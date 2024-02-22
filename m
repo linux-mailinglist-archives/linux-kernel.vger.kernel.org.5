@@ -1,112 +1,184 @@
-Return-Path: <linux-kernel+bounces-75730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3173B85EE1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:35:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A0BC85EE23
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:37:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 636061C20DF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:35:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CCB11C21935
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:37:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1CF711712;
-	Thu, 22 Feb 2024 00:35:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10FFE11711;
+	Thu, 22 Feb 2024 00:37:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bcxI/ODS"
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="AWuD0seQ"
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7A9810A21;
-	Thu, 22 Feb 2024 00:35:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DE5FFBF2
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:37:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708562124; cv=none; b=ketCCi3gU0f9SRsoQNPetzhDNvvVy4jBWqxrgE+k4lJS1l9ygTwQR4rW/cM1MdYqIxfpNu4z1FeLPJjgMX/PPaBuIzFJkYG6L3p4dGPsmvGV2vI7odTj8yqVe1O2N4RLDtOOKnlOmIjjJeg2ZqLL9xwVOe6rvsfKje/Hy9VDLMU=
+	t=1708562238; cv=none; b=WZvV/lJkMhgHdLaFenFuhnTyJZVwjJ3x1An/Bya7DYiCWQVSIIK/nM0fyJ3YXzUf5ciew1qb5Nv8Gv5ZLZLDKJMNzuEUhwopyi2vqEjveY+k41uQUSnUgpcK9VHfNDyN6wQKhxxgSU2ABwNOjtTSC8MaVmYDD47GxgAX7A+hekk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708562124; c=relaxed/simple;
-	bh=bRUQR2AfYbIVDREDggIi0tV70eU6Jl0WcIi4w7uD0r8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iFYqR0Ep1YkRbS5KE74ed1/rfWO/SvdHI9Zz3sT5ATIacDQYiJ7VK6jDwccjcNwVAZiCOQTpnyAfDsZwmzrn3LZL76ij54ApS5n3m+SMDw2RDKvFwVht1ooKo9KEdyd7rH2dXkJT9SUDe/qKqQRIIgfcIMnvvLW/qz2w+13cimo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bcxI/ODS; arc=none smtp.client-ip=209.85.222.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-785d954b236so77042585a.0;
-        Wed, 21 Feb 2024 16:35:22 -0800 (PST)
+	s=arc-20240116; t=1708562238; c=relaxed/simple;
+	bh=7DLu0D8bl4lB3TJjeIvbjOxLuBH7rI9+0zdimRyeniw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=C+FLJ8MdPi5NSzMVaB0WIs2f8Xol7d8RSXID0DeOIU1kS2f4zRS5rAiUrN14R4/avPjXymV+qcOWHN/NtHmB8NamswPN1Md5JEY0r0c+r5dJZ58m/dORCr92jdVr+S0KxX989XMbpRNoocXNlNA0kx+DYJYC/FY3mA62lHIop+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=AWuD0seQ; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dc238cb1b17so1405394276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:37:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708562122; x=1709166922; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uQcSzwYTlfpfWbC6MSH72/ZoCsP8jeNoOiicayAEZtY=;
-        b=bcxI/ODS6FD4ZSpGVtEWPYLIRGkIIlvVx7dK0VoT+V2f3ydog0FexY63uCP0Q/7aZ6
-         P1KyBrgG2IOamGilwFwEtrhdbUvxmXSi2UAl+cR1v7neEIFd310b4S0KUpT2IkRsz11c
-         53nTiiptgGrByHlcGw9PZiGa34HaOLPaJRNAmjUOaLRuUjBj0Ev6IrhWRqCy5hg88EJF
-         RwEDG7lFH3L5GZolEMAd4m2gKEsK4NkBpsw5iji1oJcLX+QwoJR/B97FfCBlNeKjSVPX
-         04RKPLbibOVeFVqvRCQ717XzCATblO/K1Ad2K8mNBm8AffvYb4KqCEqeujzwBffjzq4V
-         bIow==
+        d=paul-moore.com; s=google; t=1708562235; x=1709167035; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jwPQ5FFRE9HZKwgqe28p5vX79kU4E42ICEiVSyqmmE4=;
+        b=AWuD0seQuxSM2pg0KIzolmz4hQH1C41vVmswetXZTFhY3U9URmpE2Pgb7noqrjhFS0
+         VJk3Sl6DDsdf6yJRWe6gnSmX7JEYNgaVCjwPIvzOOdSCm56/FDqMunkl3DljsKWg3pcF
+         I0z2wtASZJeVNgrB8l6qlNHv1CKzgv7O6GGe8c9usAFQGmJGvXuolkvHh8EtXq+6VFJp
+         /1H2mU21yxv0IShaoj69664uEYmfuDXQTPysbdZeyzHmPZe+H89Zuzk/lLgGlTUBOW1R
+         5PV2VZZtF11n/6oLieojmDAtTLBF2pYFzJxIXlczJcHYGaxDe1x5Yy6r/ufCQWwGqQxT
+         jxew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708562122; x=1709166922;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uQcSzwYTlfpfWbC6MSH72/ZoCsP8jeNoOiicayAEZtY=;
-        b=XAZdtQWDeZlC3wXUn+8CeJgdl0BCQ/3ShDvOYxfvMvbZfDKfdGFX+tkKGJmAjJyiOu
-         zKGhLCC7yI16LI6SfYv9OP31rQ49hmv4WLZEbvIVmZNbgLXRwu6XsiUrzwe+lQAsb/CR
-         Cuk2T7o0VucoHszwCeCFJv28q6zkvRUicPSopDLqGSIUGQIYArm12A8nrcyEVs7FJTMn
-         JnqsPgUxEaVwg1onKObt4ThqB212CeoDcrqBW8kbY6LLrGpzQaOhLv3KU3xNeI4PkiR3
-         VxSNHKhmFbw+2voeUgsF+/FS+2R+UC1sMxQHvIcAIvXJ5dviw7jFV1fpoIr+ofywDaFZ
-         JChQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWOJkarToMC5Ro7lLzIaU8W0sxKAOofCVSr7+sVmjP3pPIeaZXoHn/f7lWKmNZ+mW0J4GBwSdrgt8drWjfyAD+RLU1kQ9I8SWOpf3SWC+KO0hG6i2imnRdFl/Ys7KOoVYh4yfYtWPqcLg==
-X-Gm-Message-State: AOJu0YywGTPIxmObJgs64AluIa0Xzh7f83DxsZW3Bkl/VvX+2BzSZlRB
-	Ofzda6bOcQ/QuQJ9gffSLT7SHdiOiCwZvZUnPX2zFyfI1x7TOeWr
-X-Google-Smtp-Source: AGHT+IGLYs/AqW3ANawAK7DT3YYIZr8BCGmTNtcMollWrLax0a8fj192lb91A98q6G/j28j+aPI7Ww==
-X-Received: by 2002:a05:620a:b52:b0:787:3820:8d9 with SMTP id x18-20020a05620a0b5200b00787382008d9mr20353756qkg.0.1708562121729;
-        Wed, 21 Feb 2024 16:35:21 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id w5-20020a05620a148500b0078723db4da9sm4804921qkj.98.2024.02.21.16.35.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 16:35:21 -0800 (PST)
-Message-ID: <7be28a94-f0f4-4098-aaa3-be3194fc14b0@gmail.com>
-Date: Wed, 21 Feb 2024 16:35:17 -0800
+        d=1e100.net; s=20230601; t=1708562235; x=1709167035;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jwPQ5FFRE9HZKwgqe28p5vX79kU4E42ICEiVSyqmmE4=;
+        b=heiMXJHelZivdthLlJ4iMX3DCd6Sbk11zm15Rc1lhIB+7z+0wN/tv0B46rqz5Q2m8B
+         axdWAWCXKAIO6ZoE7U2m2LV2ZCo7nvj+dsyOe73Z3Hst5Gsq337NHcYPp62+wkyWaUoI
+         jZre1QZJMqFZc80nDdAoyESKztFInZe9UrgO3y0+5hOPX4QkGLzMWckW/mpq459ctJnN
+         HzPucf1LsLL9iY/TrguDtwENe1WF2kM+2J/v4bMWbONN7SAsVhu+W5gE+ujKacsID5hP
+         09dJvSR96TsLoDfdj7VP+iXE0j3Mw4p9yuUN0MNX1ygMDMLJO1hjdL72YgZUjZ8pCLN0
+         u6NQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVrAn7BZrHCGZluWKuTFVl9JRnUIrkunnUM0lzP54Xp+uZBMi0r3LxnbVwOEDeOKTIMrZv1en+LB+5fOAzvN5z49mqH1IFiH3NIbzwi
+X-Gm-Message-State: AOJu0YzYFRyAFEBvmap4XbAuW5igsR5vMW63LvYmri/pmYvKVpsT59jU
+	MlAuDjNSl04zKDHYAvs8R3V88N1XCYGK0htOOOwvkCtxK9zFY0nX5uYMNaQpn4bmkMxNtc05SfS
+	0SXE8tAOMtQHVas1WiACEFEAKmc23YE9bba60
+X-Google-Smtp-Source: AGHT+IGAQ7Reayqcx5n6/kxK9gU1bvXz8FuxziZlj261BGCiV7fv0a2bbFUmVeZ6atHIXCyxpJlOV4CfjUbIVyi2enc=
+X-Received: by 2002:a25:cec1:0:b0:dcc:eb38:199c with SMTP id
+ x184-20020a25cec1000000b00dcceb38199cmr971381ybe.56.1708562235099; Wed, 21
+ Feb 2024 16:37:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 02/12] dt-bindings: mtd: brcmnand: Add WP pin
- connection property
-Content-Language: en-US
-To: William Zhang <william.zhang@broadcom.com>,
- Linux MTD List <linux-mtd@lists.infradead.org>,
- Linux ARM List <linux-arm-kernel@lists.infradead.org>,
- Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>
-Cc: kursad.oney@broadcom.com, joel.peshkin@broadcom.com,
- anand.gore@broadcom.com, dregan@mail.com, kamal.dasu@broadcom.com,
- tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com,
- devicetree@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
- linux-kernel@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Kamal Dasu <kdasu.kdev@gmail.com>,
- Rob Herring <robh+dt@kernel.org>
-References: <20240207202257.271784-1-william.zhang@broadcom.com>
- <20240207202257.271784-3-william.zhang@broadcom.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20240207202257.271784-3-william.zhang@broadcom.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
+ <20240221-idmap-fscap-refactor-v2-15-3039364623bd@kernel.org>
+ <CAHC9VhRQ7Xa2_rAjKYA_nkpmfUd9jn2D0SNcb6SjQFg=k8rn=w@mail.gmail.com> <ZdaTPV/Ngd8ed/p5@do-x1extreme>
+In-Reply-To: <ZdaTPV/Ngd8ed/p5@do-x1extreme>
+From: Paul Moore <paul@paul-moore.com>
+Date: Wed, 21 Feb 2024 19:37:04 -0500
+Message-ID: <CAHC9VhS8h-A61b8DzbOBSxSH6WBDZkHBQGuT=DVq1n5gHfx6jA@mail.gmail.com>
+Subject: Re: [PATCH v2 15/25] security: call evm fscaps hooks from generic
+ security hooks
+To: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>, Eric Paris <eparis@redhat.com>, 
+	James Morris <jmorris@namei.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+	Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
+	Casey Schaufler <casey@schaufler-ca.com>, Mimi Zohar <zohar@linux.ibm.com>, 
+	Roberto Sassu <roberto.sassu@huawei.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, 
+	Eric Snowberg <eric.snowberg@oracle.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, audit@vger.kernel.org, 
+	selinux@vger.kernel.org, linux-integrity@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/7/24 12:22, William Zhang wrote:
-> Add brcm,wp-not-connected property to have an option for disabling this
-> feature on broadband board design that does not connect WP pin.
-> 
-> Signed-off-by: William Zhang <william.zhang@broadcom.com>
+On Wed, Feb 21, 2024 at 7:20=E2=80=AFPM Seth Forshee (DigitalOcean)
+<sforshee@kernel.org> wrote:
+> On Wed, Feb 21, 2024 at 06:43:43PM -0500, Paul Moore wrote:
+> > On Wed, Feb 21, 2024 at 4:25=E2=80=AFPM Seth Forshee (DigitalOcean)
+> > <sforshee@kernel.org> wrote:
+> > >
+> > > Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
+> > > ---
+> > >  security/security.c | 15 +++++++++++++--
+> > >  1 file changed, 13 insertions(+), 2 deletions(-)
+> >
+> > First off, you've got to write *something* for the commit description,
+> > even if it is just a single sentence.
+> >
+> > > diff --git a/security/security.c b/security/security.c
+> > > index 0d210da9862c..f515d8430318 100644
+> > > --- a/security/security.c
+> > > +++ b/security/security.c
+> > > @@ -2365,9 +2365,14 @@ int security_inode_remove_acl(struct mnt_idmap=
+ *idmap,
+> > >  int security_inode_set_fscaps(struct mnt_idmap *idmap, struct dentry=
+ *dentry,
+> > >                               const struct vfs_caps *caps, int flags)
+> > >  {
+> > > +       int ret;
+> > > +
+> > >         if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+> > >                 return 0;
+> > > -       return call_int_hook(inode_set_fscaps, 0, idmap, dentry, caps=
+, flags);
+> > > +       ret =3D call_int_hook(inode_set_fscaps, 0, idmap, dentry, cap=
+s, flags);
+> > > +       if (ret)
+> > > +               return ret;
+> > > +       return evm_inode_set_fscaps(idmap, dentry, caps, flags);
+> > >  }
+> > >
+> > >  /**
+> > > @@ -2387,6 +2392,7 @@ void security_inode_post_set_fscaps(struct mnt_=
+idmap *idmap,
+> > >         if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+> > >                 return;
+> > >         call_void_hook(inode_post_set_fscaps, idmap, dentry, caps, fl=
+ags);
+> > > +       evm_inode_post_set_fscaps(idmap, dentry, caps, flags);
+> > >  }
+> > >
+> > >  /**
+> > > @@ -2415,9 +2421,14 @@ int security_inode_get_fscaps(struct mnt_idmap=
+ *idmap, struct dentry *dentry)
+> > >   */
+> > >  int security_inode_remove_fscaps(struct mnt_idmap *idmap, struct den=
+try *dentry)
+> > >  {
+> > > +       int ret;
+> > > +
+> > >         if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+> > >                 return 0;
+> > > -       return call_int_hook(inode_remove_fscaps, 0, idmap, dentry);
+> > > +       ret =3D call_int_hook(inode_remove_fscaps, 0, idmap, dentry);
+> > > +       if (ret)
+> > > +               return ret;
+> > > +       return evm_inode_remove_fscaps(dentry);
+> > >  }
+> >
+> > If you take a look at linux-next or the LSM tree's dev branch you'll
+> > see that we've gotten rid of the dedicated IMA and EVM hooks,
+> > promoting both IMA and EVM to "proper" LSMs that leverage the existing
+> > LSM hook infrastructure.  In this patchset, and moving forward, please
+> > don't add dedicated IMA/EVM hooks like this, instead register them as
+> > LSM hook implementations with LSM_HOOK_INIT().
+>
+> Yeah, I'm aware that work was going on and got applied recently. I've
+> been assuming this change will go in through the vfs tree though, and I
+> wasn't sure how you and Al/Christian would want to handle that
+> dependency between your trees, so I held off on updating based off the
+> LSM tree. I'm happy to update this for the next round though.
 
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+Okay, good, I just wanted to make sure you were aware of the changes.
+Since the merge window is only a couple of weeks away I'm guessing
+this isn't something we'll need to worry about in Linus' tree as the
+LSM/IMA/EVM changes are slated to go up during the next merge window
+and I'm guessing this will likely go in after that, targeting the
+following merge window at the earliest.
 
+--=20
+paul-moore.com
 
