@@ -1,227 +1,189 @@
-Return-Path: <linux-kernel+bounces-77430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77431-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15CF6860549
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:59:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 489BD86054D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:00:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97B461F25C0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:59:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C35501F25F59
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:00:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74EAA12D218;
-	Thu, 22 Feb 2024 21:59:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADF2313791E;
+	Thu, 22 Feb 2024 21:59:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wv4Q32ts";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="fU9Ffb0G";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wv4Q32ts";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="fU9Ffb0G"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Fm/twIxk"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D6D21DA22;
-	Thu, 22 Feb 2024 21:59:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6B5E12D1F8;
+	Thu, 22 Feb 2024 21:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708639183; cv=none; b=naroakAngR4GFUDn9rG7mne135/Ee6s0LklXjZo9LDQBXpWkXnPHrZ1tTVv1RaMkCfSF1ewnu2zLDQDAMsFRQBn64DIlceUZfIOdGDrM+71AhF78tSNbzqO34+aMg6BPPEZicvaOl/cFStx6K3OZWFjuo2NvJTZC+JgkQqhj1/0=
+	t=1708639192; cv=none; b=h9oTd42lchuQTk40J9jxULSEXXqMWBV7Yn6fGFTkMyA+WyLzKwOBkaE4qS/dvskpzEjp1SxRfyVhnn8Le2NsvqCweDp6FebyGcMJyDw5IL2mY7x3zAXi/qkzTFGchtVqoju4VIkbuXN/NLwwpCMzzEdnIdgH0+bVBP/jAfdOaaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708639183; c=relaxed/simple;
-	bh=1B1xFLhzeH905j1tpsQYa4xj6vcPSlFa5DjQaYUyU94=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=I2cId/KMtsz1Tm6gReFEYGPLU2VOWHFwIS8oDQZ0oT05JoACtF4eL2g/CAyz7eh4ep0BLF3uXapgTWh/Jl98olsQJ/9nFq9pAZUX3fShMYICNtTPY9GZs/xXiKrcj9568Rybqwc28MFe27xslk0HykhySHpuq+aFANzt2ScrSoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wv4Q32ts; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=fU9Ffb0G; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wv4Q32ts; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=fU9Ffb0G; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9B11A222A7;
-	Thu, 22 Feb 2024 21:59:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708639179; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=am0JE5DZxO41aBwalbrvXYDn2gxdsh5EjjlZFqMshpU=;
-	b=wv4Q32tsmHh3ifubCsmDzZK4Z4l/6QoDAZYywCHKpFomrey0l1+JFyvCQo9HbfoK3TVIg5
-	n2tweB4nmtlXcgGNDpaL89xXaxFHfBNm8Sti4M+Nb3itDnujYBIA0w4Y9f2t/LRqaxjsqD
-	JS/nqHPf9eogmVnkQBBWkDs9+AMO8Hc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708639179;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=am0JE5DZxO41aBwalbrvXYDn2gxdsh5EjjlZFqMshpU=;
-	b=fU9Ffb0GdMF9xsMpPSxuvZm71lruVeVLYYUvCjEi3yj4wfcvgz6NEH5M0znRmL4pAlrwEI
-	aldDoF+pBZygUeBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708639179; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=am0JE5DZxO41aBwalbrvXYDn2gxdsh5EjjlZFqMshpU=;
-	b=wv4Q32tsmHh3ifubCsmDzZK4Z4l/6QoDAZYywCHKpFomrey0l1+JFyvCQo9HbfoK3TVIg5
-	n2tweB4nmtlXcgGNDpaL89xXaxFHfBNm8Sti4M+Nb3itDnujYBIA0w4Y9f2t/LRqaxjsqD
-	JS/nqHPf9eogmVnkQBBWkDs9+AMO8Hc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708639179;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=am0JE5DZxO41aBwalbrvXYDn2gxdsh5EjjlZFqMshpU=;
-	b=fU9Ffb0GdMF9xsMpPSxuvZm71lruVeVLYYUvCjEi3yj4wfcvgz6NEH5M0znRmL4pAlrwEI
-	aldDoF+pBZygUeBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7B9E613A57;
-	Thu, 22 Feb 2024 21:59:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id AUbYHcvD12VLMwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 22 Feb 2024 21:59:39 +0000
-From: Vlastimil Babka <vbabka@suse.cz>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Michal Hocko <mhocko@suse.com>,
-	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v2] mm, mmap: fix vma_merge() case 7 with vma_ops->close
-Date: Thu, 22 Feb 2024 22:59:31 +0100
-Message-ID: <20240222215930.14637-2-vbabka@suse.cz>
-X-Mailer: git-send-email 2.43.1
+	s=arc-20240116; t=1708639192; c=relaxed/simple;
+	bh=1x+Bqaxaykfznlyo9yGS74P6CmhQYmfn9H/hXcPVVOg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=MJxwY2zKqBU66HmTuwn/5/yj/jB0dHfHb6Cezu1lZWs1Cz6USON0704bnjmpcuVfkVF88YdIqO0ETSFw6auBX3JJ1oIR5v94cYiNoTC+OOQ5Ju4mGT5zw7mK37en5mpNwpWm/x/tD44vTgVzccxBaV0e+4gkR3yEJt3zJwumq00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Fm/twIxk; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=Kh7etTWBnizty3utnv9wERJ2i8f07gzHlZck1w7FtLY=; b=Fm/twIxknGlVLiYGrsTX9mply2
+	bOCDrzxN3mCOQcXH5BKNfXYoVHa7asG+SrtTyt7iQSdj3EsgCKZpESJU++kblnDLcmM09bJFqHWRZ
+	niA1lGhaYpfGXgS8dRs0dqYU22BNfUlMMIalU/DsO/CHj4AF4KpfwgWiOjG8AvL6KTHGiliNo6dQ6
+	qxH6zbu2yATzyADzz+OcT+gbWzqGxVe8bTxira//UABuUSOli6afgy+tDGHcqJ3VkNBfRLLv9Idfk
+	VHOYDWakREF1/Ksq5Pk6t/DoIR7ABxToKtMGy+NNkqjI2gHhMUCNxdwPD4s3r7bqH4DUTSJOTueBq
+	wZf4rZgg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rdH6K-00000006l65-1NGG;
+	Thu, 22 Feb 2024 21:59:33 +0000
+Date: Thu, 22 Feb 2024 13:59:32 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: lsf-pc@lists.linux-foundation.org, John Garry <john.g.garry@oracle.com>,
+	Tso Ted <tytso@mit.edu>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Pankaj Raghav <p.raghav@samsung.com>,
+	Daniel Gomez <da.gomez@samsung.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	"kbus >> Keith Busch" <kbusch@kernel.org>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Dave Chinner <david@fromorbit.com>, hch@lst.de, mcgrof@kernel.org
+Cc: djwong@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	jack@suse.cz, chandan.babu@oracle.com, linux-kernel@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-block@vger.kernel.org, jbongio@google.com,
+	ojaswin@linux.ibm.com
+Subject: [LSF/MM/BPF TOPIC] no tears atomics & LBS
+Message-ID: <ZdfDxN26VOFaT_Tv@bombadil.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: 0.70
-X-Spamd-Result: default: False [0.70 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 MIME_GOOD(-0.10)[text/plain];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[kvack.org,vger.kernel.org,suse.cz,suse.com,oracle.com,gmail.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-When debugging issues with a workload using SysV shmem, Michal Hocko has
-come up with a reproducer that shows how a series of mprotect()
-operations can result in an elevated shm_nattch and thus leak of the
-resource.
+At last year's LSFMM we learned through Ted Ts'o about the interest by
+cloud providers in large atomics [0]. It is a good example where cloud
+providers innovated in an area perhaps before storage vendors were
+providing hardware support for such features. An example use case was
+databases. In short, with large atomics databases can disable their own version
+of journaling so to increase TPS. Large atomics lets you  disabling things like
+MySQL innodb_doublewrite. The feature to allow you to disable this and use
+large atomcis is known as torn write prevention [1]. At least for MySQL the
+default page size for the database (used for columns) is 16k, and so enabling
+for example a 16k atomic can allow you to take advantage of this. It was also
+mentioned how PostgreSQL only supports buffered-IO and so it would be desirable
+for a solution to support buffered-IO with large atomics as well. The way
+cloud providers enable torn write protection, is by using direct IO.
 
-The problem is caused by wrong assumptions in vma_merge() commit
-714965ca8252 ("mm/mmap: start distinguishing if vma can be removed in
-mergeability test"). The shmem vmas have a vma_ops->close callback
-that decrements shm_nattch, and we remove the vma without calling it.
+John Garry has been working on adding an API for atomic writes, it would
+seem some folks refer to this as the no-tears atomic API. It consists of
+two parts, one for the block layer [2] and another set of changes for
+XFS [3]. It enables Direct IO support with large atomics.  It includes
+a userspace API which lets you peg a FS_XFLAG_ATOMICWRITES flag onto a
+file, and you then create an XFS filesystem using the XFS realtime
+subvolume with with an extent alignment. The current users of this API
+seems to be SCSI, but obviously this can grow to support others. A neat
+feature of this effort is you can have two separate directories with
+separate aligment requirements. There is no generic filesystem solution
+yet.
 
-vma_merge() has thus historically avoided merging vma's with
-vma_ops->close and commit 714965ca8252 was supposed to keep it that way.
-It relaxed the checks for vma_ops->close in can_vma_merge_after()
-assuming that it is never called on a vma that would be a candidate for
-removal. However, the vma_merge() code does also use the result of this
-check in the decision to remove a different vma in the merge case 7.
+Meanwhile we're now at a v2 RFC for LBS support [4]. Although the LBS
+effort originally was a completely orthogonal effort to large atomics, it
+would seem there is a direct relationship here now worth discussing.
+In short LBS enables buffered-IO large atomic support if the hardware
+support its. We get both alignment constraints gauranteed and now ensure
+we use contigous memory for the IOs for DMA too it is built on using large
+folios. We expect NVMe drives which support support large atomics can
+easily profit from this without any userspace modification other than
+when you create the filesystem.
 
-A robust solution would be to refactor vma_merge() code in a way that
-the vma_ops->close check is only done for vma's that are actually going
-to be removed, and not as part of the preliminary checks. That would
-both solve the existing bug, and also allow additional merges that the
-checks currently prevent unnecessarily in some cases.
+We reviewed the possible intersection of both efforts at our last LBS cabal
+with LBS interested folks and Martin Peterson and John Garry. It is somewhat
+unclear exactly how to follow up on some aspects of the no-tear API [5]
+but there was agreement about the possible intersection of both efforts,
+and that we should discuss this at LSFMM. The goal would be to try to reach
+consensus on how no-tear API and how LBS could help with those
+interested in leveraging large atomics.
 
-However to fix the existing bug first with a minimized risk, and for
-easier stable backports, this patch only adds a vma_ops->close check to
-the buggy case 7 specifically. All other cases of vma removal are
-covered by the can_vma_merge_before() check that includes the test for
-vma_ops->close.
+Some things to evaluate or for us to discuss:
 
-The reproducer code, adapted from Michal Hocko's code:
+ * no-tear API:
+   - allows directories to have separate alignment requirements
+     - this might be useful for folks who want to use large IOs with
+       large atomics for some workloads but smaller IOs for another
+       directory on the same drive. It this a viable option to some
+       users for large atomics with concerns of being forced to use
+       only large writes with LBS?
+   - statx is modified so to display new alignment considerations
+   - atomics are power of 2
+   - there seems to be some interest in supporting no-hardware-accel atomic
+     solution, so a software implemented atomic solution, could someone
+     clarify if that's accurate? How is the double write avoided? What are
+     the use cases? Do databases use that today?
+   - How do we generalize a solution per file? Would extending a min
+     order per file be desirable? Is that even tenable?
 
-int main(int argc, char *argv[]) {
-  int segment_id;
-  size_t segment_size = 20 * PAGE_SIZE;
-  char * sh_mem;
-  struct shmid_ds shmid_ds;
+  * LBS:
+    - stat will return the block size set, so userspace applications
+      using stat / statx will use the larger block size to ensure
+      alignment
+    - a drive with support for a large atomic but supporting smaller
+      logical block sizes will still allow writes to the logical block
+      size. If a block driver has a "preference" (in NVMe this would
+      be the NPWG for the IU) to write above the logical block size,
+      do we want the option to lift the logical block size? In
+      retrospect I don't think this is needed given Jan Kara's patches
+      to prevent allowing writes to to mounted devices [4], that should
+      ensure that if a filesystem takes advantage of a larger physical
+      block size and creates a filesystem with it as the sector size,
+      userspace won't be mucking around with lower IOs to the drive
+      while it is mounted. But, are there any applications which would
+      get the block device logical block size instead for DIO?
+    - LBS is transparent to to userspace applications
+    - We've verified *most* IOs are aligned if you use a 16k block size
+      but a smaller sector size, the lower IOs were verified to come
+      from the XFS buffer cache. If your drive supports a large atomic
+      you can avoid these as you can lift the sector size set as the
+      physical block size will be larger than the logical block size.
+      For NVMe today this is possible for drives with a large
+      NPWG (the IU) and NAWUFP (the large atomic), for example.
 
-  key_t key = 0x1234;
-  segment_id = shmget(key, segment_size,
-                      IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
-  sh_mem = (char *)shmat(segment_id, NULL, 0);
+Tooling:
 
-  mprotect(sh_mem + 2*PAGE_SIZE, PAGE_SIZE, PROT_NONE);
+  - Both efforts stand to gain from a shared verification set of tools
+    for alignment and atomic use
+  - We have a block layer eBPF alignent tool written by Daniel Gomez [6]
+    however there is lack of interested parties to help review a simpler
+    version of this tool this tool so we merge it [7], we can benefit from more
+    eyeablls from experienced eBPF / block layer folks.
+  - More advanced tools are typically not encouraged, and this leaves us
+    wondering what a better home would be other than side forks
+  - Other than preventing torn writes, do users of the no-tear API care
+    about WAF? While we have one for NVMe for WAF [8] would
+    collaborating on a generic tool be of interest ?
 
-  mprotect(sh_mem + PAGE_SIZE, PAGE_SIZE, PROT_WRITE);
+Any other things folks want to get out of this as a session, provided
+there is interest?
 
-  mprotect(sh_mem + 2*PAGE_SIZE, PAGE_SIZE, PROT_WRITE);
+[0] https://lwn.net/Articles/932900/
+[1] https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/storage-twp.html
+[2] https://lore.kernel.org/linux-nvme/20240124113841.31824-1-john.g.garry@oracle.com/T/#m4ad28b480a8e12eb51467e17208d98ca50041ff2
+[3] https://lore.kernel.org/all/20240124142645.9334-1-john.g.garry@oracle.com/
+[4] https://lore.kernel.org/all/20240213093713.1753368-1-kernel@pankajraghav.com/T/#u
+[5] https://lkml.kernel.org/r/20231101173542.23597-1-jack@suse.cz
+[6] https://github.com/dagmcr/bcc/tree/blkalgn-dump
+[7] https://github.com/iovisor/bcc/pull/4813
+[8] https://github.com/dagmcr/bcc/tree/nvmeiuwaf
 
-  shmdt(sh_mem);
-
-  shmctl(segment_id, IPC_STAT, &shmid_ds);
-  printf("nattch after shmdt(): %lu (expected: 0)\n", shmid_ds.shm_nattch);
-
-  if (shmctl(segment_id, IPC_RMID, 0))
-          printf("IPCRM failed %d\n", errno);
-  return (shmid_ds.shm_nattch) ? 1 : 0;
-}
-
-Fixes: 714965ca8252 ("mm/mmap: start distinguishing if vma can be removed in mergeability test")
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-Reported-by: Michal Hocko <mhocko@suse.com>
-Cc: Liam R. Howlett <Liam.Howlett@oracle.com>
-Cc: Lorenzo Stoakes <lstoakes@gmail.com>
-Cc: <stable@vger.kernel.org>
----
-v2: deduplicate code, per Lorenzo
- mm/mmap.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/mm/mmap.c b/mm/mmap.c
-index d89770eaab6b..3281287771c9 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -954,13 +954,21 @@ static struct vm_area_struct
- 	} else if (merge_prev) {			/* case 2 */
- 		if (curr) {
- 			vma_start_write(curr);
--			err = dup_anon_vma(prev, curr, &anon_dup);
- 			if (end == curr->vm_end) {	/* case 7 */
-+				/*
-+				 * can_vma_merge_after() assumed we would not be
-+				 * removing prev vma, so it skipped the check
-+				 * for vm_ops->close, but we are removing curr
-+				 */
-+				if (curr->vm_ops && curr->vm_ops->close)
-+					err = -EINVAL;
- 				remove = curr;
- 			} else {			/* case 5 */
- 				adjust = curr;
- 				adj_start = (end - curr->vm_start);
- 			}
-+			if (!err)
-+				err = dup_anon_vma(prev, curr, &anon_dup);
- 		}
- 	} else { /* merge_next */
- 		vma_start_write(next);
--- 
-2.43.1
-
+  Luis
 
