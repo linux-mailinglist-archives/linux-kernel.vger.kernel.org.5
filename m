@@ -1,220 +1,179 @@
-Return-Path: <linux-kernel+bounces-76030-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76031-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A49BB85F22C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:52:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DCAE85F22D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:53:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0404B23370
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 07:52:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3272F284D87
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 07:53:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B700B17C74;
-	Thu, 22 Feb 2024 07:51:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95E25179B8;
+	Thu, 22 Feb 2024 07:53:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="l6brg+oS";
-	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="h9uqXaid"
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="48Ma/MOW"
+Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AB3D179BF
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 07:51:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=210.61.82.184
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708588305; cv=fail; b=k0V85LbL4yqSDYJpitI2jr1n1exS68yrPsDzpp/Fml98YSjeXkchDzw7Hnkw+/gj+E5lKFmLmV6u+Ym4QyilKeXbD/tmjRmjo32KKCJgGID351cVZfsF3818oZ7yFwNufBSVkTuAQHIUOaLqYRAwHCEdj6BBbWZPaod9BXvcj6o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708588305; c=relaxed/simple;
-	bh=65ayD74iJM93uJCxFU7fUMjoa3flv1RsxPeAijZIXgQ=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=peDw6FCfO8o8aGmDdYpwA/xjlzEdbX2hT0wStpGusKnQG7SgvsCSpGZ1Wzyp7Wa0jp4KM0kf8DsW14bkbHlnm4LQMRRGuVFnyYt3NDRPrePvQfX3hLsR1NlH+W80jkGz5F8DmVUuQ9j4aHvm2y+NSlHBCIRr54Esu2QAd1gjeR8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=l6brg+oS; dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b=h9uqXaid; arc=fail smtp.client-ip=210.61.82.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 35f2204ed15711eea4ad694c3f9da370-20240222
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=65ayD74iJM93uJCxFU7fUMjoa3flv1RsxPeAijZIXgQ=;
-	b=l6brg+oSg/m3C1aQ2WOG/DDRvgtBH5zkTM7CppWD4nNupkWKS4FL14tGuIkTTBNqq9LxBauSCTxIKsfSXwqxOOkyiyduMVfxecq6IkaAocggIBV165uNScadFNago9soCnxprPdlo9LEwnAnVSKiHNRyMPA/izP04ar+lRB7UnE=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:7ccf2f1b-4008-4fa4-86ec-bb4d351d03bd,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:6f543d0,CLOUDID:bbdcae80-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
-X-UUID: 35f2204ed15711eea4ad694c3f9da370-20240222
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-	(envelope-from <ck.hu@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1342559538; Thu, 22 Feb 2024 15:51:39 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 22 Feb 2024 15:51:37 +0800
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 22 Feb 2024 15:51:37 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bs123MGnEdSEOHkPLyQI41XlHjCE83erwklmbRHi6xKIXpntLYaOj5hoGP0zHFZYP2Uvvxjvi9tGDQWFj/JguJVMnC7iTkV7wskCyJvnoNTakUr8hso6vYYA0rK8h8FafbiPKJUxPJqVcn6AaeiVAAE/fiSPqviokO8lo1M1whoyrGfIV9VlpnCumq+lDGjN+8adarhabhC7E9uwnt82naO2jWRd2bm4xk1g6w1Y+gpu++WG03KrLbelhm94Xj4kSz7PDayvUc4t+qlwLB6YeVsVoX6us0Jxn+5rW7Ky0thnbQFtWEHxkGUVljrWzcIyVXNjC/OQVehJBvguEeq4aA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=65ayD74iJM93uJCxFU7fUMjoa3flv1RsxPeAijZIXgQ=;
- b=haMF1hM2RT8IllKpeeRUjQDUPW0qH1tJqViOhGMDCgYWCt3YRJ024Qo2Xc9cxBNYIX5KuNICJgwr+7A1H59A4tVYFBkrfd/PVGJ3JPSyu10QfSspt9nC0FCjYk8mYQPifPUoZPenW9cZpdBUvUBBcILIbivMwizZ6oAqmwObPvGj8/9LwPHPwlt8Tzq5c6XRoWen6WzfjzuYfyFB0AKMpQzTc3BRGA/gqmX1v3L1g+R81zQ6dw+v7THTc3/sWYboDoEoJmykKSine5H7YzD6SApzWmWEjtxGQyVe2cP8skHieblDrFgHmzwHBUPCVqiMVVKAmIu0umCO+FmSQJw/tA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=65ayD74iJM93uJCxFU7fUMjoa3flv1RsxPeAijZIXgQ=;
- b=h9uqXaidUGDXp/+PGkHWY1AGLPJ6tmgxlOKpNwP5MVbvZyrVVy0PssVH2Bm5xI9fOkjtRNh8R8giQV2CUUEoJaZpbIjLjGjTLW+pre1iK54p81hq6BqL8TpnCSNyxkCKpIiMnhxu0A7z19z8Q/ejRKB/LcGfmQep1DnvLQJ4k0I=
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
- by KL1PR03MB7767.apcprd03.prod.outlook.com (2603:1096:820:e7::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Thu, 22 Feb
- 2024 07:51:34 +0000
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::b705:ea58:46d:e98d]) by TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::b705:ea58:46d:e98d%4]) with mapi id 15.20.7292.029; Thu, 22 Feb 2024
- 07:51:34 +0000
-From: =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
-To: =?utf-8?B?TWFjIFNoZW4gKOayiOS/iik=?= <Mac.Shen@mediatek.com>,
-	"chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
-	=?utf-8?B?Sml0YW8gU2hpICjnn7PorrDmtpsp?= <jitao.shi@mediatek.com>,
-	"daniel@ffwll.ch" <daniel@ffwll.ch>, "p.zabel@pengutronix.de"
-	<p.zabel@pengutronix.de>, "airlied@gmail.com" <airlied@gmail.com>,
-	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-	"angelogioacchino.delregno@collabora.com"
-	<angelogioacchino.delregno@collabora.com>
-CC: "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>,
-	=?utf-8?B?U2h1aWppbmcgTGkgKOadjuawtOmdmSk=?= <Shuijing.Li@mediatek.com>
-Subject: Re: [PATCH v2 2/3] Subject: [PATCH] drm/mediatek/dp: Add HDCP2.x
- feature for DisplayPort
-Thread-Topic: [PATCH v2 2/3] Subject: [PATCH] drm/mediatek/dp: Add HDCP2.x
- feature for DisplayPort
-Thread-Index: AQHaV/eVzqRhxdMZlkypH21h174pubEWF/iA
-Date: Thu, 22 Feb 2024 07:51:34 +0000
-Message-ID: <3d96e1d4f851008d822e6bf978107530ef1e2841.camel@mediatek.com>
-References: <20240205055055.25340-1-mac.shen@mediatek.com>
-	 <20240205055055.25340-3-mac.shen@mediatek.com>
-In-Reply-To: <20240205055055.25340-3-mac.shen@mediatek.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|KL1PR03MB7767:EE_
-x-ms-office365-filtering-correlation-id: f6fab2ca-376e-4209-3fc4-08dc337b1742
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eZRxkBBig9Pyom4FKLl5BZu3jOtRxwAxs/CvS8ABjdH6m5xgRLFpGWW/rcAPhanGoMcL9KmsAEcttf2ummMzh0IZCHvx0HDAZ7W/7r4ma7ClUS22M8ZG3yume3E1mfkp9/QCgqj+s0NYZ9sHA2OjbH2jTDAkoOSubRercYDtGultDggHWp4RKtNHjmAXoyhCQXG9wSEJwtYRmLBW1Gc5XdXyry0e0Nef+4j5Y98bMRsVryKfv4HNYWm1+ol1CLkp2uZ214YOHhnqEJaG03RwqNwwKSTwgX6vSEfcsKu5r0dPhRwCKV0fqzWjN5L7SC4+IhWFPqgmKWb6Ug4GjC6ebZV1UK7bRvPsuHzUiDhynlRFVfnq20I82dGB/hIkFZBnnhQ53QgPVU8QsjBzUpYmH7ly+kz0GDXJivu7oRZGCfVTBOT3C0QJWe77Y4XtXAj/iZE9FAL/2kD6Hp/OMWbQl64mFH6e9IxuANmG2BDX/JDrz0F/Jaj46/hbf+YuZbSAuQpsEI7N8qBX+BM/L88DktWOaWrqL7vjc6IZkMxqx13SCxOEyi3rhBJAnewUEoioouvK1YZwFa5bhhferpS7EtAU0kgU3qS6Vdy6kdZIeFE=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MVQxbGoyN09jU1Vwc3F3ODhmdVkxckVMRklzdmU0NXhlNUZIcVMrVVNkZ2l4?=
- =?utf-8?B?c2MvWE43RFU5UnRkV0hzSmUvYXhMYjZ4SDVXdFozQ25xK21sZkFJZ2NzVnFN?=
- =?utf-8?B?WHVKc0g2ZWRJVTZhWEY1c292cUZRNWVLNElqT1IzN1FmV2xoNlZ3L3pPd0NI?=
- =?utf-8?B?SC9UdkdyNnVNZjNkNHpKUUdkanRkbll3YUxXZXQ3ZjNWM0JxMjJUcmRQZmZK?=
- =?utf-8?B?L0hXVk9ZN3Y5TGFQdHhua3oxa0FyOVVaWWVyL1d5RmhVaThDL2FaZkY1dVVn?=
- =?utf-8?B?anNQWXJHUHNBUEZacjhhTG5GdmFRQlg5UGxGOUhLcGNWWi9TM2lPQ3VrZ2hZ?=
- =?utf-8?B?eWErWlh1NENFL3Z1REErMDhpa2tNSWVkWmhLZnBmcG95NHNSMHkydE14eWlk?=
- =?utf-8?B?VEd3K0NHckJiY1V0cFpGcThkTk9LU0d1YkVweXJ3eGt3Qjh2aWFPN0MxMDNM?=
- =?utf-8?B?dkNFQkFpSHkxODJaakJHOXF5R1VDbzUxbEZBWkdqYUtxOGRBTldvTVI5OHQy?=
- =?utf-8?B?QVN2YkRnNzVjVjVEUnJURnNiSlJtKzRVY2RVVWFlOTNXVXN3U0lSZjBmYm5F?=
- =?utf-8?B?c1VHL2FCSGF5QXdlVklGbnpDUysrUzJDQm80dFhyQ0hkN3JjSEVGRncrSm9h?=
- =?utf-8?B?dGtubHlzYUgyUnpTcDB3OHFHQzNKM3hVQXM1a0tob2w4eEQxYXFMMnJnQ250?=
- =?utf-8?B?NTBILzJMV2hEbktMNnNxRFZkWWtaQlMrN0NNbVZMS3VSTG96UERiS08xcHV6?=
- =?utf-8?B?YlJxQk5obkszOHc1a1hyTjBxWlB5TzUzVE11VFZvaWlaazVKUHJLeGdEWG5K?=
- =?utf-8?B?Smg0MWNvSTRHTXFtSlhkaWhzdDd4dC9wR2dPeURldUVkZ01nSmpLb0xSN3lE?=
- =?utf-8?B?WFlpYmdaeU85WDRleFFkclVUdmRRbXhaOHhCM3BFdVZOY2h2d25yWVFhc1BM?=
- =?utf-8?B?OU9QQzZ0ZGxFcFRldzlkWUhHVlZXZlMxZnBQWXpoT2ZmV0kwTjBERUdHUVZp?=
- =?utf-8?B?cGtiOVRvQVB3M0NOZ3MwNlVCdzBUenBGWFJLUVc2M2Y4UnBBVFpzOFRBVHFF?=
- =?utf-8?B?cDcyRFB5N2ZsZm9SV2pYbitYa0dCRWh0YXpHSDhZdlVHb1pDS3hXMDluM0Z5?=
- =?utf-8?B?alhlbGJ0NE4zRUkxRGcrSjJXUXlKMGJyTndnN01RZkUyaWw1Qk5TYjJFMVkr?=
- =?utf-8?B?aXlCdUhNUDZuZ2NmNkd0S1duaE5GTytUNHB2WUd1OXRhMXlyeHN0STg4eWJp?=
- =?utf-8?B?U2pBczRYWU9XSUlhNDEwZ0ZzZW16L3cyT3RYYm1kWmtDNWhLcTdkODhIclk4?=
- =?utf-8?B?OUlJc0dNekpva3ZqN08vRml3eWxYdVBvS1NUL1lnNEtObjMvYWVQZXJBNnFZ?=
- =?utf-8?B?M0JQKzFqRGdGUjBhM2V4c1ZSL2FXL0QxbGFQYkpENFpZN3BHdkQ4TEJZeTFB?=
- =?utf-8?B?VVUvSkZ3U1hsYk9ibmFYdVBJNzJCNlZLdHpJTzMvNERCeUZtdVlpaXZYWkNE?=
- =?utf-8?B?dlVIMzV6UXpvQTdGMGdBKzJtSkxQY0V3VGxpaGNHVkFJR1NTc040cFBlU3h1?=
- =?utf-8?B?MHltRnZmdGdXbGtyZDVaaGRtSEl2clRDR3V3QnJwMWNhcHUvcW1oMDlCMTRZ?=
- =?utf-8?B?VnR1b09HYmhzS0dRVGpGR3dOMVFUQzlmclFaNDVUcnl1UVVLOW91R3dscEZh?=
- =?utf-8?B?dFE1M2sxVS92dDg4bnRCR25hRk0rRWV6S0VGMDdhVDl6THpSOGNpTFVWeGhn?=
- =?utf-8?B?bG1pa3dNb0lnM2xRcFV4ZGRoKzVGMFJ6azNjVTA0UE9KTUhoeTFXcDUvTFFX?=
- =?utf-8?B?WTRuZm9SL0xJdE1UbU9PN3hYS3ZvL0gyMC8xRDlyQVNmd0ExRWt1TDlSWFdo?=
- =?utf-8?B?Y295RW5lS2wxbXRmNm5PMDErdGNoOSs4cVRpdXJXODZjSWRLZHlEenJQazZB?=
- =?utf-8?B?RHlHc0I2UDUvZndVc1BYRUFxUGR3NmNRVmRjbkpVYzRNelpiK05pTW1YaXhx?=
- =?utf-8?B?VXI0UWkzc1dwQW40enZXOExEMC8xeXo3SmVHSW0vcCtGZEF3dFBuSk9VTTlt?=
- =?utf-8?B?OHJNdk50eUdZTjdzWFBxc2FQcFFWQS9HRytFT0ZSQjhCT0hadTZpK3Y4R04r?=
- =?utf-8?Q?u0RWYKoHIXZwOUOc3WzTLcAjn?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4987E558C2B9204696E7DA14129844B2@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DD0A79EA;
+	Thu, 22 Feb 2024 07:53:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708588397; cv=none; b=HmP5fMNwHrVQX5JECTau9BSdKzA0FF9ISlMNewMSyb44lT+GmthHQv9QQgDHny6PGAEAYs0abMLmsqfz6zLwG0niPSHG9/GoR7bG2xfZEg5/ueq0JUjz/inyDKd6VryM25JjIbE2ASifsgFGObM71/Wl5LbkjKKI4/oSyBXDAYs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708588397; c=relaxed/simple;
+	bh=0zMsYUy5KRhlXCfw9bBZkJji1fZijcebCOvNn9DUhEA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=sIi+IoTHGYsH60EYFujXkgGR+iBLqrDjMFU+uiqVuEGqi/j+ckCEkRF+8GartfoYMHCrl4shqxJ0x3QaCxgj6dQVUM55KwHW0r3d8F6t5KoVYD6/iirwNQPTipDmHWzcFf4PiJ9RosWWCuV7RMl198GUBky1Jrld+X9BA2WhZUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=48Ma/MOW; arc=none smtp.client-ip=77.93.223.253
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by bee.tesarici.cz (Postfix) with ESMTPSA id A76911B31AB;
+	Thu, 22 Feb 2024 08:53:03 +0100 (CET)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
+	t=1708588384; bh=dQNS4/WSFVGWaxYuywyIICob7fj4jpwBwAktHw9C3OY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=48Ma/MOWj94u96LTX/qi6HQoXEWA87EwZimAZJ25syYh13rZwsJUIoy84O3hH0nNY
+	 EJS0J2ib0oEIfGOdlPx5tmR+K6jRGrHMFg9Cm81tBPTUrMIMTJ0TeyFILLNUenfbdO
+	 WI3wgiY3JKdJP6VcRQew17omRZySED6EkYCH2GvxDoT6Y9H/fMyQstL9DMGx7RoBwD
+	 59k4YaAKLIjNPGmvqGeGx+MFlOJlEfKqukm8AK4zwkPAPSOVEG/H3WTjL5hHCb7Iim
+	 QIlWBnTbKu9sravsxmfQB1sw/GC1GghddPohWL0ZzhRYoeMXD3aDHhARRnCV4EiPCN
+	 zc1a96I4YTmbw==
+Date: Thu, 22 Feb 2024 08:53:02 +0100
+From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Petr Tesarik <petr.tesarik1@huawei-partners.com>, Roberto Sassu
+ <roberto.sassu@huaweicloud.com>, Matthew Wilcox <willy@infradead.org>, Petr
+ Tesarik <petrtesarik@huaweicloud.com>, Dave Hansen <dave.hansen@intel.com>,
+ Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND
+ 64-BIT)" <x86@kernel.org>, Andy Lutomirski <luto@kernel.org>, Oleg Nesterov
+ <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Xin Li
+ <xin3.li@intel.com>, Arnd Bergmann <arnd@arndb.de>, Andrew Morton
+ <akpm@linux-foundation.org>, Rick Edgecombe <rick.p.edgecombe@intel.com>,
+ Kees Cook <keescook@chromium.org>, "Masami Hiramatsu (Google)"
+ <mhiramat@kernel.org>, Pengfei Xu <pengfei.xu@intel.com>, Josh Poimboeuf
+ <jpoimboe@kernel.org>, Ze Gao <zegao2021@gmail.com>, "Kirill A. Shutemov"
+ <kirill.shutemov@linux.intel.com>, Kai Huang <kai.huang@intel.com>, David
+ Woodhouse <dwmw@amazon.co.uk>, Brian Gerst <brgerst@gmail.com>, Jason
+ Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <jroedel@suse.de>, "Mike Rapoport
+ (IBM)" <rppt@kernel.org>, Tina Zhang <tina.zhang@intel.com>, Jacob Pan
+ <jacob.jun.pan@linux.intel.com>, "open list:DOCUMENTATION"
+ <linux-doc@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+ David Howells <dhowells@redhat.com>
+Subject: Re: [RFC 6/8] KEYS: PGP data parser
+Message-ID: <20240222085302.35f3a2c3@meshulam.tesarici.cz>
+In-Reply-To: <70F9F1E7-4803-46C8-AB6E-AC1CF345F03E@zytor.com>
+References: <fb4a40c7-af9a-406a-95ab-406595f3ffe5@intel.com>
+	<20240216152435.1575-1-petrtesarik@huaweicloud.com>
+	<20240216152435.1575-7-petrtesarik@huaweicloud.com>
+	<Zc-Q5pVHjngq9lpX@casper.infradead.org>
+	<5916fa3ac3d0ce2ade71e7ed1c9eb6923e374c1f.camel@huaweicloud.com>
+	<EC53BCED-0D4C-4561-9041-584378326DD5@zytor.com>
+	<773dd9fb-e668-4652-8b24-712553bb7ab1@huawei-partners.com>
+	<70F9F1E7-4803-46C8-AB6E-AC1CF345F03E@zytor.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f6fab2ca-376e-4209-3fc4-08dc337b1742
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Feb 2024 07:51:34.3815
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UP9zi6usHUHkfpCigP77yRwd1/mTK8zgFn4KYAPp7XbqUFRVqBTcOBuRi0RxTH+jx1qpbg/hjTatCqeNxIGvwA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR03MB7767
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-SGksIE1hYzoNCg0KT24gTW9uLCAyMDI0LTAyLTA1IGF0IDEzOjUwICswODAwLCBtYWMuc2hlbiB3
-cm90ZToNCj4gQWRkIEhEQ1AyLnggZmVhdHVyZSBmb3IgRGlzcGxheVBvcnQuDQo+IFdoZW4gdXNl
-cnNwYWNlIHJlcXVlc3QgdGhlIGtlcm5lbCBwcm90ZWN0IGZ1dHVyZSBjb250ZW50IGNvbW11bmlj
-YXRlZA0KPiBvdmVyIHRoZSBsaW5rIHdpdGggQ29udGVudF9Qcm90ZWN0aW9uIHByb3BlcnR5LCB0
-aGUgZmVhdHVyZSB3aWxsIGRvDQo+IEhEQ1AyLnggYXV0aGVudGljYXRpb24gaWYgdGhlIHNpbmsg
-c3VwcG9ydCBIRENQMi5YLg0KPiANCj4gQ2hhbmdlcyBpbiB2MjoNCj4gLSByZW1vdmUgc3dpdGNo
-IGNhc2UsIGFuZCByZWZpbmUgY29kZSB0byBtYWtlIG1vcmUgY2xlYXINCj4gLSByZW1vdmUgc29t
-ZSBkZWZpbml0aW9ucywgYW5kIHVzZSB0aGUgZGVmaW5pdGlvbnMgaW4NCj4gICBpbmNsdWRlL2Ry
-bS9kcm1faGRjcC5oDQo+IC0gdXNlIHRoZSBzdHJ1Y3Qgd2hpY2ggZGVmaW5lZCBpbiBpbmNsdWRl
-L2RybS9kcm1faGRjcC5oDQo+IC0gZG8gSERDUDIueCBhdXRoZW50aWNhdGlvbiB3aGVuIHVzZXJz
-cGFjZSByZXF1ZXN0IHRoZQ0KPiAgIGtlcm5lbCBwcm90ZWN0IGZ1dHVyZSBjb250ZW50IGNvbW11
-bmljYXRlZA0KPiBwZXIgc3VnZ2VzdGlvbiBmcm9tIHRoZSBwcmV2aW91cyB0aHJlYWQ6DQo+IGh0
-dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC84ZmZmNTliNTU2NzQ0OWQ4MjAxZGQxMTM4YzhmYQ0K
-PiA5MjE4YTU0NWM0Ni5jYW1lbEBtZWRpYXRlay5jb20vDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBt
-YWMuc2hlbiA8bWFjLnNoZW5AbWVkaWF0ZWsuY29tPg0KPiAtLS0NCg0KW3NuaXBdDQoNCj4gKw0K
-PiArc3RhdGljIHZvaWQgZHBfdHhfaGRjcDJfZXJyX2hhbmRsZShzdHJ1Y3QgbXRrX2hkY3BfaW5m
-byAqaGRjcF9pbmZvLA0KPiBpbnQgZXJyX21zZywgaW50IGxpbmUpDQo+ICt7DQo+ICsJcHJfZXJy
-KCIyLng6IE1haW5TdGF0ZTolZDsgU3ViU3RhdGU6JWQ7XG4iLCBoZGNwX2luZm8tDQo+ID5oZGNw
-Ml9pbmZvLmhkY3BfaGFuZGxlci5tYWluX3N0YXRlLA0KPiArCSAgICAgICBoZGNwX2luZm8tPmhk
-Y3AyX2luZm8uaGRjcF9oYW5kbGVyLnN1Yl9zdGF0ZSk7DQo+ICsNCj4gKwlzd2l0Y2ggKGVycl9t
-c2cpIHsNCj4gKwljYXNlIEhEQ1BfRVJSX1VOS05PV05fU1RBVEU6DQo+ICsJCXByX2VycigiMi54
-OiBVbmtub3duIFN0YXRlLCBsaW5lOiVkXG4iLCBsaW5lKTsNCj4gKwkJZHBfdHhfaGRjcDJfc2V0
-X3N0YXRlKGhkY3BfaW5mbywgSERDUDJfTVNfSDFQMSwNCj4gSERDUF8yXzJfQVVUSF9GQUlMKTsN
-Cg0KRm9yIGVhY2ggY2FzZSwgeW91IGp1c3QgcHJpbnQgZXJyb3IgbWVzc2FnZSBhbmQgc2V0IHN0
-YXRlLiBJdCBzZWVtcyBub3QNCm5lY2Vzc2FyeSB0byBncm91cCB0aGVzZSBjYXNlcy4gV2hlcmUg
-ZXJyb3IgaGFwcGVuLCBqdXN0IHByaW50IG1lc3NhZ2UNCnRoZXJlIGFuZCBzZXQgc3RhdGUgdGhl
-cmUuIEFuZCBub3QgcHJpbnQgbGluZSwgeW91IHNob3VsZCBwcmludCB3aGF0DQp0aGUgZXJyb3Ig
-aXMuDQoNClJlZ2FyZHMsDQpDSw0KDQo+ICsJCWJyZWFrOw0KPiArDQo+ICsJY2FzZSBIRENQX0VS
-Ul9TRU5EX01TR19GQUlMOg0KPiArCQlwcl9lcnIoIjIueDogU2VuZCBNc2cgRmFpbCwgbGluZTol
-ZFxuIiwgbGluZSk7DQo+ICsJCWRwX3R4X2hkY3AyX3NldF9zdGF0ZShoZGNwX2luZm8sIEhEQ1Ay
-X01TX0EwRjAsDQo+IEhEQ1BfMl8yX05VTExfTVNHKTsNCj4gKwkJYnJlYWs7DQo+ICsJY2FzZSBI
-RENQX0VSUl9SRVNQT05TRV9USU1FUk9VVDoNCj4gKwkJcHJfZXJyKCIyLng6IFJlc3BvbnNlIFRp
-bWVvdXQsIGxpbmU6JWQhXG4iLCBsaW5lKTsNCj4gKwkJZHBfdHhfaGRjcDJfc2V0X3N0YXRlKGhk
-Y3BfaW5mbywgSERDUDJfTVNfQTBGMCwNCj4gSERDUF8yXzJfTlVMTF9NU0cpOw0KPiArCQlicmVh
-azsNCj4gKw0KPiArCWNhc2UgSERDUF9FUlJfUFJPQ0VTU19GQUlMOg0KPiArCQlwcl9lcnIoIjIu
-eDogUHJvY2VzcyBGYWlsLCBsaW5lOiVkIVxuIiwgbGluZSk7DQo+ICsJCWRwX3R4X2hkY3AyX3Nl
-dF9zdGF0ZShoZGNwX2luZm8sIEhEQ1AyX01TX0EwRjAsDQo+IEhEQ1BfMl8yX05VTExfTVNHKTsN
-Cj4gKwkJYnJlYWs7DQo+ICsNCj4gKwlkZWZhdWx0Og0KPiArCQlwcl9lcnIoIjIueDogTk8gRVJS
-T1IhIik7DQo+ICsJCWJyZWFrOw0KPiArCX0NCj4gK30NCg==
+On Wed, 21 Feb 2024 06:02:30 -0800
+"H. Peter Anvin" <hpa@zytor.com> wrote:
+
+> On February 20, 2024 2:55:12 AM PST, Petr Tesarik <petr.tesarik1@huawei-partners.com> wrote:
+> >On 2/16/2024 6:08 PM, H. Peter Anvin wrote:  
+> >> On February 16, 2024 8:53:01 AM PST, Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:  
+> >>> On Fri, 2024-02-16 at 16:44 +0000, Matthew Wilcox wrote:  
+> >>>> On Fri, Feb 16, 2024 at 04:24:33PM +0100, Petr Tesarik wrote:  
+> >>>>> From: David Howells <dhowells@redhat.com>
+> >>>>>
+> >>>>> Implement a PGP data parser for the crypto key type to use when
+> >>>>> instantiating a key.
+> >>>>>
+> >>>>> This parser attempts to parse the instantiation data as a PGP packet
+> >>>>> sequence (RFC 4880) and if it parses okay, attempts to extract a public-key
+> >>>>> algorithm key or subkey from it.  
+> >>>>
+> >>>> I don't understand why we want to do this in-kernel instead of in
+> >>>> userspace and then pass in the actual key.  
+> >>>
+> >>> Sigh, this is a long discussion.
+> >>>
+> >>> PGP keys would be used as a system-wide trust anchor to verify RPM
+> >>> package headers, which already contain file digests that can be used as
+> >>> reference values for kernel-enforced integrity appraisal.
+> >>>
+> >>> With the assumptions that:
+> >>>
+> >>> - In a locked-down system the kernel has more privileges than root
+> >>> - The kernel cannot offload this task to an user space process due to
+> >>>  insufficient isolation
+> >>>
+> >>> the only available option is to do it in the kernel (that is what I got
+> >>> as suggestion).
+> >>>
+> >>> Roberto
+> >>>
+> >>>  
+> >> 
+> >> Ok, at least one of those assumptions is false, and *definitely* this approach seems to be a solution in search of a problem.  
+> >
+> >As a matter of fact, there is some truth to this observation.
+> >
+> >The frustrating story of Roberto's PGP parser sparked the idea, but it
+> >would clearly be overkill to add all this code just for this one parser.
+> >I started looking around if there are other potential uses of a sandbox
+> >mode, which might justify the effort. I quickly found out that it is
+> >difficult to find a self-contained part of the kernel.
+> >
+> >Now I believe that these dependencies among different parts of the
+> >kernel present an issue, both to kernel security and to maintainability
+> >of the source code. Even if sandbox mode as such is rejected (hopefully
+> >with an explanation of the reasons), I believe that it is good to split
+> >the kernel into smaller parts and reduce their interdependencies. In
+> >this sense, sandbox mode is a way to express and enforce the remaining
+> >dependencies.
+> >
+> >Petr T  
+> 
+> Congratulations. You just reinvented the microkernel.
+
+Oh, I have never claimed that the idea is completely new. There is a
+lot of prior research in this field; the most advanced project is
+probably Lightweight Execution Domains (LXDs), presented at USENIX ATC
+in 2019 [1]. This one even adds a full-blown microkernel...
+
+However, these projects have not gone anywhere, for some reason. I
+tried to understand the reason and it seems to me that it is not the
+underlying concept. I believe the main issue is that it would require
+extremely intrusive changes in the overall design of the kernel. For
+example LXDs run their microkernel on a dedicated CPU core and it uses
+IDL to generate the glue code which passes data between Linux and this
+newly introduced microkernel...
+
+Our development process is more suited to incremental changes. This is
+reflected by SandBox Mode. It allows to start small, keep the existing
+overall design, and chip off only a few selected parts.
+
+In short, SBM does borrow some ideas from microkernels but it does not
+turn Linux into a microkernel. OTOH it enhances your freedom of
+choice. If you change your mind and decide to make a Linux microkernel
+after all, SBM will be able to help you during the transition.
+
+Petr T
+
+[1] https://www.usenix.org/system/files/atc19-narayanan.pdf
 
