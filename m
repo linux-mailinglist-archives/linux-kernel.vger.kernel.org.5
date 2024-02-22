@@ -1,117 +1,109 @@
-Return-Path: <linux-kernel+bounces-76155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76156-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92C2485F391
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:55:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 563DF85F395
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:56:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4816F1F24270
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:55:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CEBDAB2253D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:56:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8944A374C5;
-	Thu, 22 Feb 2024 08:55:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59A7236B1B;
+	Thu, 22 Feb 2024 08:55:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PapNwf3y"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="J7LYGWGz"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09A5237157
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 08:55:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4254C364CF
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 08:55:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708592136; cv=none; b=jH9Oh5OT5XMLZx0DPiMvV2nxVQB4rzCnLPGhOAZQBodJeZrY7evCslc8nNc2urJwRSPnvqSc49BYiCThCgnDVwE67tBQtJgyneIj+NnosabUC0YkKlbIrBV+GZZDyArLMiIXGPUHIBMRMD0GssB2OrShHLj7/Be7/B1rv5CBPg8=
+	t=1708592150; cv=none; b=TgsjwMDL69EzXsVakk0n1+RbinmSMq3asAGDSzH0gH9a9FfU3HCfIHCTAVKmK0Js2FTqBsxAst/xYdEjmLBrwG6rdPjqlhfh6lJxiPUrTxTCQ243b/rSSJqb+kja4EJe8wRSauj6ySMhsHowen/5hS0lvfiCPj5U+VjclKnL65A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708592136; c=relaxed/simple;
-	bh=FjEV8hE5eZcXGtQ08yUqG4aewSRcZQEUdUXoAZyvLdM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZOK2M5wa+fONA4BaUAL20+ZWOXkBVJdsamM5X3GJvowWoySFqA3Y2bRx/ZzCbn63S3H9koOATGyLHUe7I4okgV76BwUM/eizB+s0yqBNoqLzbe7llOJhflR1QABXacw7ajMrUc4h6bue5gfCIbyBkQJ/64/8Xtweu00E5GMROQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PapNwf3y; arc=none smtp.client-ip=209.85.167.46
+	s=arc-20240116; t=1708592150; c=relaxed/simple;
+	bh=IcM7smgmshlPZKJJye5knpGquFJahdcma+FIvudzbLo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=TDuB1Q7Pz9ppM9Jb8xL5roG+FrHdw6i4Jikz/tEcuumf5DwJCpd9Yv7ckwjhd9oW417kmbqb2bMQ7OlLj/3zFH7Y55mJeslmFoCWUPveVFB+XyTuycEfypmnVVdSKv1UQdHpeey5sMl2gm9q9n4Z3buo7U12thddB75fhUbBKFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=J7LYGWGz; arc=none smtp.client-ip=209.85.208.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-512ab55fde6so6561560e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:55:34 -0800 (PST)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-564fc495d83so1922635a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:55:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708592133; x=1709196933; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wvafyN1Ki3gtTTRQp/+ld7EIImwoKNgmY7mZr4vWUK4=;
-        b=PapNwf3y537Ms/L8k4eX+lIusjbE8m+RODhEiY3DAcffEEw1EQsrNG+6fbKIe9EyAW
-         tIA45Lnl0v3HXhAbk4xOFyxtc+fv6xYtw106ggEykTsnmy8TakKtbWGpfkaiKbMjrYNY
-         WsYM6B4j94DypUhEtw+ttyTmcF/hXFFIHEw0yRoHo8AHJQ4GdZCF5+zr6lp97ZC4ZFf6
-         AyVDGex46/8PCDe7Q5y16MZUzdcKZzYe29pKlZA3knz9KU4s0zDkXTtuE2IiTwiRSu+/
-         ffWo1xsBfSfdRIOY5WuNtaiAEjHaT9rwk9+PGKD+b9E43izvMczaPA41jjzuIO2sT2O1
-         nZaA==
+        d=linaro.org; s=google; t=1708592144; x=1709196944; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x2xIBE07uRp27zY2uDwM2n5My/GljeuLw0Gdcn3yNZg=;
+        b=J7LYGWGzChkTsEDAyRh5zEVArOjgduj7Xblqwpx2/8OI5npTNjONesTLZKOcSu63TA
+         0XfBLHTiiUT7ih+cF+yBuC9P+g1NYZ7pnx4zcVLk2yFfxjGghWgnufMqmDyW5tSdav1p
+         e9Xw55/E1tAMKQah+qHn9BOi8GPdM6Vq4SmxqlDRMEesK74I2lPp4gyrmqx7gffB/Plj
+         QhLeEt/3A0pAGujnnr4WITPczze4F8wT+TX+DRkE9kCABIc2C0m1PMuUiS6hD2KS9O9H
+         kPCFZQblD8rnTLGV9gJLB2dQO69p/VRXocingKxj4FoPSNxoRCGHJOzw+HU7zq77qf5e
+         IUgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708592133; x=1709196933;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wvafyN1Ki3gtTTRQp/+ld7EIImwoKNgmY7mZr4vWUK4=;
-        b=fwJHNuFQmW4gjkutItoB7gYsYLNuPxYPJbGmLHjX6KAbFY/Cn+/YmiWHccXuAdjkWL
-         ZQDpksUOoNxpEytp6lSzJjEULRR4Bk51oKlnk+1o01CUoyeX6FwKQJqDxgLF06mKt6rA
-         /S0a+rWslefy2BAsmeGblX5uRtW59XYOAFP5CsyRfkD0KmvNUc9SmPB9ow0pH24DAyMY
-         32oDcPLoJQ8AbzjAPT6fPkiwLt44LcOx6xIiL3JWcfJGlGmaRoPEtHnSziHzMSjqDRTV
-         Nr3TY0ArVT1irnmi6gWHkq1aysAGQenl0AUF5COcQMEadLR98hQ43STHaNORng13/AZT
-         uOSA==
-X-Forwarded-Encrypted: i=1; AJvYcCVaHT9WskkvpSpGoaQGY0e/4JUfTY2bcNlpsc81zM6VKybKoXHeuDSOOE6ZvcsY6bBYKQIevouS6aJiebQ4sLDvZ3QCD51u7uIrppZQ
-X-Gm-Message-State: AOJu0YzzIsNuvbzhc4oHx1gIEu2jxc8kYqdUD1Nb2aKAinFO9wuZkihV
-	PzOn8i4ozcLFd2rKZvzyaaKYGFFQZvnNksdUC+Te0TdrUUYsNj0txwZVL2aD3Aw=
-X-Google-Smtp-Source: AGHT+IEtIiogO1qg0DsIHuHZDJdmbDgFoql2wOjjQ0dHxEtTw/GBno7cWP1Jf8NhMK0pYXBLxrLr8w==
-X-Received: by 2002:a05:6512:128b:b0:512:d8fa:a0f2 with SMTP id u11-20020a056512128b00b00512d8faa0f2mr1752378lfs.22.1708592133207;
-        Thu, 22 Feb 2024 00:55:33 -0800 (PST)
-Received: from [87.246.222.6] (netpanel-87-246-222-6.pol.akademiki.lublin.pl. [87.246.222.6])
-        by smtp.gmail.com with ESMTPSA id b6-20020ac24106000000b0051176ff32c1sm1992022lfi.62.2024.02.22.00.55.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 00:55:32 -0800 (PST)
-Message-ID: <dcbf0e04-0252-4cda-be1e-ee4c707017f7@linaro.org>
-Date: Thu, 22 Feb 2024 09:55:29 +0100
+        d=1e100.net; s=20230601; t=1708592144; x=1709196944;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=x2xIBE07uRp27zY2uDwM2n5My/GljeuLw0Gdcn3yNZg=;
+        b=mgx7X1VIcww+NoaVM8DFqWh8hcdOh/I3McraLiOBM77Bll/LNFuRN/O8zS35fYCfFp
+         OLB3LED8P9nrl1ExnWfunwzYo/QFSTtJfOa2v3aeharHQXszws90oHM8EXAXW9yxQDKm
+         WLZITovi4KpNn2UZAFliswtTuSdEwb+cyeNayn3/9V551mf7JdUEv3AUqGFuFtFI/fuM
+         G0XE28CBowaeheQl0/5xQDTVwh1Ma4gPsI7S6q5gi8brAZBaZawBJ9BELudF29p3k9sn
+         BXTMECoFckt5X/VDuaJJwqKGMMo5+OyDYpuS+sUm6L+PhrK0on9hk90JU3gM43CgjsRj
+         2S5w==
+X-Forwarded-Encrypted: i=1; AJvYcCWo/QxdR8qtbmWpxUBu40cGKP4HwMzkDirWv91o3XOAxQG9cURzpr8ZNw7v0Pj3GCbEpNvi/bjdSEUgdir+Ak9EPImCfCGIA5eHaP+T
+X-Gm-Message-State: AOJu0YwItvYy+zqNNlaH5OqS0Jgcvk8bqplaDERQoSYQUIa3O6AvgN6d
+	yBd0yWjuu9b+uahVzNthZERBf7HUjqfEXU04Uv0zpEPocYtMU9l6bcCCE2goyF0hMkkZi1igm+X
+	Mghg=
+X-Google-Smtp-Source: AGHT+IGTBQXFQxIW1xR6WblG6hAs+BpiQfKPcE7mNs9Z7PfdBbyqjaLnHEWt+TEVaqWG2aU8UWq6IQ==
+X-Received: by 2002:aa7:d60f:0:b0:565:4bce:db2 with SMTP id c15-20020aa7d60f000000b005654bce0db2mr13728edr.40.1708592143835;
+        Thu, 22 Feb 2024 00:55:43 -0800 (PST)
+Received: from [127.0.1.1] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id w22-20020aa7dcd6000000b00563918a48cfsm5325808edu.40.2024.02.22.00.55.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 00:55:43 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+ Sergei Shtylyov <sergei.shtylyov@gmail.com>, 
+ Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+ Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <263d6626fd4fa51b175b5c7a53e6a363e2c91519.1708354280.git.geert+renesas@glider.be>
+References: <263d6626fd4fa51b175b5c7a53e6a363e2c91519.1708354280.git.geert+renesas@glider.be>
+Subject: Re: [PATCH] dt-bindings: memory: renesas,rpc-if: Document R-Car
+ V4M support
+Message-Id: <170859214253.12531.12753169435670805395.b4-ty@linaro.org>
+Date: Thu, 22 Feb 2024 09:55:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/9] arm64: dts: qcom: sc7280: Make eDP/DP controller
- default DP
-To: Bjorn Andersson <quic_bjorande@quicinc.com>,
- Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>,
- Marijn Suijten <marijn.suijten@somainline.org>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- cros-qcom-dts-watchers@chromium.org, Bjorn Andersson <andersson@kernel.org>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
- freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
-References: <20240221-rb3gen2-dp-connector-v1-0-dc0964ef7d96@quicinc.com>
- <20240221-rb3gen2-dp-connector-v1-2-dc0964ef7d96@quicinc.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240221-rb3gen2-dp-connector-v1-2-dc0964ef7d96@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.4
 
 
-
-On 2/22/24 00:19, Bjorn Andersson wrote:
-> The newly introduced mechanism for selecting eDP mode allow us to make a
-> DisplayPort controller operate in eDP mode, but not the other way
-> around. The qcom,sc7280-edp compatible is obviously tied to eDP, so this
-> would not allow us to select DisplayPort-mode.
+On Mon, 19 Feb 2024 15:52:19 +0100, Geert Uytterhoeven wrote:
+> Document support for the SPI Multi I/O Bus Controller (RPC-IF) in the
+> Renesas R-Car V4M (R8A779H0) SoC.
 > 
-> Switch the compatible of the mdss_edp instance and make it eDP for the
-> SC7280 qcard.
 > 
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Applied, thanks!
 
-Konrad
+[1/1] dt-bindings: memory: renesas,rpc-if: Document R-Car V4M support
+      https://git.kernel.org/krzk/linux-mem-ctrl/c/fdb88a1453d212ac52bbacfbaa9a950c626bfd1e
+
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
 
