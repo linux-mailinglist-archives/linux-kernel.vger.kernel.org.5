@@ -1,139 +1,217 @@
-Return-Path: <linux-kernel+bounces-76660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B8E085FAB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:05:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8D9485FAB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:05:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE7481C259A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:05:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37DFB283373
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:05:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF31F14691B;
-	Thu, 22 Feb 2024 14:04:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 840F11474C1;
+	Thu, 22 Feb 2024 14:04:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TySaKi8K"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="n3lcoALj"
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E7791468FA;
-	Thu, 22 Feb 2024 14:04:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D8881474B3
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 14:04:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708610683; cv=none; b=kNDPFcZHzW7zvdiGnWZtT0qNrO4gf2WcZ06z75KpZAqihFWH4qLeEeZxh/Xii1k2vBDgEuKuhhcJ4FoGtJWtcFgCT3/dSqeGeMoa6HX2FHI5jXJ5Jp9iKD/2P3NMtDDkwJYAFuDhXD2bRc5MAI2wxYZvMBt7WNizMtAVWibrd9Y=
+	t=1708610687; cv=none; b=DAVsXy/gUOSg0a7uLXeycPYGdNcWuJN9KvbCPLc4b5NrN4+wwhGPCNNwt1WukLJNze+DFCCTSY+DW3H9gzz2Gu3AEuT5M1IYmFpxaY2K+dhW8OkqlAdJtT7/19arX9vTNDwLHJuQuUghiFbjETmOavJQ+a+fhjVH9sxmrOpdr0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708610683; c=relaxed/simple;
-	bh=1D90OTPu4zbi0aXCq6zV1eVFGZJcyQxAFGiZtTpgXYs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=h5/x/6+YZGkaD+tjdZqKn/I72RxB0k3fjN8tbejAuGtP7NnWB5Yt5mOtGNeNZe3f5BsE/AD52OpdA8wOC8SvB5GmzQGuq177ZpgPOPZdTFkB8FLiSG9rtTPaKo8UIY4C0l4utPfgNHKbEP8VjN5AOMRRxWTTTX9zG4Tua2jlQHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TySaKi8K; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55D5EC433F1;
-	Thu, 22 Feb 2024 14:04:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708610682;
-	bh=1D90OTPu4zbi0aXCq6zV1eVFGZJcyQxAFGiZtTpgXYs=;
-	h=From:To:Cc:Subject:Date:From;
-	b=TySaKi8Kg28e8vkLld/dJCh4yGaJgQVGxFP4nqUT+y7Zb9s63P4GIyQD/epU9A35u
-	 FV7tzwLO0xRmcZ5j3PVgxp+Dm08eGrWwwL861ER+W8RjPhD66rH9sQRtS6J3hXqEjH
-	 V3zYjMqzpOq7qe+Z0SCL/DwlNTEVveIZaAqe0aFQEmLck5y8tw+8mS7GdYHztT7xu6
-	 LbXmezJ/S+kmUzJ9DLQROvG10ujGBh5SHasl2sa48EbsQCjZbooUA7Maxh0jEdDUhP
-	 U09TeCKWsVablS1xDY6f6dRFfQDFPtrJGcMT1lyF7g+HukuWvw540pQ53Yw66CO72O
-	 iuXd0IqFTDHpw==
-From: Christian Brauner <brauner@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] vfs fixes
-Date: Thu, 22 Feb 2024 15:03:24 +0100
-Message-ID: <20240222-vfs-fixes-90812d8f4995@brauner>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1708610687; c=relaxed/simple;
+	bh=oa2OZFr65MJTMncK2x8+Hd+WOPG54W/4LW7RmU3u+RE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dLmsMcPWud/kE1ELHeBPDk7HAZ6l5Fev2ZQA+gfx8EUDG5og+17qIclxf155aUFPN+h8wiEVR05wTbgsUVmm+jOWHRdMYx0QLzs3JTF59aUVvUKKtpFsVkQRC4QrqNs6xX2DZO7ySPRM8e0kNTRcQtXiIAzTMZ6KLE0Kf0Hjrpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=n3lcoALj; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708610682;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=B0gB3dnFjS7/hmQUqLE92LRaTlx9ED9y/zOkYWN8jYI=;
+	b=n3lcoALjtwDDsGsHEnhCKu9TSJhGuUQEVQuQfil8mAgq/3q+rsyWIfsq9eKnyq9pgtWkRB
+	kCXfFWkgwJiYqwdl8oDnucfdtJwax5nhPjJXQ8qMNfECotCEMDnEM2yfu49+nyz9RM7aN5
+	WsGpp6l7B3yc/FlByIC7K1kW3yCplyY=
+From: Gang Li <gang.li@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: David Hildenbrand <david@redhat.com>,
+	David Rientjes <rientjes@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Tim Chen <tim.c.chen@linux.intel.com>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Daniel Jordan <daniel.m.jordan@oracle.com>,
+	Jane Chu <jane.chu@oracle.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	ligang.bdlg@bytedance.com,
+	Gang Li <gang.li@linux.dev>
+Subject: [PATCH v6 0/8] hugetlb: parallelize hugetlb page init on boot
+Date: Thu, 22 Feb 2024 22:04:13 +0800
+Message-Id: <20240222140422.393911-1-gang.li@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2746; i=brauner@kernel.org; h=from:subject:message-id; bh=1D90OTPu4zbi0aXCq6zV1eVFGZJcyQxAFGiZtTpgXYs=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaReD8mNrY28LOPLa3dge91vu/STNyecELUvqPb9Xfbjn 1rARsnUjlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgIlo6DIyvNisovBbffHLd7ZH 958+mp2UKhP0I/v8R3HmXcwLb2yM0GT4p5HnryZTqMBdI3wp6Uvhr9Yn06snxRyJ0PwonB6tOlm MBwA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hey Linus,
+Hi all, hugetlb init parallelization has now been updated to v6.
 
-/* Summary */
-This contains a few fixes:
+This version is tested on mm/mm-stable.
 
-* Fix a memory leak in cachefiles.
-* Restrict aio cancellations to I/O submitted through the aio interfaces as
-  this is otherwise causing issues for I/O submitted via io_uring.
-* Increase buffer for afs volume status to avoid overflow.
-* Fix a missing zero-length check in unbuffered writes in the netfs library.
-  If generic_write_checks() returns zero make netfs_unbuffered_write_iter()
-  return right away.
-* Prevent a leak in i_dio_count caused by netfs_begin_read() operaing pas
-  i_size. It will return early and leave i_dio_count incremented.
-* Account for ipv4 addresses as well ass ipv6 addresses when processing
-  incoming callbacks in afs.
+Since the release of v5, there have been some scattered discussions, they have
+primarily centered around two issues. Both of these issues have now been
+resolved, leading to the release of v6.
 
-/* Testing */
-clang: Debian clang version 16.0.6 (19)
-gcc: (Debian 13.2.0-7) 13.2.0
+Two updates in v6
+-----------------
+- Fix a Kconfig warning
+  hugetlb parallelization depends on PADATA, and PADATA depends on SMP. When SMP
+  is not selected, selecting PADATA will cause a warning: "WARNING: unmet direct
+  dependencies detected for PADATA". So HUGETLBFS can only select PADATA when
+  SMP is set.
 
-All patches are based on v6.8-rc2 and have been sitting in linux-next.
-No build failures or warnings were observed.
+  padata.c will not be compiled if !SMP, but padata_do_multithreaded is still
+  used in this series for hugetlb parallel init. So it is necessary to implement
+  a serial version in padata.h.
 
-/* Conflicts */
-At the time of creating this PR no merge conflicts were reported from
-linux-next and no merge conflicts showed up doing a test-merge with
-current mainline.
+- Fix a potential bug in gather_bootmem_prealloc_node
+  padata_do_multithreaded implementation guarantees that each
+  gather_bootmem_prealloc_node task handles one node. However, the API described
+  in padata_do_multithreaded comment indicates that padata_do_multithreaded also
+  can assign multiple nodes to a gather_bootmem_prealloc_node task.
 
-The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
+  To avoid potential bug from future changes in padata_do_multithreaded,
+  gather_bootmem_prealloc_parallel is introduced to wrap the
+  gather_bootmem_prealloc_node.
 
-  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
+  More details in: https://lore.kernel.org/r/20240213111347.3189206-3-gang.li@linux.dev
 
-are available in the Git repository at:
+Introduction
+------------
+Hugetlb initialization during boot takes up a considerable amount of time.
+For instance, on a 2TB system, initializing 1,800 1GB huge pages takes 1-2
+seconds out of 10 seconds. Initializing 11,776 1GB pages on a 12TB Intel
+host takes more than 1 minute[1]. This is a noteworthy figure.
 
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.8-rc6.fixes
+Inspired by [2] and [3], hugetlb initialization can also be accelerated
+through parallelization. Kernel already has infrastructure like
+padata_do_multithreaded, this patch uses it to achieve effective results
+by minimal modifications.
 
-for you to fetch changes up to b820de741ae48ccf50dd95e297889c286ff4f760:
+[1] https://lore.kernel.org/all/783f8bac-55b8-5b95-eb6a-11a583675000@google.com/
+[2] https://lore.kernel.org/all/20200527173608.2885243-1-daniel.m.jordan@oracle.com/
+[3] https://lore.kernel.org/all/20230906112605.2286994-1-usama.arif@bytedance.com/
+[4] https://lore.kernel.org/all/76becfc1-e609-e3e8-2966-4053143170b6@google.com/
 
-  fs/aio: Restrict kiocb_set_cancel_fn() to I/O submitted via libaio (2024-02-21 16:31:49 +0100)
+max_threads
+-----------
+This patch use `padata_do_multithreaded` like this:
 
-Please consider pulling these changes from the signed vfs-6.8-rc6.fixes tag.
+```
+job.max_threads	= num_node_state(N_MEMORY) * multiplier;
+padata_do_multithreaded(&job);
+```
 
-Thanks!
-Christian
+To fully utilize the CPU, the number of parallel threads needs to be
+carefully considered. `max_threads = num_node_state(N_MEMORY)` does
+not fully utilize the CPU, so we need to multiply it by a multiplier.
 
-----------------------------------------------------------------
-vfs-6.8-rc6.fixes
+Tests below indicate that a multiplier of 2 significantly improves
+performance, and although larger values also provide improvements,
+the gains are marginal.
 
-----------------------------------------------------------------
-Baokun Li (1):
-      cachefiles: fix memory leak in cachefiles_add_cache()
+  multiplier     1       2       3       4       5
+ ------------ ------- ------- ------- ------- -------
+  256G 2node   358ms   215ms   157ms   134ms   126ms
+  2T   4node   979ms   679ms   543ms   489ms   481ms
+  50G  2node   71ms    44ms    37ms    30ms    31ms
 
-Bart Van Assche (1):
-      fs/aio: Restrict kiocb_set_cancel_fn() to I/O submitted via libaio
+Therefore, choosing 2 as the multiplier strikes a good balance between
+enhancing parallel processing capabilities and maintaining efficient
+resource management.
 
-Daniil Dulov (1):
-      afs: Increase buffer size in afs_update_volume_status()
+Test result
+-----------
+      test case       no patch(ms)   patched(ms)   saved
+ ------------------- -------------- ------------- --------
+  256c2T(4 node) 1G           4745          2024   57.34%
+  128c1T(2 node) 1G           3358          1712   49.02%
+     12T         1G          77000         18300   76.23%
 
-David Howells (1):
-      netfs: Fix missing zero-length check in unbuffered write
+  256c2T(4 node) 2M           3336          1051   68.52%
+  128c1T(2 node) 2M           1943           716   63.15%
 
-Marc Dionne (2):
-      netfs: Fix i_dio_count leak on DIO read past i_size
-      afs: Fix ignored callbacks over ipv4
+Change log
+----------
+Changes in v6:
+- Fix a Kconfig warning
+- Fix a potential bug in gather_bootmem_prealloc_node
 
- fs/afs/internal.h         |  6 ++----
- fs/afs/main.c             |  3 +--
- fs/afs/server.c           | 14 +++++---------
- fs/afs/volume.c           |  4 ++--
- fs/aio.c                  |  9 ++++++++-
- fs/cachefiles/cache.c     |  2 ++
- fs/cachefiles/daemon.c    |  1 +
- fs/netfs/buffered_write.c |  3 +++
- fs/netfs/direct_write.c   |  5 ++++-
- fs/netfs/io.c             |  2 ++
- include/linux/fs.h        |  2 ++
- 11 files changed, 32 insertions(+), 19 deletions(-)
+Changes in v5:
+- https://lore.kernel.org/lkml/20240126152411.1238072-1-gang.li@linux.dev/
+- Use prep_and_add_allocated_folios in 2M hugetlb parallelization
+- Update huge_boot_pages in arch/powerpc/mm/hugetlbpage.c
+- Revise struct padata_mt_job comment
+- Add 'max_threads' section in cover letter
+- Collect more Reviewed-by
+
+Changes in v4:
+- https://lore.kernel.org/r/20240118123911.88833-1-gang.li@linux.dev
+- Make padata_do_multithreaded dispatch all jobs with a global iterator
+- Revise commit message
+- Rename some functions
+- Collect Tested-by and Reviewed-by
+
+Changes in v3:
+- https://lore.kernel.org/all/20240102131249.76622-1-gang.li@linux.dev/
+- Select CONFIG_PADATA as we use padata_do_multithreaded
+- Fix a race condition in h->next_nid_to_alloc
+- Fix local variable initialization issues
+- Remove RFC tag
+
+Changes in v2:
+- https://lore.kernel.org/all/20231208025240.4744-1-gang.li@linux.dev/
+- Reduce complexity with `padata_do_multithreaded`
+- Support 1G hugetlb
+
+v1:
+- https://lore.kernel.org/all/20231123133036.68540-1-gang.li@linux.dev/
+- parallelize 2M hugetlb initialization with workqueue
+
+Gang Li (8):
+  hugetlb: code clean for hugetlb_hstate_alloc_pages
+  hugetlb: split hugetlb_hstate_alloc_pages
+  hugetlb: pass *next_nid_to_alloc directly to
+    for_each_node_mask_to_alloc
+  padata: dispatch works on different nodes
+  padata: downgrade padata_do_multithreaded to serial execution for
+    non-SMP
+  hugetlb: have CONFIG_HUGETLBFS select CONFIG_PADATA
+  hugetlb: parallelize 2M hugetlb allocation and initialization
+  hugetlb: parallelize 1G hugetlb initialization
+
+ arch/powerpc/mm/hugetlbpage.c |   2 +-
+ fs/Kconfig                    |   1 +
+ include/linux/hugetlb.h       |   2 +-
+ include/linux/padata.h        |  14 +-
+ kernel/padata.c               |  14 +-
+ mm/hugetlb.c                  | 241 +++++++++++++++++++++++-----------
+ mm/mm_init.c                  |   1 +
+ 7 files changed, 190 insertions(+), 85 deletions(-)
+
+-- 
+2.20.1
+
 
