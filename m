@@ -1,128 +1,119 @@
-Return-Path: <linux-kernel+bounces-76267-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76268-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A948485F4EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:47:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 092B485F4F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:47:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 604D51F2137D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:47:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B34241F2235D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:47:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B6B639876;
-	Thu, 22 Feb 2024 09:46:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF9203B2AD;
+	Thu, 22 Feb 2024 09:47:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pwJMM1Kg"
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dKkOC5yO"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2F123770E
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 09:46:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07F539AC5
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 09:47:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708595200; cv=none; b=Sh7BzBG2pg1bUoLYLLIB4VTd4URDjmop+CxbKq/rLRDXJHoavhaMAk3PxCLxa9XhBU97KVEsRSOwN6piT+IhV27lXMqtrWz0sr13TfUlCk3Qw6rTN6MODwrOwuv9NrR48wppu7wq3pQnL4PNj8sydgpYEYDK5MEGaVpgI80YnPA=
+	t=1708595233; cv=none; b=iv4mxGBR269z6jCt8aeRtPu63fv/0JYk0sJJMRG1fD4yXbQuZcCLPBG/hQdTakT/vbmLmp8Wz5f14bKJZZkTa1QyijB//aP2WATRuf6/T2Z1yh6Whh4fbEDepu/hlEUAKsk7JsJnwDZfaGd1vuJsXUEKsiIY/lfuNgAzmWLlmQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708595200; c=relaxed/simple;
-	bh=bPCV+xnb1Qk+NcS73lqI21dN52imcgJotWmT68p5gz0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QNbge5Ihg1b2Uv0VLuzAu8ONkin7bnTu4VGFLxO/5H8+W5m6dzTCUMzVYCrB7iK6NrksurN9ump+IYt48YSZYNDN1aZqqgViXhI41z6Rtwsydbic8icafUpK8A8qV+MzNDuS2mIWhq7iggfyWwUf+5Abv+h0XEzrmkgn4XIiRHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pwJMM1Kg; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dcc84ae94c1so7208198276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 01:46:38 -0800 (PST)
+	s=arc-20240116; t=1708595233; c=relaxed/simple;
+	bh=p/NLjmUdzl2udebkQzhZYTZge1vEW9JNghSztBz2MFg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pzGmZq7ZdOwvW2CnsVVLaQJdYefII92i+vlhBRIk3aEZQyt7nfrMzhz5DTi/lq8gaJf0RlvP3x95WMGQdOOVDaZ+EsN6Rvd32yElGraGkhfoNXUIumZL9l5wr0FkyO1P9HrwhEt8RdDE2giPUW5zTDbYlBA/ZHm+pocAAfbZD+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dKkOC5yO; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-55a035669d5so2965645a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 01:47:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708595198; x=1709199998; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=JrHiV4SbPrNlHGeovFDnwlGAOJlYDpe2wRYcFnz5Qkw=;
-        b=pwJMM1Kg351ZaCBT3YrECkJG+hyPYFBHZHDTOpW6+w8TdKKaKoWjQXhgfiQAeqVDtS
-         J9vb+bRFaFVPElzAL1rQLjzX6xe6RDsI+UL7EembEkspgS2BZPiKGiSIQviPw/OE2/oZ
-         sMJvAYsziXeWepafAgDrugdocNvpbIDQtjixX3rPIR57M76JBg7bfvkvuuUWOymhzP9F
-         5pZh2ZlQK53um/05k3+gCqRyCrNlWnSmu70T4Hy8+pxAQCrP6sKDfIoos/+JH5P530Im
-         Q0DbOAa13WqEIid/ylG6BjizZGAVEVsb2DzavmRoG4eWzm1BJlPWZ9LipQqmUK6m/WD1
-         UOiw==
+        d=suse.com; s=google; t=1708595229; x=1709200029; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dhVnYESztk5T2B/6C2k8gNoOah30/4ZRZ/kF6+4P7Uw=;
+        b=dKkOC5yOlC19qjiK5+6HgiE05WByhPHUONs6zTMjmmp6Atvb+aou1+TTyrtEvUqjsC
+         NEGMC0ymPtoOEHmhMxikyhcrnUtxvS02y8dzohqdgtumJxVsLqdSmzcv2xeOK2W4yMuJ
+         ZA1+05W8i39/A0jewi834v0Y0+GAz/I1kuOw1EpYEjTQNmFvtwjoRFPNN2KFHW3miO2h
+         W0Z+ZtN5b/lsnbOgm8PObuxvOrt6x2RHisRNSXoSLCU9ejp3Irox4wcnXJ66QK2CdCo2
+         1JTZdZfnPIIdzi6bgHTu+pxjQOGMJyz6mnwQYf7wFIEEIoCI4GIYmz9GsG/bLIIIOSUi
+         UE6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708595198; x=1709199998;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JrHiV4SbPrNlHGeovFDnwlGAOJlYDpe2wRYcFnz5Qkw=;
-        b=TUvovur7yHMNK2DenId6w2doSYA72gWNJ+5ryzHOAazME2tCkIWayZVwVVRYGJESGj
-         5o0xH8Y+jteaB1vxgwtDUA4zmXXWXwo7wunwM2NrY9dzcUovgI6bAmVCNmrm3nI78eCf
-         GNBTLicixxpgjIe3Vwrp0U0zMYEFb++0jdIhkG0VaRk5gYfEPEYHuqIzdRE5QQvQFfCx
-         M8a1+/G918KKfJCbVY4pqVJu1rfZndDJwDqRBzaiP1z0qyiaM63kWAQjspdieJQ6X3y7
-         AbieKQeU4Ke/wcgxk+Ni/C0hwp0O6gKb4upKLtw4DxsBMXwduIm8nEzDAvhbKFFIfBB7
-         XhhA==
-X-Forwarded-Encrypted: i=1; AJvYcCWOYM1lgig1sgM7Qa/hOA1d2GRJtuhZfzxyri6hfqFA2WsReSGOp5ZnvRbFPQqpNWc8r5qJXgVo8J9khOpCby8jcklHNGlMHLEB0H9u
-X-Gm-Message-State: AOJu0Yw4mBUxCRIyjZW5Eotb8szNKTzOHV9gHvvNssIpKbxcBvX9JV5K
-	bc5tfEySJ3wMpQnCYEtYmDLzCO9lah8yIrU3dE34CVqBBfiJQbNlCqi1ddVZWvrJiH6Dm52OJkz
-	RFkXsNn9TAFhgjD4ZI2YYCov9D0T7un7yQD0qgQ==
-X-Google-Smtp-Source: AGHT+IGEyFWMc/Bnv5N7cDt95kU2F8T66cMEz+jPU0sJPw/x3JWrXvmnu3gbf07WKBKu3lfbVlW8M9QwMg8fyGR6PUA=
-X-Received: by 2002:a25:c805:0:b0:dcc:8114:5a54 with SMTP id
- y5-20020a25c805000000b00dcc81145a54mr1737712ybf.43.1708595197808; Thu, 22 Feb
- 2024 01:46:37 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708595229; x=1709200029;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dhVnYESztk5T2B/6C2k8gNoOah30/4ZRZ/kF6+4P7Uw=;
+        b=BeqKtq4tTwr8ks5hxI7CR4LukutBijoGf/eO7/PLZaRayunV5Z7we1gngFb2bLe7qV
+         KtYZ0yYyLKurVNjE/IYYOxU/K63sBFPI4Iw60vGDTnkd02UY/imlpW8jSuJtcE7yjk2J
+         6SBSQVzoX6uqyuTvwsm4dpFzxcdf7vdXQmAg0eeCi49XoBzonycojQ81Dn5psAsPt5LW
+         SwJGg+sJMBB8j7MiBB7aIrxxB3elgFvrb3l1NpLmHdYW1bpXXR2rKuvSSADrvCYFBujm
+         poTKDooQfP0yZ8AXMu0WcTH+dUrJy3gu8wrLbqDD7utRS0QC2BuokD3YhbXa+eW1vPwy
+         hpmg==
+X-Forwarded-Encrypted: i=1; AJvYcCVXtsDDlp6I+maKIvQXTL69QZRRWe47i9xK9H9r/rRLJiL/RrHWUC5+2ddA/7qZeCIELThOOxGykxplwe9jE9/aPxNv3wqFJM3cEp9F
+X-Gm-Message-State: AOJu0YxsWPONcc2lArOaTuboBvDHtyyx8kq50/joKE3IgQwwIA34ftHm
+	GKTIwWD3JpIUbLLAt2gvxgti0NpheEiH9XDOBsL2d1Y8d3HCIWkpNnFmv/GpLr5EDkc765Rpoxg
+	y
+X-Google-Smtp-Source: AGHT+IG1aDzb+IIVwxggYxnhkecGvu0RiI61eOavtRNRtUy9JvH30l3jJlU3ceQLnu9hAqLoy8dj9w==
+X-Received: by 2002:a05:6402:693:b0:564:56e0:5643 with SMTP id f19-20020a056402069300b0056456e05643mr7560672edy.27.1708595229208;
+        Thu, 22 Feb 2024 01:47:09 -0800 (PST)
+Received: from ?IPV6:2001:a61:1366:6801:d8:8490:cf1a:3274? ([2001:a61:1366:6801:d8:8490:cf1a:3274])
+        by smtp.gmail.com with ESMTPSA id q29-20020a50cc9d000000b00563a3ff30basm5724081edi.59.2024.02.22.01.47.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Feb 2024 01:47:08 -0800 (PST)
+Message-ID: <3ff16f34-07a9-4b7e-b51d-b7220f08d88d@suse.com>
+Date: Thu, 22 Feb 2024 10:47:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221-rb3gen2-dp-connector-v1-0-dc0964ef7d96@quicinc.com>
- <20240221-rb3gen2-dp-connector-v1-3-dc0964ef7d96@quicinc.com>
- <CAA8EJpo=9vhM+5YzaFxUoYRuEWQyrMS8wLNPSF3K=bN5JwWyDw@mail.gmail.com>
- <8313a7c3-3ace-4dee-ad27-8f51a06cd58c@linaro.org> <CAA8EJpqFj5nf8d_=Uoup7qg+nQrxqQU-DHbL3uSP138m9AcXLw@mail.gmail.com>
- <8fcb5816-2d59-4e27-ba68-8e0ed6e7d839@linaro.org>
-In-Reply-To: <8fcb5816-2d59-4e27-ba68-8e0ed6e7d839@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 22 Feb 2024 11:46:26 +0200
-Message-ID: <CAA8EJporaUuddHHqpyYHiYSu=toHmrDxSHf9msZUJoym4Nz72g@mail.gmail.com>
-Subject: Re: [PATCH 3/9] arm64: dts: qcom: sc7280: Enable MDP turbo mode
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bjorn Andersson <quic_bjorande@quicinc.com>, Douglas Anderson <dianders@chromium.org>, 
-	Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, cros-qcom-dts-watchers@chromium.org, 
-	Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] USB:UAS:return ENODEV when submit urbs fail with device
+ not attached.
+To: Weitao Wang <WeitaoWang-oc@zhaoxin.com>, oneukum@suse.com,
+ stern@rowland.harvard.edu, gregkh@linuxfoundation.org,
+ linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-scsi@vger.kernel.org, usb-storage@lists.one-eyed-alien.net
+Cc: WeitaoWang@zhaoxin.com
+References: <20240222165441.6148-1-WeitaoWang-oc@zhaoxin.com>
+Content-Language: en-US
+From: Oliver Neukum <oneukum@suse.com>
+In-Reply-To: <20240222165441.6148-1-WeitaoWang-oc@zhaoxin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, 22 Feb 2024 at 11:28, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->
->
->
-> On 2/22/24 10:04, Dmitry Baryshkov wrote:
-> > On Thu, 22 Feb 2024 at 10:56, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
-> >>
-> >>
-> >>
-> >> On 2/22/24 00:41, Dmitry Baryshkov wrote:
-> >>> On Thu, 22 Feb 2024 at 01:19, Bjorn Andersson <quic_bjorande@quicinc.com> wrote:
-> >>>>
-> >>>> The max frequency listed in the DPU opp-table is 506MHz, this is not
-> >>>> sufficient to drive a 4k@60 display, resulting in constant underrun.
-> >>>>
-> >>>> Add the missing MDP_CLK turbo frequency of 608MHz to the opp-table to
-> >>>> fix this.
-> >>>
-> >>> I think we might want to keep this disabled for ChromeOS devices. Doug?
-> >>
-> >> ChromeOS devices don't get a special SoC
-> >
-> > But they have the sc7280-chrome-common.dtsi, which might contain a
-> > corresponding /delete-node/ .
->
-> What does that change? The clock rates are bound to the
-> SoC and the effective values are limited by link-frequencies
-> or the panel driver.
+On 22.02.24 17:54, Weitao Wang wrote:
+> In the scenario of entering hibernation with udisk in the system, if the
+> udisk was gone or resume fail in the thaw phase of hibernation. Its state
+> will be set to NOTATTACHED. However, usb_hub_wq was already freezed and
+> can't not handle disconnect event. Then, sync cache SCSI command will be
+> sent to this udisk on the poweroff phase of hibernation, that will cause
 
-Preventing the DPU from overheating? Or spending too much power?
+Wait, this seems like a contradiction. Are we in thaw or are we powering off?
 
--- 
-With best wishes
-Dmitry
+> uas_submit_urbs to be called to submit URB to sense/data/cmd pipe. Then,
+> usb_submit_urb return value -ENODEV when device was set to NOTATTACHED
+> state. However, uas_submit_urbs always return "SCSI_MLQUEUE_DEVICE_BUSY"
+> regardless of the reason for submission failure.That will lead the SCSI
+> layer go into an ugly loop and system fail to go into hibernation.
+
+The thing is that the SCSI documentation explicitly tells us to return
+either SCSI_MLQUEUE_DEVICE_BUSY or SCSI_MLQUEUE_HOST_BUSY. Now, it makes
+sense to tell the SCSI laer that a device or host is gone for good,
+if we know that. But we cannot just introduce new error returns on our own.
+
+This needs to be addressed. That means that the SCSI layer or at the
+very least the documentation needs to be fixed. Frankly, this is not strictly
+speaking a UAS issue. Any thing hotunpluggable should have this issue.
+
+	Regards
+		Oliver
 
