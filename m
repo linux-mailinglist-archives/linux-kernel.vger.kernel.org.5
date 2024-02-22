@@ -1,41 +1,41 @@
-Return-Path: <linux-kernel+bounces-76049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE87685F25E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:04:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE49C85F259
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:04:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6652E1F225E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:04:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 604B3B2230C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:04:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF59A1B7E6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2466218050;
 	Thu, 22 Feb 2024 08:03:57 +0000 (UTC)
 Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 672641799E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 673DE17BA2;
 	Thu, 22 Feb 2024 08:03:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708589037; cv=none; b=PKqULLUdmV8qnbXIpKliQJHZEYafE+GWafWvPbaEbFLhKKh3YS3DFRcoxh0ebVN8HYVf6KsE8lYTsMVK7b6ARJD1dG66rD1Ew41oSOa/EOV4fOi8eiiGdIJtHYjDDFmVOMxssowDdDHjRb26sXuzbJL3EjlAVhrztGIO0iasCaU=
+	t=1708589036; cv=none; b=bg0Z54ZQg4RjFcu0+gQvI3NavqtIU9r6BT7GG0O+4MLiEj9zmf1eGaY8jq44jT016k6JapgrHxYH5nZNC/sliKBnrLDc4q5hZBFuaSqtNEWfhrKlSfaWYUZSNRhfa1wzczcbDTf4SFTNXUa6fpFT5hVwMa2znemWgl8QOrw/UP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708589037; c=relaxed/simple;
-	bh=Sji+sT+RUYImL6rnVGEg2kPA6leNFLII/UxsXcCt0No=;
+	s=arc-20240116; t=1708589036; c=relaxed/simple;
+	bh=Wm7tBzD2PMsXbTFZd1grk+c6wpGD0RIen3kUu8il2mM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Y/WJkl7lbx6ocIp57fTwpAbs6FhgFIQ9SiBEe6qg5GEaHPHyR37+81O47hlcIcvVXWA1W026HveY7lXzcP7OXb3mWxw20Jvr+3skS3CjHS8eLghGfkVztoMoOYyO4o90x2J1hbXGy+qLY3bCqBRWY7mRicDnmDCRWKO93q+vk+Q=
+	 MIME-Version; b=nL4IjuDCGZ/Cvki7/IoTmvHeP7Okw7lkxLZ4CCPzuH/vzX25Degl2oyeh/nB3mSuYTtovwHWwvZY5+7Xdccq50nvtIt7FifZH88nSiAIYTxEspVPOrvVK51nx49GXD70nhJjSvypRPDOMLt7diy5DGfWrMppAZbycodboWqBdFY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TgQdC1mklz4f3l7R;
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TgQdC4tkVz4f3l7T;
 	Thu, 22 Feb 2024 16:03:43 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 447D61A1158;
+	by mail.maildlp.com (Postfix) with ESMTP id AF50D1A0175;
 	Thu, 22 Feb 2024 16:03:48 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgBXKBHc_9ZlnaUhEw--.37287S10;
+	by APP1 (Coremail) with SMTP id cCh0CgBXKBHc_9ZlnaUhEw--.37287S11;
 	Thu, 22 Feb 2024 16:03:48 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: paul.e.luse@linux.intel.com,
@@ -48,9 +48,9 @@ Cc: linux-raid@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH md-6.9 06/10] md/raid1: factor out read_first_rdev() from read_balance()
-Date: Thu, 22 Feb 2024 15:58:02 +0800
-Message-Id: <20240222075806.1816400-7-yukuai1@huaweicloud.com>
+Subject: [PATCH md-6.9 07/10] md/raid1: factor out choose_slow_rdev() from read_balance()
+Date: Thu, 22 Feb 2024 15:58:03 +0800
+Message-Id: <20240222075806.1816400-8-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240222075806.1816400-1-yukuai1@huaweicloud.com>
 References: <20240222075806.1816400-1-yukuai1@huaweicloud.com>
@@ -61,10 +61,10 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBXKBHc_9ZlnaUhEw--.37287S10
-X-Coremail-Antispam: 1UD129KBjvJXoWxZFW8CrW5GFW3Jr1UtrWkZwb_yoWrCFyUpw
-	45AFZ3tryUXr95Zws8J3yDWrn3t34fJF48GrZ7Xwnagrn3KrWqgFy8Grya9Fy5Crs8Jw17
-	Zw15Ar47C3Z7KFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:cCh0CgBXKBHc_9ZlnaUhEw--.37287S11
+X-Coremail-Antispam: 1UD129KBjvJXoWxZF4rKw4kZF4xXF15Zry8AFb_yoW5Zr1Dpa
+	y3GFWftryUWry7Wws8J3ykurySga4fGay8GryxJwna9r9agrZ09ayxGFyagFyUWrWrAa4U
+	Xw15ZrW293WktFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -86,135 +86,111 @@ From: Yu Kuai <yukuai3@huawei.com>
 read_balance() is hard to understand because there are too many status
 and branches, and it's overlong.
 
-This patch factor out the case to read the first rdev from
+This patch factor out the case to read the slow rdev from
 read_balance(), there are no functional changes.
 
 Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
 Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/raid1.c | 63 +++++++++++++++++++++++++++++++++-------------
- 1 file changed, 46 insertions(+), 17 deletions(-)
+ drivers/md/raid1.c | 69 ++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 52 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-index 8089c569e84f..08c45ca55a7e 100644
+index 08c45ca55a7e..bc2f8fcbe5b3 100644
 --- a/drivers/md/raid1.c
 +++ b/drivers/md/raid1.c
-@@ -579,6 +579,47 @@ static sector_t align_to_barrier_unit_end(sector_t start_sector,
- 	return len;
+@@ -620,6 +620,53 @@ static int choose_first_rdev(struct r1conf *conf, struct r1bio *r1_bio,
+ 	return -1;
  }
  
-+static void update_read_sectors(struct r1conf *conf, int disk,
-+				sector_t this_sector, int len)
-+{
-+	struct raid1_info *info = &conf->mirrors[disk];
-+
-+	atomic_inc(&info->rdev->nr_pending);
-+	if (info->next_seq_sect != this_sector)
-+		info->seq_start = this_sector;
-+	info->next_seq_sect = this_sector + len;
-+}
-+
-+static int choose_first_rdev(struct r1conf *conf, struct r1bio *r1_bio,
-+			     int *max_sectors)
++static int choose_slow_rdev(struct r1conf *conf, struct r1bio *r1_bio,
++			    int *max_sectors)
 +{
 +	sector_t this_sector = r1_bio->sector;
-+	int len = r1_bio->sectors;
++	int bb_disk = -1;
++	int bb_read_len = 0;
 +	int disk;
 +
 +	for (disk = 0 ; disk < conf->raid_disks * 2 ; disk++) {
 +		struct md_rdev *rdev;
++		int len;
 +		int read_len;
 +
 +		if (r1_bio->bios[disk] == IO_BLOCKED)
 +			continue;
 +
 +		rdev = conf->mirrors[disk].rdev;
-+		if (!rdev || test_bit(Faulty, &rdev->flags))
++		if (!rdev || test_bit(Faulty, &rdev->flags) ||
++		    !test_bit(WriteMostly, &rdev->flags))
 +			continue;
 +
-+		/* choose the first disk even if it has some bad blocks. */
++		/* there are no bad blocks, we can use this disk */
++		len = r1_bio->sectors;
 +		read_len = raid1_check_read_range(rdev, this_sector, &len);
-+		if (read_len > 0) {
++		if (read_len == r1_bio->sectors) {
 +			update_read_sectors(conf, disk, this_sector, read_len);
-+			*max_sectors = read_len;
 +			return disk;
++		}
++
++		/*
++		 * there are partial bad blocks, choose the rdev with largest
++		 * read length.
++		 */
++		if (read_len > bb_read_len) {
++			bb_disk = disk;
++			bb_read_len = read_len;
 +		}
 +	}
 +
-+	return -1;
++	if (bb_disk != -1) {
++		*max_sectors = bb_read_len;
++		update_read_sectors(conf, bb_disk, this_sector, bb_read_len);
++	}
++
++	return bb_disk;
 +}
 +
  /*
   * This routine returns the disk from which the requested read should
   * be done. There is a per-array 'next expected sequential IO' sector
-@@ -603,7 +644,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
- 	sector_t best_dist;
- 	unsigned int min_pending;
- 	struct md_rdev *rdev;
--	int choose_first;
- 
-  retry:
- 	sectors = r1_bio->sectors;
-@@ -613,10 +653,11 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
- 	best_pending_disk = -1;
- 	min_pending = UINT_MAX;
- 	best_good_sectors = 0;
--	choose_first = raid1_should_read_first(conf->mddev, this_sector,
--					       sectors);
- 	clear_bit(R1BIO_FailFast, &r1_bio->state);
- 
-+	if (raid1_should_read_first(conf->mddev, this_sector, sectors))
-+		return choose_first_rdev(conf, r1_bio, max_sectors);
-+
- 	for (disk = 0 ; disk < conf->raid_disks * 2 ; disk++) {
- 		sector_t dist;
- 		sector_t first_bad;
-@@ -662,8 +703,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
- 				 * bad_sectors from another device..
- 				 */
- 				bad_sectors -= (this_sector - first_bad);
--				if (choose_first && sectors > bad_sectors)
--					sectors = bad_sectors;
- 				if (best_good_sectors > sectors)
- 					best_good_sectors = sectors;
- 
-@@ -673,8 +712,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
- 					best_good_sectors = good_sectors;
- 					best_disk = disk;
- 				}
--				if (choose_first)
--					break;
- 			}
+@@ -672,23 +719,8 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+ 		if (!test_bit(In_sync, &rdev->flags) &&
+ 		    rdev->recovery_offset < this_sector + sectors)
  			continue;
- 		} else {
-@@ -689,10 +726,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
- 
- 		pending = atomic_read(&rdev->nr_pending);
- 		dist = abs(this_sector - conf->mirrors[disk].head_position);
--		if (choose_first) {
--			best_disk = disk;
--			break;
+-		if (test_bit(WriteMostly, &rdev->flags)) {
+-			/* Don't balance among write-mostly, just
+-			 * use the first as a last resort */
+-			if (best_dist_disk < 0) {
+-				if (is_badblock(rdev, this_sector, sectors,
+-						&first_bad, &bad_sectors)) {
+-					if (first_bad <= this_sector)
+-						/* Cannot use this */
+-						continue;
+-					best_good_sectors = first_bad - this_sector;
+-				} else
+-					best_good_sectors = sectors;
+-				best_dist_disk = disk;
+-				best_pending_disk = disk;
+-			}
++		if (test_bit(WriteMostly, &rdev->flags))
+ 			continue;
 -		}
- 		/* Don't change to another disk for sequential reads */
- 		if (conf->mirrors[disk].next_seq_sect == this_sector
- 		    || dist == 0) {
-@@ -760,13 +793,9 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
- 		rdev = conf->mirrors[best_disk].rdev;
- 		if (!rdev)
- 			goto retry;
--		atomic_inc(&rdev->nr_pending);
--		sectors = best_good_sectors;
--
--		if (conf->mirrors[best_disk].next_seq_sect != this_sector)
--			conf->mirrors[best_disk].seq_start = this_sector;
- 
--		conf->mirrors[best_disk].next_seq_sect = this_sector + sectors;
-+		sectors = best_good_sectors;
-+		update_read_sectors(conf, disk, this_sector, sectors);
+ 		/* This is a reasonable device to use.  It might
+ 		 * even be best.
+ 		 */
+@@ -799,7 +831,10 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
  	}
  	*max_sectors = sectors;
  
+-	return best_disk;
++	if (best_disk >= 0)
++		return best_disk;
++
++	return choose_slow_rdev(conf, r1_bio, max_sectors);
+ }
+ 
+ static void wake_up_barrier(struct r1conf *conf)
 -- 
 2.39.2
 
