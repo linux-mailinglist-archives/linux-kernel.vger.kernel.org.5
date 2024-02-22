@@ -1,118 +1,146 @@
-Return-Path: <linux-kernel+bounces-77357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B90A86044A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:01:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 588D48604AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:22:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CACF61F26938
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:01:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89AA91C23ADB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:22:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62E4F73F0C;
-	Thu, 22 Feb 2024 21:01:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F5BB73F28;
+	Thu, 22 Feb 2024 21:22:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IB7ZJ0Nu"
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="G28T/Rh/"
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1999610A05;
-	Thu, 22 Feb 2024 21:01:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBF3F14B832;
+	Thu, 22 Feb 2024 21:22:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708635678; cv=none; b=s2tNUVPkN/y8ZAuSjS/WzrtBvMflflj6j+zdSBS0UrHCf7tZ4iZp1aIQbF8UpNnciM4kgQPVrN9raHqtHSQcUDvxdPlN3b5XfVOcSv9BIRQXsp9vybf8f2UhLnBmZFsTI1RvCfYvsh7M9tI2T1CMu+N5PHJVLDIyKsLDFy/cLnU=
+	t=1708636940; cv=none; b=KjECv/kgUGUxPECtgXPqJxhtH9//evjoaoEsX5OjQaNKua3CEIMn1RGcJoS9GEPNrOC9Yy/sse2rlO8yJLOr2dkZrQPqGCbf6NtCGanAh/hhbKA1c9CNcyO48d+P2bgylTo6mz+qWU7dHD3kDEC3c3GhJzjBR9F+Mg+nlMpVtZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708635678; c=relaxed/simple;
-	bh=0o7JcANzu77v1OOVxgTmP0KHe9QWfy1TFeyR4mBFW5c=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type; b=GaL2e1DLMxk6WTpC55jwzYR+ajfv5NDZYJgnKqUun2Lsk8U/dcJmLbvf75xoJ1GZQrDW/2liSRMaYns3UKrS9zim1evac+qoRwC0JeaG1wRY8C5CF77wLnunfeRjJtlcSH0QtvIGWhbiVXkvHlJvdmyBM/sDEOdprfw4/Lz33rA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IB7ZJ0Nu; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d208be133bso3067401fa.2;
-        Thu, 22 Feb 2024 13:01:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708635675; x=1709240475; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:from:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=6oH+qo1R8KP/GaMF1B2QMIj0swdnvO6mC2aR2+NNiDk=;
-        b=IB7ZJ0NuvrZIwIP8UKOIvLXrt+7F9rVpWkAYCjV0ITIkUp/bSSA+ARAs3ARgrPhslY
-         AAQKv700DngM5EKUP97x/2HitgX6QRaPlLhd2KmGTM4IRvfcSlkbSNyDH9AueatxFkZ4
-         cf+lo6mfcYDrH5yEz4MUkGiDlrcHqRV12RopSy0898SPC3w3HULfNc4G2uYs6EKGxwF/
-         FqQVMft+sZvjmpvhiNgQ7x2OWm2W1JtapXKWZPAhgyg1XNQ+QG85fiSX1Okrg9/FCrkM
-         9NxhiZIrCvgDGRqcBdC4WulWuTbJEmEcR+nxb6Jru2LK4194O3QgLHPT5jKnSEr/+Rg9
-         Ui9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708635675; x=1709240475;
-        h=content-transfer-encoding:to:subject:from:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6oH+qo1R8KP/GaMF1B2QMIj0swdnvO6mC2aR2+NNiDk=;
-        b=Aj1exefCfL1aI1wai5+6s19BxzgPjcFSmp/l+JoNNWw+XtfYXdg+2m8iGoi9PJSl7x
-         y2dM2gq1YKQmn2k2DBJTleIMnGoN6SwzuF8dsKLw1Qm+2/e3TGhOySBWERzLhaN6dFHA
-         a+FPVcO9Lrwg59LHBcOnYtL7ku/cdAdMeuQV+rDlECduhde/HzSUeklx90ZkgBRacza5
-         uZTGT1owSnzQ4JT5059jtH3j5tQf9vTu/DUy3wt7stB4R/og7Hr6YUMAq9eUUbRQlPpZ
-         Trd9VQpQOC7gjW5X+laIjB0RCuydTj2TuYVkV1rhsNU5d5Y51ZDo9ijSGRS5x2rrduFx
-         Jl3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUkrU8UIC8tFBTpcn3z3/J7codUBaElK4q8ASf59nsJCRw0j3DvHc0dpfJR5P52zntgalNNQhWf2uAKfLWmE0YQ52CC1HBTM8rXEFDbS4trzILZt/LPg/HCup6DuuFu5v+6nxwxfp1d8sUtTTZxODdJ+bUaUXAE6AbX5u4ZnyuQslxYZ549
-X-Gm-Message-State: AOJu0YxothT+2V/fyNOMADbCmQ23Vc9IGd4oKpAoaumr1lgDlyHI32NW
-	iU7xhfsq/q32mVL41CehoMEQX0Vz98zOercsEFeC9B89ECWyATbI
-X-Google-Smtp-Source: AGHT+IHNG0dtgQPgn+V0ONyr9LkeNb/q/Q5pPRueOlg01yJfoaZB2X1nS/B081r9HZKUPzSzGiinQA==
-X-Received: by 2002:a2e:9cd2:0:b0:2d2:3b9e:dcff with SMTP id g18-20020a2e9cd2000000b002d23b9edcffmr92206ljj.46.1708635675054;
-        Thu, 22 Feb 2024 13:01:15 -0800 (PST)
-Received: from debian ([146.70.204.204])
-        by smtp.gmail.com with ESMTPSA id t11-20020adff60b000000b0033d01fe1f04sm198729wrp.55.2024.02.22.13.01.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 13:01:14 -0800 (PST)
-Message-ID: <e1d22505-c5f8-4c02-a997-64248480338b@gmail.com>
-Date: Thu, 22 Feb 2024 22:00:42 +0100
+	s=arc-20240116; t=1708636940; c=relaxed/simple;
+	bh=OEjaR8q/hH/zJzrJq00dzosvg9sB+rc7P5n3BrRx+nE=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=mh0Srk989n+37nkqsiN1d/epeUiqpAzTdhUiznzrYXk31BhdPdePsO6boBXXGM1QsyvFeGBAG7Qh4ux28UCvHhYquJauTyoq4iN3l4oYSMGHUa3I7m++hG6QUUJpACol7FC3s/ceeHJK+zpv6XzHRC/NcbWKO64pNMYxzE2ONEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=none smtp.helo=mx0b-0016f401.pphosted.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=G28T/Rh/; arc=none smtp.client-ip=67.231.156.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mx0b-0016f401.pphosted.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41ML8XqH001858;
+	Thu, 22 Feb 2024 13:22:10 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	pfpt0220; bh=y6gHklRy6mgfq/+kDFgxdQdIm96X6dvMx3GA+sAwVL0=; b=G28
+	T/Rh/5lpdK2wQ58rXcKy496aSLJn+3ZySP09j9o/U7PeJx8eYNp4tz31OXS8N/zv
+	ct6EW5YoW8JOBoLupWif90oLn8oQ+Hz9636tzo36G2o3awYFuoakYVWCSR9H1xXj
+	g+eUfMMRHrdZxtiKJEp2qQ48R2DMWRfqOWBLCfe+EtapT7PjNWOcnvH++vHdq58e
+	4oPaTHdrK7t+H9m/4y+t6CrrOUhaQ5sXEufeJ3CqBLgRi9vqCdYrdikANxmQgHYz
+	X3Bwfy4CrWEZFsfMaW6r7W8hg8Qaw0sVreGOQkqGfd100kmlEwGE/g0L7C6LZ8Kw
+	iWUgiqyF10HGuMVND2Q==
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3wedwxg1bd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+	Thu, 22 Feb 2024 13:22:09 -0800 (PST)
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 22 Feb
+ 2024 13:22:07 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Thu, 22 Feb 2024 13:22:07 -0800
+Received: from dc3lp-swdev041.marvell.com (dc3lp-swdev041.marvell.com [10.6.60.191])
+	by maili.marvell.com (Postfix) with ESMTP id 794AE3F719F;
+	Thu, 22 Feb 2024 11:17:23 -0800 (PST)
+From: Elad Nachman <enachman@marvell.com>
+To: <huziji@marvell.com>, <ulf.hansson@linaro.org>, <adrian.hunter@intel.com>,
+        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: <enachman@marvell.com>, <stable@vger.kernel.org>
+Subject: [PATCH v3 1/2] mmc: xenon: fix PHY init clock stability
+Date: Thu, 22 Feb 2024 21:17:13 +0200
+Message-ID: <20240222191714.1216470-2-enachman@marvell.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240222191714.1216470-1-enachman@marvell.com>
+References: <20240222191714.1216470-1-enachman@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Richard Gobert <richardbgobert@gmail.com>
-Subject: [PATCH net-next 0/3] net: gro: encapsulation bug fix and flush checks
- improvements
-To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, dsahern@kernel.org, shuah@kernel.org,
- liujian56@huawei.com, horms@kernel.org, aleksander.lobakin@intel.com,
- richardbgobert@gmail.com, linyunsheng@huawei.com, therbert@google.com,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: bYNSWMlj2hCJ90jrCB0PWeMEwubrjedi
+X-Proofpoint-ORIG-GUID: bYNSWMlj2hCJ90jrCB0PWeMEwubrjedi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-22_15,2024-02-22_01,2023-05-22_02
 
-This series fixes a bug in the complete phase of UDP in GRO, in which
-socket lookup fails due to using network_header when parsing encapsulated
-packets. The fix is to keep track of both outer and inner offsets.
+From: Elad Nachman <enachman@marvell.com>
 
-The last commit leverages the first commit to remove some state from
-napi_gro_cb, and stateful code in {ipv6,inet}_gro_receive which may be
-unnecessarily complicated due to encapsulation support in GRO.
+Each time SD/mmc phy is initialized, at times, in some of
+the attempts, phy fails to completes its initialization
+which results into timeout error. Per the HW spec, it is
+a pre-requisite to ensure a stable SD clock before a phy
+initialization is attempted.
 
-In addition, udpgro_fwd selftest is adjusted to include the socket lookup
-case for vxlan. This selftest will test its supposed functionality once
-local bind support is merged (https://lore.kernel.org/netdev/df300a49-7811-4126-a56a-a77100c8841b@gmail.com/).
+Fixes: 06c8b667ff5b ("mmc: sdhci-xenon: Add support to PHYs of Marvell Xenon SDHC")
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Elad Nachman <enachman@marvell.com>
+---
+ drivers/mmc/host/sdhci-xenon-phy.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-Richard Gobert (3):
-  net: gro: set {inner_,}network_header in receive phase
-  selftests/net: add local address bind in vxlan selftest
-  net: gro: move L3 flush checks to tcp_gro_receive
-
- include/net/gro.h                         | 23 ++++---
- net/8021q/vlan_core.c                     |  3 +
- net/core/gro.c                            |  3 -
- net/ipv4/af_inet.c                        | 44 ++------------
- net/ipv4/tcp_offload.c                    | 73 ++++++++++++++++++-----
- net/ipv4/udp_offload.c                    |  2 +-
- net/ipv6/ip6_offload.c                    | 22 ++-----
- net/ipv6/tcpv6_offload.c                  |  2 +-
- net/ipv6/udp_offload.c                    |  2 +-
- tools/testing/selftests/net/udpgro_fwd.sh | 10 +++-
- 10 files changed, 97 insertions(+), 87 deletions(-)
-
+diff --git a/drivers/mmc/host/sdhci-xenon-phy.c b/drivers/mmc/host/sdhci-xenon-phy.c
+index 8cf3a375de65..c3096230a969 100644
+--- a/drivers/mmc/host/sdhci-xenon-phy.c
++++ b/drivers/mmc/host/sdhci-xenon-phy.c
+@@ -11,6 +11,7 @@
+ #include <linux/slab.h>
+ #include <linux/delay.h>
+ #include <linux/ktime.h>
++#include <linux/iopoll.h>
+ #include <linux/of_address.h>
+ 
+ #include "sdhci-pltfm.h"
+@@ -216,6 +217,19 @@ static int xenon_alloc_emmc_phy(struct sdhci_host *host)
+ 	return 0;
+ }
+ 
++static int xenon_check_stability_internal_clk(struct sdhci_host *host)
++{
++	u32 reg;
++	int err;
++
++	err = read_poll_timeout(sdhci_readw, reg, reg & SDHCI_CLOCK_INT_STABLE,
++				1100, 20000, false, host, SDHCI_CLOCK_CONTROL);
++	if (err)
++		dev_err(mmc_dev(host->mmc), "phy_init: Internal clock never stabilized.\n");
++
++	return err;
++}
++
+ /*
+  * eMMC 5.0/5.1 PHY init/re-init.
+  * eMMC PHY init should be executed after:
+@@ -232,6 +246,11 @@ static int xenon_emmc_phy_init(struct sdhci_host *host)
+ 	struct xenon_priv *priv = sdhci_pltfm_priv(pltfm_host);
+ 	struct xenon_emmc_phy_regs *phy_regs = priv->emmc_phy_regs;
+ 
++	int ret = xenon_check_stability_internal_clk(host);
++
++	if (ret)
++		return ret;
++
+ 	reg = sdhci_readl(host, phy_regs->timing_adj);
+ 	reg |= XENON_PHY_INITIALIZAION;
+ 	sdhci_writel(host, reg, phy_regs->timing_adj);
 -- 
-2.36.1
+2.25.1
+
 
