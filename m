@@ -1,197 +1,267 @@
-Return-Path: <linux-kernel+bounces-76986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4617985FF8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:38:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17FD285FF8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:39:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69D8D1C222BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:38:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1306284F5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:39:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42752155A45;
-	Thu, 22 Feb 2024 17:38:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6656B155A4E;
+	Thu, 22 Feb 2024 17:39:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="kLXdkK8R"
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="QlE4oh1V"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22BF01E48B;
-	Thu, 22 Feb 2024 17:38:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E245B66E
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 17:39:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708623502; cv=none; b=mC0c0IIW0/NPhrQBrZNetrtE+bMptafK/sd93xgALlyF88gw4/dgcI0uNj1od0wtD0UoA2BgqhN7Zlm6sI+UaWKY+Q7vRx4PLENPyNZ+gAeybOTeTbY28lyPqSWkjdWy7h5+VaWmpKN30wTcFL3jGyxQuIr6upW/qtZxOnTsy/o=
+	t=1708623554; cv=none; b=h+oJvgkE/YsTpne6lT6DTHlTgSQ3oOemEyDu3GTgiRf4N2cFjL492zQSjZXnTjewmaCNgeLzSaDqvnjQGS20QW5om7qzCNsaa/1JL3GoRqCtVp0Ah2HfAPKrTBpei2TcZLq+SvP6H4aMc9BGYscmpySKjcyqXUB4yh3kiLHNNns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708623502; c=relaxed/simple;
-	bh=f9GmT+/ev22Rw8JyJfD4dn404A17xW0UMwar264CfIQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BNvkMEJAwRNnt39Yo/QryKCS1TWAGL6E9YhZpqm8nxKWHV3tMVf8ubYFlqAz+daKZl3Z2QZFMRkLCGxEJtcYwGdbMilbcvcMAiZ9FPPbhuee1WGsTZJOU+hLB3bXhvRFFYyYCkfEFcO3U+yEAyideBsDy1u88k+kTJDIGqK6epo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=kLXdkK8R; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id 37AA61C0080; Thu, 22 Feb 2024 18:38:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
-	t=1708623497;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Cxr6GJjOhaFoEBz5sAagQbB41dqp9VPFsBRGUex2Ge8=;
-	b=kLXdkK8RS/VsXpCtaJGevFjtXHj4xPsfEND+iP2dQKQRhHmvXjnVOipvkka8dVEATAkRUj
-	yhx99MwrgebVfBz1J3xdkaCvKrmmgDAgZiVyJRbcwyZXPWTVemKTovWtlSpWJfVVcToTRz
-	xjWeoSGf9Bo0gv5zMgAXZqGjzcreQM0=
-Date: Thu, 22 Feb 2024 18:38:16 +0100
-From: Pavel Machek <pavel@ucw.cz>
-To: Pekka Paalanen <pekka.paalanen@haloniitty.fi>
-Cc: Werner Sembach <wse@tuxedocomputers.com>,
-	Hans de Goede <hdegoede@redhat.com>, Lee Jones <lee@kernel.org>,
-	jikos@kernel.org, linux-kernel@vger.kernel.org,
-	Jelle van der Waa <jelle@vdwaa.nl>,
-	Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	linux-input@vger.kernel.org, ojeda@kernel.org,
-	linux-leds@vger.kernel.org
-Subject: Re: Future handling of complex RGB devices on Linux v2
-Message-ID: <ZdeGiMf2npmzJidU@duo.ucw.cz>
-References: <730bead8-6e1d-4d21-90d2-4ee73155887a@tuxedocomputers.com>
- <952409e1-2f0e-4d7a-a7a9-3b78f2eafec7@redhat.com>
- <9851a06d-956e-4b57-be63-e10ff1fce8b4@tuxedocomputers.com>
- <1bc6d6f0-a13d-4148-80cb-9c13dec7ed32@redhat.com>
- <b70b2ea8-abfd-4d41-b336-3e34e5bdb8c6@tuxedocomputers.com>
- <477d30ee-247e-47e6-bc74-515fd87fdc13@redhat.com>
- <e21a7d87-3059-4a51-af04-1062dac977d2@tuxedocomputers.com>
- <247b5dcd-fda8-45a7-9896-eabc46568281@tuxedocomputers.com>
- <ZdZ2kMASawJ9wdZj@duo.ucw.cz>
- <20240222110457.71618f27@eldfell>
+	s=arc-20240116; t=1708623554; c=relaxed/simple;
+	bh=HSvRkeUcQAXv0l69gaBeP0XQdAuQfn/L5XwJSDQwnwk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BazZdD9HYYxrZQ1N9KxVNmdrGjPqh1GQqHNRQugPH/8Tmp9KTz1LhxWfo2Sbi4PciZgk8qe97KhzFY2/QzQ24OCVqqggMyG9O72uo2IVjwNF35KSU4+ckgyzrEPXBKDM7jRwTWPQSmKHEaChinaegNFpGdwUIj8rdsrHpsSgg3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=QlE4oh1V; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e471caaa71so2900981b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 09:39:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1708623552; x=1709228352; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Vmn59f/7Qb3OOzJH9MbS9Xpr3MU03w04l8dQqDp9g0E=;
+        b=QlE4oh1VmePKt17ug0IHAqC8xaUgpOfTntjny9qyjSlCKOKKV7PH133k44nCmNlWk5
+         GRxPdD6i39Q0oDhT8XcrciUqRKl33WBF/VMUdwJYOzo1gqCeKkntMIVfK+/e8T3+rChB
+         qRscURjPIro9vh4R7nsoxNr9ondDo9/bVsxV8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708623552; x=1709228352;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Vmn59f/7Qb3OOzJH9MbS9Xpr3MU03w04l8dQqDp9g0E=;
+        b=KGiiYCtnSzSqNPtyTGxIffv/zZoBEgzZgMsMIlP8OXK3eHQsDVhjRYUe3nxU9ltcVn
+         J2eQJLFYTK5sirk0slrCFJFKDLrTeA5f5gmJEgEs9vFui3wCvzfijIQ19rZLakchjOuA
+         1mvhzLvWR+3rITinRt118RiH39+4hckexYTmuSanYmhYPARb/Ijg1MtvuTc84aGDm61p
+         qclCEKoowDXAHYnVKSmdMGhfbwHpEWSWiaWGqRgeAlRqAECM5ukMEBeNybEMtUAJ4TLi
+         aBtKuV2Rk1ps1NT1u6SYnWZvFZK1lsgOJaT5XUjJzDeI4yL7xSwT92+i4gkzJKpbyjW8
+         gNkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUVk5w9JlP/tXKDukr+yoDl76d/iBf7Da1s4wO704IZrn6uta5PoPH1louH0DycbvOQ74EaU1p7g29jomspRcp3pIjpMDEfPsuvCBmO
+X-Gm-Message-State: AOJu0YyrUHT1dfNFRIV8REahV2i3SKYytqcduVoGcPWgRsntlrdwwr8e
+	smwrtUMK7socJlQJUiimpU1287CmVsoYfC6dVALCOOLHJRJw0CMJ3RZcKh8O5w==
+X-Google-Smtp-Source: AGHT+IEbjgQpsX3eY+Hkb05waAD9L6tnVKUQ83TsLtgdBmsSihLgzLKmnVUUjkbCGFyqHSVFt5Dc4A==
+X-Received: by 2002:aa7:864d:0:b0:6e3:9176:5c2c with SMTP id a13-20020aa7864d000000b006e391765c2cmr12870182pfo.0.1708623552110;
+        Thu, 22 Feb 2024 09:39:12 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id z1-20020a63ac41000000b005d880b41598sm10701437pgn.94.2024.02.22.09.39.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Feb 2024 09:39:10 -0800 (PST)
+Message-ID: <e5fd9d8b-84eb-4ef9-82ab-ff4ecc41c0d5@broadcom.com>
+Date: Thu, 22 Feb 2024 09:39:06 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="eHiECiusCvm6EcTi"
-Content-Disposition: inline
-In-Reply-To: <20240222110457.71618f27@eldfell>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 10/14] serial: 8250_of: Switch to use
+ uart_read_port_properties()
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Andrew Jeffery <andrew@codeconstruct.com.au>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+ linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-aspeed@lists.ozlabs.org, linux-rpi-kernel@lists.infradead.org,
+ linux-mips@vger.kernel.org, linux-tegra@vger.kernel.org,
+ Jiri Slaby <jirislaby@kernel.org>, Joel Stanley <joel@jms.id.au>,
+ Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, Al Cooper <alcooperx@gmail.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Paul Cercueil <paul@crapouillou.net>, Vladimir Zapolskiy <vz@mleia.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Andi Shyti <andi.shyti@linux.intel.com>
+References: <20240221183442.4124354-1-andriy.shevchenko@linux.intel.com>
+ <20240221183442.4124354-11-andriy.shevchenko@linux.intel.com>
+ <0a828f2c50de712940fb9a881702ac1678a35b7c.camel@codeconstruct.com.au>
+ <ZddKzHplwOX7naLv@smile.fi.intel.com> <Zdd5m2xIPlGI0_Qv@smile.fi.intel.com>
+ <Zdd6lnXwvpPPUhRR@smile.fi.intel.com>
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
+ 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
+In-Reply-To: <Zdd6lnXwvpPPUhRR@smile.fi.intel.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000e7b3170611fbeb4b"
+
+--000000000000e7b3170611fbeb4b
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+On 2/22/24 08:47, Andy Shevchenko wrote:
+> On Thu, Feb 22, 2024 at 06:43:08PM +0200, Andy Shevchenko wrote:
+>> On Thu, Feb 22, 2024 at 03:23:24PM +0200, Andy Shevchenko wrote:
+>>> On Thu, Feb 22, 2024 at 11:07:05AM +1030, Andrew Jeffery wrote:
+>>>> On Wed, 2024-02-21 at 20:31 +0200, Andy Shevchenko wrote:
+>>>>> Since we have now a common helper to read port properties
+>>>>> use it instead of sparse home grown solution.
+>>>>
+>>>> I did some brief testing of the series for the Aspeed machines under
+>>>> qemu, building them on top of v6.8-rc5:
+>>>>
+>>>> export ARCH=arm
+>>>> export CROSS_COMPILE=arm-linux-gnueabihf-
+>>>> make aspeed_g5_defconfig
+>>>> make -j$(nproc)
+>>>> qemu-system-arm -M rainier-bmc -nographic -no-reboot -kernel arch/arm/boot/zImage -dtb arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-rainier.dtb -initrd ...
+>>>>
+>>>> I got an oops during boot, which bisected to this change:
+>>>
+>>> Thank you for prompt testing! I will look at it.
+>>
+>> I found the issue, will be fixed in next version.
+> 
+> Whoever is going to test this series, the
+> 
+> -		port->iotype = use_defaults ? UPIO_MEM : port->iotype;
+> +		port->iotype = UPIO_MEM;
+> 
+> should be applied to uart_read_port_properties() implementation.
+> 
+
+Thanks, on 8250_bcm7271.c with the above hunk applied, I did not spot 
+any differences between the values returned by stty or a cat 
+/sys/class/tty/ttyS0/* before or after, the console remained fully 
+functional. I will see if I can run an additional test where I removed 
+the DT's "clocks" property and confirm that the fall back to 
+"clock-frequency" works.
+
+Thanks Andy!
+-- 
+Florian
 
 
---eHiECiusCvm6EcTi
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+--000000000000e7b3170611fbeb4b
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-Hi!
-
-> > > so after more feedback from the OpenRGB maintainers I came up with an=
- even
-> > > more generic proposal:
-> > > https://gitlab.com/CalcProgrammer1/OpenRGB/-/issues/3916#note_1753072=
-869 =20
-> >=20
-> > > >evaluate-set-command ioctl taking:
-> > > >{
-> > > >=A0=A0=A0 enum command=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 /* one=
- of supported_commands */
-> > > >=A0=A0=A0 union data
-> > > >=A0=A0=A0 {
-> > > >=A0=A0=A0 =A0=A0=A0 char raw[3072],
-> > > >=A0=A0=A0 =A0=A0=A0 {
-> > > >=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 <input struct for command 0>
-> > > >=A0=A0=A0 =A0=A0=A0 }, =20
-> >=20
-> > Yeah, so ... this is not a interface. This is a backdoor to pass
-> > arbitrary data. That's not going to fly.
-> >=20
-> > For keyboards, we don't need complete new interface; we reasonable
-> > extensions over existing display APIs -- keyboards are clearly 2D.
->=20
-> I suppose they could be seen as *a* display, but if you are referring
-> to DRM KMS UAPI, then no, I don't see that fitting at all:
-
-So -- we already have very similar displays in
-drivers/auxdisplay. drivers/auxdisplay/cfag12864b.c is 128x64 display,
-1-bit display for example.
-
-> - the "pixel grid" is not orthogonal, it's not a rectangle, and it
->   might not be a grid at all
-
-It is quite close to orthogonal. I'd suggest simply pretending it is
-orthogonal grid with some pixels missing :-). We already have
-cellphone displays with rounded corners and holes in them, so I
-suspect handling of missing pixels will be neccessary anyway.
-
-> - Timings and video modes? DRM KMS has always been somewhat awkward for
->   display devices that do not have an inherent scanout cycle and timings
->   totally depend on the amount of pixels updated at a time
->   (FB_DAMAGE_CLIPS), e.g. USB displays (not USB-C DP alt mode).
->   They do work, but they are very different from the usual hardware
->   involved with KMS, require special consideration in userspace, and
->   they still are actual displays while what we're talking about here
->   are not.
-
-As you say, there are other displays with similar problems.
-
-> - KMS has no concept of programmed autonomous animations, and likely
->   never will. They are not useful with actual displays.
-
-Yep. We need some kind of extension here, and this is likely be quite
-vendor-specific, as animations will differ between vendors. I guess
-"please play pattern xyzzy with parametrs 3 and 5" might be enough for this.
-
-> - Userspace will try to light up KMS outputs automatically and extend
->   the traditional desktop there. This was already a problem for
->   head-mounted displays (HMD) where it made no sense. That was worked
->   around with an in-kernel list of HMDs and some KMS property
->   quirking.
-
-This will need fixing for cfag12864b.c, no? Perhaps userspace should
-simply ignore anything smaller than 240x160 or something...
-
-> Modern KMS UAPI very much aims to be a generic UAPI that abstracts
-> display devices. It already breaks down a little for things like USB
-> displays and virtual machines (e.g. qemu, vmware, especially with
-> remote viewers), which I find unfortunate. With HMDs the genericity
-> breaks down in other ways, but I'd claim HMDs are a better fit still
-> than full-featured VM virtual displays (cursor plane hijacking). With
-> non-displays like keyboards the genericity would be completely lost, as
-> they won't work at all the same way as displays. You cannot even show
-> proper images there, only coarse light patterns *IF* you actually know
-> the pixel layout. But the pixel layout is(?) hardware-specific which is
-> the opposite of generic.
->=20
-> While you could dress keyboard lights etc. up with DRM KMS UAPI, the
-> userspace would have to be written from scratch for them, and you
-> somehow need to make existing KMS userspace to never touch those
-> devices. What's the point of using DRM KMS UAPI in the first place,
-> then?
-
-Well, at least we have good UAPI to work with. Other options were 100
-files in /sys/class/leds, pretending it is a linear array of leds,
-just passing raw data around, and pretending it is grid of RGB888
-data.
-
-Anyway, there are devices such as these: (8x8 LED display).
-
-https://www.laskakit.cz/8x8-led-matice-s-max7219-3mm-cervena/
-
-We should think about what interface we want for these, and then I
-believe we should make RGB keyboards use something similar.
-
-Best regards,
-								Pavel
---=20
-People of Russia, stop Putin before his war on Ukraine escalates.
-
---eHiECiusCvm6EcTi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZdeGiAAKCRAw5/Bqldv6
-8vu+AKCMmNbj0QTQPgn6C+lJcqoWg1JfPQCfYj+NkTuf5W57SoPzN7P2Xxr2q5Q=
-=TCxg
------END PGP SIGNATURE-----
-
---eHiECiusCvm6EcTi--
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
+9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
+UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
+KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
+nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
+Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
+BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
+KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
+kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
+2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
+3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
+NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
+AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
+LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIOvdhbC0f9bdBKDd
+nSsfq8nfBYeoIlbNLSfBdp/XckuAMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTI0MDIyMjE3MzkxMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDzaNg3x1GgqfWcmgwE4YdhBtB+jfOo1h92
+ge9P9fpGU477OGyF8xlL24P8bTU5Ok3+xnqsfvCA6mbdIkaQ8a58fMj3Y2B9ixyeF1oySHLJXgZI
+cfY0K8oQbahZP7mOXseSy0FdQEbdp3Q6cMKXYDfKBHwOVAc52JOgDUyAfAV20o1i6sYqxaoG1UfC
+XxF3MVVoV2XIGPsr9QoJOa7g89OHbd9CImz40fmAtEoH4mYhYHGxWcmeINmy5XE6SPMrivI2258U
+Q+UDww04Q93MAMH0DE0LN3EPSDYLO6hm9I9AhLyBl2RpLWfzIyQzPjSQzxisr+GQ8B4kBamIDnS8
+I1z3
+--000000000000e7b3170611fbeb4b--
 
