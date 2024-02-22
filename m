@@ -1,156 +1,221 @@
-Return-Path: <linux-kernel+bounces-76968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76969-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2A9E85FF2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:20:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64A9D85FF31
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:20:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBE081C25180
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:20:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CEF361F2CB1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:20:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A43D19478;
-	Thu, 22 Feb 2024 17:19:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8B0C15530A;
+	Thu, 22 Feb 2024 17:20:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="InY9sYoE"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="N+GpiTg5"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9036A154BE3;
-	Thu, 22 Feb 2024 17:19:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76E9719478;
+	Thu, 22 Feb 2024 17:20:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708622393; cv=none; b=o0vfJyOu9tHFjPWXkye0peXK3pdz+XTSYHSv/3l/8APHbkc0J15uj1HGjwVaVY+9a4NyQC5jjDO7LcyoKipBvexSJIAN0UY4QNfieumR2+AS/lKg9x/H45mHOdLHfWfbPJpX0ECKQSe6FtmajnUq1irDldatdDWs3OFpcS1ibs4=
+	t=1708622450; cv=none; b=d+3W7qMKNnb3vH5oDwNttQrJUjnatd95um9YigSU1FuRSNjJfyhGnIKEDRB6jrWmh+MmQl6G110njp6+wTDSG97rZ42WOmTDX1AYRg2P/gtAxJ9z+pFdLmHcpTcqyFZH1RF+dQeSO/czVfyh73Aay3Y1+TtWUGoQ/SYdpcloYoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708622393; c=relaxed/simple;
-	bh=8CEg/RKdoDPInzI7juj6Pe6d6f/MCz9OOa+Abxcwaq0=;
-	h=Content-Type:Mime-Version:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=P9G7ZbXVSuMG37vKx4ZUhpVhJa900VAIdq/pEzeaa9Ad1WmBe0AQNzkwWX6/NQMZ52n4iQCANTH1PWtXae67kVXlyPtOmhnVjCgo4yw6LCH+axC78OyO/zyILSw+KME+0Bok3z4ZvpEo/6+anzFLJGRAmV3+2CLGJgAEp+iGXiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=InY9sYoE; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a3f5808b0dfso265033266b.1;
-        Thu, 22 Feb 2024 09:19:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708622390; x=1709227190; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CQMhMz89ycmZ70Ia4sIX+P56KQVZUaP0RVmqAd/9EXs=;
-        b=InY9sYoEUxm9LCJTB9VHQXmzpqr5KVHNSohIL7LDhjDCgy4oYsys0xKoO6rNfqgHZ2
-         ExIpdnhnc7WFSb1GpicPRmq3YB1Sf/ROfutzuNj0/ozgpkwtVHbyOv3/AdjLAwyPZ9O6
-         MzxDDDQTiVKFXfAElVQdQkN9kXG5qvDp3KPwnFg6hSv7DT5Lk3Bs7rR9lJ6x4DSbxkr6
-         98q9Yu/AliKUWwp6C3HecFLzvVY4Gsh1xGeljUuWzlbMAIuwW8OuZBKg+7eHrQeWzchA
-         QRRdMNC5j6qa++mmwuu2YQlSZU1TMDipmcSDHlliU25n0riXl54pw5S1miOFBOfwhXxH
-         TFpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708622390; x=1709227190;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CQMhMz89ycmZ70Ia4sIX+P56KQVZUaP0RVmqAd/9EXs=;
-        b=uIalnx8i3uf9yhMxTLMyGm9jDdW0SgsrTMqse6D4GJHXrQBX5SrDAK1/lNvUGO4tTJ
-         bFEsYVXetDf/6Cc5wBDoMDVSvuAIx1ULJlXd5/j+Be70ib9sSzzQ18b+oonFw4TUn6+2
-         /qjoQn2UB96XlzagiZ7ggTc/w4vKBUDxQZnF2WX/dvsMgBGPAwx6RzBlxcm+k5vs6esf
-         MvGpsHIdRAD62EacJdg+gqnuKcmw3N5NbHGMdy9GKzURS1fpwCAy5KARtviFk7EDEMZd
-         2fBfm97YReOYemo7jEkWNtcVIp1qcbxjhOD/cx9sMtWu0jS1X++q0NQcqkUSor+oJSDj
-         /H2g==
-X-Forwarded-Encrypted: i=1; AJvYcCW9DyWEhdzBEwBFC0qqJdM/odKO5D24einiQ0KbV7ek2jB9ePGqz9RON5yl2xwgvhrplQkoI8wuU3BoeG8DndXwRDlA4ZeOSOgbx4ZROh26Fx8ykfLClmi3rwY0dzPv7kxpwWOvfrCB7EMuhPryMY7pL7FGEbnwwCnuQu3W63/KVUq+s3W0TFum5WQ=
-X-Gm-Message-State: AOJu0Yzo4xPpbisiQunqMwF1WG7/CIudEF39MDp5WGvb3avuKj1wVH7r
-	WGEa8PfuE0I45jyxvnDprD/MfC1B2GH6dp6qpErIOk8uvSRcuX7ibtg8nndN
-X-Google-Smtp-Source: AGHT+IG/A2Zz+TNmcwZ83Ix3GENVBoY4VDLiLrmD1Q4+RDnMLOBCPfXOIHB3Cs54Y2XtVODY2oQdSA==
-X-Received: by 2002:a17:906:5fd7:b0:a3e:4f8b:bcc5 with SMTP id k23-20020a1709065fd700b00a3e4f8bbcc5mr9505053ejv.34.1708622389841;
-        Thu, 22 Feb 2024 09:19:49 -0800 (PST)
-Received: from localhost (p200300e41f2d4600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f2d:4600:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id vw3-20020a170907a70300b00a3fb4d11809sm25842ejc.204.2024.02.22.09.19.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 09:19:49 -0800 (PST)
-Content-Type: multipart/signed;
- boundary=0688b8b99b58602d6dc6058d279e832db2b7d6c583f7afba1028c2f475c1;
- micalg=pgp-sha256; protocol="application/pgp-signature"
+	s=arc-20240116; t=1708622450; c=relaxed/simple;
+	bh=tFbfNPZA+03qEJrO/W2/DwnCMP36XNB72UEAWEXa9b4=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=SEaxnegbnB1yA6gJfcsosL9lHxW8ECLC5eOQT6kUldjA4nkjIoIlJxcBD/J0Lo6ND1jF+kdReLbMJTObgfD13JNb5lOijDa4He5ITYOYEvdoSVfaA2LkFKDKRCKcpCFtYptXpAN4gjMu5/1DmSiascqP4UBroapRHVnYnaRDN/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=N+GpiTg5; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708622449; x=1740158449;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=tFbfNPZA+03qEJrO/W2/DwnCMP36XNB72UEAWEXa9b4=;
+  b=N+GpiTg532mCBUn14UGEF6i9/PZbwi4aRo3cjZeBgBYsBEOgH3yWHXJQ
+   7e5MjK4ejx3H8pTEUpeV3Yh010snOuxLmIPSuXTk2zS9sU2mbzp5gSdx0
+   UjNR+KPguuydEMJrF5wCGdvWMQUS/+Gh1EAI603ebyVnx9YIF1RTdGZBl
+   xUqv9F9/gp10She2kaCDc27qsF57/CLCX+CNKmdBEZ4ls1ate3M1nPbEP
+   QO4Qw0E0E36keOldvNX9r7UxcNlUizypBdo31yQjxCKtvFm74EIgG9P4J
+   vdvlZ7z4xLxCoiSHzEqmUfXDuMifgdmW50TbkPV0uz7cXjNYorwri71yQ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="3016210"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="3016210"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 09:20:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="5495059"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 22 Feb 2024 09:20:38 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: "Mehta, Sohil" <sohil.mehta@intel.com>, "mingo@redhat.com"
+ <mingo@redhat.com>, "jarkko@kernel.org" <jarkko@kernel.org>, "x86@kernel.org"
+ <x86@kernel.org>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "hpa@zytor.com"
+ <hpa@zytor.com>, "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+ "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>, "mkoutny@suse.com"
+ <mkoutny@suse.com>, "tglx@linutronix.de" <tglx@linutronix.de>, "tj@kernel.org"
+ <tj@kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
+ <kai.huang@intel.com>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
+ <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
+ <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+ "chrisyan@microsoft.com" <chrisyan@microsoft.com>
+Subject: Re: [PATCH v9 08/15] x86/sgx: Implement EPC reclamation flows for
+ cgroup
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-9-haitao.huang@linux.intel.com>
+ <fa091e657c2d3f3cc14aff15ad3484e0d7079b6f.camel@intel.com>
+ <op.2jhbnui0wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <d4aacbea13f0ff03ad94c31a4735746aedd009ba.camel@intel.com>
+Date: Thu, 22 Feb 2024 11:20:37 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Thu, 22 Feb 2024 18:19:48 +0100
-Message-Id: <CZBS35EFPNLY.3UV6B9TKIU1@gmail.com>
-Cc: <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-hardening@vger.kernel.org>
-Subject: Re: [PATCH v4 0/3] Tegra30: add support for LG tegra based phones
-From: "Thierry Reding" <thierry.reding@gmail.com>
-To: "Svyatoslav Ryhel" <clamor95@gmail.com>, "Rob Herring"
- <robh+dt@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Jonathan Hunter" <jonathanh@nvidia.com>, "Kees Cook"
- <keescook@chromium.org>, "Maxim Schwalm" <maxim.schwalm@gmail.com>
-X-Mailer: aerc 0.16.0-1-0-g560d6168f0ed-dirty
-References: <20240214091201.17636-1-clamor95@gmail.com>
-In-Reply-To: <20240214091201.17636-1-clamor95@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2jjzsnz0wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <d4aacbea13f0ff03ad94c31a4735746aedd009ba.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
---0688b8b99b58602d6dc6058d279e832db2b7d6c583f7afba1028c2f475c1
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+On Wed, 21 Feb 2024 05:00:27 -0600, Huang, Kai <kai.huang@intel.com> wrote:
 
-On Wed Feb 14, 2024 at 10:11 AM CET, Svyatoslav Ryhel wrote:
-> Bring up Tegra 3 based LG phones Optimus 4X HD and Optimus Vu based
-> on LG X3 board.
+> On Wed, 2024-02-21 at 00:44 -0600, Haitao Huang wrote:
+>> [...]
+>> >
+>> > Here the @nr_to_scan is reduced by the number of pages that are
+>> > isolated, but
+>> > not actually reclaimed (which is reflected by @cnt).
+>> >
+>> > IIUC, looks you want to make this function do "each cycle" as what you
+>> > mentioned
+>> > in the v8 [1]:
+>> >
+>> > 	I tested with that approach and found we can only target number of
+>> > pages
+>> > 	attempted to reclaim not pages actually reclaimed due to the
+>> > uncertainty
+>> > 	of how long it takes to reclaim pages. Besides targeting number of
+>> > 	scanned pages for each cycle is also what the ksgxd does.
+>> >
+>> > 	If we target actual number of pages, sometimes it just takes too  
+>> long.
+>> > I
+>> > 	saw more timeouts with the default time limit when running parallel
+>> > 	selftests.
+>> >
+>> > I am not sure what does "sometimes it just takes too long" mean, but
+>> > what I am
+>> > thinking is you are trying to do some perfect but yet complicated code
+>> > here.
+>>
+>> I think what I observed was that the try_charge() would block too long
+>> before getting chance of schedule() to yield, causing more timeouts than
+>> necessary.
+>> I'll do some re-test to be sure.
 >
-> ---
-> Changes from v3:
-> - set max77663 ldo0 to be always on since it is required by the SOC
-> - adjusted bluetooth module comment
-> - added enable gpio to dw9714 focuser
+> Looks this is a valid information that can be used to justify whatever  
+> you are
+> implementing in the EPC cgroup reclaiming function(s).
 >
-> Changes from v2:
-> - switched from _ to - in node names
+I'll add some comments. Was assuming this is just following the old design  
+as ksgxd.
+There were some comments at the beginning of  
+sgx_epc_cgrooup_reclaim_page().
+         /*
+          * Attempting to reclaim only a few pages will often fail and is
+          * inefficient, while reclaiming a huge number of pages can result  
+in
+          * soft lockups due to holding various locks for an extended  
+duration.
+          */
+         unsigned int nr_to_scan = SGX_NR_TO_SCAN;
+
+I think it can be improved to emphasize we only "attempt" to finish  
+scanning fixed number of pages for reclamation, not enforce number of  
+pages successfully reclaimed.
+
+>>
+>> >
+>> > For instance, I don't think selftest reflect the real workload, and I
+>> > believe
+>> > adjusting the limit of a given EPC cgroup shouldn't be a frequent
+>> > operation,
+>> > thus it is acceptable to use some easy-maintain code but less perfect
+>> > code.
+>> >
+>> > Here I still think having @nr_to_scan as a pointer is  
+>> over-complicated.
+>> > For
+>> > example, we can still let sgx_reclaim_pages() to always scan
+>> > SGX_NR_TO_SCAN
+>> > pages, but give up when there's enough pages reclaimed or when the EPC
+>> > cgroup
+>> > and its descendants have been looped:
+>> >
+>> > unsigned int sgx_epc_cgroup_reclaim_pages(struct misc_cg *root)
+>> > {
+>> > 	unsigned int cnt = 0;
+>> > 	...
+>> >
+>> > 	css_for_each_descendant_pre(pos, css_root) {
+>> > 		...
+>> > 		epc_cg = sgx_epc_cgroup_from_misc_cg(css_misc(pos));
+>> > 		cnt += sgx_reclaim_pages(&epc_cg->lru);
+>> >
+>> > 		if (cnt >= SGX_NR_TO_SCAN)
+>> > 			break;
+>> > 	}
+>> >
+>> > 	...
+>> > 	return cnt;
+>> > }
+>> >
+>> > Yeah it may reclaim more than SGX_NR_TO_SCAN when the loop actually
+>> > reaches any
+>> > descendants, but that should be rare and we don't care that much, do  
+>> we?
+>> >
+>> I assume you meant @cnt here to be number of pages actually reclaimed.
 >
-> Changes from v1:
-> - switched from prefix lge to lg
-> ---
+> Yes.
 >
-> Maxim Schwalm (1):
->   dt-bindings: arm: tegra: Add LG Optimus Vu P895 and Optimus 4X P880
+>> This could cause  sgx_epc_cgroup_reclaim_pages() block too long as @cnt
+>> may always be zero (all pages are too young) and you have to loop all
+>> descendants.
 >
-> Svyatoslav Ryhel (2):
->   ARM: tegra: Add device-tree for LG Optimus Vu (P895)
->   ARM: tegra: Add device-tree for LG Optimus 4X HD (P880)
+> I am not sure whether this is a valid point.
 >
->  .../devicetree/bindings/arm/tegra.yaml        |    8 +
->  arch/arm/boot/dts/nvidia/Makefile             |    2 +
->  arch/arm/boot/dts/nvidia/tegra30-lg-p880.dts  |  489 +++++
->  arch/arm/boot/dts/nvidia/tegra30-lg-p895.dts  |  496 +++++
->  arch/arm/boot/dts/nvidia/tegra30-lg-x3.dtsi   | 1812 +++++++++++++++++
->  5 files changed, 2807 insertions(+)
->  create mode 100644 arch/arm/boot/dts/nvidia/tegra30-lg-p880.dts
->  create mode 100644 arch/arm/boot/dts/nvidia/tegra30-lg-p895.dts
->  create mode 100644 arch/arm/boot/dts/nvidia/tegra30-lg-x3.dtsi
+> For example, your change in patch 10 "x86/sgx: Add EPC reclamation in  
+> cgroup
+> try_charge()" already loops all descendants in below code:
+>
+> +		if (sgx_epc_cgroup_lru_empty(epc_cg->cg))
+> +			return -ENOMEM;
+>
 
-Applied, thanks.
+I meant looping all descendants for reclamation which is expensive and we  
+want to avoid. Not just checking emptiness of LRUs.
 
-Thierry
-
---0688b8b99b58602d6dc6058d279e832db2b7d6c583f7afba1028c2f475c1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmXXgjUACgkQ3SOs138+
-s6EQnw//T3TGiscSn6UwTQWA/k7/K4loL3jUeWw3q5tn04EP5N6dqJBuKEg3WF48
-DYu1z6Z5P6lUS/axfxPnszFqEJu99g+O8OgJgqlcv7dOaoL3RXLBCiWHzqCV6fsP
-i7gfak36LTv8fTY88JG3xl1T27VL7rNjQ8qMFh1iqXQrRvKFtEEpkIFGAF/liMQT
-EmqTBSIO7HJE+ER1nscITCU3rUuZ4I17ZMQo+MZVYp1otdHnqI8qzWNL/cGb9k6a
-SchIHrOXO/jCXjh4j1tWh0pVrPQtN89c66MM8qllGw+0ef1dl9tqzSsPUDT9OvkK
-R7SWbYrYAwBGhTSMwrKmtMSl2fI5VHRyr1RSewvmflfpup6P+wgfDJENT1/9B/pl
-FkX3UzZiLY4tKc8SQ38rXL6MoYYaHTpaL6Nz210tPm96lJvPrx/dM2Ge+MCt3Bv0
-47hUWslfhPe9UhggaTDz3Nrm81PCCMH9s7ucV9BQSbwwHYRNzJLI0aHmuABzLFu6
-vJ0IXW+9N9wG6usjbzujq/LHCEDhm6eNHI4yXIASoz6BzuH9nfQHv91oHg5WhkNM
-8356TcPyz+Q6vsRI6QPsnKGcEIaDxen9GW6/VjxqkbPUfRO1274lCczrHsWpJP73
-8yYfQ25yz4OyfTkBUiKwfC38JDXbEFwPElTUDQcWzJ9NbBqs0E0=
-=tZ71
------END PGP SIGNATURE-----
-
---0688b8b99b58602d6dc6058d279e832db2b7d6c583f7afba1028c2f475c1--
+> Anyway, I can see all these can be justification to your  
+> design/implementation.
+> My point is please put these justification in changelog/comments so that  
+> we can
+> actually understand.
+>
+Yes, will add clarifying comments.
+Thanks
 
