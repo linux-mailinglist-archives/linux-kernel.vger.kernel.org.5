@@ -1,164 +1,161 @@
-Return-Path: <linux-kernel+bounces-75859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C512D85EFF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:32:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 123E585EFF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:33:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8224C2850D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:32:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7A8B1F23B96
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:33:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACEF01757D;
-	Thu, 22 Feb 2024 03:32:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B98E917560;
+	Thu, 22 Feb 2024 03:33:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="feTqbfuS"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hreMZrV7"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 653511754F;
-	Thu, 22 Feb 2024 03:32:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A632028EF
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:33:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708572753; cv=none; b=qSG6m9KeQEjz9mjjv9OrwnE8RlznfjQD5n3n69I516InpL+DxMSHDjk2bQfdkK/6a13gdAPFsojYffah512rsc/awPE5lnDFzbSSIpvfyt46q4uxuoRKIx6LFFdQ5gIrRfYG93BlRR87yrCjfRFBQRX0iyWlQJ9rgDZxTut5OI8=
+	t=1708572818; cv=none; b=DtM/XtZ2exyNwrcF50xF/+M+ta41A8vVneC1QAywm/JNMrbnjeleQnpoXWs4D6AbpB/M+bFZCpamfXbNDoD0OmcBZKQCcea+kkr5+2mEBH9CEAX9hDAOGJNVUhxpoYs1w/sWgyOWfspKRdBq4bx7lPzXDC41TSJAuo7v1X9jyF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708572753; c=relaxed/simple;
-	bh=zPtstHzS+Bo0aZoHlo9A0gHTwgYU3i9RLFxE6qDIVIw=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P8NEHFZ/Q+I+pq7p4vOWgDyh+IVuNgsMvBXcmRvkBjj2X9TlXLjuNUpBOyKSaEX4eQsbrEbOMaZ8Ma3DFT0fF6BDyrXNOrkYPWvkU9u7Xm5PsdpDxOBXUlHCKxB9S8PcYuMyifM0cKkH4B+CurJw+FrsR+l9wllvZMDy7yAiVo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=feTqbfuS; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41M1cM8m002608;
-	Thu, 22 Feb 2024 03:32:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=sH24qUnkBPw8Y6HHyaz/t
-	LuHbkGvooULPgfNnkyAlUw=; b=feTqbfuSfpsd/kpAXVAYBUgAouQLWOSYe+Bnr
-	b/814gArBGfDfqmNH99TWXXZaX3rkxRqEQTMLG97gYdYBN2FqTSt6QX/zMDwLBea
-	TJHper30VsuhneAe6cUMl9qqn8Rs2Ds2sluBv1DTDt1t9gC0BqQRap609IOTSLMn
-	Ib9v/Zis+UCsSfJgoCz6FBvDayxiCVkJeB3Xl7B+MrpanLOzrBpio/KtW5PcXrqS
-	J9ywI48nA1lzL9j16UvxR/cnlHjkZeoud0dXzQriMfntMFg0qRUu6HLsJsxi30XK
-	yqaZnzHVAJcqePUhL9MF+ix8IicSTNXcNDSuxyM+ClyXyQzKg==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wdvseg6h3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 03:32:17 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41M3WGYs011538
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 03:32:16 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 21 Feb 2024 19:32:16 -0800
-Date: Wed, 21 Feb 2024 19:32:14 -0800
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-To: Abel Vesa <abel.vesa@linaro.org>
-CC: Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar
-	<quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        "Maarten
- Lankhorst" <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard
-	<mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rob Herring
-	<robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kuogee Hsieh <quic_khsieh@quicinc.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Johan Hovold <johan@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <freedreno@lists.freedesktop.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RFC 1/3] dt-bindings: display: msm: dp-controller:
- document X1E80100 compatible
-Message-ID: <20240222033214.GB2273464@hu-bjorande-lv.qualcomm.com>
-References: <20240221-x1e80100-display-refactor-connector-v1-0-86c0e1ebd5ec@linaro.org>
- <20240221-x1e80100-display-refactor-connector-v1-1-86c0e1ebd5ec@linaro.org>
+	s=arc-20240116; t=1708572818; c=relaxed/simple;
+	bh=URHjr+ChHdQ1rHEgj2w8H31cO+/r5r4OAqaQksqRx6I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Fm99R+KIJdby1AdZFp1WzBTfZ3gR5l+KgGm7FZz0JqdyjZ+cDMHOGal4Bj4cd+FxIUksq9G88MCU/i9dADhUriP30las2Yeb3IuRw4hVcKwKNOMIi6xvKffwVXTMSYgJYcfrEY2Dwoxytl8W/WgrPSFpVI4mkS59IxNpsuk7eZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hreMZrV7; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e47c503fb5so2183341b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 19:33:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708572816; x=1709177616; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VHAMwOUToAwFkBITdyqsQLlGeV+NzFx4M5PdSc3kuRE=;
+        b=hreMZrV7bL9lKd9UIoAdmVlkd6c8Cl3ac1qi8+PZ4RqRkXcGbQLxSwZVARrFoMlLRP
+         Ezs77dtu0h3NFXW/dH3o2R8mCiJ/ktXuEASrWz/2QHAiF9spEjjfXuu4nSeKS8UbJQaO
+         adb7wuh9AxborLKPRNIyhD/IbPjQpjrMNBYk3OAXoJUlIqt4hmWQDp3/VnghpzMP2Fr0
+         hpBoz2eoVQOMp5V1iI9myRMJZreir1Q95YCq8EkwDjaWc0Q0/ZigBvEgnfBjwJy5w0zz
+         nZkH+qV6hCqoiRcRAc3MwbsRBB1WLB205udWsbBC4O2uPvP7ezWZHgb/avD3N/YxsFco
+         WOHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708572816; x=1709177616;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VHAMwOUToAwFkBITdyqsQLlGeV+NzFx4M5PdSc3kuRE=;
+        b=AHycHfyk5eP+DX5RDTSjL0b7mNfTJ2+YNJFABFrG+6oitakpqj+8OfopbtJFuXqXwy
+         asGa5aKc9Qr/sexqSUVLpaWUzhe1RcBNNGKjuHy8x+qvlHY5AV+S8jwDIza8PhFt5EMr
+         BJGj4WRiZlajUmrKrfAEmqaNmkejA4KBDG7oCbiIEpTaEx9lQTXzSNXODjBSMVLJW+rR
+         GdZatgY9YHIkgrB5D19Ogapr/sp+k5hNmU1G6E8VDUNS/y0UMY1yMKBP+kZC93LuvSfR
+         oJDPIXov3moeMoNUfSxfLhT76Ptqy9UA9EAGj+kyI5lCylTEoBHdiOnr6GNskvmOF3hK
+         E/zw==
+X-Forwarded-Encrypted: i=1; AJvYcCW05Ir3RHEgMIWkp8LzM/YQIwHAPGcWykNqzOz9ZKjHKynUP3/D0SosMVuCYBOqZvklJh8H5Za9HON45pGpxw9TQ6QG+c31fdzvpYno
+X-Gm-Message-State: AOJu0YxqIw10pCTpQHQlQu1NRRABzaX0rBVn7YiE8YEOJQja50ritSOz
+	NJEQcVwfkIXlFWJ2bCHcuG6SW9yaIa9n8JDySrSYmizp94LhN925LXxL9yClOAooMoP5i6vORSG
+	Z9JDGYEtcldY1cfeCqlc8UtToFA6rRJxoAtG0/g==
+X-Google-Smtp-Source: AGHT+IHO6r6XN0homLx3kTbgEJ1s87Hf/cfhSNWXD7ItOEoeWhdD8ege76NGwlURHiS8wYSf9720b3lx7s5OiQYicuc=
+X-Received: by 2002:a05:6a21:3a87:b0:1a0:c5e4:f685 with SMTP id
+ zv7-20020a056a213a8700b001a0c5e4f685mr3399855pzb.33.1708572815988; Wed, 21
+ Feb 2024 19:33:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240221-x1e80100-display-refactor-connector-v1-1-86c0e1ebd5ec@linaro.org>
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: weF_Hm3WuDZg8tI4IMChKFcDYWg9hJRx
-X-Proofpoint-GUID: weF_Hm3WuDZg8tI4IMChKFcDYWg9hJRx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-22_01,2024-02-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 suspectscore=0 mlxlogscore=999 adultscore=0
- malwarescore=0 phishscore=0 impostorscore=0 mlxscore=0 clxscore=1015
- priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2402120000 definitions=main-2402220025
+References: <20240221174333.700197-1-tj@kernel.org>
+In-Reply-To: <20240221174333.700197-1-tj@kernel.org>
+From: Lai Jiangshan <jiangshanlai@gmail.com>
+Date: Thu, 22 Feb 2024 11:33:24 +0800
+Message-ID: <CAJhGHyCJS7Pb_5dwTQtcZ25yOVzxFULJEYT4o3id_3xdj32EYA@mail.gmail.com>
+Subject: Re: [PATCHSET v2 wq/6.10] workqueue: Implement disable/enable_work()
+To: Tejun Heo <tj@kernel.org>
+Cc: torvalds@linux-foundation.org, linux-kernel@vger.kernel.org, 
+	allen.lkml@gmail.com, kernel-team@meta.com, 
+	Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 21, 2024 at 12:50:31AM +0200, Abel Vesa wrote:
-> Add the X1E80100 to the list of compatibles and docoment the is-edp
+Hello, Tejun
 
-s/docoment/document/
++cc tglx
 
-> flag. This new flag will be used from now on to dictate the mode from
+On Thu, Feb 22, 2024 at 1:43=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
 
-s/from now on//
+> 4cb1ef64609f ("workqueue: Implement BH workqueues to eventually replace
+> tasklets") implemented workqueues that execute work items in the BH conte=
+xt
+> with the goal of eventually replacing tasklet.
+>
+> While the existing workqueue API covers the basic queueing and canceling
+> operations, tasklet also has tasklet_disable*() which blocks the executio=
+n
+> of the tasklet until it's re-enabled with tasklet_enable(). The interface=
+ if
+> fairly widely used and workqueue currently doesn't have a counterpart.
+>
+> This patchset implements disable/enable_work() and the delayed_work
+> counterparts to address the gap. The ability to block future executions i=
+s
+> something which some users asked for in the past, and, while not essentia=
+l
+> as the caller can and often has to shutdown the queuer anyway, it's a nic=
+e
+> convenience to have. Also, timer grew a similar feature recently with
+> timer_shutdown().
+>
 
-Perhaps cleaner to spell out that the controllers are expected to
-operate in DP mode by default, and this flag can be used to select eDP
-mode.
+From the last patch:
+> - tasklet_disable_nosync()      -> disable_work()
+> - tasklet_disable[_in_atomic]() -> disable_work_sync()
 
-> devicetree, instead of having separate compatibles for eDP and DP.
-> 
+I think it is a misuse-prone conversion.
 
-Regards,
-Bjorn
+A developer familiar with tasklet_disable() might happily use disable_work(=
+)
+and, to her/his surprise, leave the running works unsynced.
 
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> ---
->  Documentation/devicetree/bindings/display/msm/dp-controller.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> index ae53cbfb2193..ed11852e403d 100644
-> --- a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> +++ b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> @@ -27,6 +27,7 @@ properties:
->            - qcom,sdm845-dp
->            - qcom,sm8350-dp
->            - qcom,sm8650-dp
-> +          - qcom,x1e80100-dp
->        - items:
->            - enum:
->                - qcom,sm8150-dp
-> @@ -73,6 +74,11 @@ properties:
->        - description: phy 0 parent
->        - description: phy 1 parent
->  
-> +  is-edp:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description:
-> +      Tells the controller to switch to eDP mode
-> +
->    phys:
->      maxItems: 1
->  
-> 
-> -- 
-> 2.34.1
-> 
+And tasklet_disable_nosync() is used at only 3 places while tasklet_disable=
+()
+is used a lot.  I think the shorter name for the most common cases is bette=
+r.
+
+Moreover, IMHO the unsynchronized variants of tasklet/work disabling functi=
+ons
+never have a strong scenario. I think it should be discouraged.
+
+Although it will be inconsistent with the name of cancel_work[_sync](),
+I still suggest:
+tasklet_disable_nosync() -> disable_work_nosync()
+tasklet_disable() -> disable_work().
+
+Even cancel_work_sync() is used a lot more than cancel_work(), so I
+also suggest rename cancel_work() to cancel_work_nosync() and leave
+cancel_work_sync() unchanged (at least for a while).
+
+[changed topic:]
+
+I feel uncomfortable with tasklet_disable_in_atomic() implicitly
+being implemented in disable_work_sync().
+
+I think it is a revert of the commit ca5f62511895 ("tasklets: Provide
+tasklet_disable_in_atomic()") in which tglx discouraged the usage of
+tasklet_disable_in_atomic() and marked it "error prone".
+
+And even tasklet_disable_in_atomic() is implemented in disable_work_sync(),
+I prefer to sleepable-wait than spinning-wait when disable_work_sync() is
+called in a sleepable context for BH work item.
+
+All the above is just my feeling, not reasoning, nor rejection of the patch=
+es.
+
+Thanks
+Lai
 
