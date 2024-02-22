@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-76743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D275185FBD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:06:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79A1685FBDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:06:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70B1B1F25017
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:06:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5BFC1F2143D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:06:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC94C14C5B5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8F1C14D42B;
 	Thu, 22 Feb 2024 15:06:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Dy+8yo4f"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UZTIuq7l"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A61F14A4E4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BF4F14A4E5
 	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 15:06:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708614363; cv=none; b=FYrhtBuiiX1TsmiPeWrTPDBhvrxjY7rcqc0TLdKqSQ4UXnifddznC9PSvPDtB2JBxza9I/RhPpJ9SI33Omjd4JzuwlrIdZqrC+hw/A8FuhWTrC1dSdYcT2Q4YL9Xrnx0fC5QYmGNXvQ1Zuu9YIRSCMV1cg9fXGV4fEDputf2mpQ=
+	t=1708614363; cv=none; b=s8AEYHGJ5r1qAyIT0OTBCLov3rOQDZw9iSQgfBzva4sSEhreVFGW9VY/o8tV3ILmOitl7yQ2WB2y4uqphOAaKVRNLGzelPqHEJBbumDNhR4+HMqfS6oov1sPOpXaeW9Jls40DkdTEzVyw5GOQpt+XrIrAlL/spOebm2qXe/4KHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708614363; c=relaxed/simple;
-	bh=aeHOJ9iVML/y8GMo8hBUeh/YCn/T6DMQYpgqNzuH3qU=;
+	bh=RTHbRgi+bBhmJDsk8kqG9ZoJRZNpKRFGxYgrgpT/juI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cu5lFWwiswhxYB2KK4OEes00z1Oxm2Y6QOTSv1n/QkwdZp9ipihMW2FfT5xV8rmVAfIvzSL7AZ+kIhF1TOgYvpEr8RSITMMuOV+JCzGDROzSRKk6WR7p04X8WAAhpI7P2f/pczrIhSq3kV2EAfRZyto59sCGay0Wjdh2B3ExuQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Dy+8yo4f; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=TRgE203QCW5EoRrR4H3Q4rRoC+4v0kCJeOF2QQt4Au/urrjl9iSWGU2eKMaasBONGesxSJUi7s5yjiYKfdPfKRUp9fPbSrDXj3L5JsLwUirNpHAJ9qGAKMwxFdPjBc6H3YnNINxRQtcCSgsLH0i7eee5GaHGRE0huM83i0PQ26A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UZTIuq7l; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
@@ -36,23 +36,23 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=6lp5EbVDsr1293Y0XjQkZX4GDQn3K20EV4dIoRAKwfs=;
-	b=Dy+8yo4fq9Rs505jwyrO+V6EdUPqC03+FUV2XJPoxYaa7hJOLNTxbrsbsGb4dpbBe5OO4f
-	8i8wO+Gw4BXkMifLW88VITSRsj1T7FFjcjZ6lLR+/k/DWvqih/H1hBuh1Sp52AwlOOnP3J
-	KLCEy5VLHwUCN3qL4GaXO6zKBclCO80=
+	bh=/g3EhhfkwV+ucAnH60NhMP9M6t2hq0UZAW1GW7z7sHY=;
+	b=UZTIuq7l/cc5h1vEiuNPuIDj3QEXtPfDTna6rGHl1vTCmOY+X6rWeTzxz7XG3SETjaXepm
+	IgBU3KE3ZlvZK0Jj/eoqBcfoPD3kZkBjtdrIYtdk7CjVEPvDNk0Pw35N029rml5XjEI7Uz
+	897VwfQKUAd+dl0zm5O0vlgCm7QYpxw=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-626-yAZZfy9hOwm0hMk4P6CfWQ-1; Thu, 22 Feb 2024 10:05:56 -0500
-X-MC-Unique: yAZZfy9hOwm0hMk4P6CfWQ-1
+ us-mta-639-CHC9rYMrPeCQuXkqIvx8EQ-1; Thu, 22 Feb 2024 10:05:57 -0500
+X-MC-Unique: CHC9rYMrPeCQuXkqIvx8EQ-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C6B5E863E83;
-	Thu, 22 Feb 2024 15:05:55 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 78064185A783;
+	Thu, 22 Feb 2024 15:05:56 +0000 (UTC)
 Received: from llong.com (unknown [10.22.33.9])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 1F208112131D;
+	by smtp.corp.redhat.com (Postfix) with ESMTP id D5B2C111D3D9;
 	Thu, 22 Feb 2024 15:05:55 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Peter Zijlstra <peterz@infradead.org>,
@@ -62,11 +62,10 @@ To: Peter Zijlstra <peterz@infradead.org>,
 	Andrew Morton <akpm@linux-foundation.org>
 Cc: linux-kernel@vger.kernel.org,
 	George Stark <gnstark@salutedevices.com>,
-	Waiman Long <longman@redhat.com>,
-	kernel test robot <lkp@intel.com>
-Subject: [PATCH v2 1/4] locking/qspinlock: Fix 'wait_early' set but not used warning
-Date: Thu, 22 Feb 2024 10:05:37 -0500
-Message-Id: <20240222150540.79981-2-longman@redhat.com>
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH v2 2/4] locking/mutex: Clean up mutex.h
+Date: Thu, 22 Feb 2024 10:05:38 -0500
+Message-Id: <20240222150540.79981-3-longman@redhat.com>
 In-Reply-To: <20240222150540.79981-1-longman@redhat.com>
 References: <20240222150540.79981-1-longman@redhat.com>
 Precedence: bulk
@@ -78,35 +77,56 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-When CONFIG_LOCK_EVENT_COUNTS is off, the wait_early variable will be
-set but not used. This is expected. Recent compilers will not generate
-wait_early code in this case.
+CONFIG_DEBUG_MUTEXES and CONFIG_PREEMPT_RT are mutually exclusive. They
+can't be both set at the same time.  Move up the mutex_destroy() function
+declaration and the __DEBUG_MUTEX_INITIALIZER() macro above the "#ifndef
+CONFIG_PREEMPT_RT" section to eliminate duplicated mutex_destroy()
+declaration.
 
-Add the __maybe_unused attribute to wait_early for suppressing this
-W=1 warning.
+Also remove the duplicated mutex_trylock() function declaration in the
+CONFIG_PREEMPT_RT section.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202312260422.f4pK3f9m-lkp@intel.com/
 Signed-off-by: Waiman Long <longman@redhat.com>
 Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
 ---
- kernel/locking/qspinlock_paravirt.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/mutex.h | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/locking/qspinlock_paravirt.h b/kernel/locking/qspinlock_paravirt.h
-index 6a0184e9c234..ae2b12f68b90 100644
---- a/kernel/locking/qspinlock_paravirt.h
-+++ b/kernel/locking/qspinlock_paravirt.h
-@@ -294,8 +294,8 @@ static void pv_wait_node(struct mcs_spinlock *node, struct mcs_spinlock *prev)
- {
- 	struct pv_node *pn = (struct pv_node *)node;
- 	struct pv_node *pp = (struct pv_node *)prev;
-+	bool __maybe_unused wait_early;
- 	int loop;
--	bool wait_early;
+diff --git a/include/linux/mutex.h b/include/linux/mutex.h
+index 7e208d46ba5b..67edc4ca2bee 100644
+--- a/include/linux/mutex.h
++++ b/include/linux/mutex.h
+@@ -32,11 +32,9 @@
+ # define __DEP_MAP_MUTEX_INITIALIZER(lockname)
+ #endif
  
- 	for (;;) {
- 		for (wait_early = false, loop = SPIN_THRESHOLD; loop; loop--) {
+-#ifndef CONFIG_PREEMPT_RT
+-
+ #ifdef CONFIG_DEBUG_MUTEXES
+ 
+-#define __DEBUG_MUTEX_INITIALIZER(lockname)				\
++# define __DEBUG_MUTEX_INITIALIZER(lockname)				\
+ 	, .magic = &lockname
+ 
+ extern void mutex_destroy(struct mutex *lock);
+@@ -49,6 +47,7 @@ static inline void mutex_destroy(struct mutex *lock) {}
+ 
+ #endif
+ 
++#ifndef CONFIG_PREEMPT_RT
+ /**
+  * mutex_init - initialize the mutex
+  * @mutex: the mutex to be initialized
+@@ -101,9 +100,6 @@ extern bool mutex_is_locked(struct mutex *lock);
+ 
+ extern void __mutex_rt_init(struct mutex *lock, const char *name,
+ 			    struct lock_class_key *key);
+-extern int mutex_trylock(struct mutex *lock);
+-
+-static inline void mutex_destroy(struct mutex *lock) { }
+ 
+ #define mutex_is_locked(l)	rt_mutex_base_is_locked(&(l)->rtmutex)
+ 
 -- 
 2.39.3
 
