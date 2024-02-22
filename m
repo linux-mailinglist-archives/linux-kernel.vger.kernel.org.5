@@ -1,122 +1,205 @@
-Return-Path: <linux-kernel+bounces-76027-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4338185F226
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:50:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BD1285F228
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:51:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41A101C2130E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 07:50:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE44B284DCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 07:51:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 091B9179B0;
-	Thu, 22 Feb 2024 07:50:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="BLCxIX+X"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFE8517BAC;
+	Thu, 22 Feb 2024 07:51:24 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC6EE17BA1;
-	Thu, 22 Feb 2024 07:50:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F5B1799F
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 07:51:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708588206; cv=none; b=jFEGT8NhNLlzlpS/mzVTwuVhcX2GkYmmHD43w2vUeNh1syfk8BI5x1nmQWp+xQXwR6E7Xxxp4RGc0vkJ/lXD3TgujujmKXSlrjpcirE99Esq1G3FbPOoZ76/8jbrLHeqQCJsSYu+chxgU3+ITUAjLkpFS5n8r4j2tOgfOeZfOEk=
+	t=1708588284; cv=none; b=ueoqyAD3VQt6AtjfEQwPxeBSV+Besf5X/meWV1W1d6hPsQlgQ0ctjDJU0parX7+fq0eX+GUhawk8xv078zokdVbOqhu8bGOUB8LYnWt4EhUJoLP6uiJR15Nqwmpm0KsQ4jsArtvE7GldJKJN+dutlLfR5MBQaPOAgQ5n5/YwMAc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708588206; c=relaxed/simple;
-	bh=BqYEx4+PAF1FIXKlUO2VJyByU6HT6YoYRVz0HmIAOpY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DEVgEvOK0/zyWSc3UhQgK5ziBy2Ke00rXwLGkCN1lqfH3Ms3enruDG86eRjMFmx+sh+yv86JNY2Xouw9/g/19Y3j0h/1TDOOlWa//N26IVxetc0bR3IpCGKEE1+aaDAongaVKcW9pQBECNYhCwHBOfa2s49mX5dweMZCPkhcHa4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=BLCxIX+X; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C130F20003;
-	Thu, 22 Feb 2024 07:49:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708588195;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cSLLCAcqZ7/cxOMZwrSaXrhe6GA62RvNVFkADGqZ++w=;
-	b=BLCxIX+X5angxkQeWAztWV9x6zzwuU3z/7oG1Ge5YsBPp2+4OSkNerlYOabq63gMHkKkKW
-	Q0CP9Dd2fy44RFsMG4FWuW1OQH2kamUIT+BZQZoUT9Ab+6P1AWXTi2+PCTSYlWTyN8lu7t
-	BzWzlLs4KpugsZZDkydR5nVTIcQxj7NcXWJgtkbv1kVkFtbFq7x8Dp3wR/4U9CPYIX5par
-	yqMvicTBjF24H4n6rkbL8LAymCMxJ5QAOyKP2cyylshSQ/tPa8x1tMV6d9oNGliBK59R72
-	s4fP5EL9w1goFIzDtfZDWGVH+4zM1duNTaJFS7g2WfdxOgrec6LLY+w6CnCRrQ==
-Date: Thu, 22 Feb 2024 08:49:48 +0100
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: davem@davemloft.net, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com, Andrew Lunn
- <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
- linux-arm-kernel@lists.infradead.org, Christophe Leroy
- <christophe.leroy@csgroup.eu>, Herve Codina <herve.codina@bootlin.com>,
- Florian Fainelli <f.fainelli@gmail.com>, Heiner Kallweit
- <hkallweit1@gmail.com>, Vladimir Oltean <vladimir.oltean@nxp.com>,
- =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>, Jesse Brandeburg
- <jesse.brandeburg@intel.com>, Jonathan Corbet <corbet@lwn.net>, Marek
- =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>, Piergiorgio Beruto
- <piergiorgio.beruto@gmail.com>, Oleksij Rempel <o.rempel@pengutronix.de>,
- =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>, Simon Horman
- <horms@kernel.org>, mwojtas@chromium.org
-Subject: Re: [PATCH net-next v8 08/13] netlink: specs: add ethnl PHY_GET
- command set
-Message-ID: <20240222084948.16f33760@device-28.home>
-In-Reply-To: <20240221170023.452a01ca@kernel.org>
-References: <20240220184217.3689988-1-maxime.chevallier@bootlin.com>
-	<20240220184217.3689988-9-maxime.chevallier@bootlin.com>
-	<20240221170023.452a01ca@kernel.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1708588284; c=relaxed/simple;
+	bh=YABI2wY90F4ti0YQ+FYf2izsdH0x6Nl4/AuuHydNCm8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RlTGNuVw0noz9OZ/1R2WGIwv8KYq2rdBu2pdl9UrBBz5FIUnByErgzeKwSz+go3A1/rhcU95VG9A6s0Max4YSI0sP14bQ4bQV8MoTK470nHCkSY03ixgMRVAdqH38IZ4PNBFtvL7f2MQQRUXgMsRErCpf5Ok2j7P1JwXadgX080=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rd3rP-0007Wg-9I; Thu, 22 Feb 2024 08:51:15 +0100
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rd3rO-002Bn0-D6; Thu, 22 Feb 2024 08:51:14 +0100
+Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rd3rO-00Al9r-16;
+	Thu, 22 Feb 2024 08:51:14 +0100
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: "David S. Miller" <davem@davemloft.net>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	Woojung Huh <woojung.huh@microchip.com>,
+	Arun Ramadoss <arun.ramadoss@microchip.com>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
+	kernel@pengutronix.de,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	UNGLinuxDriver@microchip.com
+Subject: [PATCH net-next v3 1/1] net: dsa: microchip: Add support for bridge port isolation
+Date: Thu, 22 Feb 2024 08:51:13 +0100
+Message-Id: <20240222075113.2564540-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: maxime.chevallier@bootlin.com
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Hello Jakub,
+Implement bridge port isolation for KSZ switches. Enabling the isolation
+of switch ports from each other while maintaining connectivity with the
+CPU and other forwarding ports. For instance, to isolate swp1 and swp2
+from each other, use the following commands:
+- bridge link set dev swp1 isolated on
+- bridge link set dev swp2 isolated on
 
-On Wed, 21 Feb 2024 17:00:23 -0800
-Jakub Kicinski <kuba@kernel.org> wrote:
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Acked-by: Arun Ramadoss <arun.ramadoss@microchip.com>
+---
+changes v3:
+- fix documentation
 
-> On Tue, 20 Feb 2024 19:42:11 +0100 Maxime Chevallier wrote:
-> > +      -
-> > +        name: upstream-phy-index
-> > +        type: u32 =20
->=20
-> The C define appears to be called:
->=20
-> 	ETHTOOL_A_PHY_UPSTREAM_INDEX,		/* u32 */
->=20
-> either it needs to gain the PHY_ or the spec needs to lose the phy-,
-> otherwise C code gen gets upset:
+changes v2:
+- add comments and new lines
+---
+ drivers/net/dsa/microchip/ksz_common.c | 55 +++++++++++++++++++++++---
+ drivers/net/dsa/microchip/ksz_common.h |  1 +
+ 2 files changed, 51 insertions(+), 5 deletions(-)
 
-I'll do it, sorry about that.
-
->=20
-> ethtool-user.c:689:10: error: =E2=80=98ETHTOOL_A_PHY_UPSTREAM_PHY_INDEX=
-=E2=80=99 undeclared here (not in a function); did you mean =E2=80=98ETHTOO=
-L_A_PHY_UPSTREAM_INDEX=E2=80=99?
->   689 |         [ETHTOOL_A_PHY_UPSTREAM_PHY_INDEX] =3D { .name =3D "upstr=
-eam-phy-index", .type =3D YNL_PT_U32, },
->       |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->       |          ETHTOOL_A_PHY_UPSTREAM_INDEX
->=20
-> Unfortunately ethtool in the in-between state where we can auto-gen
-> user space code (or rather most of it) but the uAPI header is not
-> auto-generated so we need to take extra care to keep things in sync :(
-
-Is there anything I run for testing, so that I can make sure this
-doesn't happen again ?
-
-Thanks,
-
-Maxime
+diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
+index 7cd37133ec05..d58cc685478b 100644
+--- a/drivers/net/dsa/microchip/ksz_common.c
++++ b/drivers/net/dsa/microchip/ksz_common.c
+@@ -1898,6 +1898,29 @@ static void ksz_get_strings(struct dsa_switch *ds, int port,
+ 	}
+ }
+ 
++/**
++ * ksz_update_port_member - Adjust port forwarding rules based on STP state and
++ *			    isolation settings.
++ * @dev: A pointer to the struct ksz_device representing the device.
++ * @port: The port number to adjust.
++ *
++ * This function dynamically adjusts the port membership configuration for a
++ * specified port and other device ports, based on Spanning Tree Protocol (STP)
++ * states and port isolation settings. Each port, including the CPU port, has a
++ * membership register, represented as a bitfield, where each bit corresponds
++ * to a port number. A set bit indicates permission to forward frames to that
++ * port. This function iterates over all ports, updating the membership register
++ * to reflect current forwarding permissions:
++ *
++ * 1. Forwards frames only to ports that are part of the same bridge group and
++ *    in the BR_STATE_FORWARDING state.
++ * 2. Takes into account the isolation status of ports; ports in the
++ *    BR_STATE_FORWARDING state with BR_ISOLATED configuration will not forward
++ *    frames to each other, even if they are in the same bridge group.
++ * 3. Ensures that the CPU port is included in the membership based on its
++ *    upstream port configuration, allowing for management and control traffic
++ *    to flow as required.
++ */
+ static void ksz_update_port_member(struct ksz_device *dev, int port)
+ {
+ 	struct ksz_port *p = &dev->ports[port];
+@@ -1926,7 +1949,14 @@ static void ksz_update_port_member(struct ksz_device *dev, int port)
+ 		if (other_p->stp_state != BR_STATE_FORWARDING)
+ 			continue;
+ 
+-		if (p->stp_state == BR_STATE_FORWARDING) {
++		/* At this point we know that "port" and "other" port [i] are in
++		 * the same bridge group and that "other" port [i] is in
++		 * forwarding stp state. If "port" is also in forwarding stp
++		 * state, we can allow forwarding from port [port] to port [i].
++		 * Except if both ports are isolated.
++		 */
++		if (p->stp_state == BR_STATE_FORWARDING &&
++		    !(p->isolated && other_p->isolated)) {
+ 			val |= BIT(port);
+ 			port_member |= BIT(i);
+ 		}
+@@ -1945,8 +1975,19 @@ static void ksz_update_port_member(struct ksz_device *dev, int port)
+ 			third_p = &dev->ports[j];
+ 			if (third_p->stp_state != BR_STATE_FORWARDING)
+ 				continue;
++
+ 			third_dp = dsa_to_port(ds, j);
+-			if (dsa_port_bridge_same(other_dp, third_dp))
++
++			/* Now we updating relation of the "other" port [i] to
++			 * the "third" port [j]. We already know that "other"
++			 * port [i] is in forwarding stp state and that "third"
++			 * port [j] is in forwarding stp state too.
++			 * We need to check if "other" port [i] and "third" port
++			 * [j] are in the same bridge group and not isolated
++			 * before allowing forwarding from port [i] to port [j].
++			 */
++			if (dsa_port_bridge_same(other_dp, third_dp) &&
++			    !(other_p->isolated && third_p->isolated))
+ 				val |= BIT(j);
+ 		}
+ 
+@@ -2699,7 +2740,7 @@ static int ksz_port_pre_bridge_flags(struct dsa_switch *ds, int port,
+ 				     struct switchdev_brport_flags flags,
+ 				     struct netlink_ext_ack *extack)
+ {
+-	if (flags.mask & ~BR_LEARNING)
++	if (flags.mask & ~(BR_LEARNING | BR_ISOLATED))
+ 		return -EINVAL;
+ 
+ 	return 0;
+@@ -2712,8 +2753,12 @@ static int ksz_port_bridge_flags(struct dsa_switch *ds, int port,
+ 	struct ksz_device *dev = ds->priv;
+ 	struct ksz_port *p = &dev->ports[port];
+ 
+-	if (flags.mask & BR_LEARNING) {
+-		p->learning = !!(flags.val & BR_LEARNING);
++	if (flags.mask & (BR_LEARNING | BR_ISOLATED)) {
++		if (flags.mask & BR_LEARNING)
++			p->learning = !!(flags.val & BR_LEARNING);
++
++		if (flags.mask & BR_ISOLATED)
++			p->isolated = !!(flags.val & BR_ISOLATED);
+ 
+ 		/* Make the change take effect immediately */
+ 		ksz_port_stp_state_set(ds, port, p->stp_state);
+diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
+index a3f69a036fa9..fb76637596fc 100644
+--- a/drivers/net/dsa/microchip/ksz_common.h
++++ b/drivers/net/dsa/microchip/ksz_common.h
+@@ -111,6 +111,7 @@ struct ksz_switch_macaddr {
+ struct ksz_port {
+ 	bool remove_tag;		/* Remove Tag flag set, for ksz8795 only */
+ 	bool learning;
++	bool isolated;
+ 	int stp_state;
+ 	struct phy_device phydev;
+ 
+-- 
+2.39.2
 
 
