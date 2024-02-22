@@ -1,198 +1,115 @@
-Return-Path: <linux-kernel+bounces-77479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6608B8605DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:57:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10F368605EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:00:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B46D1285767
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:57:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8B249B22A3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:00:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B23418AED;
-	Thu, 22 Feb 2024 22:57:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A6HTOqcd"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4222118026;
-	Thu, 22 Feb 2024 22:57:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 369DC18B15;
+	Thu, 22 Feb 2024 23:00:07 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9954817BD3;
+	Thu, 22 Feb 2024 23:00:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708642668; cv=none; b=ThVpQHBoBJ6abray9chWwo4kvpMCITQjRt9Z3su7iG0dyZsmWFEcS7U+uznqzm275mRlKhfIAcwizhF0641N0ix1pj6W05rf6sr2FYJ+VzD4DK3yfkjP0zDwPOWlVtBlGPnZkmOIYAGu1qVG5w7JVPzgIfBN6gDo2jj7EzlYRfQ=
+	t=1708642806; cv=none; b=NZyqxBr5iJOqrpq4h8cpXdGw7lyEYWwUAjJrJrvSaZ+wG0gP3GJ061WvUTFmXJX7mr+fc7bnwJNkJzDWLDJthO/8AeJ4q5dsTfu1m5OdG6+cv5SyEMeTsl1Ebf1jrwQixj3OSDnb+GeNssyqPYcNqvDxxQu2o9uzvgeVDwNGLd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708642668; c=relaxed/simple;
-	bh=Y/laIYepz6ZXKfQ07+X8EGPW4ul5yz5v7N3Xbc3MeGI=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=e6FsUkJfItQCCE0iIQsDmK4A/MnA9E8rHT7WoPKO/8DEDaTeXaoE1PrwDFx9fYhq7nQur9USl9NNblbQmp3Eq8wi1VQKUnyGACEw7ZMm1e4N+G/iO+OSFp94WZG+w+8jPIqrUx+JkGWuD23XI793L/ytoPpB+5Ya+b7MnkgI1ss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A6HTOqcd; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708642667; x=1740178667;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=Y/laIYepz6ZXKfQ07+X8EGPW4ul5yz5v7N3Xbc3MeGI=;
-  b=A6HTOqcdt6jm1DFoNihD/yDEuyoD6fv6wHw2ZHJiNo64J2X3BptP1l8F
-   gz9BJMdoasGhDfSkMnFoqqKPRNnilkGhdFUnng/D4PK/YRVu3wBGgFRFG
-   U5M4z6ACMmKFagWKDscojFQy0asBRnrOklkJdlgNXAgKqDieQ1DZPvSiL
-   2pwsQUys6QOfuAkdNeM9qOvBNS1ClI40ZFq10nrAfubvgrSKBbXRkvBMy
-   PHxuQifmeKirTO2Nk13oVG8mWPeUzksPc6+pnvWkTbeRJovxo+MhPXBBt
-   UQKcVux/tSUWPV23GghYcldJ8yaa4UJ2IchehoAUnC0eXRLjl9UaIa0bE
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="6737638"
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="6737638"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 14:57:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="36680848"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 22 Feb 2024 14:57:41 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
- <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
- <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
- <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
- <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
- <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
- <kai.huang@intel.com>
-Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
- <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
- "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
- <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
- "chrisyan@microsoft.com" <chrisyan@microsoft.com>
-Subject: Re: [PATCH v9 10/15] x86/sgx: Add EPC reclamation in cgroup
- try_charge()
-References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
- <20240205210638.157741-11-haitao.huang@linux.intel.com>
- <c5d03171473821ebc9cb79e3dad4d1bf0074e674.camel@intel.com>
- <op.2jjzaqdwwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <4db8493b-35a2-474f-997c-5e6ac1b8bd11@intel.com>
-Date: Thu, 22 Feb 2024 16:57:40 -0600
+	s=arc-20240116; t=1708642806; c=relaxed/simple;
+	bh=OEjFAKIuJA3qH4FAQOSySl87ZHAyj2jyASYFVZY0SMo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lJIdZSILNs+YabN6KGB74ZoMu2WHfdixNgfHhvlYPTl/D50qXLbNN1byIVZbEnWEvIYUsrhrOE5hX5lIfcOuUiNq8H9/Etf1vEb1GvH2w17N6z1nSAIy5LGnGBhpOIl1V2SyZMFre/coWTaF5Jrd18zj6cGAYsfar1ybvgGZat8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3FD8EDA7;
+	Thu, 22 Feb 2024 15:00:42 -0800 (PST)
+Received: from [10.57.10.154] (unknown [10.57.10.154])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 19E2F3F766;
+	Thu, 22 Feb 2024 15:00:00 -0800 (PST)
+Message-ID: <27ad9614-e3de-4965-9f4e-865bc541eb4c@arm.com>
+Date: Thu, 22 Feb 2024 22:59:58 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12 02/25] genirq/irqdomain: Remove the param count
+ restriction from select()
+Content-Language: en-US
+To: Marc Zyngier <maz@kernel.org>
+Cc: Anup Patel <apatel@ventanamicro.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Frank Rowand <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>,
+ =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+ Atish Patra <atishp@atishpatra.org>, Andrew Jones <ajones@ventanamicro.com>,
+ Sunil V L <sunilvl@ventanamicro.com>, Saravana Kannan
+ <saravanak@google.com>, Anup Patel <anup@brainfault.org>,
+ linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>
+References: <20240127161753.114685-1-apatel@ventanamicro.com>
+ <20240127161753.114685-3-apatel@ventanamicro.com>
+ <e42b76a9-fc5f-4ab7-96a2-629261a9c983@arm.com> <87edd4a2fo.wl-maz@kernel.org>
+From: Aishwarya TCV <aishwarya.tcv@arm.com>
+In-Reply-To: <87edd4a2fo.wl-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2jkfeezjwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <4db8493b-35a2-474f-997c-5e6ac1b8bd11@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
 
-On Thu, 22 Feb 2024 15:26:05 -0600, Huang, Kai <kai.huang@intel.com> wrote:
 
->
->
-> On 23/02/2024 6:09 am, Haitao Huang wrote:
->> On Wed, 21 Feb 2024 05:06:02 -0600, Huang, Kai <kai.huang@intel.com>  
->> wrote:
+
+On 22/02/2024 16:28, Marc Zyngier wrote:
+> On Thu, 22 Feb 2024 13:01:32 +0000,
+> Aishwarya TCV <aishwarya.tcv@arm.com> wrote:
 >>
+>>
+>>
+>> On 27/01/2024 16:17, Anup Patel wrote:
+>>> From: Thomas Gleixner <tglx@linutronix.de>
 >>>
->>>> -int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg)
->>>> +int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg, bool  
->>>> reclaim)
->>>>  {
->>>> -    return misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg,  
->>>> PAGE_SIZE);
->>>> +    for (;;) {
->>>> +        if (!misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg,
->>>> +                    PAGE_SIZE))
->>>> +            break;
->>>> +
->>>> +        if (sgx_epc_cgroup_lru_empty(epc_cg->cg))
->>>> +            return -ENOMEM;
->>>> +
->>>> +        if (signal_pending(current))
->>>> +            return -ERESTARTSYS;
->>>> +
->>>> +        if (!reclaim) {
->>>> +            queue_work(sgx_epc_cg_wq, &epc_cg->reclaim_work);
->>>> +            return -EBUSY;
->>>> +        }
->>>> +
->>>> +        if (!sgx_epc_cgroup_reclaim_pages(epc_cg->cg, false))
->>>> +            /* All pages were too young to reclaim, try again a  
->>>> little later */
->>>> +            schedule();
->>>> +    }
->>>> +
->>>> +    return 0;
->>>>  }
->>>>
+>>> Now that the GIC-v3 callback can handle invocation with a fwspec parameter
+>>> count of 0 lift the restriction in the core code and invoke select()
+>>> unconditionally when the domain provides it.
 >>>
->>> Seems this code change is 90% similar to the existing code in the
->>> sgx_alloc_epc_page():
+>>> Preparatory change for per device MSI domains.
 >>>
->>>     ...
->>>     for ( ; ; ) {
->>>                 page = __sgx_alloc_epc_page();
->>>                 if (!IS_ERR(page)) {
->>>                         page->owner = owner;
->>>                         break;
->>>                 }
->>>
->>>                 if (list_empty(&sgx_active_page_list))
->>>                         return ERR_PTR(-ENOMEM);
->>>
->>>                 if (!reclaim) {
->>>                         page = ERR_PTR(-EBUSY);
->>>                         break;
->>>                 }
->>>
->>>                 if (signal_pending(current)) {
->>>                         page = ERR_PTR(-ERESTARTSYS);
->>>                         break;
->>>                 }
->>>
->>>                 sgx_reclaim_pages();
->>>                 cond_resched();
->>>         }
->>>     ...
->>>
->>> Is it better to move the logic/code change in try_charge() out to
->>> sgx_alloc_epc_page() to unify them?
->>>
->>> IIUC, the logic is quite similar: When you either failed to allocate  
->>> one page,
->>> or failed to charge one page, you try to reclaim EPC page(s) from the  
->>> current
->>> EPC cgroup, either directly or indirectly.
->>>
->>> No?
->>  Only these lines are the same:
->>                  if (!reclaim) {
->>                          page = ERR_PTR(-EBUSY);
->>                          break;
->>                  }
->>                   if (signal_pending(current)) {
->>                          page = ERR_PTR(-ERESTARTSYS);
->>                          break;
->>                  }
->>  In sgx_alloc_epc_page() we do global reclamation but here we do  
->> per-cgroup reclamation.
->
-> But why?  If we failed to allocate, shouldn't we try to reclaim from the  
-> _current_ EPC cgroup instead of global?  E.g., I thought one enclave in  
-> one EPC cgroup requesting insane amount of EPC shouldn't impact enclaves  
-> inside other cgroups?
->
-Right. When code reaches to here, we already passed reclaim per cgroup.  
-The cgroup may not at or reach limit but system has run out of physical  
-EPC.
+>>> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+>>> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+>>> ---
+>>
+>> Hi Thomas/Anup
+>>
+>> Currently when booting the kernel against next-master(next-20240222)
+>> with Arm64 on Qualcomm boards RB5/DB845C, the kernel is resulting in
+>> boot failures for our CI. I can send the full logs if required. Most
+>> other boards seem to be fine.
+>>
+>> A bisect (full log below) identified this patch as introducing the
+>> failure. Bisected it on the tag "next-20240220" at repo
+>> "https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git".
+>>
+>> This works fine on Linux v6.8-rc5
+> 
+> Can you please try [1]?
+> 
+> 	M.
+> 
+> [1] https://lore.kernel.org/linux-kernel/20240220114731.1898534-1-maz@kernel.org
+> 
+
+With the patch[1] applied on next-master(next-20240222), successfully
+tested booting the kernel with Arm64 on Qualcomm boards RB5/DB845C.
+Confirming that the patch is resolving the boot issue on RB5/DB845C
 
 Thanks
-Haitao
+Aishwarya
 
