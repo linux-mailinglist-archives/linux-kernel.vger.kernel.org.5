@@ -1,94 +1,90 @@
-Return-Path: <linux-kernel+bounces-76068-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73A6985F288
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:12:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C17485F28C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:13:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 978FF1C232FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:12:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF8C928311C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:12:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D4CF19452;
-	Thu, 22 Feb 2024 08:12:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAC3B210E9;
+	Thu, 22 Feb 2024 08:12:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FRwFqxMY"
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="g6iibLfO"
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1A2C20310;
-	Thu, 22 Feb 2024 08:12:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6381018030
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 08:12:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708589529; cv=none; b=TK/6SdnBakjM4lDPiEBxIZBgnbZU1eocOX3r1fROJ6Xn8lh7aaQXoocMfDGyk0rpj5zrFe+tZMi84BINWwwEzi/8F6UGrJ/EurMuT0ErD7nbK34W2SDEWL7D5j3p3lbJp8oE40AX1NNpS1+mlZeAduNZuUkPUZtRV3T4v42ltB0=
+	t=1708589570; cv=none; b=UGmRNjwMAe0l3KMjCLrcjFnNKYlVjKaR3nMmXtuTelMtZr/dPuGoZFPY6tQxUPCy9dd3jmGUvdIzl0nsCzfPpEjAtBE8svWpRc90qUnj29Q85VvuWk8pDrYF9+iAzVoYHFQ7z6u1j5gItoDFMUSwBzSmhNAk/9/JkAyf7n32ajw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708589529; c=relaxed/simple;
-	bh=OhUr3xHewTNQYlcnCfLYnZEEBSimq47w7Mls+ifxF5A=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=UsositIwS6r/r1xKcXvLvfLZBP95ApN4IAQZH3D/MzbA9PKfWaQ8QWP5DHayRER/52PiTKnDI4Bng5LMX7sYGVP/Kneu59GAtBCDj8F+K0X++ixsIzIjZiyfV5dgZ34UTBWL0FKohQ7ucaGGPMTR60rKjrJNlL8/2LB7Rv4MeTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FRwFqxMY; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6e32a92e0fdso2016697b3a.0;
-        Thu, 22 Feb 2024 00:12:07 -0800 (PST)
+	s=arc-20240116; t=1708589570; c=relaxed/simple;
+	bh=109AvBUKTCt8zYZv15cJALXjRO+Ds/rqVjdmAlqe6vg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UN0VToqAoS3X4ZQ/Dcngoe+GknNF6XWmflM3T5XIFf3/GWqnINCl7mZwqhlfyPOKps4HW0ZYCBnI1X3PFvC3w38dhCWcJeTHsPaDxmSU7zay+y2p/5ALagHDWB6YQS+Kp5VLXfkRp2zYHLAb3mb9VukDl1+1ZP3ToOdqAQxQyAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=g6iibLfO; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so6327825a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:12:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708589527; x=1709194327; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Jyzbw4yb6Txj6TvozTLsczGvcpX/acfEaP+bFGtpG1E=;
-        b=FRwFqxMYdefYSx9szuexuu301Ii+irwD8Qm4JaSm8nwQihwkogJY4Jers+GZn3DHe9
-         htvJliHSU/dJrDidgFkcfAppK0RdCVwtVPQHdijQH7vsg9Lw9gdiP5egxhQF1wAkkkD0
-         sSVaT7WgDpeD+aAB7+trxyrag8/BLaQ9iyt3T18DwsZ4h5eqIzMr9DI1T4JNwWTNpYOx
-         Gua2deDGqu9rKS1GshKuXjRCsHOcyTHe1gABKeC/IMEJkScaTcapKjJFOmAILPqsRZ1b
-         fUG4qtDkQibIipuDk5OYld4T9YiVSLi4HJ32solybSUDAVKl/jew23ON0SFE6LxBS1NX
-         Xn5A==
+        d=sifive.com; s=google; t=1708589559; x=1709194359; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=srJ7CIKPfZgDl9Um7d4eDADM8otcquGOUbdJDDVwdH0=;
+        b=g6iibLfOw4Rkks5FltYu7w+fYOYqdOL2iu77RB4Cm+Pzk3x2Y/qyLZSlS/+asNa5k+
+         IOVNOXOwaK1fNRlMeLW9VKnLUi+3Cry98zxxc5y95zcP798xMMAsc0PLD187UxX/k/ms
+         KtLRGKB64/YsZb7uZkQOfmQeH5T6GUF4N9xOF3LmGECKm3YQrtkjPjvAPtN9nT+tmIfM
+         NjvsdaIiIRcz5uGPjvoH40XqM8yjOYHCGo+Hc7kIa4A+vfU9Y+g938mZcBz0vP+wWtA6
+         6Uwoy4tJ1hFoXrlpshxz7mnBl8szol+ANtd10NwXR4AP+jxZd0hqYTfroZI9qEonZYi+
+         sD3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708589527; x=1709194327;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Jyzbw4yb6Txj6TvozTLsczGvcpX/acfEaP+bFGtpG1E=;
-        b=wuJyjdV0D0m7ZwFyl6dAsApjjXK4XRU1ZHo3CxMzUVf+Mk1WSz9q4yxTDs6MhKteKs
-         shVcO8lRgKzx33rdHOTHjomPqjW81Nm6R9EpJyQ9H9AHwytsRD50v2D5QSp266xhMppK
-         1+W4WCvbBVa7WEzG+TUsVrT+0mKqDPCd8XUlNR/ccblIfXlphi88LXWd5ERGqEUhfIbo
-         KlbKdhIZpwdtq8FB31ij/H5d6omihfl1+s4iYwV4hRaLWaB6+7W46ZYDAE3NlKjohjkm
-         3qjaU6j+uD/pKSO63w68WseAFPW1fcAZnt/wXjNrINgXzP4u4eSaNEeDif88kt6/dkNz
-         uiiw==
-X-Forwarded-Encrypted: i=1; AJvYcCXK5K3PxoPk60d/bc4xcGX3L0c9QtKd3TYR6bIuGZKpTd2XDEn+suM4Z2Ih7q8DqfeUoj1xqQd3dYs20IJGJXF/WGQ90bx6XoKBYfM9nzAS5kxpI5uHbYRuiB3SAdRL/euNRIJ54LF4MA9z
-X-Gm-Message-State: AOJu0YyiuU+J4ugNj4h2SH895XW3oZgJgd10Qi4HfX7/j9k7trRs6P1q
-	2FdvZdC6OnvqqkmEN0ZquNIb4WkVkZZ6kF3Amj4WgFbL77tv9Sqc
-X-Google-Smtp-Source: AGHT+IFbrZ0+tDkMM94Z/QC2yq6Sf/RISBWbgl0RWkGMZYK099YKho/soN4snFIb+Czo7k6uHvjhzg==
-X-Received: by 2002:a05:6a00:13a6:b0:6e4:c54b:9681 with SMTP id t38-20020a056a0013a600b006e4c54b9681mr2437450pfg.9.1708589527080;
-        Thu, 22 Feb 2024 00:12:07 -0800 (PST)
-Received: from barry-desktop.hub ([2407:7000:8942:5500:3b18:a2e2:f00b:c965])
-        by smtp.gmail.com with ESMTPSA id du17-20020a056a002b5100b006e46672df97sm6989554pfb.75.2024.02.22.00.12.01
+        d=1e100.net; s=20230601; t=1708589559; x=1709194359;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=srJ7CIKPfZgDl9Um7d4eDADM8otcquGOUbdJDDVwdH0=;
+        b=aqPIIEcVuJBc1AdYVpPdNNVR/a5lXTD6R0nDOzeuba2lfWQ4NKQQLrVuH09goGqC4r
+         hi6+GufIzicvNNkq2RhsN32gyZnJqFTOUCrT4XifSiutl+cM2XzKYhrBvL79HdpdPK9u
+         3oxiuayuwr5Oo76OkeElp1Bm0oYC7xp9f77y2u6/ZtuOaThIzUKLzbk9WzPfuiat38Bz
+         J0CthB5SQeJVGh0zGPs9qPkmxLGmWZdvV/6JJ/xXAgi2HSv6CXTSxli2qLV7LeaKzuEh
+         bfqVHp56KdpPM07iNiw5GOeiDym5LMTRgg7hLt6X2k1DBYHAbr61/WvRIk3rbE8OQKYV
+         UMDg==
+X-Forwarded-Encrypted: i=1; AJvYcCWE8X3NmchUIwEOjjlkD1zbpbNDN6zcwR8hJhhg5wDtcT0S7MKB7wpbxIg+eTLsFB/G6BwTnTlggyYXv+4/qMw6XDAV7e56lIcGfC1z
+X-Gm-Message-State: AOJu0YyJAHQE3FKhmLcKjjg2gFRRmTjuqa60bu/ZV8tm9R5APuhkBpmg
+	aTvKzijVJSa/UMl5wm7TxXukolecNiO/9TXPMdWONlmCj/IeE4Fc6vsBeC3Hm2Y=
+X-Google-Smtp-Source: AGHT+IH1M21xaAm9IWGe9uyygy5ZFYZAnDH5YlVy5Z+XKY/q4Ud1AAgANQ7ADpjUjZtqZ4J+0WXtEQ==
+X-Received: by 2002:a05:6a21:31c8:b0:1a0:8a46:c3bf with SMTP id zb8-20020a056a2131c800b001a08a46c3bfmr15856784pzb.21.1708589558614;
+        Thu, 22 Feb 2024 00:12:38 -0800 (PST)
+Received: from hsinchu15.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
+        by smtp.gmail.com with ESMTPSA id lf8-20020a170902fb4800b001db5ea825b2sm9412796plb.123.2024.02.22.00.12.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 00:12:06 -0800 (PST)
-From: Barry Song <21cnbao@gmail.com>
-To: akpm@linux-foundation.org,
-	davem@davemloft.net,
-	hannes@cmpxchg.org,
-	herbert@gondor.apana.org.au,
-	linux-crypto@vger.kernel.org,
-	linux-mm@kvack.org,
-	nphamcs@gmail.com,
-	yosryahmed@google.com,
-	zhouchengming@bytedance.com
-Cc: chriscli@google.com,
-	chrisl@kernel.org,
-	ddstreet@ieee.org,
+        Thu, 22 Feb 2024 00:12:38 -0800 (PST)
+From: Nylon Chen <nylon.chen@sifive.com>
+To: linux-riscv@lists.infradead.org,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	sjenning@redhat.com,
-	vitaly.wool@konsulko.com,
-	Barry Song <v-songbaohua@oppo.com>
-Subject: [PATCH v6 2/2] mm/zswap: remove the memcpy if acomp is not sleepable
-Date: Thu, 22 Feb 2024 21:11:35 +1300
-Message-Id: <20240222081135.173040-3-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240222081135.173040-1-21cnbao@gmail.com>
-References: <20240222081135.173040-1-21cnbao@gmail.com>
+	linux-pwm@vger.kernel.org,
+	conor@kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	palmer@dabbelt.com,
+	paul.walmsley@sifive.com,
+	aou@eecs.berkeley.edu,
+	thierry.reding@gmail.com,
+	u.kleine-koenig@pengutronix.de
+Cc: vincent.chen@sifive.com,
+	zong.li@sifive.com,
+	nylon.chen@sifive.com,
+	nylon7717@gmail.com
+Subject: [PATCH v9 0/3] Change PWM-controlled LED pin active mode and algorithm
+Date: Thu, 22 Feb 2024 16:12:28 +0800
+Message-ID: <20240222081231.213406-1-nylon.chen@sifive.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -97,75 +93,79 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Barry Song <v-songbaohua@oppo.com>
+According to the circuit diagram of User LEDs - RGB described in the
+manual hifive-unleashed-a00.pdf[0] and hifive-unmatched-schematics-v3.pdf[1].
 
-Most compressors are actually CPU-based and won't sleep during
-compression and decompression. We should remove the redundant
-memcpy for them.
-This patch checks if the algorithm is sleepable by testing the
-CRYPTO_ALG_ASYNC algorithm flag.
-Generally speaking, async and sleepable are semantically similar
-but not equal. But for compress drivers, they are basically equal
-at least due to the below facts.
-Firstly, scompress drivers - crypto/deflate.c, lz4.c, zstd.c,
-lzo.c etc have no sleep. Secondly, zRAM has been using these
-scompress drivers for years in atomic contexts, and never
-worried those drivers going to sleep.
-One exception is that an async driver can sometimes still return
-synchronously per Herbert's clarification. In this case, we are
-still having a redundant memcpy. But we can't know if one
-particular acomp request will sleep or not unless crypto can
-expose more details for each specific request from offload
-drivers.
+The behavior of PWM is acitve-high.
 
-Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-Tested-by: Chengming Zhou <zhouchengming@bytedance.com>
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
-Acked-by: Yosry Ahmed <yosryahmed@google.com>
-Reviewed-by: Chengming Zhou <zhouchengming@bytedance.com>
----
- mm/zswap.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+According to the descriptionof PWM for pwmcmp in SiFive FU740-C000 Manual[2].
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 011e068eb355..de3c9e30bed7 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -162,6 +162,7 @@ struct crypto_acomp_ctx {
- 	struct crypto_wait wait;
- 	u8 *buffer;
- 	struct mutex mutex;
-+	bool is_sleepable;
- };
- 
- /*
-@@ -950,6 +951,7 @@ static int zswap_cpu_comp_prepare(unsigned int cpu, struct hlist_node *node)
- 		goto acomp_fail;
- 	}
- 	acomp_ctx->acomp = acomp;
-+	acomp_ctx->is_sleepable = acomp_is_async(acomp);
- 
- 	req = acomp_request_alloc(acomp_ctx->acomp);
- 	if (!req) {
-@@ -1077,7 +1079,7 @@ static void zswap_decompress(struct zswap_entry *entry, struct page *page)
- 	mutex_lock(&acomp_ctx->mutex);
- 
- 	src = zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
--	if (!zpool_can_sleep_mapped(zpool)) {
-+	if (acomp_ctx->is_sleepable && !zpool_can_sleep_mapped(zpool)) {
- 		memcpy(acomp_ctx->buffer, src, entry->length);
- 		src = acomp_ctx->buffer;
- 		zpool_unmap_handle(zpool, entry->handle);
-@@ -1091,7 +1093,7 @@ static void zswap_decompress(struct zswap_entry *entry, struct page *page)
- 	BUG_ON(acomp_ctx->req->dlen != PAGE_SIZE);
- 	mutex_unlock(&acomp_ctx->mutex);
- 
--	if (zpool_can_sleep_mapped(zpool))
-+	if (!acomp_ctx->is_sleepable || zpool_can_sleep_mapped(zpool))
- 		zpool_unmap_handle(zpool, entry->handle);
- }
- 
+The pwm algorithm is (PW) pulse active time  = (D) duty * (T) period.
+The `frac` variable is pulse "inactive" time so we need to invert it.
+
+So this patchset removes active-low in DTS and adds reverse logic to the driver.
+
+Updated patches: 1
+New patches: 0
+Unchanged patches: 2
+
+Links:
+- [0]: https://sifive.cdn.prismic.io/sifive/c52a8e32-05ce-4aaf-95c8-7bf8453f8698_hifive-unleashed-a00-schematics-1.pdf
+- [1]: https://sifive.cdn.prismic.io/sifive/6a06d6c0-6e66-49b5-8e9e-e68ce76f4192_hifive-unmatched-schematics-v3.pdf
+- [2]: https://sifive.cdn.prismic.io/sifive/1a82e600-1f93-4f41-b2d8-86ed8b16acba_fu740-c000-manual-v1p6.pdf
+
+Changed in v9:
+ - Fix commit message to adhere to 75 columns rule.
+ - Update commit message's subject.
+ - Add a variable for inactive logic.
+
+Changed in v8:
+ - Fix Signed-off-by and Co-developed-by typo.
+
+Changed in v7:
+ - Remove active-low strings from hifive-unleashed-a00.dts file.
+
+Changed in v6:
+ - Separate the idempotent test bug fixes into a new patch.
+ - Move the reversing the duty before the line checking
+   state->enabled.
+ - Fix the algorithm and change it to take the minimum value first and
+   then reverse it.
+
+Changed in v5:
+ - Add the updates to the PWM algorithm based on version 2 back in.
+ - Replace div64_ul with DIV_ROUND_UP_ULL to correct the error in the
+   period value of the idempotent test in pwm_apply_state_debug.
+
+Changed in v4:
+ - Remove previous updates to the PWM algorithm.
+
+Changed in v3:
+ - Convert the reference link to standard link.
+ - Move the inverted function before taking the minimum value.
+ - Change polarity check condition(high and low).
+ - Pick the biggest period length possible that is not bigger than the
+   requested period.
+
+Changed in v2:
+ - Convert the reference link to standard link.
+ - Fix typo: s/sifive unmatched:/sifive: unmatched:/.
+ - Remove active-low from hifive-unleashed-a00.dts.
+ - Include this reference link in the dts and pwm commit messages.
+
+Nylon Chen (3):
+  riscv: dts: sifive: unleashed/unmatched: Remove PWM controlled LED's
+    active-low properties
+  pwm: sifive: change the PWM controlled LED algorithm
+  pwm: sifive: Fix the error in the idempotent test within the
+    pwm_apply_state_debug function
+
+ arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts | 12 ++++--------
+ arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 12 ++++--------
+ drivers/pwm/pwm-sifive.c                            | 12 +++++++-----
+ 3 files changed, 15 insertions(+), 21 deletions(-)
+
 -- 
-2.34.1
+2.43.0
 
 
