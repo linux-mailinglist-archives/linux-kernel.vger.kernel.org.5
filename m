@@ -1,147 +1,82 @@
-Return-Path: <linux-kernel+bounces-76226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76227-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5566F85F479
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:35:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE15085F47C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:35:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BD9F2820C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:35:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF7B41C21DFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:35:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A432E39FF0;
-	Thu, 22 Feb 2024 09:34:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jcncjh+y"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF1DF381B8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BE07381BF;
+	Thu, 22 Feb 2024 09:34:40 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9C8038399;
 	Thu, 22 Feb 2024 09:34:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708594477; cv=none; b=JIJOSI6gqesvyLcLjtXUdf5Jv/V6W7py8gT8WMeX/fX0HDxlC5QdLJFQunvvsC+XWoh+hRX34Fw53i7g4yUo03C/6gSXrHskyYaPS1RNLCnXwUGc9yH0bzZLEagQWWaElWH/FXZK0sbGGmSPyqEsIvQ5p31S6a+j8sBajtNrDuw=
+	t=1708594479; cv=none; b=Ajs2Rx63qRct8zHem8lNWyMEHNFARSpL4cfRNz08GzvrfrJWdZy6hYtyTn+W0htE5RhXFtafNlPIHkl1+PnHQUz+DTAZLdwh3HrdRgvDA+jIduAA7sXYXzPdpaPaRNz14eWWOA61Cm93PI8zD7aKCC6CObccUpWvpDBIP8aTGnk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708594477; c=relaxed/simple;
-	bh=twL/O1XH0IQ5h96lKQERqeU1tJQqEQZBVZgUwRHwFlE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Rgl7GoSuYLRHYuqMBR7WgcaBEuK0sdzC/p0irirQ1u5TTKkS6YLQEeGbyG64vo1EMKGJcRYpxF9WyXeq0fQ8OPsftYzCZyMh10zjBDyzg8T245/lSa5hNVj4uYRFxNQoJjBPlumiJkLKl+eoJmAwza91NItDZ2Iyxj8Z1NVLsaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jcncjh+y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44EEBC43141;
-	Thu, 22 Feb 2024 09:34:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708594477;
-	bh=twL/O1XH0IQ5h96lKQERqeU1tJQqEQZBVZgUwRHwFlE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Jcncjh+y1tVYMLld1ZQCZGfPYyIJx2iPpfQCPBbIimujG7o+Rsyys/8gzP/O+f8fV
-	 XOw/s6eUtIWCcllKyiMXgacGO5soYfbkHQ0+NEEZ1gf3hemDhVJMrG2sP09NaH4g7F
-	 zIT9AVu3pe4nydblV2OzqtI7v3ecEuxyolBXXh7dv59kcBCbNk743kWTeJpm7gbrhf
-	 aSNV0DhaTVcL7JmzUO3hEtIFNjBvGVXrv1o51RaGkEDegP1D8rP4jybV2Zb51efNJ/
-	 AfOCtZWZEd7T9tbA94bHp6B457qYv3iIAGeOTxTd+X6rzol00H4VwsfSOeaQmwWuO/
-	 U/sJm+TlQIz0g==
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-512bb2ed1f7so5312002e87.3;
-        Thu, 22 Feb 2024 01:34:37 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVQ22YKiAVOxtggukaswkT77pnt1EJZZz6x97G8M6UBZ6FHZnRuhmSQncU1xpSkcit4Vt3XhL++5WQl+hbknI+MhTEiGBGDOtcZB3l5Nu98qIQvPOwcDlss4xDoChdKRhnb/iLfAfaj2lJUI0COSfhPGvvBsl5DdmY+c56gBUQ2aXqcE77TmpxenpgYMnRtzCZ+mnrsZxFDrVvOVhhGqL+E+WjU0o+hm5eHzqSW3Dlc146WpEtR1QVspCS/4m8ehKP0
-X-Gm-Message-State: AOJu0YyE6cNzBIH8VHs9iqbW9H9uBBn/HEuHwXYL5mTt92wH8EqW+pPz
-	4d0yWFTwt0qX09rLGuIW5abbynHmYobuY9+osvDu0Pl/tUqXgyf1T1H1NIKq2KRKQZQo7QxJAe/
-	VLFrB+awZsnz0TD0GuMwr1A48/80=
-X-Google-Smtp-Source: AGHT+IFgnHge1ffZxf+MbWd8mZJewYby/ooDbKKmh7V38xeDaM5XPDlRS942sAJqjVoJxG0ZgpzQmoetZB69KZLL9/Y=
-X-Received: by 2002:a05:6512:b0f:b0:512:d5ca:eb2f with SMTP id
- w15-20020a0565120b0f00b00512d5caeb2fmr3086686lfu.52.1708594475263; Thu, 22
- Feb 2024 01:34:35 -0800 (PST)
+	s=arc-20240116; t=1708594479; c=relaxed/simple;
+	bh=CpKNoAjcvJj23mMLIFiquS2CwmW6w7/+v3qTae+GNZw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=n7mD6AQP59DJi22Pm1rK4U6EYb4huhZmodsrP80UjcLXdDEMKhLzCDuNqOX4NG8aqPHgynQKH2OG/K6YOiHouiqAosckg8peBqFcaOYUqasAcjmxJQBSoEWBJaHshxDUsLXeBcDaXRIiCztwAHDpVPYWPGIuPIiVQlhwrkUcn+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D5BE1007;
+	Thu, 22 Feb 2024 01:35:15 -0800 (PST)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7FACD3F766;
+	Thu, 22 Feb 2024 01:34:35 -0800 (PST)
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: cristian.marussi@arm.com,
+	mturquette@baylibre.com,
+	sboyd@kernel.org,
+	"Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: Sudeep Holla <sudeep.holla@arm.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH V4 1/2] firmware: arm_scmi: Implement Clock get permissions
+Date: Thu, 22 Feb 2024 09:34:26 +0000
+Message-ID: <170859423232.108904.12518027607345269340.b4-ty@arm.com>
+X-Mailer: git-send-email 2.43.2
+In-Reply-To: <20240121110901.1414856-1-peng.fan@oss.nxp.com>
+References: <20240121110901.1414856-1-peng.fan@oss.nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214221847.2066632-1-ross.philipson@oracle.com>
- <20240214221847.2066632-7-ross.philipson@oracle.com> <CAMj1kXEmMBY_jc0uM5UgZbuZ3-C7NPKzg5AScaunyu9XzLgzZA@mail.gmail.com>
- <98ad92bb-ef17-4c15-88ba-252db2a2e738@citrix.com>
-In-Reply-To: <98ad92bb-ef17-4c15-88ba-252db2a2e738@citrix.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Thu, 22 Feb 2024 10:34:23 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXFTu+bV2kQhAyu15hrYai20NcBLb4Zu8XG2Y-XjL0f+rw@mail.gmail.com>
-Message-ID: <CAMj1kXFTu+bV2kQhAyu15hrYai20NcBLb4Zu8XG2Y-XjL0f+rw@mail.gmail.com>
-Subject: Re: [PATCH v8 06/15] x86: Add early SHA support for Secure Launch
- early measurements
-To: Andrew Cooper <andrew.cooper3@citrix.com>
-Cc: Ross Philipson <ross.philipson@oracle.com>, linux-kernel@vger.kernel.org, x86@kernel.org, 
-	linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-crypto@vger.kernel.org, kexec@lists.infradead.org, 
-	linux-efi@vger.kernel.org, dpsmith@apertussolutions.com, tglx@linutronix.de, 
-	mingo@redhat.com, bp@alien8.de, hpa@zytor.com, dave.hansen@linux.intel.com, 
-	mjg59@srcf.ucam.org, James.Bottomley@hansenpartnership.com, peterhuewe@gmx.de, 
-	jarkko@kernel.org, jgg@ziepe.ca, luto@amacapital.net, nivedita@alum.mit.edu, 
-	herbert@gondor.apana.org.au, davem@davemloft.net, kanth.ghatraju@oracle.com, 
-	trenchboot-devel@googlegroups.com, Eric Biggers <ebiggers@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Thu, 22 Feb 2024 at 04:05, Andrew Cooper <andrew.cooper3@citrix.com> wrote:
->
-> On 15/02/2024 8:17 am, Ard Biesheuvel wrote:
-> > On Wed, 14 Feb 2024 at 23:31, Ross Philipson <ross.philipson@oracle.com> wrote:
-> >> From: "Daniel P. Smith" <dpsmith@apertussolutions.com>
-> >>
-> >> The SHA algorithms are necessary to measure configuration information into
-> >> the TPM as early as possible before using the values. This implementation
-> >> uses the established approach of #including the SHA libraries directly in
-> >> the code since the compressed kernel is not uncompressed at this point.
-> >>
-> >> The SHA code here has its origins in the code from the main kernel:
-> >>
-> >> commit c4d5b9ffa31f ("crypto: sha1 - implement base layer for SHA-1")
-> >>
-> >> A modified version of this code was introduced to the lib/crypto/sha1.c
-> >> to bring it in line with the sha256 code and allow it to be pulled into the
-> >> setup kernel in the same manner as sha256 is.
-> >>
-> >> Signed-off-by: Daniel P. Smith <dpsmith@apertussolutions.com>
-> >> Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
-> > We have had some discussions about this, and you really need to
-> > capture the justification in the commit log for introducing new code
-> > that implements an obsolete and broken hashing algorithm.
-> >
-> > SHA-1 is broken and should no longer be used for anything. Introducing
-> > new support for a highly complex boot security feature, and then
-> > relying on SHA-1 in the implementation makes this whole effort seem
-> > almost futile, *unless* you provide some rock solid reasons here why
-> > this is still safe.
-> >
-> > If the upshot would be that some people are stuck with SHA-1 so they
-> > won't be able to use this feature, then I'm not convinced we should
-> > obsess over that.
->
-> To be absolutely crystal clear here.
->
-> The choice of hash algorithm(s) are determined by the OEM and the
-> platform, not by Linux.
->
-> Failing to (at least) cap a PCR in a bank which the OEM/platform left
-> active is a security vulnerability.  It permits the unsealing of secrets
-> if an attacker can replay a good set of measurements into an unused bank.
->
-> The only way to get rid of the requirement for SHA-1 here is to lobby
-> the IHVs/OEMs, or perhaps the TCG, to produce/spec a platform where the
-> SHA-1 banks can be disabled.  There are no known such platforms in the
-> market today, to the best of our knowledge.
->
+On Sun, 21 Jan 2024 19:09:00 +0800, Peng Fan (OSS) wrote:
+> ARM SCMI Spec 3.2 introduces Clock Get Permission command. This patch
+> is to add the support. Add three bool entries to scmi_clock_info to
+> indicate the operation is forbidden or not. If the CLOCK_GET_PERMISSIONS
+> command is not supported, the three bool variables will default
+> set to false, otherwise they will be set according to the return result
+> of CLOCK_GET_PERMISSIONS.
+> 
+> [...]
 
-OK, so mainline Linux does not support secure launch at all today. At
-this point, we need to decide whether or not tomorrow's mainline Linux
-will support secure launch with SHA1 or without, right?
+When I was about to ask for Stephen's ack for 2/2, I noticed an issue
+now, will repond to it directly.
 
-And the point you are making here is that we need SHA-1 not only to a)
-support systems that are on TPM 1.2 and support nothing else, but also
-to b) ensure that crypto agile TPM 2.0 with both SHA-1 and SHA-256
-enabled can be supported in a safe manner, which would involve
-measuring some terminating event into the SHA-1 PCRs to ensure they
-are not left in a dangling state that might allow an adversary to
-trick the TPM into unsealing a secret that it shouldn't.
+Applied to sudeep.holla/linux (for-next/scmi/updates), thanks!
 
-So can we support b) without a), and if so, does measuring an
-arbitrary dummy event into a PCR that is only meant to keep sealed
-forever really require a SHA-1 implementation, or could we just use an
-arbitrary (not even random) sequence of 160 bits and use that instead?
+[1/2] firmware: arm_scmi: Implement Clock get permissions
+      https://git.kernel.org/sudeep.holla/c/dc36561e1548
+
+--
+Regards,
+Sudeep
+
 
