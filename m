@@ -1,179 +1,269 @@
-Return-Path: <linux-kernel+bounces-76957-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95C5185FF07
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:17:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E537585FF0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:17:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF0BBB240E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:17:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 993C9288C15
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:17:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD62D1552F3;
-	Thu, 22 Feb 2024 17:16:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B495215530A;
+	Thu, 22 Feb 2024 17:17:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="h+CwFrSa"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iNoUCLzj"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 336B2155306
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 17:16:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61AFF154437
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 17:17:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708622199; cv=none; b=eLqkwT8ob/ZSeX93jnfonJYV/pUByWI6+1D/J9jx1KgA8ABrLl+PHkpk9feoGJPVXlex8OO4hpQ8MJ7qs/Nxe9inHn2HIMlVprASlTgFjql+ORG4uuPWJ2+qs4wmCnXSXiqwdC/CbKSpqAHLu39B/es3nkVUdpvnE1ysublLs6A=
+	t=1708622229; cv=none; b=p3cJh/2IRX9jGx+ic1wJYeyvkqRdVSAr+ks8EPgyUMAVw53Kc3Iie7hGUR8QUSQfARonfNqmnxuciU7gRlCavyR+HUrmfYL4nLSen3iQHr+9WwQxAzyFyZz+jO17O+VV96fCfwsecyFDYYu35gVv8eR/MQHWO8yGgHtA3xuYZMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708622199; c=relaxed/simple;
-	bh=CtXqJF1+n4e29y+LnaAaRjqtRkbaAMcxMgt9FkIYAoA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=M4nDbwNgjYPLBQRuc10xQkzwN+yHymyIKUtghX1RO1TheshpZ3HsV5xYZTJFLJqik5iUlXtsa6lrhj/q9wK1rDmYoImwSFMtelCp8SaNWmDz4ZFW9miAI2qhQjfWK+w0lZpWf2QWIjPoU0Bt2JYcGmJW8m9+Az4s7jMUJJ4ozyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=h+CwFrSa; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708622196;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=JTuukiLVYlOX3UUypO2eojhSEfBKmRllMc0/Rxzibrs=;
-	b=h+CwFrSa4TQJEDLe62/QJexn5fXG3pqFeOmZYX19ScM/mQF7WkiNsGTpd+ejjo6IYBw1XL
-	ykGO4GTC3QXvSxSzr+6CC7IdVXY4tctn6zpgwtuH1/ToHUlAXsNLf95dPtthOTpXvisNDQ
-	/MnD0/22wwwlRqwdJ9wLObQVvkbgCcM=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-355-0BTWqtrHOOmAPNan64BNSg-1; Thu, 22 Feb 2024 12:16:33 -0500
-X-MC-Unique: 0BTWqtrHOOmAPNan64BNSg-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4125edd9c6bso25161565e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 09:16:29 -0800 (PST)
+	s=arc-20240116; t=1708622229; c=relaxed/simple;
+	bh=Z9TW01ieGheVvSYGj35+wS9k2elxysGt636MZCOr0HM=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=bZgYpZmMzLJQsf0DNpfkEaG5dI7VQwG1ihcyRprNkoD8KGStMWj6DYSWMX55W3IwLBKv4xSgBpGKZKRxCy71dq1kDsVnh4bnkGIQ74qdwU6keGh2CqedpUzSuhewaGXIYtS6FeYKvtlJ36cjxLFkj7GyRogxwb8S8C3Qlv7hq6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iNoUCLzj; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d1094b5568so242401fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 09:17:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708622225; x=1709227025; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hty7Q8TdVcE5cj7rf2bC8mc3p4rUC33JHE6Y9JSzuwI=;
+        b=iNoUCLzjE98kmZzEVJnjRakmNWsCPq9CDLfvGwkxSLtfWWvl2WAqGXZ8HCaxzq1Yze
+         5IW5LO1ZSQwjWX58jMrlbIw3aJSgS5n5Y2XE8FRY9d9X4zbyHgXgr+jYfdu/MgbXAX8/
+         VsnQG/rzPOqAJBP9ny/OMbkkw0AVpHP4h7M+Muv2k0GJ1z9t1fguePxqii33ijyMoDLO
+         3DNe0nMHrszP6q49BzCZXLnaCarwdl600Sd8565ilBSgsYKIu50qJN1klJBnX4UlH5il
+         FmC6OY3hGdjugFHOeAMAD45zRMFdT3C8bydpTCnrAs5xwR98cvs624OMl8EDpWymMw1q
+         2kXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708622188; x=1709226988;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JTuukiLVYlOX3UUypO2eojhSEfBKmRllMc0/Rxzibrs=;
-        b=GaxVEWIc4LFViA+8sZjJrrwx8JlfzNtUzffbFScj41Z1KATTnHT+TcsH6OikL9c0xF
-         Q3dy+g5HRUw6DuhywSAU0zIs0ak44hoCEwSKpLxMg3ipdG/oe5swO3zjGg93NkkmWflI
-         H6uXi1fPYuz752pba4yR94lDLA6zFHfpvnbdjlpbiLoxP5Pl3693R6J8s8/Myg/dBAmy
-         W/W+5PmIDhW+71wY3ob3sWi2+9UBX85KaT0NJuW5EF3FLJoKHIaV7VDAUs9L7o6iFRbo
-         BrdXT2uvfblA1Ln1cskK6ZNE5RvQbYMbHMrDqau/Qd3Y4K8LTYMJ82iHEk/9Q2v9Wr6H
-         oAaw==
-X-Gm-Message-State: AOJu0YyyiFRK6gGpaNu+zLcGd5tXgvFhx7FaKxWcwradizMhtLINEnIN
-	+AxAGp1Ab81RPtd/UyRBfQKlvBn9HmVPB4+lfij8m2q8U5lcciRrzUie2kBNhPOmizqN8XXcELr
-	IbF9Ot0azas1T2ByBhyaYMEefJxeFa8xuLecsmu+v2SkLPAdgwYeHqs9hJFkelg==
-X-Received: by 2002:a05:600c:1392:b0:412:7eaf:c48f with SMTP id u18-20020a05600c139200b004127eafc48fmr2071399wmf.7.1708622188373;
-        Thu, 22 Feb 2024 09:16:28 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGQaBwe+yNbxOCf0kJIBDsT4UhayW64Euz2VeANOqZMjJsbMmb9l2jfM+kGXZb2yrcgTYnz+w==
-X-Received: by 2002:a05:600c:1392:b0:412:7eaf:c48f with SMTP id u18-20020a05600c139200b004127eafc48fmr2071384wmf.7.1708622188053;
-        Thu, 22 Feb 2024 09:16:28 -0800 (PST)
-Received: from ?IPV6:2003:cb:c70f:8b00:ed48:6d18:2152:1cda? (p200300cbc70f8b00ed486d1821521cda.dip0.t-ipconnect.de. [2003:cb:c70f:8b00:ed48:6d18:2152:1cda])
-        by smtp.gmail.com with ESMTPSA id b11-20020a05600c4e0b00b004129013aa45sm229577wmq.7.2024.02.22.09.16.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 09:16:27 -0800 (PST)
-Message-ID: <d11304b9-4e95-4f04-b652-43eb15aaa9d5@redhat.com>
-Date: Thu, 22 Feb 2024 18:16:26 +0100
+        d=1e100.net; s=20230601; t=1708622225; x=1709227025;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Hty7Q8TdVcE5cj7rf2bC8mc3p4rUC33JHE6Y9JSzuwI=;
+        b=DfuIZn9rF8ZeVNK+4xQDvQVUn28hYjnU6Lg4Iz7Bft3sxrEoJQohK5pI26DkLw0X8k
+         SCdgHn6AHnz/NMqt9X5axBo+JDeMEA5ijdOfeVtWT7lrDVw4dpxpofTOSZbIP/AUJmkR
+         1PdaPaE4oZtlAmNXh+Ok0ODkB7SEr8bUT5WNqGY4CSZtf75UdjgN8KCNe39rrbJID9Hr
+         KQkrzMp5gBw3sW77sCi7nSkSNYEamOxldV4jlRnz29UWaPNNxwPFbwd+fwHkbEO6DcaZ
+         h7pOHxRIfqg+dZjdvxt2nJ4jg0V3PCM7wuFsBIAiZq4zjSK7AkO5f4n4zf+hINfZPyuz
+         cx9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXLdUBpCL7h8AhIEVPoXjYrk/nVomzbiE+KZSW3og8fCYUsHnUYt4copFebaxanumOwpOTWQ+R0d4hobzD0gE403/UOyzgPXHiG+gPU
+X-Gm-Message-State: AOJu0YyQLPbkDIUWg7dbpIX6PpSMggWbQWKUPzaNgY0CcscHjzFEvx6M
+	akDq+1sbMnUWLWkrJJezSm0UJDh2gRJjXKCrQPAFOXKEmIW5ceXp9KL+X9Qf0Iw=
+X-Google-Smtp-Source: AGHT+IEsMvdRwmUi1rMLhFEmCATmy+3oItwsLCQ/1vC6eyzxbtfc74jRuaMhXGmY0NY45DfDcNLYZg==
+X-Received: by 2002:a2e:a272:0:b0:2d2:4388:63fc with SMTP id k18-20020a2ea272000000b002d2438863fcmr6008642ljm.44.1708622225561;
+        Thu, 22 Feb 2024 09:17:05 -0800 (PST)
+Received: from [127.0.1.1] ([176.61.106.68])
+        by smtp.gmail.com with ESMTPSA id u7-20020a7bc047000000b0040fe4b733f4sm6656512wmc.26.2024.02.22.09.17.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 09:17:05 -0800 (PST)
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Subject: [PATCH v6 0/6] media: qcom: camss: Add sc8280xp support
+Date: Thu, 22 Feb 2024 17:16:58 +0000
+Message-Id: <20240222-b4-camss-sc8280xp-v6-0-0e0e6a2f8962@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] mm: remove total_mapcount()
-Content-Language: en-US
-To: Matthew Wilcox <willy@infradead.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- Andrew Morton <akpm@linux-foundation.org>
-References: <20240222160943.622386-1-david@redhat.com>
- <ZdeAys9D98RBaPL1@casper.infradead.org>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <ZdeAys9D98RBaPL1@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAIqB12UC/23OwYoCMQyA4VeRnu2SpqnTevI9lj20tdHCOiOtD
+ C4y775VWJjFHv9AvuQhaio5VbHfPERJc655GlvsthsRz348JZmPrQUCaqVAyUAy+kutskaLFu5
+ XCUkFp1JAFVi0vWtJnO8v8/Or9TnX21R+Xidm9Zz+adjRZiVBOud2TCEGy3T4zqMv08dUTuLJz
+ bgmdI/ARoTBMx3RaI/wRug1YXqEbgQFHfWAzND5gtaE6xHUCGO9sSEiALs3wqwIBT3CNGJgcjT
+ EaFy0/4hlWX4B+zwe8b8BAAA=
+To: hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com, 
+ Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Robert Foss <rfoss@kernel.org>, 
+ Todor Tomov <todor.too@gmail.com>, 
+ Mauro Carvalho Chehab <mchehab@kernel.org>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, vincent.knecht@mailoo.org, 
+ matti.lehtimaki@gmail.com, quic_grosikop@quicinc.com
+Cc: linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.13-dev-4e032
 
-On 22.02.24 18:13, Matthew Wilcox wrote:
-> On Thu, Feb 22, 2024 at 05:09:43PM +0100, David Hildenbrand wrote:
->> We always get a head page, so we can just naturally interpret is as a folio
->> (similar to other code).
-> 
-> memfd seems rather confused about how to iterate over the page cache.
-> Perhaps we could sort that out and then delete total_mapcount as a
-> second patch?
-> 
-> I haven't tested this at all, but ...
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> 
-> diff --git a/mm/memfd.c b/mm/memfd.c
-> index d3a1ba4208c9..45e55b0e3cbe 100644
-> --- a/mm/memfd.c
-> +++ b/mm/memfd.c
-> @@ -29,28 +29,29 @@
->   #define MEMFD_TAG_PINNED        PAGECACHE_TAG_TOWRITE
->   #define LAST_SCAN               4       /* about 150ms max */
->   
-> +static bool memfd_extra_refs(struct folio *folio)
-> +{
-> +	return folio_ref_count(folio) - folio_mapcount(folio) !=
-> +		folio_nr_pages(folio);
-> +}
+V6:
+- Add of camss.yaml passes on linux-stable/master as at
+  commit: ff93872a9c61 ("clk: qcom: camcc-sc8280xp: Add sc8280xp CAMCC")
 
-That is an obvious improvement I should have realized myself.
+- Fixed IFE/VFE comment discongruity - Konrad
 
-Let me play with that.
+- Per my explaination I don't propose to change IFE/VFE naming since
+  they are the same thing.
 
-Thanks!
+  SFE blocks should be named SFE though, not IFE/VFE
 
+- Referring to Konrad's other comments on IFE/VFE naming
+  https://lore.kernel.org/all/9a13471b-fc39-4081-8905-9d0d7c28b501@linaro.org/#t
+
+  The next two changes I intend not covered in this SoC series
+
+  a) Completing the conversion to named power-domains
+  b) Camera NOC => OPPs for the camera NoC
+
+  Not covered in this series though.
+
+Link to v5: https://lore.kernel.org/r/20231110-b4-camss-sc8280xp-v5-0-7f4947cc59c8@linaro.org
+Link to tree: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/b4/camss-sc8280xp-v6
+Bootable: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/sc8280xp-v6.8-rc4-camss?ref_type=heads
+
+V5:
+- Fixes the lower case 0x0c to 0x0C not sure how Konrad even saw this.
+- Drops frequency table to just individual frequencies not full array of
+  opps - Konrad
+
+- As explained doesn't change the finding of frequencies.
+  Current array size will ensure testing if (freq[x]) succeeds though I
+  do agree this should be changed up.
+
+  Plan to restructure struct params for specificity to VFE, CSID and will
+  incorporate this change then.
+  Link: https://lore.kernel.org/all/e80d4026-a525-48ef-b53a-f1276dd316e6@linaro.org
+
+-  Reset sequence
+
+   Right now the reset works. I agree qcom's downstream has more stuff in
+   it. I've logged a task to evaluate expansion of the reset and to test
+   across multiple platforms.
+
+   For now not required for this drop.
+
+- _src clocks
+
+  One assumes the reason at some stage in time we didn't have SET_PARENT in
+  our CAMCC which meant setting _src clocks was necessary. In any case it
+  ought not to be necessary now.
+
+  Removing the _src from existing platforms should be trivial however we
+  might find that as a result some of the CAMCC drivers need to be updated.
+
+  That obviously is a separate series.
+
+Link to v4: https://lore.kernel.org/r/20231109-b4-camss-sc8280xp-v4-0-58a58bc200f9@linaro.org
+Link to tree: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/b4/camss-sc8280xp-v5
+
+V4:
+- Drops all _src clocks and _SRC indexes in series.
+  True enough the CAMCC driver has all of the appropriate SET_PARENT flags
+  so there's no need to represent _src clocks. - Konrad
+
+- I've opted not to split C-PHY and D-PHY init sequences up unless/until
+  we have a C-PHY init sequence upstream. - bod/Konrad
+
+- b4 trailes --update -> + Konrad's Acks
+
+Link to v3: https://lore.kernel.org/r/20231105-b4-camss-sc8280xp-v3-0-4b3c372ff0f4@linaro.org
+Link to tree: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/b4/camss-sc8280xp-v4
+
+V3:
+- Strip pointer to dependencies from yaml patch
+  I was hoping the robot would understand the links but it doesn't -
+  Krzysztof
+
+Link to v2: https://lore.kernel.org/r/20231103-b4-camss-sc8280xp-v2-0-b7af4d253a20@linaro.org
+
+b4 base:
+https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/b4/camss-sc8280xp-v3
+
+V2:
+- Rebase to capture is_lite flag from named power-domain series
+- Amends commit log of final patch to give more detail on rename - Konrad
+- Opted not to change switch() statements with returns. - bod/Konrad
+
+Requires CAMCC for sc8280xp which applies to qcom/clk-for-6.7:
+https://lore.kernel.org/linux-arm-msm/20231026105345.3376-1-bryan.odonoghue@linaro.org/
+b4 shazam 20231026105345.3376-1-bryan.odonoghue@linaro.org
+
+Requires the named power-domain patches which apply to media-tree/*:
+https://lore.kernel.org/linux-arm-msm/20231103-b4-camss-named-power-domains-v4-0-33a905359dbc@linaro.org/
+b4 shazam e700133b-58f7-4a4d-8e5c-0d04441b789b@linaro.org
+
+Link to v1:
+https://lore.kernel.org/r/20231102-b4-camss-sc8280xp-v1-0-9996f4bcb8f4@linaro.org
+
+b4 base:
+https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/b4/camss-sc8280xp-v2
+
+V1:
+sc8280xp is the SoC found in the Lenovo X13s. This series adds support to
+bring up the CSIPHY, CSID, VFE/RDI interfaces.
+
+A number of precursor patches make this series smaller overall than
+previous series.
+
+sc8280xp provides
+
+- 4 x VFE, 4 RDI per VFE
+- 4 x VFE Lite, 4 RDI per VFE
+- 4 x CSID
+- 4 x CSID Lite
+- 4 x CSI PHY
+
+I've taken the yaml from a dtsi series and included it here since 1) I sent
+the yaml to the wrong person and 2) it already has RB from Krzysztof.
+
+Requires CAMCC for sc8280xp which applies to qcom/clk-for-6.7:
+https://lore.kernel.org/linux-arm-msm/20231026105345.3376-1-bryan.odonoghue@linaro.org/
+b4 shazam 20231026105345.3376-1-bryan.odonoghue@linaro.org
+
+Requires the named power-domain patches which apply to media-tree/* :
+https://lore.kernel.org/linux-arm-msm/20231101-b4-camss-named-power-domains-v3-5-bbdf5f22462a@linaro.org/
+b4 shazam 20231101-b4-camss-named-power-domains-v3-5-bbdf5f22462a@linaro.org
+
+To use the camera on x13s with say Google Hangouts or Microsoft Teams you
+will need to
+
+1. Run Firefox
+2. Update about:config to enable pipewire
+3. Use this WIP version of libcamera
+   https://gitlab.freedesktop.org/camera/libcamera-softisp
+
+A working bootable tree can be found here:
+Link: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/lenovo-x13s-linux-6.5.y
+
+b4 base:
+https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/b4/camss-sc8280xp
+
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+---
+Bryan O'Donoghue (6):
+      media: dt-bindings: media: camss: Add qcom,sc8280xp-camss binding
+      media: qcom: camss: csiphy-3ph: Add Gen2 v1.1 two-phase MIPI CSI-2 DPHY init
+      media: qcom: camss: Add CAMSS_SC8280XP enum
+      media: qcom: camss: Add sc8280xp resources
+      media: qcom: camss: Add sc8280xp support
+      media: qcom: camss: vfe-17x: Rename camss-vfe-170 to camss-vfe-17x
+
+ .../bindings/media/qcom,sc8280xp-camss.yaml        | 512 +++++++++++++++++++++
+ drivers/media/platform/qcom/camss/Makefile         |   2 +-
+ .../platform/qcom/camss/camss-csiphy-3ph-1-0.c     | 108 ++++-
+ drivers/media/platform/qcom/camss/camss-csiphy.c   |   1 +
+ .../camss/{camss-vfe-170.c => camss-vfe-17x.c}     |   0
+ drivers/media/platform/qcom/camss/camss-vfe.c      |  25 +-
+ drivers/media/platform/qcom/camss/camss-video.c    |   1 +
+ drivers/media/platform/qcom/camss/camss.c          | 307 ++++++++++++
+ drivers/media/platform/qcom/camss/camss.h          |   1 +
+ 9 files changed, 948 insertions(+), 9 deletions(-)
+---
+base-commit: e31185ce00a96232308300008db193416ceb9769
+change-id: 20231101-b4-camss-sc8280xp-0e1b91eb21bf
+
+Best regards,
 -- 
-Cheers,
-
-David / dhildenb
+Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
 
