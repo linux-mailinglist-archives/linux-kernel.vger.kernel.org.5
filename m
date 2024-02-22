@@ -1,101 +1,130 @@
-Return-Path: <linux-kernel+bounces-77490-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77491-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A94A6860644
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:10:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0A06860648
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:13:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 490E31F26170
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:10:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C0E7287632
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:13:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CBA8199AD;
-	Thu, 22 Feb 2024 23:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68EB018629;
+	Thu, 22 Feb 2024 23:13:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GY9Z65NT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="A13lClL4"
+Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B738612E40;
-	Thu, 22 Feb 2024 23:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11E4F17BC7
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 23:13:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708643425; cv=none; b=Q/SHH3cL9RXngcArT5Nh3VmnICCLkdo+ZZb/HAzhlHNdiqgtcjbcnwWAoSImrsOC3VRz42HOXdir3/mq4GYtfChbv3/mUyp+ZriJtrGqnL8zAYKckjGYog0X9TRB/PjnuI/r211K2RYt8lh/NfLFbQ++3Bedj/ncjiKfovhRoig=
+	t=1708643605; cv=none; b=QcwwkgBdKqgsCkJh/P7CZzhRpWifJp84TX5ewugRYm9RSU7yAaFfPxJH5ONa3jbeW1TAgy1FgRvT+bjdHZKqvyZ1RdvZpu/b12AgCZsftBsOm2UMFEti5fuBi6Cl2vR9NZBxr34ExeAZ2asFTzb/9eqTYjmBvCP1xmTvMhLKs0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708643425; c=relaxed/simple;
-	bh=6OzJegTSQdyWQrZYOG0vp/5VWZxH+EYUsQm/nWQ5X88=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CD1RRtmsdAXPyv3LfEQ04qBp3WSaFHfFsi0hyes4oJ5rcK4pco6LPg4YrTdjNl2+WLG9r7My7KsbS4nTd2GnhqQUPQqBgyVhQmQdBQS2jivKyle9rhXMvYWJBGdwqs6kEUEO5aCZatf2TMcULtFKgVI+39oTPgCVmyH28GU0udw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GY9Z65NT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09C94C433F1;
-	Thu, 22 Feb 2024 23:10:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708643425;
-	bh=6OzJegTSQdyWQrZYOG0vp/5VWZxH+EYUsQm/nWQ5X88=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=GY9Z65NTnMWV6jVdvd5S1Equ09fRRddum6/7PmWFA2J2wUoXc2XMyP6d981QGTyOb
-	 GXftQN5+7y5Zq67S35aNDlqPt4xsCF3GC3c+Z9atZkL/eChZ/A4oNR0d4ks7dK8Oqf
-	 LTo/ExczFqLColgZcEowH0sLbHt417t2ybnQu9xdfwpr3cDpUtYVi2L4NVWhGFDwBf
-	 3w8NzYCXNGVcLcckEx2gHZ6VZ95zvRG1PIqy33MDDBFRlVlVQ6BsHx2o84i/ImlhNJ
-	 OszGA6GFkfQzwlxCF64bVghnR806hp+e4akkjYQIgruREKEMXPcJW0aVGpmK4KVqGm
-	 s6qHK50fkhlxw==
-Date: Thu, 22 Feb 2024 15:10:23 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc: davem@davemloft.net, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com, Andrew Lunn
- <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
- linux-arm-kernel@lists.infradead.org, Christophe Leroy
- <christophe.leroy@csgroup.eu>, Herve Codina <herve.codina@bootlin.com>,
- Florian Fainelli <f.fainelli@gmail.com>, Heiner Kallweit
- <hkallweit1@gmail.com>, Vladimir Oltean <vladimir.oltean@nxp.com>,
- =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>, Jesse Brandeburg
- <jesse.brandeburg@intel.com>, Jonathan Corbet <corbet@lwn.net>, Marek
- =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>, Piergiorgio Beruto
- <piergiorgio.beruto@gmail.com>, Oleksij Rempel <o.rempel@pengutronix.de>,
- =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>, Simon Horman
- <horms@kernel.org>, mwojtas@chromium.org
-Subject: Re: [PATCH net-next v8 08/13] netlink: specs: add ethnl PHY_GET
- command set
-Message-ID: <20240222151023.64abe662@kernel.org>
-In-Reply-To: <20240222084948.16f33760@device-28.home>
-References: <20240220184217.3689988-1-maxime.chevallier@bootlin.com>
-	<20240220184217.3689988-9-maxime.chevallier@bootlin.com>
-	<20240221170023.452a01ca@kernel.org>
-	<20240222084948.16f33760@device-28.home>
+	s=arc-20240116; t=1708643605; c=relaxed/simple;
+	bh=y/jZuHl6NUzjAai7o2bI+i7qcLC9Q25IhiVkgk6OeBI=;
+	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
+	 MIME-Version:Content-Type; b=PR5PRtsf73WkuuMSD33sAJhA2d/T2/9/+VGdjJKp3XgwVmqEvKC9ime72UpqxR9SQDdHBQWHrUXPP6/DoyQPe+BEaCHhTX1bELfcFJfqL1lslnRJ4vOcV++HQlVFnqxLG2GPy8KNMvPt+dtXzSVFy7VdHgDaeOPToHMnST3Ends=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=A13lClL4; arc=none smtp.client-ip=44.202.169.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
+Received: from eig-obgw-6009a.ext.cloudfilter.net ([10.0.30.184])
+	by cmsmtp with ESMTPS
+	id d4WyrWiScTHHudIFlrTGim; Thu, 22 Feb 2024 23:13:22 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+	by cmsmtp with ESMTPS
+	id dIFlrQCTWRkHQdIFlrMA6f; Thu, 22 Feb 2024 23:13:21 +0000
+X-Authority-Analysis: v=2.4 cv=N8QvFX9B c=1 sm=1 tr=0 ts=65d7d511
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=xVAsXjOY_3W_6nlrMEoA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=f2oyKlKeSKZqmQ4ISDZxnOvntf0l5tdrQzymgi4iK2I=; b=A13lClL4mgogF3Bd2pjqqOJuMG
+	T4ug6gIcahZCqtXjlaMTuI5HSEKho5PLJjIdCLZPwem6IOtGpVZvPUFCc7//TxgKS7rBONtHh1ku/
+	ksrXp/Lr34+iGZq88bHNF8lxYnYRt6t0YF6SVh7EtPvRiJx++CIw/69beSaE7VJpaDi4hIyvtBoSW
+	RN9CY5crcMs4pzNeIG9jnuwh3G+ju08cdTWz6cL5rPrvwvI6zWSAUv7uRLliZAWgxSFmgfvoNy7gK
+	NGobUPmjkeEzD52359jTxDyJvJJwEwEhbsHbg/Rh4B16UOKPYjDJ+zzzjlXppwsEg8XR5jsMAwqxY
+	iYCRZnpg==;
+Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:47430 helo=[10.0.1.47])
+	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <re@w6rz.net>)
+	id 1rdIFi-002kzD-33;
+	Thu, 22 Feb 2024 16:13:18 -0700
+Subject: Re: [PATCH 5.15 000/476] 5.15.149-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+References: <20240221130007.738356493@linuxfoundation.org>
+In-Reply-To: <20240221130007.738356493@linuxfoundation.org>
+From: Ron Economos <re@w6rz.net>
+Message-ID: <7bae8767-51bb-3549-e859-b820b7b261e6@w6rz.net>
+Date: Thu, 22 Feb 2024 15:13:16 -0800
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 98.207.139.8
+X-Source-L: No
+X-Exim-ID: 1rdIFi-002kzD-33
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:47430
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Org: HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfIL6Go8v7257qwI4wQukNhyi/GAi9hd9kvQXLI0irhHz6Vs3o7wG3A6fwjxM4HwZrPEX8DMiYqC+6jCZP8AQztjy8Z7kpgKNcfzZk4YojZlwA0l6NLpT
+ 8rBkZ227lqRV3GfHpLbNZYAtrckPDwcP57vIFC2Bx+B26SlnqPMDrlf+c2v6KUHnAhO9hte9afqv361sAGl8z5d2WA/zjmAfTwU=
 
-On Thu, 22 Feb 2024 08:49:48 +0100 Maxime Chevallier wrote:
-> > ethtool-user.c:689:10: error: =E2=80=98ETHTOOL_A_PHY_UPSTREAM_PHY_INDEX=
-=E2=80=99 undeclared here (not in a function); did you mean =E2=80=98ETHTOO=
-L_A_PHY_UPSTREAM_INDEX=E2=80=99?
-> >   689 |         [ETHTOOL_A_PHY_UPSTREAM_PHY_INDEX] =3D { .name =3D "ups=
-tream-phy-index", .type =3D YNL_PT_U32, },
-> >       |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >       |          ETHTOOL_A_PHY_UPSTREAM_INDEX
-> >=20
-> > Unfortunately ethtool in the in-between state where we can auto-gen
-> > user space code (or rather most of it) but the uAPI header is not
-> > auto-generated so we need to take extra care to keep things in sync :( =
-=20
->=20
-> Is there anything I run for testing, so that I can make sure this
-> doesn't happen again ?
+On 2/21/24 5:00 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.149 release.
+> There are 476 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 23 Feb 2024 12:59:02 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.149-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-make -C tools/net/ynl
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-will run the build. It needs some basic python libs, should be easy to
-figure out from stack traces if they are missing.=20
+Tested-by: Ron Economos <re@w6rz.net>
 
-I didn't mention it to you because.. it may not build for you on
-net-next until what I'm about to post gets merged.
 
