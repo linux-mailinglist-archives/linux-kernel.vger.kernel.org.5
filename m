@@ -1,384 +1,115 @@
-Return-Path: <linux-kernel+bounces-75997-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75998-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F18A385F1BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:06:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DA1D85F1C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:07:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E64D1F23242
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 07:06:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F17721F21750
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 07:07:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE10B17994;
-	Thu, 22 Feb 2024 07:06:34 +0000 (UTC)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C46BD1775B;
+	Thu, 22 Feb 2024 07:07:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fQWpuxce"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1C77F9E8;
-	Thu, 22 Feb 2024 07:06:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9532D17583
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 07:07:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708585594; cv=none; b=t1qqkOnFTmyDGCXckcIopp3HPGII+D91LP5Af2hCJzvpQDucWgsQiFSM8pTjRsRB60oma7VyuNwgAZPYV8Cg5N3yvKj2EsHW70JVL+1Noh9gZNJDXbniyOGAPhHnDcJlCddOfj4zFQE6jo0PHcR+xU7kKIvO1zzwvd67zsRGyow=
+	t=1708585638; cv=none; b=PN9D0hS7iQCI7/oUyZfSVbFrva6iDTZwnn8AyD2xG+qTS171iim0rzjH4u4UZsLgUfk2JexuahJFOr7rf9d+l8x5AU1DngISFyMvc6tRlJG4RFpKlhcTNSLX+3a7Bvg1vc/7HBr9Qgj5u3o8FJaXqWP5TxdwvMD+p1ZJ+hSHhPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708585594; c=relaxed/simple;
-	bh=IItrBRW1vlpkqCiIwyvCGuHX3RHvkCR+JmgXBd/0jrg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ehsM/QnE7mHJUcmG4vTbqf3VdldwGE5yCDKnMBWxkFSY+4iIOdomio9OTSmKzRBRSOR6H6EiIVjhE+zP7oSqXaTYkjQf/zp7W6jJpa2JsELAaRcfqeeg3vaAenmf54CfF4swJW4w/AWIByQGGjJrjfNC+Q1T/ohy7q9z4oBP5IA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TgPLL4TFhz1vv16;
-	Thu, 22 Feb 2024 15:05:46 +0800 (CST)
-Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 277661A0172;
-	Thu, 22 Feb 2024 15:06:21 +0800 (CST)
-Received: from [10.67.120.168] (10.67.120.168) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 22 Feb 2024 15:06:20 +0800
-Message-ID: <26ea175c-fa31-720c-2ac3-41abcb4d398a@hisilicon.com>
-Date: Thu, 22 Feb 2024 15:06:20 +0800
+	s=arc-20240116; t=1708585638; c=relaxed/simple;
+	bh=XPKVLBy6UQC9Sn82UWX+PNOQ0fEBJPFiiwTcFZ/REG4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tHJaoiUjOYsroj8ekKv47wKZ8WQnEKxbZvE/LuqZsf1L992ImaaTXcrOk+uERYSgwhKoF4l4jcLjH8yI6J8fpAPYqJBdN49KiXhFopVKmjk0KwU0U45wq5IDkxOpDG7+ERyjqna3wMpsosa3hJDKVojg5lgAnrAcbKNejQ1eZy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fQWpuxce; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708585635;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j88KzvyAQZThT6aCL8ZS+o2FWYKBFq83FjUT4vcsoNg=;
+	b=fQWpuxce//4uZGr5U1PE3xBVtJWJN9xvv81sG9m70FLGad0Y12Fgio5BCkuxDgjVoEnxq2
+	ToSfroJJdzBWiu52cHddImf1qf206Jihjy+c2Nwrn0N3RuNKyiYHQKfI1I7P3B4caw2MFw
+	In7mU9mVI2otn5GmPDsPo2NxztTWMN4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-374-MaV-uow3NFqRm-_MOPABCw-1; Thu, 22 Feb 2024 02:07:12 -0500
+X-MC-Unique: MaV-uow3NFqRm-_MOPABCw-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7B19A185A787;
+	Thu, 22 Feb 2024 07:07:11 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.2])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id A8B5A492BC8;
+	Thu, 22 Feb 2024 07:07:08 +0000 (UTC)
+Date: Thu, 22 Feb 2024 15:07:05 +0800
+From: Baoquan He <bhe@redhat.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Hari Bathini <hbathini@linux.ibm.com>, linux-s390@vger.kernel.org,
+	piliu@redhat.com, linux-sh@vger.kernel.org, x86@kernel.org,
+	kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org, ebiederm@xmission.com,
+	loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+	viro@zeniv.linux.org.uk
+Subject: Re: [PATCH v2 00/14] Split crash out from kexec and clean up related
+ config items
+Message-ID: <Zdbymex3ABImSwI3@MiWiFi-R3L-srv>
+References: <20240119145241.769622-1-bhe@redhat.com>
+ <9101bb07-70f1-476c-bec9-ec67e9899744@linux.ibm.com>
+ <Zb8D1ASrgX0qVm9z@MiWiFi-R3L-srv>
+ <559f2595-1477-4ef0-80e4-85ae8b426de7@linux.ibm.com>
+ <20240221125752.36fbfe9c307496313198b60f@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: [PATCH v2 for-next 2/2] RDMA/hns: Support userspace configuring
- congestion control algorithm with QP granularity
-Content-Language: en-US
-To: Jason Gunthorpe <jgg@ziepe.ca>
-CC: <leon@kernel.org>, <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<linux-kernel@vger.kernel.org>
-References: <20240208035038.94668-1-huangjunxian6@hisilicon.com>
- <20240208035038.94668-3-huangjunxian6@hisilicon.com>
- <20240221155248.GD13491@ziepe.ca>
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-In-Reply-To: <20240221155248.GD13491@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500006.china.huawei.com (7.221.188.68)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221125752.36fbfe9c307496313198b60f@linux-foundation.org>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-
-
-On 2024/2/21 23:52, Jason Gunthorpe wrote:
-> On Thu, Feb 08, 2024 at 11:50:38AM +0800, Junxian Huang wrote:
->> Support userspace configuring congestion control algorithm with
->> QP granularity. If the algorithm is not specified in userspace,
->> use the default one.
->>
->> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
->> ---
->>  drivers/infiniband/hw/hns/hns_roce_device.h | 23 +++++--
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 14 +---
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  3 +-
->>  drivers/infiniband/hw/hns/hns_roce_main.c   |  3 +
->>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 71 +++++++++++++++++++++
->>  include/uapi/rdma/hns-abi.h                 | 17 +++++
->>  6 files changed, 112 insertions(+), 19 deletions(-)
->>
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
->> index c88ba7e053bf..55f2f54e15fb 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_device.h
->> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
->> @@ -594,11 +594,19 @@ struct hns_roce_work {
->>  	u32 queue_num;
->>  };
->>  
->> -enum cong_type {
->> -	CONG_TYPE_DCQCN,
->> -	CONG_TYPE_LDCP,
->> -	CONG_TYPE_HC3,
->> -	CONG_TYPE_DIP,
->> +enum hns_roce_scc_algo {
->> +	HNS_ROCE_SCC_ALGO_DCQCN = 0,
->> +	HNS_ROCE_SCC_ALGO_LDCP,
->> +	HNS_ROCE_SCC_ALGO_HC3,
->> +	HNS_ROCE_SCC_ALGO_DIP,
->> +	HNS_ROCE_SCC_ALGO_TOTAL,
->> +};
->> +
->> +enum hns_roce_cong_type {
->> +	CONG_TYPE_DCQCN = 1 << HNS_ROCE_SCC_ALGO_DCQCN,
->> +	CONG_TYPE_LDCP = 1 << HNS_ROCE_SCC_ALGO_LDCP,
->> +	CONG_TYPE_HC3 = 1 << HNS_ROCE_SCC_ALGO_HC3,
->> +	CONG_TYPE_DIP = 1 << HNS_ROCE_SCC_ALGO_DIP,
->>  };
->>  
->>  struct hns_roce_qp {
->> @@ -644,7 +652,7 @@ struct hns_roce_qp {
->>  	struct list_head	sq_node; /* all send qps are on a list */
->>  	struct hns_user_mmap_entry *dwqe_mmap_entry;
->>  	u32			config;
->> -	enum cong_type		cong_type;
->> +	enum hns_roce_cong_type	cong_type;
->>  };
->>  
->>  struct hns_roce_ib_iboe {
->> @@ -845,7 +853,8 @@ struct hns_roce_caps {
->>  	u16		default_aeq_period;
->>  	u16		default_aeq_arm_st;
->>  	u16		default_ceq_arm_st;
->> -	enum cong_type	cong_type;
->> +	u8		cong_cap;
->> +	enum hns_roce_cong_type	default_cong_type;
->>  };
->>  
->>  enum hns_roce_device_state {
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> index 42e28586cefa..21532f213b0f 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> @@ -2209,11 +2209,12 @@ static int hns_roce_query_caps(struct hns_roce_dev *hr_dev)
->>  	caps->max_wqes = 1 << le16_to_cpu(resp_c->sq_depth);
->>  
->>  	caps->num_srqs = 1 << hr_reg_read(resp_d, PF_CAPS_D_NUM_SRQS);
->> -	caps->cong_type = hr_reg_read(resp_d, PF_CAPS_D_CONG_TYPE);
->> +	caps->cong_cap = hr_reg_read(resp_d, PF_CAPS_D_CONG_CAP);
->>  	caps->max_srq_wrs = 1 << le16_to_cpu(resp_d->srq_depth);
->>  	caps->ceqe_depth = 1 << hr_reg_read(resp_d, PF_CAPS_D_CEQ_DEPTH);
->>  	caps->num_comp_vectors = hr_reg_read(resp_d, PF_CAPS_D_NUM_CEQS);
->>  	caps->aeqe_depth = 1 << hr_reg_read(resp_d, PF_CAPS_D_AEQ_DEPTH);
->> +	caps->default_cong_type = hr_reg_read(resp_d, PF_CAPS_D_DEFAULT_ALG);
->>  	caps->reserved_pds = hr_reg_read(resp_d, PF_CAPS_D_RSV_PDS);
->>  	caps->num_uars = 1 << hr_reg_read(resp_d, PF_CAPS_D_NUM_UARS);
->>  	caps->reserved_qps = hr_reg_read(resp_d, PF_CAPS_D_RSV_QPS);
->> @@ -4737,14 +4738,8 @@ enum {
->>  static int check_cong_type(struct ib_qp *ibqp,
->>  			   struct hns_roce_congestion_algorithm *cong_alg)
->>  {
->> -	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
->>  	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
->>  
->> -	if (ibqp->qp_type == IB_QPT_UD || ibqp->qp_type == IB_QPT_GSI)
->> -		hr_qp->cong_type = CONG_TYPE_DCQCN;
->> -	else
->> -		hr_qp->cong_type = hr_dev->caps.cong_type;
->> -
->>  	/* different congestion types match different configurations */
->>  	switch (hr_qp->cong_type) {
->>  	case CONG_TYPE_DCQCN:
->> @@ -4772,9 +4767,6 @@ static int check_cong_type(struct ib_qp *ibqp,
->>  		cong_alg->wnd_mode_sel = WND_LIMIT;
->>  		break;
->>  	default:
->> -		ibdev_warn(&hr_dev->ib_dev,
->> -			   "invalid type(%u) for congestion selection.\n",
->> -			   hr_qp->cong_type);
->>  		hr_qp->cong_type = CONG_TYPE_DCQCN;
->>  		cong_alg->alg_sel = CONG_DCQCN;
->>  		cong_alg->alg_sub_sel = UNSUPPORT_CONG_LEVEL;
->> @@ -4807,7 +4799,7 @@ static int fill_cong_field(struct ib_qp *ibqp, const struct ib_qp_attr *attr,
->>  		return ret;
->>  
->>  	hr_reg_write(context, QPC_CONG_ALGO_TMPL_ID, hr_dev->cong_algo_tmpl_id +
->> -		     hr_qp->cong_type * HNS_ROCE_CONG_SIZE);
->> +		     ilog2(hr_qp->cong_type) * HNS_ROCE_CONG_SIZE);
->>  	hr_reg_clear(qpc_mask, QPC_CONG_ALGO_TMPL_ID);
->>  	hr_reg_write(&context->ext, QPCEX_CONG_ALG_SEL, cong_field.alg_sel);
->>  	hr_reg_clear(&qpc_mask->ext, QPCEX_CONG_ALG_SEL);
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
->> index cd97cbee682a..359a74672ba1 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
->> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
->> @@ -1214,12 +1214,13 @@ struct hns_roce_query_pf_caps_d {
->>  #define PF_CAPS_D_RQWQE_HOP_NUM PF_CAPS_D_FIELD_LOC(21, 20)
->>  #define PF_CAPS_D_EX_SGE_HOP_NUM PF_CAPS_D_FIELD_LOC(23, 22)
->>  #define PF_CAPS_D_SQWQE_HOP_NUM PF_CAPS_D_FIELD_LOC(25, 24)
->> -#define PF_CAPS_D_CONG_TYPE PF_CAPS_D_FIELD_LOC(29, 26)
->> +#define PF_CAPS_D_CONG_CAP PF_CAPS_D_FIELD_LOC(29, 26)
->>  #define PF_CAPS_D_CEQ_DEPTH PF_CAPS_D_FIELD_LOC(85, 64)
->>  #define PF_CAPS_D_NUM_CEQS PF_CAPS_D_FIELD_LOC(95, 86)
->>  #define PF_CAPS_D_AEQ_DEPTH PF_CAPS_D_FIELD_LOC(117, 96)
->>  #define PF_CAPS_D_AEQ_ARM_ST PF_CAPS_D_FIELD_LOC(119, 118)
->>  #define PF_CAPS_D_CEQ_ARM_ST PF_CAPS_D_FIELD_LOC(121, 120)
->> +#define PF_CAPS_D_DEFAULT_ALG PF_CAPS_D_FIELD_LOC(127, 122)
->>  #define PF_CAPS_D_RSV_PDS PF_CAPS_D_FIELD_LOC(147, 128)
->>  #define PF_CAPS_D_NUM_UARS PF_CAPS_D_FIELD_LOC(155, 148)
->>  #define PF_CAPS_D_RSV_QPS PF_CAPS_D_FIELD_LOC(179, 160)
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
->> index b55fe6911f9f..e5b678814f58 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_main.c
->> +++ b/drivers/infiniband/hw/hns/hns_roce_main.c
->> @@ -394,6 +394,9 @@ static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
->>  			resp.config |= HNS_ROCE_RSP_CQE_INLINE_FLAGS;
->>  	}
->>  
->> +	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09)
->> +		resp.congest_type  = hr_dev->caps.cong_cap;
->> +
->>  	ret = hns_roce_uar_alloc(hr_dev, &context->uar);
->>  	if (ret)
->>  		goto error_out;
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
->> index 31b147210688..e22911d6b6a9 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_qp.c
->> +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
->> @@ -1004,6 +1004,70 @@ static void free_kernel_wrid(struct hns_roce_qp *hr_qp)
->>  	kfree(hr_qp->sq.wrid);
->>  }
->>  
->> +static void default_congest_type(struct hns_roce_dev *hr_dev,
->> +				 struct hns_roce_qp *hr_qp)
->> +{
->> +	struct hns_roce_caps *caps = &hr_dev->caps;
->> +
->> +	if (hr_qp->ibqp.qp_type == IB_QPT_UD ||
->> +	    hr_qp->ibqp.qp_type == IB_QPT_GSI)
->> +		hr_qp->cong_type = CONG_TYPE_DCQCN;
->> +	else
->> +		hr_qp->cong_type = 1 << caps->default_cong_type;
->> +}
->> +
->> +static int set_congest_type(struct hns_roce_qp *hr_qp,
->> +			    struct hns_roce_ib_create_qp *ucmd)
->> +{
->> +	struct hns_roce_dev *hr_dev = to_hr_dev(hr_qp->ibqp.device);
->> +
->> +	switch (ucmd->cong_type_flags) {
->> +	case HNS_ROCE_CREATE_QP_FLAGS_DCQCN:
->> +		hr_qp->cong_type = CONG_TYPE_DCQCN;
->> +		break;
->> +	case HNS_ROCE_CREATE_QP_FLAGS_LDCP:
->> +		hr_qp->cong_type = CONG_TYPE_LDCP;
->> +		break;
->> +	case HNS_ROCE_CREATE_QP_FLAGS_HC3:
->> +		hr_qp->cong_type = CONG_TYPE_HC3;
->> +		break;
->> +	case HNS_ROCE_CREATE_QP_FLAGS_DIP:
->> +		hr_qp->cong_type = CONG_TYPE_DIP;
->> +		break;
->> +	default:
->> +		hr_qp->cong_type = 0;
->> +	}
->> +
->> +	if (!(hr_qp->cong_type & hr_dev->caps.cong_cap)) {
->> +		ibdev_err_ratelimited(&hr_dev->ib_dev,
->> +				      "Unsupported congest type 0x%x, cong_cap = 0x%x.\n",
->> +				      hr_qp->cong_type, hr_dev->caps.cong_cap);
->> +		return -EOPNOTSUPP;
->> +	}
->> +
->> +	if (hr_qp->ibqp.qp_type == IB_QPT_UD &&
->> +	    !(hr_qp->cong_type & CONG_TYPE_DCQCN)) {
->> +		ibdev_err_ratelimited(&hr_dev->ib_dev,
->> +				      "Only DCQCN supported for UD. Unsupported congest type 0x%x.\n",
->> +				      hr_qp->cong_type);
+On 02/21/24 at 12:57pm, Andrew Morton wrote:
+> On Wed, 21 Feb 2024 11:15:00 +0530 Hari Bathini <hbathini@linux.ibm.com> wrote:
 > 
-> Do not print kernel messages triggered by bad userspace input.
+> > On 04/02/24 8:56 am, Baoquan He wrote:
+> > >>> Hope Hari and Pingfan can help have a look, see if
+> > >>> it's doable. Now, I make it either have both kexec and crash enabled, or
+> > >>> disable both of them altogether.
+> > >>
+> > >> Sure. I will take a closer look...
+> > > Thanks a lot. Please feel free to post patches to make that, or I can do
+> > > it with your support or suggestion.
+> > 
+> > Tested your changes and on top of these changes, came up with the below
+> > changes to get it working for powerpc:
+> > 
+> >  
+> > https://lore.kernel.org/all/20240213113150.1148276-1-hbathini@linux.ibm.com/
 > 
-> Jason
+> So can we take it that you're OK with Baoquan's series as-is?
 > 
+> Baoquan, do you believe the patches in mm-unstable are ready for moving
+> into mm-stable in preparation for an upstream merge?
 
-OK. Will remove these printing in next version.
+Yeah, I think they are ready to go for merging.
 
->> +		return -EOPNOTSUPP;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static int set_congest_param(struct hns_roce_dev *hr_dev,
->> +			     struct hns_roce_qp *hr_qp,
->> +			     struct hns_roce_ib_create_qp *ucmd)
->> +{
->> +	if (ucmd->comp_mask & HNS_ROCE_CREATE_QP_MASK_CONGEST_TYPE)
->> +		return set_congest_type(hr_qp, ucmd);
->> +
->> +	default_congest_type(hr_dev, hr_qp);
->> +
->> +	return 0;
->> +}
->> +
->>  static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
->>  			struct ib_qp_init_attr *init_attr,
->>  			struct ib_udata *udata,
->> @@ -1026,6 +1090,9 @@ static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
->>  		return ret;
->>  	}
->>  
->> +	if (init_attr->qp_type == IB_QPT_XRC_TGT)
->> +		default_congest_type(hr_dev, hr_qp);
->> +
->>  	if (udata) {
->>  		ret = ib_copy_from_udata(ucmd, udata,
->>  					 min(udata->inlen, sizeof(*ucmd)));
->> @@ -1043,6 +1110,10 @@ static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
->>  			ibdev_err(ibdev,
->>  				  "failed to set user SQ size, ret = %d.\n",
->>  				  ret);
->> +
->> +		ret = set_congest_param(hr_dev, hr_qp, ucmd);
->> +		if (ret)
->> +			return ret;
->>  	} else {
->>  		if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09)
->>  			hr_qp->config = HNS_ROCE_EXSGE_FLAGS;
->> diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
->> index c996e151081e..757095a6c6fc 100644
->> --- a/include/uapi/rdma/hns-abi.h
->> +++ b/include/uapi/rdma/hns-abi.h
->> @@ -81,6 +81,9 @@ struct hns_roce_ib_create_qp {
->>  	__u8    sq_no_prefetch;
->>  	__u8    reserved[5];
->>  	__aligned_u64 sdb_addr;
->> +	__aligned_u64 comp_mask; /* Use enum hns_roce_create_qp_comp_mask */
->> +	__aligned_u64 create_flags;
->> +	__aligned_u64 cong_type_flags;
->>  };
->>  
->>  enum hns_roce_qp_cap_flags {
->> @@ -107,6 +110,17 @@ enum {
->>  	HNS_ROCE_RSP_CQE_INLINE_FLAGS = 1 << 2,
->>  };
->>  
->> +enum hns_roce_congest_type_flags {
->> +	HNS_ROCE_CREATE_QP_FLAGS_DCQCN = 1 << 0,
->> +	HNS_ROCE_CREATE_QP_FLAGS_LDCP = 1 << 1,
->> +	HNS_ROCE_CREATE_QP_FLAGS_HC3 = 1 << 2,
->> +	HNS_ROCE_CREATE_QP_FLAGS_DIP = 1 << 3,
->> +};
-> 
-> Why are these bit flags if they are exclusive?
-> 
+For Hari's patchset, the main part was planned before. And I am not
+familiar with fadump in powerpc, the Kconfig fix from Hari is a good
+guarantee with the expertise. Surely, I will await Hari's comment on
+that.
 
-Our FW uses bit flags. Although there is no direct relationship between
-FW and ABI, but from the perspective of readability, bit flags are also
-used consistently here in ABI.
-
->> +
->> +enum hns_roce_create_qp_comp_mask {
->> +	HNS_ROCE_CREATE_QP_MASK_CONGEST_TYPE = 1 << 1,
-> 
-> Why 1<<1 not 1<<0?
-
-This is to keep consistent with our internal ABI, there are some
-features not upstream yet.
-
-> 
-> These are in the wrong order in the file too, they should be before
-> their first "use", ie move above struct hns_roce_ib_create_qp
-> 
-
-OK.
-
->> @@ -114,6 +128,9 @@ struct hns_roce_ib_alloc_ucontext_resp {
->>  	__u32	reserved;
->>  	__u32	config;
->>  	__u32	max_inline_data;
->> +	__u8	reserved0;
->> +	__u8	congest_type;
-> 
-> Why this layout?
-> > Jason
-
-Same as the 1<<1 issue, to keep consistent with our internal ABI.
-
-Thanks,
-Junxian
 
