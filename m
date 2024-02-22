@@ -1,152 +1,119 @@
-Return-Path: <linux-kernel+bounces-76190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E28E85F404
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:10:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C28585F409
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:11:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05B7C1F2533E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:10:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CA4F1C20F9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:11:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89F45374F0;
-	Thu, 22 Feb 2024 09:10:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dMXnu6sl"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C51A374FC;
+	Thu, 22 Feb 2024 09:10:48 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 261F336AE9
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 09:09:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC642376ED;
+	Thu, 22 Feb 2024 09:10:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708593001; cv=none; b=Pm7ko4Nc5NsLVMq1R8LuEOLJFv+lGNFCRk3uHOhHdbDVRe+YSjmW5ThdzlFbCdCNR55ZyyDdpSUjaYeHb3Z/69ZJRxWA3cjyWFg7Pl6/Bqrm/ErCaDsWhZdTgtyUfdnp/f5azIp24PMYAeS2SdnpETcsyehVPdbTep20WVJ2Ouw=
+	t=1708593047; cv=none; b=ieixCSBVpzzLJXJCVnA3NGCx/fxe7u/3J3TKym92pTfZWkg72ENAarhsQlN+A3AIP7LElPopQFAqDEEXkC3Mp6DSE8CXg6zifMFgaG4KHM36vBUdtK/swqGRR1xehtj/iGZUT1N2BC2SJsfyOeHfCegn0gn5ewrqYrMeolZx+fI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708593001; c=relaxed/simple;
-	bh=S9f68HyI+Zr46UH5DB8yRbHjWXcwpz7SlL2wIFedeI4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=g+5YuPO3puQWpZZrejO9Ga7kA7JABmUvVApPL3jECTnww1+ipTuWgisxt41vhHUyNhw+ytihdZXrUokufQBZCNMbV2Os+kNSA8wC7VgozZgaOqStBscuXypBQPLz1GoopW4dvMDo8MtuYTDGEtRIol1rQjcPOdQnxGzlSG/kGXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dMXnu6sl; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708592999;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5z2LjmcVYTTtMHfSdE+4c74yPQ1zKXSnEQ+04Bz2RkY=;
-	b=dMXnu6slRuOdcDqNnQDdWSXFsB64fbl4rRTPjo+n+znh24mwjAAM15hVfPXau3Z+tS9Lvj
-	foUZVgbwHQ83vdYn07Vhhyii+fIs1RnJshX7mouRa5Z9cAfBZ60gppkcPsTB6Op0GQZ1ku
-	TFegnjFkKceQuoSq7ZC1IjZKOEZ4fT4=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-653-O6bkTPXSOO2yFX2frwmNZQ-1; Thu, 22 Feb 2024 04:09:57 -0500
-X-MC-Unique: O6bkTPXSOO2yFX2frwmNZQ-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-512d6483799so1139037e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 01:09:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708592996; x=1709197796;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5z2LjmcVYTTtMHfSdE+4c74yPQ1zKXSnEQ+04Bz2RkY=;
-        b=WPOi99IFYKUIA7xwTrHZgWtggv1a6iKaLmlXJ6KLezEImpJ3C1GLcu14fI52jUlZ6P
-         yMtv8d4OSXjzyOMmtPriTDzF2kL4AJdljqN1QoLi6dWxcnlQaohTSmvoVmY0tvTP+0VY
-         Fc55kdQ/xWUyYz2ZuNS4dEZ8Ez0APhtzln1+hhVbExszoeXMN0gylMeFIZrihFfdB1No
-         GUWEsv59IEfuKQcFmHqSrBDjSTTm8T5DNjnLyHLQACkiqTgM8OsrwedK5DPoUMrg1ViO
-         Ui27me4HWMKFGwIJlKpjDnKICGR2qihAlqMKsoMg07T/Z0+v2SwuxbOSwj/qdJ0h7e9m
-         RbuQ==
-X-Gm-Message-State: AOJu0YxYeOkOJvO3yzYKiTQ+kdECaXjjGgXslP0h0Wr522O+MFsyUcPz
-	WGZBHMlcw1rrpsjtItm23WNxXM9tgWS08fpCkePyqV2Ufr/nIyVxErty2YyGkTn/2WhA/1wEIDt
-	BdigAXzHjMfYkI/m9VTq/FSql4jkhRFPuR8lDgGuCVh/R3bMxd8cfrbr06uxEXA==
-X-Received: by 2002:a05:6512:34cc:b0:512:d643:8ce0 with SMTP id w12-20020a05651234cc00b00512d6438ce0mr2265903lfr.3.1708592996080;
-        Thu, 22 Feb 2024 01:09:56 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHUfQ8/pcELa6/T5KDQWDZsKcrbNfqYNrm0L3u4xqUXs43U22KoHb268lI/Y9EyTKszcVyvVA==
-X-Received: by 2002:a05:6512:34cc:b0:512:d643:8ce0 with SMTP id w12-20020a05651234cc00b00512d6438ce0mr2265896lfr.3.1708592995763;
-        Thu, 22 Feb 2024 01:09:55 -0800 (PST)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id t18-20020a05600c451200b0040fd1629443sm21435438wmo.18.2024.02.22.01.09.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 01:09:55 -0800 (PST)
-From: Javier Martinez Canillas <javierm@redhat.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Maxime Ripard
- <mripard@redhat.com>
-Cc: linux-kernel@vger.kernel.org, Enric Balletbo i Serra
- <eballetbo@redhat.com>, Erico Nunes <nunes.erico@gmail.com>, Brian Masney
- <bmasney@redhat.com>, Arnd Bergmann <arnd@arndb.de>, Bjorn Andersson
- <quic_bjorande@quicinc.com>, Catalin Marinas <catalin.marinas@arm.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, Konrad Dybcio
- <konrad.dybcio@linaro.org>, Marek Szyprowski <m.szyprowski@samsung.com>,
- Neil Armstrong <neil.armstrong@linaro.org>, Will Deacon <will@kernel.org>,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2] arm64: defconfig: Enable zram, xfs and loading
- compressed FW support
-In-Reply-To: <bd071521-7f7b-41e8-8786-ad2eeb58b03e@linaro.org>
-References: <20240221141350.3740488-1-javierm@redhat.com>
- <1f28256c-e436-4add-aa67-2cfb2248b220@linaro.org>
- <6scz7iti3tzzrd4ph3gnuc2pvkcbtuuicgfgujh3pa3c34kdkt@bhfa4xbxeu7t>
- <cb8bf006-57df-494e-80f3-947582ec71f1@linaro.org>
- <fy3wffb2jwv4veo3golfn5olri77clxywbuwuokese7sbobixd@mird5k66cl2w>
- <9083c414-62f2-4bff-93ee-13f8ff60eb34@linaro.org>
- <874je1ipb4.fsf@minerva.mail-host-address-is-not-set>
- <bd071521-7f7b-41e8-8786-ad2eeb58b03e@linaro.org>
-Date: Thu, 22 Feb 2024 10:09:54 +0100
-Message-ID: <87r0h47tlp.fsf@minerva.mail-host-address-is-not-set>
+	s=arc-20240116; t=1708593047; c=relaxed/simple;
+	bh=7wttezoz+r/aHCzYQdvjMewRzciTsCi285NrSpusK4E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oW+EsNslPE2Je4tAVlvnPd6oQcTccOlWHw5rkYIzjugVZaUIFVrZlDDvZEBy7nYGVj8ezPc+Eu+Ifeao4Xk0mK4Fkcvay2lablB7D+FWB/K9i8kICKF2yOmgXo0MRLYoEEU5xPJkpQq1uhKsjkbJhWARVAQQt4GIMGhsU6Ck1bU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36592C433F1;
+	Thu, 22 Feb 2024 09:10:45 +0000 (UTC)
+From: Huacai Chen <chenhuacai@loongson.cn>
+To: Huacai Chen <chenhuacai@kernel.org>
+Cc: loongarch@lists.linux.dev,
+	Guo Ren <guoren@kernel.org>,
+	Xuerui Wang <kernel@xen0n.name>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	linux-kernel@vger.kernel.org,
+	loongson-kernel@lists.loongnix.cn,
+	Huacai Chen <chenhuacai@loongson.cn>
+Subject: [PATCH] LoongArch: Disable IRQ before init_fn() for nonboot CPUs
+Date: Thu, 22 Feb 2024 17:10:08 +0800
+Message-ID: <20240222091008.162191-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> writes:
+Disable IRQ before init_fn() for nonboot CPUs when hotplug, in order to
+silence such warnings (and also avoid potential errors due to unexpected
+interrupts):
 
-> On 21/02/2024 20:34, Javier Martinez Canillas wrote:
+WARNING: CPU: 1 PID: 0 at kernel/rcu/tree.c:4503 rcu_cpu_starting+0x214/0x280
+CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.6.17+ #1198
+pc 90000000048e3334 ra 90000000047bd56c tp 900000010039c000 sp 900000010039fdd0
+a0 0000000000000001 a1 0000000000000006 a2 900000000802c040 a3 0000000000000000
+a4 0000000000000001 a5 0000000000000004 a6 0000000000000000 a7 90000000048e3f4c
+t0 0000000000000001 t1 9000000005c70968 t2 0000000004000000 t3 000000000005e56e
+t4 00000000000002e4 t5 0000000000001000 t6 ffffffff80000000 t7 0000000000040000
+t8 9000000007931638 u0 0000000000000006 s9 0000000000000004 s0 0000000000000001
+s1 9000000006356ac0 s2 9000000007244000 s3 0000000000000001 s4 0000000000000001
+s5 900000000636f000 s6 7fffffffffffffff s7 9000000002123940 s8 9000000001ca55f8
+   ra: 90000000047bd56c tlb_init+0x24c/0x528
+  ERA: 90000000048e3334 rcu_cpu_starting+0x214/0x280
+ CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=CC DACM=CC -WE)
+ PRMD: 00000000 (PPLV0 -PIE -PWE)
+ EUEN: 00000000 (-FPE -SXE -ASXE -BTE)
+ ECFG: 00071000 (LIE=12 VS=7)
+ESTAT: 000c0000 [BRK] (IS= ECode=12 EsubCode=0)
+ PRID: 0014c010 (Loongson-64bit, Loongson-3A5000)
+CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.6.17+ #1198
+Stack : 0000000000000000 9000000006375000 9000000005b61878 900000010039c000
+        900000010039fa30 0000000000000000 900000010039fa38 900000000619a140
+        9000000006456888 9000000006456880 900000010039f950 0000000000000001
+        0000000000000001 cb0cb028ec7e52e1 0000000002b90000 9000000100348700
+        0000000000000000 0000000000000001 ffffffff916d12f1 0000000000000003
+        0000000000040000 9000000007930370 0000000002b90000 0000000000000004
+        9000000006366000 900000000619a140 0000000000000000 0000000000000004
+        0000000000000000 0000000000000009 ffffffffffc681f2 9000000002123940
+        9000000001ca55f8 9000000006366000 90000000047a4828 00007ffff057ded8
+        00000000000000b0 0000000000000000 0000000000000000 0000000000071000
+        ...
+Call Trace:
+[<90000000047a4828>] show_stack+0x48/0x1a0
+[<9000000005b61874>] dump_stack_lvl+0x84/0xcc
+[<90000000047f60ac>] __warn+0x8c/0x1e0
+[<9000000005b0ab34>] report_bug+0x1b4/0x280
+[<9000000005b63110>] do_bp+0x2d0/0x480
+[<90000000047a2e20>] handle_bp+0x120/0x1c0
+[<90000000048e3334>] rcu_cpu_starting+0x214/0x280
+[<90000000047bd568>] tlb_init+0x248/0x528
+[<90000000047a4c44>] per_cpu_trap_init+0x124/0x160
+[<90000000047a19f4>] cpu_probe+0x494/0xa00
+[<90000000047b551c>] start_secondary+0x3c/0xc0
+[<9000000005b66134>] smpboot_entry+0x50/0x58
 
-[...]
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+---
+ arch/loongarch/kernel/smp.c | 1 +
+ 1 file changed, 1 insertion(+)
 
->>>
->>> Any explanation what ZRAM is necessary for Fedora to boot.
->>>
->> 
->> I mentioned already in another email, Fedora is enabling the systemd
->> zram-generator and not having a /dev/zram0 slows down the boot to the
->> point of being unusable. One could disable that service but then is yet
->
-> That one sentence would be enough for me.
->
-
-I'll add that then to the commit message when proposing a config fragment.
-
-[...]
-
->> 
->> So that means that for aarch64, some filesystems have more precedence over
->> others? It's OK to have ext4 or btrfs but no xfs? Honestly it seems quite
->> arbitrary and subjective for me.
->
-> Yes, subjective, but to be honest: I would drop Btrfs. I was thinking
-
-Fair. If the agreegment is to minimize defconfig (which AFAIU is your
-point), then I'm on board with it. We can start splitting in separate
-fragments, people can then mix and match for their specific use cases.
-
-> about it, but since Arnd agrees on XFS I won't fight that battle.
->
-
-Yeah, it was a strange hill for me to die on and is true that fragments
-seems to be the best compromise, as Maxime said before in this thread.
-
-By the way, I want to apologize for my harsh/rude comments yesterday. I
-wasn't in the best mood and I got too emotional...
-
+diff --git a/arch/loongarch/kernel/smp.c b/arch/loongarch/kernel/smp.c
+index 20a355478c6c..9b07dd5b60bb 100644
+--- a/arch/loongarch/kernel/smp.c
++++ b/arch/loongarch/kernel/smp.c
+@@ -334,6 +334,7 @@ void __noreturn arch_cpu_idle_dead(void)
+ 		addr = iocsr_read64(LOONGARCH_IOCSR_MBUF0);
+ 	} while (addr == 0);
+ 
++	local_irq_disable();
+ 	init_fn = (void *)TO_CACHE(addr);
+ 	iocsr_write32(0xffffffff, LOONGARCH_IOCSR_IPI_CLEAR);
+ 
 -- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+2.43.0
 
 
