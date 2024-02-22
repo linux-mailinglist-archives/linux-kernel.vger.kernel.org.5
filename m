@@ -1,253 +1,115 @@
-Return-Path: <linux-kernel+bounces-77252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D673186029A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:23:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CC7986029D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:24:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 133111C2496F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:23:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DFA91C24938
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:24:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7096548E6;
-	Thu, 22 Feb 2024 19:23:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29F846AF81;
+	Thu, 22 Feb 2024 19:23:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="m/Jss5I8"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OIBwBhIh"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E90471E874
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 19:23:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08177548E4
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 19:23:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708629827; cv=none; b=EJ3TJ5GkHv63Qxy/vQCEFX2+d9AYvAIWOb0is5OTNriv158u/zRfTJtXhwhsRVTiDY4cOeTrqrCYlfT7/0JdC3mtPeGt59FGky6pdSd84tksZuwmnZ7evLuXXKFaKWIgX9OAkfbe69DymOguxc/QoapiUBMnrZAJd8d2fCMfW4k=
+	t=1708629829; cv=none; b=gpM/Rebv7jZOSKZehKItZ3TwR+xr3R9dkw7z5CTFmlmUdSaN/jXv2m6RqApESQLruzFPR1oeTZ/SMsgQEGqMB8DKQe5M1S3sc/2Q7bJYTSvjyhxihHNGNoXWH6XfYr8DQzY63nxJQsg+EYI3iSHGREFIv3F4W+W3vMv3j2A9Izs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708629827; c=relaxed/simple;
-	bh=gKo/P0bQL66mpMQ285UxKp7suX6+SFfQgZr5WjHyN6A=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Cc:Content-Type; b=r6L1BDb/q5879J7ASrmO1jAJWam9UNNhLSTcGWFXnBELXOGfsJuz2LumHXvpgE1t3igw4plGT6VczKpPftTCn5lbuzYrbdgnQKYntptlngsyhCnX17a0aR+jenvEAGkOrytKoa/iLfun9tHK4DG8ZpI7S8yXaXvRH6g8tpLl3Ek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--pcc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=m/Jss5I8; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--pcc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6089b90acddso1462577b3.3
+	s=arc-20240116; t=1708629829; c=relaxed/simple;
+	bh=cq3Cnk+GZrsQGPtsY4OcFojjqqyL9ctq/cxxaE9pID4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WmjDWp1PI8/L6++hgVlZ/t7a7jlJXoi8UhuvIp9oYhvg3qm7qC3YUQqHFocdCfeceWYaSqWcPQ85UFjv3vdltZ0vulp1sAnzb4ASAs0Dh2Upml0wyxGoIlSj4osXs0CBJi280/pX2vpG/g25mrUDQQiO7ytr+e9W+NIpuQKTiL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OIBwBhIh; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708629827;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nZ+RDIdGnhU5lg6jFGeCqCjJlhqa8k7CnALV244t9Yw=;
+	b=OIBwBhIhS2r/I+/oeNfPlj3uvErLzJKBvwRTj2SyC9ZDDmxOA/0bCkGeJBgSUEtvfJn8hZ
+	D2ykKI6THH4Psgb+Eu3Wa+LfU5gWRmVJCE7cdwhy7ewRR9bqZm76mxzYQvprS9ti/OB7wB
+	zhXDThdOhmNeKBudbR9VzN2oRufT1Cw=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-601-2DEm0RmPMfKhBOcgchMomQ-1; Thu, 22 Feb 2024 14:23:45 -0500
+X-MC-Unique: 2DEm0RmPMfKhBOcgchMomQ-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-41290676819so298535e9.3
         for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:23:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708629825; x=1709234625; darn=vger.kernel.org;
-        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Rcd3xiyDExY5/l4KiLEuLxdganpWypINeNzRdzc4lE8=;
-        b=m/Jss5I8tdKFsnqT4oR2aaXw48zt3OEtg9w+TZuc9gkUSa5NPh6qdpfxmm/FgonM4C
-         uMqoAPQ9Nq6lZ3ix/z7X0dHNhvecmuKqci/aeQlr8YGcz7GR1a2E38dkZZAyeo+/7ooL
-         tHAaqOdljmow4OuHap5yJs6uh9OooONEVRlDOUWm+aK/DnIGXBWO7lmQAVzUuarr7IFH
-         8mNikNNNhcxjFihEWZF8N9NMiSBRCrlIjfDpOvUho3kfbHjaZuJGc5RLU1CP+PI/jM9d
-         DDiZrUoZ+XEAZqXZMl1EocbHO+uNuSCFRpMQO1gTlsxDqadpXfl5d28/RTuyUtok3mb9
-         51oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708629825; x=1709234625;
-        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Rcd3xiyDExY5/l4KiLEuLxdganpWypINeNzRdzc4lE8=;
-        b=C51zpjZmplFY0maAbZJ25WP3AYI7J1mPacnMDx3svMpMh0r//kmyq4oP2Syfyezoiu
-         qVEvLvyQAoPanIKfLIRVRDupuJu/SmuiLm9nnSs3uXYr1JyAQZZGLiU0fnX08Q0sBNwh
-         RszVoWXnMZbdN5WN9oYOLpBevZHoJ3TQuSJ/7rrLrKrfx3T5Xh0tV4jteNcMHk2/hLPN
-         Ti2KUQ+KZmZEhE1p9v9TtAaIljo6T9AKFxJG8M3NJvKGanrAJAM/dnB3dLtyekEl0DkS
-         qqgNrcgXSNuiNq3noFlY14+QIB9BXu1emDn4P3piSPGKsb1YbesLAj0wWgVeXYy1YXl0
-         J7kw==
-X-Forwarded-Encrypted: i=1; AJvYcCWTOGNDPxvmsunw/MbBtgn8oQ37kf4jbkJYzn6WgE31Dl5+hEw1xVHS81kAaiNC6rRhY4bLF9X3qCCgbfKcOO9mRnZWA40tAbN88pB8
-X-Gm-Message-State: AOJu0Yz7O+PRjkzfbW7807eAdfUobwjrX+Bpp0BwiBNWA8jkFla0XTmb
-	ZDLMfXwcYgizpSGlEUxfMYb99Qqwaq1fudQFz4XLigGPXSWxNEr5mXCFTTFnFLfeKQ==
-X-Google-Smtp-Source: AGHT+IHzo0vV16bgCE5M3R2Na6hfj983quOy6yIVGG4Q5IoKGE0CF3K5gfQ3L9X52uStrwORe3dfl2c=
-X-Received: from pcc-desktop.svl.corp.google.com ([2620:15c:2d3:205:26c7:da00:ce0c:dbd5])
- (user=pcc job=sendgmr) by 2002:a81:4ecd:0:b0:607:c633:2997 with SMTP id
- c196-20020a814ecd000000b00607c6332997mr24485ywb.5.1708629824985; Thu, 22 Feb
- 2024 11:23:44 -0800 (PST)
-Date: Thu, 22 Feb 2024 11:23:28 -0800
-Message-Id: <20240222192329.1047386-1-pcc@google.com>
+        d=1e100.net; s=20230601; t=1708629824; x=1709234624;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nZ+RDIdGnhU5lg6jFGeCqCjJlhqa8k7CnALV244t9Yw=;
+        b=D02ALBMcB18nvMQa85NcvSAFA9hSI/TARocAHSbM7YqkAp7wS1paeOIrX6rD94ja6g
+         M5sNRy2aKFKhus3YXcsKL9Yp2XeEogITcCbmGru3hadLoPrTNezS1+l7MkY4LRJ0vWr1
+         MFeEL1s5+KResTVxtoqUzD8KDd2IxUgv5rITlMnlOpT1pY9a5doPcJJ4vxDMtsPm318w
+         zSWWvPdZEXVZZ9IEpUhAtbW6ltuWw8eYCSFlY49SI7tkcgsW3fk2jCm8krGRdTnkicvc
+         08TTLkUhRQaKqUXLPeUdeCKslPWy5zsgv9GlJZ5cUmIEykbY5YdhhhWSkFxzofwsmKXJ
+         4gQw==
+X-Forwarded-Encrypted: i=1; AJvYcCXngP+FizuNPgo6uC0l3NjHAAEgfxhjUZF2DLoaRG1yQ+dwouycX8GostG+WzvWLDgWXmSyWSmpz4Y1/rZfofubAQN33vjR5/BY5L8z
+X-Gm-Message-State: AOJu0Yx+6XJcUTvEAtUpDAnzHe+iTYqL1YxUUFnYVi4sqM8PMYK/Hyeq
+	km7S3VSIoSteAqvTN1z8z3VyHLS+HXY3CMTbZ7gSImRRyJtKAjbwQXoG4yT+c1Ejfi/Zepp+0gw
+	aIfYaqVvQ+nJRVp1KGT7hseWnkhamqgROg39cIPMGTXUxL+g9XbciywKpbeHsLg==
+X-Received: by 2002:a05:600c:4c99:b0:40e:a569:3555 with SMTP id g25-20020a05600c4c9900b0040ea5693555mr18945734wmp.35.1708629824327;
+        Thu, 22 Feb 2024 11:23:44 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHRkfAP3Yd4xKF6bdlzBebTP+hY1tBDnghJRdAmvC+uFZRuB+6mlbezFnXDMpRlAhkJUEHJUQ==
+X-Received: by 2002:a05:600c:4c99:b0:40e:a569:3555 with SMTP id g25-20020a05600c4c9900b0040ea5693555mr18945722wmp.35.1708629824024;
+        Thu, 22 Feb 2024 11:23:44 -0800 (PST)
+Received: from redhat.com ([172.93.237.99])
+        by smtp.gmail.com with ESMTPSA id g16-20020a05600c311000b004127942bcd6sm5410408wmo.7.2024.02.22.11.23.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 11:23:43 -0800 (PST)
+Date: Thu, 22 Feb 2024 14:23:36 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Tobias Huschle <huschle@linux.ibm.com>
+Cc: Jason Wang <jasowang@redhat.com>, Abel Wu <wuyun.abel@bytedance.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Linux Kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+	virtualization@lists.linux.dev, netdev@vger.kernel.org
+Subject: Re: Re: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6
+ sched/fair: Add lag based placement)
+Message-ID: <20240222142254-mutt-send-email-mst@kernel.org>
+References: <42870.123121305373200110@us-mta-641.us.mimecast.lan>
+ <20231213061719-mutt-send-email-mst@kernel.org>
+ <25485.123121307454100283@us-mta-18.us.mimecast.lan>
+ <20231213094854-mutt-send-email-mst@kernel.org>
+ <20231214021328-mutt-send-email-mst@kernel.org>
+ <92916.124010808133201076@us-mta-622.us.mimecast.lan>
+ <20240121134311-mutt-send-email-mst@kernel.org>
+ <07974.124020102385100135@us-mta-501.us.mimecast.lan>
+ <20240201030341-mutt-send-email-mst@kernel.org>
+ <89460.124020106474400877@us-mta-475.us.mimecast.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
-Subject: [PATCH] serial: Lock console when calling into driver before registration
-From: Peter Collingbourne <pcc@google.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
-	Petr Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	John Ogness <john.ogness@linutronix.de>, Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: Peter Collingbourne <pcc@google.com>, linux-kernel@vger.kernel.org, 
-	linux-serial@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <89460.124020106474400877@us-mta-475.us.mimecast.lan>
 
-During the handoff from earlycon to the real console driver, we have
-two separate drivers operating on the same device concurrently. In the
-case of the 8250 driver these concurrent accesses cause problems due
-to the driver's use of banked registers, controlled by LCR.DLAB. It is
-possible for the setup(), config_port(), pm() and set_mctrl() callbacks
-to set DLAB, which can cause the earlycon code that intends to access
-TX to instead access DLL, leading to missed output and corruption on
-the serial line due to unintended modifications to the baud rate.
+On Thu, Feb 01, 2024 at 12:47:39PM +0100, Tobias Huschle wrote:
+> I'll do some more testing with the cond_resched->schedule fix, check the
+> cgroup thing and wait for Peter then.
+> Will get back if any of the above yields some results.
 
-In particular, for setup() we have:
+As I predicted, if you want attention from sched guys you need to
+send a patch in their area.
 
-univ8250_console_setup()
--> serial8250_console_setup()
--> uart_set_options()
--> serial8250_set_termios()
--> serial8250_do_set_termios()
--> serial8250_do_set_divisor()
-
-For config_port() we have:
-
-serial8250_config_port()
--> autoconfig()
-
-For pm() we have:
-
-serial8250_pm()
--> serial8250_do_pm()
--> serial8250_set_sleep()
-
-For set_mctrl() we have (for some devices):
-
-serial8250_set_mctrl()
--> omap8250_set_mctrl()
--> __omap8250_set_mctrl()
-
-To avoid such problems, let's make it so that the console is locked
-during pre-registration calls to these callbacks, which will prevent
-the earlycon driver from running concurrently.
-
-Remove the partial solution to this problem in the 8250 driver
-that locked the console only during autoconfig_irq(), as this would
-result in a deadlock with the new approach. The console continues
-to be locked during autoconfig_irq() because it can only be called
-through uart_configure_port().
-
-Although this patch introduces more locking than strictly necessary
-(and in particular it also locks during the call to rs485_config()
-which is not affected by this issue as far as I can tell), it follows
-the principle that it is the responsibility of the generic console
-code to manage the earlycon handoff by ensuring that earlycon and real
-console driver code cannot run concurrently, and not the individual
-drivers.
-
-Signed-off-by: Peter Collingbourne <pcc@google.com>
-Link: https://linux-review.googlesource.com/id/I7cf8124dcebf8618e6b2ee543fa5b25532de55d8
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: stable@vger.kernel.org
----
- drivers/tty/serial/8250/8250_port.c |  6 ------
- drivers/tty/serial/serial_core.c    | 10 ++++++++++
- kernel/printk/printk.c              | 20 +++++++++++++++++---
- 3 files changed, 27 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-index 8ca061d3bbb9..1d65055dde27 100644
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -1329,9 +1329,6 @@ static void autoconfig_irq(struct uart_8250_port *up)
- 		inb_p(ICP);
- 	}
- 
--	if (uart_console(port))
--		console_lock();
--
- 	/* forget possible initially masked and pending IRQ */
- 	probe_irq_off(probe_irq_on());
- 	save_mcr = serial8250_in_MCR(up);
-@@ -1371,9 +1368,6 @@ static void autoconfig_irq(struct uart_8250_port *up)
- 	if (port->flags & UPF_FOURPORT)
- 		outb_p(save_ICP, ICP);
- 
--	if (uart_console(port))
--		console_unlock();
--
- 	port->irq = (irq > 0) ? irq : 0;
- }
- 
-diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-index d6a58a9e072a..128aa0e0ae24 100644
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -2608,7 +2608,11 @@ uart_configure_port(struct uart_driver *drv, struct uart_state *state,
- 			port->type = PORT_UNKNOWN;
- 			flags |= UART_CONFIG_TYPE;
- 		}
-+		if (uart_console(port))
-+			console_lock();
- 		port->ops->config_port(port, flags);
-+		if (uart_console(port))
-+			console_unlock();
- 	}
- 
- 	if (port->type != PORT_UNKNOWN) {
-@@ -2616,6 +2620,9 @@ uart_configure_port(struct uart_driver *drv, struct uart_state *state,
- 
- 		uart_report_port(drv, port);
- 
-+		if (uart_console(port))
-+			console_lock();
-+
- 		/* Power up port for set_mctrl() */
- 		uart_change_pm(state, UART_PM_STATE_ON);
- 
-@@ -2632,6 +2639,9 @@ uart_configure_port(struct uart_driver *drv, struct uart_state *state,
- 
- 		uart_rs485_config(port);
- 
-+		if (uart_console(port))
-+			console_unlock();
-+
- 		/*
- 		 * If this driver supports console, and it hasn't been
- 		 * successfully registered yet, try to re-register it.
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index f2444b581e16..db69545e6250 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -3263,6 +3263,20 @@ static int __init keep_bootcon_setup(char *str)
- 
- early_param("keep_bootcon", keep_bootcon_setup);
- 
-+static int console_call_setup(struct console *newcon, char *options)
-+{
-+	int err;
-+
-+	if (!newcon->setup)
-+		return 0;
-+
-+	console_lock();
-+	err = newcon->setup(newcon, options);
-+	console_unlock();
-+
-+	return err;
-+}
-+
- /*
-  * This is called by register_console() to try to match
-  * the newly registered console with any of the ones selected
-@@ -3298,8 +3312,8 @@ static int try_enable_preferred_console(struct console *newcon,
- 			if (_braille_register_console(newcon, c))
- 				return 0;
- 
--			if (newcon->setup &&
--			    (err = newcon->setup(newcon, c->options)) != 0)
-+			err = console_call_setup(newcon, c->options);
-+			if (err != 0)
- 				return err;
- 		}
- 		newcon->flags |= CON_ENABLED;
-@@ -3325,7 +3339,7 @@ static void try_enable_default_console(struct console *newcon)
- 	if (newcon->index < 0)
- 		newcon->index = 0;
- 
--	if (newcon->setup && newcon->setup(newcon, NULL) != 0)
-+	if (console_call_setup(newcon, NULL) != 0)
- 		return;
- 
- 	newcon->flags |= CON_ENABLED;
 -- 
-2.44.0.rc1.240.g4c46232300-goog
+MST
 
 
