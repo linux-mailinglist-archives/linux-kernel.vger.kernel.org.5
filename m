@@ -1,176 +1,192 @@
-Return-Path: <linux-kernel+bounces-76022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C56A085F209
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:45:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBC1285F20D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:46:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00F391C21236
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 07:45:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E87BB22B05
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 07:46:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DC9D1799F;
-	Thu, 22 Feb 2024 07:45:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B35AC179AA;
+	Thu, 22 Feb 2024 07:45:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YnRwR1ol"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fUEeSUDj"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7D1F17BB2
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 07:45:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A042217988
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 07:45:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708587930; cv=none; b=PcJUqi4TIHU3olTwtUfgZZoBfHgenyKIxIA5jiv6mwkC41MzogZ3boTU9n1q6tVFl81kdSb01ZxycuYTUjMVN+nyTIGvZnFJD/AHe/J2Tr8UkiZS2SvzrHxB5vxRciArwkRZRt+nHrUjxYmB8Pli73gvMMFspqy/akP2K7YPKig=
+	t=1708587955; cv=none; b=GJUjJXlqF+vJLwPcu3MWUIdhZrYPkUEgRYpXxFxqDbd+AtGyT89fB0Z5exm9d62XX7UR6vX6OTz921kXO0EIYo4+o2U/Jovp7mc9liIGvFp7gF8/wUi8/wzcrgRja5Aw90LZ7+t/34PhGnYfJ0rreuP/wgSrYS86Xvtdtmc6LQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708587930; c=relaxed/simple;
-	bh=l/IxJaf6axaZ8FVwz2ZxTwzuFtamRHPtqYYDgO0NVNg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Jyive7z/9S1ITjz82mCtLEjTe5gJtfeZVtnnfYuDBXyfB91TuIjb67XNWHDqsIhpbSPey000k4X1aF8Yo4iyIWjgB+hlB/U3s5lVVSab+ikEMvPErfF9HziFc4EwsFngFWrr2VnFwzDpjirIIQmwnhYvBsKTRaQ99cN3x9MnAWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YnRwR1ol; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-56454c695e6so1045354a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 23:45:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708587927; x=1709192727; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=mG6Y8+7RSXjF1YaOJSoZA9NONPBkQg/FIATIqJdfjJ4=;
-        b=YnRwR1olqB2ye9gqb5IHP0z7TK/8QBH41WDU0eHLhaRhlS0Xdu8TbZrsJS1kcE8U7h
-         YKELw6mcJGk8y3yqk/PNrU3yKt1xMXRqMqR4rUjS43bZQKkrklCjwjdoOr1L2AzHWk+/
-         Ry/rteWdq0MeaqINFJ71w+jDc5hEWcN116lT8a7BJhMDPKEY3dqlCVEKqCRCBFf1INv+
-         dOPNc2H4dvXI/4jDmJVivT18NwDUwjduN26Ys1mtFftXgZaRC0DcUc7+QeXsyeZu+0zd
-         +lbqQUCj34p+ESdgXjGzVdqv8lUeKmGe56yp6+cm27aq0xOs5h2idubYAhxUihLOvZdW
-         Sr2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708587927; x=1709192727;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mG6Y8+7RSXjF1YaOJSoZA9NONPBkQg/FIATIqJdfjJ4=;
-        b=DU3+Z+n9HN/wjPpo4gGuITw+LAsuyL91TDgGXr/MOyxz9+dfATs18Q0yKHn/TwviMR
-         BsFUTP4SgadFfNLx3Z0KfvgCxBc1I6Pf9UKXOPqaCqzYJ48armVXp2KyoqPUKq+pKHfX
-         69VgXbwmFW5+KQ8GOOAdvNGzJO/eiV+7J3CD8+XLocwQl2IpwroN/YNPc8AJsdCwlbpP
-         4Jx1ExYd/Jl+0vxsKkXccM2SzTuGCUyOc0iTx9pSoHrRLI+3gGsOtC0ngxUps4rRBGX6
-         lYe3M7ErXnBNkN4tyDLe9btnvnC3QEG/QWTEc2QFIOs8Shpzne3qL4k5wivldwuE0N61
-         HPGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXyk2Sp5waDAdw6XipFVwVLp/lGk4aXTbFWhb8K2+idTdJ/gzs72PBZqA+KVG/QnNw4b0ASYomrZ/rWL8/x+bqm2oLXsf3Sw74M8R3r
-X-Gm-Message-State: AOJu0YyDJVCXagwfUYrK/3ef76BJyhHQOf00I1RPbNkUFRtzYLeRYA2y
-	o6t6LVUDbJt9YOC1diJMK/6cN3NnwHk+AS1NWsNnZfaw5DPvEJoYYaS8VkbkfdY=
-X-Google-Smtp-Source: AGHT+IFp3KlRLOquDS1qON7clUS013o+eb1EjJhials6/XFA+NM4rtzRhmwqRusKggKPATo3V+cTpQ==
-X-Received: by 2002:aa7:ca53:0:b0:565:cf:2566 with SMTP id j19-20020aa7ca53000000b0056500cf2566mr1514539edt.12.1708587927070;
-        Wed, 21 Feb 2024 23:45:27 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id h10-20020a0564020e0a00b005641bab8db3sm5128141edh.86.2024.02.21.23.45.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 23:45:26 -0800 (PST)
-Message-ID: <5f1ae281-7b81-49a6-82a6-37be20ea43e3@linaro.org>
-Date: Thu, 22 Feb 2024 08:45:24 +0100
+	s=arc-20240116; t=1708587955; c=relaxed/simple;
+	bh=wH+GN0xPo0yeHLLqezLJvybgqWs4nICGdwacbddb4MQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e0KdWT46S856l6G/hp0qpLMS+I3b0CgfHYGcAzTRrlZdV6FUIHXfLfZTToNwkI/L1urAHp1nMAg07bvMy/P5QrK5spvW2Gg2rq5TgLPVQ79tIENMovNBaFPm1r0lPgMBiJSjDOS/kSsX9Z5eWcJSTQ+LTzYNKmHALwfO8zqvJBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fUEeSUDj; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708587952;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CWJNOewjkbYW7x9RFz6EQgzz3x0akjI564V6xJTycn4=;
+	b=fUEeSUDjQVuo4xNyMzvssisbIbpzfrEY683TqOD6kWdonRIsbsqM4mSikKkC1udNVBnJit
+	VITO1E8REyWTtryFBy5lG55txDt13XRxXkBGv5tKhBjQNd1xyJUd87lpB0DVsUxYhn34Ce
+	oqZYLET/qAyolJK9HEg53l2KBdoK1Xc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-209-BpkYVYw7PvSVZX4hEb9qVw-1; Thu, 22 Feb 2024 02:45:48 -0500
+X-MC-Unique: BpkYVYw7PvSVZX4hEb9qVw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 43DE11021F64;
+	Thu, 22 Feb 2024 07:45:48 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.2])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 38A011121337;
+	Thu, 22 Feb 2024 07:45:27 +0000 (UTC)
+Date: Thu, 22 Feb 2024 15:45:38 +0800
+From: Baoquan He <bhe@redhat.com>
+To: "yang.zhang" <gaoshanliukou@163.com>
+Cc: ebiederm@xmission.com, kexec@lists.infradead.org,
+	linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+	"yang.zhang" <yang.zhang@hexintek.com>
+Subject: Re: [PATCH v2] kexec: copy only happens before uchunk goes to zero
+Message-ID: <Zdb7ogmu/7IOBN3U@MiWiFi-R3L-srv>
+References: <20240220021106.694-1-gaoshanliukou@163.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/16] clk: samsung: Add CPU clocks for Exynos850
-To: Sam Protsenko <semen.protsenko@linaro.org>
-Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Chanwoo Choi <cw00.choi@samsung.com>, Alim Akhtar <alim.akhtar@samsung.com>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Tomasz Figa <tomasz.figa@gmail.com>,
- linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240216223245.12273-1-semen.protsenko@linaro.org>
- <29090d97-9118-4765-a4fd-3bbe271a39bd@linaro.org>
- <CAPLW+4kmoCoqO=+zXbVw7VsGc-VB2At91ZnJfyTDRtVFmN4aiQ@mail.gmail.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAPLW+4kmoCoqO=+zXbVw7VsGc-VB2At91ZnJfyTDRtVFmN4aiQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240220021106.694-1-gaoshanliukou@163.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-On 22/02/2024 00:07, Sam Protsenko wrote:
-> On Tue, Feb 20, 2024 at 5:07 AM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
->>
->> On 16/02/2024 23:32, Sam Protsenko wrote:
->>> The series implements CPU clock support for Exynos850, adds CPU CMUs to
->>> the clock driver and enables those in dts. This is the first step
->>> towards cpufreq implementation.
->>>
->>> The breakup by patch:
->>>
->>>   * Patch 01: Add bindings
->>>   * Patches 02..12: Prepare clk-cpu.c for Exynos850 support
->>>   * Patch 13: Add Exynos850 support
->>>   * Patch 14: Init PLLs to be in manual mode
->>>   * Patch 15: Add CPU CMUs in Exynos850 clock driver
->>>   * Patch 16: Add CPU CMUs and clocks in Exynos850 dtsi
->>
->> This crossed the threshold for a patch bomb, which is in general fine
->> for me, but then please put v2 changelog in each patch's changelog. If
->> the patch did not change, annotate it as well. It's not possible to keep
->> jumping between cover letter and individual patches.
->>
+On 02/20/24 at 10:11am, yang.zhang wrote:
+> From: "yang.zhang" <yang.zhang@hexintek.com>
 > 
-> The above list is not a change log, I just tried to show that patches
-> 02..12 are cleanups. I'll reword this in v2 to make it less confusing.
-> And as usual I'll keep the changelog for each patch separately. Thanks
-> for the review!
+> When load segments, all of the copying and the rest
+> only happens before uchunk goes to zero.
 
-I know. I just wanted to clarify my expectations for v2.
+The code change looks good, while the log can be improved with more
+details so that people can more easily get what's wrong and fixed.
 
-Best regards,
-Krzysztof
+===
+When loading segments, ubytes is <= mbytes. When ubytes is exhausted,
+there could be remaining mbytes. Then in the while loop, the buf pointer
+advancing with mchunk will causing meaningless reading even though it
+doesn't harm. 
+
+So let's change to make sure that all of the copying and the rest only
+happens before uchunk goes to zero.
+===
+
+Please take above words as reference to udpate patch log and post v3,
+and you can add:
+
+Acked-by: Baoquan He <bhe@redhat.com>
+
+> 
+> Signed-off-by: yang.zhang <yang.zhang@hexintek.com>
+> 
+> ---
+> v1 -> v2:
+> - Only copy before uchunk goes to zero
+> 
+> V1: https://lore.kernel.org/lkml/20240130101802.23850-1-gaoshanliukou@163.com/
+> ---
+>  kernel/kexec_core.c | 44 ++++++++++++++++++++++++--------------------
+>  1 file changed, 24 insertions(+), 20 deletions(-)
+> 
+> diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
+> index d08fc7b5db97..2fc3d0e3715a 100644
+> --- a/kernel/kexec_core.c
+> +++ b/kernel/kexec_core.c
+> @@ -800,22 +800,24 @@ static int kimage_load_normal_segment(struct kimage *image,
+>  				PAGE_SIZE - (maddr & ~PAGE_MASK));
+>  		uchunk = min(ubytes, mchunk);
+>  
+> -		/* For file based kexec, source pages are in kernel memory */
+> -		if (image->file_mode)
+> -			memcpy(ptr, kbuf, uchunk);
+> -		else
+> -			result = copy_from_user(ptr, buf, uchunk);
+> +		if (uchunk) {
+> +			/* For file based kexec, source pages are in kernel memory */
+> +			if (image->file_mode)
+> +				memcpy(ptr, kbuf, uchunk);
+> +			else
+> +				result = copy_from_user(ptr, buf, uchunk);
+> +			ubytes -= uchunk;
+> +			if (image->file_mode)
+> +				kbuf += uchunk;
+> +			else
+> +				buf += uchunk;
+> +		}
+>  		kunmap_local(ptr);
+>  		if (result) {
+>  			result = -EFAULT;
+>  			goto out;
+>  		}
+> -		ubytes -= uchunk;
+>  		maddr  += mchunk;
+> -		if (image->file_mode)
+> -			kbuf += mchunk;
+> -		else
+> -			buf += mchunk;
+>  		mbytes -= mchunk;
+>  
+>  		cond_resched();
+> @@ -866,11 +868,18 @@ static int kimage_load_crash_segment(struct kimage *image,
+>  			memset(ptr + uchunk, 0, mchunk - uchunk);
+>  		}
+>  
+> -		/* For file based kexec, source pages are in kernel memory */
+> -		if (image->file_mode)
+> -			memcpy(ptr, kbuf, uchunk);
+> -		else
+> -			result = copy_from_user(ptr, buf, uchunk);
+> +		if (uchunk) {
+> +			/* For file based kexec, source pages are in kernel memory */
+> +			if (image->file_mode)
+> +				memcpy(ptr, kbuf, uchunk);
+> +			else
+> +				result = copy_from_user(ptr, buf, uchunk);
+> +			ubytes -= uchunk;
+> +			if (image->file_mode)
+> +				kbuf += uchunk;
+> +			else
+> +				buf += uchunk;
+> +		}
+>  		kexec_flush_icache_page(page);
+>  		kunmap_local(ptr);
+>  		arch_kexec_pre_free_pages(page_address(page), 1);
+> @@ -878,12 +887,7 @@ static int kimage_load_crash_segment(struct kimage *image,
+>  			result = -EFAULT;
+>  			goto out;
+>  		}
+> -		ubytes -= uchunk;
+>  		maddr  += mchunk;
+> -		if (image->file_mode)
+> -			kbuf += mchunk;
+> -		else
+> -			buf += mchunk;
+>  		mbytes -= mchunk;
+>  
+>  		cond_resched();
+> -- 
+> 2.25.1
+> 
 
 
