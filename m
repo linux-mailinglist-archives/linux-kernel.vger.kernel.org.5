@@ -1,105 +1,80 @@
-Return-Path: <linux-kernel+bounces-76517-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D70AB85F846
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:33:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4285285F848
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:34:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C5181F25747
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:33:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2CFA280DAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:34:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2578912DD96;
-	Thu, 22 Feb 2024 12:33:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5D3E12DD8E;
+	Thu, 22 Feb 2024 12:34:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=jms.id.au header.i=@jms.id.au header.b="YWB9i1QA"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gEmfeymq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F59112C809;
-	Thu, 22 Feb 2024 12:33:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E97381F95E;
+	Thu, 22 Feb 2024 12:34:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708605208; cv=none; b=Ox40SG7+9hEkHx+fTxTwJaZGzxPOVZ8jwwxoMTFvhLmr8xTGWiC7e/QCywBw0hvDkXtzY7IPhV6WwG1gu11Ul2NtIC5PUS4hTTRyMb2pBHGpcW7PCly4RCC9U5AhNEGftYysQFaD2EkcWWMKesgP4Yu1GwsBr//lyEbBZ3dBkE8=
+	t=1708605285; cv=none; b=SoVfAAbkBRYQKHW5fvMnccAu+910h06402Ey2jD5VbW6aU35VJcX3NSGh1g/McL1OIxZLJ6DN4ThP/T0Dm7Y0sKY15uBBrGQBk6HOeHG6/62UfkBnzhufctXLr0Xi/yNSc9AZgoNQbqttmOdAOnjByTQy3+3wt17uivTySRikLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708605208; c=relaxed/simple;
-	bh=d8IBLOsOQdtQiFzfCa4rzkp7M8N0SMED9bMMxXfaXt0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SaGJgzjU82NHyHYyeEDv4l0vw1vQbi94UpTlBNwObOWtESdK7GvuU4MPWrTKHb0HjuO1w0KypgEYDkuAWMcmPuQzWvumK+qcsApCpq27y0+UkVjVwyUiDVJkLz2uddZaT5FBHCoaADUdeNjubWXilkMaz2YvVzK1cvHI/T4Ts9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jms.id.au; spf=pass smtp.mailfrom=gmail.com; dkim=pass (1024-bit key) header.d=jms.id.au header.i=@jms.id.au header.b=YWB9i1QA; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jms.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5654621d62dso506948a12.3;
-        Thu, 22 Feb 2024 04:33:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google; t=1708605204; x=1709210004; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MG0vDESW85KfZHlebYHCzgubjC4U6RsUx6p93ih8in8=;
-        b=YWB9i1QAvS0jYzldpgC0URUHG+SesrEkacobvGZkjC27D4BwDl6o5hYfD1ivHzbcXw
-         w6D/9TRTL4J5mHC8+1Td+QsmI9DS1q3jUIWzcJtF+6EUtYlcd29aocivANCbPmssRdZd
-         Cct2yexxyP4S0EPWQf0X22YLOyIqMaTNmAjIw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708605204; x=1709210004;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MG0vDESW85KfZHlebYHCzgubjC4U6RsUx6p93ih8in8=;
-        b=sBJAu7i28EJ91wZlDh5GAjDk8gsBwtPtoV7vwyaGqHfNDCZDx0mIoiE6bfv1kDC5SM
-         oUrBUYJWsKzXpNBpy7YaOdAxvx6mfnkfiHzeOzor6EBvHDtwjyYJR88970njP9cfQnAU
-         HBlALS/AidfkidcnUug/JqpROeb6ZQnEkxkxoghYzj5BGs3K8hTEUCTy3vqyDiOP98+D
-         ZOwpGp79roP1N7PLZw1BcpKTD8ooazEfFVmZyzkBG7GayDABEf0t4rAzHqNvGR/+0bvN
-         hvQm3LoP/rL9SVX2yt4y+QkxD3NcycXqqAOCpcU8hv20+KXaGBbjCkhFwalq0X6LHSX0
-         AseQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU62+GX9H9D3cWCSplXeq1H/37Q/J5iBd/GMlOrcKb2LDaMTiBJ4iRcma+NIPBwuRDZgbzqtNI0/HbPvD6QzEo4/npLJ2pSRVwbeXdJOjipuF+iYQKdEjFBRBPymCNw37J4+xexeYeL3q9dORPVj1cOStVQJ0eZF2SHLjSqd8Ir/4v+hxhq6ElGGA+6lCdVKZ5RwjRJSlk4BmouHwNUvA==
-X-Gm-Message-State: AOJu0YwsX+DHZ4MGwJrtD6nRnDsc0wCoMDLVLctLNW53WtXr8R70BvVy
-	r0/uuEWh96BVZvP6dyl+LHbh9hITAZu+JXdwLagrPW8sw0RCmh3DAh9kiF34CnCnnbGEu39FRuW
-	JrkljmJ98PIHOOXtRDhgBwKvEwfc=
-X-Google-Smtp-Source: AGHT+IFNrhrORPsfM/GgVwQUISFHcEt4aCj/nGl8kGj58IUCD9NdG07mYT8c4lWWTr3+YPEzqcaJIS6qW4w1k5sANc0=
-X-Received: by 2002:a17:906:c5a:b0:a3e:d2ea:ff5e with SMTP id
- t26-20020a1709060c5a00b00a3ed2eaff5emr9620337ejf.58.1708605204290; Thu, 22
- Feb 2024 04:33:24 -0800 (PST)
+	s=arc-20240116; t=1708605285; c=relaxed/simple;
+	bh=ZI+o8a8KnNcSBUYdnSaf3q7l9/6TqpPnGor6PEAB6kQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QwJt7BumPJZdSH+JjUxvR2DB2G3cA+jTXbc7VK8vNTG44BlBk8y7sV2PhrbOakGZImDv3tadqHrhqpwqo5TirZGhHwEZ4RQi4dhLDEzpUSm3OEynRXcOYkOT06v24JErfHINbI2eC2QvXhPL+9IBqQYDg0nkxf3OU2D7i2NibXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gEmfeymq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5346CC433F1;
+	Thu, 22 Feb 2024 12:34:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708605284;
+	bh=ZI+o8a8KnNcSBUYdnSaf3q7l9/6TqpPnGor6PEAB6kQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gEmfeymqM7VQw7hx3G0r+Xzdoyt8kzAl79LLtb6r1ODhpfFKH7KHBgjfH4mBPk1oC
+	 b1NPJy2Px2/7V4nOvICKBGEfL6Nx8agfEv1Gwl492uv8pEIOMb5ZJjrU6gYzPn04ye
+	 oa15nK8Od9grkYZbGXeOkHhnys82jc0PEV+M250QP0ZDWbjC72YZ6bSAxz4Sfy24KX
+	 LQOhvdj60szF+gjGfqEUWbsbQA0fSZ6hvtURUFfbwmitlSvWdonu+RXnvS1nlujDt5
+	 sJ9VwRQc+HK0Ysk0F1ECl0+6RYEsUjVKqJ8C4tyDjxReR9oBIAOI9qwFoNTr04scYA
+	 e59cCi/CQvt3g==
+Date: Thu, 22 Feb 2024 07:34:44 -0500
+From: Sasha Levin <sashal@kernel.org>
+To: Pavel Machek <pavel@denx.de>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
+	x86@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+	dave.hansen@linux.intel.com
+Subject: Re: [PATCH AUTOSEL 6.1 05/15] x86/cpu: Add model number for Intel
+ Clearwater Forest processor
+Message-ID: <Zdc_ZLH200jhMTsx@sashalap>
+References: <20240202184057.541411-1-sashal@kernel.org>
+ <20240202184057.541411-5-sashal@kernel.org>
+ <ZdJXAs2j6UGcSBBN@duo.ucw.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240215220759.976998-1-eajames@linux.ibm.com>
- <20240215220759.976998-8-eajames@linux.ibm.com> <67ea1daa-72a5-4dc0-b766-34a99052dabb@linaro.org>
- <8649af3d-c7f9-452b-a8c4-921fe5fa30f8@linux.ibm.com>
-In-Reply-To: <8649af3d-c7f9-452b-a8c4-921fe5fa30f8@linux.ibm.com>
-From: Joel Stanley <joel@jms.id.au>
-Date: Thu, 22 Feb 2024 23:03:11 +1030
-Message-ID: <CACPK8XdZ6twg=d5tHKh0OuDXsHDuD8kjhcPVxRTn3y9N75hERg@mail.gmail.com>
-Subject: Re: [PATCH 07/33] ARM: dts: aspeed: p10 and tacoma: Set FSI clock frequency
-To: Eddie James <eajames@linux.ibm.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, linux-fsi@lists.ozlabs.org, 
-	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, andi.shyti@kernel.org, 
-	alistair@popple.id.au, jk@ozlabs.org, sboyd@kernel.org, 
-	mturquette@baylibre.com, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
-	conor+dt@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <ZdJXAs2j6UGcSBBN@duo.ucw.cz>
 
-On Sat, 17 Feb 2024 at 05:44, Eddie James <eajames@linux.ibm.com> wrote:
+On Sun, Feb 18, 2024 at 08:14:10PM +0100, Pavel Machek wrote:
+>Hi!
 >
+>> [ Upstream commit 090e3bec01763e415bccae445f5bfe3d0c61b629 ]
+>>
+>> Server product based on the Atom Darkmont core.
 >
-> On 2/16/24 02:08, Krzysztof Kozlowski wrote:
-> > On 15/02/2024 23:07, Eddie James wrote:
-> >> Now that the driver doesn't hardcode the clock divider, set it
-> >> in the device tree.
-> >>
-> >> Signed-off-by: Eddie James <eajames@linux.ibm.com>
-> >> ---
-> >>   arch/arm/boot/dts/aspeed/aspeed-bmc-opp-tacoma.dts | 1 +
-> >>   arch/arm/boot/dts/aspeed/ibm-power10-dual.dtsi     | 1 +
-> >>   2 files changed, 2 insertions(+)
-> > Please do not mix DTS patches with driver code. DTS goes to the end
-> > because driver code CANNOT depend on it (there are exceptions but it was
-> > not explained here).
+>This adds unused include, I don't believe we need it in AUTOSEL.
 
-No, this is fine. Please continue sending the patches in logical order
-as you see fit.
+Dropped, thanks!
+
+-- 
+Thanks,
+Sasha
 
