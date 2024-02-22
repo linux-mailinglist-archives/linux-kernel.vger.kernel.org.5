@@ -1,216 +1,197 @@
-Return-Path: <linux-kernel+bounces-76119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D797385F324
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:39:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A014B85F31C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:38:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E0E61F21B13
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:39:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10659B2165A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:38:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEDD82C86A;
-	Thu, 22 Feb 2024 08:39:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E1C923758;
+	Thu, 22 Feb 2024 08:38:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mLafSHLu"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Br3Ux179"
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5719B2C689
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 08:39:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA03B7489
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 08:37:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708591156; cv=none; b=j54ARPZbJrH0/RB/LCM+T87GxuXjx88Y8f3S/leQgv0cYMnnbiOVQBkr+BdWycipm1P+oUl7GJtA5rhGFvmzdb3SRYQ6/kEG8kkUQguYl01vSrNppCGLVpE2uHJeWzFgbDSK+XA/we9Dvx93ZRyG24sPwNcIaCZOwtZRgRccOaI=
+	t=1708591079; cv=none; b=izlHJZb72fd2VogwoCzcSbtzZFXmwllw+otaflZ4/9OoEonNOigIjfdsO2BBfwxIkyRAkdrJ4ysdI28KQizO6C3xUlMcNvd+7neASysNxcGN9Lf9/q2BQoMv2xkqXFwo4z5VWgzItRzFZJ1SsCKNhAkWOL47GxbeQfx0ISH6hqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708591156; c=relaxed/simple;
-	bh=Ye6BbZ7IIelYA1CmOSe12jyQo+o1kPZsGZObB0Nn0sM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=GB4LOzxJhA9/wHP4swacj8I7CaLGLDCM/1iadWMsleB619slOAurdf5uB78L+qwL7NOrCsK57g8IbL6AsKDFF4UX5S4GpMg58dari73FRmo2OkqDz+Gbu2EHgkmmFwEcIGA6RYx1usd0yHRw6q+/HR6MMBgfaazHAZS+ChJ22b8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mLafSHLu; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708591154; x=1740127154;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=Ye6BbZ7IIelYA1CmOSe12jyQo+o1kPZsGZObB0Nn0sM=;
-  b=mLafSHLuxgZ019L2Nrvj3MGKGSIqG9WYzM02UqQ4sysw93eHA/nW2w0S
-   qhBnGInGV9wvp4uQm/pz/J7iitTe7CRBhI3wJps9tXXZ5n/Aq6sc8tHgm
-   h+JNCQAbkIfbXJjiMGsjbOpoi1DYLso3WsFZUkB+czzfvIsXZU98dqXsT
-   Jn1FxfSr91jK/uidVeVHDFdqVXlhxsn72A12uy5Txm8n85fLQaxbjOrDL
-   G6hnCsnGflfkSo4Pb+S7kO5h7m1z7FFvGEuwjhS1Y0jSPu8v6kER3WjQ3
-   WZBjLIhliczrk1VLGPH7XzXURLqcqqvUOgx26QPfnn8A7wlEG5YpOVUDk
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="2942374"
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="2942374"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 00:39:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="10006038"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 00:39:12 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Byungchul Park <byungchul@sk.com>
-Cc: <akpm@linux-foundation.org>,  <linux-kernel@vger.kernel.org>,
-  <linux-mm@kvack.org>,  <kernel_team@skhynix.com>,  <yuzhao@google.com>
-Subject: Re: [PATCH v2] mm, vmscan: don't turn on cache_trim_mode at high
- scan priorities
-In-Reply-To: <20240222070817.70515-1-byungchul@sk.com> (Byungchul Park's
-	message of "Thu, 22 Feb 2024 16:08:17 +0900")
-References: <20240222070817.70515-1-byungchul@sk.com>
-Date: Thu, 22 Feb 2024 16:37:16 +0800
-Message-ID: <87sf1kj3nn.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1708591079; c=relaxed/simple;
+	bh=7YOqReXSrg+D9p04iIoWnVOSNboFsdzKRwZEZRJ2ibY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GM6SkeV8azuPmboSk9tjoRh1B+WAznLEGJahfyZ+euSdfWjTO28hYzvH6YQPdYJFdu6xnC/e84LlT5cnRmvol2w7GmtiIObx3Oew//H7prC2ZS4Ukjv+n9r5E7GScnXLU0yingnzQok2teTYOA3RY/H6XVPh4QRBWSxSdvZXn8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Br3Ux179; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <d3be7a90-b186-a8fb-678c-f06ef950d942@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708591073;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rqsis7qCIfa4wD4HgfeAJauNuQNyODgqCcBJ3xvV6ng=;
+	b=Br3Ux1791TakLd/z0p8E0Sf3d879NhVS0/I2uu+Fr8Ug5ZcT7ArqgrZPO1tMWC9nc7MQrz
+	QljCIBIDbjCjyfoG+VBKHilsyGPazDapzS/gGbeeBZicHGWs4/PopowhRJsTKIxsNpHrUK
+	wdc0V8CqMc3YAfbymN3cGKtAv4nKzsw=
+Date: Thu, 22 Feb 2024 16:37:44 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Subject: Re: [PATCH v2] mm/mmap: return early if it can't merge in vma_merge()
+Content-Language: en-US
+To: Lorenzo Stoakes <lstoakes@gmail.com>
+Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>, akpm@linux-foundation.org,
+ vbabka@suse.cz, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240221091453.1785076-1-yajun.deng@linux.dev>
+ <20240221153827.wkmjnnwsf6lyxatc@revolver>
+ <f3847dd7-5564-4d7e-951e-1a9d8f55fb78@lucifer.local>
+ <082fed0a-8489-37d1-f990-067976260659@linux.dev>
+ <b4232b44-083a-42d4-a245-7eb4382f7329@lucifer.local>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yajun Deng <yajun.deng@linux.dev>
+In-Reply-To: <b4232b44-083a-42d4-a245-7eb4382f7329@lucifer.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Byungchul Park <byungchul@sk.com> writes:
 
-> Changes from v1:
-> 	1. Add a comment describing why this change is necessary in code
-> 	   and rewrite the commit message with how to reproduce and what
-> 	   the result is using vmstat. (feedbacked by Andrew Morton and
-> 	   Yu Zhao)
-> 	2. Change the condition to avoid cache_trim_mode from
-> 	   'sc->priority != 1' to 'sc->priority > 1' to reflect cases
-> 	   where the priority goes to zero all the way. (feedbacked by
-> 	   Yu Zhao)
+On 2024/2/22 16:31, Lorenzo Stoakes wrote:
+> On Thu, Feb 22, 2024 at 03:47:04PM +0800, Yajun Deng wrote:
+>> On 2024/2/22 04:41, Lorenzo Stoakes wrote:
+>>> On Wed, Feb 21, 2024 at 10:38:27AM -0500, Liam R. Howlett wrote:
+>>>> * Yajun Deng <yajun.deng@linux.dev> [240221 04:15]:
+>>>>> In most cases, the range of the area is valid. But in do_mprotect_pkey(),
+>>>>> the minimum value of end and vma->vm_end is passed to mprotect_fixup().
+>>>>> This will lead to the end is less than the end of prev.
+>>>>>
+>>>>> In this case, the curr will be NULL, but the next will be equal to the
+>>>>> prev. So it will attempt to merge before, the vm_pgoff check will cause
+>>>>> this case to fail.
+>>>>>
+>>>>> To avoid the process described above and reduce unnecessary operations.
+>>>>> Add a check to immediately return NULL if the end is less than the end of
+>>>>> prev.
+>>>> If it's only one caller, could we stop that caller instead of checking
+>>>> an almost never case for all callers?  Would this better fit in
+>>>> vma_modify()?  Although that's not just for this caller at this point.
+>>>> Maybe there isn't a good place?
+>>> I definitely agree with Liam that this should not be in vma_merge(), as
+>>> it's not going to be relevant to _most_ callers.
+>>>
+>>> I am not sure vma_modify() is much better, this would be the only early
+>>> exit check in that function and makes what is very simple and
+>>> straightforward now more confusing.
+>>
+>> There are two paths that will cause this case. One is in mprotect_fixup(),
+>> the other is in
+>>
+>> madvise_update_vma().
+>>
+>>
+>> One way is to separate out the split_vma() from vma_modify(). And create a
+>> new helper function.
+> Absolutely not. I wrote the vma_modify() patch series explicitly to expose
+> _less_ not more.
 >
-> --->8---
-> From 07e0baab368160e50b6ca35d95745168aa60e217 Mon Sep 17 00:00:00 2001
-> From: Byungchul Park <byungchul@sk.com>
-> Date: Thu, 22 Feb 2024 14:50:17 +0900
-> Subject: [PATCH v2] mm, vmscan: don't turn on cache_trim_mode at high scan priorities
+>> We can call it directly at source, but we need to do this in both paths.
+>> It's more complicated.
+>>
+>>
+>> The other way is to add a check in vma_modify(). Like the following:
+> As I said above, I really don't think this is a good idea, you're just
+> special casing one non-merge case but not any others + adding an
+> unnecessary branch.
 >
-> With cache_trim_mode on, reclaim logic doesn't bother reclaiming anon
-> pages.  However, it should be more careful to turn on the mode because
-> it's going to prevent anon pages from being reclaimed even if there are
-> a huge number of anon pages that are cold and should be reclaimed.  Even
-> worse, that can lead kswapd_failures to reach MAX_RECLAIM_RETRIES and
-> stopping kswapd until direct reclaim eventually works to resume kswapd.
-> So this is more like a bug fix than a performance improvement.
->
-> The problematic behavior can be reproduced by:
->
->    CONFIG_NUMA_BALANCING enabled
->    sysctl_numa_balancing_mode set to NUMA_BALANCING_MEMORY_TIERING
->
->    numa node0 (8GB local memory, 16 CPUs)
->    numa node1 (8GB slow tier memory, no CPUs)
->
->    Sequence:
->
->    1) echo 3 > /proc/sys/vm/drop_caches
->    2) To emulate the system with full of cold memory in local DRAM, run
->       the following dummy program and never touch the region:
->
->          mmap(0, 8 * 1024 * 1024 * 1024, PROT_READ | PROT_WRITE,
-> 	      MAP_ANONYMOUS | MAP_PRIVATE | MAP_POPULATE, -1, 0);
->
->    3) Run any memory intensive work e.g. XSBench.
->    4) Check if numa balancing is working e.i. promotion/demotion.
->    5) Iterate 1) ~ 4) until kswapd stops.
->
-> With this, you could eventually see that promotion/demotion are not
-> working because kswapd has stopped due to ->kswapd_failures >=
-> MAX_RECLAIM_RETRIES.
->
-> Interesting vmstat delta's differences between before and after are like:
->
->    -nr_inactive_anon 321935
->    -nr_active_anon 1780700
->    -nr_inactive_file 30425
->    -nr_active_file 14961
->    -pgpromote_success 356
->    -pgpromote_candidate 21953245
->    -pgactivate 1844523
->    -pgdeactivate 50634
->    -pgfault 31100294
->    -pgdemote_kswapd 30856
->    -pgscan_kswapd 1861981
->    -pgscan_anon 1822930
->    -pgscan_file 39051
->    -pgsteal_anon 386
->    -pgsteal_file 30470
->    -pageoutrun 30
->    -numa_hint_faults 27418279
->    -numa_pages_migrated 356
->
->    +nr_inactive_anon 1662306
->    +nr_active_anon 440303
->    +nr_inactive_file 27669
->    +nr_active_file 1654
->    +pgpromote_success 1314102
->    +pgpromote_candidate 1892525
->    +pgactivate 3284457
->    +pgdeactivate 1527504
->    +pgfault 6847775
->    +pgdemote_kswapd 2142047
->    +pgscan_kswapd 7496588
->    +pgscan_anon 7462488
->    +pgscan_file 34100
->    +pgsteal_anon 2115661
->    +pgsteal_file 26386
->    +pageoutrun 378
->    +numa_hint_faults 3220891
->    +numa_pages_migrated 1314102
->
->    where -: before this patch, +: after this patch
->
-> Signed-off-by: Byungchul Park <byungchul@sk.com>
-> ---
->  mm/vmscan.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index bba207f41b14..6eda59fce5ee 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -2266,9 +2266,17 @@ static void prepare_scan_control(pg_data_t *pgdat, struct scan_control *sc)
->  	 * If we have plenty of inactive file pages that aren't
->  	 * thrashing, try to reclaim those first before touching
->  	 * anonymous pages.
-> +	 *
-> +	 * However, the condition 'sc->cache_trim_mode == 1' all through
-> +	 * the scan priorties might lead reclaim failure. If it keeps
-> +	 * MAX_RECLAIM_RETRIES times, then kswapd would get stopped even
-> +	 * if there are still plenty anon pages to reclaim, which is not
-> +	 * desirable. So do not use cache_trim_mode when reclaim is not
-> +	 * smooth e.i. high scan priority.
->  	 */
->  	file = lruvec_page_state(target_lruvec, NR_INACTIVE_FILE);
-> -	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE))
-> +	if (sc->priority > 1 && file >> sc->priority &&
-> +	    !(sc->may_deactivate & DEACTIVATE_FILE))
->  		sc->cache_trim_mode = 1;
->  	else
->  		sc->cache_trim_mode = 0;
+>> diff --git a/mm/mmap.c b/mm/mmap.c
+>> index 0fccd23f056e..f93f1d3939f2 100644
+>> --- a/mm/mmap.c
+>> +++ b/mm/mmap.c
+>> @@ -2431,11 +2431,15 @@ struct vm_area_struct *vma_modify(struct
+>> vma_iterator *vmi,
+>>          pgoff_t pgoff = vma->vm_pgoff + ((start - vma->vm_start) >>
+>> PAGE_SHIFT);
+>>          struct vm_area_struct *merged;
+>>
+>> +       if (prev && end < prev->vm_end)
+>> +               goto cannot_merge;
+>> +
+>>          merged = vma_merge(vmi, prev, vma, start, end, vm_flags,
+>>                             pgoff, policy, uffd_ctx, anon_name);
+>>          if (merged)
+>>                  return merged;
+>>
+>> +cannot_merge:
+>>          if (vma->vm_start < start) {
+>>                  int err = split_vma(vmi, vma, start, 1);
+>>
+>>
+>>> And I think this is the crux of it - it's confusing that we special case
+>>> this one particular non-merge scenario, but no others (all of which we then
+>>> deem ok to be caught by the usual rules).
+>>>
+>>> I think it's simpler (and more efficient) to just keep things the way they
+>>> are.
+>>>
+>>>> Or are there other reasons this may happen and is better done in this
+>>>> function?
+>>>>
+>>>> Often, this is called the "punch a hole" scenario; where an operation
+>>>> creates two entries from the old data and either leaves an empty space
+>>>> or fills the space with a new VMA.
+>>>>
+>>>>> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+>>>>> ---
+>>>>> v2: remove the case label.
+>>>>> v1: https://lore.kernel.org/all/20240218085028.3294332-1-yajun.deng@linux.dev/
+>>>>> ---
+>>>>>    mm/mmap.c | 3 +++
+>>>>>    1 file changed, 3 insertions(+)
+>>>>>
+>>>>> diff --git a/mm/mmap.c b/mm/mmap.c
+>>>>> index 0fccd23f056e..7668854d2246 100644
+>>>>> --- a/mm/mmap.c
+>>>>> +++ b/mm/mmap.c
+>>>>> @@ -890,6 +890,9 @@ static struct vm_area_struct
+>>>>>    	if (vm_flags & VM_SPECIAL)
+>>>>>    		return NULL;
+>>>>>
+>>>>> +	if (prev && end < prev->vm_end)
+>>>>> +		return NULL;
+>>>>> +
+>>>>>    	/* Does the input range span an existing VMA? (cases 5 - 8) */
+>>>>>    	curr = find_vma_intersection(mm, prev ? prev->vm_end : 0, end);
+>>>>>
+>>>>> --
+>>>>> 2.25.1
+>>>>>
+>>> So overall I don't think this check makes much sense anywhere.
+>>>
+>>> I think a better solution would be to prevent it happening _at source_ if
+>>> you can find a logical way of doing so.
+>>>
+>>> I do plan to do some cleanup passes over this stuff once again so maybe I
+>>> can figure something out that better handles non-merge scenarios.
+>>>
+>>> This is a great find though overall even if a patch doesn't make sense
+>>> Yajun, thanks for this, it's really made me think about this case (+ others
+>>> like it) :)
+> I guess maybe again I've not been clear enough on this, so unless
+> compelling reasoning can otherwise be provided, I feel this check should
+> not be added _anywhere_.
 
-In get_scan_count(), there's following code,
 
-	/*
-	 * Do not apply any pressure balancing cleverness when the
-	 * system is close to OOM, scan both anon and file equally
-	 * (unless the swappiness setting disagrees with swapping).
-	 */
-	if (!sc->priority && swappiness) {
-		scan_balance = SCAN_EQUAL;
-		goto out;
-	}
+Okay, I got it. Thank you!
 
-So, swappiness is 0 in you system?  Please check it.  If it's not 0,
-please check why this doesn't help.
-
---
-Best Regards,
-Huang, Ying
+> Therefore, NACK.
 
