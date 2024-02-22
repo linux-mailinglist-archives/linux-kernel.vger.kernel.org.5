@@ -1,161 +1,82 @@
-Return-Path: <linux-kernel+bounces-75860-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75861-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 123E585EFF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:33:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1443685EFF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:35:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7A8B1F23B96
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:33:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E1E91C21042
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:35:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B98E917560;
-	Thu, 22 Feb 2024 03:33:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE2871755A;
+	Thu, 22 Feb 2024 03:35:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hreMZrV7"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XlZsiqoy"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A632028EF
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:33:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CC8428EF
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:35:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708572818; cv=none; b=DtM/XtZ2exyNwrcF50xF/+M+ta41A8vVneC1QAywm/JNMrbnjeleQnpoXWs4D6AbpB/M+bFZCpamfXbNDoD0OmcBZKQCcea+kkr5+2mEBH9CEAX9hDAOGJNVUhxpoYs1w/sWgyOWfspKRdBq4bx7lPzXDC41TSJAuo7v1X9jyF0=
+	t=1708572950; cv=none; b=W7OM8ft4cYmipLgP7voFuYNPsQ0UUJoDbdKGB47/ftlkowdXVeP41HPPZbblyytJ3hShdYUn/yt05VudFKTonzfPafkBnj3M0T2NIww3jgIy1Or4yDZdSfUvQk0SpODJYZJYDPtF/yLGpROAw+TTC+2kAodlSVHXfnl+eTP29SA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708572818; c=relaxed/simple;
-	bh=URHjr+ChHdQ1rHEgj2w8H31cO+/r5r4OAqaQksqRx6I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Fm99R+KIJdby1AdZFp1WzBTfZ3gR5l+KgGm7FZz0JqdyjZ+cDMHOGal4Bj4cd+FxIUksq9G88MCU/i9dADhUriP30las2Yeb3IuRw4hVcKwKNOMIi6xvKffwVXTMSYgJYcfrEY2Dwoxytl8W/WgrPSFpVI4mkS59IxNpsuk7eZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hreMZrV7; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e47c503fb5so2183341b3a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 19:33:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708572816; x=1709177616; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VHAMwOUToAwFkBITdyqsQLlGeV+NzFx4M5PdSc3kuRE=;
-        b=hreMZrV7bL9lKd9UIoAdmVlkd6c8Cl3ac1qi8+PZ4RqRkXcGbQLxSwZVARrFoMlLRP
-         Ezs77dtu0h3NFXW/dH3o2R8mCiJ/ktXuEASrWz/2QHAiF9spEjjfXuu4nSeKS8UbJQaO
-         adb7wuh9AxborLKPRNIyhD/IbPjQpjrMNBYk3OAXoJUlIqt4hmWQDp3/VnghpzMP2Fr0
-         hpBoz2eoVQOMp5V1iI9myRMJZreir1Q95YCq8EkwDjaWc0Q0/ZigBvEgnfBjwJy5w0zz
-         nZkH+qV6hCqoiRcRAc3MwbsRBB1WLB205udWsbBC4O2uPvP7ezWZHgb/avD3N/YxsFco
-         WOHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708572816; x=1709177616;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VHAMwOUToAwFkBITdyqsQLlGeV+NzFx4M5PdSc3kuRE=;
-        b=AHycHfyk5eP+DX5RDTSjL0b7mNfTJ2+YNJFABFrG+6oitakpqj+8OfopbtJFuXqXwy
-         asGa5aKc9Qr/sexqSUVLpaWUzhe1RcBNNGKjuHy8x+qvlHY5AV+S8jwDIza8PhFt5EMr
-         BJGj4WRiZlajUmrKrfAEmqaNmkejA4KBDG7oCbiIEpTaEx9lQTXzSNXODjBSMVLJW+rR
-         GdZatgY9YHIkgrB5D19Ogapr/sp+k5hNmU1G6E8VDUNS/y0UMY1yMKBP+kZC93LuvSfR
-         oJDPIXov3moeMoNUfSxfLhT76Ptqy9UA9EAGj+kyI5lCylTEoBHdiOnr6GNskvmOF3hK
-         E/zw==
-X-Forwarded-Encrypted: i=1; AJvYcCW05Ir3RHEgMIWkp8LzM/YQIwHAPGcWykNqzOz9ZKjHKynUP3/D0SosMVuCYBOqZvklJh8H5Za9HON45pGpxw9TQ6QG+c31fdzvpYno
-X-Gm-Message-State: AOJu0YxqIw10pCTpQHQlQu1NRRABzaX0rBVn7YiE8YEOJQja50ritSOz
-	NJEQcVwfkIXlFWJ2bCHcuG6SW9yaIa9n8JDySrSYmizp94LhN925LXxL9yClOAooMoP5i6vORSG
-	Z9JDGYEtcldY1cfeCqlc8UtToFA6rRJxoAtG0/g==
-X-Google-Smtp-Source: AGHT+IHO6r6XN0homLx3kTbgEJ1s87Hf/cfhSNWXD7ItOEoeWhdD8ege76NGwlURHiS8wYSf9720b3lx7s5OiQYicuc=
-X-Received: by 2002:a05:6a21:3a87:b0:1a0:c5e4:f685 with SMTP id
- zv7-20020a056a213a8700b001a0c5e4f685mr3399855pzb.33.1708572815988; Wed, 21
- Feb 2024 19:33:35 -0800 (PST)
+	s=arc-20240116; t=1708572950; c=relaxed/simple;
+	bh=HSxScKbzztXZB5YaKXB2CHicE/jR2ReMfL/oei6pYmw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=O5vlxgR16ICBfbgbnVf7XD8hPIBIeF9l3XoS/WpyIonwU916f15yr3aS7ZoM+YRRtY0OudCtty0jyD71zhGq9JV25ZyUrNPalqdcKStfKJUPSDxBw3iaAkBACjH0tX5H0IxCjOQC1cXDg6Yq6ZgyNTV0p4Zzis5GNHD+bhaLoYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XlZsiqoy; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=k2qqGakj6suncR5yFTplOvwhI9MQ07qi3BIxDZ0n86Y=; b=XlZsiqoyvBGd+rE9mW8Fd2Bby3
+	sjmex3EpRfExrk/r+40NGtN49fo3fE9AREhgffMlFj5ghpupNJrD9TIwhHtaW5Pi+FluHzRCSiGF8
+	d/nVuqN2zQsVN3gKV5scRxFNXrAJjdAROVffaY+raUGFZYd5hS0vRSPCYPKRIDdezxdcD0M2rsFJV
+	/yuJh+E2eKRLAul0dnCigD4O1pZx2dXSGZr//5vg/s5rFjpY+YJLnxXaC6kckkfcxwDyycoUl3isR
+	nfA796cBiFDJaqut3yRrMDtZQBxKtUDwjwWGZPt1yTx1P6QZ/zwhabYErmbHb5SPo5D436ZCDzzTC
+	H/jJ6UPw==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rczs9-00000002TJz-215C;
+	Thu, 22 Feb 2024 03:35:45 +0000
+Date: Thu, 22 Feb 2024 03:35:45 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	akpm@linux-foundation.org, muchun.song@linux.dev
+Subject: Re: [PATCH v2 2/5] hugetlb: Move vm_struct declaration to the top of
+ hugetlb_fault()
+Message-ID: <ZdbBEc9d6WiCsQHl@casper.infradead.org>
+References: <20240221234732.187629-1-vishal.moola@gmail.com>
+ <20240221234732.187629-3-vishal.moola@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221174333.700197-1-tj@kernel.org>
-In-Reply-To: <20240221174333.700197-1-tj@kernel.org>
-From: Lai Jiangshan <jiangshanlai@gmail.com>
-Date: Thu, 22 Feb 2024 11:33:24 +0800
-Message-ID: <CAJhGHyCJS7Pb_5dwTQtcZ25yOVzxFULJEYT4o3id_3xdj32EYA@mail.gmail.com>
-Subject: Re: [PATCHSET v2 wq/6.10] workqueue: Implement disable/enable_work()
-To: Tejun Heo <tj@kernel.org>
-Cc: torvalds@linux-foundation.org, linux-kernel@vger.kernel.org, 
-	allen.lkml@gmail.com, kernel-team@meta.com, 
-	Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221234732.187629-3-vishal.moola@gmail.com>
 
-Hello, Tejun
+On Wed, Feb 21, 2024 at 03:47:29PM -0800, Vishal Moola (Oracle) wrote:
+> hugetlb_fault() currently defines a vm_struct to pass to the generic
 
-+cc tglx
+s/vm_struct/vm_fault/ (both this line and Subject:)
 
-On Thu, Feb 22, 2024 at 1:43=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
+> handle_userfault() function. We can move this definition to the top of
+> hugetlb_fault() so that it can be used throughout the rest of the
+> hugetlb fault path.
+> 
+> This will help cleanup a number of excess variables and function
+> arguments throughout the stack. Also, since vm_fault already has space
+> to store the page offset, use that instead and get rid of idx.
+> 
+> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
 
-> 4cb1ef64609f ("workqueue: Implement BH workqueues to eventually replace
-> tasklets") implemented workqueues that execute work items in the BH conte=
-xt
-> with the goal of eventually replacing tasklet.
->
-> While the existing workqueue API covers the basic queueing and canceling
-> operations, tasklet also has tasklet_disable*() which blocks the executio=
-n
-> of the tasklet until it's re-enabled with tasklet_enable(). The interface=
- if
-> fairly widely used and workqueue currently doesn't have a counterpart.
->
-> This patchset implements disable/enable_work() and the delayed_work
-> counterparts to address the gap. The ability to block future executions i=
-s
-> something which some users asked for in the past, and, while not essentia=
-l
-> as the caller can and often has to shutdown the queuer anyway, it's a nic=
-e
-> convenience to have. Also, timer grew a similar feature recently with
-> timer_shutdown().
->
-
-From the last patch:
-> - tasklet_disable_nosync()      -> disable_work()
-> - tasklet_disable[_in_atomic]() -> disable_work_sync()
-
-I think it is a misuse-prone conversion.
-
-A developer familiar with tasklet_disable() might happily use disable_work(=
-)
-and, to her/his surprise, leave the running works unsynced.
-
-And tasklet_disable_nosync() is used at only 3 places while tasklet_disable=
-()
-is used a lot.  I think the shorter name for the most common cases is bette=
-r.
-
-Moreover, IMHO the unsynchronized variants of tasklet/work disabling functi=
-ons
-never have a strong scenario. I think it should be discouraged.
-
-Although it will be inconsistent with the name of cancel_work[_sync](),
-I still suggest:
-tasklet_disable_nosync() -> disable_work_nosync()
-tasklet_disable() -> disable_work().
-
-Even cancel_work_sync() is used a lot more than cancel_work(), so I
-also suggest rename cancel_work() to cancel_work_nosync() and leave
-cancel_work_sync() unchanged (at least for a while).
-
-[changed topic:]
-
-I feel uncomfortable with tasklet_disable_in_atomic() implicitly
-being implemented in disable_work_sync().
-
-I think it is a revert of the commit ca5f62511895 ("tasklets: Provide
-tasklet_disable_in_atomic()") in which tglx discouraged the usage of
-tasklet_disable_in_atomic() and marked it "error prone".
-
-And even tasklet_disable_in_atomic() is implemented in disable_work_sync(),
-I prefer to sleepable-wait than spinning-wait when disable_work_sync() is
-called in a sleepable context for BH work item.
-
-All the above is just my feeling, not reasoning, nor rejection of the patch=
-es.
-
-Thanks
-Lai
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
