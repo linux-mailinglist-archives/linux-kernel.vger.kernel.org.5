@@ -1,117 +1,128 @@
-Return-Path: <linux-kernel+bounces-77009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2E3885FFFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:47:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A01F85FFFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:48:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BC6F1C23EE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:47:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EFADDB277DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:48:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA38156963;
-	Thu, 22 Feb 2024 17:47:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B90251552EF;
+	Thu, 22 Feb 2024 17:48:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k8bBJ6Zw"
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="GTH5DnT9"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBF36131722;
-	Thu, 22 Feb 2024 17:47:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10F321534F8
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 17:48:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708624037; cv=none; b=nz9n9MKBNkF911miqSBojfUdfSCY8HP/K1sEw9tI8KxfhIx3NBk3hf6df9/G6SWDrC+u0Cp+cx+Uqxy8snh8uS590pk+d93CZA4CNG85Hc4ZrujsBBTOeXtUM3H2k48l4drHitqGukdTJhnVZocBWZcEKWhXNe6TBR8bODi9UWI=
+	t=1708624122; cv=none; b=o81VCgRu0Epg7L3brqTZNsiV6MYNH2cWI0iTb/gZljaSOC5TwtBBTjNwM41GXJkSSp57AfeWaagHouAWqsN7w8KgO3jIEzAbyqBgJXDuPB4kWxAwwZv7Q/iBS47o04ZlU3Zzhc3iYcTTGieaDsdIS5BkvrJV1uGrQ7wXl2/ZTnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708624037; c=relaxed/simple;
-	bh=pxj3JMHZFONWDKnKYJpje4WNhEx9Zd7DxubCa9x8R+w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=PC+HxlSVaAQfGA6sRoFmT/kZEeYH7WsAjXukofNFwtjv9hsGU40oH8J+NsOuoEX1mfUNB1PFcvcllPxErtVlAbFWqRj0t1VsazFuuOXPRIgAKH0Gv2xpEWDQnValge3HM1yHlqpX/jzce8ByvZC6VsEunYSxjZ91CQe1tFGl4tY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k8bBJ6Zw; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-512e39226efso83000e87.0;
-        Thu, 22 Feb 2024 09:47:15 -0800 (PST)
+	s=arc-20240116; t=1708624122; c=relaxed/simple;
+	bh=qYLmMIu0Rese8RbpYgo2VOL3SKIbbZc5jXyxFfzqGQk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fTfhXGOSs0yQMA1HnFN09SNcbjkH6S+NB9gsTAAHlcNqJiGjKn5htooeCtdXO2D8rjsDXXGVoee+WCJBFOlPTIT+K5tUIiPdVCKri3ZkbebtOnMV2woPG9u8ruzlY1N3ZpZRCeEsuvXlRZcP93qaUCd1Dz1O8B4/jRewGcmb3NA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=GTH5DnT9; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dc74435c428so7655779276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 09:48:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708624034; x=1709228834; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=1vMzRY4ZdJC97RtaAcBXZtkJzfMV0ziR37O9+2OreJs=;
-        b=k8bBJ6ZwqQPztJ5iWSF9xS0xqfkYefAOe+dFzKRjpfycRNkZvw0qOSbAZFmAOLqiXF
-         GiTssslOJoycJdMG0obOfEnLPd5+3VRhAresH+SJ2bq10Mc5/yYzK5+nqaiBQoJJ+SKf
-         3Kab/xHaNuUUvXcBDyYP41hkcJkP4ebINQsmJ9N9BONLnnqA/56wljJXhiDGbmufp086
-         jZmPgkf/cAqDiklGFX4Sj2YaWGHBMwzS7AeNQndEZdTApbwAvjR+iOW3Xb8A00JtkdlH
-         dOsVTfjmBBQ9WcWprp7+eCoocy+6bvE1p/KsroL4tVyf8ZeL70NT73uyjUiLZ3CksDsW
-         MG4Q==
+        d=paul-moore.com; s=google; t=1708624120; x=1709228920; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yBJRDZD5mD/oheWRH0mQPSFnNThEgDgn9q7qpy7k0qc=;
+        b=GTH5DnT9xglKTab+WFANAJFmNX/cdm3sZVD1kXdgWlkDpG5ru36mcbZkJ3/82+JyVT
+         m4bVLomnL5FiRaD7gT/Wzt+3pAV+Rsq7fhggbpY/KtA3Fxf8DWf/XhX5xWkGYWPkgl1Q
+         i756rYi3M4+BywWDl+BiONa63VasKHKpBeMiXtg+Sicndzz//H5swVYg9j5qHZwS1ps8
+         TZn9m6ik3J8JOsLIRnD1VocDeLhfib7H7CUEI7bwgotypesLZGaYRFSTuQOYO2Q77lpJ
+         NceaBTsGw6E1r2F9auAdaGV4F2/CB9WA7CW1hq53K0sRsg60N4xfhYt0AesA49Awo+fG
+         HfAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708624034; x=1709228834;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1vMzRY4ZdJC97RtaAcBXZtkJzfMV0ziR37O9+2OreJs=;
-        b=NZYqTNEOyQ74pTibp6yyuDV0TE2JMwiXMAUsh36b6joebaszW7pGYLmvelI2aWDk/R
-         fRRbtApCZTxAOQ0/7Q+DkUHJtPm0pqcnegVZFHZnDAqMQCmRSH0o2rTl1tD6T5kHydaY
-         zapuqwDrsg66i6YyTTx81H7nipK4ZdvTZsowozzG3mEnHc0QOLK3Co49Ztv/L8M0kAjX
-         eodXx1/2hOSE36LHZrzyQMX2ZCTIXIkvZ/eh41QK3hDXGDPU7zLVVgwRBXvtWjuxeu4T
-         qFCMJ0bm7i4mCj2FJCIvKEmHNt7QqUG3OShssvtjl81Ak/KInLd2CeTePUcdcB0aGQvg
-         k6Ww==
-X-Forwarded-Encrypted: i=1; AJvYcCXV4HwWeGjnVKO30+oHkMLppTn7zQseZPpQgoM4uZigwkVPkRS3yr70ZlbhHC15UQjzUvElDcElcz8LVOGYAfQZptq0zhCvPKWE3h0mVa71+yCMzzrIgOcqTzi06GvG1W4BnAbSZUq2eg==
-X-Gm-Message-State: AOJu0YzmxHFTXTPWOm7Cs+EJjgcZtuQwduNqwLYNHDcXHvE7T8rNK+1I
-	ZK3z++3n1iD+1QT5BpBCEebaP0zv/ynk93tp1+WolTIES82uANRm
-X-Google-Smtp-Source: AGHT+IGiugEEEwYB53ORSW0VA1gdJrv8sHxuyh9M9w4ejmOATIcCj/UM2+JKxQktNLdPnMuWWIo5iw==
-X-Received: by 2002:a05:6512:3fc:b0:512:ceae:93d9 with SMTP id n28-20020a05651203fc00b00512ceae93d9mr3339347lfq.28.1708624033424;
-        Thu, 22 Feb 2024 09:47:13 -0800 (PST)
-Received: from [192.168.50.110] ([90.255.110.157])
-        by smtp.gmail.com with ESMTPSA id ay25-20020a05600c1e1900b00411d3a414c6sm895267wmb.47.2024.02.22.09.47.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 09:47:12 -0800 (PST)
-Message-ID: <79a4b60e-24f3-47fd-b3b3-7d207cec1470@gmail.com>
-Date: Thu, 22 Feb 2024 17:47:11 +0000
+        d=1e100.net; s=20230601; t=1708624120; x=1709228920;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yBJRDZD5mD/oheWRH0mQPSFnNThEgDgn9q7qpy7k0qc=;
+        b=QWt9mRn7Bb+u3ptEBBu+fX1JrV6uRmmsP3AX4vTOD/FIgezlIHmPFbEMu3Sq5nGeYs
+         lft+pg22oOzyBB8gcN2By9auaMeWsw7SiEP2GteoecfLcRs5RZCwtCENRvTHHvUeXxlV
+         b8BpUFRWNLENdK8y+Y22NLOoigqk/k/4Ul0mm3qsIXg4dIg6j8jsCi7rDxvHCQaULInv
+         5CIzlLmM2JdInTFvMtJo/zsZi+ogbQ+MUGNMsCZNqAFYQi7YyU2FoJPH6yCFXDkLpTfC
+         7WU8HO70ZR3dZ1bAmpv93M9XC5w5WZSmpjQhgCVm1Kc+dW6prJul3UsG+uKPAK4sRWAG
+         5KPA==
+X-Forwarded-Encrypted: i=1; AJvYcCVCGI66Lk72fDquw2r4hzydv4rfX4RQklOV2kUqzVHgZmUaq6qLHX6FpSJsumbvWeiC5I6CqGt/QKcAKNuqWrKDgGcfbZXu4bGXYhCy
+X-Gm-Message-State: AOJu0YylYz3BQXGkQ17iEaGoeMkiSshSF4lkEq5Hn2exuecokodTT4VK
+	gOQPHRP8PK2olo9pAjbNfaNZzQOwPKzmQAu+tValc0ptzNDNyzX+k7uBkmnXawvi4Bo0Syt3aoD
+	r0W41/r4aUovbrFvitDg3Y+AFUjZF17hM8I5U
+X-Google-Smtp-Source: AGHT+IFBiGaibrZl3vFlfOhP0RI6ypAvrT3Tolqp4SbjChhLeFk5HSc3i8HWa2N8L7WhRDnc/VCwvi7FLu3KyZqosMA=
+X-Received: by 2002:a25:b90c:0:b0:dcb:d8d1:2d59 with SMTP id
+ x12-20020a25b90c000000b00dcbd8d12d59mr2986852ybj.38.1708624119917; Thu, 22
+ Feb 2024 09:48:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] drm: panel: st7701: Add Hardkernel ODROID-GO Ultra
- panel support
-To: Jessica Zhang <quic_jesszhan@quicinc.com>,
- Jagan Teki <jagan@amarulasolutions.com>,
- Neil Armstrong <neil.armstrong@linaro.org>, Sam Ravnborg <sam@ravnborg.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, dri-devel@lists.freedesktop.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240221194528.1855714-1-greena88@gmail.com>
- <20240222164332.3864716-1-greena88@gmail.com>
- <20240222164332.3864716-2-greena88@gmail.com>
- <f9446923-acd3-41cf-92d4-676b946280c4@quicinc.com>
-Content-Language: en-GB
-From: Adam Green <greena88@gmail.com>
-In-Reply-To: <f9446923-acd3-41cf-92d4-676b946280c4@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240130094037.76895-1-chentao@kylinos.cn> <CAHC9VhQG6XAm3R3wtgFrb0b0UHoxkSV2yziVAnUy2x7Ovun_pQ@mail.gmail.com>
+ <CAHC9VhRLNHT0ar2YPkZBsyha_mh6Ggf6=V2gnbFkdo7ryXmHnQ@mail.gmail.com> <0f51c6ba-a6c0-4fbf-9b00-21cea6d59ca9@kylinos.cn>
+In-Reply-To: <0f51c6ba-a6c0-4fbf-9b00-21cea6d59ca9@kylinos.cn>
+From: Paul Moore <paul@paul-moore.com>
+Date: Thu, 22 Feb 2024 12:48:29 -0500
+Message-ID: <CAHC9VhTJXfPztz2W_V6sp41PJW8dzvZH0YdnRXd7tUZOF1Q09Q@mail.gmail.com>
+Subject: Re: [PATCH] cred: Use KMEM_CACHE instead of kmem_cache_create
+To: Kunwu Chan <chentao@kylinos.cn>
+Cc: axboe@kernel.dk, elena.reshetova@intel.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 22/02/2024 17:14, Jessica Zhang wrote:
-> Hi Adam,
-> 
-> Just wondering, why the change to 120 here?
-> 
-> Thanks,
-> 
-> Jessica Zhang
+On Wed, Feb 21, 2024 at 10:06=E2=80=AFPM Kunwu Chan <chentao@kylinos.cn> wr=
+ote:
+> Thanks for your reply.
+> On 2024/2/22 08:10, Paul Moore wrote:
+> > On Thu, Feb 15, 2024 at 10:54=E2=80=AFPM Paul Moore <paul@paul-moore.co=
+m> wrote:
+> >> On Tue, Jan 30, 2024 at 4:40=E2=80=AFAM Kunwu Chan <chentao@kylinos.cn=
+> wrote:
+> >>>
+> >>> commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
+> >>> introduces a new macro.
+> >>> Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+> >>> to simplify the creation of SLAB caches.
+> >>>
+> >>> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+> >>> ---
+> >>>   kernel/cred.c | 4 ++--
+> >>>   1 file changed, 2 insertions(+), 2 deletions(-)
+> >>
+> >> This seems reasonable to me, unless I see any objections I can pull
+> >> this via the LSM tree next week.
+> >
+> > Actually, never mind, the original posting has some non-ASCII junk in
+> > the patch and I'm not able to import it cleanly.
+> Thanks for reply.
+>
+> I checked the patch with the checkpatch.pl script and applied it to
+> another machine to compile and found no issues.
+> Seems ok to me, what should I do next to clean up that non-ASCII junk.
+>
+> And i use :perl -ne 'print if /[^[:ascii:]]/'
+> 0001-cred-Use-KMEM_CACHE-instead-of-kmem_cache_create.patch seems ok too.
 
-Hi,
+Look at the message when in the mailing list archive (link below) and
+you'll notice the extra characters:
+https://lore.kernel.org/all/20240130094037.76895-1-chentao@kylinos.cn/raw
 
-The 120ms is taken from the datasheet specification for the controller 
-as maximum time it takes for the display to reset,
+.. and then look at a correctly submitted patch:
+https://lore.kernel.org/all/20240126104403.1040692-1-omosnace@redhat.com/ra=
+w
 
-Kind regards,
-
-Adam
+--=20
+paul-moore.com
 
