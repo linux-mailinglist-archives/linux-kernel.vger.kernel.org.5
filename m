@@ -1,115 +1,135 @@
-Return-Path: <linux-kernel+bounces-76902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A448885FE62
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:46:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD1A985FE67
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:47:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D870282F06
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:46:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BC351F22869
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:47:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 074EF153BE4;
-	Thu, 22 Feb 2024 16:46:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AA9A153BEF;
+	Thu, 22 Feb 2024 16:47:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V2hZtdag"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mjxHJISS"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A519153BCE;
-	Thu, 22 Feb 2024 16:46:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60D7218657;
+	Thu, 22 Feb 2024 16:47:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708620385; cv=none; b=GWN5b4y8TtqkFYUwTM0v8X/ew5kfKe2XkLpstsGDJwHjx7tMLjvRJbEBKW04pn5BHC0db+lRf5Ru3r5PppiYO5Ac+fQljKaoG34T6U/mQvhkF1eXlmo2/w6dHvnE3V2dyfTRahQOl+lZ3CquBz4qolWPavCO75XFKmhmqXrK1LU=
+	t=1708620450; cv=none; b=Ev2lgifBO/PUvtd1qjIiZRT16gOj1jnGZ2SntgrsomhynB/uRC4bwHcjGnBCKu3WdixLVeiBkBFLDaWkSWVQqiA9+pCbKZ0+Wu8VQq8Gb4ILCj8z3p5bCkCLDgKvOhfOeKfIqCE76POBvDn1kmXPuFsL027y8IZlD4ritwf+U9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708620385; c=relaxed/simple;
-	bh=SI8rgYcy5xVxInz1JaUkz/QQn9h0SltRhO+47i1XgD8=;
+	s=arc-20240116; t=1708620450; c=relaxed/simple;
+	bh=rZ8aZS6VSxj1TAeS8bays2vC+U6OkHH9YohfP+YSMeA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DtU3uxztiW1w8Qr6Xq0fdIdSzb388NACmqk4wvbPzS9S+szoFdJVue0YXPS6Jsb9KVD4jvnsGqAieRBlEHPS9qFyt9uXFKGMBksNvCloHUhBalOmb9wHTkYty/kg/8Qc/umeap3RJpSASPi0i9DXBGdwF7DFiH4M90NJsJe1X28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V2hZtdag; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44DB9C433F1;
-	Thu, 22 Feb 2024 16:46:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708620384;
-	bh=SI8rgYcy5xVxInz1JaUkz/QQn9h0SltRhO+47i1XgD8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=V2hZtdagF4x/ThTGHsvbfuxY821HtZKKrSpuhXcjcr+v0IMIA+2ndb+kn7Wer2lm/
-	 JQIs3+EKD0ptoaXKJgg0/riqZhSbiNUfVr+GnCCuCa5ShgmCrkOTZko0rrGcoFdBV9
-	 QfqMeLDnZPIACmP2smETS1U7Sh2Rx5uYuoGG5KtT7bTd9lF41XxL1zNdLQts1Ys1Gr
-	 SQS7Q0u1PIXOY5no77ne28og5+P6D+dZ0l6vM4ohMXxv8xRi4mWWNEt7PB5OAkItUL
-	 hmvqytwlvirNbRDBdp9FazG7p+616hZQh85y78bTVeVdobQNbLQFZL50WHpcv5IBHQ
-	 VaTEWJDc2mWMQ==
-Date: Thu, 22 Feb 2024 17:46:22 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Chen Zhongjin <chenzhongjin@huawei.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH v2 5/6] rcu-tasks: Eliminate deadlocks involving
- do_exit() and RCU tasks
-Message-ID: <Zdd6Xm15-WfF5cus@localhost.localdomain>
-References: <20240217012745.3446231-1-boqun.feng@gmail.com>
- <20240217012745.3446231-6-boqun.feng@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=e5rGBOK6ThrkNW0OaQXPN9lKFoW4lHW1Kc0iCIkBKMuypNcErtAxyJJ/hkposH9ko1yO8YJTuOxgvqHuEaZqTpyx0vJd0fKj+4sbfTTayLAuAFQTHCHTDLTzW1ava2+QlzIOAZa74qr7V9K0S7d2zYkchQDp6kpeseU2mgBYAUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mjxHJISS; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708620449; x=1740156449;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=rZ8aZS6VSxj1TAeS8bays2vC+U6OkHH9YohfP+YSMeA=;
+  b=mjxHJISS6J/wlhPCBAefyrIiwmisu1R6+sSSCIOmdu//2KZ0lRxo4164
+   Bn5aVcjrLXjWBPloQx3K7uDCcKY2oC9Iuro/PUzPIHb5ixj6SbG3dsHJw
+   //jIxHE2UmFYFGdYDILzGYfRFYKtJyDoQZBEtDdSXP0Gkb9FySswenMFe
+   axUWf+8wLOwMtI00llGeSQ8Uu7Pm8k+GxI2BHdnVcnSyldG4QgGHV7fN4
+   tWmqUvks78UI9ekmm2C/VC1yhzTVYBhMnaf0xUqbnN84D63nMZYM2fLcN
+   5+Ck6GVEJgIJNj1rX+iyIrd9DF1O8hVdUBmN6rwq/83eihjPs87bBo4YO
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="2732222"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="2732222"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 08:47:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="913553757"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="913553757"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 08:47:23 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rdCEB-00000006gCi-0sPe;
+	Thu, 22 Feb 2024 18:47:19 +0200
+Date: Thu, 22 Feb 2024 18:47:18 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andrew Jeffery <andrew@codeconstruct.com.au>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org, linux-rpi-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org, linux-tegra@vger.kernel.org,
+	Jiri Slaby <jirislaby@kernel.org>, Joel Stanley <joel@jms.id.au>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Al Cooper <alcooperx@gmail.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Vladimir Zapolskiy <vz@mleia.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Andi Shyti <andi.shyti@linux.intel.com>
+Subject: Re: [PATCH v1 10/14] serial: 8250_of: Switch to use
+ uart_read_port_properties()
+Message-ID: <Zdd6lnXwvpPPUhRR@smile.fi.intel.com>
+References: <20240221183442.4124354-1-andriy.shevchenko@linux.intel.com>
+ <20240221183442.4124354-11-andriy.shevchenko@linux.intel.com>
+ <0a828f2c50de712940fb9a881702ac1678a35b7c.camel@codeconstruct.com.au>
+ <ZddKzHplwOX7naLv@smile.fi.intel.com>
+ <Zdd5m2xIPlGI0_Qv@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240217012745.3446231-6-boqun.feng@gmail.com>
+In-Reply-To: <Zdd5m2xIPlGI0_Qv@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Le Fri, Feb 16, 2024 at 05:27:40PM -0800, Boqun Feng a écrit :
-> From: "Paul E. McKenney" <paulmck@kernel.org>
+On Thu, Feb 22, 2024 at 06:43:08PM +0200, Andy Shevchenko wrote:
+> On Thu, Feb 22, 2024 at 03:23:24PM +0200, Andy Shevchenko wrote:
+> > On Thu, Feb 22, 2024 at 11:07:05AM +1030, Andrew Jeffery wrote:
+> > > On Wed, 2024-02-21 at 20:31 +0200, Andy Shevchenko wrote:
+> > > > Since we have now a common helper to read port properties
+> > > > use it instead of sparse home grown solution.
+> > > 
+> > > I did some brief testing of the series for the Aspeed machines under
+> > > qemu, building them on top of v6.8-rc5:
+> > > 
+> > > export ARCH=arm
+> > > export CROSS_COMPILE=arm-linux-gnueabihf-
+> > > make aspeed_g5_defconfig
+> > > make -j$(nproc)
+> > > qemu-system-arm -M rainier-bmc -nographic -no-reboot -kernel arch/arm/boot/zImage -dtb arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-rainier.dtb -initrd ...
+> > > 
+> > > I got an oops during boot, which bisected to this change:
+> > 
+> > Thank you for prompt testing! I will look at it.
 > 
-> Holding a mutex across synchronize_rcu_tasks() and acquiring
-> that same mutex in code called from do_exit() after its call to
-> exit_tasks_rcu_start() but before its call to exit_tasks_rcu_stop()
-> results in deadlock.  This is by design, because tasks that are far
-> enough into do_exit() are no longer present on the tasks list, making
-> it a bit difficult for RCU Tasks to find them, let alone wait on them
-> to do a voluntary context switch.  However, such deadlocks are becoming
-> more frequent.  In addition, lockdep currently does not detect such
-> deadlocks and they can be difficult to reproduce.
-> 
-> In addition, if a task voluntarily context switches during that time
-> (for example, if it blocks acquiring a mutex), then this task is in an
-> RCU Tasks quiescent state.  And with some adjustments, RCU Tasks could
-> just as well take advantage of that fact.
-> 
-> This commit therefore eliminates these deadlock by replacing the
-> SRCU-based wait for do_exit() completion with per-CPU lists of tasks
-> currently exiting.  A given task will be on one of these per-CPU lists for
-> the same period of time that this task would previously have been in the
-> previous SRCU read-side critical section.  These lists enable RCU Tasks
-> to find the tasks that have already been removed from the tasks list,
-> but that must nevertheless be waited upon.
-> 
-> The RCU Tasks grace period gathers any of these do_exit() tasks that it
-> must wait on, and adds them to the list of holdouts.  Per-CPU locking
-> and get_task_struct() are used to synchronize addition to and removal
-> from these lists.
-> 
-> Link: https://lore.kernel.org/all/20240118021842.290665-1-chenzhongjin@huawei.com/
-> 
-> Reported-by: Chen Zhongjin <chenzhongjin@huawei.com>
-> Reported-by: Yang Jihong <yangjihong1@huawei.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Tested-by: Yang Jihong <yangjihong1@huawei.com>
-> Tested-by: Chen Zhongjin <chenzhongjin@huawei.com>
-> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> I found the issue, will be fixed in next version.
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Whoever is going to test this series, the
+
+-		port->iotype = use_defaults ? UPIO_MEM : port->iotype;
++		port->iotype = UPIO_MEM;
+
+should be applied to uart_read_port_properties() implementation.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
