@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-76451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76452-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7766085F77C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:51:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53EDB85F77D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:51:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D612285B38
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:51:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D28C91F26636
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:51:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFFD7481B4;
-	Thu, 22 Feb 2024 11:51:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BF05482E2;
+	Thu, 22 Feb 2024 11:51:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="hcUbHLOJ"
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="QfFKhXnj"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A096B446DE
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:51:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 897B846521
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:51:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708602668; cv=none; b=Y48DhbnO5tlQMi5xR/yxTkJ6HkjyyH9UCvrGOF6FmmQis6I9eOGFv7jYCJn5hx32cVl22OfHCRnyISNTAyUBD26jlzWWTg/rgnW1vEe0/U5Ehm+mAlsYuz5cowVK8jPOx07WHmSd7jtV8lPWCvIeUjTknhVsEg5TJkKKiLY4fT8=
+	t=1708602669; cv=none; b=khz4quS/B3zH6a39If/Duka06KLW5p/+Ah4+FvogKU0K2JtYfgTwBI4oh+RkoL7oaax6SPiS7hu+nPNcIR5MHAifMjN/cscnnqrCitTO5Eiv2+AmVidCN5akq6XMHnSNRG0O8TNOro4sKAXeRtfBxMZvDeoGyKmmQ0QN+Dj+u1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708602668; c=relaxed/simple;
-	bh=aG/T2NPOQsNeyDUNTYV6KWwxd7/uxtPCMFLlShvPJLE=;
+	s=arc-20240116; t=1708602669; c=relaxed/simple;
+	bh=LuiNKwot/c2cGXu1azbocNtVe8hBsdaf1P55KumReSA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Gf6NvYT28uKgUFLvCsOzgw8lOExJHciCqHeS8UVFqultk4LB9qJlFwK3ZC22dGHZ+Xn8HrKlZJBcJMbFBIxP634RH3rW4KEJxD/hcSAj4Vek3+tM4NA6ODlhuLw/dMaGapHab4sltYRMJ4kw+4WFWQl2kE8Yev+xK9TM3/mUcPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=hcUbHLOJ; arc=none smtp.client-ip=209.85.221.51
+	 MIME-Version; b=l9r2+qe5ge69XV8GeMNOnh7Q5mT8qVagwCBBPfSUunQvPybnCRQzn7V0Aj2tA7Iq5UmVPh4CocRFcARPAE3kp10xYn2ziQgDF9XbxpnoLcEH9cx2C/iUaweVQTh1wYx1VCq1UVWP0e3EiZ4JG14fTZK9XK0DeWvcz7ufDbP6K0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=QfFKhXnj; arc=none smtp.client-ip=209.85.221.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3394b892691so434522f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:51:06 -0800 (PST)
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33d9c3f36c2so128418f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:51:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1708602665; x=1709207465; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1708602666; x=1709207466; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7b5/uhjfqeIuQAGiFdEn3Xr4J+TBvtutx0p1n4ubkzU=;
-        b=hcUbHLOJh3hHHm7E08Oi5NVR/r8Y1WgJKtqrUYpAJLqZaeR+iGf13V7vtsJ5tYPisi
-         QQt1YcuavbYtOjGa2CDCSseGtQBt2ibz9ieB99+XLPLdu26/rYf+sBKlX9TYF0c4KGl3
-         oKm/nwBwygAtkm6pRmAsFp78HLnfM7KjktsO5/fVwCTPfe3ct2hsB9bbTSfSsPqD0QdS
-         rt0t0T24c4zPVz+wDoS4ZrI2DK05fa2d72Z6teB5q6DQLFSdTfWKHRlN9q7MGb2CHEgu
-         1fpbU8BbOepWnyfRKRu4Q6Cz+Vc7eqEpAPEq/9++/FoH4PZozvITcV5bOYpZUw2XPGTW
-         I59A==
+        bh=bU66tnpYofC3HczPR5LqCx53IAlSBOajb8Iggei03v8=;
+        b=QfFKhXnjAq30/tZfPhsxMENYDZlQaRwHWLbQv5/IfE/Rgos158IFhti1m5CcTxGBio
+         o/v0JUAHvRhA7FKPHcTkZ2iD4NiGmfmGCOoOcbvA1ZTEEvMGt3QvT/1X/uf5Ml0vdMkT
+         7q+T2vdgQ4xA5JlUaWHukRe/hn/P45qy+C/F/nzO1LTY3RbdHgU+Kk3Hlzi79d7jC8st
+         TeLCRKkfgTfz9pblVE2XqxXPfQkwMxYA9utemdHLniTGvr7+lIci7bmklxu5SKdqGlfS
+         BhcbCEzsOMQ6IuNLIlcGmG5hGQExEV+ANqKr6og3TXnSsPXS/o5cpZ2K0w+w9dmNjbE5
+         gDmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708602665; x=1709207465;
+        d=1e100.net; s=20230601; t=1708602666; x=1709207466;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7b5/uhjfqeIuQAGiFdEn3Xr4J+TBvtutx0p1n4ubkzU=;
-        b=X0onyKuGdQIw/c4mdxEv+XvoaVmqCVlzmTl7Jhy+KJNh0HEPBg/zmy0wmc1MKkGmfx
-         UVGOSMWxHFBLiu+teZLcHGbPMkduJRLeSwxbafacnWi4kMWXH72RBA37aBkkQaebHC5M
-         XGhYc8Iloyi///AdY2JtRYxBW2imOgTIPK6jnLoXubld0+BtagdOn7PnGivIIvt1HDbg
-         0q114Ii7SWXgNEhR6KGo6L4Jr3BMGG9SMRQ93jN8tuQ7BSbGPceuR2bK1Ep+fqtPxmfC
-         5/vIJSNHWWDaZ+wt85Yt0zTpuo7K4K3JhDJMcjELYfPDthJfZL4KVFC/YsPNyBIh1G4G
-         iSLw==
-X-Forwarded-Encrypted: i=1; AJvYcCWMJPpLGl/8bSHKkc6+bui4msEtZJ/gwTQDJCO0lMX/Ax7uqyyuwDLmoogq9YjjJvPiZvNN+kzqBs1kgffrR88Xk667G+gwNuGPiJYv
-X-Gm-Message-State: AOJu0YxVobEeVehwoK4Nt6SFijarWPDe2cOmwnckZIENvVG64zqTjJu2
-	8WgQtOhAi9A1FIzcSaXT3DLiGyhYEcq9FqvWWBMAWEII51J20+6FLpVz5dYxSEQ=
-X-Google-Smtp-Source: AGHT+IEKsT+x17IHrY8997OwmeRClTuQ0BNyZeHPQoSXN8JZKWq1sN/JzXVa3pupvyni90LpbItmzg==
-X-Received: by 2002:a5d:4ac4:0:b0:33d:3ff3:f888 with SMTP id y4-20020a5d4ac4000000b0033d3ff3f888mr2385231wrs.0.1708602664992;
-        Thu, 22 Feb 2024 03:51:04 -0800 (PST)
+        bh=bU66tnpYofC3HczPR5LqCx53IAlSBOajb8Iggei03v8=;
+        b=JrY4XR33aKzOjhl0erEtpy2mZBefsn7oBhylAF5f5SbGGkzPYh81AumUtfTbIDAUZi
+         RgJw0NW1wuTnood/SI8A74ZHQxLaU3Aeiav/5NUTIy5KNuxiimsUd6tICyDDT5SPYHPu
+         Eqnm/ejQm81yiutY8o4NyvMKGSNKRKnwxbo3j2p297uB/hZ7N3FEcuR1LFJM0gvfamea
+         E/nB3zz6Fw2C8iBmBtv16A8JiaBGMZbargdgGyk2S4FXbbo8ubjyd0BEBuvEw6fzdJEe
+         RTH4hHtDlkMNs52htAgq2F3nH1U/UE7hpDFRb8NIFVu9BqE2TbjUQKV2M4QELbku9Y3R
+         rpbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUuxfy0gYSsSTSM4PEArvy0jcSHtidFF12pUcmw/0UTdamHjuZPiSEEg9XKOb8avnNqGhwfC9GrxU23BKrcE1tzghNWGs2Cv7Q4hcfU
+X-Gm-Message-State: AOJu0YxJ+qQO8kKZRLQGGGkFTBop/uw3u3CaNh+AjG+qN6iFObdPIAmH
+	UY3SjZmEN/HPPHMiLiHl2fuB4AvB9qTbW/i0YDVBef6bLyKzTaUm0YgcTChLqfY=
+X-Google-Smtp-Source: AGHT+IHWgvt0/sZsRq4iRTjhX0psvS+eVhVBMHB4PSfSQw/t1/qrWtQi6HShkpncAQZpTNIObD2jGg==
+X-Received: by 2002:a05:6000:12c5:b0:33d:40f0:b0de with SMTP id l5-20020a05600012c500b0033d40f0b0demr7809643wrx.6.1708602665810;
+        Thu, 22 Feb 2024 03:51:05 -0800 (PST)
 Received: from raven.intern.cm-ag (p200300dc6f010900023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f01:900:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id co18-20020a0560000a1200b0033d4c3b0beesm15044920wrb.19.2024.02.22.03.51.04
+        by smtp.gmail.com with ESMTPSA id co18-20020a0560000a1200b0033d4c3b0beesm15044920wrb.19.2024.02.22.03.51.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 03:51:04 -0800 (PST)
+        Thu, 22 Feb 2024 03:51:05 -0800 (PST)
 From: Max Kellermann <max.kellermann@ionos.com>
 To: akpm@linux-foundation.org,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
 Cc: willy@infradead.org,
 	Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH v2 03/14] linux/mm.h: move page_kasan_tag() to mm/page_kasan_tag.h
-Date: Thu, 22 Feb 2024 12:50:44 +0100
-Message-Id: <20240222115055.1172877-4-max.kellermann@ionos.com>
+Subject: [PATCH v2 04/14] linux/mm.h: move section functions to mm/page_section.h
+Date: Thu, 22 Feb 2024 12:50:45 +0100
+Message-Id: <20240222115055.1172877-5-max.kellermann@ionos.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240222115055.1172877-1-max.kellermann@ionos.com>
 References: <20240222115055.1172877-1-max.kellermann@ionos.com>
@@ -88,192 +88,95 @@ Content-Transfer-Encoding: 8bit
 
 Prepare to reduce dependencies on linux/mm.h.
 
-page_kasan_tag() is used by the page_to_virt() macro in ARM64 (but
-asm/memory.h does not include linux/mm.h).  Thus, in order to be able to use
-anything that calls page_to_virt(), linux/mm.h needs to be included.
+page_to_section() is used by __page_to_pfn() (but
+asm-generic/memory_model.h does not include linux/mm.h).  Thus, in
+order to be able to use anything that calls page_to_pfn(), linux/mm.h
+needs to be included.
 
 This would prevent us from moving page_address() to a separate header,
 because it calls lowmem_page_address() which in turn calls
-page_to_virt().  To prepare for this move, we move page_kasan_tag()
-out of linux/mm.h into a separate lean header.
-
-A side effect of this patch is that the <linux/kasan.h> include line
-is moved inside the "#ifdef CONFIG_KASAN..." block, i.e. it is not
-included at all if KASAN is disabled.
+page_to_virt() and then page_to_pfn().  To prepare for this move, we
+move page_to_section() out of linux/mm.h into a separate lean header.
 
 Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 ---
- MAINTAINERS                       |  1 +
- include/linux/mm.h                | 56 +-------------------------
- include/linux/mm/page_kasan_tag.h | 66 +++++++++++++++++++++++++++++++
- 3 files changed, 68 insertions(+), 55 deletions(-)
- create mode 100644 include/linux/mm/page_kasan_tag.h
+ include/linux/mm.h              | 18 +-----------------
+ include/linux/mm/page_section.h | 23 +++++++++++++++++++++++
+ 2 files changed, 24 insertions(+), 17 deletions(-)
+ create mode 100644 include/linux/mm/page_section.h
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c042ca394893..ad208d8aea4b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14187,6 +14187,7 @@ F:	include/linux/mempolicy.h
- F:	include/linux/mempool.h
- F:	include/linux/memremap.h
- F:	include/linux/mm.h
-+F:	include/linux/mm/*.h
- F:	include/linux/mm_*.h
- F:	include/linux/mmzone.h
- F:	include/linux/mmu_notifier.h
 diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 1743bdeab506..c8d909cc1353 100644
+index c8d909cc1353..7c3d2bd69818 100644
 --- a/include/linux/mm.h
 +++ b/include/linux/mm.h
-@@ -2,6 +2,7 @@
- #ifndef _LINUX_MM_H
+@@ -3,6 +3,7 @@
  #define _LINUX_MM_H
  
-+#include <linux/mm/page_kasan_tag.h>
+ #include <linux/mm/page_kasan_tag.h>
++#include <linux/mm/page_section.h>
  #include <linux/errno.h>
  #include <linux/mmdebug.h>
  #include <linux/gfp.h>
-@@ -27,7 +28,6 @@
- #include <linux/sizes.h>
- #include <linux/sched.h>
- #include <linux/pgtable.h>
--#include <linux/kasan.h>
- #include <linux/memremap.h>
- #include <linux/slab.h>
- 
-@@ -1810,60 +1810,6 @@ static inline void vma_set_access_pid_bit(struct vm_area_struct *vma)
+@@ -1627,10 +1628,6 @@ static inline bool is_nommu_shared_mapping(vm_flags_t flags)
  }
- #endif /* CONFIG_NUMA_BALANCING */
+ #endif
  
--#if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
+-#if defined(CONFIG_SPARSEMEM) && !defined(CONFIG_SPARSEMEM_VMEMMAP)
+-#define SECTION_IN_PAGE_FLAGS
+-#endif
 -
--/*
-- * KASAN per-page tags are stored xor'ed with 0xff. This allows to avoid
-- * setting tags for all pages to native kernel tag value 0xff, as the default
-- * value 0x00 maps to 0xff.
-- */
--
--static inline u8 page_kasan_tag(const struct page *page)
+ /*
+  * The identification function is mainly used by the buddy allocator for
+  * determining if two pages could be buddies. We are not really identifying
+@@ -1830,19 +1827,6 @@ static inline pg_data_t *folio_pgdat(const struct folio *folio)
+ 	return page_pgdat(&folio->page);
+ }
+ 
+-#ifdef SECTION_IN_PAGE_FLAGS
+-static inline void set_page_section(struct page *page, unsigned long section)
 -{
--	u8 tag = KASAN_TAG_KERNEL;
--
--	if (kasan_enabled()) {
--		tag = (page->flags >> KASAN_TAG_PGSHIFT) & KASAN_TAG_MASK;
--		tag ^= 0xff;
--	}
--
--	return tag;
+-	page->flags &= ~(SECTIONS_MASK << SECTIONS_PGSHIFT);
+-	page->flags |= (section & SECTIONS_MASK) << SECTIONS_PGSHIFT;
 -}
 -
--static inline void page_kasan_tag_set(struct page *page, u8 tag)
+-static inline unsigned long page_to_section(const struct page *page)
 -{
--	unsigned long old_flags, flags;
--
--	if (!kasan_enabled())
--		return;
--
--	tag ^= 0xff;
--	old_flags = READ_ONCE(page->flags);
--	do {
--		flags = old_flags;
--		flags &= ~(KASAN_TAG_MASK << KASAN_TAG_PGSHIFT);
--		flags |= (tag & KASAN_TAG_MASK) << KASAN_TAG_PGSHIFT;
--	} while (unlikely(!try_cmpxchg(&page->flags, &old_flags, flags)));
+-	return (page->flags >> SECTIONS_PGSHIFT) & SECTIONS_MASK;
 -}
+-#endif
 -
--static inline void page_kasan_tag_reset(struct page *page)
--{
--	if (kasan_enabled())
--		page_kasan_tag_set(page, KASAN_TAG_KERNEL);
--}
--
--#else /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS */
--
--static inline u8 page_kasan_tag(const struct page *page)
--{
--	return 0xff;
--}
--
--static inline void page_kasan_tag_set(struct page *page, u8 tag) { }
--static inline void page_kasan_tag_reset(struct page *page) { }
--
--#endif /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS */
--
- static inline struct zone *page_zone(const struct page *page)
- {
- 	return &NODE_DATA(page_to_nid(page))->node_zones[page_zonenum(page)];
-diff --git a/include/linux/mm/page_kasan_tag.h b/include/linux/mm/page_kasan_tag.h
+ /**
+  * folio_pfn - Return the Page Frame Number of a folio.
+  * @folio: The folio.
+diff --git a/include/linux/mm/page_section.h b/include/linux/mm/page_section.h
 new file mode 100644
-index 000000000000..1210c62170a3
+index 000000000000..e4558c2691b8
 --- /dev/null
-+++ b/include/linux/mm/page_kasan_tag.h
-@@ -0,0 +1,66 @@
++++ b/include/linux/mm/page_section.h
+@@ -0,0 +1,23 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_MM_PAGE_KASAN_TAG_H
-+#define _LINUX_MM_PAGE_KASAN_TAG_H
++#ifndef _LINUX_MM_PAGE_SECTION_H
++#define _LINUX_MM_PAGE_SECTION_H
 +
-+#include <linux/types.h>
-+
-+struct page;
-+
-+#if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
-+
-+#include <linux/kasan.h>
 +#include <linux/mm_types.h> // for struct page
++#include <linux/mmzone.h> // for SECTIONS_*
 +
-+/*
-+ * KASAN per-page tags are stored xor'ed with 0xff. This allows to avoid
-+ * setting tags for all pages to native kernel tag value 0xff, as the default
-+ * value 0x00 maps to 0xff.
-+ */
++#if defined(CONFIG_SPARSEMEM) && !defined(CONFIG_SPARSEMEM_VMEMMAP)
++#define SECTION_IN_PAGE_FLAGS
 +
-+static inline u8 page_kasan_tag(const struct page *page)
++static inline void set_page_section(struct page *page, unsigned long section)
 +{
-+	u8 tag = KASAN_TAG_KERNEL;
-+
-+	if (kasan_enabled()) {
-+		tag = (page->flags >> KASAN_TAG_PGSHIFT) & KASAN_TAG_MASK;
-+		tag ^= 0xff;
-+	}
-+
-+	return tag;
++	page->flags &= ~(SECTIONS_MASK << SECTIONS_PGSHIFT);
++	page->flags |= (section & SECTIONS_MASK) << SECTIONS_PGSHIFT;
 +}
 +
-+static inline void page_kasan_tag_set(struct page *page, u8 tag)
++static inline unsigned long page_to_section(const struct page *page)
 +{
-+	unsigned long old_flags, flags;
-+
-+	if (!kasan_enabled())
-+		return;
-+
-+	tag ^= 0xff;
-+	old_flags = READ_ONCE(page->flags);
-+	do {
-+		flags = old_flags;
-+		flags &= ~(KASAN_TAG_MASK << KASAN_TAG_PGSHIFT);
-+		flags |= (tag & KASAN_TAG_MASK) << KASAN_TAG_PGSHIFT;
-+	} while (unlikely(!try_cmpxchg(&page->flags, &old_flags, flags)));
++	return (page->flags >> SECTIONS_PGSHIFT) & SECTIONS_MASK;
 +}
++#endif
 +
-+static inline void page_kasan_tag_reset(struct page *page)
-+{
-+	if (kasan_enabled())
-+		page_kasan_tag_set(page, KASAN_TAG_KERNEL);
-+}
-+
-+#else /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS */
-+
-+static inline u8 page_kasan_tag(const struct page *page)
-+{
-+	return 0xff;
-+}
-+
-+static inline void page_kasan_tag_set(struct page *page, u8 tag) { }
-+static inline void page_kasan_tag_reset(struct page *page) { }
-+
-+#endif /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS */
-+
-+#endif /* _LINUX_MM_PAGE_KASAN_TAG_H */
++#endif /* _LINUX_MM_PAGE_SECTION_H */
 -- 
 2.39.2
 
