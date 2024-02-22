@@ -1,189 +1,136 @@
-Return-Path: <linux-kernel+bounces-76101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FD1885F2EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:29:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92C9185F2F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:30:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C6851F24DB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:29:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 016AA1F25634
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:30:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 257CF1B59F;
-	Thu, 22 Feb 2024 08:29:22 +0000 (UTC)
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E994250F1;
+	Thu, 22 Feb 2024 08:30:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="fFr4A/Jj"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2044.outbound.protection.outlook.com [40.107.244.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9893117F3;
-	Thu, 22 Feb 2024 08:29:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708590561; cv=none; b=TG2R3igHeL8roR2v2rqKemcwalLd9AxfxSeb/5ieekQZjYTsVVP8uh8pn07b5JnWQcODT3bsWftoxFEgGN7urpwGyH/2aLj88me74bd5cVHaZ6wsJlDXnJwTfb8/a2hgn9gEXqhnPyPqEMSwsSslwJNcZOOtesIMA7HrHhn1spA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708590561; c=relaxed/simple;
-	bh=5mjPQkEkMqV4tvrQqZa3eUo6bLhvA/Eax+OBmTANIps=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oLn4xXK2VEzPNzSjELActtmryRK70t8Y6sk3TqnGnBPQy6RRMUHwjn7qMSKNONc3YHKtwYClWP5ZW1KK260QgURAJrvdoYHfbfAAYgV7WK5KuOXRPgtQShbBccZzdy2wIJsd4sBqnAWmId+y6OekBU4bxI47Bb6NVru3VWcYdpk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-607e60d01b2so34295477b3.1;
-        Thu, 22 Feb 2024 00:29:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708590558; x=1709195358;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3E80Fr+PQHplyVIuytgLvVqlKEcgK1zfDCm4lydbgb8=;
-        b=bXB3Ivu1QhbGJ+LqJTX/+6po8ho0uh+NaJgeDHvd74z2WleFOM+F/S/e0yVJGyjLGT
-         cftaeWjG5+hPX2yZjt/HuUCUbNU1F65qb+7ZWQxU6ky6V4Gd9Ia1u9QSuzBiVFbOuzfY
-         UFftF16HzpRK2uo3epcPimNLUMboLICFVDmyBvGsJDR0BzJBr0pKGih5ZAgtTAJPU8Dr
-         ib91q2YsTNfri+xCsCjswF51kStwb6mBqHT3uStz39nDfarnVuAztbCtnUcQFKLM7Qdq
-         8ytNVdeS+vvbU45rMO7IgDfp1M4C+tujAZwJwp+uQcNY3b+KJYzb2GOAEXc+SRuQ9Qt1
-         fsWw==
-X-Forwarded-Encrypted: i=1; AJvYcCV2l7YHiZvSqwU6vz8hiALjtrsqJP12nzAGxfynwyb0pc5W++ZIIP7e+JjZJVmjy4sHDTw5LdUHYTJ32lx7qSwlEXDkqBPWpDvIfDwXOyyPBSBgJvlBrVkJ1J0erdn83WS2NZLbJqKe4Q==
-X-Gm-Message-State: AOJu0YyZigsDWu9mlRn0xPcEpYVvQ00TtyoLDFX7UNIRIdnvQAcqDW2p
-	wlvpAi16WiLqvE6RT/yFhE+XsNG47v8JQfQ1eOS1iQICtfZeGQtgvCX+4XaRy6w=
-X-Google-Smtp-Source: AGHT+IEaf9m52rkqAwSwbyA9KZsEw9SeHzIBg6FcoeD3eMSarcMRvaZcGU8KwDfJyC42Aj51GuhH2g==
-X-Received: by 2002:a25:8292:0:b0:dc2:1dd0:1d1b with SMTP id r18-20020a258292000000b00dc21dd01d1bmr1715388ybk.19.1708590557664;
-        Thu, 22 Feb 2024 00:29:17 -0800 (PST)
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
-        by smtp.gmail.com with ESMTPSA id v40-20020a25abab000000b00dce0f2db9acsm2705951ybi.34.2024.02.22.00.29.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 00:29:16 -0800 (PST)
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-6085b652fc8so32585667b3.2;
-        Thu, 22 Feb 2024 00:29:16 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCX2XrZ6tZe0afzDUYPxNmo06RWwliozLbQVdjNFcuFwXdI2hoCXaamm9hl/76fi+rQXcJKvXZwWVFAuk9XRrBMlcevCGYMTIvVgJ/S8mm8zvrhrcVfbk4VaWH+Db1W8C0px2fXS/6gzqg==
-X-Received: by 2002:a05:690c:714:b0:608:98d:6f77 with SMTP id
- bs20-20020a05690c071400b00608098d6f77mr12592435ywb.0.1708590556168; Thu, 22
- Feb 2024 00:29:16 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2300024211;
+	Thu, 22 Feb 2024 08:30:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.44
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708590628; cv=fail; b=RD4wKNyLAXU3k+SOUhbhr9c8oaT5bY1nsVG2gK4XebToh/5zuJjXB5ycwFg8JKfuXvOlJz4/v1F8uMNqE7xqAFL262ltHH1QTRX6wY5w7uz90SqBpfdy1apv8006bx5JEe1IUlbc1CIEn8ubZTJi5Nlfb7gM1YtWIINGxQLD7FI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708590628; c=relaxed/simple;
+	bh=worhjI5lpsVYsGaaT9Pz/26UBmS23q+Q39jKXKfrCNM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ct3Iu+roYX/vvilxPOWJa3MUBhu93GVEkDR74Ik1UVML7YGM3sEVjsyZfuIW3ITFSXFlw9BDLTXfCrQ2EpesaTuu6Vtp7CFkB4cpYnWbkG6Y4zay+/Z72aRQu8xfHkhIXQos38hB767Wpb/z32jY1q6D3cxT6EEB9wjFzHgqNIU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=fFr4A/Jj; arc=fail smtp.client-ip=40.107.244.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AQPlpK7iEUkvOHtu+AYCOW7+hwXMFs1C7pxuVe5fNWqQnnfIeaFCsm1Bf1uRYbPrajvDskZ9PQOmLR9k1fZIpk/D2aep71rIwsKqBcmcB0OcxFMYmlrlpKtjb1qPbgTY4/CFvvS33wiTLxd9y5atvf7b8X156XHL5imVRrhy0SPdT+iDQeYcHwm0n/lfIXDHHsqESXURRkhulYyiI2bCQqgYg5aaROPi0Xdwmw6LbojfsOYVwBtJYKf8DpCBTG+hpM8Py7RizzWB4Nc2kBKbx7Pd4ju4kAm30DeJ15QfW9J6R5X3cAwTG8lvttOjOMzAvViLosC6GAU0ePPUgkXSTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NwTnlJSdT3NuMUL6WQgNIS9T7kle4T0c7j8VJNnb0OA=;
+ b=hxua96sdvSzrHIavsVCXsKTcBJeHo/4QQT9JkpmeuqwBwamToAyEHuMuQ2DnII7+oUsCV9gkSx5asNO0CBEEgj/u4njiGQqmoKlKJOGc5wVNtEGeVhhzSizvVzj8JpJS3K1qIiZT8SAQ/4VFhKka4YMuRo4OXIuwvwhrPEN6virq0W1bFxSzT7opn58R2p81HuRPukpZ4ZBFnjfe3b5sYSUKZaiS6j8GCXqfmbpGrfsFIcXMt8JzpkZdeMOUE/HiXNjEwM3TKbRxdsGzgYdJhUAMNquDY0xtUDYxexM+yEnNfIRMJ9as5pXjXmoHheyqED+DTZAKFVeb6BX+jastiA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NwTnlJSdT3NuMUL6WQgNIS9T7kle4T0c7j8VJNnb0OA=;
+ b=fFr4A/JjTG4e7Htc2DtdI+7M8vzW88tcADPuNq0XBPALwovfEVAJbVCpebgfKhgpMe48IAHSTUBAInx8kplMVDCiagLjUbt2Kjj0XTyukIjdadUFiKoi5T2RXPEQR8NpbcsJhItV0HJv+EYa7gN5x3zkFJ9km07D0pVVYn7Jk9o=
+Received: from DS7PR03CA0194.namprd03.prod.outlook.com (2603:10b6:5:3b6::19)
+ by BL1PR12MB5160.namprd12.prod.outlook.com (2603:10b6:208:311::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.20; Thu, 22 Feb
+ 2024 08:30:25 +0000
+Received: from DS1PEPF0001709C.namprd05.prod.outlook.com
+ (2603:10b6:5:3b6:cafe::d6) by DS7PR03CA0194.outlook.office365.com
+ (2603:10b6:5:3b6::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.43 via Frontend
+ Transport; Thu, 22 Feb 2024 08:30:25 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS1PEPF0001709C.mail.protection.outlook.com (10.167.18.106) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7292.25 via Frontend Transport; Thu, 22 Feb 2024 08:30:25 +0000
+Received: from jatayu.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 22 Feb
+ 2024 02:30:23 -0600
+From: Basavaraj Natikar <Basavaraj.Natikar@amd.com>
+To: <vkoul@kernel.org>, <dmaengine@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+CC: Basavaraj Natikar <Basavaraj.Natikar@amd.com>
+Subject: [PATCH] MAINTAINERS: change in AMD ptdma maintainer
+Date: Thu, 22 Feb 2024 14:00:04 +0530
+Message-ID: <20240222083004.1907070-1-Basavaraj.Natikar@amd.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240222124610.383e1ce3@canb.auug.org.au> <TYCPR01MB11269B83A59650E230F4DD97F86562@TYCPR01MB11269.jpnprd01.prod.outlook.com>
-In-Reply-To: <TYCPR01MB11269B83A59650E230F4DD97F86562@TYCPR01MB11269.jpnprd01.prod.outlook.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 22 Feb 2024 09:29:04 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdV0nftTZ6WuEkcS9h0d1bx_haR==roB1gwbaS2fzooO_A@mail.gmail.com>
-Message-ID: <CAMuHMdV0nftTZ6WuEkcS9h0d1bx_haR==roB1gwbaS2fzooO_A@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-To: Biju Das <biju.das.jz@bp.renesas.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Daniel Vetter <daniel.vetter@ffwll.ch>, 
-	Intel Graphics <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>, 
-	Maxime Ripard <mripard@kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS1PEPF0001709C:EE_|BL1PR12MB5160:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7d70a8aa-5648-4b16-14ec-08dc3380849a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	ComnwHHvuRRIPCKo+Bm3rGQSkKcdj243N9Y5u6rpLsb5tDMlO8z8tNruYDxJ61aZ/ABomu//Y0PiFt/9AOW7+//xujqYdBVAy3SJDUxSu18thYAwN1ZYZbuUkZGZgj1CKgvF4D3z7vyeYKYQQ+RZvj40fWl54u2BO08MAT/zAtzO+k/p43RQwysqhFOKOGUu9n7nqwP57ii2sOUMKzzrgdwm+xq1O8Qd37Rr2FtCIsuB/x/XH1uafuX2HspfTlEosZJgSy1+pebNFmhOLZIllKbHYavhcVQzo1i0hbMgeBz3csMtsubSLpU1ArOqqQ5gcvt4fWG2CJfZlf912mTvma+Z6J9ySpOSUwq48kA+p1QNXIggDkdBLE2wEJcav8/09ntJ2P/CqD9DSKAXiYsgL/q9Q5Oq+r/pRfTAPiIPhvbxiUYffE75dPR+UJfXQaFYpntPFt3cF3Cjw1xNzt5SqEnAaBItbsvDy44oUrJZG5q7s7o7shKr5jxTkTFy06hXVEIuB5+Hx55LPoyHqb8mInsnWLYOAbRy3FzBfKxCMnMYqT2zwwqBTYehD1IaMsiIJDuIwRk5eGze9k7/dz5Zk2w+x5U6VQwGXLbwoKKi9l6G3EaPhVaAOdBGk4fAuoAMUsXvWBawOwFrHAgFvKJY1w==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(46966006)(40470700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2024 08:30:25.2507
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7d70a8aa-5648-4b16-14ec-08dc3380849a
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS1PEPF0001709C.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5160
 
-Hi Biju,
+As 'Sanjay R Mehta' stepped down from the role of ptdma maintainer, I
+request to be added as the new maintainer of AMD PTDMA.
 
-On Thu, Feb 22, 2024 at 9:14=E2=80=AFAM Biju Das <biju.das.jz@bp.renesas.co=
-m> wrote:
-> > -----Original Message-----
-> > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Sent: Thursday, February 22, 2024 1:46 AM
-> > Subject: linux-next: build failure after merge of the drm-misc tree
-> >
-> > After merging the drm-misc tree, today's linux-next build (x86_64
-> > allmodconfig) failed like this:
-> >
-> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:47:6: error: redefinition =
-of
-> > 'rzg2l_du_vsp_enable'
-> >    47 | void rzg2l_du_vsp_enable(struct rzg2l_du_crtc *crtc)
-> >       |      ^~~~~~~~~~~~~~~~~~~
-> > In file included from drivers/gpu/drm/renesas/rz-du/rzg2l_du_drv.h:18,
-> >                  from drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:30:
-> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h:72:20: note: previous
-> > definition of 'rzg2l_du_vsp_enable' with type 'void(struct rzg2l_du_crt=
-c
-> > *)'
-> >    72 | static inline void rzg2l_du_vsp_enable(struct rzg2l_du_crtc *cr=
-tc)
-> > { };
-> >       |                    ^~~~~~~~~~~~~~~~~~~
-> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:61:6: error: redefinition =
-of
-> > 'rzg2l_du_vsp_disable'
-> >    61 | void rzg2l_du_vsp_disable(struct rzg2l_du_crtc *crtc)
-> >       |      ^~~~~~~~~~~~~~~~~~~~
-> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h:73:20: note: previous
-> > definition of 'rzg2l_du_vsp_disable' with type 'void(struct rzg2l_du_cr=
-tc
-> > *)'
-> >    73 | static inline void rzg2l_du_vsp_disable(struct rzg2l_du_crtc
-> > *crtc) { };
-> >       |                    ^~~~~~~~~~~~~~~~~~~~
-> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:66:6: error: redefinition =
-of
-> > 'rzg2l_du_vsp_atomic_flush'
-> >    66 | void rzg2l_du_vsp_atomic_flush(struct rzg2l_du_crtc *crtc)
-> >       |      ^~~~~~~~~~~~~~~~~~~~~~~~~
-> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h:74:20: note: previous
-> > definition of 'rzg2l_du_vsp_atomic_flush' with type 'void(struct
-> > rzg2l_du_crtc *)'
-> >    74 | static inline void rzg2l_du_vsp_atomic_flush(struct rzg2l_du_cr=
-tc
-> > *crtc) { };
-> >       |                    ^~~~~~~~~~~~~~~~~~~~~~~~~
-> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:76:19: error: redefinition=
- of
-> > 'rzg2l_du_vsp_get_drm_plane'
-> >    76 | struct drm_plane *rzg2l_du_vsp_get_drm_plane(struct rzg2l_du_cr=
-tc
-> > *crtc,
-> >       |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h:75:33: note: previous
-> > definition of 'rzg2l_du_vsp_get_drm_plane' with type 'struct drm_plane
-> > *(struct rzg2l_du_crtc *, unsigned int)'
-> >    75 | static inline struct drm_plane *rzg2l_du_vsp_get_drm_plane(stru=
-ct
-> > rzg2l_du_crtc *crtc,
-> >       |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:302:5: error: redefinition=
- of
-> > 'rzg2l_du_vsp_init'
-> >   302 | int rzg2l_du_vsp_init(struct rzg2l_du_vsp *vsp, struct device_n=
-ode
-> > *np,
-> >       |     ^~~~~~~~~~~~~~~~~
-> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h:66:19: note: previous
-> > definition of 'rzg2l_du_vsp_init' with type 'int(struct rzg2l_du_vsp *,
-> > struct device_node *, unsigned int)'
-> >    66 | static inline int rzg2l_du_vsp_init(struct rzg2l_du_vsp *vsp,
-> > struct device_node *np,
-> >       |                   ^~~~~~~~~~~~~~~~~
-> >
-> > Caused by commit
-> >
-> >   768e9e61b3b9 ("drm: renesas: Add RZ/G2L DU Support")
-> >
-> > I have used the drm-misc tree from next-20240221 for today.
->
-> I will send an incremental patch to fix this build error with x86 on drm-=
-next.
->
-> I need to use the macro #if IS_ENABLED(CONFIG_VIDEO_RENESAS_VSP1)
-> in drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h to fix this error.
+Signed-off-by: Basavaraj Natikar <Basavaraj.Natikar@amd.com>
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Looks like you're also missing an EXPORT_SYMBOL_GPL(rzg2l_du_vsp_enable)?
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e2c6187a3ac8..becd09410b8c 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1034,7 +1034,7 @@ F:	include/linux/amd-pstate.h
+ F:	tools/power/x86/amd_pstate_tracer/amd_pstate_trace.py
+ 
+ AMD PTDMA DRIVER
+-M:	Sanjay R Mehta <sanju.mehta@amd.com>
++M:	Basavaraj Natikar <Basavaraj.Natikar@amd.com>
+ L:	dmaengine@vger.kernel.org
+ S:	Maintained
+ F:	drivers/dma/ptdma/
+-- 
+2.25.1
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
