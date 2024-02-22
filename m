@@ -1,199 +1,263 @@
-Return-Path: <linux-kernel+bounces-76439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0DFB85F762
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:44:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B163385F767
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:46:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C5361F2297F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:44:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B7711F22C5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:46:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91F4A45C08;
-	Thu, 22 Feb 2024 11:44:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 440E54597F;
+	Thu, 22 Feb 2024 11:46:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GxRql0GQ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="eH+HrikD";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GxRql0GQ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="eH+HrikD"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i8KFdnaf"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE4B6405CE;
-	Thu, 22 Feb 2024 11:44:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A891C208A2;
+	Thu, 22 Feb 2024 11:46:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708602261; cv=none; b=h5d0F2v/IkJVcmiWLMHwb6cjQwxZ9ySN00uNSD70OWWDsCiMPrtBuZwbqCBH89e71zFjQV30cOWYzxXXdyuUbx6Bied6/48ZJDi6RWMaZoy6A+IcHFRXQrnrluZ8QvKc6fbYLZBg/dKJX2phK+SSUQ9Vn/3LbjUuJe5gVr19DSc=
+	t=1708602393; cv=none; b=AcrbAckKtc6W3Ma28JRncoWAIZhrrnt3USZohsVC0+vLraxhsYJYFO2xq9/eyj4I4QeLjzRvGvhldFTOEzR/vauwA5SvrQtMQFKL+pCf+aEvR9lU2H8ftyGWGbS2pgEwc8gncRyNaNCNw3W7cB8kKFKT6P19c29m55g+F4sUfs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708602261; c=relaxed/simple;
-	bh=60OEQh8O8xUBuyXADpm7mF+KjKWqxvHIH7CFVVDduFo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cc5yFeCFIwem0EMX2fMitadI7STTPZ3x/X79pKdiUXUSwzFRwH2FP52nneK+mPmNA2SXUWis50oqPpwjK9VdaiEs+I8P75uZuIUjUfNOnFrge3N5Czx5PB5VoiSjthBEj4Ug1f54qqtq4X22K4qovW9kzEvSyF1R+v2XnlH4Ox0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GxRql0GQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=eH+HrikD; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GxRql0GQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=eH+HrikD; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C3B071F457;
-	Thu, 22 Feb 2024 11:44:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708602257; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xoJ6ykOvvUooYrKIs+fFW78KArCQfq5m9jqujK8AT8E=;
-	b=GxRql0GQN3kZ+yJ+otqo12KJcytm8iR3GDBEyzgH/ko4tHxaQGCUGGXUqHpLUKzFEy1V7F
-	/qv0Sw/VxgIYENs8vjnDUV/6mcw9FJgE4s3W8bNvmz7NtnjS8tGsPXJafUHbjEJ9MwG1b+
-	h22OkGgAV+Sa0O3vK38Dj6J3zlX5qFU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708602257;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xoJ6ykOvvUooYrKIs+fFW78KArCQfq5m9jqujK8AT8E=;
-	b=eH+HrikD7HaZ+vBU6osfGw2xTbRl8qJjN94PyPQvhdYW1VVQDtatc5+v4cn1MiiP2d4s2p
-	8DR+FtyyaSRulzBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708602257; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xoJ6ykOvvUooYrKIs+fFW78KArCQfq5m9jqujK8AT8E=;
-	b=GxRql0GQN3kZ+yJ+otqo12KJcytm8iR3GDBEyzgH/ko4tHxaQGCUGGXUqHpLUKzFEy1V7F
-	/qv0Sw/VxgIYENs8vjnDUV/6mcw9FJgE4s3W8bNvmz7NtnjS8tGsPXJafUHbjEJ9MwG1b+
-	h22OkGgAV+Sa0O3vK38Dj6J3zlX5qFU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708602257;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xoJ6ykOvvUooYrKIs+fFW78KArCQfq5m9jqujK8AT8E=;
-	b=eH+HrikD7HaZ+vBU6osfGw2xTbRl8qJjN94PyPQvhdYW1VVQDtatc5+v4cn1MiiP2d4s2p
-	8DR+FtyyaSRulzBw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B8D0313A6B;
-	Thu, 22 Feb 2024 11:44:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id jSIbLZEz12X9PgAAn2gu4w
-	(envelope-from <jack@suse.cz>); Thu, 22 Feb 2024 11:44:17 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 62015A0807; Thu, 22 Feb 2024 12:44:17 +0100 (CET)
-Date: Thu, 22 Feb 2024 12:44:17 +0100
-From: Jan Kara <jack@suse.cz>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Jan Kara <jack@suse.cz>, Miklos Szeredi <miklos@szeredi.hu>,
-	Josef Bacik <josef@toxicpanda.com>, linux-kernel@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	lsf-pc@lists.linux-foundation.org, linux-btrfs@vger.kernel.org
-Subject: Re: [Lsf-pc] [LSF TOPIC] statx extensions for subvol/snapshot
- filesystems & more
-Message-ID: <20240222114417.wpcdkgsed7wklv3h@quack3>
-References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
- <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
- <20240221210811.GA1161565@perftesting>
- <CAJfpegucM5R_pi_EeDkg9yPNTj_esWYrFd6vG178_asram0=Ew@mail.gmail.com>
- <w534uujga5pqcbhbc5wad7bdt5lchxu6gcmwvkg6tdnkhnkujs@wjqrhv5uqxyx>
- <20240222110138.ckai4sxiin3a74ku@quack3>
- <u4btyvpsohnf77r5rm43tz426u3advjc4goea4obt2wtv6xyog@7bukhgoyumed>
+	s=arc-20240116; t=1708602393; c=relaxed/simple;
+	bh=U/ODfnHwPi5+9NrV+Ux+CV06sA5Ml+gF11lFUa0pFdY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=BME4IREv/Ap2gGCZQCw2pte4G6rXZqg3H2M2gojNFvqYOfTMyMN1lNs7ZebghPYvA9BOvoNgQQXgVn7dBsFIk2GfB/UMJTv6Z83ximOLfqpYhIwKExlEifYZaQV5amHXkKLxU83K4VbBk5y10QrVM5JJa2bLkppkbPVFWVmFdGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=i8KFdnaf; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708602391; x=1740138391;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=U/ODfnHwPi5+9NrV+Ux+CV06sA5Ml+gF11lFUa0pFdY=;
+  b=i8KFdnafKk0s0KRkmi87a2vigx642+bWfIXYLcUj3wl8Ue6ahv+ND/8y
+   CO+qZtdAXyofUkr8bXMZPJoeBmh8Tq22p2rgY34ZuM73W201luFNQsS0e
+   6iZpoOgnCOfFAsGms64L6NmgEGwzN5xAZLUoQ+Za3/syh+RfiGKmqOHuS
+   NLujUsrzpKxalbAOjalQw4bQGKp+AfSzcky9zlpMTsvZ6jDCku3YZjb8e
+   hQA1NkT8AUH5VW1bcryO1n9PzTt0ytkDEk4Dn3sKDTi3KyJfjHbxFbaJ2
+   3dv2SgzL07RqMEZvgZPHkps6ZsKtIZhhx3uqLWroU4QyUNlNXyuPI51LW
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="13522191"
+X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
+   d="scan'208";a="13522191"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 03:46:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
+   d="scan'208";a="5436460"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.94.249.55])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 03:46:29 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: Bjorn Helgaas <bhelgaas@google.com>,
+	linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 1/1] PCI/sysfs: Demacrofy pci_dev_resource_resize_attr(n) functions
+Date: Thu, 22 Feb 2024 13:46:06 +0200
+Message-Id: <20240222114607.1837-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <u4btyvpsohnf77r5rm43tz426u3advjc4goea4obt2wtv6xyog@7bukhgoyumed>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-2.60 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -2.60
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu 22-02-24 06:27:14, Kent Overstreet wrote:
-> On Thu, Feb 22, 2024 at 12:01:38PM +0100, Jan Kara wrote:
-> > On Thu 22-02-24 04:42:07, Kent Overstreet wrote:
-> > > On Thu, Feb 22, 2024 at 10:14:20AM +0100, Miklos Szeredi wrote:
-> > > > On Wed, 21 Feb 2024 at 22:08, Josef Bacik <josef@toxicpanda.com> wrote:
-> > > > >
-> > > > > On Wed, Feb 21, 2024 at 04:06:34PM +0100, Miklos Szeredi wrote:
-> > > > > > On Wed, 21 Feb 2024 at 01:51, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> > > > > > >
-> > > > > > > Recently we had a pretty long discussion on statx extensions, which
-> > > > > > > eventually got a bit offtopic but nevertheless hashed out all the major
-> > > > > > > issues.
-> > > > > > >
-> > > > > > > To summarize:
-> > > > > > >  - guaranteeing inode number uniqueness is becoming increasingly
-> > > > > > >    infeasible, we need a bit to tell userspace "inode number is not
-> > > > > > >    unique, use filehandle instead"
-> > > > > >
-> > > > > > This is a tough one.   POSIX says "The st_ino and st_dev fields taken
-> > > > > > together uniquely identify the file within the system."
-> > > > > >
-> > > > >
-> > > > > Which is what btrfs has done forever, and we've gotten yelled at forever for
-> > > > > doing it.  We have a compromise and a way forward, but it's not a widely held
-> > > > > view that changing st_dev to give uniqueness is an acceptable solution.  It may
-> > > > > have been for overlayfs because you guys are already doing something special,
-> > > > > but it's not an option that is afforded the rest of us.
-> > > > 
-> > > > Overlayfs tries hard not to use st_dev to give uniqueness and instead
-> > > > partitions the 64bit st_ino space within the same st_dev.  There are
-> > > > various fallback cases, some involve switching st_dev and some using
-> > > > non-persistent st_ino.
-> > > 
-> > > Yeah no, you can't crap multiple 64 bit inode number spaces into 64
-> > > bits: pigeonhole principle.
-> > > 
-> > > We need something better than "hacks".
-> > 
-> > I agree we should have a better long-term plan than finding ways how to
-> > cram things into 64-bits inos. However I don't see a realistic short-term
-> > solution other than that.
-> > 
-> > To explicit: Currently, tar and patch and very likely other less well-known
-> > tools are broken on bcachefs due to non-unique inode numbers. If you want
-> > ot fix them, either you find ways how bcachefs can cram things into 64-bit
-> > ino_t or you go and modify these tools (or prod maintainers or whatever) to
-> > not depend on ino_t for uniqueness. The application side of things isn't
-> > going to magically fix itself by us telling "bad luck, ino_t isn't unique
-> > anymore".
-> 
-> My intent is to make a real effort towards getting better interfaces
-> going, prod those maintainers, _then_ look at adding those hacks (that
-> will necessarily be short term solutions since 64 bits is already
-> looking cramped).
+pci_dev_resource_resize_attr(n) macro is invoked for six resources,
+creating a large footprint function for each resource.
 
-OK, fine by me :) So one thing is still not quite clear to me - how do you
-expect the INO_NOT_UNIQUE flag to be used by these apps? Do you expect them
-to use st_dev + st_ino by default and fall back to fsid + fhandle only when
-INO_NOT_UNIQUE is set?
+Rework the macro to only create a function that calls a helper function
+so the compiler can decide if it warrants to inline the function or
+not.
 
-								Honza
+With x86_64 defconfig, this saves roughly 2.5kB:
+
+$ scripts/bloat-o-meter drivers/pci/pci-sysfs.o{.old,.new}
+add/remove: 1/0 grow/shrink: 0/6 up/down: 512/-2934 (-2422)
+Function                                     old     new   delta
+__resource_resize_store                        -     512    +512
+resource5_resize_store                       503      14    -489
+resource4_resize_store                       503      14    -489
+resource3_resize_store                       503      14    -489
+resource2_resize_store                       503      14    -489
+resource1_resize_store                       503      14    -489
+resource0_resize_store                       500      11    -489
+Total: Before=13399, After=10977, chg -18.08%
+
+(The compiler seemingly chose to still inline __resource_resize_show()
+which is fine, those functions are not very complex/large.)
+
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+---
+ drivers/pci/pci-sysfs.c | 138 +++++++++++++++++++++-------------------
+ 1 file changed, 74 insertions(+), 64 deletions(-)
+
+diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+index 2321fdfefd7d..613c5fc4f0a2 100644
+--- a/drivers/pci/pci-sysfs.c
++++ b/drivers/pci/pci-sysfs.c
+@@ -1410,79 +1410,89 @@ static const struct attribute_group pci_dev_reset_attr_group = {
+ 	.is_visible = pci_dev_reset_attr_is_visible,
+ };
+ 
++static ssize_t __resource_resize_show(struct device *dev, int n, char *buf)
++{
++	struct pci_dev *pdev = to_pci_dev(dev);
++	ssize_t ret;
++
++	pci_config_pm_runtime_get(pdev);
++
++	ret = sysfs_emit(buf, "%016llx\n",
++			 (u64)pci_rebar_get_possible_sizes(pdev, n));
++
++	pci_config_pm_runtime_put(pdev);
++
++	return ret;
++}
++
++static ssize_t __resource_resize_store(struct device *dev, int n,
++				       const char *buf, size_t count)
++{
++	struct pci_dev *pdev = to_pci_dev(dev);
++	unsigned long size, flags;
++	int ret, i;
++	u16 cmd;
++
++	if (kstrtoul(buf, 0, &size) < 0)
++		return -EINVAL;
++
++	device_lock(dev);
++	if (dev->driver) {
++		ret = -EBUSY;
++		goto unlock;
++	}
++
++	pci_config_pm_runtime_get(pdev);
++
++	if ((pdev->class >> 8) == PCI_CLASS_DISPLAY_VGA) {
++		ret = aperture_remove_conflicting_pci_devices(pdev,
++						"resourceN_resize");
++		if (ret)
++			goto pm_put;
++	}
++
++	pci_read_config_word(pdev, PCI_COMMAND, &cmd);
++	pci_write_config_word(pdev, PCI_COMMAND,
++			      cmd & ~PCI_COMMAND_MEMORY);
++
++	flags = pci_resource_flags(pdev, n);
++
++	pci_remove_resource_files(pdev);
++
++	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
++		if (pci_resource_len(pdev, i) &&
++		    pci_resource_flags(pdev, i) == flags)
++			pci_release_resource(pdev, i);
++	}
++
++	ret = pci_resize_resource(pdev, n, size);
++
++	pci_assign_unassigned_bus_resources(pdev->bus);
++
++	if (pci_create_resource_files(pdev))
++		pci_warn(pdev, "Failed to recreate resource files after BAR resizing\n");
++
++	pci_write_config_word(pdev, PCI_COMMAND, cmd);
++pm_put:
++	pci_config_pm_runtime_put(pdev);
++unlock:
++	device_unlock(dev);
++
++	return ret ? ret : count;
++}
++
+ #define pci_dev_resource_resize_attr(n)					\
+ static ssize_t resource##n##_resize_show(struct device *dev,		\
+ 					 struct device_attribute *attr,	\
+-					 char * buf)			\
++					 char *buf)			\
+ {									\
+-	struct pci_dev *pdev = to_pci_dev(dev);				\
+-	ssize_t ret;							\
+-									\
+-	pci_config_pm_runtime_get(pdev);				\
+-									\
+-	ret = sysfs_emit(buf, "%016llx\n",				\
+-			 (u64)pci_rebar_get_possible_sizes(pdev, n));	\
+-									\
+-	pci_config_pm_runtime_put(pdev);				\
+-									\
+-	return ret;							\
++	return __resource_resize_show(dev, n, buf);			\
+ }									\
+-									\
+ static ssize_t resource##n##_resize_store(struct device *dev,		\
+ 					  struct device_attribute *attr,\
+ 					  const char *buf, size_t count)\
+ {									\
+-	struct pci_dev *pdev = to_pci_dev(dev);				\
+-	unsigned long size, flags;					\
+-	int ret, i;							\
+-	u16 cmd;							\
+-									\
+-	if (kstrtoul(buf, 0, &size) < 0)				\
+-		return -EINVAL;						\
+-									\
+-	device_lock(dev);						\
+-	if (dev->driver) {						\
+-		ret = -EBUSY;						\
+-		goto unlock;						\
+-	}								\
+-									\
+-	pci_config_pm_runtime_get(pdev);				\
+-									\
+-	if ((pdev->class >> 8) == PCI_CLASS_DISPLAY_VGA) {		\
+-		ret = aperture_remove_conflicting_pci_devices(pdev,	\
+-						"resourceN_resize");	\
+-		if (ret)						\
+-			goto pm_put;					\
+-	}								\
+-									\
+-	pci_read_config_word(pdev, PCI_COMMAND, &cmd);			\
+-	pci_write_config_word(pdev, PCI_COMMAND,			\
+-			      cmd & ~PCI_COMMAND_MEMORY);		\
+-									\
+-	flags = pci_resource_flags(pdev, n);				\
+-									\
+-	pci_remove_resource_files(pdev);				\
+-									\
+-	for (i = 0; i < PCI_STD_NUM_BARS; i++) {			\
+-		if (pci_resource_len(pdev, i) &&			\
+-		    pci_resource_flags(pdev, i) == flags)		\
+-			pci_release_resource(pdev, i);			\
+-	}								\
+-									\
+-	ret = pci_resize_resource(pdev, n, size);			\
+-									\
+-	pci_assign_unassigned_bus_resources(pdev->bus);			\
+-									\
+-	if (pci_create_resource_files(pdev))				\
+-		pci_warn(pdev, "Failed to recreate resource files after BAR resizing\n");\
+-									\
+-	pci_write_config_word(pdev, PCI_COMMAND, cmd);			\
+-pm_put:									\
+-	pci_config_pm_runtime_put(pdev);				\
+-unlock:									\
+-	device_unlock(dev);						\
+-									\
+-	return ret ? ret : count;					\
++	return __resource_resize_store(dev, n, buf, count);		\
+ }									\
+ static DEVICE_ATTR_RW(resource##n##_resize)
+ 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.39.2
+
 
