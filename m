@@ -1,106 +1,148 @@
-Return-Path: <linux-kernel+bounces-77343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5562F860411
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:55:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25E9C860424
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:57:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77B391C250C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:55:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3E3828CF32
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:57:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17C0471755;
-	Thu, 22 Feb 2024 20:55:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04B5112D1E7;
+	Thu, 22 Feb 2024 20:57:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b="CyiObIsu"
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g+TVcWsU"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7DF17172E
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 20:55:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9132371739;
+	Thu, 22 Feb 2024 20:57:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708635341; cv=none; b=KYbHnUgdWcRos/UEQlGe83704LhH9ItxZOOhsW77XPltKt+sgG1ME1+4XlgaN4IFaKUHMNrddjeZlPp/1nMznnm8Klx5ZSyfy1P6/TAXRHll3YcrOGtt6fMjk6wo0mlCeRgc4AWgQP91KIcr0EEM+u/q6ckKF1vXg3JH2v5C0OM=
+	t=1708635426; cv=none; b=lg7sVW2Ntsx9pCkPEEA89w9yrp67QlHkzRrfX5d532UORdx8Fa9D/RH+Npb5FcOljNQrn7zUZHA+rrzrmrbVTEQiLP4Jx2AqM2BCBv8H0IMutAc3CEIuSKomtni44xhJoZConhmYheqbUwopL7xytVvzm+fkNaEH4yiTzGsKrLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708635341; c=relaxed/simple;
-	bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=N7/gmyVNGBQ4Qy/iPmRC4d4aerUvT7UjgkS/WBVm7N8s/dTPKBbKpF4Oirtg+XjzpB6NbGjmvViY3PN7McivBMHDdo40nb/+6AdIPqPfVFJP2Eyz1d7HB//M46MYDHbxfmAzq0h70qZGfQioKbeZTBunADC6WJAXo4om81HsP7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca; spf=none smtp.mailfrom=ndufresne.ca; dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b=CyiObIsu; arc=none smtp.client-ip=209.85.160.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ndufresne.ca
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-42e12454d7dso156141cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 12:55:39 -0800 (PST)
+	s=arc-20240116; t=1708635426; c=relaxed/simple;
+	bh=ZXL/20AOlmDgfRX36Nzj4Pff74rf6CTLJF/MqrlGbAc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=azjXMUXH+lzE5RNmJVr2Ux7N2c0WEbf2VU6gjhfaRo8Bgnic1lRBQkvtJX1FsTOPHbM1qSjr3ki32v79sxC5/2eOyxhPAMgxyHHJy20qZ6Hvexjz32+SJnKHLJ9DUBTq6RMV5APOrYcGpDr1Mpn0wcZ2/YgKHcg43T8Z/EWpTy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g+TVcWsU; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5654621d62dso66090a12.3;
+        Thu, 22 Feb 2024 12:57:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1708635339; x=1709240139; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=CyiObIsutKmXk9m0vYgmFEQWXlHSz5c+OYwNSEooQG3hV7ozSngUYJLxnz70mgYpPk
-         exyUUKMssNsHQYbmm0Yjj5vRlo5jXW4afVznZtHrlFB423UN1sQiF96jrXc0s6eecuyo
-         UdChsBzSs+wx+XuDN2SRh9AprQDoAVRk326Wg+YusDG2jPfQtuwfW8/dybT5qbA/PyGY
-         Y23jkQfH6rKuGe8o2khRP+R/gk3kzM6n8L1tIlFrRCq+B36cnU6oZitztrhyAvOub42c
-         peExYGDhN/oJgfP67CzkOzeAVEkRTZ2mSe8Uhkp4RkDU+bv5TWiQi9s9BRsCqoEJcwM7
-         YALg==
+        d=gmail.com; s=20230601; t=1708635423; x=1709240223; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k2R6exNFMuMyEP9Zs0TU701ZxYwzvvvAfOU9DIEkDzQ=;
+        b=g+TVcWsUvU38GqV+gwUEtUKoG8zXXRYmpcGGGQrpgtrCCKt9m98Xs2BAPMHqpfOWzH
+         kGLQz468V9PM7ArAM9VovH8T0WZ8X9WPp7ERPhWv6/NKQAyd/JK0EoAhgPsrFKHfCfDg
+         l5+CGWxkFgmNqX6sXF5lcnXFeTgXkOWhIvZKrAzBRmjEj7Qr8EtIbD9gS1pkyUqpv/rb
+         ibU9mTVLZ4en/MpcZydsXod7BYckyd3JlMRIxL21AjiHRXE73n4tE05Gab+VE7Hsmynp
+         mlrsH2O2RIQRmHx7jsBcK0bOtQ38Fv27toXMffpmHjnBrFucxYMAVDL0KcKkv9pOg0n3
+         NUUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708635339; x=1709240139;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=Kqrd1YlNHghpHRwlIfoGF6hac5ahrzeWyVJAnsoMYGrX8B/0JbF36Ghi0k+TLgkJPM
-         XHD3UFAKs5qz4wSIvD5qJP4p8EalyDs34+odRdhhVeAWTqYDixgXyDB+GHb4ievICP35
-         Gjc8b8btFcfQAVMm5ZmWUPbE+EhJFetuHXRmj63bgOcWNHVv6NqMFgAF3mRaB2eDlK/d
-         ko6XxQjbUgM5NkLb0A7Z6mSE7/gXrayiIMpdwfXU1hnxMXIhNhLelBpTlz6+DsGkxiO/
-         RGC1LKoO8B0qQUQB2VhQ9/tc9vP+9bU2aqe7pm67UpTd12I9LShMBK/1Il38f1QfGIJp
-         Cujg==
-X-Forwarded-Encrypted: i=1; AJvYcCUUCdH3pdmkLUgn1+Ja5e7IIuy87tI4qWYKjW7irM0OOoXQGXi5pKHPZ1PPV3DaAUVqhRQorUc4UPDvEnQzHC/38W2yFKzJXGkndmO3
-X-Gm-Message-State: AOJu0Yy8MQH7Hl0w0q7kYpoBEHWoHokEO+tG7qHoyKOTrXO+Iok+/mDC
-	W4b5gO22zDSyZmmEILRKyahP0fdvq3ETwjYtLPKZx/y3dSCjGMM5eEy8TQixxRMklgecyDHawjq
-	y
-X-Google-Smtp-Source: AGHT+IGz7efUDBoB0wqIYpaEHPilx8wtYz0FfrG3iJdyZ1CuQZCDnwAB6jiMBBlW1BnHYPOMLjuO3g==
-X-Received: by 2002:a05:622a:10a:b0:42d:dd39:355c with SMTP id u10-20020a05622a010a00b0042ddd39355cmr379415qtw.4.1708635338807;
-        Thu, 22 Feb 2024 12:55:38 -0800 (PST)
-Received: from nicolas-tpx395.localdomain ([2606:6d00:11:3354::7a9])
-        by smtp.gmail.com with ESMTPSA id q18-20020ac87352000000b0042e0620d2afsm4577379qtp.72.2024.02.22.12.55.38
+        d=1e100.net; s=20230601; t=1708635423; x=1709240223;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=k2R6exNFMuMyEP9Zs0TU701ZxYwzvvvAfOU9DIEkDzQ=;
+        b=jK9zorFkU730j0vSeb27YkIZRV484ootI7yw006nuVIfSyzo9seCNyBheZRI8jHWL3
+         txhJI/QZHf+LLgE1aJ91wc/qVylydn5rXwLbipja7vVJwhp6tAA5djaotKkxyS5B5ouo
+         mOABJv61zi1UKSt6RoFD59zqJV/4l9/m//8Uv6kUbEDk9JAy75TsVlM1mWzZ7yRVNVne
+         U7Hl8tpqQD2cEJPXjnm5PpkoPQ3Pa225stXhswp8s8MMtPZ3MTJv2t/JBwkmQEHqqom3
+         STOQEB4al3F2pawt5+k2saG6D/PFORZzn+TTBfpCKAaXA8MU/4WIKrj/p14u1mFuNWCN
+         8z2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXYRC1oXWkfQE2IGu9dcE3kfWSGp9eAUfvyijQ5M7ovpPvhEl2ilGwn8PI5LJL3Z7bkb1m9184Kb8VDQxLawsisgZ046Yen83RYIQKIKZZoa15MWCF46cWvXt/TgdekvVO+6S/ap3s=
+X-Gm-Message-State: AOJu0YxsYlAYssUVDc7IUxxK8u3pfSjglqtUl0zYGXQq0kYUPvhxOKlU
+	igbfYq3irZL2SN8kD20voe8eYQlpnF4aJ3HI1lM1KoAXuk9OfcOeCG7+rAML42g=
+X-Google-Smtp-Source: AGHT+IE/qvrg3YIq3JMhwgKa7j4LV2SY69KS3EGu1YYakjYgPPsfh2dUaKoCvH0+xzFJkFJVYOeQJA==
+X-Received: by 2002:a50:cd58:0:b0:563:e5e0:85e1 with SMTP id d24-20020a50cd58000000b00563e5e085e1mr16447362edj.25.1708635422647;
+        Thu, 22 Feb 2024 12:57:02 -0800 (PST)
+Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
+        by smtp.gmail.com with ESMTPSA id r21-20020a50d695000000b00563f3ee5003sm6120860edi.91.2024.02.22.12.57.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 12:55:38 -0800 (PST)
-Message-ID: <060d634c4c707c9ed93f0d97816407b0195daace.camel@ndufresne.ca>
-Subject: Re: [RESEND PATCH v0 3/5] wave5 : Support runtime suspend/resume.
-From: Nicolas Dufresne <nicolas@ndufresne.ca>
-To: "jackson.lee" <jackson.lee@chipsnmedia.com>, "mchehab@kernel.org"
-	 <mchehab@kernel.org>, "linux-media@vger.kernel.org"
-	 <linux-media@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	 <linux-kernel@vger.kernel.org>, Nas Chung <nas.chung@chipsnmedia.com>
-Cc: "lafley.kim" <lafley.kim@chipsnmedia.com>, "b-brnich@ti.com"
-	 <b-brnich@ti.com>
-Date: Thu, 22 Feb 2024 15:55:37 -0500
-In-Reply-To: <SE1P216MB13035B8E53454881C87059B9ED562@SE1P216MB1303.KORP216.PROD.OUTLOOK.COM>
-References: <20240131013046.15687-1-jackson.lee@chipsnmedia.com>
-	 <20240131013046.15687-4-jackson.lee@chipsnmedia.com>
-	 <efe24b949a60034bf618eb3b8a8ba82e8a5dc99c.camel@ndufresne.ca>
-	 <SE1P216MB130326E2C4BA7E723A8955C9ED512@SE1P216MB1303.KORP216.PROD.OUTLOOK.COM>
-	 <20489b01f1ac9ab3e434ea4c17b4e0ccd84afa36.camel@ndufresne.ca>
-	 <SE1P216MB1303CEEF6DFAB5FA7C69D645ED502@SE1P216MB1303.KORP216.PROD.OUTLOOK.COM>
-	 <d5546b48ea829316a8dbd2ecc27bbf05e70e8188.camel@ndufresne.ca>
-	 <SE1P216MB1303932A0D3FC399179115D9ED572@SE1P216MB1303.KORP216.PROD.OUTLOOK.COM>
-	 <be5ce95b023bcff24f53fdae55763bf4a3f6b1d7.camel@ndufresne.ca>
-	 <SE1P216MB13038F3890F8B4597465B394ED562@SE1P216MB1303.KORP216.PROD.OUTLOOK.COM>
-	 <SE1P216MB13035B8E53454881C87059B9ED562@SE1P216MB1303.KORP216.PROD.OUTLOOK.COM>
-Autocrypt: addr=nicolas@ndufresne.ca; prefer-encrypt=mutual; keydata=mQGiBEUQN0MRBACQYceNSezSdMjx7sx6gwKkMghrrODgl3B0eXBTgNp6c431IfOOEsdvkoOh1kwoYcQgbg4MXw6beOltysX4e8fFWsiRkc2nvvRW9ir9kHDm49MkBLqaDjTqOkYKNMiurFW+gozpr/lUW15QqT6v68RYe0zRdtwGZqeLzX2LVuukGwCg4AISzswrrYHNV7vQLcbaUhPgIl0D+gILYT9TJgAEK4YHW+bFRcY+cgUFoLQqQayECMlctKoLOE69nIYOc/hDr9uih1wxrQ/yL0NJvQCohSPyoyLF9b2EuIGhQVp05XP7FzlTxhYvGO/DtO08ec85+bTfVBMV6eeY4MS3ZU+1z7ObD7Pf29YjyTehN2Dan6w1g2rBk5MoA/9nDocSlk4pbFpsYSFmVHsDiAOFje3+iY4ftVDKunKYWMhwRVBjAREOByBagmRau0cLEcElpf4hX5f978GoxSGIsiKoDAlXX+ICDOWC1/EXhEEmBR1gL0QJgiVviNyLfGJlZWnPjw6xhhmtHYWTDxBOP5peztyc2PqeKsLsLWzAr7RDTmljb2xhcyBEdWZyZXNuZSAoQi4gU2MuIEluZm9ybWF0aXF1ZSkgPG5pY29sYXMuZHVmcmVzbmVAZ21haWwuY29tPohgBBMRAgAgBQJFlCyOAhsDBgsJCAcDAgQVAggDBBYCAwECHgECF4AACgkQcVMCLawGqBwhLQCgzYlrLBj6KIAZ4gmsfjXD6ZtddT8AoIeGDicVq5WvMHNWign6ApQcZUihtElOaWNvbGFzIER1ZnJlc25lIChCLiBTYy4gSW5mb3JtYXRpcXVlKSA8bmljb2xhcy5kdWZyZXNuZUBjb2xsYWJvcmEuY28udWs+iGIEExECACIFAkuzca8CGwMGCwkIBwMCBhUIAgkKCwQWA
- gMBAh4BAheAAAoJEHFTAi2sBqgcQX8An2By6LDEeMxi4B9hUbpvRnzaaeNqA J9Rox8rfqHZnSErw9bCHiBwvwJZ77QxTmljb2xhcyBEdWZyZXNuZSA8bmljb2xhcy5kdWZyZXNuZUBjb2xsYWJvcmEuY29tPohiBBMRAgAiBQJNzZzPAhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRBxUwItrAaoHLlxAKCYAGf4JL7DYDLs/188CPMGuwLypwCfWKc9DorA9f5pyYlD5pQo6SgSoiC0J05pY29sYXMgRHVmcmVzbmUgPG5pY29sYXNAbmR1ZnJlc25lLmNhPohiBBMRAgAiBQJVwNwgAhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRBxUwItrAaoHCZ4AJ0QwU6/G4c7h9CkMBT9ZxGLX4KSnQCgq0P7CX7hv/M7HeyfMFZe8t3vAEW0RE5pY29sYXMgRHVmcmVzbmUgKEIuIFNjLiBJbmZvcm1hdGlxdWUpIDxuaWNvbGFzZEBibHVlc3RyZWFrdGVjaC5jb20+iGAEExECACAFAkZjGzoCGwMGCwkIBwMCBBUCCAMEFgIDAQIeAQIXgAAKCRBxUwItrAaoHBl7AJ0d2lrzshMmJaik/EaDEakzEwqgxQCg0JVZMZm9gRfEou1FvinuZxwf/mu0R05pY29sYXMgRHVmcmVzbmUgKEIgU2MuIEluZm9ybWF0aXF1ZSkgPG5pY29sYXMuZHVmcmVzbmVAdXNoZXJicm9va2UuY2E+iGAEExECACAFAkUQN0MCGwMGCwkIBwMCBBUCCAMEFgIDAQIeAQIXgAAKCRBxUwItrAaoHPTnAJ0WGgJJVspoctAvEcI00mtp5WAFGgCgr+E7ItOqZEHAs+xabBgknYZIFPW5Ag0ERRA3UhAIAJ0rxl2HsVg/nSOAUt7U/T/W+RKzVAlD9orCB0pRVvyWNxSr8MHcH
- mWCxykLuB34ouM4GuDVRKfGnqLzJRBfjs7Ax9K2FI3Odund9xpviLCt1jFC0K XL04RebrFT7xjDfocDaSLFvgxMVs/Jr2/ckKPId1oKvgYgt/o+MzUabKyFB8wIvq4GMtj3LoBKLCie2nCaSt7uVUt6q2t5bNWrd3lO6/mWn7YMc5Hsn33H9pS0+9szw6m3dG08eMKNueDlt72QxiYl2rhjzkT4ltKEkFgYBdyrtIj1UO6eX+YXb4E1rCMJrdjBSgqDPK1sWHC7gliy+izr+XTHuFwlfy8gBpsAAwUIAJJNus64gri4HAL632eqVpza83EphX1IuHzLi1LlMnQ9Tm7XKag46NhmJbOByMG33LwBsBdLjjHQSVkYZFWUifq+NWSFC/kqlb72vW8rBAv64+i3QdfxK9FWbweiRsPpvuHjJQuecbPDJpubLaxKbu2aqLCN5LuHXvdQr6KiXwabT+OJ9AJAqHG7q4IEzg4RNUVn9AS6L8bxqMSocjqpWNBCY2efCVd/c6k4Acv6jXu+wDAZEbWXK+71uaUHExhigBYBpiHGrobe32YlTVE/XEIzKKywhm/Hkn5YKWzumLte6xiD9JhKabmD7uqIvLt2twUpz4BdPzj0dvGlSmvFcaaISQQYEQIACQUCRRA3UgIbDAAKCRBxUwItrAaoHJLyAKDeS3AFowM3f1Y3OFU6XRCTKK2ZhwCfT/7P9WDjkkmiq5AfeOiwVlpuHtM=
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+        Thu, 22 Feb 2024 12:57:02 -0800 (PST)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: linux-kernel@vger.kernel.org, Aren Moynihan <aren@peacevolution.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+ Jean-Jacques Hiblot <jjhiblot@traphandler.com>, Chen-Yu Tsai <wens@csie.org>,
+ Ondrej Jirman <megi@xff.cz>, linux-sunxi@lists.linux.dev,
+ Lee Jones <lee@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+ linux-arm-kernel@lists.infradead.org, linux-leds@vger.kernel.org,
+ Conor Dooley <conor+dt@kernel.org>, Miles Alan <m@milesalan.com>,
+ Samuel Holland <samuel@sholland.org>, Aren Moynihan <aren@peacevolution.org>
+Subject:
+ Re: [PATCH v2 4/4] arm64: dts: sun50i-a64-pinephone: change led type to
+ status
+Date: Thu, 22 Feb 2024 21:57:00 +0100
+Message-ID: <2792937.BEx9A2HvPv@jernej-laptop>
+In-Reply-To: <20240206185400.596979-4-aren@peacevolution.org>
+References:
+ <20240206185400.596979-1-aren@peacevolution.org>
+ <20240206185400.596979-4-aren@peacevolution.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+
+Dne torek, 06. februar 2024 ob 19:13:20 CET je Aren Moynihan napisal(a):
+> The status function is described in the documentation as being a rgb led
+> used for system notifications on phones[1][2]. This is exactly what this
+> led is used for on the PinePhone, so using status is probably more
+> accurate than indicator.
+> 
+> 1: Documentation/leds/well-known-leds.txt
+> 2: include/dt-bindings/leds/common.h
+> 
+> Signed-off-by: Aren Moynihan <aren@peacevolution.org>
+
+Sorry for late review.
+
+Please update subject in patches 2-3. Instead of "sun50i-a64-pinephone:"
+use "allwinner: pinephone:" (check commit history of sun50i-a64-pinephone.dtsi).
+Also rgb -> RGB, led -> LED. Last, please reword commit message to exclude
+links and just say DT bindings documentation.
+
+Note that I'll merge patches 2-3 once patch 1 is merged.
+
+Best regards,
+Jernej
+
+> ---
+> I can't find any documentation describing the indicator function, so
+> it's definitely less specific than status, but besides that I'm not sure
+> how it compares. Please ignore this patch if it's not useful.
+> 
+> (no changes since v1)
+> 
+>  arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
+> index e53e0d4579a7..6d327266e6cc 100644
+> --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
+> @@ -61,7 +61,7 @@ led2: led-2 {
+>  	multi-led {
+>  		compatible = "leds-group-multicolor";
+>  		color = <LED_COLOR_ID_RGB>;
+> -		function = LED_FUNCTION_INDICATOR;
+> +		function = LED_FUNCTION_STATUS;
+>  		leds = <&led0>, <&led1>, <&led2>;
+>  	};
+>  
+> 
+
+
 
 
 
