@@ -1,65 +1,69 @@
-Return-Path: <linux-kernel+bounces-76287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76288-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F099D85F539
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:04:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3BE685F53C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:04:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 914351F25E2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:04:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31D4A1C2111A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:04:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37CC03987A;
-	Thu, 22 Feb 2024 10:04:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40A163A1B5;
+	Thu, 22 Feb 2024 10:04:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BLFBAFuS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IIKWXmLS"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7962638DD9;
-	Thu, 22 Feb 2024 10:04:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDB1C1799E;
+	Thu, 22 Feb 2024 10:04:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708596259; cv=none; b=NzLnU9bC6t+ZWS2R1HXLT+2ZcYDDcBUntiirKGteE8hD9Vl/JMV5jEYUYdv+RwGHXcr0bIy66fVre85ZoQJF9u6gmi7u3X/DDFa+pHtwbiynoL/dveICUk8DP5/BAzdUCDrqr5hs1J6ztlmUQ4TRmulZakmY7PqHxUe0IPsJp8w=
+	t=1708596260; cv=none; b=V9C9kLKP4LV/FmgsCHq/RrBydPhNPuzkpe9sKIKzWQrSleBxJ3Igs5TKWXBGrTFQ1KVPs1CX1DglrrllStodFRaAG4cf75rt9kXq/Kmt5s1s56mWKU7N+zRyHPrEp9fBY5xj6Clz83Ej7booIIIXiRs5XWUd25cKJ5oQQEZuBZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708596259; c=relaxed/simple;
-	bh=DY+laaDGWADlgjZ4aCk/y2nEJQIg6zplT0mKVagO2gE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lS97D8ngWiBiXsGfHeO6IpXaPe+VmfzfMEeRtPlpgE87wFV0nVeKwCaH/GObn768VtBqBZVRpEtxEDCtkImY5RXatwv27940GDJD+bhzXfqUMueADzR/I88wtYUzShfX488tLwaFG/AdjAy1QldRtDQ0CSwXTEuP2A/tAXyU1po=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BLFBAFuS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CB37C433F1;
-	Thu, 22 Feb 2024 10:04:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708596259;
-	bh=DY+laaDGWADlgjZ4aCk/y2nEJQIg6zplT0mKVagO2gE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=BLFBAFuS1IqZtsu4OkQIujYD8nRbeCwV9jGbdUmQMen0qak0DD7GCeTMy/o92a6jR
-	 QeG2H/KO+xVYKuqf9XuyYY1IjgvMDAhzJgMIngXNJ8H9CwJHcN+nuee/C55+kXemL2
-	 VFxAPStbgXsHPBhbovrhsre+27Ku68taiwDZQ70gNT4NEfHnqYSd93mlIvsHeaHlBW
-	 HreItCp7zMUEGA5rJK6Lj6QSpohfJk77GuHoDmC2XtmdB1t2AeZNdonBBnx9NbcmHt
-	 V2ywIcxpAVu3ABiTXPPA9lDMZPnTmZHcXz3EhZpGx+nwz16SuhEUjhaEkGu6I4CtiK
-	 kC/MGvB3U6UQQ==
-From: Arnd Bergmann <arnd@kernel.org>
-To: David Woodhouse <dwmw2@infradead.org>,
-	Paul Durrant <paul@xen.org>,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	Jan Kara <jack@suse.cz>,
-	Christian Brauner <brauner@kernel.org>,
-	kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: x86/xen: fix 32-bit pointer cast
-Date: Thu, 22 Feb 2024 11:03:58 +0100
-Message-Id: <20240222100412.560961-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1708596260; c=relaxed/simple;
+	bh=mFZJs3BNxqZD9cGaYuH+MQZFDULSQkw1Nio/NpslbwA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=N3s2zhRIQ4pPIPKlfFVAjnKtlapAFfaTs3DL8XDcDuuAPlhFynEsfPIWGw1qOeXE1Ku2lQoIHfEiP7yMIWiSCKmsK3QcK0hP604nlJVgLhWH2AL3QeQKui5AIcW4Jhf0Qu5nuC0x5Ta0p04guKftBEOcYcy3u7aNW71e3l1CNnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IIKWXmLS; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708596259; x=1740132259;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=mFZJs3BNxqZD9cGaYuH+MQZFDULSQkw1Nio/NpslbwA=;
+  b=IIKWXmLS5OSUIbVqws1USm9svKPJRouFLVPSsfBSzYsI2CbP/4xPhNyo
+   ZXqPO0js41aCTRjljIfsgWU2jC44Xi8PaVskYEkzrJZ2e4BfmmPPSR2Kd
+   76q33WH/bkiUJ548cCllpR4YP6wb/gh21T3bxt4UMJmIns+adam/UCBJ2
+   qfByiiYCyV3eKUY+yoJixVO0OvKcoQUVYqRd/E3DN6UdMRNSuStaLNfmH
+   zQWBro4UCPDGYW1S0q7bAH803ClnJF6fCv760rrCZMaNDCWn9HsbDLCUj
+   aIs6RsMWZ+iWN7S+ntH7nvzk57R1DaIwk2+9WfOMHolQuzfOlkdP7uAzg
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="2726872"
+X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
+   d="scan'208";a="2726872"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 02:04:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="913493583"
+X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
+   d="scan'208";a="913493583"
+Received: from ksulimow-mobl1.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.23.120])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 02:04:13 -0800
+From: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+To: reinette.chatre@intel.com,
+	fenghua.yu@intel.com,
+	shuah@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	ilpo.jarvinen@linux.intel.com
+Subject: [PATCH v2 0/3] selftests/resctrl: Simplify test cleanup functions
+Date: Thu, 22 Feb 2024 11:04:03 +0100
+Message-ID: <cover.1708596015.git.maciej.wieczor-retman@intel.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,37 +72,42 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+Cleaning up after tests is implemented separately for individual tests
+and called at the end of each test execution. Since these functions are
+very similar and a more generalized test framework was introduced a
+function pointer in the resctrl_test struct can be used to reduce the
+amount of function calls.
 
-shared_info.hva is a 64-bit variable, so casting to a pointer causes
-a warning in 32-bit builds:
+These functions are also all called in the ctrl-c handler because the
+handler isn't aware which test is currently running. Since the handler
+is implemented with a sigaction no function parameters can be passed
+there but information about what test is currently running can be passed
+with a global variable.
 
-arch/x86/kvm/xen.c: In function 'kvm_xen_hvm_set_attr':
-arch/x86/kvm/xen.c:660:45: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
-  660 |                         void __user * hva = (void *)data->u.shared_info.hva;
+Changelog v2:
+- Make current_test a const pointer limited in scope to resctrl_val
+  file.
+- Remove tests_cleanup from resctrl.h.
+- Cleanup 'goto out' path and labels in individual test functions.
 
-Replace the cast with a u64_to_user_ptr() call that does the right thing.
+Older versions of this series:
+[v1] https://lore.kernel.org/all/cover.1708434017.git.maciej.wieczor-retman@intel.com/
 
-Fixes: 01a871852b11 ("KVM: x86/xen: allow shared_info to be mapped by fixed HVA")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/x86/kvm/xen.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Maciej Wieczor-Retman (3):
+  selftests/resctrl: Add cleanup function to test framework
+  selftests/resctrl: Simplify cleanup in ctrl-c handler
+  selftests/resctrl: Move cleanups out of individual tests
 
-diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
-index 01c0fd138d2f..8a04e0ae9245 100644
---- a/arch/x86/kvm/xen.c
-+++ b/arch/x86/kvm/xen.c
-@@ -657,7 +657,7 @@ int kvm_xen_hvm_set_attr(struct kvm *kvm, struct kvm_xen_hvm_attr *data)
- 						     gfn_to_gpa(gfn), PAGE_SIZE);
- 			}
- 		} else {
--			void __user * hva = (void *)data->u.shared_info.hva;
-+			void __user * hva = u64_to_user_ptr(data->u.shared_info.hva);
- 
- 			if (!PAGE_ALIGNED(hva) || !access_ok(hva, PAGE_SIZE)) {
- 				r = -EINVAL;
+ tools/testing/selftests/resctrl/cat_test.c      |  8 +++-----
+ tools/testing/selftests/resctrl/cmt_test.c      |  4 ++--
+ tools/testing/selftests/resctrl/mba_test.c      |  8 +++-----
+ tools/testing/selftests/resctrl/mbm_test.c      |  8 +++-----
+ tools/testing/selftests/resctrl/resctrl.h       |  9 +++------
+ tools/testing/selftests/resctrl/resctrl_tests.c | 16 +++++-----------
+ tools/testing/selftests/resctrl/resctrl_val.c   |  6 ++++--
+ 7 files changed, 23 insertions(+), 36 deletions(-)
+
 -- 
-2.39.2
+2.43.2
 
 
