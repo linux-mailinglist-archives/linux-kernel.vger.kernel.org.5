@@ -1,65 +1,65 @@
-Return-Path: <linux-kernel+bounces-77178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77179-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A690E8601D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:48:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 157BF8601DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:49:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 320851F29C1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:48:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5D6828C782
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:49:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1449C14DFD6;
-	Thu, 22 Feb 2024 18:40:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD57214DFEC;
+	Thu, 22 Feb 2024 18:40:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZZTrol+e"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P+0laI0Z"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E9E914CAD5
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 18:39:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D1714DFCA
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 18:40:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708627201; cv=none; b=pw2P6BXdOlVutFYYov7Nwiefa293at6VCv8I4o8qpZXw1JkOeqfpkrSKRxWTcIqUfvjXRJ14vj+9mmfEUXxIfdaY1C5HWop4dBsxHBPWyXYJ/AWngfGp8J6sRbdVt04Ye1tL/cIEpsuhD5cTkGkRXhR+vFX8lBNp7ULvhNijM04=
+	t=1708627202; cv=none; b=EPXBxyrifDtEHKdIM4vtVYrWeLu7FLMurkP5iQzPd8Z2v2BJu3Frt3kKhr3ZBUHodrkKsMXApst9YmQc1HKItdcvk1ULKqlbZDSTXt2CPv7IhDTiwZUr+u5JgahISl8bfplChT5HkuTm26kT7s/6aK9o0RFGKU4EpsJEv5gcq0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708627201; c=relaxed/simple;
-	bh=g9iOQCfCOGeDHAxU5yPd22RT/hffnnPIA4rM0xaPx8k=;
-	h=Subject:To:Cc:From:Date:References:In-Reply-To:Message-Id; b=d40yDAzKFcBntXLjc2dAOOwaTe+v83+U9nHgmuqSdLg+rixYNq2AuF/Vo90Z23XbapLBPOdhf5+o0yqvUu+C+s9MyJmYNPDvjXoT2RH0VENtnq5qzBgplON/1pA0g1kS4ZYJNFrAsrNldwXY3oUJkO1h0UmSiCHSyMx+rFxtqh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZZTrol+e; arc=none smtp.client-ip=192.198.163.9
+	s=arc-20240116; t=1708627202; c=relaxed/simple;
+	bh=EaW9U2GVh2a4ff8twfadEFuAzYEJkIYZvc+7BRdXeIw=;
+	h=Subject:To:Cc:From:Date:References:In-Reply-To:Message-Id; b=WppTmIgQ4cwNntKVBAixtwTc7zcAQw7ffuIrnIHbJBk8/09QrjE8hLfV8I1vTiFddIO0O6o0BNeWtZXOA5+mBt40sPufI1VGtv15LAdTWAFxLTW0FuDYfjR7MdYLZtaFilPVmkBJMnn4GbxPMDZ4HxYy1Hgx09U6C9vlihKQ6Ao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=P+0laI0Z; arc=none smtp.client-ip=192.198.163.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708627199; x=1740163199;
+  t=1708627201; x=1740163201;
   h=subject:to:cc:from:date:references:in-reply-to:
    message-id;
-  bh=g9iOQCfCOGeDHAxU5yPd22RT/hffnnPIA4rM0xaPx8k=;
-  b=ZZTrol+ejY0zPk4sWMIbVf27nZdPRbQltD4HlA893sxo8vpSPLPaMj00
-   5vAoT+EwU8rws8xp710uVW6FYdG2G/g2glku6DoQXOqvJipYXdh0RCbET
-   4Ubxmy56Q47HxvNA8KBxNIDErmRJyF6E7QeQtaIF2vhjb6iKqtoVIIWWn
-   XQgZZEnhddcxT4B3ESOSqur/wTz/rKuqpSmEpvuL4+ejYgJWkBGxabbKq
-   WJ08me6J5zEOhz2i097xHv72zuwdlomhI1BhyXldraAELOjhD+geCUJUk
-   PjKhH25OskuxhBGWtKaJQ4zr+aD6HG6bDkO6eD72EP2uzFkLB+JS8jom+
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="13584547"
+  bh=EaW9U2GVh2a4ff8twfadEFuAzYEJkIYZvc+7BRdXeIw=;
+  b=P+0laI0ZOC2XmHvMvquboye3X1GAbP46sEVPpfck1TtjvfFQP1XWEF+B
+   lF3ynbaMTxBeGRtWKtV+myMc4Rj7hPLzZMWCEJuWlRyLPlPwMHAevc4u6
+   8fNH0NzFL0l0G4UpStfqOnp+g0bMLDBf73qMdqCqy/RBE29im0hH8MxmU
+   +hOydID5OJdCxHrf6YnCidYunJmzI3wlVlKvBgB+LaYhACUnWYtTnMR6Q
+   36EK2ORrwYScGbpBT0ehwdUks2OYgVNrXsNQ7xRSlOHSnhfdrt+hwveO9
+   L56JT+O1j0ehbi9Eb+y94k+sFp3d8VgEffsiMjkS7UrYQIl4x8J1sAOEB
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="13584552"
 X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="13584547"
+   d="scan'208";a="13584552"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 10:39:58 -0800
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 10:39:59 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="10265228"
+   d="scan'208";a="10265229"
 Received: from davehans-spike.ostc.intel.com (HELO localhost.localdomain) ([10.165.164.11])
-  by orviesa004.jf.intel.com with ESMTP; 22 Feb 2024 10:39:59 -0800
-Subject: [RFC][PATCH 24/34] x86/cpu: Establish 'min_cache_bits' configuration
+  by orviesa004.jf.intel.com with ESMTP; 22 Feb 2024 10:40:00 -0800
+Subject: [RFC][PATCH 25/34] x86/cpu: Move cache bits to global config
 To: linux-kernel@vger.kernel.org
 Cc: kirill.shutemov@linux.intel.com,pbonzini@redhat.com,tglx@linutronix.de,x86@kernel.org,bp@alien8.de,Dave Hansen <dave.hansen@linux.intel.com>
 From: Dave Hansen <dave.hansen@linux.intel.com>
-Date: Thu, 22 Feb 2024 10:39:58 -0800
+Date: Thu, 22 Feb 2024 10:39:59 -0800
 References: <20240222183926.517AFCD2@davehans-spike.ostc.intel.com>
 In-Reply-To: <20240222183926.517AFCD2@davehans-spike.ostc.intel.com>
-Message-Id: <20240222183958.F5A0812A@davehans-spike.ostc.intel.com>
+Message-Id: <20240222183959.7061C5F3@davehans-spike.ostc.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,167 +69,99 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
 From: Dave Hansen <dave.hansen@linux.intel.com>
 
-Continue moving towards a setup where code never tweaks 'boot_cpu_data'.
-
-Code must establish their intent in 'x86_addr_config' and then later
-code will use that config information to establish the system-wide
-config.
-
-The L1TF wants to tweak x86_cache_bits.  Let it do this, but move
-the code away from bugs.c so that ti can be easily called earlier
-en boot.
+x86_cache_bits is established and stored per-cpu despite being system-wide.
+Move it from 'struct cpuinfo_x86' to 'x86_config' and give it a helper.
 
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 ---
 
- b/arch/x86/include/asm/processor.h |    6 +++++
- b/arch/x86/kernel/cpu/bugs.c       |   41 -------------------------------------
- b/arch/x86/kernel/cpu/common.c     |    2 +
- b/arch/x86/kernel/cpu/intel.c      |   40 ++++++++++++++++++++++++++++++++++++
- 4 files changed, 48 insertions(+), 41 deletions(-)
+ b/arch/x86/include/asm/processor.h |   10 +++++++---
+ b/arch/x86/kernel/cpu/common.c     |    8 ++++----
+ b/arch/x86/kvm/mmu/spte.c          |    6 +++---
+ 3 files changed, 14 insertions(+), 10 deletions(-)
 
-diff -puN arch/x86/include/asm/processor.h~bsp-min_cache_bits arch/x86/include/asm/processor.h
---- a/arch/x86/include/asm/processor.h~bsp-min_cache_bits	2024-02-22 10:09:00.220915031 -0800
-+++ b/arch/x86/include/asm/processor.h	2024-02-22 10:09:00.224915188 -0800
-@@ -177,6 +177,12 @@ struct x86_addr_config {
- 	 * will take place at a more coarse granularity.
- 	 */
- 	u8 cache_align_mult;
-+
-+	/*
-+	 * Specify a floor for the number of bits that the CPU
-+	 * caches comprehend.  Used only for L1TF mitigation.
-+	 */
-+	u8 min_cache_bits;
+diff -puN arch/x86/include/asm/processor.h~config-cache_bits arch/x86/include/asm/processor.h
+--- a/arch/x86/include/asm/processor.h~config-cache_bits	2024-02-22 10:09:00.768936544 -0800
++++ b/arch/x86/include/asm/processor.h	2024-02-22 10:09:00.772936701 -0800
+@@ -154,8 +154,6 @@ struct cpuinfo_x86 {
+ 	/*  Is SMT active on this core? */
+ 	bool			smt_active;
+ 	u32			microcode;
+-	/* Address space bits used by the cache internally */
+-	u8			x86_cache_bits;
+ 	unsigned		initialized : 1;
+ } __randomize_layout;
+ 
+@@ -195,6 +193,7 @@ struct x86_sys_config {
+ 	/* Address bits supported by all processors */
+ 	u8	phys_bits;
+ 	u8	virt_bits;
++	u8	cache_bits;
+ 	u16	clflush_size;
+ 	int	cache_alignment; /* in bytes */
  };
+@@ -241,7 +240,7 @@ extern void cpu_detect(struct cpuinfo_x8
  
- /*
-diff -puN arch/x86/kernel/cpu/bugs.c~bsp-min_cache_bits arch/x86/kernel/cpu/bugs.c
---- a/arch/x86/kernel/cpu/bugs.c~bsp-min_cache_bits	2024-02-22 10:09:00.220915031 -0800
-+++ b/arch/x86/kernel/cpu/bugs.c	2024-02-22 10:09:00.224915188 -0800
-@@ -2237,45 +2237,6 @@ EXPORT_SYMBOL_GPL(l1tf_mitigation);
- enum vmx_l1d_flush_state l1tf_vmx_mitigation = VMENTER_L1D_FLUSH_AUTO;
- EXPORT_SYMBOL_GPL(l1tf_vmx_mitigation);
- 
--/*
-- * These CPUs all support 44bits physical address space internally in the
-- * cache but CPUID can report a smaller number of physical address bits.
-- *
-- * The L1TF mitigation uses the top most address bit for the inversion of
-- * non present PTEs. When the installed memory reaches into the top most
-- * address bit due to memory holes, which has been observed on machines
-- * which report 36bits physical address bits and have 32G RAM installed,
-- * then the mitigation range check in l1tf_select_mitigation() triggers.
-- * This is a false positive because the mitigation is still possible due to
-- * the fact that the cache uses 44bit internally. Use the cache bits
-- * instead of the reported physical bits and adjust them on the affected
-- * machines to 44bit if the reported bits are less than 44.
-- */
--static void override_cache_bits(struct cpuinfo_x86 *c)
--{
--	if (c->x86 != 6)
--		return;
--
--	switch (c->x86_model) {
--	case INTEL_FAM6_NEHALEM:
--	case INTEL_FAM6_WESTMERE:
--	case INTEL_FAM6_SANDYBRIDGE:
--	case INTEL_FAM6_IVYBRIDGE:
--	case INTEL_FAM6_HASWELL:
--	case INTEL_FAM6_HASWELL_L:
--	case INTEL_FAM6_HASWELL_G:
--	case INTEL_FAM6_BROADWELL:
--	case INTEL_FAM6_BROADWELL_G:
--	case INTEL_FAM6_SKYLAKE_L:
--	case INTEL_FAM6_SKYLAKE:
--	case INTEL_FAM6_KABYLAKE_L:
--	case INTEL_FAM6_KABYLAKE:
--		if (c->x86_cache_bits < 44)
--			c->x86_cache_bits = 44;
--		break;
--	}
--}
--
- static void __init l1tf_select_mitigation(void)
+ static inline unsigned long long l1tf_pfn_limit(void)
  {
- 	u64 half_pa;
-@@ -2288,8 +2249,6 @@ static void __init l1tf_select_mitigatio
- 	else if (cpu_mitigations_auto_nosmt())
- 		l1tf_mitigation = L1TF_MITIGATION_FLUSH_NOSMT;
+-	return BIT_ULL(boot_cpu_data.x86_cache_bits - 1 - PAGE_SHIFT);
++	return BIT_ULL(x86_config.cache_bits - 1 - PAGE_SHIFT);
+ }
  
--	override_cache_bits(&boot_cpu_data);
--
- 	switch (l1tf_mitigation) {
- 	case L1TF_MITIGATION_OFF:
- 	case L1TF_MITIGATION_FLUSH_NOWARN:
-diff -puN arch/x86/kernel/cpu/common.c~bsp-min_cache_bits arch/x86/kernel/cpu/common.c
---- a/arch/x86/kernel/cpu/common.c~bsp-min_cache_bits	2024-02-22 10:09:00.220915031 -0800
-+++ b/arch/x86/kernel/cpu/common.c	2024-02-22 10:09:00.228915345 -0800
-@@ -1139,6 +1139,8 @@ void get_cpu_address_sizes(struct cpuinf
+ extern void early_cpu_init(void);
+@@ -816,6 +815,11 @@ static inline u8 x86_virt_bits(void)
+ 	return x86_config.virt_bits;
+ }
+ 
++static inline u8 x86_cache_bits(void)
++{
++	return x86_config.cache_bits;
++}
++
+ static inline u8 x86_clflush_size(void)
+ {
+ 	return x86_config.clflush_size;
+diff -puN arch/x86/kernel/cpu/common.c~config-cache_bits arch/x86/kernel/cpu/common.c
+--- a/arch/x86/kernel/cpu/common.c~config-cache_bits	2024-02-22 10:09:00.768936544 -0800
++++ b/arch/x86/kernel/cpu/common.c	2024-02-22 10:09:00.772936701 -0800
+@@ -1138,15 +1138,15 @@ void get_cpu_address_sizes(struct cpuinf
+ 	}
  	x86_config.clflush_size = detect_clflush_size(c);
  
- 	c->x86_cache_bits = x86_config.phys_bits;
-+	if (c->x86_cache_bits < bsp_addr_config.min_cache_bits)
-+		c->x86_cache_bits = bsp_addr_config.min_cache_bits;
+-	c->x86_cache_bits = x86_config.phys_bits;
+-	if (c->x86_cache_bits < bsp_addr_config.min_cache_bits)
+-		c->x86_cache_bits = bsp_addr_config.min_cache_bits;
++	x86_config.cache_bits = x86_config.phys_bits;
++	if (x86_config.cache_bits < bsp_addr_config.min_cache_bits)
++		x86_config.cache_bits = bsp_addr_config.min_cache_bits;
  
  	x86_config.cache_alignment = x86_clflush_size();
  	if (bsp_addr_config.cache_align_mult)
-diff -puN arch/x86/kernel/cpu/intel.c~bsp-min_cache_bits arch/x86/kernel/cpu/intel.c
---- a/arch/x86/kernel/cpu/intel.c~bsp-min_cache_bits	2024-02-22 10:09:00.224915188 -0800
-+++ b/arch/x86/kernel/cpu/intel.c	2024-02-22 10:09:00.228915345 -0800
-@@ -395,6 +395,44 @@ detect_keyid_bits:
- 	return keyid_bits;
+ 		x86_config.cache_alignment *= bsp_addr_config.cache_align_mult;
+ 
+-	/* Do this last to avoid affecting ->x86_cache_bits. */
++	/* Do this last to avoid affecting '.cache_bits'. */
+ 	x86_config.phys_bits -= bsp_addr_config.phys_addr_reduction_bits;
  }
  
-+/*
-+ * These CPUs all support 44bits physical address space internally in the
-+ * cache but CPUID can report a smaller number of physical address bits.
-+ *
-+ * The L1TF mitigation uses the top most address bit for the inversion of
-+ * non present PTEs. When the installed memory reaches into the top most
-+ * address bit due to memory holes, which has been observed on machines
-+ * which report 36bits physical address bits and have 32G RAM installed,
-+ * then the mitigation range check in l1tf_select_mitigation() triggers.
-+ * This is a false positive because the mitigation is still possible due to
-+ * the fact that the cache uses 44bit internally. Use the cache bits
-+ * instead of the reported physical bits and adjust them on the affected
-+ * machines to 44bit if the reported bits are less than 44.
-+ */
-+static void set_min_cache_bits(struct cpuinfo_x86 *c)
-+{
-+	if (c->x86 != 6)
-+		return;
-+
-+	switch (c->x86_model) {
-+	case INTEL_FAM6_NEHALEM:
-+	case INTEL_FAM6_WESTMERE:
-+	case INTEL_FAM6_SANDYBRIDGE:
-+	case INTEL_FAM6_IVYBRIDGE:
-+	case INTEL_FAM6_HASWELL:
-+	case INTEL_FAM6_HASWELL_L:
-+	case INTEL_FAM6_HASWELL_G:
-+	case INTEL_FAM6_BROADWELL:
-+	case INTEL_FAM6_BROADWELL_G:
-+	case INTEL_FAM6_SKYLAKE_L:
-+	case INTEL_FAM6_SKYLAKE:
-+	case INTEL_FAM6_KABYLAKE_L:
-+	case INTEL_FAM6_KABYLAKE:
-+		bsp_addr_config.min_cache_bits = 44;
-+		break;
-+	}
-+}
-+
- static void bsp_init_intel(struct cpuinfo_x86 *c)
- {
- 	int keyid_bits = 0;
-@@ -418,6 +456,8 @@ static void bsp_init_intel(struct cpuinf
- 	/* Netburst reports 64 bytes clflush size, but does IO in 128 bytes */
- 	if (c->x86 == 15)
- 		bsp_addr_config.cache_align_mult = 2;
-+
-+	set_min_cache_bits(c);
- }
+diff -puN arch/x86/kvm/mmu/spte.c~config-cache_bits arch/x86/kvm/mmu/spte.c
+--- a/arch/x86/kvm/mmu/spte.c~config-cache_bits	2024-02-22 10:09:00.772936701 -0800
++++ b/arch/x86/kvm/mmu/spte.c	2024-02-22 10:09:00.772936701 -0800
+@@ -470,12 +470,12 @@ void kvm_mmu_reset_all_pte_masks(void)
+ 	shadow_nonpresent_or_rsvd_mask = 0;
+ 	low_phys_bits = x86_phys_bits();
+ 	if (boot_cpu_has_bug(X86_BUG_L1TF) &&
+-	    !WARN_ON_ONCE(boot_cpu_data.x86_cache_bits >=
++	    !WARN_ON_ONCE(x86_cache_bits() >=
+ 			  52 - SHADOW_NONPRESENT_OR_RSVD_MASK_LEN)) {
+-		low_phys_bits = boot_cpu_data.x86_cache_bits
++		low_phys_bits = x86_cache_bits()
+ 			- SHADOW_NONPRESENT_OR_RSVD_MASK_LEN;
+ 		shadow_nonpresent_or_rsvd_mask =
+-			rsvd_bits(low_phys_bits, boot_cpu_data.x86_cache_bits - 1);
++			rsvd_bits(low_phys_bits, x86_cache_bits() - 1);
+ 	}
  
- #ifdef CONFIG_X86_32
+ 	shadow_nonpresent_or_rsvd_lower_gfn_mask =
 _
 
