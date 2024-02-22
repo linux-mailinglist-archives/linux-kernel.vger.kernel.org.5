@@ -1,179 +1,152 @@
-Return-Path: <linux-kernel+bounces-77290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77292-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43E38860348
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:55:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66ECF860351
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:55:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2137281FED
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:55:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05E8F1F2ADE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:55:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A79F6AFAA;
-	Thu, 22 Feb 2024 19:54:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77F6B6AFB7;
+	Thu, 22 Feb 2024 19:55:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d01xQM2W"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="dMhLdZCo"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 639836AF8A;
-	Thu, 22 Feb 2024 19:54:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4862548EA
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 19:55:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708631693; cv=none; b=CiwyNpVuCRhRudB7sRpxbVJ7df6Juz7CUDDABUO2jqTJSQVIhvyiZERBq/kSz6lOpLFwIWgnU0mg7GW4JSCVuYkZPk/z5Ez7kAS8DXNHKjbYjY+G5lSHFerDuTPacsK1zU3vYK+nEBqDEKQZ3GMUuI/l7B50rTsUVWXGyEVTQnY=
+	t=1708631741; cv=none; b=po0RPMWgtWSafoIR6bRgaZu5beQwXn/LmMF/Fr62xhwwp9ptrrZPdSqXFHYzIHa3pmdoihthOOK2oKeJO8yjhk44x4HXyoAttyIINjMijU9Xhd9PnJyd4VWgLm4jKwwaIt1J0HhcIQu/HVdaIuPWz45RUfIu81vzpsyWUgZmZu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708631693; c=relaxed/simple;
-	bh=bSjeGRhKKcsTliuguvmBrYAYCXALQGnt4jTIGPUKbxI=;
+	s=arc-20240116; t=1708631741; c=relaxed/simple;
+	bh=Xj8O+DPx4wU2UfJYi69n5ttyXQyRDoWMxk1LCwlpI8E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s+wQpKSs+ZkmfOxQbONs3A3gxOr+90b+11iYXxgmMjV3d6ckfL4t2kslZzX+nvXyHjqD9EWTYClFr3KqPduGtaTcxxeM1RrGH3w/pD78ym/oG39meniI+boHoGn+7ReCFanUlxQ62rmhOxkzZKvLG0eW95MNjS8TH0qxMObllDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d01xQM2W; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89FEFC433F1;
-	Thu, 22 Feb 2024 19:54:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708631692;
-	bh=bSjeGRhKKcsTliuguvmBrYAYCXALQGnt4jTIGPUKbxI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=d01xQM2WWi8U9v1enS4CDg7faOEehZVjZL+xrVT3C73d0cyZMAy0kMaClxhHeD1Eg
-	 RUAcBZdhrOz1FprZsrSo/rdCS5FRFCiLHgp3xLfSzlexVbLyIibEZR2zrAcONB9Yoj
-	 4Xdm77/5d43k/FgM4YoDgGvlzsEBtO/rzV+t5P2zxbvQyISASUOhcSFsp/jaqEMhHD
-	 DJodJH7ZlpB/LJZEVpny04B439ZJl79A19pdu2dK+eUJnZ45YJEpr1fIBL0+LrS0nT
-	 FBctZo46GCxwciW7vkKhDeKILNovNB3gd9rCCesYVbT1+arnSr8qUjSlDyHOYtGlzo
-	 pfrhZdfpn8jKQ==
-Date: Thu, 22 Feb 2024 16:54:49 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Kyle Huey <me@kylehuey.com>
-Cc: Ian Rogers <irogers@google.com>, Kyle Huey <khuey@kylehuey.com>,
-	Robert O'Callahan <robert@ocallahan.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] perf test: Test FASYNC with watermark wakeups.
-Message-ID: <ZdemibZepMqWvv6U@x1>
-References: <20240221175210.19936-1-khuey@kylehuey.com>
- <20240221175210.19936-2-khuey@kylehuey.com>
- <CAP-5=fXsv7TJ_SVOZc38fN0gn+7cWBcMWt3FdVLcs5v0_vO=uw@mail.gmail.com>
- <CAP045AoSHWoOP3TN=6Hf2wZj7X9Y41sThBQWCDZ3BEP68qeTBw@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=P1VPwxT6DxpN6ckiv7anmR0hNDElasqLebRXyAGqFxy1n+FBA1lc8UNo84MuMVzTRIWH0xhHA6kNk1ppvyRwGv9csOx+4+OC9DqvxxQpjQ0rrnUri0t5VQqbea6/7kNlTngz5cfb5CQF7sGCezswt5INeu4yfKm/V7E/mDtRRZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=dMhLdZCo; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=jhVW
+	YIYPS+WQc6qJONpuGdYkkC+vizXSWdkxmtKR2Zw=; b=dMhLdZCo1B8/rATCc2vu
+	mLNgJZko4QxGxAqBAHcqm1HMnlSyh3p6MujX/axkL2zz8dOKBqbrKaSsWZzlK2/1
+	lLOLt6chZwcranpAh2zMDdV6DcIHwWDRDhnPfEYVSMYcEKJaZjkHmRGpV9Qo2k1q
+	QAtgFkfbF3TTzNf1+9Uer1VUghhsvMhMPxCrjVcRcSDZwqTSfYA3QG+cI/UmCweK
+	rGJuAkiEyQyyIGAdDDDUn2aHixyNcPeHL+JOW4FjSeYjpFHe5ZHN8iUbSqKQbe8A
+	Nd+ANcb1k4G1B8J5XWOa6OJ10OnuAYQKf3vyh+MsQFvWm4QblGP6iD2T9nu1PTRC
+	zQ==
+Received: (qmail 4086918 invoked from network); 22 Feb 2024 20:55:30 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Feb 2024 20:55:30 +0100
+X-UD-Smtp-Session: l3s3148p1@iyNN0/0R+OQujnsZ
+Date: Thu, 22 Feb 2024 20:55:29 +0100
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+	linux-tegra@vger.kernel.org, linux-i3c@lists.infradead.org,
+	linux-sound@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: i2c: Remove obsolete i2c.txt
+Message-ID: <ZdemsdGQE0RtilCd@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Rob Herring <robh@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+	linux-tegra@vger.kernel.org, linux-i3c@lists.infradead.org,
+	linux-sound@vger.kernel.org
+References: <20240222174343.3482354-2-robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="xwbnszeJhFgpzihu"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP045AoSHWoOP3TN=6Hf2wZj7X9Y41sThBQWCDZ3BEP68qeTBw@mail.gmail.com>
+In-Reply-To: <20240222174343.3482354-2-robh@kernel.org>
 
-On Thu, Feb 22, 2024 at 09:55:36AM -0800, Kyle Huey wrote:
-> On Wed, Feb 21, 2024 at 10:36 AM Ian Rogers <irogers@google.com> wrote:
-> > On Wed, Feb 21, 2024 at 9:52 AM Kyle Huey <me@kylehuey.com> wrote:
-> > > +       if (fcntl(fd, F_SETFL, FASYNC)) {
-> > > +               pr_debug("failed F_SETFL FASYNC %d\n", errno);
-> > > +               goto cleanup;
-> > > +       }
 
-> > Thanks for the work! The perf tool and perf test should run on older
-> > kernels ideally without failure. I'm assuming this would fail on an
-> > older kernel. Could we make the return value skip in that case?
- 
-> Ah, hmm, I wasn't aware of that. This would fail on an older kernel,
-> yes. It's not possible to distinguish between an older kernel and a
-> kernel where this fix broke (at least not without hardcoding in an
-> expected good kernel version, which seems undesirable), so that would
+--xwbnszeJhFgpzihu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Take a look at:
+On Thu, Feb 22, 2024 at 10:43:42AM -0700, Rob Herring wrote:
+> Everything in i2c.txt is covered by schemas/i2c/i2c-controller.yaml in
+> dtschema project, so remove i2c.txt and update links to it in the tree.
+>=20
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
- https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/tools/perf/tests/sigtrap.c?id=650e0bde43f35bb675e87e30f679a57cfa22e0e5
+Differences to i2c.txt:
 
-To see how introspecting using BTF can be used to figure out if internal
-data structures have what is needed, or if functions with some specific
-arguments are present, etc, for sigtrap we have, in the patch above:
+* In the schema, "clock-frequency" has a minimum of 1kHz and a maximum
+  of 3MHz. Why? The specs do not say anything about a minimum freq and
+  fastest speed mentioned in the docs is 5Mhz (Ultra fast mode).
 
--       TEST_ASSERT_EQUAL("unexpected sigtraps", ctx.signal_count, NUM_THREADS * ctx.iterate_on);
-+       expected_sigtraps = NUM_THREADS * ctx.iterate_on;
-+
-+       if (ctx.signal_count < expected_sigtraps && kernel_with_sleepable_spinlocks()) {
-+               pr_debug("Expected %d sigtraps, got %d, running on a kernel with sleepable spinlocks.\n",
-+                        expected_sigtraps, ctx.signal_count);
-+               pr_debug("See https://lore.kernel.org/all/e368f2c848d77fbc8d259f44e2055fe469c219cf.camel@gmx.de/\n");
-+               return TEST_SKIP;
-+       } else
-+               TEST_ASSERT_EQUAL("unexpected sigtraps", ctx.signal_count, expected_sigtraps);
+* new binding "i2c-scl-clk-low-timeout-us" has a description which I do
+  not understand. What is a waiting state?
 
-And then:
+* new binding "no-detect" is broken. At the least, it should be named
+  something like "bus-fully-described" and then the OS can decide to
+  leave out auto-detection mechanisms. If you are interested in the
+  latter, you can simply disable class based instantiation on the host
+  controller. No need to describe this in DT.
 
-+static bool kernel_with_sleepable_spinlocks(void)
-+{
-+       const struct btf_member *member;
-+       const struct btf_type *type;
-+       const char *type_name;
-+       int id;
-+
-+       if (!btf__available())
-+               return false;
-+
-+       id = btf__find_by_name_kind(btf, "spinlock", BTF_KIND_STRUCT);
-+       if (id < 0)
-+               return false;
-+
-+       // Only RT has a "lock" member for "struct spinlock"
-+       member = __btf_type__find_member_by_name(id, "lock");
-+       if (member == NULL)
-+               return false;
-+
-+       // But check its type as well
-+       type = btf__type_by_id(btf, member->type);
-+       if (!type || !btf_is_struct(type))
-+               return false;
-+
-+       type_name = btf__name_by_offset(btf, type->name_off);
-+       return type_name && !strcmp(type_name, "rt_mutex_base");
-+}
+> Wolfram, you can take it or I can.
 
-> mean the test would always return ok or skip, not ok or fail. Is that
-> ok?
+Once we are done, I guess it is better if you take it.
 
-It should return:
+Thanks for the work,
 
-Ok if the kernel has what is needed and the test passes
-Skip if the test fails and the kernel doesn't have what is needed
-FAIL if the test fails and the kernel HAS what is needed.
+   Wolfram
 
-'perf test sigtrap' also checks for the presence of the feature it
-requires:
 
-static bool attr_has_sigtrap(void)
-{
-        int id;
+--xwbnszeJhFgpzihu
+Content-Type: application/pgp-signature; name="signature.asc"
 
-        if (!btf__available()) {
-                /* should be an old kernel */
-                return false;
-        }
+-----BEGIN PGP SIGNATURE-----
 
-        id = btf__find_by_name_kind(btf, "perf_event_attr", BTF_KIND_STRUCT);
-        if (id < 0)
-                return false;
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXXprEACgkQFA3kzBSg
+Kba7Ng//f2uJIbUxhVqaRPb6cEvRbSMkgp3fOuy7aYo9Chftjp+DCOgB+z/d29DB
+4q9Hsd4mNQAHMYKPeieoE/wm6PC7fQQqw/F4mczeiKY+XS1PpFwSXjS3flVBPYOW
+UeUYPRZCvWFck7FCOUF9XK2qR/88V1pSDzw5kHf8+CABuFX2RSjyVmiXFbdSV1qf
+/I4DfO2M40MkAVGkKIwJcaCBuk6QMjGrJqw+qWYnYmAWsltiWgdy/pOt1Ge03ieM
+CinXc9GP6Jg4eDUcpWLETd3ehz9uV40IPugp7fXJxIR38V0Pxbz1G9BUbPjPCj28
+Mp3lm3o/60TE68NXU0DEN75PpVz/M/zkv9cx0UJucMDFplec/4BH38TzTsNlAPWV
+R5Sh6wD4y6MgfkxqTVEeEaQibH7JTSYK5PwWmR8MNyGk1YN5+avCk2YbUxs618wJ
+jauxhbeZNDQ+XWplirsMKB0lrWbV75OxiJ4sGljcpy16MfXaMfP7J7HG+18GOuS1
+wD0qBTKzSVrClGu79/LwV90OieqSpAJuEbex5Ls4wNV5/VJUj7t4PH2rOPDZRxc4
+nlOpJ5SYSgWwOnGYVgh6wDr6QFCmZGZpQbQlxlezaRkwhQZKmA87/jM+ZkFt8Rwc
+3d5oj6TIiOFWfkl3zdbl9/voX7DTTY3ku/KgG5OvEPy9nl120C0=
+=o5Lw
+-----END PGP SIGNATURE-----
 
-        return __btf_type__find_member_by_name(id, "sigtrap") != NULL;
-}
-
-        fd = sys_perf_event_open(&attr, 0, -1, -1, perf_event_open_cloexec_flag());
-        if (fd < 0) {
-                if (attr_has_sigtrap()) {
-                        pr_debug("FAILED sys_perf_event_open(): %s\n",
-                                 str_error_r(errno, sbuf, sizeof(sbuf)));
-                } else {
-                        pr_debug("perf_event_attr doesn't have sigtrap\n");
-                        ret = TEST_SKIP;
-                }
-                goto out_restore_sigaction;
-        }
-
-- Arnaldo
+--xwbnszeJhFgpzihu--
 
