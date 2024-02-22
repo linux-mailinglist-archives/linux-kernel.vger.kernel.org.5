@@ -1,128 +1,177 @@
-Return-Path: <linux-kernel+bounces-76253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76259-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33AFC85F4C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:44:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E76BD85F4D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:45:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E497C286FEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:44:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 118541C24315
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:45:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B084C41757;
-	Thu, 22 Feb 2024 09:42:05 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE30938DFC;
-	Thu, 22 Feb 2024 09:42:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 146C547A58;
+	Thu, 22 Feb 2024 09:42:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Voqafx43"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F1BF46535
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 09:42:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708594925; cv=none; b=YlzjT7GqGDtOeYnvjSP/NbUNOQvDix04DcqOGmTW2bBE7mYjkwBH6HdpxOSeXHbB2mxr/brPZRtWdOg6jDxCHIQT4UyMOxz0q/AzC0Q7kcYVaohRtiOXnIAnAhOD84nFR3zL0lYVvSvJc+punt6MTjm7Wyl8aEBH5XeaR+TY9tY=
+	t=1708594947; cv=none; b=Tm34ymZH+nHW0HMDOunK/zfREKcbBWVVWfGXYgQphnZZbqebIZnb1LInb7QpKjGOAwoL8JUz6JYyuxT7fSvlmA8RgIONb2oW/aukSxUMj1PsjLipDmBTuum6DURJOMYOhb5yqt7C3BxqWrFl2hCSvJORnihXoG0P18eNAY7y4Wg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708594925; c=relaxed/simple;
-	bh=gQQtl2Hk4axXcUVCDJwIcvPOjcQGnTc5qWE0h4CCXR0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gd9oth25dVPdt5m1xL81xPgjMBj2Ge2PNO8t2np/iqPgyZVochM1SkBveZ5v40JSQD0JDyxn/fwunkaRQNTwUscgDbhAZZ177jnGHhePRQgc2tBwG/JBIZ7HzvnNlo0zbh1gF0GjDUZIK0Tzxt7eA78ijaQmRdVDyYMCPrEVtCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 251A61477;
-	Thu, 22 Feb 2024 01:42:41 -0800 (PST)
-Received: from bogus (unknown [10.57.93.2])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C7223F766;
-	Thu, 22 Feb 2024 01:41:59 -0800 (PST)
-Date: Thu, 22 Feb 2024 09:41:53 +0000
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: cristian.marussi@arm.com, mturquette@baylibre.com, sboyd@kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH V4 2/2] clk: scmi: support state_ctrl_forbidden
-Message-ID: <20240222094153.2nxvefa44y5ikutm@bogus>
-References: <20240121110901.1414856-1-peng.fan@oss.nxp.com>
- <20240121110901.1414856-2-peng.fan@oss.nxp.com>
+	s=arc-20240116; t=1708594947; c=relaxed/simple;
+	bh=Np7QyqO9HmPJ82uU6R/X1KgLnSGRSDI4XVoOJtMaVYc=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=jF7tTZydHJ98WECUHx0dwhi8+z70jZjVHvrYJg1JmfG6ImSDbKi90QstHTBUSppR48KqiOgT+519ueoW1x7LsIIcYtYP4A5T9iHoWXlDTsRSsiI88lCZ56Xzto0F9oBbfE/3AiHTZZoWkhgAjd05sjI3dgOMIGYq8Ta8e9yoZF4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Voqafx43; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708594946; x=1740130946;
+  h=date:from:to:cc:subject:message-id;
+  bh=Np7QyqO9HmPJ82uU6R/X1KgLnSGRSDI4XVoOJtMaVYc=;
+  b=Voqafx43E8Z6s6qdgaNV6a18q8ZRjY0i+Ajn2owyKjNrqaIJ+2dotJFd
+   Qgyp/o9sdCQJiho9nIuaedmYQgnmL9C1Vq5jkU6mxMPdhW8gMMLwxMiIM
+   pjr/wAD3WZsZRSIrxMRy3l1BWxZQT76J6BebezTt+kjPHu2TivObCe3Wx
+   PRbn50zHOVePeBqFzsf/x6ihoh/jagBeGW2CATGO1D5gsj0hTaoke45vU
+   ECqv2eBdTabL0C8vVGtKQDR1sqfoMMbB3VG0DrcTXnPlpxkCOFuPMPD+x
+   2AIN0qU50WNcR7QaDAbRjmayT1Agk1DF0LtHvp1SOeqTsEFp+C8XaZGxY
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="2917770"
+X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
+   d="scan'208";a="2917770"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 01:42:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
+   d="scan'208";a="28597287"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmviesa002.fm.intel.com with ESMTP; 22 Feb 2024 01:42:23 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rd5av-0006BZ-10;
+	Thu, 22 Feb 2024 09:42:21 +0000
+Date: Thu, 22 Feb 2024 17:41:58 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/cleanups] BUILD SUCCESS
+ e37ae6433a5eeb5fb66e3de4b97cdda68ee2c5e8
+Message-ID: <202402221754.snADohMB-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240121110901.1414856-2-peng.fan@oss.nxp.com>
 
-On Sun, Jan 21, 2024 at 07:09:01PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> Some clocks may exported to linux, while those clocks are not allowed
-> to configure by Linux. For example:
-> 
-> SYS_CLK1-----
->              \
-> 	     --MUX--->MMC1_CLK
->              /
-> SYS_CLK2-----
-> 
-> MMC1 needs set parent, so SYS_CLK1 and SYS_CLK2 are exported to Linux,
-> then the clk propagation will touch SYS_CLK1 or SYS_CLK2.
-> So we need bypass the failure for SYS_CLK1 or SYS_CLK2 when enable
-> the clock of MMC1, adding scmi_no_state_ctrl_clk_ops to use software
-> enable counter, while not calling scmi api.
-> 
-> Co-developed-by: Cristian Marussi <cristian.marussi@arm.com>
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
-> 
-> V4:
->  Add scmi_no_state_ctrl_clk_ops per Cristian
->  Add Cristian's tag
-> 
-> V3:
->  Add check in atomic enable
-> 
-> V2:
->  New. Take Cristian's suggestion
-> 
->  drivers/clk/clk-scmi.c | 15 +++++++++++++--
->  1 file changed, 13 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
-> index 8cbe24789c24..5747b6d651f0 100644
-> --- a/drivers/clk/clk-scmi.c
-> +++ b/drivers/clk/clk-scmi.c
-> @@ -194,6 +194,15 @@ static const struct clk_ops scmi_atomic_clk_ops = {
->  	.determine_rate = scmi_clk_determine_rate,
->  };
->  
-> +static const struct clk_ops scmi_no_state_ctrl_clk_ops = {
-> +	.recalc_rate = scmi_clk_recalc_rate,
-> +	.round_rate = scmi_clk_round_rate,
-> +	.set_rate = scmi_clk_set_rate,
-> +	.set_parent = scmi_clk_set_parent,
-> +	.get_parent = scmi_clk_get_parent,
-> +	.determine_rate = scmi_clk_determine_rate,
-> +};
-> +
->  static int scmi_clk_ops_init(struct device *dev, struct scmi_clk *sclk,
->  			     const struct clk_ops *scmi_ops)
->  {
-> @@ -290,8 +299,10 @@ static int scmi_clocks_probe(struct scmi_device *sdev)
->  		 * specify (or support) an enable_latency associated with a
->  		 * clock, we default to use atomic operations mode.
->  		 */
-> -		if (is_atomic &&
-> -		    sclk->info->enable_latency <= atomic_threshold)
-> +		if (sclk->info->state_ctrl_forbidden)
-> +			scmi_ops = &scmi_no_state_ctrl_clk_ops;
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
+branch HEAD: e37ae6433a5eeb5fb66e3de4b97cdda68ee2c5e8  x86/apm_32: Remove dead function apm_get_battery_status()
 
-With this, even if is_atomic and latency matches, we won't allow
-atomic operations ? One reason why it gets tricky and as Cristian 
-mentioned elsewhere we need dynamic assignment of these ops IMO.
-Let me know if I am getting things wrong here ?
+elapsed time: 845m
+
+configs tested: 89
+configs skipped: 134
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                     am200epdkit_defconfig   gcc  
+arm                        multi_v7_defconfig   gcc  
+arm                       omap2plus_defconfig   gcc  
+arm                           tegra_defconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+hexagon                          allmodconfig   clang
+hexagon                          allyesconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240222   gcc  
+i386         buildonly-randconfig-002-20240222   clang
+i386         buildonly-randconfig-003-20240222   clang
+i386         buildonly-randconfig-004-20240222   gcc  
+i386         buildonly-randconfig-005-20240222   clang
+i386         buildonly-randconfig-006-20240222   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240222   clang
+i386                  randconfig-002-20240222   clang
+i386                  randconfig-003-20240222   gcc  
+i386                  randconfig-004-20240222   clang
+i386                  randconfig-005-20240222   gcc  
+i386                  randconfig-006-20240222   clang
+i386                  randconfig-011-20240222   gcc  
+i386                  randconfig-012-20240222   clang
+i386                  randconfig-013-20240222   gcc  
+i386                  randconfig-014-20240222   gcc  
+i386                  randconfig-015-20240222   clang
+i386                  randconfig-016-20240222   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                          multi_defconfig   gcc  
+m68k                        stmark2_defconfig   gcc  
+microblaze                       alldefconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                      pic32mzda_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+powerpc                    adder875_defconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                        cell_defconfig   gcc  
+riscv                            allmodconfig   clang
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+sh                               allmodconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                         ap325rxa_defconfig   gcc  
+sh                          rsk7264_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                                  defconfig   clang
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                    xip_kc705_defconfig   gcc  
 
 -- 
-Regards,
-Sudeep
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
