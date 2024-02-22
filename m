@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-77539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55BA386070B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:34:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0281D860709
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:34:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92C2BB214E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:34:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22FD41C22C19
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:34:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 607647175E;
-	Thu, 22 Feb 2024 23:34:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A446722319;
+	Thu, 22 Feb 2024 23:34:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b="IjRtkDRW"
+	dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b="YGEjgrqE"
 Received: from serv108.segi.ulg.ac.be (serv108.segi.ulg.ac.be [139.165.32.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D346B199AD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBC841A5A2;
 	Thu, 22 Feb 2024 23:34:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.165.32.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708644843; cv=none; b=GbN/prKGaPLbaaWHMX+ahCys4EISIzKbd70D6I+UWftli4HaLRTB2A4BIOcvV4vv3ON1xudG7mL3/ADhVhJA+ZXVvUv2g8FVxKTpXe/fKhtH/8GSLwJ4LSMCjiuoC7hW6AVF1QXTrZ3r2ryQFoK1oDFak4l+xogIOzNoGpMa93M=
+	t=1708644843; cv=none; b=Euk4CX4f7kftlsQTt3FKW3ZFpOhQXbfB322S+5mJGsKjpMvSfKfo+FQBbrAhGu2Mw+MLYtjQJm6hmkLTItyYfl+GHBcOZGRIyrDm9U7I+KuR8EhIXiCxIjhIsgo3vB+wZNxfYTQbJW2oIzEtY+U5CI8FAcv7Orf+0eekoo3d/Ho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708644843; c=relaxed/simple;
-	bh=lYSbqhb9aelgiyV2bHdQgyY0ObK/yrK8TqQKdtUu/qM=;
+	bh=XN/Z2W6Q47kswIvugAyf+0JDBepLSAUiKU4MFYhPfmY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HxtJPEylCP1mgX76MZ2SmBWepEXQFDZycJ+9ElZ2rsJxnLuEkxgNkfmce81HRG/WFjgLgihNx0BjZDie2KNvq3FoumoQj+VRVMsdqBElLcW1Txfm5TLmPa39tf/m6e3OPOVSxe/tpMX3ENACUixfGyWSuAia3RAhvNDPnLEi1og=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be; spf=pass smtp.mailfrom=uliege.be; dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b=IjRtkDRW; arc=none smtp.client-ip=139.165.32.111
+	 MIME-Version; b=GYRTzoW5f344ascV/49sq58aqOOrjZ5mdvxq0EgfoAiMENb+i29Bh5qRLINgnlG7wxQcXrCBvVgnvYVL/QssutRowyL+LyeCCs1pB09+Mce4ctApIpUdqOg4eHHJoxya5iKXcgMt/ocHiEIw/xcYxw/e85D4w4Wyc+OScSxHSc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be; spf=pass smtp.mailfrom=uliege.be; dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b=YGEjgrqE; arc=none smtp.client-ip=139.165.32.111
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uliege.be
 Received: from ubuntu.home (125.179-65-87.adsl-dyn.isp.belgacom.be [87.65.179.125])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by serv108.segi.ulg.ac.be (Postfix) with ESMTPSA id D2883200C97D;
-	Fri, 23 Feb 2024 00:33:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 serv108.segi.ulg.ac.be D2883200C97D
+	by serv108.segi.ulg.ac.be (Postfix) with ESMTPSA id 28061200C97E;
+	Fri, 23 Feb 2024 00:33:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 serv108.segi.ulg.ac.be 28061200C97E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uliege.be;
 	s=ulg20190529; t=1708644837;
-	bh=LcVhwtN+UqJjMSh3FfAL9zHi7+WPp9yvrVRqAgObzSs=;
+	bh=hq6ndT35T0S7QhhDxp3zV7pZyTqFTsug9KaHtrGUSs0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IjRtkDRWdbBNd+C7rjucPifnfstJjCMjeNQLZIkHnJYurMlyxUTtftZqsCsgVI7Fr
-	 +0TH0V6d99wRsq5A2lq5bIV61NTIHMPE+BNukEbl6MO5gkbZVOEVVVx/H+oTBj7p69
-	 3NdG/vPug+95Hf8jbsz0MSde/jtkDxgNQQHv/DbjpLo7CwEANHbEbw6KIywkQSHAql
-	 Jt9XPNg+qG0SzC4jo9EzP0Q2ObopGWaUYv+v+zyuEPfdoaSm5ZHFy/ODCcKSazkzEq
-	 /5TEhIDDTj+5GiTqo8IE9NW+7W0nhNWhf48pjEOIu6aSWd5OlCF+fc5N51Z/nSUQEx
-	 bT7ekACTzq2Sg==
+	b=YGEjgrqEecdjYBu6NgLiI1Hk4aMlsjVzVtUCiuEtYnIoBInwOUYhVrLeVwDNaQUTa
+	 q+Au3+ABN8Q/Vr0lOtoR4TxYg6oKJUnF3j4pAcJhfzCbJCIk7Vsrl0OmLpsyWyNyBh
+	 dAYreHnLcYPFskcxtcS3kr1SP+P/f8vNOqtkXWMT5WV3tkTFMrNKYp4eYdkNvp33DQ
+	 NMrqlIkpXzIJbVfeTAenwBo7RkPFYicR+tO+CCv6UNqRCTvTuqL0WZ3qEQIv5arFNI
+	 y/XR1GI3/Ox9Epxxdjgd3u5NE6i2XYjaB2k/T657ef664mWbu70mLC3Ka6YqRr495n
+	 zyVA4msMDs3xg==
 From: Justin Iurman <justin.iurman@uliege.be>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -55,9 +55,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	linux-kernel@vger.kernel.org,
 	justin.iurman@uliege.be
-Subject: [PATCH net-next v3 1/3] uapi: ioam6: API for netlink multicast events
-Date: Fri, 23 Feb 2024 00:33:35 +0100
-Message-Id: <20240222233337.5342-2-justin.iurman@uliege.be>
+Subject: [PATCH net-next v3 2/3] net: ioam6: multicast event
+Date: Fri, 23 Feb 2024 00:33:36 +0100
+Message-Id: <20240222233337.5342-3-justin.iurman@uliege.be>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240222233337.5342-1-justin.iurman@uliege.be>
 References: <20240222233337.5342-1-justin.iurman@uliege.be>
@@ -69,45 +69,117 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add new api to support ioam6 events for generic netlink multicast. A
-first "trace" event is added to the list of ioam6 events, which will
-represent an IOAM Pre-allocated (or Incremental) Trace Option-Type. It
-provides another solution to share IOAM data with user space.
+Add a multicast group to the ioam6 generic netlink family and provide
+ioam6_event() to send an ioam6 event to the multicast group.
 
 Signed-off-by: Justin Iurman <justin.iurman@uliege.be>
 ---
- include/uapi/linux/ioam6_genl.h | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ include/net/ioam6.h |  4 +++
+ net/ipv6/ioam6.c    | 64 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 68 insertions(+)
 
-diff --git a/include/uapi/linux/ioam6_genl.h b/include/uapi/linux/ioam6_genl.h
-index ca4b22833754..1733fbc51fb5 100644
---- a/include/uapi/linux/ioam6_genl.h
-+++ b/include/uapi/linux/ioam6_genl.h
-@@ -49,4 +49,24 @@ enum {
+diff --git a/include/net/ioam6.h b/include/net/ioam6.h
+index 781d2d8b2f29..2cbbee6e806a 100644
+--- a/include/net/ioam6.h
++++ b/include/net/ioam6.h
+@@ -12,6 +12,7 @@
+ #include <linux/net.h>
+ #include <linux/ipv6.h>
+ #include <linux/ioam6.h>
++#include <linux/ioam6_genl.h>
+ #include <linux/rhashtable-types.h>
  
- #define IOAM6_CMD_MAX (__IOAM6_CMD_MAX - 1)
+ struct ioam6_namespace {
+@@ -65,4 +66,7 @@ void ioam6_exit(void);
+ int ioam6_iptunnel_init(void);
+ void ioam6_iptunnel_exit(void);
  
-+#define IOAM6_GENL_EV_GRP_NAME "ioam6_events"
++void ioam6_event(enum ioam6_event_type type, struct net *net, gfp_t gfp,
++		 void *opt, unsigned int opt_len);
 +
-+enum ioam6_event_type {
-+	IOAM6_EVENT_UNSPEC,
-+	IOAM6_EVENT_TRACE,
+ #endif /* _NET_IOAM6_H */
+diff --git a/net/ipv6/ioam6.c b/net/ipv6/ioam6.c
+index 571f0e4d9cf3..5fa923f06632 100644
+--- a/net/ipv6/ioam6.c
++++ b/net/ipv6/ioam6.c
+@@ -612,6 +612,68 @@ static const struct genl_ops ioam6_genl_ops[] = {
+ 	},
+ };
+ 
++#define IOAM6_GENL_EV_GRP_OFFSET 0
++
++static const struct genl_multicast_group ioam6_mcgrps[] = {
++	[IOAM6_GENL_EV_GRP_OFFSET] = { .name = IOAM6_GENL_EV_GRP_NAME,
++				       .flags = GENL_MCAST_CAP_NET_ADMIN },
 +};
 +
-+enum ioam6_event_attr {
-+	IOAM6_EVENT_ATTR_UNSPEC,
++static int ioam6_event_put_trace(struct sk_buff *skb,
++				 struct ioam6_trace_hdr *trace,
++				 unsigned int len)
++{
++	if (nla_put_u16(skb, IOAM6_EVENT_ATTR_TRACE_NAMESPACE,
++			be16_to_cpu(trace->namespace_id)) ||
++	    nla_put_u8(skb, IOAM6_EVENT_ATTR_TRACE_NODELEN, trace->nodelen) ||
++	    nla_put_u32(skb, IOAM6_EVENT_ATTR_TRACE_TYPE,
++			be32_to_cpu(trace->type_be32)) ||
++	    nla_put(skb, IOAM6_EVENT_ATTR_TRACE_DATA,
++		    len - sizeof(struct ioam6_trace_hdr) - trace->remlen * 4,
++		    trace->data + trace->remlen * 4))
++		return 1;
 +
-+	IOAM6_EVENT_ATTR_TRACE_NAMESPACE,	/* u16 */
-+	IOAM6_EVENT_ATTR_TRACE_NODELEN,		/* u8 */
-+	IOAM6_EVENT_ATTR_TRACE_TYPE,		/* u32 */
-+	IOAM6_EVENT_ATTR_TRACE_DATA,		/* Binary */
++	return 0;
++}
 +
-+	__IOAM6_EVENT_ATTR_MAX
-+};
++void ioam6_event(enum ioam6_event_type type, struct net *net, gfp_t gfp,
++		 void *opt, unsigned int opt_len)
++{
++	struct nlmsghdr *nlh;
++	struct sk_buff *skb;
 +
-+#define IOAM6_EVENT_ATTR_MAX (__IOAM6_EVENT_ATTR_MAX - 1)
++	if (!genl_has_listeners(&ioam6_genl_family, net,
++				IOAM6_GENL_EV_GRP_OFFSET))
++		return;
 +
- #endif /* _UAPI_LINUX_IOAM6_GENL_H */
++	skb = nlmsg_new(NLMSG_DEFAULT_SIZE, gfp);
++	if (!skb)
++		return;
++
++	nlh = genlmsg_put(skb, 0, 0, &ioam6_genl_family, 0, type);
++	if (!nlh)
++		goto nla_put_failure;
++
++	switch (type) {
++	case IOAM6_EVENT_UNSPEC:
++		WARN_ON_ONCE(1);
++		break;
++	case IOAM6_EVENT_TRACE:
++		if (ioam6_event_put_trace(skb, (struct ioam6_trace_hdr *)opt,
++					  opt_len))
++			goto nla_put_failure;
++		break;
++	}
++
++	genlmsg_end(skb, nlh);
++	genlmsg_multicast_netns(&ioam6_genl_family, net, skb, 0,
++				IOAM6_GENL_EV_GRP_OFFSET, gfp);
++	return;
++
++nla_put_failure:
++	nlmsg_free(skb);
++}
++
+ static struct genl_family ioam6_genl_family __ro_after_init = {
+ 	.name		= IOAM6_GENL_NAME,
+ 	.version	= IOAM6_GENL_VERSION,
+@@ -620,6 +682,8 @@ static struct genl_family ioam6_genl_family __ro_after_init = {
+ 	.ops		= ioam6_genl_ops,
+ 	.n_ops		= ARRAY_SIZE(ioam6_genl_ops),
+ 	.resv_start_op	= IOAM6_CMD_NS_SET_SCHEMA + 1,
++	.mcgrps		= ioam6_mcgrps,
++	.n_mcgrps	= ARRAY_SIZE(ioam6_mcgrps),
+ 	.module		= THIS_MODULE,
+ };
+ 
 -- 
 2.34.1
 
