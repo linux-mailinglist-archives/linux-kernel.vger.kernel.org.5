@@ -1,124 +1,108 @@
-Return-Path: <linux-kernel+bounces-75925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B9FC85F0C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 06:15:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4FEE85F0CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 06:15:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51EA1283070
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:15:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BC281C2160A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:15:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F7AA749F;
-	Thu, 22 Feb 2024 05:15:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54DDB748E;
+	Thu, 22 Feb 2024 05:15:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nbQaCYzF"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="daoNE5eK"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52D866FCB
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 05:14:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 210C06FCC
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 05:15:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708578899; cv=none; b=iKwUMtkLCfE9dPzAlhJp1HLVd7MOqgIBQlMTiVE6YLnvk0nLHGuJxV3DAb/L+fnfsIjkZh+HcGqYbyCW21dMNnSoDS7w2xwDuoi7TqLtkEtkDMp6Ui4sJfKz6+7BaYZSZxNS0feJwwf0b8+HI7q1w7fzpFT3jFSM1Y2ByN1emSI=
+	t=1708578952; cv=none; b=HN3H6TYDZnr+y7YnTX0SoPxzITYOgWup31OCgvT0PSog+K1QESdiuxzDH7EPkCsnUm7FwIDpRpw4sRHzWkTzknML1AqPLEtUt6Cf5zV8cEckebxjDZkbPpXujfN1yVR1mFrsXkvt+SPGezmd2Y+t/ojcnGsSfWTwsY3orxzSQZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708578899; c=relaxed/simple;
-	bh=3qny8yzuMmyJ1HQecd7Y6U83EBozIttdj4TJ16oo/RA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Bf6daFW1UwmnGmljmzsGP+FgeIs5QI0D0MlWv91Los/QUPPCz8qDEh95ifB1LI5HryTQzTK82+qTSkR0fQ4LhY+eR2BgswNLW4WhzW2xkDYtkxMFtsbJ4yKQ5jEJVTQnFThQ7ASu/Kml1EE4aMjTBIFmYnHRyPtrrjef6YWhMdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nbQaCYzF; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5d4d15ec7c5so6134765a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:14:58 -0800 (PST)
+	s=arc-20240116; t=1708578952; c=relaxed/simple;
+	bh=/5pahtp3IV21Zkx7LwhzOaL8qhatST6yLhJWnBUWtrI=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Cc:Content-Type; b=qNb/VTF+wZur5GzW4FHH+wyoAX6GZdaofPuANdDz5LsqsS71vbwRnTU7/bCW9YA6VveBxyWwhspkXBcy3CH4M1C3LKutDPLkhBgafw91xdjOyPl1ybykg9cSVg9XCWwRfIrcL/beTStjDLBFQSnzKh6ClKjeTVzbQ/ZwobjrTwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=daoNE5eK; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b26845cdso2143495276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:15:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708578898; x=1709183698; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=SjzQi95PdLFUOi++bhedl7ZKNdPeeAhvaDxnULICb2Q=;
-        b=nbQaCYzFHkSsh5xuQmilSY8caKzng7EsQVlrt0dnXkF0ss7nOHTAG5hGAOAWJvWpoI
-         NgKvwLyUV9VDTIz0RjIAdBrhQdxYX2DJo6jbri4kL8qc00JgB81yovWj8ZC0j14/2pNt
-         C8SSQWpgYZPydqS8B8ptc9VpTJ4xPaQB6rx0EIyJD0f9m/eBS+kNliKShqaVi+OKzDOV
-         fieXFpCRfs/VjpObzj2P5ZBlBhh2K4IcaLSnmsJdHJa81h61qAtkz2MMaPuNIvv/aJU5
-         B1rqQ28lMF1De2os6/HLPzuZM5k4mx7DdYjgYxPPZkWARBJ/uAalDSNV4769+tIHyPRt
-         r9/w==
+        d=google.com; s=20230601; t=1708578950; x=1709183750; darn=vger.kernel.org;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=/szi7MXaD7WqR7pua3W77cLv+YU355Nd7WimhF2bWNQ=;
+        b=daoNE5eKe1VpC/uzaTBgC5hb6/BoHP/DrwgQOcIjt+Tc3yzOa8vpPUmW3imBoF0gSQ
+         riFs66DPIKFDDiHlyRe1p3rfzKzAonIuitwavApvhDhZD6NjGYMWD88TmDg6wmTwux+U
+         N6B4YyWdDZUX4U2kCQQLK5j7w6I8PSAHYCtCN6f/Nm6Xr/T8QmZZSCf4gFKD3CQNLxuy
+         kSOQuSJucJbeKYiONQSdf/ZLEbPsNEZUXIvatg4tJHGNt+HZfEOts+f4tAvq66qRIDYR
+         vpjBg0/xBMLHXSPCvoo3NGgOcv33xsDM/O3nzi4cetk+X7hLLJfHTNOtwIs5V3EF6nx4
+         9ifQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708578898; x=1709183698;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SjzQi95PdLFUOi++bhedl7ZKNdPeeAhvaDxnULICb2Q=;
-        b=ct2DTiYBrqb7PH9hcBockaPnb4+PLXLa4ojzXkN5Bbe2hBxEbL7rrHVDM0W/cWu1VQ
-         qRDWm2oyU0uK3btJXOooeeIe8AaDEg55lUfVs5O+eFukKyP5KV/Qpe7/+vx/bGmin2V1
-         NHlYrNsQISk9BcQ0WZ8YTPMkqlOn9Edvgaoe3Z9BJfkV1PcKdzwh5Y2Hz9T/ztHC5kVY
-         wtk3oDp4sZtz1oi8elSR8m8Yl6v4LoIL540g4f2micT63ipvSGLoVoopaq9GbY2RByis
-         1PVqVcYMWYh8hnSqViBQemYyrbqZS2K54ndncwjuzx0qyYGJbYuNbDW6qEwS0zkf9OBL
-         H+cw==
-X-Forwarded-Encrypted: i=1; AJvYcCUA/1lv7qCB7Egj57xog5dprmxsmHpv+c7LV8NtW2+pus/j4UGPzH236TgyHhQgFr3qPEW7bbKf0ej+Ca3TGrCrlqkKdU8ykw/NtIj1
-X-Gm-Message-State: AOJu0YxtxuAm+V8MtBqalFLMdmWfqtAdLl0MBZRzNVIyIks0Q6dUd1rg
-	ppptlZx8q/VKZMUs7j6J2aN6L/Wbe0lt/fEreKz6xndSQ0jUZKcl3wM4Nhpogw==
-X-Google-Smtp-Source: AGHT+IGu63MPfTR0XWOYa6xte+sdI5ID4/pSdH0NA8SBF3CrpzvthDgTRKHWJ6IOCsRKwwxCAnXzlQ==
-X-Received: by 2002:a05:6a20:d04c:b0:19e:9a59:20df with SMTP id hv12-20020a056a20d04c00b0019e9a5920dfmr26902478pzb.9.1708578897688;
-        Wed, 21 Feb 2024 21:14:57 -0800 (PST)
-Received: from thinkpad ([117.193.212.166])
-        by smtp.gmail.com with ESMTPSA id li7-20020a170903294700b001db35d8ea6esm7109815plb.294.2024.02.21.21.14.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 21:14:57 -0800 (PST)
-Date: Thu, 22 Feb 2024 10:44:50 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-	linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
-	linux-arm-msm@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	quic_vbadigan@quicinc.com, quic_ramkri@quicinc.com,
-	quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
-	quic_parass@quicinc.com
-Subject: Re: [PATCH] bus: mhi: host: Change the trace string for the
- userspace tools mapping
-Message-ID: <20240222051450.GC3374@thinkpad>
-References: <20240218-ftrace_string-v1-1-27da85c1f844@quicinc.com>
- <20240221061146.GF11693@thinkpad>
- <20240221091103.37497ed0@gandalf.local.home>
+        d=1e100.net; s=20230601; t=1708578950; x=1709183750;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/szi7MXaD7WqR7pua3W77cLv+YU355Nd7WimhF2bWNQ=;
+        b=JOTSKGEzlyq4O+aeRg24o+woFIaAlIKF6YyyFKWTt8dk0IxnvpoebL8JckSenaUrDs
+         UO4ePJPs14iSpFhcR4sHLHTdxPYa77N4Go0pODSX87YQEcG1TJC6KyGmDOicaW1wGgHP
+         E7xbLTkJKlOQ4QIGAUvnHCU58Q4PuOhA5/pu68dG0GuiuJ0HY3JbAoyabwn+JLQlLoUH
+         t2y+H+OfGHSGC963PZB3hhXhw93rBMU7+gsuEJfqB5NGyxOApfN4xyvgUg91b8swvrBN
+         KdRIx6VJR97hmCGrtA+cH85+Z/nA8A5S65/ePZz5JWm1+iLsQzNNAyKelmSrmd8RRnTW
+         bbNg==
+X-Forwarded-Encrypted: i=1; AJvYcCXuHkEOXWJ3cO+cae38U9WAbz4qFp+qVgUzXMDN0rv+m8UUyXgV3gVYM/8i573GVFxxPYVQMP5rt7nu52g9AokasvtUfDNo5CtfCN/e
+X-Gm-Message-State: AOJu0YxmIj1bNqVvQvRQCONCy9Okm5LcqBh5vSotNado9sdXO4BCjd2a
+	RxD/AxEMhAknIghphNtFlq7r+qZIjG1U0yMC6GTFg5FC+k1Mhb4j/xiLs26LnSx71mGIjOE2rWr
+	GRAaDPy1/kGBbsA==
+X-Google-Smtp-Source: AGHT+IFI46TY+t86YHH4dK3IrYivpsBHYhG3Zk8JNTF8hrif3KucQdt8o3Xst902ElL9NDZWrH0gvnkppiGHzYE=
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:451c:c6c5:1fb1:a2a1])
+ (user=saravanak job=sendgmr) by 2002:a05:6902:150c:b0:dc6:e1ed:bd1a with SMTP
+ id q12-20020a056902150c00b00dc6e1edbd1amr384095ybu.2.1708578950167; Wed, 21
+ Feb 2024 21:15:50 -0800 (PST)
+Date: Wed, 21 Feb 2024 21:15:39 -0800
+Message-Id: <20240222051539.3001988-3-saravanak@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240221091103.37497ed0@gandalf.local.home>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
+Subject: [PATCH 1/2] checkpatch: Don't check for 75 chars per line for
+ create/delete mode lines
+From: Saravana Kannan <saravanak@google.com>
+To: Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>, 
+	Dwaipayan Ray <dwaipayanray1@gmail.com>, Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: Saravana Kannan <saravanak@google.com>, kernel-team@android.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Feb 21, 2024 at 09:11:03AM -0500, Steven Rostedt wrote:
-> On Wed, 21 Feb 2024 11:41:46 +0530
-> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
-> 
-> > On Sun, Feb 18, 2024 at 02:13:39PM +0530, Krishna chaitanya chundru wrote:
-> > > User space tools can't map strings if we use directly, as the string
-> > > address is internal to kernel.
-> > > 
-> > > So add trace point strings for the user space tools to map strings
-> > > properly.
-> > > 
-> > > Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>  
-> > 
-> > Reported-by: Steven Rostedt <rostedt@goodmis.org>
-> 
-> Suggested-by: may be more accurate?
-> 
+Cover letters have a "create/delete mode <mode> <filename>" line for files
+added/deleted in the patch series. Ignore these lines when checking for the
+maximum 75 chars per line limit.
 
-Sure. Will change it while applying.
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+ scripts/checkpatch.pl | 2 ++
+ 1 file changed, 2 insertions(+)
 
-- Mani
-
-> -- Steve
-> 
-> > Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> 
-
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 9c4c4a61bc83..f306634a938c 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3271,6 +3271,8 @@ sub process {
+ 					# filename then :
+ 		      $line =~ /^\s*(?:Fixes:|$link_tags_search|$signature_tags)/i ||
+ 					# A Fixes:, link or signature tag line
++		      $line =~ /^\s*(?:delete|create) mode\s+[0-8]+\s+\S+\s*$/i ||
++					# A "create/delete mode <mode> <filename>" line found in cover letters
+ 		      $commit_log_possible_stack_dump)) {
+ 			WARN("COMMIT_LOG_LONG_LINE",
+ 			     "Prefer a maximum 75 chars per line (possible unwrapped commit description?)\n" . $herecurr);
 -- 
-மணிவண்ணன் சதாசிவம்
+2.44.0.rc0.258.g7320e95886-goog
+
 
