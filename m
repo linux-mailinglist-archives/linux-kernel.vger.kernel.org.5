@@ -1,90 +1,228 @@
-Return-Path: <linux-kernel+bounces-76373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 604DA85F658
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:00:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EEAB85F661
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:00:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A87A1B23C44
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:00:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32E1C2873DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:00:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4969B3FB1F;
-	Thu, 22 Feb 2024 11:00:03 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B66538F88
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 10:59:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B056219E8;
+	Thu, 22 Feb 2024 11:00:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="VkMj3gfd"
+Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1D713FE27
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:00:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708599602; cv=none; b=GO/NP02VZk5TGj6qQvd3rGiqL7WmTXAyEGT65Ob8TOflzdvVsO35723cBId/6rcaydIog7UM83tparpNVyN081X4A8joNIxnpbckECRfLgYIRpsa8d1r0JJAQrEF3ze99C+dh1bQkLVEV2eIu3fDKQMn7lBvuX3ctl2+TnB0FvY=
+	t=1708599629; cv=none; b=HYrjyyw7DS1I0+Dv2j968oxEkYCCFzguMc3kyym8sWg+irCIHkkVqdoC4TGnJn9Vn0apdpdjhLVaU/l37h6dnnTA0uohcFXR14svar788hVKh2cOGBsy4KsJN/kUEwfwrrhuqZOfT9alSpwn2uz6gcoSmxNI8iDBcBMQNCO1Kws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708599602; c=relaxed/simple;
-	bh=ItDxMt1okGzqHpdyO0Hqc0WQvStSr/CV/9RJDXHmRds=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=boRiQDrvJuf+vr0s7X2KHAShIM8qfWs0TuMPkwdLg9W1WcmgVnRBZyOQKZZL/hHG6fB2yqeaiZI8Rr03f2xRw5M41cY0ZAvttWhu3MFPpBC1qEcMndDA77f9hTqBJrPxYZVZ2AFXe/1+McIwCAfu4Z2QlVEmJS4UCugzPs43CWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5AED8DA7;
-	Thu, 22 Feb 2024 03:00:37 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.79.93])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C2F3B3F73F;
-	Thu, 22 Feb 2024 02:59:57 -0800 (PST)
-Date: Thu, 22 Feb 2024 10:59:51 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Itaru Kitayama <itaru.kitayama@linux.dev>
-Cc: skseofh@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-	ryan.roberts@arm.com, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: add early fixmap initialization flag
-Message-ID: <ZdcpJ2zoyHJuNkSD@FVFF77S0Q05N>
-References: <20240217140326.2367186-1-skseofh@gmail.com>
- <ZdMx-svsHgrfguxX@FVFF77S0Q05N>
- <ZdPyWkOlUan5AI9r@vm3>
- <ZdSTMgxcWYsT9ECs@FVFF77S0Q05N.cambridge.arm.com>
- <ZdUyOAQG0TK1UtTY@vm3>
+	s=arc-20240116; t=1708599629; c=relaxed/simple;
+	bh=4SUhFECzfgHvN70ojLHKQ96rAaBsv2JrpKaeoW6p6NU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PYYs1cLk9ipV/7ywOtRtCIaen7nOK16Q+ZkcJaPI5XIP5GWJGe+RN1wBS/SIQI2ZYxNzdRBTJXh5nS/lxCrAKAacGBkfHk8J8buTaWYjqbz2RJNrjIsfgB5qRI0JaIdjiha2nlg25SZTkpT6b34fKofYflwHjURsi/9aNJt48u0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=VkMj3gfd; arc=none smtp.client-ip=209.85.221.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-4cecffb850cso743895e0c.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:00:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708599625; x=1709204425; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/H/VIpoB4an+Mp36arHK/D3Ob8nW5Qqkhlyoj2/3jaw=;
+        b=VkMj3gfdcFnz42zo5KLDCMaRFv4b0U0/AkjZW3epTqbYbaaD/h/iHU2FIa7Mnr67md
+         RBQ/zLS3xiCJ7ptiCQHAbPPXT3IafWKRdsIVBZfOFupfDQikMwPe+HIUEEXz5hUCweSC
+         7iangEDzwS2C0DVrsWpOxQ1BXQquior9uqGpoJhTf3S8FWWEAW5lh1VLiQ7H6pfpAnta
+         zQF50G8AMFwP+rxRZrPI8PlG3ULBuAz6yR0FfurGccUNuZrxkzFdhihk0QxIZskLoEfQ
+         fpB8b5AMkjka5xduQ7XAaeUdfCGEyQNStzPei9FXlsjUhdP0N7qvAAPEsQ6hTOFCtr/v
+         3fqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708599625; x=1709204425;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/H/VIpoB4an+Mp36arHK/D3Ob8nW5Qqkhlyoj2/3jaw=;
+        b=SW1CSDDCzK+YHyMGT3eFAjq3X8SPevGQCRjFxWXxOnKIb0Tdq91pUQlra4d3FokkFx
+         0hOZ3r5a2wCPguIgErnQsejAwBx7du+HGELFKRkeXnhav77krTOEI0ClIbVkjhZ3utd1
+         roC8huWKyp3lxFX6gikPri2XzRJo2xnCn8fWSE9dY48nQIonxFKipMuToMXc1p/3ANj8
+         nbqf1FAqgwQapZtKCzxYTlNYksTRcAleZWfoWCcuYQcg6o4/0XFI5FYNT5BDE75ROq2n
+         lQMCexDGHYnLARnaqhorJvEEOYP3VpNca9usa00PGYvNoCN1QkwtBpvh4LvHhl8Afdn0
+         6brg==
+X-Forwarded-Encrypted: i=1; AJvYcCUevj6GBaDImOjZhRq5/TkRnaVp9JPwwjUI1GfJRuEINqGkJh6fjgbbZUYAROqgUmKtO2IS7e3NFGpphBEpOHcqmnaN5ys5WSO2d2NQ
+X-Gm-Message-State: AOJu0YzXvofR1iGJcCB1itetbtHaF79iilmJ5WERD1mlTRBEVhWvHjYX
+	wZJAItLkxU+/4GwUGiXjAtg+lqL44bIHAk+fDsCXjuB29RKT0L5I16sTRbgkZyi1M9sIfZ8/9pi
+	dp4pxhRoR5GPxyLYnrU9vrPO0wd6gaATstC4Gwg==
+X-Google-Smtp-Source: AGHT+IGc4k4afM7yOHcqPtsyx85w0wC4eDvcktSKZo2fOpRx3WfdsV144zf5agpJ1l8kNtCEpqQOOt7K2tgZtw6QOw8=
+X-Received: by 2002:a1f:4a45:0:b0:4c7:7760:8f12 with SMTP id
+ x66-20020a1f4a45000000b004c777608f12mr12070252vka.2.1708599625549; Thu, 22
+ Feb 2024 03:00:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZdUyOAQG0TK1UtTY@vm3>
+References: <20240216203215.40870-1-brgl@bgdev.pl> <CAA8EJppt4-L1RyDeG=1SbbzkTDhLkGcmAbZQeY0S6wGnBbFbvw@mail.gmail.com>
+ <e4cddd9f-9d76-43b7-9091-413f923d27f2@linaro.org> <CAA8EJpp6+2w65o2Bfcr44tE_ircMoON6hvGgyWfvFuh3HamoSQ@mail.gmail.com>
+ <4d2a6f16-bb48-4d4e-b8fd-7e4b14563ffa@linaro.org> <CAA8EJpq=iyOfYzNATRbpqfBaYSdJV1Ao5t2ewLK+wY+vEaFYAQ@mail.gmail.com>
+ <CAMRc=Mfnpusf+mb-CB5S8_p7QwVW6owekC5KcQF0qrR=iOQ=oA@mail.gmail.com>
+ <CAA8EJppY7VTrDz3-FMZh2qHoU+JSGUjCVEi5x=OZgNVxQLm3eQ@mail.gmail.com>
+ <b9a31374-8ea9-407e-9ec3-008a95e2b18b@linaro.org> <CAA8EJppWY8c-pF75WaMadWtEuaAyCc5A1VLEq=JmB2Ngzk-zyw@mail.gmail.com>
+In-Reply-To: <CAA8EJppWY8c-pF75WaMadWtEuaAyCc5A1VLEq=JmB2Ngzk-zyw@mail.gmail.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Thu, 22 Feb 2024 12:00:14 +0100
+Message-ID: <CAMRc=Md6SoXukoGb4bW-CSYgjpO4RL+0Uu3tYrZzgSgVtFH6Sw@mail.gmail.com>
+Subject: Re: [PATCH v5 00/18] power: sequencing: implement the subsystem and
+ add first users
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: neil.armstrong@linaro.org, Marcel Holtmann <marcel@holtmann.org>, 
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Saravana Kannan <saravanak@google.com>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Abel Vesa <abel.vesa@linaro.org>, 
+	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, linux-bluetooth@vger.kernel.org, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 21, 2024 at 08:14:00AM +0900, Itaru Kitayama wrote:
-> On Tue, Feb 20, 2024 at 11:55:30AM +0000, Mark Rutland wrote:
-> > From 5f07f9c1d352f760fa7aba97f1b4f42d9cb99496 Mon Sep 17 00:00:00 2001
-> > From: Mark Rutland <mark.rutland@arm.com>
-> > Date: Tue, 20 Feb 2024 11:09:17 +0000
-> > Subject: [PATCH] arm64: clean up fixmap initalization
-> > 
-> > Currently we have redundant initialization of the fixmap, first in
-> > early_fdt_map(), and then again in setup_arch() before we call
-> > early_ioremap_init(). This redundant initialization isn't harmful, as
-> > early_fixmap_init() happens to be idempotent, but it's redundant and
-> > potentially confusing.
-> > 
-> > We need to call early_fixmap_init() before we map the FDT and before we
-> > call early_ioremap_init(). Ideally we'd place early_fixmap_init() and
-> > early_ioremap_init() in the same caller as early_ioremap_init() is
-> > somewhat coupled with the fixmap code.
-> > 
-> > Clean this up by moving the calls to early_fixmap_init() and
-> > early_ioremap_init() into a new early_mappings_init() function, and
-> > calling this once in __primary_switched() before we call
-> > early_fdt_map(). This means we initialize the fixmap once, and keep
-> > early_fixmap_init() and early_ioremap_init() together.
+On Mon, Feb 19, 2024 at 11:21=E2=80=AFPM Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+>
+> On Mon, 19 Feb 2024 at 19:18, <neil.armstrong@linaro.org> wrote:
+> >
+> > On 19/02/2024 13:33, Dmitry Baryshkov wrote:
+> > > On Mon, 19 Feb 2024 at 14:23, Bartosz Golaszewski <brgl@bgdev.pl> wro=
+te:
+> > >>
+> > >> On Mon, Feb 19, 2024 at 11:26=E2=80=AFAM Dmitry Baryshkov
+> > >> <dmitry.baryshkov@linaro.org> wrote:
+> > >>>
+> > >>
+> > >> [snip]
+> > >>
+> > >>>>>>>>
+> > >>>>>>>> For WCN7850 we hide the existence of the PMU as modeling it is=
+ simply not
+> > >>>>>>>> necessary. The BT and WLAN devices on the device-tree are repr=
+esented as
+> > >>>>>>>> consuming the inputs (relevant to the functionality of each) o=
+f the PMU
+> > >>>>>>>> directly.
+> > >>>>>>>
+> > >>>>>>> We are describing the hardware. From the hardware point of view=
+, there
+> > >>>>>>> is a PMU. I think at some point we would really like to describ=
+e all
+> > >>>>>>> Qualcomm/Atheros WiFI+BT units using this PMU approach, includi=
+ng the
+> > >>>>>>> older ath10k units present on RB3 (WCN3990) and db820c (QCA6174=
+).
+> > >>>>>>
+> > >>>>>> While I agree with older WiFi+BT units, I don't think it's neede=
+d for
+> > >>>>>> WCN7850 since BT+WiFi are now designed to be fully independent a=
+nd PMU is
+> > >>>>>> transparent.
+> > >>>>>
+> > >>>>> I don't see any significant difference between WCN6750/WCN6855 an=
+d
+> > >>>>> WCN7850 from the PMU / power up point of view. Could you please p=
+oint
+> > >>>>> me to the difference?
+> > >>>>>
+> > >>>>
+> > >>>> The WCN7850 datasheet clearly states there's not contraint on the =
+WLAN_EN
+> > >>>> and BT_EN ordering and the only requirement is to have all input r=
+egulators
+> > >>>> up before pulling up WLAN_EN and/or BT_EN.
+> > >>>>
+> > >>>> This makes the PMU transparent and BT and WLAN can be described as=
+ independent.
+> > >>>
+> > >>>  From the hardware perspective, there is a PMU. It has several LDOs=
+ So
+> > >>> the device tree should have the same style as the previous
+> > >>> generations.
+> > >>>
+> > >>
+> > >> My thinking was this: yes, there is a PMU but describing it has no
+> > >> benefit (unlike QCA6x90). If we do describe, then we'll end up havin=
+g
+> > >> to use pwrseq here despite it not being needed because now we won't =
+be
+> > >> able to just get regulators from WLAN/BT drivers directly.
+> > >>
+> > >> So I also vote for keeping it this way. Let's go into the package
+> > >> detail only if it's required.
+> > >
+> > > The WiFi / BT parts are not powered up by the board regulators. They
+> > > are powered up by the PSU. So we are not describing it in the accurat=
+e
+> > > way.
+> >
+> > I disagree, the WCN7850 can also be used as a discrete PCIe M.2 card, a=
+nd in
+> > this situation the PCIe part is powered with the M.2 slot and the BT si=
+de
+> > is powered separately as we currently do it now.
+>
+> QCA6390 can also be used as a discrete M.2 card.
+>
+> > So yes there's a PMU, but it's not an always visible hardware part, fro=
+m the
+> > SoC PoV, only the separate PCIe and BT subsystems are visible/controlla=
+ble/powerable.
+>
+> From the hardware point:
+> - There is a PMU
+> - The PMU is connected to the board supplies
+> - Both WiFi and BT parts are connected to the PMU
+> - The BT_EN / WLAN_EN pins are not connected to the PMU
+>
+> So, not representing the PMU in the device tree is a simplification.
+>
 
-> Thanks for this. Makes sense to me; would you post a proper patch
-> so I can build and do a boot test, just to make sure?
+What about the existing WLAN and BT users of similar packages? We
+would have to deprecate a lot of existing bindings. I don't think it's
+worth it.
 
-I took a look, and Ard's recent changes to the boot code have removed the
-duplicate call to early_fixmap_init() by other means, so we don't need to do
-anything, and can forget about this patch. :)
+The WCN7850 is already described in bindings as consuming what is PMUs
+inputs and not its outputs.
 
-Mark.
+Bart
+
+> >
+> > Neil
+> >
+> > >
+> > > Moreover, I think we definitely want to move BT driver to use only th=
+e
+> > > pwrseq power up method. Doing it in the other way results in the code
+> > > duplication and possible issues because of the regulator / pwrseq
+> > > taking different code paths.
+>
+> --
+> With best wishes
+> Dmitry
 
