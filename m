@@ -1,110 +1,320 @@
-Return-Path: <linux-kernel+bounces-77005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75ADF85FFF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:45:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E59DE85FEFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:16:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FD9A286A57
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:45:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13F3F1C2339D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:16:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE3B7157E8A;
-	Thu, 22 Feb 2024 17:45:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13AEF15697B;
+	Thu, 22 Feb 2024 17:14:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZZ2WbDfz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ZATx9QUu"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 007BD157E66;
-	Thu, 22 Feb 2024 17:45:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34669154C15;
+	Thu, 22 Feb 2024 17:14:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708623901; cv=none; b=OjMKgNQSKqzAGw+9DyTpODfMLvMsOhwTiRep1YTFQz4V9t3rgxm0sjwFYsLh7rzw+rNJM1qoNo9sPis9VmgGXYRM6YdT59Mml/P3Kxbq1/ziEjF2qk7KmWusLe0LOpzElCrw7IBJXpqVv5l1kjJOhQfEV9p5uKB6kz/LSKk3bQs=
+	t=1708622085; cv=none; b=u/tx9RbDS4kzKYl9eR5XBbejP8D7EOdLSKd5yUSERw5564Dnnp2btpNf9DDWzZTZfNnkXsE4TtKTGDYflxn9DyEuqsy6P5f+4fOyccBloHd2zfblP45GPy1WYWVHrCcAECF/4Q0ukGJ1Ri8bfLqeGzyV+rLDVW+05VdB47vhAf8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708623901; c=relaxed/simple;
-	bh=sZFV/9GvDSGC9zghoHO3Ea/qtSo9ed2vqV6HVidrL90=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VU+K2hUvcnq8K077IADPsm9SE11NgbGANudbmRnksbadSdjGHhQSddExdb/KG0Z3ACzS4Em0aoJb3Ht1eiGFYzpBrl7bW5F9g9tGvzhJMJqhbcwiPqorJyxhpWu3sQ6IcfSiYwbDFhdu9g7lOAT4fanY6UqWRCd+8T129VJpnAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZZ2WbDfz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 634BDC43394;
-	Thu, 22 Feb 2024 17:45:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708623900;
-	bh=sZFV/9GvDSGC9zghoHO3Ea/qtSo9ed2vqV6HVidrL90=;
-	h=Date:From:To:Subject:References:In-Reply-To:From;
-	b=ZZ2WbDfzmne//J8JAZX7g8jMHekZXzXy8T20ThgZx5FiNGL4AICs5lApxNhs31snl
-	 us6vGx+MYz2tLgsjQ/MbXtOECuxoa/wxkz0Uxu72IWN2XGZMObolfdmItgh6H6WcRy
-	 szFLFSXGWSU5NN4PIvH2dWTEz2ClQi59+hV9df7tRZaFl08m+fSw4W0DzHGdMDktem
-	 qnSv0zALK+7hiYActCJa1f8B8dkgX4Ce2709e1BGXtgz05sN6M4asP0M+7yLQmVqkh
-	 4/59BX5SsMqqIN8GthhUwi4HlY/dnU9rtsc3TIg8OByXHYYF0XfyHKWcJ1gOvJCUh4
-	 ccm+ASWxpXU9w==
-Date: Thu, 22 Feb 2024 10:14:04 -0700
-From: Rob Herring <robh@kernel.org>
-To: Wolfram Sang <wsa@kernel.org>,
-	=?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Subject: Re: [PATCH 01/13] dt-bindings: i2c: nomadik: add timeout-usecs
- property bindings
-Message-ID: <20240222171404.GA3334332-robh@kernel.org>
-References: <20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com>
- <20240215-mbly-i2c-v1-1-19a336e91dca@bootlin.com>
- <20240216022704.GB850600-robh@kernel.org>
- <CZ6E24VPJKJG.35LACFD6ZV5KE@bootlin.com>
- <CACRpkdZZhhzg5SY7U5dv_OfLEVejRFom4V9nCfkQXunAw1ZXSw@mail.gmail.com>
- <CZ94LGRSF9KN.15ZO1VRMIQVR8@bootlin.com>
- <CZAX02IL1N1J.2GQR9D73GLRZB@bootlin.com>
- <ZdY2WzKbElloXC4-@shikoro>
+	s=arc-20240116; t=1708622085; c=relaxed/simple;
+	bh=d32PKeM3g8/qW9WT4NQuBsLuxUjgCrWZo/R1eoVvooo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=OLjCkNodDqcfyNTkL0qEP92j8pgldH+a2Hq2eD6ltWkVhAu6Q8TYfo+jZplrsZtpdZtvsSb5+5NulEuVAK31XoiND9/t1ZOdOCqbobK9LAvP63WyjZeQRvWoGFNalv2w89ABnm2KAGVMnDjCL+xbTyatl5hEOHrITGv8SN/aW14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ZATx9QUu; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41M6mhJB019461;
+	Thu, 22 Feb 2024 17:14:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=41ijdyh6f8n7C660F21th4GQ953AMCJ7CZREOVJwJS0=; b=ZA
+	Tx9QUuIY8VQLegHQgGMdq5JfMCswoFCUxGsm2U+s0zx2YR9DnEmSa2I5yLQzl2N5
+	YPo8yipuLg4TdlMd2xAteSKoyRSo+DaPIvQnaaGyvRGDjL2NAVyZp95owapdi718
+	yde10SaY1NQZfPfMNwVw+DYKfdSvOEAR72m+nuRAgQ0IefzblHQvyb/gGC5olJT7
+	TVjBP/X3v2sPsgtnK1fM0KKf0DzLar1fpVrxDVAwOjwI5Ehf2ykbihpyt0vjyQVg
+	RihjJeuhna6PEDdsOO/WQTJYX4IVf5yer0DrhnObwtgRLKscV0b7GuayKNTi8gLS
+	QMyLoaJbIhR4Uyq70REg==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3we1b0hp20-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 22 Feb 2024 17:14:27 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41MHEQlg018442
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 22 Feb 2024 17:14:26 GMT
+Received: from [10.71.111.207] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 22 Feb
+ 2024 09:14:26 -0800
+Message-ID: <f9446923-acd3-41cf-92d4-676b946280c4@quicinc.com>
+Date: Thu, 22 Feb 2024 09:14:21 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZdY2WzKbElloXC4-@shikoro>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] drm: panel: st7701: Add Hardkernel ODROID-GO Ultra
+ panel support
+To: Adam Green <greena88@gmail.com>, Jagan Teki <jagan@amarulasolutions.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard
+	<mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie
+	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring
+	<robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240221194528.1855714-1-greena88@gmail.com>
+ <20240222164332.3864716-1-greena88@gmail.com>
+ <20240222164332.3864716-2-greena88@gmail.com>
+Content-Language: en-US
+From: Jessica Zhang <quic_jesszhan@quicinc.com>
+In-Reply-To: <20240222164332.3864716-2-greena88@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: c96G9I9C2Z3p0VD_rZ4yHUrDP4wr5jn7
+X-Proofpoint-GUID: c96G9I9C2Z3p0VD_rZ4yHUrDP4wr5jn7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-22_13,2024-02-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
+ mlxscore=0 adultscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0
+ impostorscore=0 suspectscore=0 bulkscore=0 priorityscore=1501
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402220135
 
-On Wed, Feb 21, 2024 at 06:43:55PM +0100, Wolfram Sang wrote:
-> Hi,
+
+
+On 2/22/2024 8:43 AM, Adam Green wrote:
+> The Hardkernel ODROID-GO Ultra is a handheld gaming devices, with
+> a 5 inch 480x854 display. Add support for the display.
 > 
-> > > > > i2c-mpc (fsl,timeout) and i2c-gpio (i2c-gpio,timeout-ms). I agree this
-> > > > > prop has no reason to be compatible-specific.
+> Signed-off-by: Adam Green <greena88@gmail.com>
+> ---
+>   drivers/gpu/drm/panel/panel-sitronix-st7701.c | 158 +++++++++++++++++-
+>   1 file changed, 157 insertions(+), 1 deletion(-)
 > 
-> Anyone up to convert these drivers to the new binding and mark the old
-> ones as deprecated?
+> diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7701.c b/drivers/gpu/drm/panel/panel-sitronix-st7701.c
+> index 421eb4592b61..d08e8f4c39dd 100644
+> --- a/drivers/gpu/drm/panel/panel-sitronix-st7701.c
+> +++ b/drivers/gpu/drm/panel/panel-sitronix-st7701.c
+> @@ -423,6 +423,62 @@ static void kd50t048a_gip_sequence(struct st7701 *st7701)
+>   		   0xFF, 0xFF, 0xFF, 0xFF, 0x10, 0x45, 0x67, 0x98, 0xBA);
+>   }
+>   
+> +static void odroid_go_ultra_gip_sequence(struct st7701 *st7701)
+> +{
+> +	ST7701_DSI(st7701, 0x01);
+> +	msleep(20);
+> +	ST7701_DSI(st7701, 0x11);
+> +	msleep(120);
+> +
+> +	ST7701_DSI(st7701, 0xFF, 0x77, 0x01, 0x00, 0x00, 0x10);
+> +	ST7701_DSI(st7701, 0xC0, 0xE9, 0x03);
+> +	ST7701_DSI(st7701, 0xC1, 0x11, 0x02);
+> +	ST7701_DSI(st7701, 0xC2, 0x31, 0x08);
+> +	ST7701_DSI(st7701, 0xCC, 0x10);
+> +	ST7701_DSI(st7701, 0xB0, 0x00, 0x0D, 0x14, 0x0D, 0x10, 0x05, 0x02, 0x08,
+> +		   0x08, 0x1E, 0x05, 0x13, 0x11, 0xA3, 0x29, 0x18);
+> +	ST7701_DSI(st7701, 0xB1, 0x00, 0x0C, 0x14, 0x0C, 0x10, 0x05, 0x03, 0x08,
+> +		   0x07, 0x20, 0x05, 0x13, 0x11, 0xA4, 0x29, 0x18);
+> +	ST7701_DSI(st7701, 0xFF, 0x77, 0x01, 0x00, 0x00, 0x11);
+> +	ST7701_DSI(st7701, 0xB0, 0x6C);
+> +	ST7701_DSI(st7701, 0xB1, 0x43);
+> +	ST7701_DSI(st7701, 0xB2, 0x07);
+> +	ST7701_DSI(st7701, 0xB3, 0x80);
+> +	ST7701_DSI(st7701, 0xB5, 0x47);
+> +	ST7701_DSI(st7701, 0xB7, 0x85);
+> +	ST7701_DSI(st7701, 0xB8, 0x20);
+> +	ST7701_DSI(st7701, 0xB9, 0x10);
+> +	ST7701_DSI(st7701, 0xC1, 0x78);
+> +	ST7701_DSI(st7701, 0xC3, 0x78);
+> +	ST7701_DSI(st7701, 0xD0, 0x88);
+> +	msleep(120);
+> +
+> +	ST7701_DSI(st7701, 0xE0, 0x00, 0x00, 0x02);
+> +	ST7701_DSI(st7701, 0xE1, 0x08, 0x00, 0x0A, 0x00, 0x07, 0x00, 0x09,
+> +		   0x00, 0x00, 0x33, 0x33);
+> +	ST7701_DSI(st7701, 0xE2, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+> +		   0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
+> +	ST7701_DSI(st7701, 0xE3, 0x00, 0x00, 0x33, 0x33);
+> +	ST7701_DSI(st7701, 0xE4, 0x44, 0x44);
+> +	ST7701_DSI(st7701, 0xE5, 0x0E, 0x60, 0xA0, 0xA0, 0x10, 0x60, 0xA0,
+> +		   0xA0, 0x0A, 0x60, 0xA0, 0xA0, 0x0C, 0x60, 0xA0, 0xA0);
+> +	ST7701_DSI(st7701, 0xE6, 0x00, 0x00, 0x33, 0x33);
+> +	ST7701_DSI(st7701, 0xE7, 0x44, 0x44);
+> +	ST7701_DSI(st7701, 0xE8, 0x0D, 0x60, 0xA0, 0xA0, 0x0F, 0x60, 0xA0,
+> +		   0xA0, 0x09, 0x60, 0xA0, 0xA0, 0x0B, 0x60, 0xA0, 0xA0);
+> +	ST7701_DSI(st7701, 0xEB, 0x02, 0x01, 0xE4, 0xE4, 0x44, 0x00, 0x40);
+> +	ST7701_DSI(st7701, 0xEC, 0x02, 0x01);
+> +	ST7701_DSI(st7701, 0xED, 0xAB, 0x89, 0x76, 0x54, 0x01, 0xFF, 0xFF,
+> +		   0xFF, 0xFF, 0xFF, 0xFF, 0x10, 0x45, 0x67, 0x98, 0xBA);
+> +	ST7701_DSI(st7701, 0xFF, 0x77, 0x01, 0x00, 0x00, 0x00);
+> +	ST7701_DSI(st7701, 0x3A, 0x70);
+> +	ST7701_DSI(st7701, 0x53, 0xEC);
+> +	ST7701_DSI(st7701, 0x55, 0xB3);
+> +	ST7701_DSI(st7701, 0x5E, 0xFF);
+> +	ST7701_DSI(st7701, 0x29);
+> +	msleep(50);
+> +}
+> +
+>   static void rg_arc_gip_sequence(struct st7701 *st7701)
+>   {
+>   	st7701_switch_cmd_bkx(st7701, true, 3);
+> @@ -470,7 +526,7 @@ static int st7701_prepare(struct drm_panel *panel)
+>   				    st7701->supplies);
+>   	if (ret < 0)
+>   		return ret;
+> -	msleep(20);
+> +	msleep(120);
+
+Hi Adam,
+
+Just wondering, why the change to 120 here?
+
+Thanks,
+
+Jessica Zhang
+
+>   
+>   	gpiod_set_value(st7701->reset, 1);
+>   	msleep(150);
+> @@ -875,6 +931,105 @@ static const struct st7701_panel_desc kd50t048a_desc = {
+>   	.gip_sequence = kd50t048a_gip_sequence,
+>   };
+>   
+> +static const struct drm_display_mode odroid_go_ultra_mode = {
+> +	.clock		= 29170,
+> +
+> +	.hdisplay	= 480,
+> +	.hsync_start	= 480 + 12,
+> +	.hsync_end	= 480 + 12 + 12,
+> +	.htotal		= 480 + 12 + 12 + 38,
+> +
+> +	.vdisplay	= 854,
+> +	.vsync_start	= 854 + 2,
+> +	.vsync_end	= 854 + 2 + 19,
+> +	.vtotal		= 854 + 2 + 19 + 22,
+> +
+> +	.width_mm	= 70,
+> +	.height_mm	= 140,
+> +
+> +	.type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED,
+> +};
+> +
+> +static const struct st7701_panel_desc odroid_go_ultra_desc = {
+> +	.mode = &odroid_go_ultra_mode,
+> +	.lanes = 2,
+> +	.format = MIPI_DSI_FMT_RGB888,
+> +	.panel_sleep_delay = 120,
+> +
+> +	.pv_gamma = {
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC0_MASK, 0),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC4_MASK, 0xd),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC8_MASK, 0x14),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC16_MASK, 0xd),
+> +
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC24_MASK, 0x10),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC52_MASK, 0x5),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC80_MASK, 0x2),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC108_MASK, 0x8),
+> +
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC147_MASK, 0x8),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC175_MASK, 0x1e),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC203_MASK, 0x5),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC231_MASK, 0x13),
+> +
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC239_MASK, 0x11),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 2) |
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC247_MASK, 0x23),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC251_MASK, 0x29),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC255_MASK, 0x18)
+> +	},
+> +	.nv_gamma = {
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC0_MASK, 0),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC4_MASK, 0xc),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC8_MASK, 0x14),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC16_MASK, 0xc),
+> +
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC24_MASK, 0x10),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC52_MASK, 0x5),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC80_MASK, 0x3),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC108_MASK, 0x8),
+> +
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC147_MASK, 0x7),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC175_MASK, 0x20),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC203_MASK, 0x5),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC231_MASK, 0x13),
+> +
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC239_MASK, 0x11),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 2) |
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC247_MASK, 0x24),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC251_MASK, 0x29),
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_AJ_MASK, 0) |
+> +		CFIELD_PREP(DSI_CMD2_BK0_GAMCTRL_VC255_MASK, 0x18)
+> +	},
+> +	.nlinv = 1,
+> +	.vop_uv = 4887500,
+> +	.vcom_uv = 937500,
+> +	.vgh_mv = 15000,
+> +	.vgl_mv = -9510,
+> +	.avdd_mv = 6600,
+> +	.avcl_mv = -4400,
+> +	.gamma_op_bias = OP_BIAS_MIDDLE,
+> +	.input_op_bias = OP_BIAS_MIN,
+> +	.output_op_bias = OP_BIAS_MIN,
+> +	.t2d_ns = 1600,
+> +	.t3d_ns = 10400,
+> +	.eot_en = true,
+> +	.gip_sequence = odroid_go_ultra_gip_sequence,
+> +};
+> +
+>   static const struct drm_display_mode rg_arc_mode = {
+>   	.clock          = 25600,
+>   
+> @@ -1055,6 +1210,7 @@ static const struct of_device_id st7701_of_match[] = {
+>   	{ .compatible = "anbernic,rg-arc-panel", .data = &rg_arc_desc },
+>   	{ .compatible = "densitron,dmt028vghmcmi-1a", .data = &dmt028vghmcmi_1a_desc },
+>   	{ .compatible = "elida,kd50t048a", .data = &kd50t048a_desc },
+> +	{ .compatible = "hardkernel,odroid-go-ultra-panel", .data = &odroid_go_ultra_desc },
+>   	{ .compatible = "techstar,ts8550b", .data = &ts8550b_desc },
+>   	{ }
+>   };
+> -- 
+> 2.43.0
 > 
-> > > > As Rob mentioned this isn't in the kernel schemas but in dtschema, so
-> > > > you need to patch this:
-> > > > https://github.com/robherring/dt-schema
-> 
-> @Rob: My memory fails a little bit about these two schemas: we have the
-> github one for generic bindings, not strictly related to Linux, right?
-
-Well, NONE of the bindings are strictly related to linux unless they say 
-'linux,' prefix.
-
-> But why do we have then i2c.txt in ther kernel tree? Why don't we sync
-> regularly with the generic schema?
-
-We need to remove i2c.txt. Often that hasn't happened because we need to 
-relicense the text from GPL only to dual licensed. From a quick look, 
-i2c/i2c-controller.yaml appears to have everything in i2c.txt, so I 
-think we can go ahead and remove it. There's only a few references to 
-i2c.txt to update with that. I'll send a patch, but please double check 
-whether you think i2c-controller.yaml is missing anything.
-
-Rob
 
