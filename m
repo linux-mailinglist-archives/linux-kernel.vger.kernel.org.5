@@ -1,210 +1,132 @@
-Return-Path: <linux-kernel+bounces-76656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE4C585FA9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:01:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB7A985FAA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:02:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D5E11F27CF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:01:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65A2F281B32
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:02:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 314CF137C31;
-	Thu, 22 Feb 2024 14:01:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p0XnSrP1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2660137C29;
+	Thu, 22 Feb 2024 14:02:00 +0000 (UTC)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A7D8130AD2;
-	Thu, 22 Feb 2024 14:01:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89363134CFC
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 14:01:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708610464; cv=none; b=JX5XWo03PcoJyAYBTyPtMu5XXQj3DQUhfqqnYYs6Iapx8S7OGHOk/Oe3Fqa9e47ZxJYIp29v8/6pDiIjpLeayLuiao9Gun1ODfhm7EzCvN6FdVob7aKTVeb4lrxOe0LUuS57QlL8BFdbBNf6CQTnjci+BgVs3DrZHN/67sZDVLw=
+	t=1708610520; cv=none; b=qfTA3gnAFxuO4zp03iD6DmLJwxYlmqxa0PGKSI8Ep5q1aQJLnibk7ZFBZPAN9wWScpEUiR9BChw3SnxWuw1rvgsTaI55nKjVRNJprQG779Q6GCp9YWxZkpcG9qsPgeCkOD3811KQMjWKn2siTBsmmFQLzSyJ5KMgAvk9zEIRGLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708610464; c=relaxed/simple;
-	bh=fSetG6elC4kpGUF26Sm8cvkGBwCQN75G2SfsKotHPXY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JJr2VaIkHGDOAtsEMxtIS3NPHRJe4NWXUS6EBRGxOKz5ocbb+ZfOixAdsAkYCnZxTwYUYhuZazfthP9gTTiS5uVwINYwNcJnpCRhmwn/nxB60xMYWGpd0rl4x3Zzw6oQ8uU6hFe8CszGX9TnKOGSZrFr9/avvQlWzJB5tOccFto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p0XnSrP1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20F08C43394;
-	Thu, 22 Feb 2024 14:01:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708610463;
-	bh=fSetG6elC4kpGUF26Sm8cvkGBwCQN75G2SfsKotHPXY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=p0XnSrP1p41eJvsTuLVLWF3U172Yn44+9AWCLJyshiGIzDu3f4HbenetnbJ9qYlqN
-	 Cm8k3vM3W2zpUaYdkwanrZxskr5cHCpBN+RRNIfRfv4M3+qML31eu7lbTcS7YM3TIV
-	 gcza/0AMDg+C2B4c6Sj0LbPgxE8BQBrpLWwkcX5Ay6V96c4HDuOAhLVxwrYo7blybV
-	 uG+JT2ikmgzsqAMxA5Gq8YkDg7+0LJOC3CrE1aSD/yhQqzaZ527s/WyvjZavgn19Jh
-	 Pgn0eiyk1shaGPFGtubF841FexMLoSA8rrkGCK7e8yzEP9/eeVDpPetN49erR/5QxS
-	 tI2Og5OfRrI9w==
-Date: Thu, 22 Feb 2024 19:30:59 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: "open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" <dmaengine@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
-Subject: Re: [PATCH v2 1/1] dmaengine: fsl-qdma: add __iomem and struct in
- union to fix sparse warning
-Message-ID: <ZddTmwh82K6biJSx@matsya>
-References: <20240219155939.611237-1-Frank.Li@nxp.com>
+	s=arc-20240116; t=1708610520; c=relaxed/simple;
+	bh=ewA5gH0bCylPF3H13/kbdUip8+EeXFiA5OyHZLEWf6A=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=AhvgfPCGnvJy/wE1/JY7Ze0m7SgARwFVMuGLlokaUOeNP6+c6TMxhQSJMLkO1DxV5fixKguXclzhHNXMdxnC6XE5YRqpd6CWTgE02fMhZIMSKHE8SYGIOQ76zht4YbsfjjT7ndPzpCW7ORJtXXLVnLDzBrOsyluZ4xxRipJw+Oc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TgZWt4Dprz1X3F9;
+	Thu, 22 Feb 2024 21:59:38 +0800 (CST)
+Received: from dggpeml500005.china.huawei.com (unknown [7.185.36.59])
+	by mail.maildlp.com (Postfix) with ESMTPS id C8B2114011F;
+	Thu, 22 Feb 2024 22:01:48 +0800 (CST)
+Received: from huawei.com (10.175.112.125) by dggpeml500005.china.huawei.com
+ (7.185.36.59) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 22 Feb
+ 2024 22:01:48 +0800
+From: Yongqiang Liu <liuyongqiang13@huawei.com>
+To: <linux-arm-kernel@lists.infradead.org>
+CC: <yanaijie@huawei.com>, <zhangxiaoxu5@huawei.com>,
+	<wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>,
+	<linux@armlinux.org.uk>, <rppt@linux.ibm.com>,
+	<linux-kernel@vger.kernel.org>, <keescook@chromium.org>, <arnd@arndb.de>,
+	<m.szyprowski@samsung.com>, <willy@infradead.org>,
+	<liuyongqiang13@huawei.com>
+Subject: [PATCH] arm: flush: check if the folio is reserved for IMO addresses
+Date: Thu, 22 Feb 2024 22:01:47 +0800
+Message-ID: <20240222140147.1880357-1-liuyongqiang13@huawei.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240219155939.611237-1-Frank.Li@nxp.com>
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500005.china.huawei.com (7.185.36.59)
 
-On 19-02-24, 10:59, Frank Li wrote:
-> Fix below sparse warnings.
+Since commit a4d5613c4dc6 ("arm: extend pfn_valid to take into account
+freed memory map alignment") changes the semantics of pfn_valid() to check
+presence of the memory map for a PFN. A valid page for an address which
+is reserved but not mapped by the kernel[1].In Some uio case we will get
+a crash on a system with the following memory layout:
 
-This does not apply for me, can you rebase
+ node   0: [mem 0x00000000c0a00000-0x00000000cc8fffff]
+ node   0: [mem 0x00000000d0000000-0x00000000da1fffff]
+ the uio layout is：0xc0900000, 0x100000
 
-> 
-> drivers/dma/fsl-qdma.c:645:50: sparse: warning: incorrect type in argument 2 (different address spaces)
-> drivers/dma/fsl-qdma.c:645:50: sparse:    expected void [noderef] __iomem *addr
-> drivers/dma/fsl-qdma.c:645:50: sparse:    got void
-> 
-> drivers/dma/fsl-qdma.c:387:15: sparse: sparse: restricted __le32 degrades to integer
-> drivers/dma/fsl-qdma.c:390:19: sparse:     expected restricted __le64 [usertype] data
-> drivers/dma/fsl-qdma.c:392:13: sparse:     expected unsigned int [assigned] [usertype] cmd
-> 
-> QDMA decriptor have below 3 kind formats. (little endian)
-> 
-> Compound Command Descriptor Format
->   ┌──────┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
->   │Offset│3│3│2│2│2│2│2│2│2│2│2│2│1│1│1│1│1│1│1│1│1│1│ │ │ │ │ │ │ │ │ │ │
->   │      │1│0│9│8│7│6│5│4│3│2│1│0│9│8│7│6│5│4│3│2│1│0│9│8│7│6│5│4│3│2│1│0│
->   ├──────┼─┴─┼─┴─┴─┼─┴─┴─┼─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┼─┴─┴─┴─┴─┴─┴─┴─┤
->   │ 0x0C │DD │  -  │QUEUE│             -                 │      ADDR     │
->   ├──────┼───┴─────┴─────┴───────────────────────────────┴───────────────┤
->   │ 0x08 │                       ADDR                                    │
->   ├──────┼─────┬─────────────────┬───────────────────────────────────────┤
->   │ 0x04 │ FMT │    OFFSET       │                   -                   │
->   ├──────┼─┬─┬─┴─────────────────┴───────────────────────┬───────────────┤
->   │      │ │S│                                           │               │
->   │ 0x00 │-│E│                   -                       │    STATUS     │
->   │      │ │R│                                           │               │
->   └──────┴─┴─┴───────────────────────────────────────────┴───────────────┘
-> 
-> Compound S/G Table Entry Format
->  ┌──────┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
->  │Offset│3│3│2│2│2│2│2│2│2│2│2│2│1│1│1│1│1│1│1│1│1│1│ │ │ │ │ │ │ │ │ │ │
->  │      │1│0│9│8│7│6│5│4│3│2│1│0│9│8│7│6│5│4│3│2│1│0│9│8│7│6│5│4│3│2│1│0│
->  ├──────┼─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┼─┴─┴─┴─┴─┴─┴─┴─┤
->  │ 0x0C │                      -                        │    ADDR       │
->  ├──────┼───────────────────────────────────────────────┴───────────────┤
->  │ 0x08 │                          ADDR                                 │
->  ├──────┼─┬─┬───────────────────────────────────────────────────────────┤
->  │ 0x04 │E│F│                    LENGTH                                 │
->  ├──────┼─┴─┴─────────────────────────────────┬─────────────────────────┤
->  │ 0x00 │              -                      │        OFFSET           │
->  └──────┴─────────────────────────────────────┴─────────────────────────┘
-> 
-> Source/Destination Descriptor Format
->   ┌──────┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
->   │Offset│3│3│2│2│2│2│2│2│2│2│2│2│1│1│1│1│1│1│1│1│1│1│ │ │ │ │ │ │ │ │ │ │
->   │      │1│0│9│8│7│6│5│4│3│2│1│0│9│8│7│6│5│4│3│2│1│0│9│8│7│6│5│4│3│2│1│0│
->   ├──────┼─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┤
->   │ 0x0C │                            CMD                                │
->   ├──────┼───────────────────────────────────────────────────────────────┤
->   │ 0x08 │                             -                                 │
->   ├──────┼───────────────┬───────────────────────┬───────────────────────┤
->   │ 0x04 │       -       │         S[D]SS        │        S[D]SD         │
->   ├──────┼───────────────┴───────────────────────┴───────────────────────┤
->   │ 0x00 │                             -                                 │
->   └──────┴───────────────────────────────────────────────────────────────┘
-> 
-> Previous code use 64bit 'data' map to 0x8 and 0xC. In little endian system
-> CMD is high part of 64bit 'data'. It is correct by left shift 32. But in
-> big endian system, shift left 32 will write to 0x8 position. Sparse detect
-> this problem.
-> 
-> Add below field ot match 'Source/Destination Descriptor Format'.
-> struct {
-> 	__le32 __reserved2;
-> 	__le32 cmd;
-> } __packed;
-> 
-> Using ddf(sdf)->cmd save to correct posistion regardless endian.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202402081929.mggOTHaZ-lkp@intel.com/
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
-> 
-> Notes:
->     Change from v1 to v2
->     - update commit message to show why add 'cmd'
->     
->     fsl-edma-common.c's build warning should not cause by this driver. which is
->     difference drivers. This driver will not use any code related with
->     fsl-edma-common.c.
-> 
->  drivers/dma/fsl-qdma.c | 21 ++++++++++-----------
->  1 file changed, 10 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/dma/fsl-qdma.c b/drivers/dma/fsl-qdma.c
-> index 1e3bf6f30f784..5005e138fc239 100644
-> --- a/drivers/dma/fsl-qdma.c
-> +++ b/drivers/dma/fsl-qdma.c
-> @@ -161,6 +161,10 @@ struct fsl_qdma_format {
->  			u8 __reserved1[2];
->  			u8 cfg8b_w1;
->  		} __packed;
-> +		struct {
-> +			__le32 __reserved2;
-> +			__le32 cmd;
-> +		} __packed;
->  		__le64 data;
->  	};
->  } __packed;
-> @@ -355,7 +359,6 @@ static void fsl_qdma_free_chan_resources(struct dma_chan *chan)
->  static void fsl_qdma_comp_fill_memcpy(struct fsl_qdma_comp *fsl_comp,
->  				      dma_addr_t dst, dma_addr_t src, u32 len)
->  {
-> -	u32 cmd;
->  	struct fsl_qdma_format *sdf, *ddf;
->  	struct fsl_qdma_format *ccdf, *csgf_desc, *csgf_src, *csgf_dest;
->  
-> @@ -384,15 +387,11 @@ static void fsl_qdma_comp_fill_memcpy(struct fsl_qdma_comp *fsl_comp,
->  	/* This entry is the last entry. */
->  	qdma_csgf_set_f(csgf_dest, len);
->  	/* Descriptor Buffer */
-> -	cmd = cpu_to_le32(FSL_QDMA_CMD_RWTTYPE <<
-> -			  FSL_QDMA_CMD_RWTTYPE_OFFSET) |
-> -			  FSL_QDMA_CMD_PF;
-> -	sdf->data = QDMA_SDDF_CMD(cmd);
-> -
-> -	cmd = cpu_to_le32(FSL_QDMA_CMD_RWTTYPE <<
-> -			  FSL_QDMA_CMD_RWTTYPE_OFFSET);
-> -	cmd |= cpu_to_le32(FSL_QDMA_CMD_LWC << FSL_QDMA_CMD_LWC_OFFSET);
-> -	ddf->data = QDMA_SDDF_CMD(cmd);
-> +	sdf->cmd = cpu_to_le32((FSL_QDMA_CMD_RWTTYPE << FSL_QDMA_CMD_RWTTYPE_OFFSET) |
-> +			       FSL_QDMA_CMD_PF);
-> +
-> +	ddf->cmd = cpu_to_le32((FSL_QDMA_CMD_RWTTYPE << FSL_QDMA_CMD_RWTTYPE_OFFSET) |
-> +			       (FSL_QDMA_CMD_LWC << FSL_QDMA_CMD_LWC_OFFSET));
->  }
->  
->  /*
-> @@ -626,7 +625,7 @@ static int fsl_qdma_halt(struct fsl_qdma_engine *fsl_qdma)
->  
->  static int
->  fsl_qdma_queue_transfer_complete(struct fsl_qdma_engine *fsl_qdma,
-> -				 void *block,
-> +				 __iomem void *block,
->  				 int id)
->  {
->  	bool duplicate;
-> -- 
-> 2.34.1
+the crash backtrace like:
 
+  Unable to handle kernel paging request at virtual address bff00000
+  [...]
+  CPU: 1 PID: 465 Comm: startapp.bin Tainted: G           O      5.10.0 #1
+  Hardware name: Generic DT based system
+  PC is at b15_flush_kern_dcache_area+0x24/0x3c
+  LR is at __sync_icache_dcache+0x6c/0x98
+  [...]
+   (b15_flush_kern_dcache_area) from (__sync_icache_dcache+0x6c/0x98)
+   (__sync_icache_dcache) from (set_pte_at+0x28/0x54)
+   (set_pte_at) from (remap_pfn_range+0x1a0/0x274)
+   (remap_pfn_range) from (uio_mmap+0x184/0x1b8 [uio])
+   (uio_mmap [uio]) from (__mmap_region+0x264/0x5f4)
+   (__mmap_region) from (__do_mmap_mm+0x3ec/0x440)
+   (__do_mmap_mm) from (do_mmap+0x50/0x58)
+   (do_mmap) from (vm_mmap_pgoff+0xfc/0x188)
+   (vm_mmap_pgoff) from (ksys_mmap_pgoff+0xac/0xc4)
+   (ksys_mmap_pgoff) from (ret_fast_syscall+0x0/0x5c)
+  Code: e0801001 e2423001 e1c00003 f57ff04f (ee070f3e)
+  ---[ end trace 09cf0734c3805d52 ]---
+  Kernel panic - not syncing: Fatal exception
+
+So check if PG_reserved was set to solve this issue.
+
+[1]: https://lore.kernel.org/lkml/Zbtdue57RO0QScJM@linux.ibm.com/
+
+Fixes: a4d5613c4dc6 ("arm: extend pfn_valid to take into account freed memory map alignment")
+Suggested-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Yongqiang Liu <liuyongqiang13@huawei.com>
+---
+ arch/arm/mm/flush.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm/mm/flush.c b/arch/arm/mm/flush.c
+index d19d140a10c7..f2b99223a0ab 100644
+--- a/arch/arm/mm/flush.c
++++ b/arch/arm/mm/flush.c
+@@ -15,6 +15,7 @@
+ #include <asm/smp_plat.h>
+ #include <asm/tlbflush.h>
+ #include <linux/hugetlb.h>
++#include <linux/memblock.h>
+ 
+ #include "mm.h"
+ 
+@@ -296,6 +297,9 @@ void __sync_icache_dcache(pte_t pteval)
+ 		return;
+ 
+ 	folio = page_folio(pfn_to_page(pfn));
++	if (test_bit(PG_reserved, &folio->flags))
++		return;
++
+ 	if (cache_is_vipt_aliasing())
+ 		mapping = folio_flush_mapping(folio);
+ 	else
 -- 
-~Vinod
+2.25.1
+
 
