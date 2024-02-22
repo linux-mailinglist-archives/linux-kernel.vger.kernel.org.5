@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-76408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E57685F6CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:28:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09EE585F6D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:28:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F5411C233B1
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B477E2826AF
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:28:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 789274652F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8100047A73;
 	Thu, 22 Feb 2024 11:27:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eWMvq4Hq"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RFxATkeZ"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0755D45BE7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A61B45BEF
 	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:27:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708601272; cv=none; b=VDkmiH6gtxeY35moASmlRXwyZ+pPH6VhiCg3/vYwA6+EFWMdgpzhFtBQ2lHK3CcdqwCGJcnVOyLgiaMuqgLlFcH7D5ks3Ok38W16EvnwKUaHXRLjJ81Di9intt3HRKr+yGUG+8SefK3PuIQCF5u3iW2LrIY/I7UuMF/i4UuH4s4=
+	t=1708601272; cv=none; b=fplvxp54hVkL+fWNnZDjDX91o15Uu6QXvWPRt2G3eL/fVEFO2T/s4Ve+Mta4skXF2y7ACAaFz3rYnCwZCLG4zu43IrdvKnyZqHbO41wtTB7plJIiJNVCPqbbL0xV9lba1xNrzumv2LqbHViVjW/SzL86d7BC1e6eOwssbHd/5Oo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708601272; c=relaxed/simple;
-	bh=s1HPqz0qh7gqcih0FvEIaSC2XVzpCndQCg9E2w4lGCo=;
+	bh=ODk9fkgS7BYWU+Gg1SjEmAFub5dXjOyUVZ3wrCXNqm4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QboJrtb5IGFKOwqj0nk7UgHeao+fqUnSZihEY87l5OTKQQ3xMRi3zL0QFVhCBkzlmxSb8WgOvSJc3WjiuLdcjbClqHW+6ZYWRwr+d2EffWxEXNafkQiEzhAUGalY7N07QR0YCYwvkAgqz/I7XlGb4aH/Lu/Bdgt6UcDafq/q+kI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eWMvq4Hq; arc=none smtp.client-ip=209.85.167.42
+	 MIME-Version; b=uCGkvnglzICfRZbf9wFuA0tD5oD3CBOiTYxeMNKkTpMFSqavc7o9GB72ODiXTioNoZ0E/wGM5VnBYMQ2Z9+z9oudBeqp42KWoYiuk/Ovx20bdEnaIW0kqbHNVQ9a6LU2HEruDQnfx0O9qGf7j9N/i4RWDyConM8SlsXNzJvARjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RFxATkeZ; arc=none smtp.client-ip=209.85.208.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-512bb2ed1f7so5452607e87.3
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-563c403719cso8257904a12.2
         for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:27:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1708601269; x=1709206069; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=X1yfiraC5quW41p8ykFc76HAZ3CK1+m5zIrpNUz/QnU=;
-        b=eWMvq4Hq9jTDVsEXVaZ3iki5TNRWMaQvgwqR0V5NUx4cjG9VwDNb38PigMuXCQYiWR
-         qJyiUUWAnuVKvYpT4qNb1hBUTJt2tOQdbg4xFd+EOrKs7ZtGiB2U4wU8vJPiySOtTO7D
-         87YNi1EoxV+yPnSNbUWTsvg5eFL+lwfQmn4e9FiUOSO2TXIh7DFje9SsVntpbS9xi3G6
-         19si0s8XrbjWZ5gsHWfi3elXfHJ0cpYrntVSWo4U69QXP1wOeEouFkP+HBi8AIvcCFW/
-         iEQ9VP+B3F3OYlOh6FgDGdC8pgCYH+v6qsQAUZ9NRX8OsLRF6NVHSjdKllx5zIWNoHiI
-         CKaA==
+        bh=VmUhYWRsoRWZAmukiCSIuLg/ZdC/ToO+ch53EbnA+RQ=;
+        b=RFxATkeZFRoRpLTs4v1pDf1EMdRUk1ZURXc9evQLcD8CPv97ZoHZYbXYRTObJNQjsT
+         x7v1IRcX77Y5CFi4X1x63WWhSJwYD0y5/6kmTs+fOkYBSWkk59VeIzAs5sikWeI53BR8
+         Gflk3aNJn+JeRUkBbZzh30IMhGHRZ2zAaeECRBYGYnQ8S5nn1wRrGubNEbo/5JS/fzyh
+         0O8BVa7E691HZmFpCVovpK0pqPJRcskt/oKsCYayRc1tfTRKkC1ov1sJHw4l+VfZlvMe
+         5M+XDXIQqiSMmpm3uKFfkiSlgwd1mkKVXclZLuky147mqxThsdnScrCAhXM9PYunzsNb
+         iv2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1708601269; x=1709206069;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=X1yfiraC5quW41p8ykFc76HAZ3CK1+m5zIrpNUz/QnU=;
-        b=uFhxTx/wsix6GHbtG7f7jw2ksgeUT1k1XPaq8h1uXf8qW04q1BGK5XuZaKYotHb0p9
-         qkWUwUG/giRXkkcbEnOyRJVqJIEbGYWTLCRMpS7zxuGsCMRtfFAF/F7j8pg4QW3Jyf/j
-         aJARv3Hq1j9pgCstEUKERi9DleELmna7Z85XIJOxLkKqfNgVnGBf+VvBd3LjBTHmlLDy
-         wf673FCrKZ6THAceuqmhsZY0vmD//SP+MdzGsPtTY7Nm+5tHZdpQxOe2toM1saW+MnWd
-         P8b5pOQLYPAFoK59xpvmiGPS/Q9s/wfLxBS7uttkRRggQjucxOVi7+MWw/6KXs5aMx2U
-         uahA==
-X-Forwarded-Encrypted: i=1; AJvYcCUHjUA0V+tMVTfk5BJFpbMfxlCipqnkG/p8cVvZ+uy3OtWGT++ElFvSxQATdl5vW9qrjadpcFNmjkZEuL/PnGmlOgpzeMsDUvAbLy0V
-X-Gm-Message-State: AOJu0Yz+zqaQSfnwMCww1BUe6ABlaDCr4JUZbJcIGnaonfQElnKalN8n
-	xBzx5TxHA4re1dVl0Fjz8iFVT4BrF2dXDrQqXXYfQ5kBfSOH4nU9
-X-Google-Smtp-Source: AGHT+IFrKMGU8VcxleGYFQ5yPW1HF/YQBiC035CBr41JIguflFvvCIegKaQnpXPUAsLCmXFyOwNN8g==
-X-Received: by 2002:ac2:5191:0:b0:512:ab73:d2d4 with SMTP id u17-20020ac25191000000b00512ab73d2d4mr7478165lfi.16.1708601268844;
-        Thu, 22 Feb 2024 03:27:48 -0800 (PST)
+        bh=VmUhYWRsoRWZAmukiCSIuLg/ZdC/ToO+ch53EbnA+RQ=;
+        b=UuFImyZywRkEmFiya1Q7GR6nwFqgi2DhScH8vlQbJfMFFMb1nhvHrakdOjuunHuZOV
+         Xu2LwHImmvXnA6UAAf6ImnV0gFfoVWEFHNyN0Cwh29ietrshWHlUB/eRM3ZAbzrmfjJ1
+         Up5BY/EI5mFD9Y60LxtwFW66CGM0Ci9bNbYcs/JDIHJrgfW3l1e0DXvCGHj9D4xt6vDS
+         OsLeTwes3tGqJJOzeNHfxNB75MUWEJpDUQOo69L8Jev6jSzIXLDJ0KB4XLGTcQBEb8d8
+         5jvu1ah62axJWQ3rRX17OfPbdtJxdBuowWzKFbsC8ssX9NVzGiQN9jerNKTzH+Hor5A3
+         JQAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW1T+ui4lGhQjjN7m9dPwfeZkicK27RaXShfhcbhVPNEinzQIZdvu4+2lGUSFzi50e5KZttIyQAbABSq8++dV/CSMMcNC1G26dPz0TF
+X-Gm-Message-State: AOJu0YyYxYhicLGnLog8Rv574/1Efqh4IHJUHngkhqB52WgJZ0IIbBbE
+	W3jW2mFKlrfmPGUzHGvqXVlmZstEHX1zXRN4cRxSMg7wXvFnSG4q/xtBqi1N
+X-Google-Smtp-Source: AGHT+IHtW0GuD91XcYaSU2gDY7bBfM1JJRyLzzy+8Cf5O8JnYufLlLQ+MkUMvOXSphsUGbj5JQLpVA==
+X-Received: by 2002:a05:6402:22ef:b0:565:3907:be45 with SMTP id dn15-20020a05640222ef00b005653907be45mr1149547edb.37.1708601269376;
+        Thu, 22 Feb 2024 03:27:49 -0800 (PST)
 Received: from localhost.localdomain ([95.90.186.51])
-        by smtp.gmail.com with ESMTPSA id ck8-20020a0564021c0800b0056452477a5esm4338524edb.24.2024.02.22.03.27.47
+        by smtp.gmail.com with ESMTPSA id ck8-20020a0564021c0800b0056452477a5esm4338524edb.24.2024.02.22.03.27.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 03:27:48 -0800 (PST)
+        Thu, 22 Feb 2024 03:27:49 -0800 (PST)
 From: Michael Straube <straube.linux@gmail.com>
 To: gregkh@linuxfoundation.org
 Cc: philipp.g.hortmann@gmail.com,
 	linux-staging@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 2/3] staging: rtl8192e: remove empty cases from switch statements
-Date: Thu, 22 Feb 2024 12:27:22 +0100
-Message-ID: <20240222112723.18428-3-straube.linux@gmail.com>
+Subject: [PATCH 3/3] staging: rtl8192e: rename enum members to upper case
+Date: Thu, 22 Feb 2024 12:27:23 +0100
+Message-ID: <20240222112723.18428-4-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.43.1
 In-Reply-To: <20240222112723.18428-1-straube.linux@gmail.com>
 References: <20240222112723.18428-1-straube.linux@gmail.com>
@@ -86,42 +86,105 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Rmove empty cases from switch statements to improve readability.
-All of these empty cases are covered by a default case already.
+Enum members are usually named all upper case. Rename the members of
+the enum fsync_state to improve readability and follow the common kernel
+coding style.
+
+Default_Fsync -> DEFAULT_FSYNC
+HW_Fsync -> HW_FSYNC
+SW_Fsync -> SW_FSYNC
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/rtl8192e/rtl8192e/rtl_dm.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/staging/rtl8192e/rtl8192e/rtl_dm.c | 26 +++++++++++-----------
+ drivers/staging/rtl8192e/rtllib.h          |  6 ++---
+ 2 files changed, 16 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
-index 57e1a361a7c9..4b622ad4c534 100644
+index 4b622ad4c534..bf695b61ca8b 100644
 --- a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
 +++ b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
-@@ -1725,7 +1725,6 @@ static void _rtl92e_dm_check_fsync(struct net_device *dev)
+@@ -1523,7 +1523,7 @@ static void _rtl92e_dm_init_fsync(struct net_device *dev)
+ 	priv->rtllib->fsync_multiple_timeinterval = 3;
+ 	priv->rtllib->fsync_firstdiff_ratethreshold = 100;
+ 	priv->rtllib->fsync_seconddiff_ratethreshold = 200;
+-	priv->rtllib->fsync_state = Default_Fsync;
++	priv->rtllib->fsync_state = DEFAULT_FSYNC;
+ 
+ 	timer_setup(&priv->fsync_timer, _rtl92e_dm_fsync_timer_callback, 0);
+ }
+@@ -1716,28 +1716,28 @@ static void _rtl92e_dm_check_fsync(struct net_device *dev)
+ 	    priv->rtllib->ht_info->iot_peer == HT_IOT_PEER_BROADCOM) {
+ 		if (priv->rtllib->bfsync_enable == 0) {
+ 			switch (priv->rtllib->fsync_state) {
+-			case Default_Fsync:
++			case DEFAULT_FSYNC:
  				_rtl92e_dm_start_hw_fsync(dev);
- 				priv->rtllib->fsync_state = HW_Fsync;
- 				break;
--			case HW_Fsync:
- 			default:
- 				break;
- 			}
-@@ -1740,7 +1739,6 @@ static void _rtl92e_dm_check_fsync(struct net_device *dev)
- 				_rtl92e_dm_start_sw_fsync(dev);
- 				priv->rtllib->fsync_state = SW_Fsync;
+-				priv->rtllib->fsync_state = HW_Fsync;
++				priv->rtllib->fsync_state = HW_FSYNC;
  				break;
 -			case SW_Fsync:
++			case SW_FSYNC:
+ 				_rtl92e_dm_end_sw_fsync(dev);
+ 				_rtl92e_dm_start_hw_fsync(dev);
+-				priv->rtllib->fsync_state = HW_Fsync;
++				priv->rtllib->fsync_state = HW_FSYNC;
+ 				break;
  			default:
  				break;
  			}
-@@ -1760,7 +1758,6 @@ static void _rtl92e_dm_check_fsync(struct net_device *dev)
- 			_rtl92e_dm_end_sw_fsync(dev);
- 			priv->rtllib->fsync_state = Default_Fsync;
+ 		} else {
+ 			switch (priv->rtllib->fsync_state) {
+-			case Default_Fsync:
++			case DEFAULT_FSYNC:
+ 				_rtl92e_dm_start_sw_fsync(dev);
+-				priv->rtllib->fsync_state = SW_Fsync;
++				priv->rtllib->fsync_state = SW_FSYNC;
+ 				break;
+-			case HW_Fsync:
++			case HW_FSYNC:
+ 				_rtl92e_dm_end_hw_fsync(dev);
+ 				_rtl92e_dm_start_sw_fsync(dev);
+-				priv->rtllib->fsync_state = SW_Fsync;
++				priv->rtllib->fsync_state = SW_FSYNC;
+ 				break;
+ 			default:
+ 				break;
+@@ -1750,13 +1750,13 @@ static void _rtl92e_dm_check_fsync(struct net_device *dev)
+ 		}
+ 	} else {
+ 		switch (priv->rtllib->fsync_state) {
+-		case HW_Fsync:
++		case HW_FSYNC:
+ 			_rtl92e_dm_end_hw_fsync(dev);
+-			priv->rtllib->fsync_state = Default_Fsync;
++			priv->rtllib->fsync_state = DEFAULT_FSYNC;
  			break;
--		case Default_Fsync:
+-		case SW_Fsync:
++		case SW_FSYNC:
+ 			_rtl92e_dm_end_sw_fsync(dev);
+-			priv->rtllib->fsync_state = Default_Fsync;
++			priv->rtllib->fsync_state = DEFAULT_FSYNC;
+ 			break;
  		default:
  			break;
- 		}
+diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
+index c18169725452..ac6c52b58894 100644
+--- a/drivers/staging/rtl8192e/rtllib.h
++++ b/drivers/staging/rtl8192e/rtllib.h
+@@ -1031,9 +1031,9 @@ struct rx_reorder_entry {
+ };
+ 
+ enum fsync_state {
+-	Default_Fsync,
+-	HW_Fsync,
+-	SW_Fsync
++	DEFAULT_FSYNC,
++	HW_FSYNC,
++	SW_FSYNC
+ };
+ 
+ enum ips_callback_function {
 -- 
 2.43.1
 
