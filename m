@@ -1,335 +1,314 @@
-Return-Path: <linux-kernel+bounces-76583-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7FCC85F984
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:21:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28D0185F97D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:21:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9761D287724
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:21:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49A681C21B22
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:21:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 730BB1350C6;
-	Thu, 22 Feb 2024 13:21:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43C92133296;
+	Thu, 22 Feb 2024 13:20:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hJO1/fTs"
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M0WEOm8k"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 762E8133296
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 13:21:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B62B12FF74;
+	Thu, 22 Feb 2024 13:20:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708608080; cv=none; b=CAKmvrsYbSjwGZzEO66hbykFSItMpdUZ22an8cZApwbitrqHP4o02woGYGxMocujWkW5yIsTVUHqcrJhFDEl1ibUTyVfTPROji+o2ocoqRRYDaWkctc3iz7nIypUDRP0GNM1fAzDQzxoDCioxDQUk3qBGBojS2Gb2uenSqPNImU=
+	t=1708608053; cv=none; b=Tj1cDN2MN1j/q27Q9bWJ+snMM74KMi0jkLi58fj6q587sDbMAicm+doYSlQ3cgpmZTIJRndOWUUra1+3OJrU/dK4EBtRdvOW+Tn9ojRJhHyos4OO3zXxAr0sCZxMmJpZ2ler8YNGW6nZIQPaT93ZM5Kz+DTtApdP7zuTkRPsKRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708608080; c=relaxed/simple;
-	bh=XveA4E+yk5QXd3bzarqjGQAxhwM+egZQ/Cu6Twuiuhk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bBdQnQ4Y7Dv0aLncD1S//tM+pfKQy98xpOz9TQQcF/g1ogVE59qelcU5lpsoCLc4I4DG4TmDAClr3STIvDfVeDyjjAI/ay0oi3qA855+zJhKUpj8vvpRtz/U3++PwuzpaW4+/CWP3fgpsMCp+ms7OegE7Z/GHzE8OLVDVxlgDlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hJO1/fTs; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <55ccc92a-79fa-42d2-97d8-b514cf00823b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708608075;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xVsrtEMZ6JawTvIkaCsFFiEwAJTnWgKN991X9xgEngg=;
-	b=hJO1/fTsTrllgAUFzCkXgfJKJH/fwtbEPRAPPkxqxg//Y8+EpEFlU/x/wmG+jlWK0wDTN2
-	JeIsZqLYUwObAa8kF7bvQWAwY7vDvkPxN92SY6mg0I1m38qGVtqAxblYdOkZSxExVjocK5
-	unHQQUp3rKINTBrOnsacaY0GGFlh8cQ=
-Date: Thu, 22 Feb 2024 21:20:45 +0800
+	s=arc-20240116; t=1708608053; c=relaxed/simple;
+	bh=Zu7T88OQKLjnCfKYveIU790NUrfbhEaWjmTCXZYnncA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gNtQ1ng5ixnXs4zEodUnb4v7s5rGERkXlPhT7QPNXHzZ1AaqePyIf5kIzVr0hHAtgB0NHPiGQGZs27o+DxvZjCWSh7fNED7GV0HMM+ENxtCZS1bpy7SrS8821R6g1wtjUFty/VAeR0doBCst1iyrli+wu/q2jLgZm0SXQhD/MKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M0WEOm8k; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3265DC433F1;
+	Thu, 22 Feb 2024 13:20:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708608052;
+	bh=Zu7T88OQKLjnCfKYveIU790NUrfbhEaWjmTCXZYnncA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=M0WEOm8ktKGlyWLacF5Eq1chGM6nr37qP9xBp8Ka3xn4FV0USBItMRkpg5davyEDR
+	 i7hd5f9rPQhrU9qLcZEr9ZkBmkyEzuiMvdXWJrU6qIaNCtMX4Pv5Bri+IvvSBT9eNJ
+	 R30zOLoUEJtZYT88fo7qS96vyaW4RNP+B/Q0R6TTt8n20wvvjWFebgWLnI3TK78xu7
+	 hWDtONcnJbzb1GmEp7XrmUgYzGLDSORugYi3RB57zioad41pS0OMVfY8jVD3Al/OZs
+	 giIWtZJtXo924svaDlRRvGibfVoVwwckTcaHTVi1KwWopCvrYpqw0+Bc7SPP6IcE8W
+	 Cd2/y5xQ8erxA==
+Date: Thu, 22 Feb 2024 14:20:49 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc: Sebastian Wick <sebastian.wick@redhat.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>, 
+	Jonathan Corbet <corbet@lwn.net>, Sandy Huang <hjc@rock-chips.com>, 
+	Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>, Chen-Yu Tsai <wens@csie.org>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	Hans Verkuil <hverkuil@xs4all.nl>, linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v5 08/44] drm/connector: hdmi: Add Broadcast RGB property
+Message-ID: <cf6mfm7naqdgnr3ab2tkix7b2s2frpsamlgylwiwcgbsy6ngd7@iq6ezpdnehbf>
+References: <zml6j27skvjmbrfyz7agy5waxajv4p4asbemeexelm3wuv4o7j@xkd2wvnxhbuc>
+ <20240209203435.GB996172@toolbox>
+ <ahfl6f72lpgpsbnrbgvbsh4db4npr2hh36kua2c6krh544hv5r@dndw4hz2mu2g>
+ <Zco-DQaXqae7B1jt@intel.com>
+ <yx2t7xltxxgsngdsxamsfq6y7dze3wzegxcqwmsb5yrxen73x6@u3vilqhpci4w>
+ <20240212170618.GA1372043@toolbox>
+ <2mih3humepuedtli7ge52ncom4uffkqravdpalncgfyucmwdzc@bp5o7i3ky77a>
+ <20240219140144.GB1956149@toolbox>
+ <euaujtp4jyyoud3ccg5qhyvixyq2p6vir4ojlzoky6kep754rj@wruidyfxssry>
+ <ZddFBe4A-galsO91@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] slub: avoid scanning all partial slabs in get_slabinfo()
-Content-Language: en-US
-To: Vlastimil Babka <vbabka@suse.cz>, David Rientjes <rientjes@google.com>,
- Jianfeng Wang <jianfeng.w.wang@oracle.com>
-Cc: cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com,
- akpm@linux-foundation.org, roman.gushchin@linux.dev, 42.hyeyoo@gmail.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- Chengming Zhou <zhouchengming@bytedance.com>
-References: <20240215211457.32172-1-jianfeng.w.wang@oracle.com>
- <6b58d81f-8e8f-3732-a5d4-40eece75013b@google.com>
- <fee76a21-fbc5-4ad8-b4bf-ba8a8e7cee8f@suse.cz>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <fee76a21-fbc5-4ad8-b4bf-ba8a8e7cee8f@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="tbiepc54hbczafix"
+Content-Disposition: inline
+In-Reply-To: <ZddFBe4A-galsO91@intel.com>
 
-On 2024/2/19 16:30, Vlastimil Babka wrote:
-> On 2/18/24 20:25, David Rientjes wrote:
->> On Thu, 15 Feb 2024, Jianfeng Wang wrote:
->>
->>> When reading "/proc/slabinfo", the kernel needs to report the number of
->>> free objects for each kmem_cache. The current implementation relies on
->>> count_partial() that counts the number of free objects by scanning each
->>> kmem_cache_node's partial slab list and summing free objects from all
->>> partial slabs in the list. This process must hold per kmem_cache_node
->>> spinlock and disable IRQ. Consequently, it can block slab allocation
->>> requests on other CPU cores and cause timeouts for network devices etc.,
->>> if the partial slab list is long. In production, even NMI watchdog can
->>> be triggered because some slab caches have a long partial list: e.g.,
->>> for "buffer_head", the number of partial slabs was observed to be ~1M
->>> in one kmem_cache_node. This problem was also observed by several
->>> others [1-2] in the past.
->>>
->>> The fix is to maintain a counter of free objects for each kmem_cache.
->>> Then, in get_slabinfo(), use the counter rather than count_partial()
->>> when reporting the number of free objects for a slab cache. per-cpu
->>> counter is used to minimize atomic or lock operation.
->>>
->>> Benchmark: run hackbench on a dual-socket 72-CPU bare metal machine
->>> with 256 GB memory and Intel(R) Xeon(R) CPU E5-2699 v3 @ 2.3 GHz.
->>> The command is "hackbench 18 thread 20000". Each group gets 10 runs.
->>>
->>
->> This seems particularly intrusive for the common path to optimize for 
->> reading of /proc/slabinfo, and that's shown in the benchmark result.
->>
->> Could you discuss the /proc/slabinfo usage model a bit?  It's not clear if 
->> this is being continuously read, or whether even a single read in 
->> isolation is problematic.
->>
->> That said, optimizing for reading /proc/slabinfo at the cost of runtime 
->> performance degradation doesn't sound like the right trade-off.
-> 
-> It should be possible to make this overhead smaller by restricting the
-> counter only to partial list slabs, as [2] did. This would keep it out of
-> the fast paths, where it's really not acceptable.
-> Note [2] used atomic_long_t and the percpu counters used here should be
-> lower overhead. So basically try to get the best of both attemps.
 
-I just tried to implement this, the performance numbers are below:
-(Run testing 5 times: perf bench sched messaging -g 5 -t -l 100000)
+--tbiepc54hbczafix
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-		slab-for-next	slab-pernode-counters
-Total time:	7.495		7.5
-		7.51		7.532
-		7.54		7.514
-		7.508		7.472
-		7.42		7.527
+On Thu, Feb 22, 2024 at 02:58:45PM +0200, Ville Syrj=E4l=E4 wrote:
+> On Thu, Feb 22, 2024 at 11:54:04AM +0100, Maxime Ripard wrote:
+> > On Mon, Feb 19, 2024 at 03:01:44PM +0100, Sebastian Wick wrote:
+> > > On Thu, Feb 15, 2024 at 12:00:01PM +0100, Maxime Ripard wrote:
+> > > > On Mon, Feb 12, 2024 at 06:06:18PM +0100, Sebastian Wick wrote:
+> > > > > On Mon, Feb 12, 2024 at 05:53:48PM +0100, Maxime Ripard wrote:
+> > > > > > On Mon, Feb 12, 2024 at 05:49:33PM +0200, Ville Syrj=E4l=E4 wro=
+te:
+> > > > > > > On Mon, Feb 12, 2024 at 11:01:07AM +0100, Maxime Ripard wrote:
+> > > > > > > > On Fri, Feb 09, 2024 at 09:34:35PM +0100, Sebastian Wick wr=
+ote:
+> > > > > > > > > On Mon, Feb 05, 2024 at 10:39:38AM +0100, Maxime Ripard w=
+rote:
+> > > > > > > > > > On Fri, Feb 02, 2024 at 06:37:52PM +0200, Ville Syrj=E4=
+l=E4 wrote:
+> > > > > > > > > > > On Fri, Feb 02, 2024 at 04:59:30PM +0100, Maxime Ripa=
+rd wrote:
+> > > > > > > > > > > > On Fri, Feb 02, 2024 at 05:40:47PM +0200, Ville Syr=
+j=E4l=E4 wrote:
+> > > > > > > > > > > > > On Fri, Feb 02, 2024 at 02:01:39PM +0100, Maxime =
+Ripard wrote:
+> > > > > > > > > > > > > > Hi,
+> > > > > > > > > > > > > >=20
+> > > > > > > > > > > > > > On Mon, Jan 15, 2024 at 03:37:20PM +0100, Sebas=
+tian Wick wrote:
+> > > > > > > > > > > > > > > > >  /**
+> > > > > > > > > > > > > > > > >   * DOC: HDMI connector properties
+> > > > > > > > > > > > > > > > >   *
+> > > > > > > > > > > > > > > > > + * Broadcast RGB
+> > > > > > > > > > > > > > > > > + *      Indicates the RGB Quantization R=
+ange (Full vs Limited) used.
+> > > > > > > > > > > > > > > > > + *      Infoframes will be generated acc=
+ording to that value.
+> > > > > > > > > > > > > > > > > + *
+> > > > > > > > > > > > > > > > > + *      The value of this property can b=
+e one of the following:
+> > > > > > > > > > > > > > > > > + *
+> > > > > > > > > > > > > > > > > + *      Automatic:
+> > > > > > > > > > > > > > > > > + *              RGB Range is selected au=
+tomatically based on the mode
+> > > > > > > > > > > > > > > > > + *              according to the HDMI sp=
+ecifications.
+> > > > > > > > > > > > > > > > > + *
+> > > > > > > > > > > > > > > > > + *      Full:
+> > > > > > > > > > > > > > > > > + *              Full RGB Range is forced.
+> > > > > > > > > > > > > > > > > + *
+> > > > > > > > > > > > > > > > > + *      Limited 16:235:
+> > > > > > > > > > > > > > > > > + *              Limited RGB Range is for=
+ced. Unlike the name suggests,
+> > > > > > > > > > > > > > > > > + *              this works for any numbe=
+r of bits-per-component.
+> > > > > > > > > > > > > > > > > + *
+> > > > > > > > > > > > > > > > > + *      Drivers can set up this property=
+ by calling
+> > > > > > > > > > > > > > > > > + *      drm_connector_attach_broadcast_r=
+gb_property().
+> > > > > > > > > > > > > > > > > + *
+> > > > > > > > > > > > > > > >=20
+> > > > > > > > > > > > > > > > This is a good time to document this in mor=
+e detail. There might be two
+> > > > > > > > > > > > > > > > different things being affected:
+> > > > > > > > > > > > > > > >=20
+> > > > > > > > > > > > > > > > 1. The signalling (InfoFrame/SDP/...)
+> > > > > > > > > > > > > > > > 2. The color pipeline processing
+> > > > > > > > > > > > > > > >=20
+> > > > > > > > > > > > > > > > All values of Broadcast RGB always affect t=
+he color pipeline processing
+> > > > > > > > > > > > > > > > such that a full-range input to the CRTC is=
+ converted to either full- or
+> > > > > > > > > > > > > > > > limited-range, depending on what the monito=
+r is supposed to accept.
+> > > > > > > > > > > > > > > >=20
+> > > > > > > > > > > > > > > > When automatic is selected, does that mean =
+that there is no signalling,
+> > > > > > > > > > > > > > > > or that the signalling matches what the mon=
+itor is supposed to accept
+> > > > > > > > > > > > > > > > according to the spec? Also, is this really=
+ HDMI specific?
+> > > > > > > > > > > > > > > >=20
+> > > > > > > > > > > > > > > > When full or limited is selected and the mo=
+nitor doesn't support the
+> > > > > > > > > > > > > > > > signalling, what happens?
+> > > > > > > > > > > > > > >=20
+> > > > > > > > > > > > > > > Forgot to mention: user-space still has no co=
+ntrol over RGB vs YCbCr on
+> > > > > > > > > > > > > > > the cable, so is this only affecting RGB? If =
+not, how does it affect
+> > > > > > > > > > > > > > > YCbCr?
+> > > > > > > > > > > > > >=20
+> > > > > > > > > > > > > > So I dug a bit into both the i915 and vc4 drive=
+rs, and it looks like if
+> > > > > > > > > > > > > > we're using a YCbCr format, i915 will always us=
+e a limited range while
+> > > > > > > > > > > > > > vc4 will follow the value of the property.
+> > > > > > > > > > > > >=20
+> > > > > > > > > > > > > The property is literally called "Broadcast *RGB*=
+".
+> > > > > > > > > > > > > That should explain why it's only affecting RGB.
+> > > > > > > > > > > >=20
+> > > > > > > > > > > > Right. And the limited range option is called "Limi=
+ted 16:235" despite
+> > > > > > > > > > > > being usable on bpc > 8 bits. Naming errors occurs,=
+ and history happens
+> > > > > > > > > > > > to make names inconsistent too, that's fine and not=
+ an argument in
+> > > > > > > > > > > > itself.
+> > > > > > > > > > > >=20
+> > > > > > > > > > > > > Full range YCbCr is a much rarer beast so we've n=
+ever bothered
+> > > > > > > > > > > > > to enable it.
+> > > > > > > > > > > >=20
+> > > > > > > > > > > > vc4 supports it.
+> > > > > > > > > > >=20
+> > > > > > > > > > > Someone implemented it incorrectly then.
+> > > > > > > > > >=20
+> > > > > > > > > > Incorrectly according to what documentation / specifica=
+tion? I'm sorry,
+> > > > > > > > > > but I find it super ironic that i915 gets to do its own=
+ thing, not
+> > > > > > > > > > document any of it, and when people try to clean things=
+ up they get told
+> > > > > > > > > > that we got it all wrong.
+> > > > > > > > >=20
+> > > > > > > > > FWIW, this was an i915 property and if another driver use=
+s the same
+> > > > > > > > > property name it must have the same behavior. Yes, it isn=
+'t standardized
+> > > > > > > > > and yes, it's not documented (hence this effort here) but=
+ it's still on
+> > > > > > > > > vc4 to make the property compatible.
+> > > > > > > >=20
+> > > > > > > > How is it not compatible? It's a superset of what i915 prov=
+ides, but
+> > > > > > > > it's strictly compatible with it.
+> > > > > > >=20
+> > > > > > > No it is not.
+> > > > > >=20
+> > > > > > The property is compatible with i915 interpretation of it, whet=
+her you
+> > > > > > like it or not. And that's what Sebastian was referring to.
+> > > > > >=20
+> > > > > > > Eg. what happens if you set the thing to full range for RGB (=
+which you
+> > > > > > > must on many broken monitors), and then the kernel automagica=
+lly
+> > > > > > > switches to YCbCr (for whatever reason) but the monitor doesn=
+'t
+> > > > > > > support full range YCbCr? Answer: you get crap output.
+> > > > > >=20
+> > > > > > And that part is just moving goalposts.
+> > > > >=20
+> > > > > But it's really not.
+> > > >=20
+> > > > It really is. This whole discussion started by "well it would be ni=
+ce if
+> > > > we made that property handled by the core", and we're now at the "we
+> > > > need to deal with broken YCbCr displays and i915 opinion about them"
+> > > > stage. After creating documentation, unit tests, etc. It's the text=
+book
+> > > > definition of moving goalposts. And while i915 won't be affected by=
+ all
+> > > > that work.
+> > >=20
+> > > Sorry, but what you're saying is just not true.
+> > >=20
+> > > The Broadcast RGB property is an Intel specific property.
+> >=20
+> > No, it's not. vc4 has been using it for a year now.
+> >=20
+> > > It lacked documentation but the user space contract exists and it
+> > > based on how i915 implemented it. By changing the semantics you're
+> > > breaking user space. The documentation has to document the current
+> > > contract between i915 and user space, not whatever you want the
+> > > property to be like.
+> > >=20
+> > > I get that you're frustrated that you have to do work while i915 does=
+n't
+> > > but none of that is relevant for what the property is and how user sp=
+ace
+> > > expects it to work.
+> >=20
+> > That's not it, really. I don't mind doing the work. I do mind losing
+> > functionalities on something that was working fine. And getting the
+> > blame for something that is, at best, just as much of an documentation
+> > issue on i915 devs.
+>=20
+> We've had a couple of these cases recently where people have taken
+> some old property implemented by i915 and implemented it differently
+> in some other driver. Dunno if the reason was that people didn't try
+> to understand what i915 is doing and why, or they misundestood it,
+> or they understood it but decided to ignore it anyway.
 
-The problem is that the counters include inuse objects of all slabs,
-so can't distinguish how many free objects on the node partial list,
-or how many free objects on the cpu partial lists.
+I can't tell for the other cases, but in this particular case it's
+definitely in the misunderstanding category. And implying that we didn't
+even try to understand it, or that we didn't consult anyone when the
+patches were posted on the ML for months doesn't seem fair either.
 
-But the current code will only iterate the slabs on node partial list,
-so this implementation has inconsistency with the current behavior.
+> Unfortunately having undocumented corners in the uapi is simply
+> a fact of life when dealing with a >15 year old legacy codebase.
+> Also there were basically no rules regarding properties in the
+> past, so everyone just added random properties whenever they=20
+> felt like it.
+>=20
+> I think going forward we should probably lay down some extra
+> ground rules; if an old undocumented uapi is being extended
+> to cover more than one driver we must first figure out what
+> the de facto semantics are, and document things properly
+> before anything else gets done.
 
-IMHO, we can't easily record inuse/free objects of only slabs on the
-node partial list, since in __slab_free() we can't know the freed object
-belong to slabs on cpu partial list or slabs on node partial list.
+That sounds reasonable, but you (not you personally, but the i915 team
+in general) also have to engage, you can't just impose that on everyone
+else, and then just hope they will figure it out perfectly without your
+help.
 
-Anyway, I put the code below for discussion...
+I think that whole story is a testament to that.
 
----
- mm/slub.c | 68 +++++++++++++++++++++++++++++++++++++++++++------------
- 1 file changed, 53 insertions(+), 15 deletions(-)
+Maxime
 
-diff --git a/mm/slub.c b/mm/slub.c
-index 20641ad82508..284b751b3b64 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -42,6 +42,7 @@
- #include <kunit/test.h>
- #include <kunit/test-bug.h>
- #include <linux/sort.h>
-+#include <linux/percpu_counter.h>
+--tbiepc54hbczafix
+Content-Type: application/pgp-signature; name="signature.asc"
 
- #include <linux/debugfs.h>
- #include <trace/events/kmem.h>
-@@ -431,6 +432,7 @@ struct kmem_cache_node {
- 	atomic_long_t total_objects;
- 	struct list_head full;
- #endif
-+	struct percpu_counter inuse_objects;
- };
+-----BEGIN PGP SIGNATURE-----
 
- static inline struct kmem_cache_node *get_node(struct kmem_cache *s, int node)
-@@ -1873,6 +1875,20 @@ static bool freelist_corrupted(struct kmem_cache *s, struct slab *slab,
- #endif
- #endif /* CONFIG_SLUB_DEBUG */
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZddKMQAKCRDj7w1vZxhR
+xQZ0AP9xIjID3WRjPO9YmF5lo+fbKpeIUuu3c3a+WG/PCA+kOAD/d6a9EMFe7j7G
+LSSIf9ENRHhLQi1d/PbumiFAR9PLeQM=
+=aA2v
+-----END PGP SIGNATURE-----
 
-+static inline void add_inuse_objects(struct kmem_cache *s, int node, int objects)
-+{
-+	struct kmem_cache_node *n = get_node(s, node);
-+
-+	percpu_counter_add_local(&n->inuse_objects, objects);
-+}
-+
-+static inline void sub_inuse_objects(struct kmem_cache *s, int node, int objects)
-+{
-+	struct kmem_cache_node *n = get_node(s, node);
-+
-+	percpu_counter_sub_local(&n->inuse_objects, objects);
-+}
-+
- static inline enum node_stat_item cache_vmstat_idx(struct kmem_cache *s)
- {
- 	return (s->flags & SLAB_RECLAIM_ACCOUNT) ?
-@@ -2526,6 +2542,8 @@ static void *alloc_single_from_partial(struct kmem_cache *s,
- 		add_full(s, n, slab);
- 	}
-
-+	add_inuse_objects(s, slab_nid(slab), 1);
-+
- 	return object;
- }
-
-@@ -2563,6 +2581,7 @@ static void *alloc_single_from_new_slab(struct kmem_cache *s,
- 		add_partial(n, slab, DEACTIVATE_TO_HEAD);
-
- 	inc_slabs_node(s, nid, slab->objects);
-+	add_inuse_objects(s, nid, 1);
- 	spin_unlock_irqrestore(&n->list_lock, flags);
-
- 	return object;
-@@ -2862,6 +2881,8 @@ static void deactivate_slab(struct kmem_cache *s, struct slab *slab,
- 		new.freelist, new.counters,
- 		"unfreezing slab"));
-
-+	sub_inuse_objects(s, slab_nid(slab), free_delta);
-+
- 	/*
- 	 * Stage three: Manipulate the slab list based on the updated state.
- 	 */
-@@ -3313,26 +3334,27 @@ __update_cpu_freelist_fast(struct kmem_cache *s,
- static inline void *get_freelist(struct kmem_cache *s, struct slab *slab)
- {
- 	struct slab new;
--	unsigned long counters;
--	void *freelist;
-+	struct slab old;
-
- 	lockdep_assert_held(this_cpu_ptr(&s->cpu_slab->lock));
-
- 	do {
--		freelist = slab->freelist;
--		counters = slab->counters;
-+		old.freelist = slab->freelist;
-+		old.counters = slab->counters;
-
--		new.counters = counters;
-+		new.counters = old.counters;
-
- 		new.inuse = slab->objects;
--		new.frozen = freelist != NULL;
-+		new.frozen = old.freelist != NULL;
-
- 	} while (!__slab_update_freelist(s, slab,
--		freelist, counters,
-+		old.freelist, old.counters,
- 		NULL, new.counters,
- 		"get_freelist"));
-
--	return freelist;
-+	add_inuse_objects(s, slab_nid(slab), old.objects - old.inuse);
-+
-+	return old.freelist;
- }
-
- /*
-@@ -3341,25 +3363,26 @@ static inline void *get_freelist(struct kmem_cache *s, struct slab *slab)
- static inline void *freeze_slab(struct kmem_cache *s, struct slab *slab)
- {
- 	struct slab new;
--	unsigned long counters;
--	void *freelist;
-+	struct slab old;
-
- 	do {
--		freelist = slab->freelist;
--		counters = slab->counters;
-+		old.freelist = slab->freelist;
-+		old.counters = slab->counters;
-
--		new.counters = counters;
-+		new.counters = old.counters;
- 		VM_BUG_ON(new.frozen);
-
- 		new.inuse = slab->objects;
- 		new.frozen = 1;
-
- 	} while (!slab_update_freelist(s, slab,
--		freelist, counters,
-+		old.freelist, old.counters,
- 		NULL, new.counters,
- 		"freeze_slab"));
-
--	return freelist;
-+	add_inuse_objects(s, slab_nid(slab), old.objects - old.inuse);
-+
-+	return old.freelist;
- }
-
- /*
-@@ -3567,6 +3590,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 	slab->frozen = 1;
-
- 	inc_slabs_node(s, slab_nid(slab), slab->objects);
-+	add_inuse_objects(s, slab_nid(slab), slab->objects);
-
- 	if (unlikely(!pfmemalloc_match(slab, gfpflags))) {
- 		/*
-@@ -4108,6 +4132,8 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
-
- 	stat(s, FREE_SLOWPATH);
-
-+	sub_inuse_objects(s, slab_nid(slab), cnt);
-+
- 	if (IS_ENABLED(CONFIG_SLUB_TINY) || kmem_cache_debug(s)) {
- 		free_to_partial_list(s, slab, head, tail, cnt, addr);
- 		return;
-@@ -4866,6 +4892,7 @@ static void early_kmem_cache_node_alloc(int node)
- 	n = kasan_slab_alloc(kmem_cache_node, n, GFP_KERNEL, false);
- 	slab->freelist = get_freepointer(kmem_cache_node, n);
- 	slab->inuse = 1;
-+	BUG_ON(percpu_counter_init(&n->inuse_objects, 1, GFP_KERNEL));
- 	kmem_cache_node->node[node] = n;
- 	init_kmem_cache_node(n);
- 	inc_slabs_node(kmem_cache_node, node, slab->objects);
-@@ -4884,6 +4911,7 @@ static void free_kmem_cache_nodes(struct kmem_cache *s)
-
- 	for_each_kmem_cache_node(s, node, n) {
- 		s->node[node] = NULL;
-+		percpu_counter_destroy(&n->inuse_objects);
- 		kmem_cache_free(kmem_cache_node, n);
- 	}
- }
-@@ -4916,6 +4944,11 @@ static int init_kmem_cache_nodes(struct kmem_cache *s)
- 			return 0;
- 		}
-
-+		if (percpu_counter_init(&n->inuse_objects, 0, GFP_KERNEL)) {
-+			free_kmem_cache_nodes(s);
-+			return 0;
-+		}
-+
- 		init_kmem_cache_node(n);
- 		s->node[node] = n;
- 	}
-@@ -5541,6 +5574,11 @@ static int slab_mem_going_online_callback(void *arg)
- 			ret = -ENOMEM;
- 			goto out;
- 		}
-+		ret = percpu_counter_init(&n->inuse_objects, 0, GFP_KERNEL);
-+		if (ret) {
-+			kmem_cache_free(kmem_cache_node, n);
-+			goto out;
-+		}
- 		init_kmem_cache_node(n);
- 		s->node[nid] = n;
- 	}
---
-2.40.1
+--tbiepc54hbczafix--
 
