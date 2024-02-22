@@ -1,95 +1,86 @@
-Return-Path: <linux-kernel+bounces-76285-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20B1B85F535
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:03:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A1B5A85F3DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:04:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC78C2824D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:03:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BA122853F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:04:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC75839859;
-	Thu, 22 Feb 2024 10:03:13 +0000 (UTC)
-Received: from 13.mo561.mail-out.ovh.net (13.mo561.mail-out.ovh.net [188.165.33.202])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB1BD381CF;
+	Thu, 22 Feb 2024 09:04:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="P32lxeo1"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97A36381B8
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 10:03:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.165.33.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F177364C1;
+	Thu, 22 Feb 2024 09:04:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708596193; cv=none; b=ROM5u3KTU+9z1vBN7xPSrPoFI6ZGyf+UdXuZ1tBtIKB/RdjMxcVdmGzgyAirxIeiS4djrD/aLSfI25iW0w9rmM1tsI2avh1fuJ3/RkvDPA/jTvw4li47e88ZpBtCTI7Zdj0S1VzZmKlWA/Pk9xtf0bVdeGyyerdf1GA6nnw6Okg=
+	t=1708592663; cv=none; b=I2XN88FT4pnTHx6d+/9VsqiPY7C7vWumlpmG64udQqlBJYGVk7apgSw9XUDq1C9XaeznYaGzpj00E3bKspNJ62IfryV87kQ8gODXxTvmx6OKyMDWpagBeY5a8fs9cdrzTGFQP3AIbMXwwG4lgD9vZSRoquhA/1ZHm2ModLGANH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708596193; c=relaxed/simple;
-	bh=W+jnHVVB3ZRAg9EX2fNf/hRjYdScgr/CZdITpC+rZpA=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=r6zRHMZRTJyEYYgHbQV1I1yYz/rhtjxY8CHBT7g/rvujYgunMc8t/5ACFAGwIdUeJ7b5Qex86bcijUnAZUn4Qgomb9wOYr/zbfA8B4dimC5veAIwPn8MhX3klqNasggwRi6qpIq7MLhsIjK/WQURby+AyPzvm+PasSG6lBe3nH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=etezian.org; arc=none smtp.client-ip=188.165.33.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etezian.org
-Received: from director4.ghost.mail-out.ovh.net (unknown [10.109.148.126])
-	by mo561.mail-out.ovh.net (Postfix) with ESMTP id 4TgRbg6FHlz1GZ0
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 08:47:27 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-dnswc (unknown [10.111.174.115])
-	by director4.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 922F11FD6F;
-	Thu, 22 Feb 2024 08:47:24 +0000 (UTC)
-Received: from etezian.org ([37.59.142.107])
-	by ghost-submission-6684bf9d7b-dnswc with ESMTPSA
-	id LdgvFRwK12VVngkAllgtww
-	(envelope-from <andi@etezian.org>); Thu, 22 Feb 2024 08:47:24 +0000
-Authentication-Results:garm.ovh; auth=pass (GARM-107S0017b51d39a-e42a-4bc8-afd5-71473328faab,
-                    D266FE3A7B9817F169603FF0F8C90E47FA3D240B) smtp.auth=andi@etezian.org
-X-OVh-ClientIp:89.217.109.169
-From: Andi Shyti <andi.shyti@kernel.org>
-To: linux-i2c@vger.kernel.org, 
- Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: Corey Minyard <minyard@acm.org>, 
- Andrew Manley <andrew.manley@sealingtech.com>, 
- Oleksij Rempel <o.rempel@pengutronix.de>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>, 
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240221193013.14233-2-wsa+renesas@sang-engineering.com>
-References: <20240221193013.14233-2-wsa+renesas@sang-engineering.com>
-Subject: Re: [PATCH v3] i2c: imx: when being a target, mark the last read
- as processed
-Message-Id: <170859164340.336357.16059990973960196120.b4-ty@kernel.org>
-Date: Thu, 22 Feb 2024 09:47:23 +0100
+	s=arc-20240116; t=1708592663; c=relaxed/simple;
+	bh=rktYPar//0iKWagVEAXjEGawgr778Hk9WkEJv630Kt4=;
+	h=Message-ID:Date:MIME-Version:From:To:Cc:Subject:Content-Type; b=KeCusXfsB9jQhECTAUj/aCtSfG4SAHJzCB0gHFNJYk3vZ/x9e5OS0eOOGZOO1RdrnfwzHZAgf7y6UDy/fIdvtMhclad+Myniuqza7vd9qlmbuMVf3kPHBu6f5p5LXIpudj9s0LvXZqf+isxV+u2VUheIyTZgRaRHMC8f60NhSKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=P32lxeo1; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:Subject
+	:Cc:To:From:MIME-Version:Date:Message-ID:From:Sender:Reply-To:Subject:Date:
+	Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=rktYPar//0iKWagVEAXjEGawgr778Hk9WkEJv630Kt4=; t=1708592661; x=1709024661;
+	 b=P32lxeo1KpkOrUEXXNY/fDtAP/8JtPVBQxsWBE6xQ3Rk8wLIvW975T+wcs1DGQXEWJ+G1445Zh
+	xKw5ljafi8mRB/YQ0+Nus8B2E56Uk6a7lyqsxjUXducRw2c5Yz1U5U09D+Oc4oEMwfyrAI2IHV0GC
+	MvjvxTgEhYBhiyuWmAwrlW04Q4eSnuWHnvi9cHCk2YHSnIeuld+KecGGXX13Tk0iJmywe9j/dmcDB
+	eiGKsb9ffUbiCBAaeYKx3n3qmtIP9Xf+Qyn5lNrGWatyKQUQo3HdmjALElBQ+r/JMbE7nDXNwBJYM
+	WbP5+id8cMvcoY6NV2jhyVPamhSathNiZTliw==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rd504-0006qf-AA; Thu, 22 Feb 2024 10:04:16 +0100
+Message-ID: <b743d91f-5e7d-4701-b515-5c2a84ebd291@leemhuis.info>
+Date: Thu, 22 Feb 2024 10:04:15 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US, de-DE
+From: Thorsten Leemhuis <regressions@leemhuis.info>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: "stable@vger.kernel.org" <stable@vger.kernel.org>,
+ Sasha Levin <sashal@kernel.org>,
+ Mario Limonciello <mario.limonciello@amd.com>,
+ Linux kernel regressions list <regressions@lists.linux.dev>,
+ LKML <linux-kernel@vger.kernel.org>
+Subject: Please pick up 3a9626c816db90 ("drm/amd: Stop evicting resources on
+ APUs in suspend") for linux-6.7.y
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.4
-X-Ovh-Tracer-Id: 729301668120365699
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrfeefgdduvdduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvegjfhfukfffgggtgffosehtjeertdertdejnecuhfhrohhmpeetnhguihcuufhhhihtihcuoegrnhguihdrshhhhihtiheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrhhnpeffteehudffvdfhudfgffdugfejjeduheehgeefgeeuhfeiuefghffgueffvdfgfeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeduvdejrddtrddtrddupdekledrvddujedruddtledrudeiledpfeejrdehledrudegvddruddtjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomheprghnughisegvthgviihirghnrdhorhhgpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehiedupdhmohguvgepshhmthhpohhuth
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1708592661;94c7bcfc;
+X-HE-SMSGID: 1rd504-0006qf-AA
 
-Hi
+Hi Greg! Could you please pick up 3a9626c816db90 ("drm/amd: Stop
+evicting resources on APUs in suspend") for the earliest convenient
+linux-6.7.y release? It together with another commit (91636168531909
+("Revert "drm/amd: flush any delayed gfxoff on suspend entry"")) that is
+also queued for 6.7.6 fixes suspend problems that apparently bother
+quite a few people:
+https://gitlab.freedesktop.org/drm/amd/-/issues/3132
 
-On Wed, 21 Feb 2024 20:27:13 +0100, Wolfram Sang wrote:
-> When being a target, NAK from the controller means that all bytes have
-> been transferred. So, the last byte needs also to be marked as
-> 'processed'. Otherwise index registers of backends may not increase.
-> 
-> 
+Both come from the same series (note, patch 3 of that series was deferred):
+https://lore.kernel.org/all/20240208055256.130917-1-mario.limonciello@amd.com/
 
-Applied to i2c/i2c-host-fixes on
+Mario, who authored 3a9626c816db90, forgot to add a stable tag and ask
+me to send this mail:
+https://gitlab.freedesktop.org/drm/amd/-/issues/3132#note_2292543
 
-git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
-
-Thank you,
-Andi
-
-Patches applied
-===============
-[1/1] i2c: imx: when being a target, mark the last read as processed
-      commit: cf8281b1aeab93a03c87033a741075c39ace80d4
-
+Ciao, Thorsten
 
