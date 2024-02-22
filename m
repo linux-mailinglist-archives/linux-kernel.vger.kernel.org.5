@@ -1,177 +1,100 @@
-Return-Path: <linux-kernel+bounces-76259-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E76BD85F4D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:45:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6839685F4CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:44:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 118541C24315
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:45:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07D621F21C48
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:44:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 146C547A58;
-	Thu, 22 Feb 2024 09:42:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Voqafx43"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E956D405F8;
+	Thu, 22 Feb 2024 09:42:10 +0000 (UTC)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F1BF46535
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 09:42:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86EDF37152;
+	Thu, 22 Feb 2024 09:42:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708594947; cv=none; b=Tm34ymZH+nHW0HMDOunK/zfREKcbBWVVWfGXYgQphnZZbqebIZnb1LInb7QpKjGOAwoL8JUz6JYyuxT7fSvlmA8RgIONb2oW/aukSxUMj1PsjLipDmBTuum6DURJOMYOhb5yqt7C3BxqWrFl2hCSvJORnihXoG0P18eNAY7y4Wg=
+	t=1708594930; cv=none; b=ivmb15ob6BD6qEs1C6XuoMisCSEH1U4dWfQ0Ev4ulwqeF00u8PGoBIjNFjU3V6p/VHEWgPJ1ofNpNsUGyb9X0YXm4z55C7fsjjy034hx22SVCXI5OKiznsIQJ7ndzoL1GwDRD3p1ZZ1ZD6cayQazn7S28SVJl1RcYmvSSl+tz+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708594947; c=relaxed/simple;
-	bh=Np7QyqO9HmPJ82uU6R/X1KgLnSGRSDI4XVoOJtMaVYc=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=jF7tTZydHJ98WECUHx0dwhi8+z70jZjVHvrYJg1JmfG6ImSDbKi90QstHTBUSppR48KqiOgT+519ueoW1x7LsIIcYtYP4A5T9iHoWXlDTsRSsiI88lCZ56Xzto0F9oBbfE/3AiHTZZoWkhgAjd05sjI3dgOMIGYq8Ta8e9yoZF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Voqafx43; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708594946; x=1740130946;
-  h=date:from:to:cc:subject:message-id;
-  bh=Np7QyqO9HmPJ82uU6R/X1KgLnSGRSDI4XVoOJtMaVYc=;
-  b=Voqafx43E8Z6s6qdgaNV6a18q8ZRjY0i+Ajn2owyKjNrqaIJ+2dotJFd
-   Qgyp/o9sdCQJiho9nIuaedmYQgnmL9C1Vq5jkU6mxMPdhW8gMMLwxMiIM
-   pjr/wAD3WZsZRSIrxMRy3l1BWxZQT76J6BebezTt+kjPHu2TivObCe3Wx
-   PRbn50zHOVePeBqFzsf/x6ihoh/jagBeGW2CATGO1D5gsj0hTaoke45vU
-   ECqv2eBdTabL0C8vVGtKQDR1sqfoMMbB3VG0DrcTXnPlpxkCOFuPMPD+x
-   2AIN0qU50WNcR7QaDAbRjmayT1Agk1DF0LtHvp1SOeqTsEFp+C8XaZGxY
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="2917770"
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="2917770"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 01:42:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="28597287"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa002.fm.intel.com with ESMTP; 22 Feb 2024 01:42:23 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rd5av-0006BZ-10;
-	Thu, 22 Feb 2024 09:42:21 +0000
+	s=arc-20240116; t=1708594930; c=relaxed/simple;
+	bh=nB7akApCyMJjlIrdgWz8NAIOpjWP2HJ57h/ete1dFZU=;
+	h=CC:Subject:To:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=KF88ZjMZl8v0L7HKCKxwh/fCSSRkq7HJbDGUxYdeib3ekUUDBU/SjdNhNQJhAi4cLzRMMbxTq7PykMpAZT+ukU9JVTQhSZ3RNX6CSdX/I9jf8+kWgjEC/zlvhusdyZVY7CgFMWlPh49IxrRcvzUj1Ab0Gw6FhcAk1f1nGpk1mh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4TgSmf4LZVz1Q8C7;
+	Thu, 22 Feb 2024 17:40:18 +0800 (CST)
+Received: from canpemm500009.china.huawei.com (unknown [7.192.105.203])
+	by mail.maildlp.com (Postfix) with ESMTPS id 44C791404F2;
+	Thu, 22 Feb 2024 17:41:59 +0800 (CST)
+Received: from [10.67.121.177] (10.67.121.177) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 22 Feb 2024 17:41:58 +0800
+CC: <yangyicong@hisilicon.com>, <gregkh@linuxfoundation.org>,
+	<tony@atomide.com>, <linux-kernel@vger.kernel.org>,
+	<linux-serial@vger.kernel.org>, <john.ogness@linutronix.de>,
+	<tglx@linutronix.de>, <linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
+	<jonathan.cameron@huawei.com>, <fanghao11@huawei.com>
+Subject: Re: [PATCH v3] serial: port: Don't suspend if the port is still busy
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Jiri Slaby
+	<jirislaby@kernel.org>
+References: <20240208075216.48915-1-yangyicong@huawei.com>
+ <beb599e2-ebc5-4b26-82c3-908830effd5a@kernel.org>
+ <ZcUOp60BX8njHQ4Q@smile.fi.intel.com>
+From: Yicong Yang <yangyicong@huawei.com>
+Message-ID: <d6384122-08da-03f4-ba9f-caa893ca10fb@huawei.com>
 Date: Thu, 22 Feb 2024 17:41:58 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/cleanups] BUILD SUCCESS
- e37ae6433a5eeb5fb66e3de4b97cdda68ee2c5e8
-Message-ID: <202402221754.snADohMB-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+In-Reply-To: <ZcUOp60BX8njHQ4Q@smile.fi.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500009.china.huawei.com (7.192.105.203)
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
-branch HEAD: e37ae6433a5eeb5fb66e3de4b97cdda68ee2c5e8  x86/apm_32: Remove dead function apm_get_battery_status()
+On 2024/2/9 1:25, Andy Shevchenko wrote:
+> On Thu, Feb 08, 2024 at 09:27:57AM +0100, Jiri Slaby wrote:
+>> On 08. 02. 24, 8:52, Yicong Yang wrote:
+> 
+> ...
+> 
+>>>   static int __serial_port_busy(struct uart_port *port)
+>>>   {
+>>> -	return !uart_tx_stopped(port) &&
+>>> -		uart_circ_chars_pending(&port->state->xmit);
+>>> +	if (uart_tx_stopped(port))
+>>> +		return 0;
+>>> +
+>>> +	if (uart_circ_chars_pending(&port->state->xmit))
+>>> +		return -EBUSY;
+>>
+>> Why do you do this change at all? If anything, __serial_port_busy() should
+>> be made to return a bool and not to return an error. Look how it is named --
+>> returning EBUSY is sort of unexpected in my eyes. And if this needed to be
+>> done, it should have been in a separate patch anyway.
+> 
+> I proposed that with a renaming, so it won't look as boolean.
+> And I also implied (sorry if it was unclear) that this has to be
+> done separately, so we are on the same page about this.
+> 
 
-elapsed time: 845m
+Seems I misunderstand the comment from Andy. Will drop this change which should be
+a separate one besides the fix. Will respin a v4 which only narrow the lock region
+based on v2 (per Andy).
 
-configs tested: 89
-configs skipped: 134
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                     am200epdkit_defconfig   gcc  
-arm                        multi_v7_defconfig   gcc  
-arm                       omap2plus_defconfig   gcc  
-arm                           tegra_defconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-hexagon                          allmodconfig   clang
-hexagon                          allyesconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240222   gcc  
-i386         buildonly-randconfig-002-20240222   clang
-i386         buildonly-randconfig-003-20240222   clang
-i386         buildonly-randconfig-004-20240222   gcc  
-i386         buildonly-randconfig-005-20240222   clang
-i386         buildonly-randconfig-006-20240222   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240222   clang
-i386                  randconfig-002-20240222   clang
-i386                  randconfig-003-20240222   gcc  
-i386                  randconfig-004-20240222   clang
-i386                  randconfig-005-20240222   gcc  
-i386                  randconfig-006-20240222   clang
-i386                  randconfig-011-20240222   gcc  
-i386                  randconfig-012-20240222   clang
-i386                  randconfig-013-20240222   gcc  
-i386                  randconfig-014-20240222   gcc  
-i386                  randconfig-015-20240222   clang
-i386                  randconfig-016-20240222   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                          multi_defconfig   gcc  
-m68k                        stmark2_defconfig   gcc  
-microblaze                       alldefconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                      pic32mzda_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-powerpc                    adder875_defconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                        cell_defconfig   gcc  
-riscv                            allmodconfig   clang
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-sh                               allmodconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                         ap325rxa_defconfig   gcc  
-sh                          rsk7264_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                                  defconfig   clang
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                    xip_kc705_defconfig   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks.
 
