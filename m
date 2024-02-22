@@ -1,83 +1,103 @@
-Return-Path: <linux-kernel+bounces-76377-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C4D985F66B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:02:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2667F85F665
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:02:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C58EAB2661E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:02:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83DE81F2371A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:02:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A046405D8;
-	Thu, 22 Feb 2024 11:02:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A656405D4;
+	Thu, 22 Feb 2024 11:01:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="V5Z6LsFt"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TDUdQYpm";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UHp0fn4H";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TDUdQYpm";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UHp0fn4H"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 550513FB31;
-	Thu, 22 Feb 2024 11:02:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88432182D2;
+	Thu, 22 Feb 2024 11:01:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708599737; cv=none; b=q+6K7psSzIa8RTfMciC6gCFKaabnhDjdeyH4PLZNd261iIz9GmyQTfG33DAT+pLMb57nwZjclWs9Fv3XHsS33MVG7/AZCOx6tV5YxgqsF2gTLpAfEJADZZSLlAhrADqsn2g9UEWPGVKRYzg2vdnDBU8K7BXLaIGOs1kQGu3Npo4=
+	t=1708599709; cv=none; b=hKNXjB9ZVuyciq6fo71YNCVPxTE1w7tYgucbeXGyPCtlGq9/ZJj/jO8j6QBchhJCyYzpXQg5nRtyf6yGmU9jlR2TRerJjieOxwNQzXt/wXe0vx6xk/DSXJNcziFwXZ06O33c0/00kqebBjpHoJwbWOvyftVxcDCk2isZ9L5C9kc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708599737; c=relaxed/simple;
-	bh=OVOk4RhIEc0k7TSecJD8kDaA2nGJ6pApQKcMqlr9SD0=;
+	s=arc-20240116; t=1708599709; c=relaxed/simple;
+	bh=uypqJ4fFQ77C+nUKIm+0Q6hsjDxZIHQh+EoFhOxiisU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hfX8+lnY4RnTFF2WfhuRoNinQTSxjehl+jKirD4BvMM4PEQOD+jos6wmXoWDnj6poMsR1aSJL5nN6s++uka/jN5KlMN55aoQNkZ91JpsWgyqQbO85mhh1B0KmjhwL4ADKR6QORLlqEtO8zrc6cS6yTGoHveD6LRnDqhon3mRhL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=V5Z6LsFt; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708599735; x=1740135735;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=OVOk4RhIEc0k7TSecJD8kDaA2nGJ6pApQKcMqlr9SD0=;
-  b=V5Z6LsFtGtjQy/V5Jd7gz/hOdla/lZwerTYf12W8hvBNdoFtml0NHv4P
-   B2EEoQPlqGC7dly/haG+jasgjSHjhd8PzJ9bKEgJGG1Z41sfbb+pmG/sx
-   j+qqQNDpyhtbwFHI1eeXcUQ6G1eKwHd6oeAxNKS7o83LgkLB/xe3eQS0O
-   uVdbqraGatLLCwmbIKqiz2/iwqxOO2csZ8+Goyvc21YrH1My+Nvw0EyfL
-   d9/Ndr3c+2Vq7ynqqnpx8Ta+AyZsIDMP1/8pWgiVZPXS2gm3EWIwiDAjg
-   3JPnMOoYYR9t+i9ZiGY8MBLQxA96OG3pl04NtLqZsXjOQYTpKjfDKkIaY
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="2957367"
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="2957367"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 03:02:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="36472291"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa001.fm.intel.com with ESMTP; 22 Feb 2024 03:02:09 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rd6q6-0006Ei-2E;
-	Thu, 22 Feb 2024 11:02:06 +0000
-Date: Thu, 22 Feb 2024 19:01:22 +0800
-From: kernel test robot <lkp@intel.com>
-To: andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
-	konrad.dybcio@linaro.org, manivannan.sadhasivam@linaro.org,
-	conor+dt@kernel.org, quic_nitegupt@quicinc.com
-Cc: oe-kbuild-all@lists.linux.dev, quic_shazhuss@quicinc.com,
-	quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
-	quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
-	Nitesh Gupta <nitegupt@quicinc.com>,
-	Mrinmay Sarkar <quic_msarkar@quicinc.com>,
-	Bjorn Helgaas <helgaas@kernel.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 3/3] PCI: qcom: Add support for detecting controller
- level PCIe errors
-Message-ID: <202402221838.5n7vo0Jo-lkp@intel.com>
-References: <20240221140405.28532-4-root@hu-msarkar-hyd.qualcomm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=e1WlnazthpxsqdlzI07J8FeoprafxAsekiYDhvS6L5N+XnV+d+OHY2OV84YWhcYDwa7qRT4ZaTpsgPuY9zNQOY3nN7C58Iu+ZunqlgwIJw6IfnJDXhgf8G0bwdGJTSN1xLJH4yAnJIwDlgmm0L3Sh5R4CRZPLUkbS/z6atlpRDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TDUdQYpm; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UHp0fn4H; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TDUdQYpm; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UHp0fn4H; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 620301FB9A;
+	Thu, 22 Feb 2024 11:01:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708599703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=57n3UQkx8/XYTnaB10q60NOgFC3ggZDEpt6Gg1dxT1o=;
+	b=TDUdQYpmzi2LnpQDGxgFVneXvhJPUrBy1zz7J4cI/HqcRStOy37Njl5UytajVBojefqVEc
+	vMmWM9Vn3uy3A4chu1o0y2wI3hQ6IfUdGP97Ck6I+z8l4XxnlUg9IKBBkWD5NZe7KbaGpx
+	P+p4LHlYh2vMZF59LhfFMxSmYlqT2XI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708599703;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=57n3UQkx8/XYTnaB10q60NOgFC3ggZDEpt6Gg1dxT1o=;
+	b=UHp0fn4Hfcs/SmbunYu7BfAuZ3N2FGlDCmXctHYuAGXnvbApAxULRsNgAmWe48PGYFs3kl
+	L0nrxLNLlfFUuNDw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708599703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=57n3UQkx8/XYTnaB10q60NOgFC3ggZDEpt6Gg1dxT1o=;
+	b=TDUdQYpmzi2LnpQDGxgFVneXvhJPUrBy1zz7J4cI/HqcRStOy37Njl5UytajVBojefqVEc
+	vMmWM9Vn3uy3A4chu1o0y2wI3hQ6IfUdGP97Ck6I+z8l4XxnlUg9IKBBkWD5NZe7KbaGpx
+	P+p4LHlYh2vMZF59LhfFMxSmYlqT2XI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708599703;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=57n3UQkx8/XYTnaB10q60NOgFC3ggZDEpt6Gg1dxT1o=;
+	b=UHp0fn4Hfcs/SmbunYu7BfAuZ3N2FGlDCmXctHYuAGXnvbApAxULRsNgAmWe48PGYFs3kl
+	L0nrxLNLlfFUuNDw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5573B13419;
+	Thu, 22 Feb 2024 11:01:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 6IXYFJcp12XxNQAAn2gu4w
+	(envelope-from <jack@suse.cz>); Thu, 22 Feb 2024 11:01:43 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id E8EB4A0807; Thu, 22 Feb 2024 12:01:38 +0100 (CET)
+Date: Thu, 22 Feb 2024 12:01:38 +0100
+From: Jan Kara <jack@suse.cz>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Miklos Szeredi <miklos@szeredi.hu>, Josef Bacik <josef@toxicpanda.com>,
+	linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, lsf-pc@lists.linux-foundation.org,
+	linux-btrfs@vger.kernel.org
+Subject: Re: [Lsf-pc] [LSF TOPIC] statx extensions for subvol/snapshot
+ filesystems & more
+Message-ID: <20240222110138.ckai4sxiin3a74ku@quack3>
+References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
+ <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
+ <20240221210811.GA1161565@perftesting>
+ <CAJfpegucM5R_pi_EeDkg9yPNTj_esWYrFd6vG178_asram0=Ew@mail.gmail.com>
+ <w534uujga5pqcbhbc5wad7bdt5lchxu6gcmwvkg6tdnkhnkujs@wjqrhv5uqxyx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,242 +106,102 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240221140405.28532-4-root@hu-msarkar-hyd.qualcomm.com>
+In-Reply-To: <w534uujga5pqcbhbc5wad7bdt5lchxu6gcmwvkg6tdnkhnkujs@wjqrhv5uqxyx>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
-Hi root,
+On Thu 22-02-24 04:42:07, Kent Overstreet wrote:
+> On Thu, Feb 22, 2024 at 10:14:20AM +0100, Miklos Szeredi wrote:
+> > On Wed, 21 Feb 2024 at 22:08, Josef Bacik <josef@toxicpanda.com> wrote:
+> > >
+> > > On Wed, Feb 21, 2024 at 04:06:34PM +0100, Miklos Szeredi wrote:
+> > > > On Wed, 21 Feb 2024 at 01:51, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> > > > >
+> > > > > Recently we had a pretty long discussion on statx extensions, which
+> > > > > eventually got a bit offtopic but nevertheless hashed out all the major
+> > > > > issues.
+> > > > >
+> > > > > To summarize:
+> > > > >  - guaranteeing inode number uniqueness is becoming increasingly
+> > > > >    infeasible, we need a bit to tell userspace "inode number is not
+> > > > >    unique, use filehandle instead"
+> > > >
+> > > > This is a tough one.   POSIX says "The st_ino and st_dev fields taken
+> > > > together uniquely identify the file within the system."
+> > > >
+> > >
+> > > Which is what btrfs has done forever, and we've gotten yelled at forever for
+> > > doing it.  We have a compromise and a way forward, but it's not a widely held
+> > > view that changing st_dev to give uniqueness is an acceptable solution.  It may
+> > > have been for overlayfs because you guys are already doing something special,
+> > > but it's not an option that is afforded the rest of us.
+> > 
+> > Overlayfs tries hard not to use st_dev to give uniqueness and instead
+> > partitions the 64bit st_ino space within the same st_dev.  There are
+> > various fallback cases, some involve switching st_dev and some using
+> > non-persistent st_ino.
+> 
+> Yeah no, you can't crap multiple 64 bit inode number spaces into 64
+> bits: pigeonhole principle.
+> 
+> We need something better than "hacks".
 
-kernel test robot noticed the following build warnings:
+I agree we should have a better long-term plan than finding ways how to
+cram things into 64-bits inos. However I don't see a realistic short-term
+solution other than that.
 
-[auto build test WARNING on pci/next]
-[also build test WARNING on pci/for-linus robh/for-next mani-mhi/mhi-next linus/master v6.8-rc5 next-20240221]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+To explicit: Currently, tar and patch and very likely other less well-known
+tools are broken on bcachefs due to non-unique inode numbers. If you want
+ot fix them, either you find ways how bcachefs can cram things into 64-bit
+ino_t or you go and modify these tools (or prod maintainers or whatever) to
+not depend on ino_t for uniqueness. The application side of things isn't
+going to magically fix itself by us telling "bad luck, ino_t isn't unique
+anymore".
 
-url:    https://github.com/intel-lab-lkp/linux/commits/root/dt-bindings-PCI-qcom-Add-global-irq-support-for-SA8775p/20240221-220722
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
-patch link:    https://lore.kernel.org/r/20240221140405.28532-4-root%40hu-msarkar-hyd.qualcomm.com
-patch subject: [PATCH v1 3/3] PCI: qcom: Add support for detecting controller level PCIe errors
-config: microblaze-allmodconfig (https://download.01.org/0day-ci/archive/20240222/202402221838.5n7vo0Jo-lkp@intel.com/config)
-compiler: microblaze-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240222/202402221838.5n7vo0Jo-lkp@intel.com/reproduce)
+> > What overlayfs does may or may not be applicable to btrfs/bcachefs,
+> > but that's not my point.  My point is that adding a flag to statx does
+> > not solve anything.   You can't just say that from now on btrfs
+> > doesn't have use unique st_ino/st_dev because we've just indicated
+> > that in statx and everything is fine.   That will trigger the
+> > no-regressions rule and then it's game over.  At least I would expect
+> > that to happen.
+> > 
+> > What we can do instead is introduce a new API that is better,
+> 
+> This isn't a serious proposal.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402221838.5n7vo0Jo-lkp@intel.com/
+I think for "unique inode identifier" we don't even have to come up with
+new APIs. The file handle + fsid pair is an established way to do this,
+fanotify successfully uses this as object identifier and Amir did quite
+some work for this to be usable for vast majority of filesystems (including
+virtual ones). The problem is with rewriting all these applications to use
+it. If statx flag telling whether inode numbers are unique helps with that,
+sure we can add it, but that seems like a trivial part of the problem.
 
-All warnings (new ones prefixed by >>):
-
-   drivers/pci/controller/dwc/pcie-qcom.c: In function 'qcom_pcie_error_report_show':
->> drivers/pci/controller/dwc/pcie-qcom.c:1751:63: warning: format '%lu' expects argument of type 'long unsigned int', but argument 5 has type 'u32' {aka 'unsigned int'} [-Wformat=]
-    1751 |                         len += sysfs_emit_at(buf, len, "%s: %lu\n",
-         |                                                             ~~^
-         |                                                               |
-         |                                                               long unsigned int
-         |                                                             %u
-    1752 |                                         pcie_fault_string[i],
-    1753 |                                         pcie_fault[i]);
-         |                                         ~~~~~~~~~~~~~          
-         |                                                   |
-         |                                                   u32 {aka unsigned int}
-   drivers/pci/controller/dwc/pcie-qcom.c:1756:47: warning: format '%lu' expects argument of type 'long unsigned int', but argument 5 has type 'u32' {aka 'unsigned int'} [-Wformat=]
-    1756 |         len += sysfs_emit_at(buf, len, "%s: %lu\n",
-         |                                             ~~^
-         |                                               |
-         |                                               long unsigned int
-         |                                             %u
-    1757 |                                         pcie_fault_string[i],
-    1758 |                                         pcie->pcie_fault_total);
-         |                                         ~~~~~~~~~~~~~~~~~~~~~~
-         |                                             |
-         |                                             u32 {aka unsigned int}
-   drivers/pci/controller/dwc/pcie-qcom.c: In function 'qcom_pcie_probe':
->> drivers/pci/controller/dwc/pcie-qcom.c:1902:9: warning: ignoring return value of 'sysfs_create_group' declared with attribute 'warn_unused_result' [-Wunused-result]
-    1902 |         sysfs_create_group(&pdev->dev.kobj, &qcom_pcie_attribute_group);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +1751 drivers/pci/controller/dwc/pcie-qcom.c
-
-  1739	
-  1740	static ssize_t qcom_pcie_error_report_show(struct device *dev,
-  1741			struct device_attribute *attr,
-  1742			char *buf)
-  1743	{
-  1744		unsigned int i;
-  1745		struct qcom_pcie *pcie = (struct qcom_pcie *)dev_get_drvdata(dev);
-  1746		u32 *pcie_fault = pcie->pcie_fault;
-  1747		size_t len = 0;
-  1748	
-  1749		for (i = 0; i < MAX_PCIE_SAFETY_FAULT; i++) {
-  1750			if (pcie_fault_string[i])
-> 1751				len += sysfs_emit_at(buf, len, "%s: %lu\n",
-  1752						pcie_fault_string[i],
-  1753						pcie_fault[i]);
-  1754		}
-  1755	
-  1756		len += sysfs_emit_at(buf, len, "%s: %lu\n",
-  1757						pcie_fault_string[i],
-  1758						pcie->pcie_fault_total);
-  1759	
-  1760		return len;
-  1761	}
-  1762	static DEVICE_ATTR_RO(qcom_pcie_error_report);
-  1763	
-  1764	static struct attribute *qcom_pcie_attrs[] = {
-  1765		&dev_attr_qcom_pcie_error_report.attr,
-  1766		NULL,
-  1767	};
-  1768	
-  1769	static const struct attribute_group qcom_pcie_attribute_group = {
-  1770		.attrs = qcom_pcie_attrs,
-  1771		.name = "qcom_pcie"
-  1772	};
-  1773	
-  1774	static void qcom_pcie_init_debugfs(struct qcom_pcie *pcie)
-  1775	{
-  1776		struct dw_pcie *pci = pcie->pci;
-  1777		struct device *dev = pci->dev;
-  1778		char *name;
-  1779	
-  1780		name = devm_kasprintf(dev, GFP_KERNEL, "%pOFP", dev->of_node);
-  1781		if (!name)
-  1782			return;
-  1783	
-  1784		pcie->debugfs = debugfs_create_dir(name, NULL);
-  1785		debugfs_create_devm_seqfile(dev, "link_transition_count", pcie->debugfs,
-  1786					    qcom_pcie_link_transition_count);
-  1787	}
-  1788	
-  1789	static int qcom_pcie_probe(struct platform_device *pdev)
-  1790	{
-  1791		const struct qcom_pcie_cfg *pcie_cfg;
-  1792		struct device *dev = &pdev->dev;
-  1793		struct qcom_pcie *pcie;
-  1794		struct dw_pcie_rp *pp;
-  1795		struct resource *res;
-  1796		struct dw_pcie *pci;
-  1797		int ret;
-  1798	
-  1799		pcie_cfg = of_device_get_match_data(dev);
-  1800		if (!pcie_cfg || !pcie_cfg->ops) {
-  1801			dev_err(dev, "Invalid platform data\n");
-  1802			return -EINVAL;
-  1803		}
-  1804	
-  1805		pcie = devm_kzalloc(dev, sizeof(*pcie), GFP_KERNEL);
-  1806		if (!pcie)
-  1807			return -ENOMEM;
-  1808	
-  1809		pci = devm_kzalloc(dev, sizeof(*pci), GFP_KERNEL);
-  1810		if (!pci)
-  1811			return -ENOMEM;
-  1812	
-  1813		pm_runtime_enable(dev);
-  1814		ret = pm_runtime_get_sync(dev);
-  1815		if (ret < 0)
-  1816			goto err_pm_runtime_put;
-  1817	
-  1818		pci->dev = dev;
-  1819		pci->ops = &dw_pcie_ops;
-  1820		pp = &pci->pp;
-  1821	
-  1822		pcie->pci = pci;
-  1823	
-  1824		pcie->cfg = pcie_cfg;
-  1825	
-  1826		pcie->reset = devm_gpiod_get_optional(dev, "perst", GPIOD_OUT_HIGH);
-  1827		if (IS_ERR(pcie->reset)) {
-  1828			ret = PTR_ERR(pcie->reset);
-  1829			goto err_pm_runtime_put;
-  1830		}
-  1831	
-  1832		pcie->global_irq = platform_get_irq_byname(pdev, "global");
-  1833		if (pcie->global_irq < 0) {
-  1834			ret = pcie->global_irq;
-  1835			goto err_pm_runtime_put;
-  1836		}
-  1837	
-  1838		ret = devm_request_threaded_irq(dev, pcie->global_irq, NULL,
-  1839					qcom_pcie_global_irq_thread,
-  1840					IRQF_ONESHOT,
-  1841					"global_irq", pcie);
-  1842		if (ret) {
-  1843			dev_err(dev, "Failed to request Global IRQ\n");
-  1844			goto err_pm_runtime_put;
-  1845		}
-  1846	
-  1847		pcie->parf = devm_platform_ioremap_resource_byname(pdev, "parf");
-  1848		if (IS_ERR(pcie->parf)) {
-  1849			ret = PTR_ERR(pcie->parf);
-  1850			goto err_pm_runtime_put;
-  1851		}
-  1852	
-  1853		pcie->elbi = devm_platform_ioremap_resource_byname(pdev, "elbi");
-  1854		if (IS_ERR(pcie->elbi)) {
-  1855			ret = PTR_ERR(pcie->elbi);
-  1856			goto err_pm_runtime_put;
-  1857		}
-  1858	
-  1859		/* MHI region is optional */
-  1860		res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "mhi");
-  1861		if (res) {
-  1862			pcie->mhi = devm_ioremap_resource(dev, res);
-  1863			if (IS_ERR(pcie->mhi)) {
-  1864				ret = PTR_ERR(pcie->mhi);
-  1865				goto err_pm_runtime_put;
-  1866			}
-  1867		}
-  1868	
-  1869		pcie->phy = devm_phy_optional_get(dev, "pciephy");
-  1870		if (IS_ERR(pcie->phy)) {
-  1871			ret = PTR_ERR(pcie->phy);
-  1872			goto err_pm_runtime_put;
-  1873		}
-  1874	
-  1875		ret = qcom_pcie_icc_init(pcie);
-  1876		if (ret)
-  1877			goto err_pm_runtime_put;
-  1878	
-  1879		ret = pcie->cfg->ops->get_resources(pcie);
-  1880		if (ret)
-  1881			goto err_pm_runtime_put;
-  1882	
-  1883		pp->ops = &qcom_pcie_dw_ops;
-  1884	
-  1885		ret = phy_init(pcie->phy);
-  1886		if (ret)
-  1887			goto err_pm_runtime_put;
-  1888	
-  1889		platform_set_drvdata(pdev, pcie);
-  1890	
-  1891		ret = dw_pcie_host_init(pp);
-  1892		if (ret) {
-  1893			dev_err(dev, "cannot initialize host\n");
-  1894			goto err_phy_exit;
-  1895		}
-  1896	
-  1897		qcom_pcie_icc_update(pcie);
-  1898	
-  1899		if (pcie->mhi)
-  1900			qcom_pcie_init_debugfs(pcie);
-  1901	
-> 1902		sysfs_create_group(&pdev->dev.kobj, &qcom_pcie_attribute_group);
-  1903	
-  1904		return 0;
-  1905	
-  1906	err_phy_exit:
-  1907		phy_exit(pcie->phy);
-  1908	err_pm_runtime_put:
-  1909		pm_runtime_put(dev);
-  1910		pm_runtime_disable(dev);
-  1911	
-  1912		return ret;
-  1913	}
-  1914	
-
+								Honza
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
