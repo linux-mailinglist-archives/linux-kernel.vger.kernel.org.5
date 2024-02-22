@@ -1,139 +1,256 @@
-Return-Path: <linux-kernel+bounces-77545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B856D86071E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:49:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 891B1860720
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:52:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA6261C21BDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:49:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7C51284897
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:52:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCE6913BAE4;
-	Thu, 22 Feb 2024 23:49:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEDB213BAE4;
+	Thu, 22 Feb 2024 23:51:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="FSbouayq";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="H1FMMH0I"
-Received: from wfhigh5-smtp.messagingengine.com (wfhigh5-smtp.messagingengine.com [64.147.123.156])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="G9chThIT"
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48E0732C84;
-	Thu, 22 Feb 2024 23:49:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EFB5182A3
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 23:51:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708645774; cv=none; b=Hcb49pO1+/gQMke+H3HyUWtKhnPqbhUHlxWvYXJVC0LcYbi6KORw3qlK+n3YuRH+KUVvo7PWmqT2b22Q3mdN/FEldvLOn/teGoZcmUfsD51TfKUVHaUFLqYMI0ibF0YNkhSeieNUHekCSH4yQNjX8NzVlCWtZ0sOmIwCMvbeeJI=
+	t=1708645917; cv=none; b=m27aeh7KjwnNUYwhzy9KqDmXNK1yxMzBQv4wL15R0oX+ZaPIEpJ1cFjJywnxZdP6V00ZamMRI9Wv8ipr/mv2g2zYck80PwcGQxcJ2PGXddWwOeCYpIV/jPpzFUoivq1wBN2KDIKoeJ7M2Hwxs3pd+72+4EM/eUycpd8WLv29i4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708645774; c=relaxed/simple;
-	bh=Rf4YFZGCoDZ1bCrs/37WDyG/DW+iNIONt5UEqAWkVq8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hP7Bc5rBd4Y6QrEFCmV10A1+wU0tOEmR6bys0bnljFdcue9IHfY02qPh+7OBWgXUVZVwex98B8AD62u7p5ZZ5pG1DpAWVLbbADhSW+gs//X7rZ8P/tvOeklGE4KilAQZ5lWnQXCRV9iS5PLQg3Akiz9qwE34V7o+16eKS3sALMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=FSbouayq; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=H1FMMH0I; arc=none smtp.client-ip=64.147.123.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tycho.pizza
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfhigh.west.internal (Postfix) with ESMTP id B8262180011D;
-	Thu, 22 Feb 2024 18:49:29 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 22 Feb 2024 18:49:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1708645769; x=1708732169; bh=ILw8Lb9NRg
-	Vjbv3d3fgqIKL7GVVXnpquofQj0VHt3qc=; b=FSbouayqr83HDce0dLvghbHifh
-	fg7AEv+KzCVmVsK1bHQgMVZN1LMw2AS68mtxAg+tJWGqU9QydknKVDhKLfOz4SM7
-	laOAwGxsLxKJjJXeA5IS9/CadvmnOmyprAFcEIzv/Jwe26hui4y8jl7c4gzF7eHZ
-	fTCrip5I9n3/mzctP5MCjuzZV6bSi+WKXiWV++jpBCtCsXb7mCMszAb/6Oamz4cd
-	S+yzbg1vXkHROpgE8spmFIWdSPiVk/1Kr4BtgAXG0kFa0sz+HErvq1CGhtd6TTX/
-	xZqixqVMsK7nVWMMlg177P1PmMIuFiIKtxFmCUkYGDLbS2nwvbs169NUPRtA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1708645769; x=1708732169; bh=ILw8Lb9NRgVjbv3d3fgqIKL7GVVX
-	npquofQj0VHt3qc=; b=H1FMMH0If/yP9lEBc2BZCSuNCo4ZS+ao8n+tCJstsGSj
-	cuu7GImKal3QF7hc7CupvyNqMBISdHevjoJIezleCourEcNKL6iIN5m/5MRktttf
-	RltUIoQn+qzl/YdLkTVgNklNnhsSa5Xb1WuHqtoGnJPK1cUTUfagS9x4ivqBAUDm
-	DP1uHkWsslrSLREyTcaDrGdImLu3MBVTUHtAoCJfTdQrqpwlmneLnzbpQ75eq9Bx
-	mK8fQvl/kT3teltV2APibNCu1hBd9rJ3PLld+h9g7iXTaZ9HDKbLLi7Q3JTw1sH9
-	3IMXzFUd4B6ukfjszpslg3S3abviB6YH9rBbcv1o3w==
-X-ME-Sender: <xms:id3XZcZIvU7jIzS28dgRu5tKrfITPfG0q7l6N4HnS3J3zY4uiijq4Q>
-    <xme:id3XZXb8d6jAfCWgzbGzKyV3a9CFtPBTiI4lPG4N4TRhp4Zh9NmKlDLdgqPdwDZWg
-    Kc-FSrBWMlmjUZmENE>
-X-ME-Received: <xmr:id3XZW_aEJB_xo0vM1L1XOOX3RizcIo1iYkGGUAfghuLl1mwsv2HvIrq7EM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfeehgddufecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
-    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
-    htthgvrhhnpeeutedttefgjeefffehffffkeejueevieefudelgeejuddtfeffteeklefh
-    leelteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hthigthhhosehthigthhhordhpihiiiigr
-X-ME-Proxy: <xmx:id3XZWonpGDQDkQZmXmuVXQKRIO65y08sA4Eql24Curs0f1-Vt0lpA>
-    <xmx:id3XZXrISR8H6_awCtDYWS6041JEMWvIpA9fWzlYSV3G1BwvNMoUNQ>
-    <xmx:id3XZUSU5rldCwqj-GVWqit2JMV-dp1JQnaF-CsMzHyJz2vCLeR4iA>
-    <xmx:id3XZYdrxl3TeIMTKa36i6-yJEQQTYUIgOxfVxJmmMtweCEqLnWXLY6E7wc>
-Feedback-ID: i21f147d5:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 22 Feb 2024 18:49:27 -0500 (EST)
-Date: Thu, 22 Feb 2024 16:49:26 -0700
-From: Tycho Andersen <tycho@tycho.pizza>
-To: Kees Cook <keescook@chromium.org>
-Cc: "Tobin C. Harding" <me@tobin.cc>, Greg KH <gregkh@linuxfoundation.org>,
-	Guixiong Wei <guixiongwei@gmail.com>,
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] leaking_addresses: Provide mechanism to scan binary files
-Message-ID: <Zdfdhl78xgBuZdXu@tycho.pizza>
-References: <20240218173809.work.286-kees@kernel.org>
- <ZddnEtnxhJsafdcF@tycho.pizza>
- <202402221249.FA17A8940@keescook>
+	s=arc-20240116; t=1708645917; c=relaxed/simple;
+	bh=/wHGiiuPEih+Dl1DSbuFdBlrYyz4M3oticJERwW5nCU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kwOaPFsGI8AZ/J2unCGUaVDbF5nBLmFKMvY2rTW8HaH39ErXlEvAgHm7Gu84kdRCz2EPqsE39/ASFh3elDyJWXXZRk6M4HdzI3R4+VVHqtyWZO46dFHagmPRbnfUfh3ZzDfpn7mOjSIcAP2bbed+NCh97IKIb2P/EvAiPn0MQ7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=G9chThIT; arc=none smtp.client-ip=209.85.160.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-42e0b1b11bbso31441cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 15:51:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708645914; x=1709250714; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mVOy0PwhnBKY+4KzN/4pkuX8/YBWUL2pDvveZN+SjoI=;
+        b=G9chThIT/Y2Zg923Jah7ISL6MTQfKSPHIGS8WAAUu88KKfuzKlhnLIPWfU5/9v3Loi
+         BOqhKkpyiZnhd6xS2TMndq4d3v91WQ1DoWQh0JXtyxAj5KJnxSWD2AT7Lu1AT1l1lxyf
+         KY0gd5CzFSJi1+z1KQP9jtYlPGdH+5f2d8AKq9UEYK7HQbaRgPPd9IQ86XwdrlheHK26
+         Vmob9eB7uYNU3+qzycA6xKOCYGRFK9C032/MHfG0WZj+tBaR00a3vontxCNKqhq9SRx6
+         rqSTWslXF8Kj6LLebRwkH/Qet1CJlcrKt4A1f6XC6cn6bfF1Avr10R08T+EBDsMKcAEc
+         aeVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708645914; x=1709250714;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mVOy0PwhnBKY+4KzN/4pkuX8/YBWUL2pDvveZN+SjoI=;
+        b=oTUNn91m8irAGHPL2F1/2p3euIMPR20MawzjRuQSK8hOFlblDd0g+wJjPl9PT3u1yi
+         mTtTS69S10hWwmybaEBzoYaDthVMGZdap92U40PoMN2KpzL6YbKUD4iYOVlJdEcYtuQq
+         Rp6dkvMqIF/kHyYPVppJ7rJ1FqnVEh7+X3QG0WBDy6lNFMjcLwWKtohY5MkFoU23Iry+
+         SKVspTtG+BRr3cYDsHl7IHY3KEI04GGyDiqIwomW7Br04Rp7KyXjg+jW5P9vj1H/ynC/
+         dQfD4qn8S6ZnkJDJBQCmU5NarMuQInK+Mv+Jmg/dQbz/GYg97bL34WoyzFhXsNj9DHbz
+         gNQA==
+X-Forwarded-Encrypted: i=1; AJvYcCVW3xYw8gCG+/UD9FJiFs0xz5lmEo4c5ZY1t2riIpFCcu0IYAq243PvWCCMrE6GXrogLz8RNJ4ltBbFC/RgUcaIVOCvDqdgAVJuCx13
+X-Gm-Message-State: AOJu0YxRYVWBIkhl1Acy5E+i1tIQBm2PY0CJnGDd3b8epr6Y90FqevSq
+	gll6BCX9LBgNhm2e4HabKnjBolAnSiIXseg9MrdvkV/721TwiOr5SfRBxC8JWbhyVVDArT8y8NW
+	KEYYTkQW77ZRWX/mbYMOxbKW5mj/zRapQFfb5
+X-Google-Smtp-Source: AGHT+IGSx9IqL62y1LNBY7s+dmpCEtqTu2O+jgsJsFv46ojLa1Dsip1JzYkOGamsGRfmVVJM30+X6ptu5wefZ3VTfAA=
+X-Received: by 2002:a05:622a:181d:b0:42e:377e:8c07 with SMTP id
+ t29-20020a05622a181d00b0042e377e8c07mr854859qtc.11.1708645914096; Thu, 22 Feb
+ 2024 15:51:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202402221249.FA17A8940@keescook>
+References: <20240220111019.133697-1-herve.codina@bootlin.com>
+ <20240220111019.133697-3-herve.codina@bootlin.com> <20240220142959.GA244726@rigel>
+ <20240222005744.GA3603@rigel> <20240222010530.GA11949@rigel>
+ <CAMRc=MdCm4UXMkzvG17Vd=6ajE+feihgYc66qUNTTKXhN0--dA@mail.gmail.com>
+ <20240222123615.2cbada98@bootlin.com> <CAMRc=McTkVPD-1_5vvPcM2Q15=w+ocki2xTmvQzU-o395A930w@mail.gmail.com>
+In-Reply-To: <CAMRc=McTkVPD-1_5vvPcM2Q15=w+ocki2xTmvQzU-o395A930w@mail.gmail.com>
+From: Saravana Kannan <saravanak@google.com>
+Date: Thu, 22 Feb 2024 15:51:15 -0800
+Message-ID: <CAGETcx_j4613QjHgX5AJ96Ux6MJSxxhT7DL36yzNv1JCsoxTAA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] gpiolib: cdev: release IRQs when the gpio chip device
+ is removed
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Herve Codina <herve.codina@bootlin.com>, Kent Gibson <warthog618@gmail.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 22, 2024 at 01:00:40PM -0800, Kees Cook wrote:
-> > This does bring up some interesting questions. From off-list
-> > discussions with Tobin, I believe he is not particularly interested in
-> > maintaining this script any more. I was never set up to do the PRs
-> > myself, I agreed to be a reviewer to help Tobin out. I'm happy to
-> > adopt it if that makes sense, but I'm curious about the future of the
-> > script:
-> > 
-> > 1. is it useful? (seems like yes if you're adding features)
-> 
-> Yes, LKP runs it as part of 0-day, and it's found leaks in the past[1].
-> (Though its usage could be improved.)
+On Thu, Feb 22, 2024 at 4:21=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
+>
+> On Thu, Feb 22, 2024 at 12:36=E2=80=AFPM Herve Codina <herve.codina@bootl=
+in.com> wrote:
+> >
+> > Hi Bartosz,
+> >
+> > On Thu, 22 Feb 2024 00:31:08 -0800
+> > Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> >
+> > > On Thu, 22 Feb 2024 02:05:30 +0100, Kent Gibson <warthog618@gmail.com=
+> said:
+> > > > On Thu, Feb 22, 2024 at 08:57:44AM +0800, Kent Gibson wrote:
+> > > >> On Tue, Feb 20, 2024 at 10:29:59PM +0800, Kent Gibson wrote:
+> > > >> > On Tue, Feb 20, 2024 at 12:10:18PM +0100, Herve Codina wrote:
+> > > >>
+> > > >> ...
+> > > >>
+> > > >> > >  }
+> > > >> > >
+> > > >> > > +static int linereq_unregistered_notify(struct notifier_block =
+*nb,
+> > > >> > > +                                     unsigned long action, vo=
+id *data)
+> > > >> > > +{
+> > > >> > > +      struct linereq *lr =3D container_of(nb, struct linereq,
+> > > >> > > +                                        device_unregistered_n=
+b);
+> > > >> > > +      int i;
+> > > >> > > +
+> > > >> > > +      for (i =3D 0; i < lr->num_lines; i++) {
+> > > >> > > +              if (lr->lines[i].desc)
+> > > >> > > +                      edge_detector_stop(&lr->lines[i]);
+> > > >> > > +      }
+> > > >> > > +
+> > > >> >
+> > > >> > Firstly, the re-ordering in the previous patch creates a race,
+> > > >> > as the NULLing of the gdev->chip serves to numb the cdev ioctls,=
+ so
+> > > >> > there is now a window between the notifier being called and that=
+ numbing,
+> > > >> > during which userspace may call linereq_set_config() and re-requ=
+est
+> > > >> > the irq.
+> > > >> >
+> > > >> > There is also a race here with linereq_set_config().  That can b=
+e prevented
+> > > >> > by holding the lr->config_mutex - assuming the notifier is not b=
+eing called
+> > > >> > from atomic context.
+> > > >> >
+> > > >>
+> > > >> It occurs to me that the fixed reordering in patch 1 would place
+> > > >> the notifier call AFTER the NULLing of the ioctls, so there will n=
+o longer
+> > > >> be any chance of a race with linereq_set_config() - so holding the
+> > > >> config_mutex semaphore is not necessary.
+> > > >>
+> > > >
+> > > > NULLing -> numbing
+> > > >
+> > > > The gdev->chip is NULLed, so the ioctls are numbed.
+> > > > And I need to let the coffee soak in before sending.
+> > > >
+> > > >> In which case this patch is fine - it is only patch 1 that require=
+s
+> > > >> updating.
+> > > >>
+> > > >> Cheers,
+> > > >> Kent.
+> > > >
+> > >
+> > > The fix for the user-space issue may be more-or-less correct but the =
+problem is
+> > > deeper and this won't fix it for in-kernel users.
+> > >
+> > > Herve: please consider the following DT snippet:
+> > >
+> > >       gpio0 {
+> > >               compatible =3D "foo";
+> > >
+> > >               gpio-controller;
+> > >               #gpio-cells =3D <2>;
+> > >               interrupt-controller;
+> > >               #interrupt-cells =3D <1>;
+> > >               ngpios =3D <8>;
+> > >       };
+> > >
+> > >       consumer {
+> > >               compatible =3D "bar";
+> > >
+> > >               interrupts-extended =3D <&gpio0 0>;
+> > >       };
+> > >
+> > > If you unbind the "gpio0" device after the consumer requested the int=
+errupt,
+> > > you'll get the same splat. And device links will not help you here (o=
+n that
+> > > note: Saravana: is there anything we could do about it? Have you even
+> > > considered making the irqchip subsystem use the driver model in any w=
+ay? Is it
+> > > even feasible?).
 
-Oh! That is good news :)
+I did add support to irqchip to use the driver model. See
+IRQCHIP_PLATFORM_DRIVER_BEGIN() and uses of it.  So this makes sure
+the probe ordering is correct.
 
-> > 2. does it make sense to live here as a separate thing? should we
-> >    perhaps run it as part of kselftests or similar? I think that e.g.
-> >    681ff0181bbf ("x86/mm/init/32: Stop printing the virtual memory
-> >    layout") was not discovered with this script, but maybe if we put it
-> >    inline with some other stuff people regularly run more of these would
-> >    fall out? Maybe it makes sense to live somewhere else entirely
-> >    (syzkaller)? I can probably set up some x86/arm64 infra to run it
-> >    regularly, but that won't catch other less popular arches.
-> 
-> We could certainly do that. It would need some work to clean it up,
-> though -- it seems like it wasn't designed to run as root (which is how
-> LKP runs it, and likely how at least some CIs would run it).
-> 
-> > 3. perl. I'm mostly not a perl programmer, but would be happy to
-> >    rewrite it in python pending the outcome of discussion above.
-> 
-> I am not a Perl fan either. It does work as-is, though. Address leaks,
-> while worth fixing, are relatively low priority over all, so I wouldn't
-> prioritize a rewrite very highly.
+But when I added that support, there was some pushback on making the
+modules removable[1]. But that's why you'll see that the
+IRQCHIP_PLATFORM_DRIVER_BEGIN() macro set .suppress_bind_attrs =3D true.
 
-Yep, fair enough.
+Do you have a way to unregister an interrupt controller in your
+example? If so, how do you unregister it? It shouldn't be too hard to
+extend those macros to add removal support. We could add a
+IRQCHIP_MATCH2() that also takes in an exit() function op that gets
+called on device unbind.
 
-Tycho
+[1] - https://lore.kernel.org/lkml/86sghas7so.wl-maz@kernel.org/#t
+
+> > >
+> > > I would prefer this to be fixed at a lower lever than the GPIOLIB cha=
+racter
+> > > device.
+> >
+> > I think this use case is covered.
+> > When the consumer device related to the consumer DT node is added, a
+> > consumer/supplier relationship is created:
+> > parse_interrupts() parses the 'interrups-extended' property
+> >   https://elixir.bootlin.com/linux/v6.8-rc1/source/drivers/of/property.=
+c#L1316
+> > and so, of_link_to_phandle() creates the consumer/supplier link.
+> >   https://elixir.bootlin.com/linux/v6.8-rc1/source/drivers/of/property.=
+c#L1316
+> >
+> > We that link present, if the supplier is removed, the consumer is remov=
+ed
+> > before.
+> > The consumer should release the interrupt during its remove process (i.=
+e
+> > explicit in its .remove() or explicit because of a devm_*() call).
+> >
+> > At least, it is my understanding.
+>
+> Well, then it doesn't work, because I literally just tried it before
+> sending my previous email.
+
+For your gpio0 device, can you see why __device_release_driver()
+doesn't end up calling device_links_unbind_consumers()?
+
+Also, can you look at
+/sys/class/devlink/<bus:gpio0-devicename>--<consumer device name>
+folders and see what the status file says before you try to unbind the
+gpio0 device? It should say "active".
+
+> Please try it yourself, you'll see.
+>
+> Also: an interrupt controller may not even have a device consuming its
+> DT node (see IRQCHIP_DECLARE()), what happens then?
+
+Yeah, we are screwed in those cases. Ideally we are rejecting all
+submissions for irqchip drivers that use IRQCHIP_DECLARE().
+
+-Saravana
 
