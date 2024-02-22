@@ -1,322 +1,191 @@
-Return-Path: <linux-kernel+bounces-77149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EC638601AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:41:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE21B8601B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:41:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F116A1F271B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:41:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 763292871DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:41:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7210D1448C8;
-	Thu, 22 Feb 2024 18:33:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B943E1448EC;
+	Thu, 22 Feb 2024 18:33:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HDsXer1z"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="g83gJR89"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE66E143C77
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 18:33:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54D5A1448DF
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 18:33:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708626791; cv=none; b=kdgNlvOsMflWj6XhchGbjlleHsXNec5y49YT2YxmNzc0IS6NTzUxMJr89VQmnFosHtTmT/u2YvDTl15/Oh+G13Y8Dqysae2ZHRzxA8OnYEgSmT92ut15OuuRXsRIh4h+QDfvQSqHtffedn3M4Vo0a9OiqVtffS4C1HhwCHfKPg0=
+	t=1708626803; cv=none; b=YjN8ynp1eg3qyYaJno/yBVQs2KR4nV3tT1Ot/noEakwK9A1HIeONPEfpkwto1C1Lg1vm9pN0/p6/YzRsqQxH9XtpB95IxUuE3ft10TxEUUpO7pBxbfrMYhEYHMbxcPfp0Owj2fc59mR51gzz1RkyQNZAv/Y/1iMOvD/xFcmiaIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708626791; c=relaxed/simple;
-	bh=HsYrxcq5tk165uSW3sWTCmo4aIzGksWtXmlA+cPuDG8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JwR5I450FtF7jTwPo2dfDMVoqkCtgeL3Wli/3Tw9hPs2yRLIW+w5syL9ADzKfkUS32+7JvGgWyO8mJ+Rsfjmbv6opwsCJS29PuSCpNtCgHFiYNIfjzYF0KXBhfYqRIwbAKbn3WEh1wtaKbKMxLqqA4uZbfB6uM1zJI5TQYEp7uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HDsXer1z; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d5ce88b51cso10905ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 10:33:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708626789; x=1709231589; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d9jAQ6vztnGbguyhKBccVgks3srQ+6XA4/hNYShYVTw=;
-        b=HDsXer1zRivKi9BmCSX3bSiyuoZ4Hi2fTfstfZFQS1O4YJTJRMqBilU/rj39IKqjHR
-         LQ5yaoCwXSssMkUVAIS7EsPd0uUcArXGR45hHebq4dshgIcH99o7qOw0LsEYWBBwqFfu
-         IspXvC6jMQ1miCOBWIX+KCNBqBp5eC8qtvcdvaAoE7kCsuaFYQmELEcCWJ4Czx+lLWm2
-         LTn23W7tQTz7BO7yVrKMx0+0UKcmakWjtd2gaDBvzIG8NvUOCAV8xjCVPjd4z/NbG7gS
-         EUKI75afMGdWVGUSfd3XmIHLpA8XbEQxMjAms8E5qev9ww4kymNM7XuOAzk7DAO2oQku
-         Fo/A==
+	s=arc-20240116; t=1708626803; c=relaxed/simple;
+	bh=XSQAUK/U55m0KLayh5Wo5le7Vj1aHM53DbCd9IqoMdU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=teXSBf7iuVOEwbTEghPwiU5xPAeBKQ5UeRzOCfOSBHrDT/QO5OUzrIg0fZtBllo9OJEjt4dWGgw9tpLG4cI0skDqu1P2HgDUh4+CnHP3Vtn4+RY62/9pgDO6EDGqayGqTEJv6JsBj6i6XmlRu4049H3BzS6OYNHHohKbPida+8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=g83gJR89; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708626800;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IDF5rof44gEIb9jX4TIDVAFNvDzRBoYmWa48QZ9r6nQ=;
+	b=g83gJR897ZwJ8rUK8X1YTLxVGhoTuOhG56I2tSszT+J9GWM2FdvaR++WIq28LNW0Hy2egM
+	kaGysJ/uG6CthGSsm8gZUa4h8CJyi+sFVtoPDIiZsyRZGNXX3kSvJBtPE4aaUj3CYTVTDe
+	ji2b+4QZJvKMaFNGY4HLkK3kUzHtaog=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-638-qdYoPIW6PxCD_LyX9tY_nw-1; Thu, 22 Feb 2024 13:33:19 -0500
+X-MC-Unique: qdYoPIW6PxCD_LyX9tY_nw-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a3f07bcba8cso909466b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 10:33:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708626789; x=1709231589;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d9jAQ6vztnGbguyhKBccVgks3srQ+6XA4/hNYShYVTw=;
-        b=Nuk1WX/Z5ZVy+q+dl28hSG8z3iLCoB/0fgOi0cTI4mVTSIbif5srs3jmtfU2X3wMNl
-         nIPKQua2xOOuZYaIk4DQTSkvHerWlkRqyYj6TT4bbbXy3MZLLDUYdmTpHPIGvP289DfR
-         2kDCmWQ0hes9zV1zDv+WHyTYEyl/NpwOYW/9uo7Kqn6gqJ2B3A9IFKAolRt9cusz5fZu
-         ptG8IDEe2TalAbIo0lVVk090e+1bBIPIPPZzR7T3qDDTt1BhIj6YufYyjMBmLtCCJYt8
-         PkqEX2hNC741pNz2gVGRwBo8HTv4r2b1E9qhDH5Vj80HYqEZMfIxzJUyNvxCvQzfUsbE
-         jyRA==
-X-Forwarded-Encrypted: i=1; AJvYcCW54vbYwmg/lfFW4k0+qNgwUX8DLfTN1k0gj84zFp6/yU2Z5j4Fi92OC2c6NH6/tPDLgOWB1Loh+HT1ARvtdXlyJDr7IX8S4e+AAfBt
-X-Gm-Message-State: AOJu0YxvdbLWaUYS3yfrW4kLFdGFMJsXykePeTN5OFOS6VrpnPKW8PTA
-	4uGefMHqMIIRu9MaiHezE2/Lr4z6+NzFiHiWZ2r4TnqEUnqLO2n//bx8DAI8csZltNYz5+EbtHq
-	anhZ20kISNjxJeZmKAB/E3CrIKGgx/4NPTGyl
-X-Google-Smtp-Source: AGHT+IEOdmTEhF3GXiTovqgdmBWSFWJ1yTgGWCkKgjLlSaZUhaKVDLajj4yuSD9kH67iimbz3JjZQRwPrk18uNy1hwE=
-X-Received: by 2002:a17:902:8c8b:b0:1db:640f:cb43 with SMTP id
- t11-20020a1709028c8b00b001db640fcb43mr559978plo.8.1708626788451; Thu, 22 Feb
- 2024 10:33:08 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708626797; x=1709231597;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IDF5rof44gEIb9jX4TIDVAFNvDzRBoYmWa48QZ9r6nQ=;
+        b=NfwM/p95EWM9rUloxBzmsVElFLNUaIj3Io3bSKIf+8sP6Yk1gRZMkIXHZ5PqMeqfN3
+         wcEI2E+ygHYIsKOeiGN85ccQd6V4bQrR3ojEyf4vNLs07lh7A3SxUvSwPKNbntWsCYkU
+         6HOEi5+hBzVkjTH3+DmczrokmwT+VKofPXvSqwZq+R1UDeR08CYm45pzpZBmD9+K0xMD
+         zszWaCKGKR3+3HagB3rnMHJU/BtBoBakI0asp9BCOXWNu8aeODmLryaxkSX8nz+EfT/O
+         +jlHOy2tMQKU3puL9QoBNJGlfK4vdmvSarUOLIgzKAwiQmZQxZQ22cMZh2VIml9s2CUE
+         Cd5g==
+X-Forwarded-Encrypted: i=1; AJvYcCUMnLDUUvvgzzmL1BzT9479aRjtP1RyJizq2bdegfz7+bO2FaoSjHHWBXYX4UrTr+f81Pi7TSKMhcayuZ648zNV+Q0fx0xR2eNZFwMb
+X-Gm-Message-State: AOJu0YwFYiEDVXK9HVpcp4MpVFWFbMTlgZR32fhhCUhcJE53bETDv2qv
+	+Abt4olwD0GucNNiK0lPCTNfwXRB6FIIvLKtL7IRG15s/PQoThLuRTCZNJNS2ziVHwNRXgNhdCU
+	OrbkFmBwO8nNbaF8FK7wTlpBL7MLcbm/VcsX5aktLBAdt/FqcXCVz1L/uVeT6feaWnkr13w==
+X-Received: by 2002:a17:906:3b52:b0:a3f:1ec7:8765 with SMTP id h18-20020a1709063b5200b00a3f1ec78765mr4781454ejf.8.1708626797707;
+        Thu, 22 Feb 2024 10:33:17 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHy6MVM+yU0ergPm1eOLv+jCkZxkYnKmu7DqTz49UohXBGjHmSJ/pKffRukeXLaaXuaiUR+Cg==
+X-Received: by 2002:a17:906:3b52:b0:a3f:1ec7:8765 with SMTP id h18-20020a1709063b5200b00a3f1ec78765mr4781437ejf.8.1708626797348;
+        Thu, 22 Feb 2024 10:33:17 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id lu16-20020a170906fad000b00a3d5efc65e0sm4854658ejb.91.2024.02.22.10.33.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Feb 2024 10:33:16 -0800 (PST)
+Message-ID: <7013bf9e-2663-4613-ae61-61872e81355b@redhat.com>
+Date: Thu, 22 Feb 2024 19:33:15 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221175210.19936-1-khuey@kylehuey.com> <20240221175210.19936-2-khuey@kylehuey.com>
- <CAP-5=fXsv7TJ_SVOZc38fN0gn+7cWBcMWt3FdVLcs5v0_vO=uw@mail.gmail.com> <CAP045AoSHWoOP3TN=6Hf2wZj7X9Y41sThBQWCDZ3BEP68qeTBw@mail.gmail.com>
-In-Reply-To: <CAP045AoSHWoOP3TN=6Hf2wZj7X9Y41sThBQWCDZ3BEP68qeTBw@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Thu, 22 Feb 2024 10:32:54 -0800
-Message-ID: <CAP-5=fVWUAWa4vZ7_Zb_3DjaMiTGT6grfFO2j_kOFbuZemJZTA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] perf test: Test FASYNC with watermark wakeups.
-To: Kyle Huey <me@kylehuey.com>
-Cc: Kyle Huey <khuey@kylehuey.com>, "Robert O'Callahan" <robert@ocallahan.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] devm-helpers: Add resource managed version of mutex
+ init
+To: Matthew Auld <matthew.auld@intel.com>, =?UTF-8?Q?Marek_Beh=C3=BAn?=
+ <kabel@kernel.org>, linux-kernel@vger.kernel.org,
+ Matti Vaittinen <mazziesaccount@gmail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>,
+ Lucas De Marchi <lucas.demarchi@intel.com>, Oded Gabbay
+ <ogabbay@kernel.org>, =?UTF-8?Q?Thomas_Hellstr=C3=B6m?=
+ <thomas.hellstrom@linux.intel.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Aleksandr Mezin <mezin.alexander@gmail.com>, Jean Delvare
+ <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+ Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+ Sebastian Reichel <sre@kernel.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ linux-gpio@vger.kernel.org, intel-xe@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org,
+ linux-leds@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <20240222145838.12916-1-kabel@kernel.org>
+ <03e62bcf-137c-4947-8f34-0cbfcba92a30@intel.com>
+Content-Language: en-US, nl
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <03e62bcf-137c-4947-8f34-0cbfcba92a30@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 22, 2024 at 9:55=E2=80=AFAM Kyle Huey <me@kylehuey.com> wrote:
->
-> On Wed, Feb 21, 2024 at 10:36=E2=80=AFAM Ian Rogers <irogers@google.com> =
-wrote:
-> >
-> > On Wed, Feb 21, 2024 at 9:52=E2=80=AFAM Kyle Huey <me@kylehuey.com> wro=
-te:
-> > >
-> > > The test uses PERF_RECORD_SWITCH records to fill the ring buffer and
-> > > trigger the watermark wakeup, which in turn should trigger an IO
-> > > signal.
-> > >
-> > > Signed-off-by: Kyle Huey <khuey@kylehuey.com>
-> > > ---
-> > >  tools/perf/tests/Build              |   1 +
-> > >  tools/perf/tests/builtin-test.c     |   1 +
-> > >  tools/perf/tests/tests.h            |   1 +
-> > >  tools/perf/tests/watermark_signal.c | 123 ++++++++++++++++++++++++++=
-++
-> > >  4 files changed, 126 insertions(+)
-> > >  create mode 100644 tools/perf/tests/watermark_signal.c
-> > >
-> > > diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
-> > > index 53ba9c3e20e0..de43eb60b280 100644
-> > > --- a/tools/perf/tests/Build
-> > > +++ b/tools/perf/tests/Build
-> > > @@ -67,6 +67,7 @@ perf-y +=3D sigtrap.o
-> > >  perf-y +=3D event_groups.o
-> > >  perf-y +=3D symbols.o
-> > >  perf-y +=3D util.o
-> > > +perf-y +=3D watermark_signal.o
-> > >
-> > >  ifeq ($(SRCARCH),$(filter $(SRCARCH),x86 arm arm64 powerpc))
-> > >  perf-$(CONFIG_DWARF_UNWIND) +=3D dwarf-unwind.o
-> > > diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/built=
-in-test.c
-> > > index 4a5973f9bb9b..715c01a2172a 100644
-> > > --- a/tools/perf/tests/builtin-test.c
-> > > +++ b/tools/perf/tests/builtin-test.c
-> > > @@ -124,6 +124,7 @@ static struct test_suite *generic_tests[] =3D {
-> > >         &suite__event_groups,
-> > >         &suite__symbols,
-> > >         &suite__util,
-> > > +       &suite__watermark_signal,
-> > >         NULL,
-> > >  };
-> > >
-> > > diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
-> > > index dad3d7414142..7ef4e0d0a77b 100644
-> > > --- a/tools/perf/tests/tests.h
-> > > +++ b/tools/perf/tests/tests.h
-> > > @@ -146,6 +146,7 @@ DECLARE_SUITE(sigtrap);
-> > >  DECLARE_SUITE(event_groups);
-> > >  DECLARE_SUITE(symbols);
-> > >  DECLARE_SUITE(util);
-> > > +DECLARE_SUITE(watermark_signal);
-> > >
-> > >  /*
-> > >   * PowerPC and S390 do not support creation of instruction breakpoin=
-ts using the
-> > > diff --git a/tools/perf/tests/watermark_signal.c b/tools/perf/tests/w=
-atermark_signal.c
-> > > new file mode 100644
-> > > index 000000000000..ae4abedc4b7c
-> > > --- /dev/null
-> > > +++ b/tools/perf/tests/watermark_signal.c
-> > > @@ -0,0 +1,123 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +#include <stddef.h>
-> > > +#include <signal.h>
-> > > +#include <stdlib.h>
-> > > +#include <string.h>
-> > > +#include <sys/ioctl.h>
-> > > +#include <sys/mman.h>
-> > > +#include <sys/wait.h>
-> > > +#include <unistd.h>
-> > > +#include <errno.h>
-> > > +#include <fcntl.h>
-> > > +
-> > > +#include "tests.h"
-> > > +#include "debug.h"
-> > > +#include "event.h"
-> > > +#include "../perf-sys.h"
-> > > +#include "cloexec.h"
-> > > +#include <internal/lib.h> // page_size
-> > > +
-> > > +static int sigio_count;
-> > > +
-> > > +static void handle_sigio(int sig __always_unused)
-> > > +{
-> > > +       ++sigio_count;
-> > > +}
-> > > +
-> > > +static void do_child(void)
-> > > +{
-> > > +       for (int i =3D 0; i < 20; ++i)
-> > > +               sleep(1);
-> > > +
-> > > +       exit(0);
-> > > +}
-> > > +
-> > > +static int test__watermark_signal(struct test_suite *test __maybe_un=
-used, int subtest __maybe_unused)
-> > > +{
-> > > +       struct perf_event_attr attr;
-> > > +       struct perf_event_mmap_page *p =3D NULL;
-> > > +       sighandler_t previous_sigio =3D SIG_ERR;
-> > > +       pid_t child =3D -1;
-> > > +       int fd =3D -1;
-> > > +       int ret =3D TEST_FAIL;
-> > > +
-> > > +       previous_sigio =3D signal(SIGIO, handle_sigio);
-> > > +       if (previous_sigio =3D=3D SIG_ERR) {
-> > > +               pr_debug("failed setting SIGIO handler\n");
-> > > +               goto cleanup;
-> > > +       }
-> > > +
-> > > +       memset(&attr, 0, sizeof(attr));
-> > > +       attr.size =3D sizeof(attr);
-> > > +       attr.type =3D PERF_TYPE_SOFTWARE;
-> > > +       attr.config =3D PERF_COUNT_SW_DUMMY;
-> > > +       attr.sample_period =3D 1;
-> > > +       attr.disabled =3D 1;
-> > > +       attr.watermark =3D 1;
-> > > +       attr.context_switch =3D 1;
-> > > +       attr.wakeup_watermark =3D 1;
-> > > +
-> > > +       child =3D fork();
-> > > +       if (child =3D=3D 0)
-> > > +               do_child();
-> > > +       else if (child < 0) {
-> > > +               pr_debug("failed fork() %d\n", errno);
-> > > +               goto cleanup;
-> > > +       }
-> > > +
-> > > +       fd =3D sys_perf_event_open(&attr, child, -1, -1,
-> > > +                                perf_event_open_cloexec_flag());
-> > > +       if (fd < 0) {
-> > > +               pr_debug("failed opening event %llx\n", attr.config);
-> > > +               goto cleanup;
-> > > +       }
-> > > +
-> > > +       if (fcntl(fd, F_SETFL, FASYNC)) {
-> > > +               pr_debug("failed F_SETFL FASYNC %d\n", errno);
-> > > +               goto cleanup;
-> > > +       }
-> >
-> > Thanks for the work! The perf tool and perf test should run on older
-> > kernels ideally without failure. I'm assuming this would fail on an
-> > older kernel. Could we make the return value skip in that case?
->
-> Ah, hmm, I wasn't aware of that. This would fail on an older kernel,
-> yes. It's not possible to distinguish between an older kernel and a
-> kernel where this fix broke (at least not without hardcoding in an
-> expected good kernel version, which seems undesirable), so that would
-> mean the test would always return ok or skip, not ok or fail. Is that
-> ok?
+Hi,
 
-Not great :-) Is there any hint from the errno? I was hoping for
-EOPNOTSUPP but I'm guessing it will be EINVAL, in which case probably
-something like:
-/* Older kernels lack support. */
-ret =3D (errno =3D=3D EINVAL) ? TEST_SKIP : TEST_FAIL;
+On 2/22/24 17:44, Matthew Auld wrote:
+> On 22/02/2024 14:58, Marek Behún wrote:
+>> A few drivers are doing resource-managed mutex initialization by
+>> implementing ad-hoc one-liner mutex dropping functions and using them
+>> with devm_add_action_or_reset(). Help drivers avoid these repeated
+>> one-liners by adding managed version of mutex initialization.
 
-> > > +
-> > > +       if (fcntl(fd, F_SETOWN, getpid())) {
-> > > +               pr_debug("failed F_SETOWN getpid() %d\n", errno);
-> > > +               goto cleanup;
-> > > +       }
-> > > +
-> > > +       if (fcntl(fd, F_SETSIG, SIGIO)) {
-> > > +               pr_debug("failed F_SETSIG SIGIO %d\n", errno);
-> > > +               goto cleanup;
-> > > +       }
-> > > +
-> > > +       p =3D mmap(NULL, 2 * page_size, PROT_READ | PROT_WRITE, MAP_S=
-HARED, fd, 0);
-> > > +       if (p =3D=3D NULL) {
-> > > +               pr_debug("failed to mmap\n");
-> > > +               goto cleanup;
-> > > +       }
-> > > +
-> > > +       if (ioctl(fd, PERF_EVENT_IOC_ENABLE, 0)) {
-> > > +               pr_debug("failed PERF_EVENT_IOC_ENABLE %d\n", errno);
-> > > +               goto cleanup;
-> > > +       }
-> > > +
-> > > +       sleep(30);
-> >
-> > This is kind of a painful wait, could it be less? No sleeps would be be=
-st :-)
->
-> We could synchronize with the child using SIGSTOP instead of sleeping
-> here. Not sure about getting rid of the tiny sleeps in the child. I
-> have observed that sched_yield() doesn't reliably trigger context
-> switches (which isn't surprising). I'll experiment with blocking on a
-> pipe or something.
+<snip>
 
-Great, thanks!
-Ian
+>> index 74891802200d..70640fb96117 100644
+>> --- a/include/linux/devm-helpers.h
+>> +++ b/include/linux/devm-helpers.h
+>> @@ -24,6 +24,8 @@
+>>    */
+>>     #include <linux/device.h>
+>> +#include <linux/kconfig.h>
+>> +#include <linux/mutex.h>
+>>   #include <linux/workqueue.h>
+>>     static inline void devm_delayed_work_drop(void *res)
+>> @@ -76,4 +78,34 @@ static inline int devm_work_autocancel(struct device *dev,
+>>       return devm_add_action(dev, devm_work_drop, w);
+>>   }
+>>   +static inline void devm_mutex_drop(void *res)
+>> +{
+>> +    mutex_destroy(res);
+>> +}
+>> +
+>> +/**
+>> + * devm_mutex_init - Resource managed mutex initialization
+>> + * @dev:    Device which lifetime mutex is bound to
+>> + * @lock:    Mutex to be initialized (and automatically destroyed)
+>> + *
+>> + * Initialize mutex which is automatically destroyed when driver is detached.
+>> + * A few drivers initialize mutexes which they want destroyed before driver is
+>> + * detached, for debugging purposes.
+>> + * devm_mutex_init() can be used to omit the explicit mutex_destroy() call when
+>> + * driver is detached.
+>> + */
+>> +static inline int devm_mutex_init(struct device *dev, struct mutex *lock)
+>> +{
+>> +    mutex_init(lock);
+> 
+> Do you know if this this needs __always_inline? The static lockdep key in mutex_init() should be
+> different for each caller class. See c21f11d182c2 ("drm: fix drmm_mutex_init()").
 
-> - Kyle
->
-> > Thanks,
-> > Ian
-> >
-> > > +
-> > > +       ret =3D (sigio_count =3D=3D 1) ? TEST_OK : TEST_FAIL;
-> > > +
-> > > +cleanup:
-> > > +       if (p !=3D NULL)
-> > > +               munmap(p, 2 * page_size);
-> > > +
-> > > +       if (fd >=3D 0)
-> > > +               close(fd);
-> > > +
-> > > +       if (child > 0) {
-> > > +               kill(child, SIGTERM);
-> > > +               waitpid(child, NULL, 0);
-> > > +       }
-> > > +
-> > > +       if (previous_sigio !=3D SIG_ERR)
-> > > +               signal(SIGIO, previous_sigio);
-> > > +
-> > > +       return ret;
-> > > +}
-> > > +
-> > > +DEFINE_SUITE("Watermark signal handler", watermark_signal);
-> > > --
-> > > 2.34.1
-> > >
+That is a very good point. I believe that this should mirror mutex_init() and
+the actual static inline function should be __devm_mutex_init() which takes
+the key as extra argument (and calls __mutex_init()) and then make
+devm_mutex_init() itself a macro mirroring the mutex_init() macro.
+
+Regards,
+
+Hans
+
+
+
+
+
+
+> 
+>> +
+>> +    /*
+>> +     * mutex_destroy() is an empty function if CONFIG_DEBUG_MUTEXES is
+>> +     * disabled. No need to allocate an action in that case.
+>> +     */
+>> +    if (IS_ENABLED(CONFIG_DEBUG_MUTEXES))
+>> +        return devm_add_action_or_reset(dev, devm_mutex_drop, lock);
+>> +    else
+>> +        return 0;
+>> +}
+>> +
+>>   #endif
+> 
+
 
