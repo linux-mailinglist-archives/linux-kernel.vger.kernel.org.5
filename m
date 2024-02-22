@@ -1,115 +1,119 @@
-Return-Path: <linux-kernel+bounces-77253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CC7986029D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:24:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DC848602A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:26:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DFA91C24938
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:24:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F1D11C23304
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:26:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29F846AF81;
-	Thu, 22 Feb 2024 19:23:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OIBwBhIh"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8959548F2;
+	Thu, 22 Feb 2024 19:26:30 +0000 (UTC)
+Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08177548E4
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 19:23:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DF6B14B815;
+	Thu, 22 Feb 2024 19:26:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708629829; cv=none; b=gpM/Rebv7jZOSKZehKItZ3TwR+xr3R9dkw7z5CTFmlmUdSaN/jXv2m6RqApESQLruzFPR1oeTZ/SMsgQEGqMB8DKQe5M1S3sc/2Q7bJYTSvjyhxihHNGNoXWH6XfYr8DQzY63nxJQsg+EYI3iSHGREFIv3F4W+W3vMv3j2A9Izs=
+	t=1708629990; cv=none; b=mwx1QU8HZYhibRi3AxfSCAHfbL9cLIar2M0lrf6OKf/XaWzZrvbW24bffL58USXY+VcUBEI+fdQ75Yv/wTBOrPZnaxXcE5NE47Cr1DkUB0pmCiEBxGhz52SFOwegSNEigywS22C9ilx1tuUAkkiSPykP8Ion5XqO1Bg32l0O0qg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708629829; c=relaxed/simple;
-	bh=cq3Cnk+GZrsQGPtsY4OcFojjqqyL9ctq/cxxaE9pID4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WmjDWp1PI8/L6++hgVlZ/t7a7jlJXoi8UhuvIp9oYhvg3qm7qC3YUQqHFocdCfeceWYaSqWcPQ85UFjv3vdltZ0vulp1sAnzb4ASAs0Dh2Upml0wyxGoIlSj4osXs0CBJi280/pX2vpG/g25mrUDQQiO7ytr+e9W+NIpuQKTiL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OIBwBhIh; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708629827;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nZ+RDIdGnhU5lg6jFGeCqCjJlhqa8k7CnALV244t9Yw=;
-	b=OIBwBhIhS2r/I+/oeNfPlj3uvErLzJKBvwRTj2SyC9ZDDmxOA/0bCkGeJBgSUEtvfJn8hZ
-	D2ykKI6THH4Psgb+Eu3Wa+LfU5gWRmVJCE7cdwhy7ewRR9bqZm76mxzYQvprS9ti/OB7wB
-	zhXDThdOhmNeKBudbR9VzN2oRufT1Cw=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-601-2DEm0RmPMfKhBOcgchMomQ-1; Thu, 22 Feb 2024 14:23:45 -0500
-X-MC-Unique: 2DEm0RmPMfKhBOcgchMomQ-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-41290676819so298535e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:23:45 -0800 (PST)
+	s=arc-20240116; t=1708629990; c=relaxed/simple;
+	bh=5nGriczmZj2kIVVHsvlAX+Bf/FvI3il2JhqgUUCJoOQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mdSfx8Mb1ZAoxSfKGy4UwCfb3UmYhoquemOr2vCqvPgpvr2rMVOUqYNj9VgHsGnmUJA30REj67uF9fW5U/QgDLX5uZuU2VzaInHHQnqcXfBxbVCDHIvSchtSDtsUFT8IUaTuVIVc/AuWs425mFDbM+eDn5y5M8fcqdoZZCeT2KI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5a03c5f8b2eso25783eaf.0;
+        Thu, 22 Feb 2024 11:26:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708629824; x=1709234624;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nZ+RDIdGnhU5lg6jFGeCqCjJlhqa8k7CnALV244t9Yw=;
-        b=D02ALBMcB18nvMQa85NcvSAFA9hSI/TARocAHSbM7YqkAp7wS1paeOIrX6rD94ja6g
-         M5sNRy2aKFKhus3YXcsKL9Yp2XeEogITcCbmGru3hadLoPrTNezS1+l7MkY4LRJ0vWr1
-         MFeEL1s5+KResTVxtoqUzD8KDd2IxUgv5rITlMnlOpT1pY9a5doPcJJ4vxDMtsPm318w
-         zSWWvPdZEXVZZ9IEpUhAtbW6ltuWw8eYCSFlY49SI7tkcgsW3fk2jCm8krGRdTnkicvc
-         08TTLkUhRQaKqUXLPeUdeCKslPWy5zsgv9GlJZ5cUmIEykbY5YdhhhWSkFxzofwsmKXJ
-         4gQw==
-X-Forwarded-Encrypted: i=1; AJvYcCXngP+FizuNPgo6uC0l3NjHAAEgfxhjUZF2DLoaRG1yQ+dwouycX8GostG+WzvWLDgWXmSyWSmpz4Y1/rZfofubAQN33vjR5/BY5L8z
-X-Gm-Message-State: AOJu0Yx+6XJcUTvEAtUpDAnzHe+iTYqL1YxUUFnYVi4sqM8PMYK/Hyeq
-	km7S3VSIoSteAqvTN1z8z3VyHLS+HXY3CMTbZ7gSImRRyJtKAjbwQXoG4yT+c1Ejfi/Zepp+0gw
-	aIfYaqVvQ+nJRVp1KGT7hseWnkhamqgROg39cIPMGTXUxL+g9XbciywKpbeHsLg==
-X-Received: by 2002:a05:600c:4c99:b0:40e:a569:3555 with SMTP id g25-20020a05600c4c9900b0040ea5693555mr18945734wmp.35.1708629824327;
-        Thu, 22 Feb 2024 11:23:44 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHRkfAP3Yd4xKF6bdlzBebTP+hY1tBDnghJRdAmvC+uFZRuB+6mlbezFnXDMpRlAhkJUEHJUQ==
-X-Received: by 2002:a05:600c:4c99:b0:40e:a569:3555 with SMTP id g25-20020a05600c4c9900b0040ea5693555mr18945722wmp.35.1708629824024;
-        Thu, 22 Feb 2024 11:23:44 -0800 (PST)
-Received: from redhat.com ([172.93.237.99])
-        by smtp.gmail.com with ESMTPSA id g16-20020a05600c311000b004127942bcd6sm5410408wmo.7.2024.02.22.11.23.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 11:23:43 -0800 (PST)
-Date: Thu, 22 Feb 2024 14:23:36 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Tobias Huschle <huschle@linux.ibm.com>
-Cc: Jason Wang <jasowang@redhat.com>, Abel Wu <wuyun.abel@bytedance.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Linux Kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-	virtualization@lists.linux.dev, netdev@vger.kernel.org
-Subject: Re: Re: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6
- sched/fair: Add lag based placement)
-Message-ID: <20240222142254-mutt-send-email-mst@kernel.org>
-References: <42870.123121305373200110@us-mta-641.us.mimecast.lan>
- <20231213061719-mutt-send-email-mst@kernel.org>
- <25485.123121307454100283@us-mta-18.us.mimecast.lan>
- <20231213094854-mutt-send-email-mst@kernel.org>
- <20231214021328-mutt-send-email-mst@kernel.org>
- <92916.124010808133201076@us-mta-622.us.mimecast.lan>
- <20240121134311-mutt-send-email-mst@kernel.org>
- <07974.124020102385100135@us-mta-501.us.mimecast.lan>
- <20240201030341-mutt-send-email-mst@kernel.org>
- <89460.124020106474400877@us-mta-475.us.mimecast.lan>
+        d=1e100.net; s=20230601; t=1708629988; x=1709234788;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rtuBWALuMCKrRG+zlFuBRAVfOELJtSXnc6CkMeHVjWw=;
+        b=ZHEIOw/MJzlPLcVr+YrMLURZHITMk+KhE1O+xbnnmKrElrZLS49RbPaQY2pMGELhss
+         AK+OWMuMAh0y34YVaIfW0hk0X68v4jRtsgugyRKe1C4OBchPN8Z8RKQx55GeuPGOV2j+
+         jjrUWP/RH3eXNc/P82zLh6xLSYov5nsWYIgWUTGaVDhrBLpxM56NbtCy2Jp/DytM74UA
+         ovKly2hAwz19ySlBI/55Eeu/oaDki5h12vpsR5niCV/CWBhHm2Jt0XEmAVG9OGDuElMD
+         XNQh4gsr2xcLxuaHjAGdYA1zB6TGYWGKZycZpeSXSsFjHfvELXVki1Fg+gGDdWCDRegH
+         EbFg==
+X-Forwarded-Encrypted: i=1; AJvYcCV8yhLWqNkI2nmvg2C9CRxNiaGPAGk8pDBnPR8YBRbH+Rdvo31KfLk3mj0WPqFhrFV3PkFtm6/cXOIJ+CnEdHob3XmxoxwMrF8=
+X-Gm-Message-State: AOJu0Ywc1P8/RvutViz2uF5r+NVFgjvcpU5Srp1e0K7mFf6zhMAU9sKn
+	Rw8v/BvgrzkzGtkTau1hxTKvWww93asjAckkCGIP+nX6m9JqMBJLcNxiWfKwq3IhCruhEoS7yNN
+	MsiNSfcVv5M658FUSzMu+38ceSLQ=
+X-Google-Smtp-Source: AGHT+IHr1zKwo/yRBl3RGgoeFsYfe7XwkhKFNKAp6YQOMfDOHC5BhV1AMr69hafezDF8k+jEOKb6+AgyLj/SPmkh/Xs=
+X-Received: by 2002:a4a:e89a:0:b0:5a0:168b:d91 with SMTP id
+ g26-20020a4ae89a000000b005a0168b0d91mr5103254ooe.1.1708629988119; Thu, 22 Feb
+ 2024 11:26:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <89460.124020106474400877@us-mta-475.us.mimecast.lan>
+References: <20240221142550.1814055-1-lukasz.luba@arm.com>
+In-Reply-To: <20240221142550.1814055-1-lukasz.luba@arm.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 22 Feb 2024 20:26:17 +0100
+Message-ID: <CAJZ5v0h-HmTTGY2N2BK6paga8yaqv8u6rLosH5oqrRHPMt3Xkg@mail.gmail.com>
+Subject: Re: [PATCH] PM: EM: Fix nr_states warnings in static checks
+To: Lukasz Luba <lukasz.luba@arm.com>
+Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, rafael@kernel.org, 
+	kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 01, 2024 at 12:47:39PM +0100, Tobias Huschle wrote:
-> I'll do some more testing with the cond_resched->schedule fix, check the
-> cgroup thing and wait for Peter then.
-> Will get back if any of the above yields some results.
+On Wed, Feb 21, 2024 at 3:25=E2=80=AFPM Lukasz Luba <lukasz.luba@arm.com> w=
+rote:
+>
+> During the static checks nr_states has been mentioned by the kernel test
+> robot. Fix the warning in those 2 places.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>  kernel/power/energy_model.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
+> index 7101fa3fa0c0..b686ac0345bd 100644
+> --- a/kernel/power/energy_model.c
+> +++ b/kernel/power/energy_model.c
+> @@ -280,6 +280,7 @@ static int em_compute_costs(struct device *dev, struc=
+t em_perf_state *table,
+>   * em_dev_compute_costs() - Calculate cost values for new runtime EM tab=
+le
+>   * @dev                : Device for which the EM table is to be updated
+>   * @table      : The new EM table that is going to get the costs calcula=
+ted
+> + * @nr_states  : Number of performance states
+>   *
+>   * Calculate the em_perf_state::cost values for new runtime EM table. Th=
+e
+>   * values are used for EAS during task placement. It also calculates and=
+ sets
+> @@ -728,7 +729,6 @@ static void em_check_capacity_update(void)
+>                 struct cpufreq_policy *policy;
+>                 unsigned long em_max_perf;
+>                 struct device *dev;
+> -               int nr_states;
+>
+>                 if (cpumask_test_cpu(cpu, cpu_done_mask))
+>                         continue;
+> @@ -749,7 +749,6 @@ static void em_check_capacity_update(void)
+>                 cpumask_or(cpu_done_mask, cpu_done_mask,
+>                            em_span_cpus(pd));
+>
+> -               nr_states =3D pd->nr_perf_states;
+>                 cpu_capacity =3D arch_scale_cpu_capacity(cpu);
+>
+>                 rcu_read_lock();
+> --
 
-As I predicted, if you want attention from sched guys you need to
-send a patch in their area.
-
--- 
-MST
-
+Applied, thanks!
 
