@@ -1,240 +1,180 @@
-Return-Path: <linux-kernel+bounces-77219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5365E860244
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:08:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43C45860249
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:09:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0954E289EB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:08:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A47C11F2920B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:09:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E75FA54901;
-	Thu, 22 Feb 2024 19:07:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC102548FF;
+	Thu, 22 Feb 2024 19:08:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g7ezQTfW"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K/7DCy/Q"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BE2654902
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 19:06:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.18
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708628817; cv=fail; b=Z5SDMdePKBcZ8ha/7Z8cCDsNflETru/Nw77WtocuLnUNByUsCeswToZsFHZfvNUhVUevcUPmn87RRdPwCaPspbQ6602vyeB4bghLHyLQuAPujA/tHGdY8BFSasgr2dyTvSPb/giEukGprmLoZXvP0cj8JR98bwG1fJr+BfDDaTE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708628817; c=relaxed/simple;
-	bh=TGtIY7Walra+75J+vJpabHIURacTbTv1Eky/N+fJ12o=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=PfkUW3dEZXokXWFz+y2vySBvKR5IJktTSh0PxFah4nM3+aM5YT4ng3ZDBfh868qrpNRiWa6Ie6RffgvLeOFyJDZeD786uNIKwuMDHNkJjK44sh5ZPkj/IrbDOTxnk8m9vyRjsMuGSQG2txUwLDP21A3YkmXfAWuThoMrOur2xMs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g7ezQTfW; arc=fail smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708628801; x=1740164801;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=TGtIY7Walra+75J+vJpabHIURacTbTv1Eky/N+fJ12o=;
-  b=g7ezQTfWjDwjflD24fD7pI7KvGHYqYvUz5gL/MSk+Ih/GvFrlmqeY7vm
-   N5B5oJe1OoTS21CIX2wR+GXGLovsQ/dWN6al+jMYIRBMt3emZYpuPYA5x
-   Utyc3tkSNx0r9be0Hf8d9joC9KXpEUexAz0p8KhVePuaGmsqJlRDGbX0Q
-   ykOcCMzj1DQyZ8+lYXvKMhum2h0kUQabEsx6sq0JFDoLQSK2JYf3oH76/
-   3bwcF3DFgaor7I+4hV6F83kQKSK/Ym1yUiB2bnnFTb/fJQuPrxhxisRBM
-   DAR8V3QAXlHeXhHTjWX4vQ1pSmcl1isGO+MAo/DlpG3RF4ADi+5ma/B9+
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="2763105"
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="2763105"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 11:06:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="28728953"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Feb 2024 11:06:37 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 22 Feb 2024 11:06:36 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 22 Feb 2024 11:06:36 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 22 Feb 2024 11:06:36 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e08xHI9n8mxDQhuz0B3YhjZ2fcL8Ve6nnLZWAqRTPvFcJAttP/fHJ1siErT/jKLxwyb7F4bVxbF9FnS9Tu7ntpJJsEO1CJAtF4GWi1f97GyWAouyqcut07TPBf+VhjemgXIzhUgU/tXXXbX88nSS5U/DGBinNz0CuNES2osXVp3lOxS9Y2YPQh96zhHmTy7HJ5DZddrteZcjQm7Zq28tB+ZM4WIXfCemaeITNzcg1v5vmt4loK5KOMcKT5+QQoMsHLFSEXF18IL+EPo8cXmnAWF6X1k2brr8KXkPewU+6haPdB4T7rAlKoqAoLKrXnkYwtjexD0Jn5hSw4rb1Z6TLA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Jt4xsx8VHh+k7Stv58KMWrueBwJ+zRjRB1G+KTPy4ag=;
- b=G9q2x3o5k0dU8shaE2rnYInMOZsV1aG4sp+/9pHWGAwwQ+4oYjOIR63nOsrjhA2mThtDl1L53u5x/uAeDOf1rWPHEk7q9sZzQxftELuK2lDYB60cp1Fx/1XYOB3FnlNisM9qAURHFHG21srjasImOeJo5kNBlnlXROBcjSLaNaPYZA894sGwCmmfuZC21ofjD0a/q3KqJBSOhGA1xi62R/MJV4dvFPxcGNQ6vKVKyB+BRQ/cIz3AyToYsbVGku4lEmN9CRqxUC1QVcf3DVLws0yUehFSQhZp14BswRgjvZ6YyfDQgqUJ2iMyOcSjGxCwQtLJNUR1rhOLSAdRY/JfMg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN0PR11MB6059.namprd11.prod.outlook.com (2603:10b6:208:377::9)
- by SN7PR11MB6800.namprd11.prod.outlook.com (2603:10b6:806:260::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.42; Thu, 22 Feb
- 2024 19:06:32 +0000
-Received: from MN0PR11MB6059.namprd11.prod.outlook.com
- ([fe80::a7f1:384c:5d93:1d1d]) by MN0PR11MB6059.namprd11.prod.outlook.com
- ([fe80::a7f1:384c:5d93:1d1d%4]) with mapi id 15.20.7339.009; Thu, 22 Feb 2024
- 19:06:32 +0000
-Date: Thu, 22 Feb 2024 14:06:25 -0500
-From: Rodrigo Vivi <rodrigo.vivi@intel.com>
-To: Abhinav Kumar <quic_abhinavk@quicinc.com>
-CC: <dri-devel@lists.freedesktop.org>, Maarten Lankhorst
-	<maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>, Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Tvrtko Ursulin
-	<tvrtko.ursulin@linux.intel.com>, <robdclark@gmail.com>,
-	<freedreno@lists.freedesktop.org>, <dmitry.baryshkov@linaro.org>,
-	<intel-gfx@lists.freedesktop.org>, <ville.syrjala@linux.intel.com>,
-	<quic_jesszhan@quicinc.com>, <linux-kernel@vger.kernel.org>,
-	<intel-xe@lists.freedesktop.org>
-Subject: Re: [PATCH v3 2/2] drm/dp: drop the size parameter from
- drm_dp_vsc_sdp_pack()
-Message-ID: <ZdebMVIA_EH_R_4D@intel.com>
-References: <20240220195348.1270854-1-quic_abhinavk@quicinc.com>
- <20240220195348.1270854-2-quic_abhinavk@quicinc.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240220195348.1270854-2-quic_abhinavk@quicinc.com>
-X-ClientProxiedBy: SJ0PR05CA0077.namprd05.prod.outlook.com
- (2603:10b6:a03:332::22) To MN0PR11MB6059.namprd11.prod.outlook.com
- (2603:10b6:208:377::9)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41AD614B837;
+	Thu, 22 Feb 2024 19:08:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708628892; cv=none; b=LfO2XQzZZsH+jhzhCCsQHW/3Hl/jmVRR/jccuD0jTcgsTibGcMaFpLRg30qsR5zVMm3r4EcDHP0zcm/cee9hs3vRvMCIpbIUnfInnA5Ycxexyb/T07kRvQ1xi9QhuTkRosF9uexRtgP1lRHMYDS2AGNBJ9CUStz1DRCyvvrHTwM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708628892; c=relaxed/simple;
+	bh=Vj0CdswYrgpd1U1o0M5HTUkMxkiuvEUXaGvjLSwzlcU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Xg8j+X/mrhEGY5+eYvZRvxz3B/R5lbd+ZvNr7kT7+Lk+VVmu+qCJfa643ixGH7/aAjguMLEhz9O4CZYc7xp1MI1fDOXk9JUj6NS4Q+uSwHr8UHdaC480WqOAHgvVZrdgrkYWvqOjgp7Tgu4WjxRU7yJOsW+CAQ2T6AQ1kylGbWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K/7DCy/Q; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-564372fb762so3143137a12.0;
+        Thu, 22 Feb 2024 11:08:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708628888; x=1709233688; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zwGHver7Zdn7kvlDq1hFb/tIb6DJ0PWghCpxj29Cdaw=;
+        b=K/7DCy/QKu3Bg+TuZ+KnBDbL6HFVR0pjpi9d37QdRCmFOP3faECjUfPT1GM1p8GTs6
+         ZTU3XDmfYMYp+U2sR8FGqweK8g9/2Zm+YB1fZP9IKeZQ7jpXRhtoYFdmcRgsK3DmYHzC
+         be5QMWDMMpI9MVKnHtwvn0v4CklfCGaPtB4ne2Om4FbhF40SEZMXz8mPPqzERGAT20gO
+         OgdaBcp/bJgK/h3ONfZdsQCj9WNTCljOsWkDWBfj6LFg0L6RKOHNe+858ycsufGww5Bs
+         tY2mOwjIJ60Ny5Pi3BrYnJRwHkF4qPXzxrTnRBXVLknmrH6s4AFEunz1I7+ElGquzOce
+         U6xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708628888; x=1709233688;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zwGHver7Zdn7kvlDq1hFb/tIb6DJ0PWghCpxj29Cdaw=;
+        b=bSOWpa2tCsiSgxbh4EGxwk8Pvqtt/meZcXiF36kiXOhvc8UPONdRQJqzGWjfYaO9sM
+         VGzd2JUDMjGn93QYXFB6NvM81Ns/XVOsyPWR9qhJWaDEAPCGAcHdEQ5F4JslqUQK7Dmp
+         dRt7gSPY+feuoHczrW6Y8jErBqsSaPIuUI2Er4BnJfzKIx6ceMIM5Mo6WJ39JGFtlbBv
+         ruSbzArqB9rKIpoxfkSmJ2941b42wg75ddXnd8s3PWFqBKXW0xTFSh1wJCGj8QOWeFEs
+         FT9L7vClexKyGuy0kDI2G1CVV0kw38jiTecQJXkud2AVUPvsHaBFDxYeP+M2BaMEo93S
+         e6nw==
+X-Forwarded-Encrypted: i=1; AJvYcCUPCdEA6rxv4oewM3v0Hy/KO8mQfo0WD1+VuJ7CBy8LfMBkaCMuD/16mEuAkaF2I2dIXBZuMGij4s9H+kW0as5qvAIcCLJLDB6iEb1JoBwp0pc1a1aokLgVYNjMIFfdVRBXvgRR/55FyKtxTWPTlOZHJ/f/2TAGa4MYiEu7ywirh362x6s=
+X-Gm-Message-State: AOJu0YyeM3NGI2NjEycmThTvZ5fajUlkhGGx0F+QZBxJZYmak5uwFKYZ
+	MhSN1u3RJUnrTzZs9DjJZI/l9YR48C0IisY0d5E2HUvxl12MFtYP
+X-Google-Smtp-Source: AGHT+IH07eQ34d4DdPWILOvpSPCbS9FOaWmp8ij6cDkZAQw5B9sGMqV+xWKbUWYZV2D0b3TvgKbqtg==
+X-Received: by 2002:a17:906:aad1:b0:a3e:a3d6:eb6f with SMTP id kt17-20020a170906aad100b00a3ea3d6eb6fmr8035501ejb.48.1708628888412;
+        Thu, 22 Feb 2024 11:08:08 -0800 (PST)
+Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
+        by smtp.gmail.com with ESMTPSA id xg7-20020a170907320700b00a3d11feb32esm6145225ejb.186.2024.02.22.11.08.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 11:08:07 -0800 (PST)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>,
+ Sandy Huang <hjc@rock-chips.com>,
+ Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
+ Chen-Yu Tsai <wens@csie.org>, Samuel Holland <samuel@sholland.org>,
+ Maxime Ripard <mripard@kernel.org>
+Cc: Hans Verkuil <hverkuil@xs4all.nl>,
+ Sebastian Wick <sebastian.wick@redhat.com>,
+ Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
+ dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+ linux-sunxi@lists.linux.dev, Maxime Ripard <mripard@kernel.org>,
+ Sui Jingfeng <sui.jingfeng@linux.dev>
+Subject: Re: [PATCH v7 32/36] drm/sun4i: hdmi: Convert encoder to atomic
+Date: Thu, 22 Feb 2024 20:08:05 +0100
+Message-ID: <4545275.LvFx2qVVIh@jernej-laptop>
+In-Reply-To: <20240222-kms-hdmi-connector-state-v7-32-8f4af575fce2@kernel.org>
+References:
+ <20240222-kms-hdmi-connector-state-v7-0-8f4af575fce2@kernel.org>
+ <20240222-kms-hdmi-connector-state-v7-32-8f4af575fce2@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR11MB6059:EE_|SN7PR11MB6800:EE_
-X-MS-Office365-Filtering-Correlation-Id: ee04d144-870c-4446-09fb-08dc33d961c9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JbLtv3krVJWdPyXDA2b8XzF3amQL8JhtQFxsVjAZQVNbKaOkZQfendsT7p6bsqe+gqQp95/4fqDknbAs2lqelIo6jHyo/KfPFY3l0CGB6O6Y3YcuaaZaBJPqC4tSKvyPxMyfxbEVsKH/O3RZ5/KGpmYB2P77VrxBaUfJDYtFaarfzK5qKI26189hBaiMNo4xVrrZvCYdQXSMKQK9QCPG5xCkm4LYu2S+sEViQph4FjbEM5uTzBVmLg9LcYIYFDC74iiXah858/I9ER2L7TsLZ2gRIZ/Evt0WE+EDyT1BxXfJ2GfnBueW1Ba2OisJNSDVY988B1aNpmkSNRf7F2njZEktIkg9lLTmEi4e0OIgP5c8krQLmOR3+kYrOBtzGpmmdkE+92ZgKDAh+ItkvZMdRYqTuFeimdRfI6KjONuZDfOFyijVqnhl9nokBUyWttlJ9CNbIg4AgxNRxjxhbCo0jQJVRGIqnzLfbmjBIi47/SZs2buKLXh5LU9s5LCGIxhk+8Q6gat48sIJYOUeCDt/PdfEzEbkS/jmsjUMgriR6+c=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6059.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Z5ooizlSn63eNhbbf8jV1+L5JcEJB3I/Ukhjx0MJpPzyrw0ikTPBjp7YFIVF?=
- =?us-ascii?Q?sPi9QK5PkZYyDG0/hwbu5eG84WvalZE2L91RG7pIs9YpS7jZM0Rha4Z9wKl7?=
- =?us-ascii?Q?PNrN2iA6N1rmSdGjIiAGbms2Jfgf1qY3xw2vMuBu2kBNj6LmqGGEf/tcVs3j?=
- =?us-ascii?Q?4boaX8PygzxlsmKIDkXh3jYICxeZHYOhcc7Se2KAKyF0zlX8kBTPSj0k1LF/?=
- =?us-ascii?Q?mz1voJejZQc0ahX41Ey3wPu5yBffbiv3EfdyL2a8OkXdX/w+y+cgtiqsvkVC?=
- =?us-ascii?Q?ibQU1Py/VJtGGfUKJvX4BpDJg8XW1MDnOYsQONfpnoRbp06cEQHk4+cTPhQT?=
- =?us-ascii?Q?giHpAlITY38lfGgb4CPNQWxX5Ei+ymB7cFqIvfEcforXG4kLYaTW+uy9spLt?=
- =?us-ascii?Q?Uf3ILDy3+y481q9IdpsX2F2cu4EP0sKJU34SBl3gcxILRzQkl/y9lfYjqEPY?=
- =?us-ascii?Q?sibwk8DxBhJobfbDIJBzar3N5CidhId/6VORSEAeADKC/WrWgHTd/lM96mvn?=
- =?us-ascii?Q?yxEV/sXAn5v/UeSsbHcmcJjsfYVvb4wfTAI8WZ2rkWBrUHH5U3B6myj4bGCJ?=
- =?us-ascii?Q?xOiVUrKjGuzYo6Ltr0O6AWwREsleKIbcH67BcgN5N4X4iRDSCrMu8Xu/qMD+?=
- =?us-ascii?Q?6Ep/Kx+/YxzNwYBemrmKXucHkWYED9UkRikNIwV1MOR3F31RnOz3fP1jiSxN?=
- =?us-ascii?Q?4ZCoi18FoYoRsVTf7NXvLmn+4h8Dw3SbCUkFiTKI8ifZaVBLUb9V3DENu0+k?=
- =?us-ascii?Q?5jdO474ZUdZ7ZNXaN8PFlKDLkHPiJAsE8ZQBFdp9QBegTnC/hRFgBjVu8jXF?=
- =?us-ascii?Q?F4DHXOuJNz0P9myUbyk+Xpd9n1ts0+cF+kxwmabnYRnqHFkjSXRtnHO4v0R5?=
- =?us-ascii?Q?oq1hDXEl1PFinGKtRBcGv83EPxlQS3tRORndB/VukXArS/DynNJ8Es92WgxP?=
- =?us-ascii?Q?oHxMGSBUtr9UORt3ImrgKR72ClKADUpUMQz0KFtce83xWER8Ee2yC9XjfTS5?=
- =?us-ascii?Q?8AgOqU0S/VFDadeWgL6hh6ivzGzBpp++iCpI0agbq3c+AnBrnmzJQbrZrBFC?=
- =?us-ascii?Q?GA1fo2vwN81oqDYtr57/CnZpq5fbHVz0pceQP49YVUOfMKbzF8m2I8kPkqG9?=
- =?us-ascii?Q?nuYpaED6/tuUczP7dtTvOH9aT8e1n34r5hdYoWOkj9pg4uWxhRYts+3PhTDA?=
- =?us-ascii?Q?1RkY9Q6GAwY0kCugc+7M/9pmGXjykmugvHqc8foN0arFg+HiofuiNhXcTLd6?=
- =?us-ascii?Q?tW6crujAt3hvObbB2LZy+JQq2jJwtD8zH8XTRhROy4gp+MA/JZYsUWnfyLwG?=
- =?us-ascii?Q?cnjKHzl2OoC2J7nGWzPT8hRs3sXb/Qtyl+0HjNajYje+cAfmw2LvsZ/+1kHA?=
- =?us-ascii?Q?DKhH8B3v66R3Z7kTj6e5oc7g0LpNlX57p5oazdZKA2IH7PZb+UKoF9HI7saZ?=
- =?us-ascii?Q?LzjIPlYHrQ2YrGlWJfzwe3/2R/pbdqI4q9Mvv2H9bDSqrCYU8CkuU8NEvfjv?=
- =?us-ascii?Q?ckCjc0IHl2AVCh9xzrl9MH6EjIPB+5pUMw9XYBwSwZxB1gBjclDNRbwbM70H?=
- =?us-ascii?Q?KtdSxTkdL2kyuLDFRY6oBqLBQ2PN6XLDq/JyqJp6gjJiy0tGZiMJ0ogpU1wR?=
- =?us-ascii?Q?iQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: ee04d144-870c-4446-09fb-08dc33d961c9
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6059.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2024 19:06:32.3240
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NB+uIqZKy0VsKBNOKl4n6g1H4e8+BNDrCSx4wkx2B5fQEJ3GGmdI4wA2OXgWkXeDHbqCFn+LmVM06tUokQtI7w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6800
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Feb 20, 2024 at 11:53:47AM -0800, Abhinav Kumar wrote:
-> Currently the size parameter of drm_dp_vsc_sdp_pack() is always
-> the size of struct dp_sdp. Hence lets drop this parameter and
-> use sizeof() directly.
-> 
-> Suggested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Dne =C4=8Detrtek, 22. februar 2024 ob 19:14:18 CET je Maxime Ripard napisal=
+(a):
+> The sun4i_hdmi driver still uses the non-atomic variants of the encoder
+> hooks, so let's convert to their atomic equivalents.
+>=20
+> Acked-by: Sui Jingfeng <sui.jingfeng@linux.dev>
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+
+Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+
+Best regards,
+Jernej
+
 > ---
->  drivers/gpu/drm/display/drm_dp_helper.c | 8 ++------
->  drivers/gpu/drm/i915/display/intel_dp.c | 3 +--
-
-Acked-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
-
->  include/drm/display/drm_dp_helper.h     | 3 +--
->  3 files changed, 4 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/display/drm_dp_helper.c b/drivers/gpu/drm/display/drm_dp_helper.c
-> index 6c91f400ecb1..10ee82e34de7 100644
-> --- a/drivers/gpu/drm/display/drm_dp_helper.c
-> +++ b/drivers/gpu/drm/display/drm_dp_helper.c
-> @@ -2918,19 +2918,15 @@ EXPORT_SYMBOL(drm_dp_vsc_sdp_log);
->   * @vsc: vsc sdp initialized according to its purpose as defined in
->   *       table 2-118 - table 2-120 in DP 1.4a specification
->   * @sdp: valid handle to the generic dp_sdp which will be packed
-> - * @size: valid size of the passed sdp handle
->   *
->   * Returns length of sdp on success and error code on failure
->   */
->  ssize_t drm_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
-> -			    struct dp_sdp *sdp, size_t size)
-> +			    struct dp_sdp *sdp)
+>  drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c | 17 ++++++++++-------
+>  1 file changed, 10 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c b/drivers/gpu/drm/sun=
+4i/sun4i_hdmi_enc.c
+> index 152375f3de2e..799a26215cc2 100644
+> --- a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
+> +++ b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
+> @@ -82,7 +82,8 @@ static int sun4i_hdmi_atomic_check(struct drm_encoder *=
+encoder,
+>  	return 0;
+>  }
+> =20
+> -static void sun4i_hdmi_disable(struct drm_encoder *encoder)
+> +static void sun4i_hdmi_disable(struct drm_encoder *encoder,
+> +			       struct drm_atomic_state *state)
 >  {
->  	size_t length = sizeof(struct dp_sdp);
->  
-> -	if (size < length)
-> -		return -ENOSPC;
-> -
-> -	memset(sdp, 0, size);
-> +	memset(sdp, 0, sizeof(struct dp_sdp));
->  
->  	/*
->  	 * Prepare VSC Header for SU as per DP 1.4a spec, Table 2-119
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-> index a9458df475e2..e13121dc3a03 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
-> @@ -4181,8 +4181,7 @@ static void intel_write_dp_sdp(struct intel_encoder *encoder,
->  
->  	switch (type) {
->  	case DP_SDP_VSC:
-> -		len = drm_dp_vsc_sdp_pack(&crtc_state->infoframes.vsc, &sdp,
-> -					  sizeof(sdp));
-> +		len = drm_dp_vsc_sdp_pack(&crtc_state->infoframes.vsc, &sdp);
->  		break;
->  	case HDMI_PACKET_TYPE_GAMUT_METADATA:
->  		len = intel_dp_hdr_metadata_infoframe_sdp_pack(dev_priv,
-> diff --git a/include/drm/display/drm_dp_helper.h b/include/drm/display/drm_dp_helper.h
-> index 8474504d4c88..1f41994796d3 100644
-> --- a/include/drm/display/drm_dp_helper.h
-> +++ b/include/drm/display/drm_dp_helper.h
-> @@ -812,7 +812,6 @@ int drm_dp_bw_overhead(int lane_count, int hactive,
->  		       int bpp_x16, unsigned long flags);
->  int drm_dp_bw_channel_coding_efficiency(bool is_uhbr);
->  
-> -ssize_t drm_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
-> -			    struct dp_sdp *sdp, size_t size);
-> +ssize_t drm_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc, struct dp_sdp *sdp);
->  
->  #endif /* _DRM_DP_HELPER_H_ */
-> -- 
-> 2.34.1
-> 
+>  	struct sun4i_hdmi *hdmi =3D drm_encoder_to_sun4i_hdmi(encoder);
+>  	u32 val;
+> @@ -96,7 +97,8 @@ static void sun4i_hdmi_disable(struct drm_encoder *enco=
+der)
+>  	clk_disable_unprepare(hdmi->tmds_clk);
+>  }
+> =20
+> -static void sun4i_hdmi_enable(struct drm_encoder *encoder)
+> +static void sun4i_hdmi_enable(struct drm_encoder *encoder,
+> +			      struct drm_atomic_state *state)
+>  {
+>  	struct drm_display_mode *mode =3D &encoder->crtc->state->adjusted_mode;
+>  	struct sun4i_hdmi *hdmi =3D drm_encoder_to_sun4i_hdmi(encoder);
+> @@ -120,9 +122,10 @@ static void sun4i_hdmi_enable(struct drm_encoder *en=
+coder)
+>  }
+> =20
+>  static void sun4i_hdmi_mode_set(struct drm_encoder *encoder,
+> -				struct drm_display_mode *mode,
+> -				struct drm_display_mode *adjusted_mode)
+> +				struct drm_crtc_state *crtc_state,
+> +				struct drm_connector_state *conn_state)
+>  {
+> +	const struct drm_display_mode *mode =3D &crtc_state->mode;
+>  	struct sun4i_hdmi *hdmi =3D drm_encoder_to_sun4i_hdmi(encoder);
+>  	unsigned int x, y;
+>  	u32 val;
+> @@ -201,9 +204,9 @@ static enum drm_mode_status sun4i_hdmi_mode_valid(str=
+uct drm_encoder *encoder,
+> =20
+>  static const struct drm_encoder_helper_funcs sun4i_hdmi_helper_funcs =3D=
+ {
+>  	.atomic_check	=3D sun4i_hdmi_atomic_check,
+> -	.disable	=3D sun4i_hdmi_disable,
+> -	.enable		=3D sun4i_hdmi_enable,
+> -	.mode_set	=3D sun4i_hdmi_mode_set,
+> +	.atomic_disable	=3D sun4i_hdmi_disable,
+> +	.atomic_enable	=3D sun4i_hdmi_enable,
+> +	.atomic_mode_set	=3D sun4i_hdmi_mode_set,
+>  	.mode_valid	=3D sun4i_hdmi_mode_valid,
+>  };
+> =20
+>=20
+>=20
+
+
+
+
 
