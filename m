@@ -1,246 +1,282 @@
-Return-Path: <linux-kernel+bounces-76295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3795F85F551
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:09:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D1F685F553
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:10:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59D8F1C22D37
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:09:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 914481C22178
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:09:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2E4039AD7;
-	Thu, 22 Feb 2024 10:09:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DAD439857;
+	Thu, 22 Feb 2024 10:09:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cJuYSwLB"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="d8US3848"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90D033717C;
-	Thu, 22 Feb 2024 10:09:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.16
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708596566; cv=fail; b=T5GTcjHW/a5KMVuWcR29UXkdoM9VcZPu49WvevMv9f0n7wvpx4V9TKnsdI4AcI2c8p7Ef0da45pRnXskNbpmTZYYaHQRD52ol9rzSt89L8jyukCqy2MM0c4u9JazOw6OA0q+7lfWabEq0QlcSJ4bXGwEust7nZMUDi6XDFauWSc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708596566; c=relaxed/simple;
-	bh=pFL2X5pM7MF6ucYDpB+rPVDR+WS1GKOtAiY5Wo9hJeo=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=uQ+ztdPlKN0RZC1bqeeiKaiNPp2lp5t13ofTS5Sp2UFBrJwiNQ4SU1VMj8HauXqZxHeKciD+dh+jxryXwVG22tUDAJYL3RKNlfvLUZ7qTKIsHV2ls9IHnYmRA9nYIoLpxDast1UVYd3lKAyJQ7floH5Sy9tbspoX+RTJ+cTV7k4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cJuYSwLB; arc=fail smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708596565; x=1740132565;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=pFL2X5pM7MF6ucYDpB+rPVDR+WS1GKOtAiY5Wo9hJeo=;
-  b=cJuYSwLBE+HMkySSoTcGk3mHbC/a9sB74bh6zp9wjJE3HyMV11h+XH7h
-   BMMaZLTNsiLYXeEyuzXdpiwRP0RTPLpmm9YCBFw++SJIrWhxc6/UcCkas
-   QxbHWL4vUvZr0wvm8NZAvJpFqn6/q6/rmCS8BTrl0KAXc+ylaJC7Igg3D
-   TiQXeqcV+IVR1RvIGORX8qpfAvAMYFVxWHsl8OFfpCIB4/7xb7zEn44zz
-   m9OEgTt+tVS/bQEIlevpKPVsr0wlP+akS59nQCRx0IV/xvGm1cdV5L+Pd
-   6sZ/xCoFdDADZcM1uknteT8J6M00/4Pi04+LbHyKqHAujyjw4mas/N0DD
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="3304484"
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="3304484"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 02:09:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="5755279"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orviesa007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Feb 2024 02:09:23 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 22 Feb 2024 02:09:22 -0800
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 22 Feb 2024 02:09:22 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 22 Feb 2024 02:09:22 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 22 Feb 2024 02:09:22 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VOtrJkW05K6ZpdEKoGxM/BkAnqkv3DrpiQeKsp2xAN3rSP5MlP5swje3OGTFWs6QTLMeXzrG4J/7X0U+Ir512vnD2TwjSuJhGSNXJsRw80H6h2qyknNbesm1PEc/xoI/92uKCd1ltFonQET7UZTF6YrQ1uHRfq04kS1JWRRpjga8SW/VqB1P4jPjwGO8XNFtXHRHnkSpibl4YYRJ65lbGx77XhKbyN7J0WaP97C/CYIkjPjybRlL0ALz9AE/NjaXO4LqLjVtJyHLMqz+aBZW2Vfa3J/N6Fp5eC0Q3Ke1TtGyOdhawIPmBi3YpmYmgMI/u/TGyr1gpLmQ68gaF03YTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pFL2X5pM7MF6ucYDpB+rPVDR+WS1GKOtAiY5Wo9hJeo=;
- b=ASanyRSAn7WaawQBXemwblKMOoZ+Qw9oxFpPxqGnv8FFVupjfyUY0NArQk0qUwjWQofHezxrEp8oOPnvwDx3+1enZU0YLMq7DdtAH9z5B036eH0OJgwB7aJIxrsJUvJU8WhsFq5JJAmQkDQXKCvFPYQVtGXoltjQgQVWaNEz26CWRmDOof3VaC9uaVFJu5GOeRpcl+A5V0pWyVRZpLc/sChxz4TuG4mXrKcBW++Eu670S36vT8/5iZ7T1ZBAeS7912/27ZCe1IgKxAUMqDK0u+jKFmPVcoXgaNw1YKib0JlwXVQ98/52nRvGJIu7HpcS8BiTCpRQbQIOx5H3xDJyfA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by DM4PR11MB7280.namprd11.prod.outlook.com (2603:10b6:8:108::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Thu, 22 Feb
- 2024 10:09:20 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7339.009; Thu, 22 Feb 2024
- 10:09:20 +0000
-From: "Huang, Kai" <kai.huang@intel.com>
-To: "pbonzini@redhat.com" <pbonzini@redhat.com>, "seanjc@google.com"
-	<seanjc@google.com>
-CC: "yilun.xu@linux.intel.com" <yilun.xu@linux.intel.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "f.weber@proxmox.com"
-	<f.weber@proxmox.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "Zhao, Yan Y" <yan.y.zhao@intel.com>,
-	"yuan.yao@linux.intel.com" <yuan.yao@linux.intel.com>
-Subject: Re: [PATCH v5] KVM: x86/mmu: Retry fault before acquiring mmu_lock if
- mapping is changing
-Thread-Topic: [PATCH v5] KVM: x86/mmu: Retry fault before acquiring mmu_lock
- if mapping is changing
-Thread-Index: AQHaZS42AzvE9IDdHE2D17kq53GfLLEWJAaA
-Date: Thu, 22 Feb 2024 10:09:19 +0000
-Message-ID: <8973cd56d9069ad8d21a404373d95276ebdcd37e.camel@intel.com>
-References: <20240222012640.2820927-1-seanjc@google.com>
-In-Reply-To: <20240222012640.2820927-1-seanjc@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.50.3 (3.50.3-1.fc39) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|DM4PR11MB7280:EE_
-x-ms-office365-filtering-correlation-id: e7817711-8cf9-4144-db9e-08dc338e55f2
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: JS4hiq8eB17W8H1G6FfGOCso7YfFghjyuUBu+02oFk2UbZzx3keFoqrRceyrUph3F9UahUqCWm0+tlSO9ywMt4UnAdgIclImFduL/lXjuMiFjuZEIiDUrJs1lJfXRQODJRy1VlaiJHEw/pJhJAN7X5cQRIjlHp/N5un9bLsXB5qPEPXQJpjfC6JBhpjY18OlUE2WDE3lLIzmmuFrlqeXpwsMRvN6BtMuVsBbJZn96QFckxcTZPMbXNLiHqhwZNMga553dWWMsiwCBK9LQbRNBYW3r8fHwSTDa0rT5labsm5aeTioI7jupCBJOoomqry3SpCsNfYI4eNEr+y3E33YFUiHir9KySY/Pwb/d8PHjynD5gSLZeCfQLVDxStXh7/9hmvfamEXAoyZgV8ZeEeQvJgRSz7k30HNDOrwTXLI2qOD5zp16EcC1IjmKtd9fB8xkgNAKzBF3KU0OrEMXer2AQ2gScsdhXxRnTBvGkemgrGqURSWUEy1HmRSa80m1p9SHA+xFAZKNki2lba+EEmUJYYh/8VAdKkjPBi2/NsPrU2I+wZkcVRBQjjE/FC6C5/ifFebGd3ksW+bAUtkZ/vQW6VrKnGdAH/5BIbckk1vKUk=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MHdjYXJVWUs3QklYTnJQTHJoL3VoMTE0NGF2RTAvR0oxN09mSDdkdStsai9R?=
- =?utf-8?B?SWJnT2ZidnpYc083NnJuaWpRaFVQUWJiN1hudDE1cWNWWk5za0kzb0ZtN3Yw?=
- =?utf-8?B?cGNKMkcwVXBUMWUrNTF3N3JEQVQyN0lWbklMTXpaRnBuaDZmblVvSTFsN2VK?=
- =?utf-8?B?Sy9FNWlTT2JvYkRjZ1FzYXRleWU0WTQ2S3p3SnIrVm9meEovLzMxNDRzOCtn?=
- =?utf-8?B?WTBQenBXMDA2dzBqUExiWlBEdmNpVUxjSm00ZGhkdk5iaFF3b3NhNlFHNHAz?=
- =?utf-8?B?am9GYjJNNkxoVXBqemtVVUNHY2d3VHdUN3A2M2NsYlU0VkNnU2o1YmppOE1J?=
- =?utf-8?B?OUNxdzVPVUdBVnhMZlJPd1k0K2VQYzdWSS92OTVXUktnU3ljWXg4YnRXOWJK?=
- =?utf-8?B?ZFppR3YyZDRIS1ZtcnVDZEpiNi9KSzJubjgwTlBnZjY3L3ljUERKckFIaTUr?=
- =?utf-8?B?WXUzWDRCSm5KSDdVWCtlZC94M2txZTByTG1aaVozcSt0L21NbUVsbHIxYTlx?=
- =?utf-8?B?OUt2VWdiUi9pN1dyblp2cmFQdFVBSld3WlhCbWxtcHZGWGdoY0FkWGJmcFBQ?=
- =?utf-8?B?MGgwWHkrd09BNTB6dnltQ01jOWV0T0d6SHZYZGJTTGNzSWZqNU1ROVdxOWFj?=
- =?utf-8?B?VWR4ZmlESkhKN1B1Ty96Zk5Xa3psL3dpRysxOC96MWh4bGxkM0MzMFNSeGMv?=
- =?utf-8?B?WGsrOW9pQVN6MlphTlZabDdhaWk5SDBON0dDVUdQcjNKRFZQNm14M2NzNG96?=
- =?utf-8?B?cm04Wk1sa3dRMEd0bm9GeEZPcXhBaHZHY0dMU1diUElCdk1WNjdFZmcxbldw?=
- =?utf-8?B?b3hYMkFQSkI4RDJqQUdCMGl5cUlsZ2F5cTkrT3JzUmpSRDBnYVVtZ2xrdlRZ?=
- =?utf-8?B?eFVMYkdINm4xTWtqMlJPN0pxdThpL3k4UmliLzQwVFRYdUFlbnd6M3YvWXF6?=
- =?utf-8?B?anhaYlIxZFBYbWdwT21IUHJpdVFrdithOXo0SG55d0xOYVRvUERsOUlwdktI?=
- =?utf-8?B?UTN6QWlwTHUrM2xJZmJWWkRDWmloYnlHNlR2eU9iQmQrQlduMjYxVWx5RHRm?=
- =?utf-8?B?Y2JLeGpoR1dMMGh1bUpzMk1GNEFwRFdRenl6eUl6QlV5dkF4Y3p1bWovSThy?=
- =?utf-8?B?UmMzQVd2dkJLMHZ2bVYzVUxSK2xIdkEyTWlGTWNuQlJnTU5zSWpQc0wxZzFZ?=
- =?utf-8?B?eGN2cVV1eWpDZkJWWVVsQklQQXFucG9QM3pSSjNmQm9Vdko1aXRIMmViWEk3?=
- =?utf-8?B?R2ZPV0s4bWtBb2tjbjdxbFFWVmkrTVlCcjBLUHFzRnpHbVZIU2ZoekQ5TC8z?=
- =?utf-8?B?ckQrVjd5WEk2TWdGcVpQMlg5R0IzUHdDZmE1cnUyMFBLZmVrOGM0QkdOOTVs?=
- =?utf-8?B?TmlRUkxWaUJIaU41OEhnY3lYelJ6Sm9IL0puWmphWUxnWTkxY201dXIwbmVJ?=
- =?utf-8?B?MzRscEJMeUw4eVEzcjVmZUkxeEc1RnRkTWJGNXRERE4reVlIaVBCemJ3Zysw?=
- =?utf-8?B?VFZ6K3dIREJacnlyQmJFY0EvSitYdndYUUI4ajdTNnB2RHp5TWZWQmNnNkt0?=
- =?utf-8?B?MHhEQTk2SENUN1NVb0pGcFdFcWxQSXhUNVF3WEV6WmdaSmwrOXh2cTVGS0RP?=
- =?utf-8?B?YVVLTVFFSGpyREFOcStSeDBLSlRLY0cxZFFoQWNjdDdtaUFjUTFDUENVNlRH?=
- =?utf-8?B?a25QZFdqMytBWDhwaVFGd3ltdUpBemJ5b2dTMzJOQmtHZWxNUzdNKzhOK2JF?=
- =?utf-8?B?SWhEd2UreGpja25LdUhFMEEzcyt3QU1ldmRLOUxzOVJVa3lQUmx2NmVsbXdN?=
- =?utf-8?B?Z1Y5MXB1cWZBakloem81Wnc5R2p4NXVUVFdGL29ONkxUOVFCOHVQbGYzVTVX?=
- =?utf-8?B?TjU0aTc3clFLWEZPbmpwbUFYQ2tIKy81aklsU1lLa25aa1paTHp0M04wZDll?=
- =?utf-8?B?bkR0QTlSV2hhNWNZdEorb1dSZE12S2U2dEpReEk3TElWb0QxV2VLVVM0OGV6?=
- =?utf-8?B?TUpKaUJuc1ZKZWJNQ09ySUQ1SWdMUDRJMVRHZG05R0gybjlubTk2dnBPUjFI?=
- =?utf-8?B?dGF5Vk92YUNpcHpNQzJEelU0SkVLc0pIWW1DUXhYL0tCTGRuZVFpem4ydlV6?=
- =?utf-8?B?cTlSOGNYZmpLTUYrcnNWVWMvV0JjOGszNkRKZk9xSFRrL0pxR2FVRThpc1ZK?=
- =?utf-8?B?c1E9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D2E676FF2F30924AA54AA8572C1D39E1@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64FD4383B6
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 10:09:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708596589; cv=none; b=jeDMpSwG+ijeGhIqt1ZkGQF+AROvgdAl0R2517PojcsLE99LF3mYvXCbX5YZZPTP7/8S9dOjty3r+xyvDhjEtNe9BiafCpROL6T2TS0O+trQRd70aIThwKqJGcb7G31iIK+A7NuEjXQtsZK5gexyu13oyp57DppaXlxKm5rBsu4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708596589; c=relaxed/simple;
+	bh=l7OP69mJjmjYhHV5Jm0JJ/uw/K7+1xgIU/++X08E1Fw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nK87xRZiWqoBXISs+tXir8A4n9lNGVvRF/g9tDZH4XhrNfal/Ctwt2e/RKmsN68iFMhA735wyv0JFJQD2YfTNWVvOOw2olJTMmbr1SmJ3Z69kH/VrB6bQ7J6xgCIpsH/CyBVOBywTI2iLv+qDblbWMMKEAh8gUwIQvlO/NT+3XM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=d8US3848; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708596586;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=4xnrCfEIVs3Du53BsshUUe9FZo9DURe+PxS/m7A6u5E=;
+	b=d8US3848Zp2Xd6IhKFuBjFUABKtDrv0bG6O9f2fOBn38/xJhGkvU8yvvcvCHYVegORZdDt
+	6n1yewJ8TN6qatAQCy9qUYqOAK8+4cJwTFQUhgV0UOBgwWuO4jPkf8FhJNI0BWQpIeD8B0
+	JKV7C/XKPbzkwfo6zm265TdurBCUxVQ=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-311-qUTjJS-GPpunQTC0PkUy4A-1; Thu, 22 Feb 2024 05:09:44 -0500
+X-MC-Unique: qUTjJS-GPpunQTC0PkUy4A-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33d89a393c8so391378f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 02:09:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708596583; x=1709201383;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4xnrCfEIVs3Du53BsshUUe9FZo9DURe+PxS/m7A6u5E=;
+        b=h43AhmUo8znsVft7KZUgE6xl4qxkny6Kef6LSWS6QL1pc2yNvtMvjaBqi3m6CXsMPA
+         6cMiuc6OgM8A3c3KIYO1bnNWivgVKmSej6WlSOzz4Yv8P7UazfvtgmnAOFqUx/osqrCV
+         1gVKOOPMGTHdaqhKVt8/l4PKBqrE1xFRa3Vw+/TvxrIq7gdw8RfJvxGBWS8iC06jsdMj
+         tx+gYMnpE6pu8ScPGZd8s34idkvOFWm2XgyeUSTPZZbwJeOTgcTNS/eflxZMSQ7UWJ7x
+         QWzq7tzwRBxrv2oAqHH1sQC8KqOT4AcGitjjtw17nTxuZVCCt937rnqnbkCpUk4GpvZj
+         aXbg==
+X-Forwarded-Encrypted: i=1; AJvYcCVLvTXQHg4AKXrrSvi5IKWmFJYM6SspUW3J+Ko9KAnGjXT8iDGPI8uYv2Wu9JneAiyX0CWv4YI3h07StYT25ogwWlrMc1XdmAul9QnG
+X-Gm-Message-State: AOJu0YyZ66kC2diGkWH/ZYwhnRNFhsI0SPTVy0rcLSOFsLhB/5xpAhux
+	hxJ8Evw9kEMV0z1vXcvyONhiSvYZGE3JnUl/I8A/40b2v6TC3jCfNVXQFfnccJn9OA+zavpzW0B
+	BL4mnXOszITy35asNId7Wm/5XKEJu92okAdnFqWdw6wuTHwB8Vj04PnNU8//xNg==
+X-Received: by 2002:a5d:59a9:0:b0:33d:9283:93b with SMTP id p9-20020a5d59a9000000b0033d9283093bmr890294wrr.47.1708596583564;
+        Thu, 22 Feb 2024 02:09:43 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFci1HE9M+Tq7v/+E6ijaeOFwkVfWkjtRhQA7c1BfNGSqEo7ggRfrqXvue4tJVcg5FFdQ/BFw==
+X-Received: by 2002:a5d:59a9:0:b0:33d:9283:93b with SMTP id p9-20020a5d59a9000000b0033d9283093bmr890263wrr.47.1708596583081;
+        Thu, 22 Feb 2024 02:09:43 -0800 (PST)
+Received: from ?IPV6:2003:cb:c70f:8b00:ed48:6d18:2152:1cda? (p200300cbc70f8b00ed486d1821521cda.dip0.t-ipconnect.de. [2003:cb:c70f:8b00:ed48:6d18:2152:1cda])
+        by smtp.gmail.com with ESMTPSA id p15-20020a5d4e0f000000b0033d87f61613sm2474706wrt.58.2024.02.22.02.09.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Feb 2024 02:09:42 -0800 (PST)
+Message-ID: <1a9fcdcd-c0dd-46dd-9c03-265a6988eeb2@redhat.com>
+Date: Thu, 22 Feb 2024 11:09:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e7817711-8cf9-4144-db9e-08dc338e55f2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Feb 2024 10:09:20.0018
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: muVhpQSRrS0Sd24bAyiyxe6peIp0LttVTq0Cj73ZaPw3NIL25+lOES+imblePP1uNQEPLjnce6k+KnMNGcev5g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB7280
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 4/4] mm: swap: Swap-out small-sized THP without
+ splitting
+Content-Language: en-US
+To: Barry Song <21cnbao@gmail.com>, ryan.roberts@arm.com
+Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, mhocko@suse.com, shy828301@gmail.com,
+ wangkefeng.wang@huawei.com, willy@infradead.org, xiang@kernel.org,
+ ying.huang@intel.com, yuzhao@google.com, chrisl@kernel.org,
+ surenb@google.com, hanchuanhua@oppo.com
+References: <20231025144546.577640-5-ryan.roberts@arm.com>
+ <20240222070544.133673-1-21cnbao@gmail.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240222070544.133673-1-21cnbao@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-T24gV2VkLCAyMDI0LTAyLTIxIGF0IDE3OjI2IC0wODAwLCBTZWFuIENocmlzdG9waGVyc29uIHdy
-b3RlOg0KPiBSZXRyeSBwYWdlIGZhdWx0cyB3aXRob3V0IGFjcXVpcmluZyBtbXVfbG9jaywgYW5k
-IHdpdGhvdXQgZXZlbiBmYXVsdGluZw0KPiB0aGUgcGFnZSBpbnRvIHRoZSBwcmltYXJ5IE1NVSwg
-aWYgdGhlIHJlc29sdmVkIGdmbiBpcyBjb3ZlcmVkIGJ5IGFuIGFjdGl2ZQ0KPiBpbnZhbGlkYXRp
-b24uICBDb250ZW5kaW5nIGZvciBtbXVfbG9jayBpcyBlc3BlY2lhbGx5IHByb2JsZW1hdGljIG9u
-DQo+IHByZWVtcHRpYmxlIGtlcm5lbHMgYXMgdGhlIG1tdV9ub3RpZmllciBpbnZhbGlkYXRpb24g
-dGFzayB3aWxsIHlpZWxkDQo+IG1tdV9sb2NrIChzZWUgcndsb2NrX25lZWRicmVhaygpKSwgZGVs
-YXkgdGhlIGluLXByb2dyZXNzIGludmFsaWRhdGlvbiwgYW5kDQo+IHVsdGltYXRlbHkgaW5jcmVh
-c2UgdGhlIGxhdGVuY3kgb2YgcmVzb2x2aW5nIHRoZSBwYWdlIGZhdWx0LiAgQW5kIGluIHRoZQ0K
-PiB3b3JzdCBjYXNlIHNjZW5hcmlvLCB5aWVsZGluZyB3aWxsIGJlIGFjY29tcGFuaWVkIGJ5IGEg
-cmVtb3RlIFRMQiBmbHVzaCwNCj4gZS5nLiBpZiB0aGUgaW52YWxpZGF0aW9uIGNvdmVycyBhIGxh
-cmdlIHJhbmdlIG9mIG1lbW9yeSBhbmQgdkNQVXMgYXJlDQo+IGFjY2Vzc2luZyBhZGRyZXNzZXMg
-dGhhdCB3ZXJlIGFscmVhZHkgemFwcGVkLg0KPiANCj4gRmF1bHRpbmcgdGhlIHBhZ2UgaW50byB0
-aGUgcHJpbWFyeSBNTVUgaXMgc2ltaWxhcmx5IHByb2JsZW1hdGljLCBhcyBkb2luZw0KPiBzbyBt
-YXkgYWNxdWlyZSBsb2NrcyB0aGF0IG5lZWQgdG8gYmUgdGFrZW4gZm9yIHRoZSBpbnZhbGlkYXRp
-b24gdG8NCj4gY29tcGxldGUgKHRoZSBwcmltYXJ5IE1NVSBoYXMgZmluZXIgZ3JhaW5lZCBsb2Nr
-cyB0aGFuIEtWTSdzIE1NVSksIGFuZC9vcg0KPiBtYXkgY2F1c2UgdW5uZWNlc3NhcnkgY2h1cm4g
-KGdldHRpbmcvcHV0dGluZyBwYWdlcywgbWFya2luZyB0aGVtIGFjY2Vzc2VkLA0KPiBldGMpLg0K
-PiANCj4gQWx0ZXJuYXRpdmVseSwgdGhlIHlpZWxkaW5nIGlzc3VlIGNvdWxkIGJlIG1pdGlnYXRl
-ZCBieSB0ZWFjaGluZyBLVk0ncyBNTVUNCj4gaXRlcmF0b3JzIHRvIHBlcmZvcm0gbW9yZSB3b3Jr
-IGJlZm9yZSB5aWVsZGluZywgYnV0IHRoYXQgd291bGRuJ3Qgc29sdmUNCj4gdGhlIGxvY2sgY29u
-dGVudGlvbiBhbmQgd291bGQgbmVnYXRpdmVseSBhZmZlY3Qgc2NlbmFyaW9zIHdoZXJlIGEgdkNQ
-VSBpcw0KPiB0cnlpbmcgdG8gZmF1bHQgaW4gYW4gYWRkcmVzcyB0aGF0IGlzIE5PVCBjb3ZlcmVk
-IGJ5IHRoZSBpbi1wcm9ncmVzcw0KPiBpbnZhbGlkYXRpb24uDQo+IA0KPiBBZGQgYSBkZWRpY2F0
-ZWQgbG9ja2VzcyB2ZXJzaW9uIG9mIHRoZSByYW5nZS1iYXNlZCByZXRyeSBjaGVjayB0byBhdm9p
-ZA0KPiBmYWxzZSBwb3NpdGl2ZXMgb24gdGhlIHNhbml0eSBjaGVjayBvbiBzdGFydCtlbmQgV0FS
-TiwgYW5kIHNvIHRoYXQgaXQncw0KPiBzdXBlciBvYnZpb3VzIHRoYXQgY2hlY2tpbmcgZm9yIGEg
-cmFjaW5nIGludmFsaWRhdGlvbiB3aXRob3V0IGhvbGRpbmcNCj4gbW11X2xvY2sgaXMgdW5zYWZl
-ICh0aG91Z2ggb2J2aW91c2x5IHVzZWZ1bCkuDQo+IA0KPiBXcmFwIG1tdV9pbnZhbGlkYXRlX2lu
-X3Byb2dyZXNzIGluIFJFQURfT05DRSgpIHRvIGVuc3VyZSB0aGF0IHByZS1jaGVja2luZw0KPiBp
-bnZhbGlkYXRpb24gaW4gYSBsb29wIHdvbid0IHB1dCBLVk0gaW50byBhbiBpbmZpbml0ZSBsb29w
-LCBlLmcuIGR1ZSB0bw0KPiBjYWNoaW5nIHRoZSBpbi1wcm9ncmVzcyBmbGFnIGFuZCBuZXZlciBz
-ZWVpbmcgaXQgZ28gdG8gJzAnLg0KPiANCj4gRm9yY2UgYSBsb2FkIG9mIG1tdV9pbnZhbGlkYXRl
-X3NlcSBhcyB3ZWxsLCBldmVuIHRob3VnaCBpdCBpc24ndCBzdHJpY3RseQ0KPiBuZWNlc3Nhcnkg
-dG8gYXZvaWQgYW4gaW5maW5pdGUgbG9vcCwgYXMgZG9pbmcgc28gaW1wcm92ZXMgdGhlIHByb2Jh
-YmlsaXR5DQo+IHRoYXQgS1ZNIHdpbGwgZGV0ZWN0IGFuIGludmFsaWRhdGlvbiB0aGF0IGFscmVh
-ZHkgY29tcGxldGVkIGJlZm9yZQ0KPiBhY3F1aXJpbmcgbW11X2xvY2sgYW5kIGJhaWxpbmcgYW55
-d2F5cy4NCj4gDQo+IERvIHRoZSBwcmUtY2hlY2sgZXZlbiBmb3Igbm9uLXByZWVtcHRpYmxlIGtl
-cm5lbHMsIGFzIHdhaXRpbmcgdG8gZGV0ZWN0DQo+IHRoZSBpbnZhbGlkYXRpb24gdW50aWwgbW11
-X2xvY2sgaXMgaGVsZCBndWFyYW50ZWVzIHRoZSB2Q1BVIHdpbGwgb2JzZXJ2ZQ0KPiB0aGUgd29y
-c3QgY2FzZSBsYXRlbmN5IGluIHRlcm1zIG9mIGhhbmRsaW5nIHRoZSBmYXVsdCwgYW5kIGNhbiBn
-ZW5lcmF0ZQ0KPiBldmVuIG1vcmUgbW11X2xvY2sgY29udGVudGlvbi4gIEUuZy4gdGhlIHZDUFUg
-d2lsbCBhY3F1aXJlIG1tdV9sb2NrLA0KPiBkZXRlY3QgcmV0cnksIGRyb3AgbW11X2xvY2ssIHJl
-LWVudGVyIHRoZSBndWVzdCwgcmV0YWtlIHRoZSBmYXVsdCwgYW5kDQo+IGV2ZW50dWFsbHkgcmUt
-YWNxdWlyZSBtbXVfbG9jay4gIFRoaXMgYmVoYXZpb3IgaXMgYWxzbyB3aHkgdGhlcmUgYXJlIG5v
-DQo+IG5ldyBzdGFydmF0aW9uIGlzc3VlcyBkdWUgdG8gbG9zaW5nIHRoZSBmYWlybmVzcyBndWFy
-YW50ZWVzIHByb3ZpZGVkIGJ5DQo+IHJ3bG9ja3M6IGlmIHRoZSB2Q1BVIG5lZWRzIHRvIHJldHJ5
-LCBpdCBfbXVzdF8gZHJvcCBtbXVfbG9jaywgaS5lLiB3YWl0aW5nDQo+IG9uIG1tdV9sb2NrIGRv
-ZXNuJ3QgZ3VhcmFudGVlIGZvcndhcmQgcHJvZ3Jlc3MgaW4gdGhlIGZhY2Ugb2YgX2Fub3RoZXJf
-DQo+IG1tdV9ub3RpZmllciBpbnZhbGlkYXRpb24gZXZlbnQuDQo+IA0KPiBOb3RlLCBhZGRpbmcg
-UkVBRF9PTkNFKCkgaXNuJ3QgZW50aXJlbHkgZnJlZSwgZS5nLiBvbiB4ODYsIHRoZSBSRUFEX09O
-Q0UoKQ0KPiBtYXkgZ2VuZXJhdGUgYSBsb2FkIGludG8gYSByZWdpc3RlciBpbnN0ZWFkIG9mIGRv
-aW5nIGEgZGlyZWN0IGNvbXBhcmlzb24NCj4gKE1PVitURVNUK0pjYyBpbnN0ZWFkIG9mIENNUCtK
-Y2MpLCBidXQgcHJhY3RpY2FsbHkgc3BlYWtpbmcgdGhlIGFkZGVkIGNvc3QNCj4gaXMgYSBmZXcg
-Ynl0ZXMgb2YgY29kZSBhbmQgbWFhYWF5YmUgYSBjeWNsZSBvciB0aHJlZS4NCj4gDQo+IFJlcG9y
-dGVkLWJ5OiBZYW4gWmhhbyA8eWFuLnkuemhhb0BpbnRlbC5jb20+DQo+IENsb3NlczogaHR0cHM6
-Ly9sb3JlLmtlcm5lbC5vcmcvYWxsL1pOblBGNFcyNlpiQXlHdG9AeXpoYW81Ni1kZXNrLnNoLmlu
-dGVsLmNvbQ0KPiBSZXBvcnRlZC1ieTogRnJpZWRyaWNoIFdlYmVyIDxmLndlYmVyQHByb3htb3gu
-Y29tPg0KPiBDYzogS2FpIEh1YW5nIDxrYWkuaHVhbmdAaW50ZWwuY29tPg0KPiBDYzogWWFuIFpo
-YW8gPHlhbi55LnpoYW9AaW50ZWwuY29tPg0KPiBDYzogWXVhbiBZYW8gPHl1YW4ueWFvQGxpbnV4
-LmludGVsLmNvbT4NCj4gQ2M6IFh1IFlpbHVuIDx5aWx1bi54dUBsaW51eC5pbnRlbC5jb20+DQo+
-IFNpZ25lZC1vZmYtYnk6IFNlYW4gQ2hyaXN0b3BoZXJzb24gPHNlYW5qY0Bnb29nbGUuY29tPg0K
-PiAtLS0NCj4gDQoNCkFja2VkLWJ5OiBLYWkgSHVhbmcgPGthaS5odWFuZ0BpbnRlbC5jb20+DQo=
+On 22.02.24 08:05, Barry Song wrote:
+> Hi Ryan,
+> 
+>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> index 2cc0cb41fb32..ea19710aa4cd 100644
+>> --- a/mm/vmscan.c
+>> +++ b/mm/vmscan.c
+>> @@ -1212,11 +1212,13 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
+>>   					if (!can_split_folio(folio, NULL))
+>>   						goto activate_locked;
+>>   					/*
+>> -					 * Split folios without a PMD map right
+>> -					 * away. Chances are some or all of the
+>> -					 * tail pages can be freed without IO.
+>> +					 * Split PMD-mappable folios without a
+>> +					 * PMD map right away. Chances are some
+>> +					 * or all of the tail pages can be freed
+>> +					 * without IO.
+>>   					 */
+>> -					if (!folio_entire_mapcount(folio) &&
+>> +					if (folio_test_pmd_mappable(folio) &&
+>> +					    !folio_entire_mapcount(folio) &&
+>>   					    split_folio_to_list(folio,
+>>   								folio_list))
+>>   						goto activate_locked;
+> 
+> I ran a test to investigate what would happen while reclaiming a partially
+> unmapped large folio. for example, for 64KiB large folios, MADV_DONTNEED
+> 4KB~64KB, and keep the first subpage 0~4KiB.
+
+IOW, something that already happens with ordinary THP already IIRC.
+
+>   
+> My test wants to address my three concerns,
+> a. whether we will have leak on swap slots
+> b. whether we will have redundant I/O
+> c. whether we will cause races on swapcache
+> 
+> what i have done is printing folio->_nr_pages_mapped and dumping 16 swap_map[]
+> at some specific stage
+> 1. just after add_to_swap   (swap slots are allocated)
+> 2. before and after try_to_unmap   (ptes are set to swap_entry)
+> 3. before and after pageout (also add printk in zram driver to dump all I/O write)
+> 4. before and after remove_mapping
+> 
+> The below is the dumped info for a particular large folio,
+> 
+> 1. after add_to_swap
+> [   27.267357] vmscan: After add_to_swap shrink_folio_list 1947 mapnr:1
+> [   27.267650] vmscan: offset:101b0 swp_map 40-40-40-40-40-40-40-40-40-40-40-40-40-40-40-40
+> 
+> as you can see,
+> _nr_pages_mapped is 1 and all 16 swap_map are SWAP_HAS_CACHE (0x40)
+> 
+> 
+> 2. before and after try_to_unmap
+> [   27.268067] vmscan: before try to unmap shrink_folio_list 1991 mapnr:1
+> [   27.268372] try_to_unmap_one address:ffff731f0000 pte:e8000103cd0b43 pte_p:ffff0000c36a8f80
+> [   27.268854] vmscan: after try to unmap shrink_folio_list 1997 mapnr:0
+> [   27.269180] vmscan: offset:101b0 swp_map 41-40-40-40-40-40-40-40-40-40-40-40-40-40-40-40
+> 
+> as you can see, one pte is set to swp_entry, and _nr_pages_mapped becomes
+> 0 from 1. The 1st swp_map becomes 0x41, SWAP_HAS_CACHE + 1
+> 
+> 3. before and after pageout
+> [   27.269602] vmscan: before pageout shrink_folio_list 2065 mapnr:0
+> [   27.269880] vmscan: offset:101b0 swp_map 41-40-40-40-40-40-40-40-40-40-40-40-40-40-40-40
+> [   27.270691] zram: zram_write_page page:fffffc00030f3400 index:101b0
+> [   27.271061] zram: zram_write_page page:fffffc00030f3440 index:101b1
+> [   27.271416] zram: zram_write_page page:fffffc00030f3480 index:101b2
+> [   27.271751] zram: zram_write_page page:fffffc00030f34c0 index:101b3
+> [   27.272046] zram: zram_write_page page:fffffc00030f3500 index:101b4
+> [   27.272384] zram: zram_write_page page:fffffc00030f3540 index:101b5
+> [   27.272746] zram: zram_write_page page:fffffc00030f3580 index:101b6
+> [   27.273042] zram: zram_write_page page:fffffc00030f35c0 index:101b7
+> [   27.273339] zram: zram_write_page page:fffffc00030f3600 index:101b8
+> [   27.273676] zram: zram_write_page page:fffffc00030f3640 index:101b9
+> [   27.274044] zram: zram_write_page page:fffffc00030f3680 index:101ba
+> [   27.274554] zram: zram_write_page page:fffffc00030f36c0 index:101bb
+> [   27.274870] zram: zram_write_page page:fffffc00030f3700 index:101bc
+> [   27.275166] zram: zram_write_page page:fffffc00030f3740 index:101bd
+> [   27.275463] zram: zram_write_page page:fffffc00030f3780 index:101be
+> [   27.275760] zram: zram_write_page page:fffffc00030f37c0 index:101bf
+> [   27.276102] vmscan: after pageout and before needs_release shrink_folio_list 2124 mapnr:0
+> 
+> as you can see, obviously, we have done redundant I/O - 16 zram_write_page though
+> 4~64KiB has been zap_pte_range before, we still write them to zRAM.
+> 
+> 4. before and after remove_mapping
+> [   27.276428] vmscan: offset:101b0 swp_map 41-40-40-40-40-40-40-40-40-40-40-40-40-40-40-40
+> [   27.277485] vmscan: after remove_mapping shrink_folio_list 2169 mapnr:0 offset:0
+> [   27.277802] vmscan: offset:101b0 01-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
+> 
+> as you can see, swp_map 1-15 becomes 0 and only the first swp_map is 1.
+> all SWAP_HAS_CACHE has been removed. This is perfect and there is no swap
+> slot leak at all!
+> 
+> Thus, only two concerns are left for me,
+> 1. as we don't split anyway, we have done 15 unnecessary I/O if a large folio
+> is partially unmapped.
+> 2. large folio is added as a whole as a swapcache covering the range whose
+> part has been zapped. I am not quite sure if this will cause some problems
+> while some concurrent do_anon_page, swapin and swapout occurs between 3 and
+> 4 on zapped subpage1~subpage15. still struggling.. my brain is exploding...
+
+Just noting: I was running into something different in the past with 
+THP. And it's effectively the same scenario, just swapout and 
+MADV_DONTNEED reversed.
+
+Imagine you swapped out a THP and the THP it still is in the swapcache.
+
+Then you unmap/zap some PTEs, freeing up the swap slots.
+
+In zap_pte_range(), we'll call free_swap_and_cache(). There, we run into 
+the "!swap_page_trans_huge_swapped(p, entry)", and we won't be calling 
+__try_to_reclaim_swap().
+
+So we won't split the large folio that is in the swapcache and it will 
+continue consuming "more memory" than intended until fully evicted.
+
+> 
+> To me, it seems safer to split or do some other similar optimization if we find a
+> large folio has partial map and unmap.
+
+I'm hoping that we can avoid any new direct users of _nr_pages_mapped if 
+possible.
+
+If we find that the folio is on the deferred split list, we might as 
+well just split it right away, before swapping it out. That might be a 
+reasonable optimization for the case you describe.
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
