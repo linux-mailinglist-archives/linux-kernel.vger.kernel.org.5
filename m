@@ -1,185 +1,485 @@
-Return-Path: <linux-kernel+bounces-77422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77423-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C8AF86050F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:46:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07381860519
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:49:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEE201F26323
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:46:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4C58B2414C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:49:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25B2E12D1F8;
-	Thu, 22 Feb 2024 21:46:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C22D412D201;
+	Thu, 22 Feb 2024 21:48:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="mrBXcDKo"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ID0uZFMZ"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B4DD12D1EC;
-	Thu, 22 Feb 2024 21:46:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CBE212D1EC;
+	Thu, 22 Feb 2024 21:48:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708638371; cv=none; b=cw6RKi133p0cw8aYz4OtDlmbhQLcKlZfDPGRyKtuNc1D3FZOgUsnQkz66AqfKJuyeycPWlzTvS9yAb4cVksrquUSD3zXkrn85EhG5J/a8isNX8FiEPnCLUOJA1tJDb0UfiZASxmiAg5L537pHuBjTww3WhV+hudRSbUNsXYKB68=
+	t=1708638535; cv=none; b=uDVFvcqA6x6na+z6HWvm0FDapCKJ7d3b07l3gCxgGe445TM9AbInBzUrtqLuR0PmPES6FZHksMRGkEn2dT8nX16gu0alpGopo4wQJ36jQJg0R2WUBtiRt2qiApW6kmoZNdGKwsfJmsbEN3OW1BPaBdlBlrDRTVzMnzXyr0SUy9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708638371; c=relaxed/simple;
-	bh=Vv0fjC6tqv1JhbuXN2YbUo0rHfJfx129XJY3ZYuK4oA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=TyIolSSc8bf6vVLhr1Zubt1tOrFYBoNQWe969QKuvJ6AedJweFLs2NqOnoHWwDTmfUA8DB+8ILdFZINi9HF+Ah0s6m9kwHK4rXRa2kbJG8abbwfTL3D+PUAS/VmKrj6NVrS246QDYi0DhbErgWX9rCCOTmv70f80k6PaHjTeEEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=mrBXcDKo; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1708638366;
-	bh=0ZmYCz+SCJ0BgfLpkAxVCmJACnVsDgEoO+/yVn8yWFo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=mrBXcDKoRMVzrXITn1EEU+aj01MFFwaaItfCmGPweSRFKwRzLcFrm08tgcOcLlWJA
-	 l2eyNdSEkpR2DlS+x9UTf3fBjeLznOezB2H2sPmWkxoHYsvum78te77NTYVGQ72b5Z
-	 CVEEgBK1uLKYtUlWWFHG2X+4hMR3FaWFEKu8p5tfBQBb7WWEHLOLS2NGgBhUWVKimk
-	 LR3hdv5kPUSRvtIZVCVTtelIO8HVofEcPEBj3IMCZwosQgrLhs/uITZSlXENkDNi/v
-	 B6hn+dozf5ysqZeRXb3fVcwulhUZtxq0GTR9KnCjP6wC0bD1Qf5JUl1N3uoA4Wt8Mi
-	 jW8vPcRVGIGrA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tgmt55rTGz4wcC;
-	Fri, 23 Feb 2024 08:46:05 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Alexander Gordeev <agordeev@linux.ibm.com>, Ingo Molnar
- <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Juri Lelli
- <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>
-Cc: linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, Nicholas Piggin <npiggin@gmail.com>, Heiko
- Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Frederic
- Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v2 RESEND 2/5] sched/vtime: get rid of generic
- vtime_task_switch() implementation
-In-Reply-To: <5e8f7cfc5b405b892d55c51023e8149dfd83b253.1708612016.git.agordeev@linux.ibm.com>
-References: <cover.1708612016.git.agordeev@linux.ibm.com>
- <5e8f7cfc5b405b892d55c51023e8149dfd83b253.1708612016.git.agordeev@linux.ibm.com>
-Date: Fri, 23 Feb 2024 08:46:03 +1100
-Message-ID: <87zfvs9nqc.fsf@mail.lhotse>
+	s=arc-20240116; t=1708638535; c=relaxed/simple;
+	bh=aMrWqgYK1e6hxcqXytMTHp7Ih4S3iczfOmywBnfV+vA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=DZjAZ99g8AeyKWAaXDqfiOPsPN4KJFsDXHgPfnU3lY8y2rO0VfrX2k9qLF35meAGYFDeCbFjNAh1z0YFESpgTuuLqh8NHz89cDmhqi1FRwUL4yP6gOaL9jIR1argeSOZCwn2o3NF6PEa8lgkAzMYTGo+jHn6hog7TUSa977HnWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ID0uZFMZ; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-512cca90f38so308973e87.2;
+        Thu, 22 Feb 2024 13:48:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708638532; x=1709243332; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=iestUm478PxK+5YaLCEJhp6yc3SushaDmiD6YpHgsD4=;
+        b=ID0uZFMZHlgP5JNyZ3BYSrbWpLBmNKoql0THJam+ChvM0yizmJ6RWRdaEa0KtetFYM
+         0+ZbMBGr+p/HV7qT0hZGynPq1y9EDb3XGvas4e5/p7NCwZsk5KLIfAX/APLXtgWe96Sq
+         xvr18rPLpMfB8miyl1CmATAEyxVmOiMgAMqPaMXdYeoHOmXxrZ6gVAV/iipwYVNNAKZ2
+         w//IVtSpdPCLpuDi0vCwdJFMR3r3CvGXJBPtjlfYMmf4hzAtTV0zEaxv4+unOwBDt+B0
+         lG3NbByhPkfDVwTXORY8AkwDVIRnbk472bt4cGXQINRUCE1SCTLKNPkpLYOs30LI37UY
+         ECeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708638532; x=1709243332;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iestUm478PxK+5YaLCEJhp6yc3SushaDmiD6YpHgsD4=;
+        b=boJtZJqI+BxPXOhzXdzvkMWrDBPVWIQtyLyONipVwP7fADqgACydYolwl8utvfAzyu
+         mKpmKcGeuBHGA4LNCU1bVgkbOaQ1sdAXdSfIiBTmSRtSioX4jKp0QsCBZQt/KrGPeA2F
+         hcQOF6pJeoLimHRUDwWa6PM5dH3USGqg0bmaLX80joqS6Xs/thIn/6mXhelpFqp6wXij
+         DGwQC89G0RDkCMRiTHM+LB27xQAremggpmIPC2xaS4FGAPSGIexuQU3JyVcK89fSMmSu
+         QP6xt9c8QOcP3PnDsjMtEIvw1lCYfimhWWE6GrCrTLS2rv23CrxCqP5aLRJD43OLvVe6
+         I7EA==
+X-Forwarded-Encrypted: i=1; AJvYcCUJj2BKqq2D3URA5pUsc5wZyvUuztiH8Qf/nmkjbu/Ql+lkTMWkSUZ3/ozztt6XvoVMsFH4l2HZyRRHybMvCaG7snU1Zc/B5Isbb9m0qGLG7MRWv2xow47NScKic4UKVuY+wdNkbhIkwYVHBOmGkRzZCJCJj/1MaE2puM9iADp3wVnQODIL6viHa/nqvEc1
+X-Gm-Message-State: AOJu0YwP84sZSoEVaAuFiyvYm7kisSuLqQh710v/KuXV4GcICd+lSrGN
+	UoFgIlGzyVkUT41jCE2TtAMhLX8jRkIcKCojIGvdVMbIxjntjHMD
+X-Google-Smtp-Source: AGHT+IGgj0BqB2cALTtSfMvuvW4MLV2WQd/3ewSmbBPc84VCBC9Gz2CEwRZUkyUKjC68l6jNX3nXXg==
+X-Received: by 2002:a05:6512:3e15:b0:512:e394:bfb1 with SMTP id i21-20020a0565123e1500b00512e394bfb1mr261194lfv.43.1708638531417;
+        Thu, 22 Feb 2024 13:48:51 -0800 (PST)
+Received: from localhost.localdomain ([94.120.90.19])
+        by smtp.gmail.com with ESMTPSA id kf16-20020a17090776d000b00a3ef85f0bf7sm2972525ejc.85.2024.02.22.13.48.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 13:48:50 -0800 (PST)
+From: =?UTF-8?q?Mustafa=20Ek=C5=9Fi?= <mustafa.eskieksi@gmail.com>
+To: hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com,
+	linux-kernel@vger.kernel.org,
+	platform-driver-x86@vger.kernel.org,
+	linux-hwmon@vger.kernel.org
+Cc: mustafa.eskieksi@gmail.com,
+	jdelvare@suse.com,
+	linux@roeck-us.net,
+	pavel@ucw.cz,
+	lee@kernel.org
+Subject: [PATCH v2] platform/x86: Add wmi driver for Casper Excalibur laptops. Odd line breaks was because I have used scripts/Lindent without checking, I'm sorry for that. And for my weird rgb led API: This kind of design was also used in drivers/platform/x86/dell/alienware-wmi.c:239, but mine differs as it doesn't create different attributes for different leds. That is because driver doesn't know how many leds there are, to know how many leds there are it should check processor information (whether it's 10th gen or 11th). I don't think include/linux/mod_devicetable.h supports that. If there is a way to differentiate cpus, please let me know. And even if it knew how many leds there are, having different attributes can be cumbersome because there's no way of reading leds. And also user can change led state without notifying os (with some hotkey). But I'm open to further discussion. And thanks for all of your careful reviewing. It helped me to learn more.
+Date: Fri, 23 Feb 2024 00:48:15 +0300
+Message-ID: <20240222214815.245280-1-mustafa.eskieksi@gmail.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Alexander Gordeev <agordeev@linux.ibm.com> writes:
-> The generic vtime_task_switch() implementation gets built only
-> if __ARCH_HAS_VTIME_TASK_SWITCH is not defined, but requires an
-> architecture to implement arch_vtime_task_switch() callback at
-> the same time, which is confusing.
->
-> Further, arch_vtime_task_switch() is implemented for 32-bit PowerPC
-> architecture only and vtime_task_switch() generic variant is rather
-> superfluous.
->
-> Simplify the whole vtime_task_switch() wiring by moving the existing
-> generic implementation to PowerPC.
->
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-> Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
-> Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
-> ---
->  arch/powerpc/include/asm/cputime.h | 13 -------------
->  arch/powerpc/kernel/time.c         | 22 ++++++++++++++++++++++
->  kernel/sched/cputime.c             | 13 -------------
->  3 files changed, 22 insertions(+), 26 deletions(-)
+Adding wmi driver for Casper Excalibur Laptops:
+This driver implements a ledclass_dev device for keyboard backlight
+and hwmon driver to read fan speed and (also write) pwm mode. NEW_LEDS is
+selected because this driver introduces new leds, and LEDS_CLASS is selected
+because this driver implements a led class device. All of Casper Excalibur
+Laptops are supported but fan speeds has a bug for older generations.
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Signed-off-by: Mustafa Ekşi <mustafa.eskieksi@gmail.com>
+---
+ MAINTAINERS                       |   6 +
+ drivers/platform/x86/Kconfig      |  14 ++
+ drivers/platform/x86/Makefile     |   1 +
+ drivers/platform/x86/casper-wmi.c | 315 ++++++++++++++++++++++++++++++
+ 4 files changed, 336 insertions(+)
+ create mode 100644 drivers/platform/x86/casper-wmi.c
 
-cheers
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9ed4d386853..d0142a75d2c 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4723,6 +4723,12 @@ S:	Maintained
+ W:	https://wireless.wiki.kernel.org/en/users/Drivers/carl9170
+ F:	drivers/net/wireless/ath/carl9170/
+ 
++CASPER EXCALIBUR WMI DRIVER
++M:	Mustafa Ekşi <mustafa.eskieksi@gmail.com>
++L:	platform-driver-x86@vger.kernel.org
++S:	Maintained
++F:	drivers/platform/x86/casper-wmi.c
++
+ CAVIUM I2C DRIVER
+ M:	Robert Richter <rric@kernel.org>
+ S:	Odd Fixes
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index bdd302274b9..ebef9c9dfb6 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -1127,6 +1127,20 @@ config SEL3350_PLATFORM
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called sel3350-platform.
+ 
++config CASPER_WMI
++	tristate "Casper Excalibur Laptop WMI driver"
++	depends on ACPI_WMI
++	depends on HWMON
++	select NEW_LEDS
++	select LEDS_CLASS
++	help
++	  Say Y here if you want to support WMI-based fan speed reporting,
++	  power management and keyboard backlight support on Casper Excalibur
++	  Laptops.
++
++	  To compile this driver as a module, choose M here: the module will
++	  be called casper-wmi.
++
+ endif # X86_PLATFORM_DEVICES
+ 
+ config P2SB
+diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+index 1de432e8861..4b527dd44ad 100644
+--- a/drivers/platform/x86/Makefile
++++ b/drivers/platform/x86/Makefile
+@@ -14,6 +14,7 @@ obj-$(CONFIG_MXM_WMI)			+= mxm-wmi.o
+ obj-$(CONFIG_NVIDIA_WMI_EC_BACKLIGHT)	+= nvidia-wmi-ec-backlight.o
+ obj-$(CONFIG_XIAOMI_WMI)		+= xiaomi-wmi.o
+ obj-$(CONFIG_GIGABYTE_WMI)		+= gigabyte-wmi.o
++obj-$(CONFIG_CASPER_WMI)		+= casper-wmi.o
+ 
+ # Acer
+ obj-$(CONFIG_ACERHDF)		+= acerhdf.o
+diff --git a/drivers/platform/x86/casper-wmi.c b/drivers/platform/x86/casper-wmi.c
+new file mode 100644
+index 00000000000..012ebda195d
+--- /dev/null
++++ b/drivers/platform/x86/casper-wmi.c
+@@ -0,0 +1,315 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++#include <linux/bitops.h>
++#include <linux/acpi.h>
++#include <linux/leds.h>
++#include <linux/slab.h>
++#include <linux/module.h>
++#include <linux/wmi.h>
++#include <linux/device.h>
++#include <linux/hwmon.h>
++#include <linux/sysfs.h>
++#include <linux/types.h>
++#include <acpi/acexcep.h>
++#include <linux/bitfield.h>
++#include <linux/sysfs.h>
++
++#define CASPER_WMI_GUID "644C5791-B7B0-4123-A90B-E93876E0DAAD"
++
++#define CASPER_READ 0xfa00
++#define CASPER_WRITE 0xfb00
++#define CASPER_GET_HARDWAREINFO 0x0200
++#define CASPER_SET_LED 0x0100
++#define CASPER_POWERPLAN 0x0300
++
++#define CASPER_KEYBOARD_LED_1 0x03
++#define CASPER_KEYBOARD_LED_2 0x04
++#define CASPER_KEYBOARD_LED_3 0x05
++#define CASPER_ALL_KEYBOARD_LEDS 0x06
++#define CASPER_CORNER_LEDS 0x07
++
++#define CASPER_LED_ID    0xF00000000
++#define CASPER_LED_MODE  0x0F0000000
++#define CASPER_LED_ALPHA 0x00F000000
++
++struct casper_wmi_args {
++	u16 a0, a1;
++	u32 a2, a3, a4, a5, a6, a7, a8;
++};
++
++static u32 casper_last_color;
++static u8 casper_last_led;
++
++static int casper_set(struct wmi_device *wdev, u16 a1, u8 led_id,
++			      u32 data)
++{
++	struct casper_wmi_args wmi_args = {
++		.a0 = CASPER_WRITE,
++		.a1 = a1,
++		.a2 = led_id,
++		.a3 = data
++	};
++	struct acpi_buffer input = {
++		(acpi_size) sizeof(struct casper_wmi_args),
++		&wmi_args
++	};
++	if (ACPI_FAILURE(wmidev_block_set(wdev, 0, &input)))
++		return -EINVAL;
++	return 0;
++}
++
++static ssize_t led_control_show(struct device *dev, struct device_attribute
++				*attr, char *buf)
++{
++	return sysfs_emit("%u%08x\n", buf, casper_last_led,
++		       casper_last_color);
++}
++
++/*
++ * Format wanted from user is a hexadecimal 36-bit integer: most significant
++ * 4 bits are led_id, next 4 bits are mode and next 4 bits are brightness,
++ * next 24 bits are rgb value. 64 bits
++ * IMARRGGBB
++ */
++static ssize_t led_control_store(struct device *dev, struct device_attribute
++				 *attr, const char *buf, size_t count)
++{
++	if (strlen(buf) != 10)
++		return -EINVAL;
++	u64 user_input;
++	/*
++	 * 16-base selected for ease of writing color codes. I chose 64 bit and
++	 * kstrtou64 because format I use determined fits into 64 bit.
++	 */
++	int ret = kstrtou64(buf, 16, &user_input);
++	if (ret)
++		return ret;
++	/*
++	 * led_id can't exceed 255 but it can vary among newer versions and
++	 * other models.
++	 */
++	u8 led_id = FIELD_GET(CASPER_LED_ID, user_input);
++	ret = casper_set(to_wmi_device(dev->parent), CASPER_SET_LED,
++			led_id, (u32) user_input);
++	if (ret)
++		return ret;
++	if (led_id != CASPER_CORNER_LEDS) {
++		casper_last_color = (u32) user_input;
++		casper_last_led = led_id;
++	}
++	return count;
++}
++
++static DEVICE_ATTR_RW(led_control);
++
++static struct attribute *casper_kbd_led_attrs[] = {
++	&dev_attr_led_control.attr,
++	NULL,
++};
++
++ATTRIBUTE_GROUPS(casper_kbd_led);
++
++static void set_casper_backlight_brightness(struct led_classdev *led_cdev,
++					    enum led_brightness brightness)
++{
++	// Setting any of the keyboard leds' brightness sets brightness of all
++	u32 bright_prep = FIELD_PREP(CASPER_LED_ALPHA, brightness);
++	u32 color_no_alpha = casper_last_color&~CASPER_LED_ALPHA;
++
++	casper_set(to_wmi_device(led_cdev->dev->parent), CASPER_SET_LED,
++		       CASPER_KEYBOARD_LED_1, color_no_alpha | bright_prep
++	);
++}
++
++static enum led_brightness get_casper_backlight_brightness(struct led_classdev
++							   *led_cdev)
++{
++	return FIELD_GET(CASPER_LED_ALPHA, casper_last_color);
++}
++
++static struct led_classdev casper_kbd_led = {
++	.name = "casper::kbd_backlight",
++	.brightness = 0,
++	.brightness_set = set_casper_backlight_brightness,
++	.brightness_get = get_casper_backlight_brightness,
++	.max_brightness = 2,
++	.groups = casper_kbd_led_groups,
++};
++
++static int casper_query(struct wmi_device *wdev, u16 a1,
++				struct casper_wmi_args *out)
++{
++	struct casper_wmi_args wmi_args = {
++		.a0 = CASPER_READ,
++		.a1 = a1
++	};
++	struct acpi_buffer input = {
++		(acpi_size) sizeof(struct casper_wmi_args),
++		&wmi_args
++	};
++
++	acpi_status ret = wmidev_block_set(wdev, 0, &input);
++	if (ACPI_FAILURE(ret))
++		return -EIO;
++
++	union acpi_object *obj = wmidev_block_query(wdev, 0);
++	if (obj->type != ACPI_TYPE_BUFFER) // obj will be int (0x10) on failure
++		return -EINVAL;
++	if (obj->buffer.length != 32)
++		return -EIO;
++
++	memcpy(out, obj->buffer.pointer, sizeof(struct casper_wmi_args));
++	kfree(obj);
++	return ret;
++}
++
++static umode_t casper_wmi_hwmon_is_visible(const void *drvdata,
++					   enum hwmon_sensor_types type,
++					   u32 attr, int channel)
++{
++	switch (type) {
++	case hwmon_fan:
++		return 0444;
++	case hwmon_pwm:
++		return 0644;
++	default:
++		return 0;
++	}
++	return 0;
++}
++
++static int casper_wmi_hwmon_read(struct device *dev,
++				 enum hwmon_sensor_types type, u32 attr,
++				 int channel, long *val)
++{
++	struct casper_wmi_args out = { 0 };
++	struct wmi_device *wdev = to_wmi_device(dev->parent);
++	int ret;
++
++	switch (type) {
++	case hwmon_fan:
++		ret = casper_query(wdev, CASPER_GET_HARDWAREINFO, &out);
++		/*
++		 * a4 and a5 is little endian in older laptops (with 10th gen
++		 * cpus or older) and big endian in newer ones. I don't think
++		 * dmi has something for cpu information. Also, defining a
++		 * dmi_list just for this seems like an overkill. This problem
++		 * can be solved in userspace too.
++		 */
++		if (channel == 0) // CPU fan
++			*val = out.a4;
++		else if (channel == 1) // GPU fan
++			*val = out.a5;
++		return 0;
++	case hwmon_pwm:
++		ret = casper_query(wdev, CASPER_POWERPLAN, &out);
++		if (ret) // power plan count varies generations.
++			return ret;
++		if (channel == 0)
++			*val = out.a2;
++		return 0;
++	default:
++		return -ENODEV;
++	}
++}
++
++static int casper_wmi_hwmon_read_string(struct device *dev,
++					enum hwmon_sensor_types type, u32 attr,
++					int channel, const char **str)
++{
++	switch (type) {
++	case hwmon_fan:
++		switch (channel) {
++		case 0:
++			*str = "cpu_fan_speed";
++			break;
++		case 1:
++			*str = "gpu_fan_speed";
++			break;
++		default:
++			return -ENODEV;
++		}
++		break;
++	default:
++		return -ENODEV;
++	}
++	return 0;
++}
++
++static int casper_wmi_hwmon_write(struct device *dev,
++				  enum hwmon_sensor_types type, u32 attr,
++				  int channel, long val)
++{
++	acpi_status ret;
++
++	switch (type) {
++	case hwmon_pwm:
++		if (val > 5 || val < 0)
++			return -EINVAL;
++		ret = casper_set(to_wmi_device(dev->parent),
++				 CASPER_POWERPLAN, val, 0);
++		if (ret)
++			return ret;
++		return 0;
++	default:
++		return -EOPNOTSUPP;
++	}
++}
++
++static const struct hwmon_ops casper_wmi_hwmon_ops = {
++	.is_visible = &casper_wmi_hwmon_is_visible,
++	.read = &casper_wmi_hwmon_read,
++	.read_string = &casper_wmi_hwmon_read_string,
++	.write = &casper_wmi_hwmon_write
++};
++
++static const struct hwmon_channel_info *const casper_wmi_hwmon_info[] = {
++	HWMON_CHANNEL_INFO(fan,
++			   HWMON_F_INPUT | HWMON_F_LABEL,
++			   HWMON_F_INPUT | HWMON_F_LABEL),
++	HWMON_CHANNEL_INFO(pwm, HWMON_PWM_MODE),
++	NULL
++};
++
++static const struct hwmon_chip_info casper_wmi_hwmon_chip_info = {
++	.ops = &casper_wmi_hwmon_ops,
++	.info = casper_wmi_hwmon_info,
++};
++
++static int casper_wmi_probe(struct wmi_device *wdev, const void *context)
++{
++	struct device *hwmon_dev;
++
++	if (ACPI_FAILURE(led_classdev_register(&wdev->dev, &casper_kbd_led)))
++		return -ENODEV;
++	hwmon_dev = devm_hwmon_device_register_with_info(&wdev->dev,
++						"casper_wmi", wdev,
++						&casper_wmi_hwmon_chip_info,
++						NULL);
++	return PTR_ERR_OR_ZERO(hwmon_dev);
++}
++
++static void casper_wmi_remove(struct wmi_device *wdev)
++{
++	led_classdev_unregister(&casper_kbd_led);
++}
++
++static const struct wmi_device_id casper_wmi_id_table[] = {
++	{ CASPER_WMI_GUID, NULL },
++	{ }
++};
++
++static struct wmi_driver casper_wmi_driver = {
++	.driver = {
++		   .name = "casper-wmi",
++		    },
++	.id_table = casper_wmi_id_table,
++	.probe = casper_wmi_probe,
++	.remove = &casper_wmi_remove,
++};
++
++module_wmi_driver(casper_wmi_driver);
++MODULE_DEVICE_TABLE(wmi, casper_wmi_id_table);
++
++MODULE_AUTHOR("Mustafa Ekşi <mustafa.eskieksi@gmail.com>");
++MODULE_DESCRIPTION("Casper Excalibur Laptop WMI driver");
++MODULE_LICENSE("GPL");
+-- 
+2.43.2
 
-> diff --git a/arch/powerpc/include/asm/cputime.h b/arch/powerpc/include/asm/cputime.h
-> index 4961fb38e438..aff858ca99c0 100644
-> --- a/arch/powerpc/include/asm/cputime.h
-> +++ b/arch/powerpc/include/asm/cputime.h
-> @@ -32,23 +32,10 @@
->  #ifdef CONFIG_PPC64
->  #define get_accounting(tsk)	(&get_paca()->accounting)
->  #define raw_get_accounting(tsk)	(&local_paca->accounting)
-> -static inline void arch_vtime_task_switch(struct task_struct *tsk) { }
->  
->  #else
->  #define get_accounting(tsk)	(&task_thread_info(tsk)->accounting)
->  #define raw_get_accounting(tsk)	get_accounting(tsk)
-> -/*
-> - * Called from the context switch with interrupts disabled, to charge all
-> - * accumulated times to the current process, and to prepare accounting on
-> - * the next process.
-> - */
-> -static inline void arch_vtime_task_switch(struct task_struct *prev)
-> -{
-> -	struct cpu_accounting_data *acct = get_accounting(current);
-> -	struct cpu_accounting_data *acct0 = get_accounting(prev);
-> -
-> -	acct->starttime = acct0->starttime;
-> -}
->  #endif
->  
->  /*
-> diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
-> index df20cf201f74..c0fdc6d94fee 100644
-> --- a/arch/powerpc/kernel/time.c
-> +++ b/arch/powerpc/kernel/time.c
-> @@ -354,6 +354,28 @@ void vtime_flush(struct task_struct *tsk)
->  	acct->hardirq_time = 0;
->  	acct->softirq_time = 0;
->  }
-> +
-> +/*
-> + * Called from the context switch with interrupts disabled, to charge all
-> + * accumulated times to the current process, and to prepare accounting on
-> + * the next process.
-> + */
-> +void vtime_task_switch(struct task_struct *prev)
-> +{
-> +	if (is_idle_task(prev))
-> +		vtime_account_idle(prev);
-> +	else
-> +		vtime_account_kernel(prev);
-> +
-> +	vtime_flush(prev);
-> +
-> +	if (!IS_ENABLED(CONFIG_PPC64)) {
-> +		struct cpu_accounting_data *acct = get_accounting(current);
-> +		struct cpu_accounting_data *acct0 = get_accounting(prev);
-> +
-> +		acct->starttime = acct0->starttime;
-> +	}
-> +}
->  #endif /* CONFIG_VIRT_CPU_ACCOUNTING_NATIVE */
->  
->  void __no_kcsan __delay(unsigned long loops)
-> diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
-> index af7952f12e6c..aa48b2ec879d 100644
-> --- a/kernel/sched/cputime.c
-> +++ b/kernel/sched/cputime.c
-> @@ -424,19 +424,6 @@ static inline void irqtime_account_process_tick(struct task_struct *p, int user_
->   */
->  #ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
->  
-> -# ifndef __ARCH_HAS_VTIME_TASK_SWITCH
-> -void vtime_task_switch(struct task_struct *prev)
-> -{
-> -	if (is_idle_task(prev))
-> -		vtime_account_idle(prev);
-> -	else
-> -		vtime_account_kernel(prev);
-> -
-> -	vtime_flush(prev);
-> -	arch_vtime_task_switch(prev);
-> -}
-> -# endif
-> -
->  void vtime_account_irq(struct task_struct *tsk, unsigned int offset)
->  {
->  	unsigned int pc = irq_count() - offset;
-> -- 
-> 2.40.1
 
