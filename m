@@ -1,134 +1,152 @@
-Return-Path: <linux-kernel+bounces-76348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3227B85F5F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:44:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D22C685F5F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:45:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD9B31F2388E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:44:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 333E9B21E35
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:45:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A5243F9EA;
-	Thu, 22 Feb 2024 10:44:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BOeIXNrn"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 769283FE3D;
+	Thu, 22 Feb 2024 10:45:46 +0000 (UTC)
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C5E43F9E2
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 10:44:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 872D73FE47;
+	Thu, 22 Feb 2024 10:45:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708598665; cv=none; b=p6l4YUzUHV+a1ChGUX61smmElJ6aUWY7k74lwTpVoJXYYPKpbGseRC5jhd7pBEwMOIsghL3qXXhWy7i7Jwqb6Jm/GnfruL1Jtz/mMPw6XqSumXuGdA2EXi7M1Cna+QRLswRqzM/CKJtPckfqR5ek/muZms2CZv1Yy//JKA9wEnE=
+	t=1708598744; cv=none; b=qppBWUSfO7J5xm76oFUCxI//KHMO/ZDfGy2Rr2modWa7qHmaFSLVdGp4b0fnJbE+VGix2NfZKPdA8YFwJkKouA3thmbp1qR/G0Oz52gyLwLVaYR6TWjbQhh+1vjw8h/S8s46QhJTx66qthM2GQX3y7/aQ7dRHvkPQeT6ZWdn/xk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708598665; c=relaxed/simple;
-	bh=I8GfOfCTLZmih12aYKjE14cKV4MXTg54Oq7SR/j3eZA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tBjYgeHaB7SnpFNCygxdsNOF5l2SpldxfU9wE/KWmlCHTNoIdD95q9Omens0OF/zImIaqhAgKT1vX2ufrcPc6xvYEleRcWNAcq4znnb3y03GJT9WR8cHxJ6a1TkkgAC1k56t0vaRnyYiGUt+L/wd9LQ92Z87QxhCbhhLKC1eggc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BOeIXNrn; arc=none smtp.client-ip=209.85.208.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d25a7b02d6so17673041fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 02:44:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708598662; x=1709203462; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MiMRQBwGLj/KPIT0lE6FKUXqjnkUTGxkru+2azcnTvM=;
-        b=BOeIXNrntHg88q0ztMhKZTwdp11aOLgzRPMmQ/xvzL1DiLUoyLpkJ/zYREPOF+TbJU
-         jeYHjUwv7Bxb7YmN/k6Jow5ziite1pz5l3Zf2NWIUR18QaDWFSjMoexbo9xedEPzc4pi
-         LMcCCLpYM2q6Wp3G0aID7yHmPQJp0EvsstAmkmvwlkuTQkFV0fM2Q/4BIhxbQeZRY3JV
-         N1isLzmP+oo0W+OfUZO6CPxnu+S6Lwo314bEyQTpFU8iskpXcYfyD1kjsj+D25dy20J2
-         zv7xHf4IUBj6+MkMF1hUizBe34FQDoivg/r/wbZAMEOdHSR+7RQttIUwCCIJ/pJEyfkZ
-         RUnQ==
+	s=arc-20240116; t=1708598744; c=relaxed/simple;
+	bh=svIFK8g3OJaGYcfi9ddpJJtCOaE+QXYs7Dk3B7v8jno=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dqdz4hLL9yw4JpfbjUCt0c3sAlNixfqtl8f5/eU2YnGu6clhZYlxk79swcsgsgbYqcObX8UQsi/chRZ8FmHkHcRWOcLZ+BMqKltpPQyevP/FAEJFTjXRwY9W7ZYHsjcVSVvU7wFDAcktLaZayV1EvZRHV/2wfy6FcCkk3eooHxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-db3a09e96daso6785910276.3;
+        Thu, 22 Feb 2024 02:45:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708598662; x=1709203462;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MiMRQBwGLj/KPIT0lE6FKUXqjnkUTGxkru+2azcnTvM=;
-        b=q2LscpPEygEAmVt6bf4VJ6wPKoIGQDNzTxdnSTZPfNQFy2FTc8qNqMFsiQ8Lu7IeD3
-         lPiSjl9+YiOg9b3y0xb7lDCOcCQXeve+SFRrm1tA/hgrsE6jewYC5KmS6XF4Oi7v+ysc
-         Q2AR9rC0ASGzsTIlIquCgIyt5i8weY62F7zJX/A2Uvd7tyYzgPWW0Sm0fVGvEExgsWY+
-         8SdypeL4RRXXX4CC5yzHsiZiaU/L2b0TRkyvsIrao09Fk1wDTdirlMEXPW+NehBYRDN6
-         zpA2bVleq8qDrDCIt0H5dF5uzU4LNyy1i2pe0d1DPf5uO0NFb7Xa7xYWMknnt91qCBrK
-         ABGQ==
-X-Gm-Message-State: AOJu0YyI4FMckbLwmgu15fBG7a9r7yR1bywaoCNyU9/3tWyh/kh8OVuj
-	rmcOLf1bxzOdRgZTyIgp+AaLdPGeDU0hmSaFGCPVg9UqS//PhwL4J9e0z8/Wbik=
-X-Google-Smtp-Source: AGHT+IFI+YXV+IbPRZDUS5Mhza+q8qDL4tfABrK7RQ5BrnppYXtMdT6C1vmAYblahRewhKdggLFw7Q==
-X-Received: by 2002:a2e:870f:0:b0:2d2:4218:6275 with SMTP id m15-20020a2e870f000000b002d242186275mr6301038lji.49.1708598661733;
-        Thu, 22 Feb 2024 02:44:21 -0800 (PST)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id p6-20020adfe606000000b0033cdbe335bcsm20032407wrm.71.2024.02.22.02.44.20
+        d=1e100.net; s=20230601; t=1708598727; x=1709203527;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=x4VkjVhQFbw36Dc5vCR5db7ZoL62PwqiOAoaC/EBMYQ=;
+        b=Tm77Fz3sEh8Ef+JFcaoGT9fUr3utNgvcxYbp6iWsxchgHy0u3GO/9vTVFu7fwpowNe
+         KSeCy6PE0Hpu24yKAS55Zt1Od3dEQiKpuGzAQmsGcL9KfkoH8p7xzFv7D/1D+bzWnUGB
+         PhIzE90/8PUM4s2E1GCQuAa/o24hC6ZBxD7q0wgvrIDc5oN3VcxFH+9Cz6VkkgeIvb01
+         DaUC9bJFs51r7r4WMBLa7Xh/a318TYH0KVlewwAFkDnEmQskUgp9hbjygR5XDY2U1zhf
+         oXPdVlNyoURubE/O8oZevpkdLoRM65c95/DDnUGyspv31lXIfGA6/MiKjXw6gxlmEKbt
+         QaJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWRitni8kGJswaLymF8xa05Uxm6GHfx/T/xkfyl2pmyW+d/EV1A8P9ZSYq7srP4ikCKY1U8tC2/Db6a2RwR094+nRXwmzrtg4OhM4R/B2rcjMnbWWgX8wxlzjMBg1D9u7r4bGR6PRbVcw==
+X-Gm-Message-State: AOJu0YzvmnsXvdeYwPFzQsuy/S+O55EdAyLOXJ+k4GQ9qKhT59CXj34Y
+	f5sKlrt8lnsDXOdxNk4YhSKVFBKVviw5qoMF1WX0hBVzUjbuzfpfPOFsARwepKw=
+X-Google-Smtp-Source: AGHT+IETwEXLo7fl1hRyScuq746SKmavvZUXp2ocbQlTcqV2ykNTKNjW7HCB7zn+XEKt/HW9mVaiUw==
+X-Received: by 2002:a5b:38e:0:b0:dcd:905:3d17 with SMTP id k14-20020a5b038e000000b00dcd09053d17mr1875611ybp.32.1708598727432;
+        Thu, 22 Feb 2024 02:45:27 -0800 (PST)
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
+        by smtp.gmail.com with ESMTPSA id u11-20020a258f8b000000b00dc22f4bf808sm2688569ybl.32.2024.02.22.02.45.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 02:44:21 -0800 (PST)
-Message-ID: <d6ecb1c6-f9a7-4303-96a0-129c42eff75a@linaro.org>
-Date: Thu, 22 Feb 2024 11:44:20 +0100
+        Thu, 22 Feb 2024 02:45:27 -0800 (PST)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-db3a09e96daso6785881276.3;
+        Thu, 22 Feb 2024 02:45:26 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXnxoZg2eMjAYs9/svFWfXyBYPpqgWGem6IS58W9RxQ3Fel+BWL0EbQJtg9zOayqkLj6Npbuwz6erK3/dgDX36GGL0aAn2Ilspp+KSE9M0X4GdoTrDE13rrz2tGzYtuJBGUnjgjxIpeRw==
+X-Received: by 2002:a25:ab24:0:b0:dca:a3e8:a25a with SMTP id
+ u33-20020a25ab24000000b00dcaa3e8a25amr2064989ybi.62.1708598726440; Thu, 22
+ Feb 2024 02:45:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/6] thermal: core: Store zone ops in struct
- thermal_zone_device
-Content-Language: en-US
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>,
- Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Linux ACPI <linux-acpi@vger.kernel.org>, Lukasz Luba <lukasz.luba@arm.com>,
- Zhang Rui <rui.zhang@intel.com>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
-References: <4551531.LvFx2qVVIh@kreacher> <2262393.iZASKD2KPV@kreacher>
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <2262393.iZASKD2KPV@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240221092826.748e70c4@canb.auug.org.au> <CAL_JsqKw9OXb=aOMni1qprzeWDBgmjdJef-6VAjwx0R--D+URw@mail.gmail.com>
+ <ac9ddf79-6bc9-4daf-a271-82f8b3bca988@app.fastmail.com> <CAL_Jsq+L7uPimQfATs14EWCbqRO1vxDUmPie7=cChTLCf2od2g@mail.gmail.com>
+ <CAMuHMdXNyU0eBcMe3EhhfahcRo2KtXzwdr+d_6AC-2529R3bmQ@mail.gmail.com>
+ <7178ea35-da8d-4f25-9193-78dd11902eef@app.fastmail.com> <CAMuHMdX0G90D4ifV1OVpjPX6q0d0UyMa5iu7-s+12KiAD9zL8w@mail.gmail.com>
+In-Reply-To: <CAMuHMdX0G90D4ifV1OVpjPX6q0d0UyMa5iu7-s+12KiAD9zL8w@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 22 Feb 2024 11:45:14 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdU4qk0xY228uNoDpB5oQESc_MZzVf8hwXVL3penneBPKQ@mail.gmail.com>
+Message-ID: <CAMuHMdU4qk0xY228uNoDpB5oQESc_MZzVf8hwXVL3penneBPKQ@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the arm-soc-fixes tree
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Rob Herring <robh@kernel.org>, Stephen Rothwell <sfr@canb.auug.org.au>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Olof Johansson <olof@lixom.net>, 
+	ARM <linux-arm-kernel@lists.infradead.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-next <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 14/02/2024 13:45, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> The current code requires thermal zone creators to pass pointers to
-> writable ops structures to thermal_zone_device_register_with_trips()
-> which needs to modify the target struct thermal_zone_device_ops object
-> if the "critical" operation in it is NULL.
-> 
-> Moreover, the callers of thermal_zone_device_register_with_trips() are
-> required to hold on to the struct thermal_zone_device_ops object passed
-> to it until the given thermal zone is unregistered.
-> 
-> Both of these requirements are quite inconvenient, so modify struct
-> thermal_zone_device to contain struct thermal_zone_device_ops as field and
-> make thermal_zone_device_register_with_trips() copy the contents of the
-> struct thermal_zone_device_ops passed to it via a pointer (which can be
-> const now) to that field.
-> 
-> Also adjust the code using thermal zone ops accordingly and modify
-> thermal_of_zone_register() to use a local ops variable during
-> thermal zone registration so ops do not need to be freed in
-> thermal_of_zone_unregister() any more.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-> ---
+Hi Arnd,
 
-Reviewed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+On Wed, Feb 21, 2024 at 5:36=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
+k.org> wrote:
+> On Wed, Feb 21, 2024 at 4:58=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wro=
+te:
+> > On Wed, Feb 21, 2024, at 15:51, Geert Uytterhoeven wrote:
+> > > On Wed, Feb 21, 2024 at 3:27=E2=80=AFPM Rob Herring <robh@kernel.org>=
+ wrote:
+> > >> On Wed, Feb 21, 2024 at 7:00=E2=80=AFAM Arnd Bergmann <arnd@arndb.de=
+> wrote:
+> > >> > On Wed, Feb 21, 2024, at 14:53, Rob Herring wrote:
+> > >> > > On Tue, Feb 20, 2024 at 3:28=E2=80=AFPM Stephen Rothwell <sfr@ca=
+nb.auug.org.au> wrote:
+> > >> > >> arch/arm/boot/dts/renesas/r8a7793-gose.dtb: Warning (interrupt_=
+map): Failed prerequisite 'interrupt_provider'
+> > >> > >>
+> > >> > >> Introduced/exposed by commit
+> > >> > >>
+> > >> > >>   78b6f8e7379b ("dtc: Enable dtc interrupt_provider check")
+> > >> > >>
+> > >> > >> I guess you missed some :-(
+> > >> > >
+> > >> > > No, Geert separately posted fixes for already.
+> > >> >
+> > >> > I did make the mistake of applying the final patch "dtc:
+> > >> > Enable dtc interrupt_provider check" to the arm/fixes branch
+> > >> > for 6.8 along with the other fixes.
+> > >> >
+> > >> > Clearly that should be separate and only go into mainline
+> > >> > after there are no more regressions, but now I'm unsure
+> > >> > about the other patches -- did you intend the dts fixes
+> > >> > for 6.8 or for the coming merge window?
+> > >>
+> > >> Either is fine with me. My intent was the whole series plus the
+> > >> Renesas fix to be applied together. Anything new that crops up we ca=
+n
+> > >> fix on top.
+> > >
+> > > If you want me to move commit b4f97d1b5aeb6166 ("ARM: dts: renesas:
+> > > rcar-gen2: Add missing #interrupt-cells to DA9063 nodes") to
+> > > renesas-fixes, please tell me.
+> >
+> > Up to you. I have done some merges yesterday but have not started
+> > merging the dt branches, so you can still send an updated v2
+> > if you prefer (or have this patch in both branches). Please
+> > let me know how you decide.
+>
+> OK, will move it to renesas-fixes.
+> Note that b4f97d1b5aeb6166 was not included yet in the last PR
+> I sent to soc, so you can continue merging DT branches.
 
+Moved to renesas-fixes, and PR sent.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Gr{oetje,eeting}s,
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+                        Geert
 
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
