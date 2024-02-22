@@ -1,246 +1,110 @@
-Return-Path: <linux-kernel+bounces-76324-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D75D85F5A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:26:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B09485F58C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:22:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06A951F275D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:26:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FFA41F22707
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:22:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CFC63CF6B;
-	Thu, 22 Feb 2024 10:26:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 576CE3A1B2;
+	Thu, 22 Feb 2024 10:22:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RiN6UPpP"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="fLZDdS6F"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1932F39FE1
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 10:26:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9857F51B;
+	Thu, 22 Feb 2024 10:22:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708597595; cv=none; b=qG7Ss9BbxZJZemEi3NrufXNy2qazIHFda0Jl7m1jyRG0gXfZ52jrz2ZBQa8ilQDvkxvHljCnEIAzP6lhYTdA+eDjUk93P1acYGzJ8LLEROTeY9+afLsx+OrFs6tbieIYHRQ+BJgx8xFdwRB+LaugyP1P67HVpijDPr8pDfzsUw4=
+	t=1708597350; cv=none; b=Bw8m4pPvq1NuHkbn1xmg4xW92gqifiB7Ur/yWex6EsKNFQwOsjpq5EYDCaPL564ZFTQqNupikkuJWiLhzEy7ws+XCffLyKoSScYNsCkhDh+ExrRYY5kxGktyHLMVkwNriIwIjj2ZNyrQZ/RyHORT8JjNUJUZECehyaGCgwLMSBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708597595; c=relaxed/simple;
-	bh=8yUST756hSnWdA0KZ9yZ+9ADwj7x14wYQ/+JjmTd/+k=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=apf8n7o0SICt7OqhznJn6Gd4xWjyl+Vc1BBaMA928fNOcy66otGoh3zWqa2PMIthAh+gmQTjI6vWV3F9TqILIqKu2gE7ObgysrGxIVz35NSetEeQHKJmcstRFoMx/zAfUNKepajeTkJcUrKp7Jy6XOH68zZ40pRKa+T28vTPXbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RiN6UPpP; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708597593; x=1740133593;
-  h=date:from:to:cc:subject:message-id;
-  bh=8yUST756hSnWdA0KZ9yZ+9ADwj7x14wYQ/+JjmTd/+k=;
-  b=RiN6UPpPHuUQveG1ARBQQ4McXzpBLm7hLsmt9u3iUayxYA7lqMA0CZOn
-   kXaBgxFxHAsa+LJn9ssbEikjHn6JVxIZVx5rb8Pigci4jlTXPQQkxcTu4
-   AWEYLLglBQ/neYsJTU9dLrTZ1XegonpzX562NS5qZ9f+OBysTvgiSXRxv
-   OyJUbMWEz2+mZOGajvi6OnysqMvQS6kNg46a/ipa6IF4YL1WKiOOfym0q
-   KuEHQ09DGQ6fyApalNmz102jVotmbs0j/WBFIwg4iOZwCFGVQpjZnpvyc
-   EzhW6hluuyKukOj3vSalCFCEhKYdA6FNcvUy+NPxMCYAYx/2wEg1eNed5
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="13434312"
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="13434312"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 02:26:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="5605964"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa008.fm.intel.com with ESMTP; 22 Feb 2024 02:26:31 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rd6EC-0006DX-1Y;
-	Thu, 22 Feb 2024 10:23:33 +0000
-Date: Thu, 22 Feb 2024 18:21:30 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:timers/core] BUILD SUCCESS
- 2ed08e4bc53298db3f87b528cd804cb0cce066a9
-Message-ID: <202402221825.JhjN40si-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1708597350; c=relaxed/simple;
+	bh=5u/5ihWUR+PL3goonlKbJDj1aaRfJ+VBubXkq4gGc34=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mqjJFMj0QXwID16iQReeWbZ540TXNIjVrQI6SqzFb2e7WQOt0chPICDTxx7UEx8m/RYUF83naoes/zYITIHNMJxT7rnFTiFc8FthNzrNKa6OyUGvERDASjI1eo+vNr+77MfjCUG5wrnRhVQ/jMLs3j7WkXBCqRIXUmhRc+zV2rY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=fLZDdS6F; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41MAMLtP004722;
+	Thu, 22 Feb 2024 04:22:21 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1708597341;
+	bh=ixHXj7OdIRV4zJ2FsJmNcakskY+4z5DDjV41JAZk8SE=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=fLZDdS6FGw9uLcoy3A53a7LTx3O7nUEOVpBln0HK6pXSIIexKFnFiFSqL+dy6h8h3
+	 r8NLePenxmRU66TKTZLf0OJcPDVGW4GmEugYTy1V7UuCKMGpz0pHLSqnXbFdGZnuRq
+	 eypw/eZPfeUERw4Hj3q3GklIERbJ8f6vCRBZo4EE=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41MAMLLq113308
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 22 Feb 2024 04:22:21 -0600
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 22
+ Feb 2024 04:22:20 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 22 Feb 2024 04:22:20 -0600
+Received: from localhost (dhruva.dhcp.ti.com [172.24.227.68])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41MAMJgf039156;
+	Thu, 22 Feb 2024 04:22:20 -0600
+Date: Thu, 22 Feb 2024 15:52:19 +0530
+From: Dhruva Gole <d-gole@ti.com>
+To: =?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>
+CC: Mark Brown <broonie@kernel.org>, Apurva Nandan <a-nandan@ti.com>,
+        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Gregory CLEMENT
+	<gregory.clement@bootlin.com>,
+        Vladimir Kondratiev
+	<vladimir.kondratiev@mobileye.com>,
+        Thomas Petazzoni
+	<thomas.petazzoni@bootlin.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Subject: Re: [PATCH v4 3/4] spi: cadence-qspi: put runtime in runtime PM
+ hooks names
+Message-ID: <20240222102219.gwpgxlbxpodavxr2@dhruva>
+References: <20240222-cdns-qspi-pm-fix-v4-0-6b6af8bcbf59@bootlin.com>
+ <20240222-cdns-qspi-pm-fix-v4-3-6b6af8bcbf59@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240222-cdns-qspi-pm-fix-v4-3-6b6af8bcbf59@bootlin.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/core
-branch HEAD: 2ed08e4bc53298db3f87b528cd804cb0cce066a9  clocksource: Scale the watchdog read retries automatically
+Hi,
 
-elapsed time: 945m
+On Feb 22, 2024 at 11:12:31 +0100, Théo Lebrun wrote:
+> Follow kernel naming convention with regards to power-management
+> callback function names.
+> 
+> The convention in the kernel is:
+>  - prefix_suspend means the system-wide suspend callback;
+>  - prefix_runtime_suspend means the runtime PM suspend callback.
+> The same applies to resume callbacks.
+> 
+> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+> ---
 
-configs tested: 158
-configs skipped: 3
+LGTM!
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Reviewed-by: Dhruva Gole <d-gole@ti.com>
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240222   gcc  
-arc                   randconfig-002-20240222   gcc  
-arc                    vdk_hs38_smp_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                     am200epdkit_defconfig   gcc  
-arm                       aspeed_g5_defconfig   gcc  
-arm                                 defconfig   clang
-arm                        multi_v7_defconfig   gcc  
-arm                        neponset_defconfig   gcc  
-arm                       omap2plus_defconfig   gcc  
-arm                   randconfig-001-20240222   gcc  
-arm                   randconfig-002-20240222   gcc  
-arm                           tegra_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-002-20240222   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240222   gcc  
-csky                  randconfig-002-20240222   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240222   gcc  
-i386         buildonly-randconfig-002-20240222   clang
-i386         buildonly-randconfig-003-20240222   clang
-i386         buildonly-randconfig-004-20240222   gcc  
-i386         buildonly-randconfig-005-20240222   clang
-i386         buildonly-randconfig-006-20240222   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240222   clang
-i386                  randconfig-002-20240222   clang
-i386                  randconfig-003-20240222   gcc  
-i386                  randconfig-004-20240222   clang
-i386                  randconfig-005-20240222   gcc  
-i386                  randconfig-006-20240222   clang
-i386                  randconfig-011-20240222   gcc  
-i386                  randconfig-012-20240222   clang
-i386                  randconfig-013-20240222   gcc  
-i386                  randconfig-014-20240222   gcc  
-i386                  randconfig-015-20240222   clang
-i386                  randconfig-016-20240222   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240222   gcc  
-loongarch             randconfig-002-20240222   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                          multi_defconfig   gcc  
-m68k                        stmark2_defconfig   gcc  
-microblaze                       alldefconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                      pic32mzda_defconfig   gcc  
-nios2                         10m50_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240222   gcc  
-nios2                 randconfig-002-20240222   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           alldefconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240222   gcc  
-parisc                randconfig-002-20240222   gcc  
-parisc64                            defconfig   gcc  
-powerpc                    adder875_defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                        cell_defconfig   gcc  
-powerpc                      ppc64e_defconfig   gcc  
-powerpc                         wii_defconfig   gcc  
-powerpc64             randconfig-003-20240222   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-002-20240222   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240222   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                         ap325rxa_defconfig   gcc  
-sh                                  defconfig   gcc  
-sh                 kfr2r09-romimage_defconfig   gcc  
-sh                          polaris_defconfig   gcc  
-sh                    randconfig-001-20240222   gcc  
-sh                    randconfig-002-20240222   gcc  
-sh                          rsk7264_defconfig   gcc  
-sh                          sdk7780_defconfig   gcc  
-sh                           se7705_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240222   gcc  
-sparc64               randconfig-002-20240222   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-003-20240222   gcc  
-x86_64       buildonly-randconfig-005-20240222   gcc  
-x86_64       buildonly-randconfig-006-20240222   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-005-20240222   gcc  
-x86_64                randconfig-006-20240222   gcc  
-x86_64                randconfig-012-20240222   gcc  
-x86_64                randconfig-014-20240222   gcc  
-x86_64                randconfig-074-20240222   gcc  
-x86_64                randconfig-075-20240222   gcc  
-x86_64                randconfig-076-20240222   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240222   gcc  
-xtensa                randconfig-002-20240222   gcc  
-xtensa                    xip_kc705_defconfig   gcc  
+
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Best regards,
+Dhruva Gole <d-gole@ti.com>
 
