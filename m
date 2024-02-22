@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-75895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FFAD85F068
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:27:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A12A85F069
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:27:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE3201F23966
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:27:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A4031C2215F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:27:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B75C31799D;
-	Thu, 22 Feb 2024 04:27:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B60811799F;
+	Thu, 22 Feb 2024 04:27:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VZn2MrGq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="degz5bbf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F37A017755;
-	Thu, 22 Feb 2024 04:27:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDD911775B;
+	Thu, 22 Feb 2024 04:27:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708576030; cv=none; b=SCIu6EqDPSpwczi0/oSBkvBUY8YSmNsXz2lJYFjkSutmo1WlXNJaLaYVd8MplXMqrM00btBKtXyGMCNicsHGnwk1kI+t7fhZZUmAhSpUMgXrwyfycoVi3gwJeF0rZTkuvtSXggwuSMGpcE1t+BdGRdNs8elo9Kj9Vm5GdILo5+k=
+	t=1708576055; cv=none; b=dAmWzxPjJXcEkqk8EMEa2F5D+Yv64XRqL9uxibdoA0eF5pbvbxF9bgI5Tbq/MgObje/BeZxnAG0e6UzCFj7Or70foRXYMLg1by4ZD0z/jGqOYZ0Fyx9DGQ0nhFTdY//vibRptvf+YJQPt7AKZU7WSil6nDpjlm1KKZOpaEgPZaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708576030; c=relaxed/simple;
-	bh=d9H5OiXqQ3u3m9ZnjSiQ8O/4LeLOQWApoSJAQSEG3XY=;
+	s=arc-20240116; t=1708576055; c=relaxed/simple;
+	bh=oFSGpvFms3hEQid0nl1slnjolsRI31AFhOlPP3m17wA=;
 	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=lcsC1J0esZ3CziF+OrvxMq/9Q4LH5d4R7H+xP9ZNULLyvRvzBlFEPSwoR0UZVr1ATwDBAxSkVVxi9x0I4PHfNCKI1ejqaeak6wOARbHuOZ9E6xXUFlVkVO70Aj40ekjLxVXUdOHwvnnibyuZqXbWAsxnIdPSJZ9a8d0arNAjLo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VZn2MrGq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE274C433F1;
-	Thu, 22 Feb 2024 04:27:08 +0000 (UTC)
+	 Subject:From:Cc:To:Date; b=HGWvfBferquwfSN8yHc0ZnX8CU82xEljaSHTU6RThPINtpQrg/wUQ/03JgvVZNMVT9wur1fReBURl0eGZR0Q1SzD4piqbbQd9D63rSkh4rfHhPhzCIQOdBd9R6wqQYQ288c88VjhyWc58D7N5FamJkERGUwkD/uFD6EB69D3dXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=degz5bbf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A34DBC433F1;
+	Thu, 22 Feb 2024 04:27:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708576028;
-	bh=d9H5OiXqQ3u3m9ZnjSiQ8O/4LeLOQWApoSJAQSEG3XY=;
+	s=k20201202; t=1708576054;
+	bh=oFSGpvFms3hEQid0nl1slnjolsRI31AFhOlPP3m17wA=;
 	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=VZn2MrGq+A8d6B8N8OpIw0JOwWZXr//WSCYMQ5UtcCrlhRR08MVVf3vcI//KHeyjw
-	 xlFybWL1NxrQh43Bh4OkNHFRmP4Byi/1BVFBG8Kwywcc6pR/DNnvt86DX/aX5v73z3
-	 +/vpKyf52HlfPMtBPD1wNa8D1aJhO4nw6/hSSndm4au6xV+eFXyzjSSZIdvMIHTXAv
-	 Lkum3nai9fxH8jOwWZ0KkLzJD1B17DA4B6Z9j8RrZCqS5Axkdvy/rfYFP17zoeuF9W
-	 eXx/F69Xhg6fo2RFUp7x0EQy12lx95Ngba/2QWRkWdrQ7Z+EKqMCVRO5ytMTMu2QJD
-	 ty5SASJu9WtAg==
-Message-ID: <f8bf91a3fbbe213f0bf0e63aa7cdf86c.sboyd@kernel.org>
+	b=degz5bbfCmTaX8+5xbK3rWriaahvDIWKfVNKagSXqfrDwnJYzezNaMrFgFKzQVhPO
+	 OXlyXwpvl5c2miPkr3w9BXgN/by/UynCS9BaSNGeO2fC6O18AAYU8SsqSLGdcqlao0
+	 SMabx0q4vSAu82azyCa1AOq5qfnqbej1qBz7pz7ji1T3RRZTmi5kuBUHBs0DTDrGh/
+	 0GX8E9pPELXyU1acG/xtKhEQ4hkTOjzk66sY9Eq/P1wrfKavrZYFUhcebc3kw0whiA
+	 2iYk4dvQkZ51w3wGKLWecb3as1adaWETmS/n6aHcObe+1VaTW4lYCQH0JHzo53/J+3
+	 EwMiMFyKbEAgQ==
+Message-ID: <61113ffd54a32399ebdc31fc1a57912f.sboyd@kernel.org>
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -49,31 +49,32 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <773fc8425c3b8f5b0ca7c1d89f15b65831a85ca9.1705850155.git.christophe.jaillet@wanadoo.fr>
-References: <773fc8425c3b8f5b0ca7c1d89f15b65831a85ca9.1705850155.git.christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH] clk: hisilicon: hi3559a: Fix an erroneous devm_kfree()
+In-Reply-To: <20240121142946.2796-1-erick.archer@gmx.com>
+References: <20240121142946.2796-1-erick.archer@gmx.com>
+Subject: Re: [PATCH] clk: hisilicon: Use devm_kcalloc() instead of devm_kzalloc()
 From: Stephen Boyd <sboyd@kernel.org>
-Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Christophe JAILLET <christophe.jaillet@wanadoo.fr>, linux-clk@vger.kernel.org
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, Dongjiu Geng <gengdongjiu@huawei.com>, Michael Turquette <mturquette@baylibre.com>
-Date: Wed, 21 Feb 2024 20:27:06 -0800
+Cc: Erick Archer <erick.archer@gmx.com>, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+To: Conor Dooley <conor.dooley@microchip.com>, Dinh Nguyen <dinguyen@kernel.org>, Erick Archer <erick.archer@gmx.com>, Gustavo A. R. Silva <gustavoars@kernel.org>, Heiko Stuebner <heiko@sntech.de>, Michael Turquette <mturquette@baylibre.com>, Nick Alcock <nick.alcock@oracle.com>, Rob Herring <robh@kernel.org>, Uwe =?utf-8?q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Date: Wed, 21 Feb 2024 20:27:32 -0800
 User-Agent: alot/0.10
 
-Quoting Christophe JAILLET (2024-01-21 07:16:24)
-> 'p_clk' is an array allocated just before the for loop for all clk that
-> need to be registered.
-> It is incremented at each loop iteration.
+Quoting Erick Archer (2024-01-21 06:29:46)
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
 >=20
-> If a clk_register() call fails, 'p_clk' may point to something different
-> from what should be freed.
+> So, use the purpose specific devm_kcalloc() function instead of the
+> argument size * count in the devm_kzalloc() function.
 >=20
-> The best we can do, is to avoid this wrong release of memory.
->=20
-> Fixes: 6c81966107dc ("clk: hisilicon: Add clock driver for hi3559A SoC")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-c=
+oded-arithmetic-in-allocator-arguments [1]
+> Link: https://github.com/KSPP/linux/issues/162
+> Signed-off-by: Erick Archer <erick.archer@gmx.com>
 > ---
 
 Applied to clk-next
-
-About doing the right thing, it seems OK to remove the free for now
-because the code continues on anyway.
 
