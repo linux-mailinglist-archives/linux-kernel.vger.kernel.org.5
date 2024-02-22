@@ -1,108 +1,148 @@
-Return-Path: <linux-kernel+bounces-76845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76844-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E72C585FD88
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:04:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A954885FD85
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:04:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 242621C24ED9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:04:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36D661F26DE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:04:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A28BC151CDD;
-	Thu, 22 Feb 2024 16:04:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 395DD150985;
+	Thu, 22 Feb 2024 16:04:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c/ISuEyS"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QYhswNZw"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45ADE150986;
-	Thu, 22 Feb 2024 16:04:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B1EF14E2C9;
+	Thu, 22 Feb 2024 16:04:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708617865; cv=none; b=KyBxulLpAXt5Mqx9WQN1vl7j8YJyapLWm36ZDCTiPAIc9ERFaQ5H29bAyzZIjoyww4hVVl8h81rKokLIyR84OL4YG7PKiqSjiIx0f8kkLtqCHidXWQO/PWVDGfE2jFGkks8Hr6tpeLIRUFli21JQbMytqDw4chKobXhUbRRfgPA=
+	t=1708617862; cv=none; b=VImALA2JUEjpyPwap+OsXOJJh/Quly2Cr74y2UAvcb9hhuwsF1DIeZGFYLiOZsNxAq3w4dj3x1aDyxblCYhtpse7WF4wE0zU9ZgB/c+vECBhvO8SA6hR8AbxA2rCfAkmCP2YfDSSPyG2DrVUozAcovuxUnmO/4Al7ykSZtfoYuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708617865; c=relaxed/simple;
-	bh=JVBLLr+iZprmUmwCC+R0KK2nXOwL2BBt8Mfr8ABnv2g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KtHqGdHAe9/+qFFCrCWXhpxsXyZmLOrhdWmQy2/GLje44Jo59yVHMtxxndnxJm0e21v2+T96T4IY2TRCi/XSow5hvzJClX5hr+W2Bz0Exyap/G32/84CxfmxqpnIioUZQbqtyF3jQvhzk5VQU+KFPSBMwNb+uXN5iwtjs4Fghgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c/ISuEyS; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1708617862; c=relaxed/simple;
+	bh=tx5AnOPaHZjR9nwJDGCDrP/Ld3W/I7cUJf4jLuRUobg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WE5liI++z2F2JpgjrHPZIb5Jle97X2dXyH01q3VHAwuveYBj3vsrqx2pGHfWK/GlR5tLbPav1JGI8cu8Bw6UWZheknUv43CauACvlfaIa6U2qDr1X58iqaiLXVER9m3ggZgVYsRghwysucQvsqgKbmAQArAF9QnfIJ/n2dmspNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QYhswNZw; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-41279203064so11996485e9.1;
-        Thu, 22 Feb 2024 08:04:22 -0800 (PST)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d7232dcb3eso49545775ad.2;
+        Thu, 22 Feb 2024 08:04:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708617861; x=1709222661; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JVBLLr+iZprmUmwCC+R0KK2nXOwL2BBt8Mfr8ABnv2g=;
-        b=c/ISuEySjzZoXx3vE4Fdtk4MEdz4pgt9Q49BMWQTITPe23PuMDhoYEeDqbhmijM3+L
-         xkgv5waOYJQ1Ms5cx/y4YkxlxIwBwjJIg1Sd2j8oTtKyLQT4pjw3hU8kmL03RTQNbnST
-         1VUvOgyWGDWdaF/PgTkgbNVKWmkhy/yufZCqQsObhw3e5OPMuKRmg/TGeTpLGebNC8td
-         1vOxf8+2RNyj2TnxVe/h0xiRang1ev4I+h+BlfEsmZPfB9tZ0aSG8OwuJNBJPf/x8keh
-         eMkZwlNiJaUXgwQFmFQ9sauFdLWrG9QwrRDdaFMB3wpfl+Si2N4/nBi3N8sU31k+h4mU
-         Tn8w==
+        d=gmail.com; s=20230601; t=1708617860; x=1709222660; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iCcVLelkerZ/rfS+OB1Df5D3kOgx+DV+QELs8JDtIG4=;
+        b=QYhswNZwv/rCkF9W5/YjxHyJ+VRuxoVSYmxCCLQuqLxuV/eixtzD5SzFINbjEjmr60
+         6dGd7KUOUlRVTyOYO8Ke8H9h/1z+P3YCCKZebRg5Olnj1gwDUpzOk8YPF20cJZ79v8ba
+         YpQ3knP7tYMuTFpx6WC4OATmPsFlxFXJ2aVNvmyi7WrvLRaAtR2cqg46y3RO/favvmoP
+         DtHMpdyd4ecvyxDVt5YpXxX3uo5gHaII9Z8YuZuBIwoxacfHE9XiJpLZPM8gQHMlOXMa
+         QEtGo9VAJez0xdBTBmkTRv8XcIN10SCdi63WHBOJ4Ua1F7mPHF9vfrGsYwTh4PoIkmKe
+         w01g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708617861; x=1709222661;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1708617860; x=1709222660;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JVBLLr+iZprmUmwCC+R0KK2nXOwL2BBt8Mfr8ABnv2g=;
-        b=CcEQoG6s5i+k55EVRT97RfxQyXdKdkTOGWq5l+C1/zapyspwiPgL5cYXsTTMPUkWnW
-         nRGROMJiYv3B9Dszd4vC3aMxWL3OC+tqL1DhO+xtrnKIJvHMd+7LDeSAXzXMCEuFU/Lj
-         yZLxqAgXJz73kHfmtsLGHZvRQegcfpA2eU52zecqX0Xmxy8dpWNIPxQKiQUNkNcd1vgp
-         KbD/kZEz/wYHjdXbaPSe6LSoDqFsk3UhyIqvA5lGLbdZu8m/mKVJVUvdqeSA34y00PRx
-         8fAtm8oEmgtHY9EFOUsLWnhBYaUIxyn82Kg2bMz/rBelmzjjf43h4GZkAIHIkwQeC4zU
-         dAMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW7/NRctY4VmS+6N9uomRDczrdABAB0deQ3Smo87/JR4A95jtYrZtkyR354DMOyFLK8RLGIauTL5VJtbf1yQAw8bCUmxSe43Zc8QibRDPBDLmST6CckRvc87WX1nZlnKXrxsT2/I8yub2Pe0p+07dL0U2f3T1kcJliB
-X-Gm-Message-State: AOJu0YyngMiM81Ca06m0IUPsLybWsiIoSXOUbI0tZd6hG15w2yULLIv9
-	qKJMCQe0ODrQOE5dMu/lcvki7hQUBxkrN0jnffgC5Jzek7UBE7SIm8Hqh/C2FgL0h4cNY+s4K0W
-	cFVuOUeWdyKHWfeChd0Qs9cUHC1c=
-X-Google-Smtp-Source: AGHT+IGB2NfIFYABbvqpx+xGpqV1zazBTchiC+Rsgsxx7Uav42ncBZx3rYUdxZGSjR+FGf5b0qDXtAOwJep8kJ5sQgk=
-X-Received: by 2002:a5d:64e5:0:b0:33d:5e4d:51c0 with SMTP id
- g5-20020a5d64e5000000b0033d5e4d51c0mr8963375wri.25.1708617861318; Thu, 22 Feb
- 2024 08:04:21 -0800 (PST)
+        bh=iCcVLelkerZ/rfS+OB1Df5D3kOgx+DV+QELs8JDtIG4=;
+        b=Czi1sssMEf8/Q+vQC4iP4WEKDK3lozfV7Pl9mkw4lsuS9zXL6NTqQoWWq509MaB5C4
+         ReqapDAg0ZIgREngoQpvSGpBK7pRe+BglE1yaING8ZjsA2eBPKHnpVQ2Mufw9CfhgAz5
+         DN++fxi8rqIHV8DjQUTUAOxHRMHVa2Ql4VXOGcGKCKiP5xXLwqDcT3rPtyKssu70f80k
+         0u2ZS9thgNXKkjpVELL9hCqkU+NDrCkzYAw0kw5iyy1Q3j7st/kZNQV/UKSowkgkLK7c
+         6ekv140Z2O/JwTw7l3mv2HMWpDOW7JpbXq+FRD7myLf0Y3uV5UUCag1Pt05VwJp/+/Ee
+         ZCxg==
+X-Forwarded-Encrypted: i=1; AJvYcCXjoUFFJ+piZYQcR8xhtmgejwzeGd7YR2tcXcEkGz8TLcShVT8uxlY9lRHXiYj1QIzsdf1jbXF3UD183s4ASemFsnapDnJwT48t3olg5fKDXedFr3UaWfkwWK9Xu65HpJVrurw5PmE8+7FQdpydoFfFokwxh7OcYqrAOcdsYUYA9S2WtM0g/w==
+X-Gm-Message-State: AOJu0YwTQh6mQe9u2zqutL80065rA3m8xP81uu5IeXozo6nsQv9ZrthK
+	YGUplPnZ/1YKkm4TNfA91vHPGfWiserot0T01NNsAGZFYYXqXWm7
+X-Google-Smtp-Source: AGHT+IGJdyeUbV3A+evMrI6PMjno1ReQ6CIcLH3hdNrN5VATyN7MK04L9SBiPR5aXEGBTE725uolMA==
+X-Received: by 2002:a17:902:d489:b0:1dc:1e7c:cd3 with SMTP id c9-20020a170902d48900b001dc1e7c0cd3mr8918913plg.47.1708617858899;
+        Thu, 22 Feb 2024 08:04:18 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b15-20020a170902d50f00b001db4b3769f6sm10025000plg.280.2024.02.22.08.04.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 08:04:18 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Thu, 22 Feb 2024 08:04:16 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arch@vger.kernel.org
+Subject: Re: [PATCH 1/4] asm-generic headers: Allow csum_partial arch override
+Message-ID: <212db8ca-c01c-4cb0-b794-50931338afb9@roeck-us.net>
+References: <20240221-parisc_use_generic_checksum-v1-0-ad34d895fd1b@rivosinc.com>
+ <20240221-parisc_use_generic_checksum-v1-1-ad34d895fd1b@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <87r0jwquhv.ffs@tglx> <c4c422ac-d017-9944-7d03-76ad416b19a4@igalia.com>
-In-Reply-To: <c4c422ac-d017-9944-7d03-76ad416b19a4@igalia.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 22 Feb 2024 08:04:09 -0800
-Message-ID: <CAADnVQ+9vTBj9GgxotLF0_oV7cNFRebmcq_DNUm+cRJHQXCz1Q@mail.gmail.com>
-Subject: Re: [syzbot] [mm?] BUG: unable to handle kernel paging request in copy_from_kernel_nofault
-To: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, "x86@kernel.org" <x86@kernel.org>, Jann Horn <jannh@google.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Borislav Petkov <bp@alien8.de>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	bpf <bpf@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
-	"H. Peter Anvin" <hpa@zytor.com>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
-	"luto@kernel.org" <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221-parisc_use_generic_checksum-v1-1-ad34d895fd1b@rivosinc.com>
 
-On Thu, Feb 22, 2024 at 6:30=E2=80=AFAM Guilherme G. Piccoli
-<gpiccoli@igalia.com> wrote:
->
-> Hi Thomas et.al,
->
-> I've been testing some syzkaller reports and found 2 other bugs that are
-> fixed by this patch (see other report at [0]).
->
-> So, is there anything we could do in order to get it properly submitted
-> / merged? Lemme know if I can help in anything, I could submit it myself
-> if you prefer, keeping you as author and adding the tested tags.
-> BTW, feel free to add:
->
-> Tested-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+On Wed, Feb 21, 2024 at 06:37:11PM -0800, Charlie Jenkins wrote:
+> Arches can have more a efficient implementation of csum_partial.
+> 
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 
-The fix is bpf and net trees and probably will be sent to Linus today
-as part of net PR.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+> ---
+>  include/asm-generic/checksum.h | 2 ++
+>  lib/checksum.c                 | 2 ++
+>  2 files changed, 4 insertions(+)
+> 
+> diff --git a/include/asm-generic/checksum.h b/include/asm-generic/checksum.h
+> index ad928cce268b..3309830ba2cb 100644
+> --- a/include/asm-generic/checksum.h
+> +++ b/include/asm-generic/checksum.h
+> @@ -4,6 +4,7 @@
+>  
+>  #include <linux/bitops.h>
+>  
+> +#ifndef csum_partial
+>  /*
+>   * computes the checksum of a memory block at buff, length len,
+>   * and adds in "sum" (32-bit)
+> @@ -17,6 +18,7 @@
+>   * it's best to have buff aligned on a 32-bit boundary
+>   */
+>  extern __wsum csum_partial(const void *buff, int len, __wsum sum);
+> +#endif
+>  
+>  #ifndef ip_fast_csum
+>  /*
+> diff --git a/lib/checksum.c b/lib/checksum.c
+> index 6860d6b05a17..c115a9ac71d9 100644
+> --- a/lib/checksum.c
+> +++ b/lib/checksum.c
+> @@ -110,6 +110,7 @@ __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
+>  EXPORT_SYMBOL(ip_fast_csum);
+>  #endif
+>  
+> +#ifndef csum_partial
+>  /*
+>   * computes the checksum of a memory block at buff, length len,
+>   * and adds in "sum" (32-bit)
+> @@ -134,6 +135,7 @@ __wsum csum_partial(const void *buff, int len, __wsum wsum)
+>  	return (__force __wsum)result;
+>  }
+>  EXPORT_SYMBOL(csum_partial);
+> +#endif
+>  
+>  /*
+>   * this routine is used for miscellaneous IP-like checksums, mainly
+> 
+> -- 
+> 2.34.1
+> 
 
