@@ -1,97 +1,132 @@
-Return-Path: <linux-kernel+bounces-76716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B8E485FB71
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:41:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94F6885FB73
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:41:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C36BE287614
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:41:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEFE31C23B2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:41:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94ECE1474C2;
-	Thu, 22 Feb 2024 14:41:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="qguk+Ih8"
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15DD51482FB;
+	Thu, 22 Feb 2024 14:41:29 +0000 (UTC)
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 532C113340A;
-	Thu, 22 Feb 2024 14:41:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4009131720;
+	Thu, 22 Feb 2024 14:41:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708612873; cv=none; b=C1q1OMZqJfyo3CDW9kkwNZivsQiC01RLTWyQBpD/uxWrPNrTBUAl8NB9fFJ8K+xGYBDPovhRK8dpDkKETtHZcKPM2S/5oIV3rmJp5+yrmcNsHOPJqkpQ0tRaLWe6Kcp2rpXSe+DGvLI7FqcVX3hHHRpzEUeENeyYbpdrvkVaN+M=
+	t=1708612888; cv=none; b=PGygAs33xKdHYIfQUBlGgbA8m+dABwhIipbGbxTkNsllwHKC/cqrIdzREI1OoJRea/yxCPMEFhAISXyp+QWoS04vz/zBcijtBbPKtQ8BXSNciW8NFgS0HCxVOKgTlbKu9hesEVloVRdbkekzrdMKcv1sWvJgde0F80cB3OvDvQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708612873; c=relaxed/simple;
-	bh=5G6p4CsZj5y8xjTo5u6g1DmV7f13kIan+NI5DrjzCKU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=m89wrgQe0Od+csXH0Ant0O0aLzm36r5tqn2MvOy4alO6H3b56so2jcY3Z14RpueqfRuoxYTs9IDu147Vn8q+fNq3xoZGJ6re6uS6EAhoa2W7izls8O2ZePGkgbjtq6xDSQO4vUGX6f9DjWGVAUNIWUcfJI6ujnlXvvYANF169Oo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=qguk+Ih8; arc=none smtp.client-ip=67.231.152.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41M6aL7N011439;
-	Thu, 22 Feb 2024 08:40:53 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	PODMain02222019; bh=GZdoxlRn/2MPxlEY4hTnWJTeSg5WxNCGjx0Who2o+Qc=; b=
-	qguk+Ih8VW8nQ4KMHCGyKrmBgPn8H6/cv2mPEGqsxDlvpckIVYF5ArN4Etr5w/RT
-	+Zbysbe7rD5zzrz17o+uDuUnyQQattKY1INkLTXi8uY2jJQYC9yPvs6CIC32FWIO
-	GeKrIFGsMyXGv3s/VdKXhE3Q7L8vtUc7uHgpqBUr321ENU8wxS8ZFYktkDzk1Ex1
-	b2z1bQy/jVihlun1vofgZifwMpTnkJ+orOkevtLE/QJnOhTLZq1FVigMukx+r9AQ
-	EldlMp1UbWQfJoc/P5r7fSE/g7c1HqifzZZtgoDPYQFywJsPuuXbNKwbGx9MUy03
-	W4JDpr/Qd91ArXhcgivTfA==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3wd205jmyc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 08:40:52 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 22 Feb
- 2024 14:40:50 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40 via Frontend Transport; Thu, 22 Feb 2024 14:40:50 +0000
-Received: from [198.90.208.18] (ediswws06.ad.cirrus.com [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id AD855820243;
-	Thu, 22 Feb 2024 14:40:50 +0000 (UTC)
-Message-ID: <8edbbb9b-f07a-4cd5-a6ce-c46ee3acffe6@opensource.cirrus.com>
-Date: Thu, 22 Feb 2024 14:40:50 +0000
+	s=arc-20240116; t=1708612888; c=relaxed/simple;
+	bh=Dh6zs2Kg5ny/Fs0knD5Ran/0OjSXvnBAh0w6XIv3o9o=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DSEnuXD9rWrpOSDYsS6DvkeCt2LR1iQAQD5rnN3t5SuHAtM/vRXUAhaNcLrR0WA41g69xd2+AL19ucHMtegvzy2hYJjjxJ3rGMMigjczXz34Z2jk9vxJzPBNrP7yW/yPvsMu0RUDa66k+jzeIarMFhOHe4NceimxeuOSnXAjkNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a26ed1e05c7so1107173366b.2;
+        Thu, 22 Feb 2024 06:41:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708612885; x=1709217685;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gYMQtEKjt0kzQOUifzkf8vblM5DsGEnUyHabUP9ToJk=;
+        b=tKQbfjy/JlkAxbYGGiqcwRUQponHdX3jaSps+OuXvEPKx57GbgdSWuHCUQVMjT0UOf
+         tJKHcQs8+8Nxwd3xmQM032HPB/rTE4bjyqSSw/gMmR5zLS3BGtdex2YEdJ9eZpXPDUH1
+         TzAn3WB2rv08jINr0nRb5szhJ5PnBBFveh83kWa2nBdHzj0VA3GW2deecH1rW7DCWtRB
+         LCySEd3a1eRnEdY2DcyRmr38mhIZ3j4HGcQoq0yCZ0WIc0BM6+oIvS3sx7jTD5chL0ic
+         GaoAmajIH9KcpNBU+opi76qpiF2dAsiNt5Q07qpYgJk4DKSc2/s8Ik5auBrVK3hrZEx4
+         tNVw==
+X-Forwarded-Encrypted: i=1; AJvYcCX1DObZAs8iGnHYjq7T/PH3ggH5Nutfg6DTSxKHqLJr9hLPQ3+a3JNAmd5/I2CY4GGHRH/YItOBDK4HEX1UG5ZZkXIrFprsLpelYlcN
+X-Gm-Message-State: AOJu0YwqTTR2lvHJxc2GO430CffGYNgDUSf0mfpDqNyKCjaeAIdE7IUA
+	NgtROfCNQQPKTCjYrk1/c6iBMtu4TLSxLthrFmkKYojbWiOfPuyW
+X-Google-Smtp-Source: AGHT+IGj3MI75zu42johqwAAkq+37E/uOirM4qBhtwLOTanuJlhYSjcSNsJcGr6EE4H0gCD+wCB9pA==
+X-Received: by 2002:a17:906:d7b0:b0:a3e:549f:eeff with SMTP id pk16-20020a170906d7b000b00a3e549feeffmr8985316ejb.7.1708612885039;
+        Thu, 22 Feb 2024 06:41:25 -0800 (PST)
+Received: from localhost (fwdproxy-lla-005.fbsv.net. [2a03:2880:30ff:5::face:b00c])
+        by smtp.gmail.com with ESMTPSA id an3-20020a17090656c300b00a3e77f93ea9sm4533954ejc.98.2024.02.22.06.41.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 06:41:24 -0800 (PST)
+From: Breno Leitao <leitao@debian.org>
+To: kuba@kernel.org,
+	davem@davemloft.net,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	horms@kernel.org
+Subject: [PATCH net-next] xfrm: Do not allocate stats in the driver
+Date: Thu, 22 Feb 2024 06:41:17 -0800
+Message-Id: <20240222144117.1370101-1-leitao@debian.org>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/9] ALSA: cs35l56: Apply calibration from EFI
-To: <broonie@kernel.org>, <tiwai@suse.com>
-CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
-References: <20240221150507.1039979-1-rf@opensource.cirrus.com>
-Content-Language: en-GB
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <20240221150507.1039979-1-rf@opensource.cirrus.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: zf4bQVLxDraNpc8et0FaVvviX6rn0oeh
-X-Proofpoint-GUID: zf4bQVLxDraNpc8et0FaVvviX6rn0oeh
-X-Proofpoint-Spam-Reason: safe
+Content-Transfer-Encoding: 8bit
 
-On 21/02/2024 15:04, Richard Fitzgerald wrote:
-> Factory calibration of the speakers stores the calibration information
-> into an EFI variable.
-> 
-> This set of patches adds support for applying speaker calibration
-> data from that EFI variable.
-> 
+With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
+convert veth & vrf"), stats allocation could be done on net core
+instead of this driver.
 
-STOP! Don't merge.
+With this new approach, the driver doesn't have to bother with error
+handling (allocation failure checking, making sure free happens in the
+right spot, etc). This is core responsibility now.
 
-I found a potential lockdep error in this code.
-Will send a V2.
+Remove the allocation in the xfrm driver and leverage the network
+core allocation.
+
+Signed-off-by: Breno Leitao <leitao@debian.org>
+---
+ net/xfrm/xfrm_interface_core.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
+
+diff --git a/net/xfrm/xfrm_interface_core.c b/net/xfrm/xfrm_interface_core.c
+index dafefef3cf51..cc19aa7fdc11 100644
+--- a/net/xfrm/xfrm_interface_core.c
++++ b/net/xfrm/xfrm_interface_core.c
+@@ -240,7 +240,6 @@ static void xfrmi_dev_free(struct net_device *dev)
+ 	struct xfrm_if *xi = netdev_priv(dev);
+ 
+ 	gro_cells_destroy(&xi->gro_cells);
+-	free_percpu(dev->tstats);
+ }
+ 
+ static int xfrmi_create(struct net_device *dev)
+@@ -749,6 +748,7 @@ static void xfrmi_dev_setup(struct net_device *dev)
+ 	dev->flags 		= IFF_NOARP;
+ 	dev->needs_free_netdev	= true;
+ 	dev->priv_destructor	= xfrmi_dev_free;
++	dev->pcpu_stat_type	= NETDEV_PCPU_STAT_TSTATS;
+ 	netif_keep_dst(dev);
+ 
+ 	eth_broadcast_addr(dev->broadcast);
+@@ -765,15 +765,9 @@ static int xfrmi_dev_init(struct net_device *dev)
+ 	struct net_device *phydev = __dev_get_by_index(xi->net, xi->p.link);
+ 	int err;
+ 
+-	dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
+-	if (!dev->tstats)
+-		return -ENOMEM;
+-
+ 	err = gro_cells_init(&xi->gro_cells, dev);
+-	if (err) {
+-		free_percpu(dev->tstats);
++	if (err)
+ 		return err;
+-	}
+ 
+ 	dev->features |= NETIF_F_LLTX;
+ 	dev->features |= XFRMI_FEATURES;
+-- 
+2.39.3
 
 
