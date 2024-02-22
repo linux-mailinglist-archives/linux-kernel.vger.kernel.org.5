@@ -1,92 +1,102 @@
-Return-Path: <linux-kernel+bounces-76187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12A2385F400
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:09:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF4D485F403
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:09:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99166B27550
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:09:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D3641F2531F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:09:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 105003717D;
-	Thu, 22 Feb 2024 09:08:59 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA37C28374;
-	Thu, 22 Feb 2024 09:08:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1736D381A0;
+	Thu, 22 Feb 2024 09:09:36 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5164381A1
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 09:09:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708592938; cv=none; b=dAx+x6TeKfLSg5M/xi0+Hg9y8OMVLRBkW5YjMtMbMiHM9MJeFjK2XsqIcaYFKIx+Nasaw5UOVmYWCPKUYbaTqTrWNHYFuJHfnpdIpwbz+JhTFAZMS+7EIjsVeBmQLXxIxE+kKdzV+0M3Opv+JjU4EXkikIlBCWV/T6J4zOcCoEs=
+	t=1708592975; cv=none; b=nYFRj8qSSXCYjUNzM617JZTA4G5d1d84WwT7bdvkWIx1hSp2jYYRNvFvRZpSMPjGD7TRvETJ+ozEsy18DIf23ujdw4QlLT+bt3gVwkfhfKoBrQGg5YXFezRl1Hxh1ZSVc6f2YznJnC5P45eLQYfyMOiiUb0LJtsjjQ+n9B4rsTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708592938; c=relaxed/simple;
-	bh=THqwlQyNkUJ73BiKbiScBMvS2NWzpmFqOLtTdzDigyY=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=hM5hXscZwJwLtcOhLovWQJ5FJNOmJEw1kEmv/2dE+lLMRtdbrVxhdXcFbMkyIrpWa6PBffmUndKlJ9PqX7HisJPkkNqZ0gWRycDPEqZycYgvYDQM7BBtvp4RR/f37Jdqxtw8n+iOR/vkd2/i8GLCDQKLuKHOw9ssOHD1Iil2LdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TgS4C13mBz4f3lgQ;
-	Thu, 22 Feb 2024 17:08:43 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 4C56F1A0232;
-	Thu, 22 Feb 2024 17:08:50 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgAX6REhD9dlhGAmEw--.45988S3;
-	Thu, 22 Feb 2024 17:08:50 +0800 (CST)
-Subject: Re: [PATCH md-6.9 00/10] md/raid1: refactor read_balance() and some
- minor fix
-To: Paul Menzel <pmenzel@molgen.mpg.de>, Kuai Yu <yukuai1@huaweicloud.com>,
- Paul E Luse <paul.e.luse@linux.intel.com>
-Cc: song@kernel.org, neilb@suse.com, shli@fb.com, linux-raid@vger.kernel.org,
- linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20240222075806.1816400-1-yukuai1@huaweicloud.com>
- <34b04a5f-7ef8-4e00-b1c6-c4e692281499@molgen.mpg.de>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <0f2a89e7-fa2c-fe83-bcb7-cfc449c5a721@huaweicloud.com>
-Date: Thu, 22 Feb 2024 17:08:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1708592975; c=relaxed/simple;
+	bh=CAEOYelvFs2ksjQ0owb/6iGR2EU0bVR2zjuF4dK3bUI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=o0l3zVQZJjNWOidk88vgdXYqPDuHETdYqM2kfOCzkkfxywl5NzaAnf1ayUgeW3H9eiedCYpvM0QCXBO3rEJXxeUeDWLmZJERTupErCtyQoshZEPpW4bUxdrJK14EjiRXDiFn6s/rjurgIPStJm9s2IJvU7uoky/E22f3wea2aBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 544561007;
+	Thu, 22 Feb 2024 01:10:11 -0800 (PST)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A6D8C3F766;
+	Thu, 22 Feb 2024 01:09:31 -0800 (PST)
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Cristian Marussi <cristian.marussi@arm.com>
+Cc: Sudeep Holla <sudeep.holla@arm.com>,
+	vincent.guittot@linaro.org,
+	peng.fan@oss.nxp.com,
+	michal.simek@amd.com,
+	quic_sibis@quicinc.com,
+	quic_nkela@quicinc.com,
+	souvik.chakravarty@arm.com
+Subject: Re: [PATCH 00/11] Add SCMI core checks for notification support.
+Date: Thu, 22 Feb 2024 09:09:23 +0000
+Message-ID: <170859289755.107527.12693501284171395498.b4-ty@arm.com>
+X-Mailer: git-send-email 2.43.2
+In-Reply-To: <20240212123233.1230090-1-cristian.marussi@arm.com>
+References: <20240212123233.1230090-1-cristian.marussi@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <34b04a5f-7ef8-4e00-b1c6-c4e692281499@molgen.mpg.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAX6REhD9dlhGAmEw--.45988S3
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYk7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
-	6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-	kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8I
-	cVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2js
-	IEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE
-	5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeV
-	CFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxG
-	xcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrw
-	CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
-	14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
-	IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxK
-	x2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxV
-	AFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfUF9a9DUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-Hi,
+On Mon, 12 Feb 2024 12:32:22 +0000, Cristian Marussi wrote:
+> this small series adds a new logic into the SCMI core to implicitly check
+> for notification support when some SCMI driver attempts to register for
+> notifications.
+> 
+> Till now, trying to register a notifier for an unsuppported notification
+> returned an error and this behaviour generated unneeded message exchanges:
+> the only way to avoid this was to lookup in advance the specific protocol
+> and resources available in order to avoid registering at all any notifier
+> where not supported.
+>
+> [...]
 
-在 2024/02/22 16:40, Paul Menzel 写道:
-> Is there a change in performance with the current patch set? Is radi1 
-> well enough covered by the test suite?
+Applied to sudeep.holla/linux (for-next/scmi/updates), thanks!
 
-Yes, there are no performance degradation, and mdadm tests passed. And
-Paul Luse also ran fio mixed workload w/data integrity and it passes.
-
-Thanks,
-Kuai
+[01/11] firmware: arm_scmi: Check for notification support
+        https://git.kernel.org/sudeep.holla/c/8733e86a80f5
+[02/11] firmware: arm_scmi: Add a common helper to check if a message is supported
+        https://git.kernel.org/sudeep.holla/c/637b6d6cae9c
+[03/11] firmware: arm_scmi: Implement Perf .is_notify_supported callback
+        https://git.kernel.org/sudeep.holla/c/120d26312abc
+[04/11] firmware: arm_scmi: Implement Power .is_notify_supported callback
+        https://git.kernel.org/sudeep.holla/c/b7e400bc2e2d
+[05/11] firmware: arm_scmi: Implement SysPower .is_notify_supported callback
+        https://git.kernel.org/sudeep.holla/c/9f5ddbc22225
+[06/11] firmware: arm_scmi: Implement Clock .is_notify_supported callback
+        https://git.kernel.org/sudeep.holla/c/cf1bba2775ec
+[07/11] firmware: arm_scmi: Implement Sensor .is_notify_supported callback
+        https://git.kernel.org/sudeep.holla/c/7ac7932df247
+[08/11] firmware: arm_scmi: Implement Reset .is_notify_supported callback
+        https://git.kernel.org/sudeep.holla/c/12d6a03f3224
+[09/11] firmware: arm_scmi: Implement Powercap .is_notify_supported callback
+        https://git.kernel.org/sudeep.holla/c/e85beaf76080
+[10/11] firmware: arm_scmi: Use opps_by_lvl to store opps
+        https://git.kernel.org/sudeep.holla/c/23443a3c7c0c
+[11/11] firmware: arm_scmi: Report frequencies in Perf notifications
+        https://git.kernel.org/sudeep.holla/c/22ffc748a647
+--
+Regards,
+Sudeep
 
 
