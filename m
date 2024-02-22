@@ -1,118 +1,89 @@
-Return-Path: <linux-kernel+bounces-75916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C3A185F09B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:58:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4138F85F09D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:58:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F09E41C213CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:58:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA547284D6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:58:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57500522F;
-	Thu, 22 Feb 2024 04:58:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mi80DSkD"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 369864C7E;
+	Thu, 22 Feb 2024 04:58:43 +0000 (UTC)
+Received: from mail115-95.sinamail.sina.com.cn (mail115-95.sinamail.sina.com.cn [218.30.115.95])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A2771C14;
-	Thu, 22 Feb 2024 04:58:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3828E7462
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 04:58:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.95
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708577901; cv=none; b=e6BLy+WUrcDcx02c72AFi5/qy2YaZZhp74erq6NX2wSNboiKiyWyYZhiBhtYyPsXRVRXBFVd1vtnQ19YI/CWgcoXqlCi69Ysob3RAbQCXjuREJe5b91PXDcpmQde83pmq/82Mr44f3qJUAPfIESHWdLrz9RNwoLHLTSoXCMXdBA=
+	t=1708577922; cv=none; b=TQm7cWhm5W4A9WmfkG2qoFixC/4TwKtYZAiY253jcWf4M8Yh57OrtdlmT/ICoLaPkuFrVodL4KR7JdlinwNafW6dK2BxNyIky5eV5IIODsfPEar7Bm32uprIHoWL4YGT1CwVICJx9ebKTA0bPi2++X0Xt6cUor2GZKF2v67e+Q8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708577901; c=relaxed/simple;
-	bh=qckse1wgQF53FqHwKP6EtPGsZ/nc52Ki7tmtQVe8Ys4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=j6GZ2w0IueKnHWYS8WL0mA0YQDdQ5Q/rd+X5StqWr3EIhUHM+D/kcCNUvc8NtpxeyL9VMY+Uh2wDabi12SrdJD20sBmtvcxTnxSWNoChHmNqoVUMX/tYXmVPeHRw1vLNZUeQUc3KJKanvvwJKEhUaasTqV9L4c7lEF/rjpdN+KQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mi80DSkD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 252B4C433C7;
-	Thu, 22 Feb 2024 04:58:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708577901;
-	bh=qckse1wgQF53FqHwKP6EtPGsZ/nc52Ki7tmtQVe8Ys4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Mi80DSkDY/wKkFJGX5AQk9PuAkWAxf+kvfbDoId2Gywfr9KhRxj7bYUIH1n5OciRM
-	 vzfI42zwYNPuAXc6dMfRA3qRVeaOyOW8wZyulv7y4cWEwqX3ejt5pD/zkt10ZFzCgk
-	 ZcXP0BJXY1DmixZmVFHqDafLcc3LWQwiRjVPFWmSqdEIG76/mOmN6yFyYaDzMSgi/4
-	 NPkXBi2mCkXFjGv8EQKYZx1Nh+geFG4WpayaPBnpWFxNZ2v5RJgMJd2w2KsRQxXDzF
-	 0TGYt50qJrcY7Gw4wQjSHbKPCaKXWohcq5qnX0Psk2JTMdUOGemB+8BuFsFKF5vtdj
-	 novNS6HVyuzjw==
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d1080cba75so4662591fa.0;
-        Wed, 21 Feb 2024 20:58:21 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU0R4RezdPwtSNw2LfKcf3HaxWsZpim2YHyHcGuPPU08MkQf9SMXmpshL5sbw5YdIyF0IZSnl7/i+oWcusraGahHoZa4I9KYB17QJxj
-X-Gm-Message-State: AOJu0Yw8YLjSjVFl62gS+ypoK3e7IBVHmnn1HRVKXa3oLj0pYhU0f9Hw
-	DSEjwC1KSFmpBsBfBRpQ2hPM9g9SZBJzNkG829Xm8nnRYQpqLu6xyRLouKu099D6O66bDScFWac
-	jqtsZnhD58/H3+1uxZhzFi9jikLw=
-X-Google-Smtp-Source: AGHT+IEkoeuKdW22kXnwFyoVi24R3PbL9ya6u3TEmVkU7S321D/U0UzC6jwLp/9IUrS/b0WXDU0/Y3DEt+UCkcu1QLM=
-X-Received: by 2002:a2e:809:0:b0:2d2:20bd:d386 with SMTP id
- 9-20020a2e0809000000b002d220bdd386mr502946lji.7.1708577899631; Wed, 21 Feb
- 2024 20:58:19 -0800 (PST)
+	s=arc-20240116; t=1708577922; c=relaxed/simple;
+	bh=PL+A7RzxZSOSUnkECAJUAkk9WznoRE+scfa4iDvANrY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=SVuH/378t/ZGV4EVkLCiOZv9yrHOMkbiUO760riEoj1V5YFyZ5kqULgF5jV00LVnUil5mX4jFcqTylC3xfrM/EdeMf4jXND3V3trV6RrduAXjLddRY0Nulg71oyb35jgmX0OcYQfCvjsV01QYv8PCg5yJ8El4MGF+RR80sGAd8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.95
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.118.71.174])
+	by sina.com (172.16.235.24) with ESMTP
+	id 65D6D47000007333; Thu, 22 Feb 2024 12:58:27 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 21221045089447
+X-SMAIL-UIID: EA7355BF4BE74D2CA281A1BA99AEDEF3-20240222-125827-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+116b65a23bc791ae49a6@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [media?] INFO: task hung in cec_claim_log_addrs
+Date: Thu, 22 Feb 2024 12:58:15 +0800
+Message-Id: <20240222045815.101-1-hdanton@sina.com>
+In-Reply-To: <0000000000006d96200611de3986@google.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240222031801.GG11472@google.com> <20240222032559.496127-1-senozhatsky@chromium.org>
-In-Reply-To: <20240222032559.496127-1-senozhatsky@chromium.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Thu, 22 Feb 2024 13:57:42 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARo4L6qxoqRU-0dgABarukJKAaZpCRtfA3MyUHhSuDQxQ@mail.gmail.com>
-Message-ID: <CAK7LNARo4L6qxoqRU-0dgABarukJKAaZpCRtfA3MyUHhSuDQxQ@mail.gmail.com>
-Subject: Re: [PATCHv2] kconfig: add some Kconfig env variables to make help
-To: Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 22, 2024 at 12:26=E2=80=AFPM Sergey Senozhatsky
-<senozhatsky@chromium.org> wrote:
->
-> Add a new section "Configuration environment variables" to
-> `make help` output in order to make it easier for people to
-> discover KCONFIG_WERROR, etc.
->
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> ---
->  scripts/kconfig/Makefile | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/scripts/kconfig/Makefile b/scripts/kconfig/Makefile
-> index ea1bf3b3dbde..0044d49e149c 100644
-> --- a/scripts/kconfig/Makefile
-> +++ b/scripts/kconfig/Makefile
-> @@ -158,6 +158,10 @@ help:
->                 if help=3D$$(grep -m1 '^# Help: ' $(f)); then \
->                         printf '  %-25s - %s\n' '$(notdir $(f))' "$${help=
-#*: }"; \
->                 fi;)
-> +       @echo  ''
-> +       @echo  'Configuration environment variables:'
-> +       @echo  '  KCONFIG_WERROR                 - Turn some Kconfig warn=
-ings into error conditions'
-> +       @echo  '  KCONFIG_WARN_UNKNOWN_SYMBOLS   - Make Kconfig warn abou=
-t all unrecognized config symbols'
->
->  # =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
->  # object files used by all kconfig flavours
-> --
-> 2.44.0.rc0.258.g7320e95886-goog
->
->
+On Tue, 20 Feb 2024 22:13:24 -0800
+> HEAD commit:    83d49ede4b18 Merge branch 'for-next/core' into for-kernelci
+> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11ddc734180000
 
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git  for-kernelci
 
-Why only two, while Kconfig supports more env variables?
-
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+--- x/drivers/media/cec/core/cec-adap.c
++++ y/drivers/media/cec/core/cec-adap.c
+@@ -1592,8 +1592,6 @@ static void cec_claim_log_addrs(struct c
+ 	if (WARN_ON(adap->is_configuring || adap->is_configured))
+ 		return;
+ 
+-	init_completion(&adap->config_completion);
+-
+ 	/* Ready to kick off the thread */
+ 	adap->is_configuring = true;
+ 	adap->kthread_config = kthread_run(cec_config_thread_func, adap,
+--- x/drivers/media/cec/core/cec-core.c
++++ y/drivers/media/cec/core/cec-core.c
+@@ -284,6 +284,7 @@ struct cec_adapter *cec_allocate_adapter
+ 	mutex_init(&adap->lock);
+ 	INIT_LIST_HEAD(&adap->transmit_queue);
+ 	INIT_LIST_HEAD(&adap->wait_queue);
++	init_completion(&adap->config_completion);
+ 	init_waitqueue_head(&adap->kthread_waitq);
+ 
+ 	/* adap->devnode initialization */
+--
 
