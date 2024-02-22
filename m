@@ -1,57 +1,60 @@
-Return-Path: <linux-kernel+bounces-77124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77122-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10F2A860172
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:33:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41FB9860170
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:33:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFF46284E94
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:33:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF8A428203E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:33:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFF0C15D5A4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8542315CD76;
 	Thu, 22 Feb 2024 18:19:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="NYF280GF"
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="psPTDIu/"
 Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84EA91586EE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8507F15CD4C;
 	Thu, 22 Feb 2024 18:18:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708625940; cv=none; b=u0GJnsuUNLSW3YjT/w0QR/161Y9wSJF62BMpQzHNn4QopxfiyZ1akCMmavKhVU91vbZk8cXW+cNPBoFqkwFQ1wdk5qjixbEUzfXN3Zj7oRa+IWb+uQ46yJYFJc00fagKj+dG9HLDayVz7VfdPmtW21NIGQ/5xl1QNQfMP70LqVo=
+	t=1708625939; cv=none; b=qhC02mKSCsbB7ZKpXDxBCWpBZhBYUK7iryLfjwtGoIbOdZBNcsI3kPgsiw4JTsHyAcpyEbsT+k0L5953zV0TPk9pIy0xPW+u8/+8QGt/AEhHiRGxOb8imWcAhkXtiWdqYBxxi2+98lqLWRt8Mm5ldrnvqs0l/ipULI5O/SgTd7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708625940; c=relaxed/simple;
-	bh=tVlCmtfnoRWyJBq9HUe/Vjtl8lpr2sLtXU1tQdi2rsg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jv3ou7BNTQlIGzPWSz++nelsFQtdjgDrWmwfwkpxHnneW/SdMSNNaSw+8m2z0pKPquXOYKnRVxy2B5ZtoVjykDLqEAJ+KbMZ0P4Sn9X6Y+QyJNf2Zax3373A4ZRwcLPNL7OAFy3iED8HrXI7jsCm9FisKdsu1TtAkScXDLYNZSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=NYF280GF; arc=none smtp.client-ip=195.181.215.36
+	s=arc-20240116; t=1708625939; c=relaxed/simple;
+	bh=0xAlq3FKxyKOFVzLVHdJfOKR9ZGZX8El43JyE9dp5i8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jYn44iveC69v6U0n5s4srt1dNcwxFmlSZOP1tOqcWIqAf9CMrcfYeeyVLi682Dyd5KwFQbe61h7DG+CNdiHDfPbSrlsSCeLE5TMuzh/kYaI+gDdGTW6cnxt7kneqVJBPDeTe9pMdR9mst6XTBU2UVf3BSl7uhYvX7KjGH0IqLSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=psPTDIu/; arc=none smtp.client-ip=195.181.215.36
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-	t=1708625933; bh=tVlCmtfnoRWyJBq9HUe/Vjtl8lpr2sLtXU1tQdi2rsg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=NYF280GFCZvSQ/yfp5TVqU9IGDB+6wYDZaUUvQBZn11o9TKa/JuS2Mnvzx107Opgm
-	 xHYjTSCcZ0gXK/l/l5WyLOFKhMOt4R7lczgsfRKLIHA6CHo+FCfq6mh1waTr/Vhfhi
-	 bkiT5KtmTnt6ca6gQYyRV6BWeZPLqHpYf0s4VXxs=
+	t=1708625934; bh=0xAlq3FKxyKOFVzLVHdJfOKR9ZGZX8El43JyE9dp5i8=;
+	h=From:To:Cc:Subject:Date:References:From;
+	b=psPTDIu/ElVGuGT/SH5gHUemooCcfaafxJ5DKSHWm5j36mhLy6PGAgnbTW9LbJsmJ
+	 7P7SnwrFWG6Xu6m0uq0vqFGUu/kqndVN9HVGlDpp0omgKN1avsYvoNVGQhxKn2xo4T
+	 nnCeBqBiGQLcF+7OZdJ/PobIc1RkmZpFHSaF7SMQ=
 From: =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megi@xff.cz>
 To: linux-kernel@vger.kernel.org,
 	Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>
-Cc: Ondrej Jirman <megi@xff.cz>,
+Cc: Samuel Holland <samuel@sholland.org>,
 	Chen-Yu Tsai <wens@csie.org>,
 	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
+	Ondrej Jirman <megi@xff.cz>,
 	Arnaud Ferraris <arnaud.ferraris@collabora.com>,
 	linux-sound@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-sunxi@lists.linux.dev
-Subject: [PATCH 0/4] Add support for jack detection to codec present in A64 SoC
-Date: Thu, 22 Feb 2024 19:18:43 +0100
-Message-ID: <20240222181851.3398254-1-megi@xff.cz>
+Subject: [PATCH 1/4] ASoC: sun50i-codec-analog: Move suspend/resume to set_bias_level
+Date: Thu, 22 Feb 2024 19:18:44 +0100
+Message-ID: <20240222181851.3398254-2-megi@xff.cz>
+In-Reply-To: <20240222181851.3398254-1-megi@xff.cz>
+References: <20240222181851.3398254-1-megi@xff.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,34 +64,71 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Ondrej Jirman <megi@xff.cz>
+From: Samuel Holland <samuel@sholland.org>
 
-This series adds support for jack detection to this codec. I used
-and tested this on Pinephone. It works quite nicely. I tested it
-against Android headset mic button resistor specification.
+With idle_bias_on and suspend_bias_off, there are bias level transitions
+that match the suspend/resume callbacks. However, there are also
+transitions during probe (OFF => STANDBY) and removal (STANDBY => OFF).
 
-The patches are improved and debugged version of the original
-ones from Arnaud Ferraris and Samuel Holland, imrpoved to better
-handle headset button presses and with more robust plug-in/out
-event debouncing.
+By using the set_bias_level hook, the driver can have one copy of code
+that would otherwise be duplicated between the probe/resume and
+suspend/remove hooks.
 
-Please take a look. :)
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+Signed-off-by: Ondřej Jirman <megi@xff.cz>
+---
+ sound/soc/sunxi/sun50i-codec-analog.c | 29 +++++++++++++++++----------
+ 1 file changed, 18 insertions(+), 11 deletions(-)
 
-Thank you very much,
-	Ondřej Jirman
-
-Arnaud Ferraris (2):
-  ASoC: sun50i-codec-analog: Enable jack detection on startup
-  ASoC: sun8i-codec: Implement jack and accessory detection
-
-Samuel Holland (2):
-  ASoC: sun50i-codec-analog: Move suspend/resume to set_bias_level
-  ASoC: sun8i-codec: Enable bus clock at STANDBY and higher bias
-
- sound/soc/sunxi/sun50i-codec-analog.c |  73 ++++-
- sound/soc/sunxi/sun8i-codec.c         | 388 +++++++++++++++++++++++++-
- 2 files changed, 443 insertions(+), 18 deletions(-)
-
+diff --git a/sound/soc/sunxi/sun50i-codec-analog.c b/sound/soc/sunxi/sun50i-codec-analog.c
+index 8a32d05e23e1..cedd4de42d1a 100644
+--- a/sound/soc/sunxi/sun50i-codec-analog.c
++++ b/sound/soc/sunxi/sun50i-codec-analog.c
+@@ -471,17 +471,23 @@ static const struct snd_soc_dapm_route sun50i_a64_codec_routes[] = {
+ 	{ "EARPIECE", NULL, "Earpiece Amp" },
+ };
+ 
+-static int sun50i_a64_codec_suspend(struct snd_soc_component *component)
++static int sun50i_a64_codec_set_bias_level(struct snd_soc_component *component,
++					   enum snd_soc_bias_level level)
+ {
+-	return regmap_update_bits(component->regmap, SUN50I_ADDA_HP_CTRL,
+-				  BIT(SUN50I_ADDA_HP_CTRL_PA_CLK_GATE),
+-				  BIT(SUN50I_ADDA_HP_CTRL_PA_CLK_GATE));
+-}
++	switch (level) {
++	case SND_SOC_BIAS_OFF:
++		regmap_set_bits(component->regmap, SUN50I_ADDA_HP_CTRL,
++				BIT(SUN50I_ADDA_HP_CTRL_PA_CLK_GATE));
++		break;
++	case SND_SOC_BIAS_STANDBY:
++		regmap_clear_bits(component->regmap, SUN50I_ADDA_HP_CTRL,
++				   BIT(SUN50I_ADDA_HP_CTRL_PA_CLK_GATE));
++		break;
++	default:
++		break;
++	}
+ 
+-static int sun50i_a64_codec_resume(struct snd_soc_component *component)
+-{
+-	return regmap_update_bits(component->regmap, SUN50I_ADDA_HP_CTRL,
+-				  BIT(SUN50I_ADDA_HP_CTRL_PA_CLK_GATE), 0);
++	return 0;
+ }
+ 
+ static const struct snd_soc_component_driver sun50i_codec_analog_cmpnt_drv = {
+@@ -491,8 +497,9 @@ static const struct snd_soc_component_driver sun50i_codec_analog_cmpnt_drv = {
+ 	.num_dapm_widgets	= ARRAY_SIZE(sun50i_a64_codec_widgets),
+ 	.dapm_routes		= sun50i_a64_codec_routes,
+ 	.num_dapm_routes	= ARRAY_SIZE(sun50i_a64_codec_routes),
+-	.suspend		= sun50i_a64_codec_suspend,
+-	.resume			= sun50i_a64_codec_resume,
++	.set_bias_level		= sun50i_a64_codec_set_bias_level,
++	.idle_bias_on		= true,
++	.suspend_bias_off	= true,
+ };
+ 
+ static const struct of_device_id sun50i_codec_analog_of_match[] = {
 -- 
 2.43.0
 
