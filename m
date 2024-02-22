@@ -1,146 +1,112 @@
-Return-Path: <linux-kernel+bounces-76335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27CC985F5C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:30:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29A1885F5C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:31:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BDC51C221DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:30:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8920282169
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:31:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F70E3DB86;
-	Thu, 22 Feb 2024 10:29:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87C963F9E2;
+	Thu, 22 Feb 2024 10:31:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TW9B5rlP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="QZGZQspl"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACD003CF6B;
-	Thu, 22 Feb 2024 10:29:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9657F22F0C;
+	Thu, 22 Feb 2024 10:31:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708597796; cv=none; b=SLOV0jhnW5i2XABz8PVP7/2uBQE6w04E5+kbrM3/xL2xGKH6XPnbz9G3cNqAhbgqlXrn+Xlqxy5GWR6n4O2uBECFYTrET6B69dnhqy6bt6LCATBYVZknU2g/ECAsayQyQS6/xM0p7IybK9QvkxqhNk9oSFxaasheH7CB68tmeJ8=
+	t=1708597888; cv=none; b=dsPVmQaQBulOhCLmnQq6iFrtivggz+d4k2IEjhX5XyKT/rAt8zQt94Nw5WQiHayiEtIuuG9CDHCnI2ioHwn+bCDil2ZTFsyn3rOdcHRWoGppeSosSsAR1UP+KKb5wiucNPm57sxVcgstRxx4UPnPlUSPLT0n8uAvGitKNlzOZBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708597796; c=relaxed/simple;
-	bh=afYuJSyH4RiPAE1WvxVP1Cil3M0pG313XkEHICNyg8A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cHDK71ME7BxSHO5QGx4vgxpvWtnQbxKsFX+gZ2VHsYddY4cqiUBvA8cCV3SlolkaR2DXy3kR/NVS2VBzyR55x5UU6mkNWEy2GHy58RbdURr0j/yQN4lx82iPfHkfmRLRnzHPHbPJIKZPSsb6MWSKmraoxe9qCu5xvAmstKvZ0Vs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TW9B5rlP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C18CEC43390;
-	Thu, 22 Feb 2024 10:29:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708597796;
-	bh=afYuJSyH4RiPAE1WvxVP1Cil3M0pG313XkEHICNyg8A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TW9B5rlPPl5eawcAop2ve7LU3/6MAaYknJCqr38lGgRhKsfs5J79IBTheSjcbNMtA
-	 NhO9WKjam+jcU9OHLqTknnaajMPieIFd8dtTRJhdBI5KPbNJMGCupBA0lmiagn4piM
-	 kferNd5Idv7e5m+eYzZG7rAbNLsIQrLB5vJuJqhKdf2KSVBQMExjLX7kF/6NZ0oZqs
-	 Bzgy1+ugtB9hdLQgL+vA+mJeCKM4dWp5+XkPPCXRbYyZFBzByT6ti/QSvuq0Q/qlyQ
-	 YZdEuQdlMP3WPaQKTTGZpDNGzIafV/e9gJtu1BUzbPhp2liL/Q5MDOlPcNfMkAnn5/
-	 MTWWYKprZh3Dw==
-Date: Thu, 22 Feb 2024 10:29:51 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Marco Felsch <m.felsch@pengutronix.de>
-Cc: jic23@kernel.org, lars@metafoo.de, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	denis.ciocca@st.com, linus.walleij@linaro.org,
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH] dt-bindings: iio: st-sensors: Add IIS2MDC magnetometer
-Message-ID: <20240222-fretted-riches-bf15f5d63018@spud>
-References: <20240221175810.3581399-1-m.felsch@pengutronix.de>
- <20240221-undecided-union-4078db711693@spud>
- <20240221191644.5r3ylr5w3cnfnrzj@pengutronix.de>
- <20240221-imitate-molar-81d93285ac77@spud>
- <20240221194518.3sm4o5i274ldpvzf@pengutronix.de>
- <20240221-lubricant-machine-79054f117eb0@spud>
- <20240222084717.rcckoyjeh4shmcxr@pengutronix.de>
+	s=arc-20240116; t=1708597888; c=relaxed/simple;
+	bh=cvAVudDIoWoUoaJqLInNNrpIO3J8u/OOuWGjXc5U+RA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=atCBASzP+u5ajionit585hSVWAMyIvcFPc5Ommk/gi9mCrH3gUtzjajbPWs4Vb1ZnD2kN/x6OFcL87AAHhxNHSlPOowTwvKbIHZE0S8DBmIlihu/PmIV3Z+CklZScada37uOUWLMC5pp69AzYGlVLNp+gv7zeCiipPVSQe7ofJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=QZGZQspl; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id DB2E1FF808;
+	Thu, 22 Feb 2024 10:31:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708597885;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=EUBZIS6T/qLjtF5ns0fFYJqEALyXOpqOh5I1fTOvjy8=;
+	b=QZGZQsplpYiao1CnngozWgY+pdVXe6ZKvyqqFiCKX5/zyWkXvOYe6jwuMbetqDgDMqnTCz
+	8I1mGYS0cdjUd2IBUscIkeBssxpTTiqrU5WRKra0LLiVCFN4yddnqnkhCrL+fcp9VNld3Z
+	eSXh5zCK+6i4q1Y1wNjECgFUGVI5u540UdJQpSjyZL2yfT7H4zkDwzc3EJ6qDPqwRfnSa+
+	SH9uO1hDoTzEY9FN4etIa2lm6Mq+Z7gyDs0Qo8Ou3pgSC+sbW80GRkywMH9lZsaFdZcWaT
+	4u2lmljncLNY/+Sk/sDK3B9DyOFjHgxLeP2Cf8mEPCqQoI3pTZd5yYAndZc3Ag==
+From: =?UTF-8?q?J=C3=A9r=C3=A9mie=20Dautheribes?= <jeremie.dautheribes@bootlin.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Andrew Davis <afd@ti.com>
+Cc: netdev@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	=?UTF-8?q?Miqu=C3=A8l=20Raynal?= <miquel.raynal@bootlin.com>,
+	Yen-Mei Goh <yen-mei.goh@keysight.com>,
+	Maxime Chevallier <maxime.chevallier@bootlin.com>,
+	=?UTF-8?q?J=C3=A9r=C3=A9mie=20Dautheribes?= <jeremie.dautheribes@bootlin.com>
+Subject: [PATCH net-next 0/3] Add support for TI DP83826 configuration
+Date: Thu, 22 Feb 2024 11:31:14 +0100
+Message-Id: <20240222103117.526955-1-jeremie.dautheribes@bootlin.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ahPoXcnEvQcnarTl"
-Content-Disposition: inline
-In-Reply-To: <20240222084717.rcckoyjeh4shmcxr@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: jeremie.dautheribes@bootlin.com
 
+Hi everyone,
 
---ahPoXcnEvQcnarTl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This short patch series introduces the possibility of overriding
+some parameters which are latched by default by hardware straps on the
+TI DP83826 PHY.
 
-On Thu, Feb 22, 2024 at 09:47:17AM +0100, Marco Felsch wrote:
-> On 24-02-21, Conor Dooley wrote:
-> > On Wed, Feb 21, 2024 at 08:45:18PM +0100, Marco Felsch wrote:
-> > > On 24-02-21, Conor Dooley wrote:
-> > > > On Wed, Feb 21, 2024 at 08:16:44PM +0100, Marco Felsch wrote:
-> > > > > On 24-02-21, Conor Dooley wrote:
-> > > > > > On Wed, Feb 21, 2024 at 06:58:10PM +0100, Marco Felsch wrote:
+The settings that can be overridden include:
+  - Configuring the PHY in either MII mode or RMII mode.
+  - When in RMII mode, configuring the PHY in RMII slave mode or RMII
+  master mode.
 
-> > > > Besides, having fallback compatibles is the norm when one device ha=
-s the
-> > > > same programming model as another.
-> > >=20
-> > > Not for this binding according the driver.
-> >=20
-> > If they don't have the same programming model, then describing them as
-> > "equivalent" wouldn't be correct. That said, they seem to use the same
-> > sensor settings when alls said and done (see st_magn_sensors_settings),
-> > so I think they are actually compatible even if the driver has separate
-> > match data for each.
->=20
-> I told you that I have checked the driver and skimed the datasheets and
-> came to the exact same conclusion.
+The RMII master/slave mode is TI-specific and determines whether the PHY
+operates from a 25MHz reference clock (master mode) or from a 50MHz
+reference clock (slave mode).
 
-Did you tell me that? I did't see it.
+While these features should be supported by all the TI DP8382x family,
+I have only been able to test them on TI DP83826 hardware.
+Therefore, support has been added specifically for this PHY in this patch
+series.
 
-Anyway, I think what happened is that I interpreted "Not for this
-binding according the driver" as a comment about the programming model
-being different, but you meant it in reference to the fallback. Since
-they do have the same programming model the fallback is appropriate,
-even if the driver knows about the iis2mdc compatible.
-I'd squash in the following, similar to what was done for the
-st,iis328dq that was added recently:
+Jérémie Dautheribes (3):
+  dt-bindings: net: dp83822: support configuring RMII master/slave mode
+  net: phy: dp83826: Add support for phy-mode configuration
+  net: phy: dp83826: support configuring RMII master/slave operation
+    mode
 
-diff --git a/Documentation/devicetree/bindings/iio/st,st-sensors.yaml b/Doc=
-umentation/devicetree/bindings/iio/st,st-sensors.yaml
-index ee593c8bbb65..ee6c3800436d 100644
---- a/Documentation/devicetree/bindings/iio/st,st-sensors.yaml
-+++ b/Documentation/devicetree/bindings/iio/st,st-sensors.yaml
-@@ -64,7 +64,6 @@ properties:
-           - st,lsm9ds0-gyro
-       - description: STMicroelectronics Magnetometers
-         enum:
--          - st,iis2mdc
-           - st,lis2mdl
-           - st,lis3mdl-magn
-           - st,lsm303agr-magn
-@@ -73,6 +72,9 @@ properties:
-           - st,lsm303dlhc-magn
-           - st,lsm303dlm-magn
-           - st,lsm9ds1-magn
-+      - items:
-+          - const: st,iis2mdc
-+          - const: st,lis2mdl
-       - description: STMicroelectronics Pressure Sensors
-         enum:
-           - st,lps001wp-press
+ .../devicetree/bindings/net/ti,dp83822.yaml   | 16 +++++++
+ drivers/net/phy/dp83822.c                     | 44 +++++++++++++++++++
+ 2 files changed, 60 insertions(+)
 
---ahPoXcnEvQcnarTl
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.34.1
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZdciHwAKCRB4tDGHoIJi
-0rYLAP9zXNYPi9SZuObV9gQE3XitJbRNMbErzItFTaLr7pgDwgD+NA+JrD+s8dqv
-AQAMzEvicv1YL6dcsEnWJJyJKjz4fgw=
-=TXSE
------END PGP SIGNATURE-----
-
---ahPoXcnEvQcnarTl--
 
