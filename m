@@ -1,207 +1,129 @@
-Return-Path: <linux-kernel+bounces-75781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5865685EEDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:05:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 13DA985EEDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:06:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B38FAB22303
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 02:05:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97C71B23545
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 02:06:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6F414287;
-	Thu, 22 Feb 2024 02:05:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BA3E168BD;
+	Thu, 22 Feb 2024 02:05:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="EFMyLwKr";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="EFMyLwKr"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ANE5BU/y"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76D27125D7;
-	Thu, 22 Feb 2024 02:05:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03DEF1428E;
+	Thu, 22 Feb 2024 02:05:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708567511; cv=none; b=NU5RWU0xzKp4jubk0e1uf3mrhD4vSM2W1KpCRlYl7BMxMCMzRWu8HeH8d/viuYeneh/avggBc39HJ6MafzIxPIOxYYouuY7yc7+WW6hkZ6B2VjhWUkNtl5GO2opxCqvYK00EDFMHZdjTw/hnPJAE8g2yI8sBs7R95UH+rcqRw78=
+	t=1708567554; cv=none; b=QjNFJbb3Ol2YZlnCy2bagkC3HYpon9bfVj1OFjayQOto7yZ2i2utzreeLSW75KToAVeNklwc14O0nFU2e5JQqvOJ/BCV0ByXuBGmWyMtkdGqQ7J3KI+Mw7dMbeKq5Myqm6qDdAmKOqcuAT1pJJsUMcPdJRnVCNNLD4DIzIg+sHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708567511; c=relaxed/simple;
-	bh=3m2O0gxqVD4leeDPk3EpgqVSoMqn/AGGWB8HA13FHP4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IbF0vFT741xxhXxbP+BnFF0xZE0v2QU2wROhLJ4x6iqcLVEGhj7N2G/QaxKlregqsrERv7o2wVafjhMKEnkEW8HBY9X+ao5xfxuaB54sa6Rt011Gz/iGyhj/1JF2Utalks602F+axjQSL5dv79fCJsuUrehgPw7L/Sb17cv9Gpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=EFMyLwKr; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=EFMyLwKr; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A99EC21FEF;
-	Thu, 22 Feb 2024 02:04:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708567499; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Yt2nTJyCo2DcsFR2s8JybA6/3TKUrIMwu//hSiSPmVk=;
-	b=EFMyLwKrIv2T/TF+cLB4CGTgD/P/SAUnitjVyiw/hHJqjncyIlIe/EPUxTnreAIAyUk1vx
-	7h6ebhwTHigc5XL7GqVaOvd2q8Zwr4L6emwPkiSJjvaRrE24kKkRUySbhjsc7yUqRwUP3M
-	hNmxbIUlr1pJ8aCQG1nCwyiQP+EUhvw=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708567499; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Yt2nTJyCo2DcsFR2s8JybA6/3TKUrIMwu//hSiSPmVk=;
-	b=EFMyLwKrIv2T/TF+cLB4CGTgD/P/SAUnitjVyiw/hHJqjncyIlIe/EPUxTnreAIAyUk1vx
-	7h6ebhwTHigc5XL7GqVaOvd2q8Zwr4L6emwPkiSJjvaRrE24kKkRUySbhjsc7yUqRwUP3M
-	hNmxbIUlr1pJ8aCQG1nCwyiQP+EUhvw=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 35F12134AF;
-	Thu, 22 Feb 2024 02:04:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id W7QtOsqr1mXTUAAAn2gu4w
-	(envelope-from <mpdesouza@suse.com>); Thu, 22 Feb 2024 02:04:58 +0000
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
-To: Yujie Liu <yujie.liu@intel.com>
-Cc: Shuah Khan <skhan@linuxfoundation.org>,
-	Marcos Paulo de Souza <mpdesouza@suse.com>,
-	kernel test robot <lkp@intel.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Jiri Kosina <jikos@kernel.org>,
-	Miroslav Benes <mbenes@suse.cz>,
-	Petr Mladek <pmladek@suse.com>,
-	Joe Lawrence <joe.lawrence@redhat.com>,
-	oe-kbuild-all@lists.linux.dev,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	live-patching@vger.kernel.org
-Subject: Re: [PATCH 1/3] selftests: lib.mk: Do not process TEST_GEN_MODS_DIR
-Date: Wed, 21 Feb 2024 23:04:55 -0300
-Message-ID: <20240222020456.28532-1-mpdesouza@suse.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <ZdajMy061zaqq8fP@yujie-X299>
-References: 
+	s=arc-20240116; t=1708567554; c=relaxed/simple;
+	bh=WQlrre1Af5DqGIugnUw+jmEueTMMr/mxLhUYg0DM6WE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=fzSPn4Mltfy4GHU7iGfvsbnjz2uYBvRQBwxrNVGl1vRQw4/qp7uuhlSWd8rfdMwZkGOm/TfjKy8svvinSFLsFUSaOnwHDNalABsLq0siLDx9584+Yww/LvTPChvAEQ9tqqXyVWGzBWuF2lccxzMzCMO3y3FBn+dHQC9j4oJR6ZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ANE5BU/y; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41M25IGx025387;
+	Thu, 22 Feb 2024 02:05:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=HoXQqCATqr7GEXryHy+jw904VeUxzRGQm/kjpO84j1M=; b=AN
+	E5BU/yhJXaW8MSIfTTHiGlb6R1pErQRjpgopC4Yxamq4xGK/GRA6dWRqQBjaKYXF
+	SKq0YGuxcW8PKAgo67NzR3dpqlWY3oN3OeV5EoJFfgjUeRsoNAGSjoTSMK942z9N
+	eKbW3IfikF/197kCdq9IE/XUpjoLmnheAGQHxU+G410BSRU3v4ylDA0kKjh3pJ6n
+	CLxTUabhdMtW6pwUV2tiaNp4qbIigw6vRsyALi6lJU49L9UKke8MccO6AdvBO4rC
+	XA4wse66m5xTaSjyulD3BgyOLQkS35S9LB8LXIkzu0ghsy1Jm4lllzUcKJK7szHZ
+	T18ao7zK5xUYV8z9aF6g==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wdgge1uea-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 22 Feb 2024 02:05:36 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41M25ZDP016088
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 22 Feb 2024 02:05:35 GMT
+Received: from [10.253.11.235] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 21 Feb
+ 2024 18:05:33 -0800
+Message-ID: <cca63e1e-e16e-476c-b646-b6ff2cfb70a5@quicinc.com>
+Date: Thu, 22 Feb 2024 10:05:30 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=EFMyLwKr
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.51 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 FROM_HAS_DN(0.00)[];
-	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,suse.com:dkim,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
-X-Spam-Score: -1.51
-X-Rspamd-Queue-Id: A99EC21FEF
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] scsi: ufs: core: Fix setup_xfer_req invocation
+To: Bart Van Assche <bvanassche@acm.org>, Rohit Ner <rohitner@google.com>,
+        Bean Huo <beanhuo@micron.com>, Stanley Chu <stanley.chu@mediatek.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jaegeuk Kim
+	<jaegeuk@kernel.org>
+CC: Avri Altman <avri.altman@wdc.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20240220090805.2886914-1-rohitner@google.com>
+ <1920a2f6-e398-47af-a5d7-9dad9c70e03d@acm.org>
+ <c7635c10-1724-4db5-9568-d554e1c64f72@quicinc.com>
+ <0f959cca-ad29-4b8b-966d-55eb37156ef8@acm.org>
+Content-Language: en-US
+From: Can Guo <quic_cang@quicinc.com>
+In-Reply-To: <0f959cca-ad29-4b8b-966d-55eb37156ef8@acm.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: YmPo6bM0N78jZsWaMbNB5podNQkPmEvc
+X-Proofpoint-ORIG-GUID: YmPo6bM0N78jZsWaMbNB5podNQkPmEvc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-21_10,2024-02-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
+ spamscore=0 malwarescore=0 suspectscore=0 impostorscore=0 mlxscore=0
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 mlxlogscore=809
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402220014
 
-On Thu, 22 Feb 2024 09:28:19 +0800 Yujie Liu <yujie.liu@intel.com> wrote:
 
-> On Wed, Feb 21, 2024 at 07:04:03PM -0300, Marcos Paulo de Souza wrote:
-> > On Wed, 21 Feb 2024 14:12:00 -0700 Shuah Khan <skhan@linuxfoundation.org> wrote:
-> > 
-> > > On 2/21/24 05:26, Marcos Paulo de Souza wrote:
-> > > > On Tue, 20 Feb 2024 17:19:54 -0700 Shuah Khan <skhan@linuxfoundation.org> wrote:
-> > > > 
-> > > >> On 2/19/24 06:53, Marcos Paulo de Souza wrote:
-> > > >>> On Mon, 19 Feb 2024 09:15:15 -0300 Marcos Paulo de Souza <mpdesouza@suse.com> wrote:
-> > > >>>
-> > > >>>> On Mon, 19 Feb 2024 14:35:16 +0800 kernel test robot <lkp@intel.com> wrote:
-> > > >>>>
-> > > >>>>> Hi Marcos,
-> > > >>>>>
-> > > >>>>> kernel test robot noticed the following build errors:
-> > > >>>>>
-> > > >>>>> [auto build test ERROR on 345e8abe4c355bc24bab3f4a5634122e55be8665]
-> > > >>>>>
-> > > >>>>> url:    https://github.com/intel-lab-lkp/linux/commits/Marcos-Paulo-de-Souza/selftests-lib-mk-Do-not-process-TEST_GEN_MODS_DIR/20240216-021601
-> > > >>>>> base:   345e8abe4c355bc24bab3f4a5634122e55be8665
-> > > >>>>> patch link:    https://lore.kernel.org/r/20240215-lp-selftests-fixes-v1-1-89f4a6f5cddc%40suse.com
-> > > >>>>> patch subject: [PATCH 1/3] selftests: lib.mk: Do not process TEST_GEN_MODS_DIR
-> > > >>>>> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> > > >>>>> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240219/202402191417.XULH88Ct-lkp@intel.com/reproduce)
-> > > >>>>>
-> > > >>>>> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> > > >>>>> the same patch/commit), kindly add following tags
-> > > >>>>> | Reported-by: kernel test robot <lkp@intel.com>
-> > > >>>>> | Closes: https://lore.kernel.org/oe-kbuild-all/202402191417.XULH88Ct-lkp@intel.com/
-> > > >>>>>
-> > > >>>>> All errors (new ones prefixed by >>):
-> > > >>>>>
-> > > >>>>>>> make[3]: *** /lib/modules/5.9.0-2-amd64/build: No such file or directory.  Stop.
-> > > >>>>
-> > > >>>> We should ask the kernel test robot machine owners to install kernel-devel
-> > > >>>> package in order to have this fixed.
-> > > >>>
-> > > >>> Or maybe ask them to change the reproducer to specify KDIR to the git tree,
-> > > >>> instead of /lib/modules/?
-> > > >>>
-> > > >>
-> > > >> This would be a regression to automated test rings. Do you have any other
-> > > >> solutions?
-> > > > 
-> > > > I would say that we could skip the these tests if kernel-devel package is not
-> > > > installed. Would it be acceptable? At least we would avoid such issues like this
-> > > > in the future as well.
-> > > > 
-> > > 
-> > > We have to check and skip build. Something we could do in the livepatch
-> > > Makefile. Can you send patch for this - I will oull this in for next
-> > > so we don't break test rings.
-> > 
-> > I added a new patch in the same patchset that would cover this, skipping the
-> > build and test if kernel-devel is not installed. The patchset was sent earlier
-> > today. Please check if the new patch fixes things on the build robot.
+
+On 2/22/2024 1:55 AM, Bart Van Assche wrote:
+> On 2/21/24 01:13, Can Guo wrote:
+>> I am going to push some BUG fixes for Qualcomm UFSHCI MCQ engine, one 
+>> of which would count on a vops in ufshcd_send_command(). My original 
+>> plan was to add a new vops.mcq_setup_xfer_req() to differentiate from 
+>> the existing one used in legacy mode. But if Rohit moves the existing 
+>> .setup_xfer_req() up, I can use it instead of introducing the new one.
 > 
-> Hi Shuah, Hi Marcos,
+> Hi Can,
 > 
-> Sorry for this wrong report. The files are organized in a different way
-> in the bot and cause this issue. We have fixed the bot to explicitly
-> set KDIR to the correct path before building the selftests. The patch
-> [1] can also work well in bot's environment.
-> 
-> [1] https://lore.kernel.org/all/20240221-lp-selftests-fixes-v2-2-a19be1e029a7@suse.com/
+> If an if-statement can be avoided in the hot path by introducing a new
+> callback pointer for MCQ code then I prefer the approach of introducing
+> a new callback instead of moving the setup_xfer_req() call.
 
-Hi Yujie, thanks for letting us know that the bot had different settings. Either
-way the patch you mentioned should help to reduce noise in the future on
-bot's that doesn't have kernel-devel installed.
+Hi Bart,
 
-Again, thanks a lot for fixing the issue!
-  Marcos
+The if-statement you are mentioning here, is it the if (hba->vops && 
+hba->vops->setup_xfer_req) or if (is_mcq_enabled(hba))?
+
+Thanks,
+
+Can Guo.
 
 > 
-> Best Regards,
-> Yujie
+> Thanks,
+> 
+> Bart.
+> 
 
