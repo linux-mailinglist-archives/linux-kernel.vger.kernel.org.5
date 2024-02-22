@@ -1,102 +1,217 @@
-Return-Path: <linux-kernel+bounces-77307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68199860396
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:20:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EDB386039B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:22:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99A671C24B71
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:20:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 823651C23CFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:22:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 791316E604;
-	Thu, 22 Feb 2024 20:20:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11E9E6E5F4;
+	Thu, 22 Feb 2024 20:22:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b5xqPH+j"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="l7QyR5HW"
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4D056AFA9;
-	Thu, 22 Feb 2024 20:20:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35C1D14B815
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 20:22:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708633231; cv=none; b=SJDVTKpPng8jj4scQwBbnC7vk8CXvIPWZ9oh/4rMFb+bsvBDHOpXN4EJuXp2HCSsNQxS8Ei7ISLa5pmdBI9zHzw8HjbQAmq98XPHayBWjzLr6U39Tpjoc9Zh9VudmnMR4Z/I4Vu3xec8sTdQ7ALzX0ZLbeJwfGqfVrcZ1RdJoVM=
+	t=1708633373; cv=none; b=ufdCZijtvWxts2xcU0N0NqnLm89APtSy9wpDjthc8D/nNFzHC40MRwmtAvf2EqxU8dTKFwIdlR8NwGSOWqVXG1bLbu5KND0mku5LCe1em5ETgJhKR903BS9sOC8/8HGYjoMeXJ1yxx9uxCjkTum4tck/puxEPudv/2xJ4C90WB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708633231; c=relaxed/simple;
-	bh=UtGmhrVXWOQgfINhBlApcwhf/spsw5YMmZhYCI+jEww=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=tHrLleSkezJwmEBQOym+ipyC9OW+48jhai0HW7yBs4ITOdOjp28WdF2vKUGySXVsJtuqWrERPl9GIOv3q6vHaGbFJ1vrb+MR0U2bePOYrNic8Z7VqWvmUK0uAr2jM13qFoGg706pLLUKIrdXPDvL/RbVI0GDm7pgtJ9UkPypxdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b5xqPH+j; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 549CAC43394;
-	Thu, 22 Feb 2024 20:20:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708633231;
-	bh=UtGmhrVXWOQgfINhBlApcwhf/spsw5YMmZhYCI+jEww=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=b5xqPH+jNwgz99/qOuiOdzr5cJrB+12a30C/knYO2wusyXuON2BpRDK6tqpWpsZiv
-	 lz/gvdJ1X/Ahd0nZn74UDJUQ+l0VKNZoNUcpHCBWEQ6CI6Qh2cx0O1SZkKpg8/lr2v
-	 GQSgsQJMBkgcBBEQjLlxddaSixgzV6ixmBj8CJxpd6/NmChd0eMPALkN+P5k1W7OMo
-	 75Qtkm+fRQGxuxgQGIIVbIfpsVoryXrO2WXIUMtyJh4vnkurMYQm1sQ4iWqwDybt6u
-	 PwWvesXOqcW+JWSu0VDeqxBUyEc3DG1Wi1eZqLdcPTouAPs188tPH3+fNn69emz1vb
-	 Cx92WtX27ptKQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 39A19D84BBF;
-	Thu, 22 Feb 2024 20:20:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1708633373; c=relaxed/simple;
+	bh=MhysHirwrzZgOmT/JmKn7W+RQzCr8QuKyzQeL5Lz9o0=;
+	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
+	 Content-Type; b=tcP/LrXnUZhO9tHGRbRKO7yLN9oDqK/siaJ0Z/nE+ZXelnUOFnMu2VTe27bMgXE9qjPVpOnNJdteH05evLveLClddkLvV4/Z/oBm8d3HBj3iyxr6UojtJxRWpDsAvg5Pt1FbUnD+IuWy2Lji5J+Qmp5u+yVimkcRDbEFQHSNOS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=l7QyR5HW; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-299b818d63aso182843a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 12:22:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1708633370; x=1709238170; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mpShOmtkkj9GEApYdcwx7cn/mMGxpGuhSoDbV1XUNXc=;
+        b=l7QyR5HWjp/Sx7yDSFmwCrFtkop7xMvxUckydkfpyTdxk6adsvQoFfX3RDQy7fP5Wz
+         kd2C4tDS6Ufsc6VhViLFPJSIJuseGZPy8qbC3YfYVacbgnZcYTf4pIzTo7yRXlf5B3Px
+         Ej7y9YB6xT5hJQX5FnhEKrtT3xAkm/WDGSht0N1+6Jgyy7uAvHDbSH5wdwcg+06Tpb3M
+         cQlXnFzzFy6ijIxoelWoRSpiOc5XSVMNVeWiw/YZjDK8ykg2SK4Wv1tjAdeQ3tSCj+u3
+         f2zAm+3IThbEKJmD3bSGxsOvJjl3R86+apf7dPZGKpIo4SuiZeYbKBn9/XvLQLLmuJHS
+         6qeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708633370; x=1709238170;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mpShOmtkkj9GEApYdcwx7cn/mMGxpGuhSoDbV1XUNXc=;
+        b=KwzBIeKPioR0eY3gN8xbDRJcMjfgvDcIj8D/L3e5w2gV+ahmdTT5gem2iFyfEOTWCN
+         LZyHKOnTPjhtH0PLok7CjqTn54I/kgztbZ1YxA1v6CvIGjcgmXEG18VkwKm45ug5+kGN
+         VBzLi834vEDytX8N5DDQB0WnkjM7z4ixQTAo+sDn8FVK6h73Tms/lfVM2me62v/2a9PX
+         ZG21LETJwhZtIRaQlN9o8zcNSdI3GnFUlq8c35REFZmjMGTMdcWADX4R9rpXX0iYFxVo
+         CrLHj9nEP/x6ZW5ro+0MsnkKqnflKPrpu5F3tf2X5Eaq9PlyYujtUoJBoZOVFNJD2hnu
+         IwOw==
+X-Forwarded-Encrypted: i=1; AJvYcCXptcL0Jk0B+LuZaVZSKWIM9z4LDmKMT9ztMrgMtMpJ2OQAHa9X+mMDdjJjMdZ9kVtZ9D0pW4QA36PfFKdn8wqUZqUna2iRrIyS1LHq
+X-Gm-Message-State: AOJu0YwVwQiO/bvUR8tjAATxST7ogrb9uwi4zV8mE/7EI6Tur82LeB0r
+	PYJF3lrGkBN/OmWatDjS610YXoLiNohUhNvG6JD+IO4Pt88tD5L0rzqXG2yasso=
+X-Google-Smtp-Source: AGHT+IHqzp5vBlh891WfzJCO4hseA3vx6/FnlCk5TJbweZ6XQhH5Ogc5C8SekyxUIOEcqD7DZP99Dg==
+X-Received: by 2002:a17:90a:d3d0:b0:298:b25d:127c with SMTP id d16-20020a17090ad3d000b00298b25d127cmr5033001pjw.23.1708633370408;
+        Thu, 22 Feb 2024 12:22:50 -0800 (PST)
+Received: from localhost ([50.213.54.97])
+        by smtp.gmail.com with ESMTPSA id ta4-20020a17090b4ec400b00298b3e058fcsm4424899pjb.57.2024.02.22.12.22.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 12:22:49 -0800 (PST)
+Date: Thu, 22 Feb 2024 12:22:49 -0800 (PST)
+X-Google-Original-Date: Thu, 22 Feb 2024 12:21:05 PST (-0800)
+Subject:     Re: [PATCH v2] riscv: add CALLER_ADDRx support
+In-Reply-To: <20240202015102.26251-1-zong.li@sifive.com>
+CC: Paul Walmsley <paul.walmsley@sifive.com>, alex@ghiti.fr,
+  Conor Dooley <conor.dooley@microchip.com>, aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
+  linux-kernel@vger.kernel.org, zong.li@sifive.com
+From: Palmer Dabbelt <palmer@dabbelt.com>
+To: zong.li@sifive.com
+Message-ID: <mhng-ce04b525-e138-44ba-874f-97b0f6d5e2e7@palmer-ri-x1c9a>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v8 0/4] RISC-V: Add MMC support for TH1520 boards
-From: patchwork-bot+linux-riscv@kernel.org
-Message-Id: 
- <170863323122.27873.17493121539917977053.git-patchwork-notify@kernel.org>
-Date: Thu, 22 Feb 2024 20:20:31 +0000
-References: <20231206-th1520_mmc_dts-v8-0-69220e373e8f@baylibre.com>
-In-Reply-To: <20231206-th1520_mmc_dts-v8-0-69220e373e8f@baylibre.com>
-To: Drew Fustini <dfustini@baylibre.com>
-Cc: linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
- palmer@dabbelt.com, aou@eecs.berkeley.edu, jszhang@kernel.org,
- guoren@kernel.org, wefu@redhat.com, conor@kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, jkridner@beagleboard.org,
- robertcnelson@beagleboard.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
 
-Hello:
+On Thu, 01 Feb 2024 17:51:02 PST (-0800), zong.li@sifive.com wrote:
+> CALLER_ADDRx returns caller's address at specified level, they are used
+> for several tracers. These macros eventually use
+> __builtin_return_address(n) to get the caller's address if arch doesn't
+> define their own implementation.
+>
+> In RISC-V, __builtin_return_address(n) only works when n == 0, we need
+> to walk the stack frame to get the caller's address at specified level.
+>
+> data.level started from 'level + 3' due to the call flow of getting
+> caller's address in RISC-V implementation. If we don't have additional
+> three iteration, the level is corresponding to follows:
+>
+> callsite -> return_address -> arch_stack_walk -> walk_stackframe
+> |           |                 |                  |
+> level 3     level 2           level 1            level 0
+>
+> Fixes: 10626c32e382 ("riscv/ftrace: Add basic support")
 
-This series was applied to riscv/linux.git (for-next)
-by Palmer Dabbelt <palmer@rivosinc.com>:
+You've got a spurious newline here.  I've got this queued up for 
+testing with that cleaned up, it should show up on fixes soon (assuming 
+it passes the tests and such).
 
-On Wed, 06 Dec 2023 00:09:20 -0800 you wrote:
-> This series enables the MMC controller in the T-Head TH1520 SoC and
-> enables the eMMC and microSD on both the BeagleV Ahead and the Sipeed
-> LicheePi 4A.
-> 
-> The drivers/mmc/host patches from v6 were applied by Ulf and are already
-> in the linux-next [1][2] as well as the bindings patch [3]. Thus v7 was
-> only a defconfig patch and three device tree patches. This v8 is a
-> followup to change the dwcmshc node names to match the documentation.
-> 
-> [...]
-
-Here is the summary with links:
-  - [v8,1/4] riscv: defconfig: Enable mmc and dma drivers for T-Head TH1520
-    https://git.kernel.org/riscv/c/45e0b0fd6dc5
-  - [v8,2/4] riscv: dts: thead: Add TH1520 mmc controllers and sdhci clock
-    (no matching commit)
-  - [v8,3/4] riscv: dts: thead: Enable BeagleV Ahead eMMC and microSD
-    (no matching commit)
-  - [v8,4/4] riscv: dts: thead: Enable LicheePi 4A eMMC and microSD
-    (no matching commit)
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>
+> Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> Signed-off-by: Zong Li <zong.li@sifive.com>
+> ---
+>
+> Changed in v2:
+> - Rebase to v6.8-rc2
+> - Add noinline attribute for return_address()
+> - Add a fixes tag
+>
+>  arch/riscv/include/asm/ftrace.h    |  5 ++++
+>  arch/riscv/kernel/Makefile         |  2 ++
+>  arch/riscv/kernel/return_address.c | 48 ++++++++++++++++++++++++++++++
+>  3 files changed, 55 insertions(+)
+>  create mode 100644 arch/riscv/kernel/return_address.c
+>
+> diff --git a/arch/riscv/include/asm/ftrace.h b/arch/riscv/include/asm/ftrace.h
+> index 329172122952..15055f9df4da 100644
+> --- a/arch/riscv/include/asm/ftrace.h
+> +++ b/arch/riscv/include/asm/ftrace.h
+> @@ -25,6 +25,11 @@
+>
+>  #define ARCH_SUPPORTS_FTRACE_OPS 1
+>  #ifndef __ASSEMBLY__
+> +
+> +extern void *return_address(unsigned int level);
+> +
+> +#define ftrace_return_address(n) return_address(n)
+> +
+>  void MCOUNT_NAME(void);
+>  static inline unsigned long ftrace_call_adjust(unsigned long addr)
+>  {
+> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+> index f71910718053..604d6bf7e476 100644
+> --- a/arch/riscv/kernel/Makefile
+> +++ b/arch/riscv/kernel/Makefile
+> @@ -7,6 +7,7 @@ ifdef CONFIG_FTRACE
+>  CFLAGS_REMOVE_ftrace.o	= $(CC_FLAGS_FTRACE)
+>  CFLAGS_REMOVE_patch.o	= $(CC_FLAGS_FTRACE)
+>  CFLAGS_REMOVE_sbi.o	= $(CC_FLAGS_FTRACE)
+> +CFLAGS_REMOVE_return_address.o	= $(CC_FLAGS_FTRACE)
+>  endif
+>  CFLAGS_syscall_table.o	+= $(call cc-option,-Wno-override-init,)
+>  CFLAGS_compat_syscall_table.o += $(call cc-option,-Wno-override-init,)
+> @@ -46,6 +47,7 @@ obj-y	+= irq.o
+>  obj-y	+= process.o
+>  obj-y	+= ptrace.o
+>  obj-y	+= reset.o
+> +obj-y	+= return_address.o
+>  obj-y	+= setup.o
+>  obj-y	+= signal.o
+>  obj-y	+= syscall_table.o
+> diff --git a/arch/riscv/kernel/return_address.c b/arch/riscv/kernel/return_address.c
+> new file mode 100644
+> index 000000000000..c8115ec8fb30
+> --- /dev/null
+> +++ b/arch/riscv/kernel/return_address.c
+> @@ -0,0 +1,48 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * This code come from arch/arm64/kernel/return_address.c
+> + *
+> + * Copyright (C) 2023 SiFive.
+> + */
+> +
+> +#include <linux/export.h>
+> +#include <linux/kprobes.h>
+> +#include <linux/stacktrace.h>
+> +
+> +struct return_address_data {
+> +	unsigned int level;
+> +	void *addr;
+> +};
+> +
+> +static bool save_return_addr(void *d, unsigned long pc)
+> +{
+> +	struct return_address_data *data = d;
+> +
+> +	if (!data->level) {
+> +		data->addr = (void *)pc;
+> +		return false;
+> +	}
+> +
+> +	--data->level;
+> +
+> +	return true;
+> +}
+> +NOKPROBE_SYMBOL(save_return_addr);
+> +
+> +noinline void *return_address(unsigned int level)
+> +{
+> +	struct return_address_data data;
+> +
+> +	data.level = level + 3;
+> +	data.addr = NULL;
+> +
+> +	arch_stack_walk(save_return_addr, &data, current, NULL);
+> +
+> +	if (!data.level)
+> +		return data.addr;
+> +	else
+> +		return NULL;
+> +
+> +}
+> +EXPORT_SYMBOL_GPL(return_address);
+> +NOKPROBE_SYMBOL(return_address);
 
