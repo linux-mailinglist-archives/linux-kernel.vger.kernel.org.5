@@ -1,315 +1,247 @@
-Return-Path: <linux-kernel+bounces-77004-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77006-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E978D85FFED
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:45:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D79385FFF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:45:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EFD4283A0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:45:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53E1C28C582
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:45:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94B0115697D;
-	Thu, 22 Feb 2024 17:44:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B61B91586D2;
+	Thu, 22 Feb 2024 17:45:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RhPuhD8h"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="E7QJpt6e"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2055.outbound.protection.outlook.com [40.107.94.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C7191534F8;
-	Thu, 22 Feb 2024 17:44:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708623897; cv=none; b=I76gDHnLL5M3s6aK76RsQPCSpfN8bfrcdBdO1W5tkd5pDZb+HJ9hhcKsVOZSBWnA/BJXZ2gselq4iMHZJJBYsmV5oriJmQHPjww5nBg2/Z6loDf4+E0QzNp6ljzEKh86UvyP6TnprdYLNsf8i6Bv9346X/OWobWx/Px/QYce+9g=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708623897; c=relaxed/simple;
-	bh=7BNl0V7JZ8ZTvufEz+lXYL9lojiWbKA/DEhMbabZlLo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DuG5EwkAp/lR7+rVt1wmw9GghqMjFWYR/jiDrmY9D5bIo4TFhjv06r1OjyW/pXko2a3e/bilZhl2QFJ5i1/OOF3huE2zqdQ1ZNN5ZT/4zgTI1YaJnhFnEpnudZAi0401Cs0zsLYV6CHAnV8jgAN+v8ViXcVYqSlMvocpdOfYoMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RhPuhD8h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98844C433C7;
-	Thu, 22 Feb 2024 17:44:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708623897;
-	bh=7BNl0V7JZ8ZTvufEz+lXYL9lojiWbKA/DEhMbabZlLo=;
-	h=From:To:Cc:Subject:Date:From;
-	b=RhPuhD8hNzl4pDDmJJaR9Z7BJhNWOlZjOsKhFiA64srC8v6z8YYIfy7R4+vzXS1Sz
-	 Ph4pAm1bTtt3yhZKNBh5ZqfmI5Zjh1UsoXhQPgIsrgvRQSkvh34EDsSNRbfzosV13q
-	 Im3QGBJXoPyGWTg2MQ/u5jERtY3+aMzNdvKajsfqal9EDskAZbVOHBpbwsDaPxUedy
-	 BJqNm/uO8MSmHEC7JL8tQ02rRJCOktX/XPDvQsApcSoJ6jvvVmKXwZ+hXcBKyt3wAW
-	 +adsFhYtBAA2Y8HAbsTVnebSqS/tL7QCf4VneCErtuNwuSHI8f44bJB9ImnjfpQn+b
-	 10SJr0PvNMPeA==
-From: Rob Herring <robh@kernel.org>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: linux-gpio@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-i2c@vger.kernel.org,
-	linux-tegra@vger.kernel.org,
-	linux-i3c@lists.infradead.org,
-	linux-sound@vger.kernel.org
-Subject: [PATCH] dt-bindings: i2c: Remove obsolete i2c.txt
-Date: Thu, 22 Feb 2024 10:43:42 -0700
-Message-ID: <20240222174343.3482354-2-robh@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D073515699B;
+	Thu, 22 Feb 2024 17:45:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.55
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708623902; cv=fail; b=uq+tuedmr0DW1zvz1IHs0tV3e2wwCWYPdOrq+6GntICh1sFkvc6Si/TdOqgteVxyWSkFf4JeQ3XCZYZYT6UgL7iuKsvothbFjYCh/TPqVrCEk2sdHzMrFmQUhiFIexARPtZNEWl6XyumNyjvX4PX8s79Mc8fnJBm0fM1s9zl3T0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708623902; c=relaxed/simple;
+	bh=aOVe9Bw4qNzg2tfNsB0A02CI7kSYLm3plNpHpKzp8Gk=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ea2361du4j2/lZ6SpXCp2tT94aRknIorllqgC/FuuOSlJDSwsoClwSsBJZqeQxBOdcP2saRtriffr+tUCbYIA8DlDvQJIZeQ5gCsCtfIt9BEAkmNbPTWJUHHKWszMGkNjm94RCUkZieYCKn5MJmI8LaNIvC4pin3Bcr/cqoQ1Ws=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=E7QJpt6e; arc=fail smtp.client-ip=40.107.94.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RvZXXpqivo1SGZqrlJloDtyqcBvtY8q8LjpUWTkBUtg91FiTFerL78ZxdR2EAGkp/d8dKCbM3CDB3WDRFaTYhcXuK7/WHldi4hjHO0BrGiFj14H3lqAhh5JWuEnDSI2qCS9d2rfczAkrs7Qv9YnSqu2SZncQfw05K2tSBIStupYdBg45NGwTrzl1owX7mJ1oCTXbws8+P1pO+WyXMpjdLT2ru2njudfX04XgzGPHHlCziyfH58347afbRNv/GEOeOM1i6aFpyjzE1nzUZ8+RhdKooRBqbvdlzMHsL7VpCwnMytnTteoO1xDDPzZHreXB+8ZyNWYhCu4N563PZvEZmw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5XbFOAM2dx7oY57lt9KKSiBSqgsJ1pciuGTAMTW9/FM=;
+ b=R9ymg6n/XxBtGqRKtWwK8LrZ5cuSD8+qmN1G6Fe/14OCny8DqaC0g2b7yQ07e7XbbOehRFEzcZvrh9EYFne8LvDOYF6+VtrPW1iIyIQ16pKQObQyp8HgbPKwF45HFuzaDHrdAKbtDcv9vgfoJgp8GjcL63xaw7pnRZWoBZ9TYOhpfoq0t8TtxELhuKzxLQvRDkVYwomaiC6YxR+HbqO4huTB2z7BSG854IJJTiZquHvTQ0Iap+7pltKvtSB9a3GbS6GDhKfPto0wVLQ21AJ9sZ9D/YCsyhuv7i2lsOS/yIxQr/ZVEiFULYWzqJ+LKL/R15ecyV19Cadd7CBgXn4Pcw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5XbFOAM2dx7oY57lt9KKSiBSqgsJ1pciuGTAMTW9/FM=;
+ b=E7QJpt6ebt+1YDvEBs0o32mKLUjESh0F30mwOfbPooOxdmoTV4ArE+box7CT4Ej8orM7ZxhPWApKYyM0IptyoNWKC+V5seKfOF35M93+eJNPn9CeTM6eIAHnKWTTKSeQEbgwx1YJD5mGOB4Yprzyg8fsJOE2Wby37eMTdG6lh4ZM1aJJCe6W3W9u9gbtMslf6TFM4d91mgpe+FR1ntBPl9HEsW1yy4wr9swDsZCFDJWrOmtpq3z03ciJXEHGZaFAOg5kvxt+ZHvAqr7to1UOeRThnEnxcuGs9PCR3k8xqNJKMtMLyEQIEzGHpdmiRURTn5cw1qlghzGfjI0vdjOfBQ==
+Received: from CY5P221CA0060.NAMP221.PROD.OUTLOOK.COM (2603:10b6:930:4::12) by
+ SA1PR12MB8119.namprd12.prod.outlook.com (2603:10b6:806:337::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.23; Thu, 22 Feb
+ 2024 17:44:57 +0000
+Received: from CY4PEPF0000EE39.namprd03.prod.outlook.com
+ (2603:10b6:930:4:cafe::b6) by CY5P221CA0060.outlook.office365.com
+ (2603:10b6:930:4::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.43 via Frontend
+ Transport; Thu, 22 Feb 2024 17:44:57 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ CY4PEPF0000EE39.mail.protection.outlook.com (10.167.242.13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7292.25 via Frontend Transport; Thu, 22 Feb 2024 17:44:57 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 22 Feb
+ 2024 09:44:43 -0800
+Received: from drhqmail201.nvidia.com (10.126.190.180) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.12; Thu, 22 Feb 2024 09:44:43 -0800
+Received: from vidyas-desktop.nvidia.com (10.127.8.9) by mail.nvidia.com
+ (10.126.190.180) with Microsoft SMTP Server id 15.2.1258.12 via Frontend
+ Transport; Thu, 22 Feb 2024 09:44:39 -0800
+From: Vidya Sagar <vidyas@nvidia.com>
+To: <bhelgaas@google.com>, <macro@orcam.me.uk>, <ajayagarwal@google.com>,
+	<ilpo.jarvinen@linux.intel.com>, <david.e.box@linux.intel.com>,
+	<sathyanarayanan.kuppuswamy@linux.intel.com>, <hkallweit1@gmail.com>,
+	<johan+linaro@kernel.org>, <xueshuai@linux.alibaba.com>
+CC: <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<treding@nvidia.com>, <jonathanh@nvidia.com>, <kthota@nvidia.com>,
+	<mmaddireddy@nvidia.com>, <vidyas@nvidia.com>, <sagar.tv@gmail.com>
+Subject: [PATCH V4] PCI/ASPM: Update saved buffers with latest ASPM
+Date: Thu, 22 Feb 2024 23:14:36 +0530
+Message-ID: <20240222174436.3565146-1-vidyas@nvidia.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240108124248.1552420-1-vidyas@nvidia.com>
+References: <20240108124248.1552420-1-vidyas@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-NVConfidentiality: public
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE39:EE_|SA1PR12MB8119:EE_
+X-MS-Office365-Filtering-Correlation-Id: d29ad02b-aa38-4e46-387a-08dc33cdfc69
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	/OLxc7SHXWlGfzN1J9BHrxxMwvS9PA7C1lGDWZ1xzvNP9ro0FYyE8zvzNGbIBiQIUhACIaoHriwfdxcbB69zq5ZPFQyIYCpzNHJbSeSOAz/JFKnAMn69b1T3yAbgvcUbFEiXlWpiI3BysvhxwkXuADjytgLqJNsFKXw4+Rg2nrXUfDcl7aZEahGPXAHAWzGvCjX4Q/eWgjL98JyTeqQiL71iIu0gSyeCDzWhFatdrLLDn/THE0jiZ4SkJxDMMqvkhFMI1tri5LdEtEuDIEAZ0ZXXW1Z+RK3YpgTSWTGZnzJLgiOMSoH8kV+p+wTpDWPWqADACRTUoFPdNypq5Bee1YUAdYD76YQyO5E/h+iWf4DGhHoFSlYZfc0SXv5USZT7/T1rJQVkqwgdg9WsHGD0ex7I9kRv+RZfkaPTlXXCenP0yuYY7/DdpOGFOf4f0Z2mwSCbOCUtCGrJ9dpt4IkCfKmT29mIzgBlKhCvawSFoO/g6yQ42THXtrs1JhlZUmDA47g14fe6vgfc+UpECOVrbE7w2PI3pfzV/s11B7Xt+Al0Nqe2l47ajKsjJOkEV5xkbAF3bKPsQKFdKkF4IrbTqaPddIN7dGncGlA7ylR6CmoNZQHsQXnvzhinVpE4FYrsUKw2zeqk998GOhJWxF+wO3/DvlcTGiDUmXvLrLsPwGg=
+X-Forefront-Antispam-Report:
+	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(36860700004)(40470700004)(46966006);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2024 17:44:57.4896
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d29ad02b-aa38-4e46-387a-08dc33cdfc69
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CY4PEPF0000EE39.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8119
 
-Everything in i2c.txt is covered by schemas/i2c/i2c-controller.yaml in
-dtschema project, so remove i2c.txt and update links to it in the tree.
+Many PCIe device drivers save the configuration state of their respective
+devices during probe and restore the same when their 'slot_reset' hook
+is called through PCIe Error Recovery Handler.
 
-Signed-off-by: Rob Herring <robh@kernel.org>
+If the system has a change in ASPM policy after the driver's probe is
+called and before error event occurred, 'slot_reset' hook restores the
+PCIe configuration state to what it was at the time of probe but not to
+what it was just before the occurrence of the error event.
+This effectively leads to a mismatch in the ASPM configuration between
+the device and its upstream parent device.
+
+Update the saved configuration state of the device with the latest info
+whenever there is a change w.r.t ASPM policy.
+
+Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
 ---
-Wolfram, you can take it or I can.
+V4:
+* Rebased on top of pci/aspm branch
 
- .../bindings/gpio/gateworks,pld-gpio.txt      |   3 +-
- Documentation/devicetree/bindings/i2c/i2c.txt | 151 ------------------
- .../i2c/nvidia,tegra186-bpmp-i2c.yaml         |   3 +-
- .../devicetree/bindings/i3c/i3c.yaml          |   2 +-
- .../devicetree/bindings/sound/cs4341.txt      |   2 +-
- MAINTAINERS                                   |   1 -
- 6 files changed, 4 insertions(+), 158 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/i2c/i2c.txt
+V3:
+* Addressed sathyanarayanan.kuppuswamy's review comments
 
-diff --git a/Documentation/devicetree/bindings/gpio/gateworks,pld-gpio.txt b/Documentation/devicetree/bindings/gpio/gateworks,pld-gpio.txt
-index 6e81f8b755c5..d543fd1b8b23 100644
---- a/Documentation/devicetree/bindings/gpio/gateworks,pld-gpio.txt
-+++ b/Documentation/devicetree/bindings/gpio/gateworks,pld-gpio.txt
-@@ -1,7 +1,6 @@
- Gateworks PLD GPIO controller bindings
+V2:
+* Rebased on top of the tree code
+* Addressed Bjorn's review comments
+
+ drivers/pci/pcie/aspm.c | 28 ++++++++++++++++++++++++++--
+ 3 files changed, 28 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index cfc5b84dc9c9..3db606ba9344 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -1648,7 +1648,7 @@ static int pci_save_pcie_state(struct pci_dev *dev)
+ 	pcie_capability_read_word(dev, PCI_EXP_LNKCTL2, &cap[i++]);
+ 	pcie_capability_read_word(dev, PCI_EXP_SLTCTL2, &cap[i++]);
  
--The GPIO controller should be a child node on an I2C bus,
--see: i2c/i2c.txt for details.
-+The GPIO controller should be a child node on an I2C bus.
+-	pci_save_aspm_state(dev);
++	pci_save_aspm_l1ss_state(dev);
+ 	pci_save_ltr_state(dev);
  
- Required properties:
- - compatible: Should be "gateworks,pld-gpio"
-diff --git a/Documentation/devicetree/bindings/i2c/i2c.txt b/Documentation/devicetree/bindings/i2c/i2c.txt
-deleted file mode 100644
-index fc3dd7ec0445..000000000000
---- a/Documentation/devicetree/bindings/i2c/i2c.txt
-+++ /dev/null
-@@ -1,151 +0,0 @@
--Generic device tree bindings for I2C busses
--===========================================
--
--This document describes generic bindings which can be used to describe I2C
--busses and their child devices in a device tree.
--
--Required properties (per bus)
-------------------------------
--
--- #address-cells  - should be <1>. Read more about addresses below.
--- #size-cells     - should be <0>.
--- compatible      - name of I2C bus controller
--
--For other required properties e.g. to describe register sets,
--clocks, etc. check the binding documentation of the specific driver.
--
--The cells properties above define that an address of children of an I2C bus
--are described by a single value.
--
--Optional properties (per bus)
-------------------------------
--
--These properties may not be supported by all drivers. However, if a driver
--wants to support one of the below features, it should adapt these bindings.
--
--- clock-frequency
--	frequency of bus clock in Hz.
--
--- i2c-bus
--	For I2C adapters that have child nodes that are a mixture of both I2C
--	devices and non-I2C devices, the 'i2c-bus' subnode can be used for
--	populating I2C devices. If the 'i2c-bus' subnode is present, only
--	subnodes of this will be considered as I2C slaves. The properties,
--	'#address-cells' and '#size-cells' must be defined under this subnode
--	if present.
--
--- i2c-scl-falling-time-ns
--	Number of nanoseconds the SCL signal takes to fall; t(f) in the I2C
--	specification.
--
--- i2c-scl-internal-delay-ns
--	Number of nanoseconds the IP core additionally needs to setup SCL.
--
--- i2c-scl-rising-time-ns
--	Number of nanoseconds the SCL signal takes to rise; t(r) in the I2C
--	specification.
--
--- i2c-sda-falling-time-ns
--	Number of nanoseconds the SDA signal takes to fall; t(f) in the I2C
--	specification.
--
--- i2c-analog-filter
--	Enable analog filter for i2c lines.
--
--- i2c-digital-filter
--	Enable digital filter for i2c lines.
--
--- i2c-digital-filter-width-ns
--	Width of spikes which can be filtered by digital filter
--	(i2c-digital-filter). This width is specified in nanoseconds.
--
--- i2c-analog-filter-cutoff-frequency
--	Frequency that the analog filter (i2c-analog-filter) uses to distinguish
--	which signal to filter. Signal with higher frequency than specified will
--	be filtered out. Only lower frequency will pass (this is applicable to
--	a low-pass analog filter). Typical value should be above the normal
--	i2c bus clock frequency (clock-frequency).
--	Specified in Hz.
--
--- multi-master
--	states that there is another master active on this bus. The OS can use
--	this information to adapt power management to keep the arbitration awake
--	all the time, for example. Can not be combined with 'single-master'.
--
--- pinctrl
--	add extra pinctrl to configure SCL/SDA pins to GPIO function for bus
--	recovery, call it "gpio" or "recovery" (deprecated) state
--
--- scl-gpios
--	specify the gpio related to SCL pin. Used for GPIO bus recovery.
--
--- sda-gpios
--	specify the gpio related to SDA pin. Optional for GPIO bus recovery.
--
--- single-master
--	states that there is no other master active on this bus. The OS can use
--	this information to detect a stalled bus more reliably, for example.
--	Can not be combined with 'multi-master'.
--
--- smbus
--	states that additional SMBus restrictions and features apply to this bus.
--	An example of feature is SMBusHostNotify. Examples of restrictions are
--	more reserved addresses and timeout definitions.
--
--- smbus-alert
--	states that the optional SMBus-Alert feature apply to this bus.
--
--- mctp-controller
--	indicates that the system is accessible via this bus as an endpoint for
--	MCTP over I2C transport.
--
--Required properties (per child device)
----------------------------------------
--
--- compatible
--	name of I2C slave device
--
--- reg
--	One or many I2C slave addresses. These are usually a 7 bit addresses.
--	However, flags can be attached to an address. I2C_TEN_BIT_ADDRESS is
--	used to mark a 10 bit address. It is needed to avoid the ambiguity
--	between e.g. a 7 bit address of 0x50 and a 10 bit address of 0x050
--	which, in theory, can be on the same bus.
--	Another flag is I2C_OWN_SLAVE_ADDRESS to mark addresses on which we
--	listen to be devices ourselves.
--
--Optional properties (per child device)
----------------------------------------
--
--These properties may not be supported by all drivers. However, if a driver
--wants to support one of the below features, it should adapt these bindings.
--
--- host-notify
--	device uses SMBus host notify protocol instead of interrupt line.
--
--- interrupts
--	interrupts used by the device.
--
--- interrupt-names
--	"irq", "wakeup" and "smbus_alert" names are recognized by I2C core,
--	other names are	left to individual drivers.
--
--- reg-names
--	Names of map programmable addresses.
--	It can contain any map needing another address than default one.
--
--- wakeup-source
--	device can be used as a wakeup source.
--
--Binding may contain optional "interrupts" property, describing interrupts
--used by the device. I2C core will assign "irq" interrupt (or the very first
--interrupt if not using interrupt names) as primary interrupt for the slave.
--
--Alternatively, devices supporting SMBus Host Notify, and connected to
--adapters that support this feature, may use "host-notify" property. I2C
--core will create a virtual interrupt for Host Notify and assign it as
--primary interrupt for the slave.
--
--Also, if device is marked as a wakeup source, I2C core will set up "wakeup"
--interrupt for the device. If "wakeup" interrupt name is not present in the
--binding, then primary interrupt will be used as wakeup interrupt.
-diff --git a/Documentation/devicetree/bindings/i2c/nvidia,tegra186-bpmp-i2c.yaml b/Documentation/devicetree/bindings/i2c/nvidia,tegra186-bpmp-i2c.yaml
-index b8319dcf3d8a..8676335e9e94 100644
---- a/Documentation/devicetree/bindings/i2c/nvidia,tegra186-bpmp-i2c.yaml
-+++ b/Documentation/devicetree/bindings/i2c/nvidia,tegra186-bpmp-i2c.yaml
-@@ -21,8 +21,7 @@ description: |
-   See ../firmware/nvidia,tegra186-bpmp.yaml for details of the BPMP
-   binding.
+ 	return 0;
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index b217e74966eb..9fe78eb8b07d 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -95,7 +95,7 @@ void pci_msix_init(struct pci_dev *dev);
+ bool pci_bridge_d3_possible(struct pci_dev *dev);
+ void pci_bridge_d3_update(struct pci_dev *dev);
+ void pci_aspm_get_l1ss(struct pci_dev *pdev);
+-void pci_save_aspm_state(struct pci_dev *pdev);
++void pci_save_aspm_l1ss_state(struct pci_dev *pdev);
+ void pci_restore_aspm_state(struct pci_dev *pdev);
+ void pci_save_ltr_state(struct pci_dev *dev);
+ void pci_restore_ltr_state(struct pci_dev *dev);
+diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+index 7f1d674ff171..a62648dd52bc 100644
+--- a/drivers/pci/pcie/aspm.c
++++ b/drivers/pci/pcie/aspm.c
+@@ -24,13 +24,29 @@
  
--  This node represents an I2C controller. See ../i2c/i2c.txt for details
--  of the core I2C binding.
-+  This node represents an I2C controller.
+ #include "../pci.h"
  
- properties:
-   compatible:
-diff --git a/Documentation/devicetree/bindings/i3c/i3c.yaml b/Documentation/devicetree/bindings/i3c/i3c.yaml
-index c816e295d565..87cadbcdc61c 100644
---- a/Documentation/devicetree/bindings/i3c/i3c.yaml
-+++ b/Documentation/devicetree/bindings/i3c/i3c.yaml
-@@ -71,7 +71,7 @@ patternProperties:
-     description: |
-       I2C child, should be named: <device-type>@<i2c-address>
++static void pci_save_aspm_state(struct pci_dev *dev)
++{
++	struct pci_cap_saved_state *save_state;
++	u16 *cap;
++
++	if (!pci_is_pcie(dev))
++		return;
++
++	save_state = pci_find_saved_cap(dev, PCI_CAP_ID_EXP);
++	if (!save_state)
++		return;
++
++	cap = (u16 *)&save_state->cap.data[0];
++	pcie_capability_read_word(dev, PCI_EXP_LNKCTL, &cap[1]);
++}
++
+ void pci_aspm_get_l1ss(struct pci_dev *pdev)
+ {
+ 	/* Read L1 PM substate capabilities */
+ 	pdev->l1ss = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_L1SS);
+ }
  
--      All properties described in Documentation/devicetree/bindings/i2c/i2c.txt
-+      All properties described in dtschema schemas/i2c/i2c-controller.yaml
-       are valid here, except the reg property whose content is changed.
+-void pci_save_aspm_state(struct pci_dev *pdev)
++void pci_save_aspm_l1ss_state(struct pci_dev *pdev)
+ {
+ 	struct pci_cap_saved_state *save_state;
+ 	u16 l1ss = pdev->l1ss;
+@@ -309,10 +325,12 @@ static void pcie_set_clkpm_nocheck(struct pcie_link_state *link, int enable)
+ 	struct pci_bus *linkbus = link->pdev->subordinate;
+ 	u32 val = enable ? PCI_EXP_LNKCTL_CLKREQ_EN : 0;
  
-     properties:
-diff --git a/Documentation/devicetree/bindings/sound/cs4341.txt b/Documentation/devicetree/bindings/sound/cs4341.txt
-index 12b4aa8ef0db..c1d5c8ad1a36 100644
---- a/Documentation/devicetree/bindings/sound/cs4341.txt
-+++ b/Documentation/devicetree/bindings/sound/cs4341.txt
-@@ -9,7 +9,7 @@ Required properties:
-           number for SPI.
+-	list_for_each_entry(child, &linkbus->devices, bus_list)
++	list_for_each_entry(child, &linkbus->devices, bus_list) {
+ 		pcie_capability_clear_and_set_word(child, PCI_EXP_LNKCTL,
+ 						   PCI_EXP_LNKCTL_CLKREQ_EN,
+ 						   val);
++		pci_save_aspm_state(child);
++	}
+ 	link->clkpm_enabled = !!enable;
+ }
  
- For required properties on I2C-bus, please consult
--Documentation/devicetree/bindings/i2c/i2c.txt
-+dtschema schemas/i2c/i2c-controller.yaml
- For required properties on SPI-bus, please consult
- Documentation/devicetree/bindings/spi/spi-bus.txt
+@@ -931,6 +949,12 @@ static void pcie_config_aspm_link(struct pcie_link_state *link, u32 state)
+ 		pcie_config_aspm_dev(parent, upstream);
  
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 45c6c13b4edf..50a906eb8dfd 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10074,7 +10074,6 @@ S:	Maintained
- W:	https://i2c.wiki.kernel.org/
- Q:	https://patchwork.ozlabs.org/project/linux-i2c/list/
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git
--F:	Documentation/devicetree/bindings/i2c/i2c.txt
- F:	Documentation/i2c/
- F:	drivers/i2c/*
- F:	include/dt-bindings/i2c/i2c.h
+ 	link->aspm_enabled = state;
++
++	/* Update latest ASPM configuration in saved context */
++	pci_save_aspm_state(link->downstream);
++	pci_save_aspm_l1ss_state(link->downstream);
++	pci_save_aspm_state(parent);
++	pci_save_aspm_l1ss_state(parent);
+ }
+ 
+ static void pcie_config_aspm_path(struct pcie_link_state *link)
 -- 
-2.43.0
+2.25.1
 
 
