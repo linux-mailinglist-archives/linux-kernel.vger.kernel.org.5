@@ -1,134 +1,189 @@
-Return-Path: <linux-kernel+bounces-76100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0626185F2E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:28:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FD1885F2EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:29:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5B86283BFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:28:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C6851F24DB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:29:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB1C1B5A0;
-	Thu, 22 Feb 2024 08:28:49 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E89BC17F3;
-	Thu, 22 Feb 2024 08:28:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 257CF1B59F;
+	Thu, 22 Feb 2024 08:29:22 +0000 (UTC)
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9893117F3;
+	Thu, 22 Feb 2024 08:29:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708590529; cv=none; b=X4PZJWVpMdLC1y7S0YzTdHjUEVoyqrl4GD2JquKIUslkkUpXqg6IwxrNAQ8hoKZwE6yZEIg3Jtu9N/mViiXd0xEOxQfPlaQL7YSF3Dfyjm8Xjlr6ct0OSN7FXaU8qYOLrNBF3hleTIrtUOoc4w2nEVzUC2WNcM4icH9cfmNlFS4=
+	t=1708590561; cv=none; b=TG2R3igHeL8roR2v2rqKemcwalLd9AxfxSeb/5ieekQZjYTsVVP8uh8pn07b5JnWQcODT3bsWftoxFEgGN7urpwGyH/2aLj88me74bd5cVHaZ6wsJlDXnJwTfb8/a2hgn9gEXqhnPyPqEMSwsSslwJNcZOOtesIMA7HrHhn1spA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708590529; c=relaxed/simple;
-	bh=TS189Amvyy2CvqLVwG3evt8PDz3DhxOZrY0WmQ8O+TA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WdueeDKrIEB4IYwVPcoIoALwEq1U9yaW+4n15dnAxqLhAm3MSGY8t9U12j80oQ/hs2AIBRTVCK716bNcavC3Kv9ecmJKu0ky8ct+l9gmXnvLrkbp7UWOHMtOpIuTUTh2ghDtVWdQTquPUQzouODQUHr5KdFGtQQDktBpMoXzsa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F4561007;
-	Thu, 22 Feb 2024 00:29:24 -0800 (PST)
-Received: from pluto (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 53D6A3F762;
-	Thu, 22 Feb 2024 00:28:44 -0800 (PST)
-Date: Thu, 22 Feb 2024 08:28:41 +0000
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: Stephen Boyd <sboyd@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	sudeep.holla@arm.com, james.quinlan@broadcom.com,
-	f.fainelli@gmail.com, vincent.guittot@linaro.org,
-	peng.fan@oss.nxp.com, michal.simek@amd.com, quic_sibis@quicinc.com,
-	quic_nkela@quicinc.com, souvik.chakravarty@arm.com,
-	Michael Turquette <mturquette@baylibre.com>,
-	linux-clk@vger.kernel.org
-Subject: Re: [PATCH 6/7] clk: scmi: Allocate CLK operations dynamically
-Message-ID: <ZdcFuV0KQDXTH8L8@pluto>
-References: <20240214183006.3403207-1-cristian.marussi@arm.com>
- <20240214183006.3403207-7-cristian.marussi@arm.com>
- <500e265eb7c6a03a40e0067c8806e059.sboyd@kernel.org>
+	s=arc-20240116; t=1708590561; c=relaxed/simple;
+	bh=5mjPQkEkMqV4tvrQqZa3eUo6bLhvA/Eax+OBmTANIps=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oLn4xXK2VEzPNzSjELActtmryRK70t8Y6sk3TqnGnBPQy6RRMUHwjn7qMSKNONc3YHKtwYClWP5ZW1KK260QgURAJrvdoYHfbfAAYgV7WK5KuOXRPgtQShbBccZzdy2wIJsd4sBqnAWmId+y6OekBU4bxI47Bb6NVru3VWcYdpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-607e60d01b2so34295477b3.1;
+        Thu, 22 Feb 2024 00:29:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708590558; x=1709195358;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3E80Fr+PQHplyVIuytgLvVqlKEcgK1zfDCm4lydbgb8=;
+        b=bXB3Ivu1QhbGJ+LqJTX/+6po8ho0uh+NaJgeDHvd74z2WleFOM+F/S/e0yVJGyjLGT
+         cftaeWjG5+hPX2yZjt/HuUCUbNU1F65qb+7ZWQxU6ky6V4Gd9Ia1u9QSuzBiVFbOuzfY
+         UFftF16HzpRK2uo3epcPimNLUMboLICFVDmyBvGsJDR0BzJBr0pKGih5ZAgtTAJPU8Dr
+         ib91q2YsTNfri+xCsCjswF51kStwb6mBqHT3uStz39nDfarnVuAztbCtnUcQFKLM7Qdq
+         8ytNVdeS+vvbU45rMO7IgDfp1M4C+tujAZwJwp+uQcNY3b+KJYzb2GOAEXc+SRuQ9Qt1
+         fsWw==
+X-Forwarded-Encrypted: i=1; AJvYcCV2l7YHiZvSqwU6vz8hiALjtrsqJP12nzAGxfynwyb0pc5W++ZIIP7e+JjZJVmjy4sHDTw5LdUHYTJ32lx7qSwlEXDkqBPWpDvIfDwXOyyPBSBgJvlBrVkJ1J0erdn83WS2NZLbJqKe4Q==
+X-Gm-Message-State: AOJu0YyZigsDWu9mlRn0xPcEpYVvQ00TtyoLDFX7UNIRIdnvQAcqDW2p
+	wlvpAi16WiLqvE6RT/yFhE+XsNG47v8JQfQ1eOS1iQICtfZeGQtgvCX+4XaRy6w=
+X-Google-Smtp-Source: AGHT+IEaf9m52rkqAwSwbyA9KZsEw9SeHzIBg6FcoeD3eMSarcMRvaZcGU8KwDfJyC42Aj51GuhH2g==
+X-Received: by 2002:a25:8292:0:b0:dc2:1dd0:1d1b with SMTP id r18-20020a258292000000b00dc21dd01d1bmr1715388ybk.19.1708590557664;
+        Thu, 22 Feb 2024 00:29:17 -0800 (PST)
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
+        by smtp.gmail.com with ESMTPSA id v40-20020a25abab000000b00dce0f2db9acsm2705951ybi.34.2024.02.22.00.29.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Feb 2024 00:29:16 -0800 (PST)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-6085b652fc8so32585667b3.2;
+        Thu, 22 Feb 2024 00:29:16 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCX2XrZ6tZe0afzDUYPxNmo06RWwliozLbQVdjNFcuFwXdI2hoCXaamm9hl/76fi+rQXcJKvXZwWVFAuk9XRrBMlcevCGYMTIvVgJ/S8mm8zvrhrcVfbk4VaWH+Db1W8C0px2fXS/6gzqg==
+X-Received: by 2002:a05:690c:714:b0:608:98d:6f77 with SMTP id
+ bs20-20020a05690c071400b00608098d6f77mr12592435ywb.0.1708590556168; Thu, 22
+ Feb 2024 00:29:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <500e265eb7c6a03a40e0067c8806e059.sboyd@kernel.org>
+References: <20240222124610.383e1ce3@canb.auug.org.au> <TYCPR01MB11269B83A59650E230F4DD97F86562@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+In-Reply-To: <TYCPR01MB11269B83A59650E230F4DD97F86562@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 22 Feb 2024 09:29:04 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdV0nftTZ6WuEkcS9h0d1bx_haR==roB1gwbaS2fzooO_A@mail.gmail.com>
+Message-ID: <CAMuHMdV0nftTZ6WuEkcS9h0d1bx_haR==roB1gwbaS2fzooO_A@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+To: Biju Das <biju.das.jz@bp.renesas.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Daniel Vetter <daniel.vetter@ffwll.ch>, 
+	Intel Graphics <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>, 
+	Maxime Ripard <mripard@kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 21, 2024 at 09:44:14PM -0800, Stephen Boyd wrote:
-> Quoting Cristian Marussi (2024-02-14 10:30:05)
-> > diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
-> > index 5747b6d651f0..b91a0dbd2fe0 100644
-> > --- a/drivers/clk/clk-scmi.c
-> > +++ b/drivers/clk/clk-scmi.c
-> > @@ -158,51 +158,6 @@ static int scmi_clk_atomic_is_enabled(struct clk_hw *hw)
-> >         return !!enabled;
-> >  }
-> >  
+Hi Biju,
 
-Hi Stephen,
+On Thu, Feb 22, 2024 at 9:14=E2=80=AFAM Biju Das <biju.das.jz@bp.renesas.co=
+m> wrote:
+> > -----Original Message-----
+> > From: Stephen Rothwell <sfr@canb.auug.org.au>
+> > Sent: Thursday, February 22, 2024 1:46 AM
+> > Subject: linux-next: build failure after merge of the drm-misc tree
+> >
+> > After merging the drm-misc tree, today's linux-next build (x86_64
+> > allmodconfig) failed like this:
+> >
+> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:47:6: error: redefinition =
+of
+> > 'rzg2l_du_vsp_enable'
+> >    47 | void rzg2l_du_vsp_enable(struct rzg2l_du_crtc *crtc)
+> >       |      ^~~~~~~~~~~~~~~~~~~
+> > In file included from drivers/gpu/drm/renesas/rz-du/rzg2l_du_drv.h:18,
+> >                  from drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:30:
+> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h:72:20: note: previous
+> > definition of 'rzg2l_du_vsp_enable' with type 'void(struct rzg2l_du_crt=
+c
+> > *)'
+> >    72 | static inline void rzg2l_du_vsp_enable(struct rzg2l_du_crtc *cr=
+tc)
+> > { };
+> >       |                    ^~~~~~~~~~~~~~~~~~~
+> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:61:6: error: redefinition =
+of
+> > 'rzg2l_du_vsp_disable'
+> >    61 | void rzg2l_du_vsp_disable(struct rzg2l_du_crtc *crtc)
+> >       |      ^~~~~~~~~~~~~~~~~~~~
+> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h:73:20: note: previous
+> > definition of 'rzg2l_du_vsp_disable' with type 'void(struct rzg2l_du_cr=
+tc
+> > *)'
+> >    73 | static inline void rzg2l_du_vsp_disable(struct rzg2l_du_crtc
+> > *crtc) { };
+> >       |                    ^~~~~~~~~~~~~~~~~~~~
+> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:66:6: error: redefinition =
+of
+> > 'rzg2l_du_vsp_atomic_flush'
+> >    66 | void rzg2l_du_vsp_atomic_flush(struct rzg2l_du_crtc *crtc)
+> >       |      ^~~~~~~~~~~~~~~~~~~~~~~~~
+> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h:74:20: note: previous
+> > definition of 'rzg2l_du_vsp_atomic_flush' with type 'void(struct
+> > rzg2l_du_crtc *)'
+> >    74 | static inline void rzg2l_du_vsp_atomic_flush(struct rzg2l_du_cr=
+tc
+> > *crtc) { };
+> >       |                    ^~~~~~~~~~~~~~~~~~~~~~~~~
+> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:76:19: error: redefinition=
+ of
+> > 'rzg2l_du_vsp_get_drm_plane'
+> >    76 | struct drm_plane *rzg2l_du_vsp_get_drm_plane(struct rzg2l_du_cr=
+tc
+> > *crtc,
+> >       |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
+> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h:75:33: note: previous
+> > definition of 'rzg2l_du_vsp_get_drm_plane' with type 'struct drm_plane
+> > *(struct rzg2l_du_crtc *, unsigned int)'
+> >    75 | static inline struct drm_plane *rzg2l_du_vsp_get_drm_plane(stru=
+ct
+> > rzg2l_du_crtc *crtc,
+> >       |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~
+> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c:302:5: error: redefinition=
+ of
+> > 'rzg2l_du_vsp_init'
+> >   302 | int rzg2l_du_vsp_init(struct rzg2l_du_vsp *vsp, struct device_n=
+ode
+> > *np,
+> >       |     ^~~~~~~~~~~~~~~~~
+> > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h:66:19: note: previous
+> > definition of 'rzg2l_du_vsp_init' with type 'int(struct rzg2l_du_vsp *,
+> > struct device_node *, unsigned int)'
+> >    66 | static inline int rzg2l_du_vsp_init(struct rzg2l_du_vsp *vsp,
+> > struct device_node *np,
+> >       |                   ^~~~~~~~~~~~~~~~~
+> >
+> > Caused by commit
+> >
+> >   768e9e61b3b9 ("drm: renesas: Add RZ/G2L DU Support")
+> >
+> > I have used the drm-misc tree from next-20240221 for today.
+>
+> I will send an incremental patch to fix this build error with x86 on drm-=
+next.
+>
+> I need to use the macro #if IS_ENABLED(CONFIG_VIDEO_RENESAS_VSP1)
+> in drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h to fix this error.
 
-thanks for having a look.
+Looks like you're also missing an EXPORT_SYMBOL_GPL(rzg2l_du_vsp_enable)?
 
-> > -/*
-> > - * We can provide enable/disable/is_enabled atomic callbacks only if the
-> > - * underlying SCMI transport for an SCMI instance is configured to handle
-> > - * SCMI commands in an atomic manner.
-> > - *
-> > - * When no SCMI atomic transport support is available we instead provide only
-> > - * the prepare/unprepare API, as allowed by the clock framework when atomic
-> > - * calls are not available.
-> > - *
-> > - * Two distinct sets of clk_ops are provided since we could have multiple SCMI
-> > - * instances with different underlying transport quality, so they cannot be
-> > - * shared.
-> > - */
-> > -static const struct clk_ops scmi_clk_ops = {
-> > -       .recalc_rate = scmi_clk_recalc_rate,
-> > -       .round_rate = scmi_clk_round_rate,
-> > -       .set_rate = scmi_clk_set_rate,
-> > -       .prepare = scmi_clk_enable,
-> > -       .unprepare = scmi_clk_disable,
-> > -       .set_parent = scmi_clk_set_parent,
-> > -       .get_parent = scmi_clk_get_parent,
-> > -       .determine_rate = scmi_clk_determine_rate,
-> > -};
-> > -
-> > -static const struct clk_ops scmi_atomic_clk_ops = {
-> 
-> It's not great to move these function pointer structs out of RO memory
-> to RW. I'm also not convinced that it's any better to construct them at
-> runtime. Isn't there a constant set of possible clk configurations? Or
-> why can't we simply add some failures to the clk_ops functions instead?
+Gr{oetje,eeting}s,
 
-Well, the real clock devices managed by the SCMI server can be a of
-varying nature and so the minimum set of possible clk configurations
-to cover will amount to all the possible combinations of supported ops
-regarding the specific clock properties (i.e. .set_parent / .set_rate /
-enable / .get/set_duty_cycle / atomic_capability ... for now)...we
-simply cannot know in advance what the backend SCMI server is handling.
+                        Geert
 
-These seemed to me too much in number (and growing) to be pre-allocated
-in all possible combinations. (and mostly wasted since you dont really
-probably use all combinations all the time)
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
 
-Moreover, SCMI latest spec now exposes some clock properties (or not) to
-be able avoid even sending an actual SCMI message that we know will be
-denied all the time; one option is that we return an error,, as you said,
-but what is the point (I thought) to provide at all a clk-callback that
-we know upfront will fail to be executed every time ? (and some consumer
-drivers have been reported by partners not to be happy with these errors)
-
-What I think could be optimized here instead, and I will try in the next
-respin, it is that now I am allocating one set of custom ops for each clock
-at the end, even if exactly the same ops are provided since the clock
-capabilities are the same; I could instead allocate dynamically and fill only
-one single set of ops for each distinct set of combinations, so as to avoid
-useless duplication and use only the miminum strict amount of RW memory
-needed.
-
-Thanks,
-Cristian
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
