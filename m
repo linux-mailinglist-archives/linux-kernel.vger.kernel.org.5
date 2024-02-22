@@ -1,132 +1,136 @@
-Return-Path: <linux-kernel+bounces-76369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8422F85F640
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:56:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A11C385F646
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:56:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 015CF287DB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:56:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D191287DCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:56:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FA733FE27;
-	Thu, 22 Feb 2024 10:55:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Tgx2pUFU"
-Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 033B041211;
+	Thu, 22 Feb 2024 10:56:37 +0000 (UTC)
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B08E63EA7B
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 10:55:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07B303FB20;
+	Thu, 22 Feb 2024 10:56:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708599350; cv=none; b=LjnFCwazoAV8dwd8hjJ6JMAVhENnbeZtldTobSxrxUD9LU0MZ9liqOYzpr6N8Saf/1bd60lBB5kqDXNef+SHhs2aO/cw92y3CHBS8lgCzdXlc4KKD7cx8O/7KTHvhxcfhAIKMcwOgJGSH/qX2emXzrsS80sbuPraNckpz7nyhY0=
+	t=1708599396; cv=none; b=Fls+nbbTjWjvsEwr6Dwb4KlFrKqJHVMLv9WBkYYPP9J2PzIe860wuG0at7HCfwEc3Bqs7J/x6+CgxYkP8hQ5fA99z/xmzaO1J91/O4bPK5kel1I5cxaAo3mNxXP/2P9RFH8OCw0DiYygsQp7n1as7Z6x6S5UOU1CtFLD5qfSROU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708599350; c=relaxed/simple;
-	bh=439y0CawLDEh5lyhHpxtilezXhVvm/Hhbvki2S2xLNU=;
+	s=arc-20240116; t=1708599396; c=relaxed/simple;
+	bh=8g+lYpN8PpwWg0/O+aRDucx/TvK0rLYZ+SiW1gOuKe4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JCzvkHDRrWz/EyoV+mD5YNGXfpMcpNKwjwIXohkoj7WwasKqzAHdoBxyo3/o/Ik7C+XWhuGiVurWA+Zw9lijNn1VIAvnWTtFsB99PF2hUutU6L5FCdeUSVjQgBjFD5BEJPDrKeSRsQ3LZBW6UsnihUixXWTTbztu4ofknemf65Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Tgx2pUFU; arc=none smtp.client-ip=209.85.221.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-4cb26623d8dso820142e0c.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 02:55:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708599347; x=1709204147; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FM4z7DIQDBcuDFxLdD60iofNC7omQneCJjVmeyaqoak=;
-        b=Tgx2pUFUdSF438hTbEscveydfeeumNfyXxCSO+sFQeVNfr3ZB6EpguQqC/u2CZpAox
-         p+wDR95AYVDVpJWBdEvNaH/RAAz50jevE0afOYQ2r/5MP4aMy6viE7xDm6ILi5s4nABV
-         R4iloNk4Zpf60AtQ9Y5hCWwqiM7tH6Mcon+eaWRx0n1NxlWKlzjSaWUN8KhVvDVwoQZM
-         o0Pj9DYcmkbWGyukIu1Ti1IZ2VSWc7krgWAWsqIWSrQhRb3IjM8pPK9LyMhYpLBae5ih
-         ZClyum/b4JE3oNF0Fl0zgPMxECmeE477rg4DIM+vSjAT97njZEKRJbuEXPZsBNk7IZMy
-         vXJw==
+	 To:Cc:Content-Type; b=QvBpPs/94nTQV0/CYgQAyrrh63pmSoEPGWjgzJSgpxv/93/PyIqwvGPv13UmxK0so86l1/xKQp0FeNUGqUceksg45JVIU9Q0OmYuTp6LNdw2ubaIWiNLCgFbXZayXJV214Wy6ULYcFkwTL0EjoPOCBky1qEtiAHCK0+9opYJd9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-6087192b092so17504617b3.0;
+        Thu, 22 Feb 2024 02:56:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708599347; x=1709204147;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FM4z7DIQDBcuDFxLdD60iofNC7omQneCJjVmeyaqoak=;
-        b=a0IA4fruFM91ekEGZlIRnKMi0DE30DX0ijOP3jya2J2RXVYW8ZP4uNjUlqITqN/K0q
-         sIjkY6BygPuXjV9E+KzASPf3ojU5CYcJbqF1wumeM47L2cHXOIMxT0sgRKYfnLc1pi0b
-         Jz00CcieHycpsTnnQ0ZGJkHwCB89S17iHPst9RIYU9fzS6frwXURKuH7TKpQQTo6W75/
-         oaoAhCmZ8OYl41A5zcPc30KctBGiARXpv0us19pfxIYLd9WvNlaivFfu11dHaVY2JnhD
-         zDaAGYPj+PaQ3ox7D1L89fVU6a21VxHJ36V4NXtR6gSiwerSn90VLyAZkY9pvtJSV7VX
-         fVXA==
-X-Forwarded-Encrypted: i=1; AJvYcCWbpgXqPGCNsuCbWzhFg89ebk0apy0rUn9Rw2lF7UULbYPaasb39n73pbJ6c7GkUM7m3B2aA1a4yMPtcj58ninNSZToJrCyz4FNpc4I
-X-Gm-Message-State: AOJu0YxM7Nd6ELz/Ga+B9Se2Co0AJA9/O4d75N/adw0KCfqXZ74GPsBh
-	LhC7o7y4fufleoG4xAnjfZR9NxwdgdSif0GnZ9Nf+qJWEUYLjft1aKCy5GJEeew62R53OLCbovj
-	G7Jp0RvGB91pXzP5JOGtaMxp5eIiXD9j99W+TAA==
-X-Google-Smtp-Source: AGHT+IEp/h0CWwA7NPsOW74oY68F34eSvRnb+Q+eHPYZkQd2Rfzkx8nC/J+bPgf3qu+051y3j5tLOkn3980LYQ3YEBA=
-X-Received: by 2002:a1f:d447:0:b0:4c8:90e5:6792 with SMTP id
- l68-20020a1fd447000000b004c890e56792mr12587102vkg.7.1708599347459; Thu, 22
- Feb 2024 02:55:47 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708599393; x=1709204193;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=X6Mwqh7Sl6bufwbB2Ww13UZ/ncmsWLmvES2OI56tSlk=;
+        b=ryICKrceQLTd5gSoO39lN9v/nDdf8HkU18sgFKm4cSeJH0Tl0RfgjGV2S9PgvtBzuz
+         JKaDnwQmubuKUnIfClKm/PIubvMo4q3X25IwTzxLpLSKxY5lSYPtg8R6MNzKV73R/BzL
+         mXd3rg8MFXjCk7GMOfDn2Pzop4bB4KxrtLf5Mzu2c0dhi1MkvlGr3OlGe7upx+Az306n
+         22LYt3bj/8JC1jLnVAmlNIj/0UOlWl+EaVEBeh6T19r+xrAtEkOsHNpbGfHRyPUULres
+         hddmm5yzxTz8MqWP8julAjcPk+2tH286pkkWNlBs6wxv5NMgW1l7WBVqip9xDm4isyFq
+         HsYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW4L+7EqyniWRfiNyiBBCr3Kp45NQ/uscYIzkNs01Q7q/esahGUjoW7ouFSJHm3I4tnsgiU3YkaBjmJ4URjY6xUGlnD/k8M/kdFY8ELVVdJOXQDstC4M9e819OWMVVpEZW0GyZR6lrYwM21B+ilB6gHIQk1MpMGKIj0y9xD9eaAjAhCzwj/B6WY4dzOV164/M2aemm/rjkNT82IqCV/UJczzXrt
+X-Gm-Message-State: AOJu0YzQDDpxbe/AGemyDJv+NaQZrLnEPrX8We6ns0zdVJLqBpJ1VA+f
+	WJy5668PEbNJsfYwocgqDLsfs4xd5fxO4kvBFeR9rTeeO2q8N3aQt0rgzWFYsso=
+X-Google-Smtp-Source: AGHT+IFuZhjL2WglPCgMJead0nQTTvgJizaaE4vI9V6/6UQESGu3ntQNF5P1ykGPZ/0gue7Drzsw4A==
+X-Received: by 2002:a05:690c:d17:b0:608:4bab:8b06 with SMTP id cn23-20020a05690c0d1700b006084bab8b06mr11205956ywb.45.1708599393609;
+        Thu, 22 Feb 2024 02:56:33 -0800 (PST)
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
+        by smtp.gmail.com with ESMTPSA id k62-20020a816f41000000b006047d63bc78sm3016184ywc.72.2024.02.22.02.56.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Feb 2024 02:56:33 -0800 (PST)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dcd94fb9e4dso1892988276.2;
+        Thu, 22 Feb 2024 02:56:33 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUe7BQqRfQKXOoI96vL9021illL2thEgWHvUESPfMZrg7GKFVIlNEKRMaEAegwnJvVclKsnmlUs1TGh0ZvYXmXn6Qh6XJpB7uhYkkvxlMboArxO3vgzWQJBuRba/4fAi4XTom246NwKdfzKFdohPxk3PTamKXzMko51qqWSzc0UniTCDNKU0yUoSu4p0dBAmauaLpoHTHdid4g+W8c5psW0Yf6j
+X-Received: by 2002:a81:ad28:0:b0:607:838f:8991 with SMTP id
+ l40-20020a81ad28000000b00607838f8991mr18891390ywh.38.1708599393207; Thu, 22
+ Feb 2024 02:56:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221125940.058369148@linuxfoundation.org>
-In-Reply-To: <20240221125940.058369148@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Thu, 22 Feb 2024 16:25:36 +0530
-Message-ID: <CA+G9fYua_rKjdmKMgYrRY_HRyMWPdJNz5=O0K4+M9P9wBWLPcw@mail.gmail.com>
-Subject: Re: [PATCH 5.4 000/267] 5.4.269-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
-	Beyond <Wang.Beyond@amd.com>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Alex Deucher <alexander.deucher@amd.com>, Sasha Levin <sashal@kernel.org>, 
-	Felix Kuehling <Felix.Kuehling@amd.com>, 
-	Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>, 
-	Mario Limonciello <mario.limonciello@amd.com>
+References: <20240219223833.95710-1-zfigura@codeweavers.com> <20240219223833.95710-2-zfigura@codeweavers.com>
+In-Reply-To: <20240219223833.95710-2-zfigura@codeweavers.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 22 Feb 2024 11:56:21 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdX=aXYmUbVNOH9osDFB+nv7N=xpE76w_Ds190tV1-D9=w@mail.gmail.com>
+Message-ID: <CAMuHMdX=aXYmUbVNOH9osDFB+nv7N=xpE76w_Ds190tV1-D9=w@mail.gmail.com>
+Subject: Re: [PATCH v2 01/31] ntsync: Introduce the ntsync driver and
+ character device.
+To: Elizabeth Figura <zfigura@codeweavers.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-api@vger.kernel.org, wine-devel@winehq.org, 
+	=?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>, 
+	Wolfram Sang <wsa@kernel.org>, Arkadiusz Hiler <ahiler@codeweavers.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Andy Lutomirski <luto@kernel.org>, linux-doc@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 21 Feb 2024 at 19:46, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+Hi Elizabeth,
+
+On Mon, Feb 19, 2024 at 11:42=E2=80=AFPM Elizabeth Figura
+<zfigura@codeweavers.com> wrote:
+> ntsync uses a misc device as the simplest and least intrusive uAPI interf=
+ace.
 >
-> This is the start of the stable review cycle for the 5.4.269 release.
-> There are 267 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Each file description on the device represents an isolated NT instance, i=
+ntended
+> to correspond to a single NT virtual machine.
 >
-> Responses should be made by Fri, 23 Feb 2024 12:59:02 +0000.
-> Anything received after that time might be too late.
+> Signed-off-by: Elizabeth Figura <zfigura@codeweavers.com>
+
+Thanks for your patch!
+
+> --- a/drivers/misc/Kconfig
+> +++ b/drivers/misc/Kconfig
+> @@ -506,6 +506,17 @@ config OPEN_DICE
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.269-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
+>           If unsure, say N.
 >
-> thanks,
->
-> greg k-h
+> +config NTSYNC
+> +       tristate "NT synchronization primitive emulation"
+> +       help
+> +         This module provides kernel support for emulation of Windows NT
+> +         synchronization primitives. It is not a hardware driver.
+> +
+> +         To compile this driver as a module, choose M here: the
+> +         module will be called ntsync.
+> +
+> +         If unsure, say N.
 
-The i386 allmodconfig builds failed on stable-rc 5.15, 5.10 and 5.4.
+Is it useful to have this feature on systems or architectures that
+are not supported by Windows NT?
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+If not, this should depend on <something> || COMPILE_TEST.
 
-ERROR: modpost: "__udivdi3" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined!
-make[2]: *** [/builds/linux/scripts/Makefile.modpost:133:
-modules-only.symvers] Error 1
+Gr{oetje,eeting}s,
 
-Steps to reproduce:
- tuxmake --runtime podman --target-arch i386 --toolchain gcc-12
---kconfig allmodconfig
-
-Links:
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15.148-477-gae70058cf980/testrun/22797307/suite/build/test/gcc-12-allmodconfig/log
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15.148-477-gae70058cf980/testrun/22797307/suite/build/test/gcc-12-allmodconfig/details/
+                        Geert
 
 --
-Linaro LKFT
-https://lkft.linaro.org
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
