@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-77507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAF0986069A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:20:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1270E8606A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:21:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F3F6287646
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:20:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0329B286754
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:21:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 467B5143C61;
-	Thu, 22 Feb 2024 23:17:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45E86149381;
+	Thu, 22 Feb 2024 23:17:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="IDTBGxDV"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="FjtDETKc"
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D46AE137938;
-	Thu, 22 Feb 2024 23:17:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BA2B13BAF2;
+	Thu, 22 Feb 2024 23:17:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708643830; cv=none; b=XuT5iR3g6ngDRpNLHLe3JsR0IvCN0F1JAa9UYPsn0sK9b+jJPbrg2FVuRk0hp5mpha74S0NR/HxCGcrMmTCdKZ5D5E2RiK+ZoOb430i+sPK355r6NP1GrHBu/20kdSVBLqfeiuWI0AcXuH6935qulX1WYmWPl6ThFNIPz32mjHw=
+	t=1708643831; cv=none; b=j17v1ayCw7vWEHAmyzJSvxbogYmdKmQV66P0qKb2YfakiJ/3JD9ANr/7p4ikCyDgrLk/4jo5I6l1e4dSWC5JQ5p9smanEKulVVVeDMzi6zg11UcIJU8//45R5oJphWFFT8JbGK5igiXOsbQxSi5RpBorgtzglkCw4N+SriCA6sE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708643830; c=relaxed/simple;
-	bh=wqcFf5tGf65Rykb5i/CI/IkG99/aSu0nMjKt5dgScTg=;
+	s=arc-20240116; t=1708643831; c=relaxed/simple;
+	bh=yiYkGcCnLlL27RWVyDjHKsRWJDI5Cj39FsMdry9HNCs=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=Hux/fjyU2xrcLub9BmrUb+rYG2S+vrRaec71Ybs99Eo8N0BY3kavyBUOKvnzc74GZifkfyr500Mrj9QdVJCNcmGNwQ/dNtAbtuigjzlarFrg/CrtWjp1pJXWAzrNJAW6dnmyHgNeWKmhi/tG90K1lOa6BeDYmpf2mDWOTmy+H0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=IDTBGxDV; arc=none smtp.client-ip=205.220.180.131
+	 In-Reply-To:To:CC; b=fJczU1BF8V8ZU+ITrL1RGAmyItw0atTuDqym7qfwLrPoK2ewZylmbPyXR0gfz+iSzl2trRxc1LB4EDmBlp7hoOQKMMkF341BcFR1T8biR9CrFRuN57MW6UF351+2r1KZ6lWB8pyl7aUEtMfFPnj+i/0MbNhihsUqx3J98NxNx7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=FjtDETKc; arc=none smtp.client-ip=205.220.180.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41MLfuAN024795;
-	Thu, 22 Feb 2024 23:16:47 GMT
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41MLcfsx010074;
+	Thu, 22 Feb 2024 23:16:48 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:date:subject:mime-version:content-type
 	:content-transfer-encoding:message-id:references:in-reply-to:to
-	:cc; s=qcppdkim1; bh=qh+jPnXSbiXkdzqCKqtelkO/e60PKZzxBC0LGQzikQc
-	=; b=IDTBGxDVMlOnY9TRPjx4tn4PXf17/qS4NpZe+wOYSSQw3iNSpU6nagDoQtU
-	lOfNy+ctynbmIER1vf6k7eVjaJ5TZ527gZzso64lNSuy1MbsTXzYWLJ4AJppev60
-	1JoxGYk6Z/xgM2ufdsF+tKvtlpk8va6rog29gvVVHWYvABhKJRfAUQkqGKK8LIZe
-	qXKe6Cq/jx2vnY0oWB3g/2DH4RZR4nS4Bhs1WAqFyKSuWrVMJd2Mh5Ano6euMOIL
-	wyQBJ38QGUjEn+gipIe2o1MH/SO/A4MjcJ+nx2KgpIIEnZbZXICRiEPu+ZMhq/eV
-	d5eY2NgnIM/UorcVShQACEI3cVQ==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3we4dq17sy-1
+	:cc; s=qcppdkim1; bh=JCvR/F4e78SINAjN3meQYZzTInDObRjxvrSnXKpjai8
+	=; b=FjtDETKc/0YZ7h6GsKOoYFC95XN1GsWS2Ki6KfHY2R09+DyalIWE4XK7eaG
+	5aC38FRjcTiPbwP5lRGFYahhT06fipPKURtl9nqKSKb4VaCOijdCriHT0qVs5DUV
+	2HLU6KSWWB4Y998qRUphry2pqZOIFsB/fkEQWBnbD4LATnYjqzCEAbOesOD27S12
+	GxP2S/08Jc0e06MV/j7Xrzkbr2e0Ekrpf0n1SHupWlsxfshnwO1okTdANJ7jPPi5
+	rmkQ9HFUniWnK18W50p9Ax4jhJh5hsmazkDvDbziXOefss+7giMVTPZxh82UDa0D
+	BnuL1XOK4Ez8i2eLVSXgH7fi9GA==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3we2kf9puv-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 22 Feb 2024 23:16:47 +0000 (GMT)
 Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41MNGklC028227
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41MNGksh025676
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 22 Feb 2024 23:16:46 GMT
 Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
  nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 22 Feb 2024 15:16:45 -0800
+ 15.2.1118.40; Thu, 22 Feb 2024 15:16:46 -0800
 From: Elliot Berman <quic_eberman@quicinc.com>
-Date: Thu, 22 Feb 2024 15:16:56 -0800
-Subject: [PATCH v17 33/35] virt: gunyah: Add IO handlers
+Date: Thu, 22 Feb 2024 15:16:57 -0800
+Subject: [PATCH v17 34/35] virt: gunyah: Add ioeventfd
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,7 +66,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20240222-gunyah-v17-33-1e9da6763d38@quicinc.com>
+Message-ID: <20240222-gunyah-v17-34-1e9da6763d38@quicinc.com>
 References: <20240222-gunyah-v17-0-1e9da6763d38@quicinc.com>
 In-Reply-To: <20240222-gunyah-v17-0-1e9da6763d38@quicinc.com>
 To: Alex Elder <elder@linaro.org>,
@@ -106,261 +106,265 @@ X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
  nasanex01b.na.qualcomm.com (10.46.141.250)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: _RzcJvsLBoQGikWouASJqOQmU4qKmExK
-X-Proofpoint-ORIG-GUID: _RzcJvsLBoQGikWouASJqOQmU4qKmExK
+X-Proofpoint-ORIG-GUID: bWGKXIzCtCgdXv3iBnUxn_P4tDEUuHGp
+X-Proofpoint-GUID: bWGKXIzCtCgdXv3iBnUxn_P4tDEUuHGp
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-22_15,2024-02-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- malwarescore=0 impostorscore=0 priorityscore=1501 lowpriorityscore=0
- spamscore=0 adultscore=0 mlxlogscore=999 clxscore=1015 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
+ mlxscore=0 suspectscore=0 phishscore=0 clxscore=1015 malwarescore=0
+ lowpriorityscore=0 spamscore=0 bulkscore=0 priorityscore=1501
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2402120000 definitions=main-2402220179
 
-Add framework for VM functions to handle stage-2 write faults from Gunyah
-guest virtual machines. IO handlers have a range of addresses which they
-apply to. Optionally, they may apply to only when the value written
-matches the IO handler's value.
+Allow userspace to attach an ioeventfd to an mmio address within the
+guest.  Userspace provides a description of the type of write to
+"subscribe" to and eventfd to trigger when that type of write is
+performed by the guest. This mechanism allows userspace to respond
+asynchronously to a guest manipulating a virtualized device and is
+similar to KVM's ioeventfd.
 
 Reviewed-by: Alex Elder <elder@linaro.org>
 Co-developed-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
 Signed-off-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
 Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
 ---
- drivers/virt/gunyah/gunyah_vcpu.c |   4 ++
- drivers/virt/gunyah/vm_mgr.c      | 115 ++++++++++++++++++++++++++++++++++++++
- drivers/virt/gunyah/vm_mgr.h      |   8 +++
- include/linux/gunyah.h            |  29 ++++++++++
- 4 files changed, 156 insertions(+)
+ drivers/virt/gunyah/Kconfig            |   9 +++
+ drivers/virt/gunyah/Makefile           |   1 +
+ drivers/virt/gunyah/gunyah_ioeventfd.c | 139 +++++++++++++++++++++++++++++++++
+ include/uapi/linux/gunyah.h            |  37 +++++++++
+ 4 files changed, 186 insertions(+)
 
-diff --git a/drivers/virt/gunyah/gunyah_vcpu.c b/drivers/virt/gunyah/gunyah_vcpu.c
-index f8306620b1dd6..ef78503fe586d 100644
---- a/drivers/virt/gunyah/gunyah_vcpu.c
-+++ b/drivers/virt/gunyah/gunyah_vcpu.c
-@@ -133,6 +133,10 @@ gunyah_handle_mmio(struct gunyah_vcpu *vcpu, unsigned long resume_data[3],
- 		vcpu->state = GUNYAH_VCPU_RUN_STATE_MMIO_READ;
- 		vcpu->mmio_read_len = len;
- 	} else { /* GUNYAH_VCPU_ADDRSPACE_VMMIO_WRITE */
-+		if (!gunyah_vm_mmio_write(vcpu->ghvm, addr, len, data)) {
-+			resume_data[0] = GUNYAH_ADDRSPACE_VMMIO_ACTION_EMULATE;
-+			return true;
-+		}
- 		vcpu->vcpu_run->mmio.is_write = 1;
- 		memcpy(vcpu->vcpu_run->mmio.data, &data, len);
- 		vcpu->state = GUNYAH_VCPU_RUN_STATE_MMIO_WRITE;
-diff --git a/drivers/virt/gunyah/vm_mgr.c b/drivers/virt/gunyah/vm_mgr.c
-index a61a3f3ae92f1..2434be5dffe08 100644
---- a/drivers/virt/gunyah/vm_mgr.c
-+++ b/drivers/virt/gunyah/vm_mgr.c
-@@ -302,6 +302,118 @@ static void gunyah_vm_clean_resources(struct gunyah_vm *ghvm)
- 	mutex_unlock(&ghvm->resources_lock);
- }
+diff --git a/drivers/virt/gunyah/Kconfig b/drivers/virt/gunyah/Kconfig
+index 1685b75fb77a0..855d41a88b160 100644
+--- a/drivers/virt/gunyah/Kconfig
++++ b/drivers/virt/gunyah/Kconfig
+@@ -36,3 +36,12 @@ config GUNYAH_IRQFD
+ 	  on Gunyah virtual machine.
  
-+static int _gunyah_vm_io_handler_compare(const struct rb_node *node,
-+					 const struct rb_node *parent)
-+{
-+	struct gunyah_vm_io_handler *n =
-+		container_of(node, struct gunyah_vm_io_handler, node);
-+	struct gunyah_vm_io_handler *p =
-+		container_of(parent, struct gunyah_vm_io_handler, node);
+ 	  Say Y/M here if unsure and you want to support Gunyah VMMs.
 +
-+	if (n->addr < p->addr)
-+		return -1;
-+	if (n->addr > p->addr)
-+		return 1;
-+	if ((n->len && !p->len) || (!n->len && p->len))
-+		return 0;
-+	if (n->len < p->len)
-+		return -1;
-+	if (n->len > p->len)
-+		return 1;
-+	/* one of the io handlers doesn't have datamatch and the other does.
-+	 * For purposes of comparison, that makes them identical since the
-+	 * one that doesn't have datamatch will cover the same handler that
-+	 * does.
-+	 */
-+	if (n->datamatch != p->datamatch)
-+		return 0;
-+	if (n->data < p->data)
-+		return -1;
-+	if (n->data > p->data)
-+		return 1;
++config GUNYAH_IOEVENTFD
++	tristate "Gunyah ioeventfd interface"
++	depends on GUNYAH
++	help
++	  Enable kernel support for creating ioeventfds which can alert userspace
++	  when a Gunyah virtual machine accesses a memory address.
++
++	  Say Y/M here if unsure and you want to support Gunyah VMMs.
+diff --git a/drivers/virt/gunyah/Makefile b/drivers/virt/gunyah/Makefile
+index b41b02792921c..2aec5989402b0 100644
+--- a/drivers/virt/gunyah/Makefile
++++ b/drivers/virt/gunyah/Makefile
+@@ -6,3 +6,4 @@ obj-$(CONFIG_GUNYAH) += gunyah.o gunyah_rsc_mgr.o gunyah_vcpu.o
+ obj-$(CONFIG_GUNYAH_PLATFORM_HOOKS) += gunyah_platform_hooks.o
+ obj-$(CONFIG_GUNYAH_QCOM_PLATFORM) += gunyah_qcom.o
+ obj-$(CONFIG_GUNYAH_IRQFD) += gunyah_irqfd.o
++obj-$(CONFIG_GUNYAH_IOEVENTFD) += gunyah_ioeventfd.o
+diff --git a/drivers/virt/gunyah/gunyah_ioeventfd.c b/drivers/virt/gunyah/gunyah_ioeventfd.c
+new file mode 100644
+index 0000000000000..894d303968c4c
+--- /dev/null
++++ b/drivers/virt/gunyah/gunyah_ioeventfd.c
+@@ -0,0 +1,139 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2022-2024 Qualcomm Innovation Center, Inc. All rights reserved.
++ */
++
++#include <linux/eventfd.h>
++#include <linux/device/driver.h>
++#include <linux/file.h>
++#include <linux/fs.h>
++#include <linux/gunyah.h>
++#include <linux/module.h>
++#include <linux/printk.h>
++
++#include <uapi/linux/gunyah.h>
++
++struct gunyah_ioeventfd {
++	struct gunyah_vm_function_instance *f;
++	struct gunyah_vm_io_handler io_handler;
++
++	struct eventfd_ctx *ctx;
++};
++
++static int gunyah_write_ioeventfd(struct gunyah_vm_io_handler *io_dev, u64 addr,
++				  u32 len, u64 data)
++{
++	struct gunyah_ioeventfd *iofd =
++		container_of(io_dev, struct gunyah_ioeventfd, io_handler);
++
++	eventfd_signal(iofd->ctx);
 +	return 0;
 +}
 +
-+static int gunyah_vm_io_handler_compare(struct rb_node *node,
-+					const struct rb_node *parent)
++static struct gunyah_vm_io_handler_ops io_ops = {
++	.write = gunyah_write_ioeventfd,
++};
++
++static long gunyah_ioeventfd_bind(struct gunyah_vm_function_instance *f)
 +{
-+	return _gunyah_vm_io_handler_compare(node, parent);
-+}
-+
-+static int gunyah_vm_io_handler_find(const void *key,
-+				     const struct rb_node *node)
-+{
-+	const struct gunyah_vm_io_handler *k = key;
-+
-+	return _gunyah_vm_io_handler_compare(&k->node, node);
-+}
-+
-+static struct gunyah_vm_io_handler *
-+gunyah_vm_mgr_find_io_hdlr(struct gunyah_vm *ghvm, u64 addr, u64 len, u64 data)
-+{
-+	struct gunyah_vm_io_handler key = {
-+		.addr = addr,
-+		.len = len,
-+		.datamatch = true,
-+		.data = data,
-+	};
-+	struct rb_node *node;
-+
-+	node = rb_find(&key, &ghvm->mmio_handler_root,
-+		       gunyah_vm_io_handler_find);
-+	if (!node)
-+		return NULL;
-+
-+	return container_of(node, struct gunyah_vm_io_handler, node);
-+}
-+
-+int gunyah_vm_mmio_write(struct gunyah_vm *ghvm, u64 addr, u32 len, u64 data)
-+{
-+	struct gunyah_vm_io_handler *io_hdlr = NULL;
++	const struct gunyah_fn_ioeventfd_arg *args = f->argp;
++	struct gunyah_ioeventfd *iofd;
++	struct eventfd_ctx *ctx;
 +	int ret;
 +
-+	down_read(&ghvm->mmio_handler_lock);
-+	io_hdlr = gunyah_vm_mgr_find_io_hdlr(ghvm, addr, len, data);
-+	if (!io_hdlr || !io_hdlr->ops || !io_hdlr->ops->write) {
-+		ret = -ENOENT;
-+		goto out;
-+	}
-+
-+	ret = io_hdlr->ops->write(io_hdlr, addr, len, data);
-+
-+out:
-+	up_read(&ghvm->mmio_handler_lock);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(gunyah_vm_mmio_write);
-+
-+int gunyah_vm_add_io_handler(struct gunyah_vm *ghvm,
-+			     struct gunyah_vm_io_handler *io_hdlr)
-+{
-+	struct rb_node *found;
-+
-+	if (io_hdlr->datamatch &&
-+	    (!io_hdlr->len || io_hdlr->len > sizeof(io_hdlr->data)))
++	if (f->arg_size != sizeof(*args))
 +		return -EINVAL;
 +
-+	down_write(&ghvm->mmio_handler_lock);
-+	found = rb_find_add(&io_hdlr->node, &ghvm->mmio_handler_root,
-+			    gunyah_vm_io_handler_compare);
-+	up_write(&ghvm->mmio_handler_lock);
++	/* All other flag bits are reserved for future use */
++	if (args->flags & ~GUNYAH_IOEVENTFD_FLAGS_DATAMATCH)
++		return -EINVAL;
 +
-+	return found ? -EEXIST : 0;
++	/* must be natural-word sized, or 0 to ignore length */
++	switch (args->len) {
++	case 0:
++	case 1:
++	case 2:
++	case 4:
++	case 8:
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	/* check for range overflow */
++	if (overflows_type(args->addr + args->len, u64))
++		return -EINVAL;
++
++	/* ioeventfd with no length can't be combined with DATAMATCH */
++	if (!args->len && (args->flags & GUNYAH_IOEVENTFD_FLAGS_DATAMATCH))
++		return -EINVAL;
++
++	ctx = eventfd_ctx_fdget(args->fd);
++	if (IS_ERR(ctx))
++		return PTR_ERR(ctx);
++
++	iofd = kzalloc(sizeof(*iofd), GFP_KERNEL);
++	if (!iofd) {
++		ret = -ENOMEM;
++		goto err_eventfd;
++	}
++
++	f->data = iofd;
++	iofd->f = f;
++
++	iofd->ctx = ctx;
++
++	if (args->flags & GUNYAH_IOEVENTFD_FLAGS_DATAMATCH) {
++		iofd->io_handler.datamatch = true;
++		iofd->io_handler.len = args->len;
++		iofd->io_handler.data = args->datamatch;
++	}
++	iofd->io_handler.addr = args->addr;
++	iofd->io_handler.ops = &io_ops;
++
++	ret = gunyah_vm_add_io_handler(f->ghvm, &iofd->io_handler);
++	if (ret)
++		goto err_io_dev_add;
++
++	return 0;
++
++err_io_dev_add:
++	kfree(iofd);
++err_eventfd:
++	eventfd_ctx_put(ctx);
++	return ret;
 +}
-+EXPORT_SYMBOL_GPL(gunyah_vm_add_io_handler);
 +
-+void gunyah_vm_remove_io_handler(struct gunyah_vm *ghvm,
-+				 struct gunyah_vm_io_handler *io_hdlr)
++static void gunyah_ioevent_unbind(struct gunyah_vm_function_instance *f)
 +{
-+	down_write(&ghvm->mmio_handler_lock);
-+	rb_erase(&io_hdlr->node, &ghvm->mmio_handler_root);
-+	up_write(&ghvm->mmio_handler_lock);
++	struct gunyah_ioeventfd *iofd = f->data;
++
++	gunyah_vm_remove_io_handler(iofd->f->ghvm, &iofd->io_handler);
++	eventfd_ctx_put(iofd->ctx);
++	kfree(iofd);
 +}
-+EXPORT_SYMBOL_GPL(gunyah_vm_remove_io_handler);
 +
- static int gunyah_vm_rm_notification_status(struct gunyah_vm *ghvm, void *data)
- {
- 	struct gunyah_rm_vm_status_payload *payload = data;
-@@ -404,6 +516,9 @@ static __must_check struct gunyah_vm *gunyah_vm_alloc(struct gunyah_rm *rm)
- 	INIT_LIST_HEAD(&ghvm->resource_tickets);
- 	xa_init(&ghvm->boot_context);
- 
-+	init_rwsem(&ghvm->mmio_handler_lock);
-+	ghvm->mmio_handler_root = RB_ROOT;
++static bool gunyah_ioevent_compare(const struct gunyah_vm_function_instance *f,
++				   const void *arg, size_t size)
++{
++	const struct gunyah_fn_ioeventfd_arg *instance = f->argp, *other = arg;
 +
- 	mt_init(&ghvm->mm);
- 	mt_init(&ghvm->bindings);
- 	init_rwsem(&ghvm->bindings_lock);
-diff --git a/drivers/virt/gunyah/vm_mgr.h b/drivers/virt/gunyah/vm_mgr.h
-index 8cee93e551700..daddb1d0cb70b 100644
---- a/drivers/virt/gunyah/vm_mgr.h
-+++ b/drivers/virt/gunyah/vm_mgr.h
-@@ -11,6 +11,7 @@
- #include <linux/maple_tree.h>
- #include <linux/mutex.h>
- #include <linux/pagemap.h>
-+#include <linux/rbtree.h>
- #include <linux/rwsem.h>
- #include <linux/set_memory.h>
- #include <linux/wait.h>
-@@ -58,6 +59,9 @@ long gunyah_dev_vm_mgr_ioctl(struct gunyah_rm *rm, unsigned int cmd,
-  * @guest_shared_extent_ticket: Resource ticket to the capability for
-  *                              the memory extent that represents
-  *                              memory shared with the guest.
-+ * @mmio_handler_root: RB tree of MMIO handlers.
-+ *                     Entries are &struct gunyah_vm_io_handler
-+ * @mmio_handler_lock: Serialization of traversing @mmio_handler_root
-  * @rm: Pointer to the resource manager struct to make RM calls
-  * @parent: For logging
-  * @nb: Notifier block for RM notifications
-@@ -93,6 +97,8 @@ struct gunyah_vm {
- 	struct gunyah_vm_resource_ticket addrspace_ticket,
- 		host_private_extent_ticket, host_shared_extent_ticket,
- 		guest_private_extent_ticket, guest_shared_extent_ticket;
-+	struct rb_root mmio_handler_root;
-+	struct rw_semaphore mmio_handler_lock;
- 
- 	struct gunyah_rm *rm;
- 
-@@ -119,6 +125,8 @@ struct gunyah_vm {
- 	struct xarray boot_context;
++	if (sizeof(*other) != size)
++		return false;
++
++	if (instance->addr != other->addr || instance->len != other->len ||
++	    instance->flags != other->flags)
++		return false;
++
++	if ((instance->flags & GUNYAH_IOEVENTFD_FLAGS_DATAMATCH) &&
++	    instance->datamatch != other->datamatch)
++		return false;
++
++	return true;
++}
++
++DECLARE_GUNYAH_VM_FUNCTION_INIT(ioeventfd, GUNYAH_FN_IOEVENTFD, 3,
++				gunyah_ioeventfd_bind, gunyah_ioevent_unbind,
++				gunyah_ioevent_compare);
++MODULE_DESCRIPTION("Gunyah ioeventfd VM Function");
++MODULE_LICENSE("GPL");
+diff --git a/include/uapi/linux/gunyah.h b/include/uapi/linux/gunyah.h
+index cb7b0bb9bef38..fd461e2fe8b58 100644
+--- a/include/uapi/linux/gunyah.h
++++ b/include/uapi/linux/gunyah.h
+@@ -65,10 +65,13 @@ struct gunyah_vm_dtb_config {
+  *              Return: file descriptor to manipulate the vcpu.
+  * @GUNYAH_FN_IRQFD: register eventfd to assert a Gunyah doorbell
+  *               &struct gunyah_fn_desc.arg is a pointer to &struct gunyah_fn_irqfd_arg
++ * @GUNYAH_FN_IOEVENTFD: register ioeventfd to trigger when VM faults on parameter
++ *                   &struct gunyah_fn_desc.arg is a pointer to &struct gunyah_fn_ioeventfd_arg
+  */
+ enum gunyah_fn_type {
+ 	GUNYAH_FN_VCPU = 1,
+ 	GUNYAH_FN_IRQFD,
++	GUNYAH_FN_IOEVENTFD,
  };
  
-+int gunyah_vm_mmio_write(struct gunyah_vm *ghvm, u64 addr, u32 len, u64 data);
+ #define GUNYAH_FN_MAX_ARG_SIZE		256
+@@ -120,6 +123,40 @@ struct gunyah_fn_irqfd_arg {
+ 	__u32 padding;
+ };
+ 
++/**
++ * enum gunyah_ioeventfd_flags - flags for use in gunyah_fn_ioeventfd_arg
++ * @GUNYAH_IOEVENTFD_FLAGS_DATAMATCH: the event will be signaled only if the
++ *                                written value to the registered address is
++ *                                equal to &struct gunyah_fn_ioeventfd_arg.datamatch
++ */
++enum gunyah_ioeventfd_flags {
++	GUNYAH_IOEVENTFD_FLAGS_DATAMATCH	= 1UL << 0,
++};
++
++/**
++ * struct gunyah_fn_ioeventfd_arg - Arguments to create an ioeventfd function
++ * @datamatch: data used when GUNYAH_IOEVENTFD_DATAMATCH is set
++ * @addr: Address in guest memory
++ * @len: Length of access
++ * @fd: When ioeventfd is matched, this eventfd is written
++ * @flags: See &enum gunyah_ioeventfd_flags
++ * @padding: padding bytes
++ *
++ * Create this function with &GUNYAH_VM_ADD_FUNCTION using type &GUNYAH_FN_IOEVENTFD.
++ *
++ * Attaches an ioeventfd to a legal mmio address within the guest. A guest write
++ * in the registered address will signal the provided event instead of triggering
++ * an exit on the GUNYAH_VCPU_RUN ioctl.
++ */
++struct gunyah_fn_ioeventfd_arg {
++	__u64 datamatch;
++	__u64 addr;        /* legal mmio address */
++	__u32 len;         /* 1, 2, 4, or 8 bytes; or 0 to ignore length */
++	__s32 fd;
++	__u32 flags;
++	__u32 padding;
++};
 +
  /**
-  * folio_mmapped() - Returns true if the folio is mapped into any vma
-  * @folio: Folio to test
-diff --git a/include/linux/gunyah.h b/include/linux/gunyah.h
-index a9d58150de696..dbd5b0251b491 100644
---- a/include/linux/gunyah.h
-+++ b/include/linux/gunyah.h
-@@ -155,6 +155,35 @@ int gunyah_vm_add_resource_ticket(struct gunyah_vm *ghvm,
- void gunyah_vm_remove_resource_ticket(struct gunyah_vm *ghvm,
- 				      struct gunyah_vm_resource_ticket *ticket);
- 
-+/*
-+ * gunyah_vm_io_handler contains the info about an io device and its associated
-+ * addr and the ops associated with the io device.
-+ */
-+struct gunyah_vm_io_handler {
-+	struct rb_node node;
-+	u64 addr;
-+
-+	bool datamatch;
-+	u8 len;
-+	u64 data;
-+	struct gunyah_vm_io_handler_ops *ops;
-+};
-+
-+/*
-+ * gunyah_vm_io_handler_ops contains function pointers associated with an iodevice.
-+ */
-+struct gunyah_vm_io_handler_ops {
-+	int (*read)(struct gunyah_vm_io_handler *io_dev, u64 addr, u32 len,
-+		    u64 data);
-+	int (*write)(struct gunyah_vm_io_handler *io_dev, u64 addr, u32 len,
-+		     u64 data);
-+};
-+
-+int gunyah_vm_add_io_handler(struct gunyah_vm *ghvm,
-+			     struct gunyah_vm_io_handler *io_dev);
-+void gunyah_vm_remove_io_handler(struct gunyah_vm *ghvm,
-+				 struct gunyah_vm_io_handler *io_dev);
-+
- #define GUNYAH_RM_ACL_X BIT(0)
- #define GUNYAH_RM_ACL_W BIT(1)
- #define GUNYAH_RM_ACL_R BIT(2)
+  * struct gunyah_fn_desc - Arguments to create a VM function
+  * @type: Type of the function. See &enum gunyah_fn_type.
 
 -- 
 2.34.1
