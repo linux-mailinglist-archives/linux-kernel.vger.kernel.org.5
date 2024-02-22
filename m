@@ -1,224 +1,254 @@
-Return-Path: <linux-kernel+bounces-75878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98A9F85F036
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:52:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6320385F038
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:52:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 103211F2469B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:52:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83AA31C22D47
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:52:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EB67175AB;
-	Thu, 22 Feb 2024 03:51:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E13E31772F;
+	Thu, 22 Feb 2024 03:52:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="nOWL5E2H"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="PvLgNeIU"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010EA7E9;
-	Thu, 22 Feb 2024 03:51:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13BC812E40;
+	Thu, 22 Feb 2024 03:52:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708573918; cv=none; b=qNlDn/YJYmPv6Uxpb16RM7+3gyTyTO80gfztRTFAZwkKiCcCdfvQg2zEsS194WhZB6fD+KabsxMen0AIVnWzBYvNQQuapDR7U7ufss2GpOG5TJM0ua/MXtiyL2dASzJhoECKGrNDABG8E1Bkafrei1d5zpiquYQ/JBOqbrZXi6k=
+	t=1708573964; cv=none; b=Vfv8+9vGHJGVghJli+mCaQHZI8zQflTXZF3hdbiCyPSOYtmVmNJdGB5uwi6VuQlLjmZVhV9wE0H1uImM3/0FytK3FsZYAO2bXRwrP5GFUGCKiQFogyDYpD78GA27CHylXY405bURo5A8+sKLFhjpPR+mvaeQKwHnAz6DCpDB8WU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708573918; c=relaxed/simple;
-	bh=WMdwUdLfDrRv5+bpye5rSRR//nHXrH5XULr67UtTC+Q=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o16TKLpkmpkD6oU8jjhXY8oZEVx5ZvsfHx2ao4X/zxzdu2Kg34k1XTP6s/hds8/rVl3i1SXaZgrjeP0HRSd+R3JDv6grsPBHTxA2rpRGX1lRdwiJf2OkGq/Mrc5aCLSA6r24JB57ZIzoapuDskQUZZrZRLPifdMytpNcrHw6bPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=nOWL5E2H; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41M3P4kg023077;
-	Thu, 22 Feb 2024 03:51:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=bBrRt8+UcRRQOmueHEAeP
-	jB5q/POTrKdOmEwEWV+9mc=; b=nOWL5E2HFx2aZP4RUQ1ReMiFa9AyBE7F8QQLa
-	DHQDGbbmgGlQ79L/RzberhIjyZpY4S4E2DE+MUv9Gv5J8CLQHW9UcGzc5Q49u66w
-	JY+H0XitAA8jWMDbkQPXnSZGPRu7SXT9dqZFCx/vERMMbXXIIDQfOHo8Jmes/GZ9
-	Iim3tkQ9XL5XUg4EMr1spChf2IChTA+iYMoovdmKXkvt8ItehLo7dSItJ93F6EsO
-	tOdFTbfnrr99fcOFDhf17lnKirF09/ZErmGm3oBSbCAZmUnOkMJaRjW1xSIY1am5
-	SFGCCm4n0QDsxQkgnwsoA4OXoIxSqg7p2zTrK6KN5CBhZDH4w==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wdpe6s0jh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 03:51:47 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41M3pkdD006448
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 03:51:46 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 21 Feb 2024 19:51:45 -0800
-Date: Wed, 21 Feb 2024 19:51:44 -0800
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar
-	<quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten
-	<marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>, "Daniel
- Vetter" <daniel@ffwll.ch>,
-        <cros-qcom-dts-watchers@chromium.org>,
-        "Bjorn
- Andersson" <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <freedreno@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 6/9] arm64: dts: qcom: qcs6490-rb3gen2: Enable USB role
- switching
-Message-ID: <20240222035144.GH2936378@hu-bjorande-lv.qualcomm.com>
-References: <20240221-rb3gen2-dp-connector-v1-0-dc0964ef7d96@quicinc.com>
- <20240221-rb3gen2-dp-connector-v1-6-dc0964ef7d96@quicinc.com>
- <CAA8EJppAVehWUeLAqEAq8A3nq-o2g=8GK--XRVWtDV7-0BCskA@mail.gmail.com>
+	s=arc-20240116; t=1708573964; c=relaxed/simple;
+	bh=cSLePklJRGa7EwTCUgV8JALvq9ooAhj+vmAxxI7oRD8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dfcZ7jW3h3FU3GmEfftUdoz0IYEksElWfbrhsejMYXnoDXu85f9lt2yETkv/UMAQvXgzNkorXLlE0HbgFSCwCQpqOn2OjGsxiKVlIWbiyFbK8jh+apeDnAOCcpmd3tGBEu7hIiVtp0rpDnYT0wvLBv/BDWYe4LaaoBylZbIPVHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=PvLgNeIU; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1708573962; x=1740109962;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=cSLePklJRGa7EwTCUgV8JALvq9ooAhj+vmAxxI7oRD8=;
+  b=PvLgNeIUeJvqJIZ/40E8rIu7Fnhi3Cd5lLsRAr5Esjp8lMrY5c1yWdYk
+   0FilG8ukLLG2z56J/7Ca73NtGvAYuLfdBuBgLJina7avt79gki2yD51YM
+   1FSHVklHtUhangyTTrw5lieBXV17lwdBuhuOJpvt0azj+ccbKRy7IcbWc
+   rUePGzgWaAzPxi4jAynACLz7syzTlqVIxCj7jRFhsMyO7KDslmUnNk/wB
+   GTIvNN/6JLwD659aTgeLV0biXc3PlPCREFVm7QId2SXyXZeLugudUZiWf
+   iJ1Y8dFLhg0/WxzyXEV7ER3UZeGXfDi+JtnL2SxpoJMVikvyku8THcrX9
+   Q==;
+X-CSE-ConnectionGUID: Hyb6skOcSdW7f9xiLL00sA==
+X-CSE-MsgGUID: 5TaGlClNQhmCF4oHXNQfaQ==
+X-IronPort-AV: E=Sophos;i="6.06,177,1705388400"; 
+   d="scan'208";a="16633854"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 21 Feb 2024 20:52:41 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 21 Feb 2024 20:52:07 -0700
+Received: from che-lt-i70843lx.microchip.com (10.10.85.11) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Wed, 21 Feb 2024 20:52:03 -0700
+From: Dharma Balasubiramani <dharma.b@microchip.com>
+To: <robh@kernel.org>, <tglx@linutronix.de>,
+	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+	<Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+	<claudiu.beznea@tuxon.dev>, <linux-kernel@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+CC: Dharma Balasubiramani <dharma.b@microchip.com>, Conor Dooley
+	<conor.dooley@microchip.com>
+Subject: [PATCH v3] dt-bindings: interrupt-controller: Convert Atmel AIC to json-schema
+Date: Thu, 22 Feb 2024 09:21:58 +0530
+Message-ID: <20240222035158.195265-1-dharma.b@microchip.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAA8EJppAVehWUeLAqEAq8A3nq-o2g=8GK--XRVWtDV7-0BCskA@mail.gmail.com>
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: JXx_JMRckSe4prl6xmUmKQSKHx8TnlNv
-X-Proofpoint-ORIG-GUID: JXx_JMRckSe4prl6xmUmKQSKHx8TnlNv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-22_01,2024-02-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- adultscore=0 mlxlogscore=999 clxscore=1015 bulkscore=0 spamscore=0
- impostorscore=0 lowpriorityscore=0 phishscore=0 priorityscore=1501
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402220027
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-On Thu, Feb 22, 2024 at 01:50:12AM +0200, Dmitry Baryshkov wrote:
-> On Thu, 22 Feb 2024 at 01:19, Bjorn Andersson <quic_bjorande@quicinc.com> wrote:
-> >
-> > With the ADSP remoteproc loaded pmic_glink can be introduced and wired
-> > up to provide role and orientation switching signals.
-> >
-> > Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> > ---
-> >  arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 48 +++++++++++++++++++++++++++-
-> >  1 file changed, 47 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-> > index ab498494caea..079bf43b14cc 100644
-> > --- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-> > +++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-> > @@ -121,6 +121,41 @@ debug_vm_mem: debug-vm@d0600000 {
-> >                 };
-> >         };
-> >
-> > +       pmic-glink {
-> > +               compatible = "qcom,qcm6490-pmic-glink", "qcom,pmic-glink";
-> > +
-> > +               #address-cells = <1>;
-> > +               #size-cells = <0>;
-> > +
-> > +               connector@0 {
-> > +                       compatible = "usb-c-connector";
-> > +                       reg = <0>;
-> > +                       power-role = "dual";
-> > +                       data-role = "dual";
-> > +
-> > +                       ports {
-> > +                               #address-cells = <1>;
-> > +                               #size-cells = <0>;
-> > +
-> > +                               port@0 {
-> > +                                       reg = <0>;
-> > +
-> > +                                       pmic_glink_hs_in: endpoint {
-> > +                                               remote-endpoint = <&usb_1_dwc3_hs>;
-> > +                                       };
-> > +                               };
-> > +
-> > +                               port@1 {
-> > +                                       reg = <1>;
-> > +
-> > +                                       pmic_glink_ss_in: endpoint {
-> > +                                               remote-endpoint = <&usb_1_dwc3_ss>;
-> 
-> This should be connected to the QMP PHY rather than to the USB host.
-> 
+Convert the Atmel AIC binding document to DT schema format using
+json-schema.
 
-Ahh, you're right, otherwise the orientation-switch below isn't of much
-use.
+Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+---
+Changelog
+v2 -> v3
+- Add constraints to the "atmel,external-irqs" property.
+- Move 'reg' before 'interrupt-controller' in the example.
+v1 -> v2
+- Drop the '|' as there is no formatting to preserve.
+- Remove unnecessary marketing statement from description.
+- Drop the description for interrupts and reg, it's obvious.
+- Put reg after compatible.
+- Drop comment in example.
+- Drop the example of device that is wired to an AIC as it's(dma) binding is
+  not yet available.
+---
+ .../interrupt-controller/atmel,aic.txt        | 43 ---------
+ .../interrupt-controller/atmel,aic.yaml       | 89 +++++++++++++++++++
+ 2 files changed, 89 insertions(+), 43 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/atmel,aic.txt
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/atmel,aic.yaml
 
-> Also it might be better to squash this patch with the patch 8. Or at
-> least to get redriver into the picture in this patch (and keep only
-> display-related parts in that patch).
-> 
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/atmel,aic.txt b/Documentation/devicetree/bindings/interrupt-controller/atmel,aic.txt
+deleted file mode 100644
+index 7079d44bf3ba..000000000000
+--- a/Documentation/devicetree/bindings/interrupt-controller/atmel,aic.txt
++++ /dev/null
+@@ -1,43 +0,0 @@
+-* Advanced Interrupt Controller (AIC)
+-
+-Required properties:
+-- compatible: Should be:
+-    - "atmel,<chip>-aic" where  <chip> can be "at91rm9200", "sama5d2",
+-      "sama5d3" or "sama5d4"
+-    - "microchip,<chip>-aic" where <chip> can be "sam9x60"
+-
+-- interrupt-controller: Identifies the node as an interrupt controller.
+-- #interrupt-cells: The number of cells to define the interrupts. It should be 3.
+-  The first cell is the IRQ number (aka "Peripheral IDentifier" on datasheet).
+-  The second cell is used to specify flags:
+-    bits[3:0] trigger type and level flags:
+-      1 = low-to-high edge triggered.
+-      2 = high-to-low edge triggered.
+-      4 = active high level-sensitive.
+-      8 = active low level-sensitive.
+-      Valid combinations are 1, 2, 3, 4, 8.
+-      Default flag for internal sources should be set to 4 (active high).
+-  The third cell is used to specify the irq priority from 0 (lowest) to 7
+-  (highest).
+-- reg: Should contain AIC registers location and length
+-- atmel,external-irqs: u32 array of external irqs.
+-
+-Examples:
+-	/*
+-	 * AIC
+-	 */
+-	aic: interrupt-controller@fffff000 {
+-		compatible = "atmel,at91rm9200-aic";
+-		interrupt-controller;
+-		#interrupt-cells = <3>;
+-		reg = <0xfffff000 0x200>;
+-	};
+-
+-	/*
+-	 * An interrupt generating device that is wired to an AIC.
+-	 */
+-	dma: dma-controller@ffffec00 {
+-		compatible = "atmel,at91sam9g45-dma";
+-		reg = <0xffffec00 0x200>;
+-		interrupts = <21 4 5>;
+-	};
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/atmel,aic.yaml b/Documentation/devicetree/bindings/interrupt-controller/atmel,aic.yaml
+new file mode 100644
+index 000000000000..0d51bd78bf2b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/interrupt-controller/atmel,aic.yaml
+@@ -0,0 +1,89 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/interrupt-controller/atmel,aic.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Advanced Interrupt Controller (AIC)
++
++maintainers:
++  - Nicolas Ferre <nicolas.ferre@microchip.com>
++  - Dharma balasubiramani <dharma.b@microchip.com>
++
++description:
++  The Advanced Interrupt Controller (AIC) is an 8-level priority, individually
++  maskable, vectored interrupt controller providing handling of up to one
++  hundred and twenty-eight interrupt sources.
++
++allOf:
++  - $ref: /schemas/interrupt-controller.yaml#
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: atmel,at91rm9200-aic
++    then:
++      properties:
++        atmel,external-irqs:
++          minItems: 1
++          maxItems: 7
++    else:
++      properties:
++        atmel,external-irqs:
++          minItems: 1
++          maxItems: 1
++
++properties:
++  compatible:
++    enum:
++      - atmel,at91rm9200-aic
++      - atmel,sama5d2-aic
++      - atmel,sama5d3-aic
++      - atmel,sama5d4-aic
++      - microchip,sam9x60-aic
++
++  reg:
++    maxItems: 1
++
++  interrupt-controller: true
++
++  "#interrupt-cells":
++    const: 3
++    description: |
++      The 1st cell is the IRQ number (Peripheral IDentifier on datasheet).
++      The 2nd cell specifies flags:
++        bits[3:0] trigger type and level flags:
++          1 = low-to-high edge triggered.
++          2 = high-to-low edge triggered.
++          4 = active high level-sensitive.
++          8 = active low level-sensitive.
++        Valid combinations: 1, 2, 3, 4, 8.
++        Default for internal sources: 4 (active high).
++      The 3rd cell specifies irq priority from 0 (lowest) to 7 (highest).
++
++  interrupts:
++    maxItems: 1
++
++  atmel,external-irqs:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    description: u32 array of external irqs.
++
++required:
++  - compatible
++  - reg
++  - interrupt-controller
++  - "#interrupt-cells"
++  - atmel,external-irqs
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    interrupt-controller@fffff000 {
++      compatible = "atmel,at91rm9200-aic";
++      reg = <0xfffff000 0x200>;
++      interrupt-controller;
++      #interrupt-cells = <3>;
++      atmel,external-irqs = <31>;
++    };
++...
 
-The idea was to only bring in the pmic-glink here and then do the
-plumbing between all the components separately, but I guess the
-orientation-switch in the redriver means that it should go here as
-well...
+base-commit: 4f5e5092fdbf5cec6bedc19fbe69cce4f5f08372
+-- 
+2.25.1
 
-I'll shuffle this into something that makes sense.
-
-Thanks,
-Bjorn
-
-> 
-> > +                                       };
-> > +                               };
-> > +                       };
-> > +               };
-> > +       };
-> > +
-> >         vph_pwr: vph-pwr-regulator {
-> >                 compatible = "regulator-fixed";
-> >                 regulator-name = "vph_pwr";
-> > @@ -476,7 +511,16 @@ &usb_1 {
-> >  };
-> >
-> >  &usb_1_dwc3 {
-> > -       dr_mode = "peripheral";
-> > +       dr_mode = "otg";
-> > +       usb-role-switch;
-> > +};
-> > +
-> > +&usb_1_dwc3_hs {
-> > +       remote-endpoint = <&pmic_glink_hs_in>;
-> > +};
-> > +
-> > +&usb_1_dwc3_ss {
-> > +       remote-endpoint = <&pmic_glink_ss_in>;
-> >  };
-> >
-> >  &usb_1_hsphy {
-> > @@ -491,6 +535,8 @@ &usb_1_qmpphy {
-> >         vdda-phy-supply = <&vreg_l6b_1p2>;
-> >         vdda-pll-supply = <&vreg_l1b_0p912>;
-> >
-> > +       orientation-switch;
-> > +
-> >         status = "okay";
-> >  };
-> >
-> >
-> > --
-> > 2.25.1
-> >
-> 
-> 
-> --
-> With best wishes
-> Dmitry
 
