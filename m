@@ -1,221 +1,131 @@
-Return-Path: <linux-kernel+bounces-77242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77244-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 016EA860307
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:42:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50B6386027F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:19:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 137DBB31EA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:18:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 816D11C24974
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:19:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43BC154911;
-	Thu, 22 Feb 2024 19:18:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71CD6548E5;
+	Thu, 22 Feb 2024 19:19:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gh5roxf1"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="jWtKaN2e"
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B246F14B82B
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 19:18:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C902814B804;
+	Thu, 22 Feb 2024 19:19:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708629498; cv=none; b=fGauyE4wfI2E69dELPES5+59DmNz6VCK6TCZr30UXoxIdu4SI17w7tpozGtgKJsVCeVQwcDB1R7sKWb1iAKoqJnbcxzSQJqcfNqBzJkXT2E7+yBgDUwxmrtiaz1Q5HkTY6yKCVcy5ftnDRVBH0xI+qjGF/pql03YJXQEjMjpAeI=
+	t=1708629551; cv=none; b=HfJeR8+N7GRahZxOg7NlwLqD4yLaWd/baVzcGYJBjfu1nPIIAThQziFVyAxREWR0xLW0rDXPo0NlndFOTxdbw9Jap05ZutUkE+Fftpnnr0/Lr1DKGxEBSDuA6BeDm73gqAuI5W358p7Xm6Qnb+cQkytwqSZZY5W5jkF2jYHC7L8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708629498; c=relaxed/simple;
-	bh=ipRg99dKoCexGU0mT0wMiy7MuLoK0LzRc3yx/o9w7ng=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lpCN/6QW4FY7miafjMy5j5XaxIlFqRsNM4v3BllWAZ7S2jgXmk6a3PAWkH0kU6eyXvN2q3+GnZVuvB/8Pax03Wn/8TJSOrpp+FF042RQ676JO2WXl8dM2XbB5lQC2IeSBhocMuE+2OUqmgjrfgthoWJ/nZqLrYwWXmgqf3ueTGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gh5roxf1; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a3e7f7b3d95so7429066b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:18:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708629495; x=1709234295; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aKmv8VA9qwrVjGnHU1RMltzYyr4GiBIOxbbvEQt4SA4=;
-        b=gh5roxf1SfFK6hI5zJdOkjMdDzFFNGAaf4SG2gf1cZ+Tp6541pkE5BcPi/93csXX5K
-         W0Q0zK+LjeiTwmud5ojM9U91txQqZAE19gHw3LQCaU2RAwZgCxU9eKzm3y+8RubCvlZq
-         K/PP6KRDbSwgqWIiXmTnPg6Yw3TwUere0k3FIaOnUy5qeyv/Rjr044C2vzU5gDMQgVsV
-         uwDrZPDz+lqhcJlL4YKmOUNCgx679J8FmVlZWqo1GtW9NGl4mqkmX3dTanOdz1MQ0xz0
-         +U6L/LQRfreZisLrQJlq4I/RxruHUjavualesdZwtEvLXL3jXQTcwXzpl61kQX1i+J6N
-         raSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708629495; x=1709234295;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aKmv8VA9qwrVjGnHU1RMltzYyr4GiBIOxbbvEQt4SA4=;
-        b=sVOzsAb3jR1OcHsmsYFiKoXqfe44ORSzFg2Uvnd/+q/qqcD+ZkEqlV5TCPp3ToqotM
-         6oZsDpXtZiuBpK8uV+n8zs0PlIGrdqJjudlw06DWU4tqtmjyKK9WkQHesZv7UjOlxFTK
-         TfIZ6HItW4OWkwEAPkk4TvuCOlhgkqLUSeL9JEO0l52NP8sxVFQPs6A9MLvQKwITj1Mv
-         oHhVof4/lUFr0MvkrRdDlpwYV+qTboXHYP2sKivjRTkJfn/izo9DrAfoaXrQyeUTFZTR
-         relhz00pt1IeAbBTba4+vS1r9J1taegqGU4EEjrx7M6BkLr3K4YAWYoJqL5AEXEBWZYJ
-         jJGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV1ty9ZnxACdgxK0+2qOStO99kFkfGn3YMp0a4Mp/znJpF+5qA+mTxsI6Z7SiHvbXvn/lyzcF08muTnijTJGPArjn8TMGETP8t5MemZ
-X-Gm-Message-State: AOJu0YwCCWBzQUdbazjiVxg5NRYxhtbc1690NzNg2M9J8g4PCbRv1LTb
-	tGy+NR3VRH9/+AUstspU4chZNYoz+SIvvhFmB8OSejdK5LJ5LQk3
-X-Google-Smtp-Source: AGHT+IGgtYpDu1X4LtE8dy25QBXvH7D+LGd/bcwDqJXyxCvF0xkzXLXvaCPTDclOjmCat6T4CZzXoA==
-X-Received: by 2002:a17:906:1854:b0:a3e:73c8:d383 with SMTP id w20-20020a170906185400b00a3e73c8d383mr10308795eje.49.1708629494886;
-        Thu, 22 Feb 2024 11:18:14 -0800 (PST)
-Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
-        by smtp.gmail.com with ESMTPSA id vu2-20020a170907a64200b00a3fa275de38sm425296ejc.162.2024.02.22.11.18.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 11:18:14 -0800 (PST)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Samuel Holland <samuel@sholland.org>,
- =?utf-8?B?T25kxZllag==?= Jirman <megi@xff.cz>
-Cc: Ondrej Jirman <megi@xff.cz>, dri-devel@lists.freedesktop.org,
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
- linux-kernel@vger.kernel.org
-Subject:
- Re: [PATCH 2/3] drm/sun4i: Add more parameters to sunxi_engine commit
- callback
-Date: Thu, 22 Feb 2024 20:18:13 +0100
-Message-ID: <9236885.CDJkKcVGEf@jernej-laptop>
-In-Reply-To: <20240216190430.1374132-3-megi@xff.cz>
-References:
- <20240216190430.1374132-1-megi@xff.cz> <20240216190430.1374132-3-megi@xff.cz>
+	s=arc-20240116; t=1708629551; c=relaxed/simple;
+	bh=qhLehXJeOerzMpqJ0h4GqLLY/DHCVpEfMMpWFb2pWGA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PBZR+ZsXMvx2Wa2+PUqlCZDY4I/ikCPqMJJIderfBqH3ohDUYs3FZRuHg2JjVWaNdv7eofBX+pBrQ7lB4QiG24KN5lkOZtPcEpDdhuP7ypEvmMu2I21W5SqNDbX87M+LG/B/YIP2voKFCIlhQHntk2biLgtIsC2CennyO+5eZIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=jWtKaN2e; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 9E3FF1C0080; Thu, 22 Feb 2024 20:19:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+	t=1708629546;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1CReOHfu8cM+87GmnCZWyhephfKgSIBTovz2lAsV5Kc=;
+	b=jWtKaN2e9fc60EjhziDDwBilk8Gj6DB8OqD4KR+qd5CNP8cczOyqkEbFnzGX8JiNZlBj4a
+	Zs64RPijgEDBx5Mjm40pWTvxRhxAuejqcjNq3dDh47O/BBF/ayqzB7R0A7VoSdIpesRIJd
+	jgr29KeXc2RcHrpc9kZDjgFzBR1gEeo=
+Date: Thu, 22 Feb 2024 20:19:06 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: Vlastimil Babka <vbabka@suse.cz>,
+	kernel list <linux-kernel@vger.kernel.org>
+Cc: Greg KH <gregkh@linuxfoundation.org>,
+	Oleksandr Natalenko <oleksandr@natalenko.name>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Jiri Benc <jbenc@redhat.com>, Sasha Levin <sashal@kernel.org>,
+	stable@vger.kernel.org,
+	Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: stable-kernel-rules was Re: fs/bcachefs/
+Message-ID: <ZdeeKiTXc7WidRcs@duo.ucw.cz>
+References: <g6el7eghhdk2v5osukhobvi4pige5bsfu5koqtmoyeknat36t7@irmmk7zo7edh>
+ <uknxc26o6td7g6rawxffvsez46djmvcy2532kza2zyjuj33k7p@4jdywourgtqg>
+ <2024022103-municipal-filter-fb3f@gregkh>
+ <4900587.31r3eYUQgx@natalenko.name>
+ <2024022155-reformat-scorer-98ae@gregkh>
+ <aaf2f030-b6f4-437b-bb4e-79aa4891ae56@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="s+LkKkXk95XsNqZb"
+Content-Disposition: inline
+In-Reply-To: <aaf2f030-b6f4-437b-bb4e-79aa4891ae56@suse.cz>
+
+
+--s+LkKkXk95XsNqZb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
 
-Dne petek, 16. februar 2024 ob 20:04:25 CET je Ond=C5=99ej Jirman napisal(a=
-):
-> From: Ondrej Jirman <megi@xff.cz>
->=20
-> These will be needed later on when we move layer configuration to
-> crtc update.
->=20
-> Signed-off-by: Ondrej Jirman <megi@xff.cz>
+Hi!
 
-Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+> > Personally I think we are not taking enough, and are still missing real
+> > fixes.  Overall, this is only a very small % of what goes into Linus's
+> > tree every day, so by that measure alone, we know we are missing things.
+>=20
+> What % of what goes into Linus's tree do you think fits within the rules
+> stated in Documentation/process/stable-kernel-rules.rst ? I don't know but
+> "very small" would be my guess, so we should be fine as it is?
+>=20
+> Or are the rules actually still being observed? I doubt e.g. many of the
+> AUTOSEL backports fit them? Should we rename the file to
+> stable-rules-nonsense.rst?
+
+There seems to be just one rule being observed: "It or an equivalent
+fix must already exist in Linus' tree (upstream).". Every other rule is
+broken pretty much all the time.
+
+AUTOSEL is a problem.
+
+Plus there's problem with dependencies -- if a patch A is need for fix
+B, the rules pretty much go out of the window, huge patches are
+applied, whitespace fixes are applied, etc.
+
+There are even known-bad patches being applied, and then
+reverted. Greg explained that it heps his process somehow.
+
+For example in 6.1.53 review, my notes say 30% of the patches did not
+match the documented rules. 42% for v6.1.76.
+
+OTOH ammount of patches that cause "real" problems is not that great,
+and we seem to have enough testing. Still, updating the documentation
+to match the reality would be good (perhaps explaining that stable
+does not have manpower to re-do the dependencies, and how "apply bad
+and revert" works).
 
 Best regards,
-Jernej
+								Pavel
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
 
-> ---
->  drivers/gpu/drm/sun4i/sun4i_backend.c |  4 +++-
->  drivers/gpu/drm/sun4i/sun4i_crtc.c    |  2 +-
->  drivers/gpu/drm/sun4i/sun8i_mixer.c   |  5 ++++-
->  drivers/gpu/drm/sun4i/sunxi_engine.h  | 13 ++++++++++---
->  4 files changed, 18 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/sun4i/sun4i_backend.c b/drivers/gpu/drm/sun4=
-i/sun4i_backend.c
-> index 335fd0edb904..e89eb96d3131 100644
-> --- a/drivers/gpu/drm/sun4i/sun4i_backend.c
-> +++ b/drivers/gpu/drm/sun4i/sun4i_backend.c
-> @@ -69,7 +69,9 @@ static void sun4i_backend_disable_color_correction(stru=
-ct sunxi_engine *engine)
->  			   SUN4I_BACKEND_OCCTL_ENABLE, 0);
->  }
-> =20
-> -static void sun4i_backend_commit(struct sunxi_engine *engine)
-> +static void sun4i_backend_commit(struct sunxi_engine *engine,
-> +				 struct drm_crtc *crtc,
-> +				 struct drm_atomic_state *state)
->  {
->  	DRM_DEBUG_DRIVER("Committing changes\n");
-> =20
-> diff --git a/drivers/gpu/drm/sun4i/sun4i_crtc.c b/drivers/gpu/drm/sun4i/s=
-un4i_crtc.c
-> index c06d7cd45388..18e74047b0f5 100644
-> --- a/drivers/gpu/drm/sun4i/sun4i_crtc.c
-> +++ b/drivers/gpu/drm/sun4i/sun4i_crtc.c
-> @@ -91,7 +91,7 @@ static void sun4i_crtc_atomic_flush(struct drm_crtc *cr=
-tc,
-> =20
->  	DRM_DEBUG_DRIVER("Committing plane changes\n");
-> =20
-> -	sunxi_engine_commit(scrtc->engine);
-> +	sunxi_engine_commit(scrtc->engine, crtc, state);
-> =20
->  	if (event) {
->  		crtc->state->event =3D NULL;
-> diff --git a/drivers/gpu/drm/sun4i/sun8i_mixer.c b/drivers/gpu/drm/sun4i/=
-sun8i_mixer.c
-> index 1e681314e379..bdeb9b80e038 100644
-> --- a/drivers/gpu/drm/sun4i/sun8i_mixer.c
-> +++ b/drivers/gpu/drm/sun4i/sun8i_mixer.c
-> @@ -16,6 +16,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/reset.h>
-> =20
-> +#include <drm/drm_atomic.h>
->  #include <drm/drm_atomic_helper.h>
->  #include <drm/drm_crtc.h>
->  #include <drm/drm_framebuffer.h>
-> @@ -249,7 +250,9 @@ int sun8i_mixer_drm_format_to_hw(u32 format, u32 *hw_=
-format)
->  	return -EINVAL;
->  }
-> =20
-> -static void sun8i_mixer_commit(struct sunxi_engine *engine)
-> +static void sun8i_mixer_commit(struct sunxi_engine *engine,
-> +			       struct drm_crtc *crtc,
-> +			       struct drm_atomic_state *state)
->  {
->  	DRM_DEBUG_DRIVER("Committing changes\n");
-> =20
-> diff --git a/drivers/gpu/drm/sun4i/sunxi_engine.h b/drivers/gpu/drm/sun4i=
-/sunxi_engine.h
-> index ec8cf9b2bda4..ec0c4932f15c 100644
-> --- a/drivers/gpu/drm/sun4i/sunxi_engine.h
-> +++ b/drivers/gpu/drm/sun4i/sunxi_engine.h
-> @@ -7,6 +7,7 @@
->  #define _SUNXI_ENGINE_H_
-> =20
->  struct drm_plane;
-> +struct drm_crtc;
->  struct drm_device;
->  struct drm_crtc_state;
->  struct drm_display_mode;
-> @@ -59,7 +60,9 @@ struct sunxi_engine_ops {
->  	 *
->  	 * This function is optional.
->  	 */
-> -	void (*commit)(struct sunxi_engine *engine);
-> +	void (*commit)(struct sunxi_engine *engine,
-> +		       struct drm_crtc *crtc,
-> +		       struct drm_atomic_state *state);
-> =20
->  	/**
->  	 * @layers_init:
-> @@ -144,12 +147,16 @@ struct sunxi_engine {
->  /**
->   * sunxi_engine_commit() - commit all changes of the engine
->   * @engine:	pointer to the engine
-> + * @crtc:	pointer to crtc the engine is associated with
-> + * @state:	atomic state
->   */
->  static inline void
-> -sunxi_engine_commit(struct sunxi_engine *engine)
-> +sunxi_engine_commit(struct sunxi_engine *engine,
-> +		    struct drm_crtc *crtc,
-> +		    struct drm_atomic_state *state)
->  {
->  	if (engine->ops && engine->ops->commit)
-> -		engine->ops->commit(engine);
-> +		engine->ops->commit(engine, crtc, state);
->  }
-> =20
->  /**
->=20
+--s+LkKkXk95XsNqZb
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZdeeKgAKCRAw5/Bqldv6
+8vdCAJ0RFoBCe44jaM/9Yby4MDmhD7BKnwCgow91ieOFc1Kq+uvHpe2550KDnV0=
+=f+89
+-----END PGP SIGNATURE-----
 
-
+--s+LkKkXk95XsNqZb--
 
