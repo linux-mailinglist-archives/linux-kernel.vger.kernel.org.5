@@ -1,170 +1,198 @@
-Return-Path: <linux-kernel+bounces-76447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CB4585F777
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:51:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC1E185F779
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:51:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D867A2859BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:51:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23C0E1F26493
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:51:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8923D45BF9;
-	Thu, 22 Feb 2024 11:50:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0247646B83;
+	Thu, 22 Feb 2024 11:51:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OQ9WENxL";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KTjgGJO9";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OQ9WENxL";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KTjgGJO9"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="Ybw4Z8bt"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17A6F208A2;
-	Thu, 22 Feb 2024 11:50:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E411405D4
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 11:51:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708602645; cv=none; b=W286EtR+tytwa4n/8e1f8THEl7/BHafn1qsaZB75dM2hldZNinXK7Ln5o7srWG92+I3o4G1MRQDhO25OF2HbUwBsIpIZDP99apwOceapaIpAIqLhRUN3U7pkJOhM45AzdIf+ysuTyZ/knMMbhQBjRA8K5mZW7Xke3wGM6XcSXWw=
+	t=1708602667; cv=none; b=f9EwuMB4k2eL2tyhLoutEawjt5afhSIby2Q++/pxEjtWH93F0cHBacw1gy4dJQhVQNVZBbK6C/Sfji1K2Q40aMxOqinfykPHmGDRbBVDIRlarb8ItY67jAiAobna6VEPHSu3USWBO5Eqkjg0jyMZf3RfF3l/wBpdVoJT3YS2R2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708602645; c=relaxed/simple;
-	bh=HgRKsDY0PLOGMDAasKMEGBLFqk2ft8ubOfJfMmQV5N8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WyvijNzmzbTZXOlRww/VEJEZ91pGIJ9G9LgTjbUgpQGm/7ELrQPeMBJDtutcj3zSqOO5vgFPbA6l5EnZLomNjhpujgJZ24UeoQ3vu+jZRlwxjO1bK6NK+0f9WNMGnw4KByVJlRDpql1hk/k4qFmeTDP1c9cBiyLYDH4vH9HfZ8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OQ9WENxL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KTjgGJO9; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OQ9WENxL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KTjgGJO9; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 36555222B5;
-	Thu, 22 Feb 2024 11:50:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708602641; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=liUtPNlK9kyLGztd5stD/0r54k1A7gG6pWsCn6Vb0e0=;
-	b=OQ9WENxLJThQnmKrDmZe1chLMzOPrUbrUEsnGFbRdYTDxD58soTl6ZgUGxOHmG8FAzZatV
-	4C4waoX+yHTn87c+gfwbhRmeejfVvhgkrx5fwHC2qPF8wjIWl6crPYMBDP9a1zVF2Ib5ZZ
-	G5at/OK0iLTwQDGs8gTo5EPKi29S7aU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708602641;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=liUtPNlK9kyLGztd5stD/0r54k1A7gG6pWsCn6Vb0e0=;
-	b=KTjgGJO9gucsDYuF8huMNLLkVx+dd1XuU5vwqpAGnq57bT98ATwNnY58Gub9QH/XYEYLON
-	e8dQCy4lQg30zbCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708602641; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=liUtPNlK9kyLGztd5stD/0r54k1A7gG6pWsCn6Vb0e0=;
-	b=OQ9WENxLJThQnmKrDmZe1chLMzOPrUbrUEsnGFbRdYTDxD58soTl6ZgUGxOHmG8FAzZatV
-	4C4waoX+yHTn87c+gfwbhRmeejfVvhgkrx5fwHC2qPF8wjIWl6crPYMBDP9a1zVF2Ib5ZZ
-	G5at/OK0iLTwQDGs8gTo5EPKi29S7aU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708602641;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=liUtPNlK9kyLGztd5stD/0r54k1A7gG6pWsCn6Vb0e0=;
-	b=KTjgGJO9gucsDYuF8huMNLLkVx+dd1XuU5vwqpAGnq57bT98ATwNnY58Gub9QH/XYEYLON
-	e8dQCy4lQg30zbCg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 293E513A6B;
-	Thu, 22 Feb 2024 11:50:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id B8QKChE112ViQAAAn2gu4w
-	(envelope-from <jack@suse.cz>); Thu, 22 Feb 2024 11:50:41 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id C9950A0807; Thu, 22 Feb 2024 12:50:32 +0100 (CET)
-Date: Thu, 22 Feb 2024 12:50:32 +0100
-From: Jan Kara <jack@suse.cz>
-To: Oliver Sang <oliver.sang@intel.com>
-Cc: Jan Kara <jack@suse.cz>, oe-lkp@lists.linux.dev, lkp@intel.com,
-	linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Guo Xuenan <guoxuenan@huawei.com>, linux-fsdevel@vger.kernel.org,
-	ying.huang@intel.com, feng.tang@intel.com, fengwei.yin@intel.com
-Subject: Re: [linus:master] [readahead]  ab4443fe3c:
- vm-scalability.throughput -21.4% regression
-Message-ID: <20240222115032.u5h2phfxpn77lu5a@quack3>
-References: <202402201642.c8d6bbc3-oliver.sang@intel.com>
- <20240221111425.ozdozcbl3konmkov@quack3>
- <ZdakRFhEouIF5o6D@xsang-OptiPlex-9020>
+	s=arc-20240116; t=1708602667; c=relaxed/simple;
+	bh=3IL2ZkYOqUafbNGw3RQkjvZe+8BWUuMVfyjeMypwKzg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=QqbzRDvOFZYRNS+wIYlakHt+8E/uRscIeeF9h3zIY02CsLL4/7QGuvfab2wqhk35+LLzCUBCUgRAWVKekSfHo1wUCPna48pFwKpscO8W9BprCTg+A8qH4jC4uu04uAdx07MtkIMnmeDk8G8a8NUsI5UrbYlTERgYcwwyGLebscQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=Ybw4Z8bt; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33d2b354c72so3767544f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:51:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1708602662; x=1709207462; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z9uOmaPJWXMSPVMWYlCkc7A6Acu0xg6yxtT4dMRJGg8=;
+        b=Ybw4Z8btc08e8Hfh88MBSRJMYkICJntOJDiV/xrJvUqxFP/RxdfXEHcgWjucqceskT
+         7qvsC/OK918wK1wTc9tpkCISXLqLNOnCXHmqFY7ChNKWS/5eK2Iy0nyxtjXF96i/Wpcf
+         +AjDv8fWz/Z118lmS6ox1j5ps+pEZ7HH+fMXwvoMLVeWybJYPTIedlYOhwnJkIcka/H+
+         JRBT6n+q/lyK0NAyx8lTpVPAz0TpFLjHbVSJaQs2pe/Tn+r0w+8CQR6LW6Zkv49JbIlm
+         oQfzKHPP3bBaRfK0vagCjCBtNL27QM3dOn8l0F9jJ/XiBmRajfNxw5uiGNj34eHnTsLk
+         UgZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708602662; x=1709207462;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Z9uOmaPJWXMSPVMWYlCkc7A6Acu0xg6yxtT4dMRJGg8=;
+        b=aUlAy8zeH6P8PAUgXToAtEj0+c/m4IUm0/ZTdwrEUyVFRVfCHhVKvJyJ4qcxP/9ZRq
+         RtMRec7labbVHtGOCI2b7KacxqMp2i4a1DHBcg+Lt06J7UjEjheUwtXI7J8jym2z+CQd
+         BPjp+MxXG9CT/7eQ7OH8Em75Ydu0Px50G481nmBQt91V5aIoLGv7xpcFBolKrNWFLPyl
+         AJAe29eA86Bveky1jkbkUSfk0yGPimYt3AUgpys8avPxueQILCJVKC5VTIrTRY1oQ4xx
+         BjQmZxFYk7uTvWxUtNres6E8WJ4oi6pBWalzxtw3jdjnXGDTfiIg2SIu+rCfRsd6mXqL
+         yrIw==
+X-Forwarded-Encrypted: i=1; AJvYcCUDGWRMVewk3YRnxrdVrm84IIuEUFEY+2Pdx4kVomtyXSDrErKQN2talEpovCAVWkUKqmPl1bGOvlrNcrbEi8U4Mf1KmPllOuP3nU0P
+X-Gm-Message-State: AOJu0YxIi9yy38oS2dv18QEATMBUwefxaHlNp8uMMF1Um/DV7iCXrgQh
+	rn9mkljqV2+dBw2lpvMqdy+LobognU8aO66XVF4fUIuHff+znu2U/JSvm/0Bhc0=
+X-Google-Smtp-Source: AGHT+IEvgIk/Nhw4gHfWzlO4k4QZfJ6Qjd2Y1lzMwtCvAEareQW2/qL8s/GuxCbB/x+Rr0gr6jsmVQ==
+X-Received: by 2002:adf:eeca:0:b0:33a:ff66:fecc with SMTP id a10-20020adfeeca000000b0033aff66feccmr14741847wrp.26.1708602661906;
+        Thu, 22 Feb 2024 03:51:01 -0800 (PST)
+Received: from raven.intern.cm-ag (p200300dc6f010900023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f01:900:230:64ff:fe74:809])
+        by smtp.gmail.com with ESMTPSA id co18-20020a0560000a1200b0033d4c3b0beesm15044920wrb.19.2024.02.22.03.51.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 03:51:01 -0800 (PST)
+From: Max Kellermann <max.kellermann@ionos.com>
+To: akpm@linux-foundation.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Cc: willy@infradead.org,
+	Max Kellermann <max.kellermann@ionos.com>
+Subject: [PATCH v2 00/14] Fast kernel headers: split linux/mm.h
+Date: Thu, 22 Feb 2024 12:50:41 +0100
+Message-Id: <20240222115055.1172877-1-max.kellermann@ionos.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZdakRFhEouIF5o6D@xsang-OptiPlex-9020>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [0.40 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[31.24%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: 0.40
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hello,
+This patch set aims to clean up the linux/mm.h header and reduce
+dependencies on it by moving parts out.
 
-On Thu 22-02-24 09:32:52, Oliver Sang wrote:
-> On Wed, Feb 21, 2024 at 12:14:25PM +0100, Jan Kara wrote:
-> > On Tue 20-02-24 16:25:37, kernel test robot wrote:
-> > > kernel test robot noticed a -21.4% regression of vm-scalability.throughput on:
-> > > 
-> > > commit: ab4443fe3ca6298663a55c4a70efc6c3ce913ca6 ("readahead: avoid multiple marked readahead pages")
-> > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> > > 
-> > > testcase: vm-scalability
-> > > test machine: 224 threads 2 sockets Intel(R) Xeon(R) Platinum 8480CTDX (Sapphire Rapids) with 512G memory
-> > > parameters:
-> > > 
-> > > 	runtime: 300s
-> > > 	test: lru-file-readtwice
-> > > 	cpufreq_governor: performance
-> > 
-> > JFYI I had a look into this. What the test seems to do is that it creates
-> > image files on tmpfs, loopmounts XFS there, and does reads over file on
-> > XFS. But I was not able to find what lru-file-readtwice exactly does,
-> > neither I was able to reproduce it because I got stuck on some missing Ruby
-> > dependencies on my test system yesterday.
-> 
-> what's your OS?
+The goal was to eliminate dependencies on linux/mm.h from other
+popular headers such as highmem.h and dma-mapping.h, and I started by
+checking which symbols were really used and moved those declarations
+to separate slim headers.
 
-I have SLES15-SP4 installed in my VM. What was missing was 'git' rubygem
-which apparently is not packaged at all and when I manually installed it, I
-was still hitting other problems so I rather went ahead and checked the
-vm-scalability source and wrote my own reproducer based on that.
+---
+v1 -> v2: added more explanations to commit messages; renamed several
+  new headers from page_*.h to folio_*.h as suggested by Matthew
+  Wilcox; rebase on linux-next; fix build failures on architectures
+  um,nios2,hexagon by adding more missing includes
 
-I'm now able to reproduce the regression in my VM so I'm investigating...
+Max Kellermann (14):
+  drivers: add missing includes on linux/mm.h (and others)
+  include/drm/drm_gem.h: add poll_table_struct forward declaration
+  linux/mm.h: move page_kasan_tag() to mm/page_kasan_tag.h
+  linux/mm.h: move section functions to mm/page_section.h
+  linux/mm.h: move page_address() and others to mm/page_address.h
+  linux/mm.h: move folio_size(), ... to mm/folio_size.h
+  linux/mm.h: move folio_next() to mm/folio_next.h
+  linux/mm.h: move devmap-related declarations to mm/devmap_managed.h
+  linux/mm.h: move usage count functions to mm/folio_usage.h
+  linux/mm.h: move page_zone_id() and more to mm/folio_zone.h
+  linux/mm.h: move pfmemalloc-related functions to pfmemalloc.h
+  linux/mm.h: move is_vmalloc_addr() to mm/vmalloc_addr.h
+  linux/mm.h: move high_memory to mm/high_memory.h
+  include: reduce dependencies on linux/mm.h
 
-								Honza
+ MAINTAINERS                                   |   1 +
+ arch/arm/include/asm/memory.h                 |   4 +
+ arch/arm/include/asm/pgtable.h                |   2 +
+ arch/arm/mm/iomap.c                           |   3 +
+ arch/csky/include/asm/page.h                  |   1 +
+ arch/hexagon/include/asm/mem-layout.h         |   4 +
+ arch/m68k/include/asm/page_mm.h               |   1 +
+ arch/m68k/include/asm/pgtable_mm.h            |   1 +
+ arch/parisc/include/asm/floppy.h              |   1 +
+ arch/powerpc/include/asm/book3s/32/pgtable.h  |   4 +
+ arch/powerpc/include/asm/nohash/32/pgtable.h  |   1 +
+ arch/powerpc/include/asm/page.h               |   1 +
+ arch/x86/include/asm/floppy.h                 |   1 +
+ arch/x86/include/asm/pgtable_32_areas.h       |   4 +
+ drivers/comedi/comedi_buf.c                   |   1 +
+ .../qat/qat_common/adf_gen4_pm_debugfs.c      |   1 +
+ drivers/dma/dma-axi-dmac.c                    |   1 +
+ drivers/dma/sh/rcar-dmac.c                    |   1 +
+ drivers/firmware/qcom/qcom_scm-legacy.c       |   1 +
+ drivers/firmware/qcom/qcom_scm-smc.c          |   1 +
+ drivers/firmware/raspberrypi.c                |   1 +
+ drivers/iio/buffer/industrialio-buffer-dma.c  |   1 +
+ drivers/iommu/iommufd/ioas.c                  |   2 +
+ drivers/iommu/iommufd/selftest.c              |   1 +
+ drivers/media/platform/mediatek/vpu/mtk_vpu.c |   1 +
+ drivers/media/platform/ti/omap/omap_voutlib.c |   1 +
+ drivers/misc/bcm-vk/bcm_vk_dev.c              |   1 +
+ drivers/misc/fastrpc.c                        |   1 +
+ drivers/misc/genwqe/card_dev.c                |   1 +
+ drivers/misc/uacce/uacce.c                    |   1 +
+ drivers/mtd/nand/onenand/onenand_samsung.c    |   1 +
+ drivers/mtd/spi-nor/core.h                    |   2 +
+ drivers/pci/p2pdma.c                          |   1 +
+ drivers/pci/pci.c                             |   1 +
+ drivers/remoteproc/remoteproc_core.c          |   1 +
+ drivers/soc/qcom/rmtfs_mem.c                  |   1 +
+ drivers/spi/spi-aspeed-smc.c                  |   1 +
+ drivers/spi/spi-bcm2835.c                     |   2 +
+ drivers/spi/spi-intel.c                       |   1 +
+ drivers/virtio/virtio_ring.c                  |   1 +
+ include/drm/drm_file.h                        |   1 +
+ include/linux/bio.h                           |   2 +
+ include/linux/dma-mapping.h                   |   1 +
+ include/linux/highmem-internal.h              |   2 +
+ include/linux/highmem.h                       |   4 +-
+ include/linux/huge_mm.h                       |   2 +
+ include/linux/iommu.h                         |   1 +
+ include/linux/mm.h                            | 582 +-----------------
+ include/linux/mm/devmap_managed.h             |  37 ++
+ include/linux/mm/folio_next.h                 |  27 +
+ include/linux/mm/folio_size.h                 | 150 +++++
+ include/linux/mm/folio_usage.h                | 177 ++++++
+ include/linux/mm/folio_zone.h                 |  38 ++
+ include/linux/mm/high_memory.h                |   7 +
+ include/linux/mm/page_address.h               |  71 +++
+ include/linux/mm/page_kasan_tag.h             |  66 ++
+ include/linux/mm/page_section.h               |  23 +
+ include/linux/mm/pfmemalloc.h                 |  52 ++
+ include/linux/mm/vmalloc_addr.h               |  33 +
+ include/linux/nvme-keyring.h                  |   2 +
+ include/linux/scatterlist.h                   |   8 +-
+ include/linux/skbuff.h                        |   4 +
+ kernel/dma/ops_helpers.c                      |   1 +
+ kernel/dma/remap.c                            |   1 +
+ lib/scatterlist.c                             |   1 +
+ mm/dmapool.c                                  |   1 +
+ 66 files changed, 777 insertions(+), 575 deletions(-)
+ create mode 100644 include/linux/mm/devmap_managed.h
+ create mode 100644 include/linux/mm/folio_next.h
+ create mode 100644 include/linux/mm/folio_size.h
+ create mode 100644 include/linux/mm/folio_usage.h
+ create mode 100644 include/linux/mm/folio_zone.h
+ create mode 100644 include/linux/mm/high_memory.h
+ create mode 100644 include/linux/mm/page_address.h
+ create mode 100644 include/linux/mm/page_kasan_tag.h
+ create mode 100644 include/linux/mm/page_section.h
+ create mode 100644 include/linux/mm/pfmemalloc.h
+ create mode 100644 include/linux/mm/vmalloc_addr.h
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.39.2
+
 
