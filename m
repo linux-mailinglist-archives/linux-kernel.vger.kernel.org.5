@@ -1,263 +1,115 @@
-Return-Path: <linux-kernel+bounces-77141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20CCA86019B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:39:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F00B8601A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:40:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 443D41C24375
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:38:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D6A9B2523B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:40:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62759137938;
-	Thu, 22 Feb 2024 18:28:44 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5403140E46;
+	Thu, 22 Feb 2024 18:30:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Wcme3Ygr"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6746137919;
-	Thu, 22 Feb 2024 18:28:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC61414037B;
+	Thu, 22 Feb 2024 18:30:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708626523; cv=none; b=TDCWsT2YcUSIhA0AM4q2HSakLUNq1lmuA4JvQH76x09uxUPdDORPmTWBKR1qZrf5BMcMM90VK2dceY0ZZ1vr217/vy70HhI71WvU144QfL9xGRs/0iN3OEcltvAHNu69viaiazXHra2w8G2EskHllHN0ZnHZMvdxZzReouVgyzY=
+	t=1708626604; cv=none; b=Bqyp7M91t62yOo0IJYqYZQQg+tKG3XhuTlK9YvWJLFiNgF1FQzCiyVkj9XrYJRcECpGFeeH2iZJ3jId/FjqlMr5y25eJDABxdssA5WqsNyuMZz3DYWQXOXUY12bgt+wPlGFwhmzoUwM50kt0TT1PmIkdDvciEG09Yvj+oliDjus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708626523; c=relaxed/simple;
-	bh=QiLVanTscz1aqdc7VbWSJnOpMWD88oe6T0mv+ihO+5o=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dJSWx1yaIQvGzDOKj5ZWqJg/iznqz9VrSdA7eOLpTdtMEninOqXXuhGZKYpWEWvZND27vzFGF0tLk9pjAnEaOmHcq8J0TRdfb/oyr5im9f2aM1yQpjxLcbK8hI8IB6zWqyHeP+GzGP25YOR3zg5vXCCelC5WOt78fl1V4PwXHuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TghPB5xt4z6J9St;
-	Fri, 23 Feb 2024 02:24:14 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 1E39B140A9C;
-	Fri, 23 Feb 2024 02:28:38 +0800 (CST)
-Received: from localhost (10.195.247.94) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 22 Feb
- 2024 18:28:37 +0000
-Date: Thu, 22 Feb 2024 18:28:34 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-CC: Linux ACPI <linux-acpi@vger.kernel.org>, LKML
-	<linux-kernel@vger.kernel.org>, Mika Westerberg
-	<mika.westerberg@linux.intel.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
-	"Russell King (Oracle)" <linux@armlinux.org.uk>
-Subject: Re: [PATCH v1 3/4] ACPI: scan: Rework Device Check and Bus Check
- notification handling
-Message-ID: <20240222182834.00000b02@Huawei.com>
-In-Reply-To: <2939512.e9J7NaK4W3@kreacher>
-References: <4562925.LvFx2qVVIh@kreacher>
-	<2939512.e9J7NaK4W3@kreacher>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1708626604; c=relaxed/simple;
+	bh=oIzPtj+CyOLKn0NcTVtqH16JXPUfqFE5Kv4atxAP9t4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ittAHO5NVaJBqUQ+nPCMJ60deyLucE7hmemLGb+WT972aSCpEiDlukIr9Csmc7xdeM2M9+23GK62qpUt1lvla5KjQfOzaWcoJWrhp5HP/XjAwEuBELEgxza5HAgT6E8ezisp1Msod8z+4+/6X/cenhKmFWWBXotMJMN0AdhktqQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Wcme3Ygr; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708626602; x=1740162602;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=oIzPtj+CyOLKn0NcTVtqH16JXPUfqFE5Kv4atxAP9t4=;
+  b=Wcme3YgrjQerpnZZyNZP6vs4EfmCyOUX7FbfRey3tYjIizFPETWF7wAB
+   /n+MGB5cfBfAVGqoGnFjYVj7O4+FGj91ZozgXAWiE9p1Ai6qupwUbX29l
+   TlJH8NAemBB1uwRmCX31m/a/wE2SHMJcVqpocgvpDBqXdw7yfjaKQa9Qm
+   lIV637Efm4ga8/c357v840R7DUu+pnGrw2d5833hmEsV+OXAty9wq2zwh
+   LPrbza+jrvBuUWVZkSJFtGT2FzovRQSIEOU70GRNAuMS/7ZAkgLQK5EtH
+   uXtfVRshy4YSR91rX9okIOjkUkMcjf6v3FO9uasvIqQPnMxSh4xhuki5v
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="6697550"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="6697550"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 10:30:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="5552642"
+Received: from djiang5-mobl3.amr.corp.intel.com (HELO [10.246.114.198]) ([10.246.114.198])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 10:29:59 -0800
+Message-ID: <9cc1ccfa-5ddc-46d6-93ff-dab952191207@intel.com>
+Date: Thu, 22 Feb 2024 11:29:59 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cxl/hdm: Clean up a debug printk
+Content-Language: en-US
+To: Dan Carpenter <dan.carpenter@linaro.org>,
+ Davidlohr Bueso <dave@stgolabs.net>
+Cc: Jonathan Cameron <jonathan.cameron@huawei.com>,
+ Alison Schofield <alison.schofield@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>,
+ Dan Williams <dan.j.williams@intel.com>, Robert Richter <rrichter@amd.com>,
+ linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org
+References: <3d3d969d-651d-4e9d-a892-900876a60ab5@moroto.mountain>
+From: Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <3d3d969d-651d-4e9d-a892-900876a60ab5@moroto.mountain>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Wed, 21 Feb 2024 21:02:33 +0100
-"Rafael J. Wysocki" <rjw@rjwysocki.net> wrote:
 
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+On 2/21/24 11:14 PM, Dan Carpenter wrote:
+> Smatch complains that %pa is for phys_addr_t types and "size" is a u64.
 > 
-> The underlying problem is the handling of the enabled bit in device
-> status (bit 1 of _STA return value) which is required by the ACPI
-> specification to be observed in addition to the present bit (bit 0
-> of _STA return value) [1], but Linux does not observe it.
+>     drivers/cxl/core/hdm.c:521 cxl_dpa_alloc() error: '%pa' expects
+>     argument of type 'phys_addr_t*', argument 4 has type 'ullong*
 > 
-> Since Linux has not looked at that bit for a long time, it is generally
-> risky to start obseving it in all device enumeration cases, especially
-> at the system initialization time, but it can be observed when the
-> kernel receives a Bus Check or Device Check notification indicating a
-> change in device configuration.  In those cases, seeing the enabled bit
-> clear may be regarded as an indication that the device at hand should
-> not be used any more.
-
-Hi Rafael,
-
-I rebased the vCPU HP series Russell was working to go on top of this
-and give me a basis to check the flows through your new conditions.
-It may have it's own issues, but at least it makes use of some of these
-bits and related checks.
-
-For now the only key thing is make sure we don't check enabled()
-in the hot remove path (until after _EJ0).  That happens correctly
-because acpi_device_trim() is called and that doesn't have check_status
-set.  The naming however doesn't make it obvious that path elides the
-check, so I wonder if that call in acpi_scan_hotremove()
-should be replaced with acpi_bus_trim_one(, NULL);
-
+> Looking at this, to me it seems more useful to print the sizes as
+> decimal instead of hex.  Let's do that.
 > 
-> For this reason, rework the handling of Device Check and Bus Check
-> notifications in the ACPI core device enumeration code in the
-> following way:
-> 
->  1. Make acpi_bus_trim_one() check device status if its second argument
->     is not NULL, in which case it will only detach scan handlers or ACPI
->     drivers from devices whose _STA returns the enabled bit clear.
-> 
->  2. Make acpi_scan_device_check() and acpi_scan_bus_check() invoke
->     acpi_bus_trim_one() with a non-NULL second argument unconditionally,
->     so scan handlers and ACPI drivers are detached from the target
->     device and its ancestors if their _STA returns the enabled bit
->     clear.
-> 
->  3. Make acpi_scan_device_check() skip the bus rescan if _STA for the
->     target device return the enabled bit clear, which is allowed by the
->     ACPI specification in the Device Check case. [2]
-> 
-> In addition to the above:
-> 
->  4. Make sure that the bus rescan that needs to be triggered in the case
->     when a new device has appeared is carried out in the same way in
->     both the Device Check and Bus Check cases.
-> 
->  5. In the Device Check case, start the bus rescan mentioned above from
->     the target device's parent, as per the specification. [2]
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-This feels like an 'and' kind of a patch. Can we split it up so refactors
-are done first and the _STA check stuff in a follow up patch?
-
-End result is good, just could possibly be easier to review in two hops.
-
-> 
-> Link: https://uefi.org/specs/ACPI/6.5/06_Device_Configuration.html#sta-device-status # [1]
-> Link: https://uefi.org/specs/ACPI/6.5/05_ACPI_Software_Programming_Model.html#device-object-notification-values # [2]
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
-Diff had a field day here and generated an somewhat unreadable patch.
-
-A few other comments inline, but superficial stuff. The handling looks
-correct to me.
-
+Reviewed-by: Dave Jiang <dave.jiang@intel.com>
 > ---
->  drivers/acpi/internal.h |    1 
->  drivers/acpi/scan.c     |  109 +++++++++++++++++++++++++++---------------------
->  2 files changed, 64 insertions(+), 46 deletions(-)
+>  drivers/cxl/core/hdm.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> Index: linux-pm/drivers/acpi/scan.c
-> ===================================================================
-> --- linux-pm.orig/drivers/acpi/scan.c
-> +++ linux-pm/drivers/acpi/scan.c
-> @@ -244,11 +244,27 @@ static int acpi_scan_try_to_offline(stru
->  	return 0;
->  }
+> diff --git a/drivers/cxl/core/hdm.c b/drivers/cxl/core/hdm.c
+> index 7d97790b893d..0b1843631b26 100644
+> --- a/drivers/cxl/core/hdm.c
+> +++ b/drivers/cxl/core/hdm.c
+> @@ -518,9 +518,9 @@ int cxl_dpa_alloc(struct cxl_endpoint_decoder *cxled, unsigned long long size)
+>  	}
 >  
-> -static int acpi_bus_trim_one(struct acpi_device *adev, void *not_used)
-> +static int acpi_bus_trim_one(struct acpi_device *adev, void *check_status)
-
-Bool as pointer is a bit hard to read particularly as you use (void *)true
-for true, but not (void *)false for false.
-
-However it's not too bad.  My current version of the vCPU patches needs
-to pass more data in here anyway (as there a few things we need to
-not do on eject, that don't correspond to !check_status)
-so I have this as a struct anyway after a rebase.
-
->  {
->  	struct acpi_scan_handler *handler = adev->handler;
->  
-> -	acpi_dev_for_each_child_reverse(adev, acpi_bus_trim_one, NULL);
-> +	acpi_dev_for_each_child_reverse(adev, acpi_bus_trim_one, check_status);
-> +
-> +	if (check_status) {
-> +		acpi_bus_get_status(adev);
-> +		/*
-> +		 * Skip devices that are still there and take the enabled
-> +		 * flag into account.
-> +		 */
-> +		if (acpi_device_is_enabled(adev))
-> +			return 0;
-> +
-> +		/* Skip device that have not been enumerated. */
-> +		if (!acpi_device_enumerated(adev)) {
-> +			dev_dbg(&adev->dev, "Still not enumerated\n");
-> +			return 0;
-> +		}
-> +	}
->  
->  	adev->flags.match_driver = false;
->  	if (handler) {
-> @@ -315,71 +331,67 @@ static int acpi_scan_hot_remove(struct a
->  	return 0;
->  }
->  
-> -static int acpi_scan_device_not_enumerated(struct acpi_device *adev)
-> +static void acpi_scan_check_gone(struct acpi_device *adev)
-
-The name of this had me initially a little confused.  Maybe
-acpi_bus_trim_if_gone()
-
-Or maybe just drop this wrapper entirely as it doesn't save much
-and naming it clearly is hard.
-
-
->  {
-> -	if (!acpi_device_enumerated(adev)) {
-> -		dev_warn(&adev->dev, "Still not enumerated\n");
-> -		return -EALREADY;
-> -	}
-> -	acpi_bus_trim(adev);
-> -	return 0;
-> +	acpi_bus_trim_one(adev, (void *)true);
->  }
-
-
->  static int acpi_generic_hotplug_event(struct acpi_device *adev, u32 type)
->  {
->  	switch (type) {
->  	case ACPI_NOTIFY_BUS_CHECK:
-> -		return acpi_scan_bus_check(adev, NULL);
-> +		return acpi_scan_bus_check(adev);
->  	case ACPI_NOTIFY_DEVICE_CHECK:
->  		return acpi_scan_device_check(adev);
->  	case ACPI_NOTIFY_EJECT_REQUEST:
-> @@ -1945,6 +1957,11 @@ bool acpi_device_is_present(const struct
->  	return adev->status.present || adev->status.functional;
->  }
->  
-> +bool acpi_device_is_enabled(const struct acpi_device *adev)
-> +{
-> +	return acpi_device_is_present(adev) && adev->status.enabled;
-
-This resolves as (present or functional) && enabled.
-
-By my reading you are not allowed functional && enabled, but not present.
-Line one of the description says.
-
-"If bit [0] is cleared, then bit 1 must also be cleared (in other words, a device that is not present cannot be enabled)."
-
-I don't much care about that though (I think we discussed this
-in Russel's earlier series)
-
-> +}
-> +
->  static bool acpi_scan_handler_matching(struct acpi_scan_handler *handler,
->  				       const char *idstr,
->  				       const struct acpi_device_id **matchid)
-> Index: linux-pm/drivers/acpi/internal.h
-> ===================================================================
-> --- linux-pm.orig/drivers/acpi/internal.h
-> +++ linux-pm/drivers/acpi/internal.h
-> @@ -121,6 +121,7 @@ int acpi_device_setup_files(struct acpi_
->  void acpi_device_remove_files(struct acpi_device *dev);
->  void acpi_device_add_finalize(struct acpi_device *device);
->  void acpi_free_pnp_ids(struct acpi_device_pnp *pnp);
-> +bool acpi_device_is_enabled(const struct acpi_device *adev);
->  bool acpi_device_is_present(const struct acpi_device *adev);
->  bool acpi_device_is_battery(struct acpi_device *adev);
->  bool acpi_device_is_first_physical_node(struct acpi_device *adev,
-> 
-> 
-> 
-
+>  	if (size > avail) {
+> -		dev_dbg(dev, "%pa exceeds available %s capacity: %pa\n", &size,
+> +		dev_dbg(dev, "%llu exceeds available %s capacity: %llu\n", size,
+>  			cxled->mode == CXL_DECODER_RAM ? "ram" : "pmem",
+> -			&avail);
+> +			(u64)avail);
+>  		rc = -ENOSPC;
+>  		goto out;
+>  	}
 
