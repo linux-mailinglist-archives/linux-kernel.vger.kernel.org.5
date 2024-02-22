@@ -1,178 +1,196 @@
-Return-Path: <linux-kernel+bounces-76701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2102485FB42
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:30:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDDE385FB47
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:31:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11AD21C2123F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:30:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 873A0282650
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:31:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E94D1482FD;
-	Thu, 22 Feb 2024 14:30:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F3AB1474D4;
+	Thu, 22 Feb 2024 14:31:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="FICcqJjW"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="St/l5Cmf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEEDF1474D0;
-	Thu, 22 Feb 2024 14:29:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F066134CC2;
+	Thu, 22 Feb 2024 14:31:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708612202; cv=none; b=GylnuzZ5WPYTwLeblDwk+ijd2aTbWSiv+tXpZfFOMkTXTHvF81tM+IXeocXVrhzzgLmq14e8UmDJ24HDdrVX+bq+3YV5iTCv1kjhaVTf3sxD78198yrdQp6ZxKh2wYDIyyFF/SOZuhAwdzf+lppLWeF9OcRqey4BqR3+FuH6sJ0=
+	t=1708612303; cv=none; b=ffNDwqUYrmG7yGBc0JCVWnEowoPKmFCDN3T3Y6JQJluBM2VwNyTjjok9hsUZm+7Xh4+aTe4I+Y9KWQeNC4fJkCbVH+YhYSKIhgeUGBETzOwVpv3/aYFk0vIuILPqjcfprMu6KIjcisG9p+vC2nPOVHk4urNia9h2c1lZ9UBRQ9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708612202; c=relaxed/simple;
-	bh=eVT6NRXuFee0b5qT1stFSBw6MLt6eYJNdZ0wkAk4zvE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FjLyxboF9fKusNECD6WgMR/KnsTA11OB/RB//3JfeUJTAoARIiaMSW3xsuih/GvPbd54SypPxhLwEuEEdOiA5zCT2dv2Z4WfWf8mdJ6sjDjkN2Bru1gx+Y2h2KTsPxbfx+VbLuOBTx8TQvKoHNvURVPlbVJulI9SsLuHmzy3DUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=FICcqJjW; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1708612196;
-	bh=eVT6NRXuFee0b5qT1stFSBw6MLt6eYJNdZ0wkAk4zvE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=FICcqJjWCoyNQyb/649yHJNbZ1FUOhDVyNw1DHCIRzS/ll5j+mw+39USh8Qo6zOf6
-	 kGfy79xPRtuor6C54lXoJZvqYjle760NG8W8EM9fO/5e4eVbhyMfh117fn8Tp0WWwC
-	 ROsAK9uW2iHp7nJOSQOSLdG1fYMXVcqPf8nxlODTs+XR4FDiILqTfHMkzMjKm3hi2R
-	 RZywMTZHPltOSlRp8MpdDBYHEpnBHm6APrck0/xnBxjv+rbTgdE2vdgO0xzxqGQANF
-	 n3s1AvbUxMfYu8xly5Yl9VSEl9UxDRz9ywUgklHHjC/XOAlrZ6p1LETRHEL0xWDXKd
-	 nftCxXkVKHQHA==
-Received: from [100.74.67.65] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: jmassot)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 827A3378206B;
-	Thu, 22 Feb 2024 14:29:55 +0000 (UTC)
-Message-ID: <766a4e5b-01fc-4fee-affa-9921ed7cd8f3@collabora.com>
-Date: Thu, 22 Feb 2024 15:29:54 +0100
+	s=arc-20240116; t=1708612303; c=relaxed/simple;
+	bh=fWM5/IIptB8qiMmDicnhEXv1YrCPrUbI/y/AmEvYnR4=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BH4Nsr2YwQvlvpiUSz3/hzma+aOugas5djYAmWsYWSvmx7NW+0414PTHRD+I7guhGdcJ+EwdFNBDB84C2ytxatYRes47GilVoEX/Hs6NRhDBZ8NRO0CxkDHl0PQV5mOIUulQXHw7gUBtYt4W7xZEnZVl0PGbQttMxCHGeZPbQXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=St/l5Cmf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22F57C433C7;
+	Thu, 22 Feb 2024 14:31:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708612303;
+	bh=fWM5/IIptB8qiMmDicnhEXv1YrCPrUbI/y/AmEvYnR4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=St/l5Cmfq8JVGWmQlPPDcs0go0XirWQniOnrthUt/k7WDo+z5s8LNdUj8+m7PHqix
+	 rw+j0GpJNSUYfBgYUmlOliR2QN5VROEjgj4GKOOVoBED2LD8mcZ9kO9zSOKt9fv2Jp
+	 Mw4P8onpPP8o6enDqdvXx9qvD9IzbPVSjLCqloIDMgWsf6iuhLoa1pvjaNmcU9/im/
+	 Iv3ZJ6KqOs2JDB20SflQKX8YdCQF6x8USnsGMmSQlWVUtDkS0/O4LHaZO4/An25niG
+	 GEmXXg8hWckXwyAJ5uSKM0A2jQdnqq8kQsXKhIx9w9bsvgCwLbFOiTYOWxE/rypZyW
+	 mnD1YIh8oHTXg==
+Received: from 82-132-212-42.dab.02.net ([82.132.212.42] helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rdA6u-005lAs-PH;
+	Thu, 22 Feb 2024 14:31:40 +0000
+Date: Thu, 22 Feb 2024 14:31:38 +0000
+Message-ID: <87frxka7ud.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Paolo Bonzini <pbonzini@redhat.com>,
+    Oliver Upton <oliver.upton@linux.dev>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+	Joey Gouly <joey.gouly@arm.com>,
+	Christoffer Dall <cdall@cs.columbia.edu>,
+	KVM <kvm@vger.kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the kvm-arm tree
+In-Reply-To: <b9d9a871-ba64-4c13-a186-0c60adc8d245@redhat.com>
+References: <20240222220349.1889c728@canb.auug.org.au>
+	<20240222111129.GA946362@e124191.cambridge.arm.com>
+	<20240222224041.782761fd@canb.auug.org.au>
+	<b9d9a871-ba64-4c13-a186-0c60adc8d245@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 02/21] media: cadence: csi2rx: configure DPHY before
- starting source stream
-Content-Language: en-US
-To: Jai Luthra <j-luthra@ti.com>,
- Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Sakari Ailus <sakari.ailus@linux.intel.com>,
- Hans Verkuil <hverkuil-cisco@xs4all.nl>, Vaishnav Achath
- <vaishnav.a@ti.com>, Maxime Ripard <mripard@kernel.org>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
- Aradhya Bhatia <a-bhatia1@ti.com>, Devarsh Thakkar <devarsht@ti.com>,
- Changhuang Liang <changhuang.liang@starfivetech.com>,
- Jack Zhu <jack.zhu@starfivetech.com>, Jayshri Pawar <jpawar@cadence.com>
-References: <20240222-multistream-v1-0-1837ed916eeb@ti.com>
- <20240222-multistream-v1-2-1837ed916eeb@ti.com>
-From: Julien Massot <julien.massot@collabora.com>
-In-Reply-To: <20240222-multistream-v1-2-1837ed916eeb@ti.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 82.132.212.42
+X-SA-Exim-Rcpt-To: pbonzini@redhat.com, oliver.upton@linux.dev, sfr@canb.auug.org.au, joey.gouly@arm.com, cdall@cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-Hi Jai,
+On Thu, 22 Feb 2024 13:11:59 +0000,
+Paolo Bonzini <pbonzini@redhat.com> wrote:
+>=20
+> On 2/22/24 12:40, Stephen Rothwell wrote:
+> >> This fails because https://git.kernel.org/pub/scm/linux/kernel/git/arm=
+64/linux.git/commit/?id=3Dfdd867fe9b32
+> >> added new fields to that register (ID_AA64DFR1_EL1)
+> >>=20
+> >> and commit b80b701d5a6 ("KVM: arm64: Snapshot all non-zero RES0/RES1 s=
+ysreg fields for later checking")
+> >> took a snapshot of the fields, so the RES0 (reserved 0) bits don't mat=
+ch anymore.
+> >>=20
+> >> Not sure how to resolve it in the git branches though.
+> >=20
+> > Thanks.  I will apply this patch to the merge of the kvm-arm tree from
+> > tomorrow (and at the end of today's tree).
+>=20
+> Marc, Oliver, can you get a topic branch from Catalin and friends for
+> this sysreg patch, and apply the fixup directly to the kvm-arm branch
+> in the merge commit?
+>=20
+> Not _necessary_, as I can always ask Linus to do the fixup, but
+> generally he prefers to have this sorted out by the maintainers if it
+> is detected by linux-next.
 
-On 2/22/24 12:31, Jai Luthra wrote:
-> From: Pratyush Yadav <p.yadav@ti.com>
-> 
-> When the source device is operating above 1.5 Gbps per lane, it needs to
-> send the Skew Calibration Sequence before sending any HS data. If the
-> DPHY is initialized after the source stream is started, then it might
-> miss the sequence and not be able to receive data properly. Move the
-> start of source subdev to the end of the sequence to make sure
-> everything is ready to receive data before the source starts streaming.
-> 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> Signed-off-by: Jai Luthra <j-luthra@ti.com>
+I think that's not the correct thing to do at this time. I should have
+timed the introduction of these checks a bit later, after the merge
+window.
 
-Thanks for your patch!
-This patch is useful even at lower data rate than 1.5 Gbps.
-I'm having the issue at 800Mbps with max96714F deserializer.
+But more to the point, the proposed patch is also not the best thing
+to merge, because it hides that there is a discrepancy between what
+the architecture describes, and what KVM knows. I really want to know
+about it, or it will be yet another bug that we wont detect easily.
+Specially for ID_AA64DFR*_EL1 which are a bloody mine-field.
 
-Should this patch deserve a Fixes tag?
-Fixes: 3295cf1241d3 ("media: cadence: Add support for external dphy")
+So I'd rather we make the check optional, and we'll play catch up for
+a bit longer. Something like the patch below.
 
-Reviewed-by: Julien Massot <julien.massot@collabora.com>
-Tested-by: Julien Massot <julien.massot@collabora.com>
+Oliver, do you mind queuing this ASAP (also pushed out to my dev
+branch)?
 
-> ---
->   drivers/media/platform/cadence/cdns-csi2rx.c | 26 ++++++++++++++------------
->   1 file changed, 14 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/media/platform/cadence/cdns-csi2rx.c b/drivers/media/platform/cadence/cdns-csi2rx.c
-> index 70b7f8a9e4f2..75e602c1d762 100644
-> --- a/drivers/media/platform/cadence/cdns-csi2rx.c
-> +++ b/drivers/media/platform/cadence/cdns-csi2rx.c
-> @@ -243,10 +243,6 @@ static int csi2rx_start(struct csi2rx_priv *csi2rx)
->   
->   	writel(reg, csi2rx->base + CSI2RX_STATIC_CFG_REG);
->   
-> -	ret = v4l2_subdev_call(csi2rx->source_subdev, video, s_stream, true);
-> -	if (ret)
-> -		goto err_disable_pclk;
-> -
->   	/* Enable DPHY clk and data lanes. */
->   	if (csi2rx->dphy) {
->   		reg = CSI2RX_DPHY_CL_EN | CSI2RX_DPHY_CL_RST;
-> @@ -256,6 +252,13 @@ static int csi2rx_start(struct csi2rx_priv *csi2rx)
->   		}
->   
->   		writel(reg, csi2rx->base + CSI2RX_DPHY_LANE_CTRL_REG);
-> +
-> +		ret = csi2rx_configure_ext_dphy(csi2rx);
-> +		if (ret) {
-> +			dev_err(csi2rx->dev,
-> +				"Failed to configure external DPHY: %d\n", ret);
-> +			goto err_disable_pclk;
-> +		}
->   	}
->   
->   	/*
-> @@ -295,14 +298,9 @@ static int csi2rx_start(struct csi2rx_priv *csi2rx)
->   
->   	reset_control_deassert(csi2rx->sys_rst);
->   
-> -	if (csi2rx->dphy) {
-> -		ret = csi2rx_configure_ext_dphy(csi2rx);
-> -		if (ret) {
-> -			dev_err(csi2rx->dev,
-> -				"Failed to configure external DPHY: %d\n", ret);
-> -			goto err_disable_sysclk;
-> -		}
-> -	}
-> +	ret = v4l2_subdev_call(csi2rx->source_subdev, video, s_stream, true);
-> +	if (ret)
-> +		goto err_disable_sysclk;
->   
->   	clk_disable_unprepare(csi2rx->p_clk);
->   
-> @@ -316,6 +314,10 @@ static int csi2rx_start(struct csi2rx_priv *csi2rx)
->   		clk_disable_unprepare(csi2rx->pixel_clk[i - 1]);
->   	}
->   
-> +	if (csi2rx->dphy) {
-> +		writel(0, csi2rx->base + CSI2RX_DPHY_LANE_CTRL_REG);
-> +		phy_power_off(csi2rx->dphy);
-> +	}
->   err_disable_pclk:
->   	clk_disable_unprepare(csi2rx->p_clk);
->   
-> 
+Thanks,
 
--- 
-Julien Massot
-Senior Software Engineer
-Collabora Ltd.
-Platinum Building, St John's Innovation Park, Cambridge CB4 0DS, UK
-Registered in England & Wales, no. 5513718
+	M.
+
+=46rom 85d861a6ca055c7681c826c580e7c90d74c26ac5 Mon Sep 17 00:00:00 2001
+From: Marc Zyngier <maz@kernel.org>
+Date: Thu, 22 Feb 2024 14:12:09 +0000
+Subject: [PATCH] KVM: arm64: Make build-time check of RES0/RES1 bits option=
+al
+
+In order to ease the transition towards a state of absolute
+paranoia where all RES0/RES1 bits gets checked against what
+KVM know of them, make the checks optional and garded by a
+config symbol (CONFIG_KVM_ARM64_RES_BITS_PARANOIA) default to n.
+
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+---
+ arch/arm64/kvm/Kconfig          | 11 +++++++++++
+ arch/arm64/kvm/check-res-bits.h |  4 ++++
+ 2 files changed, 15 insertions(+)
+
+diff --git a/arch/arm64/kvm/Kconfig b/arch/arm64/kvm/Kconfig
+index 5c2a672c06a8..fa9389270cfe 100644
+--- a/arch/arm64/kvm/Kconfig
++++ b/arch/arm64/kvm/Kconfig
+@@ -67,4 +67,15 @@ config PROTECTED_NVHE_STACKTRACE
+=20
+ 	  If unsure, or not using protected nVHE (pKVM), say N.
+=20
++config KVM_ARM64_RES_BITS_PARANOIA
++	bool "Build-time check of RES0/RES1 bits"
++	depends on KVM
++	default n
++	help
++	  Say Y here to validate that KVM's knowledge of most system
++	  registers' RES0/RES1 bits matches when the rest of the kernel
++	  defines. Expect the build to fail badly if you enable this.
++
++	  Just say N.
++
+ endif # VIRTUALIZATION
+diff --git a/arch/arm64/kvm/check-res-bits.h b/arch/arm64/kvm/check-res-bit=
+s.h
+index 967b5d171d53..2d98e60efc3c 100644
+--- a/arch/arm64/kvm/check-res-bits.h
++++ b/arch/arm64/kvm/check-res-bits.h
+@@ -21,6 +21,8 @@
+  */
+ static inline void check_res_bits(void)
+ {
++#ifdef CONFIG_KVM_ARM64_RES_BITS_PARANOIA
++
+ 	BUILD_BUG_ON(OSDTRRX_EL1_RES0		!=3D (GENMASK_ULL(63, 32)));
+ 	BUILD_BUG_ON(MDCCINT_EL1_RES0		!=3D (GENMASK_ULL(63, 31) | GENMASK_ULL(28=
+, 0)));
+ 	BUILD_BUG_ON(MDSCR_EL1_RES0		!=3D (GENMASK_ULL(63, 36) | GENMASK_ULL(28, =
+28) | GENMASK_ULL(25, 24) | GENMASK_ULL(20, 20) | GENMASK_ULL(18, 16) | GEN=
+MASK_ULL(11, 7) | GENMASK_ULL(5, 1)));
+@@ -118,4 +120,6 @@ static inline void check_res_bits(void)
+ 	BUILD_BUG_ON(TRBMAR_EL1_RES0		!=3D (GENMASK_ULL(63, 12)));
+ 	BUILD_BUG_ON(TRBTRG_EL1_RES0		!=3D (GENMASK_ULL(63, 32)));
+ 	BUILD_BUG_ON(TRBIDR_EL1_RES0		!=3D (GENMASK_ULL(63, 12) | GENMASK_ULL(7, =
+6)));
++
++#endif
+ }
+--=20
+2.39.2
+
+
+--=20
+Without deviation from the norm, progress is not possible.
 
