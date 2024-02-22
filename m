@@ -1,120 +1,107 @@
-Return-Path: <linux-kernel+bounces-75704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3498F85EDB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:11:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 952CA85EDB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:11:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65A861C22B5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:11:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5FE41C22AA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:11:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89FE910A16;
-	Thu, 22 Feb 2024 00:10:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C09001FB2;
+	Thu, 22 Feb 2024 00:11:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WI8G2UF6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="YjYuG5KS"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD32AA35;
-	Thu, 22 Feb 2024 00:10:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E7BD1869
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:11:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708560645; cv=none; b=dmBpybcBKCis/BRpwNag/jTQvYtGY0efoZzWFWJsPEr2ge2b4DHAsZVdNqgEJ8h594mN/cSXu991xBZECHJHVNtdRX8hTYKQI2QxCpH8vouBOVEwH6qsM37UVBuOnNG3y3SIdjuuweWt8ige2lqXBULRqdGOIBroyE+QHCn6lRc=
+	t=1708560670; cv=none; b=aAjYe/aa1+FLk/1nBUHedMC6zY9wJEa0qeig+yRakn7NRdUAbyiEmbltJHdv/d0l+Sxu9vbuRBo6MwNX6ulDJOo0VOYNTohCtNQGtlJmDOCtW9DhxUzGUCv/SPRshxKdyu0ySs/hN08Se/9YyW/uHhO2VxWgPXxRtTiU10wPA7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708560645; c=relaxed/simple;
-	bh=zlJyY3XbdGnoeuA5i4CL3so5iDSHMzSmQnC6t4+gix4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bDy6UzwtpJdYRvf7+BnW6sq/fIAA/AVUr+1elUTcDXAQnRIzVrfaZ6Q7bOKY+Jz5xeP2Zi+zzDZNwCeqrXkuZcZcJBoPIiI6C8pNCGeUUJLweG+eQihcJ1hpExdXtapDXNsEyblEFNUSPgSA2r7VJPt3/DuSXUiVB1Dhsd3ZB10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WI8G2UF6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE6E7C433F1;
-	Thu, 22 Feb 2024 00:10:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708560645;
-	bh=zlJyY3XbdGnoeuA5i4CL3so5iDSHMzSmQnC6t4+gix4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WI8G2UF6Y+uwZhKf4ihUf9stmKvZ91fGSJZc3PPmCtCjLuaro9rQSKP7q4y6PP348
-	 KDWPM0ohXL+7wtH8MTTfPhNWn1XrX3D1dtF8j9c8I4V/zPEX8Mscb0aEjY77J2dgJ5
-	 PVQD+pzHEABosHTh5/jnrtZ6Rx+qLIhYZZ3sW8QgHo7vwwIqPve1UvdL3TMmFSY/Oo
-	 ej/2ix1Oe3qU7q/IKQFrElHCrpYPPdbgiGy3OLr8SmT95d5JbRH71anRrz5xpWCrrt
-	 llmyfqzOTXLVvLZMjkcnfEVCeoBNFIMElRmCHbsf5tKnyBHMYAh9XyINg49vfJT6cM
-	 lPV2HH7DkguaQ==
-Date: Wed, 21 Feb 2024 18:10:44 -0600
-From: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-To: Paul Moore <paul@paul-moore.com>
-Cc: Christian Brauner <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>,
-	Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	Stephen Smalley <stephen.smalley.work@gmail.com>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	Casey Schaufler <casey@schaufler-ca.com>,
-	Mimi Zohar <zohar@linux.ibm.com>,
-	Roberto Sassu <roberto.sassu@huawei.com>,
-	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-	Eric Snowberg <eric.snowberg@oracle.com>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, audit@vger.kernel.org,
-	selinux@vger.kernel.org, linux-integrity@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH v2 12/25] selinux: add hooks for fscaps operations
-Message-ID: <ZdaRBBU6K3nvklPI@do-x1extreme>
-References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
- <20240221-idmap-fscap-refactor-v2-12-3039364623bd@kernel.org>
- <CAHC9VhTgHP=3Te4=t6chGte15CA_tMoVjFuzBwh+FxQ6Ri4mQQ@mail.gmail.com>
+	s=arc-20240116; t=1708560670; c=relaxed/simple;
+	bh=ITimqW9g4IYnfwAk+fE46BnuZR7ucu6gikeyx4GedN4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DGeUsrJR5HrvURdqe1t5HOiTZgJhQbLtI89VsHcm+C3Q2HoZCDGQ843yvel4HFnmqX5/r85i0qmCHci/46NgFvRYa69ko+uDMPVyioo8QI5lDpKKc+GnhqA/M6fVWrIn/UC7U9rQEpoUbQg3uOlf73GrC9M3pLwm2LsQHhgJ+X4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=YjYuG5KS; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc74435c428so6821263276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:11:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1708560667; x=1709165467; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YTXFYEa4xo6a5mwd21POLG1HLHGIr1ybDf3KHz8gaHw=;
+        b=YjYuG5KSm5u2EanQe7cOHp8PgvnV9sMmurP3kNSXhmbyIq+CiQF9Z50WEQQRLIxX7W
+         bQ8lJZWn3w0fmwrUsZMpAsL+Kf+9adf2iniuFdaHaggUF7eMxtYIs+LlWGvIiTnWDWHl
+         fC8T/7d1hJwawwSLOeYSof0Bk9zU3JHtj6fOldzbqwGydqhIf6FiRUx5I21csL2IrFkh
+         tIDp1C0uGvBuWlatwI2C0nTM6Ohi3VOIsMM49dxSAxZx+HMofBGippNbVLg4XJRh9VD5
+         o/3ee/XhMScxWHsynVQwRTuymeHiycqG26qfFT+0149gsTf8OCAyCwNrvSa495/WJYKr
+         jodg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708560667; x=1709165467;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YTXFYEa4xo6a5mwd21POLG1HLHGIr1ybDf3KHz8gaHw=;
+        b=I3JFOZo3G4bvcAzKJX2M+w5KCLydx8XGcMRJ84gOn//maA8lBeS0Ml7F1D6+XDw++4
+         RZurgrxrPjE+ImvGtDaG2kTovvizLBterPwVtb0PKT9MQ0PaVAD+SV6niR+bR3CXc2d3
+         5PGrcNctiaZI+TvDR/zrCX+DDxE5fQfXV4y+IoZsZL/h3Rhkcvv4+1Lf2ADOthBrplQx
+         CfBnHepHkowbaY0sfVBP20DH0AuqRxz39Xhyn5W5img621oY4RSUnyq6+VQALWv4rqu5
+         dsqTbQ4rSknmsjvXh3zKHMLUbX+RmefjK+z340jMLVAISQ1pVjO9QNdFoUyjrWgz7XVc
+         0u0w==
+X-Forwarded-Encrypted: i=1; AJvYcCXlL1u6keTYlNyaaHLtryFLukME6Kqp6fun2cHHRPdftGz9bMB4PFMReEekk1c77oNBoxcKoGpcHYctvA9PtSRHmGFw8FF2GPpY5M6d
+X-Gm-Message-State: AOJu0YwJAKOq782ykGHQMaP5lGuJmvnFmmt2ub9BZkWbQEtxDLi+5UZl
+	AXtm6lswqslIpyfMe8r0AbZ2EHHXLKECsRM3jWX0SCnH8TzI/iCHKwG+DpbCNyNH1WJ8qmPTKCW
+	NJYhPiZ2UmJk11ty4kfDmw3j1nP+rxnUbggN6
+X-Google-Smtp-Source: AGHT+IF2DQVDzt2c0yA7a7+ahy3Q+PeWGykVKKQL85450iacajA8akbQF24P4kQxcdmNK7g3f3rkviXmnCjZy4LpHEo=
+X-Received: by 2002:a25:6610:0:b0:dcf:288e:21ca with SMTP id
+ a16-20020a256610000000b00dcf288e21camr729938ybc.11.1708560667179; Wed, 21 Feb
+ 2024 16:11:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHC9VhTgHP=3Te4=t6chGte15CA_tMoVjFuzBwh+FxQ6Ri4mQQ@mail.gmail.com>
+References: <20240130094037.76895-1-chentao@kylinos.cn> <CAHC9VhQG6XAm3R3wtgFrb0b0UHoxkSV2yziVAnUy2x7Ovun_pQ@mail.gmail.com>
+In-Reply-To: <CAHC9VhQG6XAm3R3wtgFrb0b0UHoxkSV2yziVAnUy2x7Ovun_pQ@mail.gmail.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Wed, 21 Feb 2024 19:10:56 -0500
+Message-ID: <CAHC9VhRLNHT0ar2YPkZBsyha_mh6Ggf6=V2gnbFkdo7ryXmHnQ@mail.gmail.com>
+Subject: Re: [PATCH] cred: Use KMEM_CACHE instead of kmem_cache_create
+To: Kunwu Chan <chentao@kylinos.cn>
+Cc: axboe@kernel.dk, elena.reshetova@intel.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 21, 2024 at 06:38:33PM -0500, Paul Moore wrote:
-> On Wed, Feb 21, 2024 at 4:25 PM Seth Forshee (DigitalOcean)
-> <sforshee@kernel.org> wrote:
+On Thu, Feb 15, 2024 at 10:54=E2=80=AFPM Paul Moore <paul@paul-moore.com> w=
+rote:
+> On Tue, Jan 30, 2024 at 4:40=E2=80=AFAM Kunwu Chan <chentao@kylinos.cn> w=
+rote:
 > >
-> > Add hooks for set/get/remove fscaps operations which perform the same
-> > checks as the xattr hooks would have done for XATTR_NAME_CAPS.
+> > commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
+> > introduces a new macro.
+> > Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+> > to simplify the creation of SLAB caches.
 > >
-> > Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
+> > Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
 > > ---
-> >  security/selinux/hooks.c | 26 ++++++++++++++++++++++++++
-> >  1 file changed, 26 insertions(+)
-> >
-> > diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-> > index a6bf90ace84c..da129a387b34 100644
-> > --- a/security/selinux/hooks.c
-> > +++ b/security/selinux/hooks.c
-> > @@ -3367,6 +3367,29 @@ static int selinux_inode_removexattr(struct mnt_idmap *idmap,
-> >         return -EACCES;
-> >  }
-> >
-> > +static int selinux_inode_set_fscaps(struct mnt_idmap *idmap,
-> > +                                   struct dentry *dentry,
-> > +                                   const struct vfs_caps *caps, int flags)
-> > +{
-> > +       return dentry_has_perm(current_cred(), dentry, FILE__SETATTR);
-> > +}
-> 
-> The selinux_inode_setxattr() code also has a cap_inode_setxattr()
-> check which is missing here.  Unless you are handling this somewhere
-> else, I would expect the function above to look similar to
-> selinux_inode_remove_fscaps(), but obviously tweaked for setting the
-> fscaps and not removing them.
+> >  kernel/cred.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> This seems reasonable to me, unless I see any objections I can pull
+> this via the LSM tree next week.
 
-Right, but cap_inode_setxattr() doesn't do anything for fscaps, so I
-omitted the call. Unless you think the call should be included in case
-cap_inode_setxattr() changes in the future, which is a reasonable
-position.
+Actually, never mind, the original posting has some non-ASCII junk in
+the patch and I'm not able to import it cleanly.
 
-Thanks,
-Seth
+--=20
+paul-moore.com
 
