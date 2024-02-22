@@ -1,44 +1,46 @@
-Return-Path: <linux-kernel+bounces-76661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8D9485FAB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:05:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B571285FAB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:05:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37DFB283373
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:05:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E9A7284D0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:05:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 840F11474C1;
-	Thu, 22 Feb 2024 14:04:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 247CD1482E9;
+	Thu, 22 Feb 2024 14:04:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="n3lcoALj"
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="i3uRvd9J"
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D8881474B3
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 14:04:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 782EC1474A4
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 14:04:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708610687; cv=none; b=DAVsXy/gUOSg0a7uLXeycPYGdNcWuJN9KvbCPLc4b5NrN4+wwhGPCNNwt1WukLJNze+DFCCTSY+DW3H9gzz2Gu3AEuT5M1IYmFpxaY2K+dhW8OkqlAdJtT7/19arX9vTNDwLHJuQuUghiFbjETmOavJQ+a+fhjVH9sxmrOpdr0U=
+	t=1708610690; cv=none; b=sGUFOgsC4egy+wuHmRHyKGNgmxB2uj7P1iSuywJSHRxCkexdtNWlfDd6YjbGsseFfEv+SEsaWiMwkKCtphkX64yPL70zK+rVj6PYCDOjMjrzztO1FPKV8Ho68/c9U1MlM9dL2MsiiCEO+F3Itp15rdLsvletDf8ps2Crl1FIlBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708610687; c=relaxed/simple;
-	bh=oa2OZFr65MJTMncK2x8+Hd+WOPG54W/4LW7RmU3u+RE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dLmsMcPWud/kE1ELHeBPDk7HAZ6l5Fev2ZQA+gfx8EUDG5og+17qIclxf155aUFPN+h8wiEVR05wTbgsUVmm+jOWHRdMYx0QLzs3JTF59aUVvUKKtpFsVkQRC4QrqNs6xX2DZO7ySPRM8e0kNTRcQtXiIAzTMZ6KLE0Kf0Hjrpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=n3lcoALj; arc=none smtp.client-ip=91.218.175.182
+	s=arc-20240116; t=1708610690; c=relaxed/simple;
+	bh=9Nlv5yU9lraOMOB9dfIUMrxAw7ypqQN0Obqwia5pjOo=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Tv7tR7D1/QoVuyuZxrH9a9W651ymOGuK9NDh7wCJ+z/oF/dUw8TExGAvetfsvexl7IBu0KNBQmvGtLSl2bDhOhUgAlaOSiR+5NklFEDGUKZF524oNw8KnnOBp9+/CXybxoz1Zpz2QcB4qKFSd9jCOoL+FlYGYNW/ny7+jOgAIBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=i3uRvd9J; arc=none smtp.client-ip=91.218.175.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708610682;
+	t=1708610686;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=B0gB3dnFjS7/hmQUqLE92LRaTlx9ED9y/zOkYWN8jYI=;
-	b=n3lcoALjtwDDsGsHEnhCKu9TSJhGuUQEVQuQfil8mAgq/3q+rsyWIfsq9eKnyq9pgtWkRB
-	kCXfFWkgwJiYqwdl8oDnucfdtJwax5nhPjJXQ8qMNfECotCEMDnEM2yfu49+nyz9RM7aN5
-	WsGpp6l7B3yc/FlByIC7K1kW3yCplyY=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qLDJ0oXYyRPh9zz0wE8IXI1bSRdqq7PDnnR6TGU9VgU=;
+	b=i3uRvd9JstCtGlLa8/tyWtExImE0JtGxaojcIRs7n7nhFDNAP1r0mFxWuFGnV0DVJck360
+	+ybW3ROURTCTJyB8p7i3fvB985dnVQ3LNtm4RXv8GdUo6fpAsYQ3cBv0H6OF+4mHm7dqT7
+	SiYS5mOQGsqbMvVVng+9nU3mjbwRkQs=
 From: Gang Li <gang.li@linux.dev>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: David Hildenbrand <david@redhat.com>,
@@ -54,9 +56,11 @@ Cc: David Hildenbrand <david@redhat.com>,
 	linux-kernel@vger.kernel.org,
 	ligang.bdlg@bytedance.com,
 	Gang Li <gang.li@linux.dev>
-Subject: [PATCH v6 0/8] hugetlb: parallelize hugetlb page init on boot
-Date: Thu, 22 Feb 2024 22:04:13 +0800
-Message-Id: <20240222140422.393911-1-gang.li@linux.dev>
+Subject: [PATCH v6 1/8] hugetlb: code clean for hugetlb_hstate_alloc_pages
+Date: Thu, 22 Feb 2024 22:04:14 +0800
+Message-Id: <20240222140422.393911-2-gang.li@linux.dev>
+In-Reply-To: <20240222140422.393911-1-gang.li@linux.dev>
+References: <20240222140422.393911-1-gang.li@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,151 +70,103 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Hi all, hugetlb init parallelization has now been updated to v6.
+The readability of `hugetlb_hstate_alloc_pages` is poor. By cleaning the
+code, its readability can be improved, facilitating future modifications.
 
-This version is tested on mm/mm-stable.
+This patch extracts two functions to reduce the complexity of
+`hugetlb_hstate_alloc_pages` and has no functional changes.
 
-Since the release of v5, there have been some scattered discussions, they have
-primarily centered around two issues. Both of these issues have now been
-resolved, leading to the release of v6.
+- hugetlb_hstate_alloc_pages_node_specific() to handle iterates through
+  each online node and performs allocation if necessary.
+- hugetlb_hstate_alloc_pages_report() report error during allocation.
+  And the value of h->max_huge_pages is updated accordingly.
 
-Two updates in v6
------------------
-- Fix a Kconfig warning
-  hugetlb parallelization depends on PADATA, and PADATA depends on SMP. When SMP
-  is not selected, selecting PADATA will cause a warning: "WARNING: unmet direct
-  dependencies detected for PADATA". So HUGETLBFS can only select PADATA when
-  SMP is set.
+Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
+Tested-by: David Rientjes <rientjes@google.com>
+Reviewed-by: Muchun Song <muchun.song@linux.dev>
+Reviewed-by: Tim Chen <tim.c.chen@linux.intel.com>
+---
+ mm/hugetlb.c | 46 +++++++++++++++++++++++++++++-----------------
+ 1 file changed, 29 insertions(+), 17 deletions(-)
 
-  padata.c will not be compiled if !SMP, but padata_do_multithreaded is still
-  used in this series for hugetlb parallel init. So it is necessary to implement
-  a serial version in padata.h.
-
-- Fix a potential bug in gather_bootmem_prealloc_node
-  padata_do_multithreaded implementation guarantees that each
-  gather_bootmem_prealloc_node task handles one node. However, the API described
-  in padata_do_multithreaded comment indicates that padata_do_multithreaded also
-  can assign multiple nodes to a gather_bootmem_prealloc_node task.
-
-  To avoid potential bug from future changes in padata_do_multithreaded,
-  gather_bootmem_prealloc_parallel is introduced to wrap the
-  gather_bootmem_prealloc_node.
-
-  More details in: https://lore.kernel.org/r/20240213111347.3189206-3-gang.li@linux.dev
-
-Introduction
-------------
-Hugetlb initialization during boot takes up a considerable amount of time.
-For instance, on a 2TB system, initializing 1,800 1GB huge pages takes 1-2
-seconds out of 10 seconds. Initializing 11,776 1GB pages on a 12TB Intel
-host takes more than 1 minute[1]. This is a noteworthy figure.
-
-Inspired by [2] and [3], hugetlb initialization can also be accelerated
-through parallelization. Kernel already has infrastructure like
-padata_do_multithreaded, this patch uses it to achieve effective results
-by minimal modifications.
-
-[1] https://lore.kernel.org/all/783f8bac-55b8-5b95-eb6a-11a583675000@google.com/
-[2] https://lore.kernel.org/all/20200527173608.2885243-1-daniel.m.jordan@oracle.com/
-[3] https://lore.kernel.org/all/20230906112605.2286994-1-usama.arif@bytedance.com/
-[4] https://lore.kernel.org/all/76becfc1-e609-e3e8-2966-4053143170b6@google.com/
-
-max_threads
------------
-This patch use `padata_do_multithreaded` like this:
-
-```
-job.max_threads	= num_node_state(N_MEMORY) * multiplier;
-padata_do_multithreaded(&job);
-```
-
-To fully utilize the CPU, the number of parallel threads needs to be
-carefully considered. `max_threads = num_node_state(N_MEMORY)` does
-not fully utilize the CPU, so we need to multiply it by a multiplier.
-
-Tests below indicate that a multiplier of 2 significantly improves
-performance, and although larger values also provide improvements,
-the gains are marginal.
-
-  multiplier     1       2       3       4       5
- ------------ ------- ------- ------- ------- -------
-  256G 2node   358ms   215ms   157ms   134ms   126ms
-  2T   4node   979ms   679ms   543ms   489ms   481ms
-  50G  2node   71ms    44ms    37ms    30ms    31ms
-
-Therefore, choosing 2 as the multiplier strikes a good balance between
-enhancing parallel processing capabilities and maintaining efficient
-resource management.
-
-Test result
------------
-      test case       no patch(ms)   patched(ms)   saved
- ------------------- -------------- ------------- --------
-  256c2T(4 node) 1G           4745          2024   57.34%
-  128c1T(2 node) 1G           3358          1712   49.02%
-     12T         1G          77000         18300   76.23%
-
-  256c2T(4 node) 2M           3336          1051   68.52%
-  128c1T(2 node) 2M           1943           716   63.15%
-
-Change log
-----------
-Changes in v6:
-- Fix a Kconfig warning
-- Fix a potential bug in gather_bootmem_prealloc_node
-
-Changes in v5:
-- https://lore.kernel.org/lkml/20240126152411.1238072-1-gang.li@linux.dev/
-- Use prep_and_add_allocated_folios in 2M hugetlb parallelization
-- Update huge_boot_pages in arch/powerpc/mm/hugetlbpage.c
-- Revise struct padata_mt_job comment
-- Add 'max_threads' section in cover letter
-- Collect more Reviewed-by
-
-Changes in v4:
-- https://lore.kernel.org/r/20240118123911.88833-1-gang.li@linux.dev
-- Make padata_do_multithreaded dispatch all jobs with a global iterator
-- Revise commit message
-- Rename some functions
-- Collect Tested-by and Reviewed-by
-
-Changes in v3:
-- https://lore.kernel.org/all/20240102131249.76622-1-gang.li@linux.dev/
-- Select CONFIG_PADATA as we use padata_do_multithreaded
-- Fix a race condition in h->next_nid_to_alloc
-- Fix local variable initialization issues
-- Remove RFC tag
-
-Changes in v2:
-- https://lore.kernel.org/all/20231208025240.4744-1-gang.li@linux.dev/
-- Reduce complexity with `padata_do_multithreaded`
-- Support 1G hugetlb
-
-v1:
-- https://lore.kernel.org/all/20231123133036.68540-1-gang.li@linux.dev/
-- parallelize 2M hugetlb initialization with workqueue
-
-Gang Li (8):
-  hugetlb: code clean for hugetlb_hstate_alloc_pages
-  hugetlb: split hugetlb_hstate_alloc_pages
-  hugetlb: pass *next_nid_to_alloc directly to
-    for_each_node_mask_to_alloc
-  padata: dispatch works on different nodes
-  padata: downgrade padata_do_multithreaded to serial execution for
-    non-SMP
-  hugetlb: have CONFIG_HUGETLBFS select CONFIG_PADATA
-  hugetlb: parallelize 2M hugetlb allocation and initialization
-  hugetlb: parallelize 1G hugetlb initialization
-
- arch/powerpc/mm/hugetlbpage.c |   2 +-
- fs/Kconfig                    |   1 +
- include/linux/hugetlb.h       |   2 +-
- include/linux/padata.h        |  14 +-
- kernel/padata.c               |  14 +-
- mm/hugetlb.c                  | 241 +++++++++++++++++++++++-----------
- mm/mm_init.c                  |   1 +
- 7 files changed, 190 insertions(+), 85 deletions(-)
-
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index c53a41d07cd3a..794f3e6a19bb6 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -3482,6 +3482,33 @@ static void __init hugetlb_hstate_alloc_pages_onenode(struct hstate *h, int nid)
+ 	h->max_huge_pages_node[nid] = i;
+ }
+ 
++static bool __init hugetlb_hstate_alloc_pages_specific_nodes(struct hstate *h)
++{
++	int i;
++	bool node_specific_alloc = false;
++
++	for_each_online_node(i) {
++		if (h->max_huge_pages_node[i] > 0) {
++			hugetlb_hstate_alloc_pages_onenode(h, i);
++			node_specific_alloc = true;
++		}
++	}
++
++	return node_specific_alloc;
++}
++
++static void __init hugetlb_hstate_alloc_pages_errcheck(unsigned long allocated, struct hstate *h)
++{
++	if (allocated < h->max_huge_pages) {
++		char buf[32];
++
++		string_get_size(huge_page_size(h), 1, STRING_UNITS_2, buf, 32);
++		pr_warn("HugeTLB: allocating %lu of page size %s failed.  Only allocated %lu hugepages.\n",
++			h->max_huge_pages, buf, allocated);
++		h->max_huge_pages = allocated;
++	}
++}
++
+ /*
+  * NOTE: this routine is called in different contexts for gigantic and
+  * non-gigantic pages.
+@@ -3499,7 +3526,6 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+ 	struct folio *folio;
+ 	LIST_HEAD(folio_list);
+ 	nodemask_t *node_alloc_noretry;
+-	bool node_specific_alloc = false;
+ 
+ 	/* skip gigantic hugepages allocation if hugetlb_cma enabled */
+ 	if (hstate_is_gigantic(h) && hugetlb_cma_size) {
+@@ -3508,14 +3534,7 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+ 	}
+ 
+ 	/* do node specific alloc */
+-	for_each_online_node(i) {
+-		if (h->max_huge_pages_node[i] > 0) {
+-			hugetlb_hstate_alloc_pages_onenode(h, i);
+-			node_specific_alloc = true;
+-		}
+-	}
+-
+-	if (node_specific_alloc)
++	if (hugetlb_hstate_alloc_pages_specific_nodes(h))
+ 		return;
+ 
+ 	/* below will do all node balanced alloc */
+@@ -3558,14 +3577,7 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+ 	/* list will be empty if hstate_is_gigantic */
+ 	prep_and_add_allocated_folios(h, &folio_list);
+ 
+-	if (i < h->max_huge_pages) {
+-		char buf[32];
+-
+-		string_get_size(huge_page_size(h), 1, STRING_UNITS_2, buf, 32);
+-		pr_warn("HugeTLB: allocating %lu of page size %s failed.  Only allocated %lu hugepages.\n",
+-			h->max_huge_pages, buf, i);
+-		h->max_huge_pages = i;
+-	}
++	hugetlb_hstate_alloc_pages_errcheck(i, h);
+ 	kfree(node_alloc_noretry);
+ }
+ 
 -- 
 2.20.1
 
