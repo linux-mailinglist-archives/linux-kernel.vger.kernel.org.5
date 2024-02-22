@@ -1,78 +1,83 @@
-Return-Path: <linux-kernel+bounces-75929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 616DA85F0D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 06:16:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF87E85F0D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 06:16:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 927A21C220A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:16:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49A121F22994
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 05:16:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 612F979CB;
-	Thu, 22 Feb 2024 05:16:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3342B12E40;
+	Thu, 22 Feb 2024 05:16:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="aqtFJlbv"
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZQLXTAfk"
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 204987464
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 05:16:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6562F501
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 05:16:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708578988; cv=none; b=S1ckEmu0nkERrPAR/j2meiewgVNaCSDEbH01IJ3B9GpG1DGqji780tCcM7pRak2A9vcTAgyxy+noM1rZszTGLKO6KJlvM8X0nHvqLrsEKKvuEmmsjtjr2i1W6zUIq+6WlBPzsYi7h3aFaof0qgtJ4VOYMHH7Yf5kI95P2XYFVMo=
+	t=1708578993; cv=none; b=XTcmerWd6zPP3Q0j3QJPu/iTxqO94pE5uT4jmdZDopL+F9r97m7HO9wTVh0a8yAokXOKQX2qLs5BCUTRtXV/rlxKSINYAraiA/Zsz3qrBb8pvciAmEhqc4ZXNbZJedXgMniK/VAVfzRSIWc5KenrcBW10Vqg1oNNiT3LY3Md60o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708578988; c=relaxed/simple;
-	bh=tvXfqp8UvH2AW0EzEnXM+vkivsBB7XzVfVHdppIWjNs=;
+	s=arc-20240116; t=1708578993; c=relaxed/simple;
+	bh=EYqco1GKfph2qvviCl2qwp3U+UCjcwLr0vJ5cMoQcXI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fjCDNZjstiqwh68vV30ILX0Q9h5G+K9pEuiDAUgWmNaug7Um95k76uPMn6TmRRSSs6Bai7/gaFuwVdLp9kuOkJ+V8ATrq8sXPNqvVsciAEzbkK9pkqQv15LX9kbXpxysrYeGvhMxii5SodhSOM2zcPobK2a9Nzt4ruG8sADYrLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=aqtFJlbv; arc=none smtp.client-ip=209.85.160.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-21e2673a206so4738724fac.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:16:26 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=JJ0GEH0DoYN/UfPS+Fv3YXuA+9DDRdl7Wu5MfNDHzaa24WiXpJcY+dsUai/ALflCSb/8dTy7OoW+8OlucGGfm9G0tptRPlamEPLyRKHKav3FNKdEpXoVeO+skYDV+w+go2kLS050yc31f4ejj1YAiGecz3MNwpl5AoHb3knWo7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZQLXTAfk; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5dbf7b74402so6093854a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 21:16:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708578986; x=1709183786; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1708578990; x=1709183790; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=rD5K6UG4S2jRQ0lZUUyLSIDv5TVlF6XY/eKOdyWGS4E=;
-        b=aqtFJlbvgE82dB5kfF4wVQ5F/hKzJ74+CyuJ3t2r/tLpaSSQpejChz3n8pNmP+AH21
-         vOPUTJuCnWMeuUVp5z27FWSfK2b3+UDsaT5Yebb7+2JEXMB8Bqlw12qFp/IVUunyjBns
-         3RAB/Cd3RGNRIakm4Ij0Z/oj/WFt/00Knamrg=
+        bh=duIZxpvn6RingjjUFfVcxJVtZ2NkUSkNaC91pQVkegY=;
+        b=ZQLXTAfk0RvwuVmUULKeLpNK72O3zrBu5wE1qw3+2yR0JULUCbtWv8gI7vM34cq7BB
+         cxvlDNdpDt6w25riE3cK4aDqefh9ZoXIyIeU53K6P5ZKdsCBarecrUKVTeDMdaw2ff5U
+         tJe+UitS43xJ7zxgUQb8mQw4qtwPfr30WQCa3nXG2l4319NT6yG1FQ6EiJHXK9w8VKBj
+         WAfg5BMAdkMj6RH6NYBUIfTbHXTHchQkgOrjdUVHB8psQbEMG4lAfKJO6hQ13iidhH5G
+         oBwKYoVQFI8W1mAnM6j4t2Wo6/5g0uYPXnBnWBuXLby53HGl2R+es0dMmf4tvLRKSq9k
+         trTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708578986; x=1709183786;
+        d=1e100.net; s=20230601; t=1708578990; x=1709183790;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rD5K6UG4S2jRQ0lZUUyLSIDv5TVlF6XY/eKOdyWGS4E=;
-        b=pBVPwaL3KcIGfpMVherFCeaWwwb/gTDkf92A4lNbvAYWon+xBfRgFQIAdgnvWcqwHv
-         NvpE3scsBBTOGzq8AwMHk2r9ApPh/7G781mY+D3cKAVvaakviu8n/yxTLZGl/FSwDo6p
-         ZPzIruWY41QlBJXMDXlsvcYKdr5XOavEKBsuH27mRbY2VjGzIjeW3JmZULcU9ESt/8NP
-         V/JtAZ1sd6Z83XMUA8X43LcsSHMZsitxD8seeIE3rHTqsxAvnfI21qRzDQCMZU0S0vhJ
-         ZdM8U16NKUffaBU1uaFrEu1VRCItGMh/Nt2pm6n6Ue9GbBYNqBSW2VvUeftvZLv6fAMn
-         WxMA==
-X-Forwarded-Encrypted: i=1; AJvYcCUQvUB9Pq/mnRjx7W5LqZs7LGGOxZsYtsSvngYHl3fvgxVjBIHNTjKS0aC+PgTPqk0/6A4AhMtASuSqNqw458/x0cNwED+kxYxBAVlb
-X-Gm-Message-State: AOJu0YxFArWVqe+zkeuXZNOK592DnI9BwDvj/Hvc9mbdveQPWm7Vx1rE
-	v5SMQoeXoHdnnMp2pOz6LPCJ18MGCFSSyBd6aUQ9x5bcmziruyWRsJ+Lc6wTPg==
-X-Google-Smtp-Source: AGHT+IGzWbkFtwPUOhmgSOZKD7Kj1xtlZSmOun2EkP1bA57V8dSpyutsjCWHQljWrkEoMi6+7hibiA==
-X-Received: by 2002:a05:6870:5b9b:b0:21e:623d:1824 with SMTP id em27-20020a0568705b9b00b0021e623d1824mr19688847oab.8.1708578986068;
-        Wed, 21 Feb 2024 21:16:26 -0800 (PST)
-Received: from google.com ([2401:fa00:8f:203:480:9ded:eece:6cb3])
-        by smtp.gmail.com with ESMTPSA id k6-20020a635a46000000b005db034d1514sm9383494pgm.82.2024.02.21.21.16.24
+        bh=duIZxpvn6RingjjUFfVcxJVtZ2NkUSkNaC91pQVkegY=;
+        b=EkIGNSEr+FzxUda5TJucCpcfVu4Q6FpGvqweNxXWXPtCuTPIwgg2S1EvfvDzh1Xyz9
+         kM5zRfPg2isaqrx0Jgoj4CrJBk7Vgx4mBQzFYfN+MsczArGvqBVmABdVutvbau/t5aJQ
+         wxJ6Z326Tv+/lh93ccQxaFyJsdORYUBS18jYVBHTEsEV9FYilhZykQ64LvpR01g9Q89B
+         IouBfhuK/JRd2+ynjhyzQ5YJNQk4KTVGmFw0rVlswAGwskilzM/PxV332A0e4xcb/wR6
+         TfKmduArucikLJPxtetL+4sEjFs8nf64c9GEpXzwuwsZaVQLDOaKPBzXi431an+HZL9G
+         sHOA==
+X-Forwarded-Encrypted: i=1; AJvYcCVWQkCO8p7xLeB+c8PtIg4F8Q8eooXPmm6aAcwWjlsa2Iw6S5ChoW7EMuF/ADw3/6u1df/ErQRhq2Kc+a9j59+bS57cK5RZ1dgUv5Xw
+X-Gm-Message-State: AOJu0YzaINUSxVRL4EOJRBJW/I02Umyb3KAUp1JmBeP5JLA5Yrh4IbN8
+	poAokz5AxHB5SUf+r9KvOR/8QQJPg7BjGRxHvrbM+jYMJRKqpaDWzb5yYs3nPg==
+X-Google-Smtp-Source: AGHT+IF1BbQ0EnZKJMj1ATUyc9q4gcsnLCvpFzHDOMbytY3INdyz3p1P9lC6mFjFGyQVSpe1j4yvSg==
+X-Received: by 2002:a05:6a21:1693:b0:19e:b6e0:8d26 with SMTP id np19-20020a056a21169300b0019eb6e08d26mr19510388pzb.15.1708578990015;
+        Wed, 21 Feb 2024 21:16:30 -0800 (PST)
+Received: from thinkpad ([117.193.212.166])
+        by smtp.gmail.com with ESMTPSA id p11-20020a170902bd0b00b001dc35e04b02sm1933206pls.32.2024.02.21.21.16.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 21:16:25 -0800 (PST)
-Date: Thu, 22 Feb 2024 14:16:21 +0900
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2] kconfig: add some Kconfig env variables to make help
-Message-ID: <20240222051621.GH11472@google.com>
-References: <20240222031801.GG11472@google.com>
- <20240222032559.496127-1-senozhatsky@chromium.org>
- <CAK7LNARo4L6qxoqRU-0dgABarukJKAaZpCRtfA3MyUHhSuDQxQ@mail.gmail.com>
+        Wed, 21 Feb 2024 21:16:29 -0800 (PST)
+Date: Thu, 22 Feb 2024 10:46:21 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+	mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, quic_vbadigan@quicinc.com,
+	quic_ramkri@quicinc.com, quic_nitegupt@quicinc.com,
+	quic_skananth@quicinc.com, quic_parass@quicinc.com
+Subject: Re: [PATCH] bus: mhi: host: Change the trace string for the
+ userspace tools mapping
+Message-ID: <20240222051621.GD3374@thinkpad>
+References: <20240218-ftrace_string-v1-1-27da85c1f844@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,45 +87,71 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK7LNARo4L6qxoqRU-0dgABarukJKAaZpCRtfA3MyUHhSuDQxQ@mail.gmail.com>
+In-Reply-To: <20240218-ftrace_string-v1-1-27da85c1f844@quicinc.com>
 
-On (24/02/22 13:57), Masahiro Yamada wrote:
-> On Thu, Feb 22, 2024 at 12:26 PM Sergey Senozhatsky
-> <senozhatsky@chromium.org> wrote:
-> >
-> > Add a new section "Configuration environment variables" to
-> > `make help` output in order to make it easier for people to
-> > discover KCONFIG_WERROR, etc.
-> >
-> > Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> > ---
-> >  scripts/kconfig/Makefile | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/scripts/kconfig/Makefile b/scripts/kconfig/Makefile
-> > index ea1bf3b3dbde..0044d49e149c 100644
-> > --- a/scripts/kconfig/Makefile
-> > +++ b/scripts/kconfig/Makefile
-> > @@ -158,6 +158,10 @@ help:
-> >                 if help=$$(grep -m1 '^# Help: ' $(f)); then \
-> >                         printf '  %-25s - %s\n' '$(notdir $(f))' "$${help#*: }"; \
-> >                 fi;)
-> > +       @echo  ''
-> > +       @echo  'Configuration environment variables:'
-> > +       @echo  '  KCONFIG_WERROR                 - Turn some Kconfig warnings into error conditions'
-> > +       @echo  '  KCONFIG_WARN_UNKNOWN_SYMBOLS   - Make Kconfig warn about all unrecognized config symbols'
-> >
-> >  # ===========================================================================
-> >  # object files used by all kconfig flavours
-> > --
-> > 2.44.0.rc0.258.g7320e95886-goog
-> >
-> >
->
-> Why only two, while Kconfig supports more env variables?
+On Sun, Feb 18, 2024 at 02:13:39PM +0530, Krishna chaitanya chundru wrote:
+> User space tools can't map strings if we use directly, as the string
+> address is internal to kernel.
+> 
+> So add trace point strings for the user space tools to map strings
+> properly.
+> 
+> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
 
-Right.  I wanted to add only those that we use (and familiar with) for
-starters.  I'm not familiar with things like KCONFIG_PROBABILITY, for
-instance, and not sure how to document it (its Documentation/kbuild/kconfig.rst
-description is pretty lengthy).
+Applied to mhi-next!
+
+- Mani
+
+> ---
+>  drivers/bus/mhi/host/main.c  | 4 ++--
+>  drivers/bus/mhi/host/trace.h | 2 ++
+>  2 files changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+> index 2d38f6005da6..15d657af9b5b 100644
+> --- a/drivers/bus/mhi/host/main.c
+> +++ b/drivers/bus/mhi/host/main.c
+> @@ -1340,7 +1340,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
+>  	enum mhi_cmd_type cmd = MHI_CMD_NOP;
+>  	int ret;
+>  
+> -	trace_mhi_channel_command_start(mhi_cntrl, mhi_chan, to_state, "Updating");
+> +	trace_mhi_channel_command_start(mhi_cntrl, mhi_chan, to_state, TPS("Updating"));
+>  	switch (to_state) {
+>  	case MHI_CH_STATE_TYPE_RESET:
+>  		write_lock_irq(&mhi_chan->lock);
+> @@ -1407,7 +1407,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
+>  		write_unlock_irq(&mhi_chan->lock);
+>  	}
+>  
+> -	trace_mhi_channel_command_end(mhi_cntrl, mhi_chan, to_state, "Updated");
+> +	trace_mhi_channel_command_end(mhi_cntrl, mhi_chan, to_state, TPS("Updated"));
+>  exit_channel_update:
+>  	mhi_cntrl->runtime_put(mhi_cntrl);
+>  	mhi_device_put(mhi_cntrl->mhi_dev);
+> diff --git a/drivers/bus/mhi/host/trace.h b/drivers/bus/mhi/host/trace.h
+> index d12a98d44272..368515dcb22d 100644
+> --- a/drivers/bus/mhi/host/trace.h
+> +++ b/drivers/bus/mhi/host/trace.h
+> @@ -84,6 +84,8 @@ DEV_ST_TRANSITION_LIST
+>  #define dev_st_trans(a, b)		{ DEV_ST_TRANSITION_##a, b },
+>  #define dev_st_trans_end(a, b)		{ DEV_ST_TRANSITION_##a, b }
+>  
+> +#define TPS(x)	tracepoint_string(x)
+> +
+>  TRACE_EVENT(mhi_gen_tre,
+>  
+>  	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
+> 
+> ---
+> base-commit: ceeb64f41fe6a1eb9fc56d583983a81f8f3dd058
+> change-id: 20240218-ftrace_string-7677762aa63c
+> 
+> Best regards,
+> -- 
+> Krishna chaitanya chundru <quic_krichai@quicinc.com>
+> 
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
