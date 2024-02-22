@@ -1,116 +1,119 @@
-Return-Path: <linux-kernel+bounces-75719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C98285EDED
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:23:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F69B85EDF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:25:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18DCA284F60
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:23:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A4AF1F24831
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:25:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 661BFAD5C;
-	Thu, 22 Feb 2024 00:23:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4218A935;
+	Thu, 22 Feb 2024 00:25:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NXJQW0/B"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hkl9h2/K"
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E2F4A35;
-	Thu, 22 Feb 2024 00:23:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 894CAA35;
+	Thu, 22 Feb 2024 00:24:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708561386; cv=none; b=g1msZsXWupRhm2fn+JL9diatdP+tNO6L6F6rdgR8frHH2VdpVAFVvNKxjTfhu+4zHG1U8mrxRF9kzfgRcVk3TZ1rftlOeTE2ZYu+bDQOVqHP0CNRkgLtpjJG++deMrrrz2+vELfYHPDCoHjCPCKq5+IcCGMWYdWDDnHK4zjwQFg=
+	t=1708561501; cv=none; b=dmGK76qewutXqLLLN3ykuGm7EPy6J/hU/FTWA041lQzgvDuMspBxV1CTcCXSqWU65s3ovQtcBnOUy9GD5MHEogibeea/jQtCbKCKG2FzeUMf4hGdl/nShD7j6LRsB2TECnE4yGSToRvNo9VZufVYbVVlh34gmxLj0T1dahY1LUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708561386; c=relaxed/simple;
-	bh=eUWPi2XweW42m5sudJBaw7LCj+SQtvsiVFN93Jf+Jgg=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=mrDBYhQ3TWYkk5GXKs5/nh0RmJhW8lLAZgS1NqWPT/hcZ4Wh4b1z493xjjIb6893odjoupEf0M/g5cFMKzCLvM8msfJ6eP9C1VikbJv0g8P2GbqqQLYpTLcD+gkAhisQVT+hgCxRokSlEtWlCj63/CXN268iR7XxlUqqq8m937E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NXJQW0/B; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFD9DC433C7;
-	Thu, 22 Feb 2024 00:23:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708561386;
-	bh=eUWPi2XweW42m5sudJBaw7LCj+SQtvsiVFN93Jf+Jgg=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=NXJQW0/BrFNtBUe9GuH3ljh6EoHVSUAeDxJFN3aX+8OMHd1RQwkogjQTHeTsreqC9
-	 E3rAFb4R6LLLsHq8hHhJHaUbFUCM9MvkcCMR1ce4Zw8wAovi1EPYzWaTfGSZTExeTL
-	 BXOIF1a6EULI5Oi5te88SXGIEAkt5DEvdgDzgOLCaNy4c+c1yLqg7OXQxO30X8J+TX
-	 ZiWeL2aCSrIkBPfabz+z4dqXvTOu4zZ+8Ce6TnsJ2XvwvStfN2z4yd27pEz05TPsmm
-	 cfFVRKGteQ4NGcWB7zB3LURn1nbHxG8STiKtyeSpMT+zgvp55rYAuyUv9aKJxyUA3W
-	 7WW8HeDDVRxmw==
-Date: Wed, 21 Feb 2024 17:23:04 -0700
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1708561501; c=relaxed/simple;
+	bh=6cM1nNU4sUYIudgP5How1TvdFL1U8i4R9xzk/u45MW8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VEp4ZTqqp5CNe+5WcSsURNnGSQpnBGsiJqAhQcAddFSKh9PAqon3tKK73BVI5jZb2KSbNdULmr0XrlyEVpnQqI5W9/uxC6P7PSfLIuL9L0LYnmpOAKgsEqqDmgkZhjEXMBdkT2XEL9G8uTZME2ydRmKIQfUqe/O6uVlWKeJgZYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hkl9h2/K; arc=none smtp.client-ip=209.85.219.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-68f51ba7043so31252016d6.3;
+        Wed, 21 Feb 2024 16:24:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708561498; x=1709166298; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=anqGFlBV+rsLg3vMhzVMgDCSwtexSsDpUKQLzjs1Ooo=;
+        b=hkl9h2/KRoGtY3ilhTyM8pdImGfzthuwP6dh7LPfEo+1RJXvhOt8XMk1XQcyXCmTCx
+         0fjfmZnMOa9jgvYvyuBLXpKpTucoMQSCz1OO5aXdeU/R5f31nrJikDE4qq9BmY3OOQ5r
+         b1iPAwFpzBb4zCT2DqLtxVt1Zb+K3arFAsu6kqQfvzdzIJ7EZpEW2YEPWc+4R1hYkjYJ
+         LOVB0+1j6aSksuXZbEk5ZbtSf4AOn3NjkEVIefI3Twu5eUIZu0vj6/qSnX+z+/Oks3/Q
+         fV3++Lh1bnIudDCMENorRPymbJAl5UDkluSisl3M0DBSpFxLv6EAp1e/iDpZi1N1tWFG
+         E3nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708561498; x=1709166298;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=anqGFlBV+rsLg3vMhzVMgDCSwtexSsDpUKQLzjs1Ooo=;
+        b=WxX66Nb+na9my4n8bs1oSVt/s57E4IHwOTw1AfBhwu78OBvYWtkpiSAx6hXPxEv9QU
+         /AMQXMZpoVt3Pw4NTJR5ekodrBV2MW/0+W1MGbhq0v8JA6n2PmBgITWcb1EUu1Qp9pIu
+         GHs/MqdwBe65KJnUCtYmRrfdLlEqpjycMPX0ham3dvMRERqjLif5+b88iGlR0XeCnOmx
+         dtNca/XoMGZCjlMvtXRNojONKBUnpdnNyT/V1Y1847mOMNyP5SGTuyb+lqudrXbdvdin
+         XiJ1b+wOgmdwFtfba7PenLbpZ1Utij740kaS9xidOYKWxq7C4uA407mFAovAoVWBKsbP
+         NehQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWEg0s+wgYFUz/ypDdI5Edo4sk3iz0eMg4z+cdu5BR/w63uzuA2gJTYgT+3Y/yW9sWw0MWJPK9kGYQ2qI8Oh08IY+c5//6WFQOXdN0BOW6EbFJZA4ycxF6wApVnFeyurwBcP++6
+X-Gm-Message-State: AOJu0YyOb6GXROsWRtxfwQXIjcWjTKNgzAb7fP9JqrcpKB+o6+sOOSAX
+	43HSxiEqP7WAG3wXZwOwRAMsDFhkRaaeoRkOEXuQZ9r2+vCwWAOt
+X-Google-Smtp-Source: AGHT+IEEGx4qOQu1n7xW61AL2JSTReDsufs5qC56cdZ3yIFGqrRdkeZ7gcw9oBgnuzV4cOIWbbFgiA==
+X-Received: by 2002:a05:6214:2422:b0:68f:6dc5:149b with SMTP id gy2-20020a056214242200b0068f6dc5149bmr10959031qvb.58.1708561498418;
+        Wed, 21 Feb 2024 16:24:58 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id db15-20020a056214170f00b0068fa7e73367sm1160611qvb.42.2024.02.21.16.24.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Feb 2024 16:24:57 -0800 (PST)
+Message-ID: <58d5141a-6813-4831-ae44-9ccfcf79893b@gmail.com>
+Date: Wed, 21 Feb 2024 16:24:54 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Saravana Kannan <saravanak@google.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
- linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>, 
- Rob Herring <robh+dt@kernel.org>, Daniel Scally <djrscally@gmail.com>, 
- Heikki Krogerus <heikki.krogerus@linux.intel.com>, kernel-team@android.com, 
- linux-efi@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
- devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-acpi@vger.kernel.org, 
- Conor Dooley <conor+dt@kernel.org>, 
- Sakari Ailus <sakari.ailus@linux.intel.com>
-In-Reply-To: <20240221233026.2915061-4-saravanak@google.com>
-References: <20240221233026.2915061-1-saravanak@google.com>
- <20240221233026.2915061-4-saravanak@google.com>
-Message-Id: <170856138383.540970.12743608676098316685.robh@kernel.org>
-Subject: Re: [PATCH v3 3/4] dt-bindings: Add post-init-providers property
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.1 000/206] 6.1.79-rc2 review
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+ conor@kernel.org, allen.lkml@gmail.com
+References: <20240221130223.073542172@linuxfoundation.org>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240221130223.073542172@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-
-On Wed, 21 Feb 2024 15:30:23 -0800, Saravana Kannan wrote:
-> The post-init-providers property can be used to break a dependency cycle by
-> marking some provider(s) as a post device initialization provider(s). This
-> allows an OS to do a better job at ordering initialization and
-> suspend/resume of the devices in a dependency cycle.
+On 2/21/24 05:03, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.79 release.
+> There are 206 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> ---
->  .../bindings/post-init-providers.yaml         | 105 ++++++++++++++++++
->  MAINTAINERS                                   |  13 ++-
->  2 files changed, 112 insertions(+), 6 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/post-init-providers.yaml
+> Responses should be made by Fri, 23 Feb 2024 13:01:46 +0000.
+> Anything received after that time might be too late.
 > 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.79-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/post-init-providers.example.dtb: /example-0/clock-controller@1000: failed to match any schema with compatible: ['vendor,soc4-gcc', 'vendor,soc1-gcc']
-Documentation/devicetree/bindings/post-init-providers.example.dtb: /example-0/clock-controller@1000: failed to match any schema with compatible: ['vendor,soc4-gcc', 'vendor,soc1-gcc']
-Documentation/devicetree/bindings/post-init-providers.example.dtb: /example-0/clock-controller@2000: failed to match any schema with compatible: ['vendor,soc4-dispcc', 'vendor,soc1-dispcc']
-Documentation/devicetree/bindings/post-init-providers.example.dtb: /example-0/clock-controller@2000: failed to match any schema with compatible: ['vendor,soc4-dispcc', 'vendor,soc1-dispcc']
-
-doc reference errors (make refcheckdocs):
-Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/post-init-supplier.yaml
-MAINTAINERS: Documentation/devicetree/bindings/post-init-supplier.yaml
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240221233026.2915061-4-saravanak@google.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
 
