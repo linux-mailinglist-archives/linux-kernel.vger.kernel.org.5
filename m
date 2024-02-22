@@ -1,161 +1,90 @@
-Return-Path: <linux-kernel+bounces-76629-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76628-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A387385FA36
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:48:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A430185FA31
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:47:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5611B1F2193C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:48:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D58A41C256EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:47:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A10D1350DA;
-	Thu, 22 Feb 2024 13:47:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9875E134CFC;
+	Thu, 22 Feb 2024 13:47:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="U6N5STPX"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iPYcxwwB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7AEE36AE9;
-	Thu, 22 Feb 2024 13:47:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85D558ADF;
+	Thu, 22 Feb 2024 13:47:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708609674; cv=none; b=LyLvomeID34jrcQQybtU8Hn5mBr6LbbRGm7rNqppQVPPAAPEdcCLgh3Lw9ZfjZLSKLD13/za+XhRCxJIvj7zLa9Hg5G3F893+0BCutuUBIAG8BoS5VGkVQIcfuYjWx1Vi7tMhcknN/rY/QJP2eKvyGa+v2orf7rvv8am7DibEik=
+	t=1708609628; cv=none; b=QF6NhjKpdBVBdiBF77Fb96hMnfjguJmSWuNRobs/pI7zfqBo99j15tlIL/bmtcNYO6qpQzCFP4xfp2ZLij4b4/i9ihh5TR2JN1wIxHq8Bd2tTkBq4p4oBZUOn4/zpCWtCoAmUsJcukpjJKqdFjvrT6VbRuest7RPUC0//v9J4w8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708609674; c=relaxed/simple;
-	bh=xpTyLut7uzB3vkJ2gcm33YHNDw83yuMWLvrYsu1nfoU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=T1pSyJmaFYFnElo7nt94zncKiAlqX9sw+D3gSZdur+V9MWr4HIP7K1QUUrueNv7EYMp6yHuF2C1NJpzOxdBk1SuBRDfMaPBcvty7Y0n9J166VguMw3EezKnMBNZ7207vfFjoLFvoJKRNbg0I6uUYJYECt2HsM4csSPVyLa6EPkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=U6N5STPX; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41M666qZ013576;
-	Thu, 22 Feb 2024 13:47:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=WWXqOKm9Rw4fMWd5UNR5Tj3My/z0kfVSuwv2vQRG2ck=; b=U6
-	N5STPXnAg89/ojevzmmhA3+3622S7WVyE16A5Ea4zOPBsH108lSPXRSHg9t02ts0
-	uYv24O8EKyEmEOvZpiQzmqfe42x2xF/HxNallovDoz/TwWE/g1HFkpY48aM90sMJ
-	xggYuSuIot4BWGbFtvzNjC0y2H23kLEpNa/TA09kmrne2lKllcwsRzFMnC0JNg06
-	GOtGI2FjL4P8srMdaJI4oVuhtDMs8P780JxmqtQ0+niMiAlvv9HlNBkkt1vk1yzR
-	mDoz9T7dbyp+wLURKYRTIbU8z6PGA3xCBRNPC7PwK8pTn4E4bTDoCZHuFdXFXlBQ
-	XdZx5Kk82krK9h/PmJXg==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wdpe6thku-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 13:47:42 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41MDlfug003432
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Feb 2024 13:47:41 GMT
-Received: from [10.218.10.86] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 22 Feb
- 2024 05:47:34 -0800
-Message-ID: <51ffdd0f-d3a1-7f19-2033-264baf71394e@quicinc.com>
-Date: Thu, 22 Feb 2024 19:16:26 +0530
+	s=arc-20240116; t=1708609628; c=relaxed/simple;
+	bh=aAkb71uaG7bEs8LOfMCDfKO2FHHwbVImI5+22zd2L68=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ppeOgTb1f9aypeH7j6fYJcPYxVQts67cmsF30HqphogiyENr6ROYs6jVPT0yNrSb03H6+JRfnFhOCE83+VTrZTUugLZpLVwDpddhxy+sohqhSGTKaP37NNKX9NJMHy1jrlA6COzDslWGFX6oGR88EitR75Sas9QROpctMZcZkKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iPYcxwwB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07225C433C7;
+	Thu, 22 Feb 2024 13:47:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708609627;
+	bh=aAkb71uaG7bEs8LOfMCDfKO2FHHwbVImI5+22zd2L68=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iPYcxwwB3QaqCQy7d9saeV4mtm5mGIXaFfX/921oXth2O8u9EUE2Me/gONDNgPLxN
+	 3p5ZG24Plvnm2bz4OOGbfbwHpsLK10FWJjWGWhzkZata1PxFdhbWfWs5W7x7jlFiKw
+	 nNKT1lH48sH3CHDxcDPoII1SDocHAdWLIl8bZM6an5QdgedYmlEPS0pLdD6avoZcdb
+	 QkkAXGdEL6lOINxUKa9D8v+iYGpUsTFCwUZGYG8RH2ojj5qmkQuMID4wzAOloZBr5m
+	 6eSbmZlB3PebaXPPRm7uymprC0U2RspDvqR4GUzans+HI7BpCp/5ZdE4s+J7nKLRvR
+	 T9vcv1stRH3Kg==
+Date: Thu, 22 Feb 2024 19:17:03 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Frank Li <Frank.li@nxp.com>
+Cc: Fabio Estevam <festevam@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	"open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" <dmaengine@vger.kernel.org>,
+	"moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
+	open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
+Subject: Re: [PATCH 1/1] dmaengine: mxs-dma: switch from dma_coherent to
+ dma_pool
+Message-ID: <ZddQVzs-VvjraJAf@matsya>
+References: <20240219155728.606497-1-Frank.Li@nxp.com>
+ <CAOMZO5C4XFGoWYgexdFLgHiXAoAP7-aMdi=K6CG3adQE_mHAmA@mail.gmail.com>
+ <ZdTjrzYIiD8pwHk8@lizhi-Precision-Tower-5810>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v1 1/3] dt-bindings: PCI: qcom: Add global irq support for
- SA8775p
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        root <root@hu-msarkar-hyd.qualcomm.com>, <andersson@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <jingoohan1@gmail.com>,
-        <gustavo.pimentel@synopsys.com>, <manivannan.sadhasivam@linaro.org>,
-        <conor+dt@kernel.org>, <quic_nitegupt@quicinc.com>
-CC: <quic_shazhuss@quicinc.com>, <quic_ramkri@quicinc.com>,
-        <quic_nayiluri@quicinc.com>, <quic_krichai@quicinc.com>,
-        <quic_vbadigan@quicinc.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Rob Herring
-	<robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240221140405.28532-1-root@hu-msarkar-hyd.qualcomm.com>
- <20240221140405.28532-2-root@hu-msarkar-hyd.qualcomm.com>
- <08ca89da-d6a1-440c-8347-f2e31222bede@linaro.org>
- <a0677780-d013-44f7-94bf-ea7e23aab019@linaro.org>
- <88d8fea5-2b11-4d01-816c-dbe822ac8d19@linaro.org>
-Content-Language: en-US
-From: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-In-Reply-To: <88d8fea5-2b11-4d01-816c-dbe822ac8d19@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: UxfVJvt56qmyIe1xNXBsqw84ytiah0AC
-X-Proofpoint-ORIG-GUID: UxfVJvt56qmyIe1xNXBsqw84ytiah0AC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-22_11,2024-02-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- adultscore=0 mlxlogscore=990 clxscore=1011 bulkscore=0 spamscore=0
- impostorscore=0 lowpriorityscore=0 phishscore=0 priorityscore=1501
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402220109
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZdTjrzYIiD8pwHk8@lizhi-Precision-Tower-5810>
 
+On 20-02-24, 12:38, Frank Li wrote:
+> On Mon, Feb 19, 2024 at 01:23:22PM -0300, Fabio Estevam wrote:
+> > On Mon, Feb 19, 2024 at 12:57 PM Frank Li <Frank.Li@nxp.com> wrote:
+> > >
+> > > From: Han Xu <han.xu@nxp.com>
+> > >
+> > > Using dma_pool to manage dma descriptor memory.
+> > 
+> > Please clearly describe the motivation for doing this.
+> 
+> This try to fix a cma_alloc failure. But it is not correct to use dma_pool.
+> let's work out a better method.
 
-On 2/21/2024 8:03 PM, Krzysztof Kozlowski wrote:
-> On 21/02/2024 15:31, Konrad Dybcio wrote:
->> On 21.02.2024 15:28, Krzysztof Kozlowski wrote:
->>> On 21/02/2024 15:04, root wrote:
->>>> From: Mrinmay Sarkar <quic_msarkar@quicinc.com>
->>>>
->>>> Add global interrupt support in dt-bindings for SA8775p RC platform.
->>> What is this global interrupt? Why wasn't it there before?
->>>
->>>> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
->>>> ---
->>>>   .../devicetree/bindings/pci/qcom,pcie.yaml    | 26 +++++++++++++++++--
->>>>   1 file changed, 24 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
->>>> index a93ab3b54066..d86fb63a2d2c 100644
->>>> --- a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
->>>> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
->>>> @@ -63,7 +63,7 @@ properties:
->>>>   
->>>>     interrupt-names:
->>>>       minItems: 1
->>>> -    maxItems: 8
->>>> +    maxItems: 9
->>>>   
->>>>     iommu-map:
->>>>       minItems: 1
->>>> @@ -873,8 +873,30 @@ allOf:
->>>>           compatible:
->>>>             contains:
->>>>               enum:
->>>> -              - qcom,pcie-msm8996
->>>>                 - qcom,pcie-sa8775p
->>>> +    then:
->>>> +      oneOf:
->>> No need, drop.
->> Moreover, I think this global irq should be present on all qc platforms
-> Heh, this will anyway conflict with my series:
-> https://lore.kernel.org/all/90a50ab4-a513-48af-b13a-bba082e49540@linaro.org/
->
-> https://lore.kernel.org/all/20240205-dt-bindings-pci-qcom-split-continued-v1-0-c333cab5eeea@linaro.org/
+Good one, but this should be in log :-)
 
-Thanks for sharing the series. will make change top of your series on v2.
+> 
+> Frank
 
-Thanks,
-Mrinmay
-
-> Best regards,
-> Krzysztof
->
+-- 
+~Vinod
 
