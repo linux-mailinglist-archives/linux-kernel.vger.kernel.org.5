@@ -1,131 +1,148 @@
-Return-Path: <linux-kernel+bounces-75714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 812B785EDD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:19:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B60685EDD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:19:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22CA51F22E94
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:19:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 671C5B21180
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:19:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39ECE1401E;
-	Thu, 22 Feb 2024 00:18:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 325CAF4E7;
+	Thu, 22 Feb 2024 00:19:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="UCVpkHpR"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D2918BF3;
-	Thu, 22 Feb 2024 00:18:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="MHY5O+XQ"
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B6008C0B
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:19:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708561098; cv=none; b=GPFIC9ptmusr29uCi7oZx1lfEaiXOiD9TqXIkNfH8IWGFW4KmhhBBC49YbE0sG9mrdCrjZ9twkKqZ67NzMIwv/sxq/s420agHiXVw4CLtc8ecUx2HXUR3UOTf3f2KE5Wx0yNjP0YXDdW5ObMmlKV8wKYqjUhtT4edN44Mta900w=
+	t=1708561162; cv=none; b=Thj4p5R1MwcKRkicif6LqJQ3yk/8FObvIOLcSeiUIqlRjcwCt1RpB37F5SCqxXPRl87cyFa/MCn8JqWF9fP5HPCvznSuBiqdNfl5w7ZkJPTvppW4ImOIPSOyS7zofooaKEnX/wCgjKilabHU8hzHd7uXs81FupJUhmUU9N9EVik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708561098; c=relaxed/simple;
-	bh=1n+POexB4IxIKN4NogGOvLi6IfL+92Wk9tP/cRbJstg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=I57cNivFdTcHCPeB96Rr+6ELdir3M27zdj5f/5XJo3TyjS/WWg8kUfMXTZsTlfokOtHahsXR2Oagt45fVfXecReTJ84LPdQzX2ajr/qhUKcOmZ1P9zsFOIsPDX1R7+cIHvK6/esOfzPK5A22d5woeKlnSFLV/vkqUmDohujPUpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=UCVpkHpR; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from localhost.localdomain (unknown [4.155.48.121])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 0B54220B2002;
-	Wed, 21 Feb 2024 16:18:13 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0B54220B2002
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1708561093;
-	bh=9VOCGDdI8wf7ppg3CttBYebJqIACHcsfFVDg2ERPXoo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UCVpkHpR1/dpqOsEwf3t2N0XxUXWBevi7SUSvwaWyZrbqtGlbuYzZVYimX6EmzbSm
-	 VtxnejH1KcgoHevAe5LUcPRaieons2Boz9M5D8HV1ahaPLmAXHjJpjYv8l1biy3Jxx
-	 bvYraccXT8aHAiEkr3mwBzTyp9CTD5c0KeaGp3SY=
-From: Beau Belgrave <beaub@linux.microsoft.com>
-To: rostedt@goodmis.org,
-	mhiramat@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	mathieu.desnoyers@efficios.com
-Subject: [PATCH v4 4/4] tracing/user_events: Document multi-format flag
-Date: Thu, 22 Feb 2024 00:18:07 +0000
-Message-Id: <20240222001807.1463-5-beaub@linux.microsoft.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240222001807.1463-1-beaub@linux.microsoft.com>
-References: <20240222001807.1463-1-beaub@linux.microsoft.com>
+	s=arc-20240116; t=1708561162; c=relaxed/simple;
+	bh=YI3P7HeQYLh9u7/Ubmalb2dwpwldBv2QjTTYBegsd9Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=b1gdDmSR9LpkC1G8t/94ELXRiioRYRWov6KMv/UuGnxnW248Jn3ISzPb+lL1J+zVVva1uIuddCc0XpVKzwM4ruR59nXLVl6TL6k7eX3dS5Dy0kBcAMbBJC+24fo0IPvUwlwA3T5MfGzU7Mg0Ppv9bfY/bNlhCpuYhEOjAGbMc7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=MHY5O+XQ; arc=none smtp.client-ip=209.85.219.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dcbc00f6c04so5947684276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:19:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1708561158; x=1709165958; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J7oaGryxbVrUL2E+pOOS5V370VmMkOZfbF1VgDo0Va8=;
+        b=MHY5O+XQpYqBFmZskum/pRe153fd0o4QAVq/T21KW9KNGfS+LP7cxNUe0hRvKZwhJj
+         fN4MXtfNfczIcAFGWl686biDxSpZ/bOJYQ2u43UC7FqWgi2DXz9M7y2OSjbKZEtjjrxP
+         sjiZvMg4iH5UYkqz2iMtSaJ5URne0cFb0f3NUJ2PFoVnDVDxO7e5TymJtqQwIgNwmVFl
+         N+55ebpHYQwUzYmZ6bj6udOdtiUFCz5M2NSR7NyW6IYuZwdyL2oMBQHXgyyKiCmc+0FC
+         5IUS2arojCcGGF64/Vtx08f1dZTEfXwiZ5GoKqSqqq0AvSG3SjW9SYumzHJL6Hr5zzsP
+         o8Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708561158; x=1709165958;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=J7oaGryxbVrUL2E+pOOS5V370VmMkOZfbF1VgDo0Va8=;
+        b=n/icKfGR2Q7CScQ48QYeHDuQNFAYdiUla1tKGz/ccdO+1z3LgClQHQEFvOOn9eyco3
+         aFb+gVbI/b6jsoUPesU6L6jnXMPP8fwWizlQAFHmIU+5CYfG9CRAUxHFj+dxOP2KWlsE
+         bGxn/Dr4p/Wms2ZaayiMc9KZcUJ7l435y4Mg6igQD3XhLeeM3wIxFShjlki4KXr2Ix28
+         5l6uf7zpz/sMjxOyaMlrfSevJEcmcxxVGuqiN1h78alNjmxKGkdxSYH4jl8LAt6L6lXN
+         H7oWZAHSTvOLwEH9cMFs2jK6ACTxqZU4AH9+J6MYQJc7iWQrG72COG7MfOZjMEaJH6WX
+         vo4g==
+X-Forwarded-Encrypted: i=1; AJvYcCVKZ+7xuX7po4RI7N4MIjkhWkqrPzZvJU8yH4tju2gFyhigUR+jlDrPE1IeKKb/Rxm5KWma8ZHfwkhBdWCI+HHb3lhVa7iNHEI87ERO
+X-Gm-Message-State: AOJu0Yy+2CJLdXHnxAUcVIhDQZ6yBHGJdwzI+RH3Dp6yW6Xm7nugSj9O
+	/3NWglDiynsDthM6RSzh1tM8QvcgVE30tFGYtjfUlqCmWd35ZHi77jCKkC/HN4CJzdANIlU9gyu
+	jTvxmp1c7PXKTisTNJkNfJfhbL2Xfq+pcF07G
+X-Google-Smtp-Source: AGHT+IFK00AsHyxPzzCDY0kk3tyWl4bPtLiUwg7CqJFm0cmNqsbd/HN5372LsPp9wqFO4GAU+yi44PLCDuVyd+D/FRs=
+X-Received: by 2002:a25:2183:0:b0:dc2:2d0a:4d55 with SMTP id
+ h125-20020a252183000000b00dc22d0a4d55mr711081ybh.63.1708561158458; Wed, 21
+ Feb 2024 16:19:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
+ <20240221-idmap-fscap-refactor-v2-12-3039364623bd@kernel.org>
+ <CAHC9VhTgHP=3Te4=t6chGte15CA_tMoVjFuzBwh+FxQ6Ri4mQQ@mail.gmail.com> <ZdaRBBU6K3nvklPI@do-x1extreme>
+In-Reply-To: <ZdaRBBU6K3nvklPI@do-x1extreme>
+From: Paul Moore <paul@paul-moore.com>
+Date: Wed, 21 Feb 2024 19:19:07 -0500
+Message-ID: <CAHC9VhRr-AO2qrK3ZttsVMsQcJNhZThS7P5_i9dDC7tGPHdVAA@mail.gmail.com>
+Subject: Re: [PATCH v2 12/25] selinux: add hooks for fscaps operations
+To: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>, Eric Paris <eparis@redhat.com>, 
+	James Morris <jmorris@namei.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+	Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
+	Casey Schaufler <casey@schaufler-ca.com>, Mimi Zohar <zohar@linux.ibm.com>, 
+	Roberto Sassu <roberto.sassu@huawei.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, 
+	Eric Snowberg <eric.snowberg@oracle.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, audit@vger.kernel.org, 
+	selinux@vger.kernel.org, linux-integrity@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-User programs can now ask user_events to handle the synchronization of
-multiple different formats for an event with the same name via the new
-USER_EVENT_REG_MULTI_FORMAT flag.
+On Wed, Feb 21, 2024 at 7:10=E2=80=AFPM Seth Forshee (DigitalOcean)
+<sforshee@kernel.org> wrote:
+> On Wed, Feb 21, 2024 at 06:38:33PM -0500, Paul Moore wrote:
+> > On Wed, Feb 21, 2024 at 4:25=E2=80=AFPM Seth Forshee (DigitalOcean)
+> > <sforshee@kernel.org> wrote:
+> > >
+> > > Add hooks for set/get/remove fscaps operations which perform the same
+> > > checks as the xattr hooks would have done for XATTR_NAME_CAPS.
+> > >
+> > > Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
+> > > ---
+> > >  security/selinux/hooks.c | 26 ++++++++++++++++++++++++++
+> > >  1 file changed, 26 insertions(+)
+> > >
+> > > diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+> > > index a6bf90ace84c..da129a387b34 100644
+> > > --- a/security/selinux/hooks.c
+> > > +++ b/security/selinux/hooks.c
+> > > @@ -3367,6 +3367,29 @@ static int selinux_inode_removexattr(struct mn=
+t_idmap *idmap,
+> > >         return -EACCES;
+> > >  }
+> > >
+> > > +static int selinux_inode_set_fscaps(struct mnt_idmap *idmap,
+> > > +                                   struct dentry *dentry,
+> > > +                                   const struct vfs_caps *caps, int =
+flags)
+> > > +{
+> > > +       return dentry_has_perm(current_cred(), dentry, FILE__SETATTR)=
+;
+> > > +}
+> >
+> > The selinux_inode_setxattr() code also has a cap_inode_setxattr()
+> > check which is missing here.  Unless you are handling this somewhere
+> > else, I would expect the function above to look similar to
+> > selinux_inode_remove_fscaps(), but obviously tweaked for setting the
+> > fscaps and not removing them.
+>
+> Right, but cap_inode_setxattr() doesn't do anything for fscaps, so I
+> omitted the call. Unless you think the call should be included in case
+> cap_inode_setxattr() changes in the future, which is a reasonable
+> position.
 
-Add a section for USER_EVENT_REG_MULTI_FORMAT that explains the intended
-purpose and caveats of using it. Explain how deletion works in these
-cases and how to use /sys/kernel/tracing/dynamic_events for per-version
-deletion.
+Fair enough, but I'd be a lot happier if you included the call in case
+something changes in the future.  I worry that omitting the call would
+make it easier for us to forget about this if/when things change and
+suddenly we have a security issue.  If you are morally opposed to
+that, at the very least put a comment in selinux_inode_set_fscaps()
+about this so we know who to yell at in the future ;)
 
-Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
----
- Documentation/trace/user_events.rst | 27 ++++++++++++++++++++++++++-
- 1 file changed, 26 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/trace/user_events.rst b/Documentation/trace/user_events.rst
-index d8f12442aaa6..1d5a7626e6a6 100644
---- a/Documentation/trace/user_events.rst
-+++ b/Documentation/trace/user_events.rst
-@@ -92,6 +92,24 @@ The following flags are currently supported.
-   process closes or unregisters the event. Requires CAP_PERFMON otherwise
-   -EPERM is returned.
- 
-++ USER_EVENT_REG_MULTI_FORMAT: The event can contain multiple formats. This
-+  allows programs to prevent themselves from being blocked when their event
-+  format changes and they wish to use the same name. When this flag is used the
-+  tracepoint name will be in the new format of "name.unique_id" vs the older
-+  format of "name". A tracepoint will be created for each unique pair of name
-+  and format. This means if several processes use the same name and format,
-+  they will use the same tracepoint. If yet another process uses the same name,
-+  but a different format than the other processes, it will use a different
-+  tracepoint with a new unique id. Recording programs need to scan tracefs for
-+  the various different formats of the event name they are interested in
-+  recording. The system name of the tracepoint will also use "user_events_multi"
-+  instead of "user_events". This prevents single-format event names conflicting
-+  with any multi-format event names within tracefs. The unique_id is output as
-+  a hex string. Recording programs should ensure the tracepoint name starts with
-+  the event name they registered and has a suffix that starts with . and only
-+  has hex characters. For example to find all versions of the event "test" you
-+  can use the regex "^test\.[0-9a-fA-F]+$".
-+
- Upon successful registration the following is set.
- 
- + write_index: The index to use for this file descriptor that represents this
-@@ -106,6 +124,9 @@ or perf record -e user_events:[name] when attaching/recording.
- **NOTE:** The event subsystem name by default is "user_events". Callers should
- not assume it will always be "user_events". Operators reserve the right in the
- future to change the subsystem name per-process to accommodate event isolation.
-+In addition if the USER_EVENT_REG_MULTI_FORMAT flag is used the tracepoint name
-+will have a unique id appended to it and the system name will be
-+"user_events_multi" as described above.
- 
- Command Format
- ^^^^^^^^^^^^^^
-@@ -156,7 +177,11 @@ to request deletes than the one used for registration due to this.
- to the event. If programs do not want auto-delete, they must use the
- USER_EVENT_REG_PERSIST flag when registering the event. Once that flag is used
- the event exists until DIAG_IOCSDEL is invoked. Both register and delete of an
--event that persists requires CAP_PERFMON, otherwise -EPERM is returned.
-+event that persists requires CAP_PERFMON, otherwise -EPERM is returned. When
-+there are multiple formats of the same event name, all events with the same
-+name will be attempted to be deleted. If only a specific version is wanted to
-+be deleted then the /sys/kernel/tracing/dynamic_events file should be used for
-+that specific format of the event.
- 
- Unregistering
- -------------
--- 
-2.34.1
-
+--=20
+paul-moore.com
 
