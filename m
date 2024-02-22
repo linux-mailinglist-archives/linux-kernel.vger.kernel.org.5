@@ -1,326 +1,215 @@
-Return-Path: <linux-kernel+bounces-76056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76040-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C5B585F26B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:06:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B78685F248
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:59:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEE291C20B7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 08:06:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E6E31C22EF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 07:59:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84C4925543;
-	Thu, 22 Feb 2024 08:04:01 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EF8617BAB;
+	Thu, 22 Feb 2024 07:59:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="LxI6vt+l"
+Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2131.outbound.protection.outlook.com [40.107.9.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A15720313;
-	Thu, 22 Feb 2024 08:03:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708589040; cv=none; b=r1lzlBKeoH7KlDIYB0Jy9YxhCHmt6nH8jYW0/qeJkc+LFEqInWaSJSp4Py8oE2+iM/2q3O/rkn+4/H78HcA5ZqiJtWSPywLtXtlS0HGLs9yCz+zm7LPQFk7IDQL9Lpka6sqylN1BF8rCD5FCDti+jvhKEQT/RSTMFHzaXpG55xs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708589040; c=relaxed/simple;
-	bh=Iju3C+0qplBOBdqyqtyOXnYa0Y+uKJhdDQlEn2mhijM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=taaRz5wkJOO8mMr+Ffi9Rcvz6nyxb15c/TXFR5vgb0C/HVjuhqWHfjNZdKVV2X9c8IISUK9XPuFno2qO4gW48ZE3l9xRM8kv8HOhf/Yhqwc6yYBVrYaN35M6FY3rhDHkIk53HRFWIPADnbGSMh5eAKdyWt9mIgx3XBS6sD8Abl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TgQdF078rz4f3l7W;
-	Thu, 22 Feb 2024 16:03:45 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 0B6331A0283;
-	Thu, 22 Feb 2024 16:03:50 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgBXKBHc_9ZlnaUhEw--.37287S14;
-	Thu, 22 Feb 2024 16:03:49 +0800 (CST)
-From: Yu Kuai <yukuai1@huaweicloud.com>
-To: paul.e.luse@linux.intel.com,
-	song@kernel.org,
-	neilb@suse.com,
-	shli@fb.com
-Cc: linux-raid@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	yukuai3@huawei.com,
-	yukuai1@huaweicloud.com,
-	yi.zhang@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH md-6.9 10/10] md/raid1: factor out helpers to choose the best rdev from read_balance()
-Date: Thu, 22 Feb 2024 15:58:06 +0800
-Message-Id: <20240222075806.1816400-11-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240222075806.1816400-1-yukuai1@huaweicloud.com>
-References: <20240222075806.1816400-1-yukuai1@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 953A0E54C
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 07:59:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.9.131
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708588781; cv=fail; b=r13UK2/vGsp2lObXO4cDxjq8BalHICyf7GtcTEUgD4vCKgflxs4v0hTzwtXiOK9ED3ZkzVL7pUkEPCC7bgdTCUiUqv5r5iw8aTJDET0N0TWOvE2W6F3TKXCEQd+UYJdKtQYQNm3xtddCStdO87WRvSJpTds4vid6AYDgEREvJ9k=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708588781; c=relaxed/simple;
+	bh=lg5fqCzyGLZ7gwArDuFmzR5F6o/mNY3hSkMJVmwgR8E=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=lwvRlzNkspBegFxKblxujlVl/78G/wV/YijMSNaWusv05FWBl5QHMBflQFmN/SdXVHEawJjG+t+wnEUghbq1Q/4tNGWfSvVG+GkgJprXG6wBsaVoqJNSfdFZZ6shkMmk1vJX+Hzs3JgMVzG4VTLT09jVfSKbyrAQd/n6utZZbIo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=LxI6vt+l; arc=fail smtp.client-ip=40.107.9.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GpG3wyKkltfZmNbShsJdVh1BSKEDS8EjpTuv7qgrGZ/F8zKKbwJMp+M8dxfv3XYh1TqEcQNLGyKwXOVaLeLcXwP9b4rA1EW+5sQxUPhGwtHZcYD3A8KEWtftVLGLGNrp3XznvypNdNalaLzFfWivB5qdvSYXvlvSM6wEZu5135y1O/OatQ4+rkn7R5LzcMe85AxRgUGASfcC06U1keucboWlwEPprjUwjcNDdTGAu3hc73+FMSCfm1s6EiBDh8rjqjCX47RiMeLaU/zHQziwBbCpH1ieeX157GXa8X+KjlaQIT+sJXOXakBSg9Ij/RnHDPm6DeFiR9prwj8qd4W2rA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lg5fqCzyGLZ7gwArDuFmzR5F6o/mNY3hSkMJVmwgR8E=;
+ b=YjaYG5Q4KcNUFfTkB57oIGXcYMw/psLvSsBYvBQATjppnGBtNHriCA1xe5s8v0qvoXF2HcZdmqTrKgrXGfP8OWXM3cWoVeYS1pSwGhDA8VCCyNFM3OOlo3mmz4B9kxUMVbSyomfsrSEZvhqVLz93BX3LqRIpKo/7pGAz3u0U8muU8yTrZkdt43YTnZm4YemWWvgWY3JrCbI2rvkSox0wCEbn6DSVlIRJGIe1rlApA9EiP/6JcZLSBkXtAUyd6xrsnkUfwC4Ho/cnvjE/eDiz/ZOIQb2fd3BsQR1JIf7QC83TMMsU6sm1CPyFcfHldjyiX7SBtRA9UZo1Knj4jtg9Lg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lg5fqCzyGLZ7gwArDuFmzR5F6o/mNY3hSkMJVmwgR8E=;
+ b=LxI6vt+lKqFNOizz6860v1LHdFYhVDzUIF1WHhMtK0GUROCKkGrOUEJGx2lXLsjTZdJ2bs0OS9ZK/TMsMEdWXav+0/rmwET7Boz7zvt6kS6wEr3YUllQPI5Exjl0zOK5Eunxg2lMcy0cG52cVErlmnEblGg7e+LHEDvaRb1Dq7qwly3LQKLuSYPBK/72voXGxaUg12mCy3VDfgmXwlqcjXYNMY4RMxvS2EtEpy8gRyUd2gLQrGClyKWV/DvjOFcSe7e6YgZQpJXOlmTY5rLByqpkTzQO0Mp7hmxhnyMDhQ/bsmiV3vVlhd8HKZb5qzXKZy5X/Vl1+yX4ZBpHGkuxdw==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by MRZP264MB2008.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:8::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.21; Thu, 22 Feb
+ 2024 07:59:34 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::46af:917d:3bb2:167e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::46af:917d:3bb2:167e%6]) with mapi id 15.20.7316.023; Thu, 22 Feb 2024
+ 07:59:34 +0000
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH 1/2] powerpc: Refactor __kernel_map_pages()
+Thread-Topic: [PATCH 1/2] powerpc: Refactor __kernel_map_pages()
+Thread-Index: AQHaYMFgMRjqhl+jVkK+Dr/ZCgbD2bEV34yAgAApFYA=
+Date: Thu, 22 Feb 2024 07:59:34 +0000
+Message-ID: <4e610204-492d-4e3f-9ae6-7b8084b523f9@csgroup.eu>
+References:
+ <3656d47c53bff577739dac536dbae31fff52f6d8.1708078640.git.christophe.leroy@csgroup.eu>
+ <8734tlawsw.fsf@mail.lhotse>
+In-Reply-To: <8734tlawsw.fsf@mail.lhotse>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MRZP264MB2008:EE_
+x-ms-office365-filtering-correlation-id: 2db6156f-0078-4cbb-520a-08dc337c3572
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ rHjKVoB5wcEntgA3E/Q51ONp6Kp1mPyiDIcVq5GQa3PRVguV1HKXYUycfPCT4Dp+v+PpgCUaWTnIyI5f2+0shbL2owa46ar7/NzW+8gP2I5y5z0UGjQL7oqgluO79jrLDy2zJJuPK+fuZk+dw+8eFMoUkzeXkJlXecSIUiglGSmtzZpqiO3RxxT9fzE6R0bUlsxwG4HyXMdRWPF+vjOn41YbOI0Ao/WgvCVuKcNmI3VJYxCZiTZks8ULiW/FDMnvBlp5Z1mY+E5Tu31GhLOejQ/rBN5uzxj8OxVZj1zyd3h0wGiwyUBvybW9pZpb9PUCCd//1UOrWdJzZh3tuNw9piGrxB/A0jMmrkWbhBwUP+1tGrjtMVl0byxPkfEAM3PBaJdbye1AvP5gzgAaY5gVyy7Pok97pG51GMxSSSLbMzGsK9hsMbLf3p/qTgAWSwcJ1Um42k8A3wCcjb7+vqSRQ14kJ+ZBD0txSYVG5AsxA/BRQ1P2PjNHUg2vMI7hmVR9v5R/EijEXvyxxKLpT2sD1G1G3oLm9Ol+yKvCqUuP2nGpYImDFozLHo8PLLSGMuc3atWxQhnh7aQdy/gMc6o3kSsbTlqaJZ8s0GrOW3h9Caetg9v3Opjw/fa8HaxWosXk
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?WFlYekRBQ1drbFhwYW1tTEFmS0pLK1VtTThSRkljQTh2NUFJKzhEeTZMMzI2?=
+ =?utf-8?B?U2VXOEdIeDZ1bEU0R1I0Y1JVQ2ZQTGtMZXpLK2FUSithSzVnWVYyaWNUQXVk?=
+ =?utf-8?B?QVdBWEljMG9qVXY5eXlmNC9kK0xCTHU5NUt4b1dON0FaTENkM3c0NjFRRktZ?=
+ =?utf-8?B?U3VvZkhidTY4cHg5QTBEaUJBZ2VEeUx2YUhtMTdjcUJld25YcGpWQXlURzVM?=
+ =?utf-8?B?UTNycFUwZnkvaU53RFh3QWlNY3VLY04yNVo3ajJGWjhQNU5YVjZ0TkNDeHNy?=
+ =?utf-8?B?Q3RISHBCMXFoTGZwU0pQRzJGTjlOSUZiY2pHT0tmcnpIaXIyaWIvNkN0Ykc2?=
+ =?utf-8?B?WTRnVVZ6eTRFOTl4ZHpBZlJabFRtODNWOE4wSDl0ckREVWNRbTVjWW9ZUDBw?=
+ =?utf-8?B?VDRPUlcwNXJDU2FoMDdXeFI2aDQwOERIT3BQUTFKdTNWYXFTQzgyU2tXdG5D?=
+ =?utf-8?B?WExvaXZLSlZLK3hqanVMNmQwdktLRkVTbEpVSW5wRnlvRmN3MUw5cjRMTUxV?=
+ =?utf-8?B?dE12WEhlcDNlNGUrc3Q2SC9FUjJTbkZ3SWpiUTlIVW91S3AvRmFkTUN0eXAw?=
+ =?utf-8?B?bit5ZTJidnlZSHk2U2tpWjFxUzNQd1duQzJrazlsUVRCdTk1M3BUcDI0Z0g3?=
+ =?utf-8?B?YXBFT2RVT3ZCVmZVVWJZRXBxN1JIOG45bWptazJNWTQxdDZCKzYrMzljVEMx?=
+ =?utf-8?B?aU9SalFpcjhpWkwxT0NPM1lrZ0tHTGFSWTBhMG1YdEp5MzBqMHJtSjh5UmZB?=
+ =?utf-8?B?SlRFZlZSbkJQYjcwTGpnUkVlTDI0OWd2VDhlRGpBNU1PT1VrR2QrRmI5SSto?=
+ =?utf-8?B?d2tvRzQ0RWEyemw5SDRvaDNRKythK09STEprUktLSWpGZmFadUtWWTU1MStz?=
+ =?utf-8?B?RTJyRGdIbVlHbGQyeXp0eEZYb2ZvaFo3S1dmZTBYTWNOQTdNR2ZobFNtZUN1?=
+ =?utf-8?B?UVFMWlZhRlpMMHhhL0RZc0xRMllOQ2xzT3lIeTZGQ2FUQ0U2OHJwWGZTMGFl?=
+ =?utf-8?B?dHlsYzNyVHRLVUJXNU1OYU5HQnVaRE5MbytBemdtS1ZWWHI4V2FFeVZnRkE4?=
+ =?utf-8?B?UkszRjNRU1QvUC9CT21iZ1JSSVNHWURQbEJRaEF2dmVVQ1NFR0UwVlozMm1F?=
+ =?utf-8?B?RXJsRkpYY1QrM1JJL2RTZzNSQ2ZvandBVUhnaDViQ1B3cjdiVCs4R0x6Q0pH?=
+ =?utf-8?B?eVMrQ3BjL285dlFFY2ljVVE1ekd3Z25ib082ekV3TkxBRHFnV0NzUU5FVEtm?=
+ =?utf-8?B?ZjVJODVteVZMU3NwZ1VKK0N4cmVLazltdkFOTmY5Rk4yV2lITUlaMmVUNWFD?=
+ =?utf-8?B?Z3JLWkkyVGdnMGRpOUlXOW1FL3F6cElBKzVKTEEwMmc4R1hva1d3M3FVWGxY?=
+ =?utf-8?B?SnhCc2kvbitIZFVORFNCUWFQVXR1Y2ZmL01WdEVuYjFma2wwUWl1NWpZWXJT?=
+ =?utf-8?B?eFlZVnk4eXFxWGQzZlZNRnhacTFvdWJPclNWMHMvN2N1L1VhckR1TWlVUnF6?=
+ =?utf-8?B?RitFRlJKSDlaNlBjbU1YUW5wNW9uc05POUNaQlVKU1pDMWYzZWppRnVURmM1?=
+ =?utf-8?B?eDBuNzJ5YWR5eXBCeW9leDYyWWVhTlZPblFWUVBMK0tpanozdVRYSmcvdDdn?=
+ =?utf-8?B?RGhtdlE1RVZWQ1U2Nkc1NmZPbk0xVlF3SmxHNE05UGFKZGwxcGNMdWgzNU1O?=
+ =?utf-8?B?bEhmWndRbmthYW1UL1RibFFCbnVGOWtGZzZTbDRUaW5heElnNjBiQ3RVenI0?=
+ =?utf-8?B?ZGw3VElQVHA2bHdpV3M5aks3cWFlTmFxbE5VWnJ5cktPemdtUDhzUUJmK0lR?=
+ =?utf-8?B?TnJ0YTU0d3JHTjlhenVUa3lROWRPdU9kWkkyZ1Y1V3I0aUwyNFo4NEM5WVhl?=
+ =?utf-8?B?bmllM25JZVRYdXFYaFYremdwMnU5NWRQTjRtUVZhTVl2S3VXaGx2K2h3TGZS?=
+ =?utf-8?B?d1VpNXpXTlNOSGVQRUhlendQNmZVaWljM05vaDU2OVhwZUJnZjA4V1hhbEUx?=
+ =?utf-8?B?b0VHNllBZ0tSWGxrdzJaazEwM3dSZUJTSUF3UTZjYVp4cGNLNHBMUC9oejA4?=
+ =?utf-8?B?RWJyYUp6SGlJbWprTlBHYUdkNml2dUEwMCs3cGlOU3ZOb05GWVZaTTlVbG1v?=
+ =?utf-8?B?Mi8xUWFBT0lYOG5RTUhvV1pOeTdQZEcva3MxNFBiaS8rKzNlS2dLaWk3Q2lI?=
+ =?utf-8?B?dnc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <878E2673DC88424D9ECF341B5C5A1033@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBXKBHc_9ZlnaUhEw--.37287S14
-X-Coremail-Antispam: 1UD129KBjvJXoW3JrWrWw15WryrArWrXr1DWrg_yoW3Gr1fpw
-	45GFnay3yUZryruwn5tF4UWrWS934rJa18GrZ7C34I93sagrZ8tF97KryY9Fy5Grs3uw12
-	v345Gr47C3Z7uFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-	14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIx
-	kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAF
-	wI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr
-	0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUQ
-	SdkUUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2db6156f-0078-4cbb-520a-08dc337c3572
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Feb 2024 07:59:34.4774
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: waMf8c7hwDNTm9sITnwNCSw18/+R3vK4aR1xRHDLb70jDBsJv4ewJn67eTvg7Xf7tj7o5NhMfFtrQVfN9aF8sjFoQgq2bBkhZgTa2eVxq+I=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MRZP264MB2008
 
-From: Yu Kuai <yukuai3@huawei.com>
-
-The way that best rdev is chosen:
-
-1) If the read is sequential from one rdev:
- - if rdev is rotational, use this rdev;
- - if rdev is non-rotational, use this rdev until total read length
-   exceed disk opt io size;
-
-2) If the read is not sequential:
- - if there is idle disk, use it, otherwise:
- - if the array has non-rotational disk, choose the rdev with minimal
-   inflight IO;
- - if all the underlaying disks are rotational disk, choose the rdev
-   with closest IO;
-
-There are no functional changes, just to make code cleaner and prepare
-for following refactor.
-
-Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
-Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- drivers/md/raid1.c | 171 ++++++++++++++++++++++++---------------------
- 1 file changed, 92 insertions(+), 79 deletions(-)
-
-diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-index 223ef8d06f67..938b0e0170df 100644
---- a/drivers/md/raid1.c
-+++ b/drivers/md/raid1.c
-@@ -730,73 +730,68 @@ static bool should_choose_next(struct r1conf *conf, int disk)
- 	       mirror->next_seq_sect - opt_iosize >= mirror->seq_start;
- }
- 
--/*
-- * This routine returns the disk from which the requested read should
-- * be done. There is a per-array 'next expected sequential IO' sector
-- * number - if this matches on the next IO then we use the last disk.
-- * There is also a per-disk 'last know head position' sector that is
-- * maintained from IRQ contexts, both the normal and the resync IO
-- * completion handlers update this position correctly. If there is no
-- * perfect sequential match then we pick the disk whose head is closest.
-- *
-- * If there are 2 mirrors in the same 2 devices, performance degrades
-- * because position is mirror, not device based.
-- *
-- * The rdev for the device selected will have nr_pending incremented.
-- */
--static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sectors)
-+static bool rdev_readable(struct md_rdev *rdev, struct r1bio *r1_bio)
- {
--	const sector_t this_sector = r1_bio->sector;
--	int sectors;
--	int best_good_sectors;
--	int best_disk, best_dist_disk, best_pending_disk;
--	int disk;
--	sector_t best_dist;
--	unsigned int min_pending;
--	struct md_rdev *rdev;
-+	if (!rdev || test_bit(Faulty, &rdev->flags))
-+		return false;
- 
-- retry:
--	sectors = r1_bio->sectors;
--	best_disk = -1;
--	best_dist_disk = -1;
--	best_dist = MaxSector;
--	best_pending_disk = -1;
--	min_pending = UINT_MAX;
--	best_good_sectors = 0;
--	clear_bit(R1BIO_FailFast, &r1_bio->state);
-+	/* still in recovery */
-+	if (!test_bit(In_sync, &rdev->flags) &&
-+	    rdev->recovery_offset < r1_bio->sector + r1_bio->sectors)
-+		return false;
- 
--	if (raid1_should_read_first(conf->mddev, this_sector, sectors))
--		return choose_first_rdev(conf, r1_bio, max_sectors);
-+	/* don't read from slow disk unless have to */
-+	if (test_bit(WriteMostly, &rdev->flags))
-+		return false;
-+
-+	/* don't split IO for bad blocks unless have to */
-+	if (rdev_has_badblock(rdev, r1_bio->sector, r1_bio->sectors))
-+		return false;
-+
-+	return true;
-+}
-+
-+struct read_balance_ctl {
-+	sector_t closest_dist;
-+	int closest_dist_disk;
-+	int min_pending;
-+	int min_pending_disk;
-+	int readable_disks;
-+};
-+
-+static int choose_best_rdev(struct r1conf *conf, struct r1bio *r1_bio)
-+{
-+	int disk;
-+	struct read_balance_ctl ctl = {
-+		.closest_dist_disk      = -1,
-+		.closest_dist           = MaxSector,
-+		.min_pending_disk       = -1,
-+		.min_pending            = UINT_MAX,
-+	};
- 
- 	for (disk = 0 ; disk < conf->raid_disks * 2 ; disk++) {
-+		struct md_rdev *rdev;
- 		sector_t dist;
- 		unsigned int pending;
- 
--		rdev = conf->mirrors[disk].rdev;
--		if (r1_bio->bios[disk] == IO_BLOCKED
--		    || rdev == NULL
--		    || test_bit(Faulty, &rdev->flags))
--			continue;
--		if (!test_bit(In_sync, &rdev->flags) &&
--		    rdev->recovery_offset < this_sector + sectors)
--			continue;
--		if (test_bit(WriteMostly, &rdev->flags))
-+		if (r1_bio->bios[disk] == IO_BLOCKED)
- 			continue;
--		if (rdev_has_badblock(rdev, this_sector, sectors))
-+
-+		rdev = conf->mirrors[disk].rdev;
-+		if (!rdev_readable(rdev, r1_bio))
- 			continue;
- 
--		if (best_disk >= 0)
--			/* At least two disks to choose from so failfast is OK */
-+		/* At least two disks to choose from so failfast is OK */
-+		if (ctl.readable_disks++ == 1)
- 			set_bit(R1BIO_FailFast, &r1_bio->state);
- 
- 		pending = atomic_read(&rdev->nr_pending);
--		dist = abs(this_sector - conf->mirrors[disk].head_position);
-+		dist = abs(r1_bio->sector - conf->mirrors[disk].head_position);
-+
- 		/* Don't change to another disk for sequential reads */
- 		if (is_sequential(conf, disk, r1_bio)) {
--			if (!should_choose_next(conf, disk)) {
--				best_disk = disk;
--				break;
--			}
-+			if (!should_choose_next(conf, disk))
-+				return disk;
- 
- 			/*
- 			 * Add 'pending' to avoid choosing this disk if there is
-@@ -810,42 +805,60 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
- 			dist = 0;
- 		}
- 
--		if (min_pending > pending) {
--			min_pending = pending;
--			best_pending_disk = disk;
-+		if (ctl.min_pending > pending) {
-+			ctl.min_pending = pending;
-+			ctl.min_pending_disk = disk;
- 		}
- 
--		if (dist < best_dist) {
--			best_dist = dist;
--			best_dist_disk = disk;
-+		if (dist < ctl.closest_dist) {
-+			ctl.closest_dist = dist;
-+			ctl.closest_dist_disk = disk;
- 		}
- 	}
- 
--	/*
--	 * If all disks are rotational, choose the closest disk. If any disk is
--	 * non-rotational, choose the disk with less pending request even the
--	 * disk is rotational, which might/might not be optimal for raids with
--	 * mixed ratation/non-rotational disks depending on workload.
--	 */
--	if (best_disk == -1) {
--		if (conf->mddev->nonrot_disks || min_pending == 0)
--			best_disk = best_pending_disk;
--		else
--			best_disk = best_dist_disk;
--	}
- 
--	if (best_disk >= 0) {
--		rdev = conf->mirrors[best_disk].rdev;
--		if (!rdev)
--			goto retry;
-+	if (ctl.min_pending_disk != -1 &&
-+	    (conf->mddev->nonrot_disks || ctl.min_pending == 0))
-+		return ctl.min_pending_disk;
-+	else
-+		return ctl.closest_dist_disk;
-+}
- 
--		sectors = best_good_sectors;
--		update_read_sectors(conf, disk, this_sector, sectors);
--	}
--	*max_sectors = sectors;
-+/*
-+ * This routine returns the disk from which the requested read should be done.
-+ *
-+ * 1) If resync is in progress, find the first usable disk and use
-+ * it even if it has some bad blocks.
-+ *
-+ * 2) Now that there is no resync, loop through all disks and skipping slow
-+ * disks and disks with bad blocks for now. Only pay attention to key disk
-+ * choice.
-+ *
-+ * 3) If we've made it this far, now look for disks with bad blocks and choose
-+ * the one with most number of sectors.
-+ *
-+ * 4) If we are all the way at the end, we have no choice but to use a disk even
-+ * if it is write mostly.
-+
-+ * The rdev for the device selected will have nr_pending incremented.
-+ */
-+static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sectors)
-+{
-+	int disk;
-+
-+	clear_bit(R1BIO_FailFast, &r1_bio->state);
- 
--	if (best_disk >= 0)
--		return best_disk;
-+	if (raid1_should_read_first(conf->mddev, r1_bio->sector,
-+				    r1_bio->sectors))
-+		return choose_first_rdev(conf, r1_bio, max_sectors);
-+
-+	disk = choose_best_rdev(conf, r1_bio);
-+	if (disk >= 0) {
-+		*max_sectors = r1_bio->sectors;
-+		update_read_sectors(conf, disk, r1_bio->sector,
-+				    r1_bio->sectors);
-+		return disk;
-+	}
- 
- 	/*
- 	 * If we are here it means we didn't find a perfectly good disk so
--- 
-2.39.2
-
+DQoNCkxlIDIyLzAyLzIwMjQgw6AgMDY6MzIsIE1pY2hhZWwgRWxsZXJtYW4gYSDDqWNyaXTCoDoN
+Cj4gQ2hyaXN0b3BoZSBMZXJveSA8Y2hyaXN0b3BoZS5sZXJveUBjc2dyb3VwLmV1PiB3cml0ZXM6
+DQo+PiBfX2tlcm5lbF9tYXBfcGFnZXMoKSBpcyBhbG1vc3QgaWRlbnRpY2FsIGZvciBQUEMzMiBh
+bmQgUkFESVguDQo+Pg0KPj4gUmVmYWN0b3IgaXQuDQo+Pg0KPj4gT24gUFBDMzIgaXQgaXMgbm90
+IG5lZWRlZCBmb3IgS0ZFTkNFLCBidXQgdG8ga2VlcCBpdCBzaW1wbGUNCj4+IGp1c3QgbWFrZSBp
+dCBzaW1pbGFyIHRvIFBQQzY0Lg0KPj4NCj4+IFNpZ25lZC1vZmYtYnk6IENocmlzdG9waGUgTGVy
+b3kgPGNocmlzdG9waGUubGVyb3lAY3Nncm91cC5ldT4NCj4+IC0tLQ0KPj4gICBhcmNoL3Bvd2Vy
+cGMvaW5jbHVkZS9hc20vYm9vazNzLzY0L3BndGFibGUuaCB8IDEwIC0tLS0tLS0tLS0NCj4+ICAg
+YXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL2Jvb2szcy82NC9yYWRpeC5oICAgfCAgMiAtLQ0KPj4g
+ICBhcmNoL3Bvd2VycGMvbW0vYm9vazNzNjQvcmFkaXhfcGd0YWJsZS5jICAgICB8IDE0IC0tLS0t
+LS0tLS0tLS0tDQo+PiAgIGFyY2gvcG93ZXJwYy9tbS9wYWdlYXR0ci5jICAgICAgICAgICAgICAg
+ICAgIHwgMTkgKysrKysrKysrKysrKysrKysrKw0KPj4gICBhcmNoL3Bvd2VycGMvbW0vcGd0YWJs
+ZV8zMi5jICAgICAgICAgICAgICAgICB8IDE1IC0tLS0tLS0tLS0tLS0tLQ0KPj4gICA1IGZpbGVz
+IGNoYW5nZWQsIDE5IGluc2VydGlvbnMoKyksIDQxIGRlbGV0aW9ucygtKQ0KPj4NCj4+IGRpZmYg
+LS1naXQgYS9hcmNoL3Bvd2VycGMvbW0vcGFnZWF0dHIuYyBiL2FyY2gvcG93ZXJwYy9tbS9wYWdl
+YXR0ci5jDQo+PiBpbmRleCA0MjFkYjdjNGYyYTQuLjE2YjhkMjBkNmNhOCAxMDA2NDQNCj4+IC0t
+LSBhL2FyY2gvcG93ZXJwYy9tbS9wYWdlYXR0ci5jDQo+PiArKysgYi9hcmNoL3Bvd2VycGMvbW0v
+cGFnZWF0dHIuYw0KPj4gQEAgLTEwMSwzICsxMDEsMjIgQEAgaW50IGNoYW5nZV9tZW1vcnlfYXR0
+cih1bnNpZ25lZCBsb25nIGFkZHIsIGludCBudW1wYWdlcywgbG9uZyBhY3Rpb24pDQo+PiAgIAly
+ZXR1cm4gYXBwbHlfdG9fZXhpc3RpbmdfcGFnZV9yYW5nZSgmaW5pdF9tbSwgc3RhcnQsIHNpemUs
+DQo+PiAgIAkJCQkJICAgIGNoYW5nZV9wYWdlX2F0dHIsICh2b2lkICopYWN0aW9uKTsNCj4+ICAg
+fQ0KPj4gKw0KPj4gKyNpZiBkZWZpbmVkKENPTkZJR19ERUJVR19QQUdFQUxMT0MpIHx8IGRlZmlu
+ZWQoQ09ORklHX0tGRU5DRSkNCj4+ICsjaWZkZWYgQ09ORklHX0FSQ0hfU1VQUE9SVFNfREVCVUdf
+UEFHRUFMTE9DDQo+PiArdm9pZCBfX2tlcm5lbF9tYXBfcGFnZXMoc3RydWN0IHBhZ2UgKnBhZ2Us
+IGludCBudW1wYWdlcywgaW50IGVuYWJsZSkNCj4+ICt7DQo+PiArCXVuc2lnbmVkIGxvbmcgYWRk
+ciA9ICh1bnNpZ25lZCBsb25nKXBhZ2VfYWRkcmVzcyhwYWdlKTsNCj4+ICsNCj4+ICsJaWYgKFBh
+Z2VIaWdoTWVtKHBhZ2UpKQ0KPj4gKwkJcmV0dXJuOw0KPj4gKw0KPj4gKwlpZiAoSVNfRU5BQkxF
+RChDT05GSUdfUFBDX0JPT0szU182NCkgJiYgIXJhZGl4X2VuYWJsZWQoKSkNCj4+ICsJCWhhc2hf
+X2tlcm5lbF9tYXBfcGFnZXMocGFnZSwgbnVtcGFnZXMsIGVuYWJsZSk7DQo+PiArCWVsc2UgaWYg
+KGVuYWJsZSkNCj4+ICsJCXNldF9tZW1vcnlfcChhZGRyLCBudW1wYWdlcyk7DQo+PiArCWVsc2UN
+Cj4+ICsJCXNldF9tZW1vcnlfbnAoYWRkciwgbnVtcGFnZXMpOw0KPj4gK30NCj4gDQo+IFRoaXMg
+ZG9lc24ndCBidWlsZCBvbiAzMi1iaXQsIGVnLiBwcGMzMl9hbGxtb2Rjb25maWc6DQo+IA0KPiAu
+Li9hcmNoL3Bvd2VycGMvbW0vcGFnZWF0dHIuYzogSW4gZnVuY3Rpb24gJ19fa2VybmVsX21hcF9w
+YWdlcyc6DQo+IC4uL2FyY2gvcG93ZXJwYy9tbS9wYWdlYXR0ci5jOjExNjoyMzogZXJyb3I6IGlt
+cGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uICdoYXNoX19rZXJuZWxfbWFwX3BhZ2VzJyBb
+LVdlcnJvcj1pbXBsaWNpdC1mdW5jdGlvbi1kZWNsYXJhdGlvbl0NCj4gICAgMTE2IHwgICAgICAg
+ICAgICAgICAgIGVyciA9IGhhc2hfX2tlcm5lbF9tYXBfcGFnZXMocGFnZSwgbnVtcGFnZXMsIGVu
+YWJsZSk7DQo+ICAgICAgICB8ICAgICAgICAgICAgICAgICAgICAgICBefn5+fn5+fn5+fn5+fn5+
+fn5+fn5+DQo+IA0KPiBJIGNvdWxkbid0IHNlZSBhIG5pY2Ugd2F5IHRvIGdldCBhcm91bmQgaXQs
+IHNvIGVuZGVkIHVwIHdpdGg6DQo+IA0KPiB2b2lkIF9fa2VybmVsX21hcF9wYWdlcyhzdHJ1Y3Qg
+cGFnZSAqcGFnZSwgaW50IG51bXBhZ2VzLCBpbnQgZW5hYmxlKQ0KPiB7DQo+IAlpbnQgZXJyOw0K
+PiAJdW5zaWduZWQgbG9uZyBhZGRyID0gKHVuc2lnbmVkIGxvbmcpcGFnZV9hZGRyZXNzKHBhZ2Up
+Ow0KPiANCj4gCWlmIChQYWdlSGlnaE1lbShwYWdlKSkNCj4gCQlyZXR1cm47DQo+IA0KPiAjaWZk
+ZWYgQ09ORklHX1BQQ19CT09LM1NfNjQNCj4gCWlmICghcmFkaXhfZW5hYmxlZCgpKQ0KPiAJCWVy
+ciA9IGhhc2hfX2tlcm5lbF9tYXBfcGFnZXMocGFnZSwgbnVtcGFnZXMsIGVuYWJsZSk7DQo+IAll
+bHNlDQo+ICNlbmRpZg0KPiAJaWYgKGVuYWJsZSkNCj4gCQllcnIgPSBzZXRfbWVtb3J5X3AoYWRk
+ciwgbnVtcGFnZXMpOw0KPiAJZWxzZQ0KPiAJCWVyciA9IHNldF9tZW1vcnlfbnAoYWRkciwgbnVt
+cGFnZXMpOw0KPiANCg0KDQpJIG1pc3NlZCBzb21ldGhpbmcgaXQgc2VlbXMuIE5vdCBnb29kIHRv
+IGxlYXZlIHNvbWV0aGluZyB1bnRlcm1pbmF0ZWQgDQp3aGVuIHlvdSBsZWF2ZSBmb3IgdmFjYXRp
+b24gYW5kIHRoaW5rIGl0IHdhcyBmaW5pc2hlZCB3aGVuIHlvdSBjb21lIGJhY2suDQoNClRoZSBi
+ZXN0IHNvbHV0aW9uIEkgc2VlIGlzIHRvIG1vdmUgaGFzaF9fa2VybmVsX21hcF9wYWdlcygpIHBy
+b3RvdHlwZSANCnNvbWV3aGVyZSBlbHNlLg0KDQokIGdpdCBncmVwIC1lIGhhc2hfXyAtZSByYWRp
+eF9fIC0tIGFyY2gvcG93ZXJwYy9pbmNsdWRlL2FzbS8qLmgNCmFyY2gvcG93ZXJwYy9pbmNsdWRl
+L2FzbS9idWcuaDp2b2lkIGhhc2hfX2RvX3BhZ2VfZmF1bHQoc3RydWN0IHB0X3JlZ3MgKik7DQph
+cmNoL3Bvd2VycGMvaW5jbHVkZS9hc20vbW11Lmg6ZXh0ZXJuIHZvaWQgcmFkaXhfX21tdV9jbGVh
+bnVwX2FsbCh2b2lkKTsNCmFyY2gvcG93ZXJwYy9pbmNsdWRlL2FzbS9tbXVfY29udGV4dC5oOmV4
+dGVybiB2b2lkIA0KcmFkaXhfX3N3aXRjaF9tbXVfY29udGV4dChzdHJ1Y3QgbW1fc3RydWN0ICpw
+cmV2LA0KYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL21tdV9jb250ZXh0Lmg6ICAgICAgICAgcmV0
+dXJuIA0KcmFkaXhfX3N3aXRjaF9tbXVfY29udGV4dChwcmV2LCBuZXh0KTsNCmFyY2gvcG93ZXJw
+Yy9pbmNsdWRlL2FzbS9tbXVfY29udGV4dC5oOmV4dGVybiBpbnQgDQpoYXNoX19hbGxvY19jb250
+ZXh0X2lkKHZvaWQpOw0KYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL21tdV9jb250ZXh0Lmg6dm9p
+ZCBfX2luaXQgDQpoYXNoX19yZXNlcnZlX2NvbnRleHRfaWQoaW50IGlkKTsNCmFyY2gvcG93ZXJw
+Yy9pbmNsdWRlL2FzbS9tbXVfY29udGV4dC5oOiBjb250ZXh0X2lkID0gDQpoYXNoX19hbGxvY19j
+b250ZXh0X2lkKCk7DQphcmNoL3Bvd2VycGMvaW5jbHVkZS9hc20vbW11X2NvbnRleHQuaDogICog
+cmFkaXhfX2ZsdXNoX2FsbF9tbSgpIHRvIA0KZGV0ZXJtaW5lIHRoZSBzY29wZSAobG9jYWwvZ2xv
+YmFsKQ0KYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL21tdV9jb250ZXh0Lmg6ICAgICAgICAgcmFk
+aXhfX2ZsdXNoX2FsbF9tbShtbSk7DQoNCg0KTWF5YmUgYXNtL21tdS5oID8NCg0KT3IgbW0vbW11
+X2RlY2wuaCA/DQoNCkNocmlzdG9waGUNCg==
 
