@@ -1,143 +1,132 @@
-Return-Path: <linux-kernel+bounces-75842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75843-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36B4185EFC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:19:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4BB485EFC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:20:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC612B219F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:19:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70DCE28196B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:20:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 444681754E;
-	Thu, 22 Feb 2024 03:19:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DA3C1754E;
+	Thu, 22 Feb 2024 03:20:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="w7PD8r1N"
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="ZGHPD41W"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BE67156E4;
-	Thu, 22 Feb 2024 03:19:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B788111A1;
+	Thu, 22 Feb 2024 03:20:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708571986; cv=none; b=iuLBS5m7GYZ9qzrU+U5Zj8cBZ0ftzpvktRvG3f2qaYjFWjDYjiiuVvViEmOcxYhVtzK6pCG0V5ImKAm7Ek79qQE2YqrGIPR9RTb0WOAZHJymby5Z095SZMEG2DMEbk9rFWKnHF5mA3LM//tQvzypUuedeJzmjpeSvqAGsUEgfXs=
+	t=1708572049; cv=none; b=WfrWfugEKH6ZsVv99KVZjxPg7KuYmpog6mmMpcjmeO+CFqzyJQ96y2kT/bepNj8uCDy39gcHsY5jU65Kb/RWTUF0Ni9WUqn6AXuWIG23ovMkjI9dXrPSZK4q+mtTFs2oj9s5VCg8J2wSTYwZFZaNSsLfvuQbbBWInCxXV0ouQys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708571986; c=relaxed/simple;
-	bh=ZR4uoLQTiEOwo3CnieSljcC/pC2fqYtStebX1jAXWJA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eSCR4ac1oDWsSFnQvbxgfxc4Posn7XLEuw/nLLU6r88kMHXooeTE+tkXTonpVUx5TVndC47aVNKbnC1xmIedInLdTJYoldQKzsUEIgbuJKh7tpFBA8F+DE/alVmwwHLGGmuYKRxTE1TTpaYZ6/WK4x00wEUHSebZ2rqjcqfLIlk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=w7PD8r1N; arc=none smtp.client-ip=115.124.30.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1708571981; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=V9/JqdFP6+H5ZwF5GLxGFsL2hRG+X43V/o/Ie5ISJlI=;
-	b=w7PD8r1NPQ2OClkdgI7DKPnp8Of/q/UEv9hYF3u3DZjeKfgslGyn+f5a1phMX83XibkpD2+8jOU4Doox+YtB3uIt1ct38PlNHQlASziveVFTUucvoEx/9l6kfum10V3+jJMX0cD2/2TX6n4Mnr0RR8WgK25UlIF0hU9Y6RQLgy0=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0W1.d02z_1708571979;
-Received: from 30.221.147.146(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W1.d02z_1708571979)
-          by smtp.aliyun-inc.com;
-          Thu, 22 Feb 2024 11:19:40 +0800
-Message-ID: <27a77b2a-ad9c-4247-9ddb-61fdf5bb3891@linux.alibaba.com>
-Date: Thu, 22 Feb 2024 11:19:38 +0800
+	s=arc-20240116; t=1708572049; c=relaxed/simple;
+	bh=IQ0ZMvLgOUxRopPeocg673eNhzfHGAiic6IZwBbhKNc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=dctj9v+2AV++60vmUtmUnUDuImnAbQOtid0qPxZSgIvPDQsXIGFWJTBg3kV3cxWJ2mxAG0/ll8DnTGHZ23ySFtFoWiQ2fDvR05og3xWUuxq15zF16VSGEUk1zRE03g3at2jXiWwqqlKe+F+G6qq+rTOspiXwBFikorH4lzP0L7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=ZGHPD41W; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1708572044;
+	bh=oBSO6ysOSxxXiUfgyhcUecXa9K+EP0YyTafSTYmTvms=;
+	h=Date:From:To:Cc:Subject:From;
+	b=ZGHPD41W5HAuQ1qTji3ozalkxA7m1nYjnp4h5MbhyTlW/4vPB/qROt0ff0KFaK4XR
+	 4ss8+0hxY5m6ydRx9za3jtX8H4a/WiCH40EeKm3S6Rpqmro35bPmv2Pj0QeMEqYfNx
+	 hsWhy/PXZecq12ItXsrQ+hOhv71dE+F2Hs9mE9DveJ4aZ8LGMXGaf/zfaHqJbGPKwd
+	 sIXs1NO0SJ27Q852bjasftcRr6h6eNNCHX1BqqDdGie3uMxYlb5VhVDZhVOCYky2e1
+	 GjMRSd4j/9FeOnYyrRpvicr9W/ClgYLN1LiygAGIwc71MAT4+2sCAv0RQ/4uXn7AVc
+	 01+mCVQxp6G2g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TgJLf3xQDz4wxY;
+	Thu, 22 Feb 2024 14:20:42 +1100 (AEDT)
+Date: Thu, 22 Feb 2024 14:20:41 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Borislav Petkov
+ <bp@alien8.de>, Tony Luck <tony.luck@intel.com>, Jonathan Corbet
+ <corbet@lwn.net>
+Cc: Carlos Bilbao <carlos.bilbao@amd.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: linux-next: manual merge of the edac tree with the jc_docs tree
+Message-ID: <20240222142041.34342553@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] erofs: fix refcount on the metabuf used for inode
- lookup
-Content-Language: en-US
-To: Sandeep Dhavale <dhavale@google.com>, Gao Xiang <xiang@kernel.org>,
- Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>
-Cc: quic_wenjieli@quicinc.com, stable@vger.kernel.org,
- kernel-team@android.com, linux-erofs@lists.ozlabs.org,
- linux-kernel@vger.kernel.org
-References: <20240221210348.3667795-1-dhavale@google.com>
-From: Jingbo Xu <jefflexu@linux.alibaba.com>
-In-Reply-To: <20240221210348.3667795-1-dhavale@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/zU8aYJJPKg0ASmlJ9nmc7mR";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
+--Sig_/zU8aYJJPKg0ASmlJ9nmc7mR
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 2/22/24 5:03 AM, Sandeep Dhavale wrote:
-> In erofs_find_target_block() when erofs_dirnamecmp() returns 0,
-> we do not assign the target metabuf. This causes the caller
-> erofs_namei()'s erofs_put_metabuf() at the end to be not effective
-> leaving the refcount on the page.
-> As the page from metabuf (buf->page) is never put, such page cannot be
-> migrated or reclaimed. Fix it now by putting the metabuf from
-> previous loop and assigning the current metabuf to target before
-> returning so caller erofs_namei() can do the final put as it was
-> intended.
-> 
-> Fixes: 500edd095648 ("erofs: use meta buffers for inode lookup")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sandeep Dhavale <dhavale@google.com>
+Today's linux-next merge of the edac tree got a conflict in:
 
+  Documentation/index.rst
 
-LGTM.
+between commit:
 
-Reviewed-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+  9ee367809c67 ("docs: Include simplified link titles in main index")
 
+from the jc_docs tree and commits:
 
-> ---
-> Changes since v1
-> - Rearrange the cases as suggested by Gao so there is less duplication
->     of the code and it is more readable
-> 
->  fs/erofs/namei.c | 28 ++++++++++++++--------------
->  1 file changed, 14 insertions(+), 14 deletions(-)
-> 
-> diff --git a/fs/erofs/namei.c b/fs/erofs/namei.c
-> index d4f631d39f0f..f0110a78acb2 100644
-> --- a/fs/erofs/namei.c
-> +++ b/fs/erofs/namei.c
-> @@ -130,24 +130,24 @@ static void *erofs_find_target_block(struct erofs_buf *target,
->  			/* string comparison without already matched prefix */
->  			diff = erofs_dirnamecmp(name, &dname, &matched);
->  
-> -			if (!diff) {
-> -				*_ndirents = 0;
-> -				goto out;
-> -			} else if (diff > 0) {
-> -				head = mid + 1;
-> -				startprfx = matched;
-> -
-> -				if (!IS_ERR(candidate))
-> -					erofs_put_metabuf(target);
-> -				*target = buf;
-> -				candidate = de;
-> -				*_ndirents = ndirents;
-> -			} else {
-> +			if (diff < 0) {
->  				erofs_put_metabuf(&buf);
-> -
->  				back = mid - 1;
->  				endprfx = matched;
-> +				continue;
-> +			}
-> +
-> +			if (!IS_ERR(candidate))
-> +				erofs_put_metabuf(target);
-> +			*target = buf;
-> +			if (!diff) {
-> +				*_ndirents = 0;
-> +				return de;
->  			}
-> +			head = mid + 1;
-> +			startprfx = matched;
-> +			candidate = de;
-> +			*_ndirents = ndirents;
->  			continue;
->  		}
->  out:		/* free if the candidate is valid */
+  1289c431641f ("Documentation: RAS: Add index and address translation sect=
+ion")
+  0e4fd816b08e ("Documentation: Move RAS section to admin-guide")
 
--- 
-Thanks,
-Jingbo
+from the edac tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc Documentation/index.rst
+index 429a407470c8,9dfdc826618c..000000000000
+--- a/Documentation/index.rst
++++ b/Documentation/index.rst
+@@@ -112,8 -112,7 +112,7 @@@ to ReStructured Text format, or are sim
+  .. toctree::
+     :maxdepth: 1
+ =20
+ -   staging/index
+ +   Unsorted documentation <staging/index>
+-    RAS/ras
+ =20
+ =20
+  Translations
+
+--Sig_/zU8aYJJPKg0ASmlJ9nmc7mR
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXWvYkACgkQAVBC80lX
+0GzlUgf+Mqrx36oqhJE2739fYlkK9j9PV6lbpYiohSqDp4Iku8wNB7YQjof67VBG
+k/iK1Z4rL2K/JYS8klwlRo9yLiL3SttjKFdmTdPGHCBzCe8c5ZU4cNQWhL+ZjmqE
+P+ma5rs9Xp7+QYGSSxIuCFcvEcl5ram6aTRS3cMhvxj4FC5ZoDnNleiHQnXzrLB9
+4qKn1fWIIYtI/nrlkoxo4yPstIjQkjZ856il2YUge0klCdJqalESEc5CiuA2jqVf
+QIh3vfvozVvFl1o5A5AAmY4OlMEmHaH97U6sl9cR+KUwnfivpD1obRbYl7eRgWvT
+//fOQo3ZPfmpBNMNU3OQOHSqZAcBRg==
+=VrXX
+-----END PGP SIGNATURE-----
+
+--Sig_/zU8aYJJPKg0ASmlJ9nmc7mR--
 
