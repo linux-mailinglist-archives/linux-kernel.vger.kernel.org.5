@@ -1,129 +1,127 @@
-Return-Path: <linux-kernel+bounces-76319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E727085F598
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:25:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D24B085F594
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:25:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86FAA1F25A2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:25:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 729601F2290A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:25:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51D273D968;
-	Thu, 22 Feb 2024 10:25:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51CD23A8FE;
+	Thu, 22 Feb 2024 10:25:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="WnfM+8S3"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="fmOnswuF"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA8CF39FE1
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 10:25:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01F0039861
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 10:25:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708597527; cv=none; b=ane8wMT2KVXOeiZwhMxPfBlDSxdVzEk8dn3cPLvoJvJGzOvBYvcx0qTz/53W2pZk3egBmZqVvMtaFvqpbSzmiOACr9F4jZ0xwwbXFeCIgFxveUXcczyRoFpSjDCJ3nTn+82TaHbKcmfzsMeaebTvmBM7zbH1xktXqEHbr5VdeNg=
+	t=1708597526; cv=none; b=f9srhuNAu2a3v8EUmy1qUxMFlA58/HG8buL8bH0KkwxB+v5nhqckCBvTQzEQbHEnGpom7g9/CCMKrrgbp8SNQZr3G2oitV9Dl6fF7x+LfTs3DrJjx7MSXtbKnVBD83jHVC5cpEDij6MwS98qaxHw/Jo/4UHylPn2CLeXAYiiQ7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708597527; c=relaxed/simple;
-	bh=Q13FOxl27CAz/cOTAlE9oo3H7aFDqQ5nK/tKyITOrFs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=M5+SM1rTHN4xvdKamOeMhwNNp7PmlcEv2GjjgGUbUTC3a52QO92Co6p3tHmx/fRotXIa+HxSN83cT+cKaMuABz/Udkfm8eIG3PSIociF47NHOSOVawzegd24yAWr0WAXZMRrTxBZzP5hn9SBVEb2zdd7t+ZB2+YEvX1rIBUd3V4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=WnfM+8S3; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a3e891b5e4eso503377366b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 02:25:25 -0800 (PST)
+	s=arc-20240116; t=1708597526; c=relaxed/simple;
+	bh=mnxxNFv+0lFpw/SFMfmvyOPBK7dB4yVlBgJH3aPt1as=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=XCRHl0HY4p9X+KFHXqeveR8KCMwypaGw0JBMCRh4ucwjivN55jtVBf2sohE8svAWKG93+9SOi8W87tsF+YHaDgMQ2qnFzse5+a1S1LRikA2ovpYXf57sPqKlMP9o7qnIJ6+t68I6YTjgFNbdtA/T+WFWhJWjlatUzBk3E3VdV8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=fmOnswuF; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d23a22233fso49995441fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 02:25:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1708597524; x=1709202324; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LyfCMikxUhIuPNypfCt5bvQkByB+IHG2Wh6701iMNSM=;
-        b=WnfM+8S3I+Dr88qLq4kCqj+X036LnuGPezrubt0xQ9wK+cM6RD/dS1U1Ai60s/2fgA
-         Lst5hinMbtZOpeJLhoLOIjsvrBoHsE49GHWOC16Okii0zw8JMqg5Sta+AJAZLqOM4BXN
-         lduMk3X/a164Ri8zqfbY1YEQ0kpQ0+mykI8lk=
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708597522; x=1709202322; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Dhl5ESUaDZOx7x5KxkphJWu06MFmNtC2GZwvxBuWor8=;
+        b=fmOnswuFbm8IoGvrw7ODFN6iKLGSmRoaeCvT6us1qe6oiEN9vy2/FNVCJBmuHxpx2g
+         oPjSVt9P7K7aezjq8aZCMTPCG6bP3bZS+m66juOCbt9Ln+oL8BIe27m19ZWNGWmV036H
+         +jn8DMVPyuCAVEz1SAZDNUJ9Tz3W75aWB1X5MFzU9avqXqicgsWeNm5nr6z3B/l9IO7d
+         4hz1cnpsvolxibxzCkNmTbG9dgURgDcUVuTd6cqnrJDdvcQdj2D4JD9M8Iud2DW2N40m
+         16p9g/o6iGy8lvpcEnRQ9tlr/o4Oo1WBRWOHG4IKtpNSVB0sl6Q+KhcvfRZIXBvTeVBb
+         nOKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708597524; x=1709202324;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1708597522; x=1709202322;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=LyfCMikxUhIuPNypfCt5bvQkByB+IHG2Wh6701iMNSM=;
-        b=Nxzyk/jD1VJv7EDDkJ1GgNK2m9kRKg3FGpLvJuhCCVdtYQnkNcjJRS1+5dQP/B1wYg
-         7f8NdRzP8xLKA21D27xOL8FKyZ1nNAR7jJ5DIGd5LFFxUfaKuLvHXDSSDGSTcdJE3Nfn
-         M3ETs+lUIOf/hXA+xrcMsjvs/KnbQi6/J/kFfC5a45qjA+VGXgRFNIPYPt1u+r6+mXIW
-         ijqOLaHsviRKLG1OZprxTHJZdPcZafvyw2e+b7R39/hQK2WkpVNLHJfTyUaEceaPrGFs
-         QzfT+uLP8UVuMsCtTT1YaVrsYCXRhKNEm1LPKWdKGG/h1xnWVrcawinmGnNqVXrGwqfe
-         oToA==
-X-Forwarded-Encrypted: i=1; AJvYcCXr15pGRTwwPoV6bHAOlq6bcJzk9p22wgqcEkLh7r9+wjR0G9R+j01qRIzlkPNUER+LHjBaTaVRXwnxVodbFS/LixKodcpJjAwRhbGU
-X-Gm-Message-State: AOJu0YxfMQI8xBFU8GXGcsLKUgFIzIcFTii3ibgcq2usl4sUAz9tiqjC
-	6o3Z8yfJ1D5t0oizweZ/xXBZX8oNDZFExoyv2X507yJyVAKjc+s5qMS28IsQtGWwLJyzxJxGIvJ
-	Iev19xUPnnGJoh+FVHgIfTDRKSPG+wozDfwFFCA==
-X-Google-Smtp-Source: AGHT+IGhZ6qvSWLNcOGjEpamFEzkA4AOa+ciP3VrCmvGNu7ABvFqOlp6DSlpe9k3SjFuI7QnlREU28iTFKQjuDGZnvM=
-X-Received: by 2002:a17:906:cc83:b0:a3f:52dc:6a21 with SMTP id
- oq3-20020a170906cc8300b00a3f52dc6a21mr2403270ejb.14.1708597524017; Thu, 22
- Feb 2024 02:25:24 -0800 (PST)
+        bh=Dhl5ESUaDZOx7x5KxkphJWu06MFmNtC2GZwvxBuWor8=;
+        b=wkXRvNKV+9b/aGwpT0fz8pi6g6/1MrxrTkN7sIHZKERhEY1XGZGSk0uAIaV/mvZ8Dx
+         zPQz3H70zWR3zU3o0T3YO8drzXmf0b9hZ43xGDzzKtnxXwn5Xa6HihjZBiI/cUjqOyvq
+         YnLLHURWxm+tjCHCQe4Yq59gKGAQNKqGOSjuHgU9flvKpqZ4Q3FKi2nlzowAQDYSCXS/
+         E1HcnOZra3mjQ570CVO95FIVoDS36krMxUuAHdsZ64Ws9vNxgBgshmLk58AUsTR3vVdi
+         BT3xJ7xw8CIWW/i/jB8vh9j1jHpuNjLw57XyHPjNrOd+9CODorx+KDAghMWouRK5XedW
+         +NwA==
+X-Forwarded-Encrypted: i=1; AJvYcCXuF5ad+msLvnvbGQvoKEjivvT7Wa5kNmM+VrCf+efFRGIpeM414cBzSPsjKsGEel8bncFw/U0mE951IRxTx6zHCv4NrQNjTL964oHQ
+X-Gm-Message-State: AOJu0YzHepknTNqO2DQ58LoIwfEuMFijKDvh6pAlFt3vAVVAGqt8jOq6
+	O4HlEbkpwTgcrQuZDRkWBYTdMO5YS9jyUxZgAaMzmLe57mERBzgBHJtY3YExu94=
+X-Google-Smtp-Source: AGHT+IFOqwxJiGBc2Fme09gX8vKqytLAGdD/ajuD0r/rE1luPnxjk/tot7zNIx7Fsj9Rj2kppY/ECg==
+X-Received: by 2002:a2e:3c09:0:b0:2d2:3017:c144 with SMTP id j9-20020a2e3c09000000b002d23017c144mr9167469lja.39.1708597522077;
+        Thu, 22 Feb 2024 02:25:22 -0800 (PST)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:465e:5c78:c1d5:890b])
+        by smtp.gmail.com with ESMTPSA id ay3-20020a5d6f03000000b0033d1b760125sm20632623wrb.92.2024.02.22.02.25.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 02:25:21 -0800 (PST)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH v2 1/2] gpio: provide for_each_hwgpio()
+Date: Thu, 22 Feb 2024 11:25:12 +0100
+Message-Id: <20240222102513.16975-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
- <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
- <20240221210811.GA1161565@perftesting> <CAJfpegucM5R_pi_EeDkg9yPNTj_esWYrFd6vG178_asram0=Ew@mail.gmail.com>
- <w534uujga5pqcbhbc5wad7bdt5lchxu6gcmwvkg6tdnkhnkujs@wjqrhv5uqxyx>
-In-Reply-To: <w534uujga5pqcbhbc5wad7bdt5lchxu6gcmwvkg6tdnkhnkujs@wjqrhv5uqxyx>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Thu, 22 Feb 2024 11:25:12 +0100
-Message-ID: <CAJfpegtxv3Omm3227c-1vprHYVTd1n3WoOxDKUSioNSP5pdeGw@mail.gmail.com>
-Subject: Re: [LSF TOPIC] statx extensions for subvol/snapshot filesystems & more
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Josef Bacik <josef@toxicpanda.com>, linux-bcachefs@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, lsf-pc@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Thu, 22 Feb 2024 at 10:42, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-> Yeah no, you can't crap multiple 64 bit inode number spaces into 64
-> bits: pigeonhole principle.
+We only provide iterators for requested GPIOs to provider drivers. In
+order to allow them to display debug information about all GPIOs, let's
+provide a variant for iterating over all GPIOs.
 
-Obviously not.  And I have no idea about the inode number allocation
-strategy of bcachefs and how many bits would be needed for subvolumes,
-etc..   I was just telling what overlayfs does and why.  It's a
-pragmatic solution that works.  I'd very much like to move to better
-interfaces, but creating good interfaces is never easy.
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
+v1 -> v2:
+- rename the iterator to for_each_hwgpio()
 
-> We need something better than "hacks".
+ include/linux/gpio/driver.h | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-That's the end goal, obviously.   But we also need to take care of
-legacy.  Always have.
+diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
+index 9c1fbfaebaa8..175129a92656 100644
+--- a/include/linux/gpio/driver.h
++++ b/include/linux/gpio/driver.h
+@@ -551,6 +551,21 @@ DEFINE_CLASS(_gpiochip_for_each_data,
+ 	     }),
+ 	     const char **label, int *i)
+ 
++/**
++ * for_each_hwgpio - Iterates over all GPIOs for given chip.
++ * @_chip: Chip to iterate over.
++ * @_i: Loop counter.
++ * @_label: Place to store the address of the label if the GPIO is requested.
++ *          Set to NULL for unused GPIOs.
++ */
++#define for_each_hwgpio(_chip, _i, _label) \
++	for (CLASS(_gpiochip_for_each_data, _data)(&_label, &_i); \
++	     *_data.i < _chip->ngpio; \
++	     (*_data.i)++, kfree(*(_data.label)), *_data.label = NULL) \
++		if (IS_ERR(*_data.label = \
++			gpiochip_dup_line_label(_chip, *_data.i))) {} \
++		else
++
+ /**
+  * for_each_requested_gpio_in_range - iterates over requested GPIOs in a given range
+  * @_chip:	the chip to query
+-- 
+2.40.1
 
-> This isn't a serious proposal.
-
-If not, then what is?
-
-BTW to expand on the st_dev_v2 idea, it can be done by adding a
-STATX_DEV_V2 query mask.
-
-That way userspace can ask for the uniform stx_dev if it wants,
-knowing full well that stx_ino will be non-unique within that
-filesystem.  Then kernel is free to return with or without
-STATX_DEV_V2, which is basically what you proposed.  Except it's now
-negotiated and not forced upon legacy interfaces.
-
-The other issue is adding subvolume ID.  You seem to think that it's
-okay to add that to statx and let userspace use (st_ino, st_subvoid)
-to identify the inode.  I'm saying this is wrong, because it doesn't
-work in the general case.
-
-It doesn't work for overlayfs, for example, and we definitely want to
-avoid having userspace do filesystem specific things *if it isn't
-absolutely necessary*.  So for example "tar" should not care about
-subvolumes as long as it's not been explicitly told to care.  And that
-means for hard link detection if should using the file handle +
-st_dev_v2 instead of st_ino + st_subvolid + st_dev_v2.   So if that
-field is added to statx it must come with a stern warning about this
-type of usage.
-
-Thanks,
-Miklos
 
