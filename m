@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-75802-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75803-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4292485EF36
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:38:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD2BE85EF3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:38:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE77F1F2262E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 02:37:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBC081C2255D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 02:38:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90D121775C;
-	Thu, 22 Feb 2024 02:37:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B57C017577;
+	Thu, 22 Feb 2024 02:37:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="My0RCvBz"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="bDqLaH4M"
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35D1915EA2
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 02:37:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72C0D17562
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 02:37:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708569457; cv=none; b=rFLsVsELonkMgU5uyauBqr9gmnp3LS1x6pLPgnoVCGAUZLRvx/TdIzzLfpbEsva1Ri9S5wmazm00xFjaJUYpLFYFnIy0+JuSb8b8q9I2+o8JhMmJoR85KkfiI0hSxmEm7TLRigYVF8rsgZyJHl2dgsSJ9dFwJQOdXCvMfzMinrI=
+	t=1708569458; cv=none; b=aebnoRNHm/MKwtQqcXrkVrd6+lOAHC5ThRHwtue40bGBSczII0dfsxG/ixNHhIannzQ60+iphClFBL3vOr8fSss/cEjpJjTAZ74Hcsg/v8GvLFXxo6Oh40XFqfCM2S6z7NEA+xAiLdc+j2ryZUVTNRgvuK1FJPcNAcuMPZlElwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708569457; c=relaxed/simple;
-	bh=l+USg6YpypTRM0+WpzcfEdryMXsoNQLARzL5GiGzQLo=;
+	s=arc-20240116; t=1708569458; c=relaxed/simple;
+	bh=loWpjUeaU5B9E/ejxOfrGk83272NpESpvlB1T6y7RcU=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=moJcNZKmKe5LIYprXCp9aKkxJyZOpzSluNSXGxH/V2O0EXaWaU9DmOzkhVi4uG4f7pe0MqiXbxoT/nJQ42D/VYzhmmWZnWMNoH/sYILN05sdotrpsBIYILDtMa+uAvpX2RcqSg4T35ThdxWqLFfFoqgEXj1TG2nJ/N3g2iOCnf8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=My0RCvBz; arc=none smtp.client-ip=209.85.210.181
+	 In-Reply-To:To:Cc; b=JKVudTO9EvgZ6k+wGknB8rw8thv8jBMP+RJTEW3woFk1i9Xnabzn302yuzove6qdbnqcSS6cO8cavzdBfBQCjCIEDeofqU0ATl5TlyDWDgGqwJ7hTLptkzNGzMhgqwwT7+9Yh+A5OSzqidwNKpHbsnfbD3au6/UkWPHF73YuKYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=bDqLaH4M; arc=none smtp.client-ip=209.85.167.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e486abf3a5so1405972b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 18:37:35 -0800 (PST)
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3c1404d05bfso5399589b6e.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 18:37:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1708569455; x=1709174255; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1708569456; x=1709174256; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=xdYAIYdQG1Ak9nX+umevv7MEU7fdacXyP4+T5jQwePU=;
-        b=My0RCvBzyoUfAKwvIOr/6evWcNGJLzzMtcwkKb1D9MGInpj5eIYlBD5Y+69md2E4KJ
-         Waqg4RYOkpbP2Ot1BJDPWg7cSW4y2YUqGcuMRe661H/ffqPP6Pb9FjG1pTbgS/y+kOrc
-         GQflr0RrvAS5OpusJ1bITlWwEampTy7okf7lJd6c/qg0Gd8yZb9Ll9M9DGE2i8rXDS6m
-         +4Z215xFLj2LD0coTLSHrk2dwaHpJAfYx7M2BK+TXYl74fhNMrwPU4KJe9yhpU77ItnZ
-         rwZxvpmInhbhohbGxbXBrUejxQbrio2OWOpqHFh2GtnE9xhmJQ3M95q2HUQZP0UpCbqu
-         rd+A==
+        bh=ZGrNzxe3gyC6VQWPSLHOaYx0WPaI3IQ/8Jr8tyLxsyE=;
+        b=bDqLaH4Mz6HBVCQH8/bzqJM/xjCxIxcGrIh8PIEU0TYPLwt6nH79zDhos0DOTlmk/R
+         sewKpdEG84CTfUkO4fqkKo+KLgPemD7mqj176D+7eicT/3SoHLmguQVgQkvNX5ol1zoE
+         1W7S3IroWirVSWaPWLLTcdWP2uQMrDsflRj7BxPghmFDaR2YAXMEKZSs0qejzkCxbjGA
+         SPlxggHVkvmjfUHi8n+B1W5tu/YIAmEF7fyYfycUAhwAiGUCgm2UfQa7df201Dg9OBTJ
+         /MxdofkD0gNu3TRQycgc42xIeApQf4q278El0L7milqb7PMFVtXnJXTxROIBSCctm+Os
+         siJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708569455; x=1709174255;
+        d=1e100.net; s=20230601; t=1708569456; x=1709174256;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xdYAIYdQG1Ak9nX+umevv7MEU7fdacXyP4+T5jQwePU=;
-        b=a6xaPbdSDZPLiywXe9avU8nzjSVNK/KKf+0XsiVIgl4xHKp+JPLUykB5dLJLOaDmpA
-         d1PtfkdtL4wcmpTvS4WIfR6rfa/DoI7ulU/JgWJL+4yk3W4mK7V3YB0k5Z0T4Aww8B14
-         fc3N1nKNkzj9yFj8bDPq5fIEdUgdKc/GNJ9rYttITYIAbGLQwpHV5Ph00MbBwChEnSKV
-         PuPSybSVXVbYujpfhy8IRUIjGABXx1Zs6g0KJtQWYLknCh3sokcbXCLnFC3dUZRl5XiI
-         xLOWWpPfE+wNF23vugmNOoXr+pg0ZhIRUt3F/sp9MZYP6i/iTGPQi9r3Y0U+3is6uxoV
-         LWAg==
-X-Forwarded-Encrypted: i=1; AJvYcCWBUkjUKmm49ySb6eIdhAVZYH7mewPuKf+lLSLMl1mmhs7fwCb0KehBzUZdo3iO06ZfFuFdrZOuD7UWmHFYNEHanVBa58f61gpt/DU+
-X-Gm-Message-State: AOJu0Yz8evHlwYFsyVqARBO5qTUR9rPgmSyc/5haIZKwFr87AiO22HIK
-	rsG3OXRZne8xHhLVTevXwb+XTfxzFlFWW2YX2p90zUDM+BeH9rbI0xQn+Qe7EcUdpfoHzqX1mH1
-	Y
-X-Google-Smtp-Source: AGHT+IECw2nme63hi+mxaAn1NvEiiav0mQgIl1MQUmLPHTPgHSppDVeUu9MO0MA/vVcETkLZhGo+RQ==
-X-Received: by 2002:a05:6a00:1d92:b0:6e4:ce30:ae1 with SMTP id z18-20020a056a001d9200b006e4ce300ae1mr229424pfw.20.1708569454826;
-        Wed, 21 Feb 2024 18:37:34 -0800 (PST)
+        bh=ZGrNzxe3gyC6VQWPSLHOaYx0WPaI3IQ/8Jr8tyLxsyE=;
+        b=LDbsMdPocSxwD6xvsAQuVvXWZzxYeVS5Zdvvc2g242RDPiH5dChfvNv+UhYNOmgJCI
+         a/e+8INKfTnwuGKqZpgMescGpv+0rp1pe4couY/dbNQyhPX/k9kMFGnSEDdTzfAZnq69
+         /sOta1CwMwxTmzFfgvoWT83NnKOeSaSU2M4qCmjFqTfwf/yiJzqZaNSm26+xOFCTaJNE
+         CfdzPIZNhybqLCaGVPyZ2ejG+yHnW/HbXwYAT3IrAbzAwTekbV7DS/Ig48BAsQGKR6E4
+         sE64geUVJl5JsalxdhgRMHTnDQcB/c1SL48raq9/ZC2kHzJwquwT3BBUNvTgvH+Zn//Z
+         iy5w==
+X-Forwarded-Encrypted: i=1; AJvYcCVML9mFzUwqT1CeRe4WsC+8JnJgsYkdL+cZCLRS11PDJ2VTPaWJq8lqxkmp/bqwGslu2ioDvvdoixqpGkYEJf7Zp7/Sl0SbWHdK+Zoe
+X-Gm-Message-State: AOJu0Yz3+/O+4k/o+/ZopE1hezttOa87pCDWBdC7VpJVHe952cXSWppr
+	DV1o8cqdFQ4inxFoyBWfKTOJTpGpvtSaG79VSq8QvB7bcUy9E1LrJt+bTbcrGEKeAwMSEs3k2+5
+	S
+X-Google-Smtp-Source: AGHT+IHr4SZnfJdYWs07MIcE+jUM6/a0JrEuqqzI8zGh/SYhR/8eR1eYgSYBAmBjDUh92jlYMvK//Q==
+X-Received: by 2002:a05:6359:45a9:b0:17b:335c:fa07 with SMTP id no41-20020a05635945a900b0017b335cfa07mr13781339rwb.32.1708569455998;
+        Wed, 21 Feb 2024 18:37:35 -0800 (PST)
 Received: from charlie.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id kt21-20020a056a004bb500b006e465e1573esm6469705pfb.74.2024.02.21.18.37.33
+        by smtp.gmail.com with ESMTPSA id kt21-20020a056a004bb500b006e465e1573esm6469705pfb.74.2024.02.21.18.37.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 18:37:34 -0800 (PST)
+        Wed, 21 Feb 2024 18:37:35 -0800 (PST)
 From: Charlie Jenkins <charlie@rivosinc.com>
-Date: Wed, 21 Feb 2024 18:37:12 -0800
-Subject: [PATCH 2/4] parisc: checksum: Use generic implementations
+Date: Wed, 21 Feb 2024 18:37:13 -0800
+Subject: [PATCH 3/4] parisc: checksum: Remove folding from csum_partial
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,7 +78,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240221-parisc_use_generic_checksum-v1-2-ad34d895fd1b@rivosinc.com>
+Message-Id: <20240221-parisc_use_generic_checksum-v1-3-ad34d895fd1b@rivosinc.com>
 References: <20240221-parisc_use_generic_checksum-v1-0-ad34d895fd1b@rivosinc.com>
 In-Reply-To: <20240221-parisc_use_generic_checksum-v1-0-ad34d895fd1b@rivosinc.com>
 To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
@@ -88,126 +88,45 @@ To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
 Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org, 
  linux-arch@vger.kernel.org, Charlie Jenkins <charlie@rivosinc.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708569451; l=3620;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708569451; l=1119;
  i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
- bh=l+USg6YpypTRM0+WpzcfEdryMXsoNQLARzL5GiGzQLo=;
- b=B+aW/3quyGTiPp/dimTVueCw78vaqCIG5wP05i6PchiAwl3gIbzt2dwaZ6dscnmEwLFzm7aBr
- xnekuqU4P72D8HfAbwftg4vIXq2sfQCtMjwzQBEvRc/VMEK7L9+evsT
+ bh=loWpjUeaU5B9E/ejxOfrGk83272NpESpvlB1T6y7RcU=;
+ b=xtNabUDylbAE6Wad/8orZRl3dAazwQY8qAbie+Ef8VKsiWBGicqZfawURBgIzMindz5keC/GQ
+ JFElQKZrZefDR+vZaVkejbXrGuxRi9Xb6hk2IyfNMsmFd1KK3OjfEjC
 X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
  pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
 
-The generic implementations of the checksum functions
-csum_tcpudp_nofold, csum_fold, and ip_compute_csum are either identical
-or perform better than the parisc ones, so use the generic
-implementations instead.
-
-In order to use the generic implementations of checksum functions,
-do_csum can no longer be static.
+The parisc implementation of csum_partial previously folded the result
+into 16 bits instead of returning all 32 bits and letting consumers like
+ip_compute_csum do the folding. Since ip_compute_csum no longer depends
+on this requirement, remove the folding so that the parisc
+implementation operates the same as other architectures.
 
 Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 ---
- arch/parisc/Kconfig                |  3 +++
- arch/parisc/include/asm/checksum.h | 42 ++++++++------------------------------
- arch/parisc/lib/checksum.c         |  2 +-
- 3 files changed, 13 insertions(+), 34 deletions(-)
+ arch/parisc/lib/checksum.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index d14ccc948a29..1638deb23287 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -122,6 +122,9 @@ config GENERIC_BUG
- config GENERIC_BUG_RELATIVE_POINTERS
- 	bool
- 
-+config GENERIC_CSUM
-+	def_bool y
-+
- config GENERIC_HWEIGHT
- 	bool
- 	default y
-diff --git a/arch/parisc/include/asm/checksum.h b/arch/parisc/include/asm/checksum.h
-index 3c43baca7b39..c7847a08ef7c 100644
---- a/arch/parisc/include/asm/checksum.h
-+++ b/arch/parisc/include/asm/checksum.h
-@@ -17,6 +17,7 @@
-  * it's best to have buff aligned on a 32-bit boundary
-  */
- extern __wsum csum_partial(const void *, int, __wsum);
-+#define csum_partial csum_partial
- 
- /*
-  *	Optimized for IP headers, which always checksum on 4 octet boundaries.
-@@ -57,20 +58,8 @@ static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
- 	return (__force __sum16)sum;
- }
- 
--/*
-- *	Fold a partial checksum
-- */
--static inline __sum16 csum_fold(__wsum csum)
--{
--	u32 sum = (__force u32)csum;
--	/* add the swapped two 16-bit halves of sum,
--	   a possible carry from adding the two 16-bit halves,
--	   will carry from the lower half into the upper half,
--	   giving us the correct sum in the upper half. */
--	sum += (sum << 16) + (sum >> 16);
--	return (__force __sum16)(~sum >> 16);
--}
-- 
-+#define ip_fast_csum ip_fast_csum
-+
- static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
- 					__u32 len, __u8 proto,
- 					__wsum sum)
-@@ -85,28 +74,15 @@ static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
- 	return sum;
- }
- 
--/*
-- * computes the checksum of the TCP/UDP pseudo-header
-- * returns a 16-bit checksum, already complemented
-- */
--static inline __sum16 csum_tcpudp_magic(__be32 saddr, __be32 daddr,
--					__u32 len, __u8 proto,
--					__wsum sum)
--{
--	return csum_fold(csum_tcpudp_nofold(saddr,daddr,len,proto,sum));
--}
--
--/*
-- * this routine is used for miscellaneous IP-like checksums, mainly
-- * in icmp.c
-- */
--static inline __sum16 ip_compute_csum(const void *buf, int len)
--{
--	 return csum_fold (csum_partial(buf, len, 0));
--}
-+#define csum_tcpudp_nofold csum_tcpudp_nofold
- 
-+extern unsigned int do_csum(const unsigned char *buff, int len);
-+#define do_csum do_csum
- 
- #define _HAVE_ARCH_IPV6_CSUM
-+
-+#include <asm-generic/checksum.h>
-+
- static __inline__ __sum16 csum_ipv6_magic(const struct in6_addr *saddr,
- 					  const struct in6_addr *daddr,
- 					  __u32 len, __u8 proto,
 diff --git a/arch/parisc/lib/checksum.c b/arch/parisc/lib/checksum.c
-index 4818f3db84a5..05f5ca4b2f96 100644
+index 05f5ca4b2f96..eaa660491e24 100644
 --- a/arch/parisc/lib/checksum.c
 +++ b/arch/parisc/lib/checksum.c
-@@ -34,7 +34,7 @@ static inline unsigned short from32to16(unsigned int x)
- 	return (unsigned short)x;
+@@ -95,14 +95,11 @@ unsigned int do_csum(const unsigned char *buff, int len)
+ /*
+  * computes a partial checksum, e.g. for TCP/UDP fragments
+  */
+-/*
+- * why bother folding?
+- */
+ __wsum csum_partial(const void *buff, int len, __wsum sum)
+ {
+ 	unsigned int result = do_csum(buff, len);
+ 	addc(result, sum);
+-	return (__force __wsum)from32to16(result);
++	return (__force __wsum)result;
  }
  
--static inline unsigned int do_csum(const unsigned char * buff, int len)
-+unsigned int do_csum(const unsigned char *buff, int len)
- {
- 	int odd, count;
- 	unsigned int result = 0;
+ EXPORT_SYMBOL(csum_partial);
 
 -- 
 2.34.1
