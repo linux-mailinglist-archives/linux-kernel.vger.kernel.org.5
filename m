@@ -1,164 +1,300 @@
-Return-Path: <linux-kernel+bounces-76762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B06CC85FC23
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:18:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7298D85FC25
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:19:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D35D01C247DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:17:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 280C1289742
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:19:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 781B714C5A6;
-	Thu, 22 Feb 2024 15:17:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3B7A14C59A;
+	Thu, 22 Feb 2024 15:19:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="AtRvhUD2";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="2ZFYFNdm"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4EW4q3Mu"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E434614C59B
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 15:17:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F674149013
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 15:19:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708615044; cv=none; b=QcOrM2tWdJ8cQlxWoZofTyDEOSQv3gUdpipYI9AjZrqHeu2FINvQmB3RrfJ6pjqTQ4g0GX8pWoo20s+imlEgBr8JpZj5u0ryZVrOGTAHRrQa0ojQmx/+okp/KKdAqKPZniTw2nlAloczP18B+XDK97MsgfokBRG+Tmir5veuHq8=
+	t=1708615169; cv=none; b=lvHe0brx8bJZ4GVWujwkIEKBO7PfL+5hJO6prdH2ARg9tC9P6CpWGdUZ8cWoH7tvlIhaMecM14l/fVgGUqAr8bh99GGmuYq37++IdMUTiyktAOYnm6x5MQTyX/DUPwMURwu9w3/VbJ+e/2aS3C/rnc4r02vmXh7lmeaObIQhWGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708615044; c=relaxed/simple;
-	bh=rNZr/qFbvQHD7VbWILK52ET8FPFhOj9+F1CVqYpT9f0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=DyCNJXQThFRg3KfScPhWFAvMZa0XZ+Vuxvcp9bmrPWefeYIuT77Nj2Gc2DTK/4zgifjjdsb2rsgnHS7jOMzMNhdgy6PdoN8RyV1LAuSAxZc1+WZl6uT/9DNbpe4Hnm5d2l+GbW42OUrLWP6ZJLDpBYcUliDs+vabIHI0VPwHmX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=AtRvhUD2; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=2ZFYFNdm; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708615041;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JqXgMEODvPqPWYehMT24n8azEjHEKTzJ7cm4bihqX5A=;
-	b=AtRvhUD2TcijhmJTc2X2hbKB5Qiw5lbsMzLyZSv3kYjk6+Ek+7o0Rhd3/c391N+BwFtmeP
-	OgXY4RiLCjegmvreLavnTKvPx5Ftre63el61eNLf0Z/pRdCcJtGp1LO73ypE7uBSq0vbTF
-	r4XOAL9AN/zgAkaaAWhSKHbmrnybcqlEjNRL9784LpmM27NnHPpyoHcRl263XT9Rsuc1ZB
-	p/Pl+cU0UZL6h+7L29nadqdDEeoGWCbHl4cYAHhiubfdNAZ+MvQvBA59WwIPPe0T9kZoZ+
-	QaJfDH6dzH1+Rk480UNdoDKy6XAo+Xfg21jttdh/AlIAFFRvnoM2UDbu8bun9g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708615041;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JqXgMEODvPqPWYehMT24n8azEjHEKTzJ7cm4bihqX5A=;
-	b=2ZFYFNdmrBhxKjlPD+VSEjVhYQRF7PKVsIHqOr4x3DFyvOAhNySXWUnlmIk5zOcj7LW8Ee
-	AfiaE5DBj/sUTODw==
-To: John Stultz <jstultz@google.com>, LKML <linux-kernel@vger.kernel.org>
-Cc: John Stultz <jstultz@google.com>, Frederic Weisbecker
- <frederic@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
- kernel-team@android.com, John Ogness <jogness@linutronix.de>
-Subject: Re: [RFC][PATCH] hrtimer: Use printk_deferred_once for
- hrtimer_interrupt message
-In-Reply-To: <20240222051253.1361002-1-jstultz@google.com>
-References: <20240222051253.1361002-1-jstultz@google.com>
-Date: Thu, 22 Feb 2024 16:17:20 +0100
-Message-ID: <8734tkfrzz.ffs@tglx>
+	s=arc-20240116; t=1708615169; c=relaxed/simple;
+	bh=BJue+4GJSqk5WpSNMGudyhvHONZNOvQkW6x7cgxI604=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tVX7QZRsV4uHqVWC11ESJmn+cNI3ahWNURGK71KsfxJUMPA062blPjUw2gghotzag3Oy8ndGF+VofFqK7AgduNDIfy/la5ZsJDuJC3WcA7kxj+zz5mCnNQcvHXpcJ2gtYnQaUC2lsGrA9u+h9tcIn1nzOgwYAUAknBx0P1Xzs/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4EW4q3Mu; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-410acf9e776so59615e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 07:19:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708615166; x=1709219966; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wylv6vXEtUdi6Bcb5avU2yV6NCNR7pjMD098XS01Joc=;
+        b=4EW4q3MuW6jyN8l4x2yEFENulQyFedMbW9aBLkdDhdbDNfiye84MsmUBtBKG1Wjg/X
+         5xhvkB1aw6Q8xzSRXDpKLYKTBChx3XgfqZTEoAVaVQa4u6+jM/9P7Ts7eEUVtGBNCp68
+         +C+KHYd1hFrV6nv9gLsD99HjK62l9B2hb3wSnsytKC7O5ORDLn8579B5XP1fngED09EM
+         XOEZ+4O51XBNCjH8rWPD5j6UXpngYvxn5OQRqAAxQtu4QIoNe4OeUEBmGEqVN7MwFEhA
+         gcsqIbOCbZ+aq3nXvYkjOy2vA2v2w+14sNcPN9+PE57Ji/ZW4L4IQSqzjxO7OIAEGRYW
+         STfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708615166; x=1709219966;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wylv6vXEtUdi6Bcb5avU2yV6NCNR7pjMD098XS01Joc=;
+        b=kE7YV0UUT0pnTyOfovBRYtcN+m4smsmpn1hz4IuTJofFq5AmqKB0XT/qGjfsdA1Hnb
+         5sJy+xj3T8hRUR6uly9Tm3n9+G5bi6kx5q3pA80dtyV5qJwOc5thufa1mitXOHK1E27r
+         dWQSSOClTEZJoAjlKUBvHKo1jUuXeVPBW1qI+Y6QGlygmpJfS9nGMUU0r0/cmSDe5oH0
+         o3p+NunBF4xkWoceG+b2etqeGgFozvX3L+PFtzuJBVzOo49QCNlUlAeq3cAAnfoUo2SX
+         uZej1Ypk30gQI3sFzeCHVDhJTHHt1k9wgtGgI5om0uJY0GBNy0/3Ae+GZ2+A2DxdP3xW
+         KH9A==
+X-Forwarded-Encrypted: i=1; AJvYcCXM5PLL1vbgQOAkjh7ZO6VZyFpeRVyQkHx4BQvjn+4NONRBqazZw4FbyWSkN5Wg0fefRzf04uscitXhq7hz/CHUBw/uRw8h2DYn4MML
+X-Gm-Message-State: AOJu0Yz4XSZOf3hoeoPCqbsJLS6pglosxD544Ct7mMGjkRPlymCyNTKp
+	3OJur7kJPV8y3AzyryJ+ApCD5V8Mo07OBf1wbx0Y/emVgyI9u3HQFelroF57BA==
+X-Google-Smtp-Source: AGHT+IFAAaTEm3lXZegn3XxVb3u12ViYu3B/HVTEqaxNxbW8lSDpmbQNkCKoWLXbfgIjLhjZ5xHhGw==
+X-Received: by 2002:a05:600c:a017:b0:412:5616:d3d with SMTP id jg23-20020a05600ca01700b0041256160d3dmr385275wmb.7.1708615165506;
+        Thu, 22 Feb 2024 07:19:25 -0800 (PST)
+Received: from google.com (161.126.77.34.bc.googleusercontent.com. [34.77.126.161])
+        by smtp.gmail.com with ESMTPSA id q4-20020adfab04000000b0033cf637eea2sm20823457wrc.29.2024.02.22.07.19.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 07:19:24 -0800 (PST)
+Date: Thu, 22 Feb 2024 15:19:23 +0000
+From: Sebastian Ene <sebastianene@google.com>
+To: catalin.marinas@arm.com, gshan@redhat.com, james.morse@arm.com,
+	mark.rutland@arm.com, maz@kernel.org, oliver.upton@linux.dev,
+	rananta@google.com, ricarkol@google.com, ryan.roberts@arm.com,
+	shahuang@redhat.com, suzuki.poulose@arm.com, will@kernel.org,
+	yuzenghui@huawei.com
+Cc: kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, kernel-team@android.com,
+	vdonnefort@google.com
+Subject: Re: [PATCH v6 5/6] KVM: arm64: Initialize the ptdump parser with
+ stage-2 attributes
+Message-ID: <Zddl-_Em-pFteJXW@google.com>
+References: <20240220151035.327199-1-sebastianene@google.com>
+ <20240220151035.327199-6-sebastianene@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240220151035.327199-6-sebastianene@google.com>
 
-On Wed, Feb 21 2024 at 21:12, John Stultz wrote:
-
-Cc+ John. Keeping context intact,
-
-> With qemu, I constantly see lockdep warnings after the
-> hrimter_interrupt message is printed:
->
-> [   43.434557] hrtimer: interrupt took 6517564 ns
-> [   43.435000]
-> [   43.435000] =============================
-> [   43.435000] [ BUG: Invalid wait context ]
-
-Do you have PROVE_RAW_LOCK_NESTING enabled?
-
-> [   43.435000] 6.8.0-rc5-00002-g28763ef29a5b #3743 Not tainted
-> [   43.435000] -----------------------------
-> [   43.435000] lock_torture_wr/605 is trying to lock:
-> [   43.435000] ffffffffbdcdc6f8 (&port_lock_key){-...}-{3:3}, at: serial8250_console_write+0xdd/0x710
-> [   43.435000] other info that might help us debug this:
-> [   43.435000] context-{2:2}
-> [   43.435000] 4 locks held by lock_torture_wr/605:
-> [   43.435000]  #0: ffffffffbd6f1de8 (torture_mutex_init#4){+.+.}-{4:4}, at: torture_mutex_nested_lock+0x4b/0x70
-> [   43.435000]  #1: ffffffffbb557260 (console_lock){+.+.}-{0:0}, at: vprintk_emit+0xd3/0x330
-> [   43.435000]  #2: ffffffffbb5572d0 (console_srcu){....}-{0:0}, at: console_flush_all+0xd6/0x6b0
-> [   43.435000]  #3: ffffffffbb396e20 (console_owner){-...}-{0:0}, at: console_flush_all+0x2a0/0x6b0
-> [   43.435000] stack backtrace:
-> [   43.435000] CPU: 36 PID: 605 Comm: lock_torture_wr Not tainted 6.8.0-rc5-00002-g28763ef29a5b #3743
-> [   43.435000] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-> [   43.435000] Call Trace:
-> [   43.435000]  <IRQ>
-> [   43.435000]  dump_stack_lvl+0x57/0x90
-> [   43.435000]  __lock_acquire+0xd07/0x3260
-> [   43.435000]  ? __pfx___lock_acquire+0x10/0x10
-> [   43.435000]  ? memchr+0x1e/0x50
-> [   43.435000]  lock_acquire+0x159/0x3b0
-> [   43.435000]  ? serial8250_console_write+0xdd/0x710
-> [   43.435000]  ? __pfx_lock_acquire+0x10/0x10
-> [   43.435000]  ? __pfx___lock_acquire+0x10/0x10
-> [   43.435000]  _raw_spin_lock_irqsave+0x42/0x60
-> [   43.435000]  ? serial8250_console_write+0xdd/0x710
-> [   43.435000]  serial8250_console_write+0xdd/0x710
-> [   43.435000]  ? __pfx_serial8250_console_write+0x10/0x10
-> [   43.435000]  ? __pfx_lock_release+0x10/0x10
-> [   43.435000]  ? do_raw_spin_lock+0x104/0x180
-> [   43.435000]  ? __pfx_do_raw_spin_lock+0x10/0x10
-> [   43.435000]  ? console_flush_all+0x2a0/0x6b0
-> [   43.435000]  console_flush_all+0x2ea/0x6b0
-> [   43.435000]  ? console_flush_all+0x2a0/0x6b0
-> [   43.435000]  ? __pfx_console_flush_all+0x10/0x10
-> [   43.435000]  ? __pfx_lock_acquire+0x10/0x10
-> [   43.435000]  console_unlock+0x9d/0x150
-> [   43.435000]  ? __pfx_console_unlock+0x10/0x10
-> [   43.435000]  ? vprintk_emit+0xd3/0x330
-> [   43.435000]  ? __down_trylock_console_sem+0x62/0xa0
-> [   43.435000]  ? vprintk_emit+0xd3/0x330
-> [   43.435000]  vprintk_emit+0xdc/0x330
-> [   43.435000]  _printk+0x92/0xb0
-> [   43.435000]  ? __pfx__printk+0x10/0x10
-> [   43.435000]  ? hrtimer_interrupt+0x2f0/0x360
-> [   43.439262]  __sysvec_apic_timer_interrupt+0xb8/0x290
-> [   43.439345]  sysvec_apic_timer_interrupt+0x8a/0xb0
-> [   43.439345]  </IRQ>
-> [   43.439345]  <TASK>
-> [   43.439345]  asm_sysvec_apic_timer_interrupt+0x16/0x20
->
-> I thought the new printk work was going to resolve this, but
-> apparently not, so to avoid trying to printk in this problematic
-> context, lets use prink_deferred_once() instead.
->
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: kernel-team@android.com
-> Signed-off-by: John Stultz <jstultz@google.com>
+On Tue, Feb 20, 2024 at 03:10:34PM +0000, Sebastian Ene wrote:
+> Define a set of attributes used by the ptdump parser to display the
+> properties of a guest memory region covered by a pagetable descriptor.
+> Build a description of the pagetable levels and initialize the parser
+> with this configuration.
+> 
+> Signed-off-by: Sebastian Ene <sebastianene@google.com>
 > ---
->  kernel/time/hrtimer.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-> index edb0f821dcea..e6b060403384 100644
-> --- a/kernel/time/hrtimer.c
-> +++ b/kernel/time/hrtimer.c
-> @@ -1870,7 +1870,8 @@ void hrtimer_interrupt(struct clock_event_device *dev)
->  	else
->  		expires_next = ktime_add(now, delta);
->  	tick_program_event(expires_next, 1);
-> -	pr_warn_once("hrtimer: interrupt took %llu ns\n", ktime_to_ns(delta));
-> +	printk_deferred_once(KERN_WARNING "hrtimer: interrupt took %llu ns\n",
-> +			     ktime_to_ns(delta));
+>  arch/arm64/kvm/ptdump.c | 146 ++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 139 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/ptdump.c b/arch/arm64/kvm/ptdump.c
+> index 9b04c24bb9be..2c4e0c122d23 100644
+> --- a/arch/arm64/kvm/ptdump.c
+> +++ b/arch/arm64/kvm/ptdump.c
+> @@ -14,6 +14,61 @@
+>  #include <kvm_ptdump.h>
+>  
+>  
+> +#define MARKERS_LEN		(2)
+> +#define KVM_PGTABLE_LEVELS	(KVM_PGTABLE_LAST_LEVEL + 1)
+> +
+> +struct kvm_ptdump_guest_state {
+> +	struct kvm		*kvm;
+> +	struct pg_state		parser_state;
+> +	struct addr_marker	ipa_marker[MARKERS_LEN];
+> +	struct pg_level		level[KVM_PGTABLE_LEVELS];
+> +	struct ptdump_range	range[MARKERS_LEN];
+> +};
+> +
+> +static const struct prot_bits stage2_pte_bits[] = {
+> +	{
+> +		.mask	= PTE_VALID,
+> +		.val	= PTE_VALID,
+> +		.set	= " ",
+> +		.clear	= "F",
+> +	}, {
+> +		.mask	= KVM_PTE_LEAF_ATTR_HI_S2_XN | PTE_VALID,
+> +		.val	= KVM_PTE_LEAF_ATTR_HI_S2_XN | PTE_VALID,
+> +		.set	= "XN",
+> +		.clear	= "  ",
+> +	}, {
+> +		.mask	= KVM_PTE_LEAF_ATTR_LO_S2_S2AP_R | PTE_VALID,
+> +		.val	= KVM_PTE_LEAF_ATTR_LO_S2_S2AP_R | PTE_VALID,
+> +		.set	= "R",
+> +		.clear	= " ",
+> +	}, {
+> +		.mask	= KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W | PTE_VALID,
+> +		.val	= KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W | PTE_VALID,
+> +		.set	= "W",
+> +		.clear	= " ",
+> +	}, {
+> +		.mask	= KVM_PTE_LEAF_ATTR_LO_S2_AF | PTE_VALID,
+> +		.val	= KVM_PTE_LEAF_ATTR_LO_S2_AF | PTE_VALID,
+> +		.set	= "AF",
+> +		.clear	= "  ",
+> +	}, {
+> +		.mask	= PTE_NG,
+> +		.val	= PTE_NG,
+> +		.set	= "FnXS",
+> +		.clear	= "  ",
+> +	}, {
+> +		.mask	= PTE_CONT | PTE_VALID,
+> +		.val	= PTE_CONT | PTE_VALID,
+> +		.set	= "CON",
+> +		.clear	= "   ",
+> +	}, {
+> +		.mask	= PTE_TABLE_BIT,
+> +		.val	= PTE_TABLE_BIT,
+> +		.set	= "   ",
+> +		.clear	= "BLK",
+> +	},
+> +};
+> +
+>  static int kvm_ptdump_visitor(const struct kvm_pgtable_visit_ctx *ctx,
+>  			      enum kvm_pgtable_walk_flags visit)
+>  {
+> @@ -37,15 +92,78 @@ static int kvm_ptdump_show_common(struct seq_file *m,
+>  	return kvm_pgtable_walk(pgtable, 0, BIT(pgtable->ia_bits), &walker);
 >  }
 >  
->  /* called with interrupts disabled */
+> +static int kvm_ptdump_build_levels(struct pg_level *level, u32 start_lvl)
+> +{
+> +	static const char * const level_names[] = {"PGD", "PUD", "PMD", "PTE"};
+> +	u32 i = 0;
+> +	u64 mask = 0;
+> +
+> +	if (start_lvl > 2) {
+> +		pr_err("invalid start_lvl %u\n", start_lvl);
+> +		return -EINVAL;
+> +	}
+> +
+> +	for (i = 0; i < ARRAY_SIZE(stage2_pte_bits); i++)
+> +		mask |= stage2_pte_bits[i].mask;
+> +
+> +	for (i = start_lvl; i <= KVM_PGTABLE_LAST_LEVEL; i++) {
+> +		level[i].name	= level_names[i];
+> +		level[i].num	= ARRAY_SIZE(stage2_pte_bits);
+> +		level[i].bits	= stage2_pte_bits;
+> +		level[i].mask	= mask;
+> +	}
+> +
+> +	if (start_lvl > 0)
+> +		level[start_lvl].name = level_names[0];
+> +
+> +	return 0;
+> +}
+> +
+> +static struct kvm_ptdump_guest_state
+> +*kvm_ptdump_parser_init(struct kvm *kvm)
+> +{
+> +	struct kvm_ptdump_guest_state *st;
+> +	struct kvm_s2_mmu *mmu = &kvm->arch.mmu;
+> +	struct kvm_pgtable *pgtable = mmu->pgt;
+> +	int ret;
+> +
+> +	st = kzalloc(sizeof(struct kvm_ptdump_guest_state), GFP_KERNEL_ACCOUNT);
+> +	if (!st)
+> +		return NULL;
+> +
+> +	ret = kvm_ptdump_build_levels(&st->level[0], pgtable->start_level);
+> +	if (ret)
+> +		goto free_with_state;
+> +
+> +	st->ipa_marker[0].name		= "Guest IPA";
+> +	st->ipa_marker[1].start_address = BIT(pgtable->ia_bits);
+> +	st->range[0].end		= BIT(pgtable->ia_bits);
+> +
+> +	st->kvm				= kvm;
+> +	st->parser_state = (struct pg_state) {
+> +		.marker		= &st->ipa_marker[0],
+> +		.level		= -1,
+> +		.pg_level	= &st->level[0],
+> +		.ptdump.range	= &st->range[0],
+> +	};
+> +
+> +	return st;
+> +free_with_state:
+> +	kfree(st);
+> +	return NULL;
+> +}
+> +
+>  static int kvm_ptdump_guest_show(struct seq_file *m, void *)
+>  {
+> -	struct kvm *kvm = m->private;
+> +	struct kvm_ptdump_guest_state *st = m->private;
+> +	struct kvm *kvm = st->kvm;
+>  	struct kvm_s2_mmu *mmu = &kvm->arch.mmu;
+> -	struct pg_state parser_state = {0};
+>  	int ret;
+>  
+> +	st->parser_state.seq = m;
+> +
+>  	write_lock(&kvm->mmu_lock);
+> -	ret = kvm_ptdump_show_common(m, mmu->pgt, &parser_state);
+> +	ret = kvm_ptdump_show_common(m, mmu->pgt, &st->parser_state);
+>  	write_unlock(&kvm->mmu_lock);
+>  
+>  	return ret;
+> @@ -54,22 +172,36 @@ static int kvm_ptdump_guest_show(struct seq_file *m, void *)
+>  static int kvm_ptdump_guest_open(struct inode *m, struct file *file)
+>  {
+>  	struct kvm *kvm = m->i_private;
+> +	struct kvm_ptdump_guest_state *st;
+>  	int ret;
+>  
+> -	if (!kvm_get_kvm_safe(kvm))
+> -		return -ENOENT;
+
+FIXME: Keep kvm_get_kvm_safe before invoking kvm_ptdump_parser_init to
+avoid UAF if kvm gets destroyed.
+
+> +	st = kvm_ptdump_parser_init(kvm);
+> +	if (!st)
+> +		return -ENOMEM;
+>  
+> -	ret = single_open(file, kvm_ptdump_guest_show, m->i_private);
+> +	if (!kvm_get_kvm_safe(kvm)) {
+> +		ret = -ENOENT;
+> +		goto free_with_state;
+> +	}
+> +
+> +	ret = single_open(file, kvm_ptdump_guest_show, st);
+>  	if (ret < 0)
+> -		kvm_put_kvm(kvm);
+> +		goto free_with_kvm_ref;
+>  
+>  	return ret;
+> +free_with_kvm_ref:
+> +	kvm_put_kvm(kvm);
+> +free_with_state:
+> +	kfree(st);
+> +	return ret;
+>  }
+>  
+>  static int kvm_ptdump_guest_close(struct inode *m, struct file *file)
+>  {
+>  	struct kvm *kvm = m->i_private;
+> +	void *st = ((struct seq_file *)file->private_data)->private;
+>  
+> +	kfree(st);
+>  	kvm_put_kvm(kvm);
+>  	return single_release(m, file);
+>  }
+> -- 
+> 2.44.0.rc0.258.g7320e95886-goog
+> 
 
