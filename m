@@ -1,119 +1,182 @@
-Return-Path: <linux-kernel+bounces-76268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76269-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 092B485F4F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:47:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97B0585F4F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 10:48:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B34241F2235D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:47:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E22CEB27DE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 09:48:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF9203B2AD;
-	Thu, 22 Feb 2024 09:47:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26568383B2;
+	Thu, 22 Feb 2024 09:48:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dKkOC5yO"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="FJPXRCu4"
+Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07F539AC5
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 09:47:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8EF72BD1C
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 09:48:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708595233; cv=none; b=iv4mxGBR269z6jCt8aeRtPu63fv/0JYk0sJJMRG1fD4yXbQuZcCLPBG/hQdTakT/vbmLmp8Wz5f14bKJZZkTa1QyijB//aP2WATRuf6/T2Z1yh6Whh4fbEDepu/hlEUAKsk7JsJnwDZfaGd1vuJsXUEKsiIY/lfuNgAzmWLlmQA=
+	t=1708595293; cv=none; b=eCF9xhucMP5c8p+l/EQ4KTEaKNDeR+2YI+MN4JJBxwsSx5bL9+/SsSM8l0d2q0/5amS5VI3/jVBHR559rduOBAQzcXOhnvIUSs9iv++4TdF1WLkNxRZH2sDTDe/vN28h1pZzYjFbgo7R0RRY9E9Ez8ReXf7X85/fHVsI9sgnbZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708595233; c=relaxed/simple;
-	bh=p/NLjmUdzl2udebkQzhZYTZge1vEW9JNghSztBz2MFg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pzGmZq7ZdOwvW2CnsVVLaQJdYefII92i+vlhBRIk3aEZQyt7nfrMzhz5DTi/lq8gaJf0RlvP3x95WMGQdOOVDaZ+EsN6Rvd32yElGraGkhfoNXUIumZL9l5wr0FkyO1P9HrwhEt8RdDE2giPUW5zTDbYlBA/ZHm+pocAAfbZD+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dKkOC5yO; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-55a035669d5so2965645a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 01:47:10 -0800 (PST)
+	s=arc-20240116; t=1708595293; c=relaxed/simple;
+	bh=KdLVtMfTnlKIPD435kUd78Yt/hs3Qy4l7+vhYzsGrCQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=otJ3UESeXiF9z2c2Yqb8/rbHqjEljJhpOH6RzwpLKdhwnbH5TJCGeAyg2FQnDCeDPwn6ShBmNIsEoFYGgpqYVht7+ZhBBivxJyC8ycE6YxIRF6MEC5k03rfnbnbcFbyTXt08Q5VbRDZD3Qi6jd6DjvXNEc88vKcSgtRj251pgQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=FJPXRCu4; arc=none smtp.client-ip=209.85.221.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-4caabc3f941so347217e0c.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 01:48:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1708595229; x=1709200029; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dhVnYESztk5T2B/6C2k8gNoOah30/4ZRZ/kF6+4P7Uw=;
-        b=dKkOC5yOlC19qjiK5+6HgiE05WByhPHUONs6zTMjmmp6Atvb+aou1+TTyrtEvUqjsC
-         NEGMC0ymPtoOEHmhMxikyhcrnUtxvS02y8dzohqdgtumJxVsLqdSmzcv2xeOK2W4yMuJ
-         ZA1+05W8i39/A0jewi834v0Y0+GAz/I1kuOw1EpYEjTQNmFvtwjoRFPNN2KFHW3miO2h
-         W0Z+ZtN5b/lsnbOgm8PObuxvOrt6x2RHisRNSXoSLCU9ejp3Irox4wcnXJ66QK2CdCo2
-         1JTZdZfnPIIdzi6bgHTu+pxjQOGMJyz6mnwQYf7wFIEEIoCI4GIYmz9GsG/bLIIIOSUi
-         UE6g==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708595291; x=1709200091; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B1sHDjDZbmERo2RS8RmyCaFBbTsqNTq/w73JUWaGVMQ=;
+        b=FJPXRCu4eULJL4PeHC34UrtOqlr0BCcSIJ/1uWwEQDUx5oGOL+MJ2KO+WHTwjLVZE9
+         srbwdIANqq18sGufqklzSZSxBtAChQYgnuM/omA65azFp7+PPyDMajih6ZlQS/ciL+sT
+         W/dDGn3HMiTQUYJCh6BzbwYD2xxQmvUY3vMwESf38v8j4bAykk7L1nQvJvOGqENs2Zs1
+         U+gN+7uPfK8WjZdK2rQgY9SYOO9iDDWmFLF/l54yRbAvQvxUhHuuCzae9/vaf8Wkm68b
+         vvRrB1awYegfgJHl5xhz0biMVDmSCn8qE+jWNp/wGFlPYwuZhF0nn1Z8avVsvBAULvbi
+         hJ5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708595229; x=1709200029;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dhVnYESztk5T2B/6C2k8gNoOah30/4ZRZ/kF6+4P7Uw=;
-        b=BeqKtq4tTwr8ks5hxI7CR4LukutBijoGf/eO7/PLZaRayunV5Z7we1gngFb2bLe7qV
-         KtYZ0yYyLKurVNjE/IYYOxU/K63sBFPI4Iw60vGDTnkd02UY/imlpW8jSuJtcE7yjk2J
-         6SBSQVzoX6uqyuTvwsm4dpFzxcdf7vdXQmAg0eeCi49XoBzonycojQ81Dn5psAsPt5LW
-         SwJGg+sJMBB8j7MiBB7aIrxxB3elgFvrb3l1NpLmHdYW1bpXXR2rKuvSSADrvCYFBujm
-         poTKDooQfP0yZ8AXMu0WcTH+dUrJy3gu8wrLbqDD7utRS0QC2BuokD3YhbXa+eW1vPwy
-         hpmg==
-X-Forwarded-Encrypted: i=1; AJvYcCVXtsDDlp6I+maKIvQXTL69QZRRWe47i9xK9H9r/rRLJiL/RrHWUC5+2ddA/7qZeCIELThOOxGykxplwe9jE9/aPxNv3wqFJM3cEp9F
-X-Gm-Message-State: AOJu0YxsWPONcc2lArOaTuboBvDHtyyx8kq50/joKE3IgQwwIA34ftHm
-	GKTIwWD3JpIUbLLAt2gvxgti0NpheEiH9XDOBsL2d1Y8d3HCIWkpNnFmv/GpLr5EDkc765Rpoxg
-	y
-X-Google-Smtp-Source: AGHT+IG1aDzb+IIVwxggYxnhkecGvu0RiI61eOavtRNRtUy9JvH30l3jJlU3ceQLnu9hAqLoy8dj9w==
-X-Received: by 2002:a05:6402:693:b0:564:56e0:5643 with SMTP id f19-20020a056402069300b0056456e05643mr7560672edy.27.1708595229208;
-        Thu, 22 Feb 2024 01:47:09 -0800 (PST)
-Received: from ?IPV6:2001:a61:1366:6801:d8:8490:cf1a:3274? ([2001:a61:1366:6801:d8:8490:cf1a:3274])
-        by smtp.gmail.com with ESMTPSA id q29-20020a50cc9d000000b00563a3ff30basm5724081edi.59.2024.02.22.01.47.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 01:47:08 -0800 (PST)
-Message-ID: <3ff16f34-07a9-4b7e-b51d-b7220f08d88d@suse.com>
-Date: Thu, 22 Feb 2024 10:47:07 +0100
+        d=1e100.net; s=20230601; t=1708595291; x=1709200091;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B1sHDjDZbmERo2RS8RmyCaFBbTsqNTq/w73JUWaGVMQ=;
+        b=j3fnsJKhfgbfDiB49FD2HBwd5DepoFtNjFURztvKMddvmkkedCN2vCuarXkwHWR21h
+         OyRWCaW98hJfV39uv7KD12tYKyNQ1mwiMNBIv82sRENhC334Aebh0Wq/s6dtGFBMkMAp
+         oI37e32iUh2QIHPYHMVRSUDh3IRBYKZQLNurHguNoyC5SlEvX8VlvvGz0v6nGOgfOKiW
+         EI/JAPHxkfzKuZhLpxWQ1gJXEJ6enUsit4UUQPFapFvDdyiMjcwFLyH2aImL7Acj/OcC
+         e5fep+f7VPex8xvv4NumbfsBvp5DZG1axkSR49t3NbwsJjaIUaGwKQwAMVdy6G0Cqi59
+         v76Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXY4Em8wgxKSo5ellUGRAGaTfk5cxs7AxxbP7TW0Gj5qCvXNUHN/FHjbIkq0TvsOCyawzfeLVzPyXjP+Ow5GYOVJ28zfsLjsHEB3xYd
+X-Gm-Message-State: AOJu0Yxqyu5ofS0UUGUHjpsxVcoeBS9vVXoa+Up3kUnFWBGuJBImG+35
+	oG9JPhT5YFY3FSYN2k4YEEpPM4DAM41V2FzV+LEiHFaJ652kCgrFcrzI01TBwZ7gi2+mkXTPRNu
+	C0qU1jbkDPr+IOzhEXqlmeAmMu+PfIzVkLGnFBw==
+X-Google-Smtp-Source: AGHT+IFobjGrZnBdQYsBCX4YThs8/aguXzw16fqmoI9KgEewHdGjOBEBTH3H1gmzti+iCsQGiVyrLOJ1girSQrOaBOw=
+X-Received: by 2002:a1f:ed02:0:b0:4c8:a2c6:c2be with SMTP id
+ l2-20020a1fed02000000b004c8a2c6c2bemr1561844vkh.8.1708595290726; Thu, 22 Feb
+ 2024 01:48:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] USB:UAS:return ENODEV when submit urbs fail with device
- not attached.
-To: Weitao Wang <WeitaoWang-oc@zhaoxin.com>, oneukum@suse.com,
- stern@rowland.harvard.edu, gregkh@linuxfoundation.org,
- linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-scsi@vger.kernel.org, usb-storage@lists.one-eyed-alien.net
-Cc: WeitaoWang@zhaoxin.com
-References: <20240222165441.6148-1-WeitaoWang-oc@zhaoxin.com>
-Content-Language: en-US
-From: Oliver Neukum <oneukum@suse.com>
-In-Reply-To: <20240222165441.6148-1-WeitaoWang-oc@zhaoxin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240221193647.13777-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240221193647.13777-1-andriy.shevchenko@linux.intel.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Thu, 22 Feb 2024 10:48:00 +0100
+Message-ID: <CAMRc=McECxKW+uS7fQyGtYVfcSZQaAJZFi+s+wNMoRiHxef0zw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] gpiolib: Deduplicate cleanup for-loop in gpiochip_add_data_with_key()
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
+	Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 22.02.24 17:54, Weitao Wang wrote:
-> In the scenario of entering hibernation with udisk in the system, if the
-> udisk was gone or resume fail in the thaw phase of hibernation. Its state
-> will be set to NOTATTACHED. However, usb_hub_wq was already freezed and
-> can't not handle disconnect event. Then, sync cache SCSI command will be
-> sent to this udisk on the poweroff phase of hibernation, that will cause
+On Wed, Feb 21, 2024 at 8:36=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> There is no need to repeat for-loop twice in the error path in
+> gpiochip_add_data_with_key(). Deduplicate it. While at it,
+> rename loop variable to be more specific and avoid ambguity.
+>
+> It also properly unwinds the SRCU, i.e. in reversed order of allocating.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
 
-Wait, this seems like a contradiction. Are we in thaw or are we powering off?
+This doesn't apply on top of gpio/for-next, I think it depends on one
+of your earlier patches?
 
-> uas_submit_urbs to be called to submit URB to sense/data/cmd pipe. Then,
-> usb_submit_urb return value -ENODEV when device was set to NOTATTACHED
-> state. However, uas_submit_urbs always return "SCSI_MLQUEUE_DEVICE_BUSY"
-> regardless of the reason for submission failure.That will lead the SCSI
-> layer go into an ugly loop and system fail to go into hibernation.
+>  drivers/gpio/gpiolib.c | 26 +++++++++++---------------
+>  1 file changed, 11 insertions(+), 15 deletions(-)
+>
+> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+> index 1706edb3ee3f..60fa7816c799 100644
+> --- a/drivers/gpio/gpiolib.c
+> +++ b/drivers/gpio/gpiolib.c
+> @@ -861,7 +861,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, =
+void *data,
+>                                struct lock_class_key *request_key)
+>  {
+>         struct gpio_device *gdev;
+> -       unsigned int i, j;
+> +       unsigned int desc_index;
+>         int base =3D 0;
+>         int ret =3D 0;
+>
+> @@ -965,8 +965,8 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, =
+void *data,
+>                 }
+>         }
+>
+> -       for (i =3D 0; i < gc->ngpio; i++)
+> -               gdev->descs[i].gdev =3D gdev;
+> +       for (desc_index =3D 0; desc_index < gc->ngpio; desc_index++)
+> +               gdev->descs[desc_index].gdev =3D gdev;
+>
+>         BLOCKING_INIT_NOTIFIER_HEAD(&gdev->line_state_notifier);
+>         BLOCKING_INIT_NOTIFIER_HEAD(&gdev->device_notifier);
+> @@ -992,19 +992,16 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc=
+, void *data,
+>         if (ret)
+>                 goto err_cleanup_gdev_srcu;
+>
+> -       for (i =3D 0; i < gc->ngpio; i++) {
+> -               struct gpio_desc *desc =3D &gdev->descs[i];
+> +       for (desc_index =3D 0; desc_index < gc->ngpio; desc_index++) {
+> +               struct gpio_desc *desc =3D &gdev->descs[desc_index];
+>
+>                 ret =3D init_srcu_struct(&desc->srcu);
+> -               if (ret) {
+> -                       for (j =3D 0; j < i; j++)
+> -                               cleanup_srcu_struct(&gdev->descs[j].srcu)=
+;
+> -                       goto err_free_gpiochip_mask;
+> -               }
+> +               if (ret)
+> +                       goto err_cleanup_desc_srcu;
+>
+> -               if (gc->get_direction && gpiochip_line_is_valid(gc, i)) {
+> +               if (gc->get_direction && gpiochip_line_is_valid(gc, desc_=
+index)) {
+>                         assign_bit(FLAG_IS_OUT,
+> -                                  &desc->flags, !gc->get_direction(gc, i=
+));
+> +                                  &desc->flags, !gc->get_direction(gc, d=
+esc_index));
+>                 } else {
+>                         assign_bit(FLAG_IS_OUT,
+>                                    &desc->flags, !gc->direction_input);
+> @@ -1061,9 +1058,8 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc=
+, void *data,
+>         gpiochip_free_hogs(gc);
+>         of_gpiochip_remove(gc);
+>  err_cleanup_desc_srcu:
+> -       for (i =3D 0; i < gdev->ngpio; i++)
+> -               cleanup_srcu_struct(&gdev->descs[i].srcu);
+> -err_free_gpiochip_mask:
+> +       while (desc_index--)
 
-The thing is that the SCSI documentation explicitly tells us to return
-either SCSI_MLQUEUE_DEVICE_BUSY or SCSI_MLQUEUE_HOST_BUSY. Now, it makes
-sense to tell the SCSI laer that a device or host is gone for good,
-if we know that. But we cannot just introduce new error returns on our own.
+What about gdev->descs[0]?
 
-This needs to be addressed. That means that the SCSI layer or at the
-very least the documentation needs to be fixed. Frankly, this is not strictly
-speaking a UAS issue. Any thing hotunpluggable should have this issue.
+> +               cleanup_srcu_struct(&gdev->descs[desc_index].srcu);
+>         gpiochip_free_valid_mask(gc);
+>  err_cleanup_gdev_srcu:
+>         cleanup_srcu_struct(&gdev->srcu);
+> --
+> 2.43.0.rc1.1.gbec44491f096
+>
 
-	Regards
-		Oliver
+Bart
 
