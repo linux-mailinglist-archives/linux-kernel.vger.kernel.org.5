@@ -1,131 +1,247 @@
-Return-Path: <linux-kernel+bounces-77231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D2A586025B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:12:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0900686025F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:12:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31CB31F2A2FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:12:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 688831F2A8D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:12:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C79F548FD;
-	Thu, 22 Feb 2024 19:12:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CBD84776E;
+	Thu, 22 Feb 2024 19:12:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UuFDFpx/"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S46cfeLj"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE86548F8
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 19:12:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8527D14B82B;
+	Thu, 22 Feb 2024 19:12:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708629125; cv=none; b=G10K5LCaJgI3R+D1A+u8qnUX9Dvgjz++MTkZEhgNPwGshcGb6F6+5QFCrIZ81iyS7SGSz5JlaRz4jBkhBNMk5yJjKJ8nRoth2mTnFWuKtZmTEJAR86AFRjIBh/awshTfMbAGbp43X8vgTCR0aca36HyhBkaDcrLmNa1a5QNm2xI=
+	t=1708629156; cv=none; b=JqH8f4vaCE0Q7C7LYBhzktoL0Tz3KQzcfrHVgS6xTiUVZG7XbuvvOALKuJGNdT6oo4sezuid2KfBEdlh65GSl1WWCXwUtCRQKqPEUTRSftk2lrtDDKrzwm8ray8QQwNJp0rk8RvDYsTOBzMmC18mSC1Qcj2MUIvnnaoHbkBsWFM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708629125; c=relaxed/simple;
-	bh=0Qks+DDhYCmzTTbFrd2ThMT4amH+aqvX5uPDsqGmmfM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cdpxS027xdOyq9zKhUnFybwpwDH9XiMYOMHMj7e/2nEBz4kva6Y2nahw95HcpnTGmzsE+XBDHuLQTIUzdN5fas47T9UNMFSxCH5D1UIiG/pzGMgWXi688rDsdZwgGhVVt9v/oU/g7CtsGFDhHVztyoi6nbt0wOO7W4FpBrsTNjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UuFDFpx/; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708629124; x=1740165124;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=0Qks+DDhYCmzTTbFrd2ThMT4amH+aqvX5uPDsqGmmfM=;
-  b=UuFDFpx/zfej6bKB1Xms9AXicfDRfwmckVwYBEXmdxbpYyyJUCVMRYVL
-   KyQ0kIUGoK3eLmQ2xYY7LFSX5Zq4Hgd0MeT9QtY0oKp42k1zCxkTxuqAk
-   aeqTGAdQX1wOu8A9Hi/uLdaiyFV2XSs0CfLJgz2EkaoGTr+9w5s+n2F3u
-   a4MpCP5PTb4W/iUKMO+zp58rkNMeKLGzzd0dyqvGgiss5PQpqtjbiiuyk
-   XL9loAtXlPPCPUvGgtb15ObsnH64sOQAlClFOOAXiQBfMD+5t/6IWDDIP
-   r7V+5jrkFhrYCjzaHabI1wk91sT54aoMLWjETmC9/xmbs7BLByx9/Zjdt
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="13507555"
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="13507555"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 11:12:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="10175034"
-Received: from jwbates1-mobl.amr.corp.intel.com (HELO [10.209.48.22]) ([10.209.48.22])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 11:12:02 -0800
-Message-ID: <7c0b97b7-48c0-4f8e-829a-8e237808d47f@intel.com>
-Date: Thu, 22 Feb 2024 11:12:02 -0800
+	s=arc-20240116; t=1708629156; c=relaxed/simple;
+	bh=EW5s5hgTLOrLlu9kaSmm1DDCMmvLyTW02LJkYzGXn+8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=n0Ua0KZgJCocQY2wqVF4uZmRz2WgChbjt00fMqknvjGUgbof4cb+n1kcuIaa44QPbPUVCw6L6QpxrMcMINLXdi+1uKCXzOvHbT9pyNlwV7XcVF76WaZmoJeHXuTj0r2poWc/7usWPGGa8CQ7sMVyWb8zoUmkKGTXYMvlEnnAr04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S46cfeLj; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-512b700c8ebso186437e87.0;
+        Thu, 22 Feb 2024 11:12:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708629153; x=1709233953; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ascVxuLaaMNM+iLyCaaEtYsJ/LtdyKIcDFbaaHuf7+A=;
+        b=S46cfeLj8BUE0okJRZPWiGjt8EoLqW86BRmgYOLo66NTmuAAdrxlu3Y2guayJbj51p
+         gt0Ab3KlFHHVULxiK9alN7/hkayO7w4zAGdMseQtiItdpBv6JzxqdAhllSpY5QuNh8RS
+         E3KuWikO97v+bS21xul+FXqNByMBd65r21WPcDxH/6o4mpgr1XpkrQ40WS0jUnKADE7G
+         cMAiIIYvhthhIJMt3/6BrtZ13+WHZNVA+R4tthKr5oMycinpZ88rVibfmFG42JSYQbX+
+         Kic2ckCffzatcmzGX71phR0usMZzYllQhlsjUgThojixuTIGWw78/ey+oM65jKHzer1E
+         /ZlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708629153; x=1709233953;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ascVxuLaaMNM+iLyCaaEtYsJ/LtdyKIcDFbaaHuf7+A=;
+        b=R4S7QNCRKhriZItbQCKc8lC3hDAUEsIH5cQK60g+CidEYCgVcauzvlodbuQkDCcVZ6
+         4AxOiDUc7eTZnQrqF171V39jDPa4BYr8MzUXOPbgG1+FdAvFBlrBTHkt/4P5WdEVVGJV
+         Q57/fYF/CddiQDnFaBhj/jHDLLx9Yf8gqEopgHl4caOJ4uDGOpRmITAwCXgdzJTvnM4T
+         rzUIigc/9DfUsj6cmKmeewC34BGSKpXGJQcgF00sG7utYBouM453ILekrX2OteVjzEA7
+         r7I4CWwx0F5Vigf19n/IIvIGsNXEilCq+aKfjce0PdU70fDf3EiE4mwrasCz3oDM7dgc
+         ezKg==
+X-Forwarded-Encrypted: i=1; AJvYcCWtQwIK4JC5ctUbVkMqXjxGIZIpyZZXgDtcH4QYPxJhLZQvKhtor+zYIhBpYNOXnYZlwBc/l16/INFZti/LpQVf5u+GsCFa0KzPnNiWd1bBfQtzwcf1ZrebYpOjH21glrlWZMew/i2IriQag72NajWgTz9DxOC5DdtZs8+X6DNpZ8w/F44=
+X-Gm-Message-State: AOJu0YwFDklKcjOlBOPuS4qgFxYEw+JnIjzpBjjUN2B5Fa6+c/JRt2k/
+	B0WvEYZTv3w3fHbP7fOdNgk9NHPfGRAV/8AS9j6YbDvaxIVnIMba
+X-Google-Smtp-Source: AGHT+IGu+ExwuJo5Vy53aR587PvPGA/BvgjURLqHK9mgxxEedn8hBlpN+TNPuvzQRBJx6tkns7NcdQ==
+X-Received: by 2002:a05:6512:1196:b0:512:d655:9d4b with SMTP id g22-20020a056512119600b00512d6559d4bmr55318lfr.5.1708629152360;
+        Thu, 22 Feb 2024 11:12:32 -0800 (PST)
+Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
+        by smtp.gmail.com with ESMTPSA id r17-20020ac25a51000000b00512bfc0c2b9sm1189234lfn.178.2024.02.22.11.12.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 11:12:31 -0800 (PST)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>,
+ Sandy Huang <hjc@rock-chips.com>,
+ Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
+ Chen-Yu Tsai <wens@csie.org>, Samuel Holland <samuel@sholland.org>,
+ Maxime Ripard <mripard@kernel.org>
+Cc: Hans Verkuil <hverkuil@xs4all.nl>,
+ Sebastian Wick <sebastian.wick@redhat.com>,
+ Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
+ dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+ linux-sunxi@lists.linux.dev, Maxime Ripard <mripard@kernel.org>,
+ Sui Jingfeng <sui.jingfeng@linux.dev>
+Subject:
+ Re: [PATCH v7 35/36] drm/sun4i: hdmi: Consolidate atomic_check and mode_valid
+Date: Thu, 22 Feb 2024 20:12:29 +0100
+Message-ID: <2921783.e9J7NaK4W3@jernej-laptop>
+In-Reply-To: <20240222-kms-hdmi-connector-state-v7-35-8f4af575fce2@kernel.org>
+References:
+ <20240222-kms-hdmi-connector-state-v7-0-8f4af575fce2@kernel.org>
+ <20240222-kms-hdmi-connector-state-v7-35-8f4af575fce2@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH mm-stable 2/2] x86/mm: always pass NULL as the first
- argument of switch_mm_irqs_off()
-Content-Language: en-US
-To: Yosry Ahmed <yosryahmed@google.com>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Ingo Molnar <mingo@redhat.com>, Thomas Gleixner <tglx@linutronix.de>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- x86@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240222190911.1903054-1-yosryahmed@google.com>
- <20240222190911.1903054-2-yosryahmed@google.com>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <20240222190911.1903054-2-yosryahmed@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 
-On 2/22/24 11:09, Yosry Ahmed wrote:
-> The first argument of switch_mm_irqs_off() is unused by the x86
-> implementation. Make sure that x86 code never passes a non-NULL value to
-> make this clear. Update the only non violating caller, switch_mm().
+Dne =C4=8Detrtek, 22. februar 2024 ob 19:14:21 CET je Maxime Ripard napisal=
+(a):
+> atomic_check and mode_valid do not check for the same things which can
+> lead to surprising result if the userspace commits a mode that didn't go
+> through mode_valid. Let's merge the two implementations into a function
+> called by both.
+>=20
+> Acked-by: Sui Jingfeng <sui.jingfeng@linux.dev>
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
 
-Acked-by: Dave Hansen <dave.hansen@intel.com>
+Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+
+Best regards,
+Jernej
+
+> ---
+>  drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c | 74 +++++++++++++++++++++-------=
+=2D-----
+>  1 file changed, 47 insertions(+), 27 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c b/drivers/gpu/drm/sun=
+4i/sun4i_hdmi_enc.c
+> index c276d984da6b..b7cf369b1906 100644
+> --- a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
+> +++ b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
+> @@ -62,18 +62,6 @@ static int sun4i_hdmi_setup_avi_infoframes(struct sun4=
+i_hdmi *hdmi,
+>  	return 0;
+>  }
+> =20
+> -static int sun4i_hdmi_atomic_check(struct drm_encoder *encoder,
+> -				   struct drm_crtc_state *crtc_state,
+> -				   struct drm_connector_state *conn_state)
+> -{
+> -	struct drm_display_mode *mode =3D &crtc_state->mode;
+> -
+> -	if (mode->flags & DRM_MODE_FLAG_DBLCLK)
+> -		return -EINVAL;
+> -
+> -	return 0;
+> -}
+> -
+>  static void sun4i_hdmi_disable(struct drm_encoder *encoder,
+>  			       struct drm_atomic_state *state)
+>  {
+> @@ -166,31 +154,61 @@ static void sun4i_hdmi_enable(struct drm_encoder *e=
+ncoder,
+>  	writel(val, hdmi->base + SUN4I_HDMI_VID_CTRL_REG);
+>  }
+> =20
+> -static enum drm_mode_status sun4i_hdmi_mode_valid(struct drm_encoder *en=
+coder,
+> -					const struct drm_display_mode *mode)
+> +static const struct drm_encoder_helper_funcs sun4i_hdmi_helper_funcs =3D=
+ {
+> +	.atomic_disable	=3D sun4i_hdmi_disable,
+> +	.atomic_enable	=3D sun4i_hdmi_enable,
+> +};
+> +
+> +static enum drm_mode_status
+> +sun4i_hdmi_connector_clock_valid(const struct drm_connector *connector,
+> +				 const struct drm_display_mode *mode,
+> +				 unsigned long long clock)
+>  {
+> -	struct sun4i_hdmi *hdmi =3D drm_encoder_to_sun4i_hdmi(encoder);
+> -	unsigned long rate =3D mode->clock * 1000;
+> -	unsigned long diff =3D rate / 200; /* +-0.5% allowed by HDMI spec */
+> +	const struct sun4i_hdmi *hdmi =3D drm_connector_to_sun4i_hdmi(connector=
+);
+> +	unsigned long diff =3D clock / 200; /* +-0.5% allowed by HDMI spec */
+>  	long rounded_rate;
+> =20
+> +	if (mode->flags & DRM_MODE_FLAG_DBLCLK)
+> +		return MODE_BAD;
+> +
+>  	/* 165 MHz is the typical max pixelclock frequency for HDMI <=3D 1.2 */
+> -	if (rate > 165000000)
+> +	if (clock > 165000000)
+>  		return MODE_CLOCK_HIGH;
+> -	rounded_rate =3D clk_round_rate(hdmi->tmds_clk, rate);
+> +
+> +	rounded_rate =3D clk_round_rate(hdmi->tmds_clk, clock);
+>  	if (rounded_rate > 0 &&
+> -	    max_t(unsigned long, rounded_rate, rate) -
+> -	    min_t(unsigned long, rounded_rate, rate) < diff)
+> +	    max_t(unsigned long, rounded_rate, clock) -
+> +	    min_t(unsigned long, rounded_rate, clock) < diff)
+>  		return MODE_OK;
+> +
+>  	return MODE_NOCLOCK;
+>  }
+> =20
+> -static const struct drm_encoder_helper_funcs sun4i_hdmi_helper_funcs =3D=
+ {
+> -	.atomic_check	=3D sun4i_hdmi_atomic_check,
+> -	.atomic_disable	=3D sun4i_hdmi_disable,
+> -	.atomic_enable	=3D sun4i_hdmi_enable,
+> -	.mode_valid	=3D sun4i_hdmi_mode_valid,
+> -};
+> +static int sun4i_hdmi_connector_atomic_check(struct drm_connector *conne=
+ctor,
+> +					     struct drm_atomic_state *state)
+> +{
+> +	struct drm_connector_state *conn_state =3D
+> +		drm_atomic_get_new_connector_state(state, connector);
+> +	struct drm_crtc *crtc =3D conn_state->crtc;
+> +	struct drm_crtc_state *crtc_state =3D crtc->state;
+> +	struct drm_display_mode *mode =3D &crtc_state->adjusted_mode;
+> +	enum drm_mode_status status;
+> +
+> +	status =3D sun4i_hdmi_connector_clock_valid(connector, mode,
+> +						  mode->clock * 1000);
+> +	if (status !=3D MODE_OK)
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +
+> +static enum drm_mode_status
+> +sun4i_hdmi_connector_mode_valid(struct drm_connector *connector,
+> +				struct drm_display_mode *mode)
+> +{
+> +	return sun4i_hdmi_connector_clock_valid(connector, mode,
+> +						mode->clock * 1000);
+> +}
+> =20
+>  static int sun4i_hdmi_get_modes(struct drm_connector *connector)
+>  {
+> @@ -236,6 +254,8 @@ static struct i2c_adapter *sun4i_hdmi_get_ddc(struct =
+device *dev)
+>  }
+> =20
+>  static const struct drm_connector_helper_funcs sun4i_hdmi_connector_help=
+er_funcs =3D {
+> +	.atomic_check	=3D sun4i_hdmi_connector_atomic_check,
+> +	.mode_valid	=3D sun4i_hdmi_connector_mode_valid,
+>  	.get_modes	=3D sun4i_hdmi_get_modes,
+>  };
+> =20
+>=20
+>=20
+
+
+
 
 
