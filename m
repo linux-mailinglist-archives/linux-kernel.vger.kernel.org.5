@@ -1,167 +1,150 @@
-Return-Path: <linux-kernel+bounces-76875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AABA85FDFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:25:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2174F85FE08
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:26:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD1181C25765
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:25:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7ED24284BC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:26:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 637821534F7;
-	Thu, 22 Feb 2024 16:25:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C7D01534EE;
+	Thu, 22 Feb 2024 16:26:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="U380Pm1Q"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WLO5vQhX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C5A9151CF3
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 16:25:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E6BD1509B5;
+	Thu, 22 Feb 2024 16:26:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708619149; cv=none; b=NWvXW80lFWKdzWQ7ZYc+CGA1905OKcN3UDwtcbgcvpxDqIPQLcmNifSUI8ek2xXEyWFvfhbZP9obodGn/0Qcda61LFtDWGIasVzfy0e0O/vhJm4ToTl/6q9/BhATzsYiAlA3YHwp3+3SspY3CqIpgmBSPZB15w5/1azbvWsUZTc=
+	t=1708619205; cv=none; b=nd74QlfFj3pE2VOPzGWSBt26blx1FZ8qd+Tmx7c79HrNvS5PK9tLVoPZAAraMgqGdKCvbDI5MTZkTUfuOkfbt6IFNWTH6lL/0zl7U69C2FOXUjCE1etF3pbT0X6Rbah4ZVZOaHd5qGlfEmJCFWQAnN4y8I5RnTHI8iR/qt28DKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708619149; c=relaxed/simple;
-	bh=xI8c7R5FVGAN8wMc43qy4e84ldQjvtEyCbHUZkIpLIU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EWadUo9FavauwqMcHA6zZdgDQisWEwIJQnOXVBThOi+WbrnvxrE5fshecBXDudQvw9lNNJFu111C9XI2NngzquXXkTg0Ae8Cta6HMd8TeZhQNMtcqPbXewAx8XGWnoPb8h29HyvID86joRiYVxZLWAA7PmBCMh9HbIcFZ5Y421g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=U380Pm1Q; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1708619137;
-	bh=xI8c7R5FVGAN8wMc43qy4e84ldQjvtEyCbHUZkIpLIU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=U380Pm1Q6KPMQNXOd51fT6xFpNJ2kPyBc5J9yYeWnOvCr8lexvxAozkD65j/w9CHw
-	 Z4BgxLFI7tuSISraqJtwhoA2LOod7y7By2eqFS/o8b5v/OO8MXHXpD3F+ocbWULJOD
-	 GQ99vF4e2dH5pN85X+PeKSlzKisaMCSO37xiCg5L0/aQqcT3XzqXPE+UG/UD9hCBfI
-	 D9YucIRUvZQFBLsv0v9JLrMLyh7vbVOhmjLqIeTYlA2Y3kuWKAGQwgjr95Xio0+M0b
-	 zKVgfUf8ouryxnIg71qbPaq5LzxSKtTjZuqvaXprYvqqcdWVbcQGjbNN07uRBR1ZpU
-	 TqACuGkL1BVhQ==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TgdmK1WQKzdPk;
-	Thu, 22 Feb 2024 11:25:37 -0500 (EST)
-Message-ID: <c411eda5-5378-4511-bea3-d1566174c8c7@efficios.com>
-Date: Thu, 22 Feb 2024 11:25:36 -0500
+	s=arc-20240116; t=1708619205; c=relaxed/simple;
+	bh=Sg+7uBjGXjQ1pdFX/E/hnLOflmTEI1B/auJ2nJ5yZc0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=sOf8XR0EmEIvNeNP1lGbQhB9Dj3+RwrkHStbAu1vev3yomZudj5JRc+Z6c5Nfh3Gmm1yXpq4OJRAvZInoCeTkgLgT+EQOtK5FwZTkrTBxS34ofB2RMlTkPq9wMHxpOrqPWi7v32kKwdsqBBXf6GgBnFyzEt5C1bGANNbrrKYDUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WLO5vQhX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C2867C433F1;
+	Thu, 22 Feb 2024 16:26:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708619204;
+	bh=Sg+7uBjGXjQ1pdFX/E/hnLOflmTEI1B/auJ2nJ5yZc0=;
+	h=From:Date:Subject:To:Cc:Reply-To:From;
+	b=WLO5vQhXIjUKiQW8MTNAerCcpBsPpFOzeIdgsi8kk7cuLH0455SdSy2LdfaS8pz+z
+	 szQinCZUxI5/ERaAYyqew38pmwKsmbUFRx1B1AUpebU9Jd/IPBOelz00AjHfKTcSDE
+	 5cVg2krcsICfsyr9EjXNaPf5JZvHkb9R7BDVz+ZjnAnkHqsuavU3//GOC6+mMk6H1B
+	 8/2MmVRZ5oWWc59NVvtCDEhMCQDpBMRVotzu5xsc9CopupQialp/GadulIhhOgt0bn
+	 Yv8FV9pQ/lY/UWTXj7xM16MwdJT0uGWV++70IiQpvuK8cGxVdlelRvj0aQlAr4TiJk
+	 cNL7YxC/U3URg==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A36E4C54791;
+	Thu, 22 Feb 2024 16:26:44 +0000 (UTC)
+From:
+ Mathys-Gasnier via B4 Relay <devnull+mathys35.gasnier.gmail.com@kernel.org>
+Date: Thu, 22 Feb 2024 17:26:44 +0100
+Subject: [PATCH v3] rust: locks: Add `get_mut` method to `Lock`
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] exit: add a tracepoint for profiling a task that is
- starting to exit
-Content-Language: en-US
-To: wenyang.linux@foxmail.com, Steven Rostedt <rostedt@goodmis.org>,
- Masami Hiramatsu <mhiramat@kernel.org>, Ingo Molnar <mingo@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Mel Gorman
- <mgorman@techsingularity.net>, Peter Zijlstra <peterz@infradead.org>,
- linux-kernel@vger.kernel.org
-References: <tencent_09CF49556CD442411A93D0E92ACC2B7E5D08@qq.com>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <tencent_09CF49556CD442411A93D0E92ACC2B7E5D08@qq.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20240222-rust-locks-get-mut-v3-1-d38a6f4bde3d@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAMN112UC/23NQQ6CMBCF4auQrh3TGUqqrryHcQFDgUagpgWiI
+ dzdghsWLP+XzDezCMZbE8QtmYU3kw3W9THSUyK4yfvagC1jC5KkJOIF/BgGaB2/AtRmgG4cgBV
+ JTSix1LmIh29vKvvZ0MczdmPD4Px3+zHhuv45ktcjbkJAYJNmWHFaGqXvdZfb9syuEys30Y5AO
+ iQoEhlzmSqmQstiTyzL8gNvQQPR9wAAAA==
+To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+ Wedson Almeida Filho <wedsonaf@gmail.com>, 
+ Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+ =?utf-8?q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+ Benno Lossin <benno.lossin@proton.me>, 
+ Andreas Hindborg <a.hindborg@samsung.com>, 
+ Alice Ryhl <aliceryhl@google.com>
+Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Mathys-Gasnier <mathys35.gasnier@gmail.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708619203; l=2400;
+ i=mathys35.gasnier@gmail.com; s=20240118; h=from:subject:message-id;
+ bh=ky/U3Y/MfgLzPcLAna8JPEAOaEfDevCIfhcVRsmkGug=;
+ b=+QNhsp6z7HFvXcgU9rqBsgzmYXhbx8BMMQKZVVl3iF27daLZJUjw+acCHkIHotOIKO9yiW8qw
+ t1cr1passtyA4d6GfP0rDl+TbeGP4C0ecOarsbaGF95e1sfZ2j6smYK
+X-Developer-Key: i=mathys35.gasnier@gmail.com; a=ed25519;
+ pk=C5tqKAA3Ua7li5s3a+q2aDelT2j98/yjGg2nEVGArXE=
+X-Endpoint-Received:
+ by B4 Relay for mathys35.gasnier@gmail.com/20240118 with auth_id=129
+X-Original-From: Mathys-Gasnier <mathys35.gasnier@gmail.com>
+Reply-To: <mathys35.gasnier@gmail.com>
 
-On 2024-02-22 11:04, wenyang.linux@foxmail.com wrote:
-> From: Wen Yang <wenyang.linux@foxmail.com>
-> 
-> Currently coredump_task_exit() takes some time to wait for the generation
-> of the dump file. But if the user-space wants to receive a notification
-> as soon as possible it maybe inconvenient.
-> 
-> Commit 2d4bcf886e42 ("exit: Remove profile_task_exit & profile_munmap")
-> simplified the code, but also removed profile_task_exit(), which may
-> prevent third-party kernel modules from detecting process exits timely.
-> 
-> Add the new trace_sched_profile_task_exit() this way a user-space monitor
-> could detect the exits and potentially make some preparations in advance.
+From: Mathys-Gasnier <mathys35.gasnier@gmail.com>
 
-I don't see any explanation justifying adding an extra tracepoint
-rather than just moving trace_sched_process_exit() earlier in do_exit().
+Having a mutable reference guarantees that no other threads have
+access to the lock, so we can take advantage of that to grant callers
+access to the protected data without the the cost of acquiring and
+releasing the locks. Since the lifetime of the data is tied to the
+mutable reference, the borrow checker guarantees that the usage is safe.
 
-Why is moving trace_sched_process_exit() earlier in do_exit() an issue,
-considering that any tracer interested in knowing the point where a task
-is really reclaimed (from zombie state) is trace_sched_process_free()
-called from delayed_put_task_struct() ?
+Signed-off-by: Mathys-Gasnier <mathys35.gasnier@gmail.com>
+---
+Changes in v3:
+- Changing the function to take a `Pin<&mut self>` instead of a `&mut self`
+- Removed reviewed-by's since big changes were made. Please take another
+  look.
+- Link to v2: https://lore.kernel.org/r/20240212-rust-locks-get-mut-v2-1-5ccd34c2b70b@gmail.com
 
-Thanks,
+Changes in v2:
+- Improved doc comment. 
+- Link to v1: https://lore.kernel.org/r/20240209-rust-locks-get-mut-v1-1-ce351fc3de47@gmail.com
+---
+ rust/kernel/sync/lock.rs | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-Mathieu
+diff --git a/rust/kernel/sync/lock.rs b/rust/kernel/sync/lock.rs
+index f12a684bc957..0c8faf36d654 100644
+--- a/rust/kernel/sync/lock.rs
++++ b/rust/kernel/sync/lock.rs
+@@ -7,7 +7,11 @@
+ 
+ use super::LockClassKey;
+ use crate::{bindings, init::PinInit, pin_init, str::CStr, types::Opaque, types::ScopeGuard};
+-use core::{cell::UnsafeCell, marker::PhantomData, marker::PhantomPinned};
++use core::{
++    cell::UnsafeCell,
++    marker::{PhantomData, PhantomPinned},
++    pin::Pin,
++};
+ use macros::pin_data;
+ 
+ pub mod mutex;
+@@ -121,6 +125,16 @@ pub fn lock(&self) -> Guard<'_, T, B> {
+         // SAFETY: The lock was just acquired.
+         unsafe { Guard::new(self, state) }
+     }
++
++    /// Gets the data contained in the lock
++    /// Having a mutable reference to the lock guarantees that no other threads have access to the lock.
++    /// Making it safe to get a mutable reference to the lock content.
++    pub fn get_mut(self: Pin<&mut Self>) -> &mut T {
++        // SAFETY: Since the data is not pinned (No structural pinning for data).
++        // It is safe to get a mutable reference to the data and we never move the state.
++        let lock = unsafe { self.get_unchecked_mut() };
++        lock.data.get_mut()
++    }
+ }
+ 
+ /// A lock guard.
 
-> 
-> Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
-> Cc: Oleg Nesterov <oleg@redhat.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> Cc: Mel Gorman <mgorman@techsingularity.net>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: linux-kernel@vger.kernel.org
-> ---
->   include/trace/events/sched.h | 28 ++++++++++++++++++++++++++++
->   kernel/exit.c                |  1 +
->   2 files changed, 29 insertions(+)
-> 
-> diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
-> index dbb01b4b7451..750b2f0bdf69 100644
-> --- a/include/trace/events/sched.h
-> +++ b/include/trace/events/sched.h
-> @@ -341,6 +341,34 @@ DEFINE_EVENT(sched_process_template, sched_wait_task,
->   	TP_PROTO(struct task_struct *p),
->   	TP_ARGS(p));
->   
-> +/*
-> + * Tracepoint for profiling a task that is starting to exit:
-> + */
-> +TRACE_EVENT(sched_profile_task_exit,
-> +
-> +	TP_PROTO(struct task_struct *task, long code),
-> +
-> +	TP_ARGS(task, code),
-> +
-> +	TP_STRUCT__entry(
-> +		__array(	char,	comm,	TASK_COMM_LEN	)
-> +		__field(	pid_t,	pid			)
-> +		__field(	int,	prio			)
-> +		__field(	long,	code			)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		memcpy(__entry->comm, task->comm, TASK_COMM_LEN);
-> +		__entry->pid		= task->pid;
-> +		__entry->prio		= task->prio;
-> +		__entry->code		= code;
-> +	),
-> +
-> +	TP_printk("comm=%s pid=%d prio=%d exit_code=0x%lx",
-> +		  __entry->comm, __entry->pid, __entry->prio,
-> +		  __entry->code)
-> +);
-> +
->   /*
->    * Tracepoint for a waiting task:
->    */
-> diff --git a/kernel/exit.c b/kernel/exit.c
-> index 493647fd7c07..f675f879a1b2 100644
-> --- a/kernel/exit.c
-> +++ b/kernel/exit.c
-> @@ -826,6 +826,7 @@ void __noreturn do_exit(long code)
->   
->   	WARN_ON(tsk->plug);
->   
-> +	trace_sched_profile_task_exit(tsk, code);
->   	kcov_task_exit(tsk);
->   	kmsan_task_exit(tsk);
->   
+---
+base-commit: 711cbfc717650532624ca9f56fbaf191bed56e67
+change-id: 20240118-rust-locks-get-mut-c42072101d7a
 
+Best regards,
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+Mathys-Gasnier <mathys35.gasnier@gmail.com>
 
 
