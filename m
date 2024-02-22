@@ -1,251 +1,143 @@
-Return-Path: <linux-kernel+bounces-77021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEB06860032
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:58:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A5F9860034
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:59:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 179AC1C24235
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:58:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D97A1F2551B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:59:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12DC414601C;
-	Thu, 22 Feb 2024 17:57:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D04EC157E66;
+	Thu, 22 Feb 2024 17:59:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="4Bl7iyQ4"
-Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lNz41QyK"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93AC6155A56;
-	Thu, 22 Feb 2024 17:57:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CBD2155A39;
+	Thu, 22 Feb 2024 17:58:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708624673; cv=none; b=FeFASWyk9PraZOl4cJDPO9rHn/jL425Q+5KYDGLtPmTXLL0WJCbkVVDzOJoUdR85vY+/qGoLRyB2PEAilMJccd2/Us57JicZhTP7gTECDT64ehMWKpxiTb7RespnleOFU7fjP+cL1p7mkmk/07Ds2a2/nFxm4CmZfawSK+6h+EI=
+	t=1708624740; cv=none; b=KwJ77qylUX/Fa7VnySA7RxIOXJp1irHUg+iRarXgr8uU49Guo0aqkPMiaYtKXKi+LFKad326GxReEKtxV5OX+mkTMnckgN3mZYzUkJn5J8AN/FBEE1eRch16OLX7WOrejmaGrb8mUv4W7qkhvdghrhJXW7UfDqzZY6Ugt12+eMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708624673; c=relaxed/simple;
-	bh=bm5WhP92TE9F7brDXB57F1j5zC3T11LrP8BxYsw4a3w=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZIWBVGfvEwsDHIiaEeSyicYuMZm1G45qqZb/9GXOXrJdVXIUn0/I3yLA5DrsomixjYD2hQgMMR6gDL+AYDZZzsDhaLXNrBAk8iP9Udzthd6h0VyfYfVhyx38tKWrP+ZDrqeXUMDR/x1kyfO1AlvO09DEdouLb1T3Ca5Q6hiozVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=4Bl7iyQ4; arc=none smtp.client-ip=77.93.223.253
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id EB4591B4022;
-	Thu, 22 Feb 2024 18:57:45 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
-	t=1708624666; bh=+9ZwYH6ktombumemqSFUuCawnd03QAa+vgaZnNMK24s=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=4Bl7iyQ401acRfW9Hr0ywLRMgn053gjtAl1Bd2EVFRUuJGXxprp0o2biPdalr8Hpp
-	 gFYlYfLCW7CA5mCVaMwygOPrt4Mvxkiu1JR2xKuFolNLA9uJS1FLvgFNIYY56GTOjq
-	 NGiSoDt46lz05HN4CehhE1xCurdE5HLh+nmFV2a3t5GXqMj81DkQPlFAwI31mtS+MD
-	 EWBDPqpvzapQgFGS1uo/70knNjr1Ot7L/NHGTUo0h5mpIb+2mOKlFcnR3V1chDzHuC
-	 me2obwFWFUKhSLlW7uLRuDAYb75gNhBc16k/27pRJconBNTQzsdSwFTxTG4pk06Tis
-	 sB+Gq9wbRD6qw==
-Date: Thu, 22 Feb 2024 18:57:44 +0100
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: Petr Tesarik <petrtesarik@huaweicloud.com>, Jonathan Corbet
- <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
- <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND
- 64-BIT)" <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Andy
- Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Peter
- Zijlstra <peterz@infradead.org>, Xin Li <xin3.li@intel.com>, Arnd Bergmann
- <arnd@arndb.de>, Andrew Morton <akpm@linux-foundation.org>, Rick Edgecombe
- <rick.p.edgecombe@intel.com>, Kees Cook <keescook@chromium.org>, "Masami
- Hiramatsu (Google)" <mhiramat@kernel.org>, Pengfei Xu
- <pengfei.xu@intel.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Ze Gao
- <zegao2021@gmail.com>, "Kirill A. Shutemov"
- <kirill.shutemov@linux.intel.com>, Kai Huang <kai.huang@intel.com>, David
- Woodhouse <dwmw@amazon.co.uk>, Brian Gerst <brgerst@gmail.com>, Jason
- Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <jroedel@suse.de>, "Mike Rapoport
- (IBM)" <rppt@kernel.org>, Tina Zhang <tina.zhang@intel.com>, Jacob Pan
- <jacob.jun.pan@linux.intel.com>, "open list:DOCUMENTATION"
- <linux-doc@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
- Roberto Sassu <roberto.sassu@huaweicloud.com>, John Johansen
- <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, James
- Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>,
- apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org, Petr
- Tesarik <petr.tesarik1@huawei-partners.com>
-Subject: Re: [RFC 4/5] sbm: fix up calls to dynamic memory allocators
-Message-ID: <20240222185744.509e4958@meshulam.tesarici.cz>
-In-Reply-To: <f6135f2c-bc8f-41c3-9c6a-8346d685e4dc@intel.com>
-References: <fb4a40c7-af9a-406a-95ab-406595f3ffe5@intel.com>
-	<20240222131230.635-1-petrtesarik@huaweicloud.com>
-	<20240222131230.635-5-petrtesarik@huaweicloud.com>
-	<f6135f2c-bc8f-41c3-9c6a-8346d685e4dc@intel.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
+	s=arc-20240116; t=1708624740; c=relaxed/simple;
+	bh=dtBzsaFY2WAwF8areVe2KKs9tKw0qlKHLRdFyfRgo88=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LtXUBBOaIeGV1j04AtmWNUFO72UpmGW2AoVH+/hC0M72EPqIt/+HjFMcmLLQXkptXlF7d+HzHj4pCWUrmMdM172B0ugnXtbAmcAx6s9gbmn/tnPr/sgA/5GOrFEh8oMVFGB8se20Nr03JlznJsg4yIiBm+Dp0VqINQJQKsNi3ks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lNz41QyK; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-512d19e2cb8so79761e87.0;
+        Thu, 22 Feb 2024 09:58:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708624736; x=1709229536; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cz55Zzpfo/zk1u1UrDBK1WZgp/imaYiWSbF3hiJkto8=;
+        b=lNz41QyKM865/qW65ukfrWp19vTkOKB1S9XbqlRc03WFI6hfOE/5WfIus6LKBBpAsL
+         NffQr1psmxgIT02yYJw3nZ9W3zf6o6iI6pPlBKV/PVLrtMrCO39dtXT0nS1fY7LnymR9
+         /ZcneRIGn9A3qA6wm9Rx7oDBM24vUUUiPJ6g3YD4tmAiu5BSDzvW5PVEoWlVdF+/0OxO
+         SIidvCEEBI7XKFT+0qqhy3LSyT0TndC0QbI4OM9MkBxD+XvVzhKwt5yUTbQLefRWZrwu
+         ngvZDaDi19zkLlRMuSDP4ggA6sURHjr5SgoPNs0jmLjai9xpzJ79kFShGHzJdGOqhyAw
+         LhHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708624736; x=1709229536;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cz55Zzpfo/zk1u1UrDBK1WZgp/imaYiWSbF3hiJkto8=;
+        b=wKOYsSmmWOqcKz96TSf69N3utAFwaHKBxbhwq6u+GPhgvYDElEH77pyPD1QD8tBoeh
+         HSu2+VLQ/aS6tYPKXcgFHLwg1ualpK+qeiY+U+7VgGDRZVJjU6KjJxM6DWloxbQQu72K
+         4GkHflfboyf3Pko3hvMFhZU2BFf+kVLR6MGe9MC1y3roDvnIN3zZicxnkpvjsO141Kz9
+         DlsLod2bwUeh+e7rRCAD3fEGL2XEk9Yh5olshiuen78urZOHv4+p0CZRfw/BX1Fapji9
+         SFlHSmoVerBafTlJTDRrv7cDtfBdaXf5BduKiENZaaRIgzNOBcxgcKSVU4cX9aAsab/C
+         lRkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWsCYwT80ebkSvTkq7kgNk1ETO6ujSFVItkpB9I0IkJmXh/HzN/29hUbmqEzm4sAiThXX2FE+vLI69+sRKlHPpLUaH83ZOsKRHmAvQdNh2eGXkc7CpP/REOzV9jVsEfPPZGd2hP
+X-Gm-Message-State: AOJu0YziKGKP1orAYb/q8pJhm1kwiQkX6IBVgnVkrhqjh9I+/BRzqxhh
+	hhMSQJYZlfw79kmxLor+UGGW7HSFb3DuDD//iabyx6KPWqWMVJMgRCkvdGV7rA4=
+X-Google-Smtp-Source: AGHT+IE/1Dk0fjNMEbmuMP18Tm/K1SfZnMv41lhns0HjNNdVpdbheULkXP3yVIXQIWLc1QyRxeNXzg==
+X-Received: by 2002:a05:6512:2349:b0:511:6c63:f76a with SMTP id p9-20020a056512234900b005116c63f76amr17664673lfu.41.1708624736307;
+        Thu, 22 Feb 2024 09:58:56 -0800 (PST)
+Received: from localhost ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id q25-20020a05651232b900b00512a949a4d6sm1957987lfe.7.2024.02.22.09.58.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 09:58:55 -0800 (PST)
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Jose Abreu <joabreu@synopsys.com>,
+	Jose Abreu <Jose.Abreu@synopsys.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc: Serge Semin <fancer.lancer@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Mengyuan Lou <mengyuanlou@net-swift.com>,
+	Tomer Maimon <tmaimon77@gmail.com>,
+	Jiawen Wu <jiawenwu@trustnetic.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	openbmc@lists.ozlabs.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2 0/4] net: pcs: xpcs: Cleanups before adding MMIO dev support
+Date: Thu, 22 Feb 2024 20:58:19 +0300
+Message-ID: <20240222175843.26919-1-fancer.lancer@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Thu, 22 Feb 2024 07:51:00 -0800
-Dave Hansen <dave.hansen@intel.com> wrote:
+As stated in the subject this series is a short prequel before submitting
+the main patches adding the memory-mapped DW XPCS support to the DW XPCS
+and DW *MAC (STMMAC) drivers. Originally it was a part of the bigger
+patchset (see the changelog v2 link below) but was detached to a
+preparation set to shrink down the main series thus simplifying it'
+review.
 
-> On 2/22/24 05:12, Petr Tesarik wrote:
-> >  static const struct sbm_fixup fixups[] =
-> >  {
-> > +	/* kmalloc() and friends */
-> > +	{ kmalloc_trace, proxy_alloc3 },
-> > +	{ __kmalloc, proxy_alloc1 },
-> > +	{ __kmalloc_node, proxy_alloc1 },
-> > +	{ __kmalloc_node_track_caller, proxy_alloc1 },
-> > +	{ kmalloc_large, proxy_alloc1 },
-> > +	{ kmalloc_large_node, proxy_alloc1 },
-> > +	{ krealloc, proxy_alloc2 },
-> > +	{ kfree, proxy_free },
-> > +
-> > +	/* vmalloc() and friends */
-> > +	{ vmalloc, proxy_alloc1 },
-> > +	{ __vmalloc, proxy_alloc1 },
-> > +	{ __vmalloc_node, proxy_alloc1 },
-> > +	{ vzalloc, proxy_alloc1 },
-> > +	{ vfree, proxy_free },
-> > +
-> >  	{ }
-> >  };  
-> 
-> Petr, thanks for sending this.  This _is_ a pretty concise example of
-> what it means to convert kernel code to run in your sandbox mode.  But,
-> from me, it's still "no thanks".
-> 
-> Establishing and maintaining this proxy list will be painful.  Folks
-> will change the code to call something new and break this *constantly*.
-> 
-> That goes for infrastructure like the allocators and for individual
-> sandbox instances like apparmor.
+The patchset' content is straightforward: drop the redundant sentinel
+entry and the header files; return EINVAL errno from the soft-reset method
+and make sure that the interface validation method return EINVAL straight
+away if the requested interface isn't supported by the XPCS device
+instance. All of these changes are required to simplify the changes being
+introduced a bit later in the framework of the memory-mapped DW XPCS
+support patches.
 
-Understood.
+Link: https://lore.kernel.org/netdev/20231205103559.9605-1-fancer.lancer@gmail.com
+Changelog v2:
+- Move the preparation patches to a separate series.
+- Simplify the commit messages (@Russell, @Vladimir).
 
-OTOH the proxy list is here for the PoC so I could send something that
-builds and runs without making it an overly big patch series. As
-explained in patch 5/5, the goal is not to make a global list. Instead,
-each instance should define what it needs and that way define its
-specific policy of interfacing with the rest of the kernel.
+Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: Mengyuan Lou <mengyuanlou@net-swift.com>
+Cc: Tomer Maimon <tmaimon77@gmail.com>
+Cc: Jiawen Wu <jiawenwu@trustnetic.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: openbmc@lists.ozlabs.org
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
-To give an example, these AppArmor fixups would be added only to the
-sandbox which runs aa_unpack(), but not to the one which runs
-unpack_to_rootfs(), which is another PoC I did (but required porting
-more patches).
+Serge Semin (4):
+  net: pcs: xpcs: Drop sentinel entry from 2500basex ifaces list
+  net: pcs: xpcs: Drop redundant workqueue.h include directive
+  net: pcs: xpcs: Return EINVAL in the internal methods
+  net: pcs: xpcs: Explicitly return error on caps validation
 
-If more fixups are needed after you change your code, you know you've
-just added a new dependency. It's then up to you to decide if it was
-intentional.
+ drivers/net/pcs/pcs-xpcs.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-> It's also telling that sandboxing a bit of apparmor took four fixups.
-> That tells me we're probably still only looking at the tip of the icebeg
-> if we were to convert a bunch more sites.
+-- 
+2.43.0
 
-Yes, it is the cost paid for getting code and data flows under control.
-
-In your opinion this kind of memory safety is not worth the effort of
-explicitly defining the interface between a sandboxed component and the
-rest of the kernel, because it increases maintenance costs. Correct?
-
-> That's on top of everything I was concerned about before.
-
-Good, I think I can understand the new concern, but regarding
-everything you were concerned about before, this part is still not
-quite clear to me. I'll try to summarize the points:
-
-* Running code in ring-0 is inherently safer than running code in
-  ring-3.
-
-  Since what I'm trying to do is protect kernel data structures
-  from memory safety bugs in another part of the kernel, it roughly
-  translates to: "Kernel data structures are better protected from
-  rogue kernel modules than from userspace applications." This cannot
-  possibly be what you are trying to say.
-
-* SMAP, SMEP and/or LASS can somehow protect one part of the kernel
-  from memory safety bugs in another part of the kernel.
-
-  I somehow can't see how that is the case. I have always thought that:
-
-  * SMEP prevents the kernel to execute code from user pages.
-  * SMAP prevents the kernel to read from or write into user pages.
-  * LASS does pretty much the same job as SMEP+SMAP, but instead of
-    using page table protection bits, it uses the highest bit of the
-    virtual address because that's much faster.
-
-* Hardware designers are adding (other) hardware security defenses to
-  ring-0 that are not applied to ring-3.
-
-  Could you give an example of these other security defenses, please?
-
-* Ring-3 is more exposed to attacks.
-
-  This statement sounds a bit too vague on its own. What attack vectors
-  are we talking about? The primary attack vector that SBM is trying to
-  address are exploits of kernel code vulnerabilities triggered by data
-  from sources outside the kernel (boot loader, userspace, etc.).
-
-H. Peter Anvin added a few other points:
-
-* SBM has all the downsides of a microkernel without the upsides.
-
-  I can only guess what would be the downsides and upsides...
-
-  One notorious downside is performance. Agreed, there is some overhead.
-  I'm not promoting SBM for time-critical operations. But compared to
-  user-mode helpers (which was suggested as an alternative for one of
-  the proposed scenarios), the overhead of SBM is at least an order of
-  magnitude less.
-
-  IPC and the need to define how servers interact with each other is
-  another downside I can think of. Yes, there is a bit of it in SBM, as
-  you have correctly noted above.
-
-* SBM introduces architectural changes that are most definitely *very*
-  harmful both to maintainers and users.
-
-  It is very difficult to learn something from this statement. Could
-  you give some examples of how SBM harms either group, please?
-
-* SBM feels like paravirtualization all over again.
-
-  All right, hpa, you've had lots of pain with paravirtualization. I
-  feel with you, I've had my part of it too. Can you imagine how much
-  trouble I could have spared myself for the libkdumpfile project if I
-  didn't have to deal with the difference between "physical addresses"
-  and "machine addresses"?
-
-  However, this is hardly a relevant point. The Linux kernel community
-  is respected for making decisions based on facts, not feelings.
-
-* SBM exposes kernel memory to user space.
-
-  This is a misunderstanding. Sandbox mode does not share anything at
-  all with user mode. It does share some CPU state with kernel mode,
-  but not with user mode. If "user space" was intended to mean "Ring-3",
-  then it doesn't explain how that is a really bad idea.
-
-* SBM is not needed, because there is already eBPF.
-
-  Well, yes, but I believe they work on a different level. For example,
-  eBPF needs a verifier to ensure memory safety. If you run eBPF code
-  itself in a sandbox instead, that verifier is not needed, because
-  memory safety is enforced by CPU hardware.
-
-When hpa says that SandBox Mode is "an enormous step in the wrong
-direction", I want to understand why this direction is wrong, so I can
-take a step in the right direction next time.
-
-So far there has been only one objective concern: the need to track code
-(and data) dependencies explicitly. AFAICS this is an inherent drawback
-of any kind of program decomposition.
-
-Is decomposition considered harmful?
-
-Petr T
 
