@@ -1,82 +1,203 @@
-Return-Path: <linux-kernel+bounces-75861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1443685EFF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:35:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD49C85EFF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:37:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E1E91C21042
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:35:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2AD07B2410E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:37:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE2871755A;
-	Thu, 22 Feb 2024 03:35:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABA131756A;
+	Thu, 22 Feb 2024 03:37:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XlZsiqoy"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="W01/NdEz"
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CC8428EF
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:35:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39F37883D
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:37:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708572950; cv=none; b=W7OM8ft4cYmipLgP7voFuYNPsQ0UUJoDbdKGB47/ftlkowdXVeP41HPPZbblyytJ3hShdYUn/yt05VudFKTonzfPafkBnj3M0T2NIww3jgIy1Or4yDZdSfUvQk0SpODJYZJYDPtF/yLGpROAw+TTC+2kAodlSVHXfnl+eTP29SA=
+	t=1708573037; cv=none; b=ayluL00XYVCKTRTgnwly31gzODc4+ZveWRsfiCRSHNM/yZ+hXX4tZ6T2/mstxcPerq8VIo+EJZa1pNsJsya0glOOSoE4fMzZMA2m/dXpmBiEczlJgRyyfJ+tnlbJlGYD4tyh/pknnlxXuMxFr7iKETHuMrDaf/O8wae2MDf8NT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708572950; c=relaxed/simple;
-	bh=HSxScKbzztXZB5YaKXB2CHicE/jR2ReMfL/oei6pYmw=;
+	s=arc-20240116; t=1708573037; c=relaxed/simple;
+	bh=AClHY/wTOZgy1rmmOfdnQgC33nR4hv+88+JaIN/OiYQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O5vlxgR16ICBfbgbnVf7XD8hPIBIeF9l3XoS/WpyIonwU916f15yr3aS7ZoM+YRRtY0OudCtty0jyD71zhGq9JV25ZyUrNPalqdcKStfKJUPSDxBw3iaAkBACjH0tX5H0IxCjOQC1cXDg6Yq6ZgyNTV0p4Zzis5GNHD+bhaLoYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XlZsiqoy; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=k2qqGakj6suncR5yFTplOvwhI9MQ07qi3BIxDZ0n86Y=; b=XlZsiqoyvBGd+rE9mW8Fd2Bby3
-	sjmex3EpRfExrk/r+40NGtN49fo3fE9AREhgffMlFj5ghpupNJrD9TIwhHtaW5Pi+FluHzRCSiGF8
-	d/nVuqN2zQsVN3gKV5scRxFNXrAJjdAROVffaY+raUGFZYd5hS0vRSPCYPKRIDdezxdcD0M2rsFJV
-	/yuJh+E2eKRLAul0dnCigD4O1pZx2dXSGZr//5vg/s5rFjpY+YJLnxXaC6kckkfcxwDyycoUl3isR
-	nfA796cBiFDJaqut3yRrMDtZQBxKtUDwjwWGZPt1yTx1P6QZ/zwhabYErmbHb5SPo5D436ZCDzzTC
-	H/jJ6UPw==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rczs9-00000002TJz-215C;
-	Thu, 22 Feb 2024 03:35:45 +0000
-Date: Thu, 22 Feb 2024 03:35:45 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	akpm@linux-foundation.org, muchun.song@linux.dev
-Subject: Re: [PATCH v2 2/5] hugetlb: Move vm_struct declaration to the top of
- hugetlb_fault()
-Message-ID: <ZdbBEc9d6WiCsQHl@casper.infradead.org>
-References: <20240221234732.187629-1-vishal.moola@gmail.com>
- <20240221234732.187629-3-vishal.moola@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=L+Rd2qapb1QBf8Iq3I2HJenLHPpNROBN1NiW1yGdO/XnwhvYzr0JzoNr/3fEV9hLgfPjgDF+g8H22C+jC30632yVV2LOe8/vLd0RfQiStPxHpCFzp2Bs+72C799TziixD9BZIJnPpgN4V6Hx2hbye1S3J9U2tRyRSPP/HlFlDFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=W01/NdEz; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 21 Feb 2024 22:37:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708573030;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ojk1fz89JpUi8jWPvmW8PS+rQwDOSQZnMT7LCgNuLDc=;
+	b=W01/NdEzw/an3GwPrdLCVmxzEx5UTibBxE3aqwho4wrssQyQY7HyggVyHUFRg2QyTK+/zV
+	20AgxZfLu2Lh4jK6lCL79R8lFtkdwFUQoX+CvDUpoZHmVZwq8tAINCzoIbG6e/gyj3Dyt0
+	EHKjiTsEv4ULDmpH0eguayAfV2kh1AE=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	lsf-pc@lists.linux-foundation.org, Christian Brauner <christian@brauner.io>, 
+	=?utf-8?B?U3TDqXBoYW5l?= Graber <stgraber@stgraber.org>
+Subject: Re: [LSF TOPIC] beyond uidmapping, & towards a better security model
+Message-ID: <giojfztuhxc5ilv24htcyhlerc6otajpa32cjtze4gghevg2jr@vwykmx7526ae>
+References: <tixdzlcmitz2kvyamswcpnydeypunkify5aifsmfihpecvat7d@pmgcepiilpi6>
+ <141b4c7ecda2a8c064586d064b8d1476d8de3617.camel@HansenPartnership.com>
+ <qlmv2hjwzgnkmtvjpyn6zdnnmja3a35tx4nh6ldl23tkzh5reb@r3dseusgs3x6>
+ <bfbb1e9b521811b234f4f603c2616a9840da9ece.camel@HansenPartnership.com>
+ <4ub23tni5bwxthqzsn2uvfs5hwr6gd3oitbckd5xwxdbgci4lj@xddn3dh6y23x>
+ <c0d77327b15e84df19a019300347063a0b74e1a5.camel@HansenPartnership.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240221234732.187629-3-vishal.moola@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c0d77327b15e84df19a019300347063a0b74e1a5.camel@HansenPartnership.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Feb 21, 2024 at 03:47:29PM -0800, Vishal Moola (Oracle) wrote:
-> hugetlb_fault() currently defines a vm_struct to pass to the generic
-
-s/vm_struct/vm_fault/ (both this line and Subject:)
-
-> handle_userfault() function. We can move this definition to the top of
-> hugetlb_fault() so that it can be used throughout the rest of the
-> hugetlb fault path.
+On Thu, Feb 22, 2024 at 01:33:14AM +0100, James Bottomley wrote:
+> On Wed, 2024-02-21 at 18:01 -0500, Kent Overstreet wrote:
+> > Strings are just arrays of integers, and anyways this stuff would be
+> > within helpers.
 > 
-> This will help cleanup a number of excess variables and function
-> arguments throughout the stack. Also, since vm_fault already has space
-> to store the page offset, use that instead and get rid of idx.
-> 
-> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+> Length limits and comparisons are the problem
 
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+We'd be using qstrs for this, not c strings, so they really are
+equivalent to arrays for this purpose.
+
+> 
+> > 
+> > But what you're not seeing is the beauty and simplicity of killing
+> > the mapping layer.
+> 
+> Well, that's the problem: you don't for certain use cases.  That's what
+> I've been trying to explain.  For the fully unprivileged use case,
+> sure, it all works (as does the upper 32 bits proposal or the integer
+> array ... equally well.
+> 
+> Once you're representing to the userns contained entity they have a
+> privileged admin that can write to the fsimage as an apparently
+> privileged user then the problems begin.
+
+In what sense?
+
+If they're in a userns and all their mounts are username mapped, that's
+completely fine from a userns POV; they can put a suid root binary into
+the fs image but when they mount that suid root will be suid to the root
+user of their userns.
+
+> 
+> > When usernames are strings all the way into the kernel, creating and
+> > switching to a new user is a single syscall. You can't do that if
+> > users are small integer identifiers to the kernel; you have to create
+> > a new entry in /etc/passwd or some equivalent, and that is strictly
+> > required in order to avoid collisions. Users also can't be ephemeral.
+> > 
+> > To sketch out an example of how this would work, say we've got a new
+> > set_subuser() syscall and the username equivalent of chown().
+> > 
+> > Now if we want to run firefox as a subuser, giving it access only
+> > .local/state/firefox, we'd do the following sequence of syscalls
+> > within the start of the new firefox process:
+> > 
+> > mkdir(".local/state/firefox");
+> > chown_subuser(".local/state/firefox", "firefox"); /* now owned by
+> > $USER.firefox */
+> > set_subuser("firefox");
+> > 
+> > If we want to guarantee uniqueness, we'd append a UUID to the
+> > subusername for the chown_subuser() call, and then for subsequent
+> > invocations read it with statx() (or subuser enabled equivalent) for
+> > the set_subuser() call.
+> > 
+> > Now firefox is running in a sandbox, where it has no access to the
+> > rest of your home directory - unless explicitly granted with normal
+> > ACLs. And the sandbox requires no system configuration; rm -rfing the
+> > .local/state/firefox directory cleans everything up.
+> > 
+> > And these trivially nest: Firefox itself wants to sandbox individual
+> > tabs from each other, so firefox could run each sub-process as a
+> > different subuser.
+> > 
+> > This is dead easy compared to what we've been doing.
+> 
+> The above is the unprivileged use case.  It works, but it's not all we
+> have to support.
+
+There is only one root user, in the sense of _actual_ root -
+CAP_SYS_ADMIN and all that.
+> 
+> > > > > However, neither proposal would get us out of the problem of
+> > > > > mount mapping because we'd have to keep the filesystem
+> > > > > permission check on the owning uid unless told otherwise.
+> > > > 
+> > > > Not sure I follow?
+> > > 
+> > > Mounting a filesystem inside a userns can cause huge security
+> > > problems if we map fs root to inner root without the admin blessing
+> > > it.  Think of binding /bin into the userns and then altering one of
+> > > the root owned binaries as inner root: if the permission check
+> > > passes, the change appears in system /bin.
+> > 
+> > So with this proposal mount mapping becomes "map all users on this
+> > filesystem to subusers of username x". That's a much simpler mapping
+> > than mapping integer ranges to integer ranges, much easier to verify
+> > that there aren't accidental root escpes.
+> 
+> That doesn't work for the privileged container run in unprivileged
+> userns containment use case because we need a mapping from inner to
+> outer root.
+
+I can't parse this. "Privileged container in an unprivileged
+containment"? Do you just mean a container that has root user (which is
+only root over that container, not the rest of the system, of course).
+
+Any user is root over its subusers - so that works perfectly.
+
+Or do you mean something else by "privileged container"? Do you mean a
+container that actually has CAP_SYS_ADMIN?
+
+> > > > And it wouldn't have to be administrator assigned. Some
+> > > > administrator assignment might be required for the username <->
+> > > > 16 bit uid mapping, but if those mappings are ephemeral (i.e. if
+> > > > we get filesystems persistently storing usernames, which is easy
+> > > > enough with xattrs) then that just becomes "reserve x range of
+> > > > the 16 bit uid space for ephemeral translations".
+> > > 
+> > > *if* the user names you're dealing with are all unprivileged.  When
+> > > we have a mix of privileged and unprivileged users owning the
+> > > files, the problems begin.
+> > 
+> > Yes, all subusers are unprivilidged - only one username, the empty
+> > username (which we'd probably map to root) maps to existing uid 0.
+> 
+> But, as I said above, that's only a subset of the use cases.  The
+> equally big use case is figuring out how to run privileged containers
+> in a deprivileged mode and yet still allow them to update images (and
+> other things).
+
+If you're running in a userns, all your mounts get the same user mapping
+as your userns - where that usermapping is just prepending the username
+of the userns. That part is easy.
+
+The big difficulty with letting them update images is that our current
+filesystems really aren't ready for the mounting of untrusted images -
+they're ~100k loc codebases each and the amount of hardening required is
+significant. I would hazard to guess that XFS is the furthest along is
+this respect (from all the screaming I hear from Darrick about syzkaller
+it sounds like they're taking this the most seriously) - but I would
+hesitate to depend on any of our filesystems to be secure in this
+respect, even my own - not until we get them rewritten in Rust...
 
