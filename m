@@ -1,115 +1,110 @@
-Return-Path: <linux-kernel+bounces-75700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B07D85ED90
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:08:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF67685ED93
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:08:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EADF3284745
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:08:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA9EC28455A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:08:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1AA2881F;
-	Thu, 22 Feb 2024 00:08:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 193C52904;
+	Thu, 22 Feb 2024 00:08:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y42VscKr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MAdi4DPu"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C27331854;
-	Thu, 22 Feb 2024 00:08:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF495660;
+	Thu, 22 Feb 2024 00:08:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708560481; cv=none; b=bighMFvtnxScIe9blMRrySrupue9zM9x8WAQFRP4nB3hIbadegZ4hk9Ia3jG0UFuRjMJrJ/Qgn/8dDrAHetzaF/bNYo9v+6o5DVEfS26t377BRgBa/1TPWh6MqWOfAxt1QG/C8OenzmFHLfVi6sMfDVeQ3eWsvTMCwiLoxkZuow=
+	t=1708560514; cv=none; b=KNQ77QSjbrfYBbfqLQ9LmGj5VaND1qvXVUrVEEmeG0ze8o+QJ/uItgZPpANOtZDt+r80bBo+4a9IU/rrgxs4AszNsNg1gRzLyYv5VEV7OZq3hwIh40TqF78xFgB/IUFbqQcYl3ncDZe2llSL9WSiX8uJnX3DHDGLJDXFLZ/I4Q4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708560481; c=relaxed/simple;
-	bh=vE8G0tEnjCDvKYtM1hAj6g+Z7bZNowrFZogG32m/K70=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FDpZvRKAXUTBXQBGwzd9zjJ7Y1eK3EPr2OpFFuReeIZ3TIkqLVUpTuoCPJxPq0i8twmEF3uvEi+2XKtUB4/3LK5mM0gXXSqpe3mbw22l8ggW07DuzgjzOVYzAzBCCFED8m92YK9mhUvhw47yiQ27b7wPXgF7JF8ZgezhG4YOo5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y42VscKr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DF65C433C7;
-	Thu, 22 Feb 2024 00:08:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708560480;
-	bh=vE8G0tEnjCDvKYtM1hAj6g+Z7bZNowrFZogG32m/K70=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Y42VscKrvxtAeYusTRWD6nCdHe83JpVE4gTfo6qOWzSr35vqn+d3jY7Zw5IcL0vnB
-	 PakgDEDQ6OPmTo0AK9gFPD6TJx3p4/8JJPJFk4lV1V5VLRgjczH0cX15H6dfnlWs19
-	 w9A5I0t+DccGyh5nE/w3d3RJxsfu3btoZCd1VpBOA8jebEHWFizMP5AWg0So7quzxy
-	 QjGE4Tti8547FKVzZGuTljGQDc+MGukbKyomzjNKeJn1tK8sY/PgOiEivvyH+Ww0bn
-	 a6KlSCCFCx5aeAWxlgoHf4bXLz8WtZSNJ8rbHPmwW6S9h1/qML7j6TvG6WBPb5Dara
-	 Fq6dZETVqsoFw==
-Date: Wed, 21 Feb 2024 18:07:59 -0600
-From: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-To: Paul Moore <paul@paul-moore.com>
-Cc: Christian Brauner <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>,
-	Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	Stephen Smalley <stephen.smalley.work@gmail.com>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	Casey Schaufler <casey@schaufler-ca.com>,
-	Mimi Zohar <zohar@linux.ibm.com>,
-	Roberto Sassu <roberto.sassu@huawei.com>,
-	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-	Eric Snowberg <eric.snowberg@oracle.com>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, audit@vger.kernel.org,
-	selinux@vger.kernel.org, linux-integrity@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH v2 11/25] security: add hooks for set/get/remove of fscaps
-Message-ID: <ZdaQX9385Sq3VmMZ@do-x1extreme>
-References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
- <20240221-idmap-fscap-refactor-v2-11-3039364623bd@kernel.org>
- <CAHC9VhQ5QK_4BaHCj9SEvW9M_suWa9edDXrbw2MiNcn56eoWPg@mail.gmail.com>
+	s=arc-20240116; t=1708560514; c=relaxed/simple;
+	bh=Ihd7mrTw7+UrofKPdqAHJJTXadljxW0+2gEGdxs0gag=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XlCszDwbqd/KcoyrSddLMo9tvIiidjH1c6kFVaia4k0DMspfjMPK6La4857+vDaSdku1w2veKiB4SfBRIhSJAOVQiHi6hpPZFw1jiUcxGiPJD/oh8QMjLzfp85DAwrTeM+nn5bheZJzs89BvukFfKi4KUgAMPtO2z380JNJ9H88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MAdi4DPu; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41275971886so9548565e9.3;
+        Wed, 21 Feb 2024 16:08:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708560511; x=1709165311; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JrLVGHWqd42HuRvVm6ka+mAXekU9BySf50ulUs1HdnQ=;
+        b=MAdi4DPuAH97VAd039izT/k4E/pGxnXdUBRh4wnJCMXJB5tjHwDAsg/uP7aZlJgq8I
+         vXdmYx1XZ9NTKiG3zLFafeUOI0SIdK42RXBNNM9KwayNHp/Gxg3hejF6KcQfrAKPxR2y
+         a3+ID1zj1xppJSbjdBSpjDb/ZEojdEFZSeCqWO/CGznP8tkhlSyWds9AgtUyjLJF/DTd
+         7uTJGJNcGpL/oMZ4C2of1s5tWWe2s4q0YKHfYO1cifqoDEzWHfJ3RYjyP3BpiwUEiql9
+         VP4o+6nZG9CjP7CYzrUHtDLULZnpHyydT74b00aLxGAZ+AMgT8ixMDBcZ3FQs+miDgJ3
+         q4FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708560511; x=1709165311;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JrLVGHWqd42HuRvVm6ka+mAXekU9BySf50ulUs1HdnQ=;
+        b=UIwB0jwcwDZUxFjE0bSG9Eh6f6LwaWQneOx0WODu3ASvPjK6hoCPjkUOCyJzxrsR8i
+         0YdPYAigjhh+U9GrzjTmw+sB9jDqK1p0P/Rrz50uFt8mPMD35PSTu89kLl41xBAzDiY+
+         SMyL2J//XOibivXzWtTImC3Q48/Iq75LPrf9NyNOfvXiLjvz6e17DJCQKVCWcf1Vcrpx
+         R3UW1hMe+R0V3Pos+hvBIyKI7YnrrDfxKGonFFyAmbX+fybJ0E+2AnV4mjGcLduDtTFE
+         1qy8dBCFU9dfDvE3r6GEOeQfL90hi3nBgbVwY7CQ7Og99l/0v8ByZWgPRhWXu7fxz+yG
+         ZA+w==
+X-Forwarded-Encrypted: i=1; AJvYcCXDh2jZ9rQbQ3wYr5VhW0M9qrHCYfXf8M9AQfvtFW3lUucGoY30A7sqTTM29/DBy28qUPVVSueW7CTCrjYk9ftL+7cs0jCmn1lwNpdC11jQ4rotEo9qMuc6gYEzXbYTlb+msuH+m4royhjvO0Xrpu7u24xDyKBXD9WZnAzUthfgpSZ4Kk8G5Q+dbjT2sWA=
+X-Gm-Message-State: AOJu0YzpvXJE1lmZqG7Wq1um+arCFuvfkgklXDAhueDsyRxGWmK0J2w5
+	jN7M/RI8rfjJyuVLC0Q8VoRHWECfuDKMHaN+zB49K8dng1ZQmOhZ
+X-Google-Smtp-Source: AGHT+IH06e4oysCannDPPsoqQTO02G4XnpwkMHVszAA9iSTdrnX0sRQl2H2Vg2qlzUMWKrpS5BM7Fg==
+X-Received: by 2002:a05:600c:3515:b0:412:17dd:a227 with SMTP id h21-20020a05600c351500b0041217dda227mr14521005wmq.15.1708560510711;
+        Wed, 21 Feb 2024 16:08:30 -0800 (PST)
+Received: from [192.168.0.101] (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.googlemail.com with ESMTPSA id t11-20020a05600c198b00b0041270c2b95esm6351055wmq.29.2024.02.21.16.08.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Feb 2024 16:08:30 -0800 (PST)
+Message-ID: <cfa4cd82-67e9-4483-9c35-a425859f4a21@gmail.com>
+Date: Thu, 22 Feb 2024 00:08:28 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHC9VhQ5QK_4BaHCj9SEvW9M_suWa9edDXrbw2MiNcn56eoWPg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] bcachefs: remove redundant assignment to variable
+ ret
+Content-Language: en-US
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240221115203.3413554-1-colin.i.king@gmail.com>
+ <3qaoftjgf7p2ugutl524b3yin7pqpjrkftjx3frunhduf3so66@tjhcdoq6unk3>
+From: "Colin King (gmail)" <colin.i.king@gmail.com>
+In-Reply-To: <3qaoftjgf7p2ugutl524b3yin7pqpjrkftjx3frunhduf3so66@tjhcdoq6unk3>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 21, 2024 at 06:31:42PM -0500, Paul Moore wrote:
-> On Wed, Feb 21, 2024 at 4:26 PM Seth Forshee (DigitalOcean)
-> <sforshee@kernel.org> wrote:
-> >
-> > In preparation for moving fscaps out of the xattr code paths, add new
-> > security hooks. These hooks are largely needed because common kernel
-> > code will pass around struct vfs_caps pointers, which EVM will need to
-> > convert to raw xattr data for verification and updates of its hashes.
-> >
-> > Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
-> > ---
-> >  include/linux/lsm_hook_defs.h |  7 +++++
-> >  include/linux/security.h      | 33 +++++++++++++++++++++
-> >  security/security.c           | 69 +++++++++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 109 insertions(+)
+On 22/02/2024 00:04, Kent Overstreet wrote:
+> On Wed, Feb 21, 2024 at 11:52:03AM +0000, Colin Ian King wrote:
+>> Variable ret is being assigned a value that is never read, it is
+>> being re-assigned a couple of statements later on. The assignment
+>> is redundant and can be removed.
+>>
+>> Cleans up clang scan build warning:
+>> fs/bcachefs/super-io.c:806:2: warning: Value stored to 'ret' is
+>> never read [deadcode.DeadStores]
+>>
+>> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 > 
-> One minor problem below, but assuming you fix that, this looks okay to me.
-> 
-> Acked-by: Paul Moore <paul@paul-moore.com>
-> 
-> > diff --git a/security/security.c b/security/security.c
-> > index 3aaad75c9ce8..0d210da9862c 100644
-> > --- a/security/security.c
-> > +++ b/security/security.c
-> > @@ -2351,6 +2351,75 @@ int security_inode_remove_acl(struct mnt_idmap *idmap,
-> 
-> ...
-> 
-> > +/**
-> > + * security_inode_get_fscaps() - Check if reading fscaps is allowed
-> > + * @dentry: file
-> 
-> You are missing an entry for the @idmap parameter.
+> I'll take this, but - entirely too much of the traffic on this list is
+> getting taken up by static analyzer bullshit, we need to cut down on
+> this
 
-Fixed, thanks!
+I'll back off then.
+
+Colin
 
