@@ -1,107 +1,86 @@
-Return-Path: <linux-kernel+bounces-75705-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75706-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 952CA85EDB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:11:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 269D685EDBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:11:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5FE41C22AA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:11:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56BB31C22B30
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:11:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C09001FB2;
-	Thu, 22 Feb 2024 00:11:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CC9EA937;
+	Thu, 22 Feb 2024 00:11:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="YjYuG5KS"
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IztFEWeO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E7BD1869
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:11:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C99C8BF3;
+	Thu, 22 Feb 2024 00:11:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708560670; cv=none; b=aAjYe/aa1+FLk/1nBUHedMC6zY9wJEa0qeig+yRakn7NRdUAbyiEmbltJHdv/d0l+Sxu9vbuRBo6MwNX6ulDJOo0VOYNTohCtNQGtlJmDOCtW9DhxUzGUCv/SPRshxKdyu0ySs/hN08Se/9YyW/uHhO2VxWgPXxRtTiU10wPA7s=
+	t=1708560697; cv=none; b=JUL8Bo/oTrvviEK+frWhnEpXz88TLDLtar/sGXcpUaH4N0Y8ea9HQ3eLx71RbC2TqRZwPDpuxCYJxQBPRQTafGNylXu5xnTFWp1nzXHlPiCgZIkwG3YxGm78kRW1m4NCOTydDUnp0GN2RONwt29PLHlK3VjtX903nGNBpFjWxxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708560670; c=relaxed/simple;
-	bh=ITimqW9g4IYnfwAk+fE46BnuZR7ucu6gikeyx4GedN4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DGeUsrJR5HrvURdqe1t5HOiTZgJhQbLtI89VsHcm+C3Q2HoZCDGQ843yvel4HFnmqX5/r85i0qmCHci/46NgFvRYa69ko+uDMPVyioo8QI5lDpKKc+GnhqA/M6fVWrIn/UC7U9rQEpoUbQg3uOlf73GrC9M3pLwm2LsQHhgJ+X4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=YjYuG5KS; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc74435c428so6821263276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:11:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1708560667; x=1709165467; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YTXFYEa4xo6a5mwd21POLG1HLHGIr1ybDf3KHz8gaHw=;
-        b=YjYuG5KSm5u2EanQe7cOHp8PgvnV9sMmurP3kNSXhmbyIq+CiQF9Z50WEQQRLIxX7W
-         bQ8lJZWn3w0fmwrUsZMpAsL+Kf+9adf2iniuFdaHaggUF7eMxtYIs+LlWGvIiTnWDWHl
-         fC8T/7d1hJwawwSLOeYSof0Bk9zU3JHtj6fOldzbqwGydqhIf6FiRUx5I21csL2IrFkh
-         tIDp1C0uGvBuWlatwI2C0nTM6Ohi3VOIsMM49dxSAxZx+HMofBGippNbVLg4XJRh9VD5
-         o/3ee/XhMScxWHsynVQwRTuymeHiycqG26qfFT+0149gsTf8OCAyCwNrvSa495/WJYKr
-         jodg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708560667; x=1709165467;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YTXFYEa4xo6a5mwd21POLG1HLHGIr1ybDf3KHz8gaHw=;
-        b=I3JFOZo3G4bvcAzKJX2M+w5KCLydx8XGcMRJ84gOn//maA8lBeS0Ml7F1D6+XDw++4
-         RZurgrxrPjE+ImvGtDaG2kTovvizLBterPwVtb0PKT9MQ0PaVAD+SV6niR+bR3CXc2d3
-         5PGrcNctiaZI+TvDR/zrCX+DDxE5fQfXV4y+IoZsZL/h3Rhkcvv4+1Lf2ADOthBrplQx
-         CfBnHepHkowbaY0sfVBP20DH0AuqRxz39Xhyn5W5img621oY4RSUnyq6+VQALWv4rqu5
-         dsqTbQ4rSknmsjvXh3zKHMLUbX+RmefjK+z340jMLVAISQ1pVjO9QNdFoUyjrWgz7XVc
-         0u0w==
-X-Forwarded-Encrypted: i=1; AJvYcCXlL1u6keTYlNyaaHLtryFLukME6Kqp6fun2cHHRPdftGz9bMB4PFMReEekk1c77oNBoxcKoGpcHYctvA9PtSRHmGFw8FF2GPpY5M6d
-X-Gm-Message-State: AOJu0YwJAKOq782ykGHQMaP5lGuJmvnFmmt2ub9BZkWbQEtxDLi+5UZl
-	AXtm6lswqslIpyfMe8r0AbZ2EHHXLKECsRM3jWX0SCnH8TzI/iCHKwG+DpbCNyNH1WJ8qmPTKCW
-	NJYhPiZ2UmJk11ty4kfDmw3j1nP+rxnUbggN6
-X-Google-Smtp-Source: AGHT+IF2DQVDzt2c0yA7a7+ahy3Q+PeWGykVKKQL85450iacajA8akbQF24P4kQxcdmNK7g3f3rkviXmnCjZy4LpHEo=
-X-Received: by 2002:a25:6610:0:b0:dcf:288e:21ca with SMTP id
- a16-20020a256610000000b00dcf288e21camr729938ybc.11.1708560667179; Wed, 21 Feb
- 2024 16:11:07 -0800 (PST)
+	s=arc-20240116; t=1708560697; c=relaxed/simple;
+	bh=h9qy7DWnOvkeO6XeQXJWoofO0MXkEAwGozMFN95Vvcg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DP0BvB8dCcs0CtGOYBZEiO9zfpwGKs5ST1B1kYZvFE8wBnkbTHtAzMdj6w0VNEmV/JWM0y26WglSgdQXGTmqrRqFZ58tdVW3n5jcnV7YHnKQEOqoxw1/SlQGu13ahJjQAfzksjA5zrPF3r8eO+0fGBT2bkgkUnjpwBpUvG69tGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IztFEWeO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1F1FC433C7;
+	Thu, 22 Feb 2024 00:11:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708560696;
+	bh=h9qy7DWnOvkeO6XeQXJWoofO0MXkEAwGozMFN95Vvcg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IztFEWeOzlO9FUghVzfV5D2nwwPqZG91UAYBolXVkyMw/4Ftx6JrK/9xCDjILDbnn
+	 R3fsplJB/OgQKVGQlcT4tcVedG4q3vcvaiMH3Q6kpieLD0q+RO2Hlpdtgjcg+Ks8ZL
+	 GyQ0m9TU8rR1lQxmLiAcn4Kdb+jg70yWGJhk9mj1jw1suEmINDl2XEaTl/eC2ZSRIf
+	 GeVqq8VsCg4WEy128tsFjpACKXacjtGNd27eutPHhKh82Iovi66GcUVPraQozJUxR+
+	 BXY6d69m7Hg+ULqUYyyLQcWFZN5ATBkwkdo62bw60D1cOakNw+F2hhtQvagUShOWWJ
+	 A2WRfwCCC0waA==
+Date: Wed, 21 Feb 2024 18:11:35 -0600
+From: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
+To: Casey Schaufler <casey@schaufler-ca.com>
+Cc: Christian Brauner <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>,
+	Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
+	James Morris <jmorris@namei.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+	Stephen Smalley <stephen.smalley.work@gmail.com>,
+	Ondrej Mosnacek <omosnace@redhat.com>,
+	Mimi Zohar <zohar@linux.ibm.com>,
+	Roberto Sassu <roberto.sassu@huawei.com>,
+	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+	Eric Snowberg <eric.snowberg@oracle.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-security-module@vger.kernel.org, audit@vger.kernel.org,
+	selinux@vger.kernel.org, linux-integrity@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
+Subject: Re: [PATCH v2 13/25] smack: add hooks for fscaps operations
+Message-ID: <ZdaRN9gUkjgxxoHB@do-x1extreme>
+References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
+ <20240221-idmap-fscap-refactor-v2-13-3039364623bd@kernel.org>
+ <b14d41b6-547b-4a1d-b2b5-0bae11454482@schaufler-ca.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130094037.76895-1-chentao@kylinos.cn> <CAHC9VhQG6XAm3R3wtgFrb0b0UHoxkSV2yziVAnUy2x7Ovun_pQ@mail.gmail.com>
-In-Reply-To: <CAHC9VhQG6XAm3R3wtgFrb0b0UHoxkSV2yziVAnUy2x7Ovun_pQ@mail.gmail.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Wed, 21 Feb 2024 19:10:56 -0500
-Message-ID: <CAHC9VhRLNHT0ar2YPkZBsyha_mh6Ggf6=V2gnbFkdo7ryXmHnQ@mail.gmail.com>
-Subject: Re: [PATCH] cred: Use KMEM_CACHE instead of kmem_cache_create
-To: Kunwu Chan <chentao@kylinos.cn>
-Cc: axboe@kernel.dk, elena.reshetova@intel.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b14d41b6-547b-4a1d-b2b5-0bae11454482@schaufler-ca.com>
 
-On Thu, Feb 15, 2024 at 10:54=E2=80=AFPM Paul Moore <paul@paul-moore.com> w=
-rote:
-> On Tue, Jan 30, 2024 at 4:40=E2=80=AFAM Kunwu Chan <chentao@kylinos.cn> w=
-rote:
-> >
-> > commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
-> > introduces a new macro.
-> > Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-> > to simplify the creation of SLAB caches.
-> >
-> > Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-> > ---
-> >  kernel/cred.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> This seems reasonable to me, unless I see any objections I can pull
-> this via the LSM tree next week.
+On Wed, Feb 21, 2024 at 02:52:50PM -0800, Casey Schaufler wrote:
+> > +/**
+> > + * smack_inode_remove_acl - Smack check for removing file capabilities
+> 
+> s/smack_inode_remove_acl/smack_inode_remove_fscaps/
 
-Actually, never mind, the original posting has some non-ASCII junk in
-the patch and I'm not able to import it cleanly.
-
---=20
-paul-moore.com
+Fixed, thanks! I guess you can see where I copied my work from :-)
 
