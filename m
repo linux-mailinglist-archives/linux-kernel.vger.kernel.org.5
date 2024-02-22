@@ -1,256 +1,166 @@
-Return-Path: <linux-kernel+bounces-77546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 891B1860720
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:52:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53592860728
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:55:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7C51284897
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:52:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD07D1F23192
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:55:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEDB213BAE4;
-	Thu, 22 Feb 2024 23:51:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93B6E140366;
+	Thu, 22 Feb 2024 23:55:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="G9chThIT"
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aIXUSj9r"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EFB5182A3
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 23:51:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04224433DF;
+	Thu, 22 Feb 2024 23:55:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708645917; cv=none; b=m27aeh7KjwnNUYwhzy9KqDmXNK1yxMzBQv4wL15R0oX+ZaPIEpJ1cFjJywnxZdP6V00ZamMRI9Wv8ipr/mv2g2zYck80PwcGQxcJ2PGXddWwOeCYpIV/jPpzFUoivq1wBN2KDIKoeJ7M2Hwxs3pd+72+4EM/eUycpd8WLv29i4M=
+	t=1708646104; cv=none; b=MviTEfhqNDGC/cVqcjs7VRabNAeON6lAoSKqaSr8Lf5BOZuUTfBYuf/a+N0r4gC22/+N9+eXeHW5Ebs+48y6OSYH5vbnxmh9UtiZASugZOjYBxedYmKqNw59+WR3D/e8UMkSLBYoLzZlmMEYdOR2zxFUCbvixCjXrSdxpgnBXps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708645917; c=relaxed/simple;
-	bh=/wHGiiuPEih+Dl1DSbuFdBlrYyz4M3oticJERwW5nCU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kwOaPFsGI8AZ/J2unCGUaVDbF5nBLmFKMvY2rTW8HaH39ErXlEvAgHm7Gu84kdRCz2EPqsE39/ASFh3elDyJWXXZRk6M4HdzI3R4+VVHqtyWZO46dFHagmPRbnfUfh3ZzDfpn7mOjSIcAP2bbed+NCh97IKIb2P/EvAiPn0MQ7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=G9chThIT; arc=none smtp.client-ip=209.85.160.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-42e0b1b11bbso31441cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 15:51:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708645914; x=1709250714; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mVOy0PwhnBKY+4KzN/4pkuX8/YBWUL2pDvveZN+SjoI=;
-        b=G9chThIT/Y2Zg923Jah7ISL6MTQfKSPHIGS8WAAUu88KKfuzKlhnLIPWfU5/9v3Loi
-         BOqhKkpyiZnhd6xS2TMndq4d3v91WQ1DoWQh0JXtyxAj5KJnxSWD2AT7Lu1AT1l1lxyf
-         KY0gd5CzFSJi1+z1KQP9jtYlPGdH+5f2d8AKq9UEYK7HQbaRgPPd9IQ86XwdrlheHK26
-         Vmob9eB7uYNU3+qzycA6xKOCYGRFK9C032/MHfG0WZj+tBaR00a3vontxCNKqhq9SRx6
-         rqSTWslXF8Kj6LLebRwkH/Qet1CJlcrKt4A1f6XC6cn6bfF1Avr10R08T+EBDsMKcAEc
-         aeVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708645914; x=1709250714;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mVOy0PwhnBKY+4KzN/4pkuX8/YBWUL2pDvveZN+SjoI=;
-        b=oTUNn91m8irAGHPL2F1/2p3euIMPR20MawzjRuQSK8hOFlblDd0g+wJjPl9PT3u1yi
-         mTtTS69S10hWwmybaEBzoYaDthVMGZdap92U40PoMN2KpzL6YbKUD4iYOVlJdEcYtuQq
-         Rp6dkvMqIF/kHyYPVppJ7rJ1FqnVEh7+X3QG0WBDy6lNFMjcLwWKtohY5MkFoU23Iry+
-         SKVspTtG+BRr3cYDsHl7IHY3KEI04GGyDiqIwomW7Br04Rp7KyXjg+jW5P9vj1H/ynC/
-         dQfD4qn8S6ZnkJDJBQCmU5NarMuQInK+Mv+Jmg/dQbz/GYg97bL34WoyzFhXsNj9DHbz
-         gNQA==
-X-Forwarded-Encrypted: i=1; AJvYcCVW3xYw8gCG+/UD9FJiFs0xz5lmEo4c5ZY1t2riIpFCcu0IYAq243PvWCCMrE6GXrogLz8RNJ4ltBbFC/RgUcaIVOCvDqdgAVJuCx13
-X-Gm-Message-State: AOJu0YxRYVWBIkhl1Acy5E+i1tIQBm2PY0CJnGDd3b8epr6Y90FqevSq
-	gll6BCX9LBgNhm2e4HabKnjBolAnSiIXseg9MrdvkV/721TwiOr5SfRBxC8JWbhyVVDArT8y8NW
-	KEYYTkQW77ZRWX/mbYMOxbKW5mj/zRapQFfb5
-X-Google-Smtp-Source: AGHT+IGSx9IqL62y1LNBY7s+dmpCEtqTu2O+jgsJsFv46ojLa1Dsip1JzYkOGamsGRfmVVJM30+X6ptu5wefZ3VTfAA=
-X-Received: by 2002:a05:622a:181d:b0:42e:377e:8c07 with SMTP id
- t29-20020a05622a181d00b0042e377e8c07mr854859qtc.11.1708645914096; Thu, 22 Feb
- 2024 15:51:54 -0800 (PST)
+	s=arc-20240116; t=1708646104; c=relaxed/simple;
+	bh=JAWPRH05PCaJ/qhm7l++x2p8cgx/eVbDSM0nYdWb/ZY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HaanTRzLP8uDs+1++NVu0CxFXkFY42ZvIXZuiN47w+B9fv+Xpv+QPAG174rFCK+GSRqTT33BWfwZqmUKvE4izAVLzPjcXBnXTVGWA+jB70FLxsoBPnATEyqDpH/sd8z6by8KlV95Ctv+++GZISf5aviJI2rrRgv6XsG20AdV4ZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aIXUSj9r; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708646102; x=1740182102;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=JAWPRH05PCaJ/qhm7l++x2p8cgx/eVbDSM0nYdWb/ZY=;
+  b=aIXUSj9rLu8236qaPreso3z2uIcoT/btnevBJDcnxXzuPzPxhiw3Dinw
+   mb8Io15UdaUTCBVFvqgR0YE76byDuzB/cHLAvsQyXTcJo68L33PEbe1jj
+   pgYjeCABccKhDFZ5hGn5qfHTWnMnUkasaRZgv8eGbpx1WT+WqNYHMpd9e
+   P5FQoDdPwoX3YUJt72tNvYRN4Ov3NAMEdjAfuytDx4GMTZclfPlaMYM9F
+   8G4rUsuRf5otYE9R4jQiphvcMujd4Rxztbtt07xY4GmuXhVUBiwNptxVt
+   bYELbBa4G6hFdfbU7L3/unVi1XUhzQaXUwuVmyIze1r77kowqZ3l9M4Ud
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="25387136"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="25387136"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 15:53:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="28809352"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmviesa002.fm.intel.com with ESMTP; 22 Feb 2024 15:52:39 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rdIrl-0006o6-0y;
+	Thu, 22 Feb 2024 23:52:37 +0000
+Date: Fri, 23 Feb 2024 07:52:13 +0800
+From: kernel test robot <lkp@intel.com>
+To: Thomas Zimmermann <tzimmermann@suse.de>, arnd@arndb.de,
+	javierm@redhat.com, deller@gmx.de, suijingfeng@loongson.cn
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-arch@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linux-fbdev@vger.kernel.org, sparclinux@vger.kernel.org,
+	linux-sh@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org, loongarch@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Vineet Gupta <vgupta@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>
+Subject: Re: [PATCH 3/3] arch: Rename fbdev header and source files
+Message-ID: <202402230737.e7gWpGUp-lkp@intel.com>
+References: <20240221161431.8245-4-tzimmermann@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220111019.133697-1-herve.codina@bootlin.com>
- <20240220111019.133697-3-herve.codina@bootlin.com> <20240220142959.GA244726@rigel>
- <20240222005744.GA3603@rigel> <20240222010530.GA11949@rigel>
- <CAMRc=MdCm4UXMkzvG17Vd=6ajE+feihgYc66qUNTTKXhN0--dA@mail.gmail.com>
- <20240222123615.2cbada98@bootlin.com> <CAMRc=McTkVPD-1_5vvPcM2Q15=w+ocki2xTmvQzU-o395A930w@mail.gmail.com>
-In-Reply-To: <CAMRc=McTkVPD-1_5vvPcM2Q15=w+ocki2xTmvQzU-o395A930w@mail.gmail.com>
-From: Saravana Kannan <saravanak@google.com>
-Date: Thu, 22 Feb 2024 15:51:15 -0800
-Message-ID: <CAGETcx_j4613QjHgX5AJ96Ux6MJSxxhT7DL36yzNv1JCsoxTAA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] gpiolib: cdev: release IRQs when the gpio chip device
- is removed
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Herve Codina <herve.codina@bootlin.com>, Kent Gibson <warthog618@gmail.com>, 
-	Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221161431.8245-4-tzimmermann@suse.de>
 
-On Thu, Feb 22, 2024 at 4:21=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl>=
- wrote:
->
-> On Thu, Feb 22, 2024 at 12:36=E2=80=AFPM Herve Codina <herve.codina@bootl=
-in.com> wrote:
-> >
-> > Hi Bartosz,
-> >
-> > On Thu, 22 Feb 2024 00:31:08 -0800
-> > Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> >
-> > > On Thu, 22 Feb 2024 02:05:30 +0100, Kent Gibson <warthog618@gmail.com=
-> said:
-> > > > On Thu, Feb 22, 2024 at 08:57:44AM +0800, Kent Gibson wrote:
-> > > >> On Tue, Feb 20, 2024 at 10:29:59PM +0800, Kent Gibson wrote:
-> > > >> > On Tue, Feb 20, 2024 at 12:10:18PM +0100, Herve Codina wrote:
-> > > >>
-> > > >> ...
-> > > >>
-> > > >> > >  }
-> > > >> > >
-> > > >> > > +static int linereq_unregistered_notify(struct notifier_block =
-*nb,
-> > > >> > > +                                     unsigned long action, vo=
-id *data)
-> > > >> > > +{
-> > > >> > > +      struct linereq *lr =3D container_of(nb, struct linereq,
-> > > >> > > +                                        device_unregistered_n=
-b);
-> > > >> > > +      int i;
-> > > >> > > +
-> > > >> > > +      for (i =3D 0; i < lr->num_lines; i++) {
-> > > >> > > +              if (lr->lines[i].desc)
-> > > >> > > +                      edge_detector_stop(&lr->lines[i]);
-> > > >> > > +      }
-> > > >> > > +
-> > > >> >
-> > > >> > Firstly, the re-ordering in the previous patch creates a race,
-> > > >> > as the NULLing of the gdev->chip serves to numb the cdev ioctls,=
- so
-> > > >> > there is now a window between the notifier being called and that=
- numbing,
-> > > >> > during which userspace may call linereq_set_config() and re-requ=
-est
-> > > >> > the irq.
-> > > >> >
-> > > >> > There is also a race here with linereq_set_config().  That can b=
-e prevented
-> > > >> > by holding the lr->config_mutex - assuming the notifier is not b=
-eing called
-> > > >> > from atomic context.
-> > > >> >
-> > > >>
-> > > >> It occurs to me that the fixed reordering in patch 1 would place
-> > > >> the notifier call AFTER the NULLing of the ioctls, so there will n=
-o longer
-> > > >> be any chance of a race with linereq_set_config() - so holding the
-> > > >> config_mutex semaphore is not necessary.
-> > > >>
-> > > >
-> > > > NULLing -> numbing
-> > > >
-> > > > The gdev->chip is NULLed, so the ioctls are numbed.
-> > > > And I need to let the coffee soak in before sending.
-> > > >
-> > > >> In which case this patch is fine - it is only patch 1 that require=
-s
-> > > >> updating.
-> > > >>
-> > > >> Cheers,
-> > > >> Kent.
-> > > >
-> > >
-> > > The fix for the user-space issue may be more-or-less correct but the =
-problem is
-> > > deeper and this won't fix it for in-kernel users.
-> > >
-> > > Herve: please consider the following DT snippet:
-> > >
-> > >       gpio0 {
-> > >               compatible =3D "foo";
-> > >
-> > >               gpio-controller;
-> > >               #gpio-cells =3D <2>;
-> > >               interrupt-controller;
-> > >               #interrupt-cells =3D <1>;
-> > >               ngpios =3D <8>;
-> > >       };
-> > >
-> > >       consumer {
-> > >               compatible =3D "bar";
-> > >
-> > >               interrupts-extended =3D <&gpio0 0>;
-> > >       };
-> > >
-> > > If you unbind the "gpio0" device after the consumer requested the int=
-errupt,
-> > > you'll get the same splat. And device links will not help you here (o=
-n that
-> > > note: Saravana: is there anything we could do about it? Have you even
-> > > considered making the irqchip subsystem use the driver model in any w=
-ay? Is it
-> > > even feasible?).
+Hi Thomas,
 
-I did add support to irqchip to use the driver model. See
-IRQCHIP_PLATFORM_DRIVER_BEGIN() and uses of it.  So this makes sure
-the probe ordering is correct.
+kernel test robot noticed the following build errors:
 
-But when I added that support, there was some pushback on making the
-modules removable[1]. But that's why you'll see that the
-IRQCHIP_PLATFORM_DRIVER_BEGIN() macro set .suppress_bind_attrs =3D true.
+[auto build test ERROR on tip/x86/core]
+[also build test ERROR on deller-parisc/for-next arnd-asm-generic/master linus/master v6.8-rc5]
+[cannot apply to next-20240222]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Do you have a way to unregister an interrupt controller in your
-example? If so, how do you unregister it? It shouldn't be too hard to
-extend those macros to add removal support. We could add a
-IRQCHIP_MATCH2() that also takes in an exit() function op that gets
-called on device unbind.
+url:    https://github.com/intel-lab-lkp/linux/commits/Thomas-Zimmermann/arch-Select-fbdev-helpers-with-CONFIG_VIDEO/20240222-001622
+base:   tip/x86/core
+patch link:    https://lore.kernel.org/r/20240221161431.8245-4-tzimmermann%40suse.de
+patch subject: [PATCH 3/3] arch: Rename fbdev header and source files
+config: um-randconfig-002-20240222 (https://download.01.org/0day-ci/archive/20240223/202402230737.e7gWpGUp-lkp@intel.com/config)
+compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project edd4aee4dd9b5b98b2576a6f783e4086173d902a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240223/202402230737.e7gWpGUp-lkp@intel.com/reproduce)
 
-[1] - https://lore.kernel.org/lkml/86sghas7so.wl-maz@kernel.org/#t
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402230737.e7gWpGUp-lkp@intel.com/
 
-> > >
-> > > I would prefer this to be fixed at a lower lever than the GPIOLIB cha=
-racter
-> > > device.
-> >
-> > I think this use case is covered.
-> > When the consumer device related to the consumer DT node is added, a
-> > consumer/supplier relationship is created:
-> > parse_interrupts() parses the 'interrups-extended' property
-> >   https://elixir.bootlin.com/linux/v6.8-rc1/source/drivers/of/property.=
-c#L1316
-> > and so, of_link_to_phandle() creates the consumer/supplier link.
-> >   https://elixir.bootlin.com/linux/v6.8-rc1/source/drivers/of/property.=
-c#L1316
-> >
-> > We that link present, if the supplier is removed, the consumer is remov=
-ed
-> > before.
-> > The consumer should release the interrupt during its remove process (i.=
-e
-> > explicit in its .remove() or explicit because of a devm_*() call).
-> >
-> > At least, it is my understanding.
->
-> Well, then it doesn't work, because I literally just tried it before
-> sending my previous email.
+All errors (new ones prefixed by >>):
 
-For your gpio0 device, can you see why __device_release_driver()
-doesn't end up calling device_links_unbind_consumers()?
+   /usr/bin/ld: warning: .tmp_vmlinux.kallsyms1 has a LOAD segment with RWX permissions
+   /usr/bin/ld: drivers/video/fbdev/core/fb_io_fops.o: in function `fb_io_mmap':
+>> drivers/video/fbdev/core/fb_io_fops.c:164: undefined reference to `pgprot_framebuffer'
+   clang: error: linker command failed with exit code 1 (use -v to see invocation)
 
-Also, can you look at
-/sys/class/devlink/<bus:gpio0-devicename>--<consumer device name>
-folders and see what the status file says before you try to unbind the
-gpio0 device? It should say "active".
 
-> Please try it yourself, you'll see.
->
-> Also: an interrupt controller may not even have a device consuming its
-> DT node (see IRQCHIP_DECLARE()), what happens then?
+vim +164 drivers/video/fbdev/core/fb_io_fops.c
 
-Yeah, we are screwed in those cases. Ideally we are rejecting all
-submissions for irqchip drivers that use IRQCHIP_DECLARE().
+6b180f66c0dd62 Thomas Zimmermann 2023-09-27  140  
+33253d9e01d405 Thomas Zimmermann 2023-11-27  141  int fb_io_mmap(struct fb_info *info, struct vm_area_struct *vma)
+33253d9e01d405 Thomas Zimmermann 2023-11-27  142  {
+33253d9e01d405 Thomas Zimmermann 2023-11-27  143  	unsigned long start = info->fix.smem_start;
+33253d9e01d405 Thomas Zimmermann 2023-11-27  144  	u32 len = info->fix.smem_len;
+33253d9e01d405 Thomas Zimmermann 2023-11-27  145  	unsigned long mmio_pgoff = PAGE_ALIGN((start & ~PAGE_MASK) + len) >> PAGE_SHIFT;
+33253d9e01d405 Thomas Zimmermann 2023-11-27  146  
+b3e8813773c568 Thomas Zimmermann 2023-11-27  147  	if (info->flags & FBINFO_VIRTFB)
+b3e8813773c568 Thomas Zimmermann 2023-11-27  148  		fb_warn_once(info, "Framebuffer is not in I/O address space.");
+b3e8813773c568 Thomas Zimmermann 2023-11-27  149  
+33253d9e01d405 Thomas Zimmermann 2023-11-27  150  	/*
+33253d9e01d405 Thomas Zimmermann 2023-11-27  151  	 * This can be either the framebuffer mapping, or if pgoff points
+33253d9e01d405 Thomas Zimmermann 2023-11-27  152  	 * past it, the mmio mapping.
+33253d9e01d405 Thomas Zimmermann 2023-11-27  153  	 */
+33253d9e01d405 Thomas Zimmermann 2023-11-27  154  	if (vma->vm_pgoff >= mmio_pgoff) {
+33253d9e01d405 Thomas Zimmermann 2023-11-27  155  		if (info->var.accel_flags)
+33253d9e01d405 Thomas Zimmermann 2023-11-27  156  			return -EINVAL;
+33253d9e01d405 Thomas Zimmermann 2023-11-27  157  
+33253d9e01d405 Thomas Zimmermann 2023-11-27  158  		vma->vm_pgoff -= mmio_pgoff;
+33253d9e01d405 Thomas Zimmermann 2023-11-27  159  		start = info->fix.mmio_start;
+33253d9e01d405 Thomas Zimmermann 2023-11-27  160  		len = info->fix.mmio_len;
+33253d9e01d405 Thomas Zimmermann 2023-11-27  161  	}
+33253d9e01d405 Thomas Zimmermann 2023-11-27  162  
+33253d9e01d405 Thomas Zimmermann 2023-11-27  163  	vma->vm_page_prot = vm_get_page_prot(vma->vm_flags);
+33253d9e01d405 Thomas Zimmermann 2023-11-27 @164  	vma->vm_page_prot = pgprot_framebuffer(vma->vm_page_prot, vma->vm_start,
+33253d9e01d405 Thomas Zimmermann 2023-11-27  165  					       vma->vm_end, start);
+33253d9e01d405 Thomas Zimmermann 2023-11-27  166  
+33253d9e01d405 Thomas Zimmermann 2023-11-27  167  	return vm_iomap_memory(vma, start, len);
+33253d9e01d405 Thomas Zimmermann 2023-11-27  168  }
+33253d9e01d405 Thomas Zimmermann 2023-11-27  169  EXPORT_SYMBOL(fb_io_mmap);
+33253d9e01d405 Thomas Zimmermann 2023-11-27  170  
 
--Saravana
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
