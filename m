@@ -1,210 +1,98 @@
-Return-Path: <linux-kernel+bounces-75747-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 947D885EE60
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:58:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E09285EE64
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 02:00:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35CECB2460B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:58:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 282BA283E2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:00:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E972713AC3;
-	Thu, 22 Feb 2024 00:58:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5157511C83;
+	Thu, 22 Feb 2024 01:00:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FQI3yFBo"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ogw8MftI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64CEB111A1
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:58:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F8CA28EF;
+	Thu, 22 Feb 2024 01:00:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708563482; cv=none; b=N/PeaFHCaU21qQqPsEldYxeKLjy99262p/aWFEPOsniefoAVWgx1wT3wkW9Rd7NxCRayGRzYRhZYVTordllGf547xMeeMgbAq2ORVCaTrJ36THBNpy8oxq6ZMEiOnLTS9NDBaFnmY3GrO018G3OylLgtUKB45ahQqaUTHYUiD10=
+	t=1708563625; cv=none; b=rk0wrZGw5sgMLM0GwwIcLeyuUGIxzSw6L5ZxJASl5rZsRA1TY5uZwC9dfOz0BIixmPs+ykw7dFS8iyNG4kdlANCvo92x7ipzE/IQbwv8iARBKcUUM7D01F+0DUPAmdJMujfpyKaXRfPBoO+UlC99enQL66znMRS7R+WXOTG7GKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708563482; c=relaxed/simple;
-	bh=bspwEmj9ztDC3prfWzHxoOOULFAJ2sC2HzPuV2/nx/c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lBQt2+VUMz+vB8N3JqEiGaJhIQU1U1sNXJnr9Lw22OHkFPJGy8yVdPmOdZUbHTj0XZ+2BajVkH10QfK/892aKPqUebdf4PK0TQGR0y3mrs54agC+lZWg+EzlnVcEPWymlnNhl1eYT+76fMd19akuu73dxGnmGUSz6sPLwlYWius=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=FQI3yFBo; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dc0d11d1b7so28419005ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:58:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708563480; x=1709168280; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ulpOkHFvivSSE+e2M3yzbCAjenVPYV9xC3Luo/BV0yQ=;
-        b=FQI3yFBo2hSzyL+RI9F4txpxG1nXYoWK0F5XiZbchbvgJ1FKLK0Mqb6g2vfPmuPY0o
-         jxMpNMiNXVAQmeZs+EChJ1bIf7LCaMYzzzFxcpEPD7N+wHS3MVYxsdyNMJnazAsNlsAN
-         DGp/CHy4Nf+K/MMUextxwk4Ryy1z05JEJV0Ec=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708563480; x=1709168280;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ulpOkHFvivSSE+e2M3yzbCAjenVPYV9xC3Luo/BV0yQ=;
-        b=GxzmUAesivkT9sVU11SzR6aOnPijH7fKjVsvhButLZ1xEuY6MvK+QvvW3zQtuZopuy
-         fZCBVcvZE+7Z/G1PBvYgo3L50eKM77cn/J46+FG7n7/JgOdu0hPBLz4nmxUwI5ErZwBv
-         vxJ2AuI7ylbFLPjv3f9ANCDF7XNSNVOnd0NEtHhumpOoVhXhUmFSBZ7BYVAmlyrdF801
-         pp5P+xVgjpcFKsHziH892jRoxKGPwty42nhZ+fmxBkLchI+6js4Hg8hnIS2aifc3mSOs
-         mS8fPyRUzItCj9F6YWEMEdjd8IZj7HJwYpT6uxIng0JRd/G/Mo+ycDRAQp3Vv1sCPcYk
-         a9+g==
-X-Forwarded-Encrypted: i=1; AJvYcCVS6hE8wXRkA2uX5ZMSLSTLP69C6w1m6rG/UDaJvj48k7mXvjlfqJVfIQxBIX5gnIrqxX0tYltlUZHnSlHdT1vBcdNgSMFC882JCaNC
-X-Gm-Message-State: AOJu0Yw6Ja30cIQQbWxkG3Tju32D+qh311Zcj3CjjL7WvUfdjp8f/3w9
-	vXJAkVC3FxCj/4bqNNFQ138fBGKS2B1vfhLk0EWHO243Gxzvk0S5M/Lir1EIBg==
-X-Google-Smtp-Source: AGHT+IE07ndtCmucLw+AwElpuaWlFxCXEKAdQ2SXPUsu8K/z1cEru3443BCr7LS4IH8cJcRmaUmXqA==
-X-Received: by 2002:a17:902:7ed0:b0:1d9:a4bb:29f2 with SMTP id p16-20020a1709027ed000b001d9a4bb29f2mr15732121plb.46.1708563479697;
-        Wed, 21 Feb 2024 16:57:59 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 17-20020a170902c21100b001dc23e877c9sm2736280pll.106.2024.02.21.16.57.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 16:57:59 -0800 (PST)
-Date: Wed, 21 Feb 2024 16:57:58 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
-	mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
-	roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
-	willy@infradead.org, liam.howlett@oracle.com,
-	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net,
-	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
-	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
-	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-	x86@kernel.org, peterx@redhat.com, david@redhat.com,
-	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
-	ndesaulniers@google.com, vvvvvv@google.com,
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
-	elver@google.com, dvyukov@google.com, shakeelb@google.com,
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH v4 14/36] lib: add allocation tagging support for memory
- allocation profiling
-Message-ID: <202402211656.C3644FB@keescook>
-References: <20240221194052.927623-1-surenb@google.com>
- <20240221194052.927623-15-surenb@google.com>
- <202402211449.401382D2AF@keescook>
- <4vwiwgsemga7vmahgwsikbsawjq5xfskdsssmjsfe5hn7k2alk@b6ig5v2pxe5i>
- <202402211608.41AD94094@keescook>
- <vxx2o2wdcqjkxauglu7ul52mygu4tti2i3yc2dvmcbzydvgvu2@knujflwtakni>
+	s=arc-20240116; t=1708563625; c=relaxed/simple;
+	bh=ggpfbAk/8v/uRbo53fh+Pe5sfNyqrpSgwKHDrVgb8PQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qgs1x/ig8oAq5TtvTv2CV9dll5kvw13n+/V0Svb2HBKVauPr9g4bYOh98wxUBwgqRmD+foIlB9rj0Jq0HRuZrgKf4ldoUK2gOGSf6723R0+FunUTRvNkdKktBb8SPehdkE511G1STjJyfABVInHGoVqoctrhs+RdF+xFJOhhkHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ogw8MftI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02E85C433C7;
+	Thu, 22 Feb 2024 01:00:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708563625;
+	bh=ggpfbAk/8v/uRbo53fh+Pe5sfNyqrpSgwKHDrVgb8PQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Ogw8MftII1she2XJ/vthGAOx21yXJm/UADxrQwTaBYHTGurb4Bl5WhdgC01NEjlMW
+	 uPEh4cxfQg7LdyNMO9p5RAFgIlMyDeK7naLh2PZHJPKiv8Nvovbrai68h9555iGAu+
+	 6mNBcfnYDF8p1SJgyfNqJjOba3k8AKAPse70Psxx5vwjYx5XVtVdQ5l6j5ppSe9zq8
+	 8x+MZWjstN3ehwaqktbqT07NythCCrcMTzbsl/BtagtPF0a7tA1CrbjUe9BAeSMs0O
+	 4UAj+ly3OU6rAhOZ3nH6A+/LxGb7QRSq70tk9JKZRKjmbUlCuxyjwlmhjEF49fp0+M
+	 qCC/X222RBsQg==
+Date: Wed, 21 Feb 2024 17:00:23 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc: davem@davemloft.net, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com, Andrew Lunn
+ <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
+ linux-arm-kernel@lists.infradead.org, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, Herve Codina <herve.codina@bootlin.com>,
+ Florian Fainelli <f.fainelli@gmail.com>, Heiner Kallweit
+ <hkallweit1@gmail.com>, Vladimir Oltean <vladimir.oltean@nxp.com>,
+ =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>, Jesse Brandeburg
+ <jesse.brandeburg@intel.com>, Jonathan Corbet <corbet@lwn.net>, Marek
+ =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>, Piergiorgio Beruto
+ <piergiorgio.beruto@gmail.com>, Oleksij Rempel <o.rempel@pengutronix.de>,
+ =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>, Simon Horman
+ <horms@kernel.org>, mwojtas@chromium.org
+Subject: Re: [PATCH net-next v8 08/13] netlink: specs: add ethnl PHY_GET
+ command set
+Message-ID: <20240221170023.452a01ca@kernel.org>
+In-Reply-To: <20240220184217.3689988-9-maxime.chevallier@bootlin.com>
+References: <20240220184217.3689988-1-maxime.chevallier@bootlin.com>
+	<20240220184217.3689988-9-maxime.chevallier@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <vxx2o2wdcqjkxauglu7ul52mygu4tti2i3yc2dvmcbzydvgvu2@knujflwtakni>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 21, 2024 at 07:34:44PM -0500, Kent Overstreet wrote:
-> On Wed, Feb 21, 2024 at 04:25:02PM -0800, Kees Cook wrote:
-> > On Wed, Feb 21, 2024 at 06:29:17PM -0500, Kent Overstreet wrote:
-> > > On Wed, Feb 21, 2024 at 03:05:32PM -0800, Kees Cook wrote:
-> > > > On Wed, Feb 21, 2024 at 11:40:27AM -0800, Suren Baghdasaryan wrote:
-> > > > > [...]
-> > > > > +struct alloc_tag {
-> > > > > +	struct codetag			ct;
-> > > > > +	struct alloc_tag_counters __percpu	*counters;
-> > > > > +} __aligned(8);
-> > > > > [...]
-> > > > > +#define DEFINE_ALLOC_TAG(_alloc_tag)						\
-> > > > > +	static DEFINE_PER_CPU(struct alloc_tag_counters, _alloc_tag_cntr);	\
-> > > > > +	static struct alloc_tag _alloc_tag __used __aligned(8)			\
-> > > > > +	__section("alloc_tags") = {						\
-> > > > > +		.ct = CODE_TAG_INIT,						\
-> > > > > +		.counters = &_alloc_tag_cntr };
-> > > > > [...]
-> > > > > +static inline struct alloc_tag *alloc_tag_save(struct alloc_tag *tag)
-> > > > > +{
-> > > > > +	swap(current->alloc_tag, tag);
-> > > > > +	return tag;
-> > > > > +}
-> > > > 
-> > > > Future security hardening improvement idea based on this infrastructure:
-> > > > it should be possible to implement per-allocation-site kmem caches. For
-> > > > example, we could create:
-> > > > 
-> > > > struct alloc_details {
-> > > > 	u32 flags;
-> > > > 	union {
-> > > > 		u32 size; /* not valid after __init completes */
-> > > > 		struct kmem_cache *cache;
-> > > > 	};
-> > > > };
-> > > > 
-> > > > - add struct alloc_details to struct alloc_tag
-> > > > - move the tags section into .ro_after_init
-> > > > - extend alloc_hooks() to populate flags and size:
-> > > > 	.flags = __builtin_constant_p(size) ? KMALLOC_ALLOCATE_FIXED
-> > > > 					    : KMALLOC_ALLOCATE_BUCKETS;
-> > > > 	.size = __builtin_constant_p(size) ? size : SIZE_MAX;
-> > > > - during kernel start or module init, walk the alloc_tag list
-> > > >   and create either a fixed-size kmem_cache or to allocate a
-> > > >   full set of kmalloc-buckets, and update the "cache" member.
-> > > > - adjust kmalloc core routines to use current->alloc_tag->cache instead
-> > > >   of using the global buckets.
-> > > > 
-> > > > This would get us fully separated allocations, producing better than
-> > > > type-based levels of granularity, exceeding what we have currently with
-> > > > CONFIG_RANDOM_KMALLOC_CACHES.
-> > > > 
-> > > > Does this look possible, or am I misunderstanding something in the
-> > > > infrastructure being created here?
-> > > 
-> > > Definitely possible, but... would we want this?
-> > 
-> > Yes, very very much. One of the worst and mostly unaddressed weaknesses
-> > with the kernel right now is use-after-free based type confusion[0], which
-> > depends on merged caches (or cache reuse).
-> > 
-> > This doesn't solve cross-allocator (kmalloc/page_alloc) type confusion
-> > (as terrifyingly demonstrated[1] by Jann Horn), but it does help with
-> > what has been a very common case of "use msg_msg to impersonate your
-> > target object"[2] exploitation.
-> 
-> We have a ton of code that references PAGE_SIZE and uses the page
-> allocator completely unnecessarily - that's something worth harping
-> about at conferences; if we could motivate people to clean that stuff up
-> it'd have a lot of positive effects.
-> 
-> > > That would produce a _lot_ of kmem caches
-> > 
-> > Fewer than you'd expect, but yes, there is some overhead. However,
-> > out-of-tree forks of Linux have successfully experimented with this
-> > already and seen good results[3].
-> 
-> So in that case - I don't think there's any need for a separate
-> alloc_details; we'd just add a kmem_cache * to alloc_tag and then hook
-> into the codetag init/unload path to create and destroy the kmem caches.
+On Tue, 20 Feb 2024 19:42:11 +0100 Maxime Chevallier wrote:
+> +      -
+> +        name: upstream-phy-index
+> +        type: u32
 
-Okay, sounds good. There needs to be a place to track "is this a fixed
-size or a run-time size" choice.
+The C define appears to be called:
 
-> No need to adjust the slab code either; alloc_hooks() itself could
-> dispatch to kmem_cache_alloc() instead of kmalloc() if this is in use.
+	ETHTOOL_A_PHY_UPSTREAM_INDEX,		/* u32 */
 
-Right, it'd go to either kmem_cache_alloc() directly, or to a modified
-kmalloc() that used the passed-in cache is the base for an array of sized
-buckets, rather than the global (or 16-way global) buckets.
+either it needs to gain the PHY_ or the spec needs to lose the phy-,
+otherwise C code gen gets upset:
 
-Yay for the future!
+ethtool-user.c:689:10: error: =E2=80=98ETHTOOL_A_PHY_UPSTREAM_PHY_INDEX=E2=
+=80=99 undeclared here (not in a function); did you mean =E2=80=98ETHTOOL_A=
+_PHY_UPSTREAM_INDEX=E2=80=99?
+  689 |         [ETHTOOL_A_PHY_UPSTREAM_PHY_INDEX] =3D { .name =3D "upstrea=
+m-phy-index", .type =3D YNL_PT_U32, },
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |          ETHTOOL_A_PHY_UPSTREAM_INDEX
 
--- 
-Kees Cook
+Unfortunately ethtool in the in-between state where we can auto-gen
+user space code (or rather most of it) but the uAPI header is not
+auto-generated so we need to take extra care to keep things in sync :(
 
