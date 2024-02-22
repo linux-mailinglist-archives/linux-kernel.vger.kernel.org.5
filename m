@@ -1,500 +1,296 @@
-Return-Path: <linux-kernel+bounces-76770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74FFC85FC47
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:25:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15F9285FC49
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:25:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD5901F260CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:25:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AD491C2230E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:25:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EED914C5B4;
-	Thu, 22 Feb 2024 15:24:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F33014D441;
+	Thu, 22 Feb 2024 15:25:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZCZchb6Q"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="kOjpaDuq"
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2067.outbound.protection.outlook.com [40.107.22.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEDDE1474AC;
-	Thu, 22 Feb 2024 15:24:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708615496; cv=none; b=XmpYMV4PboRlktWkYtkJ/subzUXHsTmF6PQtswI9TjEdV9qeJVRA+t3+KgniTUpQReTf/28Fesr6CpYSBDbCLnhOD1sIP3DWnbRhJ7gVnymrMQPXAmFxupT/xYuOUMd2GxCo2XYjZSxg8xaAR9/nwyy/im8zbXDxsvE3lGwm+Vg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708615496; c=relaxed/simple;
-	bh=PIuBPcgaPYP64DROgSWdjJBcFxfi8DMAGUUPjPDY8KU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uLvclCvy+teZbDuR69K9PzkpJjnrj8a3zo1m/ueY5+XliOpxWIoTV7P9UAHg1Sh9mbiT+GOQQTO2zZ902zKZx/RLicWUECMCWRy4hLvuBOnQRcIOov62u7rAQ49iYLGIT8NdzDOpLUwjIrRTfdgC2RCiepZ+4YKm3zSjoJsxEE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZCZchb6Q; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e3ffafa708so5249118b3a.1;
-        Thu, 22 Feb 2024 07:24:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708615494; x=1709220294; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=aXQfNeMLkgL8vNtlootrbSOlal3IIy+GDwI0MRVyyC8=;
-        b=ZCZchb6QwRsqlA09Bjp8kQCk+ufUG9+Q7TP+ksBUC0Kj6UY0+RrrL6qTRtBX+Fx9Vc
-         Jo4h+SnoKgOGzbVNdWhc4BRBO8oCmuGzVxCuDS9qUcar8pyAtPkB3H/kWL+zq7XDJNr7
-         Ubf7doBX338beOpmN5XxDuK/A1QLtWmrXaQ8iGAxJ7xg1dwwO5oUGa6jjmJJWBT3dTnq
-         mQm0mB3VwhFPUul/8StkxCjT0ABL/uaDjNFoADJGlb6K6xdVdLF49pCa1lr3KrVR/qBo
-         a0ZbqCsDz6EcjUFqSqlwoBXJHBlfkgfLWAIJcMwjfUwKa+vroPbppbmlEpmw87glennm
-         pVYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708615494; x=1709220294;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aXQfNeMLkgL8vNtlootrbSOlal3IIy+GDwI0MRVyyC8=;
-        b=mjZRZ1rm6sX8lW1twirzsCUuvdksgdvha3oAS56wcaN8jkDMd+4Ep2fOKKJmNymhR7
-         Cwp0YN3hMAvvr7dhXFGSb13phLNCUQ/SMAGp1hOVePaIKhsGqf5xknxl7yShkqT30dPW
-         xqHmnXMk6ZVz2ROmsaVtcQS/37RwM4Y1yPk3KNoovcWI4HBSZUrINfalTmKvjmQyBUnv
-         od2JDeKnGRU/pvGF1r0abZB1bjkCULxvpRCtr7MHmdQrWg57cGU/Ct3E7MeLM6b0nBNw
-         OAYhJr9D1Llk0vjMzr1hdhgykxTdvR1YlEEtQvfA7SuLU4YvwFoIR9vyJuoQbZ8WdKcV
-         /mFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXy6q+uzbA7a8luup9CwrG1D6svzy0fpZuazU46T9/EAyA3arogiQ+stuibvKE8W5KNSD6jSRYYIyRz76cj8FlqU+lFMIHWDO9wWCOQSPRdJZ/Tm4FJicrv0kuXr30XOEEh7EVGP/WBqLawEd3ikugg0ojifP8qRdhaDcW05Mp+6i7n8s3+3mnRpEnHzRfNgRkyxK/jE01uj+KYXRzv3s5iNTFqQlAHUsaIL5CkOqMyMiXo01jC/KIVuewL
-X-Gm-Message-State: AOJu0YwuQ1l4i0ecFOJ7mDz64dl3hDth0ch1mmqkG9XvOPF8xrvWWPem
-	9VB/3/DvkPY03Sq+kUIET2FVYLTi8NORE1WqvChLvn4wWeuSjCpo
-X-Google-Smtp-Source: AGHT+IFOCTi3dMlzjGviA7Kz3InAm5islYUdD+oRHJxhgo5nOUg6H4x7H8pBurwv2VMO/+nCHiFKIQ==
-X-Received: by 2002:a05:6a21:3994:b0:19c:a4d3:2041 with SMTP id ad20-20020a056a21399400b0019ca4d32041mr31039509pzc.42.1708615494137;
-        Thu, 22 Feb 2024 07:24:54 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id b2-20020aa78ec2000000b006e4d2cbcac8sm998069pfr.94.2024.02.22.07.24.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 07:24:53 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <4a545c16-7518-49d2-b158-7fcabe3508c5@roeck-us.net>
-Date: Thu, 22 Feb 2024 07:24:52 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D51C14A0BE;
+	Thu, 22 Feb 2024 15:25:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.67
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708615516; cv=fail; b=G0GKsZWpYk+bixxonBceI8NVLjCTyFIlWCdVKT4+Qac+3EUs5whNAo0hHsaMBfNQUTDPDRtix7YuUxMA2PsugFFSrkwbtm8vf1LolVFffCcWMu7pc4bX/WAC/Yxb2X+QDlQJF4nYTftssQMpd1ZR1TqVkxyrq8s6W2vr2pTAmVw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708615516; c=relaxed/simple;
+	bh=MOfKgJfdKcmDfxWISs4ZlXKwodmu6I/cg9/j6O++3Xw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=gDyo8Ks9GW1F87vwanC9rkpYkEUHq6mmhJS9H6rfPCHAMK2h92aDF3T02qoNZ+Cq99uzL6wwCjszjFnc7Gdy7B+MskMgsSfZrdp2evxpsIH7l+TIH4LNuIiKYTG4TXHV60B5XWEdKHwH3lCADbFyKfvYTgWsk/J+HBaBRa+o0Xo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=kOjpaDuq; arc=fail smtp.client-ip=40.107.22.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WC8wgk96sBr7paLunmteUZZXmvCEM9JOmjbMMKDFJvSadp9Et7CT08GIXiKI4UqqHabS/TPFmCy9TtK9lUteoq89GN/bSJnPpzz+CODhlUqQmzXOY7rIh2O6HUrdIGl/YQm3zqKO8X5q5Xmm/ogbsGy8SwwDnZyteCwzx48tJwg2Qi34umm2utq7pMVCX5Neb8LPIf2fU7bnvvrJLm7tGZpklhe1Pv1CPo++5yvMGXfCF0q7/QY2sATEO8fBUZ+yETqKnT7ICTUY2ofy6aileacZTOuGZPoV7ulbyPgX8DU4Url9BA3A6hHuHATe2b0i8tppONBWTn9pJ+uZZ/7t0A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=i0ZfXFodBmqU5uYzcAquknMAdhTGkUtF7UwyDC9iPHE=;
+ b=Lj5fmqbostdUTH/Y91xUnpkxR8PQJXDXvw/gifyt7DemaygMOoO7CKPpj/UoTEZT4o13P2Nhrv+K+UiYKjBNU/qGt08mIkhoAiZtaLjVHwHq32ib5PlLmf0WPVuBDd6vS1A3X+i+Oyr05bg0HQfylGBjlInINx3wVumSOOnsZKKbqT7eMyqDMJ4paCy2zyZpZE4uOigkpLaychmbJGxLTKpsGDaI/f30UIl189CKZeycKT9wGeXO9Co/goZAwy9J9om5aahpqodiFAbPdif8M2AFvGdjSj2RMBzR3lbkh90y/5jSiwq0WcaMjZtZTwQ1RvcCrzFL/HZ59oRYxaLRww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=i0ZfXFodBmqU5uYzcAquknMAdhTGkUtF7UwyDC9iPHE=;
+ b=kOjpaDuqtxpAQ5rxwAjHFOWApkCjgKpmitCIzoA5E4v9oECt6WQwzbpKn66kiLMfI6V+oR2+iqkXnqaOHFr1LVBJFy5l2vv9Ch6FqN58mNfMMVu3qPG8C+O6AM8yhgt8NpYPPZlhM1WAWfzMsdYrcizglpBpSmSSXEaDv6Mo/mY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by DBAPR04MB7253.eurprd04.prod.outlook.com (2603:10a6:10:1a2::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.37; Thu, 22 Feb
+ 2024 15:25:11 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa%7]) with mapi id 15.20.7316.018; Thu, 22 Feb 2024
+ 15:25:11 +0000
+Date: Thu, 22 Feb 2024 10:25:04 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Vinod Koul <vkoul@kernel.org>
+Cc: "open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" <dmaengine@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
+Subject: Re: [PATCH v2 1/1] dmaengine: fsl-qdma: add __iomem and struct in
+ union to fix sparse warning
+Message-ID: <ZddnUPjrsrMb7ooJ@lizhi-Precision-Tower-5810>
+References: <20240219155939.611237-1-Frank.Li@nxp.com>
+ <ZddTmwh82K6biJSx@matsya>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZddTmwh82K6biJSx@matsya>
+X-ClientProxiedBy: SJ0PR03CA0296.namprd03.prod.outlook.com
+ (2603:10b6:a03:39e::31) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] devm-helpers: Add resource managed version of mutex
- init
-Content-Language: en-US
-To: =?UTF-8?Q?Marek_Beh=C3=BAn?= <kabel@kernel.org>,
- linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
- Matti Vaittinen <mazziesaccount@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>,
- Lucas De Marchi <lucas.demarchi@intel.com>, Oded Gabbay
- <ogabbay@kernel.org>, =?UTF-8?Q?Thomas_Hellstr=C3=B6m?=
- <thomas.hellstrom@linux.intel.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Aleksandr Mezin <mezin.alexander@gmail.com>, Jean Delvare
- <jdelvare@suse.com>, Pavel Machek <pavel@ucw.cz>, Lee Jones
- <lee@kernel.org>, Sebastian Reichel <sre@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- linux-gpio@vger.kernel.org, intel-xe@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org,
- linux-leds@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-References: <20240222145838.12916-1-kabel@kernel.org>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20240222145838.12916-1-kabel@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DBAPR04MB7253:EE_
+X-MS-Office365-Filtering-Correlation-Id: d988e645-da86-459d-f210-08dc33ba757c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	hGabDC48yYlSaVOH1fIMxKGjm++N6UB+Kv/wFtimi+3g9jM2wS/djx4mJO75vN/rpcjh2FJewtGOWTFeE/Bmu+yI/1GBRWuymmKDJY7QZ8K4aNWZkyp+vYf5LbRtIryshl17qCFNWrC2onM7jFo58DTp3sM1/JaVF6v1dckDJUkDPfMeh32MXRhfeGy1/FZIPit75WP0P4ToGpnO4R7ESMsNj2zADlGAsqvCvv9HN/IgfDWRjnjc4f7n7z4GkyO/r8sJ6myCDpAAiB57Sa03kkDuKG0gSevI4XteCT0EaIGp4JvmXVsEGt4X3Q5WLWF7B9u6KYzeNvIaX+0vWMuI8UOKYk3+CR79Bheoc1bICuDd1s/9EPewDrGNI7J0S3OZDG76m0DZ2KJj1Jzm48xj+OBXvzRUqkGnCP84RAXfF/7sOPNMWAHPWuu/9gZRj43bXL06qBOlYjWwp2VXIGLB/1TvyaQyZi02kOO6P7+q15PO/qVfUKtl3ePdrNzofiWcoo/tnEhVC1vpnRhHZwq1dXUbk0TMGRimbASRVdD7iaa5ErR1F5Bb1x/LPLbwFum31k191g9Bih1NA/1XFnKzhI4PpHCf/z8zJ1b/xOKwOAU=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(230273577357003)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Q2VkVktsOUkvU1lBRmZEVmUxcUZXRmRndzYvRkN0ZnZvd2JjK0IvTnlNY1VN?=
+ =?utf-8?B?TWY0S1c1VzBhd3ZEdy9RTTJBUVJsdkNZTXZ4S29nY2RmK3ZGWERSWW51QW90?=
+ =?utf-8?B?ejlONWJVeDZnT25pWGhVVTJldFpXbElMaTVsYzlkcEdvZEpJeFcwY2ZyVE1K?=
+ =?utf-8?B?Rm0yNXpNZ3d0aDdLSnVnOHJ1aGFoYkpEa0RTVnhyUVdTbGtuckhUekZxYUtk?=
+ =?utf-8?B?YUR2ZURrWjJXRkhwcFJxTU8wL2NFSE1VV1pkcjMrbitiUFV6RUI3bTk1OXp4?=
+ =?utf-8?B?UWd1elNwbndUQ2RXenlwZWdqeEJTaFlwcVJ6UStZaVN1N05SRThZZlh4Z3lB?=
+ =?utf-8?B?c1Z2UlVDWUtVSEEzSnhmNWRVK0ZZa3hXMlVibXpLdmovZUJTaSs5b2VaTzNw?=
+ =?utf-8?B?aXp4dWxKbTdLM2xWL212amVlMG02c2dQakhtNDZhMklYdHRHT2ZYK2RiY3Np?=
+ =?utf-8?B?K0NRclo3K1BWQkp5SnkyczdLNnE4YVRJWWtLZUNCUGpWZ3dYYjdRMnUzeXRj?=
+ =?utf-8?B?dXEyaCtDWkQvYUFpQjdzeVgveTQ4THZWNU9xSUlzN0VWS0hxdldlcE1SZHBZ?=
+ =?utf-8?B?VWJiYUZ4Q1RReGQrSkhoazdDemx3L2dLZ2VxWW5mUWdxdGg0L0I1b3huMGcv?=
+ =?utf-8?B?a3NPdXlpbVVrVmxuOExIWjFNcEpvV2NFdENyT1Zkd2RjQkVqQkk1TVdsYzgz?=
+ =?utf-8?B?d2I2QWpKTnluRFErei9uaU1qZi9pNHBhVVNGa3VqaFlRREk4aDBjaGdGWWFF?=
+ =?utf-8?B?VFQ0RkJhaGpmeEcrdTJwNDN4WEdIVXJHdHRoR0pkYVdaRHlpQWpseEtoSERw?=
+ =?utf-8?B?UG1sNU9WRkNMeHBPbnVuVXJGeDZjTnJBNDVkR0JqNzBiU2RSR08wZ0RESXRM?=
+ =?utf-8?B?WHVzN1BLRzlkelZnMWlpblZ1cjlXM1ZnUGRvTWE1S1ZsSTVXbml2VDNGRWdN?=
+ =?utf-8?B?S09HbGxnZUZHNno2cGpNdFdpQlZ6WVB5RFFKNjBVdDFrcGg2SVFURWpQaG80?=
+ =?utf-8?B?UUUzK3BYUm8vVXpmTGlwQlRzanpTTTVkQytZZFFBcEFsWXF6Um9MTzFickhH?=
+ =?utf-8?B?Q2VnWmo2SXltRGFoL3dXUmlWY09HMmVRMm5HQkJJR3hGMlI4U0ZOaUk0cEMr?=
+ =?utf-8?B?SzJPSUVTb2VPa3loYnFXNUcwWHZVa1Rtek45RXlnVEtpVXM5QVh0c2RzQ0RJ?=
+ =?utf-8?B?MFEwb1RzWDVIeFFpNmdHRVVzQ0pZTWdBMG50aXV1MXNTTjRBdEo4QmRoV1h4?=
+ =?utf-8?B?TzNuOFBFZFBJMDZPcXdrcmR2MjNOb0gwREIwWlpxWC9TVFJWNHJ6S3k1QmE1?=
+ =?utf-8?B?QkZzc2cyYllmKzZ1VE50T1pjT29FK2JkUzF5VzE5dGYyRDZVRGZqS0hEN2sy?=
+ =?utf-8?B?QU5hdVpjREwvbnJtaDQxc3MwYVhZR2lNVUxGSldRZk55R1Jhd2I5VyswbUlR?=
+ =?utf-8?B?SUhNdjEzdHZlZ1J6cDBKZUxTWTBGRnV2ZW9OS3ZIRHZTb1AxUlpOWU51azYr?=
+ =?utf-8?B?YTlFZ2RUbnNleVZvMDZid01jalpuT3Z2cnJ2TVpyRTYzb01jR2lUVmlzZm9L?=
+ =?utf-8?B?YWVDM0txU3hFeFlGYUZVZHZ0YlZkUGJYdVdiYVhrK1h1RzNHMGFFVFF5djFo?=
+ =?utf-8?B?a2Y1MlRFOUNWWjZ2K3IzLzNFQTJCMWdmc21GdjVOTVd0NGp1cnhSZVAvdUU5?=
+ =?utf-8?B?SVFTS0VnZC9xdnFQMDZaRUhRQmYzS3FMS3F1OGhObitOS0pvOHRjNTl0K29h?=
+ =?utf-8?B?MHFwamZRVzhxdmRGYmpjTVFDZ096V3o5TnR3dGxaSjlON3o0bGhXUnVXMWw2?=
+ =?utf-8?B?N3VOTGpkNkZ2UnFCbEcrL3hPK3hTczlNWVM2VkxNeGY2QUk0YmhwYklDZVNx?=
+ =?utf-8?B?WlpDR0hOM3ZGbjJZS2owWlZRTzZuL3pVSEwrenVBTjMyWG80ME54c2ZXOFZZ?=
+ =?utf-8?B?UmViQ2V3Y2l0Y1cySUNWSlUrM01JOXRtVHZ2MjV5dHh4L0ZLZzVueVlvSXB2?=
+ =?utf-8?B?endmSjFVclpxNkZZZWtqSGhkOWFuTDFWVTU5TDRkR3ZSdmNzRWliVG1COE9K?=
+ =?utf-8?B?OXJjanV4MkFYcHRBTGlVZ3IrNXExS0tlVXRUQUlVMFdGY1hCZVhqYXQvZ1l3?=
+ =?utf-8?Q?KXl9o51s2Vso0c8TaUVQj/uy4?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d988e645-da86-459d-f210-08dc33ba757c
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2024 15:25:10.9614
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xS9XA8OgXOBo68ZWwQ29LlwsooDozW5kELunupSyGTzJLFq4QP5MaZSUk1uOyYp7knbQM1xAKtav6q9dbU4Rew==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7253
 
-On 2/22/24 06:58, Marek Behún wrote:
-> A few drivers are doing resource-managed mutex initialization by
-> implementing ad-hoc one-liner mutex dropping functions and using them
-> with devm_add_action_or_reset(). Help drivers avoid these repeated
-> one-liners by adding managed version of mutex initialization.
+On Thu, Feb 22, 2024 at 07:30:59PM +0530, Vinod Koul wrote:
+> On 19-02-24, 10:59, Frank Li wrote:
+> > Fix below sparse warnings.
 > 
-> Use the new function devm_mutex_init() in the following drivers:
->    drivers/gpio/gpio-pisosr.c
->    drivers/gpio/gpio-sim.c
->    drivers/gpu/drm/xe/xe_hwmon.c
->    drivers/hwmon/nzxt-smart2.c
->    drivers/leds/leds-is31fl319x.c
->    drivers/power/supply/mt6370-charger.c
->    drivers/power/supply/rt9467-charger.c
+> This does not apply for me, can you rebase
+
+Which branch do you try to apply?
+This one is fix warnings in "fixes" branch, commit
+https://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git/commit/?h=fixes&id=9d739bccf261dd93ec1babf82f5c5d71dd4caa3e
+
+Frank
+
 > 
-> Signed-off-by: Marek Behún <kabel@kernel.org>
-> ---
->   drivers/gpio/gpio-pisosr.c            |  9 ++-----
->   drivers/gpio/gpio-sim.c               | 12 ++--------
->   drivers/gpu/drm/xe/xe_hwmon.c         | 11 ++-------
->   drivers/hwmon/nzxt-smart2.c           |  9 ++-----
->   drivers/leds/leds-is31fl319x.c        |  9 ++-----
->   drivers/power/supply/mt6370-charger.c | 11 +--------
->   drivers/power/supply/rt9467-charger.c | 34 ++++-----------------------
->   include/linux/devm-helpers.h          | 32 +++++++++++++++++++++++++
->   8 files changed, 47 insertions(+), 80 deletions(-)
+> > 
+> > drivers/dma/fsl-qdma.c:645:50: sparse: warning: incorrect type in argument 2 (different address spaces)
+> > drivers/dma/fsl-qdma.c:645:50: sparse:    expected void [noderef] __iomem *addr
+> > drivers/dma/fsl-qdma.c:645:50: sparse:    got void
+> > 
+> > drivers/dma/fsl-qdma.c:387:15: sparse: sparse: restricted __le32 degrades to integer
+> > drivers/dma/fsl-qdma.c:390:19: sparse:     expected restricted __le64 [usertype] data
+> > drivers/dma/fsl-qdma.c:392:13: sparse:     expected unsigned int [assigned] [usertype] cmd
+> > 
+> > QDMA decriptor have below 3 kind formats. (little endian)
+> > 
+> > Compound Command Descriptor Format
+> >   ┌──────┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
+> >   │Offset│3│3│2│2│2│2│2│2│2│2│2│2│1│1│1│1│1│1│1│1│1│1│ │ │ │ │ │ │ │ │ │ │
+> >   │      │1│0│9│8│7│6│5│4│3│2│1│0│9│8│7│6│5│4│3│2│1│0│9│8│7│6│5│4│3│2│1│0│
+> >   ├──────┼─┴─┼─┴─┴─┼─┴─┴─┼─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┼─┴─┴─┴─┴─┴─┴─┴─┤
+> >   │ 0x0C │DD │  -  │QUEUE│             -                 │      ADDR     │
+> >   ├──────┼───┴─────┴─────┴───────────────────────────────┴───────────────┤
+> >   │ 0x08 │                       ADDR                                    │
+> >   ├──────┼─────┬─────────────────┬───────────────────────────────────────┤
+> >   │ 0x04 │ FMT │    OFFSET       │                   -                   │
+> >   ├──────┼─┬─┬─┴─────────────────┴───────────────────────┬───────────────┤
+> >   │      │ │S│                                           │               │
+> >   │ 0x00 │-│E│                   -                       │    STATUS     │
+> >   │      │ │R│                                           │               │
+> >   └──────┴─┴─┴───────────────────────────────────────────┴───────────────┘
+> > 
+> > Compound S/G Table Entry Format
+> >  ┌──────┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
+> >  │Offset│3│3│2│2│2│2│2│2│2│2│2│2│1│1│1│1│1│1│1│1│1│1│ │ │ │ │ │ │ │ │ │ │
+> >  │      │1│0│9│8│7│6│5│4│3│2│1│0│9│8│7│6│5│4│3│2│1│0│9│8│7│6│5│4│3│2│1│0│
+> >  ├──────┼─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┼─┴─┴─┴─┴─┴─┴─┴─┤
+> >  │ 0x0C │                      -                        │    ADDR       │
+> >  ├──────┼───────────────────────────────────────────────┴───────────────┤
+> >  │ 0x08 │                          ADDR                                 │
+> >  ├──────┼─┬─┬───────────────────────────────────────────────────────────┤
+> >  │ 0x04 │E│F│                    LENGTH                                 │
+> >  ├──────┼─┴─┴─────────────────────────────────┬─────────────────────────┤
+> >  │ 0x00 │              -                      │        OFFSET           │
+> >  └──────┴─────────────────────────────────────┴─────────────────────────┘
+> > 
+> > Source/Destination Descriptor Format
+> >   ┌──────┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
+> >   │Offset│3│3│2│2│2│2│2│2│2│2│2│2│1│1│1│1│1│1│1│1│1│1│ │ │ │ │ │ │ │ │ │ │
+> >   │      │1│0│9│8│7│6│5│4│3│2│1│0│9│8│7│6│5│4│3│2│1│0│9│8│7│6│5│4│3│2│1│0│
+> >   ├──────┼─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┤
+> >   │ 0x0C │                            CMD                                │
+> >   ├──────┼───────────────────────────────────────────────────────────────┤
+> >   │ 0x08 │                             -                                 │
+> >   ├──────┼───────────────┬───────────────────────┬───────────────────────┤
+> >   │ 0x04 │       -       │         S[D]SS        │        S[D]SD         │
+> >   ├──────┼───────────────┴───────────────────────┴───────────────────────┤
+> >   │ 0x00 │                             -                                 │
+> >   └──────┴───────────────────────────────────────────────────────────────┘
+> > 
+> > Previous code use 64bit 'data' map to 0x8 and 0xC. In little endian system
+> > CMD is high part of 64bit 'data'. It is correct by left shift 32. But in
+> > big endian system, shift left 32 will write to 0x8 position. Sparse detect
+> > this problem.
+> > 
+> > Add below field ot match 'Source/Destination Descriptor Format'.
+> > struct {
+> > 	__le32 __reserved2;
+> > 	__le32 cmd;
+> > } __packed;
+> > 
+> > Using ddf(sdf)->cmd save to correct posistion regardless endian.
+> > 
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202402081929.mggOTHaZ-lkp@intel.com/
+> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > ---
+> > 
+> > Notes:
+> >     Change from v1 to v2
+> >     - update commit message to show why add 'cmd'
+> >     
+> >     fsl-edma-common.c's build warning should not cause by this driver. which is
+> >     difference drivers. This driver will not use any code related with
+> >     fsl-edma-common.c.
+> > 
+> >  drivers/dma/fsl-qdma.c | 21 ++++++++++-----------
+> >  1 file changed, 10 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/drivers/dma/fsl-qdma.c b/drivers/dma/fsl-qdma.c
+> > index 1e3bf6f30f784..5005e138fc239 100644
+> > --- a/drivers/dma/fsl-qdma.c
+> > +++ b/drivers/dma/fsl-qdma.c
+> > @@ -161,6 +161,10 @@ struct fsl_qdma_format {
+> >  			u8 __reserved1[2];
+> >  			u8 cfg8b_w1;
+> >  		} __packed;
+> > +		struct {
+> > +			__le32 __reserved2;
+> > +			__le32 cmd;
+> > +		} __packed;
+> >  		__le64 data;
+> >  	};
+> >  } __packed;
+> > @@ -355,7 +359,6 @@ static void fsl_qdma_free_chan_resources(struct dma_chan *chan)
+> >  static void fsl_qdma_comp_fill_memcpy(struct fsl_qdma_comp *fsl_comp,
+> >  				      dma_addr_t dst, dma_addr_t src, u32 len)
+> >  {
+> > -	u32 cmd;
+> >  	struct fsl_qdma_format *sdf, *ddf;
+> >  	struct fsl_qdma_format *ccdf, *csgf_desc, *csgf_src, *csgf_dest;
+> >  
+> > @@ -384,15 +387,11 @@ static void fsl_qdma_comp_fill_memcpy(struct fsl_qdma_comp *fsl_comp,
+> >  	/* This entry is the last entry. */
+> >  	qdma_csgf_set_f(csgf_dest, len);
+> >  	/* Descriptor Buffer */
+> > -	cmd = cpu_to_le32(FSL_QDMA_CMD_RWTTYPE <<
+> > -			  FSL_QDMA_CMD_RWTTYPE_OFFSET) |
+> > -			  FSL_QDMA_CMD_PF;
+> > -	sdf->data = QDMA_SDDF_CMD(cmd);
+> > -
+> > -	cmd = cpu_to_le32(FSL_QDMA_CMD_RWTTYPE <<
+> > -			  FSL_QDMA_CMD_RWTTYPE_OFFSET);
+> > -	cmd |= cpu_to_le32(FSL_QDMA_CMD_LWC << FSL_QDMA_CMD_LWC_OFFSET);
+> > -	ddf->data = QDMA_SDDF_CMD(cmd);
+> > +	sdf->cmd = cpu_to_le32((FSL_QDMA_CMD_RWTTYPE << FSL_QDMA_CMD_RWTTYPE_OFFSET) |
+> > +			       FSL_QDMA_CMD_PF);
+> > +
+> > +	ddf->cmd = cpu_to_le32((FSL_QDMA_CMD_RWTTYPE << FSL_QDMA_CMD_RWTTYPE_OFFSET) |
+> > +			       (FSL_QDMA_CMD_LWC << FSL_QDMA_CMD_LWC_OFFSET));
+> >  }
+> >  
+> >  /*
+> > @@ -626,7 +625,7 @@ static int fsl_qdma_halt(struct fsl_qdma_engine *fsl_qdma)
+> >  
+> >  static int
+> >  fsl_qdma_queue_transfer_complete(struct fsl_qdma_engine *fsl_qdma,
+> > -				 void *block,
+> > +				 __iomem void *block,
+> >  				 int id)
+> >  {
+> >  	bool duplicate;
+> > -- 
+> > 2.34.1
 > 
-> diff --git a/drivers/gpio/gpio-pisosr.c b/drivers/gpio/gpio-pisosr.c
-> index e3013e778e15..dddbf37e855f 100644
-> --- a/drivers/gpio/gpio-pisosr.c
-> +++ b/drivers/gpio/gpio-pisosr.c
-> @@ -7,6 +7,7 @@
->   #include <linux/bitmap.h>
->   #include <linux/bitops.h>
->   #include <linux/delay.h>
-> +#include <linux/devm-helpers.h>
->   #include <linux/gpio/consumer.h>
->   #include <linux/gpio/driver.h>
->   #include <linux/module.h>
-> @@ -116,11 +117,6 @@ static const struct gpio_chip template_chip = {
->   	.can_sleep		= true,
->   };
->   
-> -static void pisosr_mutex_destroy(void *lock)
-> -{
-> -	mutex_destroy(lock);
-> -}
-> -
->   static int pisosr_gpio_probe(struct spi_device *spi)
->   {
->   	struct device *dev = &spi->dev;
-> @@ -147,8 +143,7 @@ static int pisosr_gpio_probe(struct spi_device *spi)
->   		return dev_err_probe(dev, PTR_ERR(gpio->load_gpio),
->   				     "Unable to allocate load GPIO\n");
->   
-> -	mutex_init(&gpio->lock);
-> -	ret = devm_add_action_or_reset(dev, pisosr_mutex_destroy, &gpio->lock);
-> +	ret = devm_mutex_init(dev, &gpio->lock);
->   	if (ret)
->   		return ret;
->   
-> diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
-> index c4106e37e6db..fcfcaa4efe70 100644
-> --- a/drivers/gpio/gpio-sim.c
-> +++ b/drivers/gpio/gpio-sim.c
-> @@ -12,6 +12,7 @@
->   #include <linux/completion.h>
->   #include <linux/configfs.h>
->   #include <linux/device.h>
-> +#include <linux/devm-helpers.h>
->   #include <linux/err.h>
->   #include <linux/gpio/consumer.h>
->   #include <linux/gpio/driver.h>
-> @@ -307,13 +308,6 @@ static ssize_t gpio_sim_sysfs_pull_store(struct device *dev,
->   	return len;
->   }
->   
-> -static void gpio_sim_mutex_destroy(void *data)
-> -{
-> -	struct mutex *lock = data;
-> -
-> -	mutex_destroy(lock);
-> -}
-> -
->   static void gpio_sim_put_device(void *data)
->   {
->   	struct device *dev = data;
-> @@ -457,9 +451,7 @@ static int gpio_sim_add_bank(struct fwnode_handle *swnode, struct device *dev)
->   	if (ret)
->   		return ret;
->   
-> -	mutex_init(&chip->lock);
-> -	ret = devm_add_action_or_reset(dev, gpio_sim_mutex_destroy,
-> -				       &chip->lock);
-> +	ret = devm_mutex_init(dev, &chip->lock);
->   	if (ret)
->   		return ret;
->   
-> diff --git a/drivers/gpu/drm/xe/xe_hwmon.c b/drivers/gpu/drm/xe/xe_hwmon.c
-> index 174ed2185481..bb88ae1c196c 100644
-> --- a/drivers/gpu/drm/xe/xe_hwmon.c
-> +++ b/drivers/gpu/drm/xe/xe_hwmon.c
-> @@ -3,6 +3,7 @@
->    * Copyright © 2023 Intel Corporation
->    */
->   
-> +#include <linux/devm-helpers.h>
->   #include <linux/hwmon-sysfs.h>
->   #include <linux/hwmon.h>
->   #include <linux/types.h>
-> @@ -729,13 +730,6 @@ xe_hwmon_get_preregistration_info(struct xe_device *xe)
->   		xe_hwmon_energy_get(hwmon, &energy);
->   }
->   
-> -static void xe_hwmon_mutex_destroy(void *arg)
-> -{
-> -	struct xe_hwmon *hwmon = arg;
-> -
-> -	mutex_destroy(&hwmon->hwmon_lock);
-> -}
-> -
->   void xe_hwmon_register(struct xe_device *xe)
->   {
->   	struct device *dev = xe->drm.dev;
-> @@ -751,8 +745,7 @@ void xe_hwmon_register(struct xe_device *xe)
->   
->   	xe->hwmon = hwmon;
->   
-> -	mutex_init(&hwmon->hwmon_lock);
-> -	if (devm_add_action_or_reset(dev, xe_hwmon_mutex_destroy, hwmon))
-> +	if (devm_mutex_init(dev, &hwmon->hwmon_lock))
->   		return;
->   
->   	/* primary GT to access device level properties */
-> diff --git a/drivers/hwmon/nzxt-smart2.c b/drivers/hwmon/nzxt-smart2.c
-> index 7aa586eb74be..00bc89607673 100644
-> --- a/drivers/hwmon/nzxt-smart2.c
-> +++ b/drivers/hwmon/nzxt-smart2.c
-> @@ -5,6 +5,7 @@
->    * Copyright (c) 2021 Aleksandr Mezin
->    */
->   
-> +#include <linux/devm-helpers.h>
->   #include <linux/hid.h>
->   #include <linux/hwmon.h>
->   #include <linux/math.h>
-> @@ -721,11 +722,6 @@ static int __maybe_unused nzxt_smart2_hid_reset_resume(struct hid_device *hdev)
->   	return init_device(drvdata, drvdata->update_interval);
->   }
->   
-> -static void mutex_fini(void *lock)
-> -{
-> -	mutex_destroy(lock);
-> -}
-> -
->   static int nzxt_smart2_hid_probe(struct hid_device *hdev,
->   				 const struct hid_device_id *id)
->   {
-> @@ -741,8 +737,7 @@ static int nzxt_smart2_hid_probe(struct hid_device *hdev,
->   
->   	init_waitqueue_head(&drvdata->wq);
->   
-> -	mutex_init(&drvdata->mutex);
-> -	ret = devm_add_action_or_reset(&hdev->dev, mutex_fini, &drvdata->mutex);
-> +	ret = devm_mutex_init(&hdev->dev, &drvdata->mutex);
->   	if (ret)
->   		return ret;
->   
-> diff --git a/drivers/leds/leds-is31fl319x.c b/drivers/leds/leds-is31fl319x.c
-> index 66c65741202e..e9d7cf6a386c 100644
-> --- a/drivers/leds/leds-is31fl319x.c
-> +++ b/drivers/leds/leds-is31fl319x.c
-> @@ -8,6 +8,7 @@
->    * effect LEDs.
->    */
->   
-> +#include <linux/devm-helpers.h>
->   #include <linux/err.h>
->   #include <linux/i2c.h>
->   #include <linux/leds.h>
-> @@ -495,11 +496,6 @@ static inline int is31fl3196_db_to_gain(u32 dezibel)
->   	return dezibel / IS31FL3196_AUDIO_GAIN_DB_STEP;
->   }
->   
-> -static void is31f1319x_mutex_destroy(void *lock)
-> -{
-> -	mutex_destroy(lock);
-> -}
-> -
->   static int is31fl319x_probe(struct i2c_client *client)
->   {
->   	struct is31fl319x_chip *is31;
-> @@ -515,8 +511,7 @@ static int is31fl319x_probe(struct i2c_client *client)
->   	if (!is31)
->   		return -ENOMEM;
->   
-> -	mutex_init(&is31->lock);
-> -	err = devm_add_action_or_reset(dev, is31f1319x_mutex_destroy, &is31->lock);
-> +	err = devm_mutex_init(dev, &is31->lock);
->   	if (err)
->   		return err;
->   
-> diff --git a/drivers/power/supply/mt6370-charger.c b/drivers/power/supply/mt6370-charger.c
-> index e24fce087d80..fa0517d0352d 100644
-> --- a/drivers/power/supply/mt6370-charger.c
-> +++ b/drivers/power/supply/mt6370-charger.c
-> @@ -766,13 +766,6 @@ static int mt6370_chg_init_psy(struct mt6370_priv *priv)
->   	return PTR_ERR_OR_ZERO(priv->psy);
->   }
->   
-> -static void mt6370_chg_destroy_attach_lock(void *data)
-> -{
-> -	struct mutex *attach_lock = data;
-> -
-> -	mutex_destroy(attach_lock);
-> -}
-> -
->   static void mt6370_chg_destroy_wq(void *data)
->   {
->   	struct workqueue_struct *wq = data;
-> @@ -900,9 +893,7 @@ static int mt6370_chg_probe(struct platform_device *pdev)
->   	if (ret)
->   		return dev_err_probe(dev, ret, "Failed to init psy\n");
->   
-> -	mutex_init(&priv->attach_lock);
-> -	ret = devm_add_action_or_reset(dev, mt6370_chg_destroy_attach_lock,
-> -				       &priv->attach_lock);
-> +	ret = devm_mutex_init(dev, &priv->attach_lock);
->   	if (ret)
->   		return dev_err_probe(dev, ret, "Failed to init attach lock\n");
->   
-> diff --git a/drivers/power/supply/rt9467-charger.c b/drivers/power/supply/rt9467-charger.c
-> index fdfdc83ab045..84f07c22077f 100644
-> --- a/drivers/power/supply/rt9467-charger.c
-> +++ b/drivers/power/supply/rt9467-charger.c
-> @@ -10,6 +10,7 @@
->   #include <linux/bitfield.h>
->   #include <linux/completion.h>
->   #include <linux/delay.h>
-> +#include <linux/devm-helpers.h>
->   #include <linux/gpio/consumer.h>
->   #include <linux/i2c.h>
->   #include <linux/interrupt.h>
-> @@ -1149,27 +1150,6 @@ static int rt9467_reset_chip(struct rt9467_chg_data *data)
->   	return regmap_field_write(data->rm_field[F_RST], 1);
->   }
->   
-> -static void rt9467_chg_destroy_adc_lock(void *data)
-> -{
-> -	struct mutex *adc_lock = data;
-> -
-> -	mutex_destroy(adc_lock);
-> -}
-> -
-> -static void rt9467_chg_destroy_attach_lock(void *data)
-> -{
-> -	struct mutex *attach_lock = data;
-> -
-> -	mutex_destroy(attach_lock);
-> -}
-> -
-> -static void rt9467_chg_destroy_ichg_ieoc_lock(void *data)
-> -{
-> -	struct mutex *ichg_ieoc_lock = data;
-> -
-> -	mutex_destroy(ichg_ieoc_lock);
-> -}
-> -
->   static void rt9467_chg_complete_aicl_done(void *data)
->   {
->   	struct completion *aicl_done = data;
-> @@ -1222,21 +1202,15 @@ static int rt9467_charger_probe(struct i2c_client *i2c)
->   	if (ret)
->   		return dev_err_probe(dev, ret, "Failed to add irq chip\n");
->   
-> -	mutex_init(&data->adc_lock);
-> -	ret = devm_add_action_or_reset(dev, rt9467_chg_destroy_adc_lock,
-> -				       &data->adc_lock);
-> +	ret = devm_mutex_init(dev, &data->adc_lock);
->   	if (ret)
->   		return dev_err_probe(dev, ret, "Failed to init ADC lock\n");
->   
-> -	mutex_init(&data->attach_lock);
-> -	ret = devm_add_action_or_reset(dev, rt9467_chg_destroy_attach_lock,
-> -				       &data->attach_lock);
-> +	ret = devm_mutex_init(dev, &data->attach_lock);
->   	if (ret)
->   		return dev_err_probe(dev, ret, "Failed to init attach lock\n");
->   
-> -	mutex_init(&data->ichg_ieoc_lock);
-> -	ret = devm_add_action_or_reset(dev, rt9467_chg_destroy_ichg_ieoc_lock,
-> -				       &data->ichg_ieoc_lock);
-> +	ret = devm_mutex_init(dev, &data->ichg_ieoc_lock);
->   	if (ret)
->   		return dev_err_probe(dev, ret, "Failed to init ICHG/IEOC lock\n");
->   
-> diff --git a/include/linux/devm-helpers.h b/include/linux/devm-helpers.h
-> index 74891802200d..70640fb96117 100644
-> --- a/include/linux/devm-helpers.h
-> +++ b/include/linux/devm-helpers.h
-> @@ -24,6 +24,8 @@
->    */
->   
->   #include <linux/device.h>
-> +#include <linux/kconfig.h>
-> +#include <linux/mutex.h>
->   #include <linux/workqueue.h>
->   
->   static inline void devm_delayed_work_drop(void *res)
-> @@ -76,4 +78,34 @@ static inline int devm_work_autocancel(struct device *dev,
->   	return devm_add_action(dev, devm_work_drop, w);
->   }
->   
-> +static inline void devm_mutex_drop(void *res)
-> +{
-> +	mutex_destroy(res);
-> +}
-> +
-> +/**
-> + * devm_mutex_init - Resource managed mutex initialization
-> + * @dev:	Device which lifetime mutex is bound to
-> + * @lock:	Mutex to be initialized (and automatically destroyed)
-> + *
-> + * Initialize mutex which is automatically destroyed when driver is detached.
-> + * A few drivers initialize mutexes which they want destroyed before driver is
-> + * detached, for debugging purposes.
-> + * devm_mutex_init() can be used to omit the explicit mutex_destroy() call when
-> + * driver is detached.
-> + */
-> +static inline int devm_mutex_init(struct device *dev, struct mutex *lock)
-> +{
-> +	mutex_init(lock);
-> +
-> +	/*
-> +	 * mutex_destroy() is an empty function if CONFIG_DEBUG_MUTEXES is
-> +	 * disabled. No need to allocate an action in that case.
-> +	 */
-> +	if (IS_ENABLED(CONFIG_DEBUG_MUTEXES))
-> +		return devm_add_action_or_reset(dev, devm_mutex_drop, lock);
-> +	else
-
-else after return is unnecessary.
-
-> +		return 0;
-> +}
-> +
->   #endif
-
+> -- 
+> ~Vinod
 
