@@ -1,126 +1,168 @@
-Return-Path: <linux-kernel+bounces-75848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77B2285EFCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:28:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EC5685EFD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 04:28:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F4F4283504
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:28:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BF232834BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 03:28:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22ABB1755F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 914F61775C;
 	Thu, 22 Feb 2024 03:28:10 +0000 (UTC)
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87A20101EC
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 03:28:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6727168BD;
+	Thu, 22 Feb 2024 03:28:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708572489; cv=none; b=DFiRE25lzsAusR45qj8WFVf2QSyyGYgr9GwjkV4ROOjndlvurHe46f3uvqNVIQ3HTCoAerbQxOjZupV2o+AgRxBNcVA6uddAClSPFB1OueVZawWbVj/kVfdwoVL9hI0onjxrdgSBVTajjZkR0hBkx8LWeInGqQi3x0RFPM58484=
+	t=1708572490; cv=none; b=aLko0rUzwrEjGfHVrFcUdSQ/MAgTd0x0lzYHn7vEn1TdTbGpttoTrw5JQY/niB9LsRGXFIaGXtucTvfY73f0K9kqaVSJXa/XBKTTukR3pIAXIwI0l+WCGBhyaWn8g12rNkuUTFWFVNMBxxwQUoJtDs1N6uyx73UYc/5j3qo2uhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708572489; c=relaxed/simple;
-	bh=EFb+iPmzBjn4e4oMMmuJpJ2BjLmuvCUl4VH8ya1lqgA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nArcPqSVO0VpS1we1iLqpAryjMxWoTVtssmIGIUh/bNZILPEFG8qd/9yRPTbTgLQduIRNjSt778sBaJDY5LK/zpds+f0ivOpGngXW9Yc5gLpSCwzHp/P0OmEBnH5ctL4vuOy3NP+4TftzrmuhybqamDgypI89khjp4mZOOQW6sk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d85ff70000001748-9b-65d6bf41bf6c
-Date: Thu, 22 Feb 2024 12:27:56 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Yu Zhao <yuzhao@google.com>, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, kernel_team@skhynix.com
-Subject: Re: [PATCH] mm, vmscan: Don't turn on cache_trim_mode at the highest
- scan priority
-Message-ID: <20240222032756.GA71504@system.software.com>
-References: <20240208061825.36640-1-byungchul@sk.com>
- <CAOUHufYUC-oWePfqbbmm15Ue9QLfPg1G2nhXn6iSX_A460O6Uw@mail.gmail.com>
- <20240216072434.GC32626@system.software.com>
- <CAOUHufbGQ_ZFLhVSPG78pbMtvcfZ5v-E3oRdfZDP2mtHtkrPVg@mail.gmail.com>
- <20240221143013.d130b310a1306dfed0f6603a@linux-foundation.org>
+	s=arc-20240116; t=1708572490; c=relaxed/simple;
+	bh=g1rTH16jjRqZ9k/FyIw+Uz8qJkzVdUUTrfr37YwDLcM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=k8ZygTG/l2uJjn2ETcxU1l1cBf59rbp5lD6+NaGnV6mw/v+kgKcwzXcZ7ad/vXqiYXYgKGySuyLQg8HM/7OGDr4NhCEDFKgquQamdSbD0JSr/+2DsdnQz++eBzkSNf1KHb5C4nZejfoTiEAO3OR25efyoz6QVdXzqkv88jII+jE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.2.5.213])
+	by gateway (Coremail) with SMTP id _____8BxefBFv9ZlVwoQAA--.42484S3;
+	Thu, 22 Feb 2024 11:28:05 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.2.5.213])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8CxrhNDv9Zl+nM+AA--.41033S2;
+	Thu, 22 Feb 2024 11:28:03 +0800 (CST)
+From: Bibo Mao <maobibo@loongson.cn>
+To: Huacai Chen <chenhuacai@kernel.org>,
+	Tianrui Zhao <zhaotianrui@loongson.cn>,
+	Juergen Gross <jgross@suse.com>,
+	Paolo Bonzini <pbonzini@redhat.com>
+Cc: loongarch@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	virtualization@lists.linux.dev,
+	kvm@vger.kernel.org
+Subject: [PATCH v5 0/6] LoongArch: Add pv ipi support on LoongArch VM
+Date: Thu, 22 Feb 2024 11:27:57 +0800
+Message-Id: <20240222032803.2177856-1-maobibo@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240221143013.d130b310a1306dfed0f6603a@linux-foundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrJLMWRmVeSWpSXmKPExsXC9ZZnoa7j/mupBvvvy1nMWb+GzeLyrjls
-	FvfW/Ge1eDfhC6sDi8eCTaUemz5NYvc4MeM3i8fnTXIBLFFcNimpOZllqUX6dglcGS/ur2Aq
-	+CxQ0Xh1OXsDYw9vFyMnh4SAicTUNT9ZYezt946C2SwCqhI3Xz9nB7HZBNQlbtz4yQxiiwjo
-	Sqx6vgvMZhbIkZj8u4epi5GDQ1ggVmLpx3CQMK+AhUT7jrdArVwcQgKbmST6ZvxlgUgISpyc
-	+YQFoldd4s+8S8wgvcwC0hLL/3FAhOUlmrfOBhvPKeAtsez7HTBbVEBZ4sC240wgMyUEFrBJ
-	XD54iAXiZkmJgytusExgFJyFZMUsJCtmIayYhWTFAkaWVYxCmXlluYmZOSZ6GZV5mRV6yfm5
-	mxiBAb6s9k/0DsZPF4IPMQpwMCrx8D5gvJYqxJpYVlyZe4hRgoNZSYSXpfxKqhBvSmJlVWpR
-	fnxRaU5q8SFGaQ4WJXFeo2/lKUIC6YklqdmpqQWpRTBZJg5OqQbGOZGt8yyUT6bP4jVh2qQx
-	+xX/ZrvfD5fdXpFyJG2P++ug+unSh35MXi30sJ9314TFh7tUfJ5/Nn2r1uC15v4/z9IFmS+a
-	ua8yGO7cvzX2a0XUfwmJ7EuW/S4eF0ov3dyUsGTubH/3NSv5vtYoM/HNmPYxbeIcgecH1jTP
-	9i3tZOiwnBnweua3rUosxRmJhlrMRcWJAEOqsklsAgAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrALMWRmVeSWpSXmKPExsXC5WfdrOu4/1qqwcY9IhZz1q9hszg89ySr
-	xeVdc9gs7q35z2rxbsIXVgdWjwWbSj02fZrE7nFixm8Wj8UvPjB5fN4kF8AaxWWTkpqTWZZa
-	pG+XwJXx4v4KpoLPAhWNV5ezNzD28HYxcnJICJhIbL93lBXEZhFQlbj5+jk7iM0moC5x48ZP
-	ZhBbREBXYtXzXWA2s0COxOTfPUxdjBwcwgKxEks/hoOEeQUsJNp3vAVq5eIQEtjMJNE34y8L
-	REJQ4uTMJywQveoSf+ZdYgbpZRaQllj+jwMiLC/RvHU22HhOAW+JZd/vgNmiAsoSB7YdZ5rA
-	yDcLyaRZSCbNQpg0C8mkBYwsqxhFMvPKchMzc0z1irMzKvMyK/SS83M3MQLDdVntn4k7GL9c
-	dj/EKMDBqMTD+4DxWqoQa2JZcWXuIUYJDmYlEV6W8iupQrwpiZVVqUX58UWlOanFhxilOViU
-	xHm9wlMThATSE0tSs1NTC1KLYLJMHJxSDYycySfm6XAu0u6JDZ/aenKVgMOpXwwmE5b+Ss6X
-	3XnhSSTfJd6cijzN6YqCPzPnrVC9v8v9fQuTvZn2SectVn1iK/+d3dDoFdn7kS972d2pU732
-	M/5bfWe+p/0T32Oh+oXL5A/a3JfcxPzy1byMd8a1r7cuX5oSm2ny70j5hfLdB163OM1i/nNa
-	iaU4I9FQi7moOBEApnLRAlMCAAA=
-X-CFilter-Loop: Reflected
+X-CM-TRANSID:AQAAf8CxrhNDv9Zl+nM+AA--.41033S2
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxJw4DuF1xWw1xZw48KrWDWrX_yoWrWF1xpa
+	9rurn8Wr4rGryfZwnxt3s3urn8Jw1xG34aq3W2y3yUC3y2qFyUZr4kGryDAa4kJw4fJrW0
+	qF1rGw1ag3WUAabCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUU9Fb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r126r13M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+	AVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
+	AKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v2
+	6r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
+	CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF
+	0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
+	AIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2
+	KfnxnUUI43ZEXa7IU8sL05UUUUU==
 
-On Wed, Feb 21, 2024 at 02:30:13PM -0800, Andrew Morton wrote:
-> On Sat, 17 Feb 2024 00:11:25 -0500 Yu Zhao <yuzhao@google.com> wrote:
-> 
-> > On Fri, Feb 16, 2024 at 2:24 AM Byungchul Park <byungchul@sk.com> wrote:
-> > >
-> > > On Fri, Feb 16, 2024 at 12:55:17AM -0500, Yu Zhao wrote:
-> > > > On Thu, Feb 8, 2024 at 1:18 AM Byungchul Park <byungchul@sk.com> wrote:
-> > > > >
-> > > > > With cache_trim_mode on, reclaim logic doesn't bother reclaiming anon
-> > > > > pages. However, it should be more careful to turn on the mode because
-> > > > > it's going to prevent anon pages from reclaimed even if there are huge
-> > > > > ammount of anon pages that are very cold so should be reclaimed. Even
-> > > > > worse, that can lead kswapd_failures to be MAX_RECLAIM_RETRIES and stop
-> > > > > until direct reclaim eventually works to resume kswapd.
-> > > >
-> > > > Is a theory or something observed in the real world? If it's the
-> > > > former, would this change risk breaking existing use cases? It's the
-> > >
-> > > I faced the latter case.
-> > >
-> > > > latter, where are the performance numbers to show what it looks like
-> > > > before and after this patch?
-> > 
-> > Let me ask again: where are the performance numbers to show what it
-> > looks like before and after this patch?
-> > 
-> > > Before:
-> > >
-> > > Whenever the system meets the condition to turn on cache_trim_mode but
-> > > few cache pages to trim, kswapd fails without scanning anon pages that
-> > > are plenty and cold for sure and it retries 8 times and looks *stopped
-> > > for ever*.
-> 
-> Does "stopped for ever" mean that kswapd simply stops functioning?
+On physical machine, ipi HW uses IOCSR registers, however there is trap
+into hypervisor when vcpu accesses IOCSR registers if system is in VM
+mode. SWI is a interrupt mechanism like SGI on ARM, software can send
+interrupt to CPU, only that on LoongArch SWI can only be sent to local CPU
+now. So SWI can not used for IPI on real HW system, however it can be used
+on VM when combined with hypercall method. IPI can be sent with hypercall
+method and SWI interrupt is injected to vcpu, vcpu can treat SWI
+interrupt as IPI.
 
-Yes. kswapd stops its functioning. Even worse, after being stopped, any
-request to wake up kswapd fails until ->kswapd_failures gets reset to 0
-by direct reclaim or something.
+With PV IPI supported, there is one trap with IPI sending, however with IPI
+receiving there is no trap. with IOCSR HW ipi method, there will be one
+trap with IPI sending and two trap with ipi receiving.
 
-It's more like a bug fix than a performance improvement.
+Also IPI multicast support is added for VM, the idea comes from x86 PV ipi.
+IPI can be sent to 128 vcpus in one time. With IPI multicast support, trap
+will be reduced greatly.
 
-> If so, that's a pretty serious issue.  Please fully describe all of
-> this in the changelog.  Please also address Yu Zhao's review comments
-> and send us a v2 patch?  Thanks.
+Here is the microbenchmarck data with "perf bench futex wake" testcase on
+3C5000 single-way machine, there are 16 cpus on 3C5000 single-way machine,
+VM has 16 vcpus also. The benchmark data is ms time unit to wakeup 16 threads,
+the performance is better if data is smaller.
 
-I will post v2 with vmstat numbers between before and after.
+physical machine                     0.0176 ms
+VM original                          0.1140 ms
+VM with pv ipi patch                 0.0481 ms
 
-	Byungchul
+---
+Change in V5:
+  1. Refresh function/macro name from review comments.
+
+Change in V4:
+  1. Modfiy pv ipi hook function name call_func_ipi() and
+call_func_single_ipi() with send_ipi_mask()/send_ipi_single(), since pv
+ipi is used for both remote function call and reschedule notification.
+  2. Refresh changelog.
+
+Change in V3:
+  1. Add 128 vcpu ipi multicast support like x86
+  2. Change cpucfg base address from 0x10000000 to 0x40000000, in order
+to avoid confliction with future hw usage
+  3. Adjust patch order in this patchset, move patch
+Refine-ipi-ops-on-LoongArch-platform to the first one.
+
+Change in V2:
+  1. Add hw cpuid map support since ipi routing uses hw cpuid
+  2. Refine changelog description
+  3. Add hypercall statistic support for vcpu
+  4. Set percpu pv ipi message buffer aligned with cacheline
+  5. Refine pv ipi send logic, do not send ipi message with if there is
+pending ipi message.
+---
+Bibo Mao (6):
+  LoongArch/smp: Refine some ipi functions on LoongArch platform
+  LoongArch: KVM: Add hypercall instruction emulation support
+  LoongArch: KVM: Add cpucfg area for kvm hypervisor
+  LoongArch: Add paravirt interface for guest kernel
+  LoongArch: KVM: Add vcpu search support from physical cpuid
+  LoongArch: Add pv ipi support on LoongArch system
+
+ arch/loongarch/Kconfig                        |   9 +
+ arch/loongarch/include/asm/Kbuild             |   1 -
+ arch/loongarch/include/asm/hardirq.h          |   5 +
+ arch/loongarch/include/asm/inst.h             |   1 +
+ arch/loongarch/include/asm/irq.h              |  10 +-
+ arch/loongarch/include/asm/kvm_host.h         |  27 +++
+ arch/loongarch/include/asm/kvm_para.h         | 156 ++++++++++++++++++
+ arch/loongarch/include/asm/kvm_vcpu.h         |   1 +
+ arch/loongarch/include/asm/loongarch.h        |  11 ++
+ arch/loongarch/include/asm/paravirt.h         |  27 +++
+ .../include/asm/paravirt_api_clock.h          |   1 +
+ arch/loongarch/include/asm/smp.h              |  31 ++--
+ arch/loongarch/include/uapi/asm/Kbuild        |   2 -
+ arch/loongarch/kernel/Makefile                |   1 +
+ arch/loongarch/kernel/irq.c                   |  24 +--
+ arch/loongarch/kernel/paravirt.c              | 153 +++++++++++++++++
+ arch/loongarch/kernel/perf_event.c            |  14 +-
+ arch/loongarch/kernel/setup.c                 |   2 +
+ arch/loongarch/kernel/smp.c                   |  60 ++++---
+ arch/loongarch/kernel/time.c                  |  12 +-
+ arch/loongarch/kvm/exit.c                     | 125 ++++++++++++--
+ arch/loongarch/kvm/vcpu.c                     |  94 ++++++++++-
+ arch/loongarch/kvm/vm.c                       |  11 ++
+ 23 files changed, 676 insertions(+), 102 deletions(-)
+ create mode 100644 arch/loongarch/include/asm/kvm_para.h
+ create mode 100644 arch/loongarch/include/asm/paravirt.h
+ create mode 100644 arch/loongarch/include/asm/paravirt_api_clock.h
+ delete mode 100644 arch/loongarch/include/uapi/asm/Kbuild
+ create mode 100644 arch/loongarch/kernel/paravirt.c
+
+
+base-commit: 39133352cbed6626956d38ed72012f49b0421e7b
+-- 
+2.39.3
+
 
