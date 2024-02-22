@@ -1,52 +1,51 @@
-Return-Path: <linux-kernel+bounces-76527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B352D85F87E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:44:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5733285F87C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:44:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 684FA1F24393
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:44:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3A94282C82
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:44:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2587913328D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18E9B132C23;
 	Thu, 22 Feb 2024 12:43:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sFy86V0b"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DZVO5Fte"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3221912DD82;
-	Thu, 22 Feb 2024 12:43:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B75D12DD96;
+	Thu, 22 Feb 2024 12:43:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708605822; cv=none; b=AhTndIaOp4F094K8WoI9rd2OnR/zCxo9UGiObPQZVsnMesiPLdGWibrHaZExNdnns6o+FLnASlv0or6F5pgyTySB0DBBZOjChansKQ9GkMT9rDvMj8WfOEUbzwHeXIK451xFAOW8DgllTWaryS4bFUN3aPqLCDrtb9wGHHPb/ac=
+	t=1708605822; cv=none; b=I1Al92qMxDdFAqG7KFaueKGyU5rJBB+CA70y5VbtZ5QTt2/XpY/q6UsdzVlhfNDCYZsf9QD/OOaPyWUza+NZlw6RxidhUqRSRqcwk5tpAy18ffMu1ihiVg0UYQ5kx1aHIVue2awRAICTSRZj8WkNQT1WpZUv7zo+ijgynD9G4D0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708605822; c=relaxed/simple;
-	bh=dU0HjJgUNo33Wr86FpAaPRHjBCYGelpAaLa0iwZ1osU=;
+	bh=V1KomR4EYfJ5rWH5vbpqFhkkFyp2l4Yik0iVHegn1sc=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=IyqPoFUido0G9qRy3PY0TeNqGz1WqH4SQlKLFTbSOXhwH9089Dy1QMNv3A+lVYieF2wplJ5d9hjBEiNLO2NT2+Ftfbcx9wCcG3C9mLvPKEgbGlPPjE6S4oZamPQ8FGddbg21Z+A8UoXL8phbSApXy352Ss6xg76DBG9GDwJOJMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sFy86V0b; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C4E7DC433C7;
+	 In-Reply-To:To:Cc; b=apMMy8djqxhy2h5P4R9VQvcD/78QL7R9UxWOi1Ea3RV4ktg2OaO+57022mcEtfe+/6O+rCIozVB//zATv4hoRSCjaKDUqiJE8tAL8gzgPnP+tRmUOwTNhhckq/q31tvmxUFOrAQEhfW4qWOXDzaYQTV1TmaBdXNCZqKz+ClkgfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DZVO5Fte; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id DE46AC433B1;
 	Thu, 22 Feb 2024 12:43:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1708605821;
-	bh=dU0HjJgUNo33Wr86FpAaPRHjBCYGelpAaLa0iwZ1osU=;
+	bh=V1KomR4EYfJ5rWH5vbpqFhkkFyp2l4Yik0iVHegn1sc=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=sFy86V0bmpvV1NpzvFQ50N8T2DTKDhx4tka5nj6Usvyfllp4VKsaEBh5q5FP3gLpD
-	 UCOJOL2Mi6bYnj1Ahbex1nvB8bpxxEfhNSTiZjQ+zD1QaCTepL9jmPXRTUbe9XV8IP
-	 eHXZvsqPyZlkrQXQZN/d+sR3zqxQY0ESg7OTV8K1lAG7JR2ULp51dhcLTKv+pmgDa9
-	 ChqDuPC2EUgaSjONyFYiBHVhZE5ifmMAYTTo5BDfp2gfgnIiCoYTNbkBUPLrc4dtfn
-	 TDxSM15MG6687fUXMJNMhnNDYS2XMaccxsw7Hy0zCJ6gb8mE/NypGFFgHYjsy3jCyG
-	 Wt9b4uEtrcbFg==
+	b=DZVO5FteyniSEsuQFid7EvprD5it4sZV7nS0TgN7Ss3ZtkgFK2yI/e9GP76Ad/Aja
+	 S/uMbLeIm6JEc04UCzQEwRiEtGgsrntV+CVGeFWBNuzrvp20iGb1bF0OxWrKQy+2CB
+	 VFhVTnzi6l6pR4mI8oUj0Wa4ILwCG1NhAmKhvWspmbkzQHUIjOKjqD5MxMv4JE1yVM
+	 QGU4QLNdEH94NTkRAxzQO1qAIf6A5MuKLWggHi48FuAiONFmYsbzEgGioxgVaXM0au
+	 eUVk4weMiYCqCkPQHSlnm+3sYgmxXuoK4c6RuQg20T3EGHq0549ULUbOmJm/KfrCJl
+	 BbeoJzPax7CyQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AAEBDC48BF8;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFB88C54798;
 	Thu, 22 Feb 2024 12:43:41 +0000 (UTC)
 From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
-Date: Thu, 22 Feb 2024 20:43:21 +0800
-Subject: [PATCH net-next v4 1/6] dt-bindings: net: hisilicon-femac-mdio:
- convert to YAML
+Date: Thu, 22 Feb 2024 20:43:22 +0800
+Subject: [PATCH net-next v4 2/6] net: mdio: hisi-femac: make clock optional
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,7 +54,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240222-net-v4-1-eea68f93f090@outlook.com>
+Message-Id: <20240222-net-v4-2-eea68f93f090@outlook.com>
 References: <20240222-net-v4-0-eea68f93f090@outlook.com>
 In-Reply-To: <20240222-net-v4-0-eea68f93f090@outlook.com>
 To: Yisen Zhuang <yisen.zhuang@huawei.com>, 
@@ -70,11 +69,11 @@ To: Yisen Zhuang <yisen.zhuang@huawei.com>,
 Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
  devicetree@vger.kernel.org, Yang Xiwen <forbidden405@outlook.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708605802; l=2707;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708605802; l=720;
  i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
- bh=kBNRfWKBQ0id01gl7avKkUC4CeGpm5ZtYlqpv6WG6d8=;
- b=z8h7WVhMvCqDOAxS7nz/ePDZ0zE/t1zWZkPmj4E2Xmaa5JM686ebtGI5YHp2MZY/Y6wJwYvxI
- ryr+FCIiwAXB029JDU/DsG37u/5iCqz9IFcxqW2YtUSt1vZKTOAYk3U
+ bh=RxVNNMcUcOL8zwGYeNVp22tshMMwMwhDPBBRMx/bOA4=;
+ b=1c9dFQmaUoe8pYc+8UA7JNdtR9Upmnvh5R0mJamXsLrTU2F9PMlNqiN/8AASZ0TCUfB2qU/v7
+ j5ea6kccwz4AWFpQwwgxagmjlSrEfvdLJNm83pqxOHOEnqqC2iUFLNU
 X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
  pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
 X-Endpoint-Received:
@@ -84,98 +83,26 @@ Reply-To: <forbidden405@outlook.com>
 
 From: Yang Xiwen <forbidden405@outlook.com>
 
-For some FEMAC cores, MDIO bus is integrated to the MAC controller. So
-We don't have a dedicated MDIO bus clock.
-
-Also due to the PHY reset procedure, it's required to manage all clocks
-and resets in the MAC controller driver. MAC controller clock can not be
-shared with MDIO bus node in dts.
-
-Mark the clock optional to resolve this problem.
+The clocks are optional.
 
 Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
 ---
- .../bindings/net/hisilicon,hisi-femac-mdio.yaml    | 43 ++++++++++++++++++++++
- .../bindings/net/hisilicon-femac-mdio.txt          | 22 -----------
- 2 files changed, 43 insertions(+), 22 deletions(-)
+ drivers/net/mdio/mdio-hisi-femac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/net/hisilicon,hisi-femac-mdio.yaml b/Documentation/devicetree/bindings/net/hisilicon,hisi-femac-mdio.yaml
-new file mode 100644
-index 000000000000..ee8650ad98fc
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/hisilicon,hisi-femac-mdio.yaml
-@@ -0,0 +1,43 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/hisilicon,hisi-femac-mdio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: HiSilicon FEMAC MDIO bus
-+
-+maintainers:
-+  - Yang Xiwen <forbidden405@formail.com>
-+
-+allOf:
-+  - $ref: mdio.yaml#
-+
-+properties:
-+  compatible:
-+    const: hisilicon,hisi-femac-mdio
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    mdio@10091100 {
-+        compatible = "hisilicon,hisi-femac-mdio";
-+        reg = <0x10091100 0x20>;
-+        clocks = <&clk_mdio>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        phy@1 {
-+            reg = <1>;
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/net/hisilicon-femac-mdio.txt b/Documentation/devicetree/bindings/net/hisilicon-femac-mdio.txt
-deleted file mode 100644
-index 23a39a309d17..000000000000
---- a/Documentation/devicetree/bindings/net/hisilicon-femac-mdio.txt
-+++ /dev/null
-@@ -1,22 +0,0 @@
--Hisilicon Fast Ethernet MDIO Controller interface
--
--Required properties:
--- compatible: should be "hisilicon,hisi-femac-mdio".
--- reg: address and length of the register set for the device.
--- clocks: A phandle to the reference clock for this device.
--
--- PHY subnode: inherits from phy binding [1]
--[1] Documentation/devicetree/bindings/net/phy.txt
--
--Example:
--mdio: mdio@10091100 {
--	compatible = "hisilicon,hisi-femac-mdio";
--	reg = <0x10091100 0x10>;
--	clocks = <&crg HI3516CV300_MDIO_CLK>;
--	#address-cells = <1>;
--	#size-cells = <0>;
--
--	phy0: phy@1 {
--		reg = <1>;
--	};
--};
+diff --git a/drivers/net/mdio/mdio-hisi-femac.c b/drivers/net/mdio/mdio-hisi-femac.c
+index 6703f626ee83..a2620b200381 100644
+--- a/drivers/net/mdio/mdio-hisi-femac.c
++++ b/drivers/net/mdio/mdio-hisi-femac.c
+@@ -93,7 +93,7 @@ static int hisi_femac_mdio_probe(struct platform_device *pdev)
+ 		goto err_out_free_mdiobus;
+ 	}
+ 
+-	data->clk = devm_clk_get(&pdev->dev, NULL);
++	data->clk = devm_clk_get_optional(&pdev->dev, NULL);
+ 	if (IS_ERR(data->clk)) {
+ 		ret = PTR_ERR(data->clk);
+ 		goto err_out_free_mdiobus;
 
 -- 
 2.43.0
