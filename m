@@ -1,151 +1,93 @@
-Return-Path: <linux-kernel+bounces-76823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2955085FD22
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:54:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2D9D85FD3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:56:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6811B262D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:54:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68504B288B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 15:56:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAC7315098E;
-	Thu, 22 Feb 2024 15:54:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC0701552E8;
+	Thu, 22 Feb 2024 15:55:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=valentinobst.de header.i=kernel@valentinobst.de header.b="ZutQ0VjE"
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="PxY2RfhA"
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 245E314E2E8;
-	Thu, 22 Feb 2024 15:54:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.126.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73BD31509A7
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 15:55:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708617264; cv=none; b=fWOa5lbiIwe1WlkPK20PdcKum/JqJAhy6JEWWIjLMlgVd9DE3UMFcRS4QdILFlcfTeGzGOVoN/o8zV3/2uxPG6EMf/BaYmW4ofDD8OX/DoCciyhK/Quq8M44SH+6RJ5wUcrXc+/EdiY7uzEozTjtxzDyQ6RTty8Iy4T4ycvqzN4=
+	t=1708617322; cv=none; b=oDlgQZgbAF3063v8nzZFJPFMynz1uvD+yn5uXQnzl3b1EjTQgD1IGXxn5JDAyFwhrsco4BN9FFQEXnjOrJMgMl3O6ZbLgqaG+Jf6O92clR1d0nOGuJSCmsBYNJA3XTQcBAYWl9IWJYeeSapE/srMeox4GzqY8cQDkSXKB+rHXOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708617264; c=relaxed/simple;
-	bh=7QeTSQb/9tcAKQ4h97LCyJHM0kVqV+IqwGX4UOeNj/w=;
+	s=arc-20240116; t=1708617322; c=relaxed/simple;
+	bh=/sAuWoxygbHnz3bPYEk5pc98OZZN/efFuyFbLWL+ycI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oLEG8plK7mATVGWXtJlmyq8wJ60NtHE208b1f6C69KmuSLyu/lQgPDaR7C9hJCuCCnL4Q8ZJYKDiuiWDN/k2Aeuso88mNEnp+lNUMEx2tup/e6yqopqL0kaM1zl5F3V7W5mN2vu99i0RuXEDYc8vraon4cKKIPwi3gR9oMMsZNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de; spf=pass smtp.mailfrom=valentinobst.de; dkim=pass (2048-bit key) header.d=valentinobst.de header.i=kernel@valentinobst.de header.b=ZutQ0VjE; arc=none smtp.client-ip=212.227.126.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=valentinobst.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=valentinobst.de;
-	s=s1-ionos; t=1708617237; x=1709222037; i=kernel@valentinobst.de;
-	bh=7QeTSQb/9tcAKQ4h97LCyJHM0kVqV+IqwGX4UOeNj/w=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=ZutQ0VjE5tQotyW+XHFlbEPqulDcwN9zME0rJyO7HRMzQJjKQ27aDRKUcCKt8Xgf
-	 Dn0vOcYh45UKzqbJ/IdTsOru+xRr+bwtHS3emSwaOxTxHYeNy1/MV+7QgVL7ybt0x
-	 9QTHe+ICsbg3SZKlPZ2buO1W50eIq/0buMdJnbu3fHuvzCDx8giHZHVe6jFxjaEWc
-	 9pa7w5ZMuEhd7eoTjSWMbjg6Pgx+0KFBGPtgJoZshgh4CfpwRipvYr7X4bOR0PCmh
-	 I1XUNJe32yZWliE5uANSeLUNTzmMtg5FjCQsI/Gd+uVdJDwcLLK9rkZpUB2TWS1n6
-	 3Ak1LRWqOVytP0uzZg==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from localhost.localdomain ([95.223.130.98]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MhWx1-1qyul53K9j-00eakj; Thu, 22 Feb 2024 16:53:56 +0100
-From: Valentin Obst <kernel@valentinobst.de>
-To: laura.nao@collabora.com
-Cc: a.hindborg@samsung.com,
-	alex.gaynor@gmail.com,
-	aliceryhl@google.com,
-	benno.lossin@proton.me,
-	bjorn3_gh@protonmail.com,
-	boqun.feng@gmail.com,
-	gary@garyguo.net,
-	kernel@collabora.com,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	ojeda@kernel.org,
-	rust-for-linux@vger.kernel.org,
-	sergio.collado@gmail.com,
-	shuah@kernel.org,
-	usama.anjum@collabora.com,
-	wedsonaf@gmail.com,
-	Valentin Obst <kernel@valentinobst.de>
-Subject: Re: [PATCH v2] kselftest: Add basic test for probing the rust sample modules
-Date: Thu, 22 Feb 2024 16:53:38 +0100
-Message-ID: <20240222155338.26836-1-kernel@valentinobst.de>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240222151009.461264-1-laura.nao@collabora.com>
-References: <20240222151009.461264-1-laura.nao@collabora.com>
+	 MIME-Version:Content-Type; b=qD0l46TtKQRxacNAre6eEnwPLgiufPzgzMq8vje1vU8Ts1ZLgFwo52cjDOo8jYdHDv4sPQZNt6lPiICaGaEk9u6olj5+amjJr0YsQhy9lzWP1p1Gpv+deoPRpSie52Dq79Vse6TmRD4iWM0oXCzuxAOzrjvQjGF3ox6C7GBhhvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=PxY2RfhA; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-102-198.bstnma.fios.verizon.net [173.48.102.198])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 41MFseXX030787
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 22 Feb 2024 10:54:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1708617283; bh=Tw39zUJjdOXe0uc8tGlhBxpYxPbuviy9TTm3QaYl5P4=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=PxY2RfhAxGuhzUwdu0P3DJ6S97aV0dSUEXsmJ7GlKiVF21cUmtEwPyWvz2y4hnDiG
+	 bvOh4O2+YQbraST+paOtrw4GDht926QQ04i/OgeT/7vHJmluJdsbtCoX/9A9Z90r68
+	 yMTcQHjRL1QIOktmobcK3rClwOy7DSgH+tuxthOmmwmvg9+jdWdj1AZegYAXSXSIO9
+	 SGGTdo1+4kOOQqwnpb3FLCa2HOE9T/7excuepn4mBEs7EKLkDNCqsyMuY1Y5awNqmy
+	 PU+PJhS4Xfuu+l+qFD89in/j+aPydLrT3K4cRCFdI65MEZC1cUvl+8V4RIXzTO3H9R
+	 wJzKafkwl/ayQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 3887415C1414; Thu, 22 Feb 2024 10:54:40 -0500 (EST)
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: linux-ext4@vger.kernel.org, Baokun Li <libaokun1@huawei.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca, jack@suse.cz,
+        ritesh.list@gmail.com, ojaswin@linux.ibm.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com,
+        stable@kernel.org
+Subject: Re: [PATCH v2] ext4: correct best extent lstart adjustment logic
+Date: Thu, 22 Feb 2024 10:54:31 -0500
+Message-ID: <170861726753.823885.11358303915766853695.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240201141845.1879253-1-libaokun1@huawei.com>
+References: <20240201141845.1879253-1-libaokun1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Provags-ID: V03:K1:UzBpTg1mY+EZdjgUCI/z3dtqZmx+AkuLKocPOsQ17saRdDlkNLg
- LDs6ESpF9jsP1w8DSqP96zEBT51JtlkhFmMczvMN3dtlvWrobuvkOkFEQz9InzjXqCvW47W
- eUG8ZqzrhlpvjaeqdRLJg54v6taJuD0cIFWBSaFLwaLMw8PF7vWFWAUUQqKxIkUICc3AEWe
- r25NBtGKt+Qsdl4KIkWVw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:JtIm3exvgr0=;ee67eIFxmwa1VbCY08m7Bz0MlmD
- TqUTm9+L1rnBDCYsbkRYOQ0f+qm+qap0pvbNgChMo8Wa3oqTt1o0a24VIZgx9GIeIsVb8AM0C
- RsqWPhMWRvsUBBdjxphxTGtoOPSg+hcLaKvct0+3RZuV71ddvZ2KF77tVXKaWJnqi7ovPmLRO
- iWV/jfu+gw07pUgjP+jxH2Uid7woetKvspfCYKFPzKD5gja1uwDP74IimJ+uCPkbcGUcwNXvT
- FXEjK0KsL76NkXxQk5smXoK/vvO7ge6NPKNMOUdOL4mGwEaxpSMfwJg+wuQ/TXR7AXRK4XMjn
- fPxq6cfXZGxzm+1P6CIZ57ZWFY8nmsaAWF1lEh/fN6d5AJiRGMjSzqptDOldn41nXdWN3Agor
- yGo4fS8KtW38Axpqcfmf/7XxGqCixp3glbr7TDDS91HZ8UzHTC6Lb/3EEJwzRPoZqcfM/HvGU
- 8Pa3eQZTH6xyMqJvjA7J/hkqSOfT2uKnZzBeGld9SCCi2JCgaj47IsXyctJfUEZxWuQmV1/DD
- r4fT9dgcC8IiB7a2SECcqaLaQK5dVvlFHeHiGI+TK0DadZT3+v0pU6Ig9CySgm8KajPwHT7Zj
- HFWy+Fc5T1Kzs/kIknczgq2q+B+m/RGQT0eNIFC36yZ/o/Qp382HvCddvwLuXFUbDd9u82fiI
- AJAY8+Nx3NkPbMxQUXZWpZR6FzBqcqXyZFz6Ga/lAdCpaC/E72SfgOWIeAw2g3zg0QXEMRDKY
- hon87jXTTYARdBJ0SduqRoQQ66dNSrC/nF1McPJe3fCMz9b/8zOF9c=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-> diff --git a/tools/testing/selftests/rust/test_probe_samples.sh b/tools/testing/selftests/rust/test_probe_samples.sh
-> new file mode 100755
-> index 000000000000..6fcc2cd83d89
-> --- /dev/null
-> +++ b/tools/testing/selftests/rust/test_probe_samples.sh
-> @@ -0,0 +1,42 @@
-> +#!/bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Copyright (c) 2023 Collabora Ltd
-> +#
-> +# This script tests whether the rust sample modules can
-> +# be added and removed correctly.
-> +#
-> +
-> +DIR="$(dirname "$(readlink -f "$0")")"
-> +
-> +source "${DIR}"/../kselftest/ktap_helpers.sh
-> +
-> +rust_sample_modules=("rust_minimal" "rust_print")
-> +
-> +KSFT_PASS=0
-> +KSFT_FAIL=1
-> +KSFT_SKIP=4
 
-Aren't those constants now defined in `ktap_helpers.sh` as well, i.e.,
-could those be removed here?
+On Thu, 01 Feb 2024 22:18:45 +0800, Baokun Li wrote:
+> When yangerkun review commit 93cdf49f6eca ("ext4: Fix best extent lstart
+> adjustment logic in ext4_mb_new_inode_pa()"), it was found that the best
+> extent did not completely cover the original request after adjusting the
+> best extent lstart in ext4_mb_new_inode_pa() as follows:
+> 
+>   original request: 2/10(8)
+>   normalized request: 0/64(64)
+>   best extent: 0/9(9)
+> 
+> [...]
 
-    - Best Valentin
+Applied, thanks!
 
-> +
-> +ret="${KSFT_PASS}"
-> +
-> +ktap_print_header
-> +
-> +ktap_set_plan "${#rust_sample_modules[@]}"
-> +
-> +for sample in "${rust_sample_modules[@]}"; do
-> +    if ! /sbin/modprobe -n -q "$sample"; then
-> +        ktap_test_skip "module $sample is not found in /lib/modules/$(uname -r)"
-> +        continue
-> +    fi
-> +
-> +    if /sbin/modprobe -q "$sample"; then
-> +        /sbin/modprobe -q -r "$sample"
-> +        ktap_test_pass "$sample"
-> +    else
-> +        ret="${KSFT_FAIL}"
-> +        ktap_test_fail "$sample"
-> +    fi
-> +done
-> +
-> +ktap_print_totals
-> +exit "${ret}"
+[1/1] ext4: correct best extent lstart adjustment logic
+      commit: 4fbf8bc733d14bceb16dda46a3f5e19c6a9621c5
+
+Best regards,
+-- 
+Theodore Ts'o <tytso@mit.edu>
 
