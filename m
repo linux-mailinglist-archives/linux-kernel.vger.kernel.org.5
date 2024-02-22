@@ -1,110 +1,118 @@
-Return-Path: <linux-kernel+bounces-75701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-75702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF67685ED93
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:08:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C908385EDA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 01:09:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA9EC28455A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:08:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB84D1C222D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 00:09:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 193C52904;
-	Thu, 22 Feb 2024 00:08:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4D27B661;
+	Thu, 22 Feb 2024 00:09:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MAdi4DPu"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="V4v3q5zW"
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF495660;
-	Thu, 22 Feb 2024 00:08:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C1064685
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 00:09:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708560514; cv=none; b=KNQ77QSjbrfYBbfqLQ9LmGj5VaND1qvXVUrVEEmeG0ze8o+QJ/uItgZPpANOtZDt+r80bBo+4a9IU/rrgxs4AszNsNg1gRzLyYv5VEV7OZq3hwIh40TqF78xFgB/IUFbqQcYl3ncDZe2llSL9WSiX8uJnX3DHDGLJDXFLZ/I4Q4=
+	t=1708560550; cv=none; b=Cdh+vZYUYNeHdWrIe4JDACC+FyZrHSJgdOlHfHWcyiuWG01HDV+Xw6KKunK2hxcme71gSkOhOS/Du+U1OHNp9WfMllhgCz1v8ty54EIARLjVNj6V3wxYVAWh0jDUvAOuyJIeTK5GJsB6lBB8Qwv/FIO+Gc902hI1C+K0tJ82W9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708560514; c=relaxed/simple;
-	bh=Ihd7mrTw7+UrofKPdqAHJJTXadljxW0+2gEGdxs0gag=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XlCszDwbqd/KcoyrSddLMo9tvIiidjH1c6kFVaia4k0DMspfjMPK6La4857+vDaSdku1w2veKiB4SfBRIhSJAOVQiHi6hpPZFw1jiUcxGiPJD/oh8QMjLzfp85DAwrTeM+nn5bheZJzs89BvukFfKi4KUgAMPtO2z380JNJ9H88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MAdi4DPu; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41275971886so9548565e9.3;
-        Wed, 21 Feb 2024 16:08:32 -0800 (PST)
+	s=arc-20240116; t=1708560550; c=relaxed/simple;
+	bh=aiZ2wjkXdUeF2DZJw2oBIl8u+9EyfQfZ9ycNkF8fAgk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hEx7aiD864CqywevAYXtKgTc2jr/XXZ42P1XYqpiF1jiSLr67GDHsS2fvQTTintSmoDuUK2ZpWNj6V8vWVgqa59mqkhHHfKV+JD9Z8+X7GCMpRaIRWFWTLpz8GqElo3NWY/aUZDPd8l57fmg1E2L5wDSO4v1uEWgSp/olMNuwRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=V4v3q5zW; arc=none smtp.client-ip=209.85.222.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-7d5fce59261so4629626241.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Feb 2024 16:09:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708560511; x=1709165311; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JrLVGHWqd42HuRvVm6ka+mAXekU9BySf50ulUs1HdnQ=;
-        b=MAdi4DPuAH97VAd039izT/k4E/pGxnXdUBRh4wnJCMXJB5tjHwDAsg/uP7aZlJgq8I
-         vXdmYx1XZ9NTKiG3zLFafeUOI0SIdK42RXBNNM9KwayNHp/Gxg3hejF6KcQfrAKPxR2y
-         a3+ID1zj1xppJSbjdBSpjDb/ZEojdEFZSeCqWO/CGznP8tkhlSyWds9AgtUyjLJF/DTd
-         7uTJGJNcGpL/oMZ4C2of1s5tWWe2s4q0YKHfYO1cifqoDEzWHfJ3RYjyP3BpiwUEiql9
-         VP4o+6nZG9CjP7CYzrUHtDLULZnpHyydT74b00aLxGAZ+AMgT8ixMDBcZ3FQs+miDgJ3
-         q4FA==
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1708560547; x=1709165347; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aiZ2wjkXdUeF2DZJw2oBIl8u+9EyfQfZ9ycNkF8fAgk=;
+        b=V4v3q5zWy6TRguaajZ4nQ7fJK1qziegRcyc2f4uuaXkZgb4nKEsRZW5usZn2/WC6UG
+         2HWxXkyggg+HnHBE4LSYDAV3qlSVSEAJ7vgj3MpYcNlVANNi82gJyKs3TGO95H7vQQs3
+         P+mjK3bnK/Tsa/y3lgPnoCSvSJbs2j87+GMbVDg3j9OYX0gZdOAxTTKJHTxjoXOw0Gwx
+         0DKKNqPgam6bcmtKcoMyNXiATqMuN8yiT32970gwjqs7o9zipOX4DhXrYhTml3lKxizt
+         +ishB81w04QpeSmjviwcPT5P0aChisMAKE13nexWROtuY9dinTAdSxKj6PHKgtTQO6OK
+         fdXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708560511; x=1709165311;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JrLVGHWqd42HuRvVm6ka+mAXekU9BySf50ulUs1HdnQ=;
-        b=UIwB0jwcwDZUxFjE0bSG9Eh6f6LwaWQneOx0WODu3ASvPjK6hoCPjkUOCyJzxrsR8i
-         0YdPYAigjhh+U9GrzjTmw+sB9jDqK1p0P/Rrz50uFt8mPMD35PSTu89kLl41xBAzDiY+
-         SMyL2J//XOibivXzWtTImC3Q48/Iq75LPrf9NyNOfvXiLjvz6e17DJCQKVCWcf1Vcrpx
-         R3UW1hMe+R0V3Pos+hvBIyKI7YnrrDfxKGonFFyAmbX+fybJ0E+2AnV4mjGcLduDtTFE
-         1qy8dBCFU9dfDvE3r6GEOeQfL90hi3nBgbVwY7CQ7Og99l/0v8ByZWgPRhWXu7fxz+yG
-         ZA+w==
-X-Forwarded-Encrypted: i=1; AJvYcCXDh2jZ9rQbQ3wYr5VhW0M9qrHCYfXf8M9AQfvtFW3lUucGoY30A7sqTTM29/DBy28qUPVVSueW7CTCrjYk9ftL+7cs0jCmn1lwNpdC11jQ4rotEo9qMuc6gYEzXbYTlb+msuH+m4royhjvO0Xrpu7u24xDyKBXD9WZnAzUthfgpSZ4Kk8G5Q+dbjT2sWA=
-X-Gm-Message-State: AOJu0YzpvXJE1lmZqG7Wq1um+arCFuvfkgklXDAhueDsyRxGWmK0J2w5
-	jN7M/RI8rfjJyuVLC0Q8VoRHWECfuDKMHaN+zB49K8dng1ZQmOhZ
-X-Google-Smtp-Source: AGHT+IH06e4oysCannDPPsoqQTO02G4XnpwkMHVszAA9iSTdrnX0sRQl2H2Vg2qlzUMWKrpS5BM7Fg==
-X-Received: by 2002:a05:600c:3515:b0:412:17dd:a227 with SMTP id h21-20020a05600c351500b0041217dda227mr14521005wmq.15.1708560510711;
-        Wed, 21 Feb 2024 16:08:30 -0800 (PST)
-Received: from [192.168.0.101] (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.googlemail.com with ESMTPSA id t11-20020a05600c198b00b0041270c2b95esm6351055wmq.29.2024.02.21.16.08.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 16:08:30 -0800 (PST)
-Message-ID: <cfa4cd82-67e9-4483-9c35-a425859f4a21@gmail.com>
-Date: Thu, 22 Feb 2024 00:08:28 +0000
+        d=1e100.net; s=20230601; t=1708560547; x=1709165347;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aiZ2wjkXdUeF2DZJw2oBIl8u+9EyfQfZ9ycNkF8fAgk=;
+        b=rLvXxCws7bsT5OCJzvlGxw7RqUkACUgohFX6LZXcyrT5wNgA7lV1BVHxNH7dG4M8d3
+         6wOpkkEmnM/4VRp3hwO8Fy7ItN1dLx2BlQigXSYT3i+oZI/RgMmSejJf216Gul9ouISo
+         RQlnnpHIjORvcd2O0N8wZyzesGTBicCsHP3xI04MKgT/BlbC831NTkR+dAy2dJyb1yjv
+         ViFwSGu0dnKAq6Yd6WI4s8MkqcNtiKj0B4iiP+qO2T6cuAIXBNsoZ5WUEGhZrOFzV3oV
+         /hVmIyDCB+m27WfnhDh4Ca76cq3mW9ghXHwtc9dNHIS18jj/9+NOBdIjO3sK3f5MAfL6
+         Ja2A==
+X-Forwarded-Encrypted: i=1; AJvYcCXJ0YwRUoJ4SJHGmEHgYhOrOakkyOXBlQ3EYX9V/S2Nh8YGYREZbFSmPS3o/A8obxpruai86IvAT8UKfGSByr7UuTlS7MLrsshrhBNa
+X-Gm-Message-State: AOJu0YwRZuZEp7q6iE1bE5vq0Hs3/DfyKtwji9bzBZHfvGIcrOTbh6bJ
+	4oDjYTTmmdmFuUTjzXE+vrZNLrQw7IdIJBC5c3wVgUeQml6UDiiyJslDmBRvTxGUUm7b3Hzbx0r
+	YhYIRE8j1e2Rlpj/9X3tV1gJ6K+1n55nVPkxoeA==
+X-Google-Smtp-Source: AGHT+IE8YdNcoy9yHPyWH3FSVi3grCuLLJ8fT8RNUBKoMQxE9UzcTUruywG2qiU3pKHX1/up6wOF6uOUyIuOPTAbvgM=
+X-Received: by 2002:a05:6102:953:b0:470:605a:6a4 with SMTP id
+ a19-20020a056102095300b00470605a06a4mr10156813vsi.21.1708560547208; Wed, 21
+ Feb 2024 16:09:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] bcachefs: remove redundant assignment to variable
- ret
-Content-Language: en-US
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240221115203.3413554-1-colin.i.king@gmail.com>
- <3qaoftjgf7p2ugutl524b3yin7pqpjrkftjx3frunhduf3so66@tjhcdoq6unk3>
-From: "Colin King (gmail)" <colin.i.king@gmail.com>
-In-Reply-To: <3qaoftjgf7p2ugutl524b3yin7pqpjrkftjx3frunhduf3so66@tjhcdoq6unk3>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240221194052.927623-1-surenb@google.com> <20240221194052.927623-9-surenb@google.com>
+In-Reply-To: <20240221194052.927623-9-surenb@google.com>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Wed, 21 Feb 2024 19:08:30 -0500
+Message-ID: <CA+CK2bD-AvHR45zWrLOGA7Y=HQeFf=Ty4vCB5bWxbX7XyMsYRw@mail.gmail.com>
+Subject: Re: [PATCH v4 08/36] mm: introduce __GFP_NO_OBJ_EXT flag to
+ selectively prevent slabobj_ext creation
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 22/02/2024 00:04, Kent Overstreet wrote:
-> On Wed, Feb 21, 2024 at 11:52:03AM +0000, Colin Ian King wrote:
->> Variable ret is being assigned a value that is never read, it is
->> being re-assigned a couple of statements later on. The assignment
->> is redundant and can be removed.
->>
->> Cleans up clang scan build warning:
->> fs/bcachefs/super-io.c:806:2: warning: Value stored to 'ret' is
->> never read [deadcode.DeadStores]
->>
->> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> 
-> I'll take this, but - entirely too much of the traffic on this list is
-> getting taken up by static analyzer bullshit, we need to cut down on
-> this
+On Wed, Feb 21, 2024 at 2:41=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
+om> wrote:
+>
+> Introduce __GFP_NO_OBJ_EXT flag in order to prevent recursive allocations
+> when allocating slabobj_ext on a slab.
+>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-I'll back off then.
-
-Colin
+Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
 
