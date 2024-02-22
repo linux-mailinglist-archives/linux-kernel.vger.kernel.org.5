@@ -1,99 +1,101 @@
-Return-Path: <linux-kernel+bounces-76474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09D0385F7A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:05:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0787E85F7A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:05:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAF0C1F25EF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:05:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38FE71C24639
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:05:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8D2146448;
-	Thu, 22 Feb 2024 12:05:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 422AB46558;
+	Thu, 22 Feb 2024 12:05:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gW41vm9a"
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="URZPm961"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 895B641212
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 12:05:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C695A4642A;
+	Thu, 22 Feb 2024 12:05:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708603516; cv=none; b=QznJsRcAGJXTV5K1lQOfAQt4KiVXHRJ85W3AEkK8/RCfHOvb9ok/issY+F2o95AiYkRh/UEqbqrDsrAiK6Mb4/8blReQLBGip00W75bWULlLBzjPx8zBlpbWP6n5bph269DVuiLUbO/zLyau+sK4J47FCkD7235pS0S84/eyyp8=
+	t=1708603530; cv=none; b=P+lMslb8pAJO8tapcdR6rb4kPRXdUgI4bsArRzHiE7hkX0RqNSHOGX1dByHVyeBEL7eo0MLoqP/ikJ9eEMQXYY7u2pQgKzZzxrw20x+o7BSaIV/axXCN/ceP5jsFQ4H8t8AF0jQs6+gnifSLc1y1Zzdjh/TKVwzmEyPPSYpa5sA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708603516; c=relaxed/simple;
-	bh=dGWD6NHH548xIqityNEoCsAmU5e6mGLq00J6IaYPuV4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XnLxO9NqNYG/FU1nhXhrUzXQqmvo2pev8ihts1mN+nzLLriUg3peB97Go2lgR/bs0d5GeHkqcX57UJjeHxzL873Q2Sg8SO7/cZkHIsDxXzbYIknSx2OqWO82MAtUd/JmYkUWLpzAzeUA/FYXf+9asRZY4NX6UiFn5oy2K7WfQok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gW41vm9a; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-60821136c5aso34525797b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 04:05:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708603513; x=1709208313; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dGWD6NHH548xIqityNEoCsAmU5e6mGLq00J6IaYPuV4=;
-        b=gW41vm9akcQB7AxMmihe453r38x+A2sdYdZTOW7UPg8KwkJXjdRYBYjGcWnJjUhdKw
-         ayoIStKi1pSfF2uU2qH+YFUY7+Q0qA549T0mm8s/vjcxbp+KIM0ArRorrGFA0P795nao
-         v1AoOI/6IDpWSW5DHX2EmSUfcKC0x7f+cRgzawlmFI8l11zQ6ROrwAkG1yMORZ+oeix3
-         H69TJBjoI6mXOA/4kTX3WzAFQ0yK0pVHggzBzDGVqGJLZK2kswVuiUyMHFwFS7KLKotu
-         6wIdx8t+Z5b8td8NoGJX+AgCcBGIzjO8TdSh9lXUEVzGMAsDAa7/I3PmAyR42bbAnrJA
-         9z9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708603513; x=1709208313;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dGWD6NHH548xIqityNEoCsAmU5e6mGLq00J6IaYPuV4=;
-        b=G5vXTuGL1F8iKvr0LawCfHdgPln/ZSGnxyoYJd8vepkzsgspD6lcLQXo8MVLy8riP3
-         zdd8uqJTRV5UEnKyRS+Yw9lbLysHXKjtJNBjGyD2L9rhgS1kOLM0iIO5PtihoHK37LFq
-         d+YnNsgCh5LuRlKFFyad6bkag4tgbiBnX+72K5zYNjODwWQEtFDj1cr/I80UPalkNPA7
-         fceUmpePTL20x11j2cdXeRIGNKgL0L1M5QMVWFhxu6PZ3uv+EB6JETXQ/qlFxVcsT3PB
-         e3zvyBczoSiD0kCUWOwZL1Tij7BuquvdYMCT9knvFDiYzf/0hNKwaX0fzGi5JGUM0NEd
-         J+Ng==
-X-Forwarded-Encrypted: i=1; AJvYcCW9CpxMr2cNQMSji83hhDp+T9mLzMJGD3jIyD+9COvogU7ynOFroDUmDEq4SxLpxXsnki+cZCgePsjWJlQP4600hxAKdJDcb0NXZgpL
-X-Gm-Message-State: AOJu0YxZnGxq7KD7AdEjvfRDu1Vt5sCd2tgRQ3JB/CSuQSQcuz2BI1KR
-	zaTYquBxI5cN4pRW8KBjz1o2vr+/oOOc1PdV2VF0h30PWSHyTq3n6v1NTFy8onlcXZxE8sTFApi
-	+EVXbq3/4Jd1nONspVuVJ8aXhB9BsXi0vnoLByXnADYUAht1c1FI=
-X-Google-Smtp-Source: AGHT+IHkJyZ6/z/AqebANcuFmHUqMm2MbLgG0od5FktAoz/uxsuEctz7zm8Hhx2ixPA1QZA9dedCP3fZYTdMDh5FHEk=
-X-Received: by 2002:a81:bc4b:0:b0:608:74b6:49af with SMTP id
- b11-20020a81bc4b000000b0060874b649afmr5838471ywl.13.1708603513654; Thu, 22
- Feb 2024 04:05:13 -0800 (PST)
+	s=arc-20240116; t=1708603530; c=relaxed/simple;
+	bh=QE8PnDDTJgkY/Sxm/yDuHrkH3udkDHWChsHX8XlggnQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fth57JBqnJ5sQpbGDC+X+U0SJ21f+AdxVF5KmWlYuVVQ9PpVgzkT0uYC7kizMcTpUvWGGKAb2bHRIOaa2cA6yxUC7keT4pskJ6gm7jqqGGg0gFdafYLD0w20Wc1qXesAuAZovclJSw5Nr2UUAZ8jHQpHQmEBj+Y5UAPkeV4K+B8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=URZPm961; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C99661BF210;
+	Thu, 22 Feb 2024 12:05:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708603519;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IK1GlbJIzPjcabZtha8401cpHaWcLHGP+gKkN9qNPew=;
+	b=URZPm961mF8mYOcJAgDR00zqwM0Dn3N4QZl0N2oWWtaXfGjWDDlYQvlUbL3CDAN6kgyCUg
+	Sa/kYcuhdo4WuPAVb76+mFosL/QhUvPmgobIz9hovbYR/U/imSuZownAKFMQakW2OOT9ye
+	sS8qWP4WwzYbDADh1DTPcZbWGA5FStJ53GEY65XPGusASjN1apCsKge2DnQRUr8HgAQvXW
+	LfPjJzPTbyHeZ5fu40Avdt46xTHwzIvj4wJxlta8lKhKAfTAD3pYtYcVHRCQhGJNwma9U2
+	MmTBeFin+N5TU23BsleoGMz2paD4+gEbv5dxPQEvfXve45QNaR3jvOncIyFO2w==
+Date: Thu, 22 Feb 2024 13:05:16 +0100
+From: Herve Codina <herve.codina@bootlin.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Yury Norov
+ <yury.norov@gmail.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>, Mark Brown
+ <broonie@kernel.org>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v3 RESEND 1/6] net: wan: Add support for QMC HDLC
+Message-ID: <20240222130516.5e139612@bootlin.com>
+In-Reply-To: <ZcoNoDRF6h2C7TQd@smile.fi.intel.com>
+References: <20240212075646.19114-1-herve.codina@bootlin.com>
+	<20240212075646.19114-2-herve.codina@bootlin.com>
+	<ZcoNoDRF6h2C7TQd@smile.fi.intel.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240222102513.16975-1-brgl@bgdev.pl> <20240222102513.16975-2-brgl@bgdev.pl>
-In-Reply-To: <20240222102513.16975-2-brgl@bgdev.pl>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 22 Feb 2024 13:05:01 +0100
-Message-ID: <CACRpkdazuHcnXMSffa=hfHAT5nfZ0uHeDqStOBTOOsTZdmx3cw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] gpio: sim: use for_each_hwgpio()
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 
-On Thu, Feb 22, 2024 at 11:25=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl=
-> wrote:
+Hi Andy,
 
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> Display debugfs information about all simulated GPIOs, not only the
-> requested ones.
->
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Mon, 12 Feb 2024 14:22:56 +0200
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+..
 
-Yours,
-Linus Walleij
+> 
+> > +#include <linux/dma-mapping.h>
+> > +#include <linux/hdlc.h>
+> > +#include <linux/module.h>  
+> 
+> > +#include <linux/of.h>
+> > +#include <linux/of_platform.h>  
+> 
+> I do not see how these are being used, am I right?
+> What's is missing OTOH is the mod_devicetable.h.
+
+Agree for removing of.h and of_platform.h.
+
+Why do I need mod_devicetable.h ?
+Isn't including module.h enough ?
+
+Best regards,
+Hervé
 
