@@ -1,134 +1,113 @@
-Return-Path: <linux-kernel+bounces-76380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76388-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91D9385F672
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:04:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4535785F690
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 12:10:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 315D21F28039
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:04:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF06FB23E55
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 11:10:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7934241760;
-	Thu, 22 Feb 2024 11:03:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C06B5405E5;
+	Thu, 22 Feb 2024 11:10:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Ok+AwaJA"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="yYHw8ZqI"
+Received: from out203-205-251-27.mail.qq.com (out203-205-251-27.mail.qq.com [203.205.251.27])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 873433FB03;
-	Thu, 22 Feb 2024 11:03:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9313A3FE2A;
+	Thu, 22 Feb 2024 11:10:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.27
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708599838; cv=none; b=NUFvZDIjTrkXFAJHvcSAiKxPBO5zEDyUnzI0cknvqzvqCDsHh7pgWs6D+I8d1OH3+qTZE0OQ2MTd7UU14bznev9zf6pPCWjZeD5M9k6++FDgNuG6D87SVwyxX+5MjadC9hB17Po60mrssqCrZY9Sm5qdtQF6aC/311KBGN8fb3w=
+	t=1708600235; cv=none; b=hcl/b5pH5d59aa8XKjKoy26diYMzvzlUbPLi2BZmm1kjHpc/7qvkqtqwXt+gAOMvTPlNVrdazQOd9Q447n7WCjJ9L6EvpNItbdx4XCeJih8gWPxVF3ws/fqUMNYBQKwah/X2vVGp4v+3bOf8STEbUwbUN7mjhxfwbErKP6L5opY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708599838; c=relaxed/simple;
-	bh=Nhvkh3qGjiDklbVBphgKeKpgEVtWOE3lKREbR9yWuAM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=bknI+PVS/mFKaqQ5inJjurIUskK0D96rXSz2XqGXg6+SZIJaKCbMtxfHnvDPVqRUIB0P7imiScocEqqFD6n83OuJMOjmsozcICNsKJ+Z9pEY0BB2SjE+1QkIe56p/KB+OuD+y0F49jLEPsS11zrl4FnB5OY7VZxqCHr0/+QmdEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=Ok+AwaJA; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1708599832;
-	bh=mnmf11XsRxjTJ5dv9VjzYEWEYDyN39lp43BiigEjMvE=;
-	h=Date:From:To:Cc:Subject:From;
-	b=Ok+AwaJA7UQoqKP7Mr9J45edM+obH/evIa4ypaSjAwPOhFtZ8plF5ArxtaKMJkYao
-	 Wlr8/yTgyung0ZdPcruCMOTqDmdetR0gUh2dtowRvMCQgyORWKgknj4jZGlRh4ihHF
-	 sZZ/sjWrvP+g1Rw1OKv/3KLK8U83R3V+JuxwRQXQMJfgv0N5vPDprpCKpX4RuQ1hXD
-	 oyNBQaS0LuvmmrKgaQzEfto3P/v0lo5x4IkYV4l6+YnKQxjUxYEbC6nhC98xnLQ72Q
-	 OmrlKOtEripWh3SJMewBp7UuyvpIBQ0fPuChksT3xFlpo20OSAyl1fWUsYbx9gDxfh
-	 eT9p+f+oDnUQQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TgVd34jxJz4wcg;
-	Thu, 22 Feb 2024 22:03:51 +1100 (AEDT)
-Date: Thu, 22 Feb 2024 22:03:49 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Paolo Bonzini <pbonzini@redhat.com>, Christoffer Dall
- <cdall@cs.columbia.edu>, Marc Zyngier <maz@kernel.org>
-Cc: KVM <kvm@vger.kernel.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the kvm-arm tree
-Message-ID: <20240222220349.1889c728@canb.auug.org.au>
+	s=arc-20240116; t=1708600235; c=relaxed/simple;
+	bh=Sq1yThAZFD2dQsxqsmmIQlea3wqBVbMgG575+CjcE7k=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=fUAe4m+y6G3Wtx8rtbVFGCxckSxFghi3uOyc81BVwTVOYkv9E5v4w+7Sn9fR1wEj7KuLJbS9vt2urnlZbsyCNEiGb93UoUyBe82c21R83ontYs92n9FRZj0iy6ta1zC3PLvZX8bkYZhnGJdsxYJDLtuvaiYgrRPb2pS2bgKwQds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=yYHw8ZqI; arc=none smtp.client-ip=203.205.251.27
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1708599922; bh=iDuAExiCH0kR1uj9WmadgxuNzx1aARB3KyPerLUjcgY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=yYHw8ZqIMhF1cru/aDVn6WftcAYF9NMwvdOos1zQ6QmDM+gGdPF4o6J/vFm5Qm3Mg
+	 4ZNndF8tljXe3uLKSur9iLYhn0mEBrMjCCEEjqxAy1MTBv/jPaJuuv25UiPo3/P+Q8
+	 zyiYNs3a3EQ13a9awaWL4Fzo2uO488b0SgYzm5Yo=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
+	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
+	id EB8AB210; Thu, 22 Feb 2024 18:58:56 +0800
+X-QQ-mid: xmsmtpt1708599536tnnguvun4
+Message-ID: <tencent_211B474BC21B1D25ABBA31BB5133AC9E0608@qq.com>
+X-QQ-XMAILINFO: M5WvXNp9ZPrQSsCcmJmlHfhfpBGdw9jJo2pzb3aSSDulHPmDZh80TX3KB/oUWV
+	 nOp2wkhLQFMEgm7wSyX/d1jyDUAI3uAFANuLdrtLkO8GQv4zfq0CQD90nLpfXLYxFvlUjUSFz0aI
+	 qybTbcg7gQOaCX+g7PL9luyo//t3AdeWvEtE9FcuCngBcX/MKib9g23UmqXoXJ//hGdAZAF3gQZ+
+	 h/06VbaclTYJD8LJwgUpT2n9KlQ8eGBO4mEOboAMAPlYSHOnYkeJmneN1sFq0PDqx4am1KLWni+H
+	 XImxnx0O1UKeb8bNUKuXlBTA5dhUuayWBxm99veBhhuXXnbSMsu79Hc2BxcuubXnmDKeA/A3lQGY
+	 gz8EnoIGnEE8odGhVgi1k+h2z4PBsKa4gZagzbKkZRQrjNjlIBxHYhFSUp/TfVQvsWm2QI1Ox4bZ
+	 dbeaKR2wT0ydF3jX60m1PaXP8/3GBaPH4ObvD1d/qPrOx1tnHtzWOBL/xI8OCkycN2TP7+d+UHme
+	 DmEy83fgYd0KfkEBrjel+9BZvj2IygZQHF+RJ7Wg6+KT0belhkCw0QXUAtq3sAx9/DQqeMnB4/3G
+	 +LGLkgEkCp6ZdUEiXWuR1YcLXxeZBxaBthIHc4NkMXa2tT7U8rC0OcgCiKUQ2qOD6EKGK72s6I+F
+	 rjSfXFYLc6a+Wn/XyaLwf5zGxI7mM45p5hyyW1nz58j+ywWGahnHQGRr3aRv3luaPBL/gFYAIKNZ
+	 lItiXZ4FfEJzdscsaDN8GQep57TEggNTTjTfHW6g6Sd4u8i70Pp2vhIkrHFHu7w/ANNacEXc1as+
+	 DJBd9YYy3kVsO6ia7aDxnNJnhpV9Tn3+sjggvghuACRMYOw1nC+rQFZVpPvRZ6+J0eMpY9fE8hBk
+	 0WLPovLylxw4kJRTGyHAfSheI3SwPZM2B8gfWuw2/JRmSXOr5JdYHPYiYMEtKEmv8xA3hvPCbvfo
+	 sweYhiq5c=
+X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
+From: Edward Adam Davis <eadavis@qq.com>
+To: hverkuil-cisco@xs4all.nl
+Cc: eadavis@qq.com,
+	linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	mchehab@kernel.org,
+	syzbot+116b65a23bc791ae49a6@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] media/cec/core: fix task hung in cec_claim_log_addrs
+Date: Thu, 22 Feb 2024 18:58:54 +0800
+X-OQ-MSGID: <20240222105853.1157805-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <4fa62e4f-9768-4434-8f7b-24aa3b2a3490@xs4all.nl>
+References: <4fa62e4f-9768-4434-8f7b-24aa3b2a3490@xs4all.nl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/XniYb+l32S1LzO/j40ZgFnL";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 
---Sig_/XniYb+l32S1LzO/j40ZgFnL
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, 21 Feb 2024 15:38:47 +0100, Hans Verkuil wrote:
+> > After unlocking adap->lock in cec_claim_log_addrs(), cec_claim_log_addrs() may
+> > re-enter, causing this issue to occur.
+> 
+> But if it is called again, then it should hit this at the start of the function:
+> 
+>         if (WARN_ON(adap->is_configuring || adap->is_configured))
+>                 return;
+> 
+> I'm still not sure what causes the KASAN hung task since I cannot seem to reproduce
+> it, and because it is hard for me to find enough time to dig into this.
 
-Hi all,
+Please pay attention to the following section of code in cec_config_thread_func():
+   3 unconfigure:
+   2         for (i = 0; i < las->num_log_addrs; i++)
+   1                 las->log_addr[i] = CEC_LOG_ADDR_INVALID;
+1573         cec_adap_unconfigure(adap);           // [1], is_configured = false;
+   1         adap->is_configuring = false;	   // [2], is_configuring = false;
+   2         adap->must_reconfigure = false;
+   3         adap->kthread_config = NULL;
+   4         complete(&adap->config_completion);
+   5         mutex_unlock(&adap->lock);		   // [3], Afterwards
 
-After merging the kvm tree, today's linux-next build (arm64 defconfig)
-failed like this:
+And the following code is included in cec_claim_log-addrs():
+   3         } else if (block) {
+   2                 mutex_unlock(&adap->lock);
+   1                 wait_for_completion(&adap->config_completion);
+1607                 mutex_lock(&adap->lock);      // [4], During the period before re obtaining the adap->lock, how did cec_claim_log-addrs() re-enter?
 
-In file included from <command-line>:
-In function 'check_res_bits',
-    inlined from 'kvm_sys_reg_table_init' at arch/arm64/kvm/sys_regs.c:4109=
-:2:
-include/linux/compiler_types.h:449:45: error: call to '__compiletime_assert=
-_591' declared with attribute error: BUILD_BUG_ON failed: ID_AA64DFR1_EL1_R=
-ES0 !=3D (GENMASK_ULL(63, 0))
-  449 |         _compiletime_assert(condition, msg, __compiletime_assert_, =
-__COUNTER__)
-      |                                             ^
-include/linux/compiler_types.h:430:25: note: in definition of macro '__comp=
-iletime_assert'
-  430 |                         prefix ## suffix();                        =
-     \
-      |                         ^~~~~~
-include/linux/compiler_types.h:449:9: note: in expansion of macro '_compile=
-time_assert'
-  449 |         _compiletime_assert(condition, msg, __compiletime_assert_, =
-__COUNTER__)
-      |         ^~~~~~~~~~~~~~~~~~~
-include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_a=
-ssert'
-   39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-      |                                     ^~~~~~~~~~~~~~~~~~
-include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_M=
-SG'
-   50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condit=
-ion)
-      |         ^~~~~~~~~~~~~~~~
-arch/arm64/kvm/check-res-bits.h:58:9: note: in expansion of macro 'BUILD_BU=
-G_ON'
-   58 |         BUILD_BUG_ON(ID_AA64DFR1_EL1_RES0       !=3D (GENMASK_ULL(6=
-3, 0)));
-      |         ^~~~~~~~~~~~
+BR,
+edward
 
-I bisected this to the merge of the kvm-arm tree into linux-next but I
-could not figure out why it fails :-(
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/XniYb+l32S1LzO/j40ZgFnL
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXXKhUACgkQAVBC80lX
-0GxtLwf9ESR99ONEv2qGVPNShHnzbFrvMULx7FtOOrP3djqk/AfXgLrLjdEdw7DR
-kIPTEyM6QINWCSNRjVsJJ6Gt4RvTrAm5OntbhyAl50fLTakkuIsiEIVSsk+C4b55
-bf95IYnUIY16kkWU2mYgxwIwQW7AzFUUYK7t63vi4g+EVwMQLMdevZfzNPA5lZ04
-R+vxKNpVi2/H1XFrP5IXwKwAOXmzAnB5dzSp/notdsHjM5tt8qhbYQMTny2G2GjW
-vPQMi8SpXjl9//6dUHqHusz6vHFW+WH4iD0LzAOlcQr1Hp/Z0IlmheB7IOZleVKl
-gyMQrzi5/zurFFvWxbpPEOwS+XxGQg==
-=ayAK
------END PGP SIGNATURE-----
-
---Sig_/XniYb+l32S1LzO/j40ZgFnL--
 
