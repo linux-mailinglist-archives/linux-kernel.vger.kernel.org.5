@@ -1,169 +1,285 @@
-Return-Path: <linux-kernel+bounces-77049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95B44860079
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:09:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3133286007B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:09:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B54B1F2729C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:09:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA6E528337A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:09:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDD17157E81;
-	Thu, 22 Feb 2024 18:09:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3780B157E93;
+	Thu, 22 Feb 2024 18:09:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=outlook.com header.i=@outlook.com header.b="XVaQf4JL"
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01olkn2096.outbound.protection.outlook.com [40.92.53.96])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D4mgCP0X"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDF9E156990;
-	Thu, 22 Feb 2024 18:09:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.53.96
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708625344; cv=fail; b=qKRC299Wd8iyoyZbEyZz5LeY37HUW3JD6heJmBsdxs5PnfXYnygUAIOGv3VQiHwQxpJkVHoeHQ409IcHuV/8VesHn6yLkmcF0pf2yh1wqPexncQ5/N7oIY4wLaGGFVX+aJhl0qhfxejpP34o50Ay+RHvWfD22kiWsBnYXB7uS7c=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708625344; c=relaxed/simple;
-	bh=QwVNwoarxerJ/qp2mz5yvIEaIn7n2MI9NtUG4z5nxX8=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ibsUYxkjOUeUBduc6c5VlNG0fdCkx+7OkL0rrlbbnbusdVJR77vFwfcvOwiZUOWdF+eJTGWizm67jNc7p+gRJGScn0ocHj8SYqHtpxKzGdOCHenX2gZ3QG3I/bY5XxGf5G+GdRg0I6RM/bRidF52ud1nLhvwUPL7AoGF67id8UM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=XVaQf4JL; arc=fail smtp.client-ip=40.92.53.96
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DskNr/R/YBFv9JJTLWpTvhNVbE4/1ugKobczZAebEq9T5gHxElBiZl2x9tQQecFok7jq5wI5Io1gzUPfpXc9tT9mKzvv1HoyYHwOhupM7EaxX5NPWmhG7VQLrHIxkBFy6mJ4YLCbEsnHvC+7d7KHcwHFso7GxANk/u3h/0tXz+PV6plyixJT4lgtSF2DYBCu+BgUfe69Vi4D90xfrX1ikqdAgm+cIprzeq/6VR4ocUZdu8owNyotyCVbXeHjd4LITp4QQNob9+kGvlEmLCm88GDcJv8jon4n+mwKDnAUEkR4uu0xsSGNsLV5BoybDxnZ1Sm/sXqBlf56FcU9gWSAhA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=boik0WYb3eCdF+R+n+9/8j3cvtIlbPgnQMv587RCwPA=;
- b=cHhSwA2UmkSgMGBj836yQBFivr9bWb0+oTFnAQl87+rvSaqxGOOJ+4nHt23efMJ7btKjw5eacLP9ztLhGr0pDUubJ2yrSTdzdExP8VvwY6hgtpfL7BxT/ylsGP5fOeEXdwRzGsbaS7agB029dgNQPsI28Yp2E3Z+WcP+/5cByQltAVlHfQvRlsToh6mdLoui+Xjzk3J1kCFRF5NtzM+sz77dPcm3f/GWcDQ/DpwkevTK3InOtXKp/RvFfUpvj9G3rfIS8eMKcSrhcLPWlulb1x/z9pEz4bya6uWo1/3wTHyBiulYaRx9ufjEDAqFkq194cZnBL6qpyHKTsMHyI6/vQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=boik0WYb3eCdF+R+n+9/8j3cvtIlbPgnQMv587RCwPA=;
- b=XVaQf4JLnF8d3Hb299exyckDivHIHY1nyYJkA5Jra0I7aHiWqq+kLP5FstFBx2YBQWiTI9BTxjOKvBmQEdKGczM4Yq161uZ7pQcWQ1/ghzusaMpxCQbjqb+8VgCkoESySgjekY3LO3pTZAvsDk8HTO55GLQtVpba0ZphUsNbllvU0txYcG6eB8SwiCy1ZKpwttzMzwIJNj4nfRvYDGUbtekASu8KHd3ZKaG3BYPIYAU9dgCHY08Z5PfvXb+s3/sqSbZc8am4XIX86HFiw75KQG92H0kFmAuMGS58kxuenVf2RuWk2x9FW8/HxkLTT1Ql3je3oaIvRTOmvUg9TfAsIQ==
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
- by SEZPR06MB5522.apcprd06.prod.outlook.com (2603:1096:101:a6::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Thu, 22 Feb
- 2024 18:08:58 +0000
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::53da:a8a:83cb:b9ad]) by SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::53da:a8a:83cb:b9ad%4]) with mapi id 15.20.7316.023; Thu, 22 Feb 2024
- 18:08:58 +0000
-Message-ID:
- <SEZPR06MB695945A0BC315187BCF3284496562@SEZPR06MB6959.apcprd06.prod.outlook.com>
-Date: Fri, 23 Feb 2024 02:08:48 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/8] dt-bindings: clock: convert hisi-crg.txt to YAML
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: David Yang <mmyangfl@gmail.com>, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240222-clk-mv200-v3-0-f30795b50318@outlook.com>
- <20240222-clk-mv200-v3-1-f30795b50318@outlook.com>
- <f6dd8194-979a-4409-a300-f1eccba7fce7@linaro.org>
-From: Yang Xiwen <forbidden405@outlook.com>
-In-Reply-To: <f6dd8194-979a-4409-a300-f1eccba7fce7@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TMN:
- [OWRQxBZapP99VmD6duG+Q0JowEu8ab6z4KaGGCYqb8n7vRzHHFy+/Z5kRQEzLx0lO+bz30zRby8=]
-X-ClientProxiedBy: TYCP286CA0177.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:3c6::20) To SEZPR06MB6959.apcprd06.prod.outlook.com
- (2603:1096:101:1ed::14)
-X-Microsoft-Original-Message-ID:
- <b20cb3e8-77b7-4c93-a9b3-526e5e8923b3@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF44515699F;
+	Thu, 22 Feb 2024 18:09:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708625375; cv=none; b=tFwPavjgDToVDjfGVdB57mFAtn2fwCTjI4tJbkTRjPU99ZPgFZgSeknkxWDzheRFLdClliQffsy5CJaOyIAFFSu+ctQWJZwH+Xo8GSGLuNLiCIiAwNoblVplYZl/ie0ccvB4Mvi4vyPHJVvnF5pGKR+qpHQ48ei02HOEj0ES/ts=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708625375; c=relaxed/simple;
+	bh=jk8RlsiT8f/S9Jhz/GgQqUxnZg2BACrAQRRLCql1KoA=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=C8k8TA+ZZeR+HVNk0VwpMjFcha+3qhHZTY3ggN7A+YpyGNac0/J1x1hFT8i0uHkGsqb7lj8fIDFAjRbQsDVQ99v8qil/SYlymsGVMiFTWscIi//Dh9pocXM4GlJ8ikNs2XAlezKFUhALSOAG/SoSA6uucWmC3Ifmfb/mTRG/+Dc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=D4mgCP0X; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708625373; x=1740161373;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=jk8RlsiT8f/S9Jhz/GgQqUxnZg2BACrAQRRLCql1KoA=;
+  b=D4mgCP0X7V2BOL6YI2be3QbS+MM7/d61FRsc0R8cp5B7yxS9NstO1bTO
+   Dw8YFnwZy0Ig/fhx2dEOYfYpIL0D/UnC6n7t+bP5IsdcZG2o19s6p1J6H
+   g1XJZfZD7bB8I9JpBxGs1bdfBQaPYdnWwQ0KOx+5QJEKcoG9czuK8d9Qt
+   JuUy/FabbNZNV3U0Fzm6ylKNt1GQksL6YvK9NFeoCrfr4189h5D0X/6hf
+   NHKDFOVH9IAoRaHGfHGJyi3/hPMQV/TKtPIScZ2WcQqkGgozTGotZuvxs
+   875Gt4fOvUxfvWe74ryVHqmrXKNUvjuWuqxooSwrbq0gsn6+fjfUkdpWk
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="2981632"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="2981632"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 10:09:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="827583578"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="827583578"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 22 Feb 2024 10:09:29 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
+ <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
+ <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
+ <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
+ <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
+ <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
+ <kai.huang@intel.com>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
+ <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
+ <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+ "chrisyan@microsoft.com" <chrisyan@microsoft.com>
+Subject: Re: [PATCH v9 08/15] x86/sgx: Implement EPC reclamation flows for
+ cgroup
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-9-haitao.huang@linux.intel.com>
+ <fa091e657c2d3f3cc14aff15ad3484e0d7079b6f.camel@intel.com>
+Date: Thu, 22 Feb 2024 12:09:28 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|SEZPR06MB5522:EE_
-X-MS-Office365-Filtering-Correlation-Id: 478bad72-e558-4a9d-cbb5-08dc33d1557f
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	HnVE/3ReiuzVQbdpf8ylzR2+8SLHg9LwgActPz6j0/Td0WMfrZ7M0l2yEeITDDI/G0644s6pERJryAk07bMTdqbhvGV0BoTddzyAscPWO+jGYpnXVw4+ANYYztBB6pb0rikGHek6EUFXtL9NsX6TLLA+jkeWQgYqv/828TjC59pUCSA4E8vuYglI78P+F3+Itmptw6TEJEmShw00bjrRsMIbNNOGsYu0nWFXVYf7GnY+FX+Qhzb/G+sSscBvEDDelXi/DqdMPeEiOoQikMwzhPG2iUdji8qgPXXyde7+67PDQ5zpR1+VIs4HVYru6EnOSoxlm1DpMqzMMhn5oEtyIFLnvuijtzD+RFNk01PWpHXE6NlAqd8bdjDik1tVLJnhLuUnWlwnYxraQPqbnXvTWKV+s06UE0U2nhIiOZfjAdFB9P2MPXYOMCnEltpE7uIg6peJ1bvdymk1o8tkp11u5KRZNK1uIB89j4mZ24cF0loOl9wsnqHNqcJ9a2KVa4DY4+9jJxLwX5djCdDpq1veatkDlhCw6Zu5/dHU/yhYgna0Ii8IqFUznGwVrkXp84Ez
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?dzAvZzFJa1ptM1FjNm9FWnl2ZFdLNFBnMjJ1QnBLcmt4NGt6YzJISjVreWM4?=
- =?utf-8?B?NkxLV2ZvZkhzODFEbXJleGxEMjZvKzZiM1FRUWJEa3hra3FXdW1VMW1heWNl?=
- =?utf-8?B?ZG1WWHNmWi9BTXBYTFFEQ203T0FHWmU5RU9CeklFSnY1Q00xb3htb2N2d2oz?=
- =?utf-8?B?ZDd0Z1M1eFExMEZodFErcEN5RXFuYTNsWUtXdFVlWVpYMnpSSVpRS2tXZ1ZO?=
- =?utf-8?B?Y0pVSzZEdmlEUnRKaXFoZ0VzWERUK2svc3JnanFablRoRjZ6c00xWFFzdU1X?=
- =?utf-8?B?YUNyRDZaV3lqcDlwZ0RCLzE2RGQzUjVBRGJOMzlndUNWcmprb1RaRWljQkF3?=
- =?utf-8?B?YTlRdFN5eGFYeUhQTDN1cVQ0QWE2VFdRcG9pVEc2dnBPTWdZWmN6Tmc5elVv?=
- =?utf-8?B?bHdrOEVsRlpLL3d1bTBVdGdNbldZdDIxVUFTeVZScUwzMTgyRGNnUXViejNV?=
- =?utf-8?B?Sks2SVlDdVVuSHdpS2JLc0JFcVZYQkhqYURZYjNvVjRYcm5meWp4S0pyZEZJ?=
- =?utf-8?B?aUFlQmczZEZRb1VIckpiVFR0S1Ixb1RTaTlvcU5TTUl2NGRUSy9vRE8yRkll?=
- =?utf-8?B?LzV6VGZjQm05YlVicW5wandSaU1tTHovNXdhUzJNUGxWTDZabEtCZGdCMjNQ?=
- =?utf-8?B?NjB5UGJHRFJLZ2VVbGdYbXFZc3luMTBtcjQ1SDRUc0Fhc0pwbTluS0xoMXZF?=
- =?utf-8?B?V3RmMVZxaTNWTVp6bENhaXI0cUM2RTc0RlVJRVdsRHZ4bUhEdEJwYnN5Zkox?=
- =?utf-8?B?VTVxeU5GK0RxLytqKzlJV3d0aUQ0eGFzSnhtUHVWdmxtSVlPYlFBZlpDNk1z?=
- =?utf-8?B?R3JTZU5yLzFaU3RRNUVrNTVHZWhPMGkyZFdKWUJzNkRZU1hPb2JwYVRzY0to?=
- =?utf-8?B?cmJINzNKZkh4K0hXc3pZQTROYzRvNXlrd1JNMTRYOURsWDlUYlhlRDNCcVIw?=
- =?utf-8?B?MUNvT2QzM3VLT2todThQOGt2dHpUMFFVckxicU9pMzRhUjVOWC9ndjcrZGwr?=
- =?utf-8?B?QlpZRGNtbEJZaG42U3k5VVBDTUlkRVRDYlZZMG1Wbk1zaDhaSldzRndQZDJ0?=
- =?utf-8?B?L3IxUkZrK0FhaEpZUnhSZmJpSTdOVzdjTXpuTWdveXNyYkdYN09aVi9aRnZ2?=
- =?utf-8?B?ekI2bkVEeHlpdWFJTzFUMFVEZ0dLbmFTY1g3SXVPV3pORkhkQStZa2Qxa3hm?=
- =?utf-8?B?ZlZTRXlRUitMdkhoQTQxdHYzS1RxSWNJT1RUSjFTRVRLcTg3eXRVajJRM0ZR?=
- =?utf-8?B?ODNCcGFxY2tFUWFKL1RBR0NDR0MvNUxPSmpUV1c5b1Jhc0I3Zy9KSTV0bnlR?=
- =?utf-8?B?SEFOcFE0cVIzTGJnK29PU2pVU0prb2pIRFp0allCZUwyZjEwMzUxb05xS3Nz?=
- =?utf-8?B?QStVempWZXBsaTIydE9GMi9IcmQybG0rb1JkRm8rVmUyZHJVbkZBaDlvZzBD?=
- =?utf-8?B?d3JoZFM3T1h4RkJ4S0dldExuWEZVVFdCVWx4Njdubno3b3ZrN0FuNnRhejNi?=
- =?utf-8?B?MVlqZEp1dzlmT1FCayt1UGh3WGpvZ05Gam4yMGtvNTVmSjJTZURJNnl1VHdJ?=
- =?utf-8?B?ZFhKeTdMODJJZURzVEdXUUpXT3VQZkk4MEtOQWVpL3FYL0VJRVNNWUlMT1BH?=
- =?utf-8?B?MlZGckcreC9ZVGJsdml3NkpUMi93UzF3c3NvdkQrdGR4MENKU0JXT3VPWklh?=
- =?utf-8?B?SjZBbzU4WWZmVmRCL1l4dTI2V2FVY25oVjNwekFRM3RkaytWQWxScC9sRHYv?=
- =?utf-8?Q?stRBPBDK3AAw7SrDqpl91Hxz3KJN4fnEkEJJ++R?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 478bad72-e558-4a9d-cbb5-08dc33d1557f
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2024 18:08:56.9756
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB5522
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2jj11200wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <fa091e657c2d3f3cc14aff15ad3484e0d7079b6f.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-On 2/23/2024 2:06 AM, Krzysztof Kozlowski wrote:
-> On 21/02/2024 17:41, Yang Xiwen via B4 Relay wrote:
->> From: Yang Xiwen <forbidden405@outlook.com>
->>
->> Also rename to hisilicon,hisi-crg.yaml. While at it, add "syscon" and
->> "simple-mfd" compatibles to match the existing dts.
->>
->> Add reset-controller subnode for hisilicon,hi3798cv200-crg to match the
->> existing hi3798cv200.dtsi.
->>
->> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
->> ---
->>   .../bindings/clock/hisilicon,hisi-crg.yaml         | 69 ++++++++++++++++++++++
-> I don't see any conversion here.
+On Tue, 20 Feb 2024 03:52:39 -0600, Huang, Kai <kai.huang@intel.com> wrote:
 
-
-Ah. It looks like i did something wrong during rebasing. Will be more 
-careful the next time.
-
-
+>>> +/**
+>> + * sgx_epc_cgroup_reclaim_pages() - walk a cgroup tree and scan LRUs  
+>> to reclaim pages
+>> + * @root:	Root of the tree to start walking from.
+>> + * Return:	Number of pages reclaimed.
 >
-> Best regards,
-> Krzysztof
+> Just wondering, do you need to return @cnt given this function is called  
+> w/o
+> checking the return value?
+>
+Yes. Will add explicit commenting that we need scan fixed number of pages  
+for attempted reclamation.
+>> + */
+>> +unsigned int sgx_epc_cgroup_reclaim_pages(struct misc_cg *root)
+>> +{
+>> +	/*
+>> +	 * Attempting to reclaim only a few pages will often fail and is
+>> +	 * inefficient, while reclaiming a huge number of pages can result in
+>> +	 * soft lockups due to holding various locks for an extended duration.
+>> +	 */
+>
+> Not sure we need this comment, given it's already implied in
+> sgx_reclaim_pages().  You cannot pass a value > SGX_NR_TO_SCAN anyway.
+
+Will rework on these comments to make them more meaningful.
 >
 
--- 
-Regards,
-Yang Xiwen
+[other comments/questions addressed in separate email threads]
+[...]
+>> +
+>> +/*
+>> + * Scheduled by sgx_epc_cgroup_try_charge() to reclaim pages from the  
+>> cgroup
+>> + * when the cgroup is at/near its maximum capacity
+>> + */
+>
+> I don't see this being "scheduled by sgx_epc_cgroup_try_charge()" here.   
+> Does it
+> make more sense to move that code change to this patch for better review?
+>
 
+Right. This comment was left-over when I split the old patch.
+
+>> +static void sgx_epc_cgroup_reclaim_work_func(struct work_struct *work)
+>> +{
+>> +	struct sgx_epc_cgroup *epc_cg;
+>> +	u64 cur, max;
+>> +
+>> +	epc_cg = container_of(work, struct sgx_epc_cgroup, reclaim_work);
+>> +
+>> +	for (;;) {
+>> +		max = sgx_epc_cgroup_max_pages_to_root(epc_cg);
+>> +
+>> +		/*
+>> +		 * Adjust the limit down by one page, the goal is to free up
+>> +		 * pages for fault allocations, not to simply obey the limit.
+>> +		 * Conditionally decrementing max also means the cur vs. max
+>> +		 * check will correctly handle the case where both are zero.
+>> +		 */
+>> +		if (max)
+>> +			max--;
+>
+> With the below max -= SGX_NR_TO_SCAN/2 staff, do you still need this one?
+>
+
+Logically still needed for case max <= SGX_NR_TO_SCAN * 2
+
+>> +
+>> +		/*
+>> +		 * Unless the limit is extremely low, in which case forcing
+>> +		 * reclaim will likely cause thrashing, force the cgroup to
+>> +		 * reclaim at least once if it's operating *near* its maximum
+>> +		 * limit by adjusting @max down by half the min reclaim size.
+>
+> OK.  But why choose "SGX_NO_TO_SCAN * 2" as "extremely low"? E.g, could  
+> we
+> choose SGX_NR_TO_SCAN instead?
+> IMHO at least we should at least put a comment to mention this.
+>
+> And maybe you can have a dedicated macro for that in which way I believe  
+> the
+> code would be easier to understand?
+
+Good point. I think the value is kind of arbitrary. We consider  
+enclaves/cgroups of 64K size are very small. If such a cgroup ever reaches  
+the limit, then we don't aggressively reclaim to optimize #PF handling.  
+User might as well just raise the limit if it is not performant.
+
+>
+>> +		 * This work func is scheduled by sgx_epc_cgroup_try_charge
+>
+> This has been mentioned in the function comment already.
+>
+>> +		 * when it cannot directly reclaim due to being in an atomic
+>> +		 * context, e.g. EPC allocation in a fault handler.
+>
+> Why a fault handler is an "atomic context"?  Just say when it cannot  
+> directly
+> reclaim.
+>
+
+Sure.
+
+>> Waiting
+>> +		 * to reclaim until the cgroup is actually at its limit is less
+>> +		 * performant as it means the faulting task is effectively
+>> +		 * blocked until a worker makes its way through the global work
+>> +		 * queue.
+>> +		 */
+>> +		if (max > SGX_NR_TO_SCAN * 2)
+>> +			max -= (SGX_NR_TO_SCAN / 2);
+>> +
+>> +		cur = sgx_epc_cgroup_page_counter_read(epc_cg);
+>> +
+>> +		if (cur <= max || sgx_epc_cgroup_lru_empty(epc_cg->cg))
+>> +			break;
+>> +
+>> +		/* Keep reclaiming until above condition is met. */
+>> +		sgx_epc_cgroup_reclaim_pages(epc_cg->cg);
+>
+> Also, each loop here calls sgx_epc_cgroup_max_pages_to_root() and
+> sgx_epc_cgroup_lru_empty(), both loop the given EPC cgroup and  
+> descendants.  If
+> we still make sgx_reclaim_pages() always scan SGX_NR_TO_SCAN pages,  
+> seems we can
+> reduce the number of loops here?
+>
+
+[We already scan SGX_NR_TO_SCAN pages for the cgroup at the level of  
+sgx_epc_cgroup_reclaim_pages().]
+
+I think you mean that we keep scanning and reclaiming until at least  
+SGX_NR_TO_SCAN pages are reclaimed as your code suggested above. We  
+probably can make that a version for this background thread for  
+optimization. But sgx_epc_cgroup_max_pages_to_root() and  
+sgx_epc_cgroup_lru_empty() are not that bad unless we had very deep and  
+wide cgroup trees. So would you agree we defer this optimization for later?
+
+
+>> +	}
+>> +}
+>> +
+>> +/**
+>> + * sgx_epc_cgroup_try_charge() - try to charge cgroup for a single EPC  
+>> page
+>>   * @epc_cg:	The EPC cgroup to be charged for the page.
+>>   * Return:
+>>   * * %0 - If successfully charged.
+>> @@ -38,6 +209,7 @@ static void sgx_epc_cgroup_free(struct misc_cg *cg)
+>>  	if (!epc_cg)
+>>  		return;
+>>
+>> +	cancel_work_sync(&epc_cg->reclaim_work);
+>>  	kfree(epc_cg);
+>>  }
+>>
+>> @@ -50,6 +222,8 @@ const struct misc_res_ops sgx_epc_cgroup_ops = {
+>>
+>>  static void sgx_epc_misc_init(struct misc_cg *cg, struct  
+>> sgx_epc_cgroup *epc_cg)
+>>  {
+>> +	sgx_lru_init(&epc_cg->lru);
+>> +	INIT_WORK(&epc_cg->reclaim_work, sgx_epc_cgroup_reclaim_work_func);
+>>  	cg->res[MISC_CG_RES_SGX_EPC].priv = epc_cg;
+>>  	epc_cg->cg = cg;
+>>  }
+>> @@ -69,6 +243,11 @@ static int sgx_epc_cgroup_alloc(struct misc_cg *cg)
+>>
+>>  void sgx_epc_cgroup_init(void)
+>>  {
+>> +	sgx_epc_cg_wq = alloc_workqueue("sgx_epc_cg_wq",
+>> +					WQ_UNBOUND | WQ_FREEZABLE,
+>> +					WQ_UNBOUND_MAX_ACTIVE);
+>> +	BUG_ON(!sgx_epc_cg_wq);
+>
+> You cannot BUG_ON() simply due to unable to allocate a workqueue.  You  
+> can use
+> some way to mark EPC cgroup as disabled but keep going.  Static key is  
+> one way
+> although we cannot re-enable it at runtime.
+>
+>
+Okay, I'll disable and print a log.
+
+[...]
+[workqueue related discussion in separate email]
+
+Thanks
+Haitao
 
