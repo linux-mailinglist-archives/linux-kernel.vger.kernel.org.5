@@ -1,285 +1,205 @@
-Return-Path: <linux-kernel+bounces-77050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3133286007B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:09:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 972E186007E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 19:11:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA6E528337A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:09:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FC711C24983
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 18:11:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3780B157E93;
-	Thu, 22 Feb 2024 18:09:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FBAF157E91;
+	Thu, 22 Feb 2024 18:11:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D4mgCP0X"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Z3qwYgNA"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF44515699F;
-	Thu, 22 Feb 2024 18:09:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0007D13328D
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 18:11:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708625375; cv=none; b=tFwPavjgDToVDjfGVdB57mFAtn2fwCTjI4tJbkTRjPU99ZPgFZgSeknkxWDzheRFLdClliQffsy5CJaOyIAFFSu+ctQWJZwH+Xo8GSGLuNLiCIiAwNoblVplYZl/ie0ccvB4Mvi4vyPHJVvnF5pGKR+qpHQ48ei02HOEj0ES/ts=
+	t=1708625464; cv=none; b=j56+b1czXYV34kQTtX7ebJw9SU4nE84gkeM4A0V1FQ/hb9hd33PW1rbh4NLjVY09Yg9eivzuzTMboOU+yfiDi8YBiizMVRUjJKHSZR3Pj/X5QZlzA3dG+yGub0KbXx2urozS13tOkqqB7ZS8ufV3FyCjVPCli1N+aIM1a1Ej9rw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708625375; c=relaxed/simple;
-	bh=jk8RlsiT8f/S9Jhz/GgQqUxnZg2BACrAQRRLCql1KoA=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=C8k8TA+ZZeR+HVNk0VwpMjFcha+3qhHZTY3ggN7A+YpyGNac0/J1x1hFT8i0uHkGsqb7lj8fIDFAjRbQsDVQ99v8qil/SYlymsGVMiFTWscIi//Dh9pocXM4GlJ8ikNs2XAlezKFUhALSOAG/SoSA6uucWmC3Ifmfb/mTRG/+Dc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=D4mgCP0X; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708625373; x=1740161373;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=jk8RlsiT8f/S9Jhz/GgQqUxnZg2BACrAQRRLCql1KoA=;
-  b=D4mgCP0X7V2BOL6YI2be3QbS+MM7/d61FRsc0R8cp5B7yxS9NstO1bTO
-   Dw8YFnwZy0Ig/fhx2dEOYfYpIL0D/UnC6n7t+bP5IsdcZG2o19s6p1J6H
-   g1XJZfZD7bB8I9JpBxGs1bdfBQaPYdnWwQ0KOx+5QJEKcoG9czuK8d9Qt
-   JuUy/FabbNZNV3U0Fzm6ylKNt1GQksL6YvK9NFeoCrfr4189h5D0X/6hf
-   NHKDFOVH9IAoRaHGfHGJyi3/hPMQV/TKtPIScZ2WcQqkGgozTGotZuvxs
-   875Gt4fOvUxfvWe74ryVHqmrXKNUvjuWuqxooSwrbq0gsn6+fjfUkdpWk
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="2981632"
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="2981632"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 10:09:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="827583578"
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="827583578"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 22 Feb 2024 10:09:29 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
- <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
- <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
- <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
- <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
- <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
- <kai.huang@intel.com>
-Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
- <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
- "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
- <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
- "chrisyan@microsoft.com" <chrisyan@microsoft.com>
-Subject: Re: [PATCH v9 08/15] x86/sgx: Implement EPC reclamation flows for
- cgroup
-References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
- <20240205210638.157741-9-haitao.huang@linux.intel.com>
- <fa091e657c2d3f3cc14aff15ad3484e0d7079b6f.camel@intel.com>
-Date: Thu, 22 Feb 2024 12:09:28 -0600
+	s=arc-20240116; t=1708625464; c=relaxed/simple;
+	bh=nJUrBTzLCmoeEBw/e2vxOTOBcTPnOYt9FpDz/70UR30=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oJH9V5htnCB7M8WNL5VbvrC5zL8jpW3s0bnpCwxX9hDzQ02g1m5AuuX2EyyyrzBjwGXC41euSIcyRLieDxiI/eSgsIXJzP3s1SGc3hqbqOHsurjIOwsKRFJn60QXZEjCEtmZwp3xtkPA1kLJKA5f0ep6t4PNFRP9MHhEXxpGm4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Z3qwYgNA; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3fb7cd030eso2042166b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 10:11:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708625461; x=1709230261; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ILFwcJG+u/u4mc5uI+JhxO5Ph6/q8Er+p0tnlNwT0QM=;
+        b=Z3qwYgNAprmAEyBVecdT8R/fIKdxl9lKu1NvGdehFFfs/JyynlTRwYoBAbHThLdM2E
+         EBObGbrRACqMOWoICaJNfSyx+qNRFSMnsJuuC9hHCx6doMhiubJqdf+ip4OmQEkgAasM
+         9wXX+7i5r9l4pAbIaipDiTAO6BccjC8cVh0LSWrmYcCa6h4u0233XmdQcQ6nF6EH0fd7
+         xftKX/lbwNp/HPyEKjkXbKnd2nlxu/ijWZuaMYOHMgmFqVxFQzNbkqVGz6jHpF8Y55+G
+         9QfX4VtcjEDdHH48r43LjZy3hxuyjtLkRUPLiilGsbJQLD0uQZDT/V4iWnnV53ZZNps7
+         4cwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708625461; x=1709230261;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ILFwcJG+u/u4mc5uI+JhxO5Ph6/q8Er+p0tnlNwT0QM=;
+        b=a5FF2TQpyKUh0A3Yxqt2jwzSyzv1qGGnOSHoEHtb6urkbxjaOezy5l6oH1QEC40XRi
+         f0md2OJEjfjvbZvzFcLWA7cxWp87xjI7+49ksVSvLx2hFOCdEX6GAK6IPjm8lb/r6nlZ
+         hjGmwaXEwt4WmYr8/Ym4abYdn/sRdd2MNCAY8x7Huz16C1DjftwdGvLG9WsFUJCFTUEl
+         a/WqxnyYahPSZzsXeMZu/d/Dbhsf3S+uGtVs1hGHhuUbfSHhUNXotc7Q90hxB9aHoHyr
+         nC8l9jWwh8K8sYDYk2RFqJ75swa/UIuQGDp0o1ODQbGkdy2qUKMFwevtmOOlO0vUFyxg
+         t4Rw==
+X-Forwarded-Encrypted: i=1; AJvYcCUdOJXhZufQH2vB7VwDFpOHx4TlsqIPCd+2frCtXPc94T9yhu8Gsi3Mq/3xecsveaGM5TiRPK9fnfahpvlMgip2FLy7w5ZxHKp0BxNB
+X-Gm-Message-State: AOJu0Yxnssqy8VzmVDetlh2mDptpcvGznuL2oNyKRTzycFEB1FndlQX8
+	HewytAC+SrA3xbcWzxFdDynqg6cL1OCzVSp678Ut2vhwK4V/3M64Uwy9oj0aMS8=
+X-Google-Smtp-Source: AGHT+IH2aIv6DWkMkEA3X9JJb8bneFqsqS6HyS/520aJTU0j/6Ztu9TnpUDTvsf/VJJluJG+IpTySw==
+X-Received: by 2002:a17:907:76d4:b0:a3e:791d:afe6 with SMTP id kf20-20020a17090776d400b00a3e791dafe6mr8199301ejc.44.1708625461358;
+        Thu, 22 Feb 2024 10:11:01 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id q12-20020a170906770c00b00a3df13a4fe0sm6274074ejm.15.2024.02.22.10.10.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Feb 2024 10:11:00 -0800 (PST)
+Message-ID: <6e0e7670-f003-471b-b42d-8b45a42b02a8@linaro.org>
+Date: Thu, 22 Feb 2024 19:10:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 7/8] dt-bindings: clock: hisilicon: add clock
+ definitions for Hi3798MV200
+Content-Language: en-US
+To: forbidden405@outlook.com, Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: David Yang <mmyangfl@gmail.com>, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240222-clk-mv200-v3-0-f30795b50318@outlook.com>
+ <20240222-clk-mv200-v3-7-f30795b50318@outlook.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240222-clk-mv200-v3-7-f30795b50318@outlook.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2jj11200wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <fa091e657c2d3f3cc14aff15ad3484e0d7079b6f.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
 
-On Tue, 20 Feb 2024 03:52:39 -0600, Huang, Kai <kai.huang@intel.com> wrote:
+On 21/02/2024 17:41, Yang Xiwen via B4 Relay wrote:
+> From: Yang Xiwen <forbidden405@outlook.com>
+> 
+> Add clock definitions for core CRG and mcu CRG for Hi3798MV200 SoC.
+> 
+> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+> ---
+>  .../dt-bindings/clock/hisilicon,hi3798mv200-crg.h  | 150 +++++++++++++++++++++
+>  .../clock/hisilicon,hi3798mv200-sysctrl.h          |  21 +++
+>  2 files changed, 171 insertions(+)
+> 
+> diff --git a/include/dt-bindings/clock/hisilicon,hi3798mv200-crg.h b/include/dt-bindings/clock/hisilicon,hi3798mv200-crg.h
+> new file mode 100644
+> index 000000000000..bf6b6b855724
+> --- /dev/null
+> +++ b/include/dt-bindings/clock/hisilicon,hi3798mv200-crg.h
+> @@ -0,0 +1,150 @@
+> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
+> +/*
+> + * Copyright (c) 2024 Yang Xiwen <forbidden405@outlook.com>
+> + */
+> +
+> +#ifndef __DTS_HI3798MV200_CRG_H
 
->>> +/**
->> + * sgx_epc_cgroup_reclaim_pages() - walk a cgroup tree and scan LRUs  
->> to reclaim pages
->> + * @root:	Root of the tree to start walking from.
->> + * Return:	Number of pages reclaimed.
->
-> Just wondering, do you need to return @cnt given this function is called  
-> w/o
-> checking the return value?
->
-Yes. Will add explicit commenting that we need scan fixed number of pages  
-for attempted reclamation.
->> + */
->> +unsigned int sgx_epc_cgroup_reclaim_pages(struct misc_cg *root)
->> +{
->> +	/*
->> +	 * Attempting to reclaim only a few pages will often fail and is
->> +	 * inefficient, while reclaiming a huge number of pages can result in
->> +	 * soft lockups due to holding various locks for an extended duration.
->> +	 */
->
-> Not sure we need this comment, given it's already implied in
-> sgx_reclaim_pages().  You cannot pass a value > SGX_NR_TO_SCAN anyway.
+__DT_BINDINGS_CLOCK_HI3798MV200_CRG_H
 
-Will rework on these comments to make them more meaningful.
->
+That's not a DTS.
 
-[other comments/questions addressed in separate email threads]
-[...]
->> +
->> +/*
->> + * Scheduled by sgx_epc_cgroup_try_charge() to reclaim pages from the  
->> cgroup
->> + * when the cgroup is at/near its maximum capacity
->> + */
->
-> I don't see this being "scheduled by sgx_epc_cgroup_try_charge()" here.   
-> Does it
-> make more sense to move that code change to this patch for better review?
->
+> +#define __DTS_HI3798MV200_CRG_H
+> +
+> +/* clocks provided by core CRG */
+> +#define HI3798MV200_OSC_CLK			0
+> +#define HI3798MV200_APB_CLK			1
+> +#define HI3798MV200_AHB_CLK			2
+> +#define HI3798MV200_APLL_CLK			3
+> +#define HI3798MV200_BPLL_CLK			4
+> +#define HI3798MV200_DPLL_CLK			5
+> +#define HI3798MV200_VPLL_CLK			6
+> +#define HI3798MV200_HPLL_CLK			7
+> +#define HI3798MV200_EPLL_CLK			8
+> +#define HI3798MV200_QPLL_CLK			9
+> +#define HI3798MV200_PERI_DIV_CLK		10
+> +#define HI3798MV200_CORE_BUS_CLK                11
+> +#define HI3798MV200_MDE0_BUS_CLK                12
+> +#define HI3798MV200_MDE1_BUS_CLK                13
+> +#define HI3798MV200_MDE2_BUS_CLK                14
+> +#define HI3798MV200_MDE3_BUS_CLK                15
+> +/* UART1 does not exist */
+> +#define HI3798MV200_UART2_CLK			16
+> +#define HI3798MV200_UART3_CLK			17
+> +#define HI3798MV200_I2C0_CLK			18
+> +#define HI3798MV200_I2C1_CLK			19
+> +#define HI3798MV200_I2C2_CLK			20
+> +#define HI3798MV200_SPI0_CLK			21
+> +#define HI3798MV200_SCI0_CLK			22
+> +#define HI3798MV200_SCI1_CLK			23
+> +#define HI3798MV200_VDH_CLK                     24
+> +#define HI3798MV200_VDH_DSP_CLK                 25
 
-Right. This comment was left-over when I split the old patch.
+You have mixed/mess indentation.
 
->> +static void sgx_epc_cgroup_reclaim_work_func(struct work_struct *work)
->> +{
->> +	struct sgx_epc_cgroup *epc_cg;
->> +	u64 cur, max;
->> +
->> +	epc_cg = container_of(work, struct sgx_epc_cgroup, reclaim_work);
->> +
->> +	for (;;) {
->> +		max = sgx_epc_cgroup_max_pages_to_root(epc_cg);
->> +
->> +		/*
->> +		 * Adjust the limit down by one page, the goal is to free up
->> +		 * pages for fault allocations, not to simply obey the limit.
->> +		 * Conditionally decrementing max also means the cur vs. max
->> +		 * check will correctly handle the case where both are zero.
->> +		 */
->> +		if (max)
->> +			max--;
->
-> With the below max -= SGX_NR_TO_SCAN/2 staff, do you still need this one?
->
+> +#define HI3798MV200_JPGD_CLK                    26
+> +#define HI3798MV200_PGD_CLK                     27
 
-Logically still needed for case max <= SGX_NR_TO_SCAN * 2
+Best regards,
+Krzysztof
 
->> +
->> +		/*
->> +		 * Unless the limit is extremely low, in which case forcing
->> +		 * reclaim will likely cause thrashing, force the cgroup to
->> +		 * reclaim at least once if it's operating *near* its maximum
->> +		 * limit by adjusting @max down by half the min reclaim size.
->
-> OK.  But why choose "SGX_NO_TO_SCAN * 2" as "extremely low"? E.g, could  
-> we
-> choose SGX_NR_TO_SCAN instead?
-> IMHO at least we should at least put a comment to mention this.
->
-> And maybe you can have a dedicated macro for that in which way I believe  
-> the
-> code would be easier to understand?
-
-Good point. I think the value is kind of arbitrary. We consider  
-enclaves/cgroups of 64K size are very small. If such a cgroup ever reaches  
-the limit, then we don't aggressively reclaim to optimize #PF handling.  
-User might as well just raise the limit if it is not performant.
-
->
->> +		 * This work func is scheduled by sgx_epc_cgroup_try_charge
->
-> This has been mentioned in the function comment already.
->
->> +		 * when it cannot directly reclaim due to being in an atomic
->> +		 * context, e.g. EPC allocation in a fault handler.
->
-> Why a fault handler is an "atomic context"?  Just say when it cannot  
-> directly
-> reclaim.
->
-
-Sure.
-
->> Waiting
->> +		 * to reclaim until the cgroup is actually at its limit is less
->> +		 * performant as it means the faulting task is effectively
->> +		 * blocked until a worker makes its way through the global work
->> +		 * queue.
->> +		 */
->> +		if (max > SGX_NR_TO_SCAN * 2)
->> +			max -= (SGX_NR_TO_SCAN / 2);
->> +
->> +		cur = sgx_epc_cgroup_page_counter_read(epc_cg);
->> +
->> +		if (cur <= max || sgx_epc_cgroup_lru_empty(epc_cg->cg))
->> +			break;
->> +
->> +		/* Keep reclaiming until above condition is met. */
->> +		sgx_epc_cgroup_reclaim_pages(epc_cg->cg);
->
-> Also, each loop here calls sgx_epc_cgroup_max_pages_to_root() and
-> sgx_epc_cgroup_lru_empty(), both loop the given EPC cgroup and  
-> descendants.  If
-> we still make sgx_reclaim_pages() always scan SGX_NR_TO_SCAN pages,  
-> seems we can
-> reduce the number of loops here?
->
-
-[We already scan SGX_NR_TO_SCAN pages for the cgroup at the level of  
-sgx_epc_cgroup_reclaim_pages().]
-
-I think you mean that we keep scanning and reclaiming until at least  
-SGX_NR_TO_SCAN pages are reclaimed as your code suggested above. We  
-probably can make that a version for this background thread for  
-optimization. But sgx_epc_cgroup_max_pages_to_root() and  
-sgx_epc_cgroup_lru_empty() are not that bad unless we had very deep and  
-wide cgroup trees. So would you agree we defer this optimization for later?
-
-
->> +	}
->> +}
->> +
->> +/**
->> + * sgx_epc_cgroup_try_charge() - try to charge cgroup for a single EPC  
->> page
->>   * @epc_cg:	The EPC cgroup to be charged for the page.
->>   * Return:
->>   * * %0 - If successfully charged.
->> @@ -38,6 +209,7 @@ static void sgx_epc_cgroup_free(struct misc_cg *cg)
->>  	if (!epc_cg)
->>  		return;
->>
->> +	cancel_work_sync(&epc_cg->reclaim_work);
->>  	kfree(epc_cg);
->>  }
->>
->> @@ -50,6 +222,8 @@ const struct misc_res_ops sgx_epc_cgroup_ops = {
->>
->>  static void sgx_epc_misc_init(struct misc_cg *cg, struct  
->> sgx_epc_cgroup *epc_cg)
->>  {
->> +	sgx_lru_init(&epc_cg->lru);
->> +	INIT_WORK(&epc_cg->reclaim_work, sgx_epc_cgroup_reclaim_work_func);
->>  	cg->res[MISC_CG_RES_SGX_EPC].priv = epc_cg;
->>  	epc_cg->cg = cg;
->>  }
->> @@ -69,6 +243,11 @@ static int sgx_epc_cgroup_alloc(struct misc_cg *cg)
->>
->>  void sgx_epc_cgroup_init(void)
->>  {
->> +	sgx_epc_cg_wq = alloc_workqueue("sgx_epc_cg_wq",
->> +					WQ_UNBOUND | WQ_FREEZABLE,
->> +					WQ_UNBOUND_MAX_ACTIVE);
->> +	BUG_ON(!sgx_epc_cg_wq);
->
-> You cannot BUG_ON() simply due to unable to allocate a workqueue.  You  
-> can use
-> some way to mark EPC cgroup as disabled but keep going.  Static key is  
-> one way
-> although we cannot re-enable it at runtime.
->
->
-Okay, I'll disable and print a log.
-
-[...]
-[workqueue related discussion in separate email]
-
-Thanks
-Haitao
 
