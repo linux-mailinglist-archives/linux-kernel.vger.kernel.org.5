@@ -1,212 +1,163 @@
-Return-Path: <linux-kernel+bounces-76846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D80C285FD8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:05:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B8E985FDB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 17:10:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C1D42849EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:05:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CE4F287E0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 16:10:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F19A15350F;
-	Thu, 22 Feb 2024 16:04:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D93A1151CF3;
+	Thu, 22 Feb 2024 16:10:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tzv2zbgY"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="owEkeYMT"
+Received: from out203-205-221-231.mail.qq.com (out203-205-221-231.mail.qq.com [203.205.221.231])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 313A114E2EC;
-	Thu, 22 Feb 2024 16:04:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B57151CC5
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 16:10:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708617870; cv=none; b=Zok+GCm3uaD8OZysqS/ap4oWnC90lfTfb6/cREECAYddZM/HuOAZ3E213tTLwe6vTjwfl+73ngcwisRliS6WtAoyqeOS7bbmXykrFOg++UT97YTHjvvsIHXt2otYJBo4v600PtfbNzlWxLDisuSaV3oNlHsjM+SpI8NXAfVgVpw=
+	t=1708618204; cv=none; b=UIzJtW1nKXHmUGBi18QxXP0DMAiBmQer2ziGTQGBOlQNMPUYL8UeULJZNuWyxhngTxY2e8QU+U+idQ5EElxC+TO4GYERAjjqAmt0F4c5ezSgWxG8j0UUesmYiP7FcvJAIgIV+j0zMwhLiTsPTdCfiUWFEx3f3uIz3rgAkTZviWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708617870; c=relaxed/simple;
-	bh=P42TGDqNMaruT+fPW7RuapqiiWQ3asGq5OrEFjudad4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F9vPnMMwIusoGSzsSqjAjRFrFg4fYc6EWlsiVNrFZEfe9ynHsaZ4piMW4Y6t1/XkgSko4FX46sSD22Ex5GZEGruiTBo1pNhPMh3jwTEAEpyagRn75vbXvmRPURye6TmULqeak7pFf1gMOVsDd9IcW0jTuPWg5G7Wj+sD3enqdWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tzv2zbgY; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e46e07ff07so2975166b3a.3;
-        Thu, 22 Feb 2024 08:04:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708617868; x=1709222668; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=a2wZuvLUzB5Xua90WdGXe0WBeqHgCvMlx7+R6zIRuFc=;
-        b=Tzv2zbgYycGTwH/UQmxdCV/cYwsYj0dkMCUqK+wH4FUeCdSt2w0bNomEZYNkDiLTkl
-         muNszid5SGf8OxpesRJRtojPX54kC+soQJqK9C0CyxWBhMJ25UI3oDgDWjj+XuTDkBJ9
-         EcmUDzMZCd7VtVExufioUmL5bKeodgj+knBRDzwbLa5cy3GNZnv35+tAtDoFtDbdBOvv
-         myQSFmCUG5wGHnly0Tp5FUPFvXwjsFAkg64LomBcDjb1PsJna4/qUXfxm1mYD8imCi8w
-         WNy+TUVcdv1PpF5Yrq/RDrTf/GivsqwB3e4WL4QSUcXON5Fk/41porGkTbEJ5VovTsQL
-         /dFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708617868; x=1709222668;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a2wZuvLUzB5Xua90WdGXe0WBeqHgCvMlx7+R6zIRuFc=;
-        b=AgtUEE4QeS5EldvZpi50LT6QQ33KTZxLo9kTXTOMxab16XvW8oHCUDLTg0kSH4+j49
-         RSIJf2gEcBa9Gy45gcER9tYbVV3i20NF+q/cPudbtlXGEnVVYOJU4OX61uRZj10sIftC
-         BuwTKS7QHHBYtfpj/MniHglIaoDcpkYt3zXTBPWLxtiUhLpKJQF6YL5kO/PEepm94dzp
-         0CHb6NmmJOkxayFtyYKtcAxK2ky/qFOyHXISmZ6qWeLIrFFh6wkVTLWLuAuohhybKcWj
-         TXgrC2RcGh1F5I1lKTYzdsePhmt8L0i7AYOuMIh4X3V1DkcJxcQmHWEyrnfKP1F2MVqr
-         tjfA==
-X-Forwarded-Encrypted: i=1; AJvYcCUzwlXsINqCgZlzsO7p9gd3KEljS0K9IPnfyeeN4cSOljQVdnGUeecf91EqnYeZO9upiCewbHAo+AcEROC7mPObPG36/iUolDZT1u4ZrA8HphRCvOi+6/xg1xZ0W8Rg6REt6DT0ASTn2etrqG0vgqDhX5UWLvJMvGK8CZCKNPRMUx5qYJ2KgA==
-X-Gm-Message-State: AOJu0YwwHQAh54ZJYnRs8i0q3nXFwgF/7Cku12uPKc6poHJphsDtZgHA
-	zQ8o/Up4Xrjubawk3kJS03qtjB10AzYglE1H+cFqol+zvh1G4agp
-X-Google-Smtp-Source: AGHT+IFBJklfrmfWsNk9Zx3owdvhwzqUMmVPAwpM0bP01dIqsN8oHERt6/Te9gpGsniCrhGBngqMqQ==
-X-Received: by 2002:a05:6a00:b54:b0:6e4:8ea9:5e5c with SMTP id p20-20020a056a000b5400b006e48ea95e5cmr6634801pfo.27.1708617868390;
-        Thu, 22 Feb 2024 08:04:28 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id lo20-20020a056a003d1400b006e4c4b7e6f5sm2199600pfb.208.2024.02.22.08.04.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 08:04:28 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Thu, 22 Feb 2024 08:04:27 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arch@vger.kernel.org
-Subject: Re: [PATCH 2/4] parisc: checksum: Use generic implementations
-Message-ID: <e7bb76ae-285d-4840-ba58-c3fc5c5af6ec@roeck-us.net>
-References: <20240221-parisc_use_generic_checksum-v1-0-ad34d895fd1b@rivosinc.com>
- <20240221-parisc_use_generic_checksum-v1-2-ad34d895fd1b@rivosinc.com>
+	s=arc-20240116; t=1708618204; c=relaxed/simple;
+	bh=VAARJbyByjfYUowrYEBvOr5VJx+E5jEyLas79aJZyFg=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=C17Q3nYcCW0mmmk78pFzC2IivKdkx3+psPGUX7UaSM4ssqj9Yohc6fJWmjtj1STyVfpfpGWSc7rYC9w9btWwydrXWbabvojjC9kE+H3yhuDx6OkPzSyaEC0QeABq3QR+ZHgfGXn4KYKj1YCaViO1jgaqsQzvRUNj1TWjrq4GmEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=owEkeYMT; arc=none smtp.client-ip=203.205.221.231
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1708617892;
+	bh=vjLg0TSWsTe0chZQ3fuBODGo/vzvbbkVGlo25W/YgL8=;
+	h=From:To:Cc:Subject:Date;
+	b=owEkeYMTlWA81AQ2Ov455FK/7iNjh3ILUq4B2dPH3HRoJf5LdJFLczkRRS9en/olx
+	 V1l7rmOQSm6MKe0huQbmJFv8QQHSMcA8++jfp36OfWTsEqdQS+OXdtiLQe2/31pKhO
+	 G+8RayQWbZZMYPPcvwptgNogfcWQKFmVbo2OLluM=
+Received: from localhost.localdomain ([2409:8a60:2a61:ef40:7404:388f:486a:7747])
+	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
+	id 131B565A; Fri, 23 Feb 2024 00:04:49 +0800
+X-QQ-mid: xmsmtpt1708617889t56zrz7dp
+Message-ID: <tencent_09CF49556CD442411A93D0E92ACC2B7E5D08@qq.com>
+X-QQ-XMAILINFO: N3l5ASPewLWqAyF+hdEE/ByG4KGYO1CseUekNA69wAbtfaBeXNyKtLVasEGJN0
+	 qy5g6p+FH26qGZHzdo5XnP3/bUsbmc58txge5SphCJ26cjze7bnVUrByy4eJR5rgyzSzvik+cE0R
+	 4UI/nRWfdm2BWRYnAXhsL2CCqinhEhb4xncEer2svyeORTGqGmA+D2166CPlOUXLzZJUmb0dV0dB
+	 qgK+Wi0J96/O87KfTXWQbsD+3VhgM5op5IC0OhOQKqnxnRA365Get8+jhfAy3RwGHeqNy+AujpPd
+	 UvlrOwMEI+4EZptVbMSGzYVId4eSbIeiKXs2RcIZ+aW/0/Ab6Yix26995i3vAupqWHK7/HuyRie+
+	 Rk4FyU2tzulEGqvkirg1gg0q67zZNwfM9kjSv14aRjYwhpvYV9lDqlW60fd0MY6no6ycN7FDdXFw
+	 iB5alA1vjHsyzi6LKg/dA6gntzudQor3HJIkJE7cc2Wz+Pch3E5QiOdy9fAL50/QGvfwG9noUno4
+	 DuOcrEpOjLB+iO5VgztrLhHFz3cMwKVb0zpOqWBiPu7LpXbiLbAYvHUWz98mfwW2U9q13UF9vCHn
+	 xZhPdILxKseZii8O/t4Q41giT/Do9ovZ5/Z5qUY7SKFh+irRKixdgFgRY/CbQrEVLOf6lYr2izBi
+	 5V8wvDJne3tm1TCAkxuwAmMw3bYyLZCbHrHtp9ZV8q3LftPSS6xL90iB4qtOunfsN/XGdILhRE+J
+	 cS1KZyFahPVYdlJuJ85EPHm1NQVoPFuINvvTgmW2g/s6zoOzBG4+UYWJOpE3/T1CgaLsMfJ8RWRJ
+	 CRGWZeffGXY0mVJQrSvlhCInZzWTNZNCFh5tuIz6e25nUGaeLHkN7s2ynMK1B8q+VxRbZ/cOcnMR
+	 +vsEAa2AO7mFsh3Z8OJFdk1hUTCc61U5kRptZQAEmPUNkVqRiI3GvmQ+0l0dZCM+G3/VVhTCZn5k
+	 HOT2XyLd40dhOECKspO3Dj6vm0acJNMdOPsROolAQrrh/3HFwaDPFW9itmdjjPAAUzb2KE1qXAvH
+	 GsRdQZLJu9LNn0pw1Obm1E9iC6V/uxH+1Frwj7yRMcuCjbTVYz
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+From: wenyang.linux@foxmail.com
+To: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>
+Cc: Wen Yang <wenyang.linux@foxmail.com>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Mel Gorman <mgorman@techsingularity.net>,
+	Peter Zijlstra <peterz@infradead.org>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] exit: add a tracepoint for profiling a task that is starting to exit
+Date: Fri, 23 Feb 2024 00:04:34 +0800
+X-OQ-MSGID: <20240222160434.350595-1-wenyang.linux@foxmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240221-parisc_use_generic_checksum-v1-2-ad34d895fd1b@rivosinc.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 21, 2024 at 06:37:12PM -0800, Charlie Jenkins wrote:
-> The generic implementations of the checksum functions
-> csum_tcpudp_nofold, csum_fold, and ip_compute_csum are either identical
-> or perform better than the parisc ones, so use the generic
-> implementations instead.
-> 
-> In order to use the generic implementations of checksum functions,
-> do_csum can no longer be static.
-> 
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+From: Wen Yang <wenyang.linux@foxmail.com>
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Currently coredump_task_exit() takes some time to wait for the generation
+of the dump file. But if the user-space wants to receive a notification
+as soon as possible it maybe inconvenient.
 
-> ---
->  arch/parisc/Kconfig                |  3 +++
->  arch/parisc/include/asm/checksum.h | 42 ++++++++------------------------------
->  arch/parisc/lib/checksum.c         |  2 +-
->  3 files changed, 13 insertions(+), 34 deletions(-)
-> 
-> diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-> index d14ccc948a29..1638deb23287 100644
-> --- a/arch/parisc/Kconfig
-> +++ b/arch/parisc/Kconfig
-> @@ -122,6 +122,9 @@ config GENERIC_BUG
->  config GENERIC_BUG_RELATIVE_POINTERS
->  	bool
->  
-> +config GENERIC_CSUM
-> +	def_bool y
-> +
->  config GENERIC_HWEIGHT
->  	bool
->  	default y
-> diff --git a/arch/parisc/include/asm/checksum.h b/arch/parisc/include/asm/checksum.h
-> index 3c43baca7b39..c7847a08ef7c 100644
-> --- a/arch/parisc/include/asm/checksum.h
-> +++ b/arch/parisc/include/asm/checksum.h
-> @@ -17,6 +17,7 @@
->   * it's best to have buff aligned on a 32-bit boundary
->   */
->  extern __wsum csum_partial(const void *, int, __wsum);
-> +#define csum_partial csum_partial
->  
->  /*
->   *	Optimized for IP headers, which always checksum on 4 octet boundaries.
-> @@ -57,20 +58,8 @@ static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
->  	return (__force __sum16)sum;
->  }
->  
-> -/*
-> - *	Fold a partial checksum
-> - */
-> -static inline __sum16 csum_fold(__wsum csum)
-> -{
-> -	u32 sum = (__force u32)csum;
-> -	/* add the swapped two 16-bit halves of sum,
-> -	   a possible carry from adding the two 16-bit halves,
-> -	   will carry from the lower half into the upper half,
-> -	   giving us the correct sum in the upper half. */
-> -	sum += (sum << 16) + (sum >> 16);
-> -	return (__force __sum16)(~sum >> 16);
-> -}
-> - 
-> +#define ip_fast_csum ip_fast_csum
-> +
->  static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
->  					__u32 len, __u8 proto,
->  					__wsum sum)
-> @@ -85,28 +74,15 @@ static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
->  	return sum;
->  }
->  
-> -/*
-> - * computes the checksum of the TCP/UDP pseudo-header
-> - * returns a 16-bit checksum, already complemented
-> - */
-> -static inline __sum16 csum_tcpudp_magic(__be32 saddr, __be32 daddr,
-> -					__u32 len, __u8 proto,
-> -					__wsum sum)
-> -{
-> -	return csum_fold(csum_tcpudp_nofold(saddr,daddr,len,proto,sum));
-> -}
-> -
-> -/*
-> - * this routine is used for miscellaneous IP-like checksums, mainly
-> - * in icmp.c
-> - */
-> -static inline __sum16 ip_compute_csum(const void *buf, int len)
-> -{
-> -	 return csum_fold (csum_partial(buf, len, 0));
-> -}
-> +#define csum_tcpudp_nofold csum_tcpudp_nofold
->  
-> +extern unsigned int do_csum(const unsigned char *buff, int len);
-> +#define do_csum do_csum
->  
->  #define _HAVE_ARCH_IPV6_CSUM
-> +
-> +#include <asm-generic/checksum.h>
-> +
->  static __inline__ __sum16 csum_ipv6_magic(const struct in6_addr *saddr,
->  					  const struct in6_addr *daddr,
->  					  __u32 len, __u8 proto,
-> diff --git a/arch/parisc/lib/checksum.c b/arch/parisc/lib/checksum.c
-> index 4818f3db84a5..05f5ca4b2f96 100644
-> --- a/arch/parisc/lib/checksum.c
-> +++ b/arch/parisc/lib/checksum.c
-> @@ -34,7 +34,7 @@ static inline unsigned short from32to16(unsigned int x)
->  	return (unsigned short)x;
->  }
->  
-> -static inline unsigned int do_csum(const unsigned char * buff, int len)
-> +unsigned int do_csum(const unsigned char *buff, int len)
->  {
->  	int odd, count;
->  	unsigned int result = 0;
-> 
-> -- 
-> 2.34.1
-> 
+Commit 2d4bcf886e42 ("exit: Remove profile_task_exit & profile_munmap")
+simplified the code, but also removed profile_task_exit(), which may
+prevent third-party kernel modules from detecting process exits timely.
+
+Add the new trace_sched_profile_task_exit() this way a user-space monitor
+could detect the exits and potentially make some preparations in advance.
+
+Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: linux-kernel@vger.kernel.org
+---
+ include/trace/events/sched.h | 28 ++++++++++++++++++++++++++++
+ kernel/exit.c                |  1 +
+ 2 files changed, 29 insertions(+)
+
+diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+index dbb01b4b7451..750b2f0bdf69 100644
+--- a/include/trace/events/sched.h
++++ b/include/trace/events/sched.h
+@@ -341,6 +341,34 @@ DEFINE_EVENT(sched_process_template, sched_wait_task,
+ 	TP_PROTO(struct task_struct *p),
+ 	TP_ARGS(p));
+ 
++/*
++ * Tracepoint for profiling a task that is starting to exit:
++ */
++TRACE_EVENT(sched_profile_task_exit,
++
++	TP_PROTO(struct task_struct *task, long code),
++
++	TP_ARGS(task, code),
++
++	TP_STRUCT__entry(
++		__array(	char,	comm,	TASK_COMM_LEN	)
++		__field(	pid_t,	pid			)
++		__field(	int,	prio			)
++		__field(	long,	code			)
++	),
++
++	TP_fast_assign(
++		memcpy(__entry->comm, task->comm, TASK_COMM_LEN);
++		__entry->pid		= task->pid;
++		__entry->prio		= task->prio;
++		__entry->code		= code;
++	),
++
++	TP_printk("comm=%s pid=%d prio=%d exit_code=0x%lx",
++		  __entry->comm, __entry->pid, __entry->prio,
++		  __entry->code)
++);
++
+ /*
+  * Tracepoint for a waiting task:
+  */
+diff --git a/kernel/exit.c b/kernel/exit.c
+index 493647fd7c07..f675f879a1b2 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -826,6 +826,7 @@ void __noreturn do_exit(long code)
+ 
+ 	WARN_ON(tsk->plug);
+ 
++	trace_sched_profile_task_exit(tsk, code);
+ 	kcov_task_exit(tsk);
+ 	kmsan_task_exit(tsk);
+ 
+-- 
+2.25.1
+
 
