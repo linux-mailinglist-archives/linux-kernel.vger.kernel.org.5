@@ -1,102 +1,98 @@
-Return-Path: <linux-kernel+bounces-77462-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F5E6860599
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F9DB8605AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 23:27:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E43D31F253AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:25:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3D6B1F2250E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 22:27:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43C59131E32;
-	Thu, 22 Feb 2024 22:25:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA770137903;
+	Thu, 22 Feb 2024 22:27:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ReBh+MVJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="k1mq7Hhm"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C0F814B832;
-	Thu, 22 Feb 2024 22:25:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8CEE32C84
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 22:27:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708640701; cv=none; b=SCuY9U/llihNUinM4XZsXzWHnhNGIo1lR2XMwXHuZclo4DyXG5MriJ25byVI/Pmi4jBHTIfmYeR3njvx/+0T+dAyu6DnQNmx/cy2N1DQKR9UnGOcHMSz8q5+42YGAjLLoGCroDiLGYJKwMEhHLBTiblmTeLeL4LyPQcpSiRc1KU=
+	t=1708640846; cv=none; b=G1pCvog9npote9N39t8gzb5sadM7hxC+h3o79ZDKQZCU/8UDXUmdwXx7edqburVZDwVsfKIoLrkiovSshGQGCU4W0mSydaKuQ08yNYwlbwAypFEeObhQvoH5MBoRN7S+qJKuxwcoFqtuPKpEfl5M2WThTS0rdnUHwPn+Tl9rFTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708640701; c=relaxed/simple;
-	bh=RhYJ7BfPoAUNRYijyEGBnyIHRSZV2yGV02THXznja8k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KCZD3nBO0badESInzjYZa0cBYEZA1nGjLayahanm2LUy2157vk/ZxjxtIG23nljBF6tdMx6sh5bJ7EXYfk5AzOxFYOHfW/kZOHgiFWGN8eGMsxomHv+dqCDS7CyK1ychtgsKMRzyhiL71RLTZ8r5jyENyBkm61d0FGdXFpUNAS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ReBh+MVJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A6ECC433F1;
-	Thu, 22 Feb 2024 22:25:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708640701;
-	bh=RhYJ7BfPoAUNRYijyEGBnyIHRSZV2yGV02THXznja8k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ReBh+MVJ01M1vp8nrLyEVn+6lvt7lePy+tuqeyacYng0Gx3fNwUe9SfNx86qV8wE0
-	 jp1RsNoamJxTiD6qoLUYuoZoKqMq6suaKGHUq/j/5wWV39iBGPy4GBauhS8zU3uxg3
-	 BG3SLy6qC8rlSuHMvR3sqrVNX7/BCWbFIOAAeyg8wK15tmz7m86Ha+REosJmq5nStA
-	 UVKpj/xkzuh0CsFQ+zV1lKA3zufPJpmussDawH4vSIma54xEYFvgTYzuimeQLXfQ7B
-	 jD9a+LXxkOZhy+ItUpi62RhbGswow7EaEGZ/0kZWzad31vC//Qf8ZXCErO/lNaV4VH
-	 TyImlT461UBuA==
-Date: Thu, 22 Feb 2024 23:24:57 +0100
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Patrick =?utf-8?B?SMO2aG4=?= <hoehnp@gmx.de>
-Cc: Jean Delvare <jdelvare@suse.com>, 
-	Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>, Paul Menzel <pmenzel@molgen.mpg.de>, linux-i2c@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] i2c: i801: Add lis3lv02d for Dell Precision M6800 v2
- Bios: A26
-Message-ID: <3s546clapu73llqqyhj7fhab5cwhchygrtq53juqcqoyttk2dx@47ylvwpqso5d>
-References: <20240222215010.31456-1-hoehnp@gmx.de>
+	s=arc-20240116; t=1708640846; c=relaxed/simple;
+	bh=pgcUne6M9h/g/xtzSZCXPX8cqVSbwEa25baWijTpl3w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JH/PZJjJipiwLAJd6RQTFaJtrjpug1JFYV6nPNFMgI5Vm2N1RuzYAOe3J6N28x1F0a1m/nbMBqRLhawmNtqp5+EKxeew5PFGlhzoOiZbciyYPTLxxBbFx21Q/ZpIEer3Cp7iSj1u3ZVbMhzDMctBrRUuRzSTS1lJS6EAoxqcXYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=k1mq7Hhm; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-41277b9ef37so9035e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 14:27:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708640842; x=1709245642; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pgcUne6M9h/g/xtzSZCXPX8cqVSbwEa25baWijTpl3w=;
+        b=k1mq7HhmVjBXx8RYTxBgzIfXmCP8ywkrqNfEPTZvx0gKRL2ZVU+Oa4wnPxftnFtYR1
+         PaDnhGBgEi3cpL2wxxp7OS4pKt6kofIEO6klaPzD7B1VNwmHJUIhf5qlXewq1VF/U7XR
+         RkHpZdJ4iwZwivvE+01wCjyEYeRvxXGJzVSPlAQes+R10jLITgLwwiEECbZ5apPH1tca
+         OhmWtY4sPi/dFpHdPzWs7rFkdQWJ6NhVuoHQuGK9iVReg7yEtOiD5/6Ik7R7QKkvHnsP
+         0rjZQPAfyIKJed43ZX1Zt+K058m88TNb1IGz3qBJn53F7Nonl/4xgAVlrFJQXOsfkJRr
+         6JRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708640842; x=1709245642;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pgcUne6M9h/g/xtzSZCXPX8cqVSbwEa25baWijTpl3w=;
+        b=pojfU7/5edbJRIHYICbqzmXAuFYvAL3jyF66zF+uN1MSwpEf+wnMqSx5m6nQCesmhl
+         JwtlJhgBYvRU1Vv3nJ53jGx7Y+yABZJTqqdNBEWTG3UIslYclekro9fQ6Yb403Q7OCll
+         Fla/QVMHqj61ymioYLkGvz+DN4vE2ZPjqzlpahZydyA2tZiZiuaFoR5ybgogN/AnejXk
+         nIoopGqYaK0dt/F/JIFagm67Fg8KBtMeCmt8cvx0AJ1uDQWKpMiE9/WxahQVtpCR7jAm
+         I7od4+RDj++lvWE8GmYkqEJeqHVlKjMuh59m4fkXNGNIbd4sfJrlVvjgqzGgYoNLyon8
+         L4cQ==
+X-Gm-Message-State: AOJu0YxXebDZaVGY8PxlsmJdhdPYpus5LvV9QrBW/7d7NfO/s79nNqr7
+	wFmmF00FKrwUWKX7jluBtnG/SdjGAIOGg9vH7/A0e0SAEncRrNcbRrsddBfYITHpPRc64PB97z6
+	LMtN0LSmROk3+DVydhOe+73pd4Cp8175Szy0=
+X-Google-Smtp-Source: AGHT+IFBGtemsP1bM44wO5E01WKHh8GHVWrdWM4JBV6WS9B9W45GiSWrkYLSYjP1T3xpspqn2MRITn89UqjLsCf0c5s=
+X-Received: by 2002:a05:600c:5192:b0:412:909a:d3fd with SMTP id
+ fa18-20020a05600c519200b00412909ad3fdmr52237wmb.0.1708640842161; Thu, 22 Feb
+ 2024 14:27:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240222215010.31456-1-hoehnp@gmx.de>
+References: <20240222204917.1719153-1-jstultz@google.com> <20240222212409.GA396872@lorien.usersys.redhat.com>
+In-Reply-To: <20240222212409.GA396872@lorien.usersys.redhat.com>
+From: John Stultz <jstultz@google.com>
+Date: Thu, 22 Feb 2024 14:27:09 -0800
+Message-ID: <CANDhNCrmu1CkynQ_NZ=Mhh1mySGejabUwvOQdvOMKVDJJSrURg@mail.gmail.com>
+Subject: Re: [PATCH] [RFC] sched: Add trace_sched_waking() tracepoint to sched_ttwu_pending()
+To: Phil Auld <pauld@redhat.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, kernel-team@android.com, 
+	Zimuzo Ezeozue <zezeozue@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Patrick,
+On Thu, Feb 22, 2024 at 1:24=E2=80=AFPM Phil Auld <pauld@redhat.com> wrote:
+> Maybe s/this patch adds/add/. Otherwise the changelog is nice and
+> complete.
 
-On Thu, Feb 22, 2024 at 10:50:08PM +0100, Patrick Höhn wrote:
-> Signed-off-by: Patrick Höhn <hoehnp@gmx.de>
+Ah, yes, I'm still terrible about using the imperative mood! Will fix for v=
+2.
 
-I see that you've fixed almost everything that Paul has
-suggested, but please elaborate a bit more in the git commit.
-
-Spend some time adding a description. If you want, you can reply
-to this email with the commit log you have in mind, and I can add
-it for you, or you can send a v3.
-
-Thank you, Paul, for your excellent review.
-
-Andi
-
-PS: A small nitpick: there's no need to add 'v2' in the title.
-    '[PATCH v2]' is sufficient.
-
-> ---
->  drivers/i2c/busses/i2c-i801.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
-> index 2c36b36d7d51..c1fee2c61da1 100644
-> --- a/drivers/i2c/busses/i2c-i801.c
-> +++ b/drivers/i2c/busses/i2c-i801.c
-> @@ -1231,6 +1231,7 @@ static const struct {
->  	 */
->  	{ "Latitude 5480",      0x29 },
->  	{ "Precision 3540",     0x29 },
-> +	{ "Precision M6800",    0x29 },
->  	{ "Vostro V131",        0x1d },
->  	{ "Vostro 5568",        0x29 },
->  	{ "XPS 15 7590",        0x29 },
-> --
-> 2.43.0
-> 
+Thanks for taking the time to look this over and to share your reviewed-by =
+tag!
+-john
 
