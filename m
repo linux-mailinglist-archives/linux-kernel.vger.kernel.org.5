@@ -1,137 +1,141 @@
-Return-Path: <linux-kernel+bounces-77311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB86586039C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:23:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB36C86039D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 21:23:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 569DD1F2718F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:23:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F4A01C23E84
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 20:23:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD58E6E60A;
-	Thu, 22 Feb 2024 20:22:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29F8F6E5F4;
+	Thu, 22 Feb 2024 20:23:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="iZLE4fWJ"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OPQUVRXh"
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7430514B81E
-	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 20:22:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 246A514B81E
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 20:23:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708633374; cv=none; b=abOlm0qQFMMwBPfrWdY8tlcUoFUcOxS9S++KF1b1q+ttZGPVtAqlngWFARKb4B3lAOEgF5fANoLyNkbT8NAhanLG+7qfoIDaGKCAvazSQQTDY1Dg8/51zP7VjvugBrGUVkbZbe7VWrBIGTsXKYR3yyGkiWsfYDLcYKC7C7tbJ3s=
+	t=1708633415; cv=none; b=PozKwQIWs0AZVxY+pnW164nqvjdwwqXxbciMIg8F4h9a6l7Zdxb4Kk+4lVa8eWkc9VGPCUUe/1eOftspf0mFlX5yzZwsGJXStEoYAds103xp9yMI2ui0qnk2w1TBFv86ytURkCPKkd87MEnOK0e14ALv0+OO2z7GizgNsP9y6Rk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708633374; c=relaxed/simple;
-	bh=URYTFp/fuRVeilL5jaYsFaoYbDFJQDSZAADpYUjI2vg=;
-	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
-	 Content-Type; b=Z1/BocNoiVcQpTqG5wwUU/n/8qhEFzTYM8F6xO2GabYHrDi6mdOh6Q/BXa9cuwW56h97pr9dZP2myStXs0vScaFyIk4T39SgoDHE2eDptaL2jAP5FPxP9SbaXM9bzRVEo6jgRqUMSfaZ0WNFU6z2MLlLeinlnxfRjjdXRimNqdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=iZLE4fWJ; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1dc0d11d1b7so1900815ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 12:22:52 -0800 (PST)
+	s=arc-20240116; t=1708633415; c=relaxed/simple;
+	bh=4fRBgKaN3slJsS+si0oakQ81lVv2fxpNPglrqvJUjmk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DXLc/xtrhCVD68U3opmswPsh9KZTDaR2HfhYYIMgGsqOiR4C8/DN1QeBTg3upBtYPM4PiFky8+dm22WUXtKRGKMw8/WHjQkdlVWBhmY5JYxcX8tLJ5qP4/XEOmCB69bLW+sMoS9mjUurRFbz5HwP3Y1x97cHIxUUQkx1edfqhmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OPQUVRXh; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-299a2456948so192430a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 12:23:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1708633372; x=1709238172; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AvT+skZuVtuaziWCz2kmemhaijwUBiIAPgW6NDDOZYI=;
-        b=iZLE4fWJoxw+ADNTYgLoQuJBkiWWaD5tHxiXzoRt/BUcDXw3J5/HaJLpWyW7CJEg+k
-         fI1N+YlUahifMbqoQyuH2SrfalD+Xx/6G4fpSt6eDoRlgdZ+v0Rocr0lIMfQB+ynJ2o3
-         /odbgwLNZqpZwAl0Hmk9zjKgwJeAKLZYKVVlyslsCv0cZI0sVg3DkUUs4fdRjc+CO7pb
-         WydXPZz7eUnuxvX1kWqP/3KVBULbXH62ctNBkq2TdbXXlnWTC1PARGGZZNbw87WUMvGX
-         gQYZpT2Jwnk5ntpvW8jB2ANXyN75bD+aCeCEFOEbtU7EvET22In3KHqp6suyf+joNYrh
-         OIQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708633372; x=1709238172;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1708633413; x=1709238213; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AvT+skZuVtuaziWCz2kmemhaijwUBiIAPgW6NDDOZYI=;
-        b=V8/3bpuwnNPeKGHt1mIhbk8OdlRpQrFOHdzwVQmVWPxdG/YSxAgJd1qS8mzLZGMH2R
-         D4q51Yebd9Cb2MHW2DA6fBEMHTw5nI5dCqXXju9YCyP7/4nuGp3YTxnqjjC20xbtjugt
-         mSkHO/+Bo51JrcVHRJGR1vJlMNrJ/oKxFfuhFoAlbxi+r+fkxSSnprGcKy1aCZZABmZc
-         pnthQwIvOZoojAID/fUoAD+FOWPZvoRjx0TpbTYZLRTsJAUZZQKF6KFjZx4f4VltYLlH
-         reHsK1vIOgxSMohY2uyxoIA9gQWD7G3BvEBmWw1zEqnx3vp/WNsX04X+bONyHqnq6SFt
-         R0kQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWEdCOa7VNAkk7Ak1Krh3ZRxHw+BxkSf4/85V6EaBoaI2zgJ6UefJ+InZhwdLidUfKiKAwqub9eCuMxx7WYB6I6u5eeZCiGUIKHt/Oc
-X-Gm-Message-State: AOJu0Ywq5oVrO4c84zmCeiykmrsMVwAY8Uqr6Zz63vkKqujpB8S8irhb
-	RyUU4I1OGoPQw2ENEuQ/AO0t6RcYPYDBKM++H1PmesBH12BkBCoyJI2wB5g5lC8=
-X-Google-Smtp-Source: AGHT+IFX4Geggl92/IhMKrsNdt44zGVSwXSPbnf0r4+rgv+x/pEZjNOybydm0AF02MocpX49oCjQPA==
-X-Received: by 2002:a17:902:db11:b0:1db:f049:6315 with SMTP id m17-20020a170902db1100b001dbf0496315mr15282166plx.51.1708633371738;
-        Thu, 22 Feb 2024 12:22:51 -0800 (PST)
-Received: from localhost ([50.213.54.97])
-        by smtp.gmail.com with ESMTPSA id km16-20020a17090327d000b001d9fc826522sm2839647plb.239.2024.02.22.12.22.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 12:22:51 -0800 (PST)
-Date: Thu, 22 Feb 2024 12:22:51 -0800 (PST)
-X-Google-Original-Date: Thu, 22 Feb 2024 12:22:43 PST (-0800)
-Subject:     Re: [PATCH v2] riscv: mm: fix NOCACHE_THEAD does not set bit[61] correctly
-In-Reply-To: <CAHVXubg8NKBdeutbwrJh5hdZwhRFsgyTPknM=xUhV=VG+o2Lrw@mail.gmail.com>
-CC: cyy@cyyself.name, linux-riscv@lists.infradead.org, jszhang@kernel.org,
-  Paul Walmsley <paul.walmsley@sifive.com>, guoren@kernel.org, linux-kernel@vger.kernel.org
-From: Palmer Dabbelt <palmer@dabbelt.com>
-To: alexghiti@rivosinc.com
-Message-ID: <mhng-4faa415d-93d9-46fc-b2f3-3b08c0de28ee@palmer-ri-x1c9a>
+        bh=K4zRRdKL9lsMMNiFrqHRK+mlIK8Wb18NpLnVMWick6o=;
+        b=OPQUVRXhjKjTnYTK2k/nV44Obfd/oHhReRXA/1mOUsqDyfrAhdD/9tE5N05A1azN+D
+         N43pP2LJJR51xu4Csg9GSzPYVxy6Z9cfoji2n5m5SPBNv6QQ0bNzptQ6toTor1mk4CQO
+         KW5g2D5F3Vn7zF3pgaIZ/RpJrrc+QO7lt2kVe8toT5IRpG6XznSAjjgmJptCnMRppPmL
+         PPrwhyfj4khFQR+breOkhlZcwG+0AW3eDX+p8+iyYosBFg1oC6oHAqkLu6EH+e7VFIBb
+         JBt1niv7UKxrV5WdDcZTQP1P29ncGVQMYnH5hT98DD1857QJJK5hJRhkro6c4/EMDz1c
+         nVyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708633413; x=1709238213;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=K4zRRdKL9lsMMNiFrqHRK+mlIK8Wb18NpLnVMWick6o=;
+        b=iSbs77uo1OzSe80AkLpeMp46ZuxkNdZyfOZDejbXHGu3IaUMZTsubBd4292BbSv8s6
+         qYPd5d0IoU0b78PDeDHKocmMtvpr04z3kPbBg+8bKXZVsXqgFEsYiReLApHyzgaY6V+P
+         eZ2VwN0JbnIH7N3yZaokabQXUWWAEozrmpuLZHZS9NbEFhi54unUofsXQGYDgJ1NjMrr
+         XmNTdOVGLl3fXB0AFfDbHAdPyJ2RD5FoEfVsYG4hHRnp41thpXhPSiCKSCNvlBzIp/Ev
+         bf8p7wea08x4NHTmbDDd/S5PNvjdbWNYWfWZv9yUyPlMK0Qve67sLrYo1ihYzoIHx1Aq
+         e8xg==
+X-Forwarded-Encrypted: i=1; AJvYcCVtVVz6Te1Z15wp4z1e85ytZapZsdrwhX1wu9+yvhX9ilz9eO+e9mXUZOEH7cIciRpFJ57zpue8Z2Q6dCBshOg9al248TNWFHGLNYOZ
+X-Gm-Message-State: AOJu0YwFNsxonG5dU91YJ+BQtTgw7QsbjDGMSh+TYqKETLX1K7A1xW2k
+	yqysDsNB+6a6fCB18KhHOSYQwh63IOhLP3ZQ2kkkgXjNRfri8I0YjmPRy7dW3/gRAvHINdamgBm
+	zJKV3CjNh+4zZ2OMf+OKpTXJ+92I=
+X-Google-Smtp-Source: AGHT+IEYlyvmciMoWJ2MEC+vVPayK8seyKA+JhIYdvSeWsSf/2H2RqRaxwur2uqaxKGel2jPOVp8zUj+CrLX0nG0JUU=
+X-Received: by 2002:a17:90b:b01:b0:29a:4300:e2c with SMTP id
+ bf1-20020a17090b0b0100b0029a43000e2cmr3476015pjb.34.1708633413413; Thu, 22
+ Feb 2024 12:23:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+References: <20240129054551.57728-1-ioworker0@gmail.com> <CAK1f24keWtJNVv37r2vNsqnmMLRMvF-F76WR5RD_Y-BbAgEaYQ@mail.gmail.com>
+ <CAK1f24nk19eciysFqvTd=rqpiKePhstDWEEQ_mvT89WCDNrWNQ@mail.gmail.com>
+In-Reply-To: <CAK1f24nk19eciysFqvTd=rqpiKePhstDWEEQ_mvT89WCDNrWNQ@mail.gmail.com>
+From: Yang Shi <shy828301@gmail.com>
+Date: Thu, 22 Feb 2024 12:23:21 -0800
+Message-ID: <CAHbLzkoNFn6UE4Hn0gXTm2pLHD7pK4gYUe1zVh3247m30A5u2g@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm/khugepaged: bypassing unnecessary scans with
+ MMF_DISABLE_THP check
+To: Lance Yang <ioworker0@gmail.com>
+Cc: akpm@linux-foundation.org, mhocko@suse.com, zokeefe@google.com, 
+	david@redhat.com, songmuchun@bytedance.com, peterx@redhat.com, 
+	minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 21 Feb 2024 06:00:49 PST (-0800), alexghiti@rivosinc.com wrote:
-> Hi Yangyu,
+On Wed, Feb 21, 2024 at 11:51=E2=80=AFPM Lance Yang <ioworker0@gmail.com> w=
+rote:
 >
-> On Wed, Feb 21, 2024 at 4:04 AM Yangyu Chen <cyy@cyyself.name> wrote:
->>
->> Previous commit dbfbda3bd6bf ("riscv: mm: update T-Head memory type
->> definitions") from patch [1] missed a `<` for bit shifting, result in
->> bit(61) does not set in _PAGE_NOCACHE_THEAD and leaves bit(0) set instead.
->> This patch get this fixed.
->>
->> Changes since v1:
->> * reword commit message and add reviewed-by
->>
->> Link: https://lore.kernel.org/linux-riscv/20230912072510.2510-1-jszhang@kernel.org/ [1]
->> Fixes: dbfbda3bd6bf ("riscv: mm: update T-Head memory type definitions")
->> Signed-off-by: Yangyu Chen <cyy@cyyself.name>
->> Reviewed-by: Guo Ren <guoren@kernel.org>
->> Reviewed-by: Jisheng Zhang <jszhang@kernel.org>
->> ---
->>  arch/riscv/include/asm/pgtable-64.h | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/riscv/include/asm/pgtable-64.h b/arch/riscv/include/asm/pgtable-64.h
->> index b42017d76924..b99bd66107a6 100644
->> --- a/arch/riscv/include/asm/pgtable-64.h
->> +++ b/arch/riscv/include/asm/pgtable-64.h
->> @@ -136,7 +136,7 @@ enum napot_cont_order {
->>   * 10010 - IO   Strongly-ordered, Non-cacheable, Non-bufferable, Shareable, Non-trustable
->>   */
->>  #define _PAGE_PMA_THEAD                ((1UL << 62) | (1UL << 61) | (1UL << 60))
->> -#define _PAGE_NOCACHE_THEAD    ((1UL < 61) | (1UL << 60))
->> +#define _PAGE_NOCACHE_THEAD    ((1UL << 61) | (1UL << 60))
->>  #define _PAGE_IO_THEAD         ((1UL << 63) | (1UL << 60))
->>  #define _PAGE_MTMASK_THEAD     (_PAGE_PMA_THEAD | _PAGE_IO_THEAD | (1UL << 59))
->>
->> --
->> 2.43.0
->>
+> Hey,
 >
-> I feel pretty confident on this one :)
+> On an Intel Core i5 CPU, the time taken by
+> khugepaged to scan the address space of
+> the process, which has been set with the
+> MMF_DISABLE_THP flag after being added
+> to the mm_slots list, is as follows (shorter is better):
+>
+> VMA Count |   Old   |   New   |  Change
+> ---------------------------------------
+>     50     |   23us  |    9us  |  -60.9%
+>    100     |   32us  |    9us  |  -71.9%
+>    200     |   44us  |    9us  |  -79.5%
+>    400     |   75us  |    9us  |  -88.0%
+>    800     |   98us  |    9us  |  -90.8%
+>
+> IIUC, once the count of VMAs for the process
+> exceeds page_to_scan, khugepaged needs to
+> wait for scan_sleep_millisecs ms before scanning
+> the next process. IMO, unnecessary scans could
+> actually be skipped with a very inexpensive
+> mm->flags check in this case.
 
-Ya, sorry I missed it the first time around -- that's a bit embarassing 
-;).  It should show up on fixes soon, just queued up behind some other 
-patches but the tester is back alive so thing should be sane again.
+Thanks for following up on this, can you please capture all the
+information in the commit log?
 
-> Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
 >
-> Thanks,
+> Best,
+> Lance
 >
-> Alex
+> On Wed, Jan 31, 2024 at 5:30=E2=80=AFPM Lance Yang <ioworker0@gmail.com> =
+wrote:
+> >
+> > Updating the change log.
+> [...]
+>
+> > On Mon, Jan 29, 2024 at 1:46=E2=80=AFPM Lance Yang <ioworker0@gmail.com=
+> wrote:
+> > >
+> > > khugepaged scans the entire address space in the
+> > > background for each given mm, looking for
+> > > opportunities to merge sequences of basic pages
+> > > into huge pages. However, when an mm is inserted
+> > > to the mm_slots list, and the MMF_DISABLE_THP flag
+> > > is set later, this scanning process becomes
+> > > unnecessary for that mm and can be skipped to avoid
+> > > redundant operations, especially in scenarios with
+> > > a large address space.
+> [...]
+> > > Signed-off-by: Lance Yang <ioworker0@gmail.com>
 
