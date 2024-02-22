@@ -1,151 +1,131 @@
-Return-Path: <linux-kernel+bounces-76609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF1C985F9F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:37:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1419F85F9FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:38:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E25881C24E84
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:37:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74294B273AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:38:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99864134721;
-	Thu, 22 Feb 2024 13:37:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77E2D134CDC;
+	Thu, 22 Feb 2024 13:38:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IihEN++O"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Wmnz7T4V"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 992E012FF73;
-	Thu, 22 Feb 2024 13:37:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63B21131E5C
+	for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 13:38:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708609072; cv=none; b=MTY3rQ0Nxmli3HSvcLydDO+YhoQiySw96eBVcRC9q8cgfeUirhQagTGOhZOnjtt74fikGPtIdpZHm2mvEwx1vb1GHQ5Xa/YomKJFMHSyP784uYHFyYz8hC/oOQ2dmvfJXIJe7DNh7xQ6ZnFn7+nXEIngURA5wP5hmqDV+MKNpcE=
+	t=1708609111; cv=none; b=CrAsE4WZ9rGKWoBeP0C70fAQS9ky1zWwJ87RbHQmEdrIZ26iiaE56479KhEvMQbE8alJYc3P1QK5NqizK6tYPQEwKvrElI/qe2lyewn7GtYDs5f57SHNM/obs27Y9pNTQNWqyaZWyUtPcxv69P7xpupd71e0226/BhumJcFUveE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708609072; c=relaxed/simple;
-	bh=MwxV11beFPWKUQr1OLOaWNjxLg2SPPTjqifSYXHht8s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tGGZoMKRBvfoOg0dhHTxyO4r5vmYIGJj93Q0bPfdVotQt1DGwdX8m0Ep0C2csNl/UymzavZcrpnc/KWIWlHyYO7UBeuRzpchv1YGlLhehOwC4Zq++saKSKM5VRplffFQcACKAGBV04gkkfrHD6HnrfUpILikfeJD12AOtsmQ2p8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IihEN++O; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708609070; x=1740145070;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=MwxV11beFPWKUQr1OLOaWNjxLg2SPPTjqifSYXHht8s=;
-  b=IihEN++Og91pe8MVnK0lPunwM0qiAsgp6+2wJ+pM5yaXfYbuooNjgnPO
-   h/GuPGMQ8wlPq+R7tbySAtpkkwcHFBIkko691aWk7W97wn/NN50CtN6Oe
-   5amFJSuXRPYZyTGA5QMdsfXvCKRz4W9tjilpJffIKqbh5BXJcode7dxlg
-   YWy0vnCVQ6/IvBIsHLIkCSuF5DLRY2IjIk8gLOZvFfAMETddeegw0MOGH
-   L2rg3m2WAzUKsNr/k8KcyhRgWCIjnqS8lsQ9GCCKhWR93tMbPdTSGI/0C
-   MFkBPlUMVVBO2+Jvezw5nMXbLrOmV2k+EWs6aV/Gf6fRpl6dovt1Aakeb
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="25294482"
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="25294482"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 05:37:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10991"; a="913527279"
-X-IronPort-AV: E=Sophos;i="6.06,177,1705392000"; 
-   d="scan'208";a="913527279"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 05:37:48 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rd9Gj-00000006diA-1pl1;
-	Thu, 22 Feb 2024 15:37:45 +0200
-Date: Thu, 22 Feb 2024 15:37:45 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] gpiolib: Fix the error path order in
- gpiochip_add_data_with_key()
-Message-ID: <ZddOKTP73ja6ejTc@smile.fi.intel.com>
-References: <20240221192846.4156888-1-andriy.shevchenko@linux.intel.com>
- <CAMRc=MdvYdx6x=gSiOZ3SXAdJORnqhsNW79G2c7wABofWARwFw@mail.gmail.com>
- <ZddLRAqxFr7v3Zqs@smile.fi.intel.com>
- <CAMRc=Mdxtx-wh3HGu+SNrCwfSq0PEm3fG7hK_6wPAk2uzk8xpA@mail.gmail.com>
+	s=arc-20240116; t=1708609111; c=relaxed/simple;
+	bh=dnP6Na2KFoHfi/00jkUuH2sx/m/bitJm1og9b7z1FOg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WYtK4hs0iFI2fd043GEZPPhhXObX+m4w7nT7LIJiVOuFCe+cOZCwIzku6Qo8fWq0B9rUE4UIMbEiK2jzh9JFWymS0b/5+IuIOJxzK0KY2owNxij7MVVJ1CzU22Z5H61N/mUk2WjyB89oLoG03QeBf0C5BoEE9g7jz7uT4tWXcw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Wmnz7T4V; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4128e15d5e5so1356995e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 05:38:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708609108; x=1709213908; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=u0eeSj0Rbo8Tyxk9+gjLQ2yol07l3Rs5IcpVi8aXUFs=;
+        b=Wmnz7T4VTWdXNdsRdQiQsuAII/BAIrrgq0uXxoTvioFxQ1mCZ0fDhOdD+0gHBPArHe
+         tncRF9DTSzxJiVgzWoLXyiZyDIOmyPp8EUXmeFF7dAiMdlkAziEc7dXeZGqbe6nStSPY
+         vJqT2bI5l/FmAld0YUUEzyUo2p/30a/Yly0hY3ukr2J1IXoL2vywHEEgS4A4yVLg381d
+         IvWbhiKNI/7MNElA3eEn9P5EZ7HbXoU8ouVO9jUydurw9tukPnhxZYndciUS8GYlNiwI
+         PYmOlQpp/ADsZJcTeLs1NFzmD0xlPMa44nsfmhJutmmhW1u6T0PoBKacHvM8y4gRxhUD
+         pGuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708609108; x=1709213908;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=u0eeSj0Rbo8Tyxk9+gjLQ2yol07l3Rs5IcpVi8aXUFs=;
+        b=nT1spF0a4B/ZUXTVJqVgjnMsOyv4vYs4zfpM+C26obNXN4WDl1eVGu38rfwJx0K4Kk
+         OPeaL6uiJdunrVRnG7ltlZB2CkCBWX+ZpRArfoYi5rTIEhBq0NjqVor5bz60eB4alJHO
+         uE+hCbDUhhBULfqRnwHMRKMJ9QkebGBtO6NF+fspTll9hU3NEVNsaJnGN2w/hYQONMWL
+         UQR13aJBSIjEcIZUgitqi5zlXbLw/UJX3A3M2o8EOvooZC0C+P4njBVlbSJ9sjoJXxyZ
+         dUObuTNbebDpgaUI/VxJ6XhS6PusjwgGoJ5TgeHJ2H3rfnjRjhxGCVHLOsDnqrNwd044
+         J+8A==
+X-Gm-Message-State: AOJu0YxfjqdYRUKU6HV/+qjN2LU1Q8CdnmLSuixIckg0mY5HuTo/t3gh
+	aubrYrNKNZ2+5Yp3LC+5YDN147H5RXu6doYJosVYtevmpH5jdweEiPxn+KK4WYk=
+X-Google-Smtp-Source: AGHT+IG891wIGj3n6n+q1STkih4LzXtpjLUJ07Dpm8f6+K69gfvd5F6o5ICUx3SMCN+wGTidEMMoCg==
+X-Received: by 2002:a05:600c:a03:b0:410:deab:96bf with SMTP id z3-20020a05600c0a0300b00410deab96bfmr15301794wmp.22.1708609107670;
+        Thu, 22 Feb 2024 05:38:27 -0800 (PST)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id 11-20020a05600c228b00b0041288122af0sm95586wmf.0.2024.02.22.05.38.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Feb 2024 05:38:27 -0800 (PST)
+Message-ID: <0de4fb24-8e33-4c2b-b6a6-d9e8a7b358bd@linaro.org>
+Date: Thu, 22 Feb 2024 14:38:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2.1 1/6] thermal: core: Store zone trips table in struct
+ thermal_zone_device
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+ Linux PM <linux-pm@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Linux ACPI <linux-acpi@vger.kernel.org>, Lukasz Luba <lukasz.luba@arm.com>,
+ Zhang Rui <rui.zhang@intel.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
+References: <4551531.LvFx2qVVIh@kreacher> <1883976.tdWV9SEqCh@kreacher>
+ <12405371.O9o76ZdvQC@kreacher>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <12405371.O9o76ZdvQC@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=Mdxtx-wh3HGu+SNrCwfSq0PEm3fG7hK_6wPAk2uzk8xpA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Thu, Feb 22, 2024 at 05:33:59AM -0800, Bartosz Golaszewski wrote:
-> On Thu, 22 Feb 2024 14:25:24 +0100, Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> said:
-> > On Thu, Feb 22, 2024 at 10:37:06AM +0100, Bartosz Golaszewski wrote:
-> >> On Wed, Feb 21, 2024 at 8:28 PM Andy Shevchenko
-> >> <andriy.shevchenko@linux.intel.com> wrote:
-> >> >
-> >> > After shuffling the code, error path wasn't updated correctly.
-> >> > Fix it here.
-> >> >         gpiochip_irqchip_free_valid_mask(gc);
-> >> >  err_remove_acpi_chip:
-> >> >         acpi_gpiochip_remove(gc);
-> >> > +       gpiochip_remove_pin_ranges(gc);
-> >> >  err_remove_of_chip:
-> >> >         gpiochip_free_hogs(gc);
-> >> >         of_gpiochip_remove(gc);
-> >>
-> >> This undoes machine_gpiochip_add() and I think it also needs to be
-> >> moved before acpi_gpiochip_remove().
-> >
-> > You mean it should be like
-> >
-> >        gpiochip_irqchip_free_valid_mask(gc);
+On 22/02/2024 14:10, Rafael J. Wysocki wrote:
 
-> >        gpiochip_free_hogs(gc);
+[ ... ]
 
-But should it be here...
+> Index: linux-pm/drivers/thermal/thermal_of.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/thermal_of.c
+> +++ linux-pm/drivers/thermal/thermal_of.c
+> @@ -440,12 +440,10 @@ static int thermal_of_unbind(struct ther
+>    */
+>   static void thermal_of_zone_unregister(struct thermal_zone_device *tz)
+>   {
+> -	struct thermal_trip *trips = tz->trips;
+>   	struct thermal_zone_device_ops *ops = tz->ops;
+>   
+>   	thermal_zone_device_disable(tz);
+>   	thermal_zone_device_unregister(tz);
+> -	kfree(trips);
 
-> > err_remove_acpi_chip:
+thermal_of_zone_register() must free the allocated trip points after 
+registering the thermal zone.
 
-..or here?
+>   	kfree(ops);
+>   }
 
-I'm sorry I really need more (morning) coffee, maybe you can simply update
-yourself or submit a correct fix?
-
-> >        acpi_gpiochip_remove(gc);
-> >        gpiochip_remove_pin_ranges(gc);
-> > err_remove_of_chip:
-> >        of_gpiochip_remove(gc);
-> >
-> > ?
-> 
-> Yes, because the sequence is:
-> 
-> 	ret = of_gpiochip_add(gc);
-> 	if (ret)
-> 		goto err_cleanup_desc_srcu;
-> 
-> 	ret = gpiochip_add_pin_ranges(gc);
-> 	if (ret)
-> 		goto err_remove_of_chip;
-> 
-> 	acpi_gpiochip_add(gc);
-> 
-> 	machine_gpiochip_add(gc);
-> 
-> 	ret = gpiochip_irqchip_init_valid_mask(gc);
-> 	if (ret)
-> 		goto err_remove_acpi_chip;
 
 -- 
-With Best Regards,
-Andy Shevchenko
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
 
