@@ -1,143 +1,153 @@
-Return-Path: <linux-kernel+bounces-76577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-76576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D635485F96E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:16:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15A0385F966
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 14:16:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E13B1F26C02
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:16:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C563628694B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Feb 2024 13:16:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 991751474B7;
-	Thu, 22 Feb 2024 13:15:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6D0D1332B3;
+	Thu, 22 Feb 2024 13:15:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VAXC9Rtr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sbwSqzTB"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD9B3133983;
-	Thu, 22 Feb 2024 13:15:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F365312E1D3;
+	Thu, 22 Feb 2024 13:15:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708607724; cv=none; b=Gs1aXxe6VauxSnUVCSWHS8S/lpKsyWOpHD1WK87suC9MkPq0aaa6ci/gqjLxmEehTmADGp5CJ0pD9lyNnFGwXOihyy8Q/+279auTzKxLA7b0/1uRiIx6dO500CqensJRKVMribzOlbV8u1T0B9fY8HBxNQou9k3tItx/5uuEavo=
+	t=1708607723; cv=none; b=N3qvZCxuEvRDXxj14CKtRJ7s9tKdtdUU8+CnaWVet1r5v0oDI+NSpvg+qbH9125YvmuB0nU62wMuSRrJC6zHRGwBKOv8l5jj8mHrD/RlepKH2oQ95TJAim3rAMmdHXocM0l5ZhqkSIO6d8YW+E6DN4N8CR0eZ9CqHWr8XoA+AI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708607724; c=relaxed/simple;
-	bh=aB8RgiNf0b3kbIk2EGDRYvCms7pKp1j8q6BKO6yIq/s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qhP4qkfpFfozg0MqGrXYT/ZTvG2y3MsXjFM7fx0ciymRRhZieSPM5ideE/X+zs2BRCG2M0HFUFXva8cTYLALb4sE0HyU1pUbGWynTI37Rx2RAH1sy7NoArnC3oFClBryxRuxgtX00pvu3NAnzizegxEgt6Gbws6anSSGJdO1xWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VAXC9Rtr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72DB5C433F1;
-	Thu, 22 Feb 2024 13:15:16 +0000 (UTC)
+	s=arc-20240116; t=1708607723; c=relaxed/simple;
+	bh=UEVsSZcGmV67zShBBFj0j5CNp24EUBflBXO5GRus0Ec=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=oQfNsfA7xkq//Ok23fpF3HfsCVn7dlnnjqhccTBEYyXTmsIytn0voH2Eu6DEFS1miJi4PpnZPj/m+LfRqgCkQ/5RXDz6t+BpHST3Ya+faGvjyeanDUfTzklz8UDE6UIbmG9GB7WCJ/FY9xGQeeapHUKBi4iCSh6fZKvTzCU5eAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sbwSqzTB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24331C43390;
+	Thu, 22 Feb 2024 13:15:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708607724;
-	bh=aB8RgiNf0b3kbIk2EGDRYvCms7pKp1j8q6BKO6yIq/s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VAXC9RtrQiqpyOnfoqyu0u+2vXpVzPFJ3ndzmwkc9guJrM2Z4wTrrVPKnVjsM8CRI
-	 W4AXe+DEgOQA9Whp7t1wsytVkVsTDh4uevn5WtQO0SOlFtn+qXuU7Tnssm7MJUxvAx
-	 TBWGMhti93fSfj0GuGbKuXNCf1rwM6aNChG+D1TEE7OKuiLkb0bdpYM49p/DIDMsey
-	 0toi475K7XKQVtSF8ochYNgc4oDv7EYcBoQKFVThZlJ/AQuQCJdpE2Bi23Kc4X3ka7
-	 TCj0PCTsIrg0DClyDT+zwBxfW42sT+Mj776Mq1THBjH1zfrM/7oujYr8Daus67dJD7
-	 +poFkuMnxjP5Q==
-Date: Thu, 22 Feb 2024 13:15:13 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Saravana Kannan <saravanak@google.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Alex Elder <elder@linaro.org>,
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Abel Vesa <abel.vesa@linaro.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Lukas Wunner <lukas@wunner.de>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-wireless@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v5 14/18] PCI/pwrctl: add a power control driver for
- WCN7850
-Message-ID: <68e401c6-6e59-4c35-8f05-40f6c5eb6849@sirena.org.uk>
-References: <20240216203215.40870-1-brgl@bgdev.pl>
- <20240216203215.40870-15-brgl@bgdev.pl>
- <d5d603dc-ec66-4e21-aa41-3b25557f1fb7@sirena.org.uk>
- <CAMRc=MeUjKPS3ANE6=7WZ3kbbGAdyE8HeXFN=75Jp-pVyBaWrQ@mail.gmail.com>
- <ea08a286-ff53-4d58-ae41-38cca151508c@sirena.org.uk>
- <17bbd9ae-0282-430e-947b-e6fb08c53af7@linaro.org>
- <53f0956f-ee64-4bd6-b44f-cbebafd42e46@sirena.org.uk>
- <CAMRc=MedCX_TGGawMhr39oXtJPF4pOQF=Jh2z4uXkOxwhfJWRw@mail.gmail.com>
- <52fba837-989b-4213-8af7-f02cd8cb48c8@sirena.org.uk>
- <CAMRc=MeF7xVjRKetg1A3MNO4yMasPA2GC7MLCBrOiwO5UBv6LA@mail.gmail.com>
+	s=k20201202; t=1708607722;
+	bh=UEVsSZcGmV67zShBBFj0j5CNp24EUBflBXO5GRus0Ec=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=sbwSqzTBz+kazip5qwYb+U1jMEnSqGzy5vHiXeKWKcWlRSgm8X8DNJ+PKwtj8Ztoe
+	 qz7KBevpyREnT4+f44BDEwa58ymwlnjcLgM7SJuziRwmnI4xxQA+PlbTH6CLxI0y57
+	 lD0P9DdG2UgCQpqWWmPO1lpDYV2sc8g6caiaOTA0ZcpBPKOVAjavq6XVmoJr47Mky9
+	 OD/L4VncVcJvkD+jZhTgl4ko6IvJjrtMOOH8k8zO8pqh8Zr6AMTF7UPgMYNQs8w2BY
+	 grNCBSSSWkwcrVpm8rWaj9jPDJ+7W8dxYhTDoKot8c1c/UZTgXAMK2Zus0i/q5s8IE
+	 O2f8ff7S9Et3w==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Anup Patel <apatel@ventanamicro.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, Thomas
+ Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand
+ <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>
+Cc: Anup Patel <apatel@ventanamicro.com>, devicetree@vger.kernel.org,
+ Saravana Kannan <saravanak@google.com>, Marc Zyngier <maz@kernel.org>,
+ Anup Patel <anup@brainfault.org>, linux-kernel@vger.kernel.org, Atish
+ Patra <atishp@atishpatra.org>, linux-riscv@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, Andrew Jones
+ <ajones@ventanamicro.com>
+Subject: Re: [PATCH v14 12/18] irqchip/riscv-imsic: Add device MSI domain
+ support for platform devices
+In-Reply-To: <20240222094006.1030709-13-apatel@ventanamicro.com>
+References: <20240222094006.1030709-1-apatel@ventanamicro.com>
+ <20240222094006.1030709-13-apatel@ventanamicro.com>
+Date: Thu, 22 Feb 2024 14:15:19 +0100
+Message-ID: <87jzmwtzbs.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="s6adMmEGd2zLJf/T"
-Content-Disposition: inline
-In-Reply-To: <CAMRc=MeF7xVjRKetg1A3MNO4yMasPA2GC7MLCBrOiwO5UBv6LA@mail.gmail.com>
-X-Cookie: I have accepted Provolone into my life!
-
-
---s6adMmEGd2zLJf/T
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 22, 2024 at 01:26:59PM +0100, Bartosz Golaszewski wrote:
-> On Thu, Feb 22, 2024 at 1:21=E2=80=AFPM Mark Brown <broonie@kernel.org> w=
-rote:
-> > On Thu, Feb 22, 2024 at 10:22:50AM +0100, Bartosz Golaszewski wrote:
+Anup Patel <apatel@ventanamicro.com> writes:
 
-> > > Removing it would be out of scope for this series and I don't really
-> > > want to introduce any undefined behavior when doing a big development
-> > > like that. I'll think about it separately.
+> The Linux platform MSI support allows per-device MSI domains so add
+> a platform irqchip driver for RISC-V IMSIC which provides a base IRQ
+> domain with MSI parent support for platform device domains.
+>
+> The IMSIC platform driver assumes that the IMSIC state is already
+> initialized by the IMSIC early driver.
+>
+> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> ---
+>  drivers/irqchip/Makefile                   |   2 +-
+>  drivers/irqchip/irq-riscv-imsic-platform.c | 344 +++++++++++++++++++++
+>  drivers/irqchip/irq-riscv-imsic-state.h    |   1 +
+>  3 files changed, 346 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/irqchip/irq-riscv-imsic-platform.c
+>
+> diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+> index d714724387ce..abca445a3229 100644
+> --- a/drivers/irqchip/Makefile
+> +++ b/drivers/irqchip/Makefile
+> @@ -95,7 +95,7 @@ obj-$(CONFIG_QCOM_MPM)			+=3D irq-qcom-mpm.o
+>  obj-$(CONFIG_CSKY_MPINTC)		+=3D irq-csky-mpintc.o
+>  obj-$(CONFIG_CSKY_APB_INTC)		+=3D irq-csky-apb-intc.o
+>  obj-$(CONFIG_RISCV_INTC)		+=3D irq-riscv-intc.o
+> -obj-$(CONFIG_RISCV_IMSIC)		+=3D irq-riscv-imsic-state.o irq-riscv-imsic-=
+early.o
+> +obj-$(CONFIG_RISCV_IMSIC)		+=3D irq-riscv-imsic-state.o irq-riscv-imsic-=
+early.o irq-riscv-imsic-platform.o
+>  obj-$(CONFIG_SIFIVE_PLIC)		+=3D irq-sifive-plic.o
+>  obj-$(CONFIG_IMX_IRQSTEER)		+=3D irq-imx-irqsteer.o
+>  obj-$(CONFIG_IMX_INTMUX)		+=3D irq-imx-intmux.o
+> diff --git a/drivers/irqchip/irq-riscv-imsic-platform.c b/drivers/irqchip=
+/irq-riscv-imsic-platform.c
+> new file mode 100644
+> index 000000000000..e2344fc08dca
+> --- /dev/null
+> +++ b/drivers/irqchip/irq-riscv-imsic-platform.c
+> @@ -0,0 +1,344 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2021 Western Digital Corporation or its affiliates.
+> + * Copyright (C) 2022 Ventana Micro Systems Inc.
+> + */
+> +
+> +#define pr_fmt(fmt) "riscv-imsic: " fmt
+> +#include <linux/bitmap.h>
+> +#include <linux/cpu.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/io.h>
+> +#include <linux/irq.h>
+> +#include <linux/irqchip.h>
+> +#include <linux/irqdomain.h>
+> +#include <linux/module.h>
+> +#include <linux/msi.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/spinlock.h>
+> +#include <linux/smp.h>
+> +
+> +#include "irq-riscv-imsic-state.h"
+> +
+> +static bool imsic_cpu_page_phys(unsigned int cpu, unsigned int guest_ind=
+ex,
+> +				phys_addr_t *out_msi_pa)
+> +{
+> +	struct imsic_global_config *global;
+> +	struct imsic_local_config *local;
+> +
+> +	global =3D &imsic->global;
+> +	local =3D per_cpu_ptr(global->local, cpu);
+> +
+> +	if (BIT(global->guest_index_bits) <=3D guest_index)
+> +		return false;
+> +
+> +	if (out_msi_pa)
+> +		*out_msi_pa =3D local->msi_pa +
+> +			      (guest_index * IMSIC_MMIO_PAGE_SZ);
 
-> > This is new code?
+Nit: And one more redundant parenthesis and 100 char! ;-)
 
-> It's a new driver but Qualcomm standard has been to provide the load
-> values. If it's really unnecessary then maybe let's consider it
-> separately and possibly rework globally?
 
-That doesn't seem a great reason to add more instances of this - it's
-more instances that need to be removed later, and somewhere else people
-can cut'n'paste from to introduce new usage.
-
---s6adMmEGd2zLJf/T
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXXSOAACgkQJNaLcl1U
-h9CO+Af/UBAXsJGE9NN3tPz9CpviI1Xv3S28cWiubEXVJ+NzA4+IAt4j+1Y5bKls
-HytSvkTYjWKuVt+/QPMjUDjahFueK0iMxyfNIv9YmcADzKx4NV4kqoV9vA2lSe3b
-EvLpCG3N8rmHABUkHyTNAsUYDzAmia49miT9t3G0KFNzsPvbNTYzRosMRndYzd4S
-dBlL/MthOmihCZmaRB4F+41mNCzmvz9FyDcwqzavI9CX2fM7oOviI1wmSla2dxrh
-kyAn7uj2Tve+uBidpIiVZb7QKxHC/JSQR88IkKjhjXnAVlzhPIeuuuXCWXCOzlEE
-nHjsO+Kzdq6sXue+dcbfP+GMhe7IEQ==
-=2jGd
------END PGP SIGNATURE-----
-
---s6adMmEGd2zLJf/T--
+Bj=C3=B6rn
 
