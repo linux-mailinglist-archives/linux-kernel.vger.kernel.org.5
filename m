@@ -1,125 +1,78 @@
-Return-Path: <linux-kernel+bounces-79071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BF45861D35
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:02:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0BFD861D3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:04:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BEA61F26AEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:02:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E19B11C23117
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:04:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69C95149012;
-	Fri, 23 Feb 2024 20:01:53 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77B5914601C;
+	Fri, 23 Feb 2024 20:04:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="JfknjjIn"
+Received: from smtp-bc0f.mail.infomaniak.ch (smtp-bc0f.mail.infomaniak.ch [45.157.188.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5927984FA7;
-	Fri, 23 Feb 2024 20:01:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C1F084FA7
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 20:04:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.157.188.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708718512; cv=none; b=nhXg+lbnARdtFay6Xa3PAsWCXHb7JSheGP1aoQV6Q0o9xAm7z8lFaSkixJbp3DCbxcc09t4Q00dgbwInVq187tPsbIYwMLC8/m7L7b2w0pEEmvaEssjB2tzWJt8ITbo8So/tJJ+41N6fLefdYdfJL9GzNlNTMtcscTu/Ct0m6IU=
+	t=1708718646; cv=none; b=bKhQEJ2VDn9YctcQ7vcGtACDugPh8Q6PTNdQypojv+Qcrwp7q6io3/7AbWDFZEPcanvLkC5zRxpXj0hELCnypTPpyXmQMb44CvmxWfThfnwpJFMruFddxCkvWkk5JqTDwKbVxduk0zFQPXD9WidCmdVlvEShX/UKIRuUVxKAwiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708718512; c=relaxed/simple;
-	bh=qKShU0yRSF7Qai1aRFfijNm4QP3IVl+XveltCGlIK9M=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=u4SblV6STNVFKFHJnI4BdZ+gPsBpTKcvzBKj+lFhT5knxP4Jth6uDgUfy6ItaZTqxVN0TQLSYNf9uZl4SE8tLhr1XdrbB8zXvHE4jN3oSVIivELMoqPdZcGC7yOK83NmQ5IubAAnKiOAXT8gGpLm61MYf3+RNVkDxDlczDS1nJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84C71C433F1;
-	Fri, 23 Feb 2024 20:01:46 +0000 (UTC)
-Date: Fri, 23 Feb 2024 15:03:39 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>, LKML
- <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
- linux-block@vger.kernel.org, linux-cxl@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
- intel-xe@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
- freedreno@lists.freedesktop.org, virtualization@lists.linux.dev,
- linux-rdma@vger.kernel.org, linux-pm@vger.kernel.org,
- iommu@lists.linux.dev, linux-tegra@vger.kernel.org, netdev@vger.kernel.org,
- linux-hyperv@vger.kernel.org, ath10k@lists.infradead.org,
- linux-wireless@vger.kernel.org, ath11k@lists.infradead.org,
- ath12k@lists.infradead.org, brcm80211@lists.linux.dev,
- brcm80211-dev-list.pdl@broadcom.com, linux-usb@vger.kernel.org,
- linux-bcachefs@vger.kernel.org, linux-nfs@vger.kernel.org,
- ocfs2-devel@lists.linux.dev, linux-cifs@vger.kernel.org,
- linux-xfs@vger.kernel.org, linux-edac@vger.kernel.org,
- selinux@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-hwmon@vger.kernel.org, io-uring@vger.kernel.org,
- linux-sound@vger.kernel.org, bpf@vger.kernel.org,
- linux-wpan@vger.kernel.org, dev@openvswitch.org,
- linux-s390@vger.kernel.org, tipc-discussion@lists.sourceforge.net, Julia
- Lawall <Julia.Lawall@inria.fr>
-Subject: Re: [FYI][PATCH] tracing/treewide: Remove second parameter of
- __assign_str()
-Message-ID: <20240223150339.2249bc95@gandalf.local.home>
-In-Reply-To: <qsksxrdinia3cxr52tfe4p3pafsy4biktnodlfn4vyzud73p2j@6ycnhrhzwsv6>
-References: <20240223125634.2888c973@gandalf.local.home>
-	<0aed6cf2-17ae-45aa-b7ff-03da932ea4e0@quicinc.com>
-	<20240223134653.524a5c9e@gandalf.local.home>
-	<qsksxrdinia3cxr52tfe4p3pafsy4biktnodlfn4vyzud73p2j@6ycnhrhzwsv6>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708718646; c=relaxed/simple;
+	bh=9cEDsIi8vRUs821xVTfotIwh6nb7wOR2IdPnx9HNDH0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nRvAPTE9dDQv5/hI71HpaZuY4GkzdT7idn40VwKJ/hAzOIt0RBVvK78FX7v0QWWSxWvi1dlRcSUYRexObHfFpu8b6ghjxLLDFJ6TAKzKn3JcPnFyB0w0h/6nVpzv9iqOPLP+lETGxO+J9v61M1c0yaKtTSWkLXL8r3MM2jgq7sU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=JfknjjIn; arc=none smtp.client-ip=45.157.188.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Received: from smtp-4-0001.mail.infomaniak.ch (smtp-4-0001.mail.infomaniak.ch [10.7.10.108])
+	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4ThLYs49M6zDVP;
+	Fri, 23 Feb 2024 21:04:01 +0100 (CET)
+Received: from unknown by smtp-4-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4ThLYs1CxQzqSX;
+	Fri, 23 Feb 2024 21:04:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+	s=20191114; t=1708718641;
+	bh=9cEDsIi8vRUs821xVTfotIwh6nb7wOR2IdPnx9HNDH0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JfknjjInQug3qdZGhwqvNpZPx7gaVjnaWd8pJ7emv2KpVxsH4x/UtqnHs+8NFJgDj
+	 WchxVjpycDUWTgmHLsTCbSbvJKPyyTAQ86rBp71J+/DZcFdqgTZayz1gju40xLYBzz
+	 D+Xs0yJQOSkkMyQ7o4btN9r19WF4Ci7mUOTZ0sMM=
+Date: Fri, 23 Feb 2024 21:03:52 +0100
+From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To: Casey Schaufler <casey@schaufler-ca.com>, 
+	John Johansen <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>
+Cc: James Morris <jmorris@namei.org>, 
+	"Serge E . Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] SELinux: Fix lsm_get_self_attr()
+Message-ID: <20240223.eij0Oudai0Ia@digikod.net>
+References: <20240223190546.3329966-1-mic@digikod.net>
+ <20240223.ieSh2aegurig@digikod.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240223.ieSh2aegurig@digikod.net>
+X-Infomaniak-Routing: alpha
 
-On Fri, 23 Feb 2024 14:50:49 -0500
-Kent Overstreet <kent.overstreet@linux.dev> wrote:
+On Fri, Feb 23, 2024 at 08:59:34PM +0100, Mickaël Salaün wrote:
+> On Fri, Feb 23, 2024 at 08:05:45PM +0100, Mickaël Salaün wrote:
+> > selinux_lsm_getattr() may not initialize the value's pointer in some
+> > case.  As for proc_pid_attr_read(), initialize this pointer to NULL in
+> > selinux_getselfattr() to avoid an UAF in the kfree() call.
+> 
+> Not UAF but NULL pointer dereference (both patches)...
 
-> Tangentially related though, what would make me really happy is if we
-> could create the string with in the TP__fast_assign() section. I have to
-> have a bunch of annoying wrappers right now because the string length
-> has to be known when we invoke the tracepoint.
-
-You can use __string_len() to determine the string length in the tracepoint
-(which is executed in the TP_fast_assign() section).
-
-My clean up patches will make __assign_str_len() obsolete too (I'm working
-on them now), and you can just use __assign_str().
-
-I noticed that I don't have a string_len example in the sample code and I'm
-actually writing it now.
-
-// cutting out everything else:
-
-TRACE_EVENT(foo_bar,
-
-	TP_PROTO(const char *foo, int bar),
-
-	TP_ARGS(foo, bar),
-
-	TP_STRUCT__entry(
-		__string_len(	lstr,	foo,	bar < strlen(foo) ? bar : strlen(foo) )
-	),
-
-	TP_fast_assign(
-		__assign_str(lstr, foo);
-
-// Note, the above is with my updates, without them, you need to duplicate the logic
-
-//		__assign_str_len(lstr, foo, bar < strlen(foo) ? bar : strlen(foo));
-	),
-
-	TP_printk("%s", __get_str(lstr))
-);
-
-
-The above will allocate "bar < strlen(foo) ? bar : strlen(foo)" size on the
-ring buffer. As the size is already stored, my clean up code uses that
-instead of requiring duplicating the logic again.
-
--- Steve
+Well, that may be the result (as observed with the kfree() call), but
+the cause is obviously an uninitialized pointer.
 
