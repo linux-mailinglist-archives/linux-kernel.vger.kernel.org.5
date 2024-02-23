@@ -1,120 +1,104 @@
-Return-Path: <linux-kernel+bounces-77667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77669-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91EFB8608A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:00:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F0C48608A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:02:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBCD4283BFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:00:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8850CB21E5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:02:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DECABA2B;
-	Fri, 23 Feb 2024 02:00:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FB9CBA46;
+	Fri, 23 Feb 2024 02:02:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="horjrIZ3"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="jVvL27NG"
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B1BE8BF9;
-	Fri, 23 Feb 2024 02:00:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B1A1B64C;
+	Fri, 23 Feb 2024 02:02:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708653636; cv=none; b=lijAWZhV+MKfE3rHUU1oLdtKAY/5PGgqZ+uo6pEXPCNWr9Fwk1mYIzHGLJvVq9VFa3wFty1q8H2jqK2gxNdKW7pYmGd3zOtdzwvb5CDgyI9/4cx47gGgPV2TL1K4rpOHqNm3nQUvt3j+W4rdrPcVzSZzDJFMOOuxytd/1lVe3Zo=
+	t=1708653751; cv=none; b=nJNoKr8rQiFOKbd2Xh9TL5beWPwrzAZLggBx+scFpxyadEmxH2wyqFVs3PHdVtz+kM4+XjDaZskvFWeIZ4ciXYNkmPTI/vCTkskXawaorLqLlhEumgVfiuzbkt859jTnVK4si9QogSDW2OWoFnR4PnSArV4eJpFXSrSHyLMFOp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708653636; c=relaxed/simple;
-	bh=OJDfnVJSg3jkeSoz4vJPLXupTf+um5nChVNJXpHzJfI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=gKxPjtMTYWPHfaVsP5wjHZDNU60pxMzqwaWiU4+sS4oF0ixflBLEcN0z/dAbSC/MIgMxZtBFNlx7dVbXhsMlyrvsuOpYi7iSPC6rOuPiyqdRniHIwOo4Xarcr+nQHinKU6cxtgU+sp07ILK0KxpyB+gcgojW3tw+Hxjntzb5ASo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=horjrIZ3; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41N1Rfsu030093;
-	Fri, 23 Feb 2024 02:00:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:date:subject:mime-version:content-type
-	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=M51
-	KKqBp/vj9yqdyEByL4qmhSGQ5SSE2/FALZr/2vME=; b=horjrIZ3DGlFEP6oNQ+
-	isqDK1Plt2fILZ7bF64WJuYi30WUAeK5jyhlnwqaFqfXnz6YuvEudh3GsLW5tPO0
-	nL0T3Jsa6JuG0dm2Vsew4MeWR9PrqWfb6diSJcLMvpbRQXvDsfKWdzp9NbtBJpGj
-	ccugXveZtDM+EoHq4Rp1VonzTbtcN9E7KAyc2H9aNGQxFnSJa0ZoDalZw5GRn28y
-	mxeIU7y46Yf9CuIlGlirBFMdq/qlHJ6eCast3aObpPXBdherDIZ3RIZFddSXE6Gc
-	vw394uB1kJA1eQs6Dgnh9GkrOIx13MZz5Iw+X+a+4H6XkZNBHoCtXBeaFDIpLHns
-	7Gg==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3weg88r78q-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 02:00:27 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41N20QO4026888
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 02:00:26 GMT
-Received: from [169.254.0.1] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 22 Feb
- 2024 18:00:23 -0800
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-Date: Thu, 22 Feb 2024 18:00:23 -0800
-Subject: [PATCH] bus: mhi: host: pci_generic: constify
- modem_telit_fn980_hw_v1_config
+	s=arc-20240116; t=1708653751; c=relaxed/simple;
+	bh=kskjPTTlnk02nTjU48Vi66RZJJMp2qq4Ciroo9/vrsU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rdkONlOoi/zDeX2SmCXPR+w5AXtUdOiO4patL3++J3f04kQflXo4W7VR9iwW9/KKmQSM53r/mNIIl+sd4nygh9yApodnBNUnLV4uJ1CbMvWhyCTjsHiZy9nrYyzQZsKGLafQX6yycCgdNwrq0PClvozyhHXbgYQ4/sKYje9oI50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=jVvL27NG; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=RAxe3zaRk0aWqw8E+fLHpaRxO362KUw42r1LgGHaRXs=; b=jVvL27NGa/CDDS1qci8KCmp4fm
+	TgvSvTH0W/6WhjjMTuCc8k6brKFMasrl/h0d2ANWxvCAIRwaVNmwIA3Bzob2KktoI6/CpRp7sbM/j
+	D1koFPdrztFYe3INwQyyMut4ACb7ph0srU0iWuAzTl50zF2FdP52hX3DUjVGikiOuwCQoTs/Lsdmo
+	1Yld0pqlkrgJsc/tIfedSA6JOwMwdxYFUxHgj1KzHQqQenKaiVPok/48wsQMb6x/urarDEhQPMK52
+	O7IvCifCJ0iF7jypplu9db3RwlweJdxT6Z6o2gegCOOkvNVw4LSBiK3c8/iKSOVqDh/SmyOtr5FcB
+	HG98/b0Q==;
+Received: from [179.93.188.12] (helo=quatroqueijos.cascardo.eti.br)
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+	id 1rdKtM-002Wuk-RJ; Fri, 23 Feb 2024 03:02:25 +0100
+Date: Thu, 22 Feb 2024 23:02:16 -0300
+From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
+To: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	Gwendal Grignou <gwendal@chromium.org>, dlunev@chromium.org
+Subject: Re: [PATCH] fat: ignore .. subdir and always add a link to dirs
+Message-ID: <Zdf8qPN5h74MzCQh@quatroqueijos.cascardo.eti.br>
+References: <20240222203013.2649457-1-cascardo@igalia.com>
+ <87bk88oskz.fsf@mail.parknet.co.jp>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240222-mhi-const-bus-mhi-host-pci_generic-v1-1-d4c9b0b0a7a5@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIADb812UC/x3NQQqDQAxA0atI1g1orFB6lSLFZjJOFp2RiUpBv
- HuDy7f5/wCTqmLwbA6osqtpyY7u1gCnKc+CGtxALd1bIsJvUuSSbcXPZpdScSys71myxxiHEOI
- jdn3oBwYPLVWi/q7JazzPP1fnHwB0AAAA
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-CC: <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
-        Jeff Johnson
-	<quic_jjohnson@quicinc.com>
-X-Mailer: b4 0.13.0
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: FLXGPFSrDFmU3YGFzCT0QbfwhRLjxrMC
-X-Proofpoint-GUID: FLXGPFSrDFmU3YGFzCT0QbfwhRLjxrMC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-22_15,2024-02-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=967
- malwarescore=0 suspectscore=0 impostorscore=0 clxscore=1015 adultscore=0
- phishscore=0 priorityscore=1501 bulkscore=0 mlxscore=0 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402230012
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87bk88oskz.fsf@mail.parknet.co.jp>
 
-MHI expects the controller configs to be const, and all of the other ones
-in this file already are, so constify modem_telit_fn980_hw_v1_config.
+On Fri, Feb 23, 2024 at 10:52:12AM +0900, OGAWA Hirofumi wrote:
+> Thadeu Lima de Souza Cascardo <cascardo@igalia.com> writes:
+> 
+> > The tools used for creating images for the Lego Mindstrom EV3 are not
+> > adding '.' and '..' entry in the 'Projects' directory.
+> >
+> > Without this fix, the kernel can not fill the inode structure for
+> > 'Projects' directory.
+> >
+> > See https://github.com/microsoft/pxt-ev3/issues/980
+> > And https://github.com/microsoft/uf2-linux/issues/6
+> >
+> > When counting the number of subdirs, ignore .. subdir and add one when
+> > setting the initial link count for directories. This way, when .. is
+> > present, it is still accounted for, and when neither . or .. are present, a
+> > single link is still done, as it should, since this link would be the one
+> > from the parent directory.
+> >
+> > With this fix applied, we can mount an image with such empty directories,
+> > access them, create subdirectories and remove them.
+> 
+> This looks like the bug of those tools, isn't it?
+> 
+> Thanks.
+> -- 
+> OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
 
-Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
----
- drivers/bus/mhi/host/pci_generic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Which they refused to fix, arguing that there are already filesystems out there
+in the world like that. Also, there is argument that this works on Windows,
+though I haven't been able to test this.
 
-diff --git a/drivers/bus/mhi/host/pci_generic.c b/drivers/bus/mhi/host/pci_generic.c
-index cd6cd14b3d29..51639bfcfec7 100644
---- a/drivers/bus/mhi/host/pci_generic.c
-+++ b/drivers/bus/mhi/host/pci_generic.c
-@@ -538,7 +538,7 @@ static struct mhi_event_config mhi_telit_fn980_hw_v1_events[] = {
- 	MHI_EVENT_CONFIG_HW_DATA(2, 2048, 101)
- };
- 
--static struct mhi_controller_config modem_telit_fn980_hw_v1_config = {
-+static const struct mhi_controller_config modem_telit_fn980_hw_v1_config = {
- 	.max_channels = 128,
- 	.timeout_ms = 20000,
- 	.num_channels = ARRAY_SIZE(mhi_telit_fn980_hw_v1_channels),
+https://github.com/microsoft/pxt-ev3/issues/980
+https://github.com/microsoft/uf2-linux/issues/6
 
----
-base-commit: 3ab6aff5793c3c7bdf6535d9b0024544a4abbdd5
-change-id: 20240222-mhi-const-bus-mhi-host-pci_generic-5ddf8f13d35c
-
+Thanks.
+Cascardo.
 
