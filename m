@@ -1,185 +1,175 @@
-Return-Path: <linux-kernel+bounces-77903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16E4C860BE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:13:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1FE3860BEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:13:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0792283984
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:13:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 486E8B2122F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:13:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70A53171AF;
-	Fri, 23 Feb 2024 08:13:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56E53156DD;
+	Fri, 23 Feb 2024 08:13:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hwpHZa0M"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="q9SfEi6M"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2063.outbound.protection.outlook.com [40.107.244.63])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 476391642A
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 08:13:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708676002; cv=none; b=uLw2qY/1WzXuwwSEm4qBBujN/8qG3JrnGP96D0ILEuRZHLS4mxMn7Wm6Ft85Q9VdtYBfRMBJ+EPIBVoy6YpJhgNUwY8ehlvPVXKNZO7/hegvwIssrwo2waZ8pOONlBanxVv6s9ODw6VwHhYhWOut9BWHk1et88BCOw/0lwPW2OE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708676002; c=relaxed/simple;
-	bh=x3HN2Fcf2e9U2v06SCYwp15p0JYpj7gbKGtwV8l3H7c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=A1XUWXKA2ufSc0DEipuBztMKx4GmluO5CrmeEEFQBIU6vNgbl6CPsfVRNTVgZrNJT5p0Tbx2jqcM2xNb5U4p+uAV41547uK92Ptqpcyidv01BzIwey4MoDMJcghQyMdBkZ1/aLyAKZBZaNssaVI9ffX8cQFgpV2zblKt7yCrRw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hwpHZa0M; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708675989;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=aAzjuDCLmAWvO8xcKrjU4zGwSiBtDeIoA/McoIGvPgk=;
-	b=hwpHZa0MsGdPwu/jQpbYNaqMM0vJNBzYa+y7gkbMFFT2AuWpQSfbY+0iu3QyRbPfBJjhvd
-	WclBy114ZMDO6/EPEBHtYr77WsOKVhXuTx9Ess1bNjrRabngrps00kyWSVQdIk8dPjxJQL
-	XHY89y71IehC9h4rYaU7g+UUEXnC1r8=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-577-YbfC51G2PDe_F0nMLyqZNQ-1; Fri, 23 Feb 2024 03:13:06 -0500
-X-MC-Unique: YbfC51G2PDe_F0nMLyqZNQ-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33d7e755f52so270496f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 00:13:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708675985; x=1709280785;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aAzjuDCLmAWvO8xcKrjU4zGwSiBtDeIoA/McoIGvPgk=;
-        b=nRopiPPni2XSJpWmsN0rdI6c4BWUOl6uVSp2/myTZDsOkeYJ8AClslufwSVKd6Tdu0
-         CvAFQSQyI15kX4zc1+DbnmtBGkyR8G8nKYGMdcxHDpHHmUCgrhF1P1zwQm4fB6CoWFaL
-         kUx+8dFplgpqZfHNYh1Qyrl9HWNrjnxPrZpBm5zAoVUa8ZwrwDrJWIH2RhLg6DMf5K2p
-         3VyzIFI6fhAkLBjFWeG64F46IsemAYS1Q/PXlyrgM4caigLFzfPVQ32BJwya3a/oZZfx
-         2ehHjdUAXNxInwZ/v5kqQ2m3gavTVriLijnbiUTEReMNIxqD5a56LF9Yd3PmYFVRTqwQ
-         7/0A==
-X-Gm-Message-State: AOJu0YyLDAA1MqGoqpvL7yfjlW0kFsW9JvKzhprM+LcLINpWCAMvkws5
-	AH9tTiwqIQ7pixxsw2UR+GV4D0+MRWUb2ql7D4RE59NxBX66yFpfJSBjZHwzbRY/0oysRy7n0rQ
-	Lgm8vDqH1UvRGla39v+b7SZBCwxcXEacXaHT0DglIIy/0yJ8whvM2zaNS2aHhVg==
-X-Received: by 2002:a5d:6a43:0:b0:33d:3089:a840 with SMTP id t3-20020a5d6a43000000b0033d3089a840mr956262wrw.49.1708675985497;
-        Fri, 23 Feb 2024 00:13:05 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEytQZyH3TnclXxJT/vsFSiSIFTj8pgp9IIfHxcul/Ja6LrKjM2UFKQRaosQbXqowEyQrrgnw==
-X-Received: by 2002:a5d:6a43:0:b0:33d:3089:a840 with SMTP id t3-20020a5d6a43000000b0033d3089a840mr956249wrw.49.1708675985198;
-        Fri, 23 Feb 2024 00:13:05 -0800 (PST)
-Received: from [192.168.0.9] (ip-109-43-178-100.web.vodafone.de. [109.43.178.100])
-        by smtp.gmail.com with ESMTPSA id y10-20020a5d470a000000b0033d640c8942sm1850958wrq.10.2024.02.23.00.13.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Feb 2024 00:13:04 -0800 (PST)
-Message-ID: <c2832612-9a67-4dc1-a8c2-4cc026b14567@redhat.com>
-Date: Fri, 23 Feb 2024 09:13:03 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93909168C4;
+	Fri, 23 Feb 2024 08:13:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.63
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708676018; cv=fail; b=S0h8cijxQPWbDPoNXXpK0F6tqpgKNHrLjNWBgmhr6/n4oSwnyH2A0epN9ARAH3cdBlsHt5OgorK6hVGH//7MogB1xzvaUFg1mwJn6vAMBj0ABZoDvzLwGtjzweag9CgPM1rD9mGf6hE+nv+jnQU3ETXsHagD5J4AUcC5NP/GLBk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708676018; c=relaxed/simple;
+	bh=au6YPO6XHN57EG+3THegXJlTSj5RjgBCdO+M65plQu8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QW3DE/Ud+Ijg30a6Z1FgVEGkB+VdDvN5Yv6WKh3WBiUHbuYj2qXQlE7m0TXh2rK6M/mTOWa3j5CTImC9PXX2exCy8ecfoXrLLmzsTUqJdx+iajIrWg3UdetifZCmZRvY3KKTvu2lDxpyxsA6wKCXGGEg8UbnJKlv43dz/l4ysWg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=q9SfEi6M; arc=fail smtp.client-ip=40.107.244.63
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UU/o9wpoIsCVD9S3RtugYgz17osb+iorcsZbVHoJxYMJHVbNMUTD+aTBi2tG2WPax7b7Y31J91aDwr306UmZr/MKyQbbte6xT5xbN5MuqWKqj5LllRghsx2dftuvl84IlZw5klJnWfp/Qmrv8020TYSmYIl7FWc+cRaiUdtAzt6RqteSJMCuZcKbtlJtLNUVRaCmW8CBXV5umSRBqXF/EvkYjGoe6Ahpz9qOMxXWW8axcj6/AfRj3OgVHmRXhUcj9b9a9Ubgco0k3arsavCVVQKXbUhgd/R1Mv5d/+QX+Rr3baOcOz+SjAlY/6uuPS07HUZ0//hKkkKhdj7ABDcTHg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZO0BhSAnGpUcyCBbnxZlPGcb7QGoRdRwInqizGzyqJE=;
+ b=hPyKtHy36KN9A3U0dpgPurV+RcvM+SK54ScgbYTwj0Hg2lx2VTD5jofm805uJAZueUKrB8I3KV7s+MS8XKdZteQP15est8HZ5+Sl99sFlJtsPq3HuicaOK3JVUqarD0HDeAN7wD0vGPwYkuTGhCPKZRXKNBr+qHF3v/4Z6hGuEww6VZ4136yJE03z1Bf72xvMkmY8GrIng7jZTyrbQAB0DQ7gu87ByEfgYPsqX8tdzqjaS8Y6TdliT2w52ogU9nanK2UXd2fo0drjp+xPJGtYM7R0H38viUmlRod/OPlE0y6ePhQmB//QNDZs73s/uqqvcZJN9T/rcwBwBpCtOBIXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZO0BhSAnGpUcyCBbnxZlPGcb7QGoRdRwInqizGzyqJE=;
+ b=q9SfEi6MsBjOxYyd/3H8bwm5uoU2v13HIW6sr560tXHxQzLhEihVvCfMZqtAtCnn3PutLbI8GBr8qysOIq7LoL+Kz1ji5ezDXAHZgWWVNZslGNXDaWTP5eu84gwNfMYj1FASo0Jgl7RzWSaiV17EABhq8TL7mfw7ZaxAN3wTiOpi6m0qHZhJKlLPPfO9/e9iPgw013rIGGaXVvyvO3RO88zOHz03ZP+Cdaw6+D/WSqbxuih4gGbHX03ZPuECToIxqkRNWOuu1VH4LlwbDCAkZ3lyIWnrduBMiOemj78g7f1OCFS8Ow0jKVlDvZ2qHFMOj+Ss6C3jSN+06L8giuaKJg==
+Received: from BY3PR04CA0021.namprd04.prod.outlook.com (2603:10b6:a03:217::26)
+ by LV3PR12MB9166.namprd12.prod.outlook.com (2603:10b6:408:19c::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.26; Fri, 23 Feb
+ 2024 08:13:34 +0000
+Received: from MWH0EPF000971E5.namprd02.prod.outlook.com
+ (2603:10b6:a03:217:cafe::c1) by BY3PR04CA0021.outlook.office365.com
+ (2603:10b6:a03:217::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.43 via Frontend
+ Transport; Fri, 23 Feb 2024 08:13:33 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ MWH0EPF000971E5.mail.protection.outlook.com (10.167.243.73) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7292.25 via Frontend Transport; Fri, 23 Feb 2024 08:13:33 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 23 Feb
+ 2024 00:13:13 -0800
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Fri, 23 Feb
+ 2024 00:13:12 -0800
+Received: from vidyas-desktop.nvidia.com (10.127.8.9) by mail.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server id 15.2.1258.12 via Frontend
+ Transport; Fri, 23 Feb 2024 00:13:09 -0800
+From: Vidya Sagar <vidyas@nvidia.com>
+To: <robh@kernel.org>, <bhelgaas@google.com>
+CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<treding@nvidia.com>, <jonathanh@nvidia.com>, <kthota@nvidia.com>,
+	<mmaddireddy@nvidia.com>, <vidyas@nvidia.com>, <sagar.tv@gmail.com>
+Subject: [DT-SCHEMA PATCH V2] schemas: pci: Extend the meaning of 'linux,pci-probe-only'
+Date: Fri, 23 Feb 2024 13:43:07 +0530
+Message-ID: <20240223081307.1727191-1-vidyas@nvidia.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] m68k: Avoid CONFIG_COLDFIRE switch in uapi header
-Content-Language: en-US
-To: Arnd Bergmann <arnd@arndb.de>, Greg Ungerer <gerg@linux-m68k.org>,
- linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-kernel@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>
-References: <20240219160126.510498-1-thuth@redhat.com>
- <6f3b246e-7417-4455-abe4-ca3b42fdda4c@linux-m68k.org>
- <4824192b-5573-4246-a47c-ad6249e2900e@app.fastmail.com>
-From: Thomas Huth <thuth@redhat.com>
-Autocrypt: addr=thuth@redhat.com; keydata=
- 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
-In-Reply-To: <4824192b-5573-4246-a47c-ad6249e2900e@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-NVConfidentiality: public
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000971E5:EE_|LV3PR12MB9166:EE_
+X-MS-Office365-Filtering-Correlation-Id: 801a29d6-9382-46f8-186a-08dc344753f9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	354JXQ3KOaUIDoPdErbu9QW4SVmapiMedktdk6yu7bUxgcIOeeRL+pT9W03/AKtwG7XrHO3xajl+1LqudbPY4+sdLxEEh/PwzVaEqgr+MaEMExYf2BQPPc0UwQZ8MOzOfu1IVTYcvi25n/YjB4n4vsuX4Fb9yBlPIJnN2mLrBrXwJyVZuaSXj1fcrz09mOWN10z5YlOfWovAbLLJAtU7Gp5K6nC1PXySpE+uZVyULvQp0zEVPv+IU/dxbjR+OGBwCmvh6opDtzi3Nn48S4JwGPdSj8HFfoX6YOtIZjwDRYLxbMgV/T+pnEISH6LMmTbdgNXjbuOm7dTKrh1aFkmVqz1YrlNO6QzwWR5jH8oWaVZQo5/TcNbPYYxrpWsgLaDFvTNHMGWu83bDyakyni/wTA65AXB22yWLYQyPwwPQAbWwbSkbI6lyL5g0uuvNJ1hWeWy4eeY3XGNnd7wlPHULbdIBP2hEZHXGG5Jv1oIpFs/mJzpgtnk99+vF1wpdeVsmWQcMERF3UyD6IDK0p+IqsFp9348UTKQofh1K5NMnC8zgyv3mSy2xDNX7K6E+amHzQSIglAfZumzOpwMFXd69cgryph5Wl0vP1BU3WVdJP1mGvfkP6gmzp2p7bpZZeTeaWzSqig/KcyuWPqRPPXoMcYlgg1nTpj4x4TM9vIPSLUQ=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(36860700004)(46966006)(40470700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2024 08:13:33.3111
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 801a29d6-9382-46f8-186a-08dc344753f9
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MWH0EPF000971E5.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9166
 
-On 20/02/2024 16.09, Arnd Bergmann wrote:
-> On Tue, Feb 20, 2024, at 15:13, Greg Ungerer wrote:
->> On 20/2/24 02:01, Thomas Huth wrote:
->>> We should not use any CONFIG switches in uapi headers since these
->>> only work during kernel compilation; they are not defined for
->>> userspace. Fix it by moving the struct pt_regs to the kernel-internal
->>> header instead - struct pt_regs does not seem to be required for
->>> the userspace headers on m68k at all.
->>>
->>> Suggested-by: Greg Ungerer <gerg@linux-m68k.org>
->>> Signed-off-by: Thomas Huth <thuth@redhat.com>
->>> ---
->>>    v2: Move the struct instead of changing the #ifdef
->>>
->>>    See previous discussion here:
->>>    https://lore.kernel.org/lkml/6e3f2a2e-2430-4b4f-9ead-d9a4d5e42713@linux-m68k.org/
->>
->> I am fine with this. FWIW the following architectures do
->> not define pt_regs in their uapi/ptrace.h header either:
->> arc, arm64, loongarch, nios2, openrisc, riscv, s390, xtensa
->> Though quite a few of them have a user_pt_regs instead.
->>
->> So for me:
->>
->> Acked-by: Greg Ungerer <gerg@linux-m68k.org>
->>
->> Geert, Arnd, do you have any thoughts on this?
-> 
-> It clearly doesn't change the ABI, so that part is fine.
-> 
-> If asm/ptrace.h is included by some userspace tool to
-> get the definition, it might cause a compile-time error
-> that needs a trivial source change.
-> 
-> This could be needed for ptrace (gdb, strace) or signal
-> handling and setjmp (libc), though it's more likely that these
-> already have their own copies.
+Extend the meaning of 'linux,pci-probe-only' to cover the cases where
+it is applicable only to a specific PCI host bridge if defined in a
+PCI node instead of chosen node. Add the documentation for the same
+in schemas/pci/pci-host-bridge.yaml
 
-If we still feel unsure, we should maybe rather go with v1:
+Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+---
+V2:
+* Addressed Bjorn's review comments
 
-  https://lore.kernel.org/lkml/20231110103120.387517-1-thuth@redhat.com/
+ dtschema/schemas/chosen.yaml              | 7 +++++--
+ dtschema/schemas/pci/pci-host-bridge.yaml | 8 ++++++++
+ 2 files changed, 13 insertions(+), 2 deletions(-)
 
-?
-
-  Thomas
-
+diff --git a/dtschema/schemas/chosen.yaml b/dtschema/schemas/chosen.yaml
+index 6d5c3f1..f806646 100644
+--- a/dtschema/schemas/chosen.yaml
++++ b/dtschema/schemas/chosen.yaml
+@@ -142,8 +142,11 @@ properties:
+     enum: [ 0, 1 ]
+     description:
+       Optional property which takes a single-cell argument. If '0', then Linux
+-      will assign devices in its usual manner, otherwise it will not try to
+-      assign devices and instead use them as they are configured already.
++      will reassign BARs and bridge windows in its usual manner, otherwise it will
++      not try to reassign BARs and bridge windows, instead use them as they are
++      configured already by the platform firmware.
++      NOTE:- To restrict the applicability of this property to a specific PCI
++             host bridge, please refer to /schemas/pci/pci-host-bridge.yaml
+ 
+   stdout-path:
+     $ref: types.yaml#/definitions/string
+diff --git a/dtschema/schemas/pci/pci-host-bridge.yaml b/dtschema/schemas/pci/pci-host-bridge.yaml
+index fbbb829..e977520 100644
+--- a/dtschema/schemas/pci/pci-host-bridge.yaml
++++ b/dtschema/schemas/pci/pci-host-bridge.yaml
+@@ -31,6 +31,14 @@ properties:
+       number for each host bridge in the system must be unique.
+     $ref: /schemas/types.yaml#/definitions/uint32
+ 
++  linux,pci-probe-only:
++    description: If present, Linux will not try to reassign BARs and bridge windows,
++      instead use them as they are configured already by the platform firmware for
++      this particular host bridge.
++      NOTE:- If defined in chosen node, this property has system wide applicability.
++             Please refer to /schemas/chosen.yaml for more info.
++    type: boolean
++
+   msi-map:
+     $ref: /schemas/types.yaml#/definitions/uint32-matrix
+     items:
+-- 
+2.25.1
 
 
