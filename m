@@ -1,81 +1,55 @@
-Return-Path: <linux-kernel+bounces-77812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 454F5860A7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 06:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 863C3860A7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 06:58:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A78071F22590
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 05:56:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2497A1F22820
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 05:58:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CCDE125A7;
-	Fri, 23 Feb 2024 05:56:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D14B2125A8;
+	Fri, 23 Feb 2024 05:58:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ixdwQJAj"
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="vPBJQQBx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 727D6B66B
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 05:56:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0CA9B66B;
+	Fri, 23 Feb 2024 05:58:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708667793; cv=none; b=SOE2k0zzYLpxKxHnmIf//MkDbtigpycvi3k8KJ4BoTVyWrwQivXHMKVRPRWo8OHYMGNhkKXfNvmi/GvOKo/2+D44L4eLnOt8oDem4lP+coQpBLUFT5TlPLiRS5RCiBTUXrGcWFINzuxyOtfgw85g0BvFaVtkX8BiR6R2rBX4Raw=
+	t=1708667893; cv=none; b=eCFiufiPR/Go5NUeJNbAiGZRqgQYhawFnnIpCT10zhwM8jGtocytStvbM5QNx/d7cuuhvKBka6hJtq1AxhT/9d9gI8kFPWfpzf2VrAxHHIi+cvMeZT3so5XkqS3mWDJ37B7t+WHmLh77caepXx9xl4Imqkus6TxwsiYI0XsFTTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708667793; c=relaxed/simple;
-	bh=2eOqefi0VNZTnhkQdFC1j9jqkfL5vkky5ce0kHNNgTw=;
+	s=arc-20240116; t=1708667893; c=relaxed/simple;
+	bh=w48BAtHZfqUxdEwvSQENgtIIBjNl/cSlxICoYJeN8zE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jePlP7CQ1oKBTdtqaQKxq4sd6bGbTbVKOFofMrS90m6UkF2ReN6VaL5WENe9vG4UTvT995/Rv78dSZbovy32Yn7v8kVvHnBjvHmLolE8h1Z6yZnfpqVANy+IdyQDJiUbh3tu13Ta/Afio9Eg0uWAodODQbqeVXbiZBnU6FKlqbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ixdwQJAj; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e4e2380588so129460b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 21:56:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708667792; x=1709272592; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=N0GRTyFRup/uDSwIpNY903bhAXEkCVn4KPWPZ3fepfE=;
-        b=ixdwQJAjGm/iWFc3Odygk94qSEtmvFa2K24GNF89p7dIi1+eC+2IvRb0SGtfbiFPTi
-         5toAfl1AW9Y9gBZ6jIvt2wrLnDsBgCdlhgJaScvInxfvBrLXVIkIq4e8XEK4x/SdTBFr
-         yBAsEkEtY2+3qKoa6/BFo/5nvZv9XbivX/jM0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708667792; x=1709272592;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N0GRTyFRup/uDSwIpNY903bhAXEkCVn4KPWPZ3fepfE=;
-        b=qXGD6Ypyj2NdQU/4/q47E9DQ8K9PMl7UjzoaVhrSrjOy7VDyeAQYqMn26iAijbCUTS
-         vQ/sjIb5fapaV5MzNIk25twG9AFXiOw1d1gZfMoxiEbLZSbpWAq65WltiaRzAdb3N6LN
-         RgmZrQzaDWp1Ycfq78LZ1TaR7Jc0//fGCXSLSPKzlkO6Gdq8B4+8B8sgYn/+UPhI6gjF
-         YfudJB+yN8p0a2O4ikuQAZDJ6QsKwsPPjtMkSjpUAe4Cf8IWiAsNrMqEtwT9GAKO6WXm
-         hKE9HvGVDQ2ZkS5QWe/IsHhmjoyeIMaeTmh+/kyRrtlLQyzAz643ghuFB2OOtSmGhpIQ
-         zcjg==
-X-Forwarded-Encrypted: i=1; AJvYcCVGmlvX/5vMyZ+PD0n3nyTanwGrFmELzCA5XlYjogCQqRWqmAgNoVDTLgSPzrSVSkByiw+tjbrZFaM1A1h+ryG7QKJRN2/j1oPIGIip
-X-Gm-Message-State: AOJu0YySvXs6nBg1HcRN7m1bCglpUgITY2idKWZbwiLZfNSjTprHfXB4
-	5VpWG46MUqjQggb/zzaM0JQBqyp1/cFhury/+DCVX7qEzsKFx3QMfVgRCFtppQ==
-X-Google-Smtp-Source: AGHT+IF0gilLsIGarp5ejEN9+WoSUvat7KELBEnCk7j3db1t5zOXCnzQZVr7cdr0DUvKNhCIi6vtmw==
-X-Received: by 2002:a05:6a21:278a:b0:1a0:e089:e25e with SMTP id rn10-20020a056a21278a00b001a0e089e25emr715788pzb.46.1708667791830;
-        Thu, 22 Feb 2024 21:56:31 -0800 (PST)
-Received: from google.com ([2401:fa00:8f:203:b194:4f71:568a:eeb0])
-        by smtp.gmail.com with ESMTPSA id x92-20020a17090a6c6500b00298d8804ba8sm557787pjj.46.2024.02.22.21.56.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 21:56:31 -0800 (PST)
-Date: Fri, 23 Feb 2024 14:56:26 +0900
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
-To: Chengming Zhou <chengming.zhou@linux.dev>
-Cc: hannes@cmpxchg.org, Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Minchan Kim <minchan@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>, nphamcs@gmail.com,
-	yosryahmed@google.com, linux-mm@kvack.org,
-	Chengming Zhou <zhouchengming@bytedance.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND 2/3] mm/zsmalloc: remove
- migrate_write_lock_nested()
-Message-ID: <20240223055626.GV11472@google.com>
-References: <20240219-b4-szmalloc-migrate-v1-0-fc21039bed7b@linux.dev>
- <20240219-b4-szmalloc-migrate-v1-2-fc21039bed7b@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=m32v8w4sqejqzRAukDJCQHT84QwamZdwl87WBted7UQOwq6wDO3/2HIZvNGkAtDpsyYNjRa2m+I9Dhy1Fx/G4sX0YvM/hUwtUfhYD46c8QKt3QU1apS0bGF67lADfE1aB9meYPCsCS0IqNuTu08211H/txnmisfHoJ4kEjfR5fE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=vPBJQQBx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBED2C433C7;
+	Fri, 23 Feb 2024 05:58:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1708667892;
+	bh=w48BAtHZfqUxdEwvSQENgtIIBjNl/cSlxICoYJeN8zE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=vPBJQQBx5DXXY9Az3Fv/QfVnoRMcmnzr5ZuyRMCAmZXcW1yaRbnhbvbUtWI3xbyip
+	 hxs5oWGAYvGLvrjztzCbPgYJYC3EyEOG9EelpgBabYKu8PO99fNycklijdMpt6ExLG
+	 981cJNYE3BeDDgzphf4eQeFEyZdLUlgXzBd3Zu0A=
+Date: Fri, 23 Feb 2024 06:58:09 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Selvarasu Ganesan <quic_selvaras@quicinc.com>
+Cc: brauner@kernel.org, axboe@kernel.dk, jack@suse.cz, jlayton@kernel.org,
+	keescook@chromium.org, peter@korsgaard.com, hayama@lineo.co.jp,
+	dmantipov@yandex.ru, quic_linyyuan@quicinc.com,
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+	quic_ppratap@quicinc.com, quic_wcheng@quicinc.com,
+	quic_jackp@quicinc.com
+Subject: Re: [PATCH] usb: gadget: f_fs: Fix NULL pointer dereference in
+ ffs_epfile_async_io_complete()
+Message-ID: <2024022302-routine-schematic-b4fd@gregkh>
+References: <20240223054809.2379-1-quic_selvaras@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,25 +58,68 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240219-b4-szmalloc-migrate-v1-2-fc21039bed7b@linux.dev>
+In-Reply-To: <20240223054809.2379-1-quic_selvaras@quicinc.com>
 
-On (24/02/20 11:36), Chengming Zhou wrote:
-> From: Chengming Zhou <zhouchengming@bytedance.com>
+On Thu, Feb 22, 2024 at 09:48:09PM -0800, Selvarasu Ganesan wrote:
+> In scenarios of continuous and parallel usage of multiple FFS interfaces
+> and concurrent adb operations (e.g., adb root, adb reboot), there's a
+> chance that ffs_epfile_async_io_complete() might be processed after
+> ffs_epfile_release(). This could lead to a NULL pointer dereference of
+> ffs when accessing the ffs pointer in ffs_epfile_async_io_complete(), as
+> ffs is freed as part of ffs_epfile_release(). This epfile release is
+> part of file operation and is triggered when user space daemons restart
+> themselves or a reboot is initiated.
 > 
-> The migrate write lock is to protect the race between zspage migration
-> and zspage objects' map users.
+> Fix this issue by adding a NULL pointer check for ffs in
+> ffs_epfile_async_io_complete().
 > 
-> We only need to lock out the map users of src zspage, not dst zspage,
-> which is safe to map by users concurrently, since we only need to do
-> obj_malloc() from dst zspage.
+> [  9981.393115] Unable to handle kernel NULL pointer dereference at virtual address 00000000000001e0
+> [  9981.402854] Mem abort info:
+> ...
+> [  9981.532540] Hardware name: Qualcomm Technologies,
+> [  9981.540579] pstate: 204000c5 (nzCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> [  9981.548438] pc : ffs_epfile_async_io_complete+0x38/0x4c
+> [  9981.554529] lr : usb_gadget_giveback_request+0x30/0xd0
+> ...
+> [  9981.645057] Call trace:
+> [  9981.648282]  ffs_epfile_async_io_complete+0x38/0x4c
+> [  9981.654004]  usb_gadget_giveback_request+0x30/0xd0
+> [  9981.659637]  dwc3_gadget_endpoint_trbs_complete+0x1a8/0x48c
+> [  9981.666074]  dwc3_process_event_entry+0x378/0x648
+> [  9981.671622]  dwc3_process_event_buf+0x6c/0x288
+> [  9981.676903]  dwc3_thread_interrupt+0x3c/0x68
+> [  9981.682003]  irq_thread_fn+0x2c/0x8c
+> [  9981.686388]  irq_thread+0x198/0x2ac
+> [  9981.690685]  kthread+0x154/0x218
+> [  9981.694717]  ret_from_fork+0x10/0x20
 > 
-> So we can remove the migrate_write_lock_nested() use case.
-> 
-> As we are here, cleanup the __zs_compact() by moving putback_zspage()
-> outside of migrate_write_unlock since we hold pool lock, no malloc or
-> free users can come in.
-> 
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> Signed-off-by: Selvarasu Ganesan <quic_selvaras@quicinc.com>
 
-Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+What commit id does this fix?  Should it go to stable kernels?
+
+> ---
+>  drivers/usb/gadget/function/f_fs.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/function/f_fs.c
+> index be3851cffb73..d8c8e88628f9 100644
+> --- a/drivers/usb/gadget/function/f_fs.c
+> +++ b/drivers/usb/gadget/function/f_fs.c
+> @@ -849,7 +849,9 @@ static void ffs_epfile_async_io_complete(struct usb_ep *_ep,
+>  	usb_ep_free_request(_ep, req);
+>  
+>  	INIT_WORK(&io_data->work, ffs_user_copy_worker);
+> -	queue_work(ffs->io_completion_wq, &io_data->work);
+> +
+> +	if (ffs && ffs->io_completion_wq)
+> +		queue_work(ffs->io_completion_wq, &io_data->work);
+
+What happens if ffs->io_compleation_wq goes away right after you test
+it but before you call queue_work()?
+
+Where is the locking here to prevent that?
+
+thanks,
+
+greg k-h
 
