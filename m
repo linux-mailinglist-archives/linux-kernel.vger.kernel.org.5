@@ -1,205 +1,327 @@
-Return-Path: <linux-kernel+bounces-79076-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79077-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC6B4861D46
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:05:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 672F1861D49
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:10:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1D9F1C23585
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:05:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F855283657
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:10:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAAA1146E6C;
-	Fri, 23 Feb 2024 20:05:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 536E3146E70;
+	Fri, 23 Feb 2024 20:10:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="s5VlEGkR"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="sqraxKFN"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 922E01448F8
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 20:05:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1B931448F9;
+	Fri, 23 Feb 2024 20:09:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708718751; cv=none; b=Imgfyi3k/ZlbKwFlfHD7yDaH5QajREunzS4Fn7aEFii1AyZmNcx6Ju/pXR6trtjCw19fcgOiSYM613raK0ylBEl4KqGSljp7PKbpTgiNJxCm3rZc1fxUmWTbPlTky0fT9BwdPsbo45mtSxyHtHrd82gmjTyo4/Yh9Vt65lVrOmE=
+	t=1708719002; cv=none; b=gp6kobkuXi+f0stlKQRBCGnsKoG9haA6BuE/l/f3Clx1ZIaw7rh6ZP9WZoAU3CLSjjGo72GCWTv0Yhobb9yt4DwqEY44uxVpLN5hdUK94B8hhtdyQ9q+rdXNPrmtybsr2cSVhs7ZWf0uv44NaHMjR0DKVML/NWjmBtDfUPYF9Nc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708718751; c=relaxed/simple;
-	bh=c93H0T4Zb2kqV8VXSrK+QwhYIgK7q9e3GVpJjBwlDPQ=;
+	s=arc-20240116; t=1708719002; c=relaxed/simple;
+	bh=KGqZFqcii+PEF2nmplsYp1FWh9V5M+tktRr9wI9UWPs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h/2X08Nxh3TRW67VtNUMim+0rkHCZOa30xEouZlbiym4XUIiZxjS+hxYR4X5i4xwxquKVQ3q7+e3RJ4AcRz4Sw2mIku7jlm7ROznC2fpKyKtqTYD6v7lsfrL8Zuo3y3KUbufhNlLqLDlVTo0AyckN/mlfBXrAOSomrEhQwZ1PEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=s5VlEGkR; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e332bc65b3so770640b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 12:05:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1708718749; x=1709323549; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=77MYyBjrrun3U8EBRolVJQ+jLb+xOKAgdqcuRAFvrrQ=;
-        b=s5VlEGkRy62fS5jPKo7jImCWldlFM7HGNErXd+RSWVzSfUYFWhLt0RSTzSk2sIWxPV
-         FRj3aRnoDIja1NOryhm6YkAuQZwNY74a06qiK8tF9yFC0LYtlsnH4YnY6Njme2d87xNw
-         QlVTvPgq4sae3FRIDi1tTQEe1PDgr/0Pq7WEFafuct5yb11wDFSZp079QDdhokLQD3Oc
-         xlPp4tYBKp7mBfYHi0pIqOHNCn0z+gEMDifJF52UksaQYf/f94uVDBBvCcmgljwAXdsv
-         W/GO6uaGHTNsHBwm0VuHmTNJlCnUkDXEp5pomWMSFw+OoDBSmtnN/DWR5yhfl7hM0ggh
-         ihfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708718749; x=1709323549;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=77MYyBjrrun3U8EBRolVJQ+jLb+xOKAgdqcuRAFvrrQ=;
-        b=L7TaJxskI2JfsE98smjOEkIa3f5OKpJe92M0qotK1Ze/RP748LXdUXONdZKOeNt7g9
-         EBnTYIySU40ABHLocgwVq2KfmNnXZU3lOgVrCy6XDEagfHpv2BQh73YOxxndS4fReMPq
-         h/fjshuEIDBbyYyleK7iWf972C2YESJdiOa4UuBq6APvTMYfH5fuXpFbBWmlPZX0SJER
-         KPpXUyravnA7GH5N19bdiswxPbhB0w1XWJADNPTI2QHxUqIpRHdYk12ui4NVQvLpp8zs
-         CN4P/HXDQdGtq6ZwVzLkzlLP5tcfY83NvEt0JpUo4UOks+lUWoiuy4RqM7Ab1GpsiipB
-         CVBg==
-X-Forwarded-Encrypted: i=1; AJvYcCVIlO/0MPHnK/dDIR9ESO2/30DV01MCoCbr8kOZHn9WAtbWv/1gA/0J1hQ2CiMoISCPCAzrOB+ddXv8GKYc8pb5H6stLFk+sxgCnS62
-X-Gm-Message-State: AOJu0YyEFxB2JRFuZRdmcnNu9Xew0cQlv4miEL9cy4KCi5YstIvVJ/CM
-	Ayp8U3AAOrIBSlhEYp5aYpqcmaTDk+W/RkBeqp6+rfUSt4MBdLnHMEjr7zv3nBc=
-X-Google-Smtp-Source: AGHT+IEgmr0ZdwTYDwiLLCSnGGUBIxZ7Xut9Byi5mIRf8j8f1dL0+6Kee4jWo8g8/WX/ooPqwOMn1w==
-X-Received: by 2002:a62:c186:0:b0:6e4:d0ed:d2b8 with SMTP id i128-20020a62c186000000b006e4d0edd2b8mr693710pfg.16.1708718748675;
-        Fri, 23 Feb 2024 12:05:48 -0800 (PST)
-Received: from ghost ([50.213.54.97])
-        by smtp.gmail.com with ESMTPSA id a18-20020a056a000c9200b006e48e64ef54sm6019116pfv.173.2024.02.23.12.05.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 12:05:48 -0800 (PST)
-Date: Fri, 23 Feb 2024 12:05:45 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Erhard Furtner <erhard_f@mailbox.org>
-Subject: Re: [PATCH net] kunit: Fix again checksum tests on big endian CPUs
-Message-ID: <Zdj6mebHlbIq8u2o@ghost>
-References: <73df3a9e95c2179119398ad1b4c84cdacbd8dfb6.1708684443.git.christophe.leroy@csgroup.eu>
- <Zdjcnp324nIRuyUI@ghost>
- <66402663-98dd-42a2-aa04-5f04cb76b147@csgroup.eu>
+	 Content-Type:Content-Disposition:In-Reply-To; b=QKe1eH9t3AFFsBHQx+Ig8WdsJ04Bl87CJx0bHSAdbYK04+QY8Z0BXqNuHByRSfBmzncdwdpX6devyaWMqjlpIqu4Z1DUFoJAPgKkDDgipu6o9MQmql9RxADQS6LuWNajWVOv2grSc8tz2SFLzJeacjb0gqP3ggNSylEtV5/mUOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=sqraxKFN; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id E28769CA;
+	Fri, 23 Feb 2024 21:09:47 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1708718988;
+	bh=KGqZFqcii+PEF2nmplsYp1FWh9V5M+tktRr9wI9UWPs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sqraxKFNZTRY6MtOF2eD0oVoDUwqBPNEzb3+f3lYxLbe2Z6PCvLUrDiJyJJwFyY6N
+	 3h4nxnhmZz7p83Xe4rt0f5xSXIgSnttsZluBvelCdwB+kkqmIBUW1Ai8zdQGtGi/4H
+	 4W+LhfjbkBVGWKsnMMVG1bumevxPlA18LLeDgC8A=
+Date: Fri, 23 Feb 2024 22:10:00 +0200
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Mikhail Rudenko <mike.rudenko@gmail.com>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Jacopo Mondi <jacopo@jmondi.org>,
+	Tommaso Merciai <tomm.merciai@gmail.com>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Dave Stevenson <dave.stevenson@raspberrypi.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH v2 01/20] media: i2c: ov4689: Clean up and annotate the
+ register table
+Message-ID: <20240223201000.GD1313@pendragon.ideasonboard.com>
+References: <20231218174042.794012-1-mike.rudenko@gmail.com>
+ <20231218174042.794012-2-mike.rudenko@gmail.com>
+ <20240223112357.GN31348@pendragon.ideasonboard.com>
+ <87r0h3cdsi.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <66402663-98dd-42a2-aa04-5f04cb76b147@csgroup.eu>
+In-Reply-To: <87r0h3cdsi.fsf@gmail.com>
 
-On Fri, Feb 23, 2024 at 06:15:16PM +0000, Christophe Leroy wrote:
-> 
-> 
-> Le 23/02/2024 à 18:57, Charlie Jenkins a écrit :
-> > On Fri, Feb 23, 2024 at 11:41:52AM +0100, Christophe Leroy wrote:
-> >> Commit b38460bc463c ("kunit: Fix checksum tests on big endian CPUs")
-> >> fixed endianness issues with kunit checksum tests, but then
-> >> commit 6f4c45cbcb00 ("kunit: Add tests for csum_ipv6_magic and
-> >> ip_fast_csum") introduced new issues on big endian CPUs. Those issues
-> >> are once again reflected by the warnings reported by sparse.
-> >>
-> >> So, fix them with the same approach, perform proper conversion in
-> >> order to support both little and big endian CPUs. Once the conversions
-> >> are properly done and the right types used, the sparse warnings are
-> >> cleared as well.
-> >>
-> >> Reported-by: Erhard Furtner <erhard_f@mailbox.org>
-> >> Fixes: 6f4c45cbcb00 ("kunit: Add tests for csum_ipv6_magic and ip_fast_csum")
-> >> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Hi Mikhail,
+
+On Fri, Feb 23, 2024 at 07:40:20PM +0300, Mikhail Rudenko wrote:
+> On 2024-02-23 at 13:23 +02, Laurent Pinchart <laurent.pinchart@ideasonboard.com> wrote:
+> > On Mon, Dec 18, 2023 at 08:40:22PM +0300, Mikhail Rudenko wrote:
+> >> Many values in the register table are actually power-on
+> >> defaults. Remove those and also unused HDR exposures and gains.
+> >> Annotate the remaining values using the publicly available datasheet
+> >> to facilitate further development. No functional change intended.
+> >
+> > I'll trust you on that as I can't test the patch.
+> >
+> >> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
 > >> ---
-> >>   lib/checksum_kunit.c | 17 +++++++++--------
-> >>   1 file changed, 9 insertions(+), 8 deletions(-)
+> >>  drivers/media/i2c/ov4689.c | 203 +++++++++++++++++++++----------------
+> >>  1 file changed, 118 insertions(+), 85 deletions(-)
 > >>
-> >> diff --git a/lib/checksum_kunit.c b/lib/checksum_kunit.c
-> >> index 225bb7701460..bf70850035c7 100644
-> >> --- a/lib/checksum_kunit.c
-> >> +++ b/lib/checksum_kunit.c
-> >> @@ -215,7 +215,7 @@ static const u32 init_sums_no_overflow[] = {
-> >>   	0xffff0000, 0xfffffffb,
-> >>   };
-> >>   
-> >> -static const __sum16 expected_csum_ipv6_magic[] = {
-> >> +static const u16 expected_csum_ipv6_magic[] = {
-> >>   	0x18d4, 0x3085, 0x2e4b, 0xd9f4, 0xbdc8, 0x78f,	0x1034, 0x8422, 0x6fc0,
-> >>   	0xd2f6, 0xbeb5, 0x9d3,	0x7e2a, 0x312e, 0x778e, 0xc1bb, 0x7cf2, 0x9d1e,
-> >>   	0xca21, 0xf3ff, 0x7569, 0xb02e, 0xca86, 0x7e76, 0x4539, 0x45e3, 0xf28d,
-> >> @@ -241,7 +241,7 @@ static const __sum16 expected_csum_ipv6_magic[] = {
-> >>   	0x3845, 0x1014
-> >>   };
-> >>   
-> >> -static const __sum16 expected_fast_csum[] = {
-> >> +static const u16 expected_fast_csum[] = {
-> >>   	0xda83, 0x45da, 0x4f46, 0x4e4f, 0x34e,	0xe902, 0xa5e9, 0x87a5, 0x7187,
-> >>   	0x5671, 0xf556, 0x6df5, 0x816d, 0x8f81, 0xbb8f, 0xfbba, 0x5afb, 0xbe5a,
-> >>   	0xedbe, 0xabee, 0x6aac, 0xe6b,	0xea0d, 0x67ea, 0x7e68, 0x8a7e, 0x6f8a,
-> >> @@ -577,7 +577,8 @@ static void test_csum_no_carry_inputs(struct kunit *test)
-> >>   
-> >>   static void test_ip_fast_csum(struct kunit *test)
-> >>   {
-> >> -	__sum16 csum_result, expected;
-> >> +	__sum16 csum_result;
-> >> +	u16 expected;
-> >>   
-> >>   	for (int len = IPv4_MIN_WORDS; len < IPv4_MAX_WORDS; len++) {
-> >>   		for (int index = 0; index < NUM_IP_FAST_CSUM_TESTS; index++) {
-> >> @@ -586,7 +587,7 @@ static void test_ip_fast_csum(struct kunit *test)
-> >>   				expected_fast_csum[(len - IPv4_MIN_WORDS) *
-> >>   						   NUM_IP_FAST_CSUM_TESTS +
-> >>   						   index];
-> >> -			CHECK_EQ(expected, csum_result);
-> >> +			CHECK_EQ(to_sum16(expected), csum_result);
-> >>   		}
-> >>   	}
-> >>   }
-> >> @@ -598,7 +599,7 @@ static void test_csum_ipv6_magic(struct kunit *test)
-> >>   	const struct in6_addr *daddr;
-> >>   	unsigned int len;
-> >>   	unsigned char proto;
-> >> -	unsigned int csum;
-> >> +	__wsum csum;
-> >>   
-> >>   	const int daddr_offset = sizeof(struct in6_addr);
-> >>   	const int len_offset = sizeof(struct in6_addr) + sizeof(struct in6_addr);
-> >> @@ -611,10 +612,10 @@ static void test_csum_ipv6_magic(struct kunit *test)
-> >>   		saddr = (const struct in6_addr *)(random_buf + i);
-> >>   		daddr = (const struct in6_addr *)(random_buf + i +
-> >>   						  daddr_offset);
-> >> -		len = *(unsigned int *)(random_buf + i + len_offset);
-> >> +		len = le32_to_cpu(*(__le32 *)(random_buf + i + len_offset));
-> >>   		proto = *(random_buf + i + proto_offset);
-> >> -		csum = *(unsigned int *)(random_buf + i + csum_offset);
-> >> -		CHECK_EQ(expected_csum_ipv6_magic[i],
-> >> +		csum = *(__wsum *)(random_buf + i + csum_offset);
-> >> +		CHECK_EQ(to_sum16(expected_csum_ipv6_magic[i]),
-> >>   			 csum_ipv6_magic(saddr, daddr, len, proto, csum));
-> >>   	}
-> >>   #endif /* !CONFIG_NET */
-> >> -- 
-> >> 2.43.0
+> >> diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
+> >> index 403091651885..ff5213862974 100644
+> >> --- a/drivers/media/i2c/ov4689.c
+> >> +++ b/drivers/media/i2c/ov4689.c
+> >> @@ -3,7 +3,7 @@
+> >>   * ov4689 driver
+> >>   *
+> >>   * Copyright (C) 2017 Fuzhou Rockchip Electronics Co., Ltd.
+> >> - * Copyright (C) 2022 Mikhail Rudenko
+> >> + * Copyright (C) 2022, 2023 Mikhail Rudenko
+> >>   */
 > >>
-> > 
-> > There is no need to duplicate efforts here. This has already been
-> > resolved by
-> > https://lore.kernel.org/lkml/20240221-fix_sparse_errors_checksum_tests-v9-2-bff4d73ab9d1@rivosinc.com/.
-> > 
+> >>  #include <linux/clk.h>
+> >> @@ -123,90 +123,123 @@ struct ov4689_gain_range {
+> >>   * mipi_datarate per lane 1008Mbps
+> >>   */
+> >>  static const struct regval ov4689_2688x1520_regs[] = {
+> >> -	{0x0103, 0x01}, {0x3638, 0x00}, {0x0300, 0x00},
+> >> -	{0x0302, 0x2a}, {0x0303, 0x00}, {0x0304, 0x03},
+> >> -	{0x030b, 0x00}, {0x030d, 0x1e}, {0x030e, 0x04},
+> >> -	{0x030f, 0x01}, {0x0312, 0x01}, {0x031e, 0x00},
+> >> -	{0x3000, 0x20}, {0x3002, 0x00}, {0x3018, 0x72},
+> >> -	{0x3020, 0x93}, {0x3021, 0x03}, {0x3022, 0x01},
+> >> -	{0x3031, 0x0a}, {0x303f, 0x0c}, {0x3305, 0xf1},
+> >> -	{0x3307, 0x04}, {0x3309, 0x29}, {0x3500, 0x00},
+> >> -	{0x3501, 0x60}, {0x3502, 0x00}, {0x3503, 0x04},
+> >> -	{0x3504, 0x00}, {0x3505, 0x00}, {0x3506, 0x00},
+> >> -	{0x3507, 0x00}, {0x3508, 0x00}, {0x3509, 0x80},
+> >> -	{0x350a, 0x00}, {0x350b, 0x00}, {0x350c, 0x00},
+> >> -	{0x350d, 0x00}, {0x350e, 0x00}, {0x350f, 0x80},
+> >> -	{0x3510, 0x00}, {0x3511, 0x00}, {0x3512, 0x00},
+> >> -	{0x3513, 0x00}, {0x3514, 0x00}, {0x3515, 0x80},
+> >> -	{0x3516, 0x00}, {0x3517, 0x00}, {0x3518, 0x00},
+> >> -	{0x3519, 0x00}, {0x351a, 0x00}, {0x351b, 0x80},
+> >> -	{0x351c, 0x00}, {0x351d, 0x00}, {0x351e, 0x00},
+> >> -	{0x351f, 0x00}, {0x3520, 0x00}, {0x3521, 0x80},
+> >> -	{0x3522, 0x08}, {0x3524, 0x08}, {0x3526, 0x08},
+> >> -	{0x3528, 0x08}, {0x352a, 0x08}, {0x3602, 0x00},
+> >> -	{0x3603, 0x40}, {0x3604, 0x02}, {0x3605, 0x00},
+> >> -	{0x3606, 0x00}, {0x3607, 0x00}, {0x3609, 0x12},
+> >> -	{0x360a, 0x40}, {0x360c, 0x08}, {0x360f, 0xe5},
+> >> -	{0x3608, 0x8f}, {0x3611, 0x00}, {0x3613, 0xf7},
+> >> -	{0x3616, 0x58}, {0x3619, 0x99}, {0x361b, 0x60},
+> >> -	{0x361c, 0x7a}, {0x361e, 0x79}, {0x361f, 0x02},
+> >> -	{0x3632, 0x00}, {0x3633, 0x10}, {0x3634, 0x10},
+> >> -	{0x3635, 0x10}, {0x3636, 0x15}, {0x3646, 0x86},
+> >> -	{0x364a, 0x0b}, {0x3700, 0x17}, {0x3701, 0x22},
+> >> -	{0x3703, 0x10}, {0x370a, 0x37}, {0x3705, 0x00},
+> >> -	{0x3706, 0x63}, {0x3709, 0x3c}, {0x370b, 0x01},
+> >> -	{0x370c, 0x30}, {0x3710, 0x24}, {0x3711, 0x0c},
+> >> -	{0x3716, 0x00}, {0x3720, 0x28}, {0x3729, 0x7b},
+> >> -	{0x372a, 0x84}, {0x372b, 0xbd}, {0x372c, 0xbc},
+> >> -	{0x372e, 0x52}, {0x373c, 0x0e}, {0x373e, 0x33},
+> >> -	{0x3743, 0x10}, {0x3744, 0x88}, {0x3745, 0xc0},
+> >> -	{0x374a, 0x43}, {0x374c, 0x00}, {0x374e, 0x23},
+> >> -	{0x3751, 0x7b}, {0x3752, 0x84}, {0x3753, 0xbd},
+> >> -	{0x3754, 0xbc}, {0x3756, 0x52}, {0x375c, 0x00},
+> >> -	{0x3760, 0x00}, {0x3761, 0x00}, {0x3762, 0x00},
+> >> -	{0x3763, 0x00}, {0x3764, 0x00}, {0x3767, 0x04},
+> >> -	{0x3768, 0x04}, {0x3769, 0x08}, {0x376a, 0x08},
+> >> -	{0x376b, 0x20}, {0x376c, 0x00}, {0x376d, 0x00},
+> >> -	{0x376e, 0x00}, {0x3773, 0x00}, {0x3774, 0x51},
+> >> -	{0x3776, 0xbd}, {0x3777, 0xbd}, {0x3781, 0x18},
+> >> -	{0x3783, 0x25}, {0x3798, 0x1b}, {0x3800, 0x00},
+> >> -	{0x3801, 0x08}, {0x3802, 0x00}, {0x3803, 0x04},
+> >> -	{0x3804, 0x0a}, {0x3805, 0x97}, {0x3806, 0x05},
+> >> -	{0x3807, 0xfb}, {0x3808, 0x0a}, {0x3809, 0x80},
+> >> -	{0x380a, 0x05}, {0x380b, 0xf0}, {0x380c, 0x0a},
+> >> -	{0x380d, 0x0e}, {0x380e, 0x06}, {0x380f, 0x12},
+> >> -	{0x3810, 0x00}, {0x3811, 0x08}, {0x3812, 0x00},
+> >> -	{0x3813, 0x04}, {0x3814, 0x01}, {0x3815, 0x01},
+> >> -	{0x3819, 0x01}, {0x3820, 0x00}, {0x3821, 0x06},
+> >> -	{0x3829, 0x00}, {0x382a, 0x01}, {0x382b, 0x01},
+> >> -	{0x382d, 0x7f}, {0x3830, 0x04}, {0x3836, 0x01},
+> >> -	{0x3837, 0x00}, {0x3841, 0x02}, {0x3846, 0x08},
+> >> -	{0x3847, 0x07}, {0x3d85, 0x36}, {0x3d8c, 0x71},
+> >> -	{0x3d8d, 0xcb}, {0x3f0a, 0x00}, {0x4000, 0xf1},
+> >> -	{0x4001, 0x40}, {0x4002, 0x04}, {0x4003, 0x14},
+> >> -	{0x400e, 0x00}, {0x4011, 0x00}, {0x401a, 0x00},
+> >> -	{0x401b, 0x00}, {0x401c, 0x00}, {0x401d, 0x00},
+> >> -	{0x401f, 0x00}, {0x4020, 0x00}, {0x4021, 0x10},
+> >> -	{0x4022, 0x07}, {0x4023, 0xcf}, {0x4024, 0x09},
+> >> -	{0x4025, 0x60}, {0x4026, 0x09}, {0x4027, 0x6f},
+> >> -	{0x4028, 0x00}, {0x4029, 0x02}, {0x402a, 0x06},
+> >> -	{0x402b, 0x04}, {0x402c, 0x02}, {0x402d, 0x02},
+> >> -	{0x402e, 0x0e}, {0x402f, 0x04}, {0x4302, 0xff},
+> >> -	{0x4303, 0xff}, {0x4304, 0x00}, {0x4305, 0x00},
+> >> -	{0x4306, 0x00}, {0x4308, 0x02}, {0x4500, 0x6c},
+> >> -	{0x4501, 0xc4}, {0x4502, 0x40}, {0x4503, 0x01},
+> >> -	{0x4601, 0xa7}, {0x4800, 0x04}, {0x4813, 0x08},
+> >> -	{0x481f, 0x40}, {0x4829, 0x78}, {0x4837, 0x10},
+> >> -	{0x4b00, 0x2a}, {0x4b0d, 0x00}, {0x4d00, 0x04},
+> >> -	{0x4d01, 0x42}, {0x4d02, 0xd1}, {0x4d03, 0x93},
+> >> -	{0x4d04, 0xf5}, {0x4d05, 0xc1}, {0x5000, 0xf3},
+> >> -	{0x5001, 0x11}, {0x5004, 0x00}, {0x500a, 0x00},
+> >> -	{0x500b, 0x00}, {0x5032, 0x00}, {0x5040, 0x00},
+> >> -	{0x5050, 0x0c}, {0x5500, 0x00}, {0x5501, 0x10},
+> >> -	{0x5502, 0x01}, {0x5503, 0x0f}, {0x8000, 0x00},
+> >> -	{0x8001, 0x00}, {0x8002, 0x00}, {0x8003, 0x00},
+> >> -	{0x8004, 0x00}, {0x8005, 0x00}, {0x8006, 0x00},
+> >> -	{0x8007, 0x00}, {0x8008, 0x00}, {0x3638, 0x00},
+> >> +	/* System control*/
+> >> +	{0x0103, 0x01}, /* SC_CTRL0103 software_reset = 1 */
+> >> +	{0x3000, 0x20}, /* SC_CMMN_PAD_OEN0 FSIN_output_enable = 1 */
+> >> +	{0x3021, 0x03}, /*
+> >> +			 * SC_CMMN_MISC_CTRL fst_stby_ctr = 0,
+> >> +			 * sleep_no_latch_enable = 0
+> >> +			 */
+> >> +
+> >> +	/* AEC PK */
+> >> +	{0x3503, 0x04}, /* AEC_MANUAL gain_input_as_sensor_gain_format = 1 */
+> >> +	{0x352a, 0x08}, /* DIG_GAIN_FRAC_LONG dig_gain_long[14:8] = 0x08 (2x) */
+> >> +
+> >> +	/* ADC and analog control*/
+> >> +	{0x3603, 0x40},
+> >> +	{0x3604, 0x02},
+> >> +	{0x3609, 0x12},
+> >> +	{0x360c, 0x08},
+> >> +	{0x360f, 0xe5},
+> >> +	{0x3608, 0x8f},
+> >> +	{0x3611, 0x00},
+> >> +	{0x3613, 0xf7},
+> >> +	{0x3616, 0x58},
+> >> +	{0x3619, 0x99},
+> >> +	{0x361b, 0x60},
+> >> +	{0x361e, 0x79},
+> >> +	{0x3634, 0x10},
+> >> +	{0x3635, 0x10},
+> >> +	{0x3636, 0x15},
+> >> +	{0x3646, 0x86},
+> >> +	{0x364a, 0x0b},
+> >> +
+> >> +	/* Sensor control */
+> >> +	{0x3700, 0x17},
+> >> +	{0x3701, 0x22},
+> >> +	{0x3703, 0x10},
+> >> +	{0x370a, 0x37},
+> >> +	{0x3706, 0x63},
+> >> +	{0x3709, 0x3c},
+> >> +	{0x370c, 0x30},
+> >> +	{0x3710, 0x24},
+> >> +	{0x3720, 0x28},
+> >> +	{0x3729, 0x7b},
+> >> +	{0x372b, 0xbd},
+> >> +	{0x372c, 0xbc},
+> >> +	{0x372e, 0x52},
+> >> +	{0x373c, 0x0e},
+> >> +	{0x373e, 0x33},
+> >> +	{0x3743, 0x10},
+> >> +	{0x3744, 0x88},
+> >> +	{0x3745, 0xc0},
+> >> +	{0x374c, 0x00},
+> >> +	{0x374e, 0x23},
+> >> +	{0x3751, 0x7b},
+> >> +	{0x3753, 0xbd},
+> >> +	{0x3754, 0xbc},
+> >> +	{0x3756, 0x52},
+> >> +	{0x376b, 0x20},
+> >> +	{0x3774, 0x51},
+> >> +	{0x3776, 0xbd},
+> >> +	{0x3777, 0xbd},
+> >> +	{0x3781, 0x18},
+> >> +	{0x3783, 0x25},
+> >> +	{0x3798, 0x1b},
+> >> +
+> >> +	/* Timing control */
+> >> +	{0x3801, 0x08}, /* H_CROP_START_L h_crop_start[7:0] = 0x08 */
+> >
+> > It would be nice to define register macros for the known registers. This
+> > can be done in a separate patch.
 > 
-> The idea here is to provide a fix which is similar to the one done 
-> previously and that uses the same approach and reuses the same helpers.
-> 
-> This is to keep the code homogeneous.
-> 
-> Christophe
+> Register defines are introduced throughout the series as soon they get
+> users outside the register tables. For the remaining known registers, I'd
+> prefer to introduce corresponding defines in a separate patch outside
+> this series.
 
-htons makes more sense here since this is networking code, but I don't
-care enough to argue the point. I tested it on big endian SPARC and on
-riscv. I'll base my alignment patch on this.
+Sure, it can be done in a separate series (or just separate patch), no
+problem.
 
-Tested-by: Charlie Jenkins <charlie@rivosinc.com>
+> > Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> >
+> >> +	{0x3805, 0x97}, /* H_CROP_END_L h_crop_end[7:0] = 0x97 */
+> >> +	{0x380c, 0x0a}, /* TIMING_HTS_H hts[14:8] = 0x0a */
+> >> +	{0x380d, 0x0e}, /* TIMING_HTS_L hts[7:0] = 0x0e */
+> >> +	{0x3811, 0x08}, /* H_WIN_OFF_L h_win_off[7:0] = 0x08*/
+> >> +	{0x3813, 0x04}, /* V_WIN_OFF_L v_win_off[7:0] = 0x04 */
+> >> +	{0x3819, 0x01}, /* VSYNC_END_L vsync_end_point[7:0] = 0x01 */
+> >> +	{0x3821, 0x06}, /* TIMING_FORMAT2 array_h_mirror = 1, digital_h_mirror = 1 */
+> >> +
+> >> +	/* OTP control */
+> >> +	{0x3d85, 0x36}, /* OTP_REG85 OTP_power_up_load_setting_enable = 1,
+> >> +			 * OTP_power_up_load_data_enable = 1,
+> >> +			 * OTP_bist_select = 1 (compare with zero)
+> >> +			 */
+> >> +	{0x3d8c, 0x71}, /* OTP_SETTING_STT_ADDRESS_H */
+> >> +	{0x3d8d, 0xcb}, /* OTP_SETTING_STT_ADDRESS_L */
+> >> +
+> >> +	/* BLC registers*/
+> >> +	{0x4001, 0x40}, /* DEBUG_MODE */
+> >> +	{0x401b, 0x00}, /* DEBUG_MODE */
+> >> +	{0x401d, 0x00}, /* DEBUG_MODE */
+> >> +	{0x401f, 0x00}, /* DEBUG_MODE */
+> >> +	{0x4020, 0x00}, /* ANCHOR_LEFT_START_H anchor_left_start[11:8] = 0 */
+> >> +	{0x4021, 0x10}, /* ANCHOR_LEFT_START_L anchor_left_start[7:0] = 0x10 */
+> >> +	{0x4022, 0x07}, /* ANCHOR_LEFT_END_H anchor_left_end[11:8] = 0x07 */
+> >> +	{0x4023, 0xcf}, /* ANCHOR_LEFT_END_L anchor_left_end[7:0] = 0xcf */
+> >> +	{0x4024, 0x09}, /* ANCHOR_RIGHT_START_H anchor_right_start[11:8] = 0x09 */
+> >> +	{0x4025, 0x60}, /* ANCHOR_RIGHT_START_L anchor_right_start[7:0] = 0x60 */
+> >> +	{0x4026, 0x09}, /* ANCHOR_RIGHT_END_H anchor_right_end[11:8] = 0x09 */
+> >> +	{0x4027, 0x6f}, /* ANCHOR_RIGHT_END_L anchor_right_end[7:0] = 0x6f */
+> >> +
+> >> +	/* ADC sync control */
+> >> +	{0x4500, 0x6c}, /* ADC_SYNC_CTRL */
+> >> +	{0x4503, 0x01}, /* ADC_SYNC_CTRL */
+> >> +
+> >> +	/* VFIFO */
+> >> +	{0x4601, 0xa7}, /* VFIFO_CTRL_01 r_vfifo_read_start[7:0] = 0xa7 */
+> >> +
+> >> +	/* Temperature monitor */
+> >> +	{0x4d00, 0x04}, /* TPM_CTRL_00 tmp_slope[15:8] = 0x04 */
+> >> +	{0x4d01, 0x42}, /* TPM_CTRL_01 tmp_slope[7:0] = 0x42 */
+> >> +	{0x4d02, 0xd1}, /* TPM_CTRL_02 tpm_offset[31:24] = 0xd1 */
+> >> +	{0x4d03, 0x93}, /* TPM_CTRL_03 tpm_offset[23:16] = 0x93 */
+> >> +	{0x4d04, 0xf5}, /* TPM_CTRL_04 tpm_offset[15:8]  = 0xf5 */
+> >> +	{0x4d05, 0xc1}, /* TPM_CTRL_05 tpm_offset[7:0]   = 0xc1 */
+> >> +
+> >> +	/* pre-ISP control */
+> >> +	{0x5050, 0x0c}, /* DEBUG_MODE */
+> >> +
+> >> +	/* OTP-DPC control */
+> >> +	{0x5501, 0x10}, /* OTP_DPC_START_L otp_start_address[7:0] = 0x10 */
+> >> +	{0x5503, 0x0f}, /* OTP_DPC_END_L otp_end_address[7:0] = 0x0f */
+> >>  	{REG_NULL, 0x00},
+> >>  };
+> >>
 
+-- 
+Regards,
+
+Laurent Pinchart
 
