@@ -1,154 +1,170 @@
-Return-Path: <linux-kernel+bounces-77670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88FBD8608AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:03:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4901E8608AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:05:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6E0A1F24A37
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:03:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C0A5281964
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:04:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B2D0BE5B;
-	Fri, 23 Feb 2024 02:03:26 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFA0BBA30;
+	Fri, 23 Feb 2024 02:04:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mAU81YnL"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 711DCC2E9
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 02:03:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70D41B64C;
+	Fri, 23 Feb 2024 02:04:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708653806; cv=none; b=ElJyOAJmQyEMbkdfBA9pAbaUVfJQ6kbcI84ClUb6uL7/bYKPaqaAM78vpeunrooxjVPLK+WW+IhU5N+S1Dfn49oIPi5WNv4soG+3XPVIJgjiEWfL63r2aXxI/r1Zm28xCuUDA3Ym4VnqVvTega6FigW3a9ZN0ybGdnP0wpJ0w8o=
+	t=1708653890; cv=none; b=Wrm8SmRIHFSahTj4s3vOM0HvSCFtIy/wUHbhZuKxJNvOuM47s3ynxMk63v09Y8DXjqxdU0jkV2Ud3Iooy9rLvsijmn6/mjUM412piTBXTB3zFvw2N/W1QS2suazU703pl0QdcrxLXMWYVPSIILrdUeqLwZCTxnKXj6YucrRU/CM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708653806; c=relaxed/simple;
-	bh=EqwwQgShDPZSCFmD4EAzdDLI0VQyrLpY6aA9djXYpBo=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=hXCD1PqTYjiNs7nA28MxfHV2CwspgpM+l9VNmE2D4vDhYcu/i/66SldTiqWtSxz0CXc/2V+1V8TYV97AsYSEY92uWb8DsYR5LRf2I0V0n20W2M7AVoh1FTY1a42OolXsZpS/RQZIo6K+4QDkzogRA4lfpDzzfKrfcrf3IZ5hHWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-364ff869140so3317745ab.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 18:03:23 -0800 (PST)
+	s=arc-20240116; t=1708653890; c=relaxed/simple;
+	bh=8ejT+LrVX/4RdW4wa47l2VUvGiguesRa+VgG4maP9FU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lktdSxUNai5DNZBNx3qHBV12qKZl2l0d+F3IR9rNu/rnA8x7TC6R5J23SQbKwpLASem6+yD3g5/PxH0yTO8nVN3V0ID+85Kr9j1/USi6lLwp547zaOH58Gt/kv4IBeyE5SR7g/OjX/ZAggBOAmGKbeXNZUwdFhiczenRuGq6Uw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mAU81YnL; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33d6cc6d2fcso122471f8f.2;
+        Thu, 22 Feb 2024 18:04:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708653887; x=1709258687; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Nyxvpi0xE/P/bl5O4PoDj0ei2BsOzwSCujLwQU9ULXc=;
+        b=mAU81YnLYcyXMxCLbebhwL5W5Tb1wBu3o4a4/fGXm5g4joALMEUT10k0Uohy/9HPK8
+         MaWfgYYrpXe77K+4JycIUOY6Fh/ucT8DY/Nkp3lWW2ZzNpnHcgPbekRr9M8qAo8yqXNA
+         DuRrB+Kjxfo6UwbPQKjsT3sdiCxY6WbTSsg2cdX0SauQ+C2vWIFTH/5G63qUHo9aS+QD
+         CI/0quemxKQjGdh74oQbRvHDGoRvDfPFoZ5OcMnJbnEYssaZaDpitmBTlHFHrAq916GZ
+         ZvaSQClCKIPDNkGwWdRMhhPcT34a9K8Zw/sTPW6FajkH09tJiqmBdEm8RjE0kOY42jLW
+         5x9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708653803; x=1709258603;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MKrgf129mFrg2kPZfg0LvclHW3UF997R10zWrzVHdFM=;
-        b=Ss7AiFU1BC9CbaqXAs5H9uYNKz8OH2646N5LiSvDk3e/Uj/fHMx2Q5Kgss8k3X4Ze0
-         GwujbZjACj9cuqR53K9N5aeW7GtTSkqD94LqrkRluFLCrPiBkLcqeccHsbb59RRTGIVM
-         rtln5TuhaPQbWPQvOxXrm98u8KMK/G2R1ervq529VS1+LLa1T6QUb0D/GrheuOD2xrzU
-         qg/D33qIlHartYsuBLYEZIhp50FpKD6sqw0BNk01nE+ZABWpu3FGlLVA7sa6SktZdrCx
-         XLYXYJ6ww7LR3a9uT2oNxNxsSRB0TZOq17ygcSfQ+4lAgte4H7HFsbk8hX2JOpdl8Kv0
-         iYig==
-X-Forwarded-Encrypted: i=1; AJvYcCWWyp80OxtIXbf+GqyCXJ1RNx9MmnGKqeNbQsyycQVjrAaSVLkkTJVHn6dHNugnTv5l+piamHytdvtMywm6JGSm+Frqggjj6ymsZcJV
-X-Gm-Message-State: AOJu0YwW2Cdw80XEeXe9wBM0nBC8R9V19WeyDN3U42I82Gyzh/jwd3eK
-	UgPmw3cUmitRP2tU18PoramkGeC3PSZZzRtM7+wqM1Y5jtWL3aYfmS/RmBXAn6LOBb4yUTA5kgW
-	71/iAqCiSeOQEfM5Oxl+8uL6bFE5KDDeo1Helc1uUU81v/GRejnQ6GZI=
-X-Google-Smtp-Source: AGHT+IGM0alMyQC7fdJq8wc8McpSrAwflkSLEWNeVF2I359YAzIrPa++BCY4VhsMhFclFulIY0oVvWm6SJWzmNZE0f6fuuUQxP4C
+        d=1e100.net; s=20230601; t=1708653887; x=1709258687;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Nyxvpi0xE/P/bl5O4PoDj0ei2BsOzwSCujLwQU9ULXc=;
+        b=XXuYPWQ20c68lYx90XKXI/FbNFgOtkLTt/KGBEwzQ14/8ktcb1hGfY27RTLeVeXQRw
+         Gm4HnqLe2JwKniruBvlMI7OstZFB+bmHUTMFWM/c1Yk3yVgySrGhZgGTUIoaV6Iypg3X
+         3egY1RBUIvEDhvjfaZufLc4ia4wGiY6x34QcDrrbuIi4zPgg00bH9MdbLg5jcwBbcida
+         6Ndrmfgwvo833hLEl/0MZUl8+wcCKMvXK7odZTxQYYuvnUFlCIVpaEcjZe+jouftPvWK
+         jlMGVsY3iAX3qC0vDLMyvgza9vQRvl1EG4AEJLzsxJW6+RPYpHiF9lMgWZnpAE2fGXgl
+         R5mw==
+X-Forwarded-Encrypted: i=1; AJvYcCV64cGbK1Gs3ItCz/OMoRm1m4q3DRvVBbjzA5xTwvctM4Rw2LEk9YT1lV30SqitCzDPacevywc3eT1WIGKvaDHVsQ7hqTKPMDdyBegvi1TfjfoGnKvdnbUO9M3z0C2gYTIO
+X-Gm-Message-State: AOJu0YyJs2Rju/nLzbgS7jhYHNpF3fCO+st801Qh4q7zJvnchAE0J5VH
+	Hpvt39rt+rNMbr+MOP1PFq25c3LWN/Rw04ATx9UAigXmVt6hKRjb5BvqBHNnanYTKDanA7+d7z2
+	aL3otzXWDXTnMnmAKRYtM8AXg1rA=
+X-Google-Smtp-Source: AGHT+IHmUwPglAVusOGqOdl5hW5f2mZgmhM3jhm2xeuOiIAE4he5enBJIMd4q7u84smJCQGPeYCb3qzJi4WN3ibmHdQ=
+X-Received: by 2002:a5d:6512:0:b0:33d:6984:3f80 with SMTP id
+ x18-20020a5d6512000000b0033d69843f80mr461742wru.67.1708653886707; Thu, 22 Feb
+ 2024 18:04:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c56f:0:b0:365:1f2b:7be8 with SMTP id
- b15-20020a92c56f000000b003651f2b7be8mr49353ilj.5.1708653802842; Thu, 22 Feb
- 2024 18:03:22 -0800 (PST)
-Date: Thu, 22 Feb 2024 18:03:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f673a1061202f630@google.com>
-Subject: [syzbot] [btrfs?] WARNING in btrfs_get_root_ref
-From: syzbot <syzbot+623a623cfed57f422be1@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20240201125225.72796-1-puranjay12@gmail.com> <20240201125225.72796-2-puranjay12@gmail.com>
+ <ZdegTX9x2ye-7xIt@arm.com>
+In-Reply-To: <ZdegTX9x2ye-7xIt@arm.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 22 Feb 2024 18:04:35 -0800
+Message-ID: <CAADnVQLGGTshMiQAWwJ9UzrEVDR4Z8yk+ki9pUqKLgcH0DRAjA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] arm64: stacktrace: Implement
+ arch_bpf_stack_walk() for the BPF JIT
+To: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Puranjay Mohan <puranjay12@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Will Deacon <will@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Thu, Feb 22, 2024 at 11:28=E2=80=AFAM Catalin Marinas
+<catalin.marinas@arm.com> wrote:
+>
+> On Thu, Feb 01, 2024 at 12:52:24PM +0000, Puranjay Mohan wrote:
+> > This will be used by bpf_throw() to unwind till the program marked as
+> > exception boundary and run the callback with the stack of the main
+> > program.
+> >
+> > This is required for supporting BPF exceptions on ARM64.
+> >
+> > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> > ---
+> >  arch/arm64/kernel/stacktrace.c | 26 ++++++++++++++++++++++++++
+> >  1 file changed, 26 insertions(+)
+> >
+> > diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktr=
+ace.c
+> > index 7f88028a00c0..66cffc5fc0be 100644
+> > --- a/arch/arm64/kernel/stacktrace.c
+> > +++ b/arch/arm64/kernel/stacktrace.c
+> > @@ -7,6 +7,7 @@
+> >  #include <linux/kernel.h>
+> >  #include <linux/efi.h>
+> >  #include <linux/export.h>
+> > +#include <linux/filter.h>
+> >  #include <linux/ftrace.h>
+> >  #include <linux/kprobes.h>
+> >  #include <linux/sched.h>
+> > @@ -266,6 +267,31 @@ noinline noinstr void arch_stack_walk(stack_trace_=
+consume_fn consume_entry,
+> >       kunwind_stack_walk(arch_kunwind_consume_entry, &data, task, regs)=
+;
+> >  }
+> >
+> > +struct bpf_unwind_consume_entry_data {
+> > +     bool (*consume_entry)(void *cookie, u64 ip, u64 sp, u64 fp);
+> > +     void *cookie;
+> > +};
+> > +
+> > +static bool
+> > +arch_bpf_unwind_consume_entry(const struct kunwind_state *state, void =
+*cookie)
+> > +{
+> > +     struct bpf_unwind_consume_entry_data *data =3D cookie;
+> > +
+> > +     return data->consume_entry(data->cookie, state->common.pc, 0,
+> > +                                state->common.fp);
+> > +}
+> > +
+> > +noinline noinstr void arch_bpf_stack_walk(bool (*consume_entry)(void *=
+cookie, u64 ip, u64 sp,
+> > +                                                             u64 fp), =
+void *cookie)
+> > +{
+> > +     struct bpf_unwind_consume_entry_data data =3D {
+> > +             .consume_entry =3D consume_entry,
+> > +             .cookie =3D cookie,
+> > +     };
+> > +
+> > +     kunwind_stack_walk(arch_bpf_unwind_consume_entry, &data, current,=
+ NULL);
+> > +}
+>
+> Too many "cookies", I found reading this confusing. If you ever respin,
+> please use some different "cookie" names.
+>
+> I guess you want this to be merged via the bpf tree?
 
-syzbot found the following issue on:
+We typically take bpf jit patches through bpf-next, since
+we do cross arch jits refactoring from time to time,
+but nothing like this is pending for this merge window,
+so if you want it to go through arm64 tree that's fine with us.
 
-HEAD commit:    c02197fc9076 Merge tag 'powerpc-6.8-3' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16765b8a180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=caa42dd2796e3ac1
-dashboard link: https://syzkaller.appspot.com/bug?extid=623a623cfed57f422be1
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/7b2a3f729cc3/disk-c02197fc.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b4f10e6eb1ca/vmlinux-c02197fc.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/8488781d739e/bzImage-c02197fc.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+623a623cfed57f422be1@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-ida_free called for id=51 which is not allocated.
-WARNING: CPU: 1 PID: 31038 at lib/idr.c:525 ida_free+0x370/0x420 lib/idr.c:525
-Modules linked in:
-CPU: 1 PID: 31038 Comm: syz-executor.2 Not tainted 6.8.0-rc4-syzkaller-00410-gc02197fc9076 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-RIP: 0010:ida_free+0x370/0x420 lib/idr.c:525
-Code: 10 42 80 3c 28 00 74 05 e8 6d a3 9b f6 48 8b 7c 24 40 4c 89 fe e8 a0 89 17 00 90 48 c7 c7 00 ca c5 8c 89 de e8 01 91 fd f5 90 <0f> 0b 90 90 eb 3d e8 e5 85 39 f6 49 bd 00 00 00 00 00 fc ff df 4d
-RSP: 0018:ffffc90015a67300 EFLAGS: 00010246
-RAX: be5130472f5dd000 RBX: 0000000000000033 RCX: 0000000000040000
-RDX: ffffc90009a7a000 RSI: 000000000003ffff RDI: 0000000000040000
-RBP: ffffc90015a673f0 R08: ffffffff81577992 R09: 1ffff92002b4cdb4
-R10: dffffc0000000000 R11: fffff52002b4cdb5 R12: 0000000000000246
-R13: dffffc0000000000 R14: ffffffff8e256b80 R15: 0000000000000246
-FS:  00007fca3f4b46c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f167a17b978 CR3: 000000001ed26000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- btrfs_get_root_ref+0xa48/0xaf0 fs/btrfs/disk-io.c:1346
- create_pending_snapshot+0xff2/0x2bc0 fs/btrfs/transaction.c:1837
- create_pending_snapshots+0x195/0x1d0 fs/btrfs/transaction.c:1931
- btrfs_commit_transaction+0xf1c/0x3740 fs/btrfs/transaction.c:2404
- create_snapshot+0x507/0x880 fs/btrfs/ioctl.c:848
- btrfs_mksubvol+0x5d0/0x750 fs/btrfs/ioctl.c:998
- btrfs_mksnapshot+0xb5/0xf0 fs/btrfs/ioctl.c:1044
- __btrfs_ioctl_snap_create+0x387/0x4b0 fs/btrfs/ioctl.c:1306
- btrfs_ioctl_snap_create_v2+0x1ca/0x400 fs/btrfs/ioctl.c:1393
- btrfs_ioctl+0xa74/0xd40
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl+0xfe/0x170 fs/ioctl.c:857
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6f/0x77
-RIP: 0033:0x7fca3e67dda9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fca3f4b40c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007fca3e7abf80 RCX: 00007fca3e67dda9
-RDX: 00000000200005c0 RSI: 0000000050009417 RDI: 0000000000000003
-RBP: 00007fca3e6ca47a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007fca3e7abf80 R15: 00007fff6bf95658
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Thank you for the review!
 
