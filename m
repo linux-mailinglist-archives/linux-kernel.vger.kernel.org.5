@@ -1,123 +1,127 @@
-Return-Path: <linux-kernel+bounces-78208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B9BA861043
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:22:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 23FE0861045
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:23:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 476EF286F1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:22:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3AFE286FD8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:23:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB82D763EF;
-	Fri, 23 Feb 2024 11:22:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 398627AE45;
+	Fri, 23 Feb 2024 11:22:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZzAaElrm"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="V30E3W+e"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A37A5D47A;
-	Fri, 23 Feb 2024 11:22:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A88E78B6B;
+	Fri, 23 Feb 2024 11:22:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708687361; cv=none; b=P2AdVud30w04aUWSIxnHnnGesgDvtQbba4ewZl2lJwDLOQskB7w0/SC8o8sc5oMK6w0x2UWgsyfHn0Gk/Iu7DSDGI3Ydzx1j11+OtU14BSzDah+qP6zrZF4c1pPUlZ1IO/fG4aM8SL6LDQsdQjgEspMRmm/RzeWfTggrLE1b35A=
+	t=1708687365; cv=none; b=L3lskYPmfteIK0/LDgTcxy7gOls2U01SL8FZeZMXO9kg+DmsicsAL4w3FERMhhlpCw1TI+IHn6aa0kuYEEod+2LkSM9adaUB17D/Mqpoc7Ims46hEC9lO/YWskyuq/pnLEqGnl4QgfP49MG2ZHYR/SYH0yB9ta1+czlB8+r455c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708687361; c=relaxed/simple;
-	bh=7UvKRmG7swJfDdVxCMKMXceTL0sGIOI++hM+zeNhxp8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=jeKMs0MvClxqMoTvC6gcrhoBmjzu1+z4N3ZOGXtiEXNlEuJyiX+tBjRPbfgocpDIAreNxOlI6yNJ03I421W8dD14PiOxT+3ZHGJGsMt7f/Wo0nHZws0AMoMHhG5paAA9oacn1FwjxJsaBF5dN/3jOjJiTcs34q9/2hFES32xQWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZzAaElrm; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-563c403719cso743979a12.2;
-        Fri, 23 Feb 2024 03:22:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708687358; x=1709292158; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UkDOlwqdJKpgBN8ZxM5dkFMSj6BTyDau6P8LZmuFdvk=;
-        b=ZzAaElrmn6VXvmqW+Mh9/JNXjD4EsUhGLoEjxI/6qmtZV4Cej7aq+ywteOPdFzbNOJ
-         nEBqpJZFluWJEWs3Dpyxew3/ex9ZtBw1JvpY0Xga+laQ5Iy07ux2AvKDVFjf9qS4Bh8F
-         HPaPk40jhak32bXucr/iDgEJ88KB/YlPZvcaH43qic/TGxmrZvpsu7/pGSJ3xHQASOCi
-         iAcbKVVPbKz2GVJ+780K79yabmdJIovDEYzCEG/goHndFlywICPqgrS7ZAWiTEDy4E8n
-         vJnl8TLBWcED1D7XX/KyDeBtrDaoF03IzL1ckyCiEfKqhgcUv5/pXn1ERLF8TYqpXkZ5
-         GEBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708687358; x=1709292158;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UkDOlwqdJKpgBN8ZxM5dkFMSj6BTyDau6P8LZmuFdvk=;
-        b=erk4eG+of11IsXnwht97rL0B2xalgqEG2gi43HX9Rr5uo4inTQMF0ESRS22RzBXRRH
-         31OEP+lHir3HiXzeaFyPnZcOQxdBdSJbAz3D6vrMZV5Cvzihl/IePSksOT9Rpq6QSwpl
-         jv2jx4p5xo8vCByLhPSDljD5k8ZgGJqPxmvBwZrzfoRrMCu9N7BNh68TdT/yLxINQg3X
-         CEPbSzdRyiX+Y8dVlm1OFBOG2QhfbqASt8phMuwRHh9TSX1jrOqDimGVzKBdio2m5pds
-         xe4UHVCr4UYOqLUd70zd3xYjBFvlDoQqdL8tX7uEE9DN4RlJWX/yZS5miX4AG/JQBguD
-         mLJA==
-X-Forwarded-Encrypted: i=1; AJvYcCVANrWhMz1NUg884ApRvOJIPGRt5a5OTqwu1oyKWy4VSvqeFgboo+ELc6LiEjV/NeNLyyAZNeKcWrKxpUmqnl5WUWOWP4yM3Z5ZHPko5nPODIeTngkX9WPZ7QidWAYrsfpXOMhAi12/j16e8xV8iSd5NEKAsDFavKlXawoTeXOBQwuy7co=
-X-Gm-Message-State: AOJu0Yz5aY/QMIiga3bsxzb/1jt0wO5RM2ig2ZmOmFGEBqh30t4Pnuck
-	5UDyBZsIiY9EL3hAlA4YfBPt2IwltFdEz/MTbuU1dpYQJ4CkrJY3
-X-Google-Smtp-Source: AGHT+IFZW7dV98KKwCf84FGK0/EQszkPfkxlwIa3iHUC9ZlPt9zPVQjeD12dAL2y7Blnw8IOmLtBfA==
-X-Received: by 2002:aa7:d958:0:b0:564:5227:972 with SMTP id l24-20020aa7d958000000b0056452270972mr1045362eds.33.1708687357745;
-        Fri, 23 Feb 2024 03:22:37 -0800 (PST)
-Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.gmail.com with ESMTPSA id f23-20020a50a6d7000000b0056392b7d85fsm6776984edc.9.2024.02.23.03.22.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 03:22:35 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Pavel Machek <pavel@ucw.cz>,
-	Lee Jones <lee@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	linux-leds@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH] dt-bindings: leds: Add LED_FUNCTION_WAN_ONLINE for Internet access
-Date: Fri, 23 Feb 2024 12:22:23 +0100
-Message-Id: <20240223112223.1368-1-zajec5@gmail.com>
-X-Mailer: git-send-email 2.35.3
+	s=arc-20240116; t=1708687365; c=relaxed/simple;
+	bh=JlCjvXv1vhGyP/skKGYCXmNRqNPrHJWqMxafmlRLjxM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=n94JL50eveR+U213CscG4jS/8Ki9FmtCQDfneK6t5e3XsbY2+a8yjo84ggqIw7KMhL5njeh+7LXLsemoV4llBEJBVG2u1pdp+KKiEvuNE+d+T2NXgEIFxp1vwkQJCqL3uZL4AJQxQUju9181X9L6DjvxRLfJj2mpi1XBI/Gc2g4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=V30E3W+e; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id F3E2C2E7;
+	Fri, 23 Feb 2024 12:22:31 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1708687352;
+	bh=JlCjvXv1vhGyP/skKGYCXmNRqNPrHJWqMxafmlRLjxM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=V30E3W+eSPwI9/KBM4hzd8fBqQnH0AqPd5LpHGyLV+YxZ7u5njQ5dmCnZbXRDemcK
+	 9ev1+S4RK88br/e0LlOwMoVSYtywLd5VA5SnEVO2FFKiBoYDH//rCnZFuDv6HWaER0
+	 T5otOiUhnRP85wxfLcZS2CBSrjSxcxs8bte46Ecc=
+Date: Fri, 23 Feb 2024 13:22:44 +0200
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Mikhail Rudenko <mike.rudenko@gmail.com>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Jacopo Mondi <jacopo@jmondi.org>,
+	Tommaso Merciai <tomm.merciai@gmail.com>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Dave Stevenson <dave.stevenson@raspberrypi.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH v2 02/20] media: i2c: ov4689: Sort register definitions
+ by address
+Message-ID: <20240223112244.GM31348@pendragon.ideasonboard.com>
+References: <20231218174042.794012-1-mike.rudenko@gmail.com>
+ <20231218174042.794012-3-mike.rudenko@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231218174042.794012-3-mike.rudenko@gmail.com>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+Hi Mikhail,
 
-It's common for routers to have LED indicating link on the WAN port.
+Thank you for the patch.
 
-Some devices however have an extra LED that's meant to be used if WAN
-connection is actually "online" (there is Internet access available).
+On Mon, Dec 18, 2023 at 08:40:23PM +0300, Mikhail Rudenko wrote:
+> Put register defininitions in the order of increasing register
+> address.
+> 
+> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
 
-It was suggested to add #define for such use case.
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-Link: https://lore.kernel.org/linux-devicetree/80e92209-5578-44e7-bd4b-603a29053ddf@collabora.com/T/#u
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
- include/dt-bindings/leds/common.h | 1 +
- 1 file changed, 1 insertion(+)
+> ---
+>  drivers/media/i2c/ov4689.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
+> index ff5213862974..1ae6d9b9c9b3 100644
+> --- a/drivers/media/i2c/ov4689.c
+> +++ b/drivers/media/i2c/ov4689.c
+> @@ -19,15 +19,15 @@
+>  #include <media/v4l2-subdev.h>
+>  #include <media/v4l2-fwnode.h>
+>  
+> -#define CHIP_ID				0x004688
+> -#define OV4689_REG_CHIP_ID		0x300a
+> -
+>  #define OV4689_XVCLK_FREQ		24000000
+>  
+>  #define OV4689_REG_CTRL_MODE		0x0100
+>  #define OV4689_MODE_SW_STANDBY		0x0
+>  #define OV4689_MODE_STREAMING		BIT(0)
+>  
+> +#define OV4689_REG_CHIP_ID		0x300a
+> +#define CHIP_ID				0x004688
+> +
+>  #define OV4689_REG_EXPOSURE		0x3500
+>  #define OV4689_EXPOSURE_MIN		4
+>  #define OV4689_EXPOSURE_STEP		1
+> @@ -41,12 +41,12 @@
+>  #define OV4689_GAIN_STEP		1
+>  #define OV4689_GAIN_DEFAULT		0x80
+>  
+> +#define OV4689_REG_VTS			0x380e
+> +
+>  #define OV4689_REG_TEST_PATTERN		0x5040
+>  #define OV4689_TEST_PATTERN_ENABLE	0x80
+>  #define OV4689_TEST_PATTERN_DISABLE	0x0
+>  
+> -#define OV4689_REG_VTS			0x380e
+> -
+>  #define REG_NULL			0xFFFF
+>  
+>  #define OV4689_REG_VALUE_08BIT		1
 
-diff --git a/include/dt-bindings/leds/common.h b/include/dt-bindings/leds/common.h
-index c56785bb9c9c..ecea167930d9 100644
---- a/include/dt-bindings/leds/common.h
-+++ b/include/dt-bindings/leds/common.h
-@@ -100,6 +100,7 @@
- #define LED_FUNCTION_TX "tx"
- #define LED_FUNCTION_USB "usb"
- #define LED_FUNCTION_WAN "wan"
-+#define LED_FUNCTION_WAN_ONLINE "wan-online"
- #define LED_FUNCTION_WLAN "wlan"
- #define LED_FUNCTION_WLAN_2GHZ "wlan-2ghz"
- #define LED_FUNCTION_WLAN_5GHZ "wlan-5ghz"
 -- 
-2.35.3
+Regards,
 
+Laurent Pinchart
 
