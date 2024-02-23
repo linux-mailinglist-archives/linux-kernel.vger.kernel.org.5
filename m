@@ -1,165 +1,97 @@
-Return-Path: <linux-kernel+bounces-78758-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E17E86186E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:48:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E907F861876
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:50:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 321F81C238EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:48:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D5632850B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:50:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 282E61272D9;
-	Fri, 23 Feb 2024 16:48:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C7E712883A;
+	Fri, 23 Feb 2024 16:50:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FreiXuFB"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m90r8sf8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A606F12838B
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 16:48:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1049186A;
+	Fri, 23 Feb 2024 16:50:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708706909; cv=none; b=qonaTkER4rHYz3B5vlULew1YpPfIY6afjAeCAqLPAF4fDr+tZzbrYyYQyrpv/N2ZTA9dOSj/c2PH6Nk49FoIcr/Fzyn/TTUno8A23cHr0WaVwLPTYK+vdBk2URrxddczTOX9MP39qx9Xu9mPLFU0JnswA9mMu3poBn1yKcmGxgM=
+	t=1708707041; cv=none; b=H1+fD0MUyVhP44hR3lQrgXWUWMeTkFTh3CHxc7EQL88TXpsY5wvCC9iyD9hWP/XeEb1UVHdzUc7DEMkj1NbXKWBVVJAQK/MFRcWzzWHx/P0XbOEKptFMjk+mVVyVUQgYPC9awVdZt/jeSWlYYVT1lgg4dgbp2g75TNz/rke+fTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708706909; c=relaxed/simple;
-	bh=NL6Poyql//ChqFYnAITXk/nlto//1JQfy0RIuysn5XY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uBHbxSUTXpefTiGU3FC/94jgyIaWDWy4COb6TYw4kphtom9TSSK1pgZ+H3KSwcGKSEwM1hdd4b/S/O8wOzO0R+PRASCHlnwGGVyCLMNlh/BWD8DirGxcj3+puh8Y1tGV+Fokko2N6D8xK5L8HwWgfkJLbyeEeiFASLoj8DBw7sw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FreiXuFB; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708706906;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lWTBT8l0r4+LfEgX4DGPyzuq25NZlKjkAYRK5GPaE0Y=;
-	b=FreiXuFB6WWvFMidsenDSNh+/o5QmJTus2Mbf+aQq3B2KHXodBScY2Yn1J4NskmSHoHOaa
-	VSNZmPBkYszQogpLtgal7LirC4JTG590J3ygjMVdNEJUkLz4qb777OHXLI5Vkd1ElMNWpc
-	NZJu8eg/wgoeXmuZnaQjxaw2GQu5Rno=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-398-ERYiSnppOX-CvdKW_0j9Tg-1; Fri, 23 Feb 2024 11:48:24 -0500
-X-MC-Unique: ERYiSnppOX-CvdKW_0j9Tg-1
-Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2d2399a08c0so8374321fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 08:48:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708706903; x=1709311703;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lWTBT8l0r4+LfEgX4DGPyzuq25NZlKjkAYRK5GPaE0Y=;
-        b=HP6wjET2gOzkzeayq5zc2HE9HClHfbl5KMtx3xskWxUWlTflPLCu9E23ykJHkfsPBc
-         M2jMP6cT6MYRpM4XtUy9O31EYad0TmpcIO4g9gbZQjM5+RI9YoPVHt2lw0gzwPItrHKv
-         KNmGhXOKnD4280aoI6j+PTpTt/oF0wvXN9xplEF4d36GLZGjeI0YY2GWLAF2cAw36Xkp
-         S2pEyL8b+AAudTWu1UECIH02SEIfTOOyRjkO/JUF7G/m3+NppNGEug5j7MQVHy1m/0IM
-         qGLD3OcbNhT4oLJDvtdC4giTkTsYUtAVKRhEO6YFMfqhwNdmlCNIR15XAIAOsFHanSSW
-         725A==
-X-Gm-Message-State: AOJu0Yw74YXxlN3xLJNR36cM5t2bYoAHAKBM9cRsjOZnXxCjUTVI55iJ
-	OnM1p8D2tikr4Rjz/qd/tIMwO6F4/1v41/y/clTAfhe9/O+IalMXeyEW5lQ+0eMB9jqaDtjwg0i
-	7nDwDilgYHCsvWGRNzSUydGaX3uYIKx14uoCZ5CprlK8ZZMfNbrnC6eReIlIjD+c6SDr5TCMx30
-	afp/ItKoIjxy0Yp/IVphKe9Xakdx8OizbuazOe
-X-Received: by 2002:a2e:97cf:0:b0:2d2:3b61:a2b with SMTP id m15-20020a2e97cf000000b002d23b610a2bmr240914ljj.11.1708706903113;
-        Fri, 23 Feb 2024 08:48:23 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF3L8Jq/Pr0xzR++9DOj5OHGNQPCSNmFwB1mlOHfr9+KdeJXsyxiieOyfL6BKk400aamUP6IrcyHDkdN1To+jY=
-X-Received: by 2002:a2e:97cf:0:b0:2d2:3b61:a2b with SMTP id
- m15-20020a2e97cf000000b002d23b610a2bmr240905ljj.11.1708706902739; Fri, 23 Feb
- 2024 08:48:22 -0800 (PST)
+	s=arc-20240116; t=1708707041; c=relaxed/simple;
+	bh=FcFKkcD+KedUPd0nKCzo9Sr+131bk/+fxgGpLieoX10=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hX4e9S9PDYLU5neVthA2XvaPqcM0gKjWvS7e5UGQnRKMliBrRkkBkaVhW2TS/jhz8pZjgXtwQ1s3iw2oHrxD5cNeJJkZV5GlakT5X+WzPatKxLKEJj4eVOeHa+BFYt4oNwPnD+GISAnbvv7SFvavmWfcBDSPmQbruqfX9pdoAt0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m90r8sf8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 214D9C433F1;
+	Fri, 23 Feb 2024 16:50:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708707040;
+	bh=FcFKkcD+KedUPd0nKCzo9Sr+131bk/+fxgGpLieoX10=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=m90r8sf8rpAUhp0YsZ+A4WeQny1295+J2EUWd2WI/7ORXn6afHm6UHyrbjezOSHvA
+	 ltphprEqUjuiWq6LwNJ8tX8+Y2qYnUqxMnSAIUnk1a03aM/J8bH+NAbbEruroyOzQH
+	 +KJf7/Dl9SreMNRV1pdtFKwvNaHBcMK4zNDEf680YBpybMhgX8v3CFaZiYDtNMFRwe
+	 Zzf/HVbCW4OubxUvFJYH8uHaxNdBKZycj2ZJhmgdIlf0x5I72W99GLsJsl3SjLBnR1
+	 cFdLKpZt2bIV4eJSzXUok5jdgbKK66czDsVgWsP+TGtNPk3udTNlzsuFF/94dcbp2c
+	 lYlxRG7IYpbbQ==
+Message-ID: <fd7b788a-2e12-4828-8f5f-d17536ed5a10@kernel.org>
+Date: Fri, 23 Feb 2024 09:50:38 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223104009.632194-1-pbonzini@redhat.com> <20240223104009.632194-8-pbonzini@redhat.com>
- <ZdjL783FazB6V6Cy@google.com>
-In-Reply-To: <ZdjL783FazB6V6Cy@google.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Fri, 23 Feb 2024 17:48:10 +0100
-Message-ID: <CABgObfYF4pyUDpf0E98xqoJkDsjwXuViasoib-CbB0MUtRNBuQ@mail.gmail.com>
-Subject: Re: [PATCH v2 07/11] KVM: x86: define standard behavior for bits 0/1
- of VM type
-To: Sean Christopherson <seanjc@google.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com, 
-	aik@amd.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v4 0/3] ioam6: netlink multicast event
+Content-Language: en-US
+To: Justin Iurman <justin.iurman@uliege.be>, netdev@vger.kernel.org
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, linux-kernel@vger.kernel.org
+References: <20240223144135.12826-1-justin.iurman@uliege.be>
+From: David Ahern <dsahern@kernel.org>
+In-Reply-To: <20240223144135.12826-1-justin.iurman@uliege.be>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 23, 2024 at 5:46=E2=80=AFPM Sean Christopherson <seanjc@google.=
-com> wrote:
->
-> On Fri, Feb 23, 2024, Paolo Bonzini wrote:
-> > Some VM types have characteristics in common; in fact, the only use
-> > of VM types right now is kvm_arch_has_private_mem and it assumes that
-> > _all_ VM types have private memory.
-> >
-> > So, let the low bits specify the characteristics of the VM type.  As
-> > of we have two special things: whether memory is private, and whether
-> > guest state is protected.  The latter is similar to
-> > kvm->arch.guest_state_protected, but the latter is only set on a fully
-> > initialized VM.  If both are set, ioctls to set registers will cause
-> > an error---SEV-ES did not do so, which is a problematic API.
-> >
-> > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> > Message-Id: <20240209183743.22030-7-pbonzini@redhat.com>
-> > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> > ---
-> >  arch/x86/include/asm/kvm_host.h |  9 +++-
-> >  arch/x86/kvm/x86.c              | 93 +++++++++++++++++++++++++++------
-> >  2 files changed, 85 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm=
-_host.h
-> > index 0bcd9ae16097..15db2697863c 100644
-> > --- a/arch/x86/include/asm/kvm_host.h
-> > +++ b/arch/x86/include/asm/kvm_host.h
-> > @@ -2135,8 +2135,15 @@ void kvm_mmu_new_pgd(struct kvm_vcpu *vcpu, gpa_=
-t new_pgd);
-> >  void kvm_configure_mmu(bool enable_tdp, int tdp_forced_root_level,
-> >                      int tdp_max_root_level, int tdp_huge_page_level);
-> >
-> > +
-> > +/* Low bits of VM types provide confidential computing capabilities.  =
-*/
-> > +#define __KVM_X86_PRIVATE_MEM_TYPE   1
-> > +#define __KVM_X86_PROTECTED_STATE_TYPE       2
-> > +#define __KVM_X86_VM_TYPE_FEATURES   3
-> > +static_assert((KVM_X86_SW_PROTECTED_VM & __KVM_X86_VM_TYPE_FEATURES) =
-=3D=3D __KVM_X86_PRIVATE_MEM_TYPE);
->
-> Aliasing bit 0 to KVM_X86_SW_PROTECTED_VM is gross, e.g. this
->
->  #define KVM_X86_DEFAULT_VM     0
->  #define KVM_X86_SW_PROTECTED_VM        1
-> +#define KVM_X86_SEV_VM         8
-> +#define KVM_X86_SEV_ES_VM      10
->
-> is _super_ confusing and bound to cause problems.
->
-> Oh, good gravy, you're also aliasing __KVM_X86_PROTECTED_STATE_TYPE into =
-SEV_ES_VM.
-> Curse you and your Rami Code induced decimal-based bitwise shenanigans!!!
+On 2/23/24 7:41 AM, Justin Iurman wrote:
+> v4:
+>  - rebase on top of net merge
+> v3:
+>  - patchset was mistakenly superseded due to same cover title used for
+>    iproute2-next equivalent patch -> resend (renamed)
+> v2:
+>  - fix warnings
+> 
+> Add generic netlink multicast event support to ioam6 as another solution
+> to share IOAM data with user space. The other one being via IPv6 raw
+> sockets combined with ancillary data. This patchset focuses on the IOAM
+> Pre-allocated Trace (the only Option-Type currently supported), and so
+> on IOAM "trace" events. See an example of a consumer here [1].
+> 
+>   [1] https://github.com/Advanced-Observability/ioam-agent-python/blob/netlink_event/ioam-agent.py
+> 
+> Justin Iurman (3):
+>   uapi: ioam6: API for netlink multicast events
+>   net: ioam6: multicast event
+>   net: exthdrs: ioam6: send trace event
+> 
+>  include/net/ioam6.h             |  4 +++
+>  include/uapi/linux/ioam6_genl.h | 20 +++++++++++
+>  net/ipv6/exthdrs.c              |  6 ++++
+>  net/ipv6/ioam6.c                | 64 +++++++++++++++++++++++++++++++++
+>  4 files changed, 94 insertions(+)
+> 
+> 
+> base-commit: a818bd12538c1408c7480de31573cdb3c3c0926f
 
-v1 was less gross but Mike talked me into this one. :)
-
-> I don't see any reason to bleed the flags into KVM's ABI.  Even shoving t=
-he flags
-> into kvm->arch.vm_type is unncessary.  Aha!  As is storing vm_type as an =
-"unsigned
-> long", since (a) it can't ever be bigger than u32, and (b) in practice a =
-u8 will
-> suffice since as Mike pointed out we're effectively limited to 31 types b=
-efore
-> kvm_vm_ioctl_check_extension() starts returning error codes.
->
-> So I vote to skip the aliasing and simply do:
-
-Fair enough.
-
-Paolo
+For the set:
+Reviewed-by: David Ahern <dsahern@kernel.org>
 
 
