@@ -1,98 +1,107 @@
-Return-Path: <linux-kernel+bounces-78931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21955861AF4
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:56:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AE03861AF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:56:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9141B20A17
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:55:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A932B20EF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:56:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8E1C1448E0;
-	Fri, 23 Feb 2024 17:54:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DDDF13F007;
+	Fri, 23 Feb 2024 17:55:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sLDmk0vY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="StgKFPL4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 144FB13A88E;
-	Fri, 23 Feb 2024 17:54:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8878F13EFFC;
+	Fri, 23 Feb 2024 17:55:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708710892; cv=none; b=ndX5K2g9auAh9UGwwacaxuyprEonD9brJC8lv05H3hNbfWowmcINO4rX9G/3/xPWUeDOPaXHpZE2KLmqKAuT6/ulQ0wDvSfYSEUw5/iKkYHAZysa+/vOLDyGcoLo5Jx3OCCZfZyrGKMPq2S8vRXmInJ3tiygMHjFs8sAwD/e2YE=
+	t=1708710900; cv=none; b=EvJytIiz1XK4ndtZLi75r55Ngw7Ig4RIh4K8bSD0u/m7r/aYTQDcMcbtQ8qVGqzCYpaDUe6fIaHFRJTN7R/8+K9hcepEC3xoYNfmz7Dz1RLdfRFaa5ZG4CW92MZnA7plTqgbc1DtoYdCTBVL2Za45h6z42CJMyeNm7QMCe7js10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708710892; c=relaxed/simple;
-	bh=QDQLjwhGjrv6J0gGJFn9+fBtaCu989tCcvRM0N4xN5I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SAZQEvjYOhoJ8QS9BHtW52RSgJJWEVa3Cv+meX4LZDVgfylYDclRR1Wv/fPOhpgYdS6fRV/RYiLzx/UuuW3EPEs27N3ApnL1w2KnVFgaz/I53BvO/YZ9S/EWjxJg78nBFlgxx+cF8rjMoY+kzwafolDiPIC/BQf/cs5j39i6zwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sLDmk0vY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C556C43399;
-	Fri, 23 Feb 2024 17:54:51 +0000 (UTC)
+	s=arc-20240116; t=1708710900; c=relaxed/simple;
+	bh=kBMP3DNZGgm9mZ4gC+151NbDQDns4LJpJpDMR5SkalA=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=R2+E1wNDcT+3MyPFIYoCmGx0/NMKbstht1vME/3CXoAHznZp9B8wabKFHTsKg9Nj/yQJmfk/6Jh0vey5O9mFnlmSfqKVywoVs2KiumtNInhPs4RhplylxTPzLztqYekwOST8v8P8M/r+LM3iUp9uGMy4482LhLUsA1qXBg8bhtA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=StgKFPL4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3DACC433F1;
+	Fri, 23 Feb 2024 17:54:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708710891;
-	bh=QDQLjwhGjrv6J0gGJFn9+fBtaCu989tCcvRM0N4xN5I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sLDmk0vYspblgOXAoC1hDGtndhtEX5ClQrqv4HwBrmPOeqoDPmCoH9QecDEkw4k+b
-	 le+AJCfHgTBFu7ME44ZsdGBgrPxx1XDntVzq7JqVKDEOoFe7olbmg8/Mlx14w0aKX4
-	 3u2OB28AFlNz0RHygrPBtUvDPALSu+g3uUh4LE/RJbkhBQEe4R9IHYfaoPygrWlBkr
-	 x0UQuR43gmgaTidqfHdUjdCr9FiQFhBf9jBVPN6Dhm7K/Wnvc11ns7eAbOUh04bbb/
-	 GIMVyqki0yi5QhPsaSZUOq/tLrKFAzL4NndRsVCcGlq6gjsrZFsKE8F/it6IfkWKaw
-	 4h/c916YgvLHg==
-Date: Fri, 23 Feb 2024 09:54:49 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Andrew Cooper <andrew.cooper3@citrix.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>,
-	Ross Philipson <ross.philipson@oracle.com>,
-	linux-kernel@vger.kernel.org, x86@kernel.org,
-	linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-crypto@vger.kernel.org, kexec@lists.infradead.org,
-	linux-efi@vger.kernel.org, dpsmith@apertussolutions.com,
-	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-	dave.hansen@linux.intel.com, mjg59@srcf.ucam.org,
-	James.Bottomley@hansenpartnership.com, peterhuewe@gmx.de,
-	jarkko@kernel.org, jgg@ziepe.ca, luto@amacapital.net,
-	nivedita@alum.mit.edu, herbert@gondor.apana.org.au,
-	davem@davemloft.net, kanth.ghatraju@oracle.com,
-	trenchboot-devel@googlegroups.com
-Subject: Re: [PATCH v8 06/15] x86: Add early SHA support for Secure Launch
- early measurements
-Message-ID: <20240223175449.GA1112@sol.localdomain>
-References: <20240214221847.2066632-1-ross.philipson@oracle.com>
- <20240214221847.2066632-7-ross.philipson@oracle.com>
- <CAMj1kXEmMBY_jc0uM5UgZbuZ3-C7NPKzg5AScaunyu9XzLgzZA@mail.gmail.com>
- <98ad92bb-ef17-4c15-88ba-252db2a2e738@citrix.com>
- <CAMj1kXFTu+bV2kQhAyu15hrYai20NcBLb4Zu8XG2Y-XjL0f+rw@mail.gmail.com>
- <1a8e69a7-89eb-4d36-94d6-0da662d8b72f@citrix.com>
- <CAMj1kXEvmGy9RJo4s8tECsFj2dufZ8jBPoJOEtkcGUoj+x2qsw@mail.gmail.com>
- <431a0b3a-47e5-4e61-a7fc-31cdf56f4e4c@citrix.com>
+	s=k20201202; t=1708710900;
+	bh=kBMP3DNZGgm9mZ4gC+151NbDQDns4LJpJpDMR5SkalA=;
+	h=Date:From:To:Subject:From;
+	b=StgKFPL4MZ8xYqpuD+Sz2AECuqLjgmAMlwQd8ZkzWBg4FnmilOyMUIAVRTDPK9zCU
+	 hNk8AQ115qExdrEtfMuPGYXmwjX8GXBWT6VGtyR4CCRqoGyOyA0uUf9vCQDzFvnNqJ
+	 YPL4ScZpWi+/GFsX6dhyltBwrP5lxJ9+gEuNgd169z+wNZrEC6U0ExjcGjh9q/wcBF
+	 lyZ6vQURve27HaXOpT5AZBRoTAKWS3mKZFuublpJc2bMw//5lcisdxQjCXk48ROB8t
+	 MnmABGL0ptErPO7XLpfzPmogKGZ+evIb8Yo+hL4+bt7f7uYFfvMWQRBUH00vhJgENi
+	 mC7W71ap/suDw==
+Date: Fri, 23 Feb 2024 18:54:56 +0100
+From: Helge Deller <deller@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
+Subject: [GIT PULL] parisc architecture fixes for v6.8-rc6
+Message-ID: <Zdjb8E0XItxNJyVB@p100>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <431a0b3a-47e5-4e61-a7fc-31cdf56f4e4c@citrix.com>
 
-On Fri, Feb 23, 2024 at 04:42:11PM +0000, Andrew Cooper wrote:
-> 
-> Yes, and I agree.  We're not looking to try and force this in with
-> underhand tactics.
-> 
-> But a blind "nack to any SHA-1" is similarly damaging in the opposite
-> direction.
-> 
+Hi Linus,
 
-Well, reviewers have said they'd prefer that SHA-1 not be included and given
-some thoughtful reasons for that.  But also they've given suggestions on how to
-make the SHA-1 support more palatable, such as splitting it into a separate
-patch and giving it a proper justification.
+Please pull four small fixes for the parisc architecture for 6.8-rc6:
 
-All suggestions have been ignored.
+Fixes CPU hotplug, the parisc stack unwinder and two possible build errors
+in kprobes and ftrace area.
 
-- Eric
+Thanks!
+Helge
+
+----------------------------------------------------------------
+The following changes since commit 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478:
+
+  Linux 6.8-rc3 (2024-02-04 12:20:36 +0000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-6.8-rc6
+
+for you to fetch changes up to 882a2a724ee964c1ebe7268a91d5c8c8ddc796bf:
+
+  parisc: Fix stack unwinder (2024-02-19 21:55:22 +0100)
+
+----------------------------------------------------------------
+parisc architecture fixes for kernel v6.8-rc6:
+
+- Fix CPU hotplug
+- Fix unaligned accesses and faults in stack unwinder
+- Fix potential build errors by always including asm-generic/kprobes.h
+- Fix build bug by add missing CONFIG_DYNAMIC_FTRACE check
+
+----------------------------------------------------------------
+Guenter Roeck (1):
+      parisc: Fix stack unwinder
+
+Helge Deller (1):
+      Revert "parisc: Only list existing CPUs in cpu_possible_mask"
+
+Max Kellermann (2):
+      parisc/ftrace: add missing CONFIG_DYNAMIC_FTRACE check
+      parisc/kprobes: always include asm-generic/kprobes.h
+
+ arch/parisc/include/asm/kprobes.h |  3 ++-
+ arch/parisc/kernel/ftrace.c       |  2 +-
+ arch/parisc/kernel/processor.c    |  8 --------
+ arch/parisc/kernel/unwind.c       | 14 ++++++--------
+ 4 files changed, 9 insertions(+), 18 deletions(-)
 
