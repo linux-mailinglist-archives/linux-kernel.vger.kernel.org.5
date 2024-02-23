@@ -1,188 +1,142 @@
-Return-Path: <linux-kernel+bounces-79288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92B77862012
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 23:53:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 51579861F4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 23:02:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0AF341F25B89
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:53:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD1221F23FE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:02:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA15338FA1;
-	Fri, 23 Feb 2024 22:53:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 003DE14CABF;
+	Fri, 23 Feb 2024 22:02:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=equinix.com header.i=@equinix.com header.b="c6XeHFmP"
-Received: from mx0a-00268f01.pphosted.com (mx0a-00268f01.pphosted.com [148.163.148.236])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ca1Up2on"
+Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E87C22071;
-	Fri, 23 Feb 2024 22:53:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=148.163.148.236
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708728784; cv=fail; b=ew/YehmglqWNwHFiLtlGzluCd6QlxNenKSwFSYbYqRSWlUf6FdN8u9rHcIvWp5e6qYUCmFYQpmVD/tM2DnmAMLnUkUVhYrUgqg6qOvLo7miyybH0RacOIc0QQTcwBkBFoCSCj7peryvEAHm244P5Ki0P94/0qUo4sKkB8+1w43g=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708728784; c=relaxed/simple;
-	bh=coG6UqcGRRVvlE/ZjP9ARgIv8No0OWy2yF16VRBWXpc=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=VP6PXXq61zOpLe03w0zoyR69cELNPVkd8oQ+OAs2PFHb/2/1yvtORhdVVIB66xlnVdEB9JCERW1usFQYO1ty5rEFOhRuR9AOtbM1vTZLnHZb2j9w2Yog/mreKrGxpv0Aqp3IpuI9nLHBhWDDIfjMYEPVW4GHzDc0NrNSYuw/I/Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=equinix.com; spf=pass smtp.mailfrom=equinix.com; dkim=pass (2048-bit key) header.d=equinix.com header.i=@equinix.com header.b=c6XeHFmP; arc=fail smtp.client-ip=148.163.148.236
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=equinix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=equinix.com
-Received: from pps.filterd (m0165119.ppops.net [127.0.0.1])
-	by mx0a-00268f01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41NKCYWv020570;
-	Fri, 23 Feb 2024 22:02:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=equinix.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=pps202002;
- bh=IPajrUaWvY1CfpZRJehjRW4p/FSnbAfrASe83trFF+4=;
- b=c6XeHFmPIfAaYY/nghdOAzQI47juvYy47VE8SPV240TrAV5vGPP6ABd2Hqc6tAZWAsw6
- eo5KaigktW90/ihG3TLMjAFodxHeh8CJvRRNOyxuQD0bMOkO6Xf0uA+KkV+DEpAQHyo9
- lw5qbUN06eAdsYezpzB3+uyWFfPViGZLAzUW0uw3JKuPnKgQ6hG4+SLcrhhIF8jkQ9Qx
- DoJsFXhl/0h6Rd1vdTsslphXOeJH62fwj8U10KSIdcnYo4ep0S/9rQtRw316neLFSPV2
- CXCmiUbf9Dj0RcPEqnGB0cOO3UXkjsat6XFww6i4+nsqt0nPeBcImRDQpalKuYfmYLWp CQ== 
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2100.outbound.protection.outlook.com [104.47.55.100])
-	by mx0a-00268f01.pphosted.com (PPS) with ESMTPS id 3wf26u8apr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 22:02:01 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P95IRGLqrrtPoblsvBF+TsXtdHkuzpMqflP1jp4B25sWYC/aHZvV3het+w15rUFG/JhHiGPvyoaZl2lytVAkKS/aNdcAnczSDZqUg4mVXpopmmRE5yz3ssjYvgjlPhqDb5c/CnievHsrQrUiMpMEgre463rsmRhUj815QIO/8ztinUFaPzLjYUsMPh2zc6MPvwfBwTfzoPHDjJJ/yEwRLfC1p0c4Uwt5o2hiUMsqJbYfwDxNfV2EAS/bz7NbZndEldWcwEGAEzCYln8pOmnXh6o7/TUupbx34zS6r6IahQITZhhIP25wmjdkHRdbZ3ZLncai5yYOmDbiedKvyL/Rtg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IPajrUaWvY1CfpZRJehjRW4p/FSnbAfrASe83trFF+4=;
- b=Ve+eMgKAHM6sm2oBPjdcMqC91lda63kOtHsKmQB6xMjsgMpQqvXjhmsKj/6PWnRrylq62icEAc/YjErpunHv3lVCgZQJv68fAQlwSvPhLGSgXN+EC2Ve7UjDEDh2+fa2Q3gDlAkVpZq5k2cHVr+S2ZUvxRwewa+OABdAnHEdGk51jcPzlRnLWYVg1IEwvhQ3U1QlPQiOePF3e2RHdVGaPAL1tLUsA3DUGSP+6Nh9fQZqvo2jbHdJBoul8qwmTcFRFpZru/6HU48J2dFAU5ZA0vczADu3M2FliIUPsbrdkPwh6+5Wn44Cos5ONX/KoyxeN8S/j5tyxxu/Y5FuxJ7tYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=equinix.com; dmarc=pass action=none header.from=equinix.com;
- dkim=pass header.d=equinix.com; arc=none
-Received: from CO6PR04MB7843.namprd04.prod.outlook.com (2603:10b6:5:35f::22)
- by SJ0PR04MB7470.namprd04.prod.outlook.com (2603:10b6:a03:2a1::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Fri, 23 Feb
- 2024 22:01:15 +0000
-Received: from CO6PR04MB7843.namprd04.prod.outlook.com
- ([fe80::f16c:1fa7:9c55:c1c]) by CO6PR04MB7843.namprd04.prod.outlook.com
- ([fe80::f16c:1fa7:9c55:c1c%2]) with mapi id 15.20.7316.018; Fri, 23 Feb 2024
- 22:01:15 +0000
-From: Zev Weiss <zweiss@equinix.com>
-To: Conor Dooley <conor@kernel.org>
-CC: Kelly Hung <ppighouse@gmail.com>,
-        "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kelly_hung@asus.com" <kelly_hung@asus.com>,
-        "robh+dt@kernel.org"
-	<robh+dt@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-        "Allenyy_Hsu@asus.com" <Allenyy_Hsu@asus.com>,
-        "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 1/2] dt-bindings: arm: aspeed: add ASUS X4TF board
-Thread-Topic: [PATCH 1/2] dt-bindings: arm: aspeed: add ASUS X4TF board
-Thread-Index: AQHaZqPSJY1nzbZtU0+m3VCAr00hKA==
-Date: Fri, 23 Feb 2024 22:01:15 +0000
-Message-ID: <20240223220115.GB9299@packtop>
-References: <20240222085914.1218037-1-Kelly_Hung@asus.com>
- <20240222-getting-nebulizer-8f75ba8063b1@spud>
-In-Reply-To: <20240222-getting-nebulizer-8f75ba8063b1@spud>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CO6PR04MB7843:EE_|SJ0PR04MB7470:EE_
-x-ms-office365-filtering-correlation-id: fd8c497e-0fd0-40f6-b5f3-08dc34baf4f4
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- V0udlcPH36HKPH5vyhyka73zKGaw2qy2XksJlBTZgHMeg6UaiZMMY4s4b+ssPz2hVVdfx4WRRqiOk8rj1cRz9p1cfiyYonR9c5G9HVw+fbrPM0Mu1wxR6a/C6zwZUbOlEqnnWpMUc1X40oxaetcf6ahgacEZfgRiK08COKzabVf7FVUEHBQtce1cj+uLNt65PfKnpu/p8+seNw5r74T65oEQTTawmcXFJOXW+X/wdE8LRNPp3YFS251CDZSm5QMaY9SLl8gE8sa7eL18c/ddG//frDohUq9AFUIl31/BQIreOlWbGmtMzLhS05+oTsxX7CYlibK6F4tkOJGa3S+4eCukQs7T7pFwUcnK6ygWso/qMIknHhR+OisUxwiWdnAN9Ns3drsbx7OGxFHbq4VE2dohaVC2+AuxV2K1A4IuC4bspO1WrGj4qRCbfxZNLsiaeSOqerJxCkWhGilM8BtjOorEeimr2Z/2IejCbrLF/cyVYaEEqVsoPet/oYFpDOd4NWFeDTpSNriJ1uN/5h9j9kafqZLoR3jvghU4p1//wjLmYu8Ay1GTXoH8o0sbKil3KrfSUoc0T3B/fVx2B+lcKKBnj036U8W15sBha6zFjBWCEMUTvRD+JRCvkTCKy9Uj
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR04MB7843.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?us-ascii?Q?ChhJs9C9pOB1kHEs83iwJ6VOaMnNoEe/thyO0IFaxpp0rX3fbFEF9/RkhXTM?=
- =?us-ascii?Q?0/yc8inPbXUMyRrci7slJr8dfl2/3+L0MN1MuiHnS5j+/ecCg5g7Yr5nVtkO?=
- =?us-ascii?Q?sOYq+MISWFIrxvHNg5tQzfyErv668HNUJxZCNiqNhOF8VxcxJzpS3y+t2Pj6?=
- =?us-ascii?Q?bETErhsS8Ds2Vv2JTE9p72rbzQ8oJ2/GPMkuPd9tbF/hbbgDK7v7avUQtc5t?=
- =?us-ascii?Q?g0WG3PhJooXKQSOv4eVSA+SHJAzCdFmCw1UvVLZ1MNHntkhYnmm0XABU8T7U?=
- =?us-ascii?Q?IyYYBj38ZzEVqbiv2svBaDC0/e5QJS52+ZxeHz8+4ngaWYXMj8xCzAkgRpsa?=
- =?us-ascii?Q?nHJE5opq9ZL2sx4g2vzRNNW/Qv8fqwNP/Cll53YCRkFrAeEcp5lidH1DA6NT?=
- =?us-ascii?Q?EklBchkyDiE9cclTEYYUMuuGlK14/43cyR1PcnkCeGcB1guoYkq9Uv5gbW/i?=
- =?us-ascii?Q?67fKuRDtH44tIvp/d8F+nBHRgHkyG1jPIHF9m51+V1ix4ojq0kJx3xFM+tcN?=
- =?us-ascii?Q?T7JrV4XjgfNEviBK/flfBWRKqM7ZNk0fBlWz+JOZt5CDeLuFSskcrTAK/Rmu?=
- =?us-ascii?Q?5NVohh3z8ZC/F+HIQYNtRyEAefdpIsvC7bboEPWvAN6LsLCJMZn7Rq5kNRNZ?=
- =?us-ascii?Q?nVGlrmcAM/DLoDd8iWRCxVKwO46+ui8Hnj+Tj2V0Eq8Gg+MZuPQRzPU02ZUH?=
- =?us-ascii?Q?tlhJedl1epgdY7JQe1EjYLJl0YhnoyUS7pB8SO4INepbyMgfuVM+dXYxNqHJ?=
- =?us-ascii?Q?yRFZVwK9ipObsaaUQBfNoYku+gIrjJQPwe7zpdgt0CH5/+Vk8TmgHA//Vknu?=
- =?us-ascii?Q?dlZgmUeNUl2bVQ7OmL0x+RJ5oxNScUeeLk91s2VW96UGSbNSc0iuTjf1X/Ug?=
- =?us-ascii?Q?FLiQ8y+/HzdJf8ygtFFWuBJ6yQlAZW3s7qoftZfeJN0BR7Rk6UEJ9q51jyQT?=
- =?us-ascii?Q?EDnO9oQbmFHRwAE3zSVQ3whdcbLG7+YjBIXqqulvHPLMQ+tEVbfJhYfeWEno?=
- =?us-ascii?Q?B+YTAi5/jaJEtb1JbnPxJR7McQCVzuA4Ibuz7u0idKgU640bfxHbGHHn08f6?=
- =?us-ascii?Q?F2kuHwtFupEcjMxEvy9Jwi8nG5N48Fdon7bAQ4FA0oi7V6Abnc2O4eWayLrr?=
- =?us-ascii?Q?E9XzTzGBJTcfisLXbHSvBZjeMqxgIvNFmm6P/ALSXjz/FFQ5ivkRsuEdXPJu?=
- =?us-ascii?Q?FP5NjSu8cGAliOOwaw3tLtLP0w+enuHGyy4d15csQwNvxqcRgE0j4/aMWHLn?=
- =?us-ascii?Q?ItzUFV6RJYNPIknidh1qdlae69q6FVxeOuW/nlmvKOa36J+28HVurdd6h95M?=
- =?us-ascii?Q?yyK+Zm2PJLWwI2hqd8aoFmQsPnBpICvod79VP+9a5C4DlimDFEKvPoIZpHEK?=
- =?us-ascii?Q?s77Mpgg/pbWw/p2bCe3oxMbtk5NaHL5V7UcSfBh+SBQqUU7Rohr03D4RLhet?=
- =?us-ascii?Q?5kEC/17Mgme7uQnMSDyU7gSr/jRYE/83gXX2ZlYdwvOILbmybeXBEjSq/ZkZ?=
- =?us-ascii?Q?MMkvVNvVFPC9UcYEQTAE31X4BKZLr8e+BlKpTLwId3ZZ+xENUSdD1zwhXk4m?=
- =?us-ascii?Q?vmQ5OccoH+q3pCFmFbIVSp4mbIz7U6Qc5U9Ty4HH?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <A03DAFD4614B4546908C779519E505B3@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A02C914C5B5
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 22:02:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708725751; cv=none; b=LPobtdqK0Wihdt53mude6Taub2tXUrIoGD5DwPn3AyLHRd3+9muxDYqqCLj1zhMqGFqVsqll8YQ7+WrcHWS1oOE6AX8Ud0gQ7/rP24iWfCWDpjvgfqeat+cEhibYLZ8Te0rpvFGylDaQPAZMRap+idjWk95fXW4u18M0rr0OoLk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708725751; c=relaxed/simple;
+	bh=OxuxrEWZFLmd9bVvllL0cDqo3Qro+iCmjrAkC+i8LtY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=htsyB5DhDz4XxPwPQQflplsNqLQx1Y5/UD7Dn423yiVmSA+G5fDWz//uP58JZV6avqPmsGOuhPpTo/swgKQb024K5+3bEVIy7WZIYQ8gPQRYIc1NuBJq83hVs3wasxxfmmkvb8IP1dvZOlgsm3FyCaq2dD/kQ4LJbQmqoalRECc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ca1Up2on; arc=none smtp.client-ip=209.85.166.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7c495be1924so20297639f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 14:02:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1708725749; x=1709330549; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5dO5uxANb6KhoFhAZhuWxdF4f1WkNSLPqmHQVMIujpc=;
+        b=ca1Up2on7z7dE4dtnBiWQCFtuo5LnkzSa7BdIj2/JFouHPDNantTY6AG3ajjNeszEH
+         lPmhVSNNAuP0a6ZVjx/6RYIrckcdhSk30qfrJztMT/IjiTeSa6zPdST4pWyQoZ/PlBVs
+         Q5BGIbSyr/6ovyNnI86NRXba7Gs3Fhl+819xs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708725749; x=1709330549;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5dO5uxANb6KhoFhAZhuWxdF4f1WkNSLPqmHQVMIujpc=;
+        b=XgayCKHuj6Y4Dy19V/twXudVx0nHd044ep1b5U/8Tnw+IDZ/dsZN/ca81Z6Vhorc65
+         Fnxg7nL2ballwIuh6+/Zs+lITDWXwn2jjcJJdBxhYp3i51U/x55Wc4moFCbMhgk9xuoN
+         s91B/fXZffxzgK0nsqOigbjK9V+jpvn5X0x2zPPKkI3RemD3LI8adVvdbSPeAV6PxSgV
+         jTyZcwqN0BIUpj0VIY3ArNyaPnw+UZvdNY6co6y+aYbLPok42ZLn1mhLu93AKLYsX70G
+         +U94tvbSjo5gb2crlNqbDf0EFCkuJJbvXBPI0AkysB0RJvkkwd9yHbBc21hZBO7u8ETh
+         DEHg==
+X-Forwarded-Encrypted: i=1; AJvYcCVN5cKC9c8OndufGNKFBGxbjWpCYXXmsf2HI8m3tsNwfTlZYaCQZzFxp8w9S0kCfKjujquYSJoYpu4D+mVhR2MPNVkHUULyPa57qF9x
+X-Gm-Message-State: AOJu0YzrzqV1wK2cIlplP1EBPKkGY68IycteaRXIkrp2telOqRWqFoLe
+	H9DYNAIODbXXZVCiRRDUXi16lCzXRQ+Auo31Giyjt2rbHwC3aF6jxXzYdf7po2s=
+X-Google-Smtp-Source: AGHT+IERZo8E9m1EGVtoEcqCl+qpo29VVrQyzIz0yZSgzKLzC3fQ3HVY78TWD4zIJBlLjlYuudMkEg==
+X-Received: by 2002:a5e:de08:0:b0:7c7:951a:a4cb with SMTP id e8-20020a5ede08000000b007c7951aa4cbmr1177605iok.1.1708725748777;
+        Fri, 23 Feb 2024 14:02:28 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id q26-20020a02cf1a000000b00471346c4225sm4015616jar.7.2024.02.23.14.02.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Feb 2024 14:02:28 -0800 (PST)
+Message-ID: <8fe544e1-ac1c-4edf-81e9-fc0992b6bbc4@linuxfoundation.org>
+Date: Fri, 23 Feb 2024 15:02:27 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	8IxqJCjPr8T1EAclsUBn7q2aJkMxSsqRmadn6NkcDUuAKpjQYqyduGlL9JQmrbwF0/VDgTBmjuOdkDjFCqLuwInds7WR7q9onqO2cNb6vqnmEq/o1nlz7t2qXhXH0L+QI9hd5X6giCANRkujRIIQOXigHwSO4JDM1ac6zgyBCbrvsZI+Z+7cHFnRcLOC6Ukgd/+cNiWLMMayo+dnVLzNcMoF86yj15vv5v4ovFjiVwYXjr8hyzsQNRaQ8TeTQVbcpCUMcaZ/lAkP2af1omjOVtY+bYII/34ugkIFLnKoYHo4x9mkvxIYAP9lHNe5bCebxDqqng60YU40MzrcmNO/Y9S/jL7QVbugy81Z0yWLi78lrWVq5Xc1xatBTAGHpL/5pOsyyo90mKVdYFr2FH28UGPyuxA2CJWh5fbipqSv3wAHkcc80h3jj1TDhg0MSzGDkpVcgKC1I73uyGgk/pnDXJ9KYHTzFfpnDV6z150a2QF+AQ4yQE8W+utWuSsvMK+Z77pOZq3hYW4I93DNup0PCrLQPdHwM11XehnrveWmGaDacPxy0eCSO574+7tYpQQJ1WNRfaaOb++7OjnvQPJFPfIotpScX/P3pJAMZwwd5LyV8W8qMM6/0QvOCoENkCH8LGkp314CZnwIUceOxS0q2W8IEKv0XO/w3g66Pdt08Q4=
-X-OriginatorOrg: equinix.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR04MB7843.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fd8c497e-0fd0-40f6-b5f3-08dc34baf4f4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Feb 2024 22:01:15.7578
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72adb271-2fc7-4afe-a5ee-9de6a59f6bfb
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CT6ZYh8IvT0oTN90NRHjiUd5pLZZorPl9/hX6wxHeXxcC1jKEPPk+ptiZGmAQl+tojgmg12mB+k3BkX2y87Nfg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB7470
-X-Proofpoint-ORIG-GUID: FGsH4ZxKLZTAhoAZF6q2gs81s5VR_ZC2
-X-Proofpoint-GUID: FGsH4ZxKLZTAhoAZF6q2gs81s5VR_ZC2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-23_06,2024-02-23_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
- lowpriorityscore=0 phishscore=0 impostorscore=0 spamscore=0 suspectscore=0
- adultscore=0 mlxlogscore=999 priorityscore=1501 malwarescore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402230158
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] kselftest: Add basic test for probing the rust sample
+ modules
+Content-Language: en-US
+To: Laura Nao <laura.nao@collabora.com>, ojeda@kernel.org,
+ alex.gaynor@gmail.com, wedsonaf@gmail.com, shuah@kernel.org
+Cc: usama.anjum@collabora.com, a.hindborg@samsung.com, aliceryhl@google.com,
+ benno.lossin@proton.me, bjorn3_gh@protonmail.com, boqun.feng@gmail.com,
+ gary@garyguo.net, kernel@collabora.com, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, rust-for-linux@vger.kernel.org,
+ kernel@valentinobst.de, Sergio Gonzalez Collado <sergio.collado@gmail.com>,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240222162913.498197-1-laura.nao@collabora.com>
+ <bb4c94f5-082d-48d8-9d4c-099375603f9f@linuxfoundation.org>
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <bb4c94f5-082d-48d8-9d4c-099375603f9f@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 22, 2024 at 08:02:07AM PST, Conor Dooley wrote:
->On Thu, Feb 22, 2024 at 04:59:13PM +0800, Kelly Hung wrote:
->> Document the new compatibles used on ASUS X4TF.
->
->It would be good to mention here what the x4tf is - is it a bmc or
->an sbc etc.
->
+On 2/23/24 14:48, Shuah Khan wrote:
+> On 2/22/24 09:29, Laura Nao wrote:
+>> Add new basic kselftest that checks if the available rust sample modules
+>> can be added and removed correctly.
+>>
+>> Signed-off-by: Laura Nao <laura.nao@collabora.com>
+>> Reviewed-by: Sergio Gonzalez Collado <sergio.collado@gmail.com>
+>> Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+>> ---
+>> Changes in v3:
+>> - Removed useless KSFT_PASS, KSFT_FAIL, KSFT_SKIP constants
+>> - Used ktap_finished to print the results summary and handle the return code
+>> Changes in v2:
+>> - Added missing SPDX line
+>> - Edited test_probe_samples.sh script to use the common KTAP helpers file
+>> ---
+>>   MAINTAINERS                                   |  1 +
+>>   tools/testing/selftests/Makefile              |  1 +
+>>   tools/testing/selftests/rust/Makefile         |  4 +++
+>>   .../selftests/rust/test_probe_samples.sh      | 34 +++++++++++++++++++
+>>   4 files changed, 40 insertions(+)
+>>   create mode 100644 tools/testing/selftests/rust/Makefile
+>>   create mode 100755 tools/testing/selftests/rust/test_probe_samples.sh
+>>
+> 
+> Looks good to me. Don't you need a config file for this test?
+> Refer to config files for existing tests as a reference.
+> 
+make kselftest TARGETS=rust
+or
+make run_tests
 
-..and if, as a quick web search indicates is likely the case, it's a
-BMC for a server (or family of servers), following the existing naming
-convention with something more like "asus,x4tf-bmc" might be nice.
+On Linux 6.8-rc5 give the following? Doesn't look right.
+  
+TAP version 13
+1..1
+# timeout set to 45
+# selftests: rust: test_probe_samples.sh
+# ./test_probe_samples.sh: line 12: /linux/linux_6.8/tools/testing/selftests/rust/../kselftest/ktap_helpers.sh: No such file or directory
+# ./test_probe_samples.sh: line 16: ktap_print_header: command not found
+# ./test_probe_samples.sh: line 18: ktap_set_plan: command not found
+# ./test_probe_samples.sh: line 22: ktap_test_skip: command not found
+# ./test_probe_samples.sh: line 22: ktap_test_skip: command not found
+# ./test_probe_samples.sh: line 34: ktap_finished: command not found
+not ok 1 selftests: rust: test_probe_samples.sh # exit=127
 
-Also, Kelly -- when sending revised versions of patches please use the
-'-v' flag to git format-patch to include a version number in the subject
-line so it's clearer what's going on.  (So when posting the next version
-incorporating the feedback on this one use '-v3', since this appears to
-be a v2.)
+thanks,
+-- Shuah
 
-Zev
 
