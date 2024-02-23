@@ -1,338 +1,159 @@
-Return-Path: <linux-kernel+bounces-77879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A25D1860B6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:42:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD002860B6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:43:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DF9F286A8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:42:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 225A11F2474C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:43:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FEA114AA5;
-	Fri, 23 Feb 2024 07:42:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD42D1401D;
+	Fri, 23 Feb 2024 07:43:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="qN3T5YTA"
-Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="e27SJ6Tx"
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7702714A97;
-	Fri, 23 Feb 2024 07:42:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0DB212E45
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 07:43:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708674137; cv=none; b=cqAcjrqZGaYacROGRAoUM2srcZpMUGhu5M/izH8GaCF8dMm0NEW3fuVBaTaIeqPdzWHvulkf4pWDoGgoLlHB5L77cW5lRz6e89fzKQdGKJJcU0gYLmQ0Ngr/u77C8gzGF1FFh20JM7wPhLG41GC67l221tSGRZ4gyR0tKPOWey0=
+	t=1708674208; cv=none; b=KpnGdhLbE4GHR8XTgV90cSopgKJacggRW/6nbBRZk4joiFr1klOqJsCPOUrYnprZVhY2q0+xOJXaJQDmBCQ2x7D8yRKccKgY6M71Nuo9Yn2bFN/UTw082fEVPQsiuqrlgPR1u2g0i4BIKmmnXhUhfh/+TJvhQfSboPuGx1BPhdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708674137; c=relaxed/simple;
-	bh=X/HfkNoIsZIA2WUiUQsTtGrTYosTOeh3e7DouVdGKdc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Uycxif/jQ8Jih5jRdmvfGxoAIKwP2zrWCQvW/nhF1jb962prU87XAjFwxeoPnOJGcG9gz5fiDLxepSCp0652+A4nnVLiwXdmBhRnF73yJutPSPKiPgpDi2TxKAA9PZ7m+FqUO6gJG/oPW4bo52xQG1zcux0RAberPRM8dUrO+vI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=qN3T5YTA; arc=none smtp.client-ip=162.62.57.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1708674128; bh=YXnG5fEDtM+6RtdjP87+kyRIjzeA5LXBtWsYu4f14e0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=qN3T5YTAcysxpY8Rcm/DnVpNldg9XVRg195403N9I0AZDR+53Oe+FglsEx2MelWo6
-	 1702VX19TCP3ukFJ4IYJKSHLJs5ECrni9L8k0R0Q7v551ZLVNpsyg6LuXl5EEtgAFH
-	 HOW5Cmdzu27GrsmZt4jilYIQ2YToIEipVPFXejxY=
-Received: from [IPV6:240e:379:2240:ef00:31b1:ab4c:ce31:8de] ([240e:379:2240:ef00:31b1:ab4c:ce31:8de])
-	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-	id A85A68C5; Fri, 23 Feb 2024 15:42:05 +0800
-X-QQ-mid: xmsmtpt1708674125t1nearaiv
-Message-ID: <tencent_AF1B1DF96C041FB57D1C4770356254431E09@qq.com>
-X-QQ-XMAILINFO: MtZ6QPwsmM9XG2lZC8wPC+kOglompLuyy3Hs3xP4ictaHpjCY2eWtvnfejiMUL
-	 mLhFgpqsPFFQ9Vgiqo3bRyheW+Rsfw+9lU1oD68pVJvF4evnnYe5SB+RkMmcEcg+D9dP3pIEMSRF
-	 69C+yzlU9KF2oLDzhBYK0Y3wBsaqFG4wYzT9Z9sNvnZ1X4GDverPVrAwfAWEr9nP8eBtKWCFOb1q
-	 VOsaJNOnoI4dFtM/+r31M0R0uRCo9xrvUsshC8YJifWTFXXzA+mhjjMlLBEWeMXINvOw81BFeX+D
-	 qF1QAdV5aySQRgVqyDw5dRwusrqOlOFr9EkqlraxOtuwOwPW6NAne0RftmNJ3MzamCbP6HyQe/MC
-	 2/59j6EW5wb+tYaiei8dzMU6Mp3ajKrk0z4A8TDV0M9Q8x8GANt8B/+r6YKgU+75pTOhISsTEMRR
-	 NxpRaKvulLrXQgcvxFxs2mE2dNoFGbUrejfNl1wsdfEYTooDKGqEDSS/1yHrM3g3jPiwseeouVyD
-	 3ToBs+C2lYVgoI28erXvRLSL0ghJvoWRohYyRdTC7LleiWt/uuuGe2iqbvbZmUyROk4vMCC3H0Su
-	 eqex1rpufPXgRowmruuZmtprHp+4gxqUn9SEoA+Qz87tAY9JLq7MFi84ZjrY0eFGOXIVpVg7ww4p
-	 DNeofRyakw2pgjgR0/LrMxdsXCk9uZ+/cehISvg9uY5drKi++/6rbMj8MIgHc/jiB86tc+G3gr9s
-	 zlTOI3rBfn9Xpi/Coq4+/IxOTJEnSmX3u2WwqFXr3FzuX8BcBUlNX1hzPIJPfJYCpriIhDdIviqH
-	 +dyePRI1QUyVgax/lzuiKjgNbXLBvqxUKgS6D2tIsI8afVx/hEKamBkuJDk4Yau2GnZTSceusPJp
-	 mbVeIFucIcQgYm/+LcFpA1PjO3u5MYtSev8JzVhvcPhvBl+Zrp4hEWwvcu28rqAWPUIDw7ILYadv
-	 9PGzlUHd4kFBIkIOrul7TynMKZ8kRFo6ltvgMA6PE8HdIYSoQQCjI1Ge/0ZQyf
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-X-OQ-MSGID: <8d86901e-af15-46a0-b307-c491efce85e3@cyyself.name>
-Date: Fri, 23 Feb 2024 15:42:01 +0800
+	s=arc-20240116; t=1708674208; c=relaxed/simple;
+	bh=y4869a+5UPWFivactLXvq7LGVu29XzZBZxt67nVeI3M=;
+	h=From:To:Cc:In-Reply-To:Subject:Date:Message-ID:MIME-Version:
+	 Content-Type:References; b=h4QmtwQaE63eIjaGZN9/ec+d8cKDxCc4AhYVrsc2wnwIT3eIMhgxqkjtRyTINO5WHyCUAluyJDygLnm4JsBliio9++rBhuTBdTlh0KYHuuegBlXVSpWkN4ctXk6bpmzVYGSOT9mkQeQRUN0qTujM0SAHj8Nw5UCMz1PFkfWB0BQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=e27SJ6Tx; arc=none smtp.client-ip=203.254.224.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+	by mailout3.samsung.com (KnoxPortal) with ESMTP id 20240223074317epoutp031a9ad0c613f18f98e32e3ef33c207321~2biFF9hkj2335123351epoutp03i
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 07:43:17 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20240223074317epoutp031a9ad0c613f18f98e32e3ef33c207321~2biFF9hkj2335123351epoutp03i
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1708674197;
+	bh=9ocYm+fHbKwbVZzYfw8kuCyF9mhmA0CdruBcBst3zeA=;
+	h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+	b=e27SJ6TxmSWcZ127BHVjhkMm22BIewOaQklL0TqnRvFkojQehVMv0OyN3HD6o5QQx
+	 pkFDMiERfqb8RkTwGnOTognKH90oNpl2I7C11y9s8UkXtmDJjwdbloWDUMi6cAWIf6
+	 1iUQG44bNIeIi3IkdbPJFdJ4rl0hpQHhFyJujtfw=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+	epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+	20240223074317epcas1p22be5213b7a6b2733e1f399df020b529b~2biE0oIVE2275422754epcas1p26;
+	Fri, 23 Feb 2024 07:43:17 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.36.132]) by
+	epsnrtp2.localdomain (Postfix) with ESMTP id 4Th2781DHSz4x9Px; Fri, 23 Feb
+	2024 07:43:16 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+	epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+	5D.CC.11177.49C48D56; Fri, 23 Feb 2024 16:43:16 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+	epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+	20240223074315epcas1p29a05eef3c9b189b96ae5c56be5e73f87~2biC3vqfp2274622746epcas1p23;
+	Fri, 23 Feb 2024 07:43:15 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240223074315epsmtrp194efef440b3194c4e4b9589c37bbe9af~2biC3CnmE0878308783epsmtrp1o;
+	Fri, 23 Feb 2024 07:43:15 +0000 (GMT)
+X-AuditID: b6c32a35-c75fa70000002ba9-95-65d84c944f73
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+	epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	02.A7.08755.39C48D56; Fri, 23 Feb 2024 16:43:15 +0900 (KST)
+Received: from cw00choi03 (unknown [10.113.111.106]) by epsmtip2.samsung.com
+	(KnoxPortal) with ESMTPA id
+	20240223074315epsmtip2148d574882b27b4ef48189f7ed9afebd~2biCrMbSy1668416684epsmtip2k;
+	Fri, 23 Feb 2024 07:43:15 +0000 (GMT)
+From: "Chanwoo Choi" <cw00.choi@samsung.com>
+To: "'Andy Shevchenko'" <andriy.shevchenko@linux.intel.com>,
+	<linux-kernel@vger.kernel.org>
+Cc: "'MyungJoo Ham'" <myungjoo.ham@samsung.com>
+In-Reply-To: <ZddJeYhe8pCHup9a@smile.fi.intel.com>
+Subject: RE: [PATCH v1 1/1] extcon: intel-mrfld: Don't shadow error from
+ devm_extcon_dev_allocate()
+Date: Fri, 23 Feb 2024 16:43:15 +0900
+Message-ID: <061201da662b$f5b68f60$e123ae20$@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/1] riscv: dts: Allow BUILTIN_DTB for all socs
-Content-Language: en-US
-To: Conor Dooley <conor@kernel.org>
-Cc: linux-riscv@lists.infradead.org, Paul Walmsley
- <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, linux-kernel@vger.kernel.org,
- Masahiro Yamada <masahiroy@kernel.org>, Alexandre Ghiti <alex@ghiti.fr>,
- Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-References: <tencent_AB625442CC1BCFF86E04D7B5891C43719109@qq.com>
- <20240221-islamic-quartered-3863e44bc862@spud>
- <tencent_DF3D7C2E8248DA188E3FB8DF31FE21478D08@qq.com>
- <20240222-crawlers-prankish-ecf425d1f0b5@spud>
-From: Yangyu Chen <cyy@cyyself.name>
-In-Reply-To: <20240222-crawlers-prankish-ecf425d1f0b5@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: ko
+Thread-Index: AQHfTpyV7yAFNQt3UIwsEYUxvXodbgFHRVVfASmM5toCUGlICbDnsMbA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrJKsWRmVeSWpSXmKPExsWy7bCmru4UnxupBvdvslj0Nk1nsri8aw6b
+	xe3GFWwOzB7zTgZ69G1ZxejxeZNcAHNUtk1GamJKapFCal5yfkpmXrqtkndwvHO8qZmBoa6h
+	pYW5kkJeYm6qrZKLT4CuW2YO0B4lhbLEnFKgUEBicbGSvp1NUX5pSapCRn5xia1SakFKToFp
+	gV5xYm5xaV66Xl5qiZWhgYGRKVBhQnbGmq/tTAV3WSvet05gb2C8zNLFyMkhIWAisXrJdMYu
+	Ri4OIYEdjBL7HsxlgnA+MUo83rKIHcL5xihxauFzNpiWaQ82sEIk9jJKXFz0kQ3CeckoMbWx
+	H8jh4GAT0JFY8CMUpEFEIFbi3JOPzCA2s4C+xOoPtxlBbE4BI4mJG3rAhgoLpEp823OdCcRm
+	EVCV6Ox7zgoyhlfAUmLNJ7BTeQUEJU7OfMICMUZeYvvbOcwQ9yhI/Hy6jBUiLiIxu7ONGWKt
+	m8TSDa/A7pQQeMku8f7WPqifXSQm793ABGELS7w6voUdwpaSeNnfxg7RMBnosdevmSGc9YwS
+	G1e2QK0zlti/dDITyHXMApoS63fpQ2zmk3j3tQfsaAkBXomONiGIamWJyw/uQu2SlFjc3gkN
+	RA+J3wueM09gVJyF5LdZSH6bheSfWQjLFjCyrGIUSy0ozk1PLTYsMITHdnJ+7iZGcBrUMt3B
+	OPHtB71DjEwcjIcYJTiYlUR4WcqvpArxpiRWVqUW5ccXleakFh9iNAUG9kRmKdHkfGAiziuJ
+	NzSxNDAxMzI2sTA0M1QS5z1zpSxVSCA9sSQ1OzW1ILUIpo+Jg1Oqgcnbe2ESU3j+CoFHF8LS
+	Duac+/3wX+Hd/eYF22+kSO//qnFzetfp2Tfn9jc3tL/i75v6zlLsVOCFmyZzJSZedrqyYHm3
+	5MfeOVo6Jyd/SbAxOmq31SM1751T7+fusqDfT15kcE3cw7ZlXkrkL8Pe3B2tyvPMlpY3iOst
+	ltI9Z859R/X9nxVLVGaG8dqZLrk/21vwGz/LH+ELCX11vgwM4Z3/0/x/pbPNqJbeb9R2LPiP
+	ZfjEA6YsgWKCryyXm8jcrBDLYXz1q6jA/4rO48sxSzlXd3dEXYh/z9Sy+seXrj8Ni69Mf8x9
+	+vQxWY2KV/ptjmGXjObNM058VeHJEvywKuT96/q9Mv/uH7voMUFOvkmJpTgj0VCLuag4EQAQ
+	jz3jDAQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrALMWRmVeSWpSXmKPExsWy7bCSvO5knxupBj2tIha9TdOZLC7vmsNm
+	cbtxBZsDs8e8k4EefVtWMXp83iQXwBzFZZOSmpNZllqkb5fAlbHmaztTwV3WivetE9gbGC+z
+	dDFyckgImEhMe7CBtYuRi0NIYDejxM9Nx9ggEpIS0y4eZe5i5ACyhSUOHy6GqHnOKLHs4Umw
+	OJuAjsSCH6Eg5SICsRLnnnxkBrGZBfQlVn+4zQhR/4xR4uTz72AJTgEjiYkbesDmCwskS1xa
+	0Qp2BIuAqkRn33NWkJm8ApYSaz6BhXkFBCVOznzCAhJmFtCTaNvICDFeXmL72znMEFcqSPx8
+	uowVIi4iMbuzjRniHDeJpRtesU5gFJ6FZNIshEmzkEyahaR7ASPLKkbJ1ILi3PTcYsMCw7zU
+	cr3ixNzi0rx0veT83E2M4EjQ0tzBuH3VB71DjEwcjIcYJTiYlUR4WcqvpArxpiRWVqUW5ccX
+	leakFh9ilOZgURLnFX/RmyIkkJ5YkpqdmlqQWgSTZeLglGpgKrzIH/jzwKyFytmu/+W8dsf1
+	F5jp1Lm862zdl5f8Ob7O3oL9zYI3cZ67ZbzevT1VuX6hn/kJg8/cRxL3KrH/mfE7X81xY1mO
+	Lte3ztlPlK5ufblr49eO02fn5N3Yq3TS87iPUMAS/l01zy8cFpUyj1VL9+N0VPW74RqW2PWT
+	Xfe65W2Jm7Of86/WOun47OvEuOyjH/huT3rvveo53/Y69w19nlxBTbm1KVWS0itWcbes5//3
+	JZtTNEc688v9bM62snQB66KKMlGBS7aZXNYPGaVTHm49XbpmRcPbB80lCZZnxCfVpW7VtqvR
+	eb99pXXpnMLllVGxd2uLuP9UpnU0RUee8l9i6a9RUOjRHqnEUpyRaKjFXFScCAC24Kws8wIA
+	AA==
+X-CMS-MailID: 20240223074315epcas1p29a05eef3c9b189b96ae5c56be5e73f87
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240222131814epcas1p3b7a6a405f1170dcfac8e0f53b0f49d4c
+References: <20231222161854.2955859-1-andriy.shevchenko@linux.intel.com>
+	<ZcUqiaGI8N-FLijJ@smile.fi.intel.com>
+	<CGME20240222131814epcas1p3b7a6a405f1170dcfac8e0f53b0f49d4c@epcas1p3.samsung.com>
+	<ZddJeYhe8pCHup9a@smile.fi.intel.com>
 
 
 
-On 2024/2/23 04:59, Conor Dooley wrote:
-> On Wed, Feb 21, 2024 at 10:28:08PM +0800, Yangyu Chen wrote:
->> On Wed, 2024-02-21 at 11:30 +0000, Conor Dooley wrote:
->>> Hey,
->>>
->>> On Wed, Feb 21, 2024 at 03:01:53AM +0800, Yangyu Chen wrote:
->>>> The BUILTIN_DTB kernel feature on RISC-V only works on K210 SoC
->>>> only. This
->>>> patch moved this configuration to entire riscv.
->>>
->>> To be honest, I would rather delete BUILTIN_DTB (and the
->>> configurations
->>> that depend on it) than expand its usefulness.
->>>
->>
->> I agree it’s useless for most platforms because we need to start SBI
->> before kernel on RISC-V except NOMMU M-Mode Linux and SBI also need a
->> DT to work. However, it has been there for M-Mode K210 and it is set by
->> default for XIP kernel. So there might eventually be another patch to
->> support some new soc that will do this like this patch.
+> -----Original Message-----
+> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Sent: Thursday, February 22, 2024 10:18 PM
+> To: linux-kernel@vger.kernel.org
+> Cc: MyungJoo Ham <myungjoo.ham@samsung.com>; Chanwoo Choi
+> <cw00.choi@samsung.com>
+> Subject: Re: [PATCH v1 1/1] extcon: intel-mrfld: Don't shadow error from
+> devm_extcon_dev_allocate()
 > 
-> To be clear, I was not suggesting that it was useless. I was saying that
-> I would rather reduce the number of configurations that use builtin dtbs
-> than increase the level of support for it.
+> On Thu, Feb 08, 2024 at 09:24:58PM +0200, Andy Shevchenko wrote:
+> > On Fri, Dec 22, 2023 at 06:18:54PM +0200, Andy Shevchenko wrote:
+> > > Don't shadow error from devm_extcon_dev_allocate() and return it as
+is.
+> >
+> > Any comment on this?
 > 
+> Here is another one, can it be applied as well?
 
-I see.
 
->>
->>>> Although BUILTIN_DTB is not a good choice for most platforms, it is
->>>> likely
->>>> to be a debug feature when some bootloader will always override
->>>> something
->>>> like the memory node in the device tree to adjust the memory size
->>>> from SPD
->>>> or configuration resistor, which makes it hard to do some
->>>> debugging.
->>>
->>> My inclination here is to say "fix your bootloader" and if that's not
->>> possible, chainload a bootloader that allows you control over
->>> modifications to your devicetree.
->>>
->>
->> Chainload a bootloader like S-Mode U-Boot on some platforms is hard due
->> to some drivers like pcie controller does not come to the mainline repo
->> of the bootloader, and some bootloader source repos provided by the
->> vendor may require specific versions of the compiler to work, which
->> makes users not easy to do some kernel debugging if change DT is
->> needed. The simplest way to do this I can imagine is to write a simple
->> bootloader by myself link the kernel binary and the dtb I want to it
->> and replace the a1 register point to the dtb address before jumping to
->> the kernel. However, kernel has this feature, why should I do it
->> manually rather than provide a more generic patch for everyone with
->> this need to use?
->>
->>>> As an
->>>> example, some platforms with numa like sg2042 only support sv39
->>>> will fail
->>>> to boot when there is no ZONE_HIGHMEM patch with 128G memory. If we
->>>> want
->>>> a kernel without this patch to boot, we need to write the memory
->>>> nodes
->>>> in the DT manually.
->>>
->>> If, as Alex suggests, there's a way to gain support some more memory
->>> in
->>> sv39, we should do so - but it is worth mentioning that highmem is on
->>> the
->>> removal list for the kernel, so mainline support for that is highly
->>> unlikely.
->>>
->>
->> Yes. But I’m debugging some mm performance issues on the sg2042 kernel.
->> Specifically, it’s about the IPI latency when doing rfence on
->> sfence.vma or fence.i. I would like to reduce the memory size and allow
->> the mainline kernel to boot and test without taking some out-of-tree
->> kernel patches. If I remove some DIMM modules from the board to reduce
->> the memory size, it will also lose some memory channels and even leave
->> some numa nodes with zero memory, and the compatible DIMM module is
->> hard to find.
-> 
-> I'm not really sure how this relates to my comment about HIGHMEM. If
-> Alex is able to give you the extra 4 GiB of memory that he says there is
-> space for in the memory map, will the device boot properly?
-> 
+Applied it. Thanks.
 
-That is I said I want "mainline kernel to boot and test without taking 
-some out-of-tree kernel patches" as it doesn't come to mainline now. And 
-I don't see any performance issues on sifive socs with the mainline 
-kernel, but it doesn't have many cores like sg2042 either. Whatever, it 
-is a reason for simplifying the debug process on performance, not for 
-getting 128G memory on sg2042 boot properly.
-
->>>> Also, changing DT on some platforms is not easy. For Milk-V
->>>> Pioneer, the
->>>> boot procedure is ZSBL -> OpenSBI -> LinuxBoot -> Linux. If DT gets
->>>> changed, OpenSBI or LinuxBoot may refuse to boot. And there is some
->>>> bug on
->>>> LinuxBoot now which does not consume --dtb argument on kexec and
->>>> always
->>>> uses DT from memory.
->>>
->>> I don't use Linuxboot, but let me try to understand. Linuxboot uses
->>> kexec
->>> to boot the main Linux kernel, but the dtb you want to use is not
->>> used, and
->>> instead the one that Linuxboot itself was booted with is used?
->>>
->>> It sounds like Linuxboot has a --dtb argumet that is meant to be used
->>> to
->>> set the dtb for the next stage, but that argument is being ignored?
->>>
->>
->> Yes. That’s correct.
->>
->>> That sounds like a pretty serious issue with Linuxboot which should
->>> be
->>> fixed - what am I missing?
->>>
->>
->> Sure, that should be fixed in the LinuxBoot. However, I think not every
->> kernel developer should fix some complex bootloader like LinuxBoot
->> which is built upon the linux kernel with a huge initrd rootfs and runs
->> some userspace tools to support the boot process. If something is hard
->> to control, skip it, and doing some override for debugging will be a
->> better choice.
-> 
-> Has anyone even /reported/ the issues with LinuxBoot to the LinuxBoot
-> developers? Without that being fixed, there's unlikely to ever be
-> mainstream distro support for it, since they're going to have to build
-> kernels for it alone.
-> 
-
-I created a github issue on sophgo/bootloader-riscv [1] . Seems no body 
-reported it before. Yeah it will be better to fix LinuxBoot to solve my 
-own need for debugging.
-
->>>> So I would like to do debugging on DT using
->>>> BUILTIN_DTB, which makes it very simple,
->>>
->>>> I can even install the kernel in
->>>> the distro's way and provide a kernel package for other users to
->>>> test.
->>>
->>> I'm not sure what you mean by this, other distros manage to create
->>> kernel packages without using builtin dtbs.
->>>
->>
->> I mean I can provide a distro package like Debian .deb and distribute
->> it to other users to test without changing their dtb from the entire
->> boot process.
-> 
-> Other distros, like Ubuntu, manage to do this without relying on builtin
-> dtbs. I suppose this comes down to having bootloaders that
-> 
->> Because changing the DT from the entire boot process
->> might prevent their vendor-provided OpenSBI or LinuxBoot from working.
->> Some vendor kernels may be developed out-of-tree and do not use the dt-
->> binding from mainline. Even for very basic CLINT and PLIC dt bindings.
-> 
-> Which is verging on ridiculous at this point. Does the sg2042 also have
-> a version of OpenSBI that is not capable of booting a mainline kernel?
-> 
-
-Yes, their vendor provided old OpenSBI can not parse aclint dt binding 
-from the mainline dts, so there will be no timer for OpenSBI and refused 
-to boot. That can be solved if I change the dt and use mainline opensbi 
-and cherry-pick some vendor patches to get this work.
-
->> It is only for testing, not for the production environment.
-> 
-> If things are just for testing, I'm not particularly keen on merging on
-> that basis alone. We all have various bits of testing code that doesn't
-> end up being merged to mainline. That said, it is broken at present and
-> its hard to argue against fixing it and any patch fixing it would
-> ultimately look very similar to your patch here.
-> 
-
-OK. You convinced me for this reason.
-
->> I want this feature to allow more people to participate in debugging
->> some kernel issues without taking a huge amount of time to deal with
->> bootloader issues about changing the DT. I think it will be good for
->> our under-development RISC-V community.
-> 
-> And on the other hand, it provides no incentive for vendors to fix
-> broken bootloaders or firmware, which is some we suffer from on RISC-V,
-> in particular vendors that ship T-Head's vendor copy of OpenSBI.
-> 
-
-That's true.
-
->> Imagine we hardly change the
->> ACPI table for x86 machines but we sometimes change the DT for
->> ARM/RISC-V board, right?
-> 
-> Usually we change them because nobody gets things "right" and we end up
-> having different stuff in mainline to what the vendor did. Usually also
-> a vendor has a relatively complete description in their vendor tree, but
-> things only trickle into mainline, so mainline ends up requiring regular
-> dtb updates until a platform stabilises. More infrequently, changes are
-> needed for bugfixes.
-> 
-> The other thing you do is compare to the ACPI table. I don't think it is
-> quite apples to apples there - those machines mostly have devices on
-> discoverable buses etc. If they had the same number of non discoverable
-> devices, I think you'd end up having to do more BIOS updates etc.
-> 
-
-OK.
-
->> Also, some SoCs that run M-Mode NOMMU Linux
->> may need it in the future like K210 for XIP without a prior bootloader.
-> 
-> And the k210 is one of the things that is on the chopping block at the
-> moment. It's removal was discussed at LPC this year, with Damien
-> surprisingly agreeing to its removal. FWIW, builtin dtb is not required
-> for XIP.
-> 
-> BTW, I noticed that your patch only removes one of the $(addsuffix)
-> calls in a platform makefile.
-> Thanks,
-> Conor.
-
-To sum up, I agree with the reasons to refuse it for debugging purposes. 
-I am wondering what to do next. After reviewing the code carefully, I 
-found this feature not only for K210 but also for other SoCs. But for 
-other SoCs, it is broken as it will link multiple dtbs to the kernel, 
-but the kernel will always pick up the first dtb to use as discussed on 
-this thread [2]. That is because SOC_BUILTIN_DTB_DECLARE is removed from 
-this patch [3] then no code to select for multiple dtbs now. And 
-makefiles on other soc which is on the mainline kernel currently will 
-build every dtb object file from this patch [4]. So this feature for 
-other SoCs is broken now.
-
-Choices might be one of the following:
-
-1. Remove BUILTIN_DTB feature if K210 support get removed
-2. Continue to add this feature to get this work for other socs
-
-I prefer to continue to get this feature to work. Not only for my 
-debugging purposes but also for fixes.
-
-[1] https://github.com/sophgo/bootloader-riscv/issues/73
-[2] 
-https://lore.kernel.org/linux-riscv/CAK7LNATt_56mO2Le4v4EnPnAfd3gC8S_Sm5-GCsfa=qXy=8Lrg@mail.gmail.com/
-[3] 
-https://lore.kernel.org/linux-riscv/20201208073355.40828-5-damien.lemoal@wdc.com/
-[4] 
-https://lore.kernel.org/linux-riscv/20210604120639.1447869-1-alex@ghiti.fr/
+Best Regards,
+Chanwoo Choi
 
 
