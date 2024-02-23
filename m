@@ -1,237 +1,210 @@
-Return-Path: <linux-kernel+bounces-79180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBBE2861E89
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:09:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A104A861E8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:10:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 519ADB21672
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:09:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4498D2851CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:10:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB4A7149386;
-	Fri, 23 Feb 2024 21:08:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E9C8148FF7;
+	Fri, 23 Feb 2024 21:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PFKE5Eml"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="t+oVJXFt"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10olkn2067.outbound.protection.outlook.com [40.92.41.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D454146E6E;
-	Fri, 23 Feb 2024 21:08:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9816885C7C
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 21:10:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.41.67
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708722531; cv=fail; b=JSC8RyEef1I5Pod3NaerGXwY06yize5k3VKUlC0L2f/WTtyHRoEpynn3NonkpbRbhlFaySQ17eOuS5vxLS0cmPnuMxtOTmTuVg9oJqUXpxbL9tMAdVP6dmacde+PtejTI/DpwdCco0qLyAlydF1/MWPRG2a7diB9ae9y/Gebywk=
+	t=1708722639; cv=fail; b=YMndZuAE/L/a3MxCIrMkmxxsIkpJuc28PjhvWKBFNVJ1tiD9O3uapguMLkyPRkPKl0sc0AQU6WnaDBn41IKcQSh9i/9jwEZLVFJD7mRDPXR9sw2cutdZGO16+U8JQl3lVB8H9tDZkdbpLLuqEKLf/5hqVtPaQpdFJelxgUYlhHg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708722531; c=relaxed/simple;
-	bh=hJhlZbX7lys374KjC223/i9Iz9iFpDO5773DtShsqP8=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=GppH6SINtqyHxIRCa4iBplKdbi+3kRhU88dn4zdRqihM8HHnbNCLUrygGyQOPc3zDRi/VHx6CEnRXRGhoyJsqCu9hLhG1AqP0ul3pjTjJQigrlv33Fj/azy+e759SfSuAh829JcGh6Fq3GQfpsHyJWUhR/t6Mw2E2ZdXPqVUtwE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PFKE5Eml; arc=fail smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708722530; x=1740258530;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=hJhlZbX7lys374KjC223/i9Iz9iFpDO5773DtShsqP8=;
-  b=PFKE5EmlxWRxw97zDW5EZuYvS/Prfc4iZl/gx7Z1n4CG97tKIa3uWrG7
-   n66I4jQy//ET+BBDk3RVcQ/fp7qKVJ3OMB/4jbm4E3O/pVn96/x3ezrmh
-   RENq/U1mteCuPsRGqyjzYmZxKItSzoa1NB8Pbtajlj5J5pYtyWm+TOejL
-   cC2pVxZE7g3Z0U4rkJ8YptJP/K0TZYwbu+JEQSR6dtypbBE+TuSbLMx08
-   ZzU4msrbZGMSNEoyiepFcjaTLo/ogSKe5CmpK33VnU1r2ZlMfuKf7Fm3q
-   B7gbVZzp1DZFcIM3Hj9QxDhbJvxwA3kO4sPOFF6CcTJ2DVUDe2GWgIez0
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="3573573"
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="3573573"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 13:08:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="43483388"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 23 Feb 2024 13:08:41 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 23 Feb 2024 13:08:40 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 23 Feb 2024 13:08:40 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 23 Feb 2024 13:08:40 -0800
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.40) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 23 Feb 2024 13:08:40 -0800
+	s=arc-20240116; t=1708722639; c=relaxed/simple;
+	bh=JrVB95/TWCv8ZLM64mCAJklAx2qKyMBLXlf2m8jNuTw=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=rzcmG+TYhP4lVojvc4LfkIZ95fWX2l8iAiz5+NJk1/Xa0yY3+FdouM4zzEaCSxOlIDLvPDPGPud3yKCrDxIE1IGAnnZOH+MCxu+dE/4az/00a2+7I7eA52tgfuBYskD5WxQDZtzB8w5az52RKnVK8SdBSUWBX7cGfvJjqZHOTzs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=t+oVJXFt; arc=fail smtp.client-ip=40.92.41.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ckp2ld1BXJ7H0AqFTgDiaiFRj2XeE5tafgZU7MOz1R9V+qjCHRPS29hHN0Xv5WlSG+OIMYZZ2LAO9hJZdzi7argk6YZb97DFUVntOwNCb4XCb7kN11LuiFlJ82m97k6/b/NEYz8LLMm7CTQTOcPYpS/NFk2W3P//eIJ/Pz4oHcfjt9siJnwjEftSqOqtJ213ve1KabyyrEcP5VURaXgWc3aHbemVUpW+cLlwo+xZNMFTKQAdqVTzEKFxtd3cVdu//yR4Xgvsqpka6SOM1wWr0tj1TNccqtx+lKzfBJcMoFfBefdb7Ut4uVT6gE3tdN+KqvT4PqVK6qD2/rnQ8bqAJA==
+ b=UMgOd6Rs7OOXUxhdsoRTLNKdfWeY/rgMVKof0gzROzZJRSvKwV+BpdV1BI69NZy+9W9BnUOVWoLBYAqJDFhvKwV9+OOnvifxk8Cw+L6Q/o7O1BmNwQ/r5bnFa0Okp6C2ygDWDluvsekYUZHIL0NW9IMujRilVWJQKJnckvZW2WRecWL+FSWJ8RSQ3L8UXFqxFQTpibf2OVRoQyhJCl1hAy3NMaPzWhdNeQ/i+aq9NvP8WPcuXyClAn1+EwN94OX8K2v/gedZ8LAABDgxwPISIxJ/dtrWc4JXMxaTbrFYsgEYBcy++vkT4/o9z4vGSlZHou3bdGUlbvveL+N4D65I9Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xuJMuBzTB/P4m+Lmj/tQHzA/0YIKYsVpzWr7j2hnDeY=;
- b=G/AsxEAYR9TMty24C1Q0iV/3lZi4gfeTM63faIYw0/ETOM8+1DtHPjl8cu0s9oT0oZvSbV2ookcutrhKqiuzByLezSEcWES7jFphoQynttZYzjUeWU+/wgOEbJsKZycRtYW82WH53bySgro33L8tSfxNBkwai7DX/o83c/qs/RIDrVp40j0bxGPk9ln6f6KAoMiM4CZ1R+tswzRqAZjZ+gJFn7KzxPVqQR7bT+HaQuBWL6y6s9ED8crYLyBa4WBQmnW0gSbzoMqQDRfWjOoYZV+2JeHkw1Um1TpdyuN4SKy8uGVkfE1qM00SIPFl+buxV3tbkTaGZ0zM2QPZ+pPLbQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
- by SA2PR11MB5100.namprd11.prod.outlook.com (2603:10b6:806:119::11) with
+ bh=uggaKpUcAWd905T4GzigR2HNUvzixs4MV3ck+UHXZaU=;
+ b=V5h8Ax8ls6MSOkgsB9akyPG8pjedevX9XTvqFakK81sMkisE6Ey7SR+BYb+s58wsBjLsRnjVEVmZcQPjfQgrJv2aVg0bhRr8ITgCKZRY7WFpttgKtv5+ZjY2DQLugJm4plgYdRq3tzG/yZBqN7vLbJO9KGaNbxMwwJG1CFAoVHtd4VunNKHYZig3/DO0W4ZpslMUCgXRLQD8Zf02yRwkXWu8Bl0vKELGAWa2tOXvXrGxSc24lNXnfPOrJDdN3S29dKaz6P9W62Y6LCDh1cQQiPSphRNMItDTu2bnkggNQh7gTlC2GQ1BjiU9vcuNDPD9RqnqZYNLDuSN+xz9wPoL+Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uggaKpUcAWd905T4GzigR2HNUvzixs4MV3ck+UHXZaU=;
+ b=t+oVJXFtlxyXU6igdic/fSIagz02gpakQYDt+WUluul7A70wMLo/vPxqa3uuzZSLLx+cA07UXRLARBdXjb7ZWWtQlnuqCHVtjtFFH33r4wq3x1SqejJqsyc9CCI2WZe4V2YAgObuSdXoYHwfpIX4QS/Ih91/RkFQaOvex6y5PQuqlEdoXaprfeQQyF8goFKYkFVVZlvczhnjrymXrvIWM+x0wdoceTGjhdttuFWxbDuR66UoSefCS6DzDXUOmp67jF8xDTBV3puTF+1i3gaD3PytFVn8FLkr5YI2VdW3pp2OFjGwVv1Ovj9bZ/uI0NARJS0NwP1u+6rleSSa701vCA==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by CO1PR02MB8394.namprd02.prod.outlook.com (2603:10b6:303:152::6) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.22; Fri, 23 Feb
- 2024 21:08:37 +0000
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::b383:e86d:874:245a]) by CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::b383:e86d:874:245a%5]) with mapi id 15.20.7339.007; Fri, 23 Feb 2024
- 21:08:37 +0000
-Message-ID: <6e0a725f-3bd8-4e14-afda-860f1e4c1dc5@intel.com>
-Date: Fri, 23 Feb 2024 13:08:34 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC net-next v1 5/6] tools: ynl: ethtool.py: Make tool
- invokable from any CWD
+ 2024 21:10:33 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7316.023; Fri, 23 Feb 2024
+ 21:10:33 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: Nicolin Chen <nicolinc@nvidia.com>, Will Deacon <will@kernel.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"kernel-team@android.com" <kernel-team@android.com>, "iommu@lists.linux.dev"
+	<iommu@lists.linux.dev>, Christoph Hellwig <hch@lst.de>, Marek Szyprowski
+	<m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, Petr Tesarik
+	<petr.tesarik1@huawei-partners.com>, Dexuan Cui <decui@microsoft.com>
+Subject: RE: [PATCH v4 5/5] iommu/dma: Force swiotlb_max_mapping_size on an
+ untrusted device
+Thread-Topic: [PATCH v4 5/5] iommu/dma: Force swiotlb_max_mapping_size on an
+ untrusted device
+Thread-Index: AQHaZLoRyKgMK9jLMUWPn0GpqcfvobEVbBTggALvr4CAAAjwsA==
+Date: Fri, 23 Feb 2024 21:10:32 +0000
+Message-ID:
+ <SN6PR02MB41574C0F51BEF3AC474C2EC1D4552@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240221113504.7161-1-will@kernel.org>
+ <20240221113504.7161-6-will@kernel.org>
+ <SN6PR02MB4157828120FB7D3408CEC991D4572@SN6PR02MB4157.namprd02.prod.outlook.com>
+ <Zdj4y7nqF2LHq2IH@Asurada-Nvidia>
+In-Reply-To: <Zdj4y7nqF2LHq2IH@Asurada-Nvidia>
+Accept-Language: en-US
 Content-Language: en-US
-To: Rahul Rameshbabu <rrameshbabu@nvidia.com>, Saeed Mahameed
-	<saeed@kernel.org>, Leon Romanovsky <leon@kernel.org>, "David S. Miller"
-	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet
-	<corbet@lwn.net>, Richard Cochran <richardcochran@gmail.com>, Tariq Toukan
-	<tariqt@nvidia.com>, Gal Pressman <gal@nvidia.com>, Vadim Fedorenko
-	<vadim.fedorenko@linux.dev>, Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit
-	<hkallweit1@gmail.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, Ahmed
- Zaki <ahmed.zaki@intel.com>, Alexander Lobakin
-	<aleksander.lobakin@intel.com>, Hangbin Liu <liuhangbin@gmail.com>, "Paul
- Greenwalt" <paul.greenwalt@intel.com>, Justin Stitt <justinstitt@google.com>,
-	Randy Dunlap <rdunlap@infradead.org>, Maxime Chevallier
-	<maxime.chevallier@bootlin.com>, Kory Maincent <kory.maincent@bootlin.com>,
-	Wojciech Drewek <wojciech.drewek@intel.com>, Vladimir Oltean
-	<vladimir.oltean@nxp.com>, Jiri Pirko <jiri@resnulli.us>, Alexandre Torgue
-	<alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, "Dragos
- Tatulea" <dtatulea@nvidia.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>
-References: <20240223192658.45893-1-rrameshbabu@nvidia.com>
- <20240223192658.45893-6-rrameshbabu@nvidia.com>
-From: Jacob Keller <jacob.e.keller@intel.com>
-In-Reply-To: <20240223192658.45893-6-rrameshbabu@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR04CA0376.namprd04.prod.outlook.com
- (2603:10b6:303:81::21) To CO1PR11MB5089.namprd11.prod.outlook.com
- (2603:10b6:303:9b::16)
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [TssF13v3uYvU8cM/C6DKKgGnwC0n4eR9]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|CO1PR02MB8394:EE_
+x-ms-office365-filtering-correlation-id: 4924402e-63b7-43a5-a1c0-08dc34b3df5a
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ LabQ+imBQARDVexfgUuNmsh8qUTbGX91hGMZ/sVjcAr4xdiyqsCOEfCV5FT017h8I82fCfVpYuzs/XhqnO6TYyAfOvdADVWeY8NoGiqCs7MTdtv04kf1KHkMB/qViPBvxVHvENtbhC7az5B/ebz/UzZ44ecHnUIruJ0Jstrklr2hjjTtgzqmptA5gG8zMX6Z1CeINE8nZw6BKwbUc35c5R3tX7BwuElL41YLCZlUi1zo1oNQU3Fhud0K/OXnQ8FAs1hMJaZSDthr0DXWzlLK+ss2XFniYkKe6BTApIPYrK/UQgRMWrlgAuAouZD/P3flLRoZVRyAjbUAJ+ROLaNgVN75bPmvIu8dwVPrUoJ1iLUBaXuj5yRKhEwwd5zGdjkMcxQss/oHg6/sj8B5C6Yr89LAYmPrXRQAnloLxeOjPtSIwIa6L6b95CXLpfB/If9zsLfcovk0lCBJlCbio9gNO5YyoeOmdpV02cwBlYySimw5ZDsKvMzqp+XRW6CNcaHOd/fXgzwQpz/G5JBHoHb5c5DOVe/OEvB2mlu4+a0t6tj512vzAVBQA781YRv9FQ+g
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?CaWyl/XV6cBTbWB4es0rYT3xWPNv3tINhp4+W9RCGc9PWNSZwIsRqsgdTpaS?=
+ =?us-ascii?Q?9AGObyqfC4bSVacC3SLPPPMk+PTuO5GV1Tpvbewc0+ajy5iGmlmhKFyHQTE4?=
+ =?us-ascii?Q?fUV3vHQNKu74LGUBNaORUzi5iSvk+HGiecMVUO0nS99H18cdnigMn+SW0fko?=
+ =?us-ascii?Q?yGclD13/gtXEEdliBgSnCq2NdKR5jMj7rR413WZv2qcK8wBocooK3V9fpNoI?=
+ =?us-ascii?Q?2xDR73Sgy48cVqIoq/ZizfO+LjMQjp0D5WdsOkoQyo47xHZaBM9didIxe7qo?=
+ =?us-ascii?Q?ENMr2BRV/AYsUJHqK4muTHI2bsenM/yCgmy28jLo+FGh+/ara6hx8eYtUlNu?=
+ =?us-ascii?Q?7h3NBwYlryqDJl0qB/mrWUMmgcUxMLIv+8zPtJkk6hMCexnt/xXTudfsRa04?=
+ =?us-ascii?Q?s03+3hxuaPuCJPGxYotfXYqhzSpwlfKXiep8vLgccR6VcVZetXcnir0Wwpma?=
+ =?us-ascii?Q?yZV4U5A/Erpg/WBXi655xFXBMe/U+6X6yZHAe1OAVaA1Fsa+Nf/KYaSoaeKJ?=
+ =?us-ascii?Q?qztfU3Fn7m75+6MYF3jDm9cXWVC1t5PYG1NgCizaTjXPCBDnoPrs98MZYElC?=
+ =?us-ascii?Q?gNnsTjgabPqUNz5SQCVw0bbl3RtkThnUFvIjBSUJY0WdDgKNgrElNMVzJx3D?=
+ =?us-ascii?Q?+Al7IfINUgpUfjHzX42Jt+G8O0pRnpRDi+yhNy3KfmMswRbQo6XE8/XwOI+1?=
+ =?us-ascii?Q?rOH5UOaiClmbrju78Y4ZWy44YpEosPQZTg1g8LESBTnL2T6mqdBpPbLA5O6x?=
+ =?us-ascii?Q?Bsbr2ALgMal7xbfu4G2MInrQf1FuyvmdWcxS/7DVjhDoG7ZPHOJ4GrgxoSg0?=
+ =?us-ascii?Q?duWNML5hLXgjqVZQt48nVsf7elN1Tk9Jd09fo7EJMYQ3XUWk1eGXkxouF6m+?=
+ =?us-ascii?Q?YAStq3xrLcStkT8YTQMFzh3LOMQz9J116VXPzuLL2qutGs3D9SeIzLiVE7zH?=
+ =?us-ascii?Q?agVKVASaWqTV5SpiqwWCbXbK2CH5XLTjPLPHTmui1mkl5wFDZgbaDyjDXGNO?=
+ =?us-ascii?Q?h9a6Zzxrbm2+spkU5EzCYMHZsn5JBKPwBMoDMhzi2CYuoZaFrimfRJnwKQeS?=
+ =?us-ascii?Q?T8uWyPfYI4oESTxg/aMxM2MzfHUgr8XRYYjF1QExAQ3vLexAE2IMbgeC09vf?=
+ =?us-ascii?Q?WA2OAHRuWeX4mJ66DM0FECxQQb8TZ0ML5E1eg0uPitlj5VXDrztZAIBC0dtQ?=
+ =?us-ascii?Q?c4oIZf3jV3xutQpuzy2NQThlA2xv2NclZLgQ1w=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB5089:EE_|SA2PR11MB5100:EE_
-X-MS-Office365-Filtering-Correlation-Id: 451c90bf-0ee7-48a4-fe4e-08dc34b39a99
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SIfSpevkp/rMfw3zVFJgitJm5LI+LoHFqYW+xCtPiON+jAggi0ksZzJXJJSZ/+ImimunfVb2O1fn513kIr4FNH1VsF26yITQZ2Ov7mNgoMR/8Sp0x7ryxQzCtTxpHcVtu7VZJiBMdf/g61oao7ToZ+989Xk3YF4QEPzYjc8d4Np1B1vVh6cQmyXl2x5TXJ5grYaO4FOyAtJl/aaiXw5xJ9e8uaIstcqdOSr7Xv+/kNKtvOQgM69ROB8TDjL6i83nKzcpBN5IL+gpL2a/OJRlHDzriDXhapedPk4EfoVZsPql/Sc/38lAohrQhj5FfPHRuyJUHzn8haKwPvL8btB65EljCnro4SB9+B2Vvm9E3ObYez9gGxof47o9av+UmZqjK5X/ndTUeMtqxWy6ELC7ZudFlBia10GatbbxWafQodATK+w0UG//Tx3T35I4X630ppzH3PIoiPeccinbIvVMaY9FA+OPatsNRXHHzt/mmTcdszom+coaSukPKqSiORwTnb1rtENmgY2rhn3eiwfq6VnXoktaREZ6CFxrl1i4lQwo+gLag1aMuhtfk+OtkZ2MOur9Q7TFcuiOAcHV+Eqs30ZX/VNlpxCKkUsF5JeHm7s=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(921011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dlF5Q25xOUZjN24zY1JqelNSOUZUM1lvUFBVSnBCMTdNYTcycTlhc0VrdmlR?=
- =?utf-8?B?NVp1bXM0Q0RzUkl6d3U0RDF3ZmRKelNNYzBNdU53Vk5JOFhOaWlDd3ZDQzVE?=
- =?utf-8?B?ZVNFcGlWT3lDSHFDN29obzlyWE5jc2dNWXJNUldYWkJmcENYd2M4dW9rdm84?=
- =?utf-8?B?bUtQZzBDb2RVb0ltcUdEbnRrdmxXeDY2MlovMTh4UDFxYS9WcmI1a3dMNVRa?=
- =?utf-8?B?MW1IWkZpWEo5THhOQ0V4R3BLM2d5S21tZDVTRCtuTFQxM25nRVN6WnlHQmMy?=
- =?utf-8?B?bzZhRGNxZWdWSVkzL0hwbmkycW9WRStYMzMxZkVUZTlXTll3ajhDTlZKam1o?=
- =?utf-8?B?czdWajJrZ3locHlzY3M3c1M0b2ZWRC90WmV4YnFheUFpTjcyWDNCRG14alB4?=
- =?utf-8?B?Y3lDSjc4Sk1pVGErMi9zYlJzcEw4dTM2U3R0bTNaL0NWRUkwWk53K0FjbUJ4?=
- =?utf-8?B?Z3RlazZDaFQyWTZJM3gzTTNsaVBkTDRZeVpQRG0wZkU1aCtJT3pUdlpnRDBp?=
- =?utf-8?B?Z3N4Yk9sNnZZb1dnd0tpNE5IZkFDZktEV3RaTG1Cek1ma2d3RXVERzFtQitm?=
- =?utf-8?B?Ti9OTlRZcVB5cjBPRjg2VEJJMzdLVThsbmhTbzErUC9HekFVMGRZZVdTc24x?=
- =?utf-8?B?ZjRXWWN3YTdRaUErYWUyQ0F1WG41eUJzdFIxSU5wVDdEU3A4WUJOOVdHamd0?=
- =?utf-8?B?b2RVaGdGMHRLQm9jTVBKTWk1V2pvanZtRWlKWElrTFVqOUV2ZWczdEovS25N?=
- =?utf-8?B?OXpKclVwVmJXdlF0REdMQ0NsRTBmeUVTOGtiNVBTaEJlTktTc0JNQVpHT1lB?=
- =?utf-8?B?NmlzNnNZanNSUnNDWUlvWmE1d1ptSDdOc0RSb3B2TDBhTURoMkRUZ1NXZlZU?=
- =?utf-8?B?RDR1RkFIdkNqNkxGWXliRXFjVmVkd0Y1elJ0NW9XdlNoTThLTUFoNkpEZVE5?=
- =?utf-8?B?dG1nanpuYm9TcVNLOVFnK05mYm9xYko3MGhJemNMbzFFcFhDRzFWdjVJUXMz?=
- =?utf-8?B?TTRLemJsWWx3Z3FjTHpEYk5iNjlORTk1aExFSkoyQlMrcHVQZnVqUS8rNjhI?=
- =?utf-8?B?eVFweGt0OXV4YndYTUJYeVdPSWdjQm9oZWFicmVOMUgvRDZJMEVMT1FUYy9L?=
- =?utf-8?B?YjhFVEoyMDAvVGU0NitVWXRIZi9LNEZETjd5SkE5RjhkMitvYlFyaFZvaHVm?=
- =?utf-8?B?YnB0UTZkSXJBZFpRWjNWRnIvdnh4YTdWTWVUTDRSZlZuSytiayswdWdvNzdL?=
- =?utf-8?B?K3JPNHlLWC9nVzJYNURnQkRvVEhMQnk5b3VmaXZVREZMZkpaaSt4cS9UYmJv?=
- =?utf-8?B?cHVUaHZtR1JYMUpOQWllM2JLTXBlRHM4bWMrMjhnNnQ3WEhqbktGOVVMckxD?=
- =?utf-8?B?YmVTK2dNME9YelgwRERZZi9LL1ZKeXFyanVwZ2pxeUxyZnduYkp1bjRXa0Vx?=
- =?utf-8?B?SkdXaFRQcDNkZXAwd083WXJwS2V4RC9JeFdWTTJqcDRyakFrS2tWaFVnMWpV?=
- =?utf-8?B?Yys4bXVQS2kzU3FrcnhMeFZKUUl3SkkrMkhZZU9EWGVDblBBWUdueGtSQlBs?=
- =?utf-8?B?aVk3NSswb3YzbWpVaG5pR0ZuRVNoU2thMlBCVEVlbVB0dUhrMW40WUxaWjcw?=
- =?utf-8?B?L1FiSUNlY3dLbDhsYzlKUjNDQjhCT1JYRG1VKzd6ZDkzNzk0MXRZaWQzSEhU?=
- =?utf-8?B?aUhWNHVzcHcwTjlWMVhxUE1PK2d3dXI1MUZ5QnllUjk1NWVvRTdlT09rcndM?=
- =?utf-8?B?L0ZwZDc5ZW00cXpHeVlxTjZXdDdVci9vNVY5WEZQbUluNWxGVDArUk1KcmFr?=
- =?utf-8?B?WmkwamNmeTBhb0xBV3AwSmFpa2s0ZFE5MWlQRnVCWmdCam4xTXJzcXU4SGtS?=
- =?utf-8?B?QURCb3Faa1k4YXlZUjFyQTI2Rk9mL09JTHZJNFpTVnRrMzUweE9qR2NRMFhk?=
- =?utf-8?B?WGI2RFo3Nm1CcGxQR1dLVHlsL01rbGkxY214TWtWUlpTMnRWSlIyQVVwUnpa?=
- =?utf-8?B?YmNmNTBBR1pDVzBScVZwVW9Weis4cTA2aEF5MzRVWWpKNWs3dkVjdEtGblgw?=
- =?utf-8?B?MkhLbVR5dzJWZ2NnOXZ1N1VWOWZob0tUZzl2eGVleWhHVkxmMytxOWwvY2tp?=
- =?utf-8?B?cUxMeWhZQnVnQUdiWDg1clIwWUFob2FQZ0VPaFlVU3VKeWV1Tm5Xc3ZscEJz?=
- =?utf-8?B?eWc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 451c90bf-0ee7-48a4-fe4e-08dc34b39a99
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
+X-OriginatorOrg: outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2024 21:08:37.8174
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4924402e-63b7-43a5-a1c0-08dc34b3df5a
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Feb 2024 21:10:33.0319
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3OjcYAveRmts+3ql+cPy1tjatbkOD2PEubD+ixhydgRD0illOzEpxyCHQo4SlU9Us45uhrQJlZO9uWrENA19Bx+DtVz/178yOtUhbrqbbcg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5100
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR02MB8394
 
+From: Nicolin Chen <nicolinc@nvidia.com> Sent: Friday, February 23, 2024 11=
+:58 AM
+>=20
+> On Wed, Feb 21, 2024 at 11:39:29PM +0000, Michael Kelley wrote:
+> > From: Will Deacon <will@kernel.org> Sent: Wednesday, February 21, 2024
+> 3:35 AM
+> > > +static size_t iommu_dma_max_mapping_size(struct device *dev)
+> > > +{
+> > > +     if (is_swiotlb_active(dev) && dev_is_untrusted(dev))
+> > > +             return swiotlb_max_mapping_size(dev);
+> > > +     return SIZE_MAX;
+> > > +}
+> > > +
+> >
+> > In this [1] email, Nicolin had a version of this function that incorpor=
+ated
+> > the IOMMU granule.  For granules bigger than 4K, I think that's needed
+> > so that when IOMMU code sets the swiotlb alloc_align_mask to the
+> > IOMMU granule - 1, the larger offset plus the size won't exceed the
+> > max number of slots.  swiotlb_max_mapping_size() by itself may
+> > return a value that's too big when alloc_align_mask is used.
+> >
+> > Michael
+> >
+> > [1] https://lore.kernel.org/linux-iommu/SN6PR02MB415727E61B5295C259CCB2=
+68D4512@SN6PR02MB4157.namprd02.prod.outlook.com/T/#m14dd359c5a4dd13e6cb0c35=
+cf94f8d746257ae48
+>=20
+> Yea, I just confirmed that with 64KB PAGE_SIZE the alloc_size
+> can be over swiotlb_max_mapping_size, i.e. 256KB > 252KB. Yet,
+> the max size corresponding to the max number of slots should
+> be 256KB. So, I feel that this is marginally safe?
 
+Yes, in the specific case you tested.  But I don't think the general
+case is safe.  In your specific case, the "size" argument to
+iommu_dma_map_page() is presumably 252 Kbytes because that's
+what your new iommu_dma_max_mapping_size() returns.=20
+iommu_dma_map_page() calls iova_align() to round up the 252K
+to 256K.  Also in your specific case, the "offset" argument to=20
+iommu_dma_map_page() is 0, so the "phys" variable (which embeds
+the offset) passed to swiotlb_tbl_map_single() is aligned on a
+64 Kbyte page boundary.   swiotlb_tbl_map_single() then
+computes an offset in the orig_addr (i.e., "phys") based on the
+DMA min_align_mask (4 Kbytes), and that value is 0 in your specific
+case.  swiotlb_tbl_map_single() then calls swiotlb_find_slots()
+specifying a size that is 256K bytes plus an offset of 0, so everything
+works.
 
-On 2/23/2024 11:24 AM, Rahul Rameshbabu wrote:
-> ethtool.py depends on yml files in a specific location of the linux kernel
-> tree. Using relative lookup for those files means that ethtool.py would
-> need to be run under tools/net/ynl/. Lookup needed yml files without
-> depending on the current working directory that ethtool.py is invoked from.
-> 
-> Signed-off-by: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
-> ---
->  tools/net/ynl/ethtool.py | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/net/ynl/ethtool.py b/tools/net/ynl/ethtool.py
-> index 6c9f7e31250c..44ba3ba58ed9 100755
-> --- a/tools/net/ynl/ethtool.py
-> +++ b/tools/net/ynl/ethtool.py
-> @@ -6,6 +6,7 @@ import json
->  import pprint
->  import sys
->  import re
-> +import os
->  
->  from lib import YnlFamily
->  
-> @@ -152,8 +153,11 @@ def main():
->      global args
->      args = parser.parse_args()
->  
-> -    spec = '../../../Documentation/netlink/specs/ethtool.yaml'
-> -    schema = '../../../Documentation/netlink/genetlink-legacy.yaml'
-> +    script_abs_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
-> +    spec = os.path.join(script_abs_dir,
-> +                        '../../../Documentation/netlink/specs/ethtool.yaml')
-> +    schema = os.path.join(script_abs_dir,
-> +                          '../../../Documentation/netlink/genetlink-legacy.yaml')
->  
+But what if the original offset passed to iommu_dma_map_page()
+is 3 Kbytes (for example)?   swiotlb_tbl_map_single() will have an
+orig_addr that is offset from a page boundary by 3 Kbytes.  The
+value passed to swiotlb_find_slots() will be 256 Kbytes plus an
+offset of 3 Kbytes, which is too big.
 
-This seems like a worthwhile improvement to make the tool more usable.
+>=20
+> With that being said, there seems to be a 4KB size waste, due
+> to aligning with the iommu_domain granule, in this particular
+> alloc_size=3D256KB case?
+>=20
+> On the other hand, if swiotlb_max_mapping_size was subtracted
+> by 64KB (granule=3D64KB), i.e. alloc_size=3D192KB, which seems to
+> generate more swiotlb fragments?
 
-Thanks,
-Jake
+dma_max_mapping_size() returns a fixed value for a particular
+device, so the fixed value must be conversative enough to handle
+dma_map_page() calls with a non-zero offset (or the similar
+dma_map_sg() where the scatter/gather list has non-zero
+offsets).  So yes, the higher layers must limit I/O size, which
+can produce more separate I/Os and swiotlb fragments to
+fulfill an original request that is 256 Kbytes or larger.  The
+same thing happens with 4K page size in that a 256K I/O
+gets broken into a 252K I/O and a 4K I/O if the swiotlb is
+being used.
 
->      ynl = YnlFamily(spec, schema)
->  
+I'm trying to think through if there's a way to make things
+work with iommu_max_mapping_size() being less
+conversative than subtracting the full granule size.  I'm
+doubtful that there is.
+
+Michael
 
