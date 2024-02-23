@@ -1,127 +1,116 @@
-Return-Path: <linux-kernel+bounces-78762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C58486187E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:55:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17937861884
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:56:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E8ED1C2152D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:55:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 835741F25434
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:56:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C6D1292FF;
-	Fri, 23 Feb 2024 16:55:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6331B12A16D;
+	Fri, 23 Feb 2024 16:55:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BaH5c2cC"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cdn5DnOB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7EBE84FB0
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 16:55:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9100F84A2B;
+	Fri, 23 Feb 2024 16:55:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708707336; cv=none; b=ErGWGrp3vmm6k0KM0+mpIR2UzFNzot8kqCYjiKtToPM7Njz/o/jwIcDXPSR+esFky77Y4osM6qocM6WhUTGW8hY4EM7ytXbhqNwnqqTfEEBWrj5ZyLg9sHq9ZjwSRxLCLCfald+UqafBrO4p/XDBCVx7zV/6qUJISJwVUdS7SBk=
+	t=1708707355; cv=none; b=F6e7meaGJdVuQlzZuaHxkkFD4Bw/7085H31f9msrERAIydSFTDJfYG2DHk0KEYwlkyrRRo2XiAWObKJ0Qm/Zmd+6kQF0/qcdgeBkos8TBToknmyEu+GY5R5AFck60afwH355EYyy4mWnCxpFec4e6u7lJLoL/KpY4NIPz7G+1hs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708707336; c=relaxed/simple;
-	bh=PjIbn7vuZmgpKFTS/S05Q2avNwgeNmQE/ZqtPcno5Sg=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=FucwhRc27SlgYV7k+PyV4FfX9oWOjz/Zs2Lspw5gVLfK7VMs2FiDiatGwFr+Mx608xkUK3MyJgPAQl7cEIp302Yf7ruNbKkY4gTLs3i90tvuHl4yAM5a5wat77uAaTIV2ymYIJGpmkr+xRl9ieegcXEhwH1eL5xQetqSHgKeQxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BaH5c2cC; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b26eef6cso1430562276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 08:55:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708707334; x=1709312134; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mYWLMbIxWQEENVSRztSfcr6/pOIUurrebXe4uMlvipQ=;
-        b=BaH5c2cCwNrbilawcXGNrDwIdu8zV/1Kzt7bpg/6f6ewISt6vyPu+j42872+6PyuTE
-         WvlOC3HiQz5jjubtKrePpaY2KYkr7wFrlX1NU4NJSxNmx5g2j87/wcrV4gMY4FEk0Igz
-         h4eiHZfWqdD83suuahnUfMcQbFeX6DkRlqiwliPPvGf9BUm+wr2TcLnKveijmN8Gjt2b
-         DNu9SR+gr4k5ijoqmw0wZ2+dJ+PKCGfE7YpfWyjwNfT8Utbcu4MoejJm+hCHdLjbMZcQ
-         Ho+q+wBwvXOLzB7Lt0z9mYAjKZ5f83y8wR8xbeixOPbEyRIvgCZZd+ssisK7zAj3vtMe
-         WTaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708707334; x=1709312134;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mYWLMbIxWQEENVSRztSfcr6/pOIUurrebXe4uMlvipQ=;
-        b=Ea77G1x19LbVSF+jKdvfVvnn7VW4lkgIAkT7BFCmoc9Q4Yv/Q4YBjwd4NV8zqXSFmQ
-         onCYkTIYpjM+aVDwuCto/MeDsRSBG1ItThrER0PZtQ5x5AMdDRIEi6lmX6bwwwzemrbe
-         cv4zJ3UIvMhhuQX1bdFBvjyIyT2N2L0n3hRvEip9VyY2di4PUqldodA749k2YjRlZay8
-         XtwypkwgTKSIkrxbhWPT48n0KrAsZ7i3sZisfam5u9KIXVi6ReyZTeiIGZIufwVw8ZIf
-         yLLjCZbghWcyDP7p+hS14f6kP7wTkbZSc6WhP7aLPr5FzJ2E5oQlDSNsBm1K3lnYnJpF
-         cOXw==
-X-Gm-Message-State: AOJu0YzF78R9y53n+Zw1z9j3+1CK/mwNgWK9VBhXkFsF79iir8kaGY59
-	1CBWeGyjXQX6QbuiGEe4ySD0yq0eLzDRaO27MyquuY/mD3NYxLXPJlBC0wXGHKIggNRiomS6Urs
-	kYA==
-X-Google-Smtp-Source: AGHT+IFkYP1y0rThJ5zyCPCZZDCCxNQ2WYNS10EMBTaaHdno7tm/mwyj/0/APM7XLuWGiQtT4Kl4EPdV/xw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:c7cd:0:b0:dc7:865b:22c6 with SMTP id
- w196-20020a25c7cd000000b00dc7865b22c6mr25774ybe.8.1708707333910; Fri, 23 Feb
- 2024 08:55:33 -0800 (PST)
-Date: Fri, 23 Feb 2024 08:55:32 -0800
-In-Reply-To: <20240223104009.632194-10-pbonzini@redhat.com>
+	s=arc-20240116; t=1708707355; c=relaxed/simple;
+	bh=o9q4NasFNGWz8zlB0rOMsX/O1t9hGjI/2ZeyGOezbiM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=AjPMdUwOi4njmR1Y8fy2hJnWt/u/8EEedE4WenqCfgl4HCk2jIwF0KbLfEUdPPQQi+FHFSDFV7O3w91+/76zmoclsM7mz8Kq/L9cecA9E9XQ+37doXFyO4WFTmmdY1hYEnSa3jVJOuLlMH9+2ERHNg8CGMSz7FQXAx+plnupQBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cdn5DnOB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 078E8C43330;
+	Fri, 23 Feb 2024 16:55:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708707355;
+	bh=o9q4NasFNGWz8zlB0rOMsX/O1t9hGjI/2ZeyGOezbiM=;
+	h=References:In-Reply-To:From:Date:Subject:To:From;
+	b=Cdn5DnOBlicJ0wUckGy4GLjk0678uwLkjSvz0YRREgyci3Ctsqte0wLRfij9CHFRT
+	 S2L4JRLQ0QaiGizgjUOtlLun1f+2DGOcTRiUynJglubdSGcVZAat9Kx/2c5kqsS5m2
+	 plj7Y3yoBocKYXmzHqlx8PiSMrwtD3YJKlAxA0Tu2l5mh+JKT71h0x4r7Ewlxq3RIK
+	 yuR4NrFpy3wPgsq8zxxbSNpSIlFHmBN59ZlSxQYmCxNnqu8ro9xwu9/jvxcROocIWH
+	 8jCN6i5Qt2629wNnfXHUZCOgchwzysgPuROgAPldAOSa5cvX46P0jffMUJ5fTKHoad
+	 bu6YVtUsVo5rw==
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-512e75e013eso1020568e87.1;
+        Fri, 23 Feb 2024 08:55:54 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUn6SN9ylNChomsxvkwv1ZDCm1dng5ty0XYOYb3P3aLEReU3S9HmhQGkJraixOnHIK7QGexRfexWhVpm8Vt86KxXBtUCOGOITlkvK5UC/9996hJLd4v8ikWOIPHQuHVcB8IZZqE3wf/+t9JT0fphuQTF1M1rsdG22glRIr0QaSumMo6bShjSWkwvj6qE286UPTuLSAFYbklVZdpDcc1OvIzJwJ4BWLJ3mPiVGyKyJgTLJp/EGAA1j+Qt6FEMG72KG+Noqmgs9NvLiFfQxDrn7pmif6Ak3NLDVfY
+X-Gm-Message-State: AOJu0Yx+Rigxt/k9uJWiEtRRr0qB9y8CixhIpcpiEJz43OhZsEYICyTS
+	Afbq7pVr9ZcbVyFk3Qm+lFeWD/AQ0//7r8DjGYMuRzbt1WmW98AwpRNxs3YLElTuQNcaQy70mLc
+	d55ABu8W+/9xAcWpbmNggb0eBGg==
+X-Google-Smtp-Source: AGHT+IH3eU4uHcOcgNkS4EpFf9+utY4dSGP0CnG9Q3vlqtkLCgKqay36eKFj4lBrOQtl0GgcUPQ/S/qHFYrfi4oR314=
+X-Received: by 2002:a05:6512:e93:b0:512:d830:358c with SMTP id
+ bi19-20020a0565120e9300b00512d830358cmr267753lfb.49.1708707353147; Fri, 23
+ Feb 2024 08:55:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240223104009.632194-1-pbonzini@redhat.com> <20240223104009.632194-10-pbonzini@redhat.com>
-Message-ID: <ZdjOBD-Ehv3qnuDu@google.com>
-Subject: Re: [PATCH v2 09/11] KVM: SEV: define VM types for SEV and SEV-ES
-From: Sean Christopherson <seanjc@google.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com, 
-	aik@amd.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+References: <20240222174343.3482354-2-robh@kernel.org> <ZdemsdGQE0RtilCd@shikoro>
+In-Reply-To: <ZdemsdGQE0RtilCd@shikoro>
+From: Rob Herring <robh@kernel.org>
+Date: Fri, 23 Feb 2024 09:55:40 -0700
+X-Gmail-Original-Message-ID: <CAL_JsqKpn6jqktRLQUx7HMrJG0PZeiOZ=hQnHpZK6AHcM22CLQ@mail.gmail.com>
+Message-ID: <CAL_JsqKpn6jqktRLQUx7HMrJG0PZeiOZ=hQnHpZK6AHcM22CLQ@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: i2c: Remove obsolete i2c.txt
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>, Rob Herring <robh@kernel.org>, 
+	Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Andi Shyti <andi.shyti@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, 
+	Jonathan Hunter <jonathanh@nvidia.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, linux-gpio@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org, 
+	linux-i3c@lists.infradead.org, linux-sound@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 23, 2024, Paolo Bonzini wrote:
+On Thu, Feb 22, 2024 at 12:55=E2=80=AFPM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+>
+> On Thu, Feb 22, 2024 at 10:43:42AM -0700, Rob Herring wrote:
+> > Everything in i2c.txt is covered by schemas/i2c/i2c-controller.yaml in
+> > dtschema project, so remove i2c.txt and update links to it in the tree.
+> >
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+>
+> Differences to i2c.txt:
 
-Changelog...
+Thanks
 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 392b9c2e2ce1..87541c84d07e 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -4087,6 +4087,11 @@ static void svm_cancel_injection(struct kvm_vcpu *vcpu)
->  
->  static int svm_vcpu_pre_run(struct kvm_vcpu *vcpu)
->  {
-> +	struct kvm_sev_info *sev = &to_kvm_svm(vcpu->kvm)->sev_info;
+> * In the schema, "clock-frequency" has a minimum of 1kHz and a maximum
+>   of 3MHz. Why? The specs do not say anything about a minimum freq and
+>   fastest speed mentioned in the docs is 5Mhz (Ultra fast mode).
 
-Ugh, we really should have
+IIRC, the high speed mode originally topped out at 3MHz. I guess
+that's been revised.
 
-static inline struct kvm_sev_info *to_kvm_sev(struct kvm *kvm)
-{
-	return &to_kvm_svm(vcpu->kvm)->sev_info;
-}
+We can drop the minimum.
 
-> +
-> +	if (sev->need_init)
+> * new binding "i2c-scl-clk-low-timeout-us" has a description which I do
+>   not understand. What is a waiting state?
 
-And then this can be:
+Shrug. May have to look at the MPC h/w that uses the property.
 
-	if (to_kvm_sev(vcpu->kvm)->need_init)
+>
+> * new binding "no-detect" is broken. At the least, it should be named
+>   something like "bus-fully-described" and then the OS can decide to
+>   leave out auto-detection mechanisms. If you are interested in the
+>   latter, you can simply disable class based instantiation on the host
+>   controller. No need to describe this in DT.
 
-> +		return -EINVAL;
-> +
->  	return 1;
->  }
->  
-> @@ -4888,6 +4893,11 @@ static void svm_vm_destroy(struct kvm *kvm)
->  
->  static int svm_vm_init(struct kvm *kvm)
->  {
-> +	if (kvm->arch.vm_type) {
-> +		struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> +		sev->need_init = true;
+I've reverted the property now.
 
-And
-
-	if (kvm->arch.vm_type)
-		to_kvm_sev(vcpu->kvm)->need_init = true;
+Rob
 
