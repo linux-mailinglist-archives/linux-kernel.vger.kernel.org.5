@@ -1,124 +1,184 @@
-Return-Path: <linux-kernel+bounces-79057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1576861CF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:51:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF1CC861CFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:52:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0D0B1C24181
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:51:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D6061F22E35
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:52:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A64E1487CE;
-	Fri, 23 Feb 2024 19:51:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 406541420D7;
+	Fri, 23 Feb 2024 19:51:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uWxPu15j"
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cWKQHdRM"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91C3E142648;
-	Fri, 23 Feb 2024 19:51:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2FB31468EC;
+	Fri, 23 Feb 2024 19:51:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708717871; cv=none; b=lXxcEGiInldS27f/PoQPO7NZfxKyJPA/dqM89KZVQtS2/PW7EhC5KkE3LJDFj9hZlQGq40S7WKziF1YPKFdi165sG4W76winrzZ3eiL9F4YwtA1dXbXiOV5+HQTDrVGDcX1ScMNwUYs+dJ3Ds+H0FF9PqTRd0/l6YaZ6lGSeeDY=
+	t=1708717878; cv=none; b=uHUVcytyALlhweK3zrmTLZyaR5QtGRmKKQ4CEKpTdCPU73eUfDKIhFBucUWrXahGjx3L4iueXYXFS7P3oE//E9Aw49y2R3pMaCoqnCjVfpcSbZ5Sg59mrd6Vn+LvpLAT2TookijSPuC9tXR6Uk9M6GEOocD2IXyf4MxgcJ2ISsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708717871; c=relaxed/simple;
-	bh=YaVgMmCZccAOj2rhCfHdyWTcmqoRE1LJqZeVBmFLeSU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jopwIebqvkwwBE/i175fQdJ3GozQ7EiwAXHYfWjDG+b2ZCr3ZjKR7ldki4G7O1nT39zBFVHaNgkZ8FY7UzY47mWsYktnXY3iDGRyIicjeRIbNBHgWniMUaRT4VxV6ubDKAhzMeRR52ETflEbNhWgSe4xv/+iJ7CjCtQz6Dxgrj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uWxPu15j; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 23 Feb 2024 14:50:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708717865;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=G9nEEkfFGj8WFYt7yvHDxsoouHxXt+6aC7E5xhimc9A=;
-	b=uWxPu15jxbBy5Qv8sUU4/FKz9vhwMVdq24ex7AxwdBDTkpdTty7N4oFt5H+WpItVhn5h2q
-	QhDNbk6QMiXNrrlkBl7kMfsoV81d2NhOFvXWC0sVWqoHMtRJN5Tm42Zzvb2Qci9w4QIV6Q
-	wpkGE4FwRbb7rZDimmKQkBl02FYhYXk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>, 
-	LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org, 
-	linux-block@vger.kernel.org, linux-cxl@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, 
-	intel-xe@lists.freedesktop.org, linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org, 
-	virtualization@lists.linux.dev, linux-rdma@vger.kernel.org, linux-pm@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-tegra@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-hyperv@vger.kernel.org, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, 
-	ath11k@lists.infradead.org, ath12k@lists.infradead.org, brcm80211@lists.linux.dev, 
-	brcm80211-dev-list.pdl@broadcom.com, linux-usb@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
-	linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev, linux-cifs@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, linux-edac@vger.kernel.org, selinux@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-hwmon@vger.kernel.org, io-uring@vger.kernel.org, 
-	linux-sound@vger.kernel.org, bpf@vger.kernel.org, linux-wpan@vger.kernel.org, 
-	dev@openvswitch.org, linux-s390@vger.kernel.org, 
-	tipc-discussion@lists.sourceforge.net, Julia Lawall <Julia.Lawall@inria.fr>
-Subject: Re: [FYI][PATCH] tracing/treewide: Remove second parameter of
- __assign_str()
-Message-ID: <qsksxrdinia3cxr52tfe4p3pafsy4biktnodlfn4vyzud73p2j@6ycnhrhzwsv6>
-References: <20240223125634.2888c973@gandalf.local.home>
- <0aed6cf2-17ae-45aa-b7ff-03da932ea4e0@quicinc.com>
- <20240223134653.524a5c9e@gandalf.local.home>
+	s=arc-20240116; t=1708717878; c=relaxed/simple;
+	bh=DCcRHQS8179CeEbpS6ho3btFvHb0UMPTbTzkvbeC7DQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Uy3pTbYqYwBuSGolCxuRlhwHeqIX3k+1TaZ/IIMMYXhmOoTmKrJOOPRHmD9bIzcawsjJP4dtCfBr5fM5W6TLYoRN9WfUiMRMicv6WR2ARqBXWrd+4z8SztLgJJxl3jnf2W0I3AXXxoMfJAB/UiaE0h+W7h33xbVvuYLisSN+1Gk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cWKQHdRM; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a3eafbcb1c5so157325566b.0;
+        Fri, 23 Feb 2024 11:51:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708717875; x=1709322675; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0Xr6A5ZVcZDLJ7oaBlotk2t+V105HpiLWnU7g8aHJ7w=;
+        b=cWKQHdRMuhtNTqhBKF4iarsZKCM/DaFymWdqalZtHrhbE43Pq4K8GU2HLQvflj8krA
+         A1jGN7OHzPlS590Z1sQ/JItaXYGYiXjrHRmgaafl8Fm4CN4fH6Lk1fM2f50q2LccBXj+
+         8rSo9gBdlEESKUb4iKd5LtG5w699YES+fPV2pQ8asAF0xU7AwZk3bbRMSeWGqpdCLfS/
+         PR2ZDSbxe77dJ4oSF96ggYjdLKiZGjN0Hvh7bb2qkmergeAsc9i0PDAs96edLZaX0c0y
+         WKb8IdJITjGUWbH1PptUTf1SKOFH3RXoPlOvGjI1Qk1Zht1k3OwJ9+ysHvz9s/wC1OVK
+         zDDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708717875; x=1709322675;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0Xr6A5ZVcZDLJ7oaBlotk2t+V105HpiLWnU7g8aHJ7w=;
+        b=DK2LQannBTltv01Sc33AukhVt7UibphVUJ3P7myzZ6IEu0eMcz1tW+2+vvgb0bQJcy
+         TpBvt9QZDbe0Ks08LtmtLbrki3AqwXlpWsmv9ojnK9x8JuODV3OtXL4rRMVquwquUC4+
+         OFPuudqHM74PCyQMB5soJx29dHfxVdtJponCUmn6xdjAoxqclW1XtrEgX1JU7I3ghpPd
+         fOHgqLBHTGwdEiup3lWwwMUeJUQ5GtXfo2/9KEHFFVIchniWqDT50ubJh+8I6Wmyb2cg
+         /4PLmEy3L+t82ASREbSS/+eMKv27vagnlE4jKhFWKe/058/cOIHlq5x3KwWmFVw8vIzs
+         FqNw==
+X-Forwarded-Encrypted: i=1; AJvYcCW8RX+yoLTfesFXDoXWR2vIcfUFO8EchunoaEvoamOtOtkWkoGIp48YV2gIG936wgNldfwEX3UHdwdS7YvNW/o7zwB1Bal9vk3M/yPzvN5HRPoShpq1TBYHJf5S8Azy2p6gPwRsGD8=
+X-Gm-Message-State: AOJu0YzmVYbGx/lHgN7f/B+nJN26iAQo5wBLO4a7VP/Rt1erAYPrDPJ6
+	GHq6FogTDhEmGOShKiZ5Y3FPNzrlOc0dZNBYMj3YDpCDd9suauoX
+X-Google-Smtp-Source: AGHT+IE19ctpcHeC8OGPK03xM0qf45C77WZ9HAydSzM8Dyn0bvmzXPAySicx9S20pEbJNSX2ZydiUw==
+X-Received: by 2002:a17:906:cd0f:b0:a41:3950:d11c with SMTP id oz15-20020a170906cd0f00b00a413950d11cmr547643ejb.28.1708717874903;
+        Fri, 23 Feb 2024 11:51:14 -0800 (PST)
+Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
+        by smtp.gmail.com with ESMTPSA id tj9-20020a170907c24900b00a3ca56e9bcfsm7183967ejc.187.2024.02.23.11.51.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 11:51:13 -0800 (PST)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: Vasily Khoruzhick <anarsoul@gmail.com>,
+ Yangtao Li <tiny.windzz@gmail.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>, Amit Kucheria <amitk@kernel.org>,
+ Zhang Rui <rui.zhang@intel.com>, Chen-Yu Tsai <wens@csie.org>,
+ Samuel Holland <samuel@sholland.org>, Mark Brown <broonie@kernel.org>
+Cc: Hugh Dickins <hughd@google.com>, linux-pm@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Subject:
+ Re: [PATCH v3] thermal/drivers/sun8i: Don't fail probe due to zone
+ registration failure
+Date: Fri, 23 Feb 2024 20:51:12 +0100
+Message-ID: <12383045.O9o76ZdvQC@jernej-laptop>
+In-Reply-To:
+ <20240123-thermal-sun8i-registration-v3-1-3e5771b1bbdd@kernel.org>
+References: <20240123-thermal-sun8i-registration-v3-1-3e5771b1bbdd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240223134653.524a5c9e@gandalf.local.home>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-On Fri, Feb 23, 2024 at 01:46:53PM -0500, Steven Rostedt wrote:
-> On Fri, 23 Feb 2024 10:30:45 -0800
-> Jeff Johnson <quic_jjohnson@quicinc.com> wrote:
-> 
-> > On 2/23/2024 9:56 AM, Steven Rostedt wrote:
-> > > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> > > 
-> > > [
-> > >    This is a treewide change. I will likely re-create this patch again in
-> > >    the second week of the merge window of v6.9 and submit it then. Hoping
-> > >    to keep the conflicts that it will cause to a minimum.
-> > > ]
-> > > 
-> > > With the rework of how the __string() handles dynamic strings where it
-> > > saves off the source string in field in the helper structure[1], the
-> > > assignment of that value to the trace event field is stored in the helper
-> > > value and does not need to be passed in again.  
-> > 
-> > Just curious if this could be done piecemeal by first changing the
-> > macros to be variadic macros which allows you to ignore the extra
-> > argument. The callers could then be modified in their separate trees.
-> > And then once all the callers have be merged, the macros could be
-> > changed to no longer be variadic.
-> 
-> I weighed doing that, but I think ripping off the band-aid is a better
-> approach. One thing I found is that leaving unused parameters in the macros
-> can cause bugs itself. I found one case doing my clean up, where an unused
-> parameter in one of the macros was bogus, and when I made it a used
-> parameter, it broke the build.
-> 
-> I think for tree-wide changes, the preferred approach is to do one big
-> patch at once. And since this only affects TRACE_EVENT() macros, it
-> hopefully would not be too much of a burden (although out of tree users may
-> suffer from this, but do we care?)
+Hi Daniel, Rafael,
 
-Agreed on doing it all at once, it'll be way less spam for people to
-deal with.
+is there any issue with this patch? Can you apply it?
 
-Tangentially related though, what would make me really happy is if we
-could create the string with in the TP__fast_assign() section. I have to
-have a bunch of annoying wrappers right now because the string length
-has to be known when we invoke the tracepoint.
+Best regards,
+Jernej
+
+Dne sreda, 24. januar 2024 ob 00:33:07 CET je Mark Brown napisal(a):
+> Currently the sun8i thermal driver will fail to probe if any of the
+> thermal zones it is registering fails to register with the thermal core.
+> Since we currently do not define any trip points for the GPU thermal
+> zones on at least A64 or H5 this means that we have no thermal support
+> on these platforms:
+> 
+> [    1.698703] thermal_sys: Failed to find 'trips' node
+> [    1.698707] thermal_sys: Failed to find trip points for thermal-sensor id=1
+> 
+> even though the main CPU thermal zone on both SoCs is fully configured.
+> This does not seem ideal, while we may not be able to use all the zones
+> it seems better to have those zones which are usable be operational.
+> Instead just carry on registering zones if we get any non-deferral
+> error, allowing use of those zones which are usable.
+> 
+> This means that we also need to update the interrupt handler to not
+> attempt to notify the core for events on zones which we have not
+> registered, I didn't see an ability to mask individual interrupts and
+> I would expect that interrupts would still be indicated in the ISR even
+> if they were masked.
+> 
+> Reviewed-by: Vasily Khoruzhick <anarsoul@gmail.com>
+> Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+> Changes in v3:
+> - Rebase onto v6.8-rc1.
+> - Link to v2: https://lore.kernel.org/r/20230912-thermal-sun8i-registration-v2-1-077230107768@kernel.org
+> 
+> Changes in v2:
+> - Rebase onto v6.6-rc1.
+> - Link to v1: https://lore.kernel.org/r/20230718-thermal-sun8i-registration-v1-1-c95b1b070340@kernel.org
+> ---
+>  drivers/thermal/sun8i_thermal.c | 16 ++++++++++++++--
+>  1 file changed, 14 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/thermal/sun8i_thermal.c b/drivers/thermal/sun8i_thermal.c
+> index 6a8e386dbc8d..c2a8ae7f8f2f 100644
+> --- a/drivers/thermal/sun8i_thermal.c
+> +++ b/drivers/thermal/sun8i_thermal.c
+> @@ -188,6 +188,9 @@ static irqreturn_t sun8i_irq_thread(int irq, void *data)
+>  	int i;
+>  
+>  	for_each_set_bit(i, &irq_bitmap, tmdev->chip->sensor_num) {
+> +		/* We allow some zones to not register. */
+> +		if (IS_ERR(tmdev->sensor[i].tzd))
+> +			continue;
+>  		thermal_zone_device_update(tmdev->sensor[i].tzd,
+>  					   THERMAL_EVENT_UNSPECIFIED);
+>  	}
+> @@ -465,8 +468,17 @@ static int sun8i_ths_register(struct ths_device *tmdev)
+>  						      i,
+>  						      &tmdev->sensor[i],
+>  						      &ths_ops);
+> -		if (IS_ERR(tmdev->sensor[i].tzd))
+> -			return PTR_ERR(tmdev->sensor[i].tzd);
+> +
+> +		/*
+> +		 * If an individual zone fails to register for reasons
+> +		 * other than probe deferral (eg, a bad DT) then carry
+> +		 * on, other zones might register successfully.
+> +		 */
+> +		if (IS_ERR(tmdev->sensor[i].tzd)) {
+> +			if (PTR_ERR(tmdev->sensor[i].tzd) == -EPROBE_DEFER)
+> +				return PTR_ERR(tmdev->sensor[i].tzd);
+> +			continue;
+> +		}
+>  
+>  		devm_thermal_add_hwmon_sysfs(tmdev->dev, tmdev->sensor[i].tzd);
+>  	}
+> 
+> ---
+> base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+> change-id: 20230718-thermal-sun8i-registration-df3a136ccafa
+> 
+> Best regards,
+> 
+
+
+
+
 
