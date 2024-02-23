@@ -1,140 +1,157 @@
-Return-Path: <linux-kernel+bounces-78395-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78403-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CC978612E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:40:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45AEE861303
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:43:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26A8A2830AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:40:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FD4BB23520
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:43:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21DB17F7DB;
-	Fri, 23 Feb 2024 13:39:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5D7E7EF06;
+	Fri, 23 Feb 2024 13:41:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="O1pfL0Nj"
-Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="gmKWY4aC"
+Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C8666280B
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:39:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DE237C6E5;
+	Fri, 23 Feb 2024 13:40:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708695578; cv=none; b=eYIi47quYRXUWptev36wCLvlwgHEn5aIShi10fMDqCmTNgzu43Nu56K/sBBh8vWpOUBPb5PM4/UJ/mcsdOCi6mzKD7VLAwgi7eb9rtAbc+WLFWpQdFfdnBJi65I7i7fRjMEpm8o81WYclPFixd/8w6kamnx+psq/w1gdZLSbsAs=
+	t=1708695660; cv=none; b=CtxcJ4NWf6HK4QeCbqqHBc8xUP/aOm4QKPlxNMGD9RyYIEcYtp1s12Cu7NT3qspaGK5aLCbRqu5miHqALVXq2lhlhr4GBPdJBY6muzPYfvkuf4EbEDtCISypFmuULhkg5PU7Dkapmqjf/TnVfKAsnPkudb5RJsQRIMeWMXpXTLY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708695578; c=relaxed/simple;
-	bh=Twp7tfSTw0JcrYxColLY4Ax9TG/pkPRhM7VLYkZRS4A=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fcOvLTO+HAqbLOOmAxSM9jTgTuzW4wPJYTLPdzM/O/87iwkV7tYuudOYDU+L7fMkIYh0wwmhvZoPTx5N5PEIQuDTv8PQq4c9tXNRZu7l7IZ4bxDOvM4fANBh2g/C2YxcT33pYcOSRISwKWAHS2OrpfUCd1HBRwFiGX/dgJT/s50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=O1pfL0Nj; arc=none smtp.client-ip=209.85.166.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7c40863de70so44332239f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 05:39:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708695575; x=1709300375; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=d4x2sMmK8Ljy9DYC/W73ZknuhG0GdB53Q7DPx/D50TQ=;
-        b=O1pfL0NjKwcPNi6v4TRbX29zYKLHT9rMUoyBA4x2AZuL0ZSjaepb9uKDoEpUo3cMzk
-         pJ9Imwnzko2bF3xyF4oqRTx3yD+bDoWAtWke12lKiK1u8FVmMYJGv8J2C24svYf45wow
-         xTp4qQ7ZXEjU1BbrXn5OZ5+fmmRd7M2ERjJrtmT00sj5N8j1m7DmsgMNOtWy11a1fKPo
-         hcJpWg8Baju6GSUd/gPvjBVW95iGZhqW/sUnGZfMc8y420mj4lABxgkkREtMgbtuiX7t
-         x5sulLg0C39I3Dyt0Tk4ZZ6wxXAdpSwCzpD1TyKtIhVYM2/ckv/0/PlqMbrtc+tbvB9/
-         pxLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708695575; x=1709300375;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=d4x2sMmK8Ljy9DYC/W73ZknuhG0GdB53Q7DPx/D50TQ=;
-        b=sYdht2RZax2KzNPdm/a87vb/mEgnOYFffk4F03WiYg2x/PXpd56fxYfcq2BtEKm5nN
-         vUHnpZ49AVJOAFeqwcOJ89Oqljdb9+xZR0kFw4ZKVW8oZ3LMvl1NyKQzZjeAbP8IjuMF
-         6/1cwNIOKXIc+XoEZNEmunFrn8atWUMzkBpL167U/5vaAs4Fo0UeR4NE7iKCuF6G7f7T
-         jLe97S0L5KoqTBNiurNEKnDU2eKqDehUhjaoBPylibNX3MAWNFSJsk6MTM6ehXH/eU+7
-         G+RHaSVrzxJl4bz/EjclFWtOQVC7uEX37BMd76cE6JsgwTgn4Bhm5mfxS7tbqNuNG4Zo
-         V4pA==
-X-Forwarded-Encrypted: i=1; AJvYcCUH+5l8Mzoykf+ZT1qfFV7w/tpfVQBvol0TNO3cTHBoUGMN46I7tTq0lbCxvvzhM7hwoLpYxogQqy3tx1ljvC3xt2e+eLgiPdhNgVn+
-X-Gm-Message-State: AOJu0YxWA/tWeoCBJA4RugoXwQrZivym9hO0xOAy0GixKmb7xmmDldgF
-	6mjhGVEAtIiIWTR0j5QW8EMMGok7xwVmLiVoV5xOu7vpJDUqFBoAgezVF6n5e1E=
-X-Google-Smtp-Source: AGHT+IFrz5R0BlotlFi4jZ+FPrD+nKWN+cqkiTi9yfrUfHfyDhCGmqbGauLW7N/Kb+gQyn8NGnS1AQ==
-X-Received: by 2002:a6b:c90e:0:b0:7c7:9185:e58e with SMTP id z14-20020a6bc90e000000b007c79185e58emr1936714iof.12.1708695575154;
-        Fri, 23 Feb 2024 05:39:35 -0800 (PST)
-Received: from localhost.localdomain (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
-        by smtp.gmail.com with ESMTPSA id p11-20020a6b630b000000b007c76a2d6a98sm1836838iog.53.2024.02.23.05.39.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 05:39:34 -0800 (PST)
-From: Alex Elder <elder@linaro.org>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: mka@chromium.org,
-	andersson@kernel.org,
-	quic_cpratapa@quicinc.com,
-	quic_avuyyuru@quicinc.com,
-	quic_jponduru@quicinc.com,
-	quic_subashab@quicinc.com,
-	elder@kernel.org,
-	netdev@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 0/6] net: ipa: don't abort system suspend
-Date: Fri, 23 Feb 2024 07:39:24 -0600
-Message-Id: <20240223133930.582041-1-elder@linaro.org>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1708695660; c=relaxed/simple;
+	bh=PUdaN+NOyiFko6ApVjfQUO99UPdl8r3ljDhSfM9je4I=;
+	h=Message-ID:Subject:From:To:CC:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=kkYzTjMPg6x/TK/zoRD6BIfgdV4NuqawAmidd6RmduLLbiYYbsNxuwkdkY4EC+EFCi2JPYDQDAvSwJ7pS0uJCT+mi0GsUi3Wmo12gXG2efOle4YwPI7gQ+fE0yFAFhfosNDgVKl8BCe51aoNLuJW/ZjZnwpNbkXVJC4GgCMLSu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=gmKWY4aC; arc=none smtp.client-ip=91.207.212.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41NBw6P6025967;
+	Fri, 23 Feb 2024 14:40:18 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:subject:from:to:cc:date:in-reply-to:references
+	:content-type:content-transfer-encoding:mime-version; s=
+	selector1; bh=PUdaN+NOyiFko6ApVjfQUO99UPdl8r3ljDhSfM9je4I=; b=gm
+	KWY4aCZqrkRS2Qaq06UuV+RBt72dfljhqYIuva4PStKzOdrAyUhPAFIi62vE1MbS
+	2QvWTc6PcHoh0LOjJtvqldsTwdA1WJ40G0dNLsf/Q9ynqzLQun+y9ZfAitMFFnck
+	4flc3JmzFTAI33MC5OYzUsVHm8U31oMLp2+ISJgRK1tiNOR274sWDh9T/XJlCF3W
+	FBuOFov8w40GUcVMQ0lD4vGr96a5EXeP2whCHq4iRzM8XE1pn5NqBosK9yOTRjnS
+	GANfQy6gfNQSIOyNjJWJkiP+VAe9n24puIyyfgXpEfpkCy8tTzJPWGSk00SAa9rM
+	y6B0VUCQu4nFZJPaXqrA==
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3wd2024w03-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 Feb 2024 14:40:18 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id E9FE040044;
+	Fri, 23 Feb 2024 14:40:13 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id DF21A29D7F4;
+	Fri, 23 Feb 2024 14:39:26 +0100 (CET)
+Received: from [192.168.8.15] (10.201.20.114) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 23 Feb
+ 2024 14:39:26 +0100
+Message-ID: <2eb11bf9dc0c5f49de3fb72c44dd16d8ca136813.camel@foss.st.com>
+Subject: Re: [PATCH 02/12] dt-bindings: interrupt-controller: stm32-exti:
+ Add irq nexus child node
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+To: Rob Herring <robh@kernel.org>
+CC: Thomas Gleixner <tglx@linutronix.de>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue
+	<alexandre.torgue@foss.st.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Fabrice Gasnier
+	<fabrice.gasnier@foss.st.com>
+Date: Fri, 23 Feb 2024 14:39:25 +0100
+In-Reply-To: <20240222234300.GA3809915-robh@kernel.org>
+References: <20240216094758.916722-1-antonio.borneo@foss.st.com>
+	 <20240216094758.916722-3-antonio.borneo@foss.st.com>
+	 <20240222234300.GA3809915-robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-22_15,2024-02-23_01,2023-05-22_02
 
-Currently the IPA code aborts an in-progress system suspend if an
-IPA interrupt arrives before the suspend completes.  There is no
-need to do that though, because the IPA driver handles a forced
-suspend correctly, quiescing any hardware activity before finally 
-turning off clocks and interconnects.
+On Thu, 2024-02-22 at 16:43 -0700, Rob Herring wrote:
+> On Fri, Feb 16, 2024 at 10:47:47AM +0100, Antonio Borneo wrote:
+> > The mapping of EXTI interrupts to its parent interrupt controller
+> > is both SoC and instance dependent.
+> > The current implementation requires adding a new table to the
+> > driver's code and a new compatible for each new EXTI instance.
+> >=20
+> > Add to the binding an interrupt nexus child node that will be
+> > used on the new EXTI instances and can be optionally used on the
+> > existing instances.
+> > The property 'interrupt-map' in the nexus node maps each EXTI
+> > interrupt to the parent interrupt.
+> > Align #address-cells and #interrupt-cells between the EXTI node
+> > and its nexus node.
+>=20
+> Looks like an abuse of interrupt-map. You avoid adding yourself to the=
+=20
+> abuser list by putting it in a child node. Clever. (See list in=20
+> drivers/of/irq.c if you don't know what I'm talking about)
 
-This series drops the call to pm_wakeup_dev_event() if an IPA
-SUSPEND interrupt arrives during system suspend.  Doing this
-makes the two remaining IPA power flags unnecessary, and allows
-some additional code to be cleaned up--and best of all, removed.
-The result is much simpler (and I'm really glad not to be using
-these flags any more).
+Hi Rob,
+thanks for the review.
 
-The first patch implements the main change.  The second and
-third remove the flags that were used to determine whether to
-call pm_wakeup_dev_event().  The next two remove a function that
-becomes a trivial wrapper, and the last one just avoids writing
-a register unnecessarily.
+Yes, I know already about the abuser list but, from the commit
+message and the associated comment, I interpret it as an incorrect
+use of the property interrupt-map with custom syntax thus relying=20
+on custom parsing code.
+The child nexus node in this series allows using the default parser
+in kernel.
 
-Note that the first two patches will have checkpatch warnings,
-because checkpatch disagrees with my compiler on what to do when
-a block contains only a semicolon.  I went with what the compiler
-recommends.
+From your reply, looks like my interpretation is incorrect and I
+missed the real concern about the abuser list.
+Could you please explain why this use of interrupt-map is incorrect
+and/or which are the correct use cases?
 
-clang says: warning: suggest braces around empty body
-checkpatch: WARNING: braces {} are not necessary for single statement blocks
+> I assume the EXTI has 0..N interrupts. Just define 'interrupts' with N=
+=20
+> entries with each entry mapping EXTI interrupt N to 'interrupts' entry=
+=20
+> N.
 
-					-Alex
+Yes, EXTI has 0..N interrupts that can be mapped to multiple
+parent interrupt controllers and the mapping table has holes.
+While the DT in this series only use one interrupt parent, a second
+parent will follow.
+So 'interrupts-extended' property would be a better matching than
+'interrupts' to handle the multiple parents.
 
-Alex Elder (6):
-  net: ipa: don't bother aborting system resume
-  net: ipa: kill IPA_POWER_FLAG_SYSTEM
-  net: ipa: kill the IPA_POWER_FLAG_RESUMED flag
-  net: ipa: move ipa_interrupt_suspend_clear_all() up
-  net: ipa: kill ipa_power_suspend_handler()
-  net: ipa: don't bother zeroing an already zero register
+But how to code the missing entries in an 'interrupts-extended' list?
+As in the example in Documentation/devicetree/bindings/dma/apple,admac.yaml=
+ ?
 
- drivers/net/ipa/ipa_interrupt.c | 50 ++++++++++++++++-----------------
- drivers/net/ipa/ipa_interrupt.h |  8 ------
- drivers/net/ipa/ipa_power.c     | 33 ----------------------
- drivers/net/ipa/ipa_power.h     | 11 --------
- 4 files changed, 25 insertions(+), 77 deletions(-)
+The 'interrupt-map' contains the matching EXTI index, thus allowing
+a 'sparse' map where holes are simply ignored.
 
--- 
-2.40.1
+Best Regards,
+Antonio
 
 
