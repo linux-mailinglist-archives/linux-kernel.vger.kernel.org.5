@@ -1,187 +1,233 @@
-Return-Path: <linux-kernel+bounces-77784-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77785-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A86A860A31
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 06:21:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3973860A38
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 06:27:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15E261F26462
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 05:21:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9CAF1C2379F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 05:27:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 382BE11CAD;
-	Fri, 23 Feb 2024 05:20:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F193811CB1;
+	Fri, 23 Feb 2024 05:26:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="aiV8mtXW"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JQogSnRD"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBD11101FA;
-	Fri, 23 Feb 2024 05:20:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708665654; cv=none; b=GXZ4hgPIwoyste1+ICEvReuYXfKsEj6024pQTJNd+Udrw5YZoxkvMH+VmCGaygIkOyrddz7aKgjEMaWnryXqXkG6ONIKiMFbpOhmYBGC2MJQ0qbQu4drTWaRnSyKjxijzwjCzUySe2+aQe0lV4SHQcPyeXxrcpS/3n0aY3WhNF8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708665654; c=relaxed/simple;
-	bh=Mhdw9Zu4ydEVNNkZDl6MlHFqITqdLsrXh+2UiUSmICM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=cXUCRIX+ve8zm2zCkgm0FkJ2qvBdHl0MvFe4z4qB6vQiTjTTR5ku4rkGAonhag0nByN9mZ2ObnuVA+H40b/eOjgGr7N4FiLGO07ZFrtx1q5CPjIkadSF55+oPVyhsIYO7sSEmd5QWWXvp8L81aNKomyjaJa0Jlzf8xQXhImamTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=aiV8mtXW; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41N3wLZw001771;
-	Fri, 23 Feb 2024 05:20:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=XtP90d2oLGHAANc4Hry0XB7XCfCAgx7Z9UEZsQuUESs=; b=ai
-	V8mtXWQ+ss7kaXUqUgc4Dyh54flRGB0gSiZf3MG9OzQBiexfm9XJENQTID2bJ6bz
-	fZdU5hsNthYCgviFZJpllQh17SQhQJHUIufHQO/2XysxoDyJTZP5UW3D11gcDZGa
-	DmT60KQ5oXQ4iQlMvJRXIqwncyzP/UAqz3cJorxDCHugg1SSR59hsC68vsZFTTvy
-	mg4nYjIp9K2Au+3kN0ru+2u8RaGOopH5Yl0TcIV4axHXQgofJetUPoXkKZf0gFV8
-	/4saDP59GT2ZEAeeX6PcWnn5yDI160Qi459pJvlIkE+dcXEe/RRb+DqUy5+dWbwG
-	XE6AgYctFu2e44Dy6sCQ==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3weasbst7w-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 05:20:42 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41N5Kgms001975
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 05:20:42 GMT
-Received: from [10.216.26.154] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 22 Feb
- 2024 21:20:37 -0800
-Message-ID: <ef3f5a8a-f5c7-3a2c-191b-4ce0db5cd79f@quicinc.com>
-Date: Fri, 23 Feb 2024 10:50:34 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7791511715;
+	Fri, 23 Feb 2024 05:26:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.18
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708666019; cv=fail; b=n/kEs5fGXWaAEHK14+wdsoz1LfTUX+KfSRZv/53xfVfvXPrcnliG+2wHh2ey3yfKWlo252B0C9L1w4fJ/4Kk87+d7axlKF+z2LANj8DYj8cHRKMBGPGZq4QJ6QEflOCGk1C8+e9Yd5jb/5KXcbeycgHgrUsGAZJqwaRNAss5ckA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708666019; c=relaxed/simple;
+	bh=7rjntsW0xiYo3C1TT4JdxVthl76YASnSjlUNUxyKXb0=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=no0+lHgb+EDKE1ZKqAyl8LeyuapbImgUyMAj3+VlJ0eE1HVusFKoxifIC2SgxFgDyfWMdOTyLhlAq5RM8FhH6o947OJHciHi36MkDz1AI0tD0SUww+cyp7Y2ZghGQwKEqNqJtdgzNbupUzMqeXk43tAG7bKnV/S86vwWosuZOWY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JQogSnRD; arc=fail smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708666017; x=1740202017;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=7rjntsW0xiYo3C1TT4JdxVthl76YASnSjlUNUxyKXb0=;
+  b=JQogSnRDQsqmCX5Ugmls/puyeYmo0GB7IvKKY4kUDZ2P03Xyv6tnjW4E
+   a9ARPCJU2p9Fn4Ucnsy7TOlIjwQ1VvGOo7RVMps4e4ZBQWEqZh00TeR+v
+   JW8pHbAiYdMUJu6v+05OzFADrl5W5yvLEk4WryxtzoH8d/jCyYQyaJYwB
+   c+TB9IqvzjrAe6u4LyMQrCXlO/Pra9HUt1Mzq1js0NNyH+UsdWDY693ZJ
+   /oJVfTviLevF0uBGJcDdMp9XUmgvnU7vuh3jjiON/OjKVi5X8w4JC3noQ
+   mjnFLhwqxM8xYK3sCZe2uDMu4DQhLgLHeVa0Zsxk2yCFbSkJ9MoJmTcQq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="3093143"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="3093143"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 21:26:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="10556414"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Feb 2024 21:26:54 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 22 Feb 2024 21:26:53 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 22 Feb 2024 21:26:53 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 22 Feb 2024 21:26:50 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=S0sb2KIUHZsGonZXhzy6Em+p2oUHYOxahWYVSPBgkqK42dDIsOQL6RNJh+kBFoyCaiOILG/ciSLCnptHzKRpfyDDHUUj8JoWRv5eMPy0/7xTq/YspffJw6Gkl+AFqdsr1DthJ5qtm0nStdpVDQ8Ah5kBxn1iMHWvT7Y3cssA7ztWdg32W0XFgmo2btZs2I742UwkRu7NmJi5shAfGa3YH2oZXRNNlrSbu2Ahx2XLqDc3M0hs7k6Rn/Wms3znBG0NOn1ynnWFXKTZOP72tcPm7oO40NtBPd6VmvJVBdLPxEloCuXIJ8AFzgrjL3PhZec4pzyBUpvP+OR38Z5sAIf2EA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jtALn7iiPWe20aeLiEveKT7lDMZO8kWJVWk5qFg9I0Q=;
+ b=WjCbSklKXG60UqooEWbw/9/1ait7SyFmnoTe4/KYCwtVuCokIiWVwBSPO3QtbtIWOpRCTk955CxGEgOKQl0TZ+/RaAp0cCEaCcrDgRpW5oqh3uEey0coQ74psth74Nhw2OqdVWhsiJx3boxvde8CJvRt1Y4d/t2JRPWYxiyBEPhETV3kEz3FldD8I5DfLNvPOG59tFJA+rCej8cGLqJTrUBJp+q8Z155qjV0IK5Pix3wf0ryTovgyyC3pUmyYyl2mJ77y6xMK4PMmv4BbsDKvi6yGS4Fzb8CrPWCe7BbcDSOru+gemDKdg9jimtyB8M1i+GMQfHFkoE5gPWmn5IT3A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by IA1PR11MB6442.namprd11.prod.outlook.com (2603:10b6:208:3a9::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39; Fri, 23 Feb
+ 2024 05:26:47 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::da43:97f6:814c:4dc]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::da43:97f6:814c:4dc%7]) with mapi id 15.20.7316.018; Fri, 23 Feb 2024
+ 05:26:47 +0000
+Date: Thu, 22 Feb 2024 21:26:43 -0800
+From: Dan Williams <dan.j.williams@intel.com>
+To: Shuai Xue <xueshuai@linux.alibaba.com>, Borislav Petkov <bp@alien8.de>,
+	Ira Weiny <ira.weiny@intel.com>, "Luck, Tony" <tony.luck@intel.com>,
+	"james.morse@arm.com" <james.morse@arm.com>
+CC: <rafael@kernel.org>, <wangkefeng.wang@huawei.com>,
+	<tanxiaofei@huawei.com>, <mawupeng1@huawei.com>, <tony.luck@intel.com>,
+	<linmiaohe@huawei.com>, <naoya.horiguchi@nec.com>,
+	<gregkh@linuxfoundation.org>, <will@kernel.org>, <jarkko@kernel.org>,
+	<linux-acpi@vger.kernel.org>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
+	<linux-edac@vger.kernel.org>, <x86@kernel.org>, <justin.he@arm.com>,
+	<ardb@kernel.org>, <ying.huang@intel.com>, <ashish.kalra@amd.com>,
+	<baolin.wang@linux.alibaba.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
+	<dave.hansen@linux.intel.com>, <lenb@kernel.org>, <hpa@zytor.com>,
+	<robert.moore@intel.com>, <lvying6@huawei.com>, <xiexiuqi@huawei.com>,
+	<zhuo.song@linux.alibaba.com>, Jonathan Cameron
+	<Jonathan.Cameron@huawei.com>, Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH v11 1/3] ACPI: APEI: send SIGBUS to current task if
+ synchronous memory error not recovered
+Message-ID: <65d82c9352e78_24f3f294d5@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
+ <20240204080144.7977-2-xueshuai@linux.alibaba.com>
+ <20240219092528.GTZdMeiDWIDz613VeT@fat_crate.local>
+ <bdf15819-46e0-498f-97e1-a0183f257086@linux.alibaba.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <bdf15819-46e0-498f-97e1-a0183f257086@linux.alibaba.com>
+X-ClientProxiedBy: MW2PR2101CA0029.namprd21.prod.outlook.com
+ (2603:10b6:302:1::42) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.1
-Subject: Re: [PATCH] thermal/drivers/tsens: Add suspend to RAM support for
- tsens
-To: Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Thara Gopinath
-	<thara.gopinath@gmail.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Rafael J
- . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
-        <linux-pm@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_mkshah@quicinc.com>,
-        "Raghavendra
- Kakarla" <quic_rkakarla@quicinc.com>
-References: <20240122100726.16993-1-quic_priyjain@quicinc.com>
- <548e2f24-a51e-4593-9463-09506488c70e@linaro.org>
- <f415a8cd-4cae-d7c3-60fc-674b3e660f6b@quicinc.com>
- <aeae2e69-8407-4d90-9d16-27798e2f3248@linaro.org>
- <be69e0a6-fdc8-c24b-9beb-adaac4a97776@quicinc.com>
- <b5ea1c8c-c35d-45e3-9b90-d3dc480f4463@linaro.org>
- <1cd754e5-fc5e-bd8b-1d70-8de40c9a85e7@quicinc.com>
-Content-Language: en-US
-From: Priyansh Jain <quic_priyjain@quicinc.com>
-In-Reply-To: <1cd754e5-fc5e-bd8b-1d70-8de40c9a85e7@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: cH7944HrqCUIXbrJjQXy0ezi4puFE66n
-X-Proofpoint-GUID: cH7944HrqCUIXbrJjQXy0ezi4puFE66n
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-22_15,2024-02-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=1 mlxscore=1 suspectscore=0
- mlxlogscore=186 impostorscore=0 bulkscore=0 phishscore=0 spamscore=1
- clxscore=1011 lowpriorityscore=0 malwarescore=0 adultscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402230035
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|IA1PR11MB6442:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7e104ae1-28c1-42c6-1f59-08dc343007c1
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UwCiO+UNBKcJo3pB7sB+NMnaK5NrzmgHnwnlmq6olbVbXAAkglM/sPx3sgF5CBl73L9lANozAV67SKFCnser7L0rGkIztLvxk+ZBvWdXzG9cbhANt50QV/+TsbnRFy4I58xVSG8I7ad3mt3HT5xVE6TLImtMvPmr9SgXlLnQiP8zYMAP20rdm8dCt0pWmoSaUuoEb9rb8EB4qQbYp9hoahKerR/eS035XjSNVRUZruRvLnvxT/bEvfqy9mS/vW6x0IjIN+VrXvrue3KtxjODIcKj5rT2IdIXn6FrmKlmoXl8dHMqR14+XR55CEICusAcwJf8X7i+jCwuBQ3ufs8VhlNgHZ4lYSaaQNcbdPPkGncRlLG37oX/lDDHCr9CqEGY7LnimT2sboiIJbsLVHbFPqzUFovpxfTxItgHsoJY0ocVZp8PJ6JusmHPuLEsr/nTeB044W8Gw83rDh7SX7z8SvLbS8vSBo2AzYUGlHbbGkTuL5Ku0kjSXok8x97soi6js5qaS+qhVjlHvnot3Qb6jFIZZisZeBz/D2N4kcXvJcsW35lZM26Xp6hGSDilBA1J
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(230273577357003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uvDOZPI8FqrFYhaa+S8vmKTAjUYWggoLD2veqOea1LA0cNbR00bxU8yqgkir?=
+ =?us-ascii?Q?mpZgE2huyy9Tb/M9PCo5mNdre3m6lDEhfRkuK1yMeGBMVeMkfzUfoNqwaWMA?=
+ =?us-ascii?Q?YW9GiEas+Vyl1ZZFH2lnKcTNkK1P5X1Q9+BtyXHN4NpfhpECxOUclfmv9+tl?=
+ =?us-ascii?Q?ta3KegKSq9KkTmue9LZV7fcGpcyHykoBF+H/lHv2mB+F9N/p8X+jSR5fRUH5?=
+ =?us-ascii?Q?VaOx7znTH9TjjoQSs02oTH0FL0ET275TZQKaFgdoXQ3lesPH0EuTPCRVdn6n?=
+ =?us-ascii?Q?069aZ7f3nIvmaBb0RXF74H8ibDUKauogK0JtJ+ki64YX0oi/CWPHaNne6XnZ?=
+ =?us-ascii?Q?yASb3dj/8LAOcbAEDpp3mF8pdhBM7Zr222J2vl2ocjsv3IywUzr9eu7jYwP8?=
+ =?us-ascii?Q?bEFRStjj2JwMoutSKZbSpWK7FVyumhJgpVdzefwsgh0eF05L2LJYaceFtHX3?=
+ =?us-ascii?Q?uNULy/joLLduMjNeEW1mNxzLD/cZYyvsJDxcWVreiBdL5E2bk7nz9WqZhGOo?=
+ =?us-ascii?Q?S5DEkilfpY6cE8tJ7sLBxNcOI5ZTYXWl4LvR0iWuCDh37zJ7N/3tk6s+4ztk?=
+ =?us-ascii?Q?sMojuOojp7KL0Ug6+jBhGkMnpeL1k4ZVh1U8767Ot8Zu9LUXRX08q4qEnjB+?=
+ =?us-ascii?Q?NIP6kIR75ZkD14T5wMBnaezLLN21baeJJFVE5i61xkG1yRQZd3Nnzd7L0OIO?=
+ =?us-ascii?Q?kYisr4UpETkA1rSw6GqRpZ38Pr5j0HpwLCxLyVOSWKk6b1OKDlK4Q2z8bdof?=
+ =?us-ascii?Q?1pKJlLXd8yBr7YQ0f+Re8lCbi9kVOhiHlprCQJSpUVUWIxrM67fq9WP3a1WB?=
+ =?us-ascii?Q?SHCUUnSH1gPPIe9jyIdLMpkIw4D04fa9BIhT3JNnjdthW3ZTr4S9gIpytNYK?=
+ =?us-ascii?Q?4nkD4xP+r6CIsmMHJasYV0B7OoUG1yrXgcfeyHy3wfnKRPgYfxMNCcrrult8?=
+ =?us-ascii?Q?oJOGamQ/QR6161g+A9HGxDVpF0oRD55ZwfZPNrs2r+KjbXtLhsT8tJCDnFMm?=
+ =?us-ascii?Q?D2vui6dtcE06+wCzsZ4Y+j7uWdEmP9JEI8W7V3qlmCA202ZO6XMWebU7ECyM?=
+ =?us-ascii?Q?q/tJzcy/Q+OQEmGCRDCFw/lpvxbRNu1Kd69in16zk4NyzaMG6IbPQo/09Ur4?=
+ =?us-ascii?Q?HfzbfO1O/8iXCAOgDm7QP0OIWppEhSl5wltLdWgx4pquDwYREoyrV4uQ/sXL?=
+ =?us-ascii?Q?A9ki9/LUi0dCEiHfXspWRz4DhHswJ8t3SHk2G5WrDAKiNz/2ERuN9Xib4g+x?=
+ =?us-ascii?Q?ibvoLXWHBKHUairpILeArcdNud6OzwdKeo0s9/rPD8bL6BPitsIQbjL4icvO?=
+ =?us-ascii?Q?wH3fnh+i7+ZPrpc3m4hkTk9GXS6VSjgUyH8dK0vbdam9hvqkWkoF5ktHnmFI?=
+ =?us-ascii?Q?wwomUz9VJ24U56thWwm4+KPf9WsYf6C7OtaAa7I/xsDzN4PjABi1sPpr2crJ?=
+ =?us-ascii?Q?3IyzjcVtZkDDSKi+NlrCNAN+pI3mlftL+hNknmLeZ1J62PF3s7035Pv8G5A2?=
+ =?us-ascii?Q?TAVQZ1ij3Gs7MfqRZ9XHFyCWrvPJDl2zFcWuDyo7Ln+eDIqtEnBTHUEeJ5AL?=
+ =?us-ascii?Q?MKKe+1SFhJuA9py3i9AqJXzQYlQMFKC44Fybi4TO1pC36Bup7BnOQBLUL8FH?=
+ =?us-ascii?Q?Iw=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7e104ae1-28c1-42c6-1f59-08dc343007c1
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2024 05:26:47.4616
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NRamIWsoHiUythBLrvSfT8lSvf2x8l0k1DQOVgMEoSiKSt17Fo6ZtcEGgeWiYgQov8EDvKKRup0WRai6o6p9GrzkkR5fszDW2YMI9YM67Hk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6442
+X-OriginatorOrg: intel.com
 
+Shuai Xue wrote:
+> 
+> 
+> On 2024/2/19 17:25, Borislav Petkov wrote:
+> > On Sun, Feb 04, 2024 at 04:01:42PM +0800, Shuai Xue wrote:
+> >> Synchronous error was detected as a result of user-space process accessing
+> >> a 2-bit uncorrected error. The CPU will take a synchronous error exception
+> >> such as Synchronous External Abort (SEA) on Arm64. The kernel will queue a
+> >> memory_failure() work which poisons the related page, unmaps the page, and
+> >> then sends a SIGBUS to the process, so that a system wide panic can be
+> >> avoided.
+> >>
+> >> However, no memory_failure() work will be queued when abnormal synchronous
+> >> errors occur. These errors can include situations such as invalid PA,
+> >> unexpected severity, no memory failure config support, invalid GUID
+> >> section, etc. In such case, the user-space process will trigger SEA again.
+> >> This loop can potentially exceed the platform firmware threshold or even
+> >> trigger a kernel hard lockup, leading to a system reboot.
+> >>
+> >> Fix it by performing a force kill if no memory_failure() work is queued
+> >> for synchronous errors.
+> >>
+> >> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+> >> ---
+> >>  drivers/acpi/apei/ghes.c | 9 +++++++++
+> >>  1 file changed, 9 insertions(+)
+> >>
+> >> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+> >> index 7b7c605166e0..0892550732d4 100644
+> >> --- a/drivers/acpi/apei/ghes.c
+> >> +++ b/drivers/acpi/apei/ghes.c
+> >> @@ -806,6 +806,15 @@ static bool ghes_do_proc(struct ghes *ghes,
+> >>  		}
+> >>  	}
+> >>  
+> >> +	/*
+> >> +	 * If no memory failure work is queued for abnormal synchronous
+> >> +	 * errors, do a force kill.
+> >> +	 */
+> >> +	if (sync && !queued) {
+> >> +		pr_err("Sending SIGBUS to current task due to memory error not recovered");
+> >> +		force_sig(SIGBUS);
+> >> +	}
+> > 
+> > Except that there are a bunch of CXL GUIDs being handled there too and
+> > this will sigbus those processes now automatically.
+> 
+> Before the CXL GUIDs added, @Tony confirmed that the HEST notifications are always
+> asynchronous on x86 platform, so only Synchronous External Abort (SEA) on ARM is
+> delivered as a synchronous notification.
+> 
+> Will the CXL component trigger synchronous events for which we need to terminate the
+> current process by sending sigbus to process?
 
-
-On 1/27/2024 9:07 PM, Manaf Meethalavalappu Pallikunhi wrote:
-
-> +Maulik and Raghavendra
-> 
-> Hi Konrad,
-> 
-> On 1/25/2024 4:38 PM, Konrad Dybcio wrote:
->>
->>
->> On 1/24/24 16:25, Priyansh Jain wrote:
->>>
->>>
->>> On 1/24/2024 6:04 PM, Konrad Dybcio wrote:
->>>>
->>>>
->>>> On 1/24/24 11:42, Priyansh Jain wrote:
->>>>>
->>>>>
->>>>> On 1/22/2024 8:02 PM, Konrad Dybcio wrote:
->>>>>> On 22.01.2024 11:07, Priyansh Jain wrote:
->>>>>>> Add suspend callback support for tsens which disables tsens 
->>>>>>> interrupts
->>>>>>> in suspend to RAM callback.
->>>>>>
->>>>>> Would it not be preferrable to have the "critical overheat", wakeup-
->>>>>> capable interrupts be enabled, even if the system is suspended?
->>>>>>
->>>>>
->>>>>
->>>>> As part of suspend to RAM, tsens hardware will be turned off and it 
->>>>> cannot generate any interrupt.Also system doesn't want to abort 
->>>>> suspend to RAM due to tsens interrupts since system is already 
->>>>> going into lowest
->>>>> power state. Hence disabling tsens interrupt during suspend to RAM 
->>>>> callback.
->>>>
->>>> Is that a hardware limitation, or a software design choice? I'm not
->>>> sure I want my phone to have thermal notifications disabled when
->>>> it's suspended.
->>>
->>>> Konrad
->>>
->>> As part of suspend to RAM , entire SOC will be off,
->>
->> What do you mean by "entire SOC[sic] will be off"? Surely the memory
->> controller must be on to keep refreshing the memory? Are you thinking
->> of suspend-to-disk (hibernation), by chance?
-> 
-> Yes, Memory will be in self refreshing  mode(Retained). But SOC will be off
-> 
-> and will do cold boot to come out of S2R.
-> 
->>
->>> this mode (suspend to RAM) is not intended for Mobile product. Tsens 
->>> interrupts are not
->>> disabled as part of suspend to idle(suspend mode for mobile).
->>
->> That's clearly untrue, e.g. the PSCI firmware on SM8550 implements
->> PSCI_SYSTEM_SUSPEND, which does S2R.
-> 
-> IIUC, PSCI_SYSTEM_SUSPEND will be enabled only for S2R supported 
-> products and will be removed it for others.
-> 
-> Maulik/Raghavendra can comment more
-> 
-Sorry for delayed response, we have discussed internally on this and
-came to the conclusion that disabling tsens interrupt in S2R path is not 
-correct approach as S2R is being exercised on mobile kind of products as 
-well. I will update the required changes in the next patch.
-
-Priyansh
->>
->> Konrad
+None of the CXL component errors should be handled as synchronous
+events. They are either asynchronous protocol errors, or effectively
+equivalent to CPER_SEC_PLATFORM_MEM notifications.
 
