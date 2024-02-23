@@ -1,288 +1,187 @@
-Return-Path: <linux-kernel+bounces-77998-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77999-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE295860DDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:21:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9710D860DDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:21:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AEB6284555
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:21:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAA101C2104F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:21:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A54805C8E2;
-	Fri, 23 Feb 2024 09:21:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D42AA5C8E2;
+	Fri, 23 Feb 2024 09:21:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="gwPWnVVq";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="mVZdmUOU";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="gEVYnJHF";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="CkJJIhLA"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="g5XE3YV4";
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="rB3WKRju"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D54EC8BF9;
-	Fri, 23 Feb 2024 09:21:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708680065; cv=none; b=MlsJkXZNT7EuRvfJbPoh3MGiphogeUaDzQB6SgvtxrjzqfLKemIoPhq76r/DExasbnOyNcpZQ6I4qKwEUDwjTA1Nda9r2+nSHkeWxDaU7iTBl/XpXUs1dwk2IRC3Xnhiwyo0mdYAv4Ots0MVImS5QceVInWemnLZTxlgDUaI6bE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708680065; c=relaxed/simple;
-	bh=hi7vuTf7/0wf1ppWM7+I9JQRfG4EjVONwriF1pieTMg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=W1ARtZ6GbWBjIZtEeNhyVSunZOrsigwnoiW3aA1lVzVjPVkJxKRgO5r4WR1zVecMT66QfdvDNgrK5k9dgzsbPpAgQn3/akX4bZk2tnSGNZnfFMJgBcPlk41bah/iXenRCiya99v/rCLxKGLjQnWq+/dQ2k1IgXhmIBdEdzBQbGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=gwPWnVVq; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=mVZdmUOU; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=gEVYnJHF; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=CkJJIhLA; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id EF1401F7CE;
-	Fri, 23 Feb 2024 09:21:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708680062; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=grfKsBimZxMfv47mZK/EleQ0DP+M/go3GhvIQ0gisQM=;
-	b=gwPWnVVq+38kKyxbU2tO9vAI1pOm3OlTr3zKTze66q5HPxr19BgpktI8rN7x7pcAjyFH6a
-	b+NIp2/vmaGntNAp3VT58ORyyCJdBebU4Gf43ytxO06qjRHQjRJeFwHjtV17Q4ZbyV/ycz
-	JNhLZ2zBMqH5qxIz+xH0uzPupOBSt2I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708680062;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=grfKsBimZxMfv47mZK/EleQ0DP+M/go3GhvIQ0gisQM=;
-	b=mVZdmUOUVy2SStkux6x8qU+uEyv77Q6bNtMFnv/6AUIeBbXN8IpedNEAjTsbhM/3Ms4p1M
-	IN9/1nHsF8ujE8DQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708680061; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=grfKsBimZxMfv47mZK/EleQ0DP+M/go3GhvIQ0gisQM=;
-	b=gEVYnJHFZ98nDttdDyyO5mhcQLIB+rgBwBZRS+oQfYCnxW2gz5y+y2Wi0sa3D+Zxit78Id
-	efYxzryf2AXVvj4Sl5IAgJTG/CHpyqYxDwhqxoQPV706Rj0X1k3b8kviyE2H7vG19POXzf
-	rTZL93AQQpK/s3GJ2EtlC2h3XItxFrw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708680061;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=grfKsBimZxMfv47mZK/EleQ0DP+M/go3GhvIQ0gisQM=;
-	b=CkJJIhLAXeA8fcHqx3FeyB80jBgR4gIf6uJj/XVTwrulmRUkWvvt7tZavlRE25BdoHyVH6
-	kdUorZl3pObTP9Dw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 6C33C13776;
-	Fri, 23 Feb 2024 09:21:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id O/30FX1j2GXNPgAAn2gu4w
-	(envelope-from <tzimmermann@suse.de>); Fri, 23 Feb 2024 09:21:01 +0000
-Message-ID: <97c10e28-7708-4449-823a-fbf835d2a280@suse.de>
-Date: Fri, 23 Feb 2024 10:21:00 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D561B1AAA9;
+	Fri, 23 Feb 2024 09:21:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.153.233
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708680098; cv=fail; b=iT6U/EmmrpbZP1u408Ix0a2S7wWCzVu2Qx1u5SclM7W3/3LDG9yyVkCM4F/jhHT0A7qnN/wlW0vbCy7ACsvVgAEO5F/+O3tvE0blGRmsehOEESKzLBr7ggf+A3fUyq82chimzFCdCLBBpI/JGzyL//k/JrjJXk6lML0POsFqM30=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708680098; c=relaxed/simple;
+	bh=B4va5lpbcA3s1eWB1LSY7kg+9heJ3x3+w1BjLMGWMmk=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=a+OM3JqViQtgNZnfzPBI4NcP8n8xBeBWOgYS0b/mkDtJ0KbEVdozk1gVpvfGeOLVzqbiXUCy0gCur8zGaDy3WvSRpHoviYoePD0HlqxLO/1JtlZwD5+6j1ahfW+lcl7hfz1rqwG2YaZ7wb7lS8rm18eTDTLA0XUageXhnOMkBco=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=g5XE3YV4; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=rB3WKRju; arc=fail smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1708680098; x=1740216098;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=B4va5lpbcA3s1eWB1LSY7kg+9heJ3x3+w1BjLMGWMmk=;
+  b=g5XE3YV46bcCi7G1cBvbH32YjIG3jIW97JOwQi7xaP26sGj05q1NRY5d
+   xnkjNfzH0zB1NZoNjE8wZZaysa1+fe62FoVs/Mv5spkdtNS5BjKYHKFI8
+   cnGY0gOaoLxJ5DsN176aS0l1FmXQIx2tzt5+bj5t3O+6yr5jHsdFP3Qch
+   vIeO6vauVCur6p2XdKghfSNhPhpn1lIw2PzcjDZBxfHPx1WgY5r4hnGHj
+   XPOUH7WzHD/NIOYGkoBt6LYD1lOEpxOPOwkxpc5AV4OrIDEJaWf0VkNnM
+   4Fmu9SOTRCnZOHgYXve173sPiKb76t/rbs0eGCb6O+lb/HgDQR2AhOJo5
+   A==;
+X-CSE-ConnectionGUID: 5spGbb/DQYaQGHuWzReuBg==
+X-CSE-MsgGUID: xrMav4N8R3qPInlRhBSiAQ==
+X-IronPort-AV: E=Sophos;i="6.06,179,1705388400"; 
+   d="scan'208";a="16711570"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 23 Feb 2024 02:21:31 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 23 Feb 2024 02:21:29 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (10.10.215.250)
+ by email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 23 Feb 2024 02:21:29 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nvBhcuv8XbuNye0zaskVnOebsdbmGpEE29qdC72McTAlj4IBlzxpIOmIRl25bI1dGiP+ZsZnNcj806XOLmO2qWaKU4gbWOxN08tUsPyvIuwxxKoT+RVEC1XLJYmsFuNZ+fpUQ6YW+pl7NxIOc7BbuQSUw2FRW6zouMiKKOhulSAuCvwXEF4GIDPQVxQOYmV3xxqflnNpGm1YAmzGsi9pqC1b7f9VnAQLkC/AJWag+OO/iVWgalWQLq45CMzFoPgEKo5zQltCXxfWDGGKxvN+y1Neu4a1JHG3kKF/3JzY/c8jSulzF22ohgsDdD/QEUWy3rNe7lizRvamOtMoT97bTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=B4va5lpbcA3s1eWB1LSY7kg+9heJ3x3+w1BjLMGWMmk=;
+ b=BpSj3qJcRCcjViD7YXtPabmNyHYBpMQ7eM5jlzO881jJYI4Za4ngW/2rh2G/ARoi6EabWXeIvDoQ21gPT/ZqNJ47kLFOoc0xIGEqOubN8/gbDoHqDYWIakrx9aVfI2uYkX4QESEFAv7QXG84FkFaOcFojEa6pC8/BffUi4XDsk2DI1p89uRFFkQEA6245oLVxOBggtNepa1jsfCGFFBo67fvTYIUJMK2mGRHHCZAG2zr6jkzOtLEeJbv/wpQjlSYlFb9asLK+ccuFlCoiTq8F+LeUPxxn2OcsdM7nO8aa7vqMCKDGF1K9kaahOX9p9OlQ5A0v3VoooLuITHMCipstQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B4va5lpbcA3s1eWB1LSY7kg+9heJ3x3+w1BjLMGWMmk=;
+ b=rB3WKRju0ElSJHO+avRYmqyjQMEu7Bf0k2wQgOPTOK3A2M+csrWdaAYyFDLii/hAHW/91D1n1DzUtriki/ewohwfQgdnBbKdZmANzwpL+LDMwR9phTWEgB0I/eEVY1jF5LOPYqEG9W4kdmnCPymvcSnnxD62IuZi33uMJ8qy/RLBy5uQlOU5+IeOqnEkvMFcQuzStukqeGpzpIGhBFu8By6eqZQOYyQ+0eriyIJ/N/wW1bdW9ma15NInZyKFbgay5Aq90GicM2UCAVlajh7VngpDFjxBJvWdZLmPOooe5KyNlMCoHl+TZA2Big9bEfkkmYFD58hLqLmM00W6dtxstg==
+Received: from DS0PR11MB7481.namprd11.prod.outlook.com (2603:10b6:8:14b::16)
+ by CH3PR11MB7761.namprd11.prod.outlook.com (2603:10b6:610:148::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.21; Fri, 23 Feb
+ 2024 09:21:27 +0000
+Received: from DS0PR11MB7481.namprd11.prod.outlook.com
+ ([fe80::c243:33d7:2ff6:409b]) by DS0PR11MB7481.namprd11.prod.outlook.com
+ ([fe80::c243:33d7:2ff6:409b%3]) with mapi id 15.20.7292.036; Fri, 23 Feb 2024
+ 09:21:27 +0000
+From: <Rengarajan.S@microchip.com>
+To: <jirislaby@kernel.org>, <linux-serial@vger.kernel.org>,
+	<gregkh@linuxfoundation.org>, <UNGLinuxDriver@microchip.com>,
+	<Kumaravel.Thiagarajan@microchip.com>, <linux-kernel@vger.kernel.org>,
+	<Tharunkumar.Pasumarthi@microchip.com>
+Subject: Re: [PATCH v1 tty] 8250: microchip: pci1xxxx: Refactor TX Burst code
+ to use pre-existing APIs
+Thread-Topic: [PATCH v1 tty] 8250: microchip: pci1xxxx: Refactor TX Burst code
+ to use pre-existing APIs
+Thread-Index: AQHaZZZL0nj0fFzSz0iXzZOI5AQ+c7EXclSAgAA2nwA=
+Date: Fri, 23 Feb 2024 09:21:27 +0000
+Message-ID: <e93048e64c3f8aa2731575d4b296c473e8dadb82.camel@microchip.com>
+References: <20240222134944.1131952-1-rengarajan.s@microchip.com>
+	 <5bf4ba6d-d8e3-4ba6-a889-cfae8c3ddabe@kernel.org>
+In-Reply-To: <5bf4ba6d-d8e3-4ba6-a889-cfae8c3ddabe@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DS0PR11MB7481:EE_|CH3PR11MB7761:EE_
+x-ms-office365-filtering-correlation-id: a1e99c50-22fb-403e-cae8-08dc3450d039
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bTwVoet6iJ15VFGhbkXyRSNAcQuVj+0sOZJUAkDfKTrUY8Oxrvf+fo2aYjV6thQq4cogGK05TqB8BA3DlL9OYikZIoSziA32ed+IQGT9lD7yTcXpQG6xLAhSmg/MaKJSLpgbCzpz9Xhcp9pvKEyaKABkajab6Fs2g1/IkmSA5ZtS8tMTowdprksvt0i9rXLs2Z5v/YKCMMCJTmh/HGaH6VtjPSg9blUjlbABWl6adDXtuEuekkgy4ndm8XW6QO3aBDGe82AX2CbYWK5atgJebTbnVCDwf164ZCOJnsBQHdk0kHrcwafjshZiONepKsWbEB0YITdcUoADDT+4PtTKloqbbxgwlmgGTNI6k+QfZOuNB0Mdy4thTnQuXWHdEjcyzKpb5Ft93K5VY4qOYP3PECJpIOejyDgrurJBv3XNgZCse5Zoq9wus8oi7U2KUSxFJz5p2jFZV/ZLc3dhiYj5W+C6GcXXADDa2GavbVaBbQZT4eWlubUyK/qI26mtzvxAYzV5AsCy25irUOf4zDAxCQ9QBChdegD78KzDXZ0ZoKjJRA8Co0bA6zCZ+kkj5+KXAaSSZMqVu2pQ1N0pnFtQAl72Z3KEbfRzwrzbjVQyHYTS3IV3dkAUhcGICvyw0gMc
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7481.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(230273577357003)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NUVnMjF3RFc0dTM0N0YxR1NPVkdsa2VteHBPV090Sy9oUDRiQnRhUVhXci9B?=
+ =?utf-8?B?bWVleFR5V1VDY3pjNjA2YkxQZTg4ZzQ5ZmF5SUZSSjIvMDd0QmRFaXp4YTBG?=
+ =?utf-8?B?WlMvVzZkZkkvQ1pOU0VaM1N6cFFydy9YZU1NY2pVeG0zM1Y0TzBoMUFlSDEx?=
+ =?utf-8?B?SS9JWWhuaVczMXdpSUZ3d0xleVV6R0sxcWVHSXpNajBKNDU4V0hJZEpOd2N6?=
+ =?utf-8?B?eStzbkx4MjdTQzEyU2ZkNVdITStiN3dYOExPSFlRMmd6UUtyRzRkbHpEekVV?=
+ =?utf-8?B?Tk9lQ0ZYRFduc0FoWVlPd2l0UENFcXMwZGNlOU8xbEQreGtPWmcwNkNzS1oz?=
+ =?utf-8?B?SUVneEdDY004dFU1bTU2U1BiT0N3dmx4dnU3bTVsbmc1eHNETkhRMHRBT0Fm?=
+ =?utf-8?B?WEh1S2dZcmFyM2JmWTY1TGNtc2xDYmJoT3NETzJMd05ZQWVBOTVNdS9iWmVp?=
+ =?utf-8?B?V25lV1ozY2RhTG9MVldvd0FlblZ1OTdPYzRmU1R6N1huSVZSWGNzRHh6cVhn?=
+ =?utf-8?B?eCtIdUhQQll2SlRFajFJVnFFcUZMU3I1YlQ2MU9HazVxSGZKL09mRmlVVm13?=
+ =?utf-8?B?cjltNTU5RzlMS1hYb1VuMXVzWEk0eU82aEt5UVNvVjNUUE52bHVwSVY3ckJF?=
+ =?utf-8?B?VnFPMzllRHNSNm9YL2NYVCtRaEFIOUhDL3h6NjR2eTViN25DMjdFV1VzR1J4?=
+ =?utf-8?B?V2lINFpmaXMxSmRhNTNCaDhYL2txZDU1WUtibXpIbTNlcUcrbjhtcWNKUXl6?=
+ =?utf-8?B?MXhmS2t2WWVmcWRwcWdPVWR3aUhaQVpObzEybndmWmo3SGMxaGpJeUUrVnZU?=
+ =?utf-8?B?TXhPSHNxcUFNckc3RHY4TitVZDNoWVBuMm92b3NmYUE5YTlXL3M3UWRvMXZ1?=
+ =?utf-8?B?ZllsdDRGcUFUaHAyMHk3U0JiM2wxYlo2Y3dJL2xCWkI2V0xaem5xQkh5UTEx?=
+ =?utf-8?B?UkhiTDdYbUNnMjNyQ0kweExHRHRCV0ZGaWcyVFprTTJaa280VEdsMDgyYzlT?=
+ =?utf-8?B?cXhreWV2Mjl5azZMLzhOWDMvKzU0VVBsRit2MTE1TG9DQzhTZVFFTGFJZGZE?=
+ =?utf-8?B?Y0VoSkYyMHFYaU8ya0NVeTVPMEhlckdqVTVyWHlFZ20zMUJwTXZOVmc3VXJY?=
+ =?utf-8?B?YmRGYmc0U3dpYzZubGZaMVIxRk13L0ZrdmwzaUxlOG56Sjdib1Q2NzdYemhi?=
+ =?utf-8?B?TXBPMUgvYjJKMHBaQmhvVnFKZk9kOHRKemxITnlrNkxCOTNhRmtwaHVQQ2Nn?=
+ =?utf-8?B?S3pZT3R4L0l6Ymhxald1U1NPTHZHdkNPLzV6cTc2WFNLbWZDV1BHeXgrSCtn?=
+ =?utf-8?B?aWVGMlBZN09Sd2FPaEo1ajNzeDY3aGV4RTJucGlNNUZ4U0MrRDF4Z04rQks4?=
+ =?utf-8?B?bStuVVFpczd1RVFTOXlBY0pIRXowVlNxdW0yYzlucWFqUjhnQktCOVFKUlp2?=
+ =?utf-8?B?TXVScElFdlZ0cElaUGZIUEx2b21PdXlSVFg1cm9uNVZDdnZ0ZmszS3Nmd0xa?=
+ =?utf-8?B?WXdBa2tzRGR2Qk1GbHRQUkJhWnRLQWR5ekJwR2xOVWp4bG93SEIvaTVyZ2lq?=
+ =?utf-8?B?RFhGRU1pM2RxbUhDb1lmM1ppZHVzZEpBL1BXSWxyMWQxVEV6YVZsb3dOODY2?=
+ =?utf-8?B?WW9mUzJKdFVzQzNjcHc3blNEdnRlRUczTElNRnhLSHZBeFVvWUUyYlNnNitP?=
+ =?utf-8?B?RjJsb0RDSWhraXRseXM1OFU3cUluckFOUlp5RWpzY3M4OXJwOEZpRUxrRVBw?=
+ =?utf-8?B?T1doaDFHNUFYLzgvVkd4MHlHaHJUN1p3RmlzaFp1WTJWU1poMXJDbVlFQ1I5?=
+ =?utf-8?B?ejhHWkc4eElpbVg3MU1BOTMrMHR2MWtSWDdwRkF2U0FTeXVkWlBWaitTZzZk?=
+ =?utf-8?B?Q2JtWmtPWUl5WGxrV2hKUXo3YkUrUGs0SWlmVEtUZGZWVHdnenRzU0t3eVlG?=
+ =?utf-8?B?SU5NeHo2VHBHT1A5V0hwSS9jV2IreCtxcVlyY1JhT0ZZR0tiUUxOTVFJV255?=
+ =?utf-8?B?bEtLNS9CeGNmdmptMnN0RklWcTJRUFpybE51R3RlUVdyaDhzOGNod1hRUDJz?=
+ =?utf-8?B?S3Z2d3RVY1R4Y0o0UEkzaXVMaUc5VUl0dHh1RXJpTXB0YThvTktlK1ZGVTNF?=
+ =?utf-8?B?WEVJSXdhTmdwakhtT0lsdE9tTTF2ZTRuQkxYWVY0NndCaE9FYXhIZTM2cVE1?=
+ =?utf-8?B?emc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <53E2A155ECC00449812E0E62C034BD65@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Future handling of complex RGB devices on Linux v2
-To: Pavel Machek <pavel@ucw.cz>, Pekka Paalanen <pekka.paalanen@haloniitty.fi>
-Cc: Werner Sembach <wse@tuxedocomputers.com>,
- Hans de Goede <hdegoede@redhat.com>, Lee Jones <lee@kernel.org>,
- jikos@kernel.org, linux-kernel@vger.kernel.org,
- Jelle van der Waa <jelle@vdwaa.nl>,
- Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- linux-input@vger.kernel.org, ojeda@kernel.org, linux-leds@vger.kernel.org
-References: <730bead8-6e1d-4d21-90d2-4ee73155887a@tuxedocomputers.com>
- <952409e1-2f0e-4d7a-a7a9-3b78f2eafec7@redhat.com>
- <9851a06d-956e-4b57-be63-e10ff1fce8b4@tuxedocomputers.com>
- <1bc6d6f0-a13d-4148-80cb-9c13dec7ed32@redhat.com>
- <b70b2ea8-abfd-4d41-b336-3e34e5bdb8c6@tuxedocomputers.com>
- <477d30ee-247e-47e6-bc74-515fd87fdc13@redhat.com>
- <e21a7d87-3059-4a51-af04-1062dac977d2@tuxedocomputers.com>
- <247b5dcd-fda8-45a7-9896-eabc46568281@tuxedocomputers.com>
- <ZdZ2kMASawJ9wdZj@duo.ucw.cz> <20240222110457.71618f27@eldfell>
- <ZdeGiMf2npmzJidU@duo.ucw.cz>
-Content-Language: en-US
-From: Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <ZdeGiMf2npmzJidU@duo.ucw.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-1.59 / 50.00];
-	 ARC_NA(0.00)[];
-	 TO_DN_EQ_ADDR_SOME(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[gitlab.com:url,laskakit.cz:url];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[tuxedocomputers.com,redhat.com,kernel.org,vger.kernel.org,vdwaa.nl,gmail.com,lists.freedesktop.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -1.59
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7481.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a1e99c50-22fb-403e-cae8-08dc3450d039
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Feb 2024 09:21:27.5051
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /sTy/Ey8PoCXbcmT3KEISnxITEErLNgOuwufLeoSD5m3vaLsODVzrn5qZ7E9j/NZRtr6xarfFctwnv70QUhT+tWcv31PEsWvlTUN6LOr/Ts=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7761
 
-Hi
-
-Am 22.02.24 um 18:38 schrieb Pavel Machek:
-> Hi!
->
->>>> so after more feedback from the OpenRGB maintainers I came up with an even
->>>> more generic proposal:
->>>> https://gitlab.com/CalcProgrammer1/OpenRGB/-/issues/3916#note_1753072869
->>>>> evaluate-set-command ioctl taking:
->>>>> {
->>>>>      enum command                /* one of supported_commands */
->>>>>      union data
->>>>>      {
->>>>>          char raw[3072],
->>>>>          {
->>>>>              <input struct for command 0>
->>>>>          },
->>> Yeah, so ... this is not a interface. This is a backdoor to pass
->>> arbitrary data. That's not going to fly.
->>>
->>> For keyboards, we don't need complete new interface; we reasonable
->>> extensions over existing display APIs -- keyboards are clearly 2D.
->> I suppose they could be seen as *a* display, but if you are referring
->> to DRM KMS UAPI, then no, I don't see that fitting at all:
-> So -- we already have very similar displays in
-> drivers/auxdisplay. drivers/auxdisplay/cfag12864b.c is 128x64 display,
-> 1-bit display for example.
-
-Auxdisplay can be anything for everyone. It appears to be the rest that 
-didn't clearly fit elsewhere. The core interface seems to be a custom 
-char device. The fbdev code in cfag12864b is not representative.
-
->
->> - the "pixel grid" is not orthogonal, it's not a rectangle, and it
->>    might not be a grid at all
-> It is quite close to orthogonal. I'd suggest simply pretending it is
-> orthogonal grid with some pixels missing :-). We already have
-> cellphone displays with rounded corners and holes in them, so I
-> suspect handling of missing pixels will be neccessary anyway.
->
->> - Timings and video modes? DRM KMS has always been somewhat awkward for
->>    display devices that do not have an inherent scanout cycle and timings
->>    totally depend on the amount of pixels updated at a time
->>    (FB_DAMAGE_CLIPS), e.g. USB displays (not USB-C DP alt mode).
->>    They do work, but they are very different from the usual hardware
->>    involved with KMS, require special consideration in userspace, and
->>    they still are actual displays while what we're talking about here
->>    are not.
-> As you say, there are other displays with similar problems.
->
->> - KMS has no concept of programmed autonomous animations, and likely
->>    never will. They are not useful with actual displays.
-> Yep. We need some kind of extension here, and this is likely be quite
-> vendor-specific, as animations will differ between vendors. I guess
-> "please play pattern xyzzy with parametrs 3 and 5" might be enough for this.
-
-The litmus test for DRM and fbdev is something like "would the user run 
-the console, desktop, or any other meaningful output in this display". 
-That is also what userspace (e.g., X, Wayland, gfx terminals) expects: a 
-display to show the user's main output. Keyboard LEDs don't fit here.
-
-Best regards
-Thomas
-
->
->> - Userspace will try to light up KMS outputs automatically and extend
->>    the traditional desktop there. This was already a problem for
->>    head-mounted displays (HMD) where it made no sense. That was worked
->>    around with an in-kernel list of HMDs and some KMS property
->>    quirking.
-> This will need fixing for cfag12864b.c, no? Perhaps userspace should
-> simply ignore anything smaller than 240x160 or something...
->
->> Modern KMS UAPI very much aims to be a generic UAPI that abstracts
->> display devices. It already breaks down a little for things like USB
->> displays and virtual machines (e.g. qemu, vmware, especially with
->> remote viewers), which I find unfortunate. With HMDs the genericity
->> breaks down in other ways, but I'd claim HMDs are a better fit still
->> than full-featured VM virtual displays (cursor plane hijacking). With
->> non-displays like keyboards the genericity would be completely lost, as
->> they won't work at all the same way as displays. You cannot even show
->> proper images there, only coarse light patterns *IF* you actually know
->> the pixel layout. But the pixel layout is(?) hardware-specific which is
->> the opposite of generic.
->>
->> While you could dress keyboard lights etc. up with DRM KMS UAPI, the
->> userspace would have to be written from scratch for them, and you
->> somehow need to make existing KMS userspace to never touch those
->> devices. What's the point of using DRM KMS UAPI in the first place,
->> then?
-> Well, at least we have good UAPI to work with. Other options were 100
-> files in /sys/class/leds, pretending it is a linear array of leds,
-> just passing raw data around, and pretending it is grid of RGB888
-> data.
->
-> Anyway, there are devices such as these: (8x8 LED display).
->
-> https://www.laskakit.cz/8x8-led-matice-s-max7219-3mm-cervena/
->
-> We should think about what interface we want for these, and then I
-> believe we should make RGB keyboards use something similar.
->
-> Best regards,
-> 								Pavel
-
--- 
---
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Frankenstrasse 146, 90461 Nuernberg, Germany
-GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
-HRB 36809 (AG Nuernberg)
-
+T24gRnJpLCAyMDI0LTAyLTIzIGF0IDA3OjA4ICswMTAwLCBKaXJpIFNsYWJ5IHdyb3RlOg0KPiBF
+WFRFUk5BTCBFTUFJTDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5s
+ZXNzIHlvdQ0KPiBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUNCj4gDQo+IE9uIDIyLiAwMi4gMjQs
+IDE0OjQ5LCBSZW5nYXJhamFuIFMgd3JvdGU6DQo+ID4gVXBkYXRlZCB0aGUgVFggQnVyc3QgaW1w
+bGVtZW50YXRpb24gYnkgY2hhbmdpbmcgdGhlIGNpcmN1bGFyIGJ1ZmZlcg0KPiA+IHByb2Nlc3Np
+bmcgd2l0aCB0aGUgcHJlLWV4aXN0aW5nIEFQSXMgaW4ga2VybmVsLiBBbHNvIHVwZGF0ZWQNCj4g
+PiBjb25kaXRpb25hbA0KPiA+IHN0YXRlbWVudHMgYW5kIGFsaWdubWVudCBpc3N1ZXMgZm9yIGJl
+dHRlciByZWFkYWJpbGl0eS4NCj4gDQo+IEhpLA0KPiANCj4gc28gd2h5IGFyZSB5b3Uga2VlcGlu
+ZyB0aGUgbmVzdGVkIGRvdWJsZSBsb29wPw0KPiANCg0KSGksIGluIG9yZGVyIHRvIGRpZmZlcmVu
+dGlhdGUgQnVyc3QgbW9kZSBoYW5kbGluZyB3aXRoIGJ5dGUgbW9kZSBoYWQNCnNlcGVyYXRlIGxv
+b3BzIGZvciBib3RoLiBTaW5jZSwgaGF2aW5nIHNpbmdsZSB3aGlsZSBsb29wIGFsc28gZG9lcyBu
+b3QNCmFsaWduIHdpdGggcnggaW1wbGVtZW50YXRpb24gKHdoZXJlIHdlIGhhdmUgc2VwZXJhdGUg
+aGFuZGxpbmcgZm9yIGJ1cnN0DQphbmQgYnl0ZSkgaGF2ZSByZXRhaW5lZCB0aGUgZG91YmxlIGxv
+b3AuIA0KDQo+IC0tDQo+IGpzDQo+IHN1c2UgbGFicw0KPiANCg0K
 
