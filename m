@@ -1,132 +1,179 @@
-Return-Path: <linux-kernel+bounces-77822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B9E1860AA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:09:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F08E860AA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:09:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27B8E287C45
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 06:09:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC1D6B22050
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 06:09:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A33012B9E;
-	Fri, 23 Feb 2024 06:09:05 +0000 (UTC)
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC19412B60;
+	Fri, 23 Feb 2024 06:09:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uL3o/K5J"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA7012B6C;
-	Fri, 23 Feb 2024 06:08:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4845A13AF3
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 06:08:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708668541; cv=none; b=QqYG5kBav9lxngwkKgST+qah1jpX+iB8k0E9/LUiIiMuSjC1psxNamQ9RwqP48dDhFe15wMfVZ28jZY63W8yfOxlG4qfvYVRqE/um7oH5OrciTNkXQ6YfzXUXTFiHqQ5Cp7acCSnrqrBRVNv/Rd0B2rEwlkYeUcdkqBtOxVCsS0=
+	t=1708668552; cv=none; b=ChB1POokoBKZUfsApiNqWbofPp08wd/l8VN984mQrKfctBjDrVCdf/Ap5kF3GuTPgL3GkGMWIxZO1AVeERsampt4pIVk/tJ7F+CL4jzjfSCNZ8hAFM28NDR9vkaR0C7QHm+6zB3Wc49UaYTtGzfl32LNLgnWimgZJSqAZmnTY44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708668541; c=relaxed/simple;
-	bh=LE9cCs5zo8ObahidSfS5icMmo+bY1MKluVpvXGuxyb4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=YfF59NH5eSTB/LmMtqOsQXtFVp9g5238n6aVb08Sez6kc+EdznFZNPmK7JLxAshM0bwpgFn3MnQKBb3wcqhmL559vZp/O7/TnFZjQRuMPxJF7uheRVj+xdB4oWO5G6fP7regbc8U9J/Uh5o3azLtlAId0G+XF8DwZEMDkjaMxn8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4128f5ec9b7so3479115e9.3;
-        Thu, 22 Feb 2024 22:08:49 -0800 (PST)
+	s=arc-20240116; t=1708668552; c=relaxed/simple;
+	bh=w73Y1KiCtwSSNnb8s6C3iNRtkRCRJkrRrjR54fcNazI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oOqKzsKc0F9pFOatI9QixDvWlT2ZiUzcDE59hS73R+bCicRDTdsvt9IF7gwQ1+F3vcYyN5Cx8M3V7e8rm4MLlDucK4QqoGt8s+v7oCl8CsZe7Rw/RSNYGaSZ5Hp88mR4WU+Z39KPY9YDpqe13l1voyXdX/IppRA63eZEYdCXGvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uL3o/K5J; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4127700a384so3540975e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 22:08:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708668536; x=1709273336; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xvvawxzkQ/f1bt19Uoqp8vmIWZqjXje7U8hF46YHGuw=;
+        b=uL3o/K5JLpNZw8GMlEOKpA0JWyODh38Xcn0AoGB6782/io6PqplEwqfFHHcKdFBpc8
+         aZ7Pn4KoPv3g4ZVX5JvSHAH61grVA5uvjCzCSfBJGA84Qw29oEpAT1HdT2iObynp+s3D
+         //Rwz/Yh2EQA5/qJdNCxom8Zwq6FPHBaO3V0hDC38q2YM52lTN+GzM9mSP/rRgZNX0yW
+         CWXSoupVuZhjKbHmnJMdwCGJugOco2KwLFnD+pVTZUewEiPHtPT7zWySqWcxzqT4WC7p
+         M39Y8vhUfXutv9xvGd4DnisZzAScO65ebuERnzCjiVSKDfFYuurbi+a2NbD9YJmbyPHU
+         cGLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708668526; x=1709273326;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9rB/xBYOoLz2xFv+ZmS6qsvslM8+03lHX0mUb5mst/8=;
-        b=Kmx0KsO+vPgjmswFrDQTShSVGAEgHnNOgCN/00fN48kU5yMSCOS8+X89qx6TRy9/pX
-         J60bXTq1LjevVH+czAmWObvKg50RiYU/jhFnkPVPEQE4ahqJ/q7L4Fh+snF1jX7M7bQ+
-         DdO4xvS5CttAw/M+zSVpPL2oTksxPalKZip9PxXK/9LeZs2iiUkj47ImhNM5vRpCcs31
-         NGCpLqn96oeUV9EjJBiMM5M4HRS2BEBEDa3cwr4VonKWtOcQ/Xu5Zt0i7dh95Qdt0muF
-         eE2AumIOBEamFtvKSzuBaRfDkFCp2jlsiZiAVTOHembMQ2uX5h+bl5xcWxQ46uhMWZk9
-         3Lmg==
-X-Forwarded-Encrypted: i=1; AJvYcCWpzI2uZ0rsJ+hc86FaACv34wFG76XegmoEJYtVTBnbktaKJAUdgldhoh8VQ7/6J/Z911U5zthJ9JpAYigkwiGT9cl28W9S9hHfMiyilX57xPNxBPcr8obpX29+6QCY7bJkD1q4bpp3pjlZ
-X-Gm-Message-State: AOJu0YxLuoSQ/54rG3ftP6UR2et05wOLbTUw3VKGaiT8Ur+z16bzJLm5
-	4kJPJtzcoT+2MC87clw2LjLviuLKeY4r15G6ZGc6Zlw6ylDZaB2A
-X-Google-Smtp-Source: AGHT+IEJqqAyMSTndj13S6s/HHhcn7IJAh5o/FuZq7UzAKaq3aOaBE2nr7X0ndZEfl0GA9EmAJ54kA==
-X-Received: by 2002:a05:600c:470f:b0:412:415a:43ac with SMTP id v15-20020a05600c470f00b00412415a43acmr528947wmo.15.1708668525900;
-        Thu, 22 Feb 2024 22:08:45 -0800 (PST)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id p2-20020a5d4582000000b0033da1c4c29csm1452241wrq.91.2024.02.22.22.08.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 22:08:45 -0800 (PST)
-Message-ID: <5bf4ba6d-d8e3-4ba6-a889-cfae8c3ddabe@kernel.org>
-Date: Fri, 23 Feb 2024 07:08:43 +0100
+        d=1e100.net; s=20230601; t=1708668536; x=1709273336;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xvvawxzkQ/f1bt19Uoqp8vmIWZqjXje7U8hF46YHGuw=;
+        b=Wu0SOycyoRsgy9nugT9wNJzAHaQ5yJFaiGQpwkFHGTzWStRk426H1f426O5MbwGaUS
+         Oc0UfFfHTTKhi8aOBX8fSINpQb9O4kSDMdxxpDtDofkErOruImJN87DPf/KUTQQWh5aB
+         dBfWdFzVoJ2/rEtb14jbF+z4iZUuITUTrcQ7V1NSdXwafSgykBoCyYlVTqZjx/kkRGGA
+         N4h4BUN11exlLAgfdZXC7W03IXqGeNcw/Gg9sUWUQnqiQ1UFMoWS29QxY4/VqI2Wj/G/
+         NlXWC3w4wpkhwjJsHcKMeEWImBb3hZ/7U17J8GEACPwOw5IWFmuOLIaDdtwpgvzMPX6o
+         7NSw==
+X-Forwarded-Encrypted: i=1; AJvYcCWjzSBXHNZpFpnFOByOWU4C2lLs6yngJDGgAGxcJ4+0hT6fa+yqs5C9dSUZB1CXtOddV0Buhe9J+0TkSIi4sBGFWaq/t/JCctWBSScT
+X-Gm-Message-State: AOJu0Yyj9Z4k+VVi6BHWAN05ZBGVLXTDtxnZngmUR392I+4/a8YzQ8fF
+	TDIw0MDqZUZL80hQJm0V0PWJNdxg624LMuw71Vwu5GQKztZnjOOYwPB+qLWhWV4=
+X-Google-Smtp-Source: AGHT+IFIeHpvgdehCMrYu8OHPGNSDClunXiXc00W2jMt4Z0Ch5RLvUjC/9bVOT0FwD4vAERkHWlhQg==
+X-Received: by 2002:a05:600c:a4f:b0:411:c789:5730 with SMTP id c15-20020a05600c0a4f00b00411c7895730mr471326wmq.35.1708668536282;
+        Thu, 22 Feb 2024 22:08:56 -0800 (PST)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id bs22-20020a056000071600b0033b75b39aebsm1482967wrb.11.2024.02.22.22.08.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 22:08:55 -0800 (PST)
+Date: Fri, 23 Feb 2024 09:08:51 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Ethan Zhao <haifeng.zhao@linux.intel.com>
+Cc: baolu.lu@linux.intel.com, bhelgaas@google.com, robin.murphy@arm.com,
+	jgg@ziepe.ca, kevin.tian@intel.com, dwmw2@infradead.org,
+	will@kernel.org, lukas@wunner.de, yi.l.liu@intel.com,
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org
+Subject: Re: [PATCH v13 3/3] iommu/vt-d: improve ITE fault handling if target
+ device isn't valid
+Message-ID: <039a19e5-d1ff-47ae-aa35-3347c08acc13@moroto.mountain>
+References: <20240222090251.2849702-1-haifeng.zhao@linux.intel.com>
+ <20240222090251.2849702-4-haifeng.zhao@linux.intel.com>
+ <c655cd15-c883-483b-b698-b1b7ae360388@moroto.mountain>
+ <2d1788da-521c-4531-a159-81d2fb801d6c@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 tty] 8250: microchip: pci1xxxx: Refactor TX Burst code
- to use pre-existing APIs
-Content-Language: en-US
-To: Rengarajan S <rengarajan.s@microchip.com>,
- kumaravel.thiagarajan@microchip.com, tharunkumar.pasumarthi@microchip.com,
- gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
- linux-kernel@vger.kernel.org, unglinuxdriver@microchip.com
-References: <20240222134944.1131952-1-rengarajan.s@microchip.com>
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <20240222134944.1131952-1-rengarajan.s@microchip.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2d1788da-521c-4531-a159-81d2fb801d6c@linux.intel.com>
 
-On 22. 02. 24, 14:49, Rengarajan S wrote:
-> Updated the TX Burst implementation by changing the circular buffer
-> processing with the pre-existing APIs in kernel. Also updated conditional
-> statements and alignment issues for better readability.
+On Fri, Feb 23, 2024 at 10:29:28AM +0800, Ethan Zhao wrote:
+> > > @@ -1326,6 +1336,21 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
+> > >   			head = (head - 2 + QI_LENGTH) % QI_LENGTH;
+> > >   		} while (head != tail);
+> > > +		/*
+> > > +		 * If got ITE, we need to check if the sid of ITE is one of the
+> > > +		 * current valid ATS invalidation target devices, if no, or the
+> > > +		 * target device isn't presnet, don't try this request anymore.
+> > > +		 * 0 value of ite_sid means old VT-d device, no ite_sid value.
+> > > +		 */
+> > This comment is kind of confusing.
+> 
+> Really confusing ? this is typo there, resnet-> "present"
+> 
 
-Hi,
+Reading this comment again, the part about zero ite_sid values is
+actually useful, but what does "old" mean in "old VT-d device".  How old
+is it?  One year old?
 
-so why are you keeping the nested double loop?
+> > 
+> > /*
+> >   * If we have an ITE, then we need to check whether the sid of the ITE
+> >   * is in the rbtree (meaning it is probed and not released), and that
+> >   * the PCI device is present.
+> >   */
+> > 
+> > My comment is slightly shorter but I think it has the necessary
+> > information.
+> > 
+> > > +		if (ite_sid) {
+> > > +			dev = device_rbtree_find(iommu, ite_sid);
+> > > +			if (!dev || !dev_is_pci(dev))
+> > > +				return -ETIMEDOUT;
+> > -ETIMEDOUT is weird.  The callers don't care which error code we return.
+> > Change this to -ENODEV or something
+> 
+> -ETIMEDOUT means prior ATS invalidation request hit timeout fault, and the
+> caller really cares about the returned value.
+> 
 
--- 
-js
-suse labs
+I don't really care about the return value and if you say it should be
+-ETIMEDOUT, then you're the expert.  However, I don't see anything in
+linux-next which cares about the return values except -EAGAIN.
+This function is only called from qi_submit_sync() which checks for
+-EAGAIN.  Then I did a git grep.
+
+$ git grep qi_submit_sync
+drivers/iommu/intel/dmar.c:int qi_submit_sync(struct intel_iommu *iommu, struct qi_desc *desc,
+drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
+drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
+drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
+drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
+drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
+drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
+drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
+drivers/iommu/intel/iommu.h:int qi_submit_sync(struct intel_iommu *iommu, struct qi_desc *desc,
+drivers/iommu/intel/iommu.h: * Options used in qi_submit_sync:
+drivers/iommu/intel/irq_remapping.c:    return qi_submit_sync(iommu, &desc, 1, 0);
+drivers/iommu/intel/pasid.c:    qi_submit_sync(iommu, &desc, 1, 0);
+drivers/iommu/intel/svm.c:      qi_submit_sync(iommu, desc, 3, QI_OPT_WAIT_DRAIN);
+drivers/iommu/intel/svm.c:      qi_submit_sync(iommu, &desc, 1, 0);
+drivers/iommu/intel/svm.c:              qi_submit_sync(iommu, &desc, 1, 0);
+
+Only qi_flush_iec() in irq_remapping.c cares about the return.  Then I
+traced those callers back and nothing cares about -ETIMEOUT.
+
+Are you refering to patches that haven't ben merged yet?
+
+> > 
+> > > +			pdev = to_pci_dev(dev);
+> > > +			if (!pci_device_is_present(pdev) &&
+> > > +				ite_sid == pci_dev_id(pci_physfn(pdev)))
+> > The && confused me, but then I realized that probably "ite_sid ==
+> > pci_dev_id(pci_physfn(pdev))" is always true.  Can we delete that part?
+> 
+> Here is the fault handling, just double confirm nothing else goes wrong --
+> beyond the assumption.
+> 
+
+Basically for that to ever be != it would need some kind of memory
+corruption?  I feel like in that situation, the more conservative thing
+is to give up.  If the PCI device is not present then just give up.
+
+regards,
+dan carpenter
 
 
