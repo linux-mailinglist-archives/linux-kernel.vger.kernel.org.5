@@ -1,197 +1,202 @@
-Return-Path: <linux-kernel+bounces-77856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77857-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0183860B13
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:01:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52CB9860B15
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:02:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20C071F25664
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:01:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9ACC0285090
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:02:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7F99134B7;
-	Fri, 23 Feb 2024 07:00:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE347134A3;
+	Fri, 23 Feb 2024 07:02:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="x8FM8GgM"
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OuoNxWBk"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F31710A3C
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 07:00:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 459C112E4E
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 07:01:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708671653; cv=none; b=VzNu8DsPZ3SyQAecRA1tsB6UWYA/Eds389v/gYdxnd1eBaLOkxKXUicBZHXntnBhROwzgugR8ZBd1t38dvYGpeDC/OIv1NbS+9YHXwuQWDIqklNJ6T6fiVtbggp/pGW0MMI7rekLir+hZPMow70XQCaKNUzbbcV55KwR6ThCGhw=
+	t=1708671720; cv=none; b=UZj0xqytzGcFwFe3DOEmM2Xjns+6nj1PBcgjoKKHOJB+cxd04oVWoKJkfGIBmWVxY+LURhNFhlMqKboQ4jjCw7khYQc4FtAL57Bce0KCBEO9BjSTtdDOEtMoLc40LJ63ZyAn9hZtYn+hjXN1J9IgUm0i57sb+masjsMKfrDLR6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708671653; c=relaxed/simple;
-	bh=KDdmo3kiqMOHOH2UGQGaftMwmLeXhnLYIooote8eqME=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gDtq0co3Ozou2eH7NCxgXklLHhFr7nmecKT4AealAn3XsOaDSWqa/PQ2CU+hiTlo1qUdq04RjyOFKIXTLxvQED2b6efl9rIboQqSFeY0HNTXV5PrKxVTbyx546BXJ+W0y3qSNCY61lq0IGbBWb3k46Dm10H6mh0LVgEN1MRk1kw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=x8FM8GgM; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-299e4b352cdso451713a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 23:00:51 -0800 (PST)
+	s=arc-20240116; t=1708671720; c=relaxed/simple;
+	bh=OicggR++no/rBmK47CuTnad564I7swRTv7LQDAJTCmo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dGNOqqbUWN8JIYicxl3VbO5/zT1xPia4Zy1BDG/ST7/vtPhYVhxe2TKX9E2Mp9Y14V+r0dGmtfhEeBfJxd2Hh7SeQbsB9LoxWoenaSj4WDz93HbtQfxAfT2ov29mk21cobOpr1GA1zLRexv9Xzy4Bo2RqnUZLGc7ki0CboJdC3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OuoNxWBk; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5650c27e352so5312a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 23:01:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1708671650; x=1709276450; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4GCWRgSIGMo/1Rh1pYhbGvrkqDe2+bZmSg4IK0oi67Y=;
-        b=x8FM8GgMK9clSy61E8cQOf+SaBwF/DVhUw++RYmmpPXjMoxRXed6bXawYtvFNYKbBt
-         wjU3vhkbCbTwnQxZVdxWMW2Ld/xlCD84kJt8wSjHbbu3H8vtg74bsbmk5psQ7kRtGrQD
-         wEMJWKziqVYQs4qGjzfwnvxbr5NahQlFMV0mXyF5vTNEnfXzYdbjpAMrw/bkR0xq19dT
-         MeIKov2nf7vaQaUeOSXCnQ4Dm0KjC049iDnhk0iXFXNuSBetfwdkR4mgW5Y+mlt72qvt
-         6cUzAATc7bnsqxcw9L1XrqzFN2SnBtVld8qBEGyLchCvcMbzC1c8H2meYE8LYdp3hctj
-         gMow==
+        d=google.com; s=20230601; t=1708671717; x=1709276517; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=TWaA5+KGjSMHjkuFRHM1qKgKplmkeIkG437TxnYzJSw=;
+        b=OuoNxWBkvcGXqLWDzldbrJGHFArEk9tV08XTkom+YgOqgEV5KeRMynp4e3DqST7qzo
+         6rl9//xrAJrq4efxkp20hcYFAGaUbcTOfZy6oZPB4SJnmVAouahPJ2R6PccRJbih3wCV
+         WJZWTs+DbgHnMCBVXvhXPExL99owqxXauhIzdbovMeMf+8ZaQr4MXrrEPuUXZnjVSdIq
+         qXxD8+e1b9ei0LbeFu1IuzfjUkV15kZBusgw4wdA04IHjfgUfeHFevsGKJVmkNPAl0+U
+         W+E9f0zYAyu4ZsgnGv1G5o+JNnt/WBfCexwcU90eo+qFUik01CLfC3C28fC2HGozqKZ5
+         LxWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708671650; x=1709276450;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4GCWRgSIGMo/1Rh1pYhbGvrkqDe2+bZmSg4IK0oi67Y=;
-        b=iK4Afr1HoLvstUdOWWhvIezoeVIVWJOLA7xWUYyWTIg2nEK4V1ZihHsFIbV8HUE+4a
-         PHuKpRt384r3+xTL5cU0ULQhsy5ktQFhskIYYtmNBdUX+mopgw1hFDg+HQKLN/c7vG9I
-         qUVmDUqsn57pF/xSXDG7wcTiMfzaSCu5Y/gzdRPoLwF7Dsy5mwJeD5wDBAP7jKHMBLY6
-         jvC13KaNZPPcBIfG8bEfuVrsRVCZoepx4w/pkORKbXEm2d3nPmHkz6Yu/N2xFRAy6w+5
-         YFgQVtdmqibUSRQcwFSzuPODF8/9kcCY1VYXnfFEj26Q+jBVwrrIQQwR876lkUVcpCF6
-         IYfg==
-X-Forwarded-Encrypted: i=1; AJvYcCWyyHczJus9gYQKYJTXp9jHcfksOiyCdZ6Jzlb/UvxXD5Ij1UjP2T2PXDQvDu9eW+tnYj1mqDO8dDJbdqjj2HErIvQedvcCdfaUR77q
-X-Gm-Message-State: AOJu0YxxRuHbu8U//u3yiQImC0vd8i/ddLO1MdtIc0HDPVZu7/+oSb55
-	HzrtW13Tt1DR+hjJatMfhtasKGpie1F14craEuAFETgqgJT/hhXdL4QYpYFRTHY=
-X-Google-Smtp-Source: AGHT+IE6xRkUNPoFSK1CMYVf6aFspHl1Y9GsmePQYoy8WjyDYLgF3VNtTwE9HjVn1d98SR896TG/JQ==
-X-Received: by 2002:a17:90a:f190:b0:299:3c25:4248 with SMTP id bv16-20020a17090af19000b002993c254248mr910609pjb.38.1708671650519;
-        Thu, 22 Feb 2024 23:00:50 -0800 (PST)
-Received: from ghost ([2601:647:5700:6860:45bd:34a3:d1ef:a1f3])
-        by smtp.gmail.com with ESMTPSA id ck7-20020a17090afe0700b0029933f5b45dsm644162pjb.13.2024.02.22.23.00.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 23:00:50 -0800 (PST)
-Date: Thu, 22 Feb 2024 23:00:46 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Erhard Furtner <erhard_f@mailbox.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	Palmer Dabbelt <palmer@rivosinc.com>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: "test_ip_fast_csum: ASSERTION FAILED at
- lib/checksum_kunit.c:589" at boot with CONFIG_CHECKSUM_KUNIT=y enabled on a
- Talos II, kernel 6.8-rc5
-Message-ID: <ZdhCnoRu3i1Cnwks@ghost>
-References: <20240223022654.625bef62@yea>
- <528c6abf-e5ef-42cd-a5d7-6ede3254523d@csgroup.eu>
- <Zdg3X4A1eJsJ+ACh@ghost>
- <6c37ffa2-8642-46c0-89ba-1f1e29b094d9@csgroup.eu>
+        d=1e100.net; s=20230601; t=1708671717; x=1709276517;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TWaA5+KGjSMHjkuFRHM1qKgKplmkeIkG437TxnYzJSw=;
+        b=Jlq3qG1ZR/eoHxp3B7poUhEW39iD7+5eqFLp0R3cqbyHrZBpL5sU9StTK2+I5NlV4X
+         q7VkuR7LVYuKXF+D/CWscfTpbJ1K/DAx08PwEaKEp+5KdiEPLiLxWjJpu2Y3REWjUKqI
+         6WhlEd7yi7+MDu65m7YGkqUyZ40hzQKzLGljnBY8IQqy5qIIuLLQy8zlT/SxS2UCt9Ia
+         +8cYA5xK+odnEcm0ZWb9TmF3z4vMhsnejo4YUbaxkkhZLQw95eaL1iGKHlL28D5o6Q+v
+         YREmXOAFuNjO9GnQqIqtRRyXM/0ivf9sYMDxd5Mrbj/h41APfZXHc9ycBA6rJxUMtNcf
+         cRDA==
+X-Gm-Message-State: AOJu0Ywtb9TmjdorLvo2WYhu5Fa0VkGQh5XiwDzBfq/9tXOnLJEa/90I
+	tU17MiDOmqA/IghSw9oSL3q9c7v0nNcke2mDkciPCLhK8YUODPsrtcQNjEdXsFIM8MgDDcqTncP
+	+Jr84eJ3kyUJHovw6OF5OeqD/h+PyPpb/Xn2uUkmENyQic1EjuVLa
+X-Google-Smtp-Source: AGHT+IHgmbOQHwv1lw9Kp1RkyW7p5JFvBQO2BQnIB8YJ4mbBKKGXzxSKwS0FVQc1MQ4rfv2qH/7RRWSxlLbJFJNrsXM=
+X-Received: by 2002:a50:8a8c:0:b0:565:4c2a:c9b6 with SMTP id
+ j12-20020a508a8c000000b005654c2ac9b6mr246100edj.0.1708671717183; Thu, 22 Feb
+ 2024 23:01:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6c37ffa2-8642-46c0-89ba-1f1e29b094d9@csgroup.eu>
+References: <20240221092728.1281499-5-davidgow@google.com> <170853967893.398.2243431921138187436.tip-bot2@tip-bot2>
+In-Reply-To: <170853967893.398.2243431921138187436.tip-bot2@tip-bot2>
+From: David Gow <davidgow@google.com>
+Date: Fri, 23 Feb 2024 15:01:43 +0800
+Message-ID: <CABVgOSn8m9SgCzu0KzYt27qMsze+LfYET=d97Pb_=TCVciyzFg@mail.gmail.com>
+Subject: Re: [tip: timers/core] time/kunit: Use correct format specifier
+To: linux-kernel@vger.kernel.org
+Cc: linux-tip-commits@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org, 
+	Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000c557c30612072237"
 
-On Fri, Feb 23, 2024 at 06:58:14AM +0000, Christophe Leroy wrote:
-> 
-> 
-> Le 23/02/2024 à 07:12, Charlie Jenkins a écrit :
-> > On Fri, Feb 23, 2024 at 05:59:07AM +0000, Christophe Leroy wrote:
-> >> Hi Erhard, hi Charlie,
-> >>
-> >> Le 23/02/2024 à 02:26, Erhard Furtner a écrit :
-> >>> Greetings!
-> >>>
-> >>> Looks like my Talos II (running a BE kernel+system) fails some of the kernels internal unit tests. One of the failing tests is checksum_kunit, enabled via CONFIG_CHECKSUM_KUNIT=y:
-> >>>
-> >>> [...]
-> >>>      KTAP version 1
-> >>>       # Subtest: checksum
-> >>>       # module: checksum_kunit
-> >>>       1..5
-> >>> entry-flush: disabled on command line.
-> >>>       ok 1 test_csum_fixed_random_inputs
-> >>>       ok 2 test_csum_all_carry_inputs
-> >>>       ok 3 test_csum_no_carry_inputs
-> >>>       # test_ip_fast_csum: ASSERTION FAILED at lib/checksum_kunit.c:589
-> >>>       Expected ( u64)expected == ( u64)csum_result, but
-> >>>           ( u64)expected == 55939 (0xda83)
-> >>>           ( u64)csum_result == 33754 (0x83da)
-> >>>       not ok 4 test_ip_fast_csum
-> >>>       # test_csum_ipv6_magic: ASSERTION FAILED at lib/checksum_kunit.c:617
-> >>>       Expected ( u64)expected_csum_ipv6_magic[i] == ( u64)csum_ipv6_magic(saddr, daddr, len, proto, csum), but
-> >>>           ( u64)expected_csum_ipv6_magic[i] == 6356 (0x18d4)
-> >>>           ( u64)csum_ipv6_magic(saddr, daddr, len, proto, csum) == 43586 (0xaa42)
-> >>>       not ok 5 test_csum_ipv6_magic
-> >>> # checksum: pass:3 fail:2 skip:0 total:5
-> >>> # Totals: pass:3 fail:2 skip:0 total:5
-> >>> not ok 4 checksum
-> >>> [...]
-> >>>
-> >>> Full dmesg + kernel .config attached.
-> >>
-> >> Looks like the same problem as the one I fixed with commit b38460bc463c
-> >> ("kunit: Fix checksum tests on big endian CPUs")
-> >>
-> >> The new tests implemented through commit 6f4c45cbcb00 ("kunit: Add tests
-> >> for csum_ipv6_magic and ip_fast_csum") create a lot of type issues as
-> >> reported by sparse when built with C=2 (see below).
-> >>
-> >> Once those issues are fixed, it should work.
-> >>
-> >> Charlie, can you provide a fix ?
-> >>
-> >> Thanks,
-> >> Christophe
-> > 
-> > The "lib: checksum: Fix issues with checksum tests" patch should fix all of these issues [1].
-> > 
-> > [1] https://lore.kernel.org/all/20240221-fix_sparse_errors_checksum_tests-v9-1-bff4d73ab9d1@rivosinc.com/T/#m189783a9b2a7d12e3c34c4a412e65408658db2c9
-> 
-> It doesn't fix the issues, I still get the following with your patch 1/2 
-> applied:
-> 
-> [    6.893141] KTAP version 1
-> [    6.896118] 1..1
-> [    6.897764]     KTAP version 1
-> [    6.900800]     # Subtest: checksum
-> [    6.904518]     # module: checksum_kunit
-> [    6.904601]     1..5
-> [    7.139784]     ok 1 test_csum_fixed_random_inputs
-> [    7.590056]     ok 2 test_csum_all_carry_inputs
-> [    8.064415]     ok 3 test_csum_no_carry_inputs
-> [    8.070065]     # test_ip_fast_csum: ASSERTION FAILED at 
-> lib/checksum_kunit.c:589
-> [    8.070065]     Expected ( u64)expected == ( u64)csum_result, but
-> [    8.070065]         ( u64)expected == 55939 (0xda83)
-> [    8.070065]         ( u64)csum_result == 33754 (0x83da)
-> [    8.075836]     not ok 4 test_ip_fast_csum
-> [    8.101039]     # test_csum_ipv6_magic: ASSERTION FAILED at 
-> lib/checksum_kunit.c:617
-> [    8.101039]     Expected ( u64)( __sum16)expected_csum_ipv6_magic[i] 
-> == ( u64)csum_ipv6_magic(saddr, daddr, len, proto, ( __wsum)csum), but
-> [    8.101039]         ( u64)( __sum16)expected_csum_ipv6_magic[i] == 
-> 6356 (0x18d4)
-> [    8.101039]         ( u64)csum_ipv6_magic(saddr, daddr, len, proto, ( 
-> __wsum)csum) == 43586 (0xaa42)
-> [    8.106446]     not ok 5 test_csum_ipv6_magic
-> [    8.143829] # checksum: pass:3 fail:2 skip:0 total:5
-> [    8.148334] # Totals: pass:3 fail:2 skip:0 total:5
-> [    8.153173] not ok 1 checksum
-> 
-> All your patch does is to hide the sparse warnings. But forcing a cast 
-> doesn't fix byte orders.
-> 
-> Please have a look at commit b38460bc463c ("kunit: Fix checksum tests on 
-> big endian CPUs"), there are helpers to put checksums in the correct 
-> byte order.
-> 
-> Christophe
+--000000000000c557c30612072237
+Content-Type: text/plain; charset="UTF-8"
 
-Well that's what the second patch is for. Is it failing with the second
-patch applied?
+Hi,
 
-- Charlie
+On Thu, 22 Feb 2024 at 02:21, tip-bot2 for David Gow
+<tip-bot2@linutronix.de> wrote:
+>
+> The following commit has been merged into the timers/core branch of tip:
+>
+> Commit-ID:     e0a1284b293bdf91a68a6d1a0479ad476d0d8ec2
+> Gitweb:        https://git.kernel.org/tip/e0a1284b293bdf91a68a6d1a0479ad476d0d8ec2
+> Author:        David Gow <davidgow@google.com>
+> AuthorDate:    Wed, 21 Feb 2024 17:27:17 +08:00
+> Committer:     Thomas Gleixner <tglx@linutronix.de>
+> CommitterDate: Wed, 21 Feb 2024 12:00:42 +01:00
+>
+> time/kunit: Use correct format specifier
+>
+> 'days' is a s64 (from div_s64), and so should use a %lld specifier.
+>
+> This was found by extending KUnit's assertion macros to use gcc's
+> __printf attribute.
+>
+> Fixes: 276010551664 ("time: Improve performance of time64_to_tm()")
+> Signed-off-by: David Gow <davidgow@google.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Link: https://lore.kernel.org/r/20240221092728.1281499-5-davidgow@google.com
+>
 
+We're hoping to take this series in via the KUnit tree, so that we can
+enable the warning in one place without annoying Linus with lots of
+dependencies between PRs.
+(See, e.g,. https://lore.kernel.org/linux-kselftest/CAHk-=wgafXXX17eKx9wH_uHg=UgvXkngxGhPcZwhpj7Uz=_0Pw@mail.gmail.com/
+)
+
+Would that cause a problem?
+
+Thanks,
+-- David
+
+--000000000000c557c30612072237
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIPqgYJKoZIhvcNAQcCoIIPmzCCD5cCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg0EMIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+7xDrOPfX3COqq162RFg/MFcGA1UdIARQME4wCQYHZ4EMAQUBATBBBgkrBgEEAaAyASgwNDAyBggr
+BgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/
+BAIwADCBmgYIKwYBBQUHAQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNp
+Z24uY29tL2NhL2dzYXRsYXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJl
+Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgw
+FoAUfMwKaNei6x4schvRzV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9i
+YWxzaWduLmNvbS9jYS9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEB
+AK0lDd6/eSh3qHmXaw1YUfIFy07B25BEcTvWgOdla99gF1O7sOsdYaTz/DFkZI5ghjgaPJCovgla
+mRMfNcxZCfoBtsB7mAS6iOYjuwFOZxi9cv6jhfiON6b89QWdMaPeDddg/F2Q0bxZ9Z2ZEBxyT34G
+wlDp+1p6RAqlDpHifQJW16h5jWIIwYisvm5QyfxQEVc+XH1lt+taSzCfiBT0ZLgjB9Sg+zAo8ys6
+5PHxFaT2a5Td/fj5yJ5hRSrqy/nj/hjT14w3/ZdX5uWg+cus6VjiiR/5qGSZRjHt8JoApD6t6/tg
+ITv8ZEy6ByumbU23nkHTMOzzQSxczHkT+0q10/MxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJF
+MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIz
+IFNNSU1FIENBIDIwMjACEAHS+TgZvH/tCq5FcDC0n9IwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZI
+hvcNAQkEMSIEIDSwtywTaIuCbUp4fAlX/Y90UkjWL//9bvATdN5uaI35MBgGCSqGSIb3DQEJAzEL
+BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDIyMzA3MDE1N1owaQYJKoZIhvcNAQkPMVww
+WjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkq
+hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQC8LLNp
+eL6lWas3eIxmtOo23P9Imf+9AePTkrWxCJbjg5RD+BriiR6CayxTjThsM9Bq4VlIRQU3SgZAP3As
+tyzQnHgh/m8B8XiCGvP6/myMecHYdR3yROLbJfII62dk8ug6Wn9qZN9/34CY1qm/3QYdX81p00MB
+35EGYHBPZz3uUaRlBtfVfMDoL7pUgfOywbSN3LZMIiafrm6DLenuhptrIs35kqRjMdZ9rNEDoSXe
+a+6rn3OpBKdORB+MGjYM2LFkiVCtD99yiYnZeGu6ntaw8w/3nLakQf65Ey2CVIoRNILW12gq2ovQ
+yt6aGhcjHg7Xl5/J0PTeC6Hv0ApEfhsV
+--000000000000c557c30612072237--
 
