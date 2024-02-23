@@ -1,107 +1,129 @@
-Return-Path: <linux-kernel+bounces-78822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A804861953
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:23:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B957861958
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:23:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BE431C24943
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:23:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B2DB1F23C32
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:23:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A41601339B6;
-	Fri, 23 Feb 2024 17:22:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 949BC12AAE0;
+	Fri, 23 Feb 2024 17:23:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3yQ4ffSH"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="kCjRTno8"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8531E12E1F9
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 17:22:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C0B6128822;
+	Fri, 23 Feb 2024 17:23:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708708960; cv=none; b=l1KEf9hID1iVw4abwO6mwpJFReXoV5wT9rWY5jyT61gIAHw47hjafJSJFAZQZgemb89VSZi7NVXJBuNSO9LFozM9Kt+LZxxmLUG+o+HdKeneDTazcngj/dPYOCi6Wx183if2M0nqggw+pEqjUN8lrrob+lCj5Jq123h6mNSLw/k=
+	t=1708708996; cv=none; b=Y/fnYJQBhx6cy4Co270mf5jGxmp3qXw+4XBHwLj0AbEqT3u1Z1gLbKBCVb2MJlp7SeVBzKMlIdOPawKbTC+xqbJDiIs6QT9QuMWy5q75OZ+e/BDPCMg0qsNYaxihSD2pC+4PfupbVqE7epWFl9n1iOCGgGo1+lxnGDIzeQfNvWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708708960; c=relaxed/simple;
-	bh=xI1CYXpRQxNW6RhypQf+M8k1lJvk1Cdwf26jKyWxh9Y=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=k84hyx7/ylXApTobiR+QYMwm/XtoLK9nRROGRfc7Bo+V9sERQ0zNNn+zm3560VJCHYc9bHWz6nwwFEwmHMsi3vIJzG4N1DLxehQc/OaepyTR6KeCFelD18qVxXLTyuHI09BI4GESyMpX/pT8CDalvXmhvv35917dbiPl7UatsQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3yQ4ffSH; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-607e8e8c2f1so19812887b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 09:22:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708708957; x=1709313757; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fbdOsTQ4/aB9Xs+//i/yYaDnT36ysQWNMNiNUj7P11E=;
-        b=3yQ4ffSHhQXMfao1E8/GViA4MRnYrQRIn75v76OQeDmZM4vJdccsjiq3T2LHkNF/1q
-         LwTyjQy/Yz93PPSXdYiVkwBZjnM6EaBVAJTui83MFM4t771Kr3ihpJHfYk/CveHTnOXG
-         798E6PIgkQrnPJq2nGNBi7croB8u3KQ+VMiD9Zpwbry9HENX4+y9/1RB8P8lIktyDA0F
-         7bxjNQgnbI/qgeEvNRUzV8PgexiujJCkz+g3SN5jPRiuNLXvYuta4HLTAymnlKUzaXI7
-         m4vI6+doksz5Kq7NK+BAnDVXozfdWjSt0vPndXNGtVVHLTlG9+3buUPhoBV+UmVE8ycs
-         TgMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708708957; x=1709313757;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fbdOsTQ4/aB9Xs+//i/yYaDnT36ysQWNMNiNUj7P11E=;
-        b=vwZc9vyzMfbPlYRz1s1AbQfpeOHSm+Oy9yx0jPcWwXduQSfS8FHsqRaI1OVOmuDRr9
-         6kPZ4eWceuYyCNbVb2mBzMQaOOtPLnQGEsJi+6YLUdozzYnhaRLyg4VB5iEqbtQustuW
-         hHuUTlldP0WKTI99Ugu5Ex/rona2xtMZqDq/qSQptaQOdcjJln9S7kAho16s00P6a+eH
-         Za3XhNwBf1oEFWCnyOHs66GfON0+V0QCUNG2m+uvIuvvFlbmX94rLFOdD8iUVMQSM/zg
-         yBIfzhEttkM0t/1JhyvrXUYkkJellnjjiLprjSZoL7YN3+QSFk24qSGDABd96FkQlKfM
-         PQHg==
-X-Gm-Message-State: AOJu0YxDgb48SRVEAov19EK3rcr0TEa9pt+olToDH/sMTzJQi1hPyJ6N
-	cPeM+i98fJ/nPIXj7p3nLdITUGXmRrlzE3SWUpLLm3g3VOy5kV80dMS4grhDS+QmXdUA0NKNr+2
-	EhA==
-X-Google-Smtp-Source: AGHT+IHeGqi5Ue4Mu/H0ONtSYTiMAMvd1xoMjQat2ATYVRSjmG8qzOUsUnCLF3i9BZNHa5xBRqZlvKBRdPU=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a0d:d592:0:b0:608:21cf:ef0 with SMTP id
- x140-20020a0dd592000000b0060821cf0ef0mr84992ywd.4.1708708957651; Fri, 23 Feb
- 2024 09:22:37 -0800 (PST)
-Date: Fri, 23 Feb 2024 09:22:36 -0800
-In-Reply-To: <20240223104009.632194-10-pbonzini@redhat.com>
+	s=arc-20240116; t=1708708996; c=relaxed/simple;
+	bh=zhJKSICRTYexG6zbU9ZUtOoY1TWprSXwSg3wxv01iHg=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DHTDOclmAEyXXGQOycK1zQu196b252HwnnhrzozeCVhS/1go9tr1Oluf20RBmnXyXr9tf7Eco3rOSYqVCD1550rOu+aAeSDnvXI3JbOtjvIhEqa0NYPpO3ueiiOg5jA7g5F6v9Rs137fbevUS3t18Ia6z+60sVPVmNyxhV7liqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=kCjRTno8; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1708708995; x=1740244995;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=zhJKSICRTYexG6zbU9ZUtOoY1TWprSXwSg3wxv01iHg=;
+  b=kCjRTno8J6iRukPElO3mBkVzsMlbOIiSUnnLh95ZBJ2SNL7aRPDdexs9
+   wQrYSR53BjvjKlQNwjgHhsJvtRMMlL/2ZGHBFGEAhLlf8VtML2z9p7s8E
+   vaJOb67ljKab09wLxnfR8HmTr5LjgStA5y6ctqDadsrv9bZI4b/aPG6z/
+   uA+OrV/NIYFzPqWvDFbhfPeX55zS+Kvu9bGTT6XF6iyUbX8oGJ4pmi5Cr
+   3LNy/GVwkYY3bsI8x4fmLFHhijBGvav6t2tDCcf24hNZ4tkmlnJYWyloL
+   LK0C8IAJ2XOPg2UcmMCkMZaIAhcIbNrHbuSEMugKO7Bof1ukoePfPEjCk
+   A==;
+X-CSE-ConnectionGUID: kPA6bSjXSWenHIaSylMDKA==
+X-CSE-MsgGUID: +HLrebGIS6efKqwJlXHSAw==
+X-IronPort-AV: E=Sophos;i="6.06,180,1705388400"; 
+   d="scan'208";a="184009330"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 23 Feb 2024 10:23:14 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 23 Feb 2024 10:23:09 -0700
+Received: from che-lt-i67070.microchip.com (10.10.85.11) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Fri, 23 Feb 2024 10:23:05 -0700
+From: Varshini Rajendran <varshini.rajendran@microchip.com>
+To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+	<conor+dt@kernel.org>, <nicolas.ferre@microchip.com>,
+	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
+	<sebastian.reichel@collabora.com>, <varshini.rajendran@microchip.com>,
+	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v4 02/39] dt-bindings: atmel-sysreg: add sam9x7
+Date: Fri, 23 Feb 2024 22:52:50 +0530
+Message-ID: <20240223172250.671606-1-varshini.rajendran@microchip.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240223171342.669133-1-varshini.rajendran@microchip.com>
+References: <20240223171342.669133-1-varshini.rajendran@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240223104009.632194-1-pbonzini@redhat.com> <20240223104009.632194-10-pbonzini@redhat.com>
-Message-ID: <ZdjUXCITwbAWe7LT@google.com>
-Subject: Re: [PATCH v2 09/11] KVM: SEV: define VM types for SEV and SEV-ES
-From: Sean Christopherson <seanjc@google.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com, 
-	aik@amd.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-On Fri, Feb 23, 2024, Paolo Bonzini wrote:
-> @@ -3193,3 +3199,16 @@ void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector)
->  
->  	ghcb_set_sw_exit_info_2(svm->sev_es.ghcb, 1);
->  }
-> +
-> +bool sev_is_vm_type_supported(unsigned long type)
-> +{
-> +	if (type == KVM_X86_SEV_VM)
-> +		return sev_enabled;
+Add RAM controller & SFR DT bindings.
 
-Oh, I almost forgot!  This is the perfect way to solve the mess where sev_enabled
-is true, but all ASIDs are binned to SEV-ES[1], which sefltests doesn't currently
-handle because the info isn't surfaced to userspace[2].
+Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+Changes in v4:
+- Updated Acked-by tag
+---
+ Documentation/devicetree/bindings/arm/atmel-sysregs.txt | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-So it'll end up like this?
+diff --git a/Documentation/devicetree/bindings/arm/atmel-sysregs.txt b/Documentation/devicetree/bindings/arm/atmel-sysregs.txt
+index 67a66bf74895..1339298203c6 100644
+--- a/Documentation/devicetree/bindings/arm/atmel-sysregs.txt
++++ b/Documentation/devicetree/bindings/arm/atmel-sysregs.txt
+@@ -11,7 +11,8 @@ PIT Timer required properties:
+   shared across all System Controller members.
+ 
+ PIT64B Timer required properties:
+-- compatible: Should be "microchip,sam9x60-pit64b"
++- compatible: Should be "microchip,sam9x60-pit64b" or
++			"microchip,sam9x7-pit64b", "microchip,sam9x60-pit64b"
+ - reg: Should contain registers location and length
+ - interrupts: Should contain interrupt for PIT64B timer
+ - clocks: Should contain the available clock sources for PIT64B timer.
+@@ -31,7 +32,8 @@ RAMC SDRAM/DDR Controller required properties:
+ 			"atmel,at91sam9g45-ddramc",
+ 			"atmel,sama5d3-ddramc",
+ 			"microchip,sam9x60-ddramc",
+-			"microchip,sama7g5-uddrc"
++			"microchip,sama7g5-uddrc",
++			"microchip,sam9x7-ddramc", "atmel,sama5d3-ddramc".
+ - reg: Should contain registers location and length
+ 
+ Examples:
+@@ -63,6 +65,7 @@ required properties:
+ 	"atmel,<chip>-sfrbu", "syscon"
+   <chip> can be "sama5d3", "sama5d4" or "sama5d2".
+   It also can be "microchip,sam9x60-sfr", "syscon".
++  It also can be "microchip,sam9x7-sfr", "microchip,sam9x60-sfr", "syscon".
+ - reg: Should contain registers location and length
+ 
+ 	sfr@f0038000 {
+-- 
+2.25.1
 
-	if (sev_enabled && min_sev_asid <= max_sev_asid)
-		kvm_caps.supported_vm_types |= BIT(KVM_X86_SEV_VM);
-
-[1] https://lore.kernel.org/all/20240131235609.4161407-1-seanjc@google.com
-[2] https://lore.kernel.org/all/ZdfQ4jI8yT-bvbV4@google.com
-
-> +	if (type == KVM_X86_SEV_ES_VM)
-> +		return sev_es_enabled;
 
