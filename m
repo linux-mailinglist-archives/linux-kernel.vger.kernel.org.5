@@ -1,148 +1,136 @@
-Return-Path: <linux-kernel+bounces-78258-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78260-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFDEA8610D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:55:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A22B8610E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:59:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24EBD1C21921
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:55:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B8CA1C2259E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:58:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B0107AE47;
-	Fri, 23 Feb 2024 11:55:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="bLcq86JP"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FA5F7B3FA;
+	Fri, 23 Feb 2024 11:58:53 +0000 (UTC)
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F76A627FC
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:55:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4EDD7A71B;
+	Fri, 23 Feb 2024 11:58:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708689337; cv=none; b=oYP8wObeqiBheJhx7pDVeT+kPvnx5Tfj0hUcwqaGaozDErCW2HH+MW7vr+taVpNIulD1iKlTVCzE/ucIPj4yA7CU8v9w2FykM1XkvQ7Hkr4dgauGc/abukefMVXKp+MaZxYraq8P+hI/zBLD5itQZZgIS0ZQdSATMqUZS2MCp7Q=
+	t=1708689532; cv=none; b=hnutTX9iOA/Fr7uyxL805jjecvVvrPQvhnprFa1iirmxf4CJJV+2lIdhH5QNl/0+hH/ly7OnBFVPdiM0lD5cpmHsSeFO+3nqf9SUr6C21My08N6C8F/wBNvU+LNnQga5egBBS4oVHSpIqYNIjSMKD6rIHWBNv4aUy+7kioyhOD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708689337; c=relaxed/simple;
-	bh=cvHhbH5015GODLP9rzC/0ihNiAUiBPPcD/8uRZNKXRQ=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=dV7XyWpgV4w4fgrWTAp8PoFlDQONvgxrXLFaTZNIochwTdX7BGcgRmrL5xYgYN3y/KU8UIdNKZ0dwxexLIYBgfnANF33yN0Oo30rH2DVTCUFypwVn1kJBOY4XliVJ8boVaIqVH4DWfG9mTHOQCojJPBLyk6Vhnl0ht2nNgT09GM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=bLcq86JP; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41NBVjtC003784;
-	Fri, 23 Feb 2024 11:55:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : to : from : subject : content-type :
- content-transfer-encoding; s=pp1;
- bh=ZgAbRxJ5InPZt9odwVM5BuYjWb/ovDZ+HPdjW5c9yV4=;
- b=bLcq86JPHhlnQl/61YZprtkm2+am7buD3eFyinDhrwzabUm6Ye/o3KCR+HPx9kzUR434
- VRX094cVk1vH9Zq6H+wGcBa8vgvQM8mjfy63xI8IkAesSZVWace2muiIOvbMgRdpUqPn
- YOoHPTTZRqxw81/RZ+hr2/9t77nEfpb6IGnm8O8/QEBDZn4X9iFJBC/ZvJxCNhIZmh79
- lpjOWeOCta/tYX123A1Ja2TI065UfnAKUAIBDn7cGIG8JvK1W15++RQzddkVHpr5kuy5
- 5uxrcBBzaYLsGlB03SnLyjGkmnLA85NazAuv0pKP49MZHLAVUb8HtWq1l4Plex/IaxcW LA== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wetjqrky1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 11:55:29 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41NBhJjA009577;
-	Fri, 23 Feb 2024 11:55:28 GMT
-Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wb84pw3x0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 11:55:28 +0000
-Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
-	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41NBtPLm37421476
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 23 Feb 2024 11:55:27 GMT
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id EA7BC58058;
-	Fri, 23 Feb 2024 11:55:24 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7F54B5805B;
-	Fri, 23 Feb 2024 11:55:23 +0000 (GMT)
-Received: from [9.171.23.236] (unknown [9.171.23.236])
-	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 23 Feb 2024 11:55:23 +0000 (GMT)
-Message-ID: <0818a331-cea3-4962-88ad-09bccbd3659d@linux.ibm.com>
-Date: Fri, 23 Feb 2024 17:25:22 +0530
+	s=arc-20240116; t=1708689532; c=relaxed/simple;
+	bh=kgf5qzofg9XdjyRI2Okw+ogBrpfswPf+/CPSQfTyBj4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QiVfz9ife2ZbrUtyMCQq2r5KDWwp19p+wUeOz8nqADZmihzJtaKVqoeqHCuBXaNR8hI9lil64DkOANWOamSWTcBzb9EWmlNGrH/deA/yvzeRVHrifvMddqyUoLIWwBAdjl01/8jgN+Pqf2IWWToJ33iCbOOMz58CSYqpd5sPuDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5655c7dd3b1so542734a12.0;
+        Fri, 23 Feb 2024 03:58:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708689529; x=1709294329;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Wv2F+CMwFgzgnky2Oblv6t762R5K7w7duNIZkmo8KDY=;
+        b=oCX7jVTU+3VSihgcFDWBl3E8qSt7lI4RFGGEfBw3UKjBpcbWKL+sMP70zmbjG/IKJG
+         rM9yZaJQFt+dL+7ajAFmtDEJ0t5HF20frhJgN4w5sIwtDnYzrr9qXNcZujyn4Ws1OTo2
+         qBPHu/f0RRfkp/cfz3bWS1JB7RWjd1gTSsLiM3khwcSlMbJAAt5Va8vJGGl52tNgbYZ7
+         D1Pw2UPXEIt+sjGgJik94Ts5gVHnHF0ORepvXtgAE8w/4aQlS9R3NPnr4I202E1BqV2T
+         4kkNBe6WnjIvy+BPsCuKar+qTfxGNR9qAuDJV140VAoDvi/Hn2qWP4BBYQylYfx+L6jS
+         bvew==
+X-Forwarded-Encrypted: i=1; AJvYcCVqZZSxFdAt5ZWxpw1FOaCjWr41NUR6Kv5n1EyIEuhXW0Pb0z9RipgEG8W9CYSb/09I8BO2N1TmGg7NTAa/cXooOqknJgRB5qDWSMXS
+X-Gm-Message-State: AOJu0YxE0oFiAUen9soGxkvtqF8Uz1RtaWWct6CchCCAgkkIVk8KuZrB
+	R9TlsyQzOtrRVqjdBsLRWNjSy4XL3Dqae61kjyVQqZirQsS0J7Zd
+X-Google-Smtp-Source: AGHT+IEwZE90ddruXHba1WENbP9lNcLlOKscuPh/LATd8ln0hCxmETUo80I+NSEbZD9hNAu4n8T9iw==
+X-Received: by 2002:a17:906:6d49:b0:a3f:af43:5245 with SMTP id a9-20020a1709066d4900b00a3faf435245mr1702677ejt.0.1708689528908;
+        Fri, 23 Feb 2024 03:58:48 -0800 (PST)
+Received: from localhost (fwdproxy-lla-120.fbsv.net. [2a03:2880:30ff:78::face:b00c])
+        by smtp.gmail.com with ESMTPSA id fj14-20020a1709069c8e00b00a3f64663fe8sm1895858ejc.200.2024.02.23.03.58.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 03:58:48 -0800 (PST)
+From: Breno Leitao <leitao@debian.org>
+To: kuba@kernel.org,
+	davem@davemloft.net,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	Stefano Garzarella <sgarzare@redhat.com>
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	horms@kernel.org,
+	virtualization@lists.linux.dev (open list:VM SOCKETS (AF_VSOCK))
+Subject: [PATCH net-next 1/2] net/vsockmon: Leverage core stats allocator
+Date: Fri, 23 Feb 2024 03:58:37 -0800
+Message-Id: <20240223115839.3572852-1-leitao@debian.org>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: peterz@infradead.org, mingo@kernel.org, linux-kernel@vger.kernel.org
-From: Vishal Chourasia <vishalc@linux.ibm.com>
-Subject: Question about DOUBLE_TICK's role alongside EEVDF
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 4KNkVefN7YCc6OyWCoabgxtlIyIlN0G3
-X-Proofpoint-GUID: 4KNkVefN7YCc6OyWCoabgxtlIyIlN0G3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-22_15,2024-02-23_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=999 bulkscore=0 suspectscore=0 impostorscore=0 adultscore=0
- malwarescore=0 mlxscore=0 clxscore=1031 lowpriorityscore=0 phishscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402230085
+Content-Transfer-Encoding: 8bit
 
-Hi,
+With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
+convert veth & vrf"), stats allocation could be done on net core
+instead of this driver.
 
-I hope you're doing well. I've been looking into some recent changes in the
-scheduler code and would like to get your perspective on a few things.
+With this new approach, the driver doesn't have to bother with error
+handling (allocation failure checking, making sure free happens in the
+right spot, etc). This is core responsibility now.
 
-I was examining commit 5e963f2bd465 ("sched/fair: Commit to EEVDF"), which
-removed the check_preempt_tick method. As a result, the DOUBLE_TICK feature used
-within the entity_tick function no longer seems to directly influence scheduling
-decisions. I understand that this feature was designed to handle interactions
-between periodic ticks and the high-resolution timer (hrtick).
+Remove the allocation in the vsockmon driver and leverage the network
+core allocation instead.
 
-Here's my understanding so far (please correct me if there are any inaccuracies):
+Signed-off-by: Breno Leitao <leitao@debian.org>
+---
+ drivers/net/vsockmon.c | 16 +---------------
+ 1 file changed, 1 insertion(+), 15 deletions(-)
 
-DOUBLE_TICK: Enabled periodic ticks to proceed even when an hrtick timer was
-active, potentially canceling the hrtick timer in __schedule if active.
-
-Commit 5e963f2bd465: Removed a key decision point where DOUBLE_TICK played a
-role, making its current utility questionable.
-
-This brings me to my main question: As we transition towards EEVDF for
-calculating preemption points(based on entity lag) and the scheduler manages
-resource allocation in quanta, is there a continued need for the hrtick timer?
-
-In the case of multiple processes with different nice values, EEVDF handles
-their preemption according to their lag. However, the exact behavior depends on
-the values of base_slice_ns and config_hz.
-
-It's possible I don't have all the pieces of the puzzle, so my question might
-not make sense. But I wanted to bring forth this point. It would be great to
-know your thoughts.
-
-Thank you for your time.
-
--- vishal.c
-
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 533547e3c90a..73e1372d1a0d 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5510,12 +5510,6 @@ entity_tick(struct cfs_rq *cfs_rq, struct sched_entity
-*curr, int queued)
-                resched_curr(rq_of(cfs_rq));
-                return;
-        }
--       /*
--        * don't let the period tick interfere with the hrtick preemption
--        */
--       if (!sched_feat(DOUBLE_TICK) &&
--                       hrtimer_active(&rq_of(cfs_rq)->hrtick_timer))
--               return;
- #endif
+diff --git a/drivers/net/vsockmon.c b/drivers/net/vsockmon.c
+index b1bb1b04b664..a0b4dca36baf 100644
+--- a/drivers/net/vsockmon.c
++++ b/drivers/net/vsockmon.c
+@@ -13,19 +13,6 @@
+ #define DEFAULT_MTU (VIRTIO_VSOCK_MAX_PKT_BUF_SIZE + \
+ 		     sizeof(struct af_vsockmon_hdr))
+ 
+-static int vsockmon_dev_init(struct net_device *dev)
+-{
+-	dev->lstats = netdev_alloc_pcpu_stats(struct pcpu_lstats);
+-	if (!dev->lstats)
+-		return -ENOMEM;
+-	return 0;
+-}
+-
+-static void vsockmon_dev_uninit(struct net_device *dev)
+-{
+-	free_percpu(dev->lstats);
+-}
+-
+ struct vsockmon {
+ 	struct vsock_tap vt;
+ };
+@@ -79,8 +66,6 @@ static int vsockmon_change_mtu(struct net_device *dev, int new_mtu)
  }
+ 
+ static const struct net_device_ops vsockmon_ops = {
+-	.ndo_init = vsockmon_dev_init,
+-	.ndo_uninit = vsockmon_dev_uninit,
+ 	.ndo_open = vsockmon_open,
+ 	.ndo_stop = vsockmon_close,
+ 	.ndo_start_xmit = vsockmon_xmit,
+@@ -112,6 +97,7 @@ static void vsockmon_setup(struct net_device *dev)
+ 	dev->flags = IFF_NOARP;
+ 
+ 	dev->mtu = DEFAULT_MTU;
++	dev->pcpu_stat_type = NETDEV_PCPU_STAT_LSTATS;
+ }
+ 
+ static struct rtnl_link_ops vsockmon_link_ops __read_mostly = {
+-- 
+2.39.3
+
 
