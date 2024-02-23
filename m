@@ -1,135 +1,88 @@
-Return-Path: <linux-kernel+bounces-77654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02443860886
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:52:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AF19E8608A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:01:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69774285F67
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:52:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 103D5284E58
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:01:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB976C2DA;
-	Fri, 23 Feb 2024 01:52:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="rgj35SW/"
-Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5427EB671;
-	Fri, 23 Feb 2024 01:52:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C867FBA56;
+	Fri, 23 Feb 2024 02:01:00 +0000 (UTC)
+Received: from mail.parknet.co.jp (mail.parknet.co.jp [210.171.160.6])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74F72B65F;
+	Fri, 23 Feb 2024 02:00:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.171.160.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708653152; cv=none; b=kohSNH9e5Wndc0vgrgptYlflQ5aoO2UZ/kpGYo3t7MxVR1bNhxhCF6hCfe9f9dRDCPI16tIvYUmvz9msKeViTWsSjCaxbO26qxhj0EgiJ0R/VtGC/GbdYfiCVWETSHGc4WGdObeeTnKsNLW66I8N6P1Krfvk+7VtY6GxFEP6xqw=
+	t=1708653660; cv=none; b=mNwnNQXMNY+w5xFHjsMPy5GxK35xh0QpAxH3tsvpGtxiBMmG6X1kef3jFoVdxbwVrc4WgN2qqtCaHzXwBFkq45ZwqMXGe+4SgLmkKpuMRWNaiQBcS8knFO3xt7zCsKwunxktXhVa8yq+SsaXZPRW78/wGRueGi32Mq6+wPMcQqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708653152; c=relaxed/simple;
-	bh=0xAlq3FKxyKOFVzLVHdJfOKR9ZGZX8El43JyE9dp5i8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JQdRUYqnUAMsfCEtIx2gJjHceNH8VoIu4wuVueJ10cLDcYxCHG4r2lU+9NSyC9I1w7Mf5pwnOqrxeeG8XdQKJndGFGrumSe+w5JMM5isvZNbNDZXREWmzM0gS7nUppNUhCd2xF0oeBeJm2r42jIZMSHMPaT+wYQO0nS085rdlw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=rgj35SW/; arc=none smtp.client-ip=195.181.215.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-	t=1708653141; bh=0xAlq3FKxyKOFVzLVHdJfOKR9ZGZX8El43JyE9dp5i8=;
-	h=From:To:Cc:Subject:Date:References:From;
-	b=rgj35SW/h7h9d8qcHLZE3bORQC8cnupdAgLbC/J6svJ9qk5A/fljXHg4ok9bIw1iO
-	 V42hGHce2rMR0ZWZcD7WAq72CXnrb9PbJqDQJM78lTa4JKZR/ma4DhILdPE8Rf2WPI
-	 XeN7svlDEMQELBfpAdlTKGGn1Pxskh6q7PmyK3yU=
-From: =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megi@xff.cz>
-To: linux-kernel@vger.kernel.org,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Cc: Samuel Holland <samuel@sholland.org>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Ondrej Jirman <megi@xff.cz>,
-	Arnaud Ferraris <arnaud.ferraris@collabora.com>,
-	linux-sound@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-sunxi@lists.linux.dev
-Subject: [PATCH v2 2/5] ASoC: sun50i-codec-analog: Move suspend/resume to set_bias_level
-Date: Fri, 23 Feb 2024 02:52:12 +0100
-Message-ID: <20240223015219.3618111-3-megi@xff.cz>
-In-Reply-To: <20240223015219.3618111-1-megi@xff.cz>
-References: <20240223015219.3618111-1-megi@xff.cz>
+	s=arc-20240116; t=1708653660; c=relaxed/simple;
+	bh=tJiSDAP6ww9IEiLJBdFQMRvh+Pqs9jlbiF9Qlg7Fqa0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=FDjMQtNb8EjQChZlWcE8GUO/Ge+thYGRVH1cZbYWkCBIQdLdPPyFtq3DeZa78pMqDAmQtJPfvsO5n4iZXqpz0q8DiZXvu2QH/zqr1Tj5j6V73veNlVaHay8maP1KRgArvm1jO9AwN62HuDtq4C9QeosbRLJFE8YdauY42Sq7vEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mail.parknet.co.jp; spf=pass smtp.mailfrom=parknet.co.jp; arc=none smtp.client-ip=210.171.160.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mail.parknet.co.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=parknet.co.jp
+Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
+	by mail.parknet.co.jp (Postfix) with ESMTPSA id C7B95233BA7E;
+	Fri, 23 Feb 2024 10:52:14 +0900 (JST)
+Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
+	by ibmpc.myhome.or.jp (8.18.1/8.18.1/Debian-1) with ESMTPS id 41N1qDIW204627
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Fri, 23 Feb 2024 10:52:14 +0900
+Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
+	by devron.myhome.or.jp (8.18.1/8.18.1/Debian-1) with ESMTPS id 41N1qDo8963449
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Fri, 23 Feb 2024 10:52:13 +0900
+Received: (from hirofumi@localhost)
+	by devron.myhome.or.jp (8.18.1/8.18.1/Submit) id 41N1qCr5963448;
+	Fri, 23 Feb 2024 10:52:12 +0900
+From: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+To: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gwendal
+ Grignou <gwendal@chromium.org>, dlunev@chromium.org
+Subject: Re: [PATCH] fat: ignore .. subdir and always add a link to dirs
+In-Reply-To: <20240222203013.2649457-1-cascardo@igalia.com> (Thadeu Lima de
+	Souza Cascardo's message of "Thu, 22 Feb 2024 17:30:13 -0300")
+References: <20240222203013.2649457-1-cascardo@igalia.com>
+Date: Fri, 23 Feb 2024 10:52:12 +0900
+Message-ID: <87bk88oskz.fsf@mail.parknet.co.jp>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-From: Samuel Holland <samuel@sholland.org>
+Thadeu Lima de Souza Cascardo <cascardo@igalia.com> writes:
 
-With idle_bias_on and suspend_bias_off, there are bias level transitions
-that match the suspend/resume callbacks. However, there are also
-transitions during probe (OFF => STANDBY) and removal (STANDBY => OFF).
+> The tools used for creating images for the Lego Mindstrom EV3 are not
+> adding '.' and '..' entry in the 'Projects' directory.
+>
+> Without this fix, the kernel can not fill the inode structure for
+> 'Projects' directory.
+>
+> See https://github.com/microsoft/pxt-ev3/issues/980
+> And https://github.com/microsoft/uf2-linux/issues/6
+>
+> When counting the number of subdirs, ignore .. subdir and add one when
+> setting the initial link count for directories. This way, when .. is
+> present, it is still accounted for, and when neither . or .. are present, a
+> single link is still done, as it should, since this link would be the one
+> from the parent directory.
+>
+> With this fix applied, we can mount an image with such empty directories,
+> access them, create subdirectories and remove them.
 
-By using the set_bias_level hook, the driver can have one copy of code
-that would otherwise be duplicated between the probe/resume and
-suspend/remove hooks.
+This looks like the bug of those tools, isn't it?
 
-Signed-off-by: Samuel Holland <samuel@sholland.org>
-Signed-off-by: Ondřej Jirman <megi@xff.cz>
----
- sound/soc/sunxi/sun50i-codec-analog.c | 29 +++++++++++++++++----------
- 1 file changed, 18 insertions(+), 11 deletions(-)
-
-diff --git a/sound/soc/sunxi/sun50i-codec-analog.c b/sound/soc/sunxi/sun50i-codec-analog.c
-index 8a32d05e23e1..cedd4de42d1a 100644
---- a/sound/soc/sunxi/sun50i-codec-analog.c
-+++ b/sound/soc/sunxi/sun50i-codec-analog.c
-@@ -471,17 +471,23 @@ static const struct snd_soc_dapm_route sun50i_a64_codec_routes[] = {
- 	{ "EARPIECE", NULL, "Earpiece Amp" },
- };
- 
--static int sun50i_a64_codec_suspend(struct snd_soc_component *component)
-+static int sun50i_a64_codec_set_bias_level(struct snd_soc_component *component,
-+					   enum snd_soc_bias_level level)
- {
--	return regmap_update_bits(component->regmap, SUN50I_ADDA_HP_CTRL,
--				  BIT(SUN50I_ADDA_HP_CTRL_PA_CLK_GATE),
--				  BIT(SUN50I_ADDA_HP_CTRL_PA_CLK_GATE));
--}
-+	switch (level) {
-+	case SND_SOC_BIAS_OFF:
-+		regmap_set_bits(component->regmap, SUN50I_ADDA_HP_CTRL,
-+				BIT(SUN50I_ADDA_HP_CTRL_PA_CLK_GATE));
-+		break;
-+	case SND_SOC_BIAS_STANDBY:
-+		regmap_clear_bits(component->regmap, SUN50I_ADDA_HP_CTRL,
-+				   BIT(SUN50I_ADDA_HP_CTRL_PA_CLK_GATE));
-+		break;
-+	default:
-+		break;
-+	}
- 
--static int sun50i_a64_codec_resume(struct snd_soc_component *component)
--{
--	return regmap_update_bits(component->regmap, SUN50I_ADDA_HP_CTRL,
--				  BIT(SUN50I_ADDA_HP_CTRL_PA_CLK_GATE), 0);
-+	return 0;
- }
- 
- static const struct snd_soc_component_driver sun50i_codec_analog_cmpnt_drv = {
-@@ -491,8 +497,9 @@ static const struct snd_soc_component_driver sun50i_codec_analog_cmpnt_drv = {
- 	.num_dapm_widgets	= ARRAY_SIZE(sun50i_a64_codec_widgets),
- 	.dapm_routes		= sun50i_a64_codec_routes,
- 	.num_dapm_routes	= ARRAY_SIZE(sun50i_a64_codec_routes),
--	.suspend		= sun50i_a64_codec_suspend,
--	.resume			= sun50i_a64_codec_resume,
-+	.set_bias_level		= sun50i_a64_codec_set_bias_level,
-+	.idle_bias_on		= true,
-+	.suspend_bias_off	= true,
- };
- 
- static const struct of_device_id sun50i_codec_analog_of_match[] = {
+Thanks.
 -- 
-2.43.0
-
+OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
 
