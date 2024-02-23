@@ -1,181 +1,181 @@
-Return-Path: <linux-kernel+bounces-79108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18C46861DA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:34:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C14C4861DAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:35:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A589B247E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:34:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 508121F27AF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:35:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A40613B7A6;
-	Fri, 23 Feb 2024 20:33:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JAefhRU8"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 230D6146E6E;
+	Fri, 23 Feb 2024 20:34:55 +0000 (UTC)
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D90AED2E6
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 20:33:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BB3F10A11;
+	Fri, 23 Feb 2024 20:34:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708720435; cv=none; b=PzmJSbZnuhDp6WCE10azBnt15UNcFXGmwDJlf98v6ZY0lDFvSljSQCuLtwB+GTwXCiZ9KqR2jZ+edxOP9QaKmr+2qebQJZ9Q/aO1SEQUJHjFoMlvhKCHGwNzUYaaBje+kuYPkqOEPHoNdwbB+f/zLNikVPCREzvv6j5hy5z12eg=
+	t=1708720494; cv=none; b=mRUCSLzJD3sVB/UtFQLgxmv2Y7Ph5PzjPdukZRzMzNShVUg+Jd2+dN4Q3Xo7Ml3sIyLwAH/oRqelmzrePfeMsPQDBHAJbGqDlShkquOzwx9GWvfEp57/hr7hsbE91w/CVNCH7fmm7dRduIEZyuGvStixZilr3wgmXtyk90Nuav8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708720435; c=relaxed/simple;
-	bh=UO+kNR+4GiScp6Qc5LSj4182IL6AdAaAMEGObL3NwzI=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=Lc6zOyr9x46t+RodTc4+Oo0AlXmNfBxCrloyP5PQZbLGTNdcZEzpS1DkyBZngaWlAaHUd/0HLIMfoJ5irWkux61CJELCxAHpr0CBKfhE/L3lYJHqnfEOwy39zJkbU1fW0tcqZpmXZQ/LrIXYStPzFEfrot00yQSvSkZytsUtQig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JAefhRU8; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708720431;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pZGJPRxx4dMEm20S/+xsVtXIs0A/Q7eXIofxVvhZOdw=;
-	b=JAefhRU8hXqI1WNGvufY4nx/+Z/SP/8rgJrzDFRJMaHor6gqbBE7MqjfYiAxVDiPLyHB65
-	mLMMbBzyXMRgcP+XJkjZaFwVRGJYJcjHSJiGVt7n1rV0or9LrtPjlElbg1crwi5ceQDTnw
-	22uy4goG06pHgzVSwHY6DGqkYEU7UV8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-347-F6eAhvOmOg2_u6oKky05zg-1; Fri, 23 Feb 2024 15:33:48 -0500
-X-MC-Unique: F6eAhvOmOg2_u6oKky05zg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7FFBF832C08;
-	Fri, 23 Feb 2024 20:33:47 +0000 (UTC)
-Received: from file1-rdu.file-001.prod.rdu2.dc.redhat.com (unknown [10.11.5.21])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 48DF840C6EBA;
-	Fri, 23 Feb 2024 20:33:47 +0000 (UTC)
-Received: by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix, from userid 12668)
-	id 29B6F30C1B8F; Fri, 23 Feb 2024 20:33:47 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-	by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix) with ESMTP id 25C953FB4E;
-	Fri, 23 Feb 2024 21:33:47 +0100 (CET)
-Date: Fri, 23 Feb 2024 21:33:47 +0100 (CET)
-From: Mikulas Patocka <mpatocka@redhat.com>
-To: =?ISO-8859-15?Q?Wei=DF=2C_Simone?= <Simone.Weiss@elektrobit.com>
-cc: "song@kernel.org" <song@kernel.org>, 
-    "Tomerius, Kai" <Kai.Tomerius@elektrobit.com>, 
-    "simone.p.weiss@posteo.net" <simone.p.weiss@posteo.net>, 
-    "agk@redhat.com" <agk@redhat.com>, 
-    "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>, 
-    "dm-devel@lists.linux.dev" <dm-devel@lists.linux.dev>, 
-    "yukuai3@huawei.com" <yukuai3@huawei.com>, 
-    "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-    "lukas.bulwahn@gmail.com" <lukas.bulwahn@gmail.com>, 
-    "snitzer@kernel.org" <snitzer@kernel.org>
-Subject: Re: [PATCH] [RFQ] dm-integrity: Add a lazy commit mode for journal
-In-Reply-To: <3e5a2087667333bb88135a6b6f9620201989605f.camel@elektrobit.com>
-Message-ID: <9788e2a-8a61-3c76-e11e-a3f23b4d90c8@redhat.com>
-References: <20240209192542.449367-1-simone.weiss@elektrobit.com> <8a485b9-6dbb-78c-9a84-ed3ba65d9cb3@redhat.com> <3e5a2087667333bb88135a6b6f9620201989605f.camel@elektrobit.com>
+	s=arc-20240116; t=1708720494; c=relaxed/simple;
+	bh=rPPJ2L/RRzBV/p4jhRpBz6hSBChY4V2Ci3lmwX/T1Hg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=q3dr9FIj/ojNr41OTRbT6RWf0SUYIvaPMfy+KqawQ+7ozEfejLWV4CaVNqSC9B4B41p6mcluay8A2c0B2I1nR7SzJJA+4n4tf8DXQziK5a6/Zyxq7BOfpw2y7oraUPKPql3xiWOtjiNhnwV8qO1D47akMBapt8YhMk06Un/uPAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2997cb49711so468083a91.3;
+        Fri, 23 Feb 2024 12:34:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708720492; x=1709325292;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GcSK7lktycGUq3TCMwXiTLhn36wJtNMvHXvTtj8Eb6M=;
+        b=dLajL/0cv/bGP6S5nvXVjNKW9L0Om3naJ9nBiLut53DYT1mNEyxF7avwhi15yruwsj
+         oiSkuvfiScLjv3YuWXmU3x7WmieJzMMIvTuUd49QUgwM6Uio5QfJnvRFXNkl1ZyeW3ej
+         chkORGrJ5ccuMSXXS13hY3ijq0EtYpNPUZFandxJgXz4IuFu5d6lQKLfs8Z5xVR1QGNB
+         ++D91wExL+odTy378SRhSLn5rZFQnZXJpl2FNi6C3i6oT+Wx6UEcy/Lx/ykCiWkNEvZG
+         C/rOJk8pcrrxcCG3Ytqo1hFBlljHVdEqNHnylIcqAa/B5XBf1QqyCbZBmGviP5OH9ZPS
+         OZPA==
+X-Forwarded-Encrypted: i=1; AJvYcCWDjnBt5vFMVAvKZDP9boRdhjd99YGki59BcFJoW75Yj8e463aV1VgIwVomQDbmPRM6HEbHtRndzSuulpRYK9ges94sOjHzJNYm5N2CVlCNf/rl5oLZRCBD9yNOf/qsGiy1RTtPsp+A1Q==
+X-Gm-Message-State: AOJu0YzV+cSL9RG7r7ZCAdT7NE7yEihkc8rjKFOQslutISn7c66TWXk/
+	WDtF1t7hAHE4scRPsMGPp20bpEJIy5wq/KZMwNn3F7Gmpb/wVJpT/CHYI26ybLpNIsJYhDvPVhk
+	GWp72YpKAduuXw3zcbrH77BXiLLZCdpl7ZNg=
+X-Google-Smtp-Source: AGHT+IFOdigC3SxxyWtae1xXbC4lmWhve0smF+kir/IdQxFCJuiP1g7uHgs3wF+fLU5mUnBfTqBljCR9WoNG3oTobxs=
+X-Received: by 2002:a17:90a:420b:b0:29a:4239:6893 with SMTP id
+ o11-20020a17090a420b00b0029a42396893mr1013909pjg.6.1708720492297; Fri, 23 Feb
+ 2024 12:34:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="185210117-834878095-1708720427=:3731485"
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+References: <20240222100656.0a644254@canb.auug.org.au> <Zdj3FyPjE5ezyfsM@x1> <Zdj74Zo10vYTZNMl@x1>
+In-Reply-To: <Zdj74Zo10vYTZNMl@x1>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Fri, 23 Feb 2024 12:34:40 -0800
+Message-ID: <CAM9d7ciaj80QZL0AS_T2HNBdMOyS-j1wBHQSYs=U3kHQimY1mQ@mail.gmail.com>
+Subject: Re: [solved] Re: linux-next: build failure after merge of the perf tree
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Ian Rogers <irogers@google.com>, 
+	Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>, Arnaldo Carvalho de Melo <acme@redhat.com>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hi Arnaldo,
 
---185210117-834878095-1708720427=:3731485
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+On Fri, Feb 23, 2024 at 12:11=E2=80=AFPM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> On Fri, Feb 23, 2024 at 04:50:47PM -0300, Arnaldo Carvalho de Melo wrote:
+> > On Thu, Feb 22, 2024 at 10:06:56AM +1100, Stephen Rothwell wrote:
+> > > Hi all,
+> > >
+> > > After merging the perf tree, today's linux-next build (native perf)
+> > > failed like this:
+> > >
+> > > util/bpf_skel/augmented_raw_syscalls.bpf.c:329:15: error: invalid app=
+lication of 'sizeof' to an incomplete type 'struct timespec64'
+> > >         __u32 size =3D sizeof(struct timespec64);
+> > >                      ^     ~~~~~~~~~~~~~~~~~~~
+> > > util/bpf_skel/augmented_raw_syscalls.bpf.c:329:29: note: forward decl=
+aration of 'struct timespec64'
+> > >         __u32 size =3D sizeof(struct timespec64);
+> > >                                    ^
+> > >
+> > > Caused by commit
+> > >
+> > >   29d16de26df1 ("perf augmented_raw_syscalls.bpf: Move 'struct timesp=
+ec64' to vmlinux.h")
+> > >
+> > > This is a ppc64 le build.
+> > >
+> > > I have used the perf tree from next-20240221 for today.
+> >
+> > Ok, finally I managed to secure a ppc64 machine to test this and
+> > sometimes I reproduce just like you reported, but sometimes I can't do
+> > it, didn't manage to isolate what is that makes it fail sometimes, make
+> > -C tools/perf clean, nuking the O=3D target directory, etc, when I
+> > reproduce it:
+>
+> So I think I see the problem, I now left the build directory with a
+> previous build from torvalds/master, then switched to the
+> perf-tools-branch and tried to build from there, without first removing
+> the old build, it fails:
+>
+>   CLANG   /tmp/build/perf-tools-next/util/bpf_skel/.tmp/augmented_raw_sys=
+calls.bpf.o
+> util/bpf_skel/augmented_raw_syscalls.bpf.c:329:15: error: invalid applica=
+tion of 'sizeof' to an incomplete type 'struct timespec64'
+>   329 |         __u32 size =3D sizeof(struct timespec64);
+>       |                      ^     ~~~~~~~~~~~~~~~~~~~
+> util/bpf_skel/augmented_raw_syscalls.bpf.c:329:29: note: forward declarat=
+ion of 'struct timespec64'
+>   329 |         __u32 size =3D sizeof(struct timespec64);
+>       |                                    ^
+> 1 error generated.
+> make[2]: *** [Makefile.perf:1161: /tmp/build/perf-tools-next/util/bpf_ske=
+l/.tmp/augmented_raw_syscalls.bpf.o] Error 1
+> make[1]: *** [Makefile.perf:264: sub-make] Error 2
+>
+>
+> Because it will use what was installed before in the build dir:
+>
+> [acme@ibm-p9z-16-lp5 perf-tools-next]$ ls -la /tmp/build/perf-tools-next/=
+util/bpf_skel/vmlinux.h
+> -rw-r--r--. 1 acme acme 4319 Feb 23 14:59 /tmp/build/perf-tools-next/util=
+/bpf_skel/vmlinux.h
+> [acme@ibm-p9z-16-lp5 perf-tools-next]$
+>
+> And that one doesn't have 'struct timespec64':
+>
+> [acme@ibm-p9z-16-lp5 perf-tools-next]$ grep timespec64 /tmp/build/perf-to=
+ols-next/util/bpf_skel/vmlinux.h
+> [acme@ibm-p9z-16-lp5 perf-tools-next]$
+>
+> If I remove that directory contents:
+>
+> [acme@ibm-p9z-16-lp5 perf-tools-next]$ rm -rf /tmp/build/perf-tools-next/
+> [acme@ibm-p9z-16-lp5 perf-tools-next]$ mkdir /tmp/build/perf-tools-next/
+> [acme@ibm-p9z-16-lp5 perf-tools-next]$
+>
+> And then try to build again:
+>
+> make -k O=3D/tmp/build/perf-tools-next/ -C tools/perf install-bin
+>
+> It works.
+>
+> I reproduced the problem on x86_64, so, on this transition period, the
+> problem happens, probably we need to robustify the installation of
+> tools/perf/util/bpf_skel/vmlinux/vmlinux.h in the O=3D target directory,
+> but if you just make sure the build directory is clean before trying to
+> build it, this time, it should work, wdyt?
 
+Can we add a dependency to the minimal vmlinux.h?
 
+Thanks,
+Namhyung
 
-On Fri, 23 Feb 2024, Weiß, Simone wrote:
+---8<---
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 3cecd51b2397..33621114135e 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -1147,7 +1147,7 @@ ifeq ($(VMLINUX_H),)
+   endif
+ endif
 
-> On Tue, 2024-02-20 at 19:52 +0100, Mikulas Patocka wrote:
-> > CAUTION: This email originated from outside of the Elektrobit organization. Do
-> > not click links or open attachments unless you recognize the sender and know
-> > the content is safe.
-> > 
-> > 
-> > On Fri, 9 Feb 2024, Simone Weiß wrote:
-> > 
-> > > Extend the dm-integrity driver to omit writing unused journal data sectors.
-> > > Instead of filling up the whole journal section, mark the last used
-> > > sector with a special commit ID. The commit ID still uses the same base
-> > > value,
-> > > but section number and sector number are inverted. At replay when commit IDs
-> > > are analyzed this special commit ID is detected as end of valid data for
-> > > this
-> > > section. The main goal is to prolong the live times of e.g. eMMCs by
-> > > avoiding
-> > > to write the whole journal data sectors.
-> > > 
-> > > The change is right now to be seen as experimental and gets applied if
-> > > CONFIG_DMINT_LAZY_COMMIT is set to y. Note please that this is NOT
-> > > planned for a final version of the changes. I would make it configurable
-> > > via flags passed e.g. via dmsetup and stored in the superblock.
-> > > 
-> > > Architectural Limitations:
-> > > - A dm-integrity partition, that was previously used with lazy commit,
-> > >  can't be replayed with a dm-integrity driver not using lazy commit.
-> > > - A dm-integrity driver that uses lazy commit is expected
-> > >  to be able to cope with a partition that was created and used without
-> > >  lazy commit.
-> > > - With dm-integrity lazy commit, a partially written journal (e.g. due to a
-> > >  power cut) can cause a tag mismatch during replay if the journal entry
-> > > marking
-> > >  the end of the journal section is missing. Due to lazy commit, older
-> > > journal
-> > >  entries are not erased and might be processed if they have the same commit
-> > > ID
-> > >  as adjacent newer journal entries.
-> > 
-> > Hi
-> > 
-> > I was thinking about it and I think that this problem is a showstopper.
-> > 
-> > Suppose that a journal section contains these commit IDs:
-> > 
-> >         2       2       2       2(EOF)  3       3       3       3
-> > 
-> > The IDs "3" are left over from previous iterations. The IDs "2" contain
-> > the current data. And now, the journal rolls over and we attempt to write
-> > all 8 pages with the ID "3". However, a power failure happens and we only
-> > write 4 pages with the ID "3". So, the journal will look like:
-> > 
-> >         3(new)  3(new)  3(new)  3(new)  3(old)  3(old)  3(old)  3(old)
-> > 
-> > After a reboot, the journal-replay logic will falsely believe that the
-> > whole journal section is consistent and it will attempt to replay it.
-> > 
-> > This could be fixed by having always increasing commit IDs - the commit
-> > IDs have 8 bytes, so we can assume that they never roll-over and it would
-> > prevent us from mixing old IDs into the current transaction.
-> Hi
-> 
-> Thanks for the review of the concept. I was out this week and could only think
-> about it now. I understood it right, that the proposal is to add an extra value
-> to the commit ID, that is e.g. incremented when integrity_commit is executed?
-> 
-> If so, I tried this quickly and looks good on first glance. Will check and test
-> further next.
-> 
-> Simone
-
-I propose to use the commit ID 0 when writing the journal for the first 
-time, then 1 when the journal rolls over, 2 when it rolls over again, 3 
-when it rolls over again, 4 on another roll over and so on up to 
-0x7fffffffffffffff (which will be never reached in practice).
-
-And use the top bit as an end-of-section marker. As the commit IDs will 
-never roll over, it won't happen that an old transaction would be mixed 
-into a new transaction on partial journal write.
-
-Mikulas
---185210117-834878095-1708720427=:3731485--
-
+-$(SKEL_OUT)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL)
++$(SKEL_OUT)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL) $(VMLINUX_H)
+ ifeq ($(VMLINUX_H),)
+        $(QUIET_GEN)$(BPFTOOL) btf dump file $< format c > $@
+ else
 
