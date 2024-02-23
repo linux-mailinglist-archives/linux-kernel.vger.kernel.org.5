@@ -1,70 +1,73 @@
-Return-Path: <linux-kernel+bounces-78968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78969-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDCAA861B73
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:20:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBB6D861B74
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:20:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8902428BD32
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5AC58B22F51
 	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:20:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28F1B143C48;
-	Fri, 23 Feb 2024 18:20:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDF67141987;
+	Fri, 23 Feb 2024 18:20:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b="OmrC/p3J"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jrLpW/XA"
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56AF0143C75
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 18:20:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E44414263E;
+	Fri, 23 Feb 2024 18:20:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708712442; cv=none; b=oqVqqrjpbAGT4anNL5nUFS5ZZeNUymCSh4dIbcItUm6lX2yX7eO1g3GQx9n54QS9fauLGK3z8s1+pnjsWy9Io+JKWQL65MCcsmwtTUySwRwnXbXWW9HqQdYap0yixeBnRl9UHOTrci8qP33CjKOaT1mE8LmA47jc0GtDeA0KKq0=
+	t=1708712443; cv=none; b=X8de8bc8EZW/CJ+LAjVbPtyRjI+v5/ULVoPU1oSAoO7jkofKjgbOYfjMsTfEhv0osFLSyJXq7QqOzzjoYhzDVlcQBizqKfsVombK9S4nxWHrm/rirR9zOxlY6F2hHY7pRgZxAIs6dDhLaVveYyTCNnGrNN9onUi1GXAractLA6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708712442; c=relaxed/simple;
-	bh=F+0O6MLAtkoA31PIgLq8fpjX3EPS9JEOoGmoToMd2T0=;
+	s=arc-20240116; t=1708712443; c=relaxed/simple;
+	bh=4Qrvq1AhP6eyIkuoH88pa0hlk5TiVVHr6E9tQvZNksE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=K3ixFb48GkUQbRak7zqP6ImjYWLyWxN6Bd29PeGG1q8c+a9rvqrwRiFckKmHiBmu3M4ALSEFkr2a4DlNz/lZxx/atHw/GLRLSmKjjibi6wIN/fIi2xU6qYWslw7R8z4VWf8bsebJhJdKMjmBZ20O0ufzyhMToKLr2FnOJfAyf3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com; spf=pass smtp.mailfrom=cloud.com; dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b=OmrC/p3J; arc=none smtp.client-ip=209.85.208.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloud.com
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d22fa5c822so15508131fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 10:20:35 -0800 (PST)
+	 In-Reply-To:Content-Type; b=BPTv6Mavb8Y6eUlGkIEzWUuPnE90mIVLQqLEXJG5re2ASKKMEhQ51TKTf6HV0+1cds6lIoarLkdyS+5dhOh0wrZtDEeSUdhQR5eP+wQWjdkr/g+bKYVqBVxFUM2Nunzw/gsKxS6lah3EE4svFtulB7n4WR4t9Spx00wm06A3ce8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jrLpW/XA; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso999005a12.3;
+        Fri, 23 Feb 2024 10:20:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1708712432; x=1709317232; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20230601; t=1708712438; x=1709317238; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=782AoGpCOecehLZVMZnBvSEhsvxprPEXEJFDkKEsL78=;
-        b=OmrC/p3J61ZtS6R2fcLi8VNcqIXmGJiqI8CqLr47imd+gQ9hA3celPTY5MuyhpVGnI
-         WFKagv579VgoJDSTe5i10UC+URA2MFqR4ZDT7LPkTaBwLpK7FQipRdvxldCxZzyS1Hll
-         ZLqa+rpwcQLDl+YKZr+Q3c1N2XDp+gu6s9Bhs=
+        bh=uvmCBum3obDIzEvJJBYCmhBj4c5cWpFkxhaUjZo6Kko=;
+        b=jrLpW/XA9Gpvqhw2vvohkxecNbvp2boguflh8dUqSnJ7otPwc2uXpYjE5dO20hdeuP
+         EluHRC6NhES11Iq+xbCEOcl9lsXXt14u7UZZJETWX9zuafRWtX2bc/t66p1nnkVLNLF9
+         VfADDENc5cg4P6UQuWDGGbyDty5hT+bLzWVULGjgZf1HLYfLQZOVmjHRalfifH/or/Av
+         JdWUjM9SaUbjFQotcp0anP4rmO10F4vLp32KbThK8xH9IgRzQOPNl6GjPbtBOCbuv/uY
+         zeGoIJruytT3Q1qdZntKAvJPVWgNaHs+N0gYe1A28bl10ve5Hsdc4dEwZAS6BS4pHzXE
+         55hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708712432; x=1709317232;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1708712438; x=1709317238;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=782AoGpCOecehLZVMZnBvSEhsvxprPEXEJFDkKEsL78=;
-        b=PQgez2PIw9d+jzM4H63xaP8iLdije0LLomD91aq7OhpVGbKRZQiXXTr6sT/gGP+bQn
-         MjqKFQbgKLcT2e8sbb0enieCa8+luEwyQDMZHr3KgzWP2KT4G+lhVIWuQC7IGclpmkEe
-         N/3TgDfs7goKuc6Z9sLHSL0XDjppklX+L9kpipU9KKLBpEY4cex0QfLJ56Vc44gUsXCJ
-         zTCc9ihwOy4KQ1lr2a3eXsQM692HPMHw2z6DkvP+11vFtVvvcpWLbXgHZRosv+xNDiDo
-         w9Pe0lwB/Kg8ZKiGry+19Usv+1bhDVSOwSktWGd4ZBrLGetc6fE6RRYZuCQpRpX4D4Zz
-         OC4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXm2uDZ7sPCeNaLssA/jrUNPRE3aQ6FyJ8mXNPqnTgaBkAe7FDRmGXENzvv+Af6azt7S4AZvgE+ggDIg3qnEkn1al3ZnrWu7GoEy5Gs
-X-Gm-Message-State: AOJu0YyyopwhA3PKD/O3u4WHgtAyCblGebhcxSSCyoEBmIO8+5bGEvPC
-	yLWdxlOeEuSQD8tBKLaFKCwBgWZoC94c+Y0dusDUIxfj+QDfWyHZfw1lkDDLPKk=
-X-Google-Smtp-Source: AGHT+IGKmGhyIU5gJMZF27bTWRBFQ/Y1UUW5pP7G5WcYyHm4U94/AXfI5Wnt6LhdlWi2bRhTqlu5sg==
-X-Received: by 2002:a2e:9052:0:b0:2d2:6227:d30b with SMTP id n18-20020a2e9052000000b002d26227d30bmr404964ljg.47.1708712431810;
-        Fri, 23 Feb 2024 10:20:31 -0800 (PST)
-Received: from [10.80.67.149] (default-46-102-197-194.interdsl.co.uk. [46.102.197.194])
-        by smtp.gmail.com with ESMTPSA id p19-20020a05620a22f300b00785ccbb457esm1393327qki.81.2024.02.23.10.20.28
+        bh=uvmCBum3obDIzEvJJBYCmhBj4c5cWpFkxhaUjZo6Kko=;
+        b=lhUIVWehDyaUXA6h4XSupE8bOdd3wu0j9YRPH9FH77soo9tvbcpZbsZtnrNIAKvQHg
+         9uND2FWe7Z7fQIHmfYes9fnTW4cjaOfdhxiTCoEsEp+4a0yKWRTRMcgh3mHoQKK0/imc
+         QVZ19GhqkOFT9w85ntRj7VynWTpmktiWTD/DBsPQ6dZ64dwIvX/IHSyUkarvPow04EgV
+         8L4fQuC0QgdH8eP56UTcDlmhTn0W9qf0ZohHaZ1y1Bj6cTjfXnFsimBMSPybTmhCiVo/
+         Z8LtwRQhnbiTs09VVDDn6xuA/NbtJpRyKRKp1XzakLJOUGFljWvku2BiWqmdsfrG+VZk
+         tNMw==
+X-Forwarded-Encrypted: i=1; AJvYcCVBqQsdf9keqRJ0PTNa4BpEpE5Ms/tWxl+xpPQcOTvgbF5RwiljKO4opp//uccC48QvRXel+uPhJ9nipsL462hxtMYUOqOHExc=
+X-Gm-Message-State: AOJu0YwVjDAbJLWQ6CjFlVlFGx+1tagegCczdMKV95HZqbhQQ2lZYagu
+	y7q+fgjsXespj9iV4DyeKC8z2VadTHtXwmhPEoMzciVsiPQsmaUg
+X-Google-Smtp-Source: AGHT+IGg7ReM16zETYG2CYBHHz4NjUZ7dBtJCjwrpYyfNBFSVowWkw/L6NHszSznrq68kkWUt/LnqQ==
+X-Received: by 2002:a05:6a20:4c9b:b0:1a0:ce31:128b with SMTP id fq27-20020a056a204c9b00b001a0ce31128bmr519668pzb.34.1708712437592;
+        Fri, 23 Feb 2024 10:20:37 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id t42-20020a056a0013aa00b006e06b8548c3sm3986146pfg.139.2024.02.23.10.20.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Feb 2024 10:20:31 -0800 (PST)
-Message-ID: <e641e2f1-16cf-4717-8a1f-8afac2644efe@citrix.com>
-Date: Fri, 23 Feb 2024 18:20:27 +0000
+        Fri, 23 Feb 2024 10:20:37 -0800 (PST)
+Message-ID: <a299118d-eeec-40b4-9a3d-48dc40f34e12@gmail.com>
+Date: Fri, 23 Feb 2024 10:20:32 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,111 +75,42 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 06/15] x86: Add early SHA support for Secure Launch
- early measurements
-Content-Language: en-GB
-To: Eric Biggers <ebiggers@kernel.org>,
- Andrew Cooper <andrew.cooper3@citrix.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>,
- Ross Philipson <ross.philipson@oracle.com>, linux-kernel@vger.kernel.org,
- x86@kernel.org, linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-crypto@vger.kernel.org, kexec@lists.infradead.org,
- linux-efi@vger.kernel.org, dpsmith@apertussolutions.com, tglx@linutronix.de,
- mingo@redhat.com, bp@alien8.de, hpa@zytor.com, dave.hansen@linux.intel.com,
- mjg59@srcf.ucam.org, James.Bottomley@hansenpartnership.com,
- peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca, luto@amacapital.net,
- nivedita@alum.mit.edu, herbert@gondor.apana.org.au, davem@davemloft.net,
- kanth.ghatraju@oracle.com, trenchboot-devel@googlegroups.com
-References: <20240214221847.2066632-1-ross.philipson@oracle.com>
- <20240214221847.2066632-7-ross.philipson@oracle.com>
- <CAMj1kXEmMBY_jc0uM5UgZbuZ3-C7NPKzg5AScaunyu9XzLgzZA@mail.gmail.com>
- <98ad92bb-ef17-4c15-88ba-252db2a2e738@citrix.com>
- <CAMj1kXFTu+bV2kQhAyu15hrYai20NcBLb4Zu8XG2Y-XjL0f+rw@mail.gmail.com>
- <1a8e69a7-89eb-4d36-94d6-0da662d8b72f@citrix.com>
- <CAMj1kXEvmGy9RJo4s8tECsFj2dufZ8jBPoJOEtkcGUoj+x2qsw@mail.gmail.com>
- <431a0b3a-47e5-4e61-a7fc-31cdf56f4e4c@citrix.com>
- <20240223175449.GA1112@sol.localdomain>
-From: Andrew Cooper <andrew.cooper3@citrix.com>
-Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
- 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
- 6+ahAA==
-In-Reply-To: <20240223175449.GA1112@sol.localdomain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3] PM / core: conditionally skip system pm in
+ device/driver model
+Content-Language: en-US
+To: Guan-Yu Lin <guanyulin@google.com>, rafael@kernel.org, pavel@ucw.cz,
+ len.brown@intel.com, gregkh@linuxfoundation.org,
+ andriy.shevchenko@linux.intel.com, petr.tesarik.ext@huawei.com,
+ rdunlap@infradead.org, james@equiv.tech, broonie@kernel.org,
+ james.clark@arm.com, masahiroy@kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20240223143833.1509961-1-guanyulin@google.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240223143833.1509961-1-guanyulin@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 23/02/2024 5:54 pm, Eric Biggers wrote:
-> On Fri, Feb 23, 2024 at 04:42:11PM +0000, Andrew Cooper wrote:
->> Yes, and I agree.  We're not looking to try and force this in with
->> underhand tactics.
->>
->> But a blind "nack to any SHA-1" is similarly damaging in the opposite
->> direction.
->>
-> Well, reviewers have said they'd prefer that SHA-1 not be included and given
-> some thoughtful reasons for that.  But also they've given suggestions on how to
-> make the SHA-1 support more palatable, such as splitting it into a separate
-> patch and giving it a proper justification.
->
-> All suggestions have been ignored.
+On 2/23/24 06:38, Guan-Yu Lin wrote:
+> In systems with a main processor and a co-processor, asynchronous
+> controller management can lead to conflicts.  One example is the main
+> processor attempting to suspend a device while the co-processor is
+> actively using it. To address this, we introduce a new sysfs entry
+> called "conditional_skip". This entry allows the system to selectively
+> skip certain device power management state transitions. To use this
+> feature, set the value in "conditional_skip" to indicate the type of
+> state transition you want to avoid.  Please review /Documentation/ABI/
+> testing/sysfs-devices-power for more detailed information.
 
-The public record demonstrates otherwise.
+This looks like a poor way of dealing with a lack of adequate resource 
+tracking from Linux on behalf of the co-processor(s) and I really do not 
+understand how someone is supposed to use that in a way that works.
 
-But are you saying that you'd be happy if the commit message read
-something more like:
+Cannot you use a HW maintained spinlock between your host processor and 
+the co-processor such that they can each claim exclusive access to the 
+hardware and you can busy-wait until one or the other is done using the 
+device? How is your partitioning between host processor owned blocks and 
+co-processor(s) owned blocks? Is it static or is it dynamic?
+-- 
+Florian
 
----8<---
-For better or worse, Secure Launch needs SHA-1 and SHA-256.
-
-The choice of hashes used lie with the platform firmware, not with
-software, and is often outside of the users control.
-
-Even if we'd prefer to use SHA-256-only, if firmware elected to start us
-with the SHA-1 and SHA-256 backs active, we still need SHA-1 to parse
-the TPM event log thus far, and deliberately cap the SHA-1 PCRs in order
-to safely use SHA-256 for everything else.
----
-
-?
-
-~Andrew
 
