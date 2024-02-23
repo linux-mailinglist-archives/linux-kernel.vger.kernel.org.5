@@ -1,77 +1,185 @@
-Return-Path: <linux-kernel+bounces-77902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D4F0860BE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:11:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16E4C860BE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:13:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D2B0B218BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:11:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0792283984
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:13:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A01BA179A8;
-	Fri, 23 Feb 2024 08:10:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70A53171AF;
+	Fri, 23 Feb 2024 08:13:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f+4azPBF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hwpHZa0M"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0885171A6;
-	Fri, 23 Feb 2024 08:10:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 476391642A
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 08:13:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708675853; cv=none; b=TxhyIyl8jlBcjA/ezdj5KbkENTy0+E9GhBi8lpln9SmXvRI58dp9YTOeTcv4oukDDq0ceE+Z0DQPRiIx31asq8vBrIGXIZ90C4W7RegLUTNNxyzTH4YxaIkdXb2ifPzEFyPOzh+hBtz0a1l4PDZ4I0SJO3OJrwQL4/F98GM2F3I=
+	t=1708676002; cv=none; b=uLw2qY/1WzXuwwSEm4qBBujN/8qG3JrnGP96D0ILEuRZHLS4mxMn7Wm6Ft85Q9VdtYBfRMBJ+EPIBVoy6YpJhgNUwY8ehlvPVXKNZO7/hegvwIssrwo2waZ8pOONlBanxVv6s9ODw6VwHhYhWOut9BWHk1et88BCOw/0lwPW2OE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708675853; c=relaxed/simple;
-	bh=G58eG4LAAef5vMNI29H63UmRbuDbS1Aa5HYHb5xMBms=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VIwwtCMLU8N8L35sMkKQYIkbrDFzEEDm87tXdf6y7NHOzs74zCM0Z3hAKRxdO+VURFN9D0Ei29cVbIZeVYxmwyQ+RTvm5ehY4DeIX+fu6Zgfz8zKOMWzUIXD7A1LS4bDvV+g6eM3EMG2HnCbsN7GkKuq2z+aR7kyO/i5H5fqH6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f+4azPBF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08253C433C7;
-	Fri, 23 Feb 2024 08:10:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708675853;
-	bh=G58eG4LAAef5vMNI29H63UmRbuDbS1Aa5HYHb5xMBms=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=f+4azPBFpDsYrpCsm+Z4FHfyVeKBwkCE2CMDekQluaV859vQvV9yJ3gJ17zYyP50W
-	 d6cC6/GvZ98hx+Te/n55UOwPIYML+e9UIOn9DYyS6tNYi9bI1Bjf9MZMHHzT1M6Rl1
-	 Q7TSQK2crhB7CD38zOhaBjbTrXdHkJ/yYS4qdHD8dIMHxG1RE5Ul0CvO5WdLvbdq2n
-	 lr9QjLyNPcfzUz/gEQeM04XwmKMaQG0qIkZPN0SK+F1Wd8dW0poWMRnOD44bMjaTOU
-	 fKokSCYrZ2KNND2zcTij0/pwg2LGRxREgIQhmsH6ATqfvxKqOombIpycmPjN+cvWGR
-	 t2ETJKasCwXaA==
-Date: Fri, 23 Feb 2024 09:10:45 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-Cc: Serge Hallyn <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>, 
-	Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
-	Casey Schaufler <casey@schaufler-ca.com>, Mimi Zohar <zohar@linux.ibm.com>, 
-	Roberto Sassu <roberto.sassu@huawei.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, 
-	Eric Snowberg <eric.snowberg@oracle.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Miklos Szeredi <miklos@szeredi.hu>, 
-	Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, audit@vger.kernel.org, selinux@vger.kernel.org, 
-	linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH v2 10/25] xattr: use is_fscaps_xattr()
-Message-ID: <20240223-pfand-absaugen-44b5534dfcf9@brauner>
-References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
- <20240221-idmap-fscap-refactor-v2-10-3039364623bd@kernel.org>
+	s=arc-20240116; t=1708676002; c=relaxed/simple;
+	bh=x3HN2Fcf2e9U2v06SCYwp15p0JYpj7gbKGtwV8l3H7c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=A1XUWXKA2ufSc0DEipuBztMKx4GmluO5CrmeEEFQBIU6vNgbl6CPsfVRNTVgZrNJT5p0Tbx2jqcM2xNb5U4p+uAV41547uK92Ptqpcyidv01BzIwey4MoDMJcghQyMdBkZ1/aLyAKZBZaNssaVI9ffX8cQFgpV2zblKt7yCrRw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hwpHZa0M; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708675989;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=aAzjuDCLmAWvO8xcKrjU4zGwSiBtDeIoA/McoIGvPgk=;
+	b=hwpHZa0MsGdPwu/jQpbYNaqMM0vJNBzYa+y7gkbMFFT2AuWpQSfbY+0iu3QyRbPfBJjhvd
+	WclBy114ZMDO6/EPEBHtYr77WsOKVhXuTx9Ess1bNjrRabngrps00kyWSVQdIk8dPjxJQL
+	XHY89y71IehC9h4rYaU7g+UUEXnC1r8=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-577-YbfC51G2PDe_F0nMLyqZNQ-1; Fri, 23 Feb 2024 03:13:06 -0500
+X-MC-Unique: YbfC51G2PDe_F0nMLyqZNQ-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33d7e755f52so270496f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 00:13:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708675985; x=1709280785;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aAzjuDCLmAWvO8xcKrjU4zGwSiBtDeIoA/McoIGvPgk=;
+        b=nRopiPPni2XSJpWmsN0rdI6c4BWUOl6uVSp2/myTZDsOkeYJ8AClslufwSVKd6Tdu0
+         CvAFQSQyI15kX4zc1+DbnmtBGkyR8G8nKYGMdcxHDpHHmUCgrhF1P1zwQm4fB6CoWFaL
+         kUx+8dFplgpqZfHNYh1Qyrl9HWNrjnxPrZpBm5zAoVUa8ZwrwDrJWIH2RhLg6DMf5K2p
+         3VyzIFI6fhAkLBjFWeG64F46IsemAYS1Q/PXlyrgM4caigLFzfPVQ32BJwya3a/oZZfx
+         2ehHjdUAXNxInwZ/v5kqQ2m3gavTVriLijnbiUTEReMNIxqD5a56LF9Yd3PmYFVRTqwQ
+         7/0A==
+X-Gm-Message-State: AOJu0YyLDAA1MqGoqpvL7yfjlW0kFsW9JvKzhprM+LcLINpWCAMvkws5
+	AH9tTiwqIQ7pixxsw2UR+GV4D0+MRWUb2ql7D4RE59NxBX66yFpfJSBjZHwzbRY/0oysRy7n0rQ
+	Lgm8vDqH1UvRGla39v+b7SZBCwxcXEacXaHT0DglIIy/0yJ8whvM2zaNS2aHhVg==
+X-Received: by 2002:a5d:6a43:0:b0:33d:3089:a840 with SMTP id t3-20020a5d6a43000000b0033d3089a840mr956262wrw.49.1708675985497;
+        Fri, 23 Feb 2024 00:13:05 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEytQZyH3TnclXxJT/vsFSiSIFTj8pgp9IIfHxcul/Ja6LrKjM2UFKQRaosQbXqowEyQrrgnw==
+X-Received: by 2002:a5d:6a43:0:b0:33d:3089:a840 with SMTP id t3-20020a5d6a43000000b0033d3089a840mr956249wrw.49.1708675985198;
+        Fri, 23 Feb 2024 00:13:05 -0800 (PST)
+Received: from [192.168.0.9] (ip-109-43-178-100.web.vodafone.de. [109.43.178.100])
+        by smtp.gmail.com with ESMTPSA id y10-20020a5d470a000000b0033d640c8942sm1850958wrq.10.2024.02.23.00.13.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Feb 2024 00:13:04 -0800 (PST)
+Message-ID: <c2832612-9a67-4dc1-a8c2-4cc026b14567@redhat.com>
+Date: Fri, 23 Feb 2024 09:13:03 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240221-idmap-fscap-refactor-v2-10-3039364623bd@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] m68k: Avoid CONFIG_COLDFIRE switch in uapi header
+Content-Language: en-US
+To: Arnd Bergmann <arnd@arndb.de>, Greg Ungerer <gerg@linux-m68k.org>,
+ linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>
+References: <20240219160126.510498-1-thuth@redhat.com>
+ <6f3b246e-7417-4455-abe4-ca3b42fdda4c@linux-m68k.org>
+ <4824192b-5573-4246-a47c-ad6249e2900e@app.fastmail.com>
+From: Thomas Huth <thuth@redhat.com>
+Autocrypt: addr=thuth@redhat.com; keydata=
+ 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
+In-Reply-To: <4824192b-5573-4246-a47c-ad6249e2900e@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 21, 2024 at 03:24:41PM -0600, Seth Forshee (DigitalOcean) wrote:
-> Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
-> ---
+On 20/02/2024 16.09, Arnd Bergmann wrote:
+> On Tue, Feb 20, 2024, at 15:13, Greg Ungerer wrote:
+>> On 20/2/24 02:01, Thomas Huth wrote:
+>>> We should not use any CONFIG switches in uapi headers since these
+>>> only work during kernel compilation; they are not defined for
+>>> userspace. Fix it by moving the struct pt_regs to the kernel-internal
+>>> header instead - struct pt_regs does not seem to be required for
+>>> the userspace headers on m68k at all.
+>>>
+>>> Suggested-by: Greg Ungerer <gerg@linux-m68k.org>
+>>> Signed-off-by: Thomas Huth <thuth@redhat.com>
+>>> ---
+>>>    v2: Move the struct instead of changing the #ifdef
+>>>
+>>>    See previous discussion here:
+>>>    https://lore.kernel.org/lkml/6e3f2a2e-2430-4b4f-9ead-d9a4d5e42713@linux-m68k.org/
+>>
+>> I am fine with this. FWIW the following architectures do
+>> not define pt_regs in their uapi/ptrace.h header either:
+>> arc, arm64, loongarch, nios2, openrisc, riscv, s390, xtensa
+>> Though quite a few of them have a user_pt_regs instead.
+>>
+>> So for me:
+>>
+>> Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+>>
+>> Geert, Arnd, do you have any thoughts on this?
+> 
+> It clearly doesn't change the ABI, so that part is fine.
+> 
+> If asm/ptrace.h is included by some userspace tool to
+> get the definition, it might cause a compile-time error
+> that needs a trivial source change.
+> 
+> This could be needed for ptrace (gdb, strace) or signal
+> handling and setjmp (libc), though it's more likely that these
+> already have their own copies.
 
-Looks good,
-Reviewed-by: Christian Brauner <brauner@kernel.org>
+If we still feel unsure, we should maybe rather go with v1:
+
+  https://lore.kernel.org/lkml/20231110103120.387517-1-thuth@redhat.com/
+
+?
+
+  Thomas
+
+
 
