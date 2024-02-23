@@ -1,94 +1,150 @@
-Return-Path: <linux-kernel+bounces-79205-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97BDB861EE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:24:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54751861EF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:25:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C81CB23B44
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:24:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED061287B3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:25:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2F941493B6;
-	Fri, 23 Feb 2024 21:23:27 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AE251493B6;
+	Fri, 23 Feb 2024 21:25:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PURqn84J"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 684BC1DDC3;
-	Fri, 23 Feb 2024 21:23:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA459149388
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 21:25:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708723407; cv=none; b=pkrrxbvCXgmbY/AtmzZDKceFPrWBxnn5z3WUk67LuWBlf/cJPuKNFdCIGjMTFDlZAhklETv866YNe7VaBsR1SCAacRw5vmumlfNXKdYQdRMlH7wz+3uzNPxNwKRp/N1L6BOyHSYIa4RIIqp2dlGwjfGc07+oBi7i3YpdJ7Zl0f8=
+	t=1708723534; cv=none; b=jWaRxLfugLlH2yP9tV56VI/nLbneUSgNdGoDO/YPermVjg5fnyNZHMb9QGW7XaA943kj9WkT5POmFjkAm5rTg36yXPD1lbCY+1/YnMqriIkqnvJiqvJXB8jXRs5csBuoDXgJyEa/fMVEh7/3gr/TIwcQE2PqZCAz3v24gIZm4P8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708723407; c=relaxed/simple;
-	bh=yqTC6CNCGndCwN3XIdjvcwzQ+nsaHPctVb6WPNXyc18=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Lv8n7EuLSll0K7IITJPWEND5I5lbwL9N0/g7VAzo0rZ0uRkU2ccxaYg3xUdteR30jQ/EErh8HoS8TBEdbM/uV6hO5vx8K5PTpZl653zqTqdcVDNHGv0HEOa34ev58OEwj6fkiAY8HKWNCM7xcLTwKQGIDCubowy8kqYJMp3+lns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55164C433F1;
-	Fri, 23 Feb 2024 21:23:26 +0000 (UTC)
-Date: Fri, 23 Feb 2024 16:25:19 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>
-Subject: [PATCH] tracing: Remove second parameter to __assign_rel_str()
-Message-ID: <20240223162519.2beb8112@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708723534; c=relaxed/simple;
+	bh=CNHDyfwlt03n62yBOKPS0AUUGIsNT/feFufpk7g6Ghw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VeCJAZzLpeiVLms4U57B0TvFj145NryiVqbgm50kaJx6EV1H0ZgeAWWknmUNK6O64AdYrjuV2TJ2CUnbDOBjfVWLJ5LSbaGTeItqFSziMCbN0jzrrWXkq76EesMXtOfsVz6aYpZ9BS+BIr60vgz8gZEiLZ0J18NhQJluIqSXKjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PURqn84J; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3e891b5e4eso145376666b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:25:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708723531; x=1709328331; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YENr2GX006db0nPSIDpDV3ZqHJlP14oWdul/SVN/UQ8=;
+        b=PURqn84JVz7Phvto1cT96UY2AUf7W8oyjvn9H4dscG5IJPOtbqKSI7HpviUacQw738
+         xxZh0U4LwiVyY58CLn8iAHpzFbnP5CGltg6661LbaD6YxLwhmf6KehvsXVWr1EUMow9f
+         0j6AmnTOX9h3rjWHQncm2pr1QDXb6+jZyvzsUhlD12Uguz4zTt/REFsve7Jh/qGzjNgK
+         b8f6ReAsH3uhbcW+JofOh+JtcYYuG9NaHueeoUmkrqe1EYlUFqv2/B8VuptAv6BFckcM
+         lfcM5bsB7GAl8AmHlFL+fFM3V/TcW+l26hBgd3bZVlT+liCMpyaARvjByRK6ky6CWKnV
+         ODag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708723531; x=1709328331;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YENr2GX006db0nPSIDpDV3ZqHJlP14oWdul/SVN/UQ8=;
+        b=MIbnn1LocCORWQGb+aG1E+LfeyxSlLPWx2Go8dhOW854i7qa4fYfufyMnyb6TYPVlt
+         0MTLHUEGLTajufsoC0lNZw9WaByi1p4e5RlpefiXkdQnAHjMcw0PqwOEUJxNug8+2XTu
+         cLZOnqUe+2fQPARa9JvldOCE3q+EAUhXUljNDN+KUZ5QOcV2H1IoOalDYRgf7kPpLh4E
+         qELLiLzivuLRkO8V82ZiTWghLw2JbNWE5IbWoTSSVNRbOhs58noERuiesEj3hGsAdoZQ
+         eYv/65LESaV2W1PS57A/5qtW8bXJYUlyNy8oLHvP//Cf6Jr2IZjQsRtuUeP/YOWsvWaF
+         Z++Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWMpsMXJzmXQ522xLX1sb+D4Xj4ZvAC09myabUyd3+uxqAZsI2RF2Ht09s7JZiQoPHuDikSmb6/2UOq1fa3tkf3ClfqDB2sXbZSk4rJ
+X-Gm-Message-State: AOJu0YzCsFzatVNJu46EZ4JQ64HbIfwKt4Z8RtLgHEqtBalNQQaB5GHV
+	IwjGfGcQvkVSjxOiveklsJILDspuvlagE8QoRk2rIlDpCjVRiCwiygJJ6y3ARBQ=
+X-Google-Smtp-Source: AGHT+IEmURTcq2H1CfKMg2jMpRWdTBeYNihNzBc2w7JG/0XDmDaIcor57QFET4qryhjNbNwmjTFAbA==
+X-Received: by 2002:a17:906:78f:b0:a3f:c4e7:68aa with SMTP id l15-20020a170906078f00b00a3fc4e768aamr646932ejc.65.1708723531039;
+        Fri, 23 Feb 2024 13:25:31 -0800 (PST)
+Received: from [192.168.179.2] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id pv14-20020a170907208e00b00a3f45b80559sm2738150ejb.139.2024.02.23.13.25.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Feb 2024 13:25:30 -0800 (PST)
+Message-ID: <9642b70a-6b7b-4561-9924-d11ad979d57f@linaro.org>
+Date: Fri, 23 Feb 2024 22:25:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 05/12] arm64: dts: qcom: sc8280xp: add missing PCIe
+ minimum OPP
+Content-Language: en-US
+To: Johan Hovold <johan+linaro@kernel.org>,
+ Bjorn Helgaas <bhelgaas@google.com>, Bjorn Andersson <andersson@kernel.org>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+References: <20240223152124.20042-1-johan+linaro@kernel.org>
+ <20240223152124.20042-6-johan+linaro@kernel.org>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240223152124.20042-6-johan+linaro@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On 23.02.2024 16:21, Johan Hovold wrote:
+> Add the missing PCIe CX performance level votes to avoid relying on
+> other drivers (e.g. USB or UFS) to maintain the nominal performance
+> level required for Gen3 speeds.
+> 
+> Fixes: 813e83157001 ("arm64: dts: qcom: sc8280xp/sa8540p: add PCIe2-4 nodes")
+> Cc: stable@vger.kernel.org      # 6.2
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> ---
 
-The second parameter of __assign_rel_str() is no longer used. It can be removed.
+Please remember that we should remove these when OPP support
+lands :D
 
-Note, the only real users of rel_string is user events. This code is just
-in the sample code for testing purposes.
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-This makes __assign_rel_str() different than __assign_str() but that's
-fine. __assign_str() is used over 700 places and has a larger impact. That
-change will come later.
-
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- include/trace/stages/stage6_event_callback.h | 2 +-
- samples/trace_events/trace-events-sample.h   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/trace/stages/stage6_event_callback.h b/include/trace/stages/stage6_event_callback.h
-index 935608971899..a0c15f67eabe 100644
---- a/include/trace/stages/stage6_event_callback.h
-+++ b/include/trace/stages/stage6_event_callback.h
-@@ -91,7 +91,7 @@
- #define __rel_string_len(item, src, len) __rel_dynamic_array(char, item, -1)
- 
- #undef __assign_rel_str
--#define __assign_rel_str(dst, src)					\
-+#define __assign_rel_str(dst)						\
- 	do {								\
- 		char *__str__ = __get_rel_str(dst);			\
- 		int __len__ = __get_rel_dynamic_array_len(dst) - 1;	\
-diff --git a/samples/trace_events/trace-events-sample.h b/samples/trace_events/trace-events-sample.h
-index 2dfaf7fc7bfa..500981eca74d 100644
---- a/samples/trace_events/trace-events-sample.h
-+++ b/samples/trace_events/trace-events-sample.h
-@@ -574,7 +574,7 @@ TRACE_EVENT(foo_rel_loc,
- 	),
- 
- 	TP_fast_assign(
--		__assign_rel_str(foo, foo);
-+		__assign_rel_str(foo);
- 		__entry->bar = bar;
- 		__assign_rel_bitmask(bitmask, mask,
- 			BITS_PER_BYTE * sizeof(unsigned long));
--- 
-2.43.0
-
+Konrad
 
