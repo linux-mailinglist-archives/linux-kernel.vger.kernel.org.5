@@ -1,88 +1,59 @@
-Return-Path: <linux-kernel+bounces-78631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FE5186161E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:44:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE18886161B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:43:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A4051C23719
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:44:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 697CE2844C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:43:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14A8382C6C;
-	Fri, 23 Feb 2024 15:43:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 062A8823DE;
+	Fri, 23 Feb 2024 15:43:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Hl77ICMb"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fQjwj/f4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 179704A3D;
-	Fri, 23 Feb 2024 15:43:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A30282863;
+	Fri, 23 Feb 2024 15:43:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708703033; cv=none; b=nK1G3GbAI9ZxAvY46lPzsTpU3jPMtS3PMaqzdci4D/hMH9gXlcdxmNp/qWehMxkpQXt6aW5Ruwi8ybiDIV1zEuvbncTnxTah6NH/fpr/iZ3COopXKvoVTj1gezql7O99ANtaO/A7PdyXn5ML0N332Q5h0TE4XWeS3QNdWSl79DU=
+	t=1708702990; cv=none; b=m1SpQYXmfsxfGjMgtmMYLiPlBCRjiwfp/IbYr9J/2zSNS8b3X+gOGdSmcsnBLNs3vDnT0k6Oo0O5lTDWKcw7mCzBgSHwIEiwswTPBy1xuAI1qzid4MGlCflgqw9qzN5A6HJqBoEBil5Zc8iMseJo/qoZZuyzl7pR67opZJM4ApU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708703033; c=relaxed/simple;
-	bh=LRbUtJsi5tFV5Td5mfsuSsDvyXVEmiUYSJKc4U9GivU=;
+	s=arc-20240116; t=1708702990; c=relaxed/simple;
+	bh=VulX/bEzC0bjQkYNIhonnatB3A8d1Ksmk/boghxkEaw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KeSY0aJBpbqD14J0i5nPjMvJjPiU5ttPJr8geDRk4vZwmKLb7zbzAIiiqNXO6YFxuCvCyIxPCV6EhBCF6MLGUs+1JuWuNmCbUm8vTyesJFedWrexGmIiFK8yQPC2J/e7gtZ6gjT5E+PUVmxmGNbnWKVjWWQO/1lomDof7bpuTJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Hl77ICMb; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 6F3D840E01A0;
-	Fri, 23 Feb 2024 15:43:41 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id YyMHoWaZT0-N; Fri, 23 Feb 2024 15:43:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1708703018; bh=vOuid2cJTRQLhiLgDF9qDITkt0o2BhRLiMIp10b+zB0=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=FSgNEn7kBgDQMyPrdTaxucjLWoY0BLMjfF9Dfn2ksYldzk2PcpUvMifThWnhDHOKAmc06aBR/scqwvtCp63EWvPCWM9c0AJmDI2f3JuqGfJzB+OlTwuzPLVT3mUELMQyxRDVxxbvzHtWHapvu6TF1KA+Ddqt9/fH5DqxC25Ex4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fQjwj/f4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A83AC433F1;
+	Fri, 23 Feb 2024 15:43:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708702989;
+	bh=VulX/bEzC0bjQkYNIhonnatB3A8d1Ksmk/boghxkEaw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Hl77ICMbkiYiZXvnyP7l2drG6hgZ4Ocx0OmlAwmeL+3agO8UQXbkPtu9UHeYwVvCk
-	 fgojY2YiA1nbEZEf3o/QUicgYfYzdqtWICyIMv7KSvpQBZUON8BAPavJgOV4yyWRcv
-	 MARAP+KTuGeW3nEJjwsJTVBZoHoW0cQmbDTlKpNsxMi4tETXM7Z67ftazhCz924lQ1
-	 kR7sK/Lt/UoMVj0/HlLmsmJyRD5wRSonm1Zxr+Z0T0ocdHEMwujmFl0A9GvbqbaWFv
-	 mxYHZ9FGCYCyxdlOitulO/q+SeT9+QE9v4nLngN6E/5SDn4GcnAYtTrDLA3Ijjaxw3
-	 B+qnh6uLPCBZ0ZBR2x9alDC6rR8Dw5DhF2xjq27dcSfTPJ7wbiYeCfZMeCXcn8CVdF
-	 s0p3vfTNLM+NsPctNdMKiEz+fVGwVCLIj7JRGSJJl84Pxgg1yYi1UA2sYcoC7qzRGu
-	 ul5Od0UxW1Mrr1wGg12U2ReAaZ6zizCI5AEY7EtnLAue0T2F3GE5zClHTLexscMMSV
-	 uA/JiB+48CLcWxmdjFDbhZLEReZRqrpjxa4aurhC3s5Kv2P/Qr/wGwukViwrlXv0Ni
-	 ouDFi0Af7q5Hwk3AExxf1tmSoAtvDC/x/asn9L0GrL/G1brZFVMVEivvo6E6FhrX66
-	 YaWYc02C743bAOSmPKn5wG/0=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DDE8040E016C;
-	Fri, 23 Feb 2024 15:42:57 +0000 (UTC)
-Date: Fri, 23 Feb 2024 16:42:51 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: shiju.jose@huawei.com
-Cc: linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
-	linux-mm@kvack.org, dan.j.williams@intel.com, dave@stgolabs.net,
-	jonathan.cameron@huawei.com, dave.jiang@intel.com,
-	alison.schofield@intel.com, vishal.l.verma@intel.com,
-	ira.weiny@intel.com, linux-edac@vger.kernel.org,
-	linux-kernel@vger.kernel.org, david@redhat.com,
-	Vilas.Sridharan@amd.com, leo.duran@amd.com, Yazen.Ghannam@amd.com,
-	rientjes@google.com, jiaqiyan@google.com, tony.luck@intel.com,
-	Jon.Grimm@amd.com, dave.hansen@linux.intel.com, rafael@kernel.org,
-	lenb@kernel.org, naoya.horiguchi@nec.com, james.morse@arm.com,
-	jthoughton@google.com, somasundaram.a@hpe.com,
-	erdemaktas@google.com, pgonda@google.com, duenwen@google.com,
-	mike.malvestuto@intel.com, gthelen@google.com,
-	wschwartz@amperecomputing.com, dferguson@amperecomputing.com,
-	tanxiaofei@huawei.com, prime.zeng@hisilicon.com,
-	kangkang.shen@futurewei.com, wanghuiqiang@huawei.com,
-	linuxarm@huawei.com
-Subject: Re: [RFC PATCH v7 00/12] memory: scrub: introduce subsystem +
- CXL/ACPI-RAS2 drivers
-Message-ID: <20240223154251.GAZdi8--NPaMAK_ZBp@fat_crate.local>
-References: <20240223143723.1574-1-shiju.jose@huawei.com>
+	b=fQjwj/f4dQ98xd0fo1xB7lPKHDUxOPTz4UCfTpUlcO3fbM2pMRC5mbsn5wYzc6rDD
+	 51uWyKM+IuiVDK2E6sGleOjE4ZsaOJOa3vbCbt6v/wVzWTs31RQzHI/sTkgUqgFYb+
+	 ZshFgXTcKhqqO79Bhqa8Ew3u7kv6xoTNcOI5ZyZlow+rl9FMGi/jQ2s9WopDWz6zLu
+	 Minrw3mN+v7mOtl6EYUxzqQdocc5rHQ/+oxAX7R1qJQ6SMpOfdevtUD6Mtk6NrBwz4
+	 JWRddU8W+MjeIH/6+bO+lCksqNglGMD34q1Vywql1Zj4a+UcKPQbhG1ycypNEQhhwf
+	 mKz5ecVg3Su8Q==
+Date: Fri, 23 Feb 2024 15:43:04 +0000
+From: Lee Jones <lee@kernel.org>
+To: Conor Dooley <conor@kernel.org>
+Cc: Conor Dooley <conor.dooley@microchip.com>, Pavel Machek <pavel@ucw.cz>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Sven Schwermer <sven.schwermer@disruptive-technologies.com>,
+	Christian Marangi <ansuelsmth@gmail.com>,
+	linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: leds: pwm-multicolour: re-allow active-low
+Message-ID: <20240223154304.GE1666215@google.com>
+References: <20240213-verse-clinic-e6de06e1f18d@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,18 +62,106 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240223143723.1574-1-shiju.jose@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240213-verse-clinic-e6de06e1f18d@spud>
 
-On Fri, Feb 23, 2024 at 10:37:11PM +0800, shiju.jose@huawei.com wrote:
-> CXL patrol scrub and DDR5 ECS and ACPI RAS2 HW based memory
-> patrol scrub features are added as use cases for the scrub
-> subsystem to expose the scrub controls to the user.
+On Tue, 13 Feb 2024, Conor Dooley wrote:
 
-WTH is a RAS2 driver and where is the RAS1 driver?
+> From: Conor Dooley <conor.dooley@microchip.com>
+> 
+> active-low was lifted to the common schema for leds, but it went
+> unnoticed that the leds-multicolour binding had "additionalProperties:
+> false" where the other users had "unevaluatedProperties: false", thereby
+> disallowing active-low for multicolour leds. Explicitly permit it again.
+> 
+> Fixes: c94d1783136e ("dt-bindings: net: phy: Make LED active-low property common")
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> ---
+> 
+> I'm just assuming this is intentionally restrictive, if its not, we
+> could easily just change this to uneval: false.
+> 
+> CC: Pavel Machek <pavel@ucw.cz>
+> CC: Lee Jones <lee@kernel.org>
+> CC: Rob Herring <robh@kernel.org>
+> CC: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+> CC: Conor Dooley <conor+dt@kernel.org>
+> CC: Sven Schwermer <sven.schwermer@disruptive-technologies.com>
+> CC: Christian Marangi <ansuelsmth@gmail.com>
+> CC: linux-leds@vger.kernel.org
+> CC: devicetree@vger.kernel.org
+> CC: linux-kernel@vger.kernel.org
+> ---
+>  Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml b/Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml
+> index 5edfbe347341..a31a202afe5c 100644
+> --- a/Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml
+> +++ b/Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml
+> @@ -41,6 +41,8 @@ properties:
+>  
+>            pwm-names: true
+>  
+> +          active-low: true
+> +
+>            color: true
+>  
+>          required:
+> -- 
+> 2.43.0
+
+Neither checkpatch.pl or Git appear to be happy with this:
+
+ERROR: Does not appear to be a unified-diff format patch
+
+total: 1 errors, 0 warnings, 0 lines checked
+
+NOTE: For some of the reported defects, checkpatch may be able to
+      mechanically convert to the typical style using --fix or --fix-inplace.
+
+"[PATCH] dt-bindings: leds: pwm-multicolour: re-allow active-low" has style problems, please review.
+
+NOTE: If any of the errors are false positives, please report
+      them to the maintainer, see CHECKPATCH in MAINTAINERS.
+WARNING: Missing commit description - Add an appropriate one
+
+ERROR: Missing Signed-off-by: line(s)
+
+total: 1 errors, 1 warnings, 8 lines checked
+
+NOTE: For some of the reported defects, checkpatch may be able to
+      mechanically convert to the typical style using --fix or --fix-inplace.
+
+Your patch has style problems, please review.
+
+NOTE: If any of the errors are false positives, please report
+      them to the maintainer, see CHECKPATCH in MAINTAINERS.
+
+Check the results (hit return to continue or Ctrl+c to exit)
+
+
+Applying patch(es)
+Applying: dt-bindings: leds: pwm-multicolour: re-allow active-low
+Using index info to reconstruct a base tree...
+M	Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml
+/home/joneslee/projects/linux/kernel/.git/worktrees/for-led-next/rebase-apply/patch:28: indent with spaces.
+          active-low: true
+Checking patch Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml...
+Applied patch Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml cleanly.
+warning: 1 line adds whitespace errors.
+Falling back to patching base and 3-way merge...
+error: Your local changes to the following files would be overwritten by merge:
+	Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml
+Please commit your changes or stash them before you merge.
+Aborting
+error: Failed to merge in the changes.
+Patch failed at 0001 dt-bindings: leds: pwm-multicolour: re-allow active-low
+hint: Use 'git am --show-current-patch=diff' to see the failed patch
+When you have resolved this problem, run "git am --continue".
+If you prefer to skip this patch, run "git am --skip" instead.
+To restore the original branch and stop patching, run "git am --abort".
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Lee Jones [李琼斯]
 
