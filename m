@@ -1,136 +1,131 @@
-Return-Path: <linux-kernel+bounces-78568-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F362861526
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:06:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59D6486152E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:07:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF58B282C01
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:06:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F5912867F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:07:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2A6580615;
-	Fri, 23 Feb 2024 15:06:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E591A81AC6;
+	Fri, 23 Feb 2024 15:07:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pG46sheQ"
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ksxjEXF8"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7136D4A3D
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 15:06:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0913629AF;
+	Fri, 23 Feb 2024 15:07:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708700782; cv=none; b=RMaJepCOCNoTmewxtyUSZypjTIobXci4mk83bHECld7F4MwBOZNzXMR5DWDSKPxt8yOhrvCD73raP6jJuGMzuBU18rQhArAwXb1ZLfG6VdWw80vviBxU9WNycgPd/rMe5pKriuUXeACSX4GCHnQtJfVHozB/nHRK6dHOOJOldVY=
+	t=1708700837; cv=none; b=CsTCrdKUAHV+S330NpAbHRJRZaxO9+FAlTAu8NWa3nvqx/7lCBFpyAjEJFIb6KLpi6CsnIQbVXDEnVJPitYbvoON6JOlELRxHv4Iy2KQkDvom8fzegTu7WIwc8kpiTtC+LihkpnyDXTpeNyKKHBxi9BPnPT9BFtzOvETsWjcQSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708700782; c=relaxed/simple;
-	bh=X0urF8PTOLTnSGAFxgaALR8kxbAgRsy7o0cdpZScDMg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HQRB9z/4pnTzPL1qrCsNv9D6/UHgOMZEPt9Pw0tS8rXGtOSwzopn78On9ns7Q+h2LLDXArs8fEIW+h3WUGnuQe2w030dq3bAbZvO20zHcoeHmIkoA9dnqKpFtGCQMWDPugB/mH4HR4BtHofyQgxCbZvB0ipWFF8diryh5c+BQto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pG46sheQ; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d2533089f6so9639691fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 07:06:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708700779; x=1709305579; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4sJGs1NYZ5QUnzqdBB1Q8b+bNbJNb63ZLKIOCTbd53c=;
-        b=pG46sheQReakcqs32/t5ZiJgxeD49hsHsnso+dcl4BGKpvIy9vl2MoqSMb7QeQWrR4
-         zvyxAD09Go943rhpJ1SCoLUe99zjqOjuejtfW+54PZ/HWOpfGIrCEdPE6fVjVwlL2YDl
-         LONVCPy6oWa+u5FEf2TLJ76ASQNOuMx8ih/4SJJhPgsh9p3HI6fk9xpgaY6sKObrEfm4
-         /D+D0L59H6CLMX7ACVOL+7FB+FYSbpyIv//HHEc4Tte3xmLxf0Mcg7qkGL512LYkiz4y
-         IQd1FYAb1+SzNPbYvWCHOSudjmCRC1yqMJWlJJfMG3XqeN+J7e/b0rgLf4nzNzNXoQYA
-         8ZeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708700779; x=1709305579;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4sJGs1NYZ5QUnzqdBB1Q8b+bNbJNb63ZLKIOCTbd53c=;
-        b=d6I5DwEqwXfLiNEcFqHUiCAd+Tz2P77bpZ/GMSwm8UZF3s9We56H5WMpvoFqQdapAs
-         WYkbR8fxNLn1vpYC7xhaRAw+m5Oo8UjCTHWU37r7bwVS21sV43g0kG4Uy92PEQ5oX/Uv
-         00Kc/mG5xxjEKm2oaRy/z2/AMrgtTG4HRVKWFc+9wtcuDgmxm7nPvGzAZy63REuC7m6N
-         14IjiSJPC2rm2tub1KL3YXsxpigzhjzqppas8PzkugX3t9OaGarmZw138h4JPWOk3uqO
-         Xj7PWkaDAaJ+Tkpmz4KsCiYOCwfCgCt98ag6Z/oojcvTBDNypDNIEGGyAhKh1IifWs4p
-         ZaCg==
-X-Forwarded-Encrypted: i=1; AJvYcCUiTcBTE81dPbjEpp67cprrLngo96N/lrHqm/X9Fa9/EsmyddLHVEe7G8b2AbWprAgpFPyL8TP3EalwvrgoDNg1tB4rloxnMihO5EfQ
-X-Gm-Message-State: AOJu0YyOIHvZDGualgfElekWykjS/knv8oOwHmWoJVD+Vvzf+hUNMUze
-	rq6zPdbzQRiNYXCKsyfVk28hYdwUdnQ/0UcN2vFrYToAFu0CdW+yvPLqN7qmmZc=
-X-Google-Smtp-Source: AGHT+IGfCIE307IqSzsAUBlWRNDb7b8z9zOXY/2OH+3bNQA44KSVllJBbJFnbX+Qnh3P7Q37qv1Exw==
-X-Received: by 2002:a2e:a488:0:b0:2d2:61fd:7c2d with SMTP id h8-20020a2ea488000000b002d261fd7c2dmr63698lji.17.1708700778286;
-        Fri, 23 Feb 2024 07:06:18 -0800 (PST)
-Received: from eriador.lan (dzyjmhyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a00e:a300::227])
-        by smtp.gmail.com with ESMTPSA id u24-20020a2e91d8000000b002d0c8fa072asm2681353ljg.20.2024.02.23.07.06.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 07:06:17 -0800 (PST)
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>,
-	Andrzej Hajda <andrzej.hajda@intel.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Robert Foss <rfoss@kernel.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Vinod Koul <vkoul@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>
-Cc: Jonas Karlman <jonas@kwiboo.se>,
-	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Rob Clark <robdclark@gmail.com>,
-	Abhinav Kumar <quic_abhinavk@quicinc.com>,
-	Kuogee Hsieh <quic_khsieh@quicinc.com>,
-	freedreno@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-phy@lists.infradead.org
-Subject: Re: (subset) [PATCH 0/6] soc: qcom: pmic_glink_altmode: fix drm bridge use-after-free
-Date: Fri, 23 Feb 2024 17:06:15 +0200
-Message-ID: <170870071756.13438.16980480346490993922.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240217150228.5788-1-johan+linaro@kernel.org>
-References: <20240217150228.5788-1-johan+linaro@kernel.org>
+	s=arc-20240116; t=1708700837; c=relaxed/simple;
+	bh=qwYvqnbUBgRmfcU5PY/qmaPSAuFYYxZn2Jkfy1nGQPY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=if0JdlbHamRgyI8oPID4AZGMbmX8dDsrdNvNyY1dzaWOUwkyhZdpNPZm8WUDFwKXex9YSJ2LIhXup8cxmxk5gnFYz/KLvm0c7sS2Q2J2iw5XN6JYVQZ4j7EJVMYLF7pHMEmtM3YPxSDifOuxZUvDWfafr0qRe7DLWLKM4vn2nGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ksxjEXF8; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4107C1C0015;
+	Fri, 23 Feb 2024 15:07:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708700826;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7FVN6qzrARPqd8slGB+ZGG+q4yGV1yFcxd8XyD/FaGY=;
+	b=ksxjEXF8MtHctHNicBMz13UjkukmPWXphf8gXxKB6y5Uem1PJZrkDjzSlCUQQB5ENfq2bR
+	s4QDePcCTPRohSRp2I7FIgq6sVvQl8Rqm5mcl3an9DBYOPzLrJ829BWPzlPr47WLu5F2SK
+	kRkMa6hgUeMukEbhoUZzKvBiMhoagAAhl3Yumh5Nfx2gss/hD25R5pvP0GV9ibL5UiI2mD
+	ENkfmO6ab3BWQPIoaJul7mbZg6tBM7D9UzVe50WZtWjI1jhIQSa4NFblhXR8YsLmG6+zZW
+	thfqY4GS1gCWtZLP7CLf7AQl3g+aOQx30JSVfo2N5cQjDhUytE3YY5jEYO9fNA==
+Date: Fri, 23 Feb 2024 16:07:04 +0100
+From: Maxime Chevallier <maxime.chevallier@bootlin.com>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, Bastien
+ Curutchet <bastien.curutchet@bootlin.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Richard Cochran <richardcochran@gmail.com>, Heiner Kallweit
+ <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>,
+ netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Herve Codina <herve.codina@bootlin.com>
+Subject: Re: [PATCH 1/2] dt-bindings: net: Add TI DP83640
+Message-ID: <20240223160704.4018cac2@device-28.home>
+In-Reply-To: <a1e54836-51d2-4990-9444-56d9414eb28c@lunn.ch>
+References: <20240130085935.33722-1-bastien.curutchet@bootlin.com>
+	<20240130085935.33722-2-bastien.curutchet@bootlin.com>
+	<20240130-impulsive-widow-9142a069b7fd@spud>
+	<20240131210521.GA2289883-robh@kernel.org>
+	<20240131-tummy-imperfect-e6d6f0e245e9@spud>
+	<a1e54836-51d2-4990-9444-56d9414eb28c@lunn.ch>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: maxime.chevallier@bootlin.com
 
-On Sat, 17 Feb 2024 16:02:22 +0100, Johan Hovold wrote:
-> Starting with 6.8-rc1 the internal display sometimes fails to come up on
-> machines like the Lenovo ThinkPad X13s and the logs indicate that this
-> is due to a regression in the DRM subsystem [1].
+Hi Andrew, Bastien,
+
+On Wed, 31 Jan 2024 23:40:45 +0100
+Andrew Lunn <andrew@lunn.ch> wrote:
+
+> On Wed, Jan 31, 2024 at 09:18:39PM +0000, Conor Dooley wrote:
+> > On Wed, Jan 31, 2024 at 03:05:21PM -0600, Rob Herring wrote:  
+> > > On Tue, Jan 30, 2024 at 05:56:37PM +0000, Conor Dooley wrote:  
+> > > > On Tue, Jan 30, 2024 at 09:59:34AM +0100, Bastien Curutchet wrote:  
+> >   
+> > > > > +  ti,fiber-mode:
+> > > > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > > > > +    enum: [0, 1]
+> > > > > +    description: |
+> > > > > +      If present, enables or disables the FX Fiber Mode.
+> > > > > +      Fiber mode support can also be strapped. If the strap pin is not set
+> > > > > +      correctly or not set at all then this can be used to configure it.
+> > > > > +       - 0     = FX Fiber Mode disabled
+> > > > > +       - 1     = FX Fiber Mode enabled
+> > > > > +       - unset = Configured by straps  
+> > > > 
+> > > > I don't like these properties that map meanings onto numbers. We can
+> > > > have enums of strings in bindings that allow you to use something more
+> > > > meaningful than "0" or "1".  
+> > > 
+> > > Tristate properties are fairly common pattern where we need 
+> > > on/off/default. I've thought about making it a type. I don't think we 
+> > > need defines for it.  
+> > 
+> > I think a type would be a good idea. I am not at all a fan of any of the
+> > properties people introduce along these lines.  
 > 
-> This series fixes a race in the pmic_glink_altmode driver which was
-> exposed / triggered by the transparent DRM bridges rework that went into
-> 6.8-rc1 and that manifested itself as a bridge failing to attach and
-> sometimes triggering a NULL-pointer dereference.
-> 
-> [...]
+> Before going too far with that, i'm not actually sure it is required
+> here. I've not looked at the PHY driver itself, but i expect there is
+> some indication somewhere that the network stack expects a fibre link
+> is to be used. We probably can determine at runtime if fibre should be
+> used.
 
-Applied to drm-misc-fixes, thanks!
+I've missed that thread initially. I guess that if Fiber is to be used,
+this would be done through sfp, then we have all the regular interfaces
+to configure the phy_interface_mode, in that case that would be
+100BaseX.
 
-[2/6] drm/bridge: aux-hpd: separate allocation and registration
-      commit: e5ca263508f7e9d2cf711edf3258d11ca087885c
-[3/6] soc: qcom: pmic_glink_altmode: fix drm bridge use-after-free
-      commit: b979f2d50a099f3402418d7ff5f26c3952fb08bb
-[4/6] soc: qcom: pmic_glink: Fix boot when QRTR=m
-      commit: f79ee78767ca60e7a2c89eacd2dbdf237d97e838
+So, a sane behaviour could simply be to configure the PHY in copper
+mode by default, without relying on any DT property ? If anyone wants to
+use fiber mode, then they would have to implement the
+sfp_upstreamp_ops, which would take care of reconfiguring the MDI
+interface of the PHY in the correct mode.
 
-Note, PHY patches (5,6) do not have dependency on the drm patch, so they can go
-through the phy/fixes tree.
-
-Best regards,
--- 
-Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Maxime
 
