@@ -1,108 +1,212 @@
-Return-Path: <linux-kernel+bounces-78940-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEA34861B0A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:03:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B282C861B0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:05:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43B45B20E8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:03:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D58B01C25DDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:05:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEB6713EFF3;
-	Fri, 23 Feb 2024 18:03:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6201713EFEF;
+	Fri, 23 Feb 2024 18:05:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FVyjajRx"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ULrg6GFm"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B92EF85921
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 18:03:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E296985921
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 18:05:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708711426; cv=none; b=uhelsk6vTVRqI2mQktKx1vvZAqAq7TiiI9RlItfFePR9WjlEKugDQgwMwv9jAfXhjqVi9ABxWeGHFWoY91FBXQgQCXxJVyVB87mUiOrFI8dhE/GHNJmjG+sJKCQmpDIcMe8zvF42TQN99M5Ep/ps+HZSVT4EKUGvNoEtaOryb28=
+	t=1708711503; cv=none; b=uU1ifmQUPNJoLB0PvKOz/vBhqwraAaeMAoxZfScjDtBWnsn9MGvnQo8DEb1ZO1eFNrrUu3vgY6LaKz8MZdPG+DkWrMzw14qNuvEWQ4JEzNM/dEeIK3XWSQc5/77s6LSQQjAPr8U3pmP/Ujsn4ze0aUTWjWFEsoB1xg8nq3/gdeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708711426; c=relaxed/simple;
-	bh=DdRMPpgG9Tb6SaT0/ZIVpJjpD80lyxQTMLWdPoxSyYI=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=CrylvXlbm+Nl8JUkfNsEkQYJcpKqLC2Yvz4bgzAJ/xX2B3iadJpkVRK3yCfwSWcuk1Cmah/6NTHvinPq2yCEcFygZVdOfGR/dih0CVUBEFfeHFymNYgi0fFoArBwYByxoddyizTa438qhLQ+MB6RQjuUcZ0shrx4jmSCMzvpoHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FVyjajRx; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-608c85208f9so9293307b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 10:03:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708711424; x=1709316224; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=y5GBsdPl7urgMkjHsKUTWfcFYRbv5pqvr/pTSqxUepM=;
-        b=FVyjajRxnwkquAmZ8B94NIdYQSDOyMgj9jWJEi7lCx7ZkvSkH+O2msI+5xpYQ3i96y
-         2u+WY1k5ahJrM+Cxgj1ctdZUjJVlEm/VVO6ocOiJ3MZkO3YEc2eIZnGBm/LydY6LP2EO
-         jN1IH9UqU4gTtIaCo/h1SVyb4WbgoU0vLmY3PvxjN3dJSkQ3J/t/ZHcNt0/cwk6KF8OM
-         9OMNLMvt8Dhl9xYbNf9Bp5GmQG9McO5pBGncKGv9JIdS8HEDltUudWn/cPi7NZC1OqEN
-         eixnrHCUIuAny5ilAG7P05BRN1ywcZu9JSaiLphqoO65mOtEyrEWfaPB+hnxu83TjGFQ
-         Fwtw==
+	s=arc-20240116; t=1708711503; c=relaxed/simple;
+	bh=DgRka5e1twI0O1CM4WpP7Yj3tQomnKTgcsf8bQ7aWeQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MLePNxohQ+dJwBEmd3mbCuiJTBnSHMCVXjXkDKKHgoyLN3BeL7e1XW56qAS3kuVRnDqT/8WLz8/f8Wdy614KtULXVLJzczM+Hfo2f7QbV2U5bbIa7xMSlEzamyS3LAsCJC57x6I9Q5TunYsvfOrnWgacBqjaoEGEDNtUFP/nb+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ULrg6GFm; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708711500;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=82eigYgjksPkhoX7SASPwd4nqYX8wyhmUpatcdYIcqo=;
+	b=ULrg6GFmIRsecZKuhD9lRUdqrPKsbXQvqzy8+4IcxgMQq9zZLHbJ9SdC508dOgL9aZ/dNK
+	iKNS746iFGCDQn9VfpeqjmSfMm+OP3rIO/cEaUfEInC/eoikk0aqiFlKFeXbhJiUVbEVgC
+	S5R3IqWBKXqF/Li7mwdyIHCteEbE2Ow=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-299-X61vhmJJN4yGJqh1ZL-hZg-1; Fri, 23 Feb 2024 13:04:58 -0500
+X-MC-Unique: X61vhmJJN4yGJqh1ZL-hZg-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33d29de76abso509871f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 10:04:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708711424; x=1709316224;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=y5GBsdPl7urgMkjHsKUTWfcFYRbv5pqvr/pTSqxUepM=;
-        b=cy0XJ2cRxN7xgjGk4dsAKEWrsM13SBuTSCTwkCqBYnAfWweqqd9OEMNAGCufUTU0ki
-         HiRB5dRyxNYSTvSvUqAZJc3s4egKYEw9PiHfFqY0DrjloTAJKO0oA2EXgooeTK04Fku/
-         6ZsNyR5Ns80gnYeATKF4lO0zdPH43nNiABX9IaJgSNG2fJMZSuMgKYZ4gJ3E5wjtVS+i
-         aE4Ea0QPXKmG3vv1cy4bc4WuGHgn5K+EP/qNJe730sfYO0wo347txdjMDSQ6n5X8oq+e
-         4RcZI8WkfgeEUbKJkWkZAO8SlnpJ8PaXBywAv3drmcSrKxHHOjY/Z0DtoXPvuLbAqzQd
-         r4Mg==
-X-Forwarded-Encrypted: i=1; AJvYcCU4ij96KE01ryx2u1PpI4DUnnC4VPPqVvp+A39TO5SjANJgyTwijeDARy4d9dRD5pFxOn5i93dukbLULex+f1Ai7w12FbodS9YWA4wF
-X-Gm-Message-State: AOJu0Yw9SuT0TogqMNIIpLdUeJMNBLZsYVmhH95m9i8anPC3H5H0QT47
-	ZAlax3JHb8twEU7dFL6YgAwQAg00ndbWV4M69bt/wnWofLHRIGcmu+RxEKQOm2ospOmAn7FFLr8
-	gNQ==
-X-Google-Smtp-Source: AGHT+IFWV3CfQ94wgLPhbMGbDfgw7i7VWpWYNFZJz5bzHf5O44Xtwf6QXZWVPyjjqZKenQtiCT2ymWP+BkY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a0d:d9d4:0:b0:608:a901:469a with SMTP id
- b203-20020a0dd9d4000000b00608a901469amr123120ywe.1.1708711423876; Fri, 23 Feb
- 2024 10:03:43 -0800 (PST)
-Date: Fri, 23 Feb 2024 10:03:42 -0800
-In-Reply-To: <f6296a0c-df91-4de8-833e-dc13b9286a2e@redhat.com>
+        d=1e100.net; s=20230601; t=1708711497; x=1709316297;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=82eigYgjksPkhoX7SASPwd4nqYX8wyhmUpatcdYIcqo=;
+        b=htuuOqgESAcerDmwEP/3IsNKxvltZs9dCkE7alU3rOQe1cCYZDBR6TVsDv5Zc/iuEx
+         dKqrEHiqLZr63OefpoOmjbAxgcdBiyl4APmKX6sjwQ6glB+w8hbtwt0yGGpIlCaSfwQJ
+         6+HRK0jXiXSFWQW+Kp/KAAdRfM1T2uZ2zKgx6DSY4Z+06wIQ8jUcUrkauLugDImi6pVq
+         b4KzRzwwwpv1ygUEIj75ZhLcQPX0wcNlT/qG46gpMXREY/7tVrwc0K5sMtqoYjnGFK2R
+         R0xVM35KxMrL7tKzeMZpY1deewCf/UZehSLHi7Y73CIJQqEEp7ekJn5lpCBy1m2WLkRE
+         tKOw==
+X-Gm-Message-State: AOJu0YwaCWoKfqhbg9QlEKiBHRm3lkhtLIZ8h+ZJbP1GkL4+FQWhblDn
+	Za2VunCN2xRCs47hXnqj5a0BaxMVH0sdS44ehWdQljlUtmRJj7Fy1NqoZ5efSW2uUH2PLaBf4E1
+	b48jjqr2WqKFQmdgPgZi5Skm7A+EWnOInXADXd+COBPVEOzdJIWCkd1oye+MBM7gzoFgYCH9/YL
+	ksL4iIKBu3d/QBI/pAyVqXRT6kZm8vpOtgSx3R
+X-Received: by 2002:a5d:4c8d:0:b0:33d:3ff4:230e with SMTP id z13-20020a5d4c8d000000b0033d3ff4230emr345335wrs.32.1708711497121;
+        Fri, 23 Feb 2024 10:04:57 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEriJPRAGXbHZuCX1x2uHN2wQ/HGZC16cJxgWCoXazQGUM9K6McAwPYzstWeEsRlKuvvP9dScghPaHqdHGmEyQ=
+X-Received: by 2002:a5d:4c8d:0:b0:33d:3ff4:230e with SMTP id
+ z13-20020a5d4c8d000000b0033d3ff4230emr345318wrs.32.1708711496805; Fri, 23 Feb
+ 2024 10:04:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240221072528.2702048-1-stevensd@google.com> <20240221072528.2702048-10-stevensd@google.com>
- <f6296a0c-df91-4de8-833e-dc13b9286a2e@redhat.com>
-Message-ID: <Zdjd_loCXRAV3aVb@google.com>
-Subject: Re: [PATCH v10 7/8] KVM: x86/mmu: Track if sptes refer to refcounted pages
-From: Sean Christopherson <seanjc@google.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: David Stevens <stevensd@chromium.org>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
-	Isaku Yamahata <isaku.yamahata@gmail.com>, Zhi Wang <zhi.wang.linux@gmail.com>, 
-	Maxim Levitsky <mlevitsk@redhat.com>, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	kvm@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+References: <20240223104009.632194-1-pbonzini@redhat.com> <20240223104009.632194-12-pbonzini@redhat.com>
+ <ZdjTTK1TgN8B64zO@google.com>
+In-Reply-To: <ZdjTTK1TgN8B64zO@google.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Fri, 23 Feb 2024 19:04:45 +0100
+Message-ID: <CABgObfZGWHM414oq3o6YW=KBNytLGdtDThCdmCWLjPUOAutnjA@mail.gmail.com>
+Subject: Re: [PATCH v2 11/11] selftests: kvm: add tests for KVM_SEV_INIT2
+To: Sean Christopherson <seanjc@google.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com, 
+	aik@amd.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 23, 2024, Paolo Bonzini wrote:
-> On 2/21/24 08:25, David Stevens wrote:
-> > From: David Stevens <stevensd@chromium.org>
-> > 
-> > Use one of the unused bits in EPT sptes to track whether or not an spte
-> > refers to a struct page that has a valid refcount, in preparation for
-> > adding support for mapping such pages into guests. The new bit is used
-> > to avoid triggering a page_count() == 0 warning and to avoid touching
-> > A/D bits of unknown usage.
-> > 
-> > Non-EPT sptes don't have any free bits to use, so this tracking is not
-> > possible when TDP is disabled or on 32-bit x86.
-> 
-> TDX will add support for non-zero non-present PTEs.  We could use this to
-> use inverted bit 8 to mark present PTEs (bit 8 set for non-present, bit 8
-> clear for present) for both shadow paging and AMD NPT.  This would free bit
-> 11 for SPTE_MMU_PAGE_REFCOUNTED.
+On Fri, Feb 23, 2024 at 6:18=E2=80=AFPM Sean Christopherson <seanjc@google.=
+com> wrote:
+>
+> On Fri, Feb 23, 2024, Paolo Bonzini wrote:
+> > diff --git a/tools/testing/selftests/kvm/x86_64/sev_init2_tests.c b/too=
+ls/testing/selftests/kvm/x86_64/sev_init2_tests.c
+> > new file mode 100644
+> > index 000000000000..644fd5757041
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/kvm/x86_64/sev_init2_tests.c
+> > @@ -0,0 +1,146 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +#include <linux/kvm.h>
+> > +#include <linux/psp-sev.h>
+> > +#include <stdio.h>
+> > +#include <sys/ioctl.h>
+> > +#include <stdlib.h>
+> > +#include <errno.h>
+> > +#include <pthread.h>
+> > +
+> > +#include "test_util.h"
+> > +#include "kvm_util.h"
+> > +#include "processor.h"
+> > +#include "svm_util.h"
+> > +#include "kselftest.h"
+> > +
+> > +#define SVM_SEV_FEAT_DEBUG_SWAP 32u
+> > +
+> > +/*
+> > + * Some features may have hidden dependencies, or may only work
+> > + * for certain VM types.  Err on the side of safety and don't
+> > + * expect that all supported features can be passed one by one
+> > + * to KVM_SEV_INIT2.
+> > + *
+> > + * (Well, right now there's only one...)
+> > + */
+> > +#define KNOWN_FEATURES SVM_SEV_FEAT_DEBUG_SWAP
+> > +
+> > +int kvm_fd;
+> > +u64 supported_vmsa_features;
+> > +bool have_sev_es;
+> > +
+> > +static int __sev_ioctl(int vm_fd, int cmd_id, void *data)
+> > +{
+> > +     struct kvm_sev_cmd cmd =3D {
+> > +             .id =3D cmd_id,
+> > +             .data =3D (uint64_t)data,
+> > +             .sev_fd =3D open_sev_dev_path_or_exit(),
+> > +     };
+> > +     int ret;
+> > +
+> > +     ret =3D ioctl(vm_fd, KVM_MEMORY_ENCRYPT_OP, &cmd);
+> > +     TEST_ASSERT(ret < 0 || cmd.error =3D=3D SEV_RET_SUCCESS,
+> > +                 "%d failed: fw error: %d\n",
+> > +                 cmd_id, cmd.error);
+> > +
+> > +     return ret;
+>
+> If you can hold off on v3 until next week, I'll get the SEV+SEV-ES smoke =
+test
+> series into a branch and thus kvm-x86/next.  Then this can take advantage=
+ of the
+> library files and functions that are added there.  I don't know if it wil=
+l save
+> much code, but it'll at least provide a better place to land some of the =
+"library"
+> #define and helpers.
+>
+> https://lore.kernel.org/all/20240223004258.3104051-1-seanjc@google.com
 
-Ooh, that's much more clever than where I was headed, which was to abuse the PAT
-bit (kernel configures 0400 to be WB), which would actually be quite elegant if
-(a) the PAT bit didn't move around or (b) the kernel used a non-zero PCD or PWT
-bit for WB :-/
+I'll post v3 anyway, but hold on actually committing this until I've
+taken a closer look at kvm-x86/next.
+
+> > +     TEST_ASSERT(ret =3D=3D -1 && errno =3D=3D EINVAL,
+> > +                 "KVM_SEV_INIT2 return code %d, errno: %d (expected EI=
+NVAL)",
+> > +                 ret, errno);
+>
+> TEST_ASSERT() will spit out the errno and it's user-friendly name.  I wou=
+ld prefer
+> the assert message to explain why failure was expected.  That way readers=
+ of the
+> code don't need a comment, and runners of failed tests get more info.
+>
+> Hrm, though that'd require assing in a "const char *msg", which would lim=
+it this
+> to constant strings and no formatting.  I think that's still a net positi=
+ve though.
+
+Ok, will do.
+
+>         TEST_ASSERT(ret =3D=3D -1 && errno =3D=3D EINVAL,
+>                     "KVM_SET_INIT2 should fail, %s.", msg);
+>
+> > +     kvm_vm_free(vm);
+> > +}
+> > +
+> > +void test_vm_types(void)
+> > +{
+> > +     test_init2(KVM_X86_SEV_VM, &(struct kvm_sev_init){});
+> > +
+> > +     if (have_sev_es)
+> > +             test_init2(KVM_X86_SEV_ES_VM, &(struct kvm_sev_init){});
+> > +     else
+> > +             test_init2_invalid(KVM_X86_SEV_ES_VM, &(struct kvm_sev_in=
+it){});
+>
+> E.g. this could be something like
+>
+>                 test_init2_invalid(KVM_X86_SEV_ES_VM, &(struct kvm_sev_in=
+it){},
+>                                    "SEV-ES unsupported);
+>
+> Though shouldn't vm_create_barebones_type() fail on the unsupported VM ty=
+pe, not
+> KVM_SEV_INIT2?
+
+Yes, this test is broken. vm_create_barebones_type() errors out.
+
+Paolo
+
 
