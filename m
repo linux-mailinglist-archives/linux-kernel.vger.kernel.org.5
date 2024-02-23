@@ -1,109 +1,202 @@
-Return-Path: <linux-kernel+bounces-78141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 728A5860F7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:36:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DF4B8860F97
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:40:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23D3D285DE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:36:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93814280234
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:40:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 051CD633E9;
-	Fri, 23 Feb 2024 10:36:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 820FF7E59C;
+	Fri, 23 Feb 2024 10:38:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fQNsh2OK"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Kzd7q8Dt"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B13F05DF25
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 10:36:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2A256518A;
+	Fri, 23 Feb 2024 10:38:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708684605; cv=none; b=GZNNd8jclOcW4jfYF3aUwXol8nTM1EZ9KQaqSegly9yIuYzGnlKVOEaEIfR6p+EUe5B6buaZnV660N7V70FvyQw221Wr10r3SBcRkuhEX/lUmEXGVwQIqMK/IwBrJOhkRTkU7oOBFH+EbKoAPUx0CyCbJEv+NllBmxTBld11SCA=
+	t=1708684718; cv=none; b=K8HXHF357OgGmA2WkZ5aYR0M38MXUtJsjPvR0KyLD2NljKmjQ6dPodVIk8EWq+oPp5e+wSmijsaRVhdjpZ9P+hrhMca/FNT1CbGAbprRYgK45hGMIeH9JKCXEoAszeE8XUMb3BlKCoPpl3I3+bSw3m/1YBCuXJ32SKUsIAJb5No=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708684605; c=relaxed/simple;
-	bh=oGa9d8hXuiijz2WQcWWqfhlvaB3jirIqqRv0WuyyLd8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Cg2Y11WXy3zVfbEikqiXab/9cO1Rv6K4XbRCh0mt4tWLdYd9ZLBgf4KJG3Xt1d9R1GZM+tYqSzNrafMTvLFtkHGbfOVN1yBlzRu/V7ishVLCj4LRqREdNR2cu+IVSfjAC/Vi7GC1WlYDrLumZaZEQCtwJudI9S9jBlWAhAOyMwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fQNsh2OK; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-564fc495d83so701095a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 02:36:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708684602; x=1709289402; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oGa9d8hXuiijz2WQcWWqfhlvaB3jirIqqRv0WuyyLd8=;
-        b=fQNsh2OKUBgnb5FP0MIFgb3d/zuraki6pSWU1EC+QQzscEskxBX3+AG1e1a1QPvd0B
-         hr/r6dLshp+BvzTAYA2Zau6LG+yrD8YznsM50ToHcnWOfQcNaY9/0pQ+1sOsQ9hIPIb3
-         cI5ElA0W+w2DcgFUWmUZCfLsut0jK5w/aP4hZReuZfHZxjdoA6SheufDCCIZed/IBOW7
-         hNoFAXmZeNUx3BBXomv2gsuXv/zaL0sbxRvAKc31q97AlDRCy7ZA0tMDcHoAxCB6t3HZ
-         4cJKO8Huez7q3DtnQADWBGxNp4krR7xcO7/qs4/Vl2/mvjr9hUj4qmz6g3yZ4dGESN0b
-         1trw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708684602; x=1709289402;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oGa9d8hXuiijz2WQcWWqfhlvaB3jirIqqRv0WuyyLd8=;
-        b=j/HafsW90PNQ+ac+CZmnINY7j/DLAwwRZZhca8llseMQE895dXOtA9fhcvO/O4LAjd
-         +Xuslq1dVC7LQ+6TxwY7+CtYtXqlOH7aUYhaBpoEw+zndAysQ5zre6nhjMv5ZMMr6C87
-         RXG+gvLwJEXlcEZYDiY6r0E7t4JltdmeoW72GsVUAQAgrZ/AyxJERvdAKZgTUL8ubT58
-         tNVChT6C4/xaDA2Ul6ziizIhqfwy5TYX84Pej4auXofzzBgzNmWkoy+EHRpxO/yNLkeb
-         /ovOV3acxttYrriN8rahOsLmFQojybGRY2YfBIiPczClG1JBeyRGEtMqSIC5YqO5KHvz
-         1Nhw==
-X-Forwarded-Encrypted: i=1; AJvYcCWR2EIq2Rmwqz43/4ZB0lGFBrpSLI70O8Aw5+9A1WFWz2L0gbdomnoEwztfssvfPgOVlDrdsAWVBvzTtuUJpEwz098qy7zucvSVCvdN
-X-Gm-Message-State: AOJu0YwoHQCOoKGE7XzKcqm32pwXaQLFVJLWAo26rb3TJRFkAvQK0dty
-	0jnSWIyyf8OaMmhvU2dOmdhlcVAD28rME7+UgixAgGKNn5Cy9mt8V6hnllPVw22tp/09QRJrDt6
-	U6hFS1HNM4pwvX8elByXXnuR+G3oqiCIPd9ul
-X-Google-Smtp-Source: AGHT+IHUav3spNKZz8TuROOuLqr44AG4XeF8yBOYDiOk8XKBPI8yc/QGOy9I7fCdiFaLDT3fTvD/WiTk7Gr2b1xnDxE=
-X-Received: by 2002:aa7:d50a:0:b0:565:6424:6ad1 with SMTP id
- y10-20020aa7d50a000000b0056564246ad1mr843919edq.14.1708684601764; Fri, 23 Feb
- 2024 02:36:41 -0800 (PST)
+	s=arc-20240116; t=1708684718; c=relaxed/simple;
+	bh=JMRg40DCsRBsVkHSpJV3eTn7+lBni66qFPlBAmj0ed0=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=rRNN2MgJs0+GJ9RgBavNsQIBvCafAJo87KsfkWBh3w9cv/K7EI6uTX8x6gYDpHVd3QM8O66ER5NGMrc6NaBY8PeKzN2/gWpA6Z36XkGnKlCzdt0t1KkouuLGuA7auQy+hmDBsLYq+Jl+Nh26orWUOAuN4OnYF2Sq+cqsG+/icZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Kzd7q8Dt; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708684716; x=1740220716;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=JMRg40DCsRBsVkHSpJV3eTn7+lBni66qFPlBAmj0ed0=;
+  b=Kzd7q8Dt039NcFvMQTXx94TepRYX96rRRIl+xMcxKCvDR5UXH0JSLfL1
+   FIw9083KeM7BAQ/9/iPinmUnZ+eyk2T7bJpTexcCmHi32/4B4xYGOPZy1
+   3lfVVGVQC6gp8R3RISlkGe3wlXywwxdHLPW8MCE3NOO6RCjYCnDPmc26N
+   A3vAg3R+Jg5FDSEgBBzOzK0b3jklyDxhaQuMuyEE/Hua/cEX33JMHIMVo
+   /l0aV4aond6JMQz/1zHCfcHq4za/KiNhDP2wODpFhY9WHrsnzpPFrebgS
+   IHlnypK7zDguk9rMQoW4cspBe2on4roU9VSEODppI1FIh3XgI/vX+iHIm
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="2875496"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="2875496"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 02:38:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="5843470"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.49.107])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 02:38:31 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Fri, 23 Feb 2024 12:38:18 +0200 (EET)
+To: Babu Moger <babu.moger@amd.com>
+cc: fenghua.yu@intel.com, Reinette Chatre <reinette.chatre@intel.com>, 
+    shuah@kernel.org, LKML <linux-kernel@vger.kernel.org>, 
+    linux-kselftest@vger.kernel.org, 
+    =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= <maciej.wieczor-retman@intel.com>, 
+    peternewman@google.com, eranian@google.com
+Subject: Re: [PATCH 1/4] selftests/resctrl: Rename variable imcs and
+ num_of_imcs() to generic names
+In-Reply-To: <458712890b9ac90b9e027ac1500881aedd58068c.1708637563.git.babu.moger@amd.com>
+Message-ID: <8e4badb7-6cc5-61f1-e041-d902209a90d5@linux.intel.com>
+References: <cover.1708637563.git.babu.moger@amd.com> <458712890b9ac90b9e027ac1500881aedd58068c.1708637563.git.babu.moger@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220081205.135063-1-raychi@google.com> <2024022024-trout-kennel-6d14@gregkh>
- <4d62d4d0-3f28-486b-8132-4cc571b6f721@quicinc.com> <CAPBYUsD=3ux8RXgRcroVsmpqNs0D+2NeLhqPHh3TBB_oq=ziXA@mail.gmail.com>
- <2024022033-broom-anime-6dd5@gregkh>
-In-Reply-To: <2024022033-broom-anime-6dd5@gregkh>
-From: Ray Chi <raychi@google.com>
-Date: Fri, 23 Feb 2024 18:36:04 +0800
-Message-ID: <CAPBYUsAapQin9ioDggDk_ZE2dGxBRFwSUcf8JGt4eRqrYd9m6w@mail.gmail.com>
-Subject: Re: [PATCH] usb: dwc3: gadget: remove warning during kernel boot
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>, Thinh.Nguyen@synopsys.com, 
-	quic_uaggarwa@quicinc.com, albertccwang@google.com, linux-usb@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 
-On Tue, Feb 20, 2024 at 9:56=E2=80=AFPM Greg KH <gregkh@linuxfoundation.org=
-> wrote:
->
-> On Tue, Feb 20, 2024 at 05:42:56PM +0800, Ray Chi wrote:
-> > Hi Krishna,
-> >
-> > I verified the Thinh's patch and the warning could be
-> > fixed. Thanks for the information.
->
-> Can you provide a tested-by for that one?
+On Thu, 22 Feb 2024, Babu Moger wrote:
 
-Since the solution has been merged, do I still need to provide tested-by?
-If tested-by is required, should I reply to the email thread for the
-merged patch or the reported patch?
+> In an effort to support MBM and MBA tests for AMD, renaming for variable
+> and functions to generic names. For Intel, the memory controller is called
+> Integrated Memory Controllers (IMC). For AMD, it is called Unified
+> Memory Controller (UMC). No functional change.
+> 
+> Signed-off-by: Babu Moger <babu.moger@amd.com>
+> ---
+>  tools/testing/selftests/resctrl/resctrl_val.c | 25 ++++++++++---------
+>  1 file changed, 13 insertions(+), 12 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/resctrl/resctrl_val.c b/tools/testing/selftests/resctrl/resctrl_val.c
+> index 88789678917b..52e23a8076d3 100644
+> --- a/tools/testing/selftests/resctrl/resctrl_val.c
+> +++ b/tools/testing/selftests/resctrl/resctrl_val.c
+> @@ -60,7 +60,7 @@ struct imc_counter_config {
+>  };
+>  
+>  static char mbm_total_path[1024];
+> -static int imcs;
+> +static int number_of_mem_ctrls;
+>  static struct imc_counter_config imc_counters_config[MAX_IMCS][2];
+>  
+>  void membw_initialize_perf_event_attr(int i, int j)
+> @@ -211,15 +211,16 @@ static int read_from_imc_dir(char *imc_dir, int count)
+>  }
+>  
+>  /*
+> - * A system can have 'n' number of iMC (Integrated Memory Controller)
+> - * counters, get that 'n'. For each iMC counter get it's type and config.
+> + * A system can have 'n' number of iMC (Integrated Memory Controller for
+> + * Intel) counters, get that 'n'. In case of AMD it is called UMC (Unified
+> + * Memory Controller). For each iMC/UMC counter get it's type and config.
+>   * Also, each counter has two configs, one for read and the other for write.
+>   * A config again has two parts, event and umask.
+>   * Enumerate all these details into an array of structures.
+>   *
+>   * Return: >= 0 on success. < 0 on failure.
+>   */
+> -static int num_of_imcs(void)
+> +static int get_number_of_mem_ctrls(void)
 
-> And please do not top post :(
+It's a bit odd to shorten "memory" and "controller" but not "number". In 
+fact, I'd prefer to use "controllers" in the longer form because ctrls 
+is ambiguous ("control" vs "controller").
 
-Thanks for the tips and your patience.
+So perhaps num_of_mem_controllers(void) (or that with get_ prefix if you 
+insist).
 
-Regards,
-Ray
+>  {
+>  	char imc_dir[512], *temp;
+>  	unsigned int count = 0;
+> @@ -279,12 +280,12 @@ static int initialize_mem_bw_imc(void)
+>  {
+>  	int imc, j;
+>  
+> -	imcs = num_of_imcs();
+> -	if (imcs <= 0)
+> -		return imcs;
+> +	number_of_mem_ctrls = get_number_of_mem_ctrls();
+> +	if (number_of_mem_ctrls <= 0)
+> +		return number_of_mem_ctrls;
+>  
+>  	/* Initialize perf_event_attr structures for all iMC's */
+> -	for (imc = 0; imc < imcs; imc++) {
+> +	for (imc = 0; imc < number_of_mem_ctrls; imc++) {
+
+So you renamed imcs, but not imc. Perhaps the variable names could just be 
+"mc" and "mcs"?
+
+>  		for (j = 0; j < 2; j++)
+>  			membw_initialize_perf_event_attr(imc, j);
+>  	}
+> @@ -309,7 +310,7 @@ static int get_mem_bw_imc(int cpu_no, char *bw_report, float *bw_imc)
+>  
+>  	/* Start all iMC counters to log values (both read and write) */
+>  	reads = 0, writes = 0, of_mul_read = 1, of_mul_write = 1;
+> -	for (imc = 0; imc < imcs; imc++) {
+> +	for (imc = 0; imc < number_of_mem_ctrls; imc++) {
+>  		for (j = 0; j < 2; j++) {
+>  			ret = open_perf_event(imc, cpu_no, j);
+>  			if (ret)
+> @@ -322,7 +323,7 @@ static int get_mem_bw_imc(int cpu_no, char *bw_report, float *bw_imc)
+>  	sleep(1);
+>  
+>  	/* Stop counters after a second to get results (both read and write) */
+> -	for (imc = 0; imc < imcs; imc++) {
+> +	for (imc = 0; imc < number_of_mem_ctrls; imc++) {
+>  		for (j = 0; j < 2; j++)
+>  			membw_ioctl_perf_event_ioc_disable(imc, j);
+>  	}
+> @@ -331,7 +332,7 @@ static int get_mem_bw_imc(int cpu_no, char *bw_report, float *bw_imc)
+>  	 * Get results which are stored in struct type imc_counter_config
+>  	 * Take over flow into consideration before calculating total b/w
+>  	 */
+> -	for (imc = 0; imc < imcs; imc++) {
+> +	for (imc = 0; imc < number_of_mem_ctrls; imc++) {
+>  		struct imc_counter_config *r =
+>  			&imc_counters_config[imc][READ];
+>  		struct imc_counter_config *w =
+> @@ -368,7 +369,7 @@ static int get_mem_bw_imc(int cpu_no, char *bw_report, float *bw_imc)
+>  		writes += w->return_value.value * of_mul_write * SCALE;
+>  	}
+>  
+> -	for (imc = 0; imc < imcs; imc++) {
+> +	for (imc = 0; imc < number_of_mem_ctrls; imc++) {
+>  		close(imc_counters_config[imc][READ].fd);
+>  		close(imc_counters_config[imc][WRITE].fd);
+
+I've a yet submitted patch to convert these close() calls to use the 
+loop approach which is consistent with the rest of the code, since you
+will end up touching this when you do imc -> mc rename, it would be 
+preferrable if you add one patch into your series which converts them to:
+
+		for (j = 0; j < 2; j++)
+			close(imc_counters_config[mc][j].fd);
+
+(Given how long kselftest patches tend to linger unapplied, it would 
+make things a lot easier since those changes will obviously conflict 
+otherwise).
+
+-- 
+ i.
+
 
