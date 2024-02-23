@@ -1,155 +1,259 @@
-Return-Path: <linux-kernel+bounces-78021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E7FC860E0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:34:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AFAC860E0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:35:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 291962869FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:34:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C24A11F26907
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:35:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB8C85C8F8;
-	Fri, 23 Feb 2024 09:34:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I4MyNQ/f"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6313917BAC
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 09:34:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9D315C8F9;
+	Fri, 23 Feb 2024 09:35:02 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2FBD22067
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 09:34:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708680885; cv=none; b=qflOgRAELNRbUQuatoVlOJmom21dVvaxjBEU0Fa9dUJPPcaDfCF4EBXuz+cyoUkSRRPt0T2NgLCsdxxbDnM5p7fiy8X/4wxVJhGCJOIZUcWNuyiUGpJD4yQRaIkLdYvVV7GWDyjtaTJrE6b5MEwKHzW+vEnow6XyNBeRNcGdqxU=
+	t=1708680902; cv=none; b=iqYVr2Qdm2ccVjk6DtNMO/Oamvp5DPW+2f/GqBGhHHsje/aJPBBQd3r6rDvJLYDJQi9ehXhvT1PEUnFBhthg2DYNqaIArFyJg/J7JoAfq6ohs5s2RNgAsowoiL8S4PGrrJf1sITCYsN8XC09/APKXchB1/3ZPaQkT60SGO4zMvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708680885; c=relaxed/simple;
-	bh=NE67qrc8lWeV8ja1PT5ALpzS30uNGFJaTG0AIqAtbew=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mfRXTnarch5cID/E7KqWKhln3bqoL7qn+ibWIxtSr4tfLksMR3HgQavNWd9PJAmKdzYJ4ovzYvIxg0/xf4oDZFCRz+s+MwLAUL9DbjYfxAOs4RAL61fmLh5mnr0KR69fgH28wjQVafBjMs5Nb0Q6D6PHR5Cw10WnL36GYaCKkKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I4MyNQ/f; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-512dfa097b1so890247e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 01:34:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708680881; x=1709285681; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=URjY1d9IzlvjqbTTQXHELWVs3EPiLz70xCmc8FLhHfE=;
-        b=I4MyNQ/fMdV9XWLXjAJfqS2RrAG78VersUM0Szno7ZokB2Xb9SbjuDISYWzsKBxq1u
-         eGrKHqiHAZUhg9ZmCnOpNQFXeDdxJGmzSeKGry/de9TvnPJeMYcm/PVLGPbxsbxyj6fH
-         MzisGgtYjpYX1N60TpRPhykp9VshXjfkDLOoZvsSD5rqwgXrhPvxONbXm1qdCOCyc8cd
-         OgA6weyqvMdWNSh6UUdjj77ZrD6lStCXuy3MEgLfuMJVLy+eJLZfRmQydO+8I55nnHyH
-         NflPWRLd/690WGoDVrkg/4q5IdtuiPFqSHgtLKmtuouXnDZrBYHJMt1HlRsX60zOfpEn
-         vvxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708680881; x=1709285681;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=URjY1d9IzlvjqbTTQXHELWVs3EPiLz70xCmc8FLhHfE=;
-        b=k2rmz8U2pLmzNg54r7+KuF+XnXTTjqcQT+K6TZ0GL3z8n9ZUp5XGfDiaiOf/U7aZIQ
-         pww6lfTtrPaTKFaEXu0g5iDUSE3huXJJA0YZJvzRusJp4maZAGvDnnLsmE3stiCvYL3y
-         K1SKf5nF6Yf0n7O9oNLhOoOatfSW7LGVncYxIhBv3g2x15adRJxcFdfQi/e2WSO6JQSv
-         1A55ZoXUeIstLDWhZtc47Y48JBPtQK9h9NPtH18rGlvtCVdBX6ERIX+cezTmd6fED8t8
-         hCytAW3RuDZiKjnK4kyvfQ16MP0S163prdw9RSyLigw5qiBVq7tV5I7hSHqa9Y/zbChK
-         FqYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWuWtKjd78TSPckUoScpJ/ADD5DkNM4x8mtMNAE3BPbyzMFMVQdXXYICwdvUVvDkSvXuZcCbuw4zJvb7y2N17L1u1E0dAYgnf/AZ98x
-X-Gm-Message-State: AOJu0YzUfapFenLiOtsRm+/HzP3lrvrFD2htE3HpK8Y9yS9BcG5pjysI
-	/Q1gFyYNJeeklpbntD/xOS1Jdm6zMZ+mGEqM/nXRsvXjo7rghIjC
-X-Google-Smtp-Source: AGHT+IGJd3oti1UYMtI8P32WOSvRQ26F7V5U1YuI/6f+U1Kr/lA344defddV3yuQs83g91ExLQHN7A==
-X-Received: by 2002:a05:6512:1308:b0:512:b915:606a with SMTP id x8-20020a056512130800b00512b915606amr1363676lfu.12.1708680881156;
-        Fri, 23 Feb 2024 01:34:41 -0800 (PST)
-Received: from pc636 (host-90-233-206-150.mobileonline.telia.com. [90.233.206.150])
-        by smtp.gmail.com with ESMTPSA id z6-20020ac25de6000000b005119498ba1dsm2389717lfq.198.2024.02.23.01.34.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 01:34:40 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Fri, 23 Feb 2024 10:34:36 +0100
-To: Pedro Falcato <pedro.falcato@gmail.com>
-Cc: Uladzislau Rezki <urezki@gmail.com>,
-	Matthew Wilcox <willy@infradead.org>, Mel Gorman <mgorman@suse.de>,
-	kirill.shutemov@linux.intel.com,
-	Vishal Moola <vishal.moola@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
-	Dave Chinner <david@fromorbit.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	linux-mm@kvack.org
-Subject: Re: [PATCH v3 00/11] Mitigate a vmap lock contention v3
-Message-ID: <ZdhmrEmA8wOuVcQT@pc636>
-References: <20240102184633.748113-1-urezki@gmail.com>
- <ZdcHXFMq0cwmVKfM@pc636>
- <CAKbZUD3+PJUoXee3MNvToy1zRnDoPoPqMjNAf5_87Uh-u2377w@mail.gmail.com>
+	s=arc-20240116; t=1708680902; c=relaxed/simple;
+	bh=J3NqzqoAHq2OWVYdWyWTXQx4OoRWAJnnJAB0ik8r76Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V0cogbINezqYKjUqy1yMw2/1YuVreh0+Sv6FJngYnTxmGa64hWSo+BNnWOH97u6gNcvGIBEHzi25Q9ftwM7za9oBayox04ApL8NEfHu0/stcuTGmUC8RSVzXZ+AN7de3SzZ6KtQx3vXns0aNUWBfYuYFdZUlCIWwwezgzkC4d64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-d6dff70000001748-de-65d866b65faa
+Date: Fri, 23 Feb 2024 18:34:41 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, kernel_team@skhynix.com, yuzhao@google.com
+Subject: Re: [PATCH v3] mm, vmscan: do not turn on cache_trim_mode if it
+ doesn't work
+Message-ID: <20240223093441.GA1612@system.software.com>
+References: <20240223054407.14829-1-byungchul@sk.com>
+ <87o7c7h6ql.fsf@yhuang6-desk2.ccr.corp.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKbZUD3+PJUoXee3MNvToy1zRnDoPoPqMjNAf5_87Uh-u2377w@mail.gmail.com>
+In-Reply-To: <87o7c7h6ql.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJLMWRmVeSWpSXmKPExsXC9ZZnke62tBupBrtmGVjMWb+GzeLyrjls
+	FvfW/Ge1ODlrMovFuwlfWB1YPRZsKvVYvOclk8emT5PYPU7M+M3i8XmTXABrFJdNSmpOZllq
+	kb5dAlfGjTfXWQqeWlf8XjmHsYHxjE4XIyeHhICJxNxp19i7GDnA7I2vpUFMFgFViRVn4kEq
+	2ATUJW7c+MkMYosIaEh8WricHcRmFqiVeHxnJhuILSwQLtExdzcriM0rYC6xt3kFWI2QQKZE
+	y8XdzBBxQYmTM5+wQPRqSdz495IJZBWzgLTE8n8cIGFOATuJX9NvMoLYogLKEge2HQcq4QI6
+	bA6bxO+FD9ghLpaUOLjiBssERoFZSMbOQjJ2FsLYBYzMqxiFMvPKchMzc0z0MirzMiv0kvNz
+	NzECA3hZ7Z/oHYyfLgQfYhTgYFTi4S1IvJ4qxJpYVlyZe4hRgoNZSYSXpfxKqhBvSmJlVWpR
+	fnxRaU5q8SFGaQ4WJXFeo2/lKUIC6YklqdmpqQWpRTBZJg5OqQbGDiHuR8daHjzd80HYe++R
+	m74HcwI0leMvfk95v5dzjaWvcYKfyORIlWkWk7MLlcVTYvdmqe5/zzn/QOn8qCXePyfzrlS8
+	tkZa+RPr76sOi2PC3CwUu25c+Hz7T/W3o56JnAsNa9IuH/BInRQVPDnhZ6BQRZH7ey5WmSMT
+	zFfmOTUwSDV26hsqsRRnJBpqMRcVJwIAH5/Y51wCAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrALMWRmVeSWpSXmKPExsXC5WfdrLst7Uaqwf89mhZz1q9hszg89ySr
+	xeVdc9gs7q35z2pxctZkFot3E76wOrB5LNhU6rF4z0smj02fJrF7nJjxm8Vj8YsPTB6fN8kF
+	sEVx2aSk5mSWpRbp2yVwZdx4c52l4Kl1xe+VcxgbGM/odDFycEgImEhsfC0NYrIIqEqsOBPf
+	xcjJwSagLnHjxk9mEFtEQEPi08Ll7CA2s0CtxOM7M9lAbGGBcImOubtZQWxeAXOJvc0rwGqE
+	BDIlWi7uZoaIC0qcnPmEBaJXS+LGv5dMIKuYBaQllv/jAAlzCthJ/Jp+kxHEFhVQljiw7TjT
+	BEbeWUi6ZyHpnoXQvYCReRWjSGZeWW5iZo6pXnF2RmVeZoVecn7uJkZgOC6r/TNxB+OXy+6H
+	GAU4GJV4eAsSr6cKsSaWFVfmHmKU4GBWEuFlKb+SKsSbklhZlVqUH19UmpNafIhRmoNFSZzX
+	Kzw1QUggPbEkNTs1tSC1CCbLxMEp1cC4KnClRe43Hiv/wD/VvbqhMzYwWF+9Jdifs9l0ttip
+	BV8u1d7o7k6Xfb1ffV9s5wenTav2nuJbdLa35nENyzfzSsUYlm/KfZ+eb2NPUgk481Tx2T+b
+	b/9iJ71g3Mex/F/GN+3LX3sPmTbMCDuqrladXhThG/y7WfSC/Q3DdgHBn5OuFt34IHlZiaU4
+	I9FQi7moOBEAoRs+N0MCAAA=
+X-CFilter-Loop: Reflected
 
-On Thu, Feb 22, 2024 at 11:15:59PM +0000, Pedro Falcato wrote:
-> Hi,
+On Fri, Feb 23, 2024 at 05:25:54PM +0800, Huang, Ying wrote:
+> Byungchul Park <byungchul@sk.com> writes:
 > 
-> On Thu, Feb 22, 2024 at 8:35 AM Uladzislau Rezki <urezki@gmail.com> wrote:
+> > Changes from v2:
+> > 	1. Change the condition to stop cache_trim_mode.
 > >
-> > Hello, Folk!
+> > 	   From - Stop it if it's at high scan priorities, 0 or 1.
+> > 	   To   - Stop it if it's at high scan priorities, 0 or 1, and
+> > 	          the mode didn't work in the previous turn.
 > >
-> >[...]
-> > pagetable_alloc - gets increased as soon as a higher pressure is applied by
-> > increasing number of workers. Running same number of jobs on a next run
-> > does not increase it and stays on same level as on previous.
+> > 	   (feedbacked by Huang Ying)
 > >
-> > /**
-> >  * pagetable_alloc - Allocate pagetables
-> >  * @gfp:    GFP flags
-> >  * @order:  desired pagetable order
-> >  *
-> >  * pagetable_alloc allocates memory for page tables as well as a page table
-> >  * descriptor to describe that memory.
-> >  *
-> >  * Return: The ptdesc describing the allocated page tables.
-> >  */
-> > static inline struct ptdesc *pagetable_alloc(gfp_t gfp, unsigned int order)
-> > {
-> >         struct page *page = alloc_pages(gfp | __GFP_COMP, order);
+> > 	2. Change the test result in the commit message after testing
+> > 	   with the new logic.
 > >
-> >         return page_ptdesc(page);
-> > }
+> > Changes from v1:
+> > 	1. Add a comment describing why this change is necessary in code
+> > 	   and rewrite the commit message with how to reproduce and what
+> > 	   the result is using vmstat. (feedbacked by Andrew Morton and
+> > 	   Yu Zhao)
+> > 	2. Change the condition to avoid cache_trim_mode from
+> > 	   'sc->priority != 1' to 'sc->priority > 1' to reflect cases
+> > 	   where the priority goes to zero all the way. (feedbacked by
+> > 	   Yu Zhao)
 > >
-> > Could you please comment on it? Or do you have any thought? Is it expected?
-> > Is a page-table ever shrink?
+> > --->8---
+> > From 05846e34bf02ac9b3e254324dc2d7afd97a025d9 Mon Sep 17 00:00:00 2001
+> > From: Byungchul Park <byungchul@sk.com>
+> > Date: Fri, 23 Feb 2024 13:47:16 +0900
+> > Subject: [PATCH v3] mm, vmscan: do not turn on cache_trim_mode if it doesn't work
+> >
+> > With cache_trim_mode on, reclaim logic doesn't bother reclaiming anon
+> > pages.  However, it should be more careful to turn on the mode because
+> > it's going to prevent anon pages from being reclaimed even if there are
+> > a huge number of anon pages that are cold and should be reclaimed.  Even
+> > worse, that leads kswapd_failures to reach MAX_RECLAIM_RETRIES and
+> > stopping kswapd from functioning until direct reclaim eventually works
+> > to resume kswapd.
+> >
+> > So do not turn on cache_trim_mode if the mode doesn't work, especially
+> > while the sytem is struggling against reclaim.
+> >
+> > The problematic behavior can be reproduced by:
+> >
+> >    CONFIG_NUMA_BALANCING enabled
+> >    sysctl_numa_balancing_mode set to NUMA_BALANCING_MEMORY_TIERING
+> >    numa node0 (8GB local memory, 16 CPUs)
+> >    numa node1 (8GB slow tier memory, no CPUs)
+> >
+> >    Sequence:
+> >
+> >    1) echo 3 > /proc/sys/vm/drop_caches
+> >    2) To emulate the system with full of cold memory in local DRAM, run
+> >       the following dummy program and never touch the region:
+> >
+> >          mmap(0, 8 * 1024 * 1024 * 1024, PROT_READ | PROT_WRITE,
+> > 	      MAP_ANONYMOUS | MAP_PRIVATE | MAP_POPULATE, -1, 0);
+> >
+> >    3) Run any memory intensive work e.g. XSBench.
+> >    4) Check if numa balancing is working e.i. promotion/demotion.
+> >    5) Iterate 1) ~ 4) until numa balancing stops.
+> >
+> > With this, you could see that promotion/demotion are not working because
+> > kswapd has stopped due to ->kswapd_failures >= MAX_RECLAIM_RETRIES.
+> >
+> > Interesting vmstat delta's differences between before and after are like:
+> >
+> >    +-----------------------+-------------------------------+
+> >    | interesting vmstat	   | before	   | after	   |
+> >    +-----------------------+-------------------------------+
+> >    | nr_inactive_anon	   | 321935	   | 1636737	   |
+> >    | nr_active_anon	   | 1780700	   | 465913	   |
+> >    | nr_inactive_file	   | 30425	   | 35711	   |
+> >    | nr_active_file	   | 14961	   | 8698	   |
+> >    | pgpromote_success	   | 356	   | 1267785	   |
+> >    | pgpromote_candidate   | 21953245	   | 1745631	   |
+> >    | pgactivate		   | 1844523	   | 3309867	   |
+> >    | pgdeactivate	   | 50634	   | 1545041	   |
+> >    | pgfault		   | 31100294	   | 6411036	   |
+> >    | pgdemote_kswapd	   | 30856	   | 2267467	   |
+> >    | pgscan_kswapd	   | 1861981	   | 7729231	   |
+> >    | pgscan_anon	   | 1822930	   | 7667544	   |
+> >    | pgscan_file	   | 39051	   | 61687	   |
+> >    | pgsteal_anon	   | 386	   | 2227217	   |
+> >    | pgsteal_file	   | 30470	   | 40250	   |
+> >    | pageoutrun		   | 30		   | 457	   |
+> >    | numa_hint_faults	   | 27418279	   | 2752289	   |
+> >    | numa_pages_migrated   | 356	   | 1267785 	   |
+> >    +-----------------------+-------------------------------+
+> >
+> > Signed-off-by: Byungchul Park <byungchul@sk.com>
+> > ---
+> >  mm/vmscan.c | 24 +++++++++++++++++++-----
+> >  1 file changed, 19 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index bba207f41b14..f7312d831fed 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -127,6 +127,9 @@ struct scan_control {
+> >  	/* One of the zones is ready for compaction */
+> >  	unsigned int compaction_ready:1;
+> >  
+> > +	/* If the last try was reclaimable */
+> > +	unsigned int reclaimable:1;
+> > +
+> >  	/* There is easily reclaimable cold cache in the current node */
+> >  	unsigned int cache_trim_mode:1;
+> >  
+> > @@ -2266,9 +2269,14 @@ static void prepare_scan_control(pg_data_t *pgdat, struct scan_control *sc)
+> >  	 * If we have plenty of inactive file pages that aren't
+> >  	 * thrashing, try to reclaim those first before touching
+> >  	 * anonymous pages.
+> > +	 *
+> > +	 * It doesn't make sense to keep cache_trim_mode on if the mode
+> > +	 * is not working while struggling against reclaim. So do not
+> > +	 * turn it on if so. Note the highest priority of kswapd is 1.
+> >  	 */
+> >  	file = lruvec_page_state(target_lruvec, NR_INACTIVE_FILE);
+> > -	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE))
+> > +	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE) &&
+> > +	    !(sc->cache_trim_mode && !sc->reclaimable && sc->priority <= 1))
 > 
-> It's my understanding that the vunmap_range helpers don't actively
-> free page tables, they just clear PTEs. munmap does free them in
-> mmap.c:free_pgtables, maybe something could be worked up for vmalloc
-> too.
->
-Right. I see that for a user space, pgtables are removed. There was a
-work on it.
-
->
-> I would not be surprised if the memory increase you're seeing is more
-> or less correlated to the maximum vmalloc footprint throughout the
-> whole test.
+> It's a little hard to digest the logic above for me, is it better to use
+> the following logic?
 > 
-Yes, the vmalloc footprint follows the memory usage. Some uses cases
-map lot of memory.
+> 	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE) &&
+> 	    (!sc->cache_trim_mode || sc->reclaimable || sc->priority > 1))
 
-Thanks for the input!
+Looks fine to me. Thanks.
 
---
-Uladzislau Rezki
+	Byungchul
+
+> Otherwise, this looks good to me, feel free to add,
+> 
+> Acked-by: "Huang, Ying" <ying.huang@intel.com>
+> 
+> >  		sc->cache_trim_mode = 1;
+> >  	else
+> >  		sc->cache_trim_mode = 0;
+> > @@ -5862,7 +5870,6 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+> >  {
+> >  	unsigned long nr_reclaimed, nr_scanned, nr_node_reclaimed;
+> >  	struct lruvec *target_lruvec;
+> > -	bool reclaimable = false;
+> >  
+> >  	if (lru_gen_enabled() && root_reclaim(sc)) {
+> >  		lru_gen_shrink_node(pgdat, sc);
+> > @@ -5877,6 +5884,14 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+> >  	nr_reclaimed = sc->nr_reclaimed;
+> >  	nr_scanned = sc->nr_scanned;
+> >  
+> > +	/*
+> > +	 * Reset to the default values at the start.
+> > +	 */
+> > +	if (sc->priority == DEF_PRIORITY) {
+> > +		sc->reclaimable = 1;
+> > +		sc->cache_trim_mode = 0;
+> > +	}
+> > +
+> >  	prepare_scan_control(pgdat, sc);
+> >  
+> >  	shrink_node_memcgs(pgdat, sc);
+> > @@ -5890,8 +5905,7 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+> >  		vmpressure(sc->gfp_mask, sc->target_mem_cgroup, true,
+> >  			   sc->nr_scanned - nr_scanned, nr_node_reclaimed);
+> >  
+> > -	if (nr_node_reclaimed)
+> > -		reclaimable = true;
+> > +	sc->reclaimable = !!nr_node_reclaimed;
+> >  
+> >  	if (current_is_kswapd()) {
+> >  		/*
+> > @@ -5965,7 +5979,7 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+> >  	 * sleep. On reclaim progress, reset the failure counter. A
+> >  	 * successful direct reclaim run will revive a dormant kswapd.
+> >  	 */
+> > -	if (reclaimable)
+> > +	if (sc->reclaimable)
+> >  		pgdat->kswapd_failures = 0;
+> >  }
+> 
+> --
+> Best Regards,
+> Huang, Ying
 
