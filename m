@@ -1,146 +1,148 @@
-Return-Path: <linux-kernel+bounces-77803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBD2F860A67
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 06:48:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5CC4860A6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 06:48:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF0BA1C22717
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 05:48:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F0B428847A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 05:48:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0404F12B7B;
-	Fri, 23 Feb 2024 05:48:05 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8092E125A4;
+	Fri, 23 Feb 2024 05:48:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="fGrQYAr8"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B9C212B6B
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 05:48:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35E8ADDB1;
+	Fri, 23 Feb 2024 05:48:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708667284; cv=none; b=WUOcJ9gVEDZpmS5K1Rn93stXlP1aJWfTmpn0In8+rapN8L07zkdVnh/kN5v5AxDv8Am/jnt6+UFiRN7h/ap3rw2MxBbNWmPjQV01jDU66rDBXV4U2dE+giuL8zXQfK3xRMkh2ccwTAA/Qef0H6AjbkBoHS7OCje1vvgGT89p+TE=
+	t=1708667315; cv=none; b=nsSJyYfVp+IsmqF1NFHJaktLPqjoHuO+LTpC86AvFhQDlKG2rPhpYhJQBcA802DhHmq8LxcvsVv9YKg0aBQQQXuN4nec6sWDyhtojH7sSF+xicwK5b4pxUkSDc304tf6kuNDxhdlW6Zm5YD90YQu0LMxyAI2rGwsPzek8JpE4yM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708667284; c=relaxed/simple;
-	bh=3lgspPdovin39r1dgbggC/l2D36BlmeTw4hkWatherg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WFP+074VBQCWwTBM1GUXI8nYQymdlQXo7ofp44463OqOCV3lPD0cHjCG3ausyEmjzjgvlwOmi4h5dnulMZQSyZlaIwg2Wjc5VGFuLd7Jn1Zrx2U6htpZD39yBsVrBMC+qK45gcOhL20Nz90GoLggvcVFZazELqMBHF1zmNl0BFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rdOPX-0001VK-U7; Fri, 23 Feb 2024 06:47:51 +0100
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rdOPV-002Mi2-CC; Fri, 23 Feb 2024 06:47:49 +0100
-Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rdOPV-004Aqu-0s;
-	Fri, 23 Feb 2024 06:47:49 +0100
-Date: Fri, 23 Feb 2024 06:47:49 +0100
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Wei Fang <wei.fang@nxp.com>, "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>, kernel@pengutronix.de,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	Shenwei Wang <shenwei.wang@nxp.com>,
-	Clark Wang <xiaoning.wang@nxp.com>,
-	NXP Linux Team <linux-imx@nxp.com>
-Subject: Re: [PATCH net-next v5 6/8] net: phy: Add phy_support_eee()
- indicating MAC support EEE
-Message-ID: <ZdgxhVuT6d-N0M5T@pengutronix.de>
-References: <20240221062107.778661-1-o.rempel@pengutronix.de>
- <20240221062107.778661-7-o.rempel@pengutronix.de>
- <9e37a9e9-7722-407c-a2a5-b8c04b68f594@gmail.com>
+	s=arc-20240116; t=1708667315; c=relaxed/simple;
+	bh=xhDHwk8s9doyKydAn74qDiheXxaJpnOskALgWIt3pAk=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=b+DyA/wLDHeoVZhGjdCQOYMSw3CBuJU2awlITx1yXRpeUGqSTrv68cyRz6QvDhbwoaqYBEWvqMFJseGEwb2Zc6TTdTMRBtfd20InV7GuizwYh9WT/kusr06y3Sk7xfb2WlyCYQfqxEeBkUnVl/7yBSEw/OQeFZEkK8/Ow6uxeMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=fGrQYAr8; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41N5mDZh003570;
+	Fri, 23 Feb 2024 05:48:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=MeYIdH9PJYLC
+	uzPezcfeC/12/0LCGKhkxsixocN4V2M=; b=fGrQYAr8MNxtODf/hRJoxNcE9lSr
+	EYQou30xZ6OZg0pFUMo+eru7VcUrTXTPYBFMFJdk39BbsNqfRufFmXu/pdw/o0+P
+	Rwgl2vBCDwY0R+jOcZNvkQ/z9MYsnPZMdLsg31wjM9OgpkWRhqnCLDOBWfQRRUGS
+	yGmqZbFMCyvQbkzjHOopQnTYKI7ZS5ucByXkYqwIuYRTdOREAazHeDuY0MJhtY0Q
+	nVCFyMOKnig22N1lAZx4vSyFbwrkSdsGR/+1JOhZfYW175KslAB3JTmRwX+V6c6W
+	sWedt2NnTLmsX7uhGQN+gZ+vwRwC6fAgt2tKlTZQRK8CjNcFxF+PqpR8Gw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wekver5pc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 Feb 2024 05:48:13 +0000 (GMT)
+Received: from pps.filterd (NALASPPMTA03.qualcomm.com [127.0.0.1])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 41N5mCn6020064;
+	Fri, 23 Feb 2024 05:48:12 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by NALASPPMTA03.qualcomm.com (PPS) with ESMTP id 3wd3eqk0ys-1;
+	Fri, 23 Feb 2024 05:48:12 +0000
+Received: from NALASPPMTA03.qualcomm.com (NALASPPMTA03.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41N5mCcW020055;
+	Fri, 23 Feb 2024 05:48:12 GMT
+Received: from hu-devc-lv-u18-c.qualcomm.com (hu-selvaras-lv.qualcomm.com [10.47.205.157])
+	by NALASPPMTA03.qualcomm.com (PPS) with ESMTP id 41N5mBGG020054;
+	Fri, 23 Feb 2024 05:48:12 +0000
+Received: by hu-devc-lv-u18-c.qualcomm.com (Postfix, from userid 4178377)
+	id B0F55600C34; Thu, 22 Feb 2024 21:48:11 -0800 (PST)
+From: Selvarasu Ganesan <quic_selvaras@quicinc.com>
+To: gregkh@linuxfoundation.org, brauner@kernel.org, axboe@kernel.dk,
+        jack@suse.cz, jlayton@kernel.org, keescook@chromium.org,
+        peter@korsgaard.com, hayama@lineo.co.jp, dmantipov@yandex.ru,
+        quic_linyyuan@quicinc.com
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_ppratap@quicinc.com, quic_wcheng@quicinc.com,
+        quic_jackp@quicinc.com, Selvarasu Ganesan <quic_selvaras@quicinc.com>
+Subject: [PATCH] usb: gadget: f_fs: Fix NULL pointer dereference in ffs_epfile_async_io_complete()
+Date: Thu, 22 Feb 2024 21:48:09 -0800
+Message-Id: <20240223054809.2379-1-quic_selvaras@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: UIIBYA2-SVa_RRETsfsSintFSFGB2UvL
+X-Proofpoint-ORIG-GUID: UIIBYA2-SVa_RRETsfsSintFSFGB2UvL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-22_15,2024-02-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 adultscore=0
+ impostorscore=0 clxscore=1011 spamscore=0 phishscore=0 mlxlogscore=999
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402230039
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <9e37a9e9-7722-407c-a2a5-b8c04b68f594@gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Thu, Feb 22, 2024 at 08:52:25PM -0800, Florian Fainelli wrote:
-> 
-> 
-> On 2/20/2024 10:21 PM, Oleksij Rempel wrote:
-> > From: Andrew Lunn <andrew@lunn.ch>
-> > 
-> > In order for EEE to operate, both the MAC and the PHY need to support
-> > it, similar to how pause works.
-> 
-> Kinda, a number of PHYs have added support for SmartEEE or AutoGrEEEn in
-> order to provide some EEE-like power savings with non-EEE capable MACs.
+In scenarios of continuous and parallel usage of multiple FFS interfaces
+and concurrent adb operations (e.g., adb root, adb reboot), there's a
+chance that ffs_epfile_async_io_complete() might be processed after
+ffs_epfile_release(). This could lead to a NULL pointer dereference of
+ffs when accessing the ffs pointer in ffs_epfile_async_io_complete(), as
+ffs is freed as part of ffs_epfile_release(). This epfile release is
+part of file operation and is triggered when user space daemons restart
+themselves or a reboot is initiated.
 
-Will reword it.
+Fix this issue by adding a NULL pointer check for ffs in
+ffs_epfile_async_io_complete().
 
-> Oleksij  did not you have a patch series at some point that introduced a
-> smarteee field in the phy_device structure to reflect that? I thought that
-> had been accepted, but maybe not.
+[  9981.393115] Unable to handle kernel NULL pointer dereference at virtual address 00000000000001e0
+[  9981.402854] Mem abort info:
+..
+[  9981.532540] Hardware name: Qualcomm Technologies,
+[  9981.540579] pstate: 204000c5 (nzCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[  9981.548438] pc : ffs_epfile_async_io_complete+0x38/0x4c
+[  9981.554529] lr : usb_gadget_giveback_request+0x30/0xd0
+..
+[  9981.645057] Call trace:
+[  9981.648282]  ffs_epfile_async_io_complete+0x38/0x4c
+[  9981.654004]  usb_gadget_giveback_request+0x30/0xd0
+[  9981.659637]  dwc3_gadget_endpoint_trbs_complete+0x1a8/0x48c
+[  9981.666074]  dwc3_process_event_entry+0x378/0x648
+[  9981.671622]  dwc3_process_event_buf+0x6c/0x288
+[  9981.676903]  dwc3_thread_interrupt+0x3c/0x68
+[  9981.682003]  irq_thread_fn+0x2c/0x8c
+[  9981.686388]  irq_thread+0x198/0x2ac
+[  9981.690685]  kthread+0x154/0x218
+[  9981.694717]  ret_from_fork+0x10/0x20
 
-Ack. They are pending at the end of EEE refactoring queue :)
+Signed-off-by: Selvarasu Ganesan <quic_selvaras@quicinc.com>
+---
+ drivers/usb/gadget/function/f_fs.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-> > Copy the pause concept and add the
-> > call phy_support_eee() which the MAC makes after connecting the PHY to
-> > indicate it supports EEE. phylib will then advertise EEE when auto-neg
-> > is performed.
-> > 
-> > Signed-off-by: Andrew Lunn <andrew@lunn.ch>
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > ---
-> >   drivers/net/phy/phy_device.c | 18 ++++++++++++++++++
-> >   include/linux/phy.h          |  3 ++-
-> >   2 files changed, 20 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> > index 2eefee970851..269d3c7f0849 100644
-> > --- a/drivers/net/phy/phy_device.c
-> > +++ b/drivers/net/phy/phy_device.c
-> > @@ -2910,6 +2910,24 @@ void phy_advertise_eee_all(struct phy_device *phydev)
-> >   }
-> >   EXPORT_SYMBOL_GPL(phy_advertise_eee_all);
-> > +/**
-> > + * phy_support_eee - Enable support of EEE
-> > + * @phydev: target phy_device struct
-> > + *
-> > + * Description: Called by the MAC to indicate is supports Energy
-> > + * Efficient Ethernet. This should be called before phy_start() in
-> > + * order that EEE is negotiated when the link comes up as part of
-> > + * phy_start(). EEE is enabled by default when the hardware supports
-> > + * it.
-> 
-> That comment is a bit confusing without mentioning how the hardware default
-> state wrt. EEE is being factored in, can we have some details here?
-
-If I see it correctly, this function set initial EEE policy for the PHY.
-It should be called only once at PHY registration by the MAC and/or by
-the PHY in case of SmartEEE or AutoGrEEEn PHY.
-
-The advertisement configuration will be based on already filtered set of
-supported modes.
-
+diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/function/f_fs.c
+index be3851cffb73..d8c8e88628f9 100644
+--- a/drivers/usb/gadget/function/f_fs.c
++++ b/drivers/usb/gadget/function/f_fs.c
+@@ -849,7 +849,9 @@ static void ffs_epfile_async_io_complete(struct usb_ep *_ep,
+ 	usb_ep_free_request(_ep, req);
+ 
+ 	INIT_WORK(&io_data->work, ffs_user_copy_worker);
+-	queue_work(ffs->io_completion_wq, &io_data->work);
++
++	if (ffs && ffs->io_completion_wq)
++		queue_work(ffs->io_completion_wq, &io_data->work);
+ }
+ 
+ static void __ffs_epfile_read_buffer_free(struct ffs_epfile *epfile)
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.17.1
+
 
