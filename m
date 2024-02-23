@@ -1,105 +1,135 @@
-Return-Path: <linux-kernel+bounces-79216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4790B861F13
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:31:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8FFE861F14
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:32:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77CEDB23A0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:31:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E419C1C22DE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:32:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F393914C5AA;
-	Fri, 23 Feb 2024 21:30:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58D3E1493BB;
+	Fri, 23 Feb 2024 21:32:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ger20FJE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SfLV2Ms4"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A8E3149388;
-	Fri, 23 Feb 2024 21:30:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24550149381
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 21:32:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708723852; cv=none; b=Sa3yS0bG2oOAEJTOmZ7MljiONIYH8VHBD5w1F12VoDY1wlA9fTIEQX/OeusC9Dch3I8n6cfE5c4HGzP0EA0QJDql0caKxD2pcbuXV4ZQ0/gWWrDAoRSw9TOCklG05BXDGj3NerMx0W2r5HMIh7LXmM+/mdEaoPV/ictEW4Aat2U=
+	t=1708723925; cv=none; b=i6PQBMEM47CO36q3HlOZxxkvz5hchOYHzQxGSEDEgZRf3Rm51REYCR4GH0MviIJnAArYJ4ZsdgRKk/73mh1fKJ7G5QsrXkSdMvKZCwM5HEwCLHVWwntzY9Mfj4GURz7e0NeN7FPkWkRZ74M+iaF1TeZJPF9qlOcsv1aWpy6zyDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708723852; c=relaxed/simple;
-	bh=sfcwH5sN+SrxnyVjSE5DI8NCCDVtVWK2Te2B9pfPfxM=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=MxHwEs1lvXEu7yTQm2XFUVQPxvQMmc+XEBijKwi12Z9+RrzDQ9jA4n7YIyL35L0tDe8Mt3eJWSoNzl3/+df2NrA+PqiPf+3L079o9p3At96BSxcAeoiBqx+cW2vQxyFbWuoMbGZlSV6zp88zJXNjdYit4a4/d1JI3yb7ObUcn9o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ger20FJE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24D1CC433C7;
-	Fri, 23 Feb 2024 21:30:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708723851;
-	bh=sfcwH5sN+SrxnyVjSE5DI8NCCDVtVWK2Te2B9pfPfxM=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=Ger20FJEYVzroSPks6ThGRlupVxZvVrbImq3SbmeFnwGnUfxYhWq1MRdi2ZasDUpo
-	 NLCAYfyYLa1289Ptq3MqfszbUhtbxAX2yQmLNlfnWvUUifZHjeOIqgrW0ii4+xnGNW
-	 2K+d5x909zgVTiPWI3LMD/kSptmhcqOopb5yG3bFakcVLCpR+uWzAUjQ4Tace765Ms
-	 UmFmzzZox6zaNfWOJcHO+z2TLShFQhx5AlV3+EOTXxDumlFWLY6i7GPioapHEkMBjK
-	 h/ZL5ld4wAdurp0cXrIYA4xeq9anjUpm+xprI+SNfypA4DJbk6+5bN1oyz+HiM9f9b
-	 UXYLmm7KELNNA==
-Date: Fri, 23 Feb 2024 14:30:47 -0700
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1708723925; c=relaxed/simple;
+	bh=29kkunBsutguy6GvwVyorRTRKtbonmNkFfzqB8N7XEM=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Content-Type; b=DYO4vbweNwVBRhGmFlYZBDjau3EhzVWl5yLDjELrMdrZVinara66TpuvCMiQQjPX16xSuGLZw/ThnaU6DFqjwdEhgMTSqLqn/2lXNyCZwI2QL+j4ensv2h4JySvKDJ36Eg9ModFTxOKxELN2SdcZPC1iSHLvNoCBQT6m2qtOUOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SfLV2Ms4; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-607a628209eso13843357b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:32:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708723923; x=1709328723; darn=vger.kernel.org;
+        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5T8kMbM3lvFCmU6raObYkuNJfKV9OA18TCvi8MEnNBs=;
+        b=SfLV2Ms42xjATTNE0BMpqrPCFzRi35MdnFVV0fFjmY1fzQC4vkp16U0RlC7OFJpQbj
+         IhiFDZmHPJEfdWbMFc37/wGXnNW8a9jhxqv8hPezRfNgcG7RbzYNzt9g4gaKGzfFy+IL
+         WjI0blYQcgdaqu2W9DoW0i6sqnAmvWJJL+KYGUhs8dgdVEdd4/JZl62zdDihwCaA+w6h
+         BLpi4gjJc6j2nOmnXZhOU/S60oSRHkgsPF2PUOgnnnEswFgQu0gCFj/hmHIdGWAc62sK
+         2Kq64xuTptdkaZLHBLy94AOUJjuXo7qXdji3FjxMKSiKpL1EbJtkt/SM8JlxaABCRkP9
+         Ssbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708723923; x=1709328723;
+        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5T8kMbM3lvFCmU6raObYkuNJfKV9OA18TCvi8MEnNBs=;
+        b=Vsyr45FJQKF7iMfYq4as0lgTErozYdUMBgBIUgkE+xCsJIWEJB+qaUIerzNAyutAHj
+         CKGy4rLgNwbXlfYJOo1ix5FpUDmb4z5AmMc5V2GrNlRkzVmvy/b0a07wc0yFb8odAAev
+         O4IekHaNmSzQr2EwJUODAJJDgENLhEvDGvVqNjGiCVta5pn3++WFUKbGrlYdRMvCZaLm
+         okCuklQ07KLPc2gwdKcA7CzN2t6iSvrbUy49rh8a7gDjwbR7EEtvaXNLszU0GAd/ehZG
+         +UPdwy94q9xMYAqKyFESFpwBrezgYTrsRmF6Iq8/R/WfGzgnWWa3QlAoGuzKM9xttHs2
+         a+uQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXBH0xnw3lHIGKIDxKTzGdjeu/j3QUhT66iUgW8Ekmkx8PUqsEdqpLI9fPGGjRf5B+ei2xU7UIf3tjZLK2VFPXDdOZVRTsE0+f0/+ev
+X-Gm-Message-State: AOJu0Yx1RMTvsGWSJuqyqz0DojHbnpxhZbTqdAKhYto1+cFGra3sjql+
+	S7dcxFP3rrs+m+hTa8IWDsUgGMhW3agMlagKGggYuWu0osBHko7P0C4WUUxL+833OgG0ARWoGcv
+	4/Q==
+X-Google-Smtp-Source: AGHT+IHQsa2LAoeFm38m6iAgFlbUSvGJwmYQQ/4CTw9uBww3wjf6rnkg1DLsVSRa7HvqhL7ZI/R2B0/nSyg=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a0d:d9d4:0:b0:608:a901:469a with SMTP id
+ b203-20020a0dd9d4000000b00608a901469amr247453ywe.1.1708723923177; Fri, 23 Feb
+ 2024 13:32:03 -0800 (PST)
+Date: Fri, 23 Feb 2024 13:32:01 -0800
+In-Reply-To: <20240223211547.3348606-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Yang Xiwen <forbidden405@outlook.com>
-Cc: Thinh Nguyen <Thinh.Nguyen@synopsys.com>, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Yang Xiwen <forbidden405@foxmail.com>, 
- Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org
-In-Reply-To: <20240224-dwc3-v1-1-7ffb2e2baa73@outlook.com>
-References: <20240224-dwc3-v1-0-7ffb2e2baa73@outlook.com>
- <20240224-dwc3-v1-1-7ffb2e2baa73@outlook.com>
-Message-Id: <170872384596.3677869.9541717798741821865.robh@kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: usb: add hisilicon,hi3798mv200-dwc3
+Mime-Version: 1.0
+References: <20240223211547.3348606-1-seanjc@google.com>
+Message-ID: <ZdkO0bgL40l10YnU@google.com>
+Subject: Re: [GIT PULL] KVM: GUEST_MEMFD fixes for 6.8
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-
-On Sat, 24 Feb 2024 01:17:49 +0800, Yang Xiwen wrote:
-> Document the DWC3 controller used by Hi3798MV200.
+On Fri, Feb 23, 2024, Sean Christopherson wrote:
+> Minor fixes related GUEST_MEMFD.  I _just_ posted these, and they've only
+> been in -next for one night, but I am sending this now to ensure you see it
+> asap, as patch 1 in particular affects KVM's ABI, i.e. really should land
+> in 6.8 before GUEST_MEMFD support is officially released.
 > 
-> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
-> ---
->  .../bindings/usb/hisilicon,hi3798mv200-dwc3.yaml   | 100 +++++++++++++++++++++
->  1 file changed, 100 insertions(+)
+> The following changes since commit c48617fbbe831d4c80fe84056033f17b70a31136:
 > 
+>   Merge tag 'kvmarm-fixes-6.8-3' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into HEAD (2024-02-21 05:18:56 -0500)
+> 
+> are available in the Git repository at:
+> 
+>   https://github.com/kvm-x86/linux.git tags/kvm-x86-guest_memfd_fixes-6.8
+> 
+> for you to fetch changes up to 2dfd2383034421101300a3b7325cf339a182d218:
+> 
+>   KVM: selftests: Add a testcase to verify GUEST_MEMFD and READONLY are exclusive (2024-02-22 17:07:06 -0800)
+> 
+> ----------------------------------------------------------------
+> KVM GUEST_MEMFD fixes for 6.8:
+> 
+>  - Make KVM_MEM_GUEST_MEMFD mutually exclusive with KVM_MEM_READONLY to
+>    avoid creating ABI that KVM can't sanely support.
+> 
+>  - Update documentation for KVM_SW_PROTECTED_VM to make it abundantly
+>    clear that such VMs are purely a development and testing vehicle, and
+>    come with zero guarantees.
+> 
+>  - Limit KVM_SW_PROTECTED_VM guests to the TDP MMU, as the long term plan
+>    is to support confidential VMs with deterministic private memory (SNP
+>    and TDX) only in the TDP MMU.
+> 
+>  - Fix a bug in a GUEST_MEMFD negative test that resulted in false passes
+>    when verifying that KVM_MEM_GUEST_MEMFD memslots can't be dirty logged.
+> 
+> ----------------------------------------------------------------
+> Sean Christopherson (5):
+>       KVM: Make KVM_MEM_GUEST_MEMFD mutually exclusive with KVM_MEM_READONLY
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Almost forgot, just as an FYI, this has a minor conflict with your kvm/kvm-uapi
+branch.  I've been fixing it up in kvm-x86/next, and IIUC you don't feed kvm/master
+into -next, so I don't think Stephen will see a conflict?
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/usb/hisilicon,hi3798mv200-dwc3.example.dts:34.32-33 syntax error
-FATAL ERROR: Unable to parse input tree
-make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/usb/hisilicon,hi3798mv200-dwc3.example.dtb] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1428: dt_binding_check] Error 2
-make: *** [Makefile:240: __sub-make] Error 2
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240224-dwc3-v1-1-7ffb2e2baa73@outlook.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+>       KVM: x86: Update KVM_SW_PROTECTED_VM docs to make it clear they're a WIP
+>       KVM: x86/mmu: Restrict KVM_SW_PROTECTED_VM to the TDP MMU
+>       KVM: selftests: Create GUEST_MEMFD for relevant invalid flags testcases
+>       KVM: selftests: Add a testcase to verify GUEST_MEMFD and READONLY are exclusive
+> 
+>  Documentation/virt/kvm/api.rst                       |  5 +++++
+>  arch/x86/kvm/Kconfig                                 |  7 ++++---
+>  arch/x86/kvm/x86.c                                   |  2 +-
+>  tools/testing/selftests/kvm/set_memory_region_test.c | 12 +++++++++++-
+>  virt/kvm/kvm_main.c                                  |  8 +++++++-
+>  5 files changed, 28 insertions(+), 6 deletions(-)
 
