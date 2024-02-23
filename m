@@ -1,114 +1,111 @@
-Return-Path: <linux-kernel+bounces-77956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54ABB860D4B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:54:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA510860D4F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:55:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 859471C24AC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:54:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 589A92817C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:55:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFD121AADE;
-	Fri, 23 Feb 2024 08:54:24 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41AD31B5A0;
+	Fri, 23 Feb 2024 08:54:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UaO4+eda";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="RY0/77R8"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7EE61AAA9
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 08:54:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 231271A29F;
+	Fri, 23 Feb 2024 08:54:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708678464; cv=none; b=hR1jxIsXDSgpnbZb++dDmpwUAw6kC7/vbPIBegstizuIzTlqXOGaGKP+8EgbJHLSejFA4XrqVDFXzG6ReWPc1iwkysTlG8ju0af9U4SIYId4nQGd/rgeyl/sFJUVPEUIMjgmdKG9zvqjQQkVnJq2hJH7i29S+bmGEV1CKblERyM=
+	t=1708678492; cv=none; b=PoJ8l+C1r+S9puh0FCb3D2+iyWw990k4k/yKjMrikUe7ANZ4zmzWNcSvVshwvFQJbNu/4QtO6umpkl1T48Dn0xSxm+JNP5H60XdOCSAHiXwm5CNrxeKaUm6c9TXGdbStj5zwFD9IjfTlbcm0rZ/mL8f3E3uACs9crSPPqlvB15I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708678464; c=relaxed/simple;
-	bh=LDZLhdmLJuLOyKoQoccELLdHvbxLoXzSeqTWkyO71zc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o/QYheWQiiGPzfNggk4Z5VX0rDPM+yh3hsc6FCXKz2EdSqkSq6UeOfYL0L+Ru63yEIy4bubAJHoYCkudxHVsFyKbqBiWmXmyRqVIG/7gWj4A6yY+K8t0tfIRIwTYVPT+o8x7Qzv/q4tz6jviNnFY3m1z1dE1mJh7PvsF+CRya0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rdRJt-0001Jm-1E; Fri, 23 Feb 2024 09:54:13 +0100
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rdRJq-002OHE-IO; Fri, 23 Feb 2024 09:54:10 +0100
-Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rdRJq-004DHH-1X;
-	Fri, 23 Feb 2024 09:54:10 +0100
-Date: Fri, 23 Feb 2024 09:54:10 +0100
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Wei Fang <wei.fang@nxp.com>, "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>, kernel@pengutronix.de,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	Shenwei Wang <shenwei.wang@nxp.com>,
-	Clark Wang <xiaoning.wang@nxp.com>,
-	NXP Linux Team <linux-imx@nxp.com>
-Subject: Re: [PATCH net-next v5 3/8] net: phy: Add helper to set EEE Clock
- stop enable bit
-Message-ID: <ZdhdMl-EWXTGzx1p@pengutronix.de>
-References: <20240221062107.778661-1-o.rempel@pengutronix.de>
- <20240221062107.778661-4-o.rempel@pengutronix.de>
- <572300ab-3475-4ea6-b6c9-9206f237171f@gmail.com>
+	s=arc-20240116; t=1708678492; c=relaxed/simple;
+	bh=oYSYLti2IifVDTV0OzRPUbZTcLilwnzAMygead+Tsog=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ZloINzr8L7t0eVmLQoXhT/zHdOXYgqFWPkJG38PvhulqyqIxsAhYP8/GvZ7W9pYppWvnwIZ3UDz6G6cqfyQkb6iyoVzBQAKME6PaQfw4TfhZgc5o7p7gCs88S4WusH/gdJMoyEHOw3QJm6tKIulEY+lI/V3Ji2VBRsXyOyvyvrw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=UaO4+eda; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=RY0/77R8; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708678489;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zrx67e+Ks02+zDid4MN+n+m4AfW7G8yFrILIPbdnNa4=;
+	b=UaO4+edaAlRkEF1meSANixfmhiR1danHJMIoI4bWIlEjqMxlificuKVRiZjKRI34uK+/hk
+	yov6A0AAylIj/5+xhEkh25rs/R5t1D0FnBd6XiLZHZws8ZndsF4Fx6/BRPnb9WiijW74wC
+	awhDyB/C7rcWplgSzNGGRzKEdbwcmqq3WDPnGbLr42NCF1DXy7P/ggZbu6FT5xUcsNXGKG
+	aWIUlN84e44uMKNJRSTu+RlK+p7CZzXgzQbdwe7UDpsvjKIfxUfXcFI+qIbJQboXX/1e0j
+	DYYGgINgTShkLB7bcNMk/4SsS/Av095OpICDU2bdXJIq759Vi3dSngtB86Wrsw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708678489;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zrx67e+Ks02+zDid4MN+n+m4AfW7G8yFrILIPbdnNa4=;
+	b=RY0/77R84x+3anj5rVqtXr7nePncBV1qdEK0MqIR9HQ97lVwGiQRJSrwrJwrBASYJ6hOj/
+	v2mgwGRxCXg66LAA==
+To: Yu Chien Peter Lin <peterlin@andestech.com>, acme@kernel.org,
+ adrian.hunter@intel.com, ajones@ventanamicro.com,
+ alexander.shishkin@linux.intel.com, andre.przywara@arm.com,
+ anup@brainfault.org, aou@eecs.berkeley.edu, atishp@atishpatra.org,
+ conor+dt@kernel.org, conor.dooley@microchip.com, conor@kernel.org,
+ devicetree@vger.kernel.org, evan@rivosinc.com, geert+renesas@glider.be,
+ guoren@kernel.org, heiko@sntech.de, irogers@google.com,
+ jernej.skrabec@gmail.com, jolsa@kernel.org, jszhang@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-sunxi@lists.linux.dev, locus84@andestech.com, magnus.damm@gmail.com,
+ mark.rutland@arm.com, mingo@redhat.com, n.shubin@yadro.com,
+ namhyung@kernel.org, palmer@dabbelt.com, paul.walmsley@sifive.com,
+ peterlin@andestech.com, peterz@infradead.org,
+ prabhakar.mahadev-lad.rj@bp.renesas.com, rdunlap@infradead.org,
+ robh+dt@kernel.org, samuel@sholland.org, sunilvl@ventanamicro.com,
+ tim609@andestech.com, uwu@icenowy.me, wens@csie.org, will@kernel.org,
+ inochiama@outlook.com, unicorn_wang@outlook.com, wefu@redhat.com
+Cc: Randolph <randolph@andestech.com>
+Subject: Re: [PATCH v9 03/10] irqchip/riscv-intc: Introduce Andes hart-level
+ interrupt controller
+In-Reply-To: <877civefa5.ffs@tglx>
+References: <20240222083946.3977135-1-peterlin@andestech.com>
+ <20240222083946.3977135-4-peterlin@andestech.com> <87o7c8dvv4.ffs@tglx>
+ <877civefa5.ffs@tglx>
+Date: Fri, 23 Feb 2024 09:54:48 +0100
+Message-ID: <874jdzef1j.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <572300ab-3475-4ea6-b6c9-9206f237171f@gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
 
-On Thu, Feb 22, 2024 at 08:47:58PM -0800, Florian Fainelli wrote:
-> 
-> 
-> On 2/20/2024 10:21 PM, Oleksij Rempel wrote:
-> > From: Andrew Lunn <andrew@lunn.ch>
-> > 
-> > The MAC driver can request that the PHY stops the clock during EEE
-> > LPI. This has normally been does as part of phy_init_eee(), however
-> > that function is overly complex and often wrongly used. Add a
-> > standalone helper, to aid removing phy_init_eee().
-> > 
-> > Signed-off-by: Andrew Lunn <andrew@lunn.ch>
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> 
-> Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
-> 
-> It would be useful to also read whether the PHY is capable of stopping its
-> clock, this has IMHO always been missing. Clause 45 IEEE PCS Status 1
-> Register (3.1) bit 6 reflects whether the PHY is capable of stopping its
-> clock.
+On Fri, Feb 23 2024 at 09:49, Thomas Gleixner wrote:
+> On Thu, Feb 22 2024 at 22:36, Thomas Gleixner wrote:
+>> Palmer, feel free to take this through the riscv tree. I have no other
+>> changes pending against that driver.
+>
+> Aargh. Spoken too early. This conflicts with Anups AIA series.
+>
+>   https://lore.kernel.org/all/20240222094006.1030709-1-apatel@ventanamicro.com
+>
+> So I rather take the pile through my tree and deal with the conflicts
+> localy than inflicting it on next.
 
-Agreed, there is a extra set of challenges with this functionality. For
-example stmmac will fail to reset DMA engine if PHY disabled clock. It will be
-good to handle it in a separate patch set.
+> Palmer?
 
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Nah. I just apply the two intc patches localy and give you a tag to pull
+from so we carry both the same commits. Then I can deal with the
+conflicts on my side trivially.
+
+Thanks,
+
+        tglx
 
