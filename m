@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-79040-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDEF6861CB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:39:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 671CC861CB7
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:41:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D75A1C2338C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:39:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE6471F228CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:41:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AC9D1448F1;
-	Fri, 23 Feb 2024 19:39:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BC0C1448E5;
+	Fri, 23 Feb 2024 19:41:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="E/AJ5O5h"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IaA65i7f"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4D3D1448E5
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 19:39:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EDE51420B7
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 19:41:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708717150; cv=none; b=RdWdguIb75gpSJP6eIcjajjjC/KD0awpsh7XyBcQL2ZVSZ2+N2CCdjwMMw/L8DdnnfA+IStin5mNZmRepiYyQLP81GwtIC8isxZVrp8nG4ZXQwXIpcYyhJwRkUnHjfKX8Gkl2Xo+gB6jYMN2mBxqiiFpoymspA3P1lxw5LlC4Us=
+	t=1708717305; cv=none; b=AZhMV7z3YzPHRQ8TeTjfZBzBr6Tac0dIHdGLrPcZK6TSiYBzb25+Uj3lU5pIyjxeBMdtJjyk/kMNsNnkITdF5oLisp9Of6UVNsHbrbvJCiSxufy98Y8gGp9679DwNXJA7J46Gi3CPJ+DEVDBOOo4wtDWYr7FJA9XZ4Ttx04mpcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708717150; c=relaxed/simple;
-	bh=pLrNYUAa8YeswxINnrU38+oxEExh3rDUsw3BEb0+Vvg=;
+	s=arc-20240116; t=1708717305; c=relaxed/simple;
+	bh=wSyCr10hgEn6syn5sBlpIxD5jTCtsaHF/BkwDgxJQfs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=doH7lU8z3yqQMHQ5S8w/XLf6YU7zBNtJmMsf+xmfB+DGNSxBzxDdZaLtfHg0B+QpsT9sFtTwwJ5sR/why43CeY0kkKyYt/8OX8zUD7WggZzGGz7YT8+Vmv9x0pCqxTqLmNbEaeRe7tFosM88G/2fxVoUgJX4rChHVBHQTjQ0qPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=E/AJ5O5h; arc=none smtp.client-ip=198.175.65.14
+	 In-Reply-To:Content-Type; b=sULfMeJtEa4WhLQwBuqGecEPFPWDFjciIiMPbcsFsDwaYiQR34fbef4t/MDDv2K4suiFMvkLZU/KyQz4tVh7UKm+O8TGnOUt1mNIo9IRxmQ+dXlztRLCZx9HqklhN1hGZxz0mgVJEsSnS65RCDCoO74n825iQa+d1W/ZLtq0ecQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IaA65i7f; arc=none smtp.client-ip=192.198.163.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708717148; x=1740253148;
+  t=1708717303; x=1740253303;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=pLrNYUAa8YeswxINnrU38+oxEExh3rDUsw3BEb0+Vvg=;
-  b=E/AJ5O5hlNM9y5cWqYKsxCdYckt1P62xsi2MZNScgi7U2d8VOPVWpMNP
-   pE9yY4PD48Q3Qqwld0HtOFUTVheD/p7YYKO02RdAT6KH9Zw1t/bnt2JWp
-   rMSmWDV6T9Z8Jgf34y/ucLIP4fovCytVXXQfXlnO+T/rOqEUDZxArz6cC
-   KMnDKZoSrE0x+5NNUdu4xdBtPLQg3rdegeItjfBnmjZzhneD+vARCniI7
-   7L2bjR2qFmgsvOquoBl8cwnnqbSnYI1sUFEmxwel001hlPrKgEVQj4aOC
-   Neay6mu5x1zF09cL+KKLhGC7AMQEbdsOqismh2q7ZG3cCF+V/ozFYTbvs
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="6867183"
+  bh=wSyCr10hgEn6syn5sBlpIxD5jTCtsaHF/BkwDgxJQfs=;
+  b=IaA65i7f6N8+Zy01fkBb69aTj60RLDbd4+09Bnfo/zzIhwtZCfUYoJkc
+   xT67pTN5tO5HFfoCNpG0PXMN/DTSuowZOuS7mZ7/PFePlrd3J1Kc90xJX
+   Pr4d062Zdg/40oKNFF2fOZmpt2yHewaeFCH3DxHehsilFOLjwtE4I2Zvz
+   fa6NZPOr4vYyp4ckzOofyrimt+Yjwrg4c3aG+aMhQ8xJ3BU2O45+x7VR9
+   XIfLzdiNVKoLqPNa4FV+u/zrxa80bSK6XxFiD6z41VAUeYQ4RrvZwIxAd
+   7yZpz81zgOaUp5yO2t+gN3r/frItXx6v1HdNLUIr9M+eiinCwsqqSyPVn
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="13750650"
 X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="6867183"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 11:39:08 -0800
+   d="scan'208";a="13750650"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 11:41:42 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="36778758"
+   d="scan'208";a="10703891"
 Received: from gtkramer-mobl1.amr.corp.intel.com (HELO [10.209.82.163]) ([10.209.82.163])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 11:39:08 -0800
-Message-ID: <a14bda4a-15ad-4d20-8b60-0ab92b608f2f@intel.com>
-Date: Fri, 23 Feb 2024 11:39:07 -0800
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 11:41:42 -0800
+Message-ID: <90ea0a21-d803-426d-9d73-00bd1a26e73a@intel.com>
+Date: Fri, 23 Feb 2024 11:41:41 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,8 +62,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHv7 10/16] x86/tdx: Convert shared memory back to private on
- kexec
+Subject: Re: [PATCHv7 11/16] x86/mm: Make e820_end_ram_pfn() cover
+ E820_TYPE_ACPI ranges
 Content-Language: en-US
 To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
  Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
@@ -82,7 +82,7 @@ Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
  kexec@lists.infradead.org, linux-coco@lists.linux.dev,
  linux-kernel@vger.kernel.org
 References: <20240212104448.2589568-1-kirill.shutemov@linux.intel.com>
- <20240212104448.2589568-11-kirill.shutemov@linux.intel.com>
+ <20240212104448.2589568-12-kirill.shutemov@linux.intel.com>
 From: Dave Hansen <dave.hansen@intel.com>
 Autocrypt: addr=dave.hansen@intel.com; keydata=
  xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
@@ -127,50 +127,15 @@ Autocrypt: addr=dave.hansen@intel.com; keydata=
  MTsCeQDdjpgHsj+P2ZDeEKCbma4m6Ez/YWs4+zDm1X8uZDkZcfQlD9NldbKDJEXLIjYWo1PH
  hYepSffIWPyvBMBTW2W5FRjJ4vLRrJSUoEfJuPQ3vW9Y73foyo/qFoURHO48AinGPZ7PC7TF
  vUaNOTjKedrqHkaOcqB185ahG2had0xnFsDPlx5y
-In-Reply-To: <20240212104448.2589568-11-kirill.shutemov@linux.intel.com>
+In-Reply-To: <20240212104448.2589568-12-kirill.shutemov@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 2/12/24 02:44, Kirill A. Shutemov wrote:
-> +static void tdx_kexec_stop_conversion(bool crash)
-> +{
-> +	/* Stop new private<->shared conversions */
-> +	conversion_allowed = false;
-> +
-> +	/*
-> +	 * Make sure conversion_allowed is cleared before checking
-> +	 * conversions_in_progress.
-> +	 */
-> +	barrier();
-> +
-> +	/*
-> +	 * Crash kernel reaches here with interrupts disabled: can't wait for
-> +	 * conversions to finish.
-> +	 *
-> +	 * If race happened, just report and proceed.
-> +	 */
-> +	if (!crash) {
-> +		unsigned long timeout;
-> +
-> +		/*
-> +		 * Wait for in-flight conversions to complete.
-> +		 *
-> +		 * Do not wait more than 30 seconds.
-> +		 */
-> +		timeout = 30 * USEC_PER_SEC;
-> +		while (atomic_read(&conversions_in_progress) && timeout--)
-> +			udelay(1);
-> +	}
-> +
-> +	if (atomic_read(&conversions_in_progress))
-> +		pr_warn("Failed to finish shared<->private conversions\n");
-> +}
+> Despite the name, E820_TYPE_ACPI covers not only ACPI data, but also EFI
+> tables and might be required by kernel to function properly.
 
-I'd really prefer we find a way to do this with actual locks, especially
-'conversion_allowed'.
+Lovely.  You learn something new every day.
 
-This is _awfully_ close to being able to be handled by a rwsem where the
-readers are the converters and tdx_kexec_stop_conversion() takes a write.
-
-
+Reviewed-by: Dave Hansen <dave.hansen@intel.com>
 
