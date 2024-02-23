@@ -1,139 +1,98 @@
-Return-Path: <linux-kernel+bounces-78958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78952-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3DE8861B54
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:16:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB586861B47
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:15:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C1521C2350D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:16:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 573211F27BF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:15:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E34A0146911;
-	Fri, 23 Feb 2024 18:15:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8752C1419BA;
+	Fri, 23 Feb 2024 18:15:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b="a4W6EDFG"
-Received: from meesny.iki.fi (meesny.iki.fi [195.140.195.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ne/47t1y"
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C2841448C3;
-	Fri, 23 Feb 2024 18:15:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=195.140.195.201
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708712117; cv=pass; b=FYJVDkUYyW1G1usmL/55/4UyTozxK2vfGo2UcAT+gBHDUK/R7+dYZj3yiU8KtNC89mxRpMGerLfdKRhw5HXwvB2P/Y+yWadmFgw2xtXSh4VClqTFpqfwLTsPhxX4iQkhAnWDJx0CaA1dweDYdUS53gRYowY3rxS020qsJM0JFTE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708712117; c=relaxed/simple;
-	bh=WqCQnR+yf94SdIYZnyGag0TszxHaJ7hhPosA+SsHm8Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=b0mjqXOP49HNpeUF4xUads7G5jG4x0dnunS5Ax88EqQH4wPEhVDrez1stSXCb83z8LUauk1Qpuve0Ded8oNn9TICGGULmDTWWaYU1wrqEHYT7eYhI5eqWZGkZSd9g62fAv3DeOctbr3SrS3XBNxs9tcCMXDOREJ6aeBh7F7Mypc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=pass smtp.mailfrom=iki.fi; dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b=a4W6EDFG; arc=pass smtp.client-ip=195.140.195.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iki.fi
-Received: from darkstar.musicnaut.iki.fi (85-76-119-15-nat.elisa-mobile.fi [85.76.119.15])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: aaro.koskinen)
-	by meesny.iki.fi (Postfix) with ESMTPSA id 4ThJ8953Rqzyyw;
-	Fri, 23 Feb 2024 20:15:05 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
-	t=1708712106;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=S7wWfneG8wRyf2KX1pRWaaUVIRBRh/PwM028DaY3q+E=;
-	b=a4W6EDFGmKyOr2SdmLZSg3dUSlW+X4E/6GXl8FL39otWtcVoID++QKWaFFsR8uO+BcgPV4
-	qAa5WxjBCgUiKUuzLesfUOBlSiUFY/KG8QrFQkOfNYvbRvI5QhNTIJBoGkKG6Hk9GD6zcT
-	rhaWpLPfiAjBeErQEk7W+xXyo+Gb/X8=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-	s=meesny; t=1708712106;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=S7wWfneG8wRyf2KX1pRWaaUVIRBRh/PwM028DaY3q+E=;
-	b=LaxA6mjN49qayqu7alMxl1Kw/R+eFqEACpZYvYg60tz5JlhsWTWLJlrPahWh7CQZ4HCvS0
-	LmjuXISGbjVaCTizFsFT7yySbmkeOlLE7FwAUPeBVxBUd3iMEjdICtdGk51uG/s2rxzk6N
-	2hVnhxmQVQ60eMocWrohF+BYDT/IHmw=
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=aaro.koskinen smtp.mailfrom=aaro.koskinen@iki.fi
-ARC-Seal: i=1; s=meesny; d=iki.fi; t=1708712106; a=rsa-sha256; cv=none;
-	b=wCIlShYVXNVTP/xsvjSlt22TjqT7r4xG+k3R3FAQCVm5tereqBPqgJdX74xqTw72DUm1tU
-	mUhgdmBuHKxkNcgkN8jtTT5Fs6kUIn+q5mzkofrKonPWEh9BheVnTL5MJxV8X9Aj1qGyYg
-	oN4HRT5G5F/6A0fl8/7ZnUC6RpPv9bw=
-From: Aaro Koskinen <aaro.koskinen@iki.fi>
-To: Tony Lindgren <tony@atomide.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	linux-omap@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Aaro Koskinen <aaro.koskinen@iki.fi>
-Subject: [PATCH 5/5] MMC: OMAP: restore original power up/down steps
-Date: Fri, 23 Feb 2024 20:14:39 +0200
-Message-Id: <20240223181439.1099750-6-aaro.koskinen@iki.fi>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240223181439.1099750-1-aaro.koskinen@iki.fi>
-References: <20240223181439.1099750-1-aaro.koskinen@iki.fi>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5662A13F00B
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 18:15:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708712101; cv=none; b=X1/jJALg0JHeQllzwQOuvyqGvRUrPjkTcvYsZ4mxQqsS4q2HxB5AImXROYXRB+1fVzwjZGc9ccIu7/9K57+an7tq4elMEw9sAfKAWZvWfCeTjK5w2ahMAzXcbUn7W79CFEbfr9nYX721SeDNIhUNbKf3Q41dEegzJvJFlaZnCFY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708712101; c=relaxed/simple;
+	bh=Bej+JJ3v6fc7i4XxpJGQQXY0IntuLNtJu33fXgwRuYM=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=YyXUQjIRuHAu+vaPrTJRAtaBoyUj0VMea+CTt8EUgbhONi1hX/1IB/vm4PVVNyBiJqWkprjYFZ+ga8VtU0UF3m1jIqCj1nE1KeEiIZUkArgftNeMWWzzE2yd6ToL9eB51IHqcIgd9vMDq5FcRHFM0UdDtjSQ9cojWDjYY4UZ9S4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ne/47t1y; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-607e60d01b2so7915187b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 10:15:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708712099; x=1709316899; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Bej+JJ3v6fc7i4XxpJGQQXY0IntuLNtJu33fXgwRuYM=;
+        b=ne/47t1yZ0oWUL9BWHqEHqKMyIoD217Y3/6OU35bLwodsbU0t1p3dyAKvoFtb3KF+9
+         CCULI6Dm1De9OXGF/kMBzBNaZcAAIOHdbDZvP1VNwuB6cwypwSj7dkeDcsIiZQAV1fF6
+         VPFXaE6Sb+zXiG8VCvZr3tUn+4bnO+MOKa13vQqkqQvhxjKI3gQEMiYdJqdTDywouzEO
+         A2UZl2PNxYV0vPjk6uYghjhYC4Y+EvK9R3ZEyU6/lZL/JLbTXvG1Jf0ziRbFjKK0gLRQ
+         lr8Anm0NQqMEQU4zh/NTYrIgrfIHhoHpmQX3UaznpdmVvXR+J+T0kU77DMq2p8WBrNFq
+         /xBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708712099; x=1709316899;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Bej+JJ3v6fc7i4XxpJGQQXY0IntuLNtJu33fXgwRuYM=;
+        b=da9lEs3HyVwLB62OSN7Kdxjd4mC/0/HJtVK67VuSKzAzW/YTAfS4ncinPUumO2ZeT8
+         xAUE42g+n7jmYjrSpDpBilGq8nbW3eWyz6eG3Ahi+KqTGbs04Y1yEcPjQjEjZOjNDCws
+         8iwwALNxMy2scMbAw54zSP12elRYDuaT8ty0gZTLqDaLTh8LNP3JDyWEYPm+4fq9bdH3
+         soYXU+moDMEz94x8SKaovxqtYD3w+HAIESaWO81v1yAW80KdpaZ6ICR3FjK3DSDq1h6D
+         RbALfoeJyQOWWrepk6K1zsx94piFr7LYRjPK2Pr80205yha84GW+JqyxveENnB7mXKUJ
+         xN/A==
+X-Forwarded-Encrypted: i=1; AJvYcCUtjXQzgcWPzgMBi/2+5TwnY1V7DI4svnr/RkSpK6syx5kL8byu2kH8uHix8JttOyVe6Vpmlzre3uU7/sDPPGRoDqF8LycdeIBeLqET
+X-Gm-Message-State: AOJu0Yx/u+b2BWEUBmV/XY8Gnbr048tFJ1LxsjFf/i1ZbLYcgoASAteW
+	1D37cKExBBjwyL9BuYIFfGZN+sIybyxa8agHO9cEmo49Yv088O9QTcIJ+PmnR8JyyuWxqqQgKgQ
+	R1NMvFV7wsZOVTc0p2btSKV676j9kC++Aama9NoVk
+X-Google-Smtp-Source: AGHT+IFAqX1Alshv376ZhMNlyoqmfCK3CTIFfHANxWb6f1IQokRly5XNKajGW9/04laimT/onO6eb8D0SMawuA9Diqc=
+X-Received: by 2002:a05:690c:3508:b0:608:aaa4:8639 with SMTP id
+ fq8-20020a05690c350800b00608aaa48639mr660410ywb.3.1708712099277; Fri, 23 Feb
+ 2024 10:14:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: Dileep Sankhla <dileepsankhla.ds@gmail.com>
+Date: Fri, 23 Feb 2024 23:44:48 +0530
+Message-ID: <CAHxc4buV_UieeVVBhua3vmT2+2e6qf2B9uoxpSPAg6faGBa=Ww@mail.gmail.com>
+Subject: tree for the greybus subsystem
+To: greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
+Cc: pure.logic@nexus-software.ie, johan@kernel.org, elder@kernel.org, 
+	gregkh@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 
-Commit e519f0bb64ef ("ARM/mmc: Convert old mmci-omap to GPIO descriptors")
-moved Nokia N810 MMC power up/down from the board file into the MMC driver.
+Hello,
 
-The change removed some delays, and ordering without a valid reason.
-Restore power up/down to match the original code. This matters only on N810
-where the 2nd GPIO is in use. Other boards will see an additional delay but
-that should be a lesser concern than omitting delays altogether.
+I am fixing a coding style problem in the loopback bridge driver for
+the Greybus loopback module. The source code file (please see [0]) is
+located in the staging tree for the linux-next.
 
-Fixes: e519f0bb64ef ("ARM/mmc: Convert old mmci-omap to GPIO descriptors")
-Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
----
- drivers/mmc/host/omap.c | 23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
+In order to create the patch, I need to find the right development
+tree. I checked the MAINTAINERS file for the Greybus subsystem
+development tree but could not find one. I also searched [1] for
+"greybus", but without success.
 
-diff --git a/drivers/mmc/host/omap.c b/drivers/mmc/host/omap.c
-index 50408771ae01..13fa8588e38c 100644
---- a/drivers/mmc/host/omap.c
-+++ b/drivers/mmc/host/omap.c
-@@ -1119,10 +1119,25 @@ static void mmc_omap_set_power(struct mmc_omap_slot *slot, int power_on,
- 
- 	host = slot->host;
- 
--	if (slot->vsd)
--		gpiod_set_value(slot->vsd, power_on);
--	if (slot->vio)
--		gpiod_set_value(slot->vio, power_on);
-+	if (power_on) {
-+		if (slot->vsd) {
-+			gpiod_set_value(slot->vsd, power_on);
-+			msleep(1);
-+		}
-+		if (slot->vio) {
-+			gpiod_set_value(slot->vio, power_on);
-+			msleep(1);
-+		}
-+	} else {
-+		if (slot->vio) {
-+			gpiod_set_value(slot->vio, power_on);
-+			msleep(50);
-+		}
-+		if (slot->vsd) {
-+			gpiod_set_value(slot->vsd, power_on);
-+			msleep(50);
-+		}
-+	}
- 
- 	if (slot->pdata->set_power != NULL)
- 		slot->pdata->set_power(mmc_dev(slot->mmc), slot->id, power_on,
--- 
-2.39.2
+What is the development tree for the greybus subsystem?
 
+Regards,
+Dileep
+
+[0]: drivers/staging/greybus/loopback.c
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/
 
