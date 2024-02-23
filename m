@@ -1,102 +1,136 @@
-Return-Path: <linux-kernel+bounces-78361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06835861261
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:14:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29D81861267
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:15:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B44EF284C1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:14:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AA561C206A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:15:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F257780036;
-	Fri, 23 Feb 2024 13:13:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9E4C7E786;
+	Fri, 23 Feb 2024 13:15:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="EOLLiRCw"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UDySLg3f"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C2257E792
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:13:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AD0B7AE45
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:15:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708693993; cv=none; b=LFyiYp9n63EZi1YtglyQeiD6MwfH0W+csOVwk54cp5u0yePOKVlcUkLW6l2JEbISylRGZjofStDGiMdudHAB0wmPVRsV9Z+qLyOCHvM0qahsHIEpMI3MSY07CCK/9o5yg8oTaSooRIC5enJV2xgqFbLChUuyXb4v+ZtHYi53WK4=
+	t=1708694110; cv=none; b=fvgEVSooIE0MGNiJr8FrFEcB82jmIk174UiPqS7YwqpA4XCKx7Ts3q2VEJjpJ+MLv8FqVr2tCgM/Ka/uHO1RTNONOEaBOrLzcCYW54ZjXGXoIwwuv1WfqeoABvDjFpAONKUEJEpHqRXU5qS4yGel/P/7XHPbBaBXDEDc78+awdQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708693993; c=relaxed/simple;
-	bh=4grHiU4R1PD3/h/EWJQy/p4KaYw4FLcc4bf8AIrkiSk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AgwW7Bw1q7u6dQMTzPPbqsLHPSuJLHxinYxq8MJyuvg3xVdqlUcQgwKJ02BlX8T/qeJCRJ1aiI+vszVgHg1kvYpAguQPPPO4tikd3pe0QU1sPIssbLaUiW5pHEMgEVYZT2uZ+6kkS5x09Vl8crfhJmeoFuIPdLXaSXLg/faEl80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=EOLLiRCw; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5648d92919dso874130a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 05:13:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1708693988; x=1709298788; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zPpNnmfH04qPvNbsT+ao1sGUr2DFS6Kf08IWPwABmJU=;
-        b=EOLLiRCwK7gz+5rXH0mnxGFnuDugIc5VsqSDcn9i0ZdKx+Nyy7+2kyVRRok6+CNLVj
-         z35/ms+yVaowrPaDo5ThpgqH0ZUOH0gBV4umNatbx3AU/9OuykHI9ZJ04y2TMkjbah2n
-         slFlSrHdBXFPz+stp1zKCTjfEAVLtntIPTHryxH6kXd7weJGDzZfbita9Xs4VxEbHlAP
-         2BxIPCcIOmUll7PpaQGbdlDZdKMOLIQ8P80c1h8xzOK003XFiva3xguxrK/Xrqznhh/g
-         h7ze2lzzqHXtUQnWn6n1d+PCijxcAx4CbLnsOfkHfwl11yDeY2FDsu/VLfVebZZmgLVw
-         7pYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708693988; x=1709298788;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zPpNnmfH04qPvNbsT+ao1sGUr2DFS6Kf08IWPwABmJU=;
-        b=QBe+6l2WCegy0Or+wPLOsYCnpkzXwfKqA6My/AP2sKosw7t+Rcht1ZCiJK49Ae/BDk
-         pU1mhwQOIyNMh1NL/2yu/xWPikg02Km916ln/LZ6AFb+NkTApY2PDz9c4BCr6jHc7wvK
-         33rB04WJF8phbj2MP1JyKvsvyAQeqTCCKr+kO9V1H3VgCA9ivD4o9zknqU4LKgWYn+iM
-         LrAerM1p4o9hm/oIP4GFoLWvvR667hytfTnXvtmy+pfY8Oa57SuBK+YCOsLOVS4w39Lc
-         /qNW5lyK6WUeQzlagv/2s4l8q8tdxcDcrCF9h7C2YaN2Sg20BQfkDOqd5ePwrHJh5GS7
-         EZdg==
-X-Forwarded-Encrypted: i=1; AJvYcCVPFEhz6+qUgZ2SXQdKoP4zXGtutrec0Wpwhfqn705vb916aMmHIOgNDW6WIxAwF74sx68fru6iDs6U52FGYTIXvDntGZiedzENzPK1
-X-Gm-Message-State: AOJu0Yw8+A/32Q33A4XyUAqlsWxZhhAuwhLiW1ewOTmL7KIb7LQ8X/8Z
-	fIvqWn95DRdW2hM+Yx9DHVVW0Lj7Y9ENMF7+cqfgU5sHWaBCM8AvAW+/bzdV/cjktATsFZr+01Q
-	4
-X-Google-Smtp-Source: AGHT+IH3miX4jc/k/19xdvTV9lj2s9RXaKpcoI9yKpZYRmENr3yuW6k5ZiDLlOerdnnNOwl4rvdNBw==
-X-Received: by 2002:a17:906:55cc:b0:a3f:bd94:4d80 with SMTP id z12-20020a17090655cc00b00a3fbd944d80mr1248043ejp.76.1708693988309;
-        Fri, 23 Feb 2024 05:13:08 -0800 (PST)
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id rg8-20020a1709076b8800b00a3e28471fa4sm6339835ejc.59.2024.02.23.05.13.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 05:13:08 -0800 (PST)
-Date: Fri, 23 Feb 2024 14:13:06 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH printk v2 10/26] printk: nbcon: Fix kerneldoc for enums
-Message-ID: <ZdiZ4jvgHwlbEJuo@alley>
-References: <20240218185726.1994771-1-john.ogness@linutronix.de>
- <20240218185726.1994771-11-john.ogness@linutronix.de>
+	s=arc-20240116; t=1708694110; c=relaxed/simple;
+	bh=NqcAryQexHKldcmtQ7oljqwVi0qu+Trmo1bd478NK5s=;
+	h=From:To:cc:Subject:MIME-Version:Content-Type:Date:Message-ID; b=NUAC5vnUPvO+CqxIm93b7jnUB3nmd53/3TXybAVV1AkjaZGLl4hLa0eA8My1MslUF79BVxUEhDhP1Y/vPlqb66//7wD7PKWTmywnOV5NWgToTd6buc2CovCmElCo4yRXKu4InohlfCNfPA/XXfdF2ydehGsRd3/6SqBclqOswyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UDySLg3f; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708694107;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=TtbWAR6OLr2FDqFsVB9geJjS7w0NfEeR4GtkwedoxAM=;
+	b=UDySLg3fCX3knjogAKB7m/QWc0YUgIo6OIWTRqqi8Rpym18t4UEQJ6TuHp+G5fmRbtbfQw
+	eE2pWKQTpHhC4RShUpKPvvlXUvBcHBIJS2Ic/a0Xl0bMVCQkcueMKxuFW0MynhGJy1hmT1
+	SmUb53eoHCV2D0OuG72cvn0bGz3oXNE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-653-6ZLkPUbtN3685804BkJiLg-1; Fri, 23 Feb 2024 08:15:04 -0500
+X-MC-Unique: 6ZLkPUbtN3685804BkJiLg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A62D783B825;
+	Fri, 23 Feb 2024 13:15:03 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.15])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id CA8081C06713;
+	Fri, 23 Feb 2024 13:15:02 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+To: Marc Dionne <marc.dionne@auristor.com>
+cc: dhowells@redhat.com, Markus Suvanto <markus.suvanto@gmail.com>,
+    Christian Brauner <brauner@kernel.org>,
+    linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: [PATCH] afs: Fix endless loop in directory parsing
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240218185726.1994771-11-john.ogness@linutronix.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <786184.1708694102.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 23 Feb 2024 13:15:02 +0000
+Message-ID: <786185.1708694102@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-On Sun 2024-02-18 20:03:10, John Ogness wrote:
-> Kerneldoc requires enums to be specified as such. Otherwise it is
-> interpreted as function documentation.
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+    =
 
-Good to know. I havn't been aware of it.
+If a directory has a block with only ".__afsXXXX" files in it (from
+uncompleted silly-rename), these .__afsXXXX files are skipped but without
+advancing the file position in the dir_context.  This leads to
+afs_dir_iterate() repeating the block again and again.
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+Fix this by making the code that skips the .__afsXXXX file also manually
+advance the file position.
 
-Best Regards,
-Petr
+The symptoms are a soft lookup:
+
+        watchdog: BUG: soft lockup - CPU#3 stuck for 52s! [check:5737]
+        ...
+        RIP: 0010:afs_dir_iterate_block+0x39/0x1fd
+        ...
+         ? watchdog_timer_fn+0x1a6/0x213
+        ...
+         ? asm_sysvec_apic_timer_interrupt+0x16/0x20
+         ? afs_dir_iterate_block+0x39/0x1fd
+         afs_dir_iterate+0x10a/0x148
+         afs_readdir+0x30/0x4a
+         iterate_dir+0x93/0xd3
+         __do_sys_getdents64+0x6b/0xd4
+
+This is almost certainly the actual fix for:
+
+        https://bugzilla.kernel.org/show_bug.cgi?id=3D218496
+
+Fixes: 57e9d49c5452 ("afs: Hide silly-rename files from userspace")
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Marc Dionne <marc.dionne@auristor.com>
+cc: Markus Suvanto <markus.suvanto@gmail.com>
+cc: linux-afs@lists.infradead.org
+---
+ fs/afs/dir.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/fs/afs/dir.c b/fs/afs/dir.c
+index b5b8de521f99..8a67fc427e74 100644
+--- a/fs/afs/dir.c
++++ b/fs/afs/dir.c
+@@ -479,8 +479,10 @@ static int afs_dir_iterate_block(struct afs_vnode *dv=
+node,
+ 		    dire->u.name[0] =3D=3D '.' &&
+ 		    ctx->actor !=3D afs_lookup_filldir &&
+ 		    ctx->actor !=3D afs_lookup_one_filldir &&
+-		    memcmp(dire->u.name, ".__afs", 6) =3D=3D 0)
++		    memcmp(dire->u.name, ".__afs", 6) =3D=3D 0) {
++			ctx->pos =3D blkoff + next * sizeof(union afs_xdr_dirent);
+ 			continue;
++		}
+ =
+
+ 		/* found the next entry */
+ 		if (!dir_emit(ctx, dire->u.name, nlen,
+
 
