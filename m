@@ -1,128 +1,278 @@
-Return-Path: <linux-kernel+bounces-78488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7F0986140C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:36:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2937B86140F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:37:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B41BF1C2120A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:36:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D534628532A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:37:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12EB84C9F;
-	Fri, 23 Feb 2024 14:36:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XIZm/7xY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17A476FB9;
+	Fri, 23 Feb 2024 14:37:44 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DA02524F
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 14:36:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07255469D;
+	Fri, 23 Feb 2024 14:37:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708698977; cv=none; b=etuXacX/Np5oYU9C7dPtr9K2/EpIn+GruSgkcue3JCdbQ0ARg/RMGiepV+Ec/6OPLIS3Hxeg4eMfcSCxE12LcZGB9f7ieZsIQ/8EFwBIXNuqih9zY/ngZwKdjs809EeHyd7XxUDmE4J9830vmuwKikG2YnswrKc/SLNQkA0lq0w=
+	t=1708699063; cv=none; b=Fz2HPxzh+gq050UtTGk1yrpQBJ27F7jRvRuVGp9/xjSNbjPnGQ+GtQ87ni1TyPV5aIbpL1ELozEtfCzZephicul8l12hQAfW4d1u/WkssxdO7ykhZIOckipr9cc3/n1tyKRRsVZSFJqJS7JzoGusjud2kEiMvm3mp8mSJbQf5aE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708698977; c=relaxed/simple;
-	bh=HmMMDpNkcyRtych0ZhQFvwfVcCaO6TfBMFxTojcX5pY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=LYqBnopwG26KY62VmUR36Dz+/lAn3Si+AvhsYPVKolOX/YmTvk8RIYmyqPYxHL35mLt6I/rnXFhEBpNeArnj70FK6owA69XKsego50Ga9Y1qL0ZzOvGcXZRCA4ARaydnEIxsGZ8q3R8VIdC2RnM0RdrNVXKW8iTXRTJnKsqQpOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XIZm/7xY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF221C433C7;
-	Fri, 23 Feb 2024 14:36:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708698977;
-	bh=HmMMDpNkcyRtych0ZhQFvwfVcCaO6TfBMFxTojcX5pY=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=XIZm/7xYGPoKHRs51V+oY3uBkS3ll1xRo/8xu4nwYPkqaRVSF1dMKgy0Nx1rr/KdI
-	 6CVxXAYKOaY95cv3hFTD0iTf6tG5WiELVweYxxUYX3IHS4eCgt+XVHj/XmIK0GoQLj
-	 1DjhJQiE79+IYgWIxFBW9LlPQayPQpdJLqjcU7JoeQMJpZ+CMAKUYXfUJVBOKVpIJc
-	 p8a1zbUfBSgYn+Qy8Zqp2pfZpgio3FsftN9gpudqIsTp/rm/3lK2QKZApIqf/ZnXAv
-	 78IAyzG/B2ff7THWSpNYmRwvOylfy4Ek3P6TiXF+2tjf/HshG4nazyxS3pJeIHQbOk
-	 oo9nzhwzA2ULA==
-Message-ID: <191757a0ccb52fefa17b690a44299442fcb4e052.camel@kernel.org>
-Subject: Re: [for-next][PATCH 06/13] NFSD: Fix nfsd_clid_class use of
- __string_len() macro
-From: Jeff Layton <jlayton@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>,  Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, Neil Brown <neilb@suse.de>, Olga Kornievskaia
- <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
- <tom@talpey.com>, Chuck Lever <chuck.lever@oracle.com>
-Date: Fri, 23 Feb 2024 09:36:14 -0500
-In-Reply-To: <20240223141902.394601874@goodmis.org>
-References: <20240223141838.985298316@goodmis.org>
-	 <20240223141902.394601874@goodmis.org>
-Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
- keydata=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
-	kZWuOsJdJQdmwlWC5L5ln9xgfr/4mOY38B0U=
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1708699063; c=relaxed/simple;
+	bh=B8tmKlM2SuEwWy8ZSsDEye6G44FSjeSZYQxZwkll2q4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZbTway0UUe5pgD8zDtkeQdkTuw2lO4chxaLpXiVw1AqUsOT6pmLsaoT47jLfaEi5PkImoe3lXAeLbnjEhB1YvkeK+XfUuUPjYpXhGuEUCLGI6IMSxE1izISmIJnMXWFbGnE5LuYlHzpEwTZ2KnuAo5nXX2LntlXXD9Xw2VY6Hcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4ThCD5296xz6J9yc;
+	Fri, 23 Feb 2024 22:33:09 +0800 (CST)
+Received: from lhrpeml500006.china.huawei.com (unknown [7.191.161.198])
+	by mail.maildlp.com (Postfix) with ESMTPS id E8E88140B33;
+	Fri, 23 Feb 2024 22:37:34 +0800 (CST)
+Received: from SecurePC30232.china.huawei.com (10.122.247.234) by
+ lhrpeml500006.china.huawei.com (7.191.161.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 23 Feb 2024 14:37:33 +0000
+From: <shiju.jose@huawei.com>
+To: <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+	<linux-mm@kvack.org>, <dan.j.williams@intel.com>, <dave@stgolabs.net>,
+	<jonathan.cameron@huawei.com>, <dave.jiang@intel.com>,
+	<alison.schofield@intel.com>, <vishal.l.verma@intel.com>,
+	<ira.weiny@intel.com>
+CC: <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<david@redhat.com>, <Vilas.Sridharan@amd.com>, <leo.duran@amd.com>,
+	<Yazen.Ghannam@amd.com>, <rientjes@google.com>, <jiaqiyan@google.com>,
+	<tony.luck@intel.com>, <Jon.Grimm@amd.com>, <dave.hansen@linux.intel.com>,
+	<rafael@kernel.org>, <lenb@kernel.org>, <naoya.horiguchi@nec.com>,
+	<james.morse@arm.com>, <jthoughton@google.com>, <somasundaram.a@hpe.com>,
+	<erdemaktas@google.com>, <pgonda@google.com>, <duenwen@google.com>,
+	<mike.malvestuto@intel.com>, <gthelen@google.com>,
+	<wschwartz@amperecomputing.com>, <dferguson@amperecomputing.com>,
+	<tanxiaofei@huawei.com>, <prime.zeng@hisilicon.com>,
+	<kangkang.shen@futurewei.com>, <wanghuiqiang@huawei.com>,
+	<linuxarm@huawei.com>, <shiju.jose@huawei.com>
+Subject: [RFC PATCH v7 00/12] memory: scrub: introduce subsystem + CXL/ACPI-RAS2 drivers
+Date: Fri, 23 Feb 2024 22:37:11 +0800
+Message-ID: <20240223143723.1574-1-shiju.jose@huawei.com>
+X-Mailer: git-send-email 2.35.1.windows.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
+ lhrpeml500006.china.huawei.com (7.191.161.198)
 
-On Fri, 2024-02-23 at 09:18 -0500, Steven Rostedt wrote:
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
->=20
-> I'm working on restructuring the __string* macros so that it doesn't need
-> to recalculate the string twice. That is, it will save it off when
-> processing __string() and the __assign_str() will not need to do the work
-> again as it currently does.
->=20
-> Currently __string_len(item, src, len) doesn't actually use "src", but my
-> changes will require src to be correct as that is where the __assign_str(=
-)
-> will get its value from.
->=20
-> The event class nfsd_clid_class has:
->=20
->   __string_len(name, name, clp->cl_name.len)
->=20
-> But the second "name" does not exist and causes my changes to fail to
-> build. That second parameter should be: clp->cl_name.data.
->=20
-> Link: https://lore.kernel.org/linux-trace-kernel/20240222122828.3d8d213c@=
-gandalf.local.home
->=20
-> Cc: Jeff Layton <jlayton@kernel.org>
-> Cc: Neil Brown <neilb@suse.de>
-> Cc: Olga Kornievskaia <kolga@netapp.com>
-> Cc: Dai Ngo <Dai.Ngo@oracle.com>
-> Cc: Tom Talpey <tom@talpey.com>
-> Fixes: d27b74a8675ca ("NFSD: Use new __string_len C macros for nfsd_clid_=
-class")
-> Acked-by: Chuck Lever <chuck.lever@oracle.com>
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
->  fs/nfsd/trace.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/fs/nfsd/trace.h b/fs/nfsd/trace.h
-> index d1e8cf079b0f..2cd57033791f 100644
-> --- a/fs/nfsd/trace.h
-> +++ b/fs/nfsd/trace.h
-> @@ -843,7 +843,7 @@ DECLARE_EVENT_CLASS(nfsd_clid_class,
->  		__array(unsigned char, addr, sizeof(struct sockaddr_in6))
->  		__field(unsigned long, flavor)
->  		__array(unsigned char, verifier, NFS4_VERIFIER_SIZE)
-> -		__string_len(name, name, clp->cl_name.len)
-> +		__string_len(name, clp->cl_name.data, clp->cl_name.len)
->  	),
->  	TP_fast_assign(
->  		__entry->cl_boot =3D clp->cl_clientid.cl_boot;
+From: Shiju Jose <shiju.jose@huawei.com>
 
-Acked-by: Jeff Layton <jlayton@kernel.org>
+'Previously known as: cxl: Add support for CXL feature commands,
+ CXL device patrol scrub control and DDR5 ECS control features'
+https://lore.kernel.org/lkml/20240215111455.1462-1-shiju.jose@huawei.com/
+
+Introduce generic memory scrub subsystem which allows user to
+control underlying memory scrubbers in the system via the sysfs
+scrub control interface.
+
+Memory scrub is a feature where an ECC engine reads data from
+each memory media location, corrects with an ECC if necessary and
+writes the corrected data back to the same memory media location.
+More details can be found in Reference [1].
+
+CXL patrol scrub and DDR5 ECS and ACPI RAS2 HW based memory
+patrol scrub features are added as use cases for the scrub
+subsystem to expose the scrub controls to the user.
+
+CXL device patrol scrub and DDR5 ECS features needs support for
+the CXL feature mail box commands. CXL device scrub driver
+registers with the memory scrub subsystem to expose the scrub
+controls for CXL device patrol and ECS scrubs to the user.
+
+RAS2 HW based memory patrol scrub needs RAS2 PCC interfaces
+and ACPI RAS2 driver for communication b/w kernel and firmware.
+ACPI RAS2 Driver adds platform device, for each memory feature,
+which binds to the RAS2 memory driver.
+Memory RAS2 driver registers with the memory scrub subsystem to
+expose the RAS2 scrub controls to the user.
+
+Series adds,
+1. scrub subsystem driver supports configuring memory scrubs
+   in the system.
+2. support for CXL feature mailbox commands.
+3. CXL device scrub driver supporting patrol scrub control and
+   ECS control features.
+4. register CXL device patrol scrub and ECS with scrub subsystem.
+5. common library for RAS2 PCC interfaces.
+6. ACPI RAS2 driver for ACPI RAS2 feature table (RAS2).
+7. memory RAS2 driver and registers with scrub subsystem.
+
+The QEMU series to support the CXL specific scrub features is
+available here,
+https://lore.kernel.org/qemu-devel/20240223085902.1549-1-shiju.jose@huawei.com/
+
+References:
+1. Discussions on kernel support of memory error detection and
+   patrol scrubber can be found here.
+   https://lore.kernel.org/all/20221103155029.2451105-1-jiaqiyan@google.com/
+
+2. Discussions on RASF:
+   https://lore.kernel.org/lkml/20230915172818.761-1-shiju.jose@huawei.com/#r 
+   https://patchwork.kernel.org/project/linux-arm-kernel/patch/CS1PR84MB0038718F49DBC0FF03919E1184390@CS1PR84MB0038.NAMPRD84.PROD.OUTLOOK.COM/
+
+Changes
+v6 -> v7:
+1. Main changes for comments from Jonathan.
+1.1. CXL
+ - Changes for deal with small mail box and supporting multipart
+   feature data transfers.
+ - Provide more specific parameters to mbox supported/get/set features
+   interface functions.
+ - kvmalloc -> kmalloc in CXL scrub mem allocation for feature commands.
+ - Changed the way using __free(kfree)
+ - Removed readback and verify for setting CXL scrub patrol and ECS
+   parameters. Could be added later if needed.
+ - In is_visible() callback functions for scrub control sysfs attrs
+   changed to writeback the default attribute mode value instead of
+   setting per attrs.
+ - Add documentation for sysfs interfaces for CXL ECS scrub control. 
+1.2. RAS2
+ - In rasf common code, rename rasf to ras2 because RASF seems obselete.
+ - Replace pr_* with dev_* log function calls from ACPI RAS2 and
+   memory RAS2 drivers.
+ - In rasf common code, rename rasf to ras2.
+ - Removed including unnecessary .h file from memory RAS2 driver.
+ - In is_visible() callback functions for scrub control sysfs attrs
+   changed to writeback the default attribute mode value instead of
+   setting per attribute.
+
+2. Changes for comments from Fan.
+ - Add debug message if cxl patrol scrub and ecs init function
+   calls fail.
+3. Updated cover letter for feedback from Dan Williams. 
+   
+v5 -> v6:
+1. Changes for comments from Davidlohr, Thanks.
+ - Update CXL feature code based on spec 3.1.
+ - attrb -> attr
+ - Use enums with default counting.  
+2. Rebased to the latest kernel.
+
+v4 -> v5:
+1. Following are the main changes made based on the feedback from Dan Williams on v4.
+1.1. In the scrub subsystem the common scrub control attributes are statically defined
+     instead of dynamically created.
+1.2. Add scrub subsystem support externally defined attribute group.
+     Add CXL ECS driver define ECS specific attribute group and pass to
+	 the scrub subsystem.
+1.3. Move cxl_mem_ecs_init() to cxl/core/region.c so that the CXL region_id
+     is used in the registration with the scrub subsystem. 	 
+1.4. Add previously posted RASF common and RAS2 patches to this scrub series.
+	 
+2. Add support for the 'enable_background_scrub' attribute
+   for RAS2, on request from Bill Schwartz(wschwartz@amperecomputing.com).
+
+v3 -> v4:
+1. Fixes for the warnings/errors reported by kernel test robot.
+2. Add support for reading the 'enable' attribute of CXL patrol scrub.
+
+Changes
+v2 -> v3:
+1. Changes for comments from Davidlohr, Thanks.
+ - Updated cxl scrub kconfig
+ - removed usage of the flag is_support_feature from
+   the function cxl_mem_get_supported_feature_entry().
+ - corrected spelling error.
+ - removed unnecessary debug message.
+ - removed export feature commands to the userspace.
+2. Possible fix for the warnings/errors reported by kernel
+   test robot.
+3. Add documentation for the common scrub configure atrributes.
+
+v1 -> v2:
+1. Changes for comments from Dave Jiang, Thanks.
+ - Split patches.
+ - reversed xmas tree declarations.
+ - declared flags as enums.
+ - removed few unnecessary variable initializations.
+ - replaced PTR_ERR_OR_ZERO() with IS_ERR() and PTR_ERR().
+ - add auto clean declarations.
+ - replaced while loop with for loop.
+ - Removed allocation from cxl_get_supported_features() and
+   cxl_get_feature() and make change to take allocated memory
+   pointer from the caller.
+ - replaced if/else with switch case.
+ - replaced sprintf() with sysfs_emit() in 2 places.
+ - replaced goto label with return in few functions.
+2. removed unused code for supported attributes from ecs.
+3. Included following common patch for scrub configure driver
+   to this series.
+   "memory: scrub: Add scrub driver supports configuring memory scrubbers
+    in the system"
+
+A Somasundaram (1):
+  ACPI:RAS2: Add common library for RAS2 PCC interfaces
+
+Shiju Jose (11):
+  cxl/mbox: Add GET_SUPPORTED_FEATURES mailbox command
+  cxl/mbox: Add GET_FEATURE mailbox command
+  cxl/mbox: Add SET_FEATURE mailbox command
+  cxl/memscrub: Add CXL device patrol scrub control feature
+  cxl/memscrub: Add CXL device ECS control feature
+  memory: scrub: Add scrub subsystem driver supports configuring memory
+    scrubs in the system
+  cxl/memscrub: Register CXL device patrol scrub with scrub subsystem
+    driver
+  cxl/memscrub: Register CXL device ECS with scrub subsystem driver
+  ACPICA: ACPI 6.5: Add support for RAS2 table
+  ACPI:RAS2: Add driver for ACPI RAS2 feature table (RAS2)
+  memory: RAS2: Add memory RAS2 driver
+
+ .../ABI/testing/sysfs-class-cxl-ecs-configure |  79 ++
+ .../ABI/testing/sysfs-class-scrub-configure   |  91 ++
+ drivers/acpi/Kconfig                          |  14 +
+ drivers/acpi/Makefile                         |   1 +
+ drivers/acpi/ras2_acpi.c                      |  97 ++
+ drivers/acpi/ras2_acpi_common.c               | 272 +++++
+ drivers/cxl/Kconfig                           |  21 +
+ drivers/cxl/core/Makefile                     |   1 +
+ drivers/cxl/core/mbox.c                       | 143 +++
+ drivers/cxl/core/memscrub.c                   | 954 ++++++++++++++++++
+ drivers/cxl/core/region.c                     |   3 +
+ drivers/cxl/cxlmem.h                          | 124 +++
+ drivers/cxl/pci.c                             |   4 +
+ drivers/memory/Kconfig                        |  15 +
+ drivers/memory/Makefile                       |   3 +
+ drivers/memory/ras2.c                         | 364 +++++++
+ drivers/memory/ras2_common.c                  | 282 ++++++
+ drivers/memory/scrub/Kconfig                  |  11 +
+ drivers/memory/scrub/Makefile                 |   6 +
+ drivers/memory/scrub/memory-scrub.c           | 369 +++++++
+ include/acpi/actbl2.h                         | 137 +++
+ include/acpi/ras2_acpi.h                      |  59 ++
+ include/memory/memory-scrub.h                 |  79 ++
+ include/memory/ras2.h                         |  88 ++
+ 24 files changed, 3217 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-class-cxl-ecs-configure
+ create mode 100644 Documentation/ABI/testing/sysfs-class-scrub-configure
+ create mode 100755 drivers/acpi/ras2_acpi.c
+ create mode 100755 drivers/acpi/ras2_acpi_common.c
+ create mode 100644 drivers/cxl/core/memscrub.c
+ create mode 100644 drivers/memory/ras2.c
+ create mode 100644 drivers/memory/ras2_common.c
+ create mode 100644 drivers/memory/scrub/Kconfig
+ create mode 100644 drivers/memory/scrub/Makefile
+ create mode 100755 drivers/memory/scrub/memory-scrub.c
+ create mode 100644 include/acpi/ras2_acpi.h
+ create mode 100755 include/memory/memory-scrub.h
+ create mode 100755 include/memory/ras2.h
+
+-- 
+2.34.1
+
 
