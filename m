@@ -1,250 +1,150 @@
-Return-Path: <linux-kernel+bounces-77754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77755-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C53198609C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 05:17:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99A858609CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 05:20:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09EFE288458
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:17:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 071111F266BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:20:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D16D10A2A;
-	Fri, 23 Feb 2024 04:17:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10A1210A19;
+	Fri, 23 Feb 2024 04:20:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R107QGsI"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eCY90VNh"
+Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B074910A01
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 04:17:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE48AD2E6
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 04:20:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708661861; cv=none; b=dxwq4RnbIAyvu9Jnl/EhV/xS1d1F9biOvymuBNLyy9xX/YBE9vgp87nhYmiXhvorWpn4Gh2A0UnXL3YfHgDud2IhrXxgh1I6frP4qEMExJUUr6yUByLqp54LW17+xRbobtp1p6qK51R2/EMJm2Yb+BbLhLjAxwqmILspS8+b348=
+	t=1708662016; cv=none; b=gtEUtfFjsHUcETQLn1qKvi1EoVLXHueisYbVHQjWMkn4pgfd2dup+1NQBIJBwm2k4IxI/RI1iPno/GOQSHQHT0Er98GczCZycpDyVdhhli5IOin2IOi8skmNILZksEvLyzzvxr14W/Cg9geD4Lf7obVIVJZUGtiZFIAPh00Wr3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708661861; c=relaxed/simple;
-	bh=lBGBnghS4F7tZXGu+GMAmAoN/xklFqNUk5MgFHyDgjs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Jpdh/3LKH4DdXMy4MOalVajUU4MvKSRhBjTtePTbudhxZkQdWPl5nQNDz579Sm5Bsp/2LmUIsgqAIZMX8YHxf42MSBSuuM5ReOzHGt0R7np6OTOr5wHHxHoSibPS9d0W5H8vf87NcgG9RVag0Kto1epDdV5uH60LhD9SKZ69Vfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R107QGsI; arc=none smtp.client-ip=209.85.214.182
+	s=arc-20240116; t=1708662016; c=relaxed/simple;
+	bh=3aSkqCDyuDAnn4aoKsyn9oPyncLsKaXsAkp1FWB8Tqc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hpjEtbGkm9+yu69afkwUNcKkHLG3pjxrJ2nNUxqX0GfyqrjkgB7Gbq08v6Oi1ZRGVYxxHQhOVROCSJtO8wRhe6a2s6NQG3yfep7Beni4+BLDdv6N9Jurir3hKHfwHeHLhTG2FLL3y50JXkl+HvL/8dwqY1lqfcsDjtp7ia3cuCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eCY90VNh; arc=none smtp.client-ip=209.85.221.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1dc0e5b223eso3083955ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 20:17:39 -0800 (PST)
+Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-4c78b074fe0so134317e0c.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 20:20:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708661859; x=1709266659; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5+9+uMP+Bu3TiyfCDkgIe0O8ZamRmCynrJ5soRd+G7M=;
-        b=R107QGsI7MYqSy62d1RynQasOMKAO1i5ABtIHOddvCI0gLyOepqBtPyI1OOUpiNodk
-         7S5fP02l74zeVvbC5Iw23yAVcvYoAJJ6t2xDt+sVdWrwl8hQ6rp9vqZlMIeUQwHFCGrj
-         uHadkSg9i2CToKaNsY+jnbUSZcDGB8KzALgqdYdGrIgnOKpFbaLXG7SgbAmImvdwCrW/
-         UvTiOLwjtroqmrnwX9ZIRTY02QuasoYGzW0A33Ae9BhbFU6qQWDf3A4PBb4kKjpPz5ox
-         etAmg8CzYtVAVyLODwL8Vq+zcPxbhnmR8tBJARiInQ62i07MqgSXIroqYgUdNGjgX3Us
-         RHsg==
+        d=gmail.com; s=20230601; t=1708662013; x=1709266813; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IlVNrNUcEvLBYtZ/R3wczPrppgdB8B334NNJl78BewM=;
+        b=eCY90VNhTD3ITIQqRU8qfb6A64raxkKU1Qq6A70S6sS9FMn6nXFZvUtzF8c9RLu1nZ
+         T9yZ7Kd3NiDV4Ga2ouwUiNl+fa4RC+GyDy0x6PgSVhKVWuAKxW9wUE6erS7+fCRWtriN
+         EJ9nO1YbX+pf80zRuM39KcuYroiCbwynhwCfPjSI60YVf5BsXJYilUyNA5BWP7E/Svvb
+         Cytcb87XW/oauFLABvOYO93U/z9pnqo2Cb543CXqb4Ze6hpKFuRmfjC9uP4EcFCrg/gK
+         VDrVpJhDF9M+8AoN36CFBlZDe4ssMwDnJXw+eCxnpSuIpCOpI5o3PM2kyM0RcrUBjKBz
+         XfJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708661859; x=1709266659;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5+9+uMP+Bu3TiyfCDkgIe0O8ZamRmCynrJ5soRd+G7M=;
-        b=Jpy4vt12dV7KrG4sLo5vI4GL3hHblsZ9mnvZFi7Cg9QZLl+i1N4LK1EPqE4XI9K7Y9
-         areU7y2xef2UI2pg9SonPATDAZPJeKJ3F2XuIw/+46ZeTYjQuNGTYnDesa/9uQWD3A1k
-         NGVUkO8VdnYyuN4wJMgE5MpzdfLSP+z+7ihJ8OtAgVBXyu05j3Az4E5mcU+7sVYlJjri
-         G1gz5xgTvDNp4S6Hfncsd9reiEJ31jyl7Yue74xLPIRhQte9XD7Xm2WW0VY4CaISooxL
-         DMlxTnLlh90X7ElsaDkKOldkIfitmJnWNt1FpunJPmfAnIwbzvu3x6ctsxDcq00l4t80
-         ZBJg==
-X-Gm-Message-State: AOJu0Yx4iPijAjLvyTaOF1oQkbXTA2yaDCG/ihnKqr4LykvowlDVSQM+
-	WQhIcRL+RPE3AjXr2Zb3omTJEw0OkQ9eep87q0Wc/Vv3wEJ+oHvg+sRJYfcplQ4=
-X-Google-Smtp-Source: AGHT+IEahzpjoCO4rsyjoYfjCIEkVvOSN5zx8vrEST2Nrht65jVZw1Eqx6UK2Bu6waRNM6E1tEjp/w==
-X-Received: by 2002:a17:902:be0a:b0:1dc:6373:3cc with SMTP id r10-20020a170902be0a00b001dc637303ccmr652610pls.50.1708661858923;
-        Thu, 22 Feb 2024 20:17:38 -0800 (PST)
-Received: from barry-desktop.hub ([2407:7000:8942:5500:5a27:dbae:d10:c2d6])
-        by smtp.gmail.com with ESMTPSA id p12-20020a170902eacc00b001dbb06b6133sm10662054pld.127.2024.02.22.20.17.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 20:17:38 -0800 (PST)
-From: Barry Song <21cnbao@gmail.com>
-To: sj@kernel.org,
-	akpm@linux-foundation.org,
-	damon@lists.linux.dev,
-	linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org,
-	minchan@kernel.org,
-	mhocko@suse.com,
-	hannes@cmpxchg.org,
-	Barry Song <v-songbaohua@oppo.com>
-Subject: [PATCH RFC] mm: madvise: pageout: ignore references rather than clearing young
-Date: Fri, 23 Feb 2024 17:15:50 +1300
-Message-Id: <20240223041550.77157-1-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1708662013; x=1709266813;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IlVNrNUcEvLBYtZ/R3wczPrppgdB8B334NNJl78BewM=;
+        b=icy8R+HBzjLzab4HG+peOVmv6dgoolsVqBkHDiLyAYVSVbqiFgTMT7gn7qEiCIUHOL
+         egixV6vtHReW7XbRerffZh71EbZ1UX2OLrX5C+DIQYcaf0Qs2Kg7bhtyETpe8c3FU6Id
+         UPcfTpPaaa9B0GpzJJWFB52vdQ0qBV9onXr9BOBnki3Azp4v9GjgRQnodSiOZKsmOi1v
+         Dilth5BwXAX2ep9vH6Cf9jt9fnez+xnVqb1oF+Uok/YRS04PrdV3Sz9YlGJ3Q3O6J1XT
+         FetrViR5lDHc52VuOyzyGVPpXNB7rTHNvTm+w7R3OwOUP3RoClLkwUT8+WcXxrGw0fUz
+         B3OQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWyfbGD1WzC/OWdNTp7rqbvj0r0JMtje892E7P2bQAq2YSLOf9WYPxFNTmsNcKVNbPIe1a8RlsbqUIjwTT0cDYdtf10VRTiul3hFU99
+X-Gm-Message-State: AOJu0YzGoRemBUisIgB2rAC87jf8dQT/cxWUivX/yqiW3QftHIkB2r32
+	1Bsl9A/syk+jbwCx9Jlcd4MDbLFigmaSzaAlOLwlVxshLenUUU9I
+X-Google-Smtp-Source: AGHT+IHNYz8ui9bmM5AXfuUQTZHUJJqwDxpL3NhzRWFZom+4Tbuq2mDgCO5c/ar3KzUA7uEadTMX/g==
+X-Received: by 2002:a67:ad19:0:b0:46d:2d23:f500 with SMTP id t25-20020a67ad19000000b0046d2d23f500mr951202vsl.18.1708662013521;
+        Thu, 22 Feb 2024 20:20:13 -0800 (PST)
+Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
+        by smtp.gmail.com with ESMTPSA id xq18-20020a05620a5cb200b007853f736893sm6004275qkn.5.2024.02.22.20.20.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Feb 2024 20:20:12 -0800 (PST)
+Message-ID: <dd64a40d-0a7e-4f70-a516-632a3d57807a@gmail.com>
+Date: Thu, 22 Feb 2024 20:20:08 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 01/13] mtd: rawnand: brcmnand: exec_op helper functions
+ return type fixes
+Content-Language: en-US
+To: William Zhang <william.zhang@broadcom.com>,
+ Linux MTD List <linux-mtd@lists.infradead.org>,
+ Linux ARM List <linux-arm-kernel@lists.infradead.org>,
+ Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>
+Cc: kursad.oney@broadcom.com, joel.peshkin@broadcom.com,
+ anand.gore@broadcom.com, dregan@mail.com, kamal.dasu@broadcom.com,
+ tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com,
+ David Regan <dregan@broadcom.com>, Dan Carpenter <dan.carpenter@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-kernel@vger.kernel.org,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>
+References: <20240223034758.13753-1-william.zhang@broadcom.com>
+ <20240223034758.13753-2-william.zhang@broadcom.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; keydata=
+ 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
+ HGuUuzv+GKZ6nsysJw==
+In-Reply-To: <20240223034758.13753-2-william.zhang@broadcom.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Barry Song <v-songbaohua@oppo.com>
 
-While doing MADV_PAGEOUT, the current code will clear PTE young
-so that vmscan won't read young flags to allow the reclamation
-of madvised folios to go ahead.
-It seems we can do it by directly ignoring references, thus we
-can remove tlb flush in madvise and rmap overhead in vmscan.
 
-Regarding the side effect, in the original code, if a parallel
-thread runs side by side to access the madvised memory with the
-thread doing madvise, folios will get a chance to be re-activated
-by vmscan. But with the patch, they will still be reclaimed. But
-this behaviour doing PAGEOUT and doing access at the same time is
-quite silly like DoS. So probably, we don't need to care.
+On 2/22/2024 7:47 PM, William Zhang wrote:
+> From: David Regan <dregan@broadcom.com>
+> 
+> Fix return types for exec_op reset and status helper functions.
+> 
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: http://lists.infradead.org/pipermail/linux-mtd/2023-December/102423.html
+> Fixes: 3c8260ce7663 ("mtd: rawnand: brcmnand: exec_op implementation")
+> Signed-off-by: David Regan <dregan@broadcom.com>
+> Signed-off-by: William Zhang <william.zhang@broadcom.com>
+> Reviewed-by: William Zhang <william.zhang@broadcom.com>
 
-A microbench as below has shown 6% decrement on the latency of
-MADV_PAGEOUT,
-
- #define PGSIZE 4096
- main()
- {
- 	int i;
- #define SIZE 512*1024*1024
- 	volatile long *p = mmap(NULL, SIZE, PROT_READ | PROT_WRITE,
- 			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-
- 	for (i = 0; i < SIZE/sizeof(long); i += PGSIZE / sizeof(long))
- 		p[i] =  0x11;
-
- 	madvise(p, SIZE, MADV_PAGEOUT);
- }
-
-w/o patch                    w/ patch
-root@10:~# time ./a.out      root@10:~# time ./a.out
-real	0m49.634s            real   0m46.334s
-user	0m0.637s             user   0m0.648s
-sys	0m47.434s            sys    0m44.265s
-
-Signed-off-by: Barry Song <v-songbaohua@oppo.com>
----
- mm/damon/paddr.c |  2 +-
- mm/internal.h    |  2 +-
- mm/madvise.c     |  8 ++++----
- mm/vmscan.c      | 12 +++++++-----
- 4 files changed, 13 insertions(+), 11 deletions(-)
-
-diff --git a/mm/damon/paddr.c b/mm/damon/paddr.c
-index 081e2a325778..5e6dc312072c 100644
---- a/mm/damon/paddr.c
-+++ b/mm/damon/paddr.c
-@@ -249,7 +249,7 @@ static unsigned long damon_pa_pageout(struct damon_region *r, struct damos *s)
- put_folio:
- 		folio_put(folio);
- 	}
--	applied = reclaim_pages(&folio_list);
-+	applied = reclaim_pages(&folio_list, false);
- 	cond_resched();
- 	return applied * PAGE_SIZE;
- }
-diff --git a/mm/internal.h b/mm/internal.h
-index 93e229112045..36c11ea41f47 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -868,7 +868,7 @@ extern unsigned long  __must_check vm_mmap_pgoff(struct file *, unsigned long,
-         unsigned long, unsigned long);
- 
- extern void set_pageblock_order(void);
--unsigned long reclaim_pages(struct list_head *folio_list);
-+unsigned long reclaim_pages(struct list_head *folio_list, bool ignore_references);
- unsigned int reclaim_clean_pages_from_list(struct zone *zone,
- 					    struct list_head *folio_list);
- /* The ALLOC_WMARK bits are used as an index to zone->watermark */
-diff --git a/mm/madvise.c b/mm/madvise.c
-index abde3edb04f0..44a498c94158 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -386,7 +386,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
- 			return 0;
- 		}
- 
--		if (pmd_young(orig_pmd)) {
-+		if (!pageout && pmd_young(orig_pmd)) {
- 			pmdp_invalidate(vma, addr, pmd);
- 			orig_pmd = pmd_mkold(orig_pmd);
- 
-@@ -410,7 +410,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
- huge_unlock:
- 		spin_unlock(ptl);
- 		if (pageout)
--			reclaim_pages(&folio_list);
-+			reclaim_pages(&folio_list, true);
- 		return 0;
- 	}
- 
-@@ -490,7 +490,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
- 
- 		VM_BUG_ON_FOLIO(folio_test_large(folio), folio);
- 
--		if (pte_young(ptent)) {
-+		if (!pageout && pte_young(ptent)) {
- 			ptent = ptep_get_and_clear_full(mm, addr, pte,
- 							tlb->fullmm);
- 			ptent = pte_mkold(ptent);
-@@ -524,7 +524,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
- 		pte_unmap_unlock(start_pte, ptl);
- 	}
- 	if (pageout)
--		reclaim_pages(&folio_list);
-+		reclaim_pages(&folio_list, true);
- 	cond_resched();
- 
- 	return 0;
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 402c290fbf5a..ba2f37f46a73 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2102,7 +2102,8 @@ static void shrink_active_list(unsigned long nr_to_scan,
- }
- 
- static unsigned int reclaim_folio_list(struct list_head *folio_list,
--				      struct pglist_data *pgdat)
-+				      struct pglist_data *pgdat,
-+				      bool ignore_references)
- {
- 	struct reclaim_stat dummy_stat;
- 	unsigned int nr_reclaimed;
-@@ -2115,7 +2116,7 @@ static unsigned int reclaim_folio_list(struct list_head *folio_list,
- 		.no_demotion = 1,
- 	};
- 
--	nr_reclaimed = shrink_folio_list(folio_list, pgdat, &sc, &dummy_stat, false);
-+	nr_reclaimed = shrink_folio_list(folio_list, pgdat, &sc, &dummy_stat, ignore_references);
- 	while (!list_empty(folio_list)) {
- 		folio = lru_to_folio(folio_list);
- 		list_del(&folio->lru);
-@@ -2125,7 +2126,7 @@ static unsigned int reclaim_folio_list(struct list_head *folio_list,
- 	return nr_reclaimed;
- }
- 
--unsigned long reclaim_pages(struct list_head *folio_list)
-+unsigned long reclaim_pages(struct list_head *folio_list, bool ignore_references)
- {
- 	int nid;
- 	unsigned int nr_reclaimed = 0;
-@@ -2147,11 +2148,12 @@ unsigned long reclaim_pages(struct list_head *folio_list)
- 			continue;
- 		}
- 
--		nr_reclaimed += reclaim_folio_list(&node_folio_list, NODE_DATA(nid));
-+		nr_reclaimed += reclaim_folio_list(&node_folio_list, NODE_DATA(nid),
-+						   ignore_references);
- 		nid = folio_nid(lru_to_folio(folio_list));
- 	} while (!list_empty(folio_list));
- 
--	nr_reclaimed += reclaim_folio_list(&node_folio_list, NODE_DATA(nid));
-+	nr_reclaimed += reclaim_folio_list(&node_folio_list, NODE_DATA(nid), ignore_references);
- 
- 	memalloc_noreclaim_restore(noreclaim_flag);
- 
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
-2.34.1
-
+Florian
 
