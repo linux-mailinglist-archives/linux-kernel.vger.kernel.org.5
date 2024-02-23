@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-77609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DA8286080C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:09:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D63C486080E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:09:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4277A1C21A46
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:09:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34E2A1F236EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:09:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F8E9B67F;
-	Fri, 23 Feb 2024 01:08:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 423E1C14F;
+	Fri, 23 Feb 2024 01:08:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="lhySqXsM"
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2058.outbound.protection.outlook.com [40.107.21.58])
+	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="arQqzowK"
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2048.outbound.protection.outlook.com [40.107.21.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D52C6AD58;
-	Fri, 23 Feb 2024 01:08:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CB3DBE4E;
+	Fri, 23 Feb 2024 01:08:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.48
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708650530; cv=fail; b=fpLTEws2vxdF3yHT59E81EWOIx1hZ9GCcmD3qVchbXxuv2kKC5EN/ZCa19ef6quN5AdolN70WohHfJ3N9DOUTZrkJSO2v/jXunZjh+8eSNzeh3AQkmuORl/2eaAeItgQHlYc6bkZ2f2rnyQvLjiFt2iEDPYjcDkKW1P619R2zYE=
+	t=1708650535; cv=fail; b=ETwtqlz3qL4EvvbMRtSEvrLs7pmJPv2WMM8ndDchTU1TFM9Erfg45g2AtSbyLLKvPWH3mCMDObC+2eUoGiv+3tUUwa+ZC9QlMWkV4haMLfoDWdfyBYenf7uB8fEdkzI5z9S3Znvq2dIH7EU3/KhW3GvCtNpFbz2/oBNXxwhhi94=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708650530; c=relaxed/simple;
-	bh=LIbiOyIEb5ksMqwfw+ihfUycxea+JF7Ac2NBrH72rjM=;
+	s=arc-20240116; t=1708650535; c=relaxed/simple;
+	bh=Lp5urJcXxMhFvLEjMl/gU+u8bqJReXBFK776pK6/zCE=;
 	h=From:Date:Subject:Content-Type:Message-Id:References:In-Reply-To:
-	 To:Cc:MIME-Version; b=GsrWvd/Jm9xx/g7Gik5vzaEM6tY8IiibG6/w8z0H2LVNAI/gJ2GLjiA2FbAbYyPPB0YD17w/m+yP0+xkczJ+OCMQ/NzRpPtDQtKwdISsjxLitcH/Fnz9t1yfd/tAcVWfmMx0sAo0kjz+iL1jlURYUVZmDOA5f2IKGLTU2AxowRA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=lhySqXsM; arc=fail smtp.client-ip=40.107.21.58
+	 To:Cc:MIME-Version; b=nu4tlgOZzhlvmEM1R/oUV/qwQgkx6vr4Qo8UkQGFCENvQU8v0caa6SjYpMrOQON68lgmxwuUW9UOw66rXZ3iTDgYExT11IPVlLCf8sDvERTaQAAC3QQYTUC5YS/ZvQoGNgpSCJBhYfJQmi1YzUqLlUPpSk6CuZtYEQSpNK8/orw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=arQqzowK; arc=fail smtp.client-ip=40.107.21.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AqZBRfHh6k/5/3+S2XrijHRVS9HO0K8Ec8JCptOUHc64ayjechybcPQ8QpIWos5NHGjMZ78qoPA4PWVPC2IGCFiA5Ahizn+C+XKx9/Kpesm2OID6nIgPbpTRFi2QlJKBNojaTqY7Vbs9Mp/JT+8LhtNHbKTF28V1tDRx1pW5xNTKmVOaCRmD6mzpXitSdBwtG+pqei879frACSJAKzPLNxDu4mx3Omy7VPlK0isnj9YaybWvQiGY5dUuJZF2+V9TRrfo2OwUlMqwkLBlevp1pETB8+6KDIuqL0wufDJ5wqe057XA+hwafMMeZ/nzMQtUtCKINJ4TBxRodQSlqyhfCA==
+ b=WKnQVsjuZPwmN+EcYeOyI5ZATNtd4DaTGSytUPNN/fK3eKDGPZh7W5Y/dkpg+lxBFVZ8fYqwiTyfZVUbfJEelJr4czPaY5avteRUeSDPiOjpudY55g88gGS45KQTZ/E0yAuN+6oym+T6jiK+4sXfddS3H1blWm1sN0LsvauHuSc4F3SjzTiLcwcGS7cAMd8EvnYZp4V8NbqxKd+Wv+MGdrTFsTCWE+heFjnzYeAMpwt7Gy1td6lRcZNRlqpOp6EcwctcX8VzkaNPqV/evKBf7rdioODdqCDibGrYDafWGFMpPF8h+m2vOyNhvjGvjzrHHBek7j4FEBzskrC0Z4yQUA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cCcalEI+UIRZcakIjpwOIHhvXPGL1GR96ZhZnkDLELk=;
- b=DX0cTB41zDjXgWsxsuc17R29Ip9nYdgnp5bQzaixWuxlDTS3Jxrwy3Z8QBTEsT186IPtWSe9JLMIwkzuV44Swqra1S1aGsdHClREouuapGcDwDk8oWbcddfJ4h7ze4hP8yZxyEYqbad+r0H6sWVJGz0wYn0d0wllT8l4Kl7XI2Djiaa9MzK02gKnqbhH2a16n7eWcQiw/hUcld90jLqKERx/d0oS1sicR6rzLYHoHATkRvg+yFf5Owql89bW6QUG77bE3exYOgUlKx9D3RxK79bIHqCoD05dsrUi5pE0fEeG9BGeCE8DzIWmUYlXRJzlHBWpw3DL8zG6o1slSoHehw==
+ bh=jQmOgq15KqTro5dgNBFbE6fRWivw0EMchUXspHRUUpw=;
+ b=OW90zeQeHd5s/hFRCNco3swJ2Ls5P4uSBkJ2jQn7IECgxcWF8i8jZN0aRSSX6vQOnbFRQLHIroWRjZv7GGLFdPKAzAxYoPqHfDwuMJljPsgk/+1rjG3aQhoSlkwDVJSf7uawSAJXyeVFypbFybaUOxaXSsTIwEj/rqGFtKtk6wwU+ryKgitb5nDQoQGZq0mBLoDovWFnBE7HInBXDTTWSIKfSCOCiPf7XptHMfNWKD/Yj6Qy+dUE+LnxHiDYEJmrEcL8PZALoooZfE9j6KQyJCZWv/IkUYl1L+KibsyAeb/WW6G4NnGkYk/6RSLzQP3CRx85rXVFHBEKfJt/fesJVA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cCcalEI+UIRZcakIjpwOIHhvXPGL1GR96ZhZnkDLELk=;
- b=lhySqXsMmLIFmwoW4Qo08eGea1YDkwFiNujyQxvK0tLMPNCaFpVsfxea595lhRAX5eKKcodvIbY6ykoHlJbVSIyi6BowrvxcIiruinI8BaBxKN0ujIkvUtvtbdGJiXTV/SPwyQ0cfk1aBp5df/96sJYwuZZW1TntDLLTljRvztQ=
+ bh=jQmOgq15KqTro5dgNBFbE6fRWivw0EMchUXspHRUUpw=;
+ b=arQqzowKDbl/Xn8KNAlZeqUP4I/tgcj2Quadl6oVnvpLlHIEVv0BnQGa6e+XuxTcSjYhrfnsWWDIqmhsbavJaNCTIvrg9aPBfn9ELL1jgIIkidv6zQiKgQtXBlKKEcaEkjxNZ4GV8yMios7xRtvNm4WpTVfxU6q2bbJnjdz19w8=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=oss.nxp.com;
 Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
  by AS8PR04MB8418.eurprd04.prod.outlook.com (2603:10a6:20b:3fa::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Fri, 23 Feb
- 2024 01:08:44 +0000
+ 2024 01:08:50 +0000
 Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
  ([fe80::4ac3:3559:4200:38e1]) by DU0PR04MB9417.eurprd04.prod.outlook.com
  ([fe80::4ac3:3559:4200:38e1%4]) with mapi id 15.20.7292.036; Fri, 23 Feb 2024
- 01:08:44 +0000
+ 01:08:50 +0000
 From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Date: Fri, 23 Feb 2024 09:16:38 +0800
-Subject: [PATCH v4 1/4] firmware: arm_scmi: introduce helper
- get_max_msg_size
+Date: Fri, 23 Feb 2024 09:16:39 +0800
+Subject: [PATCH v4 2/4] dt-bindings: firmware: arm,scmi: support pinctrl
+ protocol
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240223-pinctrl-scmi-v4-1-10eb5a379274@nxp.com>
+Message-Id: <20240223-pinctrl-scmi-v4-2-10eb5a379274@nxp.com>
 References: <20240223-pinctrl-scmi-v4-0-10eb5a379274@nxp.com>
 In-Reply-To: <20240223-pinctrl-scmi-v4-0-10eb5a379274@nxp.com>
 To: Sudeep Holla <sudeep.holla@arm.com>, 
@@ -77,13 +77,14 @@ To: Sudeep Holla <sudeep.holla@arm.com>,
  Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
 Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
  devicetree@vger.kernel.org, linux-gpio@vger.kernel.org, 
- AKASHI Takahiro <takahiro.akashi@linaro.org>, Peng Fan <peng.fan@nxp.com>
+ AKASHI Takahiro <takahiro.akashi@linaro.org>, Peng Fan <peng.fan@nxp.com>, 
+ Rob Herring <robh@kernel.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708651021; l=2659;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708651021; l=2375;
  i=peng.fan@nxp.com; s=20230812; h=from:subject:message-id;
- bh=DBKFhaPpqrkJGCSTluDmc3QczHu1uAahbhhYhwpdRZI=;
- b=91F9bSboHX82fJggsXBcephRnZfsy9xqMLcMwDkRWe9p/LgccbEnm89/ki47oFaXfZ/Z10JfZ
- sm8rLjDrHieAYi11be0EZxS+PIW+YcvdRZ+y2I9kgTGmPNDEunemqbB
+ bh=xWNejZclzOUqKROUnFYHgVlFI6BqdpjzWE8+IpqHKp8=;
+ b=MMWisZO0cIMNuCFhs4TThTvnZCbROjAupBO38AJhC9yOfNJECPOnjA4QuAQghVQUx1JuAlZpw
+ I42xmfpmfEnAD0hgZlOqpKv7JBW4307RDQmBseoLNI5srapjBb/Zm7f
 X-Developer-Key: i=peng.fan@nxp.com; a=ed25519;
  pk=I4sJg7atIT1g63H7bb5lDRGR2gJW14RKDD0wFL8TT1g=
 X-ClientProxiedBy: SI2PR04CA0009.apcprd04.prod.outlook.com
@@ -98,131 +99,144 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AS8PR04MB8418:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0e783a9f-5006-48a3-eaa3-08dc340bfb3f
+X-MS-Office365-Filtering-Correlation-Id: e9647205-5c80-4dba-4ae3-08dc340bfe85
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	hsnAbMRsZYxqXIyAllcuNfIq/DpXvWptDvayfCLJB/ibsWyZhlHXYNsJjrrM5LIREVfObd0XrIBCjF3vt3oawMnDtazgq8KzT9Ag5pvvs3HRQ6ebokJpnw2RnrkZepy6cPjVPiiAYnXLfUfy6UKwHj0984YfdOlgX2XGzgeL2tdonFSeOEjyD5MoUnlO/UUFmxaXzyxoDRgV/3JEUuAWiei2MMaSeh+isvcptXJSczg+uAzMCqDWuNIKKOF/+7YUWj7sM6CSUZadPWybgAqMLJBATDPxtfbzLULxOPyBYNoo/aBQlSQtgPM6PCt5M2oRS4ZFzNQnokrJEHjhjYDkIwI0FOpWJ6pPlEf0xNUpwZ3/E3P1nNQNM1Qjy4JvcmOGtS6UoajJYoHNtLnXgGu+gjG6U1ysW89OyAqfyLll0s8y+YIAAzOw+o2RrWCnrpJSPq/lNWvG5VH6vATiWTQRLLFhAwVko2pQsSqAeTQuqPZ4ajPbgYEj+VrShNYS1zpxHOVySD9E6virX74uqzcatqUxplbEl6pMW+86vdz5qeGaKxZ+L0j6IuDKoYQaA8RH0qlzhsd19/2TDriQI6nSZ0HCIUyJTTslpI1fqIuIsyIBWZC+WXXLRa3VTTHHKrg7dCtg3AMGRZZrtfrxgC0eXQ==
+	bJ4JFuWq+ts2ws4VMt47v31HqZ7MWLhs0sl/Frb1gZ0hXF5bbZJIyj5E8tNEtzkfRqzggpIy5MbMbL4YwtsxH+mTj9Gq/91tRol8WNgQlafGUoGu6E1owDjN48eZu6GVeBzTAjsXyfe7gMpATatKC7LjGyTtbJLBdFERoYBQ9UZHrgzmclsa9/tNzklsjN0l/wKTT6fsuGGQ28wrxRX9RaKXk8yQFMzDVHBbuz+FsfP7zNozVoX+CiGuu/krTMRpTFmJobnLPba7+SNTLB0MOe051ibyO+MI8T8g7EIdlFulZ/U0N+iJ6kRHe0l4JgRMz1Pc0SBdTF+OTCaw5Nkj9L3KsO2B3DQaZPFmp0O38NSrTC5JlbTxvdSpSd958I+/bQixNSbqTc5c7xXZPPSn4Yb0eArEFXdaDpu1c157zzrDjzWi7NLQCa1po6Mp8cPWsY1D52IbyfgsYcwFzcNoCKirDfQuAAYTjsg+QphcJeK1elI5otStYm3gA0Ch7A7N/82msUdgCJYA0Sv6lwAyeYVZ3+PkGfLygxzh/1DW5uPYzq+dmGpgPb2SZsO6xDENCnb6Z2arFn2GePjw1ELtqnbkuFYhPi4ZTKXoTWYWTt9ngTp2j0MQS/wu4C6gnoURUZAu1zmXj+yj0JSjajjamQ==
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005)(921011);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?ZXFXSmNCUGZ1MFkvY3VLaExaelhTQ3N3WkVRY2M3czRCamR5TkVrVi8vd1d6?=
- =?utf-8?B?L2IzU0xMaEZUZ0VGT01INnFqSUJBaVFGR2pTOStQQ3B4bW5Db0NOTFZXbUlZ?=
- =?utf-8?B?N092NUQyYVFDUHNsRVRTdHFCd2tMdkk1ZkFDNDNYR2xDSzE0VGgyQ3Y3MFh5?=
- =?utf-8?B?clFDWDZvbTI1VTFSd3FHNit5WlhlR01Oa3FFZi9pNUszWGMxY3lSUEJCcWZh?=
- =?utf-8?B?aFBINGtmVlpLS3NvME1acDFUdXB5KzBBMDlWVVkrakt3RFI3SDBiTENsbnJs?=
- =?utf-8?B?U3FEU1l1NWFTUXhFSzYxVldXZVEwQ2s0b0l0S2xicTZmQlc1YmdYQk4wenhF?=
- =?utf-8?B?L2ozWFNlSXlDQXFJV0duTkRUcElYdCtDcC85ZW9aMk9GVkdOTXB2TjkydURq?=
- =?utf-8?B?cWxsZjZZYkpnYjRwRnZBZ05qK2xzUVNxcnJGUlBITkxRc0NQTlB4eEdETUlh?=
- =?utf-8?B?dWZnaEt5ZjByUGc5TjJnSmh0eGRLRTFuRDNMOFVzS3pQTDBqNlM3WnZTWndQ?=
- =?utf-8?B?cnY5UFVwMUdMbWdJTGIrNkQ1NnRmdk1SWlJVL1hmMnNIYWxlNE9rZU5vcXRM?=
- =?utf-8?B?VytScWxVN2tYTWtGUEc5bDlmSWlNU0ZRcnRmRkUvdlBhVEladHpnWVRSeGFZ?=
- =?utf-8?B?Y3pRT2YwYURNN09GaUhUMnQrdDFBRUlNQXVmSmM4TWl1L3JDbzhGOTVEdmJt?=
- =?utf-8?B?SHRsUThDWkNyZlQxdHV0WHB4ZFlXSk9TUWRIeG5HYlUxY0JOc0FsVnhMUFZJ?=
- =?utf-8?B?b1Noa3Z1Q0diaFo2azd2ajVkaFdDSktqbjNicVdiZFRLQi9lblZSUVFUWlRY?=
- =?utf-8?B?Q0pGZkVIa2FoWE1Pb05iQTZVaEp5akxKYlFLRDZzcVkrZ0EwZ2RLU0xGc3ZB?=
- =?utf-8?B?bmd6bldNQUtpK3dIaGtXQnBoUFp2dGJZbk5Gcm5sNnpBcC95TEJQTDRnY2FH?=
- =?utf-8?B?a0o5WWxyQmpnb3A0Rmd6SjEwZmF5VXl5VG51S3o5N3FJemVRNXpjSW02b2Jl?=
- =?utf-8?B?ZHZVNVdpVVhnak5tR1U5Z0VnOTRESXNFQUVCTGFmSnhPazg4SFcwWFFYbVhX?=
- =?utf-8?B?RnJjWHpkS2d3T2lJRnYrRmw3TWg1KzdtNG1ETU15akw2WDFPcThROVpib0NF?=
- =?utf-8?B?VGlpQ3lEeVV1Z2ptSXdlT0pzY3V6akhUbU1seUhYMVJ0VUtPQkJud3VwUER1?=
- =?utf-8?B?aldtL1ZoQ1BEQ1VMSHRtakdwLzV3cDB4elpSZFZsbmVsSXoxUkNRQ0JRSlhO?=
- =?utf-8?B?MHFlZ093cnVMak1sSHU5Zk1wUWlKYTd2dE1oMHFSenp3VVkrd0M2ampBc0tL?=
- =?utf-8?B?ZU5wa2Q3by93eUFudUZmZHF1RjlnTktnTjNTN2VUL1FMeDJFZGl0WEJqZGxF?=
- =?utf-8?B?S0QwNFUybVhkSFFzSmwvRlBMODR5NVoydlFiTnNuUXVhc0c5bmIxTHhYWnJp?=
- =?utf-8?B?MnRadi9TRmxXZUhGNFB1WjFId2V3SlpZakpGUVNaSFBwVnlXU0JKK01pWitP?=
- =?utf-8?B?MmxxaXJ5ZTdldjlLNTBoQ0k3UUkvN2kzUGpUbW9EbnI2QUgzMXVzNUtEdnNU?=
- =?utf-8?B?OVI4WWMyajVJU2xTOExDbmxpNUQwdTB2ZnhHb3lGWm1jN1BsdWdXUGdrSlRt?=
- =?utf-8?B?QXVXWEhUNm84OFN1VitLdkFqTkxjSnFlMTlWZ0M1bGpDTmhRVk53Ykk5UnZH?=
- =?utf-8?B?em12M2k0K0poUmpzUFNmNGx2OTMvZUFDeUdldHMzVTMrUnQ3RFgzVklqRGh1?=
- =?utf-8?B?c3BKb2FSVHhRNENWdEpmd09WN3NkUEl0WUJ5ZnYzdk0zUEFYYnYwQkNWU0VQ?=
- =?utf-8?B?NklDcG4vYmNLZTQxQlVKank2NTcxUlRrY3pqYlJXOTRkb0xpUWNPcjM0ZWc0?=
- =?utf-8?B?UHQzVDcwdytadjhnSFFrRVRGMGhZaXR2SDkyd1JIZ0QvcFRvM2dpMHgzVzRP?=
- =?utf-8?B?NENpNU9UUVB3c0hxNWxxQ200SnJZL2kxcXhXdlhjUm4ya1czaSswMWsrRHhj?=
- =?utf-8?B?UndJWmVLT1FZcUg2b0tmSXEySEZrV3pjMmF3UndoRmoxZUpRcDVNSkdSUWR5?=
- =?utf-8?B?OUJPNmpsSVh5b3JlSW4wMHVDY1ZKMzJWUndRN1o1WlN2MDJIcWk1R0pRR1JM?=
- =?utf-8?Q?DtEM7Do0q/rn2W/x56bG/tIup?=
+	=?utf-8?B?Um01WVdnamtxZEtqY1kxc2pNNzhoL3kvK2ZaOGxOT2hTNk9sYjJINnExMmcz?=
+ =?utf-8?B?NFd0QVppZTFRdFFRYXBIaGZ1aG5lMUhPaFVNbG9sOWIwaHUyZWZ0ZGdoaG1F?=
+ =?utf-8?B?VFZmbVkwb3R5RzFNWGVUWWhEVjdQK3pKdi81ZXJxQVpBTDBubEo5VjFpL1JF?=
+ =?utf-8?B?dFBhRnQrZkFCK2IwNFNVWmVvL3ZaQzYyVmdKYWd4TDhSRFdNelRLVU9hUkFJ?=
+ =?utf-8?B?bEtvYnovcUI4aXdSdEpua0QwODQzTVdrbzgrUHBtRCtReWZCYXhVbGFIVmhL?=
+ =?utf-8?B?dExYV1pnYUl5UU85dHhYYTFRWGFKUFZBM1U3Ui9DVTI4RENtQUpDbU5nQUcv?=
+ =?utf-8?B?VmxMYzJTenAzbmF0VTBSaUtmUXhOS2hGUXk3WVBXeWdQeldmbTZ3VDZ1eG5r?=
+ =?utf-8?B?TERLbC9PajhlVHMrY0lURzhWMWFDUWorcy92ZXQ0U3dxR0toUHFaQnJOT2dP?=
+ =?utf-8?B?NjRkM2xDNmlFSHNXTFJvRUQyZGxKQzl3WUZ0eVZaa0NnbWdtcDhOSWdmNy9S?=
+ =?utf-8?B?YUx0aVJuWUcrZ0VBWHd6Q2h3QVRqTENSK1VzQnpSb0IzU0tNVDE3elF4Ylov?=
+ =?utf-8?B?VkVCZXRNc05xMHJTSDhMb3VNbGR3M0w4ekQ5UDhHZENOZDBtN2VleGlFdnkr?=
+ =?utf-8?B?aGI5Y01ZU3pDK0U3bk9rcGxOWExTTFZWeHR4THhzaGZhMzhuRTZuaHdYU1Q0?=
+ =?utf-8?B?RExJVXZwZUpMblJiWUJhSkovLzVOalZvK3lOd3Vydmt0Njg4SUZmbmtiMytY?=
+ =?utf-8?B?MURGVkIxSldXWlc5TkJFeFN4SVlidFJHOXFqa3dockZJNEtmY2FMVGlGb29V?=
+ =?utf-8?B?YzNJaTlBZ2E1eU9BNXprQ0lhc0JJYnRwSXFzRnIwVjM5SExuVVRWNThtOVRj?=
+ =?utf-8?B?NGRDUTN5OFE2aXl3ejB3by9UYTdhcW0vRURPSFBPUHJSYnVoSHpJYkFtNlhL?=
+ =?utf-8?B?UENETUxIaldnVFJWZWFzb1kxejBiMDFiTWpqaXpGNllCUTI0eEptWDhyb3ZR?=
+ =?utf-8?B?V1NrbmRZQ1RmVzZ5QkYzRmpYTDNNYXA4ak5KYkFJNTR2N29Xb1NPOXhzNkNr?=
+ =?utf-8?B?RVdYMEd3SUdHcjc4K1MvOVZ1cXdSbm9qTGE4Rm03bmZvZG1qWi9NSEdaMlBz?=
+ =?utf-8?B?TTAvdnFtcWlWY0VTYWMxV25DcjhrVXF4U3VISlNtaEYrenJoLzVlc01LVkUy?=
+ =?utf-8?B?OEhDQUM1ejR1V2FkVS9SN1RMMzg0cGJmazVUSlJPR29LaGlFVUI5S0lBTTRM?=
+ =?utf-8?B?bVNJREtxczluYmN0TlRZVXdWamlSQ3Z0eUlFVkRISlBtWU94d3JHWDkvQnRq?=
+ =?utf-8?B?YTlkQ1VBdXJyaVBDejBLc0UvZ0cvQk0wMzFVeHRpQmlHQzVoeVgzMHAybEkx?=
+ =?utf-8?B?Y2E0UENIT2F5WVdGeVVWRC93VmlOZ1Y4cGVJU1dVZitvQi9nSy9WVzRjRldu?=
+ =?utf-8?B?V2UwOENFbGpKNGhGeUFjdGQ3Z1ZQYVZlMTIzclR1ZksyQ0NUZTBudVNSU2xm?=
+ =?utf-8?B?SkJGcVE2SjZnSUs4T0xMcGZYWm55eUU5d1RyVGdLZVB1b1RKVEFXQVNHY0xV?=
+ =?utf-8?B?VEh0anN2a0o2U2QwdnR4MUY4Ry9Hcmh6SkMralo3emhUMi9vWk5uem1ZNTVG?=
+ =?utf-8?B?bFJXZ3dTdVBIcU80c2Q4OXhlZ0dJK3NRZjYvM1BFcVB1RU5zQ0t5YnlYd21E?=
+ =?utf-8?B?a3J6YytIbFNmR29yR2ZWZVErNDJtTlgybHNydXR5SmxJY3BqWFZDSjFVZ0t1?=
+ =?utf-8?B?QUtxajducE9RbzA1ck5hbzlMVlNSYm5Cek54dGU1cFV5ZkdXc0FGQkRBZE5u?=
+ =?utf-8?B?T2xDVmY1NGxzVHFMN2d3L3VUWTAybUtzN2tYSitvS2cwcHVvN3BVaTdINEl3?=
+ =?utf-8?B?ZTJDaHlYZHZJRzBORmI4NCt0MldWWkxMTzR5SU94am9UOFY5azNJN0I4Qlhh?=
+ =?utf-8?B?NEQ1RW9tZ3FVWXNGdmlNYy9nd04yTDVmMXdRcndUU0FNVUsxSzlxZlBISnZQ?=
+ =?utf-8?B?M0R6dEQzSjRpMWFLUnFER0tzUlVtSWsxcE94aFNuV1lyNW5XN2cvbFRPRTFn?=
+ =?utf-8?B?SDVTbFM1cEs0M0h2N1pMdXdmT0tJNGVqcWo3dlM4TlIzMXY1QjhoaWhrYXFo?=
+ =?utf-8?Q?NzkxoXyfnUwu8Ucp6nScIMGdi?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e783a9f-5006-48a3-eaa3-08dc340bfb3f
+X-MS-Exchange-CrossTenant-Network-Message-Id: e9647205-5c80-4dba-4ae3-08dc340bfe85
 X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2024 01:08:44.5884
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2024 01:08:50.0097
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sFYsbZSxKxWIk4SlX2VLM+STEVNlB0Cck4OV7pzvSKDILg9hKHYwsVOyt1pyN2XhCBb7VZwtZM3NxHlU51kOqQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: WBH104hGHyC2oWozvoq6hK4l0XNi3xzRjMJlkUe0fKK1GeiA7JePvnKasNwGF4EzyHjm8qlz4lmeUFskQEiU+Q==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8418
 
 From: Peng Fan <peng.fan@nxp.com>
 
-When Agent sending data to SCMI server, the Agent driver could check
-the size to avoid protocol buffer overflow. So introduce the helper
-get_max_msg_size.
+Add SCMI v3.2 pinctrl protocol bindings and example.
 
-Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Peng Fan <peng.fan@nxp.com>
 ---
- drivers/firmware/arm_scmi/driver.c    | 15 +++++++++++++++
- drivers/firmware/arm_scmi/protocols.h |  2 ++
- 2 files changed, 17 insertions(+)
+ .../devicetree/bindings/firmware/arm,scmi.yaml     | 50 ++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
 
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index 34d77802c990..6f059a585896 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -1488,6 +1488,20 @@ static int scmi_common_extended_name_get(const struct scmi_protocol_handle *ph,
- 	return ret;
- }
+diff --git a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+index 4591523b51a0..bba4a37de6b4 100644
+--- a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
++++ b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+@@ -247,6 +247,37 @@ properties:
+       reg:
+         const: 0x18
  
-+/**
-+ * scmi_common_get_max_msg_size  - Get maximum message size
-+ * @ph: A protocol handle reference.
-+ *
-+ * Return: Maximum message size for the current protocol.
-+ */
-+static int scmi_common_get_max_msg_size(const struct scmi_protocol_handle *ph)
-+{
-+	const struct scmi_protocol_instance *pi = ph_to_pi(ph);
-+	struct scmi_info *info = handle_to_scmi_info(pi->handle);
++  protocol@19:
++    type: object
++    allOf:
++      - $ref: '#/$defs/protocol-node'
++      - $ref: /schemas/pinctrl/pinctrl.yaml
 +
-+	return info->desc->max_msg_size;
-+}
++    unevaluatedProperties: false
 +
- /**
-  * struct scmi_iterator  - Iterator descriptor
-  * @msg: A reference to the message TX buffer; filled by @prepare_message with
-@@ -1796,6 +1810,7 @@ static int scmi_protocol_msg_check(const struct scmi_protocol_handle *ph,
++    properties:
++      reg:
++        const: 0x19
++
++    patternProperties:
++      '-pins$':
++        type: object
++        allOf:
++          - $ref: /schemas/pinctrl/pincfg-node.yaml#
++          - $ref: /schemas/pinctrl/pinmux-node.yaml#
++        unevaluatedProperties: false
++
++        description:
++          A pin multiplexing sub-node describe how to configure a
++          set of pins is some desired function.
++          A single sub-node may define several pin configurations.
++          This sub-node is using default pinctrl bindings to configure
++          pin multiplexing and using SCMI protocol to apply specified
++          configuration using SCMI protocol.
++
++    required:
++      - reg
++
+ additionalProperties: false
  
- static const struct scmi_proto_helpers_ops helpers_ops = {
- 	.extended_name_get = scmi_common_extended_name_get,
-+	.get_max_msg_size = scmi_common_get_max_msg_size,
- 	.iter_response_init = scmi_iterator_init,
- 	.iter_response_run = scmi_iterator_run,
- 	.protocol_msg_check = scmi_protocol_msg_check,
-diff --git a/drivers/firmware/arm_scmi/protocols.h b/drivers/firmware/arm_scmi/protocols.h
-index 693019fff0f6..9c8edb1aa901 100644
---- a/drivers/firmware/arm_scmi/protocols.h
-+++ b/drivers/firmware/arm_scmi/protocols.h
-@@ -257,6 +257,7 @@ struct scmi_fc_info {
-  * @fastchannel_init: A common helper used to initialize FC descriptors by
-  *		      gathering FC descriptions from the SCMI platform server.
-  * @fastchannel_db_ring: A common helper to ring a FC doorbell.
-+ * @get_max_msg_size: A common helper to get the maximum message size.
-  */
- struct scmi_proto_helpers_ops {
- 	int (*extended_name_get)(const struct scmi_protocol_handle *ph,
-@@ -275,6 +276,7 @@ struct scmi_proto_helpers_ops {
- 				 void __iomem **p_addr,
- 				 struct scmi_fc_db_info **p_db);
- 	void (*fastchannel_db_ring)(struct scmi_fc_db_info *db);
-+	int (*get_max_msg_size)(const struct scmi_protocol_handle *ph);
- };
+ $defs:
+@@ -401,6 +432,25 @@ examples:
+             scmi_powercap: protocol@18 {
+                 reg = <0x18>;
+             };
++
++            scmi_pinctrl: protocol@19 {
++                reg = <0x19>;
++
++                i2c2-pins {
++                    groups = "g_i2c2_a", "g_i2c2_b";
++                    function = "f_i2c2";
++                };
++
++                mdio-pins {
++                    groups = "g_avb_mdio";
++                    drive-strength = <24>;
++                };
++
++                keys_pins: keys-pins {
++                    pins = "gpio_5_17", "gpio_5_20", "gpio_5_22", "gpio_2_1";
++                    bias-pull-up;
++                };
++            };
+         };
+     };
  
- /**
 
 -- 
 2.37.1
