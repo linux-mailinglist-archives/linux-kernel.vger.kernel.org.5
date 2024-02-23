@@ -1,453 +1,256 @@
-Return-Path: <linux-kernel+bounces-77878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77875-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C02BA860B67
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:41:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82118860B5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:36:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 474C22869F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:41:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28ECB286FBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:36:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C33614A97;
-	Fri, 23 Feb 2024 07:41:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4C9314A93;
+	Fri, 23 Feb 2024 07:36:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="SXiDEkhN"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Z1nSfYN2";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="PS99zJsx"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2B8713FEF
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 07:41:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708674095; cv=none; b=lSKzoyR2CaRXkZIzRQvCUDJHvTa7/s7i+CSfMPtA7SKdJkR+zrrCE/5fuhQJuV7Dpbc6gEw49oaqWEtSjbhJOO69HGkY8LW5MB88F7GH1HBpXiF3ybQU1kR0gZ1GnBVsMcgeisjMwfhCqNqO+Mtj0yLIexLzizkRjp2hspwAVXU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708674095; c=relaxed/simple;
-	bh=H4JdD2v9kLXekv0YO+TIG0NtfCLGyn1f08iN9RBDLRw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i0cllcOzvmITSmv5eQyr3hfVeIDcUueZ9It6kX7+SzRgrxgN3q6jRE73S233mUxosgXts+dkfL9bpe2fUfTwkIKh3eSmWrxBpnpPwxwQXVy3zIutG0tN/kfXAeyX027Jujr7yHPAjKLR+WxiHkzTIMicih/1N4uw1hjJXkwmSYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=SXiDEkhN; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41N7VbEi023110;
-	Fri, 23 Feb 2024 07:41:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=+VNlTVCoA3ELfSb4sVXw1+LCVDdS6YUsrflN5NLQ+H8=;
- b=SXiDEkhN/SmXY2mXk6maVAXo0G8r6S8+w9tYUXByqxxzTGgYdy0NuC1dRwDRQKbPnDeZ
- TMZQm6f41D+O7mYrK2GXDJo+rpXOirrHWnljpbCxiQUmePHbcr69382uhyWs/JkKvCPa
- kOtYxMH1YNzH5eDzGcc682ObqtBMaCaUAw4hnsZvsj3HFCrrHA3zUyeidWqSp6LrP/MH
- M/HLlFigO0ttW7mGvoX9dqXHIYU+kuMbTG44knpeJO6q375cwupZF22/Nj4sN3xT6FeT
- SADLBvl8a2guXqvlM0aLhyu5T0GshsQ5i4jG489Sfd0adT5XWde7MzVM5QB67BpriBUB /A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wepj58wxg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 07:41:12 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41N7VmOT024152;
-	Fri, 23 Feb 2024 07:41:12 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wepj58wx5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 07:41:12 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41N6r8p8014427;
-	Fri, 23 Feb 2024 07:36:11 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wb9u33a6e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 07:36:11 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41N7a5nh38011138
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DDDE134D1
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 07:36:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708673801; cv=fail; b=YKLPljWAEMWATbnywoj+1EatHiu/lEUwnE94iLn0tJ+wUgJUFBt7BJRkHnQap+jfjRRF826jwig1fW41UAyghO5G76MOb3nVg/vUTfU9dcd8cZpsPMqogoyf5vBMCNOfe04UZwwmaBdh6xtp5jeAb1ebDUcd5CfmSXwbKaKhn0Y=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708673801; c=relaxed/simple;
+	bh=cI0U/7rFYfNz51EcVL6JgvelmdrmkI6q/ASY/oviYt4=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Pup8MT+9xUO4mv9SuzE08/UBgyHHsOYSjwqqlKpMqNKeTZ/Gtc5WSB7dw6CeUeO2rmD0MTuFE7mVKKIkFqgc23/kQORoxbHwDJxqNh+SVswmMFnKj0LUfG0rgdkUDlPcut1sFslPEACTZ6Gon1y20b4XgAZgin97ihAsdY7UjmQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Z1nSfYN2; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=PS99zJsx; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41N4xA7u021276;
 	Fri, 23 Feb 2024 07:36:07 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C713220049;
-	Fri, 23 Feb 2024 07:36:05 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E8DB220040;
-	Fri, 23 Feb 2024 07:35:58 +0000 (GMT)
-Received: from [9.61.96.239] (unknown [9.61.96.239])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 23 Feb 2024 07:35:58 +0000 (GMT)
-Message-ID: <d6d42acb-6913-4c39-a21a-f91b05894fa6@linux.ibm.com>
-Date: Fri, 23 Feb 2024 13:05:56 +0530
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=BSRQUjlDikAnDWqeBzXTBsZiItRqc+UJozBsosT5yWo=;
+ b=Z1nSfYN2CwDG2CInl63IaggL8v7x7wT5grEvDHLfqlQdrXCIpu99Dpo29RitHGqKJmtC
+ 8jhKAOjgTnEho6kfz095232bfQuy/9+xW6QnsnIcCWPDt9cFCrjENBOgCfygFvZhva+4
+ FZSbwPmSuWik/VNPmUuErXrHmCxbF44G+JoPLg3LJfYgAN6PZZw54AXFQis+xUvSr0La
+ +QzBqXfFka2DSUSDqsmkX1f2usHbuU6SiYSXjr62SQ5eXK5n15u7yR8AqeU+P82Ql4Zv
+ kcvw7u04OYxYq+DvcHPIdmlaSoVLN4dPUWkh7Elum64HV2U+XC2f7RHnsMH9smSI+uDd LA== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wanbvpsac-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 23 Feb 2024 07:36:07 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41N6oZbi022315;
+	Fri, 23 Feb 2024 07:36:05 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wak8byhtg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 23 Feb 2024 07:36:05 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jm309vKZ6WfYkG72ZJLu4Ms5fjm/f/5yCV6gyBXJHfHerj+PEjUy/3IqPhLTjvoSL9sd+ubyWq9qd69GFKScTc7VnO8C1a9uTicF92zqC8gEI8ZADUkmNg32pQHA2iPHdZ82n2rTbYn13f0FYKEKYxD25W9OnvsqQ2s2C/BwV/Kut8xMyb0y2g4fg064/YwR9OJAcW9zfP2cLks7woU24tsV8cPb9+O+wsCDneRxeVg3JG7oLyAvxsGCzWSjD7Q+nrS8lYklIadKWkHmUJ6rqDeFF0iSxQTWMC74fMHzSOmmYSNDPqLC9eZjTnuost9JpPFWpnsHFdTuqbzWqtI8vA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BSRQUjlDikAnDWqeBzXTBsZiItRqc+UJozBsosT5yWo=;
+ b=oaz/kvgP84MeLJFqPiqV9wWwU9O9M+TR7VnWLfbFJO5q0ZS3dbXhOrwnN1DiH9cY1UhVGT4ZoXnfgaQlS56+GLHPetpZdGnW4AkyQPYRrKnl715i/tx2/9XC5t+An93PbdQQ8uBGOINLx1LpNE/FaFbOYBUWVrhLFH4b/a13ZWIgcFt3LErchdw6RDDr4z9qdR4Ynt8iRdIN/Ug02sm11DzxyABLV2KPmg0oqBR5K2lS3nloVYV+pk7Gqs6slm9PgtzP2MkQwagTBbKaUyG/6CusBcFAhCtR6e617HjiPSUDgOVueXeQhfMpW/+8FA/rKaGgm61SBY7npPQioNP/kw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BSRQUjlDikAnDWqeBzXTBsZiItRqc+UJozBsosT5yWo=;
+ b=PS99zJsxuHPQQ9ezdYmr77CJswx8E613Atna3npN1YR3+rLGaOb+7S+Uhh0AQzVtZ3TtPBp2coBgoF3Ui/cDDtpY65771b03KPwaqsRQGRDB8HWUHcAKZ84Dub+dwY4ONPzTgzirEC7NM1c0zQFfJ09bfpCwqQePiuHq4ifmq7o=
+Received: from PH7PR10MB6379.namprd10.prod.outlook.com (2603:10b6:510:1a9::15)
+ by SJ0PR10MB4765.namprd10.prod.outlook.com (2603:10b6:a03:2af::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Fri, 23 Feb
+ 2024 07:36:03 +0000
+Received: from PH7PR10MB6379.namprd10.prod.outlook.com
+ ([fe80::f954:65c6:3511:49c4]) by PH7PR10MB6379.namprd10.prod.outlook.com
+ ([fe80::f954:65c6:3511:49c4%6]) with mapi id 15.20.7316.023; Fri, 23 Feb 2024
+ 07:36:03 +0000
+Message-ID: <93497e03-1acf-483e-8695-e103fd1bc044@oracle.com>
+Date: Thu, 22 Feb 2024 23:36:01 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] slub: avoid scanning all partial slabs in get_slabinfo()
+To: "Christoph Lameter (Ampere)" <cl@linux.com>,
+        Chengming Zhou <chengming.zhou@linux.dev>
+Cc: Vlastimil Babka <vbabka@suse.cz>, David Rientjes <rientjes@google.com>,
+        penberg@kernel.org, iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Chengming Zhou <zhouchengming@bytedance.com>
+References: <20240215211457.32172-1-jianfeng.w.wang@oracle.com>
+ <6b58d81f-8e8f-3732-a5d4-40eece75013b@google.com>
+ <fee76a21-fbc5-4ad8-b4bf-ba8a8e7cee8f@suse.cz>
+ <55ccc92a-79fa-42d2-97d8-b514cf00823b@linux.dev>
+ <6daf88a2-84c2-5ba4-853c-c38cca4a03cb@linux.com>
+Content-Language: en-US
+From: Jianfeng Wang <jianfeng.w.wang@oracle.com>
+In-Reply-To: <6daf88a2-84c2-5ba4-853c-c38cca4a03cb@linux.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR07CA0098.namprd07.prod.outlook.com
+ (2603:10b6:a03:12b::39) To PH7PR10MB6379.namprd10.prod.outlook.com
+ (2603:10b6:510:1a9::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH linux-next 3/3] powerpc/kdump: Split KEXEC_CORE and
- CRASH_DUMP dependency
-To: Hari Bathini <hbathini@linux.ibm.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Kexec-ml <kexec@lists.infradead.org>
-Cc: lkml <linux-kernel@vger.kernel.org>,
-        Michael Ellerman
- <mpe@ellerman.id.au>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-References: <20240213113150.1148276-1-hbathini@linux.ibm.com>
- <20240213113150.1148276-4-hbathini@linux.ibm.com>
-Content-Language: en-US
-From: Sourabh Jain <sourabhjain@linux.ibm.com>
-In-Reply-To: <20240213113150.1148276-4-hbathini@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: jY1oSkEEQaqky1jNNn5yIZeftNSe0VLW
-X-Proofpoint-GUID: xvdH9agm_garpfnQObmPlgVO4w6BZO0f
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR10MB6379:EE_|SJ0PR10MB4765:EE_
+X-MS-Office365-Filtering-Correlation-Id: 452c081b-b5e8-44ca-23a6-08dc3442169b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	O/FaY64jgeTnTnMEwAXDM+PaU6kdYlF3Mj3HoDP9u9TvELMPXsRWa0L8riPic1wmMjmNIhDkmeF2uPzB+AawTod9cu+L+9UY3fKYNQcQI6m+KowOnDUSoqNwG5WG3u3t8AFkh9HNu8qKaZiUW/5XSE1FdQ0rWO9WhW3Nu6SNOjo+bJH6lJV271ab6INN9xqxS7scEr58GGh1QpJgkn9z3X5d/OdyjBYH0RKUJntLgFVNBzf3LCVWpdg3h9stqAZOxQMM+UbWhnxK4L6MQy9sUV5hQG5Yr68xbPp3RNBiiW7VF/9TgUPKeUkflCr6MNs6d6Y1pZSOGJv7Mp36gKF8jD/ElISwl+tbl787CpZwX6MHN8kWut/aZkfi3C/0h2l2jVHjIAqyuZoUIZ7eoZDKjhGmiICmsJeQ/cQMSJJXG0Z+nqrwygnPNrDs53o7ssL3+3R5Z/eKEPf67rMwgUG4cgvDyQAUUyGkaeh1Pi1zT48eAEBQMoZOwjAHyJY62RyFdZor7pUDMeeJ/w2REVtgGAVItdMVxar2fFs0BdZuTQs=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR10MB6379.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?N29UQnBVdUU3RmNadDN6L3gvdnk2enZ4RHl1RklFTHRva0c1d2ZQVzlleUdp?=
+ =?utf-8?B?WGkzREJ0VWpkd2tlQWl5M2hPWTNGSmNQV01ESG1ET2NEK2Q0QVFhZVdjaCtN?=
+ =?utf-8?B?d09mSFhEVzdOMld5aXRFSG5MRjlhMUZVc1lPTGdCT1g5REkvY0tOdURUNGVk?=
+ =?utf-8?B?aXNIekpPRFNsUWhETHBxb251Z1Z5WHRYbnRsdkdaSnJKeTdLUC9FWjFJK3Ro?=
+ =?utf-8?B?MzJlOHB2RTk5cnNoak1hUnlRYW5LRkdaNitkV1lmenJoakZSUTNVUXB4a3RW?=
+ =?utf-8?B?UDNnYUlrR1J3NjlncDVYbGRwcENLMGl6M2lCVzljMkZoUkx4bXFqYkkzRUZS?=
+ =?utf-8?B?U2pkd2VqcDJkVVpXOHlrUTBoTUF3VkhCMXBVc0ZBZDNtaCtqNHlLRUFSZFlv?=
+ =?utf-8?B?YU5kNTEyTTd4MXBqaTljZTVvMHVZSmF5dGRhWGlReGFpNXZiREV6aFlKR21Z?=
+ =?utf-8?B?WnNrKzhqejhvQXB4TllEQVVONEw5WmdTcVZTbHJqbk1jMUZ0YnVBV2dMaVhQ?=
+ =?utf-8?B?OStEOU1iRFc1UUdNRU5Xc0dYeWJpbDBEaVBueFcvb2RHN0t3aSt5ejliU3Bl?=
+ =?utf-8?B?TjAra0paMEZYUmpWOUNLcGNyNVYxUHJJQkZMc2RtVDZ6RGlLR09jZUlEZU1L?=
+ =?utf-8?B?OVBqVmc2T0RxL0ZlTXNneE1CYUtYcmg0eGNhUVZtSGdzbzNUcXhPbkp5TDFE?=
+ =?utf-8?B?QlhQU21BVkxlOVZXME41ZkQzVm9RZU9aK1VZMFlZMjl5RFFuU2FkN1FIN01R?=
+ =?utf-8?B?L0Rzc2wvaHpJRzE3MlJaZWFYWU0ybkVGYUtMbFRKLzJDMVRvZ0lpQkZFeE42?=
+ =?utf-8?B?M2VSdVFna1VXOVZBTWFZNlg1c1NtK0J2OUpDRllRMUZITUlSWTNCdGltcWRL?=
+ =?utf-8?B?MHRUakRIWnFTYnZ2NEVZL2FsdEpLQkxpbENXUTJ3WGxsNjJaUjVtaE5QelBS?=
+ =?utf-8?B?MkcwQXZrdGxqZ2Rpc0RGWVluaGxjZkVseTNuM0lMcDNnSFdNRXBjRHVPVlA0?=
+ =?utf-8?B?UDExcFdKOENaMmxHdkM4UkZpTEw5TnhKdS9EckdEb293M25WRmhvb2I0dDJ6?=
+ =?utf-8?B?Mit3UFhHL002Ky9pMkJ6M2o3ZEo0RUkxNzRHdVc0UmVhZENSQmNKNVRIRWN2?=
+ =?utf-8?B?M3ltamNjWXdDNFdHUzBDb0RnNWROSGxkWjk4RjNoQWE4ZVU2ZlkydDAxTVQr?=
+ =?utf-8?B?clJNd2wxbUdRbnBsK2tPMWNsUTkxK0hPU1ptK3pQTTdWaWxFdGRML0hoTzZZ?=
+ =?utf-8?B?RVhmL1FvT2Q3TjJ6UDdVQVVFT0VlUkYzU1l4d1BqMk1EY0dJTVdnSUxLMFNv?=
+ =?utf-8?B?a3paV24wdVczd2wwRDAwN2IyZHd4cmFkWURmb3J2bDh3cENjbnE1ODlEaWV3?=
+ =?utf-8?B?N21hd1dIeUtsZmtEeW9wZ3VVU1l4LzNPd1BiMkN4c2RXSzdLT2tiZEk4RzNr?=
+ =?utf-8?B?VmE0cWNSSVFXSW5GMUtwZ2FmTU5FNkUxY3dUSHFlck5RdzJiK0VlK2kvRFZ3?=
+ =?utf-8?B?d1RLTkRlTGpNSDhGaUlNWkRzSlBzV3VyZDJaMS9KZGdZSzRxVkcwSy9PQVFB?=
+ =?utf-8?B?aEhwKzgzMlhUWTh3RDBDSGo2eFZIYnJBRWNHNUhTcHB6eGZYR1poWklSMlFO?=
+ =?utf-8?B?Y0xhemRTMzl3UWRsVmlaNkJRRkFGN3d6dFVERnl5Nm9ya1VZVjJtZS95dlFu?=
+ =?utf-8?B?OVExWkd3SDhEYTZXQjYzN3B0bUo0WG9oam5BVnYyL0l6U3lQbHdrbTZjbzVK?=
+ =?utf-8?B?QUw1bklZb25LTnpkWkdqZEJJcXVCNFVNTFFvMndEU3JhRlRaZGFtc3I3NHZO?=
+ =?utf-8?B?OHJadWUzeVN5OVAza3ZQVUZnRVFySVkzWnk0UkhwVzE0V21yVjY5cmdyTGtn?=
+ =?utf-8?B?emVrNTg5eFAyTmFiMjJ4VUpxVlVzN3ZLUVpmVFp5WnVyOFFjelF4OFQxS3A5?=
+ =?utf-8?B?L0Rxa1FZQWoyRTNlMFpnckx3ajlMTUw5WnBqS1hlNHlKRWltd25nRFNjVTls?=
+ =?utf-8?B?SmVhRTVZbVFtTHFkTUtZSUJZSDR5L2x4dTAzYkhKZ096am85eG9XaExnd01j?=
+ =?utf-8?B?VnRHVTd2UEw2QnVVU01yL1o0Sk1IbWw1OEx5YnJpdTIwTE5BYVdoZVErdUlX?=
+ =?utf-8?B?MEl0M1VtNklWS24zZjIyeFEwaXJhN24rbzFhWjRxamJSQlMzVFhHbStoTENk?=
+ =?utf-8?B?ZkNDZnZ5NjRicFZGZERvVkFsem01QVZVTU1PRElRcXpleWF5ek1EYTQyWFNB?=
+ =?utf-8?B?UG90Y1BVaE1obldETURZUncycUd3PT0=?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	bt+V07CgMPSCxcb0caCQYvgTCtZKZLPVlc+eKGVxryUwGTMl2L3INqBy4Ircyg9LOlLreH3KgcKy1kRj52MpA5kqiq3pMV4NMq/4M0FsvBIokWZ7KGw9MrwKdH98scLqxAmUCAgsakIfCOH9BmMj5VcUvkqF1OgiXJPHp9UpABUVhsQsH+iCCtIedk60ffizPzQy0koppX4AegJIypw0HrR1YnqYsC3WH5PD7EJPlsD0ft1zoNEI41UnkaQYcN/Eve2fTtUIKJY43/6I4lGVxCb3semIyxyY1xIBdAo21M0f4YmcPNImXau+6urezhP66JyYfMhgb32c4VrRDrUS+oDVOJbEYZPwZi4j47tO/3bQHoNRmHq7NJ2afkFkzXdCuoYQGYY5LhGf+AVNYqopmOyEiresbKMIAVjaju8yfd/uZEZ3KNCYsZyG5Sof0eP+r9O/evdzznuAYN705tc3iKtz8DWzm4m7ovauBqbsGJ7jQCOYRQ/XSViDNsYsYasopsmkcuADWFPgm5IAy4McvVwBzOmGOqrmlBT+m4+bW1NYvf9Kx/8v2BBOOFTvonNTk9QvoYU27Bl0r3rrNGZ0nIrJcTfTdYDpCsCg5xm76/A=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 452c081b-b5e8-44ca-23a6-08dc3442169b
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR10MB6379.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2024 07:36:03.2969
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3IZv8A21FbAVMHMOesk/8zmOWYrRl0RgcBF7mmCHDun9pY2zZMwuES/lXgZNX+Xw1A34wtQG2Xyg7qLgOehIpObnOevLCJ+FMdgpWnI+qqA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4765
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-22_15,2024-02-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 suspectscore=0 bulkscore=0 impostorscore=0
- clxscore=1015 lowpriorityscore=0 phishscore=0 spamscore=0 mlxlogscore=999
- malwarescore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402230052
-
-Hello Hari,
-
-Build failure detected.
-
-On 13/02/24 17:01, Hari Bathini wrote:
-> Remove CONFIG_CRASH_DUMP dependency on CONFIG_KEXEC. CONFIG_KEXEC_CORE
-> was used at places where CONFIG_CRASH_DUMP or CONFIG_CRASH_RESERVE was
-> appropriate. Replace with appropriate #ifdefs to support CONFIG_KEXEC
-> and !CONFIG_CRASH_DUMP configuration option. Also, make CONFIG_FA_DUMP
-> dependent on CONFIG_CRASH_DUMP to avoid unmet dependencies for FA_DUMP
-> with !CONFIG_KEXEC_CORE configuration option.
->
-> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
-> ---
->   arch/powerpc/Kconfig               |  9 +--
->   arch/powerpc/include/asm/kexec.h   | 98 +++++++++++++++---------------
->   arch/powerpc/kernel/prom.c         |  2 +-
->   arch/powerpc/kernel/setup-common.c |  2 +-
->   arch/powerpc/kernel/smp.c          |  4 +-
->   arch/powerpc/kexec/Makefile        |  3 +-
->   arch/powerpc/kexec/core.c          |  4 ++
->   7 files changed, 60 insertions(+), 62 deletions(-)
->
-> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-> index 5cf8ad8d7e8e..e377deefa2dc 100644
-> --- a/arch/powerpc/Kconfig
-> +++ b/arch/powerpc/Kconfig
-> @@ -607,11 +607,6 @@ config PPC64_SUPPORTS_MEMORY_FAILURE
->   config ARCH_SUPPORTS_KEXEC
->   	def_bool PPC_BOOK3S || PPC_E500 || (44x && !SMP)
->   
-> -config ARCH_SELECTS_KEXEC
-> -	def_bool y
-> -	depends on KEXEC
-> -	select CRASH_DUMP
-> -
->   config ARCH_SUPPORTS_KEXEC_FILE
->   	def_bool PPC64
->   
-> @@ -622,7 +617,6 @@ config ARCH_SELECTS_KEXEC_FILE
->   	def_bool y
->   	depends on KEXEC_FILE
->   	select KEXEC_ELF
-> -	select CRASH_DUMP
->   	select HAVE_IMA_KEXEC if IMA
->   
->   config PPC64_BIG_ENDIAN_ELF_ABI_V2
-> @@ -694,8 +688,7 @@ config ARCH_SELECTS_CRASH_DUMP
->   
->   config FA_DUMP
->   	bool "Firmware-assisted dump"
-> -	depends on PPC64 && (PPC_RTAS || PPC_POWERNV)
-> -	select CRASH_DUMP
-> +	depends on CRASH_DUMP && PPC64 && (PPC_RTAS || PPC_POWERNV)
->   	help
->   	  A robust mechanism to get reliable kernel crash dump with
->   	  assistance from firmware. This approach does not use kexec,
-> diff --git a/arch/powerpc/include/asm/kexec.h b/arch/powerpc/include/asm/kexec.h
-> index e1b43aa12175..fdb90e24dc74 100644
-> --- a/arch/powerpc/include/asm/kexec.h
-> +++ b/arch/powerpc/include/asm/kexec.h
-> @@ -55,59 +55,18 @@
->   typedef void (*crash_shutdown_t)(void);
->   
->   #ifdef CONFIG_KEXEC_CORE
-> -
-> -/*
-> - * This function is responsible for capturing register states if coming
-> - * via panic or invoking dump using sysrq-trigger.
-> - */
-> -static inline void crash_setup_regs(struct pt_regs *newregs,
-> -					struct pt_regs *oldregs)
-> -{
-> -	if (oldregs)
-> -		memcpy(newregs, oldregs, sizeof(*newregs));
-> -	else
-> -		ppc_save_regs(newregs);
-> -}
-> +struct kimage;
-> +struct pt_regs;
->   
->   extern void kexec_smp_wait(void);	/* get and clear naca physid, wait for
->   					  master to copy new code to 0 */
-> -extern int crashing_cpu;
-> -extern void crash_send_ipi(void (*crash_ipi_callback)(struct pt_regs *));
-> -extern void crash_ipi_callback(struct pt_regs *);
-> -extern int crash_wake_offline;
-> -
-> -struct kimage;
-> -struct pt_regs;
->   extern void default_machine_kexec(struct kimage *image);
-> -extern void default_machine_crash_shutdown(struct pt_regs *regs);
-> -extern int crash_shutdown_register(crash_shutdown_t handler);
-> -extern int crash_shutdown_unregister(crash_shutdown_t handler);
-> -
-> -extern void crash_kexec_prepare(void);
-> -extern void crash_kexec_secondary(struct pt_regs *regs);
-> -int __init overlaps_crashkernel(unsigned long start, unsigned long size);
-> -extern void reserve_crashkernel(void);
->   extern void machine_kexec_mask_interrupts(void);
->   
-> -static inline bool kdump_in_progress(void)
-> -{
-> -	return crashing_cpu >= 0;
-> -}
-> -
->   void relocate_new_kernel(unsigned long indirection_page, unsigned long reboot_code_buffer,
->   			 unsigned long start_address) __noreturn;
-> -
->   void kexec_copy_flush(struct kimage *image);
->   
-> -#if defined(CONFIG_CRASH_DUMP)
-> -bool is_kdump_kernel(void);
-> -#define is_kdump_kernel			is_kdump_kernel
-> -#if defined(CONFIG_PPC_RTAS)
-> -void crash_free_reserved_phys_range(unsigned long begin, unsigned long end);
-> -#define crash_free_reserved_phys_range crash_free_reserved_phys_range
-> -#endif /* CONFIG_PPC_RTAS */
-> -#endif /* CONFIG_CRASH_DUMP */
-> -
->   #ifdef CONFIG_KEXEC_FILE
->   extern const struct kexec_file_ops kexec_elf64_ops;
->   
-> @@ -152,15 +111,56 @@ int setup_new_fdt_ppc64(const struct kimage *image, void *fdt,
->   
->   #endif /* CONFIG_KEXEC_FILE */
->   
-> -#else /* !CONFIG_KEXEC_CORE */
-> -static inline void crash_kexec_secondary(struct pt_regs *regs) { }
-> +#endif /* CONFIG_KEXEC_CORE */
-> +
-> +#ifdef CONFIG_CRASH_RESERVE
-> +int __init overlaps_crashkernel(unsigned long start, unsigned long size);
-> +extern void reserve_crashkernel(void);
-> +#else
-> +static inline void reserve_crashkernel(void) {}
-> +static inline int overlaps_crashkernel(unsigned long start, unsigned long size) { return 0; }
-> +#endif
->   
-> -static inline int overlaps_crashkernel(unsigned long start, unsigned long size)
-> +#if defined(CONFIG_CRASH_DUMP)
-> +/*
-> + * This function is responsible for capturing register states if coming
-> + * via panic or invoking dump using sysrq-trigger.
-> + */
-> +static inline void crash_setup_regs(struct pt_regs *newregs,
-> +					struct pt_regs *oldregs)
->   {
-> -	return 0;
-> +	if (oldregs)
-> +		memcpy(newregs, oldregs, sizeof(*newregs));
-> +	else
-> +		ppc_save_regs(newregs);
-> +}
-> +
-> +extern int crashing_cpu;
-> +extern void crash_send_ipi(void (*crash_ipi_callback)(struct pt_regs *));
-> +extern void crash_ipi_callback(struct pt_regs *regs);
-> +extern int crash_wake_offline;
-> +
-> +extern int crash_shutdown_register(crash_shutdown_t handler);
-> +extern int crash_shutdown_unregister(crash_shutdown_t handler);
-> +extern void default_machine_crash_shutdown(struct pt_regs *regs);
-> +
-> +extern void crash_kexec_prepare(void);
-> +extern void crash_kexec_secondary(struct pt_regs *regs);
-> +
-> +static inline bool kdump_in_progress(void)
-> +{
-> +	return crashing_cpu >= 0;
->   }
->   
-> -static inline void reserve_crashkernel(void) { ; }
-> +bool is_kdump_kernel(void);
-> +#define is_kdump_kernel			is_kdump_kernel
-> +#if defined(CONFIG_PPC_RTAS)
-> +void crash_free_reserved_phys_range(unsigned long begin, unsigned long end);
-> +#define crash_free_reserved_phys_range crash_free_reserved_phys_range
-> +#endif /* CONFIG_PPC_RTAS */
-> +
-> +#else /* !CONFIG_CRASH_DUMP */
-> +static inline void crash_kexec_secondary(struct pt_regs *regs) { }
->   
->   static inline int crash_shutdown_register(crash_shutdown_t handler)
->   {
-> @@ -183,7 +183,7 @@ static inline void crash_send_ipi(void (*crash_ipi_callback)(struct pt_regs *))
->   {
->   }
->   
-> -#endif /* CONFIG_KEXEC_CORE */
-> +#endif /* CONFIG_CRASH_DUMP */
->   
->   #ifdef CONFIG_PPC_BOOK3S_64
->   #include <asm/book3s/64/kexec.h>
-> diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
-> index 0b5878c3125b..1edc34b711ba 100644
-> --- a/arch/powerpc/kernel/prom.c
-> +++ b/arch/powerpc/kernel/prom.c
-> @@ -453,7 +453,7 @@ static int __init early_init_dt_scan_chosen_ppc(unsigned long node,
->   		tce_alloc_end = *lprop;
->   #endif
->   
-> -#ifdef CONFIG_KEXEC_CORE
-> +#ifdef CONFIG_CRASH_RESERVE
->   	lprop = of_get_flat_dt_prop(node, "linux,crashkernel-base", NULL);
->   	if (lprop)
->   		crashk_res.start = *lprop;
-> diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/setup-common.c
-> index 733f210ffda1..35cac3eaaf75 100644
-> --- a/arch/powerpc/kernel/setup-common.c
-> +++ b/arch/powerpc/kernel/setup-common.c
-> @@ -109,7 +109,7 @@ int ppc_do_canonicalize_irqs;
->   EXPORT_SYMBOL(ppc_do_canonicalize_irqs);
->   #endif
->   
-> -#ifdef CONFIG_VMCORE_INFO
-> +#ifdef CONFIG_CRASH_DUMP
->   /* This keeps a track of which one is the crashing cpu. */
->   int crashing_cpu = -1;
->   #endif
-> diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-> index 693334c20d07..aa81c95c73a4 100644
-> --- a/arch/powerpc/kernel/smp.c
-> +++ b/arch/powerpc/kernel/smp.c
-> @@ -588,7 +588,7 @@ void smp_send_debugger_break(void)
->   }
->   #endif
->   
-> -#ifdef CONFIG_KEXEC_CORE
-> +#ifdef CONFIG_CRASH_DUMP
->   void crash_send_ipi(void (*crash_ipi_callback)(struct pt_regs *))
->   {
->   	int cpu;
-> @@ -631,7 +631,7 @@ void crash_smp_send_stop(void)
->   
->   	stopped = true;
->   
-> -#ifdef CONFIG_KEXEC_CORE
-> +#ifdef CONFIG_CRASH_DUMP
->   	if (kexec_crash_image) {
->   		crash_kexec_prepare();
->   		return;
-> diff --git a/arch/powerpc/kexec/Makefile b/arch/powerpc/kexec/Makefile
-> index 91e96f5168b7..8e469c4da3f8 100644
-> --- a/arch/powerpc/kexec/Makefile
-> +++ b/arch/powerpc/kexec/Makefile
-> @@ -3,12 +3,13 @@
->   # Makefile for the linux kernel.
->   #
->   
-> -obj-y				+= core.o crash.o core_$(BITS).o
-> +obj-y				+= core.o core_$(BITS).o
->   
->   obj-$(CONFIG_PPC32)		+= relocate_32.o
->   
->   obj-$(CONFIG_KEXEC_FILE)	+= file_load.o ranges.o file_load_$(BITS).o elf_$(BITS).o
->   obj-$(CONFIG_VMCORE_INFO)	+= vmcore_info.o
-> +obj-$(CONFIG_CRASH_DUMP)	+= crash.o
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ mlxscore=0 spamscore=0 mlxlogscore=999 phishscore=0 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402230051
+X-Proofpoint-GUID: S_uo9poq4ENa_vc1CDUEbZLqesVZtJWi
+X-Proofpoint-ORIG-GUID: S_uo9poq4ENa_vc1CDUEbZLqesVZtJWi
 
 
-Observed a build failure with this patch.
+On 2/22/24 7:02 PM, Christoph Lameter (Ampere) wrote:
+> On Thu, 22 Feb 2024, Chengming Zhou wrote:
+> 
+>> Anyway, I put the code below for discussion...
+> 
+> Can we guestimate the free objects based on the number of partial slabs. That number is available.
+> 
 
-arch/powerpc/platforms/powernv/smp.c: In function ‘pnv_smp_init’:
-arch/powerpc/platforms/powernv/smp.c:438:2: error: ‘crash_wake_offline’ 
-undeclared (first use in this function); did you mean ‘cpu_is_offline’?
-   crash_wake_offline = 1;
-   ^~~~~~~~~~~~~~~~~~
-   cpu_is_offline
-arch/powerpc/platforms/powernv/smp.c:438:2: note: each undeclared 
-identifier is reported only once for each function it appears in
-make[5]: *** [scripts/Makefile.build:244: 
-arch/powerpc/platforms/powernv/smp.o] Error 1
+Yes.
+I've thought about calculating the average number of free objects in a
+partial slab (through sampling) and then estimating the total number of
+free objects as (avg * n->nr_partial).
 
-CONFIG:
+See the following.
 
-CONFIG_KEXEC=y
-CONFIG_KEXEC_FILE=y
-# CONFIG_CRASH_DUMP is not set
+---
+ mm/slub.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
-Below changes fixes the above issue:
+diff --git a/mm/slub.c b/mm/slub.c
+index 63d281dfacdb..13385761049c 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -2963,6 +2963,8 @@ static inline bool free_debug_processing(struct kmem_cache *s,
+ #endif /* CONFIG_SLUB_DEBUG */
+ 
+ #if defined(CONFIG_SLUB_DEBUG) || defined(SLAB_SUPPORTS_SYSFS)
++#define MAX_PARTIAL_TO_SCAN 10000
++
+ static unsigned long count_partial(struct kmem_cache_node *n,
+ 					int (*get_count)(struct slab *))
+ {
+@@ -2971,8 +2973,22 @@ static unsigned long count_partial(struct kmem_cache_node *n,
+ 	struct slab *slab;
+ 
+ 	spin_lock_irqsave(&n->list_lock, flags);
+-	list_for_each_entry(slab, &n->partial, slab_list)
+-		x += get_count(slab);
++	if (n->nr_partial > MAX_PARTIAL_TO_SCAN) {
++		/* Estimate total count of objects via sampling */
++		unsigned long sample_rate = n->nr_partial / MAX_PARTIAL_TO_SCAN;
++		unsigned long scanned = 0;
++		unsigned long counted = 0;
++		list_for_each_entry(slab, &n->partial, slab_list) {
++			if (++scanned % sample_rate == 0) {
++				x += get_count(slab);
++				counted++;
++			}
++		}
++		x = mult_frac(x, n->nr_partial, counted);
++	} else {
++		list_for_each_entry(slab, &n->partial, slab_list)
++			x += get_count(slab);
++	}
+ 	spin_unlock_irqrestore(&n->list_lock, flags);
+ 	return x;
+ }
+-- 
 
-diff --git a/arch/powerpc/platforms/powernv/smp.c 
-b/arch/powerpc/platforms/powernv/smp.c
-index 9e1a25398f98..8f14f0581a21 100644
---- a/arch/powerpc/platforms/powernv/smp.c
-+++ b/arch/powerpc/platforms/powernv/smp.c
-@@ -434,7 +434,7 @@ void __init pnv_smp_init(void)
-         smp_ops = &pnv_smp_ops;
+> How accurate need the accounting be? We also have fuzzy accounting in the VM counters.
+Based on my experience, for a |kmem_cache|, the total number of objects can tell
+whether the |kmem_cache| has been heavily used by a workload. When the total
+number is large: if the number of free objects is small, then either these objects
+are really in-use or there is *memory leak* going on (which then must be further
+diagnosed). However, if the number of free objects is large, we can only know
+the slab memory fragmentation happens.
 
-  #ifdef CONFIG_HOTPLUG_CPU
--#ifdef CONFIG_KEXEC_CORE
-+#ifdef CONFIG_CRASH_DUMP
-         crash_wake_offline = 1;
-  #endif
-  #endif
-
-Thanks,
-Sourabh
-
-
-
->   
->   # Disable GCOV, KCOV & sanitizers in odd or sensitive code
->   GCOV_PROFILE_core_$(BITS).o := n
-> diff --git a/arch/powerpc/kexec/core.c b/arch/powerpc/kexec/core.c
-> index 3ff4411ed496..b8333a49ea5d 100644
-> --- a/arch/powerpc/kexec/core.c
-> +++ b/arch/powerpc/kexec/core.c
-> @@ -44,10 +44,12 @@ void machine_kexec_mask_interrupts(void) {
->   	}
->   }
->   
-> +#ifdef CONFIG_CRASH_DUMP
->   void machine_crash_shutdown(struct pt_regs *regs)
->   {
->   	default_machine_crash_shutdown(regs);
->   }
-> +#endif
->   
->   void machine_kexec_cleanup(struct kimage *image)
->   {
-> @@ -77,6 +79,7 @@ void machine_kexec(struct kimage *image)
->   	for(;;);
->   }
->   
-> +#ifdef CONFIG_CRASH_RESERVE
->   void __init reserve_crashkernel(void)
->   {
->   	unsigned long long crash_size, crash_base, total_mem_sz;
-> @@ -251,3 +254,4 @@ static int __init kexec_setup(void)
->   	return 0;
->   }
->   late_initcall(kexec_setup);
-> +#endif /* CONFIG_CRASH_RESERVE */
-
+So, I think the object accounting needn't be accurate. We only have to tell
+whether a large percentage of slab objects is free or not. The above code is a
+sampling, which should do the job if we take enough samples.
 
