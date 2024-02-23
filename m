@@ -1,191 +1,173 @@
-Return-Path: <linux-kernel+bounces-79143-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 842C2861E26
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:50:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06575861E29
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:52:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F02F81F21A6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:50:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 856D41F24CBC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:52:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C85A1474A3;
-	Fri, 23 Feb 2024 20:50:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9AF41474C0;
+	Fri, 23 Feb 2024 20:52:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kn6Q8OKE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=tum.de header.i=@tum.de header.b="glkraDI2"
+Received: from postout1.mail.lrz.de (postout1.mail.lrz.de [129.187.255.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C13612CD85;
-	Fri, 23 Feb 2024 20:50:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3F7D143C7B;
+	Fri, 23 Feb 2024 20:52:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.187.255.137
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708721448; cv=none; b=s7VkKhfMUXaXhPIUe6qBeUNoqYCvS4Znbz5h5kY6cuZHwgkZiR6e5vEMONfOs7BdDEqbqquFzuGaY050JdHfnm/pTKDYEl9HxjeSvrsagQ0dQYHwu5ZjU7RJJmOVM+tBhWJUtcmYJIga15hgkGvuhpZDBPUygeriE7kKLlFmbiQ=
+	t=1708721542; cv=none; b=pNEfkIqIy5AVVdXmnzBFpU6guQuGndSZ3gjT7k0r22munQpyB4DLIsyOBgxXH572sRibhsyCHcP0uPKkG8hrgAePwcQ1dFy//gGiNhxtEkQL5mDODwkVG5VdzPWa8Zl+sbsdiEoCIk4cb3i3bV0bTEQ5wDUqZ3oZvDhRyWdhxVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708721448; c=relaxed/simple;
-	bh=PweppluXkvW8Lq4TMFJBzXOsYg6FGYfRiMivvD/uW4c=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=MKpHXqG62x71Av1fSps0QHOYNgyQF3G4I1/IoBPX1k8HTGMlViNm5ux66uenfG3/XR+FbDS0LDOq/g9j3UHHOmmg1JEop9wvToAifha2hp+zYJ1KQasI6w5veeUNqJcr9VqsAV34sinA1mrBg1q7rBvorwYzmjPSt7CI2UKLWlU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kn6Q8OKE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10F2CC433F1;
-	Fri, 23 Feb 2024 20:50:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708721448;
-	bh=PweppluXkvW8Lq4TMFJBzXOsYg6FGYfRiMivvD/uW4c=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=Kn6Q8OKEAocDYsJkdulyJF53gQRvwhsW/5N4N8815Do4wwL1Nl7m/IZ0ar8j2yJbk
-	 hE2w4nnWnSOmy4WOMRYi40GmSDx+s2lP0wXbcWl1eF988JSgprEWMJ8gXcBmxmMwhy
-	 Wl/YLCyMDfIicd0AUmYEqdcd0oxwVgXJZ4vC+Kw3tZhxDJP+r5MBz/iuNx5NzvEc5F
-	 69YrTeSrLAr7Mnx0tuRdB96jhbsOjmwGdQrIHOcG0taOlkXWmHZ3PV0hplj/fcbta2
-	 LnuTn19vI9I+9zcZYf+RlhSrq/vhbkmzsOVQ8gpeYt6dMRb0FP72/MoZwcWZd9frT1
-	 v8W/yehX/mz/A==
+	s=arc-20240116; t=1708721542; c=relaxed/simple;
+	bh=X2Ai3VLTUPX8J6sGlUtCyH2/JCyRJ5egDX0GMxQeImg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=n5PXtQstjn1bhsn1rKCIARQbnkDqxVD0xHrCZlGLt3+E3435F1gLKrkU0UlhdoYQS6keqZKzBlV3y1ZW8p6iAJHMJ6NPtEySzlbPaKz34/3GEA+8Nt+cXHT5cWxwqBHiBiFdzBxXKmPLZ9JSddvmpTXBz/i5y9PjNjnmzpYjjp8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tum.de; spf=pass smtp.mailfrom=tum.de; dkim=pass (2048-bit key) header.d=tum.de header.i=@tum.de header.b=glkraDI2; arc=none smtp.client-ip=129.187.255.137
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tum.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tum.de
+Received: from lxmhs51.srv.lrz.de (localhost [127.0.0.1])
+	by postout1.mail.lrz.de (Postfix) with ESMTP id 4ThMdX2XzVzyd5;
+	Fri, 23 Feb 2024 21:52:16 +0100 (CET)
+Authentication-Results: postout.lrz.de (amavisd-new); dkim=pass (2048-bit key)
+	reason="pass (just generated, assumed good)" header.d=tum.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tum.de; h=
+	in-reply-to:content-transfer-encoding:content-disposition
+	:content-type:content-type:mime-version:references:message-id
+	:subject:subject:from:from:date:date:received:received; s=
+	tu-postout21; t=1708721535; bh=X2Ai3VLTUPX8J6sGlUtCyH2/JCyRJ5egD
+	X0GMxQeImg=; b=glkraDI20d/PkHdSOMkhZ1Cyo8fyNgApNhHI2dm47TQoQz/gk
+	Ks5P9govjSJ072vBXE7fKiieMHy/zZcm7Aa2w2Xh2hxCerB8DV5qisPanmUVwqWl
+	CVxpw1yujNrr5H+8H9by40mkIXUHE/UB2RtudZnwsAoqOfvXAqcyyboC0kJkYZfq
+	eVm1pzgMspeyK+OrVYIpmQl4eQQ55I/SFJF+Ug2ZUai9qTSpG8zuJjfJ08mmISEJ
+	zjUE1Gbz4wyBgMQZRWF1jS8/7reaw0leCW35OTYsuRdPne4NW+wKExp656QZihXL
+	UzEgvI0T/ksqhnihwa7Ozr1fZGjeRTJ4lJ55Q==
+X-Virus-Scanned: by amavisd-new at lrz.de in lxmhs51.srv.lrz.de
+X-Spam-Flag: NO
+X-Spam-Score: -2.881
+X-Spam-Level:
+Received: from postout1.mail.lrz.de ([127.0.0.1])
+	by lxmhs51.srv.lrz.de (lxmhs51.srv.lrz.de [127.0.0.1]) (amavisd-new, port 20024)
+	with LMTP id jD_XKX9Z62Rv; Fri, 23 Feb 2024 21:52:15 +0100 (CET)
+Received: from pine (unknown [IPv6:2001:a61:2510:5501:544b:4b32:4119:3827])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by postout1.mail.lrz.de (Postfix) with ESMTPSA id 4ThMdW0lTtzyd7;
+	Fri, 23 Feb 2024 21:52:15 +0100 (CET)
+Date: Fri, 23 Feb 2024 21:52:09 +0100
+From: Paul =?utf-8?Q?Heidekr=C3=BCger?= <paul.heidekrueger@tum.de>
+To: David Gow <davidgow@google.com>
+Cc: Brendan Higgins <brendan.higgins@linux.dev>, 
+	Mark Brown <broonie@kernel.org>, Shuah Khan <skhan@linuxfoundation.org>, 
+	"open list:KERNEL UNIT TESTING FRAMEWORK (KUnit)" <linux-kselftest@vger.kernel.org>, 
+	"open list:KERNEL UNIT TESTING FRAMEWORK (KUnit)" <kunit-dev@googlegroups.com>, open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC] kunit: tool: add 'mte=on' qemu arg on arm64
+Message-ID: <v4sojpea3scs4rnigix5gu5dh2xqbzoxk3nlh3yuvktv2xeql4@4cyrbuf4sopq>
+References: <20240214124131.990872-1-paul.heidekrueger@tum.de>
+ <CABVgOS=n0rCS6ecAAh7BKkZbQQJu7ZHNrMJhkFGDqDG_n-U9bQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 23 Feb 2024 22:50:43 +0200
-Message-Id: <CZCR76MKS60B.UHM5MC0SBOQY@suppilovahvero>
-Cc: "Ross Philipson" <ross.philipson@oracle.com>, "Kanth Ghatraju"
- <kanth.ghatraju@oracle.com>, "Peter Huewe" <peterhuewe@gmx.de>
-Subject: Re: [PATCH 1/3] tpm: protect against locality counter underflow
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Daniel P. Smith" <dpsmith@apertussolutions.com>, "Lino Sanfilippo"
- <l.sanfilippo@kunbus.com>, "Alexander Steffen"
- <Alexander.Steffen@infineon.com>, "Jason Gunthorpe" <jgg@ziepe.ca>, "Sasha
- Levin" <sashal@kernel.org>, <linux-integrity@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-X-Mailer: aerc 0.15.2
-References: <20240131170824.6183-1-dpsmith@apertussolutions.com>
- <20240131170824.6183-2-dpsmith@apertussolutions.com>
- <CYU3CFW08DAA.29DJY7SJYPJJZ@suppilovahvero>
- <2ba9a96e-f93b-48e2-9ca0-48318af7f9b1@kunbus.com>
- <ae3fecc4-7b76-4607-8749-045e17941923@infineon.com>
- <91f600ef-867b-4523-89be-1c0ba34f8a4c@kunbus.com>
- <CZA9CM3PDILC.82JMLUWMB6B7@seitikki> <CZA9GMC718HA.1JFHTTWV563IE@seitikki>
- <4bd31b91-1f6a-4081-9ad8-e5fae29d0dd7@apertussolutions.com>
-In-Reply-To: <4bd31b91-1f6a-4081-9ad8-e5fae29d0dd7@apertussolutions.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABVgOS=n0rCS6ecAAh7BKkZbQQJu7ZHNrMJhkFGDqDG_n-U9bQ@mail.gmail.com>
 
-On Fri Feb 23, 2024 at 3:57 AM EET, Daniel P. Smith wrote:
-> On 2/20/24 17:31, Jarkko Sakkinen wrote:
-> > On Tue Feb 20, 2024 at 10:26 PM UTC, Jarkko Sakkinen wrote:
-> >> On Tue Feb 20, 2024 at 8:54 PM UTC, Lino Sanfilippo wrote:
-> >>> for (i =3D 0; i <=3D MAX_LOCALITY; i++)
-> >>> 	__tpm_tis_relinquish_locality(priv, i);
-> >>
-> >> I'm pretty unfamiliar with Intel TXT so asking a dummy question:
-> >> if Intel TXT uses locality 2 I suppose we should not try to
-> >> relinquish it, or?
-> >>
-> >> AFAIK, we don't have a symbol called MAX_LOCALITY.
-> >=20
-> > OK it was called TPM_MAX_LOCALITY :-) I had the patch set applied
-> > in one branch but looked up with wrong symbol name.
-> >=20
-> > So I reformalize my question to two parts:
-> >=20
-> > 1. Why does TXT leave locality 2 open in the first place? I did
-> >     not see explanation. Isn't this a bug in TXT?
->
-> It does so because that is what the TCG D-RTM specification requires.=20
-> See Section 5.3.4.10 of the TCG D-RTM specification[1], the first=20
-> requirement is, "The DLME SHALL receive control with access to Locality 2=
-"
+On 20.02.2024 08:46, David Gow wrote:
+> On Wed, 14 Feb 2024 at 20:41, Paul Heidekrüger <paul.heidekrueger@tum.de> wrote:
+> >
+> > Hi!
+> >
+> > I was running some KASan tests with kunit.py recently and noticed that
+> > when KASan is run in hw tags mode, we manually have to add the required
+> > `mte=on` option to kunit_tool's qemu invocation, as the tests will
+> > otherwise crash.
+> >
+> > To make life easier, I was looking into ways for kunit.py to recognise
+> > when MTE support was required and set the option automatically.
+> >
+> > All solutions I could come up with for having kunit_tool conditionally
+> > pass `mte=on` to qemu, either entailed duplicate code or required
+> > parsing of kernel's config file again. I was working under the
+> > assumption that only after configuring the kernel we would know whether
+> > the 'mte=on' option was necessary, as CONFIG_ARM64_MTE is not visible
+> > before.
+> >
+> > Only afterwads did I realise that the qemu arm64 config that kunit_tool
+> > falls back on, uses the `virt` machine, which supports MTE in any case.
+> > So, could it be as easy as just adding the `mte=on` option to
+> > kunit_tool's arm64 config? Would this be a welcome addition?
+> >
+> > What do you think?
+> >
+> > Many thanks,
+> > Paul
+> >
+> > Signed-off-by: Paul Heidekrüger <paul.heidekrueger@tum.de>
+> > ---
+> 
+> I think this is fine. I'd be a little bit concerned if this were only
+> supported in newer qemu versions, but it seems to go back to 6.2, so
+> should be okay. I think it's better to just enable it unconditionally
+> by default rather than trying to parse the config.
+> 
+> The KASAN tests seemed to work fine with HW tags in my testing here. I
+> do wonder if there's a way to make the tests skip themselves if MTE
+> isn't available: is there a way of doing a runtime check for this?
 
-From below also the locality enumeration would be good to have
-documented (as a reminder).
+Huh, interesting. Even though "mte=on" isn't set on your side?
 
->
-> > 2. Because localities are not too useful these days given TPM2's
-> >     policy mechanism I cannot recall out of top of my head can
-> >     you have two localities open at same time. So what kind of
-> >     conflict happens when you try to open locality 0 and have
-> >     locality 2 open?
->
-> I would disagree and would call your attention to the TCG's=20
-> definition/motivation for localities, Section 3.2 of Client PTP=20
-> specification[2].
->
-> "=E2=80=9CLocality=E2=80=9D is an assertion to the TPM that a command=E2=
-=80=99s source is=20
-> associated with a particular component. Locality can be thought of as a=
-=20
-> hardware-based authorization. The TPM is not actually aware of the=20
-> nature of the relationship between the locality and the component. The=20
-> ability to reset and extend notwithstanding, it is important to note=20
-> that, from a PCR =E2=80=9Cusage=E2=80=9D perspective, there is no hierarc=
-hical=20
-> relationship between different localities. The TPM simply enforces=20
-> locality restrictions on TPM assets (such as PCR or SEALed blobs)."
->
-> As stated, from the TPM specification perspective, it is not aware of=20
-> this mapping to components and leaves it to the platform to enforce.
+I get the following output without the MTE patch.
 
-Yeah, TPM is a passive component, not active actor, in everything.
+	➜   ./tools/testing/kunit/kunit.py run --kunitconfig=mm/kasan/.kunitconfig --arch=arm64
+	[14:08:11] Configuring KUnit Kernel ...
+	[14:08:11] Building KUnit Kernel ...
+	Populating config with:
+	$ make ARCH=arm64 O=.kunit olddefconfig
+	Building with:
+	$ make ARCH=arm64 O=.kunit --jobs=8
+	[14:08:23] Starting KUnit Kernel (1/1)...
+	[14:08:23] ============================================================
+	Running tests with:
+	$ qemu-system-aarch64 -nodefaults -m 1024 -kernel .kunit/arch/arm64/boot/Image.gz -append 'kunit.enable=1 console=ttyAMA0 kunit_shutdown=reboot' -no-reboot -nographic -serial stdio -machine virt -cpu max,pauth-impdef=on
+	[14:08:23] kasan: test: Can't run KASAN tests with KASAN disabled
+	[14:08:23]     # kasan:     # failed to initialize (-1)
+	[14:08:23] [FAILED] kasan
+	[14:08:23] ============================================================
+	[14:08:23] Testing complete. Ran 1 tests: failed: 1
+	[14:08:24] Elapsed time: 12.374s total, 0.001s configuring, 11.937s building, 0.382s running
 
-The way I see locality as way to separate e.g. kernel and user space
-driver TPM transactions is pretty much like actor-dependent salt
-(e.g. if 0 was for user space and 1 was for kernel).
+Where the mentioned .kunitconfig has the following options set for KASan.
 
->
-> "The protection and separation of the localities (and therefore the=20
-> association with the associated components) is entirely the=20
-> responsibility of the platform components. Platform components,=20
-> including the OS, may provide the separation of localities using=20
-> protection mechanisms such as virtual memory or paging."
->
-> The x86 manufactures opted to adopt the D-RTM specification which=20
-> defines the components as follows:
->
-> Locality 4: Usually associated with the CPU executing microcode. This is=
-=20
-> used to establish the Dynamic RTM.
-> Locality 3: Auxiliary components. Use of this is optional and, if used,=
-=20
-> it is implementation dependent.
-> Locality 2: Dynamically Launched OS (Dynamic OS) =E2=80=9Cruntime=E2=80=
-=9D environment.
-> Locality 1: An environment for use by the Dynamic OS.
-> Locality 0: The Static RTM, its chain of trust and its environment.
->
-> And the means to protect and separate those localities are encoded in=20
-> the x86 chipset, i.e A D-RTM Event must be used to access any of the=20
-> D-RTM Localities (Locality1 - Locality4).
->
-> For Intel, Locality 4 can only be accessed when a dedicated signal=20
-> between the CPU and the chipset is raised, thus only allowing the CPU to=
-=20
-> utilize Locality 4. The CPU will then close Locality 4, authenticate and=
-=20
-> give control to the ACM with access to Locality 3. When the ACM is=20
-> complete, it will instruct the chipset to lock Locality 3 and give=20
-> control to the DLME (MLE in Intel parlance) with Locality 2 open. It is=
-=20
-> up to the DLME, the Linux kernel in this case, to decide how to assign=20
-> components to Locality 1 and 2.
->
-> As to proposals to utilize localities by the Linux kernel, the only one=
-=20
-> I was aware of was dropped because they couldn't open the higher localiti=
-es.
->
-> I would also highlight that the D-RTM implementation guide for Arm=20
-> allows for a hardware D-RTM event, which the vendor may choose to=20
-> implement a hardware/CPU enforced access to TPM localities. Thus, the=20
-> ability to support localities will also become a requirement for certain=
-=20
-> Arm CPUs.
->
-> [1]=20
-> https://trustedcomputinggroup.org/wp-content/uploads/TCG_D-RTM_Architectu=
-re_v1-0_Published_06172013.pdf
-> [2]=20
-> https://trustedcomputinggroup.org/wp-content/uploads/PC-Client-Specific-P=
-latform-TPM-Profile-for-TPM-2p0-v1p05p_r14_pub.pdf
+	CONFIG_KUNIT=y
+	CONFIG_KUNIT_ALL_TESTS=n
 
-BR, Jarkko
+	CONFIG_FTRACE=y
+	CONFIG_STACK_TRACER=y 
+
+	CONFIG_KASAN=y
+	CONFIG_KASAN_HW_TAGS=y
+	CONFIG_KASAN_KUNIT_TEST=y
+
+With the MTE patch from my previous email, everything works just fine.
+
+Based on that, do you have a guess why it's working for you and why it isn't for 
+me?
+
+> Regardless, this is:
+> Reviewed-by: David Gow <davidgow@google.com>
+
+Thanks! I'll be sending a non-RFC patch shortly.
+
+Many thanks,
+Paul
+
 
