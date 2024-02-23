@@ -1,166 +1,206 @@
-Return-Path: <linux-kernel+bounces-78227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92EA086107B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:35:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E72F861081
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:37:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84E1F1C21397
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:35:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1658E1F22C79
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:37:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CC5C6166C;
-	Fri, 23 Feb 2024 11:35:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB86A7B3DE;
+	Fri, 23 Feb 2024 11:36:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="JX3dDn02"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2062.outbound.protection.outlook.com [40.107.101.62])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="VURsqpMD"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBC1B76C83
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:35:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.62
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708688120; cv=fail; b=MQhmpWaQU61OmquT77o7uBYy4hXF2rmKm+GqAKRJD+HMpHMTIS7Zyo2od8HuID3T/usS+ApCzhEt9+UmB4E7YlJUktSJfpNGxigUrQkp2cXqLKgJDqJq3khScDX0FslHSH+zWQp8nGlZw3hJp+Khz6rMVHN8+jWWgct5iI2LNQc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708688120; c=relaxed/simple;
-	bh=Wafc+tcwdz5erezhF2gq5I+swaLhLWWEXxUHFMQwFv0=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sh6Odp811kEDNcUO3DlE3pAePkxbK8VMwwLjZy4cNj1jGHunuzOP6a2m3NUscJt/TxATDjHvz8hMY96S3yNj62PXs6MceXDlCOV9UmYPf+PM+t1SyUnXErHdgxpY9bzoOqhQS29AkGks6E3Tw0k48YOITpgqZmBx9+li6gvBxaw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=JX3dDn02; arc=fail smtp.client-ip=40.107.101.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OXiCCWLuU5yGTixRQyG5KUGRP4f69klbBIUcXwEonae8SSZNHbLagjwayngCkX5y7OIFPVwQDYCg/86YuDGGTvRdj8G9RvjMyWz40AhQryC4jN7zbXOhJalnIEExOt8pvDaSubAku1ZsHtmokE23R2TknAXuQ10HZK/BTLmP+w8G+hd0lW1+03Dm1cPmqcj18/rIxKK5XIDZTMCi3kZ6bds6k9htltF07guJQmsW3Fxi8P3vaNlPnxL6tGPSID243QTV9m/lJcVg/oxl0MY2n19L9875Nq5NKLEOrOHtOrT0p/ScdgVvkG7zO/skp5dPZKkRw+k/QfNzmUtRy8MLwQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gRmU7pD5AxbiVa47px6OHcPyL9go9Vf7q3vfSTdG7pU=;
- b=kFNnxqglCyfX42+dSaEnm7mfr5VE5SxNpU29sMQO2qJJUuay3mfyOKfYBkj/BXoEds0dEn6SObys6Y4TuAGeEDAk7hSF0NKDUlabPgZgQ/qAIify9lN+iEj4hnF4LBHrqDxGLbxCSOz8ZBKkDV9YVe5ltu+Ntrr9bejQL01RZazqO43Tf+of597Re3jx6lCiQHvzr4tAqcOslWXeZk61wa3iftCBviRWoSbOMsBr3U1l1ba1avmVEsBotRtStrtsbk5vCvTDy85mQgQx+YHiWaT0YuIGr94/vtWTxWdIT91SwhKV69lKkb2ADKCdaSpoqNzDUd3DQUHxys8ZGHb0Fg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gRmU7pD5AxbiVa47px6OHcPyL9go9Vf7q3vfSTdG7pU=;
- b=JX3dDn02HeB67dv9+75us7XYGBiwQz5puPCmzpQVm8T7wTv8yiXRSCfDRin3PdI4A0wPj0I6F0NrPeQ/GRBTd6//0lBTXW9FnDdifhgQdCnqy4a7wDJ+qV9B2/XMvPaAan8fEpAVWBPb0NmEIxNuRHgYosR74Vop3wnw+8v1myWv71NT0S3mW1exr1h16TPUaRTY3LjNd1zn63DsJ9RXRiI74LSY5INX9Lv49sVrLzctsOjci8AYJ+t04iIa+CdK5vbdi5ZgiSyRrEYKF7Hpbd2odXGfbuP1RnzITT6SgW6Pi/z3bwaVK8A/F95Tej2w1HAo3qmJU+SGuMO9JnCm8A==
-Received: from SN7PR04CA0071.namprd04.prod.outlook.com (2603:10b6:806:121::16)
- by SJ0PR12MB5634.namprd12.prod.outlook.com (2603:10b6:a03:429::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.22; Fri, 23 Feb
- 2024 11:35:16 +0000
-Received: from SN1PEPF0002636A.namprd02.prod.outlook.com
- (2603:10b6:806:121:cafe::71) by SN7PR04CA0071.outlook.office365.com
- (2603:10b6:806:121::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.43 via Frontend
- Transport; Fri, 23 Feb 2024 11:35:15 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SN1PEPF0002636A.mail.protection.outlook.com (10.167.241.135) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7292.25 via Frontend Transport; Fri, 23 Feb 2024 11:35:15 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 23 Feb
- 2024 03:34:58 -0800
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Fri, 23 Feb
- 2024 03:34:58 -0800
-Received: from Asurada-Nvidia (10.127.8.13) by mail.nvidia.com (10.129.68.6)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12 via Frontend
- Transport; Fri, 23 Feb 2024 03:34:57 -0800
-Date: Fri, 23 Feb 2024 03:34:56 -0800
-From: Nicolin Chen <nicolinc@nvidia.com>
-To: Will Deacon <will@kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <kernel-team@android.com>,
-	<iommu@lists.linux.dev>, Christoph Hellwig <hch@lst.de>, Marek Szyprowski
-	<m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, Petr Tesarik
-	<petr.tesarik1@huawei-partners.com>, Dexuan Cui <decui@microsoft.com>,
-	Michael Kelley <mhklinux@outlook.com>
-Subject: Re: [PATCH v4 0/5] Fix double allocation in swiotlb_alloc()
-Message-ID: <ZdiC4OpEMQHQjEtv@Asurada-Nvidia>
-References: <20240221113504.7161-1-will@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75AF67A725;
+	Fri, 23 Feb 2024 11:36:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708688200; cv=none; b=VAdAzv5NbQZpn8XNIuNmYjP1PC1r61rglnn8KqUnNOX6Z4qOChJ6SxSyBbAf8X53Xw2BwPb/xNtG0NCCIN120NGDQYCUdtdbYkgjkFphfFVKTpB44DFJhukx13YU/FrM3yXihT6qRuId4p/ODInU1LGcnVNIrNDGY3OO/cIxeSE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708688200; c=relaxed/simple;
+	bh=rD5j6z4UXyN4KDu0BktxVBBRuPzEK0pA5vDMoVfxJxE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=rL/Ub5DX/GpYP0MeyBkfHiC8ounYHrTmE4FlAnNq6b1FlcVhSzxjEmsnYqO+wlGKqDha9T8il99d+rBMMZoyHA2aAMoiS8bPZcryn05+S8KJqByof7m0vFb1Eo8OPHsWy7m0RMwgFbe+io1EcoCa0nn5Z2Zl5B5edFM8/u5J/XI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=VURsqpMD; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41NBFOfj031519;
+	Fri, 23 Feb 2024 11:36:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=5ir3WNsd+5toDv8bs5/TXD7VZCLRGGsdWGLbCSN2DQQ=; b=VU
+	RsqpMDg2z7IahFTQ3pAbMaie1xgwwrMJE11nSYunFEZpkCfiMjOB5DWVfdW/Ai3Q
+	wkHRKl1n9aRBTJ2als03nLsHR+pZfXPlILQFNf+nsSnR+d6Pw+SgKJVArJto2efJ
+	vy1dvd8CYR57bACkpxk37U3mn4FeXbpv2o8LS9wwpHsg4Nh08LLE6DfTqm+60zny
+	jJH+ndEFLua8ofEKyIw9jcIpo81cL+OeXI0z2lmCYArxYewMrWrfEtDXRy2OUJEE
+	mtfaZMkqdW1VWKNPMWMXPg//QjIcHJBjYDtL9HK87nwc4V/ho+GJNK5YknD6YitC
+	QlwigPvVYMBoH7xEcZcA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wekverxjj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 Feb 2024 11:36:16 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41NBaFkL023154
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 Feb 2024 11:36:15 GMT
+Received: from [10.217.218.85] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 23 Feb
+ 2024 03:36:10 -0800
+Message-ID: <d2f40e2d-cbbd-41f9-9aa6-41d0f251ffda@quicinc.com>
+Date: Fri, 23 Feb 2024 17:05:59 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240221113504.7161-1-will@kernel.org>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002636A:EE_|SJ0PR12MB5634:EE_
-X-MS-Office365-Filtering-Correlation-Id: be7135ec-a052-461e-6a72-08dc3463816a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	2zzWfX+MOi/uReqVFGvh8b0zeNpgbS6uq04YdEr52D8upxgfoVLk2xXNHCT5FEKHdt0FCTHgR9nzDzhkwjoLA0iHFSuVELebd745ahSOJBR2TA+PWuPU6BbDSQ0d+aBnm1NRx99lVacUuauunulhGRBrbOT7ilckD550htfIgOWwaIyUo9C4wn4CyeCtBNxXM2UE5BgUtCjFQBavTdr6yNAGFEH6/lzxgNyXkFEIqTt9CvDkeb0TIIqdj2XSVZjTx8zoVHfksMTwWzsgY6GjL2uQrM9BuDf68XWaougZW/y3/shlvOXjPnKTB0xsNpf7QOg/PvCBkR9LD2f3MK+fpCLHqX1b16OFSM99DcgxsUZIKp/BBjtwXrhPnNWvXur8DH4cLsmfXxGqQKXEh6X5T+Lo23jAHt7NLyEe5L/Q5qyMFAts+CyGNbwssGKxq7scpOr4gbX+t+td0iVx3KF8E15U7DKUsIWTVgiRj8UzbbiVk6wUfHa6wXddwoKLkz+OnzjMjmyKWI+0mtMMwwDAHFl8Y0yl/+owoP2w6Q0G/R+vbHStjudyEIPG4zdvkBkXLcFKedb18wp1insz6r6xcWllZ6zUdlDY/iB+vFvx9Xr2Jgr0bwEKAFrc/kuOhgutas5DJkUaLtIGpfXIS7jeGXfuP8APjZ3bgDqHR4bTjXpUGUWSZIED0owxDEJP8J9Cybl+1xVtq67wVKmayQu4nD5JePsNmZGzehugYeEqSbs=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(230273577357003)(32650700005)(36860700004)(40470700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2024 11:35:15.5065
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: be7135ec-a052-461e-6a72-08dc3463816a
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF0002636A.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5634
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] usb: gadget: f_fs: Fix NULL pointer dereference in
+ ffs_epfile_async_io_complete()
+To: Greg KH <gregkh@linuxfoundation.org>
+CC: <brauner@kernel.org>, <axboe@kernel.dk>, <jack@suse.cz>,
+        <jlayton@kernel.org>, <keescook@chromium.org>, <peter@korsgaard.com>,
+        <hayama@lineo.co.jp>, <dmantipov@yandex.ru>,
+        <quic_linyyuan@quicinc.com>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_ppratap@quicinc.com>,
+        <quic_wcheng@quicinc.com>, <quic_jackp@quicinc.com>
+References: <20240223054809.2379-1-quic_selvaras@quicinc.com>
+ <2024022302-routine-schematic-b4fd@gregkh>
+Content-Language: en-US
+From: Selvarasu Ganesan <quic_selvaras@quicinc.com>
+In-Reply-To: <2024022302-routine-schematic-b4fd@gregkh>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: vbfXIqZrfokxrUvaLB29KADRC0BcAcxR
+X-Proofpoint-ORIG-GUID: vbfXIqZrfokxrUvaLB29KADRC0BcAcxR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-22_15,2024-02-23_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 adultscore=0
+ impostorscore=0 clxscore=1015 spamscore=0 phishscore=0 mlxlogscore=999
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402230083
 
-On Wed, Feb 21, 2024 at 11:34:59AM +0000, Will Deacon wrote:
-> Hi again, folks,
-> 
-> This is version four of the patches which I previously posted at:
-> 
-> v1: https://lore.kernel.org/r/20240126151956.10014-1-will@kernel.org
-> v2: https://lore.kernel.org/r/20240131122543.14791-1-will@kernel.org
-> v3: https://lore.kernel.org/r/20240205190127.20685-1-will@kernel.org
-> 
-> Thanks to Petr for his Reviewed-by tag on the first three.
-> 
-> Changes since v3 include:
-> 
->   - Use umax() instead of max() to fix a build warning if the first
->     patch is applied to older kernels which warn on signedness
->     mismatches.
-> 
->   - Add two new patches to the end of the series to resolve some
->     additional issues with NVME and 64KiB pages, reported by Nicolin.
->     I've added them to this series, as the first three patches make it
->     easier to fix this problem in the SWIOTLB code.
-> 
->   - Add Reviewed-by tags from Petr
-> 
-> Cheers,
-> 
-> Will
-> 
-> Cc: iommu@lists.linux.dev
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-> Cc: Dexuan Cui <decui@microsoft.com>
-> Cc: Nicolin Chen <nicolinc@nvidia.com>
 
-This fixes the bug with NVME on arm64/SMMU when PAGE_SIZE=64KiB.
+On 2/23/2024 11:28 AM, Greg KH wrote:
+> On Thu, Feb 22, 2024 at 09:48:09PM -0800, Selvarasu Ganesan wrote:
+>> In scenarios of continuous and parallel usage of multiple FFS interfaces
+>> and concurrent adb operations (e.g., adb root, adb reboot), there's a
+>> chance that ffs_epfile_async_io_complete() might be processed after
+>> ffs_epfile_release(). This could lead to a NULL pointer dereference of
+>> ffs when accessing the ffs pointer in ffs_epfile_async_io_complete(), as
+>> ffs is freed as part of ffs_epfile_release(). This epfile release is
+>> part of file operation and is triggered when user space daemons restart
+>> themselves or a reboot is initiated.
+>>
+>> Fix this issue by adding a NULL pointer check for ffs in
+>> ffs_epfile_async_io_complete().
+>>
+>> [  9981.393115] Unable to handle kernel NULL pointer dereference at virtual address 00000000000001e0
+>> [  9981.402854] Mem abort info:
+>> ...
+>> [  9981.532540] Hardware name: Qualcomm Technologies,
+>> [  9981.540579] pstate: 204000c5 (nzCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+>> [  9981.548438] pc : ffs_epfile_async_io_complete+0x38/0x4c
+>> [  9981.554529] lr : usb_gadget_giveback_request+0x30/0xd0
+>> ...
+>> [  9981.645057] Call trace:
+>> [  9981.648282]  ffs_epfile_async_io_complete+0x38/0x4c
+>> [  9981.654004]  usb_gadget_giveback_request+0x30/0xd0
+>> [  9981.659637]  dwc3_gadget_endpoint_trbs_complete+0x1a8/0x48c
+>> [  9981.666074]  dwc3_process_event_entry+0x378/0x648
+>> [  9981.671622]  dwc3_process_event_buf+0x6c/0x288
+>> [  9981.676903]  dwc3_thread_interrupt+0x3c/0x68
+>> [  9981.682003]  irq_thread_fn+0x2c/0x8c
+>> [  9981.686388]  irq_thread+0x198/0x2ac
+>> [  9981.690685]  kthread+0x154/0x218
+>> [  9981.694717]  ret_from_fork+0x10/0x20
+>>
+>> Signed-off-by: Selvarasu Ganesan <quic_selvaras@quicinc.com>
+> 
+> What commit id does this fix?  Should it go to stable kernels?
 
-Tested-by: Nicolin Chen <nicolinc@nvidia.com>
+Fixes: 2e4c7553cd6f9 ("usb: gadget: f_fs: add aio support"). Yes it's
+required to propagate to stable kernel as well.
+> 
+>> ---
+>>   drivers/usb/gadget/function/f_fs.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/function/f_fs.c
+>> index be3851cffb73..d8c8e88628f9 100644
+>> --- a/drivers/usb/gadget/function/f_fs.c
+>> +++ b/drivers/usb/gadget/function/f_fs.c
+>> @@ -849,7 +849,9 @@ static void ffs_epfile_async_io_complete(struct usb_ep *_ep,
+>>   	usb_ep_free_request(_ep, req);
+>>   
+>>   	INIT_WORK(&io_data->work, ffs_user_copy_worker);
+>> -	queue_work(ffs->io_completion_wq, &io_data->work);
+>> +
+>> +	if (ffs && ffs->io_completion_wq)
+>> +		queue_work(ffs->io_completion_wq, &io_data->work);
+> 
+> What happens if ffs->io_compleation_wq goes away right after you test
+> it but before you call queue_work()?
+> 
+> Where is the locking here to prevent that?
+> 
+> thanks,
+> 
+> greg k-h
 
-Thanks!
+Hi Greg,
+
+Thank you for your feedback. I understand your concern about the
+potential race condition with ffs->io_completion_wq. I’m considering
+introducing a lock to protect this section of the code, but I wanted to
+get your opinion on this.
+In the f_fs.c driver, there are pre-existing locks. Would it be suitable 
+to utilize these locks, or do you suggest the creation of a new lock 
+specifically for ffs->io_completion_wq? We anticipate a performance 
+impact if we use the existing lock, as it might be held by different
+threads. What are your thoughts on this?"
+
+Here’s what the code might look like with a new lock:
+
+static void ffs_epfile_async_io_complete(struct usb_ep *_ep,
+                                          struct usb_request *req)
+{
+...
+spin_lock(&ffs->new_lock);
+if (ffs && ffs->io_completion_wq)
+     queue_work(ffs->io_completion_wq, &io_data->work);
+spin_unlock(&ffs->new_lock);
+...
+}
+
+
+
+static void ffs_data_put(struct ffs_data *ffs) {
+..
+destroy_workqueue(ffs->io_completion_wq);
+kfree(ffs->dev_name);
+spin_lock(&ffs->new_lock);
+kfree(ffs);
+spin_unlock(&ffs->new_lock);
+..
+}
+
+Thanks,
+Selva
+
 
