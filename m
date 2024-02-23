@@ -1,77 +1,92 @@
-Return-Path: <linux-kernel+bounces-78192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFFE3860FFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:01:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3301B861001
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:02:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F14CA1C2311E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:01:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AEA38281CE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:02:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 868A463110;
-	Fri, 23 Feb 2024 11:01:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34D1B6518F;
+	Fri, 23 Feb 2024 11:02:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XnOztFFx"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="RiI3s1RY"
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCBBF22067;
-	Fri, 23 Feb 2024 11:01:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 369F15C8FB
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:02:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708686111; cv=none; b=moXIUGEJwDVR8jEUd7W3q8P5x2RNaPCPcU2n4ZtjJ/KUP1rwJe5kYtYLapKXHBmm7i81f9D2XdCGDUErow/Sxz7apVzpgVYHLgAH+GQOX35mWs9Mx5pcSAgUCT1S4o11NebaHOP9dmIZ9umifhMDCGPzt1WQF9hT0MkHCAhCBwY=
+	t=1708686130; cv=none; b=ThEgJqDABCCxHKLtnBlp7p9H82c/E+SFHfgwEIrV8yv2SU77KET8VOKPkZO/D0hTnZi7vQfIFI76wlg7zeXABaqFr80FYRXyU22Bq5BvLdTZokrSv+fCK39/le3iefELuVpnWF6XuYbjb0uwcfLDc5c77KrRHUzipjOWveGDsD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708686111; c=relaxed/simple;
-	bh=2wPi7tVov++EwHSBSYcPIxajIvKxESE+Wf+/xZ0glfs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AxvozFiz4mur05mOMH/5KLYIGb/IQ8jcL0OJPxIEDVIKdj+5na/m0J7ZiZeBHhRRQGkLNv4fVZDVwFgVKCVuPlNHPcGTQKdvQlvxWdepeRzgLnIyqpwn/L2TrYPhYqdESBjl64DMDozeyEVJRIaxk16S5/38oZsoPYi6yHxKDxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XnOztFFx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A8D8C433F1;
-	Fri, 23 Feb 2024 11:01:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708686111;
-	bh=2wPi7tVov++EwHSBSYcPIxajIvKxESE+Wf+/xZ0glfs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XnOztFFxOk7u9hifZnMNcODFeK3RHDGByqdt3YctKPvlCQ2D4lQP/Ah9i8YzcpYsy
-	 uFgAdjYuiHpQtobYaI0ciFZR+y67RytWOCXtCUnMPtksDwnjgIju2RTT+c2Glvqyjh
-	 O4qVVchAxue8WUQuBixYfdocl80U32dQx1UWHEBRN6aDdTaAWEkgzoiNEuiYR7QGRc
-	 CMwYkpNGOAK/qZGD3BPbE3hugFaUyukJlrb4mWimtxSIaaCXi2gLtVM6Z/rWj4YC3U
-	 Vs+JkEdz7w6Fb1NnnFlB78GWuefrAZL8CeHHaRRqZ4Rd3XncvOxK+6arp/7z6zu8eW
-	 IqCRYyDCqwHzw==
-Date: Fri, 23 Feb 2024 11:01:47 +0000
-From: Lee Jones <lee@kernel.org>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org, Vadim Pasternak <vadimp@nvidia.com>,
-	Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org
-Subject: Re: [PATCH] leds: mlxreg: fix a kernel-doc warning
-Message-ID: <20240223110147.GV10170@google.com>
-References: <20240221060153.3924-1-rdunlap@infradead.org>
- <20240223110100.GU10170@google.com>
+	s=arc-20240116; t=1708686130; c=relaxed/simple;
+	bh=Hfxzy3m3rgoQVAi2T6JlKhsaZWQmRoflxQMoVxc8DW4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=e/QpIGG2d1ucm+tma2Sp9dAwNwqrFNaz/hct8jUdnVTNvJyD0mtXFug1S/BpTOsalufbU5rIzxrXuhHF6tIMKNRib12aw2yc8k/9E+Lp1c8+pfcciHGPFtejf9zVh/wTpkuXmM5AvW4cJIYZMVF5NNcGjQS0iPaeehN9Ncb091w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=RiI3s1RY; arc=none smtp.client-ip=115.124.30.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1708686120; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=Gl112MpuWzCihqKFsR6Lqg9e1BT7tdysa1K7nxLWwoU=;
+	b=RiI3s1RYtnt+gUyeF7j3H8qiLEiWVvIxstg4LK2QvioMWfjJ+7Yy06HhSipeGWc6Y8krtwFJn9vzYA+LIVTkSmaAzKgI39ZJOEk9+dy8CFOu+z1dd2FEv1hppC4Cq3R7TIDV26UO2nNcrxFpyJESU8j4h1xTLFswHDfZ9xr3EdU=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=liusong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0W148c6n_1708686118;
+Received: from 30.178.80.102(mailfrom:liusong@linux.alibaba.com fp:SMTPD_---0W148c6n_1708686118)
+          by smtp.aliyun-inc.com;
+          Fri, 23 Feb 2024 19:02:00 +0800
+Message-ID: <d9eb6672-788e-414d-8138-37a3038e3c47@linux.alibaba.com>
+Date: Fri, 23 Feb 2024 19:01:58 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm, thp: display [never] for defrag when THP is set to
+ never
+To: David Hildenbrand <david@redhat.com>,
+ Yuanhe Shu <xiangzao@linux.alibaba.com>, akpm@linux-foundation.org
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240222115323.4925-1-xiangzao@linux.alibaba.com>
+ <ec6f2c48-3010-4a02-8f42-fc6b912039cf@redhat.com>
+From: Liu Song <liusong@linux.alibaba.com>
+In-Reply-To: <ec6f2c48-3010-4a02-8f42-fc6b912039cf@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240223110100.GU10170@google.com>
 
-On Fri, 23 Feb 2024, Lee Jones wrote:
 
-> On Tue, 20 Feb 2024, Randy Dunlap wrote:
-> 
-> Would you mind being more descriptive in your subject lines please?
-> 
-> It's common for people (me included) to find subject lines a reliable
-> way to search through Git history and these types of descriptions are
-> likely to cause duplication.
+在 2024/2/22 20:14, David Hildenbrand 写道:
+> On 22.02.24 12:53, Yuanhe Shu wrote:
+>> When transparent_hugepage is set to never by cmdline or echo, defrag
+>> still show what it used to be and can be modified which makes user
+>> confusing whether defrag would take effect.
+>>
+>> Actually if transparent_hugepage is set to never, defrag will not take
+>> effect. Just Display never and remain unchangeable to for defrag when
+>> transparent_hugepage is set to never.
+>>
+>> Suggested-by: Liu Song <liusong@linux.alibaba.com>
+>> Signed-off-by: Yuanhe Shu <xiangzao@linux.alibaba.com>
+>> ---
+>
+> No, I don't think we want such a dependency between both options.
+>
+> You might just end up breaking existing scripts (enable defrag before 
+> enabling THP) for no good reason.
+>
+In certain situations where khugepaged_thread is NULL, it would be more
+reasonable for the value of
+/sys/kernel/mm/transparent_hugepage/khugepaged/defrag to be 0. The patch
+should include a fix for this case.
 
-Also if you push them in a set, they're easier to apply.
+Thanks
 
--- 
-Lee Jones [李琼斯]
+
+
 
