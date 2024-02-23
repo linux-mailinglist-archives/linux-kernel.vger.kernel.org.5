@@ -1,123 +1,165 @@
-Return-Path: <linux-kernel+bounces-78779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8E0D8618B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:03:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54F608618AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:02:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BA161F25D9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:03:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72C4D1C25730
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:02:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E261132483;
-	Fri, 23 Feb 2024 17:02:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 065BF12B15D;
+	Fri, 23 Feb 2024 17:02:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="bWlCKrvA"
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kE6gJjYI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A2D12FB23;
-	Fri, 23 Feb 2024 17:02:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22DFD1292C6;
+	Fri, 23 Feb 2024 17:02:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708707760; cv=none; b=Q1SWYrJQ6qjoD01gUxEwUs1ToAxOY2ipmZxZuY5KMxWhJeTUzq6OcbLdim72gJTY7z1e3D7UeZ4vgKq2+cv/m+YKOJDMj+PzeKfAMNO6mxKGcqYp0zUAzElZfyFvd7T+bIvIP8uPDKUWJKqkntkut9QDcEaGM2zW1y6CDKDo7/8=
+	t=1708707732; cv=none; b=hJ7Xwan9vi8gOtjExLPs19fxSqVRJP1qALjFlKb/y8zh5LYGvFJRABBDwcQuRD+obTarUyCdtuwcx5LFpWtK15O//ZehRvjzvZ+nZAeg50EbizIj9sULr6Rw2g90TvWDYrCp9nsFdfmtr8eXHBtQwwIcuv49EkkPx/VP1MkcZ2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708707760; c=relaxed/simple;
-	bh=MLId+vpL1GJSYnk9r4V10bG6KRC9aNji3+0kQGieFqg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=OmrHgiVFVdw7YInHRtDv6Pn9HWl3msVzWPp+yk65OiS2bKi/9oBsTA1Xg4PnZ20ZCt3Q5DVig9dQHfnm1zvpQ29wHL2uuRcoDIOe36xhiigMsycKE4PdzS4+PQ0M4yAxri6njCTRyLqPH5KDLBXpgT34mhU8ArH0EmS0GRyqga4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=bWlCKrvA; arc=none smtp.client-ip=67.231.149.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41N6HREp027836;
-	Fri, 23 Feb 2024 11:02:06 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	PODMain02222019; bh=x/AtCItlvRqeTztsKy5EsHh5og0itw6wNDcPMUzLjho=; b=
-	bWlCKrvAeBVO4Ssmi/QxqKGTXiqcqBTnYxBFp3Gb7KV51QPwLvmCu1Choq/DX837
-	1gsatA9mcK2riPDaBdjbNdNoJwv4tD7mTeQZh0FeZ3vhWZQDpCbi7ciylpaNW2Le
-	Tm0/hRthSKWXkTy//LaLAt6Qgpmb+FCNptV/+gFbwQELQXmviypneXUPWV5RW0DP
-	dASxgw5iFWmHA+6CBEBbb6ejlpC0gFW0NpFy0+woJCD/qmigeNd8sffXxbEa8HRq
-	AnboIH7irKiwAKU6aUPMlASwci6ttZ4TPG5J0W6ZOJ1gFFyC8OJC7xgAesjHyPar
-	F2DHavGgqai6nSHlrYomKA==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3wd207mbqm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 11:02:05 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 23 Feb
- 2024 17:02:03 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40 via Frontend Transport; Fri, 23 Feb 2024 17:02:03 +0000
-Received: from [198.90.208.18] (ediswws06.ad.cirrus.com [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 6F06F820243;
-	Fri, 23 Feb 2024 17:02:03 +0000 (UTC)
-Message-ID: <956f2b88-8b52-45b3-a27d-fa8e75a02642@opensource.cirrus.com>
-Date: Fri, 23 Feb 2024 17:02:03 +0000
+	s=arc-20240116; t=1708707732; c=relaxed/simple;
+	bh=bK6MUj0ihY6O0q0AWMV5Wk/jMqKJGmt8hsDBwlu4A6Y=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rXqje48o10psr6h76ylqXEcU41z4HZ1coIR31xo0l8SFH2jrNEwDOg6KDGJdky41V+xKSHCVbbFy9MyX/iEVa8vIIhmLRtfVCxV5k4vFlEfenkP8naPbXPg2Go/qokxgH+/n8jehLtYduCfa/+YXDDfbwfTTgjYa7XonTdMwHMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kE6gJjYI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACDAAC433C7;
+	Fri, 23 Feb 2024 17:02:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708707731;
+	bh=bK6MUj0ihY6O0q0AWMV5Wk/jMqKJGmt8hsDBwlu4A6Y=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=kE6gJjYIsGH8AsPpO83eJ+g/DPLuomiNo+JyVL51HgR+r0a2J8av5JA+Yg2fJkl8M
+	 QfVisl5FK+CadKD8UhtrEm/6qymZvkFLRE5zBr3RQ8BAVpeo7OJ+pkhIetLorVaorB
+	 VtV6WgIc+DVZd/Jv2jlUFRRyze2X+GMgeIVC4V0I91zcFHHWwVfXhnL+P1UgZqO6Zv
+	 4L192KNlIg0rc1cE9kxCkw1EG5RJupdIe98kG4YzOG/hQuz21XtAs0YVLKM2XdxIk2
+	 g+M0X15L6NZnVaRixdvEBj8GudTieYGEf46FdKdS1TD39uq/W36ZkWwir918d56WFo
+	 +E5swKTwgmj8g==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rdYw5-006A9I-0t;
+	Fri, 23 Feb 2024 17:02:09 +0000
+Date: Fri, 23 Feb 2024 17:02:08 +0000
+Message-ID: <86jzmv2jxr.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: <ankita@nvidia.com>
+Cc: <jgg@nvidia.com>,
+	<oliver.upton@linux.dev>,
+	<james.morse@arm.com>,
+	<suzuki.poulose@arm.com>,
+	<yuzenghui@huawei.com>,
+	<reinette.chatre@intel.com>,
+	<surenb@google.com>,
+	<stefanha@redhat.com>,
+	<brauner@kernel.org>,
+	<catalin.marinas@arm.com>,
+	<will@kernel.org>,
+	<mark.rutland@arm.com>,
+	<alex.williamson@redhat.com>,
+	<kevin.tian@intel.com>,
+	<yi.l.liu@intel.com>,
+	<ardb@kernel.org>,
+	<akpm@linux-foundation.org>,
+	<andreyknvl@gmail.com>,
+	<wangjinchao@xfusion.com>,
+	<gshan@redhat.com>,
+	<shahuang@redhat.com>,
+	<ricarkol@google.com>,
+	<linux-mm@kvack.org>,
+	<lpieralisi@kernel.org>,
+	<rananta@google.com>,
+	<ryan.roberts@arm.com>,
+	<david@redhat.com>,
+	<linus.walleij@linaro.org>,
+	<bhe@redhat.com>,
+	<aniketa@nvidia.com>,
+	<cjia@nvidia.com>,
+	<kwankhede@nvidia.com>,
+	<targupta@nvidia.com>,
+	<vsethi@nvidia.com>,
+	<acurrid@nvidia.com>,
+	<apopple@nvidia.com>,
+	<jhubbard@nvidia.com>,
+	<danw@nvidia.com>,
+	<kvmarm@lists.linux.dev>,
+	<mochs@nvidia.com>,
+	<zhiw@nvidia.com>,
+	<kvm@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v8 0/4] kvm: arm64: allow the VM to select DEVICE_* and NORMAL_NC for IO memory
+In-Reply-To: <20240220072926.6466-1-ankita@nvidia.com>
+References: <20240220072926.6466-1-ankita@nvidia.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/6] ASoC: cs-amp-lib: Add KUnit test for calibration
- helpers
-Content-Language: en-GB
-To: Mark Brown <broonie@kernel.org>
-CC: <tiwai@suse.com>, <linux-sound@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>
-References: <20240223153910.2063698-1-rf@opensource.cirrus.com>
- <20240223153910.2063698-7-rf@opensource.cirrus.com>
- <ZdjMIVYp7Qb/Tt9d@finisterre.sirena.org.uk>
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <ZdjMIVYp7Qb/Tt9d@finisterre.sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: CnArif1KVPkqp-jNYyI0ptCu1_Z1L7YN
-X-Proofpoint-ORIG-GUID: CnArif1KVPkqp-jNYyI0ptCu1_Z1L7YN
-X-Proofpoint-Spam-Reason: safe
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: ankita@nvidia.com, jgg@nvidia.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, reinette.chatre@intel.com, surenb@google.com, stefanha@redhat.com, brauner@kernel.org, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, alex.williamson@redhat.com, kevin.tian@intel.com, yi.l.liu@intel.com, ardb@kernel.org, akpm@linux-foundation.org, andreyknvl@gmail.com, wangjinchao@xfusion.com, gshan@redhat.com, shahuang@redhat.com, ricarkol@google.com, linux-mm@kvack.org, lpieralisi@kernel.org, rananta@google.com, ryan.roberts@arm.com, david@redhat.com, linus.walleij@linaro.org, bhe@redhat.com, aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com, targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com, apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com, kvmarm@lists.linux.dev, mochs@nvidia.com, zhiw@nvidia.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On 23/02/2024 16:47, Mark Brown wrote:
-> On Fri, Feb 23, 2024 at 03:39:10PM +0000, Richard Fitzgerald wrote:
+On Tue, 20 Feb 2024 07:29:22 +0000,
+<ankita@nvidia.com> wrote:
 > 
->> +config SND_SOC_CS_AMP_LIB_TEST
->> +	tristate "KUnit test for Cirrus Logic cs-amp-lib"
->> +	depends on ACPI || COMPILE_TEST || KUNIT
+> From: Ankit Agrawal <ankita@nvidia.com>
 > 
-> Should this not depend unconditionally on KUNIT rather than KUNIT or
-> some other stuff?  ie
+> Currently, KVM for ARM64 maps at stage 2 memory that is considered device
+> with DEVICE_nGnRE memory attributes; this setting overrides (per
+> ARM architecture [1]) any device MMIO mapping present at stage 1,
+> resulting in a set-up whereby a guest operating system cannot
+> determine device MMIO mapping memory attributes on its own but
+> it is always overridden by the KVM stage 2 default.
 > 
-> 	depends on ACPI || COMPILE_TEST
-> 	depends on KUNIT
+> This set-up does not allow guest operating systems to select device
+> memory attributes independently from KVM stage-2 mappings
+> (refer to [1], "Combining stage 1 and stage 2 memory type attributes"),
+> which turns out to be an issue in that guest operating systems
+> (e.g. Linux) may request to map devices MMIO regions with memory
+> attributes that guarantee better performance (e.g. gathering
+> attribute - that for some devices can generate larger PCIe memory
+> writes TLPs) and specific operations (e.g. unaligned transactions)
+> such as the NormalNC memory type.
 > 
-> or equivalent.
+> The default device stage 2 mapping was chosen in KVM for ARM64 since
+> it was considered safer (i.e. it would not allow guests to trigger
+> uncontained failures ultimately crashing the machine) but this
+> turned out to be asynchronous (SError) defeating the purpose.
 > 
+> For these reasons, relax the KVM stage 2 device memory attributes
+> from DEVICE_nGnRE to Normal-NC.
+> 
+> Generalizing to other devices may be problematic, however. E.g.
+> GICv2 VCPU interface, which is effectively a shared peripheral, can
+> allow a guest to affect another guest's interrupt distribution. Hence
+> limit the change to VFIO PCI as caution. This is achieved by
+> making the VFIO PCI core module set a flag that is tested by KVM
+> to activate the code. This could be extended to other devices in
+> the future once that is deemed safe.
+> 
+> [1] section D8.5 - DDI0487J_a_a-profile_architecture_reference_manual.pdf
+> 
+> Applied over v6.8-rc5.
 
-Now I look at it again, it's not correct. It's the ACPI || COMPILE_TEST
-that is bogus.
+For the series,
 
->> +#define TYPESAFE_ACTIVATE_STATIC_STUB_PTR(test, fn_ptr, replacement_fn)		\
->> +	do {									\
->> +		typecheck_fn(typeof(fn_ptr), replacement_fn);			\
->> +		__kunit_activate_static_stub(test, fn_ptr, replacement_fn);	\
->> +	} while (0)
-> 
-> Should this be somewhere more generic in the kunit headers?
+Reviewed-by: Marc Zyngier <maz@kernel.org>
 
-Damn, I meant to change this. I did a patch a while ago to fix
-kunit_activate_static_stub() so that it worked but it takes a really
-long time for kunit patches to end up in the mainline kernel. Hence this
-was a temporary workaround. I noticed my fix has gone in at last but I
-forgot to remove this workaround.
+	M.
 
-Can you skip this patch and take the others (assuming you are happy with
-them) and I'll fixup and resubmit this test later.
+-- 
+Without deviation from the norm, progress is not possible.
 
