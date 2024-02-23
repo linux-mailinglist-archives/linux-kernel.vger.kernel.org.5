@@ -1,98 +1,122 @@
-Return-Path: <linux-kernel+bounces-79103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79106-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EA5D861D98
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:27:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9AD3861D9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:30:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDF681F21ED7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:26:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04B501C22B95
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:30:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AA6B146E9F;
-	Fri, 23 Feb 2024 20:26:36 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E36C51482E7;
+	Fri, 23 Feb 2024 20:30:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nzSAA1Oo"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E5B146E96;
-	Fri, 23 Feb 2024 20:26:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F828146E96;
+	Fri, 23 Feb 2024 20:30:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708719995; cv=none; b=j0aX18qISt5sZdjy0G/QPxkmycampUByT3Rn81k807jAQYeVARywstS4aRpzKujX0Qr8D53j9EdVRtiUJ6jp03lGhl2Smrl3jGfRpgJdgFqjr65JxKPKbgYH0HH5kxUgrkpLjHS0lQvptlSMwoU2OWG2zM+0hVlVOM96TRBtU30=
+	t=1708720217; cv=none; b=b78Y50li7VgaxWmaAoMwddaRG8UgSzW4mMfc6Y0qdqbLJSAqxt8KT67C26CQ2Gy21b5RqaCoKOfrpNUq2z2PyKo5BgvQVpXEtcKKp+0biUT5Jjy/zlB+FxaNMCVG3qDoq1zxm/QHJ+VjV29dEnPzQQ7I8/S96HEjJfZIGohbrsE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708719995; c=relaxed/simple;
-	bh=BKjk2drUibhKGcus9h79n6m+U1rXszg3UpQTrvBjVCA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=J3bE/IUfKkFC9fyGzFlAYRFs3lE/0Z1LPdI35lhZMt558vRFqnnENp0rEOnFEqmiCICkQRMK9hF8H6BTJnDdygrSsRIyCeQzkPfOOKUSkko/BLDc38IxwnIeKw4pQP2+ThvtTgmhEc7p5iE2CtSIj43jN+tnDlSqbRlRhma6URw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADCBFC43399;
-	Fri, 23 Feb 2024 20:26:34 +0000 (UTC)
-Date: Fri, 23 Feb 2024 15:28:27 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>
-Subject: [PATCH] tracing: Add __string_len() example
-Message-ID: <20240223152827.5f9f78e2@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708720217; c=relaxed/simple;
+	bh=Ha3KeLTITa/qwislXa09L9QKN+hTvp4TmZbpeNy2fNU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hByUr/+jGQxtI+Q66oGPcPiAv7yrThOvxN+syDBtEzymnQvJ4cs9ypx9RVvXEXJMLPjt/xGXdViu6Ji7FopT7/bQyhb+amutrN81vz23Or06UBbH/xlByJfRnpqwFsKtA/cke8cKHxGnwYBvc8a56cWqTya4Qbt3mUVC1pPlY74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nzSAA1Oo; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708720215; x=1740256215;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Ha3KeLTITa/qwislXa09L9QKN+hTvp4TmZbpeNy2fNU=;
+  b=nzSAA1OoHcwdxwUo4BnepSrlE+Q+0VCjt/algpYHCXjQ98rEbgAaR9kM
+   lMM1VFOemAu9Nisa1QvmYhKftBHTbPlt3/pUzDBP8k8BhhIq6s4+GRbed
+   4MEowGd0c/7z/W9GatIi14PM7XMpXEfHoUeyhdpQ8zWFg+b+5bu4TO6IC
+   xR/RRYpN/UrDXFlfU9TKwK2vjbz/1wi0MuHi2PQpZvsZPjvI3qYB6Qfh+
+   tiwU7WptaqE+ONzYrfosrO8gBcRqO0TSNdisn7LUIyjGGE2BAnb2k91lh
+   HMB++MdmI+E/2ixfujdQnon+Ktkef+fBxeXi4PZ8tdSU7/qDl866TYBmy
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="13758102"
+X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
+   d="scan'208";a="13758102"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 12:30:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="937025702"
+X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
+   d="scan'208";a="937025702"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 23 Feb 2024 12:30:12 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 6B9F534C; Fri, 23 Feb 2024 22:30:11 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: =?UTF-8?q?Duje=20Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	linux-leds@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Pavel Machek <pavel@ucw.cz>,
+	Lee Jones <lee@kernel.org>
+Subject: [PATCH v2 1/1] leds: expresswire: Don't use "proxy" headers
+Date: Fri, 23 Feb 2024 22:30:00 +0200
+Message-ID: <20240223203010.881065-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Update header inclusions to follow IWYU (Include What You Use)
+principle.
 
-There's no example code that uses __string_len(), and since the sample
-code is used for testing the event logic, add a use case.
-
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- samples/trace_events/trace-events-sample.h | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+v2: added one more missing header
+ drivers/leds/leds-expresswire.c  | 4 ++++
+ include/linux/leds-expresswire.h | 4 +++-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/samples/trace_events/trace-events-sample.h b/samples/trace_events/trace-events-sample.h
-index f2d2d56ce8e2..2dfaf7fc7bfa 100644
---- a/samples/trace_events/trace-events-sample.h
-+++ b/samples/trace_events/trace-events-sample.h
-@@ -303,6 +303,7 @@ TRACE_EVENT(foo_bar,
- 		__bitmask(	cpus,	num_possible_cpus()	)
- 		__cpumask(	cpum				)
- 		__vstring(	vstr,	fmt,	va		)
-+		__string_len(	lstr,	foo,	bar / 2 < strlen(foo) ? bar / 2 : strlen(foo) )
- 	),
+diff --git a/drivers/leds/leds-expresswire.c b/drivers/leds/leds-expresswire.c
+index 89e147b0e019..e4937a8e0f44 100644
+--- a/drivers/leds/leds-expresswire.c
++++ b/drivers/leds/leds-expresswire.c
+@@ -5,8 +5,12 @@
+  * ktd2692 and ktd2801 are known to use this protocol.
+  */
  
- 	TP_fast_assign(
-@@ -311,12 +312,13 @@ TRACE_EVENT(foo_bar,
- 		memcpy(__get_dynamic_array(list), lst,
- 		       __length_of(lst) * sizeof(int));
- 		__assign_str(str, string);
-+		__assign_str(lstr, foo);
- 		__assign_vstr(vstr, fmt, va);
- 		__assign_bitmask(cpus, cpumask_bits(mask), num_possible_cpus());
- 		__assign_cpumask(cpum, cpumask_bits(mask));
- 	),
++#include <linux/bits.h>
+ #include <linux/delay.h>
++#include <linux/export.h>
+ #include <linux/gpio/consumer.h>
++#include <linux/types.h>
++
+ #include <linux/leds-expresswire.h>
  
--	TP_printk("foo %s %d %s %s %s %s (%s) (%s) %s", __entry->foo, __entry->bar,
-+	TP_printk("foo %s %d %s %s %s %s %s (%s) (%s) %s", __entry->foo, __entry->bar,
+ void expresswire_power_off(struct expresswire_common_props *props)
+diff --git a/include/linux/leds-expresswire.h b/include/linux/leds-expresswire.h
+index 3c61902ccac8..a422921f4159 100644
+--- a/include/linux/leds-expresswire.h
++++ b/include/linux/leds-expresswire.h
+@@ -8,7 +8,9 @@
+ #ifndef _LEDS_EXPRESSWIRE_H
+ #define _LEDS_EXPRESSWIRE_H
  
- /*
-  * Notice here the use of some helper functions. This includes:
-@@ -360,7 +362,8 @@ TRACE_EVENT(foo_bar,
- 		  __print_array(__get_dynamic_array(list),
- 				__get_dynamic_array_len(list) / sizeof(int),
- 				sizeof(int)),
--		  __get_str(str), __get_bitmask(cpus), __get_cpumask(cpum),
-+		  __get_str(str), __get_str(lstr),
-+		  __get_bitmask(cpus), __get_cpumask(cpum),
- 		  __get_str(vstr))
- );
+-#include <linux/gpio/consumer.h>
++#include <linux/types.h>
++
++struct gpio_desc;
  
+ struct expresswire_timing {
+ 	unsigned long poweroff_us;
 -- 
-2.43.0
+2.43.0.rc1.1.gbec44491f096
 
 
