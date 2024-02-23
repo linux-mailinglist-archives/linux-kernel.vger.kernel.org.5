@@ -1,163 +1,138 @@
-Return-Path: <linux-kernel+bounces-78044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55AB5860E58
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:42:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 670AA860E55
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:42:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04040286C03
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:42:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 992D61C2135B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:42:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B38C5CDD2;
-	Fri, 23 Feb 2024 09:41:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 877145CDF5;
+	Fri, 23 Feb 2024 09:40:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="jOl95ikZ"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vVazC6xJ"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B86F22EF5;
-	Fri, 23 Feb 2024 09:41:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A2235C91E
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 09:40:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708681269; cv=none; b=sZxLp6HhH2HhIyoaVzLGe3rDQ7xbif1jLjoz+WorNuV7BeAU00Vx3/CEWKxL94vAZWFNv8/t65BfjXj+OhSyHOkxoQ5t9NxegZ/5G/ZNRmh5YMswFs8Puwee538b3T9JgpwBwew4dOghTz8LpJl/7OLWbsMU30OMRoz90YEt+t4=
+	t=1708681249; cv=none; b=QtGRLp01p9BJsBL9b22Qxu4T0QlKv9GQ0OTFxdDolOPG2XW65Jm9jzD5RALnUzgWXm3I7FnJNXojyBBLGuqHc2UTWCOiNF5qkBlaLz6u5zhVDMbIeqv7rW2UM+njKQyImrpIfvtYYR7ceoW7JWUwoXYjuwO65fxtVE0rLQ+LGkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708681269; c=relaxed/simple;
-	bh=Y43HSQ9Wo88uXt3uxGimbfx8JjZTF/WiQipb+UBy0eo=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NXYlCiA1e6Y1Z+WRPbF6isNOuXkfnpU2QCe+7DwBr0kvjSycoMYO4iZ5g1yoDZDlRPiJziMPrYssio20A3t6Nd+x5Du2ElpQgdfXVPxHPUyoUHnH72hf+RQ+zkurhveX9IBZ6wNWI8Y2vG5qqT1+cMERhTyTtlH3uJZn7DEF6f8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=jOl95ikZ; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41N8t1bH006239;
-	Fri, 23 Feb 2024 09:40:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	qcppdkim1; bh=ZEiMePE578rbncSKCGn9/0AKvjfDfwffZayqVnGyV9o=; b=jO
-	l95ikZv5aPMV/HZtNStm2SHFR28H+EFQu++eS0GcUsKVYtuXlKXb3iaGEVb9222i
-	IzYM+HYuNH/YdjKhNaeSNWMM5J4nfdXguHecR4Tk+JAsZySE6SiOwgWiDbpuW1i+
-	LoR2AtV0LRw9esmW/aNyczFbW78g0Fss3PbytziRkKNzK0g8Gfy8W5HBlN4yj1qq
-	tafPqFu2bMVRSd5d6jr0RomEbjvBK6UHcZjUgbdWaNyQIMjK4gRlLbg3LCtJ53+Y
-	8o4WKsOxF3m59Jt4RWPIamKNAQ7qhh1tdmTGHxIs9zdddwVXB+o+s8aB5h8J+xRi
-	PcO+ACQqq79T/oiXFmBA==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wer8mr2t0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 09:40:56 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41N9etiG022307
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 09:40:55 GMT
-Received: from hu-nprakash-blr.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 23 Feb 2024 01:40:52 -0800
-From: Nikhil V <quic_nprakash@quicinc.com>
-To: <stable@vger.kernel.org>
-CC: Charan Teja Kalla <quic_charante@quicinc.com>,
-        Joerg Roedel
-	<joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy
-	<robin.murphy@arm.com>, <linux-kernel@vger.kernel.org>,
-        <iommu@lists.linux.dev>, Nikhil V <quic_nprakash@quicinc.com>
-Subject: [PATCH] iommu: Avoid races around default domain allocations
-Date: Fri, 23 Feb 2024 15:10:23 +0530
-Message-ID: <cbf1295589bd90083ad6f75a7fbced01f327c047.1708680521.git.quic_nprakash@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1708681249; c=relaxed/simple;
+	bh=rAZRRa29e7xVYk8Hc95CB+iUlw9D84lT7pBp2nK1EwU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=sZe1dMAafu1O1+n7OS+n5qsKQMPmFhr00H2rDQWuapcMIQCCZN7yA7hBdkUdLV21zzrvKkeHCU2DRstl4325uYogjnZP1TwyYKHM0JEMHXMTWsKYFutygy3MOQbyuurs8CpJDiBB8wIfRY7rDM83kTRelcL9EReWJGF6HfIJ76s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vVazC6xJ; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41294021cd8so918085e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 01:40:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708681246; x=1709286046; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sClHUEJjf2CmNxz7CFNtdXtyCHWqVxiZ5wHj9LbF+v0=;
+        b=vVazC6xJNXY34o/6DEjjJLQ4bGnRcVls8AwL3GGHuTsPtQMfHCLZO70YmeWCBj+JQT
+         lLR9M0WNI0CkXxu6T+jFQS1EERdesAjFDHy/oR7JkakiZeUP3/TaLwzz0NYPSlqNaJeQ
+         UdhEmQgmEqiuis1dLJAhMTX/U1LaNV1CBclJeHrSVTQmDkTV6wQj4TIs6d4YNFLhZCpM
+         q2cUac4oBwnqLDdNe9sdQP54ChZvWRY6igr6lOww3Qsgdec9HbMtDG6ZFpTQR80qj0HT
+         5Oq0h3T/6JCK7XPa5JkWUH8xxhBiWkMb1ydX6HRfDOVaQT6Ub4iv6pJQsWvYt/uM6zkb
+         TImw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708681246; x=1709286046;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sClHUEJjf2CmNxz7CFNtdXtyCHWqVxiZ5wHj9LbF+v0=;
+        b=IrL6/xwR2XTIdlGmdJhzvwtHVc5E3zd3W21SQs5WK8zZABvdMiMM1s2Ru/pRrTTzQV
+         bsqdQ/kOwRdJVnWvBvPVbEyiIBP90geT+C+S+GMUk8gJWoSLRQ2lxv9EyoohyM/FsQma
+         o0PvC50ncj+wUifAEjEqpoY55Qbd6BklhYcGzDxH+OggiQyPNNDKmAE6FqTq33BS8UBt
+         Xb4SwGCUuIacixIQAWbaS2S/YjYvnHnYok4akQHeX7llMlTBVN/xmGQJZs8M9NNrvXQv
+         Z2rm7VFAvQnMoVvec4mPTKKosRGlscGzjp9WY2U9VbjUoPc1l7R+3ZJHyq8W7904JSgu
+         As/A==
+X-Forwarded-Encrypted: i=1; AJvYcCVAaQpyw+fOq3wKLGS3cCWx1Bk0OxCJJTxQbRo1agqkEXYxjJ3F0eO3g+kVDH+AONnHPwX9c8EPGvnDCDIuDIHuOXMe6bLqFvgzuCfs
+X-Gm-Message-State: AOJu0YyDi6ihMZsDnPm2axldfZaXNECDw/wzCT4ZeY8ekmYUWgpmeiag
+	1oOZ+qMxoant1sqt35OY5uzFPRfJMBx8ipLyI58ZE6Ob1uHBVjOSI454Yj2CUkQ=
+X-Google-Smtp-Source: AGHT+IEjHAxBxVh5OtjxN2vdFCneVCDEeOmLFcQppDjrnwdgtaLb9VFSu0mgNJ/TFI9Q41H4TYKdiA==
+X-Received: by 2002:a05:600c:5117:b0:412:96e2:96aa with SMTP id o23-20020a05600c511700b0041296e296aamr194323wms.28.1708681246371;
+        Fri, 23 Feb 2024 01:40:46 -0800 (PST)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id t6-20020a05600c198600b004129228da2dsm1676084wmq.31.2024.02.23.01.40.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 01:40:45 -0800 (PST)
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Date: Fri, 23 Feb 2024 10:40:40 +0100
+Subject: [PATCH] usb: typec: ucsi: fix UCSI on SM8550 & SM8650 Qualcomm
+ devices
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: juVgrq4OEirmf8B-ClsuUbDISik7YfOq
-X-Proofpoint-ORIG-GUID: juVgrq4OEirmf8B-ClsuUbDISik7YfOq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-22_15,2024-02-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
- adultscore=0 malwarescore=0 bulkscore=0 clxscore=1011 mlxscore=0
- impostorscore=0 mlxlogscore=996 suspectscore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402230067
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240223-topic-sm8550-upstream-ucsi-no-pdos-v1-1-8900ad510944@linaro.org>
+X-B4-Tracking: v=1; b=H4sIABdo2GUC/x3NQQqDMBBA0avIrB1IpzVoryJdhGRSZ2ESMloK4
+ t0NLt/m/wOUq7DCuzug8k9Ucmp49B34xaUvo4RmIEMvQ/TELRfxqOs4DAb3oltlt+LuVTBlLCE
+ rWorBBWunOBlooVI5yv+ezJ/zvABx+dvKdAAAAA==
+To: Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1260;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=rAZRRa29e7xVYk8Hc95CB+iUlw9D84lT7pBp2nK1EwU=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBl2GgdjlLJk4bh0zWaDYCcISwdOQmXeslMUStbkNsY
+ ndCVxl6JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZdhoHQAKCRB33NvayMhJ0SVsEA
+ DDl13NERujQDeoEBdaWpzFTUuOBR6UZhyBlRfdJ6lGVF7r0EUs0b5/KjVyShkVAVcA4liqGODKA+kU
+ Kd/6VAUN+nZKU8mqBuwdBqUSrQmmYJR8VVRYG7rtjjjh6/c9XcU2C+2Kd4a2lLnhW0wvkv2dsz39Xp
+ YbOJ53ky+sZwGk92lFkDBAIiSx1GJ/IwIZ6myDkBa5pzB8huVte71/4SEJTVUzuZ939eH4v9yHY0XU
+ g74E4GMTQiR16vZgZbMgVfG/hM3pi4J7FA86F2UaGofoIRe/FasEhdMdijxAP3uwHqLOf3Rem209E8
+ +lwM/HzDmYXb2VOW3NPPnzieEkTOiIYXxquZ1nrY5sKLylqaPWbTapz8wLB/q2CKZ2r3GKlldtTHjo
+ pt65I9G1+0eNWNJuloRhGfe5QavHa9yZZI3O9eTmSaMYeBmyrrm+aIsf3YlAYOjKDulr9QgDqil1FN
+ pEGeslk+P+uLBy3jjlSw6mKQ7k0epUCXxwK/MX8VbAJ77EUjmMNJCqQcMswyETNOAtqBG5w+OdYpYz
+ uOK94ueF4Ro+2Kvb7DYw0yrzbf+UPi3Rx9GzN+nT0BimpL9iToRz8Q/APPlT4Oc2bHgN51q8dr7R1o
+ iuunGkz8tVTQy2JRRXyjwd5BV50Gb24zsUxQY6w6SZgM0HSi7TIYimPeQ0MA==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 
-From: Charan Teja Kalla <quic_charante@quicinc.com>
+On SM8550 and SM8650 Qualcomm platforms a call to UCSI_GET_PDOS for
+non-PD partners will cause a firmware crash with no
+easy way to recover from it.
 
-This fix is applicable for LTS kernel, 6.1.y. In latest kernels, this race
-issue is fixed by the patch series [1] and [2]. The right thing to do here
-would have been propagating these changes from latest kernel to the stable
-branch, 6.1.y. However, these changes seems too intrusive to be picked for
-stable branches. Hence, the fix proposed can be taken as an alternative
-instead of backporting the patch series.
-[1] https://lore.kernel.org/all/0-v8-81230027b2fa+9d-iommu_all_defdom_jgg@nvidia.com/
-[2] https://lore.kernel.org/all/0-v5-1b99ae392328+44574-iommu_err_unwind_jgg@nvidia.com/
+Add UCSI_NO_PARTNER_PDOS quirk for those platform until we find
+a way to properly handle the crash.
 
-Issue:
-A race condition is observed when arm_smmu_device_probe and
-modprobe of client devices happens in parallel. This results
-in the allocation of a new default domain for the iommu group
-even though it was previously allocated and the respective iova
-domain(iovad) was initialized. However, for this newly allocated
-default domain, iovad will not be initialized. As a result, for
-devices requesting dma allocations, this uninitialized iovad will
-be used, thereby causing NULL pointer dereference issue.
-
-Flow:
-- During arm_smmu_device_probe, bus_iommu_probe() will be called
-as part of iommu_device_register(). This results in the device probe,
-__iommu_probe_device().
-
-- When the modprobe of the client device happens in parallel, it
-sets up the DMA configuration for the device using of_dma_configure_id(),
-which inturn calls iommu_probe_device(). Later, default domain is
-allocated and attached using iommu_alloc_default_domain() and
-__iommu_attach_device() respectively. It then ends up initializing a
-mapping domain(IOVA domain) and rcaches for the device via
-arch_setup_dma_ops()->iommu_setup_dma_ops().
-
-- Now, in the bus_iommu_probe() path, it again tries to allocate
-a default domain via probe_alloc_default_domain(). This results in
-allocating a new default domain(along with IOVA domain) via
-__iommu_domain_alloc(). However, this newly allocated IOVA domain
-will not be initialized.
-
-- Now, when the same client device tries dma allocations via
-iommu_dma_alloc(), it ends up accessing the rcaches of the newly
-allocated IOVA domain, which is not initialized. This results
-into NULL pointer dereferencing.
-
-Fix this issue by adding a check in probe_alloc_default_domain()
-to see if the iommu_group already has a default domain allocated
-and initialized.
-
-Signed-off-by: Charan Teja Kalla <quic_charante@quicinc.com>
-Co-developed-by: Nikhil V <quic_nprakash@quicinc.com>
-Signed-off-by: Nikhil V <quic_nprakash@quicinc.com>
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- drivers/iommu/iommu.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/usb/typec/ucsi/ucsi_glink.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 8b3897239477..83736824f17d 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -1741,6 +1741,9 @@ static void probe_alloc_default_domain(struct bus_type *bus,
- {
- 	struct __group_domain_type gtype;
+diff --git a/drivers/usb/typec/ucsi/ucsi_glink.c b/drivers/usb/typec/ucsi/ucsi_glink.c
+index 0bd3f6dee678..932e7bf69447 100644
+--- a/drivers/usb/typec/ucsi/ucsi_glink.c
++++ b/drivers/usb/typec/ucsi/ucsi_glink.c
+@@ -302,6 +302,7 @@ static const struct of_device_id pmic_glink_ucsi_of_quirks[] = {
+ 	{ .compatible = "qcom,sc8180x-pmic-glink", .data = (void *)UCSI_NO_PARTNER_PDOS, },
+ 	{ .compatible = "qcom,sc8280xp-pmic-glink", .data = (void *)UCSI_NO_PARTNER_PDOS, },
+ 	{ .compatible = "qcom,sm8350-pmic-glink", .data = (void *)UCSI_NO_PARTNER_PDOS, },
++	{ .compatible = "qcom,sm8550-pmic-glink", .data = (void *)UCSI_NO_PARTNER_PDOS, },
+ 	{}
+ };
  
-+	if (group->default_domain)
-+		return;
-+
- 	memset(&gtype, 0, sizeof(gtype));
- 
- 	/* Ask for default domain requirements of all devices in the group */
+
+---
+base-commit: 33e1d31873f87d119e5120b88cd350efa68ef276
+change-id: 20240223-topic-sm8550-upstream-ucsi-no-pdos-62fdad669f90
+
+Best regards,
 -- 
-2.17.1
+Neil Armstrong <neil.armstrong@linaro.org>
 
 
