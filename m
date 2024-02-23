@@ -1,107 +1,200 @@
-Return-Path: <linux-kernel+bounces-77630-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77645-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7F08860848
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:35:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D93F86086C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:42:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A8F61F23D87
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:35:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2716B285DA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:42:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68BD2BE6F;
-	Fri, 23 Feb 2024 01:35:03 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70F60BA2B;
+	Fri, 23 Feb 2024 01:42:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Y8IDWUgX"
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 826B5AD4B;
-	Fri, 23 Feb 2024 01:35:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 879DFAD32;
+	Fri, 23 Feb 2024 01:42:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708652102; cv=none; b=Re1/hvpzleCG46wCuJB0ZyvpqSFXZ9BCD1KTjNYR9BZVRMndt0eIKbzMWei+ESsuHKLvwilIg0KfRYqzSxH7z4WKiJLQDYdi1FB+naMz1pTNZY+wVI69+2s7UxIeSA+ypYO/t6cIVsMk3YKEl+c+8mTk1iaMA4D+nyaJIhJ3QLY=
+	t=1708652551; cv=none; b=loKccIXNhrmr+KO9UQD3KkJIAsoipveS+7O39QRK5z/7asGVLs+z6CTivyI6CGMQR2kkzLbYfu6EhsGVL4pv1f1o00a0oN3WbdZaAg+ZZs6h65g+afxAInlHxTo93F1ClgeRbXjji4ojYde74U04WwrHl8/KLydlgnExh4JKS8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708652102; c=relaxed/simple;
-	bh=bXEPELQj6UXcQp3AHH0JKTqXxOHMifJG9qOPbv1zezc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QPH3cVwLZ/QGOzYB70rF4wK5d3LfNPEmSXi9+ky2gu0Tctd9tSqJ5EDGIrcK0KvQWjFnc1GDOuzdl8qXc3dGbVpn7WH0FW36aOUfLEjQnntrmmTTSS494VM3LurJlGlw2umQrx4YPofjkfRfmJr7YaeutK+4Lir+gf6Fr9k5V/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C66D2C43390;
-	Fri, 23 Feb 2024 01:35:00 +0000 (UTC)
-Date: Thu, 22 Feb 2024 20:36:51 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
- Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner
- <tglx@linutronix.de>, Heiko Carstens <hca@linux.ibm.com>, Arnd Bergmann
- <arnd@arndb.de>, Douglas Anderson <dianders@chromium.org>, Ankur Arora
- <ankur.a.arora@oracle.com>, Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH rcu 3/4] arch: Select new NEED_TASKS_RCU Kconfig option
-Message-ID: <20240222203651.410151c9@gandalf.local.home>
-In-Reply-To: <20240223002627.1987886-3-paulmck@kernel.org>
-References: <8c938bd5-6d62-4eff-9289-13b0d7ae8e17@paulmck-laptop>
-	<20240223002627.1987886-3-paulmck@kernel.org>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708652551; c=relaxed/simple;
+	bh=52BQWIKSM9dbXtbk3tbReFoFAD0K+aTh0S2ao1RVbnw=;
+	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To:
+	 Content-Type; b=A/FcuTa8WMFc3Uy1VLj534j5Inl5kZkuEwluNXfSfGDMzr7msqvQu3GTal3Hfov/3N0kE5QRu9Cq2jm4BGTKaVJBHT1dTWvCBs9xZw697ZKhWwGLLy4IiyKCalLfTBlZHrU9k4NOdWGI+PogMxyPtazbl1m5matCcSG34lOZ8qk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Y8IDWUgX; arc=none smtp.client-ip=115.124.30.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1708652546; h=Message-ID:Subject:Date:From:To:Content-Type;
+	bh=hYJihYxVn8B/CLtvoS+mVwMQczZee/YJZgmgC0BQBjw=;
+	b=Y8IDWUgXh+EAJrOCvIckzeh2a46kLplwEDARjuubCFaAXMPMQ16/HbD5bXCQfNi+YdIz/A5TXptAQ/Axz5AbNLWYsyF7dMyOoACoOvyswBQA8HTOLbXXHP2xPUVQbD+H91xGC47CDuRn9Zld6Ab6t/5mL+apKQ9C8PThlWcpTak=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0W12LtQi_1708652544;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W12LtQi_1708652544)
+          by smtp.aliyun-inc.com;
+          Fri, 23 Feb 2024 09:42:25 +0800
+Message-ID: <1708652254.1517398-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net-next v5] virtio_net: Support RX hash XDP hint
+Date: Fri, 23 Feb 2024 09:37:34 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>,
+ mst@redhat.com,
+ jasowang@redhat.com,
+ hengqi@linux.alibaba.com,
+ davem@davemloft.net,
+ edumazet@google.com,
+ kuba@kernel.org,
+ netdev@vger.kernel.org,
+ virtualization@lists.linux.dev,
+ linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org,
+ john.fastabend@gmail.com,
+ daniel@iogearbox.net,
+ ast@kernel.org,
+ Liang Chen <liangchen.linux@gmail.com>
+References: <20240202121151.65710-1-liangchen.linux@gmail.com>
+ <c8d59e75-d0bb-4a03-9ef4-d6de65fa9356@kernel.org>
+ <CAKhg4tJFpG5nUNdeEbXFLonKkFUP0QCh8A9CpwU5OvtnBuz4Sw@mail.gmail.com>
+ <5297dad6499f6d00f7229e8cf2c08e0eacb67e0c.camel@redhat.com>
+ <CAKhg4tLbF8SfYD4dU9U9Nhii4FY2dftjPKYz-Emrn-CRwo10mg@mail.gmail.com>
+ <73c242b43513bde04eebb4eb581deb189443c26b.camel@redhat.com>
+ <CAKhg4tJPjcShkw4-FHFkKOcgzHK27A5pMu9FP7OWj4qJUX1ApA@mail.gmail.com>
+ <1b2d471a5d06ecadcb75e3d9155b6d566afb2767.camel@redhat.com>
+In-Reply-To: <1b2d471a5d06ecadcb75e3d9155b6d566afb2767.camel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 
-On Thu, 22 Feb 2024 16:26:26 -0800
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
+On Fri, 09 Feb 2024 13:57:25 +0100, Paolo Abeni <pabeni@redhat.com> wrote:
+> On Fri, 2024-02-09 at 18:39 +0800, Liang Chen wrote:
+> > On Wed, Feb 7, 2024 at 10:27=E2=80=AFPM Paolo Abeni <pabeni@redhat.com>=
+ wrote:
+> > >
+> > > On Wed, 2024-02-07 at 10:54 +0800, Liang Chen wrote:
+> > > > On Tue, Feb 6, 2024 at 6:44=E2=80=AFPM Paolo Abeni <pabeni@redhat.c=
+om> wrote:
+> > > > >
+> > > > > On Sat, 2024-02-03 at 10:56 +0800, Liang Chen wrote:
+> > > > > > On Sat, Feb 3, 2024 at 12:20=E2=80=AFAM Jesper Dangaard Brouer =
+<hawk@kernel.org> wrote:
+> > > > > > > On 02/02/2024 13.11, Liang Chen wrote:
+> > > > > [...]
+> > > > > > > > @@ -1033,6 +1039,16 @@ static void put_xdp_frags(struct xdp=
+_buff *xdp)
+> > > > > > > >       }
+> > > > > > > >   }
+> > > > > > > >
+> > > > > > > > +static void virtnet_xdp_save_rx_hash(struct virtnet_xdp_bu=
+ff *virtnet_xdp,
+> > > > > > > > +                                  struct net_device *dev,
+> > > > > > > > +                                  struct virtio_net_hdr_v1=
+_hash *hdr_hash)
+> > > > > > > > +{
+> > > > > > > > +     if (dev->features & NETIF_F_RXHASH) {
+> > > > > > > > +             virtnet_xdp->hash_value =3D hdr_hash->hash_va=
+lue;
+> > > > > > > > +             virtnet_xdp->hash_report =3D hdr_hash->hash_r=
+eport;
+> > > > > > > > +     }
+> > > > > > > > +}
+> > > > > > > > +
+> > > > > > >
+> > > > > > > Would it be possible to store a pointer to hdr_hash in virtne=
+t_xdp_buff,
+> > > > > > > with the purpose of delaying extracting this, until and only =
+if XDP
+> > > > > > > bpf_prog calls the kfunc?
+> > > > > > >
+> > > > > >
+> > > > > > That seems to be the way v1 works,
+> > > > > > https://lore.kernel.org/all/20240122102256.261374-1-liangchen.l=
+inux@gmail.com/
+> > > > > > . But it was pointed out that the inline header may be overwrit=
+ten by
+> > > > > > the xdp prog, so the hash is copied out to maintain its integri=
+ty.
+> > > > >
+> > > > > Why? isn't XDP supposed to get write access only to the pkt
+> > > > > contents/buffer?
+> > > > >
+> > > >
+> > > > Normally, an XDP program accesses only the packet data. However,
+> > > > there's also an XDP RX Metadata area, referenced by the data_meta
+> > > > pointer. This pointer can be adjusted with bpf_xdp_adjust_meta to
+> > > > point somewhere ahead of the data buffer, thereby granting the XDP
+> > > > program access to the virtio header located immediately before the
+> > >
+> > > AFAICS bpf_xdp_adjust_meta() does not allow moving the meta_data befo=
+re
+> > > xdp->data_hard_start:
+> > >
+> > > https://elixir.bootlin.com/linux/latest/source/net/core/filter.c#L4210
+> > >
+> > > and virtio net set such field after the virtio_net_hdr:
+> > >
+> > > https://elixir.bootlin.com/linux/latest/source/drivers/net/virtio_net=
+c#L1218
+> > > https://elixir.bootlin.com/linux/latest/source/drivers/net/virtio_net=
+c#L1420
+> > >
+> > > I don't see how the virtio hdr could be touched? Possibly even more
+> > > important: if such thing is possible, I think is should be somewhat
+> > > denied (for the same reason an H/W nic should prevent XDP from
+> > > modifying its own buffer descriptor).
+> >
+> > Thank you for highlighting this concern. The header layout differs
+> > slightly between small and mergeable mode. Taking 'mergeable mode' as
+> > an example, after calling xdp_prepare_buff the layout of xdp_buff
+> > would be as depicted in the diagram below,
+> >
+> >                       buf
+> >                        |
+> >                        v
+> >         +--------------+--------------+-------------+
+> >         | xdp headroom | virtio header| packet      |
+> >         | (256 bytes)  | (20 bytes)   | content     |
+> >         +--------------+--------------+-------------+
+> >         ^                             ^
+> >         |                             |
+> >  data_hard_start                    data
+> >                                   data_meta
+> >
+> > If 'bpf_xdp_adjust_meta' repositions the 'data_meta' pointer a little
+> > towards 'data_hard_start', it would point to the inline header, thus
+> > potentially allowing the XDP program to access the inline header.
+>
+> I see. That layout was completely unexpected to me.
+>
+> AFAICS the virtio_net driver tries to avoid accessing/using the
+> virtio_net_hdr after the XDP program execution, so nothing tragic
+> should happen.
+>
+> @Michael, @Jason, I guess the above is like that by design? Isn't it a
+> bit fragile?
 
-> Currently, if a Kconfig option depends on TASKS_RCU, it conditionally does
-> "select TASKS_RCU if PREEMPTION".  This works, but requires any change in
-> this enablement logic to be replicated across all such "select" clauses.
-> A new NEED_TASKS_RCU Kconfig option has been created to allow this
-> enablement logic to be in one place in kernel/rcu/Kconfig.
-> 
-> Therefore, select the new NEED_TASKS_RCU Kconfig option instead of the
-> old TASKS_RCU option.
-> 
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Cc: Ankur Arora <ankur.a.arora@oracle.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
+YES. We process it carefully. That brings some troubles, we hope to put the
+virtio-net header to the vring desc like other NICs. But that is a big proj=
+ect.
 
-Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+I think this patch is ok, this can be merged to net-next firstly.
 
--- Steve
+Thanks.
 
-> ---
->  arch/Kconfig | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index c91917b508736..154f994547632 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -55,7 +55,7 @@ config KPROBES
->  	depends on MODULES
->  	depends on HAVE_KPROBES
->  	select KALLSYMS
-> -	select TASKS_RCU if PREEMPTION
-> +	select NEED_TASKS_RCU
->  	help
->  	  Kprobes allows you to trap at almost any kernel address and
->  	  execute a callback function.  register_kprobe() establishes
-> @@ -104,7 +104,7 @@ config STATIC_CALL_SELFTEST
->  config OPTPROBES
->  	def_bool y
->  	depends on KPROBES && HAVE_OPTPROBES
-> -	select TASKS_RCU if PREEMPTION
-> +	select NEED_TASKS_RCU
->  
->  config KPROBES_ON_FTRACE
->  	def_bool y
 
+>
+> Thanks!
+>
+> Paolo
+>
 
