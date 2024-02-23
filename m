@@ -1,98 +1,146 @@
-Return-Path: <linux-kernel+bounces-77802-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77803-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DA9C860A66
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 06:48:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBD2F860A67
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 06:48:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F55C286CF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 05:47:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF0BA1C22717
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 05:48:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40CFE125AD;
-	Fri, 23 Feb 2024 05:47:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="VgwsAoo3"
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0404F12B7B;
+	Fri, 23 Feb 2024 05:48:05 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28C3A125A1
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 05:47:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B9C212B6B
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 05:48:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708667274; cv=none; b=ZbamnBbMUO47yQYfG6BNPF6LAMjszNiSF5QyVvJe7orycTqf60y/eGmEnUi6BIABiGys5WxmYMyJafBWw/s2+oeuYE2yhwh5JeyBmbvaVB0nK3knqLy8CoBJerZ/BczAx8podpZIo5aytdvVHXrE+jDRBVz2MKOyfh8YzP/NWvg=
+	t=1708667284; cv=none; b=WUOcJ9gVEDZpmS5K1Rn93stXlP1aJWfTmpn0In8+rapN8L07zkdVnh/kN5v5AxDv8Am/jnt6+UFiRN7h/ap3rw2MxBbNWmPjQV01jDU66rDBXV4U2dE+giuL8zXQfK3xRMkh2ccwTAA/Qef0H6AjbkBoHS7OCje1vvgGT89p+TE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708667274; c=relaxed/simple;
-	bh=7iHj8FnF8qOYSqO3SQ/uX8AyqMoQwBVtuKeJJZPr+XQ=;
+	s=arc-20240116; t=1708667284; c=relaxed/simple;
+	bh=3lgspPdovin39r1dgbggC/l2D36BlmeTw4hkWatherg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pAE7s3WxlNrfzaoDBCKEUdL+sY5ldvUfFoH9j1ymFKV41LS/HgqciM+D4xZi0gXsMbcF4lCKeen8c97AXV2Mv1gPcF7JqorA2AEbSRDgQolSD6Sfu9et/4htH2No5wWrUe58KpTS8Y+6W18I3ywMAwr1NnIQIId5yqh+dJIMO2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=VgwsAoo3; arc=none smtp.client-ip=209.85.210.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e47db45ae5so2306a34.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 21:47:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708667272; x=1709272072; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FLgAnoMtXtOoP/MT58Z1R1M569JvS4pDWEpHe4CcF8k=;
-        b=VgwsAoo3TbcUNr//x4Pu9f5GOT2JFGENJDr0M+2pYOEF+J+iwmjvbX/xJNp7h7nIlK
-         UWcZUpRL0MNxHzi/+2OCGI4OIeSloWxvV3pDjpcfO48IsQhhCwRq2YT2uLLloRTZhHs7
-         qGC5BElFXty1KcXXW2i4xr+WfCpxpYtcWcum0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708667272; x=1709272072;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FLgAnoMtXtOoP/MT58Z1R1M569JvS4pDWEpHe4CcF8k=;
-        b=vhArMhnu7GzpCeWzSnCeufxkhVdoaRfeJ74l/Sck3ZcvygLzuAzSIvzhG9GC5TMt5c
-         s/k5308TDga74jiCccqDO0JCuuj5v9dZAENOiGouNxAK3MG1kceHl/ZsVGsC8dXV520A
-         jUK6Qr3htQAEN/KlI+DWrJerkTfYZ+qtIxvo0WgfMedq1lw3kFj9OQ4h1xqcswr456G6
-         dflBtXpqX2y/VfD4iR5QvJ1fr7X6wbUeMbImHjA63SMOmOYXQrLoj3q18WWTV182mjjd
-         rrT9upnU5kvDruh1QqgPHYEBAbI5NBQix6YPtzdPcsmGYtu0s9ztK0im8yJ7hCocmnQh
-         0FRw==
-X-Forwarded-Encrypted: i=1; AJvYcCXETFT7kZ/aXNlMRInJbsp2gEUK//vNEot8CIF7M7wkisZCl18Q8iIiJB3ywwJ116hWaH6bZGzTmL6/MCrz/Wi3H7B1JA8Jro0DROkI
-X-Gm-Message-State: AOJu0YyFPW5Ky5jG4OyJbSkj13i+KfnvqhBRDZvVgdytUqOTBaSqgvYu
-	TBj3DrIFe557oI1DmDGIRVeXlMq58HJ2d9bycJGfNkYzSu1B1VHxh3gliJbJDQ==
-X-Google-Smtp-Source: AGHT+IHydtXEXOJOkOEsS/0xDSNfyZrAJ52K/3jKLIdNjUlnKorgV/cu1obnaaqYb2QdX7dGJ84kIQ==
-X-Received: by 2002:a05:6830:1e2d:b0:6e4:3e64:b0b with SMTP id t13-20020a0568301e2d00b006e43e640b0bmr1203384otr.12.1708667272328;
-        Thu, 22 Feb 2024 21:47:52 -0800 (PST)
-Received: from google.com ([2401:fa00:8f:203:b194:4f71:568a:eeb0])
-        by smtp.gmail.com with ESMTPSA id s2-20020a632c02000000b005dc98d9114bsm11471557pgs.43.2024.02.22.21.47.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 21:47:52 -0800 (PST)
-Date: Fri, 23 Feb 2024 14:47:48 +0900
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
-To: Chengming Zhou <chengming.zhou@linux.dev>
-Cc: hannes@cmpxchg.org, Andrew Morton <akpm@linux-foundation.org>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>, nphamcs@gmail.com,
-	yosryahmed@google.com, Minchan Kim <minchan@kernel.org>,
-	linux-mm@kvack.org, Chengming Zhou <zhouchengming@bytedance.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND 2/3] mm/zsmalloc: remove_zspage() don't need
- fullness parameter
-Message-ID: <20240223054748.GR11472@google.com>
-References: <20240220-b4-zsmalloc-cleanup-v1-0-b7e9cbab9541@linux.dev>
- <20240220-b4-zsmalloc-cleanup-v1-2-b7e9cbab9541@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WFP+074VBQCWwTBM1GUXI8nYQymdlQXo7ofp44463OqOCV3lPD0cHjCG3ausyEmjzjgvlwOmi4h5dnulMZQSyZlaIwg2Wjc5VGFuLd7Jn1Zrx2U6htpZD39yBsVrBMC+qK45gcOhL20Nz90GoLggvcVFZazELqMBHF1zmNl0BFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rdOPX-0001VK-U7; Fri, 23 Feb 2024 06:47:51 +0100
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rdOPV-002Mi2-CC; Fri, 23 Feb 2024 06:47:49 +0100
+Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rdOPV-004Aqu-0s;
+	Fri, 23 Feb 2024 06:47:49 +0100
+Date: Fri, 23 Feb 2024 06:47:49 +0100
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Wei Fang <wei.fang@nxp.com>, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>, kernel@pengutronix.de,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	Shenwei Wang <shenwei.wang@nxp.com>,
+	Clark Wang <xiaoning.wang@nxp.com>,
+	NXP Linux Team <linux-imx@nxp.com>
+Subject: Re: [PATCH net-next v5 6/8] net: phy: Add phy_support_eee()
+ indicating MAC support EEE
+Message-ID: <ZdgxhVuT6d-N0M5T@pengutronix.de>
+References: <20240221062107.778661-1-o.rempel@pengutronix.de>
+ <20240221062107.778661-7-o.rempel@pengutronix.de>
+ <9e37a9e9-7722-407c-a2a5-b8c04b68f594@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240220-b4-zsmalloc-cleanup-v1-2-b7e9cbab9541@linux.dev>
+In-Reply-To: <9e37a9e9-7722-407c-a2a5-b8c04b68f594@gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On (24/02/20 11:44), Chengming Zhou wrote:
-> From: Chengming Zhou <zhouchengming@bytedance.com>
+On Thu, Feb 22, 2024 at 08:52:25PM -0800, Florian Fainelli wrote:
 > 
-> We must remove_zspage() from its current fullness list, then use
-> insert_zspage() to update its fullness and insert to new fullness list.
-> Obviously, remove_zspage() doesn't need the fullness parameter.
 > 
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> On 2/20/2024 10:21 PM, Oleksij Rempel wrote:
+> > From: Andrew Lunn <andrew@lunn.ch>
+> > 
+> > In order for EEE to operate, both the MAC and the PHY need to support
+> > it, similar to how pause works.
+> 
+> Kinda, a number of PHYs have added support for SmartEEE or AutoGrEEEn in
+> order to provide some EEE-like power savings with non-EEE capable MACs.
 
-Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Will reword it.
+
+> Oleksij  did not you have a patch series at some point that introduced a
+> smarteee field in the phy_device structure to reflect that? I thought that
+> had been accepted, but maybe not.
+
+Ack. They are pending at the end of EEE refactoring queue :)
+
+> > Copy the pause concept and add the
+> > call phy_support_eee() which the MAC makes after connecting the PHY to
+> > indicate it supports EEE. phylib will then advertise EEE when auto-neg
+> > is performed.
+> > 
+> > Signed-off-by: Andrew Lunn <andrew@lunn.ch>
+> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> > ---
+> >   drivers/net/phy/phy_device.c | 18 ++++++++++++++++++
+> >   include/linux/phy.h          |  3 ++-
+> >   2 files changed, 20 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+> > index 2eefee970851..269d3c7f0849 100644
+> > --- a/drivers/net/phy/phy_device.c
+> > +++ b/drivers/net/phy/phy_device.c
+> > @@ -2910,6 +2910,24 @@ void phy_advertise_eee_all(struct phy_device *phydev)
+> >   }
+> >   EXPORT_SYMBOL_GPL(phy_advertise_eee_all);
+> > +/**
+> > + * phy_support_eee - Enable support of EEE
+> > + * @phydev: target phy_device struct
+> > + *
+> > + * Description: Called by the MAC to indicate is supports Energy
+> > + * Efficient Ethernet. This should be called before phy_start() in
+> > + * order that EEE is negotiated when the link comes up as part of
+> > + * phy_start(). EEE is enabled by default when the hardware supports
+> > + * it.
+> 
+> That comment is a bit confusing without mentioning how the hardware default
+> state wrt. EEE is being factored in, can we have some details here?
+
+If I see it correctly, this function set initial EEE policy for the PHY.
+It should be called only once at PHY registration by the MAC and/or by
+the PHY in case of SmartEEE or AutoGrEEEn PHY.
+
+The advertisement configuration will be based on already filtered set of
+supported modes.
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
