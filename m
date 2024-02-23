@@ -1,152 +1,152 @@
-Return-Path: <linux-kernel+bounces-77624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC857860830
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:25:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F678860839
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:27:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C303B220AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:25:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CCF82857DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:27:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3806D26D;
-	Fri, 23 Feb 2024 01:25:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63F07847E;
+	Fri, 23 Feb 2024 01:27:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Whrn/l45"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LpdCZBp9"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F20FEAD5A
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 01:25:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FEF979E1;
+	Fri, 23 Feb 2024 01:27:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708651518; cv=none; b=tdk582XG1UarpnsGQJxqSN4ohciFgbC+Uv653HvX+Or4d/0o+1iuouJPR2iGVRQal03nV3fsz+l/hYWRs3V/147aqbyZsXJwyliR7IjO4NEpaTZgpXLM4qmLrNdwTDiIwxw1WYNxJspNNH0Z4XeDU2mdoJClTgLYwiAIAZY2eG4=
+	t=1708651640; cv=none; b=Mae98+TuRCFSAVnVZQMayJ97e692BcoqtxAUDtgo3alq3GkzX40uEKI9l4eRDXJSWW6C+ki45r0iMU5y+VIhHiLYNjUSnQwgBC5fUdcB63NiBgyoc3s4kQDat0qU6aOPHT8b8n5x20zLbVcRZtnbPJLW7y0eGtgm1ROhbuO+pkk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708651518; c=relaxed/simple;
-	bh=4yhgOSinsbrvgntH/U3//JXULSUOb04/dyXOuirlizs=;
+	s=arc-20240116; t=1708651640; c=relaxed/simple;
+	bh=VJfzL6GLEaZMoUqazrxisfj34PLQuSNA02WLHhDPT4k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bF7HQZmAxzxXEuuhunhylZKZXB7ElXwMPTjGEwR/eAlw7ZiKDPpi8KE+CagPopEx8YRAMmNFNsQb0O2kJUTCB7G7WxDp9gq+XK5ZMwv7faLpM2nScVECv0P8Gxlq4Df/1Npehm27p+FoUt9R00+5zlnkw+72+lOauCA0C79qKBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Whrn/l45; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dbe7e51f91so37145ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 17:25:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708651500; x=1709256300; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aUsdA2noT/bEezNn+59gniW1e5bKV1Gueis9UiAo1yU=;
-        b=Whrn/l45f12MXsv6LQwrFcgERIt1VRV4Tbko/QaGHK19gtcanhWKXltzyh4ijkWo3Y
-         7hkZCfNBnxTnFUCCxpRRMgqpuk2fYNQmlT7xAYvEr++jDVI0W48KlCvJSGpZSzvWUYOE
-         VDFc4gH55jff0l3Q4fwX3xvkfZZg9b8AWqZuyFLxt43/93CQtc7v4sB0r6rw0p7e46pT
-         qPj5IRB24Iqg+Z+wRl2RPDZWaF3bHhvx91gMQ+zpLKZbKuRN8DMco/38Gm/Kslz7mPZe
-         sbCTPJJ7iPb/GZwTh0V+2EJUjjMpPDIo8SGQAxs/HZLbcDiMHcgz+h6ybbwLcr3dPatG
-         UJag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708651500; x=1709256300;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aUsdA2noT/bEezNn+59gniW1e5bKV1Gueis9UiAo1yU=;
-        b=Cez9vCyd1f2z2fVBsqFX/LBIy9qshts9gespl2rsU5XH6oSCFQMCsV+Dn+jvttANfg
-         m5hFswuyPDKqfc86rq55FRoZqKzgJe7nXxY/zC/GkiDVCZrKdnDM0PAI0P6rd/S4DM3H
-         pMJnDL+s6hY8gLzVrEDgN+7vPBDpee9vgDZe1VzNMu4pr7616mHb4xsx8a0psSp/GOdK
-         lPAPL/x4HI64lswTgYwLLpLmopr1TOgltT0htOJD80OhtpqgFJuwNiGqslpcqZxDv7sW
-         TFCFm8HfF6O74jpZ64XzJ7PvoE94ZbswnxsBOfgpWPyfgCD9HTjsvGFm0c/YmBkVTpit
-         hUGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWtPVVR+eIwoumGA81tKorrUqVu4KO+7Lucfkijpw2vIzJYpTMeSenHWXqZbqmMcPfvlGRz0vmZJUdmc0QZEOnQ3gj3qB864EN9IkYJ
-X-Gm-Message-State: AOJu0YxHUdgxHH1IPlb3vZxmsItpxh2WujBdIeUMUd8pePCimac7c5Ky
-	sbJ8BmJOE3bMxw8tsz6PuWLnThZYo+tBPxOXvAq5JdRRS/pzXuchVc7g5NakCQ==
-X-Google-Smtp-Source: AGHT+IErLKhHt20j6gRG6R/hxqmlzfrOnKmMJfRaFJw0ERiTSZiTw32RyVE2P23UMVodrdRgrlU0dA==
-X-Received: by 2002:a17:902:6b01:b0:1db:9e59:cd7 with SMTP id o1-20020a1709026b0100b001db9e590cd7mr627695plk.29.1708651499599;
-        Thu, 22 Feb 2024 17:24:59 -0800 (PST)
-Received: from google.com (30.176.125.34.bc.googleusercontent.com. [34.125.176.30])
-        by smtp.gmail.com with ESMTPSA id p21-20020aa78615000000b006e0949b2548sm10918025pfn.209.2024.02.22.17.24.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 17:24:58 -0800 (PST)
-Date: Fri, 23 Feb 2024 01:24:54 +0000
-From: Benson Leung <bleung@google.com>
-To: Jameson Thies <jthies@google.com>
-Cc: heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org,
-	pmalani@chromium.org, abhishekpandit@chromium.org,
-	andersson@kernel.org, dmitry.baryshkov@linaro.org,
-	fabrice.gasnier@foss.st.com, gregkh@linuxfoundation.org,
-	hdegoede@redhat.com, neil.armstrong@linaro.org,
-	rajaram.regupathy@intel.com, saranya.gopal@intel.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] usb: typec: ucsi: Clean up UCSI_CABLE_PROP macros
-Message-ID: <Zdfz5oWqSB2vtUGZ@google.com>
-References: <20240223010328.2826774-1-jthies@google.com>
- <20240223010328.2826774-2-jthies@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=a8ETOUUteJk46Cx6DI6O8scVD/qI874fqH3Rt5rDk6qyTLdJQRjUj5237VMIilZRRRym635B+1M6d7ifQz0nCJNdG3u81a/po1KiVqucQj9Ml3OlpclyG27/mauYkm1rl6zTQmR5lKYPlaXIS/UR3KI3tYRihFq4lTqb0woUU/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LpdCZBp9; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708651638; x=1740187638;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=VJfzL6GLEaZMoUqazrxisfj34PLQuSNA02WLHhDPT4k=;
+  b=LpdCZBp9dhFIIgtBdS4jFXFuqQKkaB2vJ/hsogVcQYEdTIm2tKSaQ3wS
+   8G5JCIyHVhU213hGOCea465UhwZgyodbLd4M/iDu1BGwQW45RAHNxLtu6
+   XesxHPmEeXlKuLwkNgMkfcrhlo0DinziUKifjYi9w+1u/b3wgmuw0S8MD
+   QIez8EIi682kcMnGnTjFUIyBbPqgcxnS1nYy5mNobPyZIQrEZDdLBvD4G
+   MT8ZOHJp5GzvK+3mXAjUU6mP7umP1knqUmICgxfc1wGDLEBo5KcXltXMa
+   jaZWpp67OG6EqS3IgostuJF2qH8x4Shbnpg6W6k6mxoW4UjS+9DMk+DQd
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="14072581"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="14072581"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 17:27:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="6192032"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by orviesa008.jf.intel.com with ESMTP; 22 Feb 2024 17:27:11 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rdKL6-0006vK-2c;
+	Fri, 23 Feb 2024 01:27:02 +0000
+Date: Fri, 23 Feb 2024 09:26:10 +0800
+From: kernel test robot <lkp@intel.com>
+To: Thomas Zimmermann <tzimmermann@suse.de>, arnd@arndb.de,
+	javierm@redhat.com, deller@gmx.de, suijingfeng@loongson.cn
+Cc: oe-kbuild-all@lists.linux.dev, linux-arch@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-sh@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	loongarch@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH 2/3] arch: Remove struct fb_info from video helpers
+Message-ID: <202402230941.JZdvHHEX-lkp@intel.com>
+References: <20240221161431.8245-3-tzimmermann@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="PZNWU6f2lFkWH7xm"
-Content-Disposition: inline
-In-Reply-To: <20240223010328.2826774-2-jthies@google.com>
-
-
---PZNWU6f2lFkWH7xm
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240221161431.8245-3-tzimmermann@suse.de>
 
-Hi Jameson,
+Hi Thomas,
 
-On Fri, Feb 23, 2024 at 01:03:25AM +0000, Jameson Thies wrote:
-> Clean up UCSI_CABLE_PROP macros by fixing a bitmask shifting error for
-> plug type and updating the modal support macro for consistent naming.
->=20
-> Fixes: 3cf657f07918 ("usb: typec: ucsi: Remove all bit-fields")
-> Signed-off-by: Jameson Thies <jthies@google.com>
+kernel test robot noticed the following build errors:
 
-Reviewed-by: Benson Leung <bleung@chromium.org>
+[auto build test ERROR on tip/x86/core]
+[also build test ERROR on deller-parisc/for-next arnd-asm-generic/master linus/master v6.8-rc5]
+[cannot apply to next-20240222]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> ---
-> Tested by building v6.6 kernel.
->=20
->  drivers/usb/typec/ucsi/ucsi.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
-> index 7e35ffbe0a6f..469a2baf472e 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.h
-> +++ b/drivers/usb/typec/ucsi/ucsi.h
-> @@ -259,12 +259,12 @@ struct ucsi_cable_property {
->  #define UCSI_CABLE_PROP_FLAG_VBUS_IN_CABLE	BIT(0)
->  #define UCSI_CABLE_PROP_FLAG_ACTIVE_CABLE	BIT(1)
->  #define UCSI_CABLE_PROP_FLAG_DIRECTIONALITY	BIT(2)
-> -#define UCSI_CABLE_PROP_FLAG_PLUG_TYPE(_f_)	((_f_) & GENMASK(3, 0))
-> +#define UCSI_CABLE_PROP_FLAG_PLUG_TYPE(_f_)	(((_f_) & GENMASK(4, 3)) >> =
-3)
->  #define   UCSI_CABLE_PROPERTY_PLUG_TYPE_A	0
->  #define   UCSI_CABLE_PROPERTY_PLUG_TYPE_B	1
->  #define   UCSI_CABLE_PROPERTY_PLUG_TYPE_C	2
->  #define   UCSI_CABLE_PROPERTY_PLUG_OTHER	3
-> -#define UCSI_CABLE_PROP_MODE_SUPPORT		BIT(5)
-> +#define UCSI_CABLE_PROP_FLAG_MODE_SUPPORT	BIT(5)
->  	u8 latency;
->  } __packed;
-> =20
-> --=20
-> 2.44.0.rc0.258.g7320e95886-goog
->=20
+url:    https://github.com/intel-lab-lkp/linux/commits/Thomas-Zimmermann/arch-Select-fbdev-helpers-with-CONFIG_VIDEO/20240222-001622
+base:   tip/x86/core
+patch link:    https://lore.kernel.org/r/20240221161431.8245-3-tzimmermann%40suse.de
+patch subject: [PATCH 2/3] arch: Remove struct fb_info from video helpers
+config: x86_64-rhel-8.3 (https://download.01.org/0day-ci/archive/20240223/202402230941.JZdvHHEX-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240223/202402230941.JZdvHHEX-lkp@intel.com/reproduce)
 
---PZNWU6f2lFkWH7xm
-Content-Type: application/pgp-signature; name="signature.asc"
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402230941.JZdvHHEX-lkp@intel.com/
 
------BEGIN PGP SIGNATURE-----
+All errors (new ones prefixed by >>):
 
-iHUEABYIAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCZdfz5gAKCRBzbaomhzOw
-wiNBAQDo3KNQemiA+FBi3/z5bmVaZO3NeofUyOdzGurkGM7T9AD/Tkff/vsteQxn
-NWhW10aJTVCRw0fdeSBN6vwgo4UIdgc=
-=uVst
------END PGP SIGNATURE-----
+   ld: vmlinux.o: in function `fbcon_select_primary':
+>> drivers/video/fbdev/core/fbcon.c:2944: undefined reference to `video_is_primary_device'
+   ld: vmlinux.o: in function `fb_io_mmap':
+   drivers/video/fbdev/core/fb_io_fops.c:164: undefined reference to `pgprot_framebuffer'
 
---PZNWU6f2lFkWH7xm--
+
+vim +2944 drivers/video/fbdev/core/fbcon.c
+
+  2939	
+  2940	#ifdef CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY
+  2941	static void fbcon_select_primary(struct fb_info *info)
+  2942	{
+  2943		if (!map_override && primary_device == -1 &&
+> 2944		    video_is_primary_device(info->device)) {
+  2945			int i;
+  2946	
+  2947			printk(KERN_INFO "fbcon: %s (fb%i) is primary device\n",
+  2948			       info->fix.id, info->node);
+  2949			primary_device = info->node;
+  2950	
+  2951			for (i = first_fb_vc; i <= last_fb_vc; i++)
+  2952				con2fb_map_boot[i] = primary_device;
+  2953	
+  2954			if (con_is_bound(&fb_con)) {
+  2955				printk(KERN_INFO "fbcon: Remapping primary device, "
+  2956				       "fb%i, to tty %i-%i\n", info->node,
+  2957				       first_fb_vc + 1, last_fb_vc + 1);
+  2958				info_idx = primary_device;
+  2959			}
+  2960		}
+  2961	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
