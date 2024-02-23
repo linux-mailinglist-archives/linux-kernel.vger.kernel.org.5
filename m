@@ -1,506 +1,239 @@
-Return-Path: <linux-kernel+bounces-78875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2656A8619F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:38:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF199861A00
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:38:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0ADA28862B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:38:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E3051F27143
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:38:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0582E14EFC3;
-	Fri, 23 Feb 2024 17:31:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8913013B7A5;
+	Fri, 23 Feb 2024 17:33:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YbDEvbWE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aS9UdDs/"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A47601339B6
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 17:31:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16E2813B793
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 17:33:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708709504; cv=none; b=IP5Q8qMTD+VCJYn70UMhfdQr5afnQmPclexstQaELbqoVKtdBx6IA+LmJHWhfQATGAHVQmhIXNDPnqHFVB+0v1QXnkvMBYMN+wgxX9GS4pJRnEduOQcnIwsgE1M/JQg+IWOKozelPqfzaajz6/DDooO62hN/LM6orzzzXjC9s5U=
+	t=1708709613; cv=none; b=feYk+ttnF2m0vroB4odTYG3wtkdgnV/B2VtC/oVgjkfLCrLnbPgqzn5Yayb9DLi/BzUT3yyDh/K6xDWcGjrHPcAFRQU3GaN71Mo90xS59VRSZiGkbfcnBxDVDdlJfXT2mtvfNUVYj6IE8XENzYZdBIN120KkeNBs7KigcqqoWu0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708709504; c=relaxed/simple;
-	bh=8GCjyaaFQcRHVZmK8mx6HSEcKwpjkXnB6lVSBZRgfZ0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zf9vU2ZRen1QYMJS0yqpZwgsWOcUIvIUwMkjkYvhQUH0X8E5kRsR1n9atAs1FP7LHRfOdaiBkIHHeyWdmcqItZqiOL8ERy35v7hvuwKT8jSt1czDUagIJTbZ1fanYQzyG9NP+Xh2V0yUPzSFOHWQfhKbLOYS+dR8cybIM9X1WYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YbDEvbWE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17C73C433A6;
-	Fri, 23 Feb 2024 17:31:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708709504;
-	bh=8GCjyaaFQcRHVZmK8mx6HSEcKwpjkXnB6lVSBZRgfZ0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YbDEvbWEDavEzD5ztABZesa+IUKy2NdLGttU5CGKVGW2XbLiX/SRmCpiBnDFCdYW3
-	 J5Q2WBw6lrg/msphyDGByVXMZx/lzrIongK6nR5YNGFQThNBkKNc8Xob5aMRNasOIt
-	 AyMIxOzF4WFxFJO9W9iZU9zeZdOTe/VV8Ca9FLijSqIoOVcz52X1vx8gkYYwwTADlC
-	 i8+9LhbNntZu2BRXm4DPEz/WZMETkOfaolQTOm4poxeA7CEW93Ur7DUwiZ5mQehMYF
-	 otrIkdIrSsp2NDolWeenxnfX2d9/1qh0TC8Pq8koDDljbTUCwQE7jl8Qx65KMiPIHh
-	 FAIexQ84h5twA==
-Date: Fri, 23 Feb 2024 09:31:42 -0800
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: Chao Yu <chao@kernel.org>
-Cc: Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-	Daeho Jeong <daehojeong@google.com>
-Subject: Re: [f2fs-dev] [PATCH v3 2/2] f2fs: support file pinning for zoned
- devices
-Message-ID: <ZdjWfqNAypN-MnaR@google.com>
-References: <20240213173812.1432663-1-daeho43@gmail.com>
- <20240213173812.1432663-2-daeho43@gmail.com>
- <a17c2c2d-6bfb-4c5a-8b6d-1e2dd5f80f54@kernel.org>
+	s=arc-20240116; t=1708709613; c=relaxed/simple;
+	bh=kDiVEVqGIbNw48l4VCGSSBQ5AM/n6nqj601r1w7M4Zk=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=W9oYgJRnlf+QRdfe2ABu3ysQOWIrpPe0yy8izE5NSigfrFwLQJt2TfynSFpV9ABglgh4rIwl0Pp6EE6GhRP1gN/lPr3YuhmzJGk0sVVhBJZKV69/ekcUNF4JscPgxmmr6iE7cQ9nQ+U5ikNHj+MDu39DEWDMhKugut20aSCc3Sw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--carlosgalo.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aS9UdDs/; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--carlosgalo.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc15b03287so1432821276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 09:33:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708709611; x=1709314411; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uB4sepnqluOGCQzWosSupcXtilnk0cI5dxVNZLd+dk0=;
+        b=aS9UdDs/asUHqbLFhlLFO7FZS4nhi9cOhTD2O76p3kEGdqf4Uneafmh5ZSMwKARhE0
+         IA7BVW8zxhRgV1ctFFEsYIJcSyd7GPxnX2XuAN6gzveZNfxJsA2ZmgvtLenAfg0nqGkb
+         ubpeTp1HSdGIOvPhZeR5AmGndSQ+3ZmziQtRCU0TkPKKK7Nq38RQkVmj3FcS5eCCophu
+         yj7XNldli3jUX79cKl2o7BIB67uTfcq797i3GZBQwCQO+syj7v6bo87i7PW3yu3AkZ9A
+         qfRZkiELm/E6UvTkpqE+vkPwf78kVSn/RyRc6cFijrRVvh/8rswsbZi99nm9D/fwdVxa
+         8C8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708709611; x=1709314411;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uB4sepnqluOGCQzWosSupcXtilnk0cI5dxVNZLd+dk0=;
+        b=L7xtjClyuntCxe6QJiDD4MkskwiNolTPSYBKRQrPy6x7Jh8z2YudzKzRahE69Vw3Wg
+         S5m8SaqbVlyC8mktlKaAfwoeEbAwdV7EQvu+3q9ZiId/Zdocf+v3NvBTaHsx/u+qpcNR
+         FH265ZmghjqNYCky4sM0CpiMl7w2WOd/KzskxS1I+PG2sbo90E0WeWXIvKO4p9+44LUe
+         BRvNh9QKt1dVjQrDTabw3gmp7+omxNsNGtJG/2SyVMgnFCiEvXaqQYt/F9DHF7ytF6Oq
+         99Iz38MtLoSTIMyVyKtkollOecb10lI7BUYzbLfJCU3HQHFVTm93CjlLKXLr2npkAhXs
+         qFug==
+X-Forwarded-Encrypted: i=1; AJvYcCVU5z3GiOLLlTjBtIaPWXsoQzMWDz9Ziv5ggmgpWn7SmP7OkV/LEkTzzTqZb/ke7UwyXy15YhB3LjnAPdGrcwm08BlegJjx453jsRa2
+X-Gm-Message-State: AOJu0YzPnuLtabSunfwCHGqyLnrOvn12xFzWbGuOe3fYeLd1GSc3DzQR
+	6axpFLAabXZDZIEbvs6nwsSe+vDC6SPSREH/e9+BEUEQvIV/Hc2MPzvi9LN/aghgDKdUcWYjsHU
+	IL+7EGw+vK+Nt+NaNOA==
+X-Google-Smtp-Source: AGHT+IHVRK3LPQO5y/JakeL60p382oMqTXfrOuVmR62hgfxoKp6aQ2jEjXhQkVkn+lJufBcDrmjuFkr7l+uc036t
+X-Received: from cgalo-android-cuttlefish.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:24f8])
+ (user=carlosgalo job=sendgmr) by 2002:a05:6902:1501:b0:dc7:66ec:9038 with
+ SMTP id q1-20020a056902150100b00dc766ec9038mr31443ybu.1.1708709611093; Fri,
+ 23 Feb 2024 09:33:31 -0800 (PST)
+Date: Fri, 23 Feb 2024 17:32:49 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a17c2c2d-6bfb-4c5a-8b6d-1e2dd5f80f54@kernel.org>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
+Message-ID: <20240223173258.174828-1-carlosgalo@google.com>
+Subject: [PATCH v3] mm: Update mark_victim tracepoints fields
+From: Carlos Galo <carlosgalo@google.com>
+To: rostedt@goodmis.org, akpm@linux-foundation.org, surenb@google.com, 
+	mhocko@suse.com
+Cc: android-mm@google.com, kernel-team@android.com, 
+	Carlos Galo <carlosgalo@google.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Chao,
+The current implementation of the mark_victim tracepoint provides only
+the process ID (pid) of the victim process. This limitation poses
+challenges for userspace tools requiring real-time OOM analysis and
+intervention. Although this information is available from the kernel
+logs, it=E2=80=99s not the appropriate format to provide OOM notifications.=
+ In
+Android, BPF programs are used with the mark_victim trace events to
+notify userspace of an OOM kill. For consistency, update the trace
+event to include the same information about the OOMed victim as the
+kernel logs.
 
-I've tested the patch and queued in -dev, so can you take a look at it and
-propose any change on top of it? Then, we can discuss further on it.
+- UID
+   In Android each installed application has a unique UID. Including
+   the `uid` assists in correlating OOM events with specific apps.
 
-On 02/23, Chao Yu wrote:
-> On 2024/2/14 1:38, Daeho Jeong wrote:
-> > From: Daeho Jeong <daehojeong@google.com>
-> > 
-> > Support file pinning with conventional storage area for zoned devices
-> > 
-> > Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> > ---
-> > v3: check the hole when migrating blocks for swap.
-> >      do not use the remainder of cold pin section.
-> > v2: flush previous dirty pages before swapon.
-> >      do not re-check for the last extent of swap area.
-> >      merge this patch with swap file pinning support patch.
-> > ---
-> >   fs/f2fs/data.c    | 58 ++++++++++++++++++++++++++-------------
-> >   fs/f2fs/f2fs.h    | 17 +++++++++++-
-> >   fs/f2fs/file.c    | 24 ++++++++++++-----
-> >   fs/f2fs/gc.c      | 14 +++++++---
-> >   fs/f2fs/segment.c | 69 +++++++++++++++++++++++++++++++++++++++++------
-> >   fs/f2fs/segment.h | 10 +++++++
-> >   6 files changed, 154 insertions(+), 38 deletions(-)
-> > 
-> > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> > index 828c797cd47c..0c9aa3082fcf 100644
-> > --- a/fs/f2fs/data.c
-> > +++ b/fs/f2fs/data.c
-> > @@ -3839,25 +3839,34 @@ static int f2fs_migrate_blocks(struct inode *inode, block_t start_blk,
-> >   	unsigned int blkofs;
-> >   	unsigned int blk_per_sec = BLKS_PER_SEC(sbi);
-> >   	unsigned int secidx = start_blk / blk_per_sec;
-> > -	unsigned int end_sec = secidx + blkcnt / blk_per_sec;
-> > +	unsigned int end_sec;
-> >   	int ret = 0;
-> > +	if (!blkcnt)
-> > +		return 0;
-> > +	end_sec = secidx + (blkcnt - 1) / blk_per_sec;
-> > +
-> >   	f2fs_down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-> >   	filemap_invalidate_lock(inode->i_mapping);
-> >   	set_inode_flag(inode, FI_ALIGNED_WRITE);
-> >   	set_inode_flag(inode, FI_OPU_WRITE);
-> > -	for (; secidx < end_sec; secidx++) {
-> > +	for (; secidx <= end_sec; secidx++) {
-> > +		unsigned int blkofs_end = secidx == end_sec ?
-> > +			(blkcnt - 1) % blk_per_sec : blk_per_sec - 1;
-> > +
-> >   		f2fs_down_write(&sbi->pin_sem);
-> > -		f2fs_lock_op(sbi);
-> > -		f2fs_allocate_new_section(sbi, CURSEG_COLD_DATA_PINNED, false);
-> > -		f2fs_unlock_op(sbi);
-> > +		ret = f2fs_allocate_pinning_section(sbi);
-> > +		if (ret) {
-> > +			f2fs_up_write(&sbi->pin_sem);
-> > +			break;
-> > +		}
-> >   		set_inode_flag(inode, FI_SKIP_WRITES);
-> > -		for (blkofs = 0; blkofs < blk_per_sec; blkofs++) {
-> > +		for (blkofs = 0; blkofs <= blkofs_end; blkofs++) {
-> >   			struct page *page;
-> >   			unsigned int blkidx = secidx * blk_per_sec + blkofs;
-> > @@ -3946,27 +3955,34 @@ static int check_swap_activate(struct swap_info_struct *sis,
-> >   		nr_pblocks = map.m_len;
-> >   		if ((pblock - SM_I(sbi)->main_blkaddr) & sec_blks_mask ||
-> > -				nr_pblocks & sec_blks_mask) {
-> > +				nr_pblocks & sec_blks_mask ||
-> > +				!f2fs_valid_pinned_area(sbi, pblock)) {
-> > +			bool last_extent = false;
-> > +
-> >   			not_aligned++;
-> >   			nr_pblocks = roundup(nr_pblocks, blks_per_sec);
-> >   			if (cur_lblock + nr_pblocks > sis->max)
-> >   				nr_pblocks -= blks_per_sec;
-> > +			/* this extent is last one */
-> >   			if (!nr_pblocks) {
-> > -				/* this extent is last one */
-> > -				nr_pblocks = map.m_len;
-> > -				f2fs_warn(sbi, "Swapfile: last extent is not aligned to section");
-> > -				goto next;
-> > +				nr_pblocks = last_lblock - cur_lblock;
-> > +				last_extent = true;
-> >   			}
-> >   			ret = f2fs_migrate_blocks(inode, cur_lblock,
-> >   							nr_pblocks);
-> > -			if (ret)
-> > +			if (ret) {
-> > +				if (ret == -ENOENT)
-> > +					ret = -EINVAL;
-> >   				goto out;
-> > -			goto retry;
-> > +			}
-> > +
-> > +			if (!last_extent)
-> > +				goto retry;
-> >   		}
-> > -next:
-> > +
-> >   		if (cur_lblock + nr_pblocks >= sis->max)
-> >   			nr_pblocks = sis->max - cur_lblock;
-> > @@ -4004,17 +4020,17 @@ static int f2fs_swap_activate(struct swap_info_struct *sis, struct file *file,
-> >   				sector_t *span)
-> >   {
-> >   	struct inode *inode = file_inode(file);
-> > +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> >   	int ret;
-> >   	if (!S_ISREG(inode->i_mode))
-> >   		return -EINVAL;
-> > -	if (f2fs_readonly(F2FS_I_SB(inode)->sb))
-> > +	if (f2fs_readonly(sbi->sb))
-> >   		return -EROFS;
-> > -	if (f2fs_lfs_mode(F2FS_I_SB(inode))) {
-> > -		f2fs_err(F2FS_I_SB(inode),
-> > -			"Swapfile not supported in LFS mode");
-> > +	if (f2fs_lfs_mode(sbi) && !f2fs_sb_has_blkzoned(sbi)) {
-> > +		f2fs_err(sbi, "Swapfile not supported in LFS mode");
-> >   		return -EINVAL;
-> >   	}
-> > @@ -4027,13 +4043,17 @@ static int f2fs_swap_activate(struct swap_info_struct *sis, struct file *file,
-> >   	f2fs_precache_extents(inode);
-> > +	ret = filemap_fdatawrite(inode->i_mapping);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> >   	ret = check_swap_activate(sis, file, span);
-> >   	if (ret < 0)
-> >   		return ret;
-> >   	stat_inc_swapfile_inode(inode);
-> >   	set_inode_flag(inode, FI_PIN_FILE);
-> > -	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
-> > +	f2fs_update_time(sbi, REQ_TIME);
-> >   	return ret;
-> >   }
-> > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> > index 40eb590ed646..351133a11518 100644
-> > --- a/fs/f2fs/f2fs.h
-> > +++ b/fs/f2fs/f2fs.h
-> > @@ -3696,7 +3696,8 @@ void f2fs_get_new_segment(struct f2fs_sb_info *sbi,
-> >   			unsigned int *newseg, bool new_sec, int dir);
-> >   void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
-> >   					unsigned int start, unsigned int end);
-> > -void f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type, bool force);
-> > +int f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type, bool force);
-> > +int f2fs_allocate_pinning_section(struct f2fs_sb_info *sbi);
-> >   void f2fs_allocate_new_segments(struct f2fs_sb_info *sbi);
-> >   int f2fs_trim_fs(struct f2fs_sb_info *sbi, struct fstrim_range *range);
-> >   bool f2fs_exist_trim_candidates(struct f2fs_sb_info *sbi,
-> > @@ -3870,6 +3871,9 @@ void f2fs_stop_gc_thread(struct f2fs_sb_info *sbi);
-> >   block_t f2fs_start_bidx_of_node(unsigned int node_ofs, struct inode *inode);
-> >   int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control);
-> >   void f2fs_build_gc_manager(struct f2fs_sb_info *sbi);
-> > +int f2fs_gc_range(struct f2fs_sb_info *sbi,
-> > +		unsigned int start_seg, unsigned int end_seg,
-> > +		bool dry_run, unsigned int dry_run_sections);
-> >   int f2fs_resize_fs(struct file *filp, __u64 block_count);
-> >   int __init f2fs_create_garbage_collection_cache(void);
-> >   void f2fs_destroy_garbage_collection_cache(void);
-> > @@ -4524,6 +4528,17 @@ static inline bool f2fs_lfs_mode(struct f2fs_sb_info *sbi)
-> >   	return F2FS_OPTION(sbi).fs_mode == FS_MODE_LFS;
-> >   }
-> > +static inline bool f2fs_valid_pinned_area(struct f2fs_sb_info *sbi,
-> > +					  block_t blkaddr)
-> > +{
-> > +	if (f2fs_sb_has_blkzoned(sbi)) {
-> > +		int devi = f2fs_target_device_index(sbi, blkaddr);
-> > +
-> > +		return !bdev_is_zoned(FDEV(devi).bdev);
-> > +	}
-> > +	return true;
-> > +}
-> > +
-> >   static inline bool f2fs_low_mem_mode(struct f2fs_sb_info *sbi)
-> >   {
-> >   	return F2FS_OPTION(sbi).memory_mode == MEMORY_MODE_LOW;
-> > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> > index 2c13b340c8a0..21c3aa93a8db 100644
-> > --- a/fs/f2fs/file.c
-> > +++ b/fs/f2fs/file.c
-> > @@ -1733,9 +1733,11 @@ static int f2fs_expand_inode_data(struct inode *inode, loff_t offset,
-> >   		f2fs_down_write(&sbi->pin_sem);
-> > -		f2fs_lock_op(sbi);
-> > -		f2fs_allocate_new_section(sbi, CURSEG_COLD_DATA_PINNED, false);
-> > -		f2fs_unlock_op(sbi);
-> > +		err = f2fs_allocate_pinning_section(sbi);
-> > +		if (err) {
-> > +			f2fs_up_write(&sbi->pin_sem);
-> > +			goto out_err;
-> > +		}
-> >   		map.m_seg_type = CURSEG_COLD_DATA_PINNED;
-> >   		err = f2fs_map_blocks(inode, &map, F2FS_GET_BLOCK_PRE_DIO);
-> > @@ -3185,6 +3187,7 @@ int f2fs_pin_file_control(struct inode *inode, bool inc)
-> >   static int f2fs_ioc_set_pin_file(struct file *filp, unsigned long arg)
-> >   {
-> >   	struct inode *inode = file_inode(filp);
-> > +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> >   	__u32 pin;
-> >   	int ret = 0;
-> > @@ -3194,7 +3197,7 @@ static int f2fs_ioc_set_pin_file(struct file *filp, unsigned long arg)
-> >   	if (!S_ISREG(inode->i_mode))
-> >   		return -EINVAL;
-> > -	if (f2fs_readonly(F2FS_I_SB(inode)->sb))
-> > +	if (f2fs_readonly(sbi->sb))
-> >   		return -EROFS;
-> >   	ret = mnt_want_write_file(filp);
-> > @@ -3207,9 +3210,18 @@ static int f2fs_ioc_set_pin_file(struct file *filp, unsigned long arg)
-> >   		clear_inode_flag(inode, FI_PIN_FILE);
-> >   		f2fs_i_gc_failures_write(inode, 0);
-> >   		goto done;
-> > +	} else if (f2fs_is_pinned_file(inode)) {
-> > +		goto done;
-> >   	}
-> > -	if (f2fs_should_update_outplace(inode, NULL)) {
-> > +	if (f2fs_sb_has_blkzoned(sbi) && F2FS_HAS_BLOCKS(inode)) {
-> > +		ret = -EFBIG;
-> > +		goto out;
-> > +	}
-> > +
-> > +	/* Let's allow file pinning on zoned device. */
-> > +	if (!f2fs_sb_has_blkzoned(sbi) &&
-> > +	    f2fs_should_update_outplace(inode, NULL)) {
-> >   		ret = -EINVAL;
-> >   		goto out;
-> >   	}
-> > @@ -3231,7 +3243,7 @@ static int f2fs_ioc_set_pin_file(struct file *filp, unsigned long arg)
-> >   	set_inode_flag(inode, FI_PIN_FILE);
-> >   	ret = F2FS_I(inode)->i_gc_failures[GC_FAILURE_PIN];
-> >   done:
-> > -	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
-> > +	f2fs_update_time(sbi, REQ_TIME);
-> >   out:
-> >   	inode_unlock(inode);
-> >   	mnt_drop_write_file(filp);
-> > diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-> > index a089a938355b..3ff126316d42 100644
-> > --- a/fs/f2fs/gc.c
-> > +++ b/fs/f2fs/gc.c
-> > @@ -1961,10 +1961,12 @@ void f2fs_build_gc_manager(struct f2fs_sb_info *sbi)
-> >   	init_atgc_management(sbi);
-> >   }
-> > -static int f2fs_gc_range(struct f2fs_sb_info *sbi,
-> > -		unsigned int start_seg, unsigned int end_seg, bool dry_run)
-> > +int f2fs_gc_range(struct f2fs_sb_info *sbi,
-> > +		unsigned int start_seg, unsigned int end_seg,
-> > +		bool dry_run, unsigned int dry_run_sections)
-> >   {
-> >   	unsigned int segno;
-> > +	unsigned int gc_secs = dry_run_sections;
-> >   	for (segno = start_seg; segno <= end_seg; segno += SEGS_PER_SEC(sbi)) {
-> >   		struct gc_inode_list gc_list = {
-> > @@ -1972,11 +1974,15 @@ static int f2fs_gc_range(struct f2fs_sb_info *sbi,
-> >   			.iroot = RADIX_TREE_INIT(gc_list.iroot, GFP_NOFS),
-> >   		};
-> > -		do_garbage_collect(sbi, segno, &gc_list, FG_GC, true);
-> > +		do_garbage_collect(sbi, segno, &gc_list, FG_GC,
-> > +						dry_run_sections == 0);
-> >   		put_gc_inode(&gc_list);
-> >   		if (!dry_run && get_valid_blocks(sbi, segno, true))
-> >   			return -EAGAIN;
-> > +		if (dry_run && dry_run_sections &&
-> > +		    !get_valid_blocks(sbi, segno, true) && --gc_secs == 0)
-> > +			break;
-> >   		if (fatal_signal_pending(current))
-> >   			return -ERESTARTSYS;
-> > @@ -2014,7 +2020,7 @@ static int free_segment_range(struct f2fs_sb_info *sbi,
-> >   		f2fs_allocate_segment_for_resize(sbi, type, start, end);
-> >   	/* do GC to move out valid blocks in the range */
-> > -	err = f2fs_gc_range(sbi, start, end, dry_run);
-> > +	err = f2fs_gc_range(sbi, start, end, dry_run, 0);
-> >   	if (err || dry_run)
-> >   		goto out;
-> > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> > index 4e985750c938..0b72c8536ccf 100644
-> > --- a/fs/f2fs/segment.c
-> > +++ b/fs/f2fs/segment.c
-> > @@ -2632,7 +2632,7 @@ static int is_next_segment_free(struct f2fs_sb_info *sbi,
-> >    * This function should be returned with success, otherwise BUG
-> >    */
-> >   static void get_new_segment(struct f2fs_sb_info *sbi,
-> > -			unsigned int *newseg, bool new_sec)
-> > +			unsigned int *newseg, bool new_sec, bool pinning)
-> >   {
-> >   	struct free_segmap_info *free_i = FREE_I(sbi);
-> >   	unsigned int segno, secno, zoneno;
-> > @@ -2650,6 +2650,16 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
-> >   		if (segno < GET_SEG_FROM_SEC(sbi, hint + 1))
-> >   			goto got_it;
-> >   	}
-> > +
-> > +	/*
-> > +	 * If we format f2fs on zoned storage, let's try to get pinned sections
-> > +	 * from beginning of the storage, which should be a conventional one.
-> > +	 */
-> > +	if (f2fs_sb_has_blkzoned(sbi)) {
-> > +		segno = pinning ? 0 : max(first_zoned_segno(sbi), *newseg);
-> > +		hint = GET_SEC_FROM_SEG(sbi, segno);
-> > +	}
-> > +
-> >   find_other_zone:
-> >   	secno = find_next_zero_bit(free_i->free_secmap, MAIN_SECS(sbi), hint);
-> >   	if (secno >= MAIN_SECS(sbi)) {
-> > @@ -2749,21 +2759,30 @@ static unsigned int __get_next_segno(struct f2fs_sb_info *sbi, int type)
-> >    * Allocate a current working segment.
-> >    * This function always allocates a free segment in LFS manner.
-> >    */
-> > -static void new_curseg(struct f2fs_sb_info *sbi, int type, bool new_sec)
-> > +static int new_curseg(struct f2fs_sb_info *sbi, int type, bool new_sec)
-> >   {
-> >   	struct curseg_info *curseg = CURSEG_I(sbi, type);
-> >   	unsigned int segno = curseg->segno;
-> > +	bool pinning = type == CURSEG_COLD_DATA_PINNED;
-> >   	if (curseg->inited)
-> >   		write_sum_page(sbi, curseg->sum_blk, GET_SUM_BLOCK(sbi, segno));
-> > +
-> >   	segno = __get_next_segno(sbi, type);
-> > -	get_new_segment(sbi, &segno, new_sec);
-> > +	get_new_segment(sbi, &segno, new_sec, pinning);
-> > +	if (new_sec && pinning &&
-> > +	    !f2fs_valid_pinned_area(sbi, START_BLOCK(sbi, segno))) {
-> > +		__set_free(sbi, segno);
-> > +		return -EAGAIN;
-> > +	}
-> > +
-> >   	curseg->next_segno = segno;
-> >   	reset_curseg(sbi, type, 1);
-> >   	curseg->alloc_type = LFS;
-> >   	if (F2FS_OPTION(sbi).fs_mode == FS_MODE_FRAGMENT_BLK)
-> >   		curseg->fragment_remained_chunk =
-> >   				get_random_u32_inclusive(1, sbi->max_fragment_chunk);
-> > +	return 0;
-> >   }
-> >   static int __next_free_blkoff(struct f2fs_sb_info *sbi,
-> > @@ -3036,7 +3055,7 @@ void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
-> >   	f2fs_up_read(&SM_I(sbi)->curseg_lock);
-> >   }
-> > -static void __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
-> > +static int __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
-> >   						bool new_sec, bool force)
-> >   {
-> >   	struct curseg_info *curseg = CURSEG_I(sbi, type);
-> > @@ -3046,21 +3065,49 @@ static void __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
-> >   	    !curseg->next_blkoff &&
-> >   	    !get_valid_blocks(sbi, curseg->segno, new_sec) &&
-> >   	    !get_ckpt_valid_blocks(sbi, curseg->segno, new_sec))
-> > -		return;
-> > +		return 0;
-> >   	old_segno = curseg->segno;
-> > -	new_curseg(sbi, type, true);
-> > +	if (new_curseg(sbi, type, true))
-> > +		return -EAGAIN;
-> >   	stat_inc_seg_type(sbi, curseg);
-> >   	locate_dirty_segment(sbi, old_segno);
-> > +	return 0;
-> >   }
-> > -void f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type, bool force)
-> > +int f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type, bool force)
-> >   {
-> > +	int ret;
-> > +
-> >   	f2fs_down_read(&SM_I(sbi)->curseg_lock);
-> >   	down_write(&SIT_I(sbi)->sentry_lock);
-> > -	__allocate_new_segment(sbi, type, true, force);
-> > +	ret = __allocate_new_segment(sbi, type, true, force);
-> >   	up_write(&SIT_I(sbi)->sentry_lock);
-> >   	f2fs_up_read(&SM_I(sbi)->curseg_lock);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +int f2fs_allocate_pinning_section(struct f2fs_sb_info *sbi)
-> > +{
-> > +	int err;
-> > +	bool gc_required = true;
-> > +
-> > +retry:
-> > +	f2fs_lock_op(sbi);
-> > +	err = f2fs_allocate_new_section(sbi, CURSEG_COLD_DATA_PINNED, false);
-> > +	f2fs_unlock_op(sbi);
-> > +
-> > +	if (f2fs_sb_has_blkzoned(sbi) && err && gc_required) {
-> > +		f2fs_down_write(&sbi->gc_lock);
-> > +		f2fs_gc_range(sbi, 0, GET_SEGNO(sbi, FDEV(0).end_blk), true, 1);
-> > +		f2fs_up_write(&sbi->gc_lock);
-> > +
-> > +		gc_required = false;
-> > +		goto retry;
-> > +	}
-> > +
-> > +	return err;
-> >   }
-> >   void f2fs_allocate_new_segments(struct f2fs_sb_info *sbi)
-> > @@ -3426,6 +3473,10 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
-> >   	 * new segment.
-> >   	 */
-> >   	if (segment_full) {
-> > +		if (type == CURSEG_COLD_DATA_PINNED &&
-> > +		    !((curseg->segno + 1) % sbi->segs_per_sec))
-> > +			goto skip_new_segment;
-> 
-> Before we skip allocate new segment for pinned log, how about
-> tagging curseg as uninitialized one via curseg->inited = false, and
-> curseg->segno = NULL_SEGNO? so that we can avoid
-> __f2fs_save_inmem_curseg() to touch this log, and not show incorrect
-> segno of pinned log in /sys/kernel/debug/f2fs/status.
-> 
-> Thanks,
-> 
-> > +
-> >   		if (from_gc) {
-> >   			get_atssr_segment(sbi, type, se->type,
-> >   						AT_SSR, se->mtime);
-> > @@ -3437,6 +3488,8 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
-> >   			stat_inc_seg_type(sbi, curseg);
-> >   		}
-> >   	}
-> > +
-> > +skip_new_segment:
-> >   	/*
-> >   	 * segment dirty status should be updated after segment allocation,
-> >   	 * so we just need to update status only one time after previous
-> > diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
-> > index 60d93a16f2ac..953af072915f 100644
-> > --- a/fs/f2fs/segment.h
-> > +++ b/fs/f2fs/segment.h
-> > @@ -942,3 +942,13 @@ static inline void wake_up_discard_thread(struct f2fs_sb_info *sbi, bool force)
-> >   	dcc->discard_wake = true;
-> >   	wake_up_interruptible_all(&dcc->discard_wait_queue);
-> >   }
-> > +
-> > +static inline unsigned int first_zoned_segno(struct f2fs_sb_info *sbi)
-> > +{
-> > +	int devi;
-> > +
-> > +	for (devi = 0; devi < sbi->s_ndevs; devi++)
-> > +		if (bdev_is_zoned(FDEV(devi).bdev))
-> > +			return GET_SEGNO(sbi, FDEV(devi).start_blk);
-> > +	return 0;
-> > +}
+- Process Name (comm)
+   Enables identification of the affected process.
+
+- OOM Score
+  Will allow userspace to get additional insight of the relative kill
+  priority of the OOM victim. In Android, the oom_score_adj is used to
+  categorize app state (foreground, background, etc.), which aids in
+  analyzing user-perceptible impacts of OOM events [1].
+
+- Total VM, RSS Stats, and pgtables
+  Amount of memory used by the victim that will, potentially, be freed up
+  by killing it.
+
+[1] https://cs.android.com/android/platform/superproject/main/+/246dc8fc95b=
+6d93afcba5c6d6c133307abb3ac2e:frameworks/base/services/core/java/com/androi=
+d/server/am/ProcessList.java;l=3D188-283
+
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Reviewed-by: Steven Rostedt <rostedt@goodmis.org>
+Signed-off-by: Carlos Galo <carlosgalo@google.com>
+---
+
+v3:
+- Added total_vm, rss fields, and pgtables  per Michal Hocko.
+- Added Steven Rostedt reviewed by
+- Updated commit description to include android usecase
+
+v2: Fixed build error. Added missing comma when printing `__entry->uid`.
+
+ include/trace/events/oom.h | 36 ++++++++++++++++++++++++++++++++----
+ mm/oom_kill.c              |  6 +++++-
+ 2 files changed, 37 insertions(+), 5 deletions(-)
+
+diff --git a/include/trace/events/oom.h b/include/trace/events/oom.h
+index 26a11e4a2c36..b799f3bcba82 100644
+--- a/include/trace/events/oom.h
++++ b/include/trace/events/oom.h
+@@ -7,6 +7,8 @@
+ #include <linux/tracepoint.h>
+ #include <trace/events/mmflags.h>
+=20
++#define PG_COUNT_TO_KB(x) ((x) << (PAGE_SHIFT - 10))
++
+ TRACE_EVENT(oom_score_adj_update,
+=20
+ 	TP_PROTO(struct task_struct *task),
+@@ -72,19 +74,45 @@ TRACE_EVENT(reclaim_retry_zone,
+ );
+=20
+ TRACE_EVENT(mark_victim,
+-	TP_PROTO(int pid),
++	TP_PROTO(struct task_struct *task, uid_t uid),
+=20
+-	TP_ARGS(pid),
++	TP_ARGS(task, uid),
+=20
+ 	TP_STRUCT__entry(
+ 		__field(int, pid)
++		__string(comm, task->comm)
++		__field(unsigned long, total_vm)
++		__field(unsigned long, anon_rss)
++		__field(unsigned long, file_rss)
++		__field(unsigned long, shmem_rss)
++		__field(uid_t, uid)
++		__field(unsigned long, pgtables)
++		__field(short, oom_score_adj)
+ 	),
+=20
+ 	TP_fast_assign(
+-		__entry->pid =3D pid;
++		__entry->pid =3D task->pid;
++		__assign_str(comm, task->comm);
++		__entry->total_vm =3D PG_COUNT_TO_KB(task->mm->total_vm);
++		__entry->anon_rss =3D PG_COUNT_TO_KB(get_mm_counter(task->mm, MM_ANONPAG=
+ES));
++		__entry->file_rss =3D PG_COUNT_TO_KB(get_mm_counter(task->mm, MM_FILEPAG=
+ES));
++		__entry->shmem_rss =3D PG_COUNT_TO_KB(get_mm_counter(task->mm, MM_SHMEMP=
+AGES));
++		__entry->uid =3D uid;
++		__entry->pgtables =3D mm_pgtables_bytes(task->mm) >> 10;
++		__entry->oom_score_adj =3D task->signal->oom_score_adj;
+ 	),
+=20
+-	TP_printk("pid=3D%d", __entry->pid)
++	TP_printk("pid=3D%d comm=3D%s total-vm=3D%lukB anon-rss=3D%lukB file-rss:=
+%lukB shmem-rss:%lukB uid=3D%u pgtables=3D%lukB oom_score_adj=3D%hd",
++		__entry->pid,
++		__get_str(comm),
++		__entry->total_vm,
++		__entry->anon_rss,
++		__entry->file_rss,
++		__entry->shmem_rss,
++		__entry->uid,
++		__entry->pgtables,
++		__entry->oom_score_adj
++	)
+ );
+=20
+ TRACE_EVENT(wake_reaper,
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index 91ccd82097c2..8d6a207c3c59 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -44,6 +44,7 @@
+ #include <linux/kthread.h>
+ #include <linux/init.h>
+ #include <linux/mmu_notifier.h>
++#include <linux/cred.h>
+=20
+ #include <asm/tlb.h>
+ #include "internal.h"
+@@ -754,6 +755,7 @@ static inline void queue_oom_reaper(struct task_struct =
+*tsk)
+  */
+ static void mark_oom_victim(struct task_struct *tsk)
+ {
++	const struct cred *cred;
+ 	struct mm_struct *mm =3D tsk->mm;
+=20
+ 	WARN_ON(oom_killer_disabled);
+@@ -773,7 +775,9 @@ static void mark_oom_victim(struct task_struct *tsk)
+ 	 */
+ 	__thaw_task(tsk);
+ 	atomic_inc(&oom_victims);
+-	trace_mark_victim(tsk->pid);
++	cred =3D get_task_cred(tsk);
++	trace_mark_victim(tsk, cred->uid.val);
++	put_cred(cred);
+ }
+=20
+ /**
+--=20
+2.44.0.rc0.258.g7320e95886-goog
+
 
