@@ -1,214 +1,259 @@
-Return-Path: <linux-kernel+bounces-79074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C343861D42
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:05:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 875CE861D44
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:05:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F26CE285082
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:05:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A36461C22907
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:05:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AE2E146E6C;
-	Fri, 23 Feb 2024 20:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C964D14690B;
+	Fri, 23 Feb 2024 20:05:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eB0CJ/jf"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="z1w5sW/k"
+Received: from out203-205-221-153.mail.qq.com (out203-205-221-153.mail.qq.com [203.205.221.153])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7213C1448DD;
-	Fri, 23 Feb 2024 20:05:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.10
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708718707; cv=fail; b=J2f5A6wKzVyOFlywc4a8dGYydvcrqL1ocsqpzyYrNh6qJ4tyQDRP1UD2vftYhMEEtUwbVkpnUWEw+6zAtXlc3nO7HaEejG+bZsDQzv2cvV+azF1MRqCApfUXJuU+nII+JyUZFTiqT0Q+HtK3mOgBgYTDcWcsQgJGUS/CsIovcKU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708718707; c=relaxed/simple;
-	bh=XoQ9t7Y468KAB7Wi1W2vlBFJSm0x7+/H1b7uakl4rG8=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=aGgMa8sX/ma6wUeh9/DNTuOwALz4SDWh6lI+Yie7mOjdoh0uli7j7I9vPHZ1x44LW5rJ7FfrM0yzdK3MQMxTe2bnjijHj47xZ4mkTikWUjKHYwoJY4aa5ArFyfzE1o6PNeK5VYkVQU+lXYY1wJcb/HROfRyvfnvZ7aUtqUJJRsI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eB0CJ/jf; arc=fail smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708718705; x=1740254705;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=XoQ9t7Y468KAB7Wi1W2vlBFJSm0x7+/H1b7uakl4rG8=;
-  b=eB0CJ/jfj/NxAS/KZ81QSXq8AQOEfaxqQa/uX3zhqJqrBiTyV/5RZWxw
-   iPPUo0yEYHOIRyRwkNb4GfEDoIh2ju5Zq9ApHwSW+EOF6zUfq9sUtR1r5
-   VE5P63IiUgY/G0d6bb9fkS+UzvlIOSihBnR3h//GGg9QgN4sO+D408fuo
-   BfVyTwbPzyNOndlNE9fyefZefAUIVYfAu/anvEE//FhnKHn1zK8E0DoRH
-   zhRGvvtNDzli7KQHiA1PiYtj3omWZjig8fi7l4vTxQV0QTs1rkqW4LiK4
-   eXxsGd8jGpsBvaF9fY5VH+uctTvrAJA5KW6f83ntkIQqayQas1GkEMByi
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="14464979"
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="14464979"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 12:05:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="10707108"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 23 Feb 2024 12:05:02 -0800
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 23 Feb 2024 12:05:02 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 23 Feb 2024 12:05:02 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 23 Feb 2024 12:05:02 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ha2ElRtT+6M5ly9054tFfsfKUFB85fT5l8yU3A0mO0ZHs6h2DKhmHQQecxL2Qg1oyIJ31iMi68uhe0iPhFjcfbAgTmL7bQA1Lazrx701y/pIP28tFRgp1rIG5oGtiN5iOgIX+EGxP1C5kO7ac023oAfUdVhZc7VQgZH3TmDbFHrREupy605TXxbx4P3l4g1PQRFIiKFaA1rDqgK6DBEneTtRArf+fq7ac6uGspREQzizBqeZ52BZD0N9QAzO2EhZqRImQQG0UmUsfCg8jhFGr2yzUK/hoPFj+VgnC6DgRFxncdvvKNBIuq7Jw7j67NAWdY9j23hb4YNk32JmAtHFCA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DUSmRUIjpUGISQE+Xe+ZZdgKjxg3pehX3VxgGWN4dso=;
- b=IDXt4/i7ZQng2FUBwrSQrqJY0OVit90jMgYf5N6hprglRQ/UOb7j1mCyiEygAt3Q0G/eLx4oye3FvhtwkpHlLuZxrcSIO7vQPQ6HSqlknl/M8coJHR4gdHtphHaN7qY5y1HzZJ4lBj9bQAEgQN/DMR47JnlK0fTaw3j/JmeEKzvUYv0xRo+3GZOrI0g4Ni1zo+GA235ELGhwuiG16VdyROF0Pl4QdLZ7un6BgCHht2AxzZ4CHhXVREk5xN4dHDLeWOAxVyxD2ZL74tVux3zO4VmXypTXRaJUg8vmy5TIHuxayovr88++hc/hCsTsZQb/2jrYdy6za4/qtw4QLH8m0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by BN0PR11MB5693.namprd11.prod.outlook.com (2603:10b6:408:164::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.10; Fri, 23 Feb
- 2024 20:04:59 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::da43:97f6:814c:4dc]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::da43:97f6:814c:4dc%7]) with mapi id 15.20.7316.018; Fri, 23 Feb 2024
- 20:04:59 +0000
-Date: Fri, 23 Feb 2024 12:04:55 -0800
-From: Dan Williams <dan.j.williams@intel.com>
-To: John Groves <John@groves.net>, Dave Hansen <dave.hansen@intel.com>
-CC: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, "Dan
- Williams" <dan.j.williams@intel.com>, Vishal Verma
-	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, Alexander Viro
-	<viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara
-	<jack@suse.cz>, "Matthew Wilcox" <willy@infradead.org>,
-	<linux-cxl@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<nvdimm@lists.linux.dev>, <john@jagalactic.com>, Dave Chinner
-	<david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>,
-	<dave.hansen@linux.intel.com>, <gregory.price@memverge.com>
-Subject: Re: [RFC PATCH 16/20] famfs: Add fault counters
-Message-ID: <65d8fa6736a18_2509b29410@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-References: <cover.1708709155.git.john@groves.net>
- <43245b463f00506016b8c39c0252faf62bd73e35.1708709155.git.john@groves.net>
- <05a12c0b-e3e3-4549-b02e-442e4b48a86d@intel.com>
- <l66vdkefx4ut73jis52wvn4j6hzj5omvrtpsoda6gbl27d4uwg@yolm6jx4yitn>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <l66vdkefx4ut73jis52wvn4j6hzj5omvrtpsoda6gbl27d4uwg@yolm6jx4yitn>
-X-ClientProxiedBy: MW4PR04CA0190.namprd04.prod.outlook.com
- (2603:10b6:303:86::15) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4D971448DD;
+	Fri, 23 Feb 2024 20:05:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.153
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708718729; cv=none; b=JHr32UCL4PUR761k2oiq7M2jicXM2Tyxeup+fe1aPgD85JVkcusk0k1DngQrCGgCZCJ3wrXIIBHPH+x/TZr0rw1QprbWyi5LYaFmnqwum1vU/hj1oVMR+zcEe2LsreliZ0IoL6MT1/GtpH8GwL9q8CU6VJm3NAxRXsmRFXa7CPU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708718729; c=relaxed/simple;
+	bh=Mm1874xOaWGSX/4lpmuBBHcJ9Oz40abiBvB//puhxjw=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=HtBKoaW9hd47Tfnp7Xhm/SLsCzknRsC2R9uj6/sI4pjhXCULUyuKelTnqSaRTrhCd5ul4ZTrLw0TUr7/kD+szEIk93+jWSqvvjVYoEgr1McrFnbfKojnMbfmbhE/D6cnk1OskRItr/guKCusVbSSM/rqQS1aB2zdPTJBSoOaK38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=z1w5sW/k; arc=none smtp.client-ip=203.205.221.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1708718712; bh=1x7RR20iHdqrvSarT+8ncAOxhf4eqeuhxqiRBpiCA+w=;
+	h=From:To:Cc:Subject:Date;
+	b=z1w5sW/k0cV4pR8kjfvoyfFR/qaaSYbULeaFsR/6snTgA5hYaC1zRdb5W1MygNW1m
+	 SvphXU84+OE4M5xNeTHwqENjm6uOYnDtbCYs1w0VqWemGcM3tbsOMGKBUVHryjtVe7
+	 Vtiuu56BCpN2Kfax+0o33lL2pl1+bQSB1LS8DdKE=
+Received: from cyy-pc.lan ([240e:379:2240:ef00:159c:db93:bdcd:c9c6])
+	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+	id 148048B8; Sat, 24 Feb 2024 04:05:08 +0800
+X-QQ-mid: xmsmtpt1708718708tfrs0kqnv
+Message-ID: <tencent_61DFA8E0B13696A3256E538C4BC856633406@qq.com>
+X-QQ-XMAILINFO: Nwl7PuG5jlSkpv89wmEjCCtsC2OI9S3j37EaXZFkIpXBasYE7HNrgBOu9WtZaG
+	 tYrEaeQknSR1lJWms5YwCE6f1OyKMc9X79D0h2XGqhGizSGo2wvGm2HWuFz3sGHQv/XaOcG7AZEI
+	 VOVTrzIKV8Eb0rsgWLdPRsKZFUYEHbFj9EdRY+TBjDqOf3kFs+o7xX/EHSuAGVLLNsQbx/DnmFOv
+	 7RDlNFGpnCKL7VeFRsZjT6EEvHlG1CzA0PsUPILmaodUL1Ry6GEhcwfqnM5AijDhC86ou+FQzBgV
+	 F/jBzZnaKsPFFc3Jb9MY1kW/RNWoXxgW1QdXhcmOLvxdiUmfOykf0gfchl6Wqga+DZyNZTTjmaKv
+	 LSld6nLYchA36bH2S44KyF/kAbPJbmLG0x0ts3ood5Rys/uvi+m7LyOu7BvDLD9GuLhpFXnhO92S
+	 LnXYiFcqiUVJp+Rk/dGmDC5zzZCGuUxjPRR3uzjsYwWgDuV7/ZdcRREkE/Z6HIKyWCnPwnUxn9aA
+	 5Pz2NjXhypJEqfr5mcrVzkPPE7aCwNDlpv/Z6pg6K8JA9JI5LF7pGqXT5NHW/9/WItcYqPuDX5Hc
+	 CpMFNBKSN3IkpJzV5KFW/03zYNbbjGCCB5qavjebAwOltjzaeyzKDa0ypkeX25mKo97B6e3nPnFY
+	 LBwhVWbIMwtu2LbL4LuH2XpJPWRuuprV4G37lPe3KuUADsLlYz341K11v6V5qtTH+MPdgvZixsW2
+	 4L3HUpr+BnA2V519a4AToLH5ydIMIYPpXvzGVUnI6Pb1TUsQ/9/xz1EVEvpALJ8nwm62JW+arM2U
+	 p0vjadDILB5+2kApH9665HWZRmjUi4yfiknT/xv9VeSqah+80+XrXHjmz28vJZ/o0PLE6zLRugAy
+	 5iSJCpM5j6CJ13hU9qQMkFNDChvRVABE20Cz43hMq+fUNc1Cw76B2M7cKiob3ub66jhJH4U+oGZW
+	 OZyi2LMJILgdLrlazJBOaTn0JWWXbPAg4PyrSyu37+qPwyHsJw7PUHTAYk7k4V1K5I4bR4Y85DNz
+	 9znAExBQ==
+X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
+From: Yangyu Chen <cyy@cyyself.name>
+To: linux-riscv@lists.infradead.org
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Conor Dooley <conor@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Alexandre Ghiti <alex@ghiti.fr>,
+	Rob Herring <robh+dt@kernel.org>,
+	devicetree@vger.kernel.org,
+	Yangyu Chen <cyy@cyyself.name>
+Subject: [PATCH v2] riscv: dts: Move BUILTIN_DTB_SOURCE to common Kconfig
+Date: Sat, 24 Feb 2024 04:05:07 +0800
+X-OQ-MSGID: <20240223200507.3702579-1-cyy@cyyself.name>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|BN0PR11MB5693:EE_
-X-MS-Office365-Filtering-Correlation-Id: f9e1bf2d-8154-4e62-3804-08dc34aab67e
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7JWTEYgCqM5o9fBste/9UlNQgyAQSnlu3Z3ZjJvPjpttA4DN3ZyCC5IoWajH/mhWjxgpCi1nip0U2eRwsHf0BDTXocp0RAdZDwTaAQfrspzjZoaZY8+x5nDlaCfghDU3EMLH++SrN7wol9vJ8wM6a9YeSJUuN/p1jh+PF5EUQ9EoMrznSQYsnQ27sFXWAHA9SZg7OdHg2mIegsiAu3jKQ3i02eP7s1IawcYGVy1AloIO4RpFFgwYWNoYqRnxEPMygYv717z2T0vTuuSl5nKpWUKhSXCOGAmS61iur558/eeFRKlYBHPBTK2L7F/G3j4N4LpwHUL7MYbCfeJprqUaCQQDontoSKH/BUHm4jFjRdnM5eW3SKIMGeDjeGBHfEuSb6w84+ixbrV5sYIu7alJ4/LHDEDS9u/iexsAwDlFBV9ijFPfv/2l7JaEA8mBLpZdMelaWfsWTUx5YTGU2aKpT5Xe455HU/X/djhqHt7IHu/IQfgXrZjF0xDbZggGYpfHOs7ru5LSknLbJQXEFvuz+g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?jXrq9gLNUO8LPHFSjKmoUxQFVyyGAC5YFOb3tht7XS/JxNKpiYzpUfM4pRYw?=
- =?us-ascii?Q?i2zMbk8sR+yv4deCZBHhUqhsbJl7MNHFapUw35PJWtHDUfbDoX3+m5cRQ7bo?=
- =?us-ascii?Q?s7l3xu13gDFwDyvk9ZmnUrTea7uG+l59rtny2yv1eN2zNJX6e4TIzmvdMVtd?=
- =?us-ascii?Q?cNm3PIcWBsw0Sk/1FAm/m19GAXkOSv3VjhBm57YgcRtKIC2GUfVi1mNcxBry?=
- =?us-ascii?Q?wPhz4VOjTk8a1+8LX0Udw6R25ZZjfkWVS0ItGYLzB0cXhqIv3z+AHIoMGzGg?=
- =?us-ascii?Q?Rr2HIcIAynE1TX/PL8H6kr6+rWlEWm5/gITacSusWSi5TYdlwkY4Sn8N4WK8?=
- =?us-ascii?Q?IIVT95evdPF0bwtCVHSKmq3nRUP70IGhS02a5gnUDuxBG7I4rLdrC8F48hdp?=
- =?us-ascii?Q?5tyem+hZERGbKxGrODC/JhmFAVRPOt620VAu+WnkeiRFb/1/e2tKGECYhh9A?=
- =?us-ascii?Q?XGl75y1TCkn4V8OqKXqRkBmMNprx5dRxz+VLX2woG5RUl7mNDmfyducwk9xJ?=
- =?us-ascii?Q?8+im1MhK6FDqCBwpHv5vrDcOsSddgaOKQ0BDTET8qe269Ns7y2F98QQDTUWj?=
- =?us-ascii?Q?AYVcqdUitlJjd6Xa5dTVoCqFnU1VPiKiculyTKH9CVkMicvDWVQJL70oKPA+?=
- =?us-ascii?Q?37a2hpkO/zVoZQItgKw+7iFcazmtGw2Y3ruDnXA05UZKX+ybi5bR2CH/GGq/?=
- =?us-ascii?Q?tPpjAxlthOKTTzOuBj90tfjFD0roto8ITooM13I0UFEwwRT2cxIKM145CgR/?=
- =?us-ascii?Q?amtSlgeS6rCqLtHegxCsd7j0UxAY3U92qJPacdcCAk5D+Q9vsUjgY6ms4PyQ?=
- =?us-ascii?Q?gnvCLPdHC6tr/c+MHdlFRkLauhDS5HjjmILUbdt6XS5q9PZYDPsuWOECxHBx?=
- =?us-ascii?Q?EGi6Xk2ELV0qCx2MQpu+9acihvOvlvZIDgc0+pvWmd7X+vpIaLWStEVj5PzD?=
- =?us-ascii?Q?whnFmF2lAAbInxW9dy1Tg8rNZ592ooNNxBP/mSxu2xUwYX5la7jUGUIdu7wf?=
- =?us-ascii?Q?QgOip4K2dm4fWQOWVk+kkyEjDlurWnFugEwR1PObm4ii6XdoLQ6/oQSydZUA?=
- =?us-ascii?Q?jkTKOq+KY6Zyea5ylQfe/rXbW46vFyTbcVauaRLaTafxWMTNzxSxPXz7Q0gC?=
- =?us-ascii?Q?0AvgMyAMP+Mt+N8bT2SwVbtF65WLhRHfYGFPKK8+d3SvsyCiXEg0/2gQ2qYj?=
- =?us-ascii?Q?QYTdVAvh0jV6n7/ICQfS6Jx34GB4b0jIBGrK6sBAQfcN+nI7MNA/qTixPF2W?=
- =?us-ascii?Q?deB4SEtNUHLc+Np2ZYXvZp1j4m9TnFuzd5A/1QDehqckpt69yJ86ukvDP1AO?=
- =?us-ascii?Q?2qkvp/6pkKzafnnxhsOXBvwbnj6hPVDIDxwlGKBEp96lPs720Ihsrv72kg/M?=
- =?us-ascii?Q?fhvr/uryw5NVyjYeHKXydbzfSWrb7j2WRLILWI0xNJ/A2rOGSEauCXpgFBjE?=
- =?us-ascii?Q?qUiyOuVtswPQU0wV54uF8V3g6oF1BvmLSndGNMIluNv91/YBltIVTvZFBAgD?=
- =?us-ascii?Q?ngKrVuhh3G/dzkYnZe0OJOUqkpLh/1wVRg4pyBLkEOONzUar3NSU5Mv6zpDn?=
- =?us-ascii?Q?kPj4tpWQCjrc3Bl2Ftv1JXXErZoJW70aznzypYAw30ZlfFb9TXx1DK5dOwCZ?=
- =?us-ascii?Q?gw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: f9e1bf2d-8154-4e62-3804-08dc34aab67e
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2024 20:04:59.2731
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KvCypRCm3PWiSj1zRFQ7p1cJaszMHWkK3n4mlYFHjB2FwyZgEG0x4qa9yiEnQL2nmw2QbMEM5GdqsiUEHkTf4K2SLHtNHveFIkzgFAp0mYw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR11MB5693
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 
-John Groves wrote:
-> On 24/02/23 10:23AM, Dave Hansen wrote:
-> > On 2/23/24 09:42, John Groves wrote:
-> > > One of the key requirements for famfs is that it service vma faults
-> > > efficiently. Our metadata helps - the search order is n for n extents,
-> > > and n is usually 1. But we can still observe gnarly lock contention
-> > > in mm if PTE faults are happening. This commit introduces fault counters
-> > > that can be enabled and read via /sys/fs/famfs/...
-> > > 
-> > > These counters have proved useful in troubleshooting situations where
-> > > PTE faults were happening instead of PMD. No performance impact when
-> > > disabled.
-> > 
-> > This seems kinda wonky.  Why does _this_ specific filesystem need its
-> > own fault counters.  Seems like something we'd want to do much more
-> > generically, if it is needed at all.
-> > 
-> > Was the issue here just that vm_ops->fault() was getting called instead
-> > of ->huge_fault()?  Or something more subtle?
-> 
-> Thanks for your reply Dave!
-> 
-> First, I'm willing to pull the fault counters out if the brain trust doesn't
-> like them.
-> 
-> I put them in because we were running benchmarks of computational data
-> analytics and and noted that jobs took 3x as long on famfs as raw dax -
-> which indicated I was doing something wrong, because it should be equivalent
-> or very close.
-> 
-> The the solution was to call thp_get_unmapped_area() in
-> famfs_file_operations, and performance doesn't vary significantly from raw
-> dax now. Prior to that I wasn't making sure the mmap address was PMD aligned.
-> 
-> After that I wanted a way to be double-secret-certain that it was servicing
-> PMD faults as intended. Which it basically always is, so far. (The smoke
-> tests in user space check this.)
+The BUILTIN_DTB_SOURCE is only configured for K210 before. Since
+SOC_BUILTIN_DTB_DECLARE is removed at commit d5805af9fe9f ("riscv: Fix
+builtin DTB handling") from patch [1], the kernel cannot choose one of the
+dtbs from then on and always take the first one dtb to use. Then, another
+commit 0ddd7eaffa64 ("riscv: Fix BUILTIN_DTB for sifive and microchip soc")
+from patch [2] supports BUILTIN_DTB_SOURCE for other SoCs. However, this
+feature will only work if the Kconfig we use links the dtb we expected in
+the first place as mentioned in the thread [3]. Thus, a config
+BUILTIN_DTB_SOURCE is needed for all SoCs to choose one dtb to use.
 
-We had similar unit test regression concerns with fsdax where some
-upstream change silently broke PMD faults. The solution there was trace
-points in the fault handlers and a basic test that knows apriori that it
-*should* be triggering a certain number of huge faults:
+For some considerations, this patch also removes default y if XIP_KERNEL
+for BUILTIN_DTB, as this requires setting a proper dtb to use on the
+BUILTIN_DTB_SOURCE, else the kernel with XIP but does not set
+BUILTIN_DTB_SOURCE or unselect BUILTIN_DTB will not boot.
 
-https://github.com/pmem/ndctl/blob/main/test/dax.sh#L31
+Also, this patch removes the default dtb string for k210 from Kconfig to
+nommu_k210_defconfig and nommu_k210_sdcard_defconfig to avoid complex
+Kconfig settings for other SoCs in the future.
+
+Changes since v1:
+- remove default y for BULTIN_DTB in any cases
+- remove default DTB_SOURCE for k210 and moved to its defconfig file
+- remove building dtb object file for other SoCs
+- reword help message to say N if unsure for BUILTIN_DTB_SOURCE
+- reword commit message
+- v1: https://lore.kernel.org/linux-riscv/tencent_AB625442CC1BCFF86E04D7B5891C43719109@qq.com/
+
+[1] https://lore.kernel.org/linux-riscv/20201208073355.40828-5-damien.lemoal@wdc.com/
+[2] https://lore.kernel.org/linux-riscv/20210604120639.1447869-1-alex@ghiti.fr/
+[3] https://lore.kernel.org/linux-riscv/CAK7LNATt_56mO2Le4v4EnPnAfd3gC8S_Sm5-GCsfa=qXy=8Lrg@mail.gmail.com/
+
+Signed-off-by: Yangyu Chen <cyy@cyyself.name>
+---
+ arch/riscv/Kconfig                            | 14 +++++++-
+ arch/riscv/Kconfig.socs                       | 32 -------------------
+ arch/riscv/boot/dts/Makefile                  |  2 +-
+ arch/riscv/boot/dts/canaan/Makefile           |  2 --
+ arch/riscv/boot/dts/microchip/Makefile        |  1 -
+ arch/riscv/boot/dts/sifive/Makefile           |  1 -
+ arch/riscv/configs/nommu_k210_defconfig       |  2 ++
+ .../riscv/configs/nommu_k210_sdcard_defconfig |  2 ++
+ 8 files changed, 18 insertions(+), 38 deletions(-)
+
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 85c899d0133a..3d6d93d71257 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -1000,7 +1000,19 @@ config RISCV_ISA_FALLBACK
+ config BUILTIN_DTB
+ 	bool "Built-in device tree"
+ 	depends on OF && NONPORTABLE
+-	default y if XIP_KERNEL
++	help
++	  Build a device tree into the Linux image.
++	  This option should be selected if no bootloader is being used.
++	  If unsure, say N.
++
++
++config BUILTIN_DTB_SOURCE
++	string "Built-in device tree source"
++	depends on BUILTIN_DTB
++	help
++	  DTS file path (without suffix, relative to arch/riscv/boot/dts)
++	  for the DTS file that will be used to produce the DTB linked into the
++	  kernel.
+ 
+ endmenu # "Boot options"
+ 
+diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+index e08e91c49abe..623de5f8a208 100644
+--- a/arch/riscv/Kconfig.socs
++++ b/arch/riscv/Kconfig.socs
+@@ -84,36 +84,4 @@ config SOC_CANAAN
+ 	help
+ 	  This enables support for Canaan Kendryte K210 SoC platform hardware.
+ 
+-if ARCH_CANAAN
+-
+-config ARCH_CANAAN_K210_DTB_BUILTIN
+-	def_bool SOC_CANAAN_K210_DTB_BUILTIN
+-
+-config SOC_CANAAN_K210_DTB_BUILTIN
+-	bool "Builtin device tree for the Canaan Kendryte K210"
+-	depends on ARCH_CANAAN
+-	default y
+-	select OF
+-	select BUILTIN_DTB
+-	help
+-	  Build a device tree for the Kendryte K210 into the Linux image.
+-	  This option should be selected if no bootloader is being used.
+-	  If unsure, say Y.
+-
+-config ARCH_CANAAN_K210_DTB_SOURCE
+-	string
+-	default SOC_CANAAN_K210_DTB_SOURCE
+-
+-config SOC_CANAAN_K210_DTB_SOURCE
+-	string "Source file for the Canaan Kendryte K210 builtin DTB"
+-	depends on ARCH_CANAAN
+-	depends on ARCH_CANAAN_K210_DTB_BUILTIN
+-	default "k210_generic"
+-	help
+-	  Base name (without suffix, relative to arch/riscv/boot/dts/canaan)
+-	  for the DTS file that will be used to produce the DTB linked into the
+-	  kernel.
+-
+-endif # ARCH_CANAAN
+-
+ endmenu # "SoC selection"
+diff --git a/arch/riscv/boot/dts/Makefile b/arch/riscv/boot/dts/Makefile
+index 72030fd727af..fdae05bbf556 100644
+--- a/arch/riscv/boot/dts/Makefile
++++ b/arch/riscv/boot/dts/Makefile
+@@ -8,4 +8,4 @@ subdir-y += sophgo
+ subdir-y += starfive
+ subdir-y += thead
+ 
+-obj-$(CONFIG_BUILTIN_DTB) := $(addsuffix /, $(subdir-y))
++obj-$(CONFIG_BUILTIN_DTB) := $(addsuffix .dtb.o, $(CONFIG_BUILTIN_DTB_SOURCE))
+diff --git a/arch/riscv/boot/dts/canaan/Makefile b/arch/riscv/boot/dts/canaan/Makefile
+index 520623264c87..987d1f0c41f0 100644
+--- a/arch/riscv/boot/dts/canaan/Makefile
++++ b/arch/riscv/boot/dts/canaan/Makefile
+@@ -5,5 +5,3 @@ dtb-$(CONFIG_ARCH_CANAAN) += sipeed_maix_bit.dtb
+ dtb-$(CONFIG_ARCH_CANAAN) += sipeed_maix_dock.dtb
+ dtb-$(CONFIG_ARCH_CANAAN) += sipeed_maix_go.dtb
+ dtb-$(CONFIG_ARCH_CANAAN) += sipeed_maixduino.dtb
+-
+-obj-$(CONFIG_ARCH_CANAAN_K210_DTB_BUILTIN) += $(addsuffix .dtb.o, $(CONFIG_ARCH_CANAAN_K210_DTB_SOURCE))
+diff --git a/arch/riscv/boot/dts/microchip/Makefile b/arch/riscv/boot/dts/microchip/Makefile
+index 45adc4926e79..e177815bf1a2 100644
+--- a/arch/riscv/boot/dts/microchip/Makefile
++++ b/arch/riscv/boot/dts/microchip/Makefile
+@@ -4,4 +4,3 @@ dtb-$(CONFIG_ARCH_MICROCHIP_POLARFIRE) += mpfs-m100pfsevp.dtb
+ dtb-$(CONFIG_ARCH_MICROCHIP_POLARFIRE) += mpfs-polarberry.dtb
+ dtb-$(CONFIG_ARCH_MICROCHIP_POLARFIRE) += mpfs-sev-kit.dtb
+ dtb-$(CONFIG_ARCH_MICROCHIP_POLARFIRE) += mpfs-tysom-m.dtb
+-obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
+diff --git a/arch/riscv/boot/dts/sifive/Makefile b/arch/riscv/boot/dts/sifive/Makefile
+index 6a5fbd4ed96a..495bf760a909 100644
+--- a/arch/riscv/boot/dts/sifive/Makefile
++++ b/arch/riscv/boot/dts/sifive/Makefile
+@@ -1,4 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0
+ dtb-$(CONFIG_ARCH_SIFIVE) += hifive-unleashed-a00.dtb \
+ 			     hifive-unmatched-a00.dtb
+-obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
+diff --git a/arch/riscv/configs/nommu_k210_defconfig b/arch/riscv/configs/nommu_k210_defconfig
+index 146c46d0525b..7e75200543f4 100644
+--- a/arch/riscv/configs/nommu_k210_defconfig
++++ b/arch/riscv/configs/nommu_k210_defconfig
+@@ -33,6 +33,8 @@ CONFIG_SMP=y
+ CONFIG_NR_CPUS=2
+ CONFIG_CMDLINE="earlycon console=ttySIF0"
+ CONFIG_CMDLINE_FORCE=y
++CONFIG_BUILTIN_DTB=y
++CONFIG_BUILTIN_DTB_SOURCE="canaan/k210_generic"
+ # CONFIG_SECCOMP is not set
+ # CONFIG_STACKPROTECTOR is not set
+ # CONFIG_GCC_PLUGINS is not set
+diff --git a/arch/riscv/configs/nommu_k210_sdcard_defconfig b/arch/riscv/configs/nommu_k210_sdcard_defconfig
+index 95d8d1808f19..0ba353e9ca71 100644
+--- a/arch/riscv/configs/nommu_k210_sdcard_defconfig
++++ b/arch/riscv/configs/nommu_k210_sdcard_defconfig
+@@ -25,6 +25,8 @@ CONFIG_SMP=y
+ CONFIG_NR_CPUS=2
+ CONFIG_CMDLINE="earlycon console=ttySIF0 root=/dev/mmcblk0p1 rootwait ro"
+ CONFIG_CMDLINE_FORCE=y
++CONFIG_BUILTIN_DTB=y
++CONFIG_BUILTIN_DTB_SOURCE="canaan/k210_generic"
+ # CONFIG_SECCOMP is not set
+ # CONFIG_STACKPROTECTOR is not set
+ # CONFIG_GCC_PLUGINS is not set
+-- 
+2.43.0
+
 
