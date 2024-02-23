@@ -1,70 +1,92 @@
-Return-Path: <linux-kernel+bounces-78748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45C7286183A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:42:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B219A86183D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:42:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBE76282B6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:42:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25C591F23EDA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:42:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 181403FF1;
-	Fri, 23 Feb 2024 16:42:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D809884FA6;
+	Fri, 23 Feb 2024 16:42:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b="Rnnxl9kS"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="B0ENLgm3";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jqf1noHa";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="B0ENLgm3";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jqf1noHa"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C307B128391
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 16:42:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8912B12838F
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 16:42:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708706540; cv=none; b=qZonrQfmTUxpVxW8jNSRfToJJHRAtiwMy0UnmutrgTJfsMUzapX3i6pq8/5TNQ3DB6mIp3m3i6qE9j6ZuKOuX+95ChHxlcy+T0j/RiI/hQbnrqECFfyiDZHKu63cXzEJR2c7bKkhatyccLTJ1PsXdVK9SSnU5S0+i3B0anoT1WY=
+	t=1708706556; cv=none; b=uOrarbrt7N2cAFTvx0GqBYdrdP1hKrNgdzBw7rCy4pS3Z0txjL/MzZo9YgBRmZB8tKs3dJgFAVtLSxnY4xCXMtSaae35M7tjqCJBswv8hT+KcWUnWhVkzpTh3DNTgwU4zBW9FFhsODlD+SKekNTvicZgiUZDflI/4eOxK+vU6Io=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708706540; c=relaxed/simple;
-	bh=tzZ5vRou2tzwpiknAbcgvaY03gJD6AH4Ovlu8u2D8nE=;
+	s=arc-20240116; t=1708706556; c=relaxed/simple;
+	bh=lYsVMJERJhvZE4jmpUqSAbs+W+UI8cO7lAplPHyIyFI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=E9Rqep1RqsAtx7+JE/8D1Ah8P4HxpyWefightJJvT3bkk4bwE9okPIQ2k6LqtR5kV9y69EV8AkR00Xu5qV4adVj0VvQmt5hcUQDNg9EsGhc8wRl61tfhwwoIzAtIcnIwhjd2Cu74oAc3delIM6XbG1bY9a/1qhBEh34sok5FGUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com; spf=pass smtp.mailfrom=cloud.com; dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b=Rnnxl9kS; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloud.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-512be6fda52so714898e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 08:42:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1708706536; x=1709311336; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qoLuBOTBYwo+qwBs59lcs6973WjeFSpK73YZ5Iw2Km4=;
-        b=Rnnxl9kSa7KrbBm6ey3tFDwIUFl3iGJfUhFX51OlJjp/NL9R+LCjXseVt4sjBDbOQS
-         osAnBZA8jImab66xW4cG3/YUrN4EiBGJnVNmj/yWEvyX7+/q2k+45PCO6z3jumO02XiM
-         ++pi0OAoFJWStxXyzi1xFUSxuFJZd2KisG+AY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708706536; x=1709311336;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qoLuBOTBYwo+qwBs59lcs6973WjeFSpK73YZ5Iw2Km4=;
-        b=YPgYClbVEh6OINZSBna54F9ElKNUkespCYRdw/Bf4IUXzgC6sIRaL++qWYUO+DmgX1
-         FDuAtsUVFcCCPmKpr1hHrtaUOGkdJ9PqUSv0xA2PRQq/DtuwLwkH5DoIfZw6Pb5fiRcV
-         bSqIgvIicc3I+LtGB/yyJW4BZHLPmi3RmeReUNVb+UiYabqB5LuDdxDtBQL4yLQ39ZjK
-         aR5oIB03Z70FV2trltPwsxivtpMIq8B5oAyr9ihy4zEB+eIF7Dix80AbEulf1nzk4/W4
-         zkAecwQYstU1hBGokyMJ21MwL4vonhxi9+/NOZBHTVEI9GCTArrNxxWp/sPrrAWXDRmz
-         aGiw==
-X-Forwarded-Encrypted: i=1; AJvYcCXciVz7yinMj8eWrTTH32nQO18BsmyWQwgqJmSIMV3XQNWEOCNcFlpbj4K1a7yipQnNztfbX7m0Il0QWWVyyIhwMcPuMVt0JOCXjEbr
-X-Gm-Message-State: AOJu0Ywc1UVo+6gqvF6yzg9O8bj+a79mGUV0x9luSrKgNr1Jo63M2kLs
-	xLCFGkB4zetGYsdFL2xd27E+xiV3OhvYovYOA23QFBPViV3hzF+F1SZFzLjJuwE=
-X-Google-Smtp-Source: AGHT+IFVg0FkzeWFv8VAUtlKSwt788AmJwtS0qsDMb5sOGtHb2BLbj86xPtSi/VfS0UFWwlNIJXZJA==
-X-Received: by 2002:a05:6512:3b0f:b0:512:be84:f49d with SMTP id f15-20020a0565123b0f00b00512be84f49dmr227672lfv.63.1708706535842;
-        Fri, 23 Feb 2024 08:42:15 -0800 (PST)
-Received: from [10.80.67.149] (default-46-102-197-194.interdsl.co.uk. [46.102.197.194])
-        by smtp.gmail.com with ESMTPSA id x4-20020a0ce244000000b0068f2d2f64d1sm8403702qvl.32.2024.02.23.08.42.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Feb 2024 08:42:15 -0800 (PST)
-Message-ID: <431a0b3a-47e5-4e61-a7fc-31cdf56f4e4c@citrix.com>
-Date: Fri, 23 Feb 2024 16:42:11 +0000
+	 In-Reply-To:Content-Type; b=ecudEMhoTib/Uc2ND8YlzNsPNIMFml7ceRMSnMqet3ZP/TzMcbIhikhO17qWoRNn/mY8hpX7UGoZ6k7E3ikAGjr5EIwCEhulYsDu8khj6b9h9TaebhJVmJOy1/cnxzhD1lvY3pcXeFCqUnnBunnwrVooZ8X1i+fBtkVglkGE8fI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=B0ENLgm3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jqf1noHa; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=B0ENLgm3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jqf1noHa; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7706421FB5;
+	Fri, 23 Feb 2024 16:42:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708706552; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KFNMZIie6l19aBPMWRYEEnQsnBcUocAqPJ4rC3B7ytY=;
+	b=B0ENLgm37c4QgheVXQWeRnAwR3WJS6MDYsvcQzrFclBddWdvDFGT8290voIijVLfoVdBcj
+	d4LEOJBHdDt3iCFFEuv7NfpymJctXz/uDVzAYWrWfmcbfVbW9ucJCRZdXNPpgy+iwanlYx
+	wgM+3VTnyQMmbWPZ6wa76W9E9ysThis=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708706552;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KFNMZIie6l19aBPMWRYEEnQsnBcUocAqPJ4rC3B7ytY=;
+	b=jqf1noHamoZfUX1sMsxHWVltkIU7bGem5pt5ygmMoJc27fVq8w7v3/1eyNBE07LqOFgrKA
+	Kmi5/+XBCJloceAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708706552; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KFNMZIie6l19aBPMWRYEEnQsnBcUocAqPJ4rC3B7ytY=;
+	b=B0ENLgm37c4QgheVXQWeRnAwR3WJS6MDYsvcQzrFclBddWdvDFGT8290voIijVLfoVdBcj
+	d4LEOJBHdDt3iCFFEuv7NfpymJctXz/uDVzAYWrWfmcbfVbW9ucJCRZdXNPpgy+iwanlYx
+	wgM+3VTnyQMmbWPZ6wa76W9E9ysThis=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708706552;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KFNMZIie6l19aBPMWRYEEnQsnBcUocAqPJ4rC3B7ytY=;
+	b=jqf1noHamoZfUX1sMsxHWVltkIU7bGem5pt5ygmMoJc27fVq8w7v3/1eyNBE07LqOFgrKA
+	Kmi5/+XBCJloceAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 443D6133DC;
+	Fri, 23 Feb 2024 16:42:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id YCWsD/jK2GWUNAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 23 Feb 2024 16:42:32 +0000
+Message-ID: <0a30e148-2698-44d5-83c9-da102c0ba753@suse.cz>
+Date: Fri, 23 Feb 2024 17:42:32 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,272 +94,84 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 06/15] x86: Add early SHA support for Secure Launch
- early measurements
-Content-Language: en-GB
-To: Ard Biesheuvel <ardb@kernel.org>,
- Andrew Cooper <andrew.cooper3@citrix.com>
-Cc: Ross Philipson <ross.philipson@oracle.com>, linux-kernel@vger.kernel.org,
- x86@kernel.org, linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-crypto@vger.kernel.org, kexec@lists.infradead.org,
- linux-efi@vger.kernel.org, dpsmith@apertussolutions.com, tglx@linutronix.de,
- mingo@redhat.com, bp@alien8.de, hpa@zytor.com, dave.hansen@linux.intel.com,
- mjg59@srcf.ucam.org, James.Bottomley@hansenpartnership.com,
- peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca, luto@amacapital.net,
- nivedita@alum.mit.edu, herbert@gondor.apana.org.au, davem@davemloft.net,
- kanth.ghatraju@oracle.com, trenchboot-devel@googlegroups.com,
- Eric Biggers <ebiggers@kernel.org>
-References: <20240214221847.2066632-1-ross.philipson@oracle.com>
- <20240214221847.2066632-7-ross.philipson@oracle.com>
- <CAMj1kXEmMBY_jc0uM5UgZbuZ3-C7NPKzg5AScaunyu9XzLgzZA@mail.gmail.com>
- <98ad92bb-ef17-4c15-88ba-252db2a2e738@citrix.com>
- <CAMj1kXFTu+bV2kQhAyu15hrYai20NcBLb4Zu8XG2Y-XjL0f+rw@mail.gmail.com>
- <1a8e69a7-89eb-4d36-94d6-0da662d8b72f@citrix.com>
- <CAMj1kXEvmGy9RJo4s8tECsFj2dufZ8jBPoJOEtkcGUoj+x2qsw@mail.gmail.com>
-From: Andrew Cooper <andrew.cooper3@citrix.com>
-Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
- 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
- 6+ahAA==
-In-Reply-To: <CAMj1kXEvmGy9RJo4s8tECsFj2dufZ8jBPoJOEtkcGUoj+x2qsw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mm, slab: use an enum to define SLAB_ cache creation
+ flags
+Content-Language: en-US
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+ David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, Andrey Ryabinin
+ <ryabinin.a.a@gmail.com>, Alexander Potapenko <glider@google.com>,
+ Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
+ Vincenzo Frascino <vincenzo.frascino@arm.com>,
+ Zheng Yejian <zhengyejian1@huawei.com>,
+ Xiongwei Song <xiongwei.song@windriver.com>,
+ Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com
+References: <20240220-slab-cleanup-flags-v1-0-e657e373944a@suse.cz>
+ <20240220-slab-cleanup-flags-v1-2-e657e373944a@suse.cz>
+ <ZdZCDEFX4_UuHSWR@P9FQF9L96D.corp.robot.car>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <ZdZCDEFX4_UuHSWR@P9FQF9L96D.corp.robot.car>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spamd-Bar: /
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=B0ENLgm3;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=jqf1noHa
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-0.11 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 TO_DN_SOME(0.00)[];
+	 R_RATELIMIT(0.00)[to_ip_from(RLycmwa99sdzp837p77658kns5)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-0.11)[66.23%];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[18];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[linux.com,kernel.org,google.com,lge.com,linux-foundation.org,gmail.com,arm.com,huawei.com,windriver.com,linux.dev,kvack.org,vger.kernel.org,googlegroups.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -0.11
+X-Rspamd-Queue-Id: 7706421FB5
+X-Spam-Flag: NO
 
-On 23/02/2024 9:27 am, Ard Biesheuvel wrote:
-> On Thu, 22 Feb 2024 at 13:30, Andrew Cooper <andrew.cooper3@citrix.com> wrote:
->> On 22/02/2024 9:34 am, Ard Biesheuvel wrote:
->>> On Thu, 22 Feb 2024 at 04:05, Andrew Cooper <andrew.cooper3@citrix.com> wrote:
->>>> On 15/02/2024 8:17 am, Ard Biesheuvel wrote:
->>>>> On Wed, 14 Feb 2024 at 23:31, Ross Philipson <ross.philipson@oracle.com> wrote:
->>>>>> From: "Daniel P. Smith" <dpsmith@apertussolutions.com>
->>>>>>
->>>>>> The SHA algorithms are necessary to measure configuration information into
->>>>>> the TPM as early as possible before using the values. This implementation
->>>>>> uses the established approach of #including the SHA libraries directly in
->>>>>> the code since the compressed kernel is not uncompressed at this point.
->>>>>>
->>>>>> The SHA code here has its origins in the code from the main kernel:
->>>>>>
->>>>>> commit c4d5b9ffa31f ("crypto: sha1 - implement base layer for SHA-1")
->>>>>>
->>>>>> A modified version of this code was introduced to the lib/crypto/sha1.c
->>>>>> to bring it in line with the sha256 code and allow it to be pulled into the
->>>>>> setup kernel in the same manner as sha256 is.
->>>>>>
->>>>>> Signed-off-by: Daniel P. Smith <dpsmith@apertussolutions.com>
->>>>>> Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
->>>>> We have had some discussions about this, and you really need to
->>>>> capture the justification in the commit log for introducing new code
->>>>> that implements an obsolete and broken hashing algorithm.
->>>>>
->>>>> SHA-1 is broken and should no longer be used for anything. Introducing
->>>>> new support for a highly complex boot security feature, and then
->>>>> relying on SHA-1 in the implementation makes this whole effort seem
->>>>> almost futile, *unless* you provide some rock solid reasons here why
->>>>> this is still safe.
->>>>>
->>>>> If the upshot would be that some people are stuck with SHA-1 so they
->>>>> won't be able to use this feature, then I'm not convinced we should
->>>>> obsess over that.
->>>> To be absolutely crystal clear here.
->>>>
->>>> The choice of hash algorithm(s) are determined by the OEM and the
->>>> platform, not by Linux.
->>>>
->>>> Failing to (at least) cap a PCR in a bank which the OEM/platform left
->>>> active is a security vulnerability.  It permits the unsealing of secrets
->>>> if an attacker can replay a good set of measurements into an unused bank.
->>>>
->>>> The only way to get rid of the requirement for SHA-1 here is to lobby
->>>> the IHVs/OEMs, or perhaps the TCG, to produce/spec a platform where the
->>>> SHA-1 banks can be disabled.  There are no known such platforms in the
->>>> market today, to the best of our knowledge.
->>>>
->>> OK, so mainline Linux does not support secure launch at all today. At
->>> this point, we need to decide whether or not tomorrow's mainline Linux
->>> will support secure launch with SHA1 or without, right?
->> I'd argue that's a slightly unfair characterisation.
->>
-> Fair enough. I'm genuinely trying to have a precise understanding of
-> this, not trying to be dismissive.
+On 2/21/24 19:33, Roman Gushchin wrote:
+> On Tue, Feb 20, 2024 at 05:58:26PM +0100, Vlastimil Babka wrote:
+>> The values of SLAB_ cache creation flagsare defined by hand, which is
+>> tedious and error-prone. Use an enum to assign the bit number and a
+>> __SF_BIT() macro to #define the final flags.
+>> 
+>> This renumbers the flag values, which is OK as they are only used
+>> internally.
+>> 
+>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+>> +#define __SF_BIT(nr)	((slab_flags_t __force)(1U << (nr)))
+> 
+> I'd rename it to (__)SLAB_FLAG_BIT(), as SF is a bit cryptic, but not a strong
+> preference. Otherwise looks really good to me, nice cleanup.
 
-Sure, and neither am I.  (And frankly, I vastly prefer this reasoned
-discussion to prior ones.)
+OK, it's also less likely that somebody would collide it.
 
-Secure Launch technology really is used today as out-of-tree code, and
-it has taken ~15y to get to this point of doing it nicely in an
-ecosystem that is wider than just Linux.  (Not a criticism, just an
-observation)
+> Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+> 
+> Thanks!
 
-We're looking not to get blocked with a brand new objection which
-approximates to "it's now not perfect, therefore you can't have
-something that's still a lot better than nothing".
-
-A major reason why the hardware ecosystem is out of date is because
-almost no-one uses it, because it's horribly complicated to configure,
-because it's a set of large out-of-tree patche series against your
-bootloader, hypervisor and kernel.
-
-The goal of the Trenchboot project is to make it easy to use (i.e.
-upstream support in the relevant projects), so that more people can use
-it, in order to drive the hardware ecosystem forward.
-
-Very seriously - Linux taking this series, even off by default and with
-a "SHA-1 considered hazardous for your health" warning somewhere, will
-still have a material positive impact in getting the hardware ecosystem
-to improve.  It is, by far and away, the best thing that we (Trenchboot)
-can do in order to move towards a SHA-1-less future.
-
-Trenchboot do have a specific intent to get to that future, and beyond,
-but it's a multi-year task.
-
-
->> We want tomorrow's mainline to support Secure Launch.  What that entails
->> under the hood is largely outside of the control of the end user.
->>
-> So the debate is really whether it makes sense at all to support
-> Secure Launch on systems that are stuck on an obsolete and broken hash
-> algorithm. This is not hyperbole: SHA-1 is broken today and once these
-> changes hit production 1-2 years down the line, the situation will
-> only have deteriorated. And another 2-3 years later, we will be the
-> ones chasing obscure bugs on systems that were already obsolete when
-> this support was added.
-
-There are indeed collisions, and this will indeed get worse over time.
-
-But right now it still takes nation-state (or certain corporation)
-resources to calculate a collision, and that would have to be specific
-to the exact firmware/settings/hypervisor/kernel/initrd configuration of
-the target device.
-
-Google et al invested the effort in SHAttered in order to drive change
-in the industry, but that doesn't mean it's viable as a general attack
-yet.  There are far more cost effective options, even a $4 wrench...
-
-> So what is the value proposition here? An end user today, who is
-> mindful enough of security to actively invest the effort to migrate
-> their system from ordinary measured boot to secure launch, is really
-> going to do so on a system that only implements SHA-1 support?
-
-Oh both Intel and AMD, the base technology is around in all platforms
-the support virt.
-
-On Intel, it's SKU-limited to vPRO, but platforms with fTPM2.0 have been
-generally SHA1+SHA256 capable for years now.  A security conscious end
-user would just want to cap the SHA1 banks and run with SHA256.
-
-Furthermore, when the attestation is based on a SHA1+SHA256 measurement,
-the attestor can spot and reject SHA1 collisions, so this configuration
-really should be safe to the concerns raised here.
-
-On AMD, it's not SKU-limited.  However, their fTPM2.0 isn't SKINIT
-compatible, and we were basically told "show us people using SKINIT
-first".  I'm not sure if we've got as far as trying to an LPC TPM 2.0 on
-AMD yet.  Even bus interception attacks can be defended against with TPM
-encrypted sessions,  but we put this in the "not for v1" bucket.
-
-
-It's not a secret - the intent of getting this technology more-generally
-usable (and therefore used) is to be able to go back to Intel and say
-"hey notice how AMD give this technology to everyone", and to say AMD
-"hey notice how Intel have this working with TPM2".  Both have been
-persuaded along this direction by Microsoft by virtue of including the
-Pluton IP blob in the main CPU package.
-
->>> And the point you are making here is that we need SHA-1 not only to a)
->>> support systems that are on TPM 1.2 and support nothing else, but also
->>> to b) ensure that crypto agile TPM 2.0 with both SHA-1 and SHA-256
->>> enabled can be supported in a safe manner, which would involve
->>> measuring some terminating event into the SHA-1 PCRs to ensure they
->>> are not left in a dangling state that might allow an adversary to
->>> trick the TPM into unsealing a secret that it shouldn't.
->> Yes.  Also c) because if the end user wants to use SHA-1, they should be
->> able to.
->>
-> The end user can do whatever they want, of course. Whether it belongs
-> in the upstream is an entirely different matter, though, especially
-> because we will effectively be forced to support this forever.
->
->
->>> So can we support b) without a), and if so, does measuring an
->>> arbitrary dummy event into a PCR that is only meant to keep sealed
->>> forever really require a SHA-1 implementation, or could we just use an
->>> arbitrary (not even random) sequence of 160 bits and use that instead?
->> a) and b) are in principle independent, but we cannot support b) without
->> SHA-1.
->>
->> To cap a PCR, the event log still needs to be kept accurate, and that's
->> at least one SHA-1 calculation.  If you were to simply extend a dummy
->> value, the system hopefully fails safe, but the user gets "something
->> went wrong, you're on your own", rather than "we intentionally blocked
->> the use of SHA-1, everything is good".
->>
->> And frankly, you need SHA-1 just to read the event log, if any component
->> (including TXT itself) wrote a SHA-1 entry into it.
->>
->>
->> To be blunt.  SHA-1 support is not viably optional today as far as
->> Secure Launch is concerned.  If there's a suitable Kconfig symbol to use
->> for people who want a completely SHA-1-less kernel, then we can make
->> Secure Launch depend on that until such time as the hardware ecosystem
->> has caught up.
->>
-> Yes, this crossed my mind as well. There is a Kconfig symbol
-> CRYPTO_USER_API_ENABLE_OBSOLETE I added a while ago for a similar
-> purpose.
->
-> I am still disappointed that we have to go down this path, but I
-> understand the concerns now that you have explained them to me (again)
-> in more detail.
->
-> These considerations need to be recorded in the documentation or
-> commit logs as well, so that we can easily refer back to them without
-> having to dig through the mail archives.
-
-Yes, and I agree.  We're not looking to try and force this in with
-underhand tactics.
-
-But a blind "nack to any SHA-1" is similarly damaging in the opposite
-direction.
-
-~Andrew
 
