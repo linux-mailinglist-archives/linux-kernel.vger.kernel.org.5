@@ -1,129 +1,102 @@
-Return-Path: <linux-kernel+bounces-78360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC8A6861260
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:14:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06835861261
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:14:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CD5D1F240B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:14:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B44EF284C1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:14:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A48E67F7E5;
-	Fri, 23 Feb 2024 13:13:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F257780036;
+	Fri, 23 Feb 2024 13:13:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a6aJ29r6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="EOLLiRCw"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E70E57E788;
-	Fri, 23 Feb 2024 13:13:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C2257E792
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:13:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708693988; cv=none; b=tcC6PNMJ4YWFOUYbRXZvZKeKeV9a9q5+yJpd8JL56Js7S6jM8gXUk9ZMfwsdxSvTVT5seUIiEJyOkl53JsVDhybKwS8vs+88blxiU4LcYi82o7lymjvhRrsLNUp3Fw3I2010az9LcIiEHRWTn7lpQA+lXjb7UWY8y5Jq5xvFqN0=
+	t=1708693993; cv=none; b=LFyiYp9n63EZi1YtglyQeiD6MwfH0W+csOVwk54cp5u0yePOKVlcUkLW6l2JEbISylRGZjofStDGiMdudHAB0wmPVRsV9Z+qLyOCHvM0qahsHIEpMI3MSY07CCK/9o5yg8oTaSooRIC5enJV2xgqFbLChUuyXb4v+ZtHYi53WK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708693988; c=relaxed/simple;
-	bh=Ia7B/FTNmnvsDKGGZT1idUgrWrwpUdfNfZY24Zv7oDU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=N2tqI6tKis2q8N4mQ2p7gwMNaNz6H3m7vi4FZdAeLKWNUifllijM3GBzB3TkBSlA833CW4bO/RUS7MsPFCUmC/tXO7RWnXo50QvUVqCsMlX1uQRYCfeuqGm6YPuPTSFueunUwuJ/sAtKenIpKn5zT3BjIxQ9wwTEYLT05SIHjkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a6aJ29r6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03E29C433F1;
-	Fri, 23 Feb 2024 13:13:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708693987;
-	bh=Ia7B/FTNmnvsDKGGZT1idUgrWrwpUdfNfZY24Zv7oDU=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=a6aJ29r6nAdNSOo01176zFTLT14uB9a8Hzs4cH7RkF5ocw1z80qpCd15z9vBXrjV5
-	 UpNPBi0k9ZIOWQ4pR1VeFEbIIA/bSAE4CmWSLvC4kTgJkMwL2qxCnwAnVxfdF/2NYc
-	 f6fTaCpEiDOV1fmgf+EPvNYTEXPdkPcR9Fq5920hGvHeqT+022mQSiD62gwgrpFk7H
-	 kjFt80mBLystV/B/iAUDUkjLpxEoRaGbey4QEddOzzt7zRw+iPGdPFmSr1cdyhw1Kj
-	 NdIXTDUBWbOPlm5jA9dSUlxWdwVzQbvS+bT12cCRsxZGvpt61tXfoxv6OCCg+ipRG0
-	 u+m+h/1yhqm/w==
-From: Roger Quadros <rogerq@kernel.org>
-Date: Fri, 23 Feb 2024 15:12:41 +0200
-Subject: [PATCH v5 4/4] arm64: dts: ti: k3-am62a: Disable USB LPM
+	s=arc-20240116; t=1708693993; c=relaxed/simple;
+	bh=4grHiU4R1PD3/h/EWJQy/p4KaYw4FLcc4bf8AIrkiSk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AgwW7Bw1q7u6dQMTzPPbqsLHPSuJLHxinYxq8MJyuvg3xVdqlUcQgwKJ02BlX8T/qeJCRJ1aiI+vszVgHg1kvYpAguQPPPO4tikd3pe0QU1sPIssbLaUiW5pHEMgEVYZT2uZ+6kkS5x09Vl8crfhJmeoFuIPdLXaSXLg/faEl80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=EOLLiRCw; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5648d92919dso874130a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 05:13:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1708693988; x=1709298788; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zPpNnmfH04qPvNbsT+ao1sGUr2DFS6Kf08IWPwABmJU=;
+        b=EOLLiRCwK7gz+5rXH0mnxGFnuDugIc5VsqSDcn9i0ZdKx+Nyy7+2kyVRRok6+CNLVj
+         z35/ms+yVaowrPaDo5ThpgqH0ZUOH0gBV4umNatbx3AU/9OuykHI9ZJ04y2TMkjbah2n
+         slFlSrHdBXFPz+stp1zKCTjfEAVLtntIPTHryxH6kXd7weJGDzZfbita9Xs4VxEbHlAP
+         2BxIPCcIOmUll7PpaQGbdlDZdKMOLIQ8P80c1h8xzOK003XFiva3xguxrK/Xrqznhh/g
+         h7ze2lzzqHXtUQnWn6n1d+PCijxcAx4CbLnsOfkHfwl11yDeY2FDsu/VLfVebZZmgLVw
+         7pYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708693988; x=1709298788;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zPpNnmfH04qPvNbsT+ao1sGUr2DFS6Kf08IWPwABmJU=;
+        b=QBe+6l2WCegy0Or+wPLOsYCnpkzXwfKqA6My/AP2sKosw7t+Rcht1ZCiJK49Ae/BDk
+         pU1mhwQOIyNMh1NL/2yu/xWPikg02Km916ln/LZ6AFb+NkTApY2PDz9c4BCr6jHc7wvK
+         33rB04WJF8phbj2MP1JyKvsvyAQeqTCCKr+kO9V1H3VgCA9ivD4o9zknqU4LKgWYn+iM
+         LrAerM1p4o9hm/oIP4GFoLWvvR667hytfTnXvtmy+pfY8Oa57SuBK+YCOsLOVS4w39Lc
+         /qNW5lyK6WUeQzlagv/2s4l8q8tdxcDcrCF9h7C2YaN2Sg20BQfkDOqd5ePwrHJh5GS7
+         EZdg==
+X-Forwarded-Encrypted: i=1; AJvYcCVPFEhz6+qUgZ2SXQdKoP4zXGtutrec0Wpwhfqn705vb916aMmHIOgNDW6WIxAwF74sx68fru6iDs6U52FGYTIXvDntGZiedzENzPK1
+X-Gm-Message-State: AOJu0Yw8+A/32Q33A4XyUAqlsWxZhhAuwhLiW1ewOTmL7KIb7LQ8X/8Z
+	fIvqWn95DRdW2hM+Yx9DHVVW0Lj7Y9ENMF7+cqfgU5sHWaBCM8AvAW+/bzdV/cjktATsFZr+01Q
+	4
+X-Google-Smtp-Source: AGHT+IH3miX4jc/k/19xdvTV9lj2s9RXaKpcoI9yKpZYRmENr3yuW6k5ZiDLlOerdnnNOwl4rvdNBw==
+X-Received: by 2002:a17:906:55cc:b0:a3f:bd94:4d80 with SMTP id z12-20020a17090655cc00b00a3fbd944d80mr1248043ejp.76.1708693988309;
+        Fri, 23 Feb 2024 05:13:08 -0800 (PST)
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id rg8-20020a1709076b8800b00a3e28471fa4sm6339835ejc.59.2024.02.23.05.13.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 05:13:08 -0800 (PST)
+Date: Fri, 23 Feb 2024 14:13:06 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH printk v2 10/26] printk: nbcon: Fix kerneldoc for enums
+Message-ID: <ZdiZ4jvgHwlbEJuo@alley>
+References: <20240218185726.1994771-1-john.ogness@linutronix.de>
+ <20240218185726.1994771-11-john.ogness@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240223-b4-for-v6-5-am62-usb-typec-dt-v5-4-4b5854d17d18@kernel.org>
-References: <20240223-b4-for-v6-5-am62-usb-typec-dt-v5-0-4b5854d17d18@kernel.org>
-In-Reply-To: <20240223-b4-for-v6-5-am62-usb-typec-dt-v5-0-4b5854d17d18@kernel.org>
-To: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>, 
- Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>
-Cc: Andrew Davis <afd@ti.com>, b-liu@ti.com, srk@ti.com, 
- r-gunasekaran@ti.com, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- Roger Quadros <rogerq@kernel.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1242; i=rogerq@kernel.org;
- h=from:subject:message-id; bh=Ia7B/FTNmnvsDKGGZT1idUgrWrwpUdfNfZY24Zv7oDU=;
- b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBl2JnQic6W1dmFUnWohl3Du6PlUiOwrkRvkqRwX
- hoBvVdq5GmJAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZdiZ0AAKCRDSWmvTvnYw
- kz9UD/0cevH5+QTgEEpTt9ewCR0vTKFFEpHjrEpAWuD6h+dlLH0g7ZLvkprg9yPtl3W/KJF1L7+
- xPuFFIqaY8VDYKi8jM1LLFoPFOozrC8lxDizkvZXN13pdJPoOUevQ5ecjO8vwIRFg6CsiJWJNlp
- FBhD3k4c3kNhg52YUcENxbxG+00TXztjko2tAEw5WWEqThWAAy3KoStSP5y2SjYybfWR7VSqwmg
- rrS2s3A9eO+eYOm7rBwW6FdF2R7nnDSwR99BKfOhT1Am81o5iJn1pZQAcCfqHIgrA+qAOeNv5Ls
- NVLWsAm4g7WuSx+MJpRS891IBPMNkNfeGrvGqoX+tVV4UYPbRf1RS5UF5eprNvijk9MWP/lY4zD
- xMtp4Y+FPz5rgIo0oY7wclqRRqq+D++xtKHYybkqtovXNvTZTa7eBLgi8mwucxwaG0g1vTw7Qic
- B0QtybIkP44LRmQ+I2prRvep9JNQPK1ndlimk072UaUHqyqx2ATYuo45qBDXIe/l8O1G8bmwB2R
- BQetzd6xFHV83QQvldm1DvdhHaCs4ph3HUmfpHieIfU7S9OODP42OSOpAYcsG3Vmb62ZzDuQ+f1
- SL+6HGALxrYuUk3LfQ2Nzfzrw0UkRHo1/8FXWIqv/PXvXV1KWa0PiJgO/DTztwCVZ0aub5l3mQl
- vqGHwhI088ZKRxg==
-X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
- fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240218185726.1994771-11-john.ogness@linutronix.de>
 
-As per AM62A TRM [1] USB Link Power Management (LPM)
-feature is not supported. Disable it else it may
-cause enumeration failure on some devices.
+On Sun 2024-02-18 20:03:10, John Ogness wrote:
+> Kerneldoc requires enums to be specified as such. Otherwise it is
+> interpreted as function documentation.
+> 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
-> 4.9.2.1 USB2SS Unsupported Features
-> The following features are not supported on this family of devices:
-> ...
-> - USB 2.0 ECN: Link Power Management (LPM)
-> ...
+Good to know. I havn't been aware of it.
 
-[1] - https://www.ti.com/lit/pdf/spruj16
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
----
-Changelog:
-v5: new patch
----
- arch/arm64/boot/dts/ti/k3-am62a-main.dtsi | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-index a158df0d0ba6..adaf578280f9 100644
---- a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-@@ -621,6 +621,8 @@ usb0: usb@31000000 {
- 			interrupt-names = "host", "peripheral";
- 			maximum-speed = "high-speed";
- 			dr_mode = "otg";
-+			snps,usb2-gadget-lpm-disable;
-+			snps,usb2-lpm-disable;
- 		};
- 	};
- 
-@@ -644,6 +646,8 @@ usb1: usb@31100000 {
- 			interrupt-names = "host", "peripheral";
- 			maximum-speed = "high-speed";
- 			dr_mode = "otg";
-+			snps,usb2-gadget-lpm-disable;
-+			snps,usb2-lpm-disable;
- 		};
- 	};
- 
-
--- 
-2.34.1
-
+Best Regards,
+Petr
 
