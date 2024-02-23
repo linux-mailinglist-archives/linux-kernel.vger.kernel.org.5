@@ -1,147 +1,135 @@
-Return-Path: <linux-kernel+bounces-77773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93416860A11
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 05:54:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D300D860A16
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 05:56:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B75E31C23641
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:54:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F76F1C220FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:56:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADFE211714;
-	Fri, 23 Feb 2024 04:54:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCCAB11731;
+	Fri, 23 Feb 2024 04:56:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q/0RuktE"
-Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mQ2o3Tq8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ADAA101FA;
-	Fri, 23 Feb 2024 04:54:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D5E1111B7;
+	Fri, 23 Feb 2024 04:56:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708664041; cv=none; b=HPq2xwRFQzQNy7NazF9rIHauR68/BZlhVpQCAdXp0C344j+0uEgI8EmVxBlrBWdjbPLGXJ6jzneDiw5QRIMhbUQFxF1pqrV4cHH87t1SnHe1xssluOrnso8fh/1bPj2OpfIoTbau1DpLqyEc/Z/w7e3HhkJxRFG/8VsvH+32hb8=
+	t=1708664200; cv=none; b=qogRkkNk9pzNLLnKmN8NRQcEJno8ufxe0rmIt38UdB0JC0gl73FYidt2VzFhRaGt7Lb8a30I3jxQ1EYJBhHvjPXcAoQuCs7YV+q3i/4y6arU8Q4fEjCaOhcykkU2CeuVpE5OJkUhnkAQ3hQPBUoWKJiR6OPWo3jAhCkVXxm4drc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708664041; c=relaxed/simple;
-	bh=VFtLTTHy+IufiBx8bHMCb9JclYhQReptBWkd9k5ahKk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JpYpsVl3vGStrxm9ooCx4AcEQEC/nTJRY7yEShFXdTQArRUlpAOUrkGUrMh88QYdcXLxN5DZsLPDzAQGf/kJIjtYoFzG9SnLPSDC7/8dCKy2v3pD5f/BaZCCOqESOEHawmdd0Hsn4UBbIPHPjm186lRtwEmAd8aTNtcC2PByWcw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q/0RuktE; arc=none smtp.client-ip=209.85.219.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-686a92a8661so3107806d6.0;
-        Thu, 22 Feb 2024 20:54:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708664039; x=1709268839; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cVuB+LTNZVGurOrECT/GZE2rhVV8QvsiBUpSNml5q2A=;
-        b=Q/0RuktEwMKvT0gIn3BfRQ1XY8Ad5WktQ0w/k+DSToJEFwXeko7qQHXvElmSMx6Fke
-         7UpIdzjnfCcgsMq3KQ1tECK+tAleHn+NDCAnDVpVes/a3BCrvRAG+KLc+f8A4PmL1LcO
-         2oxPINvex0V+f4kNIJpTKRMQmEUR9jg5h5cI5SnYrtcNrZ1FQdTJmb60BSoUTsp6Ndm6
-         BbdEhZ6FaGLYDF4yYRQMrz2PcAgR6RzbiDukYWqqj4NB50CTbc1MeRCfAHtTQzEEgPeL
-         nyrBds+4h1yd7/jAeoAn7h2KzVfkeI3Om+PZZA2FycTMjTe0/lH+npy27M+w4Pf/VyGW
-         AcNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708664039; x=1709268839;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cVuB+LTNZVGurOrECT/GZE2rhVV8QvsiBUpSNml5q2A=;
-        b=bS7FqRQgiNb3yuQNULqDYVfjr4R0fR9nK/WOb0ZbSuBqVL/OaPZLfIPBh8nlaKjfvs
-         b3Aw+SciSZrhsupb+QFT6O6fSfz9JBCfq9rzy4Rm/HeU0T9nOT5eFznhcr4LIOKvoBLO
-         U6p2WAxxHHxsFC2yR7plO2sIkOTKVRXFFmw5updbcyY9+5F7Cm2zD3BiQRlrIxkIOcKM
-         z+GJJlDdnjWvJn6l340wl+4RSvzthfRyhbGxC7if6uY2qi02e6oIy1P2Wy5H/ESUHjDW
-         HP6wjWJVmgmyF51DH4WLV1MMy90rfCx+LMf1pD1fisyRLsVfnPlxF7QVCI75RsYhZnxF
-         zChQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVwWcvWliXJf4yNB+Tzfrv+vqFuiHniL7/3ocDer5bhz0oOPVtKgdQABQUiYkOCp0OFVKcOuRrARCyP6lGTQxWU1B1VWmmXUJuU33AcO0WKPU4zBCEe3i1unMzC94CROCALjzgY
-X-Gm-Message-State: AOJu0Yx4OFfLNjjdRAhx1IlsBWXNHs0cnmOqGoR6GhXGiU+g/DTdX420
-	QrRlvnc2X1nzy3fPT9RGQ+nxM4Adt3i80H7e+XtzGlpAxlULmxmq
-X-Google-Smtp-Source: AGHT+IFIIY8nah4g7OEmWCqbZn5gUQdAxtDaPGVfiWfeZ9XWYds3wZPV+609tAHtH+EywbE1hr8TDA==
-X-Received: by 2002:a0c:e44f:0:b0:68f:2e5d:5d29 with SMTP id d15-20020a0ce44f000000b0068f2e5d5d29mr1015409qvm.40.1708664039281;
-        Thu, 22 Feb 2024 20:53:59 -0800 (PST)
-Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
-        by smtp.gmail.com with ESMTPSA id ol10-20020a0562143d0a00b0068f0ff36defsm3192165qvb.47.2024.02.22.20.53.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 20:53:58 -0800 (PST)
-Message-ID: <60c9ca14-b4e3-4c70-b459-03d0d56a4d14@gmail.com>
-Date: Thu, 22 Feb 2024 20:53:56 -0800
+	s=arc-20240116; t=1708664200; c=relaxed/simple;
+	bh=L8JdLJIOPT7SiDgt1sNgOXc6HQyxnRcj+oNXHWOfILY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GA+zIC9RQXiMcqvBUBhIZNvcCnjsZ/dt5yy6CAWSxJR9wpLyqLCrFbfLDwOQUkF2y4kU7mx6S9uNrJ3f2pEXJhb3E4RgxbQSFnUt/NP2p899zprzaRu9lwd39UVTTkATDZEfhjmJ9z5cHrkzW8eKV+1NlOpw7uR8Qh/Dqi18i8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mQ2o3Tq8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C613C433C7;
+	Fri, 23 Feb 2024 04:56:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708664199;
+	bh=L8JdLJIOPT7SiDgt1sNgOXc6HQyxnRcj+oNXHWOfILY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mQ2o3Tq8wLW451fEuRAyWrxRjveeCXKHZ1+S1Ok1khINwFiaLvH7V9NdJlDILhHf8
+	 XI7NcxUXo8up8b0ppbHK0Zm2Gg5B6mnoNnkHjDpleF8O4QDBRiIc/FvmoInPJVEDfC
+	 YLb037PuZEWQp52/GQRGhEUGkfJbUoMKoP9zwnLZKpnEKgOUC2seApF3O6Y8ZiuSGo
+	 U9sGqMEBzTIG1X3hxE/2+kCasSJru2XrT44kMFba7uPTQHflERxduzmIoj6fnwHIGr
+	 1K6bob0JcNCSsQbwZLR7tkm2NEct7IqGYEhr5vc/HlgXAHX2cUwVgB7jFWeD8Ctp9r
+	 O0WJHhrSly6qw==
+Date: Thu, 22 Feb 2024 21:56:37 -0700
+From: Rob Herring <robh@kernel.org>
+To: Conor Dooley <conor@kernel.org>
+Cc: Nikita Travkin <nikita@trvn.ru>, Sebastian Reichel <sre@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	cros-qcom-dts-watchers@chromium.org, Andy Gross <agross@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>, linux-pm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] dt-bindings: power: supply: Add Acer Aspire 1 EC
+Message-ID: <20240223045637.GA3983053-robh@kernel.org>
+References: <20240220-aspire1-ec-v3-0-02cb139a4931@trvn.ru>
+ <20240220-aspire1-ec-v3-1-02cb139a4931@trvn.ru>
+ <20240220-splinter-jackpot-ac1571af5b2d@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v5 4/8] net: phy: Keep track of EEE configuration
-Content-Language: en-US
-To: Oleksij Rempel <o.rempel@pengutronix.de>, Wei Fang <wei.fang@nxp.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
- Russell King <linux@armlinux.org.uk>
-Cc: Russell King <rmk+kernel@armlinux.org.uk>, kernel@pengutronix.de,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>,
- NXP Linux Team <linux-imx@nxp.com>
-References: <20240221062107.778661-1-o.rempel@pengutronix.de>
- <20240221062107.778661-5-o.rempel@pengutronix.de>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; keydata=
- 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
- HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20240221062107.778661-5-o.rempel@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240220-splinter-jackpot-ac1571af5b2d@spud>
 
-
-
-On 2/20/2024 10:21 PM, Oleksij Rempel wrote:
-> From: Andrew Lunn <andrew@lunn.ch>
+On Tue, Feb 20, 2024 at 06:41:06PM +0000, Conor Dooley wrote:
+> Rob,
 > 
-> Have phylib keep track of the EEE configuration. This simplifies the
-> MAC drivers, in that they don't need to store it.
+> On Tue, Feb 20, 2024 at 04:57:12PM +0500, Nikita Travkin wrote:
+> > Add binding for the EC found in the Acer Aspire 1 laptop.
+> > 
+> > Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+> > ---
+> >  .../bindings/power/supply/acer,aspire1-ec.yaml     | 69 ++++++++++++++++++++++
+> >  1 file changed, 69 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/power/supply/acer,aspire1-ec.yaml b/Documentation/devicetree/bindings/power/supply/acer,aspire1-ec.yaml
+> > new file mode 100644
+> > index 000000000000..984cf19cf806
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/power/supply/acer,aspire1-ec.yaml
+> > @@ -0,0 +1,69 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/power/supply/acer,aspire1-ec.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Acer Aspire 1 Embedded Controller
+> > +
+> > +maintainers:
+> > +  - Nikita Travkin <nikita@trvn.ru>
+> > +
+> > +description:
+> > +  The Acer Aspire 1 laptop uses an embedded controller to control battery
+> > +  and charging as well as to provide a set of misc features such as the
+> > +  laptop lid status and HPD events for the USB Type-C DP alt mode.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: acer,aspire1-ec
+> > +
+> > +  reg:
+> > +    const: 0x76
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +  acer,fn-selects-media-keys:
+> > +    description: Configure the keyboard layout to invert the Fn key.
+> > +      By default the function row of the keyboard inputs media keys
+> > +      (i.e Vol-Up) when Fn is not pressed. With this option set, pressing
+> > +      the key without Fn would input function keys (i.e. F11). The
+> > +      firmware may choose to add this property when user selects the fn
+> > +      mode in the firmware setup utility.
+> > +    type: boolean
 > 
-> Future patches to phylib will also make use of this information to
-> further simplify the MAC drivers.
+> We both had some comments on this property, and Nikita tried to follow
+> up on yours (which was much more substantive than mine) but got no
+> response:
+> https://lore.kernel.org/all/20231214220210.GA988134-robh@kernel.org/
 > 
-> Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> Signed-off-by: Andrew Lunn <andrew@lunn.ch>
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Reading what you said, I'm not entirely sure what you were looking for,
+> my guess is that you were wanted something controllable from userspace,
+> but I'm not sure how you figured that should work where the firmware
+> alone is able to control this.
 
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+I replied there, but what I want is whatever the solution is to work on 
+any laptop, not just this Acer device.
+
+Rob
 
