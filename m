@@ -1,177 +1,121 @@
-Return-Path: <linux-kernel+bounces-78749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B219A86183D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:42:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F362A86183F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:43:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25C591F23EDA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:42:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91874B26AAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:43:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D809884FA6;
-	Fri, 23 Feb 2024 16:42:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="B0ENLgm3";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jqf1noHa";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="B0ENLgm3";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jqf1noHa"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C627B12BE83;
+	Fri, 23 Feb 2024 16:42:41 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8912B12838F
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 16:42:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FB8412AAC7;
+	Fri, 23 Feb 2024 16:42:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708706556; cv=none; b=uOrarbrt7N2cAFTvx0GqBYdrdP1hKrNgdzBw7rCy4pS3Z0txjL/MzZo9YgBRmZB8tKs3dJgFAVtLSxnY4xCXMtSaae35M7tjqCJBswv8hT+KcWUnWhVkzpTh3DNTgwU4zBW9FFhsODlD+SKekNTvicZgiUZDflI/4eOxK+vU6Io=
+	t=1708706561; cv=none; b=KCr7yyUjjKoOoYcfERoXUE+/+GX19GsCa3HdZeYgCbOwrRuGz9gUvfMB8eMg7AqI+PfzqYx6g205FLtCAxsfe29ePhHrIfy+ZYN8zBmeahflFYtnXqYlWGuSKm1L+o9l3FLijdi9aPC/lvU85NOjIsyxfpUHLKiQw6CiI9SXHjM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708706556; c=relaxed/simple;
-	bh=lYsVMJERJhvZE4jmpUqSAbs+W+UI8cO7lAplPHyIyFI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ecudEMhoTib/Uc2ND8YlzNsPNIMFml7ceRMSnMqet3ZP/TzMcbIhikhO17qWoRNn/mY8hpX7UGoZ6k7E3ikAGjr5EIwCEhulYsDu8khj6b9h9TaebhJVmJOy1/cnxzhD1lvY3pcXeFCqUnnBunnwrVooZ8X1i+fBtkVglkGE8fI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=B0ENLgm3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jqf1noHa; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=B0ENLgm3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jqf1noHa; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7706421FB5;
-	Fri, 23 Feb 2024 16:42:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708706552; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KFNMZIie6l19aBPMWRYEEnQsnBcUocAqPJ4rC3B7ytY=;
-	b=B0ENLgm37c4QgheVXQWeRnAwR3WJS6MDYsvcQzrFclBddWdvDFGT8290voIijVLfoVdBcj
-	d4LEOJBHdDt3iCFFEuv7NfpymJctXz/uDVzAYWrWfmcbfVbW9ucJCRZdXNPpgy+iwanlYx
-	wgM+3VTnyQMmbWPZ6wa76W9E9ysThis=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708706552;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KFNMZIie6l19aBPMWRYEEnQsnBcUocAqPJ4rC3B7ytY=;
-	b=jqf1noHamoZfUX1sMsxHWVltkIU7bGem5pt5ygmMoJc27fVq8w7v3/1eyNBE07LqOFgrKA
-	Kmi5/+XBCJloceAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708706552; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KFNMZIie6l19aBPMWRYEEnQsnBcUocAqPJ4rC3B7ytY=;
-	b=B0ENLgm37c4QgheVXQWeRnAwR3WJS6MDYsvcQzrFclBddWdvDFGT8290voIijVLfoVdBcj
-	d4LEOJBHdDt3iCFFEuv7NfpymJctXz/uDVzAYWrWfmcbfVbW9ucJCRZdXNPpgy+iwanlYx
-	wgM+3VTnyQMmbWPZ6wa76W9E9ysThis=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708706552;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KFNMZIie6l19aBPMWRYEEnQsnBcUocAqPJ4rC3B7ytY=;
-	b=jqf1noHamoZfUX1sMsxHWVltkIU7bGem5pt5ygmMoJc27fVq8w7v3/1eyNBE07LqOFgrKA
-	Kmi5/+XBCJloceAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 443D6133DC;
-	Fri, 23 Feb 2024 16:42:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id YCWsD/jK2GWUNAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 23 Feb 2024 16:42:32 +0000
-Message-ID: <0a30e148-2698-44d5-83c9-da102c0ba753@suse.cz>
-Date: Fri, 23 Feb 2024 17:42:32 +0100
+	s=arc-20240116; t=1708706561; c=relaxed/simple;
+	bh=IWsuBkee3xCAQ86kme8tbkr6alhrezjCTnJppe/xkIg=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dKIeqXyNtMUQwJpIT/eeFy/IDeKkUoso51nAy7jwt4n5ysJCqrBOcoaGU4Fd9VDonsY1qE3nKn1AsGhCUkH2sLWYkpGMdivZkTrfcfOrQoa1f2pQcEwq9xuUE7lhaWgTOkqHX3kKqWqBYZqu6jwb6MfQZMeFp0hGqMF7z7AA9NM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4ThG0f6FZtz67mqV;
+	Sat, 24 Feb 2024 00:38:26 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 78C82140684;
+	Sat, 24 Feb 2024 00:42:36 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 23 Feb
+ 2024 16:42:36 +0000
+Date: Fri, 23 Feb 2024 16:42:35 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC: <linux-iio@vger.kernel.org>, Rob Herring <robh@kernel.org>, Frank Rowand
+	<frowand.list@gmail.com>, <linux-kernel@vger.kernel.org>, Julia Lawall
+	<Julia.Lawall@inria.fr>, Peter Zijlstra <peterz@infradead.org>, "Greg
+ Kroah-Hartman" <gregkh@linuxfoundation.org>, <marek.vasut@gmail.com>
+Subject: Re: [PATCH v2 0/4] of: automate of_node_put() - new approach to
+ loops.
+Message-ID: <20240223164235.00000e46@Huawei.com>
+In-Reply-To: <20240223163602.0000697a@Huawei.com>
+References: <20240223124432.26443-1-Jonathan.Cameron@huawei.com>
+	<Zdi_ToUofu62s5zT@smile.fi.intel.com>
+	<20240223163602.0000697a@Huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] mm, slab: use an enum to define SLAB_ cache creation
- flags
-Content-Language: en-US
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
- David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>, Andrey Ryabinin
- <ryabinin.a.a@gmail.com>, Alexander Potapenko <glider@google.com>,
- Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
- Vincenzo Frascino <vincenzo.frascino@arm.com>,
- Zheng Yejian <zhengyejian1@huawei.com>,
- Xiongwei Song <xiongwei.song@windriver.com>,
- Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com
-References: <20240220-slab-cleanup-flags-v1-0-e657e373944a@suse.cz>
- <20240220-slab-cleanup-flags-v1-2-e657e373944a@suse.cz>
- <ZdZCDEFX4_UuHSWR@P9FQF9L96D.corp.robot.car>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <ZdZCDEFX4_UuHSWR@P9FQF9L96D.corp.robot.car>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spamd-Bar: /
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=B0ENLgm3;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=jqf1noHa
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-0.11 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 TO_DN_SOME(0.00)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLycmwa99sdzp837p77658kns5)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.11)[66.23%];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[18];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[linux.com,kernel.org,google.com,lge.com,linux-foundation.org,gmail.com,arm.com,huawei.com,windriver.com,linux.dev,kvack.org,vger.kernel.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -0.11
-X-Rspamd-Queue-Id: 7706421FB5
-X-Spam-Flag: NO
+X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On 2/21/24 19:33, Roman Gushchin wrote:
-> On Tue, Feb 20, 2024 at 05:58:26PM +0100, Vlastimil Babka wrote:
->> The values of SLAB_ cache creation flagsare defined by hand, which is
->> tedious and error-prone. Use an enum to assign the bit number and a
->> __SF_BIT() macro to #define the final flags.
->> 
->> This renumbers the flag values, which is OK as they are only used
->> internally.
->> 
->> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
->> +#define __SF_BIT(nr)	((slab_flags_t __force)(1U << (nr)))
+On Fri, 23 Feb 2024 16:36:02 +0000
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+
+> On Fri, 23 Feb 2024 17:52:46 +0200
+> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 > 
-> I'd rename it to (__)SLAB_FLAG_BIT(), as SF is a bit cryptic, but not a strong
-> preference. Otherwise looks really good to me, nice cleanup.
+> > On Fri, Feb 23, 2024 at 12:44:28PM +0000, Jonathan Cameron wrote:
+> > > The equivalent device_for_each_child_node_scoped() series for
+> > > fwnode will be queued up in IIO for the merge window shortly as
+> > > it has gathered sufficient tags. Hopefully the precdent set there
+> > > for the approach will reassure people that instantiating the
+> > > child variable inside the macro definition is the best approach.
+> > > https://lore.kernel.org/linux-iio/20240217164249.921878-1-jic23@kernel.org/
+> > > 
+> > > v2: Andy suggested most of the original converted set should move to
+> > >     generic fwnode / property.h handling.  Within IIO that was
+> > >     a reasonable observation given we've been trying to move away from
+> > >     firmware specific handling for some time. Patches making that change
+> > >     to appropriate drivers posted.
+> > >     As we discussed there are cases which are not suitable for such
+> > >     conversion and this infrastructure still provides clear benefits
+> > >     for them.  
+> > 
+> > >   iio: adc: rcar-gyroadc: use for_each_available_child_node_scoped()  
+> > 
+> > Is this the only one so far? Or do we have more outside of IIO?
+> > 
+> > I'm fine with the code if OF maintainers think it's useful.
+> > My concern is to make as many as possible drivers to be converted to
+> > use fwnode instead of OF one.
+> > 
+> Julia wrote a coccinelle script 
+> __free() cases (53)
+> https://lore.kernel.org/all/alpine.DEB.2.22.394.2401291455430.8649@hadrien/
+Gah. Second time today I've hit the wrong key whilst pasting.
 
-OK, it's also less likely that somebody would collide it.
+loop cases. (73)
+https://lore.kernel.org/all/alpine.DEB.2.22.394.2401312234250.3245@hadrien/
 
-> Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
-> 
-> Thanks!
+Scattered right across the kernel.
 
+No others submitted yet and there is just the one left in IIO after fwnode
+conversions.  There are other drivers I haven't converted to fwnode for
+various reasons, but this isn't useful for them as not all call of_node_put().
+
+Some of the other cases will be suitable for fwnode conversion and that
+is definitely the right first choice in many cases.
+
+Agreed, it's down to the OF maintainers to take a call on whether they want
+this infrastructure or not.  No longer matters much to me for IIO
+as you can see.
+
+Jonathan
 
