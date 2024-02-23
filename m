@@ -1,154 +1,130 @@
-Return-Path: <linux-kernel+bounces-78312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D14A58611B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:42:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F1488611C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:44:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F1ECB26E94
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:42:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F6A2B213EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:44:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560977CF1D;
-	Fri, 23 Feb 2024 12:40:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="QvIIF0yO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC21B7B3F8;
+	Fri, 23 Feb 2024 12:44:35 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 893BB14A97;
-	Fri, 23 Feb 2024 12:40:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17D3B6FBF;
+	Fri, 23 Feb 2024 12:44:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708692027; cv=none; b=aud+Pbf1jQbuQLy3KWtLN16YEeuetRAjBfHj7W6v5XFBHagGvVr6NVSIPuRWUolQA8Ovwg9Oc3GHE92UwHoKIXw7biDZ2XB5VDtnfl1b+JnTcOdTA5MYKyRN8HYus+QQ/dwC2JIPqmhVNMREqK0ErJD+qNbnheFK37+vwl94emo=
+	t=1708692275; cv=none; b=FY8wDnJJEM+WUhhvYU2C+xGfhZKEIqATKCnipQzlOVKG065c8JRsw1/FN9dAOfvKzTD1zNoXXt323Ngkc2dgrx6tPIQmVpuKFkvWZ8FzJb5nvoFEezq0k7dRE1KSZcZ10GIrmdXVIMGcU7OpHxnmgs+vNlyu0wx9jtghW6ujje8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708692027; c=relaxed/simple;
-	bh=KKUuXezB/G+ILZzSTILOSQmE/Cbf7JN8aDFNpOwtadw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fRVYvob2/RbvZC6FCA/Rz+msTIozkETsF7BV42bWR+lCsHPOoWbt5W9Ci6sHfJzuum6txTCIlrAj3974ycECmIhCFVs1a3gWCEl1J7D11ZI+QCbaSk7ZQ2t90NMQcVDEdXI/34/xptTxmkC+hvpHtkjNtam6cDegPwRFgz7lSAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=QvIIF0yO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94E2CC433F1;
-	Fri, 23 Feb 2024 12:40:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1708692027;
-	bh=KKUuXezB/G+ILZzSTILOSQmE/Cbf7JN8aDFNpOwtadw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QvIIF0yOS7qDRmS7ZybUiXbnP9VzNjS1e91aZB3N2uZWsjsjRbCdh2Y7NDOrHKYFW
-	 qcP5UhSjxl3dhU+t3gqpqvDZ46bm8R644L3c7pAdxOz5BxYkh9WspEjqJVyii5ZDKU
-	 jNX4Sdk2YEsjvRBTfxkT6SaZVfVcZZB3s/pevq9E=
-Date: Fri, 23 Feb 2024 13:40:24 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Selvarasu Ganesan <quic_selvaras@quicinc.com>
-Cc: brauner@kernel.org, axboe@kernel.dk, jack@suse.cz, jlayton@kernel.org,
-	keescook@chromium.org, peter@korsgaard.com, hayama@lineo.co.jp,
-	dmantipov@yandex.ru, quic_linyyuan@quicinc.com,
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-	quic_ppratap@quicinc.com, quic_wcheng@quicinc.com,
-	quic_jackp@quicinc.com
-Subject: Re: [PATCH] usb: gadget: f_fs: Fix NULL pointer dereference in
- ffs_epfile_async_io_complete()
-Message-ID: <2024022350-rescuer-stretch-71e8@gregkh>
-References: <20240223054809.2379-1-quic_selvaras@quicinc.com>
- <2024022302-routine-schematic-b4fd@gregkh>
- <d2f40e2d-cbbd-41f9-9aa6-41d0f251ffda@quicinc.com>
+	s=arc-20240116; t=1708692275; c=relaxed/simple;
+	bh=Ql3pU3hgr/HBpSrJX8jkClVU8sHud/H6CmtnLarbOp0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=iIOd3RDu4KKYxEue9J0LXjHnHHNYonnhsJbyx5M9YLv5g7wX2rM1YSoBDEb23xRBbAG5qHtBOGnBZlZkXNzIK7PHIg+/W7HUpeCTRq57TKEGCL4L0OS5YiwRBBam77dG04sTnvof7f+SLa49LIIwr9doy5JgmXz/A+qll7hKNcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Th8kW2Sfdz6K8q3;
+	Fri, 23 Feb 2024 20:40:51 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 45E05140D5A;
+	Fri, 23 Feb 2024 20:44:30 +0800 (CST)
+Received: from SecurePC-101-06.china.huawei.com (10.122.247.231) by
+ lhrpeml500005.china.huawei.com (7.191.163.240) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 23 Feb 2024 12:44:29 +0000
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To: <linux-iio@vger.kernel.org>, Rob Herring <robh@kernel.org>, Frank Rowand
+	<frowand.list@gmail.com>, <linux-kernel@vger.kernel.org>, Julia Lawall
+	<Julia.Lawall@inria.fr>
+CC: Peter Zijlstra <peterz@infradead.org>, Andy Shevchenko
+	<andriy.shevchenko@linux.intel.com>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>, <marek.vasut@gmail.com>
+Subject: [PATCH v2 0/4] of: automate of_node_put() - new approach to loops.
+Date: Fri, 23 Feb 2024 12:44:28 +0000
+Message-ID: <20240223124432.26443-1-Jonathan.Cameron@huawei.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <d2f40e2d-cbbd-41f9-9aa6-41d0f251ffda@quicinc.com>
+Content-Type: text/plain
+X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Fri, Feb 23, 2024 at 05:05:59PM +0530, Selvarasu Ganesan wrote:
-> 
-> On 2/23/2024 11:28 AM, Greg KH wrote:
-> > On Thu, Feb 22, 2024 at 09:48:09PM -0800, Selvarasu Ganesan wrote:
-> > > In scenarios of continuous and parallel usage of multiple FFS interfaces
-> > > and concurrent adb operations (e.g., adb root, adb reboot), there's a
-> > > chance that ffs_epfile_async_io_complete() might be processed after
-> > > ffs_epfile_release(). This could lead to a NULL pointer dereference of
-> > > ffs when accessing the ffs pointer in ffs_epfile_async_io_complete(), as
-> > > ffs is freed as part of ffs_epfile_release(). This epfile release is
-> > > part of file operation and is triggered when user space daemons restart
-> > > themselves or a reboot is initiated.
-> > > 
-> > > Fix this issue by adding a NULL pointer check for ffs in
-> > > ffs_epfile_async_io_complete().
-> > > 
-> > > [  9981.393115] Unable to handle kernel NULL pointer dereference at virtual address 00000000000001e0
-> > > [  9981.402854] Mem abort info:
-> > > ...
-> > > [  9981.532540] Hardware name: Qualcomm Technologies,
-> > > [  9981.540579] pstate: 204000c5 (nzCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> > > [  9981.548438] pc : ffs_epfile_async_io_complete+0x38/0x4c
-> > > [  9981.554529] lr : usb_gadget_giveback_request+0x30/0xd0
-> > > ...
-> > > [  9981.645057] Call trace:
-> > > [  9981.648282]  ffs_epfile_async_io_complete+0x38/0x4c
-> > > [  9981.654004]  usb_gadget_giveback_request+0x30/0xd0
-> > > [  9981.659637]  dwc3_gadget_endpoint_trbs_complete+0x1a8/0x48c
-> > > [  9981.666074]  dwc3_process_event_entry+0x378/0x648
-> > > [  9981.671622]  dwc3_process_event_buf+0x6c/0x288
-> > > [  9981.676903]  dwc3_thread_interrupt+0x3c/0x68
-> > > [  9981.682003]  irq_thread_fn+0x2c/0x8c
-> > > [  9981.686388]  irq_thread+0x198/0x2ac
-> > > [  9981.690685]  kthread+0x154/0x218
-> > > [  9981.694717]  ret_from_fork+0x10/0x20
-> > > 
-> > > Signed-off-by: Selvarasu Ganesan <quic_selvaras@quicinc.com>
-> > 
-> > What commit id does this fix?  Should it go to stable kernels?
-> 
-> Fixes: 2e4c7553cd6f9 ("usb: gadget: f_fs: add aio support"). Yes it's
-> required to propagate to stable kernel as well.
+The equivalent device_for_each_child_node_scoped() series for
+fwnode will be queued up in IIO for the merge window shortly as
+it has gathered sufficient tags. Hopefully the precdent set there
+for the approach will reassure people that instantiating the
+child variable inside the macro definition is the best approach.
+https://lore.kernel.org/linux-iio/20240217164249.921878-1-jic23@kernel.org/
 
-Great, when you resend the next version, please include both proper
-tags.
+v2: Andy suggested most of the original converted set should move to
+    generic fwnode / property.h handling.  Within IIO that was
+    a reasonable observation given we've been trying to move away from
+    firmware specific handling for some time. Patches making that change
+    to appropriate drivers posted.
+    As we discussed there are cases which are not suitable for such
+    conversion and this infrastructure still provides clear benefits
+    for them.
 
-> > > ---
-> > >   drivers/usb/gadget/function/f_fs.c | 4 +++-
-> > >   1 file changed, 3 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/function/f_fs.c
-> > > index be3851cffb73..d8c8e88628f9 100644
-> > > --- a/drivers/usb/gadget/function/f_fs.c
-> > > +++ b/drivers/usb/gadget/function/f_fs.c
-> > > @@ -849,7 +849,9 @@ static void ffs_epfile_async_io_complete(struct usb_ep *_ep,
-> > >   	usb_ep_free_request(_ep, req);
-> > >   	INIT_WORK(&io_data->work, ffs_user_copy_worker);
-> > > -	queue_work(ffs->io_completion_wq, &io_data->work);
-> > > +
-> > > +	if (ffs && ffs->io_completion_wq)
-> > > +		queue_work(ffs->io_completion_wq, &io_data->work);
-> > 
-> > What happens if ffs->io_compleation_wq goes away right after you test
-> > it but before you call queue_work()?
-> > 
-> > Where is the locking here to prevent that?
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> Hi Greg,
-> 
-> Thank you for your feedback. I understand your concern about the
-> potential race condition with ffs->io_completion_wq. I’m considering
-> introducing a lock to protect this section of the code, but I wanted to
-> get your opinion on this.
-> In the f_fs.c driver, there are pre-existing locks. Would it be suitable to
-> utilize these locks, or do you suggest the creation of a new lock
-> specifically for ffs->io_completion_wq? We anticipate a performance impact
-> if we use the existing lock, as it might be held by different
-> threads. What are your thoughts on this?"
+Ideally it would be good if this introductory series adding the
+infrastructure makes the 6.9 merge window. There are no dependencies
+on work queued in the IIO tree, so this can go via devicetree
+if the maintainers would prefer. I've had some off list messages
+asking when this would be merged, as there is interest in building
+on it next cycle for other parts of the kernel (where conversion to
+fwnode handling may be less appropriate).
 
-Test it out yourself and see what works best!
+The outputs of Julia's scripts linked below show how widely this can be
+easily applied and give a conservative estimate of the complexity reduction
+and code savings. In some cases those drivers should move to fwnode
+and use the equivalent infrastructure there, but many will be unsuitable
+for conversion so this is still good win.
 
-thanks,
+Edited cover letter from v1:
 
-greg k-h
+Thanks to Julia Lawal who also posted coccinelle for both types (loop and
+non loop cases)
+
+https://lore.kernel.org/all/alpine.DEB.2.22.394.2401312234250.3245@hadrien/
+https://lore.kernel.org/all/alpine.DEB.2.22.394.2401291455430.8649@hadrien/
+
+The cover letter of the RFC includes information on the various approaches
+considered.
+https://lore.kernel.org/all/20240128160542.178315-1-jic23@kernel.org/
+
+Whilst these macros produce nice reductions in complexity the loops
+still have the unfortunate side effect of hiding the local declaration
+of a struct device_node * which is then used inside the loop.
+
+Julia suggested making that a little more visible via
+ #define for_each_child_of_node_scoped(parent, struct device_node *, child)
+but in discussion we both expressed that this doesn't really make things
+all that clear either so I haven't adopted this suggestion.
+
+
+
+Jonathan Cameron (4):
+  of: Add cleanup.h based auto release via __free(device_node) markings.
+  of: Introduce for_each_*_child_of_node_scoped() to automate
+    of_node_put() handling
+  of: unittest: Use for_each_child_of_node_scoped()
+  iio: adc: rcar-gyroadc: use for_each_available_child_node_scoped()
+
+ drivers/iio/adc/rcar-gyroadc.c | 21 ++++++---------------
+ drivers/of/unittest.c          | 11 +++--------
+ include/linux/of.h             | 15 +++++++++++++++
+ 3 files changed, 24 insertions(+), 23 deletions(-)
+
+-- 
+2.39.2
+
 
