@@ -1,95 +1,94 @@
-Return-Path: <linux-kernel+bounces-79241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FE40861F71
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 23:14:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C743C861F72
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 23:14:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E3311C2276C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:14:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B9352874FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:14:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0E6914D431;
-	Fri, 23 Feb 2024 22:14:06 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D47614DFE6;
+	Fri, 23 Feb 2024 22:14:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XtIikt1L"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F381A1F600
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 22:14:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB76714CAB3;
+	Fri, 23 Feb 2024 22:14:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708726446; cv=none; b=NF/HZAzyxIY2qf/MGPVukkzKkioKXAYsWYYTn8p8B/wM9g4sK08LKmL1NuEfdKzL7g9s/22ILbsprX+lrTiOmVxtYzdsK/3B88Ifro4AMDivu6mA98UD3/NfQ7ashErvTZ/uGii+5fwyfhIlzkjcmDLwWXPBD+YGmkgwsQCJGp8=
+	t=1708726451; cv=none; b=CYUFM32UWVNHhn4Xi7neeNe7XXnapzvVXBXowL1kCihUap+RSFVXUSVtAeKXiuiYU1MNqY831AMdYRVfLTSaZfzCgXhMu5QkXsdmDV06Uoq79yIzudK8JIl6KbOdFdE9nnzHUOHj4kGNVF2aEhs2N+EAfEi7zBz5hGc8RP6/2DY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708726446; c=relaxed/simple;
-	bh=+Ctr0KrDwCeMkU+RQ454ERPkbKZTfFHQEeCdfQoA6YY=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=QFwVCxHnYcHSurh+GmBLqk6+JJfqopgtAsz/hs2m9EVPlx1c+7zttGXUACCQ0aGGXH4lf0tpRoTwTSmJV9AsyBCLJXou+uvC1AVy2RnWregsmRVPYwr6BW5PcN0DRbvkWnW5xJAjK3oto7CVhuaQrNTsjCNcOYT8ihBPsyWapQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3652d6907a1so12376715ab.3
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 14:14:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708726444; x=1709331244;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+yKIsiHPc5N6utt+zlCMndtWwFz/JR5HuS2RY9FPzik=;
-        b=sK3gBepkiO3ZF56s0g8DXaQVLVyi4bh7I98n7LtpYgW0LT0yNEcIIvxumQIncwesbC
-         zocxdJ3BqoOee1hC+9yfBIQppJGTXA1/qbV3nUyrKnsHh6dd4UTCEHoalGUNbkPh1PAC
-         YTFWbZAUFqWHl81VRuj2Br0PMS+ObNIYYSC5TyIZNGR9yhsyEzx0UDpd5WVbYANbBwVQ
-         sttXwOMs02LAbwtSMMwK+gRNQ3IypiaXlfxvCd1ja8Q1lQWmr0eLQfhiq64k7B5rDEAf
-         /Pg9QUSfEjdOc6cH92Xk0Unmg29/NXseU5v2so5906/lJepyXP2mYJI5qPPLKFlLbNwV
-         JmJw==
-X-Forwarded-Encrypted: i=1; AJvYcCXJPawneKg4kBGnT24Dw3yIn0KSpmy2D2zkCiuuexWTH2dTJ0qreMZvsbaTGQun5RY5fIcUVvWqeaeuozmK9DMOX6ZXLOU9KADhvxG3
-X-Gm-Message-State: AOJu0YwXuTp7I122Y+s8aWc4xDy/hZdqIcBxaEQ8ewohnqra8Xg2wlk8
-	xnUYbTdbererqwiIEOAh5oTGBwWvII8Whjlg+65KRyyW3Wb1BEt8R8dTyFbKH478TIXpU3O3Q9G
-	CFRw3PxzJ/Ivn71UyHBK5ZNz3zU1GcMAv8FD+oc36nZq4eToHhSRgnqg=
-X-Google-Smtp-Source: AGHT+IH9hsxeN8JWcRHnUAnRF2nUKmQ8AUA2BXRL7xlSUOURky4FyCkAe+nisCjnW4nN3TEdoItNoQFcFlvbBrsaaY6y7PJ7QRDd
+	s=arc-20240116; t=1708726451; c=relaxed/simple;
+	bh=TpdIGHDKiBLkF+RxhpFOmgRov1SmClhrWulZMrP2Nts=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=TKOwwWGzXZv0JRMdK9lGcsbtJ72mJpGIMspzgZq6KhIBdioClbS0grreOuqlptZyZBYuP0WskvsHLmQhzU2OdtoVEhVm0LA4WBUGpSJKNal3DT5CY3jOVAGqxsC0C5m2u2EDJcGnnf5y0f5cF+lSK4FgSPmU6KGXoKWYX/WwIpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XtIikt1L; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A22D6C433F1;
+	Fri, 23 Feb 2024 22:14:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708726451;
+	bh=TpdIGHDKiBLkF+RxhpFOmgRov1SmClhrWulZMrP2Nts=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=XtIikt1LiQ7Oq+XYnsYqUhazCT64NgcwoZ6Ja2kVpLmEceONbe1Tot2gtzHwA4zJT
+	 sArrRepn+R7ctHwLAYWzFpjQrMdjqCCBLqVQ8dXLP79luqVW8mP4hIRiGWX92bhLsd
+	 CeKwGu7gJODvEIHfVx7LCErAEqbZj/SvnJb6R0Z4jxeIjIZM9TmaJ9r4itsNYAoAJ6
+	 /rr2RdVQ+1f6XvnGaM+RtPebfINkVQkxdCznaxXgtn2pEyh/bZYrGPwwOhnGCAVexE
+	 nsmsqaZCGpPMIXVYsxssD35Rm6Uorb8kmZ7KJnjTQsTPkIq1NuodDyapT3XCpsmLQR
+	 EYlks6iF/MUhQ==
+From: Namhyung Kim <namhyung@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	James Clark <james.clark@arm.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	linux-perf-users@vger.kernel.org,
+	Ian Rogers <irogers@google.com>,
+	llvm@lists.linux.dev,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Athira Jajeev <atrajeev@linux.vnet.ibm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH v6 0/8] Run tests in parallel
+Date: Fri, 23 Feb 2024 14:14:07 -0800
+Message-ID: <170872283709.3880577.13004256445870612040.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
+In-Reply-To: <20240221034155.1500118-1-irogers@google.com>
+References: <20240221034155.1500118-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:20ee:b0:365:1c10:9cfa with SMTP id
- q14-20020a056e0220ee00b003651c109cfamr50005ilv.5.1708726444282; Fri, 23 Feb
- 2024 14:14:04 -0800 (PST)
-Date: Fri, 23 Feb 2024 14:14:04 -0800
-In-Reply-To: <00000000000091ce6f06013df598@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000badb45061213e0c0@google.com>
-Subject: Re: [syzbot] [kernfs?] [net?] [mm?] stack segment fault in __stack_depot_save
-From: syzbot <syzbot+1f564413055af2023f17@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, bpf@vger.kernel.org, brauner@kernel.org, 
-	davem@davemloft.net, edumazet@google.com, gregkh@linuxfoundation.org, 
-	jack@suse.cz, kuba@kernel.org, linkinjeon@kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	reiserfs-devel@vger.kernel.org, sj1557.seo@samsung.com, 
-	syzkaller-bugs@googlegroups.com, tj@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-syzbot suspects this issue was fixed by commit:
+On Tue, 20 Feb 2024 19:41:47 -0800, Ian Rogers wrote:
+> If command line option '-p' is provided, start/fork all tests in the
+> main thread and then gather them in order at the end. On a laptop test
+> time was reduced from 5 minutes 21 seconds to 1 minute 50 seconds. The
+> option isn't default as the test shows up perf and test flakes.
+> 
+> The '-v' option is modified so that 'perf test -v' will give verbose
+> output only from failing tests.
+> 
+> [...]
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+Applied to perf-tools-next, thanks!
 
-    fs: Block writes to mounted block devices
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14a58254180000
-start commit:   815fb87b7530 Merge tag 'pm-6.7-rc4' of git://git.kernel.or..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1101277e240af3b9
-dashboard link: https://syzkaller.appspot.com/bug?extid=1f564413055af2023f17
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=166bcf64e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=111a00d2e80000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: fs: Block writes to mounted block devices
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Best regards,
+-- 
+Namhyung Kim <namhyung@kernel.org>
 
