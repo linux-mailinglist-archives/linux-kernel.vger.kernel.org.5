@@ -1,112 +1,99 @@
-Return-Path: <linux-kernel+bounces-78366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78368-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E87A2861288
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:18:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D6A386128C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:18:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1513286193
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:18:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56589285F14
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:18:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 860837FBBB;
-	Fri, 23 Feb 2024 13:17:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E87A18061D;
+	Fri, 23 Feb 2024 13:18:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZLn+NWth"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="u2D2k5NK"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C58867E779;
-	Fri, 23 Feb 2024 13:17:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3695E7EF0E;
+	Fri, 23 Feb 2024 13:17:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708694272; cv=none; b=poXCQe6aOhykG615sTp9LYhwsY/Cs4q4g0g38lmOOWt1X0G0jCKSP6pzzJcANdiAGSdjY4LqFrMK04tCiS4PtxK9EzxMD5GyCcBJ9PkNgd56REWJaqEJectIXZSSEy685Aid0L9EiBU4wZbAy6sTZ4MRITWpNQrOinn69uh1nd4=
+	t=1708694281; cv=none; b=h9sG7U+5cVTAy1LBQhZVHnbfWi39Xm79HcL+nqCFk5juyyCGH3vRPncpPKV7mOwK1zOeabnQtGXEziGnlCe5sx15X9ZG1UmfPJEHe5h/4A45yn8iwr3nNpANpIv9rRZP9un1ZTGpuZlS9FqDqCfFMIcLjRkr6OgO/U4gmrDKcTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708694272; c=relaxed/simple;
-	bh=Dah7nKbNvgz0/8dvPVQyf9mzODhi8A9Za+//Q+h+nOo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=A+/1XwdRHW4/rSK/TPcl35eCza6wdIQPC+QI8eoNcsMiUOcPZPhJmc+uaN1fnRzLY718BqK6FzrWYcYjzoQ/ZhPoL4kp6sZhUqdPOmJnid8JXNZoRJavBoAIDp9961DfdLqKL7oW7XRfIjH9VC+DntmN9mCYmkSYSY7b/FNo8KI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZLn+NWth; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6ACAC433C7;
-	Fri, 23 Feb 2024 13:17:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708694272;
-	bh=Dah7nKbNvgz0/8dvPVQyf9mzODhi8A9Za+//Q+h+nOo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ZLn+NWthQGZDjuQdLhDm9cq4Z+NCyABBvxxLqqJvYpMnsAcNi7UZ/YrudXsXlJPJR
-	 I7vVywWsWW57tgfWCgvWV77uy4Q77QFxCUPg4uvEld21dfq0WwWnm4lhrXn1eExFO8
-	 RvOkAm9AU+voMEa4+V2yo4Hqtaq5Nkax1ah/vsy0VrbBphdcjh4mfJamTi6pX/FEuH
-	 uX8bjiTH7weTUkKEbYnoeURf50E7qrqMICYoLdPAKz9O0bJNjVG8aesiOB0fNk9Qji
-	 5ZJIwE4jJABFElU2Xk6PbcCFg6lpFOREGu2axf11wROsAi7FVqW1SyP4xkcpqBv4+g
-	 o8Z3uA2T03RsA==
-Message-ID: <48e63867-616e-4a37-ab17-a6977c600ec1@kernel.org>
-Date: Fri, 23 Feb 2024 15:17:46 +0200
+	s=arc-20240116; t=1708694281; c=relaxed/simple;
+	bh=CJwV3AkbNYPmxUtNmWgmvsfyzdT6QZj/mLQfhzuCHbg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YwP5uOn9d/ytb/8GCmyHkY0zQZ72FXgG54Bnp0T9nKZsvTLOG+JC81ZknlHd4GPdaLLdGDBDCHn0T8lXjbomvDJFt3SMguRWkF5BWvoN/GPWu2vAad+pXVPR8ZaohHv9nEKCAb4gJIEcjzd9QP/fPnJRy/1j8FoM8TzlQDyTdqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=u2D2k5NK; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=3tX/zOPdfg9oNGtHW1EObwb4Rk2/rjHkYa5cJrgte9Y=; b=u2D2k5NKU+S/KbwkFfxUYlFwN/
+	j3v1IlFcMP3UrgK0pvVk/iTGY6eSlEVv74H1iPHksgNX9i8NhkFK/DCbft9HnBoy4p5iP6/606lAa
+	cMJxgO1KQbuN5LQB8d9roKaKLJTXftU9Prtm4fwGFl8ZXUkL8CSYKX/Jh5nKU2rBHTns=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rdVR9-008XUK-2k; Fri, 23 Feb 2024 14:17:59 +0100
+Date: Fri, 23 Feb 2024 14:17:59 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>, Wei Fang <wei.fang@nxp.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, Shenwei Wang <shenwei.wang@nxp.com>,
+	Clark Wang <xiaoning.wang@nxp.com>,
+	NXP Linux Team <linux-imx@nxp.com>
+Subject: Re: [PATCH net-next v6 5/8] net: phy: Immediately call adjust_link
+ if only tx_lpi_enabled changes
+Message-ID: <84e1368d-ec6a-48af-945b-509528c45dff@lunn.ch>
+References: <20240223094425.691209-1-o.rempel@pengutronix.de>
+ <20240223094425.691209-6-o.rempel@pengutronix.de>
+ <Zdh1nMWZDynP/AMc@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/5] usb: dwc3-am62: module removal and errata fixes
-Content-Language: en-US
-To: Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: nm@ti.com, r-gunasekaran@ti.com, afd@ti.com, b-liu@ti.com, srk@ti.com,
- francesco@dolcini.it, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20240214-for-v6-9-am62-usb-errata-3-0-v3-0-147ec5eae18c@kernel.org>
-From: Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20240214-for-v6-9-am62-usb-errata-3-0-v3-0-147ec5eae18c@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zdh1nMWZDynP/AMc@shell.armlinux.org.uk>
 
-Hi Thinh,
+On Fri, Feb 23, 2024 at 10:38:20AM +0000, Russell King (Oracle) wrote:
+> On Fri, Feb 23, 2024 at 10:44:22AM +0100, Oleksij Rempel wrote:
+> > +static void phy_ethtool_set_eee_noneg(struct phy_device *phydev,
+> > +				      struct ethtool_keee *data)
+> > +{
+> > +	if (phydev->eee_cfg.tx_lpi_enabled !=
+> > +	    data->tx_lpi_enabled) {
+> > +		eee_to_eeecfg(data, &phydev->eee_cfg);
+> > +		phydev->enable_tx_lpi = eeecfg_mac_can_tx_lpi(&phydev->eee_cfg);
+> > +		if (phydev->link)
+> > +			phy_link_up(phydev);
+> 
+> I'm not convinced this is a good idea. Hasn't phylib previously had
+> the guarantee that the link will go down between two link-up events?
+> So calling phy_link_up() may result in either the MAC driver ignoring
+> it, or modifying registers that are only supposed to be modified while
+> the MAC side is down.
 
-On 14/02/2024 11:46, Roger Quadros wrote:
-> Hi,
-> 
-> This series fixes errors during module removal. It also
-> implements PHY core voltage selection as per TI recommendation
-> and workaround for Errata i2409 [1].
-> 
-> The workaround needs PHY2 region to be present in device node.
-> The device tree patch will be sent later after the DT binding doc
-> is merged.
-> 
-> [1] - https://www.ti.com/lit/er/sprz487d/sprz487d.pdf
-> 
-> Changelog in each file
-> 
-> v2: https://lore.kernel.org/all/20240205141221.56076-1-rogerq@kernel.org/
-> v1: https://lore.kernel.org/all/20240201121220.5523-1-rogerq@kernel.org/
-> 
-> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> ---
-> Roger Quadros (5):
->       usb: dwc3-am62: call of_platform_depopulate in .remove()
->       usb: dwc3-am62: fix error on module removal
->       usb: dwc3-am62: Fix PHY core voltage selection
->       dt-bindings: usb/ti,am62-usb.yaml: Add PHY2 register space
->       usb: dwc3-am62: add workaround for Errata i2409
+When auto-neg is used, we expect the link to go down and come back up
+again.
 
-Any feedback on this series? Thanks!
+Here we are dealing with the case that autoneg is not used. The MAC
+needs informing somehow. If we want to preserve the down/up, we could
+call phy_link_down() and then phy_link_up() back to back.
 
-> 
->  .../devicetree/bindings/usb/ti,am62-usb.yaml       |  8 +++-
->  drivers/usb/dwc3/dwc3-am62.c                       | 45 ++++++++++++++++------
->  2 files changed, 39 insertions(+), 14 deletions(-)
-> ---
-> base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
-> change-id: 20240206-for-v6-9-am62-usb-errata-3-0-233024ea8e9d
-> 
-> Best regards,
-
--- 
-cheers,
--roger
+     Andrew
 
