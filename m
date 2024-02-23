@@ -1,111 +1,123 @@
-Return-Path: <linux-kernel+bounces-78298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B15AA861189
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:34:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66C0C86118B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:34:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 687A028730D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:34:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97AD11C229EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:34:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD56E7A725;
-	Fri, 23 Feb 2024 12:34:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8EE67B3D4;
+	Fri, 23 Feb 2024 12:34:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GDXWAAMl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="duqXFttV"
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C747399;
-	Fri, 23 Feb 2024 12:34:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BBA05B1EB
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 12:34:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708691663; cv=none; b=c4hU4PZRDdl2irXS1IMZuB8ajkYCAq8itkLipqhZY+CiRrDGdWyzru5bnMt4yIZUWSmoEseYdcRw8CMbzgmtVBRMGu1LWMNIe68sPp8zTkIQcTuhda7/IScCLZSAZwqsAifbeUSwislsiEPwDWFWQ4lJYDJhIuAg8gYX/T5TL/M=
+	t=1708691686; cv=none; b=jpYc2kX8S4jUi4DE+g5TxOsSVwqpPqafw0PZK6+nSWmPgdu6Rgh9OjZqTx+264fVorWWKQIwxBidTrBIy7+fGAjfbCvw77fIGyxVhDA8V45bV3k+k1ds9HYa45uPsdiCwFN/dquVZDZNJDnBzilCBTxm2qR7FQY0Cj9TwAgAEkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708691663; c=relaxed/simple;
-	bh=wIZnEe3KcxS7XCDNqgIeFfvp323Etd87hBcWJTeE5ro=;
+	s=arc-20240116; t=1708691686; c=relaxed/simple;
+	bh=zhjRfVpkoxLXxvUubdOEZ58ErNvPOno2Axh+xYl/pgw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SW94FPKs8/5UMOZ6pBPs90rPUEmC8cwBG9AmNrx4gtOmQell25DMyfLCOZIoPzDnlDhKciKLvlqZ93Vrt4WkAOPxErbxlnQw1WUi25URIlSd99+4NUlUevdedkX1W1XrlaqdYfhD1l7kDAGI+S/1NHulwALttul4CIywI6qULGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GDXWAAMl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4A30C433F1;
-	Fri, 23 Feb 2024 12:34:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708691662;
-	bh=wIZnEe3KcxS7XCDNqgIeFfvp323Etd87hBcWJTeE5ro=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=GDXWAAMl+ykSPK+Opn0rYxjm7hV3YszXdo6b2qhiqkAe54lerkkqG0LKUPNdPvvvi
-	 uDp/5QgFCstfO+3rmnLFdhAfq2WVjfUlU2Du/ga5EJbgjf0s+/PGQoLGIneE4CyJ4O
-	 4zjkgLLJcXqY0awnGlCZYFXIyZVoNX1UO8st+ud4AjKJtKWdCmNwZkq+6ur3K/vr+6
-	 aaHtS00yW6JOIjMUzeKQbn1G5vMZYt2X1TFmnBB9tfNtwoyzhwT4OWL0fbzvKiZsbR
-	 EL2PBaNn/wTCAwpZ4PTkGcqMNrN8bP41x4x0hXeuG9+fRFckbYtLtsDLQDumqyTPGQ
-	 xSiY3lgzunS5g==
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d0cdbd67f0so3630011fa.3;
-        Fri, 23 Feb 2024 04:34:22 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVujYsoS5uXK8VeNW4T/pYGmn9tGB53NlJ48XomWK/drFD5WAvIHSpIyIwc50tgaFxFPx1EA69qCpPW/v1UTCk+17x9JJOLwwYaBMicC7s+K+TguCOAH7L5qQtzUrAri7Lx8KKHlv6OIPIo
-X-Gm-Message-State: AOJu0Yz7CNkQFZOeP1TiHN4ZYt00uT73HOsGvw6hy7tzs0lD+z0K/pYa
-	keLjIavA5JZ4N58H7eoFPuAYTBknUetnb+Co6mf/kgKzeQfzkPY/in0mEpI1U8WtLMMPX2OO/qe
-	oTMXEGtUXZCItjHMAi8/hzHzyIlU=
-X-Google-Smtp-Source: AGHT+IHR/4n5aojj89CoD1dJ3LedRSlNN5a1x4hWtJYB0U8DAoIdMlL+5Lh77qZDBSm8EDFoIxbw93BIk/PvYJqXr1Y=
-X-Received: by 2002:a2e:a7cf:0:b0:2d2:3c9b:ab70 with SMTP id
- x15-20020a2ea7cf000000b002d23c9bab70mr1199422ljp.21.1708691661154; Fri, 23
- Feb 2024 04:34:21 -0800 (PST)
+	 To:Cc:Content-Type; b=W1uXVJWTt9LAZTMJ+uWm2bos+nIuApip5xf5j7dD6AXKUt5HAX3uwGbzrRLGT1VEITbb3+pPnbFPQ3RK30yRdzRZAm0cwbmjq8JSN6oqf8fy3EUzqY/WpSpTetVk9VgdZYhaDNFCHUq1xkrQlcmgZwRbQlgROimVrw+yny1AXQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=duqXFttV; arc=none smtp.client-ip=209.85.222.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7d5fce59261so568429241.3
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 04:34:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708691682; x=1709296482; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WNe+xdbuP+XQVL+r99jidBW6ZKxShOp89bgusTStUEw=;
+        b=duqXFttVRi7mAjfZIet2WuQXB5XTNBCJT1n8ZMNN//gHqzl0HydlleDWMdMFI8WOcu
+         egVFROgi73LbFBVUEStTRKlKkSMWseJvpdyRKAXClKSaUmCCx2srlbNQ3Q1nWQRXnM8C
+         Mwp7Cl5Y9Agw1aZFipHqaAPw6UVgXON0wN0P6w3rqmvXMFLn8McdUnJ0qDP9HC5yYq1P
+         OW66qRmRK8XIghvUovVxq2Lgxqu4bcgOfGylRMNpHYfB8ueAzG1JKwyiOZp6lohy4aME
+         it5t2Cr708YjeWsvRUCfOhWf4j1PsMa8Sm4Em52OSzdE/Eiz3ioPOFTOLE2C44pIUerl
+         cyBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708691682; x=1709296482;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WNe+xdbuP+XQVL+r99jidBW6ZKxShOp89bgusTStUEw=;
+        b=mS4Ul7oGICwHxWvhaS5TAvXKRFRv83FN1FBYqRL24dc+bcWhtoJkqZZGwozjSan3dQ
+         /7kMUAu/WHjG8ERCwGulpHO7y/hLmy8EinwfIypB0OREuPIP6Svb58whV3j9SWjfLN27
+         f0vTOyPMCShSxHhH24AXbKUhNJSW8zQQww2ioO+nEazMeYjp67AoVWOHaqgain67npOu
+         eIVLKcbEPAKBmhXTe1TJK7T2N3BNaxcmyewdJUaI9kpUP8nBhagDN2Wg3ACgJ9pE+2T1
+         XrrEiTMSBVOM2uHWHK0KRTtnOnJ5PBZBgesYi/7ufzrrJIFMVeK65oa9EDDPmRb/JM+R
+         Zdmw==
+X-Forwarded-Encrypted: i=1; AJvYcCVeuE1UigxadvSXOjKuuPHX6i0MhFDDEFAbVrEm1EF2W0ppJkUo2Ky15XjxeUtfVohsW1Q6SKrGLQODO72J0Rk6l6mv1xPiw0cFfk2J
+X-Gm-Message-State: AOJu0Yx/r5iArUahmWwAyyVKyDGrHepEMayxYGHu4CelcJo8jJfSiOon
+	ORz35bPl/WsY8wDIDahGXYY11l611xAIQ78spLwFN4th7bRN1rFUA3JNOszJ4RKIC7WxraCyFp3
+	P7h200tvviNYKhnU1WjQ03CKgwJxlr25OVw7Keg==
+X-Google-Smtp-Source: AGHT+IHQiTZmMiNM0w5NjI6gyMnFY2eO4mN41D+kyCN1AJC/GocX/0tuubU4v2jly1kNifC7Ftx+QhTjPB+y5DVE7Jg=
+X-Received: by 2002:a1f:de82:0:b0:4c8:9db3:3b60 with SMTP id
+ v124-20020a1fde82000000b004c89db33b60mr1697184vkg.6.1708691682205; Fri, 23
+ Feb 2024 04:34:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221202655.2423854-1-jannh@google.com>
-In-Reply-To: <20240221202655.2423854-1-jannh@google.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Fri, 23 Feb 2024 21:33:44 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARBrc=JvGr-TA9BDB7KOeOycKVBoWJUkSEgQbdhpUk+ew@mail.gmail.com>
-Message-ID: <CAK7LNARBrc=JvGr-TA9BDB7KOeOycKVBoWJUkSEgQbdhpUk+ew@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kallsyms: get rid of code for absolute kallsyms
-To: Jann Horn <jannh@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, Zhen Lei <thunder.leizhen@huawei.com>, 
-	Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+References: <20240223123028.288038-1-brgl@bgdev.pl>
+In-Reply-To: <20240223123028.288038-1-brgl@bgdev.pl>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Fri, 23 Feb 2024 13:34:31 +0100
+Message-ID: <CAMRc=MdQWAQHzM5ei=-pfghjSRzRFYyxHVXcLgXvjWOmRVLjqw@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: don't put the reference to GPIO device in pinctrl_pins_show()
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, David Arcari <darcari@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 22, 2024 at 5:27=E2=80=AFAM Jann Horn <jannh@google.com> wrote:
+On Fri, Feb 23, 2024 at 1:30=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
 >
-> To compile code for absolute kallsyms, you had to turn off
-> KALLSYMS_BASE_RELATIVE. I think based on the way it was declared in
-> Kconfig (without a string after "bool"), it wasn't even possible to
-> select it.
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 >
-> Get rid of this config option, as preparation for some kallsyms
-> optimizations that would otherwise be infeasible.
+> The call to gpiod_to_gpio_device() does not increase the reference count
+> of the GPIO device struct so it must not be decreased. Remove the buggy
+> __free() decorator.
 >
-> Signed-off-by: Jann Horn <jannh@google.com>
+> Reported-by: David Arcari <darcari@redhat.com>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+>  drivers/pinctrl/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
+> index ee56856cb80c..bbcdece83bf4 100644
+> --- a/drivers/pinctrl/core.c
+> +++ b/drivers/pinctrl/core.c
+> @@ -1644,7 +1644,7 @@ static int pinctrl_pins_show(struct seq_file *s, vo=
+id *what)
+>         const struct pinctrl_ops *ops =3D pctldev->desc->pctlops;
+>         unsigned int i, pin;
+>  #ifdef CONFIG_GPIOLIB
+> -       struct gpio_device *gdev __free(gpio_device_put) =3D NULL;
+> +       struct gpio_device *gdev =3D NULL;
+>         struct pinctrl_gpio_range *range;
+>         int gpio_num;
+>  #endif
+> --
+> 2.40.1
+>
 
+Linus,
 
-The code is correct.
-Based on Arnd's feedback, could you rephrase the commit description?
+Disregard this one, it had no Fixes tag but I didn't press Ctrl-c in time.
 
-When 2213e9a66bb87d83 was applied, IA64 and (TILE && 64BIT)
-opted out of KALLSYMS_BASE_RELATIVE.
-Now, both architectures are gone.
-
-
-
-
-
-In the commit description, for instance, you can say:
-
-  Commit cf8e8658100d ("arch: Remove Itanium (IA-64) architecture")
-  removed the last use for the combination of KALLSYMS=3Dy and
-  KALLSYMS_BASE_RELATIVE=3Dn.
-
-
-
-
-
-
---
-Best Regards
-Masahiro Yamada
+Bart
 
