@@ -1,103 +1,128 @@
-Return-Path: <linux-kernel+bounces-78819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FF75861941
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:19:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0A29861942
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:20:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4C631F25E38
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:19:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B053284FF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:20:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0655112FB22;
-	Fri, 23 Feb 2024 17:19:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BF431C68E;
+	Fri, 23 Feb 2024 17:20:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="rKxv/KTt"
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j2wHc/gq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6009A12DD81;
-	Fri, 23 Feb 2024 17:19:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E07712AAE0
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 17:20:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708708760; cv=none; b=u7as/aREbGjNx9iJgkWXfVz31wd/XDIkvfzJlAdNVKTTDQ7sfIJii/gt0eaRmyXPGMVzb/qLuTiqvabzRByePuXQHtYzNmUiXvJyLEyGuVhElUrCw3lEOfis5w/ynVgQsRxoiWgmStySfbEJqKeRPiz9VGVbCinc+1qfYAxdVGs=
+	t=1708708812; cv=none; b=KyMkBykp/kZbBOmqv16/D8IzTtXOp2NbK6CsJ4AhP9Fn+Dcgi1YRoJsPhSqe8YDk+LO7w1M8yXtBMlAqTx7L97KcPc0aEaB2yiRV5ekdXO6cKc0f7QTxV5DsvuWWBldKbAWybdJYBYkj6OE3nBvLOfMLXNcZiUlO6srC76Z4PSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708708760; c=relaxed/simple;
-	bh=djVppOvAgFVIlgt/WIoVQ6u2hzYwkqEWVq8VEJwptqg=;
+	s=arc-20240116; t=1708708812; c=relaxed/simple;
+	bh=T3y3bvy64o+ZYZ7fO4C4nj0LTrwniTjzjpka6LToHr8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FFlK8WyPn0jOXs+6Ei/y4VX0AL5v2TjSwbheKIWvEmHp3vaALCeM+ozgI5uzBj89+shwC8IjVbo3fghIqKj+NujqBTtzg6pnQIsKRsNZ3ONfAKn9hGHnIADdPmhzW7/8AeoTfn8dQlsq+ZP2xFvDqLZ944hr3KTvY+pTwx8YW98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=rKxv/KTt; arc=none smtp.client-ip=217.194.8.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
-Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-	by mail11.truemail.it (Postfix) with ESMTPA id A8D49225AC;
-	Fri, 23 Feb 2024 18:19:07 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
-	s=default; t=1708708748;
-	bh=GqOXTbroCo6UamNlREFgTejmjaBG9X8jsQRMkSHXfaw=; h=From:To:Subject;
-	b=rKxv/KTtPN1evHqGHGEOrwfrRmANaLCkTpETdw9Rgs7AKH4Pn7kUF4BIUak59M2tf
-	 yi+O2aJDTsW2M/NbXL2PL0/oFjffofUEp/eOtDKwliGGQFZ9KX6GxhNiaVEGQItGRw
-	 FMzrlC57WS91J1ytQk1bhu6oSk0XXkzZVZAP0RGhqthUVL2heSFSLHgYNAVoVb6hdz
-	 R4s2nX2c0VDyOf5Sj7Vy323+GYwAzuA0wS3h59vYzbBAFByaNWKhKidQm3Gxb4jYiD
-	 Fiw62mI5DTRu8LVZHyDltyv52R3R+PFtYcvOBBbyWqh3zVczS+5XI2+VRTpzmqX+rh
-	 SNn4K2bGK6O9g==
-Date: Fri, 23 Feb 2024 18:19:01 +0100
-From: Francesco Dolcini <francesco@dolcini.it>
-To: Shawn Guo <shawnguo@kernel.org>
-Cc: Francesco Dolcini <francesco@dolcini.it>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Francesco Dolcini <francesco.dolcini@toradex.com>,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Marco Felsch <m.felsch@pengutronix.de>,
-	Roland Hieber <rhi@pengutronix.de>,
-	Hiago De Franco <hiagofranco@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v1] ARM: dts: imx7: remove DSI port endpoints
-Message-ID: <20240223171901.GA22584@francesco-nb>
-References: <20240216104255.21052-1-francesco@dolcini.it>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kKNpgkAv3P49UxO9rI04kMauIVl9Sw1zHD/zTyvyp/WsN0frNU2/SerbJpssWNs38icnOQY4J6TxMpUenZy7n3zghBSBLX0+GyVQKEgJnVYUcOt6S2nmZfHvmK0NAVmMeLm0W33g/LjBL/fTrNDb+1zl8EUAq6I9GkyTOnHlCFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j2wHc/gq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00988C433C7;
+	Fri, 23 Feb 2024 17:20:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708708812;
+	bh=T3y3bvy64o+ZYZ7fO4C4nj0LTrwniTjzjpka6LToHr8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=j2wHc/gqwUx4LU7n5jV4YJGxdYvcIIlVOlZgIu0Gv7+6tjiPvHaqsXIvFAFgkCVVb
+	 Yyb/b9rxiY/iKEy++S21TC79mUB1hinHwv7463qyAbYlphTWnY9FePw+xQS3z9HZgC
+	 erlaHvgN7pC3nKiH8w6yEFYasWS47UJ8hYOmqdr5BlLO0kTbLE/K5vUImKcC9QQAyF
+	 dSGCaDa/euhWKFmSmaTcRwFYjVAXcdVBwehQ2m/EWxnbtNfoOXlZoYWenZafd4aCpZ
+	 fWdtzy/CyFgRqvvRJrHmHa+TW4J3dJlbBQZaZyAsHk3JiwPTe5lD4lCKqk3+sgzLSo
+	 EoJk8CpQwCBKw==
+Date: Fri, 23 Feb 2024 17:20:09 +0000
+From: Mark Brown <broonie@kernel.org>
+To: "Ding, Shenghao" <shenghao-ding@ti.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	"andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>,
+	"lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+	"perex@perex.cz" <perex@perex.cz>,
+	"13916275206@139.com" <13916275206@139.com>,
+	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>,
+	"bard.liao@intel.com" <bard.liao@intel.com>,
+	"mengdong.lin@intel.com" <mengdong.lin@intel.com>,
+	"yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>,
+	"Xu, Baojun" <baojun.xu@ti.com>, "Lu, Kevin" <kevin-lu@ti.com>,
+	"tiwai@suse.de" <tiwai@suse.de>, "soyer@irl.hu" <soyer@irl.hu>
+Subject: Re: [EXTERNAL] Re: [PATCH v9] ASoc: tas2783: Add tas2783 codec driver
+Message-ID: <ZdjTyccCDoD9QYpi@finisterre.sirena.org.uk>
+References: <20240222074000.659-1-shenghao-ding@ti.com>
+ <10f53a13-a0ff-40f9-b089-f5baacdb76b6@linux.intel.com>
+ <5c7127256bf54fcd921fc1ec83f3e527@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="JSSHE0FUht8S9Os8"
+Content-Disposition: inline
+In-Reply-To: <5c7127256bf54fcd921fc1ec83f3e527@ti.com>
+X-Cookie: You might have mail.
+
+
+--JSSHE0FUht8S9Os8
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240216104255.21052-1-francesco@dolcini.it>
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 16, 2024 at 11:42:55AM +0100, Francesco Dolcini wrote:
-> From: Francesco Dolcini <francesco.dolcini@toradex.com>
-> 
-> This fixes the display not working on colibri imx7, the driver fails to
-> load with the following error:
-> 
->   mxsfb 30730000.lcdif: error -ENODEV: Cannot connect bridge
-> 
-> NXP i.MX7 LCDIF is connected to both the Parallel LCD Display and to a
-> MIPI DSI IP block, currently it's not possible to describe the
-> connection to both.
-> 
-> Remove the port endpoint from the SOC dtsi to prevent regressions, this
-> would need to be defined on the board DTS.
-> 
-> Reported-by: Hiago De Franco <hiagofranco@gmail.com>
-> Closes: https://lore.kernel.org/r/34yzygh3mbwpqr2re7nxmhyxy3s7qmqy4vhxvoyxnoguktriur@z66m7gvpqlia/
-> Fixes: edbbae7fba49 ("ARM: dts: imx7: add MIPI-DSI support")
-> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+On Fri, Feb 23, 2024 at 10:12:49AM +0000, Ding, Shenghao wrote:
+> Hi Pierre-Louis
+>=20
+> > In the SoundWire spec, the unique_id is *LINK SPECIFIC*, and only used =
+at
+> > the bus level within the context of a link to help avoid enumeration
+> > conflicts
 
-Hello Shawn, what do you plan to do with this?
+> > If you are using the unique_id as a SYSTEM-UNIQUE value to lookup EFI
+> > data, this is a TI-specific requirement that needs to be documented.
+> > That also means you need to double-check for errors so make sure there
+> > are no board configurations where the same unique_id is used in multiple
+> > links, or by devices other than tas2783.
 
-This fixes a regression from v6.8-rc1 and would be nice to have it into
-the final v6.8.
+> This code only covers the tas2783s sitting in the same bus link. As to ca=
+ses of the
+> different SWD links, customer will be required to have the secondary deve=
+lopment
+> on current code. I'm sure my customers have much knowledge to handle this.
 
-Francesco
+As Pierre says I think we really should have some sort of defensive
+programming here, even if you're going to leave multi-link systems to
+future work people will still have older versions in distributions or
+whtaever.  While I'm not sure the consequences of getting things wrong
+are likely to be that bad (I'm expecting bad quality audio) it's also
+going to be kind of hard to figure out if we just silently pick the
+wrong calibration, especially if it's actually a valid calibration for
+another device in the system.  Other vendors (eg, Cirrus) seem to have
+figured out a scheme here?
 
+--JSSHE0FUht8S9Os8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXY08gACgkQJNaLcl1U
+h9CDTAf/bo/BBm0FaalBPQlGYIf6F1SuRLsnvDOwApCG85Z6wSol1qV1EdXwsRHM
+4ijYqyHPymwdgpesQnl3LhgpuZ2m/eMk8xXOqOtjC/yCLN0f59uCAmw7XglxhQsP
+WmS/0JEZ3Xv2+JcddbErmCdrWi+uJQkiJuhUYkxpx9p0gao5pYarIOoNyHC9vCFF
+K+Cxv/YKjuQqakXNVGTfvC7ywD7iX3tT2UVtlAFm8VnFr9W44jkggE9MzyJPP9xb
+yvqkqyrcKIEUCGSdMJLxXFTiT1N3cfWPN2/kjJ933DZMEHp2L1ytio4p1lionLE7
++KMiDfhfNZabb3w0gy+dU7MI71OnbA==
+=aP7c
+-----END PGP SIGNATURE-----
+
+--JSSHE0FUht8S9Os8--
 
