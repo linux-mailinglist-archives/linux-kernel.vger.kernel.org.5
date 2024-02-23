@@ -1,106 +1,87 @@
-Return-Path: <linux-kernel+bounces-77714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77AFA86095D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:26:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 487E886095A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:26:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 003A91F25883
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:26:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5D231F258BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:25:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E539910A25;
-	Fri, 23 Feb 2024 03:25:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1186FD310;
+	Fri, 23 Feb 2024 03:25:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="fFDPhNdW"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="apDnzXIZ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4C67D26D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52CEAC2C4;
 	Fri, 23 Feb 2024 03:25:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708658754; cv=none; b=sEZ0Taf6XpwMjIpgBFf2KC7VGAK9Y4Re/4+wE23VDPohzz4IHMWomfcThu21liqS08k3c+3hvkCxpSO4Xel43RndIYSUuvfE47vYKsdxSXGYJuiIjM/qcvK4EWm1QU5Y5pguN2zaXJTlCl/H86150j8MaSFAi0iUG/vBhgOB328=
+	t=1708658750; cv=none; b=lIvBZ6/RM379Qu8TCe7cJnbnBhVuRWMWujLL8XeG7YOTIlexSr8+hbLd/oZLNid/ePIKXZQg/d0WvZXQQcjXXMJVy4WxzvueWG57LD4iiBNb6awu9fxYff1x2okLxVUhic50C0NmzZCs+6NzSM5GXL3k+XoWgcLBrkRy9z3cpJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708658754; c=relaxed/simple;
-	bh=n4qpbgJ8v7GPZVfT9Z7r1oiTnMQmcWKFfKrBz37hriw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=F4of1I/noMGxTIKvSuMbKUtn987gdGMpXsxloeSr4agKwFVSzK6oVPLRoPI1fBR6pAUcR3iDX8wlFgWiliTAU70NJlhksXRZrZI23nfOhC0q7SeveC7sFDgKt9KlnAm/+fS8+hxgK65fjEI1pINKidr8S0P2fK0zi5l0KH3/XJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=fFDPhNdW; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1708658748;
-	bh=VPIjp5+R9X3jqT9MsfV+RShmi4vdvyr2GGYCyeKsN/Y=;
-	h=Date:From:To:Cc:Subject:From;
-	b=fFDPhNdWyCg9kOgSngASEqst2YWGbQ5tJVIS6DOkHo9srR0Gw4lpmss5U2VWXfIbM
-	 GC3zWyxWtmdfeDZhsnlNqhR5LDQHsiLPZJ9jtLDWcVLQ6DLvQENOfKxqgn9EuQ2ATD
-	 uhWqWryMxKN3q6JoCtDGNQe1bxD3jNEWQvQVpfEjVuWnGLNsCmS1XELDCi3CML7ZyS
-	 UyaTB1YVOOLrX0qmKMAgHz2bF3Dr783JGS3J/i0cUcxeEp4aPWYBvsgmtsEucSCtDa
-	 k/48DJU3EYewv/8wolG491vcdNx8kC4U/UEd0yjXQZtc9fgFWF9X45+rSB6x1zZED0
-	 8y86I9XlxsyXw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TgwQ36p7gz4wcb;
-	Fri, 23 Feb 2024 14:25:47 +1100 (AEDT)
-Date: Fri, 23 Feb 2024 14:25:46 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: "Michael S. Tsirkin" <mst@redhat.com>, Herbert Xu
- <herbert@gondor.apana.org.au>
-Cc: Linux Crypto List <linux-crypto@vger.kernel.org>, Li RongQing
- <lirongqing@baidu.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the vhost tree
-Message-ID: <20240223142546.073f7c21@canb.auug.org.au>
+	s=arc-20240116; t=1708658750; c=relaxed/simple;
+	bh=01pAmEZPrVE/mN+21C6E5KceZu5TkFsxE7fPYMyk7NQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MjgBemZ1qdtKWJEpnIm6RHaRfq/zf98TBAensetXX8093IQyU09c0Dk8HhORwfy5jiKpZ/mwZ34pTcZIiNVnAmDBMkFaI4nTLQJa6VqZs9oacncnMTxYgSwX9eAdZ6tlIASKqyn4xlpEL+1OUQmOMMdc0z1e/gFE36AO/rz6vAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=apDnzXIZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 192F2C433C7;
+	Fri, 23 Feb 2024 03:25:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708658749;
+	bh=01pAmEZPrVE/mN+21C6E5KceZu5TkFsxE7fPYMyk7NQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=apDnzXIZc6bm1rrH2Q3WZ0w/IlnAVCb1gjhZ3jy7lkYIlyCvBWwrp66MLggDA2efQ
+	 bnGxZfG6CVP1yx4981jqWLEyF0M/OBKMZgl8urDL4q+1Uu5EqenYlouyVQMj1jBujc
+	 ZLzj7MhbL3QdAJc+PywD7Bap4hICK45nBpbD5RiGyzWZacbzvT4aKr+bN/sTyz8Nki
+	 stgJCA3UWcX7MJhhM5sxFcTRdjBNq1p+PGtlXBzoBuaW3Q6hglQEdHKAVpkkUtT5wN
+	 2Xvk2OCmd2mokD4rrpkuYICmlT+2EZ0xlKxqAPw+LfLXF6yP6b1QJ7rDTxG2E9R0Ze
+	 uv+5w0vSTFNXQ==
+Date: Thu, 22 Feb 2024 19:25:48 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: Wei Fang <wei.fang@nxp.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Andrew
+ Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, Russell King
+ <linux@armlinux.org.uk>, Russell King <rmk+kernel@armlinux.org.uk>,
+ kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang
+ <xiaoning.wang@nxp.com>, NXP Linux Team <linux-imx@nxp.com>
+Subject: Re: [PATCH net-next v5 4/8] net: phy: Keep track of EEE
+ configuration
+Message-ID: <20240222192548.2e9a501e@kernel.org>
+In-Reply-To: <20240221062107.778661-5-o.rempel@pengutronix.de>
+References: <20240221062107.778661-1-o.rempel@pengutronix.de>
+	<20240221062107.778661-5-o.rempel@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/PHhm.IMMHBE0tJ_.+tM7ruv";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/PHhm.IMMHBE0tJ_.+tM7ruv
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-Hi all,
+On Wed, 21 Feb 2024 07:21:03 +0100 Oleksij Rempel wrote:
+> @@ -595,6 +596,7 @@ struct macsec_ops;
+>   * @advertising_eee: Currently advertised EEE linkmodes
+>   * @eee_enabled: Flag indicating whether the EEE feature is enabled
+>   * @enable_tx_lpi: When True, MAC should transmit LPI to PHY
+> + * eee_cfg: User configuration of EEE
 
-The following commit is also in the crypto tree as a different commit
-(but the same patch):
+missing @ in front of the name here
 
-  2374ca8f6556 ("virtio_crypto: remove duplicate check if queue is broken")
-
-This is commit
-
-  633eeefab69e ("crypto: virtio - remove duplicate check if queue is broken=
-")
-
-in the crypto tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/PHhm.IMMHBE0tJ_.+tM7ruv
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXYEDoACgkQAVBC80lX
-0GxKpwf/R0i3r/NTejhG1yI3fIJFZcWxrZbWmh5zYcpAvkAyVpND6guw1wj/47zy
-3FkCHMTEAJN4QPIRtumR1WNLvWTnLjnS2uBPpcD4lMMoZOqV3Zh7m0Q/NJhVHPOZ
-Yt/sbP3JqNIQtTBOG0sARzRb6uAfaopif5DvisjTaMjSxcO8AZ6tYZ1YVjVLAG9N
-/jJtKtFgTLSGO1gazKPVe9OlmaJN9nov6dC9ErpqkMUmRMONDltIjbcEPO7R7K+j
-XRyPbQ76ik/3OWMhnjFGI0lNclWV8704ZfT0brMDKfM6RBMgs0zYyG+JZCp3/LZf
-7xRC/07yhGE78uDxwoTjhSh1NmUn1Q==
-=PhEO
------END PGP SIGNATURE-----
-
---Sig_/PHhm.IMMHBE0tJ_.+tM7ruv--
+>   * @lp_advertising: Current link partner advertised linkmodes
+>   * @host_interfaces: PHY interface modes supported by host
+>   * @eee_broken_modes: Energy efficient ethernet modes which should be prohibited
+> @@ -715,6 +717,7 @@ struct phy_device {
+>  	/* Energy efficient ethernet modes which should be prohibited */
+>  	u32 eee_broken_modes;
+>  	bool enable_tx_lpi;
+> +	struct eee_config eee_cfg;
+-- 
+pw-bot: cr
 
