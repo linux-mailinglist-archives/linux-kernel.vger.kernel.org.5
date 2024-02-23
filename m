@@ -1,77 +1,108 @@
-Return-Path: <linux-kernel+bounces-79314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A4478620AB
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 00:31:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1E278620AD
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 00:32:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A1FB1F23494
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 23:31:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC7E61C21044
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 23:32:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B937C14DFD6;
-	Fri, 23 Feb 2024 23:30:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A761814DFC6;
+	Fri, 23 Feb 2024 23:32:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="LYtYRFTl"
-Received: from mail-177132.yeah.net (mail-177132.yeah.net [123.58.177.132])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFA4914D42B;
-	Fri, 23 Feb 2024 23:30:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.132
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="MDyX4SlA"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2DB8DDBB
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 23:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708731059; cv=none; b=En6kC9qgzH7rCmYMls0OINVF61bbH+dsmNvu8UWbtWMo9KVf0M+dlnQLJCznWBCjV1+lrKIIgcNiX2429LKcYS15/J/ub095VtJPyykNr+83imR1eiGI67ZfgM5ySm+YTG5Vrn7SGQhlfZcEjq2fvfdSYutzEGV/zVs3F48QWY4=
+	t=1708731129; cv=none; b=lObYAKAtHDMuLVG/bdjqNiAr7zXUwamoy8BUUocA0yfiw4+5e0HQBhbxPcRVFIKa1SVTaH6MCNqsdQ/8eDGdrkCHJukY4xSIcdr+r9EtCkHcMXvFSTB5eFk31YwMrLpSBnFc7bZ/DLaalb2YMeWUvl1nHDDvmPj676+731UZRgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708731059; c=relaxed/simple;
-	bh=Dls6Z90ot0nsieIIxV7nVTDnfpxy0B7m0BRTcuH40iw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HvYMdeuUdQz1FNoTVpj+2P2if2tMkbvK9hM2sjhx6LLU/s3gerBX9avkW+xARe6EusxpLwp2Xi6AgBemdzsbZBPOYZ9HLmFutywK0sakkXpBNW1xVZdTb5K4Zvn8/DBGnh49Nt/rljNuMcKYjCNI96zDZbWWGNhSttDDkZAsk5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=LYtYRFTl; arc=none smtp.client-ip=123.58.177.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=amwAWmFtC6C9Xm5MB+erBDihO0nZs63fdOhlOAyvBWM=;
-	b=LYtYRFTlLbx0SQoBX/YNCA086FSjLZNkPtvyosTc2S05AUJMZ5E4jyAG7nw550
-	2GOBsKOhE7Hxmue1dRuFLvsw8vbyLkeVKwwz5BKVPNZKe2il68IJVkRu31J1lX8D
-	EbPGOc865jbX3tnlIkglFJYd3AScP2e0iOjI7bzL7uT0I=
-Received: from dragon (unknown [183.213.196.200])
-	by smtp2 (Coremail) with SMTP id C1UQrACXfwWQKtlliXY8BA--.65296S3;
-	Sat, 24 Feb 2024 07:30:25 +0800 (CST)
-Date: Sat, 24 Feb 2024 07:30:24 +0800
-From: Shawn Guo <shawnguo2@yeah.net>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux@ew.tq-group.com
-Subject: Re: [PATCH] arm64: dts: freescale: minor whitespace cleanup
-Message-ID: <ZdkqkFjL6U9zEpX7@dragon>
-References: <20240208105217.128748-1-krzysztof.kozlowski@linaro.org>
+	s=arc-20240116; t=1708731129; c=relaxed/simple;
+	bh=mptfRWcSfZNkIIg8e6vRfg8SebiYxorzuLLHQ5JQ/b8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=SmAJlw8EUDzUIAwnw0RX8uZfPl308029JMDh/jfFtcT/1YhW0o+CNgCV7u25ZW5SB+uIwiqfGOXniqa/QfXquuNNODBdTkYIHXD77T7khQz81TKfL/ZjwRaNgEZmMmFk03dHRlzd7P8AO0WeAixwktWjZHz66fpjSZz8ohYoKmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=MDyX4SlA; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41NNW2Lc004437;
+	Fri, 23 Feb 2024 23:32:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=+ybNdyyNqdSX3SG4wxvmEr9BC/uDI+SRx62ONRrwA28=; b=MD
+	yX4SlADaYWi2omjdnSR9I6RKzd+X2dGUE91hP8VDotlQ0FiovRcKSC3L60Oq+uoK
+	t9pms2Z56jA7YGgT27QjhSXmYEuf/LN2CC7kjepDOHiu2we0yf1KRlrBxeksxvfo
+	+twXxspG2Wpl8RZRZ00SBet6D58238vLCoG2iT/05WFekddoVB4p+08zSiRm2ktl
+	smjMQ2GO/fGw4E14veogG6f6Hq0Co3pefG34J5VojEP8A3j3cil6DWqkj30yw86n
+	ykYUO3cU2IV46Xbw+QCJyZkdPBFkvg+lACY6FgkTKa5Dame/7c66R5MREfdhlloR
+	Nu+zNk1lBA1oNaH8ZZww==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wekvetb3f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 Feb 2024 23:32:02 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41NNW1en015897
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 Feb 2024 23:32:01 GMT
+Received: from [10.110.73.113] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 23 Feb
+ 2024 15:32:01 -0800
+Message-ID: <bbf83ad9-825a-0a9f-79df-620067de5c5b@quicinc.com>
+Date: Fri, 23 Feb 2024 15:32:00 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240208105217.128748-1-krzysztof.kozlowski@linaro.org>
-X-CM-TRANSID:C1UQrACXfwWQKtlliXY8BA--.65296S3
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUIxwIUUUUU
-X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiFRGNZV6Nm6LFUgAAsR
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 13/13] accel/habanalabs: modify pci health check
+Content-Language: en-US
+To: Oded Gabbay <ogabbay@kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+CC: Ofir Bitton <obitton@habana.ai>
+References: <20240220160129.909714-1-ogabbay@kernel.org>
+ <20240220160129.909714-13-ogabbay@kernel.org>
+From: Carl Vanderlip <quic_carlv@quicinc.com>
+In-Reply-To: <20240220160129.909714-13-ogabbay@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: lRhb6A63RkV57UqHTKzBCx0vhLv_bei3
+X-Proofpoint-ORIG-GUID: lRhb6A63RkV57UqHTKzBCx0vhLv_bei3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-23_06,2024-02-23_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 adultscore=0
+ impostorscore=0 clxscore=1015 spamscore=0 phishscore=0 mlxlogscore=827
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402230169
 
-On Thu, Feb 08, 2024 at 11:52:17AM +0100, Krzysztof Kozlowski wrote:
-> The DTS code coding style expects exactly one space before '{'
-> character.
+On 2/20/2024 8:01 AM, Oded Gabbay wrote:
+> From: Ofir Bitton <obitton@habana.ai>
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Today we read PCI VENDOR-ID in order to make sure PCI link is
+> healthy. Apparently the VENDOR-ID might be stored on host and
+> hence, when we read it we might not access the PCI bus.
+> In order to make sure PCI health check is reliable, we will start
+> checking the DEVICE-ID instead.
 
-Applied, thanks!
+What's keeping some system from caching that as well?
 
+Since this is checking for PCIe link health, it will be 0xFF when bad. 
+Checking some part of Config Space that is writable would be more reliable.
+
+-Carl V.
 
