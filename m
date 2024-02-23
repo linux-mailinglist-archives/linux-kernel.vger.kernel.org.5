@@ -1,485 +1,238 @@
-Return-Path: <linux-kernel+bounces-78176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FD07860FD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:51:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECD96860FD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:51:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0297F1F2406A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:51:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09AAC1C23904
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:51:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9F463110;
-	Fri, 23 Feb 2024 10:51:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Tbt/L38g"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03589664CB;
+	Fri, 23 Feb 2024 10:51:21 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 826FA14015
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 10:51:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B08982E417
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 10:51:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708685473; cv=none; b=VJrXqHFKk1Sg5A6/lWyR2SAr9CTuGS0sRslbgSkhqHFIiUcN1XvC+mATTva7qTNzvtyi/XBf/XauCPI2611Rocya+tnBwjArl7UxF603/QL90FyBRvCkIERIojVy5Kae2QCfmUTU3Le2rM9uf5nGon1gts1IJEdeJegiqbYLEQc=
+	t=1708685480; cv=none; b=tkgi/kQv+ZUoA2s1sPIfNKfGUsrYTL+DcviBDEJPzYDRmsu4Fze646Gj4stMMWEVFuUXAcEv7JJ7laArekx/jT8/F76nlkxwC6KixrwH06rR3FpR8qMAPhUgbwu077a6TyPzG/FOOTLOuUTpeoXlOyX74eoRRrQdtLLHU7zVCSU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708685473; c=relaxed/simple;
-	bh=4lGutqyo4dW9a6KP2ZL7SNHCNAMaFYQkz047+ucEuGc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HOj5vGpG+T53KCiBG+m6LhMy8beyJF2AG0FVkzrcK8uWJpFK9wHV/nwQba3+XToKkAc92RQPE0FfRCTouLXv1q4GTagCNWQ7U6eUUQdOh4AUxefOrvxcZgY0E9PDKafXoleOQy1iKV86yyKkLmf4jFzOrrVWIF8OoRA0ERu0vFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Tbt/L38g; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-563d32ee33aso757874a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 02:51:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1708685469; x=1709290269; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jKDsxXZSstfhqJQ2dtwyOtBufFR+CeoE5e1IxvLjwQk=;
-        b=Tbt/L38grhnpeaoFSFkwx6kDfkBBrAYBEaZPOJR6Gc+JV/KD898x9SRm4nwA0IXQ7t
-         OANnSw221U3Ofgq+Qz97q3tg0Z2VGjJJai/QDGvWnBdNxfq8P1wtQ7qUIctGWeEKFoak
-         nk4+6Kyl+8eLNIaUhOcvtSoVkfx6Nd4lCABWJpY6x0BSIxOfN/KwPuyEOkp+GQ9Y+IoX
-         o4Jb9Fye8KsERv0QBTB6WCK1MpxWfQB2mSCp2mZMCy6LbRAwCfgRPXg9n+HUghyseoP9
-         OGKBSMJZv0RhKRWV+N+He335U2P50XsEVsxsj+Zx4xsZNo/lq+93UPV+2wvchO8AmSxd
-         jfRg==
+	s=arc-20240116; t=1708685480; c=relaxed/simple;
+	bh=Ktk+K3RM1+s5Zau8nZtGgxW+aknPpV9Fw7aMk0k4to8=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=BnaguZqDx3/JaV0kru98GGLvKCKj+tFEIbM0PoiLLYaZ4rF491hVxl/WxW+EeDOEF56eDJHqnMm551i7eBYlcX3vl9X/jhRGDrE/wBt9rVZ9dNA2YM0ClYnzn2tzgS4vn2wlYbhD3OK5RM3TNYUFP/PAJJUvHuKjQEh/tROwusc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c79b0aaa86so27378839f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 02:51:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708685469; x=1709290269;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jKDsxXZSstfhqJQ2dtwyOtBufFR+CeoE5e1IxvLjwQk=;
-        b=MBgw7brPjXkuellzZhnj46L5Lm3TBtzSlXKP39auHa39BYdwtP4Csudkp2r+TASVXv
-         55QlhZ2pITW4WWNG1hqx/w/89qLi8S4WPdr5wv/FTzVNUYMnw+ZQhvAZPSsELUqCGdGA
-         ydIFf6dE5CKbRlcojrSTN6O9axP3kEDev+YfaM9nDjSU83dGqfpiPNEvObBhNLnRX2WC
-         k7v2Upc0lfFQ/UJiZ+H9OKn03x4BDTUa1z71zrr7LxISeynJppjpperRrcV/lYlW82qb
-         sdhA5u2ODcmU4jP9PGcoaF/AXb9PXuwlr/GynM35oMa/r3ILtUS3Wf7tFcDmFTvCIg0O
-         l1EA==
-X-Forwarded-Encrypted: i=1; AJvYcCXj7BJD1ioqJ71veWMFl5EyyVifQf6Nchj9vKGKvCmHnvqoIzPA+3HbRwBfI2HhymPh3isDQlgmf7Mo1PMNREnv4t05jAW6lHyTalLS
-X-Gm-Message-State: AOJu0YxGPbA8zhBrkOYNdqeIEytsehn4YKVnKkx1uW4rKFTCQBYw7THj
-	jEQNkZD0vrrRIA92e7yj9aOtXN4ngZKArrft/Lks+FPDRYAbtORa4y2nRW5+oJ0=
-X-Google-Smtp-Source: AGHT+IEUj9j3jrUO5dyI/q5UuKxsP9cOduD3sa2z8DCI3IJFvYGU6XuEy30KKUKwgtHpdmZ+xvx+bg==
-X-Received: by 2002:a05:6402:180a:b0:565:719b:d10e with SMTP id g10-20020a056402180a00b00565719bd10emr791620edy.1.1708685468779;
-        Fri, 23 Feb 2024 02:51:08 -0800 (PST)
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id b30-20020a50ccde000000b005643b41d128sm5951823edj.5.2024.02.23.02.51.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 02:51:08 -0800 (PST)
-Date: Fri, 23 Feb 2024 11:51:06 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Tony Lindgren <tony@atomide.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Justin Chen <justin.chen@broadcom.com>,
-	Jiaqing Zhao <jiaqing.zhao@linux.intel.com>,
-	linux-serial@vger.kernel.org
-Subject: Re: [PATCH printk v2 08/26] printk: nbcon: Implement processing in
- port->lock wrapper
-Message-ID: <Zdh4eEJJpasEWqa5@alley>
-References: <20240218185726.1994771-1-john.ogness@linutronix.de>
- <20240218185726.1994771-9-john.ogness@linutronix.de>
+        d=1e100.net; s=20230601; t=1708685478; x=1709290278;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wrKKtUWe+uw62A/Ajv7hv7s+0ZnYBxFq11mGIay4N6o=;
+        b=IhjDBWFaQz+5W6v50M1bNe3wY5T9EWCZD/uO1p+NjCo3i++Z2a/JQJboiL6N4zQvqP
+         xmP7il0Z3bS9I/eLL2JOVq1lgfQh4YBzDZMqVMEGdVJyJSdJVfAAuyLlPXgwAx6A0zWp
+         B/V3GAKWKxTYaZNnBc1M9XgodD0XWv2JOmJKhh3WpZUogaBCsP4MOG7UdXwr7XUt1lbo
+         EGD2INlR3mF43xTRuQK7SAhGvqbX7S8cHmhvrRgmwvHv4Ps18bmDQ0RwOtusym67XJ9b
+         e/CFjDMPpx44V7fgTnN0KeNeqyPJRc4sH6HiC0g+DdJ1UpznPSJJ5mUbOyeRozYBlvjF
+         n/qw==
+X-Forwarded-Encrypted: i=1; AJvYcCW2jlbNBsbcnrS6QphV9mWyaIohp1MHgVbo8xFdO4zY5/6/zcBXHxMM6HPeDfziFD9o1ak9H8Tak+3upIewYtAjQil6VJHc+88lUd6i
+X-Gm-Message-State: AOJu0YxUb6Sq1y4MV3CxfySAykiG0v0kQGaiE/otP8y2g243uNOYJHd1
+	bN5dWbicDWOpH1wro/PRN6D37Ty8iSwfg1TH0MnseuyuY7dqvTtseSLIIwkcQLy8NsMfLYCh9EL
+	5bvHuRS8Cirs19Na973M1be3O2Qw+O6SaPogvQDu0tIsQpH/fDfBpads=
+X-Google-Smtp-Source: AGHT+IGXnJHKf0+FyLxcdPYKGsmoCUQmRfVQkoIyR8qTj4+AuDgBu8TA1H4YeLy5RmLv+liJtCgoijVJzcb5/L09DH4iNwn3GScn
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240218185726.1994771-9-john.ogness@linutronix.de>
-
-On Sun 2024-02-18 20:03:08, John Ogness wrote:
-> Currently the port->lock wrappers uart_port_lock(),
-> uart_port_unlock() (and their variants) only lock/unlock
-> the spin_lock.
-> 
-> If the port is an nbcon console, the wrappers must also
-> acquire/release the console and mark the region as unsafe. This
-> allows general port->lock synchronization to be synchronized
-> with the nbcon console ownership.
-> 
-> Add a flag to struct uart_port to track nbcon console ownership.
-
-The patch makes sense.
-
-My main (only) concern was the synchronization of the various accessed
-variables, especially, port->cons.
-
-Note: I am not completely sure how the early and valid console drivers
-      share the same struct uart_port. So, maybe I miss some important
-      guarantee.
-
-Anyway. synchronization of port->cons looks like a shade area.
-IMHO, the existing code expects that it is used _only when the console
-is registered_. But this patch wants to access it _even before
-the console is registered_!
-
-For example, it took me quite a lot of time to shake my head around:
-
-#define uart_console(port) \
-	((port)->cons && (port)->cons->index == (port)->line)
-
-  + port->cons and port->line are updated in the uart code.
-    It seems that the update is not serialized by port->lock.
-    Something might be done under port->mutex.
-
-  + cons->index is updated in register_console() under
-    console_list_lock.
-
-Spoiler: I propose a solution which does not use uart_console().
-
-See below for more details.
-
-> --- a/drivers/tty/serial/8250/8250_port.c
-> +++ b/drivers/tty/serial/8250/8250_port.c
-> @@ -3284,6 +3284,7 @@ void serial8250_init_port(struct uart_8250_port *up)
->  	struct uart_port *port = &up->port;
->  
->  	spin_lock_init(&port->lock);
-> +	port->nbcon_locked_port = false;
-
-I am not sure if the variable really helps anything:
-
-   + nbcon_context release() must handle the case when it
-     lost the ownership anyway.
-
-     It is the same as if it did not acquire the context
-     in the first place [*].
-
-
-   + nbcon_acquire() is called under port->lock. It means that
-     nbcon_release() should always be called when the acquire
-     succeeded earlier.
-
-We just need to make sure that port->cons can be cleared only
-under port->lock. But this would be required even with
-port->nbcon_locked_port.
-
-[*] I am not super-happy with this semantic because it prevents
-    catching bugs by lockdep. But it is how nbcon_acquire/release
-    work and it is important part of the design.
-
-
-Apology: It is possible that I suggested to add this variable. I just
-	see now that it does not really help much. It rather makes
-	a false feeling about that nbcon acquire/release are always
-	paired.
-
->  	port->ctrl_id = 0;
->  	port->pm = NULL;
->  	port->ops = &serial8250_pops;
-> --- a/kernel/printk/nbcon.c
-> +++ b/kernel/printk/nbcon.c
-> @@ -995,3 +996,79 @@ void nbcon_free(struct console *con)
->  
->  	con->pbufs = NULL;
->  }
-> +
-> +static inline bool uart_is_nbcon(struct uart_port *up)
-> +{
-> +	int cookie;
-> +	bool ret;
-> +
-> +	if (!uart_console(up))
-
-This function accesses up->cons. I am not completely sure how
-this value is synchronized, for example:
-
-  + serial_core_add_one_port() sets uport->cons under port->mutex.
-    The function is called uart_add_one_port() in various probe()
-    or init() calls.
-
-  + univ8250_console_setup() sets and clears port->cons with
-    no explicit synchronization. The function is called from
-    try_enable_preferred_console() under console_list_lock.
-
-IMHO, the assignment is done when the drivers are being initialized.
-It is done when the port might already be used by early consoles.
-
-Especially, according to my understanding, newcon->setup() callbacks
-are responsible for using the same port by early and real console drivers.
-
-I guess that uart_port_lock() API is used by early consoles as well.
-It means that they might access up->cons here while it is being
-manipulated by the proper driver.
-
-A minimal solution would be access/modify port->cons using
-READ_ONCE()/WRITE_ONCE().
-
-But I think that we do not need to call uart_console() at all.
-We do not really need to synchronize the consistency of
-con->index and port->line.
-
-Instead, we could read up->cons using READ_ONCE() and
-check if it is defined. Or even better would be to always
-set/read port->cons under the port->lock.
-
-
-> +		return false;
-> +
-> +	cookie = console_srcu_read_lock();
-> +	ret = (console_srcu_read_flags(up->cons) & CON_NBCON);
-> +	console_srcu_read_unlock(cookie);
-
-Hmm, console_srcu_read_flags(con) is called under
-console_srcu_read_lock() to make sure that it does not
-disappear. It makes sense when it is used by registered consoles.
-
-But uart_port_lock() might be called even when the console
-is not registered.
-
-I suggest to remove the SRCU lock here. In this code path,
-it does not guarantee anything and is rather misleading.
-
-I would use a READ_ONCE(), for example by splitting:
-
-/*
- * Locklessly reading console->flags provides a consistent
- * read value because there is at most one CPU modifying
- * console->flags and that CPU is using only read-modify-write
- * operations to do so.
- *
- * The caller must make sure that @con does not disappear.
- * It can be done by console_srcu_read_lock() when used
- * only for registered consoles.
- */
-static inline short console_read_flags(const struct console *con)
-{
-	return data_race(READ_ONCE(con->flags));
-}
-
-/* Locklessly reading console->flags for registered consoles */
-static inline short console_srcu_read_flags(const struct console *con)
-{
-	WARN_ON_ONCE(!console_srcu_read_lock_is_held());
-
-	console_read_flags();
-}
-
-> +	return ret;
-> +}
-> +
-> +/**
-> + * uart_nbcon_acquire - The second half of the port locking wrapper
-> + * @up:		The uart port whose @lock was locked
-> + *
-> + * The uart_port_lock() wrappers will first lock the spin_lock @up->lock.
-> + * Then this function is called to implement nbcon-specific processing.
-> + *
-> + * If @up is an nbcon console, this console will be acquired and marked as
-> + * unsafe. Otherwise this function does nothing.
-> + */
-> +void uart_nbcon_acquire(struct uart_port *up)
-> +{
-> +	struct console *con = up->cons;
-> +	struct nbcon_context ctxt;
-
-I would add:
-
-	lockdep_assert_held(&up->lock);
-> +
-> +	if (!uart_is_nbcon(up))
-> +		return;
-> +
-> +	WARN_ON_ONCE(up->nbcon_locked_port);
-> +
-> +	do {
-> +		do {
-> +			memset(&ctxt, 0, sizeof(ctxt));
-> +			ctxt.console	= con;
-> +			ctxt.prio	= NBCON_PRIO_NORMAL;
-> +		} while (!nbcon_context_try_acquire(&ctxt));
-> +
-> +	} while (!nbcon_context_enter_unsafe(&ctxt));
-> +
-> +	up->nbcon_locked_port = true;
-> +}
-> +EXPORT_SYMBOL_GPL(uart_nbcon_acquire);
-
-I would prefer to split the uart and nbcon specific code, for example:
-
-/**
- * nbcon_normal_context_acquire - Acquire a generic context with
- *	the normal priority for nbcon console
- * @con:	nbcon console
- *
- * Context:	Any context which could not be migrated to another CPU.
- *
- * Acquire a generic context with the normal priority for the given console.
- * Prevent the release by entering the unsafe state.
- *
- * Note: The console might still loose the ownership by a hostile takeover.
- *	 But it can be done only by the final flush in panic() when other
- *	 CPUs should be stopped and other contexts interrupted.
- */
-static void nbcon_normal_context_acquire(struct console *con)
-{
-	struct nbcon_context ctxt;
-
-	do {
-		do {
-			memset(&ctxt, 0, sizeof(ctxt));
-			ctxt.console	= con;
-			ctxt.prio	= NBCON_PRIO_NORMAL;
-		} while (!nbcon_context_try_acquire(&ctxt));
-
-	} while (!nbcon_context_enter_unsafe(&ctxt));
-}
-
-/**
- * uart_nbcon_acquire - Acquire nbcon console associated with the gived port.
- * @up:		uart port
- *
- * Context:	Must be called under up->lock to prevent manipulating
- *		up->cons and migrating to another CPU.
- *
- * Note: The console might still loose the ownership by a hostile takeover.
- *	 But it can be done only by the final flush in panic() when other
- *	 CPUs should be stopped and other contexts interrupted.
- */
-void uart_nbcon_acquire(struct uart_port *up)
-{
-	struct console *con; = up->cons;
-
-	lockdep_assert_held(&up->lock);
-
-	/*
-	 * FIXME: This would require adding WRITE_ONCE()
-	 * on the write part.
-	 *
-	 * Or even better, the value should be modified under
-	 * port->lock so that simple read would be enough here.
-	 */
-	con = data_race(READ_ONCE(up->cons));
-
-	if (!con)
-		return;
-
-	if (!console_read_flags(con) & CON_NBCON)
-		return;
-
-	nbcon_normal_context_acquire(con);
-}
-
-Note that I did not use up->nbcon_locked_port as explained above.
-
-
-> +
-> +/**
-> + * uart_nbcon_release - The first half of the port unlocking wrapper
-> + * @up:		The uart port whose @lock is about to be unlocked
-> + *
-> + * The uart_port_unlock() wrappers will first call this function to implement
-> + * nbcon-specific processing. Then afterwards the uart_port_unlock() wrappers
-> + * will unlock the spin_lock @up->lock.
-> + *
-> + * If @up is an nbcon console, the console will be marked as safe and
-> + * released. Otherwise this function does nothing.
-> + */
-> +void uart_nbcon_release(struct uart_port *up)
-> +{
-> +	struct console *con = up->cons;
-> +	struct nbcon_context ctxt = {
-> +		.console	= con,
-> +		.prio		= NBCON_PRIO_NORMAL,
-> +	};
-> +
-
-I would add here as well.
-
-	lockdep_assert_held(&up->lock);
-
-
-This deserves a comment why we do not complain when this function
-is called for nbcon and it is not locked. Something like:
-
-	/*
-	 * Even port used by nbcon console might be seen unlocked
-	 * when it was locked and the console has been registered
-	 * at the same time.
-	 */
-> +	if (!up->nbcon_locked_port)
-> +		return;
-
-Wait, if up->cons might be set asynchronously then it might also
-disapper assynchronously. Which would be really bad because we would
-not be able to release the normal context.
-
-IMHO, we really need to synchronize up->cons acceess using up->lock.
-
-> +
-> +	if (nbcon_context_exit_unsafe(&ctxt))
-> +		nbcon_context_release(&ctxt);
-> +
-> +	up->nbcon_locked_port = false;
-> +}
-
-Again I would better split the nbcon and uart part and create:
-
-/**
- * nbcon_normal_context_release - Release a generic context with
- *	the normal priority.
- * @con:	nbcon console
- *
- * Context:	Any context which could not be migrated to another CPU.
- *
- * Release a generic context with the normal priority for the given console.
- * Prevent the release by entering the unsafe state.
- *
- * Note: The console might have lost the ownership by a hostile takeover.
- *	 But it should not happen in reality because the hostile
- *       takeover is allowed only for the final flush in panic()
- *	 when other CPUs should be stopped and other contexts interrupted.
- */
-static void nbcon_normal_context_release(struct console *con)
-{
-	struct nbcon_context ctxt = {
-		.console	= con,
-		.prio		= NBCON_PRIO_NORMAL,
-	};
-
-	if (nbcon_context_exit_unsafe(&ctxt))
-		nbcon_context_release(&ctxt);
-}
-
-/**
- * uart_nbcon_acquire - Release nbcon console associated with the given port.
- * @up:		uart port
- *
- * Context:	Must be called under up->lock to prevent manipulating
- *		up->cons and migrating to another CPU.
- */
-void uart_nbcon_release(struct uart_port *up)
-{
-	struct console *con;
-
-	lockdep_assert_held(&up->lock);
-
-	/*
-	 * FIXME: This would require adding WRITE_ONCE()
-	 * on the write part.
-	 *
-	 * Or even better, the value should be modified under
-	 * port->lock so that simple read would be enough here.
-	 */
-	con = data_race(READ_ONCE(up->cons));
-
-	if (!con)
-		return;
-
-	if (!console_read_flags(con) & CON_NBCON)
-		return;
-
-	nbcon_normal_context_release(con);
-}
-
-Best Regards,
-Petr
+X-Received: by 2002:a5d:8441:0:b0:7c7:9b0a:6f97 with SMTP id
+ w1-20020a5d8441000000b007c79b0a6f97mr4698ior.1.1708685478063; Fri, 23 Feb
+ 2024 02:51:18 -0800 (PST)
+Date: Fri, 23 Feb 2024 02:51:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f3f42f06120a5679@google.com>
+Subject: [syzbot] [rdma?] KASAN: slab-use-after-free Read in rdma_resolve_route
+From: syzbot <syzbot+a2e2735f09ebb9d95bd1@syzkaller.appspotmail.com>
+To: jgg@ziepe.ca, leon@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    2c3b09aac00d Add linux-next specific files for 20240214
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1793a064180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=176d2dcbf8ba7017
+dashboard link: https://syzkaller.appspot.com/bug?extid=a2e2735f09ebb9d95bd1
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/ac51042b61c6/disk-2c3b09aa.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/012344301c35/vmlinux-2c3b09aa.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/cba3c3e5cd7c/bzImage-2c3b09aa.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a2e2735f09ebb9d95bd1@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: slab-use-after-free in compare_netdev_and_ip drivers/infiniband/core/cma.c:473 [inline]
+BUG: KASAN: slab-use-after-free in cma_add_id_to_tree drivers/infiniband/core/cma.c:513 [inline]
+BUG: KASAN: slab-use-after-free in rdma_resolve_route+0x23f7/0x3150 drivers/infiniband/core/cma.c:3379
+Read of size 4 at addr ffff88808dcf6184 by task syz-executor.4/11929
+
+CPU: 1 PID: 11929 Comm: syz-executor.4 Not tainted 6.8.0-rc4-next-20240214-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0x169/0x550 mm/kasan/report.c:488
+ kasan_report+0x143/0x180 mm/kasan/report.c:601
+ compare_netdev_and_ip drivers/infiniband/core/cma.c:473 [inline]
+ cma_add_id_to_tree drivers/infiniband/core/cma.c:513 [inline]
+ rdma_resolve_route+0x23f7/0x3150 drivers/infiniband/core/cma.c:3379
+ ucma_resolve_route+0x1ba/0x330 drivers/infiniband/core/ucma.c:745
+ ucma_write+0x2df/0x430 drivers/infiniband/core/ucma.c:1743
+ vfs_write+0x2a4/0xcb0 fs/read_write.c:588
+ ksys_write+0x1a0/0x2c0 fs/read_write.c:643
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f4eae47dda9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f4eaf2cd0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f4eae5abf80 RCX: 00007f4eae47dda9
+RDX: 0000000000000010 RSI: 0000000020000440 RDI: 0000000000000003
+RBP: 00007f4eae4ca47a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f4eae5abf80 R15: 00007fff93bb3dc8
+ </TASK>
+
+Allocated by task 11919:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
+ poison_kmalloc_redzone mm/kasan/common.c:370 [inline]
+ __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:387
+ kasan_kmalloc include/linux/kasan.h:211 [inline]
+ kmalloc_trace+0x1d9/0x360 mm/slub.c:4013
+ kmalloc include/linux/slab.h:590 [inline]
+ kzalloc include/linux/slab.h:711 [inline]
+ __rdma_create_id+0x65/0x590 drivers/infiniband/core/cma.c:993
+ rdma_create_user_id+0x83/0xc0 drivers/infiniband/core/cma.c:1049
+ ucma_create_id+0x2d0/0x500 drivers/infiniband/core/ucma.c:463
+ ucma_write+0x2df/0x430 drivers/infiniband/core/ucma.c:1743
+ vfs_write+0x2a4/0xcb0 fs/read_write.c:588
+ ksys_write+0x1a0/0x2c0 fs/read_write.c:643
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+Freed by task 11915:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
+ kasan_save_free_info+0x40/0x50 mm/kasan/generic.c:586
+ poison_slab_object+0xa6/0xe0 mm/kasan/common.c:240
+ __kasan_slab_free+0x37/0x60 mm/kasan/common.c:256
+ kasan_slab_free include/linux/kasan.h:184 [inline]
+ slab_free_hook mm/slub.c:2122 [inline]
+ slab_free mm/slub.c:4296 [inline]
+ kfree+0x14a/0x380 mm/slub.c:4406
+ ucma_close_id drivers/infiniband/core/ucma.c:186 [inline]
+ ucma_destroy_private_ctx+0x14e/0xc10 drivers/infiniband/core/ucma.c:578
+ ucma_close+0xfc/0x170 drivers/infiniband/core/ucma.c:1808
+ __fput+0x429/0x8a0 fs/file_table.c:411
+ __do_sys_close fs/open.c:1557 [inline]
+ __se_sys_close fs/open.c:1542 [inline]
+ __x64_sys_close+0x7f/0x110 fs/open.c:1542
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+The buggy address belongs to the object at ffff88808dcf6000
+ which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 388 bytes inside of
+ freed 2048-byte region [ffff88808dcf6000, ffff88808dcf6800)
+
+The buggy address belongs to the physical page:
+page:ffffea0002373c00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x8dcf0
+head:ffffea0002373c00 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0xfff80000000840(slab|head|node=0|zone=1|lastcpupid=0xfff)
+page_type: 0xffffffff()
+raw: 00fff80000000840 ffff888014c42000 dead000000000100 dead000000000122
+raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 5149, tgid 5149 (kworker/1:4), ts 205905084555, free_ts 0
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x1ea/0x210 mm/page_alloc.c:1533
+ prep_new_page mm/page_alloc.c:1540 [inline]
+ get_page_from_freelist+0x33ea/0x3580 mm/page_alloc.c:3311
+ __alloc_pages+0x256/0x6a0 mm/page_alloc.c:4567
+ __alloc_pages_node include/linux/gfp.h:238 [inline]
+ alloc_pages_node include/linux/gfp.h:261 [inline]
+ alloc_slab_page+0x5f/0x160 mm/slub.c:2191
+ allocate_slab mm/slub.c:2354 [inline]
+ new_slab+0x84/0x2f0 mm/slub.c:2407
+ ___slab_alloc+0xc73/0x1260 mm/slub.c:3541
+ __slab_alloc mm/slub.c:3626 [inline]
+ __slab_alloc_node mm/slub.c:3679 [inline]
+ slab_alloc_node mm/slub.c:3851 [inline]
+ __do_kmalloc_node mm/slub.c:3981 [inline]
+ __kmalloc_node_track_caller+0x2d4/0x4e0 mm/slub.c:4002
+ kmalloc_reserve+0xf3/0x260 net/core/skbuff.c:582
+ __alloc_skb+0x1b1/0x420 net/core/skbuff.c:651
+ alloc_skb include/linux/skbuff.h:1296 [inline]
+ alloc_skb_with_frags+0xc3/0x780 net/core/skbuff.c:6394
+ sock_alloc_send_pskb+0x91a/0xa60 net/core/sock.c:2794
+ sock_alloc_send_skb include/net/sock.h:1855 [inline]
+ mld_newpack+0x1c3/0xa90 net/ipv6/mcast.c:1746
+ add_grhead net/ipv6/mcast.c:1849 [inline]
+ add_grec+0x1492/0x19a0 net/ipv6/mcast.c:1987
+ mld_send_cr net/ipv6/mcast.c:2113 [inline]
+ mld_ifc_work+0x6bf/0xb30 net/ipv6/mcast.c:2650
+ process_one_work kernel/workqueue.c:3146 [inline]
+ process_scheduled_works+0x9d7/0x1730 kernel/workqueue.c:3226
+ worker_thread+0x86d/0xd70 kernel/workqueue.c:3307
+page_owner free stack trace missing
+
+Memory state around the buggy address:
+ ffff88808dcf6080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88808dcf6100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88808dcf6180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                   ^
+ ffff88808dcf6200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88808dcf6280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
