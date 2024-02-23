@@ -1,141 +1,177 @@
-Return-Path: <linux-kernel+bounces-78199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C04C186101F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:06:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D490861020
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:06:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFA691C22DA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:06:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F8B92891F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:06:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E599633E9;
-	Fri, 23 Feb 2024 11:05:55 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3F3B5DF25
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:05:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECEEC6312D;
+	Fri, 23 Feb 2024 11:06:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SF7PUfVr"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8653D5D48A
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:06:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708686354; cv=none; b=WJDbZ+dWSfmAnNNVh2B8CJC2LvccCEtqFwEdDbcj5fBhZ/Rw62xVdT+4EP+7kDklM/wlAgYWqMYDeoYsxXpESITAmafJvcW+Uyc4FgDAg/jbrlkdB4FhHGMX8aJabxq3ROxJcr9QaBuj3+raDF7eymMlltZ700cfk16dvU3AH0k=
+	t=1708686386; cv=none; b=sDU4b7tJqk1gDA1osVxOTQbHhfXJRZsy+0Q3Xf8Us2bTgbmmf1m+LCZNhnl1pjHJhDUopwuQ1DjoEFuewwmS4uHS8ue3K6Xi2z4PL0cxHpVEXN2eCOUSC7wUyKg1INqpILi/kOYwgZmIchdLeVmXMQxjZzu9sJIbcGcevKBGQlU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708686354; c=relaxed/simple;
-	bh=MXQkqwuspqzrFUFcyJi4WstR/76sKYLEbRLdZRc8fPQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hDB5NPK240/l+ddT9hzaZkM4OI6TMH1+VTloL8xtvtd90r1o2crySmQXdt1e7ycWe4WarwAFo0mrg9NV+3S0EXs7QKJLw9RqXxNunKsOCplZ2uecrBuNPuWZaPBIpKMvUg+Tix1+b3/viQbYF/w5amoPysnHO5Mnz5F6tHsb6Oc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 975811596;
-	Fri, 23 Feb 2024 03:06:30 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.66.180])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A73ED3F762;
-	Fri, 23 Feb 2024 03:05:47 -0800 (PST)
-Date: Fri, 23 Feb 2024 11:05:45 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Ankur Arora <ankur.a.arora@oracle.com>,
-	linux-kernel@vger.kernel.org, tglx@linutronix.de,
-	peterz@infradead.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-	dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-	juri.lelli@redhat.com, vincent.guittot@linaro.org,
-	willy@infradead.org, mgorman@suse.de, jpoimboe@kernel.org,
-	jgross@suse.com, andrew.cooper3@citrix.com, bristot@kernel.org,
-	mathieu.desnoyers@efficios.com, glaubitz@physik.fu-berlin.de,
-	anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-	krypton@ulrich-teichert.org, David.Laight@aculab.com,
-	richard@nod.at, jon.grimm@amd.com, bharata@amd.com,
-	boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
-Subject: Re: [PATCH 00/30] PREEMPT_AUTO: support lazy rescheduling
-Message-ID: <Zdh8CdrtbL9LgOLG@FVFF77S0Q05N>
-References: <0be4df28-99be-41a3-9e24-2b7cfc740b4a@paulmck-laptop>
- <87r0hbkafi.fsf@oracle.com>
- <7db5c057-8bd4-4209-8484-3a0f9f3cd02d@paulmck-laptop>
- <2b735ba4-8081-4ddb-9397-4fe83143d97f@paulmck-laptop>
- <20240221131901.69c80c47@gandalf.local.home>
- <8f30ecd8-629b-414e-b6ea-b526b265b592@paulmck-laptop>
- <20240221151157.042c3291@gandalf.local.home>
- <53020731-e9a9-4561-97db-8848c78172c7@paulmck-laptop>
- <ZddtKszRH5Ak5tZ7@FVFF77S0Q05N>
- <1ec4dc29-8868-4d82-8c5e-c17ad025bc22@paulmck-laptop>
+	s=arc-20240116; t=1708686386; c=relaxed/simple;
+	bh=WOa2B/adfohPnjhm2DxwiU5JKTplsQ4FAPI6663AvTA=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X1y7r7mOb/hkqcAWWypsGB3o1SMhxQ/VMNQGN+6e659lrVPU660k0GeHL9w9B2+SaDHXjwtV6DhVWwn8TthCPY4IHEPVf/DDixnxb7pmG3UaItINJSjVK+m67aCS48dTpsTsABPnFzld/aoG3RLvXca9R1QesHKJqhIXIR51rew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SF7PUfVr; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-512ab55fde6so235876e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 03:06:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708686382; x=1709291182; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=jI1VvqgC35LAf15S3x3Yl5nucZ+rRIUoziAzKnZ3XY8=;
+        b=SF7PUfVrMhaUDhTNNQfbsyPI4lCQhT4yzXuroCsnQ8mPeukPHjnKQ2PVxk8rD13M0w
+         HITbKQafkYW/aLTcn1I5riKVY+JDHgWRpCai0xgCf23iY2lt8i/N4vD/BYURTplfNQXv
+         o1Hm/qNR2gGU/AoZIsH5b48VATIa2bSFUqhNPKP8FLCikW4hwY+5EN6hU4JzqKJS71GR
+         PRyXVjCn/BxXljomynjsqvrrNXAGaTUnyIeKaUCBDJEMx9XkR48E4NtveYMFez0ag8LY
+         MQVEngym1jbmM0ZnEe5P6PGipEqBwKmD8q6QiYRKmSJAVPmI3ETl/FDOTEbuM8s3+ccG
+         Pgrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708686382; x=1709291182;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jI1VvqgC35LAf15S3x3Yl5nucZ+rRIUoziAzKnZ3XY8=;
+        b=J417zyXQWKdOnhsFryULrzQMIL7qhEdyBRb187UEmOj94E0ARrqVy+1728yefnWx4E
+         YXBR40sNw0qLnuWEdPwWQgpeEbSj7IdKGfNBaAI5yRJ9J5IApsgx0Q1/FZ/l7/W4N1WL
+         ZQtAAaiD5/aSS5CBi6D+6e1xyFOBZ12gBfLNyKp/byXAdNpF4YyAUluTMCNtceEQlbQu
+         DwCzUbETm1XCOj2KLrNqrEKjduqcEUllBp2mhG5wihDwWQrDBeTPIoVhIx2aV05Gqrox
+         FjrlvD5ehRlk1u4jbvUyB1f2XISpNP9SsOgMoa0hh3tlh5rlE+i4JNFOrRzwy9+CbQPA
+         0BZg==
+X-Forwarded-Encrypted: i=1; AJvYcCXFM8YquangB7ucrrHPYGlvggoXkZeqTPjBA03pYq1gIEpcQ+0zCPcSb3x5KjKF4GAJlHW+ybinD7HwskDS1Ul6ubwQZdSJfh8qkVTD
+X-Gm-Message-State: AOJu0Yz+hBDxP+EjrBJJIsoW5pl9D+DVM3QowNXS/LSv3xRyIDHocea8
+	dsMc+877c/D4rZrUT6VXct3Uo237LR0zE/B6yIDCnWF748bEPoJE
+X-Google-Smtp-Source: AGHT+IEMAkg4Bat8ffHRPoKV22DBGZujIXXjCBbz4rfjX1ukK3lmgzCg1l6NUcCe/BJGgwqYJKUdog==
+X-Received: by 2002:a05:6512:69:b0:512:9af5:d083 with SMTP id i9-20020a056512006900b005129af5d083mr1091322lfo.60.1708686381379;
+        Fri, 23 Feb 2024 03:06:21 -0800 (PST)
+Received: from pc636 (host-90-233-206-150.mobileonline.telia.com. [90.233.206.150])
+        by smtp.gmail.com with ESMTPSA id b22-20020ac247f6000000b005118e37462asm2390083lfp.89.2024.02.23.03.06.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 03:06:20 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Fri, 23 Feb 2024 12:06:18 +0100
+To: Baoquan He <bhe@redhat.com>
+Cc: Uladzislau Rezki <urezki@gmail.com>,
+	Pedro Falcato <pedro.falcato@gmail.com>,
+	Matthew Wilcox <willy@infradead.org>, Mel Gorman <mgorman@suse.de>,
+	kirill.shutemov@linux.intel.com,
+	Vishal Moola <vishal.moola@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	Dave Chinner <david@fromorbit.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+	linux-mm@kvack.org
+Subject: Re: [PATCH v3 00/11] Mitigate a vmap lock contention v3
+Message-ID: <Zdh8KmZtoQym7Syz@pc636>
+References: <20240102184633.748113-1-urezki@gmail.com>
+ <ZdcHXFMq0cwmVKfM@pc636>
+ <CAKbZUD3+PJUoXee3MNvToy1zRnDoPoPqMjNAf5_87Uh-u2377w@mail.gmail.com>
+ <ZdhmrEmA8wOuVcQT@pc636>
+ <Zdhy3S1PzwfEJuS3@MiWiFi-R3L-srv>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1ec4dc29-8868-4d82-8c5e-c17ad025bc22@paulmck-laptop>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zdhy3S1PzwfEJuS3@MiWiFi-R3L-srv>
 
-On Thu, Feb 22, 2024 at 11:11:34AM -0800, Paul E. McKenney wrote:
-> On Thu, Feb 22, 2024 at 03:50:02PM +0000, Mark Rutland wrote:
-> > On Wed, Feb 21, 2024 at 12:22:35PM -0800, Paul E. McKenney wrote:
-> > > On Wed, Feb 21, 2024 at 03:11:57PM -0500, Steven Rostedt wrote:
-> > > > On Wed, 21 Feb 2024 11:41:47 -0800
-> > > > "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > > > 
-> > > > > > I wonder if we can just see if the instruction pointer at preemption is at
-> > > > > > something that was allocated? That is, if it __is_kernel(addr) returns
-> > > > > > false, then we need to do more work. Of course that means modules will also
-> > > > > > trigger this. We could check __is_module_text() but that does a bit more
-> > > > > > work and may cause too much overhead. But who knows, if the module check is
-> > > > > > only done if the __is_kernel() check fails, maybe it's not that bad.  
-> > > > > 
-> > > > > I do like very much that idea, but it requires that we be able to identify
-> > > > > this instruction pointer perfectly, no matter what.  It might also require
-> > > > > that we be able to perfectly identify any IRQ return addresses as well,
-> > > > > for example, if the preemption was triggered within an interrupt handler.
-> > > > > And interrupts from softirq environments might require identifying an
-> > > > > additional level of IRQ return address.  The original IRQ might have
-> > > > > interrupted a trampoline, and then after transitioning into softirq,
-> > > > > another IRQ might also interrupt a trampoline, and this last IRQ handler
-> > > > > might have instigated a preemption.
-> > > > 
-> > > > Note, softirqs still require a real interrupt to happen in order to preempt
-> > > > executing code. Otherwise it should never be running from a trampoline.
+> On 02/23/24 at 10:34am, Uladzislau Rezki wrote:
+> > On Thu, Feb 22, 2024 at 11:15:59PM +0000, Pedro Falcato wrote:
+> > > Hi,
 > > > 
-> > > Yes, the first interrupt interrupted a trampoline.  Then, on return,
-> > > that interrupt transitioned to softirq (as opposed to ksoftirqd).
-> > > While a softirq handler was executing within a trampoline, we got
-> > > another interrupt.  We thus have two interrupted trampolines.
+> > > On Thu, Feb 22, 2024 at 8:35 AM Uladzislau Rezki <urezki@gmail.com> wrote:
+> > > >
+> > > > Hello, Folk!
+> > > >
+> > > >[...]
+> > > > pagetable_alloc - gets increased as soon as a higher pressure is applied by
+> > > > increasing number of workers. Running same number of jobs on a next run
+> > > > does not increase it and stays on same level as on previous.
+> > > >
+> > > > /**
+> > > >  * pagetable_alloc - Allocate pagetables
+> > > >  * @gfp:    GFP flags
+> > > >  * @order:  desired pagetable order
+> > > >  *
+> > > >  * pagetable_alloc allocates memory for page tables as well as a page table
+> > > >  * descriptor to describe that memory.
+> > > >  *
+> > > >  * Return: The ptdesc describing the allocated page tables.
+> > > >  */
+> > > > static inline struct ptdesc *pagetable_alloc(gfp_t gfp, unsigned int order)
+> > > > {
+> > > >         struct page *page = alloc_pages(gfp | __GFP_COMP, order);
+> > > >
+> > > >         return page_ptdesc(page);
+> > > > }
+> > > >
+> > > > Could you please comment on it? Or do you have any thought? Is it expected?
+> > > > Is a page-table ever shrink?
 > > > 
-> > > Or am I missing something that prevents this?
+> > > It's my understanding that the vunmap_range helpers don't actively
+> > > free page tables, they just clear PTEs. munmap does free them in
+> > > mmap.c:free_pgtables, maybe something could be worked up for vmalloc
+> > > too.
+> > >
+> > Right. I see that for a user space, pgtables are removed. There was a
+> > work on it.
 > > 
-> > Surely the problematic case is where the first interrupt is taken from a
-> > trampoline, but the inner interrupt is taken from not-a-trampoline? If the
-> > innermost interrupt context is a trampoline, that's the same as that without
-> > any nesting.
+> > >
+> > > I would not be surprised if the memory increase you're seeing is more
+> > > or less correlated to the maximum vmalloc footprint throughout the
+> > > whole test.
+> > > 
+> > Yes, the vmalloc footprint follows the memory usage. Some uses cases
+> > map lot of memory.
 > 
-> It depends.  If we wait for each task to not have a trampoline in effect
-> then yes, we only need to know whether or not a given task has at least
-> one trampoline in use.  One concern with this approach is that a given
-> task might have at least one trampoline in effect every time it is
-> checked, unlikely though that might seem.
+> The 'nr_threads=256' testing may be too radical. I took the test on
+> a bare metal machine as below, it's still running and hang there after
+> 30 minutes. I did this after system boot. I am looking for other
+> machines with more processors.
 > 
-> If this is a problem, one way around it is to instead ask whether the
-> current task still has a reference to one of a set of trampolines that
-> has recently been removed.  This avoids the problem of a task always
-> being one some trampoline or another, but requires exact identification
-> of any and all trampolines a given task is currently using.
->
-> Either way, we need some way of determining whether or not a given
-> PC value resides in a trampoline.  This likely requires some data
-> structure (hash table?  tree?  something else?) that must be traversed
-> in order to carry out that determination.  Depending on the traversal
-> overhead, it might (or might not) be necessary to make sure that the
-> traversal is not on the entry/exit/scheduler fast paths.  It is also
-> necessary to keep the trampoline-use overhead low and the trampoline
-> call points small.
+> [root@dell-r640-068 ~]# nproc 
+> 64
+> [root@dell-r640-068 ~]# free -h
+>                total        used        free      shared  buff/cache   available
+> Mem:           187Gi        18Gi       169Gi        12Mi       262Mi       168Gi
+> Swap:          4.0Gi          0B       4.0Gi
+> [root@dell-r640-068 ~]# 
+> 
+> [root@dell-r640-068 linux]# tools/testing/selftests/mm/test_vmalloc.sh run_test_mask=127 nr_threads=256
+> Run the test with following parameters: run_test_mask=127 nr_threads=256
+> 
+Agree, nr_threads=256 is a way radical :) Mine took 50 minutes to
+complete. So wait more :)
 
-Thanks; I hadn't thought about that shape of livelock problem; with that in
-mind my suggestion using flags was inadequate.
 
-I'm definitely in favour of just using Tasks RCU! That's what arm64 does today,
-anyhow!
-
-Mark.
+--
+Uladzislau Rezki
 
