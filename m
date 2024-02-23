@@ -1,150 +1,201 @@
-Return-Path: <linux-kernel+bounces-77755-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99A858609CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 05:20:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E528C8609D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 05:27:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 071111F266BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:20:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67B271F261A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:27:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10A1210A19;
-	Fri, 23 Feb 2024 04:20:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 607A010A13;
+	Fri, 23 Feb 2024 04:27:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eCY90VNh"
-Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nJw5m5Aj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE48AD2E6
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 04:20:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9035F2CA5;
+	Fri, 23 Feb 2024 04:27:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708662016; cv=none; b=gtEUtfFjsHUcETQLn1qKvi1EoVLXHueisYbVHQjWMkn4pgfd2dup+1NQBIJBwm2k4IxI/RI1iPno/GOQSHQHT0Er98GczCZycpDyVdhhli5IOin2IOi8skmNILZksEvLyzzvxr14W/Cg9geD4Lf7obVIVJZUGtiZFIAPh00Wr3I=
+	t=1708662426; cv=none; b=RM4VT+ZnCuwec2KBbnWr2iHa2ct4QJf0V6L4NpNiQUhfo7GgdIFu2KZesj+9WqK36bu8JZhbX9Avf3lOaut0bCMzZijM2jx7qWWZHWXTgGdJ58RSGARox1lrB2H534od2Hf6QW9nczX3FUGiphKeWiyrq11x1QJGiq5MlkHmmuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708662016; c=relaxed/simple;
-	bh=3aSkqCDyuDAnn4aoKsyn9oPyncLsKaXsAkp1FWB8Tqc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hpjEtbGkm9+yu69afkwUNcKkHLG3pjxrJ2nNUxqX0GfyqrjkgB7Gbq08v6Oi1ZRGVYxxHQhOVROCSJtO8wRhe6a2s6NQG3yfep7Beni4+BLDdv6N9Jurir3hKHfwHeHLhTG2FLL3y50JXkl+HvL/8dwqY1lqfcsDjtp7ia3cuCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eCY90VNh; arc=none smtp.client-ip=209.85.221.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-4c78b074fe0so134317e0c.3
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 20:20:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708662013; x=1709266813; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IlVNrNUcEvLBYtZ/R3wczPrppgdB8B334NNJl78BewM=;
-        b=eCY90VNhTD3ITIQqRU8qfb6A64raxkKU1Qq6A70S6sS9FMn6nXFZvUtzF8c9RLu1nZ
-         T9yZ7Kd3NiDV4Ga2ouwUiNl+fa4RC+GyDy0x6PgSVhKVWuAKxW9wUE6erS7+fCRWtriN
-         EJ9nO1YbX+pf80zRuM39KcuYroiCbwynhwCfPjSI60YVf5BsXJYilUyNA5BWP7E/Svvb
-         Cytcb87XW/oauFLABvOYO93U/z9pnqo2Cb543CXqb4Ze6hpKFuRmfjC9uP4EcFCrg/gK
-         VDrVpJhDF9M+8AoN36CFBlZDe4ssMwDnJXw+eCxnpSuIpCOpI5o3PM2kyM0RcrUBjKBz
-         XfJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708662013; x=1709266813;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IlVNrNUcEvLBYtZ/R3wczPrppgdB8B334NNJl78BewM=;
-        b=icy8R+HBzjLzab4HG+peOVmv6dgoolsVqBkHDiLyAYVSVbqiFgTMT7gn7qEiCIUHOL
-         egixV6vtHReW7XbRerffZh71EbZ1UX2OLrX5C+DIQYcaf0Qs2Kg7bhtyETpe8c3FU6Id
-         UPcfTpPaaa9B0GpzJJWFB52vdQ0qBV9onXr9BOBnki3Azp4v9GjgRQnodSiOZKsmOi1v
-         Dilth5BwXAX2ep9vH6Cf9jt9fnez+xnVqb1oF+Uok/YRS04PrdV3Sz9YlGJ3Q3O6J1XT
-         FetrViR5lDHc52VuOyzyGVPpXNB7rTHNvTm+w7R3OwOUP3RoClLkwUT8+WcXxrGw0fUz
-         B3OQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWyfbGD1WzC/OWdNTp7rqbvj0r0JMtje892E7P2bQAq2YSLOf9WYPxFNTmsNcKVNbPIe1a8RlsbqUIjwTT0cDYdtf10VRTiul3hFU99
-X-Gm-Message-State: AOJu0YzGoRemBUisIgB2rAC87jf8dQT/cxWUivX/yqiW3QftHIkB2r32
-	1Bsl9A/syk+jbwCx9Jlcd4MDbLFigmaSzaAlOLwlVxshLenUUU9I
-X-Google-Smtp-Source: AGHT+IHNYz8ui9bmM5AXfuUQTZHUJJqwDxpL3NhzRWFZom+4Tbuq2mDgCO5c/ar3KzUA7uEadTMX/g==
-X-Received: by 2002:a67:ad19:0:b0:46d:2d23:f500 with SMTP id t25-20020a67ad19000000b0046d2d23f500mr951202vsl.18.1708662013521;
-        Thu, 22 Feb 2024 20:20:13 -0800 (PST)
-Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
-        by smtp.gmail.com with ESMTPSA id xq18-20020a05620a5cb200b007853f736893sm6004275qkn.5.2024.02.22.20.20.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 20:20:12 -0800 (PST)
-Message-ID: <dd64a40d-0a7e-4f70-a516-632a3d57807a@gmail.com>
-Date: Thu, 22 Feb 2024 20:20:08 -0800
+	s=arc-20240116; t=1708662426; c=relaxed/simple;
+	bh=DaYOsizSC6q2DFwRiqDzd0sgVjrRcguu4TDpthJnDLE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gj6E/GoOymx+CYtk5T/6a9bSq7uzwcksgyQ/J7k8lvVt83ALHsRfHHK5D36JmlSsgsB6Bf49FvmrdJ6ZWyCKr4ov3NplXq5QAsDC6XurwEcSCbdr6FWYl3s7w8gT13xcPO4t7j9isNIGlIH0XtUtFFXtVOB98JNCxoPUsn/GyDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nJw5m5Aj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 177E4C433F1;
+	Fri, 23 Feb 2024 04:27:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708662426;
+	bh=DaYOsizSC6q2DFwRiqDzd0sgVjrRcguu4TDpthJnDLE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=nJw5m5Ajhd5AFgFLc7Sxg9PPom3cl9EmlrqHHP9DT5G5jQZWOAldcRvpsehZrnUNJ
+	 hSXU4rB+lXrZ1h+svoi6cVtlhEhL9KWFurfAYQlt7LaA5/OJPdmszQhakfduTLJ/yL
+	 TuWHy3w9RgD8rvEFEf2zxsISZKB4M0bIxSGAryLPRrcNhZuNdNwuW/atbJWeD6zcee
+	 Y+4jUIhX5DlythiXIUy4XKj7AqOxcvuK6kq29Q9hW6pec66vqDzVbcj+/0hTvFgpmL
+	 0xXMRzp1ITAYC4jNFpV/Pqaj6eZ46XvKX6Nmlut2R+C3UUgH2x1fwleHjOTFccBRRe
+	 e7P928V24r5Wg==
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-512d8fe4fceso513689e87.3;
+        Thu, 22 Feb 2024 20:27:06 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV5sXj0G2y7wO99xgXip9X9grrsuLfMcggZSIh7T+llNO6rX0Xke7ZTumzSmCnyfUN6Bqva20obSXat03Mw2NNs5gAag647q5M705wSv5b64lnz+wNDEnIJ+Q89NWyCOlO/8VSnHBHUlZqR
+X-Gm-Message-State: AOJu0YwWo/LUni6Hb6SSwrSZwyCHYQYo5Tq+kfMlCwlHmCNIfurUiBOz
+	s/vWtcsQgT/TvEnxnLuO4xtYY1/2hWfX24urybV0RhPBQfbciRV7GiAY01INE8fYVAfHAbI/jAx
+	/6DMLqbSLsppO0fGB7nawA+3ohzU=
+X-Google-Smtp-Source: AGHT+IEoJ2f3nq0jZkNP9bJ1ogMeoFXnGKxgLpXxMJyl3oxvW/aw2HmGVrBDdoPIrQfG5Rauvz7gc/GWwtokbfcZgPc=
+X-Received: by 2002:a19:f718:0:b0:512:dc21:d89c with SMTP id
+ z24-20020a19f718000000b00512dc21d89cmr544054lfe.38.1708662424615; Thu, 22 Feb
+ 2024 20:27:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 01/13] mtd: rawnand: brcmnand: exec_op helper functions
- return type fixes
-Content-Language: en-US
-To: William Zhang <william.zhang@broadcom.com>,
- Linux MTD List <linux-mtd@lists.infradead.org>,
- Linux ARM List <linux-arm-kernel@lists.infradead.org>,
- Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>
-Cc: kursad.oney@broadcom.com, joel.peshkin@broadcom.com,
- anand.gore@broadcom.com, dregan@mail.com, kamal.dasu@broadcom.com,
- tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com,
- David Regan <dregan@broadcom.com>, Dan Carpenter <dan.carpenter@linaro.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-kernel@vger.kernel.org,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>
-References: <20240223034758.13753-1-william.zhang@broadcom.com>
- <20240223034758.13753-2-william.zhang@broadcom.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; keydata=
- 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
- HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20240223034758.13753-2-william.zhang@broadcom.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240221202655.2423854-1-jannh@google.com> <20240221202655.2423854-2-jannh@google.com>
+ <CAK7LNAQG_dX8p0Lch-wg8cOVRQzaJUh2zFJL+3tgpcT8_iSTow@mail.gmail.com>
+ <CAG48ez3Kg+BPsf_gWhm9E3QwOOw_CbTnHJ828Df41i1_EYrxnw@mail.gmail.com> <CAG48ez39zR+Um-9HMX2GgbOZrvQFjA=bN_dsZBJPvmnqtyg+VA@mail.gmail.com>
+In-Reply-To: <CAG48ez39zR+Um-9HMX2GgbOZrvQFjA=bN_dsZBJPvmnqtyg+VA@mail.gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Fri, 23 Feb 2024 13:26:27 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAR059LrBgvZVfapTGtU_VrHhHdrk1XfCbACPe-7109UiQ@mail.gmail.com>
+Message-ID: <CAK7LNAR059LrBgvZVfapTGtU_VrHhHdrk1XfCbACPe-7109UiQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kallsyms: build faster by using .incbin
+To: Jann Horn <jannh@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Miguel Ojeda <ojeda@kernel.org>, Zhen Lei <thunder.leizhen@huawei.com>, 
+	Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Feb 22, 2024 at 11:21=E2=80=AFPM Jann Horn <jannh@google.com> wrote=
+:
+>
+> On Thu, Feb 22, 2024 at 12:20=E2=80=AFPM Jann Horn <jannh@google.com> wro=
+te:
+> > On Thu, Feb 22, 2024 at 5:07=E2=80=AFAM Masahiro Yamada <masahiroy@kern=
+el.org> wrote:
+> > > On Thu, Feb 22, 2024 at 5:27=E2=80=AFAM Jann Horn <jannh@google.com> =
+wrote:
+> > > >
+> > > > Currently, kallsyms builds a big assembly file (~19M with a normal
+> > > > kernel config), and then the assembler has to turn that big assembl=
+y
+> > > > file back into binary data, which takes around a second per kallsym=
+s
+> > > > invocation. (Normally there are two kallsyms invocations per build.=
+)
+> > > >
+> > > > It is much faster to instead directly output binary data, which can
+> > > > be imported in an assembly file using ".incbin". This is also the
+> > > > approach taken by arch/x86/boot/compressed/mkpiggy.c.
+> > >
+> > >
+> > > Yes, that is a sensible case because it just wraps the binary
+> > > without any modification.
+> > >
+> > >
+> > >
+> > >
+> > > > So this patch switches kallsyms to that approach.
+> > > >
+> > > > A complication with this is that the endianness of numbers between
+> > > > host and target might not match (for example, when cross-compiling)=
+;
+> > > > and there seems to be no kconfig symbol that tells us what endianne=
+ss
+> > > > the target has.
+> > >
+> > >
+> > >
+> > > CONFIG_CPU_BIG_ENDIAN is it.
+> > >
+> > >
+> > >
+> > > You could do this:
+> > >
+> > > if is_enabled CONFIG_CPU_BIG_ENDIAN; then
+> > >         kallsymopt=3D"${kallsymopt} --big-endian"
+> > > fi
+> > >
+> > > if is_enabled CONFIG_64BIT; then
+> > >         kallsymopt=3D"${kallsymopt} --64bit"
+> > > fi
+> >
+> > Aah, nice, thanks, I searched for endianness kconfig flags but somehow
+> > missed that one.
+> >
+> > Though actually, I think further optimizations might make it necessary
+> > to directly operate on ELF files anyway, in which case it would
+> > probably be easier to keep using the ELF header...
+> >
+> > > > So pass the path to the intermediate vmlinux ELF file to the kallsy=
+ms
+> > > > tool, and let it parse the ELF header to figure out the target's
+> > > > endianness.
+> > > >
+> > > > I have verified that running kallsyms without these changes and
+> > > > kallsyms with these changes on the same input System.map results
+> > > > in identical object files.
+> > > >
+> > > > This change reduces the time for an incremental kernel rebuild
+> > > > (touch fs/ioctl.c, then re-run make) from 27.7s to 24.1s (medians
+> > > > over 16 runs each) on my machine - saving around 3.6 seconds.
+> > >
+> > >
+> > >
+> > >
+> > > This reverts bea5b74504742f1b51b815bcaf9a70bddbc49ce3
+> > >
+> > > Somebody might struggle with debugging again, but I am not sure.
+> > >
+> > > Arnd?
+> > >
+> > >
+> > >
+> > > If the effort were "I invented a way to do kallsyms in
+> > > one pass instead of three", it would be so much more attractive.
+> >
+> > Actually, I was chatting with someone about this yesterday, and I
+> > think I have an idea on how to get rid of two link steps... I might
+> > try out some stuff and then come back with another version of this
+> > series afterwards.
+>
+> I think basically we could change kallsyms so that on the second run,
+> it checks if the kallsyms layout is the same as on the first run, and
+> if yes, directly overwrite the relevant part of vmlinux. (And adjust
+> the relative_base.) That would save us the final link... does that
+> sound like a reasonable idea?
+
+
+I do not know how we can save the final link.
+
+Inserting the kallsyms data into the .rodata section
+would change the address of all symbols that come after.
+Only the linker can sort out the address change.
+
+
+>
+> I don't really have any good ideas for saving more than that, given
+> that we want to squeeze the kallsyms in between the data and bss
+> sections, so we can't just append it at the end of vmlinux... we could
+> get the symbol list from vmlinux.o instead of linking
+> ".tmp_vmlinux.kallsyms1", but the comments in link-vmlinux.sh say that
+> extra linker-generated symbols might appear, and I guess we probably
+> don't want to miss those...
+
+
+I knew it was not trivial.
+If you do not have an idea, you do not need to change it.
 
 
 
-On 2/22/2024 7:47 PM, William Zhang wrote:
-> From: David Regan <dregan@broadcom.com>
-> 
-> Fix return types for exec_op reset and status helper functions.
-> 
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Closes: http://lists.infradead.org/pipermail/linux-mtd/2023-December/102423.html
-> Fixes: 3c8260ce7663 ("mtd: rawnand: brcmnand: exec_op implementation")
-> Signed-off-by: David Regan <dregan@broadcom.com>
-> Signed-off-by: William Zhang <william.zhang@broadcom.com>
-> Reviewed-by: William Zhang <william.zhang@broadcom.com>
 
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+--=20
+Best Regards
+Masahiro Yamada
 
