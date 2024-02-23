@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-77665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 935A286089F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:58:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 10A288608A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:59:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F0A02860AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:58:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9DC72860CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:59:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D88ABA46;
-	Fri, 23 Feb 2024 01:57:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 234CEB673;
+	Fri, 23 Feb 2024 01:58:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=apertussolutions.com header.i=dpsmith@apertussolutions.com header.b="ua7nBwCQ"
+	dkim=pass (1024-bit key) header.d=apertussolutions.com header.i=dpsmith@apertussolutions.com header.b="E0kby1gR"
 Received: from sender4-of-o50.zoho.com (sender4-of-o50.zoho.com [136.143.188.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28355B67A;
-	Fri, 23 Feb 2024 01:57:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA7663209;
+	Fri, 23 Feb 2024 01:58:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.50
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708653474; cv=pass; b=cqKglhOwDT+U3tJbNne54IWEKczrowNr5qPYOiRXzEKfPYtMpd8woofOBol8vI5oLs6pzAMTYQul+UsgaR5Rmv9tzmTqAXYsLaDyovCY0Dyaqzf0ZCZ9IBzO32RyZsvdalZsboeNe+ebyhtiJPOSYPli67/VEHc1sb+BSSkPjzs=
+	t=1708653536; cv=pass; b=R61wdvOrMDvliqjCL7xfVtRT6v5at+Nwk38jLRKSLp/7JlTQDC/k3Gl3WnxNmWPYoAqO31XUu3TggTRU13zMz30I4YhjbIsJFxoPFtf8NbMOsXWiHgWgdC9TF3N1cJtyRAN4SCVHR6oRU3SPWC+rVwN6Wp7Sf4l/5NVX6maM0FE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708653474; c=relaxed/simple;
-	bh=wKt9TWsjT+lr1kc6jT6JYidAyFIURT7TMzy+9BW6TME=;
+	s=arc-20240116; t=1708653536; c=relaxed/simple;
+	bh=5WSYiRG0da1c48/HAqdyQzrAWeMUGqbq0I7r1FGiB2o=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qt7ehyWfjT9cNlwYmkS9MZaIx5vuyno7UZLIoUZdzZ6KNBYvOT4S2kZWxAPtu5fodM55sl5oheMW53B0YDkyGAEKd8Ut/zpbEU1jt1JNSytaRTyA6VVjF884S7uv34tKXpUjzIDcclFuIvTtckroNIpg2ffpAcx9QqwGwmwZfcM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=apertussolutions.com; spf=pass smtp.mailfrom=apertussolutions.com; dkim=pass (1024-bit key) header.d=apertussolutions.com header.i=dpsmith@apertussolutions.com header.b=ua7nBwCQ; arc=pass smtp.client-ip=136.143.188.50
+	 In-Reply-To:Content-Type; b=n7rxkQorG4aUoejdfFwCgPcapive1diXxMWzXhG/KqbepwDm2dD1gWAVk4w+FNxcKATEI20iUdr2sMWSG3nXjB0StnOeckNW5yxbMU5d8Rn3Y3AzaaN83Bk982VsOLR6fhg7a3H5cYlzqXmAsafrzA09wBWUJpdLge/+R3iA5Uo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=apertussolutions.com; spf=pass smtp.mailfrom=apertussolutions.com; dkim=pass (1024-bit key) header.d=apertussolutions.com header.i=dpsmith@apertussolutions.com header.b=E0kby1gR; arc=pass smtp.client-ip=136.143.188.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=apertussolutions.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=apertussolutions.com
-ARC-Seal: i=1; a=rsa-sha256; t=1708653454; cv=none; 
+ARC-Seal: i=1; a=rsa-sha256; t=1708653524; cv=none; 
 	d=zohomail.com; s=zohoarc; 
-	b=P+Nd9UN4xMws5QaT1qfiryGD9f1L/7zCOQ8HrEIdN/RKJkBxk1ydm7GDIpJD9wm9Nj+dbel1pV3otEbFLjYeByOBDn80j4yFl2BxWODxn+4W3cBGGDEHPq8xJeg0yM6NA7uowXBDgoG+fZcD+5c4eMHJp1JZGhW6yMW7tpw06ig=
+	b=cjiEo2im1vcFKw2Q1SOdLZUt4fE9dUoL84U3+dTryleoXrqMP/ddTUAavE4mBzY8QCP2F9XvFB3zDq0urQvxmp/1pDOhj8O/ngiw1YFq8vv6fsWgqmFQqtWlC3CFk/xwfFlsz/oZAnPK98Il3noFIe+YXM6fuzQWoI9lq6HOjBQ=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1708653454; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=eXyfAKyX45gaKkLAQFL5J6gskv64r13L4cRcWKXfxT0=; 
-	b=YC1WRQztb/hN235YpIombhXNqclIUKZv72XsuuajPCTeuFBEIbY8Rj7B7PijE51oDFkDqExhOFtUvNaavFb5OntwHaIu8ctLkRkf2P7duwOGF5+1J2IcrBdaZIU6c0UXj7ita92Az2D+Ya5C+S4KVLaqZbYB771ZuBu6kfqhWPY=
+	t=1708653524; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=0c/9UXs3DUULMzn59Y2UYaZS5a9by2Pn5MZ9zDCNofc=; 
+	b=TGvkGcZfXFDdEUU+5h/felsDdkuBNL9QRckJMK7ZDXP3YOaeG2N0Mrmfo3Q/y5xjVumMZzSKzDtLEbZwvjA3lMVQ4gxtg1SVwNKJIMN+YfYiMRZwS3qNTeDtALJXhBpevkizimQRl846PbtBv0f7UvV8l9N90JakFqF78vOSaq4=
 ARC-Authentication-Results: i=1; mx.zohomail.com;
 	dkim=pass  header.i=apertussolutions.com;
 	spf=pass  smtp.mailfrom=dpsmith@apertussolutions.com;
 	dmarc=pass header.from=<dpsmith@apertussolutions.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1708653454;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1708653524;
 	s=zoho; d=apertussolutions.com; i=dpsmith@apertussolutions.com;
 	h=Message-ID:Date:Date:MIME-Version:Subject:Subject:To:To:Cc:Cc:References:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=eXyfAKyX45gaKkLAQFL5J6gskv64r13L4cRcWKXfxT0=;
-	b=ua7nBwCQ6I36uu2rS+W0ZRUjXobpi1th7ASp1AoIoFR4xBtoSAjG93A/SKcFDB5M
-	0Yp4jvuyMg9Ncz/0taIgitlbDw9FjaVr1PYXTD4pof7xuFXvmnRSXW56g0yA2rafrbV
-	OMRec7fzV1Z8ivnHjai3A+Q8qu9JmeX7oPpckfys=
+	bh=0c/9UXs3DUULMzn59Y2UYaZS5a9by2Pn5MZ9zDCNofc=;
+	b=E0kby1gRBtS+r+5qRZAKkD77mQH5+7O7TNPBYqtdZ2urCmuFvXtWv3icZhBjISm/
+	IOYZuBTMfNy5OJ20r6q/FNetjloXoreSlppBP7V4O80lQMe3/caf0SIkt08bPWbTUvc
+	2Is16gaXyiv/QP2528TJY9/8wEJppM2w7G4NA9rM=
 Received: from [10.10.1.138] (static-72-81-132-2.bltmmd.fios.verizon.net [72.81.132.2]) by mx.zohomail.com
-	with SMTPS id 1708653453544363.34283143327457; Thu, 22 Feb 2024 17:57:33 -0800 (PST)
-Message-ID: <f1a54774-9a44-4400-91e2-358facc12191@apertussolutions.com>
-Date: Thu, 22 Feb 2024 20:57:30 -0500
+	with SMTPS id 1708653523228943.4732868395558; Thu, 22 Feb 2024 17:58:43 -0800 (PST)
+Message-ID: <88b75c9c-98ab-4474-8112-6a27d11a2fdf@apertussolutions.com>
+Date: Thu, 22 Feb 2024 20:58:40 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,7 +62,6 @@ User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 1/3] tpm: protect against locality counter underflow
 Content-Language: en-US
 To: Jarkko Sakkinen <jarkko@kernel.org>,
- James Bottomley <James.Bottomley@HansenPartnership.com>,
  Lino Sanfilippo <l.sanfilippo@kunbus.com>,
  Alexander Steffen <Alexander.Steffen@infineon.com>,
  Jason Gunthorpe <jgg@ziepe.ca>, Sasha Levin <sashal@kernel.org>,
@@ -75,9 +74,7 @@ References: <20240131170824.6183-1-dpsmith@apertussolutions.com>
  <2ba9a96e-f93b-48e2-9ca0-48318af7f9b1@kunbus.com>
  <ae3fecc4-7b76-4607-8749-045e17941923@infineon.com>
  <91f600ef-867b-4523-89be-1c0ba34f8a4c@kunbus.com>
- <CZA9CM3PDILC.82JMLUWMB6B7@seitikki> <CZA9GMC718HA.1JFHTTWV563IE@seitikki>
- <7a7f8f0c1b9d124bfc01b66082abf2d8445564ce.camel@HansenPartnership.com>
- <CZB0I9OAGNHT.1HTSJU3925RBY@seitikki>
+ <CZA9ADCGOTQT.LB5XHZZVTWVH@seitikki>
 From: "Daniel P. Smith" <dpsmith@apertussolutions.com>
 Autocrypt: addr=dpsmith@apertussolutions.com; keydata=
  xsJuBFYrueARCACPWL3r2bCSI6TrkIE/aRzj4ksFYPzLkJbWLZGBRlv7HQLvs6i/K4y/b4fs
@@ -110,81 +107,66 @@ Autocrypt: addr=dpsmith@apertussolutions.com; keydata=
  ke943EIUts9CmFAHt8cNPYOPRd20pPu4VFNBuT4fv9Ys0iv0XGCEP+sos7/pgJ3gV3pCOric
  p15jV4PCYQQYEQgACQUCViu54AIbDAAKCRBTc6WbYpR8Khu7AP9NJrBUn94C/3PeNbtQlEGZ
  NV46Mx5HF0P27lH3sFpNrwD/dVdZ5PCnHQYBZ287ZxVfVr4Zuxjo5yJbRjT93Hl0vMY=
-In-Reply-To: <CZB0I9OAGNHT.1HTSJU3925RBY@seitikki>
+In-Reply-To: <CZA9ADCGOTQT.LB5XHZZVTWVH@seitikki>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-ZohoMailClient: External
 
-On 2/21/24 14:43, Jarkko Sakkinen wrote:
-> On Wed Feb 21, 2024 at 12:37 PM UTC, James Bottomley wrote:
->> On Tue, 2024-02-20 at 22:31 +0000, Jarkko Sakkinen wrote:
+On 2/20/24 17:23, Jarkko Sakkinen wrote:
+> On Tue Feb 20, 2024 at 8:54 PM UTC, Lino Sanfilippo wrote:
+>> Hi,
+>>
+>> On 20.02.24 19:42, Alexander Steffen wrote:
+>>> ATTENTION: This e-mail is from an external sender. Please check attachments and links before opening e.g. with mouseover.
 >>>
->>> 2. Because localities are not too useful these days given TPM2's
->>>     policy mechanism
+>>>
+>>> On 02.02.2024 04:08, Lino Sanfilippo wrote:
+>>>> On 01.02.24 23:21, Jarkko Sakkinen wrote:
+>>>>
+>>>>>
+>>>>> On Wed Jan 31, 2024 at 7:08 PM EET, Daniel P. Smith wrote:
+>>>>>> Commit 933bfc5ad213 introduced the use of a locality counter to control when a
+>>>>>> locality request is allowed to be sent to the TPM. In the commit, the counter
+>>>>>> is indiscriminately decremented. Thus creating a situation for an integer
+>>>>>> underflow of the counter.
+>>>>>
+>>>>> What is the sequence of events that leads to this triggering the
+>>>>> underflow? This information should be represent in the commit message.
+>>>>>
+>>>>
+>>>> AFAIU this is:
+>>>>
+>>>> 1. We start with a locality_counter of 0 and then we call tpm_tis_request_locality()
+>>>> for the first time, but since a locality is (unexpectedly) already active
+>>>> check_locality() and consequently __tpm_tis_request_locality() return "true".
+>>>
+>>> check_locality() returns true, but __tpm_tis_request_locality() returns
+>>> the requested locality. Currently, this is always 0, so the check for
+>>> !ret will always correctly indicate success and increment the
+>>> locality_count.
+>>>
 >>
->> Localitites are useful to the TPM2 policy mechanism.  When we get key
->> policy in the kernel it will give us a way to create TPM wrapped keys
->> that can only be unwrapped in the kernel if we run the kernel in a
->> different locality from userspace (I already have demo patches doing
->> this).
+>> Will the TPM TIS CORE ever (have to) request another locality than 0? Maybe the best would
+>> be to hardcode TPM_ACCESS(0) and get rid of all the locality parameters that are
+>> passed from one function to another.
 > 
-> Let's keep this discussion in scope, please.
+> Usually, or at least use cases I'm aware of, localities are per
+> component. E.g. Intel TXT has one and Linux has another.
 > 
-> Removing useless code using registers that you might have some actually
-> useful use is not wrong thing to do. It is better to look at things from
-> clean slate when the time comes.
+> There's been some proposals in the past here for hypervisor specific
+> locality here at LKML they didn't lead to anything.
 > 
->>>   I cannot recall out of top of my head can
->>>     you have two localities open at same time.
->>
->> I think there's a misunderstanding about what localities are: they're
->> effectively an additional platform supplied tag to a command.  Each
->> command can therefore have one and only one locality.  The TPM doesn't
+> If you are suggesting of removing "int l" parameter altogether, I
+> do support that idea.
 > 
-> Actually this was not unclear at all. I even read the chapters from
-> Ariel Segall's yesterday as a refresher.
+>> But this is rather code optimization and not really required to fix
+>> the reported bug.
 > 
-> I was merely asking that if TPM_ACCESS_X is not properly cleared and you
-> se TPM_ACCESS_Y where Y < X how does the hardware react as the bug
-> report is pretty open ended and not very clear of the steps leading to
-> unwanted results.
-> 
-> With a quick check from [1] could not spot the conflict reaction but
-> it is probably there.
+> Just adding here that I wish we also had a log transcript of bug, which
+> is right now missing. The explanation believable enough to move forward
+> but I still wish to see a log transcript.
 
-The expected behavior is explained in the Informative Comment of section 
-6.5.2.4 of the Client PTP spec[1]:
-
-"The purpose of this register is to allow the processes operating at the 
-various localities to share the TPM. The basic notion is that any 
-locality can request access to the TPM by setting the 
-TPM_ACCESS_x.requestUse field using its assigned TPM_ACCESS_x register 
-address. If there is no currently set locality, the TPM sets current 
-locality to the requesting one and allows operations only from that 
-locality. If the TPM is currently at another locality, the TPM keeps the 
-request pending until the currently executing locality frees the TPM. 
-Software relinquishes the TPM’s locality by writing a 1 to the 
-TPM_ACCESS_x.activeLocality field. Upon release, the TPM honors the 
-highest locality request pending. If there is no pending request, the 
-TPM enters the “free” state."
-
->> submission).   I think the locality request/relinquish was modelled
->> after some other HW, but I don't know what.
-> 
-> My wild guess: first implementation was made when TPM's became available
-> and there was no analytical thinking other than getting something that
-> runs :-)
-
-Actually, no that is not how it was done. IIRC, localities were designed 
-in conjunction with D-RTM when Intel and MS started the LeGrande effort 
-back in 2000. It was then generalized for the TPM 1.1b specification. My 
-first introduction to LeGrande/TXT wasn't until 2005 as part of an early 
-access program. So most of my historical understanding is from 
-discussions I luckily got to have with one of the architects and a few 
-of the original TCG committee members.
-
-[1] 
-https://trustedcomputinggroup.org/wp-content/uploads/PC-Client-Specific-Platform-TPM-Profile-for-TPM-2p0-v1p05p_r14_pub.pdf
+That will be forth coming.
 
 v/r,
 dps
