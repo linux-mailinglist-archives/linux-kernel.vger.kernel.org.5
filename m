@@ -1,103 +1,85 @@
-Return-Path: <linux-kernel+bounces-78470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94F6C8613D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:20:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD9258613C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:17:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C66CE1C20B06
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:20:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 649631F230AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:17:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 139AF823DD;
-	Fri, 23 Feb 2024 14:19:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CnFOH73S"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93DF680C0C;
+	Fri, 23 Feb 2024 14:17:09 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18451823BC
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 14:19:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E7F87F46E
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 14:17:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708697954; cv=none; b=fj6/KiQ6+Ot3oukzwEyZF48z5tfbkNMNSU4Hmi8VjXr4XdPULde5RXDdG4UjRRJoawLU7nuZdO7/yYtU9D7s6rBXwlaSBhp/scMkzyB24lzXtXUzluAQo13iEQZPURobq1luAPoIzoBtxdxyB52ARBcjNrbUBdjw1caDuY+1YwM=
+	t=1708697829; cv=none; b=d6gyH63yuCMqiQzq6cxuI6n0YYQQH1EvYGlN/dthqRXWKtcxisD87Q+/25qZ8P3xuMLMXRGstmsh2VdHuwii5K+wbsGsFKDlg2GJZwvS395hERuapzq9wMScbnBbexmC64QUgANcK3vNIAx2TSc2ZT1JPJNBFZs1hWf7cX47sa4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708697954; c=relaxed/simple;
-	bh=tYze8IrJ1yAvzoappL3XtvPJ27bpcIPpI0JnZ5rnTDI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HsSgjd54vvSPzU1L+VtNNWMtPy/PrWjnrQ91PaKMAH6XXwD478Qh5ocq91hHL7yEEkuhjvlZf0HFZ2BVt7IBlDYryQq1uGA0S2NaVzOr6tQ+LbFSI2cXll8rpUNnZ8YrMy3N+fHbU323P4nneUEJrYU0BVSVrsFMe/ucBmDUdj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CnFOH73S; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708697952; x=1740233952;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=tYze8IrJ1yAvzoappL3XtvPJ27bpcIPpI0JnZ5rnTDI=;
-  b=CnFOH73SCQkUCVDTEHvttHi6GXKCfoEzUSkQVT/4cb1Umh3OwxZcbVvJ
-   /btc+4QbR1+JJuykQpjULXmlzSikPGu75iqr+vWGcM0rrysSGJC3yy221
-   GNeZxBCBUYKjfi27aYgGi7i8yNJ/EHKnPpeWoMg5ig34K2coPsyPLutaD
-   vYAuTTUkndHUMCyl6ik+O6Z0yiGphqp0Cy6taxTAj4XbcZMm4lI+H2eLG
-   oAKfFM8Sobfy1aY0OTGKnzZfUei9P5KtYrP/RK6Tm326A9tUjAY3VoAVZ
-   fUp7L7sQDQLdUuKrWovpEue117xkRW0Jn6HBU1LpI+quQsLcGXuzLBuCQ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="20451886"
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="20451886"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 06:19:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="6291708"
-Received: from awvttdev-05.aw.intel.com ([10.228.212.156])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 06:19:11 -0800
-From: "Michael J. Ruhl" <michael.j.ruhl@intel.com>
-To: linux@armlinux.org.uk,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	andriy.shevchenko@linux.intel.com
-Cc: "Michael J. Ruhl" <michael.j.ruhl@intel.com>
-Subject: [PATCH] clkdev: Update clkdev id usage to allow for longer names
-Date: Fri, 23 Feb 2024 09:18:14 -0500
-Message-ID: <20240223141857.3794855-1-michael.j.ruhl@intel.com>
-X-Mailer: git-send-email 2.41.0
+	s=arc-20240116; t=1708697829; c=relaxed/simple;
+	bh=zYQCDr9hrLFweiad+Qinjuk9PQpfLW4WKjieIAuoI5c=;
+	h=Message-ID:Date:From:To:Cc:Subject; b=IcdPi165dzaMLeMh9oHVQTCm8qq/jk4wyxcEOoxEEzQTFUxkdEugZsVQWIxCOvuiVaUkhhO27xbid9Y26/ctLgBOpsliy1EVuf96mIizHGK2UCN42IKsEpIwK9FRR4kbLdluogTsYMJZPiEjhJ7rOlEdLN6eG+2fE3B4SX4LRJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5DDAC433F1;
+	Fri, 23 Feb 2024 14:17:08 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.97)
+	(envelope-from <rostedt@goodmis.org>)
+	id 1rdWOD-000000077Kk-2NW1;
+	Fri, 23 Feb 2024 09:19:01 -0500
+Message-ID: <20240223141838.985298316@goodmis.org>
+User-Agent: quilt/0.67
+Date: Fri, 23 Feb 2024 09:18:38 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linux-kernel@vger.kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Andrew Morton <akpm@linux-foundation.org>
+Subject: [for-next][PATCH 00/13] tracing: Updates for 6.9
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-clkdev ID information is limited to arrays of 20 and 16 bytes
-(MAX_DEV_ID/MAX_CON_ID).  It is possible that the IDs could be
-longer that.  If so, the lookup will fail because the "real ID"
-will not match the copied value.
 
-Increase the size of the IDs to allow for longer names.
+Beau Belgrave (4):
+      tracing/user_events: Prepare find/delete for same name events
+      tracing/user_events: Introduce multi-format events
+      selftests/user_events: Test multi-format events
+      tracing/user_events: Document multi-format flag
 
-Signed-off-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
----
- drivers/clk/clkdev.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+John Garry (1):
+      tracing: Use init_utsname()->release
 
-diff --git a/drivers/clk/clkdev.c b/drivers/clk/clkdev.c
-index ee37d0be6877..38549db691f4 100644
---- a/drivers/clk/clkdev.c
-+++ b/drivers/clk/clkdev.c
-@@ -144,8 +144,8 @@ void clkdev_add_table(struct clk_lookup *cl, size_t num)
- 	mutex_unlock(&clocks_mutex);
- }
- 
--#define MAX_DEV_ID	20
--#define MAX_CON_ID	16
-+#define MAX_DEV_ID	32
-+#define MAX_CON_ID	32
- 
- struct clk_lookup_alloc {
- 	struct clk_lookup cl;
--- 
-2.41.0
+Steven Rostedt (Google) (8):
+      NFSD: Fix nfsd_clid_class use of __string_len() macro
+      drm/i915: Add missing ; to __assign_str() macros in tracepoint code
+      tracing: Rework __assign_str() and __string() to not duplicate getting the string
+      tracing: Do not calculate strlen() twice for __string() fields
+      tracing: Use ? : shortcut in trace macros
+      tracing: Use EVENT_NULL_STR macro instead of open coding "(null)"
+      tracing: Fix snapshot counter going between two tracers that use it
+      tracing: Decrement the snapshot if the snapshot trigger fails to register
 
+----
+ Documentation/trace/user_events.rst                |  27 ++-
+ drivers/gpu/drm/i915/display/intel_display_trace.h |   6 +-
+ fs/nfsd/trace.h                                    |   2 +-
+ include/linux/trace_events.h                       |   3 +
+ include/trace/events/sunrpc.h                      |  12 +-
+ include/trace/stages/stage2_data_offsets.h         |   4 +-
+ include/trace/stages/stage5_get_offsets.h          |  15 +-
+ include/trace/stages/stage6_event_callback.h       |  12 +-
+ include/uapi/linux/user_events.h                   |   6 +-
+ kernel/trace/trace.c                               |   6 +-
+ kernel/trace/trace_events_trigger.c                |   5 +-
+ kernel/trace/trace_events_user.c                   | 209 +++++++++++++++------
+ tools/testing/selftests/user_events/abi_test.c     | 134 +++++++++++++
+ 13 files changed, 354 insertions(+), 87 deletions(-)
 
