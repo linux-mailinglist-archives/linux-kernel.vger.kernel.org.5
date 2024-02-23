@@ -1,184 +1,134 @@
-Return-Path: <linux-kernel+bounces-79058-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF1CC861CFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:52:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B9CF861D0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:56:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D6061F22E35
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:52:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07AD01F24962
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:56:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 406541420D7;
-	Fri, 23 Feb 2024 19:51:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D55DA14601C;
+	Fri, 23 Feb 2024 19:56:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cWKQHdRM"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RbbQdQDD"
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2FB31468EC;
-	Fri, 23 Feb 2024 19:51:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 517E01448F3;
+	Fri, 23 Feb 2024 19:56:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708717878; cv=none; b=uHUVcytyALlhweK3zrmTLZyaR5QtGRmKKQ4CEKpTdCPU73eUfDKIhFBucUWrXahGjx3L4iueXYXFS7P3oE//E9Aw49y2R3pMaCoqnCjVfpcSbZ5Sg59mrd6Vn+LvpLAT2TookijSPuC9tXR6Uk9M6GEOocD2IXyf4MxgcJ2ISsg=
+	t=1708718207; cv=none; b=R0bGiSsb/uMHzlt0IYaKEiOldtXN1T9NkpOV/TOmKXR0h+Kv/xcPCGqN/pff+S1ZvQLN54weGSpqForjL/nV17E9nuzSRSKVCrgVV6w9f0OCMzgqusOL8ZI08/TR8JdCkQZfiaBkptmYQ7sBzl0mtezIiUAHzL95/qICntmJfwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708717878; c=relaxed/simple;
-	bh=DCcRHQS8179CeEbpS6ho3btFvHb0UMPTbTzkvbeC7DQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Uy3pTbYqYwBuSGolCxuRlhwHeqIX3k+1TaZ/IIMMYXhmOoTmKrJOOPRHmD9bIzcawsjJP4dtCfBr5fM5W6TLYoRN9WfUiMRMicv6WR2ARqBXWrd+4z8SztLgJJxl3jnf2W0I3AXXxoMfJAB/UiaE0h+W7h33xbVvuYLisSN+1Gk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cWKQHdRM; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1708718207; c=relaxed/simple;
+	bh=V5uXT1I1WxLZr1gVzh31tRJlTZrs2HDa7enKzhMqPFY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o2rULxQ2sPusbVDmWD1dFyU7f+T1AeNR5ZNrzUpE/Qax6Ob4QwB3zo5+UUkGqrMO2EUmUrhQlgrOOsJNfBMaF2ZNuovwyS+de+rhyL/AiJLPg9smc3GGBn4Eb2IedmDlX+cmNZUeo1hfCQsmxL7qWFwC/jxPFetqnKHUenLRNIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RbbQdQDD; arc=none smtp.client-ip=209.85.167.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a3eafbcb1c5so157325566b.0;
-        Fri, 23 Feb 2024 11:51:16 -0800 (PST)
+Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3bd4e6a7cb0so773509b6e.3;
+        Fri, 23 Feb 2024 11:56:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708717875; x=1709322675; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0Xr6A5ZVcZDLJ7oaBlotk2t+V105HpiLWnU7g8aHJ7w=;
-        b=cWKQHdRMuhtNTqhBKF4iarsZKCM/DaFymWdqalZtHrhbE43Pq4K8GU2HLQvflj8krA
-         A1jGN7OHzPlS590Z1sQ/JItaXYGYiXjrHRmgaafl8Fm4CN4fH6Lk1fM2f50q2LccBXj+
-         8rSo9gBdlEESKUb4iKd5LtG5w699YES+fPV2pQ8asAF0xU7AwZk3bbRMSeWGqpdCLfS/
-         PR2ZDSbxe77dJ4oSF96ggYjdLKiZGjN0Hvh7bb2qkmergeAsc9i0PDAs96edLZaX0c0y
-         WKb8IdJITjGUWbH1PptUTf1SKOFH3RXoPlOvGjI1Qk1Zht1k3OwJ9+ysHvz9s/wC1OVK
-         zDDw==
+        d=gmail.com; s=20230601; t=1708718204; x=1709323004; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Smi/Sp7XgkONWFBICEY7Pi/t1Ktm49FpndchyfXCKuA=;
+        b=RbbQdQDDCDWuVZB19hVQYaQUxPUqH2DZOMnyjvJy/C4sA1mEg92ezQnaDsdfR4LeWT
+         2ld0HsEfKKpgzmOpwtEAvRPBrRkeukKsb4uNtkWg+2CFbTUtWpsNv5C7f0F8IwI1E2fA
+         rCoMWvsdQaY+BJpZPBj9hFHJP+KbtiNfaWkjEM2aeSHQ8SFu876RN92K3HeeW7DjX/5c
+         Ql2Kc33U8M3yZNyQk36syxgS+XExa4KzPlWEmSo/H1g8nJQqSVnG/COK96KpvIeLm+dr
+         w5cMK7ry2/8QInE+MQ4Tfc16LgVSow1mXz6ZOpAnslLlzmg1g7JeWGGMenz1G9uS2DUt
+         rJ/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708717875; x=1709322675;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1708718204; x=1709323004;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0Xr6A5ZVcZDLJ7oaBlotk2t+V105HpiLWnU7g8aHJ7w=;
-        b=DK2LQannBTltv01Sc33AukhVt7UibphVUJ3P7myzZ6IEu0eMcz1tW+2+vvgb0bQJcy
-         TpBvt9QZDbe0Ks08LtmtLbrki3AqwXlpWsmv9ojnK9x8JuODV3OtXL4rRMVquwquUC4+
-         OFPuudqHM74PCyQMB5soJx29dHfxVdtJponCUmn6xdjAoxqclW1XtrEgX1JU7I3ghpPd
-         fOHgqLBHTGwdEiup3lWwwMUeJUQ5GtXfo2/9KEHFFVIchniWqDT50ubJh+8I6Wmyb2cg
-         /4PLmEy3L+t82ASREbSS/+eMKv27vagnlE4jKhFWKe/058/cOIHlq5x3KwWmFVw8vIzs
-         FqNw==
-X-Forwarded-Encrypted: i=1; AJvYcCW8RX+yoLTfesFXDoXWR2vIcfUFO8EchunoaEvoamOtOtkWkoGIp48YV2gIG936wgNldfwEX3UHdwdS7YvNW/o7zwB1Bal9vk3M/yPzvN5HRPoShpq1TBYHJf5S8Azy2p6gPwRsGD8=
-X-Gm-Message-State: AOJu0YzmVYbGx/lHgN7f/B+nJN26iAQo5wBLO4a7VP/Rt1erAYPrDPJ6
-	GHq6FogTDhEmGOShKiZ5Y3FPNzrlOc0dZNBYMj3YDpCDd9suauoX
-X-Google-Smtp-Source: AGHT+IE19ctpcHeC8OGPK03xM0qf45C77WZ9HAydSzM8Dyn0bvmzXPAySicx9S20pEbJNSX2ZydiUw==
-X-Received: by 2002:a17:906:cd0f:b0:a41:3950:d11c with SMTP id oz15-20020a170906cd0f00b00a413950d11cmr547643ejb.28.1708717874903;
-        Fri, 23 Feb 2024 11:51:14 -0800 (PST)
-Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
-        by smtp.gmail.com with ESMTPSA id tj9-20020a170907c24900b00a3ca56e9bcfsm7183967ejc.187.2024.02.23.11.51.12
+        bh=Smi/Sp7XgkONWFBICEY7Pi/t1Ktm49FpndchyfXCKuA=;
+        b=mqeGlQX/vvt0hJwGN8lG3uRZs5sGbKgk5f2wSBewXvcrkiFYPdABRvb2wbznr8uPt1
+         au+wqdngzgTgw1kP1n6R+HFaZzIAz+TebAq1D/vh0WEOiN8NoPPCg486BvpT/KUwc689
+         EmEAZV+Lf1EHbYEOOkLarANUWdYX8kL6GJw1FCwAYkCuW1Jb6y4rDTW8w1OHVH1KBipd
+         h8ctm71m5GMxZBn7Y8BCOOIGbqhzq4FETtANhufhSB4jqZI9pChHuVmy35oNZjAhy61t
+         hZJwKLwRlaC7v3PrgaF0/dQKTG1BPVJgQbl954y+yGKaS4LKllk7z97yDxS95jggPlLL
+         Mh8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWbDTF+2jtANMZvRglZ1o5a6sVIbYxJCRI2zoY6lrRJe6FhSfn5GJXr718ZvV0x/5IVU+NUwpTl1074hdiIHg0KPrRIostg2V6uE84jWZjRokr7FWiLlIdCaxbMQE5zNCaMZOU2r9zfs9zOnyJ8dRjOV7d36l9x6sKkuzDZvBRLUmXUMfn4tcgauPJIwcRMlzFjFnzXm0NDWp2wWZ3g5BDyrQ==
+X-Gm-Message-State: AOJu0YziA6tKLpc8PnIfe5d1JgeOIRdsV1u6xDFSiS77hqO8ORtHoNYs
+	dlzODiliaqiu5+wQwbIlTm8vLkEcHgn7HjYmmrwLOWHwNdamSeNI
+X-Google-Smtp-Source: AGHT+IHv5O7Zzjo9iR5rZ4wp2Y09L1nqF5uadiqzZbbKIzO71izmp6TPS4UCh8sTcVQ34stK3LQaXA==
+X-Received: by 2002:a05:6870:b250:b0:21e:7a1d:b4ec with SMTP id b16-20020a056870b25000b0021e7a1db4ecmr939717oam.7.1708718204401;
+        Fri, 23 Feb 2024 11:56:44 -0800 (PST)
+Received: from Borg-9.local (070-114-203-196.res.spectrum.com. [70.114.203.196])
+        by smtp.gmail.com with ESMTPSA id gq19-20020a056870d91300b0021e8424e466sm3680600oab.25.2024.02.23.11.56.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 11:51:13 -0800 (PST)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Vasily Khoruzhick <anarsoul@gmail.com>,
- Yangtao Li <tiny.windzz@gmail.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>, Amit Kucheria <amitk@kernel.org>,
- Zhang Rui <rui.zhang@intel.com>, Chen-Yu Tsai <wens@csie.org>,
- Samuel Holland <samuel@sholland.org>, Mark Brown <broonie@kernel.org>
-Cc: Hugh Dickins <hughd@google.com>, linux-pm@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject:
- Re: [PATCH v3] thermal/drivers/sun8i: Don't fail probe due to zone
- registration failure
-Date: Fri, 23 Feb 2024 20:51:12 +0100
-Message-ID: <12383045.O9o76ZdvQC@jernej-laptop>
-In-Reply-To:
- <20240123-thermal-sun8i-registration-v3-1-3e5771b1bbdd@kernel.org>
-References: <20240123-thermal-sun8i-registration-v3-1-3e5771b1bbdd@kernel.org>
+        Fri, 23 Feb 2024 11:56:44 -0800 (PST)
+Sender: John Groves <grovesaustin@gmail.com>
+Date: Fri, 23 Feb 2024 13:56:42 -0600
+From: John Groves <John@groves.net>
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
+	Dave Jiang <dave.jiang@intel.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, 
+	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, john@jagalactic.com, 
+	Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>, 
+	dave.hansen@linux.intel.com, gregory.price@memverge.com
+Subject: Re: [RFC PATCH 16/20] famfs: Add fault counters
+Message-ID: <l66vdkefx4ut73jis52wvn4j6hzj5omvrtpsoda6gbl27d4uwg@yolm6jx4yitn>
+References: <cover.1708709155.git.john@groves.net>
+ <43245b463f00506016b8c39c0252faf62bd73e35.1708709155.git.john@groves.net>
+ <05a12c0b-e3e3-4549-b02e-442e4b48a86d@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <05a12c0b-e3e3-4549-b02e-442e4b48a86d@intel.com>
 
-Hi Daniel, Rafael,
+On 24/02/23 10:23AM, Dave Hansen wrote:
+> On 2/23/24 09:42, John Groves wrote:
+> > One of the key requirements for famfs is that it service vma faults
+> > efficiently. Our metadata helps - the search order is n for n extents,
+> > and n is usually 1. But we can still observe gnarly lock contention
+> > in mm if PTE faults are happening. This commit introduces fault counters
+> > that can be enabled and read via /sys/fs/famfs/...
+> > 
+> > These counters have proved useful in troubleshooting situations where
+> > PTE faults were happening instead of PMD. No performance impact when
+> > disabled.
+> 
+> This seems kinda wonky.  Why does _this_ specific filesystem need its
+> own fault counters.  Seems like something we'd want to do much more
+> generically, if it is needed at all.
+> 
+> Was the issue here just that vm_ops->fault() was getting called instead
+> of ->huge_fault()?  Or something more subtle?
 
-is there any issue with this patch? Can you apply it?
+Thanks for your reply Dave!
 
-Best regards,
-Jernej
+First, I'm willing to pull the fault counters out if the brain trust doesn't
+like them.
 
-Dne sreda, 24. januar 2024 ob 00:33:07 CET je Mark Brown napisal(a):
-> Currently the sun8i thermal driver will fail to probe if any of the
-> thermal zones it is registering fails to register with the thermal core.
-> Since we currently do not define any trip points for the GPU thermal
-> zones on at least A64 or H5 this means that we have no thermal support
-> on these platforms:
-> 
-> [    1.698703] thermal_sys: Failed to find 'trips' node
-> [    1.698707] thermal_sys: Failed to find trip points for thermal-sensor id=1
-> 
-> even though the main CPU thermal zone on both SoCs is fully configured.
-> This does not seem ideal, while we may not be able to use all the zones
-> it seems better to have those zones which are usable be operational.
-> Instead just carry on registering zones if we get any non-deferral
-> error, allowing use of those zones which are usable.
-> 
-> This means that we also need to update the interrupt handler to not
-> attempt to notify the core for events on zones which we have not
-> registered, I didn't see an ability to mask individual interrupts and
-> I would expect that interrupts would still be indicated in the ISR even
-> if they were masked.
-> 
-> Reviewed-by: Vasily Khoruzhick <anarsoul@gmail.com>
-> Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
-> Changes in v3:
-> - Rebase onto v6.8-rc1.
-> - Link to v2: https://lore.kernel.org/r/20230912-thermal-sun8i-registration-v2-1-077230107768@kernel.org
-> 
-> Changes in v2:
-> - Rebase onto v6.6-rc1.
-> - Link to v1: https://lore.kernel.org/r/20230718-thermal-sun8i-registration-v1-1-c95b1b070340@kernel.org
-> ---
->  drivers/thermal/sun8i_thermal.c | 16 ++++++++++++++--
->  1 file changed, 14 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/thermal/sun8i_thermal.c b/drivers/thermal/sun8i_thermal.c
-> index 6a8e386dbc8d..c2a8ae7f8f2f 100644
-> --- a/drivers/thermal/sun8i_thermal.c
-> +++ b/drivers/thermal/sun8i_thermal.c
-> @@ -188,6 +188,9 @@ static irqreturn_t sun8i_irq_thread(int irq, void *data)
->  	int i;
->  
->  	for_each_set_bit(i, &irq_bitmap, tmdev->chip->sensor_num) {
-> +		/* We allow some zones to not register. */
-> +		if (IS_ERR(tmdev->sensor[i].tzd))
-> +			continue;
->  		thermal_zone_device_update(tmdev->sensor[i].tzd,
->  					   THERMAL_EVENT_UNSPECIFIED);
->  	}
-> @@ -465,8 +468,17 @@ static int sun8i_ths_register(struct ths_device *tmdev)
->  						      i,
->  						      &tmdev->sensor[i],
->  						      &ths_ops);
-> -		if (IS_ERR(tmdev->sensor[i].tzd))
-> -			return PTR_ERR(tmdev->sensor[i].tzd);
-> +
-> +		/*
-> +		 * If an individual zone fails to register for reasons
-> +		 * other than probe deferral (eg, a bad DT) then carry
-> +		 * on, other zones might register successfully.
-> +		 */
-> +		if (IS_ERR(tmdev->sensor[i].tzd)) {
-> +			if (PTR_ERR(tmdev->sensor[i].tzd) == -EPROBE_DEFER)
-> +				return PTR_ERR(tmdev->sensor[i].tzd);
-> +			continue;
-> +		}
->  
->  		devm_thermal_add_hwmon_sysfs(tmdev->dev, tmdev->sensor[i].tzd);
->  	}
-> 
-> ---
-> base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
-> change-id: 20230718-thermal-sun8i-registration-df3a136ccafa
-> 
-> Best regards,
-> 
+I put them in because we were running benchmarks of computational data
+analytics and and noted that jobs took 3x as long on famfs as raw dax -
+which indicated I was doing something wrong, because it should be equivalent
+or very close.
 
+The the solution was to call thp_get_unmapped_area() in
+famfs_file_operations, and performance doesn't vary significantly from raw
+dax now. Prior to that I wasn't making sure the mmap address was PMD aligned.
 
+After that I wanted a way to be double-secret-certain that it was servicing
+PMD faults as intended. Which it basically always is, so far. (The smoke
+tests in user space check this.)
 
-
+John
 
