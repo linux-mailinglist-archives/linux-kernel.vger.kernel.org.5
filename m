@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-77584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 671488607CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:43:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6F628607CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:44:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98653286A3B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:43:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5F1EB23C38
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:44:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9350ED2E6;
-	Fri, 23 Feb 2024 00:43:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 282DD10965;
+	Fri, 23 Feb 2024 00:43:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="B9DH6Gm+"
-Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aQEWBEBw"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E66CBA28
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 00:43:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 496F9CA73
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 00:43:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708648989; cv=none; b=L0z4IuV94uiqo/pZY6J1fSS4HlfvtXa0YyOscQ+fmnqfE1deN8S9oRoynnCfFxnlzfXWf/6Fbj66a75A/SYrwm7hPkpzSKMKLh4Zacv874/Ho3Q79mBcf95NMfxMZergdEBAS1wX2jQM+emn3J1IINjq6HK+UmTTgv9FOa4BT0M=
+	t=1708648992; cv=none; b=WoEc8Xtub/FN+XZtPoDFGmuKcaIHKF6Uv2534KM6/NY2Ou+S5r8aVSVrzBYNBBZ+B70jLwSxvZIVXKazBy+r70Q/AO2mywUBkPrkpZIdMvslXeN1lWWno0uo6ct9LOJuyL4SUJzjbssS87alOZ9tKkLU2LAeJR1nSN221QsKKLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708648989; c=relaxed/simple;
-	bh=LW9qJDJFMZKoAzuMjM4EnMGD9KOMiSIoIkVhiiIE6n0=;
+	s=arc-20240116; t=1708648992; c=relaxed/simple;
+	bh=kOWMpHRm0Jt6rsGNN4rcuUv5pHmG0Bajgke/K8TPQlw=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=UcAQSLqNONsIb1TQDLsoZ4Uzkk7j9C03ZySOSU0VXSGSWfSeLRh6AXJ6judsgcX6cY17OC306JYIqi7Zhlnlg/XUWqy7WSPOFWTkr8nyqX1AD4I6KKPLhFyMjR2OePQZIpqrGVyNYoOa5LXOnt/wL0nWqU2WeE/lkVDmr/JBp+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=B9DH6Gm+; arc=none smtp.client-ip=209.85.210.202
+	 To:Cc:Content-Type; b=R3swIlzlaHM9hU/ZN3Pp9JCG2r7LiWnbFWcYgJQF9oytDHb3oXCZfX8Bd8hRHMufVogWAoySQm9J6dmevnXyBai7wNvpoZ/7+V30g8pkDY2ZJfEd9bKxrPb2u9/I6GBs5OzAnH0cvG5L6BK8lMwmx9oed4UZpkNdh2lpW5fDV48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aQEWBEBw; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6e04e1ac036so259698b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 16:43:08 -0800 (PST)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b26eef6cso425073276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 16:43:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708648987; x=1709253787; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1708648989; x=1709253789; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=jhSBUfusWJ3ofLKWMGpg2YDRgo1XDnuJP2HRidQqwH4=;
-        b=B9DH6Gm+C1X6H3ks87B4mfBgcd9wrOAVOYx/XLoU3zt5slGPbI/pgo0jjo+yt4Nwdw
-         Wz85tdd0ojV9EgE3ccGgA5+2lkUmmnmrSYx+tpsSBbmdezCatTEAoP6pwSExWNvIUnQF
-         NQUKEFL8v0FM2Oj1S12koT0uc1vdPpxgJVUK7qSZxdk2yJcrBw5oXcG+jWjRh504m5jg
-         pSncjC1jPFGfNMAo2sZ6hA82ct9ONR47tX+iptXOqSoDjFZwOO2ZNUQ+eU+J6/y+IgZO
-         9r6QxDfl2C1Je6cforf+10ZtutDNe8LKpAkEm5JyiqFWQ8hsPZjSR20seimLstRlrm5B
-         JZpA==
+        bh=HqrOgwqdeyKlRqEiiRXs7cvS3neUx0UIcneX8OI5QMg=;
+        b=aQEWBEBwkqntI56A32yvU+TzYfrUGEtwR7LHvWnjZTTOCDLtIIfVp+1ArIfc1u8ycu
+         nAWWA1EhGy7NGJlFkIhps/7bNmHhsI5XR0Fa+jh0pIeXHrc2YDXYKMRHEyzYQh1ndUdu
+         lO/ZTN5HSPKgXqylaH86fwmg5304SXqqG/F/L0Iv4x15vle1MWkrNeRLNsCc6fmuRpQH
+         7RGWMk7EMITNDvtl9slESSt+htJ5vfpxV7qDOF5IvZNWOjRPUBqZhp+u0kV02cS4yaO2
+         wH3OicR9QYQPqk3zyhFv7IdTCs2A4ea94sCcRR52AWGylv01cQQp2jn04cNHi3yD4Ado
+         Lv4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708648987; x=1709253787;
+        d=1e100.net; s=20230601; t=1708648989; x=1709253789;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=jhSBUfusWJ3ofLKWMGpg2YDRgo1XDnuJP2HRidQqwH4=;
-        b=QeXQPh6XtecFGOUK2PzzDdy41YhRzNq+6jX1/s2Gkb3APyNX6T3liyT9+1d/41uzcV
-         cuLpV0vn6v7l9h2l3JB6gYCLaU3yZWI/lWxIwIJw5hoedPkfsroVuOr/Zy3FUGn+l4rL
-         ROeImY/8mYwXNtOociH6yhHWcqxlanumHJR9emJNJGFufI5JRgyw9pYpDNj/xkCA3k1f
-         8FmupiwZgIZBgvgzLIZm76/x9doVhWJJ7+K+NZR6pt7tPgTB0CigloLhgoFRZVROIEcd
-         2ov5+RiCzGDiM/b3TGBF0881e2XodHWKyCNxXMfzBWu/D51gF7ZkXcxGYIFMj8QU3piV
-         oM2w==
-X-Forwarded-Encrypted: i=1; AJvYcCWBgs5dHkLV8NwHVfEysl2YmPQXNYVJduuSYTyXE4IFSE8WdYsCDCs9sNcjnBpUu6hsxQJpY5B7Ap7VN4uh7HIABZ40MLc0uG6GK1vp
-X-Gm-Message-State: AOJu0YyJe8Kuxo0WcH14E1WrcRKzsCY9BGvgM/0DXGrtrGRjLwAN7LGo
-	1jdk173F9F4TbYEu+EDuI3XNuVmwohOONynk8tNsYrdTa+OI9X8SVXLqabPm7bRdHscTqCJdAj0
-	KKQ==
-X-Google-Smtp-Source: AGHT+IHIxuf373oGf69Al+lWSIf6Q+TRpWLvL/aYM1tJ8IvZSlPzsioXOjltEzRkvK0lvpvWJZPUowBn/iU=
+        bh=HqrOgwqdeyKlRqEiiRXs7cvS3neUx0UIcneX8OI5QMg=;
+        b=gJ1rjQGjDzFemARJxAhbB1J5JSYeqWhwLx6iuYoczA9019Z5sCIRmiDIvsO7/xJDAl
+         GRNgWlliwansSm38rzaCvlafdhOjjxBfMuoD3JYTpAXUMemoCqfEUxkH7xxR1w7EhNnS
+         g8Q31pzVE2G+D7V4mtkLBOU3JH7BKRZ/CSGijqxZroiBPdmPWxVhvTwZxuPmDO+3+QXz
+         6aIuPhW0FSwj6SdSW7URXloVmiZnZBytIJosfHc7mBK9JhsvUYIHi25IckOLqsPqAIor
+         f7/U1DkS1JvE6WpWkq/D/RZ3Lo8fQikE+HOYk0GE1JDPTpwICja4dnF/MRl8kcE8mK+v
+         f7Sw==
+X-Forwarded-Encrypted: i=1; AJvYcCWbKTYhq+qEmHFWOgSqb2GrPFB8ORQ2oNTiHCr0uIdKlQadtSjAwlKmAc4aqBkN2+mcitedapnqw9bg6QtJDgVMKLfZiKrFZ7/E6SyC
+X-Gm-Message-State: AOJu0Yyeq9uRbWZ/007A8IiK6dFxTHX/ej5yJwfob/B+zmrRobefqnwa
+	AsHsaLpnwnTWhHA2RFJ2U/kz7rdL4ilTNEwsKuTtOvM5zCgZ2PVz1HZDOXgUF0sy3laxcB4xc60
+	LKg==
+X-Google-Smtp-Source: AGHT+IHAocQThc2nDGuTHCVQAHxE7aFJD+GhXyIt2aJYre2j8M6mtpdSWTf/tdU8cZ1cYJDcvyTMlv2LL8I=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:22cd:b0:6e4:643e:e215 with SMTP id
- f13-20020a056a0022cd00b006e4643ee215mr24254pfj.3.1708648987517; Thu, 22 Feb
- 2024 16:43:07 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a05:6902:181f:b0:dcc:94b7:a7a3 with SMTP id
+ cf31-20020a056902181f00b00dcc94b7a7a3mr21587ybb.12.1708648989306; Thu, 22 Feb
+ 2024 16:43:09 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Thu, 22 Feb 2024 16:42:50 -0800
+Date: Thu, 22 Feb 2024 16:42:51 -0800
 In-Reply-To: <20240223004258.3104051-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,9 +75,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240223004258.3104051-1-seanjc@google.com>
 X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <20240223004258.3104051-4-seanjc@google.com>
-Subject: [PATCH v9 03/11] KVM: selftests: Add a macro to iterate over a
- sparsebit range
+Message-ID: <20240223004258.3104051-5-seanjc@google.com>
+Subject: [PATCH v9 04/11] KVM: selftests: Add support for allocating/managing
+ protected guest memory
 From: Sean Christopherson <seanjc@google.com>
 To: Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>, 
 	Oliver Upton <oliver.upton@linux.dev>, Anup Patel <anup@brainfault.org>, 
@@ -94,52 +94,162 @@ Cc: kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
 	Peter Gonda <pgonda@google.com>, Itaru Kitayama <itaru.kitayama@fujitsu.com>
 Content-Type: text/plain; charset="UTF-8"
 
-From: Ackerley Tng <ackerleytng@google.com>
+From: Peter Gonda <pgonda@google.com>
 
-Add sparsebit_for_each_set_range() to allow iterator over a range of set
-bits in a range.  This will be used by x86 SEV guests to process protected
-physical pages (each such page needs to be encrypted _after_ being "added"
-to the VM).
+Add support for differentiating between protected (a.k.a. private, a.k.a.
+encrypted) memory and normal (a.k.a. shared) memory for VMs that support
+protected guest memory, e.g. x86's SEV.  Provide and manage a common
+bitmap for tracking whether a given physical page resides in protected
+memory, as support for protected memory isn't x86 specific, i.e. adding a
+arch hook would be a net negative now, and in the future.
 
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Vishal Annapurve <vannapurve@google.com>
+Cc: Ackerley Tng <ackerleytng@google.com>
+cc: Andrew Jones <andrew.jones@linux.dev>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Michael Roth <michael.roth@amd.com>
+Reviewed-by: Itaru Kitayama <itaru.kitayama@fujitsu.com>
 Tested-by: Carlos Bilbao <carlos.bilbao@amd.com>
-Signed-off-by: Ackerley Tng <ackerleytng@google.com>
-[sean: split to separate patch]
+Originally-by: Michael Roth <michael.roth@amd.com>
+Signed-off-by: Peter Gonda <pgonda@google.com>
+Co-developed-by: Sean Christopherson <seanjc@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- .../testing/selftests/kvm/include/sparsebit.h | 20 +++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ .../selftests/kvm/include/kvm_util_base.h     | 25 +++++++++++++++++--
+ tools/testing/selftests/kvm/lib/kvm_util.c    | 22 +++++++++++++---
+ 2 files changed, 41 insertions(+), 6 deletions(-)
 
-diff --git a/tools/testing/selftests/kvm/include/sparsebit.h b/tools/testing/selftests/kvm/include/sparsebit.h
-index fb5170d57fcb..bc760761e1a3 100644
---- a/tools/testing/selftests/kvm/include/sparsebit.h
-+++ b/tools/testing/selftests/kvm/include/sparsebit.h
-@@ -66,6 +66,26 @@ void sparsebit_dump(FILE *stream, const struct sparsebit *sbit,
- 		    unsigned int indent);
- void sparsebit_validate_internal(const struct sparsebit *sbit);
+diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
+index d9dc31af2f96..a82149305349 100644
+--- a/tools/testing/selftests/kvm/include/kvm_util_base.h
++++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
+@@ -46,6 +46,7 @@ typedef uint64_t vm_vaddr_t; /* Virtual Machine (Guest) virtual address */
+ struct userspace_mem_region {
+ 	struct kvm_userspace_memory_region2 region;
+ 	struct sparsebit *unused_phy_pages;
++	struct sparsebit *protected_phy_pages;
+ 	int fd;
+ 	off_t offset;
+ 	enum vm_mem_backing_src_type backing_src_type;
+@@ -573,6 +574,13 @@ void vm_mem_add(struct kvm_vm *vm, enum vm_mem_backing_src_type src_type,
+ 		uint64_t guest_paddr, uint32_t slot, uint64_t npages,
+ 		uint32_t flags, int guest_memfd_fd, uint64_t guest_memfd_offset);
  
-+/*
-+ * Iterate over an inclusive ranges within sparsebit @s. In each iteration,
-+ * @range_begin and @range_end will take the beginning and end of the set
-+ * range, which are of type sparsebit_idx_t.
-+ *
-+ * For example, if the range [3, 7] (inclusive) is set, within the
-+ * iteration,@range_begin will take the value 3 and @range_end will take
-+ * the value 7.
-+ *
-+ * Ensure that there is at least one bit set before using this macro with
-+ * sparsebit_any_set(), because sparsebit_first_set() will abort if none
-+ * are set.
-+ */
-+#define sparsebit_for_each_set_range(s, range_begin, range_end)         \
-+	for (range_begin = sparsebit_first_set(s),                      \
-+	     range_end = sparsebit_next_clear(s, range_begin) - 1;	\
-+	     range_begin && range_end;                                  \
-+	     range_begin = sparsebit_next_set(s, range_end),            \
-+	     range_end = sparsebit_next_clear(s, range_begin) - 1)
++#ifndef vm_arch_has_protected_memory
++static inline bool vm_arch_has_protected_memory(struct kvm_vm *vm)
++{
++	return false;
++}
++#endif
 +
- #ifdef __cplusplus
+ void vm_mem_region_set_flags(struct kvm_vm *vm, uint32_t slot, uint32_t flags);
+ void vm_mem_region_move(struct kvm_vm *vm, uint32_t slot, uint64_t new_gpa);
+ void vm_mem_region_delete(struct kvm_vm *vm, uint32_t slot);
+@@ -836,10 +844,23 @@ const char *exit_reason_str(unsigned int exit_reason);
+ 
+ vm_paddr_t vm_phy_page_alloc(struct kvm_vm *vm, vm_paddr_t paddr_min,
+ 			     uint32_t memslot);
+-vm_paddr_t vm_phy_pages_alloc(struct kvm_vm *vm, size_t num,
+-			      vm_paddr_t paddr_min, uint32_t memslot);
++vm_paddr_t __vm_phy_pages_alloc(struct kvm_vm *vm, size_t num,
++				vm_paddr_t paddr_min, uint32_t memslot,
++				bool protected);
+ vm_paddr_t vm_alloc_page_table(struct kvm_vm *vm);
+ 
++static inline vm_paddr_t vm_phy_pages_alloc(struct kvm_vm *vm, size_t num,
++					    vm_paddr_t paddr_min, uint32_t memslot)
++{
++	/*
++	 * By default, allocate memory as protected for VMs that support
++	 * protected memory, as the majority of memory for such VMs is
++	 * protected, i.e. using shared memory is effectively opt-in.
++	 */
++	return __vm_phy_pages_alloc(vm, num, paddr_min, memslot,
++				    vm_arch_has_protected_memory(vm));
++}
++
+ /*
+  * ____vm_create() does KVM_CREATE_VM and little else.  __vm_create() also
+  * loads the test binary into guest memory and creates an IRQ chip (x86 only).
+diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+index a53caf81eb87..ea677aa019ef 100644
+--- a/tools/testing/selftests/kvm/lib/kvm_util.c
++++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+@@ -717,6 +717,7 @@ static void __vm_mem_region_delete(struct kvm_vm *vm,
+ 	vm_ioctl(vm, KVM_SET_USER_MEMORY_REGION2, &region->region);
+ 
+ 	sparsebit_free(&region->unused_phy_pages);
++	sparsebit_free(&region->protected_phy_pages);
+ 	ret = munmap(region->mmap_start, region->mmap_size);
+ 	TEST_ASSERT(!ret, __KVM_SYSCALL_ERROR("munmap()", ret));
+ 	if (region->fd >= 0) {
+@@ -1098,6 +1099,8 @@ void vm_mem_add(struct kvm_vm *vm, enum vm_mem_backing_src_type src_type,
+ 	}
+ 
+ 	region->unused_phy_pages = sparsebit_alloc();
++	if (vm_arch_has_protected_memory(vm))
++		region->protected_phy_pages = sparsebit_alloc();
+ 	sparsebit_set_num(region->unused_phy_pages,
+ 		guest_paddr >> vm->page_shift, npages);
+ 	region->region.slot = slot;
+@@ -1924,6 +1927,10 @@ void vm_dump(FILE *stream, struct kvm_vm *vm, uint8_t indent)
+ 			region->host_mem);
+ 		fprintf(stream, "%*sunused_phy_pages: ", indent + 2, "");
+ 		sparsebit_dump(stream, region->unused_phy_pages, 0);
++		if (region->protected_phy_pages) {
++			fprintf(stream, "%*sprotected_phy_pages: ", indent + 2, "");
++			sparsebit_dump(stream, region->protected_phy_pages, 0);
++		}
+ 	}
+ 	fprintf(stream, "%*sMapped Virtual Pages:\n", indent, "");
+ 	sparsebit_dump(stream, vm->vpages_mapped, indent + 2);
+@@ -2025,6 +2032,7 @@ const char *exit_reason_str(unsigned int exit_reason)
+  *   num - number of pages
+  *   paddr_min - Physical address minimum
+  *   memslot - Memory region to allocate page from
++ *   protected - True if the pages will be used as protected/private memory
+  *
+  * Output Args: None
+  *
+@@ -2036,8 +2044,9 @@ const char *exit_reason_str(unsigned int exit_reason)
+  * and their base address is returned. A TEST_ASSERT failure occurs if
+  * not enough pages are available at or above paddr_min.
+  */
+-vm_paddr_t vm_phy_pages_alloc(struct kvm_vm *vm, size_t num,
+-			      vm_paddr_t paddr_min, uint32_t memslot)
++vm_paddr_t __vm_phy_pages_alloc(struct kvm_vm *vm, size_t num,
++				vm_paddr_t paddr_min, uint32_t memslot,
++				bool protected)
+ {
+ 	struct userspace_mem_region *region;
+ 	sparsebit_idx_t pg, base;
+@@ -2050,8 +2059,10 @@ vm_paddr_t vm_phy_pages_alloc(struct kvm_vm *vm, size_t num,
+ 		paddr_min, vm->page_size);
+ 
+ 	region = memslot2region(vm, memslot);
++	TEST_ASSERT(!protected || region->protected_phy_pages,
++		    "Region doesn't support protected memory");
++
+ 	base = pg = paddr_min >> vm->page_shift;
+-
+ 	do {
+ 		for (; pg < base + num; ++pg) {
+ 			if (!sparsebit_is_set(region->unused_phy_pages, pg)) {
+@@ -2070,8 +2081,11 @@ vm_paddr_t vm_phy_pages_alloc(struct kvm_vm *vm, size_t num,
+ 		abort();
+ 	}
+ 
+-	for (pg = base; pg < base + num; ++pg)
++	for (pg = base; pg < base + num; ++pg) {
+ 		sparsebit_clear(region->unused_phy_pages, pg);
++		if (protected)
++			sparsebit_set(region->protected_phy_pages, pg);
++	}
+ 
+ 	return base * vm->page_size;
  }
- #endif
 -- 
 2.44.0.rc0.258.g7320e95886-goog
 
