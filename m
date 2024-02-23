@@ -1,86 +1,90 @@
-Return-Path: <linux-kernel+bounces-78573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B056E86153A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:08:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 813E286153B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:08:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64BA3286785
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:08:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B5E51F25351
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:08:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D9CF81ACB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B096081ACC;
 	Fri, 23 Feb 2024 15:08:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Vdj0i60F"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="CVsWHFzm"
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D11360260
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 15:08:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8A7D29AF
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 15:08:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708700889; cv=none; b=DwW6bVUxJbn1OjTH1wsTfIYV2NtsYHEE2xk3f6KACXgELRHfrgVysX5nheLPNRRBTUb8o26T7IzsYgVHIyRLRc9NFKj1qlH1tfrVfXbWGIKvgcm3IhCru+CqB72XtlB0fmJOBIQxkmOguMwfxPRcMW8nCBoDbS//TUzlnJcOTKA=
+	t=1708700889; cv=none; b=CM3LqP07E3gbLnyYjLXjGfw30ppWhqI+QGXO3B1sNxF/crEPt+8/hmyihTq+9EsPyeB4wtGA/wxcuirDgRcj4sNuKVqis4uYsdY/P1WHA65/ji12faVuSOQ8j80m/TD1lkCtBX3m/He6ENRDuczm0mEadk/3XZg3Ty5K9pr4Q+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708700889; c=relaxed/simple;
-	bh=skrSRwZuBvtdVUuRkNsweCyQLPd/DhiIpjJxrmh3Fk8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=a3F+Sb4UtdJNft0RcL+sXIpqQQ5OdpWMyvfgPloDVjAgdyNV14PnTuUvZ1BMb7/NvBMeNNizdJ/W/upHsz9PV6469mXwf1q9igODTdGLl+eclTpyNRf5/2FbUrSgSpeBq8yhavwAHtna/wtnZztDjdlTMSDvZBlJ5M5xz6mEWVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Vdj0i60F; arc=none smtp.client-ip=148.163.156.1
+	bh=Sov6ZXkWtBkWruu+5JsAXVtkAInsivzIlIrWhB/fdK4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Y35Y/rFAapnNr49StSCCGzqaHh+TbM8is6zeQODsuHk4nVkFvapMvJ2VlrSkK2fH5OvoCg/tuTEEJhEStvqOKV74ruWVFkayMERxDnxgBJN9AK8Y7UWg6GgNY/qnwHIL8nH91wwOLk+BXknSpdt6YdlLvxA2twYKlLUZCk9hYDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=CVsWHFzm; arc=none smtp.client-ip=148.163.156.1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41NF1KVq016417;
-	Fri, 23 Feb 2024 15:07:41 GMT
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41NEgamg017903;
+	Fri, 23 Feb 2024 15:07:44 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=QoIUJOIn9IVI6STldQBwBodmUw8MT6yN0RT2hGipzGk=;
- b=Vdj0i60Fy7w//OmraVDr4fsvsgBwHyYycm6orO9dX1FAgJs/tFXirqgDLm1uMPVRfuKc
- R6cD7+dqbtYdFYLQnYHrzzlw8fopAXIwwZMSWIhtrcv34WowQhDu1owqluNEl4tSH2vi
- 14EV7Jehl3cYjHZISZW33Agt6+/AFhWfqK8cCohnWrJ67h3t4RlTdsgEfNWk3QIeUaCp
- 4ZBz2bgMlsDONRAWJVT0Ga1f30vwlEhazYyyKEWmbcmu2t2wx9d2J3BWbqbpJKAXW+z1
- 09tohKeB8ZLhEwtvpOEWTE5Prr8XkQARQib9i13RHCMON+0NYSqOMAAShUUmlv5p2ueF Cg== 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=+Rgu1HCWPbClxoqHwxH9oS5K5pDAyvJB9bP93pSTws0=;
+ b=CVsWHFzmPLOZJvkPXe9Hl+CfNVn2UbWg6fJvAtJpKs74LvLQYD8MKrMAKwQs72JIIOVW
+ d2qxS1dZ8Suy8U983rNSTM2NLbSS73fFVorAHA/rFl+XFWrDT8ppkPjXkvhO12dROKuL
+ /mi8xkEd9EQ6/iaC5wUWUeZynP3ZhEmrnau6oVeaT8Xus0epof7K3A8cHTjVj23dz38W
+ ZWOejM8P7sB9Ua6C/97WTJN8xZDa9PubFA1COLuCm/OtOo5L/UJ+6uq575uiYnjgAtRU
+ fry3Yu3pkr3R1ToOF+sohRnxTXZn9Ry3sEMqFrmBWYMrJV6/DGbjgPEntd0gmAa5rUUU BA== 
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wew9j8r5y-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wewbyguf9-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 15:07:40 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41NF1XZZ019044;
-	Fri, 23 Feb 2024 15:07:39 GMT
+	Fri, 23 Feb 2024 15:07:44 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41NEhwv4023217;
+	Fri, 23 Feb 2024 15:07:43 GMT
 Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wew9j8r5m-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wewbygues-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 15:07:39 +0000
+	Fri, 23 Feb 2024 15:07:43 +0000
 Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41NDHEqs003671;
-	Fri, 23 Feb 2024 15:07:38 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wb74u6c4b-1
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41NDwuIi003623;
+	Fri, 23 Feb 2024 15:07:42 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wb74u6c4n-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 15:07:38 +0000
+	Fri, 23 Feb 2024 15:07:42 +0000
 Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41NF7XPm53870910
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41NF7b2Z64291144
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 23 Feb 2024 15:07:35 GMT
+	Fri, 23 Feb 2024 15:07:39 GMT
 Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0537220043;
-	Fri, 23 Feb 2024 15:07:33 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 1260F20043;
+	Fri, 23 Feb 2024 15:07:37 +0000 (GMT)
 Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3EE9B20040;
-	Fri, 23 Feb 2024 15:07:30 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 5F17220040;
+	Fri, 23 Feb 2024 15:07:34 +0000 (GMT)
 Received: from li-c1fdab4c-355a-11b2-a85c-ef242fe9efb4.ibm.com.com (unknown [9.43.125.115])
 	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 23 Feb 2024 15:07:30 +0000 (GMT)
+	Fri, 23 Feb 2024 15:07:34 +0000 (GMT)
 From: Shrikanth Hegde <sshegde@linux.ibm.com>
 To: mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org
 Cc: sshegde@linux.ibm.com, dietmar.eggemann@arm.com,
         linux-kernel@vger.kernel.org, nysal@linux.ibm.com,
         aboorvad@linux.ibm.com, srikar@linux.vnet.ibm.com, vschneid@redhat.com,
         pierre.gondois@arm.com, morten.rasmussen@arm.com, qyousef@layalina.io
-Subject: [PATCH 0/2] sched/fair: Limit access to overutilized
-Date: Fri, 23 Feb 2024 20:37:05 +0530
-Message-Id: <20240223150707.410417-1-sshegde@linux.ibm.com>
+Subject: [PATCH 1/2] sched/fair: Add EAS checks before updating overutilized
+Date: Fri, 23 Feb 2024 20:37:06 +0530
+Message-Id: <20240223150707.410417-2-sshegde@linux.ibm.com>
 X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20240223150707.410417-1-sshegde@linux.ibm.com>
+References: <20240223150707.410417-1-sshegde@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,83 +93,123 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: JE4Q5ghADXp5UIon3PUDDfxWZWydNAIb
-X-Proofpoint-GUID: JLw4Py0rjDGjPj3HjiXGzUpL3Y6U29Qk
+X-Proofpoint-GUID: 3BYzekx7VTsS-3SEOdnOvJOJyiN99qE1
+X-Proofpoint-ORIG-GUID: 9YcPV_8v9UEarWp5xexERSP0NL1KZ_ak
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-23_01,2024-02-23_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1011
- mlxscore=0 adultscore=0 spamscore=0 lowpriorityscore=0 phishscore=0
- mlxlogscore=868 bulkscore=0 suspectscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ malwarescore=0 priorityscore=1501 suspectscore=0 lowpriorityscore=0
+ impostorscore=0 clxscore=1015 mlxscore=0 bulkscore=0 spamscore=0
+ adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2311290000 definitions=main-2402230110
 
-When running a ISV workload on a large system (240 Cores, SMT8), it was
-observed from perf profile that newidle_balance and enqueue_task_fair
-were consuming more cycles. Perf annotate showed that most of the time
-was spent on accessing overutilized field of root domain.
+Overutilized field of root domain is only used for EAS(energy aware scheduler)
+to decide whether to do regular load balance or EAS aware load balance. It
+is not used if EAS not possible.
 
-Aboorva was able to simulate similar perf profile by making some
-changes to stress-ng --wait. Both newidle_balance and enqueue_task_fair
-consume close to 5-7%. Perf annotate shows that most of the cycles are spent
-in accessing rd,rd->overutilized field.
+Currently enqueue_task_fair and task_tick_fair accesses, sometime updates
+this field. In update_sd_lb_stats it is updated often.
+Which causes cache contention due to load/store tearing and burns
+a lot of cycles. Hence add EAS check before updating this field.
+EAS check is optimized at compile time or it is static branch.
+Hence it shouldn't cost much.
 
-perf profile:
+With the patch, both enqueue_task_fair and newidle_balance don't show
+up as hot routines in perf profile.
+
+6.8-rc4:
 7.18%  swapper          [kernel.vmlinux]              [k] enqueue_task_fair
 6.78%  s                [kernel.vmlinux]              [k] newidle_balance
++patch:
+0.14%  swapper          [kernel.vmlinux]              [k] enqueue_task_fair
+0.00%  swapper          [kernel.vmlinux]              [k] newidle_balance
 
-perf annotate of enqueue_task_fair:
-    1.66 :   c000000000223ba4:       beq     c000000000223c50 <enqueue_task_fair+0x238>
-         : 6789             update_overutilized_status():
-         : 6675             if (!READ_ONCE(rq->rd->overutilized) && cpu_overutilized(rq->cpu)) {
-   95.42 :   c000000000223ba8:       ld      r8,2752(r28)
-    0.08 :   c000000000223bac:       lwz     r9,540(r8)
-Debugging it further, in enqueue_task_fair:
-ld      r8,2752(r28) <-- loads rd
-lwz     r9,540(r8)   <-- loads rd->overutilized.
-Frequent write to rd in other CPUs causes load/store tearing and hence
-loading rd could take more time.
+While here, Fix updating overutilized as either SG_OVERUTILIZED or 0
+instead. Current code can make it 0, 1 or 2. This shouldn't alter the
+functionality.
 
-Perf annotate of newidle_balance:
-         : 12333            sd = rcu_dereference_check_sched_domain(this_rq->sd);
-   41.54 :   c000000000228070:       ld      r30,2760(r31)
-         : 12335            if (!READ_ONCE(this_rq->rd->overload) ||
-    0.07 :   c000000000228074:       lwz     r9,536(r9)
-Similarly, in newidle_balance,
-ld      r9,2752(r31) <-- loads rd
-lwz     r9,536(r9)   <-- loads rd->overload
-Though overutilized is not used in this function. The writes to overutilized
-could cause the load of overload to take more time. Both overload and
-overutilized are part of the same cacheline.
+Fixes: 2802bf3cd936 ("sched/fair: Add over-utilization/tipping point indicator")
+Signed-off-by: Shrikanth Hegde <sshegde@linux.ibm.com>
+---
+ kernel/sched/fair.c | 36 +++++++++++++++++++++++++-----------
+ 1 file changed, 25 insertions(+), 11 deletions(-)
 
-overutilized was added for EAS(Energy aware scheduler) to choose either
-EAS aware load balancing or regular load balance. Hence these fields
-should only be updated if EAS is active.
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 8e30e2bb77a0..9529d9ef2c5b 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6670,15 +6670,30 @@ static inline bool cpu_overutilized(int cpu)
+ 	return !util_fits_cpu(cpu_util_cfs(cpu), rq_util_min, rq_util_max, cpu);
+ }
 
-As checked, on x86 and powerpc both overload and overutilized share the
-same cacheline in rd. Updating overutilized is not required in non-EAS
-platforms.  Hence this patch can help reduce cache issues in such archs.
+-static inline void update_overutilized_status(struct rq *rq)
++static inline void update_rd_overutilized_status(struct root_domain *rd,
++						 int status)
+ {
+-	if (!READ_ONCE(rq->rd->overutilized) && cpu_overutilized(rq->cpu)) {
+-		WRITE_ONCE(rq->rd->overutilized, SG_OVERUTILIZED);
+-		trace_sched_overutilized_tp(rq->rd, SG_OVERUTILIZED);
++	if (sched_energy_enabled()) {
++		WRITE_ONCE(rd->overutilized, status);
++		trace_sched_overutilized_tp(rd, !!status);
++	}
++}
++
++static inline void check_update_overutilized_status(struct rq *rq)
++{
++	/*
++	 * overutilized field is used for load balancing decisions only
++	 * if energy aware scheduler is being used
++	 */
++	if (sched_energy_enabled()) {
++		if (!READ_ONCE(rq->rd->overutilized) && cpu_overutilized(rq->cpu))
++			update_rd_overutilized_status(rq->rd, SG_OVERUTILIZED);
+ 	}
+ }
+ #else
+-static inline void update_overutilized_status(struct rq *rq) { }
++static inline void check_update_overutilized_status(struct rq *rq) { }
++static inline void update_rd_overutilized_status(struct root_domain *rd,
++						 bool status) { }
+ #endif
 
-Patch 1/2 is the main patch. It helps in reducing the above said issue.
-Both the functions don't show up in the profile. With patch comparison is in
-changelog. With the patch stated problem in the ISV workload also got
-solved and throughput has improved. Fixes tag 2802bf3cd936 maybe removed
-if it causes issues with clean backport all the way. I didn't know what
-would be right thing to do here.
-Patch 2/2 is only code refactoring to use the helper function instead of
-direct access of the field, so one would come to know that it is accessed
-only in EAS. This depends on 1/2 to be applied first
+ /* Runqueue only has SCHED_IDLE tasks enqueued */
+@@ -6779,7 +6794,7 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+ 	 * and the following generally works well enough in practice.
+ 	 */
+ 	if (!task_new)
+-		update_overutilized_status(rq);
++		check_update_overutilized_status(rq);
 
-Thanks to Aboorva Devarajan and Nysal Jan K A for helping in
-recreating,debugging this issue and verifying the patch.
+ enqueue_throttle:
+ 	assert_list_leaf_cfs_rq(rq);
+@@ -10613,13 +10628,12 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
+ 		WRITE_ONCE(rd->overload, sg_status & SG_OVERLOAD);
 
-Shrikanth Hegde (2):
-  sched/fair: Add EAS checks before updating overutilized
-  sched/fair: Use helper function to access rd->overutilized
+ 		/* Update over-utilization (tipping point, U >= 0) indicator */
+-		WRITE_ONCE(rd->overutilized, sg_status & SG_OVERUTILIZED);
+-		trace_sched_overutilized_tp(rd, sg_status & SG_OVERUTILIZED);
++		update_rd_overutilized_status(rd,
++				(sg_status & SG_OVERUTILIZED) ? SG_OVERUTILIZED : 0);
+ 	} else if (sg_status & SG_OVERUTILIZED) {
+ 		struct root_domain *rd = env->dst_rq->rd;
 
- kernel/sched/fair.c | 50 +++++++++++++++++++++++++++++++++------------
- 1 file changed, 37 insertions(+), 13 deletions(-)
+-		WRITE_ONCE(rd->overutilized, SG_OVERUTILIZED);
+-		trace_sched_overutilized_tp(rd, SG_OVERUTILIZED);
++		update_rd_overutilized_status(rd, SG_OVERUTILIZED);
+ 	}
 
+ 	update_idle_cpu_scan(env, sum_util);
+@@ -12625,7 +12639,7 @@ static void task_tick_fair(struct rq *rq, struct task_struct *curr, int queued)
+ 		task_tick_numa(rq, curr);
+
+ 	update_misfit_status(curr, rq);
+-	update_overutilized_status(task_rq(curr));
++	check_update_overutilized_status(task_rq(curr));
+
+ 	task_tick_core(rq, curr);
+ }
 --
 2.39.3
 
