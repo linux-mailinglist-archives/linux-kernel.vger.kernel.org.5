@@ -1,71 +1,79 @@
-Return-Path: <linux-kernel+bounces-78444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78445-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F0C186139B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:06:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F88886139E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:09:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CF0E1C21A1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:06:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30CEEB21975
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:09:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B95C8002E;
-	Fri, 23 Feb 2024 14:06:28 +0000 (UTC)
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8700C8002E;
+	Fri, 23 Feb 2024 14:09:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=flyingcircus.io header.i=@flyingcircus.io header.b="i8RNYpJg"
+Received: from mail.flyingcircus.io (mail.flyingcircus.io [212.122.41.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFFE07E798;
-	Fri, 23 Feb 2024 14:06:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35E8876039;
+	Fri, 23 Feb 2024 14:08:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.122.41.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708697188; cv=none; b=VniMxR1ZHzBqzfM5SZKT1gVVGMbPae1OoUWgRL8ggoZQa0OR35ElcSjEovpo4vnM1Z2vvTlM5zxYDxkymmitU5e06AB9rfMp/Y4vBWa7wg3GDCnvf2Hk15BrxxyrXp8nHf2i1+giRLfHxHlYebjTd9Mlof+Gwbiz/kB1kTdZ7f8=
+	t=1708697339; cv=none; b=S8gjVUhvzCFOfB3ohzzXEE/3ORPh+19UMk79MIyhx4t8CT4mTkpHfYBmnUv9x0mmWZgWJX2hqj/xvaXh3b1yYMgiBfbby05oJCG9oAgt1oERFP6eBztC5xQS1QPoUbPanPGRFmgcuizmpcPxOtmEnXq6zwmTF9uJ+XoArGymiTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708697188; c=relaxed/simple;
-	bh=ScmL4w1XqacZnSkmwlBukyRTREwi2zf+jpOuAt0hDgw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cymVkypTiqtbZfOxuea8/QhbX+cJnEAnMcdf0ogcEmUWgMVgoD1ImJBHiBWaO+BApcsE7dOWNfhbs44vSjpWbLGxeeM4v4Yd1ZoHQd7ML8JxHDV6iE1AQyE23mkP9B8+fTvXxtSVLG9GjnLt2PZ7ZkkNxoNX5AN4aorGomIXUPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 6410468B05; Fri, 23 Feb 2024 15:06:19 +0100 (CET)
-Date: Fri, 23 Feb 2024 15:06:19 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>, Stephen Rothwell <sfr@canb.auug.org.au>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	David Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-	Chandan Babu R <chandanbabu@kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>
-Subject: Re: linux-next: build warning after merge of the xfs tree
-Message-ID: <20240223140619.GA30519@lst.de>
-References: <20240223153636.41358be5@canb.auug.org.au> <20240223063554.GA10956@lst.de> <20240223095509.29024d9d@coco.lan>
+	s=arc-20240116; t=1708697339; c=relaxed/simple;
+	bh=guPgw7BLwj7dlZ3/rIsnuD4FCPiualIsytSxFaptjZ0=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=QwlAs9en4s9m2DWsu5ApIueuQZiEtq6oM0h26enQ9nhfLA/kxXs/yKbAquw4VL/4IyYKjYmAxbFBtIfkOux0BDM4NMQO9sV+srEnKAH6KocPAVi7Pv2fhDf7OSxkcHj4vVsQgYCgUKRk6M5qZ8sZtKDAlCn2RCEEplsXp+slP24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=flyingcircus.io; spf=pass smtp.mailfrom=flyingcircus.io; dkim=pass (1024-bit key) header.d=flyingcircus.io header.i=@flyingcircus.io header.b=i8RNYpJg; arc=none smtp.client-ip=212.122.41.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=flyingcircus.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flyingcircus.io
+Content-Type: text/plain;
+	charset=utf-8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flyingcircus.io;
+	s=mail; t=1708697335;
+	bh=guPgw7BLwj7dlZ3/rIsnuD4FCPiualIsytSxFaptjZ0=;
+	h=Subject:From:In-Reply-To:Date:Cc:References:To;
+	b=i8RNYpJgaSpgZmxBL3kvwtslvBRS6HMlx2aqNHowiEe7h1S4vcE1z7V9mjWTlzT3Q
+	 ld7s3BnpYFBNHg4F+ygIhXVryHSa5ByhNIywCX2pCxkFDr8/HICAbe6xGnjsRe4Ral
+	 LEEEtbLNcxSlF5iZzcHNhBh37r9bxCkx8cZg1/zA=
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240223095509.29024d9d@coco.lan>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
+Subject: Re: nfs4_schedule_state_manager stuck in tight loop
+From: Christian Theune <ct@flyingcircus.io>
+In-Reply-To: <8B04DA70-ABEF-44A4-BBA7-60968E6CFA10@flyingcircus.io>
+Date: Fri, 23 Feb 2024 15:08:35 +0100
+Cc: linux-kernel@vger.kernel.org,
+ Linux regressions mailing list <regressions@lists.linux.dev>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <01DFAB47-5AFA-42C2-965B-5A14C331B0A6@flyingcircus.io>
+References: <8B04DA70-ABEF-44A4-BBA7-60968E6CFA10@flyingcircus.io>
+To: linux-nfs@vger.kernel.org,
+ chuck.lever@oracle.com,
+ jlayton@kernel.org
 
-On Fri, Feb 23, 2024 at 09:55:09AM +0100, Mauro Carvalho Chehab wrote:
-> but it is very weird for the ones reading the text file. So, what
-> we do instead for pointers is to escape the entire declaration, like:
-> 
-> 	``*inode``
-> 	``struct inode *inode``
-> 
-> I hope that helps.
+Addendum:
 
-In this case it says *foliop for an argument that is a double pointer
-and the comment refers to what it point to.  I'll see what I can do
-there, but the whole italic and bold thing seems entirely pointless
-for kerneldoc..
+I=E2=80=99ve checked kernel changelogs since then but didn=E2=80=99t =
+find anything that I could relate to this aside from *maybe* =
+dfda2a5eb66a685aa6d0b81c0cef1cf8bfe0b3c4 (rename(): fix the locking of =
+subdirectories) which mentions NFS but doesn=E2=80=99t describe the =
+potential impact.
+
+We=E2=80=99re running 5.15.148 now and as it=E2=80=99s been another 2 =
+months there might be the chance of another lockup in the near future ;)
+
+--=20
+Christian Theune =C2=B7 ct@flyingcircus.io =C2=B7 +49 345 219401 0
+Flying Circus Internet Operations GmbH =C2=B7 https://flyingcircus.io
+Leipziger Str. 70/71 =C2=B7 06108 Halle (Saale) =C2=B7 Deutschland
+HR Stendal HRB 21169 =C2=B7 Gesch=C3=A4ftsf=C3=BChrer: Christian Theune, =
+Christian Zagrodnick
 
 
