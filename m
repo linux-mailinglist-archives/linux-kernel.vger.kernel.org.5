@@ -1,99 +1,135 @@
-Return-Path: <linux-kernel+bounces-79185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02C5C861E96
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:14:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 270A1861E97
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:15:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7AD59B2211E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:14:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6C3A285855
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:15:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2D42149387;
-	Fri, 23 Feb 2024 21:14:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FD4E1474C0;
+	Fri, 23 Feb 2024 21:15:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gx27df/w"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tln3zlM6"
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F39431448DE;
-	Fri, 23 Feb 2024 21:14:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FA801474AF
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 21:15:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708722882; cv=none; b=qmYjKijV+1NGFg5sv5DvWooicxPjuPjyayQ0h6wf4mwKvui17lXjNdcFTNANE7Xv50htYCjJbgIHPchWsFqeS5Nnw/vw/shFLi7NiaswU0TePPxxYSZcurJDjDxVA0zMPF70N1GOozNLqC3IqV5IGkHTE3dmgCkhAoaOmpR9DkE=
+	t=1708722913; cv=none; b=FFnnv7uGkDuLLAhyy6PhJ7S5j1+KV66T4VWfkOKVhKoUhblPCccFcCpm0Wb9DaQpEi9RsMJoWYPaGX6hot7e5KGZB2aUOiL/9MUBYMRX/idRzg0qYB1UZG7F7HAi6iCWBlMIlrP9xJuY3eK14ZVC3X55Iz/32i9/NjRuNwFMQpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708722882; c=relaxed/simple;
-	bh=yl3CZeQj3q+MbODgHmMHwet9xKy0k4nfEARp/YeN2cs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=e2gy79U3b/CtwReM8Q9an/pQpvVtGn3Lsg899ihPJIrMIUyIhM0Yhe2cyEmOq9/XDF8FKdqwhtTjLW6/of4J9o5mT2J0tU1DiHR7LbLcpdpbaNJdT/okZPGYdveGKBTsQn9/oQT5NUxFCXH6ducSdQLrUqU4c2Z7OsEWZqeWVJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gx27df/w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFFFEC433F1;
-	Fri, 23 Feb 2024 21:14:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708722881;
-	bh=yl3CZeQj3q+MbODgHmMHwet9xKy0k4nfEARp/YeN2cs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Gx27df/wdNJMr8+1CuZZ+3TaPkaZVRZX1o3fo9UZJNOXzo55Zj/MwVpoDNj4qydMt
-	 yn6/WzHu0ZLTrOzllX1C9D5qukIg7QlPp/oN4H3kfJajOfiVhuSMOeypsxxT9RZcm9
-	 EZ3TNnMDrI/yu8KM8729XCHFGblfKl/ICHkc8LmpgBQvvEncAkn6ajDqHwGcDInvbH
-	 aO+GI34pX7KMAJxHNZcG5bl1hWOlwpMCGxhHRYsMxRu+XLj8PGUw5GMxwSFtCS8vve
-	 UY5XvC/8+posYtErQlydXsAa1JJg+OcN7dFuim7Q/I080httJhRD8Kf16u8oP4I8af
-	 2S578ThexXzVA==
-From: Namhyung Kim <namhyung@kernel.org>
-To: Adrian Hunter <adrian.hunter@intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	linux-perf-users@vger.kernel.org,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ian Rogers <irogers@google.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	linux-kernel@vger.kernel.org,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	Kajol Jain <kjain@linux.ibm.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Kaige Ye <ye@kaige.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	John Garry <john.g.garry@oracle.com>,
-	Jiri Olsa <jolsa@kernel.org>
-Cc: Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v3 1/3] perf stat: Pass fewer metric arguments
-Date: Fri, 23 Feb 2024 13:14:38 -0800
-Message-ID: <170872283702.3880577.15255792223602721084.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
-In-Reply-To: <20240221070754.4163916-1-irogers@google.com>
-References: <20240221070754.4163916-1-irogers@google.com>
+	s=arc-20240116; t=1708722913; c=relaxed/simple;
+	bh=+0WaxtfD1vqOSIN4udZF0ovEeRsC84FbHnJOBPb+zkE=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=R0sBkf7Gjf0cwX7jgjPKbKMCrCT0EpPU3RSxxBDbhgrMWxnjwSz26sFhW/mq2l2IqsFNoQU6kKXhkuY9yK4whfa3BFKZryWNwewRJ6JdLOabjyKVzpGJ/Ynat8n1NWyCAyxhDyjCv7nYo2ZqHamHobg/nv4XJwkG+FZSVsKCrX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tln3zlM6; arc=none smtp.client-ip=209.85.210.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6e4e8fae664so494555b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:15:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708722912; x=1709327712; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3ThK88zue8GNITt8rUbbFtND5su1NoXeP0vADQsaZtQ=;
+        b=tln3zlM6yedG2fyGP7nMd+jbK8gSWrs3EwusvIIDV+qjLeYUxfu9DUHz+q+7nHqfwN
+         FpbRBBJ15NnsWCjtjL6X91VsoBhkPGJhrPfWovTTqywDRn2FfLjngVa0n0lAJFm21ref
+         GUdYYH9Ytah76G6XNoAxN6d89KE3Z3c1QTTOQrIrxrt1wdaVMjxvDPzc/w8TRgvzM2nt
+         qlaiY9BGnm7nBESrhfHeBBr+5A9sYCfQR6k/0rVFSsI9xwyUQb1Hu0y+70gfy9v7zhRi
+         hJujoUNs5QaXBFT7lZuCot7nw6SuN6f/VJu7HibPwCsuFry5nO3Gd2EjyNljPJ3sQTEk
+         UwYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708722912; x=1709327712;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3ThK88zue8GNITt8rUbbFtND5su1NoXeP0vADQsaZtQ=;
+        b=DStCkCmmogH0cMs3x/kUdkMJ1fYhBn1Gdgv/ElLnjCWrlwMv3/yFgnO4vqTJSujvHt
+         MLjBQhCxD+gFLRYgtLw+rFwxoqiyfvZbERc0j9SrA6qyvwv4qB/os5GQZfhEAkDiF148
+         5q3pNl1QUA84bb2b9Ju9H8nC0qwtXLymEjvMnj2EhHMwk0PxSskZ4WxpZn/rAODXfxUV
+         kkGOZFGyuUL1pgoV52v6rgWPw2+xDbGcc6pazu3tUXh6dvKf/Rg9HbLCFATpSBmDhLDr
+         QnCj8IbpJS5hu1TW3nZN/wGcynDpmtgZk/fmwimTFt53dZE7b5ufB/rQPTks7wnyRvrz
+         gQ0g==
+X-Forwarded-Encrypted: i=1; AJvYcCWyvQcXFIrvcegCQfeMAV7PSdLfxdx8vxlnaokOZvC19cjZupHvX3RNToaacltqkjq76RU209hTXboaZ4Cy2/TG5n9KVdbk4bCEukTN
+X-Gm-Message-State: AOJu0YyK3b5Dgu/hPDsO7ZvusQSrh7nFd5pAeul2I7rG3hb0kCFZKudz
+	s2VBeK8nikywlXkVFnV6AzYuHyH9PQ1gaty4zHVVJLYDaaDb71dEOqV5FaqC0E9iymYgtQf/bUi
+	06w==
+X-Google-Smtp-Source: AGHT+IFnRqQ9Ip4giF4SYFt4PQige1puzsn+4jMkz+howHVeOccb0ece5cfhr31wlJ/8Rq8OhiyjDY+RjPA=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:3c86:b0:6e4:8b79:f5c6 with SMTP id
+ lm6-20020a056a003c8600b006e48b79f5c6mr59831pfb.5.1708722911728; Fri, 23 Feb
+ 2024 13:15:11 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date: Fri, 23 Feb 2024 13:15:08 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
+Message-ID: <20240223211508.3348529-1-seanjc@google.com>
+Subject: [GIT PULL] KVM: x86: MMU(ish) fixes for 6.8
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Sean Christopherson <seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 20 Feb 2024 23:07:52 -0800, Ian Rogers wrote:
-> Pass metric_expr and evsel rather than specific variables from the
-> struct, thereby reducing the number of arguments. This will enable
-> later fixes.
-> 
-> To reduce the size of the diff, local variables are added to match the
-> previous parameter names. This isn't done in the case of "name" as
-> evsel->name is more intention revealing. A whitespace issue is also
-> addressed.
-> 
-> [...]
+Two more MMU-related fixes for 6.8.  The first, and worst, fixes a data
+corruption bug during live migration due to KVM failing to mark a memslot
+dirty when emulating an atomic access.  Luckily, our userspace caught the
+corruption during checksumming after the final pause, but I've no idea if
+QEMU-based VMs have such protection.
 
-Applied to perf-tools-next, thanks!
+The second fixes a long-standing, but recently exposed, issue where yielding
+mmu_lock to vCPUs attempting to fault in memory that is _currently_ being
+zapped/modified can bog down the invalidation task due it constantly yielding
+to vCPUS (which end up doing nothing).
 
-[1/3] perf stat: Pass fewer metric arguments
-      commit: eee41e6b287e2adfefbe3b6fc80c66097c076f89
-[2/3] perf metrics: Compute unmerged uncore metrics individually
-      commit: a59fb796a36bb6c2b7e6e256a9e5f9ba18109937
-[3/3] perf stat: Fix metric-only aggregation index
-      commit: bafd4e75c1ac5a9da0aec5c7c52c7a72613a0cf3
+The following changes since commit 9895ceeb5cd61092f147f8d611e2df575879dd6f:
 
-Best regards,
--- 
-Namhyung Kim <namhyung@kernel.org>
+  Merge tag 'kvmarm-fixes-6.8-2' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into HEAD (2024-02-16 12:02:38 -0500)
+
+are available in the Git repository at:
+
+  https://github.com/kvm-x86/linux.git tags/kvm-x86-fixes-6.8-2
+
+for you to fetch changes up to d02c357e5bfa7dfd618b7b3015624beb71f58f1f:
+
+  KVM: x86/mmu: Retry fault before acquiring mmu_lock if mapping is changing (2024-02-23 10:14:34 -0800)
+
+----------------------------------------------------------------
+KVM x86 fixes for 6.8, round 2:
+
+ - When emulating an atomic access, mark the gfn as dirty in the memslot
+   to fix a bug where KVM could fail to mark the slot as dirty during live
+   migration, ultimately resulting in guest data corruption due to a dirty
+   page not being re-copied from the source to the target.
+
+ - Check for mmu_notifier invalidation events before faulting in the pfn,
+   and before acquiring mmu_lock, to avoid unnecessary work and lock
+   contention.  Contending mmu_lock is especially problematic on preemptible
+   kernels, as KVM may yield mmu_lock in response to the contention, which
+   severely degrades overall performance due to vCPUs making it difficult
+   for the task that triggered invalidation to make forward progress.
+
+   Note, due to another kernel bug, this fix isn't limited to preemtible
+   kernels, as any kernel built with CONFIG_PREEMPT_DYNAMIC=y will yield
+   contended rwlocks and spinlocks.
+
+   https://lore.kernel.org/all/20240110214723.695930-1-seanjc@google.com
+
+----------------------------------------------------------------
+Sean Christopherson (2):
+      KVM: x86: Mark target gfn of emulated atomic instruction as dirty
+      KVM: x86/mmu: Retry fault before acquiring mmu_lock if mapping is changing
+
+ arch/x86/kvm/mmu/mmu.c   | 42 ++++++++++++++++++++++++++++++++++++++++++
+ arch/x86/kvm/x86.c       | 10 ++++++++++
+ include/linux/kvm_host.h | 26 ++++++++++++++++++++++++++
+ 3 files changed, 78 insertions(+)
 
