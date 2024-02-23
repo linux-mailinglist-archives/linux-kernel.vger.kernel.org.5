@@ -1,158 +1,136 @@
-Return-Path: <linux-kernel+bounces-78628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EC74861611
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:41:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8AA2861615
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:41:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CCDC1C21B47
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:41:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7412D28211E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:41:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 533D886151;
-	Fri, 23 Feb 2024 15:39:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="I5S+M6Rf"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7925882879;
+	Fri, 23 Feb 2024 15:41:38 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1E9985933;
-	Fri, 23 Feb 2024 15:39:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F35682863
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 15:41:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708702784; cv=none; b=aq93YkAK1XLGkH2q/2yFTnVoS+EWAPwQv3NuQTlAyy2VP+vKLI3PcEEg4XjvQn8haPUtPaEnPgENitYsD8hqVC1R7Oe/Nl7CquEVUUOQ0umV2yh4FA4IrIkpNKKlFDmCn9Ym4I5eoUeqiGRlWKTF2TWGpoToQPGou17xoTsLli8=
+	t=1708702898; cv=none; b=s6F3useJEOKH1FavtJxqox++x7z1T0ASTVGU5tAQrRxp8tMGE63aoTJYvFejgWlVw0ze8fzLKaVsOCrkYy/6oAscSAjYpSOqiRVl0Y5nvOEMcBqChCjCtAQ5RXHq+LK7VVabJcS0SKpPAwIq4Zs7InaYZ+tALZjxaR7Q4P9SWDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708702784; c=relaxed/simple;
-	bh=Bh7hbPA2pcr3mgdNggsUQJwd3UKt27/rsubwwczdt2A=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=twinIAgT0rSZkbD8Fjh8nNiyVyixKpG5LKxjg4HhxPUskC5UfgSro15ggOnnN9TUE/AQ3ueG8jWD7J9DGIpRhTZq74RaALiAIwarDK9MXAdw3MA7gjiGI50ECXsTXCUlM/ECzd9bSSixReDjoCdsMruIQ3KLAD3mpJx+MgnSCK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=I5S+M6Rf; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41NEYfo0013056;
-	Fri, 23 Feb 2024 15:39:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:date:subject:mime-version:content-type
-	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=XFL
-	GLGr7l0kmpJUigyFMep8rypd1smZcrvTcwKTqVJw=; b=I5S+M6RfTD+3Ws6wvr2
-	ayNtVrXbVPT2vg7eM8DulNMKVlH3KaqI52SUvt5KXtnEGXe66NE47UjaR+43qMFn
-	j7mzrVE3JFhp7D9Wruyw5vcJkKAIc1DkrixGWvUbq6RvU7kgrbPySSTFTRzm4Qm9
-	wsdz6PUVPf2TuQZ010lDQS+V9BqnhW2s7C82/5NAo2l8gzw8ytXKdIXDTbPlGxqt
-	zXyY+o/bBGqUPhGAZuClGaj1T7SZ4/2zLbfD0g/dIppJUT2NRTIL/MFmX5UAcyE2
-	/cu28BQosS63Au5aiaHSYZgFO7GoLi9B4Tt+7ovt0vIH1EVys5uujpTcLQ1DBOfA
-	ODQ==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wew8c051p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 15:39:32 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41NFdVFb029057
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 15:39:31 GMT
-Received: from [169.254.0.1] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 23 Feb
- 2024 07:39:31 -0800
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-Date: Fri, 23 Feb 2024 07:39:31 -0800
-Subject: [PATCH] wifi: ath11k: constify MHI channel and controller configs
+	s=arc-20240116; t=1708702898; c=relaxed/simple;
+	bh=ISOpelRzcKba5NgCuFuc5tbG/MHEVgcIyOM8/9vVlnQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PNue3PkZ656iYfLz4VJkCEbiV9ZM4/HbMkpKFvPkoHepTarcsTWhsbpUG1tf00jN5QRgltTjHmksFplf7jZq2ol9uF7VR5OOofqHZsPZdLUudU5ybGAP+HCveBiwyqG+UioyQZHnpj3aA6tDSjE6cz1t77Htvylgd7GZWs9uIj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from dude02.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::28])
+	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
+	(envelope-from <m.felsch@pengutronix.de>)
+	id 1rdXg3-0001um-4d; Fri, 23 Feb 2024 16:41:31 +0100
+From: Marco Felsch <m.felsch@pengutronix.de>
+To: srinivas.kandagatla@linaro.org,
+	miquel.raynal@bootlin.com,
+	michael@walle.cc
+Cc: linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: [PATCH] nvmem: core: add sysfs cell write support
+Date: Fri, 23 Feb 2024 16:41:29 +0100
+Message-Id: <20240223154129.1902905-1-m.felsch@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240223-mhi-const-wifi-ath11k-v1-1-51b9d42d2639@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIADK82GUC/4WNQQ7CIBBFr9LM2jEMFUVX3sN0QYDKxBQUatU0v
- bvYC7h8L/nvz1B8Zl/g1MyQ/cSFU6xAmwZsMPHqkV1lkELuhJQSh8BoUywjvrhnNGMguqEzwhh
- x1G6vW6jbe/Y9v9fupascuIwpf9abiX72X3EiJNS9InUgsq1y58eTLUe7tWmAblmWL7VGI/G8A
- AAA
-To: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <quic_jjohnson@quicinc.com>
-CC: <ath11k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-X-Mailer: b4 0.13.0
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Pkx6RwKwzJvO0-VCFPk-7A6mA1abSfW8
-X-Proofpoint-GUID: Pkx6RwKwzJvO0-VCFPk-7A6mA1abSfW8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-23_01,2024-02-23_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
- adultscore=0 mlxscore=0 suspectscore=0 malwarescore=0 priorityscore=1501
- spamscore=0 clxscore=1015 mlxlogscore=999 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402230112
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:1101:1d::28
+X-SA-Exim-Mail-From: m.felsch@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Unlike the event configuration which can be modified by MHI, the
-channel and controller configurations are expected to be const. And
-since they are not modified locally, constify them to prevent runtime
-modification.
+Add the sysfs cell write support to make it possible to write to exposed
+cells from sysfs as well e.g. for device provisioning. The write support
+is limited to EEPROM based nvmem devices and to nvmem-cells which don't
+require post-processing.
 
-No functional changes, compile tested only.
-
-Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
 ---
- drivers/net/wireless/ath/ath11k/mhi.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/nvmem/core.c | 43 ++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 42 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath11k/mhi.c b/drivers/net/wireless/ath/ath11k/mhi.c
-index b53659145fcf..7f566d9106fc 100644
---- a/drivers/net/wireless/ath/ath11k/mhi.c
-+++ b/drivers/net/wireless/ath/ath11k/mhi.c
-@@ -20,7 +20,7 @@
- #define MHI_TIMEOUT_DEFAULT_MS	20000
- #define RDDM_DUMP_SIZE	0x420000
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index 980123fb4dde..b1f86cb431ef 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -336,6 +336,40 @@ static ssize_t nvmem_cell_attr_read(struct file *filp, struct kobject *kobj,
+ 	return read_len;
+ }
  
--static struct mhi_channel_config ath11k_mhi_channels_qca6390[] = {
-+static const struct mhi_channel_config ath11k_mhi_channels_qca6390[] = {
- 	{
- 		.num = 0,
- 		.name = "LOOPBACK",
-@@ -102,7 +102,7 @@ static struct mhi_event_config ath11k_mhi_events_qca6390[] = {
- 	},
- };
++static ssize_t nvmem_cell_attr_write(struct file *filp, struct kobject *kobj,
++				     struct bin_attribute *attr, char *buf,
++				     loff_t pos, size_t count)
++{
++	struct nvmem_cell_entry *entry;
++	struct nvmem_cell *cell;
++	int ret;
++
++	entry = attr->private;
++
++	if (!entry->nvmem->reg_write)
++		return -EPERM;
++
++	if (pos >= entry->bytes)
++		return -EFBIG;
++
++	if (pos + count > entry->bytes)
++		count = entry->bytes - pos;
++
++	cell = nvmem_create_cell(entry, entry->name, 0);
++	if (IS_ERR(cell))
++		return PTR_ERR(cell);
++
++	if (!cell)
++		return -EINVAL;
++
++	ret = nvmem_cell_write(cell, buf, count);
++
++	kfree_const(cell->id);
++	kfree(cell);
++
++	return ret;
++}
++
+ /* default read/write permissions */
+ static struct bin_attribute bin_attr_rw_nvmem = {
+ 	.attr	= {
+@@ -458,13 +492,20 @@ static int nvmem_populate_sysfs_cells(struct nvmem_device *nvmem)
  
--static struct mhi_controller_config ath11k_mhi_config_qca6390 = {
-+static const struct mhi_controller_config ath11k_mhi_config_qca6390 = {
- 	.max_channels = 128,
- 	.timeout_ms = 2000,
- 	.use_bounce_buf = false,
-@@ -113,7 +113,7 @@ static struct mhi_controller_config ath11k_mhi_config_qca6390 = {
- 	.event_cfg = ath11k_mhi_events_qca6390,
- };
- 
--static struct mhi_channel_config ath11k_mhi_channels_qcn9074[] = {
-+static const struct mhi_channel_config ath11k_mhi_channels_qcn9074[] = {
- 	{
- 		.num = 0,
- 		.name = "LOOPBACK",
-@@ -195,7 +195,7 @@ static struct mhi_event_config ath11k_mhi_events_qcn9074[] = {
- 	},
- };
- 
--static struct mhi_controller_config ath11k_mhi_config_qcn9074 = {
-+static const struct mhi_controller_config ath11k_mhi_config_qcn9074 = {
- 	.max_channels = 30,
- 	.timeout_ms = 10000,
- 	.use_bounce_buf = false,
-@@ -384,7 +384,7 @@ int ath11k_mhi_register(struct ath11k_pci *ab_pci)
- {
- 	struct ath11k_base *ab = ab_pci->ab;
- 	struct mhi_controller *mhi_ctrl;
--	struct mhi_controller_config *ath11k_mhi_config;
-+	const struct mhi_controller_config *ath11k_mhi_config;
- 	int ret;
- 
- 	mhi_ctrl = mhi_alloc_controller();
-
----
-base-commit: 3ab6aff5793c3c7bdf6535d9b0024544a4abbdd5
-change-id: 20240222-mhi-const-wifi-ath11k-da0aa098d683
+ 	/* Initialize each attribute to take the name and size of the cell */
+ 	list_for_each_entry(entry, &nvmem->cells, node) {
++		umode_t mode = nvmem_bin_attr_get_umode(nvmem);
++
++		/* Limit cell-write support to EEPROMs at the moment */
++		if (entry->read_post_process || nvmem->type != NVMEM_TYPE_EEPROM)
++			mode &= ~0222;
++
+ 		sysfs_bin_attr_init(&attrs[i]);
+ 		attrs[i].attr.name = devm_kasprintf(&nvmem->dev, GFP_KERNEL,
+ 						    "%s@%x", entry->name,
+ 						    entry->offset);
+-		attrs[i].attr.mode = 0444;
++		attrs[i].attr.mode = mode;
+ 		attrs[i].size = entry->bytes;
+ 		attrs[i].read = &nvmem_cell_attr_read;
++		attrs[i].write = &nvmem_cell_attr_write;
+ 		attrs[i].private = entry;
+ 		if (!attrs[i].attr.name) {
+ 			ret = -ENOMEM;
+-- 
+2.39.2
 
 
