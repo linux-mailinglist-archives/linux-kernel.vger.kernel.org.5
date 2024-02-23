@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-78743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78742-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9277D86182C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:39:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F09A86182A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:39:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D4E0B2522B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:39:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41E62B23706
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:39:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9067212BE98;
-	Fri, 23 Feb 2024 16:39:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCFE412A167;
+	Fri, 23 Feb 2024 16:39:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="tPjW3FS2"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="Fz5UPeMu"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A738012880E;
-	Fri, 23 Feb 2024 16:39:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0715C82D74;
+	Fri, 23 Feb 2024 16:39:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708706359; cv=none; b=CZF5h5jSHR4YJC5YDqrICiRXIRww6PKjvfNtvNLODN0NjTfRICUbOS7we148/Fi5iVY3hUauEdjB9LVN7HZ58jrz6LgC0usFLGuG2S/9PcQgvJSgKERMYPC14C+QZwvvO2toDc5BjLI7+jjbyhpsG5idlo81Fg1dvuumLCHMGGg=
+	t=1708706359; cv=none; b=MK72e0ocHaIY4fXKj1xVfxLnS1deeoMYxP2JapMxxP50XS6JuLgxsthyBRa9DCkxEe+W2IzZRkd7EHdkDhBsN57UoEgw6QHzIybmbdSrNg2D4m5NzOQ/NHN+MCtWeNA8z8Eq06lxqsakfgW259IZgREMBcY3CuJCXMB2uCtl5Jc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708706359; c=relaxed/simple;
-	bh=sB+n4etd/gtVhOjMb5MrARpzVq6Ad9vcYeHKS2dl2jE=;
+	bh=Tp+JT9YYfHOzAPbMml4VpkAxfEnq7R4BcbZtIE6tpTw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TN0jIjS/Le1Kn0nGz+iGTclQdMreltVdtP8slh2pbgqyNADryfVgbgD+jaS+ptZohsEtT5aEpBPcnfnTaXdhoEC6INwhsjZnP5Efbhge/xt7XfzfyRun+0CgTA6549bUyjN54QnoWiNVghuPjMfTKohgBnAcfNrWI76ntxkRYao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=tPjW3FS2; arc=none smtp.client-ip=212.227.17.22
+	 MIME-Version; b=ZbWF+rFdcq3J1OnGmG+DkrITshtWUDuL5jgB2KXUIQFKWF+SW+oNvLz7pAmUeUQfpm9ZcIaapm99+uSpOSI0Yp4/45z4pQe236lG3qLmy4KZGcq1LYqrKQsbRCgx7QGLDyR5UPfjOplQiminfuLdVVwxtd3exrFJx8OWNl99j0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=Fz5UPeMu; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1708706346; x=1709311146; i=w_armin@gmx.de;
-	bh=sB+n4etd/gtVhOjMb5MrARpzVq6Ad9vcYeHKS2dl2jE=;
+	t=1708706347; x=1709311147; i=w_armin@gmx.de;
+	bh=Tp+JT9YYfHOzAPbMml4VpkAxfEnq7R4BcbZtIE6tpTw=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
 	 References;
-	b=tPjW3FS2Wcx0FFaNwOzqZaUlciLQ8HKYlR40JUHn7ffwlWRmrqMUnhN+M3rqLRwY
-	 LjnDJ/E7pjN073KYIA/QxjKrxmemB2sre9FzMjg8AsnntsAaGeKwDyITtikr5EfzJ
-	 tIM2ltHVw+frZ9dRHBR6NjkJEafcCNxJgrrUqOj9A8eqnl+luTRV2Ns2ITmtjJuza
-	 1r0ZgfPzmpeVj3Gcah9+tltPplw2wJlfAMM6m+5IgqASUx1eUv7RRnylNM4U6O+V0
-	 xjkhXMmsLAKTKRCOg4RihBLnSx7s04xP1dOLN0Ng+fqpe64UcKaMOEd71zFcCdJCQ
-	 YhEnVV61ZLYXE95Mfg==
+	b=Fz5UPeMuXNv5QzNDMfJu4x4KNgOMzSN4Vf+BmJ6usglyr2bIVcVKMWjpOWkpCks0
+	 fI1b9G6AayYpueC56lRyIDukxB5s6REyzi5E0aqmsP19xnNeHE+29W+xz0c3D0z9E
+	 EwUEsPPYPUEWWzjOZ5tTq5kcTWXALp7qoGNPatudUSaSJg1xvAC6cgTeKEZ2KalZH
+	 7EXm1123v5yDqYBShezn7fuJWeOocNi4vPdmvZkpESInm7bn8Iw3qEK38GZF7Qen4
+	 fBXIkGcv/UB8ljb0SlAookmEeIjV6TKgbn3MwTbLgRsKqjdF9pbIHsF0jC7Um/hga
+	 nwja84hPH/dVz2m3FQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1MiJVG-1r1UXU00RC-00fSdt; Fri, 23 Feb 2024 17:39:06 +0100
+ (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1MvsEx-1qoTzY1EyF-00sxUm; Fri, 23 Feb 2024 17:39:07 +0100
 From: Armin Wolf <W_Armin@gmx.de>
 To: Shyam-sundar.S-k@amd.com,
 	mika.westerberg@linux.intel.com
@@ -53,9 +53,9 @@ Cc: sathyanarayanan.kuppuswamy@linux.intel.com,
 	ilpo.jarvinen@linux.intel.com,
 	platform-driver-x86@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/3] platform/x86/amd/pmf: Do not use readl() for policy buffer access
-Date: Fri, 23 Feb 2024 17:39:00 +0100
-Message-Id: <20240223163901.13504-2-W_Armin@gmx.de>
+Subject: [PATCH v2 3/3] platform/x86: intel_scu_ipcutil: Make scu static
+Date: Fri, 23 Feb 2024 17:39:01 +0100
+Message-Id: <20240223163901.13504-3-W_Armin@gmx.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240223163901.13504-1-W_Armin@gmx.de>
 References: <20240223163901.13504-1-W_Armin@gmx.de>
@@ -66,62 +66,55 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:xJrTW73+XmPgXT0JmOHX3IY9eRW5w4Hf+pwHGtsT1qCACiR8frN
- gTPS+G+Ay6bbBk3+zTVHcg1MOaS3Ns6RNlUb/ZJV4onO1PXadopumSXTDueKSMNo4Yiun1S
- Vmzq1jqKjnxjCk+3UrdI4A04HvEpsibH/dJY4GiFdCwwlhxUnb+z2bSlymEbsJQZqMoD4Xd
- IjulV72aNEjn8Z6RrmqQw==
+X-Provags-ID: V03:K1:lTG5s8N4IywScvenWJgM5TMMrBm9ZKnIeQN06JuVGNny2sW8kex
+ kWoqwXNAWyFVl+CPrC5FrHxJ16MxancwqIfVx0jcbgO2VZLiQTqxVM2X/25xvsQ+Vh87gJj
+ P+AOc4ZytxvkRl7/eKq6ePewBL7xIZz/1+XqDgl5AjSkcFTk3wK6hT2GGD+Mg3QbKQUaYer
+ DHy+BaoPrSJ+vSCC8he7g==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:MzZBuO2b4+E=;mfb/AwrUHrNDFLCyDSqO9D2HeKk
- OkAkJEtvZjiRdsq86qFYfJIIgjMXG8rx3zuQ5KNISyIngYtgG1m2KPV1jdeMrMxrBmNFHDg99
- DhAbXCI7EnW8t4uc3erciDda0hY0J891f7mWFzRODgJUatqC6s0CoMt+/vOlqQLnQxSHoDgKh
- cgcos0fy4JdS/ysooV7gSONuLTvDJ6rvm4RMTKitKLgzsPINDrHytVsT2K3oy5Is+yGBlchiw
- lkDQwIMFUbt++Hu4bgyr1eowr6/FI6FUjja8CS6PYjs7Trh3jaTNZ7EV5IfV4mEHlGEGY5hCe
- AK/thW8PEUIpgdR05hmFejvPhd/mrWy4SkD2evwJvUe5+Uglnjzp+HeKht1B0MjsNB6eaUcz6
- Huo91B6WHoQ8OVoez8ldTkusElZ3kNrbH/XSzbRLv4W5AcOpV/7QmGvckKt/5PzX3hyo2FI4t
- DFcm+xDBI7F1VO10Z2lpe5pRN1/++JubrnYqj6BfN6Tm+JCSogK5ZrmUOmMwwFDLADhcdYQ+F
- x+najwzwNqQHv9wgKKNA0hsX7oGbPL2tBlnYFsqhW6cgtrZe8pcwbxeJZnJx2oDWX6GCHvGvc
- YYBmNRoP0qqieuLqz0u1VmJqtC2nFMWY0bJXQn3+setmcI+CN+eJ6r+wyJkAmjBR482suxXG1
- k7Vxfus1HiIbMMo8n3qJU3fBhn4JjowcCPVP3zjOas8B/MqDxXtwNEmOU9Pl2Y9D7p5tKeQus
- uWViZwi+7vQiIo/uOcPIrYwzI/SSBP8KjBaZoxvmmhJzANF7ISNy3947jLAOM1F5qrSltm93G
- sG30GtBUKZ2z6jVL9/XpNAhyO4rz1eLKsIlVrQq+4EuxU=
+UI-OutboundReport: notjunk:1;M01:P0:kE0PH3YImSY=;+aTDFTGVvwEGGX00nQM22OmknxE
+ MgbFC2VaFcSUlCbkvtz+EIhWQyx8IGfjDyIIB54BuDgEHlk+N6jClQnvbW6JHm398WFztdElm
+ AsQXmC380Mo99lxUpx/vZI+aL/dvMoJRB57TV/72ze3FN05agFr5gfcPAMFMDkh6w7imXMuas
+ E7VqE1JRzFzC6MVreFbFqgFQcYWpPPp/GTiKnYCp0yffecaU3kVQKE/v4J9RbB764ZrULsnEI
+ bJu3CKhZstdz0RG2ezgMkLmeXbpYLAOE8uLiWfyEuxFSVyh1dtN6ygGEU5Ah5iCoBpHy2bZ9T
+ s5CBIr7OFIpjmpAzpJi0WCLvllXmTd1Q8Hf8ICVjTH2Hiuj8NLP1vKu9WP8hNCbqf3zAuijjI
+ 62gmsO9Ro1nywLTSTQMaC39AojvCsy2KNitysm+CrTjqJo+eIWNTq9b38jUFAP5U84yfMoFoF
+ Z6SpgjJf9C3edIctcd3q1a1/8mg5rBo4xKxT92ejzNPCKj9vyA9bhuo2o40mSrT8i/cWWuDbC
+ ieBRVOh8m9n15Ju5r9HLCEoys1rz3vCdo/XtOC6Bi6TDAqhCQysmrCJoHXDf8Bjp11BbBF8Kc
+ nV8B+0uIUD6GogbGFw72ipK6iJNNYXZydnSi/D4gXIDlei0Kln4YboymSV57oSA4MxkaxXoOg
+ J0KNw2YEwfoZ4ZKfeTxur5EALLjd8MMpsJ53jw2z/WaC2dd2ZfIKbc/Np5uwR5CHtuG8CJMa6
+ 5zMhguwQgJV8Nv2rhQ+aj3/wIQVHP1NUa5fjNANk9K7X2Bx8rJgPOyT2fs5F46Ac+bnmx0pkP
+ Uq4xwvJhDKQanZRGwGIOocScA+WSpQy3o3/Aj+hHxaUL0=
 
-The policy buffer is allocated using normal memory allocation
-functions, so readl() should not be used on it.
-
-Use get_unaligned_le32() instead.
+The variable is only used internally and has no external users,
+so it should me made static.
 
 Compile-tested only.
 
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.=
+intel.com>
 Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 =2D--
- drivers/platform/x86/amd/pmf/tee-if.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Changes since v1:
+- remove Fixes tag
+- add Reviewed-by tag
+=2D--
+ drivers/platform/x86/intel_scu_ipcutil.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/platform/x86/amd/pmf/tee-if.c b/drivers/platform/x86/=
-amd/pmf/tee-if.c
-index 16973bebf55f..3220b6580270 100644
-=2D-- a/drivers/platform/x86/amd/pmf/tee-if.c
-+++ b/drivers/platform/x86/amd/pmf/tee-if.c
-@@ -11,6 +11,7 @@
- #include <linux/debugfs.h>
- #include <linux/tee_drv.h>
- #include <linux/uuid.h>
-+#include <asm/unaligned.h>
- #include "pmf.h"
+diff --git a/drivers/platform/x86/intel_scu_ipcutil.c b/drivers/platform/x=
+86/intel_scu_ipcutil.c
+index b7c10c15a3d6..7d87cbd4b9c6 100644
+=2D-- a/drivers/platform/x86/intel_scu_ipcutil.c
++++ b/drivers/platform/x86/intel_scu_ipcutil.c
+@@ -22,7 +22,7 @@
 
- #define MAX_TEE_PARAM	4
-@@ -249,8 +250,8 @@ static int amd_pmf_start_policy_engine(struct amd_pmf_=
-dev *dev)
- 	u32 cookie, length;
- 	int res;
+ static int major;
 
--	cookie =3D readl(dev->policy_buf + POLICY_COOKIE_OFFSET);
--	length =3D readl(dev->policy_buf + POLICY_COOKIE_LEN);
-+	cookie =3D get_unaligned_le32(dev->policy_buf + POLICY_COOKIE_OFFSET);
-+	length =3D get_unaligned_le32(dev->policy_buf + POLICY_COOKIE_LEN);
+-struct intel_scu_ipc_dev *scu;
++static struct intel_scu_ipc_dev *scu;
+ static DEFINE_MUTEX(scu_lock);
 
- 	if (cookie !=3D POLICY_SIGN_COOKIE || !length)
- 		return -EINVAL;
+ /* IOCTL commands */
 =2D-
 2.39.2
 
