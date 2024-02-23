@@ -1,109 +1,108 @@
-Return-Path: <linux-kernel+bounces-78804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2BA986190E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:13:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43CFD86190F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:13:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECBBC1C23B26
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:13:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC7F01F255F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:13:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C47F813B7B9;
-	Fri, 23 Feb 2024 17:12:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 143B013BAC9;
+	Fri, 23 Feb 2024 17:12:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GB3WU5Az"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iYm1KEm2"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28F1512D1F4;
-	Fri, 23 Feb 2024 17:12:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F364A13B2B5;
+	Fri, 23 Feb 2024 17:12:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708708355; cv=none; b=NH/IXhGrIlgkqxa8ppjaEAOg9Kn8SKkHkLdFxkIJ2M2UBNGqLDCnw4/NtRogll1fw8as443kC8fk70zDggtW4X8OkGUCQh3mdv2ahKqmWKF9M2DPQ9EJbH2GtgkOfg4VYElCuNwx+AxogQ37o818D+YVDEZnEHQqPhh/pnvQMFM=
+	t=1708708358; cv=none; b=E1q8WWYrV2OPizEZq2veUYjrDxk5wgfn68g2QW0p36EZWIyMCh0XKSb7YL9SvLrHfYFTfDwE3ra4++i9EZbaVActvKMUjPebXQj6nKONIefJcZ2d3F2dnBDIFsa2n5Sq+SAxncILKopvOm/XnClrpUL57cDuuvu7S/a3H9lUXsk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708708355; c=relaxed/simple;
-	bh=w3+OCVOg6gitH+bg/hrW+YuNsjWKvSsvmr6SnY+BX9A=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=SKzeEa4uVxRM8YTiK2oNLSmIfp9b+v/MTOw76PZFsa+9novhcXC/Jln+KK96wgMZAFDrFiDI5fVTLRoGMPhdITrtfGAg/8Ah5Jl0FCohFXf5WGBiHy31slmKGVK0f/0sIXjBVzcnnkM3Lu6nmmS7gpdl5yfJfDVqrvtfvfKwvTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GB3WU5Az; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id AF1E1C4166C;
+	s=arc-20240116; t=1708708358; c=relaxed/simple;
+	bh=SJjK/OlnPiSEOlTM7MrjuCeEvk6XyHl4V+e8NRfLHqQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sAjwiog+a5vHc3wcCR3Du0cPEHjrTp0oQ3m74odeYGWy3gsAiQhJEtPpX7qBlKI8RdDpSPLPqumdstSWx9JII47EEOU/IMqnKh/X/vDwwHXDGX4oeGMCHYjL1T6G7n6ekYF8e2gS5JCPhioJt+d6ZV5+VcZsKYwygPWDsP7Pyzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iYm1KEm2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A374C433B1;
 	Fri, 23 Feb 2024 17:12:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708708354;
-	bh=w3+OCVOg6gitH+bg/hrW+YuNsjWKvSsvmr6SnY+BX9A=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=GB3WU5Az0K4Mu/1ZZdwGLczB2C3iUV8XoXgn2kqihAKVdNLbE8FkGd8Bw0axBPZZ8
-	 AL36ESF4CaW7jy4XETCXTZ9wyW+vo1P4Beich/uZfuSF28Cjvj6B/9b/RjhiaKDQGa
-	 HDTA2lfseGS4yaDPu/GWVpr1wi/8lQa4Uxt+ZtcAmXxG74tLjGx0rThGfyeIRhW65/
-	 ZC71DgRacwxtz4Vo6yu3M6KJB/LSvmBeIgw1856J2k+7ADpP4/f8DHpqj6rGK7l/TF
-	 Xetz31sdnuLk/CvmvyLF9GP7nCLY8VCKkbx5fkUK8ZDdSQcHoKQ7HxuStCTFJNkn81
-	 Hw5M1F3RM7vHA==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D100C54E4C;
-	Fri, 23 Feb 2024 17:12:34 +0000 (UTC)
-From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
-Date: Sat, 24 Feb 2024 01:12:31 +0800
-Subject: [PATCH v5 4/6] clk: hisilicon: fix include path for
- crg-hi3798cv200
+	s=k20201202; t=1708708357;
+	bh=SJjK/OlnPiSEOlTM7MrjuCeEvk6XyHl4V+e8NRfLHqQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iYm1KEm2XgtFgQGp5qKeCuIkODtj4+WK/ieP3Rqkbgz0M3YCb0tomjB7u6JQ7aURH
+	 9IPoG5BxDf5IHeMPQmbXNZKuuT4LqD038LhJkroxo/MAk/NomQeaAS+eX6XrfIF9HO
+	 ArC0Km+RQXKxmWqXOUENhhB/cN/Q8XFjbQyJdyZQAJqARFceZRVRJ1Lne60NYMOTx3
+	 p0oDUKsznRxiZzDFu4A/Xpy97Eey5CtV6lFk/azTDZZ8NsNbECZIMau1/0gQC8boTm
+	 TW4f4N5MnNQx+2qQEFuFW2pc7flHpIivly4BrC8fnptrg+CdS8QE8Bl2+SGCMXJWcb
+	 ujd3ZSC+eBWgQ==
+Date: Fri, 23 Feb 2024 17:12:31 +0000
+From: Lee Jones <lee@kernel.org>
+To: Roger Quadros <rogerq@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tero Kristo <kristo@kernel.org>, Andrew Davis <afd@ti.com>,
+	b-liu@ti.com, srk@ti.com, r-gunasekaran@ti.com,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v5 1/4] dt-bindings: mfd: syscon: Add
+ ti,am62-usb-phy-ctrl compatible
+Message-ID: <20240223171231.GN1666215@google.com>
+References: <20240223-b4-for-v6-5-am62-usb-typec-dt-v5-0-4b5854d17d18@kernel.org>
+ <20240223-b4-for-v6-5-am62-usb-typec-dt-v5-1-4b5854d17d18@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240224-clk-mv200-v5-4-79f586d6e1a2@outlook.com>
-References: <20240224-clk-mv200-v5-0-79f586d6e1a2@outlook.com>
-In-Reply-To: <20240224-clk-mv200-v5-0-79f586d6e1a2@outlook.com>
-To: Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: David Yang <mmyangfl@gmail.com>, linux-clk@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Yang Xiwen <forbidden405@outlook.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708708351; l=857;
- i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
- bh=mym+b8HCE92ettwNUwgVrGSN23Zmo9f3k4P4EePsjQY=;
- b=Ijlgt5DIGlHWiJNxY66yKpfuYc9QYswFsYlU6WdtswiwIQJDvNrwjB4uOZf1RF7ddL3oqQYER
- JwhD6O+P7sjB+6xeQkTFf4BPJnZxU/5gblqSnm7mmEcxB/UKPLZhbtE
-X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
- pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
-X-Endpoint-Received:
- by B4 Relay for forbidden405@outlook.com/20230724 with auth_id=67
-X-Original-From: Yang Xiwen <forbidden405@outlook.com>
-Reply-To: <forbidden405@outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240223-b4-for-v6-5-am62-usb-typec-dt-v5-1-4b5854d17d18@kernel.org>
 
-From: Yang Xiwen <forbidden405@outlook.com>
+On Fri, 23 Feb 2024, Roger Quadros wrote:
 
-histb-clock.h is now deprecated. Include hisilicon,hi3798cv200-crg.h and
-hisilicon-sysctrl.h directly instead.
+> Add the compatible for TI AM62 USB PHY Control register. This
+> register is found in the TI AM62 WKUP_CTRL_MMR0 space [1]. It
+> is used to indicate the USB PHY PLL reference clock rate and
+> core voltage level to the USB controller.
+> 
+> [1] - https://www.ti.com/lit/pdf/spruiv7
+> 
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> Acked-by: Rob Herring <robh@kernel.org>
+> ---
+> Changelog:
+> v5 - no change. Added Lee Jones in To list
+> v4 - no change. Added Rob's Acked-by
+>      https://lore.kernel.org/all/20240205135908.54656-2-rogerq@kernel.org/
+> v3 - add compatibles in alphabetical order
+>      https://lore.kernel.org/all/20240201120332.4811-2-rogerq@kernel.org/
+> v2 - New patch
+> ---
+>  Documentation/devicetree/bindings/mfd/syscon.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml b/Documentation/devicetree/bindings/mfd/syscon.yaml
+> index 084b5c2a2a3c..9437705af92f 100644
+> --- a/Documentation/devicetree/bindings/mfd/syscon.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
+> @@ -72,6 +72,7 @@ properties:
+>                - rockchip,rk3588-qos
+>                - rockchip,rv1126-qos
+>                - starfive,jh7100-sysmain
+> +              - ti,am62-usb-phy-ctrl
+>                - ti,am654-dss-oldi-io-ctrl
 
-Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
----
- drivers/clk/hisilicon/crg-hi3798cv200.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/clk/hisilicon/crg-hi3798cv200.c b/drivers/clk/hisilicon/crg-hi3798cv200.c
-index f651b197e45a..3e26a8f6df36 100644
---- a/drivers/clk/hisilicon/crg-hi3798cv200.c
-+++ b/drivers/clk/hisilicon/crg-hi3798cv200.c
-@@ -5,7 +5,8 @@
-  * Copyright (c) 2016 HiSilicon Technologies Co., Ltd.
-  */
- 
--#include <dt-bindings/clock/histb-clock.h>
-+#include <dt-bindings/clock/hisilicon,hi3798cv200-crg.h>
-+#include <dt-bindings/clock/hisilicon,hi3798cv200-sysctrl.h>
- #include <linux/clk-provider.h>
- #include <linux/module.h>
- #include <linux/of.h>
+Doesn't apply.  Please rebase on tomorrow's -next.
 
 -- 
-2.43.0
-
+Lee Jones [李琼斯]
 
