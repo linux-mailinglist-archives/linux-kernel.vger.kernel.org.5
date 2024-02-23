@@ -1,175 +1,325 @@
-Return-Path: <linux-kernel+bounces-77904-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1FE3860BEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:13:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47CE8860BD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:10:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 486E8B2122F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:13:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0C6B285AC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:10:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56E53156DD;
-	Fri, 23 Feb 2024 08:13:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB15E18028;
+	Fri, 23 Feb 2024 08:10:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="q9SfEi6M"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2063.outbound.protection.outlook.com [40.107.244.63])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T9Yeb5G2"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93909168C4;
-	Fri, 23 Feb 2024 08:13:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.63
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708676018; cv=fail; b=S0h8cijxQPWbDPoNXXpK0F6tqpgKNHrLjNWBgmhr6/n4oSwnyH2A0epN9ARAH3cdBlsHt5OgorK6hVGH//7MogB1xzvaUFg1mwJn6vAMBj0ABZoDvzLwGtjzweag9CgPM1rD9mGf6hE+nv+jnQU3ETXsHagD5J4AUcC5NP/GLBk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708676018; c=relaxed/simple;
-	bh=au6YPO6XHN57EG+3THegXJlTSj5RjgBCdO+M65plQu8=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QW3DE/Ud+Ijg30a6Z1FgVEGkB+VdDvN5Yv6WKh3WBiUHbuYj2qXQlE7m0TXh2rK6M/mTOWa3j5CTImC9PXX2exCy8ecfoXrLLmzsTUqJdx+iajIrWg3UdetifZCmZRvY3KKTvu2lDxpyxsA6wKCXGGEg8UbnJKlv43dz/l4ysWg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=q9SfEi6M; arc=fail smtp.client-ip=40.107.244.63
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UU/o9wpoIsCVD9S3RtugYgz17osb+iorcsZbVHoJxYMJHVbNMUTD+aTBi2tG2WPax7b7Y31J91aDwr306UmZr/MKyQbbte6xT5xbN5MuqWKqj5LllRghsx2dftuvl84IlZw5klJnWfp/Qmrv8020TYSmYIl7FWc+cRaiUdtAzt6RqteSJMCuZcKbtlJtLNUVRaCmW8CBXV5umSRBqXF/EvkYjGoe6Ahpz9qOMxXWW8axcj6/AfRj3OgVHmRXhUcj9b9a9Ubgco0k3arsavCVVQKXbUhgd/R1Mv5d/+QX+Rr3baOcOz+SjAlY/6uuPS07HUZ0//hKkkKhdj7ABDcTHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZO0BhSAnGpUcyCBbnxZlPGcb7QGoRdRwInqizGzyqJE=;
- b=hPyKtHy36KN9A3U0dpgPurV+RcvM+SK54ScgbYTwj0Hg2lx2VTD5jofm805uJAZueUKrB8I3KV7s+MS8XKdZteQP15est8HZ5+Sl99sFlJtsPq3HuicaOK3JVUqarD0HDeAN7wD0vGPwYkuTGhCPKZRXKNBr+qHF3v/4Z6hGuEww6VZ4136yJE03z1Bf72xvMkmY8GrIng7jZTyrbQAB0DQ7gu87ByEfgYPsqX8tdzqjaS8Y6TdliT2w52ogU9nanK2UXd2fo0drjp+xPJGtYM7R0H38viUmlRod/OPlE0y6ePhQmB//QNDZs73s/uqqvcZJN9T/rcwBwBpCtOBIXQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZO0BhSAnGpUcyCBbnxZlPGcb7QGoRdRwInqizGzyqJE=;
- b=q9SfEi6MsBjOxYyd/3H8bwm5uoU2v13HIW6sr560tXHxQzLhEihVvCfMZqtAtCnn3PutLbI8GBr8qysOIq7LoL+Kz1ji5ezDXAHZgWWVNZslGNXDaWTP5eu84gwNfMYj1FASo0Jgl7RzWSaiV17EABhq8TL7mfw7ZaxAN3wTiOpi6m0qHZhJKlLPPfO9/e9iPgw013rIGGaXVvyvO3RO88zOHz03ZP+Cdaw6+D/WSqbxuih4gGbHX03ZPuECToIxqkRNWOuu1VH4LlwbDCAkZ3lyIWnrduBMiOemj78g7f1OCFS8Ow0jKVlDvZ2qHFMOj+Ss6C3jSN+06L8giuaKJg==
-Received: from BY3PR04CA0021.namprd04.prod.outlook.com (2603:10b6:a03:217::26)
- by LV3PR12MB9166.namprd12.prod.outlook.com (2603:10b6:408:19c::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.26; Fri, 23 Feb
- 2024 08:13:34 +0000
-Received: from MWH0EPF000971E5.namprd02.prod.outlook.com
- (2603:10b6:a03:217:cafe::c1) by BY3PR04CA0021.outlook.office365.com
- (2603:10b6:a03:217::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.43 via Frontend
- Transport; Fri, 23 Feb 2024 08:13:33 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- MWH0EPF000971E5.mail.protection.outlook.com (10.167.243.73) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7292.25 via Frontend Transport; Fri, 23 Feb 2024 08:13:33 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 23 Feb
- 2024 00:13:13 -0800
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Fri, 23 Feb
- 2024 00:13:12 -0800
-Received: from vidyas-desktop.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.129.68.10) with Microsoft SMTP Server id 15.2.1258.12 via Frontend
- Transport; Fri, 23 Feb 2024 00:13:09 -0800
-From: Vidya Sagar <vidyas@nvidia.com>
-To: <robh@kernel.org>, <bhelgaas@google.com>
-CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<treding@nvidia.com>, <jonathanh@nvidia.com>, <kthota@nvidia.com>,
-	<mmaddireddy@nvidia.com>, <vidyas@nvidia.com>, <sagar.tv@gmail.com>
-Subject: [DT-SCHEMA PATCH V2] schemas: pci: Extend the meaning of 'linux,pci-probe-only'
-Date: Fri, 23 Feb 2024 13:43:07 +0530
-Message-ID: <20240223081307.1727191-1-vidyas@nvidia.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6D74168B9;
+	Fri, 23 Feb 2024 08:10:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708675804; cv=none; b=GQSaWIQ/oarB33DUansVYhNZolNHD5wpHnVDobVMHvwyrbXd83Vq6RZj9JDVTwzjXwWNgweCG8AI12BahFSVycoQJUEf9tbu4zNdrZGoIWSJt6Eh3VFUW6xqI41/HqMWHWh3580+kkMtNNz0MoHnOCHW7ja0bWWqAMyzBxUjGfE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708675804; c=relaxed/simple;
+	bh=QBWjYeQUn5RBEXUZgv6ZjZLyYZAviiW5C+QMhB89YFY=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=IyjfzoB8f+YhUUYYyrypIQp1t/ugZl5Pop4fn8tN5mIyWmU/ZvSk6xw71KwSSPZ4fT5HV1exibO35q9z8myDZLU6FkoUACmIXCuFraAyErRQRLsWqirCMLbCcu6AdQO40DKotCjKC0d6M79+SpkYKyAUqC7QeqAetKV/PiHLJxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T9Yeb5G2; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-564372fb762so627184a12.0;
+        Fri, 23 Feb 2024 00:10:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708675801; x=1709280601; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=QBWjYeQUn5RBEXUZgv6ZjZLyYZAviiW5C+QMhB89YFY=;
+        b=T9Yeb5G2hWxJ+xDlP9BUSd5C+kwI2JVpF6Vpn5wTpwMhp1x7HZ1DcimV4l64a7kAvo
+         U0UROXiGqAla0E/jVVaIU4Lf9Zbgz41oelwhxJM0HvpUVQIqpNdBMOHv0xajjq/Xdvw1
+         uB0D1e9jAa7i7zHRnPKi7zQmSQC9XGIF2DijpcGSnGlVVBCK1IdDVg5Elv14d/c/zDNl
+         QfG4LvY8j3ZOX8FKaUPArjCosb4oHRHNgQM06a54RPUtoLSIKzI9U5k2ZhZwr2gVyLB4
+         gnR69dxx+1l+WbFQqIS8fimKGDueW+lsmRJr0rM0ARnQ0L6c6rfNkpkJ+A6u7tDI4f9F
+         Ck8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708675801; x=1709280601;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QBWjYeQUn5RBEXUZgv6ZjZLyYZAviiW5C+QMhB89YFY=;
+        b=MUt3l2+9R+NyBQJzXRTLIX6Gx4VLeISTxhwDZAEolY8PBwxSG4dBBdGwiOQzoOR0es
+         kOuyoHNAsZVqWh+ok6WbUoWur7g+N8gEAPbL2oxe6eguzbtv+FdSxDsREadXlnQFw1Is
+         0tetIB8iqf/JZ6Xsp6VlNRy8W5YnJ9riI0WTq0gvSSFqANAsrM5dLOTTfRjZo89wrIBq
+         NOgZLGLhydUszbl6zs8wcQCeSFIqC1BV0RZwgkoxp76E62YQlIw1nDgnD8Q8xaHVMSiP
+         MreScn+UHB08ucsZCSQ/4wki+/e/9Vi1X22Y/2Si4Fxs8dMLf2D2JfQDVbtTPTKJ78sU
+         W91Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWF3PwQQTJyrDo3G3jVSLet+iKcI8hyTmkkIuceqAIRSJ4swiB/h1gnerJryzK9p/o8L6iPNctsKeO+u4E2usc50OD2EhVXp80YL0iawFNMR95Pezr5RPwBys9naELInrwQO/0pS8mYWQ==
+X-Gm-Message-State: AOJu0YxUjbdBsqoXCtK+gDrciNrWBvhbG/Pt6/j9ilV2Mc/s99HJsTr/
+	PKGLF2UUh2ESBlABhWpRcEb+zLbwRADS3hdVw9GyhPoTXZoNmwPD
+X-Google-Smtp-Source: AGHT+IH6/tmIKUpLllg396Dn5rOfwaa5kJ99I5fovVYR9bKN2foqm/LQOnMqBq+DgKagJtwBDSwkOw==
+X-Received: by 2002:a05:6402:254c:b0:565:6f16:4dab with SMTP id l12-20020a056402254c00b005656f164dabmr802844edb.16.1708675800649;
+        Fri, 23 Feb 2024 00:10:00 -0800 (PST)
+Received: from ?IPv6:2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47? (p200300f6ef1b2000944ccbc71e1c2c47.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47])
+        by smtp.gmail.com with ESMTPSA id u6-20020aa7d546000000b0056503299e26sm2084780edr.88.2024.02.23.00.09.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 00:10:00 -0800 (PST)
+Message-ID: <6e6870b37cdd3204bbf54ebce3401b3af13e9131.camel@gmail.com>
+Subject: Re: [PATCH 1/2] driver core: Introduce device_link_wait_removal()
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: Saravana Kannan <saravanak@google.com>
+Cc: Herve Codina <herve.codina@bootlin.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Rob
+ Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Lizhi
+ Hou <lizhi.hou@amd.com>,  Max Zhen <max.zhen@amd.com>, Sonal Santan
+ <sonal.santan@amd.com>, Stefano Stabellini <stefano.stabellini@xilinx.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Allan Nielsen
+ <allan.nielsen@microchip.com>, Horatiu Vultur
+ <horatiu.vultur@microchip.com>,  Steen Hegelund
+ <steen.hegelund@microchip.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Android Kernel Team
+ <kernel-team@android.com>
+Date: Fri, 23 Feb 2024 09:13:21 +0100
+In-Reply-To: <CAGETcx9h4=k9XW+jZCw9zcVZruNZLPDQDt_sNZYXc05eQ2_uWQ@mail.gmail.com>
+References: <20231130174126.688486-1-herve.codina@bootlin.com>
+	 <20231130174126.688486-2-herve.codina@bootlin.com>
+	 <CAGETcx9uP86EHyKJNifBMd23oCsA+KpMa+e36wJEEnHDve+Avg@mail.gmail.com>
+	 <c4e1092298244c288212e9f6cdbf7c26d0e9d83b.camel@gmail.com>
+	 <CAGETcx9h4=k9XW+jZCw9zcVZruNZLPDQDt_sNZYXc05eQ2_uWQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000971E5:EE_|LV3PR12MB9166:EE_
-X-MS-Office365-Filtering-Correlation-Id: 801a29d6-9382-46f8-186a-08dc344753f9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	354JXQ3KOaUIDoPdErbu9QW4SVmapiMedktdk6yu7bUxgcIOeeRL+pT9W03/AKtwG7XrHO3xajl+1LqudbPY4+sdLxEEh/PwzVaEqgr+MaEMExYf2BQPPc0UwQZ8MOzOfu1IVTYcvi25n/YjB4n4vsuX4Fb9yBlPIJnN2mLrBrXwJyVZuaSXj1fcrz09mOWN10z5YlOfWovAbLLJAtU7Gp5K6nC1PXySpE+uZVyULvQp0zEVPv+IU/dxbjR+OGBwCmvh6opDtzi3Nn48S4JwGPdSj8HFfoX6YOtIZjwDRYLxbMgV/T+pnEISH6LMmTbdgNXjbuOm7dTKrh1aFkmVqz1YrlNO6QzwWR5jH8oWaVZQo5/TcNbPYYxrpWsgLaDFvTNHMGWu83bDyakyni/wTA65AXB22yWLYQyPwwPQAbWwbSkbI6lyL5g0uuvNJ1hWeWy4eeY3XGNnd7wlPHULbdIBP2hEZHXGG5Jv1oIpFs/mJzpgtnk99+vF1wpdeVsmWQcMERF3UyD6IDK0p+IqsFp9348UTKQofh1K5NMnC8zgyv3mSy2xDNX7K6E+amHzQSIglAfZumzOpwMFXd69cgryph5Wl0vP1BU3WVdJP1mGvfkP6gmzp2p7bpZZeTeaWzSqig/KcyuWPqRPPXoMcYlgg1nTpj4x4TM9vIPSLUQ=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(36860700004)(46966006)(40470700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2024 08:13:33.3111
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 801a29d6-9382-46f8-186a-08dc344753f9
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MWH0EPF000971E5.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9166
 
-Extend the meaning of 'linux,pci-probe-only' to cover the cases where
-it is applicable only to a specific PCI host bridge if defined in a
-PCI node instead of chosen node. Add the documentation for the same
-in schemas/pci/pci-host-bridge.yaml
+On Thu, 2024-02-22 at 17:08 -0800, Saravana Kannan wrote:
+> On Tue, Feb 20, 2024 at 10:56=E2=80=AFPM Nuno S=C3=A1 <noname.nuno@gmail.=
+com> wrote:
+> >=20
+> > On Tue, 2024-02-20 at 16:31 -0800, Saravana Kannan wrote:
+> > > On Thu, Nov 30, 2023 at 9:41=E2=80=AFAM Herve Codina <herve.codina@bo=
+otlin.com>
+> > > wrote:
+> > > >=20
+> > > > The commit 80dd33cf72d1 ("drivers: base: Fix device link removal")
+> > > > introduces a workqueue to release the consumer and supplier devices=
+ used
+> > > > in the devlink.
+> > > > In the job queued, devices are release and in turn, when all the
+> > > > references to these devices are dropped, the release function of th=
+e
+> > > > device itself is called.
+> > > >=20
+> > > > Nothing is present to provide some synchronisation with this workqu=
+eue
+> > > > in order to ensure that all ongoing releasing operations are done a=
+nd
+> > > > so, some other operations can be started safely.
+> > > >=20
+> > > > For instance, in the following sequence:
+> > > > =C2=A0 1) of_platform_depopulate()
+> > > > =C2=A0 2) of_overlay_remove()
+> > > >=20
+> > > > During the step 1, devices are released and related devlinks are re=
+moved
+> > > > (jobs pushed in the workqueue).
+> > > > During the step 2, OF nodes are destroyed but, without any
+> > > > synchronisation with devlink removal jobs, of_overlay_remove() can =
+raise
+> > > > warnings related to missing of_node_put():
+> > > > =C2=A0 ERROR: memory leak, expected refcount 1 instead of 2
+> > > >=20
+> > > > Indeed, the missing of_node_put() call is going to be done, too lat=
+e,
+> > > > from the workqueue job execution.
+> > > >=20
+> > > > Introduce device_link_wait_removal() to offer a way to synchronize
+> > > > operations waiting for the end of devlink removals (i.e. end of
+> > > > workqueue jobs).
+> > > > Also, as a flushing operation is done on the workqueue, the workque=
+ue
+> > > > used is moved from a system-wide workqueue to a local one.
+> > >=20
+> > > Thanks for the bug report and fix. Sorry again about the delay in
+> > > reviewing the changes.
+> > >=20
+> > > Please add Fixes tag for 80dd33cf72d1.
+> > >=20
+> > > > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> > > > ---
+> > > > =C2=A0drivers/base/core.c=C2=A0=C2=A0=C2=A0 | 26 ++++++++++++++++++=
++++++---
+> > > > =C2=A0include/linux/device.h |=C2=A0 1 +
+> > > > =C2=A02 files changed, 24 insertions(+), 3 deletions(-)
+> > > >=20
+> > > > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > > > index ac026187ac6a..2e102a77758c 100644
+> > > > --- a/drivers/base/core.c
+> > > > +++ b/drivers/base/core.c
+> > > > @@ -44,6 +44,7 @@ static bool fw_devlink_is_permissive(void);
+> > > > =C2=A0static void __fw_devlink_link_to_consumers(struct device *dev=
+);
+> > > > =C2=A0static bool fw_devlink_drv_reg_done;
+> > > > =C2=A0static bool fw_devlink_best_effort;
+> > > > +static struct workqueue_struct *fw_devlink_wq;
+> > > >=20
+> > > > =C2=A0/**
+> > > > =C2=A0 * __fwnode_link_add - Create a link between two fwnode_handl=
+es.
+> > > > @@ -530,12 +531,26 @@ static void devlink_dev_release(struct device
+> > > > *dev)
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * It may take a wh=
+ile to complete this work because of the SRCU
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * synchronization =
+in device_link_release_fn() and if the
+> > > > consumer or
+> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * supplier devices get =
+deleted when it runs, so put it into the
+> > > > "long"
+> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * workqueue.
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * supplier devices get =
+deleted when it runs, so put it into the
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * dedicated workqueue.
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 queue_work(system_long_wq, &l=
+ink->rm_work);
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 queue_work(fw_devlink_wq, &li=
+nk->rm_work);
+> > >=20
+> > > This has nothing to do with fw_devlink. fw_devlink is just triggering
+> > > the issue in device links. You can hit this bug without fw_devlink to=
+o.
+> > > So call this device_link_wq since it's consistent with device_link_* =
+APIs.
+> > >=20
+> >=20
+> > I'm not sure if I got this right in my series. I do call
+> > devlink_release_queue() to
+> > my queue. But on the Overlay side I use fwnode_links_flush_queue() beca=
+use
+> > it looked
+> > more sensible from an OF point of view. And including (in OF code)
+> > linux/fwnode.h
+> > instead linux/device.h makes more sense to me.
+> >=20
+> > > > =C2=A0}
+> > > >=20
+> > > > +/**
+> > > > + * device_link_wait_removal - Wait for ongoing devlink removal job=
+s to
+> > > > terminate
+> > > > + */
+> > > > +void device_link_wait_removal(void)
+> > > > +{
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * devlink removal jobs =
+are queued in the dedicated work queue.
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * To be sure that all r=
+emoval jobs are terminated, ensure that
+> > > > any
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * scheduled work has ru=
+n to completion.
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 drain_workqueue(fw_devlink_wq=
+);
+> > >=20
+> > > Is there a reason this needs to be drain_workqueu() instead of
+> > > flush_workqueue(). Drain is a stronger guarantee than we need in this
+> > > case. All we are trying to make sure is that all the device link
+> > > remove work queued so far have completed.
+> > >=20
+> >=20
+> > Yeah, I'm also using flush_workqueue().
+> >=20
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(device_link_wait_removal);
+> > > > +
+> > > > =C2=A0static struct class devlink_class =3D {
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .name =3D "devlink",
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .dev_groups =3D devlink_=
+groups,
+> > > > @@ -4085,9 +4100,14 @@ int __init devices_init(void)
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sysfs_dev_char_kobj =3D =
+kobject_create_and_add("char", dev_kobj);
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!sysfs_dev_char_kobj=
+)
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 goto char_kobj_err;
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fw_devlink_wq =3D alloc_workq=
+ueue("fw_devlink_wq", 0, 0);
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!fw_devlink_wq)
+> > >=20
+> > > Fix the name appropriately here too please.
+> >=20
+> > Hi Saravana,
+> >=20
+> > Oh, was not aware of this series... Please look at my first patch. It
+> > already has a
+> > review tag by Rafael. I think the creation of the queue makes more sens=
+e to
+> > be done
+> > in devlink_class_init(). Moreover, Rafael complained in my first versio=
+n
+> > that
+> > erroring out because we failed to create the queue is too harsh since
+> > devlinks can
+> > still work.
+>=20
+> I think Rafael can be convinced on this one. Firstly, if we fail to
+> allocate so early, we have bigger problems.
 
-Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
----
-V2:
-* Addressed Bjorn's review comments
+That's true...
 
- dtschema/schemas/chosen.yaml              | 7 +++++--
- dtschema/schemas/pci/pci-host-bridge.yaml | 8 ++++++++
- 2 files changed, 13 insertions(+), 2 deletions(-)
+>=20
+> > So, what we do is to schedule the work if we have a queue or too call
+> > device_link_release_fn() synchronously if we don't have the queue (note=
+ that
+> > failing
+> > to allocate the queue is very unlikely anyways).
+>=20
+> device links don't really work when you synchronously need to delete a
+> link since it always uses SRCUs (it used to have a #ifndef CONFIG_SRCU
+> locking). That's like saying a code still works when it doesn't hit a
 
-diff --git a/dtschema/schemas/chosen.yaml b/dtschema/schemas/chosen.yaml
-index 6d5c3f1..f806646 100644
---- a/dtschema/schemas/chosen.yaml
-+++ b/dtschema/schemas/chosen.yaml
-@@ -142,8 +142,11 @@ properties:
-     enum: [ 0, 1 ]
-     description:
-       Optional property which takes a single-cell argument. If '0', then Linux
--      will assign devices in its usual manner, otherwise it will not try to
--      assign devices and instead use them as they are configured already.
-+      will reassign BARs and bridge windows in its usual manner, otherwise it will
-+      not try to reassign BARs and bridge windows, instead use them as they are
-+      configured already by the platform firmware.
-+      NOTE:- To restrict the applicability of this property to a specific PCI
-+             host bridge, please refer to /schemas/pci/pci-host-bridge.yaml
- 
-   stdout-path:
-     $ref: types.yaml#/definitions/string
-diff --git a/dtschema/schemas/pci/pci-host-bridge.yaml b/dtschema/schemas/pci/pci-host-bridge.yaml
-index fbbb829..e977520 100644
---- a/dtschema/schemas/pci/pci-host-bridge.yaml
-+++ b/dtschema/schemas/pci/pci-host-bridge.yaml
-@@ -31,6 +31,14 @@ properties:
-       number for each host bridge in the system must be unique.
-     $ref: /schemas/types.yaml#/definitions/uint32
- 
-+  linux,pci-probe-only:
-+    description: If present, Linux will not try to reassign BARs and bridge windows,
-+      instead use them as they are configured already by the platform firmware for
-+      this particular host bridge.
-+      NOTE:- If defined in chosen node, this property has system wide applicability.
-+             Please refer to /schemas/chosen.yaml for more info.
-+    type: boolean
-+
-   msi-map:
-     $ref: /schemas/types.yaml#/definitions/uint32-matrix
-     items:
--- 
-2.25.1
+Hmm, can you elaborate please? Why wouldn't it work if we call it synchrono=
+usly?
+Sure, we'll have the synchronize_srcu() call which might take some time but=
+ I'm
+not honestly seeing what could go wrong other than waiting?
+
+I can also see that we can potentially hold the devlink lock for some time =
+but
+can that lead to any deadlock (It would actually be nice - if doable at all=
+ - to
+not release the refcounts with a lock hold)?
+> deadlock condition.
+>=20
+> Let's stick with Herve's patch series since he send it first and it
+> has fewer things that need to be fixed. If he ignores this thread for
+
+Not exactly true :). If you look at my reply in the other thread (my series=
+)
+you'll see that I actually sent it first (as RFC - and spotted the issue wa=
+y
+back in May last year). About the stuff to fix, not sure if it's more. For =
+now,
+your major complain seems to be about synchronously calling=20
+device_link_release_fn() and I did not had it in my v1. But anyways, I just=
+ want
+a fix for this to land as quick as possible :)=C2=A0
+
+And I guess we also need Rafael to agree in erroring if we fail to allocate=
+ the
+queue as he was against it.
+
+- Nuno S=C3=A1
 
 
