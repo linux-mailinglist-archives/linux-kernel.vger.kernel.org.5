@@ -1,92 +1,64 @@
-Return-Path: <linux-kernel+bounces-78262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78264-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A0FE8610E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:59:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2F918610F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:02:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2005B20CB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:59:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CD881C21CF0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:02:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F6F97B3E3;
-	Fri, 23 Feb 2024 11:59:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C2387A725;
+	Fri, 23 Feb 2024 12:01:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="tauqtti8";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="jeiub6Yb";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="tauqtti8";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="jeiub6Yb"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="tOJEEK41"
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C6297AE7E
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:59:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98E50D29B;
+	Fri, 23 Feb 2024 12:01:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708689542; cv=none; b=L0duK7EXroLZfmVBlhRa4yysksbJyF9uJqXyvnCCK9Px5u51WwTqsXxEoaMtgNwbbthsnI2LOAO1BT/80XFTb2yZWFYq+o0e/Ag2T3xWSFYf88CDaqCWpIRIsUyEOfMdxI99obF96zExNljQ17sjMC1wY69uZb9dUQE9sNyMNl4=
+	t=1708689716; cv=none; b=jqRQKhaSAiWGbteBiYEAeKgJlFS7y7bcd3ZLvMkFDWASkBD2Y80piJbngWq7q3QbzMA52XQbW+pNDh4IIymzUhjJ34mcUYHTAA+2NPVcus4uoXIQJUenYSFp3tJ3p2dLNE+Lu/c1SSOfjWXZIEHZ1iywdo9ZlRQ1g2q9Tgp6eBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708689542; c=relaxed/simple;
-	bh=7vfrNB0uBqzU7Jo9nAc5SQOAi+BT9Affyka2FJIO6s4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gz6qNZTFh9T17nOFpNy5F6mZE9Op0+llbwW3UbyVFbLGfydb/EoXcUiiOb+rbByGuJHGtcy+ORyiJ7AUHDwgmrEqmAlZ9WiMRjro/7yezSX9Q9qtmFdipXGhUGkbTRr1BO+HDV2YZ2Knq1of2P/tbTY5gEuhIj7fmv3PfP9cKkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=tauqtti8; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=jeiub6Yb; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=tauqtti8; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=jeiub6Yb; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 5A1991FBF2;
-	Fri, 23 Feb 2024 11:58:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708689538; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PKWHi5n5fOcYQOJlh34zxx7zAiKRtlNS/pw+UPmx+jY=;
-	b=tauqtti8K90dYZdbldhDtQ7oAONgt8b4Wk9FfOZ4uqfHh0b4fLazFmWEWUpAsmuTp61/Ee
-	h2IJCnPfrktbjkDDZWW9xPPDSdY7acUG5SchJlzoiD+IPGguB1aXYpl0hq+XYCFVNJkqse
-	H6Xb0vTNdOGemgyccci3puzSnODds4E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708689538;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PKWHi5n5fOcYQOJlh34zxx7zAiKRtlNS/pw+UPmx+jY=;
-	b=jeiub6YbE+gcPY8sKD3M2vbc1mNrDahzuTLUiIyJ7ho8v4HIcFg2TuWJAPALk2H7DTB+FF
-	J1HlTCj2zXVINSAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708689538; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PKWHi5n5fOcYQOJlh34zxx7zAiKRtlNS/pw+UPmx+jY=;
-	b=tauqtti8K90dYZdbldhDtQ7oAONgt8b4Wk9FfOZ4uqfHh0b4fLazFmWEWUpAsmuTp61/Ee
-	h2IJCnPfrktbjkDDZWW9xPPDSdY7acUG5SchJlzoiD+IPGguB1aXYpl0hq+XYCFVNJkqse
-	H6Xb0vTNdOGemgyccci3puzSnODds4E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708689538;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PKWHi5n5fOcYQOJlh34zxx7zAiKRtlNS/pw+UPmx+jY=;
-	b=jeiub6YbE+gcPY8sKD3M2vbc1mNrDahzuTLUiIyJ7ho8v4HIcFg2TuWJAPALk2H7DTB+FF
-	J1HlTCj2zXVINSAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 45BF7132C7;
-	Fri, 23 Feb 2024 11:58:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id JOmnCIKI2GXRbAAAD6G6ig
-	(envelope-from <hare@suse.de>); Fri, 23 Feb 2024 11:58:58 +0000
-Message-ID: <5d67a55e-e979-4c3c-8dcc-597cb13c7c9d@suse.de>
-Date: Fri, 23 Feb 2024 12:58:53 +0100
+	s=arc-20240116; t=1708689716; c=relaxed/simple;
+	bh=5Ti464H/vjQEMcYS33d7Nv6BOUrc8lEh9SE6QMwz1sI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=okE6nk6nHV0G92Imc222Uwz8/DcBljS3D9kcinfg4KnLad6WCEgNuFC9aXmvrR1h8MDC5JIWmOh47/ON0ogYEvJPF1itCgb71/+cvq9v+WpQaH/GK/LnInBpVWah42PtHXx8VyKr+gjoDgia+XhEfnBKNxt5UzA5UjkaNvWBd8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=tOJEEK41; arc=none smtp.client-ip=91.207.212.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41N6mxgP014804;
+	Fri, 23 Feb 2024 13:01:10 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=4m/fBb7GPXD4Ccm5qYBxfwkW2HiwOoGWraBdyJd7n/M=; b=tO
+	JEEK41uclKoKSLfz+xvlmAvWpsDVGhP3/6sutYdJXrfgd1a3CCwi5slWcNl9gSDi
+	Y5viqyweHuHDRDxCNSuv4yzbTZrrKG8gr0DXRolJfSK8lAIYSHzSaWy+RVoT5YwI
+	/vZCY+5eO3Wd73hXAlsLDTRl4ZcC833vBBLpGMmBZ8/8ps+9XRTBYoPxw7c81Z+F
+	1zSxCZXYbsOiFFNefljr68Jfmq6mj/NT91u4qOnMF11Q/xizLGCiToABNlMnEdf6
+	LVy+g69fuFblawGnz3CoL7+6J4leyzxgveGtC0aWQKQEuH3bXMYGCa56WDNgmFSR
+	Wx1/DqWPc14kIeeJ2kXw==
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3wd203vfwr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 Feb 2024 13:01:10 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 6D17440044;
+	Fri, 23 Feb 2024 13:00:58 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id BE7D62816D2;
+	Fri, 23 Feb 2024 12:59:45 +0100 (CET)
+Received: from [10.129.178.151] (10.129.178.151) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 23 Feb
+ 2024 12:59:44 +0100
+Message-ID: <833a7287-69ff-4976-bfc6-16fabf2fa6a5@foss.st.com>
+Date: Fri, 23 Feb 2024 12:59:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,124 +66,84 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/5] nvme-fc: do not retry when auth fails or
- connection is refused
+Subject: Re: [PATCH v2 4/4] dt-bindings: display: simple: hardware can use
+ several properties
+To: Rob Herring <robh@kernel.org>
+CC: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre
+ Torgue <alexandre.torgue@foss.st.com>,
+        Neil Armstrong
+	<neil.armstrong@linaro.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam
+ Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>
+References: <20240217-ltdc_mp13-v2-0-50881f1b394e@foss.st.com>
+ <20240217-ltdc_mp13-v2-4-50881f1b394e@foss.st.com>
+ <20240223000946.GA3848625-robh@kernel.org>
 Content-Language: en-US
-To: Daniel Wagner <dwagner@suse.de>
-Cc: James Smart <james.smart@broadcom.com>, Keith Busch <kbusch@kernel.org>,
- Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
- linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240221132404.6311-1-dwagner@suse.de>
- <20240221132404.6311-3-dwagner@suse.de>
- <d5b3d5b2-ec27-4057-aa76-63fe17066cfc@suse.de>
- <sqmla42yoidail73xukhxb6uoyayo66pxpdlrhns3v533wm7wy@ppyr7t5gk3u3>
- <609e0031-e97c-466b-8cbd-47755374b117@suse.de>
- <3xhhdconprn3vvkky4yj4iazku4eiqxl6l6rw6z5tivvdjwaby@ts7satqbih7w>
- <hxr2hztb64dank3jvbnrlciaebo4k2qkkrg3brhrppizeyelpo@ewupxurl7iqm>
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <hxr2hztb64dank3jvbnrlciaebo4k2qkkrg3brhrppizeyelpo@ewupxurl7iqm>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+In-Reply-To: <20240223000946.GA3848625-robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -1.29
-X-Spamd-Result: default: False [-1.29 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Flag: NO
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-22_15,2024-02-23_01,2023-05-22_02
 
-On 2/22/24 18:02, Daniel Wagner wrote:
-> On Thu, Feb 22, 2024 at 08:45:04AM +0100, Daniel Wagner wrote:
->> On Thu, Feb 22, 2024 at 07:46:12AM +0100, Hannes Reinecke wrote:
->>> On 2/21/24 17:37, Daniel Wagner wrote:
->>>> On Wed, Feb 21, 2024 at 04:53:44PM +0100, Hannes Reinecke wrote:
->>>> In this case yes, I've tested on top of this patch. This breaks the loop
->>>> where the provided key is invalid or is missing. The loop would happy
->>>> retry until reaching max of retries.
->>>
->>> But that's to be expected, no?
+
+On 2/23/24 01:09, Rob Herring wrote:
+> On Sat, Feb 17, 2024 at 12:02:58PM +0100, Raphael Gallais-Pou wrote:
+>> Setting a panel-timing in the device-tree overwrite the one specified in
+>> the driver and set it as preferred.  In that case 'height-mm',
+>> 'width-mm' and 'panel-timing' are properties that can be use for simple
+>> panels, according to panel-common.yaml
 >>
->> Why? If the key is wrong/missing it will be likely wrong/missing the
->> next retry again. So what's the point in retrying?
+>> Fixes following warnings:
+>> arch/arm/boot/dts/st/stm32mp135f-dk.dtb: panel-rgb: 'height-mm', 'panel-timing', 'width-mm' do not match any of the regexes: 'pinctrl-[0-9]+'
+>> 	from schema $id: http://devicetree.org/schemas/display/panel/panel-simple.yaml#
 >>
->>> After all, that's _precisely_ what
->>> NVME_SC_DNR is for;
->>> if you shouldn't retry, that bit is set.
->>> If it's not set, you should.
+>> Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+>> ---
+>>  Documentation/devicetree/bindings/display/panel/panel-simple.yaml | 3 +++
+>>  1 file changed, 3 insertions(+)
 >>
->> Okay, in this case there is a bug in the auth code somewhere.
-> 
-> With the change below nvme/041 also passes:
-> 
-> modified   drivers/nvme/host/fabrics.c
-> @@ -467,7 +467,7 @@ int nvmf_connect_admin_queue(struct nvme_ctrl *ctrl)
->   		if (result & NVME_CONNECT_AUTHREQ_ASCR) {
->   			dev_warn(ctrl->device,
->   				 "qid 0: secure concatenation is not supported\n");
-> -			ret = NVME_SC_AUTH_REQUIRED;
-> +			ret = NVME_SC_AUTH_REQUIRED | NVME_SC_DNR;
->   			goto out_free_data;
->   		}
->   		/* Authentication required */
-> @@ -475,7 +475,7 @@ int nvmf_connect_admin_queue(struct nvme_ctrl *ctrl)
->   		if (ret) {
->   			dev_warn(ctrl->device,
->   				 "qid 0: authentication setup failed\n");
-> -			ret = NVME_SC_AUTH_REQUIRED;
-> +			ret = NVME_SC_AUTH_REQUIRED | NVME_SC_DNR;
->   			goto out_free_data;
->   		}
->   		ret = nvme_auth_wait(ctrl, 0);
-> @@ -540,8 +540,9 @@ int nvmf_connect_io_queue(struct nvme_ctrl *ctrl, u16 qid)
->   		/* Secure concatenation is not implemented */
->   		if (result & NVME_CONNECT_AUTHREQ_ASCR) {
->   			dev_warn(ctrl->device,
-> -				 "qid 0: secure concatenation is not supported\n");
-> -			ret = NVME_SC_AUTH_REQUIRED;
-> +				 "qid %d: secure concatenation is not supported\n",
-> +				 qid);
-> +			ret = NVME_SC_AUTH_REQUIRED | NVME_SC_DNR;
->   			goto out_free_data;
->   		}
->   		/* Authentication required */
-> @@ -549,7 +550,7 @@ int nvmf_connect_io_queue(struct nvme_ctrl *ctrl, u16 qid)
->   		if (ret) {
->   			dev_warn(ctrl->device,
->   				 "qid %d: authentication setup failed\n", qid);
-> -			ret = NVME_SC_AUTH_REQUIRED;
-> +			ret = NVME_SC_AUTH_REQUIRED | NVME_SC_DNR;
->   		} else {
->   			ret = nvme_auth_wait(ctrl, qid);
->   			if (ret)
-> 
-> Is this what you had in mind?
+>> diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+>> index 634a10c6f2dd..c02cbbc7a100 100644
+>> --- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+>> +++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+>> @@ -352,6 +352,9 @@ properties:
+>>    no-hpd: true
+>>    hpd-gpios: true
+>>    data-mapping: true
+>> +  height-mm: true
+>> +  width-mm: true
+>> +  panel-timing: true
+Hi Rob,
+> Instead, just change 'additionalProperties' to 'unevaluateProperties' 
+> and drop all these 'prop: true' lines. Pretty much anything from 
+> panel-common.yaml should be allowed.
 
-Which, incidentally, is basically the patch I just posted.
 
-Cheers,
+Will do, thanks :)
 
-Hannes
--- 
-Dr. Hannes Reinecke                  Kernel Storage Architect
-hare@suse.de                                +49 911 74053 688
-SUSE Software Solutions GmbH, Frankenstr. 146, 90461 Nürnberg
-HRB 36809 (AG Nürnberg), GF: I. Totev, A. McDonald, W. Knoblich
 
+Best regards,
+
+Raphaël
+
+>
+> Rob
 
