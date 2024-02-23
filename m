@@ -1,134 +1,102 @@
-Return-Path: <linux-kernel+bounces-78721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9E278617C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:25:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A0788617CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:26:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59FA31F23BE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:25:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BC4B1C21B16
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:26:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9B8A84FB2;
-	Fri, 23 Feb 2024 16:24:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nJM2oyYa"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4DD084A23;
+	Fri, 23 Feb 2024 16:25:59 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ECD383A0D
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 16:24:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A60A7EF06;
+	Fri, 23 Feb 2024 16:25:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708705447; cv=none; b=Vl5B1lV3Bvy/rmwPDU44sU1+UsT5odweRrMEVKGIz3NJy4zyc9t1ZSyZGUs7GmOReYRJ08sbpQePWy/wafqUU3Wr7BGqKzZiULN+wJh6kPlLxvJQmD2tqKyggiHuroR1xCh3O129bgsBnd8ATi/alCaxcGp6IsLvCwGdWlaIIIM=
+	t=1708705559; cv=none; b=PjrXHKNt/RVU9Ev8YO3lF6jXnoaiD0Ohkpd7M/Oyi/NN/Z87Nij28MoV9gn0hLDn1ooDrOXpqiMK3B6obZ2RRbicqttr71R4xUKg/AmAQjkyA0yak+itFZv63ZoMPxXtVSU5ZoCuln1MuF6XrQauZrpup/bYrDnLDrKdEFQWBnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708705447; c=relaxed/simple;
-	bh=jpd2uydbbK2quIVAUF2f9Jm7NYNaMdUuijZBqca6Nd8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qYPaqdpdHm39eShJBpAJMTYuHCTul0Af0QYtJahaHCAvzpymxcbYMgDxpi5zwCdOtNi6E+MNLbo04w60Aecj3ZEs0HzfvqKp/e3MNJZC5hsK7O4peRQ1E4NAjTGTB5x4ZLGi1p+EayPH5OXOSkQ0kZHzBkZn0IsZRafiLPlqSp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nJM2oyYa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAD6FC433C7;
-	Fri, 23 Feb 2024 16:24:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708705446;
-	bh=jpd2uydbbK2quIVAUF2f9Jm7NYNaMdUuijZBqca6Nd8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nJM2oyYa2uhQh7ht7Wgz9mA/FZAQ9kTpaAsRV9rzZbMGfzV9EwADGL8rI53rlbyP4
-	 1eF7QTqIIoYx6Bc0AqEOV0PZnK4Xt6N4KEIFPqB0tMmW31U40Y8SGcrbh73RumILzY
-	 nTgXnOnRyaje6+d286YI0gk0r6TrEKHlC4sTmIexd87gwF/uHad27DvP4xC2FJaCSa
-	 +lZoNldBO4kLbufRa+5uV0A3teSZhZMaHh+oam0IATwTKbWofU82Gs70OXPW5rrKN6
-	 N5WccSNcI+8r5FnlddIbsDiiWLmpQQc0EFRPU8ZKYMuOCztz2whPoPtHKD+Havy+Tp
-	 LkXlOb8aRvBnQ==
-Date: Fri, 23 Feb 2024 17:24:03 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Tycho Andersen <tycho@tycho.pizza>
-Cc: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>, 
-	stgraber@stgraber.org, cyphar@cyphar.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] tests/pid_namespace: add pid_max tests
-Message-ID: <20240223-kantholz-knallen-558beba46c62@brauner>
-References: <20240222160915.315255-1-aleksandr.mikhalitsyn@canonical.com>
- <20240222160915.315255-3-aleksandr.mikhalitsyn@canonical.com>
- <Zdd8MAJJD3M11yeR@tycho.pizza>
+	s=arc-20240116; t=1708705559; c=relaxed/simple;
+	bh=pcgLlYSZ94N8Z5tjPSaQIgYSm+pxjOpzSlJJCy147m0=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dr/4ypPYAvI5XJC3a6WWVwbAu98iHZpg/umh1TUfQhYnj8jSPZPLgVXVm6phxrusUQW4CGekIycT99PFBUptmtDc0dIGqk2myG3puN4CtSmQRC+DexMz7Gdr3hJOQ5SaHrEazQ4ocEN/UhZs386oS9JupJirmzknKANHWewklFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4ThFd33KWmz6JB2J;
+	Sat, 24 Feb 2024 00:21:27 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 51DEA140D30;
+	Sat, 24 Feb 2024 00:25:53 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 23 Feb
+ 2024 16:25:52 +0000
+Date: Fri, 23 Feb 2024 16:25:51 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Borislav Petkov <bp@alien8.de>
+CC: <shiju.jose@huawei.com>, <linux-cxl@vger.kernel.org>,
+	<linux-acpi@vger.kernel.org>, <linux-mm@kvack.org>,
+	<dan.j.williams@intel.com>, <dave@stgolabs.net>, <dave.jiang@intel.com>,
+	<alison.schofield@intel.com>, <vishal.l.verma@intel.com>,
+	<ira.weiny@intel.com>, <linux-edac@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <david@redhat.com>,
+	<Vilas.Sridharan@amd.com>, <leo.duran@amd.com>, <Yazen.Ghannam@amd.com>,
+	<rientjes@google.com>, <jiaqiyan@google.com>, <tony.luck@intel.com>,
+	<Jon.Grimm@amd.com>, <dave.hansen@linux.intel.com>, <rafael@kernel.org>,
+	<lenb@kernel.org>, <naoya.horiguchi@nec.com>, <james.morse@arm.com>,
+	<jthoughton@google.com>, <somasundaram.a@hpe.com>, <erdemaktas@google.com>,
+	<pgonda@google.com>, <duenwen@google.com>, <mike.malvestuto@intel.com>,
+	<gthelen@google.com>, <wschwartz@amperecomputing.com>,
+	<dferguson@amperecomputing.com>, <tanxiaofei@huawei.com>,
+	<prime.zeng@hisilicon.com>, <kangkang.shen@futurewei.com>,
+	<wanghuiqiang@huawei.com>, <linuxarm@huawei.com>
+Subject: Re: [RFC PATCH v7 00/12] memory: scrub: introduce subsystem +
+ CXL/ACPI-RAS2 drivers
+Message-ID: <20240223162551.000013ec@Huawei.com>
+In-Reply-To: <20240223154251.GAZdi8--NPaMAK_ZBp@fat_crate.local>
+References: <20240223143723.1574-1-shiju.jose@huawei.com>
+	<20240223154251.GAZdi8--NPaMAK_ZBp@fat_crate.local>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Zdd8MAJJD3M11yeR@tycho.pizza>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Thu, Feb 22, 2024 at 09:54:08AM -0700, Tycho Andersen wrote:
-> On Thu, Feb 22, 2024 at 05:09:15PM +0100, Alexander Mikhalitsyn wrote:
-> > +static int pid_max_nested_limit_inner(void *data)
-> > +{
-> > +	int fret = -1, nr_procs = 400;
-> > +	int fd, ret;
-> > +	pid_t pid;
-> > +	pid_t pids[1000];
-> > +
-> > +	ret = mount("", "/", NULL, MS_PRIVATE | MS_REC, 0);
-> > +	if (ret) {
-> > +		fprintf(stderr, "%m - Failed to make rootfs private mount\n");
-> > +		return fret;
-> > +	}
-> > +
-> > +	umount2("/proc", MNT_DETACH);
-> > +
-> > +	ret = mount("proc", "/proc", "proc", 0, NULL);
-> > +	if (ret) {
-> > +		fprintf(stderr, "%m - Failed to mount proc\n");
-> > +		return fret;
-> > +	}
-> > +
-> > +	fd = open("/proc/sys/kernel/pid_max", O_RDWR | O_CLOEXEC | O_NOCTTY);
-> > +	if (fd < 0) {
-> > +		fprintf(stderr, "%m - Failed to open pid_max\n");
-> > +		return fret;
-> > +	}
-> > +
-> > +	ret = write(fd, "500", sizeof("500") - 1);
-> > +	close(fd);
-> > +	if (ret < 0) {
-> > +		fprintf(stderr, "%m - Failed to write pid_max\n");
-> > +		return fret;
-> > +	}
-> > +
-> > +	for (nr_procs = 0; nr_procs < 500; nr_procs++) {
-> > +		pid = fork();
-> > +		if (pid < 0)
-> > +			break;
-> > +
-> > +		if (pid == 0)
-> > +			exit(EXIT_SUCCESS);
-> > +
-> > +		pids[nr_procs] = pid;
-> > +	}
-> > +
-> > +	if (nr_procs >= 400) {
-> > +		fprintf(stderr, "Managed to create processes beyond the configured outer limit\n");
-> > +		goto reap;
-> > +	}
+On Fri, 23 Feb 2024 16:42:51 +0100
+Borislav Petkov <bp@alien8.de> wrote:
+
+> On Fri, Feb 23, 2024 at 10:37:11PM +0800, shiju.jose@huawei.com wrote:
+> > CXL patrol scrub and DDR5 ECS and ACPI RAS2 HW based memory
+> > patrol scrub features are added as use cases for the scrub
+> > subsystem to expose the scrub controls to the user.  
 > 
-> A small quibble, but I wonder about the semantics here. "You can write
-> whatever you want to this file, but we'll ignore it sometimes" seems
-> weird to me. What if someone (CRIU) wants to spawn a pid numbered 450
-> in this case? I suppose they read pid_max first, they'll be able to
-> tell it's impossible and can exit(1), but returning E2BIG from write()
-> might be more useful.
+> WTH is a RAS2 driver and where is the RAS1 driver?
+> 
+Odd ACPI naming.  RASF (which is very limited) was replaced by RAS2.
 
-That's a good idea. But it's a bit tricky. The straightforward thing is
-to walk upwards through all ancestor pid namespaces and use the lowest
-pid_max value as the upper bound for the current pid namespace. This
-will guarantee that you get an error when you try to write a value that
-you would't be able to create. The same logic should probably apply to
-ns_last_pid as well.
+Both are ACPI tables that describe the Platform Communication Channels
+(mailbox) + provide a definition of the protocol that is sent over
+it in order to control memory scrub.  RAS2 has some other uses this
+driver isn't touching on.
 
-However, that still leaves cases where the current pid namespace writes
-a pid_max limit that is allowed (IOW, all ancestor pid namespaces are
-above that limit.). But then immediately afterwards an ancestor pid
-namespace lowers the pid_max limit. So you can always end up in a
-scenario like this. 
+So in short, it's an ACPI spec defined interface for controlling 
+Memory Scrub engines.
+
+https://uefi.org/specs/ACPI/6.5/05_ACPI_Software_Programming_Model.html#acpi-ras2-feature-table-ras2
+
+Jonathan
 
