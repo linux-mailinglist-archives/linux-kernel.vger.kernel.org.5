@@ -1,120 +1,140 @@
-Return-Path: <linux-kernel+bounces-78982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87E04861BA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:30:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 846D4861BC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:34:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27EE51F278E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:30:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8C0F1C224BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:34:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0779D14264A;
-	Fri, 23 Feb 2024 18:30:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A58D1448EB;
+	Fri, 23 Feb 2024 18:34:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nbO0L3o5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="SM1IU5a4"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A22E3FF1;
-	Fri, 23 Feb 2024 18:30:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86DB4101DE;
+	Fri, 23 Feb 2024 18:33:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708713007; cv=none; b=Frx2sd9TrEhcZIL/fREyQR2cJiYvyi5fpMGJzqKXqpcBVRrMntQgB6tD7OCn3lLrRd53pHgk0F3T0sNhuYk0SyOYlmEOrwXNITGyaW6Cz7N2FPN7k2MKqH9+I6uj4yCQ/vE6SOpXMCh31qLcmfYv9qGALlapNdNVqGeToe3/93E=
+	t=1708713241; cv=none; b=L+a1ixt46PE1vFVncdz3W3G3T76RRan8AraljVk6FRQYyAxdD06ElLefZIXwxdwuMlG9aPxk/MNMVvDg3PSSZXGg15EnZGFnSUFi34rQYqMVB4Vw8zhKITXA+mHEaQiL3G7ZjVHAR3DzHbUO7CcK9IGsteUKrESiuduQGDBDeqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708713007; c=relaxed/simple;
-	bh=h4pO3Tgr1PTkYatoEkKrET/MjLlwGSker91U7kqaO1o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QBFUyTsE2Yhkqv02timKASG0rTN14cU/pqC/LjDnoMRgzWmlcMG94jSztEIL1sQZzKXsLHc6JeotO5utv6OR0oo0JCR3lnZv26sh4T7AylOO9aq3an2phwa9Zm9dM5X7yuNHvHIwruSwVPMV9T46q4iOqZdjAMyJvSjLum1ATTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nbO0L3o5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBFCDC433F1;
-	Fri, 23 Feb 2024 18:30:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708713006;
-	bh=h4pO3Tgr1PTkYatoEkKrET/MjLlwGSker91U7kqaO1o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nbO0L3o5nidphoFvFp61Tw3dg+tZlos4tvnVsxt3LBum2bv9S4cTfrRbYtCdgcpk8
-	 2K3+Bqs4WAKaIaUXuBtYuzhcR3M9qhvTbIwBIFPCyZaItSaQjQrr8Jd56PmZEqrQZb
-	 acEwsL077wp13g1v9RpB2z0nSaHiOLwmaOr9HiFeBHfwJxnAsJU8yhUiKDdA+zvn9n
-	 RHBDNQixtUS8LsYmrCB85aI7TzZ//EdZ8jMmeSMNGs5bSkm8fzONPNSAGQWnNkLgVx
-	 h4oof10cHJMT7hRlxo70kTubFphVQMWuM+RE2weKDWruUnrzxYplMjxaZS63eqxuam
-	 ++gfEOXUOc9gQ==
-Date: Fri, 23 Feb 2024 10:30:04 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Andrew Cooper <andrew.cooper3@citrix.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>,
-	Ross Philipson <ross.philipson@oracle.com>,
-	linux-kernel@vger.kernel.org, x86@kernel.org,
-	linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-crypto@vger.kernel.org, kexec@lists.infradead.org,
-	linux-efi@vger.kernel.org, dpsmith@apertussolutions.com,
-	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-	dave.hansen@linux.intel.com, mjg59@srcf.ucam.org,
-	James.Bottomley@hansenpartnership.com, peterhuewe@gmx.de,
-	jarkko@kernel.org, jgg@ziepe.ca, luto@amacapital.net,
-	nivedita@alum.mit.edu, herbert@gondor.apana.org.au,
-	davem@davemloft.net, kanth.ghatraju@oracle.com,
-	trenchboot-devel@googlegroups.com
-Subject: Re: [PATCH v8 06/15] x86: Add early SHA support for Secure Launch
- early measurements
-Message-ID: <20240223183004.GE1112@sol.localdomain>
-References: <20240214221847.2066632-1-ross.philipson@oracle.com>
- <20240214221847.2066632-7-ross.philipson@oracle.com>
- <CAMj1kXEmMBY_jc0uM5UgZbuZ3-C7NPKzg5AScaunyu9XzLgzZA@mail.gmail.com>
- <98ad92bb-ef17-4c15-88ba-252db2a2e738@citrix.com>
- <CAMj1kXFTu+bV2kQhAyu15hrYai20NcBLb4Zu8XG2Y-XjL0f+rw@mail.gmail.com>
- <1a8e69a7-89eb-4d36-94d6-0da662d8b72f@citrix.com>
- <CAMj1kXEvmGy9RJo4s8tECsFj2dufZ8jBPoJOEtkcGUoj+x2qsw@mail.gmail.com>
- <431a0b3a-47e5-4e61-a7fc-31cdf56f4e4c@citrix.com>
- <20240223175449.GA1112@sol.localdomain>
- <e641e2f1-16cf-4717-8a1f-8afac2644efe@citrix.com>
+	s=arc-20240116; t=1708713241; c=relaxed/simple;
+	bh=W16s7HsLRKeMogf+4P40NdsqJiCC7rUspv0L6Ekrt7w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=rl541vZPu4amQbSs75HuxToTVKYCMZbOcDJYuNHjxS3XEkAdVhQQOSPdYtx9dD3siUhliA4nZdULOlRQVDOij0Xw7GNPuhpcG8ploTi6VEoXeUf4TecdQsHDnuX4e6YfC6Bmxd7A11QAEEx+O/M9mRi+/s4AItagHNUg0Oc8zRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=SM1IU5a4; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41NEnafk007025;
+	Fri, 23 Feb 2024 18:30:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Kfo/C8zqynWW3khr9w38fLA/juhM//M+1TSK7YbUzao=; b=SM
+	1IU5a4CNIWLmOnc+jXipb4Ga9eIJLWms0rnPxEXMwHDSoxe92W9Ew+cz2UneOT08
+	Iyi2XyxnbZDa1t3nXppWD2gBv5baFGSu5jpaJXHu6vAsxhujSo74jXQc1qhtrkyj
+	b1JYz/cxWMolVJrmsIH4767eZriXHsfPc1ASRZIKs+Vh4MImjLRwoZRf+c04IWja
+	WREgwfvGpnGGa1IxPu7qJXJNToVvZY2M73nvMYmrwiDnSM6QuEXhaYYJoUiQlYDP
+	AVkDtm/36vZFGTWQ5CsU0kJMULpTBDkWBl74wMVr5RZuQ0KaRJ0q/8gb9Xik4nP2
+	o7j3uPWaxue4GCbloFJw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3we3233ydp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 Feb 2024 18:30:49 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41NIUm69006076
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 Feb 2024 18:30:48 GMT
+Received: from [10.110.104.142] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 23 Feb
+ 2024 10:30:46 -0800
+Message-ID: <0aed6cf2-17ae-45aa-b7ff-03da932ea4e0@quicinc.com>
+Date: Fri, 23 Feb 2024 10:30:45 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e641e2f1-16cf-4717-8a1f-8afac2644efe@citrix.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [FYI][PATCH] tracing/treewide: Remove second parameter of
+ __assign_str()
+Content-Language: en-US
+To: Steven Rostedt <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+CC: Masami Hiramatsu <mhiramat@kernel.org>,
+        Mathieu Desnoyers
+	<mathieu.desnoyers@efficios.com>,
+        Linus Torvalds
+	<torvalds@linux-foundation.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <amd-gfx@lists.freedesktop.org>, <intel-gfx@lists.freedesktop.org>,
+        <intel-xe@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+        <freedreno@lists.freedesktop.org>, <virtualization@lists.linux.dev>,
+        <linux-rdma@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <iommu@lists.linux.dev>, <linux-tegra@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
+        <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <ath11k@lists.infradead.org>, <ath12k@lists.infradead.org>,
+        <brcm80211@lists.linux.dev>, <brcm80211-dev-list.pdl@broadcom.com>,
+        <linux-usb@vger.kernel.org>, <linux-bcachefs@vger.kernel.org>,
+        <linux-nfs@vger.kernel.org>, <ocfs2-devel@lists.linux.dev>,
+        <linux-cifs@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+        <linux-edac@vger.kernel.org>, <selinux@vger.kernel.org>,
+        <linux-btrfs@vger.kernel.org>, <linux-erofs@lists.ozlabs.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-hwmon@vger.kernel.org>, <io-uring@vger.kernel.org>,
+        <linux-sound@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-wpan@vger.kernel.org>, <dev@openvswitch.org>,
+        <linux-s390@vger.kernel.org>, <tipc-discussion@lists.sourceforge.net>,
+        Julia
+ Lawall <Julia.Lawall@inria.fr>
+References: <20240223125634.2888c973@gandalf.local.home>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20240223125634.2888c973@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: wCcVNA_rPgQQt00obewLDHJucphy8QWk
+X-Proofpoint-GUID: wCcVNA_rPgQQt00obewLDHJucphy8QWk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-23_04,2024-02-23_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
+ impostorscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
+ clxscore=1011 suspectscore=0 malwarescore=0 mlxlogscore=793 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402230136
 
-On Fri, Feb 23, 2024 at 06:20:27PM +0000, Andrew Cooper wrote:
-> On 23/02/2024 5:54 pm, Eric Biggers wrote:
-> > On Fri, Feb 23, 2024 at 04:42:11PM +0000, Andrew Cooper wrote:
-> >> Yes, and I agree.  We're not looking to try and force this in with
-> >> underhand tactics.
-> >>
-> >> But a blind "nack to any SHA-1" is similarly damaging in the opposite
-> >> direction.
-> >>
-> > Well, reviewers have said they'd prefer that SHA-1 not be included and given
-> > some thoughtful reasons for that.  But also they've given suggestions on how to
-> > make the SHA-1 support more palatable, such as splitting it into a separate
-> > patch and giving it a proper justification.
-> >
-> > All suggestions have been ignored.
+On 2/23/2024 9:56 AM, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 > 
-> The public record demonstrates otherwise.
+> [
+>    This is a treewide change. I will likely re-create this patch again in
+>    the second week of the merge window of v6.9 and submit it then. Hoping
+>    to keep the conflicts that it will cause to a minimum.
+> ]
 > 
-> But are you saying that you'd be happy if the commit message read
-> something more like:
-> 
-> ---8<---
-> For better or worse, Secure Launch needs SHA-1 and SHA-256.
-> 
-> The choice of hashes used lie with the platform firmware, not with
-> software, and is often outside of the users control.
-> 
-> Even if we'd prefer to use SHA-256-only, if firmware elected to start us
-> with the SHA-1 and SHA-256 backs active, we still need SHA-1 to parse
-> the TPM event log thus far, and deliberately cap the SHA-1 PCRs in order
-> to safely use SHA-256 for everything else.
-> ---
+> With the rework of how the __string() handles dynamic strings where it
+> saves off the source string in field in the helper structure[1], the
+> assignment of that value to the trace event field is stored in the helper
+> value and does not need to be passed in again.
 
-Please take some time to read through the comments that reviewers have left on
-previous versions of the patchset.
-
-- Eric
+Just curious if this could be done piecemeal by first changing the
+macros to be variadic macros which allows you to ignore the extra
+argument. The callers could then be modified in their separate trees.
+And then once all the callers have be merged, the macros could be
+changed to no longer be variadic.
 
