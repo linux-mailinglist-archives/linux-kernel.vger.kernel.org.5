@@ -1,49 +1,48 @@
-Return-Path: <linux-kernel+bounces-78219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 229BE861066
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:30:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2A0E86106A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:31:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB1D11F23820
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:30:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 747CBB237C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:31:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A782D79DB5;
-	Fri, 23 Feb 2024 11:30:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="raAYZhMG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6A0C76C62;
-	Fri, 23 Feb 2024 11:30:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7926078661;
+	Fri, 23 Feb 2024 11:31:18 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B91F478667
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:31:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708687827; cv=none; b=RDLbmUJfkNfnHh/fTLbrmaIw9RrUHgnPQzpd9ZsDONHx3rv4cjXTyfc03HNoIjw4fYrXil+WtVwOVa8ht1mpImnlsdofDyLYP3UH4BFrL7skdsicffagnx8w9euKOBSrEE2r39LDmISkKROwOzIoWiMApue+3YQrvTtqhJMWvTw=
+	t=1708687878; cv=none; b=n1tb2lpfGlLTJkmBV66f7OlVDjXBOwtWJHTacJ1KRFraF7baWN2c3TiKo7lUH4IrNS2dsN9E6b40xdzx6nVhy+mIFvGMZSgy9q/OizWQ87ZJ+cn0wR9r+6Yme4CubdNI30KYSwErZ8uyC0Dl2ezvVEk7gkENQfUdVIieptGWm6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708687827; c=relaxed/simple;
-	bh=Yvx8lu1+d4HmVl7q4rrTdL/ZqSrATFnVqJR1xZ1ppww=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=IcD57r3SJZM+83QtWzK07pDrrK4evVqfgz28MOXkZIYL/bKWsY7u9kZ3hVpB6XvAEW4pFbyKrAygfSR6dx831H7zBkPoWMlgHgfiivQWj59gJHvmLe31X0HIeb8qNLielorDxrmMp/jTLjbTY/KXce4LQFhezzQf8xoXbfyJBOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=raAYZhMG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5A504C43390;
-	Fri, 23 Feb 2024 11:30:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708687826;
-	bh=Yvx8lu1+d4HmVl7q4rrTdL/ZqSrATFnVqJR1xZ1ppww=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=raAYZhMGUdK/JjKCrmjG5kUpRADBoY3ZmuPKXrpAwSXtMilnROssvsZAh2IOqmdeg
-	 K5ODg78Z4C3rCgLO32k6nCIQsIGFpnboIQDoXVO6gFFCKny0I5G8Jna96issNSPTWl
-	 ol5hrOojec5a4P8rHA/Zy9yOD70iXTMmnNJzidCy0YuREpoPao9YMI8db8iXyMWvg6
-	 u/9KrLdCOf0ECE6ebJCkC2C5gFKuj0McXwqdAzxFRQVP25h33PZDYQx3yyiH6g2C8N
-	 0Prsa42WPmEnkUzkDmNmPdlcuHU0Ed/ver8hTC8bl1EsUl66tjNWvuglMcvsYF08dE
-	 KxQV4oG0xxVqA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3F32FD990CB;
-	Fri, 23 Feb 2024 11:30:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1708687878; c=relaxed/simple;
+	bh=mKlrDlToVS/Maui1mRuEIRqDVpR4qfopYdpXi7rgAME=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VokkERuW7mhLNEpc3KBMWEriaYarDrf+B91GOCPAjWwh1EdyAxt4VS5Te3YuuuIbqBvQBXq0W0GSeBtMKO45gGoUWhZddYTIxYlId3BDJfzTtyUVyNgER0pQc7zFZ6uNXHCz1+cxYrD5bBfCYNqdXsRhDAv+Le4f3mKqeA9fWiw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 83A6811FB;
+	Fri, 23 Feb 2024 03:31:53 -0800 (PST)
+Received: from a077893.arm.com (unknown [10.163.47.143])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 324713F762;
+	Fri, 23 Feb 2024 03:31:11 -0800 (PST)
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+To: linux-arm-kernel@lists.infradead.org
+Cc: broonie@kernel.org,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64/hw_breakpoint: Determine lengths from generic perf breakpoint macros
+Date: Fri, 23 Feb 2024 17:01:02 +0530
+Message-Id: <20240223113102.4027779-1-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,45 +50,66 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: dpaa: fman_memac: accept phy-interface-type =
- "10gbase-r" in the device tree
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170868782625.1391.6089450916134255111.git-patchwork-notify@kernel.org>
-Date: Fri, 23 Feb 2024 11:30:26 +0000
-References: <20240220223442.1275946-1-vladimir.oltean@nxp.com>
-In-Reply-To: <20240220223442.1275946-1-vladimir.oltean@nxp.com>
-To: Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, madalin.bucur@nxp.com,
- sean.anderson@seco.com, linux@armlinux.org.uk,
- zachary.goldstein@concurrent-rt.com, linux-kernel@vger.kernel.org
 
-Hello:
+Both platform i.e ARM_BREAKPOINT_LEN_X and generic i.e HW_BREAKPOINT_LEN_X
+macros are used interchangeably to convert event->attr.bp_len and platform
+breakpoint control arch_hw_breakpoint_ctrl->len. Let's be consistent while
+deriving one from the other. This does not cause any functional changes.
 
-This patch was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+This applies on v6.8-rc5
 
-On Wed, 21 Feb 2024 00:34:42 +0200 you wrote:
-> Since commit 5d93cfcf7360 ("net: dpaa: Convert to phylink"), we support
-> the "10gbase-r" phy-mode through a driver-based conversion of "xgmii",
-> but we still don't actually support it when the device tree specifies
-> "10gbase-r" proper.
-> 
-> This is because boards such as LS1046A-RDB do not define pcs-handle-names
-> (for whatever reason) in the ethernet@f0000 device tree node, and the
-> code enters through this code path:
-> 
-> [...]
+ arch/arm64/kernel/hw_breakpoint.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-Here is the summary with links:
-  - [net] net: dpaa: fman_memac: accept phy-interface-type = "10gbase-r" in the device tree
-    https://git.kernel.org/netdev/net/c/734f06db599f
-
-You are awesome, thank you!
+diff --git a/arch/arm64/kernel/hw_breakpoint.c b/arch/arm64/kernel/hw_breakpoint.c
+index 35225632d70a..1ab9fc865ddd 100644
+--- a/arch/arm64/kernel/hw_breakpoint.c
++++ b/arch/arm64/kernel/hw_breakpoint.c
+@@ -301,28 +301,28 @@ static int get_hbp_len(u8 hbp_len)
+ 
+ 	switch (hbp_len) {
+ 	case ARM_BREAKPOINT_LEN_1:
+-		len_in_bytes = 1;
++		len_in_bytes = HW_BREAKPOINT_LEN_1;
+ 		break;
+ 	case ARM_BREAKPOINT_LEN_2:
+-		len_in_bytes = 2;
++		len_in_bytes = HW_BREAKPOINT_LEN_2;
+ 		break;
+ 	case ARM_BREAKPOINT_LEN_3:
+-		len_in_bytes = 3;
++		len_in_bytes = HW_BREAKPOINT_LEN_3;
+ 		break;
+ 	case ARM_BREAKPOINT_LEN_4:
+-		len_in_bytes = 4;
++		len_in_bytes = HW_BREAKPOINT_LEN_4;
+ 		break;
+ 	case ARM_BREAKPOINT_LEN_5:
+-		len_in_bytes = 5;
++		len_in_bytes = HW_BREAKPOINT_LEN_5;
+ 		break;
+ 	case ARM_BREAKPOINT_LEN_6:
+-		len_in_bytes = 6;
++		len_in_bytes = HW_BREAKPOINT_LEN_6;
+ 		break;
+ 	case ARM_BREAKPOINT_LEN_7:
+-		len_in_bytes = 7;
++		len_in_bytes = HW_BREAKPOINT_LEN_7;
+ 		break;
+ 	case ARM_BREAKPOINT_LEN_8:
+-		len_in_bytes = 8;
++		len_in_bytes = HW_BREAKPOINT_LEN_8;
+ 		break;
+ 	}
+ 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.25.1
 
 
