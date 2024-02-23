@@ -1,154 +1,252 @@
-Return-Path: <linux-kernel+bounces-78387-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EC878612CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:37:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F1BCA8612CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:36:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD78F1C21B77
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:36:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20C121C21A7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:36:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE5EF7F46F;
-	Fri, 23 Feb 2024 13:36:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B0C7EF13;
+	Fri, 23 Feb 2024 13:36:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="R8WydVYV"
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01olkn2028.outbound.protection.outlook.com [40.92.99.28])
+	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="JuVdXM2r"
+Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AE9D7AE78;
-	Fri, 23 Feb 2024 13:36:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.99.28
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708695408; cv=fail; b=bbE2CwNx2VxpEYvzfoyPJnl6xgLWbX16I2z2dfFoh9NuryxmbdppA43acbzqvlfYRVcsAtNvD1rogY5zrgTi+i7RSEp6v+2fdIo4zvfSW8x9JVW020T4MkoCjQo+8ODLqUtJNP2wO6xcc1ygFtlRxF+wdewxQfVqc4ssLC16Vd8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708695408; c=relaxed/simple;
-	bh=7ojPixXZE5J9hkTNdeeDDMUaUZBW5I47qRWHMl9a5GU=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=F7fFtl762SnCkeEKUSOKbg0KYXnw9a1TSUyXl8f5P/3a/va2SFNTvBp30TJFF7nC2Klpstgo6s8PgVyRYpxv24R8buhoVkd+iKEvdyYC9AoLDEaAHsRsmk8KjteOSouidbQHQVaA/4H/4Zz8xiZZ8HZ25onhJ0euhLB35lNMxhg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=R8WydVYV; arc=fail smtp.client-ip=40.92.99.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lNKscIAzJhqC7d+B8pOU2hvvJm36NIosymgcx943Q2YxvlLvBIiFstLAMwLATfsNzEpx0XgK75iA/h+MSe/RQSW/FpFYJjwmdfTnDLUBYLLJDPVR/IHrWJ0xNpiqnwaVnutxcj1tRcRnDlIXDcjDvX35eEjVaY1H+FrhYScGJ7F/pSpxe4/1R6ppqMtnhqzJ0WESmWd8h/dxB55s1lsyIakaKXOhOM+Nxtks/itByASEhuF1zZxDNTuO12MjvZtXt0TTqgolfmRCEmQFdVppz1Pue9GCxS1a/Q4QfM6lgLsVMuw7JmrgqiUCglVBd4fi2yHnfVJIggO4adAvYnGong==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Oj3TNpSsWO+FLW0UrdijuaIsFCx6SOHY9wjf1DrxMNc=;
- b=Z/5SwFX3UqhmR5RpROmbeYTx9IpuCtJjBE60Qw76H/4kp+fdYseHNBUnJjeDqr8d9Ih3uMuag7/3is6+da3Xcvqz9DzWQb9xPsUT4X667DTOzKGgqEd7fjudUddk50jbqU/r+x76VXmu79aan/fl/A8t2fNCQYLI/puFINWpHu0wM3N13n48EQLDuFel5N+czxLAtO4KWFxIjQ1ZNypRnJPgiaFHnoeQm3aIOxC8HkqcJPo8z7Wh/wpkOeiTijRS1q1s+LjKCfFo/+Lx/nApmnC+hWheYQ7SvX3FdeeA9nUJKZipC3nYUzpugVXJw8Zy7/GwGgiK3+9vZwdSS1G4fA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Oj3TNpSsWO+FLW0UrdijuaIsFCx6SOHY9wjf1DrxMNc=;
- b=R8WydVYVshWnMyKnG1jJD3uLgyG2Ef/35f+eJLeSCh/s8PNaE4qGuMgNFc7WzArShxXPU4irDit5Y6Y7H72e0/gazt9aAEU+v3dEFknFNBqkcfuCFGjVqB91RMlKWQJD2fUBVlDUEVufjs6ZxBqtN44NRdz9Ik/7b1M9LRzjxni60RcHd2N+zbpXeOYBbmy5BlVEfMQuBqZWuo+FJJ5Wr5AXVMLyOUpyMH8KEEWTY+wjamE11+ZpzDr5vGZxGBaQqKN4CGQdeeZk8ds47lkJga+TughHZp9kjBSSBvdtVNVhh3M+MPXFe+m8XrXxIpD1TDA84QEinGNswKeRSpkq+w==
-Received: from TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM (2603:1096:404:8041::8)
- by TYTP286MB3527.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:3a2::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Fri, 23 Feb
- 2024 13:36:44 +0000
-Received: from TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
- ([fe80::ee92:6ce6:9de0:d8e5]) by TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
- ([fe80::ee92:6ce6:9de0:d8e5%4]) with mapi id 15.20.7316.023; Fri, 23 Feb 2024
- 13:36:44 +0000
-From: Shiji Yang <yangshiji66@outlook.com>
-To: linux-wireless@vger.kernel.org
-Cc: Jes Sorensen <Jes.Sorensen@gmail.com>,
-	Kalle Valo <kvalo@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	Shiji Yang <yangshiji66@outlook.com>
-Subject: [PATCH] wifi: rtl8xxxu: fix mixed declarations in rtl8xxxu_set_aifs()
-Date: Fri, 23 Feb 2024 21:34:32 +0800
-Message-ID:
- <TYAP286MB03157A408E0D69F2F6FBD88ABC552@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.39.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [JJ6ohtCLTKF55XCxJuoHrUI52SN/l+1MTq6gPg49uyQ=]
-X-ClientProxiedBy: PS2PR02CA0082.apcprd02.prod.outlook.com
- (2603:1096:300:5c::22) To TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:404:8041::8)
-X-Microsoft-Original-Message-ID:
- <20240223133432.4502-1-yangshiji66@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8B9A6FBF
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:36:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708695386; cv=none; b=U8dJQtZ7/DiSIUk4YDPMNS2SBDNhRzXv/t+zX5lGPefPJPe2n38lkWVmbhVnqYPkHeL6I10M7RPXvt23Msx9ZMkkPwwMH4r0oEovrG4wbRWDm/S8/2e7blBufinve/Y+xdxKM9W+kY0Xwzji7Py9ORGxkNul+a7o/rkLsjQdUVc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708695386; c=relaxed/simple;
+	bh=HgH0IgIyBLYiKnjpnfHSa1MktbhzM/lsh6rot6QCc6Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=lVQ2WqpJ/0pMyER7rumZ5PlCMm+vSjHZddinAwQYMN4pP3HbxZTdFE9iXTpwoQ/y+OXrczRTrvfdbDXl9dRL6ARhwRMIHA8eIC1S1XqhnV4g19dydi8O467+PG7aGMC/ErfAiO24g85e81oQguT55hqyXfQaLtrYXpB+vHT10Is=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=JuVdXM2r; arc=none smtp.client-ip=77.93.223.253
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by bee.tesarici.cz (Postfix) with ESMTPSA id 19D521B5D37;
+	Fri, 23 Feb 2024 14:36:15 +0100 (CET)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
+	t=1708695375; bh=8R0Jgz35RwiAAuPami73BFK87BNYyN4zzZhF/zwN98Q=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=JuVdXM2rP5U0wYlf1/U2Jshc36ExEwcNg9WkG0cbUHdzTtTWPRI+Qu8Qh/6pouKEr
+	 feiVXzKLmAbeTuDIXkyPZ69NLBozMDhhAAMYDYdHAy/fnpwmez1dfy4nbohhqWxhMk
+	 4P6XlenjmkXU+c6KQ/69yruXi0wLDsMUCcAyYd4QqHMKxl3Q+aGYytqD665Xq7Fuse
+	 itqMnoWuahtXoK3+y5Vry9LpWNYyiy9bHvIkp9yN3Qq/Bd2Q9SRjAEEjPwoNEMD/Ee
+	 Kkb9XjGyYpn4gnP+2wH1WbS9G4WsSN/iW4Dzo6rawwRrhrRw+1wQqiQzFw8i9WNkHt
+	 /dfE2c7+ilT/g==
+Date: Fri, 23 Feb 2024 14:36:13 +0100
+From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To: Will Deacon <will@kernel.org>
+Cc: Michael Kelley <mhklinux@outlook.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "kernel-team@android.com"
+ <kernel-team@android.com>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+ Christoph Hellwig <hch@lst.de>, Marek Szyprowski
+ <m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, Petr
+ Tesarik <petr.tesarik1@huawei-partners.com>, Dexuan Cui
+ <decui@microsoft.com>, Nicolin Chen <nicolinc@nvidia.com>
+Subject: Re: [PATCH v4 1/5] swiotlb: Fix double-allocation of slots due to
+ broken alignment handling
+Message-ID: <20240223143613.1878beb6@meshulam.tesarici.cz>
+In-Reply-To: <20240223124742.GB10641@willie-the-truck>
+References: <20240221113504.7161-1-will@kernel.org>
+	<20240221113504.7161-2-will@kernel.org>
+	<SN6PR02MB4157089980E6FC58D5557BCED4572@SN6PR02MB4157.namprd02.prod.outlook.com>
+	<20240223124742.GB10641@willie-the-truck>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYAP286MB0315:EE_|TYTP286MB3527:EE_
-X-MS-Office365-Filtering-Correlation-Id: cbe693d2-576f-43a3-dae4-08dc347478f9
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	EKA9hMSvhak+UZUAduJrzp85heDhjNfwO86au7JtccNndoIf4mZnOSEmhCnHIPvbYmEOefPNOkng6evvgVK6w82hfgqidxgB/3Xt1ZeYfWbQyTAsCIgMQd1kQ27ffmK/0+h9sYdiwpyKDciHVr0LHrmaRzLQ0NEF24lLfcBZdvy0aOXaFVQZ62q5Je0bKV4cEH4Lnr4tDUTL7EYyVgKk0D/MqopvIpGIbjKCKrYWbmHHlrKD8sNaHAOrkGr+QnGW5GSKaB9IaHrjs6s+uE1omV3fz54AYE22SzqcNwhMUYIXEoG5iXbWI3GSDglgn/gLhq1hWqwP+tK+55C8OCyx9HN9R9doe0OJ3H4xymK8sEAS1Z0MWNkhy6aXuNykFJZviJIkRkT5YHQJrmbm2SquRkKYhReb7/ljXtu3JbUw6j2M6qT3QO9TjEj0izvG0XR19WhwHDsHhb7PLZ3HCEwdaNsi4Po0xpaWsSmQk/swDqY/fbzA7uXzhZrBtIXV722IxzOunXbLH2hkm/1Z1DcdppcLwF7l1WzCtTNRxa7HDW1VX0FxzbVJeJcD8LbXY2/Y51m1azX/yZ1nmd73akE5SblRXjNLAcec87N/ZbfZSKqRSAd3DVoCRwG/jDxgJryW
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?b3WkjUR9X1dorvYXgijaPkmOINGzYXhACiqUhTkkoyqmxOMUhDMOHCksN/KL?=
- =?us-ascii?Q?PITXbkS+83fCr06g9Wz2WM4mpAdykjHilvfUgimOrV7blYztgzL17FFuyfmc?=
- =?us-ascii?Q?ezwDhpK4fWNrVWHsdtj4pMrTDUPqNAij/jqlmUTc1dKSWKyKP2np2x4UMmvi?=
- =?us-ascii?Q?VCUBlJ0YM4UEJ69U3QXU1rzFHX+4cV54c9iEANYJ3Pvx3Gn/Vr7nQMVZjn40?=
- =?us-ascii?Q?zO5UOTPDQwCKYuBnYGBmxe65x6Pa9BA+rgf4d2yesykcUEvJFz4sEthuo4lI?=
- =?us-ascii?Q?l6rMUvH2luEvTX4nqluqaNK+kdaOudhBAUrjeDda1rinBbrd79kk/YdEWCt4?=
- =?us-ascii?Q?qth2nP4lvCCe192dlWVr4xaX2fBDucOtFAWYy5vbyC+PPgv4vHuD2NhojoAr?=
- =?us-ascii?Q?CFd8/4iql/D/aroK1d+i6mQzJar6NMfx670IHaSfMw5SboE2nxGRiipY115h?=
- =?us-ascii?Q?plFNOCJeYOCbyE5+6UrYkw0Hm5YGaIBoOrzIg7rLgTNlZyjI6IOVDBnCy+6P?=
- =?us-ascii?Q?KVbmwtfTwhMXPzwERyyNHQ6qls9m5BzKszdwRE4EZykcgWgqCuaIRjGMhTQo?=
- =?us-ascii?Q?AUDq1lEzzJ+XHzM2mGX2X/VyKN6sAzfw287RIrA96aAZdCfKpifdt0apfGV/?=
- =?us-ascii?Q?sj7mWdhWP28hB9HGMdOaOOtXNy2pRGdrY8P7iTrjF4qz/R63x3/m2D/youH+?=
- =?us-ascii?Q?kDQ1sj4ZB+Wqcbi6DQL4vmpFci4TWdAOpy1csJUXw+/56VtX8Al1fYeLDdqE?=
- =?us-ascii?Q?Swn7SCF9F/uZLP+fD6NM9jYpcEAN99zSVcmkRu+dFM0Pmey764hNHCXhYyhm?=
- =?us-ascii?Q?lC0K/nIe/LBacwRzkPz7XB4uaXqBcCX+Tp1oeVjJOGVW+mied0+1ucwdyRAs?=
- =?us-ascii?Q?XHvVld3mQGjilp9obW0rhbGVBl34l+Df/AyTHBSp/a08K+0VIaT7Occz2k9Y?=
- =?us-ascii?Q?oBuXp9EwCgDEYAIWjsi3HpKBjU9/ArAZ1qDpuBokpc5fUyWFwRF+MdtIbYTb?=
- =?us-ascii?Q?xtbDHpvAZjMQmbfeoOqRXpX6XJ78hPXZ1I0DbHWgKqbJr1ayDh8JFkPLgMpI?=
- =?us-ascii?Q?orAmfdkqhhe6wWGmDCKLwg6LSPcWxRy/3UvDrbvjrzIO11987Gdo+kbemYsc?=
- =?us-ascii?Q?GcTUzy93QNXSissu2p+oBqX22ewt/uc93faPtJ7ebctfJiHPpQuooTEJj6wL?=
- =?us-ascii?Q?C70mmjET7IVCZZZGUkqVMUYwHXmr1Gfodvwq5rJaF6udRZb9xXH8HPy3slxb?=
- =?us-ascii?Q?k6oR8gCKDR2WbCFVT+lM?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cbe693d2-576f-43a3-dae4-08dc347478f9
-X-MS-Exchange-CrossTenant-AuthSource: TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2024 13:36:44.4228
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYTP286MB3527
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Moving struct ieee80211_sta *sta variable definition to the front
-of the code to fix the ISO C90 forbids mixed declarations and code
-warning.
+On Fri, 23 Feb 2024 12:47:43 +0000
+Will Deacon <will@kernel.org> wrote:
 
-Fixes: 43532c050f8e ("wifi: rtl8xxxu: support multiple interfaces in set_aifs()")
-Signed-off-by: Shiji Yang <yangshiji66@outlook.com>
----
- drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> On Wed, Feb 21, 2024 at 11:35:44PM +0000, Michael Kelley wrote:
+> > From: Will Deacon <will@kernel.org> Sent: Wednesday, February 21, 2024 3:35 AM  
+> > > 
+> > > Commit bbb73a103fbb ("swiotlb: fix a braino in the alignment check fix"),
+> > > which was a fix for commit 0eee5ae10256 ("swiotlb: fix slot alignment
+> > > checks"), causes a functional regression with vsock in a virtual machine
+> > > using bouncing via a restricted DMA SWIOTLB pool.
+> > > 
+> > > When virtio allocates the virtqueues for the vsock device using
+> > > dma_alloc_coherent(), the SWIOTLB search can return page-unaligned
+> > > allocations if 'area->index' was left unaligned by a previous allocation
+> > > from the buffer:
+> > > 
+> > >  # Final address in brackets is the SWIOTLB address returned to the caller
+> > >  | virtio-pci 0000:00:07.0: orig_addr 0x0 alloc_size 0x2000, iotlb_align_mask
+> > > 0x800 stride 0x2: got slot 1645-1649/7168 (0x98326800)
+> > >  | virtio-pci 0000:00:07.0: orig_addr 0x0 alloc_size 0x2000, iotlb_align_mask
+> > > 0x800 stride 0x2: got slot 1649-1653/7168 (0x98328800)
+> > >  | virtio-pci 0000:00:07.0: orig_addr 0x0 alloc_size 0x2000, iotlb_align_mask
+> > > 0x800 stride 0x2: got slot 1653-1657/7168 (0x9832a800)
+> > > 
+> > > This ends badly (typically buffer corruption and/or a hang) because
+> > > swiotlb_alloc() is expecting a page-aligned allocation and so blindly
+> > > returns a pointer to the 'struct page' corresponding to the allocation,
+> > > therefore double-allocating the first half (2KiB slot) of the 4KiB page.
+> > > 
+> > > Fix the problem by treating the allocation alignment separately to any
+> > > additional alignment requirements from the device, using the maximum
+> > > of the two as the stride to search the buffer slots and taking care
+> > > to ensure a minimum of page-alignment for buffers larger than a page.  
+> > 
+> > Could you also add some text that this patch fixes the scenario I
+> > described in the other email thread?  Something like:
+> > 
+> > The changes to page alignment handling also fix a problem when
+> > the alloc_align_mask is zero.  The page alignment handling added
+> > in the two mentioned commits could force alignment to more bits
+> > in orig_addr than specified by the device's DMA min_align_mask,
+> > resulting in a larger offset.   Since swiotlb_max_mapping_size()
+> > is based only on the DMA min_align_mask, that larger offset
+> > plus the requested size could exceed IO_TLB_SEGSIZE slots, and
+> > the mapping could fail when it shouldn't.  
+> 
+> Thanks, Michael. I can add that in.
+> 
+> > > diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> > > index b079a9a8e087..2ec2cc81f1a2 100644
+> > > --- a/kernel/dma/swiotlb.c
+> > > +++ b/kernel/dma/swiotlb.c
+> > > @@ -982,7 +982,7 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
+> > >  		phys_to_dma_unencrypted(dev, pool->start) & boundary_mask;
+> > >  	unsigned long max_slots = get_max_slots(boundary_mask);
+> > >  	unsigned int iotlb_align_mask =
+> > > -		dma_get_min_align_mask(dev) | alloc_align_mask;
+> > > +		dma_get_min_align_mask(dev) & ~(IO_TLB_SIZE - 1);
+> > >  	unsigned int nslots = nr_slots(alloc_size), stride;
+> > >  	unsigned int offset = swiotlb_align_offset(dev, orig_addr);
+> > >  	unsigned int index, slots_checked, count = 0, i;
+> > > @@ -993,19 +993,18 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
+> > >  	BUG_ON(!nslots);
+> > >  	BUG_ON(area_index >= pool->nareas);
+> > > 
+> > > +	/*
+> > > +	 * For mappings with an alignment requirement don't bother looping to
+> > > +	 * unaligned slots once we found an aligned one.
+> > > +	 */
+> > > +	stride = get_max_slots(max(alloc_align_mask, iotlb_align_mask));
+> > > +
+> > >  	/*
+> > >  	 * For allocations of PAGE_SIZE or larger only look for page aligned
+> > >  	 * allocations.
+> > >  	 */
+> > >  	if (alloc_size >= PAGE_SIZE)
+> > > -		iotlb_align_mask |= ~PAGE_MASK;
+> > > -	iotlb_align_mask &= ~(IO_TLB_SIZE - 1);
+> > > -
+> > > -	/*
+> > > -	 * For mappings with an alignment requirement don't bother looping to
+> > > -	 * unaligned slots once we found an aligned one.
+> > > -	 */
+> > > -	stride = (iotlb_align_mask >> IO_TLB_SHIFT) + 1;
+> > > +		stride = umax(stride, PAGE_SHIFT - IO_TLB_SHIFT + 1);  
+> > 
+> > Is this special handling of alloc_size >= PAGE_SIZE really needed?  
+> 
+> I've been wondering that as well, but please note that this code (and the
+> comment) are in the upstream code, so I was erring in favour of keeping
+> that while fixing the bugs. We could have an extra patch dropping it if
+> we can convince ourselves that it's not adding anything, though.
+> 
+> > I think the comment is somewhat inaccurate. If orig_addr is non-zero, and
+> > alloc_align_mask is zero, the requirement is for the alignment to match
+> > the DMA min_align_mask bits in orig_addr, even if the allocation is
+> > larger than a page.   And with Patch 3 of this series, the swiotlb_alloc()
+> > case passes in alloc_align_mask to handle page size and larger requests.
+> > So it seems like this doesn't do anything useful unless orig_addr and
+> > alloc_align_mask are both zero, and there aren't any cases of that
+> > after this patch series.  If the caller wants alignment, specify
+> > it with alloc_align_mask.  
+> 
+> It's an interesting observation. Presumably the intention here is to
+> reduce the cost of the linear search, but the code originates from a
+> time when we didn't have iotlb_align_mask or alloc_align_mask and so I
+> tend to agree that it should probably just be dropped. I'm also not even
+> convinced that it works properly if the initial search index ends up
+> being 2KiB (i.e. slot) aligned -- we'll end up jumping over the
+> page-aligned addresses!
 
-diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
-index 6dfa060..6c03433 100644
---- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
-+++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
-@@ -4919,11 +4919,11 @@ static void rtl8xxxu_set_aifs(struct rtl8xxxu_priv *priv, u8 slot_time)
- 	int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(priv->vifs); i++) {
-+		struct ieee80211_sta *sta;
-+
- 		if (!priv->vifs[i])
- 			continue;
- 
--		struct ieee80211_sta *sta;
--
- 		rcu_read_lock();
- 		sta = ieee80211_find_sta(priv->vifs[i], priv->vifs[i]->bss_conf.bssid);
- 		if (sta)
--- 
-2.39.2
+Originally, SWIOTLB was not used for allocations, so orig_addr was
+never zero. The assumption was that if the bounce buffer should be
+page-aligned, then the original buffer was also page-aligned, and the
+check against iotlb_align_mask was sufficient.
 
+> I'll add another patch to v5 which removes this check (and you've basically
+> written the commit message for me, so thanks).
+> 
+> > >  	spin_lock_irqsave(&area->lock, flags);
+> > >  	if (unlikely(nslots > pool->area_nslabs - area->used))
+> > > @@ -1015,11 +1014,14 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
+> > >  	index = area->index;
+> > > 
+> > >  	for (slots_checked = 0; slots_checked < pool->area_nslabs; ) {
+> > > -		slot_index = slot_base + index;
+> > > +		phys_addr_t tlb_addr;
+> > > 
+> > > -		if (orig_addr &&
+> > > -		    (slot_addr(tbl_dma_addr, slot_index) &
+> > > -		     iotlb_align_mask) != (orig_addr & iotlb_align_mask)) {
+> > > +		slot_index = slot_base + index;
+> > > +		tlb_addr = slot_addr(tbl_dma_addr, slot_index);
+> > > +
+> > > +		if ((tlb_addr & alloc_align_mask) ||
+> > > +		    (orig_addr && (tlb_addr & iotlb_align_mask) !=
+> > > +				  (orig_addr & iotlb_align_mask))) {  
+> > 
+> > It looks like these changes will cause a mapping failure in some
+> > iommu_dma_map_page() cases that previously didn't fail.  
+> 
+> Hmm, it's really hard to tell. This code has been quite badly broken for
+> some time, so I'm not sure how far back you have to go to find a kernel
+> that would work properly (e.g. for Nicolin's case with 64KiB pages).
+
+I believe it fails exactly in the cases that previously found an
+incorrectly aligned bounce buffer.
+
+In any case, the "middle" bits (low bits but ignoring offset inside a
+slot) of tlb_addr should indeed correspond to the middle bits of
+orig_addr.
+
+> 
+> > Everything is made right by Patch 4 of your series, but from a
+> > bisect standpoint, there will be a gap where things are worse.
+> > In [1], I think Nicolin reported a crash with just this patch applied.  
+> 
+> In Nicolin's case, I think it didn't work without the patch either, this
+> just triggered the failure earlier.
+> 
+> > While the iommu_dma_map_page() case can already fail due to
+> > "too large" requests because of not setting a max mapping size,
+> > this patch can cause smaller requests to fail as well until Patch 4
+> > gets applied.  That might be problem to avoid, perhaps by
+> > merging the Patch 4 changes into this patch.  
+> 
+> I'll leave this up to Christoph. Personally, I'm keen to avoid having
+> a giant patch trying to fix all the SWIOTLB allocation issues in one go,
+> as it will inevitably get reverted due to a corner case that we weren't
+> able to test properly, breaking the common cases at the same time.
+
+I tend to think that more patches are better, even though this patch
+alone does introduce some regressions.
+
+Petr T
 
