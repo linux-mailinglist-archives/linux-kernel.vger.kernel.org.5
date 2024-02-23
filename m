@@ -1,359 +1,202 @@
-Return-Path: <linux-kernel+bounces-78452-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78453-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 528508613B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:13:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EAA78613BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:13:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0383A284BB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:13:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 710E41C22437
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:13:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A80780BE4;
-	Fri, 23 Feb 2024 14:13:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6A1C80BE3;
+	Fri, 23 Feb 2024 14:13:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="sHqx16oE"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="sM6o6dgZ"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A48C27FBD9;
-	Fri, 23 Feb 2024 14:13:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D5237E798;
+	Fri, 23 Feb 2024 14:13:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708697597; cv=none; b=Gs86bCaUX7GeS+4/IDzwGPMj9lcxgOY/jS/aZpVLInysdaM4RBMUR/HYIw9VQfbUrhfUeoe6FdC7LPL+aP2x/Zf1Kx7i2djalqrtZF7rJRBuwb60221tWt1Wcb5DJ5ZyNXvGhBL3F6Nm8J02UGhcFL3rQ8KkdI77UXadeCnSLUM=
+	t=1708697613; cv=none; b=IdZLh+L1AWAcOJ1r6RSAHnkNrnBBxB8Kh2yGmznzu7lmgdFFiDa70zVX1S7vhhn7lgWURns3hUHm1D3qHthjcalAYh4l+9+mWwFCtr6fxtcgesZdShGk7db/ESa/rbOXiHP5DhUXw2gHpVgzrSHWOkC+pMKQf9i4sJGKDMdhHjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708697597; c=relaxed/simple;
-	bh=phVhooZ/MTs1+62yOFmazVhZyc4WnpKkUOXoFooggh8=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=WwQ2PdhAAAhKMjnSCX1NAEm7o1/q5NBBMOcewmrGFm4Eg6yf4RCLroI4uv1awu/173Wa1QIL/HURxAbuA9KxB9tcy76Za/9uVD1WYt00w1L31nSDY48Bg5MJnYpw7jPNXdkZ+kwGJpJy3hLIaaOZRV6/NigCRnLmstKO4CweyTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=sHqx16oE; arc=none smtp.client-ip=148.163.158.5
+	s=arc-20240116; t=1708697613; c=relaxed/simple;
+	bh=ko9c4iEcf/DE6C3ZRAZ+IP1qYu+WKPLwKkjums+ckWI=;
+	h=Message-ID:Date:From:Subject:To:Cc:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=BB1aSM06OZdtpdVYU/i8ir7dtecWlSUjtG/3ahj5quXO5+gGRbaRWY/ztOQ37SzwGW3gqzLzQQIsQBHjPwjyVjHDWaPFkiV+UEQUBdrLnADgrYJzlFmm0wY/oYc0iQkcDT7nK12wYOo+mB+hDtxNanSS+NfuJB8fKdlqOIxSE/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=sM6o6dgZ; arc=none smtp.client-ip=148.163.156.1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41NE7HES015212;
-	Fri, 23 Feb 2024 14:13:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : from : subject : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Cb5FpcCRI9ynnROlJT7pd1Dc9SHm+Cgby9OdbwA7C6M=;
- b=sHqx16oE8phvmJgbUoqFfHsiv/oYXTQPI7HaJPTg0r1qomc2oFrkAh8KXPWmn0ghs4wd
- VDY1AQNoFiplREV57fVe1TdqKLxZW6qMZpGviYe4qjBXLO61e1KlVp3gGADgIHc35i2u
- QquQ4kRtMnN+G0N9eUMzkmydF7r2ztRreyBZNXSk0rvakAi8X/k40OU/7UuT+DhMqO2u
- t0jRxz1aDWR6wDf6kSbdAAr3ajaSKnW4oQRX6dt13DO8qmctDJIj9mUI1oy9d/St7V5t
- DYK25BFX3hMZpU5aMSrtW33f7eyRMUsk7w9YG1aqda/7wt1tKQdqGYynJCwWFC/A0nd8 aA== 
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41NDuwbX003700;
+	Fri, 23 Feb 2024 14:13:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date : from
+ : subject : to : cc : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=Acv2wnXVA88NYpQfqAGtH+XKer3IXQR98WYmrH26+uA=;
+ b=sM6o6dgZ7RjSeTELK7cdpJBFSIepHWMXs4n52UhVzX83DjmLBQN+IyEVmvNudRWfep9R
+ ZA63OQYcwmb3hsSX0DSPU3irw+b1IvYyUYDe738K5LHHnDBKRQTEBS8KVsPjboo/+z+m
+ WflTzqHmOlmUYbgBooK/QJUH8d7XZEBrnsujJJzo5x1TtNw9bz0/pszuLQW9BOeGnD5Z
+ x9FJeTnYeP6kD2MXj1cfij608vEdxwbRTGZDRScjMYa4hfY8yq6BFj4DjuqQx/NZ516+
+ Xm1k9f3A65mpDPK+rRPRzaKkOlQqyLlkSHuq7hrDiav2mV8LAdLv6bqqHnl3099KrQev zg== 
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wetxuu2rx-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wevpr8ehd-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 14:13:07 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41NE84xM020689;
-	Fri, 23 Feb 2024 14:13:07 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wetxuu2r6-1
+	Fri, 23 Feb 2024 14:13:27 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41NDv5n7004001;
+	Fri, 23 Feb 2024 14:13:26 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wevpr8egp-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 14:13:07 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41NBI8Yq009540;
-	Fri, 23 Feb 2024 14:13:06 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wb84pwt23-1
+	Fri, 23 Feb 2024 14:13:26 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41ND2PLj031119;
+	Fri, 23 Feb 2024 14:13:25 GMT
+Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wb9bmdcy2-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 14:13:06 +0000
+	Fri, 23 Feb 2024 14:13:25 +0000
 Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-	by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41NED3Tq7078438
+	by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41NEDM4Y60817858
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 23 Feb 2024 14:13:05 GMT
+	Fri, 23 Feb 2024 14:13:24 GMT
 Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1F90658059;
-	Fri, 23 Feb 2024 14:13:03 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 53A5F58055;
+	Fri, 23 Feb 2024 14:13:22 +0000 (GMT)
 Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C81295806A;
-	Fri, 23 Feb 2024 14:12:59 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 3FCDF5805B;
+	Fri, 23 Feb 2024 14:13:19 +0000 (GMT)
 Received: from [9.171.73.236] (unknown [9.171.73.236])
 	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 23 Feb 2024 14:12:59 +0000 (GMT)
-Message-ID: <2fe9e5e0-aa5a-41e8-a2b3-80db0208cfa9@linux.ibm.com>
-Date: Fri, 23 Feb 2024 15:12:58 +0100
+	Fri, 23 Feb 2024 14:13:18 +0000 (GMT)
+Message-ID: <700198c8-e4dc-4974-9ebf-f819deaa785b@linux.ibm.com>
+Date: Fri, 23 Feb 2024 15:13:18 +0100
+User-Agent: Mozilla Thunderbird
+From: Wenjia Zhang <wenjia@linux.ibm.com>
+Subject: Re: [PATCH net-next 09/15] net/smc: introduce loopback-ism statistics
+ attributes
+To: Wen Gu <guwen@linux.alibaba.com>, wintera@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        jaka@linux.ibm.com
+Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com, alibuda@linux.alibaba.com,
+        tonylu@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240111120036.109903-1-guwen@linux.alibaba.com>
+ <20240111120036.109903-10-guwen@linux.alibaba.com>
+ <417a1b7c-4136-4f96-a614-9fd976dc884d@linux.ibm.com>
+ <cac6192e-85d8-4289-b5af-bc8143e76004@linux.alibaba.com>
+Content-Language: en-GB
+In-Reply-To: <cac6192e-85d8-4289-b5af-bc8143e76004@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: DmwT2ccgnwSpwqjqQQYJmM6mm-2ChAHF
+X-Proofpoint-ORIG-GUID: iaFTWxfo9vY_8SLwDI2OL7V38Xnb1XNU
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Wenjia Zhang <wenjia@linux.ibm.com>
-Subject: Re: [PATCH net-next 06/15] net/smc: implement DMB-related operations
- of loopback-ism
-To: Wen Gu <guwen@linux.alibaba.com>, wintera@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        jaka@linux.ibm.com, Gerd Bayer <gbayer@linux.ibm.com>
-Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com, alibuda@linux.alibaba.com,
-        tonylu@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240111120036.109903-1-guwen@linux.alibaba.com>
- <20240111120036.109903-7-guwen@linux.alibaba.com>
- <b5b4b96f-e512-4c1a-b749-f9fc3e7c2fcf@linux.ibm.com>
- <a06cdb50-591b-4984-b7d5-7ab758569d21@linux.alibaba.com>
-Content-Language: en-GB
-In-Reply-To: <a06cdb50-591b-4984-b7d5-7ab758569d21@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: YuG2ZLXkCxjwpAYMYjrK2YsGgWKwje5B
-X-Proofpoint-ORIG-GUID: jFb1KQo3tSrfPidEzDU5Omo9nxWqVCsS
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-22_15,2024-02-23_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=894 spamscore=0
- mlxscore=0 suspectscore=0 lowpriorityscore=0 impostorscore=0
- malwarescore=0 clxscore=1015 priorityscore=1501 phishscore=0 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ mlxlogscore=999 adultscore=0 impostorscore=0 bulkscore=0 suspectscore=0
+ malwarescore=0 clxscore=1015 spamscore=0 phishscore=0 priorityscore=1501
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2311290000 definitions=main-2402230103
 
 
 
-On 20.02.24 02:55, Wen Gu wrote:
+On 20.02.24 03:45, Wen Gu wrote:
 > 
 > 
-> On 2024/2/16 22:13, Wenjia Zhang wrote:
+> On 2024/2/16 22:24, Wenjia Zhang wrote:
 >>
 >>
 >> On 11.01.24 13:00, Wen Gu wrote:
->>> This implements DMB (un)registration and data move operations of
->>> loopback-ism device.
+>>> This introduces some statistics attributes of loopback-ism. They can be
+>>> read from /sys/devices/virtual/smc/loopback-ism/{xfer_tytes|dmbs_cnt}.
 >>>
 >>> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
 >>> ---
->>>   net/smc/smc_cdc.c      |   6 ++
->>>   net/smc/smc_cdc.h      |   1 +
->>>   net/smc/smc_loopback.c | 133 ++++++++++++++++++++++++++++++++++++++++-
->>>   net/smc/smc_loopback.h |  13 ++++
->>>   4 files changed, 150 insertions(+), 3 deletions(-)
+>>>   net/smc/smc_loopback.c | 74 ++++++++++++++++++++++++++++++++++++++++++
+>>>   net/smc/smc_loopback.h | 22 +++++++++++++
+>>>   2 files changed, 96 insertions(+)
 >>>
->>> diff --git a/net/smc/smc_cdc.c b/net/smc/smc_cdc.c
->>> index 3c06625ceb20..c820ef197610 100644
->>> --- a/net/smc/smc_cdc.c
->>> +++ b/net/smc/smc_cdc.c
->>> @@ -410,6 +410,12 @@ static void smc_cdc_msg_recv(struct smc_sock 
->>> *smc, struct smc_cdc_msg *cdc)
->>>   static void smcd_cdc_rx_tsklet(struct tasklet_struct *t)
->>>   {
->>>       struct smc_connection *conn = from_tasklet(conn, t, rx_tsklet);
->>> +
->>> +    smcd_cdc_rx_handler(conn);
->>> +}
->>> +
->>> +void smcd_cdc_rx_handler(struct smc_connection *conn)
->>> +{
->>>       struct smcd_cdc_msg *data_cdc;
->>>       struct smcd_cdc_msg cdc;
->>>       struct smc_sock *smc;
->>> diff --git a/net/smc/smc_cdc.h b/net/smc/smc_cdc.h
->>> index 696cc11f2303..11559d4ebf2b 100644
->>> --- a/net/smc/smc_cdc.h
->>> +++ b/net/smc/smc_cdc.h
->>> @@ -301,5 +301,6 @@ int smcr_cdc_msg_send_validation(struct 
->>> smc_connection *conn,
->>>                    struct smc_wr_buf *wr_buf);
->>>   int smc_cdc_init(void) __init;
->>>   void smcd_cdc_rx_init(struct smc_connection *conn);
->>> +void smcd_cdc_rx_handler(struct smc_connection *conn);
->>>   #endif /* SMC_CDC_H */
->>> diff --git a/net/smc/smc_loopback.c b/net/smc/smc_loopback.c
->>> index 353d4a2d69a1..f72e7b24fc1a 100644
->>> --- a/net/smc/smc_loopback.c
->>> +++ b/net/smc/smc_loopback.c
->>> @@ -15,11 +15,13 @@
->>>   #include <linux/types.h>
->>>   #include <net/smc.h>
->>> +#include "smc_cdc.h"
->>>   #include "smc_ism.h"
->>>   #include "smc_loopback.h"
->>>   #if IS_ENABLED(CONFIG_SMC_LO)
->>>   #define SMC_LO_V2_CAPABLE    0x1 /* loopback-ism acts as ISMv2 */
->>> +#define SMC_DMA_ADDR_INVALID    (~(dma_addr_t)0)
->>>   static const char smc_lo_dev_name[] = "loopback-ism";
->>>   static struct smc_lo_dev *lo_dev;
->>> @@ -50,6 +52,97 @@ static int smc_lo_query_rgid(struct smcd_dev 
->>> *smcd, struct smcd_gid *rgid,
->>>       return 0;
->>>   }
->>> +static int smc_lo_register_dmb(struct smcd_dev *smcd, struct 
->>> smcd_dmb *dmb,
->>> +                   void *client_priv)
->>> +{
->>> +    struct smc_lo_dmb_node *dmb_node, *tmp_node;
->>> +    struct smc_lo_dev *ldev = smcd->priv;
->>> +    int sba_idx, order, rc;
->>> +    struct page *pages;
->>> +
->>> +    /* check space for new dmb */
->>> +    for_each_clear_bit(sba_idx, ldev->sba_idx_mask, SMC_LO_MAX_DMBS) {
->>> +        if (!test_and_set_bit(sba_idx, ldev->sba_idx_mask))
->>> +            break;
->>> +    }
->>> +    if (sba_idx == SMC_LO_MAX_DMBS)
->>> +        return -ENOSPC;
->>> +
->>> +    dmb_node = kzalloc(sizeof(*dmb_node), GFP_KERNEL);
->>> +    if (!dmb_node) {
->>> +        rc = -ENOMEM;
->>> +        goto err_bit;
->>> +    }
->>> +
->>> +    dmb_node->sba_idx = sba_idx;
->>> +    order = get_order(dmb->dmb_len);
->>> +    pages = alloc_pages(GFP_KERNEL | __GFP_NOWARN |
->>> +                __GFP_NOMEMALLOC | __GFP_COMP |
->>> +                __GFP_NORETRY | __GFP_ZERO,
->>> +                order);
->>> +    if (!pages) {
->>> +        rc = -ENOMEM;
->>> +        goto err_node;
->>> +    }
->>> +    dmb_node->cpu_addr = (void *)page_address(pages);
->>> +    dmb_node->len = dmb->dmb_len;
->>> +    dmb_node->dma_addr = SMC_DMA_ADDR_INVALID;
->>> +
->>> +again:
->>> +    /* add new dmb into hash table */
->>> +    get_random_bytes(&dmb_node->token, sizeof(dmb_node->token));
->>> +    write_lock(&ldev->dmb_ht_lock);
->>> +    hash_for_each_possible(ldev->dmb_ht, tmp_node, list, 
->>> dmb_node->token) {
->>> +        if (tmp_node->token == dmb_node->token) {
->>> +            write_unlock(&ldev->dmb_ht_lock);
->>> +            goto again;
->>> +        }
->>> +    }
->>> +    hash_add(ldev->dmb_ht, &dmb_node->list, dmb_node->token);
->>> +    write_unlock(&ldev->dmb_ht_lock);
->>> +
->> The write_lock_irqsave()/write_unlock_irqrestore() and 
->> read_lock_irqsave()/read_unlock_irqrestore()should be used instead of 
->> write_lock()/write_unlock() and read_lock()/read_unlock() in order to 
->> keep the lock irq-safe.
 >>
+>> I've read the comments from Jiri and your answer. I can understand 
+>> your thought. However, from the perspective of the end user, it makes 
+>> more sense to integetrate the stats info into 'smcd stats'. Otherwise, 
+>> it would make users confused to find out with which tool to check 
+>> which statisic infornation. Sure, some improvement of the smc-tools is 
+>> also needed
 > 
-> dmb_ht_lock won't be hold in an interrupt or sockirq context. The 
-> dmb_{register|unregister},
-> dmb_{attach|detach} and data_move are all on the process context. So I 
-> think write_(un)lock
-> and read_(un)lock is safe here.
-
-right, it is not directly hold in a interrupt context, but it has a 
-dependency on conn->send_lock as you wrote below, which requires 
-irq-safe lock. And this matches our finding from a test:
-
-=====================================================
-WARNING: SOFTIRQ-safe -> SOFTIRQ-unsafe lock order detected
-6.8.0-rc4-00787-g8eb4d2392609 #2 Not tainted
------------------------------------------------------
-smcapp/33802 [HC0[0]:SC0[2]:HE1:SE0] is trying to acquire:
-00000000a2fc0330 (&ldev->dmb_ht_lock){++++}-{2:2}, at: 
-smc_lo_move_data+0x84/0x1d0 [>
-and this task is already holding:
-00000000e4df6f28 (&smc->conn.send_lock){+.-.}-{2:2}, at: 
-smc_tx_sndbuf_nonempty+0xaa>
-which would create a new lock dependency:
-(&smc->conn.send_lock){+.-.}-{2:2} -> (&ldev->dmb_ht_lock){++++}-{2:2}
-but this new dependency connects a SOFTIRQ-irq-safe lock:
-(&smc->conn.send_lock){+.-.}-{2:2}
-
+> Thank you Wenjia.
 > 
->>> +    dmb->sba_idx = dmb_node->sba_idx;
->>> +    dmb->dmb_tok = dmb_node->token;
->>> +    dmb->cpu_addr = dmb_node->cpu_addr;
->>> +    dmb->dma_addr = dmb_node->dma_addr;
->>> +    dmb->dmb_len = dmb_node->len;
->>> +
->>> +    return 0;
->>> +
->>> +err_node:
->>> +    kfree(dmb_node);
->>> +err_bit:
->>> +    clear_bit(sba_idx, ldev->sba_idx_mask);
->>> +    return rc;
->>> +}
->>> +
->>> +static int smc_lo_unregister_dmb(struct smcd_dev *smcd, struct 
->>> smcd_dmb *dmb)
->>> +{
->>> +    struct smc_lo_dmb_node *dmb_node = NULL, *tmp_node;
->>> +    struct smc_lo_dev *ldev = smcd->priv;
->>> +
->>> +    /* remove dmb from hash table */
->>> +    write_lock(&ldev->dmb_ht_lock);
->>> +    hash_for_each_possible(ldev->dmb_ht, tmp_node, list, 
->>> dmb->dmb_tok) {
->>> +        if (tmp_node->token == dmb->dmb_tok) {
->>> +            dmb_node = tmp_node;
->>> +            break;
->>> +        }
->>> +    }
->>> +    if (!dmb_node) {
->>> +        write_unlock(&ldev->dmb_ht_lock);
->>> +        return -EINVAL;
->>> +    }
->>> +    hash_del(&dmb_node->list);
->>> +    write_unlock(&ldev->dmb_ht_lock);
->>> +
->>> +    clear_bit(dmb_node->sba_idx, ldev->sba_idx_mask);
->>> +    kfree(dmb_node->cpu_addr);
->>> +    kfree(dmb_node);
->>> +
->>> +    return 0;
->>> +}
->>> +
->>>   static int smc_lo_add_vlan_id(struct smcd_dev *smcd, u64 vlan_id)
->>>   {
->>>       return -EOPNOTSUPP;
->>> @@ -76,6 +169,38 @@ static int smc_lo_signal_event(struct smcd_dev 
->>> *dev, struct smcd_gid *rgid,
->>>       return 0;
->>>   }
->>> +static int smc_lo_move_data(struct smcd_dev *smcd, u64 dmb_tok,
->>> +                unsigned int idx, bool sf, unsigned int offset,
->>> +                void *data, unsigned int size)
->>> +{
->>> +    struct smc_lo_dmb_node *rmb_node = NULL, *tmp_node;
->>> +    struct smc_lo_dev *ldev = smcd->priv;
->>> +
->>> +    read_lock(&ldev->dmb_ht_lock);
->>> +    hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb_tok) {
->>> +        if (tmp_node->token == dmb_tok) {
->>> +            rmb_node = tmp_node;
->>> +            break;
->>> +        }
->>> +    }
->>> +    if (!rmb_node) {
->>> +        read_unlock(&ldev->dmb_ht_lock);
->>> +        return -EINVAL;
->>> +    }
->>> +    read_unlock(&ldev->dmb_ht_lock);
->>> +
->>> +    memcpy((char *)rmb_node->cpu_addr + offset, data, size);
->>> +
->>
->> Should this read_unlock be placed behind memcpy()?
->>
+> Let's draw an analogy with RDMA devices, which is used in SMC-R. If we want
+> to check the RNIC status or statistics, we may use rdma statistic 
+> command, or
+> ibv_devinfo command, or check file under /sys/class/infiniband/mlx5_0. 
+> These
+> provide details or attributes related to *devices*.
 > 
-> dmb_ht_lock is used to ensure safe access to the DMB hash table of 
-> loopback-ism.
-> The DMB hash table could be accessed by all the connections on 
-> loopback-ism, so
-> it should be protected.
+> Since s390 ISM can be used out of SMC, I guess it also has its own way 
+> (other
+> than smc-tools) to check the statistic?
 > 
-> But a certain DMB is only used by one connection, and the move_data 
-> process is
-> protected by conn->send_lock (see smcd_tx_sndbuf_nonempty()), so the 
-> memcpy(rmb_node)
-> here is safe and no race with other.
+> What we can see in smcr stats or smcd stats command is about statistic or
+> status of SMC *protocol* layer, such as DMB status, Tx/Rx, connections, 
+> fallbacks.
+> 
+> If we put the underlying devices's statistics into smc-tools, should we 
+> also
+> put RNIC statistics or s390 ISM statistics into smcr stat or smcd stat? and
+> for each futures device that can be used by SMC-R/SMC-D, should we 
+> update them
+> into smcr stat and smcd stat? And the attributes of each devices may be 
+> different,
+> should we add entries in smcd stat for each of them?
+> 
+> After considering the above things, I believe that the details of the 
+> underlying
+> device should not be exposed to smc(smc-tools). What do you think?
 > 
 > Thanks!
 > 
-sounds reasonable.
->> <...>
+That is a very good point. It really depends on how we understand 
+*devices* and how we want to use it. The more we are thinking, the more 
+complicated the thing is getting. I'm trying to find accurate 
+definitions on modeling virtual devices hoping that would make things 
+eaiser. Unfortunately, it is not easy. Finally, I found this article: 
+https://lwn.net/Articles/645810/ (Heads up! It is even from nine years 
+ago, I'm not sure how reliable it is.) With the insight of this article, 
+I'm trying to summarize my thought:
+
+It looks good to put the loopback-ism under the /sys/devices/virtual, 
+especially according to the article
+"
+.. it is simply a place to put things that don't belong anywhere else.
+"
+However, in practice we use this in the term of simulated ism, which 
+includes not only loopback-ism, but also other ones. Thus, does it not 
+make sense to classify all of them together? E.g. same bus (just a 
+half-baked idea)
+
+Then the following questions are comig up:
+- How should we organize them?
+- Should it show up in the smc_rnics?
+- How should it be seen from the perspective of the container?
+- If we see this loopback-ism as a *device*, should we not only put the 
+device related information under the /sys? Thus, dmbs_cnt seems ok, but 
+xfer_tytes not. Besides, we have a field in smd stat naming "Data 
+transmitted (Bytes)", which should be suitable for this information.
+
 
