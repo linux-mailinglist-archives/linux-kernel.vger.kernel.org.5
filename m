@@ -1,166 +1,189 @@
-Return-Path: <linux-kernel+bounces-78283-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78284-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B400861159
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:17:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C86C186115A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:17:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12875B22B55
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:17:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E1F4286F63
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:17:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CABE978667;
-	Fri, 23 Feb 2024 12:17:09 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31AA87BAE3;
+	Fri, 23 Feb 2024 12:17:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pxxS1kyc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 360AC5C90C;
-	Fri, 23 Feb 2024 12:17:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B46A2E417;
+	Fri, 23 Feb 2024 12:17:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708690629; cv=none; b=haFEuefbmTpOXt8PAKVPc8QPQk1CqOxsUQQ0zvRCuf1XY+lucvRH0S9XfXtxlIAO/nastBFzPwEFUfItlQk68zOaSKFT4bmVeJgOW+962ckwLrLJKXDyQT5K0EID866kbAl/z64ciBQq2Co/n9ZivLt1dxyShS8w5eynuQwiAas=
+	t=1708690637; cv=none; b=W1d8LSTJVyNc1uV1cN23nzG5nppNYDHrHuml3S6EWiJsMYKFt2GdzYfE5EjRCujJPW5Fhs1OT+uzYGYvxAm4gXFBN8U7UVgK+GjmQM649QBOiCfLdjiQszIhFBMilMZ0WFcrCmXRzMpUkSZy+OZi/A5qCwbjkkQLEYrhr9xU8jU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708690629; c=relaxed/simple;
-	bh=qDrweQQqf8nzNthDbW29boU/th8Tx7nKWJxKyp/ks0w=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gfxIxTNfU69dKBvuG1MWJXrFVnl6rKlIqwVWqS/eQ9eDTVVjtY17R+DColcg0MwyFUSDsw4mUHBdwQ4MZItNI87DlNqXpngw4U248SaqJEg0ZID2sXqRx5iW/mZYMR2AoGv0ImR8n3AoDRAsYXZAxShlone84yOe8X+zDxbxTX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Th86H5SCgz6K64V;
-	Fri, 23 Feb 2024 20:12:55 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id B5251140B54;
-	Fri, 23 Feb 2024 20:17:04 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 23 Feb
- 2024 12:17:03 +0000
-Date: Fri, 23 Feb 2024 12:17:01 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Dan Williams <dan.j.williams@intel.com>
-CC: Shuai Xue <xueshuai@linux.alibaba.com>, Borislav Petkov <bp@alien8.de>,
-	Ira Weiny <ira.weiny@intel.com>, "Luck, Tony" <tony.luck@intel.com>,
-	"james.morse@arm.com" <james.morse@arm.com>, <rafael@kernel.org>,
-	<wangkefeng.wang@huawei.com>, <tanxiaofei@huawei.com>,
-	<mawupeng1@huawei.com>, <linmiaohe@huawei.com>, <naoya.horiguchi@nec.com>,
-	<gregkh@linuxfoundation.org>, <will@kernel.org>, <jarkko@kernel.org>,
-	<linux-acpi@vger.kernel.org>, <linux-mm@kvack.org>,
-	<linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
-	<linux-edac@vger.kernel.org>, <x86@kernel.org>, <justin.he@arm.com>,
-	<ardb@kernel.org>, <ying.huang@intel.com>, <ashish.kalra@amd.com>,
-	<baolin.wang@linux.alibaba.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
-	<dave.hansen@linux.intel.com>, <lenb@kernel.org>, <hpa@zytor.com>,
-	<robert.moore@intel.com>, <lvying6@huawei.com>, <xiexiuqi@huawei.com>,
-	<zhuo.song@linux.alibaba.com>
-Subject: Re: [PATCH v11 1/3] ACPI: APEI: send SIGBUS to current task if
- synchronous memory error not recovered
-Message-ID: <20240223121701.00004bcf@Huawei.com>
-In-Reply-To: <20240223120813.00005d1f@Huawei.com>
-References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
-	<20240204080144.7977-2-xueshuai@linux.alibaba.com>
-	<20240219092528.GTZdMeiDWIDz613VeT@fat_crate.local>
-	<bdf15819-46e0-498f-97e1-a0183f257086@linux.alibaba.com>
-	<65d82c9352e78_24f3f294d5@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-	<20240223120813.00005d1f@Huawei.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1708690637; c=relaxed/simple;
+	bh=dD+Amox90za99RFzb8DfVKU4tgSGxx3W9Z7qT51AAcI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N0Dolhad35Y147fDfApe2SqJ7V9iAEZ5GTne0urUPgIISJgUeVaNMIenp3u9kA+FbJ2tcs9GFwy54DmNVOAVZOTXF9EIEfSKOIqEKVPOLJqASV8mQGEMh2/RTwOyMmlWLkDDG79wrrph1wK5GEK4zsfaKkcNBQTX7EnGkXesUfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pxxS1kyc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B05A0C433C7;
+	Fri, 23 Feb 2024 12:17:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708690637;
+	bh=dD+Amox90za99RFzb8DfVKU4tgSGxx3W9Z7qT51AAcI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pxxS1kycaZswlj15eFxU59COD51PSZN2AXkjIUp8pTrNIf+p05WWq4T3No8ZuytQE
+	 S4rQrVDbJwPYHOde4GIgWD763DBD9v/zJZVH1Zo36B6Hrzkosc4Fyywo/kW1731sWb
+	 YV42CAn+KSrrxLaXVRHSR6gHm7/9Cpu8sZGMmoi0X0qWg+fXpJ0EdV6dbervfMTd1O
+	 nzCF9n7oaYWOiq5tnFQUM4+SpguW9DgKj7GX9Xo0Hn+9pG8ytEY5QcAwxBLqPpAQcF
+	 6wYBwzGJ2Yggj/Z67/xWqa/YaoXRa2lTS8Yn9pzMCDZcuoaft5cVMyfSKvaFQvs65N
+	 GYiWHUQbxU8mQ==
+Date: Fri, 23 Feb 2024 13:17:14 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org, Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Sebastian Siewior <bigeasy@linutronix.de>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH v2 6/6] rcu-tasks: Maintain real-time response in
+ rcu_tasks_postscan()
+Message-ID: <ZdiMympnNOo6e+5T@lothringen>
+References: <20240217012745.3446231-1-boqun.feng@gmail.com>
+ <20240217012745.3446231-7-boqun.feng@gmail.com>
+ <ZdeI_-RfdLR8jlsm@localhost.localdomain>
+ <e0472956-1b18-4a22-be6e-5dbbc11141eb@paulmck-laptop>
+ <9a27f638-4eb0-42b3-b8a3-201d6ed9406b@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9a27f638-4eb0-42b3-b8a3-201d6ed9406b@paulmck-laptop>
 
-On Fri, 23 Feb 2024 12:08:13 +0000
-Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+On Thu, Feb 22, 2024 at 02:56:46PM -0800, Paul E. McKenney wrote:
+> On Thu, Feb 22, 2024 at 12:52:24PM -0800, Paul E. McKenney wrote:
+> > > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > > > index 4dc355b2ac22..866743e0796f 100644
+> > > > --- a/kernel/rcu/tasks.h
+> > > > +++ b/kernel/rcu/tasks.h
+> > > > @@ -971,13 +971,32 @@ static void rcu_tasks_postscan(struct list_head *hop)
+> > > >  	 */
+> > > >  
+> > > >  	for_each_possible_cpu(cpu) {
+> > > > +		unsigned long j = jiffies + 1;
+> > > >  		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, cpu);
+> > > >  		struct task_struct *t;
+> > > > +		struct task_struct *t1;
+> > > > +		struct list_head tmp;
+> > > >  
+> > > >  		raw_spin_lock_irq_rcu_node(rtpcp);
+> > > > -		list_for_each_entry(t, &rtpcp->rtp_exit_list, rcu_tasks_exit_list)
+> > > > +		list_for_each_entry_safe(t, t1, &rtpcp->rtp_exit_list, rcu_tasks_exit_list) {
+> > > >  			if (list_empty(&t->rcu_tasks_holdout_list))
+> > > >  				rcu_tasks_pertask(t, hop);
+> > > > +
+> > > > +			// RT kernels need frequent pauses, otherwise
+> > > > +			// pause at least once per pair of jiffies.
+> > > > +			if (!IS_ENABLED(CONFIG_PREEMPT_RT) && time_before(jiffies, j))
+> > > > +				continue;
+> > > > +
+> > > > +			// Keep our place in the list while pausing.
+> > > > +			// Nothing else traverses this list, so adding a
+> > > > +			// bare list_head is OK.
+> > > > +			list_add(&tmp, &t->rcu_tasks_exit_list);
+> > > 
+> > > I'm a bit confused about what this does...
 
-> On Thu, 22 Feb 2024 21:26:43 -0800
-> Dan Williams <dan.j.williams@intel.com> wrote:
-> 
-> > Shuai Xue wrote:  
+Oh, ok now I see what you're doing! My fear was that t goes off but doesn't
+remove itself and then the list_del() crashes. But no actually tmp places itself
+after t and then if t exits, it removes itself before tmp and that's fine.
+
 > > > 
+> > > > +			raw_spin_unlock_irq_rcu_node(rtpcp);
+> > > > +			cond_resched(); // For CONFIG_PREEMPT=n kernels
+> > > > +			raw_spin_lock_irq_rcu_node(rtpcp);
+> > > > +			list_del(&tmp);
 > > > 
-> > > On 2024/2/19 17:25, Borislav Petkov wrote:    
-> > > > On Sun, Feb 04, 2024 at 04:01:42PM +0800, Shuai Xue wrote:    
-> > > >> Synchronous error was detected as a result of user-space process accessing
-> > > >> a 2-bit uncorrected error. The CPU will take a synchronous error exception
-> > > >> such as Synchronous External Abort (SEA) on Arm64. The kernel will queue a
-> > > >> memory_failure() work which poisons the related page, unmaps the page, and
-> > > >> then sends a SIGBUS to the process, so that a system wide panic can be
-> > > >> avoided.
-> > > >>
-> > > >> However, no memory_failure() work will be queued when abnormal synchronous
-> > > >> errors occur. These errors can include situations such as invalid PA,
-> > > >> unexpected severity, no memory failure config support, invalid GUID
-> > > >> section, etc. In such case, the user-space process will trigger SEA again.
-> > > >> This loop can potentially exceed the platform firmware threshold or even
-> > > >> trigger a kernel hard lockup, leading to a system reboot.
-> > > >>
-> > > >> Fix it by performing a force kill if no memory_failure() work is queued
-> > > >> for synchronous errors.
-> > > >>
-> > > >> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
-> > > >> ---
-> > > >>  drivers/acpi/apei/ghes.c | 9 +++++++++
-> > > >>  1 file changed, 9 insertions(+)
-> > > >>
-> > > >> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-> > > >> index 7b7c605166e0..0892550732d4 100644
-> > > >> --- a/drivers/acpi/apei/ghes.c
-> > > >> +++ b/drivers/acpi/apei/ghes.c
-> > > >> @@ -806,6 +806,15 @@ static bool ghes_do_proc(struct ghes *ghes,
-> > > >>  		}
-> > > >>  	}
-> > > >>  
-> > > >> +	/*
-> > > >> +	 * If no memory failure work is queued for abnormal synchronous
-> > > >> +	 * errors, do a force kill.
-> > > >> +	 */
-> > > >> +	if (sync && !queued) {
-> > > >> +		pr_err("Sending SIGBUS to current task due to memory error not recovered");
-> > > >> +		force_sig(SIGBUS);
-> > > >> +	}    
-> > > > 
-> > > > Except that there are a bunch of CXL GUIDs being handled there too and
-> > > > this will sigbus those processes now automatically.    
-> > > 
-> > > Before the CXL GUIDs added, @Tony confirmed that the HEST notifications are always
-> > > asynchronous on x86 platform, so only Synchronous External Abort (SEA) on ARM is
-> > > delivered as a synchronous notification.
-> > > 
-> > > Will the CXL component trigger synchronous events for which we need to terminate the
-> > > current process by sending sigbus to process?    
+> > > Isn't there a risk that t is reaped by then? If it was not observed on_rq
+> > > while calling rcu_tasks_pertask() then there is no get_task_struct.
 > > 
-> > None of the CXL component errors should be handled as synchronous
-> > events. They are either asynchronous protocol errors, or effectively
-> > equivalent to CPER_SEC_PLATFORM_MEM notifications.  
+> > That is OK, courtesy of the _safe in list_for_each_entry_safe().
+> > 
+> > > And what about t1? Can't it be reaped as well?
+> > 
+> > It can, and that is a problem, good catch!
+> > 
+> > My current thought is to add this before the list_del(), which is
+> > admittedly a bit crude:
+> > 
+> > 			t1 = tmp.next;
 > 
-> Not a good example, CPER_SEC_PLATFORM_MEM is sometimes signaled via SEA.
+> OK, OK...  ;-)
 > 
+> 			t1 = list_entry(tmp.next, struct task_struct, rcu_tasks_exit_list);
+> 
+> Is there still a better way?
 
-Premature send.:(
+That should work.
 
-One example I can point at is how we do signaling of memory
-errors detected by the host into a VM on arm64.
-https://elixir.bootlin.com/qemu/latest/source/hw/acpi/ghes.c#L391
-CPER_SEC_PLATFORM_MEM via ARM Synchronous External Abort (SEA).
+An (untested) alternative that fiddles a bit less with list internals could look like this:
 
-Right now we've only used async in QEMU for proposed CXL error
-CPER records signalling but your reference to them being similar
-to CPER_SEC_PLATFORM_MEM is valid so 'maybe' they will be
-synchronous in some physical systems as it's one viable way to
-provide rich information for synchronous reception of poison.
-For the VM case my assumption today is we don't care about providing the
-VM with rich data, so CPER_SEC_PLATFORM_MEM is fine as a path for
-errors whether from CXL CPER records or not.
-
-Jonathan
-
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 866743e0796f..0ff2b554f5b5 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -973,12 +973,13 @@ static void rcu_tasks_postscan(struct list_head *hop)
+ 	for_each_possible_cpu(cpu) {
+ 		unsigned long j = jiffies + 1;
+ 		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, cpu);
+-		struct task_struct *t;
+-		struct task_struct *t1;
+-		struct list_head tmp;
+ 
+ 		raw_spin_lock_irq_rcu_node(rtpcp);
+-		list_for_each_entry_safe(t, t1, &rtpcp->rtp_exit_list, rcu_tasks_exit_list) {
++		while (!list_empty(&rtpcp->rtp_exit_list)) {
++			struct task_struct *t;
++			t = list_first_entry(&rtpcp->rtp_exit_list, typeof(*t), rcu_tasks_exit_list);
++			list_del_init(&t->rcu_tasks_exit_list);
++
+ 			if (list_empty(&t->rcu_tasks_holdout_list))
+ 				rcu_tasks_pertask(t, hop);
+ 
+@@ -987,14 +988,9 @@ static void rcu_tasks_postscan(struct list_head *hop)
+ 			if (!IS_ENABLED(CONFIG_PREEMPT_RT) && time_before(jiffies, j))
+ 				continue;
+ 
+-			// Keep our place in the list while pausing.
+-			// Nothing else traverses this list, so adding a
+-			// bare list_head is OK.
+-			list_add(&tmp, &t->rcu_tasks_exit_list);
+ 			raw_spin_unlock_irq_rcu_node(rtpcp);
+ 			cond_resched(); // For CONFIG_PREEMPT=n kernels
+ 			raw_spin_lock_irq_rcu_node(rtpcp);
+-			list_del(&tmp);
+ 			j = jiffies + 1;
+ 		}
+ 		raw_spin_unlock_irq_rcu_node(rtpcp);
+@@ -1219,7 +1215,6 @@ void exit_tasks_rcu_stop(void)
+ 	struct rcu_tasks_percpu *rtpcp;
+ 	struct task_struct *t = current;
+ 
+-	WARN_ON_ONCE(list_empty(&t->rcu_tasks_exit_list));
+ 	rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, t->rcu_tasks_exit_cpu);
+ 	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
+ 	list_del_init(&t->rcu_tasks_exit_list);
 
