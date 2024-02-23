@@ -1,131 +1,102 @@
-Return-Path: <linux-kernel+bounces-78476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FF8E8613E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:22:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E63178613E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:23:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F6E61F237D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:22:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A30CF285B35
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:23:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E838061F;
-	Fri, 23 Feb 2024 14:22:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EBC67E798;
+	Fri, 23 Feb 2024 14:23:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R9H59djv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q3/aUvmv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 084FE78B57;
-	Fri, 23 Feb 2024 14:22:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DC928003E;
+	Fri, 23 Feb 2024 14:23:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708698143; cv=none; b=Yor93XOqhfVeqBwrwc0vvBphxdYSfIhb5XIn2EDAOZWqt9sJ7aXysquYmc7HZbxIUqYDAT6bmG7RAG6+fPogMdYGMGj1iHDDuvki5CJ1a27Th7AqFaO4oVopvl0kOW4Sea4Um8cwtllBzKpW798eT+9zHuAGo/HrH/Q0ePtnK8M=
+	t=1708698226; cv=none; b=nQY/5cgP1vnoKIFoiXVRFPMC9f8+FUP4VcebyaWI6lXTi148mIJDn4YpZaS1Me3k2UWJs9oVm9nPC2QiCpKDFQbrvr4Ct1lv9OJ44xPxJwgQ/f27ffItc4Vyh7UCla8+wd7pgFYANXDKLayP7JiHNPZ4BEJ7SxNobQQc61aICyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708698143; c=relaxed/simple;
-	bh=VxpccfonnRW7IPLZiMVnUbAMDQVPguZSl5ozwgM5NkQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y8FsrjdygIe6tw3+Rw6P0CpT3d0clE+EmM0covaskF9R7zwVF4rE0Y1RvhY9a+TDrgi48tqE3xFypuLJKyyv7crBWwedDyuszvqsfUk/QY2AJ0rh1uqoZk+Md/4Otme2m5QM8J+8y+mf3L4wr5vOqpPZ7Pz/mRAjSHkyvFud5IM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R9H59djv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00BBEC433C7;
-	Fri, 23 Feb 2024 14:22:20 +0000 (UTC)
+	s=arc-20240116; t=1708698226; c=relaxed/simple;
+	bh=oG6lGxWEEemBwIFT+DyX89qfDgrB0Bkcpa14XrnC2Ks=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=N/nFFY1nqUamf3mNRbAr3ldvfc8YsOY39wfRNAaW+poqLYAULSMe6nqDPxifoT3Wi/HS6iXb2YF5v1yJTqeDH+3Q6DFIwNCcqmb0nyKA3sOJwT/f5w2CNLXm2F5XK9fcQWClfu93YNqzrexaynY1vR7Nk3oWGSdpuw18AS06pdA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q3/aUvmv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE849C433F1;
+	Fri, 23 Feb 2024 14:23:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708698142;
-	bh=VxpccfonnRW7IPLZiMVnUbAMDQVPguZSl5ozwgM5NkQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=R9H59djv+xdj9IMpiTO2kiHy8ruKsmdNsaXe8aBecR1fc21Lj7r+uRmdCOGOTdQFh
-	 Hke0UzbdOV9HhvDHB4GqsOLfF8+TFp49qgq0IL8BBm+/9YYGpd3nPhcbIGlwDykLZN
-	 556lwzBGz4mHKiK3yfwJ//5P5mww+ge+oZDp6m3F9P1T+DAYNm90BKFeNfD0HSxGY/
-	 isxufZAjD0IWY9nNhSPkpGpFy2ybPxM80O/naJ2PCBOi4EuiPTb/viqS9A7XePqEpQ
-	 mRKhJtzkgMagjfg35+gZLXzBYloC78y/wcapN644tpq82lRV06m9I1uE0IzjXh0msJ
-	 38uTU3DnbEHPA==
-Date: Fri, 23 Feb 2024 14:22:18 +0000
-From: Lee Jones <lee@kernel.org>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Juergen Borleis <jbe@pengutronix.de>, linux-leds@vger.kernel.org,
-	Pavel Machek <pavel@ucw.cz>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH] leds: trigger/tty: Use led_set_brightness() to support
- all use cases
-Message-ID: <20240223142218.GA1666215@google.com>
-References: <20210503092542.14497-1-jbe@pengutronix.de>
- <20230109084320.nj7erwh3eu4jlw7y@pengutronix.de>
+	s=k20201202; t=1708698225;
+	bh=oG6lGxWEEemBwIFT+DyX89qfDgrB0Bkcpa14XrnC2Ks=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Q3/aUvmvLzINogZY+JvkRDxgprMN4ZCuIBHfT85X/0fTg2sRO+Jvm6wLmvMo8z7Cc
+	 a3IIutESGxnmRYIr0S1djg5HZji8M/uNTk3Fxm6rorHLb19e7pVsZWrhgLmLM4pB4e
+	 Nyig2p/vY35Ln+VfjuSIGh2zgvbo/qI2J9S8XzN0J+ZI1pNH/SD+xKf2dATcNPLRBf
+	 xe3rlxJcRyM3v2dZ+4qm5eswOGOqCS+CZbtHLatve78QEsuWOHs5ucPi8J9y/Ize76
+	 StUau5ku3dzKZulk13jo5MaExtKXz/oU3Ln24Qrx9BQ0Gmcha2BqWxHuf3Vv62rTOv
+	 xtbOug6ltAtVQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rdWSl-0066qh-Cf;
+	Fri, 23 Feb 2024 14:23:43 +0000
+Date: Fri, 23 Feb 2024 14:23:42 +0000
+Message-ID: <86le7b2r9t.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Oliver Upton <oliver.upton@linux.dev>
+Cc: kvmarm@lists.linux.dev,
+	kvm@vger.kernel.org,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	linux-kernel@vger.kernel.org,
+	Eric Auger <eric.auger@redhat.com>
+Subject: Re: [PATCH v4 00/10] KVM: arm64: Avoid serializing LPI get() / put()
+In-Reply-To: <20240221054253.3848076-1-oliver.upton@linux.dev>
+References: <20240221054253.3848076-1-oliver.upton@linux.dev>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230109084320.nj7erwh3eu4jlw7y@pengutronix.de>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, kvmarm@lists.linux.dev, kvm@vger.kernel.org, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, linux-kernel@vger.kernel.org, eric.auger@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Mon, 09 Jan 2023, Uwe Kleine-König wrote:
+On Wed, 21 Feb 2024 05:42:43 +0000,
+Oliver Upton <oliver.upton@linux.dev> wrote:
+> 
+> Addressing a few more goofs that Zenghui was kind enough to point out.
+> Clearly all of the bugs have been found and addressed at this point.
+> 
+> v2: https://lore.kernel.org/kvmarm/20240213093250.3960069-1-oliver.upton@linux.dev/
+> v3: https://lore.kernel.org/kvmarm/20240216184153.2714504-1-oliver.upton@linux.dev/
+> 
+> v3 -> v4:
+>  - Actually walk the LPI INTID range in vgic_copy_lpi_list() (Zenghui)
+>  - Ensure xa_lock is taken w/ IRQs disabled, even after purging usage of
+>    the lpi_list_lock (Zenghui)
+>  - Document the lock ordering (Marc)
 
-> Hello Jürgen,
-> 
-> On Mon, May 03, 2021 at 11:25:42AM +0200, Juergen Borleis wrote:
-> > Using led_set_brightness_sync() only works for LEDs which are connected
-> > via some kind of external bus like I²C or SPI. But it doesn't work for
-> > the simple use case of directly connected LEDs via GPIOs.
-> > Because this function only honors the led_classdev::brightness_set_blocking
-> > callback. But the LED-GPIO driver registers the
-> > led_classdev::brightness_set member if the GPIO can be modified directly
-> > and thus, TTY triggers fail silently with -ENOTSUPP.
-> > 
-> > With the previously used led_set_brightness() it works for both use cases.
-> > This function first checks for the simple case where the GPIO can be changed
-> > without additional overhead, and if it fails, does the modification via a
-> > workqueue.
-> > 
-> > Signed-off-by: Juergen Borleis <jbe@pengutronix.de>
-> > ---
-> >  drivers/leds/trigger/ledtrig-tty.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/leds/trigger/ledtrig-tty.c b/drivers/leds/trigger/ledtrig-tty.c
-> > index f62db7e..af61281 100644
-> > --- a/drivers/leds/trigger/ledtrig-tty.c
-> > +++ b/drivers/leds/trigger/ledtrig-tty.c
-> > @@ -122,12 +122,12 @@ static void ledtrig_tty_work(struct work_struct *work)
-> >  
-> >  	if (icount.rx != trigger_data->rx ||
-> >  	    icount.tx != trigger_data->tx) {
-> > -		led_set_brightness_sync(trigger_data->led_cdev, LED_ON);
-> > +		led_set_brightness(trigger_data->led_cdev, LED_ON);
-> >  
-> >  		trigger_data->rx = icount.rx;
-> >  		trigger_data->tx = icount.tx;
-> >  	} else {
-> > -		led_set_brightness_sync(trigger_data->led_cdev, LED_OFF);
-> > +		led_set_brightness(trigger_data->led_cdev, LED_OFF);
-> >  	}
-> 
-> This problem still exists, right?
-> 
-> I think the right thing here is to call led_set_brightness_nosleep()
-> however.
-> 
-> Having said that, I think there are too many variants of
-> led_set_brightness which makes it difficult to pick the right one.
-> 
-> (I'm aware of
->  - led_set_brightness_nosleep
->  - led_set_brightness_nopm
->  - led_set_brightness_sync
->  - led_set_brightness
-> 
-> and there are a few more static variants in led-core.c
-> (__led_set_brightness, __led_set_brightness_blocking,
-> set_brightness_delayed).)
+This is looking good so far. I'll take it for a ride shortly, but in
+the meantime:
 
-This patch (and this response) was never sent to me.
+Reviewed-by: Marc Zyngier <maz@kernel.org>
 
-Not a great deal I can do if I'm not aware of it.
+	M.
 
 -- 
-Lee Jones [李琼斯]
+Without deviation from the norm, progress is not possible.
 
