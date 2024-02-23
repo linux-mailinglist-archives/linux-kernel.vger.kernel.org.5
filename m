@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-78389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA2858612D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:38:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D733A8612D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:38:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80CB8285F75
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:38:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37E3C1F23C46
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:38:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 692D97F7C5;
-	Fri, 23 Feb 2024 13:38:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B782D80058;
+	Fri, 23 Feb 2024 13:38:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OywzuOoN"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m0pAtIEu"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C433C7EF04;
-	Fri, 23 Feb 2024 13:38:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 398D47F7E0;
+	Fri, 23 Feb 2024 13:38:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708695488; cv=none; b=OaiBUMtIvdrCoge4NOWHkHLAKn1d20+HIO3IOz++NFRQRo4OXYqVRZmaeHkQUaSdTTwT6JlR8E3/odv6nDW1Q21B8XIspY7yMHJWie0Uu74Hte7R2epnvS8nVTOG0IkwpPJvzpy3837lVkWtzpx6I9u9vT+lo3aIglcaepOq6YQ=
+	t=1708695493; cv=none; b=Ld0xpLJStHN/wpggEa5krxCmp42uGvgNHh1INA8b6fiVOe01281nCw0a94j3jZZqQL6wRdXZdg5iBspIrpmpT9edMTL/yspK6VZXls9/lhdngdlGj8nN9E/tuZ/rxLepYcyPEC8uQa3tD8y6zObfWYuh82wG8geFcOs7mrrH09o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708695488; c=relaxed/simple;
-	bh=rwgTv0+tt8DmkwbCCq7IVVH09nh6DvQW2NolmCLxYCI=;
+	s=arc-20240116; t=1708695493; c=relaxed/simple;
+	bh=ssPm+xw7Qddn2ApTRVMqS/AOF1bv+SwG2togBb1AEm4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fjqpiflG/B0ARHHrlEIFntdZaEmHstWXw8aSrRk8SBBFRlsFLQIUi88pokOZ0x2ymY3n+fe/sbGBIL3FTIEAfm1IaDXEs/OZsubMD/6Q4SWkHFammV1A3gT2sD4EMGG/tVZDtYwuJBTVcYB7pzhqfh0kCGQrFMDcSwW/z7RSpyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OywzuOoN; arc=none smtp.client-ip=209.85.208.50
+	 MIME-Version; b=hdNMBM/0EcaZLsIl3RmNyuyQ5gGPNnrLQIEDLT/VAmmMOoBjMXnqx2vDg3pxn0tJ/ct1gAOOMatArpWlya3n4xcT9ckuKpfBC/i7kezCuOMOs1MveUsNnHxDgPsehXVACXdGZfyvx/JmWs3GwY2PiBP/BHHKoWZoy9S/PfYHxxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m0pAtIEu; arc=none smtp.client-ip=209.85.208.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-563fe793e1cso1060128a12.3;
-        Fri, 23 Feb 2024 05:38:06 -0800 (PST)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55f50cf2021so1173229a12.1;
+        Fri, 23 Feb 2024 05:38:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708695485; x=1709300285; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708695487; x=1709300287; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FVYh8Pt1sI9DwV8YnQvT559pSivGGSaGIJgfdzNNlQA=;
-        b=OywzuOoN48Ndobq7Pk6FbHRhsU89Ks6iCKfBkw44mc/qaX9HN+DWTWar+XqMlVQOaf
-         QnWLID/XkCgxXxM8k9g/Gvvx4GDG1vIsRKYiXhtnDgEpvOCichDvL8Pc7Q8AcontlOkj
-         nMcrhhVJ6rvv2qnR1DSl7uIC4ef3Xr8vglw40HcAHV5W5vJGyrc+qVcydxvV6r8nZi92
-         zo70e6qmcxJf/D8ZsmE7qY+ZmTxnK637kGy2iDKG4E6hkjyPDpK9aDkLAzznwjebcVH4
-         qkd0w/lGyyUJRrTYYcFemn4qoUpm9B3p6Nqpra8M2rDpUWa+InLEtcixHcGqBd7XLYCK
-         M1QQ==
+        bh=7+av0nOtwR1wh948lh2kvl3A2jFTBhLL5tgPsxCdZGU=;
+        b=m0pAtIEupPML2K8uS7Vqf+XN3gbZh/AjDlbeTBeHRFkcfe8wd2TZALUGZZDQIQDyWf
+         L+/ix1tqQ7nIlgZVln3aVD6HRQi1drMQcr6fuGSij4xohGP5xlY6J834rXrkEQFWoe2r
+         s8pxEuPecNUWFYaimTP7wwDLcRpCcCovKOZlEvDz/WnfgSjafRcSLDjbj49rzKW7a/l+
+         xte49jEgvyr61yjlPULgdU1aEGi7PrtMzH62TxthRQPt2l/yAh3OBghe5uBmJPBgGCbC
+         h4+NGm7pV0BVynQ0yGJFz6Gtau0LAo7PtUtp+DCr1FWoV4rPHutP+WM7Z/4BDuTHOrN9
+         ivRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708695485; x=1709300285;
+        d=1e100.net; s=20230601; t=1708695487; x=1709300287;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FVYh8Pt1sI9DwV8YnQvT559pSivGGSaGIJgfdzNNlQA=;
-        b=iu6nLoiD6WvYy/j97uUyb48DvI3NH9P+91qtxNNanFDlqBtv1nDxdX+kYo/HtRAgrV
-         /2L63jdk9/tbAP6/Fm/oZ24heqUCqwob6hfROMVAC3piN0c76PnRJS316Ln/A4gttbEF
-         4tkBKbDo4UrXhsIVCSR3nccmIFUIXj+hSULnMZkC6NDq7km9yrG3OVnqh0amWJnSndox
-         /Co9R8BlUUmJ6eIr9DyqB8HcberIRB7l1PoyPUCijK3quqcxNutG7Y6sN2CvncDRCmaH
-         0JPMET3lSXEaLyn3w39IJKoM6MtMpEEMGgaqCoXT0lob0vdDMJyYos/+0DFDCRvRUpHS
-         TkkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWnGfFgJPOq1CVZWVNptgKmeU0rMDKFpND9Hn/FRnhVBeXCwQSTwqv/iuf2uSmvqSLWvdSMsCR5sl7bGbG2dU8NWPa2k5RLrmSRVAP+gN2NWekvt1um90HucoxGob2t6V4OzQsPz3bB3ekxeRtkKPOEhU6g600zVo4oeRDN6x1M3EN0BkVTgV0/bXXeczYuZX8FKsaXs4dIWmQdFwZQeN0=
-X-Gm-Message-State: AOJu0YyxUBhbTFwIZJQV0IcjzTk8RWDqEWnmrlf0EHnkfxKxZiYZ8uZK
-	RA5RKA1ExoKxDYxkmyWHOtj4ammXw9t+dGt4+biIAjN1OboVIXL9LwENKqxlB54Llw==
-X-Google-Smtp-Source: AGHT+IGN80GLzTdjf2dyxzlonrvB6WR0vGG7AF0Ag8OpGawTvTcRyjKhjMpjJiWHmavw7bfrdOtG9g==
-X-Received: by 2002:a17:906:802:b0:a3d:a63f:2db0 with SMTP id e2-20020a170906080200b00a3da63f2db0mr1302630ejd.28.1708695484688;
-        Fri, 23 Feb 2024 05:38:04 -0800 (PST)
+        bh=7+av0nOtwR1wh948lh2kvl3A2jFTBhLL5tgPsxCdZGU=;
+        b=mrwMY2xYG0//6XuN0Qijba8sQVgwK1mLBI0ErWlz9rlf53p4da1o4Kip9WxiQGKzx5
+         SZEQ7StXimNPnCXbNjKyyUUE/wg0o79wffmZhKANr9mquYh72dbT4UK4GVTs7KtCo3RX
+         WsYGZ2sokTbbXqw+cNe3SoBzD+P6sdITjYzh8Tl67F4Z6tRczbG6ZR3BbJtLcs3psXDH
+         yhP5KEviK8gQAV63l2KELF8Jgz7hRYBuXhehfXol5YELRDroeSfQctkiqLTyQPqS5BoM
+         /tpnKHtUq7gUEqX9TCyBhmCVTEynDLeN3Yy0WT8IeZVW7kH8CwrT/N4xHzuS5F5JW7ru
+         GUCw==
+X-Forwarded-Encrypted: i=1; AJvYcCVG41IACdeJ+iHHx6K52qpaRamLvKDbh/EgkmYrTHuZeirAWdA3pu+hSkaV/6h/xm3Z0hClEAFukpS0O/6tJu2E7oxa2IrqyjB2cQjMFxss2mfnO6rNBovYMwTKADoKXrfyZ+ZUz3aKKkkq8iruPC/zdtuM0CTWZvDhn46j6nztEhuN9kwnLc/F+Efinog4yrjEtFrEOPfdOjMZW234e04=
+X-Gm-Message-State: AOJu0YyxeCMF/IY414Am7WiRMh/PST8JC2IbOJWQsuaW/B16SdfIeyy+
+	XGlH0/UPqAA4a6WFIgCOoigJbzk8OfN1ad5T5/dISU36LD/FfXmX
+X-Google-Smtp-Source: AGHT+IEiI9PQdy7wIp+26lDQk7cV8oY9T4J8Ljf8JqCQYivP273h0FUho9p6oT3B7HIQgh27x70U6A==
+X-Received: by 2002:a17:906:693:b0:a3f:6466:bbcd with SMTP id u19-20020a170906069300b00a3f6466bbcdmr1260799ejb.69.1708695486932;
+        Fri, 23 Feb 2024 05:38:06 -0800 (PST)
 Received: from HYB-hhAwRlzzMZb.ad.analog.com ([83.103.132.21])
-        by smtp.gmail.com with ESMTPSA id h11-20020a17090634cb00b00a3d7bcfb9a1sm6911429ejb.128.2024.02.23.05.38.02
+        by smtp.gmail.com with ESMTPSA id h11-20020a17090634cb00b00a3d7bcfb9a1sm6911429ejb.128.2024.02.23.05.38.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 05:38:04 -0800 (PST)
+        Fri, 23 Feb 2024 05:38:06 -0800 (PST)
 From: Dumitru Ceclan <mitrutzceclan@gmail.com>
 To: 
 Cc: linus.walleij@linaro.org,
@@ -92,9 +92,9 @@ Cc: linus.walleij@linaro.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Dumitru Ceclan <mitrutzceclan@gmail.com>
-Subject: [PATCH v15 2/3] iio: adc: ad_sigma_delta: Add optional irq selection
-Date: Fri, 23 Feb 2024 15:37:29 +0200
-Message-ID: <20240223133758.9787-2-mitrutzceclan@gmail.com>
+Subject: [PATCH v15 3/3] iio: adc: ad7173: add AD7173 driver
+Date: Fri, 23 Feb 2024 15:37:30 +0200
+Message-ID: <20240223133758.9787-3-mitrutzceclan@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20240223133758.9787-1-mitrutzceclan@gmail.com>
 References: <20240223133758.9787-1-mitrutzceclan@gmail.com>
@@ -106,137 +106,1320 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add optional irq_num attribute to ad_sigma_delta_info structure for
-selecting the used interrupt line for ADC's conversion completion.
+The AD7173 family offer a complete integrated Sigma-Delta ADC solution
+which can be used in high precision, low noise single channel
+applications or higher speed multiplexed applications. The Sigma-Delta
+ADC is intended primarily for measurement of signals close to DC but also
+delivers outstanding performance with input bandwidths out to ~10kHz.
 
+Reviewed-by: Andy Shevchenko <andy@kernel.org>
+Reviewed-by: Michael Walle <michael@walle.cc> # for gpio-regmap
 Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
 ---
-V15->V14
- - Uppercase ADC acronym in commit message
- - Rename irq_num to irq_line, change type to int
-V13->V14
- - Invert logic checking the presence of the optional irq_num attribute
-V1->V12
-<Not present>
- drivers/iio/adc/ad_sigma_delta.c       | 23 ++++++++++++++---------
- include/linux/iio/adc/ad_sigma_delta.h |  3 +++
- 2 files changed, 17 insertions(+), 9 deletions(-)
+V14-> V15
+ - Use local var for dev instead of &st->sd.spi->dev
+ - Use sizeof(*st->config_cnts)
+ - Use device_property_match_property_string()
+ - ENODATA error when no channels are specified
+V13-> V14
+ - Update year copyright range
+ - Drop the ad_sigma_delta_info.irq_flags assigment
+ - Use spi_setup() after spi mode assigment
+ - Check IS_ENABLED(CONFIG_COMMON_CLK) for clk registering, drop fwnode NULL check
+ - Rename variable fwnode
+V12-> V13
+- Add precursor patch for new irq_num attribute in ad_sigma_delta_info and ad_sigma_delta structs
+- Split  *_fw_parse_channel_config() into *_channel_config and *_device_config
+- Reorder probe calls to ad_sd_init to use correctly the optional irq_num attribute
+- Require  in probe interrupt named "rdy" to be present
+- If external clock not present, register clk provider
+- If external clock present, get clock and enable
+- Add constants, strings for clock selections
+V11-> V12
+ - rename refin, refin2 to vref, vref2
+V10-> V11 <no changes>
+V9 -> V10 <no changes>
+V8 -> V9
+ - Add '(x)' to some macro's definition to reduce NO of checks
+ - Use reg 0 constant definition in debug_reg_access()
+ - Rename  channels_st_priv_arr to chans_st_arr
+ - Remove unnecessary u32 cast from read_raw()
+ - Compute read_raw() offset instead of constant
+ - Add offset comments to data rate arrays
+ - Removed redundant newline in _parse_channel_config()
+V7 -> V8
+ - remove Kconfig commas
+ - reorder include <...gpio/regmap.h>
+ - GPO12_DATA(x)  from BIT(x) -> BIT(x+0)
+ - use the same pointer to dev in ad7173_setup()
+ - rewrite temp channel read_raw scale for better readability
+ - add comment to explain temp channel offset
+ - follow multi-line comment style
+ - change ref_sel type to signed int
+ - use fwnode_property_match_property_string()
+V6 -> V7
+ - format Kconfig supported models using '-'
+ - include types.h instead of stddef.h
+ - change device_info->num_gpios type to u8
+ - reorder fields in ad7173_state, place ad_sigma_delta
+ - reorder fields in ad7173_device_info, group by type
+ - add default case in read_raw()
+ - rename ad7173_debug() to ad7173_debug_reg_access()
+ - remove explicit u8 cast
+ - remove return 0; for offset in read_raw()
+ - add '\n' to error messages
+ - reorder probe variables -> reversed xmas tree
+ - remove redundant inner commas in of_match and id_table
+ - simplify selected reference code by setting default value and ignoring
+   fwnode_property_read_string() error
+ - use match_string() for finding selected reference
+ - err on no channels specified
+ - add missing fwnode_handle_put(child) on err return branches
+ - remove spi_set_drvdata() from probe
+ - remove offset variable from find_live_config(), not used
+ - add comment showing a generic LRU implementation might be used if one
+   will exist
+ - MISC:  add blank line to chanel_config struct, trailing comma ref_sel_str[],
+   remove blank line in update_scan_mode(), add spaces around '/'
+V5->V6 <no changes>
+V4 -> V5
+ - List Kconfig supported models one per line
+ - Include <array_size.h> and <container_of.h>
+ - Remove bits.h and kernel.h include
+ - Add spaces before '\' on multi-line definitions
+ - Change constant definition name from "..._MICROV" to "..._uV"
+ - Change ad7173_channel_config attributes order for grouping by type
+ - Remove redundant {} in ad7173_gpio_init()
+ - Add array with reference select strings
+ - Change parsing of device tree adi,reference-select from integer to string
+ - Change indentation  for ad7173_find_live_config() header
+ - Use struct_group() in config struct
+ - Use offsetofend() and sizeof_field() in ad7173_find_live_config()
+ - Split line on logic operator in ad7173_find_live_config() at configs comparison
+ - Use IDA for config slots allocation
+ - Reverse xmas tree order for probe local variables
+ - Use BIT() for computing bipolar channels offset
+ - Change (MICRO/MILLI) to MILLI in read_raw for integer part of sampling frequency
+ - MISC: remove blank line, use 0 value dirrectly, one line statement devm_kcalloc()
+V3 -> V4
+ - cleaned up includes
+ - add ad7173_gpio_disable(), include to devm actions
+ - remove iio_device_claim_direct_mode() from update_scan_mode()
+ - always set differential iio_chan attribute to true, retain bipolar info only in private struct
+ - store multiple regulators in state for voltage references
+ - compute read_raw offset depending on channel used reference
+ - configure channel setup using selected reference
+ - add ad7173_get_ref_voltage_milli() 
+ - clean up ad7173_fw_sparse_channel_config() changing array access of channel structs to pointers
+ - retain chip name in st->info structure
+ - use spi_device_get_match_data() in probe
+V2 -> V3
+ - change Kconfig GPIO_REGMAP and REGMAP_SPI to be conditioned by GPIOLIB
+ - cast chip info to (kernel_ulong_t) to suppress warnings
+ - adjust copyright year to reflect the out-of-tree history
+ - remove unused sysfs and trigger header files
+ - clean up defined macros by using FIELD_PREP( ) inline
+ - use DECLARE_BITMAP( ) for defiining cfg_slots_status
+ - use clear/set _bit instead of assign_bit
+ - rename state field regmap to reg_gpiocon_regmap to better represent usage
+ - replace container_of( ) usages to ad_sigma_delta_to_ad7173( )
+ - improve readability of sampling frequency conversion in write_raw( )
+				specifying conversion from Micro to Milli
+ - use iio_device_claim_direct_mode( ) correctly in write_raw( )
+ - flip logic in write_raw( ) to reduce line length
+ - pass only state struct to gpio_init function
+ - remove else branch at end of probe
+ - remove comma after list terminator for of_match and id_table arrays
+ - clarify write_raw( ) realbits 32 bit size check in a comment
+ - change parsed fw property 'adi,bipolar' to 'bipolar' to matched referenced adc.yaml 
+ - use reg_set_base for gpio regmap xlate 
+V1 -> V2
+ - keep original out-of-tree AD7173 naming
+ - remove gpio_cleanup
+ - handle 32bit realbits offset case
+ - use iio_device_claim_direct_mode, drop own mutex
+ - use dev_err_probe
+ - cleanup headers include
+ - use GENMASK() and FIELD_PREP()
+ - use HZ_PER_MHZ
+ - change #ifdef GPIOLIB to if( IS_ENABLED(CONFIG_GPIOLIB)) 
+ - use gpio-regmap
+ - change boolean flag in info struct to number of gpios
+ - NIH memset64
+ - use struct pointers for config comparison
+ - use spi_write_then_read for ADC reset
+ - use stack allocated buffer for reset
+ - define constant for reset sequence size
+ - use kcalloc instead of kzalloc
+ - change of naming to fw of dt parse function
+ - change de-referencing chain to local variable dev in multiple locations
+ - drop write_raw_get_fmt
+ - add driver private data to spi_device_id table
+ - use fsleep() instead of usleep_range()
+ - put config value inline
+ - align read/write raw arguments
+ - remove zeroed values from channel templates structure
+ - define constants for temperature sensor positive and negative inputs
+ - always enable temperature channel
+ - configure spi clock phase and polarity from driver
+ misc changes (test bit, return disable all, indentation fix, change statements to single line)
 
-diff --git a/drivers/iio/adc/ad_sigma_delta.c b/drivers/iio/adc/ad_sigma_delta.c
-index 7e2192870743..03c170b638a8 100644
---- a/drivers/iio/adc/ad_sigma_delta.c
-+++ b/drivers/iio/adc/ad_sigma_delta.c
-@@ -222,11 +222,11 @@ int ad_sd_calibrate(struct ad_sigma_delta *sigma_delta,
- 		goto out;
+ drivers/iio/adc/Kconfig  |   17 +
+ drivers/iio/adc/Makefile |    1 +
+ drivers/iio/adc/ad7173.c | 1104 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 1122 insertions(+)
+ create mode 100644 drivers/iio/adc/ad7173.c
+
+diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+index 3b73c509bd68..c32054afdfc4 100644
+--- a/drivers/iio/adc/Kconfig
++++ b/drivers/iio/adc/Kconfig
+@@ -70,6 +70,23 @@ config AD7124
+ 	  To compile this driver as a module, choose M here: the module will be
+ 	  called ad7124.
  
- 	sigma_delta->irq_dis = false;
--	enable_irq(sigma_delta->spi->irq);
-+	enable_irq(sigma_delta->irq_line);
- 	timeout = wait_for_completion_timeout(&sigma_delta->completion, 2 * HZ);
- 	if (timeout == 0) {
- 		sigma_delta->irq_dis = true;
--		disable_irq_nosync(sigma_delta->spi->irq);
-+		disable_irq_nosync(sigma_delta->irq_line);
- 		ret = -EIO;
- 	} else {
- 		ret = 0;
-@@ -295,7 +295,7 @@ int ad_sigma_delta_single_conversion(struct iio_dev *indio_dev,
- 	ad_sigma_delta_set_mode(sigma_delta, AD_SD_MODE_SINGLE);
- 
- 	sigma_delta->irq_dis = false;
--	enable_irq(sigma_delta->spi->irq);
-+	enable_irq(sigma_delta->irq_line);
- 	ret = wait_for_completion_interruptible_timeout(
- 			&sigma_delta->completion, HZ);
- 
-@@ -315,7 +315,7 @@ int ad_sigma_delta_single_conversion(struct iio_dev *indio_dev,
- 
- out:
- 	if (!sigma_delta->irq_dis) {
--		disable_irq_nosync(sigma_delta->spi->irq);
-+		disable_irq_nosync(sigma_delta->irq_line);
- 		sigma_delta->irq_dis = true;
- 	}
- 
-@@ -396,7 +396,7 @@ static int ad_sd_buffer_postenable(struct iio_dev *indio_dev)
- 		goto err_unlock;
- 
- 	sigma_delta->irq_dis = false;
--	enable_irq(sigma_delta->spi->irq);
-+	enable_irq(sigma_delta->irq_line);
- 
- 	return 0;
- 
-@@ -414,7 +414,7 @@ static int ad_sd_buffer_postdisable(struct iio_dev *indio_dev)
- 	wait_for_completion_timeout(&sigma_delta->completion, HZ);
- 
- 	if (!sigma_delta->irq_dis) {
--		disable_irq_nosync(sigma_delta->spi->irq);
-+		disable_irq_nosync(sigma_delta->irq_line);
- 		sigma_delta->irq_dis = true;
- 	}
- 
-@@ -516,7 +516,7 @@ static irqreturn_t ad_sd_trigger_handler(int irq, void *p)
- irq_handled:
- 	iio_trigger_notify_done(indio_dev->trig);
- 	sigma_delta->irq_dis = false;
--	enable_irq(sigma_delta->spi->irq);
-+	enable_irq(sigma_delta->irq_line);
- 
- 	return IRQ_HANDLED;
- }
-@@ -586,9 +586,9 @@ static int devm_ad_sd_probe_trigger(struct device *dev, struct iio_dev *indio_de
- 	sigma_delta->irq_dis = true;
- 
- 	/* the IRQ core clears IRQ_DISABLE_UNLAZY flag when freeing an IRQ */
--	irq_set_status_flags(sigma_delta->spi->irq, IRQ_DISABLE_UNLAZY);
-+	irq_set_status_flags(sigma_delta->irq_line, IRQ_DISABLE_UNLAZY);
- 
--	ret = devm_request_irq(dev, sigma_delta->spi->irq,
-+	ret = devm_request_irq(dev, sigma_delta->irq_line,
- 			       ad_sd_data_rdy_trig_poll,
- 			       sigma_delta->info->irq_flags | IRQF_NO_AUTOEN,
- 			       indio_dev->name,
-@@ -668,6 +668,11 @@ int ad_sd_init(struct ad_sigma_delta *sigma_delta, struct iio_dev *indio_dev,
- 		}
- 	}
- 
-+	if (info->irq_line)
-+		sigma_delta->irq_line = info->irq_line;
-+	else
-+		sigma_delta->irq_line = spi->irq;
++config AD7173
++	tristate "Analog Devices AD7173 driver"
++	depends on SPI_MASTER
++	select AD_SIGMA_DELTA
++	select GPIO_REGMAP if GPIOLIB
++	select REGMAP_SPI if GPIOLIB
++	help
++	  Say yes here to build support for Analog Devices AD7173 and similar ADC
++	  Currently supported models:
++	   - AD7172-2
++	   - AD7173-8
++	   - AD7175-2
++	   - AD7176-2
 +
- 	iio_device_set_drvdata(indio_dev, sigma_delta);
- 
- 	return 0;
-diff --git a/include/linux/iio/adc/ad_sigma_delta.h b/include/linux/iio/adc/ad_sigma_delta.h
-index 7852f6c9a714..576eb617939d 100644
---- a/include/linux/iio/adc/ad_sigma_delta.h
-+++ b/include/linux/iio/adc/ad_sigma_delta.h
-@@ -45,6 +45,7 @@ struct iio_dev;
-  * @data_reg: Address of the data register, if 0 the default address of 0x3 will
-  *   be used.
-  * @irq_flags: flags for the interrupt used by the triggered buffer
-+ * @irq_line: IRQ for reading conversions. If 0, spi->irq will be used
-  * @num_slots: Number of sequencer slots
-  */
- struct ad_sigma_delta_info {
-@@ -60,6 +61,7 @@ struct ad_sigma_delta_info {
- 	unsigned int data_reg;
- 	unsigned long irq_flags;
- 	unsigned int num_slots;
-+	int irq_line;
- };
- 
- /**
-@@ -87,6 +89,7 @@ struct ad_sigma_delta {
- 	unsigned int		active_slots;
- 	unsigned int		current_slot;
- 	unsigned int		num_slots;
-+	int		irq_line;
- 	bool			status_appended;
- 	/* map slots to channels in order to know what to expect from devices */
- 	unsigned int		*slots;
++	  To compile this driver as a module, choose M here: the module will be
++	  called ad7173.
++
+ config AD7192
+ 	tristate "Analog Devices AD7190 AD7192 AD7193 AD7195 ADC driver"
+ 	depends on SPI
+diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
+index d2fda54a3259..dd4210a3634f 100644
+--- a/drivers/iio/adc/Makefile
++++ b/drivers/iio/adc/Makefile
+@@ -11,6 +11,7 @@ obj-$(CONFIG_AD7091R) += ad7091r-base.o
+ obj-$(CONFIG_AD7091R5) += ad7091r5.o
+ obj-$(CONFIG_AD7091R8) += ad7091r8.o
+ obj-$(CONFIG_AD7124) += ad7124.o
++obj-$(CONFIG_AD7173) += ad7173.o
+ obj-$(CONFIG_AD7192) += ad7192.o
+ obj-$(CONFIG_AD7266) += ad7266.o
+ obj-$(CONFIG_AD7280) += ad7280a.o
+diff --git a/drivers/iio/adc/ad7173.c b/drivers/iio/adc/ad7173.c
+new file mode 100644
+index 000000000000..3dde473cf859
+--- /dev/null
++++ b/drivers/iio/adc/ad7173.c
+@@ -0,0 +1,1104 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * AD7172-2/AD7173-8/AD7175-2/AD7176-2 SPI ADC driver
++ * Copyright (C) 2015, 2024 Analog Devices, Inc.
++ */
++
++#include <linux/array_size.h>
++#include <linux/bitfield.h>
++#include <linux/bitmap.h>
++#include <linux/container_of.h>
++#include <linux/clk.h>
++#include <linux/clk-provider.h>
++#include <linux/delay.h>
++#include <linux/device.h>
++#include <linux/err.h>
++#include <linux/gpio/driver.h>
++#include <linux/gpio/regmap.h>
++#include <linux/idr.h>
++#include <linux/interrupt.h>
++#include <linux/math64.h>
++#include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/property.h>
++#include <linux/regmap.h>
++#include <linux/regulator/consumer.h>
++#include <linux/slab.h>
++#include <linux/spi/spi.h>
++#include <linux/types.h>
++#include <linux/units.h>
++
++#include <linux/iio/buffer.h>
++#include <linux/iio/iio.h>
++#include <linux/iio/trigger_consumer.h>
++#include <linux/iio/triggered_buffer.h>
++
++#include <linux/iio/adc/ad_sigma_delta.h>
++
++#define AD7173_REG_COMMS		0x00
++#define AD7173_REG_ADC_MODE		0x01
++#define AD7173_REG_INTERFACE_MODE	0x02
++#define AD7173_REG_CRC			0x03
++#define AD7173_REG_DATA			0x04
++#define AD7173_REG_GPIO			0x06
++#define AD7173_REG_ID			0x07
++#define AD7173_REG_CH(x)		(0x10 + (x))
++#define AD7173_REG_SETUP(x)		(0x20 + (x))
++#define AD7173_REG_FILTER(x)		(0x28 + (x))
++#define AD7173_REG_OFFSET(x)		(0x30 + (x))
++#define AD7173_REG_GAIN(x)		(0x38 + (x))
++
++#define AD7173_RESET_LENGTH		BITS_TO_BYTES(64)
++
++#define AD7173_CH_ENABLE		BIT(15)
++#define AD7173_CH_SETUP_SEL_MASK	GENMASK(14, 12)
++#define AD7173_CH_SETUP_AINPOS_MASK	GENMASK(9, 5)
++#define AD7173_CH_SETUP_AINNEG_MASK	GENMASK(4, 0)
++
++#define AD7173_CH_ADDRESS(pos, neg) \
++	(FIELD_PREP(AD7173_CH_SETUP_AINPOS_MASK, pos) | \
++	 FIELD_PREP(AD7173_CH_SETUP_AINNEG_MASK, neg))
++#define AD7173_AIN_TEMP_POS	17
++#define AD7173_AIN_TEMP_NEG	18
++
++#define AD7172_ID			0x00d0
++#define AD7173_ID			0x30d0
++#define AD7175_ID			0x0cd0
++#define AD7176_ID			0x0c90
++#define AD7173_ID_MASK			GENMASK(15, 4)
++
++#define AD7173_ADC_MODE_REF_EN		BIT(15)
++#define AD7173_ADC_MODE_SING_CYC	BIT(13)
++#define AD7173_ADC_MODE_MODE_MASK	GENMASK(6, 4)
++#define AD7173_ADC_MODE_CLOCKSEL_MASK	GENMASK(3, 2)
++#define AD7173_ADC_MODE_CLOCKSEL_INT		0x0
++#define AD7173_ADC_MODE_CLOCKSEL_INT_OUTPUT	0x1
++#define AD7173_ADC_MODE_CLOCKSEL_EXT		0x2
++#define AD7173_ADC_MODE_CLOCKSEL_XTAL		0x3
++
++#define AD7173_GPIO_PDSW	BIT(14)
++#define AD7173_GPIO_OP_EN2_3	BIT(13)
++#define AD7173_GPIO_MUX_IO	BIT(12)
++#define AD7173_GPIO_SYNC_EN	BIT(11)
++#define AD7173_GPIO_ERR_EN	BIT(10)
++#define AD7173_GPIO_ERR_DAT	BIT(9)
++#define AD7173_GPIO_GP_DATA3	BIT(7)
++#define AD7173_GPIO_GP_DATA2	BIT(6)
++#define AD7173_GPIO_IP_EN1	BIT(5)
++#define AD7173_GPIO_IP_EN0	BIT(4)
++#define AD7173_GPIO_OP_EN1	BIT(3)
++#define AD7173_GPIO_OP_EN0	BIT(2)
++#define AD7173_GPIO_GP_DATA1	BIT(1)
++#define AD7173_GPIO_GP_DATA0	BIT(0)
++
++#define AD7173_GPO12_DATA(x)	BIT((x) + 0)
++#define AD7173_GPO23_DATA(x)	BIT((x) + 4)
++#define AD7173_GPO_DATA(x)	((x) < 2 ? AD7173_GPO12_DATA(x) : AD7173_GPO23_DATA(x))
++
++#define AD7173_INTERFACE_DATA_STAT	BIT(6)
++#define AD7173_INTERFACE_DATA_STAT_EN(x) \
++	FIELD_PREP(AD7173_INTERFACE_DATA_STAT, x)
++
++#define AD7173_SETUP_BIPOLAR		BIT(12)
++#define AD7173_SETUP_AREF_BUF_MASK	GENMASK(11, 10)
++#define AD7173_SETUP_AIN_BUF_MASK	GENMASK(9, 8)
++
++#define AD7173_SETUP_REF_SEL_MASK	GENMASK(5, 4)
++#define AD7173_SETUP_REF_SEL_AVDD1_AVSS	0x3
++#define AD7173_SETUP_REF_SEL_INT_REF	0x2
++#define AD7173_SETUP_REF_SEL_EXT_REF2	0x1
++#define AD7173_SETUP_REF_SEL_EXT_REF	0x0
++#define AD7173_VOLTAGE_INT_REF_uV	2500000
++#define AD7173_TEMP_SENSIIVITY_uV_per_C	477
++
++#define AD7173_FILTER_ODR0_MASK		GENMASK(5, 0)
++#define AD7173_MAX_CONFIGS		8
++
++enum ad7173_ids {
++	ID_AD7172_2,
++	ID_AD7173_8,
++	ID_AD7175_2,
++	ID_AD7176_2,
++};
++
++struct ad7173_device_info {
++	const unsigned int *sinc5_data_rates;
++	unsigned int num_sinc5_data_rates;
++	unsigned int num_channels;
++	unsigned int num_configs;
++	unsigned int num_inputs;
++	unsigned int clock;
++	unsigned int id;
++	char *name;
++	bool has_temp;
++	u8 num_gpios;
++};
++
++struct ad7173_channel_config {
++	u8 cfg_slot;
++	bool live;
++
++	/* Following fields are used to compare equality. */
++	struct_group(config_props,
++		bool bipolar;
++		bool input_buf;
++		u8 odr;
++		u8 ref_sel;
++	);
++};
++
++struct ad7173_channel {
++	unsigned int chan_reg;
++	unsigned int ain;
++	struct ad7173_channel_config cfg;
++};
++
++struct ad7173_state {
++	struct ad_sigma_delta sd;
++	const struct ad7173_device_info *info;
++	struct ad7173_channel *channels;
++	struct regulator_bulk_data regulators[3];
++	unsigned int adc_mode;
++	unsigned int interface_mode;
++	unsigned int num_channels;
++	struct ida cfg_slots_status;
++	unsigned long long config_usage_counter;
++	unsigned long long *config_cnts;
++	struct clk *ext_clk;
++	struct clk_hw int_clk_hw;
++#if IS_ENABLED(CONFIG_GPIOLIB)
++	struct regmap *reg_gpiocon_regmap;
++	struct gpio_regmap *gpio_regmap;
++#endif
++};
++
++static const unsigned int ad7173_sinc5_data_rates[] = {
++	6211000, 6211000, 6211000, 6211000, 6211000, 6211000, 5181000, 4444000,	/*  0-7  */
++	3115000, 2597000, 1007000, 503800,  381000,  200300,  100500,  59520,	/*  8-15 */
++	49680,	 20010,	  16333,   10000,   5000,    2500,    1250,		/* 16-22 */
++};
++
++static const unsigned int ad7175_sinc5_data_rates[] = {
++	50000000, 41667000, 31250000, 27778000,	/*  0-3  */
++	20833000, 17857000, 12500000, 10000000,	/*  4-7  */
++	5000000,  2500000,  1000000,  500000,	/*  8-11 */
++	397500,   200000,   100000,   59920,	/* 12-15 */
++	49960,    20000,    16666,    10000,	/* 16-19 */
++	5000,					/* 20    */
++};
++
++static const struct ad7173_device_info ad7173_device_info[] = {
++	[ID_AD7172_2] = {
++		.name = "ad7172-2",
++		.id = AD7172_ID,
++		.num_inputs = 5,
++		.num_channels = 4,
++		.num_configs = 4,
++		.num_gpios = 2,
++		.has_temp = true,
++		.clock = 2 * HZ_PER_MHZ,
++		.sinc5_data_rates = ad7173_sinc5_data_rates,
++		.num_sinc5_data_rates = ARRAY_SIZE(ad7173_sinc5_data_rates),
++	},
++	[ID_AD7173_8] = {
++		.name = "ad7173-8",
++		.id = AD7173_ID,
++		.num_inputs = 17,
++		.num_channels = 16,
++		.num_configs = 8,
++		.num_gpios = 4,
++		.has_temp = true,
++		.clock = 2 * HZ_PER_MHZ,
++		.sinc5_data_rates = ad7173_sinc5_data_rates,
++		.num_sinc5_data_rates = ARRAY_SIZE(ad7173_sinc5_data_rates),
++	},
++	[ID_AD7175_2] = {
++		.name = "ad7175-2",
++		.id = AD7175_ID,
++		.num_inputs = 5,
++		.num_channels = 4,
++		.num_configs = 4,
++		.num_gpios = 2,
++		.has_temp = true,
++		.clock = 16 * HZ_PER_MHZ,
++		.sinc5_data_rates = ad7175_sinc5_data_rates,
++		.num_sinc5_data_rates = ARRAY_SIZE(ad7175_sinc5_data_rates),
++	},
++	[ID_AD7176_2] = {
++		.name = "ad7176-2",
++		.id = AD7176_ID,
++		.num_inputs = 5,
++		.num_channels = 4,
++		.num_configs = 4,
++		.num_gpios = 2,
++		.has_temp = false,
++		.clock = 16 * HZ_PER_MHZ,
++		.sinc5_data_rates = ad7175_sinc5_data_rates,
++		.num_sinc5_data_rates = ARRAY_SIZE(ad7175_sinc5_data_rates),
++	},
++};
++
++static const char *const ad7173_ref_sel_str[] = {
++	[AD7173_SETUP_REF_SEL_EXT_REF]    = "vref",
++	[AD7173_SETUP_REF_SEL_EXT_REF2]   = "vref2",
++	[AD7173_SETUP_REF_SEL_INT_REF]    = "refout-avss",
++	[AD7173_SETUP_REF_SEL_AVDD1_AVSS] = "avdd",
++};
++
++static const char *const ad7173_clk_sel[] = {
++	"ext-clk", "xtal"
++};
++
++#if IS_ENABLED(CONFIG_GPIOLIB)
++
++static const struct regmap_range ad7173_range_gpio[] = {
++	regmap_reg_range(AD7173_REG_GPIO, AD7173_REG_GPIO),
++};
++
++static const struct regmap_access_table ad7173_access_table = {
++	.yes_ranges = ad7173_range_gpio,
++	.n_yes_ranges = ARRAY_SIZE(ad7173_range_gpio),
++};
++
++static const struct regmap_config ad7173_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 16,
++	.rd_table = &ad7173_access_table,
++	.wr_table = &ad7173_access_table,
++	.read_flag_mask = BIT(6),
++};
++
++static int ad7173_mask_xlate(struct gpio_regmap *gpio, unsigned int base,
++			     unsigned int offset, unsigned int *reg,
++			     unsigned int *mask)
++{
++	*mask = AD7173_GPO_DATA(offset);
++	*reg = base;
++	return 0;
++}
++
++static void ad7173_gpio_disable(void *data)
++{
++	struct ad7173_state *st = data;
++	unsigned int mask;
++
++	mask = AD7173_GPIO_OP_EN0 | AD7173_GPIO_OP_EN1 | AD7173_GPIO_OP_EN2_3;
++	regmap_update_bits(st->reg_gpiocon_regmap, AD7173_REG_GPIO, mask, ~mask);
++}
++
++static int ad7173_gpio_init(struct ad7173_state *st)
++{
++	struct gpio_regmap_config gpio_regmap = {};
++	struct device *dev = &st->sd.spi->dev;
++	unsigned int mask;
++	int ret;
++
++	st->reg_gpiocon_regmap = devm_regmap_init_spi(st->sd.spi, &ad7173_regmap_config);
++	ret = PTR_ERR_OR_ZERO(st->reg_gpiocon_regmap);
++	if (ret)
++		return dev_err_probe(dev, ret, "Unable to init regmap\n");
++
++	mask = AD7173_GPIO_OP_EN0 | AD7173_GPIO_OP_EN1 | AD7173_GPIO_OP_EN2_3;
++	regmap_update_bits(st->reg_gpiocon_regmap, AD7173_REG_GPIO, mask, mask);
++
++	ret = devm_add_action_or_reset(dev, ad7173_gpio_disable, st);
++	if (ret)
++		return ret;
++
++	gpio_regmap.parent = dev;
++	gpio_regmap.regmap = st->reg_gpiocon_regmap;
++	gpio_regmap.ngpio = st->info->num_gpios;
++	gpio_regmap.reg_set_base = AD7173_REG_GPIO;
++	gpio_regmap.reg_mask_xlate = ad7173_mask_xlate;
++
++	st->gpio_regmap = devm_gpio_regmap_register(dev, &gpio_regmap);
++	ret = PTR_ERR_OR_ZERO(st->gpio_regmap);
++	if (ret)
++		return dev_err_probe(dev, ret, "Unable to init gpio-regmap\n");
++
++	return 0;
++}
++
++#endif /* CONFIG_GPIOLIB */
++
++static struct ad7173_state *ad_sigma_delta_to_ad7173(struct ad_sigma_delta *sd)
++{
++	return container_of(sd, struct ad7173_state, sd);
++}
++
++static struct ad7173_state *clk_hw_to_ad7173(struct clk_hw *hw)
++{
++	return container_of(hw, struct ad7173_state, int_clk_hw);
++}
++
++static void ad7173_ida_destroy(void *data)
++{
++	struct ad7173_state *st = data;
++
++	ida_destroy(&st->cfg_slots_status);
++}
++
++static void ad7173_reset_usage_cnts(struct ad7173_state *st)
++{
++	memset64(st->config_cnts, 0, st->info->num_configs);
++	st->config_usage_counter = 0;
++}
++
++static struct ad7173_channel_config *
++ad7173_find_live_config(struct ad7173_state *st, struct ad7173_channel_config *cfg)
++{
++	struct ad7173_channel_config *cfg_aux;
++	ptrdiff_t cmp_size;
++	int i;
++
++	cmp_size = sizeof_field(struct ad7173_channel_config, config_props);
++	for (i = 0; i < st->num_channels; i++) {
++		cfg_aux = &st->channels[i].cfg;
++
++		if (cfg_aux->live &&
++		    !memcmp(&cfg->config_props, &cfg_aux->config_props, cmp_size))
++			return cfg_aux;
++	}
++	return NULL;
++}
++
++/* Could be replaced with a generic LRU implementation */
++static int ad7173_free_config_slot_lru(struct ad7173_state *st)
++{
++	int i, lru_position = 0;
++
++	for (i = 1; i < st->info->num_configs; i++)
++		if (st->config_cnts[i] < st->config_cnts[lru_position])
++			lru_position = i;
++
++	for (i = 0; i < st->num_channels; i++)
++		if (st->channels[i].cfg.cfg_slot == lru_position)
++			st->channels[i].cfg.live = false;
++
++	ida_free(&st->cfg_slots_status, lru_position);
++	return ida_alloc(&st->cfg_slots_status, GFP_KERNEL);
++}
++
++/* Could be replaced with a generic LRU implementation */
++static int ad7173_load_config(struct ad7173_state *st,
++			      struct ad7173_channel_config *cfg)
++{
++	unsigned int config;
++	int free_cfg_slot, ret;
++
++	free_cfg_slot = ida_alloc_range(&st->cfg_slots_status, 0,
++					st->info->num_configs - 1, GFP_KERNEL);
++	if (free_cfg_slot < 0)
++		free_cfg_slot = ad7173_free_config_slot_lru(st);
++
++	cfg->cfg_slot = free_cfg_slot;
++	config = FIELD_PREP(AD7173_SETUP_REF_SEL_MASK, cfg->ref_sel);
++
++	if (cfg->bipolar)
++		config |= AD7173_SETUP_BIPOLAR;
++
++	if (cfg->input_buf)
++		config |= AD7173_SETUP_AIN_BUF_MASK;
++
++	ret = ad_sd_write_reg(&st->sd, AD7173_REG_SETUP(free_cfg_slot), 2, config);
++	if (ret)
++		return ret;
++
++	return ad_sd_write_reg(&st->sd, AD7173_REG_FILTER(free_cfg_slot), 2,
++			       AD7173_FILTER_ODR0_MASK & cfg->odr);
++}
++
++static int ad7173_config_channel(struct ad7173_state *st, int addr)
++{
++	struct ad7173_channel_config *cfg = &st->channels[addr].cfg;
++	struct ad7173_channel_config *live_cfg;
++	int ret;
++
++	if (!cfg->live) {
++		live_cfg = ad7173_find_live_config(st, cfg);
++		if (live_cfg) {
++			cfg->cfg_slot = live_cfg->cfg_slot;
++		} else {
++			ret = ad7173_load_config(st, cfg);
++			if (ret)
++				return ret;
++			cfg->live = true;
++		}
++	}
++
++	if (st->config_usage_counter == U64_MAX)
++		ad7173_reset_usage_cnts(st);
++
++	st->config_usage_counter++;
++	st->config_cnts[cfg->cfg_slot] = st->config_usage_counter;
++
++	return 0;
++}
++
++static int ad7173_set_channel(struct ad_sigma_delta *sd, unsigned int channel)
++{
++	struct ad7173_state *st = ad_sigma_delta_to_ad7173(sd);
++	unsigned int val;
++	int ret;
++
++	ret = ad7173_config_channel(st, channel);
++	if (ret)
++		return ret;
++
++	val = AD7173_CH_ENABLE |
++	      FIELD_PREP(AD7173_CH_SETUP_SEL_MASK, st->channels[channel].cfg.cfg_slot) |
++	      st->channels[channel].ain;
++
++	return ad_sd_write_reg(&st->sd, AD7173_REG_CH(channel), 2, val);
++}
++
++static int ad7173_set_mode(struct ad_sigma_delta *sd,
++			   enum ad_sigma_delta_mode mode)
++{
++	struct ad7173_state *st = ad_sigma_delta_to_ad7173(sd);
++
++	st->adc_mode &= ~AD7173_ADC_MODE_MODE_MASK;
++	st->adc_mode |= FIELD_PREP(AD7173_ADC_MODE_MODE_MASK, mode);
++
++	return ad_sd_write_reg(&st->sd, AD7173_REG_ADC_MODE, 2, st->adc_mode);
++}
++
++static int ad7173_append_status(struct ad_sigma_delta *sd, bool append)
++{
++	struct ad7173_state *st = ad_sigma_delta_to_ad7173(sd);
++	unsigned int interface_mode = st->interface_mode;
++	int ret;
++
++	interface_mode |= AD7173_INTERFACE_DATA_STAT_EN(append);
++	ret = ad_sd_write_reg(&st->sd, AD7173_REG_INTERFACE_MODE, 2, interface_mode);
++	if (ret)
++		return ret;
++
++	st->interface_mode = interface_mode;
++
++	return 0;
++}
++
++static int ad7173_disable_all(struct ad_sigma_delta *sd)
++{
++	struct ad7173_state *st = ad_sigma_delta_to_ad7173(sd);
++	int ret;
++	int i;
++
++	for (i = 0; i < st->num_channels; i++) {
++		ret = ad_sd_write_reg(sd, AD7173_REG_CH(i), 2, 0);
++		if (ret < 0)
++			return ret;
++	}
++
++	return 0;
++}
++
++static struct ad_sigma_delta_info ad7173_sigma_delta_info = {
++	.set_channel = ad7173_set_channel,
++	.append_status = ad7173_append_status,
++	.disable_all = ad7173_disable_all,
++	.set_mode = ad7173_set_mode,
++	.has_registers = true,
++	.addr_shift = 0,
++	.read_mask = BIT(6),
++	.status_ch_mask = GENMASK(3, 0),
++	.data_reg = AD7173_REG_DATA,
++};
++
++static int ad7173_setup(struct iio_dev *indio_dev)
++{
++	struct ad7173_state *st = iio_priv(indio_dev);
++	struct device *dev = &st->sd.spi->dev;
++	u8 buf[AD7173_RESET_LENGTH];
++	unsigned int id;
++	int ret;
++
++	/* reset the serial interface */
++	memset(buf, 0xff, AD7173_RESET_LENGTH);
++	ret = spi_write_then_read(st->sd.spi, buf, sizeof(buf), NULL, 0);
++	if (ret < 0)
++		return ret;
++
++	/* datasheet recommends a delay of at least 500us after reset */
++	fsleep(500);
++
++	ret = ad_sd_read_reg(&st->sd, AD7173_REG_ID, 2, &id);
++	if (ret)
++		return ret;
++
++	id &= AD7173_ID_MASK;
++	if (id != st->info->id)
++		dev_warn(dev, "Unexpected device id: 0x%04X, expected: 0x%04X\n",
++			 id, st->info->id);
++
++	st->adc_mode |= AD7173_ADC_MODE_SING_CYC;
++	st->interface_mode = 0x0;
++
++	st->config_usage_counter = 0;
++	st->config_cnts = devm_kcalloc(dev, st->info->num_configs,
++				       sizeof(*st->config_cnts), GFP_KERNEL);
++	if (!st->config_cnts)
++		return -ENOMEM;
++
++	/* All channels are enabled by default after a reset */
++	return ad7173_disable_all(&st->sd);
++}
++
++static unsigned int ad7173_get_ref_voltage_milli(struct ad7173_state *st,
++						 u8 reference_select)
++{
++	int vref;
++
++	switch (reference_select) {
++	case AD7173_SETUP_REF_SEL_EXT_REF:
++		vref = regulator_get_voltage(st->regulators[0].consumer);
++		break;
++
++	case AD7173_SETUP_REF_SEL_EXT_REF2:
++		vref = regulator_get_voltage(st->regulators[1].consumer);
++		break;
++
++	case AD7173_SETUP_REF_SEL_INT_REF:
++		vref = AD7173_VOLTAGE_INT_REF_uV;
++		break;
++
++	case AD7173_SETUP_REF_SEL_AVDD1_AVSS:
++		vref = regulator_get_voltage(st->regulators[2].consumer);
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	if (vref < 0)
++		return vref;
++
++	return vref / (MICRO / MILLI);
++}
++
++static int ad7173_read_raw(struct iio_dev *indio_dev,
++			   struct iio_chan_spec const *chan,
++			   int *val, int *val2, long info)
++{
++	struct ad7173_state *st = iio_priv(indio_dev);
++	struct ad7173_channel *ch = &st->channels[chan->address];
++	unsigned int reg;
++	u64 temp;
++	int ret;
++
++	switch (info) {
++	case IIO_CHAN_INFO_RAW:
++		ret = ad_sigma_delta_single_conversion(indio_dev, chan, val);
++		if (ret < 0)
++			return ret;
++
++		/* disable channel after single conversion */
++		ret = ad_sd_write_reg(&st->sd, AD7173_REG_CH(chan->address), 2, 0);
++		if (ret < 0)
++			return ret;
++
++		return IIO_VAL_INT;
++	case IIO_CHAN_INFO_SCALE:
++		if (chan->type == IIO_TEMP) {
++			temp = AD7173_VOLTAGE_INT_REF_uV * MILLI;
++			temp /= AD7173_TEMP_SENSIIVITY_uV_per_C;
++			*val = temp;
++			*val2 = chan->scan_type.realbits;
++		} else {
++			*val = ad7173_get_ref_voltage_milli(st, ch->cfg.ref_sel);
++			*val2 = chan->scan_type.realbits - !!(ch->cfg.bipolar);
++		}
++		return IIO_VAL_FRACTIONAL_LOG2;
++	case IIO_CHAN_INFO_OFFSET:
++		if (chan->type == IIO_TEMP) {
++			/* 0 Kelvin -> raw sample */
++			temp   = -ABSOLUTE_ZERO_MILLICELSIUS;
++			temp  *= AD7173_TEMP_SENSIIVITY_uV_per_C;
++			temp <<= chan->scan_type.realbits;
++			temp   = DIV_U64_ROUND_CLOSEST(temp,
++						       AD7173_VOLTAGE_INT_REF_uV *
++						       MILLI);
++			*val   = -temp;
++		} else {
++			*val = -BIT(chan->scan_type.realbits - 1);
++		}
++		return IIO_VAL_INT;
++	case IIO_CHAN_INFO_SAMP_FREQ:
++		reg = st->channels[chan->address].cfg.odr;
++
++		*val = st->info->sinc5_data_rates[reg] / MILLI;
++		*val2 = (st->info->sinc5_data_rates[reg] % MILLI) * (MICRO / MILLI);
++
++		return IIO_VAL_INT_PLUS_MICRO;
++	default:
++		return -EINVAL;
++	}
++}
++
++static int ad7173_write_raw(struct iio_dev *indio_dev,
++			    struct iio_chan_spec const *chan,
++			    int val, int val2, long info)
++{
++	struct ad7173_state *st = iio_priv(indio_dev);
++	struct ad7173_channel_config *cfg;
++	unsigned int freq, i, reg;
++	int ret;
++
++	ret = iio_device_claim_direct_mode(indio_dev);
++	if (ret)
++		return ret;
++
++	switch (info) {
++	case IIO_CHAN_INFO_SAMP_FREQ:
++		freq = val * MILLI + val2 / MILLI;
++		for (i = 0; i < st->info->num_sinc5_data_rates - 1; i++)
++			if (freq >= st->info->sinc5_data_rates[i])
++				break;
++
++		cfg = &st->channels[chan->address].cfg;
++		cfg->odr = i;
++
++		if (!cfg->live)
++			break;
++
++		ret = ad_sd_read_reg(&st->sd, AD7173_REG_FILTER(cfg->cfg_slot), 2, &reg);
++		if (ret)
++			break;
++		reg &= ~AD7173_FILTER_ODR0_MASK;
++		reg |= FIELD_PREP(AD7173_FILTER_ODR0_MASK, i);
++		ret = ad_sd_write_reg(&st->sd, AD7173_REG_FILTER(cfg->cfg_slot), 2, reg);
++		break;
++
++	default:
++		ret = -EINVAL;
++		break;
++	}
++
++	iio_device_release_direct_mode(indio_dev);
++	return ret;
++}
++
++static int ad7173_update_scan_mode(struct iio_dev *indio_dev,
++				   const unsigned long *scan_mask)
++{
++	struct ad7173_state *st = iio_priv(indio_dev);
++	int i, ret;
++
++	for (i = 0; i < indio_dev->num_channels; i++) {
++		if (test_bit(i, scan_mask))
++			ret = ad7173_set_channel(&st->sd, i);
++		else
++			ret = ad_sd_write_reg(&st->sd, AD7173_REG_CH(i), 2, 0);
++		if (ret < 0)
++			return ret;
++	}
++
++	return 0;
++}
++
++static int ad7173_debug_reg_access(struct iio_dev *indio_dev, unsigned int reg,
++				   unsigned int writeval, unsigned int *readval)
++{
++	struct ad7173_state *st = iio_priv(indio_dev);
++	u8 reg_size;
++
++	if (reg == AD7173_REG_COMMS)
++		reg_size = 1;
++	else if (reg == AD7173_REG_CRC || reg == AD7173_REG_DATA ||
++		 reg >= AD7173_REG_OFFSET(0))
++		reg_size = 3;
++	else
++		reg_size = 2;
++
++	if (readval)
++		return ad_sd_read_reg(&st->sd, reg, reg_size, readval);
++
++	return ad_sd_write_reg(&st->sd, reg, reg_size, writeval);
++}
++
++static const struct iio_info ad7173_info = {
++	.read_raw = &ad7173_read_raw,
++	.write_raw = &ad7173_write_raw,
++	.debugfs_reg_access = &ad7173_debug_reg_access,
++	.validate_trigger = ad_sd_validate_trigger,
++	.update_scan_mode = ad7173_update_scan_mode,
++};
++
++static const struct iio_chan_spec ad7173_channel_template = {
++	.type = IIO_VOLTAGE,
++	.indexed = 1,
++	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
++		BIT(IIO_CHAN_INFO_SCALE),
++	.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SAMP_FREQ),
++	.scan_type = {
++		.sign = 'u',
++		.realbits = 24,
++		.storagebits = 32,
++		.endianness = IIO_BE,
++	},
++};
++
++static const struct iio_chan_spec ad7173_temp_iio_channel_template = {
++	.type = IIO_TEMP,
++	.indexed = 1,
++	.channel = AD7173_AIN_TEMP_POS,
++	.channel2 = AD7173_AIN_TEMP_NEG,
++	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
++		BIT(IIO_CHAN_INFO_SCALE) | BIT(IIO_CHAN_INFO_OFFSET),
++	.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SAMP_FREQ),
++	.scan_type = {
++		.sign = 'u',
++		.realbits = 24,
++		.storagebits = 32,
++		.endianness = IIO_BE,
++	},
++};
++
++static void ad7173_disable_regulators(void *data)
++{
++	struct ad7173_state *st = data;
++
++	regulator_bulk_disable(ARRAY_SIZE(st->regulators), st->regulators);
++}
++
++static void ad7173_clk_disable_unprepare(void *clk)
++{
++	clk_disable_unprepare(clk);
++}
++
++static unsigned long ad7173_sel_clk(struct ad7173_state *st,
++				    unsigned int clk_sel)
++{
++	int ret;
++
++	st->adc_mode &= !AD7173_ADC_MODE_CLOCKSEL_MASK;
++	st->adc_mode |= FIELD_PREP(AD7173_ADC_MODE_CLOCKSEL_MASK, clk_sel);
++	ret = ad_sd_write_reg(&st->sd, AD7173_REG_ADC_MODE, 0x2, st->adc_mode);
++
++	return ret;
++}
++
++static unsigned long ad7173_clk_recalc_rate(struct clk_hw *hw,
++					    unsigned long parent_rate)
++{
++	struct ad7173_state *st = clk_hw_to_ad7173(hw);
++
++	return st->info->clock / HZ_PER_KHZ;
++}
++
++static int ad7173_clk_output_is_enabled(struct clk_hw *hw)
++{
++	struct ad7173_state *st = clk_hw_to_ad7173(hw);
++	u32 clk_sel;
++
++	clk_sel = FIELD_GET(AD7173_ADC_MODE_CLOCKSEL_MASK, st->adc_mode);
++	return clk_sel == AD7173_ADC_MODE_CLOCKSEL_INT_OUTPUT;
++}
++
++static int ad7173_clk_output_prepare(struct clk_hw *hw)
++{
++	struct ad7173_state *st = clk_hw_to_ad7173(hw);
++
++	return ad7173_sel_clk(st, AD7173_ADC_MODE_CLOCKSEL_INT_OUTPUT);
++}
++
++static void ad7173_clk_output_unprepare(struct clk_hw *hw)
++{
++	struct ad7173_state *st = clk_hw_to_ad7173(hw);
++
++	ad7173_sel_clk(st, AD7173_ADC_MODE_CLOCKSEL_INT);
++}
++
++static const struct clk_ops ad7173_int_clk_ops = {
++	.recalc_rate = ad7173_clk_recalc_rate,
++	.is_enabled = ad7173_clk_output_is_enabled,
++	.prepare = ad7173_clk_output_prepare,
++	.unprepare = ad7173_clk_output_unprepare,
++};
++
++static int ad7173_register_clk_provider(struct iio_dev *indio_dev)
++{
++	struct ad7173_state *st = iio_priv(indio_dev);
++	struct device *dev = indio_dev->dev.parent;
++	struct fwnode_handle *fwnode = dev_fwnode(dev);
++	struct clk_init_data init = {};
++	int ret;
++
++	if (!IS_ENABLED(CONFIG_COMMON_CLK))
++		return 0;
++
++	init.name = fwnode_get_name(fwnode);
++	init.ops = &ad7173_int_clk_ops;
++
++	st->int_clk_hw.init = &init;
++	ret = devm_clk_hw_register(dev, &st->int_clk_hw);
++	if (ret)
++		return ret;
++
++	return devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get,
++					   &st->int_clk_hw);
++}
++
++static int ad7173_fw_parse_channel_config(struct iio_dev *indio_dev)
++{
++	struct ad7173_channel *chans_st_arr, *chan_st_priv;
++	struct ad7173_state *st = iio_priv(indio_dev);
++	struct device *dev = indio_dev->dev.parent;
++	struct iio_chan_spec *chan_arr, *chan;
++	unsigned int ain[2], chan_index = 0;
++	struct fwnode_handle *child;
++	int ref_sel, ret;
++
++	if (st->info->has_temp) {
++		chan_arr[chan_index] = ad7173_temp_iio_channel_template;
++		chan_st_priv = &chans_st_arr[chan_index];
++		chan_st_priv->ain =
++			AD7173_CH_ADDRESS(chan_arr[chan_index].channel, chan_arr[chan_index].channel2);
++		chan_st_priv->cfg.bipolar = false;
++		chan_st_priv->cfg.input_buf = true;
++		chan_st_priv->cfg.ref_sel = AD7173_SETUP_REF_SEL_INT_REF;
++		st->adc_mode |= AD7173_ADC_MODE_REF_EN;
++
++		chan_index++;
++	}
++
++	device_for_each_child_node(dev, child) {
++		chan = &chan_arr[chan_index];
++		chan_st_priv = &chans_st_arr[chan_index];
++		ret = fwnode_property_read_u32_array(child, "diff-channels",
++						     ain, ARRAY_SIZE(ain));
++		if (ret) {
++			fwnode_handle_put(child);
++			return ret;
++		}
++
++		if (ain[0] >= st->info->num_inputs ||
++		    ain[1] >= st->info->num_inputs) {
++			fwnode_handle_put(child);
++			return dev_err_probe(dev, -EINVAL,
++					     "Input pin number out of range for pair (%d %d).\n",
++					     ain[0], ain[1]);
++		}
++
++		ret = fwnode_property_match_property_string(child,
++							    "adi,reference-select",
++							    ad7173_ref_sel_str,
++							    ARRAY_SIZE(ad7173_ref_sel_str));
++		if (ret < 0)
++			ref_sel = AD7173_SETUP_REF_SEL_INT_REF;
++		else
++			ref_sel = ret;
++
++		if (ref_sel == AD7173_SETUP_REF_SEL_EXT_REF2 &&
++		    st->info->id != AD7173_ID) {
++			fwnode_handle_put(child);
++			return dev_err_probe(dev, -EINVAL, "External reference 2 is only available on ad7173-8\n");
++		}
++
++		ret = ad7173_get_ref_voltage_milli(st, ref_sel);
++		if (ret < 0) {
++			fwnode_handle_put(child);
++			return dev_err_probe(dev, ret,
++					     "Cannot use reference %u\n", ref_sel);
++		}
++		if (ref_sel == AD7173_SETUP_REF_SEL_INT_REF)
++			st->adc_mode |= AD7173_ADC_MODE_REF_EN;
++		chan_st_priv->cfg.ref_sel = ref_sel;
++
++		*chan = ad7173_channel_template;
++		chan->address = chan_index;
++		chan->scan_index = chan_index;
++		chan->channel = ain[0];
++		chan->channel2 = ain[1];
++		chan->differential = true;
++
++		chan_st_priv->ain = AD7173_CH_ADDRESS(ain[0], ain[1]);
++		chan_st_priv->chan_reg = chan_index;
++		chan_st_priv->cfg.input_buf = true;
++		chan_st_priv->cfg.odr = 0;
++
++		chan_st_priv->cfg.bipolar = fwnode_property_read_bool(child, "bipolar");
++		if (chan_st_priv->cfg.bipolar)
++			chan->info_mask_separate |= BIT(IIO_CHAN_INFO_OFFSET);
++
++		chan_index++;
++	}
++	return 0;
++}
++
++static int ad7173_fw_parse_device_config(struct iio_dev *indio_dev)
++{
++	struct ad7173_state *st = iio_priv(indio_dev);
++	struct device *dev = indio_dev->dev.parent;
++	unsigned int num_channels;
++	int ret;
++
++	st->regulators[0].supply = ad7173_ref_sel_str[AD7173_SETUP_REF_SEL_EXT_REF];
++	st->regulators[1].supply = ad7173_ref_sel_str[AD7173_SETUP_REF_SEL_EXT_REF2];
++	st->regulators[2].supply = ad7173_ref_sel_str[AD7173_SETUP_REF_SEL_AVDD1_AVSS];
++
++	/*
++	 * If a regulator is not available, it will be set to a dummy regulator.
++	 * Each channel reference is checked with regulator_get_voltage() before
++	 * setting attributes so if any channel uses a dummy supply the driver
++	 * probe will fail.
++	 */
++	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(st->regulators),
++				      st->regulators);
++	if (ret)
++		return dev_err_probe(dev, ret, "Failed to get regulators\n");
++
++	ret = regulator_bulk_enable(ARRAY_SIZE(st->regulators), st->regulators);
++	if (ret)
++		return dev_err_probe(dev, ret, "Failed to enable regulators\n");
++
++	ret = devm_add_action_or_reset(dev, ad7173_disable_regulators, st);
++	if (ret)
++		return dev_err_probe(dev, ret,
++				     "Failed to add regulators disable action\n");
++
++	ret = device_property_match_property_string(dev, "clock-names",
++						    ad7173_clk_sel,
++						    ARRAY_SIZE(ad7173_clk_sel));
++	if (ret < 0) {
++		st->adc_mode |= FIELD_PREP(AD7173_ADC_MODE_CLOCKSEL_MASK, AD7173_ADC_MODE_CLOCKSEL_INT);
++		ad7173_register_clk_provider(indio_dev);
++	} else {
++		st->adc_mode |= FIELD_PREP(AD7173_ADC_MODE_CLOCKSEL_MASK, AD7173_ADC_MODE_CLOCKSEL_EXT + ret);
++		st->ext_clk = devm_clk_get(dev, ad7173_clk_sel[ret]);
++		if (IS_ERR(st->ext_clk))
++			return dev_err_probe(dev, PTR_ERR(st->ext_clk),
++					     "Failed to get external clock\n");
++
++		ret = clk_prepare_enable(st->ext_clk);
++		if (ret)
++			return dev_err_probe(dev, ret,
++					     "Failed to enable external clock\n");
++
++		ret = devm_add_action_or_reset(dev, ad7173_clk_disable_unprepare,
++					       st->ext_clk);
++		if (ret)
++			return ret;
++	}
++
++	ret = fwnode_irq_get_byname(dev_fwnode(dev), "rdy");
++	if (ret < 0)
++		return dev_err_probe(dev, ret, "Interrupt 'rdy' is required\n");
++
++	ad7173_sigma_delta_info.irq_line = ret;
++
++	num_channels = device_get_child_node_count(dev);
++
++	if (st->info->has_temp)
++		num_channels++;
++
++	if (num_channels == 0)
++		return dev_err_probe(dev, -ENODATA, "No channels specified\n");
++	st->num_channels = num_channels;
++
++	indio_dev->channels = devm_kcalloc(dev, sizeof(*indio_dev->channels),
++					   num_channels, GFP_KERNEL);
++	if (!indio_dev->channels)
++		return -ENOMEM;
++
++	st->channels = devm_kcalloc(dev, num_channels, sizeof(*st->channels),
++				    GFP_KERNEL);
++	if (!st->channels)
++		return -ENOMEM;
++
++	indio_dev->num_channels = num_channels;
++	return ad7173_fw_parse_channel_config(indio_dev);
++}
++
++static int ad7173_probe(struct spi_device *spi)
++{
++	struct device *dev = &spi->dev;
++	struct ad7173_state *st;
++	struct iio_dev *indio_dev;
++	int ret;
++
++	indio_dev = devm_iio_device_alloc(dev, sizeof(*st));
++	if (!indio_dev)
++		return -ENOMEM;
++
++	st = iio_priv(indio_dev);
++	st->info = spi_get_device_match_data(spi);
++	if (!st->info)
++		return -ENODEV;
++
++	ida_init(&st->cfg_slots_status);
++	ret = devm_add_action_or_reset(dev, ad7173_ida_destroy, st);
++	if (ret)
++		return ret;
++
++	indio_dev->name = st->info->name;
++	indio_dev->modes = INDIO_DIRECT_MODE;
++	indio_dev->info = &ad7173_info;
++
++	spi->mode = SPI_MODE_3;
++	spi_setup(spi);
++
++	ad7173_sigma_delta_info.num_slots = st->info->num_configs;
++	ret = ad_sd_init(&st->sd, indio_dev, spi, &ad7173_sigma_delta_info);
++	if (ret)
++		return ret;
++
++	ret = ad7173_fw_parse_device_config(indio_dev);
++	if (ret)
++		return ret;
++
++	ret = devm_ad_sd_setup_buffer_and_trigger(dev, indio_dev);
++	if (ret)
++		return ret;
++
++	ret = ad7173_setup(indio_dev);
++	if (ret)
++		return ret;
++
++	ret = devm_iio_device_register(dev, indio_dev);
++	if (ret)
++		return ret;
++
++	if (IS_ENABLED(CONFIG_GPIOLIB))
++		return ad7173_gpio_init(st);
++
++	return 0;
++}
++
++static const struct of_device_id ad7173_of_match[] = {
++	{ .compatible = "adi,ad7172-2",
++	  .data = &ad7173_device_info[ID_AD7172_2]},
++	{ .compatible = "adi,ad7173-8",
++	  .data = &ad7173_device_info[ID_AD7173_8]},
++	{ .compatible = "adi,ad7175-2",
++	  .data = &ad7173_device_info[ID_AD7175_2]},
++	{ .compatible = "adi,ad7176-2",
++	  .data = &ad7173_device_info[ID_AD7176_2]},
++	{ }
++};
++MODULE_DEVICE_TABLE(of, ad7173_of_match);
++
++static const struct spi_device_id ad7173_id_table[] = {
++	{ "ad7172-2", (kernel_ulong_t)&ad7173_device_info[ID_AD7172_2]},
++	{ "ad7173-8", (kernel_ulong_t)&ad7173_device_info[ID_AD7173_8]},
++	{ "ad7175-2", (kernel_ulong_t)&ad7173_device_info[ID_AD7175_2]},
++	{ "ad7176-2", (kernel_ulong_t)&ad7173_device_info[ID_AD7176_2]},
++	{ }
++};
++MODULE_DEVICE_TABLE(spi, ad7173_id_table);
++
++static struct spi_driver ad7173_driver = {
++	.driver = {
++		.name	= "ad7173",
++		.of_match_table = ad7173_of_match,
++	},
++	.probe		= ad7173_probe,
++	.id_table	= ad7173_id_table,
++};
++module_spi_driver(ad7173_driver);
++
++MODULE_AUTHOR("Lars-Peter Clausen <lars@metafo.de>");
++MODULE_AUTHOR("Dumitru Ceclan <dumitru.ceclan@analog.com>");
++MODULE_DESCRIPTION("Analog Devices AD7172/AD7173/AD7175/AD7176 ADC driver");
++MODULE_LICENSE("GPL");
 -- 
 2.42.0
 
