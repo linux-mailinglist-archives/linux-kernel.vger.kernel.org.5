@@ -1,78 +1,78 @@
-Return-Path: <linux-kernel+bounces-78831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78836-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97ED186197A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:27:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E2CC86198E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:28:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37F991F25FB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:27:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23465287D67
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:28:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A7CD13DBBB;
-	Fri, 23 Feb 2024 17:25:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 630A7140E4D;
+	Fri, 23 Feb 2024 17:25:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="KYYn/Y1w"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="HQjHfEq9"
 Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C0EC133298;
-	Fri, 23 Feb 2024 17:25:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A845412D763;
+	Fri, 23 Feb 2024 17:25:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708709145; cv=none; b=mn1t3PYs7tiorl/aAwwGZXpdpqGP9cXdvGKF0w9g1R+IreWU94QzlEmm1PBxnS/Pfopm8hS9l/IXzMd5/WzSBUV5FuAEh9H7HZTZhqc/ooLcvo92YNXgFskgfZnGjYrCqoI8buW/QCeWVilBwoGeJAPYeiCcXCx9THfsq/ukFxU=
+	t=1708709147; cv=none; b=CzgzhjQvf0i67XB5xsJxzXNLbmgP/HEA3Cn5KF5i+y+FbLL59mtY3wO40XeslNFXYetw9ikQqNNUv4yZTLK798qqK0I/9jvHhew45KpVcLBNDkK3V2P8bRSebnl+HReSVm1gewNgzBCOLAo2BYXK1K9vgfVF9RBJ00LVM0IesG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708709145; c=relaxed/simple;
-	bh=kSLFV7xyi48KFJ8Rsbkur+uvzn+lPnb3q506OlHWcEA=;
+	s=arc-20240116; t=1708709147; c=relaxed/simple;
+	bh=ZW06s7wjj9gTGUJT+QloYe2xGmFjTLmoYI5gCOp0Tys=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ryhr/za06OD8piRpvYG0fxqLiORKVSpBJwnu7+RPlgqGjhKYubzGbP1383Kec0KzJzeLXCVDhF6yRN+eir/tk9a63CqyMzRWUZo2XkLOJ+ahcCLzCt8SVg6/wDJyaQeECPYYQKO1rfgceAChR7quNBc01nTjAkYRuKMQ+6K0Zm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=KYYn/Y1w; arc=none smtp.client-ip=148.163.158.5
+	 MIME-Version; b=U9POsXrSqyxztcw2Cir6hlRgEs3boeaH6UMO3uqoYZD1wPMySQ0Qm1yghlzm5enqrqDhE83PfDglzVMzzMYOCG0KZMmo6xG68vLzj58AckGdtHObK0ILoDExAJkuyAgt4dfo8xllwWcvH8LBkDYNHImeHPbU+HAvD4mIBrPKDXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=HQjHfEq9; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41NHHP82021805;
-	Fri, 23 Feb 2024 17:25:31 GMT
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41NHMxDo026579;
+	Fri, 23 Feb 2024 17:25:33 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=HEvyJIBK+QBpF4DAvae6ALmzO3GZjqSd7hnalCftw4g=;
- b=KYYn/Y1wsEEeusaE1UCEIIA3sR0wjY07eVJbMVuBGrDrC1lAIINE5dSHXQ6BCJKNcTEd
- 0mItmennSDK7KxfxFarxI6TgeT9QNgNE905/ap12VmKr87G1+C5saE+VkC2i1c7Nx0xE
- bmYYekSeqM2HCpAeOW5zWwGafA3xvCMGhPE/IMvHvsNBfMQuX79GMEPDQF746UbXqxuN
- G0mlOZ98M514WrRrd+TkmJJVuW9Sm4lz+I5VO6aKdoybcF3QMC5ZFMs9jEfGrYT/bq9K
- VqGlLEXMlKjLFxS0DarTz+Mb6Slu6YV3fGnicZJTsSqh6ZNvdKQSAHCK71sT70zPdO7O 6w== 
+ bh=aDrrYmw5t3BqAMNqGn8xOIneLz0gWSOm+/nasgeSH5Y=;
+ b=HQjHfEq90BCALa37sw+h3oEtOeBpQ7XuG/OS6ARfccxCKf+oYGXMEn2m8w67O02z1RIU
+ csmay8swHy/KZqBaOAK0NefWPr9LoRIbhB75ojFsjSB8lLg4WAl+UC+5JfWVVRMhxLW1
+ PwYlBGsRvTNEWis7lEpkkTfkWzFdJSnh/fTBhzj+upFoS9ipqvkKRpcAuBxyUL1kekNt
+ xyy9IWZDC3gmILfjhzybRO/ixel8zuw+WNip3JapurWj0jKVJQhB7Hria5vfjfE5xMa1
+ h5H5DO/Lf+YbTHMah3IUzufPATGSCqyo0Rmaa09/G2hFPZ6MHA1yvrU0IaQ3r83P9k2P zg== 
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3weymgg7ku-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3weyq7r33c-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 Feb 2024 17:25:32 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41NHPEI2001882;
+	Fri, 23 Feb 2024 17:25:32 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3weyq7r32k-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Fri, 23 Feb 2024 17:25:31 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41NHID7X023435;
-	Fri, 23 Feb 2024 17:25:30 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3weymgg7k8-1
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41NHKFi2009577;
+	Fri, 23 Feb 2024 17:25:31 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wb84pxva0-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 17:25:30 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41NG7eBu014416;
-	Fri, 23 Feb 2024 17:25:30 GMT
-Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wb9u36atn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 17:25:30 +0000
+	Fri, 23 Feb 2024 17:25:31 +0000
 Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-	by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41NHPQZU9241488
+	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41NHPSYx29164174
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 23 Feb 2024 17:25:29 GMT
+	Fri, 23 Feb 2024 17:25:30 GMT
 Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BD35E58066;
+	by IMSVA (Postfix) with ESMTP id 078F258043;
+	Fri, 23 Feb 2024 17:25:28 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E3E9158059;
 	Fri, 23 Feb 2024 17:25:26 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9B8E158059;
-	Fri, 23 Feb 2024 17:25:25 +0000 (GMT)
 Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
 	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 23 Feb 2024 17:25:25 +0000 (GMT)
+	Fri, 23 Feb 2024 17:25:26 +0000 (GMT)
 From: Stefan Berger <stefanb@linux.ibm.com>
 To: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org,
         linux-unionfs@vger.kernel.org
@@ -80,9 +80,9 @@ Cc: linux-kernel@vger.kernel.org, paul@paul-moore.com, jmorris@namei.org,
         serge@hallyn.com, zohar@linux.ibm.com, roberto.sassu@huawei.com,
         amir73il@gmail.com, brauner@kernel.org, miklos@szeredi.hu,
         Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH v3 07/10] ima: re-evaluate file integrity on file metadata change
-Date: Fri, 23 Feb 2024 12:25:10 -0500
-Message-ID: <20240223172513.4049959-8-stefanb@linux.ibm.com>
+Subject: [PATCH v3 08/10] evm: Enforce signatures on unsupported filesystem for EVM_INIT_X509
+Date: Fri, 23 Feb 2024 12:25:11 -0500
+Message-ID: <20240223172513.4049959-9-stefanb@linux.ibm.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240223172513.4049959-1-stefanb@linux.ibm.com>
 References: <20240223172513.4049959-1-stefanb@linux.ibm.com>
@@ -94,72 +94,76 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: BgIcHTriD_2Qpaakvseutw3_Hj9NklpK
-X-Proofpoint-GUID: y5XdLjV7a6dU1pN0kREb3005F3MWryIK
+X-Proofpoint-GUID: zIW5Up1MKJQsuaoxHMKfwanSiqMdoDAB
+X-Proofpoint-ORIG-GUID: ttjXmNiwHXBpNfA2jly-K0dxoad2B2dx
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-23_03,2024-02-23_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 spamscore=0 impostorscore=0 malwarescore=0 adultscore=0
- phishscore=0 mlxlogscore=876 mlxscore=0 bulkscore=0 priorityscore=1501
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ suspectscore=0 clxscore=1015 impostorscore=0 priorityscore=1501
+ adultscore=0 lowpriorityscore=0 mlxscore=0 spamscore=0 mlxlogscore=999
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2311290000 definitions=main-2402230127
 
-Force a file's integrity to be re-evaluated on file metadata change by
-resetting both the IMA and EVM status flags.
+Unsupported filesystems currently do not enforce any signatures. Add
+support for signature enforcement of the "original" and "portable &
+immutable" signatures when EVM_INIT_X509 is enabled.
+
+The "original" signature type contains filesystem specific metadata.
+Thus it cannot be copied up and verified. However with EVM_INIT_X509
+and EVM_ALLOW_METADATA_WRITES enabled, the "original" file signature
+may be written.
+
+When EVM_ALLOW_METADATA_WRITES is not set or once it is removed from
+/sys/kernel/security/evm by setting EVM_INIT_HMAC for example, it is not
+possible to write or remove xattrs on the overlay filesystem.
+
+This change still prevents EVM from writing HMAC signatures on
+unsupported filesystem when EVM_INIT_HMAC is enabled.
 
 Co-developed-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
 ---
- security/integrity/ima/ima_main.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ security/integrity/evm/evm_main.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index c15378dd9456..36c92d6c01f6 100644
---- a/security/integrity/ima/ima_main.c
-+++ b/security/integrity/ima/ima_main.c
-@@ -26,6 +26,7 @@
- #include <linux/ima.h>
- #include <linux/fs.h>
- #include <linux/iversion.h>
-+#include <linux/evm.h>
+diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
+index c1ca0894cd8a..cfb4f9809369 100644
+--- a/security/integrity/evm/evm_main.c
++++ b/security/integrity/evm/evm_main.c
+@@ -192,7 +192,11 @@ static enum integrity_status evm_verify_hmac(struct dentry *dentry,
+ 		     iint->evm_status == INTEGRITY_PASS_IMMUTABLE))
+ 		return iint->evm_status;
  
- #include "ima.h"
+-	if (is_unsupported_fs(dentry))
++	/*
++	 * On unsupported filesystems without EVM_INIT_X509 enabled, skip
++	 * signature verification.
++	 */
++	if (!(evm_initialized & EVM_INIT_X509) && is_unsupported_fs(dentry))
+ 		return INTEGRITY_UNKNOWN;
  
-@@ -211,6 +212,7 @@ static int process_measurement(struct file *file, const struct cred *cred,
- 	struct inode *real_inode, *inode = file_inode(file);
- 	struct ima_iint_cache *iint = NULL;
- 	struct ima_template_desc *template_desc = NULL;
-+	struct inode *metadata_inode;
- 	char *pathbuf = NULL;
- 	char filename[NAME_MAX];
- 	const char *pathname = NULL;
-@@ -286,7 +288,8 @@ static int process_measurement(struct file *file, const struct cred *cred,
- 	}
+ 	/* if status is not PASS, try to check again - against -ENOMEM */
+@@ -261,7 +265,8 @@ static enum integrity_status evm_verify_hmac(struct dentry *dentry,
+ 				evm_status = INTEGRITY_PASS_IMMUTABLE;
+ 			} else if (!IS_RDONLY(inode) &&
+ 				   !(inode->i_sb->s_readonly_remount) &&
+-				   !IS_IMMUTABLE(inode)) {
++				   !IS_IMMUTABLE(inode) &&
++				   !is_unsupported_fs(dentry)) {
+ 				evm_update_evmxattr(dentry, xattr_name,
+ 						    xattr_value,
+ 						    xattr_value_len);
+@@ -419,9 +424,6 @@ enum integrity_status evm_verifyxattr(struct dentry *dentry,
+ 	if (!evm_key_loaded() || !evm_protected_xattr(xattr_name))
+ 		return INTEGRITY_UNKNOWN;
  
- 	/*
--	 * On stacked filesystems, detect and re-evaluate file data changes.
-+	 * On stacked filesystems, detect and re-evaluate file data and
-+	 * metadata changes.
- 	 */
- 	real_inode = d_real_inode(file_dentry(file));
- 	if (real_inode != inode &&
-@@ -297,6 +300,15 @@ static int process_measurement(struct file *file, const struct cred *cred,
- 			iint->flags &= ~IMA_DONE_MASK;
- 			iint->measured_pcrs = 0;
- 		}
-+
-+		/*
-+		 * Reset the EVM status when metadata changed.
-+		 */
-+		metadata_inode = d_inode(d_real(file_dentry(file),
-+					 D_REAL_METADATA));
-+		if (evm_metadata_changed(inode, metadata_inode))
-+			iint->flags &= ~(IMA_APPRAISED |
-+					 IMA_APPRAISED_SUBMASK);
- 	}
- 
- 	/* Determine if already appraised/measured based on bitmask
+-	if (is_unsupported_fs(dentry))
+-		return INTEGRITY_UNKNOWN;
+-
+ 	return evm_verify_hmac(dentry, xattr_name, xattr_value,
+ 				 xattr_value_len);
+ }
 -- 
 2.43.0
 
