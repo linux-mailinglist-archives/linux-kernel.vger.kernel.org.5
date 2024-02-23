@@ -1,234 +1,733 @@
-Return-Path: <linux-kernel+bounces-78191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78194-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E3DD860FFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:01:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C585D861007
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:02:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D04B0282486
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:01:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E2F91F23383
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32D3C2E417;
-	Fri, 23 Feb 2024 11:01:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09FA767C4D;
+	Fri, 23 Feb 2024 11:02:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b="QeBeL3Bp"
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2040.outbound.protection.outlook.com [40.107.114.40])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="m56ycVOd"
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B3D6241F9;
-	Fri, 23 Feb 2024 11:01:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.114.40
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708686084; cv=fail; b=mjF6UXWWXFwAMzwvTRv30UDssAaz29PAlRqBu6nDk2aNZLsKRP3bLgBozXzXkSSJSysH7EIiDneSI4p1x73eSjJfAoqnlv+73UpHYZnqpRjH1LMrwmWbXMR/lNetEONU83ZjQzf2McsXtKPYoR2v16r2YkBfq4ywG1ht/lbQfa8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708686084; c=relaxed/simple;
-	bh=/57f/DFonL3GVbiWCToBgDcMCv0QxUP7Hq8s7SFnWz8=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=pFyow1nIc4g9ee3m53otTFeEI9bFBNhTNfFaaL8jp3q079rvqEGdieLLEsNfiuLFwujRGiLHjrlI9VZDL7vWLjNdFJvR2tHuIr5XLwkxjPF9Ak2ZwYu3vZE2/s2sSB7fed0w+4+1e/9/nRWCvR5b/bbd1CxsJP7fHlg75sXgn3o=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b=QeBeL3Bp; arc=fail smtp.client-ip=40.107.114.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BBu1dZutIsI5Bp7YUkCuBbZEFshc6ovOhIiR/hmNaoIVqzuIJIwhjJiTwuDdfPEs8AVbvAyrCiv2LCELtI9tUaeZYq25v/PCc1YabuVhm3PIVDwCNNeOdJk05uyhFsCtHF0dgadChv/aIEA7xD/WqMnFPyxeD6azqktT8/CT49B+Lz7EpnU4XfPsBxnfOXA0hFrtAiNWc9GMsh9k4DQ+fnkhXh0lAwosIR1uFO3lE5q8dlFrUgWPcyIK3L3B0D6bM9Nbg0mrRDq7GwGgl9ebjbRM1ZnkVriH9WnhM7qYcJvY6ta5ZjKJ8M/D8PqyIgxMTFtWBQ0AwurmDUZKoVtg7A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Q614cY1iCuMg131Uqrgkpu94aKn4lGgmM3cnkgIwHVk=;
- b=CTFA09kCF/d9ocktvefhdk75RL2An31rYUaELcYQWLJjvZl1d2jwz6Fj9CM5Ryfg+MfdjijtSe8Pvs3nqWyZ4DPzj/khYFFHyuxfbxbgxSVu2kFbcD4Nf32bvxROjNewAEBgRUVPCRk6Bpb+f+I7GfB1CQRLWc6W9Zy3Qx4ArBP10SXzEVy6RBOn0q7pp0p1duDWk4Z79CrNCiC92SLi+kGJ/9GUbEJhj90HpEQgsRCFHiIcOOFPVAW9FZdIYtqspf48y/sd+wH4lrgV6SokEkm8sLMNI7HGveN7xKRJcfSwaAnlNQVLB5CYmjelxWYOjFFRCBzXdaDnTPQ0xRQpkg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q614cY1iCuMg131Uqrgkpu94aKn4lGgmM3cnkgIwHVk=;
- b=QeBeL3BphQeFJkaNn5JDvEDTGJw9uxwKnhVZK++V4NhLwAS6D6CVB3AUKKO+BiujsgsCXetrAFkngMObg0bd0KirEaiSKzJNwnETKck/Av+yRqDq4CgR0sLXhpPxOkHF8LRmwUqh3b/cmG26S3OqMB6Ps5ixoYGxnFAvomfbyFY=
-Received: from TYCPR01MB11269.jpnprd01.prod.outlook.com
- (2603:1096:400:3c0::10) by TYWPR01MB8283.jpnprd01.prod.outlook.com
- (2603:1096:400:164::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Fri, 23 Feb
- 2024 11:01:18 +0000
-Received: from TYCPR01MB11269.jpnprd01.prod.outlook.com
- ([fe80::6719:535a:7217:9f0]) by TYCPR01MB11269.jpnprd01.prod.outlook.com
- ([fe80::6719:535a:7217:9f0%3]) with mapi id 15.20.7316.023; Fri, 23 Feb 2024
- 11:01:18 +0000
-From: Biju Das <biju.das.jz@bp.renesas.com>
-To: Marek Szyprowski <m.szyprowski@samsung.com>, Anup Patel
-	<apatel@ventanamicro.com>, Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Thomas Gleixner <tglx@linutronix.de>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Frank Rowand <frowand.list@gmail.com>,
-	Conor Dooley <conor+dt@kernel.org>
-CC: Marc Zyngier <maz@kernel.org>, =?iso-8859-1?Q?Bj=F6rn_T=F6pel?=
-	<bjorn@kernel.org>, Atish Patra <atishp@atishpatra.org>, Andrew Jones
-	<ajones@ventanamicro.com>, Sunil V L <sunilvl@ventanamicro.com>, Saravana
- Kannan <saravanak@google.com>, Anup Patel <anup@brainfault.org>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>
-Subject: RE: [PATCH v12 02/25] genirq/irqdomain: Remove the param count
- restriction from select()
-Thread-Topic: [PATCH v12 02/25] genirq/irqdomain: Remove the param count
- restriction from select()
-Thread-Index: AQHaZkJDw9NLoYRbNkuhzQYScggLGrEXvPCAgAAEdwCAAABXsA==
-Date: Fri, 23 Feb 2024 11:01:18 +0000
-Message-ID:
- <TYCPR01MB11269D56CFF46F731F932245886552@TYCPR01MB11269.jpnprd01.prod.outlook.com>
-References: <20240127161753.114685-1-apatel@ventanamicro.com>
-	<20240127161753.114685-3-apatel@ventanamicro.com>
-	<CGME20240223102258eucas1p119f38e40f769c883c0a502e9e26be888@eucas1p1.samsung.com>
-	<481aa3b9-55c2-4ccb-bb4a-58b924d77ad7@samsung.com>
-	<TYCPR01MB112692BF27640D12CEF5987BE86552@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <870534fc-eaa6-4da6-9180-a051443fbaa6@samsung.com>
-In-Reply-To: <870534fc-eaa6-4da6-9180-a051443fbaa6@samsung.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYCPR01MB11269:EE_|TYWPR01MB8283:EE_
-x-ms-office365-filtering-correlation-id: 2ed49418-a8d1-4a61-8974-08dc345ec327
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- dvphegWgH/64zNP3HzOhTqMU12IgRXmpXF7PAX+wVDbK+IVNpG3yet+hFbiSp0XuuIsIC6dME0jIadNZJXk78KkkMXRqlcTVtWgtdASlvi3utCht3o4NzJTK8Xhgn1KE/zwZL0EgXHxX8oSmVacAdB6Ef7kyNurZyv71K6Y7jY2cuUUfAD/LNiNWUwlLCMeFtlYdhrgEbYxydPZmUFx3vSRdE32MFDYuVYEGpOAgN3LriHbd45dtO0rWxElXxXiczLcoBWxiHLZgsKYpjpYXwfwOfJcoVCJh08HCPUqUCUZaX9ATyW0sMkPYIk+wocPUMP5auGMSbAXlJM+QaL7tncQFCn+PxxXHOXkJbLU6rrQIFvarhvQX7F31fJIRTtWX4YLeu1agQ4KXYE591DZeAL3appMRjhUYiuGTSZKBlz7seVmE5VtEURZHA/spRU9BDfARULup6KOZ2gGuvAySt56dnBr0hUmDTmCpY//XhVv6S0OVS4l5ZCPF303Hxne0iZn1ZLrpvSY3vlKtAfF1iQKg3PqsFXklvCr4oZZ6I7G1e4tq7i0AMV+h6mh9J2oAFYYbZXi5JR1jSkig/BBOsHP1NreCL59aG5JPJJrjoKYCyD6ppDRD2nEVd1RbWHb7
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB11269.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-1?Q?Ry55aUs23CCfCLFHXwGIJyv3daKvuf5/apKqzRCldti9oI5EuoIUFbYzxU?=
- =?iso-8859-1?Q?aRQyb8cS893c3K65FfIx46Fgrs0NmyWjkZ3aYEsNwvetCt45aJ4zRtuKNM?=
- =?iso-8859-1?Q?xpn/5lmlfq0AvHnmSRiuuTqDjmFykM3Vxe7JM451Pxi6UheMYG2lAWJ6iX?=
- =?iso-8859-1?Q?vhOqJRyjdFmkBpaUym3jhqiLcoyN5MVwmBfmE8LGVaEuueMy8563stnKyO?=
- =?iso-8859-1?Q?nMZm/b87PVd8ugcRoTibo6quErNzBCVBxNIySM+Ec6vnN0i+6ZgAGDXH89?=
- =?iso-8859-1?Q?whIfiIUWwNth0OLV0bnx5Cqb5vu85X6xfr9paMIl15gxjO1Cm0YniI5xoV?=
- =?iso-8859-1?Q?FXwadRmjXBnEkZIoeef+2VcOBs0ebPaYGDfqL44XcEgoW6JTWNDdjBamUO?=
- =?iso-8859-1?Q?DUPiiWjhA+w9Ln+uVYlJSZpwtN8ckZDUEDNe9MNiO5Qn1YHMLPmj1o0RHR?=
- =?iso-8859-1?Q?20mRxJI06tjT+sr/13Uv2vLo/BWcOC+6SEuRA+zQLAq6lvuGo2Ad/R0S5e?=
- =?iso-8859-1?Q?1pxWFYTK5A7+d/rj4n2FOnfTiZXS19U+o5Uu9uWgIbNpiwZlVgjBWizT6T?=
- =?iso-8859-1?Q?O0FSBoSQ2vO4clyHxMxDVRe/8BH69Ig4ixz4HU5vr4myoGGop+rFrhojJL?=
- =?iso-8859-1?Q?GlttCf1VS5Cq+szp9pgOi9CE0XxeHOhTcS401FA3vCLr4sm5rmZmh7Rnck?=
- =?iso-8859-1?Q?yFSmVu3Yi87K4Sq5733tFrROLHP+wMNmH4SoVxl+NDNzFkDv+9R9woPthq?=
- =?iso-8859-1?Q?VMvW5dWzNFpXGSVmabcr/x8nym6YRXRxmVOanA4zUt/KZPQyGq4MftbZ+n?=
- =?iso-8859-1?Q?8DRKmkKaezMYhXQKTCQmley5+yyBj6zNsNTfKtomtiXUPa3WbQAgpQReFp?=
- =?iso-8859-1?Q?ebPjkRTjBjabRd86Lm2z1DnaW3iSDfrgfyZmd97rwSyq73+ct3vc7PWdOB?=
- =?iso-8859-1?Q?U4n3Rc/oV4DVFEg07gYzrdcwo4qFmIFgjQHzqPr64wt2+0g0Ly2TXF02uz?=
- =?iso-8859-1?Q?5bL1ak98TWjwmQUXZhS8e5SACuDbi9PJkqCu3XEtpuI32yJRt7KGmSgjIu?=
- =?iso-8859-1?Q?f6OudMaAM9Hh0rdvV4ly7/C0Q2SLe3kijFf3Sn7Ymi8vOlfC2GTSLCjeEG?=
- =?iso-8859-1?Q?Jn0wh1Qs1JEztokXeCq2hD5c9F0C9Dvxaeow9GGhZjQBHPcz386MF2OM7n?=
- =?iso-8859-1?Q?oj2jzpWM3yB4UQrfNoMbNXtsKL1VZ7IR4ZrKXauiHoXltocc0jXpB3MFo3?=
- =?iso-8859-1?Q?T5gdnjwKvd9WVDx6xgI4cvt2whUy7A+YMjkBKFMD3cmoTz7AdD3R/2xijN?=
- =?iso-8859-1?Q?yoVRJHRtWU8BoG+L4hZ4t8XZ2q27jjNKXHfxkl8eQNvXkAIguRJLAnlfkK?=
- =?iso-8859-1?Q?mlA6GaWJna46qDnPBeS/ktRPND2xZRtjRQuTcupTL5Mrgn/4sYHmzR5pVr?=
- =?iso-8859-1?Q?wzwE7VzGcgY1zcZ7m34kDrMTz7qO7IiC1xdWeNMkoKWVeAjYkHSjRrUPXf?=
- =?iso-8859-1?Q?8pzZBKkHykuzL6euPtm3w9nPbYv46vkAwV1uRkH5DC8zpNHNnKBYFY0Uuz?=
- =?iso-8859-1?Q?mXrvmfYCFKIyD2B/hpU7Na4OgBfrNfwXKwlv+sCrAf1/1h7JCpkChDGtv6?=
- =?iso-8859-1?Q?Ok8x14F4jrx0G6wmsxwGQqeZ5dgewuqGv03Z3coKLKyNsapMPID3Tplw?=
- =?iso-8859-1?Q?=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9552514B835
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:02:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708686138; cv=none; b=RNotcMTsWq1a1gfDejrjgysq871GN/Lm8D5ZB8HE4JOt78iITShVjciblBRxuR7fqzSQlF36CO57dQ3LPTYv5mi/63Lqb4hRKAoZOJFFfNyiA19K9zO5nl5TZof7FJdnteoc31uMHdY0C4R3rHoQjR0RqaYSQdL6kTH3bpHvT54=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708686138; c=relaxed/simple;
+	bh=PVvzGTB+DdAhYFzi2A9SFrTtfoZLsYbD95ro9qa4eAw=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Vl/xh39TN/FySEPH0L6um8dpkfJ/pzuT3CvSxY2kF40DQefcz0vhyZR24YXLJnbYbmgzE/eGac3Lsz3QHTAjwsYEqKCObRo7fPYda+6IA7zr5M4Q/64MKo9z5q/XWIJfJgyqMTrLjLWlCtyZF5vkMyMgGW5Km29JN/kjVZwomzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=m56ycVOd; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d2531294faso11193261fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 03:02:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1708686133; x=1709290933; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=T4/Oils4dMi6DnXoCiXpKiFP66KSJjo2vzfJqhdN6wQ=;
+        b=m56ycVOdMMgYuX0sgPnJO0VhSM4otMCRCWpXy4VlMJnmw3pDuKNkbMG9niicnsjoMo
+         UrJC2a0s0hemDYXfyrPwAOLP+bXYr0xOFgJkjBXCkw6WsucHCO4QM/EV72UA+Wr0nsfD
+         lpXINTah+v8OSUdPLzm01B/qjzRhb0hQbsFHbnYjDd78yIWPY5HT9Wjju/N1T4mwyBJZ
+         H9tz7gzVbW/HvmLqnQem6cwGLrXyr6SrPP9+nig/aSt3bNme7r81o4G5QdxoElWDjnDL
+         Uebdus8VqYt0DG3kz0TFmGx+HgSfGcdeVSvVw5MKd5MEBDqmaQ3R11Ggy7Z2sYCLYSgw
+         IHDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708686133; x=1709290933;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T4/Oils4dMi6DnXoCiXpKiFP66KSJjo2vzfJqhdN6wQ=;
+        b=p6APQBvVlUVJ8Nl07WqNHS8GI3g71aJCfIYAae0XZlA85OZI43CxW7UHZTHi+HE0JV
+         +02Dbvvzf5fwxQj3qXDdqjWhgKC2pV9eUw1IczIYE/bAQ8Jhdw64iHH7MKI7wcrVEQJY
+         NrITKf+X/qWaI5ZotAT0twboWxNz0iaStNnK3Bp14JvYe0Ab6tednyA46+7TACWad1jn
+         gwKongjTWnzZHyPml3eg7KTesYovdgznxBHu/aKxn2OtZaXPaECWRecXmT8GLfZygXDI
+         p0Lf3B/G0se42vrbY3ZddafElPUM/gXJdBaE4Xhz44g8KkCBECHCRquNMC/nOAHN81d9
+         UFIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV6xEF1VJ+5R10ONflr+OFrsbdcW2JL16QOxthD/IQc4aH+nnBfbjL3UCVhdTN6g1wtB/uz1MyUcUz8Wso1ZregTz69/dRKhogkPGOk
+X-Gm-Message-State: AOJu0Yy9d2dHqtrKhToQwAl6YudO5k7IpQrTLRmy2N0GMEK4zK4o2iFH
+	zLx8pTv/TRCx1Ntgq1yj+QKm+/+EU1+Pm4azvAYB3Rdk/DH0/1KbuAodllUU+8c=
+X-Google-Smtp-Source: AGHT+IGe6NrMVx3QNu4DVZNW1I++0CUx85oCa3jxIVqAXxqnQ14o/Qf+tFQI1wrRjTDItkH2MTyacw==
+X-Received: by 2002:a2e:95c6:0:b0:2d2:5430:605a with SMTP id y6-20020a2e95c6000000b002d25430605amr1114617ljh.7.1708686132266;
+        Fri, 23 Feb 2024 03:02:12 -0800 (PST)
+Received: from [127.0.1.1] ([84.102.31.43])
+        by smtp.gmail.com with ESMTPSA id e17-20020a056000195100b0033b60bad2fcsm2363745wry.113.2024.02.23.03.02.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 03:02:11 -0800 (PST)
+From: Julien Panis <jpanis@baylibre.com>
+Date: Fri, 23 Feb 2024 12:01:37 +0100
+Subject: [PATCH] net: ethernet: ti: am65-cpsw: Add minimal XDP support
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB11269.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2ed49418-a8d1-4a61-8974-08dc345ec327
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Feb 2024 11:01:18.4890
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8yQMKd+Nc9rLcGm3SUYZzNLSDT2qqE3gjN8RhWJEtMCMGKQBkT5yiVH/vL5byqtufPz/a37GOkxJLWmdc9AoGwqNWhxLIv86dUE75OSB4uE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWPR01MB8283
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240223-am65-cpsw-xdp-basic-v1-1-9f0b6cbda310@baylibre.com>
+X-B4-Tracking: v=1; b=H4sIABB72GUC/x2NUQrCMBAFr1L228UYUwleRaRsktWu2BiyUAuld
+ zf1cx4zvBWUq7DCtVuh8iwqn9zgdOggjpSfjJIagzXWGWvPSNOlx1j0i0sqGEglokvBW98bH5y
+ HVraVMVTKcdzbV6Esemz+MJHkt2QeZrOLpfJDlv/97b5tP87IniyOAAAA
+To: "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>, 
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Sumit Semwal <sumit.semwal@linaro.org>, 
+ =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ bpf@vger.kernel.org, linux-media@vger.kernel.org, 
+ dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, 
+ Julien Panis <jpanis@baylibre.com>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708686130; l=20210;
+ i=jpanis@baylibre.com; s=20230526; h=from:subject:message-id;
+ bh=PVvzGTB+DdAhYFzi2A9SFrTtfoZLsYbD95ro9qa4eAw=;
+ b=R668PkKPyqv/S344bX8/DdFYAiqKX9ex8ag8vg+0O3atU5fxK/DGdluiecOeyhezejlUqAQN2
+ O5TAoUadAOXBNdElvx5/NinLyC7z6PlGbftfTQs+x1F046v8irvMyMy
+X-Developer-Key: i=jpanis@baylibre.com; a=ed25519;
+ pk=8eSM4/xkiHWz2M1Cw1U3m2/YfPbsUdEJPCWY3Mh9ekQ=
 
-Hi Marek Szyprowski,
+This patch adds XDP (eXpress Data Path) support to TI AM65 CPSW
+Ethernet driver. The following features are implemented:
+- NETDEV_XDP_ACT_BASIC (XDP_PASS, XDP_TX, XDP_DROP, XDP_ABORTED)
+- NETDEV_XDP_ACT_REDIRECT (XDP_REDIRECT)
+- NETDEV_XDP_ACT_NDO_XMIT (ndo_xdp_xmit callback)
 
-> -----Original Message-----
-> From: Marek Szyprowski <m.szyprowski@samsung.com>
-> Sent: Friday, February 23, 2024 10:57 AM
-> Subject: Re: [PATCH v12 02/25] genirq/irqdomain: Remove the param count
-> restriction from select()
->=20
-> On 23.02.2024 11:45, Biju Das wrote:
-> >> On 27.01.2024 17:17, Anup Patel wrote:
-> >>> From: Thomas Gleixner <tglx@linutronix.de>
-> >>>
-> >>> Now that the GIC-v3 callback can handle invocation with a fwspec
-> >>> parameter count of 0 lift the restriction in the core code and
-> >>> invoke
-> >>> select() unconditionally when the domain provides it.
-> >>>
-> >>> Preparatory change for per device MSI domains.
-> >>>
-> >>> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> >>> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> >>
-> >> This patch landed recently in linux-next (next-20240221) as commit
-> >> de1ff306dcf4 ("genirq/irqdomain: Remove the param count restriction
-> >> from select()"). I've noticed that it breaks booting of Qualcomm's
-> >> Robotics
-> >> RB5 ARM64 board (arch/arm64/boot/dts/qcom/qrb5165-rb5.dts). Booting
-> >> freezes after "clk: Disabling unused clocks", but this is probably a
-> >> consequence of some earlier failure. Reverting $subject on top of
-> >> next-20240221 fixes this problem. Let me know how can I help
-> >> debugging this issue.
-> >>
-> >>
-> >>> ---
-> >>>    kernel/irq/irqdomain.c | 2 +-
-> >>>    1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c index
-> >>> 0bdef4fe925b..8fee37918195 100644
-> >>> --- a/kernel/irq/irqdomain.c
-> >>> +++ b/kernel/irq/irqdomain.c
-> >>> @@ -448,7 +448,7 @@ struct irq_domain
-> >>> *irq_find_matching_fwspec(struct
-> >> irq_fwspec *fwspec,
-> >>>    	 */
-> >>>    	mutex_lock(&irq_domain_mutex);
-> >>>    	list_for_each_entry(h, &irq_domain_list, link) {
-> >>> -		if (h->ops->select && fwspec->param_count)
-> >>> +		if (h->ops->select)
-> >>>    			rc =3D h->ops->select(h, fwspec, bus_token);
-> >>>    		else if (h->ops->match)
-> >>>    			rc =3D h->ops->match(h, to_of_node(fwnode),
-> bus_token);
-> > This patch looks reverted on todays's next. But there was a fix for
-> > fixing the issue you mentioned [1]
-> >
-> > [1]
-> > https://jpn01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flor=
-e
-> > .kernel.org%2Fall%2F170844679345.398.17551290253758129895.tip-bot2%40t
-> > ip-bot2%2F&data=3D05%7C02%7Cbiju.das.jz%40bp.renesas.com%7Cffce754120ba=
-4
-> > ff0f8d708dc345e1c1a%7C53d82571da1947e49cb4625a166a4a2a%7C0%7C0%7C63844
-> > 2825998732581%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2lu
-> > MzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C0%7C%7C%7C&sdata=3DlYLVpa4tz2fEU1J=
-c
-> > DDGUF6eigi2YJuGDouMXrJSlibo%3D&reserved=3D0
->=20
-> Thanks! Today's next seems to be broken on ARM64 (doesn't compile here),
-> so I've missed it.
+Signed-off-by: Julien Panis <jpanis@baylibre.com>
+---
+This patch adds XDP support to TI AM65 CPSW Ethernet driver.
 
-FYI, ARM64 defconfig works for me.
-Linux smarc-rzg2l 6.8.0-rc5-next-20240223-gfebe82167ab7 #1430 SMP PREEMPT F=
-ri Feb 23 07:41:52 GMT 2024 aarch64 GNU/Linux
+The following features are implemented: NETDEV_XDP_ACT_BASIC,
+NETDEV_XDP_ACT_REDIRECT, and NETDEV_XDP_ACT_NDO_XMIT.
 
-Cheers,
-Biju
+Zero-copy and non-linear XDP buffer supports are NOT implemented.
+---
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c | 366 +++++++++++++++++++++++++++++--
+ drivers/net/ethernet/ti/am65-cpsw-nuss.h |   9 +
+ 2 files changed, 351 insertions(+), 24 deletions(-)
 
+diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+index 9d2f4ac783e4..080910f45629 100644
+--- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
++++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+@@ -5,6 +5,7 @@
+  *
+  */
+ 
++#include <linux/bpf_trace.h>
+ #include <linux/clk.h>
+ #include <linux/etherdevice.h>
+ #include <linux/if_vlan.h>
+@@ -138,6 +139,17 @@
+ 
+ #define AM65_CPSW_DEFAULT_TX_CHNS	8
+ 
++/* CPPI streaming packet interface */
++#define AM65_CPSW_CPPI_TX_FLOW_ID  0x3FFF
++#define AM65_CPSW_CPPI_TX_PKT_TYPE 0x7
++
++/* XDP */
++#define AM65_CPSW_XDP_CONSUMED	1
++#define AM65_CPSW_XDP_PASS	0
++
++/* Include headroom compatible with both skb and xdpf */
++#define AM65_CPSW_HEADROOM max(NET_SKB_PAD, XDP_PACKET_HEADROOM)
++
+ static void am65_cpsw_port_set_sl_mac(struct am65_cpsw_port *slave,
+ 				      const u8 *dev_addr)
+ {
+@@ -369,6 +381,30 @@ static void am65_cpsw_init_host_port_emac(struct am65_cpsw_common *common);
+ static void am65_cpsw_init_port_switch_ale(struct am65_cpsw_port *port);
+ static void am65_cpsw_init_port_emac_ale(struct am65_cpsw_port *port);
+ 
++static void am65_cpsw_destroy_xdp_rxq(struct am65_cpsw_port *port)
++{
++	struct xdp_rxq_info *rxq = &port->xdp_rxq;
++
++	if (xdp_rxq_info_is_reg(rxq))
++		xdp_rxq_info_unreg(rxq);
++}
++
++static int am65_cpsw_create_xdp_rxq(struct am65_cpsw_port *port)
++{
++	struct xdp_rxq_info *rxq = &port->xdp_rxq;
++	int ret;
++
++	ret = xdp_rxq_info_reg(rxq, port->ndev, port->port_id - 1, 0);
++	if (ret)
++		return ret;
++
++	ret = xdp_rxq_info_reg_mem_model(rxq, MEM_TYPE_PAGE_ORDER0, NULL);
++	if (ret)
++		xdp_rxq_info_unreg(rxq);
++
++	return ret;
++}
++
+ static void am65_cpsw_nuss_rx_cleanup(void *data, dma_addr_t desc_dma)
+ {
+ 	struct am65_cpsw_rx_chn *rx_chn = data;
+@@ -440,6 +476,27 @@ static void am65_cpsw_nuss_tx_cleanup(void *data, dma_addr_t desc_dma)
+ 	dev_kfree_skb_any(skb);
+ }
+ 
++static struct sk_buff *am65_cpsw_alloc_skb(struct net_device *ndev, unsigned int len)
++{
++	struct page *page;
++	struct sk_buff *skb;
++
++	page = dev_alloc_pages(0);
++	if (unlikely(!page))
++		return NULL;
++
++	len += AM65_CPSW_HEADROOM;
++
++	skb = build_skb(page_address(page), len);
++	if (unlikely(!skb))
++		return NULL;
++
++	skb_reserve(skb, AM65_CPSW_HEADROOM + NET_IP_ALIGN);
++	skb->dev = ndev;
++
++	return skb;
++}
++
+ static int am65_cpsw_nuss_common_open(struct am65_cpsw_common *common)
+ {
+ 	struct am65_cpsw_host *host_p = am65_common_get_host(common);
+@@ -506,9 +563,7 @@ static int am65_cpsw_nuss_common_open(struct am65_cpsw_common *common)
+ 	am65_cpsw_qos_tx_p0_rate_init(common);
+ 
+ 	for (i = 0; i < common->rx_chns.descs_num; i++) {
+-		skb = __netdev_alloc_skb_ip_align(NULL,
+-						  AM65_CPSW_MAX_PACKET_SIZE,
+-						  GFP_KERNEL);
++		skb = am65_cpsw_alloc_skb(NULL, AM65_CPSW_MAX_PACKET_SIZE);
+ 		if (!skb) {
+ 			ret = -ENOMEM;
+ 			dev_err(common->dev, "cannot allocate skb\n");
+@@ -648,6 +703,8 @@ static int am65_cpsw_nuss_ndo_slave_stop(struct net_device *ndev)
+ 
+ 	phylink_disconnect_phy(port->slave.phylink);
+ 
++	am65_cpsw_destroy_xdp_rxq(port);
++
+ 	ret = am65_cpsw_nuss_common_stop(common);
+ 	if (ret)
+ 		return ret;
+@@ -719,6 +776,10 @@ static int am65_cpsw_nuss_ndo_slave_open(struct net_device *ndev)
+ 
+ 	common->usage_count++;
+ 
++	ret = am65_cpsw_create_xdp_rxq(port);
++	if (ret)
++		goto error_cleanup;
++
+ 	am65_cpsw_port_set_sl_mac(port, ndev->dev_addr);
+ 
+ 	if (common->is_emac_mode)
+@@ -749,6 +810,138 @@ static int am65_cpsw_nuss_ndo_slave_open(struct net_device *ndev)
+ 	return ret;
+ }
+ 
++static int am65_cpsw_xdp_tx_frame(struct net_device *ndev,
++				  struct am65_cpsw_tx_chn *tx_chn,
++				  struct xdp_frame *xdpf)
++{
++	struct am65_cpsw_common *common = am65_ndev_to_common(ndev);
++	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
++	struct netdev_queue *netif_txq;
++	struct cppi5_host_desc_t *host_desc;
++	dma_addr_t dma_desc, dma_buf;
++	u32 pkt_len = xdpf->len;
++	void **swdata;
++	int ret;
++
++	host_desc = k3_cppi_desc_pool_alloc(tx_chn->desc_pool);
++	if (unlikely(!host_desc)) {
++		ndev->stats.tx_dropped++;
++		return -ENOMEM;
++	}
++
++	dma_buf = dma_map_single(tx_chn->dma_dev, xdpf->data, pkt_len, DMA_TO_DEVICE);
++	if (unlikely(dma_mapping_error(tx_chn->dma_dev, dma_buf))) {
++		ndev->stats.tx_dropped++;
++		ret = -ENOMEM;
++		goto pool_free;
++	}
++
++	cppi5_hdesc_init(host_desc, CPPI5_INFO0_HDESC_EPIB_PRESENT, AM65_CPSW_NAV_PS_DATA_SIZE);
++	cppi5_hdesc_set_pkttype(host_desc, AM65_CPSW_CPPI_TX_PKT_TYPE);
++	cppi5_hdesc_set_pktlen(host_desc, pkt_len);
++	cppi5_desc_set_pktids(&host_desc->hdr, 0, AM65_CPSW_CPPI_TX_FLOW_ID);
++	cppi5_desc_set_tags_ids(&host_desc->hdr, 0, port->port_id);
++
++	k3_udma_glue_tx_dma_to_cppi5_addr(tx_chn->tx_chn, &dma_buf);
++	cppi5_hdesc_attach_buf(host_desc, dma_buf, pkt_len, dma_buf, pkt_len);
++
++	swdata = cppi5_hdesc_get_swdata(host_desc);
++	*(swdata) = xdpf;
++
++	/* Report BQL before sending the packet */
++	netif_txq = netdev_get_tx_queue(ndev, tx_chn->id);
++	netdev_tx_sent_queue(netif_txq, pkt_len);
++
++	dma_desc = k3_cppi_desc_pool_virt2dma(tx_chn->desc_pool, host_desc);
++	if (AM65_CPSW_IS_CPSW2G(common)) {
++		ret = k3_udma_glue_push_tx_chn(tx_chn->tx_chn, host_desc, dma_desc);
++	} else {
++		spin_lock_bh(&tx_chn->lock);
++		ret = k3_udma_glue_push_tx_chn(tx_chn->tx_chn, host_desc, dma_desc);
++		spin_unlock_bh(&tx_chn->lock);
++	}
++	if (ret) {
++		/* Inform BQL */
++		netdev_tx_completed_queue(netif_txq, 1, pkt_len);
++		ndev->stats.tx_errors++;
++		goto dma_unmap;
++	}
++
++	return 0;
++
++dma_unmap:
++	k3_udma_glue_tx_cppi5_to_dma_addr(tx_chn->tx_chn, &dma_buf);
++	dma_unmap_single(tx_chn->dma_dev, dma_buf, pkt_len, DMA_TO_DEVICE);
++pool_free:
++	k3_cppi_desc_pool_free(tx_chn->desc_pool, host_desc);
++	return ret;
++}
++
++static int am65_cpsw_run_xdp(struct am65_cpsw_port *port, struct xdp_buff *xdp, int cpu, int *len)
++{
++	struct net_device *ndev = port->ndev;
++	struct am65_cpsw_tx_chn *tx_chn;
++	struct netdev_queue *netif_txq;
++	struct bpf_prog *prog;
++	struct xdp_frame *xdpf;
++	struct page *page;
++	u32 act;
++	int ret = AM65_CPSW_XDP_CONSUMED;
++
++	prog = READ_ONCE(port->xdp_prog);
++	if (!prog)
++		return AM65_CPSW_XDP_PASS;
++
++	act = bpf_prog_run_xdp(prog, xdp);
++	/* XDP prog might have changed packet data and boundaries */
++	*len = xdp->data_end - xdp->data;
++
++	switch (act) {
++	case XDP_PASS:
++		ret = AM65_CPSW_XDP_PASS;
++		goto out;
++	case XDP_TX:
++		tx_chn = &am65_ndev_to_common(ndev)->tx_chns[cpu % AM65_CPSW_MAX_TX_QUEUES];
++		netif_txq = netdev_get_tx_queue(ndev, tx_chn->id);
++
++		xdpf = xdp_convert_buff_to_frame(xdp);
++		if (unlikely(!xdpf))
++			break;
++
++		__netif_tx_lock(netif_txq, cpu);
++		tx_chn->buf_type = AM65_CPSW_TX_BUF_TYPE_XDP;
++		ret = am65_cpsw_xdp_tx_frame(ndev, tx_chn, xdpf);
++		__netif_tx_unlock(netif_txq);
++		if (ret)
++			break;
++
++		ndev->stats.rx_bytes += *len;
++		ndev->stats.rx_packets++;
++		ret = AM65_CPSW_XDP_CONSUMED;
++		goto out;
++	case XDP_REDIRECT:
++		if (unlikely(xdp_do_redirect(ndev, xdp, prog)))
++			break;
++
++		ndev->stats.rx_bytes += *len;
++		ndev->stats.rx_packets++;
++		goto out;
++	default:
++		bpf_warn_invalid_xdp_action(ndev, prog, act);
++		fallthrough;
++	case XDP_ABORTED:
++		trace_xdp_exception(ndev, prog, act);
++		fallthrough;
++	case XDP_DROP:
++		ndev->stats.rx_dropped++;
++	}
++
++	page = virt_to_page(xdp->data);
++	put_page(page);
++out:
++	return ret;
++}
++
+ static void am65_cpsw_nuss_rx_ts(struct sk_buff *skb, u32 *psdata)
+ {
+ 	struct skb_shared_hwtstamps *ssh;
+@@ -795,7 +988,7 @@ static void am65_cpsw_nuss_rx_csum(struct sk_buff *skb, u32 csum_info)
+ }
+ 
+ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_common *common,
+-				     u32 flow_idx)
++				     u32 flow_idx, int cpu)
+ {
+ 	struct am65_cpsw_rx_chn *rx_chn = &common->rx_chns;
+ 	u32 buf_dma_len, pkt_len, port_id = 0, csum_info;
+@@ -804,11 +997,14 @@ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_common *common,
+ 	struct cppi5_host_desc_t *desc_rx;
+ 	struct device *dev = common->dev;
+ 	struct sk_buff *skb, *new_skb;
++	struct xdp_buff	xdp;
+ 	dma_addr_t desc_dma, buf_dma;
+ 	struct am65_cpsw_port *port;
+ 	struct net_device *ndev;
++	struct page *page;
+ 	void **swdata;
+ 	u32 *psdata;
++	int headroom;
+ 	int ret = 0;
+ 
+ 	ret = k3_udma_glue_pop_rx_chn(rx_chn->rx_chn, flow_idx, &desc_dma);
+@@ -851,7 +1047,23 @@ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_common *common,
+ 
+ 	k3_cppi_desc_pool_free(rx_chn->desc_pool, desc_rx);
+ 
+-	new_skb = netdev_alloc_skb_ip_align(ndev, AM65_CPSW_MAX_PACKET_SIZE);
++	if (port->xdp_prog) {
++		xdp_init_buff(&xdp, AM65_CPSW_MAX_PACKET_SIZE, &port->xdp_rxq);
++
++		page = virt_to_page(skb->data);
++		xdp_prepare_buff(&xdp, page_address(page), skb_headroom(skb), pkt_len, false);
++
++		ret = am65_cpsw_run_xdp(port, &xdp, cpu, &pkt_len);
++		if (ret != AM65_CPSW_XDP_PASS)
++			return ret;
++
++		/* Compute additional headroom to be reserved */
++		headroom = (xdp.data - xdp.data_hard_start) - skb_headroom(skb);
++		skb_reserve(skb, headroom);
++	}
++
++	/* Pass skb to netstack if no XDP prog or returned XDP_PASS */
++	new_skb = am65_cpsw_alloc_skb(ndev, AM65_CPSW_MAX_PACKET_SIZE);
+ 	if (new_skb) {
+ 		ndev_priv = netdev_priv(ndev);
+ 		am65_cpsw_nuss_set_offload_fwd_mark(skb, ndev_priv->offload_fwd_mark);
+@@ -901,6 +1113,7 @@ static int am65_cpsw_nuss_rx_poll(struct napi_struct *napi_rx, int budget)
+ {
+ 	struct am65_cpsw_common *common = am65_cpsw_napi_to_common(napi_rx);
+ 	int flow = AM65_CPSW_MAX_RX_FLOWS;
++	int cpu = smp_processor_id();
+ 	int cur_budget, ret;
+ 	int num_rx = 0;
+ 
+@@ -909,7 +1122,7 @@ static int am65_cpsw_nuss_rx_poll(struct napi_struct *napi_rx, int budget)
+ 		cur_budget = budget - num_rx;
+ 
+ 		while (cur_budget--) {
+-			ret = am65_cpsw_nuss_rx_packets(common, flow);
++			ret = am65_cpsw_nuss_rx_packets(common, flow, cpu);
+ 			if (ret)
+ 				break;
+ 			num_rx++;
+@@ -938,8 +1151,8 @@ static int am65_cpsw_nuss_rx_poll(struct napi_struct *napi_rx, int budget)
+ }
+ 
+ static struct sk_buff *
+-am65_cpsw_nuss_tx_compl_packet(struct am65_cpsw_tx_chn *tx_chn,
+-			       dma_addr_t desc_dma)
++am65_cpsw_nuss_tx_compl_packet_skb(struct am65_cpsw_tx_chn *tx_chn,
++				   dma_addr_t desc_dma)
+ {
+ 	struct am65_cpsw_ndev_priv *ndev_priv;
+ 	struct am65_cpsw_ndev_stats *stats;
+@@ -968,6 +1181,39 @@ am65_cpsw_nuss_tx_compl_packet(struct am65_cpsw_tx_chn *tx_chn,
+ 	return skb;
+ }
+ 
++static struct xdp_frame *
++am65_cpsw_nuss_tx_compl_packet_xdp(struct am65_cpsw_common *common,
++				   struct am65_cpsw_tx_chn *tx_chn,
++				   dma_addr_t desc_dma,
++				   struct net_device **ndev)
++{
++	struct am65_cpsw_port *port;
++	struct am65_cpsw_ndev_priv *ndev_priv;
++	struct am65_cpsw_ndev_stats *stats;
++	struct cppi5_host_desc_t *desc_tx;
++	struct xdp_frame *xdpf;
++	void **swdata;
++	u32 port_id = 0;
++
++	desc_tx = k3_cppi_desc_pool_dma2virt(tx_chn->desc_pool, desc_dma);
++	cppi5_desc_get_tags_ids(&desc_tx->hdr, NULL, &port_id);
++	swdata = cppi5_hdesc_get_swdata(desc_tx);
++	xdpf = *(swdata);
++	am65_cpsw_nuss_xmit_free(tx_chn, desc_tx);
++
++	port = am65_common_get_port(common, port_id);
++	*ndev = port->ndev;
++
++	ndev_priv = netdev_priv(*ndev);
++	stats = this_cpu_ptr(ndev_priv->stats);
++	u64_stats_update_begin(&stats->syncp);
++	stats->tx_packets++;
++	stats->tx_bytes += xdpf->len;
++	u64_stats_update_end(&stats->syncp);
++
++	return xdpf;
++}
++
+ static void am65_cpsw_nuss_tx_wake(struct am65_cpsw_tx_chn *tx_chn, struct net_device *ndev,
+ 				   struct netdev_queue *netif_txq)
+ {
+@@ -994,6 +1240,7 @@ static int am65_cpsw_nuss_tx_compl_packets(struct am65_cpsw_common *common,
+ 	unsigned int total_bytes = 0;
+ 	struct net_device *ndev;
+ 	struct sk_buff *skb;
++	struct xdp_frame *xdpf;
+ 	dma_addr_t desc_dma;
+ 	int res, num_tx = 0;
+ 
+@@ -1013,10 +1260,16 @@ static int am65_cpsw_nuss_tx_compl_packets(struct am65_cpsw_common *common,
+ 			break;
+ 		}
+ 
+-		skb = am65_cpsw_nuss_tx_compl_packet(tx_chn, desc_dma);
+-		total_bytes = skb->len;
+-		ndev = skb->dev;
+-		napi_consume_skb(skb, budget);
++		if (tx_chn->buf_type == AM65_CPSW_TX_BUF_TYPE_SKB) {
++			skb = am65_cpsw_nuss_tx_compl_packet_skb(tx_chn, desc_dma);
++			ndev = skb->dev;
++			total_bytes = skb->len;
++			napi_consume_skb(skb, budget);
++		} else {
++			xdpf = am65_cpsw_nuss_tx_compl_packet_xdp(common, tx_chn, desc_dma, &ndev);
++			total_bytes = xdpf->len;
++			xdp_return_frame(xdpf);
++		}
+ 		num_tx++;
+ 
+ 		netif_txq = netdev_get_tx_queue(ndev, chn);
+@@ -1040,6 +1293,7 @@ static int am65_cpsw_nuss_tx_compl_packets_2g(struct am65_cpsw_common *common,
+ 	unsigned int total_bytes = 0;
+ 	struct net_device *ndev;
+ 	struct sk_buff *skb;
++	struct xdp_frame *xdpf;
+ 	dma_addr_t desc_dma;
+ 	int res, num_tx = 0;
+ 
+@@ -1057,11 +1311,16 @@ static int am65_cpsw_nuss_tx_compl_packets_2g(struct am65_cpsw_common *common,
+ 			break;
+ 		}
+ 
+-		skb = am65_cpsw_nuss_tx_compl_packet(tx_chn, desc_dma);
+-
+-		ndev = skb->dev;
+-		total_bytes += skb->len;
+-		napi_consume_skb(skb, budget);
++		if (tx_chn->buf_type == AM65_CPSW_TX_BUF_TYPE_SKB) {
++			skb = am65_cpsw_nuss_tx_compl_packet_skb(tx_chn, desc_dma);
++			ndev = skb->dev;
++			total_bytes += skb->len;
++			napi_consume_skb(skb, budget);
++		} else {
++			xdpf = am65_cpsw_nuss_tx_compl_packet_xdp(common, tx_chn, desc_dma, &ndev);
++			total_bytes += xdpf->len;
++			xdp_return_frame(xdpf);
++		}
+ 		num_tx++;
+ 	}
+ 
+@@ -1166,6 +1425,8 @@ static netdev_tx_t am65_cpsw_nuss_ndo_slave_xmit(struct sk_buff *skb,
+ 	tx_chn = &common->tx_chns[q_idx];
+ 	netif_txq = netdev_get_tx_queue(ndev, q_idx);
+ 
++	tx_chn->buf_type = AM65_CPSW_TX_BUF_TYPE_SKB;
++
+ 	/* Map the linear buffer */
+ 	buf_dma = dma_map_single(tx_chn->dma_dev, skb->data, pkt_len,
+ 				 DMA_TO_DEVICE);
+@@ -1185,8 +1446,8 @@ static netdev_tx_t am65_cpsw_nuss_ndo_slave_xmit(struct sk_buff *skb,
+ 
+ 	cppi5_hdesc_init(first_desc, CPPI5_INFO0_HDESC_EPIB_PRESENT,
+ 			 AM65_CPSW_NAV_PS_DATA_SIZE);
+-	cppi5_desc_set_pktids(&first_desc->hdr, 0, 0x3FFF);
+-	cppi5_hdesc_set_pkttype(first_desc, 0x7);
++	cppi5_desc_set_pktids(&first_desc->hdr, 0, AM65_CPSW_CPPI_TX_FLOW_ID);
++	cppi5_hdesc_set_pkttype(first_desc, AM65_CPSW_CPPI_TX_PKT_TYPE);
+ 	cppi5_desc_set_tags_ids(&first_desc->hdr, 0, port->port_id);
+ 
+ 	k3_udma_glue_tx_dma_to_cppi5_addr(tx_chn->tx_chn, &buf_dma);
+@@ -1488,6 +1749,58 @@ static void am65_cpsw_nuss_ndo_get_stats(struct net_device *dev,
+ 	stats->tx_dropped	= dev->stats.tx_dropped;
+ }
+ 
++static int am65_cpsw_xdp_prog_setup(struct net_device *ndev, struct bpf_prog *prog)
++{
++	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
++	struct bpf_prog *old_prog;
++	bool running = netif_running(ndev);
++
++	if (running)
++		am65_cpsw_nuss_ndo_slave_stop(ndev);
++
++	old_prog = xchg(&port->xdp_prog, prog);
++	if (old_prog)
++		bpf_prog_put(old_prog);
++
++	if (running)
++		return am65_cpsw_nuss_ndo_slave_open(ndev);
++
++	return 0;
++}
++
++static int am65_cpsw_ndo_bpf(struct net_device *ndev, struct netdev_bpf *bpf)
++{
++	switch (bpf->command) {
++	case XDP_SETUP_PROG:
++		return am65_cpsw_xdp_prog_setup(ndev, bpf->prog);
++	default:
++		return -EINVAL;
++	}
++}
++
++static int am65_cpsw_ndo_xdp_xmit(struct net_device *ndev, int n,
++				  struct xdp_frame **frames, u32 flags)
++{
++	struct am65_cpsw_tx_chn *tx_chn;
++	struct netdev_queue *netif_txq;
++	int cpu = smp_processor_id();
++	int i, nxmit = 0;
++
++	tx_chn = &am65_ndev_to_common(ndev)->tx_chns[cpu % AM65_CPSW_MAX_TX_QUEUES];
++	netif_txq = netdev_get_tx_queue(ndev, tx_chn->id);
++
++	__netif_tx_lock(netif_txq, cpu);
++	tx_chn->buf_type = AM65_CPSW_TX_BUF_TYPE_XDP;
++	for (i = 0; i < n; i++) {
++		if (am65_cpsw_xdp_tx_frame(ndev, tx_chn, frames[i]))
++			break;
++		nxmit++;
++	}
++	__netif_tx_unlock(netif_txq);
++
++	return nxmit;
++}
++
+ static const struct net_device_ops am65_cpsw_nuss_netdev_ops = {
+ 	.ndo_open		= am65_cpsw_nuss_ndo_slave_open,
+ 	.ndo_stop		= am65_cpsw_nuss_ndo_slave_stop,
+@@ -1502,6 +1815,8 @@ static const struct net_device_ops am65_cpsw_nuss_netdev_ops = {
+ 	.ndo_eth_ioctl		= am65_cpsw_nuss_ndo_slave_ioctl,
+ 	.ndo_setup_tc           = am65_cpsw_qos_ndo_setup_tc,
+ 	.ndo_set_tx_maxrate	= am65_cpsw_qos_ndo_tx_p0_set_maxrate,
++	.ndo_bpf		= am65_cpsw_ndo_bpf,
++	.ndo_xdp_xmit		= am65_cpsw_ndo_xdp_xmit,
+ };
+ 
+ static void am65_cpsw_disable_phy(struct phy *phy)
+@@ -1816,6 +2131,8 @@ static int am65_cpsw_nuss_init_tx_chns(struct am65_cpsw_common *common)
+ 			goto err;
+ 		}
+ 
++		tx_chn->buf_type = AM65_CPSW_TX_BUF_TYPE_SKB;
++
+ 		tx_chn->irq = k3_udma_glue_tx_get_irq(tx_chn->tx_chn);
+ 		if (tx_chn->irq < 0) {
+ 			dev_err(dev, "Failed to get tx dma irq %d\n",
+@@ -1873,11 +2190,7 @@ static void am65_cpsw_nuss_remove_rx_chns(void *data)
+ 
+ 	netif_napi_del(&common->napi_rx);
+ 
+-	if (!IS_ERR_OR_NULL(rx_chn->desc_pool))
+-		k3_cppi_desc_pool_destroy(rx_chn->desc_pool);
+-
+-	if (!IS_ERR_OR_NULL(rx_chn->rx_chn))
+-		k3_udma_glue_release_rx_chn(rx_chn->rx_chn);
++	am65_cpsw_nuss_free_rx_chns(common);
+ 
+ 	common->rx_flow_id_base = -1;
+ }
+@@ -2252,6 +2565,9 @@ am65_cpsw_nuss_init_port_ndev(struct am65_cpsw_common *common, u32 port_idx)
+ 				  NETIF_F_HW_TC;
+ 	port->ndev->features = port->ndev->hw_features |
+ 			       NETIF_F_HW_VLAN_CTAG_FILTER;
++	port->ndev->xdp_features = NETDEV_XDP_ACT_BASIC |
++				   NETDEV_XDP_ACT_REDIRECT |
++				   NETDEV_XDP_ACT_NDO_XMIT;
+ 	port->ndev->vlan_features |=  NETIF_F_SG;
+ 	port->ndev->netdev_ops = &am65_cpsw_nuss_netdev_ops;
+ 	port->ndev->ethtool_ops = &am65_cpsw_ethtool_ops_slave;
+@@ -2315,6 +2631,8 @@ am65_cpsw_nuss_init_port_ndev(struct am65_cpsw_common *common, u32 port_idx)
+ 	if (ret)
+ 		dev_err(dev, "failed to add percpu stat free action %d\n", ret);
+ 
++	port->xdp_prog = NULL;
++
+ 	if (!common->dma_ndev)
+ 		common->dma_ndev = port->ndev;
+ 
+diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.h b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
+index 7da0492dc091..6fbb975427df 100644
+--- a/drivers/net/ethernet/ti/am65-cpsw-nuss.h
++++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
+@@ -14,6 +14,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/soc/ti/k3-ringacc.h>
+ #include <net/devlink.h>
++#include <net/xdp.h>
+ #include "am65-cpsw-qos.h"
+ 
+ struct am65_cpts;
+@@ -56,10 +57,17 @@ struct am65_cpsw_port {
+ 	bool				rx_ts_enabled;
+ 	struct am65_cpsw_qos		qos;
+ 	struct devlink_port		devlink_port;
++	struct bpf_prog			*xdp_prog;
++	struct xdp_rxq_info		xdp_rxq;
+ 	/* Only for suspend resume context */
+ 	u32				vid_context;
+ };
+ 
++enum am65_cpsw_tx_buf_type {
++	AM65_CPSW_TX_BUF_TYPE_SKB,
++	AM65_CPSW_TX_BUF_TYPE_XDP,
++};
++
+ struct am65_cpsw_host {
+ 	struct am65_cpsw_common		*common;
+ 	void __iomem			*port_base;
+@@ -74,6 +82,7 @@ struct am65_cpsw_tx_chn {
+ 	struct am65_cpsw_common	*common;
+ 	struct k3_cppi_desc_pool *desc_pool;
+ 	struct k3_udma_glue_tx_channel *tx_chn;
++	enum am65_cpsw_tx_buf_type buf_type;
+ 	spinlock_t lock; /* protect TX rings in multi-port mode */
+ 	struct hrtimer tx_hrtimer;
+ 	unsigned long tx_pace_timeout;
+
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20240223-am65-cpsw-xdp-basic-4db828508b48
+
+Best regards,
+-- 
+Julien Panis <jpanis@baylibre.com>
 
 
