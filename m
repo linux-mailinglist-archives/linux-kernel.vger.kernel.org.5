@@ -1,234 +1,145 @@
-Return-Path: <linux-kernel+bounces-77915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 842E4860C1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:21:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51C40860C1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:21:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CB8D1F26CFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:21:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 006C1281487
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:21:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A072A18C36;
-	Fri, 23 Feb 2024 08:20:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1829018EB0;
+	Fri, 23 Feb 2024 08:20:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AAwv5aw+"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h6oWMldV"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA1F31B598
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 08:19:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5906168D0;
+	Fri, 23 Feb 2024 08:20:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708676401; cv=none; b=pnaYrDorf5Y2XT2vJygX3vRQyYymx2dLB/qNXiMCjCLMOaivIusbtcaL0ZXMDoREZhRG5cw9Xf3R33GZtGWiVXjK5Q83UiRPIj7BSqe7U3pTxTC6q6NAuvT/W5rxe1fwmJbcxRBJJjzapvojzw/0+mXQG3YFrFM9QMqApUM310U=
+	t=1708676421; cv=none; b=hQzw0FHc9+lXfyDWC1GvItBXgpx+lUXDWlaH1ApWFClgL1N+qjQ6JIxIIgRSmyc5cHtW9Ru6Yzn/fDJ4lWSrsx6TumsKCxkEis5DBvonn6dq90ObrPiBRkuvLw21L+ZD/zGqKk5umpSBlwD1hH5IAOueVWmrxuy2xJCrfJps8Eo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708676401; c=relaxed/simple;
-	bh=TUNny1HvUeftZKLUoDkacQhlF4J6gUc6wrtk141dWvM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=khKLc+gH+99GvON0vvH2ztaEfRCIDtGMHgX5K6R3yrCINgc0BHt/S5sSCqD34pPkcOxVIHxlOBca5awE60/5GlEqkXQL1Yv0p9YHjsF+yZ9NVhk7Kl+u0P6/zb/aqgJlo49e6wIuQTP9lgTrt3+xZCDXIQ8tv8BlMOBMzV1UQD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AAwv5aw+; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d180d6bd32so8244481fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 00:19:58 -0800 (PST)
+	s=arc-20240116; t=1708676421; c=relaxed/simple;
+	bh=3/tyvtTLYkVikNeiWKkzmPYZ1L/MFt6KSzklylS//MQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pRk0HU+n3jXw1/5jHbNmQJL+oNljqYrNJF+TZ8Z9mDGTRcW6OKghdMsLkXZZkx/2qgJSbboOcGwM90Ut8149hTzWPSUOE+yY7MQPj5QS2Ym5jSB+kf3f9hVQm3KLjd/fw4JM88gyd5gAXAA0HiHibr+l8fRJteXigB91rrhRhE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h6oWMldV; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dba177c596so4399965ad.0;
+        Fri, 23 Feb 2024 00:20:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708676397; x=1709281197; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RuXtCNYwsGpKXgRbUJ3unXSyq/4b1iF/r5Hh+ijkmfI=;
-        b=AAwv5aw+os1H1u0oapgzqqOZT8HTSva6VCyff0pOa5DI0xaUgmbaCKe74X2qxvM+83
-         Cb6wN5zxVdVi0PpmwLsXyuXmRAY/pb/DdRKIdj/FlEQOnHSEEqctimED2qOoNisnUyxo
-         Jry4Bk4FFYDkDnt0PS5LoLcK7HdLIzcF9qkaxr80uDOEmQoGVvF3ZbHIj2TeLQNfE4rR
-         J6gcuDedYGbJQ50NgGmBOEeOogJk1qchCxjvvOfLz3GEAoPryiTkp/oHURgp+exPca4J
-         ACORYHI7FobFXkVcKzE0RZAohd/tP8JBxsjo+OTMs4s1USgg9Luv9hXEpnOQWQgJCJ6h
-         pWXw==
+        d=gmail.com; s=20230601; t=1708676419; x=1709281219; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Sze53a4mLbAZrJRpXbT6ASWNWrGoWY6+1B710NM4C+0=;
+        b=h6oWMldVZBtmomhJChDQUWHEgMGYD96KR8JI9aNiklsI6mZFK8wVRYp5zT/oxcZR5X
+         wsdbP63q0NY9gKfVk6B/3y+BBNvXUlGRVWqIodZbmv1tGQkuyZjYfqFujpGqXeWzJS8N
+         HH0XDBd6HYVSAj8OA0GuE82tDi99qJgaKav4+HQ76MOQV+GbE+OA0Vukebntf36UY3aA
+         WlVzJVidtzin3/r13rLPb4H7FygBIKwdmoli0SSWa8Mr65/0LeRTrK8n8GLiCUtqAL02
+         f9CxKi0ips3JKqTqVpYo99064cL6A+gwtgRHeQyRRPqjXukUX5yhmfIEbeZ7sO/TIjI4
+         74Nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708676397; x=1709281197;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RuXtCNYwsGpKXgRbUJ3unXSyq/4b1iF/r5Hh+ijkmfI=;
-        b=Wr6IDl/mHPzrHjlYyDqBYU/Zzp9Xz7FTwZtijXCeIrlXY9IzZRdHa7QnJR/Vx5pUQ6
-         wsFqMCjSXTLFIRi+OVYYK9Ilze1NezitBq00tenHTJKYSr36FS/UzmP9H65yDFQOohnE
-         nK1ORlkbOFvLzWDeOyPG5lfdsw8mHMUr5wYaedRmRQZruXeR+MheKOb1Jppbqj5r3hus
-         TRQZwhQLNP1sV3F6aUlh3BEKkae0+vrOm6iHWDeKW5vyUIHYuptrq0SrBwUzeaZwe0j0
-         K8JNAmHU0jVTODA+YkPsIbkl/iKr8I4VyrlJOYEU9/J/R5l83gZgPt0sYTEUl1DHF8rV
-         60dw==
-X-Forwarded-Encrypted: i=1; AJvYcCWP/xjqSbLnA1GZkZeCCLHYvCpYqjrn5kAiExmV+BAlOdH+MB8IEFWRAUkRTQ0kkGNlOktduH9AtzLpdTDBh9fjJxl4x1rf126SZHDb
-X-Gm-Message-State: AOJu0Yx9PiAEldt4K8CsyyakkTkoWsqv+NyCcgbRtQ7h8tXVJWo46Rx+
-	HFhkbuYjy8zJLzWz7ALzieuCwhb+Pf7gJZ4jUuHkdoTXU5Bba9sWiCFbE5/b3Xg=
-X-Google-Smtp-Source: AGHT+IG3BQ8JqlqrAtOJFM04gbsnYyOURpj+vfRT2z52l3Z/d44ORUjRCHQO4AUweAm1jwyo0GRCjA==
-X-Received: by 2002:a05:651c:1061:b0:2d2:313c:3c0 with SMTP id y1-20020a05651c106100b002d2313c03c0mr738681ljm.27.1708676396701;
-        Fri, 23 Feb 2024 00:19:56 -0800 (PST)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id f16-20020a5d50d0000000b0033d449f5f65sm1890058wrt.4.2024.02.23.00.19.55
+        d=1e100.net; s=20230601; t=1708676419; x=1709281219;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Sze53a4mLbAZrJRpXbT6ASWNWrGoWY6+1B710NM4C+0=;
+        b=kNZnWzG+On5Y9DSWVxp1CTKzzH4WWFSCKiogwN0YTfLcpYMhvkxM5lc4TkkCqby/g2
+         sxpu7rHq1/w3uETykbUee05TYh7EPFbu48kn3YRSz+ILGqFdvDmFTwCtTzFv9nEvc5yz
+         iY4Q1ruQWQ6Uw2lxI03zIaAKT69IK0LxgR3Bkuxx1fm6M1JcLGuy6yDze2E4nvcac3y7
+         PnWx2I3W6+7ut2vgJiIpBULtv5QujiMY4yCjQKX3p5bc4ISVAOU8uspIykb6G5JKgfhb
+         ELTx3SGX6tjHOVwVfkz/pfy8joh0jFJPw6+FDfNKHAn/TuHkgeXxTSC3rtTWLmdU0IdU
+         Zaww==
+X-Forwarded-Encrypted: i=1; AJvYcCUnIdgjcLfpJtVOhOsqKvlEGnKVrNTyi5VlAdb2oagO6cxZJ/gKC+6I8hPXR0hdBFLejS1RAF1BUAMXTP0YjIO73U4/TXRo2s9KtBbqxq8eJNjd03HN9SqnAZT68sJnJJfwg4KXPrTrxg==
+X-Gm-Message-State: AOJu0Yyr+rZgVhqCoSaUPZGCOB5sBEJLfet0AVu+R9amt3tETANMcvBS
+	KZjbTrJn7J0zgwU87S0y79QW3AvvtEWm2yOCsqK17AWxB0FoR664
+X-Google-Smtp-Source: AGHT+IHN9p03M6aIBHrqTTDGUkW5yhHqo0eDp/G/bUfb2CZSqyCXW4ZWKB5vivJP5QX2Ka3E7QQ6Hg==
+X-Received: by 2002:a17:903:605:b0:1db:c649:cff0 with SMTP id kg5-20020a170903060500b001dbc649cff0mr5932075plb.25.1708676418326;
+        Fri, 23 Feb 2024 00:20:18 -0800 (PST)
+Received: from localhost ([46.3.240.101])
+        by smtp.gmail.com with ESMTPSA id v12-20020a170902d08c00b001d9588f0714sm11163439plv.177.2024.02.23.00.20.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 00:19:56 -0800 (PST)
-Date: Fri, 23 Feb 2024 11:19:52 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Ethan Zhao <haifeng.zhao@linux.intel.com>
-Cc: baolu.lu@linux.intel.com, bhelgaas@google.com, robin.murphy@arm.com,
-	jgg@ziepe.ca, kevin.tian@intel.com, dwmw2@infradead.org,
-	will@kernel.org, lukas@wunner.de, yi.l.liu@intel.com,
-	iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org
-Subject: Re: [PATCH v13 3/3] iommu/vt-d: improve ITE fault handling if target
- device isn't valid
-Message-ID: <f779be97-66c2-4520-91f2-a9a54e84017c@moroto.mountain>
-References: <20240222090251.2849702-1-haifeng.zhao@linux.intel.com>
- <20240222090251.2849702-4-haifeng.zhao@linux.intel.com>
- <c655cd15-c883-483b-b698-b1b7ae360388@moroto.mountain>
- <2d1788da-521c-4531-a159-81d2fb801d6c@linux.intel.com>
- <039a19e5-d1ff-47ae-aa35-3347c08acc13@moroto.mountain>
- <31ee6660-ad4a-40b8-8503-ebc3ed06dd16@linux.intel.com>
+        Fri, 23 Feb 2024 00:20:18 -0800 (PST)
+From: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+To: u.kleine-koenig@pengutronix.de,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu
+Cc: linux-pwm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	dlan@gentoo.org,
+	inochiama@outlook.com,
+	Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+Subject: [PATCH v3 0/2] riscv: pwm: sophgo: add pwm support for CV1800
+Date: Fri, 23 Feb 2024 16:20:12 +0800
+Message-Id: <20240223082014.109385-1-qiujingbao.dlmu@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <31ee6660-ad4a-40b8-8503-ebc3ed06dd16@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 23, 2024 at 03:32:52PM +0800, Ethan Zhao wrote:
-> On 2/23/2024 2:08 PM, Dan Carpenter wrote:
-> > On Fri, Feb 23, 2024 at 10:29:28AM +0800, Ethan Zhao wrote:
-> > > > > @@ -1326,6 +1336,21 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
-> > > > >    			head = (head - 2 + QI_LENGTH) % QI_LENGTH;
-> > > > >    		} while (head != tail);
-> > > > > +		/*
-> > > > > +		 * If got ITE, we need to check if the sid of ITE is one of the
-> > > > > +		 * current valid ATS invalidation target devices, if no, or the
-> > > > > +		 * target device isn't presnet, don't try this request anymore.
-> > > > > +		 * 0 value of ite_sid means old VT-d device, no ite_sid value.
-> > > > > +		 */
-> > > > This comment is kind of confusing.
-> > > Really confusing ? this is typo there, resnet-> "present"
-> > > 
-> > Reading this comment again, the part about zero ite_sid values is
-> > actually useful, but what does "old" mean in "old VT-d device".  How old
-> > is it?  One year old?
-> 
-> I recite the description from Intel VT-d spec here
-> 
-> "A value of 0 in this field indicates that this is an older version of DMA
-> remapping hardware which does not provide additional details about
-> the Invalidation Time-out Error"
-> 
+The Sophgo CV1800 chip provides a set of four independent
+PWM channel outputs.
+This series adds PWM controller support for Sophgo cv1800.
 
-This is good.  Put that in the comment.  Otherwise it's not clear.  I
-assumed "old" meant released or something.
+Changes since v2:
+- use 0x08 instead of macro
+- split if statements based on conditions
+- in order to round up, first calculate the
+  number of high-level cycles, then subtract
+  it from the PERIOD to obtain the number of HLPERIOD
+- use new pwmchip_alloc() API instead of old style
+
+v2: https://lore.kernel.org/all/20240212121729.1086718-1-qiujingbao.dlmu@gmail.com/
+
+Changes since v1:
+- drop full stop from subject
+- re-order maintainers and description
+- pass checkpatch.pl --strict
+- fix naming errors
+- add "Limitations" section
+- use a driver specific prefix for all defines
+- using bool instead u32 in cv1800_pwm_enable
+- check and set state->polarity
+- use mul_u64_u64_div_u64
+- use clk_rate_exclusive_get(), balance with clk_rate_exclusive_put()
+- using macro definitions instead of shift operations
+- remove shift operation on 0
+- use priv replace cv_pwm 
+- hardcode npwm
+- set atomic to true
+- remove MODULE_ALIAS
+
+v1: https://lore.kernel.org/all/20240207055856.672184-1-qiujingbao.dlmu@gmail.com/
+
+Jingbao Qiu (2):
+  dt-bindings: pwm: sophgo: add pwm for Sophgo CV1800 series SoC
+  pwm: sophgo: add pwm support for Sophgo CV1800 SoC
+
+ .../bindings/pwm/sophgo,cv1800-pwm.yaml       |  45 +++
+ drivers/pwm/Kconfig                           |  10 +
+ drivers/pwm/Makefile                          |   1 +
+ drivers/pwm/pwm-cv1800.c                      | 259 ++++++++++++++++++
+ 4 files changed, 315 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pwm/sophgo,cv1800-pwm.yaml
+ create mode 100644 drivers/pwm/pwm-cv1800.c
 
 
-> At least, the Intel VT-d spec 4.0 released 2022 June says the same thing.
-> as to how old, I didn't find docs older than that, really out of my radar.
-> 
-> > 
-> > > > /*
-> > > >    * If we have an ITE, then we need to check whether the sid of the ITE
-> > > >    * is in the rbtree (meaning it is probed and not released), and that
-> > > >    * the PCI device is present.
-> > > >    */
-> > > > 
-> > > > My comment is slightly shorter but I think it has the necessary
-> > > > information.
-> > > > 
-> > > > > +		if (ite_sid) {
-> > > > > +			dev = device_rbtree_find(iommu, ite_sid);
-> > > > > +			if (!dev || !dev_is_pci(dev))
-> > > > > +				return -ETIMEDOUT;
-> > > > -ETIMEDOUT is weird.  The callers don't care which error code we return.
-> > > > Change this to -ENODEV or something
-> > > -ETIMEDOUT means prior ATS invalidation request hit timeout fault, and the
-> > > caller really cares about the returned value.
-> > > 
-> > I don't really care about the return value and if you say it should be
-> > -ETIMEDOUT, then you're the expert.  However, I don't see anything in
-> > linux-next which cares about the return values except -EAGAIN.
-> > This function is only called from qi_submit_sync() which checks for
-> > -EAGAIN.  Then I did a git grep.
-> > 
-> > $ git grep qi_submit_sync
-> > drivers/iommu/intel/dmar.c:int qi_submit_sync(struct intel_iommu *iommu, struct qi_desc *desc,
-> > drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
-> > drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
-> > drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
-> > drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
-> > drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
-> > drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
-> > drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
-> > drivers/iommu/intel/iommu.h:int qi_submit_sync(struct intel_iommu *iommu, struct qi_desc *desc,
-> > drivers/iommu/intel/iommu.h: * Options used in qi_submit_sync:
-> > drivers/iommu/intel/irq_remapping.c:    return qi_submit_sync(iommu, &desc, 1, 0);
-> > drivers/iommu/intel/pasid.c:    qi_submit_sync(iommu, &desc, 1, 0);
-> > drivers/iommu/intel/svm.c:      qi_submit_sync(iommu, desc, 3, QI_OPT_WAIT_DRAIN);
-> > drivers/iommu/intel/svm.c:      qi_submit_sync(iommu, &desc, 1, 0);
-> > drivers/iommu/intel/svm.c:              qi_submit_sync(iommu, &desc, 1, 0);
-> > 
-> > Only qi_flush_iec() in irq_remapping.c cares about the return.  Then I
-> > traced those callers back and nothing cares about -ETIMEOUT.
-> > 
-> > Are you refering to patches that haven't ben merged yet?
-> 
-> Yes, patches under working, not the code running on your boxes.
-> 
-> -ETIMEOUT & -ENODEV, they both describe the error that is happenning, someone
-> prefers -ETIMEOUT, they would like to know the request was timeout, and someone
-> perfers -ENODEV, they know the target device is gone, ever existed.
-
-Okay.  I obviously can't comment on patches that I haven't seen but,
-sure, it sounds reasonable.
-
-> 
-> > > > > +			pdev = to_pci_dev(dev);
-> > > > > +			if (!pci_device_is_present(pdev) &&
-> > > > > +				ite_sid == pci_dev_id(pci_physfn(pdev)))
-> > > > The && confused me, but then I realized that probably "ite_sid ==
-> > > > pci_dev_id(pci_physfn(pdev))" is always true.  Can we delete that part?
-> > > Here is the fault handling, just double confirm nothing else goes wrong --
-> > > beyond the assumption.
-> > > 
-> > Basically for that to ever be != it would need some kind of memory
-> > corruption?  I feel like in that situation, the more conservative thing
-> > is to give up.  If the PCI device is not present then just give up.
-> 
-> memory corruption, buggy BIOS tables, faked request ...something out
-> of imagination, after confirmed the device is what it claimed to be, if
-> not present, then give up to retry the request.
-
-This is not correct.  We looked up the device based on the ite_sid so
-we know what the device id is, unless we experience catastrophic memory
-corruption.
-
-+                       dev = device_rbtree_find(iommu, ite_sid);
-                                                        ^^^^^^^
-We looked it up here.
-
-+                       if (!dev || !dev_is_pci(dev))
-+                               return -ETIMEDOUT;
-+                       pdev = to_pci_dev(dev);
-+                       if (!pci_device_is_present(pdev) &&
-+                               ite_sid == pci_dev_id(pci_physfn(pdev)))
-                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Unless the device_rbtree_find() is returning garbage then these things
-must be true.
-
-+                               return -ETIMEDOUT;
-
-I tried to double check how we were storing devices into the rbtree,
-but then I discovered that the device_rbtree_find() doesn't exist in
-linux-next and this patch breaks the build.
-
-This is very frustrating thing.  But let's say a buggy BIOS could mess
-up the rbtree.  In that situation, we would still want to change the &&
-to an ||.  If the divice is not present and^W or the rbtree is corrupted
-then return an error.  But don't do this.  If the memory is corrupted we
-are already screwed and there is no way the system can really recover
-in any reasonable way.
-
-regards,
-dan carpenter
+base-commit: 801de0882d8a95aa1b1fe67df1696e037d785656
+-- 
+2.25.1
 
 
