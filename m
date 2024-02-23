@@ -1,239 +1,108 @@
-Return-Path: <linux-kernel+bounces-78939-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78940-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1CB2861B06
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:01:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEA34861B0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:03:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 644B428966F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:01:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43B45B20E8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:03:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7D7613BAC2;
-	Fri, 23 Feb 2024 18:01:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEB6713EFF3;
+	Fri, 23 Feb 2024 18:03:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LIIedOCC"
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FVyjajRx"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 713CE12BE83
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 18:01:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B92EF85921
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 18:03:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708711310; cv=none; b=TynRXDmbdw7nGGRqJqPCqNwx0Fa4CS/GeA4ehvt6Nzy+KHIKejt9sIPVdKE3xRmXJmb+HNpxlMz3GVAZv8cp1oIkgNt/t3FCWwrEALjrr04GSrZszKoJwZ25yn38+CH9LHuPRUqsRGJ705Cj7xozpb1+GgZydbBs8FfxVJ5YrYA=
+	t=1708711426; cv=none; b=uhelsk6vTVRqI2mQktKx1vvZAqAq7TiiI9RlItfFePR9WjlEKugDQgwMwv9jAfXhjqVi9ABxWeGHFWoY91FBXQgQCXxJVyVB87mUiOrFI8dhE/GHNJmjG+sJKCQmpDIcMe8zvF42TQN99M5Ep/ps+HZSVT4EKUGvNoEtaOryb28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708711310; c=relaxed/simple;
-	bh=d93vKEyBUqSMfgszb7nKKMpMuQ2x+DYfOVS+gdJdKpU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ofiR/5S0wqB5NybThijeanaAkFuFOvQOgRPtshxL//lCpmHHSX40xL4UhGZJNUsV5wVSf2yTLVSnwfDdzwnx3eO9Qvq95bjyUNTzbH5qmj9eZrkSSMaNdkPG0sGr1LwyjiYKksILhH/aCONSwlRly/IeIwVRWA9Kg+M1t0kPw84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LIIedOCC; arc=none smtp.client-ip=209.85.160.173
+	s=arc-20240116; t=1708711426; c=relaxed/simple;
+	bh=DdRMPpgG9Tb6SaT0/ZIVpJjpD80lyxQTMLWdPoxSyYI=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=CrylvXlbm+Nl8JUkfNsEkQYJcpKqLC2Yvz4bgzAJ/xX2B3iadJpkVRK3yCfwSWcuk1Cmah/6NTHvinPq2yCEcFygZVdOfGR/dih0CVUBEFfeHFymNYgi0fFoArBwYByxoddyizTa438qhLQ+MB6RQjuUcZ0shrx4jmSCMzvpoHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FVyjajRx; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-428405a0205so8421cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 10:01:48 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-608c85208f9so9293307b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 10:03:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708711307; x=1709316107; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qRHX8SRb/g3ONTdNjk+xLg/313XUSVGYWCF8v1RW8cY=;
-        b=LIIedOCCrQrCTDIanKbTBDa5M9KBgSXuJ/EG7ZzTJXsxtM8xhV6vDvZAQfjuRWik0a
-         j4z9cNJBlSAihXOo6+UnxUek8YdjLhmbcSgDa/Tzyu3a8MkCCNGPfSN4GG22ngqjyBZK
-         6Ra58W77OaRgUhECT3wkEzBaLWTIaPjuPpBFyPgr2qOWK6z9pG0wcfK6g2sr9o3iRaFH
-         cJzLAamxTStMPINA4dpCA38ERWR5sJrreJWKMAcyQVWQOUh3nybgdBelSzOWEmqxYQD0
-         lzAlONAbbMOBwpnC/YAbJMeEOpEIImrt6pR3oBrNpsCogngeznjahSgwLgqoz+f0WW5U
-         JAYA==
+        d=google.com; s=20230601; t=1708711424; x=1709316224; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=y5GBsdPl7urgMkjHsKUTWfcFYRbv5pqvr/pTSqxUepM=;
+        b=FVyjajRxnwkquAmZ8B94NIdYQSDOyMgj9jWJEi7lCx7ZkvSkH+O2msI+5xpYQ3i96y
+         2u+WY1k5ahJrM+Cxgj1ctdZUjJVlEm/VVO6ocOiJ3MZkO3YEc2eIZnGBm/LydY6LP2EO
+         jN1IH9UqU4gTtIaCo/h1SVyb4WbgoU0vLmY3PvxjN3dJSkQ3J/t/ZHcNt0/cwk6KF8OM
+         9OMNLMvt8Dhl9xYbNf9Bp5GmQG9McO5pBGncKGv9JIdS8HEDltUudWn/cPi7NZC1OqEN
+         eixnrHCUIuAny5ilAG7P05BRN1ywcZu9JSaiLphqoO65mOtEyrEWfaPB+hnxu83TjGFQ
+         Fwtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708711307; x=1709316107;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qRHX8SRb/g3ONTdNjk+xLg/313XUSVGYWCF8v1RW8cY=;
-        b=NG/yB+DIhUuuQNTr/Lo+I7HKSFJJ4dg6pdrGgQpKxnlgQNZjnVG1GPA2gT/UVVJYR3
-         l41lGHUORMrIDVJHi4phsLk6Dy8oyX3BQXOtUqFPOGoQNJzFQ6q1RIHRS6ISZ5w3gc2j
-         hdqDJ+kafhbCzRMU+xA+l0nf2iQKR3ODjd0F1nAgbyBOEPcIamnarCIhEw0g1H/BkglP
-         E5xTWcJuTGVSdXToz+ZPxOvWwVvJljafq/kwzJolvliCzGbCHnvJCPDBPg49fPSHyGV2
-         o7LjEuv3jx0c1kOksqem/I4rwmCu13uZo35uXMGPKC1N2KEUi3xufLHSYIgtIg2DdXMP
-         ocNg==
-X-Forwarded-Encrypted: i=1; AJvYcCV9YZbspVLNLAakSY+q/Pj9/dDu0tL1u/f9VHECSjJpHBQWNmEcjClm3ov3o6ll7vDiLHUPMapwUKzdHqayMwccUP1jRxnMJ+Cve+ih
-X-Gm-Message-State: AOJu0Yz/iwnY8HOpT324yWRLzgBKtit5ycfgLS9iBSukofKU15rX08TF
-	8PMWLb7xgZ8prVL4XqvW8gu5VtN/HjJT5+3tQ9iUeIyQzuP24KcVh6nxUZ1czsuk5cu07p5f7OX
-	M/QSYPW1oL3aD9HNmoZU6/OkKF+j5BKN8Jp4C
-X-Google-Smtp-Source: AGHT+IFjd7LBMxrromnLqLyLXYjRoUlQc0+pZBSVa08jNHz7xjSQcCyQ/TFpeC7YkZ+vu00vxgg0LSWFAqtuVSa+nzc=
-X-Received: by 2002:ac8:58d0:0:b0:42d:fb39:def4 with SMTP id
- u16-20020ac858d0000000b0042dfb39def4mr10595qta.24.1708711307057; Fri, 23 Feb
- 2024 10:01:47 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708711424; x=1709316224;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=y5GBsdPl7urgMkjHsKUTWfcFYRbv5pqvr/pTSqxUepM=;
+        b=cy0XJ2cRxN7xgjGk4dsAKEWrsM13SBuTSCTwkCqBYnAfWweqqd9OEMNAGCufUTU0ki
+         HiRB5dRyxNYSTvSvUqAZJc3s4egKYEw9PiHfFqY0DrjloTAJKO0oA2EXgooeTK04Fku/
+         6ZsNyR5Ns80gnYeATKF4lO0zdPH43nNiABX9IaJgSNG2fJMZSuMgKYZ4gJ3E5wjtVS+i
+         aE4Ea0QPXKmG3vv1cy4bc4WuGHgn5K+EP/qNJe730sfYO0wo347txdjMDSQ6n5X8oq+e
+         4RcZI8WkfgeEUbKJkWkZAO8SlnpJ8PaXBywAv3drmcSrKxHHOjY/Z0DtoXPvuLbAqzQd
+         r4Mg==
+X-Forwarded-Encrypted: i=1; AJvYcCU4ij96KE01ryx2u1PpI4DUnnC4VPPqVvp+A39TO5SjANJgyTwijeDARy4d9dRD5pFxOn5i93dukbLULex+f1Ai7w12FbodS9YWA4wF
+X-Gm-Message-State: AOJu0Yw9SuT0TogqMNIIpLdUeJMNBLZsYVmhH95m9i8anPC3H5H0QT47
+	ZAlax3JHb8twEU7dFL6YgAwQAg00ndbWV4M69bt/wnWofLHRIGcmu+RxEKQOm2ospOmAn7FFLr8
+	gNQ==
+X-Google-Smtp-Source: AGHT+IFWV3CfQ94wgLPhbMGbDfgw7i7VWpWYNFZJz5bzHf5O44Xtwf6QXZWVPyjjqZKenQtiCT2ymWP+BkY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a0d:d9d4:0:b0:608:a901:469a with SMTP id
+ b203-20020a0dd9d4000000b00608a901469amr123120ywe.1.1708711423876; Fri, 23 Feb
+ 2024 10:03:43 -0800 (PST)
+Date: Fri, 23 Feb 2024 10:03:42 -0800
+In-Reply-To: <f6296a0c-df91-4de8-833e-dc13b9286a2e@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240221175210.19936-1-khuey@kylehuey.com> <20240221175210.19936-2-khuey@kylehuey.com>
- <CAP-5=fXsv7TJ_SVOZc38fN0gn+7cWBcMWt3FdVLcs5v0_vO=uw@mail.gmail.com>
- <CAP045AoSHWoOP3TN=6Hf2wZj7X9Y41sThBQWCDZ3BEP68qeTBw@mail.gmail.com>
- <ZdemibZepMqWvv6U@x1> <CAP045Aqc6woHGYKJG4d=x4gPd0=PmrLeFv25Rkts1a8xFuocOQ@mail.gmail.com>
-In-Reply-To: <CAP045Aqc6woHGYKJG4d=x4gPd0=PmrLeFv25Rkts1a8xFuocOQ@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Fri, 23 Feb 2024 10:01:31 -0800
-Message-ID: <CAP-5=fXzidk9hLm5bek3q1crds4mEjdgpq=s0YCSzLCj1GtvzQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] perf test: Test FASYNC with watermark wakeups.
-To: Kyle Huey <me@kylehuey.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Kyle Huey <khuey@kylehuey.com>, 
-	"Robert O'Callahan" <robert@ocallahan.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+References: <20240221072528.2702048-1-stevensd@google.com> <20240221072528.2702048-10-stevensd@google.com>
+ <f6296a0c-df91-4de8-833e-dc13b9286a2e@redhat.com>
+Message-ID: <Zdjd_loCXRAV3aVb@google.com>
+Subject: Re: [PATCH v10 7/8] KVM: x86/mmu: Track if sptes refer to refcounted pages
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: David Stevens <stevensd@chromium.org>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
+	Isaku Yamahata <isaku.yamahata@gmail.com>, Zhi Wang <zhi.wang.linux@gmail.com>, 
+	Maxim Levitsky <mlevitsk@redhat.com>, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	kvm@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-On Fri, Feb 23, 2024 at 9:35=E2=80=AFAM Kyle Huey <me@kylehuey.com> wrote:
->
-> On Thu, Feb 22, 2024 at 11:54=E2=80=AFAM Arnaldo Carvalho de Melo
-> <acme@kernel.org> wrote:
-> >
-> > On Thu, Feb 22, 2024 at 09:55:36AM -0800, Kyle Huey wrote:
-> > > On Wed, Feb 21, 2024 at 10:36=E2=80=AFAM Ian Rogers <irogers@google.c=
-om> wrote:
-> > > > On Wed, Feb 21, 2024 at 9:52=E2=80=AFAM Kyle Huey <me@kylehuey.com>=
- wrote:
-> > > > > +       if (fcntl(fd, F_SETFL, FASYNC)) {
-> > > > > +               pr_debug("failed F_SETFL FASYNC %d\n", errno);
-> > > > > +               goto cleanup;
-> > > > > +       }
-> >
-> > > > Thanks for the work! The perf tool and perf test should run on olde=
-r
-> > > > kernels ideally without failure. I'm assuming this would fail on an
-> > > > older kernel. Could we make the return value skip in that case?
-> >
-> > > Ah, hmm, I wasn't aware of that. This would fail on an older kernel,
-> > > yes. It's not possible to distinguish between an older kernel and a
-> > > kernel where this fix broke (at least not without hardcoding in an
-> > > expected good kernel version, which seems undesirable), so that would
-> >
-> > Take a look at:
-> >
-> >  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/com=
-mit/tools/perf/tests/sigtrap.c?id=3D650e0bde43f35bb675e87e30f679a57cfa22e0e=
-5
-> >
-> > To see how introspecting using BTF can be used to figure out if interna=
-l
-> > data structures have what is needed, or if functions with some specific
-> > arguments are present, etc, for sigtrap we have, in the patch above:
-> >
-> > -       TEST_ASSERT_EQUAL("unexpected sigtraps", ctx.signal_count, NUM_=
-THREADS * ctx.iterate_on);
-> > +       expected_sigtraps =3D NUM_THREADS * ctx.iterate_on;
-> > +
-> > +       if (ctx.signal_count < expected_sigtraps && kernel_with_sleepab=
-le_spinlocks()) {
-> > +               pr_debug("Expected %d sigtraps, got %d, running on a ke=
-rnel with sleepable spinlocks.\n",
-> > +                        expected_sigtraps, ctx.signal_count);
-> > +               pr_debug("See https://lore.kernel.org/all/e368f2c848d77=
-fbc8d259f44e2055fe469c219cf.camel@gmx.de/\n");
-> > +               return TEST_SKIP;
-> > +       } else
-> > +               TEST_ASSERT_EQUAL("unexpected sigtraps", ctx.signal_cou=
-nt, expected_sigtraps);
-> >
-> > And then:
-> >
-> > +static bool kernel_with_sleepable_spinlocks(void)
-> > +{
-> > +       const struct btf_member *member;
-> > +       const struct btf_type *type;
-> > +       const char *type_name;
-> > +       int id;
-> > +
-> > +       if (!btf__available())
-> > +               return false;
-> > +
-> > +       id =3D btf__find_by_name_kind(btf, "spinlock", BTF_KIND_STRUCT)=
-;
-> > +       if (id < 0)
-> > +               return false;
-> > +
-> > +       // Only RT has a "lock" member for "struct spinlock"
-> > +       member =3D __btf_type__find_member_by_name(id, "lock");
-> > +       if (member =3D=3D NULL)
-> > +               return false;
-> > +
-> > +       // But check its type as well
-> > +       type =3D btf__type_by_id(btf, member->type);
-> > +       if (!type || !btf_is_struct(type))
-> > +               return false;
-> > +
-> > +       type_name =3D btf__name_by_offset(btf, type->name_off);
-> > +       return type_name && !strcmp(type_name, "rt_mutex_base");
-> > +}
-> >
-> > > mean the test would always return ok or skip, not ok or fail. Is that
-> > > ok?
-> >
-> > It should return:
-> >
-> > Ok if the kernel has what is needed and the test passes
-> > Skip if the test fails and the kernel doesn't have what is needed
-> > FAIL if the test fails and the kernel HAS what is needed.
-> >
-> > 'perf test sigtrap' also checks for the presence of the feature it
-> > requires:
-> >
-> > static bool attr_has_sigtrap(void)
-> > {
-> >         int id;
-> >
-> >         if (!btf__available()) {
-> >                 /* should be an old kernel */
-> >                 return false;
-> >         }
-> >
-> >         id =3D btf__find_by_name_kind(btf, "perf_event_attr", BTF_KIND_=
-STRUCT);
-> >         if (id < 0)
-> >                 return false;
-> >
-> >         return __btf_type__find_member_by_name(id, "sigtrap") !=3D NULL=
-;
-> > }
-> >
-> >         fd =3D sys_perf_event_open(&attr, 0, -1, -1, perf_event_open_cl=
-oexec_flag());
-> >         if (fd < 0) {
-> >                 if (attr_has_sigtrap()) {
-> >                         pr_debug("FAILED sys_perf_event_open(): %s\n",
-> >                                  str_error_r(errno, sbuf, sizeof(sbuf))=
-);
-> >                 } else {
-> >                         pr_debug("perf_event_attr doesn't have sigtrap\=
-n");
-> >                         ret =3D TEST_SKIP;
-> >                 }
-> >                 goto out_restore_sigaction;
-> >         }
-> >
-> > - Arnaldo
->
-> I think perhaps I'm barking up the wrong tree here. This seems like a
-> ton of work just to write a regression test. Maybe I should be doing
-> this in tools/testing/selftests instead?
+On Fri, Feb 23, 2024, Paolo Bonzini wrote:
+> On 2/21/24 08:25, David Stevens wrote:
+> > From: David Stevens <stevensd@chromium.org>
+> > 
+> > Use one of the unused bits in EPT sptes to track whether or not an spte
+> > refers to a struct page that has a valid refcount, in preparation for
+> > adding support for mapping such pages into guests. The new bit is used
+> > to avoid triggering a page_count() == 0 warning and to avoid touching
+> > A/D bits of unknown usage.
+> > 
+> > Non-EPT sptes don't have any free bits to use, so this tracking is not
+> > possible when TDP is disabled or on 32-bit x86.
+> 
+> TDX will add support for non-zero non-present PTEs.  We could use this to
+> use inverted bit 8 to mark present PTEs (bit 8 set for non-present, bit 8
+> clear for present) for both shadow paging and AMD NPT.  This would free bit
+> 11 for SPTE_MMU_PAGE_REFCOUNTED.
 
-The problem is detecting support for the feature in the kernel. The
-BTF approach isn't that bad, a couple of finds, but I think in this
-case there isn't anything to be found to indicate the feature is
-present. I like the perf test as perf tests are a form of
-documentation. Perhaps just using TEST_SKIP here (rather than
-TEST_FAIL) is best and the skip_reason can be a presumed lack of
-kernel support.
-
-Thanks,
-Ian
-
-> - Kyle
+Ooh, that's much more clever than where I was headed, which was to abuse the PAT
+bit (kernel configures 0400 to be WB), which would actually be quite elegant if
+(a) the PAT bit didn't move around or (b) the kernel used a non-zero PCD or PWT
+bit for WB :-/
 
