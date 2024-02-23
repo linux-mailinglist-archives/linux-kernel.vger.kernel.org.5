@@ -1,121 +1,97 @@
-Return-Path: <linux-kernel+bounces-78406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC7B9861310
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:44:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91E98861315
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:44:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDFC71C2120C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:44:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 229ADB22CF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:44:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F13337C0B7;
-	Fri, 23 Feb 2024 13:43:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oNa4UFnF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31EDF811F1;
+	Fri, 23 Feb 2024 13:44:02 +0000 (UTC)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 311927EF0F;
-	Fri, 23 Feb 2024 13:43:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F010C8062E;
+	Fri, 23 Feb 2024 13:43:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708695809; cv=none; b=AcraqjkbARxbcue9bwCIKtPep/P8tSgneIvStSM2pkHKKqWDczBh1kNQiPdIHAP/hcYX75YwUaD9tkY5cGLqLA+nJcJboEv/Zbl5mSnNMqGRgydshT3w0EEOkk+oxgu+7sPpohkk4AhyJbFULSgBnv891K9HstFB3tO+Q/ZLezE=
+	t=1708695841; cv=none; b=UZR0TkRkKsZ9tzbssvlRxUU6F+gIQ0DG5Pi0jciElBUS/5mZF3P525YDEJatbFIRf0sBwwaAG9HZFNNg/d9yi3e4c+K5BC6UmFaYFNfD7sEXPtDqJ+iB8sruYqZ2dZN0bP65LiY5LVOSXG8BbUeJ4S3FWybKenr4DXOovtG7ED8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708695809; c=relaxed/simple;
-	bh=pSgrbhzYE2cxqddJbCuPtMoPkUisQmEruojDvLw93ow=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LAeZpCwO1WcXz3SWZrpfML42qiuMPVgHW2nqaO6bNLlObEjscz8m4hOdu/sc2h2QqpI1qkL0CqHDaGQWETGwajM2LaHKM2BLq2J+bR+rcV01txVB56lpgmeK7b1f9rVtMGcaFBC1fZ5TWpnRxCFz/OA7sQHuWfUcf0Nj9WDcE58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oNa4UFnF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90F49C433F1;
-	Fri, 23 Feb 2024 13:43:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708695808;
-	bh=pSgrbhzYE2cxqddJbCuPtMoPkUisQmEruojDvLw93ow=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oNa4UFnF40pNA4TqsoRYAYRpCUaS7oHjiPuJ30ZXDzAo5T3alPLZolU/sAppysKGE
-	 b2SMvrWj1GGMlIjqaQwiocQ647afQCJBK9win8Y/KD9B0lZ9raWdfX9rpUH5qLxnnY
-	 J8nwSdFwmaRPfOqTlwnKyVSzcdKr6XnLVLnhxttQc2q6ORXiitz/GnoeHM52aOi0N+
-	 g6pKC/yZjm/dGql3Z6UAmblAjaVUg4yr8qvnsFvcyu32AsKvkLsQfpZRiQNMFxf0yI
-	 TCho5zO+IR4Gfl5gSNoUHue1vnBs9iF01YCEdrllo3DQpRpnOIgt4oZ+3VpBK2eKPb
-	 zOYCb+2iXB0RA==
-Date: Fri, 23 Feb 2024 06:43:26 -0700
-From: Rob Herring <robh@kernel.org>
-To: Danila Tikhonov <danila@jiaxyga.com>
-Cc: andersson@kernel.org, konrad.dybcio@linaro.org, mturquette@baylibre.com,
-	sboyd@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, david@mainlining.org, adrian@travitia.xyz,
-	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/8] dt-bindings: clock: qcom,sm7150-gcc: Add missing CX
- power domain
-Message-ID: <20240223134326.GA1754133-robh@kernel.org>
-References: <20240220165240.154716-1-danila@jiaxyga.com>
- <20240220165240.154716-2-danila@jiaxyga.com>
+	s=arc-20240116; t=1708695841; c=relaxed/simple;
+	bh=XzO6MJifE+JArjb+66zzk/BVaQsPkGlLVFwOugc6dhw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=K1p0Lspuf5vYQFgUD43suCy6HrnnQON3t/ERfvlnWFODC2mxknmUWcCyAksVMWsGNloK7yOZCtiyHG3LGXdGZ8CZx8GknRIDIWXCiLsyX+ItYzFt49oC3i4HvPhLXE0kQLWBDSx+4up5dC7lrxn+FdOuxUEL5YCUN2ZdPmq9BFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
+Received: from i53875b6c.versanet.de ([83.135.91.108] helo=diego.localnet)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1rdVq2-0001HH-7o; Fri, 23 Feb 2024 14:43:42 +0100
+From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>,
+ Shreeya Patel <shreeya.patel@collabora.com>, Simon Xue <xxm@rock-chips.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>,
+ Quentin Schulz <foss+kernel@0leil.net>
+Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>, linux-iio@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ Quentin Schulz <quentin.schulz@theobroma-systems.com>,
+ Quentin Schulz <foss+kernel@0leil.net>
+Subject:
+ Re: [PATCH 2/3] iio: adc: rockchip_saradc: use mask for write_enable bitfield
+Date: Fri, 23 Feb 2024 14:43:41 +0100
+Message-ID: <2385656.yKrmzQ4Hd0@diego>
+In-Reply-To:
+ <20240223-saradcv2-chan-mask-v1-2-84b06a0f623a@theobroma-systems.com>
+References:
+ <20240223-saradcv2-chan-mask-v1-0-84b06a0f623a@theobroma-systems.com>
+ <20240223-saradcv2-chan-mask-v1-2-84b06a0f623a@theobroma-systems.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240220165240.154716-2-danila@jiaxyga.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-On Tue, Feb 20, 2024 at 07:52:33PM +0300, Danila Tikhonov wrote:
-> SM7150 GCC expected two power domains - CX and CX_AO. Currently only
-> one is supported, so add the missing CX.
-
-This makes no sense. You had 0 and now you have 1 power domain, not 2. 
-Where is CX_AO.
-
+Am Freitag, 23. Februar 2024, 13:45:22 CET schrieb Quentin Schulz:
+> From: Quentin Schulz <quentin.schulz@theobroma-systems.com>
 > 
-> Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
-> ---
->  .../devicetree/bindings/clock/qcom,sm7150-gcc.yaml        | 8 ++++++++
->  1 file changed, 8 insertions(+)
+> Some of the registers on the SARADCv2 have bits write protected except
+> if another bit is set. This is usually done by having the lowest 16 bits
+> store the data to write and the highest 16 bits specify which of the 16
+> lowest bits should have their value written to the hardware block.
 > 
-> diff --git a/Documentation/devicetree/bindings/clock/qcom,sm7150-gcc.yaml b/Documentation/devicetree/bindings/clock/qcom,sm7150-gcc.yaml
-> index 0eb76d9d51c4..1360e9d1d6ee 100644
-> --- a/Documentation/devicetree/bindings/clock/qcom,sm7150-gcc.yaml
-> +++ b/Documentation/devicetree/bindings/clock/qcom,sm7150-gcc.yaml
-> @@ -27,9 +27,15 @@ properties:
->        - description: Board XO Active-Only source
->        - description: Sleep clock source
->  
-> +  power-domains:
-> +    maxItems: 1
-> +    description:
-> +      CX power domain.
-> +
->  required:
->    - compatible
->    - clocks
-> +  - power-domains
-
-Adding new required properties is an ABI break. If that is fine, you 
-must say why in the commit message.
-
->  
->  allOf:
->    - $ref: qcom,gcc.yaml#
-> @@ -39,12 +45,14 @@ unevaluatedProperties: false
->  examples:
->    - |
->      #include <dt-bindings/clock/qcom,rpmh.h>
-> +    #include <dt-bindings/power/qcom,rpmhpd.h>
->      clock-controller@100000 {
->        compatible = "qcom,sm7150-gcc";
->        reg = <0x00100000 0x001f0000>;
->        clocks = <&rpmhcc RPMH_CXO_CLK>,
->                 <&rpmhcc RPMH_CXO_CLK_A>,
->                 <&sleep_clk>;
-> +      power-domains = <&rpmhpd RPMHPD_CX>;
->        #clock-cells = <1>;
->        #reset-cells = <1>;
->        #power-domain-cells = <1>;
-> -- 
-> 2.43.2
+> The write_enable mask for the channel selection was incorrect because it
+> was just the value shifted by 16 bits, which means it would only ever
+> write bits and never clear them. So e.g. if someone starts a conversion
+> on channel 5, the lowest 4 bits would be 0x5, then starts a conversion
+> on channel 0, it would still be 5.
 > 
+> Instead of shifting the value by 16 as the mask, let's use the OR'ing of
+> the appropriate masks shifted by 16.
+> 
+> Note that this is not an issue currently because the only SARADCv2
+> currently supported has a reset defined in its Device Tree, that reset
+> resets the SARADC controller before starting a conversion on a channel.
+> However, this reset is handled as optional by the probe function and
+> thus proper masking should be used in the event an SARADCv2 without a
+> reset ever makes it upstream.
+> 
+> Fixes: 757953f8ec69 ("iio: adc: rockchip_saradc: Add support for RK3588")
+> Cc: Quentin Schulz <foss+kernel@0leil.net>
+> Signed-off-by: Quentin Schulz <quentin.schulz@theobroma-systems.com>
+
+Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+
+
 
