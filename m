@@ -1,192 +1,130 @@
-Return-Path: <linux-kernel+bounces-79175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FCD1861E78
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:06:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 886CC861E7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:06:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4139028513A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:06:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 161CC28533D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:06:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB40E15697D;
-	Fri, 23 Feb 2024 21:03:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A21EC25750;
+	Fri, 23 Feb 2024 21:05:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OiiuDVRq"
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="McsG/xV1"
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5243214939E;
-	Fri, 23 Feb 2024 21:03:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 384CD14938D
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 21:05:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708722194; cv=none; b=FtmqE+iUXbNRbzlSk5Dx3WGvVvgbJhOth0G6fUjptWNTgBYtqtPtPUunpcGsl1udmLrGDEhWsD2Cnzp7RR07ogBXd1Dldpi9SCetEXNo4X4hei+NPEE/MkoBjdveTuFi0qiPsGpaWpTI+WqXzKyu1atox+Vb2bumpkDPHfNzvss=
+	t=1708722329; cv=none; b=aUofwn+jv0En2nYNVVUlqcWIh1fZibeC5Ep+pulc2ObVk6Fa6GpQIm5HBqk+tMV71YbR6bOkz+LZO2qBtovgEo9OixCoobLfhnWJKuu9sZNNfbxwGrEPef0H355vV54mrDG9V1sTqjz3CYCeorIcgxsVU+d/R/DDD344xhD9VKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708722194; c=relaxed/simple;
-	bh=wAzmO2nV/mts0uRLd+SnpnPKDzjDEHTguc73SCAqHIo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qdP4PndMQzEhSesHL8pYbPsV16oLry2U6IcOxR+iRKUlQfkwn4pGFd1+/TsRKxD4Q8xBqAw4SsCy+2BLLNmGM+br45h7lE7vgiuyT+EsciRnH5DjVFOooGhQwHMXwBZ6cuP2pQYGvtU7gs7b+CSdTi2NRnxhv8eDOjH7bzx82gU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OiiuDVRq; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d22fa5c822so17331721fa.2;
-        Fri, 23 Feb 2024 13:03:12 -0800 (PST)
+	s=arc-20240116; t=1708722329; c=relaxed/simple;
+	bh=R/+O8H4O8BwAv9+xJIMOzoReW2oS/QadBD8zkAnLLDY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iYMlFiHY53K/H0sKp9w1Mv9dNG4miM8qhzDEenUH8X1htehY1lK7eE6LybPorDttOil9ePxm428EAwP2dxr9T/qfIo6LDaEmbHzs7NJESsd8+yQN7Xo+M+Q3Rg49GnC9TmW+bo2TfWkXFjOA0Vc1EY1ns9hrb6wGcF8V4jPlL1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=McsG/xV1; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dc6d9a8815fso861691276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:05:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708722190; x=1709326990; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=paul-moore.com; s=google; t=1708722327; x=1709327127; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=u3iU9R8t6ng+bkzwOIZP0nM+fEY42hDYQ8lo7syRMXk=;
-        b=OiiuDVRqfO3+yqYy5fGX1OE6y7aqrCPXKTOsbFUfM7Zg6OgJ2HzIlGtvcEhqyxmLEk
-         ji4AgD77As+wvhpzBDvEydgJ55IINmmkUyqgeVGUX2G9dl+6h/J6CFtRMdoOX5+IOVBx
-         60o1au/kTQdKWvPJ3cyt5jz+VlSTQ2ew1qhkD+5SoD3lZfJOrSOg7daRpdp0wypCfuzq
-         uaq4UE68wKTj60Sk4F45yBku+fS/1TnnvqI9ESc9qQ2215wPZX/VF6gi6n1x7FBxr541
-         aSxJcyNrg6fpHBy7sxv+oZX0r95C6WVxEtae5dWjHKNCk5sOQOp0Zq/cOJkaIpPaT5sf
-         pMww==
+        bh=ytWrr/Z6XKokLdRa6LccyRlNuSfIGCRB1ohMJ1fqRns=;
+        b=McsG/xV1Q6wYwr0hBiL8gQeBgfp9QLQCnz1I6NLyCHktW9rh10xkCwRtX0St8yoNQq
+         /Ht/LQzBV0OaCYUlMiAIDqIP+1fia1PNf1+v8WxJaqCj0RR2bSWhW8tJ0z7evZpeqOL2
+         tNnxB0sIaVaqcsLZlXrF8ucmB/4B9FpP0s8xO2XpmqZISqV/ss+MoRARStuh/cO+3/9h
+         pEI+WO3EFFlMvbK0cdj0T63DTQXZJRMbHzox6kRF8a3usSaOoMf7EetFZbkgtM0PNvBL
+         ygVSJ2UbkD8CQVbEMf+qHwG4N+bol0bNRqYHIhecnSGum/RSz5wPq9OCd4KTA3IEUr0O
+         m5/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708722190; x=1709326990;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1708722327; x=1709327127;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=u3iU9R8t6ng+bkzwOIZP0nM+fEY42hDYQ8lo7syRMXk=;
-        b=IoEDsKps5+lnhtekXJR04UdZjCnW5QicYtPM5vQtScRgBciP/pa84XE4cl9QaghvSS
-         uVdA/oBX/eS8t7lNai/5vpHQsFlXiRC19V6FJjv25zceEKygQT0n7lEwBG8zTMTswizB
-         2etHNuIC/EqlwzI5H8e43iN4hnMtt9F7WAFyOcav5+n2mBs1jE4VhUwjY2WxLp04hAA/
-         PndF+q2vTV02zuOsvnIH9rz0SITr34qfzL1RaM8c9PvH/IUqvb0ph59tqF5hLkEBTPGa
-         Bytk4+xashHKjzhiKaOQ8Dj2fyHkZX9ulwQ+xE9+CSlAnjlBlwmgWpIGWTkQyYv+HcbE
-         2Rbg==
-X-Forwarded-Encrypted: i=1; AJvYcCWfN+XOMtCnEWMD7JeNgvGB5Jhau88l1UTbtmagNzqLjBZmL0ih+aXXgjz7t/tdxzwdz5B750YZMNcK59mq1YLgu9vL7Ex8ZQHMaude
-X-Gm-Message-State: AOJu0YxvKO1zdmKmsmYcCCOf8e8vW3Quf0+Ozl62Yjry3Yrq3rnsg4Yd
-	0Bv+Zh0zCpBUSv3CQj+dQxpcS5DTYgg6VKf5HFxXOGkXngy5Xj/LDOwz93H9CjM=
-X-Google-Smtp-Source: AGHT+IHVV2y64jRVCacDLEUV+u1xPRhTkyOMvdB8LkVI3WkOF0Ffmnp1ZpGOuI3DJBOG4YKt6gV4gw==
-X-Received: by 2002:ac2:5fef:0:b0:512:99c2:dfa with SMTP id s15-20020ac25fef000000b0051299c20dfamr552215lfg.42.1708722189978;
-        Fri, 23 Feb 2024 13:03:09 -0800 (PST)
-Received: from WBEC325.dom.lan ([185.188.71.122])
-        by smtp.gmail.com with ESMTPSA id st11-20020a170907c08b00b00a3e559aaff9sm6185424ejc.29.2024.02.23.13.03.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 13:03:09 -0800 (PST)
-From: Pawel Dembicki <paweldembicki@gmail.com>
-To: netdev@vger.kernel.org
-Cc: linus.walleij@linaro.org,
-	Pawel Dembicki <paweldembicki@gmail.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Claudiu Manoil <claudiu.manoil@nxp.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	UNGLinuxDriver@microchip.com,
-	Russell King <linux@armlinux.org.uk>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v5 16/16] net: dsa: vsc73xx: start treating the BR_LEARNING flag
-Date: Fri, 23 Feb 2024 22:00:46 +0100
-Message-Id: <20240223210049.3197486-17-paweldembicki@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240223210049.3197486-1-paweldembicki@gmail.com>
-References: <20240223210049.3197486-1-paweldembicki@gmail.com>
+        bh=ytWrr/Z6XKokLdRa6LccyRlNuSfIGCRB1ohMJ1fqRns=;
+        b=h+QvGs0/FWm0Ulg2zQqhPtwcWD+GRj2+bz5z95RD2xrNfHge5TDzTMQcTSeSOgcMMY
+         QDKq0UBZfl3YcVlQLWLvt3KzxMBZrirsUwt7AZ1ENVFF9gs6/FD3wdMUryOcXS3H64pw
+         r7hNKo0cwpwbZ5vSHJgPiPaIQafvENJU1x0gwrvc9ec+mjWVxqniPjjN/iuK0eI7bGMA
+         FG3806S/dfW0+sqyjoLXpEoi+66NHtjunHTIPuhGasovOSlvq86EKHYFP6e5Gs/yMBOi
+         /Csdm7xr3SlPd2tBWzIBvUOuhZoyDcS69x2jFzciXjy7N6YfhxF/dQVTn3VXzddJltBW
+         ej1A==
+X-Forwarded-Encrypted: i=1; AJvYcCU4EQnK+hqfowh6CfgqkfgyBbeHNeGIGAfLnizZ8FThB93Wq/zKUlsWF3EhSTZKqFb56rI2/FZsOAi60KT7hJwn92V7qZz+zwiqu+/w
+X-Gm-Message-State: AOJu0Yylk/QRs3IcSpiPUtpMFxAVAmE8XTWkJvdCjxUWoulT4V6pWrC/
+	taoBu+UN/HgTmWxJUa0okZ5I8MSXQt9YBiJfQILvdGNqM4yPu8VCbYAzTQmqtmowqd/ToD1Q5Pw
+	U3XhgkZyO/5zDuc/A/zq/xQ6+cioN04bv+AJJ
+X-Google-Smtp-Source: AGHT+IEpVFDrzEuIGmXD+usw6kJRjPirAlh3UAEtBi1UxjtPyCLhEp1Orc6J/F3wzIU5WK49aEGT3jx6+SyrtibdDLc=
+X-Received: by 2002:a25:2bc6:0:b0:dc7:6d9a:37f2 with SMTP id
+ r189-20020a252bc6000000b00dc76d9a37f2mr1120688ybr.38.1708722327204; Fri, 23
+ Feb 2024 13:05:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240223190546.3329966-1-mic@digikod.net> <20240223.ieSh2aegurig@digikod.net>
+ <20240223.eij0Oudai0Ia@digikod.net>
+In-Reply-To: <20240223.eij0Oudai0Ia@digikod.net>
+From: Paul Moore <paul@paul-moore.com>
+Date: Fri, 23 Feb 2024 16:05:16 -0500
+Message-ID: <CAHC9VhRdRK3FztE-Th=3M+0ZjCZQJ+5sTiXPwfK6xXX_=SFHhA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] SELinux: Fix lsm_get_self_attr()
+To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+Cc: Casey Schaufler <casey@schaufler-ca.com>, John Johansen <john.johansen@canonical.com>, 
+	James Morris <jmorris@namei.org>, "Serge E . Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, stable@vger.kernel.org, 
+	selinux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This patch implements .port_pre_bridge_flags() and .port_bridge_flags(),
-which are required for properly treating the BR_LEARNING flag. Also,
-port_stp_state_set() is tweaked and now disables learning for standalone
-ports.
+On Fri, Feb 23, 2024 at 3:04=E2=80=AFPM Micka=C3=ABl Sala=C3=BCn <mic@digik=
+od.net> wrote:
+>
+> On Fri, Feb 23, 2024 at 08:59:34PM +0100, Micka=C3=ABl Sala=C3=BCn wrote:
+> > On Fri, Feb 23, 2024 at 08:05:45PM +0100, Micka=C3=ABl Sala=C3=BCn wrot=
+e:
+> > > selinux_lsm_getattr() may not initialize the value's pointer in some
+> > > case.  As for proc_pid_attr_read(), initialize this pointer to NULL i=
+n
+> > > selinux_getselfattr() to avoid an UAF in the kfree() call.
+> >
+> > Not UAF but NULL pointer dereference (both patches)...
+>
+> Well, that may be the result (as observed with the kfree() call), but
+> the cause is obviously an uninitialized pointer.
 
-Disabling learning for standalone ports is required to avoid situations
-where one port sees traffic originating from another, which could cause
-invalid operations.
+Adding the SELinux list to the CC line; SELinux folks the original post is =
+here:
 
-Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
----
-v5:
-  - introduce patch
+* https://lore.kernel.org/all/20240223190546.3329966-1-mic@digikod.net
 
- drivers/net/dsa/vitesse-vsc73xx-core.c | 41 ++++++++++++++++++++++----
- 1 file changed, 35 insertions(+), 6 deletions(-)
+Thanks for finding this and testing the patch, based on our off-list
+discussion, do you mind if I add a Suggested-by?  Looking at this a
+bit more I think we'll want to make a few changes to
+selinux_lsm_getattr() later, but this patch is a good one for stable
+as it not only fixes the bug, but it is a trivial one-liner with very
+low risk.
 
-diff --git a/drivers/net/dsa/vitesse-vsc73xx-core.c b/drivers/net/dsa/vitesse-vsc73xx-core.c
-index 8dc366461b9c..3b312799cf66 100644
---- a/drivers/net/dsa/vitesse-vsc73xx-core.c
-+++ b/drivers/net/dsa/vitesse-vsc73xx-core.c
-@@ -1590,6 +1590,31 @@ static int vsc73xx_tag_8021q_vlan_del(struct dsa_switch *ds, int port, u16 vid)
- 	return vsc73xx_update_vlan_table(vsc, port, vid, false);
- }
- 
-+static int vsc73xx_port_pre_bridge_flags(struct dsa_switch *ds, int port,
-+					 struct switchdev_brport_flags flags,
-+					 struct netlink_ext_ack *extack)
-+{
-+	if (flags.mask & ~BR_LEARNING)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+static int vsc73xx_port_bridge_flags(struct dsa_switch *ds, int port,
-+				     struct switchdev_brport_flags flags,
-+				     struct netlink_ext_ack *extack)
-+{
-+	if (flags.mask & BR_LEARNING) {
-+		struct vsc73xx *vsc = ds->priv;
-+		u32 val = flags.val & BR_LEARNING ? BIT(port) : 0;
-+
-+		return vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
-+					   VSC73XX_LEARNMASK, BIT(port), val);
-+	}
-+
-+	return 0;
-+}
-+
- static int vsc73xx_port_bridge_join(struct dsa_switch *ds, int port,
- 				    struct dsa_bridge bridge,
- 				    bool *tx_fwd_offload,
-@@ -1706,19 +1731,21 @@ static void vsc73xx_refresh_fwd_map(struct dsa_switch *ds, int port, u8 state)
- static void vsc73xx_port_stp_state_set(struct dsa_switch *ds, int port,
- 				       u8 state)
- {
-+	struct dsa_port *dp = dsa_to_port(ds, port);
- 	struct vsc73xx *vsc = ds->priv;
--	u32 val;
-+	u32 val = 0;
-+
-+	if (state == BR_STATE_LEARNING || state == BR_STATE_FORWARDING)
-+		val = dp->learning ? BIT(port) : 0;
-+
-+	vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
-+			    VSC73XX_LEARNMASK, BIT(port), val);
- 
- 	val = (state == BR_STATE_BLOCKING || state == BR_STATE_DISABLED) ?
- 	      0 : BIT(port);
- 	vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
- 			    VSC73XX_RECVMASK, BIT(port), val);
- 
--	val = (state == BR_STATE_LEARNING || state == BR_STATE_FORWARDING) ?
--	      BIT(port) : 0;
--	vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
--			    VSC73XX_LEARNMASK, BIT(port), val);
--
- 	/* CPU Port should always forward packets when user ports are forwarding
- 	 * so let's configure it from other ports only.
- 	 */
-@@ -1740,6 +1767,8 @@ static const struct dsa_switch_ops vsc73xx_ds_ops = {
- 	.port_setup = vsc73xx_port_setup,
- 	.port_enable = vsc73xx_port_enable,
- 	.port_disable = vsc73xx_port_disable,
-+	.port_pre_bridge_flags = vsc73xx_port_pre_bridge_flags,
-+	.port_bridge_flags = vsc73xx_port_bridge_flags,
- 	.port_bridge_join = vsc73xx_port_bridge_join,
- 	.port_bridge_leave = vsc73xx_port_bridge_leave,
- 	.port_change_mtu = vsc73xx_change_mtu,
--- 
-2.34.1
+I do think we need to tweak the commit description a bit, what do you
+think of the following?
 
+  "selinux_getselfattr() doesn't properly initialize the string
+   pointer it passes to selinux_lsm_getattr() which can cause a
+   problem when an attribute hasn't been explicitly set;
+   selinux_lsm_getattr() returns 0/success, but does not set or
+   initialize the string label/attribute.  Failure to properly
+   initialize the string causes problems later in
+   selinux_getselfattr() when the function attempts to kfree()
+   the string."
+
+--=20
+paul-moore.com
 
