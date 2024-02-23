@@ -1,136 +1,77 @@
-Return-Path: <linux-kernel+bounces-78479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74CD48613EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:25:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14D088613EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:24:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A68811C229E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:24:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA2FA1F24656
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:24:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77BA281AD0;
-	Fri, 23 Feb 2024 14:24:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cRiRBlnh"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4F688061F;
+	Fri, 23 Feb 2024 14:24:39 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B01965DF00;
-	Fri, 23 Feb 2024 14:24:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D5DF7FBC5
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 14:24:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708698287; cv=none; b=UEPRK1nJavdyhk5HA1YG+D4NQAlT7XBGCeDfm3zXEsB+2MEC8hWfzekB7ekCjWtzpaWtqUhXSx8Xi6wA2nFd6+BGNll66qFIiEzx/8+ycrEQ7vgkgeIMuJb0S4Luw/6JIsiIvh5isWbA1j6C2MpNNSgFe2t3tcNT6nhKMSdZtHM=
+	t=1708698279; cv=none; b=SXHcn3ep+xx68Q9hmbZSJnwJ/cyUHmxWda4kDcrDdP8Kiwhcg9DBMVm2/Q49fr+KGcKXvCnxL+dcM7Mjefrum57HIgfO0IAQ6OY8VRzj0eEoUgaKcvX+hv7BlOeOF+jrETVXnmHEjjiIpDkkosUfg0Pjt3ODh7YDwvbqRyPhnJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708698287; c=relaxed/simple;
-	bh=CPKfn8KaE//cU0QWzY843HBL7tKq7sx/eZSPxH6h9NQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pOPRGbXf9PRtmvuX42k9fV05RLNml1ou5/cVTKzZEz+CKf8Bw0efzBKM5G+Beu8P09OuYRAJwF/276eMsRU4bR13nhM+vE6cgL2sKpYJzbagt7CvosLExAj/4CSiC+b3ykUjU0fsYUbOrheLPrIK+M61YhZ3ZtexUU1hUxXTWvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cRiRBlnh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B17E4C433C7;
-	Fri, 23 Feb 2024 14:24:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708698287;
-	bh=CPKfn8KaE//cU0QWzY843HBL7tKq7sx/eZSPxH6h9NQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cRiRBlnh+RvHJx9KeaGUVuGSgfkXDYv2UIAXE2Xuwvv+OQDyvQoO02ybeQ1vNGHdZ
-	 OtJYSyJ+4g+3Sb607ZvmeUXxu4wV+qExEXSOrkxsFeQ10yn/gHl2cNG7+q2jtvR1qb
-	 jcLjFqgxrHad5qd5qfVkcjgwhbNsOkLlYDIzKuR40vF71YU3DMEyKLsbbK9SnI0Cll
-	 BChWGHNeioGBa+lykJHOhOtsXJdKR3I/82v2d7v2wbjdokJII6gMNg02CJvr14K3X2
-	 vXudg3D76YfWP44rVLzOJpOPXJ8hAgaDK7FssUUSg27VNJYs2Em63QFiPPQWi36YJA
-	 F0/Fme9iSArLg==
-Date: Fri, 23 Feb 2024 14:24:42 +0000
-From: Lee Jones <lee@kernel.org>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Juergen Borleis <jbe@pengutronix.de>, linux-leds@vger.kernel.org,
-	Pavel Machek <pavel@ucw.cz>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH] leds: trigger/tty: Use led_set_brightness() to support
- all use cases
-Message-ID: <20240223142442.GB1666215@google.com>
-References: <20210503092542.14497-1-jbe@pengutronix.de>
- <20230109084320.nj7erwh3eu4jlw7y@pengutronix.de>
- <20240223142218.GA1666215@google.com>
+	s=arc-20240116; t=1708698279; c=relaxed/simple;
+	bh=vU/gHBg0qpmT0iQuaGkMnmP+a+3sqFwnNDs8zgNBfOA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=XAqgzWLnVLESk+AztEtTxdSMhVJnO/m6eZzydgNiRZqrxN4/OxvH5uub+dfw2IwbtLBqy9pjGepVU4LJ+a5EFzK30X7hd8h1eAqHLi4YpkdqCJlYFarIDE1cXAoMTJgx82Tb7UfwOAwwQi1Df5qbjV/gC5ZDQiKl9YsaY9IGwU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19786C433F1;
+	Fri, 23 Feb 2024 14:24:38 +0000 (UTC)
+Date: Fri, 23 Feb 2024 09:26:30 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Oleg Nesterov <oleg@redhat.com>, wenyang.linux@foxmail.com, Masami
+ Hiramatsu <mhiramat@kernel.org>, Ingo Molnar <mingo@kernel.org>, Mel Gorman
+ <mgorman@techsingularity.net>, Peter Zijlstra <peterz@infradead.org>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] coredump debugging: add a tracepoint to report the
+ coredumping
+Message-ID: <20240223092630.49b9d367@gandalf.local.home>
+In-Reply-To: <776b842b-b19f-44bf-bc34-ac756fce7466@efficios.com>
+References: <tencent_5CD40341EC9384E9B7CC127EA5CF2655B408@qq.com>
+	<20240217104924.GB10393@redhat.com>
+	<20240219112926.77ac16f8@gandalf.local.home>
+	<20240219170038.GA710@redhat.com>
+	<20240219122825.31579a1e@gandalf.local.home>
+	<776b842b-b19f-44bf-bc34-ac756fce7466@efficios.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240223142218.GA1666215@google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, 23 Feb 2024, Lee Jones wrote:
+On Mon, 19 Feb 2024 13:01:16 -0500
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
-> On Mon, 09 Jan 2023, Uwe Kleine-König wrote:
-> 
-> > Hello Jürgen,
-> > 
-> > On Mon, May 03, 2021 at 11:25:42AM +0200, Juergen Borleis wrote:
-> > > Using led_set_brightness_sync() only works for LEDs which are connected
-> > > via some kind of external bus like I²C or SPI. But it doesn't work for
-> > > the simple use case of directly connected LEDs via GPIOs.
-> > > Because this function only honors the led_classdev::brightness_set_blocking
-> > > callback. But the LED-GPIO driver registers the
-> > > led_classdev::brightness_set member if the GPIO can be modified directly
-> > > and thus, TTY triggers fail silently with -ENOTSUPP.
-> > > 
-> > > With the previously used led_set_brightness() it works for both use cases.
-> > > This function first checks for the simple case where the GPIO can be changed
-> > > without additional overhead, and if it fails, does the modification via a
-> > > workqueue.
-> > > 
-> > > Signed-off-by: Juergen Borleis <jbe@pengutronix.de>
-> > > ---
-> > >  drivers/leds/trigger/ledtrig-tty.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/leds/trigger/ledtrig-tty.c b/drivers/leds/trigger/ledtrig-tty.c
-> > > index f62db7e..af61281 100644
-> > > --- a/drivers/leds/trigger/ledtrig-tty.c
-> > > +++ b/drivers/leds/trigger/ledtrig-tty.c
-> > > @@ -122,12 +122,12 @@ static void ledtrig_tty_work(struct work_struct *work)
-> > >  
-> > >  	if (icount.rx != trigger_data->rx ||
-> > >  	    icount.tx != trigger_data->tx) {
-> > > -		led_set_brightness_sync(trigger_data->led_cdev, LED_ON);
-> > > +		led_set_brightness(trigger_data->led_cdev, LED_ON);
-> > >  
-> > >  		trigger_data->rx = icount.rx;
-> > >  		trigger_data->tx = icount.tx;
-> > >  	} else {
-> > > -		led_set_brightness_sync(trigger_data->led_cdev, LED_OFF);
-> > > +		led_set_brightness(trigger_data->led_cdev, LED_OFF);
-> > >  	}
-> > 
-> > This problem still exists, right?
-> > 
-> > I think the right thing here is to call led_set_brightness_nosleep()
-> > however.
-> > 
-> > Having said that, I think there are too many variants of
-> > led_set_brightness which makes it difficult to pick the right one.
-> > 
-> > (I'm aware of
-> >  - led_set_brightness_nosleep
-> >  - led_set_brightness_nopm
-> >  - led_set_brightness_sync
-> >  - led_set_brightness
-> > 
-> > and there are a few more static variants in led-core.c
-> > (__led_set_brightness, __led_set_brightness_blocking,
-> > set_brightness_delayed).)
-> 
-> This patch (and this response) was never sent to me.
-> 
-> Not a great deal I can do if I'm not aware of it.
+> Between "sched_process_exit" and "sched_process_free", the task can still be
+> observed by a trace analysis looking at sched and signal events: it's a zombie at
+> that stage.
 
-Starting to think I've gone too far back in the LEDs ML's history? =;-)
+Looking at the history of this tracepoint, it was added in 2008 by commit
+0a16b60758433 ("tracing, sched: LTTng instrumentation - scheduler").
+Hmm, LLTng? I wonder who the author was?
 
--- 
-Lee Jones [李琼斯]
+  Author: Mathieu Desnoyers <mathieu.desnoyers@polymtl.ca>
+
+ :-D
+
+Mathieu, I would say it's your call on where the tracepoint can be located.
+You added it, you own it!
+
+-- Steve
 
