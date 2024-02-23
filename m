@@ -1,111 +1,123 @@
-Return-Path: <linux-kernel+bounces-78774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC80F8618A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:02:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8E0D8618B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:03:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 771341F25FBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:02:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BA161F25D9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:03:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DB65129A8E;
-	Fri, 23 Feb 2024 17:01:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E261132483;
+	Fri, 23 Feb 2024 17:02:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XYzNY+5N"
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="bWlCKrvA"
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1728D12BE99
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 17:01:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A2D12FB23;
+	Fri, 23 Feb 2024 17:02:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708707708; cv=none; b=sar8NuEWQ3buKlSiQ5WnxJDZFCgH6HhYgCktuaGj2JI41Tsll0O0IA/jzUS+L0N1Dpyw8KgO/2y2L9xmKLMphpkbwzNuM40553C77VL3OAxwmIVttn4P7KKO2DDuerbXdpFiJKsg+uJKxeHXqjPRKq1/BR/YHWwAlM/1rWJMawA=
+	t=1708707760; cv=none; b=Q1SWYrJQ6qjoD01gUxEwUs1ToAxOY2ipmZxZuY5KMxWhJeTUzq6OcbLdim72gJTY7z1e3D7UeZ4vgKq2+cv/m+YKOJDMj+PzeKfAMNO6mxKGcqYp0zUAzElZfyFvd7T+bIvIP8uPDKUWJKqkntkut9QDcEaGM2zW1y6CDKDo7/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708707708; c=relaxed/simple;
-	bh=x9++INN2m+gpmUh/KCO+PSvjrYfe9RJFSkVt3950PsA=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Z8aDoQ9zOEg8jp4uf9DBGXMxj3/J+MCPyQwqjRUyBC7u7oDpX+Ywqtr16EveOZinFpS8UuCZh0/NUpmxjcyioQmDELRB3D50sNoq2wQTe2zABv3cFtVL9zbx7v+0zG3iiyf0ulYLygbMBhXtnl1DXziTSrHzzfToF/bNWcVhSh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XYzNY+5N; arc=none smtp.client-ip=209.85.215.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5cfc2041cdfso759535a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 09:01:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708707706; x=1709312506; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pfc17/TKkSDYgpRi5ALTWEPHfW2uf7bskubXgF1ZJyM=;
-        b=XYzNY+5N9nDJwUBFHJ59wyzsY5acfJX/77wylFZqBcvmkBkeuLWfpsTkVO627VN/k7
-         8qhGqEK5DnMb21wTWOxk42QNwALjarm7cAIGJVz/NoAV2yrbybNK9M1PGKclu/RlkiBA
-         MiOD2u+LG1vIzDmYLEgfq3f+SlWY6lm5fsSxg4ZtG72oTUo9yMkoVnWsl9R2znh8+vlZ
-         kJf0ROc3egeebelhdlu/EgLbFNrN8E0vH8sn7q1Kbnhd1Ix9jhncccIcdtm5SL/4Iy+L
-         0Dt4wrIFe0Q0Ibs2EJ6FkZlsqnHO6oeSM2i0lHnj3k9GXIrZWXdt8TXGVxoClmuXqGUm
-         ix3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708707706; x=1709312506;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pfc17/TKkSDYgpRi5ALTWEPHfW2uf7bskubXgF1ZJyM=;
-        b=W9YCt7fnkE+uqAL0hwXdk/ZTTGf4+lfTpLl6lvj6vsY+GyOJxkmumrH9Gt8WFhNpse
-         ugXulpyfzNC6/G9u4OtBlpy6FpOY444Crd4vxq5nOi43KJzYMPs/G12mkA/76k5hSND/
-         UhUQOZqF2Np98jIVVcyaw4PrAVluJPxfsUTrubbvB7owJWwc2q9Ppi8zaVpGopAJGRcw
-         pXLGdzcLI7zI19vBjtjR9u8S1GyxWZvC1r+xnPHPXvyMwoAo9A3SNlGQnLFwCYiibdpb
-         zvKKF2mSX5025jhgZ1x4vbOdnsaGp43R/8fnapfADcmBZv0qrrd95iWUq5aSKXwu0+bC
-         v3Lw==
-X-Gm-Message-State: AOJu0YyTb/N4GuhPdyEulF6+bDBQZGKx4uA0QLVpFrnFq6rGSTVp9UUW
-	N3SD9hvXSJhPLkCLmtz2vJHhOxMkl9+iiZQ4CS/b+vUCAmib6tfBSXALX6FSGJJrlio/6t+xvDb
-	zjA==
-X-Google-Smtp-Source: AGHT+IHN4bcZqxgjuf+nU1Zula5l2c65fnndy7t0fwNKOatXmncYBrpJyaX50gAvLeG5jHGHzeWmn+kw+xU=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a02:995:b0:5ca:43c7:a67 with SMTP id
- cl21-20020a056a02099500b005ca43c70a67mr997pgb.9.1708707706441; Fri, 23 Feb
- 2024 09:01:46 -0800 (PST)
-Date: Fri, 23 Feb 2024 09:01:44 -0800
-In-Reply-To: <43b9125f-35d4-4368-8783-a41799b11c21@redhat.com>
+	s=arc-20240116; t=1708707760; c=relaxed/simple;
+	bh=MLId+vpL1GJSYnk9r4V10bG6KRC9aNji3+0kQGieFqg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=OmrHgiVFVdw7YInHRtDv6Pn9HWl3msVzWPp+yk65OiS2bKi/9oBsTA1Xg4PnZ20ZCt3Q5DVig9dQHfnm1zvpQ29wHL2uuRcoDIOe36xhiigMsycKE4PdzS4+PQ0M4yAxri6njCTRyLqPH5KDLBXpgT34mhU8ArH0EmS0GRyqga4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=bWlCKrvA; arc=none smtp.client-ip=67.231.149.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41N6HREp027836;
+	Fri, 23 Feb 2024 11:02:06 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	PODMain02222019; bh=x/AtCItlvRqeTztsKy5EsHh5og0itw6wNDcPMUzLjho=; b=
+	bWlCKrvAeBVO4Ssmi/QxqKGTXiqcqBTnYxBFp3Gb7KV51QPwLvmCu1Choq/DX837
+	1gsatA9mcK2riPDaBdjbNdNoJwv4tD7mTeQZh0FeZ3vhWZQDpCbi7ciylpaNW2Le
+	Tm0/hRthSKWXkTy//LaLAt6Qgpmb+FCNptV/+gFbwQELQXmviypneXUPWV5RW0DP
+	dASxgw5iFWmHA+6CBEBbb6ejlpC0gFW0NpFy0+woJCD/qmigeNd8sffXxbEa8HRq
+	AnboIH7irKiwAKU6aUPMlASwci6ttZ4TPG5J0W6ZOJ1gFFyC8OJC7xgAesjHyPar
+	F2DHavGgqai6nSHlrYomKA==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3wd207mbqm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 Feb 2024 11:02:05 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 23 Feb
+ 2024 17:02:03 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40 via Frontend Transport; Fri, 23 Feb 2024 17:02:03 +0000
+Received: from [198.90.208.18] (ediswws06.ad.cirrus.com [198.90.208.18])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 6F06F820243;
+	Fri, 23 Feb 2024 17:02:03 +0000 (UTC)
+Message-ID: <956f2b88-8b52-45b3-a27d-fa8e75a02642@opensource.cirrus.com>
+Date: Fri, 23 Feb 2024 17:02:03 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240223104009.632194-1-pbonzini@redhat.com> <20240223104009.632194-5-pbonzini@redhat.com>
- <ZdjCpX4LMCCyYev9@google.com> <43b9125f-35d4-4368-8783-a41799b11c21@redhat.com>
-Message-ID: <ZdjPeKDITWoVre6o@google.com>
-Subject: Re: [PATCH v2 04/11] KVM: SEV: publish supported VMSA features
-From: Sean Christopherson <seanjc@google.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com, 
-	aik@amd.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 6/6] ASoC: cs-amp-lib: Add KUnit test for calibration
+ helpers
+Content-Language: en-GB
+To: Mark Brown <broonie@kernel.org>
+CC: <tiwai@suse.com>, <linux-sound@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>
+References: <20240223153910.2063698-1-rf@opensource.cirrus.com>
+ <20240223153910.2063698-7-rf@opensource.cirrus.com>
+ <ZdjMIVYp7Qb/Tt9d@finisterre.sirena.org.uk>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <ZdjMIVYp7Qb/Tt9d@finisterre.sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-GUID: CnArif1KVPkqp-jNYyI0ptCu1_Z1L7YN
+X-Proofpoint-ORIG-GUID: CnArif1KVPkqp-jNYyI0ptCu1_Z1L7YN
+X-Proofpoint-Spam-Reason: safe
 
-On Fri, Feb 23, 2024, Paolo Bonzini wrote:
-> On 2/23/24 17:07, Sean Christopherson wrote:
-> > > diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> > > index f760106c31f8..53e958805ab9 100644
-> > > --- a/arch/x86/kvm/svm/sev.c
-> > > +++ b/arch/x86/kvm/svm/sev.c
-> > > @@ -59,10 +59,12 @@ module_param_named(sev_es, sev_es_enabled, bool, 0444);
-> > >   /* enable/disable SEV-ES DebugSwap support */
-> > >   static bool sev_es_debug_swap_enabled = true;
-> > >   module_param_named(debug_swap, sev_es_debug_swap_enabled, bool, 0444);
-> > > +static u64 sev_supported_vmsa_features;
-> > >   #else
-> > >   #define sev_enabled false
-> > >   #define sev_es_enabled false
-> > >   #define sev_es_debug_swap_enabled false
-> > > +#define sev_supported_vmsa_features 0
-> > 
-> > Ok, I've reached my breaking point.  Compiling sev.c for CONFIG_KVM_AMD_SEV=n is
-> > getting untenable.  Splattering #ifdefs _inside_ SEV specific functions is weird
-> > and confusing.
+On 23/02/2024 16:47, Mark Brown wrote:
+> On Fri, Feb 23, 2024 at 03:39:10PM +0000, Richard Fitzgerald wrote:
 > 
-> Ok, I think in some cases I prefer stubs but I'll weave your 4 patches in
-> v3.
+>> +config SND_SOC_CS_AMP_LIB_TEST
+>> +	tristate "KUnit test for Cirrus Logic cs-amp-lib"
+>> +	depends on ACPI || COMPILE_TEST || KUNIT
+> 
+> Should this not depend unconditionally on KUNIT rather than KUNIT or
+> some other stuff?  ie
+> 
+> 	depends on ACPI || COMPILE_TEST
+> 	depends on KUNIT
+> 
+> or equivalent.
+> 
 
-No problem, I don't have a strong preference.  I initially added stubs instead of
-the IS_ENABLED().  The main reason I switched is when I realized that sev_set_cpu_caps()
-*cleared* capabilities, and so decided it would be safer to have a separate patch
-that effectively stubbed out the global SEV calls.
+Now I look at it again, it's not correct. It's the ACPI || COMPILE_TEST
+that is bogus.
+
+>> +#define TYPESAFE_ACTIVATE_STATIC_STUB_PTR(test, fn_ptr, replacement_fn)		\
+>> +	do {									\
+>> +		typecheck_fn(typeof(fn_ptr), replacement_fn);			\
+>> +		__kunit_activate_static_stub(test, fn_ptr, replacement_fn);	\
+>> +	} while (0)
+> 
+> Should this be somewhere more generic in the kunit headers?
+
+Damn, I meant to change this. I did a patch a while ago to fix
+kunit_activate_static_stub() so that it worked but it takes a really
+long time for kunit patches to end up in the mainline kernel. Hence this
+was a temporary workaround. I noticed my fix has gone in at last but I
+forgot to remove this workaround.
+
+Can you skip this patch and take the others (assuming you are happy with
+them) and I'll fixup and resubmit this test later.
 
