@@ -1,197 +1,143 @@
-Return-Path: <linux-kernel+bounces-77918-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1858860C23
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:21:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1760860C2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:24:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36E0A1F214C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:21:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F044C1C24815
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:24:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D07D22071;
-	Fri, 23 Feb 2024 08:20:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0975E18E3F;
+	Fri, 23 Feb 2024 08:23:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="bYZ3AfVe"
-Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="q9qWpI5H"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 599DD18AEE
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 08:20:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C140718E0E;
+	Fri, 23 Feb 2024 08:23:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708676425; cv=none; b=XBziZ3lQ0MmJjFyMotjaK0zcE8P2cwlXFWjzYjJiOUjTcWiUhbRM/PjhbnO/McOzeh+OPuSEWrI3/lXbq/3deOBR3Ze9I+n42TJc0t5Ius4HlkeviAujTpINRRdhuf5b32OC/SzgKzbYb4XvDM+RDMiQOotsZ1cy/8EMFtIkGLA=
+	t=1708676618; cv=none; b=MpLjVrbGTDkkjMYlpGNcIAVwhHZjanx4zaqS6W1/tx7BZsZmkUeAe9U20T7HW8Qp7Xxl0KtKiJX/Fn8HE0UMEYRYZQi7BXSn+ZYvdouSk5cZhQSRcRa8c55ywiYRJh83NlgAbsbpVdA0OiDv2WlrEiz5W5CwlUovzbmrtrfLl14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708676425; c=relaxed/simple;
-	bh=HeyPgo+8UCVKlR0pSsRdYja39it6FmxGSMN3doO156Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KJpsf/O6ZzPKEjqBbBvUY2+TLzbyhNZzApt0mCi90V0UIxNIRgnVlBD9noTCR3NMolkl6UMSOmv/Fxx5dpH6c7ePXZr1X2+yJEnm7Sq+NUorLwiKLWguXDO6CjdcVc6O1rn98UVFYmTb/XRewThnfzWZLiQoZE0L7Q6wB3SNUT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=bYZ3AfVe; arc=none smtp.client-ip=195.181.215.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-	t=1708676418; bh=HeyPgo+8UCVKlR0pSsRdYja39it6FmxGSMN3doO156Q=;
-	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
-	b=bYZ3AfVewfQLfkJOtr2NFwdGwxpB2Usry+rr9+yym0SxhK11qNA87fUyvvW/Crx52
-	 Kt/zDGevmVTZsYo4hzZ7qmRBJZkxkUJVi9OgXjIN9kwjkoglf5CsDcyX9RI0QEB8gw
-	 +BKARxyqsdHdcFNhHV6/hRwFibu1BJxygJF1xl7k=
-Date: Fri, 23 Feb 2024 09:20:17 +0100
-From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
-To: Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>
-Cc: Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Samuel Holland <samuel@sholland.org>, dri-devel@lists.freedesktop.org, 
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] drm/sun4i: Fix layer zpos change/atomic modesetting
-Message-ID: <iboaf4yyieqq6yeuu2amwjnwsao3vx7fzeqldhuplx5j6z2zxf@ex57tbxhzzk6>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
-	Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>, Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Samuel Holland <samuel@sholland.org>, dri-devel@lists.freedesktop.org, 
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
-References: <20240216190430.1374132-1-megi@xff.cz>
- <20240216190430.1374132-4-megi@xff.cz>
- <inuhwnlexpt6dpre4uailtvytjhms4uqeerzehbntczurhcxol@fc4nvkdwffdd>
- <2448947.jE0xQCEvom@jernej-laptop>
+	s=arc-20240116; t=1708676618; c=relaxed/simple;
+	bh=3OxgDd9cbkEjYVNolmPaiSfI2EX9hJKQ7iCEXmwarFw=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type:To:CC; b=OTElnbQAkMew9wNT7XNCC66udZJidCGyNpb3ATOJnc24AoaN7+YJ6gapaKabtIOYlaPHR70wbQkrvbueE6DFQO7DtkqsZuSRE7P/DMDnMS9y92HUv2nvTTJ6j01e5fj2harnB0E3qRrZk3h5SnP16vFBmgs23VPi9zraaJYSq/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=q9qWpI5H; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41N8NBSk119092;
+	Fri, 23 Feb 2024 02:23:11 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1708676591;
+	bh=jGkKLoODd8kkmh8k8NNJQd7ECjuwCflIUSryq6pNBTU=;
+	h=From:Subject:Date:To:CC;
+	b=q9qWpI5HstvUQoW/yzMLS8zvxpPBDA33Cx3NGNHWX1/ZT80CtG6hrMQoKW0cgoBZh
+	 zKbALsn3f1HyHQohEyzcCc33kyMbzncd5XzDjnY9NTkVRx+r/RSPLH4etJpUGAfXbM
+	 1mp15Y1lIvVCJLnNyV94JguIO/JexfUbpte7tKOQ=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41N8NBu2032260
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 23 Feb 2024 02:23:11 -0600
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 23
+ Feb 2024 02:23:11 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 23 Feb 2024 02:23:11 -0600
+Received: from localhost (jluthra.dhcp.ti.com [172.24.227.217])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41N8NA5R023178;
+	Fri, 23 Feb 2024 02:23:10 -0600
+From: Jai Luthra <j-luthra@ti.com>
+Subject: [PATCH 0/2] media: ti,cadence: Fixes for CSI2RX
+Date: Fri, 23 Feb 2024 13:53:00 +0530
+Message-ID: <20240223-csi_fixes-v1-0-c7eda7a4a852@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2448947.jE0xQCEvom@jernej-laptop>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAORV2GUC/x3KQQqAIBBA0avIrBPUiqSrREToWLOxcCAC8e4NL
+ R//V2AshAyzqlDwIaYrC2ynIJx7PlBTFIMzbjDO9TowbYleZD3ZGNNovY3Jg/x3wT/IvqytfQk
+ aYyJbAAAA
+To: Maxime Ripard <mripard@kernel.org>,
+        Mauro Carvalho Chehab
+	<mchehab@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Jack Zhu
+	<jack.zhu@starfivetech.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Vaishnav Achath <vaishnav.a@ti.com>,
+        Tomi Valkeinen
+	<tomi.valkeinen@ideasonboard.com>
+CC: <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Julien
+ Massot" <julien.massot@collabora.com>,
+        Changhuang Liang
+	<Changhuang.liang@starfivetech.com>,
+        Jai Luthra <j-luthra@ti.com>, "Pratyush
+ Yadav" <p.yadav@ti.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1237; i=j-luthra@ti.com;
+ h=from:subject:message-id; bh=3OxgDd9cbkEjYVNolmPaiSfI2EX9hJKQ7iCEXmwarFw=;
+ b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBl2FXrA0gW2mAiuq61kVbNeLhxIKM/SguNr3ZJh
+ Guc0QaDTyeJAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZdhV6wAKCRBD3pH5JJpx
+ RSHfEACDNTzRaUYLwLWhh6HN/CsHUoLH5tFKb2vuIzD60BlP2+XIWlFB5bMcSdOlaEgW1EPtWrl
+ 8rRE93Ic3xZuQfnRHNaPj/KnC++R5g+fGRYU4jjU+45b7GPLNfHGqX3imP+zt+jRv1IiQnlmGdi
+ vlSVmV+4RyNxw3dpK276g6aE1Zkmk+QwIDPtJduDU73WjkbU9DcQYLcgTJq++hF5dzRS/wQXmOT
+ p50s+DbJizBe0zLjb4Px35f9SI/CGym/RJMhJwj+VMvf7FjeBpKhNedoIBbSk3jBzpWM2joxVUK
+ HpyC43Nqy4MooyLLKjwU8xNTWgg3ytFzlbSaiTzB4DcDD03I9n8kYJIXP+/7LO24EGSkc4T64CP
+ XTg5Y6HK15SMHnKbQxB0u4I7SIVCWEOqL1BtMj/RGGh3J5SJEtZSyWat3O447Pm3hzCF7pDSTi3
+ siLnCok1Y7Zj5Vzev+sZPi5OhvQeQIXktz+QH0jDRlkJsRmU1wCeRzLm5lG8NkuNN1Bjwevxu10
+ TKFqKpY4jQk3Vc6Rz6zSkdnb1YnKl18DpMNAnTek70JdcEB7XxKkdahlqmEQvliATTgElDDaLSb
+ EnTUyymP4j2Anqq7GbIDbXzhWbktRjCqrIksaXnGlVFSVX3CdWgGA9sOfKamq28zmi9vRjuYtVf
+ Ux6U8aqc+dTX/Vw==
+X-Developer-Key: i=j-luthra@ti.com; a=openpgp;
+ fpr=4DE0D818E5D575E8D45AAFC543DE91F9249A7145
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Thu, Feb 22, 2024 at 09:02:53PM +0100, Jernej Škrabec wrote:
-> Dne sreda, 21. februar 2024 ob 14:45:20 CET je Maxime Ripard napisal(a):
-> > Hi,
-> > 
-> > On Fri, Feb 16, 2024 at 08:04:26PM +0100, Ondřej Jirman wrote:
-> > > From: Ondrej Jirman <megi@xff.cz>
-> > > 
-> > > Identical configurations of planes can lead to different (and wrong)
-> > > layer -> pipe routing at HW level, depending on the order of atomic
-> > > plane changes.
-> > > 
-> > > For example:
-> > > 
-> > > - Layer 1 is configured to zpos 0 and thus uses pipe 0. No other layer
-> > >   is enabled. This is a typical situation at boot.
-> > > 
-> > > - When a compositor takes over and layer 3 is enabled,
-> > >   sun8i_ui_layer_enable() will get called with old_zpos=0 zpos=1, which
-> > >   will lead to incorrect disabling of pipe 0 and enabling of pipe 1.
-> > > 
-> > > What happens is that sun8i_ui_layer_enable() function may disable
-> > > blender pipes even if it is no longer assigned to its layer.
-> > > 
-> > > To correct this, move the routing setup out of individual plane's
-> > > atomic_update into crtc's atomic_update, where it can be calculated
-> > > and updated all at once.
-> > > 
-> > > Remove the atomic_disable callback because it is no longer needed.
-> > > 
-> > > Signed-off-by: Ondrej Jirman <megi@xff.cz>
-> > 
-> > I don't have enough knowledge about the mixers code to comment on your
-> > patch, so I'll let Jernej review it. However, this feels to me like the
-> > pipe assignment is typically the sort of things that should be dealt
-> > with device-wide, and in atomic_check.
-> 
-> In DE2 and DE3.0, you cannot move planes between mixers (crtcs), because each
-> one is hardwired to specific mixer. Movable planes are the feature of DE3.3
-> and one of the pain points for upstreaming the code. Anyway, this commit only
-> addresses current issue of enabling and disabling planes and handling zpos.
-> 
-> In atomic check you can only precalculate final register values, but I don't
-> see any benefit doing that. I think that this code elegantly solves current
-> issue of enabling or disabling wrong plane in certain situations, so:
-> 
-> Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+This series fixes two bugs:
+1. When Cadence CSI2RX is used with an external DPHY controller, fix the
+   programming sequence to configure the DPHY controller before starting
+   streaming on the source
+2. Fix a possible race condition in TI CSI2RX Shim driver when
+   restarting DMA after stalling due to lack of buffers
 
-Thanks for the review.
+These fixes were originally posted in the multi-stream RFC series [1],
+but as these are unrelated and urgent, posting them separately now so
+they can get picked independently.
 
-> Note, if there is new revision, please rewrite blender regmap_update_bits()
-> to regmap_write(). Since there is HW issue with reads, I would like to
-> get rid of regmap_update_bits() calls eventually.
+Test logs with SK-AM62A + OV5640 https://0x0.st/H5pN.txt
 
-BTW as a side note, one observation I made about a year back after some testing
-with a setup like this:
+[1]: https://lore.kernel.org/all/20240222-multistream-v1-0-1837ed916eeb@ti.com/
 
-- PIN photodiode in a black box directed at a display (Pinephone)
-  attached to the oscilloscope
-- GPIO signal routed to another input of the scope
-- sun4i-drm driver modification that toggles the GPIO any number of times so
-  that I can correlate brightness changes as seen by photodiode on the
-  scope with the timing of what's happening in the driver
+Signed-off-by: Jai Luthra <j-luthra@ti.com>
+---
+Jai Luthra (1):
+      media: ti: j721e-csi2rx: Fix races while restarting DMA
 
-is that if you do atomic commit right after receiving the flip event there's
-a high chance that what you're commiting will get displayed right away,
-basically skipping the update from the previous atomic commit.
+Pratyush Yadav (1):
+      media: cadence: csi2rx: configure DPHY before starting source stream
 
-It's very easy to reproduce with a test application that flips between two
-completely white and completely black framebuffers back and forth right
-after flip event. What you see on the display is seemingly random blinking
-pattern: https://megous.com/dl/tmp/c9a286427ce66d80.png when it should be
-a peridic flipping between black and white pixels like this
-https://megous.com/dl/tmp/c085a50ccd387257.png
+ drivers/media/platform/cadence/cdns-csi2rx.c       | 26 ++++++++++++----------
+ .../media/platform/ti/j721e-csi2rx/j721e-csi2rx.c  |  5 ++---
+ 2 files changed, 16 insertions(+), 15 deletions(-)
+---
+base-commit: 33e1d31873f87d119e5120b88cd350efa68ef276
+change-id: 20240223-csi_fixes-71ddf5181df8
 
-This goes away for me when introducing a >150us delay between flip event
-and next atomic commit.
+Best regards,
+-- 
+Jai Luthra <j-luthra@ti.com>
 
-I did a more complex test with a test app that switches between 4 framebuffers
-of decreasing shades of gray, so that the resulting pattern of brightness should
-be a stariwise stepping signal pattern on the scope, along with gpio indicating which
-framebuffer just got commited (by the number of pulses 1-4). What I saw was
-that normally there's a 1 frame delay between commit and the corresponding
-brightness change, but often enough the brightness change is immediate.
-
-I think the hardware indicates a flip (vsync irq) some time before it performs
-the double buffered register update to shadow register for the next frame. So
-sometimes the driver manages to overwrite the values stored during the previous
-commit before they get flipped to shadow registers. Again, intorducing a 150us
-delay between flip event and atomic commit reliably fixes this, and I see
-a perfect stairwise pattern on the scope instead of occasional skipped ahead
-steps.
-
-It seems to me that those 150us are related to display timing.
-
-Vertical blanking cycle on Pinephone lasts about 400us with 45us long vsync
-pulse roughly in the middle. In my observation it seems likely that HW signals
-VSYNC interrupt at the start or end of the VSYNC pulse and flips the double
-buffered HW registers at the end of the blanking cycle, leaving some 150us of
-time in between for a quick atomic commit to still mess up the register settings
-for the upcoming scan out, before they get commited to shadow regs. I don't have
-a way to observe vsync signal on a scope, because it's MIPI-DSI display to
-verify this exactly.
-
-The certain thing is that after vsync interrupt, the double buffered registers
-are not switched, yet. There's still some time left before that happens.
-
-Anyway, just something I'd thought I share that may help us understand this
-HW better. :)
-
-kind regards,
-	o.
-
-> Best regards,
-> Jernej
-> 
-> > 
-> > If I'm talking non-sense, it would be great to mention at least why that
-> > can't be an option in the commit log.
-> > 
-> > Maxime
-> > 
-> 
-> 
-> 
-> 
 
