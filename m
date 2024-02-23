@@ -1,145 +1,136 @@
-Return-Path: <linux-kernel+bounces-78973-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9794861B82
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:23:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A44CD861B9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:28:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F8FAB22344
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:23:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EE6F28B6EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:28:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B2CD12BEA0;
-	Fri, 23 Feb 2024 18:23:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F2C3143C6A;
+	Fri, 23 Feb 2024 18:28:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="daV3PcJz"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="uiEBRAvj";
+	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="oLwsR/0C"
+Received: from mailrelay5-1.pub.mailoutpod2-cph3.one.com (mailrelay5-1.pub.mailoutpod2-cph3.one.com [46.30.211.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4EB21420B8;
-	Fri, 23 Feb 2024 18:23:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C54E5142623
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 18:27:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.211.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708712607; cv=none; b=n2vO6Rb034yXvXNu4dn0Q3G1maqUpncdLyW50+XyzgGqlkCXwSgJBlZp6tPqiGa1Y1uCZpdrwFFIy/Oc56P2gqRwSx527Vu+7QUNpLgICrxaE7yiuTyPdcRczM+gdY+HhnOAoGiF8fyYnvsYQ9MHUTEXafDqd5guBFUmzuqZD0w=
+	t=1708712881; cv=none; b=P897IuJs+HbpIEPrxGhwTWKJc4XkRHlhr4AhHyEM7DVidgBgqoJBJ8vXOZR4iF9tpXT+iaTEh/HrxzVIXO6exGDNDu1l8zACyYbEebvJDFs3Ke0UvxKoZtEjoCc0xSMSULPhywzKvltvei5BDNs1TZ/cA0XIcTBk5TOcRoiCeNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708712607; c=relaxed/simple;
-	bh=u/5mSMo2jLoil9eBiGjHmK9Nu9VBvSjMm+BdCSwUGC8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VgrIGxb0J6BmH9K8nB6THvvFpjAuOUJ584vh5WYPyWWUy1Poec15kFLp5XnZSoXNSj+e+ltxPmlzQ+NVHvQksTwtToTBTzSUdB2AZ0XcTRp3I/mQRe0xZ/L5sMMnNF5ey+QwaOlBT0lRFfYVRZpy0rqToSKE/wuFnJalyCtVjCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=daV3PcJz; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708712606; x=1740248606;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=u/5mSMo2jLoil9eBiGjHmK9Nu9VBvSjMm+BdCSwUGC8=;
-  b=daV3PcJzAWnBQiz0HzMFqKiZK3sxGCKWBhLC5MnpIaWABTyrvPK+mS4s
-   3xl/srchp5AP+lK0mGAlL8/fP8YqYts1hVpf2RbGsV67YXgw4iFVA2gaW
-   /tS9Ixira8HT6X45kH+kQgchBFLjHeit2TJB6utP9j5guNSYJlhtFv8vb
-   LL6w62hlu926Lbdo1MALqZLtJBD5HnROGKY0toGeKrRP3r2uDNHpOrVe+
-   U7VF7aHPP1fHNwHELln+HcomYuChK3UI+CLOi8YawbqhpX/F6MmomoEr5
-   DSLwjsgXL5q0Pni+KhvrwktUXgAlOjBAyV3tjHx58oG1XTQSKl9L7KEnv
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="6858582"
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="6858582"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 10:23:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="10584169"
-Received: from gtkramer-mobl1.amr.corp.intel.com (HELO [10.209.82.163]) ([10.209.82.163])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 10:23:23 -0800
-Message-ID: <05a12c0b-e3e3-4549-b02e-442e4b48a86d@intel.com>
-Date: Fri, 23 Feb 2024 10:23:21 -0800
+	s=arc-20240116; t=1708712881; c=relaxed/simple;
+	bh=D1QGXZw6sUZ778PeZk9AsWl7LhHjAPoaCloTBO103w8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KD1MkIrOpU8u8dPZDbre3H2OwnCKj9Z81ElyyasL5y8RJREPlotQQWGwkLtJChDB3b1SmJ0kY6yYfNXwKjyn7ycUga7bQQVj+MVGVsY3HVxdY+lc8/06a21MLWOeesz9x0Tdbr5Md2c7Z0dcoQ0DGqbZSALzkjvyJMC+qOPkNIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org; spf=none smtp.mailfrom=ravnborg.org; dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=uiEBRAvj; dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=oLwsR/0C; arc=none smtp.client-ip=46.30.211.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=ravnborg.org; s=rsa2;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=B6EjNaWdiktqEuLncaKVE82jxx+NKh1TlSMryRmLWUA=;
+	b=uiEBRAvjxOsaJwk90DFlIOWSmTME7MH4GDlWu5J/vG1Okq9cmza6UGoBlXeNS3sLDcVsBLxHAADjD
+	 e2ZxhAQj4u0cQOdBAuCjB6Un0IEmUZDOm8lciiu7GhoQvittFnnYTZZN1nqSLQaJvZDcEo/XsU/EeY
+	 9jhdNMSD8/Nidu4uaxLuUdRBrtF1MI6JyOCLP+iLcglu6K+1WpQxA+E3YZZHzkGjCfZA9JD+RRUDeg
+	 riAheo4PZlQzGtOdPfZ+6di84OcIaib+qjrbHiHIUBXxppG+GEZlylwj1TymX1asVXMUKAVI6/fFoN
+	 eK84IcYM75uHLBRpWw/gbRdBjFQF/gg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+	d=ravnborg.org; s=ed2;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=B6EjNaWdiktqEuLncaKVE82jxx+NKh1TlSMryRmLWUA=;
+	b=oLwsR/0Cr6RWTYv5L83UN2z/haUi/To0reQmcJ4qbMung9oH9COqad2IyStuvbuQoBprzANSv0l3C
+	 CW/4520DQ==
+X-HalOne-ID: 19483c2d-d279-11ee-ad41-657a30c718c6
+Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
+	by mailrelay5.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
+	id 19483c2d-d279-11ee-ad41-657a30c718c6;
+	Fri, 23 Feb 2024 18:26:47 +0000 (UTC)
+Date: Fri, 23 Feb 2024 19:26:46 +0100
+From: Sam Ravnborg <sam@ravnborg.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Helge Deller <deller@gmx.de>, Guo Ren <guoren@kernel.org>,
+	sparclinux@vger.kernel.org,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] sparc: vdso: Disable UBSAN instrumentation
+Message-ID: <20240223182646.GA2825372@ravnborg.org>
+References: <20240223165942.work.950-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 16/20] famfs: Add fault counters
-Content-Language: en-US
-To: John Groves <John@Groves.net>, John Groves <jgroves@micron.com>,
- Jonathan Corbet <corbet@lwn.net>, Dan Williams <dan.j.williams@intel.com>,
- Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- Matthew Wilcox <willy@infradead.org>, linux-cxl@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev
-Cc: john@jagalactic.com, Dave Chinner <david@fromorbit.com>,
- Christoph Hellwig <hch@infradead.org>, dave.hansen@linux.intel.com,
- gregory.price@memverge.com
-References: <cover.1708709155.git.john@groves.net>
- <43245b463f00506016b8c39c0252faf62bd73e35.1708709155.git.john@groves.net>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
- oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
- 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
- ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
- VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
- iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
- c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
- pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
- ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
- QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzUVEYXZpZCBDaHJp
- c3RvcGhlciBIYW5zZW4gKEludGVsIFdvcmsgQWRkcmVzcykgPGRhdmUuaGFuc2VuQGludGVs
- LmNvbT7CwXgEEwECACIFAlQ+9J0CGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEGg1
- lTBwyZKwLZUP/0dnbhDc229u2u6WtK1s1cSd9WsflGXGagkR6liJ4um3XCfYWDHvIdkHYC1t
- MNcVHFBwmQkawxsYvgO8kXT3SaFZe4ISfB4K4CL2qp4JO+nJdlFUbZI7cz/Td9z8nHjMcWYF
- IQuTsWOLs/LBMTs+ANumibtw6UkiGVD3dfHJAOPNApjVr+M0P/lVmTeP8w0uVcd2syiaU5jB
- aht9CYATn+ytFGWZnBEEQFnqcibIaOrmoBLu2b3fKJEd8Jp7NHDSIdrvrMjYynmc6sZKUqH2
- I1qOevaa8jUg7wlLJAWGfIqnu85kkqrVOkbNbk4TPub7VOqA6qG5GCNEIv6ZY7HLYd/vAkVY
- E8Plzq/NwLAuOWxvGrOl7OPuwVeR4hBDfcrNb990MFPpjGgACzAZyjdmYoMu8j3/MAEW4P0z
- F5+EYJAOZ+z212y1pchNNauehORXgjrNKsZwxwKpPY9qb84E3O9KYpwfATsqOoQ6tTgr+1BR
- CCwP712H+E9U5HJ0iibN/CDZFVPL1bRerHziuwuQuvE0qWg0+0SChFe9oq0KAwEkVs6ZDMB2
- P16MieEEQ6StQRlvy2YBv80L1TMl3T90Bo1UUn6ARXEpcbFE0/aORH/jEXcRteb+vuik5UGY
- 5TsyLYdPur3TXm7XDBdmmyQVJjnJKYK9AQxj95KlXLVO38lczsFNBFRjzmoBEACyAxbvUEhd
- GDGNg0JhDdezyTdN8C9BFsdxyTLnSH31NRiyp1QtuxvcqGZjb2trDVuCbIzRrgMZLVgo3upr
- MIOx1CXEgmn23Zhh0EpdVHM8IKx9Z7V0r+rrpRWFE8/wQZngKYVi49PGoZj50ZEifEJ5qn/H
- Nsp2+Y+bTUjDdgWMATg9DiFMyv8fvoqgNsNyrrZTnSgoLzdxr89FGHZCoSoAK8gfgFHuO54B
- lI8QOfPDG9WDPJ66HCodjTlBEr/Cwq6GruxS5i2Y33YVqxvFvDa1tUtl+iJ2SWKS9kCai2DR
- 3BwVONJEYSDQaven/EHMlY1q8Vln3lGPsS11vSUK3QcNJjmrgYxH5KsVsf6PNRj9mp8Z1kIG
- qjRx08+nnyStWC0gZH6NrYyS9rpqH3j+hA2WcI7De51L4Rv9pFwzp161mvtc6eC/GxaiUGuH
- BNAVP0PY0fqvIC68p3rLIAW3f97uv4ce2RSQ7LbsPsimOeCo/5vgS6YQsj83E+AipPr09Caj
- 0hloj+hFoqiticNpmsxdWKoOsV0PftcQvBCCYuhKbZV9s5hjt9qn8CE86A5g5KqDf83Fxqm/
- vXKgHNFHE5zgXGZnrmaf6resQzbvJHO0Fb0CcIohzrpPaL3YepcLDoCCgElGMGQjdCcSQ+Ci
- FCRl0Bvyj1YZUql+ZkptgGjikQARAQABwsFfBBgBAgAJBQJUY85qAhsMAAoJEGg1lTBwyZKw
- l4IQAIKHs/9po4spZDFyfDjunimEhVHqlUt7ggR1Hsl/tkvTSze8pI1P6dGp2XW6AnH1iayn
- yRcoyT0ZJ+Zmm4xAH1zqKjWplzqdb/dO28qk0bPso8+1oPO8oDhLm1+tY+cOvufXkBTm+whm
- +AyNTjaCRt6aSMnA/QHVGSJ8grrTJCoACVNhnXg/R0g90g8iV8Q+IBZyDkG0tBThaDdw1B2l
- asInUTeb9EiVfL/Zjdg5VWiF9LL7iS+9hTeVdR09vThQ/DhVbCNxVk+DtyBHsjOKifrVsYep
- WpRGBIAu3bK8eXtyvrw1igWTNs2wazJ71+0z2jMzbclKAyRHKU9JdN6Hkkgr2nPb561yjcB8
- sIq1pFXKyO+nKy6SZYxOvHxCcjk2fkw6UmPU6/j/nQlj2lfOAgNVKuDLothIxzi8pndB8Jju
- KktE5HJqUUMXePkAYIxEQ0mMc8Po7tuXdejgPMwgP7x65xtfEqI0RuzbUioFltsp1jUaRwQZ
- MTsCeQDdjpgHsj+P2ZDeEKCbma4m6Ez/YWs4+zDm1X8uZDkZcfQlD9NldbKDJEXLIjYWo1PH
- hYepSffIWPyvBMBTW2W5FRjJ4vLRrJSUoEfJuPQ3vW9Y73foyo/qFoURHO48AinGPZ7PC7TF
- vUaNOTjKedrqHkaOcqB185ahG2had0xnFsDPlx5y
-In-Reply-To: <43245b463f00506016b8c39c0252faf62bd73e35.1708709155.git.john@groves.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240223165942.work.950-kees@kernel.org>
 
-On 2/23/24 09:42, John Groves wrote:
-> One of the key requirements for famfs is that it service vma faults
-> efficiently. Our metadata helps - the search order is n for n extents,
-> and n is usually 1. But we can still observe gnarly lock contention
-> in mm if PTE faults are happening. This commit introduces fault counters
-> that can be enabled and read via /sys/fs/famfs/...
+Hi Kees,
+
+On Fri, Feb 23, 2024 at 08:59:45AM -0800, Kees Cook wrote:
+> The UBSAN instrumentation cannot work in the vDSO since it is executing
+> in userspace, so disable it in the Makefile. Fixes the build failures
+> such as:
 > 
-> These counters have proved useful in troubleshooting situations where
-> PTE faults were happening instead of PMD. No performance impact when
-> disabled.
+> arch/sparc/vdso/vclock_gettime.c:217: undefined reference to `__ubsan_handle_shift_out_of_bounds'
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Andreas Larsson <andreas@gaisler.com>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: Sam Ravnborg <sam@ravnborg.org>
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: Guo Ren <guoren@kernel.org>
+> Cc: sparclinux@vger.kernel.org
+> ---
+>  arch/sparc/vdso/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/sparc/vdso/Makefile b/arch/sparc/vdso/Makefile
+> index 7f5eedf1f5e0..e8aef2c8ae99 100644
+> --- a/arch/sparc/vdso/Makefile
+> +++ b/arch/sparc/vdso/Makefile
+> @@ -2,6 +2,7 @@
+>  #
+>  # Building vDSO images for sparc.
+>  #
+> +UBSAN_SANITIZE := n
 
-This seems kinda wonky.  Why does _this_ specific filesystem need its
-own fault counters.  Seems like something we'd want to do much more
-generically, if it is needed at all.
+When I read:
 
-Was the issue here just that vm_ops->fault() was getting called instead
-of ->huge_fault()?  Or something more subtle?
+config UBSAN_SANITIZE_ALL
+        bool "Enable instrumentation for the entire kernel"
+        depends on ARCH_HAS_UBSAN_SANITIZE_ALL
+        default y
+        help
+          This option activates instrumentation for the entire kernel.
+          If you don't enable this option, you have to explicitly specify
+          UBSAN_SANITIZE := y for the files/directories you want to check for UB.
+          Enabling this option will get kernel image size increased
+          significantly.
+
+
+I am left with the understanding that only arch's that
+selects ARCH_HAS_UBSAN_SANITIZE_ALL would need to turn off
+UBSAN_SANITIZE.
+
+Are this fix papering over some other bug where we enable
+UBSAN_SANITIZE_ALL for arch's that should not have it,
+or something else that enable it?
+
+	Sam
+
 
