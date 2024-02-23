@@ -1,73 +1,47 @@
-Return-Path: <linux-kernel+bounces-77746-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77747-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 389BD8609A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:53:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FFF78609A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:53:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2CE02886A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:53:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E0B1B26B57
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:53:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A3131097D;
-	Fri, 23 Feb 2024 03:52:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D734211701;
+	Fri, 23 Feb 2024 03:53:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nXIkQapq"
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CCOSiS15"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2E062F25
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 03:52:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91AE5111AE
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 03:52:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708660365; cv=none; b=Dof6ad6J5gXDHM1HFaY1r1bpAzQVqRpOKXk2HNpejLYPmn/Bpm1DUXJ0BQcYLegE0g8wfZ2gN3nJjQgr7UDMLzpDuTrz5tV8wO6YF7C73yp2fUuD0zp+S7kbYtvSyBtHd+5siBNY6NupR5DNggXJ0LFJ04HqEQG90x+42XTgngM=
+	t=1708660379; cv=none; b=f5rx9auY4rIO+6NFYjI3UVvfObGv9zO+MsrgBahcZutopLSNBat30QMH6sh8NWAzQjIyn59jUV2S8N53gA94WeNbr2eYM6I4kq4na7BoDoDG6vFHPd7N4tAZdEX4Rvapjp0TrMsMW2qbh6kXfgAVQYx37SmwDG0mL+ACLrtabzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708660365; c=relaxed/simple;
-	bh=B0RgCkjGQsXNLUjBlf7ZkqjS+RUdrdMzF2FlcZsD3l0=;
+	s=arc-20240116; t=1708660379; c=relaxed/simple;
+	bh=BjpKxR2k21bgbGwIgR3wU99y19kd0NW3z9dbHvZQyIs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FeLZs1eutlmtv95BUjTbjX8SLe3/UI6E1YCL6VzXhHCyRQc0ADiQM6AfmubInbDMaH+KYLpjahgNC8Y+6Al699pN70LKlN6KE7/in0YQu2Ny2Srfv5abj1i1LQEcrdqDAD75KPN5nnSfAXZiWgt01P4Dac5bHxAIibWPNuanqYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nXIkQapq; arc=none smtp.client-ip=209.85.215.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5d8b519e438so387637a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 19:52:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708660363; x=1709265163; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9FniuYRkAhXbyKeSYAOggD5zLt/qSqT9iOeegdh9kyI=;
-        b=nXIkQapqrJXu18qKcPQVzH3FB01Med47G6gtCQyrB2M5bPSK7JqdbGpuuSgfm09GkX
-         W+PQvNGxWCuKZ0zvoV2IBaXm5Fz2lh2TzBHPilonsvJsenKK1k0Xcw1kXVpHRgnYBT4s
-         5TDCKBMBPQNT20DfMOzlonIwhJg9N8nuvuBrISCZj9jCNP/5VaaL2rfpcZqAqvaaCOIK
-         R8Y9+GWDZsHyAsLt9ypdV7x76rFKAbtGOYnnH41l2Y5msvX8XVCqqstBk7m/8V0WbVWR
-         OMgWzwMIliZlr3dIjjug8GI2O7xMfzSCbfC7ZVixXjoSANLuG6GHRGEibp46zdVEwzN6
-         oEjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708660363; x=1709265163;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9FniuYRkAhXbyKeSYAOggD5zLt/qSqT9iOeegdh9kyI=;
-        b=m9bxDzzXjRA48zD38xjG8PQVrW/mkesSI8eN62QsA9zLcUYjq2w5rIMvNVvHwfh8Op
-         A+m80fF9zkgUJL0y5NGhWZ1WwXdN2e/IUS5004FKeTsbZwHdgQ8ndwfyVlXorSB7s+Pb
-         1/rmsn+RqnigZDAbsyNbivIrs+AyAB7KPmnfOPXXEyo9Nob2ARnk+FPV1nAwSWqrnlCR
-         aBlQAZzsz11uChy7KGqguCbbfCO/YU/ASPRxk5WAyEROL0j5drFLrhm+CS+Yc+RY2srX
-         yjZvcYzHTDOZambtc4zbQeAB2CD0zXtbY2mpEWuq1SA1SfrZ5ZxTZ9Y2DXn8abH3/8K+
-         dZtA==
-X-Forwarded-Encrypted: i=1; AJvYcCVKf3Vsb4u87z1NjiNBAK9wal43CYEMoLqHmlcdXhbjp7b6ZJ5AsIcDNIKjRKAHHCGlhUwr1Y0e+eI510plw793PRVt8tu5aOOXwofB
-X-Gm-Message-State: AOJu0YxklBFz6EH7r6UGSwpO+qvhCB4ESneWGrkfY7oSimwmWB0N2sOF
-	uA8zfHE/E88efic87PXJvZtc0OnicaYImt0TtwoZZMX44QxKhmYO
-X-Google-Smtp-Source: AGHT+IHoppTnYk3oiC+FWgyaLIZqeJ5oY7zgPwh/M5fPuSbDhnpOUjZEXE1Wa4NG438vE95Fakor+w==
-X-Received: by 2002:a05:6a20:e594:b0:1a0:decf:eabc with SMTP id ng20-20020a056a20e59400b001a0decfeabcmr746762pzb.23.1708660362554;
-        Thu, 22 Feb 2024 19:52:42 -0800 (PST)
-Received: from [192.168.255.10] ([43.132.141.27])
-        by smtp.gmail.com with ESMTPSA id ca20-20020a17090af31400b00298d203d359sm298126pjb.24.2024.02.22.19.52.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 19:52:41 -0800 (PST)
-Message-ID: <a26c0db2-79a6-4662-9ca6-7e7105cdac03@gmail.com>
-Date: Fri, 23 Feb 2024 11:52:37 +0800
+	 In-Reply-To:Content-Type; b=BOBHf2B5MvSS5GRk+A1an82FLlUhzfHqLKrrkF6RnqQh1yqhtlZiEG3AVUun5/8JPtG/nGCLKVJrejQaN94LY4iWgECoByL5Q5ZuIVcX1/H60/0KP99dSfnLDDToG02Vrdjgs9pOwyisJZEdFbs+ZC1Q/k5tFfwS/GfJzVtxrMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CCOSiS15; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CEE6C433C7;
+	Fri, 23 Feb 2024 03:52:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708660379;
+	bh=BjpKxR2k21bgbGwIgR3wU99y19kd0NW3z9dbHvZQyIs=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=CCOSiS151SH2qfeHhw7Nn1Fs+LWuxXTnlx7NJvhqpvvsdURE1ZupSGXxeyvlRjcJp
+	 H0YUmteJROkgHEhBZq1cwgEIThRrZcD0IoSoA86Kz+6VldfbAmxvroFzB2ssbMPj87
+	 Yp2iWNREU7Hdg/3Or+PUfrnwEWpNR/FwY3085IlEh5Ouu18MmJp+gfYEGVMQ3oXPGD
+	 GGAfDrEtT51HP8VSR3Z5VM4c1oGO69exxH3GZ7vuFaS9CUVc800R5JsmrbRtv+GrBT
+	 sj/6W66HGlSy42TDj4Mr3pmlSBlfa+BWeUI4Lv3iqtToMtIIyR0Ty/byvC8H6hu3M+
+	 whEqokUPK8BgA==
+Message-ID: <a17c2c2d-6bfb-4c5a-8b6d-1e2dd5f80f54@kernel.org>
+Date: Fri, 23 Feb 2024 11:52:54 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,162 +49,493 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 3/5] sched/fair: Rework sched_use_asym_prio() and
- sched_asym_prefer()
+Subject: Re: [f2fs-dev] [PATCH v3 2/2] f2fs: support file pinning for zoned
+ devices
 Content-Language: en-US
-To: Vincent Guittot <vincent.guittot@linaro.org>, alexs@kernel.org
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
- <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
- "open list:SCHEDULER" <linux-kernel@vger.kernel.org>,
- Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-References: <20240210113924.1130448-1-alexs@kernel.org>
- <20240210113924.1130448-3-alexs@kernel.org>
- <CAKfTPtDtf0WhtWV-eO2hMUpP2rDgTgUBPbHZYWMuytYJ9ifU5w@mail.gmail.com>
-From: kuiliang Shi <seakeel@gmail.com>
-In-Reply-To: <CAKfTPtDtf0WhtWV-eO2hMUpP2rDgTgUBPbHZYWMuytYJ9ifU5w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+To: Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc: Jaegeuk Kim <jaegeuk@kernel.org>, Daeho Jeong <daehojeong@google.com>
+References: <20240213173812.1432663-1-daeho43@gmail.com>
+ <20240213173812.1432663-2-daeho43@gmail.com>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <20240213173812.1432663-2-daeho43@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-
-
-On 2/14/24 12:51 AM, Vincent Guittot wrote:
-> On Sat, 10 Feb 2024 at 12:36, <alexs@kernel.org> wrote:
->>
->> From: Alex Shi <alexs@kernel.org>
->>
->> sched_use_asym_prio() and sched_asym_prefer() are used together in various
->> places. Consolidate them into a single function sched_asym().
->>
->> The existing sched_group_asym() is only used when collecting statistics
+On 2024/2/14 1:38, Daeho Jeong wrote:
+> From: Daeho Jeong <daehojeong@google.com>
 > 
-> nit: The existing sched_asym()
-
-Hi Vincent,
-
-Thanks for all reviewing. Do I need to update this for next version? or just fix it during merge?
-
-Alex
-
+> Support file pinning with conventional storage area for zoned devices
 > 
->> of a scheduling group. Rename it as sched_group_asym(), and remove the
->> obsolete function description.
->>
->> This makes the code easier to read. No functional changes.
->>
->> Tested-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
->> Signed-off-by: Alex Shi <alexs@kernel.org>
->> Cc: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
->> Cc: Valentin Schneider <vschneid@redhat.com>
->> Cc: Vincent Guittot <vincent.guittot@linaro.org>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Reviewed-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+> v3: check the hole when migrating blocks for swap.
+>      do not use the remainder of cold pin section.
+> v2: flush previous dirty pages before swapon.
+>      do not re-check for the last extent of swap area.
+>      merge this patch with swap file pinning support patch.
+> ---
+>   fs/f2fs/data.c    | 58 ++++++++++++++++++++++++++-------------
+>   fs/f2fs/f2fs.h    | 17 +++++++++++-
+>   fs/f2fs/file.c    | 24 ++++++++++++-----
+>   fs/f2fs/gc.c      | 14 +++++++---
+>   fs/f2fs/segment.c | 69 +++++++++++++++++++++++++++++++++++++++++------
+>   fs/f2fs/segment.h | 10 +++++++
+>   6 files changed, 154 insertions(+), 38 deletions(-)
 > 
-> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-> 
->> ---
->>  kernel/sched/fair.c | 45 ++++++++++++++++++++-------------------------
->>  1 file changed, 20 insertions(+), 25 deletions(-)
->>
->> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> index 607dc310b355..426eda9eda57 100644
->> --- a/kernel/sched/fair.c
->> +++ b/kernel/sched/fair.c
->> @@ -9746,8 +9746,18 @@ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
->>         return sd->flags & SD_SHARE_CPUCAPACITY || is_core_idle(cpu);
->>  }
->>
->> +static inline bool sched_asym(struct sched_domain *sd, int dst_cpu, int src_cpu)
->> +{
->> +       /*
->> +        * First check if @dst_cpu can do asym_packing load balance. Only do it
->> +        * if it has higher priority than @src_cpu.
->> +        */
->> +       return sched_use_asym_prio(sd, dst_cpu) &&
->> +               sched_asym_prefer(dst_cpu, src_cpu);
->> +}
->> +
->>  /**
->> - * sched_asym - Check if the destination CPU can do asym_packing load balance
->> + * sched_group_asym - Check if the destination CPU can do asym_packing balance
->>   * @env:       The load balancing environment
->>   * @sgs:       Load-balancing statistics of the candidate busiest group
->>   * @group:     The candidate busiest group
->> @@ -9755,34 +9765,21 @@ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
->>   * @env::dst_cpu can do asym_packing if it has higher priority than the
->>   * preferred CPU of @group.
->>   *
->> - * SMT is a special case. If we are balancing load between cores, @env::dst_cpu
->> - * can do asym_packing balance only if all its SMT siblings are idle. Also, it
->> - * can only do it if @group is an SMT group and has exactly on busy CPU. Larger
->> - * imbalances in the number of CPUS are dealt with in find_busiest_group().
->> - *
->> - * If we are balancing load within an SMT core, or at PKG domain level, always
->> - * proceed.
->> - *
->>   * Return: true if @env::dst_cpu can do with asym_packing load balance. False
->>   * otherwise.
->>   */
->>  static inline bool
->> -sched_asym(struct lb_env *env, struct sg_lb_stats *sgs, struct sched_group *group)
->> +sched_group_asym(struct lb_env *env, struct sg_lb_stats *sgs, struct sched_group *group)
->>  {
->> -       /* Ensure that the whole local core is idle, if applicable. */
->> -       if (!sched_use_asym_prio(env->sd, env->dst_cpu))
->> -               return false;
->> -
->>         /*
->> -        * CPU priorities does not make sense for SMT cores with more than one
->> +        * CPU priorities do not make sense for SMT cores with more than one
->>          * busy sibling.
->>          */
->> -       if (group->flags & SD_SHARE_CPUCAPACITY) {
->> -               if (sgs->group_weight - sgs->idle_cpus != 1)
->> -                       return false;
->> -       }
->> +       if ((group->flags & SD_SHARE_CPUCAPACITY) &&
->> +           (sgs->group_weight - sgs->idle_cpus != 1))
->> +               return false;
->>
->> -       return sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu);
->> +       return sched_asym(env->sd, env->dst_cpu, group->asym_prefer_cpu);
->>  }
->>
->>  /* One group has more than one SMT CPU while the other group does not */
->> @@ -9938,7 +9935,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
->>         /* Check if dst CPU is idle and preferred to this group */
->>         if (!local_group && env->sd->flags & SD_ASYM_PACKING &&
->>             env->idle != CPU_NOT_IDLE && sgs->sum_h_nr_running &&
->> -           sched_asym(env, sgs, group)) {
->> +           sched_group_asym(env, sgs, group)) {
->>                 sgs->group_asym_packing = 1;
->>         }
->>
->> @@ -11037,8 +11034,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
->>                  * SMT cores with more than one busy sibling.
->>                  */
->>                 if ((env->sd->flags & SD_ASYM_PACKING) &&
->> -                   sched_use_asym_prio(env->sd, i) &&
->> -                   sched_asym_prefer(i, env->dst_cpu) &&
->> +                   sched_asym(env->sd, i, env->dst_cpu) &&
->>                     nr_running == 1)
->>                         continue;
->>
->> @@ -11908,8 +11904,7 @@ static void nohz_balancer_kick(struct rq *rq)
->>                  * preferred CPU must be idle.
->>                  */
->>                 for_each_cpu_and(i, sched_domain_span(sd), nohz.idle_cpus_mask) {
->> -                       if (sched_use_asym_prio(sd, i) &&
->> -                           sched_asym_prefer(i, cpu)) {
->> +                       if (sched_asym(sd, i, cpu)) {
->>                                 flags = NOHZ_STATS_KICK | NOHZ_BALANCE_KICK;
->>                                 goto unlock;
->>                         }
->> --
->> 2.43.0
->>
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index 828c797cd47c..0c9aa3082fcf 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -3839,25 +3839,34 @@ static int f2fs_migrate_blocks(struct inode *inode, block_t start_blk,
+>   	unsigned int blkofs;
+>   	unsigned int blk_per_sec = BLKS_PER_SEC(sbi);
+>   	unsigned int secidx = start_blk / blk_per_sec;
+> -	unsigned int end_sec = secidx + blkcnt / blk_per_sec;
+> +	unsigned int end_sec;
+>   	int ret = 0;
+>   
+> +	if (!blkcnt)
+> +		return 0;
+> +	end_sec = secidx + (blkcnt - 1) / blk_per_sec;
+> +
+>   	f2fs_down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+>   	filemap_invalidate_lock(inode->i_mapping);
+>   
+>   	set_inode_flag(inode, FI_ALIGNED_WRITE);
+>   	set_inode_flag(inode, FI_OPU_WRITE);
+>   
+> -	for (; secidx < end_sec; secidx++) {
+> +	for (; secidx <= end_sec; secidx++) {
+> +		unsigned int blkofs_end = secidx == end_sec ?
+> +			(blkcnt - 1) % blk_per_sec : blk_per_sec - 1;
+> +
+>   		f2fs_down_write(&sbi->pin_sem);
+>   
+> -		f2fs_lock_op(sbi);
+> -		f2fs_allocate_new_section(sbi, CURSEG_COLD_DATA_PINNED, false);
+> -		f2fs_unlock_op(sbi);
+> +		ret = f2fs_allocate_pinning_section(sbi);
+> +		if (ret) {
+> +			f2fs_up_write(&sbi->pin_sem);
+> +			break;
+> +		}
+>   
+>   		set_inode_flag(inode, FI_SKIP_WRITES);
+>   
+> -		for (blkofs = 0; blkofs < blk_per_sec; blkofs++) {
+> +		for (blkofs = 0; blkofs <= blkofs_end; blkofs++) {
+>   			struct page *page;
+>   			unsigned int blkidx = secidx * blk_per_sec + blkofs;
+>   
+> @@ -3946,27 +3955,34 @@ static int check_swap_activate(struct swap_info_struct *sis,
+>   		nr_pblocks = map.m_len;
+>   
+>   		if ((pblock - SM_I(sbi)->main_blkaddr) & sec_blks_mask ||
+> -				nr_pblocks & sec_blks_mask) {
+> +				nr_pblocks & sec_blks_mask ||
+> +				!f2fs_valid_pinned_area(sbi, pblock)) {
+> +			bool last_extent = false;
+> +
+>   			not_aligned++;
+>   
+>   			nr_pblocks = roundup(nr_pblocks, blks_per_sec);
+>   			if (cur_lblock + nr_pblocks > sis->max)
+>   				nr_pblocks -= blks_per_sec;
+>   
+> +			/* this extent is last one */
+>   			if (!nr_pblocks) {
+> -				/* this extent is last one */
+> -				nr_pblocks = map.m_len;
+> -				f2fs_warn(sbi, "Swapfile: last extent is not aligned to section");
+> -				goto next;
+> +				nr_pblocks = last_lblock - cur_lblock;
+> +				last_extent = true;
+>   			}
+>   
+>   			ret = f2fs_migrate_blocks(inode, cur_lblock,
+>   							nr_pblocks);
+> -			if (ret)
+> +			if (ret) {
+> +				if (ret == -ENOENT)
+> +					ret = -EINVAL;
+>   				goto out;
+> -			goto retry;
+> +			}
+> +
+> +			if (!last_extent)
+> +				goto retry;
+>   		}
+> -next:
+> +
+>   		if (cur_lblock + nr_pblocks >= sis->max)
+>   			nr_pblocks = sis->max - cur_lblock;
+>   
+> @@ -4004,17 +4020,17 @@ static int f2fs_swap_activate(struct swap_info_struct *sis, struct file *file,
+>   				sector_t *span)
+>   {
+>   	struct inode *inode = file_inode(file);
+> +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+>   	int ret;
+>   
+>   	if (!S_ISREG(inode->i_mode))
+>   		return -EINVAL;
+>   
+> -	if (f2fs_readonly(F2FS_I_SB(inode)->sb))
+> +	if (f2fs_readonly(sbi->sb))
+>   		return -EROFS;
+>   
+> -	if (f2fs_lfs_mode(F2FS_I_SB(inode))) {
+> -		f2fs_err(F2FS_I_SB(inode),
+> -			"Swapfile not supported in LFS mode");
+> +	if (f2fs_lfs_mode(sbi) && !f2fs_sb_has_blkzoned(sbi)) {
+> +		f2fs_err(sbi, "Swapfile not supported in LFS mode");
+>   		return -EINVAL;
+>   	}
+>   
+> @@ -4027,13 +4043,17 @@ static int f2fs_swap_activate(struct swap_info_struct *sis, struct file *file,
+>   
+>   	f2fs_precache_extents(inode);
+>   
+> +	ret = filemap_fdatawrite(inode->i_mapping);
+> +	if (ret < 0)
+> +		return ret;
+> +
+>   	ret = check_swap_activate(sis, file, span);
+>   	if (ret < 0)
+>   		return ret;
+>   
+>   	stat_inc_swapfile_inode(inode);
+>   	set_inode_flag(inode, FI_PIN_FILE);
+> -	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
+> +	f2fs_update_time(sbi, REQ_TIME);
+>   	return ret;
+>   }
+>   
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 40eb590ed646..351133a11518 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -3696,7 +3696,8 @@ void f2fs_get_new_segment(struct f2fs_sb_info *sbi,
+>   			unsigned int *newseg, bool new_sec, int dir);
+>   void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
+>   					unsigned int start, unsigned int end);
+> -void f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type, bool force);
+> +int f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type, bool force);
+> +int f2fs_allocate_pinning_section(struct f2fs_sb_info *sbi);
+>   void f2fs_allocate_new_segments(struct f2fs_sb_info *sbi);
+>   int f2fs_trim_fs(struct f2fs_sb_info *sbi, struct fstrim_range *range);
+>   bool f2fs_exist_trim_candidates(struct f2fs_sb_info *sbi,
+> @@ -3870,6 +3871,9 @@ void f2fs_stop_gc_thread(struct f2fs_sb_info *sbi);
+>   block_t f2fs_start_bidx_of_node(unsigned int node_ofs, struct inode *inode);
+>   int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control);
+>   void f2fs_build_gc_manager(struct f2fs_sb_info *sbi);
+> +int f2fs_gc_range(struct f2fs_sb_info *sbi,
+> +		unsigned int start_seg, unsigned int end_seg,
+> +		bool dry_run, unsigned int dry_run_sections);
+>   int f2fs_resize_fs(struct file *filp, __u64 block_count);
+>   int __init f2fs_create_garbage_collection_cache(void);
+>   void f2fs_destroy_garbage_collection_cache(void);
+> @@ -4524,6 +4528,17 @@ static inline bool f2fs_lfs_mode(struct f2fs_sb_info *sbi)
+>   	return F2FS_OPTION(sbi).fs_mode == FS_MODE_LFS;
+>   }
+>   
+> +static inline bool f2fs_valid_pinned_area(struct f2fs_sb_info *sbi,
+> +					  block_t blkaddr)
+> +{
+> +	if (f2fs_sb_has_blkzoned(sbi)) {
+> +		int devi = f2fs_target_device_index(sbi, blkaddr);
+> +
+> +		return !bdev_is_zoned(FDEV(devi).bdev);
+> +	}
+> +	return true;
+> +}
+> +
+>   static inline bool f2fs_low_mem_mode(struct f2fs_sb_info *sbi)
+>   {
+>   	return F2FS_OPTION(sbi).memory_mode == MEMORY_MODE_LOW;
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index 2c13b340c8a0..21c3aa93a8db 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -1733,9 +1733,11 @@ static int f2fs_expand_inode_data(struct inode *inode, loff_t offset,
+>   
+>   		f2fs_down_write(&sbi->pin_sem);
+>   
+> -		f2fs_lock_op(sbi);
+> -		f2fs_allocate_new_section(sbi, CURSEG_COLD_DATA_PINNED, false);
+> -		f2fs_unlock_op(sbi);
+> +		err = f2fs_allocate_pinning_section(sbi);
+> +		if (err) {
+> +			f2fs_up_write(&sbi->pin_sem);
+> +			goto out_err;
+> +		}
+>   
+>   		map.m_seg_type = CURSEG_COLD_DATA_PINNED;
+>   		err = f2fs_map_blocks(inode, &map, F2FS_GET_BLOCK_PRE_DIO);
+> @@ -3185,6 +3187,7 @@ int f2fs_pin_file_control(struct inode *inode, bool inc)
+>   static int f2fs_ioc_set_pin_file(struct file *filp, unsigned long arg)
+>   {
+>   	struct inode *inode = file_inode(filp);
+> +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+>   	__u32 pin;
+>   	int ret = 0;
+>   
+> @@ -3194,7 +3197,7 @@ static int f2fs_ioc_set_pin_file(struct file *filp, unsigned long arg)
+>   	if (!S_ISREG(inode->i_mode))
+>   		return -EINVAL;
+>   
+> -	if (f2fs_readonly(F2FS_I_SB(inode)->sb))
+> +	if (f2fs_readonly(sbi->sb))
+>   		return -EROFS;
+>   
+>   	ret = mnt_want_write_file(filp);
+> @@ -3207,9 +3210,18 @@ static int f2fs_ioc_set_pin_file(struct file *filp, unsigned long arg)
+>   		clear_inode_flag(inode, FI_PIN_FILE);
+>   		f2fs_i_gc_failures_write(inode, 0);
+>   		goto done;
+> +	} else if (f2fs_is_pinned_file(inode)) {
+> +		goto done;
+>   	}
+>   
+> -	if (f2fs_should_update_outplace(inode, NULL)) {
+> +	if (f2fs_sb_has_blkzoned(sbi) && F2FS_HAS_BLOCKS(inode)) {
+> +		ret = -EFBIG;
+> +		goto out;
+> +	}
+> +
+> +	/* Let's allow file pinning on zoned device. */
+> +	if (!f2fs_sb_has_blkzoned(sbi) &&
+> +	    f2fs_should_update_outplace(inode, NULL)) {
+>   		ret = -EINVAL;
+>   		goto out;
+>   	}
+> @@ -3231,7 +3243,7 @@ static int f2fs_ioc_set_pin_file(struct file *filp, unsigned long arg)
+>   	set_inode_flag(inode, FI_PIN_FILE);
+>   	ret = F2FS_I(inode)->i_gc_failures[GC_FAILURE_PIN];
+>   done:
+> -	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
+> +	f2fs_update_time(sbi, REQ_TIME);
+>   out:
+>   	inode_unlock(inode);
+>   	mnt_drop_write_file(filp);
+> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+> index a089a938355b..3ff126316d42 100644
+> --- a/fs/f2fs/gc.c
+> +++ b/fs/f2fs/gc.c
+> @@ -1961,10 +1961,12 @@ void f2fs_build_gc_manager(struct f2fs_sb_info *sbi)
+>   	init_atgc_management(sbi);
+>   }
+>   
+> -static int f2fs_gc_range(struct f2fs_sb_info *sbi,
+> -		unsigned int start_seg, unsigned int end_seg, bool dry_run)
+> +int f2fs_gc_range(struct f2fs_sb_info *sbi,
+> +		unsigned int start_seg, unsigned int end_seg,
+> +		bool dry_run, unsigned int dry_run_sections)
+>   {
+>   	unsigned int segno;
+> +	unsigned int gc_secs = dry_run_sections;
+>   
+>   	for (segno = start_seg; segno <= end_seg; segno += SEGS_PER_SEC(sbi)) {
+>   		struct gc_inode_list gc_list = {
+> @@ -1972,11 +1974,15 @@ static int f2fs_gc_range(struct f2fs_sb_info *sbi,
+>   			.iroot = RADIX_TREE_INIT(gc_list.iroot, GFP_NOFS),
+>   		};
+>   
+> -		do_garbage_collect(sbi, segno, &gc_list, FG_GC, true);
+> +		do_garbage_collect(sbi, segno, &gc_list, FG_GC,
+> +						dry_run_sections == 0);
+>   		put_gc_inode(&gc_list);
+>   
+>   		if (!dry_run && get_valid_blocks(sbi, segno, true))
+>   			return -EAGAIN;
+> +		if (dry_run && dry_run_sections &&
+> +		    !get_valid_blocks(sbi, segno, true) && --gc_secs == 0)
+> +			break;
+>   
+>   		if (fatal_signal_pending(current))
+>   			return -ERESTARTSYS;
+> @@ -2014,7 +2020,7 @@ static int free_segment_range(struct f2fs_sb_info *sbi,
+>   		f2fs_allocate_segment_for_resize(sbi, type, start, end);
+>   
+>   	/* do GC to move out valid blocks in the range */
+> -	err = f2fs_gc_range(sbi, start, end, dry_run);
+> +	err = f2fs_gc_range(sbi, start, end, dry_run, 0);
+>   	if (err || dry_run)
+>   		goto out;
+>   
+> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> index 4e985750c938..0b72c8536ccf 100644
+> --- a/fs/f2fs/segment.c
+> +++ b/fs/f2fs/segment.c
+> @@ -2632,7 +2632,7 @@ static int is_next_segment_free(struct f2fs_sb_info *sbi,
+>    * This function should be returned with success, otherwise BUG
+>    */
+>   static void get_new_segment(struct f2fs_sb_info *sbi,
+> -			unsigned int *newseg, bool new_sec)
+> +			unsigned int *newseg, bool new_sec, bool pinning)
+>   {
+>   	struct free_segmap_info *free_i = FREE_I(sbi);
+>   	unsigned int segno, secno, zoneno;
+> @@ -2650,6 +2650,16 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
+>   		if (segno < GET_SEG_FROM_SEC(sbi, hint + 1))
+>   			goto got_it;
+>   	}
+> +
+> +	/*
+> +	 * If we format f2fs on zoned storage, let's try to get pinned sections
+> +	 * from beginning of the storage, which should be a conventional one.
+> +	 */
+> +	if (f2fs_sb_has_blkzoned(sbi)) {
+> +		segno = pinning ? 0 : max(first_zoned_segno(sbi), *newseg);
+> +		hint = GET_SEC_FROM_SEG(sbi, segno);
+> +	}
+> +
+>   find_other_zone:
+>   	secno = find_next_zero_bit(free_i->free_secmap, MAIN_SECS(sbi), hint);
+>   	if (secno >= MAIN_SECS(sbi)) {
+> @@ -2749,21 +2759,30 @@ static unsigned int __get_next_segno(struct f2fs_sb_info *sbi, int type)
+>    * Allocate a current working segment.
+>    * This function always allocates a free segment in LFS manner.
+>    */
+> -static void new_curseg(struct f2fs_sb_info *sbi, int type, bool new_sec)
+> +static int new_curseg(struct f2fs_sb_info *sbi, int type, bool new_sec)
+>   {
+>   	struct curseg_info *curseg = CURSEG_I(sbi, type);
+>   	unsigned int segno = curseg->segno;
+> +	bool pinning = type == CURSEG_COLD_DATA_PINNED;
+>   
+>   	if (curseg->inited)
+>   		write_sum_page(sbi, curseg->sum_blk, GET_SUM_BLOCK(sbi, segno));
+> +
+>   	segno = __get_next_segno(sbi, type);
+> -	get_new_segment(sbi, &segno, new_sec);
+> +	get_new_segment(sbi, &segno, new_sec, pinning);
+> +	if (new_sec && pinning &&
+> +	    !f2fs_valid_pinned_area(sbi, START_BLOCK(sbi, segno))) {
+> +		__set_free(sbi, segno);
+> +		return -EAGAIN;
+> +	}
+> +
+>   	curseg->next_segno = segno;
+>   	reset_curseg(sbi, type, 1);
+>   	curseg->alloc_type = LFS;
+>   	if (F2FS_OPTION(sbi).fs_mode == FS_MODE_FRAGMENT_BLK)
+>   		curseg->fragment_remained_chunk =
+>   				get_random_u32_inclusive(1, sbi->max_fragment_chunk);
+> +	return 0;
+>   }
+>   
+>   static int __next_free_blkoff(struct f2fs_sb_info *sbi,
+> @@ -3036,7 +3055,7 @@ void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
+>   	f2fs_up_read(&SM_I(sbi)->curseg_lock);
+>   }
+>   
+> -static void __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
+> +static int __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
+>   						bool new_sec, bool force)
+>   {
+>   	struct curseg_info *curseg = CURSEG_I(sbi, type);
+> @@ -3046,21 +3065,49 @@ static void __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
+>   	    !curseg->next_blkoff &&
+>   	    !get_valid_blocks(sbi, curseg->segno, new_sec) &&
+>   	    !get_ckpt_valid_blocks(sbi, curseg->segno, new_sec))
+> -		return;
+> +		return 0;
+>   
+>   	old_segno = curseg->segno;
+> -	new_curseg(sbi, type, true);
+> +	if (new_curseg(sbi, type, true))
+> +		return -EAGAIN;
+>   	stat_inc_seg_type(sbi, curseg);
+>   	locate_dirty_segment(sbi, old_segno);
+> +	return 0;
+>   }
+>   
+> -void f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type, bool force)
+> +int f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type, bool force)
+>   {
+> +	int ret;
+> +
+>   	f2fs_down_read(&SM_I(sbi)->curseg_lock);
+>   	down_write(&SIT_I(sbi)->sentry_lock);
+> -	__allocate_new_segment(sbi, type, true, force);
+> +	ret = __allocate_new_segment(sbi, type, true, force);
+>   	up_write(&SIT_I(sbi)->sentry_lock);
+>   	f2fs_up_read(&SM_I(sbi)->curseg_lock);
+> +
+> +	return ret;
+> +}
+> +
+> +int f2fs_allocate_pinning_section(struct f2fs_sb_info *sbi)
+> +{
+> +	int err;
+> +	bool gc_required = true;
+> +
+> +retry:
+> +	f2fs_lock_op(sbi);
+> +	err = f2fs_allocate_new_section(sbi, CURSEG_COLD_DATA_PINNED, false);
+> +	f2fs_unlock_op(sbi);
+> +
+> +	if (f2fs_sb_has_blkzoned(sbi) && err && gc_required) {
+> +		f2fs_down_write(&sbi->gc_lock);
+> +		f2fs_gc_range(sbi, 0, GET_SEGNO(sbi, FDEV(0).end_blk), true, 1);
+> +		f2fs_up_write(&sbi->gc_lock);
+> +
+> +		gc_required = false;
+> +		goto retry;
+> +	}
+> +
+> +	return err;
+>   }
+>   
+>   void f2fs_allocate_new_segments(struct f2fs_sb_info *sbi)
+> @@ -3426,6 +3473,10 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
+>   	 * new segment.
+>   	 */
+>   	if (segment_full) {
+> +		if (type == CURSEG_COLD_DATA_PINNED &&
+> +		    !((curseg->segno + 1) % sbi->segs_per_sec))
+> +			goto skip_new_segment;
+
+Before we skip allocate new segment for pinned log, how about
+tagging curseg as uninitialized one via curseg->inited = false, and
+curseg->segno = NULL_SEGNO? so that we can avoid
+__f2fs_save_inmem_curseg() to touch this log, and not show incorrect
+segno of pinned log in /sys/kernel/debug/f2fs/status.
+
+Thanks,
+
+> +
+>   		if (from_gc) {
+>   			get_atssr_segment(sbi, type, se->type,
+>   						AT_SSR, se->mtime);
+> @@ -3437,6 +3488,8 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
+>   			stat_inc_seg_type(sbi, curseg);
+>   		}
+>   	}
+> +
+> +skip_new_segment:
+>   	/*
+>   	 * segment dirty status should be updated after segment allocation,
+>   	 * so we just need to update status only one time after previous
+> diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
+> index 60d93a16f2ac..953af072915f 100644
+> --- a/fs/f2fs/segment.h
+> +++ b/fs/f2fs/segment.h
+> @@ -942,3 +942,13 @@ static inline void wake_up_discard_thread(struct f2fs_sb_info *sbi, bool force)
+>   	dcc->discard_wake = true;
+>   	wake_up_interruptible_all(&dcc->discard_wait_queue);
+>   }
+> +
+> +static inline unsigned int first_zoned_segno(struct f2fs_sb_info *sbi)
+> +{
+> +	int devi;
+> +
+> +	for (devi = 0; devi < sbi->s_ndevs; devi++)
+> +		if (bdev_is_zoned(FDEV(devi).bdev))
+> +			return GET_SEGNO(sbi, FDEV(devi).start_blk);
+> +	return 0;
+> +}
 
