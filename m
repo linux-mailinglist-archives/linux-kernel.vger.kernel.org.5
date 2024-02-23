@@ -1,132 +1,140 @@
-Return-Path: <linux-kernel+bounces-78324-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A766A8611EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:48:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE1E78611F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:51:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C0A2B26A15
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:48:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C63B2820B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:51:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D54D17E773;
-	Fri, 23 Feb 2024 12:48:09 +0000 (UTC)
-Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C145C8C0A;
+	Fri, 23 Feb 2024 12:51:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dbw1DeUE"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB3B77E0E8;
-	Fri, 23 Feb 2024 12:48:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61D2C7BAE3;
+	Fri, 23 Feb 2024 12:50:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708692489; cv=none; b=c4FSyG4TaVGVbQSPl2V0vyZDWxOIPWz1Grr6seFp1uf4d64iQgpYfPlfDi6ptLAQflT5l4cSu16q8zSR9LAkWC0DF9MgDjEAupvirz35zkxbrAIReA3l510QPelC5B5CIpxC8KCjpnxUtAU7DpLyfUXRh4Oa1gKa9pxCIhUUQ0g=
+	t=1708692661; cv=none; b=DUMTSpLTq/binFin+Jv3STbRILxT/oUyaYPWPnx6jcvGE8iwoVvTlpRTx1hKAqK0ZSa12odrlcqyp676rh6FtoD1JDzDIl8fF5EW8yP5A9rZJPPse1JsX3rVAcB62QuuabrUyr5fXkXLZSJ4DLcdGKR0WKaRSR3Z7WK25BDevAw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708692489; c=relaxed/simple;
-	bh=LAjfPoz2drXqfQvAjv9IzHKfA5IrdcSZOOkt/CeiU1c=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=M5KopDuGYo9gsf6WYOyfcm8c6/qmDQlJcRzVt4szi1DJ7ls+a9ytdiGaeyDl0ofqlWbtKxZYlaeSk+nN5T3Ivj5brckjPjmRNSdjynEUbn2AG4u2sPlqZhQ/91pGNWIgjmWKdirzozW077EW5WtdY3WuoNXvbhQY1kn51CrJq6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com; spf=pass smtp.mailfrom=perches.com; arc=none smtp.client-ip=216.40.44.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=perches.com
-Received: from omf02.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay03.hostedemail.com (Postfix) with ESMTP id 2073BA1164;
-	Fri, 23 Feb 2024 12:48:00 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf02.hostedemail.com (Postfix) with ESMTPA id 682A78000E;
-	Fri, 23 Feb 2024 12:47:57 +0000 (UTC)
-Message-ID: <bc22e93196284ddece102929ae9f6636358e6716.camel@perches.com>
-Subject: Re: [PATCH v2] checkpatch: add check for snprintf to scnprintf
-From: Joe Perches <joe@perches.com>
-To: Lee Jones <lee@kernel.org>
-Cc: Justin Stitt <justinstitt@google.com>, Andy Whitcroft
- <apw@canonical.com>,  Dwaipayan Ray <dwaipayanray1@gmail.com>, Lukas
- Bulwahn <lukas.bulwahn@gmail.com>,  linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>, Finn
- Thain <fthain@linux-m68k.org>
-Date: Fri, 23 Feb 2024 04:47:56 -0800
-In-Reply-To: <20240223103845.GP10170@google.com>
-References: <20240221-snprintf-checkpatch-v2-1-9baeb59dae30@google.com>
-	 <bccc704fc78b362bbc57a79eb240219f5ec1548e.camel@perches.com>
-	 <20240223103845.GP10170@google.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	s=arc-20240116; t=1708692661; c=relaxed/simple;
+	bh=AVRT8j5RaCn/BZf0gVyzpkugvUL51cHt0DCa7hvPaXg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HEgwhczmue+oSVLZmCaNaQjrTM5jiB1qrZURWyxH31++LXakEIFfqDaKwq47unw/TyibxTHHH6q25w5PLeJZHZ4TM9A1cE9wIIKmwblQUea6rZNQGEvba+ovsgWHLfIrbANf+muEeHK5L4wcRALP67SIpjeP6mz68WWProAEhr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dbw1DeUE; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-512b29f82d1so426805e87.1;
+        Fri, 23 Feb 2024 04:50:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708692657; x=1709297457; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:mail-followup-to:message-id:subject:cc:to
+         :from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=aUQgrMlkxXtdk899rnSTIJQcALfRj3OIxVsQ4kgw0cA=;
+        b=Dbw1DeUEfT9408bUJ84YxJ6WRaLnkfjPWh8aeEmy2S8Frz3oO0f83JkJydOUG9Z1GQ
+         pXk8EcrhZxkBF1cQoy8ok4W4s9LLm423cAEu2vZPh2mfi8Pdmor8tkMEswUR9+eV5Tun
+         L84XAjmuislsX+qUbNorFqCc54TJO5PKpIZvpuRpzvJsvL0go73hqb943TG2Ji63rk9t
+         62tSZUsr4IuPlMt5dZhmmuBkUu+VcoGddE2jNJPacod0eTb73b7IcUZq+wrah2A3qJvf
+         harfhMXRgUjO7xopTLnU/Q5IY413X08VoMMMTjlB0B4tKGB7mCTjl60LRqgyWLvbfGFl
+         mHYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708692657; x=1709297457;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:mail-followup-to:message-id:subject:cc:to
+         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aUQgrMlkxXtdk899rnSTIJQcALfRj3OIxVsQ4kgw0cA=;
+        b=wlBLQyk/efIA8iOuDeSpIbWkC48FDYhe/nf025zrbJDfA/y81wZj8FrbVBOMWcsbHf
+         Dw4r4ZEUT5E2Fn6wfc4pXNfulIDssha8TpFS2Bi639J8JqdgDQRaZwwFnMzsCXHX6Tl3
+         dsRHXfi1mzk175wij5V5lbiZScDHLxiG9Rd3WUBxOIOisLJJeWNOLCyhjWYieZtiowXp
+         m7SNteLWKo1ft8TrpTUkQ7JOCIdRnYo+cJt4GWhjqVA3fi2VtJ/2VMn0qOK6DJ0OxWRM
+         dv3+JaoYXu2GQfNLWEwtOiOZpKMMH2vZQAamIXZeWWTMfGdXrkDlHs/HZcdsGumgumCs
+         d3Rg==
+X-Forwarded-Encrypted: i=1; AJvYcCVQrgqUGCGAnq5WDlShTUaaF7LU53ctnSnww15hQwX3xtDaN1jXSDK2hFb3gElxNaEDfFD56lXJ8VMdY8+t2vrYY1q1hmteQFJm7qFDMWNm4gH5vZjByqerJfxQzWP/FptZqAoa4w==
+X-Gm-Message-State: AOJu0Yy9YQuLEPwXKSfhJJaIaIU5CjVzOwVxwFs2XHxXqBOAJB8RCClZ
+	kauBMr59AVksAvwUoHylymelgtLZaa3br3rrCiF5XBlCWKuXh7fD
+X-Google-Smtp-Source: AGHT+IGyxqZbZALpef/feNcgy99jXbBBv5LDTEdWJz/Xr+7J9fI7cV8HCU4wHYzxgYTrRBp0/rf7/w==
+X-Received: by 2002:ac2:4e06:0:b0:511:7259:370d with SMTP id e6-20020ac24e06000000b005117259370dmr1625621lfr.33.1708692657238;
+        Fri, 23 Feb 2024 04:50:57 -0800 (PST)
+Received: from localhost ([94.19.228.143])
+        by smtp.gmail.com with ESMTPSA id h17-20020a19ca51000000b00512d863919asm633177lfj.275.2024.02.23.04.50.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 04:50:55 -0800 (PST)
+Date: Fri, 23 Feb 2024 15:48:41 +0300
+From: Andrey Skvortsov <andrej.skvortzov@gmail.com>
+To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+Cc: linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
+	Dalton Durst <dalton@ubports.com>, Shoji Keita <awaittrot@shjk.jp>,
+	linux-iio@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 3/4] iio: magnetometer: add a driver for Voltafield
+ AF8133J magnetometer
+Message-ID: <ZdiUKV7JJQ5TglYM@skv.local>
+Mail-Followup-To: Andrey Skvortsov <andrej.skvortzov@gmail.com>,
+	=?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>,
+	linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
+	Dalton Durst <dalton@ubports.com>, Shoji Keita <awaittrot@shjk.jp>,
+	linux-iio@vger.kernel.org, devicetree@vger.kernel.org
+References: <20240222011341.3232645-1-megi@xff.cz>
+ <20240222011341.3232645-4-megi@xff.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 682A78000E
-X-Rspamd-Server: rspamout08
-X-Stat-Signature: ukf9z8exot3f8st6ets4czmu8p6frtk4
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/0INiopDmML8A145GUuo/QwEloV8aKws4=
-X-HE-Tag: 1708692477-39706
-X-HE-Meta: U2FsdGVkX1/UFjuIy6XDV0zdZU7pS54VpS1HyjtO8u/qVXIGPoXkdNloAv9Sw8rpIUAPYfmxbMgHsnXqz8ZXNUggPoGrMTDkMdjsuMYWEHsMBtLG+GZ+K0dEpAG+22xU1nj+tBk6LPV2pmIMpu6VcwvdSN5oBJGgkUsZbi3K8YncxD+mFqec84H8gFg73naopm5Ka34RzGP0P3M8ftqmMYFcSENvpigT1xsbb6144nhzfETCpQep1i53OKAf09EE3oRn7IF4I5FVorDTY4lpSSH5zAu+ApCymd3jDS8UkgtNx8/nNclHejShy0COFHeS75DYc+/UUZLFEms+GtiIM9Kef3betaQiXQfvaeMuQHyiEmbqKsw54ghsnU6uDBRyngX909KJKOnXPr0ZezUvEIk96GdPiZl6pP0rV0g7PWb9qkAf6J2VyX97st7Bmklws/FWmwXIWOn48xySR1ZDw9x5qStU9/1Rug+6mB1uBZs=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240222011341.3232645-4-megi@xff.cz>
 
-On Fri, 2024-02-23 at 10:38 +0000, Lee Jones wrote:
-> On Wed, 21 Feb 2024, Joe Perches wrote:
->=20
-> > On Wed, 2024-02-21 at 22:11 +0000, Justin Stitt wrote:
-> > > I am going to quote Lee Jones who has been doing some snprintf ->
-> > > scnprintf refactorings:
-> > >=20
-> > > "There is a general misunderstanding amongst engineers that
-> > > {v}snprintf() returns the length of the data *actually* encoded into =
-the
-> > > destination array.  However, as per the C99 standard {v}snprintf()
-> > > really returns the length of the data that *would have been* written =
-if
-> > > there were enough space for it.  This misunderstanding has led to
-> > > buffer-overruns in the past.  It's generally considered safer to use =
-the
-> > > {v}scnprintf() variants in their place (or even sprintf() in simple
-> > > cases).  So let's do that."
-> > >=20
-> > > To help prevent new instances of snprintf() from popping up, let's ad=
-d a
-> > > check to checkpatch.pl.
-> > >=20
-> > > Suggested-by: Finn Thain <fthain@linux-m68k.org>
-> > > Signed-off-by: Justin Stitt <justinstitt@google.com>
-> > > ---
-> > > Changes in v2:
-> > > - Had a vim moment and deleted a character before sending the patch.
-> > > - Replaced the character :)
-> > > - Link to v1: https://lore.kernel.org/r/20240221-snprintf-checkpatch-=
-v1-1-3ac5025b5961@google.com
-> > > ---
-> > > From a discussion here [1].
-> > >=20
-> > > [1]: https://lore.kernel.org/all/0f9c95f9-2c14-eee6-7faf-635880edcea4=
-@linux-m68k.org/
-> >=20
-> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > []
-> > > @@ -7012,6 +7012,12 @@ sub process {
-> > >  			     "Prefer strscpy, strscpy_pad, or __nonstring over strncpy - =
-see: https://github.com/KSPP/linux/issues/90\n" . $herecurr);
-> > >  		}
-> > > =20
-> > > +# snprintf uses that should likely be {v}scnprintf
-> > > +		if ($line =3D~ /\bsnprintf\s*\(\s*/) {
-> > > +				WARN("SNPRINTF",
-> > > +				     "Prefer scnprintf over snprintf\n" . $herecurr);
-> >=20
-> > There really should be some sort of reference link here
-> > similar to the one above this.
-> >=20
-> > Also, I rather doubt _all_ of these should be changed just
-> > for churn's sake.
->=20
-> This is for new implementations only.
->=20
-> Kees is planning on changing all of the current instances kernel-wide.
+Hi,
 
-I saw that.  I also saw pushback.
-Not just my own.
+On 24-02-22 02:13, Ondřej Jirman wrote:
+> From: Icenowy Zheng <icenowy@aosc.io>
+> 
+> AF8133J is a simple I2C-connected magnetometer, without interrupts.
+> 
+> Add a simple IIO driver for it.
+> 
+> Co-developed-by: Icenowy Zheng <icenowy@aosc.io>
+> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+> Signed-off-by: Dalton Durst <dalton@ubports.com>
+> Signed-off-by: Shoji Keita <awaittrot@shjk.jp>
+> Co-developed-by: Ondrej Jirman <megi@xff.cz>
+> Signed-off-by: Ondrej Jirman <megi@xff.cz>
+> Reviewed-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
+> Tested-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
+> ---
+>  drivers/iio/magnetometer/Kconfig   |  12 +
+>  drivers/iio/magnetometer/Makefile  |   1 +
+>  drivers/iio/magnetometer/af8133j.c | 524 +++++++++++++++++++++++++++++
+>  3 files changed, 537 insertions(+)
+>  create mode 100644 drivers/iio/magnetometer/af8133j.c
+> 
+> diff --git a/drivers/iio/magnetometer/Kconfig b/drivers/iio/magnetometer/Kconfig
+> index 38532d840f2a..cd2917d71904 100644
+> --- a/drivers/iio/magnetometer/Kconfig
+> +++ b/drivers/iio/magnetometer/Kconfig
+> @@ -6,6 +6,18 @@
 
-Creating a cocci script is easy.
-Getting Linus and others to run it isn't.
+I've tested v4 driver again on 6.8-rc5. Works like before.
 
+-- 
+Best regards,
+Andrey Skvortsov
 
