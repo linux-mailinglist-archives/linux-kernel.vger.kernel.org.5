@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-77736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C294860992
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:50:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43C1C860996
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:50:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF3651F25F27
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:50:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B80D61F2608E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:50:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12C7E168C4;
-	Fri, 23 Feb 2024 03:48:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97AEE17BAC;
+	Fri, 23 Feb 2024 03:48:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="qsjSA6Y+"
-Received: from relay.smtp-ext.broadcom.com (unknown [192.19.166.231])
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="g1Ut55jy"
+Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89769125D1
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 03:48:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.166.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1922314000
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 03:48:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.144.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708660115; cv=none; b=Q7aJAMTE5BYbM2K90C8SZSKbbLS0bMqOPj33anyaDNZmPqSposfi9kiCw3o5LJWvYLyBq6N3zLjW1PGxdsKYIK8aazM892XT3xPvIo2Fx38NiqgyhGpqNXBlt4gidgOiNMyfS9ITCMlF6Kx4VQfoG0hKG7OnVvzFKnULTrdXwPQ=
+	t=1708660116; cv=none; b=eMfqwaBfJqnBObwOykRNIEG/uVpiYyUqm+oSJAiseDLsb8a7JEXdD1+r1qsFd2Ih24K2aTovNjlS2SztVLfF0UJGd34umt4Em7Oy9K0iRf3bQVb6YBNMIOZ8c6IuKspXMks2SwBS1nG4R2b3f7JExy6wtFwa3E0c00KHqZkp350=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708660115; c=relaxed/simple;
-	bh=ig15Aoje6UB9lmYtH7+7slD4QP7mgW8tuGW4LKGdWhA=;
+	s=arc-20240116; t=1708660116; c=relaxed/simple;
+	bh=IlWBsnu227JMFpQncv19RcNKiY0NO3wmso1R4ya+F6I=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=I8O8wz5+hATKaV80x48ra7GEzDzyn2hFHGBZ8v9cPs3rr/Wp4KV3ga9aHzcTcPoiV8m88wGNyZeT21VUfz1WsTipJ1Yyc/8HtiZgn2Uu9DYl0W6GqioWW+ko7CBwVVW1ZlAUzNffHKcGeKuGW/e467JEP2DgkphufpufydADHf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=qsjSA6Y+; arc=none smtp.client-ip=192.19.166.231
+	 MIME-Version; b=hZE4RGqtg/3X45xdj67tzCAYVbzdeFggA+ihsjhU+YzHQ0kTY7v7r6G+PPOBTEiowjgrJz8TyMx6uwDfbvmR+gEAvuFczj68gY5CORW531sToa/JFWAOlFA+TWdfBeGJETqipw2YN2bnFZKrk0OIp1fHPh93A7kC1VSZb3gn99I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=g1Ut55jy; arc=none smtp.client-ip=192.19.144.205
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
 Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id F1E62C001C13;
-	Thu, 22 Feb 2024 19:48:32 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com F1E62C001C13
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id E3789C0000F9;
+	Thu, 22 Feb 2024 19:48:33 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com E3789C0000F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1708660113;
-	bh=ig15Aoje6UB9lmYtH7+7slD4QP7mgW8tuGW4LKGdWhA=;
+	s=dkimrelay; t=1708660114;
+	bh=IlWBsnu227JMFpQncv19RcNKiY0NO3wmso1R4ya+F6I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qsjSA6Y+7GXJIAxM78iptjlsQ0jaHeqmZnL9zLJqKnPEuJURQAy6FPqI8VB/YaF/N
-	 ecGxX79wEZ6hcqHfOn7clJNq75PZPbeV8KszT9WWIuKEajjWAS7nnzNqWXQ2xdOVY2
-	 MzSiqso9Ms7n3wnoQRGpA15j8fpB8V7sHS9S3X+Q=
+	b=g1Ut55jy+SWzboCGgdsV/AhcWxf1oTIzCWx0rFPTe8RRlW5ahTG5A7yBtiV4QZfMu
+	 +H0d2HyIcSQTt8yeKMdRXXfh/8sa4dy8M4OQHlyZUiAisR+SEuGlj2xli70fIGxWXf
+	 59HJlpmP9YPWw6QK6I6PBvESc0X6jYOfXlEyYmKU=
 Received: from bcacpedev-irv-3.lvn.broadcom.net (bcacpedev-irv-3.lvn.broadcom.net [10.173.232.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 8561618041CAC4;
-	Thu, 22 Feb 2024 19:48:31 -0800 (PST)
+	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 36B9E18041CAC4;
+	Thu, 22 Feb 2024 19:48:32 -0800 (PST)
 From: William Zhang <william.zhang@broadcom.com>
 To: Linux MTD List <linux-mtd@lists.infradead.org>,
 	Linux ARM List <linux-arm-kernel@lists.infradead.org>,
@@ -64,12 +64,10 @@ Cc: f.fainelli@gmail.com,
 	linux-kernel@vger.kernel.org,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	Brian Norris <computersforpeace@gmail.com>,
-	Richard Weinberger <richard@nod.at>,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-	Florian Fainelli <florian.fainelli@broadcom.com>
-Subject: [PATCH v6 11/13] mtd: rawnand: brcmnand: Add BCMBCA read data bus interface
-Date: Thu, 22 Feb 2024 19:47:56 -0800
-Message-Id: <20240223034758.13753-12-william.zhang@broadcom.com>
+	Richard Weinberger <richard@nod.at>
+Subject: [PATCH v6 12/13] mtd: rawnand: brcmnand: Add support for getting ecc setting from strap
+Date: Thu, 22 Feb 2024 19:47:57 -0800
+Message-Id: <20240223034758.13753-13-william.zhang@broadcom.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20240223034758.13753-1-william.zhang@broadcom.com>
 References: <20240223034758.13753-1-william.zhang@broadcom.com>
@@ -81,13 +79,11 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The BCMBCA broadband SoC integrates the NAND controller differently than
-STB, iProc and other SoCs.  It has different endianness for NAND cache
-data.
-
-Add a SoC read data bus shim for BCMBCA to meet the specific SoC need
-and performance improvement using the optimized memcpy function on NAND
-cache memory.
+BCMBCA broadband SoC based board design does not specify ecc setting in
+dts but rather use the SoC NAND strap info to obtain the ecc strength
+and spare area size setting. Add brcm,nand-ecc-use-strap dts propety for
+this purpose and update driver to support this option. However these two
+options can not be used at the same time.
 
 Signed-off-by: William Zhang <william.zhang@broadcom.com>
 Reviewed-by: David Regan <dregan@broadcom.com>
@@ -95,133 +91,137 @@ Reviewed-by: David Regan <dregan@broadcom.com>
 ---
 
 Changes in v6:
-- Fix style issue
+- Combine the ecc step size and ecc strength into one get function
+- Treat it as error condition if both brcm,nand-ecc-use-strap and nand
+ecc dts properties are set
+- Add intermediate steps to get the sector size bitfield
 
 Changes in v5: None
-Changes in v4: None
-Changes in v3:
-- Updated bcmbca_read_data_bus comment
+Changes in v4:
+- Update the comments for ecc setting selection
 
+Changes in v3: None
 Changes in v2:
-- Drop the is_param argument to the read data bus function now that we
-have the exec_op API to read the parameter page and ONFI data
-- Remove be32_to_cpu from brcmnand_read_data_bus
+- Minor cosmetic fixes
 
- drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c | 27 +++++++++++++++++++++
- drivers/mtd/nand/raw/brcmnand/brcmnand.c    | 20 ++++++++++++---
- drivers/mtd/nand/raw/brcmnand/brcmnand.h    |  2 ++
- 3 files changed, 46 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 83 ++++++++++++++++++++++--
+ 1 file changed, 77 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c b/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
-index 3e2f3b79788d..7ad3e7a98f97 100644
---- a/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
-@@ -26,6 +26,18 @@ enum {
- 	BCMBCA_CTLRDY		= BIT(4),
- };
- 
-+#if defined(CONFIG_ARM64)
-+#define ALIGN_REQ		8
-+#else
-+#define ALIGN_REQ		4
-+#endif
-+
-+static inline bool bcmbca_nand_is_buf_aligned(void *flash_cache,  void *buffer)
-+{
-+	return IS_ALIGNED((uintptr_t)buffer, ALIGN_REQ) &&
-+				IS_ALIGNED((uintptr_t)flash_cache, ALIGN_REQ);
-+}
-+
- static bool bcmbca_nand_intc_ack(struct brcmnand_soc *soc)
- {
- 	struct bcmbca_nand_soc *priv =
-@@ -56,6 +68,20 @@ static void bcmbca_nand_intc_set(struct brcmnand_soc *soc, bool en)
- 	brcmnand_writel(val, mmio);
- }
- 
-+static void bcmbca_read_data_bus(struct brcmnand_soc *soc,
-+				 void __iomem *flash_cache,  u32 *buffer, int fc_words)
-+{
-+	/*
-+	 * memcpy can do unaligned aligned access depending on source
-+	 * and dest address, which is incompatible with nand cache. Fallback
-+	 * to the memcpy_fromio in such case
-+	 */
-+	if (bcmbca_nand_is_buf_aligned((void *)flash_cache, buffer))
-+		memcpy((void *)buffer, (void *)flash_cache, fc_words * 4);
-+	else
-+		memcpy_fromio((void *)buffer, flash_cache, fc_words * 4);
-+}
-+
- static int bcmbca_nand_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -73,6 +99,7 @@ static int bcmbca_nand_probe(struct platform_device *pdev)
- 
- 	soc->ctlrdy_ack = bcmbca_nand_intc_ack;
- 	soc->ctlrdy_set_enabled = bcmbca_nand_intc_set;
-+	soc->read_data_bus = bcmbca_read_data_bus;
- 
- 	return brcmnand_probe(pdev, soc);
- }
 diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index f1f0de50b5f7..ef7d340475be 100644
+index ef7d340475be..e8ffc283b365 100644
 --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
 +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -851,6 +851,20 @@ static inline u32 edu_readl(struct brcmnand_controller *ctrl,
- 	return brcmnand_readl(ctrl->edu_base + offs);
+@@ -1038,6 +1038,22 @@ static inline int brcmnand_sector_1k_shift(struct brcmnand_controller *ctrl)
+ 		return -1;
  }
  
-+static inline void brcmnand_read_data_bus(struct brcmnand_controller *ctrl,
-+					  void __iomem *flash_cache, u32 *buffer, int fc_words)
++static int brcmnand_get_sector_size_1k(struct brcmnand_host *host)
 +{
-+	struct brcmnand_soc *soc = ctrl->soc;
-+	int i;
++	struct brcmnand_controller *ctrl = host->ctrl;
++	int sector_size_bit = brcmnand_sector_1k_shift(ctrl);
++	u16 acc_control_offs = brcmnand_cs_offset(ctrl, host->cs,
++						  BRCMNAND_CS_ACC_CONTROL);
++	u32 acc_control;
 +
-+	if (soc->read_data_bus) {
-+		soc->read_data_bus(soc, flash_cache, buffer, fc_words);
-+	} else {
-+		for (i = 0; i < fc_words; i++)
-+			buffer[i] = brcmnand_read_fc(ctrl, i);
++	if (sector_size_bit < 0)
++		return 0;
++
++	acc_control = nand_readreg(ctrl, acc_control_offs);
++
++	return (acc_control & BIT(sector_size_bit)) >> sector_size_bit;
++}
++
+ static void brcmnand_set_sector_size_1k(struct brcmnand_host *host, int val)
+ {
+ 	struct brcmnand_controller *ctrl = host->ctrl;
+@@ -1055,6 +1071,43 @@ static void brcmnand_set_sector_size_1k(struct brcmnand_host *host, int val)
+ 	nand_writereg(ctrl, acc_control_offs, tmp);
+ }
+ 
++static int brcmnand_get_spare_size(struct brcmnand_host *host)
++{
++	struct brcmnand_controller *ctrl = host->ctrl;
++	u16 acc_control_offs = brcmnand_cs_offset(ctrl, host->cs,
++						  BRCMNAND_CS_ACC_CONTROL);
++	u32 acc = nand_readreg(ctrl, acc_control_offs);
++
++	return (acc & brcmnand_spare_area_mask(ctrl));
++}
++
++static void brcmnand_get_ecc_settings(struct brcmnand_host *host, struct nand_chip *chip)
++{
++	struct brcmnand_controller *ctrl = host->ctrl;
++	u16 acc_control_offs = brcmnand_cs_offset(ctrl, host->cs,
++						  BRCMNAND_CS_ACC_CONTROL);
++	int sector_size_1k = brcmnand_get_sector_size_1k(host);
++	int spare_area_size, ecc_level;
++	u32 acc;
++
++	spare_area_size = brcmnand_get_spare_size(host);
++	acc = nand_readreg(ctrl, acc_control_offs);
++	ecc_level = (acc & brcmnand_ecc_level_mask(ctrl)) >> ctrl->ecc_level_shift;
++	if (sector_size_1k)
++		chip->ecc.strength = ecc_level * 2;
++	else if (spare_area_size == 16 && ecc_level == 15)
++		chip->ecc.strength = 1; /* hamming */
++	else
++		chip->ecc.strength = ecc_level;
++
++	if (chip->ecc.size == 0) {
++		if (sector_size_1k < 0)
++			chip->ecc.size = 512;
++		else
++			chip->ecc.size = 512 << sector_size_1k;
 +	}
 +}
 +
- static void brcmnand_clear_ecc_addr(struct brcmnand_controller *ctrl)
- {
- 
-@@ -1975,7 +1989,7 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
- {
- 	struct brcmnand_host *host = nand_get_controller_data(chip);
+ /***********************************************************************
+  * CS_NAND_SELECT
+  ***********************************************************************/
+@@ -2625,19 +2678,37 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
+ 		nanddev_get_memorg(&chip->base);
  	struct brcmnand_controller *ctrl = host->ctrl;
--	int i, j, ret = 0;
-+	int i, ret = 0;
+ 	struct brcmnand_cfg *cfg = &host->hwcfg;
+-	char msg[128];
++	struct device_node *np = nand_get_flash_node(chip);
+ 	u32 offs, tmp, oob_sector;
++	bool use_strap = false;
++	char msg[128];
+ 	int ret;
  
- 	brcmnand_clear_ecc_addr(ctrl);
+ 	memset(cfg, 0, sizeof(*cfg));
++	use_strap = of_property_read_bool(np, "brcm,nand-ecc-use-strap");
  
-@@ -1988,8 +2002,8 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
- 		if (likely(buf)) {
- 			brcmnand_soc_data_bus_prepare(ctrl->soc, false);
- 
--			for (j = 0; j < FC_WORDS; j++, buf++)
--				*buf = brcmnand_read_fc(ctrl, j);
-+			brcmnand_read_data_bus(ctrl, ctrl->nand_fc, buf, FC_WORDS);
-+			buf += FC_WORDS;
- 
- 			brcmnand_soc_data_bus_unprepare(ctrl->soc, false);
- 		}
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.h b/drivers/mtd/nand/raw/brcmnand/brcmnand.h
-index 928114c0be5e..9f171252a2ae 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.h
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.h
-@@ -24,6 +24,8 @@ struct brcmnand_soc {
- 	void (*ctlrdy_set_enabled)(struct brcmnand_soc *soc, bool en);
- 	void (*prepare_data_bus)(struct brcmnand_soc *soc, bool prepare,
- 				 bool is_param);
-+	void (*read_data_bus)(struct brcmnand_soc *soc, void __iomem *flash_cache,
-+			      u32 *buffer, int fc_words);
- 	const struct brcmnand_io_ops *ops;
- };
- 
+-	ret = of_property_read_u32(nand_get_flash_node(chip),
+-				   "brcm,nand-oob-sector-size",
++	/*
++	 * Either nand-ecc-xxx or brcm,nand-ecc-use-strap can be set. Error out
++	 * if both exist.
++	 */
++	if (chip->ecc.strength && use_strap) {
++		dev_err(ctrl->dev,
++			"nand ecc and strap ecc settings can't be set at the same time\n");
++		return -EINVAL;
++	}
++
++	if (use_strap)
++		brcmnand_get_ecc_settings(host, chip);
++
++	ret = of_property_read_u32(np, "brcm,nand-oob-sector-size",
+ 				   &oob_sector);
+ 	if (ret) {
+-		/* Use detected size */
+-		cfg->spare_area_size = mtd->oobsize /
+-					(mtd->writesize >> FC_SHIFT);
++		if (use_strap)
++			cfg->spare_area_size = brcmnand_get_spare_size(host);
++		else
++			/* Use detected size */
++			cfg->spare_area_size = mtd->oobsize /
++						(mtd->writesize >> FC_SHIFT);
+ 	} else {
+ 		cfg->spare_area_size = oob_sector;
+ 	}
 -- 
 2.37.3
 
