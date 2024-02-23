@@ -1,180 +1,179 @@
-Return-Path: <linux-kernel+bounces-79321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED7D18620BC
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 00:44:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACDF98620C2
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 00:46:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62F241F24CAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 23:44:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1C27B2406F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 23:46:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22D5614DFE6;
-	Fri, 23 Feb 2024 23:44:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9759714DFE9;
+	Fri, 23 Feb 2024 23:46:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="cYsHNB1L"
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WPYq7mXA"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D255014DFDB
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 23:44:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B21D250E5
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 23:46:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708731857; cv=none; b=KXayoumJuvjW5ZSW00BELPbLyTiB1uD6sauQ2vqVPx9Gx37qhZyjUQYJtpgDb+tEdNvNYySW4eAHwG767wIWR8FL7/DLEfxq4KtEVD4fxS/30YAEEiuFEEpobHmzohRIAjFk1L2qk6WXkAloyBZf4n9TOeN3sZ1N4y4nLPy9+C8=
+	t=1708731998; cv=none; b=NlX/jKTYxnuh3DAPuw6FAl2fk7OeVrjiQslgMUTTaMs8vULR6j6eBxSsGnFT9yCCTRY9GG43u2b4Qn2z1fUOf5wLR/zN4gLsVlgNr+FKXdRA07shSLiRmV0el861TwUNG6gOQVyiKnuT49nct/YmthUfD+AtpJP7zWNe3pLljHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708731857; c=relaxed/simple;
-	bh=z9xaYwJuacSDor4K3Ga1UnNCIeJNKm5H9N5VdBn0L+w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OUqZLRPeROOGz4yHCw9BdmFh2H+86rsegqFjNo2wCz2+nOSYrFkAbwl9DFBb7sRL4/9Nz5KKcvHgbpIGo0aBM0ZOoN3XiZ+TVOUz/hV1UqTVcT1pL1UVhzy2zH0c8//c8uGj0R/+R0frnKrXj624yANDoqsSrV0qXA4sCqvW3fo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=cYsHNB1L; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5c6bd3100fcso1080614a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 15:44:15 -0800 (PST)
+	s=arc-20240116; t=1708731998; c=relaxed/simple;
+	bh=mgHqWgnzX8YgCtUVgGyFblbfkBZfwH2hQtNerw34L/0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Wveay5sgCAjllINgdQnR4y5PgmJO1xy1Pd5DdZADjCBZiTmxcu5tMhM8cx9yKqlz8fDxVhnMySFCWARbt2Vo53S7K9MwPzko6jcM1ivs44qalu0wSaCCq7v6Dlss3kGfU8QH23HnKguub8BEbabAvP118V03o3qW+nBI7CYnr08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WPYq7mXA; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a293f2280c7so154740466b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 15:46:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708731855; x=1709336655; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=TG2R+CW7/iYHzGbMjn7YtgeUAnWvwQnPCbApfWV73ww=;
-        b=cYsHNB1LS/LlCHW+UmrdOBewb1iptUkyvRMedo2F16nljw+DLSYwHmCOJV0JgBaN8q
-         C9aGkwYQxoX54azzj0xuZzJXB1qizrRr2EgwHnTf/v+MqPTnD6qFrkWmKEy1UCOmoU29
-         wtAC2NGOAk7sPOCbSJU5O4xAhV67c7cdlF3+Q=
+        d=linaro.org; s=google; t=1708731995; x=1709336795; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=NIAGIlOyfdPQGzUhuhBTCj1fg0Ra/brIZfOUyFxv3go=;
+        b=WPYq7mXA4GS5XMA1VDMZ5ZAmWyn84fNBhQFINGtYcK4i6ywGXwFC1qzi0mpc+vO8wT
+         kNfaqDU04031cp+L85JZNK3iajGT92DI5MS+vOicJm/FpdXbpxcd0z3KNiIeKRLFUyQt
+         tqLFcrAr5Vnnm7yCjDPQ8L+vaOlPa8r8o840iqMi7BA6VZUNbTct1oHrNNheMDG2jXri
+         M4/ySjPMFCcfnd9BChafx5RtXhUmedzJkNozQJmDgl0eolgniE4oFaavi+jr/OqD5IJm
+         OcXwdBUCLITcdT9t5MMRpdarSMXIqhcwEkZx1/lPGn9Q1CK9qxDo2RS7gJe19HPFqLcH
+         ACpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708731855; x=1709336655;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TG2R+CW7/iYHzGbMjn7YtgeUAnWvwQnPCbApfWV73ww=;
-        b=Upb7Ala9LSfv3jhNmcjEMBrqvQ1xJNItfQrYPsBq8mg8VSAVdqxJyU7O45dbLensk/
-         snf+Tj6XUgHz7AD4i4ZoSmguFC/WOn/EWka5833kjPfzK5UgImTtZ6w30OKZqYkAlTYU
-         RCQ53h8amsE0Uhrssf5sNxx5b8KmpSW/FyDpRwgS+PJQEyRwHgk/FElBuWMjfynxA7sT
-         +6pBkvbpuOdOYcuHAAa4KCC0XlKLMGUm7Ci7KP1BcLA315hBlaR1WKe4Cs6pN8OBzpqD
-         t5cdgATPhMdHFpf/o6A9rn9kHnihy2KMSJWKtRc46gBw7S79pYBvs/7CpNRHHLRE+u+5
-         XOGA==
-X-Forwarded-Encrypted: i=1; AJvYcCXZ94b57giBIS0L8AtewMhjhqQHIq/QT9rd7C376XVcpOp+UJHNzMl4ShPf3/Ats5VvUrXEyHlQOnLEnV1oIRbu9FwGizwEsOfw3Iia
-X-Gm-Message-State: AOJu0Yy+Twv+CkFFUq3HyI4BubrWW5A5RmfSNZ29gz9Nn4Eqy4sVAiX/
-	Hl+rpY+0QdeYcx3UZqyy4W/xkhBC8hes2uAzKRUb4SVZNafRiJyfAG7/eALrOA==
-X-Google-Smtp-Source: AGHT+IEVacdtWz8DNkk1epMp5zahV7zYT30iXRFJkBYmWNUh7jmj1UM0coHCTaLz6+OEmDMKsa6yMg==
-X-Received: by 2002:a05:6a21:6801:b0:1a0:aea4:a1fe with SMTP id wr1-20020a056a21680100b001a0aea4a1femr1461775pzb.1.1708731855120;
-        Fri, 23 Feb 2024 15:44:15 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id f1-20020a056a000b0100b006e4eb29033asm24889pfu.194.2024.02.23.15.44.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 15:44:14 -0800 (PST)
-Date: Fri, 23 Feb 2024 15:44:14 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Justin Stitt <justinstitt@google.com>
-Cc: Kees Cook <kees@kernel.org>, James Smart <james.smart@broadcom.com>,
-	Dick Kennedy <dick.kennedy@broadcom.com>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] scsi: lpfc: replace deprecated strncpy with strscpy
-Message-ID: <202402231539.BA96B7F0@keescook>
-References: <20240222-strncpy-drivers-scsi-lpfc-lpfc_ct-c-v1-1-20c685bd1b43@google.com>
- <BE9C61AA-633F-4CD1-BE5E-B01DC947626E@kernel.org>
- <CAFhGd8rTBqqQvr9vhpbfcSv6cpj5JSPVPSftqOPyWkZEWBP1AQ@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1708731995; x=1709336795;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NIAGIlOyfdPQGzUhuhBTCj1fg0Ra/brIZfOUyFxv3go=;
+        b=GFFiSa1iQOHT1wZtRuFOpM4VtOI6GlNFnoRY3Rf4cKHyNh8HEK8f3QPMGDVFoEXd38
+         c0eS90b/JAA2l6JY8iYdlv1r1IATKCKQolfJ+HjkBm1jnb73UJUXtEJjoC0Bqe5zaQ3p
+         8mAxX6jn93Vm73o8+CHO+GcJjos/hrncMj/fGL3kpsrANl49bTaWp9TmAjCluRRiNnN1
+         OmJnQoJzuifghHJqWHWMk6POEAR7H0HXsCQKVb/V631tHXb3icUWkP56J/iLI0z+9f/z
+         cszBelARDyP8LsLIMTlGIwA7I1b4l0vIuNPooPSNAP7wn6vMLajzVZULQOtI28xXLgmT
+         bMlQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWNhrqLj3AZlVL3sg6OIc1et/yuIxJhSJoDyHtxYiwPEytzvMlc+ZY/3yvTZIXgXV1kTPrI7MXdMJq9eT9Scr4eCjwlHE43/V5G08Qi
+X-Gm-Message-State: AOJu0YxALJ95VlFBPPmqlnpHFI5rZFriCZGHqp9ecgqYswFSi/tV1GXS
+	iTNiIDIzN2w0ci2Iywww2R6tsyodIN+1CSg273r/yAeJSg8Sg1nxSZD1CgyV74I=
+X-Google-Smtp-Source: AGHT+IE0+tL8hH0wqn2x+/epyE+ZkG3YGes2J0uLaDyxWp2Ro/Yw07l0+8CizphqXDIS10sDl1t62Q==
+X-Received: by 2002:a17:906:d923:b0:a41:30be:4a82 with SMTP id rn3-20020a170906d92300b00a4130be4a82mr677228ejb.61.1708731994017;
+        Fri, 23 Feb 2024 15:46:34 -0800 (PST)
+Received: from [192.168.179.2] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id u22-20020a1709060b1600b00a3fbe13e2absm52810ejg.211.2024.02.23.15.46.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Feb 2024 15:46:33 -0800 (PST)
+Message-ID: <b50aae99-151b-47ed-b610-99f4748790bf@linaro.org>
+Date: Sat, 24 Feb 2024 00:46:31 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFhGd8rTBqqQvr9vhpbfcSv6cpj5JSPVPSftqOPyWkZEWBP1AQ@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v17 05/35] virt: gunyah: Add hypervisor driver
+To: Alex Elder <elder@linaro.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Murali Nalajal <quic_mnalajal@quicinc.com>,
+ Trilok Soni <quic_tsoni@quicinc.com>,
+ Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>,
+ Carl van Schaik <quic_cvanscha@quicinc.com>,
+ Philip Derrin <quic_pderrin@quicinc.com>,
+ Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>,
+ Jonathan Corbet <corbet@lwn.net>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Fuad Tabba
+ <tabba@google.com>, Sean Christopherson <seanjc@google.com>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-arm-msm@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mm@kvack.org
+References: <20240222-gunyah-v17-0-1e9da6763d38@quicinc.com>
+ <20240222-gunyah-v17-5-1e9da6763d38@quicinc.com>
+ <a3356079-bd55-4852-9bb3-b5362a1c953e@linaro.org>
+ <20240223144844667-0800.eberman@hu-eberman-lv.qualcomm.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
+ BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
+ HGWdmtO+RvadOVi6CoUDqALsmfS3MUG5Pj2Ne9+0jRg4hEnB92AyF9rW2G3qisFcwPgvatt7
+ TXD5E38mLyOPOUyXNj9XpDbt1hNwKQfiidmPh5e7VNAWRnW1iCMMoKqzM1Anzq7e5Afyeifz
+ zRcQPLaqrPjnKqZGL2BKQSZDh6NkI5ZLRhhHQf61fkWcUpTp1oDC6jWVfT7hwRVIQLrrNj9G
+ MpPzrlN4YuAqKeIer1FMt8cq64ifgTzxHzXsMcUdclzq2LTk2RXaPl6Jg/IXWqUClJHbamSk
+ t1bfif3SnmhA6TiNvEpDKPiT3IDs42THU6ygslrBxyROQPWLI9IL1y8S6RtEh8H+NZQWZNzm
+ UQ3imZirlPjxZtvz1BtnnBWS06e7x/UEAguj7VHCuymVgpl2Za17d1jj81YN5Rp5L9GXxkV1
+ aUEwONM3eCI3qcYm5JNc5X+JthZOWsbIPSC1Rhxz3JmWIwP1udr5E3oNRe9u2LIEq+wH/toH
+ kpPDhTeMkvt4KfE5m5ercid9+ZXAqoaYLUL4HCEw+HW0DXcKDwARAQABzShLb25yYWQgRHli
+ Y2lvIDxrb25yYWQuZHliY2lvQGxpbmFyby5vcmc+wsGOBBMBCAA4FiEEU24if9oCL2zdAAQV
+ R4cBcg5dfFgFAmQ5bqwCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQR4cBcg5dfFjO
+ BQ//YQV6fkbqQCceYebGg6TiisWCy8LG77zV7DB0VMIWJv7Km7Sz0QQrHQVzhEr3trNenZrf
+ yy+o2tQOF2biICzbLM8oyQPY8B///KJTWI2khoB8IJSJq3kNG68NjPg2vkP6CMltC/X3ohAo
+ xL2UgwN5vj74QnlNneOjc0vGbtA7zURNhTz5P/YuTudCqcAbxJkbqZM4WymjQhe0XgwHLkiH
+ 5LHSZ31MRKp/+4Kqs4DTXMctc7vFhtUdmatAExDKw8oEz5NbskKbW+qHjW1XUcUIrxRr667V
+ GWH6MkVceT9ZBrtLoSzMLYaQXvi3sSAup0qiJiBYszc/VOu3RbIpNLRcXN3KYuxdQAptacTE
+ mA+5+4Y4DfC3rUSun+hWLDeac9z9jjHm5rE998OqZnOU9aztbd6zQG5VL6EKgsVXAZD4D3RP
+ x1NaAjdA3MD06eyvbOWiA5NSzIcC8UIQvgx09xm7dThCuQYJR4Yxjd+9JPJHI6apzNZpDGvQ
+ BBZzvwxV6L1CojUEpnilmMG1ZOTstktWpNzw3G2Gis0XihDUef0MWVsQYJAl0wfiv/0By+XK
+ mm2zRR+l/dnzxnlbgJ5pO0imC2w0TVxLkAp0eo0LHw619finad2u6UPQAkZ4oj++iIGrJkt5
+ Lkn2XgB+IW8ESflz6nDY3b5KQRF8Z6XLP0+IEdLOOARkOW7yEgorBgEEAZdVAQUBAQdAwmUx
+ xrbSCx2ksDxz7rFFGX1KmTkdRtcgC6F3NfuNYkYDAQgHwsF2BBgBCAAgFiEEU24if9oCL2zd
+ AAQVR4cBcg5dfFgFAmQ5bvICGwwACgkQR4cBcg5dfFju1Q//Xta1ShwL0MLSC1KL1lXGXeRM
+ 8arzfyiB5wJ9tb9U/nZvhhdfilEDLe0jKJY0RJErbdRHsalwQCrtq/1ewQpMpsRxXzAjgfRN
+ jc4tgxRWmI+aVTzSRpywNahzZBT695hMz81cVZJoZzaV0KaMTlSnBkrviPz1nIGHYCHJxF9r
+ cIu0GSIyUjZ/7xslxdvjpLth16H27JCWDzDqIQMtg61063gNyEyWgt1qRSaK14JIH/DoYRfn
+ jfFQSC8bffFjat7BQGFz4ZpRavkMUFuDirn5Tf28oc5ebe2cIHp4/kajTx/7JOxWZ80U70mA
+ cBgEeYSrYYnX+UJsSxpzLc/0sT1eRJDEhI4XIQM4ClIzpsCIN5HnVF76UQXh3a9zpwh3dk8i
+ bhN/URmCOTH+LHNJYN/MxY8wuukq877DWB7k86pBs5IDLAXmW8v3gIDWyIcgYqb2v8QO2Mqx
+ YMqL7UZxVLul4/JbllsQB8F/fNI8AfttmAQL9cwo6C8yDTXKdho920W4WUR9k8NT/OBqWSyk
+ bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
+ nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
+ izWDgYvmBE8=
+In-Reply-To: <20240223144844667-0800.eberman@hu-eberman-lv.qualcomm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 23, 2024 at 12:02:22PM -0800, Justin Stitt wrote:
-> Hi,
+On 23.02.2024 23:58, Elliot Berman wrote:
+> On Fri, Feb 23, 2024 at 10:10:47PM +0100, Konrad Dybcio wrote:
+>> On 23.02.2024 00:16, Elliot Berman wrote:
+>>> Add driver to detect when running under Gunyah. It performs basic
+>>> identification hypercall and populates the platform bus for resource
+>>> manager to probe.
+>>>
+>>> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+>>> ---
+>>
+>> [...]
+>>
+>>> +
+>>> +	/* Might move this out to individual drivers if there's ever an API version bump */
+>>> +	if (gunyah_api_version(&gunyah_api) != GUNYAH_API_V1) {
+>>> +		pr_info("Unsupported Gunyah version: %u\n",
+>>> +			gunyah_api_version(&gunyah_api));
+>>
+>> Weird for this not to be an error, but it's probably not worth resending
+>> over if it's the only thing
 > 
-> On Wed, Feb 21, 2024 at 6:38 PM Kees Cook <kees@kernel.org> wrote:
-> >
-> >
-> >
-> > On February 21, 2024 4:41:52 PM PST, Justin Stitt <justinstitt@google.com> wrote:
-> > >strncpy() is deprecated for use on NUL-terminated destination strings
-> > >[1] and as such we should prefer more robust and less ambiguous string
-> > >interfaces.
-> > >
-> > >We expect ae->value_string to be NUL-terminated because there's a
-> > >comment that says as much; these attr strings are also used with other
-> > >string APIs, further cementing the fact.
-> > >
-> > >Now, the question of whether or not to NUL-pad the destination buffer:
-> > >lpfc_fdmi_rprt_defer() initializes vports (all zero-initialized), then
-> > >we call lpfc_fdmi_cmd() with each vport and a mask. Then, inside of
-> > >lpfc_fdmi_cmd() we check each bit in the mask to invoke the proper
-> > >callback. Importantly, the zero-initialized vport is passed in as the
-> > >"attr" parameter. Seeing this:
-> > >|      struct lpfc_fdmi_attr_string *ae = attr;
-> > >... we can tell that ae->value_string is entirely zero-initialized. Due
-> > >to this, NUL-padding is _not_ required as it would be redundant.
-> > >
-> > >Conveniently, strscpy also returns the number of bytes copied into the
-> > >destination buffer, eliminating the need for strnlen!
-> > >
-> > >Considering the above, a suitable replacement is `strscpy` [2].
-> > >
-> > >Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> > >Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> > >Link: https://github.com/KSPP/linux/issues/90
-> > >Cc: linux-hardening@vger.kernel.org
-> > >Signed-off-by: Justin Stitt <justinstitt@google.com>
-> > >---
-> > > drivers/scsi/lpfc/lpfc_ct.c | 5 ++---
-> > > 1 file changed, 2 insertions(+), 3 deletions(-)
-> > >
-> > >diff --git a/drivers/scsi/lpfc/lpfc_ct.c b/drivers/scsi/lpfc/lpfc_ct.c
-> > >index baae1f8279e0..42594ec87290 100644
-> > >--- a/drivers/scsi/lpfc/lpfc_ct.c
-> > >+++ b/drivers/scsi/lpfc/lpfc_ct.c
-> > >@@ -2569,9 +2569,8 @@ lpfc_fdmi_set_attr_string(void *attr, uint16_t attrtype, char *attrstring)
-> > >        * 64 bytes or less.
-> > >        */
-> > >
-> > >-      strncpy(ae->value_string, attrstring, sizeof(ae->value_string));
-> > >-      len = strnlen(ae->value_string, sizeof(ae->value_string));
-> > >-      /* round string length to a 32bit boundary. Ensure there's a NULL */
-> > >+      len = strscpy(ae->value_string, attrstring, sizeof(ae->value_string));
-> >
-> > This could be < 0 on error, and at least lpfc_fdmi_hba_attr_os_ver() may present more than 64 bytes...
-> 
-> Am I putting too much faith in this comment?
-> 
-> static inline int lpfc_fdmi_set_attr_string(void *attr, uint16_t
-> attrtype, char *attrstring)
-> ...
-> /*
-> * We are trusting the caller that if a fdmi string field
-> * is capped at 64 bytes, the caller passes in a string of
-> * 64 bytes or less.
-> */
+> It is an error, but maybe I misunderstood:
 
-This comment is clearly wrong, given lpfc_fdmi_hba_attr_os_ver(). :)
-But I feel like I'm misunderstanding it since it was added by the same
-commit that added the 256-byte callers, commit 045c58c87560 ("scsi:
-lpfc: Rework FDMI attribute registration for unintential padding")
+Sorry, I meant "pr_info might have been pr_err"
+
+Konrad
 
 > 
-> I see lpfc_fdmi_hba_attr_os_ver() calls lpfc_fdmi_set_attr_string()
-> with an attrstring sized at 256 bytes:
-> char buf[256] = { 0 };
+>>> +	/* Might move this out to individual drivers if there's ever an API version bump */
+>>> +	if (gunyah_api_version(&gunyah_api) != GUNYAH_API_V1) {
+>>> +		pr_info("Unsupported Gunyah version: %u\n",
+>>> +			gunyah_api_version(&gunyah_api));
+>>> +		return -ENODEV;
+>>> +	}
 > 
-> Can we really return -E2BIG from strscpy() if the dest buffer is the
-> same size as the source buffer?
-
-I see my confusion: I didn't check the size of ae->value_string, which I
-assumed was 64 bytes. But it's 256, so in theory we can't overflow.
-
-> I'm happy to just make the standard strncpy -> strscpy replacement and
-> drop the len assignment. Let me know what you think, Kees.
-
-For robustness, let's leave the strlen() in place...
-
--- 
-Kees Cook
 
