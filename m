@@ -1,118 +1,108 @@
-Return-Path: <linux-kernel+bounces-77699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2154586092F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:09:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDFBA860948
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:17:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D11FF28638F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:09:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5562A28655E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:17:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8307C2DA;
-	Fri, 23 Feb 2024 03:09:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZzF+rUau"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75FFAD26D;
+	Fri, 23 Feb 2024 03:17:11 +0000 (UTC)
+Received: from mail-m49198.qiye.163.com (mail-m49198.qiye.163.com [45.254.49.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD1A7C13C;
-	Fri, 23 Feb 2024 03:09:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 973F6BE7D;
+	Fri, 23 Feb 2024 03:17:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.49.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708657764; cv=none; b=VpmYSOo3hYStYGIH+48PPEtt/1a2thbLEBk+sk89HxKLN8jqslcK0ysxYrfdJ5E65kv6GZ4USRKH8/NoqSv1p9NQ1yh3m0bvod3C0GrLr77lyZ5gveQhEDDWvGXCkXa5xEOpiKLvs8zhO4FqWIhHVYDs2/KFJ6HN8/B2v+p9eL8=
+	t=1708658231; cv=none; b=c4C+AJtmfY4AT3axEN0EvPYufIu6/1XuIn7kPvSmp53QnK7Q0vyq0r4tygkCwQPOeLXo5ovYJ/CRD/0N1c8yTDS0DjMid4A298R48wWqXfMXWOAcCPBtZU4Lyhy2IfOvntRhCVZfwfnzyhue/gft2DPn+st+Y1JtNehefNTF0eg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708657764; c=relaxed/simple;
-	bh=/6WvbFZ0o/8sJFaNJURwmKXqRX5w9t3INnSLhPEqsE0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=pBkw7ITzN7uaSmuTtpFxRJepZls3IowxeOtvQTwwyYXAcCjSGHMOAfm+7i5N3tWQ9NsLtGxWB6QcdTRuNi3DU/cY/wzDWVb4mj1s+II4SdfavWRe2IUK54jYsmWvNxdNAwj26n9ExLdeRxzGX+LU3LyA0VHexGPptjoT3/K8zrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZzF+rUau; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708657763; x=1740193763;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=/6WvbFZ0o/8sJFaNJURwmKXqRX5w9t3INnSLhPEqsE0=;
-  b=ZzF+rUau8EcZFl4c5ehxQxj8fwNAzTff8JRUjaPLSdTr2NYcMm5dvy4E
-   0wAXrzcvlkEnLWsGlofSGZPU1e1IHaPtAnJBV28OjgJVsn6901jRaTMXf
-   tvR97RaNUrz0TjQj09Oc5uMewGK+ObtdAS6tPXmKR7iRFb7dfmBcnt1bY
-   xMvn3Kw6FliIV1He1tBTnq+e4Mr/ZI+s4W//y+NmLpFlKGepXe9dbUPXM
-   N/nIOiRcUMZVn6FdttOrGkPswkvP+TFdJvG7ID1fG9cPHLohcx5n7rgal
-   gS/4iyMVN3sYBOUvagxG7WUVL9jLZH4AKbn3KrE/zGOc58k/e6v2SKCeZ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="2830685"
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="2830685"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 19:09:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="10462191"
-Received: from rdegger-desk1.amr.corp.intel.com (HELO [10.209.74.18]) ([10.209.74.18])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 19:09:21 -0800
-Message-ID: <c5357fa8-3f90-4f3e-a4c5-43d8ad4fdaa0@linux.intel.com>
-Date: Thu, 22 Feb 2024 19:09:21 -0800
+	s=arc-20240116; t=1708658231; c=relaxed/simple;
+	bh=AOFDVig+qtC1FMg26lE/IlypjEeqd4lm+DmWUHDkZIg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=a3UdtXsHC0qg20AstC83SkdkXsYZMb+mz2F8EcmpcHs/NfWKNEG2ug+SOaWEH/p0ny6oKm2A69MTxin0SO6wzOTuGdDOBhyOpnU3IUXPTMEBTOvfRm8aHE+O1K/1+0we0ls76yXEoSlEOaofj/b0LEeGt6ILVSX3G+gnqImbpgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=jmu.edu.cn; spf=pass smtp.mailfrom=jmu.edu.cn; arc=none smtp.client-ip=45.254.49.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=jmu.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jmu.edu.cn
+Received: from amadeus-Vostro-3710.lan (unknown [58.61.140.157])
+	by smtp.qiye.163.com (Hmail) with ESMTPA id 7FDA17E012E;
+	Fri, 23 Feb 2024 11:10:25 +0800 (CST)
+From: Chukun Pan <amadeus@jmu.edu.cn>
+To: andersson@kernel.org
+Cc: amadeus@jmu.edu.cn,
+	conor+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	konrad.dybcio@linaro.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	robh+dt@kernel.org,
+	robimarko@gmail.com
+Subject: Re: [PATCH v4 1/2] arm64: dts: qcom: ipq6018: add LDOA2 regulator
+Date: Fri, 23 Feb 2024 11:10:20 +0800
+Message-Id: <20240223031020.78744-1-amadeus@jmu.edu.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cliph5zxla23bgguzk52ulxh6trl4qcggjg7hqvrg2d4qdh3a7@mq6fewwjfk2m>
+References: <cliph5zxla23bgguzk52ulxh6trl4qcggjg7hqvrg2d4qdh3a7@mq6fewwjfk2m>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] platform/x86/intel/pmc/arl: Put GNA device in D3
-Content-Language: en-US
-To: "David E. Box" <david.e.box@linux.intel.com>,
- rajvi.jingar@linux.intel.com, platform-driver-x86@vger.kernel.org,
- linux-kernel@vger.kernel.org, hdegoede@redhat.com,
- ilpo.jarvinen@linux.intel.com
-References: <20240221211204.515159-1-david.e.box@linux.intel.com>
- <20240221211204.515159-3-david.e.box@linux.intel.com>
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20240221211204.515159-3-david.e.box@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkZQ0lCVh5NSEpMTElNH00eGFUTARMWGhIXJBQOD1
+	lXWRgSC1lBWU5DVU1KVUpPS1VKTkxZV1kWGg8SFR0UWUFZT0tIVUpKS0hKQ1VKS0tVS1kG
+X-HM-Tid: 0a8dd3f157da03a2kunm7fda17e012e
+X-HM-MType: 10
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MEk6Txw4EjMPExwWGCFDTi8c
+	HQkwCjdVSlVKTEtDTU5MQ0lNSE5KVTMWGhIXVRoWGh8eDgg7ERYOVR4fDlUYFUVZV1kSC1lBWU5D
+	VU1KVUpPS1VKTkxZV1kIAVlBSU5ITjcG
+
+Hi, Bjorn
+> I still don't see a patch that does "something-supply = <&ipq6018_l2>;",
+> which would imply that the main thing this patch achieves is that the
+> regulator framework might turn the regulator off after a while.
+
+> Shouldn't there be a user of ipq6018_l2?
+
+Although there is the sdhc node in ipq6018-cp01-c1 in the qsdk kernel,
+I don't have the official rdp board of qca, so I can't test it.
+
+Normally it looks like this:
+
+&sdhc {
+	bus-width = <4>;
+	cd-gpios = <&tlmm 62 GPIO_ACTIVE_LOW>;
+    ... /* specific properties */
+	pinctrl-0 = <&sdhci_pins>;
+	pinctrl-names = "default";
+	vqmmc-supply = <&ipq6018_l2>;
+	status = "okay";
+};
+
+As for actual routers, there are users.
+One of the examples is on openwrt, a development board like 8devices:
+https://github.com/openwrt/openwrt/blob/main/target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq6010-mango-dvk.dts#L272
+
+	vqmmc-supply = <&ipq6018_l2>;
+	cd-gpios = <&tlmm 62 GPIO_ACTIVE_LOW>;
+..
+
+The function of this node is to reference sd/emmc supply for devices
+with pmic. Please let me know if it doesn't fit in this patch series
+and I will deal with this in another pmic patch series.
 
 
-On 2/21/24 1:12 PM, David E. Box wrote:
-> To unblock Package C state entry, put the GNA device in D3 by default if no
-> driver is loaded for it.
-
-Can you add more details about the C state issue? If no driver is enumerated,
-should it not follow the firmware default value? Why not fix this in firmware?
-
->
-> Fixes: 83f168a1a437 ("platform/x86/intel/pmc: Add Arrow Lake S support to intel_pmc_core driver")
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> ---
->  drivers/platform/x86/intel/pmc/arl.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/platform/x86/intel/pmc/arl.c b/drivers/platform/x86/intel/pmc/arl.c
-> index 683ae828276b..34b4cd23bfe5 100644
-> --- a/drivers/platform/x86/intel/pmc/arl.c
-> +++ b/drivers/platform/x86/intel/pmc/arl.c
-> @@ -673,6 +673,7 @@ static struct pmc_info arl_pmc_info_list[] = {
->  };
->  
->  #define ARL_NPU_PCI_DEV			0xad1d
-> +#define ARL_GNA_PCI_DEV			0xae4c
->  /*
->   * Set power state of select devices that do not have drivers to D3
->   * so that they do not block Package C entry.
-> @@ -680,6 +681,7 @@ static struct pmc_info arl_pmc_info_list[] = {
->  static void arl_d3_fixup(void)
->  {
->  	pmc_core_set_device_d3(ARL_NPU_PCI_DEV);
-> +	pmc_core_set_device_d3(ARL_GNA_PCI_DEV);
->  }
->  
->  static int arl_resume(struct pmc_dev *pmcdev)
+Thanks,
+Chukun
 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.25.1
 
 
