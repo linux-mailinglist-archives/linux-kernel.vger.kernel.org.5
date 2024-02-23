@@ -1,170 +1,95 @@
-Return-Path: <linux-kernel+bounces-77671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4901E8608AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:05:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7ABEF8608B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:09:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C0A5281964
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:04:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0B8328305A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:09:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFA0BBA30;
-	Fri, 23 Feb 2024 02:04:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00BDEC13D;
+	Fri, 23 Feb 2024 02:08:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mAU81YnL"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70D41B64C;
-	Fri, 23 Feb 2024 02:04:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="pc6wQcWD"
+Received: from mail-177132.yeah.net (mail-177132.yeah.net [123.58.177.132])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5098B67A;
+	Fri, 23 Feb 2024 02:08:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708653890; cv=none; b=Wrm8SmRIHFSahTj4s3vOM0HvSCFtIy/wUHbhZuKxJNvOuM47s3ynxMk63v09Y8DXjqxdU0jkV2Ud3Iooy9rLvsijmn6/mjUM412piTBXTB3zFvw2N/W1QS2suazU703pl0QdcrxLXMWYVPSIILrdUeqLwZCTxnKXj6YucrRU/CM=
+	t=1708654132; cv=none; b=GQXNM7VsbTzdzsHk+F7CBCtTEjSuqIDcAt1Q4zoZy32yY9xQPrF6K3yEotMnY1WeoCL3V4X7+fG6nas7toeVdSeQMEWpsDlSGYTCme346ezyyhoWpUuaLWMBKVLUt8Ak9tMjpWrLzMwfmcxgYQaI6AyVDvljsKd+RcbsGcjvpGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708653890; c=relaxed/simple;
-	bh=8ejT+LrVX/4RdW4wa47l2VUvGiguesRa+VgG4maP9FU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lktdSxUNai5DNZBNx3qHBV12qKZl2l0d+F3IR9rNu/rnA8x7TC6R5J23SQbKwpLASem6+yD3g5/PxH0yTO8nVN3V0ID+85Kr9j1/USi6lLwp547zaOH58Gt/kv4IBeyE5SR7g/OjX/ZAggBOAmGKbeXNZUwdFhiczenRuGq6Uw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mAU81YnL; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33d6cc6d2fcso122471f8f.2;
-        Thu, 22 Feb 2024 18:04:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708653887; x=1709258687; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Nyxvpi0xE/P/bl5O4PoDj0ei2BsOzwSCujLwQU9ULXc=;
-        b=mAU81YnLYcyXMxCLbebhwL5W5Tb1wBu3o4a4/fGXm5g4joALMEUT10k0Uohy/9HPK8
-         MaWfgYYrpXe77K+4JycIUOY6Fh/ucT8DY/Nkp3lWW2ZzNpnHcgPbekRr9M8qAo8yqXNA
-         DuRrB+Kjxfo6UwbPQKjsT3sdiCxY6WbTSsg2cdX0SauQ+C2vWIFTH/5G63qUHo9aS+QD
-         CI/0quemxKQjGdh74oQbRvHDGoRvDfPFoZ5OcMnJbnEYssaZaDpitmBTlHFHrAq916GZ
-         ZvaSQClCKIPDNkGwWdRMhhPcT34a9K8Zw/sTPW6FajkH09tJiqmBdEm8RjE0kOY42jLW
-         5x9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708653887; x=1709258687;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Nyxvpi0xE/P/bl5O4PoDj0ei2BsOzwSCujLwQU9ULXc=;
-        b=XXuYPWQ20c68lYx90XKXI/FbNFgOtkLTt/KGBEwzQ14/8ktcb1hGfY27RTLeVeXQRw
-         Gm4HnqLe2JwKniruBvlMI7OstZFB+bmHUTMFWM/c1Yk3yVgySrGhZgGTUIoaV6Iypg3X
-         3egY1RBUIvEDhvjfaZufLc4ia4wGiY6x34QcDrrbuIi4zPgg00bH9MdbLg5jcwBbcida
-         6Ndrmfgwvo833hLEl/0MZUl8+wcCKMvXK7odZTxQYYuvnUFlCIVpaEcjZe+jouftPvWK
-         jlMGVsY3iAX3qC0vDLMyvgza9vQRvl1EG4AEJLzsxJW6+RPYpHiF9lMgWZnpAE2fGXgl
-         R5mw==
-X-Forwarded-Encrypted: i=1; AJvYcCV64cGbK1Gs3ItCz/OMoRm1m4q3DRvVBbjzA5xTwvctM4Rw2LEk9YT1lV30SqitCzDPacevywc3eT1WIGKvaDHVsQ7hqTKPMDdyBegvi1TfjfoGnKvdnbUO9M3z0C2gYTIO
-X-Gm-Message-State: AOJu0YyJs2Rju/nLzbgS7jhYHNpF3fCO+st801Qh4q7zJvnchAE0J5VH
-	Hpvt39rt+rNMbr+MOP1PFq25c3LWN/Rw04ATx9UAigXmVt6hKRjb5BvqBHNnanYTKDanA7+d7z2
-	aL3otzXWDXTnMnmAKRYtM8AXg1rA=
-X-Google-Smtp-Source: AGHT+IHmUwPglAVusOGqOdl5hW5f2mZgmhM3jhm2xeuOiIAE4he5enBJIMd4q7u84smJCQGPeYCb3qzJi4WN3ibmHdQ=
-X-Received: by 2002:a5d:6512:0:b0:33d:6984:3f80 with SMTP id
- x18-20020a5d6512000000b0033d69843f80mr461742wru.67.1708653886707; Thu, 22 Feb
- 2024 18:04:46 -0800 (PST)
+	s=arc-20240116; t=1708654132; c=relaxed/simple;
+	bh=ZMkOBjon0zabIVHymipUw7nZW87QH+RIQGogdjEOVm8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=avMcl1u4So5vnk5rgKlue5DWme7W1of6Nu7Vaeda8GmHfCCEnrERUVJ1FVYbi08qtnE9Qyt50tEaRjMHakQXuQZuC7B0PS9qGLdJVl+3/yJyjv0VcZGqKpYduVL0DxGmNHhn8hFBtEsYeQBofaG4IThp8SU0S17O87hO9SBJOiE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=pc6wQcWD; arc=none smtp.client-ip=123.58.177.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
+	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
+	Content-Type; bh=lCE9TnObaj9CSGcGHs9TSjrZX9bW094ZFtuDVElRcVg=;
+	b=pc6wQcWDigcnsqIJFEhtNoozHHMXPVOdQ9QGTxZKVuJ/+cl3LAWv8I/78CXOqM
+	eYRGgx06AHlQE3Ed6kk/2MSw3jCupZWDo/E5dqrsXZTqamzd7dZvUSr/WWsWiE1F
+	VSWTtOzX9sBEjDRmM0EOCXjwMMg6mEjuRKjxQKXDTFn3I=
+Received: from dragon (unknown [183.213.196.200])
+	by smtp2 (Coremail) with SMTP id C1UQrADHrojr_ddlCaQsBA--.4847S3;
+	Fri, 23 Feb 2024 10:07:40 +0800 (CST)
+Date: Fri, 23 Feb 2024 10:07:39 +0800
+From: Shawn Guo <shawnguo2@yeah.net>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Frank Li <Frank.Li@nxp.com>, Ulf Hansson <ulf.hansson@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>, Wei Fang <wei.fang@nxp.com>,
+	Shenwei Wang <shenwei.wang@nxp.com>,
+	Clark Wang <xiaoning.wang@nxp.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, imx@lists.linux.dev
+Subject: Re: [PATCH v2 0/4] Add 8qm SMMU information
+Message-ID: <Zdf96y7q4298dkmG@dragon>
+References: <20240201-8qm_smmu-v2-0-3d12a80201a3@nxp.com>
+ <20240202110511.135d26b7@kernel.org>
+ <ZcIPCxgO3Gxc/aXh@dragon>
+ <20240206074151.577d33f1@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201125225.72796-1-puranjay12@gmail.com> <20240201125225.72796-2-puranjay12@gmail.com>
- <ZdegTX9x2ye-7xIt@arm.com>
-In-Reply-To: <ZdegTX9x2ye-7xIt@arm.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 22 Feb 2024 18:04:35 -0800
-Message-ID: <CAADnVQLGGTshMiQAWwJ9UzrEVDR4Z8yk+ki9pUqKLgcH0DRAjA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/2] arm64: stacktrace: Implement
- arch_bpf_stack_walk() for the BPF JIT
-To: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Puranjay Mohan <puranjay12@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Will Deacon <will@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240206074151.577d33f1@kernel.org>
+X-CM-TRANSID:C1UQrADHrojr_ddlCaQsBA--.4847S3
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUcjg4DUUUU
+X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiFQyNZV6Nm5-2UQAAsB
 
-On Thu, Feb 22, 2024 at 11:28=E2=80=AFAM Catalin Marinas
-<catalin.marinas@arm.com> wrote:
->
-> On Thu, Feb 01, 2024 at 12:52:24PM +0000, Puranjay Mohan wrote:
-> > This will be used by bpf_throw() to unwind till the program marked as
-> > exception boundary and run the callback with the stack of the main
-> > program.
-> >
-> > This is required for supporting BPF exceptions on ARM64.
-> >
-> > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> > ---
-> >  arch/arm64/kernel/stacktrace.c | 26 ++++++++++++++++++++++++++
-> >  1 file changed, 26 insertions(+)
-> >
-> > diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktr=
-ace.c
-> > index 7f88028a00c0..66cffc5fc0be 100644
-> > --- a/arch/arm64/kernel/stacktrace.c
-> > +++ b/arch/arm64/kernel/stacktrace.c
-> > @@ -7,6 +7,7 @@
-> >  #include <linux/kernel.h>
-> >  #include <linux/efi.h>
-> >  #include <linux/export.h>
-> > +#include <linux/filter.h>
-> >  #include <linux/ftrace.h>
-> >  #include <linux/kprobes.h>
-> >  #include <linux/sched.h>
-> > @@ -266,6 +267,31 @@ noinline noinstr void arch_stack_walk(stack_trace_=
-consume_fn consume_entry,
-> >       kunwind_stack_walk(arch_kunwind_consume_entry, &data, task, regs)=
-;
-> >  }
-> >
-> > +struct bpf_unwind_consume_entry_data {
-> > +     bool (*consume_entry)(void *cookie, u64 ip, u64 sp, u64 fp);
-> > +     void *cookie;
-> > +};
-> > +
-> > +static bool
-> > +arch_bpf_unwind_consume_entry(const struct kunwind_state *state, void =
-*cookie)
-> > +{
-> > +     struct bpf_unwind_consume_entry_data *data =3D cookie;
-> > +
-> > +     return data->consume_entry(data->cookie, state->common.pc, 0,
-> > +                                state->common.fp);
-> > +}
-> > +
-> > +noinline noinstr void arch_bpf_stack_walk(bool (*consume_entry)(void *=
-cookie, u64 ip, u64 sp,
-> > +                                                             u64 fp), =
-void *cookie)
-> > +{
-> > +     struct bpf_unwind_consume_entry_data data =3D {
-> > +             .consume_entry =3D consume_entry,
-> > +             .cookie =3D cookie,
-> > +     };
-> > +
-> > +     kunwind_stack_walk(arch_bpf_unwind_consume_entry, &data, current,=
- NULL);
-> > +}
->
-> Too many "cookies", I found reading this confusing. If you ever respin,
-> please use some different "cookie" names.
->
-> I guess you want this to be merged via the bpf tree?
+On Tue, Feb 06, 2024 at 07:41:51AM -0800, Jakub Kicinski wrote:
+> On Tue, 6 Feb 2024 18:50:51 +0800 Shawn Guo wrote:
+> > > Any preference on whether all these go via a platform tree,
+> > > or should we pick up the net patch to netdev? I guess taking
+> > > the DTB via netdev would be the usual way to handle this?  
+> > 
+> > No, it's not.  Taking DTS changes through arch/platform tree is the
+> > usual way.
+> 
+> I said DTB.
 
-We typically take bpf jit patches through bpf-next, since
-we do cross arch jits refactoring from time to time,
-but nothing like this is pending for this merge window,
-so if you want it to go through arm64 tree that's fine with us.
+If the DTB here means Device Tree Blob which is generated by DTC (Device
+Tree Compiler) taking DTS (Device Tree Source) as input, it's a build
+result and so neither of us could take.
 
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Shawn
 
-Thank you for the review!
 
