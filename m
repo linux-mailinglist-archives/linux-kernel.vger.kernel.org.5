@@ -1,145 +1,140 @@
-Return-Path: <linux-kernel+bounces-78394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 605D28612E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:40:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CC978612E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:40:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 922D21C215F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:40:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26A8A2830AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:40:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 088B2823CC;
-	Fri, 23 Feb 2024 13:38:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21DB17F7DB;
+	Fri, 23 Feb 2024 13:39:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YnagCjM0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="O1pfL0Nj"
+Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E2F6823AE;
-	Fri, 23 Feb 2024 13:38:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C8666280B
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:39:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708695525; cv=none; b=pTPsrx8VIZaSJ6AN9tjcp1IMu/4aTbA8iiNmxM11zBaEqfInDMgItrZdqHIzivmC90uwt2m9VspZRF+vT308pb92S2q0SOKSJIDyhZv9Mi/54Vh8wCGW/xMNHBpVnusBPifrLu6s3qCbHkV4DwYjj6E0VairnTCkBtw4bkAR7b8=
+	t=1708695578; cv=none; b=eYIi47quYRXUWptev36wCLvlwgHEn5aIShi10fMDqCmTNgzu43Nu56K/sBBh8vWpOUBPb5PM4/UJ/mcsdOCi6mzKD7VLAwgi7eb9rtAbc+WLFWpQdFfdnBJi65I7i7fRjMEpm8o81WYclPFixd/8w6kamnx+psq/w1gdZLSbsAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708695525; c=relaxed/simple;
-	bh=n7EJGb6r/9uWhXBTxysKjx17Y2iaQNTqlPUbVd030hI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rxERmYSxqCzqbm5LOvrItHeLk1lMJRWMeL7z+m6e0VGNECKG9urm4i+GtostmpWZ/0Me4sOku11MwW/oRowz2DUAGtGDzNdqm7Bpy6+mX3C297Eo7eXx9XIvjZfFogTVRwPF4Et6LpKBdLNu871aFJ6/leM250Acds/saPY7ITw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YnagCjM0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D0BAC43399;
-	Fri, 23 Feb 2024 13:38:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708695525;
-	bh=n7EJGb6r/9uWhXBTxysKjx17Y2iaQNTqlPUbVd030hI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YnagCjM0KBRU4knIa5ukmyCLbIBQ79mVq8ZFaUsG4bPoq3W2BaAfbzZvmZXqEfMtQ
-	 YYmdDI6hwLjWm88p8iugiOesjBI7iZxep5trLFczsqllK4hpZ/qXJGzNeDR4h2fg+J
-	 XfR4Xs48Ge1PZ8kmw6IVM1ETX8+ykApcfKU7+kbEl0YfhUTmIh/6bCoD6J+79yZO55
-	 2jPbKdE3fhQQWwIKWFQ8ZJSH78wyHoY0ZMjuiBRZb+ZZ9dEoc78qmnj6RZKr3Vlpot
-	 L6eYVy1EjkbMwlLCm3iCTXf2YQDgGfCqRjRbPBj0PCbYI0ErS8EEwSqwMYIiQ5hXi8
-	 6QYi5pY8GEQnA==
-From: Conor Dooley <conor@kernel.org>
-To: linux-riscv@lists.infradead.org
-Cc: conor@kernel.org,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Tom Rix <trix@redhat.com>,
-	rust-for-linux@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH v2 3/3] RISC-V: enable building 64-bit kernels with rust support
-Date: Fri, 23 Feb 2024 13:38:05 +0000
-Message-ID: <20240223-palatable-quintuple-ed221a517407@spud>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240223-leverage-walmart-5424542cd8bd@spud>
-References: <20240223-leverage-walmart-5424542cd8bd@spud>
+	s=arc-20240116; t=1708695578; c=relaxed/simple;
+	bh=Twp7tfSTw0JcrYxColLY4Ax9TG/pkPRhM7VLYkZRS4A=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fcOvLTO+HAqbLOOmAxSM9jTgTuzW4wPJYTLPdzM/O/87iwkV7tYuudOYDU+L7fMkIYh0wwmhvZoPTx5N5PEIQuDTv8PQq4c9tXNRZu7l7IZ4bxDOvM4fANBh2g/C2YxcT33pYcOSRISwKWAHS2OrpfUCd1HBRwFiGX/dgJT/s50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=O1pfL0Nj; arc=none smtp.client-ip=209.85.166.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7c40863de70so44332239f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 05:39:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708695575; x=1709300375; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=d4x2sMmK8Ljy9DYC/W73ZknuhG0GdB53Q7DPx/D50TQ=;
+        b=O1pfL0NjKwcPNi6v4TRbX29zYKLHT9rMUoyBA4x2AZuL0ZSjaepb9uKDoEpUo3cMzk
+         pJ9Imwnzko2bF3xyF4oqRTx3yD+bDoWAtWke12lKiK1u8FVmMYJGv8J2C24svYf45wow
+         xTp4qQ7ZXEjU1BbrXn5OZ5+fmmRd7M2ERjJrtmT00sj5N8j1m7DmsgMNOtWy11a1fKPo
+         hcJpWg8Baju6GSUd/gPvjBVW95iGZhqW/sUnGZfMc8y420mj4lABxgkkREtMgbtuiX7t
+         x5sulLg0C39I3Dyt0Tk4ZZ6wxXAdpSwCzpD1TyKtIhVYM2/ckv/0/PlqMbrtc+tbvB9/
+         pxLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708695575; x=1709300375;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d4x2sMmK8Ljy9DYC/W73ZknuhG0GdB53Q7DPx/D50TQ=;
+        b=sYdht2RZax2KzNPdm/a87vb/mEgnOYFffk4F03WiYg2x/PXpd56fxYfcq2BtEKm5nN
+         vUHnpZ49AVJOAFeqwcOJ89Oqljdb9+xZR0kFw4ZKVW8oZ3LMvl1NyKQzZjeAbP8IjuMF
+         6/1cwNIOKXIc+XoEZNEmunFrn8atWUMzkBpL167U/5vaAs4Fo0UeR4NE7iKCuF6G7f7T
+         jLe97S0L5KoqTBNiurNEKnDU2eKqDehUhjaoBPylibNX3MAWNFSJsk6MTM6ehXH/eU+7
+         G+RHaSVrzxJl4bz/EjclFWtOQVC7uEX37BMd76cE6JsgwTgn4Bhm5mfxS7tbqNuNG4Zo
+         V4pA==
+X-Forwarded-Encrypted: i=1; AJvYcCUH+5l8Mzoykf+ZT1qfFV7w/tpfVQBvol0TNO3cTHBoUGMN46I7tTq0lbCxvvzhM7hwoLpYxogQqy3tx1ljvC3xt2e+eLgiPdhNgVn+
+X-Gm-Message-State: AOJu0YxWA/tWeoCBJA4RugoXwQrZivym9hO0xOAy0GixKmb7xmmDldgF
+	6mjhGVEAtIiIWTR0j5QW8EMMGok7xwVmLiVoV5xOu7vpJDUqFBoAgezVF6n5e1E=
+X-Google-Smtp-Source: AGHT+IFrz5R0BlotlFi4jZ+FPrD+nKWN+cqkiTi9yfrUfHfyDhCGmqbGauLW7N/Kb+gQyn8NGnS1AQ==
+X-Received: by 2002:a6b:c90e:0:b0:7c7:9185:e58e with SMTP id z14-20020a6bc90e000000b007c79185e58emr1936714iof.12.1708695575154;
+        Fri, 23 Feb 2024 05:39:35 -0800 (PST)
+Received: from localhost.localdomain (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
+        by smtp.gmail.com with ESMTPSA id p11-20020a6b630b000000b007c76a2d6a98sm1836838iog.53.2024.02.23.05.39.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 05:39:34 -0800 (PST)
+From: Alex Elder <elder@linaro.org>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: mka@chromium.org,
+	andersson@kernel.org,
+	quic_cpratapa@quicinc.com,
+	quic_avuyyuru@quicinc.com,
+	quic_jponduru@quicinc.com,
+	quic_subashab@quicinc.com,
+	elder@kernel.org,
+	netdev@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/6] net: ipa: don't abort system suspend
+Date: Fri, 23 Feb 2024 07:39:24 -0600
+Message-Id: <20240223133930.582041-1-elder@linaro.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2571; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=dXiTCnXsPq6szb52W4FfTLrkIWRphwTLGk/WpEPIpxA=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDKk35u+R+n7i+OwT39IUWaQPMGd9WVleuj/N9dhv5lkZX 950bXrd0VHKwiDGwSArpsiSeLuvRWr9H5cdzj1vYeawMoEMYeDiFICJeL1nZNg/wWKXZM7OpDYn 8zeiOy94+N68+CslNMT1aGxkUqdO6GWGP1wisa+2BoUt0/q+ds2FPTL/DtavLuPzr4z/Oe/D15q /ZWwA
-X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
 Content-Transfer-Encoding: 8bit
 
-From: Miguel Ojeda <ojeda@kernel.org>
+Currently the IPA code aborts an in-progress system suspend if an
+IPA interrupt arrives before the suspend completes.  There is no
+need to do that though, because the IPA driver handles a forced
+suspend correctly, quiescing any hardware activity before finally 
+turning off clocks and interconnects.
 
-The rust modules work on 64-bit RISC-V, with no twiddling required.
-Select HAVE_RUST and provide the required flags to kbuild so that the
-modules can be used. The Makefile and Kconfig changes are lifted from
-work done by Miguel in the Rust-for-Linux tree, hence his authorship.
-Following the rabbit hole, the Makefile changes originated in a script,
-created based on config files originally added by Gary, hence his
-co-authorship.
+This series drops the call to pm_wakeup_dev_event() if an IPA
+SUSPEND interrupt arrives during system suspend.  Doing this
+makes the two remaining IPA power flags unnecessary, and allows
+some additional code to be cleaned up--and best of all, removed.
+The result is much simpler (and I'm really glad not to be using
+these flags any more).
 
-32-bit is broken in core rust code, so support is limited to 64-bit:
-ld.lld: error: undefined symbol: __udivdi3
+The first patch implements the main change.  The second and
+third remove the flags that were used to determine whether to
+call pm_wakeup_dev_event().  The next two remove a function that
+becomes a trivial wrapper, and the last one just avoids writing
+a register unnecessarily.
 
-As 64-bit RISC-V is now supported, add it to the arch support table,
-taking the opportunity to sort the table in alphabetical order.
+Note that the first two patches will have checkpatch warnings,
+because checkpatch disagrees with my compiler on what to do when
+a block contains only a semicolon.  I went with what the compiler
+recommends.
 
-Co-developed-by: Gary Guo <gary@garyguo.net>
-Signed-off-by: Gary Guo <gary@garyguo.net>
-Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
-Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
----
- Documentation/rust/arch-support.rst | 1 +
- arch/riscv/Kconfig                  | 1 +
- arch/riscv/Makefile                 | 2 ++
- 3 files changed, 4 insertions(+)
+clang says: warning: suggest braces around empty body
+checkpatch: WARNING: braces {} are not necessary for single statement blocks
 
-diff --git a/Documentation/rust/arch-support.rst b/Documentation/rust/arch-support.rst
-index 73203ba1e901..9e18a81fc2ef 100644
---- a/Documentation/rust/arch-support.rst
-+++ b/Documentation/rust/arch-support.rst
-@@ -16,6 +16,7 @@ support corresponds to ``S`` values in the ``MAINTAINERS`` file.
- Architecture   Level of support  Constraints
- =============  ================  ==============================================
- ``loongarch``  Maintained        -
-+``riscv``      Maintained        ``riscv64`` only.
- ``um``         Maintained        ``x86_64`` only.
- ``x86``        Maintained        ``x86_64`` only.
- =============  ================  ==============================================
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 5c59e00405e3..3eaae08e1d5c 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -142,6 +142,7 @@ config RISCV
- 	select HAVE_REGS_AND_STACK_ACCESS_API
- 	select HAVE_RETHOOK if !XIP_KERNEL
- 	select HAVE_RSEQ
-+	select HAVE_RUST if 64BIT
- 	select HAVE_STACKPROTECTOR
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select HOTPLUG_CORE_SYNC_DEAD if HOTPLUG_CPU
-diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index ebbe02628a27..22fdb1e83744 100644
---- a/arch/riscv/Makefile
-+++ b/arch/riscv/Makefile
-@@ -34,6 +34,8 @@ ifeq ($(CONFIG_ARCH_RV64I),y)
- 	KBUILD_AFLAGS += -mabi=lp64
- 
- 	KBUILD_LDFLAGS += -melf64lriscv
-+
-+	KBUILD_RUSTFLAGS += -Ctarget-cpu=generic-rv64
- else
- 	BITS := 32
- 	UTS_MACHINE := riscv32
+					-Alex
+
+Alex Elder (6):
+  net: ipa: don't bother aborting system resume
+  net: ipa: kill IPA_POWER_FLAG_SYSTEM
+  net: ipa: kill the IPA_POWER_FLAG_RESUMED flag
+  net: ipa: move ipa_interrupt_suspend_clear_all() up
+  net: ipa: kill ipa_power_suspend_handler()
+  net: ipa: don't bother zeroing an already zero register
+
+ drivers/net/ipa/ipa_interrupt.c | 50 ++++++++++++++++-----------------
+ drivers/net/ipa/ipa_interrupt.h |  8 ------
+ drivers/net/ipa/ipa_power.c     | 33 ----------------------
+ drivers/net/ipa/ipa_power.h     | 11 --------
+ 4 files changed, 25 insertions(+), 77 deletions(-)
+
 -- 
-2.43.0
+2.40.1
 
 
