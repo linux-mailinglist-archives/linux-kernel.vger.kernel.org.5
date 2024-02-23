@@ -1,128 +1,141 @@
-Return-Path: <linux-kernel+bounces-78563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECAA4861516
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:03:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EDC8861519
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:04:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7619286636
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:03:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE2FBB23284
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:04:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC51B8003B;
-	Fri, 23 Feb 2024 15:03:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6701823D1;
+	Fri, 23 Feb 2024 15:03:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F9pHssy9"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="a8BWlIjs"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F05429AF;
-	Fri, 23 Feb 2024 15:03:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CFCB29AF
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 15:03:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708700620; cv=none; b=aadnKTJzLnYY25d9DHqiwY7YfYtPpKmc4sqvcr5gV8sIbuGDwD5cKOlJRcit/uaKeeFYmwhxLEeAr6Xj55mEVwz41x5WWDzPZTGraJ+Ms4YKACr7ngS6IJsNwOXRCdXN4qUPfPq64bMnfeJvur2d6y3E/3Cpnm45UEmbeymNK60=
+	t=1708700625; cv=none; b=TGeM+df/zI5ym31FvS9kMouxz+yZHSKZnIniY7TtPFqdhbwNxZt7UN9Gilo5OQLc+4s2dKQH+3MRbA3r5VP0/DyGNSBQ9u88wIuGGZIKT1qAKRJ0MZkg38n5ySGstBihu+og7X33/PAYVJixV2Ctr5qAjsVKXJ2nxRXtwPMBxFA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708700620; c=relaxed/simple;
-	bh=XJ4uK049YbYNUUHoL7aPqziogI3mOCKCzfvXZt0+OhQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MrVDZlbFJGkolMUaIBcNd6ietRAiMoWl3xhICiyr3VbGuhHL7FJbi5sARWpYIuZVYqhVDB0Pb46JZnTf1MLzoIV6fV/wECB4QxWuv89kONYIkCMfK4/P+qJuvSJlDBYX9cusGagozlc0XmcXCcqirs7jX7OfvKcKUtlMxR3ceQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=F9pHssy9; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708700619; x=1740236619;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=XJ4uK049YbYNUUHoL7aPqziogI3mOCKCzfvXZt0+OhQ=;
-  b=F9pHssy9YJIaILwjvrSej5aVFCT9XhR0Br2TpsLhjlo+FoAlIDtey8B8
-   m4x1YohYv3zbD9BKWrpBOTjAAmg2l1cCtZM1sTWZ0k8rUvISUk9pdV8Yq
-   cAGseRWLVh55t3yWOcSRUsfjEmQtX9jyJQgBh67RRHZ69FtLsKHvCKEoP
-   Z9V2R5jDsFd33ihk2jJG+2FcyRyr5P5vcpZ23maEKMIVDuCxPfvonokRl
-   Do+ijkRUoo8kIuj0PYF888Lm8pJfuXTE4kkQHhcIyb2WaGNvyQp8KMe/M
-   FfNIquHdIQopare3kwMB43VqK6m66JfuPdTuvUCK1br/q0RFAuS2KFGE3
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="6833945"
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="6833945"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 07:02:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="913748390"
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="913748390"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 07:02:33 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rdX4H-00000006vhH-3v03;
-	Fri, 23 Feb 2024 17:02:29 +0200
-Date: Fri, 23 Feb 2024 17:02:29 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Florian Fainelli <florian.fainelli@broadcom.com>
-Cc: Andrew Jeffery <andrew@codeconstruct.com.au>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org, linux-rpi-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org, linux-tegra@vger.kernel.org,
-	Jiri Slaby <jirislaby@kernel.org>, Joel Stanley <joel@jms.id.au>,
-	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Al Cooper <alcooperx@gmail.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Paul Cercueil <paul@crapouillou.net>,
-	Vladimir Zapolskiy <vz@mleia.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Andi Shyti <andi.shyti@linux.intel.com>
-Subject: Re: [PATCH v1 10/14] serial: 8250_of: Switch to use
- uart_read_port_properties()
-Message-ID: <ZdizhVPfwFp72ioI@smile.fi.intel.com>
-References: <20240221183442.4124354-1-andriy.shevchenko@linux.intel.com>
- <20240221183442.4124354-11-andriy.shevchenko@linux.intel.com>
- <0a828f2c50de712940fb9a881702ac1678a35b7c.camel@codeconstruct.com.au>
- <ZddKzHplwOX7naLv@smile.fi.intel.com>
- <Zdd5m2xIPlGI0_Qv@smile.fi.intel.com>
- <Zdd6lnXwvpPPUhRR@smile.fi.intel.com>
- <e5fd9d8b-84eb-4ef9-82ab-ff4ecc41c0d5@broadcom.com>
- <ad91eec0-39da-4b9c-8da7-f1e98bb4565b@broadcom.com>
+	s=arc-20240116; t=1708700625; c=relaxed/simple;
+	bh=8jil4mbSESgq2jO/a3+fL4kkeJu1icvqEgSgVIwduTw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=g6COWeNTGfUJwpLTuGpZ8z4VBLW47F6yk1Mokn2czGemZ1b5qut2BVSIr3uU3w1FS68CQAkwNbXGRt3E8CMEZzSOlbGo+5sZQUEGoBxThE7Hz8alk0M75ojN72wwsA3xrfNXf2IUPGRVFKirfHkI/kIj4ZYeIb3k2NX1LHbr68Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=a8BWlIjs; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708700621;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=ecX1ZPlY/o2pCTZHa4NF2QdsLPgZkb3A5+qcr4AfsNg=;
+	b=a8BWlIjsFFIQaFak8sNaCq93K3ipq3Xo2AKSUCot620v/DKoSXaNcCFzEJWXo11GGJFNXT
+	ABEON+Mcis27lzAIXUt30So106VqiOAL6PjA8mJGCHUiJlhAMiDatkvhIojfy3GeE/1ut0
+	4ppk1dqEXSktJfFnn6H4MFlFfsJNzpA=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-553-BuReJdIsPAaY59_MKB_8HA-1; Fri, 23 Feb 2024 10:03:40 -0500
+X-MC-Unique: BuReJdIsPAaY59_MKB_8HA-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-564fec337b1so471357a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 07:03:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708700618; x=1709305418;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ecX1ZPlY/o2pCTZHa4NF2QdsLPgZkb3A5+qcr4AfsNg=;
+        b=UI4AWBRhNLzoIVcxh4PeqLDr38WbYuhX1JCeAfdKa2H4ff/YG2O6FICAXc3NgyQ4pM
+         KmxtIT4Yz/K8fZBxlid20czeNax2zVLJwNnNoFlisMi+l1LTiBsqVxbR7UOpaMndrChn
+         Kml2X6kH00Yfqi6TM3o1G1l/bNZdoSu6JI3yIrKqYVQnjd/b2joL1ZOrqdMaG6v0HcIO
+         FT8FmSW12/MkE00R61JYvDTEETzT/4hoKZKzO+zWgMtCceqnHDaWzC3+g023ZCVgvxeb
+         DRJs6ulSZ3aAgzSk2923H+jmG8ISLVkV4WsG/u05FJyEeWEMK16+BQbxBuqvpbxGgGKW
+         seAw==
+X-Gm-Message-State: AOJu0Ywb7yE4lOIaJ2vCb2RF2lUTW5b3mKmHHubruBS6QpIT64TH55YQ
+	t480sIcS6ZoXmoE05xg0XtpdrkuexiAUE+2gNjobHzKJqhDEElerbNmsCJqg6GAwx3lDgQRZ54T
+	anEgksGMlBJGY5oWJtcE/NFE8GBTLnF4p0IbQjeOzVaQXEyD7HhywyiJE9ElkJnstqUwHmw==
+X-Received: by 2002:aa7:d314:0:b0:565:78ff:f066 with SMTP id p20-20020aa7d314000000b0056578fff066mr89566edq.5.1708700618635;
+        Fri, 23 Feb 2024 07:03:38 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFqlD1AAnBGfo+7yBY7w2ih/9JAT8JlEWHA/Zh1Qj8q87uZI6FDoqnsd4bhnIUJx7wE7MAsyw==
+X-Received: by 2002:aa7:d314:0:b0:565:78ff:f066 with SMTP id p20-20020aa7d314000000b0056578fff066mr89548edq.5.1708700618315;
+        Fri, 23 Feb 2024 07:03:38 -0800 (PST)
+Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
+        by smtp.googlemail.com with ESMTPSA id e26-20020a50d4da000000b00564024b7845sm6944716edj.38.2024.02.23.07.03.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Feb 2024 07:03:37 -0800 (PST)
+Message-ID: <0fab8859-5dd1-4a83-8ddf-8d74401ba298@redhat.com>
+Date: Fri, 23 Feb 2024 16:03:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ad91eec0-39da-4b9c-8da7-f1e98bb4565b@broadcom.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 02/11] KVM: introduce new vendor op for
+ KVM_GET_DEVICE_ATTR
+Content-Language: en-US
+To: Sean Christopherson <seanjc@google.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com,
+ aik@amd.com
+References: <20240223104009.632194-1-pbonzini@redhat.com>
+ <20240223104009.632194-3-pbonzini@redhat.com> <Zdivel5TiNLG8poV@google.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Autocrypt: addr=pbonzini@redhat.com; keydata=
+ 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
+In-Reply-To: <Zdivel5TiNLG8poV@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 22, 2024 at 11:54:46AM -0800, Florian Fainelli wrote:
-> On 2/22/24 09:39, Florian Fainelli wrote:
-> > On 2/22/24 08:47, Andy Shevchenko wrote:
-
-..
-
-> > Thanks, on 8250_bcm7271.c with the above hunk applied, I did not spot
-> > any differences between the values returned by stty or a cat
-> > /sys/class/tty/ttyS0/* before or after, the console remained fully
-> > functional. I will see if I can run an additional test where I removed
-> > the DT's "clocks" property and confirm that the fall back to
-> > "clock-frequency" works.
+On 2/23/24 15:45, Sean Christopherson wrote:
+> And as I recently found out[2], u64_to_user_ptr() exists for this exact reason.
 > 
-> Also appears to work properly on a Raspberry Pi 4 with the console using the
-> bcm2835-aux driver, will provide Tested-by tags on the next submission,
-> thanks!
+> I vote to convert to u64_to_user_ptr() as a prep patch, which would make this all
+> quite a bit more readable.
 
-Thank you for prompt testing on real HW!
+Sounds good.
 
--- 
-With Best Regards,
-Andy Shevchenko
-
+Paolo
 
 
