@@ -1,121 +1,218 @@
-Return-Path: <linux-kernel+bounces-79226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79227-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DA3A861F39
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:44:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E5C0861F40
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:47:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECB0F2889F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:44:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09D71B223EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:47:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AE5314CAA0;
-	Fri, 23 Feb 2024 21:44:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAB2C14C5B5;
+	Fri, 23 Feb 2024 21:47:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail-com.20230601.gappssmtp.com header.i=@gmail-com.20230601.gappssmtp.com header.b="yPUj50H3"
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ColIOMfX"
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2073.outbound.protection.outlook.com [40.107.102.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F54F14AD04;
-	Fri, 23 Feb 2024 21:44:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708724663; cv=none; b=ZDOsSd3iUkiA5t/xrSbTv4jh3YAju6gtOgsNcSuQWFl5EiUkmIkT08nRUxoGIpp1Z2Z8aX84t5cIarAJl7dCTKxepsv5x/3Z3lcSwdTyGgIgbV1fBWszU842LlMWCh9XvsgflB28u1qpZ3VurZZzFyDzJNmHvfsP9qlOK8QjTR0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708724663; c=relaxed/simple;
-	bh=Pe5erZHyCvS6VkWlhzfR04p/Sev+tZt7VSqDg3j4P8Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SLqWKOwGeqShL6Gl+QfKdFkgdP3XpdKm6DXfTGDJvBDts0VdRztg2yq+DjQSj9UDbvCjglWLOxppja/8KP4GxIUlefhoOVkxZ3s+JgPuU1TcQxRYaDDJSrMU52y4AqMWG7Lefd+LNqdxf2whRAEUOB66zaOToYhKs2yVNRar0W4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ocallahan.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail-com.20230601.gappssmtp.com header.i=@gmail-com.20230601.gappssmtp.com header.b=yPUj50H3; arc=none smtp.client-ip=209.85.160.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ocallahan.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-42a9f4935a6so6190461cf.1;
-        Fri, 23 Feb 2024 13:44:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail-com.20230601.gappssmtp.com; s=20230601; t=1708724660; x=1709329460; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:reply-to:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dflXWGJiHy7MbSy8pXkZb9NeeYUWtRBjyhK7A4GkIig=;
-        b=yPUj50H34+iXkWP9ZoINgCfeRvzn6tJnjokRnGWvxpxq64M8AbuGVzv6z1C8niRJkc
-         x8Wag+5AsU6w0Rhza3+xw0leWKf5t5FcfMPe1drtcgssIr6Jn+sVSAm8B5iWiMbZNmFw
-         Ad9pFgJOzPRgXam5QpgajJz9PoKeDRSraS4lPweW3+70wUaYQaifg4xcmHV4qgyJ5uzf
-         wDNIaUS57t4Le+KrJ+vaXlWNQokkXzZsn58aGSm8HyiBEIjYs+KD/qQGJ70cFvStel1Y
-         t6JF9XB0CWbI0CvmQ6nBO9AV93rqcd8Xz/bJSwgNLZ0YWucR8bHz96ZXvkAkJ9O1RJ8t
-         icww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708724660; x=1709329460;
-        h=cc:to:subject:message-id:date:from:reply-to:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dflXWGJiHy7MbSy8pXkZb9NeeYUWtRBjyhK7A4GkIig=;
-        b=TeqAYOZHOStIQzU1EE7I2PxG95XCvb/jVwDV4RgxktTfTirlR0WxSacdSwNuQ+u/t6
-         KS6tuhLJxBNO4fgmNKVS/BrH6WCmG+/fYMQ2QdSxDoijAvi/8ncxIYE4ISonlGVm21/m
-         Igj++AQONZ3OzWAa2njnNY0+uXKjGJaznBaTp4EdLCTlQYdacZqICefIKzcvJWWzn718
-         dEQZ/yWJlU7lxN7Xg+EmHgu8g2Is7wmepS3GIrWjVEY7HLlImNx7KRf0aeQ7/clduyUl
-         F2ef7hfkEtxTQS8YKE2L/Sf62QnRAVAqXCqoRq13lYX5NeO3SfnGC6j+v5o1XNeTioiW
-         +UTA==
-X-Forwarded-Encrypted: i=1; AJvYcCVUPULJpGqeK0ofqwPdo6FvBte1Z2HFgAxoUvU98NiuW8ubsn8p+ER2b886djN7dbxH6Oy+lmTmSIavLCtdsHLifNtsos0cEc/58FA/wXwj/ZqKubFHh5ETNmg0zdks5r5Z/eKNAQR88Neisg4YAQ==
-X-Gm-Message-State: AOJu0YyScr9VITtFLPGSOKOZO6fymQUHNPo/9yliQ0+ba5+RfPXU/4Uj
-	52d3x+0jzhc3OJZ3gWL94jpWmsC3yBkI4wueNpw7OjfZKZy8vU38CDAOmu9HM0A1Mnfkgyo8Bf4
-	5ji2CGuFTxBPvmMHKTXrQTWA7eDY=
-X-Google-Smtp-Source: AGHT+IEdqbE3nTHzTHVnvtCEoIC2+Cn09Y4dZAXa8zWYlw3yYVCckBoDOV8siFuX1rqxLf21t2FTt18kB0pJV1s+ch4=
-X-Received: by 2002:ac8:7dca:0:b0:42d:de30:83e1 with SMTP id
- c10-20020ac87dca000000b0042dde3083e1mr694373qte.29.1708724659935; Fri, 23 Feb
- 2024 13:44:19 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15D99143C63;
+	Fri, 23 Feb 2024 21:47:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.73
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708724850; cv=fail; b=gMIi84C1Rdx3hFuXGatIDyw/1Z7a7lIgaetv86Zdd6Fzq2WlPw/1m4Rz3vMu4Uk2AVC/dvcwTmM4WgJgqZVrxkAgtl8nat0cBc9vfHYemOf7W5R7SXY0450DU36IAY1Q9A9wf/2O6fGGVs2mBPufJ3RIXwg0kFhvzhkuZUD4FDw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708724850; c=relaxed/simple;
+	bh=BMMqhqLsriW52JTJPpdBiE6Wk09/6wRnv65hXPvRyRQ=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=EoDuov4SioeHhhrpYIJuySw7nCQdyejWD2TrkuxQVVvdTVHEk2yZHP0IB70Uhiy3md6SPa139T/6QbzPfZ4We8Gabcs2ZpZBqHdMZEqUsZ65Sd0cNd1dPJQLcMVCfsVCJwE35lpJKuFD/Z04pKB+uHveQsZEHEb9T3VUQ0Ruz+w=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=ColIOMfX; arc=fail smtp.client-ip=40.107.102.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L9WKeDmumcx378xTqpFe/1cTdwLiU9ug6Xym+xOhoWVDoLSvyMb9jpZYluYXObVVkyqa4GI2gW360sunU9WyqXHqrxQvhT8nMGkGGBhIHj8qFApDEekRByeAa0U62QfNQ6ObzJS6tipyNXb1fZO0K1dRubCbladyKjnZhncm/nCb5oTYd6h1d+A8Fan2wwwWty08oXoNtYTSxNklIISwdodQAwSsMHysM22orJjS5Pyg1wyQEY9KGOpcgphjuSeH/8+Na4KX/IxYPGDaH6tsQZCmMDdBbOQcI2YmtrRrC74kQbzAE5aoZv7SsaRL4vjId4ShO0WHvtNMlk02JlenyA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1JyttL0PVqZMN6/wzzx9ohYA+I0RtZRUFNdvYG8xBHA=;
+ b=gkrVL0q+meR5wHX9D7Yaei0VC+LFYyD9ScllDGMq89Xnw8I7iJLKQNLcCCl+VJKHI0HdoTWP8eP9UuF6MqM12VNOToBUCjpljLDzzfB3JmY2nUrQH4M2Cuu1elVteJSXXZyQZVeCwS2Ytyr5vBFO3DmofJCyD7LeG5kCHWbZO+7PHWb6S+P1NJvC8uUSSlcZahl14CqwzFgosDJh26AY/fc8+B3fVHTPfocovWiO+ST3FC8VREjkcN90uj+Rfgtv2AgKdzVo33DjG0AkeRt/+LE5Yn/MOzjEAC59cUx8FX3DP/V8wmCzcz77GSvfvXG03PvNb7sW0NCfKqPeBRoJuQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1JyttL0PVqZMN6/wzzx9ohYA+I0RtZRUFNdvYG8xBHA=;
+ b=ColIOMfXAZITjpH7nYlZeCbxtZjgZ/blBysXQp3VV1C7obJNyzfHz6SUcEgJ9Bf6hfn5V1b4pX7Aqz67tOUNVhtZYrxAjhQt27P1kn6bxAX09Tzgqy3xuB78dX7WFX2VBYy8E3INKxWDw14/dcPePDivyvg3CWkaPex8tEmJptY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by DS7PR12MB5839.namprd12.prod.outlook.com (2603:10b6:8:7a::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Fri, 23 Feb
+ 2024 21:47:22 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::f4aa:152b:b46f:80a0]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::f4aa:152b:b46f:80a0%4]) with mapi id 15.20.7316.023; Fri, 23 Feb 2024
+ 21:47:22 +0000
+Message-ID: <21d05834-ca2f-8094-501d-f243e74cdd26@amd.com>
+Date: Fri, 23 Feb 2024 15:47:17 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Reply-To: babu.moger@amd.com
+Subject: Re: [PATCH v2 00/17] x86/resctrl : Support AMD Assignable Bandwidth
+ Monitoring Counters (ABMC)
+Content-Language: en-US
+To: Peter Newman <peternewman@google.com>, James Morse <james.morse@arm.com>
+Cc: babu.moger@amd.com, Reinette Chatre <reinette.chatre@intel.com>,
+ corbet@lwn.net, fenghua.yu@intel.com, tglx@linutronix.de, mingo@redhat.com,
+ bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+ paulmck@kernel.org, rdunlap@infradead.org, tj@kernel.org,
+ peterz@infradead.org, yanjiewtw@gmail.com, kim.phillips@amd.com,
+ lukas.bulwahn@gmail.com, seanjc@google.com, jmattson@google.com,
+ leitao@debian.org, jpoimboe@kernel.org, rick.p.edgecombe@intel.com,
+ kirill.shutemov@linux.intel.com, jithu.joseph@intel.com,
+ kai.huang@intel.com, kan.liang@linux.intel.com,
+ daniel.sneddon@linux.intel.com, pbonzini@redhat.com, sandipan.das@amd.com,
+ ilpo.jarvinen@linux.intel.com, maciej.wieczor-retman@intel.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, eranian@google.com
+References: <20231201005720.235639-1-babu.moger@amd.com>
+ <cover.1705688538.git.babu.moger@amd.com>
+ <7c26af23-fa1e-4e01-8088-8fbd9be3d6f3@intel.com>
+ <431d6ac4-53cb-2f73-3cda-22616df2f96a@amd.com>
+ <4bb63a78-0d0d-47bc-ad65-558af8bc5519@intel.com>
+ <51c60991-eb10-40e8-b3ab-676b92b0c662@amd.com>
+ <CALPaoChhKJiMAueFtgCTc7ffO++S5DJCySmxqf9ZDmhR9RQapw@mail.gmail.com>
+ <1a8c1cd6-a1ce-47a2-bc87-d4cccc84519b@arm.com>
+ <CALPaoCgNLtA7E2tgQZ6gmbZ=OF0nE0Lbi=1C7oR3F0wM4YRbjw@mail.gmail.com>
+From: "Moger, Babu" <bmoger@amd.com>
+In-Reply-To: <CALPaoCgNLtA7E2tgQZ6gmbZ=OF0nE0Lbi=1C7oR3F0wM4YRbjw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SA0PR11CA0141.namprd11.prod.outlook.com
+ (2603:10b6:806:131::26) To MW3PR12MB4553.namprd12.prod.outlook.com
+ (2603:10b6:303:2c::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221175210.19936-1-khuey@kylehuey.com> <20240221175210.19936-2-khuey@kylehuey.com>
- <CAP-5=fXsv7TJ_SVOZc38fN0gn+7cWBcMWt3FdVLcs5v0_vO=uw@mail.gmail.com>
- <CAP045AoSHWoOP3TN=6Hf2wZj7X9Y41sThBQWCDZ3BEP68qeTBw@mail.gmail.com>
- <ZdemibZepMqWvv6U@x1> <CAP045Aqc6woHGYKJG4d=x4gPd0=PmrLeFv25Rkts1a8xFuocOQ@mail.gmail.com>
- <ZdjdAKIV39A-jpR5@x1>
-In-Reply-To: <ZdjdAKIV39A-jpR5@x1>
-Reply-To: robert@ocallahan.org
-From: "Robert O'Callahan" <robert@ocallahan.org>
-Date: Sat, 24 Feb 2024 10:43:38 +1300
-Message-ID: <CAOp6jLZKZKyYrJrzjZ90ZdxzzuDV0wp+XS3Rzssd-kvZV45JSQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] perf test: Test FASYNC with watermark wakeups.
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Kyle Huey <me@kylehuey.com>, Ian Rogers <irogers@google.com>, Kyle Huey <khuey@kylehuey.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|DS7PR12MB5839:EE_
+X-MS-Office365-Filtering-Correlation-Id: 77dd9e50-c230-4255-d97a-08dc34b90406
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	luwL1fIWo5tJFzfa7v9lyfEL1JZev5ExO4UiysMrK4Dqvlw8iXQfJiQVE0gPXfXzZCpFy9mw/kee9HR6qFAxU1Efl/R2KkjZU9/3H7nmk63LqQoHlm5b6e0rJUoMpIAwdEEMOOCaEwDGCWO/TKMZhVlyT2X79IR95fE/lzhzdfifvkim2AAK1g2Jx1q4hzwBCnfC4nFAxO/zqZejgU7Fh6PWDC9ImhvLrOp1ivBqWR7joy51eii1rXG6pO7tdHcVvdAqvMk7fnHuDu0z/0rLaJtP6Fst0ULQzVygBENTBKVYE4SpM4cAcll+szZB0vLn+j6Janpr9aDTtrfM0SxUsDUSmw/V9tWEKoMFz3MO7irl9uNFckAgJYe99Wm9lIbR4nAdG48CGPifW8OvYt1/c3UG4Y8yNDmuRI3dx81n6WLvMpAkyD0JBe7BttcNwyuD8xm9ndPj6aeXCmxb0/yWUszxkSPUB3AwFhBZeQLaza6hGZH9z/sUqw7QqBjLAV9F5EmAxm87llPkptS3Xjv+MRRpjFxA8flV5GrqnUjLf1c=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Ty9jQU5qaVJ0UlJpOGI3UFhrVnVuZTk5Q0VwVzBrZW1OdUlDUEQzeXdMMmVX?=
+ =?utf-8?B?emxFREpuWWJYVzM1VCtPSFpSQisyZXVpY3RuR2tMeUMzZWFLZk5wL3lzdjk0?=
+ =?utf-8?B?dlp3OWpwVzZJOEsyUmtKYld4Vm43QjRhMjNmZFViWXlCOGJnSHg2K0t1QmhP?=
+ =?utf-8?B?cm9hVUxyald3cDVPSEVMTWY2dHpvanZoTEVra3RkNlhaTHgycnV3UHFxMTBk?=
+ =?utf-8?B?VUlnNG5sb0RvdVVBSlQ1Z1YxZFdNMVVzSmN6aXZlWnlZaVRXR1VOWE1ZYzN6?=
+ =?utf-8?B?a3RGblFpNGxRbHJ5MkhlWkVUVFVvQ1lMcHd4b2FiZFJBTE5BdlU0M2Z5Wkcw?=
+ =?utf-8?B?b3pwQm04WFUvUm9VUU40N0JyRnRRZTVrcWlodW1vTlpxQyt0eUhhamFpWDlL?=
+ =?utf-8?B?YUtJOTJpd29wdVc5YzJ1aUl3Nno2dFlEWDNra29EckNPcVFSanBrcGNoRURH?=
+ =?utf-8?B?NERzOW10bitPWFF5OGJHSGlINWM4OWhPaFhpdTk4SjA2a015ajlTeHB6RFhw?=
+ =?utf-8?B?NmdCTHpRcGVxdXA2VERvYVBtYkg5ZjNDVnRuZExlWnB5RUhsaTd1MmtSRFdF?=
+ =?utf-8?B?RHBldFZXaU1sUTVhbE1HaEdJOFNIN3JwUlRnVS9qNzI5Wjc3R3FDd3VWbmRF?=
+ =?utf-8?B?bjFxY2JyWG9CbFFyY0dubmovSFhra2x3ZGVlOE8vamo5cUg3QlVoSHVlMml6?=
+ =?utf-8?B?bml0T2ttU290SlVYOVpaZWZFUU10Z0xBM2NyeDhzZGM1MnJRalBrbk9wMUNs?=
+ =?utf-8?B?cEdsRjRvMC9YMXlQMG8xbHkrOG9XVG4yTGxLMitHSTN6WkNXa1lFd2ZXSWtj?=
+ =?utf-8?B?U05KQ2pRdStOMFJ3VEdqaFVBNTh5b2psdkRmRWszV1BoRVM1ZTdYNGlsQjhP?=
+ =?utf-8?B?Mm80Mk9XZ3RpYWMzV2FCNTRWaGtWcWpqZzd4cHc1ZllSbUV0VStXTU8ybXRW?=
+ =?utf-8?B?OXFPaXNkVldUY3E3ODNpSWlTSXNFZFNBcVZUUEFGMDNTay84L3JQUEJxbmRu?=
+ =?utf-8?B?NzZhOW10MDdkRjEva1p2NmR5Qndyb2dFeXcvUnJBMks2endLVzJhbERxSktp?=
+ =?utf-8?B?NzIxV0poZExqcGpObmZiaUJpaGJ6YzNOV1orTmxHTldoL0hPand0QS9Sd1BE?=
+ =?utf-8?B?WTlLNFVaUi9OdHhiTVovNy92c2RWZ2p4RWpZNDdTQi9nMnlFV1JvOVROZllu?=
+ =?utf-8?B?ZUE0K1dEeXhKRFkrUVVrMWRwSnZSbXowdCtBWXJRaTAxUHJiZXVPV09rdXJa?=
+ =?utf-8?B?WjNzQUF2Nmk2MUtHQ3JMbjdRUEhtNHVBK09hNGhnNGhJWE9QUitFWk1TRE53?=
+ =?utf-8?B?REFuNkVwcXB6c2pHOUFFSGhsVG9jRjM4Y3dqZS9nYlpvNjlrVitkQkt6ejFp?=
+ =?utf-8?B?am1CUEZ4Skw2cHNwMmE0clJFVi90UmwrQ3BUeEhrOTR6NFVtNzB2V2sxSFhi?=
+ =?utf-8?B?b3VTN09WTGs0V01mamVQWUljWW5zL3RHQ1BUR2IyQkxHc1hSMGc4eStpMVMy?=
+ =?utf-8?B?VVRHektDTkc4VDk1cU1sdnQ3QlZEaVVzTHVxQWxSKzhMZ01xcWlTUWlnRXFN?=
+ =?utf-8?B?ZzhkSG4zdlhYalpIUVBnYWgxZmpIZlE5V2trSHJ5cWxIV3Bxczh0THpuRDNy?=
+ =?utf-8?B?S2ZNSHJ5VjMrU0hNQzlFZ3RsTDQxZzZYUDlxUnF6WFR4VDdGYk5OT3o3L2dv?=
+ =?utf-8?B?bkhsV1d4OVVFTVVpWUl3YTViMEVnRy9sYitZbnR2Y2E4eTh2TzFvWGlJZnJ4?=
+ =?utf-8?B?U25kY0dzd2lmMnBBaERDcHFuN3BwODlTY3g0Wko1UFFVTFlUT2lUM2YzZmd5?=
+ =?utf-8?B?R0EyM3VXNjhZcldweWJGd3pLU2k2L0xOeDZ1eFNTcC9MZnU2SnY5WjM3ZnZy?=
+ =?utf-8?B?ME81QUkvdWM0NlRHYzBBNHVpc0ZPcWxBNnI2RE44RlUrMDlhQ0xhQmt2Mm5i?=
+ =?utf-8?B?MVRVUC9qREVGYnF4OGs0K3FtdmhLMHZhc0VaQU5sL0FPK1FDRDN0cXV6cDB4?=
+ =?utf-8?B?UjREZmxDWHU5dnBQenlpR3B3VWJyWTE5QlpCR3cwRzRJMlZYUHBHQ1BhVTBN?=
+ =?utf-8?B?eUJNQWRuZmxtNTQ5SEVpdHB3WitWUWpzc205bkpQaGtheXlCSUQydmdkc0k1?=
+ =?utf-8?B?N1RvYkNFOFV0VWVtc1YvZ2gzV1Q1RkhrNFZzbGE0eDlVWmN6TUlPOTVjMkFh?=
+ =?utf-8?Q?KpSFPGdpOziTH+VdejYi5gNA+zN5UmHngmtiGSJL4Cz7?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 77dd9e50-c230-4255-d97a-08dc34b90406
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2024 21:47:22.2500
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YaaKEpqmLuIT6b/Jxv+hEmX6h10aDNr7NGdcgdQyDDcYrQAQ8r7ejVFaYqnojKOQ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB5839
 
-(I work with Kyle.)
 
-IMHO this is more of a bug fix than a feature. `man perf_event_open`
-expects this to work already: "watermark: If set, have an overflow
-notification happen when we cross the wakeup_watermark boundary" and
-later "Alternatively, the overflow events can be captured via a signal
-handler, by enabling I/O signaling".
+On 2/20/2024 12:11 PM, Peter Newman wrote:
+> Hi James,
+>
+> On Tue, Feb 20, 2024 at 7:21 AM James Morse <james.morse@arm.com> wrote:
+>> On 16/02/2024 20:18, Peter Newman wrote:
+>>> On Thu, Feb 8, 2024 at 9:29 AM Moger, Babu <babu.moger@amd.com> wrote:
+>>>> On 2/5/24 16:38, Reinette Chatre wrote:
+>>>>> You have made it clear on several occasions that you do not intend to support
+>>>>> domain level assignment. That may be ok but the interface you create should
+>>>>> not prevent future support of domain level assignment.
+>>>>>
+>>>>> If my point is not clear, could you please share how this interface is able to
+>>>>> support domain level assignment in the future?
+>>>>>
+>>>>> I am starting to think that we need a file similar to the schemata file
+>>>>> for group and domain level monitor configurations.
+>>>> Something like this?
+>>>>
+>>>> By default
+>>>> #cat /sys/fs/resctrl/monitor_state
+>>>> default:0=total=assign,local=assign;1=total=assign,local=assign
+>>>>
+>>>> With ABMC,
+>>>> #cat /sys/fs/resctrl/monitor_state
+>>>> ABMC:0=total=unassign,local=unassign;1=total=unassign,local=unassign
+>>> The benefit from all the string parsing in this interface is only
+>>> halving the number of monitor_state sysfs writes we'd need compared to
+>>> creating a separate file for mbm_local and mbm_total. Given that our
+>>> use case is to assign the 32 assignable counters to read the bandwidth
+>>> of ~256 monitoring groups, this isn't a substantial gain to help us. I
+>>> think you should just focus on providing the necessary control
+>>> granularity without trying to consolidate writes in this interface. I
+>>> will propose an additional interface below to optimize our use case.
+>>>
+>>> Whether mbm_total and mbm_local are combined in the group directories
+>>> or not, I don't see why you wouldn't just repeat the same file
+>>> interface in the domain directories for a user needing finer-grained
+>>> controls.
+>> I don't follow why this has to be done globally. resctrl allows CLOSID to have different
+>> configurations for different purposes between different domains (as long as tasks are
+>> pinned to CPUs). It feels a bit odd that these counters can't be considered as per-domain too.
+> Assigning to all domains at once would allow us to better parallelize
+> the resulting IPIs when we do need to iterate a small set of monitors
+> over a large list of groups.
 
-Bug fixes need regression tests. Such tests should fail on any kernel
-where the bug is present. It seems strange to expect each such test to
-detect whether the bug "should be fixed" in the kernel it's running on
-and skip when that's not the case. I haven't seen any other project
-try to do this. Instead (as in kernel selftests) the tests, the code
-under test, and any metadata about which tests are expected to pass
-are all in the repository together and updated together.
+Planning to work on v3 of this series. For now, I will exclude the 
+global assignment option from this series.
 
-It makes sense that tests for the code in tools/perf should not fail
-on older kernels, given that the code in tools/perf is expected to
-work on older kernels. But tests for bug fixes in the kernel itself
-should be expected to fail on older kernels and therefore should live
-somewhere else, IMHO.
+We can add the global assignment support when we get time to optimize 
+assignments at later point.
 
-Rob
--- 
-Su ot deraeppa sah dna Rehtaf eht htiw saw hcihw, efil lanrete eht uoy
-ot mialcorp ew dna, ti ot yfitset dna ti nees evah ew; deraeppa efil
-eht. Efil fo Drow eht gninrecnoc mialcorp ew siht - dehcuot evah sdnah
-ruo dna ta dekool evah ew hcihw, seye ruo htiw nees evah ew hcihw,
-draeh evah ew hcihw, gninnigeb eht morf saw hcihw taht.
+Thanks
+
+Babu Moger
+
 
