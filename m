@@ -1,237 +1,113 @@
-Return-Path: <linux-kernel+bounces-79219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5F0C861F1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:37:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72DC3861F34
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:43:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 336CB1F272DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:37:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2EE01C239F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:43:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F9471493B6;
-	Fri, 23 Feb 2024 21:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBF1314CAD8;
+	Fri, 23 Feb 2024 21:43:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hGbKUQxd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ijEGgFni"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62D255D90A;
-	Fri, 23 Feb 2024 21:37:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 165431493BB;
+	Fri, 23 Feb 2024 21:43:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708724255; cv=none; b=Qk3dIhFn2BRvem7/E9V70yXe6N8zqD03F/oczO45AtxvabsQmtoh0u3/st+EnDB2v/Ym3KnyGxf2iHOF9m3w0z1Hmu7VDC6GhAYDh72h2EEeWmui6t+3X6Nb/eCW1o/sIbVuT8ODufmFSlyLVXoTrpii2WWT/xIQLO6EU9FTUxI=
+	t=1708724595; cv=none; b=tDhElV/N/bWq9umSHH7K5ZpWMPHGrcCiIAcu3u8FFxrYATn/Vpw8T3yLuWsPBHqZFYXjOVYcqgIxcNhkGqkTLTB26MZqFE3JrTMtEc6KycLLxSJJyjInfmINs1olDZjJgcIhd6AWIfZdrdvMhGl+zm7YcAbySDBBLwYoRN1w2r4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708724255; c=relaxed/simple;
-	bh=nP1XVtTKobALHJllafckrGoqJY1gjcMjisX4Im2RJss=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=UkPjryufcoUPc/GXiaSraMVH0ZUWuIkQI64AiFDVgy+pDWQjYIgBdIHl/U1dwrSfAMWUVlAScABSlNSYMbOvdEKsDTxFvh1X8jqVmVw+XyFk8KoxqRfEZjSPb7/wryKc6br6CEuTkm6KjzPZwKXphb06Q6uxFn8A+iSMg7z8S/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hGbKUQxd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C172C433F1;
-	Fri, 23 Feb 2024 21:37:34 +0000 (UTC)
+	s=arc-20240116; t=1708724595; c=relaxed/simple;
+	bh=wxmKrh/Cs57CnGFgC1amvY2Csn44ZKMzdK1MVS66FAw=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=SGgydk0G7jsJVF9Ti9vtjZxPCw+1GilR0IuHXRpcO7rMBDRYtfXd2xiDssuSSI/+gHZbAy8adbenE+0UXZv+LJH6sN9vaL1sqgl0ftmi03Ymea/QzswKByxCQeBKPVhDdomjq5mIjasXRAScOlkDeq7Xd2icYstZ0ABIZyXxN74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ijEGgFni; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9B0DFC433C7;
+	Fri, 23 Feb 2024 21:43:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708724254;
-	bh=nP1XVtTKobALHJllafckrGoqJY1gjcMjisX4Im2RJss=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=hGbKUQxdEVDYDaevBCFZqWHiQ9TG1XmtGz+718IUKYLRj7k1FcEn+MkbBwljtPxET
-	 SAD5etqitgb414ej2yix3Cg4LF61ynvfcqHWPrpTC8nLYqjw63wNAiC596+Mhkfy2D
-	 a1APxx0NbNHupYObcuT/onqzStaxTUC5PfPsAbjeoXCGSb/46DhoDGfj8DHbBFKKqU
-	 MtNM7ZIcsemv3m+WXYDaNDk607wtql9eBVIjfcQBXMrtdrH1q3adhGWrvNVMmtpDKf
-	 oECLyyGo0R/1CwG/t/3rUtLdSJLT8qLULb7FCWC5ikIp6OEq4Wz2+WAJef+0acxS8r
-	 GJgVwfjJ94C/g==
-Date: Fri, 23 Feb 2024 15:37:33 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: linux-pci@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	"David E . Box" <david.e.box@linux.intel.com>,
-	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Tasev Nikola <tasev.stefanoska@skynet.be>,
-	Mark Enriquez <enriquezmark36@gmail.com>,
-	Thomas Witt <kernel@witt.link>,
-	Werner Sembach <wse@tuxedocomputers.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Kai-Heng Feng <kai.heng.feng@canonical.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	Ricky Wu <ricky_wu@realtek.com>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Koba Ko <koba.ko@canonical.com>,
-	Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v7 4/5] PCI/ASPM: Save L1 PM Substates Capability for
- suspend/resume
-Message-ID: <20240223213733.GA115410@bhelgaas>
+	s=k20201202; t=1708724594;
+	bh=wxmKrh/Cs57CnGFgC1amvY2Csn44ZKMzdK1MVS66FAw=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=ijEGgFni62LEo/HJ95y5Enpmbq4UqSS0FpUbrRqayiHs8RoDRozNP1Ev69P4DwFnv
+	 TQygTodvfadMReqSOzTvfvTmozO9XvIF1DOPABGnZHok9MmXD6CcKq/7Ei9rmLJwV1
+	 F6I1PfEaX1V3SqgpazvN4XPMOarSdyOvIl5u+WvRwkNhP/JwdvC8nSBIo9gOE1lBwy
+	 lv+SrHQxvIlVkyCLWdlvt61Ck+vXkETY82gZ8fp+4R19LWT6EMOq4K4Z4DS0V/R/J/
+	 L4nUAMvHSus1T0o5ubXekWM75KNFav/SQZatqSJqf95PpE9k7ethBIvNIKeuB1Hr/1
+	 08a0bx/nZeBqA==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DA66C54798;
+	Fri, 23 Feb 2024 21:43:14 +0000 (UTC)
+From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
+Subject: [PATCH v2 0/2] usb: dwc3: add glue driver for Hi3798MV200
+Date: Sat, 24 Feb 2024 05:43:11 +0800
+Message-Id: <20240224-dwc3-v2-0-8e4fcd757175@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240223205851.114931-5-helgaas@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAG8R2WUC/y3MQQ7CIBCF4as0sxZDp0TQlfcwXQAFO1GLgYqah
+ ruL1eX/8vItkFwkl+DQLBBdpkRhqoGbBuyop7NjNNQG5Cg4tpINT9ux3V4qVEYorjXU6z06T6+
+ VOfW1R0pziO9Vze13/QMofkBuGWfSe4MOjdayO4bHfA3hsrXhBn0p5QMPbBkDmgAAAA==
+To: Thinh Nguyen <Thinh.Nguyen@synopsys.com>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Yang Xiwen <forbidden405@foxmail.com>
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ devicetree@vger.kernel.org, Yang Xiwen <forbidden405@outlook.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708724592; l=1171;
+ i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
+ bh=wxmKrh/Cs57CnGFgC1amvY2Csn44ZKMzdK1MVS66FAw=;
+ b=/y6KnlSRzutvZJNPU9nmWv2ucnSM2BFbmplrG3GtCQGdIKS/YQ/nnXibiML6lMg3E0yNOw7jS
+ u6eecyQOmGID+ddnSVp2f/Vhm9o3fOUgy6hiT3MZdhEKiAeIII3D4uR
+X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
+ pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
+X-Endpoint-Received:
+ by B4 Relay for forbidden405@outlook.com/20230724 with auth_id=67
+X-Original-From: Yang Xiwen <forbidden405@outlook.com>
+Reply-To: <forbidden405@outlook.com>
 
-On Fri, Feb 23, 2024 at 02:58:50PM -0600, Bjorn Helgaas wrote:
-> From: "David E. Box" <david.e.box@linux.intel.com>
-> 
-> 4ff116d0d5fd ("PCI/ASPM: Save L1 PM Substates Capability for
-> suspend/resume") restored the L1 PM Substates Capability after resume,
-> which reduced power consumption by making the ASPM L1.x states work after
-> resume.
-> 
-> a7152be79b62 ("Revert "PCI/ASPM: Save L1 PM Substates Capability for
-> suspend/resume"") reverted 4ff116d0d5fd because resume failed on some
-> systems, so power consumption after resume increased again.
-> 
-> a7152be79b62 mentioned that we restore L1 PM substate configuration even
-> though ASPM L1 may already be enabled. This is due the fact that the
-> pci_restore_aspm_l1ss_state() was called before pci_restore_pcie_state().
-> 
-> Save and restore the L1 PM Substates Capability, following PCIe r6.1, sec
-> 5.5.4 more closely by:
-> 
->   1) Do not restore ASPM configuration in pci_restore_pcie_state() but
->      do that after PCIe capability is restored in pci_restore_aspm_state()
->      following PCIe r6.1, sec 5.5.4.
-> 
->   2) If BIOS reenables L1SS, particularly L1.2, we need to clear the
->      enables in the right order, downstream before upstream. Defer
->      restoring the L1SS config until we are at the downstream component.
->      Then update the config for both ends of the link in the prescribed
->      order.
-> 
->   3) Program ASPM L1 PM substate configuration before L1 enables.
-> 
->   4) Program ASPM L1 PM substate enables last, after rest of the fields
->      in the capability are programmed.
+Hi3798MV200 uses DWC3 with a few more clocks and a dedicated reset.
 
-> @@ -1645,12 +1647,23 @@ static void pci_restore_pcie_state(struct pci_dev *dev)
->  
->  	cap = (u16 *)&save_state->cap.data[0];
->  	pcie_capability_write_word(dev, PCI_EXP_DEVCTL, cap[i++]);
-> -	pcie_capability_write_word(dev, PCI_EXP_LNKCTL, cap[i++]);
-> +
-> +	/* Restore LNKCTL register with ASPM control field clear */
-> +	lnkctl = cap[i++];
-> +	pcie_capability_write_word(dev, PCI_EXP_LNKCTL,
-> +				   lnkctl & ~PCI_EXP_LNKCTL_ASPMC);
-> +
->  	pcie_capability_write_word(dev, PCI_EXP_SLTCTL, cap[i++]);
->  	pcie_capability_write_word(dev, PCI_EXP_RTCTL, cap[i++]);
->  	pcie_capability_write_word(dev, PCI_EXP_DEVCTL2, cap[i++]);
->  	pcie_capability_write_word(dev, PCI_EXP_LNKCTL2, cap[i++]);
->  	pcie_capability_write_word(dev, PCI_EXP_SLTCTL2, cap[i++]);
-> +
-> +	pci_restore_aspm_l1ss_state(dev);
-> +
-> +	/* Restore ASPM control after restoring L1SS state */
-> +	pcie_capability_set_word(dev, PCI_EXP_LNKCTL,
-> +				 lnkctl & PCI_EXP_LNKCTL_ASPMC);
->  }
+Note xhci-histb.c can also be used. But since it's DWC3 in fact, trying
+to support it with the help of DWC3 framework seems a better solution.
 
-This part makes me wonder if the PCI_EXP_LNKCTL restore could be
-simplified by moving the L0s/L1 disable into
-pci_restore_aspm_l1ss_state() as in the patch below.
+Hi3798CV200 can also try to migrate to this driver too. Thus we can
+remove xhci-histb.c in the future.
 
-It would be nice if the knowledge about L0s/L1 being disabled while
-restoring L1SS state were encapsulated in
-pci_restore_aspm_l1ss_state() instead of doing this dance in
-pci_restore_pcie_state().
+Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+---
+Changes in v2:
+- remove histb-clock.h as it's deprecated.
+- fix bot error (Rob Herring)
+- add a dummy reg property to make simple-bus parent node happy.
+  (duplicate with subnode, not used in driver)
+- Link to v1: https://lore.kernel.org/r/20240224-dwc3-v1-0-7ffb2e2baa73@outlook.com
 
-I didn't include this in the v7 posting because it changes the
-sequence and I don't have a way to test it, and this whole thing is
-awfully tricky to get right.
+---
+Yang Xiwen (2):
+      dt-bindings: usb: add hisilicon,hi3798mv200-dwc3
+      usb: dwc3: of-simple: Add compatible for hi3798mv200 DWC3 controller
 
-Bjorn
+ .../bindings/usb/hisilicon,hi3798mv200-dwc3.yaml   | 103 +++++++++++++++++++++
+ drivers/usb/dwc3/dwc3-of-simple.c                  |   1 +
+ 2 files changed, 104 insertions(+)
+---
+base-commit: 8d3dea210042f54b952b481838c1e7dfc4ec751d
+change-id: 20240217-dwc3-697828b480aa
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 4ea98665172d..5a4b501a3f41 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -1633,13 +1633,14 @@ static void pci_restore_pcie_state(struct pci_dev *dev)
- {
- 	int i = 0;
- 	struct pci_cap_saved_state *save_state;
--	u16 *cap, lnkctl;
-+	u16 *cap;
- 
- 	/*
- 	 * Restore max latencies (in the LTR capability) before enabling
- 	 * LTR itself in PCI_EXP_DEVCTL2.
- 	 */
- 	pci_restore_ltr_state(dev);
-+	pci_restore_aspm_l1ss_state(dev);
- 
- 	save_state = pci_find_saved_cap(dev, PCI_CAP_ID_EXP);
- 	if (!save_state)
-@@ -1654,23 +1655,12 @@ static void pci_restore_pcie_state(struct pci_dev *dev)
- 
- 	cap = (u16 *)&save_state->cap.data[0];
- 	pcie_capability_write_word(dev, PCI_EXP_DEVCTL, cap[i++]);
--
--	/* Restore LNKCTL register with ASPM control field clear */
--	lnkctl = cap[i++];
--	pcie_capability_write_word(dev, PCI_EXP_LNKCTL,
--				   lnkctl & ~PCI_EXP_LNKCTL_ASPMC);
--
-+	pcie_capability_write_word(dev, PCI_EXP_LNKCTL, cap[i++]);
- 	pcie_capability_write_word(dev, PCI_EXP_SLTCTL, cap[i++]);
- 	pcie_capability_write_word(dev, PCI_EXP_RTCTL, cap[i++]);
- 	pcie_capability_write_word(dev, PCI_EXP_DEVCTL2, cap[i++]);
- 	pcie_capability_write_word(dev, PCI_EXP_LNKCTL2, cap[i++]);
- 	pcie_capability_write_word(dev, PCI_EXP_SLTCTL2, cap[i++]);
--
--	pci_restore_aspm_l1ss_state(dev);
--
--	/* Restore ASPM control after restoring L1SS state */
--	pcie_capability_set_word(dev, PCI_EXP_LNKCTL,
--				 lnkctl & PCI_EXP_LNKCTL_ASPMC);
- }
- 
- static int pci_save_pcix_state(struct pci_dev *dev)
-diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-index c89ef87ed1c4..46352132bb14 100644
---- a/drivers/pci/pcie/aspm.c
-+++ b/drivers/pci/pcie/aspm.c
-@@ -105,6 +105,7 @@ void pci_restore_aspm_l1ss_state(struct pci_dev *pdev)
- 	struct pci_dev *parent = pdev->bus->self;
- 	u32 *cap, pl_ctl1, pl_ctl2, pl_l1_2_enable;
- 	u32 cl_ctl1, cl_ctl2, cl_l1_2_enable;
-+	u16 clnkctl, plnkctl;
- 
- 	/*
- 	 * In case BIOS enabled L1.2 when resuming, we need to disable it first
-@@ -129,6 +130,17 @@ void pci_restore_aspm_l1ss_state(struct pci_dev *pdev)
- 	pl_ctl2 = *cap++;
- 	pl_ctl1 = *cap;
- 
-+	/* Make sure L0s/L1 are disabled before updating L1SS config */
-+	pcie_capability_read_word(pdev, PCI_EXP_LNKCTL, &clnkctl);
-+	pcie_capability_read_word(parent, PCI_EXP_LNKCTL, &plnkctl);
-+	if (FIELD_GET(PCI_EXP_LNKCTL_ASPMC, clnkctl) ||
-+	    FIELD_GET(PCI_EXP_LNKCTL_ASPMC, plnkctl)) {
-+		pcie_capability_write_word(pdev, PCI_EXP_LNKCTL,
-+					   clnkctl & ~PCI_EXP_LNKCTL_ASPMC);
-+		pcie_capability_write_word(parent, PCI_EXP_LNKCTL,
-+					   plnkctl & ~PCI_EXP_LNKCTL_ASPMC);
-+	}
-+
- 	/*
- 	 * Disable L1.2 on this downstream endpoint device first, followed
- 	 * by the upstream
-@@ -161,6 +173,13 @@ void pci_restore_aspm_l1ss_state(struct pci_dev *pdev)
- 		pci_write_config_dword(pdev, pdev->l1ss + PCI_L1SS_CTL1,
- 				       cl_ctl1 | cl_l1_2_enable);
- 	}
-+
-+	/* Restore L0s/L1 if they were enabled */
-+	if (FIELD_GET(PCI_EXP_LNKCTL_ASPMC, clnkctl) ||
-+	    FIELD_GET(PCI_EXP_LNKCTL_ASPMC, plnkctl)) {
-+		pcie_capability_write_word(parent, PCI_EXP_LNKCTL, clnkctl);
-+		pcie_capability_write_word(pdev, PCI_EXP_LNKCTL, plnkctl);
-+	}
- }
- 
- #ifdef CONFIG_PCIEASPM
+Best regards,
+-- 
+Yang Xiwen <forbidden405@outlook.com>
+
 
