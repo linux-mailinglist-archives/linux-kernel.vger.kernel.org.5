@@ -1,98 +1,120 @@
-Return-Path: <linux-kernel+bounces-77614-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A486F86081B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:11:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63F7486081E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:12:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 400E71F2373D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:11:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52BCAB224BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:11:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34D2EB65F;
-	Fri, 23 Feb 2024 01:10:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83436CA73;
+	Fri, 23 Feb 2024 01:10:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="h2MXFqEw"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qrOjmIbw"
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B9C66FA8;
-	Fri, 23 Feb 2024 01:10:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D173C2E9
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 01:10:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708650609; cv=none; b=VHklDQi5AgjL1COngpZzzmA8NhiHCPfa5prYyMzfuKWs1NQnvkQrvdA/ijQ6dX/mFlJObZIFXNFoEWIPKLrBojrcUqFANvi6EwCrzXew1amWOTmffXUEeRk6j/y04pP9SFA6esbaacL6eSysG/qk+9uVMMMH9UrC9LWmM7Zg2qY=
+	t=1708650656; cv=none; b=Ccn3bSLuVWLuYBKWCNaVo+ROzs3VDN3LMKkFw/P+jr1KYROL4hM+PDm/GgGGBRAgX/Kby4f+t/prKCbhdrf9/uPWK0IrqRP5FVfxY408OxZ/DO/3KPHRDM+MJvxZaTVIx7Wm5XuarJa62SoBWn+Tb0fZE7bRfHnVHPOxkrFFqHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708650609; c=relaxed/simple;
-	bh=9BliyxV5UypkRqVKkRhlc0tLlQN8R0mBGtiNxzdTx7k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QUeXvYheLnp1zHCTDRpn4EktDzMIXuHmLohkSHxNNGlupKfuZJ0NYCsdaGy+ADGXQLYs23HxnvFweQoIz93O9VPkEeu19ja3AVRz98m+2R6LMZwf/tOWhzCJtuB6MheS2pFlLFzEw6nN+RJ3dSwuM3LdtsbHJRHQFjcXjuHLrMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=h2MXFqEw; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=9BliyxV5UypkRqVKkRhlc0tLlQN8R0mBGtiNxzdTx7k=; b=h2MXFqEw0M3WAbnd2IJa2IppmE
-	fVLBz+aXxtrxqccq/KVGb1DOc2NmtnMoSc0d6ikKHN7VPiU6/+BP0DtfijoEgJd6byCCfmanJkbRW
-	WpC30SqMt4HGGPg/yD8tZhmDe+8vAJE4fXsEXSZSTZWhOS2KqTEBWDeVzAb7pf7EkaTpw4+bK4XM/
-	fhU/IjGM81bFoXLvELDe6O6ppChN4XdQ//Bfpwl7ZivI7dl0Uneypwmgaw00reYyl/x7fguDyWSAp
-	4LmI80avmet4AiWE5xBbVkq96CnPthIW9YCIfqAy8B4hqDhu/SXWqWEu9JGbZ4AsAI7oRvr5vMzet
-	bTPLf4ZA==;
-Received: from [179.232.147.2] (helo=[192.168.0.12])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1rdK48-002WHW-N1; Fri, 23 Feb 2024 02:09:29 +0100
-Message-ID: <85cdc364-e19f-625a-16e4-4efc6451fc7d@igalia.com>
-Date: Thu, 22 Feb 2024 22:09:20 -0300
+	s=arc-20240116; t=1708650656; c=relaxed/simple;
+	bh=/zpuAjWPgH31NStUkpI15+FlzmfUlwOshTeI8pkbaqM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SFD+WnVMmdWlIB1a0rDdYvzvTpdfWufiJlHK4B6+y2c/sTsW08WBjP0amrCP2Zjr2NHyRygLAVkwkPBM2iALcnkcMxSEXod3N6DKAy7CE1REOGuBC1hw4ux31N7m92LH/UG1P6pt51v7H2+Gtm8HH8my3KlK70q53wxb5anFKcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qrOjmIbw; arc=none smtp.client-ip=209.85.160.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-428405a0205so89561cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 17:10:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708650654; x=1709255454; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sboURurxKEaNFycoxUz2gIfzdUDsQeMcss9yHWictuE=;
+        b=qrOjmIbw7EANQsZGTFxVA84giKb42LVWlUAVfk7WLYQnFgyg8swptnJ5Xya8DQtw8e
+         b1F7GiBn66l8/5RtBl4XSW2fFvB937BdJlwcQH3vz+wUG60PhDdOmdXbQ8yMd0GuMfMH
+         YqQAiS2XPdSCCqBgUEAIwCy/2W6uXsgLxUDUyyAuWTP5adZ+y3vOSivzhZesZJOq7Zjh
+         U/0SEruiy1bVquCWwGKtOLqu+Km9YqBZyifTy4q0VF+pmxMDPsyup2yLhuL30Gxh32ps
+         SHJXaLsUnm2LXEninVzJLFL+Qvywo/GJUeCN+9rIwizyUxRTujwywAKkVtWSfSTfRSfb
+         1mbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708650654; x=1709255454;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sboURurxKEaNFycoxUz2gIfzdUDsQeMcss9yHWictuE=;
+        b=pBKi+C0UQoaGdwOegRL2IrQC3a6BLYL9BkxxwDmTVcqbhxDKZlndxHzD9eO/CKNGen
+         /ktRCk1FotxNINOBVhdp5a7y+K3jPP9XLiOkpCJVNGLbcec4MSQb0KTEKVTioABstfWV
+         7Dyv5nrhnYp8FzDP0rmBXJ+mcEFRuMDgiaVMgKjJxND6Ku60FOMeIGmVfVbTtcxL0F0e
+         FmnBircVSweNUjA9LtN/1EuNcCIIm+bVCLX9oQiUT7qkwlLWx3s9/xQ8ZSuGvLHC+ti7
+         F809OnzlFj/1D0jS79HGSU6xfvC8H+8S2HPxSLIwu3RV+aBDFBE4aXny+F1PYP0ZDZzZ
+         VnYA==
+X-Forwarded-Encrypted: i=1; AJvYcCXlLusKbOPe0VIyiTnwUFzdgSmtU8FReuVsVhG4p/X9s0oXKOLeRm4cK2UTZwayuSDB6uMGaaSB4V62Owy2gLvPT07kcBvvwbS65nNV
+X-Gm-Message-State: AOJu0Yym8ONdgOTMuzPEAiVmegZCJORJon2fhqV0ttMxNVfbr5sSGIuj
+	ky8Y7zJ1oS+8nBFFtSpnO6Foyini2QK0uK4qTchK4Sewm0A0kkzYaOEcxjXMO8G0U38lgSByy3T
+	tW2RtDq3MZNA2EDhNPwI/QGtFVRjTFyj8g3hI
+X-Google-Smtp-Source: AGHT+IF4A8WgyhCwujaoqvxR7XmJo5hrndtXNmFCWfL5+79E/HTYlxRiPlD53MjXhmEhr7Ccgr8vbSTIU0f+NvIUZ6U=
+X-Received: by 2002:a05:622a:1b18:b0:42e:60c2:4522 with SMTP id
+ bb24-20020a05622a1b1800b0042e60c24522mr83400qtb.1.1708650654091; Thu, 22 Feb
+ 2024 17:10:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [syzbot] [mm?] BUG: unable to handle kernel paging request in
- copy_from_kernel_nofault
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, "x86@kernel.org" <x86@kernel.org>,
- Jann Horn <jannh@google.com>, Daniel Borkmann <daniel@iogearbox.net>,
- Alexei Starovoitov <ast@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Borislav Petkov <bp@alien8.de>, John Fastabend <john.fastabend@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>, bpf <bpf@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "H. Peter Anvin" <hpa@zytor.com>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- linux-kernel <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
- "luto@kernel.org" <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>
-References: <87r0jwquhv.ffs@tglx>
- <c4c422ac-d017-9944-7d03-76ad416b19a4@igalia.com>
- <CAADnVQ+9vTBj9GgxotLF0_oV7cNFRebmcq_DNUm+cRJHQXCz1Q@mail.gmail.com>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <CAADnVQ+9vTBj9GgxotLF0_oV7cNFRebmcq_DNUm+cRJHQXCz1Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240222051539.3001988-3-saravanak@google.com>
+ <20240222051539.3001988-4-saravanak@google.com> <ffec7c7b8eb86f573e420e0582075ba1e75d0e54.camel@perches.com>
+ <CAGETcx-mNt+_ST0opQ=_M1ZJK1acf8Rr0VqaAUskyig5YwL_dw@mail.gmail.com> <e51c5e6fe02bcc5a487cae063fe8f440013d0ca9.camel@perches.com>
+In-Reply-To: <e51c5e6fe02bcc5a487cae063fe8f440013d0ca9.camel@perches.com>
+From: Saravana Kannan <saravanak@google.com>
+Date: Thu, 22 Feb 2024 17:10:15 -0800
+Message-ID: <CAGETcx8rANkOHhay6iFoXtXtJ8KvoNQBAMpruGENys+L2uHQTQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] checkpatch: Don't check for unified diff format in
+ git sendemail headers
+To: Joe Perches <joe@perches.com>
+Cc: Andy Whitcroft <apw@canonical.com>, Dwaipayan Ray <dwaipayanray1@gmail.com>, 
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>, kernel-team@android.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 22/02/2024 13:04, Alexei Starovoitov wrote:
-> [...]
-> The fix is bpf and net trees and probably will be sent to Linus today
-> as part of net PR.
+On Thu, Feb 22, 2024 at 5:01=E2=80=AFPM Joe Perches <joe@perches.com> wrote=
+:
+>
+> On Thu, 2024-02-22 at 16:45 -0800, Saravana Kannan wrote:
+> > On Thu, Feb 22, 2024 at 12:54=E2=80=AFAM Joe Perches <joe@perches.com> =
+wrote:
+> > >
+> > > On Wed, 2024-02-21 at 21:15 -0800, Saravana Kannan wrote:
+> > > > When checkpatch is used as a git sendemail-validate hook, it's also=
+ passed
+> > > > in the email header for sanity check.
+> > >
+> > > Why?
+> > >
+> > > If so, why not use a front-end script to stop/remove
+> > > the file from being scanned by checkpatch?
+> >
+> > Sure, I could do that. But this also makes it easier for people to
+> > start using checkpatch. Or I can put up a git hook wrapper script in
+> > here for people to symlink into their .git/hooks that does this.
+> >
+> > I'd prefer the lazy route of not creating a 1 line wrapper script :)
+>
+> I'd not.  checkpatch is for _patches_.
+> Don't feed stuff to it that isn't patches and expect good results.
 
-Thanks a lot Alexei!
+Would you be open to being a maintainer if I add a git hook
+sendemail-validate wrapper? It feels silly to add myself as a
+maintainer for a 1-line script. I'd rather give it to you :)
 
-So, for completeness / archiving, the patch was now split in 2 and the
-links are:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=ee0e39a63b7
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=32019c659ec
-
-Cheers,
-
-
-Guilherme
+-Saravana
 
