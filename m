@@ -1,548 +1,209 @@
-Return-Path: <linux-kernel+bounces-77824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F80E860AA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:13:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4286B860AAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:13:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7721B21D55
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 06:13:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E98AA287D47
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 06:13:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 727F9125AD;
-	Fri, 23 Feb 2024 06:12:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4979912E43;
+	Fri, 23 Feb 2024 06:13:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="u2w8jJEM"
-Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="T1pIylmg"
+Received: from FRA01-PR2-obe.outbound.protection.outlook.com (mail-pr2fra01on2103.outbound.protection.outlook.com [40.107.12.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 084D511C84
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 06:12:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.176
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708668774; cv=none; b=AOaB1dbJeVtyh8fxAYZPHixJYCnmQ5YxU8xNVY39tYedPkdKNHUnM7CCrGhSttO7Nh1EYVTZMeX/tBfstSQKStioE0xkgT7kb8fbpc2ffty0QBTxr7GttDaMZBZw3D0xm/xVpMybB9X5HC9URajjEJ9ymwuWRqCNMK1BhiIfASo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708668774; c=relaxed/simple;
-	bh=rx1X9MVNJkw8Z5WA6XuWmxNNZLKYcN0mtaczFWbxdpI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aS/z1LrnnC0ms4PP96PBHmdqinxI0JrMCRSwd5do3GInAIbHVWPwMsa0DJGzfVzEXJeB/s30ssFj5RobMI4Vt6nNchGrYsdiHyXE7Y6lscUmXac1HqMUbDXT3LNpGfuuOEgCCyX9QTB/GdTbxyyuXHMJNBFa1IdvvaZFyIiqLRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=u2w8jJEM; arc=none smtp.client-ip=209.85.167.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3bbbc6e51d0so332152b6e.3
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 22:12:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1708668771; x=1709273571; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=6+FJvkA+NVSkLGrEb3ooS7zHjJgxV3a59zcKf7gWnfU=;
-        b=u2w8jJEMu2H+PKMFxtJJMMN+SreKDJScqvtRv0iiG6ve77xDF35Qm7sTf+nN1/ikDi
-         aMz2sOXq4CIhDw49hP2nZH515CdYxKUNNDRJSJMt6b+pLGRMDm4iK9JpZDK8LxTVT2Ul
-         snowo3p5OTmzFTqRbFXbxdIh9R02Q/RYX9VMXfCrKoUOyz3+IuA4yiGExRU2u0XuvbEc
-         Fy3x74+cbSOGAHQz8kPTowd4dgyxzVAr3jox+M36jOmRw6raBuoLDuZYStBvF9fCL1xY
-         ikJRBSJYcd6f3kTeq1cN06HYSkpCUFG/8JvzZiVZ2y8bzPTOvrtr+Lsx+fXoPPcS5P3I
-         0eZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708668771; x=1709273571;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6+FJvkA+NVSkLGrEb3ooS7zHjJgxV3a59zcKf7gWnfU=;
-        b=TZ3Q4gNWXmWim+FHV6Vlz8PMW7KctKV/ypUWzTHVTjcb2vCcJ0BtEYljpeu4N0Hn1w
-         DE8va+6kvfr3Ygz6KZNi9QLJ3xjyYfykMZcDlKU0QOArY5UzZlfQwvbzXMk0Ar3coRCt
-         N/IopgRhPqxLPLhbBMv1MpvVyNFXVb66vHN690X+lJBX5jt8ma1F8oth448M0gFfveSC
-         yUf0A+33zTY9bxwwZbwl78C/c0xwel3/13map4nFDwdEJ/eMDDFCARpt0ISq5HCNHS6W
-         NcAlKcPAi6HR+pXsdvMOnic/wsun6NK2gO9h5hXd+SwfCVqpoIwx15WsUyIv3t7nzJet
-         dd5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXOeusgwr7JKT0HKmt05t3/kdOm6hRhjemIxHpp5qvdlOTpLSlvnj93YojMwq5UE5sUGsncWEl+2YesUswDMX9k0PsQTzsoCWWtkfzM
-X-Gm-Message-State: AOJu0YyGp7FfYII2hzPchVlhsNKlKmKI4k821VGaXwhXWMZXUg+74Eh+
-	/2DRB4eZTkjA6h84OlHeA6j/1yFdL8Q0eGZ1S9Jhbon+kRuIRU+YjhJRuWOK2EM=
-X-Google-Smtp-Source: AGHT+IHUtkjy8HubvTxCVo97IUEI7MplXA9430ueGwfeXj+aUWemSwJjYDBA6cZQ6qiESsI8IKp2Og==
-X-Received: by 2002:a05:6358:340b:b0:17b:6391:1136 with SMTP id h11-20020a056358340b00b0017b63911136mr903683rwd.17.1708668770829;
-        Thu, 22 Feb 2024 22:12:50 -0800 (PST)
-Received: from ghost ([2601:647:5700:6860:aede:c20c:3775:da4a])
-        by smtp.gmail.com with ESMTPSA id s27-20020a056a00179b00b006e3cdae7e60sm10494407pfg.58.2024.02.22.22.12.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 22:12:50 -0800 (PST)
-Date: Thu, 22 Feb 2024 22:12:47 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Erhard Furtner <erhard_f@mailbox.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	Palmer Dabbelt <palmer@rivosinc.com>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: "test_ip_fast_csum: ASSERTION FAILED at
- lib/checksum_kunit.c:589" at boot with CONFIG_CHECKSUM_KUNIT=y enabled on a
- Talos II, kernel 6.8-rc5
-Message-ID: <Zdg3X4A1eJsJ+ACh@ghost>
-References: <20240223022654.625bef62@yea>
- <528c6abf-e5ef-42cd-a5d7-6ede3254523d@csgroup.eu>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6897B12B8A
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 06:13:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.12.103
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708668785; cv=fail; b=FOS36720eFJGGTxeBvlnkx9rlByIwKUBf2lyWoloFG3HqKiO1y9OuLWJ3vzIJg7Q4kjmcsD8USPYpabLG7xuEWxXTCNF6AeEko8m3XfCzCkHstFgL+m6OEqlGKUFvt+ZhponfeM/5IuDBtX6WOm0EsGA0CuTz9f8K3HwRbFMwMw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708668785; c=relaxed/simple;
+	bh=eSXHFovGd5Sv++vZsIa+Pgb1VVIc6zKYmouBq6Fr9cQ=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=lM0oJeWsCw3TmVlemHC7eKxdu//bqmtwXLTuBpQ6KDVYu18jh0scVeTvbqbQEYIMnmk8SVqrkezq+jHB22Q59l9XDOx3CJdsD9JNgiLKVqBvtzj4FORWwJfjpYjW952UuvMpu7YUPT8FE/ThDFERqJI/P35JxwmcdaZ8z9jtKEg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=T1pIylmg; arc=fail smtp.client-ip=40.107.12.103
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HBl5mndw4JO2VJ6HUVhsPne3K0nC5gZSTRd603wFS6zfy7ZQrS+FnVC5xBVyT90txDfwJTa/PN7lRXFBFiXWqbe0HbJfgtyfIoEqnhP4dMXy5/HjqgaR/oZfJWlCUyd+oKyxXShSk1wXz/8jdTUULXU6W1iMllAx2ReaPcnLHB7e+eoSD9oPISwPWnjEbI6uhtrqb6YujM3cyh7CckKt4qzza2OHVxe5qOPGx57cwCsKT7HubS7dC73Cs3I2GMCOexTipBF3bBHnwVO6M2+9ol+0PUwBhj3tSh7+4vg5MPRYJl2CTT4RRw+4+KeFRPs1VN/oWPCK/xAosE7kXa3FYA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eSXHFovGd5Sv++vZsIa+Pgb1VVIc6zKYmouBq6Fr9cQ=;
+ b=QRCVh5kaXd3lgDwyKjhVItU1eIBL/jrTy3nSqUxRP87DCobr+j4aQa6GlLHLZ5vAfCIySn88ODSewZbsTPCj78yTOYtix3pnG/GII+OsXLXAexwgZJDFOiNx57M3C96/kGjoTSUi2Y5mrVtZFKm70htgQtNaDQR6eDf6jwCMDEwaI2RlMGQ4Y+jOXKZN6BXfqW94v+Ovyt6RTZtS5IrQ+VXe1P8REyeQs9rBuo7IojkHaG8ICJYadHu2/sjYnRL37gycFcNDSdzCzSqajOxp6ZcXHH3qpKuSHcDOaBhcQK4V6/655tEuWvxxMqPOBzHciEghPrzhp1AowD12OcP9pg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eSXHFovGd5Sv++vZsIa+Pgb1VVIc6zKYmouBq6Fr9cQ=;
+ b=T1pIylmgZIJlmynB+VtT+3omV34e7kKXN8mF3Mbd52UUQfUiOtAZAcA3DC2tmbXmZIvJmeEw4XXfVqVkwiEOxR6fcuygGaJkMI1vJ2XYud6o4MHp29g3InMdkLHOcuos9zS66PDtgNgVKyYtuzeH9bXWWGC4ujD2nw4RL4UDjuW5BO5WelzK3CsqAyDKRnxLUpXbwWD9axVPk2TWCoqQLysjsHDXLkr3qh2abm16Z+b33oJKjtqQ95VX5Szpz+Ajh51B+n7V5lhHHrx7R9y96JzVOGgHUVJWdYGk6LOaDwvWRnMi6PJw4hlMJoybg3Rg8nUU5iBNQbF7r5MUJcvEWQ==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by MRZP264MB3228.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Fri, 23 Feb
+ 2024 06:12:59 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::46af:917d:3bb2:167e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::46af:917d:3bb2:167e%6]) with mapi id 15.20.7316.023; Fri, 23 Feb 2024
+ 06:12:59 +0000
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: Erhard Furtner <erhard_f@mailbox.org>, "dri-devel@lists.freedesktop.org"
+	<dri-devel@lists.freedesktop.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: drm_format_helper_test fails Subtest:
+ drm_test_fb_xrgb8888_to_xrgb2101010 on Big Endian machines (kernel 6.7.5,
+ ppc64)
+Thread-Topic: drm_format_helper_test fails Subtest:
+ drm_test_fb_xrgb8888_to_xrgb2101010 on Big Endian machines (kernel 6.7.5,
+ ppc64)
+Thread-Index: AQHaZh9ZQhm4AtwYmUiq0+H8HCUkhg==
+Date: Fri, 23 Feb 2024 06:12:59 +0000
+Message-ID: <9344c3bb-08b4-4816-8c0f-14934ffd2f1a@csgroup.eu>
+References: <20240220004531.5c6e5b38@yea>
+In-Reply-To: <20240220004531.5c6e5b38@yea>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MRZP264MB3228:EE_
+x-ms-office365-filtering-correlation-id: 8205c09f-e36a-4c47-3b1b-08dc34367c47
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ TwJ1Edk9RRDqrmsHTXfORV7FPmmvCW0PKe6yzBhVyeenO9J63VH0vifRjfhFRuyc6CCeBD/69cI9NXtmOCID00a9O6+owwqU1oPYYTG0fXxRy2OlMEd/Np3yCn6Wvb1wNPBJ4O0uqHdDWiQ2nfRDyWrnbAsT2sgeRoMZdL6iw70GVbxBI39F8TYbL9A85hsFBqQxg9ZYSXN5ynh4/Xd3CMP6gc9yHsQ4zRYTjDUYaq0cLLRDaDg014Jv71T6Rb/p7cTl4HlxH468Hwf4wR3UjIbpVS6zbTxKZ2uG3OfoVxAmcIGG+CkpDPCVefpo0khuIzzoqpn2Wc2kdYAYAdOwdj+r8eO3VWZJLvTQVd42UcgoJ1WqwL/SwZ8fHmJcmrL2GIjm2vMp0GQwvZG95clD8hPoOhRpS43J2XBOHJLXxn57ikrtXr0ZKefclAH45pDKS2JHJgFuPfKD+h1/GV61MQcrQ6yY6FspYjb4y06cDcN5Iu0XFubq9hZcZrVjOYWLP0nrn4v3sP1XJq0598U0MXJU2N/0PDCI/Moib+MuO19OhGEy1ZDT4T3BEEzeF/v0U0pqPovOPOIKMQqov1BzlwmUR+Sg/A2Iz5v90s1ooQk27WgVm7jmw2W00VvLma9y
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(230273577357003)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?UXhOTTVrTVBuYXdrS0x4YUJnVDRnK0lDNlBNUDU2NUptaHZGN0JoTFk5TGlo?=
+ =?utf-8?B?NE5RNllqcnlpaW1EY3pYUFowMkJGSlpxSEJ2cmJ0Q3dPV1JuTlhzZFVLbGFi?=
+ =?utf-8?B?TDNmT3pxK0Z1MHFKa3ovdDNWT1g4bnJ3S1ZoTjAzNnIzc0tTdVZJSFRCZHkv?=
+ =?utf-8?B?Ukt5aElVaUZxZEZkU0pjcEQ1MU1vZUFkbmhwbjk0NkpuQ2lzNVNpSmFTV2Jz?=
+ =?utf-8?B?SFpScFJyb0V0M29kYWFkQUtVL0dJdUFyanFBaUZhN1U4Q1RVZFRKd0RMUE1u?=
+ =?utf-8?B?STIySndwL1kzeXdmZnBaM1JIakVKUHpBb2F3Q2ZZeEhta2ZRSVdOeWgzUmpw?=
+ =?utf-8?B?eHgzZWNNZkU5TmJieFpsL0kxSjJLbSswUUlyRi9WSkZCelBSWnVtYnhseWVF?=
+ =?utf-8?B?NERMOC8zWjZDQzE2NjFFZDdWYUhHODkyd0dPaHVjWEVrbGUrM2hiOHkra1NT?=
+ =?utf-8?B?bEZqNXRnNUJXd09YandaVEpZOUkzcktweFlaS3ZuellRRG96TUVwQlRXQkF2?=
+ =?utf-8?B?WU5nRkgzZ0NCWFdlL0ZFelBBMThrWVZHWVlPUlhXNXM5K20xN3hNODB5eFVT?=
+ =?utf-8?B?clE1enRlZE9uQVdvdlFtSVc1UkVYT0RKRmZ5c2VsbkJqK09NUFRlL29VQk5I?=
+ =?utf-8?B?RjNKdUp4bWJwYlR2R3dhUjZmNHhuTlAxMytxZy9OaGJqdEtkZFZJSVR1Mndr?=
+ =?utf-8?B?bmdpckE2WU1vNjBIek1kSTJ6bmNKZUVTLzdhYnIzdDA0d29OT1FyQWpJY3lu?=
+ =?utf-8?B?RVNydlo0TzdMWE1sWEJXZnRGZGNTSUFCN0lUQm9pamN3S3p4eUpZWUFOTm5w?=
+ =?utf-8?B?MkVGR2ZrTkRUcFdvTW9LRHgyZzJKaFU2TkdWQ21ST2hUVGd2dHUwOEhzMXFt?=
+ =?utf-8?B?eUwwMG51dVNPMDFDazZOT21QQUxKbk9CQzROVGEwcWNuRnJnNExwUElNNmRZ?=
+ =?utf-8?B?REN4cm9nOGZmOTBZTTNUd2p2R3JqTTVwWktCcTlQRXphTkF3dlVUelNUMkJo?=
+ =?utf-8?B?NTlUZDFldTVIdWpDUmp2UWZZcDc1d0tMVjdmWFJZaXJpbWNYK2pnU0d4UEV0?=
+ =?utf-8?B?K3ppOVpiRWpzaVBvNENaNVJ1SmplZkZDVWlhbjU3ZFBLZTUweXc5QTF6eGJt?=
+ =?utf-8?B?anZ5dXN1UjExTFhPeWdGOTZZVXJRWWdHWENqMEtmdkRDYXQwcU9XWit0NEIx?=
+ =?utf-8?B?WkNodUtaQkhCOHpKYkp3dnRRVWNaK3NsTDBkOEM1dTFSck1LVzExdzVZK3B5?=
+ =?utf-8?B?azIzVWl4OU53TUxxWUwzNGw5bDlvLzNMZGdOdHJ3SlhSeEduYXJKRlJ6Y1ln?=
+ =?utf-8?B?TVFtanZyayt0OE95YmllTStlV2Fjd1dzdVlCWHBsaDIxNEpuelF1VmJsWXFU?=
+ =?utf-8?B?eWZLOFJBQ05HTlV5K1JHekY4LzdhdXM0a2M3Tnk2WHNOd3U5OFBoYjhtRW9P?=
+ =?utf-8?B?bUxmV2JnTm54YldTR2dlMlVTK1ZYbkhiOGZKWjRhajV2dnkrV2xYUS9pN2dS?=
+ =?utf-8?B?MlNHQkVZVWludVFFTVZ0Um51ZUpPN3NuSEd3ZTBDZThjYy8zdGJ5N3d1MWZF?=
+ =?utf-8?B?cWh4RWtENERVNlFzdFVsSVNIVkw3WEoxcGFRR1kzRWdIcTl6N0ZhQzhRR2pU?=
+ =?utf-8?B?aXg5Q2JEdnVac1pTMTVXSGJXWE1KSFhJUmE4R3ZVMFU0RkxnakVjMFFia2hi?=
+ =?utf-8?B?TmFPMm9ybXpqcnFuNUsrOEhNdCtTTlhHRmN3UmZuWWJGd2twWkpzNlJEeTht?=
+ =?utf-8?B?QXlKVGp5ZTRLbkU3dk9TZXdwT0Q2MnRIUzEwTnVsR3p1aDNybDgyZjJIaXJV?=
+ =?utf-8?B?eklYNGl4cTFmUHlGSWVJVjBzdldwd0Uxa1pTZTMxVk96WlVJZWRyazRUV0RI?=
+ =?utf-8?B?dVhkejdDTkxKYy9zNTd4MmJLVStzTUFNTUozQUdsd2czdGFObERnUHJJVWl1?=
+ =?utf-8?B?MWxnOCtVb1VnRllVUElVZUpyeDZpY1FXM2V6OUU0aEF1RE1RRGg3UDlLWm5t?=
+ =?utf-8?B?MzlsaFBidzZQVFRzRk1Ud1Q4Ri9WV0kxY28ycW1jVlNZL1JSb1BhTkZDM09r?=
+ =?utf-8?B?Z0VoN1FkT0JTelMwOS9rV2tSNndVVitQZUlmTFFiclVSbEQrUlFXZ1dPREo5?=
+ =?utf-8?B?Ylh1RmxmdVR5aS9FSGVDL3MvaEs3V0VXK1NzZ2xQTU40bVk0dU5DVEhFN3FY?=
+ =?utf-8?B?cVE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <83D0477F774DA342B452D2F770195B91@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <528c6abf-e5ef-42cd-a5d7-6ede3254523d@csgroup.eu>
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8205c09f-e36a-4c47-3b1b-08dc34367c47
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Feb 2024 06:12:59.7101
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: h7l/3Zk9hbsW1F5uvpCfBvdnNRb13ZI0xc81i2LOwCXklZflJ0WQonROzf+NvRp0CF24y1GR21qpYBsjb7diJllQQeqLYY0AJFnd+Q+CSCw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MRZP264MB3228
 
-On Fri, Feb 23, 2024 at 05:59:07AM +0000, Christophe Leroy wrote:
-> Hi Erhard, hi Charlie,
-> 
-> Le 23/02/2024 à 02:26, Erhard Furtner a écrit :
-> > Greetings!
-> > 
-> > Looks like my Talos II (running a BE kernel+system) fails some of the kernels internal unit tests. One of the failing tests is checksum_kunit, enabled via CONFIG_CHECKSUM_KUNIT=y:
-> > 
-> > [...]
-> >     KTAP version 1
-> >      # Subtest: checksum
-> >      # module: checksum_kunit
-> >      1..5
-> > entry-flush: disabled on command line.
-> >      ok 1 test_csum_fixed_random_inputs
-> >      ok 2 test_csum_all_carry_inputs
-> >      ok 3 test_csum_no_carry_inputs
-> >      # test_ip_fast_csum: ASSERTION FAILED at lib/checksum_kunit.c:589
-> >      Expected ( u64)expected == ( u64)csum_result, but
-> >          ( u64)expected == 55939 (0xda83)
-> >          ( u64)csum_result == 33754 (0x83da)
-> >      not ok 4 test_ip_fast_csum
-> >      # test_csum_ipv6_magic: ASSERTION FAILED at lib/checksum_kunit.c:617
-> >      Expected ( u64)expected_csum_ipv6_magic[i] == ( u64)csum_ipv6_magic(saddr, daddr, len, proto, csum), but
-> >          ( u64)expected_csum_ipv6_magic[i] == 6356 (0x18d4)
-> >          ( u64)csum_ipv6_magic(saddr, daddr, len, proto, csum) == 43586 (0xaa42)
-> >      not ok 5 test_csum_ipv6_magic
-> > # checksum: pass:3 fail:2 skip:0 total:5
-> > # Totals: pass:3 fail:2 skip:0 total:5
-> > not ok 4 checksum
-> > [...]
-> > 
-> > Full dmesg + kernel .config attached.
-> 
-> Looks like the same problem as the one I fixed with commit b38460bc463c 
-> ("kunit: Fix checksum tests on big endian CPUs")
-> 
-> The new tests implemented through commit 6f4c45cbcb00 ("kunit: Add tests 
-> for csum_ipv6_magic and ip_fast_csum") create a lot of type issues as 
-> reported by sparse when built with C=2 (see below).
-> 
-> Once those issues are fixed, it should work.
-> 
-> Charlie, can you provide a fix ?
-> 
-> Thanks,
-> Christophe
-
-The "lib: checksum: Fix issues with checksum tests" patch should fix all of these issues [1].
-
-[1] https://lore.kernel.org/all/20240221-fix_sparse_errors_checksum_tests-v9-1-bff4d73ab9d1@rivosinc.com/T/#m189783a9b2a7d12e3c34c4a412e65408658db2c9
-
-- Charlie
-
-> 
->    CC      lib/checksum_kunit.o
->    CHECK   lib/checksum_kunit.c
-> lib/checksum_kunit.c:219:9: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:219:9:    expected restricted __sum16
-> lib/checksum_kunit.c:219:9:    got int
-> lib/checksum_kunit.c:219:17: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:219:17:    expected restricted __sum16
-> lib/checksum_kunit.c:219:17:    got int
-> lib/checksum_kunit.c:219:25: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:219:25:    expected restricted __sum16
-> lib/checksum_kunit.c:219:25:    got int
-> lib/checksum_kunit.c:219:33: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:219:33:    expected restricted __sum16
-> lib/checksum_kunit.c:219:33:    got int
-> lib/checksum_kunit.c:219:41: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:219:41:    expected restricted __sum16
-> lib/checksum_kunit.c:219:41:    got int
-> lib/checksum_kunit.c:219:49: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:219:49:    expected restricted __sum16
-> lib/checksum_kunit.c:219:49:    got int
-> lib/checksum_kunit.c:219:57: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:219:57:    expected restricted __sum16
-> lib/checksum_kunit.c:219:57:    got int
-> lib/checksum_kunit.c:219:65: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:219:65:    expected restricted __sum16
-> lib/checksum_kunit.c:219:65:    got int
-> lib/checksum_kunit.c:219:73: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:219:73:    expected restricted __sum16
-> lib/checksum_kunit.c:219:73:    got int
-> lib/checksum_kunit.c:220:9: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:220:9:    expected restricted __sum16
-> lib/checksum_kunit.c:220:9:    got int
-> lib/checksum_kunit.c:220:17: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:220:17:    expected restricted __sum16
-> lib/checksum_kunit.c:220:17:    got int
-> lib/checksum_kunit.c:220:25: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:220:25:    expected restricted __sum16
-> lib/checksum_kunit.c:220:25:    got int
-> lib/checksum_kunit.c:220:33: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:220:33:    expected restricted __sum16
-> lib/checksum_kunit.c:220:33:    got int
-> lib/checksum_kunit.c:220:41: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:220:41:    expected restricted __sum16
-> lib/checksum_kunit.c:220:41:    got int
-> lib/checksum_kunit.c:220:49: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:220:49:    expected restricted __sum16
-> lib/checksum_kunit.c:220:49:    got int
-> lib/checksum_kunit.c:220:57: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:220:57:    expected restricted __sum16
-> lib/checksum_kunit.c:220:57:    got int
-> lib/checksum_kunit.c:220:65: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:220:65:    expected restricted __sum16
-> lib/checksum_kunit.c:220:65:    got int
-> lib/checksum_kunit.c:220:73: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:220:73:    expected restricted __sum16
-> lib/checksum_kunit.c:220:73:    got int
-> lib/checksum_kunit.c:221:9: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:221:9:    expected restricted __sum16
-> lib/checksum_kunit.c:221:9:    got int
-> lib/checksum_kunit.c:221:17: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:221:17:    expected restricted __sum16
-> lib/checksum_kunit.c:221:17:    got int
-> lib/checksum_kunit.c:221:25: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:221:25:    expected restricted __sum16
-> lib/checksum_kunit.c:221:25:    got int
-> lib/checksum_kunit.c:221:33: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:221:33:    expected restricted __sum16
-> lib/checksum_kunit.c:221:33:    got int
-> lib/checksum_kunit.c:221:41: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:221:41:    expected restricted __sum16
-> lib/checksum_kunit.c:221:41:    got int
-> lib/checksum_kunit.c:221:49: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:221:49:    expected restricted __sum16
-> lib/checksum_kunit.c:221:49:    got int
-> lib/checksum_kunit.c:221:57: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:221:57:    expected restricted __sum16
-> lib/checksum_kunit.c:221:57:    got int
-> lib/checksum_kunit.c:221:65: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:221:65:    expected restricted __sum16
-> lib/checksum_kunit.c:221:65:    got int
-> lib/checksum_kunit.c:221:73: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:221:73:    expected restricted __sum16
-> lib/checksum_kunit.c:221:73:    got int
-> lib/checksum_kunit.c:222:9: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:222:9:    expected restricted __sum16
-> lib/checksum_kunit.c:222:9:    got int
-> lib/checksum_kunit.c:222:17: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:222:17:    expected restricted __sum16
-> lib/checksum_kunit.c:222:17:    got int
-> lib/checksum_kunit.c:222:25: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:222:25:    expected restricted __sum16
-> lib/checksum_kunit.c:222:25:    got int
-> lib/checksum_kunit.c:222:33: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:222:33:    expected restricted __sum16
-> lib/checksum_kunit.c:222:33:    got int
-> lib/checksum_kunit.c:222:41: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:222:41:    expected restricted __sum16
-> lib/checksum_kunit.c:222:41:    got int
-> lib/checksum_kunit.c:222:49: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:222:49:    expected restricted __sum16
-> lib/checksum_kunit.c:222:49:    got int
-> lib/checksum_kunit.c:222:57: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:222:57:    expected restricted __sum16
-> lib/checksum_kunit.c:222:57:    got int
-> lib/checksum_kunit.c:222:65: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:222:65:    expected restricted __sum16
-> lib/checksum_kunit.c:222:65:    got int
-> lib/checksum_kunit.c:222:73: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:222:73:    expected restricted __sum16
-> lib/checksum_kunit.c:222:73:    got int
-> lib/checksum_kunit.c:223:9: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:223:9:    expected restricted __sum16
-> lib/checksum_kunit.c:223:9:    got int
-> lib/checksum_kunit.c:223:17: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:223:17:    expected restricted __sum16
-> lib/checksum_kunit.c:223:17:    got int
-> lib/checksum_kunit.c:223:25: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:223:25:    expected restricted __sum16
-> lib/checksum_kunit.c:223:25:    got int
-> lib/checksum_kunit.c:223:33: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:223:33:    expected restricted __sum16
-> lib/checksum_kunit.c:223:33:    got int
-> lib/checksum_kunit.c:223:41: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:223:41:    expected restricted __sum16
-> lib/checksum_kunit.c:223:41:    got int
-> lib/checksum_kunit.c:223:49: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:223:49:    expected restricted __sum16
-> lib/checksum_kunit.c:223:49:    got int
-> lib/checksum_kunit.c:223:57: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:223:57:    expected restricted __sum16
-> lib/checksum_kunit.c:223:57:    got int
-> lib/checksum_kunit.c:223:65: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:223:65:    expected restricted __sum16
-> lib/checksum_kunit.c:223:65:    got int
-> lib/checksum_kunit.c:223:73: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:223:73:    expected restricted __sum16
-> lib/checksum_kunit.c:223:73:    got int
-> lib/checksum_kunit.c:224:9: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:224:9:    expected restricted __sum16
-> lib/checksum_kunit.c:224:9:    got int
-> lib/checksum_kunit.c:224:17: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:224:17:    expected restricted __sum16
-> lib/checksum_kunit.c:224:17:    got int
-> lib/checksum_kunit.c:224:25: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:224:25:    expected restricted __sum16
-> lib/checksum_kunit.c:224:25:    got int
-> lib/checksum_kunit.c:224:33: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:224:33:    expected restricted __sum16
-> lib/checksum_kunit.c:224:33:    got int
-> lib/checksum_kunit.c:224:41: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:224:41:    expected restricted __sum16
-> lib/checksum_kunit.c:224:41:    got int
-> lib/checksum_kunit.c:224:49: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:224:49:    expected restricted __sum16
-> lib/checksum_kunit.c:224:49:    got int
-> lib/checksum_kunit.c:224:57: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:224:57:    expected restricted __sum16
-> lib/checksum_kunit.c:224:57:    got int
-> lib/checksum_kunit.c:224:65: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:224:65:    expected restricted __sum16
-> lib/checksum_kunit.c:224:65:    got int
-> lib/checksum_kunit.c:224:73: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:224:73:    expected restricted __sum16
-> lib/checksum_kunit.c:224:73:    got int
-> lib/checksum_kunit.c:225:9: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:225:9:    expected restricted __sum16
-> lib/checksum_kunit.c:225:9:    got int
-> lib/checksum_kunit.c:225:17: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:225:17:    expected restricted __sum16
-> lib/checksum_kunit.c:225:17:    got int
-> lib/checksum_kunit.c:225:25: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:225:25:    expected restricted __sum16
-> lib/checksum_kunit.c:225:25:    got int
-> lib/checksum_kunit.c:225:33: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:225:33:    expected restricted __sum16
-> lib/checksum_kunit.c:225:33:    got int
-> lib/checksum_kunit.c:225:41: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:225:41:    expected restricted __sum16
-> lib/checksum_kunit.c:225:41:    got int
-> lib/checksum_kunit.c:225:49: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:225:49:    expected restricted __sum16
-> lib/checksum_kunit.c:225:49:    got int
-> lib/checksum_kunit.c:225:57: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:225:57:    expected restricted __sum16
-> lib/checksum_kunit.c:225:57:    got int
-> lib/checksum_kunit.c:225:65: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:225:65:    expected restricted __sum16
-> lib/checksum_kunit.c:225:65:    got int
-> lib/checksum_kunit.c:225:73: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:225:73:    expected restricted __sum16
-> lib/checksum_kunit.c:225:73:    got int
-> lib/checksum_kunit.c:226:9: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:226:9:    expected restricted __sum16
-> lib/checksum_kunit.c:226:9:    got int
-> lib/checksum_kunit.c:226:17: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:226:17:    expected restricted __sum16
-> lib/checksum_kunit.c:226:17:    got int
-> lib/checksum_kunit.c:226:25: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:226:25:    expected restricted __sum16
-> lib/checksum_kunit.c:226:25:    got int
-> lib/checksum_kunit.c:226:33: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:226:33:    expected restricted __sum16
-> lib/checksum_kunit.c:226:33:    got int
-> lib/checksum_kunit.c:226:41: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:226:41:    expected restricted __sum16
-> lib/checksum_kunit.c:226:41:    got int
-> lib/checksum_kunit.c:226:49: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:226:49:    expected restricted __sum16
-> lib/checksum_kunit.c:226:49:    got int
-> lib/checksum_kunit.c:226:57: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:226:57:    expected restricted __sum16
-> lib/checksum_kunit.c:226:57:    got int
-> lib/checksum_kunit.c:226:65: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:226:65:    expected restricted __sum16
-> lib/checksum_kunit.c:226:65:    got int
-> lib/checksum_kunit.c:226:73: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:226:73:    expected restricted __sum16
-> lib/checksum_kunit.c:226:73:    got int
-> lib/checksum_kunit.c:227:9: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:227:9:    expected restricted __sum16
-> lib/checksum_kunit.c:227:9:    got int
-> lib/checksum_kunit.c:227:17: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:227:17:    expected restricted __sum16
-> lib/checksum_kunit.c:227:17:    got int
-> lib/checksum_kunit.c:227:25: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:227:25:    expected restricted __sum16
-> lib/checksum_kunit.c:227:25:    got int
-> lib/checksum_kunit.c:227:33: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:227:33:    expected restricted __sum16
-> lib/checksum_kunit.c:227:33:    got int
-> lib/checksum_kunit.c:227:41: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:227:41:    expected restricted __sum16
-> lib/checksum_kunit.c:227:41:    got int
-> lib/checksum_kunit.c:227:49: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:227:49:    expected restricted __sum16
-> lib/checksum_kunit.c:227:49:    got int
-> lib/checksum_kunit.c:227:57: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:227:57:    expected restricted __sum16
-> lib/checksum_kunit.c:227:57:    got int
-> lib/checksum_kunit.c:227:65: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:227:65:    expected restricted __sum16
-> lib/checksum_kunit.c:227:65:    got int
-> lib/checksum_kunit.c:227:73: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:227:73:    expected restricted __sum16
-> lib/checksum_kunit.c:227:73:    got int
-> lib/checksum_kunit.c:228:9: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:228:9:    expected restricted __sum16
-> lib/checksum_kunit.c:228:9:    got int
-> lib/checksum_kunit.c:228:17: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:228:17:    expected restricted __sum16
-> lib/checksum_kunit.c:228:17:    got int
-> lib/checksum_kunit.c:228:25: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:228:25:    expected restricted __sum16
-> lib/checksum_kunit.c:228:25:    got int
-> lib/checksum_kunit.c:228:33: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:228:33:    expected restricted __sum16
-> lib/checksum_kunit.c:228:33:    got int
-> lib/checksum_kunit.c:228:41: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:228:41:    expected restricted __sum16
-> lib/checksum_kunit.c:228:41:    got int
-> lib/checksum_kunit.c:228:49: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:228:49:    expected restricted __sum16
-> lib/checksum_kunit.c:228:49:    got int
-> lib/checksum_kunit.c:228:57: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:228:57:    expected restricted __sum16
-> lib/checksum_kunit.c:228:57:    got int
-> lib/checksum_kunit.c:228:65: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:228:65:    expected restricted __sum16
-> lib/checksum_kunit.c:228:65:    got int
-> lib/checksum_kunit.c:228:73: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:228:73:    expected restricted __sum16
-> lib/checksum_kunit.c:228:73:    got int
-> lib/checksum_kunit.c:229:9: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:229:9:    expected restricted __sum16
-> lib/checksum_kunit.c:229:9:    got int
-> lib/checksum_kunit.c:229:17: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:229:17:    expected restricted __sum16
-> lib/checksum_kunit.c:229:17:    got int
-> lib/checksum_kunit.c:229:25: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:229:25:    expected restricted __sum16
-> lib/checksum_kunit.c:229:25:    got int
-> lib/checksum_kunit.c:229:33: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:229:33:    expected restricted __sum16
-> lib/checksum_kunit.c:229:33:    got int
-> lib/checksum_kunit.c:229:41: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:229:41:    expected restricted __sum16
-> lib/checksum_kunit.c:229:41:    got int
-> lib/checksum_kunit.c:229:49: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:229:49:    expected restricted __sum16
-> lib/checksum_kunit.c:229:49:    got int
-> lib/checksum_kunit.c:229:57: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:229:57:    expected restricted __sum16
-> lib/checksum_kunit.c:229:57:    got int
-> lib/checksum_kunit.c:229:65: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:229:65:    expected restricted __sum16
-> lib/checksum_kunit.c:229:65:    got int
-> lib/checksum_kunit.c:229:73: warning: incorrect type in initializer 
-> (different base types)
-> lib/checksum_kunit.c:229:73:    expected restricted __sum16
-> lib/checksum_kunit.c:229:73:    got int
-> lib/checksum_kunit.c:230:9: warning: too many warnings
+SGksDQoNCkxlIDIwLzAyLzIwMjQgw6AgMDA6NDUsIEVyaGFyZCBGdXJ0bmVyIGEgw6ljcml0wqA6
+DQo+IEdyZWV0aW5ncyENCj4gDQo+IEkgcmFuIHNvbWUga2VybmVsIGRybS90dG0gdW5pdCB0ZXN0
+cyB0byBjaGVjayBmb3IgcXVpcmtzIGluIHRoZSBkcm0vdHRtIHN1YnN5c3RlbS4gT25lIHRoaW5n
+IEkgZm91bmQgb3V0IHRoYXQgdGhlIGRybV9mb3JtYXRfaGVscGVyX3Rlc3QgZmFpbHMgU3VidGVz
+dDogZHJtX3Rlc3RfZmJfeHJnYjg4ODhfdG9feHJnYjIxMDEwMTAgb24gbXkgVGFsb3MgSUkgKHBw
+YzY0KSB3aGljaCBJIHJ1biBpbiBCaWdFbmRpYW4gbW9kZToNCj4gDQo+IFsuLi5dDQo+ICAgICAg
+ICAgICBLVEFQIHZlcnNpb24gMQ0KPiAgICAgICAgICAgIyBTdWJ0ZXN0OiBkcm1fdGVzdF9mYl94
+cmdiODg4OF90b194cmdiMjEwMTAxMA0KPiAgICAgICAjIGRybV90ZXN0X2ZiX3hyZ2I4ODg4X3Rv
+X3hyZ2IyMTAxMDEwOiBFWFBFQ1RBVElPTiBGQUlMRUQgYXQgZHJpdmVycy9ncHUvZHJtL3Rlc3Rz
+L2RybV9mb3JtYXRfaGVscGVyX3Rlc3QuYzo5OTUNCj4gICAgICAgRXhwZWN0ZWQgYnVmID09IHJl
+c3VsdC0+ZXhwZWN0ZWQsIGJ1dA0KPiAgICAgICAgICAgYnVmID09DQo+ICAgICAgICAgICA8MDA+
+PDAwPjxmMD48M2Y+DQo+ICAgICAgICAgICByZXN1bHQtPmV4cGVjdGVkID09DQo+ICAgICAgICAg
+ICA8M2Y+PGYwPjwwMD48MDA+DQo+ICAgICAgICAgICBub3Qgb2sgMSBzaW5nbGVfcGl4ZWxfc291
+cmNlX2J1ZmZlcg0KPiAgICAgICAjIGRybV90ZXN0X2ZiX3hyZ2I4ODg4X3RvX3hyZ2IyMTAxMDEw
+OiBFWFBFQ1RBVElPTiBGQUlMRUQgYXQgZHJpdmVycy9ncHUvZHJtL3Rlc3RzL2RybV9mb3JtYXRf
+aGVscGVyX3Rlc3QuYzo5OTUNCj4gICAgICAgRXhwZWN0ZWQgYnVmID09IHJlc3VsdC0+ZXhwZWN0
+ZWQsIGJ1dA0KPiAgICAgICAgICAgYnVmID09DQo+ICAgICAgICAgICA8MDA+PDAwPjxmMD48M2Y+
+DQo+ICAgICAgICAgICByZXN1bHQtPmV4cGVjdGVkID09DQo+ICAgICAgICAgICA8M2Y+PGYwPjww
+MD48MDA+DQo+ICAgICAgICAgICBub3Qgb2sgMiBzaW5nbGVfcGl4ZWxfY2xpcF9yZWN0YW5nbGUN
+Cj4gICAgICAgIyBkcm1fdGVzdF9mYl94cmdiODg4OF90b194cmdiMjEwMTAxMDogRVhQRUNUQVRJ
+T04gRkFJTEVEIGF0IGRyaXZlcnMvZ3B1L2RybS90ZXN0cy9kcm1fZm9ybWF0X2hlbHBlcl90ZXN0
+LmM6OTk1DQo+ICAgICAgIEV4cGVjdGVkIGJ1ZiA9PSByZXN1bHQtPmV4cGVjdGVkLCBidXQNCj4g
+ICAgICAgICAgIGJ1ZiA9PQ0KPiAgICAgICAgICAgPGZmPiBmZiAgZmYgPDNmPiAwMCAgMDAgIDAw
+ICAwMCA8MDA+PDAwPjxmMD48M2Y+IDAwIDxmYz48MGY+IDAwDQo+ICAgICAgICAgICA8ZmY+PDAz
+PjwwMD48MDA+PGZmPjwwMz48ZjA+PDNmPjwwMD48ZmM+PGZmPjwzZj48ZmY+PGZmPjwwZj48MDA+
+DQo+ICAgICAgICAgICByZXN1bHQtPmV4cGVjdGVkID09DQo+ICAgICAgICAgICA8M2Y+IGZmICBm
+ZiA8ZmY+IDAwICAwMCAgMDAgIDAwIDwzZj48ZjA+PDAwPjwwMD4gMDAgPDBmPjxmYz4gMDANCj4g
+ICAgICAgICAgIDwwMD48MDA+PDAzPjxmZj48M2Y+PGYwPjwwMz48ZmY+PDNmPjxmZj48ZmM+PDAw
+PjwwMD48MGY+PGZmPjxmZj4NCj4gICAgICAgICAgIG5vdCBvayAzIHdlbGxfa25vd25fY29sb3Jz
+DQo+ICAgICAgICMgZHJtX3Rlc3RfZmJfeHJnYjg4ODhfdG9feHJnYjIxMDEwMTA6IEVYUEVDVEFU
+SU9OIEZBSUxFRCBhdCBkcml2ZXJzL2dwdS9kcm0vdGVzdHMvZHJtX2Zvcm1hdF9oZWxwZXJfdGVz
+dC5jOjk5NQ0KPiAgICAgICBFeHBlY3RlZCBidWYgPT0gcmVzdWx0LT5leHBlY3RlZCwgYnV0DQo+
+ICAgICAgICAgICBidWYgPT0NCj4gICAgICAgICAgIDw3Mj48NDY+PDg0PjwwMz48MTQ+PGQ0Pjw0
+ND48MDQ+PDBjPjwzYz48MmY+PDJhPiAwMCAgMDAgIDAwICAwMA0KPiAgICAgICAgICAgIDAwICAw
+MCAgMDAgIDAwIDxjZD48MGQ+PDFmPjwxYj48NzI+PDQ2Pjw4ND48MDM+PDE0PjxkND48NDQ+PDA0
+Pg0KPiAgICAgICAgICAgIDAwICAwMCAgMDAgIDAwICAwMCAgMDAgIDAwICAwMCA8MGM+PDMwPjwy
+MD48MmE+PGNkPjwwZD48MWY+PDFiPg0KPiAgICAgICAgICAgPDcyPjw0Nj48ODQ+PDAzPiAwMCAg
+MDAgIDAwICAwMCAgMDAgIDAwICAwMCAgMDANCj4gICAgICAgICAgIHJlc3VsdC0+ZXhwZWN0ZWQg
+PT0NCj4gICAgICAgICAgIDwwMz48ODQ+PDQ2Pjw3Mj48MDQ+PDQ0PjxkND48MTQ+PDJhPjwyZj48
+M2M+PDBjPiAwMCAgMDAgIDAwICAwMA0KPiAgICAgICAgICAgIDAwICAwMCAgMDAgIDAwIDwxYj48
+MWY+PDBkPjxjZD48MDM+PDg0Pjw0Nj48NzI+PDA0Pjw0ND48ZDQ+PDE0Pg0KPiAgICAgICAgICAg
+IDAwICAwMCAgMDAgIDAwICAwMCAgMDAgIDAwICAwMCA8MmE+PDIwPjwzMD48MGM+PDFiPjwxZj48
+MGQ+PGNkPg0KPiAgICAgICAgICAgPDAzPjw4ND48NDY+PDcyPiAwMCAgMDAgIDAwICAwMCAgMDAg
+IDAwICAwMCAgMDANCj4gICAgICAgICAgIG5vdCBvayA0IGRlc3RpbmF0aW9uX3BpdGNoDQo+ICAg
+ICAgICMgZHJtX3Rlc3RfZmJfeHJnYjg4ODhfdG9feHJnYjIxMDEwMTA6IHBhc3M6MCBmYWlsOjQg
+c2tpcDowIHRvdGFsOjQNCj4gICAgICAgbm90IG9rIDkgZHJtX3Rlc3RfZmJfeHJnYjg4ODhfdG9f
+eHJnYjIxMDEwMTANCj4gWy4uLl0NCj4gDQo+IExvb2tpbmcgYXQgdGhlc2UgcmVzdWx0cyBJIHN1
+c3BlY3QgdGhpcyB0byBiZSBhbiBlbmRpYW4gaXNzdWUsIHByb2JhYmx5IGFmZmVjdGluZyBvdGhl
+ciBCRSBhcmNoZXMgdG9vLg0KPiANCj4gRnVsbCBkbWVzZyArIGtlcm5lbCAuY29uZmlnIGF0dGFj
+aGVkLg0KDQpEb2luZyBhIGJ1aWxkIHdpdGggQz0yIEkgZ2V0IHRoZSBmb2xsb3dpbmcgd2Fybmlu
+Zy4gRml4IHRoaXMgd2FybmluZyBhbmQgDQppdCBzaG91bGQgd29yayBvbiBhbGwgZW5kaWFubmVz
+c2VzOg0KDQogICBDQyAgICAgIGRyaXZlcnMvZ3B1L2RybS90ZXN0cy9kcm1fZm9ybWF0X2hlbHBl
+cl90ZXN0Lm8NCiAgIENIRUNLICAgZHJpdmVycy9ncHUvZHJtL3Rlc3RzL2RybV9mb3JtYXRfaGVs
+cGVyX3Rlc3QuYw0KZHJpdmVycy9ncHUvZHJtL3Rlc3RzL2RybV9mb3JtYXRfaGVscGVyX3Rlc3Qu
+Yzo5OTQ6MzY6IHdhcm5pbmc6IA0KaW5jb3JyZWN0IHR5cGUgaW4gYXJndW1lbnQgMiAoZGlmZmVy
+ZW50IGJhc2UgdHlwZXMpDQpkcml2ZXJzL2dwdS9kcm0vdGVzdHMvZHJtX2Zvcm1hdF9oZWxwZXJf
+dGVzdC5jOjk5NDozNjogICAgZXhwZWN0ZWQgDQpyZXN0cmljdGVkIF9fbGUzMiBjb25zdCBbdXNl
+cnR5cGVdICpidWYNCmRyaXZlcnMvZ3B1L2RybS90ZXN0cy9kcm1fZm9ybWF0X2hlbHBlcl90ZXN0
+LmM6OTk0OjM2OiAgICBnb3QgdW5zaWduZWQgDQppbnQgW3VzZXJ0eXBlXSAqW2Fzc2lnbmVkXSBi
+dWYNCg0KDQpDaHJpc3RvcGhlDQo=
 
