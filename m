@@ -1,312 +1,256 @@
-Return-Path: <linux-kernel+bounces-79030-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79031-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DE9D861C91
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:33:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5E51861C96
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:34:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0CC9B22F8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:33:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BA2D1F25093
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:34:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 305B1143C7F;
-	Fri, 23 Feb 2024 19:33:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C783214535D;
+	Fri, 23 Feb 2024 19:33:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ers+pVUM"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2061.outbound.protection.outlook.com [40.107.93.61])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eMv5K1aQ"
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 227D61D6B6
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 19:33:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.61
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708716827; cv=fail; b=fPHnpup/UqlRos9mPClBD+uG/Fha46W5uUjp2h2x8irSTnymUS4KnepfjJrvwVN0+7F2ItkpBOl2OkrnbOTOVB4McHdtZlLxUvuzQXS52lDlvFW7YX0ybmc70I8NtY9vFBNciwwJSbYMCYRk5GGMLVNGdd/3/qfzvA1AK8E/nO4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708716827; c=relaxed/simple;
-	bh=4uiCfX/z5LeXvnGO+MNumdWku9fly8FO06T4COBsfuk=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=BpSsbShGx9q0t0URntgjvRXYmDcHM+M+DNywxps3/HmQ5ZwmI5F2vLgvEFiQbBWeifyZxP/49kB9vBd0A6kkZhBMjnvgbdLWkLhz6wForCyn+rz2f5JKRM9ExWbRfbK576qii3GKWA1QYFBBnlv1f9+GHeB8DXwLV/C3CbIDqU8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=ers+pVUM; arc=fail smtp.client-ip=40.107.93.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xec6rCca/8BrlRMvhZqHju+zOHP6RuBbpTYWs/gkR2LwroXzCfWBGdxpmxR1Rxr2Ftk8ocmg215kEpbxe08FTgZZPqyJF9/iacV09rzATXMNkE7RcA8O2lSwZ3+lUjkoizjZzKjFdiiAFjVpO0dDhDdoHqFMTTkzxzGIvSitsu74UFCOacVKScc5fcQ3SnZiZicb50vL1t6hWp+G6RCKHOk3Kbr0DWQCbx8mRRCTSyXDD5JvR6aV3dTzwlj8/cvdpJ6q1J86hTZgrh5woXpxgApQhdLzy9Oc93p/U3P8v67fpuD10mcY6MBmrviwg/2EgzO6GFs0CUv/2sfmHtxgFQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iMwDvuQAv1fsYCgpaTBXhEUbGHmk+EbHebjZp2+bVzk=;
- b=lQeh0W0RTgfJ3thEkZLvvEaZAfMcA7cRp213JQmT8yqxx4HkXrFYoeK9QmgLJ7g0x0zoXDTB5bhq/UqJslTK+RESwxh5qDoVX/OS8R8F3olYUfuYvuwXr1m/Ae9kBjn/ReYzA+Ki/VhShvhPmmzcnSK1upFg81/Z17OCR3yZW6HAas+If4JRmxZ4NdbuM3ZbM7fdqV92YSGXrrV9jIxKcmyYKa/A0j5mgcALPq7FNMssTUxgyQ/2LeLpcKPNiSirH6EpnosJ2XVbq29uY7WCE3ymdMvYdquVBVg8ey6tQOVvbq8ukf7tCH8/qNicpYUB7g6JlloZhxJr7iHCPWLY4A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iMwDvuQAv1fsYCgpaTBXhEUbGHmk+EbHebjZp2+bVzk=;
- b=ers+pVUM6G9QQ4NEMjbv0POtU/i5IMnBw9av51t8niRyfn3i/UoFX0N7Yw2dK+wHxbxZccsMklLnvfoySqrRrhXsoBzEe7P++suyjoMepdwbwUm7gzX7+Q8ATR2RFwxLCQ7UnOhAtOhX6z9hvp1zBPFrgt+UUFIw9Du+y9XftiE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
- by DM4PR12MB5359.namprd12.prod.outlook.com (2603:10b6:5:39e::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Fri, 23 Feb
- 2024 19:33:43 +0000
-Received: from BL1PR12MB5732.namprd12.prod.outlook.com
- ([fe80::db9b:a5f:5d0a:2a42]) by BL1PR12MB5732.namprd12.prod.outlook.com
- ([fe80::db9b:a5f:5d0a:2a42%4]) with mapi id 15.20.7316.018; Fri, 23 Feb 2024
- 19:33:42 +0000
-Message-ID: <bbab8031-3f92-7f88-93c0-7aa8778782dd@amd.com>
-Date: Fri, 23 Feb 2024 13:33:39 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] x86/coco: Require seeding RNG with RDRAND on CoCo systems
-To: "Jason A. Donenfeld" <Jason@zx2c4.com>, x86@kernel.org,
- linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc: Borislav Petkov <bp@alien8.de>, =?UTF-8?Q?Daniel_P_=2e_Berrang=c3=a9?=
- <berrange@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>,
- Elena Reshetova <elena.reshetova@intel.com>, "H . Peter Anvin"
- <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
- "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
- Theodore Ts'o <tytso@mit.edu>, Thomas Gleixner <tglx@linutronix.de>
-References: <20240209164946.4164052-1-Jason@zx2c4.com>
-Content-Language: en-US
-From: Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <20240209164946.4164052-1-Jason@zx2c4.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SA0PR11CA0049.namprd11.prod.outlook.com
- (2603:10b6:806:d0::24) To BL1PR12MB5732.namprd12.prod.outlook.com
- (2603:10b6:208:387::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68A231448DC
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 19:33:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708716838; cv=none; b=D/i6nBdnM8YqtePYbYV4Kn/+G8GlSkDK33mHuZnqWa8Yb9oMwGZ74JSZtj2+1FX5m45vy9TDQ1R+BwIugMZ6AmJxcxge2h10uyfhV2pRKJ5qQawjM+6zGSRvtlkjTi8CYMmy4pdziRP8vCUBRcoi58ZBJNEtXv9QDd1OR9Leq6M=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708716838; c=relaxed/simple;
+	bh=3JP2Y+lMrx4bgfNqs453NNL0xZbM58Cy1copOn6C0Wc=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=ermVA5Fiv3pfby6clpNRpRP3iNmVZXgdsERp9n6cFQ0jQy3n8fiK1ePVCmypVQzHOi60POzKS5WcDT3BI2kZ3D2rwXGPmn6E9lGlHJftv6v+7Cv8ZGyVTvxZyb2HsnO3H/QxLFJjd7AjKEq3SQpySTL69amcWRTPCwSlSBiXtEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eMv5K1aQ; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2994a20ff32so763870a91.3
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:33:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708716836; x=1709321636; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gt7meJqTVoP9FlWAMNFY5PaFjI18IsSFLr+lpcXAyOc=;
+        b=eMv5K1aQ8M0W85NudSfBQHnSFGZ+/fjwLAIh1XUNlgSk+Cco1OHnCs91SEH5FIdkwv
+         NK+olC6RwhrU28biCzO38LBstKIh+wUSUzgFpOgKSqj59LBoBMbgENWQVOX6OScMlwiR
+         St8++9JVpLYsWCPqqUhXtOgDBNfn0u54My1MV0LAHQuOjCULNsIRJGD4spteQ7kFHe4T
+         L/yYTCV7tOLu6wn1R3mm5EYkrXu8KFZhKxGDi8UIVjXdFPJriZ3REzYqi9XuIJTRozZB
+         6jFaTvs76wNpPsBrPQ/+4GxDuNhQ8CSIn4Ikc30SwLY+e3plHH6OoyLrP7XGY9gXrOxI
+         5aLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708716836; x=1709321636;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gt7meJqTVoP9FlWAMNFY5PaFjI18IsSFLr+lpcXAyOc=;
+        b=lTA7FLFaCmfcKIn/RLH7d6IUUG7M6DF8fUPVjUzJyt8iHOICYbpQ7YKvv0FKcUougA
+         RZNXccnbmQJm4M9sgAkZBsDldp5LRA28f1Zt8ZWiKODUO+TDB66znYtqzLn2bGHuWbq1
+         79gGCh6YpC+e6deSVGir/FAwoiNT2Z55iNyM9FIuVuwE7uCTVN0SZ1q+MsLEcpcc8y1t
+         ANP30sGMr18qxy7Du9MT+mPO3573QbDRMBj3ntoST7gRJr4IrjqBlT+L0J8pOd1hAD/i
+         GNTQrTH4USirlJts/odd+20fSH+VhvGsl9AdisZg56BumC7RDyginq474hSP+bqui5o4
+         svIw==
+X-Forwarded-Encrypted: i=1; AJvYcCWa62r8bhcYLNZndRt98mT+iEKOVU3LZ+5itRly0OJ9pYWG5yBhINR79x9dRFQ7PPSfnuzkX/QdllhidItnSLPkCA8FdQOiZu2gdgNw
+X-Gm-Message-State: AOJu0YzG86E8PWu0ZN2g1K5Xdybwguy1lmzKqD+vZ66FaCQoFApkLs6O
+	xFeOiY2Wveq3Q3z1p+Bldo3DZ50ze/mp+7B7PnpHngpltrEKlLN3QYNb/VJfh91NqOhVgM4ON8M
+	i9A==
+X-Google-Smtp-Source: AGHT+IGGf71nIP5YN9DMXPrh3Ny4KHnDmPfhv6X1EDcC2lJIByupjzHqtCY7Y0Ow4FzYH3bftMA6W+7ND4A=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90b:2e8e:b0:29a:75cd:14d6 with SMTP id
+ sn14-20020a17090b2e8e00b0029a75cd14d6mr1717pjb.7.1708716836612; Fri, 23 Feb
+ 2024 11:33:56 -0800 (PST)
+Date: Fri, 23 Feb 2024 11:33:54 -0800
+In-Reply-To: <f393da364d3389f8e65c7fae3e5d9210ffe7a2db.1702974319.git.isaku.yamahata@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|DM4PR12MB5359:EE_
-X-MS-Office365-Filtering-Correlation-Id: 13ad1b35-ee37-4787-b2ae-08dc34a65806
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	6S6QJIksn4H9ZT0eX8j+/CvK2t9gUGVQ7YK51skEUDEWKdogXMob1ePoWNOPl0QXlWW0ASR0pTHzpuZFMDxCROWhwThB1kpdL3c+N2fZXlNV25n6qmYwo9Th1gPIe3wOUORdrmE0ShSnCQezf4nwbmIpAQll3ZsVsFyWlwhZ/nDAIjP95oIaJWO0PblwnqCD2K8D+1X5KmHFv281HAcjpj3xL2PjsPKknPH4vwsqdDn2h5Z4KlNhhP2sFJny/cxKHTF+LW/WjsxdeMmyQG8c3x/PHGcVm8i2cZDuh+GPdaQQ6gI/B6Bs6q+DnTrd2ACwBfg6EGaYzswePxtlCuSD4lYCeOSOnToLTUKaodCSJX3JWuMsjO1R3D6vUkXgMf2u1OmquNsVBMqPgfjQpGG9H8v3rjMSSmB5zW5U+TPeIC24N5WcPT01gR5E5XHmy9Y+GmD6+0CBilLKOojiGIug1gwBYGxRcm4PaFia/8DlT0wD2r+BOtEyLwJ5dJ9dwLbOrcoo2iIKh4BnxGYhonJEAxZy4uVTMylgqpQxJhDeCeY=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?ME0yeXJTUzQrbnZ5cVQrdEMvcldoQ3dkeWZWMzBkbDBJdmNOYjhZWGhPNldF?=
- =?utf-8?B?RDB5dmpYRkYvUW5MZ0FGQ0NIOTNvM2s1UUtIdWlsMDVkQWtFMjk0bFNRWm1p?=
- =?utf-8?B?YmtycnFLU2Q2NlNvYzQ2OTRSRHZNTHFNVHU2RTJRNE1vY0ZqV25oTUtHZmxK?=
- =?utf-8?B?by9LcGZlM0VrY29sNFlteVliZ0RzcGtTUjdjMTJjRGwvVFJzc2FWT3ljajRY?=
- =?utf-8?B?V2s2WDhQcFREZlZYcTBRY1Rxd0h0a1lwT2tnUk93NDhqemxLNHh3M0pUNUd4?=
- =?utf-8?B?UGxlTndNNWtyak8yekRLYnhUZXlwak9hbjEzMDBFc3NsQTB4WGpjTFFJQ0lX?=
- =?utf-8?B?QjhFR3VZSTZERUhMTHlmRWEwNTZMUG1CTHdxcFByYWxNRnIwY2xKQmU4UVpL?=
- =?utf-8?B?WVV0c3Q0YVFsQjN2MktQMjlJM0RYWGJqay8rZjMzZnl3d1JXZ25aWFE5SjBR?=
- =?utf-8?B?QmM3R2ZqU1pYN2NIRHN2bDBHOWQ5YW5ZUFRqV2tqYlBMZGZnRUF1SkZiRlhU?=
- =?utf-8?B?bzZFMHVqdDhVTzd2cHNQaXVTdlVYYWIrU1lidkdlUDU0ZDE5UkJSRnBQK0dx?=
- =?utf-8?B?NFQ5RllOZ2FTck43VDFZVGdWOWQyQlZoSkZXT2hnV3RjMU9oaW45bHV6Tmw3?=
- =?utf-8?B?SEM2TEdHWEdjUUVEdW1JZWtQeHdHNmVxWk1NNFF1L3NpcldNYml2Y3pJRVd5?=
- =?utf-8?B?M2JtKzZRRlJCaklSNkZIS0F5ZWRLVWdRdGw1L1pqYkhMTnU5bmNucjhUSmFR?=
- =?utf-8?B?UGV5bUlmZ1Arc05EVWFLUkhHMC9LOEdGQ0RvTjZJWFlISVZLSHphelB2RURx?=
- =?utf-8?B?K1RZK2pMTlh4Y25xUEpmQnY4eExSdjlRMjdESkRFb3kzVkJLY1g1aHJuSXJ2?=
- =?utf-8?B?dkNxMWlGbUVzamZpYjRNTWI4OXFzVjh2QUNLMi9aaG5VaGVrTnloK0lDL3JG?=
- =?utf-8?B?SFdCcjFjVzY3d2FMSW13UmN2K25Da0d0dGVPSEZMODRkZnJPTjRsNkhPQ3hO?=
- =?utf-8?B?Znc0VHJ0RExjUDAyakRvd0ZqZ1dzY1RCVUtjNVhQOVYyQ3dXb1RObXMzNmlk?=
- =?utf-8?B?NHY3SzgvY0RKTnRSWFl4MmFXZ0laQjRjNjRpdjBHOTlROVl6cWorVDZMLzIr?=
- =?utf-8?B?a2JoZUhJTXJIODRyMUQ1SHJ3bkxaMW9ha2VkTWYvWnljR0EwTTgwVFpSMkc4?=
- =?utf-8?B?MFMrRjc1NTJrR3docndlUDllZW9iYW9FS0Z0cU9CTnNsZld3WWRpTFdSc0dL?=
- =?utf-8?B?bndiem5LY2JJcVVLWjB6M3g1NlJQZlVHVFdEdVBQd2ZDb1pmQ3VxZ1EvRVpM?=
- =?utf-8?B?MXRIUENaY0dEd0dJR0R4dnhmdmFaUWErbnhSbm9SSzM2ZlNicjkzOUxTZkd1?=
- =?utf-8?B?OW1MeGRVLzdKUzZhb09jOHdvam9uTWxoUDBFTWU4djZhQlA0WXpkV2FoeWhQ?=
- =?utf-8?B?SGNOamVmVDFjdHZuQTd0TldHRXpLWVRIaVVwbUJYMW5kM3p5ZXVORUk3elhF?=
- =?utf-8?B?MU5EZ3RUNTRuTDBmanRFbDJ6dEJuTzZjM1o4V2tNb1oxZ3NWTDA4bjJwcnlQ?=
- =?utf-8?B?enN4MVpWWkJaa2ttQXNpWm5zcDVDcXF0Ui9YNVMwT0tUbHBtWis4K2ZTVThP?=
- =?utf-8?B?a2lEeDlNQzg5OHgyaFdEU24vWGhpaEJpTGdJYmRVY3BSazBtQndmZFRCWHh4?=
- =?utf-8?B?ZmFubU5pb0JMK1lrWGQrN1Q5UFJ4NjE0d0p6Z1hhWjYvRDA1SWxheE53MWJP?=
- =?utf-8?B?SmF0UCtqZWlNeUhUU1RKM0YvZlpwVjQ2V1MzSDNycHR2T2ZTQnZhZEI4b3VP?=
- =?utf-8?B?cmsvZytLa29hSkFpdEpvL1VENWpvaXlBSDhpVFJQbUNPVUhwaWVzaVlMcmFq?=
- =?utf-8?B?bjQ4TmkxaEQ0YkVYb21DdE5RTmZWSUo0eHYxZDJBRnIzbFh2eVVmK2xQZ3dY?=
- =?utf-8?B?aERhcUhLdlBNMExqYjRXckJ3cmJDd08xVXJiMlNaazVCWStheEErME4zZXpN?=
- =?utf-8?B?eVJGRW4ybk1WaXNscXN0Yk4zdWZpZG1nWDJXQzVza0RhVmZtTzF0QVhvcEc0?=
- =?utf-8?B?blNMU3pRSEVzUEs5R21Ydjc2S3VNUjVESEUxWWFVYW9GcVNld0lmSm5IbVMw?=
- =?utf-8?Q?xveqofezi2zv4oKdxeca95hmk?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 13ad1b35-ee37-4787-b2ae-08dc34a65806
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5732.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2024 19:33:42.7411
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CyZeYnZCROGfAKmzUTqlVcF5TbG4w53tdLu1NFOzdOen1zbYXAauHSA+eS09M6AT56lsGsHE5UXYgpMIh7C9ig==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5359
+Mime-Version: 1.0
+References: <cover.1702974319.git.isaku.yamahata@intel.com> <f393da364d3389f8e65c7fae3e5d9210ffe7a2db.1702974319.git.isaku.yamahata@intel.com>
+Message-ID: <ZdjzIgS6EAeCsUue@google.com>
+Subject: Re: [PATCH v3 3/4] KVM: X86: Add a capability to configure bus
+ frequency for APIC timer
+From: Sean Christopherson <seanjc@google.com>
+To: Isaku Yamahata <isaku.yamahata@intel.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com, 
+	Vishal Annapurve <vannapurve@google.com>, Jim Mattson <jmattson@google.com>, 
+	Maxim Levitsky <mlevitsk@redhat.com>, Xiaoyao Li <xiaoyao.li@intel.com>, isaku.yamahata@gmail.com
+Content-Type: text/plain; charset="us-ascii"
 
-On 2/9/24 10:49, Jason A. Donenfeld wrote:
-> There are few uses of CoCo that don't rely on working cryptography and
-> hence a working RNG. Unfortunately, the CoCo threat model means that the
-> VM host cannot be trusted and may actively work against guests to
-> extract secrets or manipulate computation. Since a malicious host can
-> modify or observe nearly all inputs to guests, the only remaining source
-> of entropy for CoCo guests is RDRAND.
-> 
-> Unfortunately, RDRAND itself can be rendered unreliable by the host,
-> since the host controls guest scheduling and can starve RDRAND's
-> generation. A malicious host could also choose to simply terminate or
-> not boot a CoCo guest. So, tie the starvation of RDRAND to a BUG_ON at
-> boot time.
-> 
-> Specifically, try at boot to seed the RNG using 256 bits of RDRAND
-> output. If these fail, BUG(). This doesn't handle the more complicated
-> case of reseeding later in boot, but that's fraught with its own
-> difficulties, such as a malicious userspace starving the kernel. For
-> now, simply make sure the RNG is initially seeded securely during boot,
-> avoiding the worst of potential pitfalls.
-> 
-> This patch is deliberately written to be "just a CoCo x86 driver
-> feature" and not part of the RNG itself. Many device drivers and
-> platforms have some desire to contribute something to the RNG, and
-> add_device_randomness() is specifically meant for this purpose. Any
-> driver can call this with seed data of any quality, or even garbage
-> quality, and it can only possibly make the quality of the RNG better or
-> have no effect, but can never make it worse. Rather than trying to
-> build something into the core of the RNG, this patch interprets the
-> particular CoCo issue as just a CoCo issue, and therefore separates this
-> all out into driver (well, arch/platform) code.
-> 
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Daniel P. Berrangé <berrange@redhat.com>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Elena Reshetova <elena.reshetova@intel.com>
-> Cc: H. Peter Anvin <hpa@zytor.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Cc: Theodore Ts'o <tytso@mit.edu>
-> Cc: Thomas Gleixner <tglx@linutronix.de>,
-> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-> ---
-> Probably this shouldn't be merged until Dave/Elena and others get back
-> with regards to the full picture, with information from inside Intel.
-> But I have a feeling this patch, or something like it, is ultimately
-> what we'll wind up with, so I'm posting it now.
-> 
-> I don't have a functional CoCo setup, so this patch has only been very
-> lightly tested.
-> 
->   arch/x86/coco/core.c        | 36 ++++++++++++++++++++++++++++++++++++
->   arch/x86/include/asm/coco.h |  2 ++
->   arch/x86/kernel/setup.c     |  2 ++
->   3 files changed, 40 insertions(+)
-> 
-> diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
-> index eeec9986570e..4e3b1cfe0063 100644
-> --- a/arch/x86/coco/core.c
-> +++ b/arch/x86/coco/core.c
-> @@ -3,13 +3,16 @@
->    * Confidential Computing Platform Capability checks
->    *
->    * Copyright (C) 2021 Advanced Micro Devices, Inc.
-> + * Copyright (C) 2024 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
->    *
->    * Author: Tom Lendacky <thomas.lendacky@amd.com>
->    */
->   
->   #include <linux/export.h>
->   #include <linux/cc_platform.h>
-> +#include <linux/random.h>
->   
-> +#include <asm/archrandom.h>
->   #include <asm/coco.h>
->   #include <asm/processor.h>
->   
-> @@ -153,3 +156,36 @@ __init void cc_set_mask(u64 mask)
->   {
->   	cc_mask = mask;
->   }
+On Tue, Dec 19, 2023, Isaku Yamahata wrote:
+> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+> index 7025b3751027..cc976df2651e 100644
+> --- a/Documentation/virt/kvm/api.rst
+> +++ b/Documentation/virt/kvm/api.rst
+> @@ -7858,6 +7858,20 @@ This capability is aimed to mitigate the threat that malicious VMs can
+>  cause CPU stuck (due to event windows don't open up) and make the CPU
+>  unavailable to host or other VMs.
+>  
+> +7.34 KVM_CAP_X86_BUS_FREQUENCY_CONTROL
+
+BUS_FREQUENCY_CONTROL is simultaneously too long, yet not descriptive enough.
+Depending on whether people get hung up on nanoseconds not being a "frequency",
+either KVM_CAP_X86_APIC_BUS_FREQUENCY or KVM_CAP_X86_APIC_BUS_CYCLES_NS.
+
+Also, this series needs to be rebased onto kvm-x86/next.
+
+> +:Architectures: x86
+> +:Target: VM
+> +:Parameters: args[0] is the value of apic bus clock frequency
+> +:Returns: 0 on success, -EINVAL if args[0] contains invalid value for the
+> +          frequency, or -ENXIO if virtual local APIC isn't enabled by
+> +          KVM_CREATE_IRQCHIP, or -EBUSY if any vcpu is created.
 > +
-> +__init void cc_random_init(void)
-> +{
-> +	unsigned long rng_seed[32 / sizeof(long)];
-> +	size_t i, longs;
+> +This capability sets the APIC bus clock frequency (or core crystal clock
+> +frequency) for kvm to emulate APIC in the kernel.  The default value is 1000000
+> +(1GHz).
+
+If we're going to add a capability, might as well make KVM's default value
+discoverable.
+
+This also needs to clarify the units.  Having to count the number of zeros in the
+code to figure that out is ridiculous.
+
+And as Xiaoyao, this is NOT the core crystal clock.  Though conversely, this
+documentation should make it clear that setting CPUID 0x15 is userspace's problem.
+E.g.
+
+7.35 KVM_CAP_X86_APIC_BUS_FREQUENCY
+-----------------------------------
+
+:Architectures: x86
+:Target: VM
+:Parameters: args[0] is the desired APIC bus clock rate, in nanoseconds
+:Returns: 0 on success, -EINVAL if args[0] contains invalid value for the
+          frequency, or -ENXIO if virtual local APIC isn't enabled by
+          KVM_CREATE_IRQCHIP, or -EBUSY if any vcpu is created.
+
+This capability sets VM's APIC bus clock frequency, used by KVM's in-kernel
+virtual APIC when emulating APIC timers.  KVM's default value can be retrieved
+by KVM_CHECK_EXTENSION.
+
+Note: Userspace is responsible for correctly configuring CPUID 0x15, a.k.a. the
+core crystal clock frequency, if a non-zero CPUID 0x15 is exposed to the guest.
+
+>  8. Other capabilities.
+>  ======================
+>  
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index d7d865f7c847..97f81d612366 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -4625,6 +4625,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>  	case KVM_CAP_ENABLE_CAP:
+>  	case KVM_CAP_VM_DISABLE_NX_HUGE_PAGES:
+>  	case KVM_CAP_IRQFD_RESAMPLE:
+> +	case KVM_CAP_X86_BUS_FREQUENCY_CONTROL:
+>  		r = 1;
+
+And instead of returning '1', return APIC_BUS_CYCLE_NS_DEFAULT (which is amusingly
+also '1', but there's no reason to rely on that, it's unnecessarily confusing).
+
+>  		break;
+>  	case KVM_CAP_EXIT_HYPERCALL:
+> @@ -6616,6 +6617,38 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+>  		}
+>  		mutex_unlock(&kvm->lock);
+>  		break;
+> +	case KVM_CAP_X86_BUS_FREQUENCY_CONTROL: {
+> +		u64 bus_frequency = cap->args[0];
+> +		u64 bus_cycle_ns;
 > +
-> +	if (cc_vendor == CC_VENDOR_NONE)
+> +		if (!bus_frequency)
+> +			return -EINVAL;
+> +		/* CPUID[0x15] only support 32bits.  */
 
-You probably want to use:
+So?  This capability might exist to play nice with TDX forcing CPUID 0x15, but
+that doesn't mean the capability is beholden to CPUID 0x15.
 
-	if (!cc_platform_has(CC_GUEST_MEM_ENCRYPT))
-		return;
-
-Otherwise, you can hit the bare-metal case where AMD SME is active and 
-then cc_vendor will not be CC_VENDOR_NONE.
-
-Thanks,
-Tom
-
-> +		return;
+> +		if (bus_frequency != (u32)bus_frequency)
+> +			return -EINVAL;
 > +
-> +	/*
-> +	 * Since the CoCo threat model includes the host, the only reliable
-> +	 * source of entropy that can be neither observed nor manipulated is
-> +	 * RDRAND. Usually, RDRAND failure is considered tolerable, but since a
-> +	 * host can possibly induce failures consistently, it's important to at
-> +	 * least ensure the RNG gets some initial random seeds.
-> +	 */
-> +	for (i = 0; i < ARRAY_SIZE(rng_seed); i += longs) {
-> +		longs = arch_get_random_longs(&rng_seed[i], ARRAY_SIZE(rng_seed) - i);
+> +		/* Cast to avoid 64bit division on 32bit platform. */
+> +		bus_cycle_ns = 1000000000UL / (u32)bus_frequency;
+
+Why take the userspace value as a frequency?  That will unnecessarily result in
+loss of fidelity if 1000000000UL isn't cleanly disibile by bus_frequency, e.g.
+reversing the math in the Hyper-V code will yield the "wrong" frequency.
+
+> +		if (!bus_cycle_ns)
+
+This needs to guard against overflow in tmict_to_ns().  The max divide count is
+14, I think?  Whatever this yields:
+
+	apic->divide_count = 0x1 << (tmp2 & 0x7);
+
+So from that, we can derive the max allowed bus_cycle_ns.
+
+> +			return -EINVAL;
+
+Use break, like literally every other case statement.  Burying a return in the
+middle of this pile will result in breakage if kvm_vm_ioctl_enable_cap() ever
+gains an epilogue.
+
 > +
+> +		r = 0;
+> +		mutex_lock(&kvm->lock);
 > +		/*
-> +		 * A zero return value means that the guest is under attack,
-> +		 * the hardware is broken, or some other mishap has occurred
-> +		 * that means the RNG cannot be properly rng_seeded, which also
-> +		 * likely means most crypto inside of the CoCo instance will be
-> +		 * broken, defeating the purpose of CoCo in the first place. So
-> +		 * just panic here because it's absolutely unsafe to continue
-> +		 * executing.
+> +		 * Don't allow to change the frequency dynamically during vcpu
+> +		 * running to avoid potentially bizarre behavior.
 > +		 */
-> +		BUG_ON(longs == 0);
-> +	}
-> +	add_device_randomness(rng_seed, sizeof(rng_seed));
-> +	memzero_explicit(rng_seed, sizeof(rng_seed));
-> +}
-> diff --git a/arch/x86/include/asm/coco.h b/arch/x86/include/asm/coco.h
-> index 76c310b19b11..e9d059449885 100644
-> --- a/arch/x86/include/asm/coco.h
-> +++ b/arch/x86/include/asm/coco.h
-> @@ -15,6 +15,7 @@ extern enum cc_vendor cc_vendor;
->   void cc_set_mask(u64 mask);
->   u64 cc_mkenc(u64 val);
->   u64 cc_mkdec(u64 val);
-> +void cc_random_init(void);
->   #else
->   #define cc_vendor (CC_VENDOR_NONE)
->   
-> @@ -27,6 +28,7 @@ static inline u64 cc_mkdec(u64 val)
->   {
->   	return val;
->   }
-> +static inline void cc_random_init(void) { }
->   #endif
->   
->   #endif /* _ASM_X86_COCO_H */
-> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> index 84201071dfac..30a653cfc7d2 100644
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@ -36,6 +36,7 @@
->   #include <asm/bios_ebda.h>
->   #include <asm/bugs.h>
->   #include <asm/cacheinfo.h>
-> +#include <asm/coco.h>
->   #include <asm/cpu.h>
->   #include <asm/efi.h>
->   #include <asm/gart.h>
-> @@ -994,6 +995,7 @@ void __init setup_arch(char **cmdline_p)
->   	 * memory size.
->   	 */
->   	mem_encrypt_setup_arch();
-> +	cc_random_init();
->   
->   	efi_fake_memmap();
->   	efi_find_mirror();
+> +		if (kvm->created_vcpus)
+> +			r = -EBUSY;
+
+EINVAL, not EBUSY, because userspace can't magically uncreate vCPUs.
+
+> +		/* This is for in-kernel vAPIC emulation. */
+
+Meh, just drop the comment.  Same for the one above created_vcpus, it's fairly
+self-explantory.
+
+> +		else if (!irqchip_in_kernel(kvm))
+> +			r = -ENXIO;
+
+This should go before created_vcpus, e.g. creating a vCPU shouldn't change the
+error code.
+
+> +
+> +		if (!r)
+
+Make this an else...
+
+> +			kvm->arch.apic_bus_cycle_ns = bus_cycle_ns;
+
+> +		mutex_unlock(&kvm->lock);
+> +		return r;
+
+		break;
+
+Something like:
+
+	case KVM_CAP_X86_APIC_BUS_FREQUENCY: {
+		u64 bus_cycle_ns = cap->args[0];
+
+		r = -EINVAL;
+		if (!bus_frequency || bus_frequency > (whatever cause overflow))
+			break;
+
+		r = 0;
+		mutex_lock(&kvm->lock);
+		if (!irqchip_in_kernel(kvm))
+			r = -ENXIO;
+		else if (kvm->created_vcpus)
+			r = -EINVAL;
+		else
+			kvm->arch.apic_bus_cycle_ns = bus_cycle_ns;
+		mutex_unlock(&kvm->lock);
+		break;
+	}
+
 
