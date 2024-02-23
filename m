@@ -1,300 +1,245 @@
-Return-Path: <linux-kernel+bounces-79258-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79259-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC13D861FB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 23:27:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBE76861FBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 23:27:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40AB01F21DCC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:27:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B093B22A9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:27:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC0A614F9E6;
-	Fri, 23 Feb 2024 22:25:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13982153BD5;
+	Fri, 23 Feb 2024 22:25:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KKnKW1NQ"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=synopsys.com header.i=@synopsys.com header.b="IwY6eK0A";
+	dkim=pass (2048-bit key) header.d=synopsys.com header.i=@synopsys.com header.b="NcwsRupE";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=synopsys.com header.i=@synopsys.com header.b="nvkJSDS7"
+Received: from mx0b-00230701.pphosted.com (mx0b-00230701.pphosted.com [148.163.158.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FF7414DFE8;
-	Fri, 23 Feb 2024 22:24:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708727101; cv=none; b=qi7IApZLSAfDc6ohXHPVMHmFqsuqbC1cWVBlaoV1jwhev8S30yo7GfM34aiEODdLiZXcxDRQ5OPW+yeil6uB4IjOYE6SR43Kv8drp2qkazrBmsD5vMp9g5pP0axV/ZiGU4eQKEg2quDsFFEvPp3tJWlR4ll4PoGqmEwmgxmtMsY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708727101; c=relaxed/simple;
-	bh=MQxlYd+pjzVvfwlAGAaWuqcrm9SliaxLj/ICvA7THrI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fuA6x/XlqkpkthmjnkJiSrWjg4F5nPjik9bKbEDWRrk2JFm3h93sSK3q+OTiJ9jzxg3qRbMjE5ACDHPwn1JUozPJyIY/ZFu4hNlgdMvqxNrJrdHMIKghL8pbrqjs5q5+2+IVG2+k3RNwQbJaaEWYiN3LaZdhpa88pqj5AIR1dmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KKnKW1NQ; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d23d301452so17517671fa.1;
-        Fri, 23 Feb 2024 14:24:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708727098; x=1709331898; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OOl1lY0a6/dohk1NliPsKFcgM+2fz/8FAtk2Q5fDb1Y=;
-        b=KKnKW1NQZeP0ME2pOM6a8kHjEdS6YFk8tz1220oFv6t5zN5+pgsPACZq5GXE+RyRU1
-         4mEnSRN0iBtdU5uYZb0CjcmIxzsKOuZddPaNeNylrAJAfWEFoLPZfkZ20LggIyOAbDE7
-         DW/qSP9Fs0GgyddHUq5oH7mQp1A0Aaf9QO1rQy1ZJIwrvxQU6MRYD32r2HXSPdVRz1Rd
-         xLhOCbWCdvtO5OBXATsbXWfb/2xmeqqk1E0iyHNi6MPNT+4GvaaNOUNSGknJln9gwCXS
-         kzPZrABomAyKw6CCUwn5AVFzK/eHTW9Wepj32S/omkfH81O/7FXGRlr6egd+PLlSLT4W
-         /Sbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708727098; x=1709331898;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OOl1lY0a6/dohk1NliPsKFcgM+2fz/8FAtk2Q5fDb1Y=;
-        b=k1UcPu24Httqthmw7dn9+hERIGvaTO4kssyHIYpxC9lXicunBfU4+ah6L6ZtU18SxM
-         PzHC1Wmm7aq9CcNvS/jBvmFPcICehdQypU2ryJfW41wZA2xOyXypcK9qKVPO6mPFCj0y
-         ZU55JFn+0hHdGrm6s9HCaC8DIk5cXRbcomdki9Bzd9S+9zre5ujAwE4jh3q0Le+BfokF
-         1u2GRjQW1EPLwFnQt6e8SwprQYIiNoLAtSR7wCLX4Lc8MkVS2Opq/iPr856MCEgk3w5r
-         RCIe1tkPwxZhagMldmz4U6lWudUH5oPc5ZCTnRHfeUEG07q0PqaPbDoZBM7xWNIBmILj
-         WBxg==
-X-Forwarded-Encrypted: i=1; AJvYcCXoMDsI6GQAGTHtz+B9c8T5wVlBpNjnl2i7sefFj9nF5i6zicn8WYLR6Uec7v+7c9BgE4LhSjcyAszSuyKQcYxXdB3nmo7RSzTsswszQuzo3LeGsfP9fbvZe3AxrxSe587SoMM89Qyh24orlKEt0u/kFHQtaFRi3AhDcgZ+GFttNUg=
-X-Gm-Message-State: AOJu0Yzr0z+bPSwny32OLq5Zi2Mq72VOmxhYwQpki+3GctRaMBzk4+C9
-	tvK/NyKRF61fB538MmpQ552UGl4xEw9OcWtTN+v1hWR/mMJeBZYm
-X-Google-Smtp-Source: AGHT+IEXKLqTCm3Drz6eJFU6W2jRa+bGqgbnfHWqsjRN8it0sQzJZAQ9bhgdCfAAqOYjVLeFlMIwOQ==
-X-Received: by 2002:ac2:5e9b:0:b0:512:db76:4e16 with SMTP id b27-20020ac25e9b000000b00512db764e16mr642503lfq.4.1708727097314;
-        Fri, 23 Feb 2024 14:24:57 -0800 (PST)
-Received: from mobilestation ([95.79.226.168])
-        by smtp.gmail.com with ESMTPSA id j9-20020a056512398900b00512e14d1218sm610819lfu.261.2024.02.23.14.24.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 14:24:56 -0800 (PST)
-Date: Sat, 24 Feb 2024 01:24:54 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Thierry Reding <thierry.reding@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, 
-	Thierry Reding <treding@nvidia.com>
-Subject: Re: [PATCH net-next v3 3/3] net: stmmac: Configure AXI on Tegra234
- MGBE
-Message-ID: <kns2u6o4nhz4vda74r2mscyyp6yjgo2p62vryeenucm4o3ngzb@j6ch3sl6xha2>
-References: <20240219-stmmac-axi-config-v3-0-fca7f046e6ee@nvidia.com>
- <20240219-stmmac-axi-config-v3-3-fca7f046e6ee@nvidia.com>
- <xne2i6jwqaptsrd2hjdahxbscysgtj7iabqendyjb75fnrjc5z@js7n7qngtzym>
- <CZ9Z70HO2C7J.398BRNM8NBIG1@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E168414DFC3;
+	Fri, 23 Feb 2024 22:25:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=148.163.158.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708727142; cv=fail; b=CY07Nm6FD1kyVMIvtehWtSskmpn5uQ1Y+tkwvV8WZcH+N25herIby0a+gYvGfeAPgm8It74zH1Pravo7K9vgb0upMWW+x9wWz9yVz+XPQGYBVMJnUTI16nzDN8azQk6K1RlR66X8UQBCGH6jADMKyKgY6kARCi8yOKHZKOSfVig=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708727142; c=relaxed/simple;
+	bh=Sbz/2cXrZbSTPwx8RvXVdqQxVFDZlpUQXSgRTz/WBrk=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Eh9IVNlU3jYlGnsABAfUT3c5NYUN8vro+j46Mt8vmYOm4TF0+yFU3tJF6cLn5Ru3wm04pPw2tbJhFdB+M59DhkCoJGd2adaEgXJ0xrAmE/pEYZYH8Vhp1FQ8wgG6P20d9eggRDQKhE93fgd8WNYaV0SBbR5H9mRns+NUhl/epqQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synopsys.com; spf=pass smtp.mailfrom=synopsys.com; dkim=pass (2048-bit key) header.d=synopsys.com header.i=@synopsys.com header.b=IwY6eK0A; dkim=pass (2048-bit key) header.d=synopsys.com header.i=@synopsys.com header.b=NcwsRupE; dkim=fail (1024-bit key) header.d=synopsys.com header.i=@synopsys.com header.b=nvkJSDS7 reason="signature verification failed"; arc=fail smtp.client-ip=148.163.158.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synopsys.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=synopsys.com
+Received: from pps.filterd (m0297265.ppops.net [127.0.0.1])
+	by mx0a-00230701.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41NGjYh4028444;
+	Fri, 23 Feb 2024 14:25:29 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com; h=
+	from:to:cc:subject:date:message-id:references:in-reply-to
+	:content-type:content-id:content-transfer-encoding:mime-version;
+	 s=pfptdkimsnps; bh=Sbz/2cXrZbSTPwx8RvXVdqQxVFDZlpUQXSgRTz/WBrk=; b=
+	IwY6eK0AvPsAk/Xi+uF4LTJ23QihG/dQVoBQi7m3LHjZlE1aDt2KgCos2XIjZGX/
+	0325V5dS5U6YEz0+kCP3RWstLUzBz5XbJNng3V1f13x1TSv4utqOO/rgPD+Bp9mm
+	8G3OJ6oM+667fvCtL460tjNOqbYxt89Zo/Sco2YemuZ9PuS9gGf+so0rczaVQuPZ
+	ijknHX+oItKccnQOqQlYW8gNXlUAqH3MJSVEeowZ3WxhJfo9hgGCV52BZH4Cn1AW
+	wwJ3m/LW9Myoim9j1RLDQ9nwdrTjN+4xaORlTvy1F9gEhiv//vMb37L4BxL7h6mu
+	AL7adg1HSy2bSejpDd0SDw==
+Received: from smtprelay-out1.synopsys.com (smtprelay-out1.synopsys.com [149.117.73.133])
+	by mx0a-00230701.pphosted.com (PPS) with ESMTPS id 3wd2241254-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 Feb 2024 14:25:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+	t=1708727127; bh=Sbz/2cXrZbSTPwx8RvXVdqQxVFDZlpUQXSgRTz/WBrk=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+	b=NcwsRupEDcM98lRE69xJXaxYPUH31CmJLABJDjc6Pfwv6tkAEjG2TOb7lrM7H4lw3
+	 6uvDIp52MhlmMiQcOjVqcburA69CgoqD1EobCfGseJx82eVdejp6bmG+KimFvqI7r7
+	 PBlEg9IwC+B2A4ASfOt4qhF9i0Pxb5jTZpQf0FUJj7Y2shoIMMEDhU/V8Z3iEXNwmR
+	 SDv7qo4OKg4iwQ3mW9vPf640dbWtHvcri511uCiRrs9V5FMWJD/DOuHkPQZ+iNd5cj
+	 Zm9+LeNE2s63ZLfnai4RqioaZtKpb7eegIf5lHZizB6jRy+triYsXyQV2qn+OvIuOR
+	 LaYFN88XKu+Ow==
+Received: from mailhost.synopsys.com (us03-mailhost2.synopsys.com [10.4.17.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits)
+	 client-signature RSA-PSS (2048 bits))
+	(Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
+	by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 7A73540453;
+	Fri, 23 Feb 2024 22:25:27 +0000 (UTC)
+Received: from o365relay-in.synopsys.com (us03-o365relay3.synopsys.com [10.4.161.139])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(Client CN "o365relay-in.synopsys.com", Issuer "Entrust Certification Authority - L1K" (verified OK))
+	by mailhost.synopsys.com (Postfix) with ESMTPS id 11F2AA008A;
+	Fri, 23 Feb 2024 22:25:26 +0000 (UTC)
+Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com;
+	dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.a=rsa-sha256 header.s=selector1 header.b=nvkJSDS7;
+	dkim-atps=neutral
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2041.outbound.protection.outlook.com [104.47.56.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(Client CN "mail.protection.outlook.com", Issuer "DigiCert Cloud Services CA-1" (verified OK))
+	by o365relay-in.synopsys.com (Postfix) with ESMTPS id 891B240132;
+	Fri, 23 Feb 2024 22:25:26 +0000 (UTC)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lhBmSzhhv6At8RglPg7L2DCnu6woyqEofxiazreLJ2XgD6nVxdQw3eREsa8gKGV/zig563KRbRsLyNEHI6+ttpA6zZS95c8hHv7reFIIjbJmdJ9jOauD4+DRo6OJyd0ky7m6K5U4KH58LImkR8P/ZDd6orZvS4EyF8qB/BjhnJFU9JcqRo5EGM89l9Er2ER9BWCzeRCY9/jtTJSM8+vXBmwIAshNpgtZCozfUs7bnnwWJhqZ+lPQMvkZkCZPHqhoipGDG8xUwhrl834VvnWegnzd9ibVitoBRFKhUGS/zLgYXzZBqWsOrWrNvGo1jev4xK0kbOGsqm2+OatC9glYCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Sbz/2cXrZbSTPwx8RvXVdqQxVFDZlpUQXSgRTz/WBrk=;
+ b=aCScGZ1RhjioKYR8cUwx7+CKHFCr+3Yfz9y15MaY2uUiTqYoKEtvTvLfqtYZD05uHCwMsVDRXzWzjaB4lcl5bvv0rMq4PPMqn2+Qf/YTF3an1ptXpT/3aZXz9oCf+KTg63rBCcbLq20m8hSj05g7XwZrFMpuUSUXlJveuuIlC+tYpbSmOg3LBipFiQv+1T5NBeFUScty5ybd+81eJd0l4lqDB42Ty8i3XMg4uoDOxxAP4EK4MH9PrQEPpuPrT/x3xkprPpPsfLQX21hpHuK8HkgBqso3YyyVmT5Xy71FuZCrGsnzsMXtQHwZN+pcJcg8YkDmLGv24UsMw473+dECTQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
+ dkim=pass header.d=synopsys.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Sbz/2cXrZbSTPwx8RvXVdqQxVFDZlpUQXSgRTz/WBrk=;
+ b=nvkJSDS7qBej/U1YXdlqhbyTBsL3nviQG7IoSqYaF+w9AHdenxlt5EgPlSQxU9NDUC4YTkjb1Y5gDG2CBKeO3YVA4lXE0ei8XEBRG5d4syxVRFQdaQX9lR8r1HV2+JAQ2Z4eaXiPigc313omu3ADClArYr2QL60HXsGCF/6lFSs=
+Received: from LV2PR12MB5990.namprd12.prod.outlook.com (2603:10b6:408:170::16)
+ by PH7PR12MB5733.namprd12.prod.outlook.com (2603:10b6:510:1e0::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.21; Fri, 23 Feb
+ 2024 22:25:20 +0000
+Received: from LV2PR12MB5990.namprd12.prod.outlook.com
+ ([fe80::a6b8:3d34:4250:8ae3]) by LV2PR12MB5990.namprd12.prod.outlook.com
+ ([fe80::a6b8:3d34:4250:8ae3%3]) with mapi id 15.20.7316.023; Fri, 23 Feb 2024
+ 22:25:20 +0000
+X-SNPS-Relay: synopsys.com
+From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+To: Roger Quadros <rogerq@kernel.org>
+CC: Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, "nm@ti.com" <nm@ti.com>,
+        "r-gunasekaran@ti.com" <r-gunasekaran@ti.com>,
+        "afd@ti.com" <afd@ti.com>, "b-liu@ti.com" <b-liu@ti.com>,
+        "srk@ti.com" <srk@ti.com>,
+        "francesco@dolcini.it" <francesco@dolcini.it>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v3 0/5] usb: dwc3-am62: module removal and errata fixes
+Thread-Topic: [PATCH v3 0/5] usb: dwc3-am62: module removal and errata fixes
+Thread-Index: AQHaXyr63orOBWnmSUqv7m0Qa+M7vLEX9wsAgACY+wA=
+Date: Fri, 23 Feb 2024 22:25:20 +0000
+Message-ID: <20240223222518.si6rznhhrbptpyjq@synopsys.com>
+References: 
+ <20240214-for-v6-9-am62-usb-errata-3-0-v3-0-147ec5eae18c@kernel.org>
+ <48e63867-616e-4a37-ab17-a6977c600ec1@kernel.org>
+In-Reply-To: <48e63867-616e-4a37-ab17-a6977c600ec1@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: LV2PR12MB5990:EE_|PH7PR12MB5733:EE_
+x-ms-office365-filtering-correlation-id: 31f74ce4-2f94-4c8d-eeaf-08dc34be51d5
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ lautOsRXw4iMOJhv/PgJJvjsTPKbeHuIaiXwWY8hXx44UfkQ48KspNyTMkADLfhJK+CrPscdbcmJpUUDkHbYrjTLZIyxCDN6aHVgNReMLJyWjPQCITS6cqNggDXPKp9NxyLM7SCPbFpl3oUOeRu+sUYguE9XbuGmZIXUAWH+LvVYs5mT0u0Byzn2bj5mXTZNeE925n30mDXkgqCQvrlZDMhjDN47e/EqxO4+j2d/lUV/7s2Ig75Neiy/fvUJAjAvmO7ugH7u0bilC+6w9tv5MBKYMGiHt9DONLBS00ZPB62HWWi3H8TWMQ68fV0Z2zi+oWmPo4vxxIVr4OBrT8f8TuYcbVLx7B0mHpYizvLLn1eUNHJ2T2Aq3l2mGX2J8GeYoah8zn3wJT/O7TZ5lk5LKFUIa/6v6YhYLKnsph5rd1OsQPXY+yYdr5h4TBBw6isLk46iLUAavUH8a0ScearHkLKyJkOIZSThpwRJR3+RjrUu3TYI3jrm+pQBf9hsytiZ3tMZs+Fy9IACFHCQQ7mUvqFD9n/Ig19jMHUC9gPa/oLkEB7KCtJfP8OeQXSVrLGYnjZ/C56j97mDGk5gqprSi9H6gv9ULlMTml9crWxvlXA=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5990.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?utf-8?B?R1ZLT05hakZWMFNSZ25zYU9ZOVVUQ2kzL085RU5hcjlIVDFiQlgvTlRxYU4x?=
+ =?utf-8?B?M2RjWE5ja1ByMHJIMHhiZ0UwSFBGK0lnQlRWMzl0S25RR1pQN3UxOEM0SVFC?=
+ =?utf-8?B?cWVwb0FjMVpqZ21XTnRFZkhPdmExVndHWCtVeEs4RUtTamxtejJuWWtzU25m?=
+ =?utf-8?B?bzc3cDRYSFdtQWZGdTNyTnltb3ptQ2x2Smp6cEE3OWZRRVQ5d1hBMzlRejZX?=
+ =?utf-8?B?dXhvaDI1ckxOMFBEaEE4Znk4Z1RJRE0yMk55Z0VybXFlTUE0N2hySmFFeVJ1?=
+ =?utf-8?B?UzRvMW51L3ZLcERlWUNOOW5PdHo1bC8rOEEvQ2xIN09ZVi92YXoyd3lQRHFw?=
+ =?utf-8?B?RG5SdmxNSDB4Qk9KMjlaamo4RVF2SWthZUtiN08rYVBUQlNrNEVDVk8vMUNq?=
+ =?utf-8?B?cGROSWZrUWtXUVZUMWphNk8xbzhnK0VaUjlxbHJocUVQT3JMY2M1VWV3YmlV?=
+ =?utf-8?B?MkVrYnJPRmcwMko0bFE2cjRrbGo4ZkwxUmszeXRGUG9weWRZUUphVW1nWEUr?=
+ =?utf-8?B?dUsvWVBYSHRVeVVnbk5kbUNMNFhMMFIwejJ0RmlSQ0x3eC8wS0VmQm1DNlF6?=
+ =?utf-8?B?dEVFSEkvaXhWMUhmWUJJSWVmYlRGWjZmYjdOZXU1NHhXdENPSHFpaEZBeGNJ?=
+ =?utf-8?B?cldYcitHaERXUFlvU1FoaEh2Z1hGWm8vYTUvdmo4TVlGYU4xM1pkZ2FIUC91?=
+ =?utf-8?B?ZGtxck00V1hFWGRuc3pITVpOb2J2RFk1TGtWellpWnR4eGhzcHQyQVlRRFFS?=
+ =?utf-8?B?TFk4VGxWSUtjZHZkZk82VHVOdlAzTGhyakc3SlVtMlRmRnlIdGhPK3dtNmVo?=
+ =?utf-8?B?Zy9QR2RwdEFuUzF3M3MvandKZmFKK0FqaXppeDU3SVdOcmZUZmV3RmI5VnBt?=
+ =?utf-8?B?bHNJaTVWOXltYkh3M1I5NjlCN01wd1Q4NmVtOUNjWHdVRjJQeXRtNWl0Ykkz?=
+ =?utf-8?B?RldjenYveDVLOFM4cVZObHdGU1ZyaVZCYVVjN21PeDRnWldsVW9PaUx2clFS?=
+ =?utf-8?B?Znh3WDRoT1ZZZjFzZVZTUmZIL0pZYWJOUEt5eEltcXlzUFNWRHBxWTVCVFZZ?=
+ =?utf-8?B?NHNyVmRwVmxEcDd6cHl1ajBjZlNHalNFZXR5S0g3ME1MMzJRRG83T3ZuQUsw?=
+ =?utf-8?B?MG43Vm9DejlKNFhxS1VjOWk0N0J1RUozOTJnb0F4b2RLcDEzTy90Qnc2Mzlo?=
+ =?utf-8?B?SFFONWlyS2dWVVZ4UzJXaUZKS052OUxIS3BWSCtIYitFWCtXcTFZcjV3VHBq?=
+ =?utf-8?B?RFRnZ0xQbzRmSkRRMUtwR2M3Y2Uvdmk2SmNUeEpBVElTd29jQWNlMmVFVlBr?=
+ =?utf-8?B?NjArWlhiS2crM09Sakh5QXl4c0ZPTnMxUkJydWpSUlNoWm1IMElFWXhkQXVo?=
+ =?utf-8?B?UXAraHVJUDBjMWlpQTh3Z1ZkeExGZG1PbFZ4L0VKb1Q2cXdtamZGdXdYcGJ3?=
+ =?utf-8?B?ZXRFWFVMREgvYUNRVXFEOTdxVkFmSlQzMGlNc1NNdWlpRlhaSzZ1ZG1VN2xO?=
+ =?utf-8?B?K29XSkJMbDNIeXl1QVRhajZRYUlYdjdFQndrNkRtN2tCek8yMFRldUhGcXlh?=
+ =?utf-8?B?Um5LTGMwSUpTdXd5MldlVXJjZU9iWm5sQmR5N2RRV2VpUWJkdnBGYXF6ZjlX?=
+ =?utf-8?B?aE5nR3ZiVmtadHlydVpLVjBtNnUxVm9jeXVxNE1GcTJHODBBbU5RQ2ZBQVlJ?=
+ =?utf-8?B?NTZoM2k0SFJrM0NaV1pWZVVYMkh6U2ZyNE5ZUTNVK2s1ZkZNRjk4bkpQVStQ?=
+ =?utf-8?B?dFliOEo5UWU2OVFWTTI2RHNUV0F3Nyt6VUIyVG10Qk5MdHFsak5SYWNOdEVm?=
+ =?utf-8?B?R0I3bmhnbTVGQ2NTbnlRU2F2Ny94WklWeFFSSFJaYlFpbUdvRktrSDRpNVg1?=
+ =?utf-8?B?THRmaHVIcy9xVTZaMG52Zi9US0hkNm05WnBFVDh4d0lWTm8yc1UxdkFiSFJq?=
+ =?utf-8?B?QkN2djlUSFJHR1FXeVQzY0RrOENLZnVweW1HYlpTSHFnSVN5Ymd2c0dhM2Fy?=
+ =?utf-8?B?bllkQm5oNDJqZ1I3d1NUQjFaRnQ5RTRYUFp0T244YjQwbWRQSlpyWGQwcCtK?=
+ =?utf-8?B?UEJEL2RqK1VZcldFTDVJSzB3ODh6MGtRL1JVVnJpbm9xam9ma09OZUpjcUJw?=
+ =?utf-8?Q?9UWXc8a4yfYZ5LiDTOjH5GeKS?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A1700C8AF39B0A49A95E6CFDE2C5AC46@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CZ9Z70HO2C7J.398BRNM8NBIG1@gmail.com>
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	ueJ1cd+2Q1LVD6oEkGcwPb6fesOoSMqFdorBoKFrwaOM0IXcsKBzKk8oBjlxoSboB91tDjKpaJ9Jt9zbvkVHmGgxYebTI7Ji9yGGTmnbl5QukbUP4FCcCxC7rD6STU5LS9wB9UQDEWreFrpDOYdZWhPJTtNUxa7TlgIhhvLI0uWi/jx1wbTeW4BHRTqPN+gIOGVHxc9Siv//ZseBD7UQIQ7pl0EfLqbnJCMECXQEhWdTyr4Z6W8MkgnAq0tCq3JDXaJkUgTDwI4mpITafDRpr6oep+4vmEJgAcpoGACSsqxBCqal2COJQ4uiATkBSBOkE/VXbmF75L73UIGGZ5bDbrRwKJIvkMneljuRHp5msCLsDb5xLGnqc9bxwRip71rpv5gFONbtqBZzJRGMNUhQG4NaeaPe3sF13pXpQgzE1JEKAyVMGgLl1nspCiM2cVhrF59cs4n7wsczalZHCZk18C41ohIGoDT7biOTMxGtx8wNFePKjt8/McXnnzduLMJf2copsxLZZO28KIherJD/5cPNC+hcwSDKNaO1lAChoi6/LzpJ5HCoI9RKCpIA6QG7JapV7MF9vHiOP1G+s+O3FR1W6JBgLi9bOWUA+mIMnlkOLB69OK9MFYk3wGdZyQaxrDKR1ikyRXN3p/5XRtiwtw==
+X-OriginatorOrg: synopsys.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5990.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 31f74ce4-2f94-4c8d-eeaf-08dc34be51d5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Feb 2024 22:25:20.0765
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: UJpPesCBGirsVXAotoWqV0rGLenXKZqzDu1yDDu782mOZ68jXtn+m3EfoWIPnjgfyVLFhTNRH15bMCH5rf8fzQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5733
+X-Proofpoint-GUID: RnLtPydhpYanXi3TCKpKx3OtNhtCHiu4
+X-Proofpoint-ORIG-GUID: RnLtPydhpYanXi3TCKpKx3OtNhtCHiu4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-23_06,2024-02-23_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_active_cloned_notspam policy=outbound_active_cloned score=0
+ priorityscore=1501 mlxlogscore=966 phishscore=0 impostorscore=0
+ malwarescore=0 clxscore=1015 bulkscore=0 lowpriorityscore=0 spamscore=0
+ adultscore=0 mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2402120000 definitions=main-2402230160
 
-On Tue, Feb 20, 2024 at 03:28:39PM +0100, Thierry Reding wrote:
-> On Mon Feb 19, 2024 at 7:32 PM CET, Serge Semin wrote:
-> > On Mon, Feb 19, 2024 at 05:46:06PM +0100, Thierry Reding wrote:
-> > > From: Thierry Reding <treding@nvidia.com>
-> > > 
-> > > Allow the device to use bursts and increase the maximum number of
-> > > outstanding requests to improve performance. Measurements show an
-> > > increase in throughput of around 5x on a 1 Gbps link.
-> > > 
-> > > Signed-off-by: Thierry Reding <treding@nvidia.com>
-> > > ---
-> > >  drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c | 9 +++++++++
-> > >  1 file changed, 9 insertions(+)
-> > > 
-> > > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c
-> > > index bab57d1675df..b6bfa48f279d 100644
-> > > --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c
-> > > +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c
-> > > @@ -199,6 +199,12 @@ static void mgbe_uphy_lane_bringup_serdes_down(struct net_device *ndev, void *mg
-> > >  	writel(value, mgbe->xpcs + XPCS_WRAP_UPHY_RX_CONTROL);
-> > >  }
-> > >  
-> > > +static const struct stmmac_axi tegra234_mgbe_axi = {
-> > > +	.axi_wr_osr_lmt = 63,
-> > > +	.axi_rd_osr_lmt = 63,
-> > > +	.axi_blen = { 256, },
-> > > +};
-> > > +
-> > >  static int tegra_mgbe_probe(struct platform_device *pdev)
-> > >  {
-> > >  	struct plat_stmmacenet_data *plat;
-> > > @@ -284,6 +290,9 @@ static int tegra_mgbe_probe(struct platform_device *pdev)
-> > >  	if (err < 0)
-> > >  		goto disable_clks;
-> > >  
-> > > +	/* setup default AXI configuration */
-> > > +	res.axi = &tegra234_mgbe_axi;
-> > > +
-> > >  	plat = devm_stmmac_probe_config_dt(pdev, &res);
-> > >  	if (IS_ERR(plat)) {
-> > >  		err = PTR_ERR(plat);
-> >
-> > Let's get back to the v2 discussion:
-> >
-> > On Mon Feb 5, 2024 at 1:44 AM CET, Serge Semin wrote:
-> > > The entire series can be converted to just a few lines of change:
-> > >     plat = devm_stmmac_probe_config_dt(pdev, res.mac);
-> > >     if (IS_ERR(plat)) {
-> > >             err = PTR_ERR(plat);
-> > >             goto disable_clks;
-> > >     }
-> > > +
-> > > +   if (IS_ERR_OR_NULL(plat->axi)) {
-> > > +           plat->axi = devm_kzalloc(&pdev->dev, sizeof(*axi), GFP_KERNEL);
-> > > +           if (!plat->axi) {
-> > > +                   ret = -ENOMEM;
-> > > +                   goto disable_clks;
-> > > +           }
-> > > +   } /* else memset plat->axi with zeros if you wish */
-> > > +
-> > > +   plat->axi->axi_wr_osr_lmt = 63;
-> > > +   plat->axi->axi_rd_osr_lmt = 63;
-> > > +   plat->axi->axi_blen[0] = 256;
-> > >  
-> > >     plat->has_xgmac = 1;
-> > >     plat->flags |= STMMAC_FLAG_TSO_EN;
-> > >     plat->pmt = 1;
-> > >
-> > > Please don't overcomplicate the already overcomplicated driver with a
-> > > functionality which can be reached by the default one. In this case
-> > > the easiest way is to let the generic code work and then
-> > > override/replace/fix/etc the retrieved values. Thus there won't be
-> > > need in adding the redundant functionality and keep the generic
-> > > DT-platform code a bit simpler to read.
-> >
-> > You responded with:
-> >
-> > On Tue, Feb 13, 2024 at 04:51:34PM +0100, Thierry Reding wrote:
-> > > I'm not sure I understand how this is overcomplicating things. The code
-> > > is pretty much unchanged, except that the AXI configuration can now have
-> > > driver-specified defaults before the DT is parsed. Perhaps I need to add
-> > > comments to make that a bit clearer?
-> > > 
-> > > While your version is certainly simpler it has the drawback that it no
-> > > longer allows the platform defaults to be overridden in device tree. I
-> > > would prefer if the defaults can be derived from the compatible string
-> > > but if need be for those defaults to still be overridable from device
-> > > tree.
-> >
-> > Currently available functionality is easier to read and understand: by
-> > default the data is retrieved from the DT, if no AXI DT-node found you
-> > can allocate/create your own AXI-configs, if there is AXI DT-node you
-> > can fix it up in whatever way your wish. Thus the default behavior is
-> > straightforward. You on the contrary suggest to add an additional
-> > field to the resources structure which would need to be merged in with
-> > the data retrieved from DT. It makes the stmmac_axi_setup() method and
-> > the entire logic more complex and thus harder to comprehend.
-> 
-> I suppose that's subjective. Being able to let the driver provide
-> defaults that can then be overridden by values from DT doesn't seem like
-> a very exotic (or complicated) feature to me. We do that elsewhere all
-> the time. Do the comments that I added in this version not sufficiently
-> explain what's going on?
-
-I have perfectly understood what was going on since v1. My concern is
-the implementation. Here is the way the platform-specific setup
-currently works.
-
-There are two structures: stmmac_resources and plat_stmmacenet_data.
-The former one contains the generic platform resources like CSRs
-mapping, IRQs and MAC-address. The later one mainly has the DW
-MAC-specific settings. Yes, plat_stmmacenet_data has been evolved to
-an ugly monster with many redundant flags (fixing code and data here
-and there in the driver) and with some generic platform resources
-(which should have been added to the stmmac_resources structure in the
-first place, like clocks and resets). But still it's purpose is
-more-or-less defined. Both of these structures can be filled in with
-data either directly by the glue drivers or by calling the
-ready-to-use DW MAC platform data getters (stmmac_probe_config_dt()
-and stmmac_get_platform_resources()). Most importantly is that
-currently these structures have independent init semantics: no common
-data, no fields used in both contexts. There are tons of problematic
-places or questionable implementations in the driver, but at least
-this one is more-or-less defined: coherency is minimal, logic is
-linear.
-
-You suggest to break that logic by introducing a new stmmac_resources
-field which doesn't represent a generic resource data, but which
-purpose is to tweak the AXI-settings in the plat_stmmacenet_data
-structure. The pointer won't be even ever initialized in the
-stmmac_get_platform_resources() method because it's done in the
-stmmac_probe_config_dt() function. Based on all of that the change you
-suggest look more like a fixup of the problem with your particular
-device/platform.
-
-Let's assume you patches are accepted. In sometime an another
-developer comes with a need to pre-define say MTL Tx/Rx queue configs,
-then another one with DMA configs, MDIO-bus settings, and so on. Thus
-the stmmac_resources structure will eventually turn in a set of the
-tweaks and the plat_stmmacenet_data pre-defines. That's how the
-plat_stmmacenet_data structure has turned in what it is now. This
-doesn't look like a right path to take again.
-
-> 
-> > The driver is already overwhelmed with flags and private/platform data
-> > fixing the code here and there (see plat_stmmacenet_data, it's a
-> > madness). So please justify in more details why do you need one more
-> > complexity added instead of:
-> > 1. overriding the AXI-configs retrieved from DT,
-> 
-> Again, overriding the AXI configs read from DT doesn't keep the current
-> default behaviour of DT being the final authority. That's a policy that
-> should remain intact. This patch (series) is about allowing the driver
-> to override the AXI defaults with something that's sensible based on
-> the compatible string. The current defaults, for example, cause the GBE
-> on Tegra devices to run at around 100 Mbps even on a 1 Gbps link.
-> 
-> > 2. updating DT on your platform
-> 
-
-> That's one possibility and was in fact the first variant I used, but it
-> has a few drawbacks. For example, it means that I need to create the AXI
-> node just to make the device functional, but if possible it's better to
-> derive all necessary information from the compatible string. Having this
-> in a separate AXI configuration node is duplicating information that's
-> already implied by the compatible string.
-> 
-> Also, on Tegra we have a few instances of this device that are all
-> configured the same way. Since the AXI configuration node is supposed to
-> be a child of the Ethernet controller node, we end up having to
-> duplicate even more information.
-
-None of that sounds like big problems. The default behavior doesn't
-make your devices not-working. Yes, the performance is poor, but they
-still work. Regarding the AXI-config DT-nodes it's not a problem at
-all. A lot of the DW *MAC instances currently have the AXI-config
-DT-subnodes. It's absolutely fine to have them setting up the same
-configs.
-
-Once again having the pre-defined configs is fine. All I am worried
-about is the implementation you suggest especially in using the
-stmmac_resources structure to tweak up the plat_stmmacenet_data data.
-So the easiest solutions in your case are:
-1. Initialize the plat_stmmacenet_data->axi pointer if no AXI
-DT-subnode was detected by the stmmac_probe_config_dt() method, after
-the method is called. This will provide almost the same semantics as
-you suggest. The only difference is that it would work not on the
-property level but on the node-level one. (Note the implementation
-suggested by you doesn't provide the AXI-configs pre-definition for
-the boolean properties. So it doesn't provide a complete AXI-config
-default pre-definition.)
-2. Add the proper AXI-config DT-subnodes to the respective device tree
-sources.
-
-If despite of all my reasoning you still insist on having a
-pre-defined setting pattern, then we'll need to come up with some
-better solution. On the top of my mind it might be for example a
-pre-definition of the entire plat_stmmacenet_data structure instance
-or using the software nodes.
-
--Serge(y)
-
-> 
-> Thierry
-
-
+T24gRnJpLCBGZWIgMjMsIDIwMjQsIFJvZ2VyIFF1YWRyb3Mgd3JvdGU6DQo+IEhpIFRoaW5oLA0K
+PiANCj4gT24gMTQvMDIvMjAyNCAxMTo0NiwgUm9nZXIgUXVhZHJvcyB3cm90ZToNCj4gPiBIaSwN
+Cj4gPiANCj4gPiBUaGlzIHNlcmllcyBmaXhlcyBlcnJvcnMgZHVyaW5nIG1vZHVsZSByZW1vdmFs
+LiBJdCBhbHNvDQo+ID4gaW1wbGVtZW50cyBQSFkgY29yZSB2b2x0YWdlIHNlbGVjdGlvbiBhcyBw
+ZXIgVEkgcmVjb21tZW5kYXRpb24NCj4gPiBhbmQgd29ya2Fyb3VuZCBmb3IgRXJyYXRhIGkyNDA5
+IFsxXS4NCj4gPiANCj4gPiBUaGUgd29ya2Fyb3VuZCBuZWVkcyBQSFkyIHJlZ2lvbiB0byBiZSBw
+cmVzZW50IGluIGRldmljZSBub2RlLg0KPiA+IFRoZSBkZXZpY2UgdHJlZSBwYXRjaCB3aWxsIGJl
+IHNlbnQgbGF0ZXIgYWZ0ZXIgdGhlIERUIGJpbmRpbmcgZG9jDQo+ID4gaXMgbWVyZ2VkLg0KPiA+
+IA0KPiA+IFsxXSAtIGh0dHBzOi8vdXJsZGVmZW5zZS5jb20vdjMvX19odHRwczovL3d3dy50aS5j
+b20vbGl0L2VyL3Nwcno0ODdkL3Nwcno0ODdkLnBkZl9fOyEhQTRGMlI5R19wZyFaQlhINE9lYkIy
+c0ZHczRZMDRYNmUzVXlyM0FLY3Bwc1hDTFk5WEcyRVQzUkZSZ1NfaS14cTdKd3BzLXVGLTc0Z1BP
+b2xmWm85Z3RaNFRqRENUcDUkIA0KPiA+IA0KPiA+IENoYW5nZWxvZyBpbiBlYWNoIGZpbGUNCj4g
+PiANCj4gPiB2MjogaHR0cHM6Ly91cmxkZWZlbnNlLmNvbS92My9fX2h0dHBzOi8vbG9yZS5rZXJu
+ZWwub3JnL2FsbC8yMDI0MDIwNTE0MTIyMS41NjA3Ni0xLXJvZ2VycUBrZXJuZWwub3JnL19fOyEh
+QTRGMlI5R19wZyFaQlhINE9lYkIyc0ZHczRZMDRYNmUzVXlyM0FLY3Bwc1hDTFk5WEcyRVQzUkZS
+Z1NfaS14cTdKd3BzLXVGLTc0Z1BPb2xmWm85Z3RaNGQtY1NlaFAkIA0KPiA+IHYxOiBodHRwczov
+L3VybGRlZmVuc2UuY29tL3YzL19faHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsLzIwMjQwMjAx
+MTIxMjIwLjU1MjMtMS1yb2dlcnFAa2VybmVsLm9yZy9fXzshIUE0RjJSOUdfcGchWkJYSDRPZWJC
+MnNGR3M0WTA0WDZlM1V5cjNBS2NwcHNYQ0xZOVhHMkVUM1JGUmdTX2kteHE3Sndwcy11Ri03NGdQ
+T29sZlpvOWd0WjRZbllCVE1nJCANCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBSb2dlciBRdWFk
+cm9zIDxyb2dlcnFAa2VybmVsLm9yZz4NCj4gPiAtLS0NCj4gPiBSb2dlciBRdWFkcm9zICg1KToN
+Cj4gPiAgICAgICB1c2I6IGR3YzMtYW02MjogY2FsbCBvZl9wbGF0Zm9ybV9kZXBvcHVsYXRlIGlu
+IC5yZW1vdmUoKQ0KPiA+ICAgICAgIHVzYjogZHdjMy1hbTYyOiBmaXggZXJyb3Igb24gbW9kdWxl
+IHJlbW92YWwNCj4gPiAgICAgICB1c2I6IGR3YzMtYW02MjogRml4IFBIWSBjb3JlIHZvbHRhZ2Ug
+c2VsZWN0aW9uDQo+ID4gICAgICAgZHQtYmluZGluZ3M6IHVzYi90aSxhbTYyLXVzYi55YW1sOiBB
+ZGQgUEhZMiByZWdpc3RlciBzcGFjZQ0KPiA+ICAgICAgIHVzYjogZHdjMy1hbTYyOiBhZGQgd29y
+a2Fyb3VuZCBmb3IgRXJyYXRhIGkyNDA5DQo+IA0KPiBBbnkgZmVlZGJhY2sgb24gdGhpcyBzZXJp
+ZXM/IFRoYW5rcyENCj4gDQoNClRoZXkgbG9vayBnb29kIHRvIG1lLg0KDQpCUiwNClRoaW5o
 
