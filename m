@@ -1,60 +1,73 @@
-Return-Path: <linux-kernel+bounces-79193-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79194-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D7B6861EA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:19:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45E6B861EAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:19:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BA9628AC81
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:19:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C31CA1F24668
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:19:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DA191493BA;
-	Fri, 23 Feb 2024 21:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BE2F149386;
+	Fri, 23 Feb 2024 21:19:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="h+850t0y"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jXd84D1E"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94F1A149387;
-	Fri, 23 Feb 2024 21:19:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8383C149391
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 21:19:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708723145; cv=none; b=G1mhKeC325jJAreo7RI8Mevgr0lD2nTI/7QrYdURZ7lgQ+sT01+0gh9HaMTAX1onAtAiHmdqF6BdZEWaA3eq7uQXPlFwXd0b+1kmKImo7t/DTJbu26YFIFFXoDtFFBjcyhW+VDhPF9NaFZTwm2bbFHQIDSoc63XBh7Vs5/098+8=
+	t=1708723154; cv=none; b=PshV0QjgVOje7O0cpEBGORo02jZ15PBWXaSytnyKRD/62f1yMfVHAxWBBjrZrhMnkPbw1AAK3TVpqT3Fv75yNbhxMczLKh39seXh3y/hpUlTfsPunsHBiTJQ+DAqZiEG/0Ianrx+6zJqgY9B6GLiUWeUYJLRTLfopBssaCD2v1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708723145; c=relaxed/simple;
-	bh=G9acwVY7ymcyRnYpWSx3LpLsRlDgFlbI0aKKwvJ3ZyM=;
+	s=arc-20240116; t=1708723154; c=relaxed/simple;
+	bh=272NrUo3mumvi07dCk+j67Rdf5c8bpyCl3Ye1TD/L60=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZPXoYsRsIj+vplWuqlAMw2kQCurcyeqoZvwPb2A2PBP2YFdLR7BDAe293EuokhsdFaE/1vAW5q+Ucw1zqfAtKKBse9xe0D5XNBGlk6f+eOrcOdncfjghBlI4FGTRL7jMbt0g9BB4AYHfcJQ0vcQC3ZKzbRBykDeMzjHgPuCmje0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=h+850t0y; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708723144; x=1740259144;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=G9acwVY7ymcyRnYpWSx3LpLsRlDgFlbI0aKKwvJ3ZyM=;
-  b=h+850t0ye2zZb/KxefKlOx0vHWYl+pn9Xws/drW+1j2wKgzYI2Nq7r0e
-   hF/P6Igb0O0OAZuZ9DQvs97NvYpiWuFDongdIzFS0/IXxg+/bCIBMzroV
-   BnoHDkuXOXEo0F71oHn5mHu8X3oSKZXNxcrIoEcFHYMnhSH7sYYo63utb
-   mLa9YSc2JCi6o/FwqvxPXGcJXNlmAyQfOrA5LwPR28D9c0DIaBvbKpTun
-   2K0cs6dxVQpY/mfDkJRo9sL2oeImoWw3JFPYjat7sn/JMtBbQpWxoYIVt
-   ukO19yKARmlbVrcLifCn2PUrjoMHUzS8pnHcfgHU5QIjGr9oZ1QaknEQX
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="6876802"
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="6876802"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 13:19:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="5913894"
-Received: from gtkramer-mobl1.amr.corp.intel.com (HELO [10.209.82.163]) ([10.209.82.163])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 13:19:02 -0800
-Message-ID: <b26fc2d6-207c-4d93-b9a3-1fa81fd89f6c@intel.com>
-Date: Fri, 23 Feb 2024 13:19:01 -0800
+	 In-Reply-To:Content-Type; b=MfvLEtBxl/6EuMCMsVPkV3JAwHSg4kg0m3s3Bx5rqFj07Uo6NtQ8hc+Z5eWnh1fGlI4KAtMFKRvgmthJ0sO3W79/ns/J6t4pTl5eX1EbV6oC6QUn0sZeLSpqgcy69WpQlPl+muxPXqWOidt6CzpAautpPmrwZ/zJMCeSjQ13YLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jXd84D1E; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a3d484a58f6so185812366b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:19:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708723151; x=1709327951; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ANUC1UxsLZd4LKf6dSfaiD16hzgSZI8H6O5PPlG6DVk=;
+        b=jXd84D1Evjga8ldSiEHjoVrnsUlbZrM2d5NkcrChycbxtJXLvzgg46s4mIX/7ccOSO
+         OMqWqRNTD/56a5u4uLIaJw0++r5H8GiWW4zNCC/U1/V7L9WKaR74nLAZOWp5esmPSUf8
+         lgIbjFQC+isCKj83o0VS11r2gBwW17ojdA67dUBsVqmvrcs7maB369XdM9QTbEOFZbuO
+         RkXgepou1GFe0ByWFVAHyNFUnO5ctQ6HYquVVFM2GbMapRrXyVx6ZliQTxXMzj40NGSM
+         7fDQcUGKdrcW3OPlXY4/z6be3lYuQ+k0gEvO/Eb/Yqo/X7BvndXDMR5I8rCdfDI4Gc2E
+         pvaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708723151; x=1709327951;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ANUC1UxsLZd4LKf6dSfaiD16hzgSZI8H6O5PPlG6DVk=;
+        b=aTMy7zS5t2xKzKV6PaYApw+ANogI1AKRJJs8nPnASgfmaXHKpMnyLTC60/bEJWa+6s
+         Zql5mqsbrzV5/bjccIM5zi7W6xBBe2lOV34w3hASm/fwuYJcXYWt2jpwbKciyImyWMcz
+         2jpEDk/KHMAYSnCxcCPueW3aTS1Lp+KEBEdG2ware7alcTpn5MdQi4Khx5ruWG3V1BLN
+         qrVxPp8XFYK2VKgz5P+8RmutGID7eKwaVBd+IgRmOfuIIqSak89q+AIeOiPgU6N9iYeD
+         rHxq1TKWkj5f/oZj1Vd7moZaUnfvvsEmBvyfk2VAfWaOUbYoHOQmzXHXlLCATrLJMVbF
+         wM2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXtoCVls7cbMsCamK76xoKHjeCC1FRlCfS6VAGD+pHB4Hm8YSPeJtI9bqC0wPoKavbgzHl9wRtXfHj96ak1lAaQ8XC2ZXEMlp8ctyoN
+X-Gm-Message-State: AOJu0YyjQ2nTmVH6/TIuKjFU3JC5lXycdVnC5zfJRY/4Lvi2yMxw36xR
+	OmMtoBISz8n+LfWNkXQqDcXneC2GGh/raoy/vLeCAZPD7NbLqvoiBMrysH/CHhg=
+X-Google-Smtp-Source: AGHT+IEP0nMpkP0PlQhT/Mmck7ycCP+HSO72hWBJVUKTirmrz6cJO75oCqWHj/KuPC7PFllZoW813w==
+X-Received: by 2002:a17:906:3b84:b0:a3f:9d6a:65ec with SMTP id u4-20020a1709063b8400b00a3f9d6a65ecmr624649ejf.28.1708723150813;
+        Fri, 23 Feb 2024 13:19:10 -0800 (PST)
+Received: from [192.168.179.2] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id js20-20020a170906ca9400b00a3f947c55besm1660040ejb.92.2024.02.23.13.19.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Feb 2024 13:19:10 -0800 (PST)
+Message-ID: <a1ea56d2-e04d-489e-b80f-6f6810374080@linaro.org>
+Date: Fri, 23 Feb 2024 22:19:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,99 +75,63 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 16/20] famfs: Add fault counters
+Subject: Re: [PATCH 3/3] soc: qcom: socinfo: Add SMB2360 PMIC
 Content-Language: en-US
-To: John Groves <John@groves.net>, Dan Williams <dan.j.williams@intel.com>
-Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>,
- Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- Matthew Wilcox <willy@infradead.org>, linux-cxl@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, john@jagalactic.com,
- Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>,
- dave.hansen@linux.intel.com, gregory.price@memverge.com
-References: <cover.1708709155.git.john@groves.net>
- <43245b463f00506016b8c39c0252faf62bd73e35.1708709155.git.john@groves.net>
- <05a12c0b-e3e3-4549-b02e-442e4b48a86d@intel.com>
- <l66vdkefx4ut73jis52wvn4j6hzj5omvrtpsoda6gbl27d4uwg@yolm6jx4yitn>
- <65d8fa6736a18_2509b29410@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <ytyzwnrpxrc4pakw763qytiz2uft66qynwbjqhuuxrs376xiik@iazam6xcqbhv>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <ytyzwnrpxrc4pakw763qytiz2uft66qynwbjqhuuxrs376xiik@iazam6xcqbhv>
+To: Abel Vesa <abel.vesa@linaro.org>, Bjorn Andersson <andersson@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240223-x1e80100-socinfo-v1-0-be581ca60f27@linaro.org>
+ <20240223-x1e80100-socinfo-v1-3-be581ca60f27@linaro.org>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240223-x1e80100-socinfo-v1-3-be581ca60f27@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 2/23/24 12:39, John Groves wrote:
->> We had similar unit test regression concerns with fsdax where some
->> upstream change silently broke PMD faults. The solution there was trace
->> points in the fault handlers and a basic test that knows apriori that it
->> *should* be triggering a certain number of huge faults:
->>
->> https://github.com/pmem/ndctl/blob/main/test/dax.sh#L31
-> Good approach, thanks Dan! My working assumption is that we'll be able to make
-> that approach work in the famfs tests. So the fault counters should go away
-> in the next version.
+On 23.02.2024 15:37, Abel Vesa wrote:
+> The SMB2360 PMIC is used on boards with X1E80100.
+> 
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> ---
 
-I do really suspect there's something more generic that should be done
-here.  Maybe we need a generic 'huge_faults' perf event to pair up with
-the good ol' faults that we already have:
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-# perf stat -e faults /bin/ls
-
- Performance counter stats for '/bin/ls':
-
-               104      faults
-
-
-       0.001499862 seconds time elapsed
-
-       0.001490000 seconds user
-       0.000000000 seconds sys
-
-
-
+Konrad
 
