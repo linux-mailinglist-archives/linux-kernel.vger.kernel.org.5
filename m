@@ -1,170 +1,166 @@
-Return-Path: <linux-kernel+bounces-78025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78031-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBB32860E1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:37:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDDF6860E2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:38:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79EA51F27774
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:37:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF6D41C21BE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:38:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BE015C91C;
-	Fri, 23 Feb 2024 09:37:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lTO9NyHW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE4C55CDC0;
+	Fri, 23 Feb 2024 09:38:26 +0000 (UTC)
+Received: from esa2.ltts.com (unknown [14.140.155.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 541DD5B687;
-	Fri, 23 Feb 2024 09:37:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDFF042ABC;
+	Fri, 23 Feb 2024 09:38:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.140.155.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708681021; cv=none; b=bgDgajhkJEr/pSgA3q6NkyxSiAEZxd4v18FraoJXUMdZXsmOfwsNcn+9yCD0hpRszkjg2nsdxePQdDXz/PZJ96Um+8H/L+61blsG8XlMpbi4nampJldhwpCX4nlaZJZndYizNysBuaa/w96h4BFUvp0ucY4Bhi68a8PFrcL3Lg8=
+	t=1708681106; cv=none; b=C7PaAgL6TjdjO8QzDL814aUznSNCEG4xbj0f0jnKoJPQ9hk20G3YMCE/5jIHEY+8yR//iULMAFp6J8iwRUV/CuYHbb7OHizTXf3zxtPGhnXLF6uoJN5fDveoxIdHvsJUPXSKSssnt44NBW8mlymITKAbH+d6uzLahWQzq7a0MVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708681021; c=relaxed/simple;
-	bh=WmJ0OMw0PMDqgKg1zGlDpZIg7VOeRdS3myN/hyG1fUo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hMH35kTPft1B73Rfifw+4Bf1ltJdzz7K2XE+ZOnB3AOq0b2hgVXE4OTboW0EMqm/rSB3m5NOkglITgiR5oTwPxXZOlBQkTYzmD0yCNA7p4XOVQQh8SAktXstqfq9nZIamno4ndR0kT5EAR2YxdzfXL0a8Gs3rjb/NY8TLX4o4AA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lTO9NyHW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17FCAC43601;
-	Fri, 23 Feb 2024 09:37:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708681021;
-	bh=WmJ0OMw0PMDqgKg1zGlDpZIg7VOeRdS3myN/hyG1fUo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=lTO9NyHW+QOcMkPuRJcotERPkR/T2h9Kq86+n167xu60btQS459z0+tDwQV9XtMkF
-	 CCzImEA3iAnuVeKfshq3AGjapuUcNQ2z+0C3diuj1m7yJl6nabO3pjg5uK8hE2R/4I
-	 nU/fJ+g+YZnImI/WG2V1kvg/CNU1ux5b7YpQKc0k+M09ttWcGpefZhfZtYlfr/Vsiz
-	 zG006FszQVM54ch5S67QwNbU22wRqoal5Way327q1cACUXVIVY8J+rWHhRVDi78YzE
-	 /LR62mm8Zc8HPECYu4ZYElfIj9f9T7E49tbsdxG++WabH4jk93AVVcCMa2QiiQtUCJ
-	 jq0wikgl2s6mg==
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d27184197cso1639191fa.1;
-        Fri, 23 Feb 2024 01:37:00 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVajRbhKxKDUOBNrxxeomu+tpNNdhYP3QZM3Loz210OkE2NuYEewOg4fhyIqH1ledLZOoC4nsUUZZiXcyRFh2Ga3wuFGTt9N7Pwf72cNBUGgJ4/JuE0oFhxpBebaOq/jMUd1jZDJPuqi50ZBsopRFFrkWonv4gsPw66j4Jl3bbJQjS++KUVMYO7QhnuoItxKLhlcqJXZRLFcQYPPbN6sSIobKC/+NSNdHifM0gKJ+4/MaAdHizOA8LnwtM5m2De5+mm
-X-Gm-Message-State: AOJu0YwCAjxfObg14yC/nvrXh6FdBpJENqhDbb/7CDnjzGkq8ngSfk4g
-	YTQULkwqMDE40HxSnZEWxICBTr4IRm1ciTWzJMYf+MWM8HQz+NwscCUMoMiXGx/ZbTjDrcM29IJ
-	nX8I/QgHyIVHbrkOZLTbWso+sqrk=
-X-Google-Smtp-Source: AGHT+IG8RzI+KlFZjtnX9Ar8ORCwXhB3wnST2X3XRz5ROmCtiTukZgWnN7bJJrkNqPIDPlBotgqwm3wzCz7lultVJL8=
-X-Received: by 2002:a2e:a30f:0:b0:2d2:40d7:9a55 with SMTP id
- l15-20020a2ea30f000000b002d240d79a55mr940682lje.4.1708681019139; Fri, 23 Feb
- 2024 01:36:59 -0800 (PST)
+	s=arc-20240116; t=1708681106; c=relaxed/simple;
+	bh=xp17ex6OVIGqyDHx2eR4ylz5qMHIi3zIK/X1fbBlexQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Fwl7dHdquuie6WnK4fMjQDfjuBIdEDVUPD+EWyDo4ISMCj7GqcLRtINnTFcRRQTqgFVN26qWSOHN+VTbHcppSAocADxmkQCjLdMsrrI0LI6ShHj9zImxjykgDeA65cn5mMiwAIPQe2fbStq3JLBXweWJAx4PuAsFeED8HrrfLys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com; spf=pass smtp.mailfrom=ltts.com; arc=none smtp.client-ip=14.140.155.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ltts.com
+IronPort-SDR: bniLN9+fhWZcFzp+c+ZdnZ2JqzX5Gtt5Xvv84E/1VodYErwSK3FdOfDjwy7Ka9XOM6wcg53EJX
+ g9MHJ8pJyPZw==
+Received: from unknown (HELO localhost.localdomain) ([192.168.34.55])
+  by esa2.ltts.com with ESMTP; 23 Feb 2024 15:07:09 +0530
+From: Bhargav Raviprakash <bhargav.r@ltts.com>
+To: linux-kernel@vger.kernel.org
+Cc: m.nirmaladevi@ltts.com,
+	lee@kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	jpanis@baylibre.com,
+	devicetree@vger.kernel.org,
+	arnd@arndb.de,
+	gregkh@linuxfoundation.org,
+	lgirdwood@gmail.com,
+	broonie@kernel.org,
+	linus.walleij@linaro.org,
+	linux-gpio@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	nm@ti.com,
+	vigneshr@ti.com,
+	kristo@kernel.org,
+	Bhargav Raviprakash <bhargav.r@ltts.com>
+Subject: [PATCH v2 00/14]  Add support for TI TPS65224 PMIC
+Date: Fri, 23 Feb 2024 15:06:47 +0530
+Message-Id: <20240223093701.66034-1-bhargav.r@ltts.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214221847.2066632-1-ross.philipson@oracle.com>
- <20240214221847.2066632-15-ross.philipson@oracle.com> <CAMj1kXHXt6z94JCM2C5rLz-n9nGA46bb1eMbqcP5e7K9+NzPSg@mail.gmail.com>
- <c5bd3ee4-4bf1-4e9a-8e5d-12ee8e195d3d@apertussolutions.com>
-In-Reply-To: <c5bd3ee4-4bf1-4e9a-8e5d-12ee8e195d3d@apertussolutions.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Fri, 23 Feb 2024 10:36:46 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXEUdj+==Ud_YWP2FP05St3KDsduzUMsOZzu9LRsLVsLVA@mail.gmail.com>
-Message-ID: <CAMj1kXEUdj+==Ud_YWP2FP05St3KDsduzUMsOZzu9LRsLVsLVA@mail.gmail.com>
-Subject: Re: [PATCH v8 14/15] x86: Secure Launch late initcall platform module
-To: "Daniel P. Smith" <dpsmith@apertussolutions.com>
-Cc: Ross Philipson <ross.philipson@oracle.com>, linux-kernel@vger.kernel.org, x86@kernel.org, 
-	linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-crypto@vger.kernel.org, kexec@lists.infradead.org, 
-	linux-efi@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
-	hpa@zytor.com, dave.hansen@linux.intel.com, mjg59@srcf.ucam.org, 
-	James.Bottomley@hansenpartnership.com, peterhuewe@gmx.de, jarkko@kernel.org, 
-	jgg@ziepe.ca, luto@amacapital.net, nivedita@alum.mit.edu, 
-	herbert@gondor.apana.org.au, davem@davemloft.net, kanth.ghatraju@oracle.com, 
-	trenchboot-devel@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Thu, 22 Feb 2024 at 14:58, Daniel P. Smith
-<dpsmith@apertussolutions.com> wrote:
->
-> On 2/15/24 03:40, Ard Biesheuvel wrote:
-> > On Wed, 14 Feb 2024 at 23:32, Ross Philipson <ross.philipson@oracle.com> wrote:
-> >>
-> >> From: "Daniel P. Smith" <dpsmith@apertussolutions.com>
-> >>
-> >> The Secure Launch platform module is a late init module. During the
-> >> init call, the TPM event log is read and measurements taken in the
-> >> early boot stub code are located. These measurements are extended
-> >> into the TPM PCRs using the mainline TPM kernel driver.
-> >>
-> >> The platform module also registers the securityfs nodes to allow
-> >> access to TXT register fields on Intel along with the fetching of
-> >> and writing events to the late launch TPM log.
-> >>
-> >> Signed-off-by: Daniel P. Smith <dpsmith@apertussolutions.com>
-> >> Signed-off-by: garnetgrimm <grimmg@ainfosec.com>
-> >> Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
-> >
-> > There is an awful amount of code that executes between the point where
-> > the measurements are taken and the point where they are loaded into
-> > the PCRs. All of this code could subvert the boot flow and hide this
-> > fact, by replacing the actual taken measurement values with the known
-> > 'blessed' ones that will unseal the keys and/or phone home to do a
-> > successful remote attestation.
->
-> To set context, in general the motivation to employ an RTM, Static or
-> Dynamic, integrity solution is to enable external platform validation,
-> aka attestation. These trust chains are constructed from the principle
-> of measure and execute that rely on the presence of a RoT for Storage
-> (RTS) and a RoT for Reporting (RTR). Under the TCG architecture adopted
-> by x86 vendors and now recently by Arm, those roles are fulfilled by the
-> TPM. With this context, lets layout the assumptive trusts being made here,
->    1. The CPU GETSEC instruction functions correctly
->    2. The IOMMU, and by extension the PMRs, functions correctly
->    2. The ACM authentication process functions correctly
->    3. The ACM functions correctly
->    4. The TPM interactions function correctly
->    5. The TPM functions correctly
->
-> With this basis, let's explore your assertion here. The assertion breaks
-> down into two scenarios. The first is that the at-rest kernel binary is
-> corrupt, unintentionally (bug) or maliciously, either of which does not
-> matter for the situation. For the sake of simplicity, corruption of the
-> Linux kernel during loading or before the DRTM Event is considered an
-> equivalent to corruption of the kernel at-rest. The second is that the
-> kernel binary was corrupted in memory at some point after the DRTM event
-> occurs.
->
-> For both scenarios, the ACM will correctly configure the IOMMU PMRs to
-> ensure the kernel can no longer be tampered with in memory. After which,
-> the ACM will then accurately measure the kernel (bzImage) and safely
-> store the measurement in the TPM.
->
-> In the first scenario, the TPM will accurately report the kernel
-> measurement in the attestation. The attestation authority will be able
-> to detect if an invalid kernel was started and can take whatever
-> remediation actions it may employ.
->
-> In the second scenario, any attempt to corrupt the binary after the ACM
-> has configured the IOMMU PMR will fail.
->
->
+This series modifies the existing TPS6594 drivers to add support for the
+TPS65224 PMIC device that is a derivative of TPS6594. TPS65224 has a
+similar register map to TPS6594 with a few differences. SPI, I2C, ESM,
+PFSM, Regulators and GPIO features overlap between the two devices.
 
-This protects the memory image from external masters after the
-measurement has been taken.
+TPS65224 is a Power Management IC (PMIC) which provides regulators and
+other features like GPIOs, Watchdog, Error Signal Monitor (ESM) and
+Pre-configurable Finite State Machine (PFSM). The SoC and the PMIC can
+communicate through the I2C or SPI interfaces. The PMIC TPS65224
+additionally has a 12-bit ADC.
+Data Sheet for TPS65224: https://www.ti.com/product/TPS65224-Q1
 
-So any external influences in the time window between taking the
-measurements and loading them into the PCRs are out of scope here, I
-guess?
+Driver re-use is applied following the advice of the following series:
+https://lore.kernel.org/lkml/2f467b0a-1d11-4ec7-8ca6-6c4ba66e5887@baylibre.com/
 
-Maybe it would help (or if I missed it - apologies) to include a
-threat model here. I suppose physical tampering is out of scope?
+The features implemented in this series are:
+- TPS65224 Register definitions
+- Core (MFD I2C and SPI entry points)
+- PFSM	
+- ESM
+- Regulators
+- Pinctrl
 
-> > At the very least, this should be documented somewhere. And if at all
-> > possible, it should also be documented why this is ok, and to what
-> > extent it limits the provided guarantees compared to a true D-RTM boot
-> > where the early boot code measures straight into the TPMs before
-> > proceeding.
->
-> I can add a rendition of the above into the existing section of the
-> documentation patch that already discusses separation of the measurement
-> from the TPM recording code. As to the limits it incurs on the DRTM
-> integrity, as explained above, I submit there are none.
->
+TPS65224 Register definitions:
+This patch adds macros for register field definitions of TPS65224
+to the existing TPS6594 driver.  
 
-Thanks for the elaborate explananation. And yes, please document this
-with the changes.
+Core description:
+I2C and SPI interface protocols are implemented, with and without
+the bit-integrity error detection feature (CRC mode).
+
+PFSM description:
+Strictly speaking, PFSM is not hardware. It is a piece of code.
+PMIC integrates a state machine which manages operational modes.
+Depending on the current operational mode, some voltage domains
+remain energized while others can be off.
+PFSM driver can be used to trigger transitions between configured
+states.
+
+ESM description:
+This device monitors the SoC error output signal at its nERR_MCU
+input pin. On error detection, ESM driver toggles the PMIC nRSTOUT pin
+to reset the SoC.
+
+Regulators description:
+4 BUCKs and 3 LDOs.
+BUCK12 can be used in dual-phase mode.
+
+Pinctrl description:
+TPS65224 family has 6 GPIOs. Those GPIOs can also serve different
+functions such as I2C or SPI interface or watchdog disable functions.
+The driver provides both pinmuxing for the functions and GPIO capability.
+
+This series was tested on linux-next tag: next-20240118
+
+Test logs can be found here:
+https://gist.github.com/LeonardMH/58ec135921fb1062ffd4a8b384831eb0
+
+Changelog v1 -> v2:
+- Changes to patch sign-off
+- Commit message change in dt-bindings patch
+- regmap config included in the of_match_table data field
+
+Bhargav Raviprakash (11):
+  mfd: tps6594: use volatile_table instead of volatile_reg
+  mfd: tps6594: add regmap config in match data
+  dt-bindings: mfd: ti,tps6594: Add TI TPS65224 PMIC
+  mfd: tps6594-i2c: Add TI TPS65224 PMIC I2C
+  mfd: tps6594-spi: Add TI TPS65224 PMIC SPI
+  mfd: tps6594-core: Add TI TPS65224 PMIC core
+  misc: tps6594-pfsm: Add TI TPS65224 PMIC PFSM
+  misc: tps6594-esm: reversion check limited to TPS6594 family
+  misc: tps6594-esm: use regmap_field
+  misc: tps6594-esm: Add TI TPS65224 PMIC ESM
+  arch: arm64: dts: ti: k3-am62p5-sk: Add TPS65224 PMIC support in AM62P
+    dts
+
+Nirmala Devi Mal Nadar (3):
+  mfd: tps6594: Add register definitions for TI TPS65224 PMIC
+  regulator: tps6594-regulator: Add TI TPS65224 PMIC regulators
+  pinctrl: pinctrl-tps6594: Add TPS65224 PMIC pinctrl and GPIO
+
+ .../devicetree/bindings/mfd/ti,tps6594.yaml   |   1 +
+ arch/arm64/boot/dts/ti/k3-am62p5-sk.dts       |  95 +++++
+ drivers/mfd/tps6594-core.c                    | 266 +++++++++++--
+ drivers/mfd/tps6594-i2c.c                     |  41 +-
+ drivers/mfd/tps6594-spi.c                     |  41 +-
+ drivers/misc/tps6594-esm.c                    |  89 +++--
+ drivers/misc/tps6594-pfsm.c                   |  55 ++-
+ drivers/pinctrl/pinctrl-tps6594.c             | 287 ++++++++++++--
+ drivers/regulator/Kconfig                     |   4 +-
+ drivers/regulator/tps6594-regulator.c         | 244 ++++++++++--
+ include/linux/mfd/tps6594.h                   | 369 +++++++++++++++++-
+ 11 files changed, 1325 insertions(+), 167 deletions(-)
+
+
+base-commit: 2863b714f3ad0a9686f2de1b779228ad8c7a8052
+-- 
+2.25.1
+
 
