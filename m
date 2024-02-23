@@ -1,186 +1,166 @@
-Return-Path: <linux-kernel+bounces-79266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59413861FD8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 23:34:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 765FC861FDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 23:34:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5D601F23BC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:34:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1297B1F24811
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:34:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A615414535B;
-	Fri, 23 Feb 2024 22:33:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F244C146019;
+	Fri, 23 Feb 2024 22:34:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="t7PTmVJa";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="t7PTmVJa"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="WNubgYoW"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14A1F1419B3;
-	Fri, 23 Feb 2024 22:33:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E28F22071
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 22:34:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708727638; cv=none; b=Q8qSg4dfV7QAabL7S+l5Y5MeefrfwUQVpR5hkIi2I8OvsG1ZM3cYHlSEqx47ze6qDsrrLRox9sb/C5TPcriqmvcDJhBIsagQmQpHz1ZyxS+5KWFqNRLtTEAVQhqyRCASLEAcZ3AVIjHlWxcmy5Oe4KeGnLUi0ug2b+72TlsGOV4=
+	t=1708727672; cv=none; b=DL2tw6ouplwNusZNmkRV5cHDhc3vZm9sSLL9T2y/Tt6CVlpzl/ksHoeqlHJ+JScKtyiRJWOR5Q9lxq00ZgTMelky0utg1SjSuwsgc45guHOn8PNOC7NuV22+CmzAKGBmNF2qdOO1TgAZ6sgTvNUBiC1cl10p9AfdiB5UqKG46ls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708727638; c=relaxed/simple;
-	bh=kG5gIyiT7mXCo+bLuAIFsgfZm/MS6sIwZR95nfqKS00=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sG3j/tAMEhbT2hApdDuV+TNTKeEKIoy09TUHXiW6OdL6vmyJPWpfdblntzM7mwLGBhNzytcGxF41fqaMHpnUE4e5terxHJbrZqSSc52Fw0Y8Hlg48K2YOp/eMuBj9nW2Y9pEwgO/F1z7ogiSQaXJ9VgpVHsDzus/1zk2KbwwoYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=t7PTmVJa; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=t7PTmVJa; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4FE4321E9F;
-	Fri, 23 Feb 2024 22:33:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708727635; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ncC4AZwMTanyhRFGNnHWUDxF2reJCIB1LsfOs3NCmHM=;
-	b=t7PTmVJamWd6pk/ZPQ4B8s1MQjb6Zdr79l6k0d7rDFdJmb9VGZ4bKQe/bS6TBxjTS9BPyC
-	49DO3cjjCTwLCyYBZFoFTI5PYmBnqMWvbFVoLa1br6l/VNdI+vsSXSoZQVkcUNipRpKqPG
-	G9BSq/JO3RwF6FNneD2hqrMORjERMZM=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708727635; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ncC4AZwMTanyhRFGNnHWUDxF2reJCIB1LsfOs3NCmHM=;
-	b=t7PTmVJamWd6pk/ZPQ4B8s1MQjb6Zdr79l6k0d7rDFdJmb9VGZ4bKQe/bS6TBxjTS9BPyC
-	49DO3cjjCTwLCyYBZFoFTI5PYmBnqMWvbFVoLa1br6l/VNdI+vsSXSoZQVkcUNipRpKqPG
-	G9BSq/JO3RwF6FNneD2hqrMORjERMZM=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id CF14913419;
-	Fri, 23 Feb 2024 22:33:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id LMYVJVId2WVNWwAAn2gu4w
-	(envelope-from <mpdesouza@suse.com>); Fri, 23 Feb 2024 22:33:54 +0000
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
-To: Marcos Paulo de Souza <mpdesouza@suse.com>
-Cc: Shuah Khan <shuah@kernel.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Jiri Kosina <jikos@kernel.org>,
-	Miroslav Benes <mbenes@suse.cz>,
-	Petr Mladek <pmladek@suse.com>,
-	Joe Lawrence <joe.lawrence@redhat.com>,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	live-patching@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] selftests: lib.mk: Simplify TEST_GEN_MODS_DIR handling
-Date: Fri, 23 Feb 2024 19:33:51 -0300
-Message-ID: <20240223223352.13784-1-mpdesouza@suse.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20240221-lp-selftests-fixes-v2-4-a19be1e029a7@suse.com>
-References: 
+	s=arc-20240116; t=1708727672; c=relaxed/simple;
+	bh=OjImI9nqJ8TO8TDyZt96kFcK0C88oOP70tesV0S+yBY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=j6/7yBvM9Y5hS/vUO6OH5pg7MlmTkoWl4k0ML46YR8z9zzMb3KzdaxfZGAw65U61EFq4XqjqUHMHoSPXDN+IVVNgoKOq+9EqLOL3DZ2CesLzV8+yuauysbSrjFrJV4CnrrxO58q8gVBR3DUm5i5ON9xknfcgqSzgrh/RunjEVCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=WNubgYoW; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=2Wfh
+	FQ80HGIyU4EysZndPKnOpYN/Nd/vyMAbdv2H1oE=; b=WNubgYoWQFi11xP0oDRe
+	z/4cvJH7rLAtEdS7XwEDVqmGY3B/gf0rxuPUCi8SUmKE5NbqOBWwE3iLQxBm9z/Y
+	GEhlSWf36eGtjPd7KjFexqs64aymQbsRPCwOZcBC/7+QRUd4K/1mIjQ6nEUMx9JP
+	AeZM/fNoXKdT96q0u3GhKaPjI1i7SzrnuBKBsjMY7PuqTkzMIFucYW2sTxJNgjBh
+	kSBN6dzu658AL9eQEIOvM/8tXMt79XIyRdZtZrZXHw1xf+F5Z9tYhCEkfE1IKoFx
+	RAyhlfXSm1iJv2YG1wkKEE87gA9pf/lj9V9PaSZ4GoezXe+222K7unYyAizoWy0i
+	lg==
+Received: (qmail 380856 invoked from network); 23 Feb 2024 23:34:20 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 23 Feb 2024 23:34:20 +0100
+X-UD-Smtp-Session: l3s3148p1@CUgsKRQS0JEujnsZ
+Date: Fri, 23 Feb 2024 23:34:19 +0100
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+	linux-tegra@vger.kernel.org, linux-i3c@lists.infradead.org,
+	linux-sound@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: i2c: Remove obsolete i2c.txt
+Message-ID: <Zdkda5jf072mENvK@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Rob Herring <robh@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+	linux-tegra@vger.kernel.org, linux-i3c@lists.infradead.org,
+	linux-sound@vger.kernel.org
+References: <20240222174343.3482354-2-robh@kernel.org>
+ <ZdemsdGQE0RtilCd@shikoro>
+ <CAL_JsqKpn6jqktRLQUx7HMrJG0PZeiOZ=hQnHpZK6AHcM22CLQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [10.00 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_SPAM(5.10)[100.00%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Level: **********
-X-Spam-Score: 10.00
-X-Spam-Flag: NO
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="fF2R2D/X283ptnYJ"
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqKpn6jqktRLQUx7HMrJG0PZeiOZ=hQnHpZK6AHcM22CLQ@mail.gmail.com>
 
-On Wed, 21 Feb 2024 14:17:06 -0300 Marcos Paulo de Souza <mpdesouza@suse.com> wrote:
 
-Shuah, please skip this one. The simplification is not worthy if it causes a new
-warning. This reply[1] explains what's going on.
+--fF2R2D/X283ptnYJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks in advance,
-  Marcos
+Hi Rob,
 
-[1]: https://lore.kernel.org/linux-kselftest/20240223161244.17709-1-mpdesouza@suse.com/
+> > * In the schema, "clock-frequency" has a minimum of 1kHz and a maximum
+> >   of 3MHz. Why? The specs do not say anything about a minimum freq and
+> >   fastest speed mentioned in the docs is 5Mhz (Ultra fast mode).
+>=20
+> IIRC, the high speed mode originally topped out at 3MHz. I guess
+> that's been revised.
 
-> We don't need new targets only to run two make modules and make clean.
-> We can test if TEST_GEN_MODS_DIR is specified, and then run the
-> commands.
-> 
-> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-> ---
->  tools/testing/selftests/lib.mk | 16 +++++++---------
->  1 file changed, 7 insertions(+), 9 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
-> index 286ce0ee102b..eddcd4a849dc 100644
-> --- a/tools/testing/selftests/lib.mk
-> +++ b/tools/testing/selftests/lib.mk
-> @@ -58,8 +58,9 @@ TEST_GEN_PROGS := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_PROGS))
->  TEST_GEN_PROGS_EXTENDED := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_PROGS_EXTENDED))
->  TEST_GEN_FILES := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_FILES))
->  
-> -all: $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED) $(TEST_GEN_FILES) \
-> -	$(if $(TEST_GEN_MODS_DIR),gen_mods_dir)
-> +all: $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED) $(TEST_GEN_FILES)
-> +	$(if $(TEST_GEN_MODS_DIR), \
-> +		$(Q)$(MAKE) -C $(TEST_GEN_MODS_DIR))
->  
->  define RUN_TESTS
->  	BASE_DIR="$(selfdir)";			\
-> @@ -85,11 +86,6 @@ else
->  	@$(call RUN_TESTS, $(TEST_GEN_PROGS) $(TEST_CUSTOM_PROGS) $(TEST_PROGS))
->  endif
->  
-> -gen_mods_dir:
-> -	$(Q)$(MAKE) -C $(TEST_GEN_MODS_DIR)
-> -
-> -clean_mods_dir:
-> -	$(Q)$(MAKE) -C $(TEST_GEN_MODS_DIR) clean
->  
->  define INSTALL_SINGLE_RULE
->  	$(if $(INSTALL_LIST),@mkdir -p $(INSTALL_PATH))
-> @@ -133,9 +129,11 @@ endif
->  
->  define CLEAN
->  	$(RM) -r $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED) $(TEST_GEN_FILES) $(EXTRA_CLEAN)
-> +	$(if $(TEST_GEN_MODS_DIR), \
-> +		$(Q)$(MAKE) -C $(TEST_GEN_MODS_DIR) clean)
->  endef
->  
-> -clean: $(if $(TEST_GEN_MODS_DIR),clean_mods_dir)
-> +clean:
->  	$(CLEAN)
->  
->  # Enables to extend CFLAGS and LDFLAGS from command line, e.g.
-> @@ -166,4 +164,4 @@ $(OUTPUT)/%:%.S
->  	$(LINK.S) $^ $(LDLIBS) -o $@
->  endif
->  
-> -.PHONY: run_tests all clean install emit_tests gen_mods_dir clean_mods_dir
-> +.PHONY: run_tests all clean install emit_tests
-> 
-> -- 
-> 2.42.1
+Hs-mode has a max of 3.4MHz...
+
+>=20
+> We can drop the minimum.
+
+=2E.. but I see you changed min/max now to 1/5000000. That's what I would
+have suggested as well.
+
+
+> > * new binding "i2c-scl-clk-low-timeout-us" has a description which I do
+> >   not understand. What is a waiting state?
+>=20
+> Shrug. May have to look at the MPC h/w that uses the property.
+
+I will also have another look. My gut feeling is that the binding is
+okay, only the description might need an update.
+
+> >
+> > * new binding "no-detect" is broken. At the least, it should be named
+> >   something like "bus-fully-described" and then the OS can decide to
+> >   leave out auto-detection mechanisms. If you are interested in the
+> >   latter, you can simply disable class based instantiation on the host
+> >   controller. No need to describe this in DT.
+>=20
+> I've reverted the property now.
+
+Cool, thanks!
+
+Kind regards,
+
+   Wolfram
+
+
+--fF2R2D/X283ptnYJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXZHWcACgkQFA3kzBSg
+KbYzig//S6LN1IJcbov4tQYqc0ld204PZ2cFEc0wE9p1z2ACiq71IoYiaESHLfjF
+8BndHnuZnCc4LsHNTnDVquUsM54mxypBiXdnBvmmKCrJUlnpDrwlVmRi1yQ0VuFP
+V2/zW4mOesb56puXSfua8Hsyp9M2qEGyjwJSdMMEozyQcBkLausobHQKbphvFhc6
+OAjp1HJvGb9kjrYRGpH6dbDPrk6efXcwKy3n63//ILBcmSloVfFbWgn8n3j7nk1I
+0EDdgRx4MDdz0leMRTlROjl7VtF+EdWeZ0OqIuZPGNxTuk5xXa3XII0bT9+tOBCA
+/c4eLMLua8keQnLJanHxIpcVYv982KNjJMfOaIOI6u0F7UsV6ZRLEQbmzuYE9QpG
+2mK37DgB4b8V85n6HwpXzZaiqOnzEFIJ70ZEDPkVhtEfcNjz5etDvwWomgiotfKO
+QajwbDm9F3R4FcO3EA8WgDR/dDv8cqCXjOfgFyUV9jjbbeDO5rVUMBGLoLSlv1+D
+ysOnVR1JSK6d4wtN6gbCMnzK6aAQPmgdZWq09P5sarNEfGJ3tv6ztUdcfDkoKsiJ
+xfRUrch+VMkrIMbshoICqlRyjtOPMSNpme1eClzMQgd6CDi0mBXJC6fWPmLYV6kS
+Spc1IA87hY7oYQH5LXdd0PwZs/2ulfzTdJ/m90bdPzfIifiVxn4=
+=ITPf
+-----END PGP SIGNATURE-----
+
+--fF2R2D/X283ptnYJ--
 
