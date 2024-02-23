@@ -1,126 +1,102 @@
-Return-Path: <linux-kernel+bounces-79018-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E82F861C4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:11:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D01F6861C5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:17:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 431C31C234A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:11:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 585CEB233DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:17:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3608143C40;
-	Fri, 23 Feb 2024 19:11:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9560143C74;
+	Fri, 23 Feb 2024 19:17:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="BMp0xEww"
-Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com [209.85.222.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="tEPf2WBO"
+Received: from smtp-42ac.mail.infomaniak.ch (smtp-42ac.mail.infomaniak.ch [84.16.66.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EE6984FBB
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 19:11:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAC5D7D413;
+	Fri, 23 Feb 2024 19:17:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.16.66.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708715498; cv=none; b=Necgdu/mk2xU+NS1z+DKefLBhcBhJUyCCsTUsigL1sxAINuX7ziUwX/zMZS34YvszxcTvtGUz6kAxmiWpcq4kK+H3ADtYRsfx+GeLLE/8wYvrkD0gMxgqTUEwS0K3eRC+di2ed2XD8AmErQGR0WUWbgVuaT0Od9rGq2EzRMDfCE=
+	t=1708715832; cv=none; b=Lihw+bC63bc+7d0nMPIbFaIwIla/3jQhoNrlQSWyypE52+xVBnZRI5b1RfTCt6Dp0jqXPzNo4a/2/IPEUM5pGCCGHvYEZUsmb2YMm5dJls2xD+xlhroDEscNqdFeMggaEdQlxWrt8hRhE6BViv6sk0twUpvfziLciCASZJCWxAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708715498; c=relaxed/simple;
-	bh=ClfBlzO7QpgXN5F3JKLl+3YPCiaYFHLAJGvdDZM4QEI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eE2khOZfAFprzrcS5+mFenWFB6ZNETUI8HEFGj2+FqwDxPpplxuQQAFNWvc7F2/BK6LimVH4yJLjCCaxon7w66ETgbfouhqvIjAXmq+JCofK6dEZkWvZ+XpR+L8d5O7iXDLX8PesAi2sHMjkaOpbb+HmPRRk52o4SKd3vyhkR3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=BMp0xEww; arc=none smtp.client-ip=209.85.222.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-ua1-f53.google.com with SMTP id a1e0cc1a2514c-7d995bd557eso360524241.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:11:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1708715494; x=1709320294; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j0XCvTK0JutYyKCTFM1dWFP+TyUZlvqtwx4Xm5HJezU=;
-        b=BMp0xEwwkNSaExo3V3Djl3bbXRw75NUaNr4aOrAlwlxLA36VIrZ7oqbUPRBhM7uj4w
-         /0W2+aAnTOCIdSXugAXsN5ohh2iZhP7613aVf3+uD1zkmeKot5aGDZ79yYCi9dZ72LiS
-         CgLf5MBwlEwrpuZ3xBsgcLkxlXwytXRXTRxW4e7VNEgiXsPZ7TwrXUSAzjOISMsVaIts
-         vbUv+M0DGt97XuXmhSIBD8+4TgYgfDluctR8D7q9TC8ftTdQO2XebmTUcCeTdE6vWFtN
-         QG1jLs2Mco31KKSB9OXvXP/Ken46oEM/TdjgDilXnP9SassootgM0VkGrsCN6+Uc4Y5U
-         ERvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708715494; x=1709320294;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j0XCvTK0JutYyKCTFM1dWFP+TyUZlvqtwx4Xm5HJezU=;
-        b=D0mXQT9yT5YAjIpeyfzSc8ZTP4vRhifkXBNG8LouUyUoBdMQ8yKVoj4ccpj0SZ8jGP
-         +juInize/Pd0SF1zV3KKbSi9sNoe9zCnz3chhjI3WZjWSdcia8l+G5wGgSsULiIXHKpz
-         12JfPTYpfSAkce8cVVbXS3CuO90P7lENaRZ5E0Wfql/4UmCHPsYtEVrG7FY2arwheKMy
-         POclK1vLfRIthRK7GcKhTwweiBK2+/lGHQGUnR3GpvSuEbn5PVCY+OO5Yn+NJrcpOkvK
-         7GDZS/ANDK7EEUD0DpM+f8aKPIcd1/yJKCYxGEnmQGuRRQJeThm05qFjxQa5iNnwZCMW
-         f83A==
-X-Forwarded-Encrypted: i=1; AJvYcCWIEViHedpkHf3yK1ZyZideISCPNuJgH7kCYAG8GmecWducQQzLnAB/6ynAdb++8A5nZOh+yAzxNh2mT4SIBM/SfBm5OhYZMxVAfBLM
-X-Gm-Message-State: AOJu0YzZtoi4nyytdZzDvmMpgr4MhwBMNOah7UEUbNx/VZOvzzpeZx4B
-	6MdoI1sLsvvomGXYBqTv2gNDUc1L7+HOS1lSruJxKB8S7YhfRyq/v1C7wAfu/t535acj4EjoCPd
-	U+UbWnIjpAJ5PTVNiYwMUjYJktDxBHVbZzT5k
-X-Google-Smtp-Source: AGHT+IHgnpzrAJiqOtQa0RtIP05NlipiiJgyjy+Jaz0pPBXd/km1Jma/USlORd79vvIIEbsdXpIneAyVk15v6ZKaFuo=
-X-Received: by 2002:a1f:c4c3:0:b0:4c0:2182:3cdc with SMTP id
- u186-20020a1fc4c3000000b004c021823cdcmr866522vkf.1.1708715494038; Fri, 23 Feb
- 2024 11:11:34 -0800 (PST)
+	s=arc-20240116; t=1708715832; c=relaxed/simple;
+	bh=btAxHCenbi7nA/lRWN8WH3LBJ7bc55IUulvOXV3KHy4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jq4Xmq5GrSmvfob+6hkojqyoxZ4uSCCPYjhI0w3UciSIP2jahB7KG6709o+0s9vsvihYLXkH+hOqGA2DfqoPDsRsOwZC+76EwdVY+ucQbvaGmcyP2BPRQ6QHwPFg0KKkpOypXgjvRaTqmrI3B3fLC1CtfzX5+U0BQnjg/1kGI/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=tEPf2WBO; arc=none smtp.client-ip=84.16.66.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4ThKWc173pzMq205;
+	Fri, 23 Feb 2024 20:17:00 +0100 (CET)
+Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4ThKWb3JSzzMpvFL;
+	Fri, 23 Feb 2024 20:16:59 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+	s=20191114; t=1708715820;
+	bh=btAxHCenbi7nA/lRWN8WH3LBJ7bc55IUulvOXV3KHy4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tEPf2WBOddV0HtcOKEC89Zq1oHkkaqbIaJh7gNzZTdvff9eHWwSIfoKs7tUPC+Dg+
+	 UpCviJ+Ib4KO5xHYkkkO4vtdWAXkWihiuLqBR5Mtj78Uu6Mkp+p5mE4z26sq4LXLcB
+	 uDvHwTOeNX3xuAdjyaSslK3arp6nJMCing9z4RE8=
+Date: Fri, 23 Feb 2024 20:16:51 +0100
+From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To: Casey Schaufler <casey@schaufler-ca.com>, 
+	John Johansen <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>
+Cc: James Morris <jmorris@namei.org>, 
+	"Serge E . Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] SELinux: Fix lsm_get_self_attr()
+Message-ID: <20240223.iph9eew7pooX@digikod.net>
+References: <20240223190546.3329966-1-mic@digikod.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223170824.work.768-kees@kernel.org>
-In-Reply-To: <20240223170824.work.768-kees@kernel.org>
-From: Paul Moore <paul@paul-moore.com>
-Date: Fri, 23 Feb 2024 14:11:22 -0500
-Message-ID: <CAHC9VhSyupEj_WfD=6tFUkujqBrNS86_TVFLpb+Um=5hc2C-8w@mail.gmail.com>
-Subject: Re: [PATCH] init/Kconfig: Lower GCC version check for -Warray-bounds
-To: Kees Cook <keescook@chromium.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>, Lu Yao <yaolu@kylinos.cn>, 
-	"Gustavo A . R . Silva" <gustavoars@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Christophe Leroy <christophe.leroy@csgroup.eu>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Petr Mladek <pmladek@suse.com>, Suren Baghdasaryan <surenb@google.com>, 
-	=?UTF-8?Q?Marc_Aur=C3=A8le_La_France?= <tsi@tuyoix.net>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ard Biesheuvel <ardb@kernel.org>, 
-	Nhat Pham <nphamcs@gmail.com>, linux-kernel@vger.kernel.org, 
-	linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240223190546.3329966-1-mic@digikod.net>
+X-Infomaniak-Routing: alpha
 
-On Fri, Feb 23, 2024 at 12:08=E2=80=AFPM Kees Cook <keescook@chromium.org> =
-wrote:
->
-> We continue to see false positives from -Warray-bounds even in GCC 10,
-> which is getting reported in a few places[1] still:
->
-> security/security.c:811:2: warning: =E2=80=98memcpy=E2=80=99 offset 32 is=
- out of the bounds [0, 0] [-Warray-bounds]
->
-> Lower the GCC version check from 11 to 10.
->
-> Reported-by: Lu Yao <yaolu@kylinos.cn>
-> Closes: https://lore.kernel.org/lkml/20240117014541.8887-1-yaolu@kylinos.=
-cn/
-> Link: https://lore.kernel.org/linux-next/65d84438.620a0220.7d171.81a7@mx.=
-google.com [1]
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
+These bugs have been found with syzkaller. I just sent a PR to add
+support for the new LSM syscalls:
+https://github.com/google/syzkaller/pull/4524
+
+
+On Fri, Feb 23, 2024 at 08:05:45PM +0100, Mickaël Salaün wrote:
+> selinux_lsm_getattr() may not initialize the value's pointer in some
+> case.  As for proc_pid_attr_read(), initialize this pointer to NULL in
+> selinux_getselfattr() to avoid an UAF in the kfree() call.
+> 
+> Cc: Casey Schaufler <casey@schaufler-ca.com>
 > Cc: Paul Moore <paul@paul-moore.com>
-> Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Cc: Nathan Chancellor <nathan@kernel.org>
-> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: stable@vger.kernel.org
+> Fixes: 762c934317e6 ("SELinux: Add selfattr hooks")
+> Signed-off-by: Mickaël Salaün <mic@digikod.net>
 > ---
->  init/Kconfig | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-
-Thanks Kees.
-
-Reviewed-by: Paul Moore <paul@paul-moore.com>
-
---=20
-paul-moore.com
+>  security/selinux/hooks.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+> index a6bf90ace84c..338b023a8c3e 100644
+> --- a/security/selinux/hooks.c
+> +++ b/security/selinux/hooks.c
+> @@ -6559,7 +6559,7 @@ static int selinux_getselfattr(unsigned int attr, struct lsm_ctx __user *ctx,
+>  			       size_t *size, u32 flags)
+>  {
+>  	int rc;
+> -	char *val;
+> +	char *val = NULL;
+>  	int val_len;
+>  
+>  	val_len = selinux_lsm_getattr(attr, current, &val);
+> -- 
+> 2.43.0
+> 
 
