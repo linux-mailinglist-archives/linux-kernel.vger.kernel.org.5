@@ -1,129 +1,122 @@
-Return-Path: <linux-kernel+bounces-78288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4748C86116B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:23:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69FED86116D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:25:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 500F5B219A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:23:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 833D81C21A66
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:25:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C6757BAE8;
-	Fri, 23 Feb 2024 12:23:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EAB57BAE6;
+	Fri, 23 Feb 2024 12:25:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iCTRbhSt"
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QZzh6hfe"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4C9D63104
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 12:23:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963237B3DA;
+	Fri, 23 Feb 2024 12:25:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708691022; cv=none; b=Wr8UY17rHNB0VfYTygYUEB7Ti64bByP7mkesAgwNLPXI6W2zImmMfiu/nAjwT6OQhIjtAUyKq2mbb6vy4PVwThAmiAD0wLRloZPF7y5UfwdNEIlHtnNxdPgTQTdK7O8cgKZk2KBJ/vtybepZXI1eetIvRkxYjU4+1VypK1jOF7g=
+	t=1708691109; cv=none; b=N/9dLTmH4l+GwKH7i8yV9lnjufjLKVjpzYYOqRMWnCrrtNSPrdnBzq+OvWebKluM9VRXPrzQFvlJW1dnuTTxe+dKgDk0EFWURW4mZOp0b6m5n8Z6bXu8kO5IhXERbLQ56OE5JFcPrP2+iJhbWFWUkggZBZSTJEdywMcbX0pBuqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708691022; c=relaxed/simple;
-	bh=NKGn1r+5p3H5zKXUsYG99yRpWFlDz+56uQrt0ylyUNc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=n4tGG0xxZh/dzW5Y2Vt2DoghT2pn+BNK0GDm+npb2GZBQYcwxH/5wciW6549MhHkbjiuGTpJXn29zPMwduUAMpfX9iBrr2IVUhTFaWVKtDTu1kelsVzeAQAVgUDuiFk3M9n9EMrNYGhl9K3gqtSH7T+gCJiV70pplBgHpTwrnzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iCTRbhSt; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-33d2b354c72so215021f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 04:23:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708691019; x=1709295819; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hQOmmDAHNb8LHRbOSJZq+6Uxp8YDhnDGFn2+TQ7yf58=;
-        b=iCTRbhSt91WP56cedhSbJWd2W7dAW6y5+yhhuXih2NQnK/twN8IqpBFzmxnjGPc8nr
-         vYOCIiF01+RG0xZ/3k8vCvG4YbJ12y9Fs5uhqn6mWXfqx0/xuVwVYuLnLPW7Bqu+wq21
-         8Croc1G3XycW1Q4Wb6G+9kV/WE8BXkgHNwOSj7bloH/84QOSbgNnL3M9eSkK1nYGUGUD
-         0aIB6F5G43iM6TA+6aRQLglHhZefbr+ODQgYwV8g3/IVxX8eR5acooCBZUl64QQOP1zD
-         F8rSVs4mroavWUQ/cEorC6kw4z7uneCSHJhyFuPzp/UtOI5YVLd7p2ttQl8/fNIDaEgD
-         EkQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708691019; x=1709295819;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hQOmmDAHNb8LHRbOSJZq+6Uxp8YDhnDGFn2+TQ7yf58=;
-        b=F+FWhsnRSmojSF4S6ojgFQulf4Tvr5wHOoEzNdhF391TvpX8DwIjFfnvO/4u4pbMsv
-         D1OR7j7kJA0QiC7fDJmRVtg7IPZAY3FaiIkU5jUr/q4JP2mttQpL1PS8Y4YveOAU/DAj
-         KrumW/MKA6fEZdRQp7Kl11TSbYteQRZqnp39l2n5aHyK8cvp4qz85FEbpD1geVvmLlZW
-         aLgjLOh9N29OUR6o6V0OLvSMtsnIfv4k7mMQHp8wrGKJ02aqsu7lBFwtAWowwjjmezPz
-         wLxoUjKjStipHJ43hG10qEphBTB5dIe6DKTy+yBKGVKDOJx6BFo0jJ3bbUwAngaX98LY
-         E3cQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXLqIaE3jSU9e07ZhNqToibSNUCG1Y1t9q+qlMzfbOQp0aoeQpb2x8CHlVKRgMkNXireeXco4paYoi2e+0MhPT8ngje7xZxbR3ISN2X
-X-Gm-Message-State: AOJu0YyP1H+fPabFuVgD8uTHXkUK45lNtKsVNU1qUkeWYXA6wwkOFLeS
-	TTFXuDXSQDzOhVAtd29ICJ/CUqY3okdJNX9QrL5jzTqlKpTUFYh3RIeIlORu+gE=
-X-Google-Smtp-Source: AGHT+IEwKRwqNM4uowp13vp2rQI4u/M+PLn0ngC7EVXLHt1GfirC5r5MNLXGGhCi3JM125UVA6u4cQ==
-X-Received: by 2002:a5d:6781:0:b0:33d:4f0d:7e75 with SMTP id v1-20020a5d6781000000b0033d4f0d7e75mr1195059wru.53.1708691019179;
-        Fri, 23 Feb 2024 04:23:39 -0800 (PST)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id k2-20020a5d6e82000000b0033d4c3b0beesm2674392wrz.19.2024.02.23.04.23.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Feb 2024 04:23:38 -0800 (PST)
-Message-ID: <54605748-e737-46f0-ada5-0e3e79699262@linaro.org>
-Date: Fri, 23 Feb 2024 13:23:38 +0100
+	s=arc-20240116; t=1708691109; c=relaxed/simple;
+	bh=MaYmzslx1mf+A0NsaTa/pwiRoRWhmyCe7uHLHoWcvWk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZkwjT30xUU0zTpmw6Gq9anGn+5XcOCxN/stqJldOtLY4ok6mn3yNTKU6ZcSN+ZTA2Xf+0GZxqhMnVJloTGjjyW+4T5v/Rwazt+rU5DRDAU+zFDebka7vt6rQQ1lOsBwacceDZja8jyzW8Apc3DGN8jp2FBUIkcM5p/8wr0JdSKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QZzh6hfe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AA8AC433C7;
+	Fri, 23 Feb 2024 12:25:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708691109;
+	bh=MaYmzslx1mf+A0NsaTa/pwiRoRWhmyCe7uHLHoWcvWk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QZzh6hfeQeMNWZYdbqEaxioTBGZ+mJt/NHcqk+dArheg7i59OcGjeBTfZPmvFQE4d
+	 JdsZtv6LFy/0QAGQEFyiGAquMPB2JTsp4NVilxCKsoLE78YzNu9RT3/sgaYv6ROwu9
+	 hJO1OBBiuX1TVmdMwaCjr12HAHnq+9lOR392OElPmJPTx9TvoHhOGSOvY4BofL4+NL
+	 Lt72yrgSF6zPkSYE5jZO4WY3mVGHSSyPLV5b5zb44b3EukMiqd0EZgIKr8yFcKgSoL
+	 pVskg+jGQpmFMq+grGHvxhGKogtpNjgQrNVqHd8K/p9gY0Mrl/iKfQPobzpQDZWghu
+	 I0PCQlsfhY17Q==
+Date: Fri, 23 Feb 2024 13:25:06 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org, Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+Subject: Re: [PATCH v2 0/6] RCU tasks fixes for v6.9
+Message-ID: <ZdiOot2RJm1VuzSJ@lothringen>
+References: <20240217012745.3446231-1-boqun.feng@gmail.com>
+ <Zdd7x4Rmy_-WDqfl@localhost.localdomain>
+ <cf84fb44-9620-40bc-a68d-051edf6823b8@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v2] dt-bindings: timer: add Ralink SoCs system tick
- counter
-Content-Language: en-US
-To: Sergio Paracuellos <sergio.paracuellos@gmail.com>,
- devicetree@vger.kernel.org
-Cc: tglx@linutronix.de, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
-References: <20231212093443.1898591-1-sergio.paracuellos@gmail.com>
- <CAMhs-H__b2dNQH+nsbc0+gTeQPmkZf5B95+3Y88iRZ5KZmu=yQ@mail.gmail.com>
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <CAMhs-H__b2dNQH+nsbc0+gTeQPmkZf5B95+3Y88iRZ5KZmu=yQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <cf84fb44-9620-40bc-a68d-051edf6823b8@paulmck-laptop>
 
-
-Hi Sergio,
-
-On 23/02/2024 12:27, Sergio Paracuellos wrote:
-> Hi,
+On Thu, Feb 22, 2024 at 02:09:17PM -0800, Paul E. McKenney wrote:
+> On Thu, Feb 22, 2024 at 05:52:23PM +0100, Frederic Weisbecker wrote:
+> > Le Fri, Feb 16, 2024 at 05:27:35PM -0800, Boqun Feng a �crit :
+> > > Hi,
+> > > 
+> > > This series contains the fixes of RCU tasks for v6.9. You can also find
+> > > the series at:
+> > > 
+> > > 	git://git.kernel.org/pub/scm/linux/kernel/git/boqun/linux.git rcu-tasks.2024.02.14a
+> > > 
+> > > Changes since v1:
+> > > 
+> > > *	Update with Paul's rework on "Eliminate deadlocks involving
+> > > 	do_exit() and RCU task"
+> > > 
+> > > The detailed list of changes:
+> > > 
+> > > Paul E. McKenney (6):
+> > >   rcu-tasks: Repair RCU Tasks Trace quiescence check
+> > >   rcu-tasks: Add data to eliminate RCU-tasks/do_exit() deadlocks
+> > >   rcu-tasks: Initialize data to eliminate RCU-tasks/do_exit() deadlocks
+> > >   rcu-tasks: Maintain lists to eliminate RCU-tasks/do_exit() deadlocks
+> > >   rcu-tasks: Eliminate deadlocks involving do_exit() and RCU tasks
+> > 
+> > Food for later thoughts and further improvements: would it make sense to
+> > call exit_rcu_tasks_start() on fork() instead and rely solely on
+> > each CPUs' rtp_exit_list instead of the tasklist?
 > 
-> On Tue, Dec 12, 2023 at 10:34 AM Sergio Paracuellos
-> <sergio.paracuellos@gmail.com> wrote:
->>
->> Add YAML doc for the system tick counter which is present on Ralink SoCs.
->>
->> cc: Daniel Lezcano <daniel.lezcano@linaro.org>
->> Reviewed-by: Rob Herring <robh@kernel.org>
->> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
->> ---
->> Changes in v2 RESEND:
->> - Add Daniel Lezcano to CC in the patch itself.
->> Changes in v2:
->> - Add Rob's Reviewed-by tag.
-
-Applied, thanks
-
-Sorry for missing this patch
-
-> Gentle ping on this patch. It has been a while since it has been sent.
+> It might well.
 > 
-> Thanks,
->       Sergio Paracuellos
+> One big advantage of doing that is the ability to incrementally traverse
+> the tasks.  But is there some good way of doing that to the full task
+> lists?  If so, everyone could benefit.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+What do you mean by incrementally? You mean being able to cond_resched()
+in the middle of the tasks iteration? Yeah not sure that's possible...
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Thanks.
 
+> 
+> 							Thanx, Paul
+> 
+> > Thanks.
+> > 
+> > >   rcu-tasks: Maintain real-time response in rcu_tasks_postscan()
+> > > 
+> > >  include/linux/rcupdate.h |   4 +-
+> > >  include/linux/sched.h    |   2 +
+> > >  init/init_task.c         |   1 +
+> > >  kernel/fork.c            |   1 +
+> > >  kernel/rcu/tasks.h       | 110 ++++++++++++++++++++++++++++++---------
+> > >  5 files changed, 90 insertions(+), 28 deletions(-)
+> > > 
+> > > -- 
+> > > 2.43.0
+> > > 
+> > > 
+> > 
 
