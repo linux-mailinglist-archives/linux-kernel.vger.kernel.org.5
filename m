@@ -1,59 +1,57 @@
-Return-Path: <linux-kernel+bounces-78727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 803978617E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:28:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 615DC8617E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:29:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3855628A0AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:28:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 928871C22E69
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:29:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BA3E83CA8;
-	Fri, 23 Feb 2024 16:28:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AED1784FAE;
+	Fri, 23 Feb 2024 16:28:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FDL5Y02+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SkYRUySC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29D8D84FA1;
-	Fri, 23 Feb 2024 16:28:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB3DD8565A;
+	Fri, 23 Feb 2024 16:28:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708705728; cv=none; b=X+Ay9TQKHRmfb7nVgy2KEZ7gZT+UZGHPOD7ItvBTEoVibdNvxui3AIRL+OC+6Z/dnz8P81Heaa1awThC1hCqjtLrKIjUWWwcq7fjaopL/La4/ALUEeoh86fVpMrwydpM+9Eq+TgAoNIkP4nA5OPvdQ8wnsy4n1+/15N7yn5hi0o=
+	t=1708705730; cv=none; b=m/kxe+ri34L3fLWtjzaHE9Fq76rHhao/85dZiI7Ekx91r7m2glNenUwcQN4QckN9JOZwYCpeUAhK9rxUNWqquMrND2/aBmsuYkeBkw98Wxs1lr/t31pgks4wgu9ssYppraYXxlsV6MZtdEAktfZyl0BrJVXutkHk64DJedRPwoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708705728; c=relaxed/simple;
-	bh=MKwvCMy8mgFWdbvzLyOsYqWArU5NYYRlO+TE1+VYsX0=;
+	s=arc-20240116; t=1708705730; c=relaxed/simple;
+	bh=wEGHK2WBxOjfXbevpTQb3aIk60mWJqBlr3ZiHUy36VM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=THWjdJbxbQXqH9E2Rn03bwdM856BmnRkYgBMMQr3l3F80GATp/FLSVOG7/Zf3A3mmIUbkEPh0Phvm7khqRGZmtBrQxvwqxuM3LdjPK7OqACBxBgZ92kvyeSA4ZNDi83/tvo/A0QJ++WFeVAhtyPk9roAQ/UbtCL1gzazg1WRptc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FDL5Y02+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC4B0C433F1;
-	Fri, 23 Feb 2024 16:28:44 +0000 (UTC)
+	 MIME-Version:Content-Type; b=c5LpBTfAdsI0+JtLxfifOIwJ1OiRqv4X3fWl7Q9VOODOD7GBLkxzGryCIGjVzkA0udxsBq7rzNKZTQj2zJi2WVC7WwHSjV9e3FpzzfzajWqFuiG3gTu4wU8x9QfGiKyL3gz2MRmXCxuJ/2qSiSHTFOFxS+VkF1qs/eIJWcHQAjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SkYRUySC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 203AAC43390;
+	Fri, 23 Feb 2024 16:28:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708705727;
-	bh=MKwvCMy8mgFWdbvzLyOsYqWArU5NYYRlO+TE1+VYsX0=;
+	s=k20201202; t=1708705729;
+	bh=wEGHK2WBxOjfXbevpTQb3aIk60mWJqBlr3ZiHUy36VM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=FDL5Y02+HEIiYaW0kbThPhPZ5tpkcEb6j8qRIscIJQcZKJqdHUcl6flVaSz66yUg7
-	 BMle0D2XUu60z49ecU5S+lXh/RmAHkziGc6RKUdso/xlD6G0q5n0Zt7vxBMkZsyQGK
-	 AFlWcWyfa2TV/wK+DwSvpPQasjAsjE8ySm5hFRTwRICxPrl7KRIzksFx26MA2v/6ui
-	 CCak8RETlNWeV49Jpu+d/FMOHeWtejvHrT+7JV6vztuGSAfTjH8GYlJShrwVMj6toa
-	 q1AmEnwkCppWTlGYZPTqGd02csea04b7DzYGhkuVFo2uHJ9H7tkiGTTXR1MEPMZnQm
-	 wvsZC8x59WyVA==
+	b=SkYRUySC7rIkFog+P2vIgPZHmirWaNLzsVE0UJf5iJ3cwiTt8uvDiENx72N+umzwI
+	 7+LpOSjln0PwmN+WL+WJsNu9O54/1X+4a2Efdt6pwBgSdyEzVf4Z2MhV+yypmC3SFx
+	 pFGEi1SyLtad8/y+2LEQ+PWe+aC2rJHYaYWN4nxvOv0Yc95mbWb/VfZhCH4WR3yLHO
+	 gUiKSg78OTlnbEr8Lg15KyOEyAmA5unW7M0YUxmCU24Or7ZsU7kbVW4GBRc5fvNNA2
+	 MigHG6/ia+IBaOYVyqirFWnnIzM9ERex4xaaVYv2Xa1jEmH/NKIjeKcCdd5mV52iv7
+	 MbHyGG4dbBDsg==
 From: Lee Jones <lee@kernel.org>
-To: lee@kernel.org, daniel.thompson@linaro.org, jingoohan1@gmail.com, 
- pavel@ucw.cz, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
- conor+dt@kernel.org, andersson@kernel.org, quic_kgunda@quicinc.com, 
- Jeffrey Hugo <quic_jhugo@quicinc.com>
-Cc: dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240202180151.4116329-1-quic_jhugo@quicinc.com>
-References: <20240202180151.4116329-1-quic_jhugo@quicinc.com>
-Subject: Re: (subset) [PATCH] dt-bindings: backlight: qcom-wled: Fix
- bouncing email addresses
-Message-Id: <170870572457.1740438.258994199463486668.b4-ty@kernel.org>
-Date: Fri, 23 Feb 2024 16:28:44 +0000
+To: Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>, 
+ Daniel Thompson <daniel.thompson@linaro.org>
+Cc: Luca Weiss <luca@z3ntu.xyz>, dri-devel@lists.freedesktop.org, 
+ linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240220153532.76613-5-daniel.thompson@linaro.org>
+References: <20240220153532.76613-1-daniel.thompson@linaro.org>
+ <20240220153532.76613-5-daniel.thompson@linaro.org>
+Subject: Re: (subset) [PATCH RESEND 4/4] backlight: mp3309c: Fully
+ initialize backlight_properties during probe
+Message-Id: <170870572786.1740438.15453067020985270956.b4-ty@kernel.org>
+Date: Fri, 23 Feb 2024 16:28:47 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,22 +62,17 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.12.4
 
-On Fri, 02 Feb 2024 11:01:51 -0700, Jeffrey Hugo wrote:
-> Bjorn is no longer at Linaro.  Update his email address to @kernel to
-> match the .mailmap entry.
+On Tue, 20 Feb 2024 15:35:27 +0000, Daniel Thompson wrote:
+> props is stack allocated and, although this driver initializes all the
+> fields that are not "owned" by the framework, we'd still like to ensure
+> it is zeroed to avoid problems from this driver if the fields change.
 > 
-> The servers for @codeaurora are long retired and messages sent there
-> will bounce.  Update Kiran's email address to match the .mailmap entry.
 > 
-> This will help anyone that is looking to reach out about this binding
-> and is not using .mailmap to pre-process their message.
-> 
-> [...]
 
 Applied, thanks!
 
-[1/1] dt-bindings: backlight: qcom-wled: Fix bouncing email addresses
-      commit: f842d487c6a2f17a9d4d9bbcbfdb90b49adac71d
+[4/4] backlight: mp3309c: Fully initialize backlight_properties during probe
+      commit: 50a2c0aee92699ed47076636b652f9d27a20fbef
 
 --
 Lee Jones [李琼斯]
