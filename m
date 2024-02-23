@@ -1,98 +1,230 @@
-Return-Path: <linux-kernel+bounces-79213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D858861F0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:27:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FB5E861F0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:29:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51299B225E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:27:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0143EB242CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:28:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19F411493B0;
-	Fri, 23 Feb 2024 21:27:28 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AF3C1493BB;
+	Fri, 23 Feb 2024 21:28:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="DMcfwQ1r"
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49829146E9F
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 21:27:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F4E3149388;
+	Fri, 23 Feb 2024 21:28:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708723647; cv=none; b=OjG/y/z5iJ6e2pfJNUxVNv5ZyqM/NVv8xJZsuxcfRdCTNiLg2dnxqZz2IRrBSiiZyAwdYigTual60SFILkrMM/dV5PkT0RHF3vg2gTMTQpn5PIDn9Xg8HxaXp/0afoxCLAIcvEMLMv19I2vwNW9Se8xpWBYcYGG44Jp4UNoF3FU=
+	t=1708723727; cv=none; b=V+PFmri9mGObCWEYRDDOUGbfaQhhe3aZCFHvKDrJz6A4Jm48YhfrcFa4t+LxdLrCI/QBeaPyGp9pB6VR13jTGmGJ8BaAh3sGhcEBVuI4VzxlXQJJsInC2cHhUgNUn2daVGK5gh5leEWG3Oi9FWLNG6KB6O192edYToJdtGik1uE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708723647; c=relaxed/simple;
-	bh=VLMGcoKqB8lRoDP0aswhFqwwhXnudyVIBfdJQmMCSS4=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=tw4KPr8oMJuZ5c+Mn1M3Wk7+qssQUEwTQn2zDeDRzr4huIcXM0e1i3TQUnKYE1GkkFyoakXvVXrsq3Mi1cjAaSLgklu+YARtanqtc/uDfkdtNA0dLFZKHFnBaLa4rb/7hE6AMIzvUkQrMUqlp7Bu8u0ikiUhBmVWVupZXlpEAcU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3651fd50053so8228615ab.3
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:27:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708723645; x=1709328445;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=044LH8cJATSgHllL+X3xvCtVZ2tnyTB+fC4voAuIDv4=;
-        b=r+jIBUnm5DsD4uB8yvuDBSuoMVPWo0opk5lFBt9AgLpsIRE17o9ExQNoqtggp4J3ti
-         jyQjTMkIrcNfTeMuHlTyN8HXrYeb79F/MG0ywo6j2Z9JcoUsjaNq2UdlvgbX6ICw1BCV
-         tEFKtEAl2Upo4iIeVAr6HyHQgUgNioofP2c1Fi5dBcanHlDWI7Y491b93iFdOsjThytB
-         jvRh3NIcQMUYUT6JDtd6s+OGXwfqz4nL1Dw9osVbxm/g/L3/SHMl9mTUu6/qFi5wenkf
-         24e7MZv7hFNzTJfD9FNjZQqd3o/ofJ4NE+Nu8OAU/vW63seRPbYgJw1+bNx9wFXH4hkT
-         6Cpw==
-X-Forwarded-Encrypted: i=1; AJvYcCWlcsvhS5YKgDS9/07DqMa2wY9XbkELBC8YKKIvK9bLUtc+zLUQd6eyGukktStQwHyQ7aKp4b5ZpBo0XP3VOFUpDwKOmZDpTAqdkkNF
-X-Gm-Message-State: AOJu0YxTaZc5FtaZwpafDoV6AVjDi3vB/a1AFndr5+O5EhFMhAVsFu1S
-	15qziHqXyxyE1yzfcHdlTgINYtaP8ffAlNewo7uD26KIOa4997YnmDM3JSMeqBSEZ9r+nyvx6Zi
-	wcaW2JKGF/UcznNgwsOdT45LjY+ZjxPXvJqLZbXvCyCjkMsfXW9sUSjo=
-X-Google-Smtp-Source: AGHT+IEmu9pZ71VokjjsFo+IJZvhbi2GgLkE2nE4NjmMnazl1hkHlv+sO/TWslddmfx2T7/pAl2sJLeumUQjPljJFUW5MPVJAyUz
+	s=arc-20240116; t=1708723727; c=relaxed/simple;
+	bh=DxNJF2HfobJndwwGNuoV3A/j+HNdIf1M2fN5HyV89UU=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition; b=ktrIol+xmth1KnhlDqhwXgHLs5yVNAwK3Elbnvu5pb+Ym6LUtvE9cEWu0wBNKNRpKfOnOIs9KABVowsA+pgnKset7DNd3Jl1MiMNdGITz9if639+HfeIlPa+EoIvrCQIIntsi9Exlg01w1bHQSPzCSaOSQQQ8gRnnPwdhRCeFcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=DMcfwQ1r; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 9A52A1C006B; Fri, 23 Feb 2024 22:28:42 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+	t=1708723722;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 references:references; bh=6xEIm2edK68HPN0TzWfyCgFMgXaReyr4GncU+XTIWD8=;
+	b=DMcfwQ1r+t1JybfpFlCJHuyYBt6MEIzKeb2mkpYJ2QO6ipE6xUsGnF/bU5KyGUOJ3NGprB
+	u5/Il0c/+l/OODRyjhQERLN/Nzr3u1wrYJBbF0GtYxWE50lyQDIaIPISAvcUOic1ynAYAF
+	fcBBlUUoVOof1v5ET6HQjXQx0ao9GMo=
+Date: Fri, 23 Feb 2024 22:28:42 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: phone-devel@vger.kernel.org, kernel list <linux-kernel@vger.kernel.org>,
+	fiona.klute@gmx.de, martijn@brixit.nl, samuel@sholland.org,
+	heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
+	linux-usb@vger.kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org,
+	megi@xff.cz
+Subject: [PATCHv2 1/2] dt-bindings: usb: typec: anx7688: start a binding
+ document
+Message-ID: <ZdkOCqPKqa/u9Ftb@duo.ucw.cz>
+References: <ZcaCXYOf6o4VNneu@duo.ucw.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c08:b0:365:5dbd:b956 with SMTP id
- l8-20020a056e021c0800b003655dbdb956mr52445ilh.3.1708723645570; Fri, 23 Feb
- 2024 13:27:25 -0800 (PST)
-Date: Fri, 23 Feb 2024 13:27:25 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e9e80e061213394a@google.com>
-Subject: [syzbot] Monthly gfs2 report (Feb 2024)
-From: syzbot <syzbot+list72751ee4e1b31b4ea4be@syzkaller.appspotmail.com>
-To: gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="jCLN6xU/n9iIU9zP"
+Content-Disposition: inline
 
-Hello gfs2 maintainers/developers,
 
-This is a 31-day syzbot report for the gfs2 subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/gfs2
+--jCLN6xU/n9iIU9zP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-During the period, 2 new issues were detected and 0 were fixed.
-In total, 13 issues are still open and 29 have been fixed so far.
+Add binding for anx7688 usb type-c bridge. I don't have a datasheet,
+but I did best I could.
 
-Some of the still happening issues:
-
-Ref Crashes Repro Title
-<1> 5640    Yes   WARNING in __folio_mark_dirty (2)
-                  https://syzkaller.appspot.com/bug?extid=e14d6cd6ec241f507ba7
-<2> 697     Yes   kernel BUG in gfs2_glock_nq (2)
-                  https://syzkaller.appspot.com/bug?extid=70f4e455dee59ab40c80
-<3> 2       Yes   general protection fault in gfs2_rindex_update
-                  https://syzkaller.appspot.com/bug?extid=74edb1a3ea8f1c65a086
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+v2: implement review feedback
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+diff --git a/Documentation/devicetree/bindings/usb/analogix,anx7688.yaml b/=
+Documentation/devicetree/bindings/usb/analogix,anx7688.yaml
+new file mode 100644
+index 000000000000..9e887eafb5fc
+--- /dev/null
++++ b/Documentation/devicetree/bindings/usb/analogix,anx7688.yaml
+@@ -0,0 +1,127 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/usb/analogix,anx7688.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++# Pin names can be deduced from
++# https://files.pine64.org/doc/PinePhone/PinePhone%20v1.2b%20Released%20Sc=
+hematic.pdf
++
++title: Analogix ANX7688 Type-C controller
++
++maintainers:
++  - Pavel Machek <pavel@ucw.cz>
++
++properties:
++  compatible:
++    enum:
++      - analogix,anx7688
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  reset-gpios:
++    maxItems: 1
++    description: GPIO controlling RESET_N (B7) pin.
++
++  enable-gpios:
++    maxItems: 1
++    description: GPIO controlling POWER_EN (D2) pin.
++
++  cabledet-gpios:
++    maxItems: 1
++    description: GPIO controlling CABLE_DET (C3) pin.
++
++  avdd10-supply:
++    description: 1.0V power supply going to AVDD10 (A4, ...) pins
++
++  dvdd10-supply:
++    description: 1.0V power supply going to DVDD10 (D6, ...) pins
++
++  avdd18-supply:
++    description: 1.8V power supply going to AVDD18 (E3, ...) pins
++
++  dvdd18-supply:
++    description: 1.8V power supply going to DVDD18 (G4, ...) pins
++
++  avdd33-supply:
++    description: 3.3V power supply going to AVDD33 (C4, ...) pins
++
++  i2c-supply: true
++  vconn-supply: true
++  hdmi-vt-supply: true
++  vbus-supply: true
++  vbus-in-supply: true
++
++  connector:
++    type: object
++    $ref: /schemas/connector/usb-connector.yaml
++
++    description:
++      Properties for usb c connector.
++
++    properties:
++      compatible:
++        const: usb-c-connector
++
++required:
++  - compatible
++  - reg
++  - connector
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/gpio/gpio.h>
++
++    i2c {
++        #address-cells =3D <1>;
++        #size-cells =3D <0>;
++
++        typec@2c {
++            compatible =3D "analogix,anx7688";
++            reg =3D <0x2c>;
++            interrupts =3D <8 IRQ_TYPE_EDGE_FALLING>;
++            interrupt-parent =3D <&gpio0>;
++
++            enable-gpios =3D <&pio 3 10 GPIO_ACTIVE_LOW>; /* PD10 */
++            reset-gpios =3D <&pio 3 6 GPIO_ACTIVE_HIGH>; /* PD6 */
++            cabledet-gpios =3D <&r_pio 0 8 GPIO_ACTIVE_HIGH>; /* PL8 */
++
++            avdd10-supply =3D <&reg_anx1v0>;
++            dvdd10-supply =3D <&reg_anx1v0>;
++            avdd18-supply =3D <&reg_ldo_io1>;
++            dvdd18-supply =3D <&reg_ldo_io1>;
++            avdd33-supply =3D <&reg_dcdc1>;
++            i2c-supply =3D <&reg_ldo_io0>;
++            vconn-supply =3D <&reg_vconn5v0>;
++            hdmi_vt-supply =3D <&reg_dldo1>;
++
++            vbus-supply =3D <&reg_usb_5v>;
++            vbus-in-supply =3D <&usb_power_supply>;
++
++            typec_con: connector {
++                compatible =3D "usb-c-connector";
++                power-role =3D "dual";
++                data-role =3D "dual";
++                try-power-role =3D "source";
++
++                ports {
++                    #address-cells =3D <1>;
++                    #size-cells =3D <0>;
++                    port@0 {
++                        reg =3D <0>;
++                        typec_con_ep: endpoint {
++                            remote-endpoint =3D <&usbotg_hs_ep>;
++                        };
++                    };
++                };
++            };
++        };
++    };
++...
 
-You may send multiple commands in a single email message.
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
+
+--jCLN6xU/n9iIU9zP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZdkOCgAKCRAw5/Bqldv6
+8k4ZAKCyacCwwDMiQJfpB92pVwG7Ep6PFwCglGOsVgCKKM15n+AZgQHGOn/a+1I=
+=AcFn
+-----END PGP SIGNATURE-----
+
+--jCLN6xU/n9iIU9zP--
 
