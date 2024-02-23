@@ -1,199 +1,163 @@
-Return-Path: <linux-kernel+bounces-77881-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77882-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9DEB860B74
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:45:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96053860B8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:47:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7596B284557
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:45:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20E2128262A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:47:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064D314AA5;
-	Fri, 23 Feb 2024 07:45:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5360014AAE;
+	Fri, 23 Feb 2024 07:47:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Lh4iJg27"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="Vq+fZKmD"
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AD4A12B6C;
-	Fri, 23 Feb 2024 07:45:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD69314A8C;
+	Fri, 23 Feb 2024 07:47:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708674305; cv=none; b=nRuX1ZTYLRGj3IzmEVs1uGUUuwD52Y2Deu81bROcSUFzFKnD8Qi8kFVes+XxQ1JhC1Nd+cPCW3I1a6Bz83rFFA8UBSWBo5Cskqr+cVzR4OwrVSOcVCAvvm1e0yg7adDm+GwfGlftI8VPekMlT8bqHZUycv1vZqc3FNYy9A+d92Q=
+	t=1708674459; cv=none; b=Qxt/G/U12VxOzgMyxo1Bxz6excbNtdpSmZuAjFEIt+VVd8zj3XgcuN3AEdXc/DhpKblhXGufPV7Nn0JKPTWvsydaKsYngG9UHUl5I1AQDOcSTTug9fNpK+x7j9BEr89+ULqqfv/K1FNFBlFwHnrhX4y5LnLa1UG8z2VNxpONPpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708674305; c=relaxed/simple;
-	bh=aZQtPzQPB1/AfUOCVilt9mDQ6+e6sJCSoNnzUrnCeiA=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cZRbllv4HJkJ2Y1RHVdVHbjplwieVTXbuFHKwgQwElvWgB8ldu7FbEWwb6bosx4dKpR34tdRev1fY4CW4lIUF0j2X8LMYQa6ur5i/VjhmvoyxHM4VIgFAPLMTkytpGyWRxvMpZbXO+oUsaQN1KyJPGp6dBHSjA6+UItGkW5KOi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Lh4iJg27; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41N7ikl3086238;
-	Fri, 23 Feb 2024 01:44:46 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1708674286;
-	bh=HbrV+ATuFW+OxTTN987BCVpEDxpaf0I7ZAX4hbcUxm0=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=Lh4iJg27t5o4sGcHRu8dchvGkFis1wz45NVIqZL+nMPGSoUStd6EZku7oNwJFG9We
-	 CttwRpyKNvH9t8yBQNA+XAX3uOhBOF5PbSk6YLifluSZJ/EDEoSBEkTodiVh3nhb8C
-	 kQVhW3bczkzT76hZAX3V7XUZbvSbVjlAnvc22jNk=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41N7ikYI023176
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 23 Feb 2024 01:44:46 -0600
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 23
- Feb 2024 01:44:45 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 23 Feb 2024 01:44:45 -0600
-Received: from localhost (jluthra.dhcp.ti.com [172.24.227.217])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41N7ijXL100873;
-	Fri, 23 Feb 2024 01:44:45 -0600
-Date: Fri, 23 Feb 2024 13:14:44 +0530
-From: Jai Luthra <j-luthra@ti.com>
-To: Rob Herring <robh@kernel.org>
-CC: Vaishnav Achath <vaishnav.a@ti.com>,
-        Sakari Ailus
-	<sakari.ailus@linux.intel.com>,
-        Jayshri Pawar <jpawar@cadence.com>,
-        Jack Zhu
-	<jack.zhu@starfivetech.com>,
-        Julien Massot <julien.massot@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Changhuang Liang
-	<changhuang.liang@starfivetech.com>,
-        Maxime Ripard <mripard@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Aradhya
- Bhatia <a-bhatia1@ti.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        <linux-kernel@vger.kernel.org>, Devarsh Thakkar <devarsht@ti.com>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Tomi Valkeinen
-	<tomi.valkeinen@ideasonboard.com>
-Subject: Re: Re: [PATCH RFC 04/21] dt-bindings: media: ti,j721e-csi2rx-shim:
- Support 32 dma chans
-Message-ID: <jk7jsiws7ivxwdl4teoviu6qxp43fcj2raxj424m5jtep5dm2u@j3vpbetaimhy>
-References: <20240222-multistream-v1-0-1837ed916eeb@ti.com>
- <20240222-multistream-v1-4-1837ed916eeb@ti.com>
- <170860471258.2476270.8232202066004725650.robh@kernel.org>
+	s=arc-20240116; t=1708674459; c=relaxed/simple;
+	bh=dakXAoUwybWwoGMWZfdTc8ldPExi8xKCBV6CWj3leCg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BLQoKmPXWTOloX39yfNk/3IED7Pw/idYDcLgM2BF2/PjKyQYykDOIK0MD9ZB5U/HfZI4tgYmcNW3jT6lEiRFAnnIjDiRg5gttCyOKzs8rWQRHHK4qw8w1KA7+yFS1+qwa//fIiExkk7O3rWYIn5W942D1hsb5kvKCQZF0xykUsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=Vq+fZKmD; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 50CF41C0080; Fri, 23 Feb 2024 08:47:33 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+	t=1708674453;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ce5HkTYASA33I56IAyhmdG33rVUQPOyGT/uJIx9/trs=;
+	b=Vq+fZKmDjInp+2GboJUiFHaP9nTcpq47lLljE5/ryHmf4shX02b9F0N5mpS7URFic4p06n
+	52twNA/Dgwu4QV18jBf4KL8O6Pt9fxk6KzQROLWCs8ilEgpXe6A3rFqf1gKpD1VIMIyK05
+	CMFYGW97zmVteb5cD3oIzFY+hz5asow=
+Date: Fri, 23 Feb 2024 08:47:33 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	"lee@kernel.org" <lee@kernel.org>,
+	"linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: Linux support for a 7 segment LED display
+Message-ID: <ZdhNlUotGJCklJTs@duo.ucw.cz>
+References: <1f598a72-dd9f-4c6c-af7f-29751f84bd23@alliedtelesis.co.nz>
+ <Zde966nsJ76QOuzm@surfacebook.localdomain>
+ <f5e74774-226a-4678-a6f9-b4f17250ad91@alliedtelesis.co.nz>
+ <CAHp75Vfq3Pc+Eo3Z5mhORZwwuKF+Y7_47dTO8qARcfba4nmj2w@mail.gmail.com>
+ <9d00e1b1-120b-4c2b-89c5-0ac736bf6441@alliedtelesis.co.nz>
+ <CAHp75VdnXtVwrLrcGjnYMfNx7roBvQm9DMr6_ndjZeAbRDbs_Q@mail.gmail.com>
+ <2a8d19ee-b18b-4b7c-869f-7d601cea30b6@alliedtelesis.co.nz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="dkpavki64dphg6yq"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="E6eqKPZfu8IShWOk"
 Content-Disposition: inline
-In-Reply-To: <170860471258.2476270.8232202066004725650.robh@kernel.org>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <2a8d19ee-b18b-4b7c-869f-7d601cea30b6@alliedtelesis.co.nz>
 
---dkpavki64dphg6yq
-Content-Type: text/plain; charset=us-ascii
+
+--E6eqKPZfu8IShWOk
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Rob,
+Hi!
 
-On Feb 22, 2024 at 05:25:13 -0700, Rob Herring wrote:
+> > Right, but also with some additional properties, like
+> > - type of the indicator (7, 14, etc segments, for now we have only
+> > these two supported)
+> > - use-dot (+1 led per each digit)
+> > - characters (how many digits we have, so we need respective amount of =
+GPIOs)
+> >
+> > With this it's indeed belongs directly to auxdisplay as we have almost
+> > everything is done already there.
 >=20
-> On Thu, 22 Feb 2024 17:01:20 +0530, Jai Luthra wrote:
-> > The CSI2RX SHIM IP can support a maximum of 32x DMA channels.
-> >=20
-> > These can be used to split incoming "streams" of data on the CSI-RX
-> > port, distinguished by MIPI Virtual Channel (or Data Type), into
-> > different locations in memory (/dev/videoX nodes).
-> >=20
-> > Actual number of DMA channels reserved is different for each SoC
-> > integrating this IP, but a maximum of 32x channels are always available
-> > in this IP's register space, so set minimum as 1 and maximum as 32.
-> >=20
-> > Link: https://www.ti.com/lit/pdf/spruiv7
-> > Signed-off-by: Jai Luthra <j-luthra@ti.com>
-> > ---
-> >  .../bindings/media/ti,j721e-csi2rx-shim.yaml       | 40 ++++++++++++++=
-++++++--
-> >  1 file changed, 37 insertions(+), 3 deletions(-)
-> >=20
+> I've been playing about with this. I've got an auxdisplay driver that's=
+=20
+> basically working (I won't bother spamming list with it yet). But I'm=20
+> wondering how I'd represent multiple characters. I kind of feel the=20
+> natural representation would be something like.
 >=20
-> My bot found errors running 'make DT_CHECKER_FLAGS=3D-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>  =A0=A0=A0=A0=A0=A0=A0 led-7seg {
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 compatible =3D "generic,7-=
+segment-on-gpio";
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 char-0 {
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =A0=A0=A0 segment-gpios =
+=3D <&gpio 0 GPIO_ACTIVE_LOW
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =A0=A0 =A0 =A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 &gpio 1 GPIO_ACTIVE_LOW
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =
+=A0=A0 =A0 =A0=A0=A0=A0=A0=A0=A0 &gpio 2 GPIO_ACTIVE_LOW
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 =A0=A0 =A0 =A0=A0=A0 &gpio 3 GPIO_ACTIVE_LOW
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0 =A0=A0 =A0 &gpio 4 GPIO_ACTIVE_LOW
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0 =A0=A0=A0 &gpio 5 GPIO_ACTIVE_LOW
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0 =A0=A0 =A0 &gpio 6 GPIO_ACTIVE_LOW>;
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 };
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 char-1 {
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =A0=A0=A0 segment-gpios =
+=3D <&gpio 8 GPIO_ACTIVE_LOW
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =A0=A0 =A0 =A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 &gpio 9 GPIO_ACTIVE_LOW
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =
+=A0=A0 =A0 =A0=A0=A0=A0=A0=A0=A0 &gpio 10 GPIO_ACTIVE_LOW
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 =A0=A0 =A0 =A0=A0=A0 &gpio 11 GPIO_ACTIVE_LOW
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0 =A0=A0 =A0 &gpio 12 GPIO_ACTIVE_LOW
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0 =A0=A0=A0 &gpio 13 GPIO_ACTIVE_LOW
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0 =A0=A0 =A0 &gpio 14 GPIO_ACTIVE_LOW>;
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 };
+>  =A0=A0=A0=A0=A0=A0=A0 };
 >=20
-> yamllint warnings/errors:
->=20
-> dtschema/dtc warnings/errors:
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/m=
-edia/ti,j721e-csi2rx-shim.yaml: properties:dma-names: {'minItems': 1, 'maxI=
-tems': 32, 'items': [{'const': 'rx0'}, {'const': 'rx1'}, {'const': 'rx2'}, =
-{'const': 'rx3'}, {'const': 'rx4'}, {'const': 'rx5'}, {'const': 'rx6'}, {'c=
-onst': 'rx7'}, {'const': 'rx8'}, {'const': 'rx9'}, {'const': 'rx10'}, {'con=
-st': 'rx11'}, {'const': 'rx12'}, {'const': 'rx13'}, {'const': 'rx14'}, {'co=
-nst': 'rx15'}, {'const': 'rx16'}, {'const': 'rx17'}, {'const': 'rx18'}, {'c=
-onst': 'rx19'}, {'const': 'rx20'}, {'const': 'rx21'}, {'const': 'rx22'}, {'=
-const': 'rx23'}, {'const': 'rx24'}, {'const': 'rx25'}, {'const': 'rx26'}, {=
-'const': 'rx27'}, {'const': 'rx28'}, {'const': 'rx29'}, {'const': 'rx30'}, =
-{'const': 'rx31'}]} should not be valid under {'required': ['maxItems']}
-> 	hint: "maxItems" is not needed with an "items" list
+> But having those sub-nodes means I can't just use devm_gpiod_get_array()=
+=20
+> instead I'd have to use device_for_each_child_node() and=20
+> devm_fwnode_gpiod_get_index(). Am I missing something? I could do away=20
+> with the sub-nodes and have properties like "segment-0-gpios",=20
+> "segment-1-gpios" but that feels awkward.
 
-Thanks will fix in next revision.
+One solution would be to treat separate digits as separata devices
+:-).
 
-> 	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
->=20
-> doc reference errors (make refcheckdocs):
->=20
-> See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/202402=
-22-multistream-v1-4-1837ed916eeb@ti.com
->=20
-> The base for the series is generally the latest rc1. A different dependen=
-cy
-> should be noted in *this* patch.
->=20
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
->=20
-> pip3 install dtschema --upgrade
->=20
-> Please check and re-submit after running the above command yourself. Note
-> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-> your schema. However, it must be unset to test all examples with your sch=
-ema.
->=20
+Other would be saying you don't have hardware for that, and make it
+someone else's future problem.
 
+Best regards,
+								Pavel
 --=20
-Thanks,
-Jai
+People of Russia, stop Putin before his war on Ukraine escalates.
 
-GPG Fingerprint: 4DE0 D818 E5D5 75E8 D45A AFC5 43DE 91F9 249A 7145
-
---dkpavki64dphg6yq
+--E6eqKPZfu8IShWOk
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEETeDYGOXVdejUWq/FQ96R+SSacUUFAmXYTOsACgkQQ96R+SSa
-cUXppxAAiKve/pejPnfyEE6LI718RJadaeKyqDT2+qv/N6KmqzlLizyKRnfta4yG
-04AOumjKIUJjXXZ6AuVHs1qXSCnan0ux6h1hTcBVeCnz4iWQchaJ7mwmO8puJRIH
-rwABkD8TGxeAhBhMnBjfF7pyyCZsTLIJTzJw5Vtee5FlqY2Yz7xhCqdsqoBMpBTz
-5gJoUOLv/HYfUZWI+nnxTOTw95UJEhTGq8Id40neo9AygAZi4h/3NdH9y44Ivy4E
-sAbKaeVaGbjtfRu1HpfoEZGIyUPlp7j3g9z435+kS1G3agOVTE9qf71EgoJfGXu1
-WvW7/gzZcG9ncU/38ekNxApqQm953BNNa9OOpGL08rCdZWMsA3l7sHHkf4H5vpga
-ehyJLHga+6oGiViMojmUBBAS0AB24qOldB944cClRLdXcek32t1SmpP4SLL8wupv
-ttISmAcxnD6ab2Cxz2FY1roA2UTADXyb6JbT+OJSxBhNNlLVyDxyUQ76HLTs1o6W
-ZZ7n13bLOjs9gus0U0KTJhNXnwaAp8nYc//TGSiEqrAjJ+M4wystJdrbrrdbG+BF
-/1rHPZU3iM1tEKhYxk6HBPhLIFih+bHmnRj5sKrYMig7W3LW4sHasLUr2mFE8Wlb
-vTGMHEFlTXu+mQVBPx6PNI0RWS3o4xW+ThEH1IK5y9ap5+fkLWA=
-=9a+5
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZdhNlQAKCRAw5/Bqldv6
+8rq7AJ9pBX3jWCZOuYr6ImDa9LPgqwb8kgCfYRQsL9gOcZVAvjG7CU18xj2IY1Y=
+=Gbls
 -----END PGP SIGNATURE-----
 
---dkpavki64dphg6yq--
+--E6eqKPZfu8IShWOk--
 
