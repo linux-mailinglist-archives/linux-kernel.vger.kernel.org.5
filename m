@@ -1,145 +1,95 @@
-Return-Path: <linux-kernel+bounces-78218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CE13861064
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:30:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 229BE861066
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:30:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E9281C216C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:30:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB1D11F23820
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:30:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B135178B57;
-	Fri, 23 Feb 2024 11:30:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A782D79DB5;
+	Fri, 23 Feb 2024 11:30:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="rPjDAoWc"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="raAYZhMG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99E075C911;
-	Fri, 23 Feb 2024 11:30:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6A0C76C62;
+	Fri, 23 Feb 2024 11:30:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708687806; cv=none; b=PXKNKmFVkstqm4LvjH4mCp5wsQwZdf8dxbliDYzdjssofNacooXdJ3607ljWkE/8kIEDzm6CkukypNf6gJZ9GEYdvkdT5levv2ENNM1iAZs/SDTF+/I+7S+tXmzrKitBWLpSnDcWIDVU74MxMGqnHLnNQJY5eR802BpeusLgZx4=
+	t=1708687827; cv=none; b=RDLbmUJfkNfnHh/fTLbrmaIw9RrUHgnPQzpd9ZsDONHx3rv4cjXTyfc03HNoIjw4fYrXil+WtVwOVa8ht1mpImnlsdofDyLYP3UH4BFrL7skdsicffagnx8w9euKOBSrEE2r39LDmISkKROwOzIoWiMApue+3YQrvTtqhJMWvTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708687806; c=relaxed/simple;
-	bh=sRCQO7RgeHDKkHCU1kxMeMy3uw8Xi1J+ZxGRQNaYUcU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Cvpf6vjbGs3yYr/YQFP2LtRQeVOddNiPg0Q45KBCyS3fyr5oRG+1ie+utInUXDDzWc+OQi7j2+d+3Tbw4h9iEHCBgay/HxLbn+HdPDerSr/NUaxAafEm7Ni0odzosbPggW6HPTLaFZ94RHZTAbXGTgf3ZhGD9RwSdx4dBAncbS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=rPjDAoWc; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id D3D362E7;
-	Fri, 23 Feb 2024 12:29:53 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1708687794;
-	bh=sRCQO7RgeHDKkHCU1kxMeMy3uw8Xi1J+ZxGRQNaYUcU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rPjDAoWc5pQn7WOZrzCCb/5X0o7B+XiUunlbrAVbQiQSXTGrDp2prI77cFL4FrSQz
-	 ZQ7z5b0h7UrEimNNMHwIser5cs2A9/40YqN9gW4iZ68e+NoW9fgjAJhb0zTY/qNSn3
-	 dqHBlp/VJq9WhUxcuUOjet+2dGPYXxABrwxlp4kI=
-Date: Fri, 23 Feb 2024 13:30:06 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Mikhail Rudenko <mike.rudenko@gmail.com>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Jacopo Mondi <jacopo@jmondi.org>,
-	Tommaso Merciai <tomm.merciai@gmail.com>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Dave Stevenson <dave.stevenson@raspberrypi.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [PATCH v2 13/20] media: i2c: ov4689: Implement digital gain
- control
-Message-ID: <20240223113006.GQ31348@pendragon.ideasonboard.com>
-References: <20231218174042.794012-1-mike.rudenko@gmail.com>
- <20231218174042.794012-14-mike.rudenko@gmail.com>
+	s=arc-20240116; t=1708687827; c=relaxed/simple;
+	bh=Yvx8lu1+d4HmVl7q4rrTdL/ZqSrATFnVqJR1xZ1ppww=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=IcD57r3SJZM+83QtWzK07pDrrK4evVqfgz28MOXkZIYL/bKWsY7u9kZ3hVpB6XvAEW4pFbyKrAygfSR6dx831H7zBkPoWMlgHgfiivQWj59gJHvmLe31X0HIeb8qNLielorDxrmMp/jTLjbTY/KXce4LQFhezzQf8xoXbfyJBOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=raAYZhMG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5A504C43390;
+	Fri, 23 Feb 2024 11:30:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708687826;
+	bh=Yvx8lu1+d4HmVl7q4rrTdL/ZqSrATFnVqJR1xZ1ppww=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=raAYZhMGUdK/JjKCrmjG5kUpRADBoY3ZmuPKXrpAwSXtMilnROssvsZAh2IOqmdeg
+	 K5ODg78Z4C3rCgLO32k6nCIQsIGFpnboIQDoXVO6gFFCKny0I5G8Jna96issNSPTWl
+	 ol5hrOojec5a4P8rHA/Zy9yOD70iXTMmnNJzidCy0YuREpoPao9YMI8db8iXyMWvg6
+	 u/9KrLdCOf0ECE6ebJCkC2C5gFKuj0McXwqdAzxFRQVP25h33PZDYQx3yyiH6g2C8N
+	 0Prsa42WPmEnkUzkDmNmPdlcuHU0Ed/ver8hTC8bl1EsUl66tjNWvuglMcvsYF08dE
+	 KxQV4oG0xxVqA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3F32FD990CB;
+	Fri, 23 Feb 2024 11:30:26 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231218174042.794012-14-mike.rudenko@gmail.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: dpaa: fman_memac: accept phy-interface-type =
+ "10gbase-r" in the device tree
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170868782625.1391.6089450916134255111.git-patchwork-notify@kernel.org>
+Date: Fri, 23 Feb 2024 11:30:26 +0000
+References: <20240220223442.1275946-1-vladimir.oltean@nxp.com>
+In-Reply-To: <20240220223442.1275946-1-vladimir.oltean@nxp.com>
+To: Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, madalin.bucur@nxp.com,
+ sean.anderson@seco.com, linux@armlinux.org.uk,
+ zachary.goldstein@concurrent-rt.com, linux-kernel@vger.kernel.org
 
-Hi Mikhail,
+Hello:
 
-Thank you for the patch.
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-On Mon, Dec 18, 2023 at 08:40:34PM +0300, Mikhail Rudenko wrote:
-> The OV4689 sensor supports digital gain up to 16x. Implement
-> corresponding control in the driver. Default digital gain value is not
-> modified by this patch.
+On Wed, 21 Feb 2024 00:34:42 +0200 you wrote:
+> Since commit 5d93cfcf7360 ("net: dpaa: Convert to phylink"), we support
+> the "10gbase-r" phy-mode through a driver-based conversion of "xgmii",
+> but we still don't actually support it when the device tree specifies
+> "10gbase-r" proper.
 > 
-> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
->  drivers/media/i2c/ov4689.c | 16 ++++++++++++++--
->  1 file changed, 14 insertions(+), 2 deletions(-)
+> This is because boards such as LS1046A-RDB do not define pcs-handle-names
+> (for whatever reason) in the ethernet@f0000 device tree node, and the
+> code enters through this code path:
 > 
-> diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
-> index 6cf986bf305d..579362570ba4 100644
-> --- a/drivers/media/i2c/ov4689.c
-> +++ b/drivers/media/i2c/ov4689.c
-> @@ -35,6 +35,12 @@
->  #define OV4689_GAIN_STEP		1
->  #define OV4689_GAIN_DEFAULT		0x80
->  
-> +#define OV4689_REG_DIG_GAIN		CCI_REG16(0x352a)
-> +#define OV4689_DIG_GAIN_MIN		1
-> +#define OV4689_DIG_GAIN_MAX		0x7fff
-> +#define OV4689_DIG_GAIN_STEP		1
-> +#define OV4689_DIG_GAIN_DEFAULT		0x800
-> +
->  #define OV4689_REG_HTS			CCI_REG16(0x380c)
->  #define OV4689_HTS_DIVIDER		4
->  #define OV4689_HTS_MAX			0x7fff
-> @@ -131,7 +137,6 @@ static const struct cci_reg_sequence ov4689_2688x1520_regs[] = {
->  
->  	/* AEC PK */
->  	{CCI_REG8(0x3503), 0x04}, /* AEC_MANUAL gain_input_as_sensor_gain_format = 1 */
-> -	{CCI_REG8(0x352a), 0x08}, /* DIG_GAIN_FRAC_LONG dig_gain_long[14:8] = 0x08 (2x) */
->  
->  	/* ADC and analog control*/
->  	{CCI_REG8(0x3603), 0x40},
-> @@ -624,6 +629,9 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
->  				OV4689_TIMING_FLIP_MASK,
->  				ctrl->val ? 0 : OV4689_TIMING_FLIP_BOTH, &ret);
->  		break;
-> +	case V4L2_CID_DIGITAL_GAIN:
-> +		cci_write(regmap, OV4689_REG_DIG_GAIN, ctrl->val, &ret);
-> +		break;
->  	default:
->  		dev_warn(dev, "%s Unhandled id:0x%x, val:0x%x\n",
->  			 __func__, ctrl->id, ctrl->val);
-> @@ -654,7 +662,7 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
->  
->  	handler = &ov4689->ctrl_handler;
->  	mode = ov4689->cur_mode;
-> -	ret = v4l2_ctrl_handler_init(handler, 12);
-> +	ret = v4l2_ctrl_handler_init(handler, 13);
->  	if (ret)
->  		return ret;
->  
-> @@ -697,6 +705,10 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
->  	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_VFLIP, 0, 1, 1, 0);
->  	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_HFLIP, 0, 1, 1, 0);
->  
-> +	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_DIGITAL_GAIN,
-> +			  OV4689_DIG_GAIN_MIN, OV4689_DIG_GAIN_MAX,
-> +			  OV4689_DIG_GAIN_STEP, OV4689_DIG_GAIN_DEFAULT);
-> +
->  	if (handler->error) {
->  		ret = handler->error;
->  		dev_err(ov4689->dev, "Failed to init controls(%d)\n", ret);
+> [...]
 
+Here is the summary with links:
+  - [net] net: dpaa: fman_memac: accept phy-interface-type = "10gbase-r" in the device tree
+    https://git.kernel.org/netdev/net/c/734f06db599f
+
+You are awesome, thank you!
 -- 
-Regards,
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Laurent Pinchart
+
 
