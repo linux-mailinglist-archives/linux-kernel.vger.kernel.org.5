@@ -1,155 +1,131 @@
-Return-Path: <linux-kernel+bounces-79081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B7CD861D53
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:14:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FDE3861D5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:19:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AB711C22AE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:14:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A40DE285190
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:19:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C67B9146915;
-	Fri, 23 Feb 2024 20:14:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DBE3146E7F;
+	Fri, 23 Feb 2024 20:18:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Zr6mgTnD"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cv8xDIxo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B53331170E
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 20:14:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EC97823CD;
+	Fri, 23 Feb 2024 20:18:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708719289; cv=none; b=KKkJnbjFh1htQwyeiCiqckdzprYd2crHNXtVfb2/rYqWE0ODHo6SsDegvH9nJy026VB3VzktK/JWy/jA1WNsF8hDlEQIH+Zqdnr/rXXlRB1n2B6y5wr5nGtrF9Y+IwTiZe10pvdgmIMUVyEvialsI7EfgMeR/dVfuuUPMgEOfw4=
+	t=1708719537; cv=none; b=nWoq1XCobAnsBnQ5j9G/62QT6iZDarcq6FAYWYT5egkXitvC/1Qb4HbUC2+9CKXA3U0JusLf2/45omB9FRtGpxL4NO3VSZV/vhlJlf/sFSAzru9Ehe3b1BPEx4Oh4fLH5JjZuktg7Q/+YUaOpQYtVgL5OhmxlMaxhaQRNDVfMPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708719289; c=relaxed/simple;
-	bh=GAV0YEZII1KXdP/l7x6m86oj5oYErslcGjKNsLJ+dIQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k2yjocAb5x1ekIm2kdMwy//liid7xcTGIlM+RlihQOt8O8x2yDIl2XKWvO2K1M8KbK5YkPhbs/7JfVPV58UjzJl81MVoiNRH4uRkrQXob8ZDlg6WVPYUX0W28TNkBW8NhmpuPtSyws3podnKfA2YV/stdi/xfUMwJrG+mp/jrpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Zr6mgTnD; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708719287; x=1740255287;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=GAV0YEZII1KXdP/l7x6m86oj5oYErslcGjKNsLJ+dIQ=;
-  b=Zr6mgTnD9Oe9CuMIOKzrSCemutcX/7MzErDaTQ9fF975Xwqe9gVMZYCO
-   evg76VIiv6mqgmjduGqOwJTlCDCcaLMIPvCgtvE5blkGYYX2bf+OYIpxC
-   6fnyqQhOKm1VZ1x3dRbC6qOU7POxyKn5PXHpXgvh6N0aIvy62lR2gDNxZ
-   BDoNjX6ugLZHJzOeFYUuwB+2DeJrVdZEZs/pFtNiQ0a1H08IbdIM2523Q
-   b4osiMZnG1vHYtil6rmr+mHVDi2Dii/CXkQ2vFccjqPC46gXty5+ta3PS
-   rA+eogRuwDCd/8xHaIa3qP+tiOTeOfSLLNrXr6Mmd5r13Z+61mQzu6XYi
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="2929955"
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="2929955"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 12:14:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="913755316"
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="913755316"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 12:14:44 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rdbwP-00000006zlr-3qby;
-	Fri, 23 Feb 2024 22:14:41 +0200
-Date: Fri, 23 Feb 2024 22:14:41 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: "Ruhl, Michael J" <michael.j.ruhl@intel.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] clkdev: Update clkdev id usage to allow for longer
- names
-Message-ID: <Zdj8sSKBG22msfYy@smile.fi.intel.com>
-References: <20240223163516.796606-1-michael.j.ruhl@intel.com>
- <ZdjZCrpP52Hfbs6L@smile.fi.intel.com>
- <DS0PR11MB64248E0C15C0B86A1CCF945BC1552@DS0PR11MB6424.namprd11.prod.outlook.com>
- <Zdjku0kxCvMl2HcU@smile.fi.intel.com>
- <Zdj2zaicBvkTOZZe@shell.armlinux.org.uk>
+	s=arc-20240116; t=1708719537; c=relaxed/simple;
+	bh=OSjpPRzTqbZ3a9okUwWjddq7mgz7QRjbWWThZ88G4m4=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=eNEPTk/8CGtT0zEpffmRaCmb5D1sEu2oFOowNNMEJwp/F4uizm66NJ/H6o+DY9pcJYoRtCjAeit/8swWmxZz7t4zzD9AOJa1DJiJuL3dpvNAdL2PNGHjJA9h8W4K5CslZhVJGp8xuu/RQYmiwLJola4bXDRY1ArefQ0Wmlg9JGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cv8xDIxo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92795C433C7;
+	Fri, 23 Feb 2024 20:18:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708719536;
+	bh=OSjpPRzTqbZ3a9okUwWjddq7mgz7QRjbWWThZ88G4m4=;
+	h=From:Subject:Date:To:Cc:From;
+	b=cv8xDIxotWY2cM/hqHvIaYn77e/DGw8ySKKlu/Z5ILxjJHCyodGw8ClgUTfzRt4Al
+	 MtRfN3y802Gb7EAPdsQP3jIVpHRdHlX3p1d41hUdWLcZa2QZTSlv3QN2/pu3YFQHij
+	 XaCBIk8MK4nSxUTAX+bqTr+N7z/Jort4dRnfWUstIiJnbbuVnrIxBVJbpPtpzNbsM0
+	 IVDPfo8fjB5KHPZKJ4ru2KZw80IyBIUBmyT/z01eZh8uPMjxQXgLTV7H5e+ybpA2Mj
+	 meyZFS+mwvPXyJ9l80tOpw+4xljkOjcanaNI+YWHZTWlImBZGSnLIsJ0y2cKncDTAK
+	 QmpBUw/Bz8jIw==
+From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
+Subject: [PATCH net-next 0/8] mptcp: various small improvements
+Date: Fri, 23 Feb 2024 21:17:52 +0100
+Message-Id: <20240223-upstream-net-next-20240223-misc-improvements-v1-0-b6c8a10396bd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zdj2zaicBvkTOZZe@shell.armlinux.org.uk>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAHD92GUC/z2NQQrCMBBFr1Jm7UCMpRWvIi5i+tVZJA0zsRRK7
+ 24QdPEXjw/vbWRQgdGl20ixiMmcGxwPHcVXyE+wTI3JO98770/8LlYVIXFGbVsr/68kFllS0Xl
+ BQq7G4zT0wY3DPYYzNWVRPGT95q70E9Bt3z+zbD2kiAAAAA==
+To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
+ Geliang Tang <geliang@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
+Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, "Matthieu Baerts (NGI0)" <matttbe@kernel.org>, 
+ Geliang Tang <tanggeliang@kylinos.cn>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2147; i=matttbe@kernel.org;
+ h=from:subject:message-id; bh=OSjpPRzTqbZ3a9okUwWjddq7mgz7QRjbWWThZ88G4m4=;
+ b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBl2P2qwaPOdQQ/ylED+kPthFbTEqIOTcOjIPWCe
+ irt0BPH0KiJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZdj9qgAKCRD2t4JPQmmg
+ c/xFEACx+Gxmlr4U5auuWXNK8BBoLvsFJuEVn5L4B3J9+M+NhC1rmRgNvAraqMhT79FQVmIYiqp
+ pIUdIMaw2L2ojMr7vkmyza+iouo0EnfhQqfKgfpL1rA8ckH5+iDBQeNovKhUSbE9NdF3VAMvV3i
+ tr4aYwV4/T151azt4hprJyaq+d95LBXHyuTGIYtMcqm1QUbPzMn6w+rYLaUaS8Kg9+vjU344yeI
+ r7Rbj5FrJxo0O6AUEI5sr8gTV+khwo9568DZj/NCo75Vh5O6m7N199XcLHjbUFaA3JwSZMPRT+7
+ PwVJMIksjqiAJ4cWjjQRNylEK2bwHJTPZ2HkWUFkWqDmJihHMnKQr2xMUTNjMCzA+3CCTHSiyPq
+ QGV+agGZrfZAE3gN0FZJ8b0Ul04fIvAkh6qNWhObKO3wiiUFvLqkflCXlGYL59Dk0boYyMYCwaP
+ dMoch3oDaAx4oPMlxii+cO5t4ieLSojoaif+KzF+1/xW2x+YBQm2kql+NDQbUaQuJL554EHPmDt
+ UzSGcBfn0/twZ2wkdFV7AyygG+hygKtGXtJJP2N+ZisPxVIyXOJgu2B0/KA/tEZszdy/2mCtQa+
+ yjf49N9ajceGg2y5QazQLt9xpbadGkvtEGUlxVdUCg+JzUBYkZa9Sk9Y4jSmPzWZircQ+N0dz3I
+ 85J5lv46eB29Bdg==
+X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
+ fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
 
-On Fri, Feb 23, 2024 at 07:49:33PM +0000, Russell King (Oracle) wrote:
-> On Fri, Feb 23, 2024 at 08:32:27PM +0200, Andy Shevchenko wrote:
-> > On Fri, Feb 23, 2024 at 06:22:13PM +0000, Ruhl, Michael J wrote:
-> > > >From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > >Sent: Friday, February 23, 2024 12:43 PM
-> > > >On Fri, Feb 23, 2024 at 11:35:16AM -0500, Michael J. Ruhl wrote:
+This series brings various small improvements to MPTCP and its
+selftests:
 
-..
+Patch 1 prints an error if there are duplicated subtests names. It is
+important to have unique (sub)tests names in TAP, because some CI
+environments drop (sub)tests with duplicated names.
 
-> > > >[1]: https://github.com/andy-shev/home-bin-
-> > > >tools/blob/master/ge2maintainer.sh
-> > > 
-> > > Using your script I got:
-> > > 
-> > > To: "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
-> > >         linux-arm-kernel@lists.infradead.org,
-> > >         linux-kernel@vger.kernel.org
-> > > Cc: Russell King <linux@armlinux.org.uk>
-> > > 
-> > > My list (using get_maintainers.pl) is:
-> > > 
-> > > linux@armlinux.org.uk
-> > > linux-arm-kernel@lists.infradead.org
-> > > linux-kernel@vger.kernel.org
-> > > 
-> > > They appear to be the same....
-> > 
-> > Ah, the Russel's email looked like a mailing list, that what confused me.
-> 
-> Joe, I think you know that I'll pick up on your mis-spelling of my
-> name... and I take that as an implicit right to call you something
-> other than your proper name. :D
+Patch 2 is a preparation for patches 3 and 4, which check the protocol
+in tcp_sk() and mptcp_sk() with DEBUG_NET, only in code from net/mptcp/.
+We recently had the case where an MPTCP socket was wrongly treated as a
+TCP one, and fuzzers and static checkers never spot the issue. This
+would prevent such issues in the future.
 
-Since, Javier, you told me that, I now remember some rumors... :D
+Patches 5 to 7 are some cleanup for the MPTCP selftests. These patches
+are not supposed to change the behaviour.
 
-> Secondly, because the Cc contained my name, I fail to see how you can
-> confuse that with a mailing list. Maybe your script that you mentioned
-> strips the names from the email addresses, thereby adding to your
-> confusion - and maybe that isn't such a good idea after all?
+Patch 8 sets the poll timeout in diag selftest to the same value as the
+one used in the other selftests.
 
-It's other way around. My script uses full names.
+Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+---
+Geliang Tang (4):
+      selftests: mptcp: netlink: drop duplicate var ret
+      selftests: mptcp: simult flows: define missing vars
+      selftests: mptcp: join: change capture/checksum as bool
+      selftests: mptcp: diag: change timeout_poll to 30
 
-> I'm not the only one who uses linux@... There are six people in total listed
-> in MAINTAINERS who have a linux@... email address there.
+Matthieu Baerts (NGI0) (4):
+      selftests: mptcp: lib: catch duplicated subtest entries
+      mptcp: token kunit: set protocol
+      mptcp: check the protocol in tcp_sk() with DEBUG_NET
+      mptcp: check the protocol in mptcp_sk() with DEBUG_NET
 
-Yes, but you are the only one which pops up WRT this file.
+ net/mptcp/protocol.h                              | 16 ++++++++++++++++
+ net/mptcp/token_test.c                            |  7 ++++++-
+ tools/testing/selftests/net/mptcp/diag.sh         |  2 +-
+ tools/testing/selftests/net/mptcp/mptcp_join.sh   | 22 +++++++++++-----------
+ tools/testing/selftests/net/mptcp/mptcp_lib.sh    | 21 +++++++++++++++++++++
+ tools/testing/selftests/net/mptcp/pm_netlink.sh   |  1 -
+ tools/testing/selftests/net/mptcp/simult_flows.sh |  6 ++++++
+ 7 files changed, 61 insertions(+), 14 deletions(-)
+---
+base-commit: a818bd12538c1408c7480de31573cdb3c3c0926f
+change-id: 20240223-upstream-net-next-20240223-misc-improvements-7d64a076bca8
 
-> > > I don't have the plain text part on Russel's email
-> > > (linxu@armlinux.org.uk)... Is that what is missing?
-> > 
-> > Yes :-)
-> > But my script also uses a heuristics (which is not visible here) to add active
-> > developers of the code in question based on the git history.
-> 
-> The developers in question for this part of the code is me and not the
-> CCF.
-
-Yes, get_maintainer.pl seems to return that. It's me who naively considered you
-as CCF maintainer.
-
-> Therefore, what has been done by the patch author is reasonable
-> and no special scripts are necessary.
-
-The scripts makes life easier and robust against changes.
-
+Best regards,
 -- 
-With Best Regards,
-Andy Shevchenko
-
+Matthieu Baerts (NGI0) <matttbe@kernel.org>
 
 
