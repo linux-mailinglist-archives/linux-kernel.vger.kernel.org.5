@@ -1,84 +1,157 @@
-Return-Path: <linux-kernel+bounces-78404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ECCD861305
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:43:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B22C7861333
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:47:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEAB9286937
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:43:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BF9A285E61
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:47:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 849AA81749;
-	Fri, 23 Feb 2024 13:41:21 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9E327F7C5;
+	Fri, 23 Feb 2024 13:46:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="nKJOqbj2"
+Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67ADB7F493;
-	Fri, 23 Feb 2024 13:41:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74BC57F7C3
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:46:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708695681; cv=none; b=Z/3VclEkFiFBloisjt1nwePNwcksYgPb87KkIFxs04b4I+ICzxqnxIKp7wzpwuoF4/G9zDiHWL0rC84yhCACQnukMFbr1zed4pNp5tUlipRN4m+yvCEtZAa/iqNPu/VZ1bqQZr3T7jWSZFJ1yK2soo0Ja6rn2G7I0w4ZGatltcg=
+	t=1708696013; cv=none; b=YsYjwpLeJRDAfFswXZEhbEixGthugZ5eibd7m4XM3Hra37w5voEc5MaNdVwGieN1RkSMVxz8x0ccstNlWhQqWhxD5+Jv8XG0STzcDhN1bZxhUZW0ws9N1PKk5ahkPWTZ7bURSnPZVPmafNBCaQWPn5FByhf6DXKdpz7hTuEY4ic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708695681; c=relaxed/simple;
-	bh=yuJXpRYUJshMxuzMieG1EFSg+djx7nwtZ8wXWiT2ueU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XyqZQ3PmjRowuKuXFvjN3jMoBqaNPDWK9kVNxqLshCmXEPJIG1uI2o2JwMhSzol9jwtcEuNQh92LxMtqCn/3/b3nPdpXQNZBTU+m5LJ07oxoUCOEih5mpWp0FudJQi9oj7ZRtr6mb4pG/ok5NsLAgjZvXVzfZyoFYiYu6qoa6mU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from i53875b6c.versanet.de ([83.135.91.108] helo=diego.localnet)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1rdVn4-0001FZ-Ou; Fri, 23 Feb 2024 14:40:38 +0100
-From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Andy Shevchenko <andy.shevchenko@gmail.com>,
- Shreeya Patel <shreeya.patel@collabora.com>, Simon Xue <xxm@rock-chips.com>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Quentin Schulz <foss+kernel@0leil.net>
-Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>, linux-iio@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org,
- Quentin Schulz <quentin.schulz@theobroma-systems.com>,
- Quentin Schulz <foss+kernel@0leil.net>
-Subject:
- Re: [PATCH 1/3] iio: adc: rockchip_saradc: fix bitmask for channels on
- SARADCv2
-Date: Fri, 23 Feb 2024 14:40:37 +0100
-Message-ID: <4499105.Wku2Vz74k6@diego>
-In-Reply-To:
- <20240223-saradcv2-chan-mask-v1-1-84b06a0f623a@theobroma-systems.com>
-References:
- <20240223-saradcv2-chan-mask-v1-0-84b06a0f623a@theobroma-systems.com>
- <20240223-saradcv2-chan-mask-v1-1-84b06a0f623a@theobroma-systems.com>
+	s=arc-20240116; t=1708696013; c=relaxed/simple;
+	bh=tQ+4MkeaOdk8F1CNSLrgDH2Jr/uEmRDsHrx0aGUhjZo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CRaRqb/rZNGpPoJx4jinx3wkl2MeqC7D7gpYO0yxu2qG0KB3n9DMbKE2QGU0rnliUjCg7R16tb9oOngWQa08sshE5d3EbrHqpX4VPM+8ig4qeVzEsh+HpQjRXcc3ALkMVOtShqlS/D4IDDD6+9U6YqkU61fRlpVPwQTsiZO6dXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=nKJOqbj2; arc=none smtp.client-ip=162.62.58.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1708695704;
+	bh=KNP5q5q/PAXpZJw1qKUd/6AeLQXLWocD1CBe+CsZZ6E=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=nKJOqbj29B9dT9jI4NELHB3iBzz9+6CIoo72s0+opHVCvnH/YBw5Sbm3r1MSWrfyn
+	 bcX3ZT6lj6AYW/NzlowdCf/lUtr1qMcSCkpZPQtuWBTmBjjrVkFkbrUYHlsaG7b/o9
+	 tdl5YZMGaXwIitF81KZyzzxpFb/7lPsMNPU7Vml0=
+Received: from [IPV6:2409:8a60:2a61:ef40:a0ce:972d:4d86:c925] ([2409:8a60:2a61:ef40:a0ce:972d:4d86:c925])
+	by newxmesmtplogicsvrszc5-2.qq.com (NewEsmtp) with SMTP
+	id A5633ED8; Fri, 23 Feb 2024 21:41:22 +0800
+X-QQ-mid: xmsmtpt1708695682t1idb5efw
+Message-ID: <tencent_7C50F304C14CB2A5133317F8A13D1F544D0A@qq.com>
+X-QQ-XMAILINFO: M/NR0wiIuy7004WcpIuEbJrJAv+aA6cCrPORn/FF08+ybhGNSVfdGS2UZ80axu
+	 +CFqLLgOatgnkf28L5AAoEpclz7/PM0BpxTXdPpgdZyA4VSMadRPMDhVWIBOxeyCZubaDrLZ0SVm
+	 z/ZV/x9BE2N4PMjMYJBMk53vQybhsyYQtARVBH1tKE45GJWGkIGL50jz5t6m8cUe3ZrFG5tBgWR3
+	 ijrfPzq4v9GxyQuSNqq9CaRgZ+gG/GUyVyOu3y/3k7rnCcQR+DCSU1K2ZcVuRSvdbashZsrNX0oU
+	 T6QcQowo3i7H4YWXRhPEwseURr201uhY4PtyXaKu874lYVCqz/Dnew1sw0auWblP3iuzf9irv/pl
+	 PbTWt3RL5E9K2VAwgmllbcxJKvCK52dxpNQ0QNnuYZ0DZ26VmV5YQgTNLZt1nbifK1DM5Yf85gct
+	 Z8NrBcxpDj9SEQGkg3n9G6Lk3V3BozxSTnukCre5T9kecqHSaFpQylIEwkW6R9ssbdaxkFIPfk1J
+	 ECYUGt+CijPA3aWPVrjfaWZPkBc6HEfZUSNp0MwDiFcsHNmzgWu66OZu6DwKvO02fHhx0QsDQMFd
+	 NOsYYJeyXBzN/SLfDQ+kyRSC49NisX08zE1ndHWEPHrhagPyfzbm44D8L/ePmmRbVRKmaLwvEzLa
+	 P7new2CbWdaMsCNzmJRL2T5Hy+bpqWnpio+R79cZ/1JCByFbQNsqtR7g0YUuWug6bLMSBq7CmYU1
+	 PYQHOyKMMvCa/2Sxp4501yCK6azrvUYZUViyZXbyzEZapmhdl6bEX3hjU6yt4HRov8p1gb12DDP/
+	 MVh17ZepJytm9AFPzMYPlGwBagj6uni//G7zfZhbuUFN8TiZubxGpTzXnvpm/UosLuqwdhCXtcBS
+	 tCf3ULsfSJNocoIm3hBGPfKI1hReQCwkoR4MibLg6V2Mb9cPNRzi02AaltOg5zOgux+M/JXdeWF6
+	 KQWDtmQuIpOq/sCQu1HaSUhNz1iO/Qy29YA8RCf5Vqf6KZJ/hRGguj/aRRHFMn
+X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
+X-OQ-MSGID: <8b9f4b04-a347-8af4-b74f-16a83ae3ac31@foxmail.com>
+Date: Fri, 23 Feb 2024 21:41:21 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] get_signal: simplify/cleanup the the usage of ksig->info
+Content-Language: en-US
+To: Oleg Nesterov <oleg@redhat.com>, Andrew Morton <akpm@linux-foundation.org>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
+ Christian Brauner <brauner@kernel.org>, linux-kernel@vger.kernel.org
+References: <20240223105025.GA4542@redhat.com>
+From: Wen Yang <wenyang.linux@foxmail.com>
+In-Reply-To: <20240223105025.GA4542@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Am Freitag, 23. Februar 2024, 13:45:21 CET schrieb Quentin Schulz:
-> From: Quentin Schulz <quentin.schulz@theobroma-systems.com>
+
+
+On 2024/2/23 18:50, Oleg Nesterov wrote:
+> get_signal() uses signr or ksig->info.si_signo in a chaotic way, this
+> looks confusing. Change it to always use signr.
 > 
-> The SARADCv2 on RK3588 (the only SoC currently supported that has an
-> SARADCv2) selects the channel through the channel_sel bitfield which is
-> the 4 lowest bits, therefore the mask should be GENMASK(3, 0) and not
-> GENMASK(15, 0).
+> This allows us to simplify the SIGNAL_GROUP_EXIT/group_exec_task branch,
+> it no longer needs to touch ksig at all.
 > 
-> Fixes: 757953f8ec69 ("iio: adc: rockchip_saradc: Add support for RK3588")
-> Cc: Quentin Schulz <foss+kernel@0leil.net>
-> Signed-off-by: Quentin Schulz <quentin.schulz@theobroma-systems.com>
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+> ---
+>   kernel/signal.c | 15 +++++++++------
+>   1 file changed, 9 insertions(+), 6 deletions(-)
+> 
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index c9c57d053ce4..690982e6595e 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -2727,12 +2727,15 @@ bool get_signal(struct ksignal *ksig)
+>   		/* Has this task already been marked for death? */
+>   		if ((signal->flags & SIGNAL_GROUP_EXIT) ||
+>   		     signal->group_exec_task) {
+> -			clear_siginfo(&ksig->info);
+> -			ksig->info.si_signo = signr = SIGKILL;
+> +			signr = SIGKILL;
+>   			sigdelset(&current->pending.signal, SIGKILL);
+>   			trace_signal_deliver(SIGKILL, SEND_SIG_NOINFO,
+> -				&sighand->action[SIGKILL - 1]);
+> +					     &sighand->action[SIGKILL - 1]);
+>   			recalc_sigpending();
+> +			/*
+> +			 * implies do_group_exit(), no need to initialize
+> +			 * ksig->info
+> +			 */
+>   			goto fatal;
 
-after checking against the TRM
+There is little question:
+If the this conditions is met:
+    current->flags & PF_USER_WORKER
+It may execute “goto out“ instead of do_group_exit().
 
-Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+--
+Best wishes,
+Wen
 
+
+>   		}
+>   
+> @@ -2842,7 +2845,7 @@ bool get_signal(struct ksignal *ksig)
+>   				spin_lock_irq(&sighand->siglock);
+>   			}
+>   
+> -			if (likely(do_signal_stop(ksig->info.si_signo))) {
+> +			if (likely(do_signal_stop(signr))) {
+>   				/* It released the siglock.  */
+>   				goto relock;
+>   			}
+> @@ -2866,7 +2869,7 @@ bool get_signal(struct ksignal *ksig)
+>   
+>   		if (sig_kernel_coredump(signr)) {
+>   			if (print_fatal_signals)
+> -				print_fatal_signal(ksig->info.si_signo);
+> +				print_fatal_signal(signr);
+>   			proc_coredump_connector(current);
+>   			/*
+>   			 * If it was able to dump core, this kills all
+> @@ -2890,7 +2893,7 @@ bool get_signal(struct ksignal *ksig)
+>   		/*
+>   		 * Death signals, no core dump.
+>   		 */
+> -		do_group_exit(ksig->info.si_signo);
+> +		do_group_exit(signr);
+>   		/* NOTREACHED */
+>   	}
+>   	spin_unlock_irq(&sighand->siglock);
 
 
