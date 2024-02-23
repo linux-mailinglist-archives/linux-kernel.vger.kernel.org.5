@@ -1,182 +1,120 @@
-Return-Path: <linux-kernel+bounces-78651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D91FB86168C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:57:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CFBD86169E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:59:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 529BD1F21D37
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:57:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F1BC1C25463
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:59:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D76C82D66;
-	Fri, 23 Feb 2024 15:57:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11E5C8595D;
+	Fri, 23 Feb 2024 15:58:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="g5hIBsHk"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="KFKNFmPH"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D7D182C60
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 15:57:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E74482D7D
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 15:58:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708703860; cv=none; b=nCacgRmXS8EOd3TKR/cP8Npae+jn/AV6kgx2b74MiVLMq54eEcSXuLXLfs9Tj/VOw6tfVdEIwE7nor7yZwNBdNAiIK0zzuKbxjJPKYPuoRyDC6VTdbufu1tKjLFy+J5HbgQujwP0osm04ASMuNy6gqhx9paP+/FHOMQjTniVXLQ=
+	t=1708703900; cv=none; b=qjgkfmq4cTuXEkdPqyFdc6ck1fOXmL2UW87VbboveKP0q7jXuUTqeDT6pkc/CUW2IE/s36kjDma8+wlyi1mwoaNOQl3j5py1LoMR5DsGMjUpbitDk+PDqYjMX4ZgTVp6BjEi7AxEcAM/GjdLcPlpU5ds7FD3+fDf2dWAsRIuk3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708703860; c=relaxed/simple;
-	bh=zi7xhCN9r1n3iv+sh5wHZdIfmjyejjuSjiISgXho2UM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=doDmcgTnPd+96Yp20keBjASBCU/wEDCe8HSReYrETP8GDJPlBUjnnj2Q8CKfcWdkmlieV9135s8rCkusXsmQ3OxKYcNZUJY2mq3YADIegskaBXO+ZJ8BkgbpLAewsqC2It2VknNwKWS9cHlGCERZAOg7oXLCnxHagx/3XFQCDrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=g5hIBsHk; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708703856;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P+cR72EL54R2xpPEHe1/1VXURnv19BSEwvnemyDV8zU=;
-	b=g5hIBsHkEL823PoYoE96NvQRIbPuglpuH9XAXJOFJGcqFSq6HTQcHRDtu3wH7SFRJbhBy8
-	jGCh2eYn9tz9CGi8TMfevWsLFjcRhZog5BcAbjjRIq29ebIDjfGby4WUAvOc431+giRKZ6
-	gQCIXNkB3ocYtYdkYQgZZZEdf0AP5hQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-635-ahSBYWehOVOzYxLguwbzWw-1; Fri, 23 Feb 2024 10:57:31 -0500
-X-MC-Unique: ahSBYWehOVOzYxLguwbzWw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6AABB185A780;
-	Fri, 23 Feb 2024 15:57:30 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.2])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 43026112132A;
-	Fri, 23 Feb 2024 15:57:28 +0000 (UTC)
-Date: Fri, 23 Feb 2024 23:57:25 +0800
-From: Baoquan He <bhe@redhat.com>
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: Pedro Falcato <pedro.falcato@gmail.com>,
-	Matthew Wilcox <willy@infradead.org>, Mel Gorman <mgorman@suse.de>,
-	kirill.shutemov@linux.intel.com,
-	Vishal Moola <vishal.moola@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
+	s=arc-20240116; t=1708703900; c=relaxed/simple;
+	bh=ZH381XWq1zBTkACBF2//KeafUWHfw67mulBGzDmiY08=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bp1SzpVVjakw4n2Wp2HFf4p+UruLx3QJwBBIJ+u+7Y0+sWaAnxYQ9wk2Ey6U4P9D4Um+PIeNie1gVOWpA6wBeu6IP9olDh2NkhlVkbH994A3h/04acLC8BSnyUOpc1PtWwn/hPXJaXgT/aRqDVHhLCY9n5iuA9F++OG00i5vhD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=KFKNFmPH; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so83094866b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 07:58:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1708703895; x=1709308695; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=G6OU9fCSyWEEzN1u8BEFct7dyiCVhZczrHs1XtVuYnk=;
+        b=KFKNFmPHFQvnDtcs/LTdD3HuBYePSJheE7tvw/U+T3yLpjCPJNM1YC7hGoaOnohm/3
+         jVe/bz5W3TJj/JlbiKG3vuIVXEkzxilb8KUVOpSUfWlGYNlJZepoI8CIBRgA9K0wGqio
+         v0NznsX88neTPiQms+BZKv0WeISNc4E3xrl/UUWTRUbzp1UWAzwC+pKRljfgTJAXz7Se
+         jQQ5gVRZlwJgGLGDl+riICyZT9kZIu23m8ikbY8c/i3rAm/+MU0pKGbtbG8pWkGhhCQm
+         J34aQYBkGW5NUrPmM1XLf8OQTs3o3w11yFl46Z9sDjJQcpsxWzpWwk6VJbIEBR499BFG
+         pjCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708703895; x=1709308695;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=G6OU9fCSyWEEzN1u8BEFct7dyiCVhZczrHs1XtVuYnk=;
+        b=SiruqKScV2a0Y5hVxITyzR4xfjh8waMhRdP6SWAGTYliegO2NdoYTmeRd/SZitAxWT
+         djHaoKBMv7SdSqARBZwkdljM0fHWWsXhw8qSLJRknTempD8Z3cMvP6hvLxFilf9BT4OS
+         Qhph76upJnmeHO2wVsAaZcU30fo480NsWAzI3efMJFtgFX/+PCHrA2o1Eqw/W7QNfzaJ
+         Srw0TjJayBsFiOxYY9Cvy6STrGZ7CCT0cY22YMXVD31MMCEalJxH23TzTmpZIIeVOoSP
+         G1SWrVoxXoGKkmn9as0zDI9k7+0g26f9AIqFQKWqn/AHblYWZy+Iar3LTtMgA4b6AYMR
+         l14g==
+X-Gm-Message-State: AOJu0Yy2oh+Enzxi53Z/izjMOmm026FERZmD1FXGbUr4yL2+wpLpWrFX
+	1JLPZ3OaVjaIxm9P1zg/ld7IJLmOFs2voFHhrfB4Ezim34l5DcvN+rufVFT7ETI=
+X-Google-Smtp-Source: AGHT+IFOrob8ed9f5/s0soRamhpTRgugIXA1/sDn/fhSiVJwNaqHd65cLwVQZcDbvzNuhb8zX2rujA==
+X-Received: by 2002:a17:906:ae54:b0:a3e:f7c1:5f21 with SMTP id lf20-20020a170906ae5400b00a3ef7c15f21mr147674ejb.52.1708703895503;
+        Fri, 23 Feb 2024 07:58:15 -0800 (PST)
+Received: from airbuntu.. (host109-154-46-208.range109-154.btcentralplus.com. [109.154.46.208])
+        by smtp.gmail.com with ESMTPSA id rg8-20020a1709076b8800b00a3e28471fa4sm6461293ejc.59.2024.02.23.07.58.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 07:58:14 -0800 (PST)
+From: Qais Yousef <qyousef@layalina.io>
+To: Jens Axboe <axboe@kernel.dk>,
+	Ingo Molnar <mingo@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Wei Wang <wvw@google.com>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	Bart Van Assche <bvanassche@acm.org>,
 	Christoph Hellwig <hch@infradead.org>,
-	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
-	Dave Chinner <david@fromorbit.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	linux-mm@kvack.org
-Subject: Re: [PATCH v3 00/11] Mitigate a vmap lock contention v3
-Message-ID: <ZdjAZQRVmP9gnfsJ@MiWiFi-R3L-srv>
-References: <20240102184633.748113-1-urezki@gmail.com>
- <ZdcHXFMq0cwmVKfM@pc636>
- <CAKbZUD3+PJUoXee3MNvToy1zRnDoPoPqMjNAf5_87Uh-u2377w@mail.gmail.com>
- <ZdhmrEmA8wOuVcQT@pc636>
- <Zdhy3S1PzwfEJuS3@MiWiFi-R3L-srv>
- <Zdh8KmZtoQym7Syz@pc636>
+	Qais Yousef <qyousef@layalina.io>
+Subject: [PATCH v2 0/2] sched: blk: Handle HMP systems when completing IO
+Date: Fri, 23 Feb 2024 15:57:47 +0000
+Message-Id: <20240223155749.2958009-1-qyousef@layalina.io>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zdh8KmZtoQym7Syz@pc636>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-On 02/23/24 at 12:06pm, Uladzislau Rezki wrote:
-> > On 02/23/24 at 10:34am, Uladzislau Rezki wrote:
-> > > On Thu, Feb 22, 2024 at 11:15:59PM +0000, Pedro Falcato wrote:
-> > > > Hi,
-> > > > 
-> > > > On Thu, Feb 22, 2024 at 8:35 AM Uladzislau Rezki <urezki@gmail.com> wrote:
-> > > > >
-> > > > > Hello, Folk!
-> > > > >
-> > > > >[...]
-> > > > > pagetable_alloc - gets increased as soon as a higher pressure is applied by
-> > > > > increasing number of workers. Running same number of jobs on a next run
-> > > > > does not increase it and stays on same level as on previous.
-> > > > >
-> > > > > /**
-> > > > >  * pagetable_alloc - Allocate pagetables
-> > > > >  * @gfp:    GFP flags
-> > > > >  * @order:  desired pagetable order
-> > > > >  *
-> > > > >  * pagetable_alloc allocates memory for page tables as well as a page table
-> > > > >  * descriptor to describe that memory.
-> > > > >  *
-> > > > >  * Return: The ptdesc describing the allocated page tables.
-> > > > >  */
-> > > > > static inline struct ptdesc *pagetable_alloc(gfp_t gfp, unsigned int order)
-> > > > > {
-> > > > >         struct page *page = alloc_pages(gfp | __GFP_COMP, order);
-> > > > >
-> > > > >         return page_ptdesc(page);
-> > > > > }
-> > > > >
-> > > > > Could you please comment on it? Or do you have any thought? Is it expected?
-> > > > > Is a page-table ever shrink?
-> > > > 
-> > > > It's my understanding that the vunmap_range helpers don't actively
-> > > > free page tables, they just clear PTEs. munmap does free them in
-> > > > mmap.c:free_pgtables, maybe something could be worked up for vmalloc
-> > > > too.
-> > > >
-> > > Right. I see that for a user space, pgtables are removed. There was a
-> > > work on it.
-> > > 
-> > > >
-> > > > I would not be surprised if the memory increase you're seeing is more
-> > > > or less correlated to the maximum vmalloc footprint throughout the
-> > > > whole test.
-> > > > 
-> > > Yes, the vmalloc footprint follows the memory usage. Some uses cases
-> > > map lot of memory.
-> > 
-> > The 'nr_threads=256' testing may be too radical. I took the test on
-> > a bare metal machine as below, it's still running and hang there after
-> > 30 minutes. I did this after system boot. I am looking for other
-> > machines with more processors.
-> > 
-> > [root@dell-r640-068 ~]# nproc 
-> > 64
-> > [root@dell-r640-068 ~]# free -h
-> >                total        used        free      shared  buff/cache   available
-> > Mem:           187Gi        18Gi       169Gi        12Mi       262Mi       168Gi
-> > Swap:          4.0Gi          0B       4.0Gi
-> > [root@dell-r640-068 ~]# 
-> > 
-> > [root@dell-r640-068 linux]# tools/testing/selftests/mm/test_vmalloc.sh run_test_mask=127 nr_threads=256
-> > Run the test with following parameters: run_test_mask=127 nr_threads=256
-> > 
-> Agree, nr_threads=256 is a way radical :) Mine took 50 minutes to
-> complete. So wait more :)
+Due to recent changes in how topology is represented on asymmetric multi
+processing systems like big.LITTLE where all cpus share the last LLC, there is
+a performance regression as cpus with different compute capacities appear under
+the same LLC and we no longer send an IPI when the requester is running on
+a different cluster with different compute capacity.
 
-Right, mine could take the similar time to finish that. I got a machine
-with 288 cpus, see if I can get some clues. When I go through the code
-flow, suddenly realized it could be drain_vmap_area_work which is the 
-bottle neck and cause the tremendous page table pages costing.
+Restore the old behavior by adding a new cpus_equal_capacity() function to help
+check for the new condition for these systems.
 
-On your system, there's 64 cpus. then 
+Changes since v1:
 
-nr_lazy_max = lazy_max_pages() = 7*32M = 224M;
+	* Split the patch per subsystem.
+	* Convert cpus_gte_capacity() to cpus_equal_capacity()
+	* Make cpus_equal_capacity() return immediately for SMP systems.
 
-So with nr_threads=128 or 256, it's so easily getting to the nr_lazy_max
-and triggering drain_vmap_work(). When cpu resouce is very limited, the
-lazy vmap purging will be very slow. While the alloc/free in lib/tet_vmalloc.c 
-are going far faster and more easily then vmap reclaiming. If old va is not
-reused, new va is allocated and keep extending, the new page table surely
-need be created to cover them.
+Qais Yousef (2):
+  sched: Add a new function to compare if two cpus have the same
+    capacity
+  block/blk-mq: Don't complete locally if capacities are different
 
-I will take testing on the system with 288 cpus, will update if testing
-is done.
+ block/blk-mq.c                 |  5 +++--
+ include/linux/sched/topology.h |  6 ++++++
+ kernel/sched/core.c            | 11 +++++++++++
+ 3 files changed, 20 insertions(+), 2 deletions(-)
+
+-- 
+2.34.1
 
 
