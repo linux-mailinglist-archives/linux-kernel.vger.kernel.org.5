@@ -1,246 +1,160 @@
-Return-Path: <linux-kernel+bounces-78437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0DC786137C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:04:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D3F2B861381
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:04:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76691283FA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:03:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9357A284247
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:04:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD917FBC5;
-	Fri, 23 Feb 2024 14:03:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D1C381219;
+	Fri, 23 Feb 2024 14:04:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="efHR4ON/"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="aF7w5mQZ"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD697F460
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 14:03:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3053B7E798;
+	Fri, 23 Feb 2024 14:04:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708697031; cv=none; b=eG/oIdg9FDYrcxDBsteaQIn/TxplyUZ5UpkBRta4LJ+CY/YV0zjJeyCkCMtJFWoFAqv9COmJDtXh35FCQRwZTNUvJogG/U5z8aVpPJ0g1heC/gEKVByjFWq2KQbw42JjVRjEVqJavjJX3/r+G4Xfr0qyYgpKTrt8tbeEw9iDtOc=
+	t=1708697047; cv=none; b=SFYVq91ZRRYQzi9kV10elso7VcOnilkkzsW8jmG1ZWzebH7hgSbYj+BWITt8mrT/GYXcR6cip9ewM2506I4SHA65ClDos+bdZ8TvAp6T+hTA1fk6DLj3gcPkCbUqh/fjTBkCIqe9RBsIFEFsxweWF/su5iv88YNjhLyPZbLd+DI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708697031; c=relaxed/simple;
-	bh=YXpg3mzmRNTgL/bgrgvTKdeThIxiarXfTS+HezeGh0o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BHMIerw6qT124kLsG8Q1SgAd3zGQh9O3fTuCxAXnkhauYvxiLHv8Fvnk3omO7pniR6T1tF2AkwcZJdZRtcF4cEbWLrIGqFGsRYgpaChewbwt1J07q6x7A6zBYU1vCVhWdVU1BJRVvg1EFVLJUJm/GxODWTVH5FebqscfO2Ae9lY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=efHR4ON/; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708697029;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0V31ObxG5auoCtgae8PDeH/jiF4IyClWW1aJTl3/qDg=;
-	b=efHR4ON/sbVKhQZfboNI9D5op0h53/7+NdfFXuy+NATSJ99sjrCLgDVX984NAds9FCc6Hg
-	ZrmqOPc+wY6UGSmFEbfTVgN33gCZKtrC9KedOuKzVFmsrxgk5eTX5ZHTBHEzFXFOV+IS2c
-	jn+JXJCYdiVmkeigmalS4SkA++QBGmc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-600-HkpALEzdO7yOzJBNqMB_1A-1; Fri, 23 Feb 2024 09:03:45 -0500
-X-MC-Unique: HkpALEzdO7yOzJBNqMB_1A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0182A862FDF;
-	Fri, 23 Feb 2024 14:03:45 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.2])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 9ABF0200B251;
-	Fri, 23 Feb 2024 14:03:43 +0000 (UTC)
-Date: Fri, 23 Feb 2024 22:03:34 +0800
-From: Baoquan He <bhe@redhat.com>
-To: rulinhuang <rulin.huang@intel.com>
-Cc: urezki@gmail.com, colin.king@intel.com, hch@infradead.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	lstoakes@gmail.com, tianyou.li@intel.com, tim.c.chen@intel.com,
-	wangyang.guo@intel.com, zhiguo.zhou@intel.com
-Subject: Re: [PATCH v5] mm/vmalloc: lock contention optimization under
- multi-threading
-Message-ID: <ZdiltpK5fUvwVWtD@MiWiFi-R3L-srv>
-References: <20240207033059.1565623-1-rulin.huang@intel.com>
- <20240223130318.112198-2-rulin.huang@intel.com>
+	s=arc-20240116; t=1708697047; c=relaxed/simple;
+	bh=nM40QHzYL1kwG2zb35krcUIqERe+VLJRE/J43CVPmVw=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=t0+/I33O8iC1vEMl4u0DB4XkK9oNlxcwrqmF4V3ijEO3xNdZB9I1BHcM51MxGy3S3zN8qOpc6A3wft4bpzZT99gBgcBdH7fmKGzsuAre8x1TXJ1D0Z6iHEi9BkZrWtul5lc9iR8hPuUVf8ZNcvoQylXALk+gQBOL57uooo74O/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=aF7w5mQZ; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41NDvndw018420;
+	Fri, 23 Feb 2024 14:03:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=1mgJOW5SMwFM
+	2S8R8LzsDNYwGCjSr8J/HH+/75aLe24=; b=aF7w5mQZXV05NkBroo2HHMmUTgtD
+	mEZJKnZeVB7APNG0SDY3+ecddv2T5JgIQSaS7etgP9sUSIZE1blHDPUU2IvREkxg
+	Z1wNFn4Rqvpvl+bKedTIod69gdMlF+4CPqwuyMsGPY4KbHvK8/6dIIKde8Vw2q9A
+	wBoeaB6a2c+U23KJfh8MyoGN4yNfRPFr7IX4xwEHxEEW3eZt8nWCB2ug/rTn4z6Q
+	vfXqoqPq/cSAx699PKq1eLk2QqDFpmnXwMot+ff3JpUtiVK56TuzeDXaLkX8XpoB
+	+6gDzlp6zgNtN1RaWha/6quDUYl/OdVK8dGAB2KyepL0P3uyQpP2TgH+Pw==
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wesgg0hsg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 Feb 2024 14:03:55 +0000 (GMT)
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 41NE2Yr2026559;
+	Fri, 23 Feb 2024 14:03:52 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3wanvme27t-1;
+	Fri, 23 Feb 2024 14:03:52 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41NE3qBo027350;
+	Fri, 23 Feb 2024 14:03:52 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-msarkar-hyd.qualcomm.com [10.213.111.194])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 41NE3qSF027347;
+	Fri, 23 Feb 2024 14:03:52 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3891782)
+	id 718DA14C5; Fri, 23 Feb 2024 19:33:51 +0530 (+0530)
+From: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+To: andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, konrad.dybcio@linaro.org,
+        manivannan.sadhasivam@linaro.org, robh@kernel.org
+Cc: quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+        dmitry.baryshkov@linaro.org, quic_krichai@quicinc.com,
+        quic_vbadigan@quicinc.com, quic_schintav@quicinc.com,
+        Mrinmay Sarkar <quic_msarkar@quicinc.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: [PATCH v5 0/3] arm64: qcom: sa8775p: add cache coherency support for SA8775P
+Date: Fri, 23 Feb 2024 19:33:37 +0530
+Message-Id: <1708697021-16877-1-git-send-email-quic_msarkar@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: vpn7AjzS49pQmA8aqIQKDmgZ30uYzrJb
+X-Proofpoint-ORIG-GUID: vpn7AjzS49pQmA8aqIQKDmgZ30uYzrJb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-22_15,2024-02-23_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 bulkscore=0
+ suspectscore=0 adultscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
+ mlxscore=0 malwarescore=0 clxscore=1015 priorityscore=1501 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
+ definitions=main-2402230102
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240223130318.112198-2-rulin.huang@intel.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-Hi Rulin,
+Due to some hardware changes, SA8775P has set the NO_SNOOP attribute
+in its TLP for all the PCIe controllers. NO_SNOOP attribute when set,
+the requester is indicating that there no cache coherency issues exit
+for the addressed memory on the host i.e., memory is not cached. But
+in reality, requester cannot assume this unless there is a complete
+control/visibility over the addressed memory on the host.
 
-On 02/23/24 at 08:03am, rulinhuang wrote:
-> When allocating a new memory area where the mapping address range is
-> known, it is observed that the vmap_area lock is acquired twice.
-> The first acquisition occurs in the alloc_vmap_area() function when
-> inserting the vm area into the vm mapping red-black tree. The second
-> acquisition occurs in the setup_vmalloc_vm() function when updating the
-> properties of the vm, such as flags and address, etc.
-> Combine these two operations together in alloc_vmap_area(), which
-> improves scalability when the vmap_area lock is contended. By doing so,
-> the need to acquire the lock twice can also be eliminated.
-> With the above change, tested on intel icelake platform(160 vcpu, kernel
-> v6.7), a 6% performance improvement and a 7% reduction in overall
-> spinlock hotspot are gained on
-> stress-ng/pthread(https://github.com/ColinIanKing/stress-ng), which is
-> the stress test of thread creations.
+And worst case, if the memory is cached on the host, it may lead to
+memory corruption issues. It should be noted that the caching of memory
+on the host is not solely dependent on the NO_SNOOP attribute in TLP.
 
-This log can be rearranged into several paragraphes for easier reading.
+So to avoid the corruption, this patch overrides the NO_SNOOP attribute
+by setting the PCIE_PARF_NO_SNOOP_OVERIDE register. This patch is not
+needed for other upstream supported platforms since they do not set
+NO_SNOOP attribute by default.
 
-> 
-> Reviewed-by: Chen Tim C <tim.c.chen@intel.com>
-> Reviewed-by: King Colin <colin.king@intel.com>
+This series is to enable cache snooping logic in both RC and EP driver
+and add the "dma-coherent" property in dtsi to support cache coherency
+in SA8775P platform.
 
-Since you have taken different way to fix, these Reviewed-by from old
-solution and patch should be removed. Carrying them is 
+Dependency
+----------
 
-Yeah, this v5 is what I suggested in the draft. It looks good to me.
-There's one concern in code, plesae see inline comment.
+Depends on:
+https://lore.kernel.org/all/1701432377-16899-1-git-send-email-quic_msarkar@quicinc.com/
+https://lore.kernel.org/all/20240216-dw-hdma-v2-4-b42329003f43@linaro.org/ [1]
 
-> Signed-off-by: rulinhuang <rulin.huang@intel.com>
-> ---
-> V1 -> V2: Avoided the partial initialization issue of vm and
-> separated insert_vmap_area() from alloc_vmap_area()
-> V2 -> V3: Rebased on 6.8-rc5
-> V3 -> V4: Rebased on mm-unstable branch
-> V4 -> V5: cancel the split of alloc_vmap_area()
-> and keep insert_vmap_area()
-> ---
->  mm/vmalloc.c | 48 ++++++++++++++++++++++--------------------------
->  1 file changed, 22 insertions(+), 26 deletions(-)
-> 
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index 25a8df497255..6baaf08737f8 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -1841,15 +1841,26 @@ node_alloc(unsigned long size, unsigned long align,
->  	return va;
->  }
->  
-> +static inline void setup_vmalloc_vm(struct vm_struct *vm,
-> +	struct vmap_area *va, unsigned long flags, const void *caller)
-> +{
-> +	vm->flags = flags;
-> +	vm->addr = (void *)va->va_start;
-> +	vm->size = va->va_end - va->va_start;
-> +	vm->caller = caller;
-> +	va->vm = vm;
-> +}
-> +
->  /*
->   * Allocate a region of KVA of the specified size and alignment, within the
-> - * vstart and vend.
-> + * vstart and vend. If vm is passed in, the two will also be bound.
->   */
->  static struct vmap_area *alloc_vmap_area(unsigned long size,
->  				unsigned long align,
->  				unsigned long vstart, unsigned long vend,
->  				int node, gfp_t gfp_mask,
-> -				unsigned long va_flags)
-> +				unsigned long va_flags, struct vm_struct *vm,
-> +				unsigned long flags, const void *caller)
->  {
->  	struct vmap_node *vn;
->  	struct vmap_area *va;
-> @@ -1912,6 +1923,9 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
->  	va->vm = NULL;
->  	va->flags = (va_flags | vn_id);
->  
+V4 -> V5:
+- Updated commit message in both Patch1 and patch2
+- change variable name from no_snoop_override to
+  enable_cache_snoop
+- rebased patch2 on top of [1]
 
-We may need add a BUG_ON() or WARN_ON() checking if (va_flags & VMAP_RAM)
-is true and vm is not NULL. Not sure if this is over thinking.
+v3 -> v4:
+- added new cfg(cfg_1_34_0) for SA8775P in both RC and EP driver.
+- populated a flag in the data structures instead of doing
+  of_device_is_compatible() in both RC and EP patch.
+- update commit mesaage and added reveiwed-by tag in commit message
+  in dtsi patch.
 
-By the way, can you post it separately if you decide to post v6 to
-polish the log and remove the ack tag? Sometime adding all posts in one
-thread looks so confusing.
+v2 -> v3:
+- update commit message(8755 -> 8775).
 
-Thanks
-Baoquan
+v1 -> v2:
+- update cover letter with explanation.
+- define each of these bits and ORing at usage time rather than
+  directly writing value in register.
 
-> +	if (vm)
-> +		setup_vmalloc_vm(vm, va, flags, caller);
-> +
->  	vn = addr_to_node(va->va_start);
->  
->  	spin_lock(&vn->busy.lock);
-> @@ -2486,7 +2500,8 @@ static void *new_vmap_block(unsigned int order, gfp_t gfp_mask)
->  	va = alloc_vmap_area(VMAP_BLOCK_SIZE, VMAP_BLOCK_SIZE,
->  					VMALLOC_START, VMALLOC_END,
->  					node, gfp_mask,
-> -					VMAP_RAM|VMAP_BLOCK);
-> +					VMAP_RAM|VMAP_BLOCK, NULL,
-> +					0, NULL);
->  	if (IS_ERR(va)) {
->  		kfree(vb);
->  		return ERR_CAST(va);
-> @@ -2843,7 +2858,8 @@ void *vm_map_ram(struct page **pages, unsigned int count, int node)
->  		struct vmap_area *va;
->  		va = alloc_vmap_area(size, PAGE_SIZE,
->  				VMALLOC_START, VMALLOC_END,
-> -				node, GFP_KERNEL, VMAP_RAM);
-> +				node, GFP_KERNEL, VMAP_RAM,
-> +				NULL, 0, NULL);
->  		if (IS_ERR(va))
->  			return NULL;
->  
-> @@ -2946,26 +2962,6 @@ void __init vm_area_register_early(struct vm_struct *vm, size_t align)
->  	kasan_populate_early_vm_area_shadow(vm->addr, vm->size);
->  }
->  
-> -static inline void setup_vmalloc_vm_locked(struct vm_struct *vm,
-> -	struct vmap_area *va, unsigned long flags, const void *caller)
-> -{
-> -	vm->flags = flags;
-> -	vm->addr = (void *)va->va_start;
-> -	vm->size = va->va_end - va->va_start;
-> -	vm->caller = caller;
-> -	va->vm = vm;
-> -}
-> -
-> -static void setup_vmalloc_vm(struct vm_struct *vm, struct vmap_area *va,
-> -			      unsigned long flags, const void *caller)
-> -{
-> -	struct vmap_node *vn = addr_to_node(va->va_start);
-> -
-> -	spin_lock(&vn->busy.lock);
-> -	setup_vmalloc_vm_locked(vm, va, flags, caller);
-> -	spin_unlock(&vn->busy.lock);
-> -}
-> -
->  static void clear_vm_uninitialized_flag(struct vm_struct *vm)
->  {
->  	/*
-> @@ -3002,7 +2998,7 @@ static struct vm_struct *__get_vm_area_node(unsigned long size,
->  	if (!(flags & VM_NO_GUARD))
->  		size += PAGE_SIZE;
->  
-> -	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0);
-> +	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0, area, flags, caller);
->  	if (IS_ERR(va)) {
->  		kfree(area);
->  		return NULL;
-> @@ -4584,7 +4580,7 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
->  
->  		spin_lock(&vn->busy.lock);
->  		insert_vmap_area(vas[area], &vn->busy.root, &vn->busy.head);
-> -		setup_vmalloc_vm_locked(vms[area], vas[area], VM_ALLOC,
-> +		setup_vmalloc_vm(vms[area], vas[area], VM_ALLOC,
->  				 pcpu_get_vm_areas);
->  		spin_unlock(&vn->busy.lock);
->  	}
-> 
-> base-commit: c09a8e005eff6c064e2e9f11549966c36a724fbf
-> -- 
-> 2.43.0
-> 
+Mrinmay Sarkar (3):
+  PCI: qcom: Enable cache coherency for SA8775P RC
+  PCI: qcom-ep: Enable cache coherency for SA8775P EP
+  arm64: dts: qcom: sa8775p: Mark PCIe EP controller as cache coherent
+
+ arch/arm64/boot/dts/qcom/sa8775p.dtsi     |  1 +
+ drivers/pci/controller/dwc/pcie-qcom-ep.c | 20 +++++++++++++++++---
+ drivers/pci/controller/dwc/pcie-qcom.c    | 20 +++++++++++++++++++-
+ 3 files changed, 37 insertions(+), 4 deletions(-)
+
+-- 
+2.40.1
 
 
