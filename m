@@ -1,125 +1,226 @@
-Return-Path: <linux-kernel+bounces-78256-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78259-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3BB18610D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:52:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6481B8610DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:58:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79F58286744
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:52:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18DD3285467
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:58:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C24BC7A722;
-	Fri, 23 Feb 2024 11:52:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 781FB7AE5A;
+	Fri, 23 Feb 2024 11:58:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r7ut2uuV"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="VFx8LYLO"
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 159467D418
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:52:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0B3C7AE65
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:58:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708689125; cv=none; b=YFUTi1fSdzKUN7Z+sdsxeUm/Jm1/cu+gETGeoYiH3z22lCf7bmsus8yrGb944xH2Ckrs7WCYnlepPsphrY/AwAzWql+ALZ5SpACKPPwNWl/gdVPonsvhCODPaArr6GAX+DOCUOBuLkZyCnfZ6GafsjErwJB2H74cCUTu1tYSenM=
+	t=1708689483; cv=none; b=pYIg6kncaZ5/qMSrKV2B3+Apeh7bKzYoN8OXJMHH5DnIN5esBYSqvdHt3xWn09MqzZ5KJm7p+WIARq9IQ1VODf7GhlnDF1qtePDdATmgc4gJ5tL591Y9E62Utv0Z4qNOrsexxhnGDWao/FWOAnWYljcQWvG5KoClMaIo5EZSlJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708689125; c=relaxed/simple;
-	bh=mGgNsYPzZ25IdsQy+436tZTCd+Dedkm6W3A4qITGUiM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SZqjNOA3cr3Cn0fwHXoWVh49t9DDO6LTP0nzI+jl1qRiU1JdpeVflBUoyh8YJJj/Q5Frs8TKO+dw4W6FVva8ALziKmB8dtp00OsmxXOmrgMiGvwZNt74FuCYvfzRyS1m/myZD2aqaSQYQQehB7jpbLIg0g4jVM1aN3KUeEakPNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r7ut2uuV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EE11C43399;
-	Fri, 23 Feb 2024 11:52:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708689124;
-	bh=mGgNsYPzZ25IdsQy+436tZTCd+Dedkm6W3A4qITGUiM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=r7ut2uuVDj2VUFcFQJzZriprXKbw91IgHM8eAGM7mn4xoxeB/x+9/xY7Ui5aLNjSZ
-	 g2xQAh4q7/i019vO0wmF7aoYsd7Rqr7O2sbgEKP6jmokQMiF6/fWLb1wYRX80em5vR
-	 hKHSvifiuQuWzy+u9EB4W0I5Tn2C3xR51rEGkW/K1JWzn1CxRgM4cXFUO0XkbJC8zn
-	 cjB40UedVPVE8PHDYqgU9ZEtbbBmSdCt9/E4tPGZQzqVpymEnaVNI5FKenzZ3xbyCw
-	 pk2LZEfsKSAB90f73OQX2KwyWK37qpm+5AWYjBWTVg8CujLQwBbAzpPjXrqF492lVw
-	 WAZfyYR97htPA==
-From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-To: stefani@seibold.net
-Cc: linux-kernel@vger.kernel.org,
-	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH 4/4] kfifo: fix typos in kernel-doc
-Date: Fri, 23 Feb 2024 12:51:55 +0100
-Message-ID: <20240223115155.8806-5-jirislaby@kernel.org>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240223115155.8806-1-jirislaby@kernel.org>
-References: <20240223115155.8806-1-jirislaby@kernel.org>
+	s=arc-20240116; t=1708689483; c=relaxed/simple;
+	bh=OUmiIYV1ZOxPQwwDzWBugUjrO/94kZzGcCCUhw19TKo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UwjVC8f71FLQZpOlJIWK5dfACeKKfT/E1XqDH1PcIy0s6koi/nv1DoDgDyLfOXxvb/9iZ7HAfGA9oEhQZihK93N9jX0JUVlmYbpUWLbtVZ4prWRUyevC2NV3V8V5RmVKRDb9ScLguzQ4e65OWT0Xk8AVv130xb5e6HKQitCIR/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=VFx8LYLO; arc=none smtp.client-ip=198.252.153.129
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+Received: from mx0.riseup.net (mx0-pn.riseup.net [10.0.1.42])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx1.riseup.net (Postfix) with ESMTPS id 4Th7g32jqZzDqP1
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:52:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1708689167; bh=OUmiIYV1ZOxPQwwDzWBugUjrO/94kZzGcCCUhw19TKo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=VFx8LYLOZmIhQp8rg646zyQMKTWhjrjgJOKt4Q4GITfYo6/MMPpsCPkqpJQx1u1QK
+	 4SRtKwTasjQzUWK6A3hqzLP9tzNaMwQiRe2h5tGHu+NJ5apgU6a4U9C6CY9df6zfNq
+	 N/mvBySley4kW3od04tNf4CnDkBY7u8woeH4nzfc=
+Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx0.riseup.net (Postfix) with ESMTPS id 4Th7fx1tgFz9wx0;
+	Fri, 23 Feb 2024 11:52:41 +0000 (UTC)
+X-Riseup-User-ID: 0EF8E654CC1AEAB381F9584BCE1A40612DF66BFDD921DB16F4891EE24A96A184
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4Th7fr1hYYzFsSY;
+	Fri, 23 Feb 2024 11:52:35 +0000 (UTC)
+Message-ID: <282a368c-6713-4c36-8713-4e081025b0bb@riseup.net>
+Date: Fri, 23 Feb 2024 08:52:33 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH v2 0/9] drm/vkms: Reimplement line-per-line pixel
+ conversion for plane reading
+Content-Language: en-US
+To: Louis Chauvet <louis.chauvet@bootlin.com>,
+ Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+ Melissa Wen <melissa.srw@gmail.com>,
+ Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, arthurgrillo@riseup.net,
+ Jonathan Corbet <corbet@lwn.net>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
+ thomas.petazzoni@bootlin.com
+References: <20240223-yuv-v2-0-aa6be2827bb7@bootlin.com>
+From: Maira Canal <mairacanal@riseup.net>
+In-Reply-To: <20240223-yuv-v2-0-aa6be2827bb7@bootlin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Obviously:
-"This macro finish" -> "This macro finishes"
-and similar.
+Hi Louis,
 
-Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-Cc: Stefani Seibold <stefani@seibold.net>
-Cc: Andrew Morton <akpm@linux-foundation.org>
----
- include/linux/kfifo.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+On 2/23/24 08:37, Louis Chauvet wrote:
+> This patchset is the second version of [1]. It is almost a complete
+> rewrite to use a line-by-line algorithm for the composition.
+> It can be divided in three parts:
+> - PATCH 1 to 4: no functional change is intended, only some formatting and
+> documenting
+> (PATCH 2 is taken from [2])
+> - PATCH 5: main patch for this series, it reintroduce the
+> line-by-line algorithm
+> - PATCH 6 to 9: taken from Arthur's series [2], with sometimes adaptation
+> to use the pixel-by-pixel algorithm.
+> 
+> The PATCH 5 aims to restore the line-by-line pixel reading algorithm. It
+> was introduced in 8ba1648567e2 ("drm: vkms: Refactor the plane composer to
+> accept new formats") but removed in 8ba1648567e2 ("drm: vkms: Refactor the
+> plane composer to accept new formats") in a over-simplification effort.
+> At this time, nobody noticed the performance impact of this commit. After
+> the first iteration of my series, poeple notice performance impact, and it
+> was the case. Pekka suggested to reimplement the line-by-line algorithm.
+> 
+> Expiriments on my side shown great improvement for the line-by-line
+> algorithm, and the performances are the same as the original line-by-line
+> algorithm. I targeted my effort to make the code working for all the
+> rotations and translations. The usage of helpers from drm_rect_* avoid
+> reimplementing existing logic.
+> 
+> The only "complex" part remaining is the clipping of the coordinate to
+> avoid reading/writing outside of src/dst. Thus I added a lot of comments
+> to help when someone will want to add some features (framebuffer resizing
+> for example).
+> 
+> The YUV part is not mandatory for this series, but as my first effort was
+> to help the integration of YUV, I decided to rebase Arthur's series on
+> mine to help. I took [3], [4], [5] and [6] and adapted them to use the
+> line-by-line reading. If I did something wrong here, please let me
+> know.
+> 
+> My series was mainly tested with:
+> - kms_plane (for color conversions)
+> - kms_rotation_crc (for rotations of planes)
+> - kms_cursor_crc (for translations)
+> The benchmark used to measure the improvment was done with:
+> - kms_fb_stress
+> 
+> [1]: https://lore.kernel.org/r/20240201-yuv-v1-0-3ca376f27632@bootlin.com
+> [2]: https://lore.kernel.org/all/20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net/
+> [3]: https://lore.kernel.org/all/20240110-vkms-yuv-v2-3-952fcaa5a193@riseup.net/
+> [4]: https://lore.kernel.org/all/20240110-vkms-yuv-v2-5-952fcaa5a193@riseup.net/
+> [5]: https://lore.kernel.org/all/20240110-vkms-yuv-v2-6-952fcaa5a193@riseup.net/
+> [6]: https://lore.kernel.org/all/20240110-vkms-yuv-v2-7-952fcaa5a193@riseup.net/
+> 
+> To: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+> To: Melissa Wen <melissa.srw@gmail.com>
+> To: Maíra Canal <mairacanal@riseup.net>
+> To: Haneen Mohammed <hamohammed.sa@gmail.com>
+> To: Daniel Vetter <daniel@ffwll.ch>
+> To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> To: Maxime Ripard <mripard@kernel.org>
+> To: Thomas Zimmermann <tzimmermann@suse.de>
+> To: David Airlie <airlied@gmail.com>
+> To: arthurgrillo@riseup.net
+> To: Jonathan Corbet <corbet@lwn.net>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: jeremie.dautheribes@bootlin.com
+> Cc: miquel.raynal@bootlin.com
+> Cc: thomas.petazzoni@bootlin.com
+> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+> 
+> Note: after my changes, those tests seems to pass, so [7] may need
+> updating (I did not check, it was maybe already the case):
+> - kms_cursor_legacy@flip-vs-cursor-atomic
+> - kms_pipe_crc_basic@nonblocking-crc
+> - kms_pipe_crc_basic@nonblocking-crc-frame-sequence
+> - kms_writeback@writeback-pixel-formats
+> - kms_writeback@writeback-invalid-parameters
+> - kms_flip@flip-vs-absolute-wf_vblank-interruptible
+> And those tests pass, I did not investigate why the runners fails:
+> - kms_flip@flip-vs-expired-vblank-interruptible
+> - kms_flip@flip-vs-expired-vblank
+> - kms_flip@plain-flip-fb-recreate
+> - kms_flip@plain-flip-fb-recreate-interruptible
+> - kms_flip@plain-flip-ts-check-interruptible
+> - kms_cursor_legacy@cursorA-vs-flipA-toggle
+> - kms_pipe_crc_basic@nonblocking-crc
+> - kms_prop_blob@invalid-get-prop
+> - kms_flip@flip-vs-absolute-wf_vblank-interruptible
+> - kms_invalid_mode@zero-hdisplay
+> - kms_invalid_mode@bad-vtotal
+> - kms_cursor_crc.* (everything is SUCCEED or SKIP, but no fails)
 
-diff --git a/include/linux/kfifo.h b/include/linux/kfifo.h
-index 0491bc526240..d8533e700bed 100644
---- a/include/linux/kfifo.h
-+++ b/include/linux/kfifo.h
-@@ -584,7 +584,7 @@ __kfifo_uint_must_check_helper( \
-  * @buf: pointer to the storage buffer
-  * @n: max. number of elements to get
-  *
-- * This macro get some data from the fifo and return the numbers of elements
-+ * This macro gets some data from the fifo and returns the numbers of elements
-  * copied.
-  *
-  * Note that with only one concurrent reader and one concurrent
-@@ -611,7 +611,7 @@ __kfifo_uint_must_check_helper( \
-  * @n: max. number of elements to get
-  * @lock: pointer to the spinlock to use for locking
-  *
-- * This macro get the data from the fifo and return the numbers of elements
-+ * This macro gets the data from the fifo and returns the numbers of elements
-  * copied.
-  */
- #define	kfifo_out_spinlocked(fifo, buf, n, lock) \
-@@ -739,7 +739,7 @@ __kfifo_int_must_check_helper( \
-  * @fifo: address of the fifo to be used
-  * @len: number of bytes to received
-  *
-- * This macro finish a DMA IN operation. The in counter will be updated by
-+ * This macro finishes a DMA IN operation. The in counter will be updated by
-  * the len parameter. No error checking will be done.
-  *
-  * Note that with only one concurrent reader and one concurrent
-@@ -790,7 +790,7 @@ __kfifo_int_must_check_helper( \
-  * @fifo: address of the fifo to be used
-  * @len: number of bytes transferred
-  *
-- * This macro finish a DMA OUT operation. The out counter will be updated by
-+ * This macro finishes a DMA OUT operation. The out counter will be updated by
-  * the len parameter. No error checking will be done.
-  *
-  * Note that with only one concurrent reader and one concurrent
-@@ -807,7 +807,7 @@ __kfifo_int_must_check_helper( \
-  * @buf: pointer to the storage buffer
-  * @n: max. number of elements to get
-  *
-- * This macro get the data from the fifo and return the numbers of elements
-+ * This macro gets the data from the fifo and returns the numbers of elements
-  * copied. The data is not removed from the fifo.
-  *
-  * Note that with only one concurrent reader and one concurrent
--- 
-2.43.2
+This is great news! Could you just adjust the series fixing the
+compiling errors?
 
+Best Regards,
+- Maíra
+
+> 
+> [7]: https://lore.kernel.org/all/20240201065346.801038-1-vignesh.raman@collabora.com/
+> 
+> Changes in v2:
+> - Rebased the series on top of drm-misc/drm-misc-net
+> - Extract the typedef for pixel_read/pixel_write
+> - Introduce the line-by-line algorithm per pixel format
+> - Add some documentation for existing and new code
+> - Port the series [1] to use line-by-line algorithm
+> - Link to v1: https://lore.kernel.org/r/20240201-yuv-v1-0-3ca376f27632@bootlin.com
+> 
+> ---
+> Arthur Grillo (5):
+>        drm/vkms: Use drm_frame directly
+>        drm/vkms: Add YUV support
+>        drm/vkms: Add range and encoding properties to pixel_read function
+>        drm/vkms: Drop YUV formats TODO
+>        drm/vkms: Create KUnit tests for YUV conversions
+> 
+> Louis Chauvet (4):
+>        drm/vkms: Code formatting
+>        drm/vkms: write/update the documentation for pixel conversion and pixel write functions
+>        drm/vkms: Add typedef and documentation for pixel_read and pixel_write functions
+>        drm/vkms: Re-introduce line-per-line composition algorithm
+> 
+>   Documentation/gpu/vkms.rst                    |   3 +-
+>   drivers/gpu/drm/vkms/Makefile                 |   1 +
+>   drivers/gpu/drm/vkms/tests/.kunitconfig       |   4 +
+>   drivers/gpu/drm/vkms/tests/Makefile           |   3 +
+>   drivers/gpu/drm/vkms/tests/vkms_format_test.c | 155 +++++++
+>   drivers/gpu/drm/vkms/vkms_composer.c          | 233 ++++++++---
+>   drivers/gpu/drm/vkms/vkms_crtc.c              |   6 +-
+>   drivers/gpu/drm/vkms/vkms_drv.c               |   3 +-
+>   drivers/gpu/drm/vkms/vkms_drv.h               |  56 ++-
+>   drivers/gpu/drm/vkms/vkms_formats.c           | 565 +++++++++++++++++++++-----
+>   drivers/gpu/drm/vkms/vkms_formats.h           |  13 +-
+>   drivers/gpu/drm/vkms/vkms_plane.c             |  50 ++-
+>   drivers/gpu/drm/vkms/vkms_writeback.c         |  14 +-
+>   13 files changed, 916 insertions(+), 190 deletions(-)
+> ---
+> base-commit: aa1267e673fe5307cf00d02add4017d2878598b6
+> change-id: 20240201-yuv-1337d90d9576
+> 
+> Best regards,
 
