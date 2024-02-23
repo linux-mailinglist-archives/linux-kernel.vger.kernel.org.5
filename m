@@ -1,162 +1,197 @@
-Return-Path: <linux-kernel+bounces-77917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDF29860C22
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:21:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1858860C23
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:21:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E07FC1C245C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:21:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36E0A1F214C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:21:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B408D1B5B2;
-	Fri, 23 Feb 2024 08:20:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D07D22071;
+	Fri, 23 Feb 2024 08:20:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="igzC3AMW"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="bYZ3AfVe"
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBCA54414;
-	Fri, 23 Feb 2024 08:20:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 599DD18AEE
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 08:20:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708676425; cv=none; b=JY3nIFBpscrqZpW+nH7oLaXNhNgcZorQJGkowcKK47VzEOxHrGXCqcDLnGkv2CPZUEdIQSrkRgq1/a56S9WUGmChlATPo3IpdnH2EjwykJGx6PUaqTtUqiDf+gKB/HXfEixLvaFrfS4PMLz3NhMe4XBSrMSRH7wQlNgX8qW/whU=
+	t=1708676425; cv=none; b=XBziZ3lQ0MmJjFyMotjaK0zcE8P2cwlXFWjzYjJiOUjTcWiUhbRM/PjhbnO/McOzeh+OPuSEWrI3/lXbq/3deOBR3Ze9I+n42TJc0t5Ius4HlkeviAujTpINRRdhuf5b32OC/SzgKzbYb4XvDM+RDMiQOotsZ1cy/8EMFtIkGLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708676425; c=relaxed/simple;
-	bh=5n7Ca93sgt2C4nvaRXiYy2nhqL3iHW3hsRzfzicQJdw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=sgk6PrL1DZBxGfBWYgl4Tl4DZqZb+KTnyAQ5OAIF1323Xz/ylULd/yWGvkkOfq7G1TRKmehu2a4d8aWVNS+9nKkX8XHuH5VH5b+nI+tJFFVlMPrZSS2P9WTV9kUTgsbvvUVLGlDOYnwNoFH3XV89Jilee+3Avxh7NKlVJRFm5CY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=igzC3AMW; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e4e7e25945so68132b3a.1;
-        Fri, 23 Feb 2024 00:20:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708676422; x=1709281222; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8RfbJF1AHvLx68TbsWfPK5aQiL25UBSnWB8Job9Vv4g=;
-        b=igzC3AMWY/D77ji9c9voFd2EoFBTHFS2c/Cf0MvmXxkmiC0naIph42oNxNUIPkNGeK
-         9xEzgfPcj+tIBm3L6Im8vjXkSsOqEK1OWgBrvCmLIlhE1fn/Sb6eWcO/5+WodkVhxEAt
-         wso0ByJ3VTzgF7v8qNaw31UcIlpcCYQU/NTG7FYw02cbdD7CcZVOr7IK4WQkGx7yz9Gy
-         NcLoFML9FxKXi7hEU4OptBG4LL6+2AMKsrcIplBf5A3JRzb1K1OiJYzUcPJPViYzWaG9
-         gE2vY475c9kb4ubGKEJdM+2kTRi2qFMa81Nz6AAcgr18ha8jHzDZS0aj4pV7lDGZ8lTk
-         8W/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708676422; x=1709281222;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8RfbJF1AHvLx68TbsWfPK5aQiL25UBSnWB8Job9Vv4g=;
-        b=K1FXu/Gc55iXcg3Qq2d+IQp6XcYfuRgC9m/AaUJwuEP7oW4wMWje0NKRCgVm9u9chj
-         hyKcXfB1nSGP/9hZF9GcnK0v/IwCroaKK2CxRh5T5cwLEOhZZf/2MiLpPbCBrFSI1R5d
-         UR1zDKHRGnepR8aLvPYzSsDmKrdctf9NctQqzc7PTdK+Gb6N6NV6jvT4FYDOU9Y0dU4z
-         oqMyCXAPEWvk+1ar2lm6Gmejdlkgih7L2ZuYEijvCaNYdc/bQRYre8Vml6c5eCqbB3aW
-         8nNAgTmaqsoPde3LytQQEFbcc4hCnyX1xjrzSF1/HBuHPrfVKY1I9mx+LSpAdKJnVCb/
-         lchQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUnpoRTbAPAhQdLXRMqSBYGB6b+/6QRomSlAJhMCUmQirNzBMsJ0W5EST43hMpjCQ8tkJVwubM98ZzL4pnkRwBirQSxHZh95DM2T+9QNMWZ0AgASpfjl0VKa5NVxDuzVfLk4QZTEmboYg==
-X-Gm-Message-State: AOJu0YwCIo7HWS8j+Wcun6a30POE5E9qEW9JhqOS4XCtcyJm1N1Tmdll
-	aj0iY6V0ZeXAkuNjrMrzxf3Wf1/oJKtjlJp/gRn3eyj41zmkta9Y
-X-Google-Smtp-Source: AGHT+IESlTxR62kcKEjRyPd2MRipWcHKSB7X8sQnfOsHDmD+ru1s8Eaj7GCPdSZiEdY7xGi0rgweRw==
-X-Received: by 2002:a05:6a20:7a9e:b0:19e:5517:c345 with SMTP id u30-20020a056a207a9e00b0019e5517c345mr924733pzh.44.1708676421551;
-        Fri, 23 Feb 2024 00:20:21 -0800 (PST)
-Received: from localhost ([46.3.240.102])
-        by smtp.gmail.com with ESMTPSA id bf6-20020a170902b90600b001dc6f7e794dsm411534plb.16.2024.02.23.00.20.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 00:20:21 -0800 (PST)
-From: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
-To: u.kleine-koenig@pengutronix.de,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	paul.walmsley@sifive.com,
-	palmer@dabbelt.com,
-	aou@eecs.berkeley.edu
-Cc: linux-pwm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	dlan@gentoo.org,
-	inochiama@outlook.com,
-	Jingbao Qiu <qiujingbao.dlmu@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v3 1/2] dt-bindings: pwm: sophgo: add pwm for Sophgo CV1800 series SoC
-Date: Fri, 23 Feb 2024 16:20:13 +0800
-Message-Id: <20240223082014.109385-2-qiujingbao.dlmu@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240223082014.109385-1-qiujingbao.dlmu@gmail.com>
-References: <20240223082014.109385-1-qiujingbao.dlmu@gmail.com>
+	bh=HeyPgo+8UCVKlR0pSsRdYja39it6FmxGSMN3doO156Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KJpsf/O6ZzPKEjqBbBvUY2+TLzbyhNZzApt0mCi90V0UIxNIRgnVlBD9noTCR3NMolkl6UMSOmv/Fxx5dpH6c7ePXZr1X2+yJEnm7Sq+NUorLwiKLWguXDO6CjdcVc6O1rn98UVFYmTb/XRewThnfzWZLiQoZE0L7Q6wB3SNUT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=bYZ3AfVe; arc=none smtp.client-ip=195.181.215.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+	t=1708676418; bh=HeyPgo+8UCVKlR0pSsRdYja39it6FmxGSMN3doO156Q=;
+	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
+	b=bYZ3AfVewfQLfkJOtr2NFwdGwxpB2Usry+rr9+yym0SxhK11qNA87fUyvvW/Crx52
+	 Kt/zDGevmVTZsYo4hzZ7qmRBJZkxkUJVi9OgXjIN9kwjkoglf5CsDcyX9RI0QEB8gw
+	 +BKARxyqsdHdcFNhHV6/hRwFibu1BJxygJF1xl7k=
+Date: Fri, 23 Feb 2024 09:20:17 +0100
+From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+To: Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>
+Cc: Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Samuel Holland <samuel@sholland.org>, dri-devel@lists.freedesktop.org, 
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] drm/sun4i: Fix layer zpos change/atomic modesetting
+Message-ID: <iboaf4yyieqq6yeuu2amwjnwsao3vx7fzeqldhuplx5j6z2zxf@ex57tbxhzzk6>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
+	Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>, Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Samuel Holland <samuel@sholland.org>, dri-devel@lists.freedesktop.org, 
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
+References: <20240216190430.1374132-1-megi@xff.cz>
+ <20240216190430.1374132-4-megi@xff.cz>
+ <inuhwnlexpt6dpre4uailtvytjhms4uqeerzehbntczurhcxol@fc4nvkdwffdd>
+ <2448947.jE0xQCEvom@jernej-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <2448947.jE0xQCEvom@jernej-laptop>
 
-Add devicetree binding to describe the PWM for Sophgo CV1800 SoC.
+On Thu, Feb 22, 2024 at 09:02:53PM +0100, Jernej Škrabec wrote:
+> Dne sreda, 21. februar 2024 ob 14:45:20 CET je Maxime Ripard napisal(a):
+> > Hi,
+> > 
+> > On Fri, Feb 16, 2024 at 08:04:26PM +0100, Ondřej Jirman wrote:
+> > > From: Ondrej Jirman <megi@xff.cz>
+> > > 
+> > > Identical configurations of planes can lead to different (and wrong)
+> > > layer -> pipe routing at HW level, depending on the order of atomic
+> > > plane changes.
+> > > 
+> > > For example:
+> > > 
+> > > - Layer 1 is configured to zpos 0 and thus uses pipe 0. No other layer
+> > >   is enabled. This is a typical situation at boot.
+> > > 
+> > > - When a compositor takes over and layer 3 is enabled,
+> > >   sun8i_ui_layer_enable() will get called with old_zpos=0 zpos=1, which
+> > >   will lead to incorrect disabling of pipe 0 and enabling of pipe 1.
+> > > 
+> > > What happens is that sun8i_ui_layer_enable() function may disable
+> > > blender pipes even if it is no longer assigned to its layer.
+> > > 
+> > > To correct this, move the routing setup out of individual plane's
+> > > atomic_update into crtc's atomic_update, where it can be calculated
+> > > and updated all at once.
+> > > 
+> > > Remove the atomic_disable callback because it is no longer needed.
+> > > 
+> > > Signed-off-by: Ondrej Jirman <megi@xff.cz>
+> > 
+> > I don't have enough knowledge about the mixers code to comment on your
+> > patch, so I'll let Jernej review it. However, this feels to me like the
+> > pipe assignment is typically the sort of things that should be dealt
+> > with device-wide, and in atomic_check.
+> 
+> In DE2 and DE3.0, you cannot move planes between mixers (crtcs), because each
+> one is hardwired to specific mixer. Movable planes are the feature of DE3.3
+> and one of the pain points for upstreaming the code. Anyway, this commit only
+> addresses current issue of enabling and disabling planes and handling zpos.
+> 
+> In atomic check you can only precalculate final register values, but I don't
+> see any benefit doing that. I think that this code elegantly solves current
+> issue of enabling or disabling wrong plane in certain situations, so:
+> 
+> Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Signed-off-by: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
----
- .../bindings/pwm/sophgo,cv1800-pwm.yaml       | 45 +++++++++++++++++++
- 1 file changed, 45 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/pwm/sophgo,cv1800-pwm.yaml
+Thanks for the review.
 
-diff --git a/Documentation/devicetree/bindings/pwm/sophgo,cv1800-pwm.yaml b/Documentation/devicetree/bindings/pwm/sophgo,cv1800-pwm.yaml
-new file mode 100644
-index 000000000000..b5b819d780f1
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pwm/sophgo,cv1800-pwm.yaml
-@@ -0,0 +1,45 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pwm/sophgo,cv1800-pwm.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Sophgo CV1800 PWM controller
-+
-+maintainers:
-+  - Jingbao Qiu <qiujingbao.dlmu@gmail.com>
-+
-+description:
-+  The chip provides a set of four independent PWM channel outputs.
-+
-+allOf:
-+  - $ref: pwm.yaml#
-+
-+properties:
-+  compatible:
-+    const: sophgo,cv1800-pwm
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  "#pwm-cells":
-+    const: 3
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    pwm0: pwm@3060000 {
-+        compatible = "sophgo,cv1800-pwm";
-+        reg = <0x3060000 0x1000>;
-+        clocks = <&clk 60>;
-+        #pwm-cells = <3>;
-+    };
--- 
-2.25.1
+> Note, if there is new revision, please rewrite blender regmap_update_bits()
+> to regmap_write(). Since there is HW issue with reads, I would like to
+> get rid of regmap_update_bits() calls eventually.
 
+BTW as a side note, one observation I made about a year back after some testing
+with a setup like this:
+
+- PIN photodiode in a black box directed at a display (Pinephone)
+  attached to the oscilloscope
+- GPIO signal routed to another input of the scope
+- sun4i-drm driver modification that toggles the GPIO any number of times so
+  that I can correlate brightness changes as seen by photodiode on the
+  scope with the timing of what's happening in the driver
+
+is that if you do atomic commit right after receiving the flip event there's
+a high chance that what you're commiting will get displayed right away,
+basically skipping the update from the previous atomic commit.
+
+It's very easy to reproduce with a test application that flips between two
+completely white and completely black framebuffers back and forth right
+after flip event. What you see on the display is seemingly random blinking
+pattern: https://megous.com/dl/tmp/c9a286427ce66d80.png when it should be
+a peridic flipping between black and white pixels like this
+https://megous.com/dl/tmp/c085a50ccd387257.png
+
+This goes away for me when introducing a >150us delay between flip event
+and next atomic commit.
+
+I did a more complex test with a test app that switches between 4 framebuffers
+of decreasing shades of gray, so that the resulting pattern of brightness should
+be a stariwise stepping signal pattern on the scope, along with gpio indicating which
+framebuffer just got commited (by the number of pulses 1-4). What I saw was
+that normally there's a 1 frame delay between commit and the corresponding
+brightness change, but often enough the brightness change is immediate.
+
+I think the hardware indicates a flip (vsync irq) some time before it performs
+the double buffered register update to shadow register for the next frame. So
+sometimes the driver manages to overwrite the values stored during the previous
+commit before they get flipped to shadow registers. Again, intorducing a 150us
+delay between flip event and atomic commit reliably fixes this, and I see
+a perfect stairwise pattern on the scope instead of occasional skipped ahead
+steps.
+
+It seems to me that those 150us are related to display timing.
+
+Vertical blanking cycle on Pinephone lasts about 400us with 45us long vsync
+pulse roughly in the middle. In my observation it seems likely that HW signals
+VSYNC interrupt at the start or end of the VSYNC pulse and flips the double
+buffered HW registers at the end of the blanking cycle, leaving some 150us of
+time in between for a quick atomic commit to still mess up the register settings
+for the upcoming scan out, before they get commited to shadow regs. I don't have
+a way to observe vsync signal on a scope, because it's MIPI-DSI display to
+verify this exactly.
+
+The certain thing is that after vsync interrupt, the double buffered registers
+are not switched, yet. There's still some time left before that happens.
+
+Anyway, just something I'd thought I share that may help us understand this
+HW better. :)
+
+kind regards,
+	o.
+
+> Best regards,
+> Jernej
+> 
+> > 
+> > If I'm talking non-sense, it would be great to mention at least why that
+> > can't be an option in the commit log.
+> > 
+> > Maxime
+> > 
+> 
+> 
+> 
+> 
 
