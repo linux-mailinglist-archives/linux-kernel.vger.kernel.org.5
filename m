@@ -1,123 +1,207 @@
-Return-Path: <linux-kernel+bounces-79006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79011-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D286861C26
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:51:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5BB6861C35
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:00:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9964EB2406E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:51:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA4AC1C226A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:00:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 494CA84FBB;
-	Fri, 23 Feb 2024 18:50:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 273C014263A;
+	Fri, 23 Feb 2024 18:59:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="rzQC+UUs"
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FE00142645;
-	Fri, 23 Feb 2024 18:50:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="gSJOHz8G"
+Received: from smtp.smtpout.orange.fr (smtp-27.smtpout.orange.fr [80.12.242.27])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BFB971735
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 18:59:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.27
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708714243; cv=none; b=uMB2OW16FlCTbzolU4RqWeBEU+I59v8zSjEuDB10N7d6pA2Wj5F7kpKJpHBgaBnblLN6NFxC0z86Rfx5TKFbzoQdcu2TG6lxPnyMtzTWO8OulKuO8Uvlw5EV4jrrjHwCuAKV2D4aQ1pXr0554+VxU+hezn6sYE2Rey//H+onXoQ=
+	t=1708714798; cv=none; b=Rp6UWMRlUtuvlXmk903Heae7UXVwmAvWKolYdqckDd2Q4M19GZSONXT8baQz6JPJFJ7Yh8XuepXsdytuJ7VAytIuFvggLgcjLCJetn4Gd1OMMmbni+ifO7YKrcyhJw3s37q288S8MrOE/FeoM9F8ODr6DZwT+sUWGQTVzCdXIUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708714243; c=relaxed/simple;
-	bh=DhL+o3TBv9wTdewu3RZDH83BAQtweFRzwwjac4VyAmQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ptjRk73cQdlnjfmzMtpBnAlHusR1fAy6RcLRZkBrsoLrdpVXsxgT32kPYqWxaIT6Z5DvzfaDBPja21Dx38Z0PHSXTk0gkBMBAeT7IaGAawZnP+9Zf/k/FSM19jGk4IrbB/qSCRj871lZJVGEUe+a7atw3UcClQ55V9XmhQ5J7/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=rzQC+UUs; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id D19971C0081; Fri, 23 Feb 2024 19:50:36 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
-	t=1708714236;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=N5THRV7c4OguqZqtxRyAd4aFwhAeBHnTNbl2Gj2YB8I=;
-	b=rzQC+UUsFYyriraM5TQkTbiALnJrX/ttY9RMMeRia5fd/0YPxmstJoPqHuzpCzMq0nn4JG
-	+jtXtMON8C6dPIb9W53Qp5ujdt3dvfI5WOqwOHCbMWA4UZqmSHiqToNBUkxjVHHZiSakkt
-	LW8x54za/0EZbqjE+SMKhpXYbUVXf40=
-Date: Fri, 23 Feb 2024 19:50:36 +0100
-From: Pavel Machek <pavel@ucw.cz>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Vlastimil Babka <vbabka@suse.cz>,
-	kernel list <linux-kernel@vger.kernel.org>,
-	Greg KH <gregkh@linuxfoundation.org>,
-	Oleksandr Natalenko <oleksandr@natalenko.name>,
-	Jiri Benc <jbenc@redhat.com>, Sasha Levin <sashal@kernel.org>,
-	stable@vger.kernel.org,
-	Thorsten Leemhuis <regressions@leemhuis.info>
-Subject: Re: stable-kernel-rules was Re: fs/bcachefs/
-Message-ID: <Zdjo/D8dZ/gJ4vz4@duo.ucw.cz>
-References: <g6el7eghhdk2v5osukhobvi4pige5bsfu5koqtmoyeknat36t7@irmmk7zo7edh>
- <uknxc26o6td7g6rawxffvsez46djmvcy2532kza2zyjuj33k7p@4jdywourgtqg>
- <2024022103-municipal-filter-fb3f@gregkh>
- <4900587.31r3eYUQgx@natalenko.name>
- <2024022155-reformat-scorer-98ae@gregkh>
- <aaf2f030-b6f4-437b-bb4e-79aa4891ae56@suse.cz>
- <ZdeeKiTXc7WidRcs@duo.ucw.cz>
- <bhqwmyfmd3a5mgsdbfom6hz2cvhf75felzf2bu3aiusr6f3ael@6qo7buimzot2>
+	s=arc-20240116; t=1708714798; c=relaxed/simple;
+	bh=7UqDuwBDaflgwCxw652350Ulcmu75Iyquu+SWNAvWw4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bjed5s6ZkllPRJ2j0554kH0fBEPzpgU5vY9xAuvHGoE2gqAk0mzVrZ/H8sxHpYtFubBmuUIu3oueh5k+lrNFWCG0jw79wYg503/hfWCjZZNYr9WvZEK8+Fho0ZrYL+S+3PTj9jp8++hS5TMPIWPOCHpUU7E4whuzaBbReubbOds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=gSJOHz8G; arc=none smtp.client-ip=80.12.242.27
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from [192.168.1.18] ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id dad3rSWmGAVWCdad3rWYDQ; Fri, 23 Feb 2024 19:50:38 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1708714238;
+	bh=b2nzjyV92V5xFcCR433HxBvfMH7+kUtrO9FWeyeWOCQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=gSJOHz8G0WmTpVutXKnIFVjcLbBB1QIclwwVEQyQ4j6idFD9JbNJap3o6UKPBJVZz
+	 cqMFD/y4EvOF8qWOv8Y8+4Qy1CHhsbC2ahw9ZY+oHwAwBojDPKbLC+0eARYERsT9kZ
+	 J8MljnZMQYF9Ed3LsOYxwkorekwBuoSpdxNXoEfegcDpWAKJ/8I6lQGCdD5v3FdVWp
+	 qo8FRhlWim+zAOeryHLsfiwrcj1wkkTTeNGWvmNwMpDTDfoPGJkMYbh8KayxOMxHWG
+	 NjB7hOFJZMC9iA/hGqmcSxgeeNpY5s+jus6lwGJZpxVEzbWBI1yZ87CD5L9VV1q6tH
+	 oiJ1FRv0DTNCA==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 23 Feb 2024 19:50:38 +0100
+X-ME-IP: 92.140.202.140
+Message-ID: <530912d2-aa44-494d-bd51-dcac6147b78a@wanadoo.fr>
+Date: Fri, 23 Feb 2024 19:50:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+wZgcwm10bI8HAca"
-Content-Disposition: inline
-In-Reply-To: <bhqwmyfmd3a5mgsdbfom6hz2cvhf75felzf2bu3aiusr6f3ael@6qo7buimzot2>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH V8 2/2] dmaengine: amd: qdma: Add AMD QDMA driver
+Content-Language: en-MW
+To: Lizhi Hou <lizhi.hou@amd.com>, vkoul@kernel.org,
+ dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Nishad Saraf <nishads@amd.com>, nishad.saraf@amd.com,
+ sonal.santan@amd.com, max.zhen@amd.com
+References: <1708707403-47386-1-git-send-email-lizhi.hou@amd.com>
+ <1708707403-47386-3-git-send-email-lizhi.hou@amd.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <1708707403-47386-3-git-send-email-lizhi.hou@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
+Le 23/02/2024 à 17:56, Lizhi Hou a écrit :
+> From: Nishad Saraf <nishads@amd.com>
+> 
+> Adds driver to enable PCIe board which uses AMD QDMA (the Queue-based
+> Direct Memory Access) subsystem. For example, Xilinx Alveo V70 AI
+> Accelerator devices.
+>      https://www.xilinx.com/applications/data-center/v70.html
+> 
+> The QDMA subsystem is used in conjunction with the PCI Express IP block
+> to provide high performance data transfer between host memory and the
+> card's DMA subsystem.
+> 
+>              +-------+       +-------+       +-----------+
+>     PCIe     |       |       |       |       |           |
+>     Tx/Rx    |       |       |       |  AXI  |           |
+>   <=======>  | PCIE  | <===> | QDMA  | <====>| User Logic|
+>              |       |       |       |       |           |
+>              +-------+       +-------+       +-----------+
+> 
+> The primary mechanism to transfer data using the QDMA is for the QDMA
+> engine to operate on instructions (descriptors) provided by the host
+> operating system. Using the descriptors, the QDMA can move data in both
+> the Host to Card (H2C) direction, or the Card to Host (C2H) direction.
+> The QDMA provides a per-queue basis option whether DMA traffic goes
+> to an AXI4 memory map (MM) interface or to an AXI4-Stream interface.
+> 
+> The hardware detail is provided by
+>      https://docs.xilinx.com/r/en-US/pg302-qdma
+> 
+> Implements dmaengine APIs to support MM DMA transfers.
+> - probe the available DMA channels
+> - use dma_slave_map for channel lookup
+> - use virtual channel to manage dmaengine tx descriptors
+> - implement device_prep_slave_sg callback to handle host scatter gather
+>    list
+> - implement descriptor metadata operations to set device address for DMA
+>    transfer
+> 
+> Signed-off-by: Nishad Saraf <nishads@amd.com>
+> Signed-off-by: Lizhi Hou <lizhi.hou@amd.com>
+> ---
 
---+wZgcwm10bI8HAca
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+..
 
-Hi!
+> +static void qdma_free_qintr_rings(struct qdma_device *qdev)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < qdev->qintr_ring_num; i++) {
+> +		if (!qdev->qintr_rings[i].base)
+> +			continue;
+> +
+> +		dma_free_coherent(&qdev->pdev->dev, QDMA_INTR_RING_SIZE,
+> +				  qdev->qintr_rings[i].base,
+> +				  qdev->qintr_rings[i].dev_base);
+> +	}
+> +}
+> +
+> +static int qdma_alloc_qintr_rings(struct qdma_device *qdev)
+> +{
+> +	u32 ctxt[QDMA_CTXT_REGMAP_LEN];
+> +	struct device *dev = &qdev->pdev->dev;
+> +	struct qdma_intr_ring *ring;
+> +	struct qdma_ctxt_intr intr_ctxt;
+> +	u32 vector;
+> +	int ret, i;
+> +
+> +	qdev->qintr_ring_num = qdev->queue_irq_num;
+> +	qdev->qintr_rings = devm_kcalloc(dev, qdev->qintr_ring_num,
+> +					 sizeof(*qdev->qintr_rings),
+> +					 GFP_KERNEL);
+> +	if (!qdev->qintr_rings)
+> +		return -ENOMEM;
+> +
+> +	vector = qdev->queue_irq_start;
+> +	for (i = 0; i < qdev->qintr_ring_num; i++, vector++) {
+> +		ring = &qdev->qintr_rings[i];
+> +		ring->qdev = qdev;
+> +		ring->msix_id = qdev->err_irq_idx + i + 1;
+> +		ring->ridx = i;
+> +		ring->color = 1;
+> +		ring->base = dma_alloc_coherent(dev, QDMA_INTR_RING_SIZE,
+> +						&ring->dev_base,
+> +						GFP_KERNEL);
 
-> > There seems to be just one rule being observed: "It or an equivalent
-> > fix must already exist in Linus' tree (upstream).". Every other rule is
-> > broken pretty much all the time.
-> >=20
-> > AUTOSEL is a problem.
-> >=20
-> > Plus there's problem with dependencies -- if a patch A is need for fix
-> > B, the rules pretty much go out of the window, huge patches are
-> > applied, whitespace fixes are applied, etc.
-> >=20
-> > There are even known-bad patches being applied, and then
-> > reverted. Greg explained that it heps his process somehow.
->=20
-> This seems to be a pretty consistent theme theme - thins are done baesd
-> on whatever makes Greg's process easier, not input from the people
-> stable ought to be working with. Pretty questionable set of priorities
-> if you ask me.
+Hi,
 
-Well, I'd not mind stable process following the documented rules.
+Does it make sense to use dmam_alloc_coherent() and remove 
+qdma_free_qintr_rings()?
 
-But fixing the documentation to match the reality would also be an
-improvement, because some people actually read it and expect it to be
-followed.
+If yes, maybe the function could be renamed as qdmam_alloc_qintr_rings() 
+or devm_qdma_alloc_qintr_rings() to show that it is fully managed.
 
-Best regards,
-								Pavel
---=20
-People of Russia, stop Putin before his war on Ukraine escalates.
+CJ
 
---+wZgcwm10bI8HAca
-Content-Type: application/pgp-signature; name="signature.asc"
+> +		if (!ring->base) {
+> +			qdma_err(qdev, "Failed to alloc intr ring %d", i);
+> +			ret = -ENOMEM;
+> +			goto failed;
+> +		}
+> +		intr_ctxt.agg_base = QDMA_INTR_RING_BASE(ring->dev_base);
+> +		intr_ctxt.size = (QDMA_INTR_RING_SIZE - 1) / 4096;
+> +		intr_ctxt.vec = ring->msix_id;
+> +		intr_ctxt.valid = true;
+> +		intr_ctxt.color = true;
+> +		ret = qdma_prog_context(qdev, QDMA_CTXT_INTR_COAL,
+> +					QDMA_CTXT_CLEAR, ring->ridx, NULL);
+> +		if (ret) {
+> +			qdma_err(qdev, "Failed clear intr ctx, ret %d", ret);
+> +			goto failed;
+> +		}
+> +
+> +		qdma_prep_intr_context(qdev, &intr_ctxt, ctxt);
+> +		ret = qdma_prog_context(qdev, QDMA_CTXT_INTR_COAL,
+> +					QDMA_CTXT_WRITE, ring->ridx, ctxt);
+> +		if (ret) {
+> +			qdma_err(qdev, "Failed setup intr ctx, ret %d", ret);
+> +			goto failed;
+> +		}
+> +
+> +		ret = devm_request_threaded_irq(dev, vector, NULL,
+> +						qdma_queue_isr, IRQF_ONESHOT,
+> +						"amd-qdma-queue", ring);
+> +		if (ret) {
+> +			qdma_err(qdev, "Failed to request irq %d", vector);
+> +			goto failed;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +
+> +failed:
+> +	qdma_free_qintr_rings(qdev);
+> +	return ret;
+> +}
 
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZdjo/AAKCRAw5/Bqldv6
-8hT1AKCNAauh3IxGbhZqKnYZ40ZpkG3lCQCfY8dSbOtuGWBuqkhzTC2wX47Wptw=
-=5ekV
------END PGP SIGNATURE-----
-
---+wZgcwm10bI8HAca--
+..
 
