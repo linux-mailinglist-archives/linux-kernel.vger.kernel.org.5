@@ -1,118 +1,143 @@
-Return-Path: <linux-kernel+bounces-78381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0905F8612BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:30:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBE0A8612C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:31:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DE4F1F25093
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:30:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 297DE1C21080
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:31:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D06882D77;
-	Fri, 23 Feb 2024 13:28:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DbXiv5If"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1BF57F46F;
+	Fri, 23 Feb 2024 13:28:44 +0000 (UTC)
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58A9A7F48D;
-	Fri, 23 Feb 2024 13:28:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10F737EF06;
+	Fri, 23 Feb 2024 13:28:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708694909; cv=none; b=brW75pxGXDF207Q8AEPX7mi+PFbwBhXPh33XYUwDEqT8bVHjA3AZQkf+Vx/Fo+icGE8uQ2q6gpbbV2dZv/z8lfmu0iBisF2kW963GuK13f4CzviUKybRVC42wt4FTbAMZz5LIOqwtgUdZrP+uwKHEv5EopaJEQEVsFhmcJb4mbk=
+	t=1708694924; cv=none; b=fJGHgYsb7STaD3hY9f8SCM8ymHX6jmRFUx5FkFYHAld2++7EXt8usLM62HSQDwgrVIA8M49uJsuMUvpDVbtQ90pMvUe7Jt3y0H5mI5qh+9hlSZoGJZkJr32BKvNi8D+iEugkXI8UdVJcUTw8fH3Qti/npQO/fHpd1v9P8030CZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708694909; c=relaxed/simple;
-	bh=OcmgXpcRM8kSwibnYWY2jGXTBaTcyrBdkKpBfGjwCpA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=mlEKqgti3EwQnyMXRc6OTM54JTUslQtAyoxBUEh8MqQe9kSFIz2mtuV2S6lpv1Wt4pDY/PPHdH5/vqoSP1FINKlMBe3/OzyZeMEJiwZNDkbYQ0ShhuGJXPFB6caRqikG/2hq7qssuOLbN5KR31Xo4aV+kQ2ICk/ERVxUNmWHxcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DbXiv5If; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D8DB3C3277A;
-	Fri, 23 Feb 2024 13:28:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708694908;
-	bh=OcmgXpcRM8kSwibnYWY2jGXTBaTcyrBdkKpBfGjwCpA=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=DbXiv5IflUQwSulHSPUIsrLM6b5xxJTprJWdi+BS3lCzOZZQnOkp/sG7fDeis9liv
-	 HbVpVl9l6eyYuGrKkkLM5vJCz7Too9nzAiTuiyfv2KGEj6ZR0GV/Kpbdfo3aDb1wYw
-	 L0WDOu7+2cpe6DAMUN9Kk0zuM0qjb64OlHf0TbTNXN3aI87/XWTQ87NuyZtpo4GBjj
-	 mhf4DvcYUsqsPuYLJsSxjjS4o8u8r5mzNADE9qOkK67FwSbo90Jcfu21r6+i/45Vtc
-	 KXM2Bab4tzvBL3y46Y9+Nkay91klgfeW+RlkjhJiN9KtNqeu/Hu2DRDphlCwMBD4oG
-	 UxKIpkI5s7+TA==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6B41C54798;
-	Fri, 23 Feb 2024 13:28:28 +0000 (UTC)
-From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
-Date: Fri, 23 Feb 2024 21:28:22 +0800
-Subject: [PATCH net-next v5 7/7] net: hisi_femac: remove unused compatible
- strings
+	s=arc-20240116; t=1708694924; c=relaxed/simple;
+	bh=HBeXTwP6V8GWzKbXvRGCp7ccI5d7wCs1JlCvNNA4GHA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lLAmV37TeJrS0868ZmI5DACCuvGjw6pVlL4L4ZwoSzDSepJYc6+rZyKCLTsVOdbOnrsXdwyHbYtvpeA9maJiQirFLLkfhnzFBbKH5iCPtg1LdTg42EzTYD3t5dYBqXshJ8MPZtOuAznU4DAJmztqUrvoSUAlc1kPLJu+21aJsWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=auristor.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=auristor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5640fef9fa6so1031126a12.0;
+        Fri, 23 Feb 2024 05:28:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708694920; x=1709299720;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1pxp9SZUqXTyshzqGMBNW9bsQ0Wd0IUJwu8yD4N1umA=;
+        b=HOG1nzCsRuEXxOwPSJE9AJdYkDcwzkcOhgSep+WfpVlaBhA8xHpewLkA3fv8FoNiKv
+         hfAcML83H0Yd9Y7+jfKip347YLQOHz6++lBcxZJNzYYAMm7jful2NhiY2pwX59PF46Nf
+         ea+F8DmT0eS2CPYVy0RO4E3wjAmsYRlzO93RAPgP6jBZBBLdkU5tp4Sq0rvWvb4OxO7w
+         iwBgIRQCOT5jkJLJokFFaXMxPMrpqLn6NAnQQDDqHp/r9VNqS4MwlGYmbYO8zaGaLa0C
+         xWghFDBCYpQvxZzWI8oFZvpzE7MkNjTyjpzKsedgZ2gs90bwtozDQvkJp2EfuUoBhv3U
+         VcYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVfdRP0EKionPRCOXZxVEw6WHSanrK4mcaqBpcW5PGcFk4NS6MHYMMgh0dANOHDUS+r95hHH2kHDEaIs3IIDnBEweAxYHj7pGVmQzRNLyC3Efy82ln9ivh9qoTUFdrIIXouIJHr80Rd9tvspw==
+X-Gm-Message-State: AOJu0Yx/yqbJWPoiwvBM5d/f3fxUIQUzpOPenBtkztcXr/Czntcv6AGe
+	R9LkTqryfBVS0y9MA67U1/ZyWIZ9Jyzysp7/vXMI4SlNXf0DRpJ/SpE7nmaeNedRmA==
+X-Google-Smtp-Source: AGHT+IEt5ukyCi6juaBcTv7LG71P8GlHsU0WQp8yd08i4vXieMWXhl1JUOTBc4ePdp8lzP3CGTjemg==
+X-Received: by 2002:aa7:dd0f:0:b0:564:ded0:6072 with SMTP id i15-20020aa7dd0f000000b00564ded06072mr1391419edv.1.1708694919979;
+        Fri, 23 Feb 2024 05:28:39 -0800 (PST)
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com. [209.85.208.44])
+        by smtp.gmail.com with ESMTPSA id e18-20020a056402149200b00563c63e0a13sm6441222edv.49.2024.02.23.05.28.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Feb 2024 05:28:39 -0800 (PST)
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5654f700705so1020699a12.1;
+        Fri, 23 Feb 2024 05:28:39 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV73BGPLkv0YBnNqC3XFBVNfCbK5ED+QYpxfdQ3SbDuGtx1sbt8YKzM8aZczd9S7S8VSBvBVNBDNA6MTUJNRBRUVxEPrfJyjMFAbrKLBECPNxVV3hahmLsschQ6w0UVy8iD5cXbQJTgCqvTug==
+X-Received: by 2002:a17:906:a112:b0:a3e:4404:dc7 with SMTP id
+ t18-20020a170906a11200b00a3e44040dc7mr1404625ejy.23.1708694919517; Fri, 23
+ Feb 2024 05:28:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240223-net-v5-7-43b22d39c013@outlook.com>
-References: <20240223-net-v5-0-43b22d39c013@outlook.com>
-In-Reply-To: <20240223-net-v5-0-43b22d39c013@outlook.com>
-To: Yisen Zhuang <yisen.zhuang@huawei.com>, 
- Salil Mehta <salil.mehta@huawei.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>, 
- Heiner Kallweit <hkallweit1@gmail.com>, 
- Russell King <linux@armlinux.org.uk>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- devicetree@vger.kernel.org, Yang Xiwen <forbidden405@outlook.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708694896; l=1155;
- i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
- bh=sYmI7rY8FFj5xi4CE0Px8R4wNFWcF8TjujWAa/SwbJA=;
- b=y5AFthUDMAKc4WCobsL6nAa0m+n8a/ePnE5/DJblwDSUz4juexa2ujqNi+54+2fmxtaOl8KyF
- 7CGgey2Rt/FDIhmZB+d//6McD0Ts6Bkjyw6lP6d5dCOBSgArlbZ58v+
-X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
- pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
-X-Endpoint-Received:
- by B4 Relay for forbidden405@outlook.com/20230724 with auth_id=67
-X-Original-From: Yang Xiwen <forbidden405@outlook.com>
-Reply-To: <forbidden405@outlook.com>
+References: <786185.1708694102@warthog.procyon.org.uk>
+In-Reply-To: <786185.1708694102@warthog.procyon.org.uk>
+From: Marc Dionne <marc.dionne@auristor.com>
+Date: Fri, 23 Feb 2024 09:28:28 -0400
+X-Gmail-Original-Message-ID: <CAB9dFdvDitrof7a4Df1ziJJHnfqNModR7ZxBD971VCZuxyiEZQ@mail.gmail.com>
+Message-ID: <CAB9dFdvDitrof7a4Df1ziJJHnfqNModR7ZxBD971VCZuxyiEZQ@mail.gmail.com>
+Subject: Re: [PATCH] afs: Fix endless loop in directory parsing
+To: David Howells <dhowells@redhat.com>
+Cc: Markus Suvanto <markus.suvanto@gmail.com>, Christian Brauner <brauner@kernel.org>, 
+	linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Yang Xiwen <forbidden405@outlook.com>
+On Fri, Feb 23, 2024 at 9:15=E2=80=AFAM David Howells <dhowells@redhat.com>=
+ wrote:
+>
+>
+> If a directory has a block with only ".__afsXXXX" files in it (from
+> uncompleted silly-rename), these .__afsXXXX files are skipped but without
+> advancing the file position in the dir_context.  This leads to
+> afs_dir_iterate() repeating the block again and again.
+>
+> Fix this by making the code that skips the .__afsXXXX file also manually
+> advance the file position.
+>
+> The symptoms are a soft lookup:
+>
+>         watchdog: BUG: soft lockup - CPU#3 stuck for 52s! [check:5737]
+>         ...
+>         RIP: 0010:afs_dir_iterate_block+0x39/0x1fd
+>         ...
+>          ? watchdog_timer_fn+0x1a6/0x213
+>         ...
+>          ? asm_sysvec_apic_timer_interrupt+0x16/0x20
+>          ? afs_dir_iterate_block+0x39/0x1fd
+>          afs_dir_iterate+0x10a/0x148
+>          afs_readdir+0x30/0x4a
+>          iterate_dir+0x93/0xd3
+>          __do_sys_getdents64+0x6b/0xd4
+>
+> This is almost certainly the actual fix for:
+>
+>         https://bugzilla.kernel.org/show_bug.cgi?id=3D218496
+>
+> Fixes: 57e9d49c5452 ("afs: Hide silly-rename files from userspace")
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Marc Dionne <marc.dionne@auristor.com>
+> cc: Markus Suvanto <markus.suvanto@gmail.com>
+> cc: linux-afs@lists.infradead.org
+> ---
+>  fs/afs/dir.c |    4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/afs/dir.c b/fs/afs/dir.c
+> index b5b8de521f99..8a67fc427e74 100644
+> --- a/fs/afs/dir.c
+> +++ b/fs/afs/dir.c
+> @@ -479,8 +479,10 @@ static int afs_dir_iterate_block(struct afs_vnode *d=
+vnode,
+>                     dire->u.name[0] =3D=3D '.' &&
+>                     ctx->actor !=3D afs_lookup_filldir &&
+>                     ctx->actor !=3D afs_lookup_one_filldir &&
+> -                   memcmp(dire->u.name, ".__afs", 6) =3D=3D 0)
+> +                   memcmp(dire->u.name, ".__afs", 6) =3D=3D 0) {
+> +                       ctx->pos =3D blkoff + next * sizeof(union afs_xdr=
+_dirent);
+>                         continue;
+> +               }
+>
+>                 /* found the next entry */
+>                 if (!dir_emit(ctx, dire->u.name, nlen,
 
-The only documented SoC Hi3516DV300 does not receive any updates from 8
-years ago. With the recent driver changes, it unlikely works for this
-SoC anymore. Remove the binding for this SoC.
+Reviewed-by: Marc Dionne <marc.dionne@auristor.com>
 
-Also it's hard to get the version number and it's unknown how the
-version can be used. Remove them until it's really needed.
-
-Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
----
- drivers/net/ethernet/hisilicon/hisi_femac.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/hisilicon/hisi_femac.c b/drivers/net/ethernet/hisilicon/hisi_femac.c
-index eab91e011d11..9466ca9da2bb 100644
---- a/drivers/net/ethernet/hisilicon/hisi_femac.c
-+++ b/drivers/net/ethernet/hisilicon/hisi_femac.c
-@@ -990,9 +990,7 @@ static int hisi_femac_drv_resume(struct platform_device *pdev)
- #endif
- 
- static const struct of_device_id hisi_femac_match[] = {
--	{.compatible = "hisilicon,hisi-femac-v1",},
--	{.compatible = "hisilicon,hisi-femac-v2",},
--	{.compatible = "hisilicon,hi3516cv300-femac",},
-+	{.compatible = "hisilicon,hisi-femac",},
- 	{.compatible = "hisilicon,hi3798mv200-femac",},
- 	{},
- };
-
--- 
-2.43.0
-
+Marc
 
