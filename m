@@ -1,144 +1,177 @@
-Return-Path: <linux-kernel+bounces-77765-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D611D8609F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 05:44:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 828F58609FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 05:46:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A4681F24D2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:44:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B756B287B58
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:46:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F7B11119E;
-	Fri, 23 Feb 2024 04:43:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A58C1111BA;
+	Fri, 23 Feb 2024 04:46:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="b76Xqx/F"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="EFItMfhh"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2057.outbound.protection.outlook.com [40.107.220.57])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D3B010A31
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 04:43:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708663433; cv=none; b=JvX4NaLyncTvEqebBmanv4ADeZa+yMhlcTL2WU1CCfmljIa01wllFiW0eqq3wC3kE3TGT9jU98L+fenlhkYgAQVf22Y9XkFIkhCUDAlYhAJRYzFDExgl9toOYAY1AyuoPiW2XPDrvwpBn1t770tm0YvNIgVpn7R3U6d/ou4qomU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708663433; c=relaxed/simple;
-	bh=Ca4fxX1YOQIc9IaTljm5TL6Wj+BZP/Dp47VTszaskxg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tiAX+5EIfxuUWzDwO4iQPVtlIY1gSCi/tZgzJxP+arl/+E1joBSV9RKIcQy/OzJaqTiqHsWpDUkv6BS6qYT4qrW/Z+3iwGNeYjU4bHCPI+tb4+xfgpCOGUb82zzqhNBtaYthvsT+R7C8bkRK8AKFQZz9QZRKrJTiTAYoW6pa75g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=b76Xqx/F; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-512a65cd2c7so732229e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 20:43:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708663430; x=1709268230; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oBx7MOkn9wW9DxztfWR4DG5bZ9dZsBTrKJsnaVTaV5I=;
-        b=b76Xqx/Fd4fzyl8ovMUOV499M5dh2vDT5nCpZ7S7dYHGX5yRGIB7Dkr3rrGhgp/zIJ
-         WQwu+BWTTlA+NcZv01ZT9lwh22qwk5c4suPxymiEYPF7toQomjQIIfLHRhVUOrJGrE2d
-         4J/1k2MZ/HNPPFkuxAiqZf/ZWcU0pCOOLaUxw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708663430; x=1709268230;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oBx7MOkn9wW9DxztfWR4DG5bZ9dZsBTrKJsnaVTaV5I=;
-        b=MxVPBA2nP/V30755IzvxZ81xMyzDhi/rR6xhdy3eG1FaJXrXuBqCaP7XhsXDONpBnd
-         2WSg7HuwUoPmnArEy0MeB/d34MwECGaRsCyzHZzK3H1adRNaSflfeQBT0v/D0ra/c67b
-         OIFf/z8nAORYKTJAm0iJ1rx6fWQjIJRexIZQeAd//umHIMwJl9PfLTa9Fcpk2A+VqNU9
-         9Aaa77mXCQRHVEjOhhFLdf9eBS8pr1A5Lq/q6bsge5JMhwmLsEm02Q2WcbN/lW8M0P1B
-         TcpTpeyPabdR9rn1HyxpCtNwfMOxYPhoTG0aDLiSh9iiX9GBcqhab9pesRXxRHZYecn5
-         AHAA==
-X-Forwarded-Encrypted: i=1; AJvYcCVYGpagxce1uxon3C78yWGQ5jYr4HdAxBGbeakXLo4cjZG6i6+1cYZsmHJZi9mugNAx9g56XI0AyP/tqxE5SasgKjusY/IW8SyS+U5s
-X-Gm-Message-State: AOJu0YyNz2CTtsuaY8qhuGh4BHxrSYUSjYp0lEQXF30zGxLmxq241Nmv
-	y4rDmEl7oHY4rUqDIF9R5HhPqQUL4ylk2opDUU4Nb222I6ytAojOx5DQz8NhKdI6SB4H5u9Y7Ct
-	stRGpYuV1Ku268iACPNNHQKemu28cdYM76cmo
-X-Google-Smtp-Source: AGHT+IF5QOowQOFza4xh4jiRjjWLNuX1rVomW/9NM2WmASfwoESsVYQHmb/UIiIOu30QnLkqolbWhZLkQamy3+pnN3M=
-X-Received: by 2002:ac2:5984:0:b0:512:e091:cb1b with SMTP id
- w4-20020ac25984000000b00512e091cb1bmr566669lfn.13.1708663430207; Thu, 22 Feb
- 2024 20:43:50 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E9DBC8DE;
+	Fri, 23 Feb 2024 04:46:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.57
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708663601; cv=fail; b=ryQ3bGAYN3bXUY359C0Xj2zT6S6Q5+k41Re3i9sttxWU+FDVM72AalG2skltK4BQyqDUBSMC9sTRkW3JDL0fV13F3BP8czhKD3kA3D0tp9oeAzVWxm4pkPmSoulsAsOcXYjM2umAYayebFWuTTzNywmxSfx+GVw/LCjBn6q8Zzo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708663601; c=relaxed/simple;
+	bh=qG7rCtXi/+BQB0iReAaib26C3PyLofDDMIm8TC2A90o=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=GykEhGi/HNESks1+gH5frt2hMsgSm9Z5uHaztQrc/P/ik18V5FHpC4JxygD7OqM+OOiWsXxJlNvKB8INqETRIX08h1ue8SlZNEIN/fr+yabDobVcnj2jf/GV2IPMqWqT6WFsGZ2DVHq+zqcLavn7JwXQejgxN/IQctJbPZQxqAY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=EFItMfhh; arc=fail smtp.client-ip=40.107.220.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RaZNeUZlQK//1GxxiT1s59vXDj1Lm6uAeACt6Y82TWIzlZSL1aycyxY93NKnQYxCB1o63oaICib9CXvVtMJmypoWQQOVTGuHwcjgsijrQ5easC/kRXRsV1ePBFEbg1hChBBj7zFVF9NDvznTBs0MsORKTMxJIastqUoQg2xFQU/A0bOFLJC87lzYrvnDhSnGPUTns6t1Ev6u8fskM1nmAMbU80adimH5Fqqmu+TQv9SQvg1Au0NAtsW6XROkzxwOfSnnJATduvUr7ZxqntfL1B9gegFiRlUFKVBOA1VX+6kOkLgVTksFkjuTbyGSS1bJFYdPjzF6ZTofbNDppAEbpQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rTs/X7DF7INX2lrmO7jk6w+fOYc7EzQnxXGddJH9Il0=;
+ b=HZoer5HguMFzNTgSZ5+XEGT6Jxn3dyfR7HsFCnPnKGKlPti6V2DsBAfJ0vjfCb76gBGopFBCXPQaH73sjfT8xvokALyoGwp0opWXjVxyN4uaF0DJEv5DINjBa2HXTkdQSEOugzTYIVNG6iKpIipdhWvBY3pQ2WGqCrvawQYUhFLDhGbcQBXWSx9Xu/ue/84/vin73dMO+jniOA7DvKI08oPGVNa8T/0/SfM42k1jX7ZZXvoSgxiTMlZ6UGabSM1x4JeO8VVgxW8RpnKiTEdqDkpJ+JYm9TLriMN0i7+GShKo29jf96IhUfOf345q4WsdGpsD5f+eYW/yBzO9wPJv1A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rTs/X7DF7INX2lrmO7jk6w+fOYc7EzQnxXGddJH9Il0=;
+ b=EFItMfhhl2Ny4G0/xDVOS1pAGyHrAcUZ4U4BmehO48FsXCiT0fvamOWCEodG+SPN8eKgk6eUiHBVxXdFpZxE1So58quLEDScVrnBarg0hssjVz6d9re8CS3ftj7xnkv1zDoBPx5Dh0Yrkq6V7c0awMaEZXsdjhOByvjGpHrSd8M=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BL1PR12MB5946.namprd12.prod.outlook.com (2603:10b6:208:399::8)
+ by DS7PR12MB8290.namprd12.prod.outlook.com (2603:10b6:8:d8::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Fri, 23 Feb
+ 2024 04:46:36 +0000
+Received: from BL1PR12MB5946.namprd12.prod.outlook.com
+ ([fe80::b440:9a95:dbfa:ae67]) by BL1PR12MB5946.namprd12.prod.outlook.com
+ ([fe80::b440:9a95:dbfa:ae67%2]) with mapi id 15.20.7316.018; Fri, 23 Feb 2024
+ 04:46:35 +0000
+Message-ID: <03499bd0-323d-4f57-99a8-d47c5ae680ae@amd.com>
+Date: Fri, 23 Feb 2024 10:16:26 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2 2/4] net: macb: Add ARP support to WOL
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: nicolas.ferre@microchip.com, claudiu.beznea@tuxon.dev,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, linux@armlinux.org.uk, vadim.fedorenko@linux.dev,
+ netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, git@amd.com
+References: <20240222153848.2374782-1-vineeth.karumanchi@amd.com>
+ <20240222153848.2374782-3-vineeth.karumanchi@amd.com>
+ <8e4a779a-22e7-4db2-b65e-69cca5e6fac5@lunn.ch>
+Content-Language: en-GB
+From: Vineeth Karumanchi <vineeth.karumanchi@amd.com>
+In-Reply-To: <8e4a779a-22e7-4db2-b65e-69cca5e6fac5@lunn.ch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN2PR01CA0030.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:25::35) To BL1PR12MB5946.namprd12.prod.outlook.com
+ (2603:10b6:208:399::8)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108081834.408403-1-treapking@chromium.org> <20240108081834.408403-2-treapking@chromium.org>
-In-Reply-To: <20240108081834.408403-2-treapking@chromium.org>
-From: Chen-Yu Tsai <wenst@chromium.org>
-Date: Fri, 23 Feb 2024 12:43:39 +0800
-Message-ID: <CAGXv+5GoAauw77wVXx6SXsSma9zP_A1vXLRo=GH2ptjvY=kLgA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] clk: mediatek: mt8183: Enable need_runtime_pm on mt8183-mfgcfg
-To: Pin-yen Lin <treapking@chromium.org>
-Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Weiyi Lu <weiyi.lu@mediatek.com>, 
-	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, 
-	linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5946:EE_|DS7PR12MB8290:EE_
+X-MS-Office365-Filtering-Correlation-Id: 59e6d274-8fc8-46ac-6f66-08dc342a6a37
+X-LD-Processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	vwHPx13eNCHwJ6BP1BlOTy8sAnfuwaYmooLhegUhowrb+dy+aKnDuYTKFZwYPp6H1LdF3/Dwiy98giYRS/PdmzTu8H8FmbAyPs9XONsulIwzwMjTypfIPtKQx9hxIDrgzGmN+AVovobSSVIv4W9x2u7mEWMjFaw31eSjxYIR6HJ8dfN/JeGbvlzTj6oX+hlFjaFPnOva0w3gZX5ae7Sd9jQp2ooN/9tz5BqCOHcjOW9p/5/NTQSMt2CHDJp7PntQXUsKhOCPnC7z7T1qmCrggpCPKb2geoG9LcDuAMXvgUuXRwRCTywUXFl/49y1q8oVuPRNzLxDptXwlgAm2CdzI4MmrZ3DEZ0rwkNuttwDLzUQdGoYig7U4haMRgOGJqs01PAQL9bgXXELAGlhQhYcMyZCxrA3vECLXoTtPkKaKVXIC54iyzUHknRnSrLRuQ4hO/6PwJxyg5zGuBvvCM8ALolO0lZBLYM0Hg2lQCUofX8Cv+lYCOIj0/clc8xupoOVT86JOt/IMqAPi6DBnah/CpKYa4vUO+pAgWOEyGX9J3I=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5946.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?QUR3NzVGVmVaZWR2TDZnTlNyeU5KVm90c0p5azBZUGhpR0R3bitmYkd4RXBQ?=
+ =?utf-8?B?UERSZXZpalRpWWJuWmxuNGsyaG1UeElWczJiQlBvZEVyNG5OYm5Vc3o2TlVW?=
+ =?utf-8?B?MnA4TUl2K2xwU2JMbjNRUDkvbDFoVWZSS0Nsb084eDZIRS9BVU41RitMOG5W?=
+ =?utf-8?B?NTdzc0hKYldGdlNJSEkzdWVwZXNXdmdpWHQ1UERSU1FQN1ZuR2VwQ0dYWjMw?=
+ =?utf-8?B?ZjlEdGZQdXowUFBzWHBZNFV1dHk3emYxeGRNVk5LRkN6c0FtMFZPeDB6UmdZ?=
+ =?utf-8?B?dEd0Y2cxa2xCbHhZV3kzQkNaS1FIaGRrbE1nTHBQeHdaaWFadzJjY2dENVRL?=
+ =?utf-8?B?SEtRMjgvTUVpdTVySHcrVUVnSlJFekM2K3p1QTZvNENleDBEVHhVNzZDcHZo?=
+ =?utf-8?B?cytNcEFsa3NnQ21HWmVMZnM1RnNHTnl5YWhPTkdLZGprbEVybmNPalM4OXFN?=
+ =?utf-8?B?cHlBV0xSTmYxbUU0YnB1SWloZ29mSnhvOG9NclFYZWZwRTIvV2FYaXlUeEpU?=
+ =?utf-8?B?cWdLd0lnMHJnanZqTkx3K0JwaHFiMEhCZmNBR3FrbVdzcE9ZNnAxMUgxVVlX?=
+ =?utf-8?B?M3pOa2dsUUZjSzk0TWVkSjUzTmd6Y2pacDFyNFRaeDFLM3R0aW1OQlhuN1FP?=
+ =?utf-8?B?SUFmQmI5ak5hZ09CUitrVUh5MjJxaXozSS95ZkxRcVBOekFiSDdiTzlhZ1RG?=
+ =?utf-8?B?L2M2SlA1TndNMjl0R1ZHcEEyRFNiaHJmMUVzY1laWmF4LzRISGdPN2RYajJn?=
+ =?utf-8?B?Rmh4V0x0SnFGU1c2Myt3Z1JHSE93czc1dTczTDdQZVBCWktsREZvdU9PVDh6?=
+ =?utf-8?B?UGViQXJvaENybkd3cnRXUWlVVGo0TmhmZXpFaEt5ZGI2NW0xWFk3VWltQjBY?=
+ =?utf-8?B?MGpUWExYL0I1N0c3aXpKV1M1THRILytheHBzL3J0VnMyTy9OY2NmeFM4cTVY?=
+ =?utf-8?B?ZjdQa0xBUVNkMW43MW1kM0pqZXVFZVoyaXV3d2NZaS8rMkhsOTZLS0F2L0E5?=
+ =?utf-8?B?QjE2RFlVYmJyM0FJRFZmaGdOWUtFcW93ckZlYkJJRlBsNUNITXIxM0xGNGpi?=
+ =?utf-8?B?bUR4M3kvQklDWEJISi9oRHlPRjhZQmIwSnQrejRyT0NWc1B1ZDYyUGFkTGZW?=
+ =?utf-8?B?SkNUM0prOHQ1WXRPWjZmbDA0VFBrdzYxYkpWRFZQUzRXTUZ5SExWeGhrZEYx?=
+ =?utf-8?B?Ti9jSVNMSkM0ZUQxRXRzSVgyVjdiYUVYd2J6N0hJMEZNbCtPWmxVRVkxMXBm?=
+ =?utf-8?B?c0UzRWpoV3lOS1hyNlVHcENEYWVLNCtKY2JvWHpTeWRSNkVVdko5ZHlReUpT?=
+ =?utf-8?B?cGFCSVAzcFRwYnVZVGU3c1NzTmtjMnYwUGhndU1iTi9NelhSZ01MbVRYT1A0?=
+ =?utf-8?B?RklTTHZiNmpCeGFlYVNQb0RLTndpT2RaUnNFeDlMWUx1cm9OTEpaNUdSRGVQ?=
+ =?utf-8?B?TFhMN0lGRVRBejUxQlp5STNyK3FKZi9nSUR3KzVmVUlwVG9rbVRjcnY2THBH?=
+ =?utf-8?B?WXR3RVBWN3VxL3doSWlVYnVscEw0dU5QM0hCdEE2dVdZcURBeVJOKzZBY0s2?=
+ =?utf-8?B?eTlZL2l1Y1pNZVlXMXFsdHROSkpDOUs3dnFmejQ2d0lVQW5iVUcvNjR4T01y?=
+ =?utf-8?B?aEZqWmp3TGZBakNvWFJKNG41WE44elhuTmF3Y0o2NXZXZW41RGJlU244eWF5?=
+ =?utf-8?B?YWZIMGp0cDBDRWJIMzhTRFFLR2duMGJPeTB5WXlSYjlMNTdGTWkvWDlqenNk?=
+ =?utf-8?B?bkdBVkRzLzFIQzVJTHE5TDk4T1lwcm9HMDRZdFBydEJoRHphelh2cStuVUNi?=
+ =?utf-8?B?Qkl0SDZaRjNvSXRDUjdqOStlQ3RVeDFBc3VSS2NCOWhrdkMxUVhzSjBjeWZx?=
+ =?utf-8?B?bDZoNFB5SFlOR0lCMndteUkxYldhTUNnSExBSlBVWDVnSWhqVksyU1diRWNs?=
+ =?utf-8?B?VnFDazlMcXRqaEFmVFp3NWw1RkZwcmtlOVI4RHlveXN3RDZqakVxcVV0NUxk?=
+ =?utf-8?B?akh5VTR2OW0wRmFSbWl6NGhJVnRRanFRSTNIZ2VZaUw5enVaaVJYSU9vYzA0?=
+ =?utf-8?B?N29TcnJFWUtYaEt6S1JuQXcwWTllLzhzRzlSa1l1WHFvcHNnWlYyaGZkUzlB?=
+ =?utf-8?Q?XKQVD6cg4FMXCm0GGfxMfzG9F?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59e6d274-8fc8-46ac-6f66-08dc342a6a37
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5946.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2024 04:46:35.8212
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 15krgvatj8d7U5GSybKqwV09sCF7r1ahwG/Gl5HM5WK77B5OwKt9dXAfD/jdJdRd
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8290
 
-On Mon, Jan 8, 2024 at 4:18=E2=80=AFPM Pin-yen Lin <treapking@chromium.org>=
- wrote:
->
-> mt8183-mfgcfg has a mutual dependency with genpd during the probing
-> stage, so enable need_runtim_pm to prevent a deadlock in the following
-> call stack:
->
-> CPU0:  genpd_lock --> clk_prepare_lock
-> genpd_power_off_work_fn()
->  genpd_lock()
->  generic_pm_domain::power_off()
->     clk_unprepare()
->       clk_prepare_lock()
->
-> CPU1: clk_prepare_lock --> genpd_lock
-> clk_register()
->   __clk_core_init()
->     clk_prepare_lock()
->     clk_pm_runtime_get()
->       genpd_lock()
->
-> Do a runtime PM get at the probe function to make sure clk_register()
-> won't acquire the genpd lock.
->
-> Fixes: acddfc2c261b ("clk: mediatek: Add MT8183 clock support")
-> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
+Hi Andrew,
 
-Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+On 23/02/24 1:02 am, Andrew Lunn wrote:
+>>   	u32			wol;
+>> +	u32			wolopts;
+> 
+>> +	wol->supported |= (bp->wol & MACB_WOL_HAS_MAGIC_PACKET) ? WAKE_MAGIC : 0;
+>> +	wol->supported |= (bp->wol & MACB_WOL_HAS_ARP_PACKET) ? WAKE_ARP : 0;
+> 
+>> +	if (bp->caps & MACB_CAPS_WOL)
+>> +		bp->wol |= (MACB_WOL_HAS_ARP_PACKET | MACB_WOL_HAS_MAGIC_PACKET);
+> 
+> So bp->wol is the capabilities of the hardware?
+> 
 
-Note that this compliments a patch [1] adding the power domain for the mfgc=
-fg
-clock controller node, which has been floating around for almost 3 years.
+Yes, it holds the supported capabilities.
 
-[1] https://lore.kernel.org/linux-mediatek/20210414073108.3899082-1-ikjn@ch=
-romium.org/
+> And bp->wolopts is what has been enabled via ethtool?
+> 
 
-> ---
->
-> (no changes since v1)
->
->  drivers/clk/mediatek/clk-mt8183-mfgcfg.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/clk/mediatek/clk-mt8183-mfgcfg.c b/drivers/clk/media=
-tek/clk-mt8183-mfgcfg.c
-> index ba504e19d420..62d876e150e1 100644
-> --- a/drivers/clk/mediatek/clk-mt8183-mfgcfg.c
-> +++ b/drivers/clk/mediatek/clk-mt8183-mfgcfg.c
-> @@ -29,6 +29,7 @@ static const struct mtk_gate mfg_clks[] =3D {
->  static const struct mtk_clk_desc mfg_desc =3D {
->         .clks =3D mfg_clks,
->         .num_clks =3D ARRAY_SIZE(mfg_clks),
-> +       .need_runtime_pm =3D true,
->  };
->
->  static const struct of_device_id of_match_clk_mt8183_mfg[] =3D {
-> --
-> 2.43.0.472.g3155946c3a-goog
->
+Yes, it holds the selected options through ethtool.
+
+> I just wounder if it would be easier to understand is bp->wol was
+> renamed wol_caps, similar to bp->caps?
+> 
+> 	Andrew
+
+Sure, I will make the change.
+
+🙏 vineeth
 
