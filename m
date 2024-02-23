@@ -1,115 +1,141 @@
-Return-Path: <linux-kernel+bounces-78175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41C45860FCF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:49:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B00D8860FD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:52:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B99F1B21A4A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:49:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34CD8B259D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:52:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A55963104;
-	Fri, 23 Feb 2024 10:49:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28ED363121;
+	Fri, 23 Feb 2024 10:51:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Mc8ZASG7"
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UqIo4Sx9"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4358563111
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 10:49:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEE92171B8
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 10:51:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708685369; cv=none; b=KOB7gVqtqmyUnTAN/qh+3QaD6KjrChC62NIDcC1UMZBEHLYHoQxph2ZQBWuYlKiGmI4bRuUsHszR+O5UnhdV3m88UWI/10XZqMByGKA2T3dKZbhcc81KELBuAz5rGm6Gbq3JKsMFPgW3OU/O+nP6z62IDBlNUaFKD7tpC7/CxdY=
+	t=1708685516; cv=none; b=GIbwmq0yJQUOC/Ihkv1TO4HVOVIiK3b58oz1DBSsIcmcLWP7rSozIuAhwXJWQTA/PmPS3C9Ci4Z5qGEgPQivcdruSRoBMfQ0p+1HXvnM4ur2Gkw4TCqiEPGFFn82Fg2XRJ4IJGMezSZtSXVZnxiGonQjkRJAehlPG2awG74hpcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708685369; c=relaxed/simple;
-	bh=xKmHqtYAcI8JTc51pSNY0Si56PBb13xYvaijXtKZ6IE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nVA3PcarC0B+Ppj3Q8h3+q9MxKEofoNclXHB20WZAynwPO53R01+IRe+b97FeK4EHxn0GsFKAEIzuuJZboTIcMGpg6Mc3AzJ1oHxXwS+04Mei6cghcXdb3Ro9ZowwlC3Sb9Q3tRPmfLggPmWkIupx6Gm0E3DYDYAgm06jKDcuFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Mc8ZASG7; arc=none smtp.client-ip=209.85.222.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-7d643a40a91so352119241.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 02:49:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708685367; x=1709290167; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GE+2ynBhau0YKFYIh74VjetPhnXxE9fhhkw20RQkbUE=;
-        b=Mc8ZASG73TJLsAICDEowTcrPWK3tauWP9pPv32dNBcMqtIHxsJWmqAf6j0Uq/PGfrT
-         BfHwRPSYprbjOcS0Dox18cP8x7shyDMH0nO67fKbDlqktO53x6qoxH/vn7DLJExLq38m
-         fhX+1JmgEanNyrtjoOetKWtqfmh1Zrps+rUUimZzduINm5pw9wZ2NqlOwRrEK0tPPrNT
-         WgnRb2OXmmlkyF2EcdPTf//AfGViU+/A3AAS4/vVnIaHfX9UKBACLvVuur9rxnxZhcXj
-         b3L26FvROgDfuclRd1uuIUydDp/co9OGhCXaT7SNaYS9L1FJ6kmCpki/lVVhrwIgEo17
-         herg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708685367; x=1709290167;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GE+2ynBhau0YKFYIh74VjetPhnXxE9fhhkw20RQkbUE=;
-        b=fjH7Ouo0JxK3TeiRXKv7ODmETggPeyR7xHxyudVArEx9UgqIpDCT+udV1whZ4fRvN1
-         12J/i2TfUfXhqY/VPFjLUjSGWRWIzrrN0CvgqsjkhTfKxJNbyLHcJnWtnTvYV8wRYQjp
-         sKIPZNaO20Wl6sh9vQpAYsQ+y7KFJev2+oI4pSfwjyzDxxunSsNmczvDtb5MaxQ5QV5B
-         9YNb/84RVcMMyutTa9BeKe1vx1DzKgx529t6OlB1tRvMyxDba3k9fG8Nvdv/mJ4Ik6MO
-         IpmmpetcanLdIP7kEDbTOBkaivJmDod+1rpuOnYAMK+qBzXri2mDA916zPmdYvNvvmG5
-         omBg==
-X-Forwarded-Encrypted: i=1; AJvYcCWCQKnXtG9yEjJaALSaWqERRw/9TXtKQf5CsOsbj8xc34cWbkTXqWVBgQQIG4xVapLKmoot2oa2RxguzgX8YiJvX/9Boz9AeXkWED1q
-X-Gm-Message-State: AOJu0Yz9wPqgpPr6K6UFXpgfFr89PByqLXDLwRvZ8L6NkklDvh2pDaEW
-	xhUH4KOfvVHlGLAvouQbSex3hLR/vBhJF6l1i8qPemTAXioNnFdh/GeXvWUCiCNpF2uCjDOE0RI
-	SFtCKDPOezDLqTV5JBr7gFa/bSU5BXMnDC+df
-X-Google-Smtp-Source: AGHT+IFVKUTApUEEXzyYgMbKLZNHK0/f69f+1zVhwvpBprrQ1a6a7pE2JZNcM3/2fyl0R5mGU45zfZ5p+LPe/PqqPeE=
-X-Received: by 2002:a05:6102:3584:b0:470:575a:f4bd with SMTP id
- h4-20020a056102358400b00470575af4bdmr1645580vsu.28.1708685367012; Fri, 23 Feb
- 2024 02:49:27 -0800 (PST)
+	s=arc-20240116; t=1708685516; c=relaxed/simple;
+	bh=oof7A++FydP9At/YUbuwr3ObhSdy49ePGn9HOQeG5cY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=UWKKNmM76Tu9H0QbWEEWRDxrO2rD3+JEQNy5L6Qx//2Tk8/txFPE9Ui9gHp8w5YTeXpWNtkyy2WAOqj+DLY4piro3PTVEW7vIwrp8kk2LAlH0IqCSR2397sW+TbV/ZCiidH6tOM572zUzANXmqvStVBf6KpA27yspmhZaecGyq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UqIo4Sx9; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708685513;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=pSmnO00mIYNIEXoWmL94MfKqzwMDUvzRTkxqzjX2bi4=;
+	b=UqIo4Sx9C8tdIrKUWemM1/jcpTJ3IH1NiOFRtvt8+Ab2pdOvskQlu8HNijSYA5pGMinqwm
+	EoTI0jtGV/6GC4Yi7Xk5oZLZKNXTZSsInGWLHckqPugc1sc74+gHBv5jZih8RpOZuiXF+a
+	5W5YivbWag6QYFHEwLY31D5jCGjk5os=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-130-eQOhhm18PC-OWCo3wMLQJQ-1; Fri, 23 Feb 2024 05:51:48 -0500
+X-MC-Unique: eQOhhm18PC-OWCo3wMLQJQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9FDA6108BF3D;
+	Fri, 23 Feb 2024 10:51:47 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.151])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 0C08E2015DB2;
+	Fri, 23 Feb 2024 10:51:45 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Fri, 23 Feb 2024 11:50:29 +0100 (CET)
+Date: Fri, 23 Feb 2024 11:50:25 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Wen Yang <wenyang.linux@foxmail.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] get_signal: simplify/cleanup the the usage of ksig->info
+Message-ID: <20240223105025.GA4542@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240222-rust-locks-get-mut-v3-1-d38a6f4bde3d@gmail.com> <ZdgIVxrwBfTEjuEe@boqun-archlinux>
-In-Reply-To: <ZdgIVxrwBfTEjuEe@boqun-archlinux>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Fri, 23 Feb 2024 11:49:15 +0100
-Message-ID: <CAH5fLgj8g1d47u0eFD83topKg2d7FEG+cHS5+Be6+TLt06NmHg@mail.gmail.com>
-Subject: Re: [PATCH v3] rust: locks: Add `get_mut` method to `Lock`
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: mathys35.gasnier@gmail.com, Miguel Ojeda <ojeda@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Fri, Feb 23, 2024 at 3:52=E2=80=AFAM Boqun Feng <boqun.feng@gmail.com> w=
-rote:
-> BTW, while we are at it, I think we should document the
-> "structural/non-structural pinning" design decisions somewhere, for
-> example in the struct definition:
->
->         #[pin_data]
->         pub struct Lock<T: ?Sized, B: Backend> {
->             ...
->             /// The data protected by the lock.
->             /// This field is non-structural pinned.
->             pub(crate) data: UnsafeCell<T>,
->         }
->
-> Thoughts? Or do we think "non-structural pinned" should be the default
-> case so no need to document it? I want to have a clear document for each
-> field to avoid the accidental "everyone forgets what's the decision
-> here" ;-)
+get_signal() uses signr or ksig->info.si_signo in a chaotic way, this
+looks confusing. Change it to always use signr.
 
-I would normally assume that "field is not marked #[pin]" implies that
-it's not structurally pinned. But it could still be worth to call out
-here.
+This allows us to simplify the SIGNAL_GROUP_EXIT/group_exec_task branch,
+it no longer needs to touch ksig at all.
 
-I prefer the wording "not structurally pinnned" over "non-structural pinned=
-".
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+---
+ kernel/signal.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-Alice
+diff --git a/kernel/signal.c b/kernel/signal.c
+index c9c57d053ce4..690982e6595e 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -2727,12 +2727,15 @@ bool get_signal(struct ksignal *ksig)
+ 		/* Has this task already been marked for death? */
+ 		if ((signal->flags & SIGNAL_GROUP_EXIT) ||
+ 		     signal->group_exec_task) {
+-			clear_siginfo(&ksig->info);
+-			ksig->info.si_signo = signr = SIGKILL;
++			signr = SIGKILL;
+ 			sigdelset(&current->pending.signal, SIGKILL);
+ 			trace_signal_deliver(SIGKILL, SEND_SIG_NOINFO,
+-				&sighand->action[SIGKILL - 1]);
++					     &sighand->action[SIGKILL - 1]);
+ 			recalc_sigpending();
++			/*
++			 * implies do_group_exit(), no need to initialize
++			 * ksig->info
++			 */
+ 			goto fatal;
+ 		}
+ 
+@@ -2842,7 +2845,7 @@ bool get_signal(struct ksignal *ksig)
+ 				spin_lock_irq(&sighand->siglock);
+ 			}
+ 
+-			if (likely(do_signal_stop(ksig->info.si_signo))) {
++			if (likely(do_signal_stop(signr))) {
+ 				/* It released the siglock.  */
+ 				goto relock;
+ 			}
+@@ -2866,7 +2869,7 @@ bool get_signal(struct ksignal *ksig)
+ 
+ 		if (sig_kernel_coredump(signr)) {
+ 			if (print_fatal_signals)
+-				print_fatal_signal(ksig->info.si_signo);
++				print_fatal_signal(signr);
+ 			proc_coredump_connector(current);
+ 			/*
+ 			 * If it was able to dump core, this kills all
+@@ -2890,7 +2893,7 @@ bool get_signal(struct ksignal *ksig)
+ 		/*
+ 		 * Death signals, no core dump.
+ 		 */
+-		do_group_exit(ksig->info.si_signo);
++		do_group_exit(signr);
+ 		/* NOTREACHED */
+ 	}
+ 	spin_unlock_irq(&sighand->siglock);
+-- 
+2.25.1.362.g51ebf55
+
+
 
