@@ -1,107 +1,119 @@
-Return-Path: <linux-kernel+bounces-77637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6434860856
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:38:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0083F860859
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:38:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B38B1F23EBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:38:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5985B22556
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:38:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA28F11705;
-	Fri, 23 Feb 2024 01:36:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8976D11CB3;
+	Fri, 23 Feb 2024 01:36:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nmIRYBN6"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ftlW0RCO"
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96783C126
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 01:36:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90737125A3
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 01:36:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708652189; cv=none; b=OXEv/vN1/C+J65SIRCP/ap8Wzl8LdYsiTK/UOlZ88o8hNCrnRL7zcgzoRXyoOSIfStQ1XDwtCgIpH+za2qOryzv3I3CBFAfXMFawjO5pX8dgKyLGTrSKakpmSSfzRIlJbnSkodNpm0Q20Fu61PRZ3Kf46qeANl0Ba2Oe9foCgn0=
+	t=1708652193; cv=none; b=F7O3Igrq12hznsvg7lburpNcrmbUHMxUZduNf6TdPj/hVejRFQhxQEyEGWdWaf6KlIV4yKRWaTy6gQ8SFty+R/oKv3GmrawMSJ51yVX15sBoWyouTNrBTH2LDr/pB80k46kXsGYwUxg1aD2zImikFF3EdDT7FSNe/GIXNeRpnV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708652189; c=relaxed/simple;
-	bh=wxHfWMq7Lgq0G67zQZ2MnUqa7LLPfz3fmqOUA3OwDDE=;
+	s=arc-20240116; t=1708652193; c=relaxed/simple;
+	bh=BkoxhNv8YGjeOPf3BxX6PpRyfNMqnk1232GU8+2yKW4=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=BFchS/GNO+iRxo2FiPyRoEeGgUYty7uJZ65XXc03HqcxeCfdFBUiqxLxd8S63is7S4nf+GeJ9KuqbHcNmFX4Hz/BWQDxXsbg774e42+tqFZtr4wraDoBS/BOksNF1JrhVwTdEbKRGhL73L7P6uhPNcaYp3QM1CUX7oRxmpKQ49Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nmIRYBN6; arc=none smtp.client-ip=209.85.219.202
+	 To:Cc:Content-Type; b=alziZ2xaaDHMqRhaBB0pM6jOg9hVrwcEWKPbUfuxyE8TvNihYHwWYXMqv0rwnsYwPqZSyEo3hil3Fq7EjThlKBtd1u852Pbv4DGupDmhwtksw6Agy4snXPCy+CrUT8dzdJP5pSLaOejeus0PLtKmhRu9Koksv9OGwMLjqMB5bm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ftlW0RCO; arc=none smtp.client-ip=209.85.210.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcc0bcf9256so509776276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 17:36:27 -0800 (PST)
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6e37db1a3a0so254804b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 17:36:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708652186; x=1709256986; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1708652192; x=1709256992; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nZOxtidqnLAab6ncFHZHgfs5e5Ab+wmQ1LWEiG/Eq7o=;
-        b=nmIRYBN6qgptcdqAMatCANBuBCLZ3VH1z5nGK7vGyuHNAxuiIPPORAdGpvnkWXKv1/
-         jgOm4FI29ePK0iq0lzBsqZY57i441Yv/k13CG5J12xfvp3XmqXx/RCMpJoHLpx4QrwBX
-         6jFLJ+dFz2lGWVTOI7bmWNoacsR4QUnSot8xNKHR1yOpZ6IejVw59EEM2VTxvwUCvSr8
-         x0Arp79ezK0d/i9K48PCU3cPs/+2BV80WO4i5TAZkwDwU0Qr8jcyL3VagCwMPI7NSinJ
-         wwSqEvlTEDYuBC+TWyX0Sih4bOuICHMYTffvtX7d/TMripqTZNjRSOLrT130Ci5ISFSK
-         Pziw==
+        bh=8OHMj6uK9aYeUBcJN1mkUfVh2fQ8ZHKv8aBZ9H0/QEM=;
+        b=ftlW0RCOvT+4apk53JwCWpSFs45M/JEbKHJQBTFML9YknIAbI5i2MADlrFOL8cUnZh
+         S0S1vGJJtesUACw08wMIxk2ec2e5JItk0rQliJ5Li/M9EVVOzuvKJT7Rjw+sHuzQCb7H
+         RCsLuD7kKjhjngkuAzyegFMAmTxaj+JbOsOcHzRXW7rXRNWx8zy0itlxw5lXxkGdypKT
+         FwNiEcoCzOA1gGuuMUmUcf1MXCFGqXDhA/45+RsQMMKiennqpv6Dznu/WeRysMtlErTX
+         pSy+vFUMLlnUnD+VI7BsiGZJuwTScY5k1PiQ8chrr40L57JjqcTIpYDsAgNiuHjOur8w
+         6sAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708652186; x=1709256986;
+        d=1e100.net; s=20230601; t=1708652192; x=1709256992;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nZOxtidqnLAab6ncFHZHgfs5e5Ab+wmQ1LWEiG/Eq7o=;
-        b=NdsV57peIWHk/YSC39E0QkwhhbRPW0B8tuYCxXooJXzC7CM5dIfAF/qZC1KTeS97CD
-         DdURF/anUc6D98Y2jsxoVU212crL/+ZlYVlvuMOHYMCKq0yx95RVtpHIrUD7WUfC5LJa
-         LkEI22FUKB7hdqmlXwB+rVYxf1wYpAxgCYIFdWWaOsP4q8lLruzRNxhAPG+vQG064Dgm
-         dnDLPVgxGlH/4GB3Y1+b10b1bmy/bTlAoSvghNy6CwZ220GTmoUQhv+tmfgNSlpZaReG
-         v4W8AAhLsSLbcUSqAOgg3gI5c3joebG5IMBIeGtS8gLsk1SCf7lPXSOIqUNbSLaI+Ocm
-         vsGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUuOXO4y1K91Fha01st8s/bJ+cejKHhmKpRT/aIFV3A3f4XwIXXR/cv83MIAYNv9rSisxUqq4lvrU1xLDDh9R/2irN1D0VWwFmWJJY5
-X-Gm-Message-State: AOJu0Yx+qja1OcWpoQld3X2qvPoWLt+sbr0sCy1bZWcPVeEadKHsb853
-	NCMTpqEx1jEiEAyEWFCplJR4Jkeo6FPZtuzDaWWWipjTGBcjVqCUIN5Dl90oJlACfO3GKCxW0zO
-	9NQ==
-X-Google-Smtp-Source: AGHT+IFHKxDxmR9WB8yLWn/Z+MxbjDTvcrp37vqBa/Ljad7x10UvGxm48lqBVJ6xFYEFD1kLViisRCa4Aa4=
+        bh=8OHMj6uK9aYeUBcJN1mkUfVh2fQ8ZHKv8aBZ9H0/QEM=;
+        b=fz7Ef6TSp0VtavZ3KjyNUD3C+9tRObQ5MVLykzhz1PmjMufajRpkDExFs8MSn3vZH5
+         ZVoJ96NFsbYD09iUZbHS/rYRtMppu70HfNMq1OUH28DwOMlU4UJnxggTZJIXKuccqOzW
+         Z7t4V4p3Ta2eXzvMLnUBd1mTM4HiOZs/8tNVCgpJzOqMU7nzb0dH8HQouCZnxf/3p/xR
+         XMxP9/u1iG4BE9g0IjOnrq/ISl9PlxVPDP1Nmf8V/CPsaCx6hknrMSKhrXoTfNXxKIze
+         jYhPZrN2tMKe4+3qQhgrNuDF8xgVwdhY+A9rQV8+ubXhaB8lSSWA1qMP3t8dkDejOhjg
+         nBuw==
+X-Forwarded-Encrypted: i=1; AJvYcCVD/KZ43hDo6yT60aMhM9nie0M4rCcCVJBWOFNxBwDs+nwv2IK4SWS3zBWwOdiMAEZsDXNrQDFPcZ9u++/vQR02n8zNcdYhezEYVbvh
+X-Gm-Message-State: AOJu0YyELQ3w+T1rv42pxeQbYCQn9KeC6jsRYczfzsxLwS64GYTAptLa
+	fBCauQZkQWZDX0Gr6wf64hBDw9aNh3wJ9YPGbQeVhR9eie0NBVXUk5Es+XdTuji3rSir6lgqlRQ
+	bPw==
+X-Google-Smtp-Source: AGHT+IFp1y3YhiJB1B9/itvUBAxg1qSxumSRsptUuQ6R8T3NlISg4Iqh9ewwhLn9e9Pf6b7LKU0u/n6mcUs=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1741:b0:dc6:b982:cfa2 with SMTP id
- bz1-20020a056902174100b00dc6b982cfa2mr24039ybb.8.1708652186598; Thu, 22 Feb
- 2024 17:36:26 -0800 (PST)
-Date: Thu, 22 Feb 2024 17:35:42 -0800
-In-Reply-To: <20240110003938.490206-1-seanjc@google.com>
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:188b:b0:6e4:8b79:f5be with SMTP id
+ x11-20020a056a00188b00b006e48b79f5bemr40447pfh.3.1708652191798; Thu, 22 Feb
+ 2024 17:36:31 -0800 (PST)
+Date: Thu, 22 Feb 2024 17:35:44 -0800
+In-Reply-To: <20240110012705.506918-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20240110003938.490206-1-seanjc@google.com>
+References: <20240110012705.506918-1-seanjc@google.com>
 X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <170864807002.3089764.1263409460793232398.b4-ty@google.com>
-Subject: Re: [PATCH 0/4] KVM: Clean up "preempted in-kernel" logic
+Message-ID: <170864777139.3087243.3610536587641565240.b4-ty@google.com>
+Subject: Re: [PATCH 0/6] KVM: x86: Clean up "force immediate exit" code
 From: Sean Christopherson <seanjc@google.com>
 To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
 Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Like Xu <like.xu.linux@gmail.com>
+	Maxim Levitsky <mlevitsk@redhat.com>
 Content-Type: text/plain; charset="utf-8"
 
-On Tue, 09 Jan 2024 16:39:34 -0800, Sean Christopherson wrote:
-> Provide a dedicated helper to query if a *different* vCPU was preempted
-> in-kernel.  x86's VMX is an oddball and can only check if the vCPU is in
-> kernel (versus userspace) if the vCPU is loaded on the current pCPU.
+On Tue, 09 Jan 2024 17:26:59 -0800, Sean Christopherson wrote:
+> Plumb "force_immediate_exit" into the kvm_entry() tracepoint, as
+> suggested by Maxim, and then follow that up with cleanups that are made
+> possible by having force_immediate_exit made available to .vcpu_run(),
+> e.g. VMX can use the on-stack param instead of what is effectively a
+> temporary field in vcpu_vmx.
 > 
-> The existing kvm_arch_vcpu_in_kernel() "works", but it's an ugly mess as
-> KVM x86 is forced to check kvm_get_running_vcpu() to effectively undo the
-> multiplexing.
+> Sean Christopherson (6):
+>   KVM: x86: Plumb "force_immediate_exit" into kvm_entry() tracepoint
+>   KVM: VMX: Re-enter guest in fastpath for "spurious" preemption timer
+>     exits
+>   KVM: VMX: Handle forced exit due to preemption timer in fastpath
+>   KVM: x86: Move handling of is_guest_mode() into fastpath exit handlers
+>   KVM: VMX: Handle KVM-induced preemption timer exits in fastpath for L2
+>   KVM: x86: Fully defer to vendor code to decide how to force immediate
+>     exit
 > 
 > [...]
 
 Applied to kvm-x86 misc, thanks!
 
-[1/4] KVM: Add dedicated arch hook for querying if vCPU was preempted in-kernel
-      https://github.com/kvm-x86/linux/commit/77bcd9e6231a
-[2/4] KVM: x86: Rely solely on preempted_in_kernel flag for directed yield
-      https://github.com/kvm-x86/linux/commit/9b8615c5d37f
-[3/4] KVM: x86: Clean up directed yield API for "has pending interrupt"
-      https://github.com/kvm-x86/linux/commit/322d79f1db4b
-[4/4] KVM: Add a comment explaining the directed yield pending interrupt logic
-      https://github.com/kvm-x86/linux/commit/dafc17dd529a
+[1/6] KVM: x86: Plumb "force_immediate_exit" into kvm_entry() tracepoint
+      https://github.com/kvm-x86/linux/commit/9c9025ea003a
+[2/6] KVM: VMX: Re-enter guest in fastpath for "spurious" preemption timer exits
+      https://github.com/kvm-x86/linux/commit/e6b5d16bbd2d
+[3/6] KVM: VMX: Handle forced exit due to preemption timer in fastpath
+      https://github.com/kvm-x86/linux/commit/11776aa0cfa7
+[4/6] KVM: x86: Move handling of is_guest_mode() into fastpath exit handlers
+      https://github.com/kvm-x86/linux/commit/bf1a49436ea3
+[5/6] KVM: VMX: Handle KVM-induced preemption timer exits in fastpath for L2
+      https://github.com/kvm-x86/linux/commit/7b3d1bbf8d68
+[6/6] KVM: x86: Fully defer to vendor code to decide how to force immediate exit
+      https://github.com/kvm-x86/linux/commit/0ec3d6d1f169
 
 --
 https://github.com/kvm-x86/linux/tree/next
