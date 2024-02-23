@@ -1,153 +1,83 @@
-Return-Path: <linux-kernel+bounces-78351-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F2EE86124F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:11:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0845C861252
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:12:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C07461C217AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:11:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABFBF28224A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:12:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BB457E787;
-	Fri, 23 Feb 2024 13:11:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ebvv/7s7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EECBA7F465;
+	Fri, 23 Feb 2024 13:11:45 +0000 (UTC)
+Received: from smtp-8faa.mail.infomaniak.ch (smtp-8faa.mail.infomaniak.ch [83.166.143.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B924B7CF07;
-	Fri, 23 Feb 2024 13:11:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1271A7EEF0
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:11:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.166.143.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708693884; cv=none; b=fLPNoUNBTSwRW38adsmNl3zg92UBohMqppR4zed7v5htowuWvMJUg75fWx8kd6I2j/QrfPUGuBLAnUsJU9td768ZL60PwHxmUEiwq8+WbJZ5WOS0pofai5Qto8spfgJD2ifsugF9FSLvmj/uH2iE/nPXyvdckMk0DJP+ht3BNxg=
+	t=1708693905; cv=none; b=Kr0FCqyVINdF2qpwwfwyDmVvYyPB7/uPoFgvRnTfnq5H5Bu3vlQz39msnx80Oq8TbAzveB+4s65SM27Nhh4KehlS1dLP0jfYx03YckXrcM7Who/9AGgjWPMxfeudqQUXR7N1vfa44f57Ea/1wEJDmDUQQvRKqyCw0MgiCBaoIu0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708693884; c=relaxed/simple;
-	bh=d1m6ANOqwKXrv9+LcTPfoOJ4sArWK9YSnVhDFXtLuLM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lx3JZ3NrSGH5qSMgB0bp/trvwUk2afuc74ueeysJJlH/vE8GmpPOAZKX43KShrJsuDqxGzusgadzAdsylOL8WIuD2odA2aq9UZjIZYt77992T4pgvwSvS4SEmYdLwoi25lhI+UDgea7hHj14Nt0pdXqSq+NMjl6lzN2Jn4CIkAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ebvv/7s7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 614C8C433C7;
-	Fri, 23 Feb 2024 13:11:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708693884;
-	bh=d1m6ANOqwKXrv9+LcTPfoOJ4sArWK9YSnVhDFXtLuLM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Ebvv/7s7jWF2knmh/ApfiKPoZn0oY+OtXfdntU0JDB3IRn1weaXAs2oj5e6FgE6if
-	 NoDIAxh0S3r3CUya7AwGYF9zOp2ptIjiZ0WVjv3lyE/GLlfTtrocbBYJCTPYPjDMo5
-	 yX9reo68M+CS5EW2gtEs/r6Ugly+IiRj6qzESy192jTFPuXzWKCplHVM4PqFnA+r6z
-	 qX15Gq/aeAGQCmxRN49SvTNgOgLwUZOxSxsik0hVu6/LszsF2D/r17uQyat1VpDDGm
-	 KdCEO9JbZ/sdem6Ci+kX7Y5sXggbUrtPFdFOvQ/mThTS8xliNN6jOZEi0tMoFI+PZo
-	 1gjKojxyEhgrQ==
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d204e102a9so8642121fa.0;
-        Fri, 23 Feb 2024 05:11:24 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUd2ZUENFtg0IXpxW6BNuFwxULIdRrjxJ11bvZsYB++uZGwd9qulkPjuTKWBnEQAoAS9XPtZxdlZCRDlQe4HTgac1+MAasjISQ9zg==
-X-Gm-Message-State: AOJu0Yxsut8/N5nSqmdOxVEvlttqqsBH+SCIb3bYLJ6toRalUKPL4gYJ
-	LsC5v7ACSN0MNUFX2l1V1JRQ3jPZt0ux9p8Un30cU26PnXKzGdBR5qSOYkP4Abrr9A164qo8Bg8
-	G6wcYTMDVttjHl21TG3GcxX1nid4=
-X-Google-Smtp-Source: AGHT+IEsCg2Q0TwrKd0cog82aTVDxFfxFpKuZiqhdev7tD/NUay4QE8lNuoY0iLfx2wJjeRraE2dvnF5myz898EFVRQ=
-X-Received: by 2002:a05:651c:204f:b0:2d2:3f1d:92ec with SMTP id
- t15-20020a05651c204f00b002d23f1d92ecmr1220780ljo.40.1708693882639; Fri, 23
- Feb 2024 05:11:22 -0800 (PST)
+	s=arc-20240116; t=1708693905; c=relaxed/simple;
+	bh=lH5FyfKw2kMUVgT8bT5UHBrJrgC3A6gelAiKsdPdCZQ=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=hWxNXwnLJF/cIVjU7tMv3HX1xVf4TGoGfzueuEuuGlKyzL6uD0iqokLrCp14L1luFIft1CcZPp3a6Gvbc768IkCdsWhMFooSlbLXsvTbzmYLkwdXvDM4IRdQSLN6sVHGtR32y8RQZO/aN2nUW7KTynA+Q7Gr4MH1ABQhtsZGAfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0leil.net; spf=pass smtp.mailfrom=0leil.net; arc=none smtp.client-ip=83.166.143.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0leil.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0leil.net
+Received: from smtp-4-0001.mail.infomaniak.ch (unknown [10.7.10.108])
+	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Th9Pz1pWwzMtHT5;
+	Fri, 23 Feb 2024 14:11:35 +0100 (CET)
+Received: from unknown by smtp-4-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4Th9Py5XBnzXs3;
+	Fri, 23 Feb 2024 14:11:34 +0100 (CET)
+From: Quentin Schulz <foss+kernel@0leil.net>
+Subject: [PATCH 0/2] regulator: rk808: fix regulator ranges on RK806
+Date: Fri, 23 Feb 2024 14:11:21 +0100
+Message-Id: <20240223-rk806-regulator-ranges-v1-0-3904ab70d250@theobroma-systems.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221113506.2565718-18-ardb+git@google.com> <20240221113506.2565718-28-ardb+git@google.com>
-In-Reply-To: <20240221113506.2565718-28-ardb+git@google.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Fri, 23 Feb 2024 14:11:11 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGFP0oz=7_4sW=Cd-n2k5=M6Nzzrst-dAdkYtmdeTqYrg@mail.gmail.com>
-Message-ID: <CAMj1kXGFP0oz=7_4sW=Cd-n2k5=M6Nzzrst-dAdkYtmdeTqYrg@mail.gmail.com>
-Subject: Re: [PATCH v5 10/16] x86/startup_64: Simplify virtual switch on
- primary boot
-To: Ard Biesheuvel <ardb+git@google.com>
-Cc: linux-kernel@vger.kernel.org, Kevin Loughlin <kevinloughlin@google.com>, 
-	Tom Lendacky <thomas.lendacky@amd.com>, Dionna Glaze <dionnaglaze@google.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, 
-	llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAHmZ2GUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDIyNj3aJsCwMz3aLU9NKcxJL8It0ikKJi3ZQ0U8tkM5OU5BSzFCWg5oK
+ i1LTMCrDB0bG1tQA5j53eaAAAAA==
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+ Matti Vaittinen <mazziesaccount@gmail.com>, 
+ shengfei Xu <xsf@rock-chips.com>, 
+ Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc: linux-kernel@vger.kernel.org, 
+ Quentin Schulz <quentin.schulz@theobroma-systems.com>, 
+ Quentin Schulz <foss+kernel@0leil.net>
+X-Mailer: b4 0.13.0
+X-Infomaniak-Routing: alpha
 
-On Wed, 21 Feb 2024 at 12:36, Ard Biesheuvel <ardb+git@google.com> wrote:
->
-> From: Ard Biesheuvel <ardb@kernel.org>
->
-> The secondary startup code is used on the primary boot path as well, but
-> in this case, the initial part runs from a 1:1 mapping, until an
-> explicit cross-jump is made to the kernel virtual mapping of the same
-> code.
->
-> On the secondary boot path, this jump is pointless as the code already
-> executes from the mapping targeted by the jump. So combine this
-> cross-jump with the jump from startup_64() into the common boot path.
-> This simplifies the execution flow, and clearly separates code that runs
-> from a 1:1 mapping from code that runs from the kernel virtual mapping.
->
-> Note that this requires a page table switch, so hoist the CR3 assignment
-> into startup_64() as well. And since absolute symbol references will no
-> longer be permitted in .head.text once we enable the associated build
-> time checks, a RIP-relative memory operand is used in the JMP
-> instruction, referring to an absolute constant in the .init.rodata
-> section.
->
-> Given that the secondary startup code does not require a special
-> placement inside the executable, move it to the .noinstr.text section.
+The regulator ranges aren't really matching what they should be for the
+buck and ldo regulators on RK806. They are not wrong per-se but they are
+a bit misleading.
 
-This should be the .text section, or we get
+The only change in behavior expected is that the buck regulators
+shouldn't be able to say that 3.65V is possible.
 
-vmlinux.o: warning: objtool: early_setup_idt+0x4: call to
-startup_64_load_idt() leaves .noinstr.text section
+Signed-off-by: Quentin Schulz <quentin.schulz@theobroma-systems.com>
+---
+Quentin Schulz (2):
+      regulator: rk808: fix buck range on RK806
+      regulator: rk808: fix LDO range on RK806
 
-It would be better to have the secondary startup code in
-noinstr.text, but it is only a very minor improvement. I'll be
-looking into teaching objtool to be strict about .head.text code and
-reject references that use absolute addressing, so I might be able to
-tweak it to permit this use case as well but at this point we should
-probably just move it into ordinary .text
+ drivers/regulator/rk808-regulator.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+---
+base-commit: ffd2cb6b718e189e7e2d5d0c19c25611f92e061a
+change-id: 20240223-rk806-regulator-ranges-df59c64dcd6d
 
+Best regards,
+-- 
+Quentin Schulz <quentin.schulz@theobroma-systems.com>
 
-> This requires the use of a subsection so that the payload is placed
-> after the page aligned Xen hypercall page, as otherwise, objtool will
-> complain about the resulting JMP instruction emitted by the assembler
-> being unreachable.
->
-
-^^^ this bit can be dropped, and the following hunk applied (apologies
-if my gmail mangles this - i can resend the patch or the series)
-
-
-diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
-index 4bee33d8e1dc..e16df01791be 100644
---- a/arch/x86/kernel/head64.c
-+++ b/arch/x86/kernel/head64.c
-@@ -515,7 +515,7 @@
- }
-
- /* This is used when running on kernel addresses */
--void noinstr early_setup_idt(void)
-+void early_setup_idt(void)
- {
-        void *handler = NULL;
-
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index 32fefb23f4df..c9ee92550508 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -139,8 +139,7 @@
-        __INITRODATA
- 0:     .quad   common_startup_64
-
--       .section .noinstr.text, "ax"
--       .subsection 1
-+       .text
- SYM_CODE_START(secondary_startup_64)
-        UNWIND_HINT_END_OF_STACK
-        ANNOTATE_NOENDBR
 
