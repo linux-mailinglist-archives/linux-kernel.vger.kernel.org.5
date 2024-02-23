@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-79094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79095-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5216861D7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:22:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1254861D80
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:23:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 025391C23C08
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:22:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44B01B23C03
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:23:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51242146904;
-	Fri, 23 Feb 2024 20:21:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7005614DFC3;
+	Fri, 23 Feb 2024 20:21:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HXswtQXg"
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wk+bWj8T"
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D65C146E9B
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 20:21:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D94014CAB3
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 20:21:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708719672; cv=none; b=gSt+9OaFhZeJ9xSzdOu4bbEf8sBePWgpM7jw8KlbN1vythBz3RV1DUVi4WCzE7fYezj+Twn4WdbfERg4Co8E36qyp1Gwp+Hh8Y1WEr6p2YLh756UaxTwXZKO4NCQRH7xNiMY5+RRD/K/Ntb3CsGihEbgXpY9Q+JbfK20eb8TWTY=
+	t=1708719674; cv=none; b=ckMcehqRv7rs8Co2vjxQn+jY2PgVZHR9Hooj9Pn5eYoipAtNNVwjryniJ1mk86RbPOrTwvrVZPoxPjV8LOePlsX1hzOD2Y+uqDDQdQPKxbg3CoQ8/vzdjLSmzi8zITO4SH4fVMw0Z5mMG1VQ3Ow8IhIU41SRpa5iPWI0AfZOMHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708719672; c=relaxed/simple;
-	bh=HGThLVUxXYbVSOOZxCrgBI4/8udXcy4h8pBaZ8gILd4=;
+	s=arc-20240116; t=1708719674; c=relaxed/simple;
+	bh=+lJk5AK8dlVL05cps/qThtV9mpJgp251EZLu0QB3UtM=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=eZc6UJqws00m8j1YwIcJEPv9pIRHexswxhafRDZ6uWQgRx/jI8WAJJM26AaskF1G0yDfnYZb7dS5Yjh66TC5ckH+72CyCosqGGeeTie/pbs2MtmDwe4Y3BI7jdjCHarCqpZUJUdpFuH9O7lDeqaN52AZ7lUk+xR/RmILI9C87Z8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HXswtQXg; arc=none smtp.client-ip=209.85.210.201
+	 To:Cc:Content-Type; b=iy4i8nFGow/ESP3VwB3FK2PEzVzklyN4wRpi6vcD0Yp+TLX2Maem49+nHDkE9t4QIO19n7vpC8rXVyN8g5SvRDOedc8UeWKtyK5mAsMASxWkojRf8IYSplJyc82iJ3a3zBIETex0ehqBAuHJZ2KL7YD004BaoVg9VyBYSpTBItc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wk+bWj8T; arc=none smtp.client-ip=209.85.216.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6e41d856114so901790b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 12:21:10 -0800 (PST)
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-29a86539b3cso340640a91.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 12:21:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708719670; x=1709324470; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1708719672; x=1709324472; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=SJIQNAlIsKGXsg0lFIYuueKE4jyUGKIK5OKq5RD486Q=;
-        b=HXswtQXgBREBdmoKabdRaJen+fLGcnUNFTYOZR0tnm9hpXuuoYpSAZNymOK8xD+le3
-         jYmcz0L+2WUypcToslY5SxvCEFPysoh21Iggl0rgdd1iS6rAONBBQNNfKRMGPcIjhD6W
-         v55MlgkPuqkZYUbiBdtto5WuB4gOjTd3i4CW2fUv65qZ8huv4XlKiYYjklgLGJDPCr4t
-         bQN7fHpdL4qOgJL40fZxWc56rXnPp58R4DBUfPNBGb4x/epv1uIqeStMICjtB1sJeEGa
-         mujKs29fcmSIgxmfeb8hAUBf8140LMIffBdbI7DC8AJQV8uvEihwb8ozLO3J9QzwIdB/
-         liiQ==
+        bh=4AhBqaFKsEgrMMKsPnTb4KDGMvhddDO4DQwV/SsUl6M=;
+        b=wk+bWj8T05NuASRY4t99y3sPoOQodcX+XY5Y/efVhoDnzqIR/gZsEv/FDad1IUMNdw
+         TqZFbnNwa5YOi2aVNeWL/Nly6lvl8U2+QMHAyotSt6cRhSRe0HSzIWyz6GPEmCw2sqPg
+         5LPOUmooA8UHT5pa0Lq3csjGLkSSZocnMFOlbm3ZK3wkalpEJCo158N2xoiQcB17ChXu
+         utjpYd4SOdO4I+TTJCCQdG4WJNPHOgxHitNsbIMv+AAjk9Kdo1GXlkK8w+JQMmQZaivR
+         nGIj+UD5DhwNbAjMp1w72XoZLDKWudIHnhkF5qNYKEVogbsFaMiRtPivNLEltiHN6DdO
+         Idsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708719670; x=1709324470;
+        d=1e100.net; s=20230601; t=1708719672; x=1709324472;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=SJIQNAlIsKGXsg0lFIYuueKE4jyUGKIK5OKq5RD486Q=;
-        b=Q4OwBLajm/O7nnpI+5pX9pMIKTBdAJL0vAiKcegdHgB2Z4zEl4pgFiZNIUC0uWGhst
-         8t506CpSSHuMGfCBNHjYPcHkfRnOVhw6EUuXjG0IkQ+NbiTq4L34YGhss0fLhuqBqXPG
-         eC/g7YgcbZ10/EUGWKUauHu0lFMxuRF7dJcCLKIwp64XwkltKDje3Gzb44PZ2K29BlmL
-         s6Vvhbtan5BlFRvGHNLG/pi6yABeqGBtYRjRaDgryhVQ4HyCERgwPvJcIUX6grhi3Glc
-         sN87zu3LfLLAWKSCOHE1O4XqTtS8q8ohmmCXavLCjPNckUNeLjecNXtU20d2NzjkglCX
-         Y9IA==
-X-Forwarded-Encrypted: i=1; AJvYcCXRDTBwSXLHLg0DoX2zLwkRrczUhR1XVLwNNrScACg6MgZ/461IurvyVeMT7jHTBSt4Qz02wwyVGaddbbo02IKSqELE9PyXQvEWph86
-X-Gm-Message-State: AOJu0Yx/ME3k+bdjVdMF8mVq0NnRgZug9PKB0eStCu7eCcUCznt3Lrif
-	BClt2KbiCtaVNW/FPiG4HRkbrgXJbte/2KDmibiQvYgCi1xLN+Lp3yI5RppJTDlCL/reYLkjhVx
-	Vhg==
-X-Google-Smtp-Source: AGHT+IFTnRQtCDzRnGZQfMKCP1Sben1lkat4SJ0r2UaFSBXl30JLLLG//l2lC62khs4DclZsMGiqGb9wwLU=
+        bh=4AhBqaFKsEgrMMKsPnTb4KDGMvhddDO4DQwV/SsUl6M=;
+        b=wKNzg7dYbEZ7JdY0QSEvMu3BfN+89c1YtmfaFah36b/fNq1wjJmqvXwq4+pomzc6aH
+         yodIPIOAhv4YWDaVNJwI2PEjM4UkP/rCQZSvxDtm8ic0BgOsH6fQvG0qxZxlpntM2PBe
+         bR/AEAklb1QurzZbvhm/VYrUYjLwr8ABWo79ma4t9DQ4kzxV0Ag8QhXH0qhek1RwrFga
+         SVAgbZHM+Cvwb0dW2g/Fdz+6qEoNe1hoiIoVA9q/NWvQBN61qU79l/OcZ9J7vURCVoEk
+         0qGm4amP3+CqtLim3otr7kvcppTb9N0B1Le0fGYxI6Nx+HhNRBXY5Chu1oGr5BcT6plY
+         3MQw==
+X-Forwarded-Encrypted: i=1; AJvYcCWq54mQUWBK947FFbm0q+p1R7G3/+tFycRSDi0/SkzpgRLBKcnmHGcWY9Lasuj7iCFAggiQNjnPlKcfMUJJmmsSpTRDUImK+7iqS1bL
+X-Gm-Message-State: AOJu0Yx8yBRek7NLyLxTrQ+F40dpLs1ffRGNHUE+MwuvtLVUpZ/AUtt4
+	f+yx8ikobseNEDrjcmMA/xBNkVXRlstoZ7FgFBjxHIdRkvLXWAufBscs28/3hg5/iT+Y9FYJABE
+	f8w==
+X-Google-Smtp-Source: AGHT+IGpWKvmDN9UJOkoRROg6YO/V3Lnx0DBSYyghLMqb2TYzKIvdjMkbunbt1ZlwLgd5KXFqE87krbBLRc=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:3cd1:b0:6e4:8aa4:387b with SMTP id
- ln17-20020a056a003cd100b006e48aa4387bmr67638pfb.1.1708719670527; Fri, 23 Feb
- 2024 12:21:10 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a17:90b:2d89:b0:299:4395:a21c with SMTP id
+ sj9-20020a17090b2d8900b002994395a21cmr2519pjb.7.1708719672505; Fri, 23 Feb
+ 2024 12:21:12 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Fri, 23 Feb 2024 12:21:03 -0800
+Date: Fri, 23 Feb 2024 12:21:04 -0800
 In-Reply-To: <20240223202104.3330974-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,49 +75,146 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240223202104.3330974-1-seanjc@google.com>
 X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <20240223202104.3330974-3-seanjc@google.com>
-Subject: [PATCH v2 2/3] KVM: VMX: return early if msr_bitmap is not supported
+Message-ID: <20240223202104.3330974-4-seanjc@google.com>
+Subject: [PATCH v2 3/3] KVM: VMX: Combine "check" and "get" APIs for
+ passthrough MSR lookups
 From: Sean Christopherson <seanjc@google.com>
 To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
 Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	Dongli Zhang <dongli.zhang@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
 
-From: Dongli Zhang <dongli.zhang@oracle.com>
+Combine possible_passthrough_msr_slot() and is_valid_passthrough_msr()
+into a single function, vmx_get_passthrough_msr_slot(), and have the
+combined helper return the slot on success, using a negative value to
+indicate "failure".
 
-The vmx_msr_filter_changed() may directly/indirectly calls only
-vmx_enable_intercept_for_msr() or vmx_disable_intercept_for_msr(). Those
-two functions may exit immediately if !cpu_has_vmx_msr_bitmap().
+Combining the operations avoids iterating over the array of passthrough
+MSRs twice for relevant MSRs.
 
-vmx_msr_filter_changed()
--> vmx_disable_intercept_for_msr()
--> pt_update_intercept_for_msr()
-   -> vmx_set_intercept_for_msr()
-      -> vmx_enable_intercept_for_msr()
-      -> vmx_disable_intercept_for_msr()
-
-Therefore, we exit early if !cpu_has_vmx_msr_bitmap().
-
-Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
+Suggested-by: Dongli Zhang <dongli.zhang@oracle.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/vmx/vmx.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/x86/kvm/vmx/vmx.c | 63 +++++++++++++++++-------------------------
+ 1 file changed, 25 insertions(+), 38 deletions(-)
 
 diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 7470a7fb1014..014cf47dc66b 100644
+index 014cf47dc66b..969fd3aa0da3 100644
 --- a/arch/x86/kvm/vmx/vmx.c
 +++ b/arch/x86/kvm/vmx/vmx.c
-@@ -4127,6 +4127,9 @@ static void vmx_msr_filter_changed(struct kvm_vcpu *vcpu)
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
- 	u32 i;
+@@ -658,25 +658,14 @@ static inline bool cpu_need_virtualize_apic_accesses(struct kvm_vcpu *vcpu)
+ 	return flexpriority_enabled && lapic_in_kernel(vcpu);
+ }
  
-+	if (!cpu_has_vmx_msr_bitmap())
-+		return;
-+
+-static int possible_passthrough_msr_slot(u32 msr)
++static int vmx_get_passthrough_msr_slot(u32 msr)
+ {
+-	u32 i;
+-
+-	for (i = 0; i < ARRAY_SIZE(vmx_possible_passthrough_msrs); i++)
+-		if (vmx_possible_passthrough_msrs[i] == msr)
+-			return i;
+-
+-	return -ENOENT;
+-}
+-
+-static bool is_valid_passthrough_msr(u32 msr)
+-{
+-	bool r;
++	int i;
+ 
+ 	switch (msr) {
+ 	case 0x800 ... 0x8ff:
+ 		/* x2APIC MSRs. These are handled in vmx_update_msr_bitmap_x2apic() */
+-		return true;
++		return -ENOENT;
+ 	case MSR_IA32_RTIT_STATUS:
+ 	case MSR_IA32_RTIT_OUTPUT_BASE:
+ 	case MSR_IA32_RTIT_OUTPUT_MASK:
+@@ -691,14 +680,16 @@ static bool is_valid_passthrough_msr(u32 msr)
+ 	case MSR_LBR_CORE_FROM ... MSR_LBR_CORE_FROM + 8:
+ 	case MSR_LBR_CORE_TO ... MSR_LBR_CORE_TO + 8:
+ 		/* LBR MSRs. These are handled in vmx_update_intercept_for_lbr_msrs() */
+-		return true;
++		return -ENOENT;
+ 	}
+ 
+-	r = possible_passthrough_msr_slot(msr) != -ENOENT;
+-
+-	WARN(!r, "Invalid MSR %x, please adapt vmx_possible_passthrough_msrs[]", msr);
++	for (i = 0; i < ARRAY_SIZE(vmx_possible_passthrough_msrs); i++) {
++		if (vmx_possible_passthrough_msrs[i] == msr)
++			return i;
++	}
+ 
+-	return r;
++	WARN(1, "Invalid MSR %x, please adapt vmx_possible_passthrough_msrs[]", msr);
++	return -ENOENT;
+ }
+ 
+ struct vmx_uret_msr *vmx_find_uret_msr(struct vcpu_vmx *vmx, u32 msr)
+@@ -3954,6 +3945,7 @@ void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
+ {
+ 	struct vcpu_vmx *vmx = to_vmx(vcpu);
+ 	unsigned long *msr_bitmap = vmx->vmcs01.msr_bitmap;
++	int idx;
+ 
+ 	if (!cpu_has_vmx_msr_bitmap())
+ 		return;
+@@ -3963,16 +3955,13 @@ void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
  	/*
- 	 * Redo intercept permissions for MSRs that KVM is passing through to
- 	 * the guest.  Disabling interception will check the new MSR filter and
+ 	 * Mark the desired intercept state in shadow bitmap, this is needed
+ 	 * for resync when the MSR filters change.
+-	*/
+-	if (is_valid_passthrough_msr(msr)) {
+-		int idx = possible_passthrough_msr_slot(msr);
+-
+-		if (idx != -ENOENT) {
+-			if (type & MSR_TYPE_R)
+-				clear_bit(idx, vmx->shadow_msr_intercept.read);
+-			if (type & MSR_TYPE_W)
+-				clear_bit(idx, vmx->shadow_msr_intercept.write);
+-		}
++	 */
++	idx = vmx_get_passthrough_msr_slot(msr);
++	if (idx >= 0) {
++		if (type & MSR_TYPE_R)
++			clear_bit(idx, vmx->shadow_msr_intercept.read);
++		if (type & MSR_TYPE_W)
++			clear_bit(idx, vmx->shadow_msr_intercept.write);
+ 	}
+ 
+ 	if ((type & MSR_TYPE_R) &&
+@@ -3998,6 +3987,7 @@ void vmx_enable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
+ {
+ 	struct vcpu_vmx *vmx = to_vmx(vcpu);
+ 	unsigned long *msr_bitmap = vmx->vmcs01.msr_bitmap;
++	int idx;
+ 
+ 	if (!cpu_has_vmx_msr_bitmap())
+ 		return;
+@@ -4008,15 +3998,12 @@ void vmx_enable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
+ 	 * Mark the desired intercept state in shadow bitmap, this is needed
+ 	 * for resync when the MSR filter changes.
+ 	*/
+-	if (is_valid_passthrough_msr(msr)) {
+-		int idx = possible_passthrough_msr_slot(msr);
+-
+-		if (idx != -ENOENT) {
+-			if (type & MSR_TYPE_R)
+-				set_bit(idx, vmx->shadow_msr_intercept.read);
+-			if (type & MSR_TYPE_W)
+-				set_bit(idx, vmx->shadow_msr_intercept.write);
+-		}
++	idx = vmx_get_passthrough_msr_slot(msr);
++	if (idx >= 0) {
++		if (type & MSR_TYPE_R)
++			set_bit(idx, vmx->shadow_msr_intercept.read);
++		if (type & MSR_TYPE_W)
++			set_bit(idx, vmx->shadow_msr_intercept.write);
+ 	}
+ 
+ 	if (type & MSR_TYPE_R)
 -- 
 2.44.0.rc0.258.g7320e95886-goog
 
