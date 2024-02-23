@@ -1,412 +1,198 @@
-Return-Path: <linux-kernel+bounces-77619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E4F6860824
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:16:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC8F2860828
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:19:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC2E61F22C74
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:16:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F054B21087
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:19:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 534E49470;
-	Fri, 23 Feb 2024 01:16:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBA54AD4B;
+	Fri, 23 Feb 2024 01:18:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="glBwmgDH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="MoAhjLj6";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="PwkpYDcW"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32811847E
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 01:16:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708650973; cv=none; b=Y606k0uiDLUZ7xz7UMYUPGC6lihyy2pL3w9soZU0ltpoNHGP6ddFhwe6e08m574UfBrzjSdSDkH2S6uY5ubXPiDcPli16a95Vt6JdaOWE6n0upYnboXwSl/0KTBk06VtMWYK3XVmXRHnX8uJLzzjAgdMP79p8VUkEh5Npwyqfu8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708650973; c=relaxed/simple;
-	bh=bt0v5yeGHnD4YYUl0ZoLlEH5P5CVzY1MYew/SO2Ese0=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=I7WtydniFUtrzHic4cqj6GPcFLX323eY1KXLDWjtnE5+eECXnxm0PNDggJ0SaB9n40zGOBOzMQ2YMyhPzbILMfW0U98rdwdx8pJ4SW5Ohne6QkgroMTfK7Vd8FDactsEXzqQOPPjGzF1l7vgLRqZEXGk0Le5J5UctR9IsLuzEqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=glBwmgDH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D81F6C433C7;
-	Fri, 23 Feb 2024 01:16:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708650972;
-	bh=bt0v5yeGHnD4YYUl0ZoLlEH5P5CVzY1MYew/SO2Ese0=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-	b=glBwmgDH1ptQVJ4b0DpxjYfcyEXDrD7YlmTYcmiliqnUHiPOkfEqi/vv/iobUoqcC
-	 pBELv3sz4jxMjv0VGzP5fU12dzptwCKlXpWQAbLvrNpzbuKNlVKUzwH4/sIhbtOjIL
-	 ZPpnlR9D+Owg82HbufKpIfUuVdoxWH2+uJnuTjQ5vsRXYufwjWluxjq/HVyD3fWt/N
-	 DmuHSkE0lFvXyyk3l9qFNBFTs4PA3hPoUR6jJ8Vkq4qoYPogk1r2Lt+MISUjp6m+wD
-	 UisZaeGQcVq57Ti3lt9aqu+s5CVQL0QaZxZPDahQToIObQWKSfP+7uzeJmiEGQw7zA
-	 agxHTPjf1HzQQ==
-Date: Thu, 22 Feb 2024 17:16:09 -0800 (PST)
-From: Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@ubuntu-linux-20-04-desktop
-To: Roger Pau Monne <roger.pau@citrix.com>
-cc: xen-devel@lists.xenproject.org, Juergen Gross <jgross@suse.com>, 
-    Boris Ostrovsky <boris.ostrovsky@oracle.com>, 
-    Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-    Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-    x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-    Stefano Stabellini <sstabellini@kernel.org>, 
-    Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>, 
-    linux-kernel@vger.kernel.org, Jan Beulich <jbeulich@suse.com>, 
-    Andrew Cooper <andrew.cooper3@citrix.com>
-Subject: Re: [PATCH RFC] x86/xen: attempt to inflate the memory balloon on
- PVH
-In-Reply-To: <20240220174341.56131-1-roger.pau@citrix.com>
-Message-ID: <alpine.DEB.2.22.394.2402221701190.754277@ubuntu-linux-20-04-desktop>
-References: <20240220174341.56131-1-roger.pau@citrix.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF458847E;
+	Fri, 23 Feb 2024 01:18:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708651136; cv=fail; b=fhNRVg5aLKV50qVtpjbszWxg8C1lggbMAYC6P4PR0uxYblDje1WX9TrHA9QStr38CcB1YVx8z5arLeweG+5uj+9KpFuj2hOZdL3HV0CZ7gEYy25wtDP9NgAf6NEUo4uG5cuFBNf96ohRWrP2nmiQj8cARgkQ3s3jwj7O90T+n58=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708651136; c=relaxed/simple;
+	bh=eZ9mONgI1gjVZMi160RGdnC8PzQ+dASKxc6TH8xAmFk=;
+	h=To:Cc:Subject:From:Message-ID:References:Date:In-Reply-To:
+	 Content-Type:MIME-Version; b=rYXMRN4Mie8E7JDlYlz+cUYrnOajz3+0YL3PCo7aaYl43mvTczv4P7ZCcxeuJteEmdefC2L9wvuMXvk2Ogn5kjaHhxS3KzF3sBs1RRgC1WBKC0BVFTdiF0/mYV3rwSi0/T/kqi59hf/fqgKg44fLkD9C+L6oB5dpPePl2yC3vic=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=MoAhjLj6; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=PwkpYDcW; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41MIQUZH013906;
+	Fri, 23 Feb 2024 01:16:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2023-11-20;
+ bh=qQTTTugDV/C3oKRs/JzN4fs5FhlGf/AkAql690BJ4vo=;
+ b=MoAhjLj6/Rtqq8Cp3vqAln8M7n1Ola4x4/PFeawpuKUBKwYPo0m+g/yX03hj+yAfkXnq
+ A/c1+mAzEKOpqmo4C0LXwbqKRVlScgrLpAELGMPwaW7GHQq5t1B8nJ3wB4p1PpiHGn62
+ Roza4E+L6mZuZ8v/DEEhYYdhq9TItPA81nmy1/aghOI48Upwi2+xYiUHGunwj7ihZd9q
+ TPxLuegV7fsA//CElKQrPzsyNGLowl+HcslX3SoDhP+zpWGJ9rVzHjku61aDczWZu5XE
+ NM79J3jW77Lkx6S7dnW99uuBb9IYshWJAH1QKD2PpUAVk9DvLFabCJCcj+dTtx+3+Ju7 NA== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wd5fw6052-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 23 Feb 2024 01:16:38 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41N10YVA037737;
+	Fri, 23 Feb 2024 01:16:32 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wak8bf5qn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 23 Feb 2024 01:16:31 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fwxM5KVBt1SDXFIXuJpOr8gTFb6ESH+M5cdSVFcFJNwKi8roo+X5Y3sVkDlfbYzjtStwFFO5fuMgFQRCGC3Aly+T/Y8QKa+1BL4AvafzUzVWYVN9XFpXk9cmTG4znW2K1A4mTC8OJAhTqCBEiPVqpmYwkaYp72tHZy8d7qv/afdS4eVwbM7W/8pQVHiYd/tvKZKhPLTRs8F3eI1DMIesS0sbjkoebElLnHIiQ7GaN2OV14f/sCnbHrwK1d/hNcJmreQBAzOH7/E3Il0CNrPo4/3+gyUrPO3K7fuUKlQDXuMVvZ1NqxIBr5h8TZlIFlgAA4iyq3j1hxBdX7x1GiAAgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qQTTTugDV/C3oKRs/JzN4fs5FhlGf/AkAql690BJ4vo=;
+ b=I0pwQ8Ygp5Id/xB4609V+NR39vn32V6Z9b7LCDExIDXUdk4nRv6tdoH+Tn21HICSlXGrBrTCx4Lyc4mhJqUOgvTBLTfo7kyXFCO3AuaEdCZiEHK+zPjktfsooFrMak5mgsRVLL8SuI24hYxMkaLvodDuItwSfy6FusCl9TveMVS6HUJwRoaTjITC9m59cGtva6WS0bSo1cpSBbs9MpGnTbkmDUA2uXimCuI/M10znCq6GHW/CnxDa4EeR2dI0HKxYwUzdE62UCdhQ330mw9uqqU6TQeZRtzzdJaozvPQRGgOgHpAw+0RVjJvYHfXp5SMYVI2yaPBXxkc0XCyaQkfdw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qQTTTugDV/C3oKRs/JzN4fs5FhlGf/AkAql690BJ4vo=;
+ b=PwkpYDcWrQXpAKghEyXKyILrKRsGRkm0y1GeVzQAwrLdcM1WHLYqZ88UvrCpVKa2H/fEmbn/QUH/YGoYQ+fqkmuBucICPKBPZhKuRBq6PNK2tyhrB1IaDDE2twFVUqbnAW6yp31LHMYR3aJCLC6NnUT7EHAPLxplFA2dhLEsp8M=
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4808.namprd10.prod.outlook.com (2603:10b6:510:35::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.22; Fri, 23 Feb
+ 2024 01:16:29 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::1b19:1cdf:6ae8:1d79]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::1b19:1cdf:6ae8:1d79%5]) with mapi id 15.20.7316.023; Fri, 23 Feb 2024
+ 01:16:29 +0000
+To: John Garry <john.g.garry@oracle.com>
+Cc: Arnd Bergmann <arnd@kernel.org>,
+        Sathya Prakash Veerichetty
+ <sathya.prakash@broadcom.com>,
+        Kashyap Desai
+ <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Arnd Bergmann
+ <arnd@arndb.de>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        "James
+ E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen"
+ <martin.petersen@oracle.com>,
+        Ranjan Kumar <ranjan.kumar@broadcom.com>,
+        Tomas Henzl <thenzl@redhat.com>,
+        Harshit Mogalapalli
+ <harshit.m.mogalapalli@oracle.com>,
+        mpi3mr-linuxdrv.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v2] scsi: mpi3mr: reduce stack usage in
+ mpi3mr_refresh_sas_ports()
+From: "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1bk887zg8.fsf@ca-mkp.ca.oracle.com>
+References: <20240123130754.2011469-1-arnd@kernel.org>
+	<96bb914c-79be-4867-b59d-62f80dbcdace@oracle.com>
+Date: Thu, 22 Feb 2024 20:16:27 -0500
+In-Reply-To: <96bb914c-79be-4867-b59d-62f80dbcdace@oracle.com> (John Garry's
+	message of "Mon, 19 Feb 2024 12:08:24 +0000")
+Content-Type: text/plain
+X-ClientProxiedBy: MN2PR01CA0027.prod.exchangelabs.com (2603:10b6:208:10c::40)
+ To PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-1734207608-1708650207=:754277"
-Content-ID: <alpine.DEB.2.22.394.2402221703300.754277@ubuntu-linux-20-04-desktop>
-
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-1734207608-1708650207=:754277
-Content-Type: text/plain; CHARSET=UTF-8
-Content-Transfer-Encoding: 8BIT
-Content-ID: <alpine.DEB.2.22.394.2402221703301.754277@ubuntu-linux-20-04-desktop>
-
-On Tue, 20 Feb 2024, Roger Pau Monne wrote:
-> When running as PVH or HVM Linux will use holes in the memory map as scratch
-> space to map grants, foreign domain pages and possibly miscellaneous other
-> stuff.  However the usage of such memory map holes for Xen purposes can be
-> problematic.  The request of holesby Xen happen quite early in the kernel boot
-> process (grant table setup already uses scratch map space), and it's possible
-> that by then not all devices have reclaimed their MMIO space.  It's not
-> unlikely for chunks of Xen scratch map space to end up using PCI bridge MMIO
-> window memory, which (as expected) causes quite a lot of issues in the system.
-
-Am I understanding correctly that XEN_BALLOON_MEMORY_HOTPLUG doesn't
-help because it becomes available too late in the PVH boot sequence? 
-
-
-
-> At least for PVH dom0 we have the possibility of using regions marked as
-> UNUSABLE in the e820 memory map.  Either if the region is UNUSABLE in the
-> native memory map, or it has been converted into UNUSABLE in order to hide RAM
-> regions from dom0, the second stage translation page-tables can populate those
-> areas without issues.
-> 
-> PV already has this kind of logic, where the balloon driver is inflated at
-> boot.  Re-use the current logic in order to also inflate it when running as
-> PVH.  onvert UNUSABLE regions up to the ratio specified in EXTRA_MEM_RATIO to
-> RAM, while reserving them using xen_add_extra_mem() (which is also moved so
-> it's no longer tied to CONFIG_PV).
-> 
-> Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
-> ---
-> RFC reasons:
-> 
->  * Note that it would be preferred for the hypervisor to provide an explicit
->    range to be used as scratch mapping space, but that requires changes to Xen,
->    and it's not fully clear whether Xen can figure out the position of all MMIO
->    regions at boot in order to suggest a scratch mapping region for dom0.
-> 
->  * Should the whole set of xen_{add,del,chk,inv}_extra_mem() functions be moved
->    to a different file?  For the purposes of PVH only xen_add_extra_mem() is
->    moved and the chk and inv ones are PV specific and might not want moving to
->    a separate file just to guard them with CONFIG_PV.
-> ---
->  arch/x86/include/asm/xen/hypervisor.h |  1 +
->  arch/x86/platform/pvh/enlighten.c     |  3 ++
->  arch/x86/xen/enlighten.c              | 32 +++++++++++++
->  arch/x86/xen/enlighten_pvh.c          | 68 +++++++++++++++++++++++++++
->  arch/x86/xen/setup.c                  | 44 -----------------
->  arch/x86/xen/xen-ops.h                | 14 ++++++
->  drivers/xen/balloon.c                 |  2 -
->  7 files changed, 118 insertions(+), 46 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/xen/hypervisor.h b/arch/x86/include/asm/xen/hypervisor.h
-> index a9088250770f..31e2bf8d5db7 100644
-> --- a/arch/x86/include/asm/xen/hypervisor.h
-> +++ b/arch/x86/include/asm/xen/hypervisor.h
-> @@ -62,6 +62,7 @@ void xen_arch_unregister_cpu(int num);
->  #ifdef CONFIG_PVH
->  void __init xen_pvh_init(struct boot_params *boot_params);
->  void __init mem_map_via_hcall(struct boot_params *boot_params_p);
-> +void __init xen_reserve_extra_memory(struct boot_params *bootp);
->  #endif
->  
->  /* Lazy mode for batching updates / context switch */
-> diff --git a/arch/x86/platform/pvh/enlighten.c b/arch/x86/platform/pvh/enlighten.c
-> index 00a92cb2c814..a12117f3d4de 100644
-> --- a/arch/x86/platform/pvh/enlighten.c
-> +++ b/arch/x86/platform/pvh/enlighten.c
-> @@ -74,6 +74,9 @@ static void __init init_pvh_bootparams(bool xen_guest)
->  	} else
->  		xen_raw_printk("Warning: Can fit ISA range into e820\n");
->  
-> +	if (xen_guest)
-> +		xen_reserve_extra_memory(&pvh_bootparams);
-> +
->  	pvh_bootparams.hdr.cmd_line_ptr =
->  		pvh_start_info.cmdline_paddr;
->  
-> diff --git a/arch/x86/xen/enlighten.c b/arch/x86/xen/enlighten.c
-> index 3c61bb98c10e..a01ca255b0c6 100644
-> --- a/arch/x86/xen/enlighten.c
-> +++ b/arch/x86/xen/enlighten.c
-> @@ -6,6 +6,7 @@
->  #include <linux/console.h>
->  #include <linux/cpu.h>
->  #include <linux/kexec.h>
-> +#include <linux/memblock.h>
->  #include <linux/slab.h>
->  #include <linux/panic_notifier.h>
->  
-> @@ -350,3 +351,34 @@ void xen_arch_unregister_cpu(int num)
->  }
->  EXPORT_SYMBOL(xen_arch_unregister_cpu);
->  #endif
-> +
-> +/* Amount of extra memory space we add to the e820 ranges */
-> +struct xen_memory_region xen_extra_mem[XEN_EXTRA_MEM_MAX_REGIONS] __initdata;
-> +
-> +void __init xen_add_extra_mem(unsigned long start_pfn, unsigned long n_pfns)
-> +{
-> +	unsigned int i;
-> +
-> +	/*
-> +	 * No need to check for zero size, should happen rarely and will only
-> +	 * write a new entry regarded to be unused due to zero size.
-> +	 */
-> +	for (i = 0; i < XEN_EXTRA_MEM_MAX_REGIONS; i++) {
-> +		/* Add new region. */
-> +		if (xen_extra_mem[i].n_pfns == 0) {
-> +			xen_extra_mem[i].start_pfn = start_pfn;
-> +			xen_extra_mem[i].n_pfns = n_pfns;
-> +			break;
-> +		}
-> +		/* Append to existing region. */
-> +		if (xen_extra_mem[i].start_pfn + xen_extra_mem[i].n_pfns ==
-> +		    start_pfn) {
-> +			xen_extra_mem[i].n_pfns += n_pfns;
-> +			break;
-> +		}
-> +	}
-> +	if (i == XEN_EXTRA_MEM_MAX_REGIONS)
-> +		printk(KERN_WARNING "Warning: not enough extra memory regions\n");
-> +
-> +	memblock_reserve(PFN_PHYS(start_pfn), PFN_PHYS(n_pfns));
-> +}
-> diff --git a/arch/x86/xen/enlighten_pvh.c b/arch/x86/xen/enlighten_pvh.c
-> index ada3868c02c2..c28f073c1df5 100644
-> --- a/arch/x86/xen/enlighten_pvh.c
-> +++ b/arch/x86/xen/enlighten_pvh.c
-> @@ -1,6 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0
->  #include <linux/acpi.h>
->  #include <linux/export.h>
-> +#include <linux/mm.h>
->  
->  #include <xen/hvc-console.h>
->  
-> @@ -72,3 +73,70 @@ void __init mem_map_via_hcall(struct boot_params *boot_params_p)
->  	}
->  	boot_params_p->e820_entries = memmap.nr_entries;
->  }
-> +
-> +/*
-> + * Reserve e820 UNUSABLE regions to inflate the memory balloon.
-> + *
-> + * On PVH dom0 the host memory map is used, RAM regions available to dom0 are
-> + * located as the same place as in the native memory map, but since dom0 gets
-> + * less memory than the total amount of host RAM the ranges that can't be
-> + * populated are converted from RAM -> UNUSABLE.  Use such regions (up to the
-> + * ratio signaled in EXTRA_MEM_RATIO) in order to inflate the balloon driver at
-> + * boot.  Doing so prevents the guest (even if just temporary) from using holes
-> + * in the memory map in order to map grants or foreign addresses, and
-> + * hopefully limits the risk of a clash with a device MMIO region.  Ideally the
-> + * hypervisor should notify us which memory ranges are suitable for creating
-> + * foreign mappings, but that's not yet implemented.
-> + */
-> +void __init xen_reserve_extra_memory(struct boot_params *bootp)
-> +{
-> +	unsigned int i, ram_pages = 0, extra_pages;
-> +
-> +	for (i = 0; i < bootp->e820_entries; i++) {
-> +		struct boot_e820_entry *e = &bootp->e820_table[i];
-> +
-> +		if (e->type != E820_TYPE_RAM)
-> +			continue;
-> +		ram_pages += PFN_DOWN(e->addr + e->size) - PFN_UP(e->addr);
-> +	}
-> +
-> +	/* Max amount of extra memory. */
-> +	extra_pages = EXTRA_MEM_RATIO * ram_pages;
-> +
-> +	/*
-> +	 * Convert UNUSABLE ranges to RAM and reserve them for foreign mapping
-> +	 * purposes.
-> +	 */
-> +	for (i = 0; i < bootp->e820_entries && extra_pages; i++) {
-> +		struct boot_e820_entry *e = &bootp->e820_table[i];
-> +		unsigned long pages;
-> +
-> +		if (e->type != E820_TYPE_UNUSABLE)
-> +			continue;
-> +
-> +		pages = min(extra_pages,
-> +			PFN_DOWN(e->addr + e->size) - PFN_UP(e->addr));
-> +
-> +		if (pages != (PFN_DOWN(e->addr + e->size) - PFN_UP(e->addr))) {
-> +			struct boot_e820_entry *next;
-> +
-> +			if (bootp->e820_entries ==
-> +			    ARRAY_SIZE(bootp->e820_table))
-> +				/* No space left to split - skip region. */
-> +				continue;
-> +
-> +			/* Split entry. */
-> +			next = e + 1;
-> +			memmove(next, e,
-> +				(bootp->e820_entries - i) * sizeof(*e));
-> +			bootp->e820_entries++;
-> +			next->addr = PAGE_ALIGN(e->addr) + PFN_PHYS(pages);
-> +			e->size = next->addr - e->addr;
-> +			next->size -= e->size;
-
-Is this really worth doing? Can we just skip this range and continue or
-simply break out and call it a day? Or even add the whole range instead?
-
-The reason I am asking is that I am expecting E820_TYPE_UNUSABLE regions
-not to be huge. Splitting one just to cover the few remaining pages out
-of extra_pages doesn't seem worth it?
-
-Everything else looks OK to me.
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|PH0PR10MB4808:EE_
+X-MS-Office365-Filtering-Correlation-Id: 68c605c4-959b-42c6-47ef-08dc340d1005
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	etpm0XCD390yLVinHmtgvUxBNfgjLAu10NW6uj/fD28SdFKMjRYpISqVa+VOPo9c4kkcn0ZSfPWtbAgB/6bGeji/qJoinKjsyRbJQ/NjvtBDCcJIJdA/pF0eqUMHny33MZWZ63MU2ty10JZ5ZVyPlaTOOV8n7AYdQ6iptjHZ75K1j3sTRYIAk+4zx+ZDm0ZU2e9NsO0bjFicp1yWQUJ7Pc77uWXkskT7TYzC+yaL6/f3DwZNe1XLVx0TIrQ0fgEZqT56r5YrbeTrFSy44rycuj0iExz4zjXElln8UOAEwOxq30iYfWUmZV09Kwff8IfMcik7C1haSpju5diLzrdCY8c59Hy6zg20pJH1dL9btHJbZdHpvcYVH/fY7LNex5nfRh1elQQP+bvlE8QT+lYmqOP5hHfW605WFriyYbMj5JHqOSCdB79b1xY7aA+cVXSi0J+9zzbrOUFQX5Lppu5SnyoIz8ghGa7YrL00pXHMt0nTPJ8hfPP/MkfxnKuPq/NnP53BY9Dr5YM/npW2vS1LtWU5Q+7nxEwql4QdLYp0x/A=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?WYKXN98Hqurx7NKk9Pm+OBs0exdbWb0co2E2CwQtFPsHR709JJXSG0ildehX?=
+ =?us-ascii?Q?4pVW2GKpSl/OMq7L0TZ18COQlP1lpLZtqw55v5/aNGcOaWja4SOQMT+GavBM?=
+ =?us-ascii?Q?zsggKmPE+eTUOlobc4kue6cBM1o5wpdyYcyK78W2QuNZiTOnXgTi2nnpY6Mc?=
+ =?us-ascii?Q?fS8PSjA3NaDZxsiK4GkgNcJpC3qdW7G/PqfV7eoJ+wZ/UOR6chzIDe158Yab?=
+ =?us-ascii?Q?I4CXfm5gsVjao1Dq0PFV5U3sOi5XO9U724HbJpoB64Fpw/NpIAqXDq/oxMEf?=
+ =?us-ascii?Q?VefZQFYzcZki4I1UxD0jXdXXo/Z1ru9ZPx0Js5mXhpIe7ZnMle/gz8+r+BzY?=
+ =?us-ascii?Q?Tj7VDrm8ZFtvnghjfWmsq0GJ6LOvTbay5+acL6ASwt7s0Dbq4qjl5dfq8M0E?=
+ =?us-ascii?Q?Jtug2yQtMcGXFugtQfG5lExxcrrfKmzju7ujYf0ojnOc0kYN+M7QbrzRMSmg?=
+ =?us-ascii?Q?FvsgfiVdXewUKWZo455d2Hsh0jhpVyO+ipDxSwjeWt+nBTt2OYKcdwrncSMb?=
+ =?us-ascii?Q?yCrsYdWzD+IwEVJBVsFrk2NZEonzlzWHAzG8ETqv0hTpie4G+ygf3fsYjgHs?=
+ =?us-ascii?Q?HTlcWgXRAmf0c2d5xvpjjGqn6NZXDS2aTUJyHN7jzwpyK36C065D5cxbrTPH?=
+ =?us-ascii?Q?Pw+E2MDpR6SXOv+YPDwTxebTEGjlPTT1tXzvG4/5O97uTjc+Ni2na40pHeTp?=
+ =?us-ascii?Q?WmsIrYti9ZKsGqGogWoPEzzhtT+hupb+bSP8b1hj71LbzkVBlDbjlZz1SqQu?=
+ =?us-ascii?Q?cXB5CqNE4D1Fl5IU7dguDf6uwr2PQh/2gM6UiJ7ABhTTNkwAovpEL62KQLTE?=
+ =?us-ascii?Q?f1PfsJrZikj52L8JOinJ38CjKQB4o1RKMdIRGjC6ED4kAqvEzjJEbt9zUMER?=
+ =?us-ascii?Q?kzCV8huFE3QC72aVTUD5vGGxoo0bBz1SouFhrWW6BnRZN6xEFVPd63wEtLWk?=
+ =?us-ascii?Q?s5qU3JnvXyLRPEwuNmTjPGofugfK5l89J/uNR1h7PecQc8yD3zxwGnW/YxyL?=
+ =?us-ascii?Q?t4wYpoRmtQ42GvhfB1ZODDTORMXp+wpWTlxkF4uAlbp8oLukyBkxHhSrxsVF?=
+ =?us-ascii?Q?7LUgUVL294KU1WTFSjc6XEXj2ouzGSXvE/tzgWlGohxdy26k99q5IrIwkrQ1?=
+ =?us-ascii?Q?2s4RSBu2uPOcxNpldj99REX0iV5hX3nOx5kakBeop0sy4H8tMhOX49o98pNW?=
+ =?us-ascii?Q?IVe7E9+9q4lfS0l7GizU0egNkkClLUyHbnnlDVJHuoFVj05DgaTk0TemiILr?=
+ =?us-ascii?Q?qPORX6mH13F1ND/PNFjK4yKYrK+1aIYGNyLLvNVmm5KGem+c34Fg/2npA+mn?=
+ =?us-ascii?Q?TJ2LjT/aWer2mRKLraVl5YRr6mnXhPIX6ZGCSsihsNMSYBbKfdhaUVL00Uv+?=
+ =?us-ascii?Q?NtWVnG6yJNwt02qU3ksyWDVKMoQSxu5Cz681fRMg6kMSLTdQ/m3CLHvbk0C0?=
+ =?us-ascii?Q?G8Ad4r7BR7sZnXiFRFh8uW+R8RkEcFoD2mvG6jYZnL8f/h97cEijpjQHWznM?=
+ =?us-ascii?Q?zp5TyUafZt750IhTGx5s6eJTzoTQETvB3oAc/EhQsjO8cD2cdtvfDt1RCOAu?=
+ =?us-ascii?Q?hPZQN7TWzICiP1U34b2K75NHONc1u521pqvGHGhz1h9RDt9H3VvEyqZpgnO8?=
+ =?us-ascii?Q?6g=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	n0lDWv+mDCwOK/bdgGcoxHtLCXb0HMLSZ9y1IjOFCiYPlGFajMTe3bVeKImC8xKWZfA2Xl1mUbWtQklyL0evVBfGifoyJVRvVjZHAG4vke19P6POCYoNSvrfa0z63YgptS2Eu7RQEsZERBoFJMII8wAJilJgrNZABIsxo0Tx7tIHX0OWH3QpXlxkNK8Y4zzoV8vcwb9ESn/BtoDjueL6FwDaFsIwUdPlo6g4ekRzV8/TRdkqpiUEYe6J9V9xDZj983XP0B2gaxsnmE/UHI/e3eCFSmAUu7e1a4YkWD5iSNOgyDLH09upkODpbyTwrnW9KLyqjD97e4+Z1NISsEQ7919Ldss9xeGA1F8jFj/R2IAebQLyMU23oXUiVH2TUnZG7Gro2lYqEEOOBiDAkxDQuTG1o+yc4+CUWEocy5P8Gu5lGZ+8IwaQqDvFOyro9ie4Ki0f9W7lCduHXGoTrcx+nDTNWDauJrPUxACOp+5G7jhNk1Scl8upeeBkwLsbGjKZbWhts69Q67GmNd8lTCnrmsAb2BIW8KL4Zp/qiSg7t2u/S2EwRHbxyk0e03Ry3ibIyhcfG1+DtoNtxGaVKBV5Md6HCjc+MFOZ0ctcZO+Lavg=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 68c605c4-959b-42c6-47ef-08dc340d1005
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2024 01:16:28.8817
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: m0tDVYrie9EfmfRGeDYn6KoOKQedrTDbw4x5zAbZmPy3dYxLLQMNSNxgxd9mj7kVUzrCjcmHS5DPGfScZF4gk3RGDCKevwuWgi7mJ2cnGwM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4808
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-22_15,2024-02-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 malwarescore=0
+ bulkscore=0 adultscore=0 suspectscore=0 spamscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402230003
+X-Proofpoint-GUID: W5yNvm5MZvRvzmc5b1OrQvOuNQez479I
+X-Proofpoint-ORIG-GUID: W5yNvm5MZvRvzmc5b1OrQvOuNQez479I
 
 
-> +		}
-> +		e->type = E820_TYPE_RAM;
-> +		extra_pages -= pages;
-> +
-> +		xen_add_extra_mem(PFN_UP(e->addr), pages);
-> +	}
-> +}
-> diff --git a/arch/x86/xen/setup.c b/arch/x86/xen/setup.c
-> index b3e37961065a..380591028cb8 100644
-> --- a/arch/x86/xen/setup.c
-> +++ b/arch/x86/xen/setup.c
-> @@ -38,9 +38,6 @@
->  
->  #define GB(x) ((uint64_t)(x) * 1024 * 1024 * 1024)
->  
-> -/* Amount of extra memory space we add to the e820 ranges */
-> -struct xen_memory_region xen_extra_mem[XEN_EXTRA_MEM_MAX_REGIONS] __initdata;
-> -
->  /* Number of pages released from the initial allocation. */
->  unsigned long xen_released_pages;
->  
-> @@ -64,18 +61,6 @@ static struct {
->  } xen_remap_buf __initdata __aligned(PAGE_SIZE);
->  static unsigned long xen_remap_mfn __initdata = INVALID_P2M_ENTRY;
->  
-> -/*
-> - * The maximum amount of extra memory compared to the base size.  The
-> - * main scaling factor is the size of struct page.  At extreme ratios
-> - * of base:extra, all the base memory can be filled with page
-> - * structures for the extra memory, leaving no space for anything
-> - * else.
-> - *
-> - * 10x seems like a reasonable balance between scaling flexibility and
-> - * leaving a practically usable system.
-> - */
-> -#define EXTRA_MEM_RATIO		(10)
-> -
->  static bool xen_512gb_limit __initdata = IS_ENABLED(CONFIG_XEN_512GB);
->  
->  static void __init xen_parse_512gb(void)
-> @@ -96,35 +81,6 @@ static void __init xen_parse_512gb(void)
->  	xen_512gb_limit = val;
->  }
->  
-> -static void __init xen_add_extra_mem(unsigned long start_pfn,
-> -				     unsigned long n_pfns)
-> -{
-> -	int i;
-> -
-> -	/*
-> -	 * No need to check for zero size, should happen rarely and will only
-> -	 * write a new entry regarded to be unused due to zero size.
-> -	 */
-> -	for (i = 0; i < XEN_EXTRA_MEM_MAX_REGIONS; i++) {
-> -		/* Add new region. */
-> -		if (xen_extra_mem[i].n_pfns == 0) {
-> -			xen_extra_mem[i].start_pfn = start_pfn;
-> -			xen_extra_mem[i].n_pfns = n_pfns;
-> -			break;
-> -		}
-> -		/* Append to existing region. */
-> -		if (xen_extra_mem[i].start_pfn + xen_extra_mem[i].n_pfns ==
-> -		    start_pfn) {
-> -			xen_extra_mem[i].n_pfns += n_pfns;
-> -			break;
-> -		}
-> -	}
-> -	if (i == XEN_EXTRA_MEM_MAX_REGIONS)
-> -		printk(KERN_WARNING "Warning: not enough extra memory regions\n");
-> -
-> -	memblock_reserve(PFN_PHYS(start_pfn), PFN_PHYS(n_pfns));
-> -}
-> -
->  static void __init xen_del_extra_mem(unsigned long start_pfn,
->  				     unsigned long n_pfns)
->  {
-> diff --git a/arch/x86/xen/xen-ops.h b/arch/x86/xen/xen-ops.h
-> index a87ab36889e7..79cf93f2c92f 100644
-> --- a/arch/x86/xen/xen-ops.h
-> +++ b/arch/x86/xen/xen-ops.h
-> @@ -163,4 +163,18 @@ void xen_hvm_post_suspend(int suspend_cancelled);
->  static inline void xen_hvm_post_suspend(int suspend_cancelled) {}
->  #endif
->  
-> +/*
-> + * The maximum amount of extra memory compared to the base size.  The
-> + * main scaling factor is the size of struct page.  At extreme ratios
-> + * of base:extra, all the base memory can be filled with page
-> + * structures for the extra memory, leaving no space for anything
-> + * else.
-> + *
-> + * 10x seems like a reasonable balance between scaling flexibility and
-> + * leaving a practically usable system.
-> + */
-> +#define EXTRA_MEM_RATIO		(10)
-> +
-> +void xen_add_extra_mem(unsigned long start_pfn, unsigned long n_pfns);
-> +
->  #endif /* XEN_OPS_H */
-> diff --git a/drivers/xen/balloon.c b/drivers/xen/balloon.c
-> index 976c6cdf9ee6..aaf2514fcfa4 100644
-> --- a/drivers/xen/balloon.c
-> +++ b/drivers/xen/balloon.c
-> @@ -672,7 +672,6 @@ EXPORT_SYMBOL(xen_free_ballooned_pages);
->  
->  static void __init balloon_add_regions(void)
->  {
-> -#if defined(CONFIG_XEN_PV)
->  	unsigned long start_pfn, pages;
->  	unsigned long pfn, extra_pfn_end;
->  	unsigned int i;
-> @@ -696,7 +695,6 @@ static void __init balloon_add_regions(void)
->  
->  		balloon_stats.total_pages += extra_pfn_end - start_pfn;
->  	}
-> -#endif
->  }
->  
->  static int __init balloon_init(void)
-> -- 
-> 2.43.0
-> 
---8323329-1734207608-1708650207=:754277--
+John,
+
+> Has this patch been missed?
+>
+> I have this same build issue for i386 allmodconfig on v6.8-rc5 and earlier
+>
+> Tested-by: John Garry <john.g.garry@oracle.com> #build only
+
+Broadcom requested changes and I haven't seen a v3.
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
 
