@@ -1,226 +1,278 @@
-Return-Path: <linux-kernel+bounces-78259-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78257-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6481B8610DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:58:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A79808610D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:55:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18DD3285467
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:58:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB24A283614
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:54:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 781FB7AE5A;
-	Fri, 23 Feb 2024 11:58:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B3EE7B3E2;
+	Fri, 23 Feb 2024 11:54:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="VFx8LYLO"
-Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="tH5POp2p";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QdmwY6q6";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="tH5POp2p";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QdmwY6q6"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0B3C7AE65
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:58:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5841F5C60F;
+	Fri, 23 Feb 2024 11:54:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708689483; cv=none; b=pYIg6kncaZ5/qMSrKV2B3+Apeh7bKzYoN8OXJMHH5DnIN5esBYSqvdHt3xWn09MqzZ5KJm7p+WIARq9IQ1VODf7GhlnDF1qtePDdATmgc4gJ5tL591Y9E62Utv0Z4qNOrsexxhnGDWao/FWOAnWYljcQWvG5KoClMaIo5EZSlJI=
+	t=1708689292; cv=none; b=QIoAWLNnG+3wc0CRREGQpyYckhR0D86QeyIV4LKVc/fgUb9W9iUqpYdpgZCj8J70APVsjr89q1hgJ1XeBGvTaEf/RUavoempWilWIFKbBt8RJWPRGJeg25+lnlAHolfYKBAbVHoTl0QCoUJwDgCgMAoXsJ3WeCPQL2qv2DQ2rS0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708689483; c=relaxed/simple;
-	bh=OUmiIYV1ZOxPQwwDzWBugUjrO/94kZzGcCCUhw19TKo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UwjVC8f71FLQZpOlJIWK5dfACeKKfT/E1XqDH1PcIy0s6koi/nv1DoDgDyLfOXxvb/9iZ7HAfGA9oEhQZihK93N9jX0JUVlmYbpUWLbtVZ4prWRUyevC2NV3V8V5RmVKRDb9ScLguzQ4e65OWT0Xk8AVv130xb5e6HKQitCIR/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=VFx8LYLO; arc=none smtp.client-ip=198.252.153.129
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
-Received: from mx0.riseup.net (mx0-pn.riseup.net [10.0.1.42])
+	s=arc-20240116; t=1708689292; c=relaxed/simple;
+	bh=hsclevQNjz+SfkH0FkhYEt+qljL99JSIY/InOd4J8vc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cuf/H0Xpx82/F8cEyV43wacOtz4khAFgPYxKy9ePBWHRylzAQEgnbe5RTZHNnBpdA/DX2UtPEuNBy5X8PgDpf9mu+yZsf1feFPT77yN0z++oeQR5B6yp26KcpIowmL35TBzAmCdozrydPafnmvthvY83w4u3iI+zco2FpbbZWb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=tH5POp2p; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=QdmwY6q6; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=tH5POp2p; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=QdmwY6q6; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx1.riseup.net (Postfix) with ESMTPS id 4Th7g32jqZzDqP1
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:52:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1708689167; bh=OUmiIYV1ZOxPQwwDzWBugUjrO/94kZzGcCCUhw19TKo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=VFx8LYLOZmIhQp8rg646zyQMKTWhjrjgJOKt4Q4GITfYo6/MMPpsCPkqpJQx1u1QK
-	 4SRtKwTasjQzUWK6A3hqzLP9tzNaMwQiRe2h5tGHu+NJ5apgU6a4U9C6CY9df6zfNq
-	 N/mvBySley4kW3od04tNf4CnDkBY7u8woeH4nzfc=
-Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 17C2A21EF4;
+	Fri, 23 Feb 2024 11:54:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708689288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4jJj4+yHWBRFRCRjCnrlQZ6lYovmQ/EO+kcbsYVVZlE=;
+	b=tH5POp2paP8F5tywFW/QXwbb/upYOp8dN703unlSY5BTqoof+p0FLcjJckkq/glA4kfLSX
+	6eg55Oawf7hjAbHgCSRoPwWV6Z2S1YuwGcKKVj6sNjdluNPoYN0+R27Fa1SFmHq+08JPYP
+	A4OdZYEncu1TNOs+G9BhYC2v+jAbrzc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708689288;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4jJj4+yHWBRFRCRjCnrlQZ6lYovmQ/EO+kcbsYVVZlE=;
+	b=QdmwY6q6iAr/jDj/DTIwIQyMxcfZpijmyBs8DQwjt1kMQYj/cHRxuyrnh82fOGq1T8+9Ve
+	SUTdRvKkThRphSBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708689288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4jJj4+yHWBRFRCRjCnrlQZ6lYovmQ/EO+kcbsYVVZlE=;
+	b=tH5POp2paP8F5tywFW/QXwbb/upYOp8dN703unlSY5BTqoof+p0FLcjJckkq/glA4kfLSX
+	6eg55Oawf7hjAbHgCSRoPwWV6Z2S1YuwGcKKVj6sNjdluNPoYN0+R27Fa1SFmHq+08JPYP
+	A4OdZYEncu1TNOs+G9BhYC2v+jAbrzc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708689288;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4jJj4+yHWBRFRCRjCnrlQZ6lYovmQ/EO+kcbsYVVZlE=;
+	b=QdmwY6q6iAr/jDj/DTIwIQyMxcfZpijmyBs8DQwjt1kMQYj/cHRxuyrnh82fOGq1T8+9Ve
+	SUTdRvKkThRphSBw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx0.riseup.net (Postfix) with ESMTPS id 4Th7fx1tgFz9wx0;
-	Fri, 23 Feb 2024 11:52:41 +0000 (UTC)
-X-Riseup-User-ID: 0EF8E654CC1AEAB381F9584BCE1A40612DF66BFDD921DB16F4891EE24A96A184
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4Th7fr1hYYzFsSY;
-	Fri, 23 Feb 2024 11:52:35 +0000 (UTC)
-Message-ID: <282a368c-6713-4c36-8713-4e081025b0bb@riseup.net>
-Date: Fri, 23 Feb 2024 08:52:33 -0300
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id EEDBC13776;
+	Fri, 23 Feb 2024 11:54:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id cRJHOoeH2GVKZAAAn2gu4w
+	(envelope-from <jack@suse.cz>); Fri, 23 Feb 2024 11:54:47 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id A59CBA07D1; Fri, 23 Feb 2024 12:54:43 +0100 (CET)
+Date: Fri, 23 Feb 2024 12:54:43 +0100
+From: Jan Kara <jack@suse.cz>
+To: Baokun Li <libaokun1@huawei.com>
+Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, ritesh.list@gmail.com,
+	linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+	yangerkun@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH 1/7] ext4: avoid overflow when setting values via sysfs
+Message-ID: <20240223115443.spaztzcv7llmfl77@quack3>
+References: <20240126085716.1363019-1-libaokun1@huawei.com>
+ <20240126085716.1363019-2-libaokun1@huawei.com>
+ <20240213160554.35cpsfqqeqpgtux2@quack3>
+ <81081ec9-3aab-ecd1-c2f6-9a3835ea4fda@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 0/9] drm/vkms: Reimplement line-per-line pixel
- conversion for plane reading
-Content-Language: en-US
-To: Louis Chauvet <louis.chauvet@bootlin.com>,
- Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
- Melissa Wen <melissa.srw@gmail.com>,
- Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, arthurgrillo@riseup.net,
- Jonathan Corbet <corbet@lwn.net>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com
-References: <20240223-yuv-v2-0-aa6be2827bb7@bootlin.com>
-From: Maira Canal <mairacanal@riseup.net>
-In-Reply-To: <20240223-yuv-v2-0-aa6be2827bb7@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <81081ec9-3aab-ecd1-c2f6-9a3835ea4fda@huawei.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=tH5POp2p;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=QdmwY6q6
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[suse.cz,vger.kernel.org,mit.edu,dilger.ca,gmail.com,huawei.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -2.51
+X-Rspamd-Queue-Id: 17C2A21EF4
+X-Spam-Flag: NO
 
-Hi Louis,
+On Sat 17-02-24 15:09:06, Baokun Li wrote:
+> On 2024/2/14 0:05, Jan Kara wrote:
+> > On Fri 26-01-24 16:57:10, Baokun Li wrote:
+> > > When setting values of type unsigned int through sysfs, we use kstrtoul()
+> > > to parse it and then truncate part of it as the final set value, when the
+> > > set value is greater than UINT_MAX, the set value will not match what we
+> > > see because of the truncation. As follows:
+> > > 
+> > >    $ echo 4294967296 > /sys/fs/ext4/sda/mb_max_linear_groups
+> > >    $ cat /sys/fs/ext4/sda/mb_max_linear_groups
+> > >      0
+> > > 
+> > > So when the value set is outside the variable type range, -EINVAL is
+> > > returned to avoid the inconsistency described above. In addition, a
+> > > judgment is added to avoid setting s_resv_clusters less than 0.
+> > > 
+> > > Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> > > ---
+> > >   fs/ext4/sysfs.c | 4 +++-
+> > >   1 file changed, 3 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+> > > index 6d332dff79dd..3671a8aaf4af 100644
+> > > --- a/fs/ext4/sysfs.c
+> > > +++ b/fs/ext4/sysfs.c
+> > > @@ -104,7 +104,7 @@ static ssize_t reserved_clusters_store(struct ext4_sb_info *sbi,
+> > >   	int ret;
+> > >   	ret = kstrtoull(skip_spaces(buf), 0, &val);
+> > > -	if (ret || val >= clusters)
+> > > +	if (ret || val >= clusters || (s64)val < 0)
+> > >   		return -EINVAL;
+> > This looks a bit pointless, doesn't it? 'val' is u64, clusters is u64. We
+> > know that val < clusters so how could (s64)val be < 0?
+> When clusters is bigger than LLONG_MAX, (s64)val may be less than 0.
+> Of course we don't have such a large storage device yet, so it's only
+> theoretically possible to overflow here. But the previous patches in this
+> patch set were intended to ensure that the values set via sysfs did not
+> exceed the range of the variable type, so I've modified that here as well.
 
-On 2/23/24 08:37, Louis Chauvet wrote:
-> This patchset is the second version of [1]. It is almost a complete
-> rewrite to use a line-by-line algorithm for the composition.
-> It can be divided in three parts:
-> - PATCH 1 to 4: no functional change is intended, only some formatting and
-> documenting
-> (PATCH 2 is taken from [2])
-> - PATCH 5: main patch for this series, it reintroduce the
-> line-by-line algorithm
-> - PATCH 6 to 9: taken from Arthur's series [2], with sometimes adaptation
-> to use the pixel-by-pixel algorithm.
-> 
-> The PATCH 5 aims to restore the line-by-line pixel reading algorithm. It
-> was introduced in 8ba1648567e2 ("drm: vkms: Refactor the plane composer to
-> accept new formats") but removed in 8ba1648567e2 ("drm: vkms: Refactor the
-> plane composer to accept new formats") in a over-simplification effort.
-> At this time, nobody noticed the performance impact of this commit. After
-> the first iteration of my series, poeple notice performance impact, and it
-> was the case. Pekka suggested to reimplement the line-by-line algorithm.
-> 
-> Expiriments on my side shown great improvement for the line-by-line
-> algorithm, and the performances are the same as the original line-by-line
-> algorithm. I targeted my effort to make the code working for all the
-> rotations and translations. The usage of helpers from drm_rect_* avoid
-> reimplementing existing logic.
-> 
-> The only "complex" part remaining is the clipping of the coordinate to
-> avoid reading/writing outside of src/dst. Thus I added a lot of comments
-> to help when someone will want to add some features (framebuffer resizing
-> for example).
-> 
-> The YUV part is not mandatory for this series, but as my first effort was
-> to help the integration of YUV, I decided to rebase Arthur's series on
-> mine to help. I took [3], [4], [5] and [6] and adapted them to use the
-> line-by-line reading. If I did something wrong here, please let me
-> know.
-> 
-> My series was mainly tested with:
-> - kms_plane (for color conversions)
-> - kms_rotation_crc (for rotations of planes)
-> - kms_cursor_crc (for translations)
-> The benchmark used to measure the improvment was done with:
-> - kms_fb_stress
-> 
-> [1]: https://lore.kernel.org/r/20240201-yuv-v1-0-3ca376f27632@bootlin.com
-> [2]: https://lore.kernel.org/all/20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net/
-> [3]: https://lore.kernel.org/all/20240110-vkms-yuv-v2-3-952fcaa5a193@riseup.net/
-> [4]: https://lore.kernel.org/all/20240110-vkms-yuv-v2-5-952fcaa5a193@riseup.net/
-> [5]: https://lore.kernel.org/all/20240110-vkms-yuv-v2-6-952fcaa5a193@riseup.net/
-> [6]: https://lore.kernel.org/all/20240110-vkms-yuv-v2-7-952fcaa5a193@riseup.net/
-> 
-> To: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
-> To: Melissa Wen <melissa.srw@gmail.com>
-> To: Ma√≠ra Canal <mairacanal@riseup.net>
-> To: Haneen Mohammed <hamohammed.sa@gmail.com>
-> To: Daniel Vetter <daniel@ffwll.ch>
-> To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> To: Maxime Ripard <mripard@kernel.org>
-> To: Thomas Zimmermann <tzimmermann@suse.de>
-> To: David Airlie <airlied@gmail.com>
-> To: arthurgrillo@riseup.net
-> To: Jonathan Corbet <corbet@lwn.net>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: jeremie.dautheribes@bootlin.com
-> Cc: miquel.raynal@bootlin.com
-> Cc: thomas.petazzoni@bootlin.com
-> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
-> 
-> Note: after my changes, those tests seems to pass, so [7] may need
-> updating (I did not check, it was maybe already the case):
-> - kms_cursor_legacy@flip-vs-cursor-atomic
-> - kms_pipe_crc_basic@nonblocking-crc
-> - kms_pipe_crc_basic@nonblocking-crc-frame-sequence
-> - kms_writeback@writeback-pixel-formats
-> - kms_writeback@writeback-invalid-parameters
-> - kms_flip@flip-vs-absolute-wf_vblank-interruptible
-> And those tests pass, I did not investigate why the runners fails:
-> - kms_flip@flip-vs-expired-vblank-interruptible
-> - kms_flip@flip-vs-expired-vblank
-> - kms_flip@plain-flip-fb-recreate
-> - kms_flip@plain-flip-fb-recreate-interruptible
-> - kms_flip@plain-flip-ts-check-interruptible
-> - kms_cursor_legacy@cursorA-vs-flipA-toggle
-> - kms_pipe_crc_basic@nonblocking-crc
-> - kms_prop_blob@invalid-get-prop
-> - kms_flip@flip-vs-absolute-wf_vblank-interruptible
-> - kms_invalid_mode@zero-hdisplay
-> - kms_invalid_mode@bad-vtotal
-> - kms_cursor_crc.* (everything is SUCCEED or SKIP, but no fails)
+Well, my point was that the on disk format is limited to much less than
+2^63 blocks. But I guess having the additional check does not matter.
 
-This is great news! Could you just adjust the series fixing the
-compiling errors?
+> > > @@ -463,6 +463,8 @@ static ssize_t ext4_attr_store(struct kobject *kobj,
+> > >   		ret = kstrtoul(skip_spaces(buf), 0, &t);
+> > >   		if (ret)
+> > >   			return ret;
+> > > +		if (t != (unsigned int)t)
+> > > +			return -EINVAL;
+> > >   		if (a->attr_ptr == ptr_ext4_super_block_offset)
+> > >   			*((__le32 *) ptr) = cpu_to_le32(t);
+> > >   		else
+> > I kind of agree with Alexey that using kstrtouint() here instead would look
+> > nicer. And it isn't like you have to define many new variables. You just
+> > need unsigned long for attr_pointer_ul and unsigned int for
+> > attr_pointer_ui.
+>
+> If we use both kstrtouint() and kstrtoul(), then we need to add
+> kstrtouint() or kstrtoul() to each case, which would be a lot of
+> duplicate code as follows:
 
-Best Regards,
-- Ma√≠ra
+Well, it is 5 more lines if I'm counting right :) (3x 3 lines of conversion
+- 2x 2 lines of boundary checks). I kind of find it easier to oversee the
+boundary checks when everything is together at each parameter. But frankly
+this is a bit of nitpicking so if you feel strongly about this I won't
+insist.
 
+> static ssize_t ext4_generic_attr_store(struct ext4_attr *a,
+> †††††††††††††††††††††††††††††††††††††† struct ext4_sb_info *sbi,
+> †††††††††††††††††††††††††††††††††††††† const char *buf, size_t len)
+> {
+> ††††††† int ret;
+> †† †††† unsigned int t;
+> ††††††† unsigned long lt;
+> ††††††† void *ptr = calc_ptr(a, sbi);
 > 
-> [7]: https://lore.kernel.org/all/20240201065346.801038-1-vignesh.raman@collabora.com/
+> ††††††† if (!ptr)
+> ††††††††††††††† return 0;
 > 
-> Changes in v2:
-> - Rebased the series on top of drm-misc/drm-misc-net
-> - Extract the typedef for pixel_read/pixel_write
-> - Introduce the line-by-line algorithm per pixel format
-> - Add some documentation for existing and new code
-> - Port the series [1] to use line-by-line algorithm
-> - Link to v1: https://lore.kernel.org/r/20240201-yuv-v1-0-3ca376f27632@bootlin.com
+> ††††††† switch (a->attr_id) {
+> ††††††† case attr_group_prealloc:
+> †† †††† ††† ††† ret = kstrtouint(skip_spaces(buf), 0, &t);
+> ††††††††††††††† if (ret)
+> ††††††††††††††††††††††† return ret;
+> ††††††††††††††† if (t > sbi->s_clusters_per_group)
+> ††††††††††††††††††††††† return -EINVAL;
+> ††††††††††††††† return len;
+> ††††††† case attr_pointer_pi:
+> †† †††† ††† ††† ret = kstrtouint(skip_spaces(buf), 0, &t);
+> ††††††††††††††† if (ret)
+> ††††††††††††††††††††††† return ret;
+> ††††††††††††††† if ((int)t < 0)
+> ††††††††††††††††††††††† return -EINVAL;
+> ††††††††††††††† return len;
+> ††††††† case attr_pointer_ui:
+> †† †††† ††† ††† ret = kstrtouint(skip_spaces(buf), 0, &t);
+> ††††††††††††††† if (ret)
+> ††††††††††††††††††††††† return ret;
+> ††††††††††††††† if (t != (unsigned int)t)
+> ††††††††††††††††††††††† return -EINVAL;
+		  ^^^ this can go away
+
+> ††††††††††††††† if (a->attr_ptr == ptr_ext4_super_block_offset)
+> ††††††††††††††††††††††† *((__le32 *) ptr) = cpu_to_le32(t);
+> ††††††††††††††† else
+> ††††††††††††††††††††††† *((unsigned int *) ptr) = t;
+> ††††††††††††††† return len;
+> ††††††† case attr_pointer_ul:
+> †† †††† ††††††† ret = kstrtoul(skip_spaces(buf), 0, &lt);
+> †† †††† ††† ††† if (ret)
+> †† †††† ††† ††† ††† ††† return ret;
+> ††††††††††††††† *((unsigned long *) ptr) = lt;
+> ††††††††††††††† return len;
+> ††††††† }
+> ††††††† return 0;
 > 
-> ---
-> Arthur Grillo (5):
->        drm/vkms: Use drm_frame directly
->        drm/vkms: Add YUV support
->        drm/vkms: Add range and encoding properties to pixel_read function
->        drm/vkms: Drop YUV formats TODO
->        drm/vkms: Create KUnit tests for YUV conversions
+> }
 > 
-> Louis Chauvet (4):
->        drm/vkms: Code formatting
->        drm/vkms: write/update the documentation for pixel conversion and pixel write functions
->        drm/vkms: Add typedef and documentation for pixel_read and pixel_write functions
->        drm/vkms: Re-introduce line-per-line composition algorithm
-> 
->   Documentation/gpu/vkms.rst                    |   3 +-
->   drivers/gpu/drm/vkms/Makefile                 |   1 +
->   drivers/gpu/drm/vkms/tests/.kunitconfig       |   4 +
->   drivers/gpu/drm/vkms/tests/Makefile           |   3 +
->   drivers/gpu/drm/vkms/tests/vkms_format_test.c | 155 +++++++
->   drivers/gpu/drm/vkms/vkms_composer.c          | 233 ++++++++---
->   drivers/gpu/drm/vkms/vkms_crtc.c              |   6 +-
->   drivers/gpu/drm/vkms/vkms_drv.c               |   3 +-
->   drivers/gpu/drm/vkms/vkms_drv.h               |  56 ++-
->   drivers/gpu/drm/vkms/vkms_formats.c           | 565 +++++++++++++++++++++-----
->   drivers/gpu/drm/vkms/vkms_formats.h           |  13 +-
->   drivers/gpu/drm/vkms/vkms_plane.c             |  50 ++-
->   drivers/gpu/drm/vkms/vkms_writeback.c         |  14 +-
->   13 files changed, 916 insertions(+), 190 deletions(-)
-> ---
-> base-commit: aa1267e673fe5307cf00d02add4017d2878598b6
-> change-id: 20240201-yuv-1337d90d9576
-> 
-> Best regards,
+> Also, both kstrtouint() and kstrtoul() are based on the kstrtoull()
+> implementation, so it feels better to opencode kstrtoul() and
+> kstrtouint() to reduce duplicate code.
+> Why is it better to distinguish uint and ulong cases here?
+
+Hopefully explained above :)
+
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
