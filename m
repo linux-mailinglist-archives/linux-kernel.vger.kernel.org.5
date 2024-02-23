@@ -1,219 +1,141 @@
-Return-Path: <linux-kernel+bounces-78198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEF7C861019
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:05:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C04C186101F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:06:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37769287E5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:05:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFA691C22DA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:06:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11629657B0;
-	Fri, 23 Feb 2024 11:04:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="S2QNUkq7"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5B966280B
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:04:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E599633E9;
+	Fri, 23 Feb 2024 11:05:55 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3F3B5DF25
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:05:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708686294; cv=none; b=gVLavFBt6IqRneSA5nCLzYpFjgSwo1xSgSolBo2udO6JTWfqb/FvphMaACjQ/N7YA+yHtyRiyy3dnI3SlkyPql7yxap0WTamFkO0XRC6sHViuQ/6XEl8HGTDSWeHdNnU1NWGBrotzybpZDYAukPfJp+F4ds4tQ7+ciBd34omnQs=
+	t=1708686354; cv=none; b=WJDbZ+dWSfmAnNNVh2B8CJC2LvccCEtqFwEdDbcj5fBhZ/Rw62xVdT+4EP+7kDklM/wlAgYWqMYDeoYsxXpESITAmafJvcW+Uyc4FgDAg/jbrlkdB4FhHGMX8aJabxq3ROxJcr9QaBuj3+raDF7eymMlltZ700cfk16dvU3AH0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708686294; c=relaxed/simple;
-	bh=n4A6R+Fhgf6BlCrcDrfkA8N5wgFe1jO0F3kW12IxQPY=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=Rpkcrdyku1eiCf0IMnOhYkUf7s6fp1SwpqvuGfjMgy1STES3BU4aZr9JHoMpBkxZ6vX3xKeU7ywRrH66zmXUwfsxYshJaSaC7BQ9u4Z+FfWfIjFbmBkZlCBXMv3Y88lXZPzp+dMx1/eFxqvn0OP+vnvMw6mnFzKGvWsrp3K6xG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=S2QNUkq7; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-412698ac6f9so1476235e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 03:04:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708686290; x=1709291090; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dpIrZ6DID2LKFZOgEe2hRQ7/dIExMrSdp13/JdG8p1M=;
-        b=S2QNUkq7iygOLHrTJbabhMlAQTI2HX1aWtPpcsIbFtw5hoS3thYz+gKUL/dKKsd29z
-         YV7NWvtx2GoHYnze9h4brj7udcbjdSUI5eEaZcbMfBac3nlMJPWVoXR7bu7MCs1SD+o2
-         y9EWMoBeSU4V+D+avDyQkypdI3cccQQxV+cekdQ8dxQxcynVUHvIzr6gvOsoop0LCveT
-         zWBdVmA1JXwVZx91ZicPhMifMlKvsj4IkrWRggYmTKzJ+iv2klyRJ7y1024H566TDM+i
-         oIHZ9K7Jw5iausXh5iHUkVyhYdsawPl7bMcZLXSlsdfxXsZoFdwRQC5ke/ykwlQVwx3i
-         oFRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708686290; x=1709291090;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=dpIrZ6DID2LKFZOgEe2hRQ7/dIExMrSdp13/JdG8p1M=;
-        b=AYxc0IGibboiAnLB0vQl73ET4Mh/QoWDHv7LjZ/GJZz4CqvJj5e1hl1xbgpAeych1e
-         CEPwf3Vx+v7042eC2rV1H9/KqnXZz691s7mg3VFn09Cu8OxHEXuTVoylchV1PuEXfNzG
-         mNDJmfFWuM+LoRj1yD6+aIme+hFrNY6ejHjxqehLvtrqNgZYyEjz/Vw55Iy3EHGC2m1e
-         YT/3Wz18jmDRPxarNhZ8dDhGK0Mn0Eica1NkfN+8jnMyLTrtF9MrwMJraiJ5z6r9Pi6o
-         Y3xI5PpkoKvAw0QiyamlR5WE4UTeodlML3dI7UbcAwBRN4mX8sznVaJVxxbobnkjJall
-         dsGA==
-X-Forwarded-Encrypted: i=1; AJvYcCVcR1fFkzTqMQUC85gGKm+pzFwAHDeOZBfgbTDyGYhNAGHZJdzPrqp/J9KwlTiaqiGaiGlKtXSBo1Toqf3JMCopY6+nYcAeYhnDY6eC
-X-Gm-Message-State: AOJu0YxC3ErS7oiL3XGiC5KoWn/3C2fYpfFRPdndtuVZk/v00+t2nDak
-	JPtScfxZDRWUVbH7DJOdiVpWU46CNmnsubJccyCPACmVhSRFB+RWqQEb9/0O8P8=
-X-Google-Smtp-Source: AGHT+IGnhOanEmC+FFYKStze36jnGP7rwyWuG1Kq6ilYQmZZ4KpE6Mgybp5TasF6iXliwnPhK8ra0g==
-X-Received: by 2002:a05:600c:3b07:b0:412:95fb:9613 with SMTP id m7-20020a05600c3b0700b0041295fb9613mr859610wms.2.1708686290037;
-        Fri, 23 Feb 2024 03:04:50 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:58e3:6b80:c446:11f4? ([2a01:e0a:982:cbb0:58e3:6b80:c446:11f4])
-        by smtp.gmail.com with ESMTPSA id jj26-20020a05600c6a1a00b0041294a6fc03sm1541476wmb.9.2024.02.23.03.04.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Feb 2024 03:04:49 -0800 (PST)
-Message-ID: <cd2b45d4-53b4-4a3f-88bd-116f4e6a7bae@linaro.org>
-Date: Fri, 23 Feb 2024 12:04:48 +0100
+	s=arc-20240116; t=1708686354; c=relaxed/simple;
+	bh=MXQkqwuspqzrFUFcyJi4WstR/76sKYLEbRLdZRc8fPQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hDB5NPK240/l+ddT9hzaZkM4OI6TMH1+VTloL8xtvtd90r1o2crySmQXdt1e7ycWe4WarwAFo0mrg9NV+3S0EXs7QKJLw9RqXxNunKsOCplZ2uecrBuNPuWZaPBIpKMvUg+Tix1+b3/viQbYF/w5amoPysnHO5Mnz5F6tHsb6Oc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 975811596;
+	Fri, 23 Feb 2024 03:06:30 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.66.180])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A73ED3F762;
+	Fri, 23 Feb 2024 03:05:47 -0800 (PST)
+Date: Fri, 23 Feb 2024 11:05:45 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Ankur Arora <ankur.a.arora@oracle.com>,
+	linux-kernel@vger.kernel.org, tglx@linutronix.de,
+	peterz@infradead.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+	dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	willy@infradead.org, mgorman@suse.de, jpoimboe@kernel.org,
+	jgross@suse.com, andrew.cooper3@citrix.com, bristot@kernel.org,
+	mathieu.desnoyers@efficios.com, glaubitz@physik.fu-berlin.de,
+	anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+	krypton@ulrich-teichert.org, David.Laight@aculab.com,
+	richard@nod.at, jon.grimm@amd.com, bharata@amd.com,
+	boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
+Subject: Re: [PATCH 00/30] PREEMPT_AUTO: support lazy rescheduling
+Message-ID: <Zdh8CdrtbL9LgOLG@FVFF77S0Q05N>
+References: <0be4df28-99be-41a3-9e24-2b7cfc740b4a@paulmck-laptop>
+ <87r0hbkafi.fsf@oracle.com>
+ <7db5c057-8bd4-4209-8484-3a0f9f3cd02d@paulmck-laptop>
+ <2b735ba4-8081-4ddb-9397-4fe83143d97f@paulmck-laptop>
+ <20240221131901.69c80c47@gandalf.local.home>
+ <8f30ecd8-629b-414e-b6ea-b526b265b592@paulmck-laptop>
+ <20240221151157.042c3291@gandalf.local.home>
+ <53020731-e9a9-4561-97db-8848c78172c7@paulmck-laptop>
+ <ZddtKszRH5Ak5tZ7@FVFF77S0Q05N>
+ <1ec4dc29-8868-4d82-8c5e-c17ad025bc22@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 4/6] soc: qcom: pmic_glink: Fix boot when QRTR=m
-Content-Language: en-US, fr
-To: Johan Hovold <johan+linaro@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Andrzej Hajda <andrzej.hajda@intel.com>, Robert Foss <rfoss@kernel.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Vinod Koul <vkoul@kernel.org>
-Cc: Jonas Karlman <jonas@kwiboo.se>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>,
- Kuogee Hsieh <quic_khsieh@quicinc.com>, freedreno@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
- Rob Clark <robdclark@chromium.org>, stable@vger.kernel.org
-References: <20240217150228.5788-1-johan+linaro@kernel.org>
- <20240217150228.5788-5-johan+linaro@kernel.org>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20240217150228.5788-5-johan+linaro@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1ec4dc29-8868-4d82-8c5e-c17ad025bc22@paulmck-laptop>
 
-On 17/02/2024 16:02, Johan Hovold wrote:
-> From: Rob Clark <robdclark@chromium.org>
+On Thu, Feb 22, 2024 at 11:11:34AM -0800, Paul E. McKenney wrote:
+> On Thu, Feb 22, 2024 at 03:50:02PM +0000, Mark Rutland wrote:
+> > On Wed, Feb 21, 2024 at 12:22:35PM -0800, Paul E. McKenney wrote:
+> > > On Wed, Feb 21, 2024 at 03:11:57PM -0500, Steven Rostedt wrote:
+> > > > On Wed, 21 Feb 2024 11:41:47 -0800
+> > > > "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > > > 
+> > > > > > I wonder if we can just see if the instruction pointer at preemption is at
+> > > > > > something that was allocated? That is, if it __is_kernel(addr) returns
+> > > > > > false, then we need to do more work. Of course that means modules will also
+> > > > > > trigger this. We could check __is_module_text() but that does a bit more
+> > > > > > work and may cause too much overhead. But who knows, if the module check is
+> > > > > > only done if the __is_kernel() check fails, maybe it's not that bad.  
+> > > > > 
+> > > > > I do like very much that idea, but it requires that we be able to identify
+> > > > > this instruction pointer perfectly, no matter what.  It might also require
+> > > > > that we be able to perfectly identify any IRQ return addresses as well,
+> > > > > for example, if the preemption was triggered within an interrupt handler.
+> > > > > And interrupts from softirq environments might require identifying an
+> > > > > additional level of IRQ return address.  The original IRQ might have
+> > > > > interrupted a trampoline, and then after transitioning into softirq,
+> > > > > another IRQ might also interrupt a trampoline, and this last IRQ handler
+> > > > > might have instigated a preemption.
+> > > > 
+> > > > Note, softirqs still require a real interrupt to happen in order to preempt
+> > > > executing code. Otherwise it should never be running from a trampoline.
+> > > 
+> > > Yes, the first interrupt interrupted a trampoline.  Then, on return,
+> > > that interrupt transitioned to softirq (as opposed to ksoftirqd).
+> > > While a softirq handler was executing within a trampoline, we got
+> > > another interrupt.  We thus have two interrupted trampolines.
+> > > 
+> > > Or am I missing something that prevents this?
+> > 
+> > Surely the problematic case is where the first interrupt is taken from a
+> > trampoline, but the inner interrupt is taken from not-a-trampoline? If the
+> > innermost interrupt context is a trampoline, that's the same as that without
+> > any nesting.
 > 
-> We need to bail out before adding/removing devices if we are going to
-> -EPROBE_DEFER. Otherwise boot can get stuck in a probe deferral loop due
-> to a long-standing issue in driver core (see fbc35b45f9f6 ("Add
-> documentation on meaning of -EPROBE_DEFER")).
+> It depends.  If we wait for each task to not have a trampoline in effect
+> then yes, we only need to know whether or not a given task has at least
+> one trampoline in use.  One concern with this approach is that a given
+> task might have at least one trampoline in effect every time it is
+> checked, unlikely though that might seem.
 > 
-> Deregistering the altmode child device can potentially also trigger bugs
-> in the DRM bridge implementation, which does not expect bridges to go
-> away.
-> 
-> Suggested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> Link: https://lore.kernel.org/r/20231213210644.8702-1-robdclark@gmail.com
-> [ johan: rebase on 6.8-rc4, amend commit message and mention DRM ]
-> Fixes: 58ef4ece1e41 ("soc: qcom: pmic_glink: Introduce base PMIC GLINK driver")
-> Cc: stable@vger.kernel.org      # 6.3
-> Cc: Bjorn Andersson <andersson@kernel.org>
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-> ---
->   drivers/soc/qcom/pmic_glink.c | 21 +++++++++++----------
->   1 file changed, 11 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/soc/qcom/pmic_glink.c b/drivers/soc/qcom/pmic_glink.c
-> index f4bfd24386f1..f913e9bd57ed 100644
-> --- a/drivers/soc/qcom/pmic_glink.c
-> +++ b/drivers/soc/qcom/pmic_glink.c
-> @@ -265,10 +265,17 @@ static int pmic_glink_probe(struct platform_device *pdev)
->   
->   	pg->client_mask = *match_data;
->   
-> +	pg->pdr = pdr_handle_alloc(pmic_glink_pdr_callback, pg);
-> +	if (IS_ERR(pg->pdr)) {
-> +		ret = dev_err_probe(&pdev->dev, PTR_ERR(pg->pdr),
-> +				    "failed to initialize pdr\n");
-> +		return ret;
-> +	}
-> +
->   	if (pg->client_mask & BIT(PMIC_GLINK_CLIENT_UCSI)) {
->   		ret = pmic_glink_add_aux_device(pg, &pg->ucsi_aux, "ucsi");
->   		if (ret)
-> -			return ret;
-> +			goto out_release_pdr_handle;
->   	}
->   	if (pg->client_mask & BIT(PMIC_GLINK_CLIENT_ALTMODE)) {
->   		ret = pmic_glink_add_aux_device(pg, &pg->altmode_aux, "altmode");
-> @@ -281,17 +288,11 @@ static int pmic_glink_probe(struct platform_device *pdev)
->   			goto out_release_altmode_aux;
->   	}
->   
-> -	pg->pdr = pdr_handle_alloc(pmic_glink_pdr_callback, pg);
-> -	if (IS_ERR(pg->pdr)) {
-> -		ret = dev_err_probe(&pdev->dev, PTR_ERR(pg->pdr), "failed to initialize pdr\n");
-> -		goto out_release_aux_devices;
-> -	}
-> -
->   	service = pdr_add_lookup(pg->pdr, "tms/servreg", "msm/adsp/charger_pd");
->   	if (IS_ERR(service)) {
->   		ret = dev_err_probe(&pdev->dev, PTR_ERR(service),
->   				    "failed adding pdr lookup for charger_pd\n");
-> -		goto out_release_pdr_handle;
-> +		goto out_release_aux_devices;
->   	}
->   
->   	mutex_lock(&__pmic_glink_lock);
-> @@ -300,8 +301,6 @@ static int pmic_glink_probe(struct platform_device *pdev)
->   
->   	return 0;
->   
-> -out_release_pdr_handle:
-> -	pdr_handle_release(pg->pdr);
->   out_release_aux_devices:
->   	if (pg->client_mask & BIT(PMIC_GLINK_CLIENT_BATT))
->   		pmic_glink_del_aux_device(pg, &pg->ps_aux);
-> @@ -311,6 +310,8 @@ static int pmic_glink_probe(struct platform_device *pdev)
->   out_release_ucsi_aux:
->   	if (pg->client_mask & BIT(PMIC_GLINK_CLIENT_UCSI))
->   		pmic_glink_del_aux_device(pg, &pg->ucsi_aux);
-> +out_release_pdr_handle:
-> +	pdr_handle_release(pg->pdr);
->   
->   	return ret;
->   }
+> If this is a problem, one way around it is to instead ask whether the
+> current task still has a reference to one of a set of trampolines that
+> has recently been removed.  This avoids the problem of a task always
+> being one some trampoline or another, but requires exact identification
+> of any and all trampolines a given task is currently using.
+>
+> Either way, we need some way of determining whether or not a given
+> PC value resides in a trampoline.  This likely requires some data
+> structure (hash table?  tree?  something else?) that must be traversed
+> in order to carry out that determination.  Depending on the traversal
+> overhead, it might (or might not) be necessary to make sure that the
+> traversal is not on the entry/exit/scheduler fast paths.  It is also
+> necessary to keep the trampoline-use overhead low and the trampoline
+> call points small.
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+Thanks; I hadn't thought about that shape of livelock problem; with that in
+mind my suggestion using flags was inadequate.
+
+I'm definitely in favour of just using Tasks RCU! That's what arm64 does today,
+anyhow!
+
+Mark.
 
