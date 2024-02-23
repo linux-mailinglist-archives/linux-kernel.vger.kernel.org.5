@@ -1,167 +1,97 @@
-Return-Path: <linux-kernel+bounces-78222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B14786106E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:33:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CB14861070
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:33:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98A63B240BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:33:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E1241C22518
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:33:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B788278B79;
-	Fri, 23 Feb 2024 11:33:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4844B78699;
+	Fri, 23 Feb 2024 11:33:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="JAFl2++A"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="c+KgcuPk"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98E385C617;
-	Fri, 23 Feb 2024 11:32:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEDA743168
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:33:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708687980; cv=none; b=aOCMIaghWUf3KdtrFX8WG3edf/+x3GX/YLHinylkOY/wJ3o1lwHKClalSUIfATwMCjHxIl7Cxbjo2JKP8QxkRTRnI7CL6lDJK8ZhpjmDwWqD52ahTV1XY66hjQHMlV4l56Kk80jvijW6IJZtV5DzY3KmcC+ZEiKmuPCSw5InSaY=
+	t=1708687986; cv=none; b=R9NdjknfuLj9LBEFHEOs5XWVPO/RRJKWFRB0oqTrrdYFOjKS3dyR4SzFd7b7nYCwKKhV4APwrfH+aLxxxKDIB4wRB+3RCObESw4TmVEyaBdG7EMoBKCexKbf+WzwHomAszkG/MsmS5jQUPHAyz+vXdXhB4Qxl3rnMDLHzVLu8s8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708687980; c=relaxed/simple;
-	bh=E8Lif2LsYWgiOStX5/WWdENwxJ97hdnhRuKU+qaBHOQ=;
+	s=arc-20240116; t=1708687986; c=relaxed/simple;
+	bh=a2/sWvjONKNTR/WqUBkhrunN18P7D63UFgDsvKVgKGo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cT2J2dokhVupKpJ95cVplqWrgsJ8EdYva2DOEEdGWhczD0isTT7xy3u6KYMntOSBme3RN7HR3F/17F7k7NVp37RNbogY+pisiiVGDsCA4bbtGNuzMa5ZPhrTTqtXezAuSSXFTTanwF6lvPHlVqVjyzNYq/7TLIEDrkan8t4AxKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=JAFl2++A; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id AE6AB2E7;
-	Fri, 23 Feb 2024 12:32:47 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1708687967;
-	bh=E8Lif2LsYWgiOStX5/WWdENwxJ97hdnhRuKU+qaBHOQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JAFl2++A1kGB6XVk/sFWGm3mgoo/++iReBl/1hHrZhmv5NI3dPruCIf4GYYnRniSa
-	 BZaPGHKugaisoDI6kbUoxPucSzRRQWt1qxe0UJCObuN0s9+j2j6i6vSgNthjI2QK4v
-	 X8f6iP6UHSVIm4plcP0bKVrs223m89CC6sy5NA7M=
-Date: Fri, 23 Feb 2024 13:33:00 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Mikhail Rudenko <mike.rudenko@gmail.com>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Jacopo Mondi <jacopo@jmondi.org>,
-	Tommaso Merciai <tomm.merciai@gmail.com>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Dave Stevenson <dave.stevenson@raspberrypi.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [PATCH v2 15/20] media: i2c: ov4689: Move pixel array size out
- of struct ov4689_mode
-Message-ID: <20240223113300.GS31348@pendragon.ideasonboard.com>
-References: <20231218174042.794012-1-mike.rudenko@gmail.com>
- <20231218174042.794012-16-mike.rudenko@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=oFAZzAA0P9BH5O2gB/PL+sjNBQmRrPOR+X/eYZVQWoUX2gWft2ph83bVDUHhslMT15oU9NNLpA7w4pihsV4PAv4Oumu7/g+7saiBKNbTBp/2JWFl+Z57ezBPGR0F2LLHb48+poN5K1qtb+q86otFoN+5XwihSDtgIbm8u+7LhRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c+KgcuPk; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708687985; x=1740223985;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=a2/sWvjONKNTR/WqUBkhrunN18P7D63UFgDsvKVgKGo=;
+  b=c+KgcuPk1ubyAm9fVh1voF6s1Ko5j5BhbdNQ2dyFlfmEFm9w87h1N5EG
+   kcvuPbZTZGOKQKzadwoWTSl7IQY1i2oKIBspt8rINaH9Hp8PPexjfGhi9
+   d6MWhhz/9qM6Qk8YTbQDzoO1uNohGLspPsUTzEdA+FU1888xxv7gKtVAD
+   pQZIZcle52nshO4vTgp8PI6ZXHrA2nZ2bCeii+YQwwAMGuPLAuv3YrqEc
+   E2XObfsAO2eRIxn+lln2VQtwliHMeo1rPJ12jRoLrjy+0+01bq8ZtpoBy
+   cZsmGRdN0p9W880rG4D7Sr1L1xQ7yxP8mxuNqQ1ClLWxQSMRzcx87kyFv
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="6783685"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="6783685"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 03:33:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="937024665"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="937024665"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 23 Feb 2024 03:33:02 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 4A2A41FD; Fri, 23 Feb 2024 13:33:01 +0200 (EET)
+Date: Fri, 23 Feb 2024 13:33:01 +0200
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: linux-kernel@vger.kernel.org, pbonzini@redhat.com, tglx@linutronix.de, 
+	x86@kernel.org, bp@alien8.de
+Subject: Re: [RFC][PATCH 11/34] x86/cpu/intel: Prepare MKTME for "address
+ configuration" infrastructure
+Message-ID: <z52bbgqxtr7wpa3yqqgbwurb6vx6i7gpddae2rrbxkjasuhnuk@7zsudlb4tw6s>
+References: <20240222183926.517AFCD2@davehans-spike.ostc.intel.com>
+ <20240222183941.7CB634A5@davehans-spike.ostc.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231218174042.794012-16-mike.rudenko@gmail.com>
+In-Reply-To: <20240222183941.7CB634A5@davehans-spike.ostc.intel.com>
 
-Hi Mikhail,
-
-Thank you for the patch.
-
-On Mon, Dec 18, 2023 at 08:40:36PM +0300, Mikhail Rudenko wrote:
-> Pixel array dimensions and default crop size do not belong to the
-> ov4689_mode structure, since they are mode independent. Make them
-> defines instead.
+On Thu, Feb 22, 2024 at 10:39:41AM -0800, Dave Hansen wrote:
 > 
-> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
-> ---
->  drivers/media/i2c/ov4689.c | 29 +++++++++++++----------------
->  1 file changed, 13 insertions(+), 16 deletions(-)
+> From: Dave Hansen <dave.hansen@linux.intel.com>
 > 
-> diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
-> index b43fb1d7b15f..475508559e3e 100644
-> --- a/drivers/media/i2c/ov4689.c
-> +++ b/drivers/media/i2c/ov4689.c
-> @@ -70,6 +70,11 @@
->  #define OV4689_LANES			4
->  #define OV4689_XVCLK_FREQ		24000000
->  
-> +#define OV4689_PIXEL_ARRAY_WIDTH	2720
-> +#define OV4689_PIXEL_ARRAY_HEIGHT	1536
-> +#define OV4689_DUMMY_ROWS		8
-> +#define OV4689_DUMMY_COLUMNS		16
+> Intel also does memory encryption and also fiddles with the physical
+> address bits.  This is currently called for *each* CPU, but practically
+> only done on the boot CPU because of 'mktme_status'.
+> 
+> Move it from the "each CPU" ->c_init() function to ->c_bsp_init() where
+> the whole thing only gets called once ever.  This also necessitates moving
+> detect_tme() and its entourage around in the file.
 
-Adding a comment here to indicate that there are dummy columns in each
-side would be useful:
-
-#define OV4689_DUMMY_ROWS		8	/* 8 dummy rows on each side */
-#define OV4689_DUMMY_COLUMNS		16	/* 16 dummy columns on each side */
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> +
->  static const char *const ov4689_supply_names[] = {
->  	"avdd", /* Analog power */
->  	"dovdd", /* Digital I/O power */
-> @@ -90,10 +95,6 @@ struct ov4689_mode {
->  	u32 vts_def;
->  	u32 exp_def;
->  	u32 pixel_rate;
-> -	u32 sensor_width;
-> -	u32 sensor_height;
-> -	u32 crop_top;
-> -	u32 crop_left;
->  	const struct cci_reg_sequence *reg_list;
->  	unsigned int num_regs;
->  };
-> @@ -254,10 +255,6 @@ static const struct ov4689_mode supported_modes[] = {
->  		.id = OV4689_MODE_2688_1520,
->  		.width = 2688,
->  		.height = 1520,
-> -		.sensor_width = 2720,
-> -		.sensor_height = 1536,
-> -		.crop_top = 8,
-> -		.crop_left = 16,
->  		.exp_def = 1536,
->  		.hts_def = 10296,
->  		.hts_min = 3432,
-> @@ -385,8 +382,6 @@ static int ov4689_get_selection(struct v4l2_subdev *sd,
->  				struct v4l2_subdev_state *state,
->  				struct v4l2_subdev_selection *sel)
->  {
-> -	const struct ov4689_mode *mode = to_ov4689(sd)->cur_mode;
-> -
->  	if (sel->which != V4L2_SUBDEV_FORMAT_ACTIVE)
->  		return -EINVAL;
->  
-> @@ -394,15 +389,17 @@ static int ov4689_get_selection(struct v4l2_subdev *sd,
->  	case V4L2_SEL_TGT_CROP_BOUNDS:
->  		sel->r.top = 0;
->  		sel->r.left = 0;
-> -		sel->r.width = mode->sensor_width;
-> -		sel->r.height = mode->sensor_height;
-> +		sel->r.width = OV4689_PIXEL_ARRAY_WIDTH;
-> +		sel->r.height = OV4689_PIXEL_ARRAY_HEIGHT;
->  		return 0;
->  	case V4L2_SEL_TGT_CROP:
->  	case V4L2_SEL_TGT_CROP_DEFAULT:
-> -		sel->r.top = mode->crop_top;
-> -		sel->r.left = mode->crop_left;
-> -		sel->r.width = mode->width;
-> -		sel->r.height = mode->height;
-> +		sel->r.top = OV4689_DUMMY_ROWS;
-> +		sel->r.left = OV4689_DUMMY_COLUMNS;
-> +		sel->r.width =
-> +			OV4689_PIXEL_ARRAY_WIDTH - 2 * OV4689_DUMMY_COLUMNS;
-> +		sel->r.height =
-> +			OV4689_PIXEL_ARRAY_WIDTH - 2 * OV4689_DUMMY_ROWS;
->  		return 0;
->  	}
->  
+The state machine around mktme_state doesn't make sense if we only call it
+on boot CPU, so detect_tme() can be drastically simplified. I can do it on
+top of the patchset.
 
 -- 
-Regards,
-
-Laurent Pinchart
+  Kiryl Shutsemau / Kirill A. Shutemov
 
