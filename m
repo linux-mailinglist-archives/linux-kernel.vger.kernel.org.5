@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-77772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44B4E860A0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 05:53:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93416860A11
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 05:54:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5E211F24FF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:53:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B75E31C23641
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:54:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1D1911CAD;
-	Fri, 23 Feb 2024 04:53:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADFE211714;
+	Fri, 23 Feb 2024 04:54:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iIaFtiti"
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q/0RuktE"
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 953ADF9EB;
-	Fri, 23 Feb 2024 04:53:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ADAA101FA;
+	Fri, 23 Feb 2024 04:54:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708664005; cv=none; b=FRFOFyolSWceSGETSx8cSGb54ZDwRQ+Keg8GrkeGzwTyg9666CtVi6SPvQNSarDT8qKMYsC5j2/ULOWVWIAVitC+a8pInnrtUf2ZtEgEGjGxjoR3qWikQZS4BKzvoNs6SeFc6GTHhnv32jRC4ETz28xXt9Ici2LqCeeM3vRvc08=
+	t=1708664041; cv=none; b=HPq2xwRFQzQNy7NazF9rIHauR68/BZlhVpQCAdXp0C344j+0uEgI8EmVxBlrBWdjbPLGXJ6jzneDiw5QRIMhbUQFxF1pqrV4cHH87t1SnHe1xssluOrnso8fh/1bPj2OpfIoTbau1DpLqyEc/Z/w7e3HhkJxRFG/8VsvH+32hb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708664005; c=relaxed/simple;
-	bh=Wz69nJustR8qAYVNI9oXbi1iPomxDU38qEYqSvolah0=;
+	s=arc-20240116; t=1708664041; c=relaxed/simple;
+	bh=VFtLTTHy+IufiBx8bHMCb9JclYhQReptBWkd9k5ahKk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=C6E+buzjzuDfUR/KAtViSX9DD9X9JLIo/AaU5Hc1f0XpxoM7IarjGwla/+tZQz/+raO18WsEPES19fUAsOLZuvDFcem97qomO2oFTNOeKxxer5D5r2G1zavOF60o7sGKkgDreaQOLhc1XfLIptMKG5NuBBVB9NlYJQpQlvqGJwE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iIaFtiti; arc=none smtp.client-ip=209.85.219.46
+	 In-Reply-To:Content-Type; b=JpYpsVl3vGStrxm9ooCx4AcEQEC/nTJRY7yEShFXdTQArRUlpAOUrkGUrMh88QYdcXLxN5DZsLPDzAQGf/kJIjtYoFzG9SnLPSDC7/8dCKy2v3pD5f/BaZCCOqESOEHawmdd0Hsn4UBbIPHPjm186lRtwEmAd8aTNtcC2PByWcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q/0RuktE; arc=none smtp.client-ip=209.85.219.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-68fb3a3f1c5so3427056d6.3;
-        Thu, 22 Feb 2024 20:53:23 -0800 (PST)
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-686a92a8661so3107806d6.0;
+        Thu, 22 Feb 2024 20:54:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708664002; x=1709268802; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708664039; x=1709268839; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=qQ3BptRYQaEKv4neOaGLcF1kQOsftaDXevonNaVBevU=;
-        b=iIaFtitiO7IJDsyrmuRpTli2wNa69ktCv6xXPV2nz48ItJD/XZDlA7SnLd4rt71efX
-         bH7UQ8EyVtfTqkjAbGke/zKQunJEtoKdpvYOlmwe1cRJQE3rw3Pw7Yvdo4lu96Ej/sS1
-         waNvtyYPMgKqKUDdm74AHKURmGFSWcVebX7IOwCQyrjXggVhdB7z5mDMODiRnRxftnBG
-         qiM/XYtinEaaKmulAseJkqSTB+RaPXcNSxF8duReciOZsh4/9T1mZoQ7BOEAo0n0EPJW
-         TsbM/Sbo5wQacGo+82x09LWZuUeolyVAIgckWueGO2TsE8ivwwQxqatrvXP6dNNJ2C9a
-         tbmA==
+        bh=cVuB+LTNZVGurOrECT/GZE2rhVV8QvsiBUpSNml5q2A=;
+        b=Q/0RuktEwMKvT0gIn3BfRQ1XY8Ad5WktQ0w/k+DSToJEFwXeko7qQHXvElmSMx6Fke
+         7UpIdzjnfCcgsMq3KQ1tECK+tAleHn+NDCAnDVpVes/a3BCrvRAG+KLc+f8A4PmL1LcO
+         2oxPINvex0V+f4kNIJpTKRMQmEUR9jg5h5cI5SnYrtcNrZ1FQdTJmb60BSoUTsp6Ndm6
+         BbdEhZ6FaGLYDF4yYRQMrz2PcAgR6RzbiDukYWqqj4NB50CTbc1MeRCfAHtTQzEEgPeL
+         nyrBds+4h1yd7/jAeoAn7h2KzVfkeI3Om+PZZA2FycTMjTe0/lH+npy27M+w4Pf/VyGW
+         AcNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708664002; x=1709268802;
+        d=1e100.net; s=20230601; t=1708664039; x=1709268839;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qQ3BptRYQaEKv4neOaGLcF1kQOsftaDXevonNaVBevU=;
-        b=DTpwxfg4Hy4400I3EY35ZjZYmCrsKXrO8m5q9SdAn7XmL5LQXZyanAqECy2kX/uDEj
-         TfVGqHuSqLqqhBVuyaG9K0xaOZoIgTG8oqPDXWcwplfPdymj/Oyrciyu3t94mrYjhwoj
-         mxwrkzygSbS0RqNzBEuX9L2NF8/QLo4z4wyvJx17VjxzQEnMtOMCtx6LsZcmFU5W4eyi
-         4fywXHFRUiWQIPPtsUjytpSaDhVcJEbLTmv59d57taV/G/HtIgI867DQOkKpMkCTRYmh
-         FgeFtN4JKR9r7Z3zIcophL5ZVPdR1VriNU/hDY08bAtbQ1xemxRH3Ao9btjdUqOqWHpv
-         plXw==
-X-Forwarded-Encrypted: i=1; AJvYcCX/hzfzchXy7QM+HF494dmvP4CfIvKOQpdf/BjtaxrrpfDBdMlQh7ZhdcYrofx4CT7vfhxmieksiqkD6zVYyfX+RTmNtpSNIuzHPhk0XYuRzNqLmV45VMUMsa6CX7hfcrclX9lQ
-X-Gm-Message-State: AOJu0YzX+ei6vO0zO3NfdOGnWMK6LFfWfTQikzMu2IgXK4lSpZAEc0Mx
-	eNr5ehbL1fmsJsbKhi0MzB2sAa4wFZAU0QBImqwoTUmqxJQyKrmQ
-X-Google-Smtp-Source: AGHT+IE1SoDFWsW/RE6p9qED1fJAhLxb7hPl9LOeG7uWKZpCl6ol7uSO2OhyMCWE7ljc1TSxQ3YP5w==
-X-Received: by 2002:a05:6214:e65:b0:68f:1bd9:f6d5 with SMTP id jz5-20020a0562140e6500b0068f1bd9f6d5mr1241555qvb.16.1708664002554;
-        Thu, 22 Feb 2024 20:53:22 -0800 (PST)
+        bh=cVuB+LTNZVGurOrECT/GZE2rhVV8QvsiBUpSNml5q2A=;
+        b=bS7FqRQgiNb3yuQNULqDYVfjr4R0fR9nK/WOb0ZbSuBqVL/OaPZLfIPBh8nlaKjfvs
+         b3Aw+SciSZrhsupb+QFT6O6fSfz9JBCfq9rzy4Rm/HeU0T9nOT5eFznhcr4LIOKvoBLO
+         U6p2WAxxHHxsFC2yR7plO2sIkOTKVRXFFmw5updbcyY9+5F7Cm2zD3BiQRlrIxkIOcKM
+         z+GJJlDdnjWvJn6l340wl+4RSvzthfRyhbGxC7if6uY2qi02e6oIy1P2Wy5H/ESUHjDW
+         HP6wjWJVmgmyF51DH4WLV1MMy90rfCx+LMf1pD1fisyRLsVfnPlxF7QVCI75RsYhZnxF
+         zChQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVwWcvWliXJf4yNB+Tzfrv+vqFuiHniL7/3ocDer5bhz0oOPVtKgdQABQUiYkOCp0OFVKcOuRrARCyP6lGTQxWU1B1VWmmXUJuU33AcO0WKPU4zBCEe3i1unMzC94CROCALjzgY
+X-Gm-Message-State: AOJu0Yx4OFfLNjjdRAhx1IlsBWXNHs0cnmOqGoR6GhXGiU+g/DTdX420
+	QrRlvnc2X1nzy3fPT9RGQ+nxM4Adt3i80H7e+XtzGlpAxlULmxmq
+X-Google-Smtp-Source: AGHT+IFIIY8nah4g7OEmWCqbZn5gUQdAxtDaPGVfiWfeZ9XWYds3wZPV+609tAHtH+EywbE1hr8TDA==
+X-Received: by 2002:a0c:e44f:0:b0:68f:2e5d:5d29 with SMTP id d15-20020a0ce44f000000b0068f2e5d5d29mr1015409qvm.40.1708664039281;
+        Thu, 22 Feb 2024 20:53:59 -0800 (PST)
 Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
-        by smtp.gmail.com with ESMTPSA id ol10-20020a0562143d0a00b0068f0ff36defsm3192165qvb.47.2024.02.22.20.53.20
+        by smtp.gmail.com with ESMTPSA id ol10-20020a0562143d0a00b0068f0ff36defsm3192165qvb.47.2024.02.22.20.53.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 20:53:22 -0800 (PST)
-Message-ID: <3c15bf65-5702-4991-beb9-6e86e8afcfce@gmail.com>
-Date: Thu, 22 Feb 2024 20:53:19 -0800
+        Thu, 22 Feb 2024 20:53:58 -0800 (PST)
+Message-ID: <60c9ca14-b4e3-4c70-b459-03d0d56a4d14@gmail.com>
+Date: Thu, 22 Feb 2024 20:53:56 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,7 +75,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v5 1/8] net: add helpers for EEE configuration
+Subject: Re: [PATCH net-next v5 4/8] net: phy: Keep track of EEE configuration
 Content-Language: en-US
 To: Oleksij Rempel <o.rempel@pengutronix.de>, Wei Fang <wei.fang@nxp.com>,
  "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
@@ -87,7 +87,7 @@ Cc: Russell King <rmk+kernel@armlinux.org.uk>, kernel@pengutronix.de,
  Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>,
  NXP Linux Team <linux-imx@nxp.com>
 References: <20240221062107.778661-1-o.rempel@pengutronix.de>
- <20240221062107.778661-2-o.rempel@pengutronix.de>
+ <20240221062107.778661-5-o.rempel@pengutronix.de>
 From: Florian Fainelli <f.fainelli@gmail.com>
 Autocrypt: addr=f.fainelli@gmail.com; keydata=
  xsDiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
@@ -122,20 +122,22 @@ Autocrypt: addr=f.fainelli@gmail.com; keydata=
  y5arMQorqTFWlEOgRA8OP47L9knl9i4xuR0euV6DChDrguup2aJVU8JPBBgRAgAPAhsMBQJU
  X9LxBQkeXB3fAAoJEGFXmRW1Y3YOj4UAn3nrFLPZekMeqX5aD/aq/dsbXSfyAKC45Go0YyxV
  HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20240221062107.778661-2-o.rempel@pengutronix.de>
+In-Reply-To: <20240221062107.778661-5-o.rempel@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
 
 On 2/20/2024 10:21 PM, Oleksij Rempel wrote:
-> From: Russell King <rmk+kernel@armlinux.org.uk>
+> From: Andrew Lunn <andrew@lunn.ch>
 > 
-> Add helpers that phylib and phylink can use to manage EEE configuration
-> and determine whether the MAC should be permitted to use LPI based on
-> that configuration.
+> Have phylib keep track of the EEE configuration. This simplifies the
+> MAC drivers, in that they don't need to store it.
 > 
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> Future patches to phylib will also make use of this information to
+> further simplify the MAC drivers.
+> 
+> Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 > Signed-off-by: Andrew Lunn <andrew@lunn.ch>
 > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
