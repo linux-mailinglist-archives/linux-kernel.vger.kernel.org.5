@@ -1,129 +1,109 @@
-Return-Path: <linux-kernel+bounces-79289-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9F53862016
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 23:53:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 267CE86201C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 23:54:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74210287392
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:53:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C57181F27153
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:54:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B70E14CAD0;
-	Fri, 23 Feb 2024 22:53:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F5D114CADB;
+	Fri, 23 Feb 2024 22:54:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gAofBZiN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YsZPHsz5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 762E1145B1B;
-	Fri, 23 Feb 2024 22:53:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85C491419B3;
+	Fri, 23 Feb 2024 22:54:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708728830; cv=none; b=NouMQeNhHjQM2eQ8HnDqZ+kyQhy1+pnXkUD71UDpSaPkbJWzsj7AxE0cCO5WynK5Oi9Fh2tLCxp4+HxyTkHHsKE4R2VVLs6++thLmQfxzubO2f34QqAN57Jnfcs+nbMAItNDijQtoH/vEJT0y701nCK6a5DX20X3/sOw5YfA9kU=
+	t=1708728867; cv=none; b=LNp27+1yk39CtK8YfBtfDiaoiUtXXKc7yFGxyy/Zl9PMxwZ4pYxDhns932T4Tcwd5PEh6id9lN6hsMwoihiiUYKNOn26+49Zs2dVbikKKIHeSL9fp8gBVYHJMC2dW+H+QUNyZtrf0Km2bX4R9uMivot0beWUa40VwS/JBDsSs9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708728830; c=relaxed/simple;
-	bh=8fI90c/X8hnq40ZoYMZVuBQV6bfsiyXr3g1YwmXe9gA=;
+	s=arc-20240116; t=1708728867; c=relaxed/simple;
+	bh=0NSUedbjyUk5R7hCcVkUZdvNMS/jzvFh6DRYgWh6R8c=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=WRqqxEb/DaLNoJoEI8PG8HKDsjqcwwDTixLrSoWEJt8IUe+i4j+HtDTBJ7FuMQDpwe4kgpuF5+PdpZZgFZ39Wzz+k2g5tjLBpxwCXqUMGQFtH3jtO+Ul4ZIwiQZUY+Uo7/kXd8BGrQYmbhPXaPb/N7ncfNeAk6i4VUOL7CzumOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gAofBZiN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90C8BC433F1;
-	Fri, 23 Feb 2024 22:53:49 +0000 (UTC)
+	 Content-Disposition:In-Reply-To; b=sWLpSJihS8iibk9jpLNm7bSXecBhq2jioPyTzYD5E4UoY26hGHFHAC8905A2940t8HIbHimZmHKdj+80LFSMD65A7+CCvzO7bchFpdT8hEAIXbOAJ8jnwGDV0R1pUiJxOArAyolhVXbnQcoLCI7U5QsUqHAbeebw10QgH6844Y8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YsZPHsz5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9C20C433C7;
+	Fri, 23 Feb 2024 22:54:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708728830;
-	bh=8fI90c/X8hnq40ZoYMZVuBQV6bfsiyXr3g1YwmXe9gA=;
-	h=Date:From:To:Cc:Subject:From;
-	b=gAofBZiN7cVAP4fKdDIZemGEMo13V0vKOsp4JmYY7W6TfmCJ3Fb1lnL3knaYqFNMA
-	 L9/41+JTv2xGcvxTfDHF8N6X5K0H56AOwltAs34gAVBTQmZCDcxTeDe2oJW/uewVBn
-	 cAaAxyFtY936OgNZXdy2ssSEZPkIR5dmqZlj3+nuf9QBo/1GnvVreqrV5wMgyVFjsK
-	 c+5ofxMbDwdjWRI4wYvra/aNGCFht/Bv7U83bzbjBw26cRnLhuZY2TIW0IH53+WmQR
-	 jiA3G/m9d8V3eIc3jolsenmmKdOebO+zdaEJhsKlBNtpWYi24hfyBViAgvDVigbpd7
-	 wKlji5ZvK/K6w==
-Date: Fri, 23 Feb 2024 23:53:47 +0100
-From: Wolfram Sang <wsa@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>,
-	Andi Shyti <andi.shyti@kernel.org>
-Subject: [PULL REQUEST] i2c-for-6.8-rc6
-Message-ID: <Zdkh-4-6G9UfkOIu@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>,
-	Andi Shyti <andi.shyti@kernel.org>
+	s=k20201202; t=1708728867;
+	bh=0NSUedbjyUk5R7hCcVkUZdvNMS/jzvFh6DRYgWh6R8c=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=YsZPHsz5raerQE80c8dON9WhwjgnZnIGP/CdqHiR1h6RPx/Hkh44I+f91o0jhk7YG
+	 BrGNkJ9pKYgdC1yhLs9XycYQUqdZsKvjMuRDJP6Q31eySEYOGTZ1Fqz2ppsjHcmrbc
+	 UokZK/Ozi4TcwTfHV12hPMreJD5ha5pVFPGW9AtbseYWUrzmVwaX4wiJldsbPpiDbK
+	 HkGt/ointiIK+uT9jhDrVZ5kPeJn0fC19ztaqVy0IqfA4gFk0+H51IwRCvvvWJ756+
+	 yAVZItBMOnxXTUreSGnyOn+vY9PBRhiwL2ircyGdIoihcqcpGtwF2Elrkv1e8iQInp
+	 8pTiumOHJUagA==
+Date: Fri, 23 Feb 2024 16:54:25 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+Cc: andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, konrad.dybcio@linaro.org,
+	manivannan.sadhasivam@linaro.org, robh@kernel.org,
+	quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+	quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+	dmitry.baryshkov@linaro.org, quic_krichai@quicinc.com,
+	quic_vbadigan@quicinc.com, quic_schintav@quicinc.com,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org
+Subject: Re: [PATCH v5 1/3] PCI: qcom: Enable cache coherency for SA8775P RC
+Message-ID: <20240223225425.GA103870@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="W+jNT0ni3h6BrAXc"
-Content-Disposition: inline
-
-
---W+jNT0ni3h6BrAXc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <1708697021-16877-2-git-send-email-quic_msarkar@quicinc.com>
 
-The following changes since commit b401b621758e46812da61fa58a67c3fd8d91de0d:
+On Fri, Feb 23, 2024 at 07:33:38PM +0530, Mrinmay Sarkar wrote:
+> Due to some hardware changes, SA8775P has set the NO_SNOOP attribute
+> in its TLP for all the PCIe controllers. NO_SNOOP attribute when set,
+> the requester is indicating that there no cache coherency issues exit
+> for the addressed memory on the host i.e., memory is not cached. But
+> in reality, requester cannot assume this unless there is a complete
+> control/visibility over the addressed memory on the host.
 
-  Linux 6.8-rc5 (2024-02-18 12:56:25 -0800)
+s/that there no/that no/
+s/exit/exist/
 
-are available in the Git repository at:
+Forgive my ignorance here.  It sounds like the cache coherency issue
+would refer to system memory, so the relevant No Snoop attribute would
+be in DMA transactions, i.e., Memory Reads or Writes initiated by PCIe
+Endpoints.  But it looks like this patch would affect TLPs initiated
+by the Root Complex, not those from Endpoints, so I'm confused about 
+how this works.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git tags/i2c-for-6.8-rc6
+If this were in the qcom-ep driver, it would make sense that setting
+No Snoop in the TLPs initiated by the Endpoint could be a problem, but
+that doesn't seem to be what this patch is concerned with.
 
-for you to fetch changes up to 87aec499368d488c20292952d6d4be7cb9e49c5e:
+> And worst case, if the memory is cached on the host, it may lead to
+> memory corruption issues. It should be noted that the caching of memory
+> on the host is not solely dependent on the NO_SNOOP attribute in TLP.
+> 
+> So to avoid the corruption, this patch overrides the NO_SNOOP attribute
+> by setting the PCIE_PARF_NO_SNOOP_OVERIDE register. This patch is not
+> needed for other upstream supported platforms since they do not set
+> NO_SNOOP attribute by default.
+> 
+> 8775 has IP version 1.34.0 so intruduce a new cfg(cfg_1_34_0) for this
+> platform. Assign enable_cache_snoop flag into struct qcom_pcie_cfg and
+> set it true in cfg_1_34_0 and enable cache snooping if this particular
+> flag is true.
 
-  i2c: imx: when being a target, mark the last read as processed (2024-02-23 23:39:35 +0100)
+s/intruduce/introduce/
 
-----------------------------------------------------------------
-Passing on a bugfix for host drivers
-
-Andi's PR comment:
-
-One fix in i2c-imx marks the last read as 'processed' to ensure
-proper indexing of the transfers.
-
-----------------------------------------------------------------
-Corey Minyard (1):
-      i2c: imx: when being a target, mark the last read as processed
-
-
-with much appreciated quality assurance from
-----------------------------------------------------------------
-Andrew Manley (2):
-      (Test) i2c: imx: when being a target, mark the last read as processed
-      (Rev.) i2c: imx: when being a target, mark the last read as processed
-
-Oleksij Rempel (1):
-      (Rev.) i2c: imx: when being a target, mark the last read as processed
-
- drivers/i2c/busses/i2c-imx.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
---W+jNT0ni3h6BrAXc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIyBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXZIfoACgkQFA3kzBSg
-KbYTcw/1EZrGvabgy1mEd1gWPl7QMhRG4Jw0nCv2xNMcmRP1KmnWWzbEsQf1h7pg
-38VNldLVE6brjgmFCBsXW7jI073Zctb9UMeFmibiickI6JL1ES1YC0e7mwiRz2m2
-GWZiVFmyLQFBZTcHWqi4MOk+2oKFXOAPv7+ifTs47k6JYve+Vzd9jaILc2M9sdMv
-3FdAw8iCVRt8WvP5//qPDNJeoKyBa9M2wR9vK2Iy0J2yHsZu/s8SSIDoYOvRUhJC
-vj1X09FrV8/9KcSzYYvQMOefGIfsvotF8qAx6FVQkQ6W8xRJ1VmKGcFNgK/yODyH
-5mKWa/F8hJZQegFenQxrHUQ+fjBHYOwrUaIeEp3Ej9WHFzLtycFrIQzPRqCiwdeC
-aLr952omuLIFdwVJj56eQDQLfFe6bLqEqq+yhNZkwuLc91r5SFhlIue2hV9nUPot
-GsSZ2oLv8yB2zogQGi0UNlLpwcmToGfjnVRylA7jnTSS0igh3A+UUhv3oPCDQA1D
-QukON2YxTAMPjiZAyjlYjUQ0wEKId7M6p5q6ssMIMisq+SfddjVtuWpqRGc5mHHb
-O9K+2LGag3iB6MVNaGrEMTmiJ7xs1rY7UVlL+yOFv7y6M1yllC4ot25BFYyeB9Up
-Y4Xob/50Oy0yr3UQFAgIklY0WHjhDElO8TRhFZ7PkQSiXY4ZNQ==
-=OjSX
------END PGP SIGNATURE-----
-
---W+jNT0ni3h6BrAXc--
+Bjorn
 
