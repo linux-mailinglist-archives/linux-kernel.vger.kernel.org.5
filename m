@@ -1,146 +1,673 @@
-Return-Path: <linux-kernel+bounces-79010-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79012-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08FF6861C32
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:59:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23B3B861C3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:04:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D4CC1F23C34
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:59:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F1F02878A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:04:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D85011D6B6;
-	Fri, 23 Feb 2024 18:58:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14CB8143C78;
+	Fri, 23 Feb 2024 19:04:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BF0uMPLf"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OvW/KuiE"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE7EF1339BA
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 18:58:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4940313BAC2;
+	Fri, 23 Feb 2024 19:04:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708714739; cv=none; b=uB3LgBrONcE33PARB3ealJR7vbpRT3goAiRymuSgnaQ8o71j4giXBZZMnXgAfKhXCBehjFGgEGgt1RVqld5KOxyig8A5Ro3XABJCOZdCwyA2Xh+jpINH9EXCxwwgL2yWtr9kVBIsqTew1YDjn0FOVtzU8xPeD2dvLOYrQP5/T10=
+	t=1708715071; cv=none; b=mSmw7tF5lMDTxPc5EdrSu0TMOiaDFVC4qQlITPM4vAMjF25MC3U3z7xSNQZtTogNb6A46MYVMTaUPe9ryVMWgT8s3xB7aGy4FETr2/DfsdlMcw1nsYsXkUeQzAN232TkdQ4InrsJv965EV2YZ8ZQuxAmL4hQYdU8yG2BKotfypU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708714739; c=relaxed/simple;
-	bh=Kaf0RNBKifZxmQBKJDDuFTaXgO5JnmzMcvf2mBmpSm4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YR9QvXto8UfPDeT5zmkPW8JKFDJWX8Iu3EsIJKP6DLhruxALclWsmkm4lJ6CxqLYIN5wGFkQUR+NvRTQe4ISlH/aetAY1Q/z4u4X8QOULULoRu4DIe1LDBCDI9nIHV3fUtPVhLjtUUHi+GjuMiDxrj7dKqP0YXLEse1WzddQtpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BF0uMPLf; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708714738; x=1740250738;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Kaf0RNBKifZxmQBKJDDuFTaXgO5JnmzMcvf2mBmpSm4=;
-  b=BF0uMPLf+HkVu/aQEDmq38M4KWmCYbtSgDZySEh7xYttDKsXaugdyR5z
-   PuLnRSzdzvhcH2BU6Nc9bTaH8HqCfWJ4HsyrfV4JZyGCzseEt8xkTbLP3
-   8ZRT0ROiVcHcBIT/SAk4ESdzo0Nnp3ILPHVPofSNpIgT7pQLyxm3sYYgi
-   HI7d0lc3ngCrtURxRC1hF6UPN2J1I/gGrpsMoq6waqbLM1wgpQMx3j1xg
-   b+OsCOPbTFPVTE6hs11c9qocntcsedHuIHbc2jotATkAP+00w/gCBV2YM
-   71aMwu3sHphbb7Fed+WuyKHx5WBgEsv8MHS3g6O8RIcM+LvSBBOZdhiUO
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="13745707"
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="13745707"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 10:58:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="5977964"
-Received: from gtkramer-mobl1.amr.corp.intel.com (HELO [10.209.82.163]) ([10.209.82.163])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 10:58:56 -0800
-Message-ID: <b01b4506-eb8e-4070-b318-bad68caf534f@intel.com>
-Date: Fri, 23 Feb 2024 10:58:55 -0800
+	s=arc-20240116; t=1708715071; c=relaxed/simple;
+	bh=8ADDstHVumIlW/HKFQmphRTto9H5pLC/Zfr5+gq0nsY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=J9jDyPwW0prkK0Gb7Bf8xWkB2BJkNMl3L8adrYkMku63T1TdAIgExOzBAA02hpBQ8iWy3cbTYbRl1V3ueq57pq0xf2gGIhOacIadyFVZKnlqdZs37nodH1P1DQkcGj/cMdPvYLcMahnyj8JFWjfxAa48qhZNpZQKHUO151yXJuY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OvW/KuiE; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-512cc3ea7a5so789360e87.3;
+        Fri, 23 Feb 2024 11:04:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708715067; x=1709319867; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vijFnIPIDRK0WerPjeRaOiPFj7TwHQttM28/ZM6+S9k=;
+        b=OvW/KuiERN6h6sELwnWBk3c8H/yNov3iN49hrc92noBhRY3YtkltGNuNwaZDJBNR+Q
+         fpmfhV/0KM/st+9Ul9nJ08tewwdDW09J1IWjCsmaaLdpQ04SJpbjwuxEj06NH4+B0tod
+         YY10hH+EolHrmFlwec/0T3AXOHs6Q+IIDT6iaYaTAlk2ag+Xn66INMSxKNMKdMohGVep
+         yEov/SPdJwmlwlZY9vOMmKahv8+D4YCK38c/0spQfLsGq2OeyJhIxkN0WQ/UXJfaSccz
+         yY7hdaK/fILci5Y/RWe4ZGFkiSsTbpjxjoTg0MG+/wfHKN1dHu6Lo0yNQJtruZxPGaTF
+         X2bQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708715067; x=1709319867;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vijFnIPIDRK0WerPjeRaOiPFj7TwHQttM28/ZM6+S9k=;
+        b=tDb9tA1Ou5XEDiqLbCjXoB9LH8c6ROMwzwTUuYpyi/IRww8Et+MtIRaxg1FvoDitMg
+         KSjWt8oXeHykraAMrVE9q+RhXWd1u9MwYk42Ejhy7Hx9egFHu5hY8Lv2vgASddzo94zc
+         7l/662tav7tMrxMvpU96QZm51iB3XkepODAvqfck603BaBZ06+Lbg1YpvA0lmxj00YjL
+         GaF4DDJIDwkCMqZO5l3LXqLDQ8AmVTwB2xDosm36/NRqASY3lLfnsVLYCaaK5hB8xD1b
+         0mKW6Tw28s81Xr8yxkXY+TddSe3iA72MzZihqNs2aHBp0D5rZqjxyLvcUSUw4neOl9he
+         Cj8g==
+X-Forwarded-Encrypted: i=1; AJvYcCVSR0gcaY901WeG0/HCBjuk+OlC9L9EloBbH8q49fRZr3ZwwCMpcWfjnZVo+7hGP32pK8VfC7omxkFCVLs+VjYyyYavPPRY64F4M57MWK6ed7ysDoJaIeq7SIz8QZbgZjdk3wdElLarHllCz68/oaUM77/uaOUvNzxLKA+l15mX6oMBg2oJ7js=
+X-Gm-Message-State: AOJu0YwAo/CDgG5yzv7H6VcJghoKCglrSOjYhAZrcuNBvWCCX6ltKY0k
+	4bgpaAOGUYC1hZp4Mt7mrzzKqEYRi3gqUd7FPRgwaJ9AA7Vi+ZqKDhAzf+XYhgjKwpRiBJOkrBt
+	3OGxAXKuSJfEucoAr93+ytPrjNM8=
+X-Google-Smtp-Source: AGHT+IGqUi6hXsymR+VR2nIl/wZyRnRk85g/HFBOXchC9LXe+4eFIilo9k104KSns7k2tZLNZsWtMgPspe6T0WRLQvE=
+X-Received: by 2002:a19:6553:0:b0:512:ab58:3807 with SMTP id
+ c19-20020a196553000000b00512ab583807mr411745lfj.9.1708715067035; Fri, 23 Feb
+ 2024 11:04:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHv7 07/16] x86/mm: Return correct level from
- lookup_address() if pte is none
-Content-Language: en-US
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
- Elena Reshetova <elena.reshetova@intel.com>,
- Jun Nakajima <jun.nakajima@intel.com>,
- Rick Edgecombe <rick.p.edgecombe@intel.com>,
- Tom Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish"
- <ashish.kalra@amd.com>, Sean Christopherson <seanjc@google.com>,
- "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
- kexec@lists.infradead.org, linux-coco@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <20240212104448.2589568-1-kirill.shutemov@linux.intel.com>
- <20240212104448.2589568-8-kirill.shutemov@linux.intel.com>
- <bb5931cf-d361-419b-9e80-8a5ec03f29d7@intel.com>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <bb5931cf-d361-419b-9e80-8a5ec03f29d7@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <652317.1708600826@warthog.procyon.org.uk>
+In-Reply-To: <652317.1708600826@warthog.procyon.org.uk>
+From: Steve French <smfrench@gmail.com>
+Date: Fri, 23 Feb 2024 13:04:15 -0600
+Message-ID: <CAH2r5msXug-fDa22mqEkrpgx=bYG_h3Z674PkUGssH0aG4bGXg@mail.gmail.com>
+Subject: Re: [RFC PATCH] cifs: Fix writeback data corruption
+To: David Howells <dhowells@redhat.com>
+Cc: Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>, 
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, 
+	Tom Talpey <tom@talpey.com>, Jeff Layton <jlayton@kernel.org>, 
+	Matthew Wilcox <willy@infradead.org>, linux-cifs@vger.kernel.org, 
+	samba-technical@lists.samba.org, netfs@lists.linux.dev, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/23/24 10:45, Dave Hansen wrote:
-> 	Always filling out the level allows using lookup_address() to
-> 	iterate over kernel page tables.
+Should the BUG() be changed to a WARN() or warn once?
 
-This doesn't parse very well.  How about this instead:
+/scripts/checkpatch.pl
+fs/smb/client/0001-cifs-Fix-writeback-data-corruption.patch WARNING:
+Do not crash the kernel unless it is absolutely unavoidable--use
+WARN_ON_ONCE() plus recovery code (if feasible) instead of BUG() or
+variants
+#205: FILE: fs/smb/client/file.c:2758:
++ BUG();
 
-	Always filling out the level allows using lookup_address() to
-	precisely skip over holes when walking kernel page tables.
+total: 0 errors, 1 warnings, 439 lines checked
 
-I think that more accurately captures what you're doing with it in the
-next patch.
+On Thu, Feb 22, 2024 at 5:20=E2=80=AFAM David Howells <dhowells@redhat.com>=
+ wrote:
+>
+> cifs writeback doesn't correctly handle the case where
+> cifs_extend_writeback() hits a point where it is considering an additiona=
+l
+> folio, but this would overrun the wsize - at which point it drops out of
+> the xarray scanning loop and calls xas_pause().  The problem is that
+> xas_pause() advances the loop counter - thereby skipping that page.
+>
+> What needs to happen is for xas_reset() to be called any time we decide w=
+e
+> don't want to process the page we're looking at, but rather send the
+> request we are building and start a new one.
+>
+> Fix this by copying and adapting the netfslib writepages code as a
+> temporary measure, with cifs writeback intending to be offloaded to
+> netfslib in the near future.
+>
+> This also fixes the issue with the use of filemap_get_folios_tag() causin=
+g
+> retry of a bunch of pages which the extender already dealt with.
+>
+> This can be tested by creating, say, a 64K file somewhere not on cifs
+> (otherwise copy-offload may get underfoot), mounting a cifs share with a
+> wsize of 64000, copying the file to it and then comparing the original fi=
+le
+> and the copy:
+>
+>         dd if=3D/dev/urandom of=3D/tmp/64K bs=3D64k count=3D1
+>         mount //192.168.6.1/test /mnt -o user=3D...,pass=3D...,wsize=3D64=
+000
+>         cp /tmp/64K /mnt/64K
+>         cmp /tmp/64K /mnt/64K
+>
+> Without the fix, the cmp fails at position 64000 (or shortly thereafter).
+>
+> Fixes: d08089f649a0 ("cifs: Change the I/O paths to use an iterator rathe=
+r than a page list")
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Steve French <sfrench@samba.org>
+> cc: Paulo Alcantara <pc@manguebit.com>
+> cc: Ronnie Sahlberg <ronniesahlberg@gmail.com>
+> cc: Shyam Prasad N <sprasad@microsoft.com>
+> cc: Tom Talpey <tom@talpey.com>
+> cc: Jeff Layton <jlayton@kernel.org>
+> cc: linux-cifs@vger.kernel.org
+> cc: samba-technical@lists.samba.org
+> cc: netfs@lists.linux.dev
+> cc: linux-fsdevel@vger.kernel.org
+> ---
+>  fs/smb/client/file.c |  284 ++++++++++++++++++++++++++++----------------=
+-------
+>  1 file changed, 158 insertions(+), 126 deletions(-)
+>
+> diff --git a/fs/smb/client/file.c b/fs/smb/client/file.c
+> index f391c9b803d8..671ce6ebd203 100644
+> --- a/fs/smb/client/file.c
+> +++ b/fs/smb/client/file.c
+> @@ -2624,20 +2624,20 @@ static int cifs_partialpagewrite(struct page *pag=
+e, unsigned from, unsigned to)
+>   * dirty pages if possible, but don't sleep while doing so.
+>   */
+>  static void cifs_extend_writeback(struct address_space *mapping,
+> +                                 struct xa_state *xas,
+>                                   long *_count,
+>                                   loff_t start,
+>                                   int max_pages,
+> -                                 size_t max_len,
+> -                                 unsigned int *_len)
+> +                                 loff_t max_len,
+> +                                 size_t *_len)
+>  {
+>         struct folio_batch batch;
+>         struct folio *folio;
+> -       unsigned int psize, nr_pages;
+> -       size_t len =3D *_len;
+> -       pgoff_t index =3D (start + len) / PAGE_SIZE;
+> +       unsigned int nr_pages;
+> +       pgoff_t index =3D (start + *_len) / PAGE_SIZE;
+> +       size_t len;
+>         bool stop =3D true;
+>         unsigned int i;
+> -       XA_STATE(xas, &mapping->i_pages, index);
+>
+>         folio_batch_init(&batch);
+>
+> @@ -2648,54 +2648,64 @@ static void cifs_extend_writeback(struct address_=
+space *mapping,
+>                  */
+>                 rcu_read_lock();
+>
+> -               xas_for_each(&xas, folio, ULONG_MAX) {
+> +               xas_for_each(xas, folio, ULONG_MAX) {
+>                         stop =3D true;
+> -                       if (xas_retry(&xas, folio))
+> +                       if (xas_retry(xas, folio))
+>                                 continue;
+>                         if (xa_is_value(folio))
+>                                 break;
+> -                       if (folio->index !=3D index)
+> +                       if (folio->index !=3D index) {
+> +                               xas_reset(xas);
+>                                 break;
+> +                       }
+> +
+>                         if (!folio_try_get_rcu(folio)) {
+> -                               xas_reset(&xas);
+> +                               xas_reset(xas);
+>                                 continue;
+>                         }
+>                         nr_pages =3D folio_nr_pages(folio);
+> -                       if (nr_pages > max_pages)
+> +                       if (nr_pages > max_pages) {
+> +                               xas_reset(xas);
+>                                 break;
+> +                       }
+>
+>                         /* Has the page moved or been split? */
+> -                       if (unlikely(folio !=3D xas_reload(&xas))) {
+> +                       if (unlikely(folio !=3D xas_reload(xas))) {
+>                                 folio_put(folio);
+> +                               xas_reset(xas);
+>                                 break;
+>                         }
+>
+>                         if (!folio_trylock(folio)) {
+>                                 folio_put(folio);
+> +                               xas_reset(xas);
+>                                 break;
+>                         }
+> -                       if (!folio_test_dirty(folio) || folio_test_writeb=
+ack(folio)) {
+> +                       if (!folio_test_dirty(folio) ||
+> +                           folio_test_writeback(folio)) {
+>                                 folio_unlock(folio);
+>                                 folio_put(folio);
+> +                               xas_reset(xas);
+>                                 break;
+>                         }
+>
+>                         max_pages -=3D nr_pages;
+> -                       psize =3D folio_size(folio);
+> -                       len +=3D psize;
+> +                       len =3D folio_size(folio);
+>                         stop =3D false;
+> -                       if (max_pages <=3D 0 || len >=3D max_len || *_cou=
+nt <=3D 0)
+> -                               stop =3D true;
+>
+>                         index +=3D nr_pages;
+> +                       *_count -=3D nr_pages;
+> +                       *_len +=3D len;
+> +                       if (max_pages <=3D 0 || *_len >=3D max_len || *_c=
+ount <=3D 0)
+> +                               stop =3D true;
+> +
+>                         if (!folio_batch_add(&batch, folio))
+>                                 break;
+>                         if (stop)
+>                                 break;
+>                 }
+>
+> -               if (!stop)
+> -                       xas_pause(&xas);
+> +               xas_pause(xas);
+>                 rcu_read_unlock();
+>
+>                 /* Now, if we obtained any pages, we can shift them to be=
+ing
+> @@ -2712,16 +2722,12 @@ static void cifs_extend_writeback(struct address_=
+space *mapping,
+>                         if (!folio_clear_dirty_for_io(folio))
+>                                 WARN_ON(1);
+>                         folio_start_writeback(folio);
+> -
+> -                       *_count -=3D folio_nr_pages(folio);
+>                         folio_unlock(folio);
+>                 }
+>
+>                 folio_batch_release(&batch);
+>                 cond_resched();
+>         } while (!stop);
+> -
+> -       *_len =3D len;
+>  }
+>
+>  /*
+> @@ -2729,8 +2735,10 @@ static void cifs_extend_writeback(struct address_s=
+pace *mapping,
+>   */
+>  static ssize_t cifs_write_back_from_locked_folio(struct address_space *m=
+apping,
+>                                                  struct writeback_control=
+ *wbc,
+> +                                                struct xa_state *xas,
+>                                                  struct folio *folio,
+> -                                                loff_t start, loff_t end=
+)
+> +                                                unsigned long long start=
+,
+> +                                                unsigned long long end)
+>  {
+>         struct inode *inode =3D mapping->host;
+>         struct TCP_Server_Info *server;
+> @@ -2739,17 +2747,18 @@ static ssize_t cifs_write_back_from_locked_folio(=
+struct address_space *mapping,
+>         struct cifs_credits credits_on_stack;
+>         struct cifs_credits *credits =3D &credits_on_stack;
+>         struct cifsFileInfo *cfile =3D NULL;
+> -       unsigned int xid, wsize, len;
+> -       loff_t i_size =3D i_size_read(inode);
+> -       size_t max_len;
+> +       unsigned long long i_size =3D i_size_read(inode), max_len;
+> +       unsigned int xid, wsize;
+> +       size_t len;
+>         long count =3D wbc->nr_to_write;
+>         int rc;
+>
+>         /* The folio should be locked, dirty and not undergoing writeback=
+ */
+> +       if (!folio_clear_dirty_for_io(folio))
+> +               BUG();
+>         folio_start_writeback(folio);
+>
+>         count -=3D folio_nr_pages(folio);
+> -       len =3D folio_size(folio);
+>
+>         xid =3D get_xid();
+>         server =3D cifs_pick_channel(cifs_sb_master_tcon(cifs_sb)->ses);
+> @@ -2779,10 +2788,12 @@ static ssize_t cifs_write_back_from_locked_folio(=
+struct address_space *mapping,
+>         wdata->server =3D server;
+>         cfile =3D NULL;
+>
+> -       /* Find all consecutive lockable dirty pages, stopping when we fi=
+nd a
+> -        * page that is not immediately lockable, is not dirty or is miss=
+ing,
+> -        * or we reach the end of the range.
+> +       /* Find all consecutive lockable dirty pages that have contiguous
+> +        * written regions, stopping when we find a page that is not
+> +        * immediately lockable, is not dirty or is missing, or we reach =
+the
+> +        * end of the range.
+>          */
+> +       len =3D folio_size(folio);
+>         if (start < i_size) {
+>                 /* Trim the write to the EOF; the extra data is ignored. =
+ Also
+>                  * put an upper limit on the size of a single storedata o=
+p.
+> @@ -2801,19 +2812,18 @@ static ssize_t cifs_write_back_from_locked_folio(=
+struct address_space *mapping,
+>                         max_pages -=3D folio_nr_pages(folio);
+>
+>                         if (max_pages > 0)
+> -                               cifs_extend_writeback(mapping, &count, st=
+art,
+> +                               cifs_extend_writeback(mapping, xas, &coun=
+t, start,
+>                                                       max_pages, max_len,=
+ &len);
+>                 }
+> -               len =3D min_t(loff_t, len, max_len);
+>         }
+> -
+> -       wdata->bytes =3D len;
+> +       len =3D min_t(unsigned long long, len, i_size - start);
+>
+>         /* We now have a contiguous set of dirty pages, each with writeba=
+ck
+>          * set; the first page is still locked at this point, but all the=
+ rest
+>          * have been unlocked.
+>          */
+>         folio_unlock(folio);
+> +       wdata->bytes =3D len;
+>
+>         if (start < i_size) {
+>                 iov_iter_xarray(&wdata->iter, ITER_SOURCE, &mapping->i_pa=
+ges,
+> @@ -2864,102 +2874,118 @@ static ssize_t cifs_write_back_from_locked_foli=
+o(struct address_space *mapping,
+>  /*
+>   * write a region of pages back to the server
+>   */
+> -static int cifs_writepages_region(struct address_space *mapping,
+> -                                 struct writeback_control *wbc,
+> -                                 loff_t start, loff_t end, loff_t *_next=
+)
+> +static ssize_t cifs_writepages_begin(struct address_space *mapping,
+> +                                    struct writeback_control *wbc,
+> +                                    struct xa_state *xas,
+> +                                    unsigned long long *_start,
+> +                                    unsigned long long end)
+>  {
+> -       struct folio_batch fbatch;
+> +       struct folio *folio;
+> +       unsigned long long start =3D *_start;
+> +       ssize_t ret;
+>         int skips =3D 0;
+>
+> -       folio_batch_init(&fbatch);
+> -       do {
+> -               int nr;
+> -               pgoff_t index =3D start / PAGE_SIZE;
+> +search_again:
+> +       /* Find the first dirty page. */
+> +       rcu_read_lock();
+>
+> -               nr =3D filemap_get_folios_tag(mapping, &index, end / PAGE=
+_SIZE,
+> -                                           PAGECACHE_TAG_DIRTY, &fbatch)=
+;
+> -               if (!nr)
+> +       for (;;) {
+> +               folio =3D xas_find_marked(xas, end / PAGE_SIZE, PAGECACHE=
+_TAG_DIRTY);
+> +               if (xas_retry(xas, folio) || xa_is_value(folio))
+> +                       continue;
+> +               if (!folio)
+>                         break;
+>
+> -               for (int i =3D 0; i < nr; i++) {
+> -                       ssize_t ret;
+> -                       struct folio *folio =3D fbatch.folios[i];
+> +               if (!folio_try_get_rcu(folio)) {
+> +                       xas_reset(xas);
+> +                       continue;
+> +               }
+>
+> -redo_folio:
+> -                       start =3D folio_pos(folio); /* May regress with T=
+HPs */
+> +               if (unlikely(folio !=3D xas_reload(xas))) {
+> +                       folio_put(folio);
+> +                       xas_reset(xas);
+> +                       continue;
+> +               }
+>
+> -                       /* At this point we hold neither the i_pages lock=
+ nor the
+> -                        * page lock: the page may be truncated or invali=
+dated
+> -                        * (changing page->mapping to NULL), or even swiz=
+zled
+> -                        * back from swapper_space to tmpfs file mapping
+> -                        */
+> -                       if (wbc->sync_mode !=3D WB_SYNC_NONE) {
+> -                               ret =3D folio_lock_killable(folio);
+> -                               if (ret < 0)
+> -                                       goto write_error;
+> -                       } else {
+> -                               if (!folio_trylock(folio))
+> -                                       goto skip_write;
+> -                       }
+> +               xas_pause(xas);
+> +               break;
+> +       }
+> +       rcu_read_unlock();
+> +       if (!folio)
+> +               return 0;
+>
+> -                       if (folio->mapping !=3D mapping ||
+> -                           !folio_test_dirty(folio)) {
+> -                               start +=3D folio_size(folio);
+> -                               folio_unlock(folio);
+> -                               continue;
+> -                       }
+> +       start =3D folio_pos(folio); /* May regress with THPs */
+>
+> -                       if (folio_test_writeback(folio) ||
+> -                           folio_test_fscache(folio)) {
+> -                               folio_unlock(folio);
+> -                               if (wbc->sync_mode =3D=3D WB_SYNC_NONE)
+> -                                       goto skip_write;
+> +       /* At this point we hold neither the i_pages lock nor the page lo=
+ck:
+> +        * the page may be truncated or invalidated (changing page->mappi=
+ng to
+> +        * NULL), or even swizzled back from swapper_space to tmpfs file
+> +        * mapping
+> +        */
+> +lock_again:
+> +       if (wbc->sync_mode !=3D WB_SYNC_NONE) {
+> +               ret =3D folio_lock_killable(folio);
+> +               if (ret < 0)
+> +                       return ret;
+> +       } else {
+> +               if (!folio_trylock(folio))
+> +                       goto search_again;
+> +       }
+>
+> -                               folio_wait_writeback(folio);
+> +       if (folio->mapping !=3D mapping ||
+> +           !folio_test_dirty(folio)) {
+> +               start +=3D folio_size(folio);
+> +               folio_unlock(folio);
+> +               goto search_again;
+> +       }
+> +
+> +       if (folio_test_writeback(folio) ||
+> +           folio_test_fscache(folio)) {
+> +               folio_unlock(folio);
+> +               if (wbc->sync_mode !=3D WB_SYNC_NONE) {
+> +                       folio_wait_writeback(folio);
+>  #ifdef CONFIG_CIFS_FSCACHE
+> -                               folio_wait_fscache(folio);
+> +                       folio_wait_fscache(folio);
+>  #endif
+> -                               goto redo_folio;
+> -                       }
+> -
+> -                       if (!folio_clear_dirty_for_io(folio))
+> -                               /* We hold the page lock - it should've b=
+een dirty. */
+> -                               WARN_ON(1);
+> -
+> -                       ret =3D cifs_write_back_from_locked_folio(mapping=
+, wbc, folio, start, end);
+> -                       if (ret < 0)
+> -                               goto write_error;
+> -
+> -                       start +=3D ret;
+> -                       continue;
+> -
+> -write_error:
+> -                       folio_batch_release(&fbatch);
+> -                       *_next =3D start;
+> -                       return ret;
+> +                       goto lock_again;
+> +               }
+>
+> -skip_write:
+> -                       /*
+> -                        * Too many skipped writes, or need to reschedule=
+?
+> -                        * Treat it as a write error without an error cod=
+e.
+> -                        */
+> +               start +=3D folio_size(folio);
+> +               if (wbc->sync_mode =3D=3D WB_SYNC_NONE) {
+>                         if (skips >=3D 5 || need_resched()) {
+>                                 ret =3D 0;
+> -                               goto write_error;
+> +                               goto out;
+>                         }
+> -
+> -                       /* Otherwise, just skip that folio and go on to t=
+he next */
+>                         skips++;
+> -                       start +=3D folio_size(folio);
+> -                       continue;
+>                 }
+> +               goto search_again;
+> +       }
+>
+> -               folio_batch_release(&fbatch);
+> -               cond_resched();
+> -       } while (wbc->nr_to_write > 0);
+> +       ret =3D cifs_write_back_from_locked_folio(mapping, wbc, xas, foli=
+o, start, end);
+> +out:
+> +       if (ret > 0)
+> +               *_start =3D start + ret;
+> +       return ret;
+> +}
+>
+> -       *_next =3D start;
+> -       return 0;
+> +/*
+> + * Write a region of pages back to the server
+> + */
+> +static int cifs_writepages_region(struct address_space *mapping,
+> +                                 struct writeback_control *wbc,
+> +                                 unsigned long long *_start,
+> +                                 unsigned long long end)
+> +{
+> +       ssize_t ret;
+> +
+> +       XA_STATE(xas, &mapping->i_pages, *_start / PAGE_SIZE);
+> +
+> +       do {
+> +               ret =3D cifs_writepages_begin(mapping, wbc, &xas, _start,=
+ end);
+> +               if (ret > 0 && wbc->nr_to_write > 0)
+> +                       cond_resched();
+> +       } while (ret > 0 && wbc->nr_to_write > 0);
+> +
+> +       return ret > 0 ? 0 : ret;
+>  }
+>
+>  /*
+> @@ -2968,7 +2994,7 @@ static int cifs_writepages_region(struct address_sp=
+ace *mapping,
+>  static int cifs_writepages(struct address_space *mapping,
+>                            struct writeback_control *wbc)
+>  {
+> -       loff_t start, next;
+> +       loff_t start, end;
+>         int ret;
+>
+>         /* We have to be careful as we can end up racing with setattr()
+> @@ -2976,28 +3002,34 @@ static int cifs_writepages(struct address_space *=
+mapping,
+>          * to prevent it.
+>          */
+>
+> -       if (wbc->range_cyclic) {
+> +       if (wbc->range_cyclic && mapping->writeback_index) {
+>                 start =3D mapping->writeback_index * PAGE_SIZE;
+> -               ret =3D cifs_writepages_region(mapping, wbc, start, LLONG=
+_MAX, &next);
+> -               if (ret =3D=3D 0) {
+> -                       mapping->writeback_index =3D next / PAGE_SIZE;
+> -                       if (start > 0 && wbc->nr_to_write > 0) {
+> -                               ret =3D cifs_writepages_region(mapping, w=
+bc, 0,
+> -                                                            start, &next=
+);
+> -                               if (ret =3D=3D 0)
+> -                                       mapping->writeback_index =3D
+> -                                               next / PAGE_SIZE;
+> -                       }
+> +               ret =3D cifs_writepages_region(mapping, wbc, &start, LLON=
+G_MAX);
+> +               if (ret < 0)
+> +                       goto out;
+> +
+> +               if (wbc->nr_to_write <=3D 0) {
+> +                       mapping->writeback_index =3D start / PAGE_SIZE;
+> +                       goto out;
+>                 }
+> +
+> +               start =3D 0;
+> +               end =3D mapping->writeback_index * PAGE_SIZE;
+> +               mapping->writeback_index =3D 0;
+> +               ret =3D cifs_writepages_region(mapping, wbc, &start, end)=
+;
+> +               if (ret =3D=3D 0)
+> +                       mapping->writeback_index =3D start / PAGE_SIZE;
+>         } else if (wbc->range_start =3D=3D 0 && wbc->range_end =3D=3D LLO=
+NG_MAX) {
+> -               ret =3D cifs_writepages_region(mapping, wbc, 0, LLONG_MAX=
+, &next);
+> +               start =3D 0;
+> +               ret =3D cifs_writepages_region(mapping, wbc, &start, LLON=
+G_MAX);
+>                 if (wbc->nr_to_write > 0 && ret =3D=3D 0)
+> -                       mapping->writeback_index =3D next / PAGE_SIZE;
+> +                       mapping->writeback_index =3D start / PAGE_SIZE;
+>         } else {
+> -               ret =3D cifs_writepages_region(mapping, wbc,
+> -                                            wbc->range_start, wbc->range=
+_end, &next);
+> +               start =3D wbc->range_start;
+> +               ret =3D cifs_writepages_region(mapping, wbc, &start, wbc-=
+>range_end);
+>         }
+>
+> +out:
+>         return ret;
+>  }
+>
+>
+
+
+--=20
+Thanks,
+
+Steve
 
