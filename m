@@ -1,174 +1,265 @@
-Return-Path: <linux-kernel+bounces-79237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3070861F5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 23:08:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FB70861F60
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 23:09:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68BE2286060
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:08:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB2701F246DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:09:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C11414CAC4;
-	Fri, 23 Feb 2024 22:08:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FCF814CAC5;
+	Fri, 23 Feb 2024 22:09:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Ty/7+bV4"
-Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J6lx4zwv"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9A5B142648
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 22:07:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F364D14C5B5
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 22:09:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708726081; cv=none; b=uAQjnbrsTfGRYZHHJ0HOZ7NjemLuR72DPioF+oS9Vj54Nk8N15wv1DIFuH3fCsAurTJsfr3qlSt47HTHyEmc34g264bdqzvg9EYIn8qCG+Wk1Z1qQXCsE76YmaduPRQ1jESd/A9xuwMFMzXgdQnJh2kabuVr0qbu6pOkvavAWjY=
+	t=1708726186; cv=none; b=DA7ENUBJibr8J5gsb4xImrQCxYD99Ym/3lpaXVretLcG7VZIFVCSIz1h097kI/eFhG1+0RI13Ie+ymzZW5zTmv39JVQGSYAXU5hIrb+VMGeb0XHar33IANAYzCCcL6VzLhO+koJgxmep5Fg5+gLndScub+FLq4+5EK9sTy1RQlM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708726081; c=relaxed/simple;
-	bh=XCkxVjJN6TdCgPtRmewiRi7q1bmPB9dwiCi4ta9RI58=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cPxhvswvQEzQV1qcFS/WbohJOS8JkfcfO8BKtylcLUOP+Fu1WTA330EQ9ysyTeZWVF1TF52bjlYEJI4MgqjyZZ+d/l021RUP7aBAtWEIXuf1f7GWFgMYXJae+L+EOMWuTvAyix3oFhkehIzWEiNgVAOCfrJZf+2tx8S53W1GETI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Ty/7+bV4; arc=none smtp.client-ip=209.85.166.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7bf3283c18dso23244139f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 14:07:59 -0800 (PST)
+	s=arc-20240116; t=1708726186; c=relaxed/simple;
+	bh=NfaUGlHI9XLsk1nlMEAR7M/7M17hVAq68eUm+2SFQS4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dG8scCuFEOXhIcmDh7XrDhD9HCUbuIrW2Dq6SuulbcBzWP45RVfa2Sy3QY3jHWuLRs41SblDt6L/z92ZKlH2EpR/QZoqMnJN/BdYnLY6Oy97ZcFCFASc2UI363PqhA099jy9KrwMElk/0PepRHdhO95mJqsRYsglbfPX0M1RrqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J6lx4zwv; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e4560664b5so1072321b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 14:09:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1708726079; x=1709330879; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1fdAI0DrY4+cZupo08XTufNQuBtOKpu0rrwHi//EJSU=;
-        b=Ty/7+bV4BtT8sPZXsU1Hx88Mk9as271jwVWwQ4kRzfrPttCAFsOb3Lr/mTqo/HBIsh
-         xpMVrTilUaw5ZhpOWJNvdTSqxxq7AnuSKjll561YXzkWicph9jiuKA3qtiLT269X7Tms
-         S/A4EHKjmZGgAGEufKgSlaMK9Tm97xXl092kA=
+        d=gmail.com; s=20230601; t=1708726184; x=1709330984; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eDQUYGjK0gcC/i45nvgEKWYFzF6rZTJ86bsg/M9a66I=;
+        b=J6lx4zwvTuHg3htV5KzjEq33zTT3XbqP2nlEJl0zZD/826fdnVdUkAbJG10QWRZhSh
+         VqAqeM2h69WFOBrk4ZP0qXOEV07IDoJQRwHQLtt84my0dH/s5StF1X29/IAfquQh+xT3
+         w+ilTJ1Q4geB/OD99XsV0P2NKe9GqbAUM+Eh40gjKfn2gLPUNrOt86W+aPzeen21K8mM
+         QIM/bfZa98HS/TRk9np1rRhxEiEc5ZsVuuugcXKpIHCXzOn3Eul717KrUrUnpuNbhnB2
+         ISegI370+s6tY6udeSAB4Z8RRT/rqHydSSzOX0366onFLGWr5rNGzbAGdwMupFeNtgFs
+         Fz/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708726079; x=1709330879;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1fdAI0DrY4+cZupo08XTufNQuBtOKpu0rrwHi//EJSU=;
-        b=WrfSEhiFr4h2T3jNBODfOJN8PvRmMJlFsKE9GrzZHIzQIxrp8Io0jvHH3b6gYUddYL
-         5mAr9JoDxaeJ2dHtStdl0JMFMftGviSTQwhqd3TKXeE0VjG7cOlM4FaSH30FMlGYCNKK
-         wL1s0N7hdEvYFOKMOV9d6AIUS1iHOaY0wu6QvWk4VMLGkQCFQiH1CmnHof6+IZ8850qq
-         lXT+tawbGrBzovz3xgcXJrdh1AF5TYXj2VzqTRSOWyKFUOvNpvxfbPB5EcCQd0RypYVS
-         EVZQ6y3rlRiYJMZbVG4pjc0VYf2hz1OghAUSONpaVhhSxaT7d+F0r+BzEgaZ7q5AN5an
-         BZvg==
-X-Forwarded-Encrypted: i=1; AJvYcCWmnjTwV6OAwsdMuQ8Cp7YgorW+sodSPdPW8APsQJimh8sTDwM76tmKqYvNkTRfjQ9x1KVfmvPsB+1tTisqSC4nOZ94+mWog+y8UR5h
-X-Gm-Message-State: AOJu0YxUqIGJmvdlKM9YhRxuNrGDUBx3OfzCGq++x4kkDwbKQxd3q7CH
-	VVPnoSonnPGcp9id6euwKK8Wc9RCVu9dN5FoH/Phmk6dThFHlKqilaxlct1mXQ4=
-X-Google-Smtp-Source: AGHT+IHiKVcuqSVcuMUfgbyF+Cd49SlDxNt5CwWlzj2tF4SXuMug78NaNUTvJkUOoYewqfd+aR+MXA==
-X-Received: by 2002:a6b:6501:0:b0:7c7:7f73:d1a with SMTP id z1-20020a6b6501000000b007c77f730d1amr1276130iob.1.1708726078903;
-        Fri, 23 Feb 2024 14:07:58 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id j3-20020a05663822c300b00472f79e0001sm3950166jat.171.2024.02.23.14.07.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Feb 2024 14:07:58 -0800 (PST)
-Message-ID: <bfec40fc-8152-4f5e-84c4-926312014322@linuxfoundation.org>
-Date: Fri, 23 Feb 2024 15:07:58 -0700
+        d=1e100.net; s=20230601; t=1708726184; x=1709330984;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eDQUYGjK0gcC/i45nvgEKWYFzF6rZTJ86bsg/M9a66I=;
+        b=V2gxM9+UM/SEfwHAVYoS0zt8PS4pQtE3DvXOPY0lVm1FdH4Ru/T7YPjyHjSjezk0AC
+         SNCf3MuQwK6FBuXUbmBTgOHj5jnzNA78vxVPt0CXTS4QghbiE0z7MOhSVBGo7Fo0jeJE
+         s7EM5mwYzWsRkdHedUmF4OTxZRbwBXlE2AteCwwen0BCulNESWYg+AJEnJf8ugDNrvRz
+         mcVKAuLtskmXxCdCEUXlFV24mASvNYFWVcYCBFsp0VMmhxPyyu6NZ5kIn6W4jtdd6/xp
+         3PXohHkIO1ivAZeRnDPQe1dCyfmwn3ADGmGP0v1rY3cSMNrkihfuSHOdjOQKyrrP5lNt
+         daOw==
+X-Forwarded-Encrypted: i=1; AJvYcCUmMsWDQyyLZqN0Eirp9ul6FSuA3j5/my2FvBeHD2zqkt3bZoaxG09ywDSfrOUlkPXEjXNgz/vBY9zN1F9S6jIqQ8tQ4Qx8/xdNq1os
+X-Gm-Message-State: AOJu0YwQ4eouwHJ37aVqLjeEpPKFlcXGJOB1JH5IPIKP383mf8p2yeGB
+	bqUN6CTjmsJVWAKOdULVOwZisUZ96dsrmZEArAaHpCC28dLuFaBwSoozNH0C
+X-Google-Smtp-Source: AGHT+IG8ledTXUl0IDZBAqHjI2OfFBzfeL/4f3W2QpaICgJumHwDsuOA89YMgW/mABXln+9HXqbx5g==
+X-Received: by 2002:a62:b505:0:b0:6e3:3bd7:6f23 with SMTP id y5-20020a62b505000000b006e33bd76f23mr960762pfe.8.1708726184168;
+        Fri, 23 Feb 2024 14:09:44 -0800 (PST)
+Received: from google.com ([2620:0:1000:8411:6da7:9880:a81c:aee8])
+        by smtp.gmail.com with ESMTPSA id a6-20020aa780c6000000b006e134c4d6b0sm13310100pfn.217.2024.02.23.14.09.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 14:09:43 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date: Fri, 23 Feb 2024 14:09:41 -0800
+From: Minchan Kim <minchan@kernel.org>
+To: Barry Song <21cnbao@gmail.com>
+Cc: sj@kernel.org, akpm@linux-foundation.org, damon@lists.linux.dev,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, mhocko@suse.com,
+	hannes@cmpxchg.org, Barry Song <v-songbaohua@oppo.com>
+Subject: Re: [PATCH RFC] mm: madvise: pageout: ignore references rather than
+ clearing young
+Message-ID: <ZdkXpcAB6xWj2geh@google.com>
+References: <20240223041550.77157-1-21cnbao@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] selftests: lib.mk: Do not process TEST_GEN_MODS_DIR
-Content-Language: en-US
-To: Marcos Paulo de Souza <mpdesouza@suse.com>,
- Yujie Liu <yujie.liu@intel.com>
-Cc: kernel test robot <lkp@intel.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
- Jiri Kosina <jikos@kernel.org>, Miroslav Benes <mbenes@suse.cz>,
- Petr Mladek <pmladek@suse.com>, Joe Lawrence <joe.lawrence@redhat.com>,
- oe-kbuild-all@lists.linux.dev, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, live-patching@vger.kernel.org,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240222020456.28532-1-mpdesouza@suse.com>
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240222020456.28532-1-mpdesouza@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240223041550.77157-1-21cnbao@gmail.com>
 
-On 2/21/24 19:04, Marcos Paulo de Souza wrote:
-> On Thu, 22 Feb 2024 09:28:19 +0800 Yujie Liu <yujie.liu@intel.com> wrote:
+Hi Barry,
+
+On Fri, Feb 23, 2024 at 05:15:50PM +1300, Barry Song wrote:
+> From: Barry Song <v-songbaohua@oppo.com>
 > 
->> On Wed, Feb 21, 2024 at 07:04:03PM -0300, Marcos Paulo de Souza wrote:
->>> On Wed, 21 Feb 2024 14:12:00 -0700 Shuah Khan <skhan@linuxfoundation.org> wrote:
->>>
->>>> On 2/21/24 05:26, Marcos Paulo de Souza wrote:
->>>>> On Tue, 20 Feb 2024 17:19:54 -0700 Shuah Khan <skhan@linuxfoundation.org> wrote:
->>>>>
->>>>>> On 2/19/24 06:53, Marcos Paulo de Souza wrote:
->>>>>>> On Mon, 19 Feb 2024 09:15:15 -0300 Marcos Paulo de Souza <mpdesouza@suse.com> wrote:
->>>>>>>
->>>>>>>> On Mon, 19 Feb 2024 14:35:16 +0800 kernel test robot <lkp@intel.com> wrote:
->>>>>>>>
->>>>>>>>> Hi Marcos,
->>>>>>>>>
->>>>>>>>> kernel test robot noticed the following build errors:
->>>>>>>>>
->>>>>>>>> [auto build test ERROR on 345e8abe4c355bc24bab3f4a5634122e55be8665]
->>>>>>>>>
->>>>>>>>> url:    https://github.com/intel-lab-lkp/linux/commits/Marcos-Paulo-de-Souza/selftests-lib-mk-Do-not-process-TEST_GEN_MODS_DIR/20240216-021601
->>>>>>>>> base:   345e8abe4c355bc24bab3f4a5634122e55be8665
->>>>>>>>> patch link:    https://lore.kernel.org/r/20240215-lp-selftests-fixes-v1-1-89f4a6f5cddc%40suse.com
->>>>>>>>> patch subject: [PATCH 1/3] selftests: lib.mk: Do not process TEST_GEN_MODS_DIR
->>>>>>>>> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
->>>>>>>>> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240219/202402191417.XULH88Ct-lkp@intel.com/reproduce)
->>>>>>>>>
->>>>>>>>> If you fix the issue in a separate patch/commit (i.e. not just a new version of
->>>>>>>>> the same patch/commit), kindly add following tags
->>>>>>>>> | Reported-by: kernel test robot <lkp@intel.com>
->>>>>>>>> | Closes: https://lore.kernel.org/oe-kbuild-all/202402191417.XULH88Ct-lkp@intel.com/
->>>>>>>>>
->>>>>>>>> All errors (new ones prefixed by >>):
->>>>>>>>>
->>>>>>>>>>> make[3]: *** /lib/modules/5.9.0-2-amd64/build: No such file or directory.  Stop.
->>>>>>>>
->>>>>>>> We should ask the kernel test robot machine owners to install kernel-devel
->>>>>>>> package in order to have this fixed.
->>>>>>>
->>>>>>> Or maybe ask them to change the reproducer to specify KDIR to the git tree,
->>>>>>> instead of /lib/modules/?
->>>>>>>
->>>>>>
->>>>>> This would be a regression to automated test rings. Do you have any other
->>>>>> solutions?
->>>>>
->>>>> I would say that we could skip the these tests if kernel-devel package is not
->>>>> installed. Would it be acceptable? At least we would avoid such issues like this
->>>>> in the future as well.
->>>>>
->>>>
->>>> We have to check and skip build. Something we could do in the livepatch
->>>> Makefile. Can you send patch for this - I will oull this in for next
->>>> so we don't break test rings.
->>>
->>> I added a new patch in the same patchset that would cover this, skipping the
->>> build and test if kernel-devel is not installed. The patchset was sent earlier
->>> today. Please check if the new patch fixes things on the build robot.
->>
->> Hi Shuah, Hi Marcos,
->>
->> Sorry for this wrong report. The files are organized in a different way
->> in the bot and cause this issue. We have fixed the bot to explicitly
->> set KDIR to the correct path before building the selftests. The patch
->> [1] can also work well in bot's environment.
->>
->> [1] https://lore.kernel.org/all/20240221-lp-selftests-fixes-v2-2-a19be1e029a7@suse.com/
+> While doing MADV_PAGEOUT, the current code will clear PTE young
+> so that vmscan won't read young flags to allow the reclamation
+> of madvised folios to go ahead.
+
+Isn't it good to accelerate reclaiming? vmscan checks whether the
+page was accessed recenlty by the young bit from pte and if it is,
+it doesn't reclaim the page. Since we have cleared the young bit
+in pte in madvise_pageout, vmscan is likely to reclaim the page
+since it wouldn't see the ferencecd_ptes from folio_check_references.
+
+Could you clarify if I miss something here?
+
+
+> It seems we can do it by directly ignoring references, thus we
+> can remove tlb flush in madvise and rmap overhead in vmscan.
 > 
-> Hi Yujie, thanks for letting us know that the bot had different settings. Either
-> way the patch you mentioned should help to reduce noise in the future on
-> bot's that doesn't have kernel-devel installed.
+> Regarding the side effect, in the original code, if a parallel
+> thread runs side by side to access the madvised memory with the
+> thread doing madvise, folios will get a chance to be re-activated
+> by vmscan. But with the patch, they will still be reclaimed. But
+> this behaviour doing PAGEOUT and doing access at the same time is
+> quite silly like DoS. So probably, we don't need to care.
 > 
-
-Marcos, If you send me the patch, I will apply it to linux-kselftest next.
-> Again, thanks a lot for fixing the issue!
->    Marcos
+> A microbench as below has shown 6% decrement on the latency of
+> MADV_PAGEOUT,
 > 
-
-Thank you Yujie
-
-thanks,
---- Shuah
-
+>  #define PGSIZE 4096
+>  main()
+>  {
+>  	int i;
+>  #define SIZE 512*1024*1024
+>  	volatile long *p = mmap(NULL, SIZE, PROT_READ | PROT_WRITE,
+>  			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+> 
+>  	for (i = 0; i < SIZE/sizeof(long); i += PGSIZE / sizeof(long))
+>  		p[i] =  0x11;
+> 
+>  	madvise(p, SIZE, MADV_PAGEOUT);
+>  }
+> 
+> w/o patch                    w/ patch
+> root@10:~# time ./a.out      root@10:~# time ./a.out
+> real	0m49.634s            real   0m46.334s
+> user	0m0.637s             user   0m0.648s
+> sys	0m47.434s            sys    0m44.265s
+> 
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> ---
+>  mm/damon/paddr.c |  2 +-
+>  mm/internal.h    |  2 +-
+>  mm/madvise.c     |  8 ++++----
+>  mm/vmscan.c      | 12 +++++++-----
+>  4 files changed, 13 insertions(+), 11 deletions(-)
+> 
+> diff --git a/mm/damon/paddr.c b/mm/damon/paddr.c
+> index 081e2a325778..5e6dc312072c 100644
+> --- a/mm/damon/paddr.c
+> +++ b/mm/damon/paddr.c
+> @@ -249,7 +249,7 @@ static unsigned long damon_pa_pageout(struct damon_region *r, struct damos *s)
+>  put_folio:
+>  		folio_put(folio);
+>  	}
+> -	applied = reclaim_pages(&folio_list);
+> +	applied = reclaim_pages(&folio_list, false);
+>  	cond_resched();
+>  	return applied * PAGE_SIZE;
+>  }
+> diff --git a/mm/internal.h b/mm/internal.h
+> index 93e229112045..36c11ea41f47 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -868,7 +868,7 @@ extern unsigned long  __must_check vm_mmap_pgoff(struct file *, unsigned long,
+>          unsigned long, unsigned long);
+>  
+>  extern void set_pageblock_order(void);
+> -unsigned long reclaim_pages(struct list_head *folio_list);
+> +unsigned long reclaim_pages(struct list_head *folio_list, bool ignore_references);
+>  unsigned int reclaim_clean_pages_from_list(struct zone *zone,
+>  					    struct list_head *folio_list);
+>  /* The ALLOC_WMARK bits are used as an index to zone->watermark */
+> diff --git a/mm/madvise.c b/mm/madvise.c
+> index abde3edb04f0..44a498c94158 100644
+> --- a/mm/madvise.c
+> +++ b/mm/madvise.c
+> @@ -386,7 +386,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+>  			return 0;
+>  		}
+>  
+> -		if (pmd_young(orig_pmd)) {
+> +		if (!pageout && pmd_young(orig_pmd)) {
+>  			pmdp_invalidate(vma, addr, pmd);
+>  			orig_pmd = pmd_mkold(orig_pmd);
+>  
+> @@ -410,7 +410,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+>  huge_unlock:
+>  		spin_unlock(ptl);
+>  		if (pageout)
+> -			reclaim_pages(&folio_list);
+> +			reclaim_pages(&folio_list, true);
+>  		return 0;
+>  	}
+>  
+> @@ -490,7 +490,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+>  
+>  		VM_BUG_ON_FOLIO(folio_test_large(folio), folio);
+>  
+> -		if (pte_young(ptent)) {
+> +		if (!pageout && pte_young(ptent)) {
+>  			ptent = ptep_get_and_clear_full(mm, addr, pte,
+>  							tlb->fullmm);
+>  			ptent = pte_mkold(ptent);
+> @@ -524,7 +524,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+>  		pte_unmap_unlock(start_pte, ptl);
+>  	}
+>  	if (pageout)
+> -		reclaim_pages(&folio_list);
+> +		reclaim_pages(&folio_list, true);
+>  	cond_resched();
+>  
+>  	return 0;
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 402c290fbf5a..ba2f37f46a73 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -2102,7 +2102,8 @@ static void shrink_active_list(unsigned long nr_to_scan,
+>  }
+>  
+>  static unsigned int reclaim_folio_list(struct list_head *folio_list,
+> -				      struct pglist_data *pgdat)
+> +				      struct pglist_data *pgdat,
+> +				      bool ignore_references)
+>  {
+>  	struct reclaim_stat dummy_stat;
+>  	unsigned int nr_reclaimed;
+> @@ -2115,7 +2116,7 @@ static unsigned int reclaim_folio_list(struct list_head *folio_list,
+>  		.no_demotion = 1,
+>  	};
+>  
+> -	nr_reclaimed = shrink_folio_list(folio_list, pgdat, &sc, &dummy_stat, false);
+> +	nr_reclaimed = shrink_folio_list(folio_list, pgdat, &sc, &dummy_stat, ignore_references);
+>  	while (!list_empty(folio_list)) {
+>  		folio = lru_to_folio(folio_list);
+>  		list_del(&folio->lru);
+> @@ -2125,7 +2126,7 @@ static unsigned int reclaim_folio_list(struct list_head *folio_list,
+>  	return nr_reclaimed;
+>  }
+>  
+> -unsigned long reclaim_pages(struct list_head *folio_list)
+> +unsigned long reclaim_pages(struct list_head *folio_list, bool ignore_references)
+>  {
+>  	int nid;
+>  	unsigned int nr_reclaimed = 0;
+> @@ -2147,11 +2148,12 @@ unsigned long reclaim_pages(struct list_head *folio_list)
+>  			continue;
+>  		}
+>  
+> -		nr_reclaimed += reclaim_folio_list(&node_folio_list, NODE_DATA(nid));
+> +		nr_reclaimed += reclaim_folio_list(&node_folio_list, NODE_DATA(nid),
+> +						   ignore_references);
+>  		nid = folio_nid(lru_to_folio(folio_list));
+>  	} while (!list_empty(folio_list));
+>  
+> -	nr_reclaimed += reclaim_folio_list(&node_folio_list, NODE_DATA(nid));
+> +	nr_reclaimed += reclaim_folio_list(&node_folio_list, NODE_DATA(nid), ignore_references);
+>  
+>  	memalloc_noreclaim_restore(noreclaim_flag);
+>  
+> -- 
+> 2.34.1
+> 
 
