@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-77590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF9758607D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:45:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8973E8607D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:46:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E1741F24F39
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:45:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AC902812CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:46:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A24014A93;
-	Fri, 23 Feb 2024 00:43:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76CBD171A6;
+	Fri, 23 Feb 2024 00:43:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Z1fqfPJU"
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Em36FEgh"
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D77012E4E
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 00:43:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10B7713AF9
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 00:43:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708649001; cv=none; b=XeG3nW7AsOj1a0oBaUjEkECxCLEeYeSgpoP8atdxg3QLm3IX9mDVN9ijVmr3BJUi/X7Wf4Eu643cNlCDp0ztEJDGmPHhMNg3nDt0VKbFxr66Heayyoakxl/+HqOr91cluyxsAjsu/1IAQQWRZbZz295xlbhRX4w30g1NCZAv0zs=
+	t=1708649003; cv=none; b=dQQH0acqDRUpNOl1cc+gnEfkBWFPyooOwWhstbSBZPxna/UkwR6a8RHdSFDn6J8E+45cwcCUTNuncjvqr8esexOpj0CDAsKQ1eHfj7GsImP+TW5LxqEHzT1sNvA1Mce4HvvNVpoyOxbmFjMapwoQjnRCvR4pSJO/qu0gJVNDPzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708649001; c=relaxed/simple;
-	bh=tyZgfxNkQndxJJOO7ECuOTfeiV340CWZKe8/mOgdQK8=;
+	s=arc-20240116; t=1708649003; c=relaxed/simple;
+	bh=wYG3aBkI4214Z2xd6xHe4uZY8sEWm9j7oKweqpMTgCo=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=SC+vBkJjtM0BFYIdZllebxdfvw/4RwouuyZy1QjaIoOiKY2rrOP1H4KY08joquSsEfw9DpUdZaW520mf+kWCRxX7LAhJwe9YudMpr9ZdgXJkM9ewv66lQ7sgagKA+2S8N3BMNRHuktqwHBUDOHzG+kCB4zh1929ODJFnnk+Yr8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Z1fqfPJU; arc=none smtp.client-ip=209.85.216.73
+	 To:Cc:Content-Type; b=CXkJ6dS/AfplNsmwe+6jaapC4EWDj/N9FkBEPkLL74jp8jCRwPPsLqu42vu1r78HRj6bQbc0s6Gg9XDv4dHplCDNnk2Rg6HxOEyotYc3O7FrF9m89ud4ywZba7e05eKfUM2N9LtJDgkPRwxwOT8PbRaqfPpUmpw3TkFEulSvEMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Em36FEgh; arc=none smtp.client-ip=209.85.214.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-299783294a6so299404a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 16:43:20 -0800 (PST)
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1dbc6ff68ffso2514085ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 16:43:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708648999; x=1709253799; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1708649001; x=1709253801; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=lRpse7Hgpajlk57C2H5vth1Tg0pkPPWc04aEOHzQOwA=;
-        b=Z1fqfPJUV+2UqYUSJtafJe8vLVB9XizU+aOn9sFXD6S0fm6oaLGS4E1DNI7snLbVs9
-         8GKrRjRlslYLGAXNMKHL0MeAmThcFnM9ysEI1ICg4MeROyVYJx9uFKIYODGBNq+KiHih
-         S0SxywN7xIQd5JJ32+aNtGdPkWfoc5u9CwHloMZ9CEPiS+YRsXwhMbx2oeg4Es2wsQde
-         yeY9piBAgqRMhK81CGmitNgJbvTiFYEX63ZnjFWPniPd2tCpUlh71hUou7+BUYFHpjc/
-         5TMYy6hZY5gJSp5Tmcc9lKwELLwEQAU4yAKKrxJqxTlj+1oKNbxQGjAgtd62YkPOoJ7l
-         PoQA==
+        bh=ufdAB/OIgPR6sk1BH6tXU4Lb92iEyKpRUAsMWFh65lo=;
+        b=Em36FEgh97nyp76bmotk8WR0avZyxpP/pj5q6LXuqFIyy13uo5sTPBOFJy8Yoivbgm
+         XnVtw53YinNGs/V0PpKvxbhhQlfUvX5ndaOv8cYUraIkVJl8A8vUPRMzF7COJrRwKj0l
+         yOzFbwH47axebAZzevu9Kudd01pSYCwLQgVVBHinKEcciW1d6PpV5V7tlHvd/uoz5Gyt
+         G72ZWP82c7Bm9UMmMGnav+r059S113S7Bpf3fc9+2b6qkIk3nLVhOWQH9cMd5l5IdL2K
+         VultK8yuvFMacqGcZRVLY2w/FEgwWCz7z8Chc2kvzxnBAQUGuJxeg0vOleA7uf/efhiB
+         3hsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708648999; x=1709253799;
+        d=1e100.net; s=20230601; t=1708649001; x=1709253801;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=lRpse7Hgpajlk57C2H5vth1Tg0pkPPWc04aEOHzQOwA=;
-        b=OAjZCAh5w18SjFxuPZ291hb8+QLgr12OaxJ8MCu/R1IXNW+DmAMxxvTsI0SF2w8XMa
-         GDXrBa/IwjGh3vDAXYida/05IUucpRcPojQcFHwLtodn8ySEbApff950bzq++x7SXoqR
-         V7FP9KwR/EHg5YFjjLp+8D6+7r5nyLvT9A1EcZW4ztAHbOYtRCrapBS1NZguSQmGVeCl
-         c40AtC77VDhwSddBKIN8qwbZSSdeFv/Zp5jRGpoCp66urwlF2uQP2FgzYenUlE7elSOy
-         D48qZRJGE2JOqzU2co0zhOOs1GOX+KWY+8Lbh0Tih5tAj/Mq58lryrPK6O8ETg4rUsyJ
-         en/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXqqjPpRbSuY7Io7FTMZb855KwcZaP2i9OPBHZ2A4JKi+KsiEnspwGEZRfHloUdnOmqDNUZXhunVCiSQ79f4sdSnON1PNVvB3sRefeN
-X-Gm-Message-State: AOJu0Yxya7146V3rl55XT8Byq6cXdRGo9mIZBuHruq2ZnYrgmfiS7Qt8
-	bR0E3GT+q+OKtVOXzOh1+87jlCj3kmJ3xhO2kKkVfHf7khZXA5mHcuDRZnC+8+Rk4zwn/uZ7tQq
-	z3w==
-X-Google-Smtp-Source: AGHT+IHDQETePQetxa/9bLHgOPQ91WhsyrAdMFKDkfvyNMFp3v4runbA1w2m83674UspLgdjLo+hqAFR40U=
+        bh=ufdAB/OIgPR6sk1BH6tXU4Lb92iEyKpRUAsMWFh65lo=;
+        b=ZjvHfhyWgQNeXkMSTwygL9jdUeElGjvb1BBKbr352NPwnUYk7lMZcixVkt1GQ2myXi
+         aMOwJ76sHhN7gTK5KLMhHqVyEU2AAnfz2qI7O3qfeVQgHq2mMlBlAA7nqo/7HBwYGhtT
+         BXRFnOfJvPaPxoVmWPtBZ8kQMci7H/87BLX903iaPIeVpPwzZn+eWjJToe25EjrbZfUR
+         tDPaC7akICvwpiPUlIHBzZEIzObvwuY4vKdY8beMiHWEaTSkoKIoavohlWa0x1xxvNXo
+         0Qy5VNyYVsh913iTD9yWvoGnXRho7nAvSjBzWp0Yd0OKznAWyWtnf3ecpmpPLz05HcUw
+         pJQA==
+X-Forwarded-Encrypted: i=1; AJvYcCUP8WoZNv8+v4+MxGgy6CttMZjDT5V6fggWg/iDgVHhH/nKjZk3CDj7Z5LtPFbE0aAFBjz16gwI+VAnKI4rDlVsHFiqvGZWVlviLtbA
+X-Gm-Message-State: AOJu0YxC9Vs0p8I8+dOgp4Z9lrkzEZB5LOYUI7LaMIh3EMZWUS5s+TKb
+	MRJ1Ykr/y1LPrZ88+tmYz+M7468maefyhpyc39NjGOSlAN8B1+AsB25lySqcnoOcXUQj/qLn4+a
+	29Q==
+X-Google-Smtp-Source: AGHT+IG8+r/xpCHDcIabTu60pIgBwVS8FUp4lQYZJVuuCn7QXyTR4BHnC5QtDdnTL8fekJtdMeUpyEN6qt8=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:3d01:b0:299:942e:6634 with SMTP id
- pt1-20020a17090b3d0100b00299942e6634mr1218pjb.1.1708648999474; Thu, 22 Feb
- 2024 16:43:19 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a17:903:234c:b0:1dc:1c81:1b2a with SMTP id
+ c12-20020a170903234c00b001dc1c811b2amr1699plh.1.1708649001454; Thu, 22 Feb
+ 2024 16:43:21 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Thu, 22 Feb 2024 16:42:56 -0800
+Date: Thu, 22 Feb 2024 16:42:57 -0800
 In-Reply-To: <20240223004258.3104051-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,9 +75,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240223004258.3104051-1-seanjc@google.com>
 X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <20240223004258.3104051-10-seanjc@google.com>
-Subject: [PATCH v9 09/11] KVM: selftests: Use the SEV library APIs in the
- intra-host migration test
+Message-ID: <20240223004258.3104051-11-seanjc@google.com>
+Subject: [PATCH v9 10/11] KVM: selftests: Add a basic SEV smoke test
 From: Sean Christopherson <seanjc@google.com>
 To: Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>, 
 	Oliver Upton <oliver.upton@linux.dev>, Anup Patel <anup@brainfault.org>, 
@@ -94,147 +93,108 @@ Cc: kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
 	Peter Gonda <pgonda@google.com>, Itaru Kitayama <itaru.kitayama@fujitsu.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Port the existing intra-host SEV(-ES) migration test to the recently added
-SEV library, which handles much of the boilerplate needed to create and
-configure SEV guests.
+From: Peter Gonda <pgonda@google.com>
 
+Add a basic smoke test for SEV guests to verify that KVM can launch an
+SEV guest and run a few instructions without exploding.  To verify that
+SEV is indeed enabled, assert that SEV is reported as enabled in
+MSR_AMD64_SEV, a.k.a. SEV_STATUS, which cannot be intercepted by KVM
+(architecturally enforced).
+
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Vishal Annapurve <vannapurve@google.com>
+Cc: Ackerly Tng <ackerleytng@google.com>
+cc: Andrew Jones <andrew.jones@linux.dev>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Michael Roth <michael.roth@amd.com>
+Suggested-by: Michael Roth <michael.roth@amd.com>
 Tested-by: Carlos Bilbao <carlos.bilbao@amd.com>
+Signed-off-by: Peter Gonda <pgonda@google.com>
+[sean: rename to "sev_smoke_test"]
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- .../selftests/kvm/x86_64/sev_migrate_tests.c  | 67 ++++++-------------
- 1 file changed, 21 insertions(+), 46 deletions(-)
+ tools/testing/selftests/kvm/Makefile          |  1 +
+ .../selftests/kvm/x86_64/sev_smoke_test.c     | 58 +++++++++++++++++++
+ 2 files changed, 59 insertions(+)
+ create mode 100644 tools/testing/selftests/kvm/x86_64/sev_smoke_test.c
 
-diff --git a/tools/testing/selftests/kvm/x86_64/sev_migrate_tests.c b/tools/testing/selftests/kvm/x86_64/sev_migrate_tests.c
-index a49828adf294..d6f7428e42c6 100644
---- a/tools/testing/selftests/kvm/x86_64/sev_migrate_tests.c
-+++ b/tools/testing/selftests/kvm/x86_64/sev_migrate_tests.c
-@@ -10,11 +10,9 @@
- #include "test_util.h"
- #include "kvm_util.h"
- #include "processor.h"
--#include "svm_util.h"
+diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+index 169b6ee8f733..da20e6bb43ed 100644
+--- a/tools/testing/selftests/kvm/Makefile
++++ b/tools/testing/selftests/kvm/Makefile
+@@ -120,6 +120,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/vmx_pmu_caps_test
+ TEST_GEN_PROGS_x86_64 += x86_64/xen_shinfo_test
+ TEST_GEN_PROGS_x86_64 += x86_64/xen_vmcall_test
+ TEST_GEN_PROGS_x86_64 += x86_64/sev_migrate_tests
++TEST_GEN_PROGS_x86_64 += x86_64/sev_smoke_test
+ TEST_GEN_PROGS_x86_64 += x86_64/amx_test
+ TEST_GEN_PROGS_x86_64 += x86_64/max_vcpuid_cap_test
+ TEST_GEN_PROGS_x86_64 += x86_64/triple_fault_event_test
+diff --git a/tools/testing/selftests/kvm/x86_64/sev_smoke_test.c b/tools/testing/selftests/kvm/x86_64/sev_smoke_test.c
+new file mode 100644
+index 000000000000..54d72efd9b4d
+--- /dev/null
++++ b/tools/testing/selftests/kvm/x86_64/sev_smoke_test.c
+@@ -0,0 +1,58 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include <fcntl.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/ioctl.h>
++
++#include "test_util.h"
++#include "kvm_util.h"
++#include "processor.h"
++#include "svm_util.h"
++#include "linux/psp-sev.h"
 +#include "sev.h"
- #include "kselftest.h"
- 
--#define SEV_POLICY_ES 0b100
--
- #define NR_MIGRATE_TEST_VCPUS 4
- #define NR_MIGRATE_TEST_VMS 3
- #define NR_LOCK_TESTING_THREADS 3
-@@ -22,46 +20,24 @@
- 
- bool have_sev_es;
- 
--static int __sev_ioctl(int vm_fd, int cmd_id, void *data, __u32 *fw_error)
--{
--	struct kvm_sev_cmd cmd = {
--		.id = cmd_id,
--		.data = (uint64_t)data,
--		.sev_fd = open_sev_dev_path_or_exit(),
--	};
--	int ret;
--
--	ret = ioctl(vm_fd, KVM_MEMORY_ENCRYPT_OP, &cmd);
--	*fw_error = cmd.error;
--	return ret;
--}
--
--static void sev_ioctl(int vm_fd, int cmd_id, void *data)
--{
--	int ret;
--	__u32 fw_error;
--
--	ret = __sev_ioctl(vm_fd, cmd_id, data, &fw_error);
--	TEST_ASSERT(ret == 0 && fw_error == SEV_RET_SUCCESS,
--		    "%d failed: return code: %d, errno: %d, fw error: %d",
--		    cmd_id, ret, errno, fw_error);
--}
--
- static struct kvm_vm *sev_vm_create(bool es)
- {
- 	struct kvm_vm *vm;
--	struct kvm_sev_launch_start start = { 0 };
- 	int i;
- 
- 	vm = vm_create_barebones();
--	sev_ioctl(vm->fd, es ? KVM_SEV_ES_INIT : KVM_SEV_INIT, NULL);
-+	if (!es)
-+		sev_vm_init(vm);
-+	else
-+		sev_es_vm_init(vm);
 +
- 	for (i = 0; i < NR_MIGRATE_TEST_VCPUS; ++i)
- 		__vm_vcpu_add(vm, i);
++static void guest_sev_code(void)
++{
++	GUEST_ASSERT(this_cpu_has(X86_FEATURE_SEV));
++	GUEST_ASSERT(rdmsr(MSR_AMD64_SEV) & MSR_AMD64_SEV_ENABLED);
 +
-+	sev_vm_launch(vm, es ? SEV_POLICY_ES : 0);
++	GUEST_DONE();
++}
 +
- 	if (es)
--		start.policy |= SEV_POLICY_ES;
--	sev_ioctl(vm->fd, KVM_SEV_LAUNCH_START, &start);
--	if (es)
--		sev_ioctl(vm->fd, KVM_SEV_LAUNCH_UPDATE_VMSA, NULL);
-+		vm_sev_ioctl(vm, KVM_SEV_LAUNCH_UPDATE_VMSA, NULL);
- 	return vm;
- }
- 
-@@ -181,7 +157,7 @@ static void test_sev_migrate_parameters(void)
- 	sev_vm = sev_vm_create(/* es= */ false);
- 	sev_es_vm = sev_vm_create(/* es= */ true);
- 	sev_es_vm_no_vmsa = vm_create_barebones();
--	sev_ioctl(sev_es_vm_no_vmsa->fd, KVM_SEV_ES_INIT, NULL);
-+	sev_es_vm_init(sev_es_vm_no_vmsa);
- 	__vm_vcpu_add(sev_es_vm_no_vmsa, 1);
- 
- 	ret = __sev_migrate_from(sev_vm, sev_es_vm);
-@@ -230,13 +206,13 @@ static void sev_mirror_create(struct kvm_vm *dst, struct kvm_vm *src)
- 	TEST_ASSERT(!ret, "Copying context failed, ret: %d, errno: %d", ret, errno);
- }
- 
--static void verify_mirror_allowed_cmds(int vm_fd)
-+static void verify_mirror_allowed_cmds(struct kvm_vm *vm)
- {
- 	struct kvm_sev_guest_status status;
-+	int cmd_id;
- 
--	for (int cmd_id = KVM_SEV_INIT; cmd_id < KVM_SEV_NR_MAX; ++cmd_id) {
-+	for (cmd_id = KVM_SEV_INIT; cmd_id < KVM_SEV_NR_MAX; ++cmd_id) {
- 		int ret;
--		__u32 fw_error;
- 
- 		/*
- 		 * These commands are allowed for mirror VMs, all others are
-@@ -256,14 +232,13 @@ static void verify_mirror_allowed_cmds(int vm_fd)
- 		 * These commands should be disallowed before the data
- 		 * parameter is examined so NULL is OK here.
- 		 */
--		ret = __sev_ioctl(vm_fd, cmd_id, NULL, &fw_error);
--		TEST_ASSERT(
--			ret == -1 && errno == EINVAL,
--			"Should not be able call command: %d. ret: %d, errno: %d",
--			cmd_id, ret, errno);
-+		ret = __vm_sev_ioctl(vm, cmd_id, NULL);
-+		TEST_ASSERT(ret == -1 && errno == EINVAL,
-+			    "Should not be able call command: %d. ret: %d, errno: %d",
-+			    cmd_id, ret, errno);
- 	}
- 
--	sev_ioctl(vm_fd, KVM_SEV_GUEST_STATUS, &status);
-+	vm_sev_ioctl(vm, KVM_SEV_GUEST_STATUS, &status);
- }
- 
- static void test_sev_mirror(bool es)
-@@ -281,9 +256,9 @@ static void test_sev_mirror(bool es)
- 		__vm_vcpu_add(dst_vm, i);
- 
- 	if (es)
--		sev_ioctl(dst_vm->fd, KVM_SEV_LAUNCH_UPDATE_VMSA, NULL);
-+		vm_sev_ioctl(dst_vm, KVM_SEV_LAUNCH_UPDATE_VMSA, NULL);
- 
--	verify_mirror_allowed_cmds(dst_vm->fd);
-+	verify_mirror_allowed_cmds(dst_vm);
- 
- 	kvm_vm_free(src_vm);
- 	kvm_vm_free(dst_vm);
++static void test_sev(void *guest_code, uint64_t policy)
++{
++	struct kvm_vcpu *vcpu;
++	struct kvm_vm *vm;
++	struct ucall uc;
++
++	vm = vm_sev_create_with_one_vcpu(policy, guest_code, &vcpu);
++
++	for (;;) {
++		vcpu_run(vcpu);
++
++		switch (get_ucall(vcpu, &uc)) {
++		case UCALL_SYNC:
++			continue;
++		case UCALL_DONE:
++			return;
++		case UCALL_ABORT:
++			REPORT_GUEST_ASSERT(uc);
++		default:
++			TEST_FAIL("Unexpected exit: %s",
++				  exit_reason_str(vcpu->run->exit_reason));
++		}
++	}
++
++	kvm_vm_free(vm);
++}
++
++int main(int argc, char *argv[])
++{
++	TEST_REQUIRE(kvm_cpu_has(X86_FEATURE_SEV));
++
++	test_sev(guest_sev_code, SEV_POLICY_NO_DBG);
++	test_sev(guest_sev_code, 0);
++
++	return 0;
++}
 -- 
 2.44.0.rc0.258.g7320e95886-goog
 
