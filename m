@@ -1,198 +1,303 @@
-Return-Path: <linux-kernel+bounces-77620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC8F2860828
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:19:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60499860809
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:08:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F054B21087
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:19:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D898428235B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:08:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBA54AD4B;
-	Fri, 23 Feb 2024 01:18:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F904947B;
+	Fri, 23 Feb 2024 01:08:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="MoAhjLj6";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="PwkpYDcW"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="YqcwPi4C"
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2057.outbound.protection.outlook.com [40.107.21.57])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF458847E;
-	Fri, 23 Feb 2024 01:18:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B42567499;
+	Fri, 23 Feb 2024 01:08:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.57
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708651136; cv=fail; b=fhNRVg5aLKV50qVtpjbszWxg8C1lggbMAYC6P4PR0uxYblDje1WX9TrHA9QStr38CcB1YVx8z5arLeweG+5uj+9KpFuj2hOZdL3HV0CZ7gEYy25wtDP9NgAf6NEUo4uG5cuFBNf96ohRWrP2nmiQj8cARgkQ3s3jwj7O90T+n58=
+	t=1708650525; cv=fail; b=nk/8zBnZ3TrAW8qAXduLsMx9v8GKUHPLGaRx8NLYHZp9izpZi5xWNpHy89F77LQOyDqhjEGb6MMqCa+b/rMqOvvKYYCvk/TEYJ86z9rkXMcFqEXJW/Y2PR8fXuuDnh6mgDvKyVXJZsjy+saxb5bE/PjLYU88fzUpE2PJwwUG+/c=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708651136; c=relaxed/simple;
-	bh=eZ9mONgI1gjVZMi160RGdnC8PzQ+dASKxc6TH8xAmFk=;
-	h=To:Cc:Subject:From:Message-ID:References:Date:In-Reply-To:
-	 Content-Type:MIME-Version; b=rYXMRN4Mie8E7JDlYlz+cUYrnOajz3+0YL3PCo7aaYl43mvTczv4P7ZCcxeuJteEmdefC2L9wvuMXvk2Ogn5kjaHhxS3KzF3sBs1RRgC1WBKC0BVFTdiF0/mYV3rwSi0/T/kqi59hf/fqgKg44fLkD9C+L6oB5dpPePl2yC3vic=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=MoAhjLj6; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=PwkpYDcW; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41MIQUZH013906;
-	Fri, 23 Feb 2024 01:16:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2023-11-20;
- bh=qQTTTugDV/C3oKRs/JzN4fs5FhlGf/AkAql690BJ4vo=;
- b=MoAhjLj6/Rtqq8Cp3vqAln8M7n1Ola4x4/PFeawpuKUBKwYPo0m+g/yX03hj+yAfkXnq
- A/c1+mAzEKOpqmo4C0LXwbqKRVlScgrLpAELGMPwaW7GHQq5t1B8nJ3wB4p1PpiHGn62
- Roza4E+L6mZuZ8v/DEEhYYdhq9TItPA81nmy1/aghOI48Upwi2+xYiUHGunwj7ihZd9q
- TPxLuegV7fsA//CElKQrPzsyNGLowl+HcslX3SoDhP+zpWGJ9rVzHjku61aDczWZu5XE
- NM79J3jW77Lkx6S7dnW99uuBb9IYshWJAH1QKD2PpUAVk9DvLFabCJCcj+dTtx+3+Ju7 NA== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wd5fw6052-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 23 Feb 2024 01:16:38 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41N10YVA037737;
-	Fri, 23 Feb 2024 01:16:32 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wak8bf5qn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 23 Feb 2024 01:16:31 +0000
+	s=arc-20240116; t=1708650525; c=relaxed/simple;
+	bh=YHkwtVh+esDQfZ1ExIdMXWgwOrS7JqItjZP+s9+y5fg=;
+	h=From:Subject:Date:Message-Id:Content-Type:To:Cc:MIME-Version; b=qQDSujKLTxvmQTIAzsJuk/d/lWV04Chebutwjny/+NXy4eHxRM+247fmaA58CM/pgbVg7sMzc6voygDu+rUZcCRxJMRaCpV9jZIUfZv9ux4oIbValQaKetboJn9uZsypaxy86Foy/r/9iWA5FQZzbppf5PfrGM6/9x21y7dbBbs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=YqcwPi4C; arc=fail smtp.client-ip=40.107.21.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fwxM5KVBt1SDXFIXuJpOr8gTFb6ESH+M5cdSVFcFJNwKi8roo+X5Y3sVkDlfbYzjtStwFFO5fuMgFQRCGC3Aly+T/Y8QKa+1BL4AvafzUzVWYVN9XFpXk9cmTG4znW2K1A4mTC8OJAhTqCBEiPVqpmYwkaYp72tHZy8d7qv/afdS4eVwbM7W/8pQVHiYd/tvKZKhPLTRs8F3eI1DMIesS0sbjkoebElLnHIiQ7GaN2OV14f/sCnbHrwK1d/hNcJmreQBAzOH7/E3Il0CNrPo4/3+gyUrPO3K7fuUKlQDXuMVvZ1NqxIBr5h8TZlIFlgAA4iyq3j1hxBdX7x1GiAAgg==
+ b=FBkoZSrzwdbjclqrnhba8n02j1hKx1qSAy6DgXHJxrUCbt2AF3a3dMv1lhwnZt6+yQgRDykjPpEjD3hmqI348GMCvb+gftrbKOIQsRh3I+3cxsgR2Te2IbnlXYsICIMI6FP8KfhdD5BZ/rlMqj7kmMs3ZNjPUrG25P5E46DbueKY3To/kvGmLeF7ZANQd10boEwf32EJ78RY24/aYFSKyaAjISP+BlwQxhuRtSe4N9vgCkAYyz7XOH6LkzE+TsfkYHCMOm4w0AhxNmcX77n/xKGiQkouNlcSfL8XGd+qPjvk74HvgGAz/iIaWzbNpGOwROh/jwfvW7FRNh38RsGaBg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qQTTTugDV/C3oKRs/JzN4fs5FhlGf/AkAql690BJ4vo=;
- b=I0pwQ8Ygp5Id/xB4609V+NR39vn32V6Z9b7LCDExIDXUdk4nRv6tdoH+Tn21HICSlXGrBrTCx4Lyc4mhJqUOgvTBLTfo7kyXFCO3AuaEdCZiEHK+zPjktfsooFrMak5mgsRVLL8SuI24hYxMkaLvodDuItwSfy6FusCl9TveMVS6HUJwRoaTjITC9m59cGtva6WS0bSo1cpSBbs9MpGnTbkmDUA2uXimCuI/M10znCq6GHW/CnxDa4EeR2dI0HKxYwUzdE62UCdhQ330mw9uqqU6TQeZRtzzdJaozvPQRGgOgHpAw+0RVjJvYHfXp5SMYVI2yaPBXxkc0XCyaQkfdw==
+ bh=Pc9X5Ef4BsMQeAE5mYloiGCj4ZG5D8rMwgOtMkmGmw8=;
+ b=JX+2dy6cLbcn2iM5Dxr1+HhS9b3QxQ3We+0wI1jUfMSzQCK40SMZrYC3faHN7r7kVaug0i58N/e/LPr9ISNJ6flWRvjxc7Ij1xkwxI+ga35bjK8xl3TQPCJN8Roy4T6U/kPhL7bJsnvrg4smGgRDHo5TmwYOuc4MW20TuRN2Q6PEL5GgZS3uEjpD/cds5CHmYZcbhL7pgIoHkfYSpr4uH5IAidZ4sa9Ar1QFBt78CByef39x60Rcb/DO71rHQKzkaX5k7BPwGYeLzFPNQ7myFIsnCz8PQ+gAbWuzkNA68rsPE8iNazzZyVonBYiNhEvgJQZGKnOYQ55MxLu1zZDpag==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qQTTTugDV/C3oKRs/JzN4fs5FhlGf/AkAql690BJ4vo=;
- b=PwkpYDcWrQXpAKghEyXKyILrKRsGRkm0y1GeVzQAwrLdcM1WHLYqZ88UvrCpVKa2H/fEmbn/QUH/YGoYQ+fqkmuBucICPKBPZhKuRBq6PNK2tyhrB1IaDDE2twFVUqbnAW6yp31LHMYR3aJCLC6NnUT7EHAPLxplFA2dhLEsp8M=
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4808.namprd10.prod.outlook.com (2603:10b6:510:35::23) with
+ bh=Pc9X5Ef4BsMQeAE5mYloiGCj4ZG5D8rMwgOtMkmGmw8=;
+ b=YqcwPi4Ca97rQMtM7lPzclXl8qiUnh6O25/Pxfjod/fk6rkqhXj9rxo5gXm/uOmRR6bPBv+k1LPBQP4FrdgM+RDmTP/WlfmiurVyXtGxMuMtJH2F1XOy3DrkivBIs+g8uXpS4LJzlXOITMx4HEPV1JOn6RCCUmWtcv5hWw94jYY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by AS8PR04MB8418.eurprd04.prod.outlook.com (2603:10a6:20b:3fa::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.22; Fri, 23 Feb
- 2024 01:16:29 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::1b19:1cdf:6ae8:1d79]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::1b19:1cdf:6ae8:1d79%5]) with mapi id 15.20.7316.023; Fri, 23 Feb 2024
- 01:16:29 +0000
-To: John Garry <john.g.garry@oracle.com>
-Cc: Arnd Bergmann <arnd@kernel.org>,
-        Sathya Prakash Veerichetty
- <sathya.prakash@broadcom.com>,
-        Kashyap Desai
- <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Arnd Bergmann
- <arnd@arndb.de>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        "James
- E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen"
- <martin.petersen@oracle.com>,
-        Ranjan Kumar <ranjan.kumar@broadcom.com>,
-        Tomas Henzl <thenzl@redhat.com>,
-        Harshit Mogalapalli
- <harshit.m.mogalapalli@oracle.com>,
-        mpi3mr-linuxdrv.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v2] scsi: mpi3mr: reduce stack usage in
- mpi3mr_refresh_sas_ports()
-From: "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1bk887zg8.fsf@ca-mkp.ca.oracle.com>
-References: <20240123130754.2011469-1-arnd@kernel.org>
-	<96bb914c-79be-4867-b59d-62f80dbcdace@oracle.com>
-Date: Thu, 22 Feb 2024 20:16:27 -0500
-In-Reply-To: <96bb914c-79be-4867-b59d-62f80dbcdace@oracle.com> (John Garry's
-	message of "Mon, 19 Feb 2024 12:08:24 +0000")
-Content-Type: text/plain
-X-ClientProxiedBy: MN2PR01CA0027.prod.exchangelabs.com (2603:10b6:208:10c::40)
- To PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Fri, 23 Feb
+ 2024 01:08:39 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::4ac3:3559:4200:38e1]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::4ac3:3559:4200:38e1%4]) with mapi id 15.20.7292.036; Fri, 23 Feb 2024
+ 01:08:38 +0000
+From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Subject: [PATCH v4 0/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+ protocol basic support
+Date: Fri, 23 Feb 2024 09:16:37 +0800
+Message-Id: <20240223-pinctrl-scmi-v4-0-10eb5a379274@nxp.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAPXx12UC/3XMyQrCMBSF4VeRrI1kuOngyvcQF2ma2At2ICmhU
+ vrupgVRCy7Pge+fSbAebSDnw0y8jRiw79KA44GYRnd3S7FOmwgmJBdc0QE7M/oHDaZFCkZVTOb
+ gwGQkkcFbh9OWu97SbjCMvX9u9cjX908ocsooc1YqCxnnLr9003AyfUvWTBRvCowz2FGRqC6ru
+ sh0pXQBv1R+UcF3VCZa1CVUOi9ro4sPXZblBeeI+nccAQAA
+To: Sudeep Holla <sudeep.holla@arm.com>, 
+ Cristian Marussi <cristian.marussi@arm.com>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Oleksii Moisieiev <oleksii_moisieiev@epam.com>, 
+ Linus Walleij <linus.walleij@linaro.org>, Shawn Guo <shawnguo@kernel.org>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-gpio@vger.kernel.org, 
+ AKASHI Takahiro <takahiro.akashi@linaro.org>, Peng Fan <peng.fan@nxp.com>, 
+ Rob Herring <robh@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708651021; l=5069;
+ i=peng.fan@nxp.com; s=20230812; h=from:subject:message-id;
+ bh=YHkwtVh+esDQfZ1ExIdMXWgwOrS7JqItjZP+s9+y5fg=;
+ b=YQk3XOJaLeMI2sNwSTJqmDYCN/gs4PQye0P7eISVgjV0Znug0oiXYK4SqL065KKo2gkeE1zLF
+ OouBWMiC5x6Arj3cTn9++oy6w0o8IvUuI3B6d6gXrssMSYQYrJ3k7+M
+X-Developer-Key: i=peng.fan@nxp.com; a=ed25519;
+ pk=I4sJg7atIT1g63H7bb5lDRGR2gJW14RKDD0wFL8TT1g=
+X-ClientProxiedBy: SI2PR04CA0009.apcprd04.prod.outlook.com
+ (2603:1096:4:197::8) To DU0PR04MB9417.eurprd04.prod.outlook.com
+ (2603:10a6:10:358::11)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|PH0PR10MB4808:EE_
-X-MS-Office365-Filtering-Correlation-Id: 68c605c4-959b-42c6-47ef-08dc340d1005
+X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AS8PR04MB8418:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2ced592d-4b3f-4570-a8f7-08dc340bf7c0
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	etpm0XCD390yLVinHmtgvUxBNfgjLAu10NW6uj/fD28SdFKMjRYpISqVa+VOPo9c4kkcn0ZSfPWtbAgB/6bGeji/qJoinKjsyRbJQ/NjvtBDCcJIJdA/pF0eqUMHny33MZWZ63MU2ty10JZ5ZVyPlaTOOV8n7AYdQ6iptjHZ75K1j3sTRYIAk+4zx+ZDm0ZU2e9NsO0bjFicp1yWQUJ7Pc77uWXkskT7TYzC+yaL6/f3DwZNe1XLVx0TIrQ0fgEZqT56r5YrbeTrFSy44rycuj0iExz4zjXElln8UOAEwOxq30iYfWUmZV09Kwff8IfMcik7C1haSpju5diLzrdCY8c59Hy6zg20pJH1dL9btHJbZdHpvcYVH/fY7LNex5nfRh1elQQP+bvlE8QT+lYmqOP5hHfW605WFriyYbMj5JHqOSCdB79b1xY7aA+cVXSi0J+9zzbrOUFQX5Lppu5SnyoIz8ghGa7YrL00pXHMt0nTPJ8hfPP/MkfxnKuPq/NnP53BY9Dr5YM/npW2vS1LtWU5Q+7nxEwql4QdLYp0x/A=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info:
+	tO/RX9EOvHjZEDfFo2g55/6Eb5rs4KyERrIEFjIF02paoSCyxOF1L1Z4tlz0BLGO5OzFSy8P5x7tme8M5P1nt5dGaiydhCHrL58B1VlGvPqBqisvMsK/qZjkcvv/2/i65DjfPnXQ9VVBXa6tAEUyS7I/J+5av+U3b38sl1Qy4OH+hczfQboYJxH+ErAQulZumsGpFZW5uaAp/vCrDPSDSgzv9+4eTCPDZve50qu1YqK2urO3pbxb+2h3Kp6uiW/AdY8XbW0f6PYgjnpUDWgQiWfhdjacJkw1+zU6d+yrFtO4g04S8Gr6Td5rE9YaNFICEfQz7OFIlU7Zy2RawHi8qJNt3syg1zDNIOgTcARVy+rFvysfcRa37bynWwcrrkc2cqpSptyb7gj9pU/58VKwxVi8tRJfQSi9BA2nCUeN1E/I4iavLdQouJic3NO7XOZQlWACtYX9wr89q5JnMYuWs2o5J1EHZTQtEGc2kQGFPUX4JYCmWLQaEW4n/XEppeH2ZH0mv+gUJnrEHaMAJ04RPhDRQkBllASLjxKPzrCLexeTa5RfZ79mMkoOTGd8AV4dKSOjTTDCcsN2xx5gBh/jek6yTO3cdCEpsF//12aEjCUKS16nn9BF6RDYJNUvYswm
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005)(921011);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?WYKXN98Hqurx7NKk9Pm+OBs0exdbWb0co2E2CwQtFPsHR709JJXSG0ildehX?=
- =?us-ascii?Q?4pVW2GKpSl/OMq7L0TZ18COQlP1lpLZtqw55v5/aNGcOaWja4SOQMT+GavBM?=
- =?us-ascii?Q?zsggKmPE+eTUOlobc4kue6cBM1o5wpdyYcyK78W2QuNZiTOnXgTi2nnpY6Mc?=
- =?us-ascii?Q?fS8PSjA3NaDZxsiK4GkgNcJpC3qdW7G/PqfV7eoJ+wZ/UOR6chzIDe158Yab?=
- =?us-ascii?Q?I4CXfm5gsVjao1Dq0PFV5U3sOi5XO9U724HbJpoB64Fpw/NpIAqXDq/oxMEf?=
- =?us-ascii?Q?VefZQFYzcZki4I1UxD0jXdXXo/Z1ru9ZPx0Js5mXhpIe7ZnMle/gz8+r+BzY?=
- =?us-ascii?Q?Tj7VDrm8ZFtvnghjfWmsq0GJ6LOvTbay5+acL6ASwt7s0Dbq4qjl5dfq8M0E?=
- =?us-ascii?Q?Jtug2yQtMcGXFugtQfG5lExxcrrfKmzju7ujYf0ojnOc0kYN+M7QbrzRMSmg?=
- =?us-ascii?Q?FvsgfiVdXewUKWZo455d2Hsh0jhpVyO+ipDxSwjeWt+nBTt2OYKcdwrncSMb?=
- =?us-ascii?Q?yCrsYdWzD+IwEVJBVsFrk2NZEonzlzWHAzG8ETqv0hTpie4G+ygf3fsYjgHs?=
- =?us-ascii?Q?HTlcWgXRAmf0c2d5xvpjjGqn6NZXDS2aTUJyHN7jzwpyK36C065D5cxbrTPH?=
- =?us-ascii?Q?Pw+E2MDpR6SXOv+YPDwTxebTEGjlPTT1tXzvG4/5O97uTjc+Ni2na40pHeTp?=
- =?us-ascii?Q?WmsIrYti9ZKsGqGogWoPEzzhtT+hupb+bSP8b1hj71LbzkVBlDbjlZz1SqQu?=
- =?us-ascii?Q?cXB5CqNE4D1Fl5IU7dguDf6uwr2PQh/2gM6UiJ7ABhTTNkwAovpEL62KQLTE?=
- =?us-ascii?Q?f1PfsJrZikj52L8JOinJ38CjKQB4o1RKMdIRGjC6ED4kAqvEzjJEbt9zUMER?=
- =?us-ascii?Q?kzCV8huFE3QC72aVTUD5vGGxoo0bBz1SouFhrWW6BnRZN6xEFVPd63wEtLWk?=
- =?us-ascii?Q?s5qU3JnvXyLRPEwuNmTjPGofugfK5l89J/uNR1h7PecQc8yD3zxwGnW/YxyL?=
- =?us-ascii?Q?t4wYpoRmtQ42GvhfB1ZODDTORMXp+wpWTlxkF4uAlbp8oLukyBkxHhSrxsVF?=
- =?us-ascii?Q?7LUgUVL294KU1WTFSjc6XEXj2ouzGSXvE/tzgWlGohxdy26k99q5IrIwkrQ1?=
- =?us-ascii?Q?2s4RSBu2uPOcxNpldj99REX0iV5hX3nOx5kakBeop0sy4H8tMhOX49o98pNW?=
- =?us-ascii?Q?IVe7E9+9q4lfS0l7GizU0egNkkClLUyHbnnlDVJHuoFVj05DgaTk0TemiILr?=
- =?us-ascii?Q?qPORX6mH13F1ND/PNFjK4yKYrK+1aIYGNyLLvNVmm5KGem+c34Fg/2npA+mn?=
- =?us-ascii?Q?TJ2LjT/aWer2mRKLraVl5YRr6mnXhPIX6ZGCSsihsNMSYBbKfdhaUVL00Uv+?=
- =?us-ascii?Q?NtWVnG6yJNwt02qU3ksyWDVKMoQSxu5Cz681fRMg6kMSLTdQ/m3CLHvbk0C0?=
- =?us-ascii?Q?G8Ad4r7BR7sZnXiFRFh8uW+R8RkEcFoD2mvG6jYZnL8f/h97cEijpjQHWznM?=
- =?us-ascii?Q?zp5TyUafZt750IhTGx5s6eJTzoTQETvB3oAc/EhQsjO8cD2cdtvfDt1RCOAu?=
- =?us-ascii?Q?hPZQN7TWzICiP1U34b2K75NHONc1u521pqvGHGhz1h9RDt9H3VvEyqZpgnO8?=
- =?us-ascii?Q?6g=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	n0lDWv+mDCwOK/bdgGcoxHtLCXb0HMLSZ9y1IjOFCiYPlGFajMTe3bVeKImC8xKWZfA2Xl1mUbWtQklyL0evVBfGifoyJVRvVjZHAG4vke19P6POCYoNSvrfa0z63YgptS2Eu7RQEsZERBoFJMII8wAJilJgrNZABIsxo0Tx7tIHX0OWH3QpXlxkNK8Y4zzoV8vcwb9ESn/BtoDjueL6FwDaFsIwUdPlo6g4ekRzV8/TRdkqpiUEYe6J9V9xDZj983XP0B2gaxsnmE/UHI/e3eCFSmAUu7e1a4YkWD5iSNOgyDLH09upkODpbyTwrnW9KLyqjD97e4+Z1NISsEQ7919Ldss9xeGA1F8jFj/R2IAebQLyMU23oXUiVH2TUnZG7Gro2lYqEEOOBiDAkxDQuTG1o+yc4+CUWEocy5P8Gu5lGZ+8IwaQqDvFOyro9ie4Ki0f9W7lCduHXGoTrcx+nDTNWDauJrPUxACOp+5G7jhNk1Scl8upeeBkwLsbGjKZbWhts69Q67GmNd8lTCnrmsAb2BIW8KL4Zp/qiSg7t2u/S2EwRHbxyk0e03Ry3ibIyhcfG1+DtoNtxGaVKBV5Md6HCjc+MFOZ0ctcZO+Lavg=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 68c605c4-959b-42c6-47ef-08dc340d1005
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?RzlhTFdxSkNYcm1LWENtUXB3Q3hWZlZ4ckZwSGFSMjBBamx5emx3TGZaSGU1?=
+ =?utf-8?B?Z0tJOUFEVWZzbVc3SysrWlpPclBWbkR6aUx0d3pmRnRSbWFJSmVpOG0zYVFi?=
+ =?utf-8?B?ZFdvNUVTcFlwS25saEFhU0dOa2VzWVFSdXpKSjNoSXIxK2wzeno1WitMVjhl?=
+ =?utf-8?B?WlR0S2QzWnNBNDBRemtDcUUzY204cWEzT3FmZlhaeXB0U1lDNGhPdlZzYkxM?=
+ =?utf-8?B?Z2JKMGpKRWRxSnpSc29tZWo3Y0FOa3hQY2E2aTlTaXFWaHhmaFJyQjRISWY5?=
+ =?utf-8?B?MFdIOHJvb3FFeFVNVDR3NFFocUdaOGxOb29TS3l6U3d5djRjZTJTb2UvU3BV?=
+ =?utf-8?B?cm5pSURsTXdBYVJiR3lHWmxNZCtmVlRhdEhaVjNJRnJOY3JpTGRSbmdrVmRW?=
+ =?utf-8?B?ZmdST2p2d1dzOVFHc0ROQkNtVDgxNjVhc0UxaUlnWHZpMVdxK0tNOXRQU2gw?=
+ =?utf-8?B?ZGlzWkl4emV0L0hDaDJWZndaUDVRRjB5VEVWWHd6ekJleEdMTSs2cnlmTlJF?=
+ =?utf-8?B?ZGFva2FjTjZLV1pwRkdVUjlPaFhLRE5LTTI4MXBZSW4waHJMNWdDV2NhVnZY?=
+ =?utf-8?B?c2RxQlVSZERRNWh2VytnL0JCaGhPUVlaNmpzeDEwSzBBNVlGWkdWVWgzUW0z?=
+ =?utf-8?B?VFh5WVZEbWk5VEx6L2Rma3lxNmhBZit4N0xEZitNSll1V1BWOWV0QS9RaXcz?=
+ =?utf-8?B?eko4YjdjWGRjQXdpMkdLYmFvV0c0dHE4L0JvNlZEVnk1S2JldEZtK2pqV3dh?=
+ =?utf-8?B?SUt4MkRpcktqc1d1Rk5KeWtnbjRick10UFh0T2tmellHZFZRQ25jT2ozWmJo?=
+ =?utf-8?B?RzdQbm1hVTFoUFprUjFGTEcwd2VCb3FZR2VYc01iK0RVQUVoOHVhRDZ5Ylgw?=
+ =?utf-8?B?RW5kbzMrbjd3dG1pVURqbHF2SzBHREtUZjc3V21ia1cxbXh5ald2MlpCU1Nt?=
+ =?utf-8?B?eFlNS1RRS2I1ZVc3QzJKU3pBZ25tZW8rTXRvbVR0LzFJVmREWSszSTlDRG9U?=
+ =?utf-8?B?L21RbGJ1cUs5MUlJKy81Z0xVU3kzOXhBRHlQbHloMlFwQWpNdUpOdWRSdjhl?=
+ =?utf-8?B?RWJkNHYrZllUUGtvZkVhWlpOeU1KeEdmOE9ObGlRajI0UUVGbU13R3REQTRv?=
+ =?utf-8?B?b2RmRWIyN1RIV1YvcE9OVWJzWXNDMjRxSTZpbWljWGh0QTVaTGgwRXVjeWMy?=
+ =?utf-8?B?NU5aVWdDeFY2anlsaEhoTzBxc0todmV2ekFCT3ZxSzZPOUpWVjdWN3FHdldo?=
+ =?utf-8?B?K3hCU0NiRFdjWXA0TEZUMXEwQWRBZWtuM0hma0NNOEEyNm1FT2xNMC83blFj?=
+ =?utf-8?B?c2xqV0ZJK0dOUkFBTHZObmJiRmFudEFNUFNzWFY4ejNtdS8rSlVNWm1iZnA4?=
+ =?utf-8?B?VHNYa09OMmVSbVFLMXZMa05uV005L0RxRzE1dFNtTzV0RSt4ZEtzR1VjcHF0?=
+ =?utf-8?B?blNXU2VzdjZFaTBYcVBuZkd2dDZOVW5aalduVW9XclVaT0xJQU5TaW1GSnd1?=
+ =?utf-8?B?WXFmTWE3bWxGd082Tk83QnJYMGJGdEk5d0cyMEcySEI4ay9mUHhOUGI3MGxF?=
+ =?utf-8?B?blZISkxjMkNDZ3ZJZFFtTUYzY0VUYTB5aXlLcVY5NndrRDNJN0JZcFZ4cS9p?=
+ =?utf-8?B?d3p5Y0NuUG9kQ0hPOFJFOFBtRUNpRXdwL3l2MGpUTzdiSFFzVWFYS2l6NGdm?=
+ =?utf-8?B?ZzdQMC8zTkx6eWY2dk92RE1OZ0czN0ErWUx2d2Y3eXE0V1BnUURaZXlKYzhC?=
+ =?utf-8?B?YzE2T0RBb2ZvSHFzbk9QUW0zekdrK1c5eXNLcVJXamNwYTFPT25QVkkyS0pY?=
+ =?utf-8?B?UkNwR0p4Q0pOM0N0aEN5RVYwTDE1NVJTcFZUdXJyQ0NFRUdueWdQa1ZlY21o?=
+ =?utf-8?B?R01WRWdYZ29LemlMTk9SWDRxbml5endYc2VDckQ1NkVmQXVJT2pydlM5VlNS?=
+ =?utf-8?B?blZ2cTdBa2d0YUJHQW04bitHc2FSNnAvR1A2cjJlMEQ0WWhYZjZIRVUvRy8w?=
+ =?utf-8?B?SmovYktybVR4RGhFS3hmeWVES2NNVHZTVWJnZ0xVSG9TMjJzR2JXYTlCQURB?=
+ =?utf-8?B?WFlVWFQrbENiL3g2UW9JZDhic3pLYlp5QUpEK09Ld3JlT1NyUC83aDQ5S1hp?=
+ =?utf-8?Q?befzuhpY5XH4bEdLAjL/BzZdz?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2ced592d-4b3f-4570-a8f7-08dc340bf7c0
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2024 01:16:28.8817
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2024 01:08:38.9134
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: m0tDVYrie9EfmfRGeDYn6KoOKQedrTDbw4x5zAbZmPy3dYxLLQMNSNxgxd9mj7kVUzrCjcmHS5DPGfScZF4gk3RGDCKevwuWgi7mJ2cnGwM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4808
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-22_15,2024-02-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 malwarescore=0
- bulkscore=0 adultscore=0 suspectscore=0 spamscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402230003
-X-Proofpoint-GUID: W5yNvm5MZvRvzmc5b1OrQvOuNQez479I
-X-Proofpoint-ORIG-GUID: W5yNvm5MZvRvzmc5b1OrQvOuNQez479I
+X-MS-Exchange-CrossTenant-UserPrincipalName: A1TQHBr4IAUvrOSVzwTbiz5FbPMAcxAwFtZk7I8HH9ZmQyAJTJfyRAcitfROShJLZfxiIVGVeyd2PunumGpoqQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8418
 
+This patchset is a rework from Oleksii's RFC v5 patchset
+https://lore.kernel.org/all/cover.1698353854.git.oleksii_moisieiev@epam.com/
 
-John,
+This patchset introduces some changes based on RFC v5:
+- introduce helper get_max_msg_size
+- support compatible string
+- iterate the id_table
+- Support multiple configs in one command
+- Added i.MX support
+- Patch 5 firmware: arm_scmi: Add SCMI v3.2 pincontrol protocol basic support
+  is almost same as RFCv5 expect multiple configs support.
+- Patch 4 the dt-bindings includes compatible string to support i.MX
+- Rebased on 2023-12-15 linux-next/master
 
-> Has this patch been missed?
->
-> I have this same build issue for i386 allmodconfig on v6.8-rc5 and earlier
->
-> Tested-by: John Garry <john.g.garry@oracle.com> #build only
+If any comments from RFC v5 are missed, I am sorry in advance.
 
-Broadcom requested changes and I haven't seen a v3.
+This PINCTRL Protocol is following Version 3.2 SCMI Spec Beta release.
 
+On ARM-based systems, a separate Cortex-M based System Control Processor
+(SCP) provides control on pins, as well as with power, clocks, reset
+controllers. So implement the driver to support such cases.
+
+The i.MX95 Example as below:
+
+Configuration:
+The scmi-pinctrl driver can be configured using DT bindings.
+For example:
+/ {
+	sram0: sram@445b1000 {
+		compatible = "mmio-sram";
+		reg = <0x0 0x445b1000 0x0 0x400>;
+
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges = <0x0 0x0 0x445b1000 0x400>;
+
+		scmi_buf0: scmi-sram-section@0 {
+			compatible = "arm,scmi-shmem";
+			reg = <0x0 0x80>;
+		};
+
+		scmi_buf1: scmi-sram-section@80 {
+			compatible = "arm,scmi-shmem";
+			reg = <0x80 0x80>;
+		};
+	};
+
+	firmware {
+		scmi {
+			compatible = "arm,scmi";
+			mboxes = <&mu2 5 0>, <&mu2 3 0>, <&mu2 3 1>;
+			shmem = <&scmi_buf0>, <&scmi_buf1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			scmi_iomuxc: protocol@19 {
+				compatible = "fsl,imx95-scmi-pinctrl";
+				reg = <0x19>;
+			};
+		};
+	};
+};
+
+&scmi_iomuxc {
+	pinctrl_tpm3: tpm3grp {
+		fsl,pins = <
+			IMX95_PAD_GPIO_IO12__TPM3_CH2		0x51e
+		>;
+	};
+};
+
+This patchset has been tested on i.MX95-19x19-EVK board.
+
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
+---
+Changes in v4:
+- Rebased to next-20240222
+- Drop pinctrl-scmi-imx and compatible patches in V3
+- Add T-b and R-b collected from v3
+- Link to v3: https://lore.kernel.org/r/20240121-pinctrl-scmi-v3-0-8d94ba79dca8@nxp.com
+
+Changes in v3:
+- Add R-b for dt-binding patch
+- Use 80 chars per line to align with other scmi drivers
+- Add pinctrl_scmi_alloc_configs pinctrl_scmi_free_configs to replace
+  driver global config_value and config_type array to avoid in parrell
+  access issue. When num_configs is larger than 4, use alloc, else use
+  stack.
+- Drop the separate MAITAINERS entry for firmware scmi pinctrl
+- Use enum type, not u8 when referring the scmi or generic pin conf type
+- Drop scmi_pinctrl_config_get_all which is not used at all for now.
+- Update copyright year to 2024
+- Move the enum scmi_pinctrl_conf_type above pinctrl_proto_ops for consistency
+- Link to v2: https://lore.kernel.org/r/20240104-pinctrl-scmi-v2-0-a9bd86ab5a84@nxp.com
+
+Changes in v2:
+ Added comments, and added R-b for Patch 1
+ Moved the compatile string and i.MX patch to the end, marked NOT APPLY
+ Patchset based on lore.kernel.org/all/20231221151129.325749-1-cristian.marussi@arm.com/
+ Addressed the binding doc issue, dropped i.MX content.
+ For the firmware pinctrl scmi driver, addressed the comments from Cristian
+ For the pinctrl scmi driver, addressed comments from Cristian
+
+ For the i.MX95 OEM stuff, I not have good idea, expect using compatbile
+ string. Maybe the firmware public an protocol attribute to indicate it is
+ VENDOR stuff or NXP use a new protocol id, not 0x19. But I think
+ current pinctrl-scmi.c not able to support OEM config, should we extend
+ it with some method? Anyway if patch 1-4 is good enough, they could
+ be picked up first.
+
+ Since I am only able to test the patch on i.MX95 which not support
+ geneirc pinconf, only OEM configs are tested in my side.
+
+---
+Oleksii Moisieiev (1):
+      firmware: arm_scmi: Add SCMI v3.2 pincontrol protocol basic support
+
+Peng Fan (3):
+      firmware: arm_scmi: introduce helper get_max_msg_size
+      dt-bindings: firmware: arm,scmi: support pinctrl protocol
+      pinctrl: Implementation of the generic scmi-pinctrl driver
+
+ .../devicetree/bindings/firmware/arm,scmi.yaml     |  50 ++
+ MAINTAINERS                                        |   1 +
+ drivers/firmware/arm_scmi/Makefile                 |   1 +
+ drivers/firmware/arm_scmi/driver.c                 |  17 +
+ drivers/firmware/arm_scmi/pinctrl.c                | 908 +++++++++++++++++++++
+ drivers/firmware/arm_scmi/protocols.h              |   3 +
+ drivers/pinctrl/Kconfig                            |  11 +
+ drivers/pinctrl/Makefile                           |   1 +
+ drivers/pinctrl/pinctrl-scmi.c                     | 593 ++++++++++++++
+ include/linux/scmi_protocol.h                      |  75 ++
+ 10 files changed, 1660 insertions(+)
+---
+base-commit: e31185ce00a96232308300008db193416ceb9769
+change-id: 20231215-pinctrl-scmi-4c5b0374f4c6
+
+Best regards,
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+Peng Fan <peng.fan@nxp.com>
+
 
