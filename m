@@ -1,139 +1,128 @@
-Return-Path: <linux-kernel+bounces-77959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85CD9860D58
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:58:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29528860D5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:58:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26F42B2183F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:58:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83D5BB22285
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:58:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27C1E1A731;
-	Fri, 23 Feb 2024 08:58:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D32811B59B;
+	Fri, 23 Feb 2024 08:58:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="hsc9L+4q"
-Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com [209.85.217.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="U6gLO3x4"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B8D018E11
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 08:57:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A50C18EB9
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 08:58:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708678679; cv=none; b=h8//Wrn0huc+HzUCxh7xumt5YkkXwY/zHaH8AGO/xOymruu3ryuJHicCqNRBoWEqwtqGlwWGypW7PKB/5Tk6vKVm1Axv2D9KrhL0OC0vw4NeNs/2nYiNCO6sMeXqOFY0pRs6bzcYvYXONlQAGVgM7WJGGFE6mqT8n6JGX7S5N6o=
+	t=1708678690; cv=none; b=dSnUErlSnFBxRjOTsT9apiBqE1pAB88qegzBf80aOTJFlySOjGos0ffCflizMH8v99ADOUlcWs372NcdmAJRy3nHd4VOIzAzoIJFWy6ifEvbHhLHBkUI9QI7QDrMrpaJobbvyVEnpdnx41TG97yXPspyyIOl/vGf17ZNuh66tbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708678679; c=relaxed/simple;
-	bh=nlK5qHaZhiykL1gGFylKHCeTVd6rL0Q153oLIBBktCA=;
+	s=arc-20240116; t=1708678690; c=relaxed/simple;
+	bh=YZbhuAtP+26wSLICWdq/lyQWSLDnxV62jHh0sN94jd4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BJsYI7Wv42XRrdufnDKFo9zQn/pGCRFPvvIwlSTdZXpg5IpUlPNXxl13i6FIHElb8tUmYZPtbC1v3UbZfZI7a/6+sd5RxUtXpErhLkqG7DX9BVGOkqugQ7Hq8K6aXmXvdpyxNrObe9D7g6gISKRyVeD1Z/jYluWTovi89/Z3S4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=hsc9L+4q; arc=none smtp.client-ip=209.85.217.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vs1-f50.google.com with SMTP id ada2fe7eead31-46d60c75683so70877137.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 00:57:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708678677; x=1709283477; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CjhPEhBa12TItlvxQZxsnnjXxJoCDUZerm30n59NmwU=;
-        b=hsc9L+4qeDS6W1HqxbjC7PeBfOfJt1ODkai83guOCktqMmL1LDOgoaLtMfyTRBkoWf
-         xXQ1vbZ5r4/ojrbDZUCHa7J3Gy+qcXzl9mNM8XBfv2M3q9UlbVYvxD/lEto9KoVbVv24
-         FIwrLb+gFmcdh4GhjU24KSzyCK/d/78lBA0Til/50FYmnEQnW0PvqL+ARiNWnkfZbbPK
-         1+Dtb8u5s1cIgY8+n8W7Jn+RXGncrYfYOUoD1bXYgmkDhIQjCDPeZzvY7QwMe3gi1VSt
-         GzKXdCIt79vNCMzhN/mZlSjzTjN227vvUasKylRDepNWUl3tKuO7y8P3gxGW1cuDG+zv
-         QoeA==
+	 To:Cc:Content-Type; b=S3/+LgW6pYpkQ+UL6L3ErMYcBSyiRBBrY1lsu1/O5U9ePd9GZjxS9nd13nctnbtQZiIuvzprBYtEd7xCNNjQ50KdJQriP/FYdBoAKatzt7zmprpEGpew7YIZNy27XF1UB0Vb570sn8wTBklbpIUBA1wM0V7Lkl5uaw/qevm1084=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=U6gLO3x4; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708678687;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iLQwWfoTn0xaoRpTFSAvxI7eKjXdmQ16vLaj1rspCoQ=;
+	b=U6gLO3x412UlNLi7iT5R+TroQiBcykyHJE7UtWiN7f3SDiuitTOrf3xL39erCeZ2S4r2H8
+	/7U4O3uZ00Ub4O0yz5qeoip1w8gq2n56kSdfW2aYwLkdSxnlAFtTLM8lQt4KjjChOqursU
+	VTvO4ce8f6IGKZEJagB/eTj94ghbeNo=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-648-Xcjfg5BdNESh4ClbbrUosQ-1; Fri, 23 Feb 2024 03:58:05 -0500
+X-MC-Unique: Xcjfg5BdNESh4ClbbrUosQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-412829eab17so3220905e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 00:58:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708678677; x=1709283477;
+        d=1e100.net; s=20230601; t=1708678683; x=1709283483;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CjhPEhBa12TItlvxQZxsnnjXxJoCDUZerm30n59NmwU=;
-        b=tPNucMhZtAdLp2v4AkmoAh5Wze4G8jrW1yMQ1PzzzHgu1IrlwnS9wQXTD+ZTo6dvYQ
-         b+kAeUZYpc53fblwZUy2UyHmL20CVrhpXmUijqdFfoI+eqv8Gb5ENyCN76PqxzNN0JmJ
-         D1nG/TjKuqT+5gUVF7BSRD+eznHgSprLBwBjMma/rNrB1uYvJ1TSiFGzjl3VzvR+fsrt
-         JqRGP9ZHoc9DNPXqUo2I1vzhu0K9UuSX9gOO+NkwZAh29bn7gOsAym3DIRBU/8uVp9Ct
-         P9Fsc1IvdgzA5sgE34yhE2cvI2RjUK0+9LghQrRVI04gdPOjWieL3G98jN4UQ3sfRISz
-         4h5w==
-X-Forwarded-Encrypted: i=1; AJvYcCV/lalMS/mPm22PpsS7M6cFo/3SpQ9CHM4xsjub9icCgmxbwdNZjbJMZ/eQK1S4jTziEjjGqx63Aeqb7zTQM12mALTido0SmZe2wNCH
-X-Gm-Message-State: AOJu0YxWLOD1z/tquBDhj9+v3m1fI0oIfUoZN2IRphrgZWc1mfNJg3dt
-	/mYFFEfDVjjjE6NC3lTphKa5TugRvSXSP7yUTNhm7VBmo92PRQ9lpgK6bVjIaSpdgRG57FPIDS2
-	tEX+wokNM7N+9wChKHx5c8N4zQDVzyssKPMYgJw==
-X-Google-Smtp-Source: AGHT+IF5EtRLg2sHfJzKBquPxZdBzGX8N61QJTJeYEubsIh78w4hHntCP/VtMxzVtkyLbjkp9oBlqYwmlgEWyY3rL4I=
-X-Received: by 2002:a05:6102:2910:b0:471:c4ad:4119 with SMTP id
- cz16-20020a056102291000b00471c4ad4119mr1380211vsb.8.1708678676895; Fri, 23
- Feb 2024 00:57:56 -0800 (PST)
+        bh=iLQwWfoTn0xaoRpTFSAvxI7eKjXdmQ16vLaj1rspCoQ=;
+        b=AsChK3wRpxsfNA01mKDkSOzcxs8Q5U6eejntglR1yU1IiChxanaWQ974DHNCZBik54
+         ukRlN8hvA3MjS2iA+AoguM3uSvoItv9BsCegnyUdnKIWD7TI3gnoRozmTWPHNOjAqYld
+         SIJwRZ0/VEtGakzwK8a7FKPIKip8PSgZilOyggLK7Hx4s4917KRuyEOJKRLZ5IO8GLdd
+         aWhI7JsT9vFY+2DFHRVmRbjuN1JtOJkDwP8a7WO1GEA5PGiJC/NZsc9UBsG8FnM05O7L
+         E1RjwaDkvdgkqybqr8aAjzXdBuoxjKBHy/hYg16UGdZNG3pZZuVZQud8LKrMqwZLxQRY
+         lgGw==
+X-Forwarded-Encrypted: i=1; AJvYcCWrKCKvOvBo91laSJ9Zq/adBYwSA8YT9HN3ZaE2z7w61Bv42U8tQW0AHQuGDtQIdNKtPCo3KXuEOO6kpA+/D7uA9inHrf4ge7sme7Ts
+X-Gm-Message-State: AOJu0Yw2E3gnsjNJsh6r9XiIQ5+E59AgfS8FRIkCVGWIxjq4fHdvOiHa
+	2RnPpwOqXL+ugOXsokPC59r+4zdFY8SUUlG4fnDPnBTV7wycJotfmW32Tpa7r/StyBcFe7kw+VW
+	jcmZsG5z/AOVJeEAXBTovxSgQFLHEc75EofqSpXBqaxxAOLvFzk1fez8N0Da3yh6xHBQzMV1MeL
+	a5VotB4mV+f9DnQDXyxMIYKkxjTLR+zKUeIMdgeKe9NAdn
+X-Received: by 2002:adf:eac3:0:b0:33d:71e5:f556 with SMTP id o3-20020adfeac3000000b0033d71e5f556mr1020421wrn.27.1708678683411;
+        Fri, 23 Feb 2024 00:58:03 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE+mrCKzWAaGkT/K53qU2Sd9UG7Fu614wcbzGC+OYclult0+HHvvNnkxisAg/4y0NnQxxIN8re7HwpceFAujt8=
+X-Received: by 2002:adf:eac3:0:b0:33d:71e5:f556 with SMTP id
+ o3-20020adfeac3000000b0033d71e5f556mr1020407wrn.27.1708678683094; Fri, 23 Feb
+ 2024 00:58:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220135431.22910-1-brgl@bgdev.pl>
-In-Reply-To: <20240220135431.22910-1-brgl@bgdev.pl>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Fri, 23 Feb 2024 09:57:46 +0100
-Message-ID: <CAMRc=Me7h9fzTqu7hkfOOGdFz4dwcgcVOdLu+3KovX9nZk5U4A@mail.gmail.com>
-Subject: Re: [PATCH] gpio: sim: delimit the fwnode name with a ":" when
- generating labels
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20240222-memfd-v1-1-7d39680286f1@linux.dev>
+In-Reply-To: <20240222-memfd-v1-1-7d39680286f1@linux.dev>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Fri, 23 Feb 2024 09:57:50 +0100
+Message-ID: <CABgObfakz1KQ==Cvrxr5wS36Lq8mvF9uJtW3AWVe9m-b+0OKYA@mail.gmail.com>
+Subject: Re: [PATCH] Build guest_memfd_test also on arm64.
+To: Itaru Kitayama <itaru.kitayama@linux.dev>
+Cc: Shuah Khan <shuah@kernel.org>, kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Itaru Kitayama <itaru.kitayama@fujitsu.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 20, 2024 at 2:54=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
- wrote:
->
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> Typically, whenever a human-readable name is created for objects using
-> a software node, its name is delimited with ":" as dashes are often used
-> in other parts of the name. Make gpio-sim use the same pattern. This
-> results in better looking default names:
->
->   gpio-sim.0:node0
->   gpio-sim.0:node1
->   gpio-sim.1:node0
->
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Thu, Feb 22, 2024 at 12:44=E2=80=AFAM Itaru Kitayama
+<itaru.kitayama@linux.dev> wrote:
+> on arm64 KVM_CAP_GUEST_MEMDF capability is not enabled, but
+> guest_memfd_test can build on arm64, let's build it on arm64 as well.
+
+The test will be skipped, so there's no point in compiling it.
+
+Paolo
+
+> Signed-off-by: Itaru Kitayama <itaru.kitayama@fujitsu.com>
 > ---
->  drivers/gpio/gpio-sim.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  tools/testing/selftests/kvm/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
-> index c4106e37e6db..1f3dd95dd6da 100644
-> --- a/drivers/gpio/gpio-sim.c
-> +++ b/drivers/gpio/gpio-sim.c
-> @@ -420,7 +420,7 @@ static int gpio_sim_add_bank(struct fwnode_handle *sw=
-node, struct device *dev)
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftes=
+ts/kvm/Makefile
+> index 492e937fab00..8a4f8afb81ca 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -158,6 +158,7 @@ TEST_GEN_PROGS_aarch64 +=3D access_tracking_perf_test
+>  TEST_GEN_PROGS_aarch64 +=3D demand_paging_test
+>  TEST_GEN_PROGS_aarch64 +=3D dirty_log_test
+>  TEST_GEN_PROGS_aarch64 +=3D dirty_log_perf_test
+> +TEST_GEN_PROGS_aarch64 +=3D guest_memfd_test
+>  TEST_GEN_PROGS_aarch64 +=3D guest_print_test
+>  TEST_GEN_PROGS_aarch64 +=3D get-reg-list
+>  TEST_GEN_PROGS_aarch64 +=3D kvm_create_max_vcpus
 >
->         ret =3D fwnode_property_read_string(swnode, "gpio-sim,label", &la=
-bel);
->         if (ret) {
-> -               label =3D devm_kasprintf(dev, GFP_KERNEL, "%s-%pfwP",
-> +               label =3D devm_kasprintf(dev, GFP_KERNEL, "%s:%pfwP",
->                                        dev_name(dev), swnode);
->                 if (!label)
->                         return -ENOMEM;
-> @@ -833,7 +833,7 @@ static int gpio_sim_add_hogs(struct gpio_sim_device *=
-dev)
->                                                           GFP_KERNEL);
->                         else
->                                 hog->chip_label =3D kasprintf(GFP_KERNEL,
-> -                                                       "gpio-sim.%u-%pfw=
-P",
-> +                                                       "gpio-sim.%u:%pfw=
-P",
->                                                         dev->id,
->                                                         bank->swnode);
->                         if (!hog->chip_label) {
+> ---
+> base-commit: 39133352cbed6626956d38ed72012f49b0421e7b
+> change-id: 20240222-memfd-7285f9564c1e
+>
+> Best regards,
 > --
-> 2.40.1
+> Itaru Kitayama <itaru.kitayama@linux.dev>
 >
 
-Patch applied.
-
-Bart
 
