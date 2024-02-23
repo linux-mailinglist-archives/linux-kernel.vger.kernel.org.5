@@ -1,104 +1,96 @@
-Return-Path: <linux-kernel+bounces-77873-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77874-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AA80860B5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:34:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DAE3860B5D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:35:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFB111F24559
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:34:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A68E51C23BF0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:35:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C836E1401D;
-	Fri, 23 Feb 2024 07:34:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D750514A97;
+	Fri, 23 Feb 2024 07:35:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YY/Nb7of";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="+g5M39FL"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IFgCtHd3"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6F9B12E7D;
-	Fri, 23 Feb 2024 07:34:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD298134D1;
+	Fri, 23 Feb 2024 07:35:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708673642; cv=none; b=T23l++a21JTFHPzbI5a8u2/XYmslbpbu0fJfcAEAdd9b8JkXHmB3mj5EuUdhUdn2LAUB65quyQEblfQv0lFCjqKZFXUAq0KK4XitNaWtS6O/nOixewj2NfDlLFCcjeHg4/4f6Nm/tBZjuDsqvwbRMG9Eo+pGhfc3vthDu4TiaGE=
+	t=1708673728; cv=none; b=W8IJIcbvqyl8ewkZ73vI/SFQe42dB17I2MTPH8eOh0E8LUFtOea8PqQyS0dQiiFxf0asvRjZAf8ZjnGvOuH15n/Tt6q1wwFb7zUhPqzAe+AWsvaC8Xiw9gvd1a5e7d6m2kJivjgzyXJ8Mkdm/qRT6eKXNWS+tPfvCQEt6nnotuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708673642; c=relaxed/simple;
-	bh=P079MrrGvHu7pWw2m3o5CihifE+Hq2GMO2lGobccamk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=hg1TXCwV35rVXPC3q0539oMpjxb7YoqRKP+1JhvUzLq3fu3NTfDgd9VD5ihemjmJFAcP/hWtWjNRONs7siyAYvAzZWXWmbO900SBvHJ3ocwZg86kfod8YS1sAuLjh16cDnKzJuEpr1ltDyjEBEwqyF0sYCYWbFiXvJ1kaseumOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YY/Nb7of; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=+g5M39FL; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708673638;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pjNx4BQcwgWzuFIv1trKOm0daQPJvueQjdA0aX5uzfM=;
-	b=YY/Nb7ofRVKzMKe93lJCL+3T+p9iZqJDXuukZvnVrQpKUhl44RXWyV2/I0SlcFX2dPY91w
-	4A1K1OY2GKr0/1ekarOFbm1JWXomTu6dCjwMYuTae+iitDDtEWHDWkOzp8n9qK30Yj4xwZ
-	9RuUB/zDwmHcio8H6vZBZy0wnc9H2fdZ4rzuWN+gejr05klbO7F0E75boSsNCVJudZwuvU
-	B1X7ZpFzIpJZUp4kiKbwLB05+n44i8LHPBvC7F6YJl7x/xHBZ2F4aCflgquHUC0H2ALsww
-	cVL3vyRtGuIwRE/niUEyRmweWBpBjSexbJhk+JG++9HOavEjhGhjsuBvmRQ9GA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708673638;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pjNx4BQcwgWzuFIv1trKOm0daQPJvueQjdA0aX5uzfM=;
-	b=+g5M39FL5yg0ypDdsaZEocLX0jM30cta14pJcVGZn9nIv4M1JqT8XsbTWImunh/Tf/F/6C
-	ClniuRNmD+SwHzCg==
-To: Leonardo Bras <leobras@redhat.com>
-Cc: Leonardo Bras <leobras@redhat.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, Tony
- Lindgren <tony@atomide.com>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, John Ogness
- <john.ogness@linutronix.de>, Ilpo =?utf-8?Q?J=C3=A4rvinen?=
- <ilpo.jarvinen@linux.intel.com>, Uwe =?utf-8?Q?Kleine-K=C3=B6nig?=
- <u.kleine-koenig@pengutronix.de>, Florian Fainelli
- <florian.fainelli@broadcom.com>, Shanker Donthineni
- <sdonthineni@nvidia.com>, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org
-Subject: Re: [RFC PATCH v2 3/4] irq: Introduce IRQ_HANDLED_MANY
-In-Reply-To: <ZdghE6TNHgZ_bi19@LeoBras>
-References: <20240216075948.131372-2-leobras@redhat.com>
- <20240216075948.131372-5-leobras@redhat.com> <87zfvwai62.ffs@tglx>
- <87v86kaf84.ffs@tglx> <ZdWMja3BfCZsbF_q@LeoBras> <87edd5hljz.ffs@tglx>
- <ZdghE6TNHgZ_bi19@LeoBras>
-Date: Fri, 23 Feb 2024 08:33:58 +0100
-Message-ID: <87cysneis9.ffs@tglx>
+	s=arc-20240116; t=1708673728; c=relaxed/simple;
+	bh=eBnTWhjdcjzGBQGM4lj/0XFmDSyQvrKqnnc7evSd3sk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=onYoiq/ey6pHFa33+t/tBh3mUEENX5CGKXxaF9iKfoFNxV8svSnbZmcjW4PvS+o7+/NdEwD0yAx3+LCZc0D1F9ct36Q2Kyj5liw/tuk8QHG1GjWDhoYdlJjv6OhPtgaSY7AmH1PkvqAWNqy4voeBE8Hz69irPgKRhgK0XHTBn2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IFgCtHd3; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708673727; x=1740209727;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=eBnTWhjdcjzGBQGM4lj/0XFmDSyQvrKqnnc7evSd3sk=;
+  b=IFgCtHd3EYv/t5XQdcDaJI11Dg75gjMZzPi8/a9VfBO6/FtGlJl7yKle
+   vaMhga0n8MKBWvG4fO+sknRotVAVkEXLpCVnMIfXpNu+qk9MxUUl1Tt5F
+   eTQxGr/FxCnvmYlun9Rt8ZseD2NyltRNLabg/5ExQSmpB/jnS89iVDN+h
+   tcHpoW9w4eH3XFepTcTDY5mrf2TwzCe0KHS8Go8V1iBXXfjG6lU1YkFhi
+   D5TngbwpH6F7knQY1opATdDiK2ltu82bULf9lY9ctMU6JokpuTesHW+hi
+   KWnwgxrDETShdrPVE+BavqsKgpEJ/VjCFBpnzwpzat8sx78jr2gP1zEVT
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="6760655"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="6760655"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 23:35:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="5833025"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.255.30.59]) ([10.255.30.59])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 23:35:20 -0800
+Message-ID: <c241efc5-9baf-4069-8fe5-d156fd281601@linux.intel.com>
+Date: Fri, 23 Feb 2024 15:35:16 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 1/3] PCI: make pci_dev_is_disconnected() helper public
+ for other drivers
+To: Dan Carpenter <dan.carpenter@linaro.org>,
+ Baolu Lu <baolu.lu@linux.intel.com>
+Cc: bhelgaas@google.com, robin.murphy@arm.com, jgg@ziepe.ca,
+ kevin.tian@intel.com, dwmw2@infradead.org, will@kernel.org, lukas@wunner.de,
+ yi.l.liu@intel.com, iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+ linux-pci@vger.kernel.org, Haorong Ye <yehaorong@bytedance.com>
+References: <20240222090251.2849702-1-haifeng.zhao@linux.intel.com>
+ <20240222090251.2849702-2-haifeng.zhao@linux.intel.com>
+ <9c4637d5-6496-4c68-b2db-4be1e56ca746@linux.intel.com>
+ <88915639-b6cc-43f7-9ac7-8e2dde982757@moroto.mountain>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+In-Reply-To: <88915639-b6cc-43f7-9ac7-8e2dde982757@moroto.mountain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 23 2024 at 01:37, Leonardo Bras wrote:
-> On Wed, Feb 21, 2024 at 04:41:20PM +0100, Thomas Gleixner wrote:
->> There is usually no concurrency at all, except for administrative
->> operations like enable/disable or affinity changes. Those administrative
->> operations are not high frequency and the resulting cache line bouncing
->> is unavoidable even without that change. But does it matter in the
->> larger picture? I don't think so.
+
+On 2/23/2024 2:47 PM, Dan Carpenter wrote:
+> I'm not a PCI maintainer, but first two patches seem good to me.  For
+> the third patch, my complaints were really minor.  Let's just add a
+> Fixes tag for sure, the rest is okay.
 >
-> That's a fair point, but there are some use cases that use CPU Isolation on 
-> top of PREEMPT_RT in order to reduce interference on a CPU running an RT 
-> workload.
+> Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
+
+Thanks Dan.
+
 >
-> For those cases, IIRC the handler will run on a different (housekeeping) 
-> CPU when those IRQs originate on an Isolated CPU, meaning the above 
-> described cacheline bouncing is expected.
-
-No. The affinity of the interrupt and the thread are strictly coupled
-and always on the same CPU except for one instance during migration, but
-that's irrelevant.
-
-Thanks,
-
-        tglx
+> regards,
+> dan carpenter
+>
 
