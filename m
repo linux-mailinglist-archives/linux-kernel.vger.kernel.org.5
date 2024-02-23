@@ -1,81 +1,152 @@
-Return-Path: <linux-kernel+bounces-77623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A811D86082F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:24:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC857860830
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:25:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E34981C21A1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:24:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C303B220AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:25:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10343AD5A;
-	Fri, 23 Feb 2024 01:24:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3806D26D;
+	Fri, 23 Feb 2024 01:25:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="lB1V9GQu"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AA12AD27;
-	Fri, 23 Feb 2024 01:24:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Whrn/l45"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F20FEAD5A
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 01:25:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708651476; cv=none; b=syKyu2XdtOWASUmUdIZe7c8WnbPbt+Zbubo2X1WYef8I8yb+b+DSmbnjtPXwh5Uy8HSo450JNFQ4ovVZyZEY1Yu5xm3tpEZKk/YvhyMAmQAEhYijonBlBolpqVCW+mGkmZYjwLEmg1GsFGgnpCvmXR6JpnveQRld8Ql6wSflZ7I=
+	t=1708651518; cv=none; b=tdk582XG1UarpnsGQJxqSN4ohciFgbC+Uv653HvX+Or4d/0o+1iuouJPR2iGVRQal03nV3fsz+l/hYWRs3V/147aqbyZsXJwyliR7IjO4NEpaTZgpXLM4qmLrNdwTDiIwxw1WYNxJspNNH0Z4XeDU2mdoJClTgLYwiAIAZY2eG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708651476; c=relaxed/simple;
-	bh=yyQg6XYyqGW1cB+HwjZPHkKX14Ehl9PiApFpMimuFyo=;
+	s=arc-20240116; t=1708651518; c=relaxed/simple;
+	bh=4yhgOSinsbrvgntH/U3//JXULSUOb04/dyXOuirlizs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G1Hcv8J/SXUKVS0mZ+exvxV1IC9qkkDCbWqaB6L9TrNcWpR5X39zR0GTWMhXWlCXIQv7zUxCX0AfrlOvihFSDgq/BVRNlSfyRNUdHfWnNHoZahHm6Nsyi9UsV1cOqXpGeUupr3W01hAijQddGtR4AUQHSgPHi2jqL7VZvoikxd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=lB1V9GQu; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1131)
-	id E7E3A20B74C0; Thu, 22 Feb 2024 17:24:34 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E7E3A20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1708651474;
-	bh=AnR/6UJPCClT4pxKKUKVNNuY0J9NeDwa5YyTzwv5ejo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lB1V9GQumX/jeI/WPyV1DTreH+f1YYg9TrGGwv3X6azVEnQ0KlllqhcSITnidM63p
-	 3m4W0e+sW8ZsJntWkxzDZh1DODkNbiLAQsRiEDG8TDB9yyjV/9y5WkhGu54FFHyjZX
-	 Q5EVP5Jt/mYRUj3dqCucrq9H+u2iBkU7fAUweqyk=
-Date: Thu, 22 Feb 2024 17:24:34 -0800
-From: Kelsey Steele <kelseysteele@linux.microsoft.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-	jonathanh@nvidia.com, f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-	conor@kernel.org, allen.lkml@gmail.com
-Subject: Re: [PATCH 5.15 000/476] 5.15.149-rc1 review
-Message-ID: <20240223012434.GC20295@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <20240221130007.738356493@linuxfoundation.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bF7HQZmAxzxXEuuhunhylZKZXB7ElXwMPTjGEwR/eAlw7ZiKDPpi8KE+CagPopEx8YRAMmNFNsQb0O2kJUTCB7G7WxDp9gq+XK5ZMwv7faLpM2nScVECv0P8Gxlq4Df/1Npehm27p+FoUt9R00+5zlnkw+72+lOauCA0C79qKBQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Whrn/l45; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dbe7e51f91so37145ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 17:25:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708651500; x=1709256300; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=aUsdA2noT/bEezNn+59gniW1e5bKV1Gueis9UiAo1yU=;
+        b=Whrn/l45f12MXsv6LQwrFcgERIt1VRV4Tbko/QaGHK19gtcanhWKXltzyh4ijkWo3Y
+         7hkZCfNBnxTnFUCCxpRRMgqpuk2fYNQmlT7xAYvEr++jDVI0W48KlCvJSGpZSzvWUYOE
+         VDFc4gH55jff0l3Q4fwX3xvkfZZg9b8AWqZuyFLxt43/93CQtc7v4sB0r6rw0p7e46pT
+         qPj5IRB24Iqg+Z+wRl2RPDZWaF3bHhvx91gMQ+zpLKZbKuRN8DMco/38Gm/Kslz7mPZe
+         sbCTPJJ7iPb/GZwTh0V+2EJUjjMpPDIo8SGQAxs/HZLbcDiMHcgz+h6ybbwLcr3dPatG
+         UJag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708651500; x=1709256300;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aUsdA2noT/bEezNn+59gniW1e5bKV1Gueis9UiAo1yU=;
+        b=Cez9vCyd1f2z2fVBsqFX/LBIy9qshts9gespl2rsU5XH6oSCFQMCsV+Dn+jvttANfg
+         m5hFswuyPDKqfc86rq55FRoZqKzgJe7nXxY/zC/GkiDVCZrKdnDM0PAI0P6rd/S4DM3H
+         pMJnDL+s6hY8gLzVrEDgN+7vPBDpee9vgDZe1VzNMu4pr7616mHb4xsx8a0psSp/GOdK
+         lPAPL/x4HI64lswTgYwLLpLmopr1TOgltT0htOJD80OhtpqgFJuwNiGqslpcqZxDv7sW
+         TFCFm8HfF6O74jpZ64XzJ7PvoE94ZbswnxsBOfgpWPyfgCD9HTjsvGFm0c/YmBkVTpit
+         hUGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWtPVVR+eIwoumGA81tKorrUqVu4KO+7Lucfkijpw2vIzJYpTMeSenHWXqZbqmMcPfvlGRz0vmZJUdmc0QZEOnQ3gj3qB864EN9IkYJ
+X-Gm-Message-State: AOJu0YxHUdgxHH1IPlb3vZxmsItpxh2WujBdIeUMUd8pePCimac7c5Ky
+	sbJ8BmJOE3bMxw8tsz6PuWLnThZYo+tBPxOXvAq5JdRRS/pzXuchVc7g5NakCQ==
+X-Google-Smtp-Source: AGHT+IErLKhHt20j6gRG6R/hxqmlzfrOnKmMJfRaFJw0ERiTSZiTw32RyVE2P23UMVodrdRgrlU0dA==
+X-Received: by 2002:a17:902:6b01:b0:1db:9e59:cd7 with SMTP id o1-20020a1709026b0100b001db9e590cd7mr627695plk.29.1708651499599;
+        Thu, 22 Feb 2024 17:24:59 -0800 (PST)
+Received: from google.com (30.176.125.34.bc.googleusercontent.com. [34.125.176.30])
+        by smtp.gmail.com with ESMTPSA id p21-20020aa78615000000b006e0949b2548sm10918025pfn.209.2024.02.22.17.24.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 17:24:58 -0800 (PST)
+Date: Fri, 23 Feb 2024 01:24:54 +0000
+From: Benson Leung <bleung@google.com>
+To: Jameson Thies <jthies@google.com>
+Cc: heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org,
+	pmalani@chromium.org, abhishekpandit@chromium.org,
+	andersson@kernel.org, dmitry.baryshkov@linaro.org,
+	fabrice.gasnier@foss.st.com, gregkh@linuxfoundation.org,
+	hdegoede@redhat.com, neil.armstrong@linaro.org,
+	rajaram.regupathy@intel.com, saranya.gopal@intel.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] usb: typec: ucsi: Clean up UCSI_CABLE_PROP macros
+Message-ID: <Zdfz5oWqSB2vtUGZ@google.com>
+References: <20240223010328.2826774-1-jthies@google.com>
+ <20240223010328.2826774-2-jthies@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="PZNWU6f2lFkWH7xm"
+Content-Disposition: inline
+In-Reply-To: <20240223010328.2826774-2-jthies@google.com>
+
+
+--PZNWU6f2lFkWH7xm
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240221130007.738356493@linuxfoundation.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 21, 2024 at 02:00:51PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.149 release.
-> There are 476 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 23 Feb 2024 12:59:02 +0000.
-> Anything received after that time might be too late.
+Hi Jameson,
 
-No regressions found on WSL (x86 and arm64).
+On Fri, Feb 23, 2024 at 01:03:25AM +0000, Jameson Thies wrote:
+> Clean up UCSI_CABLE_PROP macros by fixing a bitmask shifting error for
+> plug type and updating the modal support macro for consistent naming.
+>=20
+> Fixes: 3cf657f07918 ("usb: typec: ucsi: Remove all bit-fields")
+> Signed-off-by: Jameson Thies <jthies@google.com>
 
-Built, booted, and reviewed dmesg.
+Reviewed-by: Benson Leung <bleung@chromium.org>
 
-Thank you.
+> ---
+> Tested by building v6.6 kernel.
+>=20
+>  drivers/usb/typec/ucsi/ucsi.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
+> index 7e35ffbe0a6f..469a2baf472e 100644
+> --- a/drivers/usb/typec/ucsi/ucsi.h
+> +++ b/drivers/usb/typec/ucsi/ucsi.h
+> @@ -259,12 +259,12 @@ struct ucsi_cable_property {
+>  #define UCSI_CABLE_PROP_FLAG_VBUS_IN_CABLE	BIT(0)
+>  #define UCSI_CABLE_PROP_FLAG_ACTIVE_CABLE	BIT(1)
+>  #define UCSI_CABLE_PROP_FLAG_DIRECTIONALITY	BIT(2)
+> -#define UCSI_CABLE_PROP_FLAG_PLUG_TYPE(_f_)	((_f_) & GENMASK(3, 0))
+> +#define UCSI_CABLE_PROP_FLAG_PLUG_TYPE(_f_)	(((_f_) & GENMASK(4, 3)) >> =
+3)
+>  #define   UCSI_CABLE_PROPERTY_PLUG_TYPE_A	0
+>  #define   UCSI_CABLE_PROPERTY_PLUG_TYPE_B	1
+>  #define   UCSI_CABLE_PROPERTY_PLUG_TYPE_C	2
+>  #define   UCSI_CABLE_PROPERTY_PLUG_OTHER	3
+> -#define UCSI_CABLE_PROP_MODE_SUPPORT		BIT(5)
+> +#define UCSI_CABLE_PROP_FLAG_MODE_SUPPORT	BIT(5)
+>  	u8 latency;
+>  } __packed;
+> =20
+> --=20
+> 2.44.0.rc0.258.g7320e95886-goog
+>=20
 
-Tested-by: Kelsey Steele <kelseysteele@linux.microsoft.com> 
+--PZNWU6f2lFkWH7xm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCZdfz5gAKCRBzbaomhzOw
+wiNBAQDo3KNQemiA+FBi3/z5bmVaZO3NeofUyOdzGurkGM7T9AD/Tkff/vsteQxn
+NWhW10aJTVCRw0fdeSBN6vwgo4UIdgc=
+=uVst
+-----END PGP SIGNATURE-----
+
+--PZNWU6f2lFkWH7xm--
 
