@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-79133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15B0F861DF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:46:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47F03861DFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:46:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 820001F24910
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:46:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 680BB1C22B3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:46:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBF13158D84;
-	Fri, 23 Feb 2024 20:42:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E8A7159589;
+	Fri, 23 Feb 2024 20:42:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="t8oFKth8"
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bpT+2oIB"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AC4D1493BC
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 20:42:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E348A158D8D
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 20:42:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708720970; cv=none; b=IRG0lPultgyol/frkQCiYcK+ZNcobAEVY3WOMns/w1GPTMJQTaKpty/NaNs357/H1FcpWZ5uu1ZV1njGXhT+qwVh6WH80pVs+dMlwC/vSJsssli0DpmYU+MGFeEIaGMNVPPxo08Jqqd7CmaqLImtx6GNw6CGD1JSY+Y6MLtpxrM=
+	t=1708720972; cv=none; b=Yl1L/nD8KRQbEyPrittucUd+Tw60rqrBvbGPibet3bpwlv6/roolQfrLoawZSnE/awgaski6O7qneA9G4LfzcXySa9t5wnV4pGihow0VwCKe3/qyt2F3gSdV3bdM4urqVfytKl/kUdCr+GCxh/jKZfLtNHyJJNogeovdkaF3BO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708720970; c=relaxed/simple;
-	bh=l0zkmGZQWE9+kQETtRT0ImK1JoiFu1GlHAy5QX+NL98=;
+	s=arc-20240116; t=1708720972; c=relaxed/simple;
+	bh=x8JOCHKvKb4ozY0sAwrZiWMcGVvJkG+syIMQG5Dq5oA=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=qlKnnQ+e6/rL1yQ3VUhhVwdg8ianvg+m2LUn+Yl7oMXat6gOmbZRfEIfhtr2O5WX24O7DHLL+sAD2+bedytZushCTJo13nVcmQrkjxr5wwQD/Mhb//CO+S1d5lGmSt9koOgfbpQRGuBx2W7rUmE0RYYTZ1MFbBX+nRss3h2sk8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=t8oFKth8; arc=none smtp.client-ip=209.85.215.201
+	 To:Cc:Content-Type; b=XE1kGwoOYdI3fLvJrtpGAdlTwL7e8nnfk67gZNzEv5KaaqzO2Pa1Lj9OSE1Uby5n1575JG1J2ylEknR027OReNHRvSk9uejvbxhWySrYA+pgEocik3o0oWmIFCC/FCWKp3rqu/4UDOffGGw+lgc0QSZ1xbCPJ0ePUZRjb0JZo9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bpT+2oIB; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5dc91de351fso925413a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 12:42:48 -0800 (PST)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-608ad239f8fso22867787b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 12:42:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708720968; x=1709325768; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1708720970; x=1709325770; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=eMiAiix9phUQ/h1sG+JlRQvWAIP+ZL2r3XfvgJSywGA=;
-        b=t8oFKth8zniXokoLiWVauCK3SM+RLdkOE9fVqUWEuIkoEUL9qn7AZUEdrkbEtoxVxu
-         ElmJoa+oPiHmrhRDZGYWcAnqDl8HFYb5OVT7HPyFfBD/lyCG2xZsIgumUdFzOdkjVkjT
-         069/y+FMsRy+mzxdw6kk8fxheM3Mhzith3Wh/xURXW8t/5MwRHvEJSO/2uDVCdoTznBx
-         +HOLEH1J+H/Kt69LCOiVgSETRLMZ0qGlbq6+bBvVpIUmexSiOUsKP8ze1HA0H13VBlF3
-         Dk+fa9yN5MwBvIZPVSdVnwbuFkAsC20Fe1iq427x6wh86BtIkKvzHLVPgUCxq/sJhg7g
-         mwVg==
+        bh=FfzNCmRZ0S/1zY2q7LR3gyLGd166iHY+ytisyKJMCXE=;
+        b=bpT+2oIBtxQEZ5sHzyTYn58ZEVbChWKoqeyVU7YgevVPbxsTMBbkFVxnBJ2vrYKRED
+         QVN4vsNproJH7drfX9lXIMKf5c1rouM4YcdATbY/b4sWyk/Q1ZzxlWMvoS80slMAGfra
+         37omCqmeSOl548rP/Zdrj6j3fNT3aguQ97cFoprNR1E4U3MB1Q65cG7ycfMx8R7UcXLL
+         NEXu2JUzFVQ6K32SstHAn4i5RWT9etYIDGIrn6YmotxX9sd8boKnROT2pkzCad9T+Te1
+         JavvoSrkDBcpSRHGVAGbc5a3rngICnIHoGwNbGY6qNJ64a+CW4XuLMDVLqMzIa4W9nyL
+         D5CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708720968; x=1709325768;
+        d=1e100.net; s=20230601; t=1708720970; x=1709325770;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=eMiAiix9phUQ/h1sG+JlRQvWAIP+ZL2r3XfvgJSywGA=;
-        b=TSgQkth+bYPOIQARYEuRGDQgdnZCEmXTKemIGfPZQ5u6ZFvp/oJJwRsd1FoHx7fWVo
-         jSbLy2X+MaISl9xkoDLcdr+4KYVSGeP7anSv0SUsBmNdZJaqa2Yh1EiD3WmIuRmsM8kg
-         T0HWqwvKYLhzvIRLc9Nq5YdomeJ41infQ26n+yTGtx0lu7y8xFadtlzCODnLsKiPl2mu
-         J6ROzW3dJF1amHgzbp0l8+Dy1oWaAOvL60O/XAymdOuK3ptBSKKUvcvVFBBNv6+Z/AVy
-         6qpaohMNWrTPcVa4CfHZobIW7vAac5JqPUZNcs8R4GIy4zsnWjyYMArL77+zoOWQZG5O
-         rqoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW/xGZ29Uq6AIPVnwPKSiT7POZdQlOyrcdUCsoMG2FRKNKW3QvZA9psRmGxqaMUCcylMD/l1TviJ9EpZ7Ya/SI5AtgK5EGlMxG0fv6P
-X-Gm-Message-State: AOJu0YyxIeVqUpmEmjBJe9VDjMKCNScjGDW1DTrOzKPHRGqeH8O/ql73
-	nwkPIzK/ZvJBz2SPKZFf57uS1RCTdcihlEc8/88dFLGj9YsOB567jwEVnFzooC+apHrOzdVkdGO
-	KNw==
-X-Google-Smtp-Source: AGHT+IGwnheLLt11GCgq5bE9Gg3yzwQwcKlYIU9oJNz7WYe1wgIud5ZyeG1jDhmi6OGPwB1nWqKwpU0ePoM=
+        bh=FfzNCmRZ0S/1zY2q7LR3gyLGd166iHY+ytisyKJMCXE=;
+        b=atq7cv6O6MZJHpLkhDXnegsgiGByQt0OH5KRO70HfkWMiovyDvrZ3vQRhu68CjBgKj
+         IIAGqJ1Qhx55EjA3JusQRFwQU5w6Gp5Kbh1HFkzAEJi7pKYuEBqPAO6EOF9l7/FaToHm
+         S/2SI4OGwvbZkwKSBLtCs9Oh/KETcNpfphdo4Faqi0L4AfEuSfJ153Kh1/qWagg0/yXX
+         zehmMkFgsPtGRhs2MNE/W1z/EUrJWKa6Ow6r1TSOAZZazhBETxSYtmQ+W6DWNPGHinDI
+         MHmC3PyRwzM2RNEvvPrGWGQGnVS632yiBLcXWnG05KYS589/bJVP3eUfhNSJ9qffYRIE
+         0n8g==
+X-Forwarded-Encrypted: i=1; AJvYcCWT7Z+aPcEPtvCEvzUNI2ePkCqxXhLm56b4IcqtYzeAhjVvV6rb6XYy/U2GhJZ0O8pWT11gWrA++eXocovFgytSOawVPvj2BPs+kOdl
+X-Gm-Message-State: AOJu0YyKNCNCBEywvL0JinIKQp6kjxXukN0Tejv1MHVYpbSjSZtx2vdq
+	JsGAYHfc3RTFPOdCpB3TIMGtXZ9FhxqHTwAQQQmhgRM6Be68FsujRvr0YIyfP5nQOZu7qrsTWst
+	SQQ==
+X-Google-Smtp-Source: AGHT+IGV/hthBaiJp1W+WKWwI6YRWoUvbR1xriGM2Y9FcbsRPxmHxnvvDAebYds6DGtRf3myzVI02QFezT4=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:201b:0:b0:5e4:2b26:960a with SMTP id
- g27-20020a63201b000000b005e42b26960amr2263pgg.4.1708720967712; Fri, 23 Feb
- 2024 12:42:47 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a05:6902:2602:b0:dc6:519b:5425 with SMTP id
+ dw2-20020a056902260200b00dc6519b5425mr242656ybb.11.1708720969888; Fri, 23 Feb
+ 2024 12:42:49 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Fri, 23 Feb 2024 12:42:31 -0800
+Date: Fri, 23 Feb 2024 12:42:32 -0800
 In-Reply-To: <20240223204233.3337324-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,9 +75,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240223204233.3337324-1-seanjc@google.com>
 X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <20240223204233.3337324-7-seanjc@google.com>
-Subject: [PATCH 6/8] KVM: SVM: Save/restore args across SEV-ES VMRUN via host
- save area
+Message-ID: <20240223204233.3337324-8-seanjc@google.com>
+Subject: [PATCH 7/8] KVM: SVM: Create a stack frame in __svm_sev_es_vcpu_run()
 From: Sean Christopherson <seanjc@google.com>
 To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
 Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
@@ -85,116 +84,47 @@ Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Alexey Kardashevskiy <aik@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Use the host save area to preserve volatile registers that are used in
-__svm_sev_es_vcpu_run() to access function parameters after #VMEXIT.
-Like saving/restoring non-volatile registers, there's no reason not to
-take advantage of hardware restoring registers on #VMEXIT, as doing so
-shaves a few instructions and the save area is going to be accessed no
-matter what.
+Now that KVM uses the host save area to context switch RBP, i.e.
+preserves RBP for the entirety of __svm_sev_es_vcpu_run(), create a stack
+frame using the standared FRAME_{BEGIN,END} macros.
 
-Converting all register save/restore code to use the host save area also
-make it easier to follow the SEV-ES VMRUN flow in its entirety, as
-opposed to having a mix of stack-based versus host save area save/restore.
-
-Add a parameter to RESTORE_HOST_SPEC_CTRL_BODY so that the SEV-ES path
-doesn't need to write @spec_ctrl_intercepted to memory just to play nice
-with the common macro.
+Note, __svm_sev_es_vcpu_run() is subtly not a leaf function as it can call
+into ibpb_feature() via UNTRAIN_RET_VM.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/svm/vmenter.S | 29 +++++++++++++----------------
- 1 file changed, 13 insertions(+), 16 deletions(-)
+ arch/x86/kvm/svm/vmenter.S | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/arch/x86/kvm/svm/vmenter.S b/arch/x86/kvm/svm/vmenter.S
-index e92953427100..48cdba47622c 100644
+index 48cdba47622c..5461c23ee762 100644
 --- a/arch/x86/kvm/svm/vmenter.S
 +++ b/arch/x86/kvm/svm/vmenter.S
-@@ -67,7 +67,7 @@
- 		"", X86_FEATURE_V_SPEC_CTRL
- 901:
- .endm
--.macro RESTORE_HOST_SPEC_CTRL_BODY
-+.macro RESTORE_HOST_SPEC_CTRL_BODY spec_ctrl_intercepted:req
- 900:
- 	/* Same for after vmexit.  */
- 	mov $MSR_IA32_SPEC_CTRL, %ecx
-@@ -76,7 +76,7 @@
- 	 * Load the value that the guest had written into MSR_IA32_SPEC_CTRL,
- 	 * if it was not intercepted during guest execution.
- 	 */
--	cmpb $0, (%_ASM_SP)
-+	cmpb $0, \spec_ctrl_intercepted
- 	jnz 998f
- 	rdmsr
- 	movl %eax, SVM_spec_ctrl(%_ASM_DI)
-@@ -269,7 +269,7 @@ SYM_FUNC_START(__svm_vcpu_run)
- 	RET
- 
- 	RESTORE_GUEST_SPEC_CTRL_BODY
--	RESTORE_HOST_SPEC_CTRL_BODY
-+	RESTORE_HOST_SPEC_CTRL_BODY (%_ASM_SP)
- 
- 10:	cmpb $0, _ASM_RIP(kvm_rebooting)
- 	jne 2b
-@@ -298,6 +298,8 @@ SYM_FUNC_END(__svm_vcpu_run)
- #define SEV_ES_GPRS_BASE 0x300
- #define SEV_ES_RBX	(SEV_ES_GPRS_BASE + __VCPU_REGS_RBX * WORD_SIZE)
- #define SEV_ES_RBP	(SEV_ES_GPRS_BASE + __VCPU_REGS_RBP * WORD_SIZE)
-+#define SEV_ES_RSI	(SEV_ES_GPRS_BASE + __VCPU_REGS_RSI * WORD_SIZE)
-+#define SEV_ES_RDI	(SEV_ES_GPRS_BASE + __VCPU_REGS_RDI * WORD_SIZE)
- #define SEV_ES_R12	(SEV_ES_GPRS_BASE + __VCPU_REGS_R12 * WORD_SIZE)
- #define SEV_ES_R13	(SEV_ES_GPRS_BASE + __VCPU_REGS_R13 * WORD_SIZE)
- #define SEV_ES_R14	(SEV_ES_GPRS_BASE + __VCPU_REGS_R14 * WORD_SIZE)
-@@ -322,11 +324,12 @@ SYM_FUNC_START(__svm_sev_es_vcpu_run)
- 	mov %r12, SEV_ES_R12 (%rdx)
- 	mov %rbx, SEV_ES_RBX (%rdx)
- 
--	/* Accessed directly from the stack in RESTORE_HOST_SPEC_CTRL.  */
--	push %rsi
--
--	/* Save @svm. */
--	push %rdi
-+	/*
-+	 * Save volatile registers that hold arguments that are needed after
-+	 * #VMEXIT (RDI=@svm and RSI=@spec_ctrl_intercepted).
-+	 */
-+	mov %rdi, SEV_ES_RDI (%rdx)
-+	mov %rsi, SEV_ES_RSI (%rdx)
- 
- 	/* Clobbers RAX, RCX, RDX (@hostsa). */
- 	RESTORE_GUEST_SPEC_CTRL
-@@ -342,15 +345,12 @@ SYM_FUNC_START(__svm_sev_es_vcpu_run)
- 
- 2:	cli
- 
--	/* Pop @svm to RDI, guest registers have been saved already. */
--	pop %rdi
--
- #ifdef CONFIG_RETPOLINE
- 	/* IMPORTANT: Stuff the RSB immediately after VM-Exit, before RET! */
- 	FILL_RETURN_BUFFER %rax, RSB_CLEAR_LOOPS, X86_FEATURE_RETPOLINE
- #endif
- 
--	/* Clobbers RAX, RCX, RDX, consumes RDI (@svm). */
-+	/* Clobbers RAX, RCX, RDX, consumes RDI (@svm) and RSI (@spec_ctrl_intercepted). */
- 	RESTORE_HOST_SPEC_CTRL
- 
+@@ -3,6 +3,7 @@
+ #include <asm/asm.h>
+ #include <asm/asm-offsets.h>
+ #include <asm/bitsperlong.h>
++#include <asm/frame.h>
+ #include <asm/kvm_vcpu_regs.h>
+ #include <asm/nospec-branch.h>
+ #include "kvm-asm-offsets.h"
+@@ -312,6 +313,8 @@ SYM_FUNC_END(__svm_vcpu_run)
+  * @spec_ctrl_intercepted: bool
+  */
+ SYM_FUNC_START(__svm_sev_es_vcpu_run)
++	FRAME_BEGIN
++
  	/*
-@@ -362,13 +362,10 @@ SYM_FUNC_START(__svm_sev_es_vcpu_run)
+ 	 * Save non-volatile (callee-saved) registers to the host save area.
+ 	 * Except for RAX and RSP, all GPRs are restored on #VMEXIT, but not
+@@ -362,6 +365,7 @@ SYM_FUNC_START(__svm_sev_es_vcpu_run)
  	 */
  	UNTRAIN_RET_VM
  
--	/* "Pop" and discard @spec_ctrl_intercepted. */
--	pop %rax
--
++	FRAME_END
  	RET
  
  	RESTORE_GUEST_SPEC_CTRL_BODY
--	RESTORE_HOST_SPEC_CTRL_BODY
-+	RESTORE_HOST_SPEC_CTRL_BODY %sil
- 
- 3:	cmpb $0, kvm_rebooting(%rip)
- 	jne 2b
 -- 
 2.44.0.rc0.258.g7320e95886-goog
 
