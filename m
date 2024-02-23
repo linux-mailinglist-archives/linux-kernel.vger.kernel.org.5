@@ -1,114 +1,166 @@
-Return-Path: <linux-kernel+bounces-77550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A76B86075C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:01:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B71586075D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:02:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B45191F23DB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:01:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CFCE1C21F7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 00:02:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A283279E4;
-	Fri, 23 Feb 2024 00:01:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D80D61FA4;
+	Fri, 23 Feb 2024 00:02:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gs0KJuYr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="obHVaBWm"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC9823209;
-	Fri, 23 Feb 2024 00:01:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8178370
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 00:02:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708646498; cv=none; b=juXJUz1Tk3V1/VQ9hKhgTEfLYG4VvMUzo5toq/aLoWfV6Af9Q7DPvzhvEr4vw/MnBp9/veyrvMAi5ldJ82WFXtmdYYJVdpkdv9zlTdVXeK2M8ff7txkAbgwuejahdpuwgDmyv/qjyc5bHpPZZdzH5043wCiQbp/ZLeOo04rQ22Q=
+	t=1708646545; cv=none; b=rEnUbvBXG6eXgmnsRPuB+h8+aKcnhrUFpHNP9F68yDq1hHnBSKvYWvAB2DRTOiQ7hhGOGrDH1Pe3H2Muay3o40q7A8dIuJOeC9g86iX3qmKM3lZ6oCh4EiYHrkCUFx+HM85fCrGPwC5TuGAzht8CI/RHZFdKyoxy/Ocog7RSgU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708646498; c=relaxed/simple;
-	bh=j+ESD4Q/QZWpzJ5PpQQRTIfQxg53nG40zpN2uQgqods=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
-	 References:In-Reply-To; b=UZv5F3a5zLrgngRdxPlcHr62Gn0Jg7wOsBsGQQGhka0kHCE0T0LhYERu2JH3wk1K0/TH8Uc5njQUXRbZzCFQ/y6oUPysa0rcobcbq/Pe6rrPJ41qFFN8jIJt7Hjn7lOVZgOtRuspXvhLa9vxL3ALw0moHqDpOU4XO736SeM0Znw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gs0KJuYr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC3E8C433C7;
-	Fri, 23 Feb 2024 00:01:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708646497;
-	bh=j+ESD4Q/QZWpzJ5PpQQRTIfQxg53nG40zpN2uQgqods=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Gs0KJuYrsbWv0csq9XYhI1MSXveC6+TJux7Yu8n+3P/GUY4HF6Q4eJot5v0D0cowJ
-	 D6PZUi8jVGWIj0JFmpOlo7yqoFib31jJtAo9JVnBcJSE3Ab0bg4eVkXCtoMdmhM7yJ
-	 nGKdnAAPk/TKgmJvyqzxj2Vn/IotNsRDVQ2dkvEDsRfw6dmowZVm/MGPUbi4T6HXYW
-	 YV8uzTrV+/BJs7T/gYsg3NzKDdZvtC6nAexp1Ukg/pcHfLuBkTaPJbZ1pN59Znq+h3
-	 68aoBcbx0azO7lh/sIC5DJX9GhScZfHXgxdsZVewRxJbi/oO3x9wQHhd96L4+0Hjbd
-	 w8sMNd9iQqplA==
+	s=arc-20240116; t=1708646545; c=relaxed/simple;
+	bh=e+0tBc5rl3AsuopjGEnlgHYKkTUemBC1S0uodgi3rj8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ff3XXxaRwVyCI57i45mbEp74mhoBqffOqlfies3CxROCB1UPfk+aJR4lHF+eRYvDySgH6r8pm7GJvkv/RpQBSoIQzq4aAPwXbq9Jo13pqngOXPHBhM6RCmB2fF0/3ekyKgKdeSR9vmqQAdhpVbVmeAu7KdjFJ5LIcbAAZP9+C9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=obHVaBWm; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d5ce88b51cso36145ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 16:02:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708646543; x=1709251343; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YKIqei624U8pNnH0un8neNQZM9OozSHq1mh1Op7pFks=;
+        b=obHVaBWmN2MUW8UVZkDATg3Eh6mC8E/svZFewFXut+0YRIgCGRAES2gnH8zfUHxUp1
+         cDpVN+MICjIpv1l2xiDoVBPOMlzTI8CBTV/kK/cWR4v85gjzncbe2W7UdcmmqDfgQFt2
+         nZC9YnB0aFeD47dbjoq4FMNf3VaymQHRhDoqmG//EkRP2EuHGKm3Yes8QWSar+lIQkuB
+         s4dp7/p9BbFk8qrg+bYyMrh4lLJw5uAePzRv5Y7+rE8rb/oO1gBrAtP4N6xWxItSOKD+
+         5eVZbcafepdjCo2lV/J5QV/E4Y4xkOyc5e9OdQQ5JsEicVC7rPeiIvvkDtLQKS2EiI8V
+         SiCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708646543; x=1709251343;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YKIqei624U8pNnH0un8neNQZM9OozSHq1mh1Op7pFks=;
+        b=YQvQlSVnrlSd9mZE+xCe1NbOycfDVGMTVLJknDfa0ENtMRJVL6f29NczeRJW77ZyQo
+         gqrhLyN3Z6MDH3Lpl+aNOxvZsIovBPdcBQkOo3IG+Spf/pHw60Tj+n9X+ONtzKdczkXK
+         6+NHHgl8lYtkEoLw+iaehZLPC9kqZMW706y1z9I6EjL/2FCRUcO7WTqxY29ezYa6O20d
+         ZBL7+sEFIlniae/1MdVG3KRh32vqxilpwS+YkAQ4FUudyN4PGlPR1StF2OXUP5yKdx2E
+         I3KEF5WW6yol34HzmurcqVvaV1T+PTKddKhUWTEjqHJDNuzZw1Js1gKTtRtnZw36jtNN
+         gW8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU+33UWb+LYeFRfhiBfSvZ7P2FLqqEN4zu1ecsymjXlVyeqkcfrCdHjln5/0aTP5fbd3iCD9P3qgM0gDXeRTtD1VYh27RTmoEzRYwS0
+X-Gm-Message-State: AOJu0YzJswd2jQJ5zpdOa7ohpoaklmdwUZt9WNnF60JDlUQwv5m9g2CK
+	JfQg3fxLkxV9JhcoOCRhP1pgf9VN/9WoCGSmqKgOdQVMOPXBzhct5Ty4ONzuMqvYotvIQfrPeFy
+	YWI176srWRwhNvfqXATFehfSu3xoXMNSkNBf/yEXOhn/AyznorcXc
+X-Google-Smtp-Source: AGHT+IER6ZkSQzG0kj2Bw1ykdDF9DFfTp86VxCrkri92YG1vjri132FLxMLOD4+5Zql5MBIoVXrxSQvCBDFa7V50Cs8=
+X-Received: by 2002:a17:903:4093:b0:1d9:6949:6c88 with SMTP id
+ z19-20020a170903409300b001d969496c88mr606312plc.17.1708646542627; Thu, 22 Feb
+ 2024 16:02:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <ZdepeMsjagbf1ufD@x1>
+In-Reply-To: <ZdepeMsjagbf1ufD@x1>
+From: Ian Rogers <irogers@google.com>
+Date: Thu, 22 Feb 2024 16:02:07 -0800
+Message-ID: <CAP-5=fVkA0-JMn-Xu-typJYFod-+LfyAwdUKCKEDQdQu4V_NNw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] perf test: Use TEST_FAIL in the TEST_ASSERT macros
+ instead of -1
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 23 Feb 2024 02:01:32 +0200
-Message-Id: <CZC0MQ8XX32O.8NIQ5WNDKUFJ@kernel.org>
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Daniel P. Smith" <dpsmith@apertussolutions.com>, "Jason Gunthorpe"
- <jgg@ziepe.ca>, "Sasha Levin" <sashal@kernel.org>, "Lino Sanfilippo"
- <l.sanfilippo@kunbus.com>, <linux-integrity@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-Cc: "Ross Philipson" <ross.philipson@oracle.com>, "Kanth Ghatraju"
- <kanth.ghatraju@oracle.com>, "Peter Huewe" <peterhuewe@gmx.de>
-Subject: Re: [PATCH 1/3] tpm: protect against locality counter underflow
-X-Mailer: aerc 0.17.0
-References: <20240131170824.6183-1-dpsmith@apertussolutions.com>
- <20240131170824.6183-2-dpsmith@apertussolutions.com>
-In-Reply-To: <20240131170824.6183-2-dpsmith@apertussolutions.com>
 
-On Wed Jan 31, 2024 at 7:08 PM EET, Daniel P. Smith wrote:
-> Commit 933bfc5ad213 introduced the use of a locality counter to control w=
-hen a
-> locality request is allowed to be sent to the TPM. In the commit, the cou=
-nter
-> is indiscriminately decremented. Thus creating a situation for an integer
-> underflow of the counter.
+On Thu, Feb 22, 2024 at 12:07=E2=80=AFPM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
 >
-> Signed-off-by: Daniel P. Smith <dpsmith@apertussolutions.com>
-> Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
-> Reported-by: Kanth Ghatraju <kanth.ghatraju@oracle.com>
-> Fixes: 933bfc5ad213 ("tpm, tpm: Implement usage counter for locality")
+> Just to make things clearer, return TEST_FAIL (-1) instead of an open
+> coded -1.
+>
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Ian Rogers <irogers@google.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+
+Reviewed-by: Ian Rogers <irogers@google.com>
+
+Thanks,
+Ian
+
 > ---
->  drivers/char/tpm/tpm_tis_core.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  tools/perf/tests/tests.h | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
 >
-> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_c=
-ore.c
-> index 1b350412d8a6..4176d3bd1f04 100644
-> --- a/drivers/char/tpm/tpm_tis_core.c
-> +++ b/drivers/char/tpm/tpm_tis_core.c
-> @@ -180,7 +180,8 @@ static int tpm_tis_relinquish_locality(struct tpm_chi=
-p *chip, int l)
->  	struct tpm_tis_data *priv =3D dev_get_drvdata(&chip->dev);
-> =20
->  	mutex_lock(&priv->locality_count_mutex);
-> -	priv->locality_count--;
-> +	if (priv->locality_count > 0)
-> +		priv->locality_count--;
->  	if (priv->locality_count =3D=3D 0)
->  		__tpm_tis_relinquish_locality(priv, l);
->  	mutex_unlock(&priv->locality_count_mutex);
-
-To make this patch set better the whole story should be scenario based.
-
-Starting from cover letter the explanation is way too rounded to guide
-to the conclusion that these are actually best possible code changes to
-fix the issue.=20
-
-I agree fully on that the problem should be fixed but given that the
-scenarios are fuzzy deciding whether this the right things done right
-is the open question.
-
-I.e. we need the steps for destruction and how these patches change
-those steps to make this right. Since the whole topic is complicated
-I'd use PC Client spec as reference.
-
-BR, Jarkko
+> diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
+> index dad3d7414142d1be..3aa7701ee0e939f7 100644
+> --- a/tools/perf/tests/tests.h
+> +++ b/tools/perf/tests/tests.h
+> @@ -4,11 +4,17 @@
+>
+>  #include <stdbool.h>
+>
+> +enum {
+> +       TEST_OK   =3D  0,
+> +       TEST_FAIL =3D -1,
+> +       TEST_SKIP =3D -2,
+> +};
+> +
+>  #define TEST_ASSERT_VAL(text, cond)                                     =
+\
+>  do {                                                                    =
+\
+>         if (!(cond)) {                                                   =
+\
+>                 pr_debug("FAILED %s:%d %s\n", __FILE__, __LINE__, text); =
+\
+> -               return -1;                                               =
+\
+> +               return TEST_FAIL;                                        =
+\
+>         }                                                                =
+\
+>  } while (0)
+>
+> @@ -17,16 +23,10 @@ do {                                                 =
+                        \
+>         if (val !=3D expected) {                                         =
+  \
+>                 pr_debug("FAILED %s:%d %s (%d !=3D %d)\n",               =
+  \
+>                          __FILE__, __LINE__, text, val, expected);       =
+\
+> -               return -1;                                               =
+\
+> +               return TEST_FAIL;                                        =
+        \
+>         }                                                                =
+\
+>  } while (0)
+>
+> -enum {
+> -       TEST_OK   =3D  0,
+> -       TEST_FAIL =3D -1,
+> -       TEST_SKIP =3D -2,
+> -};
+> -
+>  struct test_suite;
+>
+>  typedef int (*test_fnptr)(struct test_suite *, int);
+> --
+> 2.43.0
+>
 
