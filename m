@@ -1,160 +1,154 @@
-Return-Path: <linux-kernel+bounces-79204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EFE9861EE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:24:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2417D861EE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:24:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C0701F26411
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:24:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A814728BB24
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:24:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D06131493B1;
-	Fri, 23 Feb 2024 21:22:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9ED714939E;
+	Fri, 23 Feb 2024 21:24:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O2quoiZY"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="abnqJsqt"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E4AA1DDC3;
-	Fri, 23 Feb 2024 21:22:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AC4C149382
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 21:24:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708723374; cv=none; b=CtFUqnZ5x/i8fHA6KnA/6iN13Mt9efV3m0IouhYvjVAWlUfLC4nGuiKRTuHg8LYRId0B1L7qwpqkGFbOyeh7h2Zw5eX3ValNMOxCbImmNC9x7TgtfkyLmbNWSZbutNANF4MlBeI0IcTKJ2VJBkyezBz91LoICcAPN8Xo5sKpK70=
+	t=1708723453; cv=none; b=EYOMO/QsDCuz4MD5JdRNk/cPxvXo/oOxXipN+HxMH0552IM1ylFyzj/C9LmulxPgbXn0q2FWmiQ3tYlxtdmEN2+7BuAMAE5WfRLvSS3cN3UkllsXa5BQkR3JqIuyZouwdp/APxqZYSUd/PhkAqrblr9+5fIGzVwr6d1VjOPpDsc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708723374; c=relaxed/simple;
-	bh=D9xlkAwetO2YYsp4AzG3YrTgZ6UnVD1pIb+/R0M9yxU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Yj+McLpI1k0DtHEsR237Xpr/OUhNUUlZnJUl2L424EMs2nzsTcaWPSOgjjKeB5Uv85ryJlhxm8KSmloyhdP+KL4MQLqhJXqAMFZt2UtcFUqwqDmAhv6DTvn3NhIqjl6AsmLF1NR5cBM2Et47sYPJxxA7iJVaXKTW4m9Lnziwt88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O2quoiZY; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33d0a7f2424so606389f8f.0;
-        Fri, 23 Feb 2024 13:22:52 -0800 (PST)
+	s=arc-20240116; t=1708723453; c=relaxed/simple;
+	bh=M33J+0Pv453G1Jv4haCud5wnpPj0c4hnwqkFQXtoS4E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DM1CxDdIf/exU1tVggra8SwsUJoU35H+lYbnLOuYcuMqhKBmEryi0wLQDQuYU+Dr1kPPU95q2/u0lJAqG9Fwx3JaC8Y0MiZw5IBApVI1h6el6W8C8168485nHFARK0SlgN09+TvL3Ez8qkrVJU9ugwP/R7nK/V+8MMSubNYEnME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=abnqJsqt; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d911c2103aso5665295ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:24:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708723371; x=1709328171; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FighQhaXjcHvzu/cP/qcaVJd6ZUW+O6jZf8uJbTD2qg=;
-        b=O2quoiZYslg1y0C5mMQHU1y3J2iUBMxdsgxy0W2Hk76Brzj5DrhGjUqIanNSS6K/Os
-         3SmKU9aUWk22o7bh14DURBbd0SQzPqTFZC3DkLYxdZPys27+wfJPYPdjLNSIK/DISLIL
-         cSDqokRsVPvnlVHvRcufjcnwCgJwPjMqOBPlCzFLyBAcsvbHG0fl9TYhsGq/XbFkLm6S
-         Yzysz8uOSxX8cezfzFnyBIngvyWzOUkxu1gUirvdEDs4HGx26he4pFqeoLlMq7W1ZN6T
-         zNeS2IKnG/0p8/QlxHxFS0+gWy8Xy0Fm6rpwgGoYSo/s1LFHgeadi0vl7sXqZcvT6SYt
-         B1jQ==
+        d=chromium.org; s=google; t=1708723449; x=1709328249; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0M8Ho4hghHsHT9QadaKTfyu0riwtgTi9mQkpLqOU5Dg=;
+        b=abnqJsqtEtnNmLwzBbNfqyuQh0+hAXypX/EBmTXcPvICdLmMrgH51gDJUyWXJKZoJW
+         xcB1n6M1+QJxxr3LliUivrxFqX4vPn1CS8qH0ufNKhHpe7B3u6zWXBVCXwNFB5iHr542
+         6RaoMpZsefpv9P40SwtCE92S1s2UKBiyk5OVY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708723371; x=1709328171;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FighQhaXjcHvzu/cP/qcaVJd6ZUW+O6jZf8uJbTD2qg=;
-        b=ACwWfzaT9zpB0NOu/0buJ39VHSZryCl2S0cHs3AiDA9r0uGck2OSpf1LO5KTQL5sAR
-         pXar4xh5lhplwelTSI071mr0EZFGLVfFABRXh2drqqZqlESwqamC+gjKi8lH/52y24Q0
-         KcRzFVR6qpicFtYQFN2d0JqYOwxwv0ivu5r/K2HbJCENkJuEWQcTEoAO04zMkFsXLst2
-         8YksjaP+DXoNWT1X8/xdlEFJgC1TFJnAzOZxjE8phJ+7OfuboFLstoTpbjq8xRDAYcr/
-         cZQUy+zjjee2Cw1M0K1FLXrdBTPJmQesaNyAJnnKAZKeDrXYGVJJVVrHS1DPgLLT+Tx2
-         m08A==
-X-Forwarded-Encrypted: i=1; AJvYcCX73zVzPwNydoSczZcgnjVXMHhPJK6iyyqjFxx0NaLwjXq0t+2ZMAnxgKxwUtf10xHKiZaWOEJbXSxVuUxV7HWu+mxvu/vPjEGLy4lofxnkB2uDVVCNpNldk1z5hmsIjz3XZbnT8qUShxo=
-X-Gm-Message-State: AOJu0Yxp8lnELeRQiYwQ9YBHBJLwA7ozF6NB49le7lyFGQIQfW5A5ved
-	fzi46wOA4cEGAmL/n9QW8qgUD3RZHuGn1FPrhdj14y79SNpXYUom
-X-Google-Smtp-Source: AGHT+IFDBAaVDq0LkSeFnlg7HBYqY64qEoifclU9wuWbudpVFSVqQQA6UsymPdnn6EifuGspZgNgMA==
-X-Received: by 2002:adf:f98a:0:b0:33d:adce:568a with SMTP id f10-20020adff98a000000b0033dadce568amr606581wrr.33.1708723370468;
-        Fri, 23 Feb 2024 13:22:50 -0800 (PST)
-Received: from m2 (89-139-223-180.bb.netvision.net.il. [89.139.223.180])
-        by smtp.gmail.com with ESMTPSA id y10-20020a5d470a000000b0033d640c8942sm4062605wrq.10.2024.02.23.13.22.48
+        d=1e100.net; s=20230601; t=1708723449; x=1709328249;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0M8Ho4hghHsHT9QadaKTfyu0riwtgTi9mQkpLqOU5Dg=;
+        b=k8PZj3rtfhw34LVercLbw8pfihxlKxzSeonBZFciMTTVm+AzgvPRBrTPG3iopsaFhx
+         656tkA28+74e3L7RN9bQeyB9J6pl7nrFgnkyfeHcLSu1YgwvDYoEANyLGYiEjffBAqU9
+         7hV9KB+yGtlIuXv/gV+U+yDT3XiSyVEuF3qcpVh6tiW1ujltm+p4/rRuOatD/l6lKvBQ
+         6BEbTwHxhz+Cqs+HtNlInXwZX25DXM15uXiumPVRRi21m49GVO9I7iT1wsAQjfXR5vna
+         TnrMD/DbQuu3K7MLf8fhq5SiXZEItR0dlaFHYL9WLUM65lgqPfA9JO3P138OsUu1OlNE
+         zJCw==
+X-Forwarded-Encrypted: i=1; AJvYcCVrFs6g7a0WHv9mpzLVpuSMlx8jS9opjqYETOo+0aGSJxCK1X4RDGaDLBazfclyh75THLHC+o8MeW8FucUVWzSDoJ1zTZblwPsEyHcS
+X-Gm-Message-State: AOJu0YxLwbn5SkoZ4cRDeH6BGribwqgzgmEzagoOQvwt2+ymPzDRE17T
+	ySkrfxerB0D5eZRpmfbZ2M6cjtszreO0D8QH5mRrOktsuWqsuEaFFpM5iA+GIA==
+X-Google-Smtp-Source: AGHT+IF/iOCf8G84HtjaG5OPfPAZChzYV76riZA2G3uYSX6UcLKBg0B+sc+slfUuIZE19uyFrsPkxw==
+X-Received: by 2002:a17:902:7b87:b0:1d9:a2b1:8693 with SMTP id w7-20020a1709027b8700b001d9a2b18693mr1106969pll.23.1708723449437;
+        Fri, 23 Feb 2024 13:24:09 -0800 (PST)
+Received: from hsinyi.sjc.corp.google.com ([2620:15c:9d:2:8ff9:a089:c05c:9af])
+        by smtp.gmail.com with ESMTPSA id b15-20020a170902d50f00b001db4b3769f6sm11970413plg.280.2024.02.23.13.24.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 13:22:49 -0800 (PST)
-Date: Fri, 23 Feb 2024 23:22:47 +0200
-From: Michael Zaidman <michael.zaidman@gmail.com>
-To: chrysh@christina-quast.de, daniel.beer@igorinstitute.com,
-	jikos@kernel.org, michael.zaidman@gmail.com
-Cc: linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-	linux-serial@vger.kernel.org, ilpo.jarvinen@linux.intel.com,
-	johan@kernel.org, gregkh@linuxfoundation.org, equinox@diac24.net
-Subject: Re: [PATCH v1 19/19] hid-ft260: uart: improve write performance
-Message-ID: <ZdkMpwA1ZPWRUvWM@m2>
-References: <20240210215147.77629-1-michael.zaidman@gmail.com>
- <20240210215147.77629-20-michael.zaidman@gmail.com>
+        Fri, 23 Feb 2024 13:24:09 -0800 (PST)
+From: Hsin-Yi Wang <hsinyi@chromium.org>
+To: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	dri-devel@lists.freedesktop.org,
+	linux-mediatek@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] drm/mediatek: Fix a null pointer crash in mtk_drm_crtc_finish_page_flip
+Date: Fri, 23 Feb 2024 13:23:29 -0800
+Message-ID: <20240223212404.3709690-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240210215147.77629-20-michael.zaidman@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Sat, Feb 10, 2024 at 11:51:47PM +0200, Michael Zaidman wrote:
-> Tx performance with the current buffer size of 256 bytes is lower when
-> the data length exceeds the xmit buf size.
-> 
-> [134331.147978] ft260_uart_write: count: 288, len: 256
-> [134331.157945] ft260_uart_write: count: 32, len: 32
-> [134331.159977] ft260_uart_write: count: 288, len: 256
-> [134331.169990] ft260_uart_write: count: 32, len: 32
-> 
-> 1. Increase the xmit buffer size to page size as used in the serial core
-> and other tty drivers.
-> 
-> 2. Remove the xmit buffer fulness against the watermark checking and the
-> tty_wakeup calling in the ft260_uart_transmit_chars routine. This code is
-> taken from other drivers, but other drivers may call the routine from the
-> interrupt context. In our case, this condition is always True since xmit
-> buffer filling and emptying are serialized and done synchronously.
-> 
-> Tested with picocom ASCII file transfer by 288-byte chunks at 921600
-> bauds rate with above 20% performance improvement.
-> 
-> Before:
-> 2821.7 Kbytes transferred at 47367 CPS... Done.
-> 
-> After:
-> 2821.7 Kbytes transferred at 57788 CPS... Done.
-> 
+It's possible that mtk_crtc->event is NULL in
+mtk_drm_crtc_finish_page_flip().
 
-Besides the performance improvement, it fixes the bug of outputting
-characters to the local terminal when local echo is disabled and
-printing every character twice with local echo enabled.
+pending_needs_vblank value is set by mtk_crtc->event, but in
+mtk_drm_crtc_atomic_flush(), it's is not guarded by the same
+lock in mtk_drm_finish_page_flip(), thus a race condition happens.
 
-> Signed-off-by: Michael Zaidman <michael.zaidman@gmail.com>
-> ---
->  drivers/hid/hid-ft260.c | 11 +++--------
->  1 file changed, 3 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/hid/hid-ft260.c b/drivers/hid/hid-ft260.c
-> index 6b172bfa4f98..1188b8e09938 100644
-> --- a/drivers/hid/hid-ft260.c
-> +++ b/drivers/hid/hid-ft260.c
-> @@ -308,8 +308,7 @@ enum {
->  #define FT260_UART_EN_PW_SAVE_BAUD	(4800)
->  
->  #define UART_COUNT_MAX (4) /* Number of supported UARTs */
-> -#define XMIT_FIFO_SIZE (256)
-> -#define TTY_WAKEUP_WATERMARK (XMIT_FIFO_SIZE / 2)
-> +#define XMIT_FIFO_SIZE (PAGE_SIZE)
->  
->  static const struct hid_device_id ft260_devices[] = {
->  	{ HID_USB_DEVICE(USB_VENDOR_ID_FUTURE_TECHNOLOGY,
-> @@ -1211,7 +1210,7 @@ static int ft260_uart_transmit_chars(struct ft260_device *port)
->  
->  		len = kfifo_out_spinlocked(xmit, rep->data, len, &port->xmit_fifo_lock);
->  
-> -		ret = ft260_hid_output_report(hdev, (u8 *)rep, len + sizeof(*rep));
-> +		ret = ft260_hid_output_report(hdev, (u8 *)rep, len + 2);
->  		if (ret < 0)
->  			goto tty_out;
->  
-> @@ -1219,10 +1218,6 @@ static int ft260_uart_transmit_chars(struct ft260_device *port)
->  		port->icount.tx += len;
->  	} while (data_len > 0);
->  
-> -	len = kfifo_len(xmit);
-> -	if ((XMIT_FIFO_SIZE - len) > TTY_WAKEUP_WATERMARK)
-> -		tty_wakeup(tty);
-> -
->  	ret = 0;
->  
->  tty_out:
+Consider the following case:
+
+CPU1                              CPU2
+step 1:
+mtk_drm_crtc_atomic_begin()
+mtk_crtc->event is not null,
+                                  step 1:
+                                  mtk_drm_crtc_atomic_flush:
+                                  mtk_drm_crtc_update_config(
+                                      !!mtk_crtc->event)
+step 2:
+mtk_crtc_ddp_irq ->
+mtk_drm_finish_page_flip:
+lock
+mtk_crtc->event set to null,
+pending_needs_vblank set to false
+unlock
+                                  pending_needs_vblank set to true,
+
+                                  step 2:
+                                  mtk_crtc_ddp_irq ->
+                                  mtk_drm_finish_page_flip called again,
+                                  pending_needs_vblank is still true
+                                  //null pointer
+
+Instead of guarding the entire mtk_drm_crtc_atomic_flush(), it's more
+efficient to just check if mtk_crtc->event is null before use.
+
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Fixes: 119f5173628a ("drm/mediatek: Add DRM Driver for Mediatek SoC MT8173.")
+---
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+index db43f9dff912..d645b85f9721 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+@@ -95,11 +95,13 @@ static void mtk_drm_crtc_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
+ 	struct drm_crtc *crtc = &mtk_crtc->base;
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&crtc->dev->event_lock, flags);
+-	drm_crtc_send_vblank_event(crtc, mtk_crtc->event);
+-	drm_crtc_vblank_put(crtc);
+-	mtk_crtc->event = NULL;
+-	spin_unlock_irqrestore(&crtc->dev->event_lock, flags);
++	if (mtk_crtc->event) {
++		spin_lock_irqsave(&crtc->dev->event_lock, flags);
++		drm_crtc_send_vblank_event(crtc, mtk_crtc->event);
++		drm_crtc_vblank_put(crtc);
++		mtk_crtc->event = NULL;
++		spin_unlock_irqrestore(&crtc->dev->event_lock, flags);
++	}
+ }
+ 
+ static void mtk_drm_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
+-- 
+2.44.0.rc0.258.g7320e95886-goog
+
 
