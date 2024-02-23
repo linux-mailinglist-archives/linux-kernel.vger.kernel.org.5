@@ -1,210 +1,193 @@
-Return-Path: <linux-kernel+bounces-78002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56E68860DE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:24:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C75FF860DE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:24:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D5122873A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:23:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D601287DF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:24:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A41925C61F;
-	Fri, 23 Feb 2024 09:23:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8EF25C8E9;
+	Fri, 23 Feb 2024 09:24:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kX4RZiim"
-Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PhS/hbMB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HQ6TEx6P";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PhS/hbMB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HQ6TEx6P"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F62C1AAA9
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 09:23:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 575DD59B50
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 09:24:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708680234; cv=none; b=p7r1b+bTN05UihQnoz4QktWLYNFLinKWdz7OhPB4V0rpCekPREsolOkQh7on9gUQRsPOU//t+UTd4W4J06rCfFeQ7nQvzEyWJvwQ8GuNH2xVUdOx8nWOfxRovP1CISySLqcPeb1esBG1HW9DiSwdQDfuSN+Msp1LRfCbAsqfREE=
+	t=1708680256; cv=none; b=rQox238AhhjgYT5lBGBBSB0nr1eY0tcNPl6pZOvUxJ7Acfjy94IrdB+8K7ejiAAziCAXEqkXd2cyw3CJlsY3ZygXMqE5SQKm9HgKa3OXXxeivT5b+vy1E2xflqTbEI/MGjrmrNu/5mmLwJ/0zramMbOEaPROLHbs5jyIhsIYeqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708680234; c=relaxed/simple;
-	bh=ckRSkSYNxlYZlzbSiUcnhkJwKP6BpBL3C/6X5jI2i14=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=E0UMOq4VQG3K/CSsqyikiY8GqHxpsU3WKD3hLpgEkI7T7dm15HC3QqyzL7plyZ2Ye5hyyYduuW1LQ+Myfm+26yZZfVx6NtZ1FcMmtzYaIrJFRscIaYqqBGL3UekuOus0bt/U1ciQELUwWuCcd3dlAGKsTtoYj3c9eELt9IefPYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=kX4RZiim; arc=none smtp.client-ip=209.85.161.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-59d489e8d68so292971eaf.2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 01:23:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708680230; x=1709285030; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HB/FNAFmQYYhsfmNSuI61Gc8yU/ABQLJ8+mq/+w5WNE=;
-        b=kX4RZiimfH11IPgvY0tTrD5Z9Qxxj8f9bXLVO5P7a3UTcyEmsvmnao6OOTirj4IRHk
-         Cv9cAaDdRS+458DCYmb6w8gPjSHJafDYGOOZ4NI4ZkKeQl9lZ2D5gd6ryvRMhiuG6YP4
-         Xq1HwWBRmOP10cvMtLcsFYvjZZDp8l2DA1TLM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708680230; x=1709285030;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HB/FNAFmQYYhsfmNSuI61Gc8yU/ABQLJ8+mq/+w5WNE=;
-        b=EVgYXGwFL94qY1ZXyHhLwbc4lHC1TzoolvvIHegOHzl/RXlyvJrDCC0+EevqPv54Zl
-         ZA8rqzCjsBvg5t/C5nHIb8JQVn0SsdT2LQiuZaJGkr+tDjOsysGo+fgNZT3SIfPkwP8e
-         mI3HZa577t4cSfUPsy37WM3nN2AeNScQSeltbZaJBCNnj0vCY9faV4VvpYLEtrKA9nf2
-         5zZsZPcnVLWy+ahyQk+XMl1/xeKUrJQRqJJD7n2+spB1KbhsmLSDXfFyE+sv2dd/Nxd9
-         ZX7qgEJ45B9FF8485ArSPcYFvoHRzCgUdlWlDyiKnvHvQQFbYjCIUb9cJTWBixySPEjC
-         tpOg==
-X-Forwarded-Encrypted: i=1; AJvYcCV8varI8dXtquHshwhw1uk9fmCh8lZp0dnhiUUovhqUPn/KIjHnvRCQl3sxsqjTEp7H5YhZW2qV2cN6B7aE8DVvuX9gDw+QsrS6rEWw
-X-Gm-Message-State: AOJu0YzPFJZ9+iEwYE929KC2zJDk179o3lgUWtOEyBAKXl4wm/VzG1ih
-	xnlo13R7DzZWgQYsu1pMVbI0g0aa8IowLatlIJaMweaiohu6VlxWJppWZnT1Mw==
-X-Google-Smtp-Source: AGHT+IGxmT9JLyw7jzJXAiJjYX06IB01yPHil8fnUx8qSrKhBlGjZrRaHZVMNca8KrtmHHQgE+zc9g==
-X-Received: by 2002:a05:6358:d06:b0:17b:58a6:5172 with SMTP id v6-20020a0563580d0600b0017b58a65172mr1826086rwj.21.1708680230122;
-        Fri, 23 Feb 2024 01:23:50 -0800 (PST)
-Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:e0c9:81eb:a87f:e8e7])
-        by smtp.gmail.com with ESMTPSA id a21-20020a056a0011d500b006e0d1e6036bsm12367253pfu.129.2024.02.23.01.23.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 01:23:49 -0800 (PST)
-From: Chen-Yu Tsai <wenst@chromium.org>
-To: Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>
-Cc: Chen-Yu Tsai <wenst@chromium.org>,
-	linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Simon Glass <sjg@chromium.org>
-Subject: [PATCH RFC] kbuild: create a list of all built DTB files
-Date: Fri, 23 Feb 2024 17:23:34 +0800
-Message-ID: <20240223092338.2433632-1-wenst@chromium.org>
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
+	s=arc-20240116; t=1708680256; c=relaxed/simple;
+	bh=/b/uAasNatYQkDRlPz3mGNYIuDQ6VGlg03I3StB6bnk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hCq0Lo2+qjWPnpqnUx1U//AVoVMx+higdyptsgRQzVwMWMWz1Jp3GlV+PuHrOcI4aTJIVbp7RycrfNVgWpQVZEf+1WUCMoqmDagBx26vmfTTMjnxgQXbfANzNTKw+1+WlpwpUZx+Rewv34jQ98aqt90ECkdUV2jKh1OWYv+/bNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PhS/hbMB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=HQ6TEx6P; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PhS/hbMB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=HQ6TEx6P; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 858CF22055;
+	Fri, 23 Feb 2024 09:24:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708680252; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BI3PUL04AyDJ8eLPoZj8TZ5v3v4zDascbS3qGTDm8D4=;
+	b=PhS/hbMBvnREKdhHIvVRK1rDlStl2LC2w7g5gFbs3R1CwU0qVyq0B9V6lT4zNYzOlmNpIP
+	ITRqzZ6UfvYaghpqpjHqBTPRFB1z4GBbIr2ggKpXa8OHwGBAAzuOktz5o2jAUbT8XG29Vp
+	/tbjJ+LNZqjjFPLxkra3qvef5i0AJ3M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708680252;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BI3PUL04AyDJ8eLPoZj8TZ5v3v4zDascbS3qGTDm8D4=;
+	b=HQ6TEx6PM75XacgxB4dFIxFRF1g7/nuTmAk4ERZVWj/k+MOdY4NvPKJLQEUlTs5+BQ77CS
+	ioeKSi5/ZgymjaCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708680252; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BI3PUL04AyDJ8eLPoZj8TZ5v3v4zDascbS3qGTDm8D4=;
+	b=PhS/hbMBvnREKdhHIvVRK1rDlStl2LC2w7g5gFbs3R1CwU0qVyq0B9V6lT4zNYzOlmNpIP
+	ITRqzZ6UfvYaghpqpjHqBTPRFB1z4GBbIr2ggKpXa8OHwGBAAzuOktz5o2jAUbT8XG29Vp
+	/tbjJ+LNZqjjFPLxkra3qvef5i0AJ3M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708680252;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BI3PUL04AyDJ8eLPoZj8TZ5v3v4zDascbS3qGTDm8D4=;
+	b=HQ6TEx6PM75XacgxB4dFIxFRF1g7/nuTmAk4ERZVWj/k+MOdY4NvPKJLQEUlTs5+BQ77CS
+	ioeKSi5/ZgymjaCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 634E8132C7;
+	Fri, 23 Feb 2024 09:24:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id r++SFzxk2GW9RQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 23 Feb 2024 09:24:12 +0000
+Message-ID: <1a952209-fa22-4439-af27-bf102c7d742b@suse.cz>
+Date: Fri, 23 Feb 2024 10:24:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] slub: avoid scanning all partial slabs in get_slabinfo()
+Content-Language: en-US
+To: Chengming Zhou <chengming.zhou@linux.dev>,
+ "Christoph Lameter (Ampere)" <cl@linux.com>
+Cc: David Rientjes <rientjes@google.com>,
+ Jianfeng Wang <jianfeng.w.wang@oracle.com>, penberg@kernel.org,
+ iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, roman.gushchin@linux.dev,
+ 42.hyeyoo@gmail.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ Chengming Zhou <zhouchengming@bytedance.com>
+References: <20240215211457.32172-1-jianfeng.w.wang@oracle.com>
+ <6b58d81f-8e8f-3732-a5d4-40eece75013b@google.com>
+ <fee76a21-fbc5-4ad8-b4bf-ba8a8e7cee8f@suse.cz>
+ <55ccc92a-79fa-42d2-97d8-b514cf00823b@linux.dev>
+ <6daf88a2-84c2-5ba4-853c-c38cca4a03cb@linux.com>
+ <e924c39b-7636-4c34-bfe9-603cf07c21d3@linux.dev>
+ <b8f393fb-2b1d-213c-9301-35d4ffca1f50@linux.com>
+ <347b870e-a7d5-45df-84ba-4eee37b74ff6@linux.dev>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <347b870e-a7d5-45df-84ba-4eee37b74ff6@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -2.79
+X-Spamd-Result: default: False [-2.79 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[google.com,oracle.com,kernel.org,lge.com,linux-foundation.org,linux.dev,gmail.com,kvack.org,vger.kernel.org,bytedance.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
-It is useful to have a list of all composite *.dtb files, along with
-their individual components, generated from the current build.
+On 2/23/24 06:00, Chengming Zhou wrote:
+> On 2024/2/23 11:50, Christoph Lameter (Ampere) wrote:
+>> On Fri, 23 Feb 2024, Chengming Zhou wrote:
+>> 
+>>>> Can we guestimate the free objects based on the number of partial slabs. That number is available.
+>>>
+>>> Yeah, the number of partial slabs is easy to know, but I can't think of a way to
+>>> estimate the free objects, since __slab_free() is just double cmpxchg in most cases.
+>> 
+>> Well a starting point may be half the objects possible in a slab page?
+> 
+> Yeah, also a choice.
+> 
+>> 
+>> 
+>>>> How accurate need the accounting be? We also have fuzzy accounting in the VM counters.
+>>>
+>>> Maybe not need to be very accurate, some delay/fuzzy should be acceptable.
+>>>
+>>> Another direction I think is that we don't distinguish slabs on cpu partial list or
+>>> slabs on node partial list anymore (different with current behavior).
+>>>
+>>> Now we have three scopes:
+>>> 1. SL_ALL: include all slabs
+>>> 2. SL_PARTIAL: only include partial slabs on node
+>>> 3. SL_CPU: only include partail slabs on cpu and the using cpu slab
+>>>
+>>> If we change SL_PARTIAL to mean all partial slabs, it maybe simpler.
+>> 
+>> Thats not going to work since you would have to scan multiple lists instead of a single list.
+> 
+> We have to use percpu counters if we go this way.
+> 
+>> 
+>> Another approach may be to come up with some way to scan the partial lists without taking locks. That actually would improve the performance of the allocator. It may work with a single linked lists and RCU.
 
-With this commit, 'make dtbs' creates arch/*/boot/dts/dtbs-components,
-which lists the composite dtb files created in the current build. It
-maintains the order of the dtb-y additions in Makefiles although the
-order is not important for DTBs.
+We often remove a slab from the middle of a partial list due to object
+freeing, and this means it has to be double linked, no?
 
-This compliments the list of all *.dtb and *.dtbo files in dtbs-list,
-which only includes the files directly added to dtb-y.
+>> 
+> 
+> I think this is a better direction! We can use RCU list if slab can be freed by RCU.
 
-For example, consider this case:
-
-    foo-dtbs := foo_base.dtb foo_overlay.dtbo
-    dtb-y := bar.dtb foo.dtb
-
-In this example, the new list will include foo.dtb with foo_base.dtb and
-foo_overlay.dtbo on the same line, but not bar.dtb.
-
-Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
----
-Hi,
-
-I hacked up this new thing to list out the individual components of each
-composite dtb. I think this information would be useful for FIT image
-generation or other toolchains to consume. For example, instead of
-including each dtb, a toolchain could realize that some are put together
-using others, and if the bootloader supports it, put together commands
-to reassemble the end result from the original parts.
-
-This is based on and complements Masahiro-san's recent dtbs-list work.
-
- .gitignore             |  1 +
- scripts/Makefile.build | 16 ++++++++++++++++
- scripts/Makefile.lib   |  8 ++++++--
- 3 files changed, 23 insertions(+), 2 deletions(-)
-
-diff --git a/.gitignore b/.gitignore
-index c59dc60ba62e..bb5b3bbca4ef 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -52,6 +52,7 @@
- *.xz
- *.zst
- Module.symvers
-+dtbs-components
- dtbs-list
- modules.order
- 
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index 4971f54c855e..ba85c2385c9e 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -72,6 +72,7 @@ endif
- subdir-builtin := $(sort $(filter %/built-in.a, $(real-obj-y)))
- subdir-modorder := $(sort $(filter %/modules.order, $(obj-m)))
- subdir-dtbslist := $(sort $(filter %/dtbs-list, $(dtb-y)))
-+subdir-dtbscomp := $(sort $(filter %/dtbs-components, $(multi-dtb-y)))
- 
- targets-for-builtin := $(extra-y)
- 
-@@ -390,6 +391,7 @@ $(obj)/%.asn1.c $(obj)/%.asn1.h: $(src)/%.asn1 $(objtree)/scripts/asn1_compiler
- $(subdir-builtin): $(obj)/%/built-in.a: $(obj)/% ;
- $(subdir-modorder): $(obj)/%/modules.order: $(obj)/% ;
- $(subdir-dtbslist): $(obj)/%/dtbs-list: $(obj)/% ;
-+$(subdir-dtbscomp): $(obj)/%/dtbs-components: $(obj)/% ;
- 
- #
- # Rule to compile a set of .o files into one .a file (without symbol table)
-@@ -422,6 +424,20 @@ $(obj)/modules.order: $(obj-m) FORCE
- $(obj)/dtbs-list: $(dtb-y) FORCE
- 	$(call if_changed,gen_order)
- 
-+#
-+# Rule to create dtbs-components
-+#
-+# This is a list of composite dtb(s), along with each dtb's components,
-+# from the current Makefile and its sub-directories.
-+
-+cmd_gen_dtb_components = { $(foreach m, $(real-prereqs), \
-+		$(if $(filter %/$(notdir $@), $m), cat $m, \
-+			echo $m: $(addprefix $(obj)/,$($(notdir $(m:%.dtb=%-dtbs))))); \
-+	) :; } > $@
-+
-+$(obj)/dtbs-components: $(multi-dtb-y) FORCE
-+	$(call if_changed,gen_dtb_components)
-+
- #
- # Rule to compile a set of .o files into one .a file (with symbol table)
- #
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index dbcac396329e..7c2127a84ac2 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -61,7 +61,6 @@ real-search = $(foreach m, $1, $(if $(call suffix-search, $m, $2, $3 -), $(call
- multi-obj-y := $(call multi-search, $(obj-y), .o, -objs -y)
- multi-obj-m := $(call multi-search, $(obj-m), .o, -objs -y -m)
- multi-obj-ym := $(multi-obj-y) $(multi-obj-m)
--
- # Replace multi-part objects by their individual parts,
- # including built-in.a from subdirectories
- real-obj-y := $(call real-search, $(obj-y), .o, -objs -y)
-@@ -91,6 +90,11 @@ real-dtb-y := $(call real-search, $(dtb-y), .dtb, -dtbs)
- # Base DTB that overlay is applied onto
- base-dtb-y := $(filter %.dtb, $(call real-search, $(multi-dtb-y), .dtb, -dtbs))
- 
-+ifdef need-dtbslist
-+multi-dtb-y	+= $(addsuffix /dtbs-components, $(subdir-ym))
-+always-y	+= dtbs-components
-+endif
-+
- always-y			+= $(dtb-y)
- 
- # Add subdir path
-@@ -406,7 +410,7 @@ cmd_dtc = $(HOSTCC) -E $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ;
- quiet_cmd_fdtoverlay = DTOVL   $@
-       cmd_fdtoverlay = $(objtree)/scripts/dtc/fdtoverlay -o $@ -i $(real-prereqs)
- 
--$(multi-dtb-y): FORCE
-+$(filter-out %/dtbs-components, multi-dtb-y): FORCE
- 	$(call if_changed,fdtoverlay)
- $(call multi_depend, $(multi-dtb-y), .dtb, -dtbs)
- 
--- 
-2.44.0.rc0.258.g7320e95886-goog
-
+Often we remove slab from the partial list for other purposes than freeing -
+i.e. to become a cpu (partial) slab, and that can't be handled by a rcu
+callback nor can we wait a grace period in such situations.
 
