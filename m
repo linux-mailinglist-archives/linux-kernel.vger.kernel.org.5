@@ -1,238 +1,282 @@
-Return-Path: <linux-kernel+bounces-77853-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36632860B08
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:58:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26502860B10
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:59:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A2DD1C21F88
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 06:58:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C51FB284C4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 06:59:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23220134C5;
-	Fri, 23 Feb 2024 06:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BEE114AA1;
+	Fri, 23 Feb 2024 06:59:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K2Mh4XFH"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f+uOeTFm"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56200125C0;
-	Fri, 23 Feb 2024 06:58:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708671499; cv=none; b=Dwv04//llHtxrIPpyJ0r5OfSiUGTRV0n4VerqXDxqRjMigZ6t4xse3FgGg2ZRQYXiolpikzp0mhq1IHHRUCSSh6ivTifoTxhONt1KhpY9iwbcVKWRN165Wu6dpCxwrd4/tn0TnT94dQaXQQVLQjIDeJ6Lap4lr5VgtpHPGpFk9I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708671499; c=relaxed/simple;
-	bh=lc/yt4IS94i/PggBesRtoUxeMb9Ge0+HWzjbnUyIH6o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Lmawm4Fvf9McEqRcBE21EoQQ+2uLifDqsBIiby228olRaxP4FH6QwMgkPJYndivtMfvXKeoxahykCy/R5KFmNadSbqEmacoygazsrY9hL6+cNxtyjMU43behyp2f/+RfiFxAHdPnZUudGkubsWjLRDRRZcLvyPfuHflKmZozjCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K2Mh4XFH; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3ed9cae56fso5179766b.1;
-        Thu, 22 Feb 2024 22:58:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708671495; x=1709276295; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=PYQW8xk+KH0pSpx6H5KsMCXCe4+bWONQsAJOLW2+kE8=;
-        b=K2Mh4XFH5Ma37ze/5c+jpQ+lJSPgFsg1zw1rLaNlUv/tflVBkzZUrgy22qhj2mIJxD
-         p7+RbxE9C+3XndDxXOaUeMFT/L9YhVr2ShFs130XWu44l2h5H+JQpWlKdtlT18Qa99xs
-         JCIGwBCL8/TeQFYRWI3ho0bazyPvEkLxp4VfqRwRqN8J40uJCu6SiuN/fDyR0Aqwuba/
-         aqI7h47hcg0nHfxlsttlP/rPeULxpsqyR5TuGTwG4hbgFXN1I6fcmUJESC2yGBVLBJPf
-         nOSkNJwTjyBxPSkZfpSDPRNgA5ffp7LPTP6+7QWVGQDU2rMFrRpReIFpBYEUlc1QKcMd
-         3zMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708671495; x=1709276295;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PYQW8xk+KH0pSpx6H5KsMCXCe4+bWONQsAJOLW2+kE8=;
-        b=iESNlUb1LLdoa7sGiwbiuEpi6uJSqrF4Y6B1BVWVbBXm2mGjdxh2SsfBfi0cLs5Q2b
-         jTESYLjLWmTomHUVmjXDWvkRENNQ3igwezJtzcc7zBRJF8wF+/gMzYTGKtv81Se+zUpa
-         LbUew5tVxbG+R4jwEIC+BFChqKPaGiPYWCV9snLtid/k8Iez6Q450yJS9uawLEUylRF/
-         Teu5CBZNH5TgTsO4+HoKKT4xlkX20JpgqzlBDc4zCAlK/wNIhn3BpEdt5fMFnYI8mC5s
-         rDFJ3djGmTtF8NP/GRXWEszaQmC1bYFmKKgxGfOq2BZc1IIhFq1/JqzjaouN9YS0oYru
-         mZSw==
-X-Forwarded-Encrypted: i=1; AJvYcCUvDSMizii33oJBOnrowNBhaxaCHu4Dzj1WcNdVOVxnm6pJ9nWGq/zeSDeoqfcmg8DbC1xdABPeGBfX99y/SFRnJBFeg58mKNDg+gfDjG2zAZ0nSDb2oJlrEyHGkUjgbgIu++pL
-X-Gm-Message-State: AOJu0Yw+m2rHlHG/ydCMXzjWryuzK77t7i4tmankLKv3KX/OREwpc3oh
-	LEwpALdCdEyQ8jOV4RutTtP86hA3qyu+/u1p5vm11zqQxthd5703
-X-Google-Smtp-Source: AGHT+IFHpcJ55PGpgA8fFtoMt9eQSNpL1qLuU1a6ObwzIYK4/gHMGyh+NP9Qv20jXnV6y24WKoa5Xg==
-X-Received: by 2002:a17:906:b789:b0:a3e:8bd8:b711 with SMTP id dt9-20020a170906b78900b00a3e8bd8b711mr908003ejb.37.1708671495353;
-        Thu, 22 Feb 2024 22:58:15 -0800 (PST)
-Received: from ?IPV6:2a01:c23:c403:8000:4442:2b24:9c18:44ef? (dynamic-2a01-0c23-c403-8000-4442-2b24-9c18-44ef.c23.pool.telefonica.de. [2a01:c23:c403:8000:4442:2b24:9c18:44ef])
-        by smtp.googlemail.com with ESMTPSA id tj2-20020a170907c24200b00a3f480154a3sm2107724ejc.65.2024.02.22.22.58.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 22:58:14 -0800 (PST)
-Message-ID: <4a43c21e-1ba9-4853-b2e2-8d2f5f8be464@gmail.com>
-Date: Fri, 23 Feb 2024 07:58:17 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4BA6134BF;
+	Fri, 23 Feb 2024 06:59:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708671548; cv=fail; b=fq9wZACCJYxZeAXoxxMCNW3GupWePsN77d+RbiM3KaASecGLZvuyHo/4qpMThYe436JI4Sz6ErvNHGMT7ccuf8//1B+cixO9Qo79txi2EGKAbfrOocfsxm/ls/zih2FA0LeNSHOP7uSabMTm5Jw9L5sQ8bgFs9JF8xKbXALcLXo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708671548; c=relaxed/simple;
+	bh=S8K7E5yjxuvvTISxTHbHgufa6hsyVOKJxVQDpyRsKJc=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=gVZG9GgsqZC+yq9izTkiY7bo3AREfEndVL1bxo9YHDCmbWFzJpColYlejdyROs5Phnncd4Hk/rHT2jWIZR4Ld8G5c9EjMug81XLWY51XDFBHnCyxvTagmzuo7B5woiFlmwWDW03TCklnp+7p8b+0kbRsUIolTYN9seUvoUARtuw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=f+uOeTFm; arc=fail smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708671546; x=1740207546;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=S8K7E5yjxuvvTISxTHbHgufa6hsyVOKJxVQDpyRsKJc=;
+  b=f+uOeTFmAx2v/RObN4iJnT1awQfSsqp4HOJ8SFz/pRDgh0hiuFxXM0D3
+   4pGu1PaLReawlaJrSBWQdgCQ/YUvub9Q8JNWyp6NGu0JrX4164NKGbqCH
+   UpbGqTGdLvulhr4Ghe8uIQumB5T9sXFR/76kL7EJQSsMeGgfvc/uPWouc
+   1IIqLnXqsHLlddpLAZAOn+Q5tdhi6xbru3SfgVSCj/6ZTW4tg63FoI2k2
+   oYWQaaXugOdQyHQfDAnxnaakAcLPVJpAdt+gKRUMX11LCqaURXWBBvD16
+   UYtCFYiHA4qT+vYtvW1yPS7P78LIFT48VKoP2TMEf/CDjdWbV720h/1gn
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="13668872"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="13668872"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 22:59:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="10392652"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmviesa005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Feb 2024 22:59:05 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 22 Feb 2024 22:59:04 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 22 Feb 2024 22:59:03 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 22 Feb 2024 22:59:03 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 22 Feb 2024 22:59:03 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XMD567a0Rlatz2uBNoW9VE/P9lTXdS6rrWKnYZdC823AZw2NqvEKzi4hk5RZ1BCSlGR5G1ySVRMNvu5CGAnNPy7r0S4RJvfj40IqsqSRiQ5PJjqhZA5u/QbQYsIRGV+CsRTvRYbUKSGJo7w7vPiKf+BJW4VVhayKB3hWdTRLGj9bMVALIvS9+qDvIAWDjPfQBoz0YBCKfrWz0T6kIJCh8eJm/TwfanYDT6Ugzyh63r6wQrjTaSmNNwxFA3QujiqT+f8XE1R6qJiOMnJxtq4WaT7do4LqUJ6XNOIPw7Lk4PGkioxV5viyE+//C+mloW1ZPDyLZrkJc+domXy1lw/Daw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=S8K7E5yjxuvvTISxTHbHgufa6hsyVOKJxVQDpyRsKJc=;
+ b=nNlGfGw+81gBJkUOxBGhyizSWf5HYJ/9ioTPPQy71/0rK7y/b3D8W9VylNRSyskafWk3uw7IfEuVnxmK/mrc7R5jiRGSqGcJybjMi7WV0EGkZuMlUGxFaocluN7mAt/9gmzqLovuIAtVIcE9eRR/YM9opEgOJVAyA6Rfx/uidETH4NpItmTu3oz93QGxexxk2d79q7rC6+NcFvbR7a/0PThbD/F4QALWyJXQjmoQLnQRgzev07jYNOgXp6He2s2+dj25gMlFC60a/sn/DAj8ihWAI2+90nwyyLXR7isOFgCZJv5a/EbwMOnwoZHWBgn8EJhon9EVXjIvfYHaKZ7iAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from PH7PR11MB6521.namprd11.prod.outlook.com (2603:10b6:510:213::21)
+ by DM4PR11MB6357.namprd11.prod.outlook.com (2603:10b6:8:b5::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Fri, 23 Feb
+ 2024 06:58:56 +0000
+Received: from PH7PR11MB6521.namprd11.prod.outlook.com
+ ([fe80::f188:a73d:bdb4:c93e]) by PH7PR11MB6521.namprd11.prod.outlook.com
+ ([fe80::f188:a73d:bdb4:c93e%5]) with mapi id 15.20.7339.009; Fri, 23 Feb 2024
+ 06:58:55 +0000
+From: "Voon, Weifeng" <weifeng.voon@intel.com>
+To: Russell King <linux@armlinux.org.uk>, Choong Yong Liang
+	<yong.liang.choong@linux.intel.com>
+CC: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>, David E Box
+	<david.e.box@linux.intel.com>, Hans de Goede <hdegoede@redhat.com>, "Mark
+ Gross" <markgross@kernel.org>, Alexandre Torgue
+	<alexandre.torgue@foss.st.com>, Jose Abreu <Jose.Abreu@synopsys.com>, "David
+ S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, "Jakub
+ Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin
+	<mcoquelin.stm32@gmail.com>, Richard Cochran <richardcochran@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
+	<john.fastabend@gmail.com>, Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit
+	<hkallweit1@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>, "Andrew
+ Halaney" <ahalaney@redhat.com>, Serge Semin <fancer.lancer@gmail.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-stm32@st-md-mailman.stormreply.com"
+	<linux-stm32@st-md-mailman.stormreply.com>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "platform-driver-x86@vger.kernel.org"
+	<platform-driver-x86@vger.kernel.org>, "linux-hwmon@vger.kernel.org"
+	<linux-hwmon@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"Sit, Michael Wei Hong" <michael.wei.hong.sit@intel.com>, "Lai, Peter Jun
+ Ann" <peter.jun.ann.lai@intel.com>, "Abdul Rahim, Faizal"
+	<faizal.abdul.rahim@intel.com>
+Subject: RE: [PATCH net-next v5 1/9] net: phylink: provide
+ mac_get_pcs_neg_mode() function
+Thread-Topic: [PATCH net-next v5 1/9] net: phylink: provide
+ mac_get_pcs_neg_mode() function
+Thread-Index: AQHaX7wldK1LhNzF+keQLCZ6YcdPm7ELmBuAgAvwXwA=
+Date: Fri, 23 Feb 2024 06:58:55 +0000
+Message-ID: <PH7PR11MB65210C62342088CF5C484A2888552@PH7PR11MB6521.namprd11.prod.outlook.com>
+References: <20240215030500.3067426-1-yong.liang.choong@linux.intel.com>
+ <20240215030500.3067426-2-yong.liang.choong@linux.intel.com>
+ <Zc47T/qv8Xg2SA21@shell.armlinux.org.uk>
+In-Reply-To: <Zc47T/qv8Xg2SA21@shell.armlinux.org.uk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR11MB6521:EE_|DM4PR11MB6357:EE_
+x-ms-office365-filtering-correlation-id: bc331a0d-dcfc-4843-3a10-08dc343ce6e8
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: IOLdxGzOJD6ueHZoOffN8kb9tn3n2Dhvq4bGaT8G0PJ7tcvk62ymMu0W/GM2uv9JkMJ3V/2XLvq56SXs578KV0N3fEko3bBd/27ilhsdlrjwsD1j6PZQxh+MBddnDg8EHo5YXemSuDvP8DIYc1b+IQ961hUt6l/Hjnoag+hEX8V3ZC66modWrzJsDX2Y3mRHsUkXVaRn59n8L7NGmUa0h3IXl6mB2lLub3eqClz76e8I5m7hBdXHErgqD6ezKS9zQvI5cWzL90ZDlL7nCb22tfeIz1NmAvza2aWIauWk0NxZuJB3kAtXCN91/chLK5mViyRAiXdesC25FamnZVg22sbB7PWB3ybKE36nma1kybA7J7i9WldrWBViJv5pqAznDGXTE1aebXdfOPe+A3G5xsxA+retjwhiZlssS9CJ8VgwCKzGV7dHeL1l6mvVKKLgEwsYWSdnLIxt5AldFljTBoqR9P+HDcnG7adfN4IvQ7nPolvTdUbWBqTWCmfUzvpE5Y1lq3BBScEOKM2iftoS8O2hLdJOvbhI5cxkHuysgpnMzcGMNPQwEny8zEDwS6vclXlubR0EtdonFI4QYIBUPgyMA7SJjVqyhk92oXM9BMRA98BH7mqYB+/npLrd5dKA
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB6521.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?7/IUgbSGa0Px+952D1zU+IbdN30+Dq5euxdvhssNo3HqPkKrfjTR/p2OLtQS?=
+ =?us-ascii?Q?PsN/29hEjzTerPMdl5/+MDPzEbbBJ7wmkVRLYZfEc4/WpC7qFBsAfs/KpqkG?=
+ =?us-ascii?Q?7TdeVYotaEaGHIU5tgFg1zq5WSmbGdzdOV9iGwx4ZXMWyjGiEU8Kllx4oBnh?=
+ =?us-ascii?Q?MPcsasAfyMv80SuWpoNPiLZqy/aZ6MnkJdzP76Tx/N45udJuj3Ygthl1vP4q?=
+ =?us-ascii?Q?QWJuhaLdUzwdlr2UFJCLwbgoC6Sb6wPk/GowYxyiFfIYLg0uhDf9CJ8EA412?=
+ =?us-ascii?Q?DE3UgmTu/jvW+3fBZ4GtVfSGExJpawGtz5LkRZxCG3PKJLfRKe27rFkOCd2/?=
+ =?us-ascii?Q?daTXFK5AoNZ7tSxkVc0KGIaZh7D1TNmmTc3+hxOAJt4vu+izJgRgupcSE7Mb?=
+ =?us-ascii?Q?mIYnZs5CGMhf+ICp1ywR8qFn/BA5xB6g0QB41Kzn2v0oTMzZCtngG3YcnVJ+?=
+ =?us-ascii?Q?lAHq7ZeD6Mgyi0qSrmzCOJ77zLmWarmQnMNneCOd9N0QyMuByWFxWaKT+WKI?=
+ =?us-ascii?Q?QwIGYSOOaMtihBpCbFS7AZManCCPw1muOLgXbDDZ1s0TcQi4pyXPNBIB5+0c?=
+ =?us-ascii?Q?Edi4zAO1G9CZm2Vmsf4hQtenATNy0lpXo3jllDxeE0nkP/eewnDuiE6gjkBe?=
+ =?us-ascii?Q?JS1wu7ouslAU1yd1GE++qqxanb4i24QdWG4M8hgO9m65qGyFPcacSmdOMeZ6?=
+ =?us-ascii?Q?xbpIp8WRuEkq/NJTZDpAa7Sc4U1m6BLoetiJVTSxjvShS6CCZB4/VVALd4zg?=
+ =?us-ascii?Q?RkKomiy0O7yF/OeCNMFKWCaVAuAVRhLLCNRneMCitf7cuAeqIA9bZfJDaKLz?=
+ =?us-ascii?Q?n95YrStb5ZdTQ5fqRoZ691UF+AVMV0Nhc0SrB1Uxp3kBpL0vNmhIIoDDupmN?=
+ =?us-ascii?Q?1KbVh+qS5t0PEwhvyn9xYmVnJg43rAn8rBFiAaSsryYAogGVWlBVvEaz2MLo?=
+ =?us-ascii?Q?PxnSpqGGUBpS92H1fUe7w1RcUQAygJj3rih6Tj3REDHK+/hTGgcUR3YYFRhh?=
+ =?us-ascii?Q?+Z9GvpX+DmbSkda3UOJDRwgWG935Khu9L7WW5ObKmJG3m0oHRxTSOFKJ8e1w?=
+ =?us-ascii?Q?+gvUc0deQyqbdId72cLYxx4d/DNbbTrMFkTSw+wnYNEGPt5H2WW8FoK43X8P?=
+ =?us-ascii?Q?2RG318d46rNI4p+eJWjjx1q7inZfLf0+T/ChdAsj1ZJCZaxJWCuCxonc3q6x?=
+ =?us-ascii?Q?oh8BXtSutqGEjwY4TLsjIz+Uu189qjS0WZgUC5XVvKJaXeDbmtklEmFNScQA?=
+ =?us-ascii?Q?wGJbXszJATocSYqI5wkbH0TOGmAlBxj8YUap8hfQTGKr4YjU2YlzTx2MXR1H?=
+ =?us-ascii?Q?yFw7KE7FLd8b1/4S+CgZ/txwmOCpEfJ9oM+6AMMnHQxgkHh3mZVr7eENHB/B?=
+ =?us-ascii?Q?WDFof+otoh+0rGsL8+AHpvXJWvCir8Yd+N1uynx+oOqHgziayteFITaUwZgK?=
+ =?us-ascii?Q?FiWe92sHZxXVm7o82AnKU/HH+hIe89xE9G3zFARD2FInFFI1fAFpUkzAE3yy?=
+ =?us-ascii?Q?ajPQvhpiSmz6aKMJNyXb6erVeBU3CYEEeYZomk8N/xaGr2lNohcWyjFibdFc?=
+ =?us-ascii?Q?V89Pi8tsUXuktogRuYY=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v5 2/8] net: phy: Add phydev->enable_tx_lpi to
- simplify adjust link callbacks
-To: Wei Fang <wei.fang@nxp.com>, Oleksij Rempel <o.rempel@pengutronix.de>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Andrew Lunn <andrew@lunn.ch>, Russell King <linux@armlinux.org.uk>
-Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>,
- dl-linux-imx <linux-imx@nxp.com>
-References: <20240221062107.778661-1-o.rempel@pengutronix.de>
- <20240221062107.778661-3-o.rempel@pengutronix.de>
- <AM5PR04MB3139BF92ABAE988EAD75088D88552@AM5PR04MB3139.eurprd04.prod.outlook.com>
-Content-Language: en-US
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Autocrypt: addr=hkallweit1@gmail.com; keydata=
- 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
-In-Reply-To: <AM5PR04MB3139BF92ABAE988EAD75088D88552@AM5PR04MB3139.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB6521.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc331a0d-dcfc-4843-3a10-08dc343ce6e8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Feb 2024 06:58:55.6400
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7i6imOzmO4Fz1Y0yBHgdsGxUmWh2Jd275CNrKjy9Kfw3fleho0vCIwhssolleZM8VIBSKFtbzkfNGVB0WiVqbQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB6357
+X-OriginatorOrg: intel.com
 
-On 23.02.2024 06:36, Wei Fang wrote:
->> -----Original Message-----
->> From: Oleksij Rempel <o.rempel@pengutronix.de>
->> Sent: 2024年2月21日 14:21
->> To: Wei Fang <wei.fang@nxp.com>; David S. Miller <davem@davemloft.net>;
->> Eric Dumazet <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>;
->> Paolo Abeni <pabeni@redhat.com>; Andrew Lunn <andrew@lunn.ch>;
->> Heiner Kallweit <hkallweit1@gmail.com>; Russell King
->> <linux@armlinux.org.uk>
->> Cc: Florian Fainelli <florian.fainelli@broadcom.com>; Oleksij Rempel
->> <o.rempel@pengutronix.de>; kernel@pengutronix.de;
->> linux-kernel@vger.kernel.org; netdev@vger.kernel.org; Shenwei Wang
->> <shenwei.wang@nxp.com>; Clark Wang <xiaoning.wang@nxp.com>;
->> dl-linux-imx <linux-imx@nxp.com>
->> Subject: [PATCH net-next v5 2/8] net: phy: Add phydev->enable_tx_lpi to
->> simplify adjust link callbacks
->>
->> From: Andrew Lunn <andrew@lunn.ch>
->>
->> MAC drivers which support EEE need to know the results of the EEE auto-neg
->> in order to program the hardware to perform EEE or not.  The oddly named
->> phy_init_eee() can be used to determine this, it returns 0 if EEE should be
->> used, or a negative error code, e.g. -EOPPROTONOTSUPPORT if the PHY does
->> not support EEE or negotiate resulted in it not being used.
->>
->> However, many MAC drivers get this wrong. Add phydev->enable_tx_lpi
->> which indicates the result of the autoneg for EEE, including if EEE is
->> administratively disabled with ethtool. The MAC driver can then access this in
->> the same way as link speed and duplex in the adjust link callback. If
->> enable_tx_lpi is true, the MAC should send low power indications and does
->> not need to consider anything else with respect to EEE.
->>
->> Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
->> Signed-off-by: Andrew Lunn <andrew@lunn.ch>
->> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
->> ---
->> v2 Check for errors from genphy_c45_eee_is_active
->> v5: Rename to enable_tx_lpi to fit better with phylink changes
->> ---
->>  drivers/net/phy/phy.c | 7 +++++++
->>  include/linux/phy.h   | 2 ++
->>  2 files changed, 9 insertions(+)
->>
->> diff --git a/drivers/net/phy/phy.c b/drivers/net/phy/phy.c index
->> 14224e06d69f..a54b1daf5d5f 100644
->> --- a/drivers/net/phy/phy.c
->> +++ b/drivers/net/phy/phy.c
->> @@ -983,9 +983,16 @@ static int phy_check_link_status(struct phy_device
->> *phydev)
->>  	if (phydev->link && phydev->state != PHY_RUNNING) {
->>  		phy_check_downshift(phydev);
->>  		phydev->state = PHY_RUNNING;
->> +		err = genphy_c45_eee_is_active(phydev,
->> +					       NULL, NULL, NULL);
->> +		if (err < 0)
->> +			phydev->enable_tx_lpi = false;
->> +		else
->> +			phydev->enable_tx_lpi = err;
-> 
-> phydev->enable_tx_lpi = !!err; Is this better?
-> 
-I don't think so. Effectively err is a bool value, and it's implicitly
-converted.
+> > For instance, if the interface switches from 2500baseX to SGMII mode,
+> > and the current link mode is MLO_AN_PHY, calling
+> 'phylink_pcs_neg_mode'
+> > would yield PHYLINK_PCS_NEG_OUTBAND. Since the MAC and PCS driver
+> > require PHYLINK_PCS_NEG_INBAND_ENABLED, the
+> 'mac_get_pcs_neg_mode'
+> > function will calculate the mode based on the interface, current link
+> > negotiation mode, and advertising link mode, returning
+> > PHYLINK_PCS_NEG_OUTBAND to enable the PCS to configure the correct
+> settings.
+>=20
+> This paragraph doesn't make sense - at least to me. It first talks about
+> requiring PHYLINK_PCS_NEG_INBAND_ENABLED when in SGMII mode. On
+> this:
 
->>  		phy_link_up(phydev);
->>  	} else if (!phydev->link && phydev->state != PHY_NOLINK) {
->>  		phydev->state = PHY_NOLINK;
->> +		phydev->enable_tx_lpi = false;
->>  		phy_link_down(phydev);
->>  	}
->>
->> diff --git a/include/linux/phy.h b/include/linux/phy.h index
->> e3ab2c347a59..a880f6d7170e 100644
->> --- a/include/linux/phy.h
->> +++ b/include/linux/phy.h
->> @@ -594,6 +594,7 @@ struct macsec_ops;
->>   * @supported_eee: supported PHY EEE linkmodes
->>   * @advertising_eee: Currently advertised EEE linkmodes
->>   * @eee_enabled: Flag indicating whether the EEE feature is enabled
->> + * @enable_tx_lpi: When True, MAC should transmit LPI to PHY
->>   * @lp_advertising: Current link partner advertised linkmodes
->>   * @host_interfaces: PHY interface modes supported by host
->>   * @eee_broken_modes: Energy efficient ethernet modes which should be
->> prohibited @@ -713,6 +714,7 @@ struct phy_device {
->>
->>  	/* Energy efficient ethernet modes which should be prohibited */
->>  	u32 eee_broken_modes;
->> +	bool enable_tx_lpi;
->>
->>  #ifdef CONFIG_LED_TRIGGER_PHY
->>  	struct phy_led_trigger *phy_led_triggers;
->> --
->> 2.39.2
-> 
+The example given here is a very specific condition and that probably why t=
+here are some confusions here. Basically, this patch provides an optional f=
+unction for MAC driver to change the phy interface on-the-fly without the n=
+eed of reinitialize the Ethernet driver. As we know that the 2500base-x is =
+messy, in our case the 2500base-x does not support inband. To complete the =
+picture, we are using SGMII c37 to handle speed 10/100/1000. Hence, to enab=
+le user to switch link speed from 2500 to 1000/100/10 and vice versa on-the=
+-fly, the phy interface need to be configured to inband SGMII for speed 10/=
+100/1000, and outband 2500base-x for speed 2500. Lastly, the newly introduc=
+ed "mac_get_pcs_neg_mode"callback function enables MAC driver to reconfigur=
+e pcs negotiation mode to inband or outband based on the interface mode, cu=
+rrent link negotiation mode, and advertising link mode.
+
+>=20
+> 1) are you sure that the hardware can't be programmed for the SGMII
+> symbol repititions?
+>=20
+
+No, the HW can be program for SGMII symbol repetitions.
+
+> 2) what happens if you're paired with a PHY (e.g. on a SFP module) which
+> uses SGMII but has no capability of providing the inband data?
+> (They do exist.) If your hardware truly does require inband data, it is g=
+oing to
+> be fundamentally inoperative with these modules.
+>=20
+
+Above explanation should have already cleared your doubts. Inband or outban=
+d capability is configured based on the phy interface.
+
+> Next, you then talk about returning PHYLINK_PCS_NEG_OUTBAND for the
+> "correct settings". How does this relate to the first part where you basi=
+cally
+> describe the problem as SGMII requring inband? Basically the two don't
+> follow.
+
+It should be a typo mistake. SGMII should return PHYLINK_PCS_NEG_INBAND_ENA=
+BLED.
+
+>=20
+> How, from a design point of view, because this fundamentally allows drive=
+rs
+> to change how the system behaves, it will allow radically different behav=
+iours
+> for the same parameters between different drivers.
+> I am opposed to that - I want to see a situation where we have uniform
+> behaviour for the same configuration, and where hardware doesn't support
+> something, we have some way to indicate that via some form of capabilitie=
+s.
+>=20
+
+Hi Russell,
+If I understand you correctly, MAC driver should not interfere with pcs neg=
+otiation mode and it should be standardized in the generic function, e.g., =
+phylink_pcs_neg_mode()?
+
+> The issue of whether 2500base-X has inband or not is a long standing issu=
+e,
+> and there are arguments (and hardware) that take totally opposing views o=
+n
+> this. There is hardware where 2500base-X inband _must_ be used or the lin=
+k
+> doesn't come up. There is also hardware where 2500base-X inband is not
+> "supported" in documentation but works in practice. There is also hardwar=
+e
+> where 2500base-X inband doesn't work. The whole thing is a total mess
+> (thanks IEEE 802.3 for not getting on top of this early enough... and wha=
+t's
+> now stated in 802.3 for 2500base-X is now irrelevant because they were to=
+o
+> late to the
+> party.)
+>=20
+
+Agreed. And I have also seen some of your comments regarding the 2500SGMII =
+and 2500BASEX.
 
 
