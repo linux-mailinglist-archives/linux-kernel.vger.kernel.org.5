@@ -1,89 +1,154 @@
-Return-Path: <linux-kernel+bounces-78172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0AFA860FC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:46:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C5F97860FC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:46:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF56D1C231C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:46:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D78E91C2290D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:46:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C80147BB17;
-	Fri, 23 Feb 2024 10:42:30 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BCC75C902;
-	Fri, 23 Feb 2024 10:42:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 692AB7A722;
+	Fri, 23 Feb 2024 10:41:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nNXUAdlz"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C82F5FB82;
+	Fri, 23 Feb 2024 10:41:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708684950; cv=none; b=X/UgveILCZeNVerDYBfd2lmG1R3pnv9mPFqEqoAS/ocai4jr9UuDLGF4IVykUhQ6x/h68iGfWJHchlCG1ZfBJbeclDXIETetXlOZWuPkE8khu2zjKd4bS0dvm5bkNGv4PPuMCGprthfiFODpv2TfanjcQCKth/Bsyk9UuPgCHGM=
+	t=1708684904; cv=none; b=OpxC+MP6aKlSfrkIxNisIXXE0lH0anGf5Pxt0qgVFMyBzUnTfbCug85og/fgDAZgspT8z4gtLX57tS0K3WBnGNqfA+c8PM7uD+RfOYhOyNaczPIw8VufLTS0gGHDZSml+lRu3WKfR+rZwSRxH8fexDNBGQ3kpZLVfw5O+Rc4M1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708684950; c=relaxed/simple;
-	bh=TuRfPZIINLDlgF89geTHSbS2hhL4J/pD5I7aljCqZF4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dOv8lRulHmXAhi/4PX5VH6WQU9PsgFdhUWZZviNUHUBO9yFYLbZBbTmFK9RSf1d3u0JY4I2/FlhZhcm8HXwsuAzHAr4jKIAOnIz8i4tU4TUDp+3+wKJof6Cp5zgSPVKCorkmnBmP2uEI+Qm7M+X6e8h6XRB7PacEeAzDrDDnFTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 28E9F1596;
-	Fri, 23 Feb 2024 02:43:06 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.66.180])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 45B013F762;
-	Fri, 23 Feb 2024 02:42:25 -0800 (PST)
-Date: Fri, 23 Feb 2024 10:42:16 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: syzbot <syzbot+07144c543a5c002c7305@syzkaller.appspotmail.com>
-Cc: acme@kernel.org, adrian.hunter@intel.com,
-	alexander.shishkin@linux.intel.com, eadavis@qq.com,
-	irogers@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, mingo@redhat.com,
-	namhyung@kernel.org, netdev@vger.kernel.org, olsajiri@gmail.com,
-	peterz@infradead.org, syzkaller-bugs@googlegroups.com,
-	xrivendell7@gmail.com
-Subject: Re: [syzbot] [perf?] WARNING in perf_event_open
-Message-ID: <Zdh2fjuWi0sQIhpV@FVFF77S0Q05N>
-References: <000000000000e8099a060cee1003@google.com>
- <00000000000007401c061204919d@google.com>
+	s=arc-20240116; t=1708684904; c=relaxed/simple;
+	bh=pMA/M1Wst7tXkYIO5GIr1rjeX1F/9HHGrY1Lxy8EC3w=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=OYDaltaPLpq5zNpd3+JNM4LNnEH5/teblyXxTT/37c21tPX01PGJW5r6k0dbE8xSoX2e0hGxdHSNwqKFyI+Q9fdy6Gf3hW5ktUZa9Heq32SLLZX/4+h/4s1hy1VkcHo+aDvT80NauSrgI8Qpzb+tX2qQlrDXaSfgaQys0l0BwZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nNXUAdlz; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a3d5e77cfbeso128235366b.0;
+        Fri, 23 Feb 2024 02:41:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708684901; x=1709289701; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=pMA/M1Wst7tXkYIO5GIr1rjeX1F/9HHGrY1Lxy8EC3w=;
+        b=nNXUAdlzppPpKfGM+9uUXwTErhlOIWOEuIIycM5iubmq6LkmexL98e41OsNy+L8qDe
+         yrV0hi618880HngsiGM+Zg8HCnkGimOHdp/QZen5W71FFV3LvKYc7YBMbjhar/+eyZGY
+         Ad3AECKIxoa9Hqrhh2knV8qRLDy9Q8OfkkhsxSdLkJDJhZsQ+vLljKhMzoNn6UKjYBsA
+         NSKHgNsSnqu1dMls+GHOKI4lW3eHVA9Xi6MvAPcK9/rCbWnxWQ3+rEx51rj2sOvXXp7Y
+         WGNBxtDVmhFmGOZKNgkDT1iuE5Mcleu6DqRhoZ7FYpgFdwGX5CKOx0gaSrYDkT1po3DB
+         bkpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708684901; x=1709289701;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pMA/M1Wst7tXkYIO5GIr1rjeX1F/9HHGrY1Lxy8EC3w=;
+        b=Vda7QvdLes8BW4WLCprRLOHrrirXF7Y64xBXOWHNbGJOzbIuXqCToVOpbT2K5t6ua8
+         xhhANJ4Qnwq8okg3rZMNSaJTmScoToN0SRfbu0hEjaoWinDZVzzAGTs/UAvb+vkmXTEO
+         3MWIMHNca4cu2Y8d7z9XMC6xhFLuNUkPDUQ2uK7MruQ/zCqBF8aCHNhBjgaZiRA8Wi0N
+         Wb5ckVjjTYNq4Ml7vUbtog6inCBl3OQF0iF6gloGgvSzPha6K6XHJyd+hJDX29iF9dAI
+         tzD5OmOqV5FISQpOtdMpaabmNO/oWo8RzSye4WvE08WsJzCXPX/OOfnJMM7JvmsyM2RT
+         GLaw==
+X-Forwarded-Encrypted: i=1; AJvYcCWTZyMP29Kzo4jXJqKUZDzq9EXd4yaWyb5yhhuiaJnTjp9boHC0beCS5iPZuLgqd74wM549jziqk/lWzHTJkGZJUgGCBfofNJKRqlEZOdXZmLOLo134gEN9k8bRh2zIC8AvBVHpbcJD/w==
+X-Gm-Message-State: AOJu0Yx8fwGP6tvSPi+tVDfcPfSZVFX5Qh3HeJQ4rwGLZXckCId8RRLR
+	ZQgJbYHglmSBOe3McYvEILV0bxXJVswz9Nz5/eo5UXLQwW3nC9Zb
+X-Google-Smtp-Source: AGHT+IGUCCSCQV9rw4wx/ZhCMSmgrPlnVN15HXlKN/MbnKUIkrgqLVKR3L5lMpuFeA3d/5nKzSSAzg==
+X-Received: by 2002:a17:906:5c9:b0:a3f:4800:1fa8 with SMTP id t9-20020a17090605c900b00a3f48001fa8mr4270726ejt.26.1708684901141;
+        Fri, 23 Feb 2024 02:41:41 -0800 (PST)
+Received: from ?IPv6:2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47? (p200300f6ef1b2000944ccbc71e1c2c47.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47])
+        by smtp.gmail.com with ESMTPSA id ty24-20020a170907c71800b00a3ee41cbe87sm3762669ejc.153.2024.02.23.02.41.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 02:41:40 -0800 (PST)
+Message-ID: <cdf0a9facd95a2b7ee618e6130dedb9aabf4ed09.camel@gmail.com>
+Subject: Re: [PATCH 1/2] driver core: Introduce device_link_wait_removal()
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: Herve Codina <herve.codina@bootlin.com>, Saravana Kannan
+	 <saravanak@google.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, Frank Rowand
+ <frowand.list@gmail.com>, Lizhi Hou <lizhi.hou@amd.com>, Max Zhen
+ <max.zhen@amd.com>, Sonal Santan <sonal.santan@amd.com>, Stefano Stabellini
+ <stefano.stabellini@xilinx.com>, Jonathan Cameron
+ <Jonathan.Cameron@huawei.com>,  linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Allan Nielsen <allan.nielsen@microchip.com>,
+ Horatiu Vultur <horatiu.vultur@microchip.com>,  Steen Hegelund
+ <steen.hegelund@microchip.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Android Kernel Team
+ <kernel-team@android.com>
+Date: Fri, 23 Feb 2024 11:45:02 +0100
+In-Reply-To: <20240223101115.6bf7d570@bootlin.com>
+References: <20231130174126.688486-1-herve.codina@bootlin.com>
+	 <20231130174126.688486-2-herve.codina@bootlin.com>
+	 <CAGETcx9uP86EHyKJNifBMd23oCsA+KpMa+e36wJEEnHDve+Avg@mail.gmail.com>
+	 <20240223101115.6bf7d570@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00000000000007401c061204919d@google.com>
 
-On Thu, Feb 22, 2024 at 07:58:02PM -0800, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 7e2c1e4b34f07d9aa8937fab88359d4a0fce468e
-> Author: Mark Rutland <mark.rutland@arm.com>
-> Date:   Fri Dec 15 11:24:50 2023 +0000
-> 
->     perf: Fix perf_event_validate_size() lockdep splat
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=157c509c180000
-> start commit:   5abde6246522 bpf: Avoid unnecessary use of comma operator ..
-> git tree:       bpf-next
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=8f565e10f0b1e1fc
-> dashboard link: https://syzkaller.appspot.com/bug?extid=07144c543a5c002c7305
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16ba8929e80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17be7265e80000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
-> 
-> #syz fix: perf: Fix perf_event_validate_size() lockdep splat
+On Fri, 2024-02-23 at 10:11 +0100, Herve Codina wrote:
+> Hi Saravana,
+>=20
+> On Tue, 20 Feb 2024 16:31:13 -0800
+> Saravana Kannan <saravanak@google.com> wrote:
+>=20
+> ...
+>=20
+> > > +void device_link_wait_removal(void)
+> > > +{
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * devlink removal jobs ar=
+e queued in the dedicated work queue.
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * To be sure that all rem=
+oval jobs are terminated, ensure that
+> > > any
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * scheduled work has run =
+to completion.
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 drain_workqueue(fw_devlink_wq);=
+=C2=A0=20
+> >=20
+> > Is there a reason this needs to be drain_workqueu() instead of
+> > flush_workqueue(). Drain is a stronger guarantee than we need in this
+> > case. All we are trying to make sure is that all the device link
+> > remove work queued so far have completed.
+>=20
+> I used drain_workqueue() because drain_workqueue() allows for jobs alread=
+y
+> present in a workqueue to re-queue a job and drain_workqueue() will wait
+> also for this new job completion.
+>=20
+> I think flush_workqueue() doesn't wait for this chain queueing.
+>=20
+> In our case, my understanding was that device_link_release_fn() calls
+> put_device() for the consumer and the supplier.
+> If refcounts reaches zero, devlink_dev_release() can be called again
+> and re-queue a job.
+>=20
 
-I believe syzbot is correct; this is fixed by commit:
+Looks sensible. The only doubt (that Saravana mays know better) is that I'm=
+ not
+sure put_device() on a supplier or consumer can actually lead to
+devlink_dev_release(). AFAIU, a consumer or a supplier should not be a devi=
+ce
+from the devlink class. Hence, looking at device_release(), I'm not sure it=
+ can
+happen unless for some odd reason someone is messing with devlinks in .remo=
+ve()
+or .type->remove().
 
-  7e2c1e4b34f07d9a ("perf: Fix perf_event_validate_size() lockdep splat")
+- Nuno S=C3=A1
 
-.. so:
-
-#syz fix: perf: Fix perf_event_validate_size() lockdep splat
-
-Mark.
 
