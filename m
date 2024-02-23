@@ -1,279 +1,99 @@
-Return-Path: <linux-kernel+bounces-78201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24873861023
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:07:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ACEC86102F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:16:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7C84B22D8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:07:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B38DCB21DD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:16:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27D0D657A9;
-	Fri, 23 Feb 2024 11:07:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC74B67C4D;
+	Fri, 23 Feb 2024 11:16:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YAY3CJ5b"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="N+4llCPZ"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3329E250E2;
-	Fri, 23 Feb 2024 11:07:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ABDD14B835;
+	Fri, 23 Feb 2024 11:16:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708686426; cv=none; b=pM5etq6Sr8d3aw3iB/rcpv0d7BWoecKFWS34gKsp5WEzt/fclxqMrY6PqOJyWFyrSePKlO8JSB57qdA+/lK0xwwr7yTT/h5e4Er9StCI4Jza/aAxZPqzV1jOpeZyUkaH85EBEozqQsswi8nK1cGlfhhLYrhYvDd+s4OhedzMk6o=
+	t=1708686989; cv=none; b=rD9cudBRjttmh3cCEdUoGUDDOIaXFGmcKo3aTNzGiChSvH2x+8+/OaNsuLRIkNZKk0e1JdOOdTQh2ePRh2S0bckx4poYLcVjZnmbM4vB7GL9wuW8Ok22MkRgBG3+FKo5A0ejByXmyfxtwS+cq8tkCfmXSLXgWx9XEvwPdGWSob4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708686426; c=relaxed/simple;
-	bh=Zlm5d+QOs/dktmMB+z0HKv98GRZBJLPrBX3i8rbARso=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KJq7sIcMdK5z9iasMvSnOTUGp5JL97zTHk2q2/+eDoENelNAdXNFiVdIHRCHko5Ac9oBYQgmj9z79T+fQQsRZKPgutN685QXm1Ph+ztuHyW7aKXzzkCWGcwaKryvzgoTc1Ne/OXqbHWgRFhClWZcihtbBUdieczeqMqh4RPlywg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YAY3CJ5b; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 801FEC433F1;
-	Fri, 23 Feb 2024 11:07:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708686425;
-	bh=Zlm5d+QOs/dktmMB+z0HKv98GRZBJLPrBX3i8rbARso=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=YAY3CJ5bB/KTy3+uDviC3rtHYpB5iZfKlvwFkPvcAsCbAFqyHYEYXThiV5Q5CMHhU
-	 j5a/GSSWxeub66LHvHTcWC1N3NXCWGn20UypDl00hL9UgnGxrInbr2ZidAuHyeXeqw
-	 xNAIC7vv+mTbC2hJfCSPozSvRc8xsz+XBtiFHtfBemd0JweUDx4bd9K2ICMO+ej5Mm
-	 HrLtBXBI/SnCHRRpmQAS8LrnLY+D7Mkl6kav5DgOjqhO8Gnt4Cb/39B49kgjdGrTD5
-	 RZPw6nxk2uPRXpZd7t8Hmui1cIq3Hpf5kVfj9qHwZr5TLhQ7QeB1lOYg2KY9kGFN+p
-	 uf98LxxIE3b2w==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rdTOQ-0063wt-P7;
-	Fri, 23 Feb 2024 11:07:03 +0000
-Date: Fri, 23 Feb 2024 11:07:02 +0000
-Message-ID: <86r0h330dl.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <shuah@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Dave Martin <dave.martin@arm.com>,
-	kvmarm@lists.linux.dev,
-	linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 03/14] arm64/fpsimd: Support FEAT_FPMR
-In-Reply-To: <20240122-arm64-2023-dpisa-v4-3-776e094861df@kernel.org>
-References: <20240122-arm64-2023-dpisa-v4-0-776e094861df@kernel.org>
-	<20240122-arm64-2023-dpisa-v4-3-776e094861df@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1708686989; c=relaxed/simple;
+	bh=bCP9xIHaRBY6slhXkEczq0iwAfBBoyIZlUPlQCFQ93o=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=W7KboKzNl1tCyVZuIDsJCc6raNO+21YkZZUogkwMRi21dEPMPgLiKSEwfeRBZHV9IlHgrgi1peGIX2o3C9ATlZlIO6kv++ie7IyIw/3TJ6BYLreObba3+cpi4P07Qdyokdt4YjS4bc6oCyTbHyDw0ZwH2NIslEt8zVDfLYku4wY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=N+4llCPZ; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C1B1520005;
+	Fri, 23 Feb 2024 11:16:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708686984;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bCP9xIHaRBY6slhXkEczq0iwAfBBoyIZlUPlQCFQ93o=;
+	b=N+4llCPZevgTvBggZq8lo7lMJfaFDrjsN6nOnM/ydnQgxhWC8rE+xxvEJjjJcQCo+FpJzt
+	TWR0vQvsOJU6KVR8Vh1QvcrzAYfpzBVOJis1Cm2JHDmd61mXcjEh0D/jQHxam+d0xoQhuh
+	M6k04k+EmUf4dQhiumN5C4hjn0ILWLr12S5bzUampCnMdtdPYocFdtFoFkM4bfkLFWxRkZ
+	iVxApVsJUQ+/jP8HtPbKsspxH1GxLRJAMJq+p7J5t5p7s1kywwoe5ykknRVxNhpL1M5Ff6
+	yd6zlqC0ugVd0NmAlwmDX78yIm9X2YGWQ+UBQKYliBor9uLdY+ftZKwCI35TJQ==
+Date: Fri, 23 Feb 2024 12:16:22 +0100
+From: Maxime Chevallier <maxime.chevallier@bootlin.com>
+To: =?UTF-8?B?SsOpcsOpbWll?= Dautheribes <jeremie.dautheribes@bootlin.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
+ Russell King <linux@armlinux.org.uk>, Andrew Davis <afd@ti.com>,
+ netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, =?UTF-8?B?TWlxdcOobA==?= Raynal
+ <miquel.raynal@bootlin.com>, Yen-Mei Goh <yen-mei.goh@keysight.com>
+Subject: Re: [PATCH net-next 2/3] net: phy: dp83826: Add support for
+ phy-mode configuration
+Message-ID: <20240223121622.6bd9e3b1@device-28.home>
+In-Reply-To: <20240222103117.526955-3-jeremie.dautheribes@bootlin.com>
+References: <20240222103117.526955-1-jeremie.dautheribes@bootlin.com>
+	<20240222103117.526955-3-jeremie.dautheribes@bootlin.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: broonie@kernel.org, catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, corbet@lwn.net, shuah@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, dave.martin@arm.com, kvmarm@lists.linux.dev, linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: maxime.chevallier@bootlin.com
 
-On Mon, 22 Jan 2024 16:28:06 +0000,
-Mark Brown <broonie@kernel.org> wrote:
-> 
-> FEAT_FPMR defines a new EL0 accessible register FPMR use to configure the
-> FP8 related features added to the architecture at the same time. Detect
-> support for this register and context switch it for EL0 when present.
-> 
-> Due to the sharing of responsibility for saving floating point state
-> between the host kernel and KVM FP8 support is not yet implemented in KVM
-> and a stub similar to that used for SVCR is provided for FPMR in order to
-> avoid bisection issues. To make it easier to share host state with the
-> hypervisor we store FPMR as a hardened usercopy field in uw (along with
-> some padding).
-> 
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
->  arch/arm64/include/asm/cpufeature.h |  5 +++++
->  arch/arm64/include/asm/fpsimd.h     |  2 ++
->  arch/arm64/include/asm/kvm_host.h   |  1 +
->  arch/arm64/include/asm/processor.h  |  4 ++++
->  arch/arm64/kernel/cpufeature.c      |  9 +++++++++
->  arch/arm64/kernel/fpsimd.c          | 13 +++++++++++++
->  arch/arm64/kvm/fpsimd.c             |  1 +
->  arch/arm64/tools/cpucaps            |  1 +
->  8 files changed, 36 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-> index 21c824edf8ce..34fcdbc65d7d 100644
-> --- a/arch/arm64/include/asm/cpufeature.h
-> +++ b/arch/arm64/include/asm/cpufeature.h
-> @@ -768,6 +768,11 @@ static __always_inline bool system_supports_tpidr2(void)
->  	return system_supports_sme();
->  }
->  
-> +static __always_inline bool system_supports_fpmr(void)
-> +{
-> +	return alternative_has_cap_unlikely(ARM64_HAS_FPMR);
-> +}
-> +
->  static __always_inline bool system_supports_cnp(void)
->  {
->  	return alternative_has_cap_unlikely(ARM64_HAS_CNP);
-> diff --git a/arch/arm64/include/asm/fpsimd.h b/arch/arm64/include/asm/fpsimd.h
-> index 50e5f25d3024..6cf72b0d2c04 100644
-> --- a/arch/arm64/include/asm/fpsimd.h
-> +++ b/arch/arm64/include/asm/fpsimd.h
-> @@ -89,6 +89,7 @@ struct cpu_fp_state {
->  	void *sve_state;
->  	void *sme_state;
->  	u64 *svcr;
-> +	unsigned long *fpmr;
->  	unsigned int sve_vl;
->  	unsigned int sme_vl;
->  	enum fp_type *fp_type;
-> @@ -154,6 +155,7 @@ extern void cpu_enable_sve(const struct arm64_cpu_capabilities *__unused);
->  extern void cpu_enable_sme(const struct arm64_cpu_capabilities *__unused);
->  extern void cpu_enable_sme2(const struct arm64_cpu_capabilities *__unused);
->  extern void cpu_enable_fa64(const struct arm64_cpu_capabilities *__unused);
-> +extern void cpu_enable_fpmr(const struct arm64_cpu_capabilities *__unused);
->  
->  extern u64 read_smcr_features(void);
->  
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index 21c57b812569..7993694a54af 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -543,6 +543,7 @@ struct kvm_vcpu_arch {
->  	enum fp_type fp_type;
->  	unsigned int sve_max_vl;
->  	u64 svcr;
-> +	unsigned long fpmr;
+Hello J=C3=A9r=C3=A9mie,
 
-As this directly represents a register, I'd rather you use a type that
-represents the size of that register unambiguously (u64).
+On Thu, 22 Feb 2024 11:31:16 +0100
+J=C3=A9r=C3=A9mie Dautheribes <jeremie.dautheribes@bootlin.com> wrote:
 
->  
->  	/* Stage 2 paging state used by the hardware on next switch */
->  	struct kvm_s2_mmu *hw_mmu;
-> diff --git a/arch/arm64/include/asm/processor.h b/arch/arm64/include/asm/processor.h
-> index 5b0a04810b23..b453c66d3fae 100644
-> --- a/arch/arm64/include/asm/processor.h
-> +++ b/arch/arm64/include/asm/processor.h
-> @@ -155,6 +155,8 @@ struct thread_struct {
->  	struct {
->  		unsigned long	tp_value;	/* TLS register */
->  		unsigned long	tp2_value;
-> +		unsigned long	fpmr;
-> +		unsigned long	pad;
->  		struct user_fpsimd_state fpsimd_state;
->  	} uw;
->  
-> @@ -253,6 +255,8 @@ static inline void arch_thread_struct_whitelist(unsigned long *offset,
->  	BUILD_BUG_ON(sizeof_field(struct thread_struct, uw) !=
->  		     sizeof_field(struct thread_struct, uw.tp_value) +
->  		     sizeof_field(struct thread_struct, uw.tp2_value) +
-> +		     sizeof_field(struct thread_struct, uw.fpmr) +
-> +		     sizeof_field(struct thread_struct, uw.pad) +
->  		     sizeof_field(struct thread_struct, uw.fpsimd_state));
->  
->  	*offset = offsetof(struct thread_struct, uw);
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index eae59ec0f4b0..0263565f617a 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -272,6 +272,7 @@ static const struct arm64_ftr_bits ftr_id_aa64pfr1[] = {
->  };
->  
->  static const struct arm64_ftr_bits ftr_id_aa64pfr2[] = {
-> +	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64PFR2_EL1_FPMR_SHIFT, 4, 0),
->  	ARM64_FTR_END,
->  };
->  
-> @@ -2767,6 +2768,14 @@ static const struct arm64_cpu_capabilities arm64_features[] = {
->  		.type = ARM64_CPUCAP_SYSTEM_FEATURE,
->  		.matches = has_lpa2,
->  	},
-> +	{
-> +		.desc = "FPMR",
-> +		.type = ARM64_CPUCAP_SYSTEM_FEATURE,
-> +		.capability = ARM64_HAS_FPMR,
-> +		.matches = has_cpuid_feature,
-> +		.cpu_enable = cpu_enable_fpmr,
-> +		ARM64_CPUID_FIELDS(ID_AA64PFR2_EL1, FPMR, IMP)
-> +	},
->  	{},
->  };
->  
-> diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c
-> index a5dc6f764195..8e24b5e5e192 100644
-> --- a/arch/arm64/kernel/fpsimd.c
-> +++ b/arch/arm64/kernel/fpsimd.c
-> @@ -359,6 +359,9 @@ static void task_fpsimd_load(void)
->  	WARN_ON(preemptible());
->  	WARN_ON(test_thread_flag(TIF_KERNEL_FPSTATE));
->  
-> +	if (system_supports_fpmr())
-> +		write_sysreg_s(current->thread.uw.fpmr, SYS_FPMR);
-> +
->  	if (system_supports_sve() || system_supports_sme()) {
->  		switch (current->thread.fp_type) {
->  		case FP_STATE_FPSIMD:
-> @@ -446,6 +449,9 @@ static void fpsimd_save_user_state(void)
->  	if (test_thread_flag(TIF_FOREIGN_FPSTATE))
->  		return;
->  
-> +	if (system_supports_fpmr())
-> +		*(last->fpmr) = read_sysreg_s(SYS_FPMR);
-> +
->  	/*
->  	 * If a task is in a syscall the ABI allows us to only
->  	 * preserve the state shared with FPSIMD so don't bother
-> @@ -688,6 +694,12 @@ static void sve_to_fpsimd(struct task_struct *task)
->  	}
->  }
->  
-> +void cpu_enable_fpmr(const struct arm64_cpu_capabilities *__always_unused p)
-> +{
-> +	write_sysreg_s(read_sysreg_s(SYS_SCTLR_EL1) | SCTLR_EL1_EnFPM_MASK,
-> +		       SYS_SCTLR_EL1);
-> +}
-> +
->  #ifdef CONFIG_ARM64_SVE
->  /*
->   * Call __sve_free() directly only if you know task can't be scheduled
-> @@ -1680,6 +1692,7 @@ static void fpsimd_bind_task_to_cpu(void)
->  	last->sve_vl = task_get_sve_vl(current);
->  	last->sme_vl = task_get_sme_vl(current);
->  	last->svcr = &current->thread.svcr;
-> +	last->fpmr = &current->thread.uw.fpmr;
->  	last->fp_type = &current->thread.fp_type;
->  	last->to_save = FP_STATE_CURRENT;
->  	current->thread.fpsimd_cpu = smp_processor_id();
-> diff --git a/arch/arm64/kvm/fpsimd.c b/arch/arm64/kvm/fpsimd.c
-> index 8c1d0d4853df..e3e611e30e91 100644
-> --- a/arch/arm64/kvm/fpsimd.c
-> +++ b/arch/arm64/kvm/fpsimd.c
-> @@ -153,6 +153,7 @@ void kvm_arch_vcpu_ctxsync_fp(struct kvm_vcpu *vcpu)
->  		fp_state.sve_vl = vcpu->arch.sve_max_vl;
->  		fp_state.sme_state = NULL;
->  		fp_state.svcr = &vcpu->arch.svcr;
-> +		fp_state.fpmr = &vcpu->arch.fpmr;
->  		fp_state.fp_type = &vcpu->arch.fp_type;
+> The TI DP83826 PHY can operate in either MII mode or RMII mode.
+> By default, it is configured by straps.
+> It can also be configured by writing to the bit 5 of register 0x17 - RMII
+> and Status Register (RCSR).
+>=20
+> When phydev->interface is rmii, rmii mode must be enabled, otherwise
+> mii mode must be set.
+> This prevents misconfiguration of hw straps.
+>=20
+> Signed-off-by: J=C3=A9r=C3=A9mie Dautheribes <jeremie.dautheribes@bootlin=
+com>
 
-Given the number of fields you keep track of, it would make a lot more
-sense if these FP-related fields were in their own little structure
-and tracked by a single pointer (I don't think there is a case where
-we track them independently).
+This looks good to me,
 
-Thanks,
+Reviewed-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
 
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
 
