@@ -1,116 +1,94 @@
-Return-Path: <linux-kernel+bounces-77930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3D96860CE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:34:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9656860CE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:34:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30EA11C24BD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:34:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A91E1F25916
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:34:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F08F1AAD2;
-	Fri, 23 Feb 2024 08:28:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD30A4F5ED;
+	Fri, 23 Feb 2024 08:28:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hspgkU4V"
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="VgbPUV1v"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D18917BAC
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 08:28:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74F7717BAC;
+	Fri, 23 Feb 2024 08:28:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708676907; cv=none; b=CEjZsU5AbYYNQZmjiNIjHnmLWeTQwHMh2tuOW3+TqRUEiRBryTEKY3OeFgJ53JvDRrJ1T6VpJjS+ONGKaCvFiuSh89/7sVqjI7TygYFHjVdt/MiF7dXoK6mcjx6qBbCHaBc/ncUR0vLXvP45G38ATPyboZE6T7aAwpe9f5XrJpY=
+	t=1708676915; cv=none; b=NedCMmzAfbDj8Uo1S5MXot05icABGzsCfBlTg2koMsYh5pago+q1as6yS2PxZNoEet5rzFICf82X8TRp6+Hr94Pz1/nU0+clJ3Rx02bxfKA3aT3jiTbuMJ53D9TSnxTh/c3j8TTnyDL66VqYjm03HEt0u7/AzPPu0eegy5FZQEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708676907; c=relaxed/simple;
-	bh=8AiynCpe9xm6kQcOTCDN5hH0DOETixPNQfpGOskMMBI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=O9Pv4J/AZ523w+A8b3+/AqF8pPK5Pjjh8hp+2+0G+CXQXXl019DetysBvxqDBRbZdisAdJucaz5APE42IimIiCYXlHd61UuR7XCBXHb7tDGBchXQnCmMSpAGPICXyMViYGHNFBbSPKZJsCcPBU/OdSgCzskWIGxktPfBiukwWcg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hspgkU4V; arc=none smtp.client-ip=209.85.219.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dc6e080c1f0so92705276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 00:28:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708676904; x=1709281704; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8AiynCpe9xm6kQcOTCDN5hH0DOETixPNQfpGOskMMBI=;
-        b=hspgkU4VuOYaCAYPBmvVF/+2R5JyzbNB2B/GRCJWBySrNNcG9uQ/mZQ/Oh7kpaFp8X
-         qPAxk4/A39k38ZhDtIbMoh2kByr/fcOQKvqqJfZzb867K8L0olDNFw71V0UAeP3aUxvp
-         aKXbmTeibIXNwTdIxJPzGDzt7M+L3lk+5STrThAdgXWVcJv62Wz96p2+3qg2tYCRK0X0
-         kbGA+w+b+2xbwsrgDZ/IFW1KjuLV3b9G2ZPoGNLsOrHFZdAAKuL8sL+yw4xvidIMk/Dz
-         UVPh21EP1q0ldgz56cbHLbWI5U+/yxHmkJmpF2g9d4U+dybUOlefuJO8K/HcouBSh2h6
-         R5rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708676904; x=1709281704;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8AiynCpe9xm6kQcOTCDN5hH0DOETixPNQfpGOskMMBI=;
-        b=h3B7qQG3yUQM0QAcP/rGJFFJy/WXBoNgw2+H8h/zKspJuoSBT057Qht9p8HAqzsMI5
-         dYPa4yqIWUC7apHnATtz77KgvLrhWezK6T964vVt6fhxsOpg7x5pBxqnq6ZswtqcNy00
-         /k5t2EAkTUZgYWcfzsB4sHut5kmJBxkIbMypSZhOWi5A8rQ5LHnzmuZMOvM5Nsyi3bQy
-         Y9ggqB/C1+54ksY+2UjxR5mED977STYCHUr0ltaJm9OKrnBdCCN6MWh8b6mAAIDqu+yQ
-         dppO1yIBgbv1Tf/Tk6Uz/sLcns3Y3lBFsUVkQIlhzbddJDJHrE9Tc2gvBQDM3LqPBAFv
-         FEeA==
-X-Forwarded-Encrypted: i=1; AJvYcCUNZfdeYvawxoGb1GtpiAICHa/Cx7oJRTOKfaGNwLd94ONqwaUXpDgt4JuLvp7ITl9Lvr8EOicD0MoNLKa0W8VtbP17efBNzwukwRGn
-X-Gm-Message-State: AOJu0YyxcnQrUx6ja5XTL6FeitnZRhEwiv304KwzAVJqv88c+wBiDGM2
-	o1yQZOLQXeQ1mRYHChQSAKWkDRdcQsmNmBWQ2WHsYfVkB9XcPxzFREvLdq2I08YXYdXyOCqmcCD
-	VHuYxxcqHYUod1uF4fAE7kxw7y6IbQmpmrFJegg==
-X-Google-Smtp-Source: AGHT+IFZmfPy2te5fRsS6uPQOwURXMnZozqqnqYceFRPogHaB094n6NaUZkzBM6xsJv0mbIN5skNvcuRImnUSaccFbQ=
-X-Received: by 2002:a25:5f4b:0:b0:dcc:b69c:12e1 with SMTP id
- h11-20020a255f4b000000b00dccb69c12e1mr1538778ybm.59.1708676904144; Fri, 23
- Feb 2024 00:28:24 -0800 (PST)
+	s=arc-20240116; t=1708676915; c=relaxed/simple;
+	bh=cWWIxYRgoOxuJ68j1q9tZim4FqZAlZlra0e2EyXAcqQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mboc+jDOcp2MvCYQzzUvyByRGsXvFiJ0RHxDTsespbPPrZIsJYlW/C80J0+EEK6SHCYCIAq2BnUWnlqNjY/pHa1RtuRah+5y91rqVzkqcUwCJDqp0FzchuMmmK9j9hAiwGsRKQET1dl8Tluv6DyZJUPNEKIoT/vasq+AjWujXa8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=VgbPUV1v; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708676911;
+	bh=cWWIxYRgoOxuJ68j1q9tZim4FqZAlZlra0e2EyXAcqQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=VgbPUV1vaOZ1+Qy2HpOhr+qA2MyPZzmIs2aDRGaC6TtZeyXnn8i6yskawRRSDVrIr
+	 B7vzNaGsr5cDdjRyl/AVD5xnzSCyfnsxkYTjU2fhroXaPw6CJyPpPLY2K/AWhEjsOi
+	 imunYIf5BH1qCEiANnOjuadrvXGj9oeS+UHsE5f1WeKi+zwuFOvzVQZnzwoQDTktla
+	 eXsGErXMmAoCKIFh4b/kWkmLJM8UpfW+RdLSTbi4DUXw9cqdlkGPAhOp+DWxHfkSqF
+	 Ku9H6p347w1ZUsibw5cvdWulxsKjJzRM6h/UPryhiwhKm16Axs4TBhuMg5v4AuE0Qa
+	 YhdbTBqgKGo+w==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 30BC437813DF;
+	Fri, 23 Feb 2024 08:28:30 +0000 (UTC)
+Message-ID: <298d953d-6320-4dda-b31e-c9503dc91cdb@collabora.com>
+Date: Fri, 23 Feb 2024 09:28:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223-pinctrl-scmi-v4-0-10eb5a379274@nxp.com> <20240223-pinctrl-scmi-v4-3-10eb5a379274@nxp.com>
-In-Reply-To: <20240223-pinctrl-scmi-v4-3-10eb5a379274@nxp.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 23 Feb 2024 09:28:12 +0100
-Message-ID: <CACRpkdZLuWwecacBAimT=Vj67dGabzBH-7aaqzoyj1B1sY6o_A@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
- protocol basic support
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>, Cristian Marussi <cristian.marussi@arm.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Oleksii Moisieiev <oleksii_moisieiev@epam.com>, Shawn Guo <shawnguo@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	AKASHI Takahiro <takahiro.akashi@linaro.org>, Peng Fan <peng.fan@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3,2/2] media: mediatek: vcodec: adding lock to protect
+ encoder context list
+Content-Language: en-US
+To: Yunfei Dong <yunfei.dong@mediatek.com>,
+ =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
+ Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+ Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+ Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+ Nathan Hebert <nhebert@chromium.org>, Irui Wang <irui.wang@mediatek.com>
+Cc: Hsin-Yi Wang <hsinyi@chromium.org>, Fritz Koenig <frkoenig@chromium.org>,
+ Daniel Vetter <daniel@ffwll.ch>, Steve Cho <stevecho@chromium.org>,
+ linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20240222092609.31382-1-yunfei.dong@mediatek.com>
+ <20240222092609.31382-3-yunfei.dong@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240222092609.31382-3-yunfei.dong@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 23, 2024 at 2:08=E2=80=AFAM Peng Fan (OSS) <peng.fan@oss.nxp.co=
-m> wrote:
+Il 22/02/24 10:26, Yunfei Dong ha scritto:
+> The ctx_list will be deleted when scp getting unexpected behavior, then the
+> ctx_list->next will be NULL, the kernel driver maybe access NULL pointer in
+> function vpu_enc_ipi_handler when going through each context, then reboot.
+> 
+> Need to add lock to protect the ctx_list to make sure the ctx_list->next isn't
+> NULL pointer.
+> 
+> Fixes: 1972e32431ed ("media: mediatek: vcodec: Fix possible invalid memory access for encoder")
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
 
-> From: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
->
-> Add basic implementation of the SCMI v3.2 pincontrol protocol.
->
-> Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
-> Tested-by: Cristian Marussi <cristian.marussi@arm.com>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-> Co-developed-by: Peng Fan <peng.fan@nxp.com>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-This looks ripe for merging for me, there are clearly dependencies in the S=
-CMI
-firmware tree so I can't apply this to the pin control tree, but if
-someone creates
-an immutable branch from the SCMI firmware repo (based off v6.8-rc1 or so)
-I'm happy to also pull the branch into pin control.
-
-Yours,
-Linus Walleij
 
