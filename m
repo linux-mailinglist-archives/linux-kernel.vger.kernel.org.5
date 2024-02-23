@@ -1,116 +1,108 @@
-Return-Path: <linux-kernel+bounces-79090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BB8E861D76
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:21:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 376E1861D7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:22:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C707CB26354
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:21:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FFD01C2303A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:22:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE4FB14C5AA;
-	Fri, 23 Feb 2024 20:19:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D20C91474C1;
+	Fri, 23 Feb 2024 20:21:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oxHxISt9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="USxebXXe"
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 813A7149392;
-	Fri, 23 Feb 2024 20:19:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DB23823CD
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 20:21:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708719571; cv=none; b=W7Uo8X3V6dbRo7O29QOh9Osfm4yrcGP7XixctPHZiZkVe3/+dZdNPhk/krA6iBxYXImxx0oksNLXyGTe7imF4EtjFmqcxGeiyR4A9aVkLDHeN6ydMm7fIU14pF3IwExjCOaFdD1LIQd2kQjd1a07WUueeOX45CgIzLUTUoIEFdU=
+	t=1708719669; cv=none; b=ncm5GDN9RWQ1el32i6UjoXnHQKfaC4Gh8v8Ede7uMEIzQ6rNgzw6URchycVdRrYkcRLW34WbAGBdm7stp8IZLAdHYPU+UYCt77ViHgidrh/bQ4xl+qg6bZX2eBvbazi1b0rL+VzgzhdhFvbGXt6B0QL9XA7BRn/NH7vgIHgEUwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708719571; c=relaxed/simple;
-	bh=FwvYtTGfOF4NuvGGUI168jKEh9/uz8oP6Cgx5tzsEu4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=jq7K6ZXRavbPEzFlobcZJiGwAN2h4XUft3K8c5lMdh1mti0tg3hi6KAFtGyHoWUnOxDev6f8aUbhVhtazNXce5D5E9bXK+HeSlKPChPdeVu1PHE+14HXb6pF6D5K0gs5nGNDHtRXsSqpekJJQEBM8aFI8uhBg0ixMxiRF5GYvcs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oxHxISt9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF8B1C43390;
-	Fri, 23 Feb 2024 20:19:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708719567;
-	bh=FwvYtTGfOF4NuvGGUI168jKEh9/uz8oP6Cgx5tzsEu4=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=oxHxISt9+nPVcr3U99R+uDYJC90r0TKLIjZsBOWmFM0aJABvqFYO8xMYZ11VYVoA3
-	 5jVP2wgbjFB2xnJU5E63UQAu9AGoEq23JEplKoEtM4i7onlmL+1sSHp8rA7hOvisWd
-	 9HwissidoxIUwP+qQBGspUPHVQ2VZQTWJO9N+3gTZSvjBxYf5ID+2Sh4mlwgHXD1bX
-	 2kMfRSN9jwIO0/stP12obSwx+6EQWDoH1wx4Xv3wRAymY+xDHy1TkA6vLjl+8tF0+t
-	 IeBXy7OFhyPxtU/bRG3VA/cgyTRZ6tLKLJJI52iOoqCHYIT3EwenwJ8sUtlJk3Bg8O
-	 wXcC15VjPiNmg==
-From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
-Date: Fri, 23 Feb 2024 21:18:00 +0100
-Subject: [PATCH net-next 8/8] selftests: mptcp: diag: change timeout_poll
- to 30
+	s=arc-20240116; t=1708719669; c=relaxed/simple;
+	bh=1bmnyFrNrxcCLjE3S/+oXjFKsestIbMgUBvvfSSy+OA=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=AHdWh7fZ8lMLXaNgovUjIzM0vTS7vyOZEqEWhmxxm1b4+X/2X2kHTsx1Bhe0Pz1cxLN1qq40hUaHIIMQZi3dp3naaZZ7rJxyh9eSbREiviDk+Egiv0bfce4PZcK1zhX83ASR49ciCcn6YcqVPEaLRMcNWvJmykYCdbAAyIzRqpQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=USxebXXe; arc=none smtp.client-ip=209.85.214.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1dc758f4264so4615295ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 12:21:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708719666; x=1709324466; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uMOKrbIKnJ6TKtSp5dRNn05/ENEXJGPDCIutix2Nmno=;
+        b=USxebXXerT99qzSHcujpnpMzyGBUM8k2BxQbJd2jwZFxX+o4lcuxA9mVSpnWg0rJVY
+         Kh7u8oj5ILoFJpTL+XbWBtSsYonNzWRV2qLiZPAQrxgoxLc+fcuunZqiOpzhw8Z8ZNgB
+         13qvrO1s2o1WFuV+7cobjzrIwSHjv+EUKrS1IpWJZ9D+yGvCfXy86HvnQpWhWEK6xKuE
+         RHftZI8TQWvxYxJkl6ZTPKLwNu0zwEJazYa03xKVda1Vh5vPqgaWzMyWlY7cY3kGrXlf
+         RsywgVZpe4xgc+JgMI0RUMOfGhAD1HMeMK6+gcIqxsnFBLHBx+flFHi7d6ArGxoWxd3h
+         XjNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708719666; x=1709324466;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uMOKrbIKnJ6TKtSp5dRNn05/ENEXJGPDCIutix2Nmno=;
+        b=MqakbZo5vXoUTqLYu+Sq+080PB7WR41EZnO7p8j5V8HvKIcn6ruovc3S8ln62tYW/V
+         81a4kYX+n2eztUdbDQr820LAWTGjEMDmBNXi394cX30yhILq/XBRJIHSsrfrLGGDCQ/G
+         3BXrNNw/9Evfz0VRVCddThKJVJQyxBvbcbTO0Dt8/Lc/aU8rqTHW/xN1lJ01FXuyMOtA
+         YORVdUuTxE/Uot6jVH1tsmKrQeBL0Ga+ztDob/GPX872nkp6m6DWXJiE42CU5SiINGy/
+         swcnIUMrJOuh0iy+TGGYFTKuS8Q1vSP82T2z5jApiJGtnQLi69Z2RFGGRem2DmCSZQcK
+         eI9g==
+X-Forwarded-Encrypted: i=1; AJvYcCXcG6pD0tUmhvxbJJreKjZAYUsWCM9+EolRPBMl3tdvPzJcqq+zB8f9MaUEthR0efGCNVwrvbSIknzYKPPSMlDMntiqBaAFFSB7IZLS
+X-Gm-Message-State: AOJu0YwLbCVg1Zzd9dlIUvA0RqQjcsnTC5ss0+fT5cSNzqEaIOHYTMX2
+	cp6XzbBynjlTGrkJxV7ywU8oPmwys1X5MCYkBnPmszFQoGj90XEgPwC/h4qfu+4qXw3BKG0hqtS
+	6Ug==
+X-Google-Smtp-Source: AGHT+IGAiiFLABQHhdRPopaK/78IVe7JcLUV+v80lMlmvMheOafreGID10sjMpfQSo848B2ZgsL84/ldoM8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:d50b:b0:1db:cf63:b87b with SMTP id
+ b11-20020a170902d50b00b001dbcf63b87bmr56644plg.7.1708719666432; Fri, 23 Feb
+ 2024 12:21:06 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date: Fri, 23 Feb 2024 12:21:01 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240223-upstream-net-next-20240223-misc-improvements-v1-8-b6c8a10396bd@kernel.org>
-References: <20240223-upstream-net-next-20240223-misc-improvements-v1-0-b6c8a10396bd@kernel.org>
-In-Reply-To: <20240223-upstream-net-next-20240223-misc-improvements-v1-0-b6c8a10396bd@kernel.org>
-To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
- Geliang Tang <geliang@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
-Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- linux-kernel@vger.kernel.org, "Matthieu Baerts (NGI0)" <matttbe@kernel.org>, 
- Geliang Tang <tanggeliang@kylinos.cn>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1053; i=matttbe@kernel.org;
- h=from:subject:message-id; bh=ldlT+YlgwNS1TOVTH5ihpsJJVG5JuNAuK5gNgkDMv/4=;
- b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBl2P2q/16gTXBNVCrsIQuAheU23oKyVW2BEFE2+
- m4sUhGHGvGJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZdj9qgAKCRD2t4JPQmmg
- c1yFD/9zMyKUhNJCjKZH5FziaSaNxSGl/y01VMLaWVTFKs1VoY3Olwfqj9b0oBKWdJRm3C/3V1n
- b1ACvfpLqPw0PyWZcTotGpZqDaM4idaAfH332C3AQ+dso+SpsR1HiJciG0LWcu31R1dbFrYkgZn
- VluB3ntCvST6AUjTYmaOIr3E4Xg4iEhN8cP+DYg68YdP8qWpE945Ou7MBxJBUO/lSU5jNcMkM1Z
- aUtQyCyokMmFLOI3FsDHmsufHEf8w2XI7uQMkI1YJG8avQQU378J9+DgqCmxFJawTv7IZfXd4/+
- ztH7PunSnYn+IMHXcjGGYkk8SaA1U0dyvWK1SJl97YpGlw5mZJgpGcoEBB6cZwC8eD0OwktL9EH
- h5dJ14uCg09MUb7nDx7VgZeKNINJAm1wDNq4+Z+MRF45mmepljAIskoWkCloLAdjEhd9sYMaWa+
- QSYcBcfO0Bt39I1o+X8jqLdw0t1gE/iu70zz9Gdkc4aH7In7GA9gRskrNL1REAcmNwXbj0cEBjY
- nXx48R9Df/HIOgHet9CoTLCnb0cnfI5B/2wWCHSbO2+FZVjTJaq/Lql4lv1riEl9ZIFCE79ClEg
- 2Q2jUojOVNKqwL1gTu90F/mabT5MCs4nTUzrqedW1XcLQu+PFPjxp5/QzEcBAlDacfLD+pLfIGG
- XEQ5a5bGzWooQZw==
-X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
- fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
+Message-ID: <20240223202104.3330974-1-seanjc@google.com>
+Subject: [PATCH v2 0/3] KVM: VMX: MSR intercept/passthrough cleanup and simplification
+From: Sean Christopherson <seanjc@google.com>
+To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Dongli Zhang <dongli.zhang@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
+Clean up VMX's MSR passthrough code, in particular the portion that deals with
+userspace MSR filters (KVM needs to force interception if userspace wants to
+intercept even if KVM wants to passthrough).  As pointed out by Dongli, KVM
+does a linear walk twice in quick succession, which is wasteful, confuing, and
+unnecessarily brittle.
 
-Even if it is set to 100ms from the beginning with commit
-df62f2ec3df6 ("selftests/mptcp: add diag interface tests"), there is
-no reason not to have it to 30ms like all the other tests. "diag.sh" is
-not supposed to be slower than the other ones.
+Same exact idea as Dongli's v1[*], just a different approach to cleaning up the
+API for dealing with MSR filters.
 
-To maintain consistency with other scripts, this patch changes it to 30.
-
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-Reviewed-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
-Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
----
- tools/testing/selftests/net/mptcp/diag.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/net/mptcp/diag.sh b/tools/testing/selftests/net/mptcp/diag.sh
-index 0a58ebb8b04c..8573326d326a 100755
---- a/tools/testing/selftests/net/mptcp/diag.sh
-+++ b/tools/testing/selftests/net/mptcp/diag.sh
-@@ -8,7 +8,7 @@ rndh=$(printf %x $sec)-$(mktemp -u XXXXXX)
- ns="ns1-$rndh"
- ksft_skip=4
- test_cnt=1
--timeout_poll=100
-+timeout_poll=30
- timeout_test=$((timeout_poll * 2 + 1))
- ret=0
+v2: Combine "check and get" into a single API instead of adding an out param.
  
+Dongli Zhang (2):
+  KVM: VMX: fix comment to add LBR to passthrough MSRs
+  KVM: VMX: return early if msr_bitmap is not supported
 
+Sean Christopherson (1):
+  KVM: VMX: Combine "check" and "get" APIs for passthrough MSR lookups
+
+ arch/x86/kvm/vmx/vmx.c | 68 ++++++++++++++++++------------------------
+ 1 file changed, 29 insertions(+), 39 deletions(-)
+
+
+base-commit: ec1e3d33557babed2c2c2c7da6e84293c2f56f58
 -- 
-2.43.0
+2.44.0.rc0.258.g7320e95886-goog
 
 
