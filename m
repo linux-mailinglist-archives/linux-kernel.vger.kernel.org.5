@@ -1,190 +1,151 @@
-Return-Path: <linux-kernel+bounces-79263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79264-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52E1B861FCE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 23:32:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8FD9861FD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 23:32:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 377181C23663
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:32:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78F6C1F23ACF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:32:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20EBB250E5;
-	Fri, 23 Feb 2024 22:32:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36B7824B2B;
+	Fri, 23 Feb 2024 22:32:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="h/CHrS0t";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="h/CHrS0t"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="KDiQaAq1"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D735C2E3;
-	Fri, 23 Feb 2024 22:31:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA9C91119B;
+	Fri, 23 Feb 2024 22:32:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708727520; cv=none; b=Ihi3W5/FPzRV6PPmDCoqNqhwRPCJ6/f9lwpGlvPmbfxcRoMv1fnJBVqlZzZhBnbL2qlP8VDHMD4dFy2Id5JMCEyhzXGi386MLSH/kARNlRNuGbZru6VTM1xwm12WVqjrsVEKHuJvMKUgJ7Z13GBdlxZ0WMRLAH40Mc0+Xft9Efo=
+	t=1708727560; cv=none; b=hPKTGyp9TTFIlorEqLeq4lHOJ5RvYGWezT5ICmEyFMCU2zS5ZS/FybDQ/390fwDaZdf+Fg1WHUKIBvcaFhpTIX7yjgHFK9wxlz02epxXfNuMibG6LWiH7Z9PuoJ9Tbi2JxTbh4KbgiV3YhY2Xag/eBYMuWoa/L5OqsRcB/5LyQI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708727520; c=relaxed/simple;
-	bh=CSSfnrBOZr8oER5j70U04tSSJE+PjtiMP6S1SgYinKk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cjqbahV0Fckd8ANzmUKsF2eC/Xr7Gzvk6tDy7zzhG9848TvQLoME5d6b1R2gedRcagjOvFy59uiviqlI+8otQ8WI9+HVQ5uze0Bsqp2+eg0/H/Yp+/LU+PWtgHlgfCXqsXRer5BWkrRIJjAOLEzFkuUyCHuqUsjhTVsOhAFe5Gw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=h/CHrS0t; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=h/CHrS0t; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	s=arc-20240116; t=1708727560; c=relaxed/simple;
+	bh=PSs1k4yhOaJo0FhDXl1IC/61LVXaUjlUC3glDlqHR+s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fO0i7LcyLgV2PN8k2kNf4G+io1RPmdLHzF9IQ04Xf4avyN9+QBeeFErwQIGmPER7ymxqGw0jIhKNKwYLczls4FHS8lLrIeYYHldIDDpTwGnDsuTfF/ykp1n6ur4A+slfNXuSIVZNewnS19oNZkHtA31iBJmC8M6pHSnOMKnURUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=KDiQaAq1; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708727554;
+	bh=PSs1k4yhOaJo0FhDXl1IC/61LVXaUjlUC3glDlqHR+s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KDiQaAq1lyRcjhTQW47KCHDEbmn5dw4W0sqCeown0uhw6TzmHSV93fpjvZU7swVkI
+	 +KXHOAjYoD/aE5QDrVnCfbI2k1hOSE7EDK9EM59hbVqhXqYj0345NiO/75as3pQJdr
+	 zGONe1b+drG4lF1T8vkB/mewsMfc8XJmd0VKY1POhpnut9rDJ/qF5uGj96+k5eBxFY
+	 G4Bu1fgzzbHkFsPjhWljBjV+hgUPexoljU9qGO9YTfzrHmjqq33JMir2C46wM/em+E
+	 X+6cxY3dC5gCPfR8z5zl72ZmyVpfxeTZTNUGUJPVxKHVMLZ741ADY3cO42YAMTllGK
+	 ADnx4v9lvELjA==
+Received: from mercury (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3AFC921E9F;
-	Fri, 23 Feb 2024 22:31:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708727516; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wVnaK53xBINKA/CDWOs8fMo7oTELoE+zxqM9rpML8hw=;
-	b=h/CHrS0tRTMG8iJA4XXKW0FILU4bB+N/5UUZJoqw1D12lI7/NI2sJL7osABOkgvs1GMViu
-	cHNg+Z50MTCOOCVtCHogGCt0neZUMuG0FYRVhbwCvX6dJJ9VxGjfTbe8+Obkfv7jdpzfDm
-	R9L5tawSfqXnHAKeo02ePrCreKbhNUo=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708727516; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wVnaK53xBINKA/CDWOs8fMo7oTELoE+zxqM9rpML8hw=;
-	b=h/CHrS0tRTMG8iJA4XXKW0FILU4bB+N/5UUZJoqw1D12lI7/NI2sJL7osABOkgvs1GMViu
-	cHNg+Z50MTCOOCVtCHogGCt0neZUMuG0FYRVhbwCvX6dJJ9VxGjfTbe8+Obkfv7jdpzfDm
-	R9L5tawSfqXnHAKeo02ePrCreKbhNUo=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A5DE613419;
-	Fri, 23 Feb 2024 22:31:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id xJMeG9sc2WUQWwAAn2gu4w
-	(envelope-from <mpdesouza@suse.com>); Fri, 23 Feb 2024 22:31:55 +0000
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
-To: Shuah Khan <skhan@linuxfoundation.org>
-Cc: Marcos Paulo de Souza <mpdesouza@suse.com>,
-	kernel test robot <lkp@intel.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Jiri Kosina <jikos@kernel.org>,
-	Miroslav Benes <mbenes@suse.cz>,
-	Petr Mladek <pmladek@suse.com>,
-	Joe Lawrence <joe.lawrence@redhat.com>,
-	oe-kbuild-all@lists.linux.dev,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	live-patching@vger.kernel.org
-Subject: Re: [PATCH 1/3] selftests: lib.mk: Do not process TEST_GEN_MODS_DIR
-Date: Fri, 23 Feb 2024 19:31:52 -0300
-Message-ID: <20240223223152.13528-1-mpdesouza@suse.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <cf6b3ca2-3996-4ebd-858d-eb71a5bd3841@linuxfoundation.org>
-References: 
+	(Authenticated sender: sre)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id CB97C3780627;
+	Fri, 23 Feb 2024 22:32:34 +0000 (UTC)
+Received: by mercury (Postfix, from userid 1000)
+	id 4818D1060C95; Fri, 23 Feb 2024 23:32:34 +0100 (CET)
+Date: Fri, 23 Feb 2024 23:32:34 +0100
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+To: Nikita Travkin <nikita@trvn.ru>
+Cc: Hans de Goede <hdegoede@redhat.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	cros-qcom-dts-watchers@chromium.org, Andy Gross <agross@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh@kernel.org>, linux-pm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] power: supply: Add Acer Aspire 1 embedded
+ controller driver
+Message-ID: <wr4awfmyip3fe5y4xpv6xajigsvc4qftawonkolrtsamr3pumb@aio2ishg3o7c>
+References: <20240220-aspire1-ec-v3-0-02cb139a4931@trvn.ru>
+ <20240220-aspire1-ec-v3-2-02cb139a4931@trvn.ru>
+ <qoidm5wujjbeoc2hlraky26wuwmuaxi2atyl6ehovhvffdbfeh@g5gunqdei45m>
+ <7c429d2110dbac68d0c82c8fb8bfb742@trvn.ru>
+ <xelebhoitnwguhewahw26xopl5btjo5ezznjjaeb2zfyy2bpcr@7pmclezshwck>
+ <6e3fb1080c54cfc38dc3c3e79e32a53d@trvn.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [1.90 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: *
-X-Spam-Score: 1.90
-X-Spam-Flag: NO
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="x3dnrs6dj67zatrw"
+Content-Disposition: inline
+In-Reply-To: <6e3fb1080c54cfc38dc3c3e79e32a53d@trvn.ru>
 
-On Fri, 23 Feb 2024 15:07:20 -0700 Shuah Khan <skhan@linuxfoundation.org> wrote:
 
-> On 2/21/24 15:04, Marcos Paulo de Souza wrote:
-> > On Wed, 21 Feb 2024 14:12:00 -0700 Shuah Khan <skhan@linuxfoundation.org> wrote:
-> > 
-> >> On 2/21/24 05:26, Marcos Paulo de Souza wrote:
-> >>> On Tue, 20 Feb 2024 17:19:54 -0700 Shuah Khan <skhan@linuxfoundation.org> wrote:
-> >>>
-> >>>> On 2/19/24 06:53, Marcos Paulo de Souza wrote:
-> >>>>> On Mon, 19 Feb 2024 09:15:15 -0300 Marcos Paulo de Souza <mpdesouza@suse.com> wrote:
-> >>>>>
-> >>>>>> On Mon, 19 Feb 2024 14:35:16 +0800 kernel test robot <lkp@intel.com> wrote:
-> >>>>>>
-> >>>>>>> Hi Marcos,
-> >>>>>>>
-> >>>>>>> kernel test robot noticed the following build errors:
-> >>>>>>>
-> >>>>>>> [auto build test ERROR on 345e8abe4c355bc24bab3f4a5634122e55be8665]
-> >>>>>>>
-> >>>>>>> url:    https://github.com/intel-lab-lkp/linux/commits/Marcos-Paulo-de-Souza/selftests-lib-mk-Do-not-process-TEST_GEN_MODS_DIR/20240216-021601
-> >>>>>>> base:   345e8abe4c355bc24bab3f4a5634122e55be8665
-> >>>>>>> patch link:    https://lore.kernel.org/r/20240215-lp-selftests-fixes-v1-1-89f4a6f5cddc%40suse.com
-> >>>>>>> patch subject: [PATCH 1/3] selftests: lib.mk: Do not process TEST_GEN_MODS_DIR
-> >>>>>>> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> >>>>>>> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240219/202402191417.XULH88Ct-lkp@intel.com/reproduce)
-> >>>>>>>
-> >>>>>>> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> >>>>>>> the same patch/commit), kindly add following tags
-> >>>>>>> | Reported-by: kernel test robot <lkp@intel.com>
-> >>>>>>> | Closes: https://lore.kernel.org/oe-kbuild-all/202402191417.XULH88Ct-lkp@intel.com/
-> >>>>>>>
-> >>>>>>> All errors (new ones prefixed by >>):
-> >>>>>>>
-> >>>>>>>>> make[3]: *** /lib/modules/5.9.0-2-amd64/build: No such file or directory.  Stop.
-> >>>>>>
-> >>>>>> We should ask the kernel test robot machine owners to install kernel-devel
-> >>>>>> package in order to have this fixed.
-> >>>>>
-> >>>>> Or maybe ask them to change the reproducer to specify KDIR to the git tree,
-> >>>>> instead of /lib/modules/?
-> >>>>>
-> >>>>
-> >>>> This would be a regression to automated test rings. Do you have any other
-> >>>> solutions?
-> >>>
-> >>> I would say that we could skip the these tests if kernel-devel package is not
-> >>> installed. Would it be acceptable? At least we would avoid such issues like this
-> >>> in the future as well.
-> >>>
+--x3dnrs6dj67zatrw
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Fri, Feb 23, 2024 at 08:34:29PM +0500, Nikita Travkin wrote:
+> Sebastian Reichel =D0=BF=D0=B8=D1=81=D0=B0=D0=BB(=D0=B0) 23.02.2024 20:04:
+> > On Fri, Feb 23, 2024 at 07:32:17PM +0500, Nikita Travkin wrote:
+> >> >> + This driver provides battery and AC status support for the mentio=
+ned
+> >> > I did not see any AC status bits?
 > >>
-> >> We have to check and skip build. Something we could do in the livepatch
-> >> Makefile. Can you send patch for this - I will oull this in for next
-> >> so we don't break test rings.
-> > 
-> > I added a new patch in the same patchset that would cover this, skipping the
-> > build and test if kernel-devel is not installed. The patchset was sent earlier
-> > today. Please check if the new patch fixes things on the build robot.
-> > 
-> 
-> Did you send the patch to me so I can apply it on top of what I have in next?
+> >> I was referring to whatever ACPI spec calls "AC Adapter" but I guess
+> >> I should have used the word "charger" instead... Will reword this.
+> >=20
+> > But you only register a power-supply device for the battery and not
+> > for the AC adapter/charger. When you write "and AC status support" I
+> > would have expected something similar to this (that's from ACPI AC
+> > adapter driver):
+> >=20
+> > $ cat /sys/class/power_supply/AC/uevent
+> > POWER_SUPPLY_NAME=3DAC
+> > POWER_SUPPLY_TYPE=3DMains
+> > POWER_SUPPLY_ONLINE=3D1
+>=20
+> Ah, I see... Yeah looking at it one more time, I mistakenly assumed the
+> acpi ac code uses the same data fields as the battery but seems like it
+> reads the single online flag from a different place. I don't think there
+> is really a point on implementing that field since we can still easily
+> track the battery charging/discharging status so I will probably omit it
+> for now. Will reword the help text to not mention charger/ac adapter.
 
-Yes, I have sent the patchset. The message id is
+If you have the information easily available, it's a good plan to
+expose it.
 
-https://lore.kernel.org/linux-kselftest/20240221-lp-selftests-fixes-v2-0-a19be1e029a7@suse.com/T/#t
+Without a charger reporting online status at least the kernel's
+power_supply_is_system_supplied() will return false (which is e.g.
+used by AMD GPU driver to select power profile).
 
-BTW, you can skip the last patch, since it introduced a warning when running
-furex selftests. The rest is ok per Yujie.
+Generic userspace (i.e. upower) probably behaves similar, since
+battery status is not the same as AC connceted. A system might
+not charge the battery but still run from AC itself.
 
-> 
-> thanks,
-> -- Shuah
+-- Sebastian
+
+--x3dnrs6dj67zatrw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmXZHPcACgkQ2O7X88g7
++ppExA/6Ay7wM3uN5mNgDtWxq1XLrsykjXSgSsYKJzByjQuageupwDlF6Rx6lKXQ
+X8UjL4r8YlEaGyce2L8uYaoH9KN0ge45v/CiEKZo2PJyCBpQGW8rbO1rNlZampi+
+y2jSurRj8aUrbgToM0Q2tiZQWU3CLJzu0TsFZ0/7sfgEzaEzFurQ0k3nvTNYARLN
+ayqnP6NIDb18AFwToW5jdoe8c+MweBK4XhjNNZeiFAsnCe4LgKSjr0aHdeGwJh1F
+AGffLuHnc/TSWecDaKQG8NaZV9KIjzYHZwULTWFQwvIaFnMSNFJLyaZX91NGV4Sc
+R7HZVdSm/3Q60PvKQ9ZkseRbLSHHRJQTvj8akX5sLfD4L7CMe19tPqcaDB50jIUi
+VJdqCrq9lZLJVfbJDKVysLHfTNHBrm948FxOdFgd/chETFCDODrRJZ+W96+rb7uC
+m/CoGtow7mSP1Tm183JktlamMk7c+D2qj2xF6mfRJMIT1816qA7hfZNB6YQyky++
+pw8kRos46RCCOrhRInZqJGy5DBz3JDZqqMWJFDQYdxQaZM0m7J2PST/auCUhK14v
+Uo8bjWdbR7BBFLB5FXAGONH/bdihhnD8er1H5LIDzPmxv8ASQxC924BEozSya/4J
+aEox1XhdHHsQpCByVX7kL2afGt574rkvnyOwT9WLf8RA2KCjROg=
+=gazE
+-----END PGP SIGNATURE-----
+
+--x3dnrs6dj67zatrw--
 
