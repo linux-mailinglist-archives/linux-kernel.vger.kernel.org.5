@@ -1,111 +1,130 @@
-Return-Path: <linux-kernel+bounces-78560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78562-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1809A861508
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:00:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E406E861510
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:02:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F5691C20CDA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:00:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82B0C1F23DF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:02:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F7C46E60D;
-	Fri, 23 Feb 2024 15:00:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60E0621364;
+	Fri, 23 Feb 2024 15:02:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EyyFnYft"
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SfQQQc40"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66BE121364;
-	Fri, 23 Feb 2024 15:00:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 051138BE7;
+	Fri, 23 Feb 2024 15:02:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708700440; cv=none; b=lriB3wyOt+VOtbr+7GxvN2MyNeksXKcKCybjeIQO5skpKPDR0J+7Btr544K8SE5wNecGaA7H51SslkHq/CX7JO4moBCgUXiOVNZGK1i9SBBGv3U1yu2dReWYPtoZTcaDNURLSNLvzlfkvSc7wMbfIyfgFt+6Fzh7gwL5jtaVCQU=
+	t=1708700566; cv=none; b=ppwXRWI5YYhqCj6wPgA8vsCgKuez96Rrr12ENFzseceSlCCw2tOy8rppQNdZBYrCnny9/Qa1mnR3ddKZH/PqzD3B5Az7nDBilQsHI/c2ghUGf/NaAn4aI7JoVqfrlE3NfN20wYEfd3G/h9IHLS9siA5YYBsgeJ8o/zwsZS3Q5nY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708700440; c=relaxed/simple;
-	bh=VgUlltsMr74niDfQ33mjF/yfLalcfE+W+x+KMUOuyVw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=b47mL1dtNuiwEFSEsi+7NOnT0ScxLJqpwVQ+/IInsj/o8+Figrv9spkEsNuiDiD8qG0rXuhYVEfJ7KwGYdqVTxOLVUjb9Kqt9Atrc+c7j3hNBqdurYRehZBj5pW3VklEJOJwwAE1u3TYyDguW5hlvEXRiHE10f9yLfRk8T6SLJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EyyFnYft; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-29a950152bcso9087a91.1;
-        Fri, 23 Feb 2024 07:00:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708700439; x=1709305239; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UuiW3vgYamUonIgJifnWsdJ41+amBUZpTSrVUyXFt1U=;
-        b=EyyFnYftso9DrHFua3wIMf8ykogWSe4vWkPEOAszMFrbYUrIWfefnB05UIsT3ufc47
-         OXfIVTx4FB1STGWbHYVgPPxmNjxE+eZBrEXW93Sr5D3S7F37seCilsjROyqawhJllzbo
-         xYd4ylRQ7RA92rge7f2QbQEPFGrLXqxhftjg1hkUk1Fxn9LICNUDKd0RTGAZIYEiWF6U
-         MTRsXxFZ6uqwiI8CJKfP6B0DAw9PhpiNFLyqTYnoVTlid6Cs99QogyfjeGAr09MjomT8
-         aEA8POErgLLuOSHm2Nahs6QSTr+LGY/Mx4ord8zCU1nNnqpyvkVamAdirF/NxyoS3uLy
-         9qLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708700439; x=1709305239;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UuiW3vgYamUonIgJifnWsdJ41+amBUZpTSrVUyXFt1U=;
-        b=EyayzB4fJDZtcPQEKqa3HVFW1Oh/a1P/BODQ0q76rQYXi9REwOpzpauy2NZWmxhqqx
-         CcFOEz7yLXNefT4QO6rHuhMXJNxFe7v/S1KXFz1OpihDnyK9m0ZPuk6CUp3biNwGpxQJ
-         ITk1B/RDtf7q6uZvezKh8yCy6Lap4i2VxZ3QcjrR78luKEq39G0b/0DqtWFVhMpjoe8m
-         Kjq4kQPPBpUb3pzev33+Lb+Bsh8uH/93qulLv00huU5LVpxadPvOXJlmrUDC/spxPhlN
-         xwschvbJ67XpM4JssiWbZBn87HhVE5Z23/Tc3BGrnFtWqtoImRq3WOH5xpxOHaX8CVtO
-         F1Lw==
-X-Forwarded-Encrypted: i=1; AJvYcCWfDYnboA8GgXJk8XGSfX/7v45TBu2t4/+MQOlpH1g1oEDC1UKKViRV/yjHhduE/92qa4F7WBXHgBhliWLY3lJLPtlL61TnqbHAKmcY/wYjVXd100PI7aAcoBmUC+e6SnrS5bSk
-X-Gm-Message-State: AOJu0Yzbp7k+XowdmzKst5QAlGHl14aRKt/cgwjUu/H0xiWVLpPmbzed
-	c1Uk5Ir0OxeWBatE2vOp5U7dlj4M/b9BzFLfSxOdVJBsWQjj3TwdteehvhMC+UvNes7zD9T+Y95
-	zK1Wf1+0AOXfyB88E5Zn70C7L2uI=
-X-Google-Smtp-Source: AGHT+IGZGAqQ4Z+lKDdINw8JgTnWczel16tJ9w9dUi0R7tIHS4tgrZpBIDjoSZIuhhJsPtR6FsmUCrBc2ciVrayq/ok=
-X-Received: by 2002:a17:90b:364b:b0:299:10c8:9c95 with SMTP id
- nh11-20020a17090b364b00b0029910c89c95mr58077pjb.20.1708700438618; Fri, 23 Feb
- 2024 07:00:38 -0800 (PST)
+	s=arc-20240116; t=1708700566; c=relaxed/simple;
+	bh=FLcUOtGk9O9iSiLBqxraYsFBaH+S3qMsBm4QVDsOq3E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mhKdvoETIvFijFDDzF/xRgf/T0Y/4Jd1dpH6B4+S8HdWb4cLymE0KNoI8hVEEPTCQRINL/OEYd60K+V2RSro+/2ftCn3mcplMSTtgiWTTM3HYwKu0pRZJnKRMf6KgloYAgFi2e9TdlesxhpjCsDRW2bQCk0XAfx2Cd3IUL5JTMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SfQQQc40; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708700565; x=1740236565;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=FLcUOtGk9O9iSiLBqxraYsFBaH+S3qMsBm4QVDsOq3E=;
+  b=SfQQQc400sJWeb+1vGnLtS2hdmas89tlD7fpO8VwNEBcy7XgaOKRK4Wi
+   bVVd5+BfDQ+vLn5MPK1pLmoTsjUK6Mc3K8l/npoeWfX1wr3RwjgFKWYuz
+   LKaz2q28zy8Wdlm14jBzVYJ8JA10CswyHyGGFQboemCz0iRfWvyPYobel
+   35A+VWFY6PYwJSD5onGVnDTapLB6l2yEPQ3V21RmQBJNIIPxig6nBEY9A
+   cJgPAyOB2G4omyUfqh6ExCGA9pnMqrTpYpgZpXnG1q77a6HQgsENMiaT8
+   F7qHZKLQNl2U9YqEa+EBmgxJfSu2W0GmzxaceCaueKhX3HEbQI/ndJa6P
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="6833564"
+X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
+   d="scan'208";a="6833564"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 07:01:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="913748372"
+X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
+   d="scan'208";a="913748372"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 07:01:48 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rdX3Y-00000006vfp-0F1g;
+	Fri, 23 Feb 2024 17:01:44 +0200
+Date: Fri, 23 Feb 2024 17:01:43 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: kernel test robot <lkp@intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org, linux-rpi-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org, linux-tegra@vger.kernel.org,
+	oe-kbuild-all@lists.linux.dev, Jiri Slaby <jirislaby@kernel.org>,
+	Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Al Cooper <alcooperx@gmail.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Vladimir Zapolskiy <vz@mleia.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH v1 06/14] serial: 8250_bcm7271: Switch to use
+ uart_read_port_properties()
+Message-ID: <ZdizV7sbAtCZ4AyO@smile.fi.intel.com>
+References: <20240221183442.4124354-7-andriy.shevchenko@linux.intel.com>
+ <202402231238.AWqLyIoM-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223-x86-insn-decoder-line-fix-v2-1-cde49c69f402@valentinobst.de>
-In-Reply-To: <20240223-x86-insn-decoder-line-fix-v2-1-cde49c69f402@valentinobst.de>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Fri, 23 Feb 2024 16:00:25 +0100
-Message-ID: <CANiq72=2T9br4G2E5Ky-NgX-VgM2PJoDZ0NGTrzG7xXmd0C=hg@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/tools: fix line number reported for malformed lines
-To: Valentin Obst <kernel@valentinobst.de>
-Cc: Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	"H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, John Baublitz <john.m.baublitz@gmail.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Miguel Ojeda <ojeda@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, 
-	=?UTF-8?Q?Sergio_Gonz=C3=A1lez_Collado?= <sergio.collado@gmail.com>, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202402231238.AWqLyIoM-lkp@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Fri, Feb 23, 2024 at 2:17=E2=80=AFPM Valentin Obst <kernel@valentinobst.=
-de> wrote:
->
-> - Explain why this patch fixes the commit mentioned in the 'Fixes' tag.
+On Fri, Feb 23, 2024 at 12:14:38PM +0800, kernel test robot wrote:
+> Hi Andy,
+> 
+> kernel test robot noticed the following build warnings:
 
-Thanks for this!
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202402231238.AWqLyIoM-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>):
+> 
 
-> - CCed the stable list and sent to all x86 maintainers.
+>    In file included from arch/hexagon/include/asm/io.h:328:
+>    include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>      547 |         val = __raw_readb(PCI_IOBASE + addr);
+>          |                           ~~~~~~~~~~ ^
 
-Sorry if I was not clear -- the "Cc: stable@vger.kernel.org" needs to
-be in the commit message itself, see:
+Okay, the above is well known issue with hexagon arch, not related to the series.
 
-    https://docs.kernel.org/process/submitting-patches.html#select-the-reci=
-pients-for-your-patch
+> >> drivers/tty/serial/8250/8250_bcm7271.c:938:22: warning: unused variable 'np' [-Wunused-variable]
+>      938 |         struct device_node *np = pdev->dev.of_node;
+>          |                             ^~
 
-But I would wait a few days for a v3 to see if x86 says something
-meanwhile -- patches to stable need to arrive in mainline anyway :)
+This one is a good catch! Will be fixed in a new version.
 
-Cheers,
-Miguel
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
