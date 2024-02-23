@@ -1,267 +1,100 @@
-Return-Path: <linux-kernel+bounces-77741-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77742-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDF8086099C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:52:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 811E08609A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:52:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53C94B261E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:52:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B17A1F26537
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:52:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 101FC10A3C;
-	Fri, 23 Feb 2024 03:49:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A1FA1171E;
+	Fri, 23 Feb 2024 03:49:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=aspeedtech.com header.i=@aspeedtech.com header.b="q69aQJku"
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2122.outbound.protection.outlook.com [40.107.215.122])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pWTmeLFu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BC1DE573;
-	Fri, 23 Feb 2024 03:49:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.215.122
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708660167; cv=fail; b=pEmcb3qPE7fJT1LbBMquRLq8Kdz+bTKH2I/0YZBQgyLejYO4Zc4R2YQCSbS6giZ8d84d13GE9guSb+PoC40hVLL8cbvsTC/Bm+1f0oMkSyID3jGeIg3w4w6Ef9SVfDdUDDwZ5Pbmyx0FWL2K7VidIGDSRPMDnnYh3mZZwF6b1w8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708660167; c=relaxed/simple;
-	bh=u9sPNuKH4pfjHq4g6WG0olmGwVnNcDE46L2sUE9sL6w=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=qjRGrgEa1hmWCZ5I5oucFA7ceexg8bBdycMZOm8h9JuyvBvOUnx7RBBcVSLhSwSGSVmE9jRrjCRYnQiF5rxSqa7Ln/UuIw9JJAxp89tgsQ5umLReSlhj8485dA4bfUT18jKbppvP+BnSMDN9EDO7jV2VBXo296RFhOH/6oTKiqo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=aspeedtech.com; spf=pass smtp.mailfrom=aspeedtech.com; dkim=pass (2048-bit key) header.d=aspeedtech.com header.i=@aspeedtech.com header.b=q69aQJku; arc=fail smtp.client-ip=40.107.215.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=aspeedtech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aspeedtech.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Yg950ouvx1WjNpCP1clyKtNInAyLcDkgW+Nteoi9HHrbIhePcDI7Ioc5aJrL9s5zmhIB8bh8pmp3/nj3lTiEyQeteZzFWrXKK71zxS4sekdNVSurRKK8P9469OBkxGAFQVcfX/0GYlL+8TCSYjAO5XdNZSESscksbvYgu7k7d3ib9htimI7awGG7HQW5ZyNaCo+JYKwDtEZ2S7QuWQcnAtawxCidAjN2WOAnGTPP4j7P+57PqhewOypkq99kZXcdR7x7Miy+E+B/5yNkWMwTSTcHmhsclf8OqDbAb5Be3qYa9GhXSRu4c461Z6sQNsY2SuVFmaUdbiPDmyRbHgj6Vg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UhT5Jglo9eajC1MtBF2LOaR4J/dQPutJITGmsH95r18=;
- b=euONYUYATW14N5VC8ymbp10E5JR2cR7jXp56Qyd+502ps3s1rGjQumkmMZIoig8/lejipHgYVJMIElkteicCGB2FRIxE4MGMiiOrIQJOJwbSj6WqoTvDLAxUPAZFFHvNvG5NVhu+acgjBrjlP1L2ma5HAzvycUdVP0MSzvvwL0nGUOafL8Tr50miXk6mzSq46ZU8HFsBXSMMTNKZkxq1qJX9pg4LEmssfLP2GgFtsIMWTGPjtE1w5nuVXUxePQvEZA/dDPZYikex2zSAxe8apfjndGAbCV8FK3hPyeXhBw6RuJDAThyWWjSodm3FokTeiJtQEdq9aNX8W9MjQtDNAg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UhT5Jglo9eajC1MtBF2LOaR4J/dQPutJITGmsH95r18=;
- b=q69aQJkuvPhpllidfujK4e5Gm4OQym0rSZGFa/E7/R/np+CgIGxECqOyTVw9gc2E6kJBqsA+uKaagTnOf5ifbLvxU/LDOtY01JYtyzktZYWDgWX4VpkpB2Wyp039Oao3efV8fhOBNsAPIASj0VLKdvk4BMAGRzh/WGT3m+wxeDV3GjCocoSMwoxSYSRQUtcNcFOlBkNCQLGOm4YOuK5bXv6aXGFj4nyMsf53O3fF+FO8qt48u9+c+Aiepk3+2H8PdhGMM/gtL/qaj8RMZ2PCp/p0nnwoU/OchdTyET/aX3Vwuyh7D2ddfhd6MYwFFAHmHWOmWB4SvrE0TaHA0WYHJg==
-Received: from TYZPR06MB6191.apcprd06.prod.outlook.com (2603:1096:400:33d::12)
- by PUZPR06MB5585.apcprd06.prod.outlook.com (2603:1096:301:e9::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Fri, 23 Feb
- 2024 03:49:17 +0000
-Received: from TYZPR06MB6191.apcprd06.prod.outlook.com
- ([fe80::e10a:d9a2:5070:6903]) by TYZPR06MB6191.apcprd06.prod.outlook.com
- ([fe80::e10a:d9a2:5070:6903%5]) with mapi id 15.20.7292.036; Fri, 23 Feb 2024
- 03:49:17 +0000
-From: Tommy Huang <tommy_huang@aspeedtech.com>
-To: Andi Shyti <andi.shyti@kernel.org>
-CC: "brendan.higgins@linux.dev" <brendan.higgins@linux.dev>,
-	"p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-	"linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-	"openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-	"benh@kernel.crashing.org" <benh@kernel.crashing.org>, "joel@jms.id.au"
-	<joel@jms.id.au>, "andrew@aj.id.au" <andrew@aj.id.au>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-aspeed@lists.ozlabs.org"
-	<linux-aspeed@lists.ozlabs.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, BMC-SW <BMC-SW@aspeedtech.com>
-Subject: RE: [PATCH] i2c: aspeed: Fix the dummy irq expected print
-Thread-Topic: [PATCH] i2c: aspeed: Fix the dummy irq expected print
-Thread-Index: AQHaYNBg0EEa3X7oHECRXZPcHJI3VbEVVFwAgAA4R6CAAIwtAIABM1cg
-Date: Fri, 23 Feb 2024 03:49:17 +0000
-Message-ID:
- <TYZPR06MB61912715EE2869DDB7C3763DE1552@TYZPR06MB6191.apcprd06.prod.outlook.com>
-References: <20240216120455.4138642-1-tommy_huang@aspeedtech.com>
- <nbkkaktcozbhly44hii3zwie7ivsra3qxzdibyzhyhooxrudvb@zik6skmkki2c>
- <TYZPR06MB61911F076C8719C6A7D57B97E1562@TYZPR06MB6191.apcprd06.prod.outlook.com>
- <v4nawwb4rwjiy2g7xv2sfyhc545mhk4izb3g22f7jupcevjuzb@nxmqgf2zjyqs>
-In-Reply-To: <v4nawwb4rwjiy2g7xv2sfyhc545mhk4izb3g22f7jupcevjuzb@nxmqgf2zjyqs>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=aspeedtech.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYZPR06MB6191:EE_|PUZPR06MB5585:EE_
-x-ms-office365-filtering-correlation-id: 24e1dc8c-477e-4a4c-8f3f-08dc342268f9
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 2cEFO/Ns/jyTKVK6b3AShK7EQ4FudoSO+1qoQfMr8atutRZqvSBohSHG2geisIdhGDgcF4eYdYBBuINDrlyYvBIE4eIoYro6Ii/FCN9cL+TMXvHOlcm41ULEVtGBCVU6upuxUqPgusO5uYSRWoPElClPSfh4TJJb8qZ+C0TgFVph4YGh87zjqVpNYke9iqw9v9NsOCUmbhcvKZPwyhp70x2/bGm6k/57dDLLIIzA/01A5Vq/swqK7sH2RNbbWSFQTAKLnIFglLzYlnYymqkXOxSYZy2VM43Wydo5yalnufup245SLzCKdwA8h2gQwTGVD0gBUEchHUTFSZO1x7neI2sGrKeBKtevJpuCLKzQXNXITcZf+lQeHSI44EBFDDJyjWgU1985xmtWFYonUKaszmPQuUIFie+bYFRhdN/0zn56GszY5cHx46HTqM39nN7zjvUfsh5Mp4ZV3Wotwl/Jukv4b306fJBTnIiYxr47iqcTLqhMJ435f7nEl13JK4sw5aDnRVcFoI48zlvQLumQ23wMOzf1FsTOYPLRRfAXELppxy33MK/Sm8O71Cd5TCbMrRHbcxtMFQDT/MUtWoV/WK9d1fcE6Sh/Oww/fzF8nl9Jkry1M4UTVr0KM97tdEHk
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB6191.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?RQ/iP1ovrQvLx9MtJZ+PU0pTCBfdhYSuh+l/cKaNGRZWpS+i25YaSPq61bwb?=
- =?us-ascii?Q?/XDhmfkWMQx3OhBU2OnrXlgOQWWIW+ytcPGw9H6RLjzqVTrV2lJCj79MYJE1?=
- =?us-ascii?Q?l+dnJh7evAO0D+2jPjmNeTWduVTLf2T8/NcgHuRUFtr42v6ghOMit45/ZvZ6?=
- =?us-ascii?Q?LuGiGYBBjrdWl/iKG3SsyCdLLagS9NiYCtKe1t0Sesb/USNGrb/Uo2HpwpXE?=
- =?us-ascii?Q?dg6+K9cXnh1irpt5gba97gHAAHiQKWaZYaYII3+pubBRgnzli4Z5grnh2USW?=
- =?us-ascii?Q?hNe7cXDg8++z6FjJouO5HvUlsCUAZ1qMxFFNVvoWe7o1agnq2/jqLM3uEBK5?=
- =?us-ascii?Q?qMi4YlNERCtzTunVoywBRE8ssPahrTs4ezo2WNOJ7vCPEhs5OYdTNEQsdtaW?=
- =?us-ascii?Q?Xjr2JXYUXBc79nIJZOOgUx5UqMh1kMiuSs/rFXjje7T2hSzZpNMiv6b7SiIG?=
- =?us-ascii?Q?4NSuXrLUnCuYsidmbsVfBZhOLqQEmfTzTf+HwOeve182ZE1w/1OLIVZDPvzm?=
- =?us-ascii?Q?LMi1C4KsqwpoJi8QXj050eI2ywHH3UxjKK+gNQcO8ei5kJIgg0BY1ibU98LR?=
- =?us-ascii?Q?X2rxVdZSG99k4mdfqWxY4wNvRTO2ZsarV/ktZMgLoG8zDwP0vI7jxeTD5pG5?=
- =?us-ascii?Q?LvyprxIfi3dYelo0cqmP9F/nUJyx98pxL3WZYwqo3vv8RpKaXw34MnG/OI7h?=
- =?us-ascii?Q?Zn6Yf/OJJOqhxsGrIXMw+AozL+51Bw3fNj8DUASbYfYyBsH9lFiUU8EOzVSU?=
- =?us-ascii?Q?HWRZZh2nbJ+fduiFAtf9zS3B8MMNjzFBj45svnXoy31ykq4N3GNYgOYYPHc+?=
- =?us-ascii?Q?kzGCtiI9U13LxK30VUXiuEe8ZevvvOl0C1w89mz9EZhxK0S8XcEl1e+ctl7K?=
- =?us-ascii?Q?FEkI8JPa5Yf8Smsvf2ZpvOTRvcMNXekoV+w6KxV0WIOIRkUJdTXHX1kZ4OFw?=
- =?us-ascii?Q?Ipdzb8y+dWoiUsJmuRHtt3eLL3fCM18Ct5Wl968Hi+R5p3HAGQEBH3UJe4WJ?=
- =?us-ascii?Q?foR6UsZx9YRlFLiqWzVibPCBe9QQbL4oUkTdui4zfHbRLl1l2mqtOFdWNSvr?=
- =?us-ascii?Q?JG8tGtXUTiWot29SQ93X7Xz6S0NNDICwf+2jB9BQgsM0qknp6oOjwDdmdUYr?=
- =?us-ascii?Q?D6713RI9XF6CH/m5ke241LsYtX7fZ7U6nBpeHbWjdX1hsakd9G9CNHJ3Rnlw?=
- =?us-ascii?Q?G58JB3lD77A1BY8Fjpy4omUn2q0SGHziF0XTWkauTCrDcvbhe+8PjGJc+U2I?=
- =?us-ascii?Q?MzquyFrNcjgqQmy9MQuE1c6wrm714fl5RHysmfRpZcoNsX8jyZ8ZaAT23KC0?=
- =?us-ascii?Q?mqaJhKVeo+XmNkS8eEjsNFJCcHcTr+lL3BsCC66kfjAz8gOTAb4uHD3nZWip?=
- =?us-ascii?Q?4E/KQIIpUaVS5/kPu1mn4OMtNYN/Dv6B64ui0eQVYjl9sRgx3SpgJKP9wePV?=
- =?us-ascii?Q?+9yA5s3qtUjG3LziCEHGjRkMDTwGiCUerz9aYCmj/aoylpsRWtenRY0Xcw60?=
- =?us-ascii?Q?08eRkgOPD/plcjmx3W6xEfhQk7FJKlPWkAPKsFmB6O0tUJeD6cu4Sk3XxbFz?=
- =?us-ascii?Q?mFFInGt3ikOcKY7zFCAoAvbE+fPRTaUTPGV8mf4pmicTCWgvYaeDV8hUWEtI?=
- =?us-ascii?Q?Kg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A24562CA5;
+	Fri, 23 Feb 2024 03:49:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708660190; cv=none; b=oxfJ+JWkwJ1+CBA3F2LwiFUY9lF4k06aD2v6k71WIpXX3eC2G6K+0xsazai5Zqx95i7v6rvLW3/Kp0sR8f25SlneU12yyFhc8FwyDOMutOYhjN9GNvL3MDX2PU/dzkiHwzTPML7zCyZ0yYGzgtm8+5y2hqy0XrZ2DGr4qRJBSKs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708660190; c=relaxed/simple;
+	bh=FABj5PqTYhnM786LMrFtQ0eBls3CUT1p0QbNHPCEQCs=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=IadMFZFvRZjABMqKA/ZjSU44eFoHSWxpASg8ivufdFjus0ZckTRTRCupAuobQrDO95tVWyukZfAjJWfdgXXPOY7DIqfXraeFh1/KfWmevsWL9P/QRgnFw50V31XVlk7t+Zlzz0VBb1ao3oxIjdjNVrb9KZynihbeALgL1fES9qc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pWTmeLFu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6E36EC433C7;
+	Fri, 23 Feb 2024 03:49:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708660190;
+	bh=FABj5PqTYhnM786LMrFtQ0eBls3CUT1p0QbNHPCEQCs=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=pWTmeLFuio0Ad5mcU+z4JGB4eT3C3VXIbezT4tSRCwKbeC7UUBV2XBJVMggGBirwU
+	 YOoYcgQsk3wluZGgxgkPApCfx3Gox4oilEmE2gKj0PBYYJV4ItAQy6ataCGXfOo8ck
+	 pFRp40DmNTTlQzkmOvyolJJBBS6B1xBYu/eiKrZxVASV83RKD/x8fYgixAmAY8k82G
+	 +rkNLGiNq/fvTW7km70I7puU3hu2Wu3uav0UVRtpENoA9ULvOOaImxjrPwmgWg8mJr
+	 BUtlfDAUggFxRV8wztTArEZXZaWsV5ibb/2WvHBCo+n5NecyjhssF9jqIo5pDmD4AK
+	 YYZpgBGPLWAag==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58CCAC48BC4;
+	Fri, 23 Feb 2024 03:49:50 +0000 (UTC)
+From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
+Subject: [PATCH 0/2] simple-pm-bus: deassert resets if possible
+Date: Fri, 23 Feb 2024 11:49:45 +0800
+Message-Id: <20240223-b4-bus-v1-0-2803c3ac4673@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB6191.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 24e1dc8c-477e-4a4c-8f3f-08dc342268f9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Feb 2024 03:49:17.3927
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: GYHVUIN+3itbPP/SihXlxAi3PvAGjKEJWzxXGcGY/DMRBn9s4MYJM8KXgPY1gdajXvH6+BtjM7L6s9Gy0p4mi0Tnnt27Pn5zL6RK/+gWKWg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PUZPR06MB5585
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANkV2GUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDIyNj3SQT3aTSYt0U02SzNHPTRCNTw0QloOKCotS0zAqwQdGxtbUAock
+ 28lgAAAA=
+To: Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Geert Uytterhoeven <geert+renesas@glider.be>, 
+ Philipp Zabel <p.zabel@pengutronix.de>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Yang Xiwen <forbidden405@outlook.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708660187; l=658;
+ i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
+ bh=FABj5PqTYhnM786LMrFtQ0eBls3CUT1p0QbNHPCEQCs=;
+ b=lAjMgm0upwe5GNEV4wO9MDqjNe+0Gto1rn6DLXSaTmlZoFGjD2+RXTGbL9uwWw6+3sir5+WNP
+ tQQ29dl5Rw1AQ8/E5UGsm02f5c26NWy06kxgA0nYOhW9ArEmiBAfR67
+X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
+ pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
+X-Endpoint-Received:
+ by B4 Relay for forbidden405@outlook.com/20230724 with auth_id=67
+X-Original-From: Yang Xiwen <forbidden405@outlook.com>
+Reply-To: <forbidden405@outlook.com>
 
-Hi Andi,
+simple power-managed buses can also have resets. Get and deassert them
+if possible.
 
-	Sure~
-	Below is my re-word commit and fixes tag.
+Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+---
+Yang Xiwen (2):
+      dt-bindings: simple-pm-bus: Add optional resets
+      drivers: bus: simple-pm-bus: Get and deassert resets exclusively
 
-	When the i2c error condition occurred and master state was not
-	idle, the master irq function will goto complete state without any
-    other interrupt handling. It would cause dummy irq expected print.
-    Under this condition, assign the irq_status into irq_handle.
+ Documentation/devicetree/bindings/bus/simple-pm-bus.yaml |  7 +++++--
+ drivers/bus/simple-pm-bus.c                              | 14 +++++++++++++-
+ 2 files changed, 18 insertions(+), 3 deletions(-)
+---
+base-commit: 8d3dea210042f54b952b481838c1e7dfc4ec751d
+change-id: 20240223-b4-bus-d5c6f75a251a
 
-	For example, when the abnormal start / stop occurred (bit 5) with normal s=
-top
-	status (bit 4) at same time. Then the normal stop status would not be hand=
-led=20
-	and it would cause irq expected print in the aspeed_i2c_bus_irq.
+Best regards,
+-- 
+Yang Xiwen <forbidden405@outlook.com>
 
-	...
-	aspeed-i2c-bus xxxxxxxx. i2c-bus: irq handled !=3D irq. Expected 0x0000003=
-0, but was 0x00000020
-	...
-=20
-	Fixes: 3e9efc3299dd ("i2c: aspeed: Handle master/slave combined irq events=
- properly")
-	Cc: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
-
-	Tommy
-
-> -----Original Message-----
-> From: Andi Shyti <andi.shyti@kernel.org>
-> Sent: Thursday, February 22, 2024 4:58 PM
-> To: Tommy Huang <tommy_huang@aspeedtech.com>
-> Cc: brendan.higgins@linux.dev; p.zabel@pengutronix.de;
-> linux-i2c@vger.kernel.org; openbmc@lists.ozlabs.org;
-> benh@kernel.crashing.org; joel@jms.id.au; andrew@aj.id.au;
-> linux-arm-kernel@lists.infradead.org; linux-aspeed@lists.ozlabs.org;
-> linux-kernel@vger.kernel.org; BMC-SW <BMC-SW@aspeedtech.com>
-> Subject: Re: [PATCH] i2c: aspeed: Fix the dummy irq expected print
->=20
-> Hi Tommy,
->=20
-> On Thu, Feb 22, 2024 at 01:10:39AM +0000, Tommy Huang wrote:
-> > > On Fri, Feb 16, 2024 at 08:04:55PM +0800, Tommy Huang wrote:
-> > > > When the i2c error condition occurred and master state was not
-> > > > idle, the master irq function will goto complete state without any
-> > > > other interrupt handling. It would cause dummy irq expected print.
-> > > > Under this condition, assign the irq_status into irq_handle.
-> > >
-> > > I'm sorry, but I don't understand much from your log here.
-> > >
-> > > Do you mean that irq_handled in aspeed_i2c_master_irq() is left with
-> > > some states that is not supposed to have and then you end up printing
-> here:
-> > >
-> > > 	dev_err(bus->dev,
-> > > 		"irq handled !=3D irq. expected 0x%08x, but was 0x%08x\n",
-> > > 		irq_received, irq_handled);
-> > >
-> > > Can you please explain better?
-> > >
-> >
-> > Yes. If the platform met any irq error condition and the i2c wasn't sta=
-ted
-> under ASPEED_I2C_MASTER_INACTIVE.
-> > Then the code flow would goto the end of aspeed_i2c_master_irq.
-> >
-> > 	ret =3D aspeed_i2c_is_irq_error(irq_status);
-> > 	if (ret) {
-> > 		...
-> > 		irq_handled |=3D (irq_status & ASPEED_I2CD_INTR_MASTER_ERRORS);
-> > 		if (bus->master_state !=3D ASPEED_I2C_MASTER_INACTIVE) {
-> > 			bus->cmd_err =3D ret;
-> > 			bus->master_state =3D ASPEED_I2C_MASTER_INACTIVE;
-> > 			goto out_complete;
-> > 		}
-> > 	}
-> >
-> > Some master interrupt states were not handled under this situation.
-> > The fake irq not equaled message would be filled into whole of demsg.
-> > It's most like below example.
-> >
-> > ...
-> > aspeed-i2c-bus 1e78a780. i2c-bus: irq handled !=3D irq. expected
-> > 0x00000030, but was 0x00000020 aspeed-i2c-bus 1e78a780. i2c-bus: irq
-> > handled !=3D irq. expected 0x00000030, but was 0x00000020 aspeed-i2c-bu=
-s
-> > 1e78a780. i2c-bus: irq handled !=3D irq. expected 0x00000030, but was
-> 0x00000020 ...
-> >
-> > I thought the bus->cmd_err has been filled error reason and it would be
-> returned to upper layer.
-> > So, I didn't think the print should be existed.
->=20
-> thanks! Can you please write a commit that explains better the fix you ar=
-e
-> doing?
->=20
-> > > If that's the case, wouldn't it make more sense to check for
-> > > bus->master_state !=3D ASPEED_I2C_MASTER_INACTIVE) earlier?
-> >
-> > Did you suggest to add "bus->master_state !=3D
-> ASPEED_I2C_MASTER_INACTIVE" judgement before print the irq not equal
-> print?
->=20
-> no, not really, but nevermind, on a second look, what I'm suggesting does=
-n't
-> make much sense.
->=20
-> If you want, please reword the commit message as reply to this e-mail and=
- I
-> will take care of it.
->=20
-> > > And, still, If that's the case, I believe you might need the Fixes
-> > > tag. It's true that you are not really failing, but you are not repor=
-ting a
-> failure by mistake.
->=20
-> Please, also consider adding the Fixes tag if you see it necessary; I thi=
-nk you
-> should, but it's borderline.
->=20
-> Andi
 
