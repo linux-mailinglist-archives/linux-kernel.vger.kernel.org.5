@@ -1,252 +1,421 @@
-Return-Path: <linux-kernel+bounces-78386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78388-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1BCA8612CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:36:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB8178612D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:38:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20C121C21A7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:36:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1B2F285C85
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:38:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B0C7EF13;
-	Fri, 23 Feb 2024 13:36:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01D597F471;
+	Fri, 23 Feb 2024 13:38:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="JuVdXM2r"
-Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QsA924Ru"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8B9A6FBF
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:36:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 020357AE6E;
+	Fri, 23 Feb 2024 13:38:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708695386; cv=none; b=U8dJQtZ7/DiSIUk4YDPMNS2SBDNhRzXv/t+zX5lGPefPJPe2n38lkWVmbhVnqYPkHeL6I10M7RPXvt23Msx9ZMkkPwwMH4r0oEovrG4wbRWDm/S8/2e7blBufinve/Y+xdxKM9W+kY0Xwzji7Py9ORGxkNul+a7o/rkLsjQdUVc=
+	t=1708695487; cv=none; b=fLFQWj9y3Je9gx8SysFrsr8BCy9f/1zkJ9JRrbzvt12zcNUqOoYdwA3jXBG51L0k3u9Km0FcyNb4aCRoKluwPEei29biddmLAh652Zfm8CtVho7BcaQR9AqG4ISRZbmtaRTHL+ZpReIb17Xz8jH4OEVXqRgsdrMAVbwoxeqAQ34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708695386; c=relaxed/simple;
-	bh=HgH0IgIyBLYiKnjpnfHSa1MktbhzM/lsh6rot6QCc6Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lVQ2WqpJ/0pMyER7rumZ5PlCMm+vSjHZddinAwQYMN4pP3HbxZTdFE9iXTpwoQ/y+OXrczRTrvfdbDXl9dRL6ARhwRMIHA8eIC1S1XqhnV4g19dydi8O467+PG7aGMC/ErfAiO24g85e81oQguT55hqyXfQaLtrYXpB+vHT10Is=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=JuVdXM2r; arc=none smtp.client-ip=77.93.223.253
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id 19D521B5D37;
-	Fri, 23 Feb 2024 14:36:15 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
-	t=1708695375; bh=8R0Jgz35RwiAAuPami73BFK87BNYyN4zzZhF/zwN98Q=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=JuVdXM2rP5U0wYlf1/U2Jshc36ExEwcNg9WkG0cbUHdzTtTWPRI+Qu8Qh/6pouKEr
-	 feiVXzKLmAbeTuDIXkyPZ69NLBozMDhhAAMYDYdHAy/fnpwmez1dfy4nbohhqWxhMk
-	 4P6XlenjmkXU+c6KQ/69yruXi0wLDsMUCcAyYd4QqHMKxl3Q+aGYytqD665Xq7Fuse
-	 itqMnoWuahtXoK3+y5Vry9LpWNYyiy9bHvIkp9yN3Qq/Bd2Q9SRjAEEjPwoNEMD/Ee
-	 Kkb9XjGyYpn4gnP+2wH1WbS9G4WsSN/iW4Dzo6rawwRrhrRw+1wQqiQzFw8i9WNkHt
-	 /dfE2c7+ilT/g==
-Date: Fri, 23 Feb 2024 14:36:13 +0100
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Will Deacon <will@kernel.org>
-Cc: Michael Kelley <mhklinux@outlook.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "kernel-team@android.com"
- <kernel-team@android.com>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- Christoph Hellwig <hch@lst.de>, Marek Szyprowski
- <m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, Petr
- Tesarik <petr.tesarik1@huawei-partners.com>, Dexuan Cui
- <decui@microsoft.com>, Nicolin Chen <nicolinc@nvidia.com>
-Subject: Re: [PATCH v4 1/5] swiotlb: Fix double-allocation of slots due to
- broken alignment handling
-Message-ID: <20240223143613.1878beb6@meshulam.tesarici.cz>
-In-Reply-To: <20240223124742.GB10641@willie-the-truck>
-References: <20240221113504.7161-1-will@kernel.org>
-	<20240221113504.7161-2-will@kernel.org>
-	<SN6PR02MB4157089980E6FC58D5557BCED4572@SN6PR02MB4157.namprd02.prod.outlook.com>
-	<20240223124742.GB10641@willie-the-truck>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
+	s=arc-20240116; t=1708695487; c=relaxed/simple;
+	bh=5ieuGD931HGPK6rLXZGzOee73cDPA9R58arcB59nvCg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TbyymG8Wqutwt46jKgO54baUty8iTAVWJSchCXACL55urLggB5b29p3rccN6j6ORh51OaSqteU+Yaz/1DD3+KHyO8TqS5IT1yba+xASL0oNtOGNXzIkL9P2YYzkeUx/rXDMOtUxzMsLRUCkUGcOpLr6wqNGT6j802WJbD7Qc+kU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QsA924Ru; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3f48422fb6so123011966b.3;
+        Fri, 23 Feb 2024 05:38:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708695483; x=1709300283; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7xWo64HPyceyCrU5fgBBH7VbC2lBdca093uyLG+HM+8=;
+        b=QsA924RuxRvKfoPiNMpSyusFqfnrAUzWlrRRS52ueegWJONGUiMqWgwhEUlEUo9oRa
+         Krn8IMrEaIoi5mWUKehfVMVIf+cdjCs0rOCR1YbhZwoxcnwJE/MxyXWTLZJOWkEjBt4Q
+         LM0hxqmasrIEjOHgLQR1R/eEL6e3EQmuS7jD7wtp/Ust/rgD616fN3va+r0YQaQtIILU
+         1gUSBaGiFaua90u3Pr38xOABCpzB9Ow0NRcxMSQHcoPEuc1GLvS57clj7+K18iKTz2/6
+         ygCvnGXWBhnDXXYAvf1UniTz51v22UrFDJIVsArkFBzJOtrc3jYpaxp0BbpXtasIqgrX
+         IV1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708695483; x=1709300283;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7xWo64HPyceyCrU5fgBBH7VbC2lBdca093uyLG+HM+8=;
+        b=eVj7sUfMBI4mfBlr2jqocEPXZitJwcp5O9RUNkdiEeIHUDq8iGXNDdVowOKjGhAPqP
+         9kew72zLjDhvC6zKtOTuK3acQQPAmH0vheBQB6JuxGqjNrDo48Aj02rGWg9CAXhNaPSJ
+         hhR5k/U+Pa+mlnWI50cq/TehbxUibpYJhdx+FTXkCkkcNzZezgwPRr2YbhY/5ymFto/h
+         iqHbNgGx9nCCWp9yLKF5R+vjy3phK/am1JWbbWZPLSKHKjhm5UltY4Irb9Z1DGqS8VHQ
+         zKxXEYE5s4zSlIjvMPRAt7pLlGNhCyFjqC+dEor4cAYHzcIFOWnHNngvkV1IZhJaODMw
+         wBQg==
+X-Forwarded-Encrypted: i=1; AJvYcCUHnYFo3ikLl7K0FouLUlzhznV209nV9eP/FiIfKc4eMmqRvMvrCxlL2O6XiqmdbtVoE6vg0XLnT/qTYIpBl1+N4mAbUc2MllpKAxkLBYyrXBRU9moNRWQdg2awIN/O6Wg0bH/oeznkZjbTbJ9dJd21bcv0z0/tOUM9PUFQ1G5tQdPMVepp5HbH71Qj8n6kpSl0foNqxuO6f1rfhOK6FrQ=
+X-Gm-Message-State: AOJu0YykzVjha6PHgP1t++0qy7zn5ZbhmLKwG0eXJFHCyDH8krDU5UNL
+	ujaJlb+7gcGUCofuLoYk0LW0lU/bt1mX/nk9pA6JPf2VBoEJjqLJ
+X-Google-Smtp-Source: AGHT+IHSuJ0k6vRbHvVLRXkmiDeKhDXRdviKQl0ehB5fsFZRrRWY4C9VF4pdHPAiWswO8XQvXd7kRg==
+X-Received: by 2002:a17:906:2608:b0:a3e:c680:ee3a with SMTP id h8-20020a170906260800b00a3ec680ee3amr1365827ejc.30.1708695482674;
+        Fri, 23 Feb 2024 05:38:02 -0800 (PST)
+Received: from HYB-hhAwRlzzMZb.ad.analog.com ([83.103.132.21])
+        by smtp.gmail.com with ESMTPSA id h11-20020a17090634cb00b00a3d7bcfb9a1sm6911429ejb.128.2024.02.23.05.38.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 05:38:02 -0800 (PST)
+From: Dumitru Ceclan <mitrutzceclan@gmail.com>
+To: 
+Cc: linus.walleij@linaro.org,
+	brgl@bgdev.pl,
+	andy@kernel.org,
+	linux-gpio@vger.kernel.org,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	ChiaEn Wu <chiaen_wu@richtek.com>,
+	Niklas Schnelle <schnelle@linux.ibm.com>,
+	=?UTF-8?q?Leonard=20G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
+	Mike Looijmans <mike.looijmans@topic.nl>,
+	Haibo Chen <haibo.chen@nxp.com>,
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+	David Lechner <dlechner@baylibre.com>,
+	Ceclan Dumitru <dumitru.ceclan@analog.com>,
+	linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Dumitru Ceclan <mitrutzceclan@gmail.com>,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v15 1/3] dt-bindings: adc: add AD7173
+Date: Fri, 23 Feb 2024 15:37:28 +0200
+Message-ID: <20240223133758.9787-1-mitrutzceclan@gmail.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, 23 Feb 2024 12:47:43 +0000
-Will Deacon <will@kernel.org> wrote:
+The AD7173 family offer a complete integrated Sigma-Delta ADC solution
+which can be used in high precision, low noise single channel applications
+or higher speed multiplexed applications. The Sigma-Delta ADC is intended
+primarily for measurement of signals close to DC but also delivers
+outstanding performance with input bandwidths out to ~10kHz.
 
-> On Wed, Feb 21, 2024 at 11:35:44PM +0000, Michael Kelley wrote:
-> > From: Will Deacon <will@kernel.org> Sent: Wednesday, February 21, 2024 3:35 AM  
-> > > 
-> > > Commit bbb73a103fbb ("swiotlb: fix a braino in the alignment check fix"),
-> > > which was a fix for commit 0eee5ae10256 ("swiotlb: fix slot alignment
-> > > checks"), causes a functional regression with vsock in a virtual machine
-> > > using bouncing via a restricted DMA SWIOTLB pool.
-> > > 
-> > > When virtio allocates the virtqueues for the vsock device using
-> > > dma_alloc_coherent(), the SWIOTLB search can return page-unaligned
-> > > allocations if 'area->index' was left unaligned by a previous allocation
-> > > from the buffer:
-> > > 
-> > >  # Final address in brackets is the SWIOTLB address returned to the caller
-> > >  | virtio-pci 0000:00:07.0: orig_addr 0x0 alloc_size 0x2000, iotlb_align_mask
-> > > 0x800 stride 0x2: got slot 1645-1649/7168 (0x98326800)
-> > >  | virtio-pci 0000:00:07.0: orig_addr 0x0 alloc_size 0x2000, iotlb_align_mask
-> > > 0x800 stride 0x2: got slot 1649-1653/7168 (0x98328800)
-> > >  | virtio-pci 0000:00:07.0: orig_addr 0x0 alloc_size 0x2000, iotlb_align_mask
-> > > 0x800 stride 0x2: got slot 1653-1657/7168 (0x9832a800)
-> > > 
-> > > This ends badly (typically buffer corruption and/or a hang) because
-> > > swiotlb_alloc() is expecting a page-aligned allocation and so blindly
-> > > returns a pointer to the 'struct page' corresponding to the allocation,
-> > > therefore double-allocating the first half (2KiB slot) of the 4KiB page.
-> > > 
-> > > Fix the problem by treating the allocation alignment separately to any
-> > > additional alignment requirements from the device, using the maximum
-> > > of the two as the stride to search the buffer slots and taking care
-> > > to ensure a minimum of page-alignment for buffers larger than a page.  
-> > 
-> > Could you also add some text that this patch fixes the scenario I
-> > described in the other email thread?  Something like:
-> > 
-> > The changes to page alignment handling also fix a problem when
-> > the alloc_align_mask is zero.  The page alignment handling added
-> > in the two mentioned commits could force alignment to more bits
-> > in orig_addr than specified by the device's DMA min_align_mask,
-> > resulting in a larger offset.   Since swiotlb_max_mapping_size()
-> > is based only on the DMA min_align_mask, that larger offset
-> > plus the requested size could exceed IO_TLB_SEGSIZE slots, and
-> > the mapping could fail when it shouldn't.  
-> 
-> Thanks, Michael. I can add that in.
-> 
-> > > diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> > > index b079a9a8e087..2ec2cc81f1a2 100644
-> > > --- a/kernel/dma/swiotlb.c
-> > > +++ b/kernel/dma/swiotlb.c
-> > > @@ -982,7 +982,7 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
-> > >  		phys_to_dma_unencrypted(dev, pool->start) & boundary_mask;
-> > >  	unsigned long max_slots = get_max_slots(boundary_mask);
-> > >  	unsigned int iotlb_align_mask =
-> > > -		dma_get_min_align_mask(dev) | alloc_align_mask;
-> > > +		dma_get_min_align_mask(dev) & ~(IO_TLB_SIZE - 1);
-> > >  	unsigned int nslots = nr_slots(alloc_size), stride;
-> > >  	unsigned int offset = swiotlb_align_offset(dev, orig_addr);
-> > >  	unsigned int index, slots_checked, count = 0, i;
-> > > @@ -993,19 +993,18 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
-> > >  	BUG_ON(!nslots);
-> > >  	BUG_ON(area_index >= pool->nareas);
-> > > 
-> > > +	/*
-> > > +	 * For mappings with an alignment requirement don't bother looping to
-> > > +	 * unaligned slots once we found an aligned one.
-> > > +	 */
-> > > +	stride = get_max_slots(max(alloc_align_mask, iotlb_align_mask));
-> > > +
-> > >  	/*
-> > >  	 * For allocations of PAGE_SIZE or larger only look for page aligned
-> > >  	 * allocations.
-> > >  	 */
-> > >  	if (alloc_size >= PAGE_SIZE)
-> > > -		iotlb_align_mask |= ~PAGE_MASK;
-> > > -	iotlb_align_mask &= ~(IO_TLB_SIZE - 1);
-> > > -
-> > > -	/*
-> > > -	 * For mappings with an alignment requirement don't bother looping to
-> > > -	 * unaligned slots once we found an aligned one.
-> > > -	 */
-> > > -	stride = (iotlb_align_mask >> IO_TLB_SHIFT) + 1;
-> > > +		stride = umax(stride, PAGE_SHIFT - IO_TLB_SHIFT + 1);  
-> > 
-> > Is this special handling of alloc_size >= PAGE_SIZE really needed?  
-> 
-> I've been wondering that as well, but please note that this code (and the
-> comment) are in the upstream code, so I was erring in favour of keeping
-> that while fixing the bugs. We could have an extra patch dropping it if
-> we can convince ourselves that it's not adding anything, though.
-> 
-> > I think the comment is somewhat inaccurate. If orig_addr is non-zero, and
-> > alloc_align_mask is zero, the requirement is for the alignment to match
-> > the DMA min_align_mask bits in orig_addr, even if the allocation is
-> > larger than a page.   And with Patch 3 of this series, the swiotlb_alloc()
-> > case passes in alloc_align_mask to handle page size and larger requests.
-> > So it seems like this doesn't do anything useful unless orig_addr and
-> > alloc_align_mask are both zero, and there aren't any cases of that
-> > after this patch series.  If the caller wants alignment, specify
-> > it with alloc_align_mask.  
-> 
-> It's an interesting observation. Presumably the intention here is to
-> reduce the cost of the linear search, but the code originates from a
-> time when we didn't have iotlb_align_mask or alloc_align_mask and so I
-> tend to agree that it should probably just be dropped. I'm also not even
-> convinced that it works properly if the initial search index ends up
-> being 2KiB (i.e. slot) aligned -- we'll end up jumping over the
-> page-aligned addresses!
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
+---
+V14->V15 <no changes>
+V13->V14
+ - Refer in descriptions of the avdd-supply as AVDD1 in concordance to datasheet
+ - Fix typo
+ - Place interrupts descriptions separately for each item
+ - Restrict max channel reg to 3 for models AD717x-2
+V12->V13
+ - Remove adi,clock-select
+ - Update avdd and avdd2 supply descriptions
+ - Update adi,reference-select description to suggest that it is referenced to avss
+ - Make clocks/clock-names and clock-controller mutually exclusive
+V11->V12
+ - Drop "binding", describe hardware in binding description
+ - Rename refin and refin2 to vref and vref2
+ - Add better description to external references to better show that the voltage
+    value that needs to be specified is the difference between the positive and
+    negative reference pins
+ - Add optional clocks properties
+ - Add optional adi,clock-select property
+ - Add option for second interrupt, error
+ - Add description to interrupts
+V10->V11
+ - Fix example warning: '#gpio-cells' is a dependency of 'gpio-controller'
+ - Add description to #gpio-cells property
+V9->V10
+ - Fix dt_binding_check type warning from adi,reference-select
+V8->v9
+ - Add gpio-controller and "#gpio-cells" properties
+ - Add missing avdd2 and iovdd supplies
+ - Add string type to reference-select
+V7->V8
+ - include missing fix from V6
+V6->V7 <no changes>
+V5->V6
+ - Moved global required property to proper placement
+V4 -> V5
+ - Use string enum instead of integers for "adi,reference-select"
+ - Fix conditional checking in regards to compatible
+V3 -> V4
+ - include supply attributes
+ - add channel attribute for selecting conversion reference
+V2 -> V3
+ - remove redundant descriptions
+ - use referenced 'bipolar' property
+ - remove newlines from example
+V1 -> V2 <no changes>
+ .../bindings/iio/adc/adi,ad7173.yaml          | 246 ++++++++++++++++++
+ 1 file changed, 246 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
 
-Originally, SWIOTLB was not used for allocations, so orig_addr was
-never zero. The assumption was that if the bounce buffer should be
-page-aligned, then the original buffer was also page-aligned, and the
-check against iotlb_align_mask was sufficient.
+diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
+new file mode 100644
+index 000000000000..36f16a325bc5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
+@@ -0,0 +1,246 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright 2023 Analog Devices Inc.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/adc/adi,ad7173.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Analog Devices AD7173 ADC
++
++maintainers:
++  - Ceclan Dumitru <dumitru.ceclan@analog.com>
++
++description: |
++  Analog Devices AD717x ADC's:
++  The AD717x family offer a complete integrated Sigma-Delta ADC solution which
++  can be used in high precision, low noise single channel applications
++  (Life Science measurements) or higher speed multiplexed applications
++  (Factory Automation PLC Input modules). The Sigma-Delta ADC is intended
++  primarily for measurement of signals close to DC but also delivers
++  outstanding performance with input bandwidths out to ~10kHz.
++
++  Datasheets for supported chips:
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7172-2.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7173-8.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7175-2.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7176-2.pdf
++
++properties:
++  compatible:
++    enum:
++      - adi,ad7172-2
++      - adi,ad7173-8
++      - adi,ad7175-2
++      - adi,ad7176-2
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    minItems: 1
++    items:
++      - description: |
++          Ready: multiplexed with SPI data out. While SPI CS is low,
++          can be used to indicate the completion of a conversion.
++
++      - description: |
++          Error: The three error bits in the status register (ADC_ERROR, CRC_ERROR,
++          and REG_ERROR) are OR'ed, inverted, and mapped to the ERROR pin.
++          Therefore, the ERROR pin indicates that an error has occurred.
++
++  interrupt-names:
++    minItems: 1
++    items:
++      - const: rdy
++      - const: err
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++  spi-max-frequency:
++    maximum: 20000000
++
++  gpio-controller:
++    description: Marks the device node as a GPIO controller.
++
++  '#gpio-cells':
++    const: 2
++    description:
++      The first cell is the GPIO number and the second cell specifies
++      GPIO flags, as defined in <dt-bindings/gpio/gpio.h>.
++
++  vref-supply:
++    description: |
++      Differential external reference supply used for conversion. The reference
++      voltage (Vref) specified here must be the voltage difference between the
++      REF+ and REF- pins: Vref = (REF+) - (REF-).
++
++  vref2-supply:
++    description: |
++      Differential external reference supply used for conversion. The reference
++      voltage (Vref2) specified here must be the voltage difference between the
++      REF2+ and REF2- pins: Vref2 = (REF2+) - (REF2-).
++
++  avdd-supply:
++    description: Avdd supply, can be used as reference for conversion.
++                 This supply is referenced to AVSS, voltage specified here
++                 represents (AVDD1 - AVSS).
++
++  avdd2-supply:
++    description: Avdd2 supply, used as the input to the internal voltage regulator.
++                 This supply is referenced to AVSS, voltage specified here
++                 represents (AVDD2 - AVSS).
++
++  iovdd-supply:
++    description: iovdd supply, used for the chip digital interface.
++
++  clocks:
++    maxItems: 1
++    description: |
++      Optional external clock source. Can include one clock source: external
++      clock or external crystal.
++
++  clock-names:
++    enum:
++      - ext-clk
++      - xtal
++
++  '#clock-cells':
++    const: 0
++
++patternProperties:
++  "^channel@[0-9a-f]$":
++    type: object
++    $ref: adc.yaml
++    unevaluatedProperties: false
++
++    properties:
++      reg:
++        minimum: 0
++        maximum: 15
++
++      diff-channels:
++        items:
++          minimum: 0
++          maximum: 31
++
++      adi,reference-select:
++        description: |
++          Select the reference source to use when converting on
++          the specific channel. Valid values are:
++          vref       : REF+  /REF−
++          vref2      : REF2+ /REF2−
++          refout-avss: REFOUT/AVSS (Internal reference)
++          avdd       : AVDD  /AVSS
++
++          External reference ref2 only available on ad7173-8.
++          If not specified, internal reference used.
++        $ref: /schemas/types.yaml#/definitions/string
++        enum:
++          - vref
++          - vref2
++          - refout-avss
++          - avdd
++        default: refout-avss
++
++    required:
++      - reg
++      - diff-channels
++
++required:
++  - compatible
++  - reg
++
++allOf:
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++
++  - if:
++      properties:
++        compatible:
++          not:
++            contains:
++              const: adi,ad7173-8
++    then:
++      properties:
++        vref2-supply: false
++      patternProperties:
++        "^channel@[0-9a-f]$":
++          properties:
++            adi,reference-select:
++              enum:
++                - vref
++                - refout-avss
++                - avdd
++            reg:
++              maximum: 3
++
++  - if:
++      anyOf:
++        - required: [clock-names]
++        - required: [clocks]
++    then:
++      properties:
++        '#clock-cells': false
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    spi {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      adc@0 {
++        compatible = "adi,ad7173-8";
++        reg = <0>;
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        interrupts = <25 IRQ_TYPE_EDGE_FALLING>;
++        interrupt-names = "rdy";
++        interrupt-parent = <&gpio>;
++        spi-max-frequency = <5000000>;
++        gpio-controller;
++        #gpio-cells = <2>;
++        #clock-cells = <0>;
++
++        vref-supply = <&dummy_regulator>;
++
++        channel@0 {
++          reg = <0>;
++          bipolar;
++          diff-channels = <0 1>;
++          adi,reference-select = "vref";
++        };
++
++        channel@1 {
++          reg = <1>;
++          diff-channels = <2 3>;
++        };
++
++        channel@2 {
++          reg = <2>;
++          bipolar;
++          diff-channels = <4 5>;
++        };
++
++        channel@3 {
++          reg = <3>;
++          bipolar;
++          diff-channels = <6 7>;
++        };
++
++        channel@4 {
++          reg = <4>;
++          diff-channels = <8 9>;
++          adi,reference-select = "avdd";
++        };
++      };
++    };
+-- 
+2.42.0
 
-> I'll add another patch to v5 which removes this check (and you've basically
-> written the commit message for me, so thanks).
-> 
-> > >  	spin_lock_irqsave(&area->lock, flags);
-> > >  	if (unlikely(nslots > pool->area_nslabs - area->used))
-> > > @@ -1015,11 +1014,14 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
-> > >  	index = area->index;
-> > > 
-> > >  	for (slots_checked = 0; slots_checked < pool->area_nslabs; ) {
-> > > -		slot_index = slot_base + index;
-> > > +		phys_addr_t tlb_addr;
-> > > 
-> > > -		if (orig_addr &&
-> > > -		    (slot_addr(tbl_dma_addr, slot_index) &
-> > > -		     iotlb_align_mask) != (orig_addr & iotlb_align_mask)) {
-> > > +		slot_index = slot_base + index;
-> > > +		tlb_addr = slot_addr(tbl_dma_addr, slot_index);
-> > > +
-> > > +		if ((tlb_addr & alloc_align_mask) ||
-> > > +		    (orig_addr && (tlb_addr & iotlb_align_mask) !=
-> > > +				  (orig_addr & iotlb_align_mask))) {  
-> > 
-> > It looks like these changes will cause a mapping failure in some
-> > iommu_dma_map_page() cases that previously didn't fail.  
-> 
-> Hmm, it's really hard to tell. This code has been quite badly broken for
-> some time, so I'm not sure how far back you have to go to find a kernel
-> that would work properly (e.g. for Nicolin's case with 64KiB pages).
-
-I believe it fails exactly in the cases that previously found an
-incorrectly aligned bounce buffer.
-
-In any case, the "middle" bits (low bits but ignoring offset inside a
-slot) of tlb_addr should indeed correspond to the middle bits of
-orig_addr.
-
-> 
-> > Everything is made right by Patch 4 of your series, but from a
-> > bisect standpoint, there will be a gap where things are worse.
-> > In [1], I think Nicolin reported a crash with just this patch applied.  
-> 
-> In Nicolin's case, I think it didn't work without the patch either, this
-> just triggered the failure earlier.
-> 
-> > While the iommu_dma_map_page() case can already fail due to
-> > "too large" requests because of not setting a max mapping size,
-> > this patch can cause smaller requests to fail as well until Patch 4
-> > gets applied.  That might be problem to avoid, perhaps by
-> > merging the Patch 4 changes into this patch.  
-> 
-> I'll leave this up to Christoph. Personally, I'm keen to avoid having
-> a giant patch trying to fix all the SWIOTLB allocation issues in one go,
-> as it will inevitably get reverted due to a corner case that we weren't
-> able to test properly, breaking the common cases at the same time.
-
-I tend to think that more patches are better, even though this patch
-alone does introduce some regressions.
-
-Petr T
 
