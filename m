@@ -1,92 +1,175 @@
-Return-Path: <linux-kernel+bounces-78752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F075E861851
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:46:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09D47861859
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:46:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3E991F23BCA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:46:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F0C0B26EF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:46:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 635471292D5;
-	Fri, 23 Feb 2024 16:46:06 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52E38129A8E;
+	Fri, 23 Feb 2024 16:46:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="uKSYtuJ2";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="dbXUCI0R"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F03D84A2B
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 16:46:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E773E12839B;
+	Fri, 23 Feb 2024 16:46:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708706766; cv=none; b=sR5rym5w7IKxIfPqhsOBNZ7HW87SuEn8qv10tjqxnceXAwGHBXAg3Ow3nia8gji4lebzfbdW69CJqBzy25ypoEf56cZsFiCxV9b6eEfqZBzmwuEL6FDKx5TF4xcXLW2vvmceY+cFeuepq3qheX9hc4Vc/mShtsQ0h0G5M6yQKi4=
+	t=1708706787; cv=none; b=b+UZN+FAuBhRlaUYElOo925Aiu3piU9cIX1U7rxWEPMFXHBEtnF2dc5wSDNJBDsewNvl3ZVVgDj3+P2MKE7foLJ5xeF7iE2dFbHGjZHpvx2UDeMYat+BeZ/V7klZfh+Dql6fRDI5ozjc2q7FBPJTVSBgoEIEQG1Y6tSZpn+2J+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708706766; c=relaxed/simple;
-	bh=qQXXCJnEn0gEmCgei4EJtGTcYDFQeydarbbINEJ98wc=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=QrkNDntx1XuuDtfxPZjtTuBtQCakwEce2o7kiGpCSPPO9ppvi2zSVdfQ/2f3Xq/LRmJeYZcObARrNgkms0LoL2MBOsTMe3GQybvyZAO8MqaEF7UB7UwYTyB/LSdwv2lwSFL20vOktxF8aYQmBzZLHW0vBc1P/0VlYGTmbKEtEHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7c75dee76c0so95080339f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 08:46:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708706763; x=1709311563;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5ceXc2lDEn8+HQNQqoepYTtPf4nu6XaifYXdeQUwtmA=;
-        b=ZEHYws4qnH5eiaO/cm3sipwptpfnbE8xylzNON2N4ymaisPKZyMkCBMQEb7W1mT61T
-         ALkR4H7Y4ay89Op/exBSkrxV2Slb5eWnoxCF58E15qGrwW18xsaFE1yz6/b8heboNaW8
-         xbhyMRsXtGSdrQCwSMETYV/8ceosrhW4AQHH0ovyQkfkyPKwX5aPmqZyUqWpvlVN7p2O
-         PgAbXrtdsT0Hb+U27hpKznZygMaKpA7/g4nyTynKAUVy4VikbktcL6iMEXaPNIYnn7KY
-         1dTgo9wVkXjVgCJaixI4310AuFOKI4uTEfoGvV0Zg7rtJmUyrX36rB+gBMl8Q1h98Cyt
-         IT1A==
-X-Forwarded-Encrypted: i=1; AJvYcCW78DtefvmsBCpaJXlhUhapdPcfUgIbyEhiO6NsGtfLQyNLVFqejuS6V/FtfZ29+hw7c7+Evk76d9CZ/93LYrVcAU7uisbMXPIwHO4G
-X-Gm-Message-State: AOJu0Yy8jXrbcu3EFp4r5djrZC9YH2TSUHDH+CvfR6IHKzTJXdDiHDo4
-	6qH1A5pI/xmOTOFGZ9GOHOvEzMNyCDu5/5HIxraWsw6u9VlEg0yCq6GAZL1i+GGyemrGow9m/WQ
-	TAqP865hqss5Oe0TJdr1Xrg4nIh7qyIfjUXsxt35V8WQAkQ/qGl4Qt3Y=
-X-Google-Smtp-Source: AGHT+IFJyp0MBrj4S7LpAYTmGxLLAIs0GF3qNZ35WmD+27zb/IWGxxjM2bKRA6m25SWK8yidx1cSH3ToQ5m5W8fEDdkEIjf8h1Qz
+	s=arc-20240116; t=1708706787; c=relaxed/simple;
+	bh=/BSuq4/86RjZ2LGVk3j8gdEPLDTykbNGwxB1TAs82K0=;
+	h=Date:From:To:Subject:Cc:MIME-Version:Message-ID:Content-Type; b=PJcr3GUwlnWcjDu6avt0XdYbIQiwvDC+lilvbX24cDyuiAFGl/xFm/j3s52lKE/HYKzzGRaMOgjFJ3WOrfdxn7kK2bLYifT/4L/HTplnFN7xe1RqAGg2ZdmjjHC9VgRC+UiYplG8nC3nWO7YZx6yNRhz2Ttc95AgiWLXUy3g/2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=uKSYtuJ2; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=dbXUCI0R; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 23 Feb 2024 16:46:23 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708706784;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+	bh=gYbe1yDtXUyQ0sodWy4NQ+yO4YkaKvVupNCaCp2iDBo=;
+	b=uKSYtuJ2wmHKc2fmU8RjR9p4AoeCxT7GkJk+VpoO7Uz9X6p0AAsfJbflyI4uFeHu8AIQPe
+	/ZBpfu/OWSK3yS4FJqXlSk5bsLvgcx/ce77ihm7YvmYatp//1+HBJH1n5FjaD3CzLiXTmg
+	I/Wdt4roq+BwW1XsEMIeJSdkUjd+lbIfirY97t6oe6bB2DAzWhtNaBFYoL3Pw/yIobfI8r
+	aeHRl1jPu9GK6ejbKU6ZUiN3tOReQDNSI1xzX1O7YqMK4sYVctLoixzKqXsTJNO/zj1Uz0
+	x/FTA2yAAozlXu4pDlZfDAC9V673OEKWbu/QAegQx4llFl2aPLsVYNv9EPtMNQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708706784;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+	bh=gYbe1yDtXUyQ0sodWy4NQ+yO4YkaKvVupNCaCp2iDBo=;
+	b=dbXUCI0RawIlloYCbB7cV3VeIG7d02VmlIf8F5NBGd8YwNMGExhJNmVwHq0pZl7N0USWJ2
+	e+Zqw7iVwpU1v8AA==
+From: "tip-bot2 for Kirill A. Shutemov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/boot] x86/trampoline: Bypass compat mode in
+ trampoline_start64() if not needed
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>, Andi Kleen <ak@linux.intel.com>,
+ Kai Huang <kai.huang@intel.com>, x86@kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a5d:898f:0:b0:7c7:96ac:9408 with SMTP id
- m15-20020a5d898f000000b007c796ac9408mr4609iol.0.1708706763728; Fri, 23 Feb
- 2024 08:46:03 -0800 (PST)
-Date: Fri, 23 Feb 2024 08:46:03 -0800
-In-Reply-To: <0000000000007fcc9c05f909f7f3@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ad6da206120f4b2c@google.com>
-Subject: Re: [syzbot] [reiserfs?] KASAN: null-ptr-deref Read in fix_nodes
-From: syzbot <syzbot+5184326923f180b9d11a@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	reiserfs-devel@vger.kernel.org, rkovhaev@gmail.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <170870678304.398.7107349021319622516.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-syzbot suspects this issue was fixed by commit:
+The following commit has been merged into the x86/boot branch of tip:
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+Commit-ID:     c2cfc23f79676a9857a5a48911011bd56e23fd46
+Gitweb:        https://git.kernel.org/tip/c2cfc23f79676a9857a5a48911011bd56e23fd46
+Author:        Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+AuthorDate:    Fri, 26 Jan 2024 12:01:01 +02:00
+Committer:     Dave Hansen <dave.hansen@linux.intel.com>
+CommitterDate: Fri, 23 Feb 2024 08:40:29 -08:00
 
-    fs: Block writes to mounted block devices
+x86/trampoline: Bypass compat mode in trampoline_start64() if not needed
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14c5b3f0180000
-start commit:   a4aebe936554 posix-timers: Get rid of [COMPAT_]SYS_NI() uses
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=671af399e2dac0e3
-dashboard link: https://syzkaller.appspot.com/bug?extid=5184326923f180b9d11a
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10a4c8cee80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17a59e11e80000
+The trampoline_start64() vector is used when a secondary CPU starts in
+64-bit mode. The current implementation directly enters compatibility
+mode. It is necessary to disable paging and re-enable it in the correct
+paging mode: either 4- or 5-level, depending on the configuration.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+The X86S[1] ISA does not support compatibility mode in ring 0, and
+paging cannot be disabled.
 
-#syz fix: fs: Block writes to mounted block devices
+Rework the trampoline_start64() function to only enter compatibility
+mode if it is necessary to change the paging mode. If the CPU is
+already in the desired paging mode, proceed in long mode.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+This allows a secondary CPU to boot on an X86S machine as long as the
+CPU is already in the correct paging mode.
+
+In the future, there will be a mechanism to switch between paging modes
+without disabling paging.
+
+[1] https://www.intel.com/content/www/us/en/developer/articles/technical/envisioning-future-simplified-architecture.html
+
+[ dhansen: changelog tweaks ]
+
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Reviewed-by: Kai Huang <kai.huang@intel.com>
+Link: https://lore.kernel.org/all/20240126100101.689090-1-kirill.shutemov%40linux.intel.com
+---
+ arch/x86/realmode/rm/trampoline_64.S | 33 ++++++++++++++++++++++++++-
+ 1 file changed, 32 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/realmode/rm/trampoline_64.S b/arch/x86/realmode/rm/trampoline_64.S
+index c9f76fa..14d9c7d 100644
+--- a/arch/x86/realmode/rm/trampoline_64.S
++++ b/arch/x86/realmode/rm/trampoline_64.S
+@@ -37,13 +37,15 @@
+ 	.text
+ 	.code16
+ 
+-.macro LOCK_AND_LOAD_REALMODE_ESP lock_pa=0
++.macro LOCK_AND_LOAD_REALMODE_ESP lock_pa=0 lock_rip=0
+ 	/*
+ 	 * Make sure only one CPU fiddles with the realmode stack
+ 	 */
+ .Llock_rm\@:
+ 	.if \lock_pa
+         lock btsl       $0, pa_tr_lock
++	.elseif \lock_rip
++        lock btsl       $0, tr_lock(%rip)
+ 	.else
+         lock btsl       $0, tr_lock
+ 	.endif
+@@ -220,6 +222,35 @@ SYM_CODE_START(trampoline_start64)
+ 	lidt	tr_idt(%rip)
+ 	lgdt	tr_gdt64(%rip)
+ 
++	/* Check if paging mode has to be changed */
++	movq	%cr4, %rax
++	xorl	tr_cr4(%rip), %eax
++	testl	$X86_CR4_LA57, %eax
++	jnz	.L_switch_paging
++
++	/* Paging mode is correct proceed in 64-bit mode */
++
++	LOCK_AND_LOAD_REALMODE_ESP lock_rip=1
++
++	movw	$__KERNEL_DS, %dx
++	movl	%edx, %ss
++	addl	$pa_real_mode_base, %esp
++	movl	%edx, %ds
++	movl	%edx, %es
++	movl	%edx, %fs
++	movl	%edx, %gs
++
++	movl	$pa_trampoline_pgd, %eax
++	movq	%rax, %cr3
++
++	pushq	$__KERNEL_CS
++	pushq	tr_start(%rip)
++	lretq
++.L_switch_paging:
++	/*
++	 * To switch between 4- and 5-level paging modes, it is necessary
++	 * to disable paging. This must be done in the compatibility mode.
++	 */
+ 	ljmpl	*tr_compat(%rip)
+ SYM_CODE_END(trampoline_start64)
+ 
 
