@@ -1,102 +1,124 @@
-Return-Path: <linux-kernel+bounces-78353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78356-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B8BE861251
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:12:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65BFA861256
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:13:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0092B214C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:12:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 212E8283928
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:12:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40B857EF0A;
-	Fri, 23 Feb 2024 13:11:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 268E87E78A;
+	Fri, 23 Feb 2024 13:12:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Z+U5Ejar"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="akSHjSLE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 115EF7D417
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:11:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 652747D411;
+	Fri, 23 Feb 2024 13:12:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708693903; cv=none; b=H2y5goyEe/9Nu1v8142RZEdF2Ph35NBzZvGyFUWbB5N5pY06DBgGzACQaMz+sx0NjEY1KpAHtERaMMcTepCp21bGfYMvG062dbuyz7d6g23joDXOg/+ZpkZcZ0pkfRIZtPuDAwKwE8V0SUbR70DjIx3gMWW8G2ab64TWfLEPlp8=
+	t=1708693972; cv=none; b=Ap9FqCIdJkvDq94cqX5zzMWteYBjpwa9/TijWYo/mbHKvp/cekFE61txn6pJ4nr8eyRVMdm6iLGFImNv7QAv3w0yT36MhC9hIH758+FDkOGyQLdfvNs9H0hlIVmdbWQNIIdz1OzSi7nw5q3GFPwmHQrQgLzZ2qLrrYg/U6elGMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708693903; c=relaxed/simple;
-	bh=3zucdEuTqNjd2l4aFxWzG4Sn8yMHQeMarA3/+gpy61c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ie63cZr2MeEW2PPZW0Z7DtPUjA1Er+e8O1FoyaAC42t21MiaSwRi+bhp6hFBzCfgpto9kTlV+rI2H9Bqcw8XGsxLNvA11tpILDA+kLZ0M2ON5pEE8+tsqNdmvVho5nmc0S8escTMHejS32VlQn0qUORyekwJ+DUKCC+Teol7WEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Z+U5Ejar; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a3e550ef31cso92490066b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 05:11:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1708693899; x=1709298699; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9IfamIKp532gMCfozCmitNOH75viZll5QKAcnVigqEQ=;
-        b=Z+U5EjarSht91xSxg3CAD/tBMuoVblYDLO1uWJm1M5KofU0+MKa/5TQ19sS2muGDrh
-         1c5u0m7snvbBa3joH4QDcvR5u01yZrlmuh5bLZ9PcTAv+z/7xYQx8NirL7Pltou+g3g3
-         9bdhMNH7u2xGaFa/AMGwToYLtEXaiFxUkFMSA67bUIFj3E2V9LFy9wiv6d0e9mmaCp6f
-         IuGBDQjGrMNMnE2dUlPztqkVqFIEATY323+rld60cu1NIEh8bucbrxIPJwgDtW3I1+B6
-         qVOb3cSDajyVRv0+Mp1LAO8NyzDLdhWnSCA2k3L+fHUWvAPTRd2oYaSSMjXqlnfLscQB
-         smrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708693899; x=1709298699;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9IfamIKp532gMCfozCmitNOH75viZll5QKAcnVigqEQ=;
-        b=hFpzS8H6pIPWP8kAusRUS6LFk8at8SGXLHWKjVkOWJk9PkfGSwcxCNGMJMo+/n8B/U
-         QaFUa2k68RzECtXvDf/wFC1V3RU0ogB4u8bIFhX8Vdp2QO8OJCOP+1ICsX3Tv04OJfC3
-         MVsorn5EnkOXyPpCIxMCLIU7FpZ/tSayh5uVmA0zC/Y7Cz9+coFm19Ae4DvwyMkynT4E
-         EXRRnEFTPbiTZlp2Qva1dXQrXAxiXVjoju3J2DgYhWSp54TK5Sld9Tu79+y8qA1G23Ym
-         WAf0xFcIENMX0GyPZPoUZfzdw+s6Bzs1Vr6hn5UGvS/lVd1il5ymSoBlbnms+6+P2F6x
-         vpPw==
-X-Forwarded-Encrypted: i=1; AJvYcCVzFIEGdx6m9Aaede6VrCE8xMCU7BY63e/sSrWRy0Tn9rn1OBoWunbpgwE0EmuSBhC19FJWse2VrAaAJ0ucCkZYutGNBGCm3lv1fHPU
-X-Gm-Message-State: AOJu0YwYc8KNwbV3kfL/C82MkRXQvE0iJtZSMU1bMjwDJ7fXj2gzBMhA
-	/YQOWgLsXyR+fyd7CtIkb0nK+UD+0RNl6RHdrJMBsFpe/PtpPZeXheFKVZKnqcg=
-X-Google-Smtp-Source: AGHT+IFkS9lZ3F8MycYfE3t6zb/J+kB/eDHJsdQ3u3UAkDabPqXiTmw+SwdGjy7eQhPzdDg+PG/W1A==
-X-Received: by 2002:a17:906:6cb:b0:a3e:9def:5c8d with SMTP id v11-20020a17090606cb00b00a3e9def5c8dmr1243817ejb.28.1708693899344;
-        Fri, 23 Feb 2024 05:11:39 -0800 (PST)
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id ps7-20020a170906bf4700b00a3f1cb81dcesm2979759ejb.116.2024.02.23.05.11.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 05:11:39 -0800 (PST)
-Date: Fri, 23 Feb 2024 14:11:37 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH printk v2 09/26] printk: nbcon: Add detailed doc for
- write_atomic()
-Message-ID: <ZdiZif8xyfbpXrc3@alley>
-References: <20240218185726.1994771-1-john.ogness@linutronix.de>
- <20240218185726.1994771-10-john.ogness@linutronix.de>
+	s=arc-20240116; t=1708693972; c=relaxed/simple;
+	bh=2SIXe075Sw3ed8GxgqbY7C51dZQTx4Z+wCjZhCZu2Bo=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=tAHNBzuvQYoZVILJC68Bmer3TSTRM6xOMnVjHijsK0DvEDbKvcDkIwpcm7G6HkJwYeZICq2SS6wpLeT5Gc/kTKRcG+rfx1PV8cgEHUF8WRqeCcmdG778oz1uGDLO+kgwFmR5MJmxxgDbnOOSMYMon9HmRrN/0nsTakhVgKO5IeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=akSHjSLE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85028C433F1;
+	Fri, 23 Feb 2024 13:12:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708693972;
+	bh=2SIXe075Sw3ed8GxgqbY7C51dZQTx4Z+wCjZhCZu2Bo=;
+	h=From:Subject:Date:To:Cc:From;
+	b=akSHjSLEWJFZ9lW2TTL/znls0ISFCWhaXcDnccAfc09E9FcjOEIHEx2XobXW3gAev
+	 mZhjekb45ccNvG92WwDPSP1PmfcvgoMq0c3j4gbiy2hlr56aSc3Vi5ayUkFj2g1nvI
+	 X/RxDTZqPBlVZN/mpKzaBb3VzVcmTnoKLSnEhiPaY9JtX2CcihT7vy3OpxxCqpDuEO
+	 YCQQmrziu26UbSTCc/dbJ8AY5mRQJeypaqF3H6yVhXMq6QtnbtKIjHzKnt0lxjKstE
+	 2na0t5l+4k2WCvWmj8F6QoEOFTB2Epb/eRApPdmN3HEdu778R1vBontT8HPHyDYFRo
+	 VZ03xL9PWUrFg==
+From: Roger Quadros <rogerq@kernel.org>
+Subject: [PATCH v5 0/4] arm64: dts: ti: am62: Add USB support for k3-am62p
+Date: Fri, 23 Feb 2024 15:12:37 +0200
+Message-Id: <20240223-b4-for-v6-5-am62-usb-typec-dt-v5-0-4b5854d17d18@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240218185726.1994771-10-john.ogness@linutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAMWZ2GUC/x3MMQ6DMAwF0Ksgz/0SckOgvUrVIRgDHgoooQiEu
+ Hujjm95JyWNpomexUlRN0s2TxnVrSAZwzQorMsmLtmVzHe0Dv0csXlUCB/P+KYW67GooFtR+4e
+ qOGnEBcrHErW3/f+/3tf1AygNYRtvAAAA
+To: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>
+Cc: Andrew Davis <afd@ti.com>, b-liu@ti.com, srk@ti.com, 
+ r-gunasekaran@ti.com, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ Roger Quadros <rogerq@kernel.org>, Rob Herring <robh@kernel.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1476; i=rogerq@kernel.org;
+ h=from:subject:message-id; bh=2SIXe075Sw3ed8GxgqbY7C51dZQTx4Z+wCjZhCZu2Bo=;
+ b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBl2JnPzQuFDaW7cPuQ8iABwa7UFZfp3gSsHvRMB
+ qfDarDNTBCJAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZdiZzwAKCRDSWmvTvnYw
+ kxB6EACBMDYHp8ymY83yO/lfB1yd8wPfI5L1Sv2fvGPtHqO5DqGFn3rN1mQbhImx7Y1xE45Lx+1
+ JIcdEndHlZCvTsJtJtOChLYvE88oj9g46PjRLcXJJ9QeIrTSqxtTsy81f71LlhV1s50CAZZQ+eP
+ CuZneoj8HL8DKf9ZrFapWqh9mSRiOuMgq6oGovd3urWZ8822rnFredTndJJQZxA+vY8bMXU+R59
+ G2haNFUdCSaUfzYpFPTVJnUXDsKq7jeswMr1q5lRZj85elYii+U46wNG1/FN56Voi2u0H90Ttmi
+ bg4/xcF26otMoJvu+ZtYGlbUEx1bcpOIxFRoBkjLTinKMPt9u0lrELqZoMd0QOabo8Bda3dRIWV
+ BToR/4BR4cs+7YVBL5bUikMyenXxO5/Ko0sncMrsJDqe0/UY4ZaQxW5HfD8JB8fVvp0Ah3pKNHU
+ F4YZ1u3edWjtX33ramwpm6CbmvfqLL8M2rehxL5gVcPDdujCdwbRovT5P8VzBKN2mDY76cW2K0U
+ pLZCfh8r7BVP6J1o2uqwVed5azz/Blpbp02Wt4HzGeVVxFu3QJ2jhM6jd5gDFjXDZird6bbCiwc
+ q5pM20DXUs03AC75IRlg8F6T3DpOe3qQ9hoS8jmBk5pTFqkDtF7/yml/zXJPHYqBCdDb2T1aUxe
+ WvwUz0olSFcM6VA==
+X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
+ fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
 
-On Sun 2024-02-18 20:03:09, John Ogness wrote:
-> The write_atomic() callback has special requirements and is
-> allowed to use special helper functions. Provide detailed
-> documentation of the callback so that a developer has a
-> chance of implementing it correctly.
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Hi,
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+This series first adds device nodes for USB0_PHY_CTRL and USB1_PHY_CTRL
+in the wkup_conf node and fixus up the USB nodes to use the newly
+added nodes.
 
-Best Regards,
-Petr
+Then it adds USB support for AM62P SoC and AM62P5-SK board.
+
+In v5, we disable USB LPM support for all USB nodes as it is not supported.
+Also Acks were added and To list updated.
+
+Changelog in each patch.
+
+cheers,
+-roger
+
+Signed-off-by: Roger Quadros <rogerq@kernel.org>
+---
+Roger Quadros (4):
+      dt-bindings: mfd: syscon: Add ti,am62-usb-phy-ctrl compatible
+      arm64: dts: ti: k3-am62/a: use sub-node for USB_PHY_CTRL registers
+      arm64: dts: ti: k3-am62p: add the USB sub-system
+      arm64: dts: ti: k3-am62a: Disable USB LPM
+
+ Documentation/devicetree/bindings/mfd/syscon.yaml |  1 +
+ arch/arm64/boot/dts/ti/k3-am62-main.dtsi          |  4 +-
+ arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi        | 10 ++++
+ arch/arm64/boot/dts/ti/k3-am62a-main.dtsi         |  8 ++-
+ arch/arm64/boot/dts/ti/k3-am62a-wakeup.dtsi       | 10 ++++
+ arch/arm64/boot/dts/ti/k3-am62p-main.dtsi         | 50 +++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi       | 10 ++++
+ arch/arm64/boot/dts/ti/k3-am62p5-sk.dts           | 67 +++++++++++++++++++++++
+ 8 files changed, 156 insertions(+), 4 deletions(-)
+---
+base-commit: ab480b8036fde8c1ea628bb1027919bf399468e9
+change-id: 20240223-b4-for-v6-5-am62-usb-typec-dt-769eec4c8c4a
+
+Best regards,
+-- 
+Roger Quadros <rogerq@kernel.org>
+
 
