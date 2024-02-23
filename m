@@ -1,111 +1,108 @@
-Return-Path: <linux-kernel+bounces-78936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFB88861B00
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:59:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C97D0861B01
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:59:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B043B2274B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:59:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0638E289A71
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:59:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0849143C4B;
-	Fri, 23 Feb 2024 17:58:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5F46142648;
+	Fri, 23 Feb 2024 17:59:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A6YPe/w2"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S5FYjqyC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97D42142623
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 17:58:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E54C612AAD7;
+	Fri, 23 Feb 2024 17:59:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708711134; cv=none; b=RBQGvSMf0nKhRrngeedMOqRw+9U18KYmHrfbNPho4f+8GRDJkUbDDuiPRvk2Bd4ImOoComlwcrT3Xgs3DGG1k2i41ZsbmM0ixjHbjMZwsa6tmKaE7PI+E7k9rWKJTogNKHZe1tEnDHuU1ytS61e6/rywLhoV8N3K1fLl4GjqZgE=
+	t=1708711174; cv=none; b=rDBjKP+W5iQfL91RotT3zu23AGUvKPf9v02+25imnTZCxxXnXnkA2lgNIi8rdBZevddEXxuMP0uU5DPNzVGla+1bfXO4Mju0MJ/vaYZHxF/9qqTOX6k6g/bxuGMQQ3zm0eC8Sm+H+91ZowvxcDO4AH+PFmD8e4HwiME7ZTUV9vc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708711134; c=relaxed/simple;
-	bh=SCO8ITUqhG2FbmejGhM3Vq7ikdTJoRqR5JOu7/L0C2c=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Ud0RrbbzAihpsVi2ZQOx3HE8vN9w/gWbqiWr6nndAx8s9WvHSGWv8B0Pdslz9vrb2/iyW6PIVgwe5/w7OkSmw5rZ1FFY2Kp0j+W3YYmbuCnqMNCkr7NcB2sdI+wd4EiG97PfUbjOxat0Q0sBrf8XQHjt8pnXhUa7Vt3sUBQhO2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A6YPe/w2; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-512e733a525so626920e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 09:58:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708711131; x=1709315931; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gjPLPth3YBrz5IbXnB2CEJbAtOdB4AEiM340Etx+BTA=;
-        b=A6YPe/w22blmkotXB8OQLBFBgnYG9+48SaKuNvN0LKiZHbtLebIpWL+NbirFmY27tQ
-         s89smwT+koESylTQmtNbfFagmscCQUdhMqLIAJJnXGSEtoIRQd+SgCkt2kOo6PEjq4Ur
-         4Gqymtttg7WvbSWvEjPS0Nz/V2yi0X3S6hsk7VRNh0A/9snfpmQhaKspxUxsCvIXVXHg
-         qC4POLrSyfyNPPdBbzRYiWRi/0+yz8ZEO1DoTclpx8KMlLQ2Y61ijITbC0HJ47UzraMg
-         3ltWj4GyQckhIRPAB57VEyfaiJNCystDmvcbMNezh94+wrtqglpIxut/ISCVnjYFW5TR
-         coJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708711131; x=1709315931;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gjPLPth3YBrz5IbXnB2CEJbAtOdB4AEiM340Etx+BTA=;
-        b=BUDRhZLdX7ta78xFdrWXh4gnwPNyWk84czPvgfkeLFXNAW6LVxN1bnMElSJB6d7oux
-         IHH4dbf02R+lFk8W+hKmV0XqjEfL72NhzWXk7Z10Fgg2qIurHFfZi4DZRGzNtri5fJPQ
-         v+JrkPwHsXFhkLdM0g4M1qMRjk+5eMnIpd7G1sXrFJwsDtP2AOD5KXhWjJ8lo9jjELZ9
-         ZVuwDqcgjPGcForsBJrAI3ffjNSf20LqaKWshRU9AWOeAguQddA8DYlLDhhF679qPKO/
-         eA+wqmn25ppb0dyIVwD8R0Mhso/ynJrcU0HNh6V1X2xhxVaWX0awvvxqFd3gsPUKZWiY
-         p1Gw==
-X-Forwarded-Encrypted: i=1; AJvYcCVSrJ+pwhA+wPccD2U7EeTRFcQ+DkB+xgAcPGzhq2sOHrzSNo6D3X7v3o+qAPwKI5O56zdYhXC92fZdddDznIf3SRui1obszpKr7uq2
-X-Gm-Message-State: AOJu0YzkC/Tz0FO5dW1hZc3fTHJ62Wye30RXDxHWekvAZaWbPGSToS/G
-	gxMZWCQNKX22lz+Vkz0KjxrWbz9odSiblgKQuA8ztpk7PS5Levbs
-X-Google-Smtp-Source: AGHT+IFAMAHx4vBOlMRimWgFf1gJmSbVaj4+lXguuwpejpvGFTmKnPyY3fhTFtusJXKgtctWwEXivg==
-X-Received: by 2002:a05:6512:20c9:b0:511:aa89:2cd8 with SMTP id u9-20020a05651220c900b00511aa892cd8mr135231lfr.18.1708711130673;
-        Fri, 23 Feb 2024 09:58:50 -0800 (PST)
-Received: from localhost.localdomain (c83-255-24-248.bredband.tele2.se. [83.255.24.248])
-        by smtp.googlemail.com with ESMTPSA id w11-20020a056512098b00b00512bc1445b6sm1785479lft.234.2024.02.23.09.58.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 09:58:50 -0800 (PST)
-From: Jonathan Bergh <bergh.jonathan@gmail.com>
-To: gregkh@linuxfoundation.org
-Cc: dan.carpenter@linaro.org,
-	linux-kernel@vger.kernel.org,
-	Jonathan Bergh <bergh.jonathan@gmail.com>
-Subject: [PATCH 2/2] staging: rtl8192e: Include blank line after variable declarations
-Date: Fri, 23 Feb 2024 18:58:36 +0100
-Message-Id: <20240223175836.541337-2-bergh.jonathan@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240223175836.541337-1-bergh.jonathan@gmail.com>
-References: <20240223175836.541337-1-bergh.jonathan@gmail.com>
+	s=arc-20240116; t=1708711174; c=relaxed/simple;
+	bh=gTzPvov1pysXpbl26Na1x4ZDLy1bbNoAUuYg5g+g3FM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R6+R5bKMfPA0OPP7NwMLDNLpjG1d5tbxu0zSvByXoxpECzO1DzEqE3cNbINrGtqgODA9I/FQLt8OvTXOXqvsEKQiPK8ezDsgeYbjWw5AWWAg+vA7Sy35Xt2/VqQzc7kOu/JPaNQTUawhrXylZF2L++fAVJnqevi+6rOKkzGa/z0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S5FYjqyC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A0D7C433F1;
+	Fri, 23 Feb 2024 17:59:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708711173;
+	bh=gTzPvov1pysXpbl26Na1x4ZDLy1bbNoAUuYg5g+g3FM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=S5FYjqyCTQVqnb/2O35S6LdSKdQ4lCjDyuMfRmmKmXwo32Z8lBPAgLGJulNOiVvLn
+	 cKPT5ZXr88aAwmPvkE6ZzgEEB3Hi7cnRFF/azwL3KPcOpvw4VpDZzyo3quRFaYE9oU
+	 Jj5SdxpJxfHlbgDqss+f5aP7kkKWGhshHg3/0lnDOTq5vRPuKDmkpGChdFVlAQW7Px
+	 QczJPnwsDq9L4MdWG9uhvdEqA1Q8mbWVvZjC5utB1+acfhy8SejCLOIThqZ+FnBRDn
+	 fY/cxXpClZCSVjFhre9vstTJMrmA9HgYbOBmpm89YPc0YegmJQt3R4oU4Cjt2UMkwu
+	 v1PZkTR2ubOvQ==
+Date: Fri, 23 Feb 2024 14:59:28 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Kyle Huey <me@kylehuey.com>
+Cc: Ian Rogers <irogers@google.com>, Kyle Huey <khuey@kylehuey.com>,
+	Robert O'Callahan <robert@ocallahan.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] perf test: Test FASYNC with watermark wakeups.
+Message-ID: <ZdjdAKIV39A-jpR5@x1>
+References: <20240221175210.19936-1-khuey@kylehuey.com>
+ <20240221175210.19936-2-khuey@kylehuey.com>
+ <CAP-5=fXsv7TJ_SVOZc38fN0gn+7cWBcMWt3FdVLcs5v0_vO=uw@mail.gmail.com>
+ <CAP045AoSHWoOP3TN=6Hf2wZj7X9Y41sThBQWCDZ3BEP68qeTBw@mail.gmail.com>
+ <ZdemibZepMqWvv6U@x1>
+ <CAP045Aqc6woHGYKJG4d=x4gPd0=PmrLeFv25Rkts1a8xFuocOQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP045Aqc6woHGYKJG4d=x4gPd0=PmrLeFv25Rkts1a8xFuocOQ@mail.gmail.com>
 
-This patch does the following things:
- - adds a newline after variable declarations as per code style guidelines
-
-Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
----
- drivers/staging/rtl8192e/rtllib_rx.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/staging/rtl8192e/rtllib_rx.c b/drivers/staging/rtl8192e/rtllib_rx.c
-index 4df20f4d6bf9..c7c8ffecb825 100644
---- a/drivers/staging/rtl8192e/rtllib_rx.c
-+++ b/drivers/staging/rtl8192e/rtllib_rx.c
-@@ -945,6 +945,7 @@ static int rtllib_rx_data_filter(struct rtllib_device *ieee, struct ieee80211_hd
- {
- 	u8 type, stype;
- 	u16 fc = le16_to_cpu(hdr->frame_control);
-+
- 	type = WLAN_FC_GET_TYPE(fc);
- 	stype = WLAN_FC_GET_STYPE(fc);
+On Fri, Feb 23, 2024 at 09:35:29AM -0800, Kyle Huey wrote:
+> On Thu, Feb 22, 2024 at 11:54 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> >         fd = sys_perf_event_open(&attr, 0, -1, -1, perf_event_open_cloexec_flag());
+> >         if (fd < 0) {
+> >                 if (attr_has_sigtrap()) {
+> >                         pr_debug("FAILED sys_perf_event_open(): %s\n",
+> >                                  str_error_r(errno, sbuf, sizeof(sbuf)));
+> >                 } else {
+> >                         pr_debug("perf_event_attr doesn't have sigtrap\n");
+> >                         ret = TEST_SKIP;
+> >                 }
+> >                 goto out_restore_sigaction;
  
--- 
-2.40.1
+> I think perhaps I'm barking up the wrong tree here. This seems like a
+> ton of work just to write a regression test. Maybe I should be doing
+> this in tools/testing/selftests instead?
 
+Well, if it tests a perf feature, then yeah, that would be better placed
+in 'perf test'.
+
+Maybe you can just assume this will run just on modern kernels where
+this feature is expected to be present and then add some pr_debug()
+stating that maybe this feature is not present in the kernel.
+
+For the vast majority of cases this will be enough, so that is what I
+encourage you to do now.
+
+Its possible that distros, like Red Hat, end up backporting first the
+perf tools with this test and not the feature it is being tested, if
+that happens, then it will eventually come to my attention and I will be
+able to do the BTF treatment, as in that case even a test based on the
+kernel version would be insufficient.
+
+- Arnaldo
 
