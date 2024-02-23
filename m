@@ -1,150 +1,121 @@
-Return-Path: <linux-kernel+bounces-78518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 222BA86146A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:45:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA3F0861471
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:46:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8294B2143A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:45:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E55CE1C20C26
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:46:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 510A3811F9;
-	Fri, 23 Feb 2024 14:44:29 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C005C60F;
+	Fri, 23 Feb 2024 14:45:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VoHgQvPM"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C912514B815;
-	Fri, 23 Feb 2024 14:44:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 392A51C680;
+	Fri, 23 Feb 2024 14:45:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708699468; cv=none; b=ew6bDsXEjXJ1138M4DYDqMhXCJUbxTbYO4CLGFAjMEZQj++zGNABhMTpxZnX/tSDNT+A1a/3cYpdnJbI0igecJIvOgzcbKsfjK6T7KeKSwpzr2Czw5vL+L93Wvav+7krcS2ZTokUx2Td0GA3S/h618wApgo7W/vTow2jZaaXan8=
+	t=1708699533; cv=none; b=mTr875HbdJMfyltAVPESFaCFCWcCGJA7NJ54BVlLHjHg9gNFyOQkT1TwZ9VTMWEVm1iFl5gGxXw+DXJfvvuaKeFBH/kREY8k+oW2H1dFvuGXk7hj6dWUSjRRN+kOwv6+1oWPuMZsxvRGZ1jf/iOlPUeiDxo1uGk4tbm3LRuOFfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708699468; c=relaxed/simple;
-	bh=RyvUCZi8Wj5AWG9UJJBgJ1vhks86ype6GuNjY56uF5s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SQQEXUyEDoS25kYCyaCopWDTU7fgdhbrWNwkZ3b5IzAlKQopfKsVwqgITFErqCBYvKX3Lw2Nmdqlghml2eUWuxACf9WYowBIEDMsbU47+5e32hs6JBE5rVb96etWPWAMjBusM5dpBdn6TtfGbh9ssOyRA6XXYZ+Vj+GMxxsLxFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01691C433C7;
-	Fri, 23 Feb 2024 14:44:26 +0000 (UTC)
-Message-ID: <49a68c10-9549-4fd8-b929-d4c7a9c8debf@xs4all.nl>
-Date: Fri, 23 Feb 2024 15:44:25 +0100
+	s=arc-20240116; t=1708699533; c=relaxed/simple;
+	bh=BfsdNiLPuAMy7kSkAtbNij4qj8LZNG1lsXLeWEKp+iQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tkfT0syQ67i5xe/JDbepEvCIn4Bc+Vr0nNAjuBuXHcpxVhu5uOVfYYgRjt8PliEJSyotqQ9jDJbm28HiIPsVGVPpJe4ZCNfmFpGqlm075PE0BPKZV6GnZAVuNQ/4ofAw14VLR34J6+eOfjs6xo/BPtJtWPiFvH0D6F9xCS4HK90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VoHgQvPM; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a3e706f50beso117597866b.0;
+        Fri, 23 Feb 2024 06:45:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708699529; x=1709304329; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BfsdNiLPuAMy7kSkAtbNij4qj8LZNG1lsXLeWEKp+iQ=;
+        b=VoHgQvPM4yt1NgNp0Aj5W/KgakPK8nqwI49QYLDSM2bi9TIsvzEq3Qw9t0pF4uWSVa
+         zbKLzePd83hR1wGPpTbs0JjoK/wGPL+UcJuP9QRbSpl+tuAwVlAumS+H/6c40pHJGoyo
+         DjJN0QJ4ZB2IZf0nIxQDz87enFRSCdM+XELDAjiyuxl4c119xYG3k4La2q7lrys9X45k
+         GoBJUdBFZZHVs98hcexaDNUDRf/m/laGYy6Kfy7JE0iNAi8Rj6I5LLTUGyCTBem8h+/z
+         KLc6aF6fbHEtpHy51USPrUnCT4Qdh7qNwRPBnwN1JCtgwTP6+ZlZMHniRSc265BnhoC2
+         ge0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708699529; x=1709304329;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BfsdNiLPuAMy7kSkAtbNij4qj8LZNG1lsXLeWEKp+iQ=;
+        b=evM431ySroUilxzJcFguljHEs9NjFxP/hTP6qss51fwwdwsqNwReF4r2zxji+cF19W
+         hgp9gL0sj/N/HarqCoJ2Hn4nz+7mk69jiS2rtMDxiEGcjskPl1uN0m8O0muQny0XuXgW
+         SnHnc6ql8IwBxLV39PrPtHqvNPCyDKRaZCytbRwsmhh0+cKFWKTvnZg2lDBTr2Sq9h3W
+         p08X1wO7b5eb8UcsrhaadFBnCEUqU9A0ElCrFU172BUfCiXdZIGtU5kZmCYJdMwTKeYr
+         /3YPjlw/mE8MAv5YxelZ1gmDrdKHo1PzVYKGxXdC9KAb2dS6IlXjmOsszihSnH2l4tCV
+         vv8g==
+X-Forwarded-Encrypted: i=1; AJvYcCWDUVw213+j2OSAViKHswMm98OIFb6beN3aGct+dQNiSrenLM9/QGdlldti7TCIxMPprB7PZuR7x7DTQecdChZrtg6jVT5Xv5csuDCkKlOrbehZH20o/b30ZUKwvW1kIm822SBVTqcz+A==
+X-Gm-Message-State: AOJu0YwhkhvXNCUtf67DZQAuu/qna2xBq94xXTR2e0AhrxtaghrNLw9W
+	uBqe6ZQlnuLC46YjkMpo+J5UVkoHJNrbvaTPPyRpCNey74uE1YcKw4x/yKK0k6/mCFEbTt07ZSU
+	hhqcc5GdN0eMotgWeIhoYLg7vUf4=
+X-Google-Smtp-Source: AGHT+IHpGq+phVFLaZeC26ocGsL8AfkiYJNn4F/EeswUoJ7ZVLBk5ozgifLr7/gd+vx88ceM9Ug0BVMVZvD8ij7037Y=
+X-Received: by 2002:a17:906:4e97:b0:a3f:d71d:d820 with SMTP id
+ v23-20020a1709064e9700b00a3fd71dd820mr1204331eju.26.1708699529198; Fri, 23
+ Feb 2024 06:45:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Linux Kernel Bugs] KASAN: slab-use-after-free Read in
- cec_queue_msg_fh and 4 other crashes in the cec device (`cec_ioctl`)
-Content-Language: en-US, nl
-To: "Yang, Chenyuan" <cy54@illinois.edu>,
- "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "jani.nikula@intel.com" <jani.nikula@intel.com>,
- "syzkaller@googlegroups.com" <syzkaller@googlegroups.com>,
- "mchehab@kernel.org" <mchehab@kernel.org>, "Zhao, Zijie"
- <zijie4@illinois.edu>, "Zhang, Lingming" <lingming@illinois.edu>
-References: <PH7PR11MB57688E64ADE4FE82E658D86DA09EA@PH7PR11MB5768.namprd11.prod.outlook.com>
- <f985d664-d907-48ed-9b3d-dc956c178b88@xs4all.nl>
- <526380BE-57AC-493D-A7B0-B8F0ECC0FE0A@illinois.edu>
- <f1855145-9562-4bef-800f-43bcacff6fc8@xs4all.nl>
- <2e5f1e92-7fad-4a74-b375-1e194ff08ce6@xs4all.nl>
- <F8D4A291-8CFB-4A25-B296-3CA07B56F459@illinois.edu>
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <F8D4A291-8CFB-4A25-B296-3CA07B56F459@illinois.edu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <1f598a72-dd9f-4c6c-af7f-29751f84bd23@alliedtelesis.co.nz>
+ <Zde966nsJ76QOuzm@surfacebook.localdomain> <f5e74774-226a-4678-a6f9-b4f17250ad91@alliedtelesis.co.nz>
+ <CAHp75Vfq3Pc+Eo3Z5mhORZwwuKF+Y7_47dTO8qARcfba4nmj2w@mail.gmail.com>
+ <9d00e1b1-120b-4c2b-89c5-0ac736bf6441@alliedtelesis.co.nz>
+ <CAHp75VdnXtVwrLrcGjnYMfNx7roBvQm9DMr6_ndjZeAbRDbs_Q@mail.gmail.com>
+ <2a8d19ee-b18b-4b7c-869f-7d601cea30b6@alliedtelesis.co.nz>
+ <CAMuHMdUFW7iTdhQtW4eDnU50zRqsdWsLnTD74UQo8tBU66-dCA@mail.gmail.com>
+ <CAHp75Veyvw75jc4LFpW2EQQ=wSYmn_VdsPBWVG03b+P0QvyGaQ@mail.gmail.com> <CAMuHMdX0CYWGn8OSQ3sXGyZTSqjTK5n1aj2-BOudfEejp980Tg@mail.gmail.com>
+In-Reply-To: <CAMuHMdX0CYWGn8OSQ3sXGyZTSqjTK5n1aj2-BOudfEejp980Tg@mail.gmail.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Fri, 23 Feb 2024 16:44:53 +0200
+Message-ID: <CAHp75VeGiAWOFgOVjpOCHj0-CGgUYAuGEYmLomn4ydnSVv=_yA@mail.gmail.com>
+Subject: Re: Linux support for a 7 segment LED display
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Chris Packham <Chris.Packham@alliedtelesis.co.nz>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Pavel Machek <pavel@ucw.cz>, 
+	"lee@kernel.org" <lee@kernel.org>, "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Chenyuan,
+On Fri, Feb 23, 2024 at 3:01=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
+k.org> wrote:
+> On Fri, Feb 23, 2024 at 1:36=E2=80=AFPM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Fri, Feb 23, 2024 at 9:52=E2=80=AFAM Geert Uytterhoeven <geert@linux=
+-m68k.org> wrote:
+> > > Note that most larger displays are not individual LEDs, but matrices
+> > > of LEDs. Do we want to drive/scan them from software, using a
+> > > gpio-7seg-matrix driver?
+> >
+> > LED matrices are the displays (like tinyDRM is for).
+>
+> TinyDRM is for rectangular matrices.
+>
+> Multiple 7-segment displays are usually multiplexed using a matrix,
+> using 7 (or 8) lines shared by the corresponding segments of all
+> displays, and one common line per display.
+> https://embedded-lab.com/blog/wp-content/uploads/2011/03/Lab11_Circuit_Se=
+venSegmentMultiplexing.jpg
 
-Here is another patch for you to try. I think it is good for blocking CEC_ADAP_S_LOG_ADDRS
-ioctl calls, but if the filehandle is in non-blocking mode, I'm still not certain it
-is correct. But one issue at a time :-)
+Yes, that's what I call "dynamic" approach (in my translated
+terminology, I dunno the proper English one). With this in mind, you
+can read my message(s) above where I referred to it.
 
-Regards,
-
-	Hans
-
-diff --git a/drivers/media/cec/core/cec-adap.c b/drivers/media/cec/core/cec-adap.c
-index 559a172ebc6c..a493cbce2456 100644
---- a/drivers/media/cec/core/cec-adap.c
-+++ b/drivers/media/cec/core/cec-adap.c
-@@ -936,8 +936,7 @@ int cec_transmit_msg_fh(struct cec_adapter *adap, struct cec_msg *msg,
- 	 */
- 	mutex_unlock(&adap->lock);
- 	wait_for_completion_killable(&data->c);
--	if (!data->completed)
--		cancel_delayed_work_sync(&data->work);
-+	cancel_delayed_work_sync(&data->work);
- 	mutex_lock(&adap->lock);
-
- 	/* Cancel the transmit if it was interrupted */
-@@ -1575,9 +1574,12 @@ static int cec_config_thread_func(void *arg)
-  */
- static void cec_claim_log_addrs(struct cec_adapter *adap, bool block)
- {
--	if (WARN_ON(adap->is_configuring || adap->is_configured))
-+	if (WARN_ON(adap->is_claiming_log_addrs ||
-+		    adap->is_configuring || adap->is_configured))
- 		return;
-
-+	adap->is_claiming_log_addrs = true;
-+
- 	init_completion(&adap->config_completion);
-
- 	/* Ready to kick off the thread */
-@@ -1592,6 +1594,7 @@ static void cec_claim_log_addrs(struct cec_adapter *adap, bool block)
- 		wait_for_completion(&adap->config_completion);
- 		mutex_lock(&adap->lock);
- 	}
-+	adap->is_claiming_log_addrs = false;
- }
-
- /*
-diff --git a/drivers/media/cec/core/cec-api.c b/drivers/media/cec/core/cec-api.c
-index 67dc79ef1705..3ef915344304 100644
---- a/drivers/media/cec/core/cec-api.c
-+++ b/drivers/media/cec/core/cec-api.c
-@@ -178,7 +178,7 @@ static long cec_adap_s_log_addrs(struct cec_adapter *adap, struct cec_fh *fh,
- 			   CEC_LOG_ADDRS_FL_ALLOW_RC_PASSTHRU |
- 			   CEC_LOG_ADDRS_FL_CDC_ONLY;
- 	mutex_lock(&adap->lock);
--	if (!adap->is_configuring &&
-+	if (!adap->is_claiming_log_addrs && !adap->is_configuring &&
- 	    (!log_addrs.num_log_addrs || !adap->is_configured) &&
- 	    !cec_is_busy(adap, fh)) {
- 		err = __cec_s_log_addrs(adap, &log_addrs, block);
-@@ -664,6 +664,8 @@ static int cec_release(struct inode *inode, struct file *filp)
- 		list_del_init(&data->xfer_list);
- 	}
- 	mutex_unlock(&adap->lock);
-+
-+	mutex_lock(&fh->lock);
- 	while (!list_empty(&fh->msgs)) {
- 		struct cec_msg_entry *entry =
- 			list_first_entry(&fh->msgs, struct cec_msg_entry, list);
-@@ -681,6 +683,7 @@ static int cec_release(struct inode *inode, struct file *filp)
- 			kfree(entry);
- 		}
- 	}
-+	mutex_unlock(&fh->lock);
- 	kfree(fh);
-
- 	cec_put_device(devnode);
-diff --git a/include/media/cec.h b/include/media/cec.h
-index 10c9cf6058b7..cc3fcd0496c3 100644
---- a/include/media/cec.h
-+++ b/include/media/cec.h
-@@ -258,6 +258,7 @@ struct cec_adapter {
- 	u16 phys_addr;
- 	bool needs_hpd;
- 	bool is_enabled;
-+	bool is_claiming_log_addrs;
- 	bool is_configuring;
- 	bool must_reconfigure;
- 	bool is_configured;
-
+--
+With Best Regards,
+Andy Shevchenko
 
