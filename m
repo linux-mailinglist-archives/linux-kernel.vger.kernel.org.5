@@ -1,73 +1,35 @@
-Return-Path: <linux-kernel+bounces-78515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85FEB86145E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:44:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 222BA86146A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:45:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24FDD1F249C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:44:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8294B2143A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:45:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A6682232D;
-	Fri, 23 Feb 2024 14:43:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="coMqQ7hy"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 510A3811F9;
+	Fri, 23 Feb 2024 14:44:29 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1508E4C8C
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 14:43:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C912514B815;
+	Fri, 23 Feb 2024 14:44:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708699393; cv=none; b=WV0vEn3zWZxJ7xWH/AdXisHwtTXA8wn5X4nk+AAugo7fhLY/Q9vuxfajyxDcsSMmGXTWwATQJ31h4j/M6XYUWON8jNJ/ps39nKSu02IFIqe4vEcVyao9qab0gs3KXc9/qEsrwt90iJRJkb0e6glkeMsGWUTzhzJ6HsgMcxw0dBg=
+	t=1708699468; cv=none; b=ew6bDsXEjXJ1138M4DYDqMhXCJUbxTbYO4CLGFAjMEZQj++zGNABhMTpxZnX/tSDNT+A1a/3cYpdnJbI0igecJIvOgzcbKsfjK6T7KeKSwpzr2Czw5vL+L93Wvav+7krcS2ZTokUx2Td0GA3S/h618wApgo7W/vTow2jZaaXan8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708699393; c=relaxed/simple;
-	bh=LCCnxhxOKUUGScjoj8X/h+vtjtJ8g9tt6GUc6Qartj0=;
+	s=arc-20240116; t=1708699468; c=relaxed/simple;
+	bh=RyvUCZi8Wj5AWG9UJJBgJ1vhks86ype6GuNjY56uF5s=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QofJ2ToiX0e7dRpMfFaSCiTQkxGz+0d/vt+d9F2/QvuJ7YKS41cCROudeKZaOSwHflHVvW+laTknycownX7TcGnRBq+2+ua9Jw0Z+Z+AvU4jdGha6Q0DOIrulBStRWtlMHRzevik+8yfq7T0KGBhbXXCyviZS74SsAmYMpm2ZKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=coMqQ7hy; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d748f1320aso522985ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 06:43:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1708699391; x=1709304191; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GaiOkbA7+hcdvvfDFyD524BR9JUDgPVysbGQWfqsDPs=;
-        b=coMqQ7hyMeoPDlFryqCi3Yjbj8HfuO3QSwyNknqI0QT0YLje91naBj96S2Ih/IdesG
-         DzoNG+Ay2A9iUZMIi7XZSkmf4fAXgTO3Ar8FrMRnFNIp+oRI3m1yPUIIUUdDRAUjnma7
-         wcEWDGI0UTI69e9QwCXSm1PcnDK4cqXFvOsCjYswgZOeEJt2MrRfT/ikELxCr3Lmpwoq
-         CCPh8/eelf27Yp4nh6Ra04qJRySpfJIZ4qZHiPMp0wvNlX2LgOJH85h/GFLRb8SF/b9k
-         EBugKy1QHd30vIcempHm2my3vLgu9TuMge+3n+p/lp/y4yUfeyLP4YzcMm8pauvNuwVJ
-         BqRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708699391; x=1709304191;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GaiOkbA7+hcdvvfDFyD524BR9JUDgPVysbGQWfqsDPs=;
-        b=HySMsA+OS4qHB1V8SHUxRoxWXHXlz8MTn715jDSp6XpdYYXtTpOfdRyrWmXRRqNFqK
-         te24/u30xUhFxn4lFyXglyFDxESG49JVSmzHLnz5BvheQaAkQRMwFee1FLHpThVi6le1
-         T+GlPu7WxcI5T9Zz33El9kkqN9iOhurpF0T8YBHXgAU4P3YlH1wMGBOGBAK1Vaxq6Pjb
-         0Z/mWV5FwgaoCrp1Z8DiNABNOuP5BbHZ+T4OT2L5cuC+ZQIfFnhscRZ4WkhvbWuugzmh
-         BGJVuhkvV9y6kx6thLtoyU6GEoLcf6Yzzqpi9sNSxFd1S+S6pl5YQzbrkTOlkbtgLi3l
-         SVOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWU0H4fdjv9kh2Z7oSah9YQs6hvpKlZ7StA5TfsBtUX/xD2cgNXMdsT1TMQsiBIX/f+jEe+kMCIB1Ziy9fuIc0+aG5p2DkBfCNQBVC3
-X-Gm-Message-State: AOJu0YxaIe2UIFuGSRdF6MhGMguE7TqVRRkvuC66bKBXyM8UEAIpsu0+
-	RpicgmBmZRyNtt5CXGm7dZq75QTXt1KQwrgJWWyKHPl7Nxf+mf60mxlUWEeuQaU=
-X-Google-Smtp-Source: AGHT+IFCe2OmI6udUtrLrpGM7CH6IcwXuOjaaWwTj2TJkeKJuL+YC18h5jSygUOYCFe/1oOsbioDdw==
-X-Received: by 2002:a17:90a:3f16:b0:299:3fb4:4f28 with SMTP id l22-20020a17090a3f1600b002993fb44f28mr1673303pjc.4.1708699391114;
-        Fri, 23 Feb 2024 06:43:11 -0800 (PST)
-Received: from [172.20.8.9] (071-095-160-189.biz.spectrum.com. [71.95.160.189])
-        by smtp.gmail.com with ESMTPSA id z15-20020a17090ab10f00b002995e9aca72sm1522284pjq.29.2024.02.23.06.43.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Feb 2024 06:43:10 -0800 (PST)
-Message-ID: <3cbe7ad1-421a-493c-9cb2-9234e139923f@kernel.dk>
-Date: Fri, 23 Feb 2024 07:43:08 -0700
+	 In-Reply-To:Content-Type; b=SQQEXUyEDoS25kYCyaCopWDTU7fgdhbrWNwkZ3b5IzAlKQopfKsVwqgITFErqCBYvKX3Lw2Nmdqlghml2eUWuxACf9WYowBIEDMsbU47+5e32hs6JBE5rVb96etWPWAMjBusM5dpBdn6TtfGbh9ssOyRA6XXYZ+Vj+GMxxsLxFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01691C433C7;
+	Fri, 23 Feb 2024 14:44:26 +0000 (UTC)
+Message-ID: <49a68c10-9549-4fd8-b929-d4c7a9c8debf@xs4all.nl>
+Date: Fri, 23 Feb 2024 15:44:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,54 +37,114 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] usb: gadget: f_fs: Fix NULL pointer dereference in
- ffs_epfile_async_io_complete()
-Content-Language: en-US
-To: Selvarasu Ganesan <quic_selvaras@quicinc.com>,
- Greg KH <gregkh@linuxfoundation.org>
-Cc: brauner@kernel.org, jack@suse.cz, jlayton@kernel.org,
- keescook@chromium.org, peter@korsgaard.com, hayama@lineo.co.jp,
- dmantipov@yandex.ru, quic_linyyuan@quicinc.com, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, quic_ppratap@quicinc.com,
- quic_wcheng@quicinc.com, quic_jackp@quicinc.com
-References: <20240223054809.2379-1-quic_selvaras@quicinc.com>
- <2024022302-routine-schematic-b4fd@gregkh>
- <d2f40e2d-cbbd-41f9-9aa6-41d0f251ffda@quicinc.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <d2f40e2d-cbbd-41f9-9aa6-41d0f251ffda@quicinc.com>
+Subject: Re: [Linux Kernel Bugs] KASAN: slab-use-after-free Read in
+ cec_queue_msg_fh and 4 other crashes in the cec device (`cec_ioctl`)
+Content-Language: en-US, nl
+To: "Yang, Chenyuan" <cy54@illinois.edu>,
+ "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: "jani.nikula@intel.com" <jani.nikula@intel.com>,
+ "syzkaller@googlegroups.com" <syzkaller@googlegroups.com>,
+ "mchehab@kernel.org" <mchehab@kernel.org>, "Zhao, Zijie"
+ <zijie4@illinois.edu>, "Zhang, Lingming" <lingming@illinois.edu>
+References: <PH7PR11MB57688E64ADE4FE82E658D86DA09EA@PH7PR11MB5768.namprd11.prod.outlook.com>
+ <f985d664-d907-48ed-9b3d-dc956c178b88@xs4all.nl>
+ <526380BE-57AC-493D-A7B0-B8F0ECC0FE0A@illinois.edu>
+ <f1855145-9562-4bef-800f-43bcacff6fc8@xs4all.nl>
+ <2e5f1e92-7fad-4a74-b375-1e194ff08ce6@xs4all.nl>
+ <F8D4A291-8CFB-4A25-B296-3CA07B56F459@illinois.edu>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <F8D4A291-8CFB-4A25-B296-3CA07B56F459@illinois.edu>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 2/23/24 4:35 AM, Selvarasu Ganesan wrote:
-> Here?s what the code might look like with a new lock:
-> 
-> static void ffs_epfile_async_io_complete(struct usb_ep *_ep,
->                                          struct usb_request *req)
-> {
-> ....
-> spin_lock(&ffs->new_lock);
-> if (ffs && ffs->io_completion_wq)
->     queue_work(ffs->io_completion_wq, &io_data->work);
-> spin_unlock(&ffs->new_lock);
-> ....
-> }
-> 
-> 
-> 
-> static void ffs_data_put(struct ffs_data *ffs) {
-> ...
-> destroy_workqueue(ffs->io_completion_wq);
-> kfree(ffs->dev_name);
-> spin_lock(&ffs->new_lock);
-> kfree(ffs);
-> spin_unlock(&ffs->new_lock);
-> ...
-> }
+Hi Chenyuan,
 
-This obviously won't work at all, and it's not the right way to fix it
-at all. It needs a ref count.
+Here is another patch for you to try. I think it is good for blocking CEC_ADAP_S_LOG_ADDRS
+ioctl calls, but if the filehandle is in non-blocking mode, I'm still not certain it
+is correct. But one issue at a time :-)
 
--- 
-Jens Axboe
+Regards,
+
+	Hans
+
+diff --git a/drivers/media/cec/core/cec-adap.c b/drivers/media/cec/core/cec-adap.c
+index 559a172ebc6c..a493cbce2456 100644
+--- a/drivers/media/cec/core/cec-adap.c
++++ b/drivers/media/cec/core/cec-adap.c
+@@ -936,8 +936,7 @@ int cec_transmit_msg_fh(struct cec_adapter *adap, struct cec_msg *msg,
+ 	 */
+ 	mutex_unlock(&adap->lock);
+ 	wait_for_completion_killable(&data->c);
+-	if (!data->completed)
+-		cancel_delayed_work_sync(&data->work);
++	cancel_delayed_work_sync(&data->work);
+ 	mutex_lock(&adap->lock);
+
+ 	/* Cancel the transmit if it was interrupted */
+@@ -1575,9 +1574,12 @@ static int cec_config_thread_func(void *arg)
+  */
+ static void cec_claim_log_addrs(struct cec_adapter *adap, bool block)
+ {
+-	if (WARN_ON(adap->is_configuring || adap->is_configured))
++	if (WARN_ON(adap->is_claiming_log_addrs ||
++		    adap->is_configuring || adap->is_configured))
+ 		return;
+
++	adap->is_claiming_log_addrs = true;
++
+ 	init_completion(&adap->config_completion);
+
+ 	/* Ready to kick off the thread */
+@@ -1592,6 +1594,7 @@ static void cec_claim_log_addrs(struct cec_adapter *adap, bool block)
+ 		wait_for_completion(&adap->config_completion);
+ 		mutex_lock(&adap->lock);
+ 	}
++	adap->is_claiming_log_addrs = false;
+ }
+
+ /*
+diff --git a/drivers/media/cec/core/cec-api.c b/drivers/media/cec/core/cec-api.c
+index 67dc79ef1705..3ef915344304 100644
+--- a/drivers/media/cec/core/cec-api.c
++++ b/drivers/media/cec/core/cec-api.c
+@@ -178,7 +178,7 @@ static long cec_adap_s_log_addrs(struct cec_adapter *adap, struct cec_fh *fh,
+ 			   CEC_LOG_ADDRS_FL_ALLOW_RC_PASSTHRU |
+ 			   CEC_LOG_ADDRS_FL_CDC_ONLY;
+ 	mutex_lock(&adap->lock);
+-	if (!adap->is_configuring &&
++	if (!adap->is_claiming_log_addrs && !adap->is_configuring &&
+ 	    (!log_addrs.num_log_addrs || !adap->is_configured) &&
+ 	    !cec_is_busy(adap, fh)) {
+ 		err = __cec_s_log_addrs(adap, &log_addrs, block);
+@@ -664,6 +664,8 @@ static int cec_release(struct inode *inode, struct file *filp)
+ 		list_del_init(&data->xfer_list);
+ 	}
+ 	mutex_unlock(&adap->lock);
++
++	mutex_lock(&fh->lock);
+ 	while (!list_empty(&fh->msgs)) {
+ 		struct cec_msg_entry *entry =
+ 			list_first_entry(&fh->msgs, struct cec_msg_entry, list);
+@@ -681,6 +683,7 @@ static int cec_release(struct inode *inode, struct file *filp)
+ 			kfree(entry);
+ 		}
+ 	}
++	mutex_unlock(&fh->lock);
+ 	kfree(fh);
+
+ 	cec_put_device(devnode);
+diff --git a/include/media/cec.h b/include/media/cec.h
+index 10c9cf6058b7..cc3fcd0496c3 100644
+--- a/include/media/cec.h
++++ b/include/media/cec.h
+@@ -258,6 +258,7 @@ struct cec_adapter {
+ 	u16 phys_addr;
+ 	bool needs_hpd;
+ 	bool is_enabled;
++	bool is_claiming_log_addrs;
+ 	bool is_configuring;
+ 	bool must_reconfigure;
+ 	bool is_configured;
 
 
