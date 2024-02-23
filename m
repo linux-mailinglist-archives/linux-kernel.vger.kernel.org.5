@@ -1,168 +1,228 @@
-Return-Path: <linux-kernel+bounces-78230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE39E861083
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:37:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 97F0D861093
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:38:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A5D81F248EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:37:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 246C01F24944
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:38:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44A5D7A71E;
-	Fri, 23 Feb 2024 11:37:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C07AD7BAFC;
+	Fri, 23 Feb 2024 11:37:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="eSAhnN4a"
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="b0zmyfS+"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05AFB5C617;
-	Fri, 23 Feb 2024 11:37:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D28BB7B3FA
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:37:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708688249; cv=none; b=GgQalgYN1Ibqrkav4GKcNJQR0km+/DW09YbS7y+M4gJUctCnhCbxGhI9kAbDs6MCuhZgJhjp8sN50IfeW+F2S6rIo5n+4h3GgilWJP/AY3Cy4CP5+4WJJaGoIDTibEIcW/HWWSUcamh960p6meiPi+UpPHbp/ydQbcXxWujRGvI=
+	t=1708688268; cv=none; b=gvioCDwPDKDGNhKcOqkfwFK1eVqQfvHIZdS0vRMSflFNFmB5aibj42S4m/hHzEh3Jwk2FSdWZAhDODJxGCJELNPS0tyU2/emSa1hLkIFxl3lwQR7ZbKEeoXnaaZfhObAfglKfzBRgy12Y0Hg1WsqB3RmFl8U9K2IPxH3fIYUmMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708688249; c=relaxed/simple;
-	bh=ruxxOsZUCWD8LWHhoOKiqm+o9AotKoVhW0IiONdJ+zw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ExFyzMLJkXZOVh0GsvAfWpOt7ZMYGVtLO7Qi7KFIEOxGAVVqIQyZZ1FZEd3RcvNqmwhSljxvwxMivjV5F6cAtBDFnLSc2NN4qA7YVphqps3v+dJv540c0nzo31lphzmK3W7kHoRBiazDJSNlBmBj+GehCREd5JmlFMEYNw4EoEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=eSAhnN4a; arc=none smtp.client-ip=80.241.56.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [10.196.197.202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4Th7K92jZGz9ssc;
-	Fri, 23 Feb 2024 12:37:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1708688237;
+	s=arc-20240116; t=1708688268; c=relaxed/simple;
+	bh=mBNtO9MRdQyVSUnp0677/U3/dj0DCJQz7n5ZIh29cQE=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=rJuWL3ERHy5SSSHZz6s9RAR95AXheGx34DV3vGO50aiY3PRcWj512jDPEbSxAjTr2tXZds3RKqK150wo5N55j9fFBR4G5HaiDsyhCD/Tilb7384hAmh2ghIB0Duj0MaetbythDs2wzkp06b7lIOC3HMxni7QEUx16AQdZBfTWVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=b0zmyfS+; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3795C40003;
+	Fri, 23 Feb 2024 11:37:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708688263;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=G/cnYUO4t1KnFyWBtPESWQ1mYGZ8vow6mQdKLDyR1pc=;
-	b=eSAhnN4ahg6PeXaRexhK/avhwA+IWYb3jKCemeJYcLlzdezH8LgnibRcp4AkSVTxE8v8ZA
-	gTyXWYgq8lX9Yj4FcUi4uMow0ZZwnqiqs+f3HJC2SAki1v/iE/dcTtPl/mf1J7Ek18mt1w
-	9s0H+i8+WEpqYepKcDTk4XsQ0cYF39gLnlUOKUrkyymJ99o8jWgmTfXhKgYz0rQlq/V6kj
-	dNzyLuSWsQj5sHhm6Q8P3OxxsEvuQXQZPy36uFkeZd1hTRNXLn14SH/gh2rcIt8KqaGopS
-	/uxiB5/Hoyv/IwhjYU9SRJSYEywY6k9uLXkir1Yv109X1K7tp0a9fm9V0hvGAA==
-Date: Fri, 23 Feb 2024 12:37:13 +0100
-From: Erhard Furtner <erhard_f@mailbox.org>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Charlie Jenkins <charlie@rivosinc.com>, "linuxppc-dev@lists.ozlabs.org"
- <linuxppc-dev@lists.ozlabs.org>, Palmer Dabbelt <palmer@rivosinc.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: "test_ip_fast_csum: ASSERTION FAILED at
- lib/checksum_kunit.c:589" at boot with CONFIG_CHECKSUM_KUNIT=y enabled on a
- Talos II, kernel 6.8-rc5
-Message-ID: <20240223123713.2e49b981@yea>
-In-Reply-To: <b2a7b678-fc59-4d12-acc3-696866cfd7c2@csgroup.eu>
-References: <20240223022654.625bef62@yea>
-	<528c6abf-e5ef-42cd-a5d7-6ede3254523d@csgroup.eu>
-	<Zdg3X4A1eJsJ+ACh@ghost>
-	<6c37ffa2-8642-46c0-89ba-1f1e29b094d9@csgroup.eu>
-	<ZdhCnoRu3i1Cnwks@ghost>
-	<b2a7b678-fc59-4d12-acc3-696866cfd7c2@csgroup.eu>
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Ifnpa8zr1id8PgJXAuNZq9AhudHBZLq2Kwr93pnBEgE=;
+	b=b0zmyfS+9hX6zpg2BoKv+GQp29BajjAmhNNNuroNVnLpyMFMEYTCefpuKRxKkdNmuFSTPv
+	fUeS2BCL1dqlcFQB1IsHDBR/YzlefjC+0nBqKWcWfPVyh3t04MvktSiSBDpANOI52SzSlS
+	2Qc2alkYhbg0cICKX8HddioLKALFf+Vr1lSPVIPMhATWwjjVYfAYzcAi1ql9Nhl26izR6d
+	SFdd4EgVE80RNz6U0IoP4oCvWV+/qHwP8X5xfYjRAYg40asQIRZrvVTjDjVp9Ep51YOXkX
+	g5wOpIADJxJDyQ3KK9CNOuFQk976cCsHqRG9j7kN7QwXDv/OwXzXkPezoZAUPQ==
+From: Louis Chauvet <louis.chauvet@bootlin.com>
+Subject: [PATCH v2 0/9] drm/vkms: Reimplement line-per-line pixel
+ conversion for plane reading
+Date: Fri, 23 Feb 2024 12:37:20 +0100
+Message-Id: <20240223-yuv-v2-0-aa6be2827bb7@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-MBO-RS-META: 8gai3cka79z68h461yeewwdpd8k1qg58
-X-MBO-RS-ID: 26b6a50f4d4151b2f26
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAHCD2GUC/1WNyw6CMBBFf4XM2po+lAZX/odhUUqxk9TWtNBIC
+ P/uyM7lObk5d4PiMroCt2aD7CoWTJFAnhqw3sSnYzgSg+TywiUXbF0qE0rpseNjd9Ut0HIwxbE
+ hm2g9beMSAsl3dhN+jvSjJ/ZY5pTX46mKn/2PVsE4U9Yo3U5St0reh5TmgPFs0wv6fd+/D8E/B
+ K0AAAA=
+To: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, 
+ Melissa Wen <melissa.srw@gmail.com>, 
+ =?utf-8?q?Ma=C3=ADra_Canal?= <mairacanal@riseup.net>, 
+ Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ David Airlie <airlied@gmail.com>, arthurgrillo@riseup.net, 
+ Jonathan Corbet <corbet@lwn.net>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+ jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com, 
+ thomas.petazzoni@bootlin.com, Louis Chauvet <louis.chauvet@bootlin.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6323;
+ i=louis.chauvet@bootlin.com; h=from:subject:message-id;
+ bh=mBNtO9MRdQyVSUnp0677/U3/dj0DCJQz7n5ZIh29cQE=;
+ b=owEBbQKS/ZANAwAIASCtLsZbECziAcsmYgBl2IN+GTYEFNEAcoL/p6sJ5vjm9X3v40h/neLWa2yK
+ Wgf0TvOJAjMEAAEIAB0WIQRPj7g/vng8MQxQWQQgrS7GWxAs4gUCZdiDfgAKCRAgrS7GWxAs4rdMD/
+ 9Ngf3zJRcQPu9bD2hXq1E9sgmcV85hIia99c6PSm9wHwO9HHgCf7hwN01UST03oJgT/MglWYrZndXX
+ zl9c0SrSrlMFznOO9E+xjNI67Kqku94u7CPun6c0UmhBk7qQYOe6x+rnABs507vUpfmIae6YD1k4g+
+ hkJHKKlDYMr/PmGPpbhtQziizHrjyfaXaCGgl8zu60iJ9pjMBKKd91VDs0gtTOcq5Jtg+h9oxtRC91
+ 23K8sHXtVb5a03mD7h2oU7ZXVpCfUGpm+EV7ay/k0p1b28kFcWEi3YEEKz4NX132HvoD5XF7a/zAC/
+ sUB1vxKM2P5Z2u0z8T4fx2MUDC7KeTvUL7if7Uvev4vqHudT1kiyRaV7bw0STMvsGzRX/fP+K0V0WG
+ RsEKkLtk5BoGlv1GXj1YVMmATbQ2G7KkHZyw5Qi2O/4Lnz2G1/frgcW6h726YI4/FWwVCnrru7BXVQ
+ +4XEFmdPQpdH19fMAyukAyvKPFL2AjGvZeaGBuZZyd8Mmy2WeTConPyX15+rP/MPT0Wxb+LK1Fwh1p
+ EcbSNrEWSOpXB2XgNu3aml2/ZQ5PECimbtWrLys5q3vsqYF+x7YanUprayOryMjFr8arMLLZDypxlA
+ EjGnU7ugmn4TPHOeOGlBaq17DWN2O3+eT6Abb2RXcf2uQ2qCKY+6bxB2G0zw==
+X-Developer-Key: i=louis.chauvet@bootlin.com; a=openpgp;
+ fpr=8B7104AE9A272D6693F527F2EC1883F55E0B40A5
+X-GND-Sasl: louis.chauvet@bootlin.com
 
-On Fri, 23 Feb 2024 09:06:56 +0000
-Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
+This patchset is the second version of [1]. It is almost a complete 
+rewrite to use a line-by-line algorithm for the composition.
+It can be divided in three parts:
+- PATCH 1 to 4: no functional change is intended, only some formatting and 
+documenting
+(PATCH 2 is taken from [2])
+- PATCH 5: main patch for this series, it reintroduce the 
+line-by-line algorithm
+- PATCH 6 to 9: taken from Arthur's series [2], with sometimes adaptation 
+to use the pixel-by-pixel algorithm.
 
-> Yes, with second patch is magically works, meaning the patch description 
-> is not correct because the problem for powerpc it not at all related to 
-> memory alignment but to endianness. And endianness should have been 
-> fixed by patch 1, but instead of it, patch 1 just hides the problem by 
-> forcing casts.
-> 
-> The real fix for endianness which should be your patch 1 is the 
-> following change. With that change it works perfectly well without any 
-> forced cast:
-> 
-> diff --git a/lib/checksum_kunit.c b/lib/checksum_kunit.c
-> index 225bb7701460..bf70850035c7 100644
-> --- a/lib/checksum_kunit.c
-> +++ b/lib/checksum_kunit.c
-> @@ -215,7 +215,7 @@ static const u32 init_sums_no_overflow[] = {
->   	0xffff0000, 0xfffffffb,
->   };
-> 
-> -static const __sum16 expected_csum_ipv6_magic[] = {
-> +static const u16 expected_csum_ipv6_magic[] = {
->   	0x18d4, 0x3085, 0x2e4b, 0xd9f4, 0xbdc8, 0x78f,	0x1034, 0x8422, 0x6fc0,
->   	0xd2f6, 0xbeb5, 0x9d3,	0x7e2a, 0x312e, 0x778e, 0xc1bb, 0x7cf2, 0x9d1e,
->   	0xca21, 0xf3ff, 0x7569, 0xb02e, 0xca86, 0x7e76, 0x4539, 0x45e3, 0xf28d,
-> @@ -241,7 +241,7 @@ static const __sum16 expected_csum_ipv6_magic[] = {
->   	0x3845, 0x1014
->   };
-> 
-> -static const __sum16 expected_fast_csum[] = {
-> +static const u16 expected_fast_csum[] = {
->   	0xda83, 0x45da, 0x4f46, 0x4e4f, 0x34e,	0xe902, 0xa5e9, 0x87a5, 0x7187,
->   	0x5671, 0xf556, 0x6df5, 0x816d, 0x8f81, 0xbb8f, 0xfbba, 0x5afb, 0xbe5a,
->   	0xedbe, 0xabee, 0x6aac, 0xe6b,	0xea0d, 0x67ea, 0x7e68, 0x8a7e, 0x6f8a,
-> @@ -577,7 +577,8 @@ static void test_csum_no_carry_inputs(struct kunit 
-> *test)
-> 
->   static void test_ip_fast_csum(struct kunit *test)
->   {
-> -	__sum16 csum_result, expected;
-> +	__sum16 csum_result;
-> +	u16 expected;
-> 
->   	for (int len = IPv4_MIN_WORDS; len < IPv4_MAX_WORDS; len++) {
->   		for (int index = 0; index < NUM_IP_FAST_CSUM_TESTS; index++) {
-> @@ -586,7 +587,7 @@ static void test_ip_fast_csum(struct kunit *test)
->   				expected_fast_csum[(len - IPv4_MIN_WORDS) *
->   						   NUM_IP_FAST_CSUM_TESTS +
->   						   index];
-> -			CHECK_EQ(expected, csum_result);
-> +			CHECK_EQ(to_sum16(expected), csum_result);
->   		}
->   	}
->   }
-> @@ -598,7 +599,7 @@ static void test_csum_ipv6_magic(struct kunit *test)
->   	const struct in6_addr *daddr;
->   	unsigned int len;
->   	unsigned char proto;
-> -	unsigned int csum;
-> +	__wsum csum;
-> 
->   	const int daddr_offset = sizeof(struct in6_addr);
->   	const int len_offset = sizeof(struct in6_addr) + sizeof(struct in6_addr);
-> @@ -611,10 +612,10 @@ static void test_csum_ipv6_magic(struct kunit *test)
->   		saddr = (const struct in6_addr *)(random_buf + i);
->   		daddr = (const struct in6_addr *)(random_buf + i +
->   						  daddr_offset);
-> -		len = *(unsigned int *)(random_buf + i + len_offset);
-> +		len = le32_to_cpu(*(__le32 *)(random_buf + i + len_offset));
->   		proto = *(random_buf + i + proto_offset);
-> -		csum = *(unsigned int *)(random_buf + i + csum_offset);
-> -		CHECK_EQ(expected_csum_ipv6_magic[i],
-> +		csum = *(__wsum *)(random_buf + i + csum_offset);
-> +		CHECK_EQ(to_sum16(expected_csum_ipv6_magic[i]),
->   			 csum_ipv6_magic(saddr, daddr, len, proto, csum));
->   	}
->   #endif /* !CONFIG_NET */
-> ---
-> 
-> Christophe
+The PATCH 5 aims to restore the line-by-line pixel reading algorithm. It 
+was introduced in 8ba1648567e2 ("drm: vkms: Refactor the plane composer to 
+accept new formats") but removed in 8ba1648567e2 ("drm: vkms: Refactor the 
+plane composer to accept new formats") in a over-simplification effort. 
+At this time, nobody noticed the performance impact of this commit. After 
+the first iteration of my series, poeple notice performance impact, and it 
+was the case. Pekka suggested to reimplement the line-by-line algorithm.
 
-Your patch applied on top of 6.8-rc5 fixes the issue. Thanks!
+Expiriments on my side shown great improvement for the line-by-line 
+algorithm, and the performances are the same as the original line-by-line 
+algorithm. I targeted my effort to make the code working for all the 
+rotations and translations. The usage of helpers from drm_rect_* avoid 
+reimplementing existing logic.
 
-And I take your remarks here as a hint for the other "drm_test_fb_xrgb8888_to_xrgb2101010 on Big Endian machines" issue I posted. ;) Let's see what I can do.
+The only "complex" part remaining is the clipping of the coordinate to 
+avoid reading/writing outside of src/dst. Thus I added a lot of comments 
+to help when someone will want to add some features (framebuffer resizing 
+for example).
 
-Regards,
-Erhard
+The YUV part is not mandatory for this series, but as my first effort was 
+to help the integration of YUV, I decided to rebase Arthur's series on 
+mine to help. I took [3], [4], [5] and [6] and adapted them to use the 
+line-by-line reading. If I did something wrong here, please let me 
+know.
+
+My series was mainly tested with:
+- kms_plane (for color conversions)
+- kms_rotation_crc (for rotations of planes)
+- kms_cursor_crc (for translations)
+The benchmark used to measure the improvment was done with:
+- kms_fb_stress
+
+[1]: https://lore.kernel.org/r/20240201-yuv-v1-0-3ca376f27632@bootlin.com
+[2]: https://lore.kernel.org/all/20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net/
+[3]: https://lore.kernel.org/all/20240110-vkms-yuv-v2-3-952fcaa5a193@riseup.net/
+[4]: https://lore.kernel.org/all/20240110-vkms-yuv-v2-5-952fcaa5a193@riseup.net/
+[5]: https://lore.kernel.org/all/20240110-vkms-yuv-v2-6-952fcaa5a193@riseup.net/
+[6]: https://lore.kernel.org/all/20240110-vkms-yuv-v2-7-952fcaa5a193@riseup.net/
+
+To: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+To: Melissa Wen <melissa.srw@gmail.com>
+To: Maíra Canal <mairacanal@riseup.net>
+To: Haneen Mohammed <hamohammed.sa@gmail.com>
+To: Daniel Vetter <daniel@ffwll.ch>
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+To: Maxime Ripard <mripard@kernel.org>
+To: Thomas Zimmermann <tzimmermann@suse.de>
+To: David Airlie <airlied@gmail.com>
+To: arthurgrillo@riseup.net
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-kernel@vger.kernel.org
+Cc: jeremie.dautheribes@bootlin.com
+Cc: miquel.raynal@bootlin.com
+Cc: thomas.petazzoni@bootlin.com
+Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+
+Note: after my changes, those tests seems to pass, so [7] may need 
+updating (I did not check, it was maybe already the case):
+- kms_cursor_legacy@flip-vs-cursor-atomic
+- kms_pipe_crc_basic@nonblocking-crc
+- kms_pipe_crc_basic@nonblocking-crc-frame-sequence
+- kms_writeback@writeback-pixel-formats
+- kms_writeback@writeback-invalid-parameters
+- kms_flip@flip-vs-absolute-wf_vblank-interruptible
+And those tests pass, I did not investigate why the runners fails:
+- kms_flip@flip-vs-expired-vblank-interruptible
+- kms_flip@flip-vs-expired-vblank
+- kms_flip@plain-flip-fb-recreate
+- kms_flip@plain-flip-fb-recreate-interruptible
+- kms_flip@plain-flip-ts-check-interruptible
+- kms_cursor_legacy@cursorA-vs-flipA-toggle
+- kms_pipe_crc_basic@nonblocking-crc
+- kms_prop_blob@invalid-get-prop
+- kms_flip@flip-vs-absolute-wf_vblank-interruptible
+- kms_invalid_mode@zero-hdisplay
+- kms_invalid_mode@bad-vtotal
+- kms_cursor_crc.* (everything is SUCCEED or SKIP, but no fails)
+
+[7]: https://lore.kernel.org/all/20240201065346.801038-1-vignesh.raman@collabora.com/
+
+Changes in v2:
+- Rebased the series on top of drm-misc/drm-misc-net
+- Extract the typedef for pixel_read/pixel_write
+- Introduce the line-by-line algorithm per pixel format
+- Add some documentation for existing and new code
+- Port the series [1] to use line-by-line algorithm
+- Link to v1: https://lore.kernel.org/r/20240201-yuv-v1-0-3ca376f27632@bootlin.com
+
+---
+Arthur Grillo (5):
+      drm/vkms: Use drm_frame directly
+      drm/vkms: Add YUV support
+      drm/vkms: Add range and encoding properties to pixel_read function
+      drm/vkms: Drop YUV formats TODO
+      drm/vkms: Create KUnit tests for YUV conversions
+
+Louis Chauvet (4):
+      drm/vkms: Code formatting
+      drm/vkms: write/update the documentation for pixel conversion and pixel write functions
+      drm/vkms: Add typedef and documentation for pixel_read and pixel_write functions
+      drm/vkms: Re-introduce line-per-line composition algorithm
+
+ Documentation/gpu/vkms.rst                    |   3 +-
+ drivers/gpu/drm/vkms/Makefile                 |   1 +
+ drivers/gpu/drm/vkms/tests/.kunitconfig       |   4 +
+ drivers/gpu/drm/vkms/tests/Makefile           |   3 +
+ drivers/gpu/drm/vkms/tests/vkms_format_test.c | 155 +++++++
+ drivers/gpu/drm/vkms/vkms_composer.c          | 233 ++++++++---
+ drivers/gpu/drm/vkms/vkms_crtc.c              |   6 +-
+ drivers/gpu/drm/vkms/vkms_drv.c               |   3 +-
+ drivers/gpu/drm/vkms/vkms_drv.h               |  56 ++-
+ drivers/gpu/drm/vkms/vkms_formats.c           | 565 +++++++++++++++++++++-----
+ drivers/gpu/drm/vkms/vkms_formats.h           |  13 +-
+ drivers/gpu/drm/vkms/vkms_plane.c             |  50 ++-
+ drivers/gpu/drm/vkms/vkms_writeback.c         |  14 +-
+ 13 files changed, 916 insertions(+), 190 deletions(-)
+---
+base-commit: aa1267e673fe5307cf00d02add4017d2878598b6
+change-id: 20240201-yuv-1337d90d9576
+
+Best regards,
+-- 
+Louis Chauvet <louis.chauvet@bootlin.com>
+
 
