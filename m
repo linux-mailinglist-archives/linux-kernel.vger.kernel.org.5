@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-78714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62A758617C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:24:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86E2B8617BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:23:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2C2FB2A410
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:23:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42B53281DA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:23:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1566012A153;
-	Fri, 23 Feb 2024 16:21:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29B8C126F0E;
+	Fri, 23 Feb 2024 16:21:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CaLfWowF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g5YuVDCL"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54E90128830;
-	Fri, 23 Feb 2024 16:21:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B29B12CD90;
+	Fri, 23 Feb 2024 16:21:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708705299; cv=none; b=PA+bTBeqd1nW5uwO1kyFjEmYj3y+c2LtX3n7GMMFbOE3uT52sbM8C5+3f8LSu5aGUoMArdG/ecDEIjpphPWgvOjDANMN53Jr76CerCDYaaTAh2799XdF9ai9ldGpMPA4a51w9HHxgz4MtglFN4cyZ/j3ZpEmaAssDmulHpuQB5A=
+	t=1708705302; cv=none; b=GxXKLPe5OnkVr4tR/Q2KUuU617tO7PQ2SJtmvV/ebdibTPpm+YMhXExnHcy0CSK5/FPkJlzFDsITsPlgrhZBC8et6ei8t+GcJg+sqhATWaDDG056Txfw+CHtAhVfOugyX7ulKV/8yYN1lgHOhDdPkmuUZG/Kdk8dWv25CQHFIeM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708705299; c=relaxed/simple;
-	bh=e35n+V+KJ6GOR5w3FZqinp9ivKeGJSYSJSqC9t8Lvbk=;
+	s=arc-20240116; t=1708705302; c=relaxed/simple;
+	bh=0X7Yo77IwoX+OlGIjRRgP1KpwS96thIJDoZvlw0AoCs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FBBC0UmFpGpKiIp1jx9WUFL/gKkTx+JGTKRRUXZaNXoDcaS8e5ij6iEoT0IPQgnedCrszicqMJKKEdXBNhZfmQ8/kgbP14ffOFGIpn8ObaEF4l4p//k2kEJdDVDgFDrVUlud/hqoxQjtAM/6XBiISkN/9IhBkPvo1TztNynDTOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CaLfWowF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4D52C433C7;
-	Fri, 23 Feb 2024 16:21:35 +0000 (UTC)
+	 MIME-Version; b=PFOSls9jx7TTXZGcOAmacDPq4QC3rFRqTHr0xc4a5LKivSzD4yIbOt0yHJKGsF2sWGtXxLmurWRttOmWRwaEnhMTXPrY2B0wYUZxEiQaElptcXvdgjZgwbd3XkvUBd5covaYxX5N1r/KzdSdYhhoo3147aEVvPNXIm030o71x5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g5YuVDCL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AFBAC43390;
+	Fri, 23 Feb 2024 16:21:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708705298;
-	bh=e35n+V+KJ6GOR5w3FZqinp9ivKeGJSYSJSqC9t8Lvbk=;
+	s=k20201202; t=1708705302;
+	bh=0X7Yo77IwoX+OlGIjRRgP1KpwS96thIJDoZvlw0AoCs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CaLfWowFUAZvfg7KCh0JXisHPeSYqM338HrkS/XYrcIY13yKcumLHFAfQKBVQsnB2
-	 YPFKTRgIgWHlu6eq5OFROubL95AnmGfyu5Hb6B78a66rf+iTP4p2CJl2XuNMvUqSrj
-	 Nvd09NUwaRyqKBhHdkIAzevtwLNlpDObHLAAR/zISzGvC4v6gJr+J2plrob+qBgxyj
-	 KU7HcZehOV1EaNm0ylEiFRYV6conFlj5EoF0EnOfvj5zrvDLud/lqulqGuv4PYU6tY
-	 ZP/sd4PBvK4WjiyKTnOIq/2y8f2wTz8NaMvPnjNHj493GVG7gJN5jLpx0bW5rjuQrG
-	 khkUHdC0yHrag==
+	b=g5YuVDCLN/T/KWUpCn5FpVgVR14S+/1nnajs9jAVZ9CUpLRBrXklv+SLFZFH4cX1r
+	 ACYjSrcyLQm3V2GPbiaKC9uW3y47pStQS5ssywWEVZqoXiUIsyW8jWRuE51E0M0Izf
+	 SrsemgXcHSokFakkV6kG4a9GiQ+VexBsuCCq4Ehx4swq+POZ2jNWb5Q5TtbR0Fh4d7
+	 egmLQkNjCUcOPIYjVTfzXpTwNctKfwLQeFeLKPeRdhEjS8XusR+093QMUXAzLF79ml
+	 8Isxt9eYebwzizrwHrQjpQPSPrSrpOSvCTKNtwjTUx/oO/gta/2XJ5lCXCJ/5YJhSj
+	 HjUWNhcLR6feQ==
 From: Conor Dooley <conor@kernel.org>
 To: linux@roeck-us.net
 Cc: conor@kernel.org,
@@ -57,9 +57,9 @@ Cc: conor@kernel.org,
 	linux-hwmon@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/5] dt-bindings: hwmon/pmbus: ti,lm25066: document regulators
-Date: Fri, 23 Feb 2024 16:21:05 +0000
-Message-ID: <20240223-tingling-mutt-dd55dd87ff5e@spud>
+Subject: [PATCH v2 2/5] regulator: dt-bindings: promote infineon buck converters to their own binding
+Date: Fri, 23 Feb 2024 16:21:06 +0000
+Message-ID: <20240223-blabber-obnoxious-353e519541a6@spud>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240223-moonrise-feminist-de59b9e1b3ba@spud>
 References: <20240223-moonrise-feminist-de59b9e1b3ba@spud>
@@ -69,50 +69,94 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1342; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=joH1ld+xUmYlj/ECTPEZz+fzAg0PtsSN+LgfoDkIwW0=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDKk3jn7nWd7eUn3owuY+e62Kdzs6XDeGFlgv7fjd/JRl2 QMBwXvWHaUsDGIcDLJiiiyJt/tapNb/cdnh3PMWZg4rE8gQBi5OAZiIliYjw+fgLx1Pbl/g+/hp iZ55w3L3GJXmVZH3HH1qvTamVt68fo/hn8l3qZ6exAnP7pzveydiz9z4bqVtqMNqvUo+R0YjvWW 2/AA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2647; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=u1pFfi4y8oia/3MILbtpYBE5pLdSu5ZPbthI3AYMSvI=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDKk3jv5YdUj93sezWrMyVONvtd/51rnmYaPx0o25tQ1xm W7Cwe6cHaUsDGIcDLJiiiyJt/tapNb/cdnh3PMWZg4rE8gQBi5OAZjIgwJGhtkaCfmGmwJ5zDad nvdj0tIDS1W23j/1OnPr9m/JL+dFbzRk+J9yY7/blLcGCfcc3v08ervovfCsuo4Hx0sEGsXE5ib +9GUEAA==
 X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
 Content-Transfer-Encoding: 8bit
 
 From: Conor Dooley <conor.dooley@microchip.com>
 
-All devices documented in the lm25066 binding are intended for use with
-a regulator, be that for purely monitoring purposes (lm25056) or, for
-the other devices, as the controller of that regulator. The binding does
-not currently allow regulator child nodes, so add one.
+These devices are regulators may need to make use of the common
+regulator properties, but these are not permitted while only documented
+in trivial-devices.yaml
 
-Each of these devices interacts with only a single regulator and
-documentation refers to it as "Vout", hence the choice of child node
-name.
-
-Acked-by: Zev Weiss <zev@bewilderbeest.net>
 Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- .../devicetree/bindings/hwmon/pmbus/ti,lm25066.yaml  | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ .../bindings/regulator/infineon,ir38060.yaml  | 46 +++++++++++++++++++
+ .../devicetree/bindings/trivial-devices.yaml  |  8 ----
+ 2 files changed, 46 insertions(+), 8 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/regulator/infineon,ir38060.yaml
 
-diff --git a/Documentation/devicetree/bindings/hwmon/pmbus/ti,lm25066.yaml b/Documentation/devicetree/bindings/hwmon/pmbus/ti,lm25066.yaml
-index da8292bc32f5..4373e9c86e54 100644
---- a/Documentation/devicetree/bindings/hwmon/pmbus/ti,lm25066.yaml
-+++ b/Documentation/devicetree/bindings/hwmon/pmbus/ti,lm25066.yaml
-@@ -34,6 +34,18 @@ properties:
-       Shunt (sense) resistor value in micro-Ohms
-     default: 1000
- 
-+  regulators:
-+    type: object
+diff --git a/Documentation/devicetree/bindings/regulator/infineon,ir38060.yaml b/Documentation/devicetree/bindings/regulator/infineon,ir38060.yaml
+new file mode 100644
+index 000000000000..bb0114f7e13f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/regulator/infineon,ir38060.yaml
+@@ -0,0 +1,46 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/regulator/infineon,ir38060.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+    properties:
-+      vout:
-+        $ref: /schemas/regulator/regulator.yaml#
-+        type: object
++title: Infineon Buck Regulators with PMBUS interfaces
 +
-+        unevaluatedProperties: false
++maintainers:
++  - Not Me.
 +
-+    additionalProperties: false
++allOf:
++  - $ref: regulator.yaml#
 +
- required:
-   - compatible
-   - reg
++properties:
++  compatible:
++    enum:
++      - infineon,ir38060
++      - infineon,ir38064
++      - infineon,ir38164
++      - infineon,ir38263
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      regulator@34 {
++        compatible = "infineon,ir38060";
++        reg = <0x34>;
++
++        regulator-min-microvolt = <437500>;
++        regulator-max-microvolt = <1387500>;
++      };
++    };
++
+diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
+index 9cdd5a534120..e07be7bf8395 100644
+--- a/Documentation/devicetree/bindings/trivial-devices.yaml
++++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+@@ -130,14 +130,6 @@ properties:
+           - infineon,dps310
+             # Infineon IR36021 digital POL buck controller
+           - infineon,ir36021
+-            # Infineon IR38060 Voltage Regulator
+-          - infineon,ir38060
+-            # Infineon IR38064 Voltage Regulator
+-          - infineon,ir38064
+-            # Infineon IR38164 Voltage Regulator
+-          - infineon,ir38164
+-            # Infineon IR38263 Voltage Regulator
+-          - infineon,ir38263
+             # Infineon IRPS5401 Voltage Regulator (PMIC)
+           - infineon,irps5401
+             # Infineon TLV493D-A1B6 I2C 3D Magnetic Sensor
 -- 
 2.43.0
 
