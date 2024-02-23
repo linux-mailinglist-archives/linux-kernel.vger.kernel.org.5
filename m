@@ -1,263 +1,211 @@
-Return-Path: <linux-kernel+bounces-77650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE37486087B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:47:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FFD6860880
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:50:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E74D1C22092
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:47:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F23B1C219D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:50:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 300E7B671;
-	Fri, 23 Feb 2024 01:47:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A018B67F;
+	Fri, 23 Feb 2024 01:50:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CLlBP5Ai"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="mxoq4V5j"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2ADDAD53
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 01:47:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 847C9AD53;
+	Fri, 23 Feb 2024 01:50:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708652864; cv=none; b=EC20dv81yQppqW/LadmCa5AIRhlb4jATSxtPRvn8Bgp+oZ8ud00TpK7LBIUxpc0DjOlUVYpWyljqBHhgVUq2XXPs62A/sRj8F8C5brM8KSCthQMVo1ymPc3qXZO5R1oa8itseaM9qHtBTfyN+GZZvKHes1qvF5csPn/CmHb24EA=
+	t=1708653035; cv=none; b=mzLXK4+1+0REivRmVXwgPGcLQt9MbG7G9zk/yNe0wyv2yzihbLIpFDVtTJdcuVxN5005UqVQ+Qn+A6lo3tv2X09c4EqwWy+QyItstMWlTf+8p/btE8KiI5vp9krmPO8oOCpXspy/EKWT7kahzU/7uAcWKcu1Tdj4t4A05PLRUBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708652864; c=relaxed/simple;
-	bh=xIQxyrijVvw5tFZVsDF24qabtT7R6qgyFyEjcKmhITw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b279Zl0aVhGHeZg/OklB84zn2HnOIMEjkR55H6ONnw34lLT16XlwoqR0MORNuQF3Oi1ex3iIlY+0UIZETRwbvi5K29FbP42UVIZ6LIpLCbP+8kmE+5aZHGSuNpV8iRJw2q07Nmge90rRWRyYhTsL0F0NY3tqGmIUTL/giOvKEwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CLlBP5Ai; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dbcf58b05cso35905ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 17:47:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708652862; x=1709257662; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=T8LqUSdRok/CA+tRah7op5DIjhzrzfCw19wfAf0zitA=;
-        b=CLlBP5Aiih526HFjAfCeUED1Bl23xXDcNdtwhPnjzW8J30gKm3VdfVtWJgoQLLVE9J
-         y8Q27ZAWQXzyzwE9NmnJL8Qp1wD0rpqGoxO1mzLm2aSZ2z2jCYBeqyNQ/4YjNgV3UfTa
-         J3GJt25ovYvSlRKl/eiIjvA6N305LUlW0OUik7Ox+sJGdnYNfsuEtzU6INuiK3RemD+H
-         fwmfnQdompWHfS32//YFz8kzxL7QU1jVqrQxDZUXhfZQee19P5kEWr2kFXI7UBZUK2x/
-         znCYfdwVwCQ3hQVR+fTmmPtEo8sXNnKCGBHiot/oq/ItMuv/5sfq1viE0IMJuOkFeYt5
-         pbCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708652862; x=1709257662;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T8LqUSdRok/CA+tRah7op5DIjhzrzfCw19wfAf0zitA=;
-        b=f2KYglIwv0ZNcmOojbVQL1f6PUAEhnw8S2OxYPNBur2XagbPIFmQ+KXIp26zAJcXd/
-         3gde/kzCk5qXZV1z0OFAqJ2IJqGn22WiAeFIch/4kClSxsDO59yp9vK/pKrwY1Vzbv2a
-         +uGdBsgfJT4VyhmFuFBxtdDKftLC/2wzfWZQcs97djCxo6NXcLoVyd3gml4Jsp7uLPlP
-         q5vs1wCBCM1IlMHoqY9xMzRkQRAVNwljYE4zhL7sAneFx37BNJudBcG+YI7QehNrQNga
-         +dubCP0Kfis+aLf4OsTVpjX3kPRHX9lVqgIP60oX3jxmnJ9quQIS05batd9cueKGY19W
-         d/yQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUArSePgCQw1Z6D45yYmj6BwHJ5XPmcmxuUJ1DS5L2hj50W4pBcFSgFirBOlx6bLOiJYtMIWLTFTQ/RUWjAvWlnZukzglOmPrsPu54r
-X-Gm-Message-State: AOJu0Yy28G5QL/r83H6VIFamJjilJd5pGgY+2hRNMK6Yq5s0h/glFT/7
-	X/ruQvAgzbgLVuxgQLTQdPUcwPxL++/73dgh3vnUwxpM8SrmMDzvYpdSy35izA==
-X-Google-Smtp-Source: AGHT+IHJh4lJkS324hWVEfeHHCDYDYahMyeLB4IsT6cMcZZZGLq3E1DHCneNrGMY6CSoZVw+J0j8eA==
-X-Received: by 2002:a17:902:bc45:b0:1db:e5e3:f7ac with SMTP id t5-20020a170902bc4500b001dbe5e3f7acmr639536plz.7.1708652861816;
-        Thu, 22 Feb 2024 17:47:41 -0800 (PST)
-Received: from google.com (30.176.125.34.bc.googleusercontent.com. [34.125.176.30])
-        by smtp.gmail.com with ESMTPSA id z11-20020aa7888b000000b006e0465879b2sm11562873pfe.70.2024.02.22.17.47.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 17:47:40 -0800 (PST)
-Date: Fri, 23 Feb 2024 01:47:37 +0000
-From: Benson Leung <bleung@google.com>
-To: Jameson Thies <jthies@google.com>
-Cc: heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org,
-	pmalani@chromium.org, abhishekpandit@chromium.org,
-	andersson@kernel.org, dmitry.baryshkov@linaro.org,
-	fabrice.gasnier@foss.st.com, gregkh@linuxfoundation.org,
-	hdegoede@redhat.com, neil.armstrong@linaro.org,
-	rajaram.regupathy@intel.com, saranya.gopal@intel.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] usb: typec: ucsi: Register SOP' alternate modes with
- cable plug
-Message-ID: <Zdf5OQectSrBf_sn@google.com>
-References: <20240223010328.2826774-1-jthies@google.com>
- <20240223010328.2826774-5-jthies@google.com>
+	s=arc-20240116; t=1708653035; c=relaxed/simple;
+	bh=TO9aSmC1qF+2Vi3+58lvCecuRJcGdfmPoYzFPgBvLh4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=q1t8CyXQ50BldY2evLRmo3v5Bt5OK9GnLTwIppo3wED/LCSq7l2vcMHxmLmXHZ9r0JEE4k+hmlceWXlwB1X9xQOno/hvCVXo7Oi8H8gvRyFnovRgFiLPp9Nrk6O5Kz+mdnloc5ZcgEPvTbFXxXsWH/4JyKD8O0E5Pq5t6D1dRLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=mxoq4V5j; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1708653030;
+	bh=uuyXxSqtakaPAQV/y8aASUxaDXqmMJlArJZheVqoNb8=;
+	h=Date:From:To:Cc:Subject:From;
+	b=mxoq4V5jTdP6nBNw+E4kSJ9rHS3+MpHGdPnIoFB9bD6agKfzDCui49GfiwtRTagus
+	 xEZrYpNlIhH8r/t5pNDB5ShAuvWQUC7dn/qtY1u+zmaIpLRMly1FW4i0VCLNwU2ViU
+	 m1rYKh9CPNfXaIxgxfFyeP00jG/mb13xNHmID+1mcfflgQwbadZbl0attRpicaG7JG
+	 6GD/T9lTESKCQziAoqY79SHDWf9lj3nZPJdPmhGydMFwy0KWUjW/kYeQujwnX4X7VD
+	 JD8F0v60VWPqxV/97wk/DDVsnU7reF3VXKAh6PDwYmdK1aF5z1b7SA9DbbAk2n3hjr
+	 r/aROdV2W1FIA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TgtJ55hQbz4wcR;
+	Fri, 23 Feb 2024 12:50:29 +1100 (AEDT)
+Date: Fri, 23 Feb 2024 12:50:27 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Paul Moore <paul@paul-moore.com>, David Miller <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: Networking <netdev@vger.kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Linux Kernel Mailing
+ List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Ondrej Mosnacek <omosnace@redhat.com>
+Subject: linux-next: manual merge of the security tree with the net-next
+ tree
+Message-ID: <20240223125027.1c9f4f07@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="crR+FIe5gTszUjTd"
-Content-Disposition: inline
-In-Reply-To: <20240223010328.2826774-5-jthies@google.com>
+Content-Type: multipart/signed; boundary="Sig_//dCjoofoYCR0aUn90YdCSxX";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-
---crR+FIe5gTszUjTd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Sig_//dCjoofoYCR0aUn90YdCSxX
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-Hi Jameson,
+Hi all,
 
-On Fri, Feb 23, 2024 at 01:03:28AM +0000, Jameson Thies wrote:
-> Register SOP' alternate modes with a Type-C Connector Class cable plug.
-> Alternate modes are queried from the PPM using the GET_ALTERNATE_MODES
-> command with recipient set to SOP'.
->=20
+Today's linux-next merge of the security tree got a conflict in:
 
-Is there a plan to do the same for the SOP Double Prime for advanced active
-cables with two plugs?
+  security/security.c
 
-> Signed-off-by: Jameson Thies <jthies@google.com>
+between commits:
 
-Other than that question,
+  1b67772e4e3f ("bpf,lsm: Refactor bpf_prog_alloc/bpf_prog_free LSM hooks")
+  a2431c7eabcf ("bpf,lsm: Refactor bpf_map_alloc/bpf_map_free LSM hooks")
+  f568a3d49af9 ("bpf,lsm: Add BPF token LSM hooks")
 
-Reviewed-by: Benson Leung <bleung@chromium.org>
+from the net-next tree and commit:
 
-> ---
-> Tested on v6.6 kernel. SOP' GET_ALTERNATE_MODE responses from the PPM
-> are correctly registered as to the cable plug.
-> redrix-rev3 /sys/class/typec # ls port2-cable/port2-plug0/
-> device  port2-plug0.0  port2-plug0.1  power  subsystem  uevent
->=20
->  drivers/usb/typec/ucsi/ucsi.c | 60 +++++++++++++++++++++++++++++++++++
->  drivers/usb/typec/ucsi/ucsi.h |  2 ++
->  2 files changed, 62 insertions(+)
->=20
-> diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
-> index 6d6443e61faa..9b541547917b 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.c
-> +++ b/drivers/usb/typec/ucsi/ucsi.c
-> @@ -399,6 +399,27 @@ static int ucsi_register_altmode(struct ucsi_connect=
-or *con,
-> =20
->  		con->partner_altmode[i] =3D alt;
->  		break;
-> +	case UCSI_RECIPIENT_SOP_P:
-> +		i =3D ucsi_next_altmode(con->plug_altmode);
-> +		if (i < 0) {
-> +			ret =3D i;
-> +			goto err;
-> +		}
-> +
-> +		ret =3D ucsi_altmode_next_mode(con->plug_altmode, desc->svid);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		desc->mode =3D ret;
-> +
-> +		alt =3D typec_plug_register_altmode(con->plug, desc);
-> +		if (IS_ERR(alt)) {
-> +			ret =3D PTR_ERR(alt);
-> +			goto err;
-> +		}
-> +
-> +		con->plug_altmode[i] =3D alt;
-> +		break;
->  	default:
->  		return -EINVAL;
->  	}
-> @@ -566,6 +587,9 @@ static void ucsi_unregister_altmodes(struct ucsi_conn=
-ector *con, u8 recipient)
->  	case UCSI_RECIPIENT_SOP:
->  		adev =3D con->partner_altmode;
->  		break;
-> +	case UCSI_RECIPIENT_SOP_P:
-> +		adev =3D con->plug_altmode;
-> +		break;
->  	default:
->  		return;
->  	}
-> @@ -801,6 +825,33 @@ static void ucsi_unregister_partner_pdos(struct ucsi=
-_connector *con)
->  	con->partner_pd =3D NULL;
->  }
-> =20
-> +static int ucsi_register_plug(struct ucsi_connector *con)
-> +{
-> +	struct typec_plug *plug;
-> +	struct typec_plug_desc desc =3D {.index =3D TYPEC_PLUG_SOP_P};
-> +
-> +	plug =3D typec_register_plug(con->cable, &desc);
-> +	if (IS_ERR(plug)) {
-> +		dev_err(con->ucsi->dev,
-> +			"con%d: failed to register plug (%ld)\n", con->num,
-> +			PTR_ERR(plug));
-> +		return PTR_ERR(plug);
-> +	}
-> +
-> +	con->plug =3D plug;
-> +	return 0;
-> +}
-> +
-> +static void ucsi_unregister_plug(struct ucsi_connector *con)
-> +{
-> +	if (!con->plug)
-> +		return;
-> +
-> +	ucsi_unregister_altmodes(con, UCSI_RECIPIENT_SOP_P);
-> +	typec_unregister_plug(con->plug);
-> +	con->plug =3D NULL;
-> +}
-> +
->  static int ucsi_register_cable(struct ucsi_connector *con)
->  {
->  	struct typec_cable *cable;
-> @@ -842,6 +893,7 @@ static void ucsi_unregister_cable(struct ucsi_connect=
-or *con)
->  	if (!con->cable)
->  		return;
-> =20
-> +	ucsi_unregister_plug(con);
->  	typec_unregister_cable(con->cable);
->  	con->cable =3D NULL;
->  	memset(&con->cable_identity, 0, sizeof(con->cable_identity));
-> @@ -1046,6 +1098,14 @@ static int ucsi_check_cable(struct ucsi_connector =
-*con)
->  	if (ret < 0)
->  		return ret;
-> =20
-> +	ret =3D ucsi_register_plug(con);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret =3D ucsi_register_altmodes(con, UCSI_RECIPIENT_SOP_P);
-> +	if (ret < 0)
-> +		return ret;
-> +
->  	return 0;
->  }
-> =20
-> diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
-> index b89fae82e8ce..32daf5f58650 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.h
-> +++ b/drivers/usb/typec/ucsi/ucsi.h
-> @@ -429,9 +429,11 @@ struct ucsi_connector {
->  	struct typec_port *port;
->  	struct typec_partner *partner;
->  	struct typec_cable *cable;
-> +	struct typec_plug *plug;
-> =20
->  	struct typec_altmode *port_altmode[UCSI_MAX_ALTMODES];
->  	struct typec_altmode *partner_altmode[UCSI_MAX_ALTMODES];
-> +	struct typec_altmode *plug_altmode[UCSI_MAX_ALTMODES];
-> =20
->  	struct typec_capability typec_cap;
-> =20
-> --=20
-> 2.44.0.rc0.258.g7320e95886-goog
->=20
+  260017f31a8c ("lsm: use default hook return value in call_int_hook()")
 
---crR+FIe5gTszUjTd
-Content-Type: application/pgp-signature; name="signature.asc"
+from the security tree.
+
+I fixed it up (I think, see below) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc security/security.c
+index aef69632d0a9,b95772333d05..000000000000
+--- a/security/security.c
++++ b/security/security.c
+@@@ -5458,10 -5436,9 +5439,10 @@@ int security_bpf_prog(struct bpf_prog *
+   *
+   * Return: Returns 0 on success, error on failure.
+   */
+ -int security_bpf_map_alloc(struct bpf_map *map)
+ +int security_bpf_map_create(struct bpf_map *map, union bpf_attr *attr,
+ +			    struct bpf_token *token)
+  {
+- 	return call_int_hook(bpf_map_create, 0, map, attr, token);
+ -	return call_int_hook(bpf_map_alloc_security, map);
+++	return call_int_hook(bpf_map_create, map, attr, token);
+  }
+ =20
+  /**
+@@@ -5476,59 -5449,9 +5457,59 @@@
+   *
+   * Return: Returns 0 on success, error on failure.
+   */
+ -int security_bpf_prog_alloc(struct bpf_prog_aux *aux)
+ +int security_bpf_prog_load(struct bpf_prog *prog, union bpf_attr *attr,
+ +			   struct bpf_token *token)
+  {
+- 	return call_int_hook(bpf_prog_load, 0, prog, attr, token);
+ -	return call_int_hook(bpf_prog_alloc_security, aux);
+++	return call_int_hook(bpf_prog_load, prog, attr, token);
+ +}
+ +
+ +/**
+ + * security_bpf_token_create() - Check if creating of BPF token is allowed
+ + * @token: BPF token object
+ + * @attr: BPF syscall attributes used to create BPF token
+ + * @path: path pointing to BPF FS mount point from which BPF token is cre=
+ated
+ + *
+ + * Do a check when the kernel instantiates a new BPF token object from BP=
+F FS
+ + * instance. This is also the point where LSM blob can be allocated for L=
+SMs.
+ + *
+ + * Return: Returns 0 on success, error on failure.
+ + */
+ +int security_bpf_token_create(struct bpf_token *token, union bpf_attr *at=
+tr,
+ +			      struct path *path)
+ +{
+- 	return call_int_hook(bpf_token_create, 0, token, attr, path);
+++	return call_int_hook(bpf_token_create, token, attr, path);
+ +}
+ +
+ +/**
+ + * security_bpf_token_cmd() - Check if BPF token is allowed to delegate
+ + * requested BPF syscall command
+ + * @token: BPF token object
+ + * @cmd: BPF syscall command requested to be delegated by BPF token
+ + *
+ + * Do a check when the kernel decides whether provided BPF token should a=
+llow
+ + * delegation of requested BPF syscall command.
+ + *
+ + * Return: Returns 0 on success, error on failure.
+ + */
+ +int security_bpf_token_cmd(const struct bpf_token *token, enum bpf_cmd cm=
+d)
+ +{
+- 	return call_int_hook(bpf_token_cmd, 0, token, cmd);
+++	return call_int_hook(bpf_token_cmd, token, cmd);
+ +}
+ +
+ +/**
+ + * security_bpf_token_capable() - Check if BPF token is allowed to delega=
+te
+ + * requested BPF-related capability
+ + * @token: BPF token object
+ + * @cap: capabilities requested to be delegated by BPF token
+ + *
+ + * Do a check when the kernel decides whether provided BPF token should a=
+llow
+ + * delegation of requested BPF-related capabilities.
+ + *
+ + * Return: Returns 0 on success, error on failure.
+ + */
+ +int security_bpf_token_capable(const struct bpf_token *token, int cap)
+ +{
+- 	return call_int_hook(bpf_token_capable, 0, token, cap);
+++	return call_int_hook(bpf_token_capable, token, cap);
+  }
+ =20
+  /**
+
+--Sig_//dCjoofoYCR0aUn90YdCSxX
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCZdf5OAAKCRBzbaomhzOw
-wonTAQDqAauPp5X46PDTM5+U7Sw5KGHeA77Vn5fKGzxHWNWM+gEAkmbBJC78698T
-6M+p+fQHFs85ChV5M6Gy5rhtaShYtgM=
-=llRe
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXX+eMACgkQAVBC80lX
+0GyEuQf/fzW8pQqhRLV/LNjkPuQR42gLeAwWk3S5MB02eF0x5Rtjob5uUAFyZZRs
+j8d9rWhqoi5yQLzGEbcpIfZfUKjQOzzXRqCWj0q6r6HtsF9hDcLGrHoDoWBiyHjf
+/tASthmG100GLPol1xgbiWAIKV+tFIJOWZ6+j0WaUwYM2WsmeeCYtt3uuYfKD2GG
+RRJkPjrr7JnHfKrD57uosARQKHTal5JHdo0wiZsS/vX76YXCzqtvqubFBw0YalDf
+lQthV7SnrXux7wxglMjEQfKvJQyRntjsjRRRt2mfx6scfn2WKmFLG+HlkmXEcGrb
+lqF7Hfhr4oGHpXaAxACKYTMsZ4ojQg==
+=yQjI
 -----END PGP SIGNATURE-----
 
---crR+FIe5gTszUjTd--
+--Sig_//dCjoofoYCR0aUn90YdCSxX--
 
