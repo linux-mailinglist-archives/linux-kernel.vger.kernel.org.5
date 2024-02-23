@@ -1,461 +1,148 @@
-Return-Path: <linux-kernel+bounces-78014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E0C9860DFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:30:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 326EC860DFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:32:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E373EB23252
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:30:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C545CB20F97
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:32:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF0BE5CDC0;
-	Fri, 23 Feb 2024 09:30:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2EB95C8F1;
+	Fri, 23 Feb 2024 09:32:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fp1X1XJO"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="z6HxZk59"
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B733522067
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 09:30:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F8D517BAC
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 09:32:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708680637; cv=none; b=s2dZejQEm1IQ0l6+NmKfQlbHjbLgzsZgDFECyRw3DagMHsk21VPcRx60x2tgW0/VMFFfZzgdV5KWDLbR0qC6Ssg+k5hSnZ7rtRt1UtBnx7X7AOhpi7bKGVQCVSogfzlPLJSyELZ4SFgWNT8MTmmZ0+dKUai0Om7WkS6foreocSA=
+	t=1708680730; cv=none; b=Vj0/oivxkVXFNy5jExztqn8Y4/lSAd0gvWzp5DeUNOisit9aWB6EG+LBhBFnz1r2kU+lidEAF7rC9FUOON7xOnS3YMVLP3KtLcLVLoOQ2XNJ7gba2iNYmg/G8rVRaFtEndEe43q6sTIfmSNQqWRK4qHvTzDMbRQSltHSgEEjD6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708680637; c=relaxed/simple;
-	bh=0X+kVH/61QMgqZQaa2Os4+EPghceV1wIHbj+rBO8Ukw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DFza11u4yGGvX65Yh/3QBpVDDlM/VTA+8nCXJlsu2+XiPnJf5zGJvME5BexRodVdSmffNB/DF/kbIXTDOUJtLuCtl/WvxA/jN8dy9x2n1EgYm5YgjVj2i4RG7ORFjV8ip5n3VxFaq9xeS2P4/u6trfh028XxTiyGP1N0ovHhuUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fp1X1XJO; arc=none smtp.client-ip=209.85.221.41
+	s=arc-20240116; t=1708680730; c=relaxed/simple;
+	bh=1VYx/axPQ/Y/kZ06Nqv3k98TVq+A97WOfptU9iKYjbI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Yu/POTblgTJl4XOwjg9FluyXMSYlcwKiAb036DRnc0/v5l669cHe6Y/1vWvArROIe2Gw8o/I2kP0yiLH+GIy8qkuTYs1IFXDDyadISXnQ9nVX6F5iwBzkHzdJ1SuXJGQH922rIp12EZ7rjFsjo9r2y2ezClde4sR8ULQRWYdRpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=z6HxZk59; arc=none smtp.client-ip=209.85.216.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33adec41b55so453798f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 01:30:35 -0800 (PST)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-299e4b352cdso513250a91.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 01:32:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708680634; x=1709285434; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=2Fp6W9g3vD5RwtjACPaXueQika+ummbHKpHwtAJ8mQY=;
-        b=fp1X1XJOE0LzBTH1QZWLsLZJvjaTtvzUv/s5iCIlUfOwNi1iefDoVyCTJ5hc17nvKk
-         CAyiHRugo0GN2s+Il39BwcjwG1bs/W2efOZ7+uWGSi6yiXwe5QPJ7wLGifzNUhyXclUw
-         MaB/dn1BeN/zn0TJa/SUiV4Bjm2Un5DhD5pfh2R1SiW/oV+vJZyQeBOp9zOeBdV4re2n
-         irNz8h2VG+0UhMBQlgw5x/gSG+teE/uwJZuC42ctDkTi6GTxly1t+eMgC3STa2LZYRwl
-         86glwRRXiiG6mlYIw9/odqzwjuM6ZYb1uoUP3fsgKQ3pCmxB4UzGLiOlAHRqqhoxBCBz
-         Om6w==
+        d=linaro.org; s=google; t=1708680728; x=1709285528; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=6MtRioIoGbmMgxjAxFCCvhtN1+GGLvZzkqp5B6pIt9g=;
+        b=z6HxZk59x0V/HjqUOzbuNvs9YPU9uaoJO5b94c7QTZRF3aRwqNgOwiy7l6nEqo49+0
+         A7HxRRNLW96J4gbBC9UAD0ruMvZQO5hlv50DWJ8zlGT0u/g8AM/DijNAVNbVPoufHmWc
+         N57sFZ83hXGVW5Jeyp21vMj/ifjQdVPSy0jpPVB2+YitF5Dv6fq5HYtzy29kWzRzb02S
+         AOZ7a+uXS3xaa9XH2DG+PnOagxTE6sXJpsh5eWnShc2N/S85bmnoj3r3s5MtReBVTf47
+         x6NIXZwfI322yimyZ3rcVY6DuX3rTjCQfOVpFYU/rsYrGC2gV0XimzG3/h1ubrB2Jvtl
+         mD2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708680634; x=1709285434;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2Fp6W9g3vD5RwtjACPaXueQika+ummbHKpHwtAJ8mQY=;
-        b=F9uMGke5TMIzLjqmVMh25Kpu6v1lawdew6P+lwbYLR12IqvEKcT55i3sxGnOYUm+vF
-         wU/lqX4GKBup9YJHm7CbsPGsJvKtEIpl4USr4cYZyO2s6drwUg8RsY8v1X6sabXQcjIY
-         S0ZQ/Z8cpj36mArOeQIujlWG9Oy2V1QKtc07pOjn6PqqN9ofZ/3Wto2dIJWBFDo2Sbpw
-         0ZvYG3ewHuQpIdv+YxCF8gRDxvOBaYiFO2A+/cQ5hOgigrGVuT+t5Ef7qKM8yzlBK0NS
-         xxoompWG4uHeexkffAH5ntzMqaQuGbwgIDk1/LYFOTjTBhzt4k7uW13/9PDsb16Z3X+5
-         n3Lw==
-X-Forwarded-Encrypted: i=1; AJvYcCX1K/6AfIceZleLzlcu+7X4tLeURpfZda2bEz01XXNA1JieznVCMURjRqClpka2CnlaYye7vLQ1uVCM00/q07CojXbu2OO42bid1bNy
-X-Gm-Message-State: AOJu0YzsMpODiz7Mvy2pvaQi7jEk92gqeeAv9jNR5nsLF2DwJhbRwqRA
-	1IEKJLTV+TgRYbzfHfVP4kddhffZPowx+A3VH2RzQnl0/dsAno2kL8SBJgT2tbqsidoAVGBmpGr
-	9
-X-Google-Smtp-Source: AGHT+IGa3XYU1Qr16pIb6Ki/O3WgooDFUgl+hE+/WEHodWOsta/O3VvJfkOmGwGqf1pRbnpjaFi7uA==
-X-Received: by 2002:a05:6000:1286:b0:33d:7164:abfd with SMTP id f6-20020a056000128600b0033d7164abfdmr1016614wrx.32.1708680633953;
-        Fri, 23 Feb 2024 01:30:33 -0800 (PST)
-Received: from vingu-book ([2a01:e0a:f:6020:d721:6df1:db5f:d33c])
-        by smtp.gmail.com with ESMTPSA id g11-20020adff3cb000000b0033d1500b639sm2127909wrp.30.2024.02.23.01.30.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 01:30:33 -0800 (PST)
-Date: Fri, 23 Feb 2024 10:30:31 +0100
-From: Vincent Guittot <vincent.guittot@linaro.org>
-To: Qais Yousef <qyousef@layalina.io>
-Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	linux-kernel@vger.kernel.org,
-	Pierre Gondois <Pierre.Gondois@arm.com>
-Subject: Re: [PATCH v6 2/4] sched/fair: Check a task has a fitting cpu when
- updating misfit
-Message-ID: <Zdhlt9GZe502wpPy@vingu-book>
-References: <20240220225622.2626569-1-qyousef@layalina.io>
- <20240220225622.2626569-3-qyousef@layalina.io>
+        d=1e100.net; s=20230601; t=1708680728; x=1709285528;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6MtRioIoGbmMgxjAxFCCvhtN1+GGLvZzkqp5B6pIt9g=;
+        b=F6xExmx+w1IPwMfErM4ip/f2UdyDOkpalj/P/28KpDPFTf6UgMiaRvzTKlZIy7Lv9h
+         4O8PKIIWXokqpV2weFX67YBt/qEtJQhcakEjQifRyOXz9Poc1Kp/WTsDQJC1VQJP1eDn
+         kE8NJJpAiXoYSvt0M9DwXhLHfRwr/Oi52X/eZOy0o954EB9PuTeUGVVWrblIuKA3s0pd
+         pGpyTt7CNU5wZwbqKOAdNwmj/uTwOTHfWbcwuGs7Kuso0gi2PwgKnhcVEJNOKigpQAJ3
+         OZfXWQ8KgyycHId0gNrXFaa9/GM0fSpSMM9MGeu6iGE2U7+fPdZhkkgtwbKb3I46IwJI
+         qVRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUYtCkkPgYfBQybrTK2NWcZw225xXpmA2nHVHrHz1W39Xfafm3HIHDURAnbHKeeCdv9HI62siCUC8+YxCEuvvfAMI8DB080fe2WcK9J
+X-Gm-Message-State: AOJu0Yx6W4JDcRi+j5m8986764XQ9djbhnSlaTs+RqZgkhKtlpMTuJ6V
+	XJafx+SOL65hIr0NIXu4rd52UfRwN7b4bpn2UfbHIR0H4XzRT1SVClV7W2xBcNd748zHClc3Liw
+	cZzsXqnFuCMla9ojdxAVOiqTNHtYkkVQ0rEwDUQ==
+X-Google-Smtp-Source: AGHT+IHgcMD7lYWOBAfEs/KH+f5tKhGl2C+lRa25s1X4PdXzt4a9gGPZ5TNkiWHH3WHNz3KA1kxIE3aOz33ObHZjUKE=
+X-Received: by 2002:a17:90a:3d4c:b0:299:1bf1:9351 with SMTP id
+ o12-20020a17090a3d4c00b002991bf19351mr1167066pjf.29.1708680727925; Fri, 23
+ Feb 2024 01:32:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240220225622.2626569-3-qyousef@layalina.io>
+References: <20240220225622.2626569-1-qyousef@layalina.io> <20240220225622.2626569-4-qyousef@layalina.io>
+In-Reply-To: <20240220225622.2626569-4-qyousef@layalina.io>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Fri, 23 Feb 2024 10:31:56 +0100
+Message-ID: <CAKfTPtAvmMFL355zrqCebZJg6Su-V_um4X-c629cOJoS09-fdQ@mail.gmail.com>
+Subject: Re: [PATCH v6 3/4] sched/topology: Remove max_cpu_capacity from root_domain
+To: Qais Yousef <qyousef@layalina.io>
+Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, linux-kernel@vger.kernel.org, 
+	Pierre Gondois <Pierre.Gondois@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Le mardi 20 févr. 2024 à 22:56:20 (+0000), Qais Yousef a écrit :
-> If a misfit task is affined to a subset of the possible cpus, we need to
-> verify that one of these cpus can fit it. Otherwise the load balancer
-> code will continuously trigger needlessly leading the balance_interval
-> to increase in return and eventually end up with a situation where real
-> imbalances take a long time to address because of this impossible
-> imbalance situation.
-> 
-> This can happen in Android world where it's common for background tasks
-> to be restricted to little cores.
-> 
-> Similarly if we can't fit the biggest core, triggering misfit is
-> pointless as it is the best we can ever get on this system.
-> 
-> To be able to detect that; we use asym_cap_list to iterate through
-> capacities in the system to see if the task is able to run at a higher
-> capacity level based on its p->cpus_ptr. We do that when the affinity
-> change, a fair task is forked, or when a task switched to fair policy.
-> We store the max_allowed_capacity in task_struct to allow for cheap
-> comparison in the fast path.
-> 
-> Improve check_misfit_status() function by removing redundant checks.
-> misfit_task_load will be 0 if the task can't move to a bigger CPU. And
-> nohz_load_balance() already checks for cpu_check_capacity() before
-> calling check_misfit_status().
-> 
-> Test:
-> =====
-> 
-> Add
-> 
-> 	trace_printk("balance_interval = %lu\n", interval)
-> 
-> in get_sd_balance_interval().
-> 
-> run
-> 	if [ "$MASK" != "0" ]; then
-> 		adb shell "taskset -a $MASK cat /dev/zero > /dev/null"
-> 	fi
-> 	sleep 10
-> 	// parse ftrace buffer counting the occurrence of each valaue
-> 
-> Where MASK is either:
-> 
-> 	* 0: no busy task running
-> 	* 1: busy task is pinned to 1 cpu; handled today to not cause
-> 	  misfit
-> 	* f: busy task pinned to little cores, simulates busy background
-> 	  task, demonstrates the problem to be fixed
-> 
-> Results:
-> ========
-> 
-> Note how occurrence of balance_interval = 128 overshoots for MASK = f.
-> 
-> BEFORE
-> ------
-> 
-> 	MASK=0
-> 
-> 		   1 balance_interval = 175
-> 		 120 balance_interval = 128
-> 		 846 balance_interval = 64
-> 		  55 balance_interval = 63
-> 		 215 balance_interval = 32
-> 		   2 balance_interval = 31
-> 		   2 balance_interval = 16
-> 		   4 balance_interval = 8
-> 		1870 balance_interval = 4
-> 		  65 balance_interval = 2
-> 
-> 	MASK=1
-> 
-> 		  27 balance_interval = 175
-> 		  37 balance_interval = 127
-> 		 840 balance_interval = 64
-> 		 167 balance_interval = 63
-> 		 449 balance_interval = 32
-> 		  84 balance_interval = 31
-> 		 304 balance_interval = 16
-> 		1156 balance_interval = 8
-> 		2781 balance_interval = 4
-> 		 428 balance_interval = 2
-> 
-> 	MASK=f
-> 
-> 		   1 balance_interval = 175
-> 		1328 balance_interval = 128
-> 		  44 balance_interval = 64
-> 		 101 balance_interval = 63
-> 		  25 balance_interval = 32
-> 		   5 balance_interval = 31
-> 		  23 balance_interval = 16
-> 		  23 balance_interval = 8
-> 		4306 balance_interval = 4
-> 		 177 balance_interval = 2
-> 
-> AFTER
-> -----
-> 
-> Note how the high values almost disappear for all MASK values. The
-> system has background tasks that could trigger the problem without
-> simulate it even with MASK=0.
-> 
-> 	MASK=0
-> 
-> 		 103 balance_interval = 63
-> 		  19 balance_interval = 31
-> 		 194 balance_interval = 8
-> 		4827 balance_interval = 4
-> 		 179 balance_interval = 2
-> 
-> 	MASK=1
-> 
-> 		 131 balance_interval = 63
-> 		   1 balance_interval = 31
-> 		  87 balance_interval = 8
-> 		3600 balance_interval = 4
-> 		   7 balance_interval = 2
-> 
-> 	MASK=f
-> 
-> 		   8 balance_interval = 127
-> 		 182 balance_interval = 63
-> 		   3 balance_interval = 31
-> 		   9 balance_interval = 16
-> 		 415 balance_interval = 8
-> 		3415 balance_interval = 4
-> 		  21 balance_interval = 2
-> 
+On Tue, 20 Feb 2024 at 23:56, Qais Yousef <qyousef@layalina.io> wrote:
+>
+> The value is no longer used as we now keep track of max_allowed_capacity
+> for each task instead.
+>
 > Signed-off-by: Qais Yousef <qyousef@layalina.io>
-
-I have a comment below but anyway
 
 Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
 > ---
->  include/linux/sched.h |  1 +
->  init/init_task.c      |  1 +
->  kernel/sched/fair.c   | 77 +++++++++++++++++++++++++++++++++----------
->  3 files changed, 61 insertions(+), 18 deletions(-)
-> 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index ffe8f618ab86..774cddbeab09 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -835,6 +835,7 @@ struct task_struct {
->  #endif
->  
->  	unsigned int			policy;
-> +	unsigned long			max_allowed_capacity;
->  	int				nr_cpus_allowed;
->  	const cpumask_t			*cpus_ptr;
->  	cpumask_t			*user_cpus_ptr;
-> diff --git a/init/init_task.c b/init/init_task.c
-> index 7ecb458eb3da..b3dbab4c959e 100644
-> --- a/init/init_task.c
-> +++ b/init/init_task.c
-> @@ -77,6 +77,7 @@ struct task_struct init_task __aligned(L1_CACHE_BYTES) = {
->  	.cpus_ptr	= &init_task.cpus_mask,
->  	.user_cpus_ptr	= NULL,
->  	.cpus_mask	= CPU_MASK_ALL,
-> +	.max_allowed_capacity	= SCHED_CAPACITY_SCALE,
->  	.nr_cpus_allowed= NR_CPUS,
->  	.mm		= NULL,
->  	.active_mm	= &init_mm,
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 8e30e2bb77a0..20006fcf7df2 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -5092,24 +5092,35 @@ static inline int task_fits_cpu(struct task_struct *p, int cpu)
->  
->  static inline void update_misfit_status(struct task_struct *p, struct rq *rq)
->  {
-> +	unsigned long cpu_cap;
-> +	int cpu = cpu_of(rq);
-> +
->  	if (!sched_asym_cpucap_active())
->  		return;
->  
-> -	if (!p || p->nr_cpus_allowed == 1) {
-> -		rq->misfit_task_load = 0;
-> -		return;
-> -	}
-> +	if (!p || p->nr_cpus_allowed == 1)
-> +		goto out;
->  
-> -	if (task_fits_cpu(p, cpu_of(rq))) {
-> -		rq->misfit_task_load = 0;
-> -		return;
-> -	}
-> +	cpu_cap = arch_scale_cpu_capacity(cpu);
-> +
-> +	/*
-> +	 * Affinity allows us to go somewhere higher?  Or are we on biggest
-> +	 * available CPU already?
-> +	 */
-> +	if (cpu_cap == p->max_allowed_capacity)
-> +		goto out;
-> +
-> +	if (task_fits_cpu(p, cpu))
-> +		goto out;
-
-I think the below is easier to read:
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 209f5da17d79..0929e6704b44 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5095,35 +5095,25 @@ static inline int task_fits_cpu(struct task_struct *p, int cpu)
-
- static inline void update_misfit_status(struct task_struct *p, struct rq *rq)
- {
--       unsigned long cpu_cap;
-        int cpu = cpu_of(rq);
-
-        if (!sched_asym_cpucap_active())
-                return;
-
--       if (!p || p->nr_cpus_allowed == 1)
--               goto out;
--
--       cpu_cap = arch_scale_cpu_capacity(cpu);
--
-        /*
-         * Affinity allows us to go somewhere higher?  Or are we on biggest
--        * available CPU already?
-+        * available CPU already? Or do we fit into this CPU ?
-         */
--       if (cpu_cap == p->max_allowed_capacity)
--               goto out;
--
--       if (task_fits_cpu(p, cpu))
--               goto out;
--
--       /*
--        * Make sure that misfit_task_load will not be null even if
--        * task_h_load() returns 0.
--        */
--       rq->misfit_task_load = max_t(unsigned long, task_h_load(p), 1);
--       return;
--out:
--       rq->misfit_task_load = 0;
-+       if (!p || (p->nr_cpus_allowed == 1) ||
-+          (arch_scale_cpu_capacity(cpu) == p->max_allowed_capacity) ||
-+          task_fits_cpu(p, cpu))
-+               rq->misfit_task_load = 0;
-+       else
-+               /*
-+                * Make sure that misfit_task_load will not be null even if
-+                * task_h_load() returns 0.
-+                */
-+               rq->misfit_task_load = max_t(unsigned long, task_h_load(p), 1);
- }
-
- #else /* CONFIG_SMP */
-
-
-
-
->  
->  	/*
->  	 * Make sure that misfit_task_load will not be null even if
->  	 * task_h_load() returns 0.
->  	 */
->  	rq->misfit_task_load = max_t(unsigned long, task_h_load(p), 1);
-> +	return;
-> +out:
-> +	rq->misfit_task_load = 0;
->  }
->  
->  #else /* CONFIG_SMP */
-> @@ -8241,6 +8252,36 @@ static void task_dead_fair(struct task_struct *p)
->  	remove_entity_load_avg(&p->se);
->  }
->  
-> +/*
-> + * Check the max capacity the task is allowed to run at for misfit detection.
-> + */
-> +static void set_task_max_allowed_capacity(struct task_struct *p)
-> +{
-> +	struct asym_cap_data *entry;
-> +
-> +	if (!sched_asym_cpucap_active())
-> +		return;
-> +
-> +	rcu_read_lock();
-> +	list_for_each_entry_rcu(entry, &asym_cap_list, link) {
-> +		cpumask_t *cpumask;
-> +
-> +		cpumask = cpu_capacity_span(entry);
-> +		if (!cpumask_intersects(p->cpus_ptr, cpumask))
-> +			continue;
-> +
-> +		p->max_allowed_capacity = entry->capacity;
-> +		break;
-> +	}
-> +	rcu_read_unlock();
-> +}
-> +
-> +static void set_cpus_allowed_fair(struct task_struct *p, struct affinity_context *ctx)
-> +{
-> +	set_cpus_allowed_common(p, ctx);
-> +	set_task_max_allowed_capacity(p);
-> +}
-> +
->  static int
->  balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->  {
-> @@ -8249,6 +8290,8 @@ balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->  
->  	return newidle_balance(rq, rf) != 0;
->  }
-> +#else
-> +static inline void set_task_max_allowed_capacity(struct task_struct *p) {}
->  #endif /* CONFIG_SMP */
->  
->  static void set_next_buddy(struct sched_entity *se)
-> @@ -9601,16 +9644,10 @@ check_cpu_capacity(struct rq *rq, struct sched_domain *sd)
->  				(arch_scale_cpu_capacity(cpu_of(rq)) * 100));
->  }
->  
-> -/*
-> - * Check whether a rq has a misfit task and if it looks like we can actually
-> - * help that task: we can migrate the task to a CPU of higher capacity, or
-> - * the task's current CPU is heavily pressured.
-> - */
-> -static inline int check_misfit_status(struct rq *rq, struct sched_domain *sd)
-> +/* Check if the rq has a misfit task */
-> +static inline bool check_misfit_status(struct rq *rq, struct sched_domain *sd)
->  {
-> -	return rq->misfit_task_load &&
-> -		(arch_scale_cpu_capacity(rq->cpu) < rq->rd->max_cpu_capacity ||
-> -		 check_cpu_capacity(rq, sd));
-> +	return rq->misfit_task_load;
->  }
->  
->  /*
-> @@ -12645,6 +12682,8 @@ static void task_fork_fair(struct task_struct *p)
->  	rq_lock(rq, &rf);
->  	update_rq_clock(rq);
->  
-> +	set_task_max_allowed_capacity(p);
-> +
->  	cfs_rq = task_cfs_rq(current);
->  	curr = cfs_rq->curr;
->  	if (curr)
-> @@ -12768,6 +12807,8 @@ static void switched_to_fair(struct rq *rq, struct task_struct *p)
->  {
->  	attach_task_cfs_rq(p);
->  
-> +	set_task_max_allowed_capacity(p);
-> +
->  	if (task_on_rq_queued(p)) {
->  		/*
->  		 * We were most likely switched from sched_rt, so
-> @@ -13139,7 +13180,7 @@ DEFINE_SCHED_CLASS(fair) = {
->  	.rq_offline		= rq_offline_fair,
->  
->  	.task_dead		= task_dead_fair,
-> -	.set_cpus_allowed	= set_cpus_allowed_common,
-> +	.set_cpus_allowed	= set_cpus_allowed_fair,
->  #endif
->  
->  	.task_tick		= task_tick_fair,
-> -- 
+>  kernel/sched/sched.h    |  2 --
+>  kernel/sched/topology.c | 13 ++-----------
+>  2 files changed, 2 insertions(+), 13 deletions(-)
+>
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index e85976bd2bab..bc9e598d6f62 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -917,8 +917,6 @@ struct root_domain {
+>         cpumask_var_t           rto_mask;
+>         struct cpupri           cpupri;
+>
+> -       unsigned long           max_cpu_capacity;
+> -
+>         /*
+>          * NULL-terminated list of performance domains intersecting with the
+>          * CPUs of the rd. Protected by RCU.
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index 1505677e4247..a57c006d2923 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -2513,16 +2513,9 @@ build_sched_domains(const struct cpumask *cpu_map, struct sched_domain_attr *att
+>         /* Attach the domains */
+>         rcu_read_lock();
+>         for_each_cpu(i, cpu_map) {
+> -               unsigned long capacity;
+> -
+>                 rq = cpu_rq(i);
+>                 sd = *per_cpu_ptr(d.sd, i);
+>
+> -               capacity = arch_scale_cpu_capacity(i);
+> -               /* Use READ_ONCE()/WRITE_ONCE() to avoid load/store tearing: */
+> -               if (capacity > READ_ONCE(d.rd->max_cpu_capacity))
+> -                       WRITE_ONCE(d.rd->max_cpu_capacity, capacity);
+> -
+>                 cpu_attach_domain(sd, d.rd, i);
+>
+>                 if (lowest_flag_domain(i, SD_CLUSTER))
+> @@ -2536,10 +2529,8 @@ build_sched_domains(const struct cpumask *cpu_map, struct sched_domain_attr *att
+>         if (has_cluster)
+>                 static_branch_inc_cpuslocked(&sched_cluster_active);
+>
+> -       if (rq && sched_debug_verbose) {
+> -               pr_info("root domain span: %*pbl (max cpu_capacity = %lu)\n",
+> -                       cpumask_pr_args(cpu_map), rq->rd->max_cpu_capacity);
+> -       }
+> +       if (rq && sched_debug_verbose)
+> +               pr_info("root domain span: %*pbl\n", cpumask_pr_args(cpu_map));
+>
+>         ret = 0;
+>  error:
+> --
 > 2.34.1
-> 
+>
 
