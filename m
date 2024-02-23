@@ -1,170 +1,96 @@
-Return-Path: <linux-kernel+bounces-78435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDB5F861375
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DEE608613A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:10:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54E39B23B0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:00:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62A9FB21853
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:10:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 250D6811F1;
-	Fri, 23 Feb 2024 13:59:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9FBC80049;
+	Fri, 23 Feb 2024 14:10:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bZ3Mrm2k";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="fwLuUbpH";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bZ3Mrm2k";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="fwLuUbpH"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=flyingcircus.io header.i=@flyingcircus.io header.b="ALvdoC1n"
+Received: from mail.flyingcircus.io (mail.flyingcircus.io [212.122.41.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CCFE80BE3;
-	Fri, 23 Feb 2024 13:59:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 876D57F7CE;
+	Fri, 23 Feb 2024 14:10:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.122.41.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708696797; cv=none; b=sYcvYWvyB3oicesM8BUUliRz2iNtm1wp2CmzDrJdYCXo4NDoV4QTR9XByzseYSQdmKZvBM+UjTb07eG7rg4qe8yfgF1Gey3srRGFb1siCNFxbCdE9Z7blUbPWlt1k7bN6UnT34NB5x+NGmRmQQfSCls7HxWMJ+CYWbwInH2ocVc=
+	t=1708697424; cv=none; b=mElLGR2+ZWdIPbUSwY/BWMefasntOxNXhAK4lsojRvyAKdq/c3u+zRMYN/skPA7T4iS1O0xehbgMGGDwk/WCJ8xgEQ5UICVTgAIPRTO3YVOXarAKD7FQyFSjVUWxUZJmFNbAs5Q5HlDqWcJSFaQFi3Lb9E+eCNsxzJn1cK1ZR34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708696797; c=relaxed/simple;
-	bh=WH00J42XRSLOx+AYd4eDGdtsAI7y6ZtzqylvJFYY4z0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o3xvasnjMY4u8LZtJcUg4u1CKC/j9laxEvlBKoZf/j4yqPxRTOm68H2r1wRx+x2Qtxd9D1MRs4R2yHjnHmDU9GV9fhapceTqJUj50Xce5gzLcsIGzAWeb6EDqXjUaIwHUR1dCULVQRx3nYLJPdjWA/GuB+Fj8O69N+7bgT0MoRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bZ3Mrm2k; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=fwLuUbpH; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bZ3Mrm2k; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=fwLuUbpH; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 6157021228;
-	Fri, 23 Feb 2024 13:59:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708696779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=U5I5JLIOt6cWg7cHecCMNbeuLIZxzsx9ULi7w8Ob25k=;
-	b=bZ3Mrm2k2f8asnJGUairFgzsX61UmeXmfZANe8xoomAgt+CyDDoRF8r3wDWypucksBH2iP
-	v5jACxDlaYMOKliZuHxkknuPvf+H6xsRJnVy5lBBjCsPxKOg4KxQ+K8KdVuxm7vv3ZnD7W
-	2ZWJgavfsDR/vkvR3N9JVRTnBgaJ94M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708696779;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=U5I5JLIOt6cWg7cHecCMNbeuLIZxzsx9ULi7w8Ob25k=;
-	b=fwLuUbpHNRaOeE4s8d7WpY7t5c5Znn4EjJtrCGtEQWt60gZb90naQDRFQeEtIFMuQCWzVH
-	/5GRfVHPBc6VoNBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708696779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=U5I5JLIOt6cWg7cHecCMNbeuLIZxzsx9ULi7w8Ob25k=;
-	b=bZ3Mrm2k2f8asnJGUairFgzsX61UmeXmfZANe8xoomAgt+CyDDoRF8r3wDWypucksBH2iP
-	v5jACxDlaYMOKliZuHxkknuPvf+H6xsRJnVy5lBBjCsPxKOg4KxQ+K8KdVuxm7vv3ZnD7W
-	2ZWJgavfsDR/vkvR3N9JVRTnBgaJ94M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708696779;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=U5I5JLIOt6cWg7cHecCMNbeuLIZxzsx9ULi7w8Ob25k=;
-	b=fwLuUbpHNRaOeE4s8d7WpY7t5c5Znn4EjJtrCGtEQWt60gZb90naQDRFQeEtIFMuQCWzVH
-	/5GRfVHPBc6VoNBA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5610413419;
-	Fri, 23 Feb 2024 13:59:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id EVr9FMuk2GWBfgAAn2gu4w
-	(envelope-from <jack@suse.cz>); Fri, 23 Feb 2024 13:59:39 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 16937A07D1; Fri, 23 Feb 2024 14:59:39 +0100 (CET)
-Date: Fri, 23 Feb 2024 14:59:39 +0100
-From: Jan Kara <jack@suse.cz>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 7/7] fs/writeback: remove unnecessary return in
- writeback_inodes_sb
-Message-ID: <20240223135939.5wxt6vuifkauuksv@quack3>
-References: <20240208172024.23625-1-shikemeng@huaweicloud.com>
- <20240208172024.23625-8-shikemeng@huaweicloud.com>
+	s=arc-20240116; t=1708697424; c=relaxed/simple;
+	bh=DdomKR0wDWtw1msIsHKsZbMqZerkBGz5yzEdAw5eRNc=;
+	h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:Cc:To; b=Q9xzCE1xYvQTsKtT1ZxTFofr6ezbIw6YF4SkvAX3n8gV+ldsqdlQ6u/CiRPJQOtEljgGHO7Kj4OqBwa2j5JjqfG1y5r0i56Q1/X+PNVKM3VJCFkZ5v28/Elsh1xzmHKIVvKOzMsHIdca+Ug7ApROwgUsSgZSpV3tBPeq/7wVIik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=flyingcircus.io; spf=pass smtp.mailfrom=flyingcircus.io; dkim=pass (1024-bit key) header.d=flyingcircus.io header.i=@flyingcircus.io header.b=ALvdoC1n; arc=none smtp.client-ip=212.122.41.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=flyingcircus.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flyingcircus.io
+From: Christian Theune <ct@flyingcircus.io>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flyingcircus.io;
+	s=mail; t=1708696810;
+	bh=DdomKR0wDWtw1msIsHKsZbMqZerkBGz5yzEdAw5eRNc=;
+	h=From:Subject:Date:Cc:To;
+	b=ALvdoC1nl9f5fZXz6p4s8YOYNDvrNmlsf9Ola4oIjj8QSIjlTw6nsmCsfAJE+CYV6
+	 xJd2kBCgZerrVJ35S0dZ43n81AmI0u3xBlOwXoEvWMpm2sAa0CpTEqIY/Gq5TL0FSJ
+	 xM1D5KqgyChsHdBxVfh3mXXZzKHdeBLuGN0MdeLY=
+Content-Type: text/plain;
+	charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240208172024.23625-8-shikemeng@huaweicloud.com>
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=bZ3Mrm2k;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=fwLuUbpH
-X-Spamd-Result: default: False [-1.71 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[huaweicloud.com:email,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.90)[94.47%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 6157021228
-X-Spam-Level: 
-X-Spam-Score: -1.71
-X-Spam-Flag: NO
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
+Subject: nfs4_schedule_state_manager stuck in tight loop
+Message-Id: <8B04DA70-ABEF-44A4-BBA7-60968E6CFA10@flyingcircus.io>
+Date: Fri, 23 Feb 2024 14:59:49 +0100
+Cc: linux-kernel@vger.kernel.org,
+ Linux regressions mailing list <regressions@lists.linux.dev>
+To: linux-nfs@vger.kernel.org,
+ chuck.lever@oracle.com,
+ jlayton@kernel.org
 
-On Fri 09-02-24 01:20:24, Kemeng Shi wrote:
-> writeback_inodes_sb doesn't have return value, just remove unnecessary
-> return in it.
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+Hi,
 
-Looks good. Feel free to add:
+unfortunately I=E2=80=99m a bit light on details, but willing to provide =
+better diagnostics as this moves along.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+We=E2=80=99ve had two instances of NFS clients getting stuck with a =
+kernel thread spinning around `nfs4_schedule_state_manager` AFAICT:
 
-								Honza
+The first instance of this was last September on a Qemu VM running a =
+6.1.45 guest:
 
-> ---
->  fs/fs-writeback.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index 816505d74b2f..eb62196777dd 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -2748,7 +2748,7 @@ EXPORT_SYMBOL(writeback_inodes_sb_nr);
->   */
->  void writeback_inodes_sb(struct super_block *sb, enum wb_reason reason)
->  {
-> -	return writeback_inodes_sb_nr(sb, get_nr_dirty_pages(), reason);
-> +	writeback_inodes_sb_nr(sb, get_nr_dirty_pages(), reason);
->  }
->  EXPORT_SYMBOL(writeback_inodes_sb);
->  
-> -- 
-> 2.30.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+root 315344 44.5 0.0 0 0 ? D Sep05 781:38 \_ [172.22.56.83-manager]
+
+It happened a second time in last December on another VM that was likely =
+running 5.15.139. (We downgraded our fleet due to other stability issues =
+from 6.1 to 5.15 in between those two incidents.)
+
+My colleagues told me that no issues were visible in the logs at that =
+time, the systems were generally usable but interacting with anything on =
+NFS was (obviously) stuck. So apparently no (soft-) lock ups and no =
+stalls were recorded, but I=E2=80=99ll ask my colleagues to either alert =
+me or provide all of the logging they can get the next time this =
+happens.
+
+Cheers,
+Christian
+
+PS: I=E2=80=99ve also recorded this in =
+https://bugzilla.kernel.org/show_bug.cgi?id=3D217877 but switching to =
+mail-based workflow now.
+
+--=20
+Christian Theune =C2=B7 ct@flyingcircus.io =C2=B7 +49 345 219401 0
+Flying Circus Internet Operations GmbH =C2=B7 https://flyingcircus.io
+Leipziger Str. 70/71 =C2=B7 06108 Halle (Saale) =C2=B7 Deutschland
+HR Stendal HRB 21169 =C2=B7 Gesch=C3=A4ftsf=C3=BChrer: Christian Theune, =
+Christian Zagrodnick
+
 
