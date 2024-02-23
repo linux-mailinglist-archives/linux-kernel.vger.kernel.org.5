@@ -1,181 +1,120 @@
-Return-Path: <linux-kernel+bounces-77675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A19A28608CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:25:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 161008608D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:25:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDE651C2129C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:25:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 482771C2128A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:25:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEBA5C13D;
-	Fri, 23 Feb 2024 02:25:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E361BE68;
+	Fri, 23 Feb 2024 02:25:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MW/Wwdxp"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ceiWdK8i"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63FCABA39
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 02:25:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5269B674;
+	Fri, 23 Feb 2024 02:25:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708655105; cv=none; b=NQGpTt3YHhyALJoe8Tgn5VzbvhqM3r6OtuL3Qf9lyblvR0fwTLEQvMXUOSQQ9MhPIpaVFpCL4Ne/UI1jqtpSsF63F6fJav7gqhz5YzNRKeTRfASfvihztJzwOZJ7Cobt9poQgGIw2wBpO/X9EQ9yTDhsfibVVjsU+sruPxabFMg=
+	t=1708655143; cv=none; b=NEwNOxJuWy3PoX592C6PPndHrHNL5re0YXH3zm1VJ3oZ+EMQCZe7ZX2JTyFDXvISEquft/Ar+alf8bjSFJ7u49HcWUQ2l0yTw8hotJUIIHOHrg3RIRwb4f7Rr7RpKjk6c1DQS0WT6m1euh32yLDwX7ef6bcALr3EpaZRvnjviWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708655105; c=relaxed/simple;
-	bh=PzfE8dvOzIfSG/xSCddRDMvBcZR0ITDteEVsQNyILMw=;
-	h=References:From:To:Cc:Subject:In-reply-to:Date:Message-ID:
-	 MIME-Version:Content-Type; b=MY7du6zyjvgxcEL1lqSMI2WmIoryQqnuDD0PPBlPcNiJkjahpdFgDW9gKgtZBZhBGazCaUNX86vgsyoaE2EEuQeGaYkbRecbK4QvmTEWQRs+mQxY+8prSz5APr4qc23kC3rnZCOZN3gMieIOMpfoFAQXt9LnWwJvrzEyHF8S2S8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MW/Wwdxp; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e471caaa71so244501b3a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 18:25:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708655103; x=1709259903; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:in-reply-to
-         :subject:cc:to:from:user-agent:references:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yvpsMbjqPU4UR9+5wWiHmUmCTwM1PMtLjxdFJ8jAgDo=;
-        b=MW/WwdxppZuCISdh5ukjVaVojPDfa8y2RJ9EMgTLHGmO75iCpbGn9eOMQOynBMj9Yk
-         +nHcnfM5AoyhqCq8WDWBF5mYyQ0l7RJIrKd+6dDMBx0DDyXNTnle9GNGeIET6VjoE5r+
-         ip+H99r3aucGAz50ztmNfyQ6n4RtZAMRKA8AJkeYUTnm2NsUVAgzm4MZlK5R04fc/yA6
-         mR/8Zc3FooUqY6XgJzf03hNheaOYJpKWtbd14YbhoPMPVwRXBw4vQ8lOV5UNbE7B1eb9
-         k7952iFSIPy9KB5OkO3aIAibOpIHFUe7YW0kQRG/JdPHJ+3ulfMCIxWWwr8sK0NQvXtW
-         thmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708655103; x=1709259903;
-        h=content-transfer-encoding:mime-version:message-id:date:in-reply-to
-         :subject:cc:to:from:user-agent:references:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=yvpsMbjqPU4UR9+5wWiHmUmCTwM1PMtLjxdFJ8jAgDo=;
-        b=IJM6d2DNa4J+PtBAAQuzhmPkAVAd0HET8YLA8BXWeIst9MRGaVaeJ0YeU9C4Px0aZF
-         SdmDRVPly3hqfyDPdd9dTiFjUmqx4GUVoIxF/4Em9tuBNSldT6LHwH9JfykbWmmuFLta
-         OIdTHVVdFp5ro2uaIkY5gyK33U+OwFhhMksP1rZw4QajyvMhRxfKMdNzroyI7jY3jrJ/
-         bWK9utOTA9xCbtfFbd/TMriH2sCvhTZULKE+U/2pFKuC3Ce1FaGNfAcOPRheUFVoyTlw
-         9OaJR2tBOJ1rhs9fbQ4Uouxko7Y8jm6suhYmpjwZc+juNnhlkyuIp++6kI6nnOU2gBCw
-         SjJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXazVrr7Wol+bgOph1hBzLZD9ebF7qPxBcLHvVcTh0PamHMH4l5tGJuDkQVUV3TAAxidFWkJSs6u6NiM9XFmHxE8CFx+yJ94fPY6fih
-X-Gm-Message-State: AOJu0Yw0SvPQMZVQJPae5+UxTiebijY1FKwQnlK0gwGlyYhDpoJIlsS9
-	4XHmObSBEp9izHJkTkZPLKW7jeYCs9wOUm1otkOgoPsHCKXSEc0B9xoyLT1NP0Q=
-X-Google-Smtp-Source: AGHT+IGXzUvLuIBqAH6IpfTDaGkH8Ve8NCjMdXcR7MwfrFmhzj20/am5IT7QTj11UMAitUQcB9a5gw==
-X-Received: by 2002:a05:6a20:e607:b0:19e:a353:81b0 with SMTP id my7-20020a056a20e60700b0019ea35381b0mr734946pzb.11.1708655102714;
-        Thu, 22 Feb 2024 18:25:02 -0800 (PST)
-Received: from localhost ([2804:14d:7e39:8470:902e:6d00:6c11:e63b])
-        by smtp.gmail.com with ESMTPSA id mf8-20020a170902fc8800b001d9fc6cb5f2sm10645873plb.203.2024.02.22.18.25.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 18:25:02 -0800 (PST)
-References: <20240203-arm64-gcs-v8-0-c9fec77673ef@kernel.org>
- <20240203-arm64-gcs-v8-33-c9fec77673ef@kernel.org>
- <87sf1n7uea.fsf@linaro.org>
- <9b899b4e-7410-4c3b-967b-7794dac742e4@sirena.org.uk>
-User-agent: mu4e 1.10.8; emacs 29.1
-From: Thiago Jung Bauermann <thiago.bauermann@linaro.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
- <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Andrew Morton
- <akpm@linux-foundation.org>, Marc Zyngier <maz@kernel.org>, Oliver Upton
- <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>, Suzuki K
- Poulose <suzuki.poulose@arm.com>, Arnd Bergmann <arnd@arndb.de>, Oleg
- Nesterov <oleg@redhat.com>, Eric Biederman <ebiederm@xmission.com>, Kees
- Cook <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>, "Rick P.
- Edgecombe" <rick.p.edgecombe@intel.com>, Deepak Gupta
- <debug@rivosinc.com>, Ard Biesheuvel <ardb@kernel.org>, Szabolcs Nagy
- <Szabolcs.Nagy@arm.com>, "H.J. Lu" <hjl.tools@gmail.com>, Paul Walmsley
- <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
- <aou@eecs.berkeley.edu>, Florian Weimer <fweimer@redhat.com>, Christian
- Brauner <brauner@kernel.org>, linux-arm-kernel@lists.infradead.org,
- linux-doc@vger.kernel.org, kvmarm@lists.linux.dev,
- linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
- linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v8 33/38] kselftest/arm64: Add a GCS test program built
- with the system libc
-In-reply-to: <9b899b4e-7410-4c3b-967b-7794dac742e4@sirena.org.uk>
-Date: Thu, 22 Feb 2024 23:24:59 -0300
-Message-ID: <87ttlzsyro.fsf@linaro.org>
+	s=arc-20240116; t=1708655143; c=relaxed/simple;
+	bh=5a15H4gjG9Z8VNMVpz9Ni3AuhpV4Czq4UmRYp26Cahk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kWqBPXc4n+/H//paxgF5FIy46/DDuofFqg4N6EXJATEjmc8zbc8VNVQvTvoDrwjdP5ZZdyZfRIXULgRRbzHcYwAg+vCV9R/xMc0mA+RrT2G33U3+liA5t4KjG10QBe/I2CSrlrhmb/zBA6yvPblZNt1nTGXL+pCQtaIUye+b8eQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ceiWdK8i; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AE79C43399;
+	Fri, 23 Feb 2024 02:25:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708655143;
+	bh=5a15H4gjG9Z8VNMVpz9Ni3AuhpV4Czq4UmRYp26Cahk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ceiWdK8i45R9/jlFuwzOrVBtzkeXJCgWncbvtP9JDZiYppVhRfLFm+IWKPKVOD7zr
+	 6p4W2ahnepM5LVyps8O44sqYdktoki3Aps3NkRh+cdUzU6epRU2xYIkK9nIvOzKPEk
+	 gwuXWqQn1bReolpRgOK6mH7O59TTQxNmArVf/dbv6vQ4fY4pzwFTX6quBeh1pf9wke
+	 v2EhIkzomYqee7IqNMTxwJYqxlLce0jz/GrRy+kdn9SFRnCxsObQpVhEaekHaNW1l4
+	 /tL+mGrK9goTlG8oIKPojos8M6j3aTXECl7mI31dl9QeQAhXWm3SL17kkHmqZ8B6/K
+	 MY2yslwhj720A==
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d21a68dd3bso5212631fa.1;
+        Thu, 22 Feb 2024 18:25:43 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVgqSlTOPPhF83xQLuXqrzRmLqOGEZVuoCphnlkm362sNmBDgdGbw0GN/7aFdHXjJHPGOC0eHM/NojRKzAZxiq/uAFPuscN0qnlnr7Xh+JHNum8cMhDaft9KywfCU6TDMk5rAmFDum3LsS+PyYL7O/PTrg5RioYp7hEnPjr0W7efJ2VzdwBPTzvPz8asQ==
+X-Gm-Message-State: AOJu0YwDKnWIfNuwoaaaDRbRgkUF9WP/+C4eCDM8sPAcsJWH0s7o7u87
+	jYJNcdcEfJ81UpLNyig1t5dQEY/9DOrb3iL1Cc/U31OXh73loPUtcnAkIgnwUdfIf+hjt/ux8pk
+	KhuYY/ZW3WlqrUvzUTi6lYGOsn2U=
+X-Google-Smtp-Source: AGHT+IHv/pqSXOqGKS7AHlfuR7hjQALuFEIFDcK1HpkE2N7ySttizVh9qLS0Xl/Y8NUQ9GCaKzp4frWkxaJzXnWCDBs=
+X-Received: by 2002:a2e:8613:0:b0:2d2:3b61:a2b with SMTP id
+ a19-20020a2e8613000000b002d23b610a2bmr452895lji.11.1708655141667; Thu, 22 Feb
+ 2024 18:25:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20240221134201.2656908-1-masahiroy@kernel.org> <CAM9d7cjQ0wbPu9NWcg_Rj66jcJ=6HoNMcTnfR4wvjaJ47FDVQA@mail.gmail.com>
+In-Reply-To: <CAM9d7cjQ0wbPu9NWcg_Rj66jcJ=6HoNMcTnfR4wvjaJ47FDVQA@mail.gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Fri, 23 Feb 2024 11:25:05 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASch8P49gNagJ3OhMDqFNuzxcRRKatet2iedWFi76qoog@mail.gmail.com>
+Message-ID: <CAK7LNASch8P49gNagJ3OhMDqFNuzxcRRKatet2iedWFi76qoog@mail.gmail.com>
+Subject: Re: [PATCH] treewide: remove meaningless assignments in Makefiles
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, linux-perf-users@vger.kernel.org, 
+	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-
-Mark Brown <broonie@kernel.org> writes:
-
-> On Mon, Feb 19, 2024 at 11:15:57PM -0300, Thiago Jung Bauermann wrote:
+On Fri, Feb 23, 2024 at 2:08=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> =
+wrote:
 >
->> The only issue as can be seen above is that the can_call_function test
->> is failing. The child is getting a GCS Segmentation fault when returning
->> from fork().
+> Hello,
 >
->> I tried debugging it with GDB, but I don't see what's wrong since the
->> address in LR matches the first entry in GCSPR. Here is the
->> debug session:
+> On Wed, Feb 21, 2024 at 5:42=E2=80=AFAM Masahiro Yamada <masahiroy@kernel=
+org> wrote:
+> >
+> > In Makefiles, $(error ), $(warning ), and $(info ) expand to the empty
+> > string, as explained in the GNU Make manual [1]:
+> >  "The result of the expansion of this function is the empty string."
+> >
+> > Therefore, they are no-op except for logging purposes.
+> >
+> > $(shell ...) expands to the output of the command. It expands to the
+> > empty string when the command does not print anything to stdout.
+> > Hence, $(shell mkdir ...) is no-op except for creating the directory.
+> >
+> > Remove meaningless assignments.
+> >
+> > [1]: https://www.gnu.org/software/make/manual/make.html#Make-Control-Fu=
+nctions
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> > This is a treewide cleanup, but in practice, this is touching mostly
+> > perf Makefiles. I am sending this to perf subsystem.
 >
-> I believe based on prior discussions that you're running this using
-> shrinkwrap - can you confirm exactly how please, including things like
-> which firmware configuration you're using?  I'm using current git with
->
->   shrinkwrap run \
->         --rtvar KERNEL=3Darch/arm64/boot/Image \
->         --rtvar ROOTFS=3D${ROOTFS} \
->         --rtvar CMDLINE=3D"${CMDLINE}" \
->         --overlay=3Darch/v9.4.yaml ns-edk2.yaml
->
-> and a locally built yocto and everything seems perfectly happy.
+> How do you want to route this?  I can take it to perf tree if you're ok.
 
-Yes, this is how I'm running it:
 
-  CMDLINE=3D"Image dtb=3Dfdt.dtb console=3DttyAMA0 earlycon=3Dpl011,0x1c090=
-000 root=3D/dev/vda2 ip=3Ddhcp maxcpus=3D1"
+Yes, that is my expectation because it will reduce the risk
+of merge conflicts.
 
-  shrinkwrap run \
-      --rtvar=3DKERNEL=3DImage-gcs-v8-v6.7-rc4-14743-ga551a7d7af93 \
-      --rtvar=3DROOTFS=3D$HOME/VMs/ubuntu-aarch64.img \
-      --rtvar=3DCMDLINE=3D"$CMDLINE" \
-      ns-edk2.yaml
+I only included the perf maintainers and ML to To:,
+and anything else in CC:
 
-I ran the following to set up the FVP VM:
 
-$ shrinkwrap build --overlay=3Darch/v9.4.yaml ns-edk2.yaml
 
-My rootfs is Ubuntu 22.04.3. In case it's useful, my kernel config is
-here:
-
-https://people.linaro.org/~thiago.bauermann/gcs/config-v6.8.0-rc2
-
-I tried removing "maxcpus=3D1" from the kernel command line, but it made
-no difference.
-
-I also tried resetting my Shrinkwrap setup and starting from scratch,
-but it also made no difference: I just pulled from the current main
-branch and removed Shrinkwrap's build and package directories, and also
-removed all Docker images and the one container I had.
-
-Here are some firmware versions from early boot:
-
-  NOTICE:  Booting Trusted Firmware
-  NOTICE:  BL1: v2.10.0   (release):v2.10.0
-  NOTICE:  BL1: Built : 00:07:29, Feb 23 2024
-     =E2=8B=AE
-  NOTICE:  BL2: v2.10.0   (release):v2.10.0
-  NOTICE:  BL2: Built : 00:07:29, Feb 23 2024
-     =E2=8B=AE
-  NOTICE:  BL31: v2.10.0  (release):v2.10.0
-  NOTICE:  BL31: Built : 00:07:29, Feb 23 2024
-     =E2=8B=AE
-  [  edk2 ] UEFI firmware (version  built at 00:06:55 on Feb 23 2024)
-  Press ESCAPE for boot options ...........UEFI Interactive Shell v2.2
-  EDK II
-  UEFI v2.70 (EDK II, 0x00010000)
-
-It looks like our main differences are the kernel config and the distro.
 
 --=20
-Thiago
+Best Regards
+Masahiro Yamada
 
