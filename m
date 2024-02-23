@@ -1,115 +1,100 @@
-Return-Path: <linux-kernel+bounces-78612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C3FC8615DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:32:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45FAA8615E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:32:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A3351C23890
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:32:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4FE42877DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:32:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ED7C10A3E;
-	Fri, 23 Feb 2024 15:32:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24BC28287D;
+	Fri, 23 Feb 2024 15:32:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fEUFeLJy"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=peacevolution.org header.i=@peacevolution.org header.b="CoCNqIXM"
+Received: from a.peacevolution.org (a.peacevolution.org [206.189.193.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5048E823D8
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 15:32:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE8846FD1;
+	Fri, 23 Feb 2024 15:32:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=206.189.193.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708702333; cv=none; b=JkvqQV/4MIPmnP8sFzZRO1dfVmkdVIlwkBeBXz++NjTarFfb1z4DuPP+u3Tcw5N7ZvCj65fFWHs32inFHjUqBBdIghc1lqQxvO0cSfQFvmXskBspkBTF46r+X370S5AkIiQGWHprUeeePbWt8rC7Gqk01ZanxzadBGkqDXgD/fc=
+	t=1708702360; cv=none; b=P/tszB+YSAVYV0Q786wMm6QgQkk91Iue2wQh4CfyR9/RhcNXCbZ37dkeaE14SgQvxGOGbvh0JMvPvLQY+MIMxTYO7+KmeLyc7fHKzgDxVSEBhjTFx0pwf1cySyeo4++cDcU0CrYf7r1KfTX+/GP/HXyP4iHl2TpDyIfdCfgW37s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708702333; c=relaxed/simple;
-	bh=ltXfiFuoTEtZlQ375zaRTODYeS+HobqFtlM+RXnHddQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FxXeToVVJezv1fRS359Tivd/8kPyB/R/unbNpvZt9DmNhx3EmoL9zfnlBd84q9/8E8pEa6fEXXNwlU/ZHhg574ZvdEiFCEPTB3e5+eE48hT2GDJrhLIhl9xGTlMic1I8qBr1xjyceoer/+DjN0ZqfPbUW1a10OcqtSDIbk+3L6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fEUFeLJy; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708702330;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ltXfiFuoTEtZlQ375zaRTODYeS+HobqFtlM+RXnHddQ=;
-	b=fEUFeLJy7wWCGpsIiw44ytq1MxrQn95Q8qS+X9SfrvuWRe09YCVAmK+wOeulUp2jRM+VmD
-	wO9W+Hh+Y+4yDpJgbRlzyDVDDJ2HME5w+r4iCliYoMzQjCgnIw6RD3aC1iEKITUMz0lF9A
-	5klySqb5NbQZTkujA+CmSs52nZDzW4E=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-688-nSogOnByOHmtDwumvMgsMA-1; Fri, 23 Feb 2024 10:32:08 -0500
-X-MC-Unique: nSogOnByOHmtDwumvMgsMA-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33d256ca4c8so660116f8f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 07:32:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708702327; x=1709307127;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ltXfiFuoTEtZlQ375zaRTODYeS+HobqFtlM+RXnHddQ=;
-        b=pseUVZeoPQ0PlLreh3jnWPuXsSwcIAtbUJ23aE391gUYVr3qtGAjYkvNLO2cRc5MYb
-         m2AtfcNsX0d1xXRyIfke5E0qKvyjq74kNO3qXBJaVncQr/dqpXKeDCeeNUIeugVOc8L2
-         sQ4ccnxbb9E1NuzDrXnEB75P4EagAWKros85brJ72g/lbUrmFZmQF3V9Yv1fqUJHsZlQ
-         XVqgEeNmD6xoWFeRuLtgspLwnaMz8KBbcVgm+P1I3JyL9M3xKzGdo409pR4elW/vt8Hu
-         1zUKF8vZjI5QktdGIMknqRWaFoWUFoLhBTghef3fpOqZNdUVYVzG4p6b7POlnFZuLXE0
-         mWZA==
-X-Forwarded-Encrypted: i=1; AJvYcCVoF/h/QQfINPn6CjG4sZ4/od6R5cjx6EVPeJnsnSbIHfID9iUCNFhVSzRmQU29KgWoQ9qtCMseJzTsocSla9SAx7akmYHcAM+2R0lm
-X-Gm-Message-State: AOJu0YyTrWVJU7uWeUhZXbe1xih89zYiX7X7bMGCGW8Cy8DEBx5Yx3VQ
-	BFhcCfunx7fBT4xINh3fi/7HtGWgX0E36zJA0Aj5MeY9/ce2uRspDs3By3CkzeyR19K3tTlozPC
-	m/cASCv8dV374lCLxHDCCrbbfdrp4DY1eK1uHKXF884+RxFXsEu2+RWlhBOTPzwryuv/a5LsE8+
-	O00Sk4p3SpgNYLfJcj/g6SQ2NZnxUWhgJ9cBrb
-X-Received: by 2002:adf:e511:0:b0:33d:5ae5:f356 with SMTP id j17-20020adfe511000000b0033d5ae5f356mr94668wrm.20.1708702327609;
-        Fri, 23 Feb 2024 07:32:07 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGLm2G66Tw4sgodVUIb9Jzv+TjNHaof3FgriahBQfesSvJsXof4hqEVZ82kEIdVUXv/1jq4kYYkRea+6qJNwbM=
-X-Received: by 2002:adf:e511:0:b0:33d:5ae5:f356 with SMTP id
- j17-20020adfe511000000b0033d5ae5f356mr94647wrm.20.1708702327323; Fri, 23 Feb
- 2024 07:32:07 -0800 (PST)
+	s=arc-20240116; t=1708702360; c=relaxed/simple;
+	bh=QwhJ/EhbFImaRF3xYH27wlph7G0Hv+gUoIttDJYn92g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rB67kS9OS6SChFk3PIG8ZLKHK0uVXvna7aGJ7TLvsVND8LPci2xiCkrSGHObZzulu3TmyMnJqsSQbEhsWDR7W6CpOlVd1uAj+6EspQhIOqn9CAS8KK/J0K0YIxUbMKOanMy+M4ZkybLtX5QPg+PY/AXEg11g61GOowbVtdHgz0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=peacevolution.org; spf=pass smtp.mailfrom=peacevolution.org; dkim=pass (1024-bit key) header.d=peacevolution.org header.i=@peacevolution.org header.b=CoCNqIXM; arc=none smtp.client-ip=206.189.193.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=peacevolution.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=peacevolution.org
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+	by a.peacevolution.org (Postfix) with ESMTPA id 03147473D0;
+	Fri, 23 Feb 2024 15:32:36 +0000 (UTC)
+Date: Fri, 23 Feb 2024 10:32:34 -0500
+From: Aren <aren@peacevolution.org>
+To: Lee Jones <lee@kernel.org>
+Cc: linux-kernel@vger.kernel.org, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, 
+	Jean-Jacques Hiblot <jjhiblot@traphandler.com>, Chen-Yu Tsai <wens@csie.org>, Ondrej Jirman <megi@xff.cz>, 
+	linux-sunxi@lists.linux.dev, Pavel Machek <pavel@ucw.cz>, 
+	linux-arm-kernel@lists.infradead.org, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	linux-leds@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>, Miles Alan <m@milesalan.com>, 
+	Samuel Holland <samuel@sholland.org>
+Subject: Re: (subset) [PATCH v2 1/4] leds: rgb: leds-group-multicolor: allow
+ leds to stay on in suspend
+Message-ID: <hjug4ilzxvtf7in64zw4jcjudzknqh2onvicd5cjuc3e47nl4w@3uiabmqehx5n>
+References: <20240206185400.596979-1-aren@peacevolution.org>
+ <170868429025.1582603.10651778411484887304.b4-ty@kernel.org>
+ <20240223103537.GA1585387@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240216155941.2029458-1-oliver.upton@linux.dev>
-In-Reply-To: <20240216155941.2029458-1-oliver.upton@linux.dev>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Fri, 23 Feb 2024 16:31:55 +0100
-Message-ID: <CABgObfYZBnTjXh4TqH77HjO3zTMRfekaorTUVqQoFOMPJLjJTg@mail.gmail.com>
-Subject: Re: [PATCH] KVM: Get rid of return value from kvm_arch_create_vm_debugfs()
-To: Oliver Upton <oliver.upton@linux.dev>
-Cc: kvm@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	aneesh.kumar@kernel.org, naveen.n.rao@linux.ibm.com, 
-	Sean Christopherson <seanjc@google.com>, linuxppc-dev@lists.ozlabs.org, 
-	linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, 
-	Marc Zyngier <maz@kernel.org>, Sebastian Ene <sebastianene@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240223103537.GA1585387@google.com>
+X-Spamd-Bar: /
+Authentication-Results: auth=pass smtp.auth=aren@peacevolution.org smtp.mailfrom=aren@peacevolution.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=peacevolution.org;
+	s=dkim; t=1708702357;
+	h=from:subject:date:message-id:to:cc:mime-version:content-type:content-transfer-encoding:in-reply-to:references;
+	bh=bw29ITqhOc5CeCA/jH5jxWpEfOX2iQUtCJTOD5NXUhg=;
+	b=CoCNqIXMagBCAcmjTHXGXkYAtAh0zjlljpz2ecGOWTzDEXfRdy9XzNeENx/jrVfOFS/3Uh
+	Bh9wbkJxKqXrTaacPJkPRP6DnmA9E3X0/t9Dizc79YsRX84jJVg8KlnStpJ2ArEIZL8uq7
+	siR4+baxF5E9ExTBYG/xrQJ6/pD4y9s=
 
-On Fri, Feb 16, 2024 at 5:00=E2=80=AFPM Oliver Upton <oliver.upton@linux.de=
-v> wrote:
->
-> The general expectation with debugfs is that any initialization failure
-> is nonfatal. Nevertheless, kvm_arch_create_vm_debugfs() allows
-> implementations to return an error and kvm_create_vm_debugfs() allows
-> that to fail VM creation.
->
-> Change to a void return to discourage architectures from making debugfs
-> failures fatal for the VM. Seems like everyone already had the right
-> idea, as all implementations already return 0 unconditionally.
->
-> Signed-off-by: Oliver Upton <oliver.upton@linux.dev>
+On Fri, Feb 23, 2024 at 10:35:37AM +0000, Lee Jones wrote:
+> On Fri, 23 Feb 2024, Lee Jones wrote:
+> 
+> > On Tue, 06 Feb 2024 13:13:17 -0500, Aren Moynihan wrote:
+> > > If none of the managed leds enable LED_CORE_SUSPENDRESUME, then we
+> > > shouldn't need to set it here. This makes it possible to use multicolor
+> > > groups with gpio leds that enable retain-state-suspended in the device
+> > > tree.
+> > > 
+> > > 
+> > 
+> > Applied, thanks!
+> > 
+> > [1/4] leds: rgb: leds-group-multicolor: allow leds to stay on in suspend
+> >       commit: 68552911e71d59e62dd5e50e9ac56ebfc32f0c71
+> 
+> Note that I changed a bunch of grammatical issues.
+> 
+> led  => LED
+> gpio => GPIO
+> 
+> Capitalised the first word of the comment, etc.
 
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+Awesome, thank you
+ - Aren
 
-Feel free to place it in kvm-arm.
-
-Paolo
-
+> -- 
+> Lee Jones [李琼斯]
 
