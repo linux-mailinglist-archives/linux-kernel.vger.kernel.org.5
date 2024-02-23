@@ -1,116 +1,130 @@
-Return-Path: <linux-kernel+bounces-79151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 181AF861E3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:57:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CA91861E48
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:59:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46F4D1C25140
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:57:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C4DB286961
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:59:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2B6D146E6E;
-	Fri, 23 Feb 2024 20:57:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28345146E93;
+	Fri, 23 Feb 2024 20:58:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="QDYA8WAx"
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SKJO1XJA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7091412A16D;
-	Fri, 23 Feb 2024 20:56:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A5EE12A16D;
+	Fri, 23 Feb 2024 20:58:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708721822; cv=none; b=O8XxSLjYtjxdXv+D5mD/H9TUwmMK0HF9v+ydkyjqFoRwONL7qsgdZGwsy9YSZsGzr9fKQDiwc7L2afcH2Of1BNCnsG9863mCrYKKRxODlcOioZGXw+20Ajo5KLaDCRWk/KHlA54OpiNdZilnN2p7h7gtkSrXUypOQilz+RPneD0=
+	t=1708721935; cv=none; b=qJI0VPNHy2CvIsu6fKiQwt9yW13t6uvvGJWLsPbAUcR2QsH8E6c1v3nTnE/1n3cHGxhkQ0ZirmYrBPLtpL0tRe2Aguu16vy6uCvgaG5D5Z+kjBZPYWQJSWK0WwPUfOXyma+hN4Cmn5FW/k2tDicaE5Dnj/u+s1inanuH49ARX6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708721822; c=relaxed/simple;
-	bh=CKZrZ6sYomS5NW1gYcqEpokW/ERpUA257FQDucHaWjg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NeoJg5sgI+LuMcUSeUMeeeege6DRTXAQqZgfIKQDbCH26xpUAnlP2mfde08HmNX39QdmmGY0YWt9RmyprJ7AL+LrzMtgdbvryRQKm3Et2tfrcWoXWFANo2mkT/zlaxS2jOOx2jsm4HcZg3go0TAZjjKuPPXqClw/583TDyct4vo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=QDYA8WAx; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id 377961C006B; Fri, 23 Feb 2024 21:56:57 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
-	t=1708721817;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=19PmzHinJBrlqK95eJjEcRGwQvI5W5s5uv/yUxNPc48=;
-	b=QDYA8WAxyJChGBr3RHP0k1/MDQiSnDHWQnghXsOWwRcRxIKvWBd2PzCJKaW4sW4YjLns43
-	voiF48OWAHvesB7KGc6XbfJCRYyCQks0w50tRTDYWVO+G/s9fSzzEaWNFnbgCNe8LUYAoT
-	eIcijqHdFA9axqOQSwFbKPuZzEFvhgI=
-Date: Fri, 23 Feb 2024 21:56:56 +0100
-From: Pavel Machek <pavel@ucw.cz>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-	linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Lee Jones <lee@kernel.org>
-Subject: Re: [PATCH v2 1/1] leds: expresswire: Don't use "proxy" headers
-Message-ID: <ZdkGmE2HFxXpIonR@duo.ucw.cz>
-References: <20240223203010.881065-1-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1708721935; c=relaxed/simple;
+	bh=ZnhJxh0/iM55/Ih9OWsBqkos+7Gz6O4NkpMi/NZLabM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LP2ZaF0YlpIwkFr++ni/9sSjqG5AOlJmwfQaIXBpCOlrKEfdTo2GyBKY2dEHL/haHJ5PLaqs3ADerMbQbQrMvY5Zigf+d7axPDuDsv4zDEhlCQyWsCZL1VWzJRXbqePtaSt503ygctliKBaBY6/1T6Rkwq2VQT+N+f+yx+TsPfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SKJO1XJA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAF24C433F1;
+	Fri, 23 Feb 2024 20:58:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708721934;
+	bh=ZnhJxh0/iM55/Ih9OWsBqkos+7Gz6O4NkpMi/NZLabM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=SKJO1XJAV3byIfprXimylg/0/cOa72YkVcW2E/j5DAtRQ+zhgVF1vWvSv+xxbwVLB
+	 InNYbiDaV89suN0QAjcUd/UltBHwWQPunJ6Pi7N9gyIXrxIDx7jjP38ZSIqzEAuSZh
+	 ukS7vWy+ohfhN66QthEMg2EsyGGwdO5E9pB7V8dIC2WbgA8ydnzsNREJUg5Erj6SMG
+	 pkPw4aOoxy9KPhMm9oZ1DLkBAWm5jPo7r8d0bVPfRF5OJ2Rkdc50s+HcMYvnwYUeaX
+	 PJQ8eWqOHfHynQKi3beH5yNloYu1EdTJoJbgxDLD6mv7w2MuAkBzi/z4YLPPBSlTGZ
+	 f4AEkzlhgVazQ==
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: linux-pci@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	"David E . Box" <david.e.box@linux.intel.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Tasev Nikola <tasev.stefanoska@skynet.be>,
+	Mark Enriquez <enriquezmark36@gmail.com>,
+	Thomas Witt <kernel@witt.link>,
+	Werner Sembach <wse@tuxedocomputers.com>,
+	Vidya Sagar <vidyas@nvidia.com>,
+	Kai-Heng Feng <kai.heng.feng@canonical.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Ricky Wu <ricky_wu@realtek.com>,
+	Mario Limonciello <mario.limonciello@amd.com>,
+	Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH v7 0/5] PCI/ASPM: Save/restore L1 PM Substates for suspend/resume
+Date: Fri, 23 Feb 2024 14:58:46 -0600
+Message-Id: <20240223205851.114931-1-helgaas@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2lTx/hEuWHPoqeWW"
-Content-Disposition: inline
-In-Reply-To: <20240223203010.881065-1-andriy.shevchenko@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 
+From: Bjorn Helgaas <bhelgaas@google.com>
 
---2lTx/hEuWHPoqeWW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is some rework of David's series to preserve ASPM L1 substate
+configuration across suspend/resume.
 
-Hi!
+We've had several attempts to make this work:
 
-> Update header inclusions to follow IWYU (Include What You Use)
-> principle.
->=20
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
-> v2: added one more missing header
->  drivers/leds/leds-expresswire.c  | 4 ++++
->  include/linux/leds-expresswire.h | 4 +++-
->  2 files changed, 7 insertions(+), 1 deletion(-)
->=20
+  (unlabeled): https://lore.kernel.org/r/20240128233212.1139663-1-david.e.box@linux.intel.com
+  v5: https://lore.kernel.org/r/20231221011250.191599-1-david.e.box@linux.intel.com
+  v4: https://lore.kernel.org/all/20231002070044.2299644-1-mika.westerberg@linux.intel.com/
+  v3: https://lore.kernel.org/linux-pci/20230925074636.2893747-1-mika.westerberg@linux.intel.com/
+  v2: https://lore.kernel.org/linux-pci/20230911073352.3472918-1-mika.westerberg@linux.intel.com/
+  v1: https://lore.kernel.org/linux-pci/20230627062442.54008-1-mika.westerberg@linux.intel.com/
 
-> diff --git a/include/linux/leds-expresswire.h b/include/linux/leds-expres=
-swire.h
-> index 3c61902ccac8..a422921f4159 100644
-> --- a/include/linux/leds-expresswire.h
-> +++ b/include/linux/leds-expresswire.h
-> @@ -8,7 +8,9 @@
->  #ifndef _LEDS_EXPRESSWIRE_H
->  #define _LEDS_EXPRESSWIRE_H
-> =20
-> -#include <linux/gpio/consumer.h>
-> +#include <linux/types.h>
-> +
-> +struct gpio_desc;
+The most recent posting is the unlabeled one mentioned above, and I'm
+calling it v6 and this rework v7.
 
-If include tweak means you need to declare struct, is it ian
-improvement?
+Changes since the unlabeled v6:
 
-BR,
-								Pavel
---=20
-People of Russia, stop Putin before his war on Ukraine escalates.
+  - Rename pci_save_aspm_state() to pci_save_aspm_l1ss_state() (this
+    is the reason for opening this again, because Vidya's patch [1]
+    had to do some incidental renaming).
 
---2lTx/hEuWHPoqeWW
-Content-Type: application/pgp-signature; name="signature.asc"
+  - Rename pcie_restore_aspm_l1ss() to pci_restore_aspm_l1ss_state()
+    to match.
 
------BEGIN PGP SIGNATURE-----
+  - Move the PCI_EXP_LNKCTL_ASPMC from pci_restore_aspm_state() to
+    pci_restore_pcie_state() so both writes are in the same place.
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZdkGmAAKCRAw5/Bqldv6
-8kAvAJ0UQUgcqts8MRgtY+0Rml1psMSvWQCgnUAbxDekDN5xR7B5siUnzJgeMIU=
-=ENYA
------END PGP SIGNATURE-----
+  - Rename pci_aspm_get_l1ss() to pci_configure_aspm_l1ss() and add
+    the save_buffer there as well.
 
---2lTx/hEuWHPoqeWW--
+  - Split [1/5] into two patches: move pci_configure_ltr() and
+    pci_bridge_reconfigure_ltr() to aspm.c, and build aspm.c
+    unconditionally.
+
+  - Squash [2/5] and [3/5] since [2/5] didn't add any functionality
+    itself so they seem like a single logical change.
+
+[1] https://lore.kernel.org/r/20230125133830.20620-1-vidyas@nvidia.com
+
+David E. Box (5):
+  PCI/ASPM: Move pci_configure_ltr() to aspm.c
+  PCI/ASPM: Always build aspm.c
+  PCI/ASPM: Move pci_save_ltr_state() to aspm.c
+  PCI/ASPM: Save L1 PM Substates Capability for suspend/resume
+  PCI/ASPM: Call pci_save_ltr_state() from pci_save_pcie_state()
+
+ drivers/pci/pci.c         |  89 ++++------------
+ drivers/pci/pci.h         |  13 ++-
+ drivers/pci/pcie/Makefile |   2 +-
+ drivers/pci/pcie/aspm.c   | 215 ++++++++++++++++++++++++++++++++++++++
+ drivers/pci/probe.c       |  62 +----------
+ include/linux/pci.h       |   2 +-
+ 6 files changed, 252 insertions(+), 131 deletions(-)
+
+-- 
+2.34.1
+
 
