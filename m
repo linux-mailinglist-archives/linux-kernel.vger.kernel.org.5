@@ -1,140 +1,160 @@
-Return-Path: <linux-kernel+bounces-79203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79204-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA701861EE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:23:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EFE9861EE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:24:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1805B1C23618
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:23:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C0701F26411
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:24:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AF0214F963;
-	Fri, 23 Feb 2024 21:22:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D06131493B1;
+	Fri, 23 Feb 2024 21:22:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Pi0TsOEr"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O2quoiZY"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57E8F14EFE0
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 21:22:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E4AA1DDC3;
+	Fri, 23 Feb 2024 21:22:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708723326; cv=none; b=E/NwWu71NKlFF3UzBFYnxmruyBmbk+oFP5CqbQeP6F/Ir1TX4pHD+QTBgaGYDPTa1onFuh5xG3H9WVWZ+fdlJGQJQOIZhlkWlfeHNOgPhJnB6yF5afTsvukGwwOG4xpnKYhqPZKE+rnuaUOwF0evx385Kxl2GHBf17dFNIJwfDY=
+	t=1708723374; cv=none; b=CtFUqnZ5x/i8fHA6KnA/6iN13Mt9efV3m0IouhYvjVAWlUfLC4nGuiKRTuHg8LYRId0B1L7qwpqkGFbOyeh7h2Zw5eX3ValNMOxCbImmNC9x7TgtfkyLmbNWSZbutNANF4MlBeI0IcTKJ2VJBkyezBz91LoICcAPN8Xo5sKpK70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708723326; c=relaxed/simple;
-	bh=/vlAxfs5pRi3jedgeW7eSy/wWzvCwowVIaHNbXcWUPw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Mkw6qf2mmk0DFzoRJA3BXgH+KbDhtwE6609qx4wtfsCfFs+hX2lRiuLIPxjNulSPbvEqQ3/QUF+z5qvX19+CboluQKy3us+YNQubzyH4YlQcZT6HFeu2bUxsZcNY6OMmGTXia/t7U+LkLpF7E7Cbc596UGUIw7/4+yKzMMfM7j4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Pi0TsOEr; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5643eccad0bso1975092a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:22:04 -0800 (PST)
+	s=arc-20240116; t=1708723374; c=relaxed/simple;
+	bh=D9xlkAwetO2YYsp4AzG3YrTgZ6UnVD1pIb+/R0M9yxU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Yj+McLpI1k0DtHEsR237Xpr/OUhNUUlZnJUl2L424EMs2nzsTcaWPSOgjjKeB5Uv85ryJlhxm8KSmloyhdP+KL4MQLqhJXqAMFZt2UtcFUqwqDmAhv6DTvn3NhIqjl6AsmLF1NR5cBM2Et47sYPJxxA7iJVaXKTW4m9Lnziwt88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O2quoiZY; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33d0a7f2424so606389f8f.0;
+        Fri, 23 Feb 2024 13:22:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708723323; x=1709328123; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=z1FkVd0ZOd4HuLhR6rsPDjyD4D3QNLPmtuC+OU6cTVA=;
-        b=Pi0TsOErnHXISUgj31PwEukAqrDNBomxahi38SV4kDor6C0K+REWKsTPcjYNdV8GSP
-         uEOzz/4amAc0QybviiDDv5rL9+APLj68FXlaVhoafYv7H7FSH/qkdYtD5eQyt9EpTGxt
-         afcyfsfcJq4ZgKsLVPMyJ2/zgGGcZsrs7UwFCxqnZQkvtYaL4Re04QVLUcybj0h41ELG
-         FSW6CVtauvPTW93rtfNHPpzQ0klfmVpq02QrA6t+pg1Tpo23nFQ1h6taHoKTmjQUs80F
-         6XluZN0rXJe6YaK0JsEoePDkXgPp4wOgpMnPbTLlE0cavISD+ScmzVdl9UNLK56jiLXB
-         0GYg==
+        d=gmail.com; s=20230601; t=1708723371; x=1709328171; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FighQhaXjcHvzu/cP/qcaVJd6ZUW+O6jZf8uJbTD2qg=;
+        b=O2quoiZYslg1y0C5mMQHU1y3J2iUBMxdsgxy0W2Hk76Brzj5DrhGjUqIanNSS6K/Os
+         3SmKU9aUWk22o7bh14DURBbd0SQzPqTFZC3DkLYxdZPys27+wfJPYPdjLNSIK/DISLIL
+         cSDqokRsVPvnlVHvRcufjcnwCgJwPjMqOBPlCzFLyBAcsvbHG0fl9TYhsGq/XbFkLm6S
+         Yzysz8uOSxX8cezfzFnyBIngvyWzOUkxu1gUirvdEDs4HGx26he4pFqeoLlMq7W1ZN6T
+         zNeS2IKnG/0p8/QlxHxFS0+gWy8Xy0Fm6rpwgGoYSo/s1LFHgeadi0vl7sXqZcvT6SYt
+         B1jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708723323; x=1709328123;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z1FkVd0ZOd4HuLhR6rsPDjyD4D3QNLPmtuC+OU6cTVA=;
-        b=dmI16wGzvVkOmgu3pJszelA9pzOyhxQpUodFR59gHPM7h0Ff0J/TIYOd4jO7NzDm7p
-         s79a7qjQ/DDl3exUnVo310yeZFfygaax2tcjOKHbvafvp6JxUM4KbPYQljdEj+8RlFMJ
-         2yobDBFrOuiPIWXfSK6iL7mGdEC88EowXRR4DdvDO4uhyICAdT9hBdiZMu4Etnn/CHuZ
-         ddpJzYhPjbG67rfFkv1H/SoGAlCfrceOSTv863DsETivtDm9qDBIMCXY8pduYmMCUzOT
-         l5OZlv2M8wnAyk4DZqDLyganq1jrCEBCBgN9yyBn49V08ZBBIhopzWoaDWFTmacTgbmU
-         ejEw==
-X-Forwarded-Encrypted: i=1; AJvYcCUYAQhfgmzbZKsYDSGgE9bT0AQrednEFMI+d/dYRTuAs0DwlflracNjF6er5n93bcb4G3KEsCP3xUhndqS+O5QfHC+GPln6ArXIHmWL
-X-Gm-Message-State: AOJu0YzEj0SBGNWzc5LWoxyCXO9LEu5Gub4j+eWfYwKlb8lJN8tKsjy6
-	o8/dB/dzfHkHNSpkSEfMQl0NKrgygjyiFIoBdCacl+fOR6y83TPI0KH7eYq5HCg=
-X-Google-Smtp-Source: AGHT+IGOTeJ72nc86iYe9aCP0RR8+Z6aDoD/m/NIKZ620up7wC2li1nmXfS7jDE9C25SuU9Ep338Kg==
-X-Received: by 2002:a17:906:f215:b0:a36:5079:d6cb with SMTP id gt21-20020a170906f21500b00a365079d6cbmr656216ejb.56.1708723322827;
-        Fri, 23 Feb 2024 13:22:02 -0800 (PST)
-Received: from [10.167.154.1] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id mj8-20020a170906af8800b00a3ee9305b02sm4091226ejb.20.2024.02.23.13.22.00
+        d=1e100.net; s=20230601; t=1708723371; x=1709328171;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FighQhaXjcHvzu/cP/qcaVJd6ZUW+O6jZf8uJbTD2qg=;
+        b=ACwWfzaT9zpB0NOu/0buJ39VHSZryCl2S0cHs3AiDA9r0uGck2OSpf1LO5KTQL5sAR
+         pXar4xh5lhplwelTSI071mr0EZFGLVfFABRXh2drqqZqlESwqamC+gjKi8lH/52y24Q0
+         KcRzFVR6qpicFtYQFN2d0JqYOwxwv0ivu5r/K2HbJCENkJuEWQcTEoAO04zMkFsXLst2
+         8YksjaP+DXoNWT1X8/xdlEFJgC1TFJnAzOZxjE8phJ+7OfuboFLstoTpbjq8xRDAYcr/
+         cZQUy+zjjee2Cw1M0K1FLXrdBTPJmQesaNyAJnnKAZKeDrXYGVJJVVrHS1DPgLLT+Tx2
+         m08A==
+X-Forwarded-Encrypted: i=1; AJvYcCX73zVzPwNydoSczZcgnjVXMHhPJK6iyyqjFxx0NaLwjXq0t+2ZMAnxgKxwUtf10xHKiZaWOEJbXSxVuUxV7HWu+mxvu/vPjEGLy4lofxnkB2uDVVCNpNldk1z5hmsIjz3XZbnT8qUShxo=
+X-Gm-Message-State: AOJu0Yxp8lnELeRQiYwQ9YBHBJLwA7ozF6NB49le7lyFGQIQfW5A5ved
+	fzi46wOA4cEGAmL/n9QW8qgUD3RZHuGn1FPrhdj14y79SNpXYUom
+X-Google-Smtp-Source: AGHT+IFDBAaVDq0LkSeFnlg7HBYqY64qEoifclU9wuWbudpVFSVqQQA6UsymPdnn6EifuGspZgNgMA==
+X-Received: by 2002:adf:f98a:0:b0:33d:adce:568a with SMTP id f10-20020adff98a000000b0033dadce568amr606581wrr.33.1708723370468;
+        Fri, 23 Feb 2024 13:22:50 -0800 (PST)
+Received: from m2 (89-139-223-180.bb.netvision.net.il. [89.139.223.180])
+        by smtp.gmail.com with ESMTPSA id y10-20020a5d470a000000b0033d640c8942sm4062605wrq.10.2024.02.23.13.22.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 13:22:02 -0800 (PST)
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Date: Fri, 23 Feb 2024 22:21:43 +0100
-Subject: [PATCH v2 7/7] arm64: dts: qcom: qrb2210-rb1: Enable the GPU
+        Fri, 23 Feb 2024 13:22:49 -0800 (PST)
+Date: Fri, 23 Feb 2024 23:22:47 +0200
+From: Michael Zaidman <michael.zaidman@gmail.com>
+To: chrysh@christina-quast.de, daniel.beer@igorinstitute.com,
+	jikos@kernel.org, michael.zaidman@gmail.com
+Cc: linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+	linux-serial@vger.kernel.org, ilpo.jarvinen@linux.intel.com,
+	johan@kernel.org, gregkh@linuxfoundation.org, equinox@diac24.net
+Subject: Re: [PATCH v1 19/19] hid-ft260: uart: improve write performance
+Message-ID: <ZdkMpwA1ZPWRUvWM@m2>
+References: <20240210215147.77629-1-michael.zaidman@gmail.com>
+ <20240210215147.77629-20-michael.zaidman@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240219-topic-rb1_gpu-v2-7-2d3d6a0db040@linaro.org>
-References: <20240219-topic-rb1_gpu-v2-0-2d3d6a0db040@linaro.org>
-In-Reply-To: <20240219-topic-rb1_gpu-v2-0-2d3d6a0db040@linaro.org>
-To: Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, 
- Joerg Roedel <joro@8bytes.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, Rob Clark <robdclark@gmail.com>, 
- Abhinav Kumar <quic_abhinavk@quicinc.com>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
- linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Konrad Dybcio <konradybcio@kernel.org>, linux-arm-msm@vger.kernel.org, 
- linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org, 
- freedreno@lists.freedesktop.org, Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708723303; l=915;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=/vlAxfs5pRi3jedgeW7eSy/wWzvCwowVIaHNbXcWUPw=;
- b=4NlbjUV1GBwZhD/RgzQVAtB0KvTlyLizT1CamJiEGMHqdxMJ9uLicJBWYxiAk+HFlJirPhazp
- Vg14+VV3wZTAdFOGnvbdNKKrCCVqvlFJbUo88fKB1HZyJF7PN0UX4Z8
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240210215147.77629-20-michael.zaidman@gmail.com>
 
-Enable the A702 GPU (also marketed as "3D accelerator by qcom [1], lol).
+On Sat, Feb 10, 2024 at 11:51:47PM +0200, Michael Zaidman wrote:
+> Tx performance with the current buffer size of 256 bytes is lower when
+> the data length exceeds the xmit buf size.
+> 
+> [134331.147978] ft260_uart_write: count: 288, len: 256
+> [134331.157945] ft260_uart_write: count: 32, len: 32
+> [134331.159977] ft260_uart_write: count: 288, len: 256
+> [134331.169990] ft260_uart_write: count: 32, len: 32
+> 
+> 1. Increase the xmit buffer size to page size as used in the serial core
+> and other tty drivers.
+> 
+> 2. Remove the xmit buffer fulness against the watermark checking and the
+> tty_wakeup calling in the ft260_uart_transmit_chars routine. This code is
+> taken from other drivers, but other drivers may call the routine from the
+> interrupt context. In our case, this condition is always True since xmit
+> buffer filling and emptying are serialized and done synchronously.
+> 
+> Tested with picocom ASCII file transfer by 288-byte chunks at 921600
+> bauds rate with above 20% performance improvement.
+> 
+> Before:
+> 2821.7 Kbytes transferred at 47367 CPS... Done.
+> 
+> After:
+> 2821.7 Kbytes transferred at 57788 CPS... Done.
+> 
 
-[1] https://docs.qualcomm.com/bundle/publicresource/87-61720-1_REV_A_QUALCOMM_ROBOTICS_RB1_PLATFORM__QUALCOMM_QRB2210__PRODUCT_BRIEF.pdf
+Besides the performance improvement, it fixes the bug of outputting
+characters to the local terminal when local echo is disabled and
+printing every character twice with local echo enabled.
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- arch/arm64/boot/dts/qcom/qrb2210-rb1.dts | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/qrb2210-rb1.dts b/arch/arm64/boot/dts/qcom/qrb2210-rb1.dts
-index 6e9dd0312adc..c9abca5a7e39 100644
---- a/arch/arm64/boot/dts/qcom/qrb2210-rb1.dts
-+++ b/arch/arm64/boot/dts/qcom/qrb2210-rb1.dts
-@@ -199,6 +199,14 @@ &gpi_dma0 {
- 	status = "okay";
- };
- 
-+&gpu {
-+	status = "okay";
-+
-+	zap-shader {
-+		firmware-name = "qcom/qcm2290/a702_zap.mbn";
-+	};
-+};
-+
- &i2c2 {
- 	clock-frequency = <400000>;
- 	status = "okay";
-
--- 
-2.43.2
-
+> Signed-off-by: Michael Zaidman <michael.zaidman@gmail.com>
+> ---
+>  drivers/hid/hid-ft260.c | 11 +++--------
+>  1 file changed, 3 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/hid/hid-ft260.c b/drivers/hid/hid-ft260.c
+> index 6b172bfa4f98..1188b8e09938 100644
+> --- a/drivers/hid/hid-ft260.c
+> +++ b/drivers/hid/hid-ft260.c
+> @@ -308,8 +308,7 @@ enum {
+>  #define FT260_UART_EN_PW_SAVE_BAUD	(4800)
+>  
+>  #define UART_COUNT_MAX (4) /* Number of supported UARTs */
+> -#define XMIT_FIFO_SIZE (256)
+> -#define TTY_WAKEUP_WATERMARK (XMIT_FIFO_SIZE / 2)
+> +#define XMIT_FIFO_SIZE (PAGE_SIZE)
+>  
+>  static const struct hid_device_id ft260_devices[] = {
+>  	{ HID_USB_DEVICE(USB_VENDOR_ID_FUTURE_TECHNOLOGY,
+> @@ -1211,7 +1210,7 @@ static int ft260_uart_transmit_chars(struct ft260_device *port)
+>  
+>  		len = kfifo_out_spinlocked(xmit, rep->data, len, &port->xmit_fifo_lock);
+>  
+> -		ret = ft260_hid_output_report(hdev, (u8 *)rep, len + sizeof(*rep));
+> +		ret = ft260_hid_output_report(hdev, (u8 *)rep, len + 2);
+>  		if (ret < 0)
+>  			goto tty_out;
+>  
+> @@ -1219,10 +1218,6 @@ static int ft260_uart_transmit_chars(struct ft260_device *port)
+>  		port->icount.tx += len;
+>  	} while (data_len > 0);
+>  
+> -	len = kfifo_len(xmit);
+> -	if ((XMIT_FIFO_SIZE - len) > TTY_WAKEUP_WATERMARK)
+> -		tty_wakeup(tty);
+> -
+>  	ret = 0;
+>  
+>  tty_out:
 
