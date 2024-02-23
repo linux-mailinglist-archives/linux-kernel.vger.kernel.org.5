@@ -1,268 +1,108 @@
-Return-Path: <linux-kernel+bounces-77969-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 281CE860D7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:05:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52CBA860DD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:19:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93346B238DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:05:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C088284306
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:19:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24C7724B21;
-	Fri, 23 Feb 2024 09:04:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GvCH4LoJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D3661864C;
-	Fri, 23 Feb 2024 09:04:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9B385CDCE;
+	Fri, 23 Feb 2024 09:19:29 +0000 (UTC)
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE4A75C61F;
+	Fri, 23 Feb 2024 09:19:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708679085; cv=none; b=H5jJSWWwxC2jvbIcT//XP2HioOEV0VSPznUeV9bxlozmw1LyR3bs7PBqCbRZhLtTDvoy/Zs9l3dShuS9rL2a24bKdPYmeewbScx/j4JYSM1fLJZXMYyHMJoq9QbClzPDYHRhm2nvLA4Bf4ANaozh5GcduFW/XL+IIsrPnZS/vXA=
+	t=1708679969; cv=none; b=Gd3XEreIpvCUgMy62kxyTdbkrXLyyzmJAWuKjPa43op9w7EH7Orf9/dXFJfOhkz7xRd8i8S+XBa2QH8crG+YiBTihrMeWAMbf7ONBBdnv94EBswyi4jaIxmjONF0us5K4vIH2ZCnUujEOlR71rlHHx9G69h8io5vSsjG73eSOpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708679085; c=relaxed/simple;
-	bh=7kFRhHwFlVphxZTXGnqN85XzeoEezZvAaghzbI2ztG8=;
+	s=arc-20240116; t=1708679969; c=relaxed/simple;
+	bh=6CMFof3aEOjiVtZ6J4iQukC3w3fqUlorNiOBhG5SfRM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gn1YgCUIUesV+TSQYHWRRzFJACfYcBKyFRA4L8B8CydByPFb90Udm0MNXtYEo75vJLd+hh86VK3KFn+3RTVzJA/sL0cIS+Avqra7VadtQQ8V/ecxVKxi/S/TYZWrV9/I1uvZg7pRJHf5GSym6ZY2/JsPdJ2KCGJjArjC36uThus=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GvCH4LoJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C152C433F1;
-	Fri, 23 Feb 2024 09:04:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708679084;
-	bh=7kFRhHwFlVphxZTXGnqN85XzeoEezZvAaghzbI2ztG8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GvCH4LoJMMNaIT0igFhCk4k0LdsCvF1yK9NRBHwdsShWV4oHubDamxW9SXY8qzUad
-	 NeFnqfJCvolHAKGf3LvVgOdBLFmDx2lA3/gzvxQYThNEge7HWhRW5AotDuEvmoDE/p
-	 cgiKuublpFC+Tr4h7MBN8WdkLZBdyjJJgkeM+sXoBtf0jxIgaMeSYjJOFVgyVfz6c7
-	 V6bb/pIXGRES7bb2d4FADw9XsFf+NBL5ykf8euOtnDkn2A+unTIcyqTJ7+26szPImH
-	 1L/efaXcq/x/624shWTxOeVy44Rz4//9uzkzgt9m4/ROVeNU0J6FVvXRQ70GlCxYCi
-	 Bm81xRtbHq9NA==
-Date: Fri, 23 Feb 2024 10:04:37 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-Cc: Serge Hallyn <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>, 
-	Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
-	Casey Schaufler <casey@schaufler-ca.com>, Mimi Zohar <zohar@linux.ibm.com>, 
-	Roberto Sassu <roberto.sassu@huawei.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, 
-	Eric Snowberg <eric.snowberg@oracle.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Miklos Szeredi <miklos@szeredi.hu>, 
-	Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, audit@vger.kernel.org, selinux@vger.kernel.org, 
-	linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH v2 20/25] ovl: add fscaps handlers
-Message-ID: <20240223-geldhahn-anklicken-e118fa7ad4c0@brauner>
-References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
- <20240221-idmap-fscap-refactor-v2-20-3039364623bd@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=TFnvUCXRlwTDURFCjOl+oMKx1Q0/W7y6I0Xa4KneWgUmV+YLftv59A59ObTVZBPRzjM8zbjch14Atrz1vpyq3rC4DodFE6NSiNuvVOIlSqxgB5cvIAjFc00u/kVpqaTfBygtTr+8sMJoQurzy2yV+RvtDWTpPDHy9W1HsPw67fg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1rdRi6-0003J9-00; Fri, 23 Feb 2024 10:19:14 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id 089C8C0267; Fri, 23 Feb 2024 10:06:33 +0100 (CET)
+Date: Fri, 23 Feb 2024 10:06:33 +0100
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+	Stephen Rothwell <sfr@rothwell.id.au>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-mips@vger.kernel.org, linux-serial@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] mips: cm: Add CM GCR and L2-sync base address
+ getters declarations
+Message-ID: <ZdhgGRknaFmxKvfI@alpha.franken.de>
+References: <20240215171740.14550-1-fancer.lancer@gmail.com>
+ <20240215171740.14550-3-fancer.lancer@gmail.com>
+ <ZdTgSZRTDkakekkd@alpha.franken.de>
+ <difioxc7b7e2ic2p4om36l6vu4vkud6qa6t3aeikxzkhlqhgqb@zsx3dmjcofw4>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240221-idmap-fscap-refactor-v2-20-3039364623bd@kernel.org>
+In-Reply-To: <difioxc7b7e2ic2p4om36l6vu4vkud6qa6t3aeikxzkhlqhgqb@zsx3dmjcofw4>
 
-On Wed, Feb 21, 2024 at 03:24:51PM -0600, Seth Forshee (DigitalOcean) wrote:
-> Add handlers which read fs caps from the lower or upper filesystem and
-> write/remove fs caps to the upper filesystem, performing copy-up as
-> necessary.
+On Wed, Feb 21, 2024 at 09:39:58PM +0300, Serge Semin wrote:
+> On Tue, Feb 20, 2024 at 06:24:25PM +0100, Thomas Bogendoerfer wrote:
+> > On Thu, Feb 15, 2024 at 08:17:27PM +0300, Serge Semin wrote:
+> > > Based on the design pattern utilized in the CM GCR and L2-sync base
+> > > address getters implementation the platform-specific code is capable to
+> > > re-define the getters and re-use the weakly defined initial versions. But
+> > > since the re-definition is supposed to be done in another source file the
+> > > interface methods have been globally defined which in its turn causes the
+> > > "no previous prototype" warning printed should the re-definition is
+> > > finally introduced. Since without the global declarations the pattern can
+> > > be considered as incomplete and causing the warning printed, fix it by
+> > > providing the respective methods prototype declarations in
+> > > "arch/mips/include/asm/mips-cm.h".
+> > > 
+> > > Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+> > > 
+> > > ---
+> > > 
+> > > Note as I mentioned in the previous patch, since the weak implementation
+> > > of the getters isn't utilized other than as a default implementation of
+> > > the original methods, we can convert the denoted pattern to a simple
+> > > __weak attributed methods. Let me know if that would be more preferable.
+> > 
 > 
-> While fscaps only really make sense on regular files, the general policy
-> is to allow most xattr namespaces on all different inode types, so
-> fscaps handlers are installed in the inode operations for all types of
-> inodes.
+> > how about simply remove __mips_cm_l2sync_phys_base() and do everything
+> > via mips_cm_phys_base(). And at the moment without anyone overriding
+> > mips_cm_phys_base I tend to keep static without __weak. If someone
+> > needs, we can change it. Does this make sense ?
 > 
-> Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
-> ---
->  fs/overlayfs/dir.c       |  2 ++
->  fs/overlayfs/inode.c     | 72 ++++++++++++++++++++++++++++++++++++++++++++++++
->  fs/overlayfs/overlayfs.h |  5 ++++
->  3 files changed, 79 insertions(+)
-> 
-> diff --git a/fs/overlayfs/dir.c b/fs/overlayfs/dir.c
-> index 0f8b4a719237..4ff360fe10c9 100644
-> --- a/fs/overlayfs/dir.c
-> +++ b/fs/overlayfs/dir.c
-> @@ -1307,6 +1307,8 @@ const struct inode_operations ovl_dir_inode_operations = {
->  	.get_inode_acl	= ovl_get_inode_acl,
->  	.get_acl	= ovl_get_acl,
->  	.set_acl	= ovl_set_acl,
-> +	.get_fscaps	= ovl_get_fscaps,
-> +	.set_fscaps	= ovl_set_fscaps,
->  	.update_time	= ovl_update_time,
->  	.fileattr_get	= ovl_fileattr_get,
->  	.fileattr_set	= ovl_fileattr_set,
-> diff --git a/fs/overlayfs/inode.c b/fs/overlayfs/inode.c
-> index c63b31a460be..7a8978ea6fe1 100644
-> --- a/fs/overlayfs/inode.c
-> +++ b/fs/overlayfs/inode.c
-> @@ -568,6 +568,72 @@ int ovl_set_acl(struct mnt_idmap *idmap, struct dentry *dentry,
->  }
->  #endif
->  
-> +int ovl_get_fscaps(struct mnt_idmap *idmap, struct dentry *dentry,
-> +		   struct vfs_caps *caps)
-> +{
-> +	int err;
-> +	const struct cred *old_cred;
-> +	struct path realpath;
-> +
-> +	ovl_path_real(dentry, &realpath);
-> +	old_cred = ovl_override_creds(dentry->d_sb);
-> +	err = vfs_get_fscaps(mnt_idmap(realpath.mnt), realpath.dentry, caps);
+> To be honest my arch code (not submitted yet) do override the
+> mips_cm_l2sync_phys_base() method. The memory just behind the CM2
 
-Right, vfs_get_fscaps() returns a struct vfs_caps which contains a
-vfs{g,u}id and has the lower/upper layer's idmap taken into account.
+that's fine, I just wanted to know a reason for having it provided as
+weak symbol.
 
-That confused me at first because vfs_get_acl() returns a struct
-posix_acl which contains k{g,u}id.
+> What about instead of that I'll just convert both mips_cm_phys_base()
+> and mips_cm_l2sync_phys_base() to being defined with the underscored
+> methods body and assign the __weak attribute to them?
 
-Reading through this made me realize that we need a few more words about
-the translations. The reason is that we do distinct things for POSIX
-ACLs and for fscaps. For POSIX ACLs when we call vfs_get_acl() what we
-get is a struct posix_acl which contains k{g,u}id_t types. Because
-struct posix_acl is cached filesytems wide and thus shared among
-concurrent retrievers from different mounts with different idmappings.
-Which means that we can't put vfs{g,u}id_t types in there. Instead we
-perform translations on the fly. We do that in the VFS during path
-lookup and we do that for overlayfs when it retrieves POSIX ACLs.
+works for me ;-) I'll pick patch 3/4 of this series, so no need to
+resend them.
 
-However, for fscaps we seem to do it differently because they're not
-cached which is ok because they don't matter during path lookup as POSIX
-ACLs do. So performance here doesn't matter too much. But that means
-overall that the translations are quite distinct. And that gets
-confusing when we have a stacking filesystem in the mix where we have to
-take into account the privileges of the mounter of the overlayfs
-instance and the idmap of the lower/upper layer.
+Thomas.
 
-I only skimmed my old commit but I think that commit 0c5fd887d2bb ("acl: move
-idmapped mount fixup into vfs_{g,s}etxattr()") contains a detailed explanation
-of this as I see:
-
-    > For POSIX ACLs we need to do something similar. However, in contrast to fscaps
-    > we cannot apply the fix directly to the kernel internal posix acl data
-    > structure as this would alter the cached values and would also require a rework
-    > of how we currently deal with POSIX ACLs in general which almost never take the
-    > filesystem idmapping into account (the noteable exception being FUSE but even
-    > there the implementation is special) and instead retrieve the raw values based
-    > on the initial idmapping.
-
-Could you please add a diagram/explanation illustrating the translations for
-fscaps in the general case and for stacking filesystems? It doesn't really
-matter too much where you put it. Either add a section to
-Documentation/filesystems/porting.rst or add a section to
-Documentation/filesystems/idmapping.rst.
-
-> +	revert_creds(old_cred);
-> +	return err;
-> +}
-> +
-> +int ovl_set_fscaps(struct mnt_idmap *idmap, struct dentry *dentry,
-> +		   const struct vfs_caps *caps, int setxattr_flags)
-> +{
-> +	int err;
-> +	struct ovl_fs *ofs = OVL_FS(dentry->d_sb);
-> +	struct dentry *upperdentry = ovl_dentry_upper(dentry);
-> +	struct dentry *realdentry = upperdentry ?: ovl_dentry_lower(dentry);
-> +	const struct cred *old_cred;
-> +
-> +	/*
-> +	 * If the fscaps are to be remove from a lower file, check that they
-> +	 * exist before copying up.
-> +	 */
-> +	if (!caps && !upperdentry) {
-> +		struct path realpath;
-> +		struct vfs_caps lower_caps;
-> +
-> +		ovl_path_lower(dentry, &realpath);
-> +		old_cred = ovl_override_creds(dentry->d_sb);
-> +		err = vfs_get_fscaps(mnt_idmap(realpath.mnt), realdentry,
-> +				     &lower_caps);
-> +		revert_creds(old_cred);
-> +		if (err)
-> +			goto out;
-> +	}
-> +
-> +	err = ovl_want_write(dentry);
-> +	if (err)
-> +		goto out;
-> +
-> +	err = ovl_copy_up(dentry);
-> +	if (err)
-> +		goto out_drop_write;
-> +	upperdentry = ovl_dentry_upper(dentry);
-> +
-> +	old_cred = ovl_override_creds(dentry->d_sb);
-> +	if (!caps)
-> +		err = vfs_remove_fscaps(ovl_upper_mnt_idmap(ofs), upperdentry);
-> +	else
-> +		err = vfs_set_fscaps(ovl_upper_mnt_idmap(ofs), upperdentry,
-> +				     caps, setxattr_flags);
-> +	revert_creds(old_cred);
-> +
-> +	/* copy c/mtime */
-> +	ovl_copyattr(d_inode(dentry));
-> +
-> +out_drop_write:
-> +	ovl_drop_write(dentry);
-> +out:
-> +	return err;
-> +}
-> +
->  int ovl_update_time(struct inode *inode, int flags)
->  {
->  	if (flags & S_ATIME) {
-> @@ -747,6 +813,8 @@ static const struct inode_operations ovl_file_inode_operations = {
->  	.get_inode_acl	= ovl_get_inode_acl,
->  	.get_acl	= ovl_get_acl,
->  	.set_acl	= ovl_set_acl,
-> +	.get_fscaps	= ovl_get_fscaps,
-> +	.set_fscaps	= ovl_set_fscaps,
->  	.update_time	= ovl_update_time,
->  	.fiemap		= ovl_fiemap,
->  	.fileattr_get	= ovl_fileattr_get,
-> @@ -758,6 +826,8 @@ static const struct inode_operations ovl_symlink_inode_operations = {
->  	.get_link	= ovl_get_link,
->  	.getattr	= ovl_getattr,
->  	.listxattr	= ovl_listxattr,
-> +	.get_fscaps	= ovl_get_fscaps,
-> +	.set_fscaps	= ovl_set_fscaps,
->  	.update_time	= ovl_update_time,
->  };
->  
-> @@ -769,6 +839,8 @@ static const struct inode_operations ovl_special_inode_operations = {
->  	.get_inode_acl	= ovl_get_inode_acl,
->  	.get_acl	= ovl_get_acl,
->  	.set_acl	= ovl_set_acl,
-> +	.get_fscaps	= ovl_get_fscaps,
-> +	.set_fscaps	= ovl_set_fscaps,
->  	.update_time	= ovl_update_time,
->  };
->  
-> diff --git a/fs/overlayfs/overlayfs.h b/fs/overlayfs/overlayfs.h
-> index ee949f3e7c77..4f948749ee02 100644
-> --- a/fs/overlayfs/overlayfs.h
-> +++ b/fs/overlayfs/overlayfs.h
-> @@ -781,6 +781,11 @@ static inline struct posix_acl *ovl_get_acl_path(const struct path *path,
->  }
->  #endif
->  
-> +int ovl_get_fscaps(struct mnt_idmap *idmap, struct dentry *dentry,
-> +		   struct vfs_caps *caps);
-> +int ovl_set_fscaps(struct mnt_idmap *idmap, struct dentry *dentry,
-> +		   const struct vfs_caps *caps, int setxattr_flags);
-> +
->  int ovl_update_time(struct inode *inode, int flags);
->  bool ovl_is_private_xattr(struct super_block *sb, const char *name);
->  
-> 
-> -- 
-> 2.43.0
-> 
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
 
