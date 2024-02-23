@@ -1,200 +1,111 @@
-Return-Path: <linux-kernel+bounces-77645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D93F86086C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:42:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87B9D860867
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:40:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2716B285DA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:42:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D829280721
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:40:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70F60BA2B;
-	Fri, 23 Feb 2024 01:42:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Y8IDWUgX"
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA2168831;
+	Fri, 23 Feb 2024 01:39:40 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 879DFAD32;
-	Fri, 23 Feb 2024 01:42:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF0EEAD4C
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 01:39:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708652551; cv=none; b=loKccIXNhrmr+KO9UQD3KkJIAsoipveS+7O39QRK5z/7asGVLs+z6CTivyI6CGMQR2kkzLbYfu6EhsGVL4pv1f1o00a0oN3WbdZaAg+ZZs6h65g+afxAInlHxTo93F1ClgeRbXjji4ojYde74U04WwrHl8/KLydlgnExh4JKS8Q=
+	t=1708652380; cv=none; b=RqOJo+hcsC/HKXbStmIDRVpiWioi4i2DPCNyQL0cp5uyaai2uu9Yp53Z3TEYTqdqVVzyB/AG6U5puFIcE/H+GeyrYs8lawbNTSF4LQ68PMb8jdqSwZaWDJkVh/a48Zh70JwO18MndvvbITHKQTulh6jO3QHntUhRYd6HaDBCxgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708652551; c=relaxed/simple;
-	bh=52BQWIKSM9dbXtbk3tbReFoFAD0K+aTh0S2ao1RVbnw=;
-	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To:
-	 Content-Type; b=A/FcuTa8WMFc3Uy1VLj534j5Inl5kZkuEwluNXfSfGDMzr7msqvQu3GTal3Hfov/3N0kE5QRu9Cq2jm4BGTKaVJBHT1dTWvCBs9xZw697ZKhWwGLLy4IiyKCalLfTBlZHrU9k4NOdWGI+PogMxyPtazbl1m5matCcSG34lOZ8qk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Y8IDWUgX; arc=none smtp.client-ip=115.124.30.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1708652546; h=Message-ID:Subject:Date:From:To:Content-Type;
-	bh=hYJihYxVn8B/CLtvoS+mVwMQczZee/YJZgmgC0BQBjw=;
-	b=Y8IDWUgXh+EAJrOCvIckzeh2a46kLplwEDARjuubCFaAXMPMQ16/HbD5bXCQfNi+YdIz/A5TXptAQ/Axz5AbNLWYsyF7dMyOoACoOvyswBQA8HTOLbXXHP2xPUVQbD+H91xGC47CDuRn9Zld6Ab6t/5mL+apKQ9C8PThlWcpTak=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0W12LtQi_1708652544;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W12LtQi_1708652544)
-          by smtp.aliyun-inc.com;
-          Fri, 23 Feb 2024 09:42:25 +0800
-Message-ID: <1708652254.1517398-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net-next v5] virtio_net: Support RX hash XDP hint
-Date: Fri, 23 Feb 2024 09:37:34 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>,
- mst@redhat.com,
- jasowang@redhat.com,
- hengqi@linux.alibaba.com,
- davem@davemloft.net,
- edumazet@google.com,
- kuba@kernel.org,
- netdev@vger.kernel.org,
- virtualization@lists.linux.dev,
- linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org,
- john.fastabend@gmail.com,
- daniel@iogearbox.net,
- ast@kernel.org,
- Liang Chen <liangchen.linux@gmail.com>
-References: <20240202121151.65710-1-liangchen.linux@gmail.com>
- <c8d59e75-d0bb-4a03-9ef4-d6de65fa9356@kernel.org>
- <CAKhg4tJFpG5nUNdeEbXFLonKkFUP0QCh8A9CpwU5OvtnBuz4Sw@mail.gmail.com>
- <5297dad6499f6d00f7229e8cf2c08e0eacb67e0c.camel@redhat.com>
- <CAKhg4tLbF8SfYD4dU9U9Nhii4FY2dftjPKYz-Emrn-CRwo10mg@mail.gmail.com>
- <73c242b43513bde04eebb4eb581deb189443c26b.camel@redhat.com>
- <CAKhg4tJPjcShkw4-FHFkKOcgzHK27A5pMu9FP7OWj4qJUX1ApA@mail.gmail.com>
- <1b2d471a5d06ecadcb75e3d9155b6d566afb2767.camel@redhat.com>
-In-Reply-To: <1b2d471a5d06ecadcb75e3d9155b6d566afb2767.camel@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1708652380; c=relaxed/simple;
+	bh=w6a/lM4JOOIkaLGjwoIWUqUMup/m3aYFAur7x35KVXg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ceiFJDn5bGNnDBBFnkG7HqQLeMmvSPN2Qd46Bdq+/XHLUBg6EKKg2RifaxEtYnID1AFrt6ZyA0tffZ7ASSLDy/rrLn88yqF7OZ77vIRqNupYrqLuBKT8DElyUsxD+dU9lLBSMtnEYseLXAwNIHKAbgeM1bKacYMSyp63cS2wGTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Tgsxm2fPGz1FLGY;
+	Fri, 23 Feb 2024 09:34:36 +0800 (CST)
+Received: from dggpemd100004.china.huawei.com (unknown [7.185.36.20])
+	by mail.maildlp.com (Postfix) with ESMTPS id D2FDA1A016B;
+	Fri, 23 Feb 2024 09:39:29 +0800 (CST)
+Received: from [10.67.109.211] (10.67.109.211) by
+ dggpemd100004.china.huawei.com (7.185.36.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Fri, 23 Feb 2024 09:39:29 +0800
+Message-ID: <7396cdc0-e878-48fe-85b9-d88611d28444@huawei.com>
+Date: Fri, 23 Feb 2024 09:39:29 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-
-On Fri, 09 Feb 2024 13:57:25 +0100, Paolo Abeni <pabeni@redhat.com> wrote:
-> On Fri, 2024-02-09 at 18:39 +0800, Liang Chen wrote:
-> > On Wed, Feb 7, 2024 at 10:27=E2=80=AFPM Paolo Abeni <pabeni@redhat.com>=
- wrote:
-> > >
-> > > On Wed, 2024-02-07 at 10:54 +0800, Liang Chen wrote:
-> > > > On Tue, Feb 6, 2024 at 6:44=E2=80=AFPM Paolo Abeni <pabeni@redhat.c=
-om> wrote:
-> > > > >
-> > > > > On Sat, 2024-02-03 at 10:56 +0800, Liang Chen wrote:
-> > > > > > On Sat, Feb 3, 2024 at 12:20=E2=80=AFAM Jesper Dangaard Brouer =
-<hawk@kernel.org> wrote:
-> > > > > > > On 02/02/2024 13.11, Liang Chen wrote:
-> > > > > [...]
-> > > > > > > > @@ -1033,6 +1039,16 @@ static void put_xdp_frags(struct xdp=
-_buff *xdp)
-> > > > > > > >       }
-> > > > > > > >   }
-> > > > > > > >
-> > > > > > > > +static void virtnet_xdp_save_rx_hash(struct virtnet_xdp_bu=
-ff *virtnet_xdp,
-> > > > > > > > +                                  struct net_device *dev,
-> > > > > > > > +                                  struct virtio_net_hdr_v1=
-_hash *hdr_hash)
-> > > > > > > > +{
-> > > > > > > > +     if (dev->features & NETIF_F_RXHASH) {
-> > > > > > > > +             virtnet_xdp->hash_value =3D hdr_hash->hash_va=
-lue;
-> > > > > > > > +             virtnet_xdp->hash_report =3D hdr_hash->hash_r=
-eport;
-> > > > > > > > +     }
-> > > > > > > > +}
-> > > > > > > > +
-> > > > > > >
-> > > > > > > Would it be possible to store a pointer to hdr_hash in virtne=
-t_xdp_buff,
-> > > > > > > with the purpose of delaying extracting this, until and only =
-if XDP
-> > > > > > > bpf_prog calls the kfunc?
-> > > > > > >
-> > > > > >
-> > > > > > That seems to be the way v1 works,
-> > > > > > https://lore.kernel.org/all/20240122102256.261374-1-liangchen.l=
-inux@gmail.com/
-> > > > > > . But it was pointed out that the inline header may be overwrit=
-ten by
-> > > > > > the xdp prog, so the hash is copied out to maintain its integri=
-ty.
-> > > > >
-> > > > > Why? isn't XDP supposed to get write access only to the pkt
-> > > > > contents/buffer?
-> > > > >
-> > > >
-> > > > Normally, an XDP program accesses only the packet data. However,
-> > > > there's also an XDP RX Metadata area, referenced by the data_meta
-> > > > pointer. This pointer can be adjusted with bpf_xdp_adjust_meta to
-> > > > point somewhere ahead of the data buffer, thereby granting the XDP
-> > > > program access to the virtio header located immediately before the
-> > >
-> > > AFAICS bpf_xdp_adjust_meta() does not allow moving the meta_data befo=
-re
-> > > xdp->data_hard_start:
-> > >
-> > > https://elixir.bootlin.com/linux/latest/source/net/core/filter.c#L4210
-> > >
-> > > and virtio net set such field after the virtio_net_hdr:
-> > >
-> > > https://elixir.bootlin.com/linux/latest/source/drivers/net/virtio_net=
-c#L1218
-> > > https://elixir.bootlin.com/linux/latest/source/drivers/net/virtio_net=
-c#L1420
-> > >
-> > > I don't see how the virtio hdr could be touched? Possibly even more
-> > > important: if such thing is possible, I think is should be somewhat
-> > > denied (for the same reason an H/W nic should prevent XDP from
-> > > modifying its own buffer descriptor).
-> >
-> > Thank you for highlighting this concern. The header layout differs
-> > slightly between small and mergeable mode. Taking 'mergeable mode' as
-> > an example, after calling xdp_prepare_buff the layout of xdp_buff
-> > would be as depicted in the diagram below,
-> >
-> >                       buf
-> >                        |
-> >                        v
-> >         +--------------+--------------+-------------+
-> >         | xdp headroom | virtio header| packet      |
-> >         | (256 bytes)  | (20 bytes)   | content     |
-> >         +--------------+--------------+-------------+
-> >         ^                             ^
-> >         |                             |
-> >  data_hard_start                    data
-> >                                   data_meta
-> >
-> > If 'bpf_xdp_adjust_meta' repositions the 'data_meta' pointer a little
-> > towards 'data_hard_start', it would point to the inline header, thus
-> > potentially allowing the XDP program to access the inline header.
->
-> I see. That layout was completely unexpected to me.
->
-> AFAICS the virtio_net driver tries to avoid accessing/using the
-> virtio_net_hdr after the XDP program execution, so nothing tragic
-> should happen.
->
-> @Michael, @Jason, I guess the above is like that by design? Isn't it a
-> bit fragile?
-
-YES. We process it carefully. That brings some troubles, we hope to put the
-virtio-net header to the vring desc like other NICs. But that is a big proj=
-ect.
-
-I think this patch is ok, this can be merged to net-next firstly.
-
-Thanks.
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next] arm32: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+Content-Language: en-US
+To: Arnd Bergmann <arnd@arndb.de>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+CC: Russell King <linux@armlinux.org.uk>, Andrew Davis <afd@ti.com>, Andrew
+ Morton <akpm@linux-foundation.org>, "Kirill A. Shutemov"
+	<kirill.shutemov@linux.intel.com>, Geert Uytterhoeven
+	<geert+renesas@glider.be>, Jonathan Corbet <corbet@lwn.net>, Mike Rapoport
+	<rppt@kernel.org>, Eric DeVolder <eric.devolder@oracle.com>, Rob Herring
+	<robh@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Linus Walleij
+	<linus.walleij@linaro.org>
+References: <20240220081527.23408-1-liuyuntao12@huawei.com>
+ <1342759e-b967-4ec4-98d5-48146f81f695@app.fastmail.com>
+ <38c09a4b-69cc-4dc5-8a68-e5f5597613ac@huawei.com>
+ <30b01c65-12f2-4ee0-81d5-c7a2da2c36b4@app.fastmail.com>
+ <4e9396ca-460b-49ca-818e-73f0a8997b15@huawei.com>
+ <58297ee9-4f33-4b3b-bd00-b44e86965892@app.fastmail.com>
+From: "liuyuntao (F)" <liuyuntao12@huawei.com>
+In-Reply-To: <58297ee9-4f33-4b3b-bd00-b44e86965892@app.fastmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemd100004.china.huawei.com (7.185.36.20)
 
 
->
-> Thanks!
->
-> Paolo
->
+
+On 2024/2/23 0:04, Arnd Bergmann wrote:
+> On Thu, Feb 22, 2024, at 12:24, liuyuntao (F) wrote:
+>>
+>> The position of the caret has been moved below the right brace
+>> of { KEEP(*(.vectors.bhb.loop8)) }, indicating that lld is treating
+>> the entire `KEEP(*(.vectors))` as a file name. This could potentially be
+>> a bug in lld. Perhaps we can temporarily
+>> enable the DCE option only when option LD_IS_LLD is disabled,
+>> like risc-v:
+>>
+>> `select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !LD_IS_LLD`.
+> 
+> I would really like to see this working with lld if at all
+> possible, as it allows the combination of gc-sections with
+> lto and CONFIG_TRIM_UNUSED_KSYMS.
+> 
+> I experimented with lld myself now and I did get a booting
+> kernel even without the the KEEP() on the vectors. I also
+
+When the kernel booted up successfully, was config DCE enabled?
+
+> see that this is the only use of OVERLAY in the kernel, so
+> I hope that we can find a way to make it work with existing
+> lld after all, either without the KEEP or without the OVERLAY.
+
+Yeah, i will try other way to make it work.
+
+> 
+> Did you see any problems without the KEEP() on the vectors?
+> 
+>       Arnd
+
+Without the KEEP(),disable DCE, qemu boots well,
+enable DCE,qemu hangs on startup.
+I experimented with lld using vexpress_defconfig.
 
