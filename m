@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-78209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23FE0861045
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:23:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A280861047
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:24:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3AFE286FD8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:23:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E20B1C21C7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:24:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 398627AE45;
-	Fri, 23 Feb 2024 11:22:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9274E78661;
+	Fri, 23 Feb 2024 11:23:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="V30E3W+e"
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="rTwCI6KP"
 Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A88E78B6B;
-	Fri, 23 Feb 2024 11:22:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBD7667C7D;
+	Fri, 23 Feb 2024 11:23:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708687365; cv=none; b=L3lskYPmfteIK0/LDgTcxy7gOls2U01SL8FZeZMXO9kg+DmsicsAL4w3FERMhhlpCw1TI+IHn6aa0kuYEEod+2LkSM9adaUB17D/Mqpoc7Ims46hEC9lO/YWskyuq/pnLEqGnl4QgfP49MG2ZHYR/SYH0yB9ta1+czlB8+r455c=
+	t=1708687437; cv=none; b=lOMpW921mlMyTZjWW/xM28LUZYGnmIioi3OtWw+0zDjcJgVkxcNc3wUEfLSPoR2oGClIX94fLyaI1Bkn3HUeqqj/ttMlJq01HnizLnasTWNdfOEDJmch3yKuX89Aqw0MZT6Xx5aqyH8gBguebS5zkA0tadUN79j9JykZykvoxXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708687365; c=relaxed/simple;
-	bh=JlCjvXv1vhGyP/skKGYCXmNRqNPrHJWqMxafmlRLjxM=;
+	s=arc-20240116; t=1708687437; c=relaxed/simple;
+	bh=Qa9B1rXQ+gdWbnrbTzJ2o12MstNyG8i2yFEHNXUOric=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n94JL50eveR+U213CscG4jS/8Ki9FmtCQDfneK6t5e3XsbY2+a8yjo84ggqIw7KMhL5njeh+7LXLsemoV4llBEJBVG2u1pdp+KKiEvuNE+d+T2NXgEIFxp1vwkQJCqL3uZL4AJQxQUju9181X9L6DjvxRLfJj2mpi1XBI/Gc2g4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=V30E3W+e; arc=none smtp.client-ip=213.167.242.64
+	 Content-Type:Content-Disposition:In-Reply-To; b=QGmxH+uX4S72ruMHKqFR43HZaIq0oFNaLnPytB4QlxDNtWPYzkaPp7adF+XP9pss2coYHQghUNG6cAyFp6+X0H/t1G7e9jCFkjS2+BPEKSkrP37+XfbVZLDxv2fvfHkPLME5ZuY/0nnIIc1Ca3HW6+4hQsl6xk5crypFjUM59bE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=rTwCI6KP; arc=none smtp.client-ip=213.167.242.64
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
 Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id F3E2C2E7;
-	Fri, 23 Feb 2024 12:22:31 +0100 (CET)
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id B41109B6;
+	Fri, 23 Feb 2024 12:23:44 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1708687352;
-	bh=JlCjvXv1vhGyP/skKGYCXmNRqNPrHJWqMxafmlRLjxM=;
+	s=mail; t=1708687424;
+	bh=Qa9B1rXQ+gdWbnrbTzJ2o12MstNyG8i2yFEHNXUOric=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=V30E3W+eSPwI9/KBM4hzd8fBqQnH0AqPd5LpHGyLV+YxZ7u5njQ5dmCnZbXRDemcK
-	 9ev1+S4RK88br/e0LlOwMoVSYtywLd5VA5SnEVO2FFKiBoYDH//rCnZFuDv6HWaER0
-	 T5otOiUhnRP85wxfLcZS2CBSrjSxcxs8bte46Ecc=
-Date: Fri, 23 Feb 2024 13:22:44 +0200
+	b=rTwCI6KPCFJZipqq4J3rzbHMwM3gdlE6ZfTcm6pFEmE40OyFraLmTSByeyNo79kg1
+	 N1DVbfQoizTX5zs9LrGe0PDa/D5LDp/mwtNMCbUAopBMoIiekUDlDPNHtdgJ6PUzgZ
+	 Gc6jhJfJUiQExjch0qB3W10yEScqG9lyYUrsDXjM=
+Date: Fri, 23 Feb 2024 13:23:57 +0200
 From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 To: Mikhail Rudenko <mike.rudenko@gmail.com>
 Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -50,11 +50,11 @@ Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
 	Dave Stevenson <dave.stevenson@raspberrypi.com>,
 	Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [PATCH v2 02/20] media: i2c: ov4689: Sort register definitions
- by address
-Message-ID: <20240223112244.GM31348@pendragon.ideasonboard.com>
+Subject: Re: [PATCH v2 01/20] media: i2c: ov4689: Clean up and annotate the
+ register table
+Message-ID: <20240223112357.GN31348@pendragon.ideasonboard.com>
 References: <20231218174042.794012-1-mike.rudenko@gmail.com>
- <20231218174042.794012-3-mike.rudenko@gmail.com>
+ <20231218174042.794012-2-mike.rudenko@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,62 +63,252 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231218174042.794012-3-mike.rudenko@gmail.com>
+In-Reply-To: <20231218174042.794012-2-mike.rudenko@gmail.com>
 
-Hi Mikhail,
+HiMikhail,
 
 Thank you for the patch.
 
-On Mon, Dec 18, 2023 at 08:40:23PM +0300, Mikhail Rudenko wrote:
-> Put register defininitions in the order of increasing register
-> address.
-> 
+On Mon, Dec 18, 2023 at 08:40:22PM +0300, Mikhail Rudenko wrote:
+> Many values in the register table are actually power-on
+> defaults. Remove those and also unused HDR exposures and gains.
+> Annotate the remaining values using the publicly available datasheet
+> to facilitate further development. No functional change intended.
+
+I'll trust you on that as I can't test the patch.
+
 > Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
 > ---
->  drivers/media/i2c/ov4689.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+>  drivers/media/i2c/ov4689.c | 203 +++++++++++++++++++++----------------
+>  1 file changed, 118 insertions(+), 85 deletions(-)
 > 
 > diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
-> index ff5213862974..1ae6d9b9c9b3 100644
+> index 403091651885..ff5213862974 100644
 > --- a/drivers/media/i2c/ov4689.c
 > +++ b/drivers/media/i2c/ov4689.c
-> @@ -19,15 +19,15 @@
->  #include <media/v4l2-subdev.h>
->  #include <media/v4l2-fwnode.h>
+> @@ -3,7 +3,7 @@
+>   * ov4689 driver
+>   *
+>   * Copyright (C) 2017 Fuzhou Rockchip Electronics Co., Ltd.
+> - * Copyright (C) 2022 Mikhail Rudenko
+> + * Copyright (C) 2022, 2023 Mikhail Rudenko
+>   */
 >  
-> -#define CHIP_ID				0x004688
-> -#define OV4689_REG_CHIP_ID		0x300a
-> -
->  #define OV4689_XVCLK_FREQ		24000000
->  
->  #define OV4689_REG_CTRL_MODE		0x0100
->  #define OV4689_MODE_SW_STANDBY		0x0
->  #define OV4689_MODE_STREAMING		BIT(0)
->  
-> +#define OV4689_REG_CHIP_ID		0x300a
-> +#define CHIP_ID				0x004688
+>  #include <linux/clk.h>
+> @@ -123,90 +123,123 @@ struct ov4689_gain_range {
+>   * mipi_datarate per lane 1008Mbps
+>   */
+>  static const struct regval ov4689_2688x1520_regs[] = {
+> -	{0x0103, 0x01}, {0x3638, 0x00}, {0x0300, 0x00},
+> -	{0x0302, 0x2a}, {0x0303, 0x00}, {0x0304, 0x03},
+> -	{0x030b, 0x00}, {0x030d, 0x1e}, {0x030e, 0x04},
+> -	{0x030f, 0x01}, {0x0312, 0x01}, {0x031e, 0x00},
+> -	{0x3000, 0x20}, {0x3002, 0x00}, {0x3018, 0x72},
+> -	{0x3020, 0x93}, {0x3021, 0x03}, {0x3022, 0x01},
+> -	{0x3031, 0x0a}, {0x303f, 0x0c}, {0x3305, 0xf1},
+> -	{0x3307, 0x04}, {0x3309, 0x29}, {0x3500, 0x00},
+> -	{0x3501, 0x60}, {0x3502, 0x00}, {0x3503, 0x04},
+> -	{0x3504, 0x00}, {0x3505, 0x00}, {0x3506, 0x00},
+> -	{0x3507, 0x00}, {0x3508, 0x00}, {0x3509, 0x80},
+> -	{0x350a, 0x00}, {0x350b, 0x00}, {0x350c, 0x00},
+> -	{0x350d, 0x00}, {0x350e, 0x00}, {0x350f, 0x80},
+> -	{0x3510, 0x00}, {0x3511, 0x00}, {0x3512, 0x00},
+> -	{0x3513, 0x00}, {0x3514, 0x00}, {0x3515, 0x80},
+> -	{0x3516, 0x00}, {0x3517, 0x00}, {0x3518, 0x00},
+> -	{0x3519, 0x00}, {0x351a, 0x00}, {0x351b, 0x80},
+> -	{0x351c, 0x00}, {0x351d, 0x00}, {0x351e, 0x00},
+> -	{0x351f, 0x00}, {0x3520, 0x00}, {0x3521, 0x80},
+> -	{0x3522, 0x08}, {0x3524, 0x08}, {0x3526, 0x08},
+> -	{0x3528, 0x08}, {0x352a, 0x08}, {0x3602, 0x00},
+> -	{0x3603, 0x40}, {0x3604, 0x02}, {0x3605, 0x00},
+> -	{0x3606, 0x00}, {0x3607, 0x00}, {0x3609, 0x12},
+> -	{0x360a, 0x40}, {0x360c, 0x08}, {0x360f, 0xe5},
+> -	{0x3608, 0x8f}, {0x3611, 0x00}, {0x3613, 0xf7},
+> -	{0x3616, 0x58}, {0x3619, 0x99}, {0x361b, 0x60},
+> -	{0x361c, 0x7a}, {0x361e, 0x79}, {0x361f, 0x02},
+> -	{0x3632, 0x00}, {0x3633, 0x10}, {0x3634, 0x10},
+> -	{0x3635, 0x10}, {0x3636, 0x15}, {0x3646, 0x86},
+> -	{0x364a, 0x0b}, {0x3700, 0x17}, {0x3701, 0x22},
+> -	{0x3703, 0x10}, {0x370a, 0x37}, {0x3705, 0x00},
+> -	{0x3706, 0x63}, {0x3709, 0x3c}, {0x370b, 0x01},
+> -	{0x370c, 0x30}, {0x3710, 0x24}, {0x3711, 0x0c},
+> -	{0x3716, 0x00}, {0x3720, 0x28}, {0x3729, 0x7b},
+> -	{0x372a, 0x84}, {0x372b, 0xbd}, {0x372c, 0xbc},
+> -	{0x372e, 0x52}, {0x373c, 0x0e}, {0x373e, 0x33},
+> -	{0x3743, 0x10}, {0x3744, 0x88}, {0x3745, 0xc0},
+> -	{0x374a, 0x43}, {0x374c, 0x00}, {0x374e, 0x23},
+> -	{0x3751, 0x7b}, {0x3752, 0x84}, {0x3753, 0xbd},
+> -	{0x3754, 0xbc}, {0x3756, 0x52}, {0x375c, 0x00},
+> -	{0x3760, 0x00}, {0x3761, 0x00}, {0x3762, 0x00},
+> -	{0x3763, 0x00}, {0x3764, 0x00}, {0x3767, 0x04},
+> -	{0x3768, 0x04}, {0x3769, 0x08}, {0x376a, 0x08},
+> -	{0x376b, 0x20}, {0x376c, 0x00}, {0x376d, 0x00},
+> -	{0x376e, 0x00}, {0x3773, 0x00}, {0x3774, 0x51},
+> -	{0x3776, 0xbd}, {0x3777, 0xbd}, {0x3781, 0x18},
+> -	{0x3783, 0x25}, {0x3798, 0x1b}, {0x3800, 0x00},
+> -	{0x3801, 0x08}, {0x3802, 0x00}, {0x3803, 0x04},
+> -	{0x3804, 0x0a}, {0x3805, 0x97}, {0x3806, 0x05},
+> -	{0x3807, 0xfb}, {0x3808, 0x0a}, {0x3809, 0x80},
+> -	{0x380a, 0x05}, {0x380b, 0xf0}, {0x380c, 0x0a},
+> -	{0x380d, 0x0e}, {0x380e, 0x06}, {0x380f, 0x12},
+> -	{0x3810, 0x00}, {0x3811, 0x08}, {0x3812, 0x00},
+> -	{0x3813, 0x04}, {0x3814, 0x01}, {0x3815, 0x01},
+> -	{0x3819, 0x01}, {0x3820, 0x00}, {0x3821, 0x06},
+> -	{0x3829, 0x00}, {0x382a, 0x01}, {0x382b, 0x01},
+> -	{0x382d, 0x7f}, {0x3830, 0x04}, {0x3836, 0x01},
+> -	{0x3837, 0x00}, {0x3841, 0x02}, {0x3846, 0x08},
+> -	{0x3847, 0x07}, {0x3d85, 0x36}, {0x3d8c, 0x71},
+> -	{0x3d8d, 0xcb}, {0x3f0a, 0x00}, {0x4000, 0xf1},
+> -	{0x4001, 0x40}, {0x4002, 0x04}, {0x4003, 0x14},
+> -	{0x400e, 0x00}, {0x4011, 0x00}, {0x401a, 0x00},
+> -	{0x401b, 0x00}, {0x401c, 0x00}, {0x401d, 0x00},
+> -	{0x401f, 0x00}, {0x4020, 0x00}, {0x4021, 0x10},
+> -	{0x4022, 0x07}, {0x4023, 0xcf}, {0x4024, 0x09},
+> -	{0x4025, 0x60}, {0x4026, 0x09}, {0x4027, 0x6f},
+> -	{0x4028, 0x00}, {0x4029, 0x02}, {0x402a, 0x06},
+> -	{0x402b, 0x04}, {0x402c, 0x02}, {0x402d, 0x02},
+> -	{0x402e, 0x0e}, {0x402f, 0x04}, {0x4302, 0xff},
+> -	{0x4303, 0xff}, {0x4304, 0x00}, {0x4305, 0x00},
+> -	{0x4306, 0x00}, {0x4308, 0x02}, {0x4500, 0x6c},
+> -	{0x4501, 0xc4}, {0x4502, 0x40}, {0x4503, 0x01},
+> -	{0x4601, 0xa7}, {0x4800, 0x04}, {0x4813, 0x08},
+> -	{0x481f, 0x40}, {0x4829, 0x78}, {0x4837, 0x10},
+> -	{0x4b00, 0x2a}, {0x4b0d, 0x00}, {0x4d00, 0x04},
+> -	{0x4d01, 0x42}, {0x4d02, 0xd1}, {0x4d03, 0x93},
+> -	{0x4d04, 0xf5}, {0x4d05, 0xc1}, {0x5000, 0xf3},
+> -	{0x5001, 0x11}, {0x5004, 0x00}, {0x500a, 0x00},
+> -	{0x500b, 0x00}, {0x5032, 0x00}, {0x5040, 0x00},
+> -	{0x5050, 0x0c}, {0x5500, 0x00}, {0x5501, 0x10},
+> -	{0x5502, 0x01}, {0x5503, 0x0f}, {0x8000, 0x00},
+> -	{0x8001, 0x00}, {0x8002, 0x00}, {0x8003, 0x00},
+> -	{0x8004, 0x00}, {0x8005, 0x00}, {0x8006, 0x00},
+> -	{0x8007, 0x00}, {0x8008, 0x00}, {0x3638, 0x00},
+> +	/* System control*/
+> +	{0x0103, 0x01}, /* SC_CTRL0103 software_reset = 1 */
+> +	{0x3000, 0x20}, /* SC_CMMN_PAD_OEN0 FSIN_output_enable = 1 */
+> +	{0x3021, 0x03}, /*
+> +			 * SC_CMMN_MISC_CTRL fst_stby_ctr = 0,
+> +			 * sleep_no_latch_enable = 0
+> +			 */
 > +
->  #define OV4689_REG_EXPOSURE		0x3500
->  #define OV4689_EXPOSURE_MIN		4
->  #define OV4689_EXPOSURE_STEP		1
-> @@ -41,12 +41,12 @@
->  #define OV4689_GAIN_STEP		1
->  #define OV4689_GAIN_DEFAULT		0x80
->  
-> +#define OV4689_REG_VTS			0x380e
+> +	/* AEC PK */
+> +	{0x3503, 0x04}, /* AEC_MANUAL gain_input_as_sensor_gain_format = 1 */
+> +	{0x352a, 0x08}, /* DIG_GAIN_FRAC_LONG dig_gain_long[14:8] = 0x08 (2x) */
 > +
->  #define OV4689_REG_TEST_PATTERN		0x5040
->  #define OV4689_TEST_PATTERN_ENABLE	0x80
->  #define OV4689_TEST_PATTERN_DISABLE	0x0
+> +	/* ADC and analog control*/
+> +	{0x3603, 0x40},
+> +	{0x3604, 0x02},
+> +	{0x3609, 0x12},
+> +	{0x360c, 0x08},
+> +	{0x360f, 0xe5},
+> +	{0x3608, 0x8f},
+> +	{0x3611, 0x00},
+> +	{0x3613, 0xf7},
+> +	{0x3616, 0x58},
+> +	{0x3619, 0x99},
+> +	{0x361b, 0x60},
+> +	{0x361e, 0x79},
+> +	{0x3634, 0x10},
+> +	{0x3635, 0x10},
+> +	{0x3636, 0x15},
+> +	{0x3646, 0x86},
+> +	{0x364a, 0x0b},
+> +
+> +	/* Sensor control */
+> +	{0x3700, 0x17},
+> +	{0x3701, 0x22},
+> +	{0x3703, 0x10},
+> +	{0x370a, 0x37},
+> +	{0x3706, 0x63},
+> +	{0x3709, 0x3c},
+> +	{0x370c, 0x30},
+> +	{0x3710, 0x24},
+> +	{0x3720, 0x28},
+> +	{0x3729, 0x7b},
+> +	{0x372b, 0xbd},
+> +	{0x372c, 0xbc},
+> +	{0x372e, 0x52},
+> +	{0x373c, 0x0e},
+> +	{0x373e, 0x33},
+> +	{0x3743, 0x10},
+> +	{0x3744, 0x88},
+> +	{0x3745, 0xc0},
+> +	{0x374c, 0x00},
+> +	{0x374e, 0x23},
+> +	{0x3751, 0x7b},
+> +	{0x3753, 0xbd},
+> +	{0x3754, 0xbc},
+> +	{0x3756, 0x52},
+> +	{0x376b, 0x20},
+> +	{0x3774, 0x51},
+> +	{0x3776, 0xbd},
+> +	{0x3777, 0xbd},
+> +	{0x3781, 0x18},
+> +	{0x3783, 0x25},
+> +	{0x3798, 0x1b},
+> +
+> +	/* Timing control */
+> +	{0x3801, 0x08}, /* H_CROP_START_L h_crop_start[7:0] = 0x08 */
+
+It would be nice to define register macros for the known registers. This
+can be done in a separate patch.
+
+Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> +	{0x3805, 0x97}, /* H_CROP_END_L h_crop_end[7:0] = 0x97 */
+> +	{0x380c, 0x0a}, /* TIMING_HTS_H hts[14:8] = 0x0a */
+> +	{0x380d, 0x0e}, /* TIMING_HTS_L hts[7:0] = 0x0e */
+> +	{0x3811, 0x08}, /* H_WIN_OFF_L h_win_off[7:0] = 0x08*/
+> +	{0x3813, 0x04}, /* V_WIN_OFF_L v_win_off[7:0] = 0x04 */
+> +	{0x3819, 0x01}, /* VSYNC_END_L vsync_end_point[7:0] = 0x01 */
+> +	{0x3821, 0x06}, /* TIMING_FORMAT2 array_h_mirror = 1, digital_h_mirror = 1 */
+> +
+> +	/* OTP control */
+> +	{0x3d85, 0x36}, /* OTP_REG85 OTP_power_up_load_setting_enable = 1,
+> +			 * OTP_power_up_load_data_enable = 1,
+> +			 * OTP_bist_select = 1 (compare with zero)
+> +			 */
+> +	{0x3d8c, 0x71}, /* OTP_SETTING_STT_ADDRESS_H */
+> +	{0x3d8d, 0xcb}, /* OTP_SETTING_STT_ADDRESS_L */
+> +
+> +	/* BLC registers*/
+> +	{0x4001, 0x40}, /* DEBUG_MODE */
+> +	{0x401b, 0x00}, /* DEBUG_MODE */
+> +	{0x401d, 0x00}, /* DEBUG_MODE */
+> +	{0x401f, 0x00}, /* DEBUG_MODE */
+> +	{0x4020, 0x00}, /* ANCHOR_LEFT_START_H anchor_left_start[11:8] = 0 */
+> +	{0x4021, 0x10}, /* ANCHOR_LEFT_START_L anchor_left_start[7:0] = 0x10 */
+> +	{0x4022, 0x07}, /* ANCHOR_LEFT_END_H anchor_left_end[11:8] = 0x07 */
+> +	{0x4023, 0xcf}, /* ANCHOR_LEFT_END_L anchor_left_end[7:0] = 0xcf */
+> +	{0x4024, 0x09}, /* ANCHOR_RIGHT_START_H anchor_right_start[11:8] = 0x09 */
+> +	{0x4025, 0x60}, /* ANCHOR_RIGHT_START_L anchor_right_start[7:0] = 0x60 */
+> +	{0x4026, 0x09}, /* ANCHOR_RIGHT_END_H anchor_right_end[11:8] = 0x09 */
+> +	{0x4027, 0x6f}, /* ANCHOR_RIGHT_END_L anchor_right_end[7:0] = 0x6f */
+> +
+> +	/* ADC sync control */
+> +	{0x4500, 0x6c}, /* ADC_SYNC_CTRL */
+> +	{0x4503, 0x01}, /* ADC_SYNC_CTRL */
+> +
+> +	/* VFIFO */
+> +	{0x4601, 0xa7}, /* VFIFO_CTRL_01 r_vfifo_read_start[7:0] = 0xa7 */
+> +
+> +	/* Temperature monitor */
+> +	{0x4d00, 0x04}, /* TPM_CTRL_00 tmp_slope[15:8] = 0x04 */
+> +	{0x4d01, 0x42}, /* TPM_CTRL_01 tmp_slope[7:0] = 0x42 */
+> +	{0x4d02, 0xd1}, /* TPM_CTRL_02 tpm_offset[31:24] = 0xd1 */
+> +	{0x4d03, 0x93}, /* TPM_CTRL_03 tpm_offset[23:16] = 0x93 */
+> +	{0x4d04, 0xf5}, /* TPM_CTRL_04 tpm_offset[15:8]  = 0xf5 */
+> +	{0x4d05, 0xc1}, /* TPM_CTRL_05 tpm_offset[7:0]   = 0xc1 */
+> +
+> +	/* pre-ISP control */
+> +	{0x5050, 0x0c}, /* DEBUG_MODE */
+> +
+> +	/* OTP-DPC control */
+> +	{0x5501, 0x10}, /* OTP_DPC_START_L otp_start_address[7:0] = 0x10 */
+> +	{0x5503, 0x0f}, /* OTP_DPC_END_L otp_end_address[7:0] = 0x0f */
+>  	{REG_NULL, 0x00},
+>  };
 >  
-> -#define OV4689_REG_VTS			0x380e
-> -
->  #define REG_NULL			0xFFFF
->  
->  #define OV4689_REG_VALUE_08BIT		1
 
 -- 
 Regards,
