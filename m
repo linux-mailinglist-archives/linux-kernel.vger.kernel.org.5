@@ -1,101 +1,102 @@
-Return-Path: <linux-kernel+bounces-78352-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FAB3861250
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:11:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B8BE861251
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:12:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 041D31F230C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:11:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0092B214C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:12:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D841C7E77C;
-	Fri, 23 Feb 2024 13:11:41 +0000 (UTC)
-Received: from smtp-bc0e.mail.infomaniak.ch (smtp-bc0e.mail.infomaniak.ch [45.157.188.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40B857EF0A;
+	Fri, 23 Feb 2024 13:11:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Z+U5Ejar"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C5B65DF00
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:11:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.157.188.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 115EF7D417
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:11:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708693901; cv=none; b=L6wpV3D6mC/l7duemZ4lBIWYruV0IB4437wO2vMBGh2RT4d9I327f/NkQtPnPEj21HfBHnpnS3KLr0kvSftNa/ok9cu+oZ+IojPXQ+4TmUbY6zNsC2sd0oQTTlgW/X7JviYqLVAPm+59+/Ok0W0q9Qj104NhTkVQY8O2D5t/IcA=
+	t=1708693903; cv=none; b=H2y5goyEe/9Nu1v8142RZEdF2Ph35NBzZvGyFUWbB5N5pY06DBgGzACQaMz+sx0NjEY1KpAHtERaMMcTepCp21bGfYMvG062dbuyz7d6g23joDXOg/+ZpkZcZ0pkfRIZtPuDAwKwE8V0SUbR70DjIx3gMWW8G2ab64TWfLEPlp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708693901; c=relaxed/simple;
-	bh=0EmZbA6Z/VNF5c7++YIeS8HzXck5oR/WMMWqA0pYtD0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=qOCWM4Za/TNl2nck9LW2ri7Qyr8HQNAvPseeVLzHrOmLqZSd4MjbNb1Jlmtlaunw0BkepO/6/TCP9lXJRB9PQ4HgktiKWlvyoYWVMhinO9oOdcENyxwqrR1svPJXlD9nZMGBd1n2O4G+Rof9O1DZkcvUWg4eb2FFB0sIjbDWrHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0leil.net; spf=pass smtp.mailfrom=0leil.net; arc=none smtp.client-ip=45.157.188.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0leil.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0leil.net
-Received: from smtp-4-0001.mail.infomaniak.ch (unknown [10.7.10.108])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Th9Q03TwQzMs1Yf;
-	Fri, 23 Feb 2024 14:11:36 +0100 (CET)
-Received: from unknown by smtp-4-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4Th9Q005gGzbZW;
-	Fri, 23 Feb 2024 14:11:35 +0100 (CET)
-From: Quentin Schulz <foss+kernel@0leil.net>
-Date: Fri, 23 Feb 2024 14:11:23 +0100
-Subject: [PATCH 2/2] regulator: rk808: fix LDO range on RK806
+	s=arc-20240116; t=1708693903; c=relaxed/simple;
+	bh=3zucdEuTqNjd2l4aFxWzG4Sn8yMHQeMarA3/+gpy61c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ie63cZr2MeEW2PPZW0Z7DtPUjA1Er+e8O1FoyaAC42t21MiaSwRi+bhp6hFBzCfgpto9kTlV+rI2H9Bqcw8XGsxLNvA11tpILDA+kLZ0M2ON5pEE8+tsqNdmvVho5nmc0S8escTMHejS32VlQn0qUORyekwJ+DUKCC+Teol7WEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Z+U5Ejar; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a3e550ef31cso92490066b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 05:11:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1708693899; x=1709298699; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9IfamIKp532gMCfozCmitNOH75viZll5QKAcnVigqEQ=;
+        b=Z+U5EjarSht91xSxg3CAD/tBMuoVblYDLO1uWJm1M5KofU0+MKa/5TQ19sS2muGDrh
+         1c5u0m7snvbBa3joH4QDcvR5u01yZrlmuh5bLZ9PcTAv+z/7xYQx8NirL7Pltou+g3g3
+         9bdhMNH7u2xGaFa/AMGwToYLtEXaiFxUkFMSA67bUIFj3E2V9LFy9wiv6d0e9mmaCp6f
+         IuGBDQjGrMNMnE2dUlPztqkVqFIEATY323+rld60cu1NIEh8bucbrxIPJwgDtW3I1+B6
+         qVOb3cSDajyVRv0+Mp1LAO8NyzDLdhWnSCA2k3L+fHUWvAPTRd2oYaSSMjXqlnfLscQB
+         smrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708693899; x=1709298699;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9IfamIKp532gMCfozCmitNOH75viZll5QKAcnVigqEQ=;
+        b=hFpzS8H6pIPWP8kAusRUS6LFk8at8SGXLHWKjVkOWJk9PkfGSwcxCNGMJMo+/n8B/U
+         QaFUa2k68RzECtXvDf/wFC1V3RU0ogB4u8bIFhX8Vdp2QO8OJCOP+1ICsX3Tv04OJfC3
+         MVsorn5EnkOXyPpCIxMCLIU7FpZ/tSayh5uVmA0zC/Y7Cz9+coFm19Ae4DvwyMkynT4E
+         EXRRnEFTPbiTZlp2Qva1dXQrXAxiXVjoju3J2DgYhWSp54TK5Sld9Tu79+y8qA1G23Ym
+         WAf0xFcIENMX0GyPZPoUZfzdw+s6Bzs1Vr6hn5UGvS/lVd1il5ymSoBlbnms+6+P2F6x
+         vpPw==
+X-Forwarded-Encrypted: i=1; AJvYcCVzFIEGdx6m9Aaede6VrCE8xMCU7BY63e/sSrWRy0Tn9rn1OBoWunbpgwE0EmuSBhC19FJWse2VrAaAJ0ucCkZYutGNBGCm3lv1fHPU
+X-Gm-Message-State: AOJu0YwYc8KNwbV3kfL/C82MkRXQvE0iJtZSMU1bMjwDJ7fXj2gzBMhA
+	/YQOWgLsXyR+fyd7CtIkb0nK+UD+0RNl6RHdrJMBsFpe/PtpPZeXheFKVZKnqcg=
+X-Google-Smtp-Source: AGHT+IFkS9lZ3F8MycYfE3t6zb/J+kB/eDHJsdQ3u3UAkDabPqXiTmw+SwdGjy7eQhPzdDg+PG/W1A==
+X-Received: by 2002:a17:906:6cb:b0:a3e:9def:5c8d with SMTP id v11-20020a17090606cb00b00a3e9def5c8dmr1243817ejb.28.1708693899344;
+        Fri, 23 Feb 2024 05:11:39 -0800 (PST)
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id ps7-20020a170906bf4700b00a3f1cb81dcesm2979759ejb.116.2024.02.23.05.11.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 05:11:39 -0800 (PST)
+Date: Fri, 23 Feb 2024 14:11:37 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH printk v2 09/26] printk: nbcon: Add detailed doc for
+ write_atomic()
+Message-ID: <ZdiZif8xyfbpXrc3@alley>
+References: <20240218185726.1994771-1-john.ogness@linutronix.de>
+ <20240218185726.1994771-10-john.ogness@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240223-rk806-regulator-ranges-v1-2-3904ab70d250@theobroma-systems.com>
-References: <20240223-rk806-regulator-ranges-v1-0-3904ab70d250@theobroma-systems.com>
-In-Reply-To: <20240223-rk806-regulator-ranges-v1-0-3904ab70d250@theobroma-systems.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
- Matti Vaittinen <mazziesaccount@gmail.com>, 
- shengfei Xu <xsf@rock-chips.com>, 
- Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc: linux-kernel@vger.kernel.org, 
- Quentin Schulz <quentin.schulz@theobroma-systems.com>, 
- Quentin Schulz <foss+kernel@0leil.net>
-X-Mailer: b4 0.13.0
-X-Infomaniak-Routing: alpha
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240218185726.1994771-10-john.ogness@linutronix.de>
 
-From: Quentin Schulz <quentin.schulz@theobroma-systems.com>
+On Sun 2024-02-18 20:03:09, John Ogness wrote:
+> The write_atomic() callback has special requirements and is
+> allowed to use special helper functions. Provide detailed
+> documentation of the callback so that a developer has a
+> chance of implementing it correctly.
+> 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
-The linear ranges aren't really matching what they should be. Indeed,
-the range is inclusive of the min value, so it makes sense the previous
-range does NOT include the max step value representing the min value of
-the range in question.
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-Since 3.4V is represented by the decimal value 232, the previous range
-max step value should be 231 and not 232.
-
-No expected change in behavior since 3.4V was mapped with step 232 from
-the first range but is now mapped with step 232 from the second range.
-
-While at it, remove the incorrect comment from the second range.
-
-Fixes: f991a220a447 ("regulator: rk808: add rk806 support")
-Cc: Quentin Schulz <foss+kernel@0leil.net>
-Signed-off-by: Quentin Schulz <quentin.schulz@theobroma-systems.com>
----
- drivers/regulator/rk808-regulator.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/regulator/rk808-regulator.c b/drivers/regulator/rk808-regulator.c
-index bfab5468cc54..d89ae7f16d7a 100644
---- a/drivers/regulator/rk808-regulator.c
-+++ b/drivers/regulator/rk808-regulator.c
-@@ -1023,8 +1023,8 @@ static const struct linear_range rk806_buck_voltage_ranges[] = {
- };
- 
- static const struct linear_range rk806_ldo_voltage_ranges[] = {
--	REGULATOR_LINEAR_RANGE(500000, 0, 232, 12500), /* 500mV ~ 3400mV */
--	REGULATOR_LINEAR_RANGE(3400000, 233, 255, 0), /* 500mV ~ 3400mV */
-+	REGULATOR_LINEAR_RANGE(500000, 0, 231, 12500), /* 500mV ~ 3400mV */
-+	REGULATOR_LINEAR_RANGE(3400000, 232, 255, 0),
- };
- 
- static const struct regulator_desc rk806_reg[] = {
-
--- 
-2.43.2
-
+Best Regards,
+Petr
 
