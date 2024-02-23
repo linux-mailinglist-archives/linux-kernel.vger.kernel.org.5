@@ -1,204 +1,168 @@
-Return-Path: <linux-kernel+bounces-77939-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77943-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55044860D03
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:39:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 101BB860D15
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:43:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B44E286939
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:39:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B89421F29B6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:43:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC8C818EB9;
-	Fri, 23 Feb 2024 08:39:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qoAHNn/+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB1C918E2A;
+	Fri, 23 Feb 2024 08:43:34 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E82E17BC1;
-	Fri, 23 Feb 2024 08:39:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9B7118E10;
+	Fri, 23 Feb 2024 08:43:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708677548; cv=none; b=ZvN/Rq/nuIO/33XH17ZIufa35uapAmHS8GE/XbzvP6Ndfd66epApsEa1heoHYO3sIAXDuhnF7KfSygvlYk7LARvWg2mKDUbWaCPp1faa+XX4ZG4+MOITY42Icw/9bYP0DPa230I0Jsub1vqz73I/i+9LvahCAGgySRib8ZK+hiY=
+	t=1708677814; cv=none; b=DH3et1E3Gy9pi93EoPauZ/No1Ab0PK6Rc+YMfGpfZVPvxPTFZjUwESa8dlwQdjpY5cYY9qD/xgddat2NAl4meR+T8/kcBnk0bcpZGTipbL+FTS5+KL/oHu4p0YIBbCzC8vuCerkgWd0NPFfq5FmrJkm5LzUZ1jq9SF09uM82ie0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708677548; c=relaxed/simple;
-	bh=/UDfrDS9KwonodlrRcDZK+463Wesj7cXnS8k0zwgjbw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l1i6XkI/uUgwOj0Q7YkYCcFQuAAJKkbDZLqilpCi/GItrDJzJ0I+AmlZMYwlDODKu8ArNLJEoIfM9gbUkoIz/42CTJo34rYH9xxXsQ59PrxXXXpToTne4TE2PxWaA3zdEnOUW0UWMF36qF5SX6Z3y4/+7tgUBxD88upF2ZKdH6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qoAHNn/+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 385A7C433C7;
-	Fri, 23 Feb 2024 08:39:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708677547;
-	bh=/UDfrDS9KwonodlrRcDZK+463Wesj7cXnS8k0zwgjbw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qoAHNn/+PBXxa6O8LLgQzQyGQOtdDop3hBZysdXKh2tXhh+Ri5zvjoNa1G8bNpJFU
-	 3j1wNb1TAAwqVWq19uJZ8qkq9XjDDeqko0Uz65KP1yiSZVcuV0o5+J7z6wgWpdhrbc
-	 OSQfFbpAzTB5NuXvp6pI4e043pnHBj3PiMuxHgaWr2HfMGc57u1Jl4pz9ygUvq1ieE
-	 fpyg6PFMJKMGqKnUgyYhH8qfCogF39tbpoTNzlxmxDsV4di+HboHhslxkSw7h0as+g
-	 F9dO36WvChMmfBHwz5du+PWnvWudQ8slQkYpxYG3NvcrjAh/+8nqy0mvN8i11qyv3P
-	 D7rE73sy0aQrg==
-Date: Fri, 23 Feb 2024 09:38:59 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-Cc: Serge Hallyn <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>, 
-	Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
-	Casey Schaufler <casey@schaufler-ca.com>, Mimi Zohar <zohar@linux.ibm.com>, 
-	Roberto Sassu <roberto.sassu@huawei.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, 
-	Eric Snowberg <eric.snowberg@oracle.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Miklos Szeredi <miklos@szeredi.hu>, 
-	Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, audit@vger.kernel.org, selinux@vger.kernel.org, 
-	linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH v2 18/25] fs: add vfs_set_fscaps()
-Message-ID: <20240223-kehlkopf-zitat-494f00034071@brauner>
-References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
- <20240221-idmap-fscap-refactor-v2-18-3039364623bd@kernel.org>
+	s=arc-20240116; t=1708677814; c=relaxed/simple;
+	bh=iLnJXvuR5lkNWwaRH7mn/a0WJs/BElzIKvl+E/YGsVo=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LZhgZdh9t5hnrldkucy0/UZqzf56oIIF8iUeUtceUwZgvdfVBu4EpLauH0G74Pr8nYOpAmh7IpvYV9J9N7d5II9wtI3Ege/KuQWSqhRY92dn9K8wXQKRUM2zFRuSeocgmEG3qIlWnp23PafXljyNhTNndlfcLJtnAeYZh+Up5/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Th3Q52vzdz1h08B;
+	Fri, 23 Feb 2024 16:41:17 +0800 (CST)
+Received: from canpemm500009.china.huawei.com (unknown [7.192.105.203])
+	by mail.maildlp.com (Postfix) with ESMTPS id C1E871A016B;
+	Fri, 23 Feb 2024 16:43:27 +0800 (CST)
+Received: from localhost.localdomain (10.50.165.33) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 23 Feb 2024 16:43:27 +0800
+From: Yicong Yang <yangyicong@huawei.com>
+To: <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>, <tony@atomide.com>,
+	<linux-kernel@vger.kernel.org>, <linux-serial@vger.kernel.org>
+CC: <john.ogness@linutronix.de>, <andriy.shevchenko@linux.intel.com>,
+	<tglx@linutronix.de>, <yangyicong@hisilicon.com>, <linuxarm@huawei.com>,
+	<prime.zeng@hisilicon.com>, <jonathan.cameron@huawei.com>,
+	<fanghao11@huawei.com>
+Subject: [PATCH v4] serial: port: Don't suspend if the port is still busy
+Date: Fri, 23 Feb 2024 16:39:03 +0800
+Message-ID: <20240223083903.42129-1-yangyicong@huawei.com>
+X-Mailer: git-send-email 2.31.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240221-idmap-fscap-refactor-v2-18-3039364623bd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500009.china.huawei.com (7.192.105.203)
 
-On Wed, Feb 21, 2024 at 03:24:49PM -0600, Seth Forshee (DigitalOcean) wrote:
-> Provide a type-safe interface for setting filesystem capabilities and a
-> generic implementation suitable for most filesystems.
-> 
-> Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
-> ---
->  fs/xattr.c         | 79 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/fs.h |  2 ++
->  2 files changed, 81 insertions(+)
-> 
-> diff --git a/fs/xattr.c b/fs/xattr.c
-> index 10d1b1f78fc2..96de43928a51 100644
-> --- a/fs/xattr.c
-> +++ b/fs/xattr.c
-> @@ -245,6 +245,85 @@ int vfs_get_fscaps(struct mnt_idmap *idmap, struct dentry *dentry,
->  }
->  EXPORT_SYMBOL(vfs_get_fscaps);
->  
-> +static int generic_set_fscaps(struct mnt_idmap *idmap, struct dentry *dentry,
-> +			      const struct vfs_caps *caps, int setxattr_flags)
-> +{
-> +	struct inode *inode = d_inode(dentry);
-> +	struct vfs_ns_cap_data nscaps;
-> +	int size;
+From: Yicong Yang <yangyicong@hisilicon.com>
 
-ssize_t, I believe.
+We accidently met the issue that the bash prompt is not shown after the
+previous command done and until the next input if there's only one CPU
+(In our issue other CPUs are isolated by isolcpus=). Further analysis
+shows it's because the port entering runtime suspend even if there's
+still pending chars in the buffer and the pending chars will only be
+processed in next device resuming. We are using amba-pl011 and the
+problematic flow is like below:
 
-> +
-> +	size = vfs_caps_to_xattr(idmap, i_user_ns(inode), caps,
-> +				 &nscaps, sizeof(nscaps));
-> +	if (size < 0)
-> +		return size;
-> +
-> +	return __vfs_setxattr_noperm(idmap, dentry, XATTR_NAME_CAPS,
-> +				     &nscaps, size, setxattr_flags);
-> +}
-> +
-> +/**
-> + * vfs_set_fscaps - set filesystem capabilities
-> + * @idmap: idmap of the mount the inode was found from
-> + * @dentry: the dentry on which to set filesystem capabilities
-> + * @caps: the filesystem capabilities to be written
-> + * @setxattr_flags: setxattr flags to use when writing the capabilities xattr
-> + *
-> + * This function writes the supplied filesystem capabilities to the dentry.
-> + *
-> + * Return: 0 on success, a negative errno on error.
-> + */
-> +int vfs_set_fscaps(struct mnt_idmap *idmap, struct dentry *dentry,
-> +		   const struct vfs_caps *caps, int setxattr_flags)
-> +{
-> +	struct inode *inode = d_inode(dentry);
-> +	struct inode *delegated_inode = NULL;
-> +	int error;
-> +
-> +retry_deleg:
-> +	inode_lock(inode);
-> +
-> +	error = xattr_permission(idmap, inode, XATTR_NAME_CAPS, MAY_WRITE);
-> +	if (error)
-> +		goto out_inode_unlock;
+Bash                                         kworker
+tty_write()
+  file_tty_write()
+    n_tty_write()
+      uart_write()
+        __uart_start()
+          pm_runtime_get() // wakeup waker
+            queue_work()
+                                             pm_runtime_work()
+                                               rpm_resume()
+                                                status = RPM_RESUMING
+                                                serial_port_runtime_resume()
+                                                  port->ops->start_tx()
+                                                    pl011_tx_chars()
+                                                      uart_write_wakeup()
+        […]
+        __uart_start()
+          pm_runtime_get() < 0 // because runtime status = RPM_RESUMING
+                               // later data are not commit to the port driver
+                                                status = RPM_ACTIVE
+                                                rpm_idle() -> rpm_suspend()
 
-I think this should be
+This patch tries to fix this by checking the port busy before entering
+runtime suspending. A runtime_suspend callback is added for the port
+driver. When entering runtime suspend the callback is invoked, if there's
+still pending chars in the buffer then flush the buffer.
 
-        /*
-         * We only care about restrictions the inode struct itself places upon
-         * us otherwise fscaps aren't subject to any VFS restrictions.
-         */
-        error = may_write_xattr(idmap, inode);
-        if (error)
-                goto out_inode_unlock;
+Cc: Tony Lindgren <tony@atomide.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Jiri Slaby <jirislaby@kernel.org>
+Fixes: 84a9582fd203 ("serial: core: Start managing serial controllers to enable runtime PM")
+Reviewed-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+---
+Change since v3:
+- Drop non-fix change in __serial_port_busy()
+- Use a boolen busy instead of ret per Jiri
+Link: https://lore.kernel.org/all/20240208075216.48915-1-yangyicong@huawei.com/
 
-which is a 1:1 copy of what POSIX ACLs do?
+Change since v2:
+- Narrow the spinlock region per Andy
+- Make __serial_port_busy() return -EBUSY if port has pending chars per Andy
+Thanks.
+Link: https://lore.kernel.org/all/20240206073322.5560-1-yangyicong@huawei.com/
 
-> +	error = security_inode_set_fscaps(idmap, dentry, caps, setxattr_flags);
-> +	if (error)
-> +		goto out_inode_unlock;
-> +
-> +	error = try_break_deleg(inode, &delegated_inode);
-> +	if (error)
-> +		goto out_inode_unlock;
-> +
-> +	if (inode->i_opflags & IOP_XATTR) {
+Change since v1:
+- Use port lock wrapper per John
+- Flush the pending chars and return -EBUSY per Tony.
+Thanks.
+Link: https://lore.kernel.org/all/20240204031957.58176-1-yangyicong@huawei.com/
 
-Fwiw, I think that if we move fscaps off of xattr handlers completely
-this can go away and we can simply rely on ->{g,s}et_fscaps() being
-implemented. But again, that can be in a follow-up series.
+ drivers/tty/serial/serial_port.c | 27 ++++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
 
-> +		if (inode->i_op->set_fscaps)
-> +			error = inode->i_op->set_fscaps(idmap, dentry, caps,
-> +							setxattr_flags);
-> +		else
-> +			error = generic_set_fscaps(idmap, dentry, caps,
-> +						   setxattr_flags);
-> +		if (!error) {
-> +			fsnotify_xattr(dentry);
-> +			security_inode_post_set_fscaps(idmap, dentry, caps,
-> +						       setxattr_flags);
-> +		}
-> +	} else if (unlikely(is_bad_inode(inode))) {
-> +		error = -EIO;
-> +	} else {
-> +		error = -EOPNOTSUPP;
-> +	}
-> +
-> +out_inode_unlock:
-> +	inode_unlock(inode);
-> +
-> +	if (delegated_inode) {
-> +		error = break_deleg_wait(&delegated_inode);
-> +		if (!error)
-> +			goto retry_deleg;
-> +	}
-> +
-> +	return error;
-> +}
-> +EXPORT_SYMBOL(vfs_set_fscaps);
-> +
->  int
->  __vfs_setxattr(struct mnt_idmap *idmap, struct dentry *dentry,
->  	       struct inode *inode, const char *name, const void *value,
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index d7cd2467e1ea..4f5d7ed44644 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -2120,6 +2120,8 @@ extern int vfs_get_fscaps_nosec(struct mnt_idmap *idmap, struct dentry *dentry,
->  				struct vfs_caps *caps);
->  extern int vfs_get_fscaps(struct mnt_idmap *idmap, struct dentry *dentry,
->  			  struct vfs_caps *caps);
-> +extern int vfs_set_fscaps(struct mnt_idmap *idmap, struct dentry *dentry,
-> +			  const struct vfs_caps *caps, int setxattr_flags);
+diff --git a/drivers/tty/serial/serial_port.c b/drivers/tty/serial/serial_port.c
+index 88975a4df306..1843c9ef7c49 100644
+--- a/drivers/tty/serial/serial_port.c
++++ b/drivers/tty/serial/serial_port.c
+@@ -46,8 +46,33 @@ static int serial_port_runtime_resume(struct device *dev)
+ 	return 0;
+ }
+ 
++static int serial_port_runtime_suspend(struct device *dev)
++{
++	struct serial_port_device *port_dev = to_serial_base_port_device(dev);
++	struct uart_port *port;
++	unsigned long flags;
++	bool busy;
++
++	port = port_dev->port;
++
++	if (port->flags & UPF_DEAD)
++		return 0;
++
++	uart_port_lock_irqsave(port, &flags);
++	busy = __serial_port_busy(port);
++	if (busy)
++		port->ops->start_tx(port);
++	uart_port_unlock_irqrestore(port, flags);
++
++	if (busy)
++		pm_runtime_mark_last_busy(dev);
++
++	return busy ? -EBUSY : 0;
++}
++
+ static DEFINE_RUNTIME_DEV_PM_OPS(serial_port_pm,
+-				 NULL, serial_port_runtime_resume, NULL);
++				 serial_port_runtime_suspend,
++				 serial_port_runtime_resume, NULL);
+ 
+ static int serial_port_probe(struct device *dev)
+ {
+-- 
+2.24.0
 
-Please drop the extern.
 
