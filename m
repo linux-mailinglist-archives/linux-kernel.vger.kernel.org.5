@@ -1,88 +1,89 @@
-Return-Path: <linux-kernel+bounces-78684-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78685-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8292F86172E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:12:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D3A8861730
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:12:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD8941C21BC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:12:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCAAE28C94A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:12:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66CFC84A2C;
-	Fri, 23 Feb 2024 16:12:07 +0000 (UTC)
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D45FB84A36;
+	Fri, 23 Feb 2024 16:12:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TgiNb3HX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6093405C7;
-	Fri, 23 Feb 2024 16:12:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FBA3405C7;
+	Fri, 23 Feb 2024 16:12:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708704727; cv=none; b=d4n8TCdBl5+StkLpiCzBwTGwZB8R86+ksItWKkw/RQFqPeu8Uq90RrpthvmZScYnfXMToobS8Obxy55xhHm2KKgKAeYO1dqu3lxfan2JluV21QZ3h66pL9OPkmGP4y/ApSdR+8f8KizL1qZdT0jzLHGaiw2azCyBjqSwBU3L0dY=
+	t=1708704737; cv=none; b=L+oscrW1ajSMg12R3i5OfAe/MZXGDl1jHD+LbkBmNkAI4vXIaoaPSg8sdmgmskqHEyEW+sMwH1kI8xuCj3X5AoE5/oqmfVIK8tHFCquEex1bEgL4JZ0QgIfQSI3ssvOlPNzeO6hZkZEzpwWwkZKi8IDVXnv1dphA7+ORAOxG0Gk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708704727; c=relaxed/simple;
-	bh=IYZqpnDB3Z2+5OZRzz3nhcxs9MGkwIv0jltubSu1ZvA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QW7JDYsl+HDLXdAeeX7rzyk0jzfx90KF8ov716x/wxGWCo/XLeOTLYnk1cdgcDR0MuL+K3TblI/ZqCUDXMDIXu89baK7Dlrh+lSbCL2JfHz6r+G51CfdxHtseevXYZoZv14oqqaUdrduRa0P2yztlGKLIWRUIhEsnhizBBWgVrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e47c503fb5so703238b3a.2;
-        Fri, 23 Feb 2024 08:12:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708704725; x=1709309525;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IYZqpnDB3Z2+5OZRzz3nhcxs9MGkwIv0jltubSu1ZvA=;
-        b=roLdd85Bv8xTcnyoKQZE5NWzYzLElKQMAjtIFUgn5Yjx32FSAD0QIuZW+ttcz5CS3B
-         86JDfG5qrU5XuenY7Hi9xZyZrcJM3mhDgBaVELwn7Rve+xKDepSBvsk5yKDh2vjpZtph
-         uKNnubWZqUGvzpcwKIJ1h/av7e0otmOi9LYxaoW1otG2rBPeZvMOVYkrEPe7100O+jEG
-         yb8qlahu4Bhdi/QHfqoOQvaKgUtCPCEpOX15kiPmBjlE2t1t3hCRPjxF/L+NEC0IRR5Y
-         zNcMk/aRbfW3kKKTcK/ddsUIRN1/qrl2NWw5X52HcTEptkM8G7EyN4LQv+CLJEq9OYwY
-         KwhA==
-X-Forwarded-Encrypted: i=1; AJvYcCVLNDVOR9gr1buL6CMNVPbZydbWY4isv16mR+lyZvbKEhXqSWInm7QBJzvJrfeOmZkA8RXcIgs1sP98jV015r4Aj9wTi2el/KyOTU0=
-X-Gm-Message-State: AOJu0YwGgkCS/qF1UvdAO6oYGctC1Sg73yHzPOV21prmIIbflfRlZgr2
-	mmtixusGr67NI9QNYA5iwuWISicIrh+j9CHPtQ32TAZepP7ciozt
-X-Google-Smtp-Source: AGHT+IHzpuQcMVcAUWd8AjHuQZlT1DFNC2jSXD7wC37QFNhWnipL/1e5mN9eWMwtB7J/g5vvfb7brw==
-X-Received: by 2002:a05:6a00:929f:b0:6e4:d868:ac35 with SMTP id jw31-20020a056a00929f00b006e4d868ac35mr298726pfb.19.1708704724846;
-        Fri, 23 Feb 2024 08:12:04 -0800 (PST)
-Received: from [192.168.51.14] (c-73-231-117-72.hsd1.ca.comcast.net. [73.231.117.72])
-        by smtp.gmail.com with ESMTPSA id d24-20020aa78158000000b006e053e98e1csm12993655pfn.136.2024.02.23.08.12.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Feb 2024 08:12:04 -0800 (PST)
-Message-ID: <e079f55d-9e4c-49e5-8389-ac2c2c4ad7c5@acm.org>
-Date: Fri, 23 Feb 2024 08:12:03 -0800
+	s=arc-20240116; t=1708704737; c=relaxed/simple;
+	bh=6Vdkn9yDLgHPAT50DJZjRibJ9yb91Gq41Nl29O4tsYQ=;
+	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=TAmQKKfpsq8zl7ar+RcSWLV5uhMpdfT56ufFG8GLWyFV/H3BFXDWmYvmddSAujBFyhnT+YZz0inB8HZ1zM0JvHIuZpO9YTNW3wtMOzXR1xU1anxHkl43HmseDdrxCYME72SYp8+WmFz+dqBa1O98FFG4FrOrtNpVqhr3CifF0xk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TgiNb3HX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5631C433C7;
+	Fri, 23 Feb 2024 16:12:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708704736;
+	bh=6Vdkn9yDLgHPAT50DJZjRibJ9yb91Gq41Nl29O4tsYQ=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=TgiNb3HXtT5b1DGXjeswMUh4cOyr+uOIP2q2xbcHkQOtOBQIkEYWx86Uc737WvMDV
+	 hsvsAO+P3TCTOW59TMa3a6rHFlVcDNLK5OEDoyFB0skqvC6Y9AS8QtR8LXaXLDhZGG
+	 ACQJyzleCKGp3Pqf19/q4ORqxufsm0i4Pp8b6/jcDZinOLXYv7XBHKfkUVXVMFql2I
+	 i3hT2GwpJVyBvw74+kuwK23LR6/wIMnFGVpLQha4pEeKuv392ew3ZLsbpsqCCEi+8P
+	 ADVKn37HHzSI0W3UGKcOo99KrdP506ClR/MgJI95DoSbPMrktaGpIhoN3G+uPn9pW1
+	 aXSY3cGzA/i5w==
+From: Lee Jones <lee@kernel.org>
+To: lee@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+ conor+dt@kernel.org, bcousson@baylibre.com, tony@atomide.com, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-omap@vger.kernel.org, Andreas Kemnade <andreas@kemnade.info>
+In-Reply-To: <20240217082007.3238948-1-andreas@kemnade.info>
+References: <20240217082007.3238948-1-andreas@kemnade.info>
+Subject: Re: (subset) [PATCH v4 0/5] mfd: twl: system-power-controller
+Message-Id: <170870473441.1731639.3240676194817206962.b4-ty@kernel.org>
+Date: Fri, 23 Feb 2024 16:12:14 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] sched: Add a new function to compare if two cpus
- have the same capacity
-Content-Language: en-US
-To: Qais Yousef <qyousef@layalina.io>, Jens Axboe <axboe@kernel.dk>,
- Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
- Sudeep Holla <sudeep.holla@arm.com>, Wei Wang <wvw@google.com>,
- Jaegeuk Kim <jaegeuk@kernel.org>, Christoph Hellwig <hch@infradead.org>
-References: <20240223155749.2958009-1-qyousef@layalina.io>
- <20240223155749.2958009-2-qyousef@layalina.io>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20240223155749.2958009-2-qyousef@layalina.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.4
 
-On 2/23/24 07:57, Qais Yousef wrote:
-> The new helper function is needed to help blk-mq check if it needs to
-> dispatch the softirq on another CPU to match the performance level the
-> IO requester is running at. This is important on HMP systems where not
-> all CPUs have the same compute capacity.
+On Sat, 17 Feb 2024 09:20:02 +0100, Andreas Kemnade wrote:
+> Add system-power-controller property in the bindings and
+> the corresponding implementation and use it where
+> appropriate.
+> Not all cases are hit yet, there has probably to be a
+> separate series after going through with a brush.
+> 
+> Changes in v4:
+> - fix spelling/grammar
+> - drop twl4030 dts cleanup, it would need an IB
+>   or be postponed till next release
+> 
+> [...]
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Applied, thanks!
+
+[1/5] dt-bindings: mfd: ti,twl: Document system-power-controller
+      commit: 0c7cc7497f6f62a65037e94cf0d885ab0af3c0d3
+[2/5] twl-core: add power off implementation for twl603x
+      commit: ca9414a1d08756c8392f9219caee607e1b7bade1
+[5/5] mfd: twl4030-power: accept standard property for power controller
+      commit: 8ba560ec14267af1169e1f5407fbce514fd4f6f6
+
+--
+Lee Jones [李琼斯]
+
 
