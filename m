@@ -1,107 +1,148 @@
-Return-Path: <linux-kernel+bounces-78385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 710A38612C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:34:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D7D468612C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:33:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2FAA1C211FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:34:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C29B1C20F74
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:33:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D14007F49A;
-	Fri, 23 Feb 2024 13:33:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B36587EF0F;
+	Fri, 23 Feb 2024 13:33:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="f96jtLrL"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="sQOGblkp";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="//qkOW96";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="sQOGblkp";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="//qkOW96"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D5085D464;
-	Fri, 23 Feb 2024 13:33:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E8157E779;
+	Fri, 23 Feb 2024 13:33:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708695231; cv=none; b=vDsfrLRRBkgfJKMnTZXYTfNIRYHbi7S8Y6b5wpFLKNekAj4UanohXRcsicPvx0y+UaePgdGGXhI4rSm1vGbYrdmBEENKUK0RJtj/oz/FlZKEdVvMrTVhQCGhWiqbCAXnwzXKzH6UFk92OZ0ULsD3wqb8ziHFTomSO36XmoRQBuA=
+	t=1708695226; cv=none; b=ET1xoc9RxMb5Vt+2GgyHUcsnSgcj9ocpD+eN7XQcJUlewETQYH20bpcOGv8V3O5QedkQPjFLzQdc9vuRil2/duGpxAuSxvDi4uywRW5oCF05kgc3ch5JN7CAQhhUi0DCLHWaFccEeJuAMdtdikvUMpe4cODqTtOhzyBVwUTBHsI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708695231; c=relaxed/simple;
-	bh=82xM9lLAtgLWnaztA20ypr52fvBlm2+As3g364oe+eQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UsNRxzzW3cFt/LbakJWqEgzMMXKOSIwK4hNrsICe55JDa4VWRRRG/e7E0oY9aBmr3/SLHgPnnJO20YsI6zQEFq4QDUKcnV98GiRfKJ8mhZPl3+bWIi+fGmKVQ9d+0sFE8NJxAZtr8258kutV3eTu+UOOHJV27Mqid9TCVgOitYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=f96jtLrL; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=4+ALhPuYcxWwH/SNYa5YOlZ50uESGdizB1+wfDCVL6Q=; b=f96jtLrLxOSQvHkUyoney/lDIf
-	FmaOuJUbMaIaJWb68rnYYopini8SwEMs+/Z2Demf58VK+ODk26NoNWyv5auWuhV++Hvw+3siDxLuy
-	i0fxNvz/QCDRQZlZCnFnN+nLG25EodAgJzt2TTO6aKiZFKkm50C/kxQ4KT1Mgt0sPK7/AlY/vcGQI
-	vVvAMiP4R5VaW4IoZ18pgXAkMWWLMGY1vctv9p7STyCLcQxFt0XKHSW8dtMaKCKLOW8oWeNTXDuwF
-	96EoJPaS0Z5aDGzBYVg2v36eOqRP44lT9q1futg2cbejcPzC2Mx7nabzisGxmPR73wn7JE+REyOvf
-	HSI4atHA==;
-Received: from 179-125-75-196-dinamico.pombonet.net.br ([179.125.75.196] helo=quatroqueijos.cascardo.eti.br)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1rdVgK-002gkj-IF; Fri, 23 Feb 2024 14:33:41 +0100
-Date: Fri, 23 Feb 2024 10:33:35 -0300
-From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-To: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	Gwendal Grignou <gwendal@chromium.org>, dlunev@chromium.org
-Subject: Re: [PATCH] fat: ignore .. subdir and always add a link to dirs
-Message-ID: <Zdier5NF7JeiMFx7@quatroqueijos.cascardo.eti.br>
-References: <20240222203013.2649457-1-cascardo@igalia.com>
- <87bk88oskz.fsf@mail.parknet.co.jp>
- <Zdf8qPN5h74MzCQh@quatroqueijos.cascardo.eti.br>
- <874jdzpov7.fsf@mail.parknet.co.jp>
- <87zfvroa1c.fsf@mail.parknet.co.jp>
- <ZdhsYAUCe9GVMnYE@quatroqueijos.cascardo.eti.br>
- <87v86fnz2o.fsf@mail.parknet.co.jp>
+	s=arc-20240116; t=1708695226; c=relaxed/simple;
+	bh=oUxqSzZqQBYpocUGl1L/RrfzZGEAqSdrli9rsNXnAEA=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Ag0ZB5+ue0jrSmBW9sMJg2pI+20vEGDG88cbkaorL4YafyHhn/bodMh4ghe1K/EjwSyBhv05YYWNe6wBUcoSHYRiKUafQTwRjoLMQ2BuP/2iYaXPmZwOvxNIVZ+qkTFciAtxeFWY5afaRGNclhl/6mk88iSD1SJEZr+pkajgqjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=sQOGblkp; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=//qkOW96; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=sQOGblkp; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=//qkOW96; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 99DB51F7AF;
+	Fri, 23 Feb 2024 13:33:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708695222; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Xy9QEdTXAj64w03PMB8hpvq3C4fgdJIvBJUiHqeCNKs=;
+	b=sQOGblkpudeS/4GVdYO+y0hfRHjGaS7DtI/EnNv/KSA+SCT57X8lkNvhpsFlkURQoIT1PX
+	TCuKiNYMXBzPNwu02XHUOozDQKVkFIlpAHfNAYfZGFFEQNPlFgHfBZ7SZXzpLXREQ5mxwD
+	onad0O8k+eR7QwMQsAKRNe3pdENv040=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708695222;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Xy9QEdTXAj64w03PMB8hpvq3C4fgdJIvBJUiHqeCNKs=;
+	b=//qkOW966GRBJzkU2tmypU/yzAVNh+/8vKquYBxXQvmyVVCFoh/4fnprfPCKNObLLjmP/A
+	w/oFQsoXgYc0d5DQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708695222; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Xy9QEdTXAj64w03PMB8hpvq3C4fgdJIvBJUiHqeCNKs=;
+	b=sQOGblkpudeS/4GVdYO+y0hfRHjGaS7DtI/EnNv/KSA+SCT57X8lkNvhpsFlkURQoIT1PX
+	TCuKiNYMXBzPNwu02XHUOozDQKVkFIlpAHfNAYfZGFFEQNPlFgHfBZ7SZXzpLXREQ5mxwD
+	onad0O8k+eR7QwMQsAKRNe3pdENv040=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708695222;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Xy9QEdTXAj64w03PMB8hpvq3C4fgdJIvBJUiHqeCNKs=;
+	b=//qkOW966GRBJzkU2tmypU/yzAVNh+/8vKquYBxXQvmyVVCFoh/4fnprfPCKNObLLjmP/A
+	w/oFQsoXgYc0d5DQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5756A132C7;
+	Fri, 23 Feb 2024 13:33:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 9TTVE7ae2GXyBQAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 23 Feb 2024 13:33:42 +0000
+Date: Fri, 23 Feb 2024 14:33:41 +0100
+Message-ID: <87v86f2tl6.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Gergo Koteles <soyer@irl.hu>
+Cc: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Shenghao Ding <shenghao-ding@ti.com>,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH] ALSA: hda/realtek: tas2781: enable subwoofer volume control
+In-Reply-To: <7ffae10ebba58601d25fe2ff8381a6ae3a926e62.1708687813.git.soyer@irl.hu>
+References: <7ffae10ebba58601d25fe2ff8381a6ae3a926e62.1708687813.git.soyer@irl.hu>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87v86fnz2o.fsf@mail.parknet.co.jp>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -3.27
+X-Spamd-Result: default: False [-3.27 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-2.97)[99.87%]
+X-Spam-Flag: NO
 
-On Fri, Feb 23, 2024 at 09:29:35PM +0900, OGAWA Hirofumi wrote:
-> Thadeu Lima de Souza Cascardo <cascardo@igalia.com> writes:
+On Fri, 23 Feb 2024 12:34:30 +0100,
+Gergo Koteles wrote:
 > 
-> > So far, I have only seen expected correct behavior here: mkdir/rmdir inside the
-> > "bogus" directory works. rmdir of the "bogus" directory works.
-> >
-> > The only idiosyncrasies I can think of is that if neither "." or ".." are
-> > present, the directory will have a link of 1, instead of 2. And when listing
-> > the directory, those entries will not show up.
-> >
-> > Do you expect any of these to be corrected? It will require a more convoluted
-> > change.
-> >
-> > Right now, I think accepting the idiosyncratic behavior for the bogus
-> > filesystems is fine, as long as the correct filesystems continue to behave as
-> > before. Which seems to be the case here as far as my testing has shown.
+> The volume of subwoofer channels is always at maximum with the
+> ALC269_FIXUP_THINKPAD_ACPI chain.
 > 
-> There are many corrupted images, and attacks. Allowing too wide is
-> danger for fs.
+> Use ALC285_FIXUP_THINKPAD_HEADSET_JACK to align it to the master volume.
 > 
-> BTW, this image works and pass fsck on windows? When I quickly tested
-> ev3fs.zip (https://github.com/microsoft/pxt-ev3/issues/980) on windows
-> on qemu, it didn't seem recognized as FAT. I can wrongly tested though.
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=208555#c827
 > 
-> Thanks.
-> -- 
-> OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+> Fixes: 3babae915f4c ("ALSA: hda/tas2781: Add tas2781 HDA driver")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Gergo Koteles <soyer@irl.hu>
 
-Testing on FreeDOS, it is able to access the directory and create
-subdirectories there. "." and ".." are missing when using "DIR" command. And
-dosfsck complains about the missing "." and ".." but states it is not able to
-fix those yet. But accessing the directory works nonetheless.
+Thanks, applied.
 
-Cascardo.
+
+Takashi
 
