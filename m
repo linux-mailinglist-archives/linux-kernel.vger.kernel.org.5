@@ -1,111 +1,98 @@
-Return-Path: <linux-kernel+bounces-77643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77646-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87B9D860867
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:40:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E40F0860870
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:43:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D829280721
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:40:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 205D81C2207B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 01:43:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA2168831;
-	Fri, 23 Feb 2024 01:39:40 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A207B665;
+	Fri, 23 Feb 2024 01:43:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="U5ELMvfu"
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF0EEAD4C
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 01:39:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69352AD4B
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 01:43:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708652380; cv=none; b=RqOJo+hcsC/HKXbStmIDRVpiWioi4i2DPCNyQL0cp5uyaai2uu9Yp53Z3TEYTqdqVVzyB/AG6U5puFIcE/H+GeyrYs8lawbNTSF4LQ68PMb8jdqSwZaWDJkVh/a48Zh70JwO18MndvvbITHKQTulh6jO3QHntUhRYd6HaDBCxgQ=
+	t=1708652624; cv=none; b=JV0O6I8Qt6bvWijxD1eOEasRb+RNL55YjXIXxcTPcJjqZ7JrLZQdFtT2uxNZWsEouSImBw1tEjIwOGseM9XNvMG79mL441TzZuZT9WZte1Wa4skxOQhVnhxSQtcKzKGZ3KsnZdTnqdugkrECg/x2SZDBsUhv3c5rNa0qKgppoCU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708652380; c=relaxed/simple;
-	bh=w6a/lM4JOOIkaLGjwoIWUqUMup/m3aYFAur7x35KVXg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ceiFJDn5bGNnDBBFnkG7HqQLeMmvSPN2Qd46Bdq+/XHLUBg6EKKg2RifaxEtYnID1AFrt6ZyA0tffZ7ASSLDy/rrLn88yqF7OZ77vIRqNupYrqLuBKT8DElyUsxD+dU9lLBSMtnEYseLXAwNIHKAbgeM1bKacYMSyp63cS2wGTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Tgsxm2fPGz1FLGY;
-	Fri, 23 Feb 2024 09:34:36 +0800 (CST)
-Received: from dggpemd100004.china.huawei.com (unknown [7.185.36.20])
-	by mail.maildlp.com (Postfix) with ESMTPS id D2FDA1A016B;
-	Fri, 23 Feb 2024 09:39:29 +0800 (CST)
-Received: from [10.67.109.211] (10.67.109.211) by
- dggpemd100004.china.huawei.com (7.185.36.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Fri, 23 Feb 2024 09:39:29 +0800
-Message-ID: <7396cdc0-e878-48fe-85b9-d88611d28444@huawei.com>
-Date: Fri, 23 Feb 2024 09:39:29 +0800
+	s=arc-20240116; t=1708652624; c=relaxed/simple;
+	bh=Q68JTkmTvaca/7XKfrcLjsI6zB7P1f/ULoMPv/7Ii5w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=B5fXSpG0gWLcRrA0/H55a0n8x5D/QmmdskWw4MUEJSncOZ5JxR3i0v6zJfoAcxxUX1mtrsYhfCGjzm44qQu29kMJJ9UchwQ4KBdm0IrBJjsOHb9UWKI17Fbs6Yp9oyOS1xdtgs/aLU7zjk8Z+aA/qx/O2XB/GGYEkaygWD35RhU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=U5ELMvfu; arc=none smtp.client-ip=209.85.222.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-787ad0290adso14527885a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 17:43:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1708652622; x=1709257422; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q68JTkmTvaca/7XKfrcLjsI6zB7P1f/ULoMPv/7Ii5w=;
+        b=U5ELMvfumvWRZxc/bD8Twdo0zXNP3rsWj1d+412tg8j3RX+yq33iZuepVo3BoPUWgo
+         Ma7Y/s4eA7a6jmOUQ18rqRMAxyBL6ZTZ6M8xniCDXm4E/D2/dLrhfyBZIs9Yn+2/Vkz5
+         h34XJMer6kALIED5dF7tW7/b5BRm9qGSitzxk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708652622; x=1709257422;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Q68JTkmTvaca/7XKfrcLjsI6zB7P1f/ULoMPv/7Ii5w=;
+        b=Uck2BT1sAkUPsOLcnT79dpkdFABsajWhscbKNQktdACH5tl0Tx67Oly4ndHAfQDoNr
+         R2Ro7yka/26BqUfizFcElIpmtC3I2r5nZTBcpmhPed5htqb6w9B1qf6XE7/xn+LtqJiN
+         Ksc3IwBG8MYSoxF6T/vgkyuF95wFefKzTGtbx7l+zahEcZElOjYynLBh7ksYk3ettPBV
+         zyKSRLsDOGFPI8gEGIkES8iu+mbIF317WGmEJoXkvuZeybPEwV0Oi+ObtxYFqP05jB/u
+         TYRxtNKqNod5dYugjkRjner7dJn9hk46oCXKQWzOwXEDHkiZrbq6UV29rVQL0k7deV3b
+         uftw==
+X-Forwarded-Encrypted: i=1; AJvYcCVbXnlqTq0rH8N4dpJhOv+5XhXIJ0poxU9aEWE5mMkcrB0Cv9lUEGrNptbKuqJtOqrzwLUYljUSgb7Uzoo8SsROJQb2kcKEShRHnZhf
+X-Gm-Message-State: AOJu0Yz7uvmtQUG077rbUZx2efNUgu40QOySn5+MXvy6DvlpxIjIpbQf
+	v34Ivvya19q8zAaWkADenEwNK2veNw3Ie4YoHFMMdY/mr3kPwG74QnCL5QstfvuFF4NfyqMcb96
+	YZBbbbKyY3Loyp4cpzgGfNMb5JYpMqjT+Wk/g
+X-Google-Smtp-Source: AGHT+IE+61R6YeJrVypveqB8cGLlYKqNb6UwFmpsKtWuEUYQ3EDm9X5NTDZSuB7qWlGuX0b0wwD3TT+QJpZoN+s/kZE=
+X-Received: by 2002:a0c:d988:0:b0:68f:6a2e:cfc5 with SMTP id
+ y8-20020a0cd988000000b0068f6a2ecfc5mr872706qvj.5.1708652622374; Thu, 22 Feb
+ 2024 17:43:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] arm32: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-Content-Language: en-US
-To: Arnd Bergmann <arnd@arndb.de>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-CC: Russell King <linux@armlinux.org.uk>, Andrew Davis <afd@ti.com>, Andrew
- Morton <akpm@linux-foundation.org>, "Kirill A. Shutemov"
-	<kirill.shutemov@linux.intel.com>, Geert Uytterhoeven
-	<geert+renesas@glider.be>, Jonathan Corbet <corbet@lwn.net>, Mike Rapoport
-	<rppt@kernel.org>, Eric DeVolder <eric.devolder@oracle.com>, Rob Herring
-	<robh@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Linus Walleij
-	<linus.walleij@linaro.org>
-References: <20240220081527.23408-1-liuyuntao12@huawei.com>
- <1342759e-b967-4ec4-98d5-48146f81f695@app.fastmail.com>
- <38c09a4b-69cc-4dc5-8a68-e5f5597613ac@huawei.com>
- <30b01c65-12f2-4ee0-81d5-c7a2da2c36b4@app.fastmail.com>
- <4e9396ca-460b-49ca-818e-73f0a8997b15@huawei.com>
- <58297ee9-4f33-4b3b-bd00-b44e86965892@app.fastmail.com>
-From: "liuyuntao (F)" <liuyuntao12@huawei.com>
-In-Reply-To: <58297ee9-4f33-4b3b-bd00-b44e86965892@app.fastmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemd100004.china.huawei.com (7.185.36.20)
+References: <20240223010328.2826774-1-jthies@google.com> <20240223010328.2826774-2-jthies@google.com>
+In-Reply-To: <20240223010328.2826774-2-jthies@google.com>
+From: Prashant Malani <pmalani@chromium.org>
+Date: Thu, 22 Feb 2024 17:43:30 -0800
+Message-ID: <CACeCKadU+A=ydQq_pQdfwQ3qLT=ydLt6PPdLNQaqbzH53W2D9A@mail.gmail.com>
+Subject: Re: [PATCH 1/4] usb: typec: ucsi: Clean up UCSI_CABLE_PROP macros
+To: Jameson Thies <jthies@google.com>
+Cc: heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org, 
+	bleung@google.com, abhishekpandit@chromium.org, andersson@kernel.org, 
+	dmitry.baryshkov@linaro.org, fabrice.gasnier@foss.st.com, 
+	gregkh@linuxfoundation.org, hdegoede@redhat.com, neil.armstrong@linaro.org, 
+	rajaram.regupathy@intel.com, saranya.gopal@intel.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Feb 22, 2024 at 5:04=E2=80=AFPM Jameson Thies <jthies@google.com> w=
+rote:
+>
+> Clean up UCSI_CABLE_PROP macros by fixing a bitmask shifting error for
+> plug type and updating the modal support macro for consistent naming.
+>
+> Fixes: 3cf657f07918 ("usb: typec: ucsi: Remove all bit-fields")
+> Signed-off-by: Jameson Thies <jthies@google.com>
+ I think you should CC stable@ for this patch.
 
-
-On 2024/2/23 0:04, Arnd Bergmann wrote:
-> On Thu, Feb 22, 2024, at 12:24, liuyuntao (F) wrote:
->>
->> The position of the caret has been moved below the right brace
->> of { KEEP(*(.vectors.bhb.loop8)) }, indicating that lld is treating
->> the entire `KEEP(*(.vectors))` as a file name. This could potentially be
->> a bug in lld. Perhaps we can temporarily
->> enable the DCE option only when option LD_IS_LLD is disabled,
->> like risc-v:
->>
->> `select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !LD_IS_LLD`.
-> 
-> I would really like to see this working with lld if at all
-> possible, as it allows the combination of gc-sections with
-> lto and CONFIG_TRIM_UNUSED_KSYMS.
-> 
-> I experimented with lld myself now and I did get a booting
-> kernel even without the the KEEP() on the vectors. I also
-
-When the kernel booted up successfully, was config DCE enabled?
-
-> see that this is the only use of OVERLAY in the kernel, so
-> I hope that we can find a way to make it work with existing
-> lld after all, either without the KEEP or without the OVERLAY.
-
-Yeah, i will try other way to make it work.
-
-> 
-> Did you see any problems without the KEEP() on the vectors?
-> 
->       Arnd
-
-Without the KEEP(),disable DCE, qemu boots well,
-enable DCE,qemu hangs on startup.
-I experimented with lld using vexpress_defconfig.
+That apart:
+Reviewed-by: Prashant Malani <pmalani@chromium.org>
 
