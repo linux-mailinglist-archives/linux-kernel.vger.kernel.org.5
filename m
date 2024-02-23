@@ -1,246 +1,196 @@
-Return-Path: <linux-kernel+bounces-79218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A3F8861F18
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:37:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A1815861F1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:39:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF0591F26CBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:37:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 175321F27A2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:39:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C68BB1493AE;
-	Fri, 23 Feb 2024 21:37:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3235F14A0A9;
+	Fri, 23 Feb 2024 21:39:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TN9HRta6"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ENo7FEAO"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D656148FE2
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 21:37:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB4CA145B1B;
+	Fri, 23 Feb 2024 21:39:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708724223; cv=none; b=bBHNPE1DXDg8IG6jEryPQyFOU66BbKeN4LQ1U7FAhR4dFe30BdOmFvQi1zaRrPCaVwttpTdVe+AAjAzMwzGqCxeUwaHrdQnDMzoh8ZRbSw2HWjazx6HUIlSKIQCPGOZrLSpqQltPymrKVt6y/UjoW+vKznEGn6BMvRM5KQGGBEc=
+	t=1708724372; cv=none; b=pAyHt3TNgWgEbL8PxRzkcUIPUrkSJv17U1QrPR/VGghPyJtka58qp5ruM9Y5jPWQa7aym+5w48ELfEQwCyolhLNjaigq5/OR0Ou8ewRKmRje/tsND/jq8p5tphQ6iFGXWiIWnL/RdEF0twUxGmDjECkVLxNmeb0UrvbI66TdSdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708724223; c=relaxed/simple;
-	bh=iCUi6Iury85zHUH4wfyMGLL10JEW8BC43mKqU1s74lc=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=EaKPUKFiCpeg8EqkMDfMZ3viklJqaI0AzmugLqKslnEvSpbGE+NpTRQPwnahs+Ih2vpGSPNec5zTS3U4HDKu7uo6amQJ0hXaJ2+wrxm1R+OaPyal0WhSIvF2pxG+ORuLEnsMmuxqCM5tJRbN0BssUS9X5OM+yAEIPSUbJufbQ+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TN9HRta6; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708724222; x=1740260222;
-  h=date:from:to:cc:subject:message-id;
-  bh=iCUi6Iury85zHUH4wfyMGLL10JEW8BC43mKqU1s74lc=;
-  b=TN9HRta6BYGiEQS598Un+IPN6WyKDa8anKjU8FCQfalL0keXyZRJoeBr
-   Rhx48YdiQVz9NmB6Ru1IrpAH6M1OUdqgElOhtMkXpbof+sV0a9WZawrqS
-   EP6J1i9whKfjcNYRYQRUIfKLe9t6wqtQqgXgelUVJalVmB+3e2ihTAWUa
-   8WDb/r5MgWadsoVWZd6ljhoVwes/WCleIWnBjKgqH/CE/5HLGN55p6Zly
-   mynbMp16DgcFc1TDgLEyxTu/EGFRhY5zftorKF7QgpaBVbK1AGHtnuSo8
-   //YaFo8UWh//t+k+N2A32PQTwjAP8z44N1E4nGQUfFXxc0ieXwpGw6Rkc
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="3576570"
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="3576570"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 13:37:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="6440955"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by orviesa006.jf.intel.com with ESMTP; 23 Feb 2024 13:37:00 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rddE1-0007v4-2X;
-	Fri, 23 Feb 2024 21:36:57 +0000
-Date: Sat, 24 Feb 2024 05:36:55 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:dev.2024.02.17a] BUILD SUCCESS
- e72d464faeb0279da4dd8411b369587fab127db3
-Message-ID: <202402240552.SIMmqveV-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1708724372; c=relaxed/simple;
+	bh=mq4SvG7SWA3etLr2nckw6IZrUzeAQQs1+Xf7aQM2F50=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oExkVCkvRwH6usz0JiTdAr0HupLTeDpIs4R2Zk+orlEa2O41srQSjr0+T1UkXcLfi/K5ApZKvZyLKpjFxuvXwQ2DvuCT4QN0AzY5vEbehaGg1HZeaaqXufTf3AfZzZo/MSl5m+aW7F0PL9wjC7pfBmeqoyFWzerZLQQqWP9AK7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ENo7FEAO; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-512be6fda52so1100916e87.0;
+        Fri, 23 Feb 2024 13:39:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708724369; x=1709329169; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=b6ujNt33DTW/nBjyL7svpOEhORGOnWdQHD+ihLBARuc=;
+        b=ENo7FEAOiw5SujziZWfueLNqlNV+VqhqnCq3Huje4sRodxSy2xxf2gYkt/aFCZheCc
+         biEny9+07ttUxKxHyuVc5DttrZoZU+NBlgYm6Gyhn6tJMOBhiT1ic5y86B5uN52zhg5S
+         GllIY7JxoeZuoFQCg3OK79FOoGqdse0lwjOtFaNPM9bOgmfPOKK/SBl27sWqNWhJlq34
+         v37cfgwDRZUGYSszOxpgl9XAIPnHzzvF2Zcx3sNCt0pwX8pAtPclsuLbX4Necr+auPtN
+         RW7ATJfGb61Wu5FEdpgSjcEWdeSRyqIBqKnDaKRTfE4u5wSdzsHhCTpJRD92ed5UHYm/
+         n7Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708724369; x=1709329169;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=b6ujNt33DTW/nBjyL7svpOEhORGOnWdQHD+ihLBARuc=;
+        b=qDTP+pdUISDBiVkuLV2C2DUWONURcCiPf7BRnWqr5Xlrdg7s+/+RsxaO8a10pbGv3T
+         p4/hB0MkYdVOtqHmNC1JdTwTv+WNu3pfCPAe0/OT7uisjyYU0jbbV5M5C5s3PEhVvH9t
+         DghpcvhQCmtajnGc2ii0QV2/XytUt/Gt7ZimYlbrpaoTsobJkGSNBTq5Jflhw0LIKgAK
+         RzCzWdjQ2+9q8UYrufJ+pvTL4lVa2gczr1dhkj5qATnjM8kjm0wJNzRZjS4ZISduXY4a
+         1+MdqD+6kuDSbk1T3sR9ktBux4Rgz5lsXX/1KeE2plYn+KXRyYRKvKztSQV9EvV2Y2hA
+         7TTw==
+X-Forwarded-Encrypted: i=1; AJvYcCW0t6HF2ztu6hduXlISLWJTbX9CCIe0yyjqbAwvYFeVeva4/jZZcHF2ljXivdwubpVxfHrQrJr/kzDvrNFOrSAfNO/IsYy78o8EkIcHaUOHnJk9tljDG6bB8awYYaBH1Insk8p3VBbNHw9SO5aj
+X-Gm-Message-State: AOJu0Yyud9WO17h0h67lkwnx5SZ9o+JdfP0hsDtC24o1D1AvKzlHdxFz
+	nbSNmp0MH85KsfC+iu6IXc63JOIdZNK23GsMMTl/CNbGSVaiC58GYdFStyFMsW8=
+X-Google-Smtp-Source: AGHT+IE/jus2VH97rc84MPtCtfaDJv1OQqDINTjfWmlepN0n6jUlYDIvv/ERKNvEZ8opvrKDyUtjTg==
+X-Received: by 2002:a05:6512:614:b0:512:e51f:b58 with SMTP id b20-20020a056512061400b00512e51f0b58mr665816lfe.24.1708724368494;
+        Fri, 23 Feb 2024 13:39:28 -0800 (PST)
+Received: from localhost.localdomain ([94.19.228.143])
+        by smtp.gmail.com with ESMTPSA id i1-20020ac25b41000000b005114ee99515sm2584897lfp.220.2024.02.23.13.39.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 13:39:27 -0800 (PST)
+From: Andrey Skvortsov <andrej.skvortzov@gmail.com>
+To: Marcel Holtmann <marcel@holtmann.org>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	Hilda Wu <hildawu@realtek.com>,
+	Alex Lu <alex_lu@realsil.com.cn>,
+	linux-bluetooth@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Arnaud Ferraris <arnaud.ferraris@collabora.com>,
+	Andrey Skvortsov <andrej.skvortzov@gmail.com>
+Subject: [PATCH 0/2] Bluetooth: btrtl: fix out of bounds memory access
+Date: Sat, 24 Feb 2024 00:37:02 +0300
+Message-ID: <20240223213704.290849-1-andrej.skvortzov@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2024.02.17a
-branch HEAD: e72d464faeb0279da4dd8411b369587fab127db3  squash! rcu-tasks: Maintain real-time response in rcu_tasks_postscan()
+The problem is detected by KASAN.
+btrtl driver uses private hci data to store 'struct btrealtek_data'.
+If btrtl driver is used with btusb, then memory for private hci data
+is allocated in btusb. But no private data is allocated after hci_dev,
+when btrtl is used with hci_h5.
 
-elapsed time: 1171m
+These commits add memory allocation for hci_h5 case.
 
-configs tested: 158
-configs skipped: 3
+ ==================================================================
+ BUG: KASAN: slab-out-of-bounds in btrtl_initialize+0x6cc/0x958 [btrtl]
+ Write of size 8 at addr ffff00000f5a5748 by task kworker/u9:0/76
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+ Hardware name: Pine64 PinePhone (1.2) (DT)
+ Workqueue: hci0 hci_power_on [bluetooth]
+ Call trace:
+  dump_backtrace+0x9c/0x128
+  show_stack+0x20/0x38
+  dump_stack_lvl+0x48/0x60
+  print_report+0xf8/0x5d8
+  kasan_report+0x90/0xd0
+  __asan_store8+0x9c/0xc0
+  	 [btrtl]
+  h5_btrtl_setup+0xd0/0x2f8 [hci_uart]
+  h5_setup+0x50/0x80 [hci_uart]
+  hci_uart_setup+0xd4/0x260 [hci_uart]
+  hci_dev_open_sync+0x1cc/0xf68 [bluetooth]
+  hci_dev_do_open+0x34/0x90 [bluetooth]
+  hci_power_on+0xc4/0x3c8 [bluetooth]
+  process_one_work+0x328/0x6f0
+  worker_thread+0x410/0x778
+  kthread+0x168/0x178
+  ret_from_fork+0x10/0x20
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                          axs101_defconfig   gcc  
-arc                                 defconfig   gcc  
-arc                         haps_hs_defconfig   gcc  
-arc                     haps_hs_smp_defconfig   gcc  
-arc                   randconfig-001-20240223   gcc  
-arc                   randconfig-002-20240223   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                       aspeed_g5_defconfig   gcc  
-arm                                 defconfig   clang
-arm                          moxart_defconfig   gcc  
-arm                           omap1_defconfig   gcc  
-arm                             pxa_defconfig   gcc  
-arm                   randconfig-001-20240223   gcc  
-arm                   randconfig-004-20240223   gcc  
-arm                         s3c6400_defconfig   gcc  
-arm                           spitz_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-002-20240223   gcc  
-arm64                 randconfig-004-20240223   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240223   gcc  
-csky                  randconfig-002-20240223   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-006-20240223   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240223   clang
-i386                  randconfig-006-20240223   clang
-i386                  randconfig-013-20240223   clang
-i386                  randconfig-014-20240223   clang
-i386                  randconfig-015-20240223   clang
-i386                  randconfig-016-20240223   clang
-loongarch                        alldefconfig   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240223   gcc  
-loongarch             randconfig-002-20240223   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                          amiga_defconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                        stmark2_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240223   gcc  
-nios2                 randconfig-002-20240223   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240223   gcc  
-parisc                randconfig-002-20240223   gcc  
-parisc64                            defconfig   gcc  
-powerpc                    adder875_defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                    amigaone_defconfig   gcc  
-powerpc                     ep8248e_defconfig   gcc  
-powerpc                 xes_mpc85xx_defconfig   gcc  
-powerpc64             randconfig-001-20240223   gcc  
-powerpc64             randconfig-002-20240223   gcc  
-powerpc64             randconfig-003-20240223   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240223   gcc  
-riscv                 randconfig-002-20240223   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240223   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                        edosk7760_defconfig   gcc  
-sh                            hp6xx_defconfig   gcc  
-sh                          r7780mp_defconfig   gcc  
-sh                    randconfig-001-20240223   gcc  
-sh                    randconfig-002-20240223   gcc  
-sh                           se7619_defconfig   gcc  
-sh                        sh7763rdp_defconfig   gcc  
-sh                            shmin_defconfig   gcc  
-sh                             shx3_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240223   gcc  
-sparc64               randconfig-002-20240223   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-002-20240223   gcc  
-um                           x86_64_defconfig   clang
-x86_64                           alldefconfig   gcc  
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-003-20240223   clang
-x86_64       buildonly-randconfig-004-20240223   clang
-x86_64       buildonly-randconfig-006-20240223   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-002-20240223   clang
-x86_64                randconfig-005-20240223   clang
-x86_64                randconfig-013-20240223   clang
-x86_64                randconfig-015-20240223   clang
-x86_64                randconfig-016-20240223   clang
-x86_64                randconfig-074-20240223   clang
-x86_64                randconfig-076-20240223   clang
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                randconfig-001-20240223   gcc  
-xtensa                randconfig-002-20240223   gcc  
+ Allocated by task 53:
+  kasan_save_stack+0x3c/0x68
+  kasan_save_track+0x20/0x40
+  kasan_save_alloc_info+0x68/0x78
+  __kasan_kmalloc+0xd4/0xd8
+  __kmalloc+0x1b4/0x3b0
+  hci_alloc_dev_priv+0x28/0xa58 [bluetooth]
+  hci_uart_register_device+0x118/0x4f8 [hci_uart]
+  h5_serdev_probe+0xf4/0x178 [hci_uart]
+  serdev_drv_probe+0x54/0xa0
+  really_probe+0x254/0x588
+  __driver_probe_device+0xc4/0x210
+  driver_probe_device+0x64/0x160
+  __driver_attach_async_helper+0x88/0x158
+  async_run_entry_fn+0xd0/0x388
+  process_one_work+0x328/0x6f0
+  worker_thread+0x410/0x778
+  kthread+0x168/0x178
+  ret_from_fork+0x10/0x20
+
+ Last potentially related work creation:
+  kasan_save_stack+0x3c/0x68
+  __kasan_record_aux_stack+0xb0/0x150
+  kasan_record_aux_stack_noalloc+0x14/0x20
+  __queue_work+0x33c/0x960
+  queue_work_on+0x98/0xc0
+  hci_recv_frame+0xc8/0x1e8 [bluetooth]
+  h5_complete_rx_pkt+0x2c8/0x800 [hci_uart]
+  h5_rx_payload+0x98/0xb8 [hci_uart]
+  h5_recv+0x158/0x3d8 [hci_uart]
+  hci_uart_receive_buf+0xa0/0xe8 [hci_uart]
+  ttyport_receive_buf+0xac/0x178
+  flush_to_ldisc+0x130/0x2c8
+  process_one_work+0x328/0x6f0
+  worker_thread+0x410/0x778
+  kthread+0x168/0x178
+  ret_from_fork+0x10/0x20
+
+ Second to last potentially related work creation:
+  kasan_save_stack+0x3c/0x68
+  __kasan_record_aux_stack+0xb0/0x150
+  kasan_record_aux_stack_noalloc+0x14/0x20
+  __queue_work+0x788/0x960
+  queue_work_on+0x98/0xc0
+  __hci_cmd_sync_sk+0x23c/0x7a0 [bluetooth]
+  __hci_cmd_sync+0x24/0x38 [bluetooth]
+  btrtl_initialize+0x760/0x958 [btrtl]
+  h5_btrtl_setup+0xd0/0x2f8 [hci_uart]
+  h5_setup+0x50/0x80 [hci_uart]
+  hci_uart_setup+0xd4/0x260 [hci_uart]
+  hci_dev_open_sync+0x1cc/0xf68 [bluetooth]
+  hci_dev_do_open+0x34/0x90 [bluetooth]
+  hci_power_on+0xc4/0x3c8 [bluetooth]
+  process_one_work+0x328/0x6f0
+  worker_thread+0x410/0x778
+  kthread+0x168/0x178
+  ret_from_fork+0x10/0x20
+ ==================================================================
+
+Fixes: 5b355944b190 ("Bluetooth: btrtl: Add btrealtek data struct")
+Fixes: 044014ce85a1 ("Bluetooth: btrtl: Add Realtek devcoredump support")
+Signed-off-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
+
+Andrey Skvortsov (2):
+  Bluetooth: hci_h5: Add ability to allocate memory for private data
+  Bluetooth: btrtl: fix out of bounds memory access
+
+ drivers/bluetooth/hci_h5.c     |  5 ++++-
+ drivers/bluetooth/hci_serdev.c |  9 +++++----
+ drivers/bluetooth/hci_uart.h   | 12 +++++++++++-
+ 3 files changed, 20 insertions(+), 6 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.43.0
+
 
