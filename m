@@ -1,188 +1,199 @@
-Return-Path: <linux-kernel+bounces-78061-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DED2860E84
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:47:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6614E860E93
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:49:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99914B25162
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:47:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BFA6DB272E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:49:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE16D5F463;
-	Fri, 23 Feb 2024 09:44:55 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB87B6024C;
+	Fri, 23 Feb 2024 09:45:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gQb6DXK9"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB4E65CDC3
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 09:44:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B0345D8F0
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 09:45:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708681490; cv=none; b=OlE1unc9hg/gSoNbhvMyW4SXHhd3m5Wfo3pJwoeUIgq2VVVmDTU7r3jJtbe41ntAQn9K5TNOPLjQS+6RO5NMQjQ4RbjwOAc2wOM4vKio73BhRA3yacv+AP/kz4G1gncMqbIUl5ct4Z4EohsNps32KY9bzINXVJ+U6xIgROuWumw=
+	t=1708681508; cv=none; b=DwuplhrOAHaRyLjU51tT2uH4aq1Yk5xCezsyer6QFJd14VtS4UCUxVE7haxQTel88QgyWKq+kG4hADcaO+t3Vi+DeBRf2Ze7RPbQNDdtH3YeXG74r8+TpveS85GcAm4FQRR5ziFEd6+HA7VUZrW3NlvhR4C7jqSYFxI9ntnxrHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708681490; c=relaxed/simple;
-	bh=XKcT45bumpicsgmOQeai5NcHMqk50lyvyruWB4lGLD8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Hsq6pIcRVUYoul4xgBMVZH4owqw14gsSYDkILXJPKtts3AdAXvvYu/gvqOKp7n+5Qtxw+r8fh/tdq0jthMeakp90csBuueOaO47aXEzovCLuccQXP7CoifRYHj8NopL8bSQ2/7z6YU7MlJy8z1Qzk3t41fKtQiA2D66PDz8YT7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rdS6W-00080q-F4; Fri, 23 Feb 2024 10:44:28 +0100
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rdS6V-002Okf-F4; Fri, 23 Feb 2024 10:44:27 +0100
-Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rdS6V-002tqb-1A;
-	Fri, 23 Feb 2024 10:44:27 +0100
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Wei Fang <wei.fang@nxp.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
-	kernel@pengutronix.de,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Shenwei Wang <shenwei.wang@nxp.com>,
-	Clark Wang <xiaoning.wang@nxp.com>,
-	NXP Linux Team <linux-imx@nxp.com>
-Subject: [PATCH net-next v6 8/8] net: fec: Fixup EEE
-Date: Fri, 23 Feb 2024 10:44:25 +0100
-Message-Id: <20240223094425.691209-9-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240223094425.691209-1-o.rempel@pengutronix.de>
-References: <20240223094425.691209-1-o.rempel@pengutronix.de>
+	s=arc-20240116; t=1708681508; c=relaxed/simple;
+	bh=nlADwHXiU4N2bYbFdKbmDq3H7h/qowAgPBvAt1TmE0I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kPs6TPePLmWxgYOpCZQgH/s1fncDrM3awj/2dMVEH6W3OrLDc6qbUrVEnFaVU5eAT7BYWUf5VOgdmv8xUe1dslZ8edbVLgV41yBCSYnZRNEbT2sMqPbk3Xq541UO1vJnVRpsDvD93+TtCwyVWtnG7hipHkB4KwQMXYXu4Yfx+gg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gQb6DXK9; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708681505;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jRfdfPpvcbsTygicFCTkhEAznNGxCZy95wBHIu3kazU=;
+	b=gQb6DXK9JF2l8Akw/qQclp2h40JuRQS0pUvz6Hdivp0pbRiaUbNt0xbgfvvRR++yOlNgG+
+	jkXU1p11+zPMF60/xSRYoOE8Znn0njv9sRJPwz/bbVnoUaK6ZZZLfd762jSNAxSkobtMmz
+	5Bqe+nfonb0GyvmHyNNBtxZapd+AkZU=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-639-BXl5rxYDPxSl28G3dfXfxg-1; Fri, 23 Feb 2024 04:45:03 -0500
+X-MC-Unique: BXl5rxYDPxSl28G3dfXfxg-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-55fee28d93dso337856a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 01:45:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708681502; x=1709286302;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jRfdfPpvcbsTygicFCTkhEAznNGxCZy95wBHIu3kazU=;
+        b=Kg7Cisu3piP4yX/AYvmfu5ILleJ1Yxd95jkeyI/NY5ZNfBgof5XgK4O0dyR/EwfGh7
+         yWZ0jH7UFY3/CiHOU881l6C/DyFYOFZRH0MArmh+qhsCy7iUccJPXDSRPvOYlCDdoh1A
+         f8XNZxSa9G7o98+G9/kJ0/bZAHFdJjQ7nWmWQNet9b9Njaas2Ra9ku28c4ub6iiqrwP+
+         1TQ2QVJvdMiL0EdqcD39mXmZCcaRas2i2sBny4NJNNlr/9X2IzAViHcv5B+7j8eEwfaj
+         YD78rZOmiPsF/PNlz0LFJ6JHS4P5qr+Uh3iv9Sw8hyhVsj3QRHVubKoyH3jj3LK64ODq
+         kDDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXYeEI3SYq3nRTPniSoYZSpEzSkCXW8SG/cJ3/y52qPJbvuwEuwikfNLpzWsrWVPonpw4qlxBrtgiPPW0x21kfmLmZ2AyNMQw+FG7AA
+X-Gm-Message-State: AOJu0YztoKmwETObGDxOIx5PMrlLZCzO8qImcpGx1++2o5F+98WbWkbx
+	MxmmWtLVC7pCNsX+OFm/EkBvN284wJME2JQdhPsQTmEdRKMY3yFRsGPeAu73aqgBej/uQlgDa8j
+	PJcnuU6T9o+6xYNGA0e2qovKL9fu6vsPUZaBNc23zcOKu/9Tt1lOShBe8XOOLLQ==
+X-Received: by 2002:aa7:d61a:0:b0:565:66df:8911 with SMTP id c26-20020aa7d61a000000b0056566df8911mr829569edr.23.1708681502348;
+        Fri, 23 Feb 2024 01:45:02 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHuMH8683DYRbpq6LcJc7yYpMd16t4+gnDIDbjWin5j56q72c6x9PsXt0q/N0ive6BiuPfdQQ==
+X-Received: by 2002:aa7:d61a:0:b0:565:66df:8911 with SMTP id c26-20020aa7d61a000000b0056566df8911mr829552edr.23.1708681501967;
+        Fri, 23 Feb 2024 01:45:01 -0800 (PST)
+Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.googlemail.com with ESMTPSA id r10-20020a056402034a00b0056524c91e18sm1601708edw.2.2024.02.23.01.45.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Feb 2024 01:45:01 -0800 (PST)
+Message-ID: <92a21507-b179-49ca-b0e0-d0aea69ab3a3@redhat.com>
+Date: Fri, 23 Feb 2024 10:44:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 0/8] KVM: allow mapping non-refcounted pages
+Content-Language: en-US
+To: David Stevens <stevensd@chromium.org>,
+ Sean Christopherson <seanjc@google.com>
+Cc: Yu Zhang <yu.c.zhang@linux.intel.com>,
+ Isaku Yamahata <isaku.yamahata@gmail.com>,
+ Zhi Wang <zhi.wang.linux@gmail.com>, Maxim Levitsky <mlevitsk@redhat.com>,
+ kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20240221072528.2702048-1-stevensd@google.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20240221072528.2702048-1-stevensd@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Andrew Lunn <andrew@lunn.ch>
+On 2/21/24 08:25, David Stevens wrote:
+> From: David Stevens <stevensd@chromium.org>
+> 
+> This patch series adds support for mapping VM_IO and VM_PFNMAP memory
+> that is backed by struct pages that aren't currently being refcounted
+> (e.g. tail pages of non-compound higher order allocations) into the
+> guest.
+> 
+> Our use case is virtio-gpu blob resources [1], which directly map host
+> graphics buffers into the guest as "vram" for the virtio-gpu device.
+> This feature currently does not work on systems using the amdgpu driver,
+> as that driver allocates non-compound higher order pages via
+> ttm_pool_alloc_page().
+> 
+> First, this series replaces the gfn_to_pfn_memslot() API with a more
+> extensible kvm_follow_pfn() API. The updated API rearranges
+> gfn_to_pfn_memslot()'s args into a struct and where possible packs the
+> bool arguments into a FOLL_ flags argument. The refactoring changes do
+> not change any behavior.
+> 
+>  From there, this series extends the kvm_follow_pfn() API so that
+> non-refconuted pages can be safely handled. This invloves adding an
+> input parameter to indicate whether the caller can safely use
+> non-refcounted pfns and an output parameter to tell the caller whether
+> or not the returned page is refcounted. This change includes a breaking
+> change, by disallowing non-refcounted pfn mappings by default, as such
+> mappings are unsafe. To allow such systems to continue to function, an
+> opt-in module parameter is added to allow the unsafe behavior.
+> 
+> This series only adds support for non-refcounted pages to x86. Other
+> MMUs can likely be updated without too much difficulty, but it is not
+> needed at this point. Updating other parts of KVM (e.g. pfncache) is not
+> straightforward [2].
 
-The enabling/disabling of EEE in the MAC should happen as a result of
-auto negotiation. So move the enable/disable into
-fec_enet_adjust_link() which gets called by phylib when there is a
-change in link status.
+Looks good to me, apart that two patches were sent twice.  I only have a 
+small comment on patch 4, to which I'll reply separately.
 
-fec_enet_set_eee() now just stores away the LPI timer value.
-Everything else is passed to phylib, so it can correctly setup the
-PHY.
+Paolo
 
-fec_enet_get_eee() relies on phylib doing most of the work,
-the MAC driver just adds the LPI timer value.
-
-Call phy_support_eee() if the quirk is present to indicate the MAC
-actually supports EEE.
-
-Signed-off-by: Andrew Lunn <andrew@lunn.ch>
-Tested-by: Oleksij Rempel <o.rempel@pengutronix.de> (On iMX8MP debix)
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Reviewed-by: Wei Fang <wei.fang@nxp.com>
----
-v2: Only call fec_enet_eee_mode_set for those that support EEE
-v7: update against kernel v6.8-rc4
----
- drivers/net/ethernet/freescale/fec_main.c | 23 +++++------------------
- 1 file changed, 5 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-index a2c786550342..d7693fdf640d 100644
---- a/drivers/net/ethernet/freescale/fec_main.c
-+++ b/drivers/net/ethernet/freescale/fec_main.c
-@@ -2033,13 +2033,8 @@ static int fec_enet_eee_mode_set(struct net_device *ndev, bool enable)
- 	struct fec_enet_private *fep = netdev_priv(ndev);
- 	struct ethtool_keee *p = &fep->eee;
- 	unsigned int sleep_cycle, wake_cycle;
--	int ret = 0;
- 
- 	if (enable) {
--		ret = phy_init_eee(ndev->phydev, false);
--		if (ret)
--			return ret;
--
- 		sleep_cycle = fec_enet_us_to_tx_cycle(ndev, p->tx_lpi_timer);
- 		wake_cycle = sleep_cycle;
- 	} else {
-@@ -2047,8 +2042,6 @@ static int fec_enet_eee_mode_set(struct net_device *ndev, bool enable)
- 		wake_cycle = 0;
- 	}
- 
--	p->tx_lpi_enabled = enable;
--
- 	writel(sleep_cycle, fep->hwp + FEC_LPI_SLEEP);
- 	writel(wake_cycle, fep->hwp + FEC_LPI_WAKE);
- 
-@@ -2094,6 +2087,8 @@ static void fec_enet_adjust_link(struct net_device *ndev)
- 			netif_tx_unlock_bh(ndev);
- 			napi_enable(&fep->napi);
- 		}
-+		if (fep->quirks & FEC_QUIRK_HAS_EEE)
-+			fec_enet_eee_mode_set(ndev, phy_dev->enable_tx_lpi);
- 	} else {
- 		if (fep->link) {
- 			netif_stop_queue(ndev);
-@@ -2453,6 +2448,9 @@ static int fec_enet_mii_probe(struct net_device *ndev)
- 	else
- 		phy_set_max_speed(phy_dev, 100);
- 
-+	if (fep->quirks & FEC_QUIRK_HAS_EEE)
-+		phy_support_eee(phy_dev);
-+
- 	fep->link = 0;
- 	fep->full_duplex = 0;
- 
-@@ -3172,7 +3170,6 @@ fec_enet_get_eee(struct net_device *ndev, struct ethtool_keee *edata)
- 		return -ENETDOWN;
- 
- 	edata->tx_lpi_timer = p->tx_lpi_timer;
--	edata->tx_lpi_enabled = p->tx_lpi_enabled;
- 
- 	return phy_ethtool_get_eee(ndev->phydev, edata);
- }
-@@ -3182,7 +3179,6 @@ fec_enet_set_eee(struct net_device *ndev, struct ethtool_keee *edata)
- {
- 	struct fec_enet_private *fep = netdev_priv(ndev);
- 	struct ethtool_keee *p = &fep->eee;
--	int ret = 0;
- 
- 	if (!(fep->quirks & FEC_QUIRK_HAS_EEE))
- 		return -EOPNOTSUPP;
-@@ -3192,15 +3188,6 @@ fec_enet_set_eee(struct net_device *ndev, struct ethtool_keee *edata)
- 
- 	p->tx_lpi_timer = edata->tx_lpi_timer;
- 
--	if (!edata->eee_enabled || !edata->tx_lpi_enabled ||
--	    !edata->tx_lpi_timer)
--		ret = fec_enet_eee_mode_set(ndev, false);
--	else
--		ret = fec_enet_eee_mode_set(ndev, true);
--
--	if (ret)
--		return ret;
--
- 	return phy_ethtool_set_eee(ndev->phydev, edata);
- }
- 
--- 
-2.39.2
+> [1]
+> https://patchwork.kernel.org/project/dri-devel/cover/20200814024000.2485-1-gurchetansingh@chromium.org/
+> [2] https://lore.kernel.org/all/ZBEEQtmtNPaEqU1i@google.com/
+> 
+> v9 -> v10:
+>   - Re-add FOLL_GET changes.
+>   - Split x86/mmu spte+non-refcount-page patch into two patches.
+>   - Rename 'foll' variables to 'kfp'.
+>   - Properly gate usage of refcount spte bit when it's not available.
+>   - Replace kfm_follow_pfn's is_refcounted_page output parameter with
+>     a struct page *refcounted_page pointing to the page in question.
+>   - Add patch downgrading BUG_ON to WARN_ON_ONCE.
+> v8 -> v9:
+>   - Make paying attention to is_refcounted_page mandatory. This means
+>     that FOLL_GET is no longer necessary. For compatibility with
+>     un-migrated callers, add a temporary parameter to sidestep
+>     ref-counting issues.
+>   - Add allow_unsafe_mappings, which is a breaking change.
+>   - Migrate kvm_vcpu_map and other callsites used by x86 to the new API.
+>   - Drop arm and ppc changes.
+> v7 -> v8:
+>   - Set access bits before releasing mmu_lock.
+>   - Pass FOLL_GET on 32-bit x86 or !tdp_enabled.
+>   - Refactor FOLL_GET handling, add kvm_follow_refcounted_pfn helper.
+>   - Set refcounted bit on >4k pages.
+>   - Add comments and apply formatting suggestions.
+>   - rebase on kvm next branch.
+> v6 -> v7:
+>   - Replace __gfn_to_pfn_memslot with a more flexible __kvm_faultin_pfn,
+>     and extend that API to support non-refcounted pages (complete
+>     rewrite).
+> 
+> David Stevens (7):
+>    KVM: Relax BUG_ON argument validation
+>    KVM: mmu: Introduce kvm_follow_pfn()
+>    KVM: mmu: Improve handling of non-refcounted pfns
+>    KVM: Migrate kvm_vcpu_map() to kvm_follow_pfn()
+>    KVM: x86: Migrate to kvm_follow_pfn()
+>    KVM: x86/mmu: Track if sptes refer to refcounted pages
+>    KVM: x86/mmu: Handle non-refcounted pages
+> 
+> Sean Christopherson (1):
+>    KVM: Assert that a page's refcount is elevated when marking
+>      accessed/dirty
+> 
+>   arch/x86/kvm/mmu/mmu.c          | 104 +++++++---
+>   arch/x86/kvm/mmu/mmu_internal.h |   2 +
+>   arch/x86/kvm/mmu/paging_tmpl.h  |   7 +-
+>   arch/x86/kvm/mmu/spte.c         |   4 +-
+>   arch/x86/kvm/mmu/spte.h         |  22 +-
+>   arch/x86/kvm/mmu/tdp_mmu.c      |  22 +-
+>   arch/x86/kvm/x86.c              |  11 +-
+>   include/linux/kvm_host.h        |  53 ++++-
+>   virt/kvm/guest_memfd.c          |   8 +-
+>   virt/kvm/kvm_main.c             | 349 +++++++++++++++++++-------------
+>   virt/kvm/kvm_mm.h               |   3 +-
+>   virt/kvm/pfncache.c             |  11 +-
+>   12 files changed, 399 insertions(+), 197 deletions(-)
+> 
+> 
+> base-commit: 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478
 
 
