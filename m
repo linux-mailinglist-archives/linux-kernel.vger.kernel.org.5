@@ -1,100 +1,95 @@
-Return-Path: <linux-kernel+bounces-78613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45FAA8615E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:32:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 979C78615E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:33:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4FE42877DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:32:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF3151C24369
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:33:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24BC28287D;
-	Fri, 23 Feb 2024 15:32:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD1A0823D9;
+	Fri, 23 Feb 2024 15:33:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=peacevolution.org header.i=@peacevolution.org header.b="CoCNqIXM"
-Received: from a.peacevolution.org (a.peacevolution.org [206.189.193.133])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="WklkA4+A"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE8846FD1;
-	Fri, 23 Feb 2024 15:32:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=206.189.193.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF2EE10A3E
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 15:33:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708702360; cv=none; b=P/tszB+YSAVYV0Q786wMm6QgQkk91Iue2wQh4CfyR9/RhcNXCbZ37dkeaE14SgQvxGOGbvh0JMvPvLQY+MIMxTYO7+KmeLyc7fHKzgDxVSEBhjTFx0pwf1cySyeo4++cDcU0CrYf7r1KfTX+/GP/HXyP4iHl2TpDyIfdCfgW37s=
+	t=1708702424; cv=none; b=NwbMlPYUn1XNASNJf47B6kPWXlg0mrRZaqU011BYGzB4XBTNmNJYbzirTPVr0YjA0gQlp/Y/xKeiK5CAwMQd2BJgsptd2FcD8gtYhdYvHpFNsSJzGTDIdD5YbXvAS1NnS7vVuDecPO0gJd3kIcaZfmGAZ/FDzETJHqPwInD6rNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708702360; c=relaxed/simple;
-	bh=QwhJ/EhbFImaRF3xYH27wlph7G0Hv+gUoIttDJYn92g=;
+	s=arc-20240116; t=1708702424; c=relaxed/simple;
+	bh=KOyYNN4sawLmarmFXwEDwpnsf8VJet7cZEbLu6KFV6E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rB67kS9OS6SChFk3PIG8ZLKHK0uVXvna7aGJ7TLvsVND8LPci2xiCkrSGHObZzulu3TmyMnJqsSQbEhsWDR7W6CpOlVd1uAj+6EspQhIOqn9CAS8KK/J0K0YIxUbMKOanMy+M4ZkybLtX5QPg+PY/AXEg11g61GOowbVtdHgz0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=peacevolution.org; spf=pass smtp.mailfrom=peacevolution.org; dkim=pass (1024-bit key) header.d=peacevolution.org header.i=@peacevolution.org header.b=CoCNqIXM; arc=none smtp.client-ip=206.189.193.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=peacevolution.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=peacevolution.org
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-	by a.peacevolution.org (Postfix) with ESMTPA id 03147473D0;
-	Fri, 23 Feb 2024 15:32:36 +0000 (UTC)
-Date: Fri, 23 Feb 2024 10:32:34 -0500
-From: Aren <aren@peacevolution.org>
-To: Lee Jones <lee@kernel.org>
-Cc: linux-kernel@vger.kernel.org, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, 
-	Jean-Jacques Hiblot <jjhiblot@traphandler.com>, Chen-Yu Tsai <wens@csie.org>, Ondrej Jirman <megi@xff.cz>, 
-	linux-sunxi@lists.linux.dev, Pavel Machek <pavel@ucw.cz>, 
-	linux-arm-kernel@lists.infradead.org, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	linux-leds@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>, Miles Alan <m@milesalan.com>, 
-	Samuel Holland <samuel@sholland.org>
-Subject: Re: (subset) [PATCH v2 1/4] leds: rgb: leds-group-multicolor: allow
- leds to stay on in suspend
-Message-ID: <hjug4ilzxvtf7in64zw4jcjudzknqh2onvicd5cjuc3e47nl4w@3uiabmqehx5n>
-References: <20240206185400.596979-1-aren@peacevolution.org>
- <170868429025.1582603.10651778411484887304.b4-ty@kernel.org>
- <20240223103537.GA1585387@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Xe3eesYQ7sqXQkoj5Ij54/vDUhC3I04RS8hBRjulSmgG8oodCSxCsxBZQ69eSfRdhminaghBcUePW4lqN7V+u9aepWl3Iv6rJ2P0qYMlvIYryg0jxgUE6OZEFDc1fOfdets40hdGzu2bMVmhF6kkYV6lNnJ8l07wgrkf8TDgcLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=WklkA4+A; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0070C433C7;
+	Fri, 23 Feb 2024 15:33:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1708702423;
+	bh=KOyYNN4sawLmarmFXwEDwpnsf8VJet7cZEbLu6KFV6E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WklkA4+AxcwO46gmT3z1yG2l227y/JSWaLobbiHU7VJEPhujD0rz88AOb7ApI4OKa
+	 6UJgzPc/UGSppjm7cMj1+gjzOclv4TQ9TTVThFjsoQLroDG/pCvtloym/U7RluTaLM
+	 GoWuxI9+2j79t3ttyL7uK1apZC9YL+1JO4bmNcBo=
+Date: Fri, 23 Feb 2024 16:33:40 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Mukesh Ojha <quic_mojha@quicinc.com>, russ.weight@linux.dev,
+	rafael@kernel.org, linux-kernel@vger.kernel.org,
+	cocci@systeme.lip6.fr
+Subject: Re: [PATCH vRFC 3/8] treewide: rename firmware_request_platform()
+Message-ID: <2024022323-accustom-eradicate-8af4@gregkh>
+References: <20240222180033.23775-1-quic_mojha@quicinc.com>
+ <20240222180033.23775-4-quic_mojha@quicinc.com>
+ <2024022347-ribcage-clench-37c4@gregkh>
+ <Zdi2odoYPBWywOXn@bombadil.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240223103537.GA1585387@google.com>
-X-Spamd-Bar: /
-Authentication-Results: auth=pass smtp.auth=aren@peacevolution.org smtp.mailfrom=aren@peacevolution.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=peacevolution.org;
-	s=dkim; t=1708702357;
-	h=from:subject:date:message-id:to:cc:mime-version:content-type:content-transfer-encoding:in-reply-to:references;
-	bh=bw29ITqhOc5CeCA/jH5jxWpEfOX2iQUtCJTOD5NXUhg=;
-	b=CoCNqIXMagBCAcmjTHXGXkYAtAh0zjlljpz2ecGOWTzDEXfRdy9XzNeENx/jrVfOFS/3Uh
-	Bh9wbkJxKqXrTaacPJkPRP6DnmA9E3X0/t9Dizc79YsRX84jJVg8KlnStpJ2ArEIZL8uq7
-	siR4+baxF5E9ExTBYG/xrQJ6/pD4y9s=
+In-Reply-To: <Zdi2odoYPBWywOXn@bombadil.infradead.org>
 
-On Fri, Feb 23, 2024 at 10:35:37AM +0000, Lee Jones wrote:
-> On Fri, 23 Feb 2024, Lee Jones wrote:
-> 
-> > On Tue, 06 Feb 2024 13:13:17 -0500, Aren Moynihan wrote:
-> > > If none of the managed leds enable LED_CORE_SUSPENDRESUME, then we
-> > > shouldn't need to set it here. This makes it possible to use multicolor
-> > > groups with gpio leds that enable retain-state-suspended in the device
-> > > tree.
-> > > 
-> > > 
+On Fri, Feb 23, 2024 at 07:15:45AM -0800, Luis Chamberlain wrote:
+> On Fri, Feb 23, 2024 at 07:21:31AM +0100, Greg KH wrote:
+> > On Thu, Feb 22, 2024 at 11:30:28PM +0530, Mukesh Ojha wrote:
+> > > Rename firmware_request_platform() to request_firmware_platform()
+> > > to be more concrete and align with the name of other request
+> > > firmware family functions.
 > > 
-> > Applied, thanks!
-> > 
-> > [1/4] leds: rgb: leds-group-multicolor: allow leds to stay on in suspend
-> >       commit: 68552911e71d59e62dd5e50e9ac56ebfc32f0c71
+> > Sorry, but no, it should be "noun_verb" for public functions.
 > 
-> Note that I changed a bunch of grammatical issues.
-> 
-> led  => LED
-> gpio => GPIO
-> 
-> Capitalised the first word of the comment, etc.
+> News to me, do we have this documented somewhere?
 
-Awesome, thank you
- - Aren
+Not really, but searching makes it nicer.
 
-> -- 
-> Lee Jones [李琼斯]
+And yes, I violated this in the past in places, and have regretted it...
+
+> > Yes, we mess this up a lot, but keeping the namespace this way works out
+> > better for global symbols, so "firmware_*" is best please.
+> 
+> We should certainly stick to *one* pattern, for the better, and it
+> occurs to me we could further review this with a coccinelle python
+> script for public functions, checking the first two elements of a public
+> function for noun and verb.
+
+Changing the existing function names for no real reason isn't probably a
+good idea, nor worth it.  The firmware_* function prefix is good, let's
+keep it please.
+
+If you really wanted to be picky, we should make them part of a module
+namespace too :)
+
+thanks,
+
+greg k-h
 
