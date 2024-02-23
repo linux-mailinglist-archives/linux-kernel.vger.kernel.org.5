@@ -1,96 +1,66 @@
-Return-Path: <linux-kernel+bounces-78327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78325-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE1E78611F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:51:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 879EC8611EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:50:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C63B2820B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:51:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DD67281D28
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:50:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C145C8C0A;
-	Fri, 23 Feb 2024 12:51:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dbw1DeUE"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8F097C6E9;
+	Fri, 23 Feb 2024 12:49:54 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61D2C7BAE3;
-	Fri, 23 Feb 2024 12:50:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE3976C83
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 12:49:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708692661; cv=none; b=DUMTSpLTq/binFin+Jv3STbRILxT/oUyaYPWPnx6jcvGE8iwoVvTlpRTx1hKAqK0ZSa12odrlcqyp676rh6FtoD1JDzDIl8fF5EW8yP5A9rZJPPse1JsX3rVAcB62QuuabrUyr5fXkXLZSJ4DLcdGKR0WKaRSR3Z7WK25BDevAw=
+	t=1708692594; cv=none; b=M6bHyexWTbfpFDkeF55ZKP1PCTn9W/7KY4HN9AlYm6cnP/C4KNdkmNyde+3TwQX6akLNEEPVedHsC3YUjKVVEESkyjvvj4ouZr0uiu7qOZgXiKZ5B98Hba3FZYiVWS+FF8rvnAZSwv+gMKzQseMhs/JSyGCuAkbU+b9m1P/fNI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708692661; c=relaxed/simple;
-	bh=AVRT8j5RaCn/BZf0gVyzpkugvUL51cHt0DCa7hvPaXg=;
+	s=arc-20240116; t=1708692594; c=relaxed/simple;
+	bh=Z69H1wxWWYdXs8q/7YDlQLtBE7Izos6W67qIanP/aSg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HEgwhczmue+oSVLZmCaNaQjrTM5jiB1qrZURWyxH31++LXakEIFfqDaKwq47unw/TyibxTHHH6q25w5PLeJZHZ4TM9A1cE9wIIKmwblQUea6rZNQGEvba+ovsgWHLfIrbANf+muEeHK5L4wcRALP67SIpjeP6mz68WWProAEhr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dbw1DeUE; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-512b29f82d1so426805e87.1;
-        Fri, 23 Feb 2024 04:50:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708692657; x=1709297457; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:mail-followup-to:message-id:subject:cc:to
-         :from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aUQgrMlkxXtdk899rnSTIJQcALfRj3OIxVsQ4kgw0cA=;
-        b=Dbw1DeUEfT9408bUJ84YxJ6WRaLnkfjPWh8aeEmy2S8Frz3oO0f83JkJydOUG9Z1GQ
-         pXk8EcrhZxkBF1cQoy8ok4W4s9LLm423cAEu2vZPh2mfi8Pdmor8tkMEswUR9+eV5Tun
-         L84XAjmuislsX+qUbNorFqCc54TJO5PKpIZvpuRpzvJsvL0go73hqb943TG2Ji63rk9t
-         62tSZUsr4IuPlMt5dZhmmuBkUu+VcoGddE2jNJPacod0eTb73b7IcUZq+wrah2A3qJvf
-         harfhMXRgUjO7xopTLnU/Q5IY413X08VoMMMTjlB0B4tKGB7mCTjl60LRqgyWLvbfGFl
-         mHYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708692657; x=1709297457;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:mail-followup-to:message-id:subject:cc:to
-         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aUQgrMlkxXtdk899rnSTIJQcALfRj3OIxVsQ4kgw0cA=;
-        b=wlBLQyk/efIA8iOuDeSpIbWkC48FDYhe/nf025zrbJDfA/y81wZj8FrbVBOMWcsbHf
-         Dw4r4ZEUT5E2Fn6wfc4pXNfulIDssha8TpFS2Bi639J8JqdgDQRaZwwFnMzsCXHX6Tl3
-         dsRHXfi1mzk175wij5V5lbiZScDHLxiG9Rd3WUBxOIOisLJJeWNOLCyhjWYieZtiowXp
-         m7SNteLWKo1ft8TrpTUkQ7JOCIdRnYo+cJt4GWhjqVA3fi2VtJ/2VMn0qOK6DJ0OxWRM
-         dv3+JaoYXu2GQfNLWEwtOiOZpKMMH2vZQAamIXZeWWTMfGdXrkDlHs/HZcdsGumgumCs
-         d3Rg==
-X-Forwarded-Encrypted: i=1; AJvYcCVQrgqUGCGAnq5WDlShTUaaF7LU53ctnSnww15hQwX3xtDaN1jXSDK2hFb3gElxNaEDfFD56lXJ8VMdY8+t2vrYY1q1hmteQFJm7qFDMWNm4gH5vZjByqerJfxQzWP/FptZqAoa4w==
-X-Gm-Message-State: AOJu0Yy9YQuLEPwXKSfhJJaIaIU5CjVzOwVxwFs2XHxXqBOAJB8RCClZ
-	kauBMr59AVksAvwUoHylymelgtLZaa3br3rrCiF5XBlCWKuXh7fD
-X-Google-Smtp-Source: AGHT+IGyxqZbZALpef/feNcgy99jXbBBv5LDTEdWJz/Xr+7J9fI7cV8HCU4wHYzxgYTrRBp0/rf7/w==
-X-Received: by 2002:ac2:4e06:0:b0:511:7259:370d with SMTP id e6-20020ac24e06000000b005117259370dmr1625621lfr.33.1708692657238;
-        Fri, 23 Feb 2024 04:50:57 -0800 (PST)
-Received: from localhost ([94.19.228.143])
-        by smtp.gmail.com with ESMTPSA id h17-20020a19ca51000000b00512d863919asm633177lfj.275.2024.02.23.04.50.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 04:50:55 -0800 (PST)
-Date: Fri, 23 Feb 2024 15:48:41 +0300
-From: Andrey Skvortsov <andrej.skvortzov@gmail.com>
-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
-Cc: linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
-	Dalton Durst <dalton@ubports.com>, Shoji Keita <awaittrot@shjk.jp>,
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 3/4] iio: magnetometer: add a driver for Voltafield
- AF8133J magnetometer
-Message-ID: <ZdiUKV7JJQ5TglYM@skv.local>
-Mail-Followup-To: Andrey Skvortsov <andrej.skvortzov@gmail.com>,
-	=?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>,
-	linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
-	Dalton Durst <dalton@ubports.com>, Shoji Keita <awaittrot@shjk.jp>,
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org
-References: <20240222011341.3232645-1-megi@xff.cz>
- <20240222011341.3232645-4-megi@xff.cz>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YNYRcM5pA+r7evnFD7sZmH/H4A0Oj3UjDRHUw8f0VJ3n4Xm+sp2uhWqmM4WWY0gRXNjFKCYd0JXnLt+570RjUhjlMGRXSpd2Bt9QePPbErH0/djFaKkE/HOFFos2QwPQFcEY6Lf/0t3yqHyngb5h/xCzgzSufbJP993EF6yRd48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rdUza-0004PF-08; Fri, 23 Feb 2024 13:49:30 +0100
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rdUzX-002QYz-LA; Fri, 23 Feb 2024 13:49:27 +0100
+Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rdUzX-004HCl-1l;
+	Fri, 23 Feb 2024 13:49:27 +0100
+Date: Fri, 23 Feb 2024 13:49:27 +0100
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Wei Fang <wei.fang@nxp.com>, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, Shenwei Wang <shenwei.wang@nxp.com>,
+	Clark Wang <xiaoning.wang@nxp.com>,
+	NXP Linux Team <linux-imx@nxp.com>
+Subject: Re: [PATCH net-next v6 5/8] net: phy: Immediately call adjust_link
+ if only tx_lpi_enabled changes
+Message-ID: <ZdiUVxHNJ2KV0OYf@pengutronix.de>
+References: <20240223094425.691209-1-o.rempel@pengutronix.de>
+ <20240223094425.691209-6-o.rempel@pengutronix.de>
+ <Zdh1nMWZDynP/AMc@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -99,42 +69,41 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240222011341.3232645-4-megi@xff.cz>
+In-Reply-To: <Zdh1nMWZDynP/AMc@shell.armlinux.org.uk>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Feb 23, 2024 at 10:38:20AM +0000, Russell King (Oracle) wrote:
+> On Fri, Feb 23, 2024 at 10:44:22AM +0100, Oleksij Rempel wrote:
+> > +static void phy_ethtool_set_eee_noneg(struct phy_device *phydev,
+> > +				      struct ethtool_keee *data)
+> > +{
+> > +	if (phydev->eee_cfg.tx_lpi_enabled !=
+> > +	    data->tx_lpi_enabled) {
+> > +		eee_to_eeecfg(data, &phydev->eee_cfg);
+> > +		phydev->enable_tx_lpi = eeecfg_mac_can_tx_lpi(&phydev->eee_cfg);
+> > +		if (phydev->link)
+> > +			phy_link_up(phydev);
+> 
+> I'm not convinced this is a good idea. Hasn't phylib previously had
+> the guarantee that the link will go down between two link-up events?
+> So calling phy_link_up() may result in either the MAC driver ignoring
+> it, or modifying registers that are only supposed to be modified while
+> the MAC side is down.
 
-On 24-02-22 02:13, Ondřej Jirman wrote:
-> From: Icenowy Zheng <icenowy@aosc.io>
-> 
-> AF8133J is a simple I2C-connected magnetometer, without interrupts.
-> 
-> Add a simple IIO driver for it.
-> 
-> Co-developed-by: Icenowy Zheng <icenowy@aosc.io>
-> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
-> Signed-off-by: Dalton Durst <dalton@ubports.com>
-> Signed-off-by: Shoji Keita <awaittrot@shjk.jp>
-> Co-developed-by: Ondrej Jirman <megi@xff.cz>
-> Signed-off-by: Ondrej Jirman <megi@xff.cz>
-> Reviewed-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
-> Tested-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
-> ---
->  drivers/iio/magnetometer/Kconfig   |  12 +
->  drivers/iio/magnetometer/Makefile  |   1 +
->  drivers/iio/magnetometer/af8133j.c | 524 +++++++++++++++++++++++++++++
->  3 files changed, 537 insertions(+)
->  create mode 100644 drivers/iio/magnetometer/af8133j.c
-> 
-> diff --git a/drivers/iio/magnetometer/Kconfig b/drivers/iio/magnetometer/Kconfig
-> index 38532d840f2a..cd2917d71904 100644
-> --- a/drivers/iio/magnetometer/Kconfig
-> +++ b/drivers/iio/magnetometer/Kconfig
-> @@ -6,6 +6,18 @@
+Ok, I'll drop this patch.
 
-I've tested v4 driver again on 6.8-rc5. Works like before.
-
+Regards,
+Oleksij
 -- 
-Best regards,
-Andrey Skvortsov
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
