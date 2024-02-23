@@ -1,92 +1,186 @@
-Return-Path: <linux-kernel+bounces-78421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD40286133B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:49:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99A1986133D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:49:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 675DA286856
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:49:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB2E6B231B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:49:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF6997F7D9;
-	Fri, 23 Feb 2024 13:49:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BF668061C;
+	Fri, 23 Feb 2024 13:49:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qn1mMn3a"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mpvZQopB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dltkzz6g";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mpvZQopB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dltkzz6g"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2ACC7F460;
-	Fri, 23 Feb 2024 13:49:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE9C67F460;
+	Fri, 23 Feb 2024 13:49:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708696154; cv=none; b=TfAgbySi7j/H2IT5ZFWnHviOCi1A+y+OnfG848Iajxi2VBkxgiVzsNzbQX9w77oS2bKBrO1vnLXgO+ObR9pjTfuWr7QxLTjuli/Gm/aSSAnUUmWjCvLSLZsAl05LYWTdO0l9HIwP5R11JHgM8byBeOPuGeTbIZ+1zzxXf/anvjA=
+	t=1708696159; cv=none; b=u+v6jIGCiTTQQBMlul280iRbbW6u3pBlp66RBNXSfLAAnshnHYHiqVJHn/1oCRySXxaOzL4Ky54WnnMYi/DALr8rvADw2WcjkjhXa/fGTS3JMDYXp0l8ntdURQLhrYOVl+vS8qKqKz7Pm5MV8258wBrxZrrzXxgJ1aXDuz1ADRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708696154; c=relaxed/simple;
-	bh=8Rl1l2yFPG+lt29qbKzTpc6sXKmsDQCVh7f3P8VQjRE=;
+	s=arc-20240116; t=1708696159; c=relaxed/simple;
+	bh=gKUBK0CoPjpYUTQslOTw1FVWTkhJy5XxJn5pEs1c0NU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kA+BTyh+Y/1p/oL9z5zTYYPaWpwVthf+5bYLYIh+8wKz3T/jOTPJrP81STy0bWXLUui38E/K4cabPFKe7DB0YkQI5uP8L9okyU+Gl9ngCaRYpPaSWxc3pumASM1fsG+pfOzhlNTvNZpxHzuGRU10c06YB63LWZfyc9xbE34BXRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qn1mMn3a; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D578CC433F1;
-	Fri, 23 Feb 2024 13:49:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708696153;
-	bh=8Rl1l2yFPG+lt29qbKzTpc6sXKmsDQCVh7f3P8VQjRE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Qn1mMn3apX3+iCQRF7jvY1gWwlT8dR3Fg6RU8ULLQ1LMK9dH8EIwMzI0CY0u4AwuR
-	 uk3KEDl7egdP/RiGTY8mLu9n0t0S8w7yxMY4P9KQvf7z4Ie16s/TFLaylhLKte84PI
-	 l9IdjmQOVjLSl/p9wUnhziAKElzxUVLLY8pEcp4mdWQSMSzBJvsw9hcUyCyW3Rk4hK
-	 vKuusjjeibhWA6JBK/P2MGrGyvh2vJ6ceY4DkdJO6o69uPrkaIetFcCjmc05Cq2ANq
-	 J4dqKQhITHyqpPmfXIR0HLgcd6d972dDhEcWogMVn+aSDMTaRlYjuXT+62yWZyKecX
-	 TWdGjXdYWpvRA==
-Date: Fri, 23 Feb 2024 13:49:08 +0000
-From: Lee Jones <lee@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Daniel Thompson <daniel.thompson@linaro.org>,
-	Flavio Suligoi <f.suligoi@asem.it>, dri-devel@lists.freedesktop.org,
-	linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>
-Subject: Re: [resend, PATCH v3 0/3] backlight: mp3309c: Allow to use on
- non-OF platforms
-Message-ID: <20240223134908.GA1613065@google.com>
-References: <20240208184313.2224579-1-andriy.shevchenko@linux.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q2HW71B7xprLiA2NPR9BqESIT9iFxdheImxELBrvspew7+XIbXpmUxhs3+oXZNKrC/mavvF3ITBKo7JatvX3+sn7O9/LdL8abwz63TC8lU95whySjf/r1AQ7hlKVZfgcrpKyHZY0IQNiHKGTTdgfiCBURikouTpRCFcX5hLExwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mpvZQopB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dltkzz6g; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mpvZQopB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dltkzz6g; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1BCC91F7AF;
+	Fri, 23 Feb 2024 13:49:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708696156; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0YJwrLAcdRzg/8Vh7S2MSUyEvRQx5UjdTY7fI/KTU2o=;
+	b=mpvZQopB6Qr+3TwfWrrAnpgYCt8ceDOYg2Hl2WYSA8wfJNxU2VMxe3fpPP2DRxiINhSaw1
+	ZjRWs73LLrQb9wyLVQ6zMLT92X0yQcgPS9t3blg9SeUJDS3wzSsk3k7Xift98breYvRPCu
+	dwETyTgMXq/Du9RKVri7VvyL8SERw3o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708696156;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0YJwrLAcdRzg/8Vh7S2MSUyEvRQx5UjdTY7fI/KTU2o=;
+	b=dltkzz6gsPyzRt7AjH9w3SA1JsZF+n038FJuoRRaQi+u5x8CWW/dY91Fbh8mgD2LMLRaP+
+	UFJeICa74JEfPrAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708696156; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0YJwrLAcdRzg/8Vh7S2MSUyEvRQx5UjdTY7fI/KTU2o=;
+	b=mpvZQopB6Qr+3TwfWrrAnpgYCt8ceDOYg2Hl2WYSA8wfJNxU2VMxe3fpPP2DRxiINhSaw1
+	ZjRWs73LLrQb9wyLVQ6zMLT92X0yQcgPS9t3blg9SeUJDS3wzSsk3k7Xift98breYvRPCu
+	dwETyTgMXq/Du9RKVri7VvyL8SERw3o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708696156;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0YJwrLAcdRzg/8Vh7S2MSUyEvRQx5UjdTY7fI/KTU2o=;
+	b=dltkzz6gsPyzRt7AjH9w3SA1JsZF+n038FJuoRRaQi+u5x8CWW/dY91Fbh8mgD2LMLRaP+
+	UFJeICa74JEfPrAg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 0C56E13776;
+	Fri, 23 Feb 2024 13:49:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id +omvAlyi2GU+fAAAn2gu4w
+	(envelope-from <jack@suse.cz>); Fri, 23 Feb 2024 13:49:16 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id A547EA07D1; Fri, 23 Feb 2024 14:49:15 +0100 (CET)
+Date: Fri, 23 Feb 2024 14:49:15 +0100
+From: Jan Kara <jack@suse.cz>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/7] fs/writeback: bail out if there is no more inodes
+ for IO and queued once
+Message-ID: <20240223134915.rfgsrtemvhqfmt2t@quack3>
+References: <20240208172024.23625-1-shikemeng@huaweicloud.com>
+ <20240208172024.23625-3-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240208184313.2224579-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240208172024.23625-3-shikemeng@huaweicloud.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-2.60 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[huaweicloud.com:email,suse.cz:email,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -2.60
 
-On Thu, 08 Feb 2024, Andy Shevchenko wrote:
-
-> Allow to use driver on non-OF platforms and other cleanups.
+On Fri 09-02-24 01:20:19, Kemeng Shi wrote:
+> For case there is no more inodes for IO in io list from last wb_writeback,
+> We may bail out early even there is inode in dirty list should be written
+> back. Only bail out when we queued once to avoid missing dirtied inode.
 > 
-> Changelog v3:
-> - rebased on top of the last changes against this driver (Lee)
-> - added tags to patch 2 (Daniel, Flavio)
+> This is from code reading...
 > 
-> Changelog v2:
-> - rename pm3309c_parse_dt_node() --> mp3309c_parse_fwnode() (Daniel)                                             - add tags (Daniel, Flavio)
-> - new patch 2
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+
+Makes sense. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/fs-writeback.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 > 
-> Andy Shevchenko (3):
->   backlight: mp3309c: Make use of device properties
->   backlight: mp3309c: use dev_err_probe() instead of dev_err()
->   backlight: mp3309c: Utilise temporary variable for struct device
+> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+> index a9a918972719..edb0cff51673 100644
+> --- a/fs/fs-writeback.c
+> +++ b/fs/fs-writeback.c
+> @@ -2086,6 +2086,7 @@ static long wb_writeback(struct bdi_writeback *wb,
+>  	struct inode *inode;
+>  	long progress;
+>  	struct blk_plug plug;
+> +	bool queued = false;
+>  
+>  	if (work->for_kupdate)
+>  		filter_expired_io(wb);
+> @@ -2131,8 +2132,10 @@ static long wb_writeback(struct bdi_writeback *wb,
+>  			dirtied_before = jiffies;
+>  
+>  		trace_writeback_start(wb, work);
+> -		if (list_empty(&wb->b_io))
+> +		if (list_empty(&wb->b_io)) {
+>  			queue_io(wb, work, dirtied_before);
+> +			queued = true;
+> +		}
+>  		if (work->sb)
+>  			progress = writeback_sb_inodes(work->sb, wb, work);
+>  		else
+> @@ -2155,7 +2158,7 @@ static long wb_writeback(struct bdi_writeback *wb,
+>  		/*
+>  		 * No more inodes for IO, bail
+>  		 */
+> -		if (list_empty(&wb->b_more_io)) {
+> +		if (list_empty(&wb->b_more_io) && queued) {
+>  			spin_unlock(&wb->list_lock);
+>  			break;
+>  		}
+> -- 
+> 2.30.0
 > 
->  drivers/video/backlight/mp3309c.c | 88 ++++++++++++-------------------
->  1 file changed, 35 insertions(+), 53 deletions(-)
-
-Sorry for the delay, I was on vacation and I've been fighting fires this
-week.
-
-This set still doesn't apply?
-
 -- 
-Lee Jones [李琼斯]
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
