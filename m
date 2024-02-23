@@ -1,255 +1,152 @@
-Return-Path: <linux-kernel+bounces-77889-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77890-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8642F860BA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:54:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1306860BA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:59:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9F501C237EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:54:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96613285BF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:59:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4F991643E;
-	Fri, 23 Feb 2024 07:54:27 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E10516428;
+	Fri, 23 Feb 2024 07:59:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jlGz9uju"
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D2C813AF3;
-	Fri, 23 Feb 2024 07:54:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A29513AED
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 07:59:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708674867; cv=none; b=Tc3jjrSeJlFYGkfQSYMZe3nvlaX5Xjj6wOv2pCySfWs/lpZsIDQ4WIopC0bnXwySfLv4OE0q2gOIFP4DNx9iYRAbrOswk7YI9oK0HZcze6jJyLFjuFOX3MWnTu0irJfTUkQS3aXGXMuFI8t/qbl+8km3jxRcW97kmaPtlHZKMQU=
+	t=1708675161; cv=none; b=l3Eqo4dRQ9HA7uUlyrJBhoKZSVV8dbgQSsIsgx4czOgDb+Es4lio7JBQD5TjWxkBP/XjmZgiBY5I0lZzGAh8vrmiGUzR/dA1QRRNH6BUw7PxCSnNZ62yAI/HSA+0eqPKv99079p/or6K54ois0F8kLJ9m5Y5+lRZqB+un7W9E80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708674867; c=relaxed/simple;
-	bh=s9WEmS1JeaRfuBaRo5YOQgJKXJEVSk9vt5/AjGo1kXw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=odph0DwtgRwmQwypJdH/FN/yJQn7FC6wtq30WdIJ68DtdjEG9jLUQmZC9iax1cM5c/1rd7da/XnK299HULYyVXNPXjpMNCRkBAocgRQQzCcM7sgdRbkgf1dAQXMW1oLi/XX6JyIo/jX25qGghU0MSkRFmC92Vk+PjKgHnJg/eMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E9DBC433C7;
-	Fri, 23 Feb 2024 07:54:24 +0000 (UTC)
-From: Huacai Chen <chenhuacai@loongson.cn>
-To: Huacai Chen <chenhuacai@kernel.org>
-Cc: loongarch@lists.linux.dev,
-	Guo Ren <guoren@kernel.org>,
-	Xuerui Wang <kernel@xen0n.name>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	linux-kernel@vger.kernel.org,
-	loongson-kernel@lists.loongnix.cn,
-	Huacai Chen <chenhuacai@loongson.cn>,
-	stable@vger.kernel.org
-Subject: [PATCH] LoongArch: Update cpu_sibling_map when disabling nonboot CPUs
-Date: Fri, 23 Feb 2024 15:54:04 +0800
-Message-ID: <20240223075404.1550127-1-chenhuacai@loongson.cn>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1708675161; c=relaxed/simple;
+	bh=58pIforKk3pYU+TpwduX/a4NUM9YeG6awVJjgoWgrqQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jv9dz9SgbhMAvK5jVxFESJz0rzUryxVzrbkdOTJO9OR0+NZiG4b+3ffyxjOo6t8AyIlC/U0UnelW810wTSsQAnU3WZIkCd5//UE2tb/JVKrdsmnMm6S26F5/nIE66eO212wyCBgHWLIHxMMde1tGhlhSQuhtmHL9XZG0GbObS+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jlGz9uju; arc=none smtp.client-ip=209.85.219.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dc74435c428so77456276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 23:59:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708675159; x=1709279959; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G20CYRRkwpc4XiQtt15MXyHAMAhYgyffA964Je/jszk=;
+        b=jlGz9ujuBL0OVwwnb6+1lhy+p2v9dIuN6gO6lSkDB3ayuFGNmntSj8aD9IIhBMOPjX
+         8lt7MR9kblpE0PMAEsKJuO81zM/YWKLICQ/UywGQgV0oKk6mqaXpzAgKwVnQUMLRHGqQ
+         Ya+0atAznO7JUT2qDR26Rl7geGTHBomY2V2hN844uQC7Ers49QIfnt8EnkQXyW917rCz
+         0VLEB1s4qumZYUtTJam+NrvoaFh0n1JtbmUrJoedGxbrG6uClQcSn43hlLEHftPCl/dA
+         OB2OolZrk2EJhaORIFMrUZTKJkR6Sxue38LBYM06epbmVJPv4zNUF0W4y8RXOaVfzkfc
+         L7zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708675159; x=1709279959;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=G20CYRRkwpc4XiQtt15MXyHAMAhYgyffA964Je/jszk=;
+        b=Wne7CGKD3R2j6H8AaP2IajMerGTUkgEKEEb0Rt0CBUIsWb4WyN0wrFi/1o1ykf0yMG
+         XAYYzqY8lDZdjeM7uHrU8WZcVWu8MKVfwi6pHpSGlI08Cfcf6h8WtGBjXs74etmTNXkt
+         NwWgCEvDn5AVu+1SxEMCymu48Uf7EwyzvvHAUhNFdozV7rsyDyIgWjT9EJfJuBmDk4a3
+         tYDlV6PWLJDs6NMTAPmflskYl2/dW9YBIcMryhppOrB5u3hZ7NRbT7Tuvk7Q4pNSGg15
+         4SDL3xNQ8oNGaOQ4I8SUiVMkuXaw7di7G+SCP6EzpzD0KdvdbG7rv5ObZD2G66R4i3hB
+         1YaA==
+X-Forwarded-Encrypted: i=1; AJvYcCWHTbsts4jxSxyFx4bw7rEc8mb3jtoO8PV/awoRFBdmM249fZMrVnO0gRqIK49/66tgovGx/nT+6MW1hEVbB/dK1PDalBnm+2aNjdMP
+X-Gm-Message-State: AOJu0YzOd9R5fSPt6ISP+nSc9tAFYRmgf01pUroj8M2DnfCA21CPxjcb
+	YjBXq/oI/Eap+tDFBtosVMsjU1iIOfoagLjUEGTXRd9SOQFX0kIEvjjcHK+yyKIVyfvMRwSBNvA
+	Sv9aDfwVxT5573iuQbErEpl34870=
+X-Google-Smtp-Source: AGHT+IGpZlkojZBuQ5KldQ9ONWwa0S0G4VmAypoUsFHq2B8Mwk1MF1kK5xY+uEXuh6dMkcAp3ymzBoFW3a5ZevC4SWA=
+X-Received: by 2002:a05:6902:1b85:b0:dcf:30d9:1d7b with SMTP id
+ ei5-20020a0569021b8500b00dcf30d91d7bmr1453488ybb.45.1708675159252; Thu, 22
+ Feb 2024 23:59:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240129054551.57728-1-ioworker0@gmail.com> <CAK1f24keWtJNVv37r2vNsqnmMLRMvF-F76WR5RD_Y-BbAgEaYQ@mail.gmail.com>
+ <CAK1f24nk19eciysFqvTd=rqpiKePhstDWEEQ_mvT89WCDNrWNQ@mail.gmail.com>
+ <CAHbLzkoNFn6UE4Hn0gXTm2pLHD7pK4gYUe1zVh3247m30A5u2g@mail.gmail.com> <20240222131151.4d24563d58240e76a3b535db@linux-foundation.org>
+In-Reply-To: <20240222131151.4d24563d58240e76a3b535db@linux-foundation.org>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Fri, 23 Feb 2024 15:59:07 +0800
+Message-ID: <CAK1f24nzfh9n5qZ=uMSC_WP8g0HCmOpRrZZAM0FYOfpp1CD-Yw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm/khugepaged: bypassing unnecessary scans with
+ MMF_DISABLE_THP check
+To: Andrew Morton <akpm@linux-foundation.org>, Yang Shi <shy828301@gmail.com>
+Cc: mhocko@suse.com, zokeefe@google.com, david@redhat.com, 
+	songmuchun@bytedance.com, peterx@redhat.com, minchan@kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Update cpu_sibling_map when disabling nonboot CPUs by defining & calling
-clear_cpu_sibling_map(), otherwise we get such errors on SMT systems:
+Thanks for taking the time to look into this!
 
-jump label: negative count!
-WARNING: CPU: 6 PID: 45 at kernel/jump_label.c:263 __static_key_slow_dec_cpuslocked+0xec/0x100
-CPU: 6 PID: 45 Comm: cpuhp/6 Not tainted 6.8.0-rc5+ #1340
-pc 90000000004c302c ra 90000000004c302c tp 90000001005bc000 sp 90000001005bfd20
-a0 000000000000001b a1 900000000224c278 a2 90000001005bfb58 a3 900000000224c280
-a4 900000000224c278 a5 90000001005bfb50 a6 0000000000000001 a7 0000000000000001
-t0 ce87a4763eb5234a t1 ce87a4763eb5234a t2 0000000000000000 t3 0000000000000000
-t4 0000000000000006 t5 0000000000000000 t6 0000000000000064 t7 0000000000001964
-t8 000000000009ebf6 u0 9000000001f2a068 s9 0000000000000000 s0 900000000246a2d8
-s1 ffffffffffffffff s2 ffffffffffffffff s3 90000000021518c0 s4 0000000000000040
-s5 9000000002151058 s6 9000000009828e40 s7 00000000000000b4 s8 0000000000000006
-   ra: 90000000004c302c __static_key_slow_dec_cpuslocked+0xec/0x100
-  ERA: 90000000004c302c __static_key_slow_dec_cpuslocked+0xec/0x100
- CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=CC DACM=CC -WE)
- PRMD: 00000004 (PPLV0 +PIE -PWE)
- EUEN: 00000000 (-FPE -SXE -ASXE -BTE)
- ECFG: 00071c1c (LIE=2-4,10-12 VS=7)
-ESTAT: 000c0000 [BRK] (IS= ECode=12 EsubCode=0)
- PRID: 0014d000 (Loongson-64bit, Loongson-3A6000-HV)
-CPU: 6 PID: 45 Comm: cpuhp/6 Not tainted 6.8.0-rc5+ #1340
-Stack : 0000000000000000 900000000203f258 900000000179afc8 90000001005bc000
-        90000001005bf980 0000000000000000 90000001005bf988 9000000001fe0be0
-        900000000224c280 900000000224c278 90000001005bf8c0 0000000000000001
-        0000000000000001 ce87a4763eb5234a 0000000007f38000 90000001003f8cc0
-        0000000000000000 0000000000000006 0000000000000000 4c206e6f73676e6f
-        6f4c203a656d616e 000000000009ec99 0000000007f38000 0000000000000000
-        900000000214b000 9000000001fe0be0 0000000000000004 0000000000000000
-        0000000000000107 0000000000000009 ffffffffffafdabe 00000000000000b4
-        0000000000000006 90000000004c302c 9000000000224528 00005555939a0c7c
-        00000000000000b0 0000000000000004 0000000000000000 0000000000071c1c
-        ...
-Call Trace:
-[<9000000000224528>] show_stack+0x48/0x1a0
-[<900000000179afc8>] dump_stack_lvl+0x78/0xa0
-[<9000000000263ed0>] __warn+0x90/0x1a0
-[<90000000017419b8>] report_bug+0x1b8/0x280
-[<900000000179c564>] do_bp+0x264/0x420
-[<90000000004c302c>] __static_key_slow_dec_cpuslocked+0xec/0x100
-[<90000000002b4d7c>] sched_cpu_deactivate+0x2fc/0x300
-[<9000000000266498>] cpuhp_invoke_callback+0x178/0x8a0
-[<9000000000267f70>] cpuhp_thread_fun+0xf0/0x240
-[<90000000002a117c>] smpboot_thread_fn+0x1dc/0x2e0
-[<900000000029a720>] kthread+0x140/0x160
-[<9000000000222288>] ret_from_kernel_thread+0xc/0xa4
+Thanks, Yang and Andrew!
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
----
- arch/loongarch/kernel/smp.c | 121 ++++++++++++++++++++----------------
- 1 file changed, 68 insertions(+), 53 deletions(-)
+Best,
+Lance
 
-diff --git a/arch/loongarch/kernel/smp.c b/arch/loongarch/kernel/smp.c
-index 87b7190fe48e..aabee0b280fe 100644
---- a/arch/loongarch/kernel/smp.c
-+++ b/arch/loongarch/kernel/smp.c
-@@ -88,6 +88,73 @@ void show_ipi_list(struct seq_file *p, int prec)
- 	}
- }
- 
-+static inline void set_cpu_core_map(int cpu)
-+{
-+	int i;
-+
-+	cpumask_set_cpu(cpu, &cpu_core_setup_map);
-+
-+	for_each_cpu(i, &cpu_core_setup_map) {
-+		if (cpu_data[cpu].package == cpu_data[i].package) {
-+			cpumask_set_cpu(i, &cpu_core_map[cpu]);
-+			cpumask_set_cpu(cpu, &cpu_core_map[i]);
-+		}
-+	}
-+}
-+
-+static inline void set_cpu_sibling_map(int cpu)
-+{
-+	int i;
-+
-+	cpumask_set_cpu(cpu, &cpu_sibling_setup_map);
-+
-+	for_each_cpu(i, &cpu_sibling_setup_map) {
-+		if (cpus_are_siblings(cpu, i)) {
-+			cpumask_set_cpu(i, &cpu_sibling_map[cpu]);
-+			cpumask_set_cpu(cpu, &cpu_sibling_map[i]);
-+		}
-+	}
-+}
-+
-+static inline void clear_cpu_sibling_map(int cpu)
-+{
-+	int i;
-+
-+	for_each_cpu(i, &cpu_sibling_setup_map) {
-+		if (cpus_are_siblings(cpu, i)) {
-+			cpumask_clear_cpu(i, &cpu_sibling_map[cpu]);
-+			cpumask_clear_cpu(cpu, &cpu_sibling_map[i]);
-+		}
-+	}
-+
-+	cpumask_clear_cpu(cpu, &cpu_sibling_setup_map);
-+}
-+
-+/*
-+ * Calculate a new cpu_foreign_map mask whenever a
-+ * new cpu appears or disappears.
-+ */
-+void calculate_cpu_foreign_map(void)
-+{
-+	int i, k, core_present;
-+	cpumask_t temp_foreign_map;
-+
-+	/* Re-calculate the mask */
-+	cpumask_clear(&temp_foreign_map);
-+	for_each_online_cpu(i) {
-+		core_present = 0;
-+		for_each_cpu(k, &temp_foreign_map)
-+			if (cpus_are_siblings(i, k))
-+				core_present = 1;
-+		if (!core_present)
-+			cpumask_set_cpu(i, &temp_foreign_map);
-+	}
-+
-+	for_each_online_cpu(i)
-+		cpumask_andnot(&cpu_foreign_map[i],
-+			       &temp_foreign_map, &cpu_sibling_map[i]);
-+}
-+
- /* Send mailbox buffer via Mail_Send */
- static void csr_mail_send(uint64_t data, int cpu, int mailbox)
- {
-@@ -303,6 +370,7 @@ int loongson_cpu_disable(void)
- 	numa_remove_cpu(cpu);
- #endif
- 	set_cpu_online(cpu, false);
-+	clear_cpu_sibling_map(cpu);
- 	calculate_cpu_foreign_map();
- 	local_irq_save(flags);
- 	irq_migrate_all_off_this_cpu();
-@@ -380,59 +448,6 @@ static int __init ipi_pm_init(void)
- core_initcall(ipi_pm_init);
- #endif
- 
--static inline void set_cpu_sibling_map(int cpu)
--{
--	int i;
--
--	cpumask_set_cpu(cpu, &cpu_sibling_setup_map);
--
--	for_each_cpu(i, &cpu_sibling_setup_map) {
--		if (cpus_are_siblings(cpu, i)) {
--			cpumask_set_cpu(i, &cpu_sibling_map[cpu]);
--			cpumask_set_cpu(cpu, &cpu_sibling_map[i]);
--		}
--	}
--}
--
--static inline void set_cpu_core_map(int cpu)
--{
--	int i;
--
--	cpumask_set_cpu(cpu, &cpu_core_setup_map);
--
--	for_each_cpu(i, &cpu_core_setup_map) {
--		if (cpu_data[cpu].package == cpu_data[i].package) {
--			cpumask_set_cpu(i, &cpu_core_map[cpu]);
--			cpumask_set_cpu(cpu, &cpu_core_map[i]);
--		}
--	}
--}
--
--/*
-- * Calculate a new cpu_foreign_map mask whenever a
-- * new cpu appears or disappears.
-- */
--void calculate_cpu_foreign_map(void)
--{
--	int i, k, core_present;
--	cpumask_t temp_foreign_map;
--
--	/* Re-calculate the mask */
--	cpumask_clear(&temp_foreign_map);
--	for_each_online_cpu(i) {
--		core_present = 0;
--		for_each_cpu(k, &temp_foreign_map)
--			if (cpus_are_siblings(i, k))
--				core_present = 1;
--		if (!core_present)
--			cpumask_set_cpu(i, &temp_foreign_map);
--	}
--
--	for_each_online_cpu(i)
--		cpumask_andnot(&cpu_foreign_map[i],
--			       &temp_foreign_map, &cpu_sibling_map[i]);
--}
--
- /* Preload SMP state for boot cpu */
- void smp_prepare_boot_cpu(void)
- {
--- 
-2.43.0
-
+On Fri, Feb 23, 2024 at 5:11=E2=80=AFAM Andrew Morton <akpm@linux-foundatio=
+n.org> wrote:
+>
+> On Thu, 22 Feb 2024 12:23:21 -0800 Yang Shi <shy828301@gmail.com> wrote:
+>
+> > > VMA Count |   Old   |   New   |  Change
+> > > ---------------------------------------
+> > >     50     |   23us  |    9us  |  -60.9%
+> > >    100     |   32us  |    9us  |  -71.9%
+> > >    200     |   44us  |    9us  |  -79.5%
+> > >    400     |   75us  |    9us  |  -88.0%
+> > >    800     |   98us  |    9us  |  -90.8%
+> > >
+> > > IIUC, once the count of VMAs for the process
+> > > exceeds page_to_scan, khugepaged needs to
+> > > wait for scan_sleep_millisecs ms before scanning
+> > > the next process. IMO, unnecessary scans could
+> > > actually be skipped with a very inexpensive
+> > > mm->flags check in this case.
+> >
+> > Thanks for following up on this, can you please capture all the
+> > information in the commit log?
+>
+> I added it.
+>
+> --- a/txt/mm-khugepaged-bypassing-unnecessary-scans-with-mmf_disable_thp-=
+check.txt
+> +++ b/txt/mm-khugepaged-bypassing-unnecessary-scans-with-mmf_disable_thp-=
+check.txt
+> @@ -9,6 +9,24 @@ and the MMF_DISABLE_THP flag is set later, this scanning=
+ process
+>  becomes unnecessary for that mm and can be skipped to avoid redundant
+>  operations, especially in scenarios with a large address space.
+>
+> +On an Intel Core i5 CPU, the time taken by khugepaged to scan the
+> +address space of the process, which has been set with the
+> +MMF_DISABLE_THP flag after being added to the mm_slots list, is as
+> +follows (shorter is better):
+> +
+> +VMA Count |   Old   |   New   |  Change
+> +---------------------------------------
+> +    50    |   23us  |    9us  |  -60.9%
+> +   100    |   32us  |    9us  |  -71.9%
+> +   200    |   44us  |    9us  |  -79.5%
+> +   400    |   75us  |    9us  |  -88.0%
+> +   800    |   98us  |    9us  |  -90.8%
+> +
+> +Once the count of VMAs for the process exceeds page_to_scan, khugepaged
+> +needs to wait for scan_sleep_millisecs ms before scanning the next
+> +process.  IMO, unnecessary scans could actually be skipped with a very
+> +inexpensive mm->flags check in this case.
+> +
+>  This commit introduces a check before each scanning process to test the
+>  MMF_DISABLE_THP flag for the given mm; if the flag is set, the scanning
+>  process is bypassed, thereby improving the efficiency of khugepaged.
+>
 
