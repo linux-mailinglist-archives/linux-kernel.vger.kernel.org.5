@@ -1,125 +1,132 @@
-Return-Path: <linux-kernel+bounces-78323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78324-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D27158611E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:48:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A766A8611EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:48:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86D5A1F21A17
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:48:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C0A2B26A15
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:48:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4C417D401;
-	Fri, 23 Feb 2024 12:48:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="k4XEASfc";
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="Q3xpTjy9"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D54D17E773;
+	Fri, 23 Feb 2024 12:48:09 +0000 (UTC)
+Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9347363104;
-	Fri, 23 Feb 2024 12:48:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB3B77E0E8;
+	Fri, 23 Feb 2024 12:48:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708692486; cv=none; b=r1Iw4YD81qMpf3F34Kqyx+UYArN9mbA5e+7JYbynbRQT3Jc4tVXI5NdylA/AndlT1WBc23PcPxT2XDpKK9IF41c+RsBsq06oqj13jWWj0D4eNi1RW5QN6XiqaPMaj3Iiv823LScxf4MHwgvUAjZqzTQvBTPYEIOw9AthMURfL6I=
+	t=1708692489; cv=none; b=c4FSyG4TaVGVbQSPl2V0vyZDWxOIPWz1Grr6seFp1uf4d64iQgpYfPlfDi6ptLAQflT5l4cSu16q8zSR9LAkWC0DF9MgDjEAupvirz35zkxbrAIReA3l510QPelC5B5CIpxC8KCjpnxUtAU7DpLyfUXRh4Oa1gKa9pxCIhUUQ0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708692486; c=relaxed/simple;
-	bh=YeNq88cn8AskaOyzEMN8jpKCKDALj2OsTrYHvjryzao=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qCoJl3HQkzmBnVCCN+o1Gd0PpQ+Bo5Jx2g4C3m1UgFsfvN62En97+qz3oIjfULFJOZmhkud8YOELtGw51AUfn4ZNYqyM5MtlxOGKp3MlhTIObsadudSVBwy0kiicIvGok0BRIecSAm6SKAuR6rBk8Pq14gVqn5d8Gys9BoWLYOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=k4XEASfc; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=Q3xpTjy9 reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1708692482; x=1740228482;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=iDYNy6oIeCR6d3Vo/NOlyZSkpMTmvkzg41nasM8MjEw=;
-  b=k4XEASfcfgbeQ+dQxlK6S/MLrXEbMNBCFfuuGSublg9WrmDFfBXnrAd5
-   c+TR/ezi8wleH285j1HhBgw2vieiEN9i95EgCArkPW7pu2Crfh05m7Oxe
-   GSAJdz6xvzOnKO9tmnyukMPYeeMsyQEQ41l9CM3Vuc24y+AzXJ/XY/2Ml
-   GFasWHRbOsSuYau0urqgrJq+Oo+H81uWtcEE27VXX4d4bYT7jtzrmassq
-   WXHiLZPRqtyz7GQ12uSyMkLvltndhMaJ/ggaNfvHkDun2kUHrpE++F8sk
-   cYcJhWyi176iojeWcwB98iQ2zo+JeKZsRnxaOoWCXdhw4qmddO9NMULcP
-   A==;
-X-IronPort-AV: E=Sophos;i="6.06,180,1705359600"; 
-   d="scan'208";a="35568077"
-Received: from vmailcow01.tq-net.de ([10.150.86.48])
-  by mx1.tq-group.com with ESMTP; 23 Feb 2024 13:47:59 +0100
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 7D84C16EC42;
-	Fri, 23 Feb 2024 13:47:53 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
-	s=dkim; t=1708692474; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding; bh=iDYNy6oIeCR6d3Vo/NOlyZSkpMTmvkzg41nasM8MjEw=;
-	b=Q3xpTjy9DDiy50EI9hZpfsKCpAwDXe72pxB0/LxIoM+Lpmlslk1ghFRHCZeJDI7PEq4qBg
-	nlJMJNQQQVLlx5Qq2oLkTTRQCcCdylKW6e9RYr/Di6RCaZ9WnTpTGr4MVReGk3KrYuj3H+
-	DCuKe6/vLYBO7jouVwwH1/jN5UzgoNVS0jx2nJu60FU91sxomTIFEBW9ww5rN9st3ni7c7
-	TceMBb2LtTMXve0hU/VggJ460+aMz6hlRVodrQ36B54v4uSyEyJRFGy3b/Ije1oaytrnWq
-	nvdCPUwCv7YNE1EWvsa3ZbsFKJ/e2xdTKUS1Kc9USYhUID4cxoQZNYA5V/FKLA==
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
-	linux-media@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] media: dt-bindings: sony,imx290: Allow props from video-interface-devices
-Date: Fri, 23 Feb 2024 13:47:43 +0100
-Message-Id: <20240223124744.545955-1-alexander.stein@ew.tq-group.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1708692489; c=relaxed/simple;
+	bh=LAjfPoz2drXqfQvAjv9IzHKfA5IrdcSZOOkt/CeiU1c=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=M5KopDuGYo9gsf6WYOyfcm8c6/qmDQlJcRzVt4szi1DJ7ls+a9ytdiGaeyDl0ofqlWbtKxZYlaeSk+nN5T3Ivj5brckjPjmRNSdjynEUbn2AG4u2sPlqZhQ/91pGNWIgjmWKdirzozW077EW5WtdY3WuoNXvbhQY1kn51CrJq6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com; spf=pass smtp.mailfrom=perches.com; arc=none smtp.client-ip=216.40.44.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=perches.com
+Received: from omf02.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay03.hostedemail.com (Postfix) with ESMTP id 2073BA1164;
+	Fri, 23 Feb 2024 12:48:00 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf02.hostedemail.com (Postfix) with ESMTPA id 682A78000E;
+	Fri, 23 Feb 2024 12:47:57 +0000 (UTC)
+Message-ID: <bc22e93196284ddece102929ae9f6636358e6716.camel@perches.com>
+Subject: Re: [PATCH v2] checkpatch: add check for snprintf to scnprintf
+From: Joe Perches <joe@perches.com>
+To: Lee Jones <lee@kernel.org>
+Cc: Justin Stitt <justinstitt@google.com>, Andy Whitcroft
+ <apw@canonical.com>,  Dwaipayan Ray <dwaipayanray1@gmail.com>, Lukas
+ Bulwahn <lukas.bulwahn@gmail.com>,  linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>, Finn
+ Thain <fthain@linux-m68k.org>
+Date: Fri, 23 Feb 2024 04:47:56 -0800
+In-Reply-To: <20240223103845.GP10170@google.com>
+References: <20240221-snprintf-checkpatch-v2-1-9baeb59dae30@google.com>
+	 <bccc704fc78b362bbc57a79eb240219f5ec1548e.camel@perches.com>
+	 <20240223103845.GP10170@google.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
+X-Rspamd-Queue-Id: 682A78000E
+X-Rspamd-Server: rspamout08
+X-Stat-Signature: ukf9z8exot3f8st6ets4czmu8p6frtk4
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/0INiopDmML8A145GUuo/QwEloV8aKws4=
+X-HE-Tag: 1708692477-39706
+X-HE-Meta: U2FsdGVkX1/UFjuIy6XDV0zdZU7pS54VpS1HyjtO8u/qVXIGPoXkdNloAv9Sw8rpIUAPYfmxbMgHsnXqz8ZXNUggPoGrMTDkMdjsuMYWEHsMBtLG+GZ+K0dEpAG+22xU1nj+tBk6LPV2pmIMpu6VcwvdSN5oBJGgkUsZbi3K8YncxD+mFqec84H8gFg73naopm5Ka34RzGP0P3M8ftqmMYFcSENvpigT1xsbb6144nhzfETCpQep1i53OKAf09EE3oRn7IF4I5FVorDTY4lpSSH5zAu+ApCymd3jDS8UkgtNx8/nNclHejShy0COFHeS75DYc+/UUZLFEms+GtiIM9Kef3betaQiXQfvaeMuQHyiEmbqKsw54ghsnU6uDBRyngX909KJKOnXPr0ZezUvEIk96GdPiZl6pP0rV0g7PWb9qkAf6J2VyX97st7Bmklws/FWmwXIWOn48xySR1ZDw9x5qStU9/1Rug+6mB1uBZs=
 
-Allow properties from video-interface-devices. This aligns the bindings
-to sony,imx415.yaml. Changes inspired by commit e2e73ed46c395 ("media:
-dt-bindings: sony,imx415: Allow props from video-interface-devices")
+On Fri, 2024-02-23 at 10:38 +0000, Lee Jones wrote:
+> On Wed, 21 Feb 2024, Joe Perches wrote:
+>=20
+> > On Wed, 2024-02-21 at 22:11 +0000, Justin Stitt wrote:
+> > > I am going to quote Lee Jones who has been doing some snprintf ->
+> > > scnprintf refactorings:
+> > >=20
+> > > "There is a general misunderstanding amongst engineers that
+> > > {v}snprintf() returns the length of the data *actually* encoded into =
+the
+> > > destination array.  However, as per the C99 standard {v}snprintf()
+> > > really returns the length of the data that *would have been* written =
+if
+> > > there were enough space for it.  This misunderstanding has led to
+> > > buffer-overruns in the past.  It's generally considered safer to use =
+the
+> > > {v}scnprintf() variants in their place (or even sprintf() in simple
+> > > cases).  So let's do that."
+> > >=20
+> > > To help prevent new instances of snprintf() from popping up, let's ad=
+d a
+> > > check to checkpatch.pl.
+> > >=20
+> > > Suggested-by: Finn Thain <fthain@linux-m68k.org>
+> > > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > > ---
+> > > Changes in v2:
+> > > - Had a vim moment and deleted a character before sending the patch.
+> > > - Replaced the character :)
+> > > - Link to v1: https://lore.kernel.org/r/20240221-snprintf-checkpatch-=
+v1-1-3ac5025b5961@google.com
+> > > ---
+> > > From a discussion here [1].
+> > >=20
+> > > [1]: https://lore.kernel.org/all/0f9c95f9-2c14-eee6-7faf-635880edcea4=
+@linux-m68k.org/
+> >=20
+> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> > []
+> > > @@ -7012,6 +7012,12 @@ sub process {
+> > >  			     "Prefer strscpy, strscpy_pad, or __nonstring over strncpy - =
+see: https://github.com/KSPP/linux/issues/90\n" . $herecurr);
+> > >  		}
+> > > =20
+> > > +# snprintf uses that should likely be {v}scnprintf
+> > > +		if ($line =3D~ /\bsnprintf\s*\(\s*/) {
+> > > +				WARN("SNPRINTF",
+> > > +				     "Prefer scnprintf over snprintf\n" . $herecurr);
+> >=20
+> > There really should be some sort of reference link here
+> > similar to the one above this.
+> >=20
+> > Also, I rather doubt _all_ of these should be changed just
+> > for churn's sake.
+>=20
+> This is for new implementations only.
+>=20
+> Kees is planning on changing all of the current instances kernel-wide.
 
-Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
----
- Documentation/devicetree/bindings/media/i2c/sony,imx290.yaml | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+I saw that.  I also saw pushback.
+Not just my own.
 
-diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx290.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx290.yaml
-index a531badc16c98..e957b5dd4284d 100644
---- a/Documentation/devicetree/bindings/media/i2c/sony,imx290.yaml
-+++ b/Documentation/devicetree/bindings/media/i2c/sony,imx290.yaml
-@@ -23,6 +23,9 @@ description: |-
-   is treated the same as this as it was the original compatible string.
-   imx290llr is the mono version of the sensor.
- 
-+allOf:
-+  - $ref: ../video-interface-devices.yaml#
-+
- properties:
-   compatible:
-     oneOf:
-@@ -101,7 +104,7 @@ required:
-   - vdddo-supply
-   - port
- 
--additionalProperties: false
-+unevaluatedProperties: false
- 
- examples:
-   - |
--- 
-2.34.1
+Creating a cocci script is easy.
+Getting Linus and others to run it isn't.
 
 
