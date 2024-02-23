@@ -1,236 +1,219 @@
-Return-Path: <linux-kernel+bounces-78197-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78198-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D029861014
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AEF7C861019
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:05:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 502582882A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:03:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37769287E5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:05:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D03163121;
-	Fri, 23 Feb 2024 11:03:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11629657B0;
+	Fri, 23 Feb 2024 11:04:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mysnt.onmicrosoft.com header.i=@mysnt.onmicrosoft.com header.b="Ahw0iX8h"
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2138.outbound.protection.outlook.com [40.107.20.138])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="S2QNUkq7"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D247814B835
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:03:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.138
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708686209; cv=fail; b=Qjb3prdHvy6b401ZbKZqqgl3uhSJF/o35Okux6OKLu9WrTrGXEO7t7RCrFqgDlCVJV4uaz4nqnrYS8ShahB2FRH4ESgFYJDcOuPnWF5zJhsy7tOK7CxjKFrW972uc//5SYJfLy8dAFIAoqryN2BwGTXB4yjkuLGislY/ehAwS8U=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708686209; c=relaxed/simple;
-	bh=5baE0mc+GvtS/1E37589e9iaYet1ekD9jqaADKyeZ7g=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=mjlnJk0wc54DR72SfwcJqm+/EhRWD0+1xBCPF52BoTr9tQfF0DPfYeh3Geqyb6L44GpeUc5xkEYPve7BFVBEli6fVRbLa7ASJXZLTNpkfsJUGgKr4ZjXfCsAf/14lkbzsrbjxE5amLqAQzicD43eRVvR4RKpXnmUib3oZcBom8U=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kontron.com; spf=pass smtp.mailfrom=kontron.com; dkim=pass (1024-bit key) header.d=mysnt.onmicrosoft.com header.i=@mysnt.onmicrosoft.com header.b=Ahw0iX8h; arc=fail smtp.client-ip=40.107.20.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kontron.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kontron.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jbLmA97I7zQNKdhlLXdDSNFvJ4k1fMXsN0KvESlFsWHFaUNk3LPwD5e++pAtxFbVvgQaOVgggifodoiCvNjOMGTRG69Jh4gAhVXCO03IP7WTcnh9o1qIKdhxKePowH9SO1B4XAe/thKk0AG4A4MyReBEznZATwJYiCqmoWpmKbunf/05M7ypq/WYjB6PtSNgB+gybQ682uqSGGOmskiW6RmKjUDovi6J+YSWuhBk9Oarp7ijUJ6knNKerHBmO/cBzSfx2mUQ893WIARV3qDRc7O/+bOikdf8MEKfB1kV38TCs0JiPBZE/aShvQ9w5EgaVtVPWDLDkl+NXqlQq4szbQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rf1fchIiB75ENEMWIMzyvCZWCUzCYZjRngYRlqK7+v4=;
- b=ZmcpfSniDzSzV65q8gf4OhUPpdCplbEZ4pmfThZ47lpmuqK+2Zgd81feCeBmqqk7KhoksviPu3TCBZphRiXlQFe/AMJQ1VKL5nZjY0+iEmwuKrxttxXob29pqWqifHMDx5B6Q0iV3SZpB0fJ2NJ7Z9U3FHeWiFPL4pJF5wZl9mswewKQTBlFnifVS5W81NWWhLABMas+k943j/TESiH5Jh6kFrzwPJNik5e8xk1I27ZcASXEBNHCMYTICnQmQQLtg8hOoJ3nnM+B/bPZpti0NAv/tFUE6KIaednbcXPN0QLsLLjMxD0OI/MEP/9KO6P/HHuPnHbC8tG0J8ZG62hGnQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kontron.com; dmarc=pass action=none header.from=kontron.com;
- dkim=pass header.d=kontron.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
- s=selector2-mysnt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rf1fchIiB75ENEMWIMzyvCZWCUzCYZjRngYRlqK7+v4=;
- b=Ahw0iX8h6H2bq3KBXdOlMf+LPe6EYEKJp7FKmYc1CBiUhTJtPZhc7S1M9SfT2LW3UNXWF8Ye+30vD2hpy9fRpKu8nzXgEUrn2Gv5Csb8RQVe+I56+z2j4HMhbHml5fJpSPxnVz/wAvwwn9xKY80jLowVXdWosUHgxsBEkQI10N8=
-Received: from AS2PR10MB7551.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:591::19)
- by VI1PR10MB3230.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:803:136::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Fri, 23 Feb
- 2024 11:03:22 +0000
-Received: from AS2PR10MB7551.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::5208:477d:77da:84f8]) by AS2PR10MB7551.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::5208:477d:77da:84f8%7]) with mapi id 15.20.7316.023; Fri, 23 Feb 2024
- 11:03:22 +0000
-From: Michael Brunner <michael.brunner@kontron.com>
-To: "lee@kernel.org" <lee@kernel.org>
-CC: "linux@roeck-us.net" <linux@roeck-us.net>, "mibru@gmx.de" <mibru@gmx.de>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: [PATCH RESEND] mfd: kempld-core: don't replace resources provided by
- ACPI
-Thread-Topic: [PATCH RESEND] mfd: kempld-core: don't replace resources
- provided by ACPI
-Thread-Index: AQHaZkfqoQvbWL67f0u16KhjtwoT2w==
-Date: Fri, 23 Feb 2024 11:03:22 +0000
-Message-ID: <34ae1832d52a3f03994843d01cd1d9a0ecb7a72d.camel@kontron.com>
-References: <09855448430a5f090dbe09cbb269959a08881ee7.camel@kontron.com>
-	 <8ec638c2-93b6-48e4-8ac4-965072b1d5af@roeck-us.net>
-	 <de6bc09c779a4b4fa2ddaa1fa3a595de323b7f5a.camel@kontron.com>
-	 <20240223105242.GR10170@google.com>
-In-Reply-To: <20240223105242.GR10170@google.com>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.36.5-0ubuntu1 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=kontron.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AS2PR10MB7551:EE_|VI1PR10MB3230:EE_
-x-ms-office365-filtering-correlation-id: 44441a71-3dbc-4136-6b4c-08dc345f0cd5
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 1hZapr61pbGCsjzrlaHqV8jQ0J0OccEQAXKGnxBDzyOBdbF7Zk800kNoqQVtl+KLa+CE6kbgYhvCo6Id7zUWPZPBuN5k3yh5QGi/eTcHT8O5lCjHAwVWDr7c/PPlDEbYFvBfj4YZlhYoHbHoWRqE3Huq89cokxo/aHrYx9X8mbsK0ks0pECPcuGFrIA26LOPKKMhidH1YzH8c7xRDsoapkFgdZ9T1SoCsnUv8xlUwk1yo8KNKQ97+y/VZVkYVzPvjxnsQP0RHHth354lBh9TL8RC6IgnoTOu4Khr9rhA96A1TDsUBpQjvmNH++VIY4OQCWi5z+6IWNLJbu+XzLAQEKh2chFyPb+YcREtmHSMxSesbYnrIt8l/+TdugV2jJfVI6OH9xmQMURZWEagP3QwHTpVRUQcu5DDljevEyT+5ORKy/BAJHWdVbymziKhEnUyE1fo2r74GU8uL5Ipf9yIBft2u+j/+9M0SJ1JM8qeRzFYuq46CUpZyRAJR7UBHs39uNcoYhdDDjv59o79FvDhxf+hDGh16TkrKR2mtorjwquvqlVUBSnZ0dzttQGGNQdX44/sDQrXTdba3f8qXcZ2Bk0T1npDExbh8U84v16OEZ1XBUM5afCGMRhIR0hZaaJ8
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS2PR10MB7551.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-15?Q?C09onMOcvA3Di6RUePnZ92JJ9r3Cbkb8uCFzl70KtorUpEocGEfVbRmEl?=
- =?iso-8859-15?Q?kGozQNJm+2+iexWEFn7la+44iqglzU3fpx+5Oxbn/aOp3mGu7XZz/jZgK?=
- =?iso-8859-15?Q?FWALB+10OANfVlJL/xnrLk6GZ4Vmz6EvNMdt97p/qbF+wotZj4Nx6ylsA?=
- =?iso-8859-15?Q?pbgxs3QaYgYQhcBGLBbnoQkcDiOWtEwD6ErSESRuwXYhr5dhWHUVnLp3g?=
- =?iso-8859-15?Q?PwCWrZt5iEph8i9LekJOXuGx5QCg9cgSvs9TiKdXXRijoc4uy5UsECIYM?=
- =?iso-8859-15?Q?tsM4UraQDG/nhODv0np3LYBIt1LhlGgR3Qg3/L2xrvflNxzc479OSZBnD?=
- =?iso-8859-15?Q?IsHvQm64c40OkElBx2c6sZMDZQFrgfOiTTD+pb/KEZKsOgRH1auk8bkV9?=
- =?iso-8859-15?Q?nr5mSMGD+9yJpsiOqnyF9nEUZAp0eFe+NbSnxOt30/eFpvR3yul+0QT8r?=
- =?iso-8859-15?Q?mSeRjTLc+KmMRT3N7DzrUx1sMsE+OYN468OftLHh59YdAupoirJyGDlwn?=
- =?iso-8859-15?Q?WvgEy+HA/CpXUIdg0IF1VLa340CY+a684NJ0KGuAnPlGaqgc/M9BLjaE2?=
- =?iso-8859-15?Q?3GV8Xbg8/gGQFPfyYS1OZ3PJDp6kxg0MNNE0sWWGkPK/hpWsUyrv/qVU7?=
- =?iso-8859-15?Q?k/LGfYZELhMusVqdQDGx7pFDtUTyjD7IDJA7O+UhDplSeE/SwPVbppfJS?=
- =?iso-8859-15?Q?ENshEqLWDxnr/fUiVm9/es+iu/HA9xPm40axzPdUwnxZ6pKoFvdi8jx8c?=
- =?iso-8859-15?Q?iqOotFxs73JjuU/bFHObYxLNhRXyTbsx7OJPsGAZ6Hq5JhAShwkN5h4eD?=
- =?iso-8859-15?Q?iWpCU2t2UiPoSlm6jBOgPuwIBia5AkzkFwXM3AUpV3gd34vpN7RROs1lo?=
- =?iso-8859-15?Q?xPkJGEHSapUM4e24UpUyX1wlGusbejoBKPMszR/7gGVN485zziQiq9PMq?=
- =?iso-8859-15?Q?59tV7zaCeOZ2cFZLR+Vep/1zegXIjsQW5ey6U514L3WjY1SPnfQ+ktUtB?=
- =?iso-8859-15?Q?1b4Oho2Agl0sxcumI53yeCWMm82RTl2LVhH9CSWIEqC4R4XIAVUxqcvbX?=
- =?iso-8859-15?Q?R/rgpvjPWl3NHNXDfpL638QrxD1jDE7QqflkQDmn6/UTxsH33SOAORQpN?=
- =?iso-8859-15?Q?9nVryD/pxvbpnTHeSZcs/XuFoItb2K47ZajiqX8e5bIhSye+1bBAFapH5?=
- =?iso-8859-15?Q?nMKpthXW2+XlblwnZGNn3CRCB1ZdtdGPJ3GGvXuOWF02dGDukY7Fytrsu?=
- =?iso-8859-15?Q?4wOopYpbd5saN09Ma2s3kzt+0nvvs09FP+OTsD7cWK/J1/gMwc7g86RXt?=
- =?iso-8859-15?Q?hR0J5cwjrmzDjMjcxaL2mGfpy6aTdebg59AqxHRw5EVhaODAMMQnff2o9?=
- =?iso-8859-15?Q?LQUuX3lJnITDdBO1Kcme1ko7nf2kDYQA6udNpwP28oVzVaiZ0XGY7pqfv?=
- =?iso-8859-15?Q?nbF4caqUSkDnKl0seXnz9Iev/qT5N9XbIsIovpJohbe185rnQKQ3okC69?=
- =?iso-8859-15?Q?mOFFxW2Jyu5lRs+SnPT6STPXV0huPZ+o3q98IfdEDCu6yjR0escH7RcOw?=
- =?iso-8859-15?Q?XUllsojg2cE6OiDK+8fQeVSrQGtROVDd3cZXekBoMYDA5bMnfCYUdTXzU?=
- =?iso-8859-15?Q?Qqg/5mr/r8hE0b79virFfY01S4NfsFYVIqpGgydriuaxfaYmmg1xjozH6?=
- =?iso-8859-15?Q?O2igj3P32gH/ikx51PiXdKsB85m4Dcywxv2zbT5W8bPQapo=3D?=
-Content-Type: text/plain; charset="iso-8859-15"
-Content-ID: <E2B490788B26EB4AB760CA23536CF742@EURPRD10.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5B966280B
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:04:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708686294; cv=none; b=gVLavFBt6IqRneSA5nCLzYpFjgSwo1xSgSolBo2udO6JTWfqb/FvphMaACjQ/N7YA+yHtyRiyy3dnI3SlkyPql7yxap0WTamFkO0XRC6sHViuQ/6XEl8HGTDSWeHdNnU1NWGBrotzybpZDYAukPfJp+F4ds4tQ7+ciBd34omnQs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708686294; c=relaxed/simple;
+	bh=n4A6R+Fhgf6BlCrcDrfkA8N5wgFe1jO0F3kW12IxQPY=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=Rpkcrdyku1eiCf0IMnOhYkUf7s6fp1SwpqvuGfjMgy1STES3BU4aZr9JHoMpBkxZ6vX3xKeU7ywRrH66zmXUwfsxYshJaSaC7BQ9u4Z+FfWfIjFbmBkZlCBXMv3Y88lXZPzp+dMx1/eFxqvn0OP+vnvMw6mnFzKGvWsrp3K6xG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=S2QNUkq7; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-412698ac6f9so1476235e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 03:04:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708686290; x=1709291090; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dpIrZ6DID2LKFZOgEe2hRQ7/dIExMrSdp13/JdG8p1M=;
+        b=S2QNUkq7iygOLHrTJbabhMlAQTI2HX1aWtPpcsIbFtw5hoS3thYz+gKUL/dKKsd29z
+         YV7NWvtx2GoHYnze9h4brj7udcbjdSUI5eEaZcbMfBac3nlMJPWVoXR7bu7MCs1SD+o2
+         y9EWMoBeSU4V+D+avDyQkypdI3cccQQxV+cekdQ8dxQxcynVUHvIzr6gvOsoop0LCveT
+         zWBdVmA1JXwVZx91ZicPhMifMlKvsj4IkrWRggYmTKzJ+iv2klyRJ7y1024H566TDM+i
+         oIHZ9K7Jw5iausXh5iHUkVyhYdsawPl7bMcZLXSlsdfxXsZoFdwRQC5ke/ykwlQVwx3i
+         oFRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708686290; x=1709291090;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dpIrZ6DID2LKFZOgEe2hRQ7/dIExMrSdp13/JdG8p1M=;
+        b=AYxc0IGibboiAnLB0vQl73ET4Mh/QoWDHv7LjZ/GJZz4CqvJj5e1hl1xbgpAeych1e
+         CEPwf3Vx+v7042eC2rV1H9/KqnXZz691s7mg3VFn09Cu8OxHEXuTVoylchV1PuEXfNzG
+         mNDJmfFWuM+LoRj1yD6+aIme+hFrNY6ejHjxqehLvtrqNgZYyEjz/Vw55Iy3EHGC2m1e
+         YT/3Wz18jmDRPxarNhZ8dDhGK0Mn0Eica1NkfN+8jnMyLTrtF9MrwMJraiJ5z6r9Pi6o
+         Y3xI5PpkoKvAw0QiyamlR5WE4UTeodlML3dI7UbcAwBRN4mX8sznVaJVxxbobnkjJall
+         dsGA==
+X-Forwarded-Encrypted: i=1; AJvYcCVcR1fFkzTqMQUC85gGKm+pzFwAHDeOZBfgbTDyGYhNAGHZJdzPrqp/J9KwlTiaqiGaiGlKtXSBo1Toqf3JMCopY6+nYcAeYhnDY6eC
+X-Gm-Message-State: AOJu0YxC3ErS7oiL3XGiC5KoWn/3C2fYpfFRPdndtuVZk/v00+t2nDak
+	JPtScfxZDRWUVbH7DJOdiVpWU46CNmnsubJccyCPACmVhSRFB+RWqQEb9/0O8P8=
+X-Google-Smtp-Source: AGHT+IGnhOanEmC+FFYKStze36jnGP7rwyWuG1Kq6ilYQmZZ4KpE6Mgybp5TasF6iXliwnPhK8ra0g==
+X-Received: by 2002:a05:600c:3b07:b0:412:95fb:9613 with SMTP id m7-20020a05600c3b0700b0041295fb9613mr859610wms.2.1708686290037;
+        Fri, 23 Feb 2024 03:04:50 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:58e3:6b80:c446:11f4? ([2a01:e0a:982:cbb0:58e3:6b80:c446:11f4])
+        by smtp.gmail.com with ESMTPSA id jj26-20020a05600c6a1a00b0041294a6fc03sm1541476wmb.9.2024.02.23.03.04.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Feb 2024 03:04:49 -0800 (PST)
+Message-ID: <cd2b45d4-53b4-4a3f-88bd-116f4e6a7bae@linaro.org>
+Date: Fri, 23 Feb 2024 12:04:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: kontron.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS2PR10MB7551.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 44441a71-3dbc-4136-6b4c-08dc345f0cd5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Feb 2024 11:03:22.1330
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 9ZeqaoDvGwHwhfRwBmL/voSuIvWJtMXaL7OWE0lg+ajwQzsv7oODiWMKfWAViZmNGRgzvceH9rOb90TTIdmnzrYqMeJUT1Vt253eRW2JNtE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR10MB3230
+User-Agent: Mozilla Thunderbird
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH 4/6] soc: qcom: pmic_glink: Fix boot when QRTR=m
+Content-Language: en-US, fr
+To: Johan Hovold <johan+linaro@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Andrzej Hajda <andrzej.hajda@intel.com>, Robert Foss <rfoss@kernel.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Vinod Koul <vkoul@kernel.org>
+Cc: Jonas Karlman <jonas@kwiboo.se>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Kishon Vijay Abraham I <kishon@kernel.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>,
+ Kuogee Hsieh <quic_khsieh@quicinc.com>, freedreno@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+ Rob Clark <robdclark@chromium.org>, stable@vger.kernel.org
+References: <20240217150228.5788-1-johan+linaro@kernel.org>
+ <20240217150228.5788-5-johan+linaro@kernel.org>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20240217150228.5788-5-johan+linaro@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The current implementation to retrieve ACPI resources is faulty
-and may
-cause issues that even can lead to non-booting systems.
+On 17/02/2024 16:02, Johan Hovold wrote:
+> From: Rob Clark <robdclark@chromium.org>
+> 
+> We need to bail out before adding/removing devices if we are going to
+> -EPROBE_DEFER. Otherwise boot can get stuck in a probe deferral loop due
+> to a long-standing issue in driver core (see fbc35b45f9f6 ("Add
+> documentation on meaning of -EPROBE_DEFER")).
+> 
+> Deregistering the altmode child device can potentially also trigger bugs
+> in the DRM bridge implementation, which does not expect bridges to go
+> away.
+> 
+> Suggested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> Link: https://lore.kernel.org/r/20231213210644.8702-1-robdclark@gmail.com
+> [ johan: rebase on 6.8-rc4, amend commit message and mention DRM ]
+> Fixes: 58ef4ece1e41 ("soc: qcom: pmic_glink: Introduce base PMIC GLINK driver")
+> Cc: stable@vger.kernel.org      # 6.3
+> Cc: Bjorn Andersson <andersson@kernel.org>
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> ---
+>   drivers/soc/qcom/pmic_glink.c | 21 +++++++++++----------
+>   1 file changed, 11 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/soc/qcom/pmic_glink.c b/drivers/soc/qcom/pmic_glink.c
+> index f4bfd24386f1..f913e9bd57ed 100644
+> --- a/drivers/soc/qcom/pmic_glink.c
+> +++ b/drivers/soc/qcom/pmic_glink.c
+> @@ -265,10 +265,17 @@ static int pmic_glink_probe(struct platform_device *pdev)
+>   
+>   	pg->client_mask = *match_data;
+>   
+> +	pg->pdr = pdr_handle_alloc(pmic_glink_pdr_callback, pg);
+> +	if (IS_ERR(pg->pdr)) {
+> +		ret = dev_err_probe(&pdev->dev, PTR_ERR(pg->pdr),
+> +				    "failed to initialize pdr\n");
+> +		return ret;
+> +	}
+> +
+>   	if (pg->client_mask & BIT(PMIC_GLINK_CLIENT_UCSI)) {
+>   		ret = pmic_glink_add_aux_device(pg, &pg->ucsi_aux, "ucsi");
+>   		if (ret)
+> -			return ret;
+> +			goto out_release_pdr_handle;
+>   	}
+>   	if (pg->client_mask & BIT(PMIC_GLINK_CLIENT_ALTMODE)) {
+>   		ret = pmic_glink_add_aux_device(pg, &pg->altmode_aux, "altmode");
+> @@ -281,17 +288,11 @@ static int pmic_glink_probe(struct platform_device *pdev)
+>   			goto out_release_altmode_aux;
+>   	}
+>   
+> -	pg->pdr = pdr_handle_alloc(pmic_glink_pdr_callback, pg);
+> -	if (IS_ERR(pg->pdr)) {
+> -		ret = dev_err_probe(&pdev->dev, PTR_ERR(pg->pdr), "failed to initialize pdr\n");
+> -		goto out_release_aux_devices;
+> -	}
+> -
+>   	service = pdr_add_lookup(pg->pdr, "tms/servreg", "msm/adsp/charger_pd");
+>   	if (IS_ERR(service)) {
+>   		ret = dev_err_probe(&pdev->dev, PTR_ERR(service),
+>   				    "failed adding pdr lookup for charger_pd\n");
+> -		goto out_release_pdr_handle;
+> +		goto out_release_aux_devices;
+>   	}
+>   
+>   	mutex_lock(&__pmic_glink_lock);
+> @@ -300,8 +301,6 @@ static int pmic_glink_probe(struct platform_device *pdev)
+>   
+>   	return 0;
+>   
+> -out_release_pdr_handle:
+> -	pdr_handle_release(pg->pdr);
+>   out_release_aux_devices:
+>   	if (pg->client_mask & BIT(PMIC_GLINK_CLIENT_BATT))
+>   		pmic_glink_del_aux_device(pg, &pg->ps_aux);
+> @@ -311,6 +310,8 @@ static int pmic_glink_probe(struct platform_device *pdev)
+>   out_release_ucsi_aux:
+>   	if (pg->client_mask & BIT(PMIC_GLINK_CLIENT_UCSI))
+>   		pmic_glink_del_aux_device(pg, &pg->ucsi_aux);
+> +out_release_pdr_handle:
+> +	pdr_handle_release(pg->pdr);
+>   
+>   	return ret;
+>   }
 
-When adding data from an ACPI device, the resources are already
-assigned to the platform device. Therefore there is no need to
-retrieve the resource list from ACPI and manually assign it to
-the platform device. Also there shouldn't be any BIOS in the wild
-anymore, that does not have resources added to the KEMPLD ACPI
-data.
-
-In particular this fixes an issue where the retrieval of the
-resource list using /proc/ioports is disturbed and does not list
-the assigned resource for the kempld device or even no resources
-at all.
-On some distributions this also leads to problems during system
-initialization (e.g. with udev) and causes the system to not
-boot at all.
-
-I have reproduced the issue with the following kernel versions:
-    5.10.209
-    5.15.148
-    6.1.25
-    6.6.17
-    6.7.5
-    6.8-rc5
-
-The patch applies to all of those versions and seems to resolve
-the issue.
-
-Signed-off-by: Michael Brunner <michael.brunner@kontron.com>
----
- drivers/mfd/kempld-core.c | 37 -------------------------------------
- 1 file changed, 37 deletions(-)
-
-diff --git a/drivers/mfd/kempld-core.c b/drivers/mfd/kempld-core.c
-index 67af36a38913..5557f023a173 100644
---- a/drivers/mfd/kempld-core.c
-+++ b/drivers/mfd/kempld-core.c
-@@ -428,50 +428,13 @@ static int kempld_detect_device(struct kempld_device_=
-data *pld)
- #ifdef CONFIG_ACPI
- static int kempld_get_acpi_data(struct platform_device *pdev)
- {
--	struct list_head resource_list;
--	struct resource *resources;
--	struct resource_entry *rentry;
- 	struct device *dev =3D &pdev->dev;
--	struct acpi_device *acpi_dev =3D ACPI_COMPANION(dev);
- 	const struct kempld_platform_data *pdata;
- 	int ret;
--	int count;
-=20
- 	pdata =3D acpi_device_get_match_data(dev);
- 	ret =3D platform_device_add_data(pdev, pdata,
- 				       sizeof(struct kempld_platform_data));
--	if (ret)
--		return ret;
--
--	INIT_LIST_HEAD(&resource_list);
--	ret =3D acpi_dev_get_resources(acpi_dev, &resource_list, NULL, NULL);
--	if (ret < 0)
--		goto out;
--
--	count =3D ret;
--
--	if (count =3D=3D 0) {
--		ret =3D platform_device_add_resources(pdev, pdata->ioresource, 1);
--		goto out;
--	}
--
--	resources =3D devm_kcalloc(&acpi_dev->dev, count, sizeof(*resources),
--				 GFP_KERNEL);
--	if (!resources) {
--		ret =3D -ENOMEM;
--		goto out;
--	}
--
--	count =3D 0;
--	list_for_each_entry(rentry, &resource_list, node) {
--		memcpy(&resources[count], rentry->res,
--		       sizeof(*resources));
--		count++;
--	}
--	ret =3D platform_device_add_resources(pdev, resources, count);
--
--out:
--	acpi_dev_free_resource_list(&resource_list);
-=20
- 	return ret;
- }
---=20
-2.25.1
-
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
 
