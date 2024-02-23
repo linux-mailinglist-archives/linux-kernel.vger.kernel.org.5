@@ -1,502 +1,231 @@
-Return-Path: <linux-kernel+bounces-79110-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD39D861DAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:35:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A390B861DB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:37:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 448FA1F28353
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:35:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6352B24876
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:37:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7717D2E6;
-	Fri, 23 Feb 2024 20:35:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52321146E96;
+	Fri, 23 Feb 2024 20:37:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g89yUTeP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b="jgALnP+O"
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2058.outbound.protection.outlook.com [40.107.20.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB58313B7A6;
-	Fri, 23 Feb 2024 20:35:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708720514; cv=none; b=GljNobDfvs8+hgoFv/4CubmPtZDGeFRN3Q2enXzmqg1HnmNGl02IlySxRWhvbEnEg+ke+RC1gMBFTIkMUOvafwflgYBwRRU7iHiuUH0lvaJL21Ryk1bUQjMXeQjMRsp8WeE7rhfYnisQ0kG/qo/aEmgD+sXTtDenGh0yH9r0L1I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708720514; c=relaxed/simple;
-	bh=7BQSc2cmfATswOeFfQC9zLfVbFnudPwYYzS+AWBPuPg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=c9y0ZaycO09IsrccDOES1aN27KvalLX+Lv3nlS5pbTN2aqi9+UbxJgy5k9qSiLhjibb3cPAhjX6Bp6mhL0glwU5o02GjYDNvigr47rFi3UxIZIGPT+iVQi3el6KIsebyPCr9GGbPQ+3jF3ISh6rMf2w5wlQCsr3CcuqYzNJ+MWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g89yUTeP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0569C433F1;
-	Fri, 23 Feb 2024 20:35:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708720514;
-	bh=7BQSc2cmfATswOeFfQC9zLfVbFnudPwYYzS+AWBPuPg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=g89yUTePWhkUvcxPW1Db3UVZxwlThZJTC1FcHJqvnEbsBzJlCc17lToYOfnxALO/y
-	 GNgNYg7hHoLMQFhJlbatOMA8EVoCwmIHFWVqY3lRAB74qx8cxitIeH0FzjE3AE/Uyd
-	 13ieLnrg9JJpldpWNn/SMeyMExWip0pCy2Za5icSW05f07kcvrwqxTHcKGphZXpc/B
-	 EAcDJTi9/GKBe6DWZJBgLD5wbRNx+F8y0hBkwOgmE/9DtIpriQ29bwU1Mb4RbQ7pB1
-	 0+zUn3VhJLqKuRgsw9wqpZUpD+3VomAwa4qsoQMQ/lzyRMbuZPaXx34JSvFNk5FwMu
-	 ua1h8OsU5wvLQ==
-Date: Fri, 23 Feb 2024 14:35:12 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: "David E. Box" <david.e.box@linux.intel.com>
-Cc: mika.westerberg@linux.intel.com, ilpo.jarvinen@linux.intel.com,
-	bhelgaas@google.com, rjw@rjwysocki.net, tasev.stefanoska@skynet.be,
-	enriquezmark36@gmail.com, kernel@witt.link, wse@tuxedocomputers.com,
-	vidyas@nvidia.com, kai.heng.feng@canonical.com,
-	sathyanarayanan.kuppuswamy@linux.intel.com, ricky_wu@realtek.com,
-	mario.limonciello@amd.com, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] Always build aspm.c
-Message-ID: <20240223203512.GA112491@bhelgaas>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B13D3D2E6;
+	Fri, 23 Feb 2024 20:37:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.58
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708720658; cv=fail; b=OKmRlG93b5eyQ8TfNnZgr/oI7U0G/MET6ao4jKkROAqHDOYieOOR4i5sLthaZkhhHzNzi5ZlTfERO5cR/QY7DKK6OGZB7Jd+G7vcPbbTooG1bxWuNTmoLqCQWmYQjVdLR83tm2xcqd5AnZoQcdmhkgaKecgYa0tRf6uTcbw6etY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708720658; c=relaxed/simple;
+	bh=aBWSrG5PTHNDYbjhu6vhwaGZci5zg9VS2o4mtJiReCk=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=tcSBSLczgkFkQpyKvkpWPRAxM8NwEeUOpMbwnYZvnHm2txiBa8hLMhhQ2y7vLimencChTvjWyv/LXWpep3EptgwYGRoQxEJYs+fbCBbOvyAjaMljmqeOtth3F1f8G4mU9RGdfnIuQURkjg1qVIwkg+NAOQomP1OJ2mgaVomjJaQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com; spf=pass smtp.mailfrom=axis.com; dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b=jgALnP+O; arc=fail smtp.client-ip=40.107.20.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=axis.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JkO2qNFNy/+9xNvcQku4DU1PCG2R48NzWgQunCmQNtu5f2A7F68kjZHmkKMxCe5UqYhUBi8KLnXP/BkROmvPYGWUvzpmIf+si6Jys9b+xoR/YHIIaP0T2z9/u4HLxk1jziHIiS6ynPtvyV9u/ZO+esY/73I5GSgYxYyCCkuQFeYF52fl/jphW6hxyykgH3qrcTDq4uqtDjPOJIAcb4xBEOkmvjioLoMN58pqdeG6rloiaiC+2LeHOg7wCm4MWFX7ZiLsVnByWJ7cTKWoWFy+jZ4ThAirQmIJw9jbUbwFBCoTMcuZed0SyEjaNrocIYKaxK1Cobxknxo/CzRdXUZydw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KX2vTzEsii4NViW4fXjvR0QwyG1i8Hhyblb5tLywzXo=;
+ b=UffD1wngdNVa0kcd++RDIZ+lAnKW509e4i0lgfcoMY8EU0TeCYS2hVmQu5aGE8e+YKudikKYv6D/iNVZzPNOFZfw+7eUiZ4qEIjMkso0vc9cyyfxTXTPLpF+w9CIEXbpqNGyAy5eH5eu3KQNHLeHNCnpWr88A0fI+zyHSsO73l5j9juv4kMpMQstgkw8L0/VlbTk5At4hVb/37tfez9P5i3cymnb3OCvZmlN9jROaad9LK4VtrhOm1E2pZy9LkKETmEXqEm+5+hUkzV5HCVbQRGfPqQK78CHLnefu3wvj6V24eUTr2GMG82ycG+G8BFRpAIUGbMymWhm0otomDShCg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 195.60.68.100) smtp.rcpttodomain=davemloft.net smtp.mailfrom=axis.com;
+ dmarc=fail (p=none sp=none pct=100) action=none header.from=axis.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KX2vTzEsii4NViW4fXjvR0QwyG1i8Hhyblb5tLywzXo=;
+ b=jgALnP+OTN74HjcmT8zsKQYAAkI+bbqBIOVbx+XpCaNFNO+o2cT93VtiWyzYqjeloXGAOx5cWcaXkASt2TfvhABV2NFNqQoaZsNP4wVpenDDb9IDrDJIVSE0w/Jm0HCqhpeOPpGN9FOeFJaEqam3SRm92KOazWkYKiVCArY0lLU=
+Received: from AM6P194CA0062.EURP194.PROD.OUTLOOK.COM (2603:10a6:209:84::39)
+ by DB4PR02MB8462.eurprd02.prod.outlook.com (2603:10a6:10:379::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Fri, 23 Feb
+ 2024 20:37:33 +0000
+Received: from AMS0EPF000001A5.eurprd05.prod.outlook.com
+ (2603:10a6:209:84:cafe::45) by AM6P194CA0062.outlook.office365.com
+ (2603:10a6:209:84::39) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.43 via Frontend
+ Transport; Fri, 23 Feb 2024 20:37:32 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 195.60.68.100)
+ smtp.mailfrom=axis.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=none header.from=axis.com;
+Received-SPF: Fail (protection.outlook.com: domain of axis.com does not
+ designate 195.60.68.100 as permitted sender) receiver=protection.outlook.com;
+ client-ip=195.60.68.100; helo=mail.axis.com;
+Received: from mail.axis.com (195.60.68.100) by
+ AMS0EPF000001A5.mail.protection.outlook.com (10.167.16.232) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7292.25 via Frontend Transport; Fri, 23 Feb 2024 20:37:32 +0000
+Received: from SE-MAILARCH01W.axis.com (10.20.40.15) by se-mail02w.axis.com
+ (10.20.40.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Fri, 23 Feb
+ 2024 21:37:31 +0100
+Received: from se-mail01w.axis.com (10.20.40.7) by SE-MAILARCH01W.axis.com
+ (10.20.40.15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Fri, 23 Feb
+ 2024 21:37:31 +0100
+Received: from se-intmail01x.se.axis.com (10.0.5.60) by se-mail01w.axis.com
+ (10.20.40.7) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
+ Transport; Fri, 23 Feb 2024 21:37:31 +0100
+Received: from pc55637-2337.se.axis.com (pc55637-2337.se.axis.com [10.88.4.11])
+	by se-intmail01x.se.axis.com (Postfix) with ESMTP id 075D214EA7;
+	Fri, 23 Feb 2024 21:37:31 +0100 (CET)
+Received: by pc55637-2337.se.axis.com (Postfix, from userid 363)
+	id 3BDE12369AF7; Fri, 23 Feb 2024 21:37:31 +0100 (CET)
+From: Jesper Nilsson <jesper.nilsson@axis.com>
+Date: Fri, 23 Feb 2024 21:37:01 +0100
+Subject: [PATCH net-next v3] net: stmmac: mmc_core: Drop interrupt
+ registers from stats
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240129234627.GA487749@bhelgaas>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240223-stmmac_stats-v3-1-5d483c2a071a@axis.com>
+X-B4-Tracking: v=1; b=H4sIAOwB2WUC/22NQQqDMBBFryKzbsok0Shd9R6llDSONQu1ZEKwi
+ HdvyEpKl4/Pe38DpuCJ4VJtECh59sucQZ8qcKOdXyR8nxkUqhqVNILjNFn34GgjC9KNkX1tsEe
+ CrLwDDX4tuRvMFMVMa4R7XkbPcQmf8pNk2f8nkxRStGiawdZG6qG72tXz2S1T6SR1cBX+uCq7a
+ NuuM/pJrsWDu+/7Fwfma0ztAAAA
+To: Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu
+	<joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>
+CC: <netdev@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<kernel@axis.com>, Serge Semin <fancer.lancer@gmail.com>, Jesper Nilsson
+	<jesper.nilsson@axis.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708720651; l=3843;
+ i=jesper.nilsson@axis.com; s=20240216; h=from:subject:message-id;
+ bh=aBWSrG5PTHNDYbjhu6vhwaGZci5zg9VS2o4mtJiReCk=;
+ b=Bh+Rxs7daVj8594P6YNp7rM9ZzWAJfr4ixMYoRXeDBlqt0tXkJQRqncG/xWdtkhMSHYeXGn6X
+ FRXqcrU6FBEDU7r5dMVLXT9zZSq20ZVl4QXVqoxwx5jow0QHDz45ZE+
+X-Developer-Key: i=jesper.nilsson@axis.com; a=ed25519;
+ pk=RDobTFVrTaE8iMP112Wk0CDiLdcV7I+OkaCECzhr/bI=
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AMS0EPF000001A5:EE_|DB4PR02MB8462:EE_
+X-MS-Office365-Filtering-Correlation-Id: fafa762f-109b-490f-1e30-08dc34af42a1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	LY4TkECqaYmAd3wTqlcI1DlcZjkfRZ9SmaPssjt6pB6WSflhBXRq/ShyNkAUETBnMdsd0JEV0a5QZEt+/nIWXyqEQM97mUf1PlEEVLUIxONFMbQxP9mG+dghRcaKqasZ6/xnwI684tK6QAjrJJYPYqO7T90e0DTs2GAppzDCKGCQNfeIPVk7iAqXHNuiR9HP/g5QVlwM//GcG5pQDVr2uj1H+MbzvWK+alR3ZCYzDHxHj1lbwsbt+iJJxHk+y7/9wej9MW/ew4ivE1eXOp/u8Goa6buPXqNoJCMsv+cHi9UM9A2OMtJ3Nl143C0MzcXXtCv9Cae1SjyWRTJTkDyIp+iGE3o7c6Yj3zrvXCjqebE3bzVltrrAItin24IUKehrQ3Wc4wb+Me5LArRUf6S3j3nEe9icFk8/E1tAaQuMLpfdN2/Y8v3ksIKn/Z04AKvq1vnCdELvUfKIFEKjnypZ64gaeljqo8cB/hAkMMymM7jOdgVAMRAMUcrdRnlfhMtdbqpFC9x3KXwJztyDuZRq30iIERbEQG0wlnAiNy9kyRPLzsxDNFIi0cleLi/xvzdqAF9pwiJ0QS7z+I0B62amFDTqtv4x/yj6VvgwaXDfC8nyNb430PG5UQoD3oJf5mQv1whhSOE6ezITZxc1mAplXg==
+X-Forefront-Antispam-Report:
+	CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(46966006)(40470700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: axis.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2024 20:37:32.1231
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: fafa762f-109b-490f-1e30-08dc34af42a1
+X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=78703d3c-b907-432f-b066-88f7af9ca3af;Ip=[195.60.68.100];Helo=[mail.axis.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	AMS0EPF000001A5.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB4PR02MB8462
 
-On Mon, Jan 29, 2024 at 05:46:27PM -0600, Bjorn Helgaas wrote:
-> On Sun, Jan 28, 2024 at 03:32:07PM -0800, David E. Box wrote:
-> > Here is the series to always build aspm.c, add back L1SS save/restore, and
-> > consolidate all ASPM related code in aspm.c.
-> > 
-> > Patch 1 - Moves all PCI core functions running under CONFIG_PCIEASPM into
-> > aspm.c and changes they Makefile to always build it. No functional changes.
-> > 
-> > Patch 2 - Creates a separate function to save the L1SS offset and places it
-> > outside of CONFIG_PCIEASPM in aspm.c so that the offset is available for
-> > later use by the L1SS save/restore code which needs to run when
-> > CONFIG_PCIEASPM=n.
-> > 
-> > Patch 3 - Updated L1 Substate save/restore patch from previous V5 [1].
-> > 
-> > Patch 4 - Moves the LTR save/restore state functions into aspm.c outside of
-> > CONFIG_PCIEASPM.
-> > 
-> > Patch 5 - Moves the LTR save/restore state calls into
-> > pci_save/restore_pcie_state().
-> > 
-> > The series does not continue any of the ASPM robustness changes proposed by
-> > Ilpo [2]. But if we think it's worth combining with this series I can
-> > add it and help continue the work.
-> > 
-> > [1] https://lore.kernel.org/linux-pci/20231221011250.191599-1-david.e.box@linux.intel.com/
-> > [2] https://lore.kernel.org/linux-pci/20230918131103.24119-1-ilpo.jarvinen@linux.intel.com/
-> > 
-> > David E. Box (5):
-> >   PCI: Always build aspm.c
-> >   PCI: Create function to save L1SS offset
-> >   PCI/ASPM: Add back L1 PM Substate save and restore
-> >   PCI: Move pci_save/restore_ltr_state() to aspm.c
-> >   PCI: Call LTR save/restore state from PCIe save/restore
-> > 
-> >  drivers/pci/pci.c         |  91 ++++----------
-> >  drivers/pci/pci.h         |  10 +-
-> >  drivers/pci/pcie/Makefile |   2 +-
-> >  drivers/pci/pcie/aspm.c   | 257 ++++++++++++++++++++++++++++++++++++--
-> >  drivers/pci/probe.c       |  62 +--------
-> >  include/linux/pci.h       |   4 +-
-> >  6 files changed, 283 insertions(+), 143 deletions(-)
-> > 
-> > 
-> > base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
-> 
-> Rebased to v6.8-rc1 and applied to pci/aspm for v6.9, thanks!
+The MMC IPC interrupt status and interrupt mask registers are
+of little use as Ethernet statistics, but incrementing counters
+based on the current interrupt and interrupt mask registers
+makes them actively misleading.
 
-I reworked this to accommodate Vidya's "Update saved buffers with
-latest ASPM configuration" patch:
-https://lore.kernel.org/r/20230125133830.20620-1-vidyas@nvidia.com
+For example, if the interrupt mask is set to 0x08420842,
+the current code will increment by that amount each iteration,
+leading to the following sequence of nonsense:
 
-It ended up being more work than I expected.  The interdiff is below,
-and I put this and Vidya's patch on a pci/aspm-rework branch
-temporarily so we can take a look before saying it's done:
-https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git/log/?h=aspm-rework
+mmc_rx_ipc_intr_mask: 969816526
+mmc_rx_ipc_intr_mask: 1108361744
 
-The main changes are:
+These registers have been included in the Ethernet statistics
+since the first version of MMC back in 2011 (commit 1c901a46d57).
+That commit also mentions the MMC interrupts as
+"something to add later (if actually useful)".
 
-  - Rename pci_save_aspm_state() to pci_save_aspm_l1ss_state() (this
-    is the main thing for Vidya's patch).
+If the registers are actually useful, they should probably
+be part of the Ethernet register dump instead of statistics,
+but for now, drop the counters for mmc_rx_ipc_intr and
+mmc_rx_ipc_intr_mask completely.
 
-  - Rename pcie_restore_aspm_l1ss() to pci_restore_aspm_l1ss_state()
-    to match.
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+Signed-off-by: Jesper Nilsson <jesper.nilsson@axis.com>
+---
+Changes in v3:
+- Rebase to be against net-next
+- Link to v2: https://lore.kernel.org/r/20240220-stmmac_stats-v2-1-0a78863bec70@axis.com
 
-  - Move the PCI_EXP_LNKCTL_ASPMC from pci_restore_aspm_state() to
-    pci_restore_pcie_state() so both writes are in the same place.
+Changes in v2:
+- Drop the misleading registers completely
+- Link to v1: https://lore.kernel.org/r/20240216-stmmac_stats-v1-1-7065fa4613f8@axis.com
+---
+ drivers/net/ethernet/stmicro/stmmac/mmc.h            | 4 ----
+ drivers/net/ethernet/stmicro/stmmac/mmc_core.c       | 3 ---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c | 2 --
+ 3 files changed, 9 deletions(-)
 
-  - Rename pci_aspm_get_l1ss() to pci_configure_aspm_l1ss() and add
-    the save_buffer there as well.
+diff --git a/drivers/net/ethernet/stmicro/stmmac/mmc.h b/drivers/net/ethernet/stmicro/stmmac/mmc.h
+index 14c9d2637dfe..dff02d75d519 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/mmc.h
++++ b/drivers/net/ethernet/stmicro/stmmac/mmc.h
+@@ -86,10 +86,6 @@ struct stmmac_counters {
+ 	unsigned int mmc_rx_discard_octets_gb;
+ 	unsigned int mmc_rx_align_err_frames;
+ 
+-	/* IPC */
+-	unsigned int mmc_rx_ipc_intr_mask;
+-	unsigned int mmc_rx_ipc_intr;
+-
+ 	/* IPv4 */
+ 	unsigned int mmc_rx_ipv4_gd;
+ 	unsigned int mmc_rx_ipv4_hderr;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
+index 8597c6abae8d..7eb477faa75a 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
++++ b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
+@@ -316,9 +316,6 @@ static void dwmac_mmc_read(void __iomem *mmcaddr, struct stmmac_counters *mmc)
+ 	mmc->mmc_rx_fifo_overflow += readl(mmcaddr + MMC_RX_FIFO_OVERFLOW);
+ 	mmc->mmc_rx_vlan_frames_gb += readl(mmcaddr + MMC_RX_VLAN_FRAMES_GB);
+ 	mmc->mmc_rx_watchdog_error += readl(mmcaddr + MMC_RX_WATCHDOG_ERROR);
+-	/* IPC */
+-	mmc->mmc_rx_ipc_intr_mask += readl(mmcaddr + MMC_RX_IPC_INTR_MASK);
+-	mmc->mmc_rx_ipc_intr += readl(mmcaddr + MMC_RX_IPC_INTR);
+ 	/* IPv4 */
+ 	mmc->mmc_rx_ipv4_gd += readl(mmcaddr + MMC_RX_IPV4_GD);
+ 	mmc->mmc_rx_ipv4_hderr += readl(mmcaddr + MMC_RX_IPV4_HDERR);
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+index 0e44b84fb7e7..e1537a57815f 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+@@ -243,8 +243,6 @@ static const struct stmmac_stats stmmac_mmc[] = {
+ 	STMMAC_MMC_STAT(mmc_rx_discard_frames_gb),
+ 	STMMAC_MMC_STAT(mmc_rx_discard_octets_gb),
+ 	STMMAC_MMC_STAT(mmc_rx_align_err_frames),
+-	STMMAC_MMC_STAT(mmc_rx_ipc_intr_mask),
+-	STMMAC_MMC_STAT(mmc_rx_ipc_intr),
+ 	STMMAC_MMC_STAT(mmc_rx_ipv4_gd),
+ 	STMMAC_MMC_STAT(mmc_rx_ipv4_hderr),
+ 	STMMAC_MMC_STAT(mmc_rx_ipv4_nopay),
 
-  - Split [1/5] into two patches: move pci_configure_ltr() and
-    pci_bridge_reconfigure_ltr() to aspm.c, and build aspm.c
-    unconditionally.
+---
+base-commit: a08689109c5989acdc5c320de8e45324f6cfa791
+change-id: 20240216-stmmac_stats-e3561d460d0e
 
-  - Squash [2/5] and [3/5] since [2/5] didn't add any functionality
-    itself so they seem like a single logical change.
+Best regards,
+-- 
 
-Let me know if you spot anything that I broke.
+/^JN - Jesper Nilsson
+-- 
+               Jesper Nilsson -- jesper.nilsson@axis.com
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 00139fad1827..4ea98665172d 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -1623,7 +1623,7 @@ static int pci_save_pcie_state(struct pci_dev *dev)
- 	pcie_capability_read_word(dev, PCI_EXP_LNKCTL2, &cap[i++]);
- 	pcie_capability_read_word(dev, PCI_EXP_SLTCTL2, &cap[i++]);
- 
--	pci_save_aspm_state(dev);
-+	pci_save_aspm_l1ss_state(dev);
- 	pci_save_ltr_state(dev);
- 
- 	return 0;
-@@ -1633,11 +1633,11 @@ static void pci_restore_pcie_state(struct pci_dev *dev)
- {
- 	int i = 0;
- 	struct pci_cap_saved_state *save_state;
--	u16 *cap, val;
-+	u16 *cap, lnkctl;
- 
- 	/*
- 	 * Restore max latencies (in the LTR capability) before enabling
--	 * LTR itself (in the PCIe capability).
-+	 * LTR itself in PCI_EXP_DEVCTL2.
- 	 */
- 	pci_restore_ltr_state(dev);
- 
-@@ -1655,19 +1655,22 @@ static void pci_restore_pcie_state(struct pci_dev *dev)
- 	cap = (u16 *)&save_state->cap.data[0];
- 	pcie_capability_write_word(dev, PCI_EXP_DEVCTL, cap[i++]);
- 
--	/*
--	 * Restore only the LNKCTL register with the ASPM control field
--	 * clear. ASPM will be restored in pci_restore_aspm_state().
--	 */
--	val = cap[i++] & ~PCI_EXP_LNKCTL_ASPMC;
--	pcie_capability_write_word(dev, PCI_EXP_LNKCTL, val);
-+	/* Restore LNKCTL register with ASPM control field clear */
-+	lnkctl = cap[i++];
-+	pcie_capability_write_word(dev, PCI_EXP_LNKCTL,
-+				   lnkctl & ~PCI_EXP_LNKCTL_ASPMC);
-+
- 	pcie_capability_write_word(dev, PCI_EXP_SLTCTL, cap[i++]);
- 	pcie_capability_write_word(dev, PCI_EXP_RTCTL, cap[i++]);
- 	pcie_capability_write_word(dev, PCI_EXP_DEVCTL2, cap[i++]);
- 	pcie_capability_write_word(dev, PCI_EXP_LNKCTL2, cap[i++]);
- 	pcie_capability_write_word(dev, PCI_EXP_SLTCTL2, cap[i++]);
- 
--	pci_restore_aspm_state(dev);
-+	pci_restore_aspm_l1ss_state(dev);
-+
-+	/* Restore ASPM control after restoring L1SS state */
-+	pcie_capability_set_word(dev, PCI_EXP_LNKCTL,
-+				 lnkctl & PCI_EXP_LNKCTL_ASPMC);
- }
- 
- static int pci_save_pcix_state(struct pci_dev *dev)
-@@ -3532,11 +3535,6 @@ void pci_allocate_cap_save_buffers(struct pci_dev *dev)
- 	if (error)
- 		pci_err(dev, "unable to allocate suspend buffer for LTR\n");
- 
--	error = pci_add_ext_cap_save_buffer(dev, PCI_EXT_CAP_ID_L1SS,
--					    2 * sizeof(u32));
--	if (error)
--		pci_err(dev, "unable to allocate suspend buffer for ASPM-L1SS\n");
--
- 	pci_allocate_vc_save_buffers(dev);
- }
- 
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index ecceb690fbbb..eca5938deb07 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -97,11 +97,6 @@ void pci_msi_init(struct pci_dev *dev);
- void pci_msix_init(struct pci_dev *dev);
- bool pci_bridge_d3_possible(struct pci_dev *dev);
- void pci_bridge_d3_update(struct pci_dev *dev);
--void pci_aspm_get_l1ss(struct pci_dev *pdev);
--void pci_save_aspm_state(struct pci_dev *pdev);
--void pci_restore_aspm_state(struct pci_dev *pdev);
--void pci_save_ltr_state(struct pci_dev *dev);
--void pci_restore_ltr_state(struct pci_dev *dev);
- int pci_bridge_wait_for_secondary_bus(struct pci_dev *dev, char *reset_type);
- 
- static inline void pci_wakeup_event(struct pci_dev *dev)
-@@ -572,6 +567,14 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
- 
- bool pcie_wait_for_link(struct pci_dev *pdev, bool active);
- int pcie_retrain_link(struct pci_dev *pdev, bool use_lt);
-+
-+/* ASPM-related functionality we need even without CONFIG_PCIEASPM */
-+void pci_save_ltr_state(struct pci_dev *dev);
-+void pci_restore_ltr_state(struct pci_dev *dev);
-+void pci_configure_aspm_l1ss(struct pci_dev *dev);
-+void pci_save_aspm_l1ss_state(struct pci_dev *dev);
-+void pci_restore_aspm_l1ss_state(struct pci_dev *dev);
-+
- #ifdef CONFIG_PCIEASPM
- void pcie_aspm_init_link_state(struct pci_dev *pdev);
- void pcie_aspm_exit_link_state(struct pci_dev *pdev);
-diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-index 60716fbf40a9..977eca893b2a 100644
---- a/drivers/pci/pcie/aspm.c
-+++ b/drivers/pci/pcie/aspm.c
-@@ -24,126 +24,6 @@
- 
- #include "../pci.h"
- 
--void pci_aspm_get_l1ss(struct pci_dev *pdev)
--{
--	/* Read L1 PM substate capabilities */
--	pdev->l1ss = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_L1SS);
--}
--
--void pci_save_aspm_state(struct pci_dev *pdev)
--{
--	struct pci_cap_saved_state *save_state;
--	u16 l1ss = pdev->l1ss;
--	u32 *cap;
--
--	/*
--	 * Save L1 substate configuration. The ASPM L0s/L1 configuration
--	 * is already saved in pci_save_pcie_state().
--	 */
--	if (!l1ss)
--		return;
--
--	save_state = pci_find_saved_ext_cap(pdev, PCI_EXT_CAP_ID_L1SS);
--	if (!save_state)
--		return;
--
--	cap = &save_state->cap.data[0];
--	pci_read_config_dword(pdev, l1ss + PCI_L1SS_CTL2, cap++);
--	pci_read_config_dword(pdev, l1ss + PCI_L1SS_CTL1, cap++);
--}
--
--static void pcie_restore_aspm_l1ss(struct pci_dev *pdev)
--{
--	struct pci_cap_saved_state *pl_save_state, *cl_save_state;
--	struct pci_dev *parent = pdev->bus->self;
--	u32 *cap, pl_ctl1, pl_ctl2, pl_l1_2_enable;
--	u32 cl_ctl1, cl_ctl2, cl_l1_2_enable;
--
--	/*
--	 * In case BIOS enabled L1.2 after resume, we need to disable it first
--	 * on the downstream component before the upstream. So, don't attempt to
--	 * restore either until we are at the downstream component.
--	 */
--	if (pcie_downstream_port(pdev) || !parent)
--		return;
--
--	if (!pdev->l1ss || !parent->l1ss)
--		return;
--
--	cl_save_state = pci_find_saved_ext_cap(pdev, PCI_EXT_CAP_ID_L1SS);
--	pl_save_state = pci_find_saved_ext_cap(parent, PCI_EXT_CAP_ID_L1SS);
--	if (!cl_save_state || !pl_save_state)
--		return;
--
--	cap = &cl_save_state->cap.data[0];
--	cl_ctl2 = *cap++;
--	cl_ctl1 = *cap;
--	cap = &pl_save_state->cap.data[0];
--	pl_ctl2 = *cap++;
--	pl_ctl1 = *cap;
--
--
--	/*
--	 * Disable L1.2 on this downstream endpoint device first, followed
--	 * by the upstream
--	 */
--	pci_clear_and_set_config_dword(pdev, pdev->l1ss + PCI_L1SS_CTL1,
--				       PCI_L1SS_CTL1_L1_2_MASK, 0);
--	pci_clear_and_set_config_dword(parent, parent->l1ss + PCI_L1SS_CTL1,
--				       PCI_L1SS_CTL1_L1_2_MASK, 0);
--
--	/*
--	 * In addition, Common_Mode_Restore_Time and LTR_L1.2_THRESHOLD
--	 * in PCI_L1SS_CTL1 must be programmed *before* setting the L1.2
--	 * enable bits, even though they're all in PCI_L1SS_CTL1.
--	 */
--	pl_l1_2_enable = pl_ctl1 & PCI_L1SS_CTL1_L1_2_MASK;
--	pl_ctl1 &= ~PCI_L1SS_CTL1_L1_2_MASK;
--	cl_l1_2_enable = cl_ctl1 & PCI_L1SS_CTL1_L1_2_MASK;
--	cl_ctl1 &= ~PCI_L1SS_CTL1_L1_2_MASK;
--
--	/* Write back without enables first (above we cleared them in ctl1) */
--	pci_write_config_dword(parent, parent->l1ss + PCI_L1SS_CTL2, pl_ctl2);
--	pci_write_config_dword(pdev, pdev->l1ss + PCI_L1SS_CTL2, cl_ctl2);
--	pci_write_config_dword(parent, parent->l1ss + PCI_L1SS_CTL1, pl_ctl1);
--	pci_write_config_dword(pdev, pdev->l1ss + PCI_L1SS_CTL1, cl_ctl1);
--
--
--	/* Then write back the enables */
--	if (pl_l1_2_enable || cl_l1_2_enable) {
--		pci_write_config_dword(parent, parent->l1ss + PCI_L1SS_CTL1,
--				       pl_ctl1 | pl_l1_2_enable);
--		pci_write_config_dword(pdev, pdev->l1ss + PCI_L1SS_CTL1,
--				       cl_ctl1 | cl_l1_2_enable);
--	}
--}
--
--void pci_restore_aspm_state(struct pci_dev *pdev)
--{
--	struct pci_cap_saved_state *save_state;
--	u16 *cap, val;
--
--	save_state = pci_find_saved_cap(pdev, PCI_CAP_ID_EXP);
--
--	if (!save_state)
--		return;
--
--	cap = (u16 *)&save_state->cap.data[0];
--	/* Must match the ordering in pci_save/restore_pcie_state() */
--	val = cap[1] & PCI_EXP_LNKCTL_ASPMC;
--	if (!val)
--		return;
--
--	/*
--	 * We restore L1 substate configuration first before enabling L1
--	 * as the PCIe spec 6.1 sec 5.5.4 suggests.
--	 */
--	pcie_restore_aspm_l1ss(pdev);
--
--	/* Re-enable L0s/L1 */
--	pcie_capability_set_word(pdev, PCI_EXP_LNKCTL, val);
--}
--
- void pci_save_ltr_state(struct pci_dev *dev)
- {
- 	int ltr;
-@@ -184,6 +64,105 @@ void pci_restore_ltr_state(struct pci_dev *dev)
- 	pci_write_config_dword(dev, ltr + PCI_LTR_MAX_SNOOP_LAT, *cap);
- }
- 
-+void pci_configure_aspm_l1ss(struct pci_dev *pdev)
-+{
-+	int rc;
-+
-+	pdev->l1ss = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_L1SS);
-+
-+	rc = pci_add_ext_cap_save_buffer(pdev, PCI_EXT_CAP_ID_L1SS,
-+					 2 * sizeof(u32));
-+	if (rc)
-+		pci_err(pdev, "unable to allocate ASPM L1SS save buffer (%pe)\n",
-+			ERR_PTR(rc));
-+}
-+
-+void pci_save_aspm_l1ss_state(struct pci_dev *pdev)
-+{
-+	struct pci_cap_saved_state *save_state;
-+	u16 l1ss = pdev->l1ss;
-+	u32 *cap;
-+
-+	/*
-+	 * Save L1 substate configuration. The ASPM L0s/L1 configuration
-+	 * in PCI_EXP_LNKCTL_ASPMC is saved by pci_save_pcie_state().
-+	 */
-+	if (!l1ss)
-+		return;
-+
-+	save_state = pci_find_saved_ext_cap(pdev, PCI_EXT_CAP_ID_L1SS);
-+	if (!save_state)
-+		return;
-+
-+	cap = &save_state->cap.data[0];
-+	pci_read_config_dword(pdev, l1ss + PCI_L1SS_CTL2, cap++);
-+	pci_read_config_dword(pdev, l1ss + PCI_L1SS_CTL1, cap++);
-+}
-+
-+void pci_restore_aspm_l1ss_state(struct pci_dev *pdev)
-+{
-+	struct pci_cap_saved_state *pl_save_state, *cl_save_state;
-+	struct pci_dev *parent = pdev->bus->self;
-+	u32 *cap, pl_ctl1, pl_ctl2, pl_l1_2_enable;
-+	u32 cl_ctl1, cl_ctl2, cl_l1_2_enable;
-+
-+	/*
-+	 * In case BIOS enabled L1.2 when resuming, we need to disable it first
-+	 * on the downstream component before the upstream. So, don't attempt to
-+	 * restore either until we are at the downstream component.
-+	 */
-+	if (pcie_downstream_port(pdev) || !parent)
-+		return;
-+
-+	if (!pdev->l1ss || !parent->l1ss)
-+		return;
-+
-+	cl_save_state = pci_find_saved_ext_cap(pdev, PCI_EXT_CAP_ID_L1SS);
-+	pl_save_state = pci_find_saved_ext_cap(parent, PCI_EXT_CAP_ID_L1SS);
-+	if (!cl_save_state || !pl_save_state)
-+		return;
-+
-+	cap = &cl_save_state->cap.data[0];
-+	cl_ctl2 = *cap++;
-+	cl_ctl1 = *cap;
-+	cap = &pl_save_state->cap.data[0];
-+	pl_ctl2 = *cap++;
-+	pl_ctl1 = *cap;
-+
-+	/*
-+	 * Disable L1.2 on this downstream endpoint device first, followed
-+	 * by the upstream
-+	 */
-+	pci_clear_and_set_config_dword(pdev, pdev->l1ss + PCI_L1SS_CTL1,
-+				       PCI_L1SS_CTL1_L1_2_MASK, 0);
-+	pci_clear_and_set_config_dword(parent, parent->l1ss + PCI_L1SS_CTL1,
-+				       PCI_L1SS_CTL1_L1_2_MASK, 0);
-+
-+	/*
-+	 * In addition, Common_Mode_Restore_Time and LTR_L1.2_THRESHOLD
-+	 * in PCI_L1SS_CTL1 must be programmed *before* setting the L1.2
-+	 * enable bits, even though they're all in PCI_L1SS_CTL1.
-+	 */
-+	pl_l1_2_enable = pl_ctl1 & PCI_L1SS_CTL1_L1_2_MASK;
-+	pl_ctl1 &= ~PCI_L1SS_CTL1_L1_2_MASK;
-+	cl_l1_2_enable = cl_ctl1 & PCI_L1SS_CTL1_L1_2_MASK;
-+	cl_ctl1 &= ~PCI_L1SS_CTL1_L1_2_MASK;
-+
-+	/* Write back without enables first (above we cleared them in ctl1) */
-+	pci_write_config_dword(parent, parent->l1ss + PCI_L1SS_CTL2, pl_ctl2);
-+	pci_write_config_dword(pdev, pdev->l1ss + PCI_L1SS_CTL2, cl_ctl2);
-+	pci_write_config_dword(parent, parent->l1ss + PCI_L1SS_CTL1, pl_ctl1);
-+	pci_write_config_dword(pdev, pdev->l1ss + PCI_L1SS_CTL1, cl_ctl1);
-+
-+	/* Then write back the enables */
-+	if (pl_l1_2_enable || cl_l1_2_enable) {
-+		pci_write_config_dword(parent, parent->l1ss + PCI_L1SS_CTL1,
-+				       pl_ctl1 | pl_l1_2_enable);
-+		pci_write_config_dword(pdev, pdev->l1ss + PCI_L1SS_CTL1,
-+				       cl_ctl1 | cl_l1_2_enable);
-+	}
-+}
-+
- #ifdef CONFIG_PCIEASPM
- 
- #ifdef MODULE_PARAM_PREFIX
-@@ -1676,4 +1655,5 @@ bool pcie_aspm_support_enabled(void)
- {
- 	return aspm_support_enabled;
- }
-+
- #endif /* CONFIG_PCIEASPM */
-diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-index b5ccf5a16dc1..1434bf495db3 100644
---- a/drivers/pci/probe.c
-+++ b/drivers/pci/probe.c
-@@ -2258,8 +2258,8 @@ static void pci_configure_device(struct pci_dev *dev)
- 	pci_configure_mps(dev);
- 	pci_configure_extended_tags(dev, NULL);
- 	pci_configure_relaxed_ordering(dev);
--	pci_aspm_get_l1ss(dev);
- 	pci_configure_ltr(dev);
-+	pci_configure_aspm_l1ss(dev);
- 	pci_configure_eetlp_prefix(dev);
- 	pci_configure_serr(dev);
- 
 
