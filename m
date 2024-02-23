@@ -1,60 +1,54 @@
-Return-Path: <linux-kernel+bounces-78619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95E028615F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:36:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A1B98615FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:37:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4ACF11F25E00
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:36:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAF551C20FEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:37:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA4E48287A;
-	Fri, 23 Feb 2024 15:35:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEC8A823BD;
+	Fri, 23 Feb 2024 15:37:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mILdl0BO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HqOIG3/7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 094FE567F;
-	Fri, 23 Feb 2024 15:35:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FD226E618
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 15:37:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708702545; cv=none; b=fs1fWOzwYoMVYKgBvqE4UApz0i8Z4xZ7PxQVfKRRy3gppAYucwM/RBB4PBDgYfU5rg3t1aET6LJ3bG7aFrYsdT1TQ9IjLUaW6Bp0IT7DiMol0l27mdvT+oOGMKnVc1YnF7NT+CVeO+pgsKRWJJr9k0sAGSU3JipEYrLvVjIDGhk=
+	t=1708702629; cv=none; b=YAs7WGnCnTzOhznbTjpIXylMhTUQwfkneOIkuYI15uJUgbB8lEmxjNysKYLHqb5D8xJBqV0LhN5LXxdfK24gruYN0u7OGqKmFMCsqgPY6wnbPgBqcy6OMmnTHdxMlAZtAWJoh9MnpG39bF3A5Vs61+L9QHGAv9SnzMkEIO7deIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708702545; c=relaxed/simple;
-	bh=SXQ3eQ3ao+baIMoqLDm5AXQTKDx9eEFqMrwt+ibBWNw=;
+	s=arc-20240116; t=1708702629; c=relaxed/simple;
+	bh=1Mc2mfHsTojIwn0Wldi0LZb5nmTE/KW/KUJ8gCPv8s8=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=sxhaAbbB0zxN2FY+wKsy5brXhgLKGZE4pIWFWLg0Y2DVRGslbVtcGtidEkR+rd8vKYO2emYddBoqewb39PCM8AjArU2JFLVL0ph2KxEXSipdWRZm4w9ppovx6O/04jQGohNf18MxrL5NqTP3nEQPbD1YWDkvZLSkKYBmge9Tusk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mILdl0BO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D4F1C433C7;
-	Fri, 23 Feb 2024 15:35:42 +0000 (UTC)
+	 MIME-Version:Content-Type; b=lEcLWEflUVUgNL73T2oJ6gUjGUxSJ23kt2zNZzZ8Tqpc9+SLl5imMAo2GQ1K2H6had7usRwzzFGKXcU+vTdhHlI0Vjew1CXN9eO+CAEn4TnnLVem/4SqLduZAciEnAihD2ZTuHipNzyuok5kw+2uK/IjULsPW4IO31RNRy301RU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HqOIG3/7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE08FC433F1;
+	Fri, 23 Feb 2024 15:37:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708702544;
-	bh=SXQ3eQ3ao+baIMoqLDm5AXQTKDx9eEFqMrwt+ibBWNw=;
+	s=k20201202; t=1708702628;
+	bh=1Mc2mfHsTojIwn0Wldi0LZb5nmTE/KW/KUJ8gCPv8s8=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=mILdl0BOCbDrNTcp25KFYci1H/I70C1UIiJ0+qAvSGipfcEN+P2ETPKaaQOYcd8MX
-	 a4i1tjkbTK/dGQPSDXW0gPS2fTn9GtngsU41LOVc+7M0+PIaINyQ9DUlUxhYZPpckE
-	 ODylk166Z2bG/T6lykplj7bmyC+iR2fLxqO9UPnBNslMxG4yjU7HMg7MPVwZBbfFD6
-	 rndTc4ErOQQHi8ycd9IJt3K8Un+AvZZJ3AmcNvknyvsNAnYd/MOI0sts+QUNAjHTw/
-	 AKMuDWnxkPAWSLNArz+YnAqvGi2hS1GC/ECK244eQmf9zxs0RkgB4mXTHVgv/MAA4N
-	 Ra42+eb+DczUA==
+	b=HqOIG3/7aojtaoUhqHJUT6jh+l1179+DqPGcdOBFuWEKIaz8kbc8QMzHR5lIQ4t7n
+	 RxAVzszo3Ds6AcFu3Vlv6RRnAIVuaXxwEjxFbLxedPkDu4B7/KOSxQ/95EV0M9v/IT
+	 rlN9H+JZuBT3SGPvZzaGPaCYO6R3oHcq3lNCAtxoU4/mqF1U8CWi9KmG28Rj29P9WZ
+	 2/mR7P1C33Aeb2Bv+GAbXWDt8dOGgYGg8qzRk0aFNxMAd8GJ96UMVAitD4yzKbjYVl
+	 RG+nmqsd7n2mi9M9LmWBTSjDAhrfeK+y+Plp/xL254lMu82V52qz2tNmlnINhJLzlo
+	 sZ0NwCv6h0ZOQ==
 From: Lee Jones <lee@kernel.org>
-To: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, 
- Arnd Bergmann <arnd@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Fenglin Wu <quic_fenglinw@quicinc.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- ChiYuan Huang <cy_huang@richtek.com>, 
- =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>, 
- Linus Walleij <linus.walleij@linaro.org>, 
- Daniel Thompson <daniel.thompson@linaro.org>, linux-leds@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240213165602.2230970-1-arnd@kernel.org>
-References: <20240213165602.2230970-1-arnd@kernel.org>
-Subject: Re: (subset) [PATCH] leds: ktd2692: add gpiolib dependency
-Message-Id: <170870254198.1708897.11776260792446922226.b4-ty@kernel.org>
-Date: Fri, 23 Feb 2024 15:35:41 +0000
+To: =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+ Lee Jones <lee@kernel.org>, Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: linux-kernel@vger.kernel.org
+In-Reply-To: <ef7d5fc3d867338520392417cdf2b67ba19aecde.1708002264.git.geert+renesas@glider.be>
+References: <ef7d5fc3d867338520392417cdf2b67ba19aecde.1708002264.git.geert+renesas@glider.be>
+Subject: Re: (subset) [PATCH resend] mfd: mc13xxx: Use bitfield helpers
+Message-Id: <170870262748.1709751.12807653760472822358.b4-ty@kernel.org>
+Date: Fri, 23 Feb 2024 15:37:07 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,21 +59,16 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.12.4
 
-On Tue, 13 Feb 2024 17:55:50 +0100, Arnd Bergmann wrote:
-> The expresswire module requires gpiolib, so anything selecting it
-> also needs this dependency:
+On Thu, 15 Feb 2024 14:07:13 +0100, Geert Uytterhoeven wrote:
+> Use the FIELD_GET() helper, instead of defining a custom macro
+> implementing the same operation.
 > 
-> WARNING: unmet direct dependencies detected for LEDS_EXPRESSWIRE
->   Depends on [n]: NEW_LEDS [=y] && GPIOLIB [=n]
->   Selected by [y]:
->   - LEDS_KTD2692 [=y] && NEW_LEDS [=y] && LEDS_CLASS_FLASH [=y] && OF [=y]
 > 
-> [...]
 
 Applied, thanks!
 
-[1/1] leds: ktd2692: add gpiolib dependency
-      commit: 52380f87d190e1e3f376f6a01d70bca753e81251
+[1/1] mfd: mc13xxx: Use bitfield helpers
+      commit: 18cf74b67f1db31ef8e2cd256e605fe40a034cdc
 
 --
 Lee Jones [李琼斯]
