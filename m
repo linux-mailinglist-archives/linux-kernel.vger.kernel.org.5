@@ -1,133 +1,131 @@
-Return-Path: <linux-kernel+bounces-78475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37D468613E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:21:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FF8E8613E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:22:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E69AF285AE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:21:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F6E61F237D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:22:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B17980629;
-	Fri, 23 Feb 2024 14:21:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E838061F;
+	Fri, 23 Feb 2024 14:22:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R70UCjWs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R9H59djv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D11FE6FBF;
-	Fri, 23 Feb 2024 14:21:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 084FE78B57;
+	Fri, 23 Feb 2024 14:22:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708698109; cv=none; b=IqQ1Dds2g4ZV6wp8i+NlapcfEny69ow2tddvAFtW7sBKeGt5cifPCVqb+DH881rEHdLHSEvWPngnO+68ZKIMLkiIrEBskY9a5xWn22dCERPoeEyJG5THPBospB7Q36fU1pPRKaxMxtGm0TV9bfMkEwFfpkxb3YN9YNG8gmF01d8=
+	t=1708698143; cv=none; b=Yor93XOqhfVeqBwrwc0vvBphxdYSfIhb5XIn2EDAOZWqt9sJ7aXysquYmc7HZbxIUqYDAT6bmG7RAG6+fPogMdYGMGj1iHDDuvki5CJ1a27Th7AqFaO4oVopvl0kOW4Sea4Um8cwtllBzKpW798eT+9zHuAGo/HrH/Q0ePtnK8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708698109; c=relaxed/simple;
-	bh=GITjPyU/6jMigNK1ZyHILoVv5+gvdYxOZ3RVFKuYVnM=;
+	s=arc-20240116; t=1708698143; c=relaxed/simple;
+	bh=VxpccfonnRW7IPLZiMVnUbAMDQVPguZSl5ozwgM5NkQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lFC0QDXisdmynj/uMu9jxjXLhcUe/qg0X/OYvDwITHRIKRHptiMqANevQkZ5fYVbfgF6l1Rh4LyQXuYpkAObgL+1pN4mwGdRJmz5v3I5uvn9YLTXrFAN78who2paO3yuNjPCZhP/7wcw4WY0ed3tXVdZsS8TR3ze+GOA8SgAZGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R70UCjWs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57609C433F1;
-	Fri, 23 Feb 2024 14:21:49 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y8FsrjdygIe6tw3+Rw6P0CpT3d0clE+EmM0covaskF9R7zwVF4rE0Y1RvhY9a+TDrgi48tqE3xFypuLJKyyv7crBWwedDyuszvqsfUk/QY2AJ0rh1uqoZk+Md/4Otme2m5QM8J+8y+mf3L4wr5vOqpPZ7Pz/mRAjSHkyvFud5IM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R9H59djv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00BBEC433C7;
+	Fri, 23 Feb 2024 14:22:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708698109;
-	bh=GITjPyU/6jMigNK1ZyHILoVv5+gvdYxOZ3RVFKuYVnM=;
+	s=k20201202; t=1708698142;
+	bh=VxpccfonnRW7IPLZiMVnUbAMDQVPguZSl5ozwgM5NkQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=R70UCjWsObGZG+ZlxvBs/p61UxvAVIj7WCPF5uyACsIXigriAX/Dlyujzz4nH5ypC
-	 ZDmO3qy3nKPkFppx93FrOxndf+Lm34+jHBQ/8b2CWUUHl2RZ2SQfA79difCwrRhMtH
-	 o/RNHlz7JNNXwLZ3ubgnF+w9lzR22xIytIwlVKI/v7yvMKDUCijOzSYblko9ZH6SkK
-	 +8j6nD1GoYy9hMo7Baa9Kt6VAWua57q/uKEa//W3g6iiEwfttlPqUjsUD3Ak1A/PWw
-	 UoAvrzA++iA7xtRy2iSkaBmxfGPhITxlbPUISjcA53bsUXQfRCqOOL+s/eZa3dzDEO
-	 Zzpxz26ASeXYw==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rdWQy-000000004u4-2RdT;
-	Fri, 23 Feb 2024 15:21:53 +0100
-Date: Fri, 23 Feb 2024 15:21:52 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Neil Armstrong <neil.armstrong@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Andrzej Hajda <andrzej.hajda@intel.com>,
-	Robert Foss <rfoss@kernel.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Vinod Koul <vkoul@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Jonas Karlman <jonas@kwiboo.se>,
-	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Rob Clark <robdclark@gmail.com>,
-	Abhinav Kumar <quic_abhinavk@quicinc.com>,
-	Kuogee Hsieh <quic_khsieh@quicinc.com>,
-	freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-phy@lists.infradead.org
-Subject: Re: [PATCH 0/6] soc: qcom: pmic_glink_altmode: fix drm bridge
- use-after-free
-Message-ID: <ZdiqAPPTn9SvsjL8@hovoldconsulting.com>
-References: <20240217150228.5788-1-johan+linaro@kernel.org>
- <170868613914.4029284.5549880672870201262.b4-ty@linaro.org>
- <3c4246b6-431a-442e-8ace-3b0d0e67743f@linaro.org>
- <ZdiU2z8rzo542_Ih@hovoldconsulting.com>
- <d4049823-ad24-4426-887b-9c66cdd96318@linaro.org>
+	b=R9H59djv+xdj9IMpiTO2kiHy8ruKsmdNsaXe8aBecR1fc21Lj7r+uRmdCOGOTdQFh
+	 Hke0UzbdOV9HhvDHB4GqsOLfF8+TFp49qgq0IL8BBm+/9YYGpd3nPhcbIGlwDykLZN
+	 556lwzBGz4mHKiK3yfwJ//5P5mww+ge+oZDp6m3F9P1T+DAYNm90BKFeNfD0HSxGY/
+	 isxufZAjD0IWY9nNhSPkpGpFy2ybPxM80O/naJ2PCBOi4EuiPTb/viqS9A7XePqEpQ
+	 mRKhJtzkgMagjfg35+gZLXzBYloC78y/wcapN644tpq82lRV06m9I1uE0IzjXh0msJ
+	 38uTU3DnbEHPA==
+Date: Fri, 23 Feb 2024 14:22:18 +0000
+From: Lee Jones <lee@kernel.org>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Juergen Borleis <jbe@pengutronix.de>, linux-leds@vger.kernel.org,
+	Pavel Machek <pavel@ucw.cz>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH] leds: trigger/tty: Use led_set_brightness() to support
+ all use cases
+Message-ID: <20240223142218.GA1666215@google.com>
+References: <20210503092542.14497-1-jbe@pengutronix.de>
+ <20230109084320.nj7erwh3eu4jlw7y@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <d4049823-ad24-4426-887b-9c66cdd96318@linaro.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230109084320.nj7erwh3eu4jlw7y@pengutronix.de>
 
-On Fri, Feb 23, 2024 at 02:52:28PM +0100, Neil Armstrong wrote:
-> On 23/02/2024 13:51, Johan Hovold wrote:
-> > On Fri, Feb 23, 2024 at 12:03:10PM +0100, Neil Armstrong wrote:
-> >> On 23/02/2024 12:02, Neil Armstrong wrote:
+On Mon, 09 Jan 2023, Uwe Kleine-König wrote:
 
-> >>> Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-fixes)
-> >>>
-> >>> [1/6] drm/bridge: aux-hpd: fix OF node leaks
-> >>>         https://cgit.freedesktop.org/drm/drm-misc/commit/?id=9ee485bdda68d6d3f5728cbe3150eb9013d7d22b
-> >>> [2/6] drm/bridge: aux-hpd: separate allocation and registration
-> >>>         (no commit info)
-> >>> [3/6] soc: qcom: pmic_glink_altmode: fix drm bridge use-after-free
-> >>>         (no commit info)
-> >>> [4/6] soc: qcom: pmic_glink: Fix boot when QRTR=m
-> >>>         (no commit info)
-> >>> [5/6] phy: qcom-qmp-combo: fix drm bridge registration
-> >>>         (no commit info)
-> >>> [6/6] phy: qcom-qmp-combo: fix type-c switch registration
-> >>>         (no commit info)
-> >>>
-> >>
-> >> To clarify, I only applied patch 1 to drm-misc-fixes
-> > 
-> > Ok, but can you please not do that? :)
-> > 
-> > These patches should go in through the same tree to avoid conflicts.
-> > 
-> > I discussed this with Bjorn and Dmitry the other day and the conclusion
-> > was that it was easiest to take all of these through DRM.
+> Hello Jürgen,
 > 
-> I only applied patch 1, which is a standalone fix and goes into a separate tree,
-> for the next patches it would be indeed simpler for them to go via drm-misc when
-> they are properly acked.
+> On Mon, May 03, 2021 at 11:25:42AM +0200, Juergen Borleis wrote:
+> > Using led_set_brightness_sync() only works for LEDs which are connected
+> > via some kind of external bus like I²C or SPI. But it doesn't work for
+> > the simple use case of directly connected LEDs via GPIOs.
+> > Because this function only honors the led_classdev::brightness_set_blocking
+> > callback. But the LED-GPIO driver registers the
+> > led_classdev::brightness_set member if the GPIO can be modified directly
+> > and thus, TTY triggers fail silently with -ENOTSUPP.
+> > 
+> > With the previously used led_set_brightness() it works for both use cases.
+> > This function first checks for the simple case where the GPIO can be changed
+> > without additional overhead, and if it fails, does the modification via a
+> > workqueue.
+> > 
+> > Signed-off-by: Juergen Borleis <jbe@pengutronix.de>
+> > ---
+> >  drivers/leds/trigger/ledtrig-tty.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/leds/trigger/ledtrig-tty.c b/drivers/leds/trigger/ledtrig-tty.c
+> > index f62db7e..af61281 100644
+> > --- a/drivers/leds/trigger/ledtrig-tty.c
+> > +++ b/drivers/leds/trigger/ledtrig-tty.c
+> > @@ -122,12 +122,12 @@ static void ledtrig_tty_work(struct work_struct *work)
+> >  
+> >  	if (icount.rx != trigger_data->rx ||
+> >  	    icount.tx != trigger_data->tx) {
+> > -		led_set_brightness_sync(trigger_data->led_cdev, LED_ON);
+> > +		led_set_brightness(trigger_data->led_cdev, LED_ON);
+> >  
+> >  		trigger_data->rx = icount.rx;
+> >  		trigger_data->tx = icount.tx;
+> >  	} else {
+> > -		led_set_brightness_sync(trigger_data->led_cdev, LED_OFF);
+> > +		led_set_brightness(trigger_data->led_cdev, LED_OFF);
+> >  	}
+> 
+> This problem still exists, right?
+> 
+> I think the right thing here is to call led_set_brightness_nosleep()
+> however.
+> 
+> Having said that, I think there are too many variants of
+> led_set_brightness which makes it difficult to pick the right one.
+> 
+> (I'm aware of
+>  - led_set_brightness_nosleep
+>  - led_set_brightness_nopm
+>  - led_set_brightness_sync
+>  - led_set_brightness
+> 
+> and there are a few more static variants in led-core.c
+> (__led_set_brightness, __led_set_brightness_blocking,
+> set_brightness_delayed).)
 
-But it is *not* standalone as I tried to explain above.
+This patch (and this response) was never sent to me.
 
-So you have to drop it again as the later patches depend on it and
-cannot be merged (through a different tree) without it.
+Not a great deal I can do if I'm not aware of it.
 
-I thought you had all the acks you needed to take this through drm-misc,
-but we can wait a bit more if necessary (and there's no rush to get the
-first one in).
-
-Johan
+-- 
+Lee Jones [李琼斯]
 
