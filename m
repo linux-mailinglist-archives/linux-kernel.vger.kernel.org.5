@@ -1,139 +1,106 @@
-Return-Path: <linux-kernel+bounces-78020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AAC3860E09
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:33:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99A8F860E10
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:35:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1BB01F25DAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:33:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EF8C1F265F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:35:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5F195CDEE;
-	Fri, 23 Feb 2024 09:32:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58AA922EF5;
+	Fri, 23 Feb 2024 09:35:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="e5FkuvEU"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="QoxcclqC";
+	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="U8Qo2tdD"
+Received: from mailrelay4-1.pub.mailoutpod2-cph3.one.com (mailrelay4-1.pub.mailoutpod2-cph3.one.com [46.30.211.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E43A21A731;
-	Fri, 23 Feb 2024 09:32:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E3B25C8F9
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 09:35:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.211.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708680779; cv=none; b=fuwxbviTqkX1LRWh7N4uf2dk56dSicgXS4gFR5M0aw4cCv9e/cXUmq5DM/eljcRgf6U2xEGyx7zpLA3LTUTKlrMJ6GzXTNkMq7c3GUFp0+0KNGZj4D4xrSjKRo8CObAkwglVh2CZC6eFHgFbQCUvrzwJeBnRrD2cd4jbRJ3JV80=
+	t=1708680932; cv=none; b=pdPZEjj74VIJ9fSwjy+p+QLlNbtxVYIS2gPa6t2aLucI+K0xaSgr/VlUgz5ZWFfrVM1T6LhDDm08HccubUDGpxekJok/rePBIQv9ipsQGxRR9sZilBFEUXuH82HlTkcCSVe2G/L6m2pHEaqrk0VrBynJcHb4NEuqkJiJzIjY/Zo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708680779; c=relaxed/simple;
-	bh=e4RXBe7SdrRLGGStxY/kvqt/kAPWHBSBirHEGGNnVHY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=rYwY9dipaFyv1OgyVklSj+uHjdvMdScWkejES8R29gd6+z/QykzG4vy4CWRFUeztGh6ekGhiq2hcMwgHdE98LEE2MRvk658EEGIlxu0FGa+I4xYV5b/csZ+7HGSyaT+Q6QXc9PBzo+d1tp/uzufXb2QcagiaPYChC9peIwRmo3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=e5FkuvEU; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5792D20013;
-	Fri, 23 Feb 2024 09:32:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708680768;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=x2oRLe0RRlPq8BsMAid2UDLfRRqpSJFqF07a/MXQocI=;
-	b=e5FkuvEU2Mtn0cO+/Pa1PC8U8ugIYJVnlW4u1isMnfRprKNsfXGnJv0iLEelAWSBkPl1tH
-	6B0/VxrzJaFqOYsWkxXb+itolf3E4GBHd8De+VJHYTFVe7W5lz+ZjJYyWd7shkQSQxO1H5
-	v9GX8t6lPIvjgjoeWbNr5tU8SyXmZDP1EBO828Ks0U7oBxUacIDgoljkHKg+AcjzPdBwaQ
-	sD3IFPuSOI2/T1JIuIonLCdH6b4SFvzaYrLoZco63ffJwl88Pv9WdZ9PKAl5D7RgHt0y4q
-	Eqv9VIy+ZOIeMMEIfmLHehO9FidUyC+yM6dw6lPs1MQvNPS5KlAXIcM6Qv3KaA==
-From: Louis Chauvet <louis.chauvet@bootlin.com>
-Date: Fri, 23 Feb 2024 10:32:13 +0100
-Subject: [PATCH v2 3/3] spi: omap2-mcpsi: Enable MULTI-mode in more
- situations
+	s=arc-20240116; t=1708680932; c=relaxed/simple;
+	bh=1AuFo9AfZZjMBhRnQTvCb4B3WDa1c0+Ea+mu6365uDQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dNTeFsi+R2VZJVy77DT7dmUxmOEl+prnrO4qCpJQGAYwV+QThB+3rNhD/XT1dGEumCy48zkXeAXI/CWCPjieJ7QQMzpHmWsO60Xu6z4VGGYpT8sAE6ZxVPV8ZJsuypSVJ2eW8CPn2kJLG6sABxSRC5Np47fSLZTk1L0vqGoAjFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org; spf=none smtp.mailfrom=ravnborg.org; dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=QoxcclqC; dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=U8Qo2tdD; arc=none smtp.client-ip=46.30.211.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=ravnborg.org; s=rsa2;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=b9DVkpvcR7/h1gy9vtR0pGRtWbblb47ZL60TRaWUHFQ=;
+	b=QoxcclqCooYXSycrWqe51U/lHSyIwOxCt/eKvo59wzb5L7JwHuhwKzNGTJgAlRyxPphW0Jz/ezXcb
+	 Ejl5fdHG6UU9+sd9iX+9TP06PegzHHpeXIPq7PCDJRVLPJd0y4QlBrWXEYUflLdgQ/Ed1duM00VMM+
+	 GnrVsA8w1QiGjPPzIcbQxkmhqyf7YbUhS4OlRlLHGV9c8okHV7WWMaL2O6SiprK2CioyxvMm6CB67g
+	 BuRocIt4V2JZFNHcwZ2wJg1ShNz8PwWNHmv/o+RDdetDlXR83uaFj3vT9sUo5pe0TFW/ifq7ZhWhub
+	 wz52WkGZfb7lGCSZuEzoTVIBwVVBV+g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+	d=ravnborg.org; s=ed2;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=b9DVkpvcR7/h1gy9vtR0pGRtWbblb47ZL60TRaWUHFQ=;
+	b=U8Qo2tdD2GOyZ4ktLKLjEgLf1Vv6OiJMJdBXIIP892Aej7Lx30DlYRqgc+7MUhvJsMTGKAqbj5AZ7
+	 vRLGr3EAQ==
+X-HalOne-ID: b5829225-d22e-11ee-a484-31e85a7fa845
+Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
+	by mailrelay4.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
+	id b5829225-d22e-11ee-a484-31e85a7fa845;
+	Fri, 23 Feb 2024 09:34:17 +0000 (UTC)
+Date: Fri, 23 Feb 2024 10:34:16 +0100
+From: Sam Ravnborg <sam@ravnborg.org>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: sparclinux <sparclinux@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Andreas Larsson <andreas@gaisler.com>,
+	"Maciej W. Rozycki" <macro@orcam.me.uk>
+Subject: Re: sparc: patch to fix parport_pc build on 32-bit
+Message-ID: <20240223093416.GA2800152@ravnborg.org>
+References: <4c4e2845-c7a8-4d0b-aa4a-7c5e3399b3dc@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240223-spi-omap2-mcspi-multi-mode-v2-3-afe94476b9c3@bootlin.com>
-References: <20240223-spi-omap2-mcspi-multi-mode-v2-0-afe94476b9c3@bootlin.com>
-In-Reply-To: <20240223-spi-omap2-mcspi-multi-mode-v2-0-afe94476b9c3@bootlin.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- thomas.petazzoni@bootlin.com, Miquel Raynal <miquel.raynal@bootlin.com>, 
- yen-mei.goh@keysight.com, koon-kee.lie@keysight.com, 
- jeremie.dautheribes@bootlin.com, Louis Chauvet <louis.chauvet@bootlin.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2499;
- i=louis.chauvet@bootlin.com; h=from:subject:message-id;
- bh=e4RXBe7SdrRLGGStxY/kvqt/kAPWHBSBirHEGGNnVHY=;
- b=owEBbQKS/ZANAwAIASCtLsZbECziAcsmYgBl2GY3HapgT8vFrAzfkho/rXRT8omzMteYRE6HA4M9
- wXk7xeeJAjMEAAEIAB0WIQRPj7g/vng8MQxQWQQgrS7GWxAs4gUCZdhmNwAKCRAgrS7GWxAs4mxzD/
- 0debrX/LIA5gA7Z8tqa7TLIMcoQ0g8WrhuUEvSDtPE+T97+U0bdmBZoTTWtDv517MiqFcjO8JUjKJo
- 7rVm1WjO4FKfAZX3MV0vXWPsPqQsmSTsCNEofs1AYGhJV67el0jM+NCfWnZcRX3sxEhGbvgmGUVmx0
- 3CitqWMhGGCVsz8H3UncBec47ut7lHvmNpQ1oY41KyLbwmizqCoIwxJYMimwa6rTRAgu4+CWIkwdt1
- ZytzZMlcxrz8p4pb62qv3ei7KE/o7pU3RMNTe39LoAiReSyjhSXlMgDgFXVWhlgZUYgxLdTxKa70Lw
- Av41sUyxGTFN/HMMFoQFdQ04/5L5WmohvgwjC00VLPaMa+itxmxlOYOcxRWqu+/09NimNImd3GhRf4
- hso9WljUe9vPBxl6qhfax3iZ4lZH1KcP9jgmHPpzD05cohjIGXBn8gks6WJuS8MP7UtJFJFtQPCk+v
- PQbTqcz6135eTKjdL1XyoApJzYHYuUoqNEr0QV1G/kzleFVBH+y+PZeC0YETr3J6o9hFeGX1rObvvP
- 52fGXdSmGd7fWwi4QnR1faq2TnnBtxLtw015zUhcWJbiNSRLNyTwICzzzxTkx6aUgeEu2OzJtLVq2d
- +GqOShz/Yve+48NUEGNi010THIKw3+e/j84uC8+8YeK9PXJc1IJnEdFpP+Rg==
-X-Developer-Key: i=louis.chauvet@bootlin.com; a=openpgp;
- fpr=8B7104AE9A272D6693F527F2EC1883F55E0B40A5
-X-GND-Sasl: louis.chauvet@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4c4e2845-c7a8-4d0b-aa4a-7c5e3399b3dc@infradead.org>
 
-Enable multimode when a transfer of multiple small words can be
-transformed in a transfer with a single bigger word. This is allowed as
-long as the result on the cable is the same, so word_delay must be zero.
+Hi Randy/Andreas.
 
-Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+On Thu, Feb 22, 2024 at 09:15:28PM -0800, Randy Dunlap wrote:
+> Hi Andreas,
+> 
+> Please pick up this patch from June/2023. I have already replied to
+> the patch with:
+> 
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+> 
+> and I just rechecked it on linux-next-20240223 to make sure that it
+> builds cleanly. It does; however, there is one trivial merge warning:
+> 
+> patching file arch/sparc/include/asm/parport.h
+> Hunk #1 succeeded at 20 (offset 1 line).
+> Hunk #2 succeeded at 252 (offset 1 line).
+> 
+> The patch:
+> https://lore.kernel.org/lkml/alpine.DEB.2.21.2306190121540.14084@angie.orcam.me.uk/
 
----
+I took a quick look at the patch. It does the minimal to fix the build
+but the ebus_dma thing is only used by sparc64 an should not be visible
+at all for sparc32.
 
-I am not sure if this is the best place to put such "optimization". I
-think this improvment should be in the core, as it is not depending on the
-driver itself, but I think Mark suggested something like this so if that
-fits to what was expected, I am happy to share this small improvement.
----
- drivers/spi/spi-omap2-mcspi.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+I think the right fix is to make the current
+arch/sparc/include/asm/parport.h sparc64 specific and use
+asm-generic/parport.h for sparc32.
 
-diff --git a/drivers/spi/spi-omap2-mcspi.c b/drivers/spi/spi-omap2-mcspi.c
-index 36075c4416d5..f64cc8cc7587 100644
---- a/drivers/spi/spi-omap2-mcspi.c
-+++ b/drivers/spi/spi-omap2-mcspi.c
-@@ -1397,14 +1397,26 @@ static int omap2_mcspi_prepare_message(struct spi_controller *ctlr,
- 		else
- 			bits_per_word = tr->bits_per_word;
- 
--	/* Only a single channel can have the FORCE bit enabled
- 		/*
- 		 * Check if this transfer contains only one word;
-+		 * OR contains 1 to 4 words, with bits_per_word == 8 and no delay between each word
-+		 * OR contains 1 to 2 words, with bits_per_word == 16 and no delay between each word
-+		 *
-+		 * If one of the two last case is true, this also change the bits_per_word of this
-+		 * transfer to make it a bit faster.
-+		 * It's not an issue to change the bits_per_word here even if the multi-mode is not
-+		 * applicable for this message, the signal on the wire will be the same.
- 		 */
- 		if (bits_per_word < 8 && tr->len == 1) {
- 			/* multi-mode is applicable, only one word (1..7 bits) */
-+		} else if (tr->word_delay.value == 0 && bits_per_word == 8 && tr->len <= 4) {
-+			/* multi-mode is applicable, only one "bigger" word (8,16,24,32 bits) */
-+			tr->bits_per_word = tr->len * bits_per_word;
-+		} else if (tr->word_delay.value == 0 && bits_per_word == 16 && tr->len <= 2) {
-+			/* multi-mode is applicable, only one "bigger" word (16,32 bits) */
-+			tr->bits_per_word = tr->len * bits_per_word / 2;
- 		} else if (bits_per_word >= 8 && tr->len == bits_per_word / 8) {
--			/* multi-mode is applicable, only one word (8..32 bits) */
-+			/* multi-mode is applicable, only one word (9..15,17..32 bits) */
- 		} else {
- 			/* multi-mode is not applicable: more than one word in the transfer */
- 			mcspi->use_multi_mode = false;
-
--- 
-2.43.0
-
+	Sam
 
