@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-78253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6FDF8610CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:52:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D5878610D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:52:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 811C728657A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:52:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01D512863B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:52:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 420D07B3E3;
-	Fri, 23 Feb 2024 11:52:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD6557C093;
+	Fri, 23 Feb 2024 11:52:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mCGeHbF9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jgjtbGYD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 882CA7AE72
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:52:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EFCC7BAEF
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 11:52:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708689120; cv=none; b=tWn96exIYox3qyUpKwxWoBXw1cHczMGTiVivmICUPTwJILrqxvJp5GHtKPwHA1tqfWTsepaxrQjEWc79gZh5ksKbe9WC8vMQaY058Ypyd+huGO4/hO0bJ9O/2DLDwoqqwUs31+XYaw5gYmRodAU8M+OabnRC1KnMaDIdSCwJ4BQ=
+	t=1708689122; cv=none; b=bTmHAmUARrJGY6vuqm9ZtZYOcAtS6m72pRKKDtemytVEaD4AeFSCnpvSZRSnU4gynOK2N0S8gukjdgkWvkZeQs2iteOeEbw8+o0O6qAXS/5CGSF7Y3hVDitBZX8IZBPN0B+byCoRW7kgyepxlLJS8z3X4puGNdt5+/SvceBqygs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708689120; c=relaxed/simple;
-	bh=VsACx/BCa3XtWDoMNVc71XrU2WWQ9BG6/Ja5X5GaJvs=;
+	s=arc-20240116; t=1708689122; c=relaxed/simple;
+	bh=FNEmQ819X+4jzsi2LEQDgwiIxK1a6W9fcLNJsEFzcXo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OBa3MYzyCV7de1RWG+VSQbxm8/UZY7GJZTULqr5vZgJKyvCeEggGPj3e5t1VqzqxVAfcqEsNF5/nWNRIbMP+H2VhPW3TJBhsWfOC2t+ZqXde14KZ5mrpGT7oiIUb8Ge7YtdZkUpJgOlos3UUKw5ZGjYSRVC+L3g2bnaPs82VJmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mCGeHbF9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 082E3C433C7;
-	Fri, 23 Feb 2024 11:51:58 +0000 (UTC)
+	 MIME-Version; b=GDMC0MfleAAtUXxcy8Xj0N9ACLW23QLtSfH1YP079naHHyXuteXwNqZiceN2qGFc7rcRFRLNGWoNDUvOitiLV38IfHb9IAb+ljoMwg05MdTTVcnul69BBXm+8OBcDsds8xy3aOG3rv1D1Ne7Mw7ZTD/4SUEcZjq6VqMkQ6Qta/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jgjtbGYD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87D13C43390;
+	Fri, 23 Feb 2024 11:52:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708689120;
-	bh=VsACx/BCa3XtWDoMNVc71XrU2WWQ9BG6/Ja5X5GaJvs=;
+	s=k20201202; t=1708689121;
+	bh=FNEmQ819X+4jzsi2LEQDgwiIxK1a6W9fcLNJsEFzcXo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mCGeHbF9fdejLLUoPOAvN3DkRK9WSq7b5ef7IjBHRCw/RVcFnkwSiPTO9OFdLvVKi
-	 y0r8sFvi5sKdLh292HbOFTl83c8gstQuBLhppb3rwIRoo/JqiL0E6z/ySnug0isgOM
-	 br/tLbAyxv8Aap/nrfYmemA1dICRHNQflaIKPYlVzc93/fbJLfLrv94DpCPY5x6N72
-	 ln1feHpBE571k28UkXqTb9zQ24K1AQTCOiFQhF5s1VIX7Eyx29gDXFUXmEBU5wK67t
-	 FsPdd5VH/HUKPbsRBlAY0+WXDxUysjbkrb29f0z1soffdXUD6s8Ta9Y5IzZr3y9A/9
-	 blNjrJ4Hnwm6A==
+	b=jgjtbGYD7QTuXEz/tAsXFo0qynF8zdVuzsGr6cjWw9N1j+03d4f9L1AMdlb3rHNNw
+	 xVbSrZheauh+O0tka2zI2kgH66iabZOLWU0S61NcSFzbStTn0hAsEz3EgzoyRfuq0H
+	 0Ii400wqnFm2owHwuxwKMLFKXVzr/mXsC8AsGb7m4htqpex+E2w5TuN2DEJ99SZcfi
+	 hit+GaowoEvv4mEoZbuwXm2I7IPC4XzJtF/G+YR6wFMCUF9Ev8oqR6N/tzxokDY13g
+	 jt7DZBJFGRdx0heCzq0tMr75+yXQVNRpGXxwwEXev/lv7GC2lES/PTusdqGms2MFPK
+	 l/jj7/KYLkUkg==
 From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To: stefani@seibold.net
 Cc: linux-kernel@vger.kernel.org,
 	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
 	Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH 1/4] kfifo: drop __kfifo_dma_out_finish_r()
-Date: Fri, 23 Feb 2024 12:51:52 +0100
-Message-ID: <20240223115155.8806-2-jirislaby@kernel.org>
+Subject: [PATCH 2/4] kfifo: introduce and use kfifo_skip_count()
+Date: Fri, 23 Feb 2024 12:51:53 +0100
+Message-ID: <20240223115155.8806-3-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240223115155.8806-1-jirislaby@kernel.org>
 References: <20240223115155.8806-1-jirislaby@kernel.org>
@@ -59,56 +59,84 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-It is the same as __kfifo_skip_r(), so:
-* drop __kfifo_dma_out_finish_r() completely, and
-* replace its (only) use by __kfifo_skip_r().
+kfifo_skip_count() is an extended version of kfifo_skip(), accepting
+also count. This will be useful in the serial code later.
+
+Now, it can be used to implement both kfifo_skip() and
+kfifo_dma_out_finish(). In the latter, 'len' only needs to be divided by
+'type' size (as it was until now).
+
+And stop using statement expressions when the return value is cast to
+'void'. Use classic 'do {} while (0)' instead.
+
+Note: perhaps we should skip 'count' records for the 'recsize' case, but
+the original (kfifo_dma_out_finish()) used to skip only one record. So
+this is kept unchanged and 'count' is still ignored in the recsize case.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 Cc: Stefani Seibold <stefani@seibold.net>
 Cc: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 ---
- include/linux/kfifo.h | 4 +---
- lib/kfifo.c           | 8 --------
- 2 files changed, 1 insertion(+), 11 deletions(-)
+ include/linux/kfifo.h | 29 ++++++++++++++---------------
+ 1 file changed, 14 insertions(+), 15 deletions(-)
 
 diff --git a/include/linux/kfifo.h b/include/linux/kfifo.h
-index 0b35a41440ff..bc7a1f5bb0ce 100644
+index bc7a1f5bb0ce..9e64eb03c535 100644
 --- a/include/linux/kfifo.h
 +++ b/include/linux/kfifo.h
-@@ -797,7 +797,7 @@ __kfifo_int_must_check_helper( \
+@@ -304,19 +304,25 @@ __kfifo_uint_must_check_helper( \
+ )
+ 
+ /**
+- * kfifo_skip - skip output data
++ * kfifo_skip_count - skip output data
+  * @fifo: address of the fifo to be used
++ * @count: count of data to skip
+  */
+-#define	kfifo_skip(fifo) \
+-(void)({ \
++#define	kfifo_skip_count(fifo, count) do { \
+ 	typeof((fifo) + 1) __tmp = (fifo); \
  	const size_t __recsize = sizeof(*__tmp->rectype); \
  	struct __kfifo *__kfifo = &__tmp->kfifo; \
  	if (__recsize) \
--		__kfifo_dma_out_finish_r(__kfifo, __recsize); \
-+		__kfifo_skip_r(__kfifo, __recsize); \
+ 		__kfifo_skip_r(__kfifo, __recsize); \
  	else \
- 		__kfifo->out += __len / sizeof(*__tmp->type); \
- })
-@@ -879,8 +879,6 @@ extern void __kfifo_dma_in_finish_r(struct __kfifo *fifo,
- extern unsigned int __kfifo_dma_out_prepare_r(struct __kfifo *fifo,
- 	struct scatterlist *sgl, int nents, unsigned int len, size_t recsize);
+-		__kfifo->out++; \
+-})
++		__kfifo->out += (count); \
++} while(0)
++
++/**
++ * kfifo_skip - skip output data
++ * @fifo: address of the fifo to be used
++ */
++#define	kfifo_skip(fifo)	kfifo_skip_count(fifo, 1)
  
--extern void __kfifo_dma_out_finish_r(struct __kfifo *fifo, size_t recsize);
--
- extern unsigned int __kfifo_len_r(struct __kfifo *fifo, size_t recsize);
+ /**
+  * kfifo_peek_len - gets the size of the next fifo record
+@@ -790,17 +796,10 @@ __kfifo_int_must_check_helper( \
+  * Note that with only one concurrent reader and one concurrent
+  * writer, you don't need extra locking to use these macros.
+  */
+-#define kfifo_dma_out_finish(fifo, len) \
+-(void)({ \
++#define kfifo_dma_out_finish(fifo, len) do { \
+ 	typeof((fifo) + 1) __tmp = (fifo); \
+-	unsigned int __len = (len); \
+-	const size_t __recsize = sizeof(*__tmp->rectype); \
+-	struct __kfifo *__kfifo = &__tmp->kfifo; \
+-	if (__recsize) \
+-		__kfifo_skip_r(__kfifo, __recsize); \
+-	else \
+-		__kfifo->out += __len / sizeof(*__tmp->type); \
+-})
++	kfifo_skip_count(__tmp, (len) / sizeof(*__tmp->type)); \
++} while (0)
  
- extern void __kfifo_skip_r(struct __kfifo *fifo, size_t recsize);
-diff --git a/lib/kfifo.c b/lib/kfifo.c
-index 12f5a347aa13..958099cc4914 100644
---- a/lib/kfifo.c
-+++ b/lib/kfifo.c
-@@ -582,11 +582,3 @@ unsigned int __kfifo_dma_out_prepare_r(struct __kfifo *fifo,
- }
- EXPORT_SYMBOL(__kfifo_dma_out_prepare_r);
- 
--void __kfifo_dma_out_finish_r(struct __kfifo *fifo, size_t recsize)
--{
--	unsigned int len;
--
--	len = __kfifo_peek_n(fifo, recsize);
--	fifo->out += len + recsize;
--}
--EXPORT_SYMBOL(__kfifo_dma_out_finish_r);
+ /**
+  * kfifo_out_peek - gets some data from the fifo
 -- 
 2.43.2
 
