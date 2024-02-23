@@ -1,140 +1,207 @@
-Return-Path: <linux-kernel+bounces-78414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78416-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EEF7861326
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:46:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D19C486132E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:47:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2203284CF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:46:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14478B223C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:47:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F44B7F49A;
-	Fri, 23 Feb 2024 13:45:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADA4B7E779;
+	Fri, 23 Feb 2024 13:46:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="H8HuPFVF"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b="fEnAJIVy"
+Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EE157F7CE;
-	Fri, 23 Feb 2024 13:45:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10BD38003B;
+	Fri, 23 Feb 2024 13:46:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.87.146.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708695929; cv=none; b=A6az1PLosr1pyg2SRieeGiVB7N0GdUrF080C1A2o5m4wXmJTKaWQ7LHc+62GoUf/laHa3D/YuszidxCad1GuRBMf5k09Ys4kJ+xEXU+B7fOtTo7f/+cowGe3dI+UghcHqQUKwwLeUj3nIvkKuE4nIbdbVtw1qDt+k6WyUN76AaY=
+	t=1708695972; cv=none; b=l5bRlgfoUYjo9OsBs0W4pO0EQIIV9xcxCJWzF3VattH+sVP531BMvfzcXVRZR10niNJ5PjNLjxYjNvNXUhrrOPBWaXzaJw0fzXLCDnAhAnuM+OCMQZSAN/mSpsnIynIutU38pbhvPTI5N1YaiShmVsNLvrC7KaVAf7QJ3DCLr7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708695929; c=relaxed/simple;
-	bh=UqrS3L3ZfbwmChhjl8azT4mTToB0ZPmTuVA//e4Tm3c=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=N0qVDWwCwoRsYNf57mpcfj2bU5qYJb/Pv+C7hf/qvw8AKj1ixFtkFfG8ezCVTRV5ss1aE2JNPld0LMEYtfHze7FinFv80qDQxoyfwGRNJ/dPrUvgqoVF9TPBEdMy59iYKBVaNgalCBr6+KGlzBDLxRtHoW4SqOZVxXUOD5yQf7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=H8HuPFVF; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id EE26724000E;
-	Fri, 23 Feb 2024 13:45:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708695924;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=02ddm9Xy6N7z/+neL8gzCb13I4/NT+KuYhzJAZBmiP4=;
-	b=H8HuPFVFjlTSb6rpaiXXgs5bRaL0zt7HcTIQ9cusb5bvcuJk9zcO0BldPrYHbrN9D3KiFQ
-	u+2yGHH3pVxZA0GGmSGe0fjQ0aprlD5dfJYQG/sKXRtq+DAlXBNO5NZpwP01jNpJDe01tP
-	oBrgGicgs4gym0SCDZqY+FdmMZJt3FZxU1+sr6/DYWAWH/aRT0YYEMB/An4Y29qXyq+OEB
-	SdqbDBckYhAtpvgGvmm2mhEAD+7/xF7/JdMWBYJyZvIwxGbC19y4Fm1wBuI3mrk1wuTtGX
-	XBQe1s4wrfq9ax0PBfvKRW3ohgTYYXQcWNyOvo5dd+djCCLjxKgHBfaSO/Drgg==
-From: =?UTF-8?q?J=C3=A9r=C3=A9mie=20Dautheribes?= <jeremie.dautheribes@bootlin.com>
-To: Neil Armstrong <neil.armstrong@linaro.org>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>
-Cc: dri-devel@lists.freedesktop.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Yen-Mei Goh <yen-mei.goh@keysight.com>,
-	=?UTF-8?q?J=C3=A9r=C3=A9mie=20Dautheribes?= <jeremie.dautheribes@bootlin.com>
-Subject: [PATCH 3/3] drm/panel: simple: add CMT430B19N00 LCD panel support
-Date: Fri, 23 Feb 2024 14:45:17 +0100
-Message-Id: <20240223134517.728568-4-jeremie.dautheribes@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240223134517.728568-1-jeremie.dautheribes@bootlin.com>
-References: <20240223134517.728568-1-jeremie.dautheribes@bootlin.com>
+	s=arc-20240116; t=1708695972; c=relaxed/simple;
+	bh=VKyijuW+QYpVtdh3FevlUhFteoZyVClemqfIxUdTt6c=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=rjYzmUoxaSMPzfeISgkOmDU1lEdbM15f7Sedgbjale0ASwSbeoY3T6X/VKAPu2jxKOPl+i8HMw3MJRFCbeYTdOUTcAWSsKK58NKUbI8sqJEnelplJejTNP83eyB3FI7XFzKg/ClN5hIuOsrAqRSIHkGKfWZD4x9ICGV3AfVvKrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=trvn.ru; spf=pass smtp.mailfrom=trvn.ru; dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b=fEnAJIVy; arc=none smtp.client-ip=194.87.146.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=trvn.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=trvn.ru
+Received: from authenticated-user (box.trvn.ru [194.87.146.52])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	by box.trvn.ru (Postfix) with ESMTPSA id F0B12408F0;
+	Fri, 23 Feb 2024 18:45:55 +0500 (+05)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
+	t=1708695958; bh=VKyijuW+QYpVtdh3FevlUhFteoZyVClemqfIxUdTt6c=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=fEnAJIVyGEsmi4ReEAQHlsXOOdaaXMFFSTfySA9Nh9591+MkexHsDdhHfoByIshfu
+	 lEpSICw5FCjZs4t9eY6mPHKi43c4ZFcSfpvAUA1FHRAsIatbfdiRaFKl1AMryoxy7Y
+	 JlpOoK9xoU9hrP6D3ku7NVHGYr9fuWcC5+BttuGog3Dsk7/JV5WSiNj1aCq3lIQuYp
+	 iK9oOftJOnuse8qQrthhSCLFqDvv5p+dg5fIWGrbUBa+fNfOaaAb39iL9M+NBZ8bVh
+	 2a+Q4P94q7jlgGBxTQHIy2r7Ud4blz+bljm5i/b4/N9tdv5u9057mJDcCONrTJzI+P
+	 mud9dvToq2R7Q==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Date: Fri, 23 Feb 2024 18:45:52 +0500
+From: Nikita Travkin <nikita@trvn.ru>
+To: Rob Herring <robh@kernel.org>
+Cc: Sebastian Reichel <sre@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ cros-qcom-dts-watchers@chromium.org, Andy Gross <agross@kernel.org>, Bjorn
+ Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>,
+ linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] dt-bindings: power: supply: Add Acer Aspire 1 EC
+In-Reply-To: <20240223045227.GA4017491-robh@kernel.org>
+References: <20231212-aspire1-ec-v2-0-ca495ea0a7ac@trvn.ru>
+ <20231212-aspire1-ec-v2-1-ca495ea0a7ac@trvn.ru>
+ <20231214220210.GA988134-robh@kernel.org>
+ <207edefe4e8eac9679cd8966d28820cd@trvn.ru>
+ <20240223045227.GA4017491-robh@kernel.org>
+Message-ID: <c402da126fcc832c08dc4006542740cb@trvn.ru>
+X-Sender: nikita@trvn.ru
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: jeremie.dautheribes@bootlin.com
 
-Add support for Crystal Clear Technology CMT430B19N00 4.3" 480x272
-TFT-LCD panel.
+Rob Herring писал(а) 23.02.2024 09:52:
+> On Fri, Dec 15, 2023 at 10:29:22AM +0500, Nikita Travkin wrote:
+>> Rob Herring писал(а) 15.12.2023 03:02:
+>> > On Tue, Dec 12, 2023 at 05:49:09PM +0500, Nikita Travkin wrote:
+>> >> Add binding for the EC found in the Acer Aspire 1 laptop.
+>> >>
+>> >> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+>> >> ---
+>> >>  .../bindings/power/supply/acer,aspire1-ec.yaml     | 67 ++++++++++++++++++++++
+>> >>  1 file changed, 67 insertions(+)
+>> >>
+>> >> diff --git a/Documentation/devicetree/bindings/power/supply/acer,aspire1-ec.yaml b/Documentation/devicetree/bindings/power/supply/acer,aspire1-ec.yaml
+>> >> new file mode 100644
+>> >> index 000000000000..1fbf1272a00f
+>> >> --- /dev/null
+>> >> +++ b/Documentation/devicetree/bindings/power/supply/acer,aspire1-ec.yaml
+>> >> @@ -0,0 +1,67 @@
+>> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> >> +%YAML 1.2
+>> >> +---
+>> >> +$id: http://devicetree.org/schemas/power/supply/acer,aspire1-ec.yaml#
+>> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> >> +
+>> >> +title: Acer Aspire 1 Embedded Controller
+>> >> +
+>> >> +maintainers:
+>> >> +  - Nikita Travkin <nikita@trvn.ru>
+>> >> +
+>> >> +description:
+>> >> +  The Acer Aspire 1 laptop uses an embedded controller to control battery
+>> >> +  and charging as well as to provide a set of misc features such as the
+>> >> +  laptop lid status and HPD events for the USB Type-C DP alt mode.
+>> >> +
+>> >> +properties:
+>> >> +  compatible:
+>> >> +    const: acer,aspire1-ec
+>> >> +
+>> >> +  reg:
+>> >> +    const: 0x76
+>> >> +
+>> >> +  interrupts:
+>> >> +    maxItems: 1
+>> >> +
+>> >> +  acer,media-keys-on-top:
+>> >> +    description: Configure the keyboard layout to use media features of
+>> >> +      the fn row when the fn key is not pressed. The firmware may choose
+>> >> +      to add this property when user selects the fn mode in the firmware
+>> >> +      setup utility.
+>> >> +    type: boolean
+>> >
+>> > Besides the naming, this isn't really a property of the EC, but really
+>> > part of the keyboard layout. It seems you just stuck it here because
+>> > this is part of the specific device.
+>> >
+>>
+>> The EC on this device is also a keyboard controller, but the keyboard
+>> part has a dedicated i2c bus with hid-over-i2c. Since this is the
+>> "management" bus of the same device, I decided that it fits here.
+> 
+> So there's also a hid-over-i2c DT node? Then why wouldn't you put this 
+> there?
+> 
 
-Signed-off-by: Jérémie Dautheribes <jeremie.dautheribes@bootlin.com>
----
- drivers/gpu/drm/panel/panel-simple.c | 29 ++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+Yes indeed, however I wasn't sure of a nice way to make two drivers
+interact so I opted to having the prop here instead given I was trying
+to reflect "device specific" (in terms of uefi setup -> os code
+interaction) property.
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 20e3df1c59d4..b940220f56e2 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -1457,6 +1457,32 @@ static const struct panel_desc boe_hv070wsa = {
- 	.connector_type = DRM_MODE_CONNECTOR_LVDS,
- };
- 
-+static const struct drm_display_mode cct_cmt430b19n00_mode = {
-+	.clock = 9000,
-+	.hdisplay = 480,
-+	.hsync_start = 480 + 43,
-+	.hsync_end = 480 + 43 + 8,
-+	.htotal = 480 + 43 + 8 + 4,
-+	.vdisplay = 272,
-+	.vsync_start = 272 + 12,
-+	.vsync_end = 272 + 12 + 8,
-+	.vtotal = 272 + 12 + 8 + 4,
-+	.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
-+};
-+
-+static const struct panel_desc cct_cmt430b19n00 = {
-+	.modes = &cct_cmt430b19n00_mode,
-+	.num_modes = 1,
-+	.bpc = 8,
-+	.size = {
-+		.width = 95,
-+		.height = 53,
-+	},
-+	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
-+	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE,
-+	.connector_type = DRM_MODE_CONNECTOR_DPI,
-+};
-+
- static const struct drm_display_mode cdtech_s043wq26h_ct7_mode = {
- 	.clock = 9000,
- 	.hdisplay = 480,
-@@ -4402,6 +4428,9 @@ static const struct of_device_id platform_of_match[] = {
- 	}, {
- 		.compatible = "boe,hv070wsa-100",
- 		.data = &boe_hv070wsa
-+	}, {
-+		.compatible = "cct,cmt430b19n00",
-+		.data = &cct_cmt430b19n00,
- 	}, {
- 		.compatible = "cdtech,s043wq26h-ct7",
- 		.data = &cdtech_s043wq26h_ct7,
--- 
-2.34.1
+>>
+>> > It is also hardly a feature unique to this device. I'm typing this from
+>> > a device with the exact same thing (M1 Macbook Pro). Actually, all 3
+>> > laptops I have in front of me have the same thing. The other 2 have
+>> > a Fnlock (Fn+ESC) though.  On the M1, it's just a module param which I
+>> > set as persistent. Though I now wonder if the Fnlock could be
+>> > implemented on it too. Being able to switch whenever I want would be
+>> > nice. That would probably have to be in Linux where as these other
+>> > laptops probably implement this in their EC/firmware?
+>> >
+>> > What I'm getting at is controlling changing this in firmware is not a
+>> > great experience and this should all be common.
+>> >
+>>
+>> You may be right, however my goal here is to support the original
+>> firmware feature that is lost when we use DT.
+>>
+>> This is a WoA laptop with UEFI/ACPI and, as usual for "Windows"
+>> machines, there is a setting in the firmware setup utility ("bios") to
+>> set the fn behavior. But it works by setting an ACPI value, and for
+>> Snapdragon devices we can't use that now.
+>>
+>> Long term I want to have a EFI driver that would automatically
+>> detect/load DT and my plan is to handle things like this (and i.e. mac
+>> address, different touchpad vendor, etc) there. Thus I'm adding this
+>> property already, as an equivalent of that weird acpi bit that original
+>> firmware sets.
+>>
+>> If we only provide a module param, the "intended by OEM" way of setting
+>> the fn mode will be broken, and one would need to know how to write a
+>> magic special config file to set a kernel module param. I think it's not
+>> the best UX. (and just adds to the silly "arm/dt bad, x86/uefi/acpi
+>> "just works"" argument many people sadly have)
+> 
+> But it always works, it is just a question of what is the default mode 
+> and I, as a user, want to decide that, not the OEM. And I want to change 
+> it at run-time, not reboot into BIOS to change it.
+> 
+> I wasn't suggesting you do a module param either. That's still specific 
+> to the module. Something like a sysfs file would be nice:
+> 
+> echo 1 >  /sys/class/input/input1/fnlock
+> 
 
+I see your point. Having a generic way of switching fnlock, attached to
+the correct input device would be great. However as I wasn't sure how
+exactly that can be implemented in a generic manner, I opted to just
+make sure that at least the user manual for this device still "works".
+
+> 
+>> If you think I shouldn't use DT to pass this info, feel free to say so.
+>> I will drop this property and see if there is something else I can do
+>> to still support this without relying on Linux cooperation.
+> 
+> Not saying no to being in DT, but if it is, it should be a common 
+> property because it is a common thing on all laptops.
+> 
+
+Right. Then I think I will drop the property for now and will see if
+we can introduce something better and generic later.
+
+Thanks for explaining!
+Nikita
+
+> Rob
 
