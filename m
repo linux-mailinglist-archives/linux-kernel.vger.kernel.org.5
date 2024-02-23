@@ -1,96 +1,127 @@
-Return-Path: <linux-kernel+bounces-78348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29C6A861245
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:09:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4B5F861239
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:06:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4E9D1F238BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:09:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 048A11C21446
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:06:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 898A17E77F;
-	Fri, 23 Feb 2024 13:09:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F37D07E773;
+	Fri, 23 Feb 2024 13:06:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4FcaqgB+"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bAEdihN8"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49A357CF02
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:09:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93A0722EF5
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:06:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708693754; cv=none; b=Z3wGkYY5zC9IIOpACbNpT0D5xDPG/DY3I+q/xnbHYRo2jZyyrZtBrQFsixt2Vij11crup2YJo8SA1l+RjN/dYNHwYQsvgI/3CwZF+rc0Sby85IgJnNw2I7Tjuv9HqQPWBUZQVabwP7fM/AOP50OqTcgPdkbqiJbe4o64JtZqpbQ=
+	t=1708693611; cv=none; b=JrkBqbdqrq3T9P336WXoxB7uYwN2jW4dqmtiQEJ4mkHVZseiRltLaGuHfjKezsb5urYxVSU+Kq49cRSMgbblJC2i78G6FfJY6Z3lS7xBHXD5QYWMrHt9lYNSj+yd8pfcRTV0CLOE7Egwe3S5qxp4Y8froXoDOZSoUVV6EXGhPZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708693754; c=relaxed/simple;
-	bh=5oxnAR9jOd/xn82V3EZsBR2nFCo/zbhDKEhxECbBMz4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I2i0bbV8Gakvz+9mv4bWy4+eK1NnIsJ7fU30CJJRXYzEYYEAIUwyKt5LSEWx8qSD7xKzy2Qz49MUUYuM+PbObXOtxRglCLpKMAtVbcLCO8e+Fpkn3NMTtcu9gvjUxzC1m98x3Kyg1vLodDuFqwMO1deXy278f9dfyFbJ9e28z7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4FcaqgB+; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-564e4477b7cso9960a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 05:09:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708693751; x=1709298551; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5oxnAR9jOd/xn82V3EZsBR2nFCo/zbhDKEhxECbBMz4=;
-        b=4FcaqgB+1C078eAoaafRDL4fqu4DIzPKbAx3ENigfkSUQp0m2u6lXWpMtVcuGuQEeA
-         aGc4FDqO7AxjO/eSMc6FX7QDMyQ62QV3/KKiLEd6+i6YTCKC2Cr1HchCU1dbmjUztVGZ
-         huAQvTGQRl8bP0XMhiMLoXolKWRUBpFhvP7xzBuDbFGsTEb/EzC62cXsXgpgvZK1Jiki
-         HyGdWFURDKfh7UppE7q12/NqFAg6iHgMLdGtCeMGQjCXn261QMOyhixXM6fwVHCJBYFA
-         g3u7UAyzktOSWIU6V1dPIoEpBrIVf9cUediXE3Mvcd/uc8NXgs2/kn92xs4odXcZtKCf
-         z+gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708693751; x=1709298551;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5oxnAR9jOd/xn82V3EZsBR2nFCo/zbhDKEhxECbBMz4=;
-        b=L4VdQNgIQ40gxqN7YFyd8ooBzirNJIZyqaXZxBrYzWKzIL/W03r3HOEluSfQVgr3qM
-         G5lE+ghgAa3e2SdMMiunvPmVzGj8pi9T1Uqv6KXDdKuE0Nx0lSLBRBcazuHJQAlNIySH
-         B00dILH7uD0UwDoBk1shYSOyrJzi+/PiuVne7v8nQNaJLUPGYtIc8zQjVe3rbEJBAUT/
-         7FFjHwmpxRfXXOq+cjOM38v9Iw5ahXX0TZoYYrLLbHqkWO/IxfjmiH0dlKXSCeMR1CBz
-         fKTU6ekHz5Pr4100gG6pyej7uNNSKs76Eopai/qfvQCjlAcu9CC94vTWIMURm8NarcHW
-         cJ9A==
-X-Forwarded-Encrypted: i=1; AJvYcCXTmYd10wIW4Bxk+OpDHdx7Pgieh3MtYxOVw3aVIHpkWzORxCVE9Tb93ca/MFKQz5ZhH9XLze1N8mjHBxZawtJxRKTUIzzR2hMF1h6t
-X-Gm-Message-State: AOJu0Yyreh9llqs3RDYkSMKsLvA86XU1XWnSwP9s1YWsFLumPsYOeDcP
-	wOlA/iTTf6LoVrkDO6Ub8Sa/trgnYKaOkdoPVge3m4BCgTfkghKEX6/boh5Kicjb9bSpuyGZyVJ
-	gjd26VJBwW7yz8LYmsasTB7vWcEPO5TYQF2eO
-X-Google-Smtp-Source: AGHT+IFTFVekIAS/syom6ama+ratNO4vACdmLnCwK3G2sDq+DMZJbrVO0ynz19qzO8cib1qXIYaUCR67YLUqPfbyCLA=
-X-Received: by 2002:a50:9f04:0:b0:562:9d2:8857 with SMTP id
- b4-20020a509f04000000b0056209d28857mr700687edf.6.1708693751255; Fri, 23 Feb
- 2024 05:09:11 -0800 (PST)
+	s=arc-20240116; t=1708693611; c=relaxed/simple;
+	bh=vrHViwPtfViEodYrYu27uDWOfGFSmxsgqGqcy7hiZeE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=bj9lLa6Nfh3SKbiDO+xenNamgmtVFNIhOgtsiTn6WZlqqrXDOUGDsQYMrt0hazQUplHScZAIsDFEYQFYrQh4ayTJMVAa6H53VcsR9yie/A6r9Ab8l4/jJmZHH5FmpXUXztKu/6N+QX5W7GW2TCRnWJju8NPx90lA3IR9p/MKZaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bAEdihN8; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708693609; x=1740229609;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=vrHViwPtfViEodYrYu27uDWOfGFSmxsgqGqcy7hiZeE=;
+  b=bAEdihN82roZzTL7Z0FLWsQAjO8hTpiu0bS+8vlNIj7gOXoVddeE4FAS
+   ljSdLUCqMbepLWzz1TZyMqgtxlXPfn2aGlNxp9IraLLbX2eGNQqwr72MP
+   tAg+vzpoUN1uIgR5zzTuWEk+bQF5P8iIxE1IjrCAAoSIPQ1Csyn9Tid9V
+   qRuRQChSxVsUyWw+SRzf0QedrzqLgSS+OcRETde2FCmg05Z8xyJYF9Q21
+   F00jnSI+OSaVenecD4fGW3bk8xCVdEJ+xxxqSZtsvjNnFboUPwWON2HBG
+   +pW7IqHadHuPZyxIODabtVd9tOW/bl84BnocSLYHS6F/5QhyUH/PUquWs
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="3164262"
+X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
+   d="scan'208";a="3164262"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 05:06:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
+   d="scan'208";a="5859032"
+Received: from linux-pnp-server-09.sh.intel.com ([10.239.176.190])
+  by fmviesa009.fm.intel.com with ESMTP; 23 Feb 2024 05:06:45 -0800
+From: rulinhuang <rulin.huang@intel.com>
+To: urezki@gmail.com,
+	bhe@redhat.com
+Cc: colin.king@intel.com,
+	hch@infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	lstoakes@gmail.com,
+	rulin.huang@intel.com,
+	tianyou.li@intel.com,
+	tim.c.chen@intel.com,
+	wangyang.guo@intel.com,
+	zhiguo.zhou@intel.com
+Subject: Re: [PATCH v3] mm/vmalloc: lock contention optimization under multi-threading
+Date: Fri, 23 Feb 2024 08:09:25 -0500
+Message-ID: <20240223130946.112890-1-rulin.huang@intel.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <ZddDdxcdD5hNpyUX@pc636>
+References: <ZddDdxcdD5hNpyUX@pc636>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223115839.3572852-1-leitao@debian.org> <20240223115839.3572852-2-leitao@debian.org>
-In-Reply-To: <20240223115839.3572852-2-leitao@debian.org>
-From: Eric Dumazet <edumazet@google.com>
-Date: Fri, 23 Feb 2024 14:08:57 +0100
-Message-ID: <CANn89iLKdX1owfY3w2Bh=E0rb0v8pJVF2Z3ZtXRE0osAVKtuQw@mail.gmail.com>
-Subject: Re: [PATCH net-next 2/2] net/vsockmon: Do not set zeroed statistics
-To: Breno Leitao <leitao@debian.org>
-Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com, 
-	Stefano Garzarella <sgarzare@redhat.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	horms@kernel.org, 
-	"open list:VM SOCKETS (AF_VSOCK)" <virtualization@lists.linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 23, 2024 at 12:58=E2=80=AFPM Breno Leitao <leitao@debian.org> w=
-rote:
->
-> Do not set rtnl_link_stats64 fields to zero, since they are zeroed
-> before ops->ndo_get_stats64 is called in core dev_get_stats() function.
->
-> Signed-off-by: Breno Leitao <leitao@debian.org>
+> 
+> Hello, Rulinhuang!
+> 
+> > Hi Uladzislau and Andrew, we have rebased it(Patch v4) on branch
+> > mm-unstable and remeasured it. Could you kindly help confirm if this
+> > is the right base to work on?
+> > Compared to the previous result at kernel v6.7 with a 5% performance
+> > gain on intel icelake(160 vcpu), we only had a 0.6% with this commit
+> > base. But we think our modification still has some significance. On
+> > the one hand, this does reduce a critical section. On the other hand,
+> > we have a 4% performance gain on intel sapphire rapids(224 vcpu),
+> > which suggests more performance improvement would likely be achieved
+> > when the core count of processors increases to hundreds or even
+> > thousands.
+> > Thank you again for your comments.
+> >
+> According to the patch that was a correct rebase. Right a small delta on your
+> 160 CPUs is because of removing a contention. As for bigger systems it is
+> bigger impact, like you point here on your 224 vcpu results where you see %4
+> perf improvement.
+> 
+> So we should fix it. But the way how it is fixed is not optimal from my point of
+> view, because the patch that is in question spreads the internals from
+> alloc_vmap_area(), like inserting busy area, across many parts now.
+> 
+> --
+> Uladzislau Rezki
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+Our modifications in patch 5 not only achieve the original effect, 
+but also cancel the split of alloc_vmap_area()and setup_vmalloc_vm() 
+is placed without lock and lengthen the critical section.
+Without splitting alloc_vmap_area(), putting setup_vmalloc_vm() 
+directly into it is all we can think of.
+Regarding Baoquan’s changes, we think that:
+We prefer put setup_vmalloc_vm() function not placed inside the 
+critical section and it is no need to lengthen the critical section.
+We prefer use judging (vm_data) rather than 
+((!(va_flags & VMAP_RAM) && vm), and it is enough to deetermine the 
+conditions for assignment. The change seem to be wandering about the 
+judgment of va_flags.
+Hi Uladzislau, could you please let us know if you have any better 
+suggestions on the modification scheme?
+Thank you for your advice!
 
