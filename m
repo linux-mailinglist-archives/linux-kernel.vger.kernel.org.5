@@ -1,218 +1,156 @@
-Return-Path: <linux-kernel+bounces-79227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E5C0861F40
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:47:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 980A4861F44
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 22:49:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09D71B223EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:47:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 415C41F2645D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:49:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAB2C14C5B5;
-	Fri, 23 Feb 2024 21:47:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5841814CAA0;
+	Fri, 23 Feb 2024 21:49:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ColIOMfX"
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2073.outbound.protection.outlook.com [40.107.102.73])
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="q5MbD4G6"
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15D99143C63;
-	Fri, 23 Feb 2024 21:47:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.73
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708724850; cv=fail; b=gMIi84C1Rdx3hFuXGatIDyw/1Z7a7lIgaetv86Zdd6Fzq2WlPw/1m4Rz3vMu4Uk2AVC/dvcwTmM4WgJgqZVrxkAgtl8nat0cBc9vfHYemOf7W5R7SXY0450DU36IAY1Q9A9wf/2O6fGGVs2mBPufJ3RIXwg0kFhvzhkuZUD4FDw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708724850; c=relaxed/simple;
-	bh=BMMqhqLsriW52JTJPpdBiE6Wk09/6wRnv65hXPvRyRQ=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=EoDuov4SioeHhhrpYIJuySw7nCQdyejWD2TrkuxQVVvdTVHEk2yZHP0IB70Uhiy3md6SPa139T/6QbzPfZ4We8Gabcs2ZpZBqHdMZEqUsZ65Sd0cNd1dPJQLcMVCfsVCJwE35lpJKuFD/Z04pKB+uHveQsZEHEb9T3VUQ0Ruz+w=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=ColIOMfX; arc=fail smtp.client-ip=40.107.102.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L9WKeDmumcx378xTqpFe/1cTdwLiU9ug6Xym+xOhoWVDoLSvyMb9jpZYluYXObVVkyqa4GI2gW360sunU9WyqXHqrxQvhT8nMGkGGBhIHj8qFApDEekRByeAa0U62QfNQ6ObzJS6tipyNXb1fZO0K1dRubCbladyKjnZhncm/nCb5oTYd6h1d+A8Fan2wwwWty08oXoNtYTSxNklIISwdodQAwSsMHysM22orJjS5Pyg1wyQEY9KGOpcgphjuSeH/8+Na4KX/IxYPGDaH6tsQZCmMDdBbOQcI2YmtrRrC74kQbzAE5aoZv7SsaRL4vjId4ShO0WHvtNMlk02JlenyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1JyttL0PVqZMN6/wzzx9ohYA+I0RtZRUFNdvYG8xBHA=;
- b=gkrVL0q+meR5wHX9D7Yaei0VC+LFYyD9ScllDGMq89Xnw8I7iJLKQNLcCCl+VJKHI0HdoTWP8eP9UuF6MqM12VNOToBUCjpljLDzzfB3JmY2nUrQH4M2Cuu1elVteJSXXZyQZVeCwS2Ytyr5vBFO3DmofJCyD7LeG5kCHWbZO+7PHWb6S+P1NJvC8uUSSlcZahl14CqwzFgosDJh26AY/fc8+B3fVHTPfocovWiO+ST3FC8VREjkcN90uj+Rfgtv2AgKdzVo33DjG0AkeRt/+LE5Yn/MOzjEAC59cUx8FX3DP/V8wmCzcz77GSvfvXG03PvNb7sW0NCfKqPeBRoJuQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1JyttL0PVqZMN6/wzzx9ohYA+I0RtZRUFNdvYG8xBHA=;
- b=ColIOMfXAZITjpH7nYlZeCbxtZjgZ/blBysXQp3VV1C7obJNyzfHz6SUcEgJ9Bf6hfn5V1b4pX7Aqz67tOUNVhtZYrxAjhQt27P1kn6bxAX09Tzgqy3xuB78dX7WFX2VBYy8E3INKxWDw14/dcPePDivyvg3CWkaPex8tEmJptY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
- by DS7PR12MB5839.namprd12.prod.outlook.com (2603:10b6:8:7a::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Fri, 23 Feb
- 2024 21:47:22 +0000
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::f4aa:152b:b46f:80a0]) by MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::f4aa:152b:b46f:80a0%4]) with mapi id 15.20.7316.023; Fri, 23 Feb 2024
- 21:47:22 +0000
-Message-ID: <21d05834-ca2f-8094-501d-f243e74cdd26@amd.com>
-Date: Fri, 23 Feb 2024 15:47:17 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Reply-To: babu.moger@amd.com
-Subject: Re: [PATCH v2 00/17] x86/resctrl : Support AMD Assignable Bandwidth
- Monitoring Counters (ABMC)
-Content-Language: en-US
-To: Peter Newman <peternewman@google.com>, James Morse <james.morse@arm.com>
-Cc: babu.moger@amd.com, Reinette Chatre <reinette.chatre@intel.com>,
- corbet@lwn.net, fenghua.yu@intel.com, tglx@linutronix.de, mingo@redhat.com,
- bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
- paulmck@kernel.org, rdunlap@infradead.org, tj@kernel.org,
- peterz@infradead.org, yanjiewtw@gmail.com, kim.phillips@amd.com,
- lukas.bulwahn@gmail.com, seanjc@google.com, jmattson@google.com,
- leitao@debian.org, jpoimboe@kernel.org, rick.p.edgecombe@intel.com,
- kirill.shutemov@linux.intel.com, jithu.joseph@intel.com,
- kai.huang@intel.com, kan.liang@linux.intel.com,
- daniel.sneddon@linux.intel.com, pbonzini@redhat.com, sandipan.das@amd.com,
- ilpo.jarvinen@linux.intel.com, maciej.wieczor-retman@intel.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, eranian@google.com
-References: <20231201005720.235639-1-babu.moger@amd.com>
- <cover.1705688538.git.babu.moger@amd.com>
- <7c26af23-fa1e-4e01-8088-8fbd9be3d6f3@intel.com>
- <431d6ac4-53cb-2f73-3cda-22616df2f96a@amd.com>
- <4bb63a78-0d0d-47bc-ad65-558af8bc5519@intel.com>
- <51c60991-eb10-40e8-b3ab-676b92b0c662@amd.com>
- <CALPaoChhKJiMAueFtgCTc7ffO++S5DJCySmxqf9ZDmhR9RQapw@mail.gmail.com>
- <1a8c1cd6-a1ce-47a2-bc87-d4cccc84519b@arm.com>
- <CALPaoCgNLtA7E2tgQZ6gmbZ=OF0nE0Lbi=1C7oR3F0wM4YRbjw@mail.gmail.com>
-From: "Moger, Babu" <bmoger@amd.com>
-In-Reply-To: <CALPaoCgNLtA7E2tgQZ6gmbZ=OF0nE0Lbi=1C7oR3F0wM4YRbjw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SA0PR11CA0141.namprd11.prod.outlook.com
- (2603:10b6:806:131::26) To MW3PR12MB4553.namprd12.prod.outlook.com
- (2603:10b6:303:2c::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 897CA143C63;
+	Fri, 23 Feb 2024 21:49:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708724949; cv=none; b=dEKyHQOBqXMv+LB8JomRjceC8cnYdP/A2mlZh499kQqNE/qxGPFhzJU8pJeCNsLjuTcBpS2gQI6yt30nWpzC4BLO8c6fsrrqfpMhJmnZyzxHVLdrf1N0YfPcYQpxqwarEmD7vUPy2DJLr+SUPl9q/vXnvspfQ4q2gTY4bhymFBg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708724949; c=relaxed/simple;
+	bh=6SBVEVhGe14XSlEdjUuk3BF9ZIWoWFHmX0bNpDG5K8c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=opJIj51Ea+Grr1hjnugiLWbiP7hHExZaWg6T6ap7smlg9mEfV0mHFby9G5KZxYVhm06ywXCZRu4Q7KGD+8p8c9369F2Uz+zjB4XYv6637xvAafmkys3WjPYEuVUfsN8S8x9/GO5FZjnP3+9hG6PvbT53iy4PaTaq5MLVqicARB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=sberdevices.ru; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=q5MbD4G6; arc=none smtp.client-ip=45.89.224.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sberdevices.ru
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 9EDAB120004;
+	Sat, 24 Feb 2024 00:49:00 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 9EDAB120004
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1708724940;
+	bh=LuXzDQesO0b7s03KMrS/BJMWiJPrhOHKPc+5IUUDRMs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=q5MbD4G6MeOiwWzMZjjrknD5OdzsMSPM8jkxEd1eYvknvAwt7zbOitmzbmTyuuobq
+	 pQUnqOd1X9JOhOejFGHWc6NsIurcnBwYMdclTjD4zeE/RVuTbQjVxi8moI2AsD59Bu
+	 U279J5LFTw0rna//7/xIe4jl0FLoD1TpSN/JXUG/reMdcfLXjHUh0j54I5fAUC5ZOY
+	 pQp8PAIaj+/39UwnWZRXZ3nFHum7bKc+FFu8WAhs+oVHudhY7JdL7wlGK2697bOO1M
+	 sTF+TT7XPX96Rxf1S7givW/nOuNMhJ6MyCDdDXnvqObhOONQvByIC00neVuHuo/bJG
+	 LJj6RrzOIBHoQ==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Sat, 24 Feb 2024 00:49:00 +0300 (MSK)
+Received: from [172.28.226.86] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Sat, 24 Feb 2024 00:49:00 +0300
+Message-ID: <9922942e-ea9e-4cdb-a091-5b8ea0a180d8@salutedevices.com>
+Date: Sat, 24 Feb 2024 00:47:35 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|DS7PR12MB5839:EE_
-X-MS-Office365-Filtering-Correlation-Id: 77dd9e50-c230-4255-d97a-08dc34b90406
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	luwL1fIWo5tJFzfa7v9lyfEL1JZev5ExO4UiysMrK4Dqvlw8iXQfJiQVE0gPXfXzZCpFy9mw/kee9HR6qFAxU1Efl/R2KkjZU9/3H7nmk63LqQoHlm5b6e0rJUoMpIAwdEEMOOCaEwDGCWO/TKMZhVlyT2X79IR95fE/lzhzdfifvkim2AAK1g2Jx1q4hzwBCnfC4nFAxO/zqZejgU7Fh6PWDC9ImhvLrOp1ivBqWR7joy51eii1rXG6pO7tdHcVvdAqvMk7fnHuDu0z/0rLaJtP6Fst0ULQzVygBENTBKVYE4SpM4cAcll+szZB0vLn+j6Janpr9aDTtrfM0SxUsDUSmw/V9tWEKoMFz3MO7irl9uNFckAgJYe99Wm9lIbR4nAdG48CGPifW8OvYt1/c3UG4Y8yNDmuRI3dx81n6WLvMpAkyD0JBe7BttcNwyuD8xm9ndPj6aeXCmxb0/yWUszxkSPUB3AwFhBZeQLaza6hGZH9z/sUqw7QqBjLAV9F5EmAxm87llPkptS3Xjv+MRRpjFxA8flV5GrqnUjLf1c=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Ty9jQU5qaVJ0UlJpOGI3UFhrVnVuZTk5Q0VwVzBrZW1OdUlDUEQzeXdMMmVX?=
- =?utf-8?B?emxFREpuWWJYVzM1VCtPSFpSQisyZXVpY3RuR2tMeUMzZWFLZk5wL3lzdjk0?=
- =?utf-8?B?dlp3OWpwVzZJOEsyUmtKYld4Vm43QjRhMjNmZFViWXlCOGJnSHg2K0t1QmhP?=
- =?utf-8?B?cm9hVUxyald3cDVPSEVMTWY2dHpvanZoTEVra3RkNlhaTHgycnV3UHFxMTBk?=
- =?utf-8?B?VUlnNG5sb0RvdVVBSlQ1Z1YxZFdNMVVzSmN6aXZlWnlZaVRXR1VOWE1ZYzN6?=
- =?utf-8?B?a3RGblFpNGxRbHJ5MkhlWkVUVFVvQ1lMcHd4b2FiZFJBTE5BdlU0M2Z5Wkcw?=
- =?utf-8?B?b3pwQm04WFUvUm9VUU40N0JyRnRRZTVrcWlodW1vTlpxQyt0eUhhamFpWDlL?=
- =?utf-8?B?YUtJOTJpd29wdVc5YzJ1aUl3Nno2dFlEWDNra29EckNPcVFSanBrcGNoRURH?=
- =?utf-8?B?NERzOW10bitPWFF5OGJHSGlINWM4OWhPaFhpdTk4SjA2a015ajlTeHB6RFhw?=
- =?utf-8?B?NmdCTHpRcGVxdXA2VERvYVBtYkg5ZjNDVnRuZExlWnB5RUhsaTd1MmtSRFdF?=
- =?utf-8?B?RHBldFZXaU1sUTVhbE1HaEdJOFNIN3JwUlRnVS9qNzI5Wjc3R3FDd3VWbmRF?=
- =?utf-8?B?bjFxY2JyWG9CbFFyY0dubmovSFhra2x3ZGVlOE8vamo5cUg3QlVoSHVlMml6?=
- =?utf-8?B?bml0T2ttU290SlVYOVpaZWZFUU10Z0xBM2NyeDhzZGM1MnJRalBrbk9wMUNs?=
- =?utf-8?B?cEdsRjRvMC9YMXlQMG8xbHkrOG9XVG4yTGxLMitHSTN6WkNXa1lFd2ZXSWtj?=
- =?utf-8?B?U05KQ2pRdStOMFJ3VEdqaFVBNTh5b2psdkRmRWszV1BoRVM1ZTdYNGlsQjhP?=
- =?utf-8?B?Mm80Mk9XZ3RpYWMzV2FCNTRWaGtWcWpqZzd4cHc1ZllSbUV0VStXTU8ybXRW?=
- =?utf-8?B?OXFPaXNkVldUY3E3ODNpSWlTSXNFZFNBcVZUUEFGMDNTay84L3JQUEJxbmRu?=
- =?utf-8?B?NzZhOW10MDdkRjEva1p2NmR5Qndyb2dFeXcvUnJBMks2endLVzJhbERxSktp?=
- =?utf-8?B?NzIxV0poZExqcGpObmZiaUJpaGJ6YzNOV1orTmxHTldoL0hPand0QS9Sd1BE?=
- =?utf-8?B?WTlLNFVaUi9OdHhiTVovNy92c2RWZ2p4RWpZNDdTQi9nMnlFV1JvOVROZllu?=
- =?utf-8?B?ZUE0K1dEeXhKRFkrUVVrMWRwSnZSbXowdCtBWXJRaTAxUHJiZXVPV09rdXJa?=
- =?utf-8?B?WjNzQUF2Nmk2MUtHQ3JMbjdRUEhtNHVBK09hNGhnNGhJWE9QUitFWk1TRE53?=
- =?utf-8?B?REFuNkVwcXB6c2pHOUFFSGhsVG9jRjM4Y3dqZS9nYlpvNjlrVitkQkt6ejFp?=
- =?utf-8?B?am1CUEZ4Skw2cHNwMmE0clJFVi90UmwrQ3BUeEhrOTR6NFVtNzB2V2sxSFhi?=
- =?utf-8?B?b3VTN09WTGs0V01mamVQWUljWW5zL3RHQ1BUR2IyQkxHc1hSMGc4eStpMVMy?=
- =?utf-8?B?VVRHektDTkc4VDk1cU1sdnQ3QlZEaVVzTHVxQWxSKzhMZ01xcWlTUWlnRXFN?=
- =?utf-8?B?ZzhkSG4zdlhYalpIUVBnYWgxZmpIZlE5V2trSHJ5cWxIV3Bxczh0THpuRDNy?=
- =?utf-8?B?S2ZNSHJ5VjMrU0hNQzlFZ3RsTDQxZzZYUDlxUnF6WFR4VDdGYk5OT3o3L2dv?=
- =?utf-8?B?bkhsV1d4OVVFTVVpWUl3YTViMEVnRy9sYitZbnR2Y2E4eTh2TzFvWGlJZnJ4?=
- =?utf-8?B?U25kY0dzd2lmMnBBaERDcHFuN3BwODlTY3g0Wko1UFFVTFlUT2lUM2YzZmd5?=
- =?utf-8?B?R0EyM3VXNjhZcldweWJGd3pLU2k2L0xOeDZ1eFNTcC9MZnU2SnY5WjM3ZnZy?=
- =?utf-8?B?ME81QUkvdWM0NlRHYzBBNHVpc0ZPcWxBNnI2RE44RlUrMDlhQ0xhQmt2Mm5i?=
- =?utf-8?B?MVRVUC9qREVGYnF4OGs0K3FtdmhLMHZhc0VaQU5sL0FPK1FDRDN0cXV6cDB4?=
- =?utf-8?B?UjREZmxDWHU5dnBQenlpR3B3VWJyWTE5QlpCR3cwRzRJMlZYUHBHQ1BhVTBN?=
- =?utf-8?B?eUJNQWRuZmxtNTQ5SEVpdHB3WitWUWpzc205bkpQaGtheXlCSUQydmdkc0k1?=
- =?utf-8?B?N1RvYkNFOFV0VWVtc1YvZ2gzV1Q1RkhrNFZzbGE0eDlVWmN6TUlPOTVjMkFh?=
- =?utf-8?Q?KpSFPGdpOziTH+VdejYi5gNA+zN5UmHngmtiGSJL4Cz7?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 77dd9e50-c230-4255-d97a-08dc34b90406
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2024 21:47:22.2500
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YaaKEpqmLuIT6b/Jxv+hEmX6h10aDNr7NGdcgdQyDDcYrQAQ8r7ejVFaYqnojKOQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB5839
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] clk: allow to skip clk_core_req_round_rate_nolock()
+Content-Language: en-US
+To: Stephen Boyd <sboyd@kernel.org>, Michael Turquette
+	<mturquette@baylibre.com>, <linux-clk@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+CC: <kernel@salutedevices.com>
+References: <20240126201433.1830600-1-jan.dakinevich@salutedevices.com>
+ <c79909e4e55badc8f094d2ff8c4d34ca.sboyd@kernel.org>
+From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+In-Reply-To: <c79909e4e55badc8f094d2ff8c4d34ca.sboyd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 183695 [Feb 23 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.3
+X-KSMG-AntiSpam-Envelope-From: YVDakinevich@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_smtp_not_equal_from}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;sberdevices.ru:5.0.1,7.1.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/23 20:04:00 #23774084
+X-KSMG-AntiVirus-Status: Clean, skipped
 
 
-On 2/20/2024 12:11 PM, Peter Newman wrote:
-> Hi James,
->
-> On Tue, Feb 20, 2024 at 7:21 AM James Morse <james.morse@arm.com> wrote:
->> On 16/02/2024 20:18, Peter Newman wrote:
->>> On Thu, Feb 8, 2024 at 9:29 AM Moger, Babu <babu.moger@amd.com> wrote:
->>>> On 2/5/24 16:38, Reinette Chatre wrote:
->>>>> You have made it clear on several occasions that you do not intend to support
->>>>> domain level assignment. That may be ok but the interface you create should
->>>>> not prevent future support of domain level assignment.
->>>>>
->>>>> If my point is not clear, could you please share how this interface is able to
->>>>> support domain level assignment in the future?
->>>>>
->>>>> I am starting to think that we need a file similar to the schemata file
->>>>> for group and domain level monitor configurations.
->>>> Something like this?
->>>>
->>>> By default
->>>> #cat /sys/fs/resctrl/monitor_state
->>>> default:0=total=assign,local=assign;1=total=assign,local=assign
->>>>
->>>> With ABMC,
->>>> #cat /sys/fs/resctrl/monitor_state
->>>> ABMC:0=total=unassign,local=unassign;1=total=unassign,local=unassign
->>> The benefit from all the string parsing in this interface is only
->>> halving the number of monitor_state sysfs writes we'd need compared to
->>> creating a separate file for mbm_local and mbm_total. Given that our
->>> use case is to assign the 32 assignable counters to read the bandwidth
->>> of ~256 monitoring groups, this isn't a substantial gain to help us. I
->>> think you should just focus on providing the necessary control
->>> granularity without trying to consolidate writes in this interface. I
->>> will propose an additional interface below to optimize our use case.
->>>
->>> Whether mbm_total and mbm_local are combined in the group directories
->>> or not, I don't see why you wouldn't just repeat the same file
->>> interface in the domain directories for a user needing finer-grained
->>> controls.
->> I don't follow why this has to be done globally. resctrl allows CLOSID to have different
->> configurations for different purposes between different domains (as long as tasks are
->> pinned to CPUs). It feels a bit odd that these counters can't be considered as per-domain too.
-> Assigning to all domains at once would allow us to better parallelize
-> the resulting IPIs when we do need to iterate a small set of monitors
-> over a large list of groups.
 
-Planning to work on v3 of this series. For now, I will exclude the 
-global assignment option from this series.
+On 2/23/24 02:20, Stephen Boyd wrote:
+> Quoting Jan Dakinevich (2024-01-26 12:14:33)
+>> Calling of clk_core_req_round_rate_nolock() can be time-consuming in a
+>> case of deep hierarchy with multiple dividers/parents. But if the clock
+>> already has exactly the same rate as desired, there is no need to
+>> determine how it could be rounded.
+> 
+> What exactly are you trying to avoid? Is this an optimization or a bug
+> fix? TL;DR: I'm unlikely to apply this patch.
+> 
 
-We can add the global assignment support when we get time to optimize 
-assignments at later point.
+It is an optimization, not a bug. The problem is that 
+clk_core_req_round_rate_nolock() is quite expensive, and I faced with 
+cases, where it takes tens and hundreds milliseconds (depending on SoC).
 
-Thanks
+As I see, it is irremovable feature of clk_core_req_round_rate_nolock() 
+design itself. Lets imagine, we have some clock, and its parent is a 
+divider. When clk_core_req_round_rate_nolock() is being called the 
+execution is walked through the following path:
 
-Babu Moger
+clk_core_determine_round_nolock
+  core->ops->determine_rate
+    divider_determine_rate
+     clk_divider_bestdiv
 
+Inside clk_divider_bestdiv() for each possible divider 
+clk_hw_round_rate() is called for parent of the clock, which in turn 
+calls clk_core_determine_round_nolock().
+
+So, each divider and multiplexer in clock path multiplies many times an 
+amount of iteration required to execute 
+clk_core_req_round_rate_nolock(). When there are a lot of them the time 
+consumed by clk_core_req_round_rate_nolock() becomes sufficient.
+
+> I could see some driver implementing round_rate()/determine_rate() in a
+> way that rounds the rate passed in, so that even if the rate is what the
+> clk is running at _right now_, it still wants to change it to something
+> else, or at least call down into the driver to call the set_rate clk_op.
+> Applying this patch will break that. The contract is that
+> clk_set_rate(rate) == clk_set_rate(clk_round_rate(rate)). It doesn't
+> look like anything needs to change.
+
+If I am not mistaken, clocks's rate is either equal to its parent rate 
+or calculated by ->recalc_rate(). I suppose, this callback should return 
+valid rate value that is based on current clock parameters.
+
+Now, suppose the clock has rate "rateA" and we called clk_set_rate() to 
+set "rateA", but clk_core_req_round_rate_nolock() inside clk_set_rate() 
+rounds it to "rateB". Thus, although the clock is able to run on desired 
+rate (and actually run on it), ->determine_rate() and ->round_rate() are 
+unable to choose clocks's parameters for that value. Is it correct 
+behavior for clock driver?
+
+
+
+-- 
+Best regards
+Jan Dakinevich
 
