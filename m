@@ -1,121 +1,211 @@
-Return-Path: <linux-kernel+bounces-78742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F09A86182A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:39:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6932386182E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:40:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41E62B23706
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:39:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86F881C2392F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:40:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCFE412A167;
-	Fri, 23 Feb 2024 16:39:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="Fz5UPeMu"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0715C82D74;
-	Fri, 23 Feb 2024 16:39:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4237C128834;
+	Fri, 23 Feb 2024 16:40:04 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4420D128831
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 16:40:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708706359; cv=none; b=MK72e0ocHaIY4fXKj1xVfxLnS1deeoMYxP2JapMxxP50XS6JuLgxsthyBRa9DCkxEe+W2IzZRkd7EHdkDhBsN57UoEgw6QHzIybmbdSrNg2D4m5NzOQ/NHN+MCtWeNA8z8Eq06lxqsakfgW259IZgREMBcY3CuJCXMB2uCtl5Jc=
+	t=1708706403; cv=none; b=c2kb/CnkYH0nJ7uFeCgpB7v4et5HHvPtqui3iCzjav9+KKRMtALGe4osu4l0+k2wJPoiGAqt789FOl0qauQF819ygEEtUbtIOROwHBxGa8pyuikzMFTyom1kg+2dy8h+jZt9jGvxumU1Etj/f5uEhFUu93jkWGL7EF7qPuJCA8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708706359; c=relaxed/simple;
-	bh=Tp+JT9YYfHOzAPbMml4VpkAxfEnq7R4BcbZtIE6tpTw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZbWF+rFdcq3J1OnGmG+DkrITshtWUDuL5jgB2KXUIQFKWF+SW+oNvLz7pAmUeUQfpm9ZcIaapm99+uSpOSI0Yp4/45z4pQe236lG3qLmy4KZGcq1LYqrKQsbRCgx7QGLDyR5UPfjOplQiminfuLdVVwxtd3exrFJx8OWNl99j0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=Fz5UPeMu; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1708706347; x=1709311147; i=w_armin@gmx.de;
-	bh=Tp+JT9YYfHOzAPbMml4VpkAxfEnq7R4BcbZtIE6tpTw=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=Fz5UPeMuXNv5QzNDMfJu4x4KNgOMzSN4Vf+BmJ6usglyr2bIVcVKMWjpOWkpCks0
-	 fI1b9G6AayYpueC56lRyIDukxB5s6REyzi5E0aqmsP19xnNeHE+29W+xz0c3D0z9E
-	 EwUEsPPYPUEWWzjOZ5tTq5kcTWXALp7qoGNPatudUSaSJg1xvAC6cgTeKEZ2KalZH
-	 7EXm1123v5yDqYBShezn7fuJWeOocNi4vPdmvZkpESInm7bn8Iw3qEK38GZF7Qen4
-	 fBXIkGcv/UB8ljb0SlAookmEeIjV6TKgbn3MwTbLgRsKqjdF9pbIHsF0jC7Um/hga
-	 nwja84hPH/dVz2m3FQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1MvsEx-1qoTzY1EyF-00sxUm; Fri, 23 Feb 2024 17:39:07 +0100
-From: Armin Wolf <W_Armin@gmx.de>
-To: Shyam-sundar.S-k@amd.com,
-	mika.westerberg@linux.intel.com
-Cc: sathyanarayanan.kuppuswamy@linux.intel.com,
-	hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com,
-	platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] platform/x86: intel_scu_ipcutil: Make scu static
-Date: Fri, 23 Feb 2024 17:39:01 +0100
-Message-Id: <20240223163901.13504-3-W_Armin@gmx.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240223163901.13504-1-W_Armin@gmx.de>
-References: <20240223163901.13504-1-W_Armin@gmx.de>
+	s=arc-20240116; t=1708706403; c=relaxed/simple;
+	bh=LgBPi4YGvQiURBDu7BWFC4LVteBlxpmBQloXiDMEn0E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=X4QXPaJLTG64eLYz7zy+M4fTibemgd48YrReuAA/6aqkpfzawtqBR2SPTH8IDb6T6H5GSu7vqWYlRYQQL9utw4KWcwVXaDxJLS0Z9WBJdnWW3VveqBszwPdCMhalkfx2YY6jUPqx4Z5u0JsvLTh3pc9XWLjImT7QHEpWdOgxsXg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 569D5DA7;
+	Fri, 23 Feb 2024 08:40:39 -0800 (PST)
+Received: from [10.57.51.6] (unknown [10.57.51.6])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3F76D3F762;
+	Fri, 23 Feb 2024 08:39:57 -0800 (PST)
+Message-ID: <9d3f9f70-0b34-7426-8b62-93dc173a0bb2@arm.com>
+Date: Fri, 23 Feb 2024 16:39:55 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:lTG5s8N4IywScvenWJgM5TMMrBm9ZKnIeQN06JuVGNny2sW8kex
- kWoqwXNAWyFVl+CPrC5FrHxJ16MxancwqIfVx0jcbgO2VZLiQTqxVM2X/25xvsQ+Vh87gJj
- P+AOc4ZytxvkRl7/eKq6ePewBL7xIZz/1+XqDgl5AjSkcFTk3wK6hT2GGD+Mg3QbKQUaYer
- DHy+BaoPrSJ+vSCC8he7g==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:kE0PH3YImSY=;+aTDFTGVvwEGGX00nQM22OmknxE
- MgbFC2VaFcSUlCbkvtz+EIhWQyx8IGfjDyIIB54BuDgEHlk+N6jClQnvbW6JHm398WFztdElm
- AsQXmC380Mo99lxUpx/vZI+aL/dvMoJRB57TV/72ze3FN05agFr5gfcPAMFMDkh6w7imXMuas
- E7VqE1JRzFzC6MVreFbFqgFQcYWpPPp/GTiKnYCp0yffecaU3kVQKE/v4J9RbB764ZrULsnEI
- bJu3CKhZstdz0RG2ezgMkLmeXbpYLAOE8uLiWfyEuxFSVyh1dtN6ygGEU5Ah5iCoBpHy2bZ9T
- s5CBIr7OFIpjmpAzpJi0WCLvllXmTd1Q8Hf8ICVjTH2Hiuj8NLP1vKu9WP8hNCbqf3zAuijjI
- 62gmsO9Ro1nywLTSTQMaC39AojvCsy2KNitysm+CrTjqJo+eIWNTq9b38jUFAP5U84yfMoFoF
- Z6SpgjJf9C3edIctcd3q1a1/8mg5rBo4xKxT92ejzNPCKj9vyA9bhuo2o40mSrT8i/cWWuDbC
- ieBRVOh8m9n15Ju5r9HLCEoys1rz3vCdo/XtOC6Bi6TDAqhCQysmrCJoHXDf8Bjp11BbBF8Kc
- nV8B+0uIUD6GogbGFw72ipK6iJNNYXZydnSi/D4gXIDlei0Kln4YboymSV57oSA4MxkaxXoOg
- J0KNw2YEwfoZ4ZKfeTxur5EALLjd8MMpsJ53jw2z/WaC2dd2ZfIKbc/Np5uwR5CHtuG8CJMa6
- 5zMhguwQgJV8Nv2rhQ+aj3/wIQVHP1NUa5fjNANk9K7X2Bx8rJgPOyT2fs5F46Ac+bnmx0pkP
- Uq4xwvJhDKQanZRGwGIOocScA+WSpQy3o3/Aj+hHxaUL0=
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v5 5/7] arm64: KVM: Add interface to set guest value for
+ TRFCR register
+Content-Language: en-US
+To: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: James Morse <james.morse@arm.com>, Zenghui Yu <yuzenghui@huawei.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Mike Leach <mike.leach@linaro.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Anshuman Khandual <anshuman.khandual@arm.com>,
+ Miguel Luis <miguel.luis@oracle.com>, Joey Gouly <joey.gouly@arm.com>,
+ Ard Biesheuvel <ardb@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Arnd Bergmann <arnd@arndb.de>, Helge Deller <deller@gmx.de>,
+ Andrew Walbran <qwandor@google.com>,
+ Vincent Donnefort <vdonnefort@google.com>,
+ Ryan Roberts <ryan.roberts@arm.com>, Fuad Tabba <tabba@google.com>,
+ Jing Zhang <jingzhangos@google.com>, linux-kernel@vger.kernel.org,
+ coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+ kvmarm@lists.linux.dev, maz@kernel.org, acme@kernel.org,
+ oliver.upton@linux.dev, broonie@kernel.org
+References: <20240220100924.2761706-1-james.clark@arm.com>
+ <20240220100924.2761706-6-james.clark@arm.com>
+ <c8819064-13c3-41c6-8b2e-779ef8a22ee8@arm.com>
+From: James Clark <james.clark@arm.com>
+In-Reply-To: <c8819064-13c3-41c6-8b2e-779ef8a22ee8@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-The variable is only used internally and has no external users,
-so it should me made static.
 
-Compile-tested only.
 
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.=
-intel.com>
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-=2D--
-Changes since v1:
-- remove Fixes tag
-- add Reviewed-by tag
-=2D--
- drivers/platform/x86/intel_scu_ipcutil.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 23/02/2024 10:03, Suzuki K Poulose wrote:
+> On 20/02/2024 10:09, James Clark wrote:
+>> Add an interface for the Coresight driver to use to set the value of the
+>> TRFCR register for the guest. This register controls the exclude
+>> settings for trace at different exception levels, and is used to honor
+>> the exclude_host and exclude_guest parameters from the Perf session.
+>> This will be used to later write TRFCR_EL1 on nVHE at guest switch. For
+>> VHE, the host trace is controlled by TRFCR_EL2 and thus we can write to
+>> the TRFCR_EL1 immediately. Because guest writes to the register are
+>> trapped, the value will persist and can't be modified.
+>>
+>> Instead of adding a load of infrastructure to share the host's per-cpu
+>> offsets with the hypervisor, just define the new storage as a NR_CPUS
+>> array.
+>>
+>> Signed-off-by: James Clark <james.clark@arm.com>
+>> ---
+>>   arch/arm64/include/asm/kvm_host.h |  3 +++
+>>   arch/arm64/kernel/image-vars.h    |  1 +
+>>   arch/arm64/kvm/debug.c            | 26 ++++++++++++++++++++++++++
+>>   3 files changed, 30 insertions(+)
+>>
+>> diff --git a/arch/arm64/include/asm/kvm_host.h
+>> b/arch/arm64/include/asm/kvm_host.h
+>> index 85b5477bd1b4..56b7f7eca195 100644
+>> --- a/arch/arm64/include/asm/kvm_host.h
+>> +++ b/arch/arm64/include/asm/kvm_host.h
+>> @@ -509,6 +509,7 @@ struct kvm_host_psci_config {
+>>       bool psci_0_1_cpu_off_implemented;
+>>       bool psci_0_1_migrate_implemented;
+>>   };
+>> +extern u64 ____cacheline_aligned kvm_guest_trfcr[NR_CPUS];
+>>     extern struct kvm_host_psci_config
+>> kvm_nvhe_sym(kvm_host_psci_config);
+>>   #define kvm_host_psci_config CHOOSE_NVHE_SYM(kvm_host_psci_config)
+>> @@ -1174,6 +1175,7 @@ void kvm_arch_vcpu_put_debug_state_flags(struct
+>> kvm_vcpu *vcpu);
+>>   void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr);
+>>   void kvm_clr_pmu_events(u32 clr);
+>>   bool kvm_set_pmuserenr(u64 val);
+>> +void kvm_etm_set_guest_trfcr(u64 trfcr_guest);
+>>   #else
+>>   static inline void kvm_set_pmu_events(u32 set, struct
+>> perf_event_attr *attr) {}
+>>   static inline void kvm_clr_pmu_events(u32 clr) {}
+>> @@ -1181,6 +1183,7 @@ static inline bool kvm_set_pmuserenr(u64 val)
+>>   {
+>>       return false;
+>>   }
+>> +static inline void kvm_etm_set_guest_trfcr(u64 trfcr_guest) {}
+>>   #endif
+>>     void kvm_vcpu_load_vhe(struct kvm_vcpu *vcpu);
+>> diff --git a/arch/arm64/kernel/image-vars.h
+>> b/arch/arm64/kernel/image-vars.h
+>> index 5e4dc72ab1bd..a451e4f10804 100644
+>> --- a/arch/arm64/kernel/image-vars.h
+>> +++ b/arch/arm64/kernel/image-vars.h
+>> @@ -59,6 +59,7 @@ KVM_NVHE_ALIAS(alt_cb_patch_nops);
+>>     /* Global kernel state accessed by nVHE hyp code. */
+>>   KVM_NVHE_ALIAS(kvm_vgic_global_state);
+>> +KVM_NVHE_ALIAS(kvm_guest_trfcr);
+>>     /* Kernel symbols used to call panic() from nVHE hyp code (via
+>> ERET). */
+>>   KVM_NVHE_ALIAS(nvhe_hyp_panic_handler);
+>> diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
+>> index 49a13e72ddd2..c8d936ce6e2b 100644
+>> --- a/arch/arm64/kvm/debug.c
+>> +++ b/arch/arm64/kvm/debug.c
+>> @@ -22,6 +22,7 @@
+>>                   DBG_MDSCR_MDE)
+>>     static DEFINE_PER_CPU(u64, mdcr_el2);
+>> +u64 ____cacheline_aligned kvm_guest_trfcr[NR_CPUS];
+>>     /*
+>>    * save/restore_guest_debug_regs
+>> @@ -359,3 +360,28 @@ void kvm_arch_vcpu_put_debug_state_flags(struct
+>> kvm_vcpu *vcpu)
+>>       vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
+>>       vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
+>>   }
+>> +
+>> +/*
+>> + * Interface for the Coresight driver to use to set the value of the
+>> TRFCR
+>> + * register for the guest. This register controls the exclude
+>> settings for trace
+>> + * at different exception levels, and is used to honor the
+>> exclude_host and
+>> + * exclude_guest parameters from the Perf session.
+>> + *
+>> + * This will be used to later write TRFCR_EL1 on nVHE at guest
+>> switch. For VHE,
+>> + * the host trace is controlled by TRFCR_EL2 and thus we can write to
+>> the
+>> + * TRFCR_EL1 immediately. Because guest writes to the register are
+>> trapped, the
+>> + * value will persist and can't be modified. For pKVM,
+>> kvm_guest_trfcr can't
+>> + * be read by the hypervisor, so don't bother writing it.
+>> + */
+>> +void kvm_etm_set_guest_trfcr(u64 trfcr_guest)
+>> +{
+>> +    if
+>> (WARN_ON_ONCE(!cpuid_feature_extract_unsigned_field(read_sysreg(id_aa64dfr0_el1),
+>> +                                   ID_AA64DFR0_EL1_TraceFilt_SHIFT)))
+>> +        return;
+>> +
+>> +    if (has_vhe())
+>> +        write_sysreg_s(trfcr_guest, SYS_TRFCR_EL12);
+>> +    else if (!is_protected_kvm_enabled())
+>> +        kvm_guest_trfcr[smp_processor_id()] = trfcr_guest;
+> 
+> smp_processor_id() could sleep in some configurations ? Should we switch
+> to raw_smp_processor_id() to be safer ?
+> 
 
-diff --git a/drivers/platform/x86/intel_scu_ipcutil.c b/drivers/platform/x=
-86/intel_scu_ipcutil.c
-index b7c10c15a3d6..7d87cbd4b9c6 100644
-=2D-- a/drivers/platform/x86/intel_scu_ipcutil.c
-+++ b/drivers/platform/x86/intel_scu_ipcutil.c
-@@ -22,7 +22,7 @@
+I don't think so, it's #defined to raw_smp_processor_id() anyway. Unless
+DEBUG_PREEMPT is on, then it's still raw_smp_processor_id() but it
+validates that preemption is disabled so the value isn't stale.
 
- static int major;
+We actually want that validation, so should leave it as
+smp_processor_id(). I can add a comment saying that this function should
+only be called with preemption disabled, but I wouldn't add any extra
+validation. Every smp_processor_id() call is already checked when
+DEBUG_PREEMPT is on and this one doesn't seem to be special in any way.
 
--struct intel_scu_ipc_dev *scu;
-+static struct intel_scu_ipc_dev *scu;
- static DEFINE_MUTEX(scu_lock);
+I also checked that the warning isn't triggered with DEBUG_PREEMPT on,
+and there are also a lot of other smp_processor_id() calls on similar
+paths in the Coresight driver.
 
- /* IOCTL commands */
-=2D-
-2.39.2
-
+> Otherwise looks good to me.
+> 
+> Suzuki
+> 
+>> +}
+>> +EXPORT_SYMBOL_GPL(kvm_etm_set_guest_trfcr);
+> 
 
