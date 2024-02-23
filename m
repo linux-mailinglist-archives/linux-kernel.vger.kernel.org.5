@@ -1,146 +1,95 @@
-Return-Path: <linux-kernel+bounces-78149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27339860F91
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:39:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E0CCD860F73
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:35:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB75CB216F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:39:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8103DB21FB0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:35:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C6DE7B3FB;
-	Fri, 23 Feb 2024 10:38:26 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7CE263104;
+	Fri, 23 Feb 2024 10:35:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RWgHoCDs"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94AD16311D
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 10:38:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32E3A5C91B;
+	Fri, 23 Feb 2024 10:35:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708684705; cv=none; b=TZ/lWECXAfF9PXMAQx/XaN9nhd9EvqnAR/SqADdg5wgO8hpR9cAdfKYqM6k2GMCm29pz2IFH9+3bT8nzfNmrEXjLiD7/i9ySOTwTURlZy3pIklfjZ9oswDtIVMU+a4HwYw1r5aWSuLg4yQbf9mVSmLZxBDMjv8qm86ovuLnJe/4=
+	t=1708684544; cv=none; b=EfcXe/XUijZ9TqWCtfXE8OYyIQ/wPGtpX+X6cxqbCXobG2bklsPM5w48pAZbSuW/pf3knIhX8E7xNSXdJQqjplQjefiu3od30V11CAYoWes1ArQpRsW4yqhBB30ZzF0yanWQ/hq3kO/1Y3OW6d7g+BThSjIaCdQ5vJzHB5oHEYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708684705; c=relaxed/simple;
-	bh=UmKeEZN5gz+R0yIx9LvjW24GAChVNwT+bTIKirbn/3w=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZxWD5qwzdzH3zG5WSj1GOmeE+wBf7YEUISGGKIeM9XRSY3KfNkUzSH0Y2sPhw9VP23yoh+BmxfvlNXnIqLQ88JJNMCav1pwopEVjpqwsuTuhyBflY3p5eYIjuThyZRStHhXlx8gWcmG3k/IX0VxQQlhqEgg1vff+E9sc9L9pG8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Th60R28VLzLncB;
-	Fri, 23 Feb 2024 18:37:43 +0800 (CST)
-Received: from canpemm500009.china.huawei.com (unknown [7.192.105.203])
-	by mail.maildlp.com (Postfix) with ESMTPS id 409E01400D5;
-	Fri, 23 Feb 2024 18:38:20 +0800 (CST)
-Received: from localhost.localdomain (10.50.165.33) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 23 Feb 2024 18:38:19 +0800
-From: Yicong Yang <yangyicong@huawei.com>
-To: <jonathan.cameron@huawei.com>, <will@kernel.org>, <mark.rutland@arm.com>,
-	<hejunhao3@huawei.com>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-CC: <yangyicong@hisilicon.com>, <linuxarm@huawei.com>,
-	<prime.zeng@hisilicon.com>, <fanghao11@huawei.com>
-Subject: [PATCH v2 8/8] docs: perf: Update usage for target filter of hisi-pcie-pmu
-Date: Fri, 23 Feb 2024 18:33:59 +0800
-Message-ID: <20240223103359.18669-9-yangyicong@huawei.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20240223103359.18669-1-yangyicong@huawei.com>
-References: <20240223103359.18669-1-yangyicong@huawei.com>
+	s=arc-20240116; t=1708684544; c=relaxed/simple;
+	bh=ruwnsn/gjGehFv1nBJWx1lSoMV/uko91BIOgAziMm3M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rlce9eXP0g2dSXDvuwxckbzomZTKc4stdqjVLcvPgRdvQX9yz6Ia7DynPhorn4iKPm3dU385kAILYYhEmhym//8lQREplJ6EfQ3Sy4oUmAFct+NUxq8WYQpM0OZRDFseb/ZpbGKTONxaIQWKc/i+vmmliw5y2fIFw1WZCZw7DQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RWgHoCDs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1C69C433F1;
+	Fri, 23 Feb 2024 10:35:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708684543;
+	bh=ruwnsn/gjGehFv1nBJWx1lSoMV/uko91BIOgAziMm3M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RWgHoCDsVInAwCNNN7dPCmlvFap+RO20ZKOlw5tytgf/6HhxKiXjXRWImhWH4zwH4
+	 vzTPARKaSLya1nJMxTc3NfXVRQSgkd+uWgdiSeKp+i3IEsyAWavegkD2Nn0WFtefg0
+	 KDoZGR/8YogeLYhEEJ98ZrF//2MX+GGKZ0y6LoazZzdZX2DXWHCoIXQD92qnARlSou
+	 Hom7au3sqBTdrrTwXo30O7GOKJkb5SuteMP8x+N1GTlKwaoKpDfxcRESRuBSUtF3Ph
+	 AuVlC3rc2dVnBYZp4TFtwnXgsSd1gY/lDdCp/yAg+zEVC/T1a+HfeRW8msjSLElkrz
+	 TrAjAOo9vBIYg==
+Date: Fri, 23 Feb 2024 10:35:37 +0000
+From: Lee Jones <lee@kernel.org>
+To: linux-kernel@vger.kernel.org, Aren Moynihan <aren@peacevolution.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+	Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
+	Chen-Yu Tsai <wens@csie.org>, Ondrej Jirman <megi@xff.cz>,
+	linux-sunxi@lists.linux.dev, Pavel Machek <pavel@ucw.cz>,
+	linux-arm-kernel@lists.infradead.org,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	linux-leds@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+	Miles Alan <m@milesalan.com>, Samuel Holland <samuel@sholland.org>
+Subject: Re: (subset) [PATCH v2 1/4] leds: rgb: leds-group-multicolor: allow
+ leds to stay on in suspend
+Message-ID: <20240223103537.GA1585387@google.com>
+References: <20240206185400.596979-1-aren@peacevolution.org>
+ <170868429025.1582603.10651778411484887304.b4-ty@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500009.china.huawei.com (7.192.105.203)
+In-Reply-To: <170868429025.1582603.10651778411484887304.b4-ty@kernel.org>
 
-From: Junhao He <hejunhao3@huawei.com>
+On Fri, 23 Feb 2024, Lee Jones wrote:
 
-One of the "port" and "bdf" target filter interface must be set, and
-the related events should preferably used in the same group.
-Update the usage in the documentation.
+> On Tue, 06 Feb 2024 13:13:17 -0500, Aren Moynihan wrote:
+> > If none of the managed leds enable LED_CORE_SUSPENDRESUME, then we
+> > shouldn't need to set it here. This makes it possible to use multicolor
+> > groups with gpio leds that enable retain-state-suspended in the device
+> > tree.
+> > 
+> > 
+> 
+> Applied, thanks!
+> 
+> [1/4] leds: rgb: leds-group-multicolor: allow leds to stay on in suspend
+>       commit: 68552911e71d59e62dd5e50e9ac56ebfc32f0c71
 
-Signed-off-by: Junhao He <hejunhao3@huawei.com>
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
----
- .../admin-guide/perf/hisi-pcie-pmu.rst        | 31 ++++++++++++++-----
- 1 file changed, 23 insertions(+), 8 deletions(-)
+Note that I changed a bunch of grammatical issues.
 
-diff --git a/Documentation/admin-guide/perf/hisi-pcie-pmu.rst b/Documentation/admin-guide/perf/hisi-pcie-pmu.rst
-index 7e863662e2d4..678d3865560c 100644
---- a/Documentation/admin-guide/perf/hisi-pcie-pmu.rst
-+++ b/Documentation/admin-guide/perf/hisi-pcie-pmu.rst
-@@ -37,9 +37,20 @@ Example usage of perf::
-   hisi_pcie0_core0/rx_mwr_cnt/ [kernel PMU event]
-   ------------------------------------------
- 
--  $# perf stat -e hisi_pcie0_core0/rx_mwr_latency/
--  $# perf stat -e hisi_pcie0_core0/rx_mwr_cnt/
--  $# perf stat -g -e hisi_pcie0_core0/rx_mwr_latency/ -e hisi_pcie0_core0/rx_mwr_cnt/
-+  $# perf stat -e hisi_pcie0_core0/rx_mwr_latency,port=0xffff/
-+  $# perf stat -e hisi_pcie0_core0/rx_mwr_cnt,port=0xffff/
-+
-+The related events usually used to calculate the bandwidth, latency or others.
-+They need to start and end counting at the same time, therefore related events
-+are best used in the same event group to get the expected value. There are two
-+ways to know if they are related events:
-+a) By event name, such as the latency events "xxx_latency, xxx_cnt" or
-+   bandwidth events "xxx_flux, xxx_time".
-+b) By event type, such as "event=0xXXXX, event=0x1XXXX".
-+
-+Example usage of perf group::
-+
-+  $# perf stat -e "{hisi_pcie0_core0/rx_mwr_latency,port=0xffff/,hisi_pcie0_core0/rx_mwr_cnt,port=0xffff/}"
- 
- The current driver does not support sampling. So "perf record" is unsupported.
- Also attach to a task is unsupported for PCIe PMU.
-@@ -51,8 +62,12 @@ Filter options
- 
-    PMU could only monitor the performance of traffic downstream target Root
-    Ports or downstream target Endpoint. PCIe PMU driver support "port" and
--   "bdf" interfaces for users, and these two interfaces aren't supported at the
--   same time.
-+   "bdf" interfaces for users.
-+   Please notice that, one of these two interfaces must be set, and these two
-+   interfaces aren't supported at the same time. If they are both set, only
-+   "port" filter is valid.
-+   If "port" filter not being set or is set explicitly to zero (default), the
-+   "bdf" filter will be in effect, because "bdf=0" meaning 0000:000:00.0.
- 
-    - port
- 
-@@ -95,7 +110,7 @@ Filter options
- 
-    Example usage of perf::
- 
--     $# perf stat -e hisi_pcie0_core0/rx_mrd_flux,trig_len=0x4,trig_mode=1/ sleep 5
-+     $# perf stat -e hisi_pcie0_core0/rx_mrd_flux,port=0xffff,trig_len=0x4,trig_mode=1/ sleep 5
- 
- 3. Threshold filter
- 
-@@ -109,7 +124,7 @@ Filter options
- 
-    Example usage of perf::
- 
--     $# perf stat -e hisi_pcie0_core0/rx_mrd_flux,thr_len=0x4,thr_mode=1/ sleep 5
-+     $# perf stat -e hisi_pcie0_core0/rx_mrd_flux,port=0xffff,thr_len=0x4,thr_mode=1/ sleep 5
- 
- 4. TLP Length filter
- 
-@@ -127,4 +142,4 @@ Filter options
- 
-    Example usage of perf::
- 
--     $# perf stat -e hisi_pcie0_core0/rx_mrd_flux,len_mode=0x1/ sleep 5
-+     $# perf stat -e hisi_pcie0_core0/rx_mrd_flux,port=0xffff,len_mode=0x1/ sleep 5
+led  => LED
+gpio => GPIO
+
+Capitalised the first word of the comment, etc.
+
 -- 
-2.24.0
-
+Lee Jones [李琼斯]
 
