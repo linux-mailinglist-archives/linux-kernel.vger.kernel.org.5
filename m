@@ -1,78 +1,87 @@
-Return-Path: <linux-kernel+bounces-77913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6BAD860C14
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:20:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 842E4860C1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 09:21:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B240283BF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:20:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CB8D1F26CFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:21:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB3D3199B9;
-	Fri, 23 Feb 2024 08:19:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A072A18C36;
+	Fri, 23 Feb 2024 08:20:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q8NnMJki"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AAwv5aw+"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5787F18E3F;
-	Fri, 23 Feb 2024 08:19:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA1F31B598
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 08:19:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708676359; cv=none; b=YNDIrZvp1YhUFdcOqE/QiAZYgKjpuGii0B5UzLE7/Ycd7Z7BTc6Nyyi4S3JEa/AHN0FfxqEEQnjoB5aVLoCiW/Xb0VlPEaaz1B9nGqCfBwbEc+aie4JWRbhR7SKQpjjJOkRuiyu2HdhEItLhsLKQcYpRqicFKnoLUYPlf41KUXA=
+	t=1708676401; cv=none; b=pnaYrDorf5Y2XT2vJygX3vRQyYymx2dLB/qNXiMCjCLMOaivIusbtcaL0ZXMDoREZhRG5cw9Xf3R33GZtGWiVXjK5Q83UiRPIj7BSqe7U3pTxTC6q6NAuvT/W5rxe1fwmJbcxRBJJjzapvojzw/0+mXQG3YFrFM9QMqApUM310U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708676359; c=relaxed/simple;
-	bh=WOz3K7fGcR+hiIvIfBIGp8ujfEAcshj/zn68XDonDmA=;
+	s=arc-20240116; t=1708676401; c=relaxed/simple;
+	bh=TUNny1HvUeftZKLUoDkacQhlF4J6gUc6wrtk141dWvM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V18LN2ZHEH37ES57jg9CM4QmEsmTRsDeOCsXiTpp8hLxvVDjzx+eWYRV1hfPP0Cleqza+mSBPT0Vxze6nR3MGsmsSNkgwuH/p21md10bblSogYvCzgpToKlCXOUqls2Fre7anCPdCxYVJ7sNimkRZrim2J8xt7q+2tOjikFWGk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Q8NnMJki; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708676359; x=1740212359;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=WOz3K7fGcR+hiIvIfBIGp8ujfEAcshj/zn68XDonDmA=;
-  b=Q8NnMJkisXYY6o8rfxrg1bmUYHaPp+vige1A2dScm1MZTnMucXykTCZ+
-   G/xTetnlNp/LYEPyb1GMeQaouyMjzQEZ6gOSeqyTQ5b1ZWAqhofjAD9vE
-   Qs7o3VTan70itf7t8iYgHRZ8n0e/RlR5bXhO/5jRL3SSB9egRCXbwqR1q
-   5ZIs0VcilbN6NNSIYiY+bsDTJwbyx+RIDfbi3ZqQm8dbP9eVMTtFtn3OD
-   FrKCBWEHzADYrROSq1iQ/q6prRAnRqZsVNS0a/imSfZJCRxuy+sik3ALV
-   o5a6R2dIa1wv1w3foMDCQuuoNmGp27n/gCWgg/euZQJSDN6E/Tj4v26Lx
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="14405366"
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="14405366"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 00:19:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="6036345"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 00:19:15 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with SMTP id 7A52711F81D;
-	Fri, 23 Feb 2024 10:19:12 +0200 (EET)
-Date: Fri, 23 Feb 2024 08:19:12 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Mikhail Rudenko <mike.rudenko@gmail.com>
-Cc: Sakari Ailus <sakari.ailus@iki.fi>, linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Jacopo Mondi <jacopo@jmondi.org>,
-	Tommaso Merciai <tomm.merciai@gmail.com>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Dave Stevenson <dave.stevenson@raspberrypi.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [PATCH v2 09/20] media: i2c: ov4689: Use runtime PM autosuspend
-Message-ID: <ZdhVAEElqzmJAynB@kekkonen.localdomain>
-References: <20231218174042.794012-1-mike.rudenko@gmail.com>
- <20231218174042.794012-10-mike.rudenko@gmail.com>
- <ZZvaDyGSMrjb6e75@valkosipuli.retiisi.eu>
- <878r4z4ysb.fsf@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=khKLc+gH+99GvON0vvH2ztaEfRCIDtGMHgX5K6R3yrCINgc0BHt/S5sSCqD34pPkcOxVIHxlOBca5awE60/5GlEqkXQL1Yv0p9YHjsF+yZ9NVhk7Kl+u0P6/zb/aqgJlo49e6wIuQTP9lgTrt3+xZCDXIQ8tv8BlMOBMzV1UQD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AAwv5aw+; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d180d6bd32so8244481fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 00:19:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708676397; x=1709281197; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RuXtCNYwsGpKXgRbUJ3unXSyq/4b1iF/r5Hh+ijkmfI=;
+        b=AAwv5aw+os1H1u0oapgzqqOZT8HTSva6VCyff0pOa5DI0xaUgmbaCKe74X2qxvM+83
+         Cb6wN5zxVdVi0PpmwLsXyuXmRAY/pb/DdRKIdj/FlEQOnHSEEqctimED2qOoNisnUyxo
+         Jry4Bk4FFYDkDnt0PS5LoLcK7HdLIzcF9qkaxr80uDOEmQoGVvF3ZbHIj2TeLQNfE4rR
+         J6gcuDedYGbJQ50NgGmBOEeOogJk1qchCxjvvOfLz3GEAoPryiTkp/oHURgp+exPca4J
+         ACORYHI7FobFXkVcKzE0RZAohd/tP8JBxsjo+OTMs4s1USgg9Luv9hXEpnOQWQgJCJ6h
+         pWXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708676397; x=1709281197;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RuXtCNYwsGpKXgRbUJ3unXSyq/4b1iF/r5Hh+ijkmfI=;
+        b=Wr6IDl/mHPzrHjlYyDqBYU/Zzp9Xz7FTwZtijXCeIrlXY9IzZRdHa7QnJR/Vx5pUQ6
+         wsFqMCjSXTLFIRi+OVYYK9Ilze1NezitBq00tenHTJKYSr36FS/UzmP9H65yDFQOohnE
+         nK1ORlkbOFvLzWDeOyPG5lfdsw8mHMUr5wYaedRmRQZruXeR+MheKOb1Jppbqj5r3hus
+         TRQZwhQLNP1sV3F6aUlh3BEKkae0+vrOm6iHWDeKW5vyUIHYuptrq0SrBwUzeaZwe0j0
+         K8JNAmHU0jVTODA+YkPsIbkl/iKr8I4VyrlJOYEU9/J/R5l83gZgPt0sYTEUl1DHF8rV
+         60dw==
+X-Forwarded-Encrypted: i=1; AJvYcCWP/xjqSbLnA1GZkZeCCLHYvCpYqjrn5kAiExmV+BAlOdH+MB8IEFWRAUkRTQ0kkGNlOktduH9AtzLpdTDBh9fjJxl4x1rf126SZHDb
+X-Gm-Message-State: AOJu0Yx9PiAEldt4K8CsyyakkTkoWsqv+NyCcgbRtQ7h8tXVJWo46Rx+
+	HFhkbuYjy8zJLzWz7ALzieuCwhb+Pf7gJZ4jUuHkdoTXU5Bba9sWiCFbE5/b3Xg=
+X-Google-Smtp-Source: AGHT+IG3BQ8JqlqrAtOJFM04gbsnYyOURpj+vfRT2z52l3Z/d44ORUjRCHQO4AUweAm1jwyo0GRCjA==
+X-Received: by 2002:a05:651c:1061:b0:2d2:313c:3c0 with SMTP id y1-20020a05651c106100b002d2313c03c0mr738681ljm.27.1708676396701;
+        Fri, 23 Feb 2024 00:19:56 -0800 (PST)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id f16-20020a5d50d0000000b0033d449f5f65sm1890058wrt.4.2024.02.23.00.19.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 00:19:56 -0800 (PST)
+Date: Fri, 23 Feb 2024 11:19:52 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Ethan Zhao <haifeng.zhao@linux.intel.com>
+Cc: baolu.lu@linux.intel.com, bhelgaas@google.com, robin.murphy@arm.com,
+	jgg@ziepe.ca, kevin.tian@intel.com, dwmw2@infradead.org,
+	will@kernel.org, lukas@wunner.de, yi.l.liu@intel.com,
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org
+Subject: Re: [PATCH v13 3/3] iommu/vt-d: improve ITE fault handling if target
+ device isn't valid
+Message-ID: <f779be97-66c2-4520-91f2-a9a54e84017c@moroto.mountain>
+References: <20240222090251.2849702-1-haifeng.zhao@linux.intel.com>
+ <20240222090251.2849702-4-haifeng.zhao@linux.intel.com>
+ <c655cd15-c883-483b-b698-b1b7ae360388@moroto.mountain>
+ <2d1788da-521c-4531-a159-81d2fb801d6c@linux.intel.com>
+ <039a19e5-d1ff-47ae-aa35-3347c08acc13@moroto.mountain>
+ <31ee6660-ad4a-40b8-8503-ebc3ed06dd16@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,129 +90,145 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <878r4z4ysb.fsf@gmail.com>
+In-Reply-To: <31ee6660-ad4a-40b8-8503-ebc3ed06dd16@linux.intel.com>
 
-Hi Mikhail,
-
-On Mon, Jan 08, 2024 at 06:06:52PM +0300, Mikhail Rudenko wrote:
-> Hi Sakari,
+On Fri, Feb 23, 2024 at 03:32:52PM +0800, Ethan Zhao wrote:
+> On 2/23/2024 2:08 PM, Dan Carpenter wrote:
+> > On Fri, Feb 23, 2024 at 10:29:28AM +0800, Ethan Zhao wrote:
+> > > > > @@ -1326,6 +1336,21 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
+> > > > >    			head = (head - 2 + QI_LENGTH) % QI_LENGTH;
+> > > > >    		} while (head != tail);
+> > > > > +		/*
+> > > > > +		 * If got ITE, we need to check if the sid of ITE is one of the
+> > > > > +		 * current valid ATS invalidation target devices, if no, or the
+> > > > > +		 * target device isn't presnet, don't try this request anymore.
+> > > > > +		 * 0 value of ite_sid means old VT-d device, no ite_sid value.
+> > > > > +		 */
+> > > > This comment is kind of confusing.
+> > > Really confusing ? this is typo there, resnet-> "present"
+> > > 
+> > Reading this comment again, the part about zero ite_sid values is
+> > actually useful, but what does "old" mean in "old VT-d device".  How old
+> > is it?  One year old?
 > 
-> Thanks for the review!
+> I recite the description from Intel VT-d spec here
 > 
-> On 2024-01-08 at 11:18 GMT, Sakari Ailus <sakari.ailus@iki.fi> wrote:
-> 
-> > Hi Mikhail,
-> >
-> > On Mon, Dec 18, 2023 at 08:40:30PM +0300, Mikhail Rudenko wrote:
-> >> Use runtime PM autosuspend to avoid powering off the sensor during
-> >> fast stop-reconfigure-restart cycles.
-> >>
-> >> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
-> >> ---
-> >>  drivers/media/i2c/ov4689.c | 22 +++++++++++++++-------
-> >>  1 file changed, 15 insertions(+), 7 deletions(-)
-> >>
-> >> diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
-> >> index 5300e621ff90..64cc6d9e48cc 100644
-> >> --- a/drivers/media/i2c/ov4689.c
-> >> +++ b/drivers/media/i2c/ov4689.c
-> >> @@ -407,26 +407,27 @@ static int ov4689_s_stream(struct v4l2_subdev *sd, int on)
-> >>  					  ov4689->cur_mode->num_regs,
-> >>  					  NULL);
-> >>  		if (ret) {
-> >> -			pm_runtime_put(dev);
-> >> +			pm_runtime_put_sync(dev);
-> >
-> > Why are you switching to pm_runtime_put_sync() here? That isn't covered by
-> > the commit message (nor I think should be done).
-> 
-> PM autosuspend conversion was suggested earlier by Laurent in his review
-> of this series [1], and he adviced looking at how it was done for the
-> imx290 driver. I followed along the lines of the corresponding patch
-> [2].
-
-There's no need to use the _sync() variant here. And at least it wouldn't
-be related to autosuspend, were you to switch to that.
-
-> 
-> >>  			goto unlock_and_return;
-> >>  		}
-> >>
-> >>  		ret = __v4l2_ctrl_handler_setup(&ov4689->ctrl_handler);
-> >>  		if (ret) {
-> >> -			pm_runtime_put(dev);
-> >> +			pm_runtime_put_sync(dev);
-> >>  			goto unlock_and_return;
-> >>  		}
-> >>
-> >>  		ret = cci_write(ov4689->regmap, OV4689_REG_CTRL_MODE,
-> >>  				OV4689_MODE_STREAMING, NULL);
-> >>  		if (ret) {
-> >> -			pm_runtime_put(dev);
-> >> +			pm_runtime_put_sync(dev);
-> >>  			goto unlock_and_return;
-> >>  		}
-> >>  	} else {
-> >>  		cci_write(ov4689->regmap, OV4689_REG_CTRL_MODE,
-> >>  			  OV4689_MODE_SW_STANDBY, NULL);
-> >> -		pm_runtime_put(dev);
-> >> +		pm_runtime_mark_last_busy(dev);
-> >> +		pm_runtime_put_autosuspend(dev);
-> >>  	}
-> >>
-> >>  unlock_and_return:
-> >> @@ -606,7 +607,9 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
-> >>  		break;
-> >>  	}
-> >>
-> >> -	pm_runtime_put(dev);
-> >> +	pm_runtime_mark_last_busy(dev);
-> >> +	pm_runtime_put_autosuspend(dev);
-> >
-> > Also note that with runtime PM autosuspend,  you have to use
-> > pm_runtime_get_if_active() instead of pm_runtime_get_if_in_use().
-> 
-> Noted, will do so in v3.
-> 
-> >> +
-> >>  	return ret;
-> >>  }
-> >>
-> >> @@ -877,8 +880,10 @@ static int ov4689_probe(struct i2c_client *client)
-> >>  	}
-> >>
-> >>  	pm_runtime_set_active(dev);
-> >> +	pm_runtime_get_noresume(dev);
-> >>  	pm_runtime_enable(dev);
-> >> -	pm_runtime_idle(dev);
-> >> +	pm_runtime_set_autosuspend_delay(dev, 1000);
-> >> +	pm_runtime_use_autosuspend(dev);
-> >>
-> >>  	ret = v4l2_async_register_subdev_sensor(sd);
-> >>  	if (ret) {
-> >> @@ -886,11 +891,14 @@ static int ov4689_probe(struct i2c_client *client)
-> >>  		goto err_clean_subdev_pm;
-> >>  	}
-> >>
-> >> +	pm_runtime_mark_last_busy(dev);
-> >> +	pm_runtime_put_autosuspend(dev);
-> >> +
-> >>  	return 0;
-> >>
-> >>  err_clean_subdev_pm:
-> >>  	pm_runtime_disable(dev);
-> >> -	pm_runtime_set_suspended(dev);
-> >> +	pm_runtime_put_noidle(dev);
-> >>  	v4l2_subdev_cleanup(sd);
-> >>  err_clean_entity:
-> >>  	media_entity_cleanup(&sd->entity);
-> 
-> [1] https://lore.kernel.org/all/20231211181935.GG27535@pendragon.ideasonboard.com/
-> [2] https://lore.kernel.org/all/20230116144454.1012-14-laurent.pinchart@ideasonboard.com/
+> "A value of 0 in this field indicates that this is an older version of DMA
+> remapping hardware which does not provide additional details about
+> the Invalidation Time-out Error"
 > 
 
--- 
-Regards,
+This is good.  Put that in the comment.  Otherwise it's not clear.  I
+assumed "old" meant released or something.
 
-Sakari Ailus
+
+> At least, the Intel VT-d spec 4.0 released 2022 June says the same thing.
+> as to how old, I didn't find docs older than that, really out of my radar.
+> 
+> > 
+> > > > /*
+> > > >    * If we have an ITE, then we need to check whether the sid of the ITE
+> > > >    * is in the rbtree (meaning it is probed and not released), and that
+> > > >    * the PCI device is present.
+> > > >    */
+> > > > 
+> > > > My comment is slightly shorter but I think it has the necessary
+> > > > information.
+> > > > 
+> > > > > +		if (ite_sid) {
+> > > > > +			dev = device_rbtree_find(iommu, ite_sid);
+> > > > > +			if (!dev || !dev_is_pci(dev))
+> > > > > +				return -ETIMEDOUT;
+> > > > -ETIMEDOUT is weird.  The callers don't care which error code we return.
+> > > > Change this to -ENODEV or something
+> > > -ETIMEDOUT means prior ATS invalidation request hit timeout fault, and the
+> > > caller really cares about the returned value.
+> > > 
+> > I don't really care about the return value and if you say it should be
+> > -ETIMEDOUT, then you're the expert.  However, I don't see anything in
+> > linux-next which cares about the return values except -EAGAIN.
+> > This function is only called from qi_submit_sync() which checks for
+> > -EAGAIN.  Then I did a git grep.
+> > 
+> > $ git grep qi_submit_sync
+> > drivers/iommu/intel/dmar.c:int qi_submit_sync(struct intel_iommu *iommu, struct qi_desc *desc,
+> > drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
+> > drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
+> > drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
+> > drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
+> > drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
+> > drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
+> > drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
+> > drivers/iommu/intel/iommu.h:int qi_submit_sync(struct intel_iommu *iommu, struct qi_desc *desc,
+> > drivers/iommu/intel/iommu.h: * Options used in qi_submit_sync:
+> > drivers/iommu/intel/irq_remapping.c:    return qi_submit_sync(iommu, &desc, 1, 0);
+> > drivers/iommu/intel/pasid.c:    qi_submit_sync(iommu, &desc, 1, 0);
+> > drivers/iommu/intel/svm.c:      qi_submit_sync(iommu, desc, 3, QI_OPT_WAIT_DRAIN);
+> > drivers/iommu/intel/svm.c:      qi_submit_sync(iommu, &desc, 1, 0);
+> > drivers/iommu/intel/svm.c:              qi_submit_sync(iommu, &desc, 1, 0);
+> > 
+> > Only qi_flush_iec() in irq_remapping.c cares about the return.  Then I
+> > traced those callers back and nothing cares about -ETIMEOUT.
+> > 
+> > Are you refering to patches that haven't ben merged yet?
+> 
+> Yes, patches under working, not the code running on your boxes.
+> 
+> -ETIMEOUT & -ENODEV, they both describe the error that is happenning, someone
+> prefers -ETIMEOUT, they would like to know the request was timeout, and someone
+> perfers -ENODEV, they know the target device is gone, ever existed.
+
+Okay.  I obviously can't comment on patches that I haven't seen but,
+sure, it sounds reasonable.
+
+> 
+> > > > > +			pdev = to_pci_dev(dev);
+> > > > > +			if (!pci_device_is_present(pdev) &&
+> > > > > +				ite_sid == pci_dev_id(pci_physfn(pdev)))
+> > > > The && confused me, but then I realized that probably "ite_sid ==
+> > > > pci_dev_id(pci_physfn(pdev))" is always true.  Can we delete that part?
+> > > Here is the fault handling, just double confirm nothing else goes wrong --
+> > > beyond the assumption.
+> > > 
+> > Basically for that to ever be != it would need some kind of memory
+> > corruption?  I feel like in that situation, the more conservative thing
+> > is to give up.  If the PCI device is not present then just give up.
+> 
+> memory corruption, buggy BIOS tables, faked request ...something out
+> of imagination, after confirmed the device is what it claimed to be, if
+> not present, then give up to retry the request.
+
+This is not correct.  We looked up the device based on the ite_sid so
+we know what the device id is, unless we experience catastrophic memory
+corruption.
+
++                       dev = device_rbtree_find(iommu, ite_sid);
+                                                        ^^^^^^^
+We looked it up here.
+
++                       if (!dev || !dev_is_pci(dev))
++                               return -ETIMEDOUT;
++                       pdev = to_pci_dev(dev);
++                       if (!pci_device_is_present(pdev) &&
++                               ite_sid == pci_dev_id(pci_physfn(pdev)))
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Unless the device_rbtree_find() is returning garbage then these things
+must be true.
+
++                               return -ETIMEDOUT;
+
+I tried to double check how we were storing devices into the rbtree,
+but then I discovered that the device_rbtree_find() doesn't exist in
+linux-next and this patch breaks the build.
+
+This is very frustrating thing.  But let's say a buggy BIOS could mess
+up the rbtree.  In that situation, we would still want to change the &&
+to an ||.  If the divice is not present and^W or the rbtree is corrupted
+then return an error.  But don't do this.  If the memory is corrupted we
+are already screwed and there is no way the system can really recover
+in any reasonable way.
+
+regards,
+dan carpenter
+
 
