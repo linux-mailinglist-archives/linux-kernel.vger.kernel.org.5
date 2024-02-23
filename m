@@ -1,101 +1,138 @@
-Return-Path: <linux-kernel+bounces-78767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1547861891
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:58:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF22C861895
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:00:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0082D1C23B1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:58:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33C6CB2108E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 16:59:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34FA412A140;
-	Fri, 23 Feb 2024 16:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1D54129A8E;
+	Fri, 23 Feb 2024 16:59:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IAgxXDZG"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="nitAuW0n"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 201D21272C5
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 16:58:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBAB9128397
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 16:59:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708707529; cv=none; b=ZgQ7382Ax6GCHrLUgBJbWUxweIXYUgez5gOdyIqZ6GDujLBryA/0c/mkmrGYbRjd4PvFdT59TruZX9bKNOg0q+gmq9PA68BzB0Dc523ognAkn4LODpCFehgPRk/BkakPqcp2DxvHGkDj/dymzKFS4AuHxRhw9JzQhfSfx5tbdnM=
+	t=1708707590; cv=none; b=j/L7fiD+j9CACOO5mFr1GyTdAyTHbs7XzMqcCh38ZDh17XfZVp0cbDAuJuSMx1Guid3mtbQMTsBU/zpYzZMIhSOqPQtpm0K1a94ErL8mRH51kzN8lkK9QukL1qz0MmyuAFSsdztjRYB4s5EQmVP0wfh0/KZsO7r6t3PPzsVT3sk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708707529; c=relaxed/simple;
-	bh=/qCYSqlO9DNszGUQz3vCGxRHgLhruOfrybgzCU6DVXA=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=NADBzuUw5BzCnVcGIuYA7VXesAKTSwaUJdSjZT4VuCDAOREQPIidMG7KjcE5rG3EeZYs4n8djHYjaQevJyZ+h7CEbunKEIT6eynenJx9zGqmeNjfx9AVX5QMeFnqwuVsVz/7x3KbVd1g8ZF3mCKpW1A4BqxfgWbKsTEwuQ/RLjE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IAgxXDZG; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-607cd6c11d7so17813147b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 08:58:47 -0800 (PST)
+	s=arc-20240116; t=1708707590; c=relaxed/simple;
+	bh=GFnd+uRgcZ5JE6+yaYSUeEigjBZZ5ehiRJbCdQFjMSg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ozekoIdvCTY2azSc2/ucZPKKWjmewyAOwP6c0RJ53waWnFutXRPQDkCiOLDFwaCSlFrKzI0IWHG2WQQEyj0eJbtpu3Sl2SFE6rNfnHB6ufIv9muiBoZPo8M9BtqfmFWD2l7Y7MY+hGpbxM+u0OAljmklIQvWisKF09T5xyJV4W4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=nitAuW0n; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e4ca46ab04so363461b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 08:59:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708707527; x=1709312327; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Oc3Qq6lAIDsi/q5F7XRr3cp32P8qkiyEnUPLih6Y/wY=;
-        b=IAgxXDZGMqLfSlz96LIdeX51FWRb2z2mPqCH+Rq76KcHLn3hrtiS1bY5ttltIRB3Fv
-         JzOsWlUBO/1CAaXouuHE/6SRDm0J6Frg9AMzyRnHr4LbwXNR+fD7mO2VynOiDjHh76ZM
-         ++7WmX+7RS1LrUQudStQnQ2RYk8L5rdfWojJlcn1l3kOR78L9BtcJRoV5wOecOdbTSpf
-         yfC68QWjX6zA3UJE86HOyNN78OT78NIPsVbLbFpKqZrKnRWoO1CPtH5f6XlCcNeDaEZJ
-         FQoSR1ev+9YOdTGylgYYzb7GBq86tDgHGVtZQgXZnIvGtntvsKf3lD7XcErMpaxhIjpK
-         vYnw==
+        d=chromium.org; s=google; t=1708707588; x=1709312388; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FDMzDk/lBMFwiZnh7jtuEycU3dW7wec2i4CrQjkGJo4=;
+        b=nitAuW0nEJXqcuwrvok8CkVkbfn2pnfOCTGqhqgni0qOUhvTAhltyrpkmRwSRrbh0B
+         98mW8FxQhTkRddbNuvjY1OlR4EehYdeL0eARCJG8gW0y3gsHiuUVmVyOiDl/jLh1TF5D
+         j58bfHK882zi2L5G6JAhTPLzgzIjkBqHE0PuQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708707527; x=1709312327;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Oc3Qq6lAIDsi/q5F7XRr3cp32P8qkiyEnUPLih6Y/wY=;
-        b=AOmPwzBOMTyd9Gwuxo1ZqIYjCj7k/F3zyQrOr8Xrh9/wqplO0wTDTVzWRgYD8Z0YHN
-         j87SC0cYN85y7eRWGo0N85i3vEDrPvymtsAWXyFyLxJ5gnEla40/Lt5Y78gqLw6jy4qJ
-         JK2R1ARszS8DC7V0ryRhI7XTSaOESC2wTHX2qq6Mjf/Oh5rOPAdoDaVkEXSaGkIXDN/8
-         QMtogr3XJG50FJmuPfki15L+061mHRdl7n8BcB13YBbXw6m6gTdeqkzCxvl8kWZvdxhV
-         qC729F5kz+adk/xs85Nxb1o4zkxodzRCUKArcjgPCPtX9o9T+3AhMxdXt470q/RabIIz
-         h0PA==
-X-Gm-Message-State: AOJu0YxmRnpwRZLHFgm6mfqYA2lDkxBMWoAkvdYKPVkQ6lx0TArDoqsc
-	p33rm91iDMDc0noobTSsycXJHir6u2pOTnHaQGwmqnhAnAjPqOjd1Dx6eLzz0vqSzFK7KkxOyLT
-	auw==
-X-Google-Smtp-Source: AGHT+IG+gq17ikIqA8XdmP9ANQ3WUhP5iYW2W+seOy/2+HGUIAfb6gwraEplyOYx/xpz0xfx0noUaIPphmM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:9e13:0:b0:607:83bd:bea3 with SMTP id
- m19-20020a819e13000000b0060783bdbea3mr64043ywj.10.1708707527179; Fri, 23 Feb
- 2024 08:58:47 -0800 (PST)
-Date: Fri, 23 Feb 2024 08:58:45 -0800
-In-Reply-To: <20240223104009.632194-11-pbonzini@redhat.com>
+        d=1e100.net; s=20230601; t=1708707588; x=1709312388;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FDMzDk/lBMFwiZnh7jtuEycU3dW7wec2i4CrQjkGJo4=;
+        b=evv99R0qFf5590B6m7HlF2L8yvJIqLPNzOphe7lyp1BKAsUKuRLvtIYei9UWOa3e0a
+         DlRbCTtrsPoVk22VLe0TNpvY17uj79Ta49NV72UKsObXcW2c66Wog8FjTWuUgxfQO59V
+         7ljc18t8xwf+CS5x736ZIPDVYv/zghGeE4u19svlJ2RL4gulPexsfb1Gcuc0pRRP3jFO
+         fJ+WMiLAr+WhcvegbkYIXTEaNYsd76ntRwO2YyrzIQAF4A4oA9EZ6yBDovMfzfJ42ABR
+         gC96UAPdb15EcZLmBMpuXVk4EobqfdFU2F5I0C+alVz1s3DnndAN6bUwJavA1qaeQA2I
+         g5Jg==
+X-Forwarded-Encrypted: i=1; AJvYcCXqHc2CeWiGX+skA72TRQ19pdYX5vf4uG3iAtgMghtd+fsYBW+D4hv9zAerxxGGMTophApGVQTm0ONmglNe+BCOzIHUKaQk4FBbi+8M
+X-Gm-Message-State: AOJu0YzAc3Q8JiJJTtRO/zeiCoxqrthbxcRq0ct+1riGgELEKQCS9P6H
+	yGKLrDmBPU/iGxk7LKR2W9A26kI/Zf8l9b4PBCMBIgjOTcPME+P1N7nkSgrAzA==
+X-Google-Smtp-Source: AGHT+IHX/Yc4T9nL5wRR/DYkhblZDpzp2THzLbdrmdP4IR1mBZ1kcT2liaypJSpebHmorYbeiH+inw==
+X-Received: by 2002:aa7:9d82:0:b0:6e3:636b:dd99 with SMTP id f2-20020aa79d82000000b006e3636bdd99mr331864pfq.24.1708707588228;
+        Fri, 23 Feb 2024 08:59:48 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id o74-20020a62cd4d000000b006e3f09fd6a7sm11865200pfg.85.2024.02.23.08.59.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 08:59:47 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: "David S. Miller" <davem@davemloft.net>
+Cc: Kees Cook <keescook@chromium.org>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Helge Deller <deller@gmx.de>,
+	Guo Ren <guoren@kernel.org>,
+	sparclinux@vger.kernel.org,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH] sparc: vdso: Disable UBSAN instrumentation
+Date: Fri, 23 Feb 2024 08:59:45 -0800
+Message-Id: <20240223165942.work.950-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240223104009.632194-1-pbonzini@redhat.com> <20240223104009.632194-11-pbonzini@redhat.com>
-Message-ID: <ZdjOxe1BHyn9KDrY@google.com>
-Subject: Re: [PATCH v2 10/11] KVM: SEV: introduce KVM_SEV_INIT2 operation
-From: Sean Christopherson <seanjc@google.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com, 
-	aik@amd.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=997; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=GFnd+uRgcZ5JE6+yaYSUeEigjBZZ5ehiRJbCdQFjMSg=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBl2M8BVTkPTYzeAtIdjSlijqw9uZvhDwrdnLvn9
+ blIHXwVpeGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZdjPAQAKCRCJcvTf3G3A
+ JoCwEACKVFAmUO4no0Qaxq8qbED2OYobHjEx8UJ+OGsvTvGLxdH8D7zH1Jm07MIB5qteNWszAPW
+ mmeZi2C8ojqf8QZCcqjRXQJWlCBUm6nET1lK20B7bHNNenRsAU3f+oq4vdh143ne09ThQL0vycD
+ GkDx6xhb0cdwF/fuoUugrYKfxI242MeUa/lIkLQMoxXyJ+uQvBLKYtshUKKs/AdBkdZ56fsAR6W
+ WK/+Q26n6BKUSxtMnNvhGt+AiOe0ElsbAbAPLSAf/+ACWu34JMXSe6b3o6WbemF7w6zZSFfxx3L
+ aiWCjVpYB49at5XwwkPh4ZiViM11V4RJIIV8Wq2Lj3Wn2SfL+xAfohSXysGvuiAxtXG7wgnWXCl
+ YkaEHux6vs5pt1/gsv6WKr+/UpXZvWQJkqpYBmRJY502AnAbYg00exgRnJoCpHC2bgyAS+cb9Zu
+ YqnvktgImg3XSAhBvOhxXMf/40ggBFstPwm6YOucNM1IdW4aKRktYWll8E0i3M54hNRCm8eREdF
+ 7CUN7Wo3pISsoJ5iWpsP3QdnuKVtUTXyu7XI5CcS33ZzxMMFpWTwMH1yZcEwM7e5+h4a4tSFsuK
+ jSEdGEu1KEwGh3gepDThUCJTuVkHMRQLz80mbbn4/SrwStrx23fql2KEfgBMP0h30pfMsV78289
+ Q67U30eW 2zupgVA==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 23, 2024, Paolo Bonzini wrote:
-> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
-> index 12cf6f3b367e..f6c13434fa31 100644
-> --- a/arch/x86/include/uapi/asm/kvm.h
-> +++ b/arch/x86/include/uapi/asm/kvm.h
-> @@ -683,6 +683,9 @@ enum sev_cmd_id {
->  	/* Guest Migration Extension */
->  	KVM_SEV_SEND_CANCEL,
->  
-> +	/* Second time is the charm; improved versions of the above ioctls.  */
-> +	KVM_SEV_INIT2,
+The UBSAN instrumentation cannot work in the vDSO since it is executing
+in userspace, so disable it in the Makefile. Fixes the build failures
+such as:
 
-Heh, I was just laughing in a team meeting yesterday that it took me an
-embarrassingly long time to realize that KVM_SET_CPUID2 was version 2, not for
-setting two CPUID entries.  :-)
+arch/sparc/vdso/vclock_gettime.c:217: undefined reference to `__ubsan_handle_shift_out_of_bounds'
 
-> +	if (copy_from_user(&data, (void __user *)(uintptr_t)argp->data, sizeof(data)))
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Andreas Larsson <andreas@gaisler.com>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Guo Ren <guoren@kernel.org>
+Cc: sparclinux@vger.kernel.org
+---
+ arch/sparc/vdso/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-u64_to_user_ptr()
+diff --git a/arch/sparc/vdso/Makefile b/arch/sparc/vdso/Makefile
+index 7f5eedf1f5e0..e8aef2c8ae99 100644
+--- a/arch/sparc/vdso/Makefile
++++ b/arch/sparc/vdso/Makefile
+@@ -2,6 +2,7 @@
+ #
+ # Building vDSO images for sparc.
+ #
++UBSAN_SANITIZE := n
+ 
+ # files to link into the vdso
+ vobjs-y := vdso-note.o vclock_gettime.o
+-- 
+2.34.1
+
 
