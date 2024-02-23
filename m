@@ -1,159 +1,199 @@
-Return-Path: <linux-kernel+bounces-77880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD002860B6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:43:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9DEB860B74
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:45:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 225A11F2474C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:43:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7596B284557
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:45:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD42D1401D;
-	Fri, 23 Feb 2024 07:43:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064D314AA5;
+	Fri, 23 Feb 2024 07:45:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="e27SJ6Tx"
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Lh4iJg27"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0DB212E45
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 07:43:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AD4A12B6C;
+	Fri, 23 Feb 2024 07:45:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708674208; cv=none; b=KpnGdhLbE4GHR8XTgV90cSopgKJacggRW/6nbBRZk4joiFr1klOqJsCPOUrYnprZVhY2q0+xOJXaJQDmBCQ2x7D8yRKccKgY6M71Nuo9Yn2bFN/UTw082fEVPQsiuqrlgPR1u2g0i4BIKmmnXhUhfh/+TJvhQfSboPuGx1BPhdA=
+	t=1708674305; cv=none; b=nRuX1ZTYLRGj3IzmEVs1uGUUuwD52Y2Deu81bROcSUFzFKnD8Qi8kFVes+XxQ1JhC1Nd+cPCW3I1a6Bz83rFFA8UBSWBo5Cskqr+cVzR4OwrVSOcVCAvvm1e0yg7adDm+GwfGlftI8VPekMlT8bqHZUycv1vZqc3FNYy9A+d92Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708674208; c=relaxed/simple;
-	bh=y4869a+5UPWFivactLXvq7LGVu29XzZBZxt67nVeI3M=;
-	h=From:To:Cc:In-Reply-To:Subject:Date:Message-ID:MIME-Version:
-	 Content-Type:References; b=h4QmtwQaE63eIjaGZN9/ec+d8cKDxCc4AhYVrsc2wnwIT3eIMhgxqkjtRyTINO5WHyCUAluyJDygLnm4JsBliio9++rBhuTBdTlh0KYHuuegBlXVSpWkN4ctXk6bpmzVYGSOT9mkQeQRUN0qTujM0SAHj8Nw5UCMz1PFkfWB0BQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=e27SJ6Tx; arc=none smtp.client-ip=203.254.224.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-	by mailout3.samsung.com (KnoxPortal) with ESMTP id 20240223074317epoutp031a9ad0c613f18f98e32e3ef33c207321~2biFF9hkj2335123351epoutp03i
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 07:43:17 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20240223074317epoutp031a9ad0c613f18f98e32e3ef33c207321~2biFF9hkj2335123351epoutp03i
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1708674197;
-	bh=9ocYm+fHbKwbVZzYfw8kuCyF9mhmA0CdruBcBst3zeA=;
-	h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-	b=e27SJ6TxmSWcZ127BHVjhkMm22BIewOaQklL0TqnRvFkojQehVMv0OyN3HD6o5QQx
-	 pkFDMiERfqb8RkTwGnOTognKH90oNpl2I7C11y9s8UkXtmDJjwdbloWDUMi6cAWIf6
-	 1iUQG44bNIeIi3IkdbPJFdJ4rl0hpQHhFyJujtfw=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-	epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-	20240223074317epcas1p22be5213b7a6b2733e1f399df020b529b~2biE0oIVE2275422754epcas1p26;
-	Fri, 23 Feb 2024 07:43:17 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.36.132]) by
-	epsnrtp2.localdomain (Postfix) with ESMTP id 4Th2781DHSz4x9Px; Fri, 23 Feb
-	2024 07:43:16 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-	epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-	5D.CC.11177.49C48D56; Fri, 23 Feb 2024 16:43:16 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-	epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240223074315epcas1p29a05eef3c9b189b96ae5c56be5e73f87~2biC3vqfp2274622746epcas1p23;
-	Fri, 23 Feb 2024 07:43:15 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240223074315epsmtrp194efef440b3194c4e4b9589c37bbe9af~2biC3CnmE0878308783epsmtrp1o;
-	Fri, 23 Feb 2024 07:43:15 +0000 (GMT)
-X-AuditID: b6c32a35-c75fa70000002ba9-95-65d84c944f73
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-	epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	02.A7.08755.39C48D56; Fri, 23 Feb 2024 16:43:15 +0900 (KST)
-Received: from cw00choi03 (unknown [10.113.111.106]) by epsmtip2.samsung.com
-	(KnoxPortal) with ESMTPA id
-	20240223074315epsmtip2148d574882b27b4ef48189f7ed9afebd~2biCrMbSy1668416684epsmtip2k;
-	Fri, 23 Feb 2024 07:43:15 +0000 (GMT)
-From: "Chanwoo Choi" <cw00.choi@samsung.com>
-To: "'Andy Shevchenko'" <andriy.shevchenko@linux.intel.com>,
-	<linux-kernel@vger.kernel.org>
-Cc: "'MyungJoo Ham'" <myungjoo.ham@samsung.com>
-In-Reply-To: <ZddJeYhe8pCHup9a@smile.fi.intel.com>
-Subject: RE: [PATCH v1 1/1] extcon: intel-mrfld: Don't shadow error from
- devm_extcon_dev_allocate()
-Date: Fri, 23 Feb 2024 16:43:15 +0900
-Message-ID: <061201da662b$f5b68f60$e123ae20$@samsung.com>
+	s=arc-20240116; t=1708674305; c=relaxed/simple;
+	bh=aZQtPzQPB1/AfUOCVilt9mDQ6+e6sJCSoNnzUrnCeiA=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cZRbllv4HJkJ2Y1RHVdVHbjplwieVTXbuFHKwgQwElvWgB8ldu7FbEWwb6bosx4dKpR34tdRev1fY4CW4lIUF0j2X8LMYQa6ur5i/VjhmvoyxHM4VIgFAPLMTkytpGyWRxvMpZbXO+oUsaQN1KyJPGp6dBHSjA6+UItGkW5KOi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Lh4iJg27; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41N7ikl3086238;
+	Fri, 23 Feb 2024 01:44:46 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1708674286;
+	bh=HbrV+ATuFW+OxTTN987BCVpEDxpaf0I7ZAX4hbcUxm0=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=Lh4iJg27t5o4sGcHRu8dchvGkFis1wz45NVIqZL+nMPGSoUStd6EZku7oNwJFG9We
+	 CttwRpyKNvH9t8yBQNA+XAX3uOhBOF5PbSk6YLifluSZJ/EDEoSBEkTodiVh3nhb8C
+	 kQVhW3bczkzT76hZAX3V7XUZbvSbVjlAnvc22jNk=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41N7ikYI023176
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 23 Feb 2024 01:44:46 -0600
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 23
+ Feb 2024 01:44:45 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 23 Feb 2024 01:44:45 -0600
+Received: from localhost (jluthra.dhcp.ti.com [172.24.227.217])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41N7ijXL100873;
+	Fri, 23 Feb 2024 01:44:45 -0600
+Date: Fri, 23 Feb 2024 13:14:44 +0530
+From: Jai Luthra <j-luthra@ti.com>
+To: Rob Herring <robh@kernel.org>
+CC: Vaishnav Achath <vaishnav.a@ti.com>,
+        Sakari Ailus
+	<sakari.ailus@linux.intel.com>,
+        Jayshri Pawar <jpawar@cadence.com>,
+        Jack Zhu
+	<jack.zhu@starfivetech.com>,
+        Julien Massot <julien.massot@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Changhuang Liang
+	<changhuang.liang@starfivetech.com>,
+        Maxime Ripard <mripard@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Aradhya
+ Bhatia <a-bhatia1@ti.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        <linux-kernel@vger.kernel.org>, Devarsh Thakkar <devarsht@ti.com>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Tomi Valkeinen
+	<tomi.valkeinen@ideasonboard.com>
+Subject: Re: Re: [PATCH RFC 04/21] dt-bindings: media: ti,j721e-csi2rx-shim:
+ Support 32 dma chans
+Message-ID: <jk7jsiws7ivxwdl4teoviu6qxp43fcj2raxj424m5jtep5dm2u@j3vpbetaimhy>
+References: <20240222-multistream-v1-0-1837ed916eeb@ti.com>
+ <20240222-multistream-v1-4-1837ed916eeb@ti.com>
+ <170860471258.2476270.8232202066004725650.robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: ko
-Thread-Index: AQHfTpyV7yAFNQt3UIwsEYUxvXodbgFHRVVfASmM5toCUGlICbDnsMbA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrJKsWRmVeSWpSXmKPExsWy7bCmru4UnxupBvdvslj0Nk1nsri8aw6b
-	xe3GFWwOzB7zTgZ69G1ZxejxeZNcAHNUtk1GamJKapFCal5yfkpmXrqtkndwvHO8qZmBoa6h
-	pYW5kkJeYm6qrZKLT4CuW2YO0B4lhbLEnFKgUEBicbGSvp1NUX5pSapCRn5xia1SakFKToFp
-	gV5xYm5xaV66Xl5qiZWhgYGRKVBhQnbGmq/tTAV3WSvet05gb2C8zNLFyMkhIWAisXrJdMYu
-	Ri4OIYEdjBL7HsxlgnA+MUo83rKIHcL5xihxauFzNpiWaQ82sEIk9jJKXFz0kQ3CeckoMbWx
-	H8jh4GAT0JFY8CMUpEFEIFbi3JOPzCA2s4C+xOoPtxlBbE4BI4mJG3rAhgoLpEp823OdCcRm
-	EVCV6Ox7zgoyhlfAUmLNJ7BTeQUEJU7OfMICMUZeYvvbOcwQ9yhI/Hy6jBUiLiIxu7ONGWKt
-	m8TSDa/A7pQQeMku8f7WPqifXSQm793ABGELS7w6voUdwpaSeNnfxg7RMBnosdevmSGc9YwS
-	G1e2QK0zlti/dDITyHXMApoS63fpQ2zmk3j3tQfsaAkBXomONiGIamWJyw/uQu2SlFjc3gkN
-	RA+J3wueM09gVJyF5LdZSH6bheSfWQjLFjCyrGIUSy0ozk1PLTYsMITHdnJ+7iZGcBrUMt3B
-	OPHtB71DjEwcjIcYJTiYlUR4WcqvpArxpiRWVqUW5ccXleakFh9iNAUG9kRmKdHkfGAiziuJ
-	NzSxNDAxMzI2sTA0M1QS5z1zpSxVSCA9sSQ1OzW1ILUIpo+Jg1Oqgcnbe2ESU3j+CoFHF8LS
-	Duac+/3wX+Hd/eYF22+kSO//qnFzetfp2Tfn9jc3tL/i75v6zlLsVOCFmyZzJSZedrqyYHm3
-	5MfeOVo6Jyd/SbAxOmq31SM1751T7+fusqDfT15kcE3cw7ZlXkrkL8Pe3B2tyvPMlpY3iOst
-	ltI9Z859R/X9nxVLVGaG8dqZLrk/21vwGz/LH+ELCX11vgwM4Z3/0/x/pbPNqJbeb9R2LPiP
-	ZfjEA6YsgWKCryyXm8jcrBDLYXz1q6jA/4rO48sxSzlXd3dEXYh/z9Sy+seXrj8Ni69Mf8x9
-	+vQxWY2KV/ptjmGXjObNM058VeHJEvywKuT96/q9Mv/uH7voMUFOvkmJpTgj0VCLuag4EQAQ
-	jz3jDAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrALMWRmVeSWpSXmKPExsWy7bCSvO5knxupBj2tIha9TdOZLC7vmsNm
-	cbtxBZsDs8e8k4EefVtWMXp83iQXwBzFZZOSmpNZllqkb5fAlbHmaztTwV3WivetE9gbGC+z
-	dDFyckgImEhMe7CBtYuRi0NIYDejxM9Nx9ggEpIS0y4eZe5i5ACyhSUOHy6GqHnOKLHs4Umw
-	OJuAjsSCH6Eg5SICsRLnnnxkBrGZBfQlVn+4zQhR/4xR4uTz72AJTgEjiYkbesDmCwskS1xa
-	0Qp2BIuAqkRn33NWkJm8ApYSaz6BhXkFBCVOznzCAhJmFtCTaNvICDFeXmL72znMEFcqSPx8
-	uowVIi4iMbuzjRniHDeJpRtesU5gFJ6FZNIshEmzkEyahaR7ASPLKkbJ1ILi3PTcYsMCw7zU
-	cr3ixNzi0rx0veT83E2M4EjQ0tzBuH3VB71DjEwcjIcYJTiYlUR4WcqvpArxpiRWVqUW5ccX
-	leakFh9ilOZgURLnFX/RmyIkkJ5YkpqdmlqQWgSTZeLglGpgKrzIH/jzwKyFytmu/+W8dsf1
-	F5jp1Lm862zdl5f8Ob7O3oL9zYI3cZ67ZbzevT1VuX6hn/kJg8/cRxL3KrH/mfE7X81xY1mO
-	Lte3ztlPlK5ufblr49eO02fn5N3Yq3TS87iPUMAS/l01zy8cFpUyj1VL9+N0VPW74RqW2PWT
-	Xfe65W2Jm7Of86/WOun47OvEuOyjH/huT3rvveo53/Y69w19nlxBTbm1KVWS0itWcbes5//3
-	JZtTNEc688v9bM62snQB66KKMlGBS7aZXNYPGaVTHm49XbpmRcPbB80lCZZnxCfVpW7VtqvR
-	eb99pXXpnMLllVGxd2uLuP9UpnU0RUee8l9i6a9RUOjRHqnEUpyRaKjFXFScCAC24Kws8wIA
-	AA==
-X-CMS-MailID: 20240223074315epcas1p29a05eef3c9b189b96ae5c56be5e73f87
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240222131814epcas1p3b7a6a405f1170dcfac8e0f53b0f49d4c
-References: <20231222161854.2955859-1-andriy.shevchenko@linux.intel.com>
-	<ZcUqiaGI8N-FLijJ@smile.fi.intel.com>
-	<CGME20240222131814epcas1p3b7a6a405f1170dcfac8e0f53b0f49d4c@epcas1p3.samsung.com>
-	<ZddJeYhe8pCHup9a@smile.fi.intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="dkpavki64dphg6yq"
+Content-Disposition: inline
+In-Reply-To: <170860471258.2476270.8232202066004725650.robh@kernel.org>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
+--dkpavki64dphg6yq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi Rob,
 
-> -----Original Message-----
-> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Sent: Thursday, February 22, 2024 10:18 PM
-> To: linux-kernel@vger.kernel.org
-> Cc: MyungJoo Ham <myungjoo.ham@samsung.com>; Chanwoo Choi
-> <cw00.choi@samsung.com>
-> Subject: Re: [PATCH v1 1/1] extcon: intel-mrfld: Don't shadow error from
-> devm_extcon_dev_allocate()
-> 
-> On Thu, Feb 08, 2024 at 09:24:58PM +0200, Andy Shevchenko wrote:
-> > On Fri, Dec 22, 2023 at 06:18:54PM +0200, Andy Shevchenko wrote:
-> > > Don't shadow error from devm_extcon_dev_allocate() and return it as
-is.
-> >
-> > Any comment on this?
-> 
-> Here is another one, can it be applied as well?
+On Feb 22, 2024 at 05:25:13 -0700, Rob Herring wrote:
+>=20
+> On Thu, 22 Feb 2024 17:01:20 +0530, Jai Luthra wrote:
+> > The CSI2RX SHIM IP can support a maximum of 32x DMA channels.
+> >=20
+> > These can be used to split incoming "streams" of data on the CSI-RX
+> > port, distinguished by MIPI Virtual Channel (or Data Type), into
+> > different locations in memory (/dev/videoX nodes).
+> >=20
+> > Actual number of DMA channels reserved is different for each SoC
+> > integrating this IP, but a maximum of 32x channels are always available
+> > in this IP's register space, so set minimum as 1 and maximum as 32.
+> >=20
+> > Link: https://www.ti.com/lit/pdf/spruiv7
+> > Signed-off-by: Jai Luthra <j-luthra@ti.com>
+> > ---
+> >  .../bindings/media/ti,j721e-csi2rx-shim.yaml       | 40 ++++++++++++++=
+++++++--
+> >  1 file changed, 37 insertions(+), 3 deletions(-)
+> >=20
+>=20
+> My bot found errors running 'make DT_CHECKER_FLAGS=3D-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>=20
+> yamllint warnings/errors:
+>=20
+> dtschema/dtc warnings/errors:
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/m=
+edia/ti,j721e-csi2rx-shim.yaml: properties:dma-names: {'minItems': 1, 'maxI=
+tems': 32, 'items': [{'const': 'rx0'}, {'const': 'rx1'}, {'const': 'rx2'}, =
+{'const': 'rx3'}, {'const': 'rx4'}, {'const': 'rx5'}, {'const': 'rx6'}, {'c=
+onst': 'rx7'}, {'const': 'rx8'}, {'const': 'rx9'}, {'const': 'rx10'}, {'con=
+st': 'rx11'}, {'const': 'rx12'}, {'const': 'rx13'}, {'const': 'rx14'}, {'co=
+nst': 'rx15'}, {'const': 'rx16'}, {'const': 'rx17'}, {'const': 'rx18'}, {'c=
+onst': 'rx19'}, {'const': 'rx20'}, {'const': 'rx21'}, {'const': 'rx22'}, {'=
+const': 'rx23'}, {'const': 'rx24'}, {'const': 'rx25'}, {'const': 'rx26'}, {=
+'const': 'rx27'}, {'const': 'rx28'}, {'const': 'rx29'}, {'const': 'rx30'}, =
+{'const': 'rx31'}]} should not be valid under {'required': ['maxItems']}
+> 	hint: "maxItems" is not needed with an "items" list
 
+Thanks will fix in next revision.
 
-Applied it. Thanks.
+> 	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
+>=20
+> doc reference errors (make refcheckdocs):
+>=20
+> See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/202402=
+22-multistream-v1-4-1837ed916eeb@ti.com
+>=20
+> The base for the series is generally the latest rc1. A different dependen=
+cy
+> should be noted in *this* patch.
+>=20
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+>=20
+> pip3 install dtschema --upgrade
+>=20
+> Please check and re-submit after running the above command yourself. Note
+> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+> your schema. However, it must be unset to test all examples with your sch=
+ema.
+>=20
 
-Best Regards,
-Chanwoo Choi
+--=20
+Thanks,
+Jai
 
+GPG Fingerprint: 4DE0 D818 E5D5 75E8 D45A AFC5 43DE 91F9 249A 7145
+
+--dkpavki64dphg6yq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEETeDYGOXVdejUWq/FQ96R+SSacUUFAmXYTOsACgkQQ96R+SSa
+cUXppxAAiKve/pejPnfyEE6LI718RJadaeKyqDT2+qv/N6KmqzlLizyKRnfta4yG
+04AOumjKIUJjXXZ6AuVHs1qXSCnan0ux6h1hTcBVeCnz4iWQchaJ7mwmO8puJRIH
+rwABkD8TGxeAhBhMnBjfF7pyyCZsTLIJTzJw5Vtee5FlqY2Yz7xhCqdsqoBMpBTz
+5gJoUOLv/HYfUZWI+nnxTOTw95UJEhTGq8Id40neo9AygAZi4h/3NdH9y44Ivy4E
+sAbKaeVaGbjtfRu1HpfoEZGIyUPlp7j3g9z435+kS1G3agOVTE9qf71EgoJfGXu1
+WvW7/gzZcG9ncU/38ekNxApqQm953BNNa9OOpGL08rCdZWMsA3l7sHHkf4H5vpga
+ehyJLHga+6oGiViMojmUBBAS0AB24qOldB944cClRLdXcek32t1SmpP4SLL8wupv
+ttISmAcxnD6ab2Cxz2FY1roA2UTADXyb6JbT+OJSxBhNNlLVyDxyUQ76HLTs1o6W
+ZZ7n13bLOjs9gus0U0KTJhNXnwaAp8nYc//TGSiEqrAjJ+M4wystJdrbrrdbG+BF
+/1rHPZU3iM1tEKhYxk6HBPhLIFih+bHmnRj5sKrYMig7W3LW4sHasLUr2mFE8Wlb
+vTGMHEFlTXu+mQVBPx6PNI0RWS3o4xW+ThEH1IK5y9ap5+fkLWA=
+=9a+5
+-----END PGP SIGNATURE-----
+
+--dkpavki64dphg6yq--
 
