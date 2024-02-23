@@ -1,66 +1,66 @@
-Return-Path: <linux-kernel+bounces-78528-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F165861485
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:49:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1601F861488
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 15:49:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 403D71F243A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:49:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A3F01C230C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:49:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C7726A000;
-	Fri, 23 Feb 2024 14:48:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2308182C88;
+	Fri, 23 Feb 2024 14:48:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="gP+x0dKG";
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="hDB0/chE"
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="ar+dIaK2";
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="NEdXQftG"
 Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B46D9823DB;
-	Fri, 23 Feb 2024 14:48:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB72F8288C;
+	Fri, 23 Feb 2024 14:48:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708699702; cv=none; b=Nid3hHPgV+2/CzOcnajM+0voChBAvWfNC6Q0RdHrpYxWBhFKl57D1sNRuYBzNH0Tl/KxhMCccMPhQ2ekM9ppQVLZTjfzMopukm5o1E1qWDUaU37HmrNsCf/u9V7IuEaUC7nLl2ogbgu8CRJV8F0ZcMfNui/eyeL7yA+O7clgYF4=
+	t=1708699707; cv=none; b=XZYmdrCWI75aJ5L7cUrXpmcv+y5oehHoYb1IPij479l7JVKCixO7eCcA5hc2a0O/yd8twMwdu9Pz4yPV6C4pdYmy9GjMVqNE1xfMJ8Fz0oEiZaYJZ+5nHg5ivqhKJyPu6pZr53C6NDQJGc9V+jyuVFxNL11UW/DeW1PvZVFqRyc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708699702; c=relaxed/simple;
-	bh=UcliE0LzDhCSgcywixlwl3dp7EKiym3+zi1BTGCrAww=;
+	s=arc-20240116; t=1708699707; c=relaxed/simple;
+	bh=kbyGQGNLsmWMs4CGXQ7MZXIRNMdes7VvAexotyOLQn8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=VSpFdw4PZc+LFt4ieWEpq9QSSBAyYCyiQekxxzYj0yRtoRLsg5lOXniu2HS1mh71f/7Zq43myh0cJtDzROeMeLoJy3HPr2HcF/XRt8U2NeP5S/urHZAGlmuL00r0KBuxbw10ZJT2vm4SAIFNGSWKDFCLbgZ0gaW+LhFSpuJOOrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=gP+x0dKG; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=hDB0/chE reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
+	 MIME-Version; b=WuHnvr1c0GFlBC7jR4+UOBUNciFcIYbctD/dLiye5+R9Cp9m0FcQ/x4y7k7awNi1EaNJAXXJZOKqmliNVlBJnV9KF6hO/eGgBsJatPQ8XV63wLOI7Bag2kNmpzjuaGuGy7+bwJIz0akiqVPZPB32xp07YvULBCpoHgnADE4lduQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=ar+dIaK2; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=NEdXQftG reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1708699700; x=1740235700;
+  t=1708699705; x=1740235705;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=QhudgKuG0ya+4gppWpZrYwAYWsjwepgCr9RMCVa8f+I=;
-  b=gP+x0dKGR+i4Ar5Kd7L3TXMpDixrZTyHlntmiV2qd/PAsox5tjVBUYhW
-   ntPun2nMU1JXP3Dz+bcf7HpPe4FGxR7hk5PROJOk3HUHoRe23QMRLqRe2
-   xqF3LehKPSJ5VsIrY+gE6PiHbTKDU8A4g1QSbFzRpC7qY7zEZqGdUjy90
-   dWWUgdzijgXL92/puOtU0rq7vFGYV2Q94HfiQ4Rct8RHE7VU2i9KbD1WT
-   TJb5qFSlzeTrrNweUy+PBvyOKM7wZgivAp9Un/L418pWTtls+7p+cTQC5
-   H61j824Tws27B9Bjn/7oA6UxeO0UJMbVQoe2NsHpbolGUenjFKtwSVOxF
-   g==;
+  bh=AcVLUcgUtxZpoSvfjiBj7CTKivXozKunT5EebkjBNAc=;
+  b=ar+dIaK2FlhDEXIVY1z8nIpV+ih4dJf204OQHNvbEpTGVNKCyB/ve7nj
+   rfwqHYyICuNCZktNcyZlpN93bCiDQsVSC+jNZmOlm3LGb4l7GHO0rZK/f
+   xnO9AX9aWyERgQJofhB9c1A3vqD4aChSC15ci+H5hZt/97cFP7bXzQmhT
+   49ZiNpcjFH0+pliKwkkd7dawPLSm4EJKo2N4CIImxLuJ3Rmagg2JwuPRu
+   ua3ETkQ/pCNKQIjh3p6+gL/94qDcXUqa1tDkxFckq/GU6gE/ifyS310mQ
+   c3SUlMDFq6HHRZVkDtdi4XZpD6oehs47jcmUb+vZ8zeNHwm8CAOf8nOD2
+   w==;
 X-IronPort-AV: E=Sophos;i="6.06,180,1705359600"; 
-   d="scan'208";a="35570393"
+   d="scan'208";a="35570394"
 Received: from vmailcow01.tq-net.de ([10.150.86.48])
-  by mx1.tq-group.com with ESMTP; 23 Feb 2024 15:48:19 +0100
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 5E7C31706D7;
-	Fri, 23 Feb 2024 15:48:14 +0100 (CET)
+  by mx1.tq-group.com with ESMTP; 23 Feb 2024 15:48:24 +0100
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id B1E961706F2;
+	Fri, 23 Feb 2024 15:48:19 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
-	s=dkim; t=1708699695; h=from:subject:date:message-id:to:cc:mime-version:
+	s=dkim; t=1708699700; h=from:subject:date:message-id:to:cc:mime-version:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=QhudgKuG0ya+4gppWpZrYwAYWsjwepgCr9RMCVa8f+I=;
-	b=hDB0/chExCPzRC0v01DDzM12JNYPnx3cQVS/giW+bXtZE7uz3jLx6J+H+Oa/rvLe7GJmK7
-	48cCap0uA9qrRUq9m8pWdCKNsb+gVd8gHwkXQB7tQqdNSKT5EgueEDsWl2/Tezq8lggh1c
-	NWgSS+ekSWw+kmq20/ffhEhuSLfitRceYl6Tv67oiynH3j67S/v4k9Yynb3c7J0oxZb6Tp
-	RA258C91WSIRcfgXrxvn3Z3YFE6jyooHtCo9Cb5j0xWii355nWpn8IntdklNYds/D6qOW9
-	mliIWiSjRvWp7ziZYhyVISuTM0PeHc71YigyAfAi5TBMNg+Nq4usRlQfPdT9vA==
+	bh=AcVLUcgUtxZpoSvfjiBj7CTKivXozKunT5EebkjBNAc=;
+	b=NEdXQftGBzjR5g2s2t1+I7quhzbF1JsaVMruz7bCwXYg1W7Hdn674Zfmqzh+wu4dwVGUI0
+	nNlp/d7juOUDCioZW4M/y6T+d//xPeadqk0pmwGN6KwidUordpeCcJb+4+xXbA45Iq+Iu8
+	j5ByvuLqMicqaZfqj6nJ1XVUjMOFWY9z/6jC50weFl0VPWBacEbJ//fuLrpQH1IJr5HI4D
+	+oscSKew/cG1RM4Da3Q0uQmA5qe4FK484mAMHVpyC+/c+xuEJ8cz/vwEpiqF5xYAZKi/a1
+	ELatc06+4nC5JQLxFHgx2dNycHpn9zP73X7oIcLBQ0ok7ri5KnPrQqDXa3oBZA==
 From: Alexander Stein <alexander.stein@ew.tq-group.com>
-To: Ricardo Ribalda <ribalda@kernel.org>,
+To: Michael Riesch <michael.riesch@wolfvision.net>,
 	Mauro Carvalho Chehab <mchehab@kernel.org>,
 	Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -75,9 +75,9 @@ Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
 	devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/5] media: dt-bindings: sony,imx214: use absolute path to other schema
-Date: Fri, 23 Feb 2024 15:47:44 +0100
-Message-Id: <20240223144746.2583749-4-alexander.stein@ew.tq-group.com>
+Subject: [PATCH v2 5/5] media: dt-bindings: sony,imx415: use absolute path to other schema
+Date: Fri, 23 Feb 2024 15:47:45 +0100
+Message-Id: <20240223144746.2583749-5-alexander.stein@ew.tq-group.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240223144746.2583749-1-alexander.stein@ew.tq-group.com>
 References: <20240223144746.2583749-1-alexander.stein@ew.tq-group.com>
@@ -97,15 +97,15 @@ Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
 Changes in v2:
 * Added new patch
 
- Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml | 2 +-
+ Documentation/devicetree/bindings/media/i2c/sony,imx415.yaml | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml
-index 60903da84e1f3..0162eec8ca993 100644
---- a/Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml
-+++ b/Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml
-@@ -16,7 +16,7 @@ description: |
-   maximum throughput of 1.2Gbps/lane.
+diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx415.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx415.yaml
+index 9a00dab2e8a3f..34962c5c70065 100644
+--- a/Documentation/devicetree/bindings/media/i2c/sony,imx415.yaml
++++ b/Documentation/devicetree/bindings/media/i2c/sony,imx415.yaml
+@@ -18,7 +18,7 @@ description: |-
+   available via CSI-2 serial data output (two or four lanes).
  
  allOf:
 -  - $ref: ../video-interface-devices.yaml#
