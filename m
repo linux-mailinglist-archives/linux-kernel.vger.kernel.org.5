@@ -1,163 +1,119 @@
-Return-Path: <linux-kernel+bounces-77885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D038860B91
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:49:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92730860B96
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 08:51:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85B86B22499
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:49:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0838B2478E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 07:51:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 676F116436;
-	Fri, 23 Feb 2024 07:49:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D92616428;
+	Fri, 23 Feb 2024 07:51:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="PtTMhYZd"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cmlhRdBl"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22EC714ABA;
-	Fri, 23 Feb 2024 07:49:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA0FA12E5E
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 07:51:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708674581; cv=none; b=oE8Vipyg/mnmyaXggEXPmJRuTaH+T9V9aLuNWLfZzYKORlld1UhjvnQ+bcWZ4SvA5k/CBUp8l67fTL6wBGlYJamqK3scoc9fiRq+Frm4BEqZGwR4UmB631P9G5/ws0aYqeyL/Ebd+WUIvDZXdcFB3QofxxSvarRiGd9qaXh48B0=
+	t=1708674684; cv=none; b=VEg2wcKNraLX1KBPvJKj5qrvdoHl6+TXgvjFbJGVfPuE/9Y3SW0dXZhDcXwnkAgxoeOPhD8AO725P8TxaVjghCHxmbjXk/Xao2ynbtOagvWSWZt1u1Pr+h7j+kuWQv02YidEcZfZHCCK3K1lg1lSnxnBAZS3VRGXWRrr7UBfhMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708674581; c=relaxed/simple;
-	bh=O3Q3jzKQ/3cdXtifz0siSvc8dDL03m6Kbdf4X1Ilf14=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JMNctjAXE2eCP4p74SKhHQLSMMI5u56vRem3lUlUS3JzLYvjGhoTIBzF7QcZKowkDVKzTpontGp7SzMMeRAK1DJUoD3NnZm15rglfGD8lDoUbdQ6r4Z1t7e523TsHkgVLxptIxtQvgaMc+pdKoR2VXFeLGGK7MuQDIt9O1D8q1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=PtTMhYZd; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41N7nEoM056673;
-	Fri, 23 Feb 2024 01:49:14 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1708674554;
-	bh=sPaoASB5atiXiCOt+4ErPru7d1mBrGuaPGnNpeDCJOc=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=PtTMhYZdlcWY9wTqkLl6Urvj1KHjyn/1Y1t7FIjtvYUa5P/8jMiwwC0BbETZnVLHN
-	 G1BDMdwUs6HM/aWP2c+VF6V3RuM0oqaObCexvaCQbEf87Ol8PKZ9BZcLpGmuKBavpf
-	 pTXrKNCzZVIVSwOUyEwIlKXo6lojkyFbv8Vv3Fe0=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41N7nE2i042447
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 23 Feb 2024 01:49:14 -0600
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 23
- Feb 2024 01:49:14 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 23 Feb 2024 01:49:14 -0600
-Received: from localhost (jluthra.dhcp.ti.com [172.24.227.217])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41N7nDW5106733;
-	Fri, 23 Feb 2024 01:49:13 -0600
-Date: Fri, 23 Feb 2024 13:19:12 +0530
-From: Jai Luthra <j-luthra@ti.com>
-To: Changhuang Liang <changhuang.liang@starfivetech.com>
-CC: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Mauro Carvalho Chehab
-	<mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans
- Verkuil <hverkuil-cisco@xs4all.nl>,
-        Vaishnav Achath <vaishnav.a@ti.com>,
-        Maxime Ripard <mripard@kernel.org>, Rob Herring <robh@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        "linux-media@vger.kernel.org"
-	<linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Aradhya
- Bhatia <a-bhatia1@ti.com>, Devarsh Thakkar <devarsht@ti.com>,
-        Jack Zhu
-	<jack.zhu@starfivetech.com>,
-        Julien Massot <julien.massot@collabora.com>,
-        Jayshri Pawar <jpawar@cadence.com>
-Subject: Re: =?utf-8?B?5Zue5aSNOiBbUEFUQw==?= =?utf-8?Q?H?= RFC 00/21] media:
- cadence,ti: CSI2RX Multistream Support
-Message-ID: <rlqe5xfooueitv6m6kfu6z5yl3gbknbkswf32n4ll625hrqtom@htspcaorydm6>
-References: <20240222-multistream-v1-0-1837ed916eeb@ti.com>
- <SHXPR01MB06714030189A3CFD430A88EEF255A@SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn>
+	s=arc-20240116; t=1708674684; c=relaxed/simple;
+	bh=7SLujE9p9Nm9Prxjtn8fONPkVvEqrDPAS/csWaCIAzQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Y5GU3g7nqfx6nkzhYJjZD+KWp1NCmAnZg682cGMMPV/eSrBAzMHb2SMeqq8aRrxuMwVpjftK4jTgAytP75MZQnKUSL00EQT66EzGrRrAUnKsyhfMI6f8jhvXi9UYTgGP4wftU8zMjxT48aJ08ZFu28ctzJxEFFaxAHi055CBqsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cmlhRdBl; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc6d8bd618eso533556276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 23:51:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708674682; x=1709279482; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0zwJRKqqvkbB5yeYH6nxcBNukYSHGMyv7mjOlzCXaIE=;
+        b=cmlhRdBljn+lU2MLykpe/QlhI2j4gJ0rJDexxq7JsqV/nEL41jjIk5V2jYc/NA2SkG
+         kq1IcVx9PqXhnjgkytUHVfspW+q/5qIBLFaOMicrM+geMGDxV6fYz/S0InKfK+ZAbAP1
+         aJA5PM0l1fZXTKR4WBigZJT9x2UNdM4OeZNezOSVdhTOHugyrHncAqYVWI/IccKBK4mX
+         93SY1fMIcKWImvSk632hxFtML8Yc2AW0EDkFa4/2fmtvAFktbf5YJfsH+297hP5DEVak
+         2EZREBxt4gp61TE9NW8g9HmdFmtRvk7PuD5d3Bpkk89qc0ADa3ZGGwpztl9rvgh9owj1
+         w9aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708674682; x=1709279482;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0zwJRKqqvkbB5yeYH6nxcBNukYSHGMyv7mjOlzCXaIE=;
+        b=sp0F28oZnikMhcBH/i/qwaSVRjg9O2E5JdFMKhx9TiXDPdHma4J8YDotLQBZgPWH0D
+         AqjzJPN90UC8YAKTmtqE3bYGgUtgvRUNhyUM2bwgdBmPBiCx9CzDiTKJpGB6yeMtNPCd
+         nZ6jxTZ0px55Hz0IMkLt6ZlIWe3EpwG1AfZvuZA44zgoVyoxa2Qe0vzmfD5GcjOHQ+lU
+         nTha13At4jcldL2FKajNr0T7GeMEqlRm477wi5uOh7UXPif9o1bsNwwsezrXzhpSti/z
+         K3ODHKCYYFz/EEFxwelWgJSdBM8rK3y914dvAQfnwM7MtNQhnbbWh61NymvoWUOfPvYz
+         HcrA==
+X-Forwarded-Encrypted: i=1; AJvYcCV29nTYNG7SikhAzojGCO9FaPYehNxwipDs64Snu1PfYvX4iC9TxbxqE7yWTZr4JPHWeAab430qxnvlY1OskRkST29KL2pbcA3jjPis
+X-Gm-Message-State: AOJu0YwF8KIHwx58qyPfcUgWP+rAsPIw/shBIoa8btlP7BZaPBka4u9I
+	6XYkir0ovYUaXTQer+3EJosWbgB5zqPyNoAUGy7C5y+oLEVMfROEYhOR+qjVkVaKMI3iepLnjEN
+	Y+IpJyCUwLVT3lLsQwXrLIGT3AR39CbJqNynrzeBu2QFRhZ94
+X-Google-Smtp-Source: AGHT+IHbNOowKrX8O4/m/+E511Tw0EHE2Y4FoVovhCwVnGeUs+qExDuEJiYiV23qeO9vY5G95qZUDa6MNnGueapTxIE=
+X-Received: by 2002:a25:c78c:0:b0:dcd:6a02:c111 with SMTP id
+ w134-20020a25c78c000000b00dcd6a02c111mr1405796ybe.11.1708674681755; Thu, 22
+ Feb 2024 23:51:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="vqnq6xp2ptvsrrup"
-Content-Disposition: inline
-In-Reply-To: <SHXPR01MB06714030189A3CFD430A88EEF255A@SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20240223143309.5ec298ec@canb.auug.org.au>
+In-Reply-To: <20240223143309.5ec298ec@canb.auug.org.au>
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Date: Fri, 23 Feb 2024 08:51:10 +0100
+Message-ID: <CACMJSevZxCiqa8uz+XU36psCa5T_rQGi5tVkMejpZj22Bj1k3Q@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the gpio-brgl tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy.shevchenko@gmail.com>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
---vqnq6xp2ptvsrrup
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, 23 Feb 2024 at 04:33, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the gpio-brgl tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>
+> x86_64-linux-gnu-ld: vmlinux.o: in function `bgpio_write64':
+> gpio-mmio.c:(.text+0x1489427): undefined reference to `iowrite64'
+> x86_64-linux-gnu-ld: vmlinux.o: in function `bgpio_read64':
+> gpio-mmio.c:(.text+0x14894a0): undefined reference to `ioread64'
+> x86_64-linux-gnu-ld: vmlinux.o: in function `bgpio_write64be':
+> gpio-mmio.c:(.text+0x1489527): undefined reference to `iowrite64be'
+> x86_64-linux-gnu-ld: vmlinux.o: in function `bgpio_read64be':
+> gpio-mmio.c:(.text+0x14895a0): undefined reference to `ioread64be'
+>
+> Caused by commit
+>
+>   36e44186e0ba ("gpio: mmio: Support 64-bit BE access")
+>
+> I have used the gpio-brgl from next-20240222 for today.
+>
+> --
+> Cheers,
+> Stephen Rothwell
 
-Hi Changhuang,
+Hi Stephen,
 
-On Feb 23, 2024 at 02:53:36 +0000, Changhuang Liang wrote:
-> Hi Jai,
->=20
-> > [PATCH RFC 00/21] media: cadence,ti: CSI2RX Multistream Support
-> [...]
-> >  .../bindings/media/ti,j721e-csi2rx-shim.yaml       |  40 +-
-> >  drivers/media/platform/cadence/cdns-csi2rx.c       | 460 +++++++++--
-> >  .../media/platform/ti/j721e-csi2rx/j721e-csi2rx.c  | 853
-> > +++++++++++++++------
-> >  3 files changed, 1052 insertions(+), 301 deletions(-)
-> > ---
-> > base-commit: d894a2a286fccd6e47cd1cac4c2d4ff5d300d7c7
->=20
-> Can you provide me with where this commit comes from, I can only=20
-> apply partial patchs to test.
+I'm not seeing this issue with allmodconfig on x86_64, could you give
+me some more information on the build environment?
 
-My bad, this series is based on next-20240219 but I had a few DT commits=20
-to test that I forgot to remove before sending it out.
+Andy: Could it be that the ifdefs you added should depend on
+CONFIG_64BIT and not only on the BITS_PER_LONG value?
 
-You can apply this on top of=20
-https://gitlab.com/linux-kernel/linux-next/-/tree/next-20240219
-
->=20
-> Thanks,
-> Changhuang
-
---=20
-Thanks,
-Jai
-
-GPG Fingerprint: 4DE0 D818 E5D5 75E8 D45A AFC5 43DE 91F9 249A 7145
-
---vqnq6xp2ptvsrrup
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEETeDYGOXVdejUWq/FQ96R+SSacUUFAmXYTfgACgkQQ96R+SSa
-cUXIHxAAhEcjgZeb486+P08BDFmyaZ4hKnTEHmx3m0U5V/jXrnxFVQtmT6oHgtrW
-Vt/TCPv6UQ+jD2J8WLVj2Ed4RpW0Y9/0YeL1oBibmDn1jUmGCnbXLWXFlak1BrHd
-oG93ZhFKpDQDt0buhkKu7s35s/WJPRMcSiSGEQEwWCyp+vcLIr1/K8hfXG9mSOkB
-mX3taQXPKq2lezzkMhDqOIWkg5r54wJ9t5Mfr+t47vfhBOHdea0uXEAtHyF27AXo
-dXBec+w8IYMVA8tCn9tIHX/+FmN312bxzS47UzXEeSEmFJxkVSd81/TjgcEK09sG
-Ys1OS+lfYMit7Bk0MOZN1z7aPzBQ0oT3QX9Fz/dxLNXLeZn/aL5riaszm/PJRUbG
-tulc1nzpYtMxKo7JNJYLaJg6rZYMQLR+gTg4ecZ0X/tNLIt9zYIf1imrzv0GrYzL
-aeo+AP9vBJtlyh3M6xaISsU8Y5O+ixZS80LEMrM7yFDtFtSgqkj8BWukX791rFMq
-CLWrBQCrryZXQjG1wNKwuYidKumXTYVyQpfVSmrnLPGMDAKiXuVkGao4pUe6mhSV
-FBVsNya4NywAiRQ4j99PCh88Ko8+XTbafjCpWt0pUoCMWjozUckCLwTaLVWd22GY
-Bbpy62oI4xuLScI65scpb4fn5Nl1Xl/R+s4MddX4jPuXYz76zoU=
-=XYhn
------END PGP SIGNATURE-----
-
---vqnq6xp2ptvsrrup--
+Bartosz
 
