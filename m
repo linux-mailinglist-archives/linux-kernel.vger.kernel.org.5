@@ -1,320 +1,132 @@
-Return-Path: <linux-kernel+bounces-78164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FF62860FAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:42:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8D3F860FBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:45:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 786791F260FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:42:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FD5E287F79
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 10:45:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73C677F46F;
-	Fri, 23 Feb 2024 10:40:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAF6F664B4;
+	Fri, 23 Feb 2024 10:41:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TnTyJlD4"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K20sDKCU"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C49737AE50
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 10:40:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C18E7E76C;
+	Fri, 23 Feb 2024 10:41:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708684821; cv=none; b=mhOoQ7awoSzX7Euc5RY5dWSokBjTsXKKQZSz0+spWF1BBqhz1/cIa6ktJV/P5jF+3w7OVCiT/7mCyeRfmKcrw+KtTfSVIrOqJcJPvMbLjOyCha99k5uQvShs3dM7PBPkUHIoc4stJEroEgtfxU+M81eQIVHBoY5H5pXEy7vOYRA=
+	t=1708684868; cv=none; b=Ofx0zeZgFR61qI9ZzQO6GzH+fLGdni83jzG49NMCZU1Vd3aV6hqwdRPfRaMH02f3w2iI/3l1Fjcm38Jo/LrwsZ/xV5dd3eWR+hvxKF1S8+nQ4j0yq9ltWAAsca1CsT12/76T023+WpQDo9J1bzhgIeSdZFJvhTx1kLzL2MiDdXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708684821; c=relaxed/simple;
-	bh=MxHen5gZ4mUabNWwbFOU550bpEpTeJP+x6FtutXKCWU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hvJiqmtGH8FvU+neXv7TGt6nX29Ev52EBcrDjOTjh0JfmMXzm+WF8dFrTt2t+MCe25KpXuAqlPSgvPSEHscCT+aWtB8zxxiwD3J53P2dHRExt29vsILWfxm4L7nPYu5ytFKdg3o3ekISrLE+wV+efLSv3xmtHOzLLb+NhsLbbfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TnTyJlD4; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708684817;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W1kbnyH9FICEHgN6ZoJfgIOpveSUVH1COmtrpN3QbUA=;
-	b=TnTyJlD4XGvZuZNWfW1SCeTzSs0LGeXaqb0aHbPhrT2rLSpGQS5+5t7eYJkwkgcFgNPRTA
-	6ndHLsn70OdfZ9xx1R6d6q/yep8+d6dJd1WjQN6ya52KCd1ViUidVAe8BhFFXrYDWHzNTG
-	uexTys6ZjLMlw67NpO4A8eOItJGzSy8=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-620-9M76F_CEM-qdjABZYmJWLw-1; Fri,
- 23 Feb 2024 05:40:13 -0500
-X-MC-Unique: 9M76F_CEM-qdjABZYmJWLw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A7D1A3806723;
-	Fri, 23 Feb 2024 10:40:12 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 80E6A8CE8;
-	Fri, 23 Feb 2024 10:40:12 +0000 (UTC)
-From: Paolo Bonzini <pbonzini@redhat.com>
-To: linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org
-Cc: seanjc@google.com,
-	michael.roth@amd.com,
-	aik@amd.com
-Subject: [PATCH v2 11/11] selftests: kvm: add tests for KVM_SEV_INIT2
-Date: Fri, 23 Feb 2024 05:40:09 -0500
-Message-Id: <20240223104009.632194-12-pbonzini@redhat.com>
-In-Reply-To: <20240223104009.632194-1-pbonzini@redhat.com>
-References: <20240223104009.632194-1-pbonzini@redhat.com>
+	s=arc-20240116; t=1708684868; c=relaxed/simple;
+	bh=bS1VlWWtfMYZsf4Vr4MMGRqT9FuitId+v7MsAAu5Wqo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MNITKTbBlL0hGf669WkAHUKnRayhdnv3863tamWfT301hYfW1zbphNURMpWODHIqKugR8u2SDyvXw3OlZ/aVThalES3DUEq1GDlOJwcv3N2+Y23pJ1Ti2FqPuOPVF+bhSCPUEQ7bTR3xakYbZpFQb789ChfLISuecys9z7qK5HA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K20sDKCU; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e46b5e7c43so72832b3a.2;
+        Fri, 23 Feb 2024 02:41:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708684866; x=1709289666; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bS1VlWWtfMYZsf4Vr4MMGRqT9FuitId+v7MsAAu5Wqo=;
+        b=K20sDKCUCM6MHLusjSvzCijr5rH7jEaufI4EWyO7ugYGEGdg9iea4nnIFtWVUlHROe
+         NyiTbDAyLE3PnqtuQ48RtG77cwVQVXUHKe09nh5tBtsWY0m7f5U8VYOsCwwc11IYxgfW
+         dAdeCwg8ySfhWF+1yfepQEyCi98bx8pnBX3G8k9rgQN0l8iOiV9blsZPpq4uwEK5wkvK
+         x2D131Cg3XKD5MQTmxk7aVaICLROZFco5LmmFfDYZMJkxCc/YMiTwpiIT1126k0C4XOE
+         2/y6sw37i56neYVzv5Wo73hFux50uwwLux9k19Qc78uHEkdUve1nT6GC3k4dsUp4schK
+         RPSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708684866; x=1709289666;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bS1VlWWtfMYZsf4Vr4MMGRqT9FuitId+v7MsAAu5Wqo=;
+        b=aKdasx/oEqgv+CdjpcyBMUu+6URH2zgliZlZ84hzAEZ94ON4uLpXkYGDTByEBFGKrs
+         4I1jvJBUNiOl9P2gKTKuI8mMXlGbL3HcNVv8mGyW56Y83X9kZRzEmET3DcYno8iEhxTX
+         dVHPdaHbFzLHM7Qmjdu2kpG72zQU3lVla0oAa30S+YrzYwDDx/XboPqHQLwG1vgj1/IK
+         PpFAu4TzwGXsuRED1g66yLA6dy/AsvadOsDdUswJlkI1spci5faAgzVy2D4ZdvAsFeD2
+         IKQBEMt14neLj6XXQrzPrO7X8w7Q8Tm1oPGMaHuckhGT7sWSRXHLaf9X55zjmSdCrxZU
+         ilCA==
+X-Forwarded-Encrypted: i=1; AJvYcCXm/XAY79cy1EM6tQUUYiy84WPnFOFjzekEvaRszz92I3pfhL4prmN/Tymlh+AeV/3C4W6tT0PppD3Fg2gOR1Gtg5qB2AvvUlbJiqposOlALqQGtD9UUF3yXA2alyVRaeVDvT/e
+X-Gm-Message-State: AOJu0Yy58WDDa07U+fuvOTDLOZxBA7w1oGrsA4Q6aLWbD5uCvyrhs18F
+	Pd2AdlV+JZFICkNKq7Vz1XIdr0xZJYxaa808Cudg+kM0Ek0nPGIgOl6jI5EW735q5tAI/2Qd9mz
+	E+upMTp7lI/J04R41ddAubV2Tawo=
+X-Google-Smtp-Source: AGHT+IGTNc9DAuoK5dbDsDxbrKxA8UrZIc5SuUO2JlymGhYz29b4KU/AshwgM7WkIh4GJLy3MTwifj08Jf/BARUheMY=
+X-Received: by 2002:a05:6a20:a3a6:b0:19e:9143:2ab5 with SMTP id
+ w38-20020a056a20a3a600b0019e91432ab5mr985913pzk.25.1708684865861; Fri, 23 Feb
+ 2024 02:41:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+References: <CANiq72=gYWZ24EEqRL71Vh+YjjK9Bu0QfxGEBzee16QAf4Q6XA@mail.gmail.com>
+ <20240221214939.4715-1-kernel@valentinobst.de>
+In-Reply-To: <20240221214939.4715-1-kernel@valentinobst.de>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Fri, 23 Feb 2024 11:40:53 +0100
+Message-ID: <CANiq72mHk4E2fr+6w2zn0t=Fy+-CCqE6uTFou=2+3uLiTDr_gw@mail.gmail.com>
+Subject: Re: [PATCH] x86/tools: fix line number reported for malformed lines
+To: Valentin Obst <kernel@valentinobst.de>
+Cc: a.hindborg@samsung.com, david@readahead.eu, gregkh@linuxfoundation.org, 
+	hpa@zytor.com, john.m.baublitz@gmail.com, linux-kernel@vger.kernel.org, 
+	mhiramat@kernel.org, mingo@kernel.org, mingo@redhat.com, ojeda@kernel.org, 
+	peterz@infradead.org, sergio.collado@gmail.com, stable@vger.kernel.org, 
+	tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Message-Id: <20240209183743.22030-11-pbonzini@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- tools/testing/selftests/kvm/Makefile          |   1 +
- .../selftests/kvm/include/kvm_util_base.h     |   6 +-
- .../selftests/kvm/set_memory_region_test.c    |   8 +-
- .../selftests/kvm/x86_64/sev_init2_tests.c    | 146 ++++++++++++++++++
- 4 files changed, 153 insertions(+), 8 deletions(-)
- create mode 100644 tools/testing/selftests/kvm/x86_64/sev_init2_tests.c
+On Wed, Feb 21, 2024 at 10:51=E2=80=AFPM Valentin Obst <kernel@valentinobst=
+de> wrote:
+>
+> Thanks!
+>
+> Cross checked this as well, can confirm your assessment. Thanks for
+> bringing this up.
 
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index 492e937fab00..a81a89b1dc2a 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -116,6 +116,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/tsc_msrs_test
- TEST_GEN_PROGS_x86_64 += x86_64/vmx_pmu_caps_test
- TEST_GEN_PROGS_x86_64 += x86_64/xen_shinfo_test
- TEST_GEN_PROGS_x86_64 += x86_64/xen_vmcall_test
-+TEST_GEN_PROGS_x86_64 += x86_64/sev_init2_tests
- TEST_GEN_PROGS_x86_64 += x86_64/sev_migrate_tests
- TEST_GEN_PROGS_x86_64 += x86_64/amx_test
- TEST_GEN_PROGS_x86_64 += x86_64/max_vcpuid_cap_test
-diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
-index 9e5afc472c14..44b6ea56a205 100644
---- a/tools/testing/selftests/kvm/include/kvm_util_base.h
-+++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
-@@ -846,17 +846,15 @@ static inline struct kvm_vm *vm_create_barebones(void)
- 	return ____vm_create(VM_SHAPE_DEFAULT);
- }
- 
--#ifdef __x86_64__
--static inline struct kvm_vm *vm_create_barebones_protected_vm(void)
-+static inline struct kvm_vm *vm_create_barebones_type(unsigned long type)
- {
- 	const struct vm_shape shape = {
- 		.mode = VM_MODE_DEFAULT,
--		.type = KVM_X86_SW_PROTECTED_VM,
-+		.type = type,
- 	};
- 
- 	return ____vm_create(shape);
- }
--#endif
- 
- static inline struct kvm_vm *vm_create(uint32_t nr_runnable_vcpus)
- {
-diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
-index 075b80dbe237..0ac6c21d7251 100644
---- a/tools/testing/selftests/kvm/set_memory_region_test.c
-+++ b/tools/testing/selftests/kvm/set_memory_region_test.c
-@@ -339,7 +339,7 @@ static void test_invalid_memory_region_flags(void)
- 
- #ifdef __x86_64__
- 	if (kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SW_PROTECTED_VM))
--		vm = vm_create_barebones_protected_vm();
-+		vm = vm_create_barebones_type(KVM_X86_SW_PROTECTED_VM);
- 	else
- #endif
- 		vm = vm_create_barebones();
-@@ -452,7 +452,7 @@ static void test_add_private_memory_region(void)
- 
- 	pr_info("Testing ADD of KVM_MEM_GUEST_MEMFD memory regions\n");
- 
--	vm = vm_create_barebones_protected_vm();
-+	vm = vm_create_barebones_type(KVM_X86_SW_PROTECTED_VM);
- 
- 	test_invalid_guest_memfd(vm, vm->kvm_fd, 0, "KVM fd should fail");
- 	test_invalid_guest_memfd(vm, vm->fd, 0, "VM's fd should fail");
-@@ -461,7 +461,7 @@ static void test_add_private_memory_region(void)
- 	test_invalid_guest_memfd(vm, memfd, 0, "Regular memfd() should fail");
- 	close(memfd);
- 
--	vm2 = vm_create_barebones_protected_vm();
-+	vm2 = vm_create_barebones_type(KVM_X86_SW_PROTECTED_VM);
- 	memfd = vm_create_guest_memfd(vm2, MEM_REGION_SIZE, 0);
- 	test_invalid_guest_memfd(vm, memfd, 0, "Other VM's guest_memfd() should fail");
- 
-@@ -489,7 +489,7 @@ static void test_add_overlapping_private_memory_regions(void)
- 
- 	pr_info("Testing ADD of overlapping KVM_MEM_GUEST_MEMFD memory regions\n");
- 
--	vm = vm_create_barebones_protected_vm();
-+	vm = vm_create_barebones_type(KVM_X86_SW_PROTECTED_VM);
- 
- 	memfd = vm_create_guest_memfd(vm, MEM_REGION_SIZE * 4, 0);
- 
-diff --git a/tools/testing/selftests/kvm/x86_64/sev_init2_tests.c b/tools/testing/selftests/kvm/x86_64/sev_init2_tests.c
-new file mode 100644
-index 000000000000..644fd5757041
---- /dev/null
-+++ b/tools/testing/selftests/kvm/x86_64/sev_init2_tests.c
-@@ -0,0 +1,146 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include <linux/kvm.h>
-+#include <linux/psp-sev.h>
-+#include <stdio.h>
-+#include <sys/ioctl.h>
-+#include <stdlib.h>
-+#include <errno.h>
-+#include <pthread.h>
-+
-+#include "test_util.h"
-+#include "kvm_util.h"
-+#include "processor.h"
-+#include "svm_util.h"
-+#include "kselftest.h"
-+
-+#define SVM_SEV_FEAT_DEBUG_SWAP 32u
-+
-+/*
-+ * Some features may have hidden dependencies, or may only work
-+ * for certain VM types.  Err on the side of safety and don't
-+ * expect that all supported features can be passed one by one
-+ * to KVM_SEV_INIT2.
-+ *
-+ * (Well, right now there's only one...)
-+ */
-+#define KNOWN_FEATURES SVM_SEV_FEAT_DEBUG_SWAP
-+
-+int kvm_fd;
-+u64 supported_vmsa_features;
-+bool have_sev_es;
-+
-+static int __sev_ioctl(int vm_fd, int cmd_id, void *data)
-+{
-+	struct kvm_sev_cmd cmd = {
-+		.id = cmd_id,
-+		.data = (uint64_t)data,
-+		.sev_fd = open_sev_dev_path_or_exit(),
-+	};
-+	int ret;
-+
-+	ret = ioctl(vm_fd, KVM_MEMORY_ENCRYPT_OP, &cmd);
-+	TEST_ASSERT(ret < 0 || cmd.error == SEV_RET_SUCCESS,
-+		    "%d failed: fw error: %d\n",
-+		    cmd_id, cmd.error);
-+
-+	return ret;
-+}
-+
-+static void test_init2(unsigned long vm_type, struct kvm_sev_init *init)
-+{
-+	struct kvm_vm *vm;
-+	int ret;
-+
-+	vm = vm_create_barebones_type(vm_type);
-+	ret = __sev_ioctl(vm->fd, KVM_SEV_INIT2, init);
-+	TEST_ASSERT(ret == 0,
-+		    "KVM_SEV_INIT2 return code is %d (expected 0), errno: %d",
-+		    ret, errno);
-+	kvm_vm_free(vm);
-+}
-+
-+static void test_init2_invalid(unsigned long vm_type, struct kvm_sev_init *init)
-+{
-+	struct kvm_vm *vm;
-+	int ret;
-+
-+	vm = vm_create_barebones_type(vm_type);
-+	ret = __sev_ioctl(vm->fd, KVM_SEV_INIT2, init);
-+	TEST_ASSERT(ret == -1 && errno == EINVAL,
-+		    "KVM_SEV_INIT2 return code %d, errno: %d (expected EINVAL)",
-+		    ret, errno);
-+	kvm_vm_free(vm);
-+}
-+
-+void test_vm_types(void)
-+{
-+	test_init2(KVM_X86_SEV_VM, &(struct kvm_sev_init){});
-+
-+	if (have_sev_es)
-+		test_init2(KVM_X86_SEV_ES_VM, &(struct kvm_sev_init){});
-+	else
-+		test_init2_invalid(KVM_X86_SEV_ES_VM, &(struct kvm_sev_init){});
-+
-+	test_init2_invalid(0, &(struct kvm_sev_init){});
-+	if (kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SW_PROTECTED_VM))
-+		test_init2_invalid(KVM_X86_SW_PROTECTED_VM, &(struct kvm_sev_init){});
-+}
-+
-+void test_flags(uint32_t vm_type)
-+{
-+	int i;
-+
-+	for (i = 0; i < 32; i++)
-+		test_init2_invalid(vm_type, &(struct kvm_sev_init){
-+			.flags = 1u << i,
-+		});
-+}
-+
-+void test_features(uint32_t vm_type, uint64_t supported_features)
-+{
-+	int i;
-+
-+	for (i = 0; i < 64; i++) {
-+		if (!(supported_features & (1u << i)))
-+			test_init2_invalid(vm_type, &(struct kvm_sev_init){
-+				.vmsa_features = 1u << i,
-+			});
-+		else if (KNOWN_FEATURES & (1u << i))
-+			test_init2(vm_type, &(struct kvm_sev_init){
-+				.vmsa_features = 1u << i,
-+			});
-+	}
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int kvm_fd = open_kvm_dev_path_or_exit();
-+	bool have_sev;
-+
-+	TEST_REQUIRE(__kvm_has_device_attr(kvm_fd, 0, KVM_X86_SEV_VMSA_FEATURES) == 0);
-+	kvm_device_attr_get(kvm_fd, 0, KVM_X86_SEV_VMSA_FEATURES, &supported_vmsa_features);
-+
-+	have_sev = kvm_cpu_has(X86_FEATURE_SEV);
-+	TEST_ASSERT(have_sev == !!(kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SEV_VM)),
-+		    "sev: KVM_CAP_VM_TYPES (%x) does not match cpuid (checking %x)",
-+		    kvm_check_cap(KVM_CAP_VM_TYPES), 1 << KVM_X86_SEV_VM);
-+
-+	TEST_REQUIRE(kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SEV_VM));
-+	have_sev_es = kvm_cpu_has(X86_FEATURE_SEV_ES);
-+
-+	TEST_ASSERT(have_sev_es == !!(kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SEV_ES_VM)),
-+		    "sev-es: KVM_CAP_VM_TYPES (%x) does not match cpuid (checking %x)",
-+		    kvm_check_cap(KVM_CAP_VM_TYPES), 1 << KVM_X86_SEV_ES_VM);
-+
-+	test_vm_types();
-+
-+	test_flags(KVM_X86_SEV_VM);
-+	if (have_sev_es)
-+		test_flags(KVM_X86_SEV_ES_VM);
-+
-+	test_features(KVM_X86_SEV_VM, 0);
-+	if (have_sev_es)
-+		test_features(KVM_X86_SEV_ES_VM, supported_vmsa_features);
-+
-+	return 0;
-+}
--- 
-2.39.1
+My pleasure!
 
+> Absolutely, without him reporting the test failure and narrowing down the
+> config I'd have never looked at this file. Adding him for **both** is fai=
+r.
+> (This particular fix was not discussed on Zulip though, its just somethin=
+g
+> I noticed along the way.)
+
+In that case, up to you -- whatever you consider fair for this particular p=
+atch.
+
+> Didn't add it because the discussion does not mention this particular
+> issue, but it might indeed be good for some context.
+
+Makes sense -- I saw the [1] reference and I thought it could be a
+nice complement to it, but it is true that it may be not that useful,
+so please feel free to leave it out.
+
+> Will this need a v2, or are all of the 'Fixes', 'Reported-By',
+> 'Debugged-By', 'Tested-By', 'Reviewed-By' and 'Link' tags something that
+> maintainers may add when merging?
+
+Typically, tags are picked up by maintainers when they apply the patch
+(if it is the last version, otherwise you would already pick them up
+in the next version you send).
+
+However, in this case, since we have the Cc stable@ and you also have
+the most context to decide on the tags (e.g. for the Reported-by
+etc.), I would send a v2.
+
+Thanks!
+
+Cheers,
+Miguel
 
