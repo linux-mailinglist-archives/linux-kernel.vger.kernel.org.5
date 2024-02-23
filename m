@@ -1,164 +1,141 @@
-Return-Path: <linux-kernel+bounces-78374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACEA78612A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:27:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90CF88612B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 14:28:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41A0328543F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:27:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDC461F22DAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:28:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E89D7EEF7;
-	Fri, 23 Feb 2024 13:27:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A8817F7CA;
+	Fri, 23 Feb 2024 13:28:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="xwRkhhr+"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QMKlpope"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B70F7CF07
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 13:27:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC427A73A;
+	Fri, 23 Feb 2024 13:28:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708694862; cv=none; b=laSlZvuQQ54UDN2eqe24HeX9DAybHoeh2bdNmMJ+uNnHqVYe4tUljXFQoeNzrCbuXbhp+Tq6uhD4QfiWuwDMqkjd69aCbEj9998T51ZrJVyjs87fC3Os+I/M6aYQuvHZrBzjo18+CscT3wwEJKlH6c6wp893K5dVx56gxF7afb4=
+	t=1708694908; cv=none; b=G3p9yH2A6/x1KIhFxF5WjGQtSW5J7M+EviBA858Ec4ujErvL5vTWMZ8vX/mIx4FF3fImIsk64V/8Jp0EMqJWSkLHhIdFoyZaWUDVZP/AUolySeB/cDkbVMMuMLSIxkywZuSFe4negNld+2JouqYCv/cq5wLbHN3/Uf5/dXXtZjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708694862; c=relaxed/simple;
-	bh=vP8k20Ag1O076Uu/hwPXs6RI5WGURVuUjElcUfCfwMU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e3sBmqKCv/aAvoVTonBfNZx3dOYjw56ePndzxGj60gBviV/LEsFyp3tUI4oTqXTjcC1wfC8Y2MucRTJu1i7UePRGW+MxnI7Esib9j01kz1Wu4bElVeGluRl47vHwWZueWnLTgXVrKZ7KLOHvyU9P2QEwtA2j1tZuxny0kiKq0yA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=xwRkhhr+; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d2531294faso13387181fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 05:27:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1708694858; x=1709299658; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0ncctXod7EUhdZeRvIKR8JyC0fIDHtd7Zc9VFP5vKak=;
-        b=xwRkhhr+N5ps8c3gtgLANKB4vJDSeXxAnJNDPYElg79Nu/oJ07XBQz6W9qcz3rqo5p
-         XFyiH9ZO9MSOBA5MBD3sAgHf6JmhZFnN19J1963kSMWPEblpGisElSVKSXy0WAEed5/s
-         aMAqpjlBs1Xr2xT1i5HQlNboip2m+AlFcgyJWf21JFsImu4rPKhJipzQLSsP0DlfaGfr
-         vwRYyersVCn6PkI0rstJBSiI09vhPswOX3NfNlCXR+SnTjGYUQsJcBEOb+25U+ROFxJk
-         FCUMYEU72nBSVRWBYQIZ1aET6k3Mp+/+Wioq813VJGduZDyFNNz+Q59FcJ1px7HYy2xd
-         CkUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708694858; x=1709299658;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0ncctXod7EUhdZeRvIKR8JyC0fIDHtd7Zc9VFP5vKak=;
-        b=gR1mmaKi5d0Eq6vGPXC1a2wkG2L0A2sS+5fKLpGwWgHTtRTUStZ0xEoNP0Xae3MFPX
-         iwfp6h5iVrOIon5TDaoRGJacnGOXYBTRMJla4LA0SWZ5igQnoOrf7N1S859QnMBUaEt8
-         2E3nmELTxc5wvQRfQMx2mkIF+vUpNJZhtBBrmM0FRs2V81gIpUrR3DLJU0v+hU1Hp8GA
-         /AZsccbactfiS04DMaZBOpSBqZpobxslK5RYfYhHMnrMP5XwqcgiAbWoUhlw6LV1o4uX
-         abjgVNtzsejnN0vmF17SSBxihUkql4UWxOlIsY7ieCEmN0OsOAAwh7gONQ8YUZweq66d
-         ntMg==
-X-Forwarded-Encrypted: i=1; AJvYcCUNfsohNaeTkSk5boAcTB7/82ysE9ltN8eRaDHAEmELKhuqZNw6i3qRMJF8XBcOikke3ecfIzCqytjZfOW/sxhR7qZJxcgxMXYe1w2c
-X-Gm-Message-State: AOJu0YxRd5SKymdFErTXiiCKtGbdNdT0Px7PO4ahY9Ohv+FrqGrKwZRX
-	Pw42veM0xqmC9eQKvJi+inct5pc7bqhajQfFYqkOGU2po4s2Rs11JDJ9UaCFulU=
-X-Google-Smtp-Source: AGHT+IGHJQtc7/fhy/7PUeyUCJgrv+2MPR6+rU59HBCi8qFcbLzNLCKyqDFu48LBc4YqazWm6Sw1dA==
-X-Received: by 2002:a05:6512:a90:b0:512:ed29:684 with SMTP id m16-20020a0565120a9000b00512ed290684mr124852lfu.54.1708694858420;
-        Fri, 23 Feb 2024 05:27:38 -0800 (PST)
-Received: from airbuntu (host109-154-46-208.range109-154.btcentralplus.com. [109.154.46.208])
-        by smtp.gmail.com with ESMTPSA id d18-20020a50fe92000000b0056484c0eab8sm4391485edt.57.2024.02.23.05.27.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 05:27:37 -0800 (PST)
-Date: Fri, 23 Feb 2024 13:27:36 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: Pierre Gondois <pierre.gondois@arm.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-	Ingo Molnar <mingo@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Christian.Loehle@arm.com
-Subject: Re: [PATCH] cpufreq: Change default transition delay to 2ms
-Message-ID: <20240223132736.xp3c3k4k6y2a2ep7@airbuntu>
-References: <20240205022500.2232124-1-qyousef@layalina.io>
- <20240205074514.kiolurpounokalum@vireshk-i7>
- <CAJZ5v0j2rA-+Jpdv6OZ_ymiqh0+RGzmJBNncKGBwuxO3PxgSKA@mail.gmail.com>
- <ca000b2d-b552-43cb-8807-0a5f1450c6a2@arm.com>
- <20240220135037.qriyapwrznz2wdni@airbuntu>
- <d58de550-0ce1-4af9-9e2d-dedd5e73c797@arm.com>
- <20240222115557.blnm4uulkxnorrl4@airbuntu>
- <f4c3f028-b93e-4658-af28-ac2123203d68@arm.com>
- <20240222233947.sl435tvhhpe5iqzw@airbuntu>
- <fdd82ddb-82bc-4c8c-86ef-c80505881013@arm.com>
+	s=arc-20240116; t=1708694908; c=relaxed/simple;
+	bh=8DzLgimkymdwxe/dgxIFcpGgsnFMVLS8xgcZ/cKHlA0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=AFrxcVRKKgejlg1d4LRjEecsWQ0Swwo0xeHGT0Yw3rlxBe8xiNIYDzt5F8++Htv5LyzksehlVAMfQhzXWENQ10fAN361z7dYdcC/hoVf+CWo3gJnk96yrGU8bDkOKGLhz79qEyeaYbC4uJRKf2+Zv2vydrvvL+44sz9n41d3b4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QMKlpope; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 77180C433C7;
+	Fri, 23 Feb 2024 13:28:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708694908;
+	bh=8DzLgimkymdwxe/dgxIFcpGgsnFMVLS8xgcZ/cKHlA0=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=QMKlpopeiC4P7KqbFG2J/pnhV+q8ybPdy1eTWQMGC8qMYxATNb1j2UVyHWsDRbxz2
+	 tJFTcWW7/UpLLpzPzxycF2H9UslrDRE4/hxd5j8yL7pMfgm1KhLbC7owcl6gTbAqaF
+	 UNSsZoMtdaQWoxCbiHuQWh+giLkSUISSVS2Vv3gWCl5u2Nz5oKkpDxb0bwnpyheGGE
+	 LBNboSOQvItKUTqGp09jqDWRV57uFCjb/DYe3G2mURKBhxJxgyNvgJURwTActh+Q2r
+	 wdzWitT+5aHrJlrRJmgsE0J699i4LbANrkqDj0o4ZlWVfZ1169fUK4zDIjX5cLYiZW
+	 zNAFcC/V15XPA==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D918C5478C;
+	Fri, 23 Feb 2024 13:28:28 +0000 (UTC)
+From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
+Subject: [PATCH net-next v5 0/7] net: hisi-femac: add support for
+ Hi3798MV200, remove unmaintained compatibles
+Date: Fri, 23 Feb 2024 21:28:15 +0800
+Message-Id: <20240223-net-v5-0-43b22d39c013@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <fdd82ddb-82bc-4c8c-86ef-c80505881013@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAG+d2GUC/23OTQ6CMBAF4KuYrq0Zhv5QV97DuChl0EalBpBgC
+ He3wAaiy5c338sMrKHaU8OOu4HV1PnGhyoGud8xd7PVlbgvYmYIKAATxStqubEIGSXaCShZvHz
+ VVPp+Xjmz6aCivmWX2Nx804b6M893ydxvlrqEAyewhdHoCmvMKbzbRwj3gwvPeaHDPwqjykxei
+ FyDkg5/VbpSCItKo8pVRjLXkrSSv0qsFS5KTB+SVVlp0hIMbNU4jl9E8i9QRAEAAA==
+To: Yisen Zhuang <yisen.zhuang@huawei.com>, 
+ Salil Mehta <salil.mehta@huawei.com>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>, 
+ Heiner Kallweit <hkallweit1@gmail.com>, 
+ Russell King <linux@armlinux.org.uk>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ devicetree@vger.kernel.org, Yang Xiwen <forbidden405@outlook.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708694896; l=2386;
+ i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
+ bh=8DzLgimkymdwxe/dgxIFcpGgsnFMVLS8xgcZ/cKHlA0=;
+ b=FY1uLXGvPGQH6mhEYG7UftN41nXckDIFRjZaWfO2cVFD45mih3KdAAhxbqNJaCm5hhnov0qCN
+ iokPH60OCTFANhtIoY/prVwwMtMyfiFHSW228W4qgeU5i94yCNpQGD1
+X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
+ pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
+X-Endpoint-Received:
+ by B4 Relay for forbidden405@outlook.com/20230724 with auth_id=67
+X-Original-From: Yang Xiwen <forbidden405@outlook.com>
+Reply-To: <forbidden405@outlook.com>
 
-On 02/23/24 10:48, Pierre Gondois wrote:
+Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+---
+Changes in v5:
+- hisi-femac-mdio: remove clock completely (Krzysztof Kozlowski)
+- dt-bindings: mdio: apply comments from Krzysztof Kozlowski
 
-> > diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> > index 66cef33c4ec7..668263c53810 100644
-> > --- a/drivers/cpufreq/cpufreq.c
-> > +++ b/drivers/cpufreq/cpufreq.c
-> > @@ -576,8 +576,17 @@ unsigned int cpufreq_policy_transition_delay_us(struct cpufreq_policy *policy)
-> >          latency = policy->cpuinfo.transition_latency / NSEC_PER_USEC;
-> >          if (latency) {
-> > +               unsigned int max_delay_us = 2 * MSEC_PER_SEC;;
-> > +
-> > +               /*
-> > +                * If the platform already has high transition_latency, use it
-> > +                * as-is.
-> > +                */
-> > +               if (latency > max_delay_us)
-> > +                       return latency;
-> > +
-> >                  /*
-> > -                * For platforms that can change the frequency very fast (< 10
-> > +                * For platforms that can change the frequency very fast (< 20
-> 
-> I think it should be 10->2us as we do:
->   min(latency * 1000, 2ms)
+Changes in v4:
+- edit commit log to show why mdio bus clk is optional (Krzysztof Kozlowski)
+- add clk_bulk_disable_unprepare() during error path (Maxime Chevallier)
+- remove of_node_put() (Simon Horman)
+- remove histb-clock.h header in binding example as it's goign to be deprecated.
+- rearrange patches so binding comes before driver
+- Link to v3: https://lore.kernel.org/r/20240220-net-v3-0-b68e5b75e765@outlook.com
 
-Yeah I meant 2, that was a typo
+Changes in v3:
+- rearrange patches to fix bot error. (Rob Herring)
+- rewrite commit logs (Andrew Lunn)
+- use clk_bulk_ APIs (Andrew Lunn)
+- fix uninitialization use of ret (assign to -ENODEV before goto) (Simon Horman)
+- Link to v2: https://lore.kernel.org/r/20240216-net-v2-0-89bd4b7065c2@outlook.com
 
-Thanks
+Changes in v2:
+- replace email.
+- hisi-femac: s/BUS/MACIF (Andrew Lunn)
+- hisi-femac: add "hisilicon,hisi-femac" compatible since the driver
+  seems generic enough for various SoCs
+- hisi-femac-mdio: convert binding to YAML (Krzysztof Kozlowski)
+- rewrite commit logs (Krzysztof Kozlowski)
+- Link to v1: https://lore.kernel.org/r/20240216-net-v1-0-e0ad972cda99@outlook.com
 
--->8--
+---
+Yang Xiwen (7):
+      dt-bindings: net: hisilicon-femac-mdio: convert to YAML
+      dt-bindings: net: hisilicon,hisi-femac-mdio: remove clocks
+      net: mdio: hisi-femac: remove clock
+      dt-bindings: net: remove outdated hisilicon-femac
+      dt-bindings: net: add hisilicon,hisi-femac
+      net: hisilicon: add support for hisi_femac core on Hi3798MV200
+      net: hisi_femac: remove unused compatible strings
 
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index 66cef33c4ec7..de92a9912587 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -576,8 +576,17 @@ unsigned int cpufreq_policy_transition_delay_us(struct cpufreq_policy *policy)
+ .../bindings/net/hisilicon,hisi-femac-mdio.yaml    |  39 +++++++
+ .../bindings/net/hisilicon,hisi-femac.yaml         | 116 +++++++++++++++++++++
+ .../bindings/net/hisilicon-femac-mdio.txt          |  22 ----
+ .../devicetree/bindings/net/hisilicon-femac.txt    |  41 --------
+ drivers/net/ethernet/hisilicon/hisi_femac.c        |  78 +++++++++++---
+ drivers/net/mdio/mdio-hisi-femac.c                 |  18 +---
+ 6 files changed, 217 insertions(+), 97 deletions(-)
+---
+base-commit: 8d3dea210042f54b952b481838c1e7dfc4ec751d
+change-id: 20240216-net-9a208e17c40f
 
-        latency = policy->cpuinfo.transition_latency / NSEC_PER_USEC;
-        if (latency) {
-+               unsigned int max_delay_us = 2 * MSEC_PER_SEC;;
-+
-+               /*
-+                * If the platform already has high transition_latency, use it
-+                * as-is.
-+                */
-+               if (latency > max_delay_us)
-+                       return latency;
-+
-                /*
--                * For platforms that can change the frequency very fast (< 10
-+                * For platforms that can change the frequency very fast (< 2
-                 * us), the above formula gives a decent transition delay. But
-                 * for platforms where transition_latency is in milliseconds, it
-                 * ends up giving unrealistic values.
-@@ -586,7 +595,7 @@ unsigned int cpufreq_policy_transition_delay_us(struct cpufreq_policy *policy)
-                 * a reasonable amount of time after which we should reevaluate
-                 * the frequency.
-                 */
--               return min(latency * LATENCY_MULTIPLIER, (unsigned int)(2 * MSEC_PER_SEC));
-+               return min(latency * LATENCY_MULTIPLIER, max_delay_us);
-        }
+Best regards,
+-- 
+Yang Xiwen <forbidden405@outlook.com>
 
-        return LATENCY_MULTIPLIER;
 
