@@ -1,216 +1,217 @@
-Return-Path: <linux-kernel+bounces-78809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37640861924
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:15:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5024861925
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:15:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AC3C1C24F72
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:15:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E80741C25556
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:15:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F07112D769;
-	Fri, 23 Feb 2024 17:14:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06E4A12AAFA;
+	Fri, 23 Feb 2024 17:15:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="nD9O8SxF"
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="E92gmXBl"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95E10823A7
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 17:14:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A2DD823A1
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 17:15:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708708497; cv=none; b=q71ETkxGHTC7SZdvh0D3HXCS2MORZCJfSthJYXKbTZDN30l+eWI6QW0CBJsSUPxHmYQJDBUIM3I2mRfDXoDM8japY1LpGzUfB3MN98zRkdYskwyQHVyQ2hJ4ZEfuA4w47zNVn+zBeeB8ZPj6s6thWeuTsOdJ6eRlJcfNF2z+BGk=
+	t=1708708530; cv=none; b=LE5XBB1+d8g1tfJqqPQRwyUWovQjmQMclJOYWUm5eGHXW3mNHxCobHIl5tHWkxIfsE/q76tYtDsVcK450aSbhpL68/QiBW0WsTvJbkN56pTe068YQCRv+I8439Xk4aiChGlxawM9glYRyGvuIzsXlwMQi6bgzVc9uNtpQavXcC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708708497; c=relaxed/simple;
-	bh=ztI079C4kK2GAb/GQ39H0guLv9wqTuVaU/tymCIWIXM=;
+	s=arc-20240116; t=1708708530; c=relaxed/simple;
+	bh=kY8+owXwTk1+/3E9mvrJKMt5yL2lucedEJ4KlXu0ack=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c/gy4jFDtvQGQoATZjA9tCzFzX+fWwZ9cqT+j0sjVYDkkrCDcy99aNaOcfMbEmzSFcu57yG98imtxXAQZpVmLbTsXlBRiIleyEUYimIF2K8TG1P+ONpAvmwddjaFg0PR3KOG+ypwpbE/n3N2dualf6GfFHt2c3ZFkX5H9MfYdDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=nD9O8SxF; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-29a378040daso811044a91.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 09:14:54 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=OtUR7uDCT3b6U+L15T8/WrD4AvDIbqYoCDaaZgLx6aG8yMkZHB7jGeeBPygVUEfTmWhtEMYpoBNC6TwKQQgOyox+ptZ80b4VlO7s391W9UNP9A0jn5ww93ZSRxQcmPHA0vw2mzETNvqRxvwQcLLJbRMSmfH1JezJTSS9kJX733Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=E92gmXBl; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-512c2e8c6cfso1347395e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 09:15:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708708494; x=1709313294; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Vg7OXlKlVYW7hg5QFkzlyn1txlxCwfeUmFWqrZZakkI=;
-        b=nD9O8SxFwXZ5OICagtej07tg8zISocQZb43sE8vXfeMn6qcQabMD5xGGSZfpgRR6GI
-         n6Zwh9qSxycabFyxfep3LeG2LygBwOC+KsYKAMZkFMf5aY3uwdNpes0/o++bsRFe/WQR
-         Arzj/PXAEn39txFhmk8+uC7RuUPn51+7BO9b0=
+        d=suse.com; s=google; t=1708708523; x=1709313323; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BmQUUgFSEEhIsxOXnK3/N/kppHuIG9Ht0ivweiH9ieo=;
+        b=E92gmXBl2UqTfRGaJGjJLIqdbIivaaL+oow8RtLB7Qp7AXFRVEE0hidztKqyFUyH8z
+         5C4ZmAKkXQWEWMQ+8UZ5K8iaHVi6sktzFWWuhpjX2uBcxWRLeRFKWAHO7GWXg7MyNyCS
+         7oAa4ZjdPjA3vAG/vQbE/MPUcZhxti6Mm7ttaHmDXW9ZqPWi2/QzroLXXnNDW6+iWYcF
+         63JLjDNJBlBAhode9Et7w3otieZx7B+QJ9crgZVugRm+rXndnZ569/XMSGaoLQffgigE
+         P37KNsW1Q66N6qmfBSHgliQ6RUP1XmAt3bt2NUVzQJbocN7bEqCQDP+T2mkkcTJu4yv5
+         pbqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708708494; x=1709313294;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vg7OXlKlVYW7hg5QFkzlyn1txlxCwfeUmFWqrZZakkI=;
-        b=DG/zaQJUMCTYk9IEP+q5FQJvUMW6wvxC5XCDvu2TfUu4a6lnlFZbDFz2hgbuVP8tlq
-         bm2Ih/AdNsEAcOAQ5udEOBCW+Il0zX6PynLoMM7xborWZYX4upcqrtJJY4eVErYxKTs9
-         aMksxjlEnrSoZTlJHphUTne1CP8u1MxjnUHBvcePgH/1SfXbUsB8uLA86pCE1Jtzi6le
-         d9PImgaUUGdlS3BPiT0Og299LNhvFh1G/yb7DjxW4aaAtUPZUETT4oWxu1ZSXxCu9H+K
-         y2Hb9XCnOwKF7FY016FEMixwT3WN5d5vJjo2vTLC1/Tp3JDOXx5/DyrFnTwV6/kWit+S
-         B5SQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUp4rft9y6N6QUvcE6U66MgbahNM66ayTaYQydFmLPnALXC5yxyo7qJec4DPcRF+nqte3QUk/z7Ijaz5zs5rkw9Vx3tLGrcKJBEd5/Z
-X-Gm-Message-State: AOJu0YxycJ6JqUmUUNmlIld669GXf2URPMxe+ZJvk/ZuDTv/2zhhv7ll
-	khMRZ/mQxy9rl2XWECxv+jLudHQe/FnMrnF1R/fQ4Bn+IloinLRp3UU3GusITw==
-X-Google-Smtp-Source: AGHT+IHYsFzFj8B69cBmCkJ+HRyrAZNB3qghpWQMDXfj6imG1QPDbz2xJ3wDEwcSJ8BYkVFwQqGa9A==
-X-Received: by 2002:a17:90a:c797:b0:29a:5eb9:71ab with SMTP id gn23-20020a17090ac79700b0029a5eb971abmr462657pjb.21.1708708494023;
-        Fri, 23 Feb 2024 09:14:54 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id a4-20020a17090acb8400b002973162eca1sm1738761pju.17.2024.02.23.09.14.53
+        d=1e100.net; s=20230601; t=1708708523; x=1709313323;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BmQUUgFSEEhIsxOXnK3/N/kppHuIG9Ht0ivweiH9ieo=;
+        b=wMhkodzAldNdEknSJlbSFaTNtb5ukwrjpFT146XrqscvlMtZo8B9qJPCpSaJ7fkqNo
+         lbFKonID67WMbtKRJW/3zw0ONNMzfyke4lKBlZjFwL+vmt8tiZU+gn9r2kHv2+Znwl98
+         TB7E++uhknhb35/LelWQ3+QcpegnZwInU34y+4WHxusJbdgkZzAV3jJ9qnukL6rIRFuE
+         DFqKD2cgFO0b0dazKzfoqcTq/ektuTVFxmGchiAOeMzdIVhKJiE8U27iuEIawuG91N2x
+         OipmvbKObCWJ+f82+4f7L52NqcNKp/h4k0t4h8VFcAqrK6nAy5xYlmtxVxnr+3VEp2Hv
+         5OPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWcT1jQhXfGmmEjimhNe84mMP+RHigUHModlot+RLdRTGCtZSzni+IQzAc7B6cOtbfBloYF4ddlijW7M6fy8q5SPtvZ8tFevTm0/6zw
+X-Gm-Message-State: AOJu0YxKKNx7+1eSzDh/I9p2N2gn8b27pOh62Fei7P0RvUqfWsZO2Njw
+	Tibp1GChPeERo7dt2c1a4bi63EjQs5Cesog1PsxUthqM8PxGzSZx3VGK7A3B07o=
+X-Google-Smtp-Source: AGHT+IG8C7msxur/Yk0akspVF7be7IMf918Xl5cA6Tp4W8o/mpcyjpsjAFXdtngrVdQFyDuTcVW72Q==
+X-Received: by 2002:ac2:4c16:0:b0:512:ce7c:c99d with SMTP id t22-20020ac24c16000000b00512ce7cc99dmr238833lfq.18.1708708523577;
+        Fri, 23 Feb 2024 09:15:23 -0800 (PST)
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id vk7-20020a170907cbc700b00a3f29591dcdsm2927515ejc.95.2024.02.23.09.15.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 09:14:53 -0800 (PST)
-Date: Fri, 23 Feb 2024 09:14:53 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-	linux-iio@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] [RFC] iio: pressure: dlhl60d: Check mask_width for IRQs
-Message-ID: <202402230912.50332AF1@keescook>
-References: <20240222222335.work.759-kees@kernel.org>
- <20240223170918.00006b16@Huawei.com>
+        Fri, 23 Feb 2024 09:15:23 -0800 (PST)
+Date: Fri, 23 Feb 2024 18:15:21 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v2 16/26] printk: nbcon: Use nbcon consoles in
+ console_flush_all()
+Message-ID: <ZdjSqZH5ivCrIBpx@alley>
+References: <20240218185726.1994771-1-john.ogness@linutronix.de>
+ <20240218185726.1994771-17-john.ogness@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240223170918.00006b16@Huawei.com>
+In-Reply-To: <20240218185726.1994771-17-john.ogness@linutronix.de>
 
-On Fri, Feb 23, 2024 at 05:09:18PM +0000, Jonathan Cameron wrote:
-> On Thu, 22 Feb 2024 14:23:39 -0800
-> Kees Cook <keescook@chromium.org> wrote:
+On Sun 2024-02-18 20:03:16, John Ogness wrote:
+> Allow nbcon consoles to print messages in the legacy printk()
+> caller context (printing via unlock) by integrating them into
+> console_flush_all(). The write_atomic() callback is used for
+> printing.
 > 
-> > Clang tripped over a FORTIFY warning in this code, and while it seems it
-> > may be a false positive in Clang due to loop unwinding, the code in
-> > question seems to make a lot of assumptions. 
+> Provide nbcon_legacy_emit_next_record(), which acts as the
+> nbcon variant of console_emit_next_record(). Call this variant
+> within console_flush_all() for nbcon consoles. Since nbcon
+> consoles use their own @nbcon_seq variable to track the next
+> record to print, this also must be appropriately handled.
 > 
-> Hi Kees,
-> 
-> The assumptions are mostly characteristics of how the IIO buffers work
-> with the scan masks defined based on indexes in the driver provided
-> struct iio_chan_spec arrays.
-> 
-> This driver is doing more work than it should need to as we long ago
-> moved some of the more fiddly handling into the IIO core.
-> 
-> > Comments added, and the
-> > Clang warning[1] has been worked around by growing the array size.
-> > Also there was an uninitialized 4th byte in the __be32 array that was
-> > being sent through to iio_push_to_buffers().
-> 
-> That is indeed not good - the buffer should have been zero initialized.
+> --- a/kernel/printk/nbcon.c
+> +++ b/kernel/printk/nbcon.c
+> @@ -960,6 +961,50 @@ static bool nbcon_atomic_emit_one(struct nbcon_write_context *wctxt)
+>  	return ctxt->backlog;
+>  }
+>  
+> +/**
+> + * nbcon_legacy_emit_next_record - Print one record for an nbcon console
+> + *					in legacy contexts
+> + * @con:	The console to print on
+> + * @handover:	Will be set to true if a printk waiter has taken over the
+> + *		console_lock, in which case the caller is no longer holding
+> + *		both the console_lock and the SRCU read lock. Otherwise it
+> + *		is set to false.
+> + * @cookie:	The cookie from the SRCU read lock.
+> + *
+> + * Context:	Any context which could not be migrated to another CPU.
 
-Okay, I'll get this respun and include the fix.
+This seems to be a relic after shufling the code. IMHO, it was meant
+for nbcon_atomic_emit_one(). This function disables interrupts
+to prevent CPU migration when calling nbcon_atomic_emit_one().
 
-> 
-> > 
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/2000 [1]
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> > Cc: Jonathan Cameron <jic23@kernel.org>
-> > Cc: Lars-Peter Clausen <lars@metafoo.de>
-> > Cc: "Uwe Kleine-König" <u.kleine-koenig@pengutronix.de>
-> > Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Cc: "Nuno Sá" <nuno.sa@analog.com>
-> > Cc: linux-iio@vger.kernel.org
-> > ---
-> >  drivers/iio/pressure/dlhl60d.c | 11 +++++++++--
-> >  1 file changed, 9 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/iio/pressure/dlhl60d.c b/drivers/iio/pressure/dlhl60d.c
-> > index 28c8269ba65d..9bbecd0bfe88 100644
-> > --- a/drivers/iio/pressure/dlhl60d.c
-> > +++ b/drivers/iio/pressure/dlhl60d.c
-> > @@ -250,20 +250,27 @@ static irqreturn_t dlh_trigger_handler(int irq, void *private)
-> >  	struct dlh_state *st = iio_priv(indio_dev);
-> >  	int ret;
-> >  	unsigned int chn, i = 0;
-> > -	__be32 tmp_buf[2];
-> > +	/* This was only an array pair of 4 bytes. */
-> 
-> True, which is the right size as far as I can tell.
-> If we need this to suppress a warning then comment should say that.
+> + * Return:	True if a record could be printed, otherwise false.
 
-Okay. I think I'll leave it as 2 and manually "unroll" the loop.
+A more precise might be to say "has been printed" instead of
+"could be printed".
 
-> 
-> > +	__be32 tmp_buf[4] = { };
-> >  
-> >  	ret = dlh_start_capture_and_read(st);
-> >  	if (ret)
-> >  		goto out;
-> >  
-> > +	/* Nothing was checking masklength vs ARRAY_SIZE(tmp_buf)? */
-> 
-> Not needed but no way a compiler could know that.
-> 
-> > +	if (WARN_ON_ONCE(indio_dev->masklength > ARRAY_SIZE(tmp_buf)))
-> > +		goto out;
-> > +
-> >  	for_each_set_bit(chn, indio_dev->active_scan_mask,
-> 
-> This is all a bit pointless if not 'wrong' other than the
-> 4th byte uninitialized part.  The limit can be hard coded as 2 as
-> that's a characteristic of this driver.
-> 
-> For device that always read a particular set of channels they
-> should provide indio_dev->available_scan_masks = { BIT(1) | BIT(0), 0 };
-> and then always push all the data making this always
-> 
-> 	memcpy(&tmp_buf[0], &st->rx_buf[1], 3);
-> 	mempcy(&tmp_buf[1], &st->rx_buf[1] + 3, 3);
+It is more problematic here. It could return false also when it was
+not able to acquire nbcon console.
 
-Okay, so this could be unrolled manually to check just for bits 0 and 1?
+While console_emit_next_record() has a bit different semantic.
+It returns false only when there is no new record.
 
-> 
-> The buffer demux code in the IIO core will deal with repacking the data
-> if only one channel is enabled.
-> 
-> >  		indio_dev->masklength) {
-> > -		memcpy(tmp_buf + i,
-> > +		/* This is copying 3 bytes. What about the 4th? */
-> > +		memcpy(&tmp_buf[i],
-> >  			&st->rx_buf[1] + chn * DLH_NUM_DATA_BYTES,
-> >  			DLH_NUM_DATA_BYTES);
-> >  		i++;
-> >  	}
-> >  
-> > +	/* How do we know the iio buffer_list has only 2 items? */
-> 
-> Can only include items from the channels array at indexes up to the max
-> scan_index in there, so 0 and 1 in this case (1 might not be present if only
-> one channel is enabled). Sizes (and alignment) are given by storagebits so
-> 4 bytes for each.
+Thinking loudly:
 
-This code pattern seems repeated through all of iio, so I guess we'll
-leave it as-is. It seems like it'd be nice to have a "length" argument
-to iio_push_to_buffers(), just to sanity check, but that would need to
-be a pretty large patch. :P
+It probably is not a bit deal. console_flush_all() does not guarantee
+that it flushed all messages. It might return early when
+the console_lock was handovered. It means there there is
+another legacy context flushing the messages.
 
-> 
-> >  	iio_push_to_buffers(indio_dev, tmp_buf);
-> >  
-> >  out:
+And nbcon console could not be acquired here also when
+there is another nbcon context already flushing the nbcon.
 
-Thanks for looking at this!
+Another question is whether console_flush_all() should return "false"
+when nbcon consoles were not flushed because they could not be acquired.
+It might be needed so that console_unlock() does not wait until
+the other context flushes the nbcon console.
 
--Kees
+> + *
+> + * This function is meant to be called by console_flush_all() to print records
+> + * on nbcon consoles from legacy context (printing via console unlocking).
+> + * Essentially it is the nbcon version of console_emit_next_record().
+> + */
+> +bool nbcon_legacy_emit_next_record(struct console *con, bool *handover,
+> +				   int cookie)
+> +{
+> +	struct nbcon_write_context wctxt = { };
+> +	struct nbcon_context *ctxt = &ACCESS_PRIVATE(&wctxt, ctxt);
+> +	bool progress = false;
+> +	unsigned long flags;
+> +
+> +	*handover = false;
+> +
+> +	/* Use the same procedure as console_emit_next_record(). */
+> +	printk_safe_enter_irqsave(flags);
+> +	console_lock_spinning_enable();
+> +	stop_critical_timings();
+> +
+> +	ctxt->console	= con;
+> +	ctxt->prio	= NBCON_PRIO_NORMAL;
+> +
+> +	progress = nbcon_atomic_emit_one(&wctxt);
+> +
+> +	start_critical_timings();
+> +	*handover = console_lock_spinning_disable_and_check(cookie);
+> +	printk_safe_exit_irqrestore(flags);
+> +
+> +	return progress;
+> +}
+> +
+>  /**
+>   * __nbcon_atomic_flush_all - Flush all nbcon consoles using their
+>   *					write_atomic() callback
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -2948,13 +2948,22 @@ static bool console_flush_all(bool do_cond_resched, u64 *next_seq, bool *handove
+>  		cookie = console_srcu_read_lock();
+>  		for_each_console_srcu(con) {
+>  			short flags = console_srcu_read_flags(con);
+> +			u64 printk_seq;
+>  			bool progress;
+>  
+>  			if (!console_is_usable(con, flags))
+>  				continue;
+>  			any_usable = true;
+>  
+> -			progress = console_emit_next_record(con, handover, cookie);
+> +			if (flags & CON_NBCON) {
+> +				progress = nbcon_legacy_emit_next_record(con, handover, cookie);
+> +
+> +				printk_seq = nbcon_seq_read(con);
 
--- 
-Kees Cook
+It might looks better without the empty line. But it is just my view.
+Feel free to keep it as is.
+
+> +			} else {
+> +				progress = console_emit_next_record(con, handover, cookie);
+> +
+> +				printk_seq = con->seq;
+> +			}
+>  
+>  			/*
+>  			 * If a handover has occurred, the SRCU read lock
+
+Best Regards,
+Petr
 
