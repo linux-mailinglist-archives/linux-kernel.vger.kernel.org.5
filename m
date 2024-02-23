@@ -1,104 +1,154 @@
-Return-Path: <linux-kernel+bounces-77669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F0C48608A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:02:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88FBD8608AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:03:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8850CB21E5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:02:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6E0A1F24A37
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 02:03:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FB9CBA46;
-	Fri, 23 Feb 2024 02:02:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="jVvL27NG"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B2D0BE5B;
+	Fri, 23 Feb 2024 02:03:26 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B1A1B64C;
-	Fri, 23 Feb 2024 02:02:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 711DCC2E9
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 02:03:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708653751; cv=none; b=nJNoKr8rQiFOKbd2Xh9TL5beWPwrzAZLggBx+scFpxyadEmxH2wyqFVs3PHdVtz+kM4+XjDaZskvFWeIZ4ciXYNkmPTI/vCTkskXawaorLqLlhEumgVfiuzbkt859jTnVK4si9QogSDW2OWoFnR4PnSArV4eJpFXSrSHyLMFOp8=
+	t=1708653806; cv=none; b=ElJyOAJmQyEMbkdfBA9pAbaUVfJQ6kbcI84ClUb6uL7/bYKPaqaAM78vpeunrooxjVPLK+WW+IhU5N+S1Dfn49oIPi5WNv4soG+3XPVIJgjiEWfL63r2aXxI/r1Zm28xCuUDA3Ym4VnqVvTega6FigW3a9ZN0ybGdnP0wpJ0w8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708653751; c=relaxed/simple;
-	bh=kskjPTTlnk02nTjU48Vi66RZJJMp2qq4Ciroo9/vrsU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rdkONlOoi/zDeX2SmCXPR+w5AXtUdOiO4patL3++J3f04kQflXo4W7VR9iwW9/KKmQSM53r/mNIIl+sd4nygh9yApodnBNUnLV4uJ1CbMvWhyCTjsHiZy9nrYyzQZsKGLafQX6yycCgdNwrq0PClvozyhHXbgYQ4/sKYje9oI50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=jVvL27NG; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=RAxe3zaRk0aWqw8E+fLHpaRxO362KUw42r1LgGHaRXs=; b=jVvL27NGa/CDDS1qci8KCmp4fm
-	TgvSvTH0W/6WhjjMTuCc8k6brKFMasrl/h0d2ANWxvCAIRwaVNmwIA3Bzob2KktoI6/CpRp7sbM/j
-	D1koFPdrztFYe3INwQyyMut4ACb7ph0srU0iWuAzTl50zF2FdP52hX3DUjVGikiOuwCQoTs/Lsdmo
-	1Yld0pqlkrgJsc/tIfedSA6JOwMwdxYFUxHgj1KzHQqQenKaiVPok/48wsQMb6x/urarDEhQPMK52
-	O7IvCifCJ0iF7jypplu9db3RwlweJdxT6Z6o2gegCOOkvNVw4LSBiK3c8/iKSOVqDh/SmyOtr5FcB
-	HG98/b0Q==;
-Received: from [179.93.188.12] (helo=quatroqueijos.cascardo.eti.br)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1rdKtM-002Wuk-RJ; Fri, 23 Feb 2024 03:02:25 +0100
-Date: Thu, 22 Feb 2024 23:02:16 -0300
-From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-To: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	Gwendal Grignou <gwendal@chromium.org>, dlunev@chromium.org
-Subject: Re: [PATCH] fat: ignore .. subdir and always add a link to dirs
-Message-ID: <Zdf8qPN5h74MzCQh@quatroqueijos.cascardo.eti.br>
-References: <20240222203013.2649457-1-cascardo@igalia.com>
- <87bk88oskz.fsf@mail.parknet.co.jp>
+	s=arc-20240116; t=1708653806; c=relaxed/simple;
+	bh=EqwwQgShDPZSCFmD4EAzdDLI0VQyrLpY6aA9djXYpBo=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=hXCD1PqTYjiNs7nA28MxfHV2CwspgpM+l9VNmE2D4vDhYcu/i/66SldTiqWtSxz0CXc/2V+1V8TYV97AsYSEY92uWb8DsYR5LRf2I0V0n20W2M7AVoh1FTY1a42OolXsZpS/RQZIo6K+4QDkzogRA4lfpDzzfKrfcrf3IZ5hHWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-364ff869140so3317745ab.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 18:03:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708653803; x=1709258603;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MKrgf129mFrg2kPZfg0LvclHW3UF997R10zWrzVHdFM=;
+        b=Ss7AiFU1BC9CbaqXAs5H9uYNKz8OH2646N5LiSvDk3e/Uj/fHMx2Q5Kgss8k3X4Ze0
+         GwujbZjACj9cuqR53K9N5aeW7GtTSkqD94LqrkRluFLCrPiBkLcqeccHsbb59RRTGIVM
+         rtln5TuhaPQbWPQvOxXrm98u8KMK/G2R1ervq529VS1+LLa1T6QUb0D/GrheuOD2xrzU
+         qg/D33qIlHartYsuBLYEZIhp50FpKD6sqw0BNk01nE+ZABWpu3FGlLVA7sa6SktZdrCx
+         XLYXYJ6ww7LR3a9uT2oNxNxsSRB0TZOq17ygcSfQ+4lAgte4H7HFsbk8hX2JOpdl8Kv0
+         iYig==
+X-Forwarded-Encrypted: i=1; AJvYcCWWyp80OxtIXbf+GqyCXJ1RNx9MmnGKqeNbQsyycQVjrAaSVLkkTJVHn6dHNugnTv5l+piamHytdvtMywm6JGSm+Frqggjj6ymsZcJV
+X-Gm-Message-State: AOJu0YwW2Cdw80XEeXe9wBM0nBC8R9V19WeyDN3U42I82Gyzh/jwd3eK
+	UgPmw3cUmitRP2tU18PoramkGeC3PSZZzRtM7+wqM1Y5jtWL3aYfmS/RmBXAn6LOBb4yUTA5kgW
+	71/iAqCiSeOQEfM5Oxl+8uL6bFE5KDDeo1Helc1uUU81v/GRejnQ6GZI=
+X-Google-Smtp-Source: AGHT+IGM0alMyQC7fdJq8wc8McpSrAwflkSLEWNeVF2I359YAzIrPa++BCY4VhsMhFclFulIY0oVvWm6SJWzmNZE0f6fuuUQxP4C
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87bk88oskz.fsf@mail.parknet.co.jp>
+X-Received: by 2002:a92:c56f:0:b0:365:1f2b:7be8 with SMTP id
+ b15-20020a92c56f000000b003651f2b7be8mr49353ilj.5.1708653802842; Thu, 22 Feb
+ 2024 18:03:22 -0800 (PST)
+Date: Thu, 22 Feb 2024 18:03:22 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f673a1061202f630@google.com>
+Subject: [syzbot] [btrfs?] WARNING in btrfs_get_root_ref
+From: syzbot <syzbot+623a623cfed57f422be1@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Feb 23, 2024 at 10:52:12AM +0900, OGAWA Hirofumi wrote:
-> Thadeu Lima de Souza Cascardo <cascardo@igalia.com> writes:
-> 
-> > The tools used for creating images for the Lego Mindstrom EV3 are not
-> > adding '.' and '..' entry in the 'Projects' directory.
-> >
-> > Without this fix, the kernel can not fill the inode structure for
-> > 'Projects' directory.
-> >
-> > See https://github.com/microsoft/pxt-ev3/issues/980
-> > And https://github.com/microsoft/uf2-linux/issues/6
-> >
-> > When counting the number of subdirs, ignore .. subdir and add one when
-> > setting the initial link count for directories. This way, when .. is
-> > present, it is still accounted for, and when neither . or .. are present, a
-> > single link is still done, as it should, since this link would be the one
-> > from the parent directory.
-> >
-> > With this fix applied, we can mount an image with such empty directories,
-> > access them, create subdirectories and remove them.
-> 
-> This looks like the bug of those tools, isn't it?
-> 
-> Thanks.
-> -- 
-> OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Hello,
 
-Which they refused to fix, arguing that there are already filesystems out there
-in the world like that. Also, there is argument that this works on Windows,
-though I haven't been able to test this.
+syzbot found the following issue on:
 
-https://github.com/microsoft/pxt-ev3/issues/980
-https://github.com/microsoft/uf2-linux/issues/6
+HEAD commit:    c02197fc9076 Merge tag 'powerpc-6.8-3' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16765b8a180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=caa42dd2796e3ac1
+dashboard link: https://syzkaller.appspot.com/bug?extid=623a623cfed57f422be1
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-Thanks.
-Cascardo.
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/7b2a3f729cc3/disk-c02197fc.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b4f10e6eb1ca/vmlinux-c02197fc.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/8488781d739e/bzImage-c02197fc.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+623a623cfed57f422be1@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+ida_free called for id=51 which is not allocated.
+WARNING: CPU: 1 PID: 31038 at lib/idr.c:525 ida_free+0x370/0x420 lib/idr.c:525
+Modules linked in:
+CPU: 1 PID: 31038 Comm: syz-executor.2 Not tainted 6.8.0-rc4-syzkaller-00410-gc02197fc9076 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+RIP: 0010:ida_free+0x370/0x420 lib/idr.c:525
+Code: 10 42 80 3c 28 00 74 05 e8 6d a3 9b f6 48 8b 7c 24 40 4c 89 fe e8 a0 89 17 00 90 48 c7 c7 00 ca c5 8c 89 de e8 01 91 fd f5 90 <0f> 0b 90 90 eb 3d e8 e5 85 39 f6 49 bd 00 00 00 00 00 fc ff df 4d
+RSP: 0018:ffffc90015a67300 EFLAGS: 00010246
+RAX: be5130472f5dd000 RBX: 0000000000000033 RCX: 0000000000040000
+RDX: ffffc90009a7a000 RSI: 000000000003ffff RDI: 0000000000040000
+RBP: ffffc90015a673f0 R08: ffffffff81577992 R09: 1ffff92002b4cdb4
+R10: dffffc0000000000 R11: fffff52002b4cdb5 R12: 0000000000000246
+R13: dffffc0000000000 R14: ffffffff8e256b80 R15: 0000000000000246
+FS:  00007fca3f4b46c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f167a17b978 CR3: 000000001ed26000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ btrfs_get_root_ref+0xa48/0xaf0 fs/btrfs/disk-io.c:1346
+ create_pending_snapshot+0xff2/0x2bc0 fs/btrfs/transaction.c:1837
+ create_pending_snapshots+0x195/0x1d0 fs/btrfs/transaction.c:1931
+ btrfs_commit_transaction+0xf1c/0x3740 fs/btrfs/transaction.c:2404
+ create_snapshot+0x507/0x880 fs/btrfs/ioctl.c:848
+ btrfs_mksubvol+0x5d0/0x750 fs/btrfs/ioctl.c:998
+ btrfs_mksnapshot+0xb5/0xf0 fs/btrfs/ioctl.c:1044
+ __btrfs_ioctl_snap_create+0x387/0x4b0 fs/btrfs/ioctl.c:1306
+ btrfs_ioctl_snap_create_v2+0x1ca/0x400 fs/btrfs/ioctl.c:1393
+ btrfs_ioctl+0xa74/0xd40
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl+0xfe/0x170 fs/ioctl.c:857
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
+RIP: 0033:0x7fca3e67dda9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fca3f4b40c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fca3e7abf80 RCX: 00007fca3e67dda9
+RDX: 00000000200005c0 RSI: 0000000050009417 RDI: 0000000000000003
+RBP: 00007fca3e6ca47a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007fca3e7abf80 R15: 00007fff6bf95658
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
