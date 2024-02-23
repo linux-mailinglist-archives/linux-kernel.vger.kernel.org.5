@@ -1,323 +1,212 @@
-Return-Path: <linux-kernel+bounces-79097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC3B8861D88
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:23:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A912861D89
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:24:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 832E8289412
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:23:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68E11B23FAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:24:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F249B146E98;
-	Fri, 23 Feb 2024 20:22:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61FDC146E6D;
+	Fri, 23 Feb 2024 20:23:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=danm.net header.i=@danm.net header.b="YS1wGRy8"
-Received: from mr85p00im-ztdg06011201.me.com (mr85p00im-ztdg06011201.me.com [17.58.23.181])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="X0gEoB0X"
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2052.outbound.protection.outlook.com [40.107.212.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 968DA143C45
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 20:22:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=17.58.23.181
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708719745; cv=none; b=KPV9Z3S55m0nqBUxIBtbNc6uV3mufjEkbfhY/NiSnLhy4k2QniMzOL0YXxXlxWMH1OzkbiXLbzv2lBGX9RjgM8FxSf0P7Y3FALgkqtsFPnvsoiNUQ2Q5ASNEm/lXJxpRxyRgJ/HhOLPWlp57e1+bHpWMKzLYBISDXVK0+5hXGA4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708719745; c=relaxed/simple;
-	bh=i4bjYjnFuN3uQJWtwzufy5HHsEsupjuk8beollEohDM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=doEIn3gKDljILhCMelpH/0dBA9JW4lS1fqLhCp5Xia9s3VzVP+hbEvGocEcFPX9hKU8sYFru3o6NQPar9DX9HJb4dvw57SKTSNzdng+2PE77aGQ4fP3qj56nyYtzIwusqiy1mXz0wwcZjySgN+insebI6v6p+tZRHDiMLcSdNC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=danm.net; spf=pass smtp.mailfrom=danm.net; dkim=pass (2048-bit key) header.d=danm.net header.i=@danm.net header.b=YS1wGRy8; arc=none smtp.client-ip=17.58.23.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=danm.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=danm.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=danm.net; s=sig1;
-	t=1708719743; bh=q5WIEnTvGFLIOGqtmBakZKNfAn/EMCpeNpBFapy+o7U=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=YS1wGRy81mEiDAOAvpuqOPivkFU2DP7gE77zLdCrFTZUWLX7u4KVBiuMRiimCFwTl
-	 FnIhgDBd5enEKK8+EWT/Y+VqLjHCkj7EPsbkBdpDU/byBqv5xfUXeQWmRjvlTBEsBb
-	 Kj9SpwX5Pb56uWZCHLRshduhjaBR9rZ7cNaBPiCLCMN9liUPy1qunaI8kPyPJZnmsZ
-	 QXssQ3jCvmI90h2fS8x1SCKuSCV7v81PtgXSsi+K5lFwc3S1BDCFgcqiGMB0MpFu0L
-	 Pryu09QhFenkV4ib8eNdjAT+x3nm3p1KWnqyND5Ybt/u4goyJt/h96qsEGp3+KksUG
-	 VJQon+czEvNXw==
-Received: from hitch.danm.net (mr38p00im-dlb-asmtp-mailmevip.me.com [17.57.152.18])
-	by mr85p00im-ztdg06011201.me.com (Postfix) with ESMTPSA id F01309602C0;
-	Fri, 23 Feb 2024 20:22:21 +0000 (UTC)
-From: Dan Moulding <dan@danm.net>
-To: junxiao.bi@oracle.com
-Cc: dan@danm.net,
-	gregkh@linuxfoundation.org,
-	linux-kernel@vger.kernel.org,
-	linux-raid@vger.kernel.org,
-	regressions@lists.linux.dev,
-	song@kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [REGRESSION] 6.7.1: md: raid5 hang and unresponsive system; successfully bisected
-Date: Fri, 23 Feb 2024 13:22:20 -0700
-Message-ID: <20240223202220.11776-1-dan@danm.net>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <f6640cc8-2b66-44e7-b2f7-8ba17bde2281@oracle.com>
-References: <f6640cc8-2b66-44e7-b2f7-8ba17bde2281@oracle.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B34EE143C45
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 20:23:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.52
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708719820; cv=fail; b=Fdy7/KYBi884n44h7OQyKovkYIigSZxZs3BFO5NrU7z1UpnmgjxoJa5cNg2saRPFA+f908RGFxFAD/5+Af2/4xV5i0Xu2T9vR20G24UtcrDZFqZTyNhq9Ubxd65eDV1I07MZDVOTzlJIvD9IGqc5aeQ1gZod46c5bCwMffVHxwo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708719820; c=relaxed/simple;
+	bh=Mzgu0DIYiyHo1RtCV5Y68cucvvpFQjG8nfOwr57d4o4=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=ZscGfaaMTN8vBHjwUgtwXI3AekBLOjIXrAcYf8BD0PPjYNfR7PKLO+yyboNfrN7CN/KFHKbrA4xu/T/9MgfwnpRu5Bo/bXMnZQYX4/qgb4Cv3yOYqG2bhld7tD5vGL0nfUpv+vUo58ozM5Ze+txIbrhflcLcIqsLF5el5DRy8Gs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=X0gEoB0X; arc=fail smtp.client-ip=40.107.212.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V/97W96jiI49hJgr5IwHR5Q8Gt7YhiGVjOiLTC8ExIE6R6Kw++i6IT2584Pjj9l0FUesPCet3SDfRhBhwI1ZEZXztwM0lcoQGJRViNtPFFl4fvQFQ++TtiqO92V9ubnJR2LTPOLy7Uo96qvtwp7vEjYc8NCHwBYhbBILiWWZ3tPSiKls4sI76YXNj0PoBjp5n5aLF8ZcR95tZvLXOKq3UhxtrCGLSeIaDFSLwNieNTk23G7XcTb1gebCgOl7zbFJQ7HNOpZ15Y32vjNs1SH8+eLoosR/j7nqC34a7yPKSywZjK7amUFY1FMR8WCTe2nrTbGNmvwioJ7E4bf1GjQBIw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xaPkHKTekceEw/Bz1WanmEB1WiNHBsDTzE1SlSzeiHw=;
+ b=bHjzV0/ffDjDnLIU+T3MZpJkZopRqZYRpyWYd+rWu38aElaXF4tVn1uhbb6xU8w0eNPxfQC/7tHcFCiOGxgmZAqqgFfH4d9l0RagxWf2FrQriwjzh2qdQmBkRnkEezExpLmQ9+nQ1XRYkNfV2R1pyTY6lWFTMYEDNU2XmLKWUhzGQvK46dsIKfvfRdOY2fPuu3aodL5yHxTH5eDd6HwugilbgVVxqCHw/WKYa5YLOR94Zzbc/zh4K22AYctPrAkRway1rB3IVCq1tVp5li5iM+Vxx10okKr44STmlA7FDEH2ivrl36oiNe+kAny7XxndF/OKyMvc1J/AlC+Bej8Wcg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xaPkHKTekceEw/Bz1WanmEB1WiNHBsDTzE1SlSzeiHw=;
+ b=X0gEoB0XlnpCF2LxSO3PMOhakcItkLx7+HW2zGW/SWqPq29gn1d6B82AGHY/LXn9PS6vztRlmxFROgUeM20pbKg8KQD/Fzsq2a6uaJH9w3R+aD9rmDCS8D55dG4VxqCP+mDgW/X+d++reJGcwyCzJgjdfeM6h/LSlYti65XnGXk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
+ by SA1PR12MB8844.namprd12.prod.outlook.com (2603:10b6:806:378::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.23; Fri, 23 Feb
+ 2024 20:23:35 +0000
+Received: from BL1PR12MB5732.namprd12.prod.outlook.com
+ ([fe80::db9b:a5f:5d0a:2a42]) by BL1PR12MB5732.namprd12.prod.outlook.com
+ ([fe80::db9b:a5f:5d0a:2a42%4]) with mapi id 15.20.7316.018; Fri, 23 Feb 2024
+ 20:23:35 +0000
+Message-ID: <38fc0e0a-536c-3074-9c81-47362762ef59@amd.com>
+Date: Fri, 23 Feb 2024 14:23:31 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 00/11] Provide SEV-SNP support for running under an SVSM
+Content-Language: en-US
+To: "Reshetova, Elena" <elena.reshetova@intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "x86@kernel.org" <x86@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ "Williams, Dan J" <dan.j.williams@intel.com>,
+ Michael Roth <michael.roth@amd.com>, Ashish Kalra <ashish.kalra@amd.com>,
+ "Shutemov, Kirill" <kirill.shutemov@intel.com>,
+ "Dong, Eddie" <eddie.dong@intel.com>,
+ Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+References: <cover.1706307364.git.thomas.lendacky@amd.com>
+ <DM8PR11MB575087DCCB069C723BBE1B47E7482@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <447b491f-ae1a-85db-a862-0a2b999cd0d4@amd.com>
+ <DM8PR11MB575046453648C384A3D29020E7512@DM8PR11MB5750.namprd11.prod.outlook.com>
+From: Tom Lendacky <thomas.lendacky@amd.com>
+In-Reply-To: <DM8PR11MB575046453648C384A3D29020E7512@DM8PR11MB5750.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN7PR04CA0112.namprd04.prod.outlook.com
+ (2603:10b6:806:122::27) To BL1PR12MB5732.namprd12.prod.outlook.com
+ (2603:10b6:208:387::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: O2jvMMKCNJFXZjd4HEXFoLAnQcixREe8
-X-Proofpoint-ORIG-GUID: O2jvMMKCNJFXZjd4HEXFoLAnQcixREe8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-23_06,2024-02-23_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 phishscore=0
- mlxscore=0 clxscore=1030 malwarescore=0 bulkscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2308100000 definitions=main-2402230151
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|SA1PR12MB8844:EE_
+X-MS-Office365-Filtering-Correlation-Id: d3d9caef-fef2-4c05-19b4-08dc34ad4fbc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	YbwsVqlagJ7yccb9Ry68rYbZrbw2Qc9/gWlR370P6YntDKl2+LTk1pBjwf/V1Gzy11kiDLfyKxclHRVbR3IS7vtUsy5xLWMuuDHYQI46UU03XuxhpZnm8qyTCqbKK+RTUTJAdLEHvHezeOO4dY76iPm00lxKVE4HwBd/QYHsMBV1zun7w5HwSIs9yuEeZ5O5idnh7kEMrlFz+wCYRArwd6FWCtYeR44k0L9pv22rHCy2zZ5lEqV8ifyyVzX2lhXroc6BV2heklEBIfXMoM0317spVwuV13NWinVQqgTli8ZhjM8PsVd3DipvpduW434QoJaMKZLKhQQM+/LzuOqGtwXWsDdEdA2vd5M8QAokz+w4kL2tKi1HzA3unoyGKcRm1xTBgwEBaNsBCo/mdXLyPah47FolLofhZWHN/iA0+Tw40XZ5PH15P50WxE3X78wYgzgq/Q7trAtZnBZyyUDrHmcxRXif1nbp/Vb3kofHBMbtRXSvC4WoHB3PuxJWEuIrAU8Wn2ZCiUaL6OnOBXmtHA==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?RHdCeHBDcGxXQitNUExYbzUxK0FxUjd4V0IwMHpkZjJtcGZxczREM0JEWlpj?=
+ =?utf-8?B?d3Q5aFNKM3YzZzlDK2VaS1ZsODRUOEVxbUd6TTlLeXEvZy9JSVlPay95bU44?=
+ =?utf-8?B?aHd4UTl3RzRGOG5rdU5FVlhKNjM5cGdHaHloWlBWY3NGakVPdWhzUU85Zlc2?=
+ =?utf-8?B?OFo3TzV0dmp2WEJuUUg4bWpSaVFRKzdVQ0d5OUV2VkhPd3d5WHcwT1VNK3Rx?=
+ =?utf-8?B?RisvZzRNRTRRWUswdG85eG9pd1N5VEJ0RUh5eENaV0tEUTBkYnRvRVJ1cEtJ?=
+ =?utf-8?B?TTVJY0MzSkRUbEZaMXRHbjBaWUxyNUZMQlNXZlo4dmpHVHlrVzhVeUJmY1VN?=
+ =?utf-8?B?dXhwazhtU1ZWQWZXZ2F0ZmtVYVlwTFhZSkxqVE8wZzFkeDMwK0VGWnJqU1py?=
+ =?utf-8?B?NndtUzlHQWQxU0p5YVhXRUFHYjREM0dyNGZTYU1mU2NnYkpQYndQV0E2Tjdx?=
+ =?utf-8?B?WlRPUUFSOUhnREp1TjRzS0JoV2U0Z29rNGtjeFU2dVdPaUhyaGFZcHVvUkFa?=
+ =?utf-8?B?TUZpOEpBM1pmYjdzb1FwdUd4U3pvcngxSHJwRDNQR3hGV2RVWlVUa2JnWmFx?=
+ =?utf-8?B?bkd6cEZqdml1SXFZSzllT3FPaFgrUUZRNXExN2M1MElDemVTdFN1NTFoRDMx?=
+ =?utf-8?B?RWRVMXV6OW1XOCtDZWNsQlF3YW9hZlNVWE9MR0tuVFQ3VW5Ib3BNNU9HcDYz?=
+ =?utf-8?B?ZE5vdkkzcXYyZTZFTzVVNk5SbFl0WXZyci80R0JEc21TQU84eDZMR25sYWY1?=
+ =?utf-8?B?ZHNBajNKOFFLVHQvUTRBSWdoTlV3aHI4WHZIMVhGQ3pHQTl6WmZMT2pMMU5T?=
+ =?utf-8?B?ckNKU1Z6bG1MQnRQTEZwNmFhc0liekZBTVZuZ015ODVZQ0N4Z0hiMkJVVkFF?=
+ =?utf-8?B?eTgyaDVmWVo4NE1nRjRkdnR2SmVnWkRoclFVbjMrNWdMZ2tFVytZSGU0cHQ3?=
+ =?utf-8?B?Q1N6MmpOM1pCenRCT0dSZWV0ZnMzVFo4MVpuZmVURnlyZmZjbW5qR0ZrcCtJ?=
+ =?utf-8?B?NHNFNm85OWlHMG9rT0lGMnhGd3pyWml3UnZpUXNrOTdqd2VrWkZza1dORHZx?=
+ =?utf-8?B?ZS9FeHYwU1hMbkdSS0lKU3E5b2xTLytRMzFvSzhxbkt4TXBrNTZNd3dvSGlT?=
+ =?utf-8?B?WnNWUXJpeTdDZGtta2hUNjdBeEYvUHpERmNaTnBvdVYwNjI3bC8zTmFPeWl0?=
+ =?utf-8?B?dExzUEFXdFN5cVFVaEkwcTM0R0V5TVJ0MHhGU3A1QWlwUHI4VHRTK21YQlRu?=
+ =?utf-8?B?cGc1d0J5MzZzQ3UwaXZWYXR0R3ZUem02OFBQdEhQT2F6a1lieWw1UWd0M0JK?=
+ =?utf-8?B?d2hzdFlYc1FzNGo1QWNjbFBFZ0V6aldyWnB6L0JteVY0TnpocEFiL05MZkJi?=
+ =?utf-8?B?UW1qRWhsQkRkN0c5RnJKQUdNQTdnNGc3VWhXNElXN0lNWDZjSmNiYUYzVHpm?=
+ =?utf-8?B?MzhzbndhQThhazg4b0Q3R3dubWxCSHQ3dERQTVVjS3ZMd1Q0ZjM3NDZzTkxk?=
+ =?utf-8?B?M2tFa0t1Rk90cGNFQ213ZWp0UXBBK2dOVERUWDVUL0ZKc1d5T1R0ckJSeVZq?=
+ =?utf-8?B?RDhGUUg3bVRJMmRhbjJCMkxWdVBqT203Vm1Uc1d0NHV1bFdQTk1GWi82RnQv?=
+ =?utf-8?B?RG12T2JpcG5QeE1RaEprN0szdUZDWnduZGhZYW9FdTUrNjVhSXFaRGRQSEtF?=
+ =?utf-8?B?RkZNTitmTkxUanRLNWFJVnFIalFTTEU3YmJwUWE1M0g2R1A3ZkFTc2xyWEVW?=
+ =?utf-8?B?S2VYMUNRQ3hINFFLUVFRV3FvZVFhMmRzcjZkcUF0Z2l1WnlTQ2hzbTFzOXpS?=
+ =?utf-8?B?R1BQY1BvVERRemExNGtPYWFMZkdTMnZrdnkzVnMvWVpFQ3RhckdYRUhjam5X?=
+ =?utf-8?B?MXk1Q0pYTG9vRzVWaS9LaGp1cUlaUmpFNEZTb2V1MnZlVHovKzVENSttYi9S?=
+ =?utf-8?B?U09LYVB6U2VYUEpjdFlMbnBmN2hEcTZnQk9XKzlaU01pUWJZb1lUeHhGdDlh?=
+ =?utf-8?B?NmdXdktFaTAyYitOMHVmaFcrTzFqZThJYlpHV0t3Wm5zWGZ2ZEo1ZEdtbktH?=
+ =?utf-8?B?N3IxMmUwQTJqcE12TG5KajVCN0tKdHRrUmdnR2dGTUlZNG1reHNwMFRFNDRI?=
+ =?utf-8?Q?kD2+b1wDWQqlGvR+an8PHTACa?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d3d9caef-fef2-4c05-19b4-08dc34ad4fbc
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5732.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2024 20:23:35.3031
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: guM4TrdOpgSWGg2W5EVsVsLnfQOdaXWf6a6i5opZ93LYi2A5LD1WYvfh1Cyh+PXrgiYUXQPW2PHmkl0/IpvCXg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8844
 
-> Before we know how to share vmcore, can you run below cmds from crash first:
->
-> 1. ps -m | grep UN
->
-> 2. foreach UN bt
->
-> 3. ps -m | grep md
->
-> 4. bt each md process
+On 2/19/24 11:54, Reshetova, Elena wrote:
+>> Subject: Re: [PATCH 00/11] Provide SEV-SNP support for running under an SVSM
+>>
+>> On 2/12/24 04:40, Reshetova, Elena wrote:
+>>>> This series adds SEV-SNP support for running Linux under an Secure VM
 
-Sure, here you go!
+> 
+> Sorry for my ignorance, what the HV?
 
-----
+HV == Hypervisor
 
-root@localhost:/var/crash/127.0.0.1-2024-02-23-01:34:56# crash /home/test/src/linux/vmlinux vmcore
+> 
+>>
 
-crash 8.0.4-2.fc39
-Copyright (C) 2002-2022  Red Hat, Inc.
-Copyright (C) 2004, 2005, 2006, 2010  IBM Corporation
-Copyright (C) 1999-2006  Hewlett-Packard Co
-Copyright (C) 2005, 2006, 2011, 2012  Fujitsu Limited
-Copyright (C) 2006, 2007  VA Linux Systems Japan K.K.
-Copyright (C) 2005, 2011, 2020-2022  NEC Corporation
-Copyright (C) 1999, 2002, 2007  Silicon Graphics, Inc.
-Copyright (C) 1999, 2000, 2001, 2002  Mission Critical Linux, Inc.
-Copyright (C) 2015, 2021  VMware, Inc.
-This program is free software, covered by the GNU General Public License,
-and you are welcome to change it and/or distribute copies of it under
-certain conditions.  Enter "help copying" to see the conditions.
-This program has absolutely no warranty.  Enter "help warranty" for details.
- 
-GNU gdb (GDB) 10.2
-Copyright (C) 2021 Free Software Foundation, Inc.
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.
-Type "show copying" and "show warranty" for details.
-This GDB was configured as "x86_64-pc-linux-gnu".
-Type "show configuration" for configuration details.
-Find the GDB manual and other documentation resources online at:
-    <http://www.gnu.org/software/gdb/documentation/>.
+> 
+> Kirill already commented on this, and the answer is of course we can, but imo we
+> need to see a bigger picture first. If we go with option 2 above, then coming with a
+> joint protocol is only limitedly useful because likely we wont be able to share the
+> code in the guest kernel. Ideally I think we want a common concept and a common
+> protocol that we can share in both guest kernel and coconut-svsm.
+> 
+> Btw, is continuing discussion here the best/preferred/efficient way forward? Or should we
+> setup a call with anyone who is interested in the topic to form a joint understanding
+> on what can be done here?
 
-For help, type "help".
-Type "apropos word" to search for commands related to "word"...
+I'm not sure what the best way forward is since I'm not sure what a common 
+concept / common protocol would look like. If you feel we can effectively 
+describe it via email, then we should continue that, maybe on a new thread 
+under linux-coco. If not, then a call might be best.
 
-WARNING: ORC unwinder: module orc_entry structures have changed
-WARNING: cannot determine how modules are linked
-WARNING: no kernel module access
+Thanks,
+Tom
 
-      KERNEL: /home/test/src/linux/vmlinux 
-    DUMPFILE: vmcore
-        CPUS: 8
-        DATE: Fri Feb 23 01:34:54 UTC 2024
-      UPTIME: 00:41:00
-LOAD AVERAGE: 6.00, 5.90, 4.80
-       TASKS: 309
-    NODENAME: localhost.localdomain
-     RELEASE: 6.8.0-rc5
-     VERSION: #1 SMP Fri Feb 23 00:22:23 UTC 2024
-     MACHINE: x86_64  (2999 Mhz)
-      MEMORY: 8 GB
-       PANIC: "Kernel panic - not syncing: sysrq triggered crash"
-         PID: 1977
-     COMMAND: "bash"
-        TASK: ffff888105325880  [THREAD_INFO: ffff888105325880]
-         CPU: 5
-       STATE: TASK_RUNNING (PANIC)
-
-crash> ps -m | grep UN
-[0 00:15:50.424] [UN]  PID: 957      TASK: ffff88810baa0ec0  CPU: 1    COMMAND: "jbd2/dm-3-8"
-[0 00:15:56.151] [UN]  PID: 1835     TASK: ffff888108a28ec0  CPU: 2    COMMAND: "dd"
-[0 00:15:56.187] [UN]  PID: 876      TASK: ffff888108bebb00  CPU: 3    COMMAND: "md0_reclaim"
-[0 00:15:56.185] [UN]  PID: 1914     TASK: ffff8881015e6740  CPU: 1    COMMAND: "kworker/1:2"
-[0 00:15:56.255] [UN]  PID: 403      TASK: ffff888101351d80  CPU: 7    COMMAND: "kworker/u21:1"
-crash> foreach UN bt
-PID: 403      TASK: ffff888101351d80  CPU: 7    COMMAND: "kworker/u21:1"
- #0 [ffffc90000863840] __schedule at ffffffff81ac18ac
- #1 [ffffc900008638a0] schedule at ffffffff81ac1d82
- #2 [ffffc900008638b8] io_schedule at ffffffff81ac1e4d
- #3 [ffffc900008638c8] wait_for_in_progress at ffffffff81806224
- #4 [ffffc90000863910] do_origin at ffffffff81807265
- #5 [ffffc90000863948] __map_bio at ffffffff817ede6a
- #6 [ffffc90000863978] dm_submit_bio at ffffffff817ee31e
- #7 [ffffc900008639f0] __submit_bio at ffffffff81515ec1
- #8 [ffffc90000863a08] submit_bio_noacct_nocheck at ffffffff815162a7
- #9 [ffffc90000863a60] ext4_io_submit at ffffffff813b506b
-#10 [ffffc90000863a70] ext4_do_writepages at ffffffff81399ed6
-#11 [ffffc90000863b20] ext4_writepages at ffffffff8139a85d
-#12 [ffffc90000863bb8] do_writepages at ffffffff81258c30
-#13 [ffffc90000863c18] __writeback_single_inode at ffffffff8132348a
-#14 [ffffc90000863c48] writeback_sb_inodes at ffffffff81323b62
-#15 [ffffc90000863d18] __writeback_inodes_wb at ffffffff81323e17
-#16 [ffffc90000863d58] wb_writeback at ffffffff8132400a
-#17 [ffffc90000863dc0] wb_workfn at ffffffff8132503c
-#18 [ffffc90000863e68] process_one_work at ffffffff81147b69
-#19 [ffffc90000863ea8] worker_thread at ffffffff81148554
-#20 [ffffc90000863ef8] kthread at ffffffff8114f8ee
-#21 [ffffc90000863f30] ret_from_fork at ffffffff8108bb98
-#22 [ffffc90000863f50] ret_from_fork_asm at ffffffff81000da1
-
-PID: 876      TASK: ffff888108bebb00  CPU: 3    COMMAND: "md0_reclaim"
- #0 [ffffc900008c3d10] __schedule at ffffffff81ac18ac
- #1 [ffffc900008c3d70] schedule at ffffffff81ac1d82
- #2 [ffffc900008c3d88] md_super_wait at ffffffff817df27a
- #3 [ffffc900008c3dd0] md_update_sb at ffffffff817df609
- #4 [ffffc900008c3e20] r5l_do_reclaim at ffffffff817d1cf4
- #5 [ffffc900008c3e98] md_thread at ffffffff817db1ef
- #6 [ffffc900008c3ef8] kthread at ffffffff8114f8ee
- #7 [ffffc900008c3f30] ret_from_fork at ffffffff8108bb98
- #8 [ffffc900008c3f50] ret_from_fork_asm at ffffffff81000da1
-
-PID: 957      TASK: ffff88810baa0ec0  CPU: 1    COMMAND: "jbd2/dm-3-8"
- #0 [ffffc90001d47b10] __schedule at ffffffff81ac18ac
- #1 [ffffc90001d47b70] schedule at ffffffff81ac1d82
- #2 [ffffc90001d47b88] io_schedule at ffffffff81ac1e4d
- #3 [ffffc90001d47b98] wait_for_in_progress at ffffffff81806224
- #4 [ffffc90001d47be0] do_origin at ffffffff81807265
- #5 [ffffc90001d47c18] __map_bio at ffffffff817ede6a
- #6 [ffffc90001d47c48] dm_submit_bio at ffffffff817ee31e
- #7 [ffffc90001d47cc0] __submit_bio at ffffffff81515ec1
- #8 [ffffc90001d47cd8] submit_bio_noacct_nocheck at ffffffff815162a7
- #9 [ffffc90001d47d30] jbd2_journal_commit_transaction at ffffffff813d246c
-#10 [ffffc90001d47e90] kjournald2 at ffffffff813d65cb
-#11 [ffffc90001d47ef8] kthread at ffffffff8114f8ee
-#12 [ffffc90001d47f30] ret_from_fork at ffffffff8108bb98
-#13 [ffffc90001d47f50] ret_from_fork_asm at ffffffff81000da1
-
-PID: 1835     TASK: ffff888108a28ec0  CPU: 2    COMMAND: "dd"
- #0 [ffffc90000c2fb30] __schedule at ffffffff81ac18ac
- #1 [ffffc90000c2fb90] schedule at ffffffff81ac1d82
- #2 [ffffc90000c2fba8] io_schedule at ffffffff81ac1e4d
- #3 [ffffc90000c2fbb8] bit_wait_io at ffffffff81ac2418
- #4 [ffffc90000c2fbc8] __wait_on_bit at ffffffff81ac214a
- #5 [ffffc90000c2fc10] out_of_line_wait_on_bit at ffffffff81ac22cc
- #6 [ffffc90000c2fc60] do_get_write_access at ffffffff813d0bc3
- #7 [ffffc90000c2fcb0] jbd2_journal_get_write_access at ffffffff813d0dc4
- #8 [ffffc90000c2fcd8] __ext4_journal_get_write_access at ffffffff8137c2c9
- #9 [ffffc90000c2fd18] ext4_reserve_inode_write at ffffffff813997f8
-#10 [ffffc90000c2fd40] __ext4_mark_inode_dirty at ffffffff81399a38
-#11 [ffffc90000c2fdc0] ext4_dirty_inode at ffffffff8139cf52
-#12 [ffffc90000c2fdd8] __mark_inode_dirty at ffffffff81323284
-#13 [ffffc90000c2fe10] generic_update_time at ffffffff8130de25
-#14 [ffffc90000c2fe28] file_modified at ffffffff8130e23c
-#15 [ffffc90000c2fe50] ext4_buffered_write_iter at ffffffff81388b6f
-#16 [ffffc90000c2fe78] vfs_write at ffffffff812ee149
-#17 [ffffc90000c2ff08] ksys_write at ffffffff812ee47e
-#18 [ffffc90000c2ff40] do_syscall_64 at ffffffff81ab418e
-#19 [ffffc90000c2ff50] entry_SYSCALL_64_after_hwframe at ffffffff81c0006a
-    RIP: 00007f14bdcacc74  RSP: 00007ffcee806498  RFLAGS: 00000202
-    RAX: ffffffffffffffda  RBX: 0000000000000000  RCX: 00007f14bdcacc74
-    RDX: 0000000000100000  RSI: 00007f14bdaa0000  RDI: 0000000000000001
-    RBP: 00007ffcee8064c0   R8: 0000000000000001   R9: 00007ffcee8a8080
-    R10: 0000000000000017  R11: 0000000000000202  R12: 0000000000100000
-    R13: 00007f14bdaa0000  R14: 0000000000000000  R15: 0000000000100000
-    ORIG_RAX: 0000000000000001  CS: 0033  SS: 002b
-
-PID: 1914     TASK: ffff8881015e6740  CPU: 1    COMMAND: "kworker/1:2"
- #0 [ffffc90000d5fa58] __schedule at ffffffff81ac18ac
- #1 [ffffc90000d5fab8] schedule at ffffffff81ac1d82
- #2 [ffffc90000d5fad0] schedule_timeout at ffffffff81ac64e9
- #3 [ffffc90000d5fb18] io_schedule_timeout at ffffffff81ac15e7
- #4 [ffffc90000d5fb30] __wait_for_common at ffffffff81ac2723
- #5 [ffffc90000d5fb98] sync_io at ffffffff817f695d
- #6 [ffffc90000d5fc00] dm_io at ffffffff817f6b22
- #7 [ffffc90000d5fc80] chunk_io at ffffffff81808950
- #8 [ffffc90000d5fd38] persistent_commit_exception at ffffffff81808caa
- #9 [ffffc90000d5fd50] copy_callback at ffffffff8180601a
-#10 [ffffc90000d5fd80] run_complete_job at ffffffff817f78ff
-#11 [ffffc90000d5fdc8] process_jobs at ffffffff817f7c5e
-#12 [ffffc90000d5fe10] do_work at ffffffff817f7eb7
-#13 [ffffc90000d5fe68] process_one_work at ffffffff81147b69
-#14 [ffffc90000d5fea8] worker_thread at ffffffff81148554
-#15 [ffffc90000d5fef8] kthread at ffffffff8114f8ee
-#16 [ffffc90000d5ff30] ret_from_fork at ffffffff8108bb98
-#17 [ffffc90000d5ff50] ret_from_fork_asm at ffffffff81000da1
-crash> ps -m | grep md
-[0 00:00:00.129] [IN]  PID: 965      TASK: ffff88810b8de740  CPU: 4    COMMAND: "systemd-oomd"
-[0 00:00:01.187] [RU]  PID: 875      TASK: ffff888108bee740  CPU: 3    COMMAND: "md0_raid5"
-[0 00:00:07.128] [IN]  PID: 707      TASK: ffff88810cc31d80  CPU: 1    COMMAND: "systemd-journal"
-[0 00:00:07.524] [IN]  PID: 1007     TASK: ffff88810b8dc9c0  CPU: 4    COMMAND: "systemd-logind"
-[0 00:00:07.524] [IN]  PID: 1981     TASK: ffff88810521bb00  CPU: 5    COMMAND: "systemd-hostnam"
-[0 00:00:07.524] [IN]  PID: 1        TASK: ffff888100158000  CPU: 0    COMMAND: "systemd"
-[0 00:00:07.824] [IN]  PID: 1971     TASK: ffff88810521ac40  CPU: 2    COMMAND: "systemd-userwor"
-[0 00:00:07.825] [IN]  PID: 1006     TASK: ffff8881045a0ec0  CPU: 4    COMMAND: "systemd-homed"
-[0 00:00:07.830] [IN]  PID: 1970     TASK: ffff888105218000  CPU: 1    COMMAND: "systemd-userwor"
-[0 00:00:10.916] [IN]  PID: 1972     TASK: ffff888105218ec0  CPU: 1    COMMAND: "systemd-userwor"
-[0 00:00:36.004] [IN]  PID: 971      TASK: ffff8881089c2c40  CPU: 0    COMMAND: "systemd-userdbd"
-[0 00:10:56.905] [IN]  PID: 966      TASK: ffff888105546740  CPU: 4    COMMAND: "systemd-resolve"
-[0 00:15:56.187] [UN]  PID: 876      TASK: ffff888108bebb00  CPU: 3    COMMAND: "md0_reclaim"
-[0 00:34:52.328] [IN]  PID: 1669     TASK: ffff88810521c9c0  CPU: 2    COMMAND: "systemd"
-[0 00:39:21.349] [IN]  PID: 739      TASK: ffff8881089c5880  CPU: 3    COMMAND: "systemd-udevd"
-[0 00:40:59.426] [ID]  PID: 74       TASK: ffff888100a68000  CPU: 6    COMMAND: "kworker/R-md"
-[0 00:40:59.427] [ID]  PID: 75       TASK: ffff888100a68ec0  CPU: 7    COMMAND: "kworker/R-md_bi"
-[0 00:40:59.556] [IN]  PID: 66       TASK: ffff8881003e8000  CPU: 4    COMMAND: "ksmd"
-crash> bt 875
-PID: 875      TASK: ffff888108bee740  CPU: 3    COMMAND: "md0_raid5"
- #0 [fffffe00000bee60] crash_nmi_callback at ffffffff810a351e
- #1 [fffffe00000bee68] nmi_handle at ffffffff81085acb
- #2 [fffffe00000beea8] default_do_nmi at ffffffff81ab59d2
- #3 [fffffe00000beed0] exc_nmi at ffffffff81ab5c9c
- #4 [fffffe00000beef0] end_repeat_nmi at ffffffff81c010f7
-    [exception RIP: ops_run_io+224]
-    RIP: ffffffff817c4740  RSP: ffffc90000b3fb58  RFLAGS: 00000206
-    RAX: 0000000000000220  RBX: 0000000000000003  RCX: ffff88810cee7098
-    RDX: ffff88812495a3d0  RSI: 0000000000000000  RDI: ffff88810cee7000
-    RBP: ffff888103884000   R8: 0000000000000000   R9: ffff888103884000
-    R10: 0000000000000000  R11: 0000000000000000  R12: 0000000000000000
-    R13: 0000000000000003  R14: ffff88812495a1b0  R15: ffffc90000b3fc00
-    ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
---- <NMI exception stack> ---
- #5 [ffffc90000b3fb58] ops_run_io at ffffffff817c4740
- #6 [ffffc90000b3fc40] handle_stripe at ffffffff817cd85d
- #7 [ffffc90000b3fd40] handle_active_stripes at ffffffff817ce82c
- #8 [ffffc90000b3fdd0] raid5d at ffffffff817cee88
- #9 [ffffc90000b3fe98] md_thread at ffffffff817db1ef
-#10 [ffffc90000b3fef8] kthread at ffffffff8114f8ee
-#11 [ffffc90000b3ff30] ret_from_fork at ffffffff8108bb98
-#12 [ffffc90000b3ff50] ret_from_fork_asm at ffffffff81000da1
-crash> bt 876
-PID: 876      TASK: ffff888108bebb00  CPU: 3    COMMAND: "md0_reclaim"
- #0 [ffffc900008c3d10] __schedule at ffffffff81ac18ac
- #1 [ffffc900008c3d70] schedule at ffffffff81ac1d82
- #2 [ffffc900008c3d88] md_super_wait at ffffffff817df27a
- #3 [ffffc900008c3dd0] md_update_sb at ffffffff817df609
- #4 [ffffc900008c3e20] r5l_do_reclaim at ffffffff817d1cf4
- #5 [ffffc900008c3e98] md_thread at ffffffff817db1ef
- #6 [ffffc900008c3ef8] kthread at ffffffff8114f8ee
- #7 [ffffc900008c3f30] ret_from_fork at ffffffff8108bb98
- #8 [ffffc900008c3f50] ret_from_fork_asm at ffffffff81000da1
-crash> bt 74
-PID: 74       TASK: ffff888100a68000  CPU: 6    COMMAND: "kworker/R-md"
- #0 [ffffc900002afdf8] __schedule at ffffffff81ac18ac
- #1 [ffffc900002afe58] schedule at ffffffff81ac1d82
- #2 [ffffc900002afe70] rescuer_thread at ffffffff81148138
- #3 [ffffc900002afef8] kthread at ffffffff8114f8ee
- #4 [ffffc900002aff30] ret_from_fork at ffffffff8108bb98
- #5 [ffffc900002aff50] ret_from_fork_asm at ffffffff81000da1
-crash> bt 75
-PID: 75       TASK: ffff888100a68ec0  CPU: 7    COMMAND: "kworker/R-md_bi"
- #0 [ffffc900002b7df8] __schedule at ffffffff81ac18ac
- #1 [ffffc900002b7e58] schedule at ffffffff81ac1d82
- #2 [ffffc900002b7e70] rescuer_thread at ffffffff81148138
- #3 [ffffc900002b7ef8] kthread at ffffffff8114f8ee
- #4 [ffffc900002b7f30] ret_from_fork at ffffffff8108bb98
- #5 [ffffc900002b7f50] ret_from_fork_asm at ffffffff81000da1
-crash> 
+> 
+> Best Regards,
+> Elena.
+> 
+> 
+>>
+>> Thanks,
+>> Tom
+>>
+>>>
+>>> 5. Anything else is missing?
+>>>
+>>> References:
+>>>
+>>> [1] https://lkml.org/lkml/2023/11/22/1089
+>>>
+>>> [2] MSFT hyper-v implementation of AMD SEV-SNP !VMPL0 guest and TDX L2
+>>> partitioning guest:
+>>> https://elixir.bootlin.com/linux/latest/source/arch/x86/hyperv/ivm.c#L575
+>>>
+>>> [3] https://github.com/coconut-svsm/svsm
+>>>
+>>> [4] https://www.amd.com/content/dam/amd/en/documents/epyc-technical-
+>> docs/specifications/58019.pdf
+>>>
+>>>
 
