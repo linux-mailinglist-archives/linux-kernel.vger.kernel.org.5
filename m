@@ -1,98 +1,142 @@
-Return-Path: <linux-kernel+bounces-77710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 653C6860951
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:21:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C67E860953
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:21:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 969AF1C230E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:21:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48734B24358
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:21:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11786111A4;
-	Fri, 23 Feb 2024 03:20:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0FFFD533;
+	Fri, 23 Feb 2024 03:20:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HkTK6xpy"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b="mlsOYNF4"
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52EBF10A10;
-	Fri, 23 Feb 2024 03:20:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 012DAC8DE
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 03:20:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708658430; cv=none; b=Iv88CI7yCg/jzeToxKwsSQ9O3j6063MCbLSAv9l1js24bOcYr1RMurYqZ7G5MNaJbYpZeEag6MBsGYi2gU05/UjGveNO1EuiyV5SIZPdSI69YbRVETmnreeGs81VoS8h08t/wcqTbq+YIz6aJERohFrOw8Zx7niibhUVHeDrpFY=
+	t=1708658456; cv=none; b=DP/bmll5QBp3wew/wzhJzQI/xnG1mnuwOThJPISS+V9BX+pjXwhSpcvq4yCYH5wihApceZhGrit4jZuA8uuuxcgI/tZsmNsuPiri9mTLoMiItWgbxA4eeQPrQ9uYg8eXzeUjac1pKqqHHv/1UHK5dqktLgromz/kJZmjAYwo2r0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708658430; c=relaxed/simple;
-	bh=DA/Qri4FRnR82K28V8ne3NOgfpa2H6l2LDbTqoIcsW8=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=UgntLharD/6VbccpqujGEcIEl9ZtCsYBQLCny3fsaPlgdJS27tyZnDbPCAr934Vqkmuz3SkcNyOzjcNctja8m32UX0ygPthLA4mHvQHlmThFMKc2Pj4rN/Ha5cX7CyxyrPZtQMXf3kNUIzhu24Eo5VgBWzWEdXk3tjjgYwdTGrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HkTK6xpy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0845FC43390;
-	Fri, 23 Feb 2024 03:20:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708658430;
-	bh=DA/Qri4FRnR82K28V8ne3NOgfpa2H6l2LDbTqoIcsW8=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=HkTK6xpyvf6axWJHdW0nri31MtNqaEqP4mzRWDXZxesYhCouSbuKjeyGDHVTFQlQe
-	 vAgWzw0m1PmOFzyfeH3/GKMW6bg/XZmUsvlfyxpXNTfeePpy7ZyfM1or1j6knLvFo6
-	 5X9RQpxjt67Wj+NL7kcHlvyoKWTMJqF9bk24s7KITFd01zQgAd72dLtwjU95iZYuFh
-	 0hrk+XQUA8GRPR3diA2DAgONwVg6z72Gnx4PyqUTO8ZJNzP/SIwWr+vhDpy7smcOgb
-	 qE++jldPp3DKEGEYN6byhdjZlNX8kTdSZtXX7rLdzMlpH9IHTO3r6LTCCKwgFVGa10
-	 FNSYyUITE0BQQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E9C62C395F1;
-	Fri, 23 Feb 2024 03:20:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1708658456; c=relaxed/simple;
+	bh=1jVuDccX6c53Z5TPHBrUqUB5hgIDnadIovqzOPyZsRI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pcbIWQTjCVOhJbgqRyw07goi0jj7au00pvm+5Dcdh7QsFdxGPDtt8QvS7YsyRu8jf4SqFArqDoaVQenEio4CZCaSSd8L0AJa71Cmp7717091XJUA9TkMK6/nY4AE9fr09org3NrxiT0iSpuizobnGjnkFsdZniogXS469uWfx8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com; spf=none smtp.mailfrom=smartx.com; dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b=mlsOYNF4; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=smartx.com
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d22fa5c822so5858961fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Feb 2024 19:20:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=smartx-com.20230601.gappssmtp.com; s=20230601; t=1708658452; x=1709263252; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Gz9/y1+Xczqmn0vzWbn4vSoN0rultOqiJeV+pU2vDP8=;
+        b=mlsOYNF4ZX9GlCAQV+O1mwDa7JWjeWZxKVwaVUwiScj+wS+ir0XZfNW8oU0nWxfMm8
+         lsnPSOUjQX56ci+T7k6dNdD9irGm9wrMb15zvDfABroydLK8WrQK9+N/qgPdaGMAHvcY
+         XYwtk9Hm1Py3dTmPYD8QxREZqpe7X7M13vEkCb8ywOiePaCrxePmkyCFD74/Ye0wdAdo
+         6H9iqBRnXLBJcw05pd5mK7davxdttRn0O4PIa5g0wEUbjHzQeQ9WleVR3EHR4aZKolrm
+         qGdzy2c4ElD3IMz1yrlIbzQ4sxM5OH3KXwMvaFz0Fn9feLHMvd2oiyYoqdTxqU9KlKW0
+         1ydg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708658452; x=1709263252;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Gz9/y1+Xczqmn0vzWbn4vSoN0rultOqiJeV+pU2vDP8=;
+        b=Wqyi1+yYncASbswjJWz8iw1AlBEy1NASaWp+9LIs+sucUHv4uzlwSAG3Gz15G6mICw
+         nCsvqlyXUrEV9PYfLfaKkuDXugy0m/Qy89K49T3svvSJGW9gSHth3otEo4sGpsZznbMA
+         WfNcMuukq2v4uaRQ5X+GkJmxQyJfY9buIeuLk068NU4WA54g2LItra2f2d8DbLyYZ8ey
+         cIqiLQoFASb6i4oW70fDHYlyuCYzwkcjPcZVZuPfkuij/e+sH3zN30izlalT0lGzMYwU
+         8Xpv5xdn6jV8OZJpwFC9p7PnEMBMeekvsKKvNKC3IQRlntm6xpuvifptMNVlNpDQBPsf
+         zZKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVKc4yJBZh/CMwFpAn7XDDgNVobzKrFul/hvGDQ8Ef4FmRC5ukQEbMvzBjKQinVk/B31FBQCClhSv6jzDxU549mouekxTux9Jec98Jy
+X-Gm-Message-State: AOJu0Yx1PSsnXbOEibFhNU9SMY8hXaWN/7eewKT66IGUe8yPtvgpeAdh
+	G//UHAH9tZkr6YVVRi4+FD/wcM6mewhhb+jeFBtSq1u8X3uBdCAYbhovINIKZ9ULX7cgAgwqDk0
+	14bTjQbx6sKv5tjqiPbLcP8a/BbIkP/JWgBeBiA==
+X-Google-Smtp-Source: AGHT+IH/UzfMZ/ZV7LvEuilyk6pyGE5mVQdDN03YeHUUqvWVzTNugLcvFy/MOotbFW/bWyPy34qjlVo7J6Mgor6aabE=
+X-Received: by 2002:a2e:9602:0:b0:2d2:4589:b7ba with SMTP id
+ v2-20020a2e9602000000b002d24589b7bamr421076ljh.51.1708658451177; Thu, 22 Feb
+ 2024 19:20:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v6] bonding: rate-limit bonding driver inspect
- messages
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170865842995.21611.9707338053394073057.git-patchwork-notify@kernel.org>
-Date: Fri, 23 Feb 2024 03:20:29 +0000
-References: <20240221082752.4660-1-praveen.kannoju@oracle.com>
-In-Reply-To: <20240221082752.4660-1-praveen.kannoju@oracle.com>
-To: Praveen Kannoju <praveen.kannoju@oracle.com>
-Cc: j.vosburgh@gmail.com, andy@greyhouse.net, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- rajesh.sivaramasubramaniom@oracle.com, rama.nichanamatlu@oracle.com,
- manjunath.b.patil@oracle.com
+References: <CAPKjjnrYvzH8hEk9boaBt-fETX3VD2cjjN-Z6iNgwZpHqYUjWw@mail.gmail.com>
+ <77a58302766cb6c8fac45682ede63569df80cd5d.camel@hammerspace.com> <1179779e2f74e3e5cb2be30cf89e6362aaab706d.camel@kernel.org>
+In-Reply-To: <1179779e2f74e3e5cb2be30cf89e6362aaab706d.camel@kernel.org>
+From: Zhitao Li <zhitao.li@smartx.com>
+Date: Fri, 23 Feb 2024 11:20:37 +0800
+Message-ID: <CAPKjjnrir1C8YYhhW10Nj6bAOTiz_YwWUOynEwXbjetMAuA1UA@mail.gmail.com>
+Subject: Re: PROBLEM: NFS client IO fails with ERESTARTSYS when another mount
+ point with the same export is unmounted with force [NFS] [SUNRPC]
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Trond Myklebust <trondmy@hammerspace.com>, 
+	"chuck.lever@oracle.com" <chuck.lever@oracle.com>, "tom@talpey.com" <tom@talpey.com>, 
+	"anna@kernel.org" <anna@kernel.org>, "Dai.Ngo@oracle.com" <Dai.Ngo@oracle.com>, "neilb@suse.de" <neilb@suse.de>, 
+	"kolga@netapp.com" <kolga@netapp.com>, "huangping@smartx.com" <huangping@smartx.com>, 
+	"linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+Thanks for Jeff's reply.
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+I did see  ERESTARTSYS in userland. As described in the above
+"Reproduction" chapter, "dd" fails with "dd: error writing
+'/mnt/test1/1G': Unknown error 512".
 
-On Wed, 21 Feb 2024 13:57:52 +0530 you wrote:
-> Through the routine bond_mii_monitor(), bonding driver inspects and commits
-> the slave state changes. During the times when slave state change and
-> failure in aqcuiring rtnl lock happen at the same time, the routine
-> bond_mii_monitor() reschedules itself to come around after 1 msec to commit
-> the new state.
-> 
-> During this, it executes the routine bond_miimon_inspect() to re-inspect
-> the state chane and prints the corresponding slave state on to the console.
-> Hence we do see a message at every 1 msec till the rtnl lock is acquired
-> and state chage is committed.
-> 
-> [...]
+After strace "dd", it turns out that syscall WRITE fails with:
+write(1, "4\303\31\211\316\237\333\r-\275g\370\233\374X\277\374Tb\202\24\36=
+5\220\320\16\27o3\331q\344\364"...,
+1048576) =3D ? ERESTARTSYS (To be restarted if SA_RESTART is set)
 
-Here is the summary with links:
-  - [net-next,v6] bonding: rate-limit bonding driver inspect messages
-    https://git.kernel.org/netdev/net-next/c/a4634aa71fee
+In fact, other syscalls related to file systems can also fail with
+ERESTARTSYS in our cases, for example: mount, open, read, write and so
+on.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Maybe the reason is that on forced unmount, rpc_killall_tasks() in
+net/sunrpc/clnt.c will set all inflight IO with ERESTARTSYS, while no
+signal gets involved. So ERESTARTSYS is not handled before entering
+userspace.
 
+Best regards,
+Zhitao Li at SmartX.
 
+On Thu, Feb 22, 2024 at 7:05=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wr=
+ote:
+>
+> On Wed, 2024-02-21 at 13:48 +0000, Trond Myklebust wrote:
+> > On Wed, 2024-02-21 at 16:20 +0800, Zhitao Li wrote:
+> > > [You don't often get email from zhitao.li@smartx.com. Learn why this
+> > > is important at https://aka.ms/LearnAboutSenderIdentification ]
+> > >
+> > > Hi, everyone,
+> > >
+> > > - Facts:
+> > > I have a remote NFS export and I mount the same export on two
+> > > different directories in my OS with the same options. There is an
+> > > inflight IO under one mounted directory. And then I unmount another
+> > > mounted directory with force. The inflight IO ends up with "Unknown
+> > > error 512", which is ERESTARTSYS.
+> > >
+> >
+> > All of the above is well known. That's because forced umount affects
+> > the entire filesystem. Why are you using it here in the first place? It
+> > is not intended for casual use.
+> >
+>
+> While I agree Trond's above statement, the kernel is not supposed to
+> leak error codes that high into userland. Are you seeing ERESTARTSYS
+> being returned to system calls? If so, which ones?
+> --
+> Jeff Layton <jlayton@kernel.org>
 
