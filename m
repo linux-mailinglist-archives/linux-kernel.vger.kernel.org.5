@@ -1,53 +1,70 @@
-Return-Path: <linux-kernel+bounces-78967-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06664861B6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:20:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DDCAA861B73
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:20:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B571C28A3C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:20:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8902428BD32
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:20:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E73DA142634;
-	Fri, 23 Feb 2024 18:20:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28F1B143C48;
+	Fri, 23 Feb 2024 18:20:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b="mjZbgi9O"
-Received: from serv108.segi.ulg.ac.be (serv108.segi.ulg.ac.be [139.165.32.111])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D2E012D1F9;
-	Fri, 23 Feb 2024 18:20:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.165.32.111
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708712410; cv=none; b=qvhKL1lCvUlTULkTZhGoknuRzDAnQw1YtiWQil3KabYJztirSix4hSJhKgwwBAWeHpAtM/5+yHdOx/1SYO0mttuswpjTt/vPp//nb6UsVcapoXXvy+iC7BrL8+QVxhxzvH3jIO2tRhWRU8qfx7wR+T4lgASS5QjtK9+GU90Q00o=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708712410; c=relaxed/simple;
-	bh=L17zNUCxvNnm7yyqQ7WS5W8AZHiSgpBGe/zD9/AGBOs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Y0ZOBfUI5EnREzcYLk0OQ0IThrN2nncDvlDcnhl3e88aHHSMymL3Q8oukEs2ptCEesTB+5MKiyOVu2J3l77+o3eSjsWXBujsnOVQg5W5bvEQ1pPrE5Ely5MbNzH2IRhoixfCb1rS1zBv/tdl2UWQx8SedzZrqniVAcppl/NWKcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be; spf=pass smtp.mailfrom=uliege.be; dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b=mjZbgi9O; arc=none smtp.client-ip=139.165.32.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uliege.be
-Received: from [192.168.1.55] (125.179-65-87.adsl-dyn.isp.belgacom.be [87.65.179.125])
+	dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b="OmrC/p3J"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by serv108.segi.ulg.ac.be (Postfix) with ESMTPSA id CE777200C247;
-	Fri, 23 Feb 2024 19:20:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 serv108.segi.ulg.ac.be CE777200C247
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uliege.be;
-	s=ulg20190529; t=1708712405;
-	bh=QvbrHms9ETKk/v/CsD8CfF4FaoDekyg4wG/YRj8GOqI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=mjZbgi9O1KiS3zphKQB3YRcvJaUIZGjlHWJbEWKciGZrv9WW10zNrgHKW/5d3UY/9
-	 Q/+npasTrG7gWq0+wNIoVxufjRcpPgyvg+4DGR6qZaX6+j1LANaU+p1oze7zVtdpLe
-	 KAgWj+CTITrjLGKVbMbSKsItLiwk5gwGIzxmlTOTA3eX3qO5VSOlTRgurILwzGswLM
-	 Rpn5VjpTQRu0ft89eDT3Viy4gwi2Fuu8TJnn1uOIqvix24WEEBsufY69LmzJcn1z3W
-	 Ajp0GFK5pWsq1uzU1n+qpfiXWZt2DUeMjOTCZrshgQ+LRgBII3M99txJB28MqE+cNV
-	 IcQbMvSws1W0A==
-Message-ID: <da6a308f-8053-4744-8b81-67b63232a526@uliege.be>
-Date: Fri, 23 Feb 2024 19:20:04 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56AF0143C75
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 18:20:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708712442; cv=none; b=oqVqqrjpbAGT4anNL5nUFS5ZZeNUymCSh4dIbcItUm6lX2yX7eO1g3GQx9n54QS9fauLGK3z8s1+pnjsWy9Io+JKWQL65MCcsmwtTUySwRwnXbXWW9HqQdYap0yixeBnRl9UHOTrci8qP33CjKOaT1mE8LmA47jc0GtDeA0KKq0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708712442; c=relaxed/simple;
+	bh=F+0O6MLAtkoA31PIgLq8fpjX3EPS9JEOoGmoToMd2T0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=K3ixFb48GkUQbRak7zqP6ImjYWLyWxN6Bd29PeGG1q8c+a9rvqrwRiFckKmHiBmu3M4ALSEFkr2a4DlNz/lZxx/atHw/GLRLSmKjjibi6wIN/fIi2xU6qYWslw7R8z4VWf8bsebJhJdKMjmBZ20O0ufzyhMToKLr2FnOJfAyf3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com; spf=pass smtp.mailfrom=cloud.com; dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b=OmrC/p3J; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloud.com
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d22fa5c822so15508131fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 10:20:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=citrix.com; s=google; t=1708712432; x=1709317232; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=782AoGpCOecehLZVMZnBvSEhsvxprPEXEJFDkKEsL78=;
+        b=OmrC/p3J61ZtS6R2fcLi8VNcqIXmGJiqI8CqLr47imd+gQ9hA3celPTY5MuyhpVGnI
+         WFKagv579VgoJDSTe5i10UC+URA2MFqR4ZDT7LPkTaBwLpK7FQipRdvxldCxZzyS1Hll
+         ZLqa+rpwcQLDl+YKZr+Q3c1N2XDp+gu6s9Bhs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708712432; x=1709317232;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=782AoGpCOecehLZVMZnBvSEhsvxprPEXEJFDkKEsL78=;
+        b=PQgez2PIw9d+jzM4H63xaP8iLdije0LLomD91aq7OhpVGbKRZQiXXTr6sT/gGP+bQn
+         MjqKFQbgKLcT2e8sbb0enieCa8+luEwyQDMZHr3KgzWP2KT4G+lhVIWuQC7IGclpmkEe
+         N/3TgDfs7goKuc6Z9sLHSL0XDjppklX+L9kpipU9KKLBpEY4cex0QfLJ56Vc44gUsXCJ
+         zTCc9ihwOy4KQ1lr2a3eXsQM692HPMHw2z6DkvP+11vFtVvvcpWLbXgHZRosv+xNDiDo
+         w9Pe0lwB/Kg8ZKiGry+19Usv+1bhDVSOwSktWGd4ZBrLGetc6fE6RRYZuCQpRpX4D4Zz
+         OC4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXm2uDZ7sPCeNaLssA/jrUNPRE3aQ6FyJ8mXNPqnTgaBkAe7FDRmGXENzvv+Af6azt7S4AZvgE+ggDIg3qnEkn1al3ZnrWu7GoEy5Gs
+X-Gm-Message-State: AOJu0YyyopwhA3PKD/O3u4WHgtAyCblGebhcxSSCyoEBmIO8+5bGEvPC
+	yLWdxlOeEuSQD8tBKLaFKCwBgWZoC94c+Y0dusDUIxfj+QDfWyHZfw1lkDDLPKk=
+X-Google-Smtp-Source: AGHT+IGKmGhyIU5gJMZF27bTWRBFQ/Y1UUW5pP7G5WcYyHm4U94/AXfI5Wnt6LhdlWi2bRhTqlu5sg==
+X-Received: by 2002:a2e:9052:0:b0:2d2:6227:d30b with SMTP id n18-20020a2e9052000000b002d26227d30bmr404964ljg.47.1708712431810;
+        Fri, 23 Feb 2024 10:20:31 -0800 (PST)
+Received: from [10.80.67.149] (default-46-102-197-194.interdsl.co.uk. [46.102.197.194])
+        by smtp.gmail.com with ESMTPSA id p19-20020a05620a22f300b00785ccbb457esm1393327qki.81.2024.02.23.10.20.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Feb 2024 10:20:31 -0800 (PST)
+Message-ID: <e641e2f1-16cf-4717-8a1f-8afac2644efe@citrix.com>
+Date: Fri, 23 Feb 2024 18:20:27 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,68 +72,111 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v4 3/3] net: exthdrs: ioam6: send trace event
-Content-Language: en-US
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, linux-kernel@vger.kernel.org,
- justin.iurman@uliege.be
-References: <20240223144135.12826-1-justin.iurman@uliege.be>
- <20240223144135.12826-4-justin.iurman@uliege.be>
-From: Justin Iurman <justin.iurman@uliege.be>
-In-Reply-To: <20240223144135.12826-4-justin.iurman@uliege.be>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v8 06/15] x86: Add early SHA support for Secure Launch
+ early measurements
+Content-Language: en-GB
+To: Eric Biggers <ebiggers@kernel.org>,
+ Andrew Cooper <andrew.cooper3@citrix.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>,
+ Ross Philipson <ross.philipson@oracle.com>, linux-kernel@vger.kernel.org,
+ x86@kernel.org, linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-crypto@vger.kernel.org, kexec@lists.infradead.org,
+ linux-efi@vger.kernel.org, dpsmith@apertussolutions.com, tglx@linutronix.de,
+ mingo@redhat.com, bp@alien8.de, hpa@zytor.com, dave.hansen@linux.intel.com,
+ mjg59@srcf.ucam.org, James.Bottomley@hansenpartnership.com,
+ peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca, luto@amacapital.net,
+ nivedita@alum.mit.edu, herbert@gondor.apana.org.au, davem@davemloft.net,
+ kanth.ghatraju@oracle.com, trenchboot-devel@googlegroups.com
+References: <20240214221847.2066632-1-ross.philipson@oracle.com>
+ <20240214221847.2066632-7-ross.philipson@oracle.com>
+ <CAMj1kXEmMBY_jc0uM5UgZbuZ3-C7NPKzg5AScaunyu9XzLgzZA@mail.gmail.com>
+ <98ad92bb-ef17-4c15-88ba-252db2a2e738@citrix.com>
+ <CAMj1kXFTu+bV2kQhAyu15hrYai20NcBLb4Zu8XG2Y-XjL0f+rw@mail.gmail.com>
+ <1a8e69a7-89eb-4d36-94d6-0da662d8b72f@citrix.com>
+ <CAMj1kXEvmGy9RJo4s8tECsFj2dufZ8jBPoJOEtkcGUoj+x2qsw@mail.gmail.com>
+ <431a0b3a-47e5-4e61-a7fc-31cdf56f4e4c@citrix.com>
+ <20240223175449.GA1112@sol.localdomain>
+From: Andrew Cooper <andrew.cooper3@citrix.com>
+Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
+ 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
+ 6+ahAA==
+In-Reply-To: <20240223175449.GA1112@sol.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 2/23/24 15:41, Justin Iurman wrote:
-> If we're processing an IOAM Pre-allocated Trace Option-Type (the only
-> one supported currently), and if we're the destination, then send the
-> trace as an ioam6 event to the multicast group. This way, user space
-> apps will be able to collect IOAM data (for a trace, it only makes sense
-> to send events if we're the destination).
-> 
-> Signed-off-by: Justin Iurman <justin.iurman@uliege.be>
-> ---
->   net/ipv6/exthdrs.c | 6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> diff --git a/net/ipv6/exthdrs.c b/net/ipv6/exthdrs.c
-> index 02e9ffb63af1..003f35d9b42b 100644
-> --- a/net/ipv6/exthdrs.c
-> +++ b/net/ipv6/exthdrs.c
-> @@ -50,6 +50,7 @@
->   #endif
->   #include <net/rpl.h>
->   #include <linux/ioam6.h>
-> +#include <linux/ioam6_genl.h>
->   #include <net/ioam6.h>
->   #include <net/dst_metadata.h>
->   
-> @@ -954,6 +955,11 @@ static bool ipv6_hop_ioam(struct sk_buff *skb, int optoff)
->   						   + optoff + sizeof(*hdr));
->   
->   		ioam6_fill_trace_data(skb, ns, trace, true);
-> +
-> +		if (skb_dst(skb)->dev->flags & IFF_LOOPBACK)
+On 23/02/2024 5:54 pm, Eric Biggers wrote:
+> On Fri, Feb 23, 2024 at 04:42:11PM +0000, Andrew Cooper wrote:
+>> Yes, and I agree.  We're not looking to try and force this in with
+>> underhand tactics.
+>>
+>> But a blind "nack to any SHA-1" is similarly damaging in the opposite
+>> direction.
+>>
+> Well, reviewers have said they'd prefer that SHA-1 not be included and given
+> some thoughtful reasons for that.  But also they've given suggestions on how to
+> make the SHA-1 support more palatable, such as splitting it into a separate
+> patch and giving it a proper justification.
+>
+> All suggestions have been ignored.
 
-Hmm, now that I think about this a bit more, I'm not sure we should 
-force a node to be the destination in order to send the event. Instead, 
-we could just remove the "am I the destination" check and directly call 
-ioam6_event(), which does check if there is at least one listener before 
-sending the event. I see two reasons for the change: (a) one may want 
-(for whatever reason) to capture IOAM traces on transit nodes, or (b) 
-one may use inline (instead of encap) IOAM injection where the 
-destination may be outside the IOAM domain (i.e., destination != 
-decap/egress IOAM node), which is not RFC8200-compliant and requires 
-removing the IOAM Option-Type in-flight from the HbH, but that's another 
-story.
+The public record demonstrates otherwise.
 
-Any opinion?
+But are you saying that you'd be happy if the commit message read
+something more like:
 
-> +			ioam6_event(IOAM6_EVENT_TRACE, dev_net(skb->dev),
-> +				    GFP_ATOMIC, (void *)trace,
-> +				    hdr->opt_len - 2);
->   		break;
->   	default:
->   		break;
+---8<---
+For better or worse, Secure Launch needs SHA-1 and SHA-256.
+
+The choice of hashes used lie with the platform firmware, not with
+software, and is often outside of the users control.
+
+Even if we'd prefer to use SHA-256-only, if firmware elected to start us
+with the SHA-1 and SHA-256 backs active, we still need SHA-1 to parse
+the TPM event log thus far, and deliberately cap the SHA-1 PCRs in order
+to safely use SHA-256 for everything else.
+---
+
+?
+
+~Andrew
 
