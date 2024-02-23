@@ -1,117 +1,99 @@
-Return-Path: <linux-kernel+bounces-78329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A46F8611F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:52:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CA8B8611F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 13:52:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8BB1282482
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:51:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06DEB283779
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:52:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D625F7CF2E;
-	Fri, 23 Feb 2024 12:51:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 795407CF08;
+	Fri, 23 Feb 2024 12:52:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="RBRfgEUu"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hHs2BTlA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC30873F0A;
-	Fri, 23 Feb 2024 12:51:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C41328C0A
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 12:52:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708692706; cv=none; b=B/8UcA8myFjmYH5Bewgnpa3I81YhM/SpdjEGKvSIk95Xon8Aqk4f42YqPyGeQWKh0oGNF7k8KrQASh/4yRpPTCxs/RBca9ExGRGdOSJ/QNKnwsxg1knIu9lU3wxdEhS/V4Ap1Lmzrwr7DT39LwgT6IgZvXZnA/U0IFKfBH5lzGI=
+	t=1708692749; cv=none; b=HdVD7ipFvhpaSJEULc4NAONS+inYqhIOUqBOM5M+dywyMNzk27xcSLry1QjiZVPrRspax7+J1DaeOfrV6aS8GFS+gEAj7AbwqAtBrWQ0tNKJuIBo7uwh0AK1vn9tZ85c6C9RJfxeDQK8eTrCd0pBcLyt/Qzybsp6xFvAuZXTyCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708692706; c=relaxed/simple;
-	bh=WLDHP3Pmi6fiyPlExmfFMkvWm7uWSWkNRrejelK8FGE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=u8kKgE+H8Iij+cY3w5C9hdA46+O3OcTaGO3nhE4/8zBiYhrt2wlp4DnlYdJPwuqD4JcclLO/UMec2S8VqIKEqT4pBugEwdMWbHI1xgtudnZcDeuTW4hQxjH+LVrm/BpfbN8jOU4kvj8VWG9cnWTsegTwsODMkHmC5qDjOnV2Ti8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=RBRfgEUu; arc=none smtp.client-ip=93.104.207.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1708692703; x=1740228703;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=SCMZi11A1E2YMpLas5B8w2A6YUXUmq8oj7oBAEFAisI=;
-  b=RBRfgEUuFEjaCYq04c+kGGnPvS8EJtPRYzOw/+whnWlfjax5uR3HW8Z2
-   ytQPH8ICPV/24QEtXb7iBRSs49z+6ZpATg+7sloxAt5zYzItfGCKP/FTj
-   ITCz+E+AE3CiQRWah/rSsae0iQ4wOPUzNJKq924JhYNPLRvluTxdOD7BQ
-   y7cNlycpCXeDhSIMjjgvsYzOXXRqNziMVdZEvXVOBW5Mj2IdNA6CAPTtu
-   0fV5GF0rvBt0dgMY80feOAXdAMt4EVzJkJNtY1v0VKmkrPxVusYtJU7st
-   Jnvrx+niT2TXMHTUWze+whUNBy6VvUG6kxn6BLNR9s56g4G0ptyyiexTX
-   w==;
-X-IronPort-AV: E=Sophos;i="6.06,180,1705359600"; 
-   d="scan'208";a="35568140"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 23 Feb 2024 13:51:40 +0100
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 9D5F8280075;
-	Fri, 23 Feb 2024 13:51:40 +0100 (CET)
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
-To: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Liu Ying <victor.liu@nxp.com>
-Cc: robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com, l.stach@pengutronix.de, marex@denx.de
-Subject: Re: [PATCH] arm64: dts: imx8mp: Fix LDB clocks property
-Date: Fri, 23 Feb 2024 13:51:40 +0100
-Message-ID: <1979964.usQuhbGJ8B@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <20240223091522.2880155-1-victor.liu@nxp.com>
-References: <20240223091522.2880155-1-victor.liu@nxp.com>
+	s=arc-20240116; t=1708692749; c=relaxed/simple;
+	bh=IyCj5keIAQfJYXAfP7hpyBP6OruhWQ1GZ9RjUxfZQm8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FG4Cgx6Kqcu+aepX8ZnQSOw+axPoAL5or+D0y6YJPtz7mP9HLYDhM7uX9uN53ObMaTWUbjBlbF/OdZHc3dbymfrMo0FyscsNPwObifyMP2HnDbcuLvyjebZmWJsl2OYdJFe60tQw3d0LwDS8jJgRGHxsrcS7PvnuvpnML0DrXhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hHs2BTlA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20503C433F1;
+	Fri, 23 Feb 2024 12:52:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708692749;
+	bh=IyCj5keIAQfJYXAfP7hpyBP6OruhWQ1GZ9RjUxfZQm8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hHs2BTlAsibvTiPS5uMtGnbO95Z5CrS7S3+VfQE1MQ8ydoVDU/7TBA3sUrx8unWeS
+	 NlX6nPjBNeKzA3euVww5/83iSoXhurkXXlwPTVfMi8k+aHHcy/IxMkapQy924+3C4V
+	 l6tww2r6xsNFuJgm0/YJuYrO0A3LKH4hmiX6Jx56QpRoei7ASSTgjWPNRBRLsdivXv
+	 tO67neua4MvUrYTfJf2s3LCxJrvd8n9trzJ/GaCmK/nDPP+mpOSsJUajcf+uffxZt0
+	 67YTFv9gvchP8jjUL+bp/QVlL8LBFFv/K0TzzsNo4hwAhPlH9qmcZ/ky2EMWm31rxe
+	 Ao7vrxxRrX4/w==
+Date: Fri, 23 Feb 2024 12:52:24 +0000
+From: Will Deacon <will@kernel.org>
+To: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org, broonie@kernel.org,
+	Mark Rutland <mark.rutland@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64/hw_breakpoint: Determine lengths from generic perf
+ breakpoint macros
+Message-ID: <20240223125224.GC10641@willie-the-truck>
+References: <20240223113102.4027779-1-anshuman.khandual@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240223113102.4027779-1-anshuman.khandual@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Am Freitag, 23. Februar 2024, 10:15:22 CET schrieb Liu Ying:
-> The "media_ldb_root_clk" is the gate clock to enable or disable the clock
-> provided by CCM(Clock Control Module) to LDB instead of the "media_ldb"
-> clock which is the parent of the "media_ldb_root_clk" clock as a composite
-> clock.  Fix LDB clocks property by referencing the "media_ldb_root_clk"
-> clock instead of the "media_ldb" clock.
->=20
-> Fixes: e7567840ecd3 ("arm64: dts: imx8mp: Reorder clock and reg propertie=
-s")
-> Fixes: 94e6197dadc9 ("arm64: dts: imx8mp: Add LCDIF2 & LDB nodes")
-> Signed-off-by: Liu Ying <victor.liu@nxp.com>
-
-Thanks.
-Reviewed-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-
+On Fri, Feb 23, 2024 at 05:01:02PM +0530, Anshuman Khandual wrote:
+> Both platform i.e ARM_BREAKPOINT_LEN_X and generic i.e HW_BREAKPOINT_LEN_X
+> macros are used interchangeably to convert event->attr.bp_len and platform
+> breakpoint control arch_hw_breakpoint_ctrl->len. Let's be consistent while
+> deriving one from the other. This does not cause any functional changes.
+> 
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 > ---
->  arch/arm64/boot/dts/freescale/imx8mp.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/=
-dts/freescale/imx8mp.dtsi
-> index 9ab9c057f41e..bfc5c81a5bd4 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> @@ -1824,7 +1824,7 @@ lvds_bridge: bridge@5c {
->  					compatible =3D "fsl,imx8mp-ldb";
->  					reg =3D <0x5c 0x4>, <0x128 0x4>;
->  					reg-names =3D "ldb", "lvds";
-> -					clocks =3D <&clk IMX8MP_CLK_MEDIA_LDB>;
-> +					clocks =3D <&clk IMX8MP_CLK_MEDIA_LDB_ROOT>;
->  					clock-names =3D "ldb";
->  					assigned-clocks =3D <&clk IMX8MP_CLK_MEDIA_LDB>;
->  					assigned-clock-parents =3D <&clk IMX8MP_VIDEO_PLL1_OUT>;
->=20
+> This applies on v6.8-rc5
+> 
+>  arch/arm64/kernel/hw_breakpoint.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/hw_breakpoint.c b/arch/arm64/kernel/hw_breakpoint.c
+> index 35225632d70a..1ab9fc865ddd 100644
+> --- a/arch/arm64/kernel/hw_breakpoint.c
+> +++ b/arch/arm64/kernel/hw_breakpoint.c
+> @@ -301,28 +301,28 @@ static int get_hbp_len(u8 hbp_len)
+>  
+>  	switch (hbp_len) {
+>  	case ARM_BREAKPOINT_LEN_1:
+> -		len_in_bytes = 1;
+> +		len_in_bytes = HW_BREAKPOINT_LEN_1;
 
+I don't think we should do this. The HW_BREAKPOINT_LEN_* definitions are
+part of the user ABI and, although they correspond to the length in bytes,
+that's not necessarily something we should rely on.
 
-=2D-=20
-TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht M=FCnchen, HRB 105018
-Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-http://www.tq-group.com/
-
-
+Will
 
