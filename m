@@ -1,113 +1,207 @@
-Return-Path: <linux-kernel+bounces-79042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79041-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46D72861CB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 79A4C861CB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:39:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E7181C23841
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:39:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D8BF1C23733
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 19:39:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEF851468EC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA34B14601D;
 	Fri, 23 Feb 2024 19:39:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="Himi804K";
-	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="JLDJWSde"
-Received: from mailrelay5-1.pub.mailoutpod2-cph3.one.com (mailrelay5-1.pub.mailoutpod2-cph3.one.com [46.30.211.180])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="PbpcRNIF"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2068.outbound.protection.outlook.com [40.107.94.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F74B1448DD
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 19:39:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.211.180
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708717153; cv=none; b=pAYWEfg5+uxHObOMsfw5ljk4roZ2SqVq7atoO0+O8i3ORNF6llVIZfqKCrrH23M3DPn/T2maamst7l4W2mO/b2AtHftvAWUueh7VpZy6cEc4D44bv5Z2TcheV1cA7qrWpAeaWKjrYQDgSVHabFJRo+h8NxLaydr2PyObMyo8Jm4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708717153; c=relaxed/simple;
-	bh=gtjsAtzY6CoR2uHPdcQk0akokLqtoegbn5o87uU296A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jfiCONM7+TKcNakPekcvkW5hKk0yH6QyZYvkMU3wgtzlIaW5DYbWeOtvc7aNjYpZcYtGPZdwd8e8ifeX+t58a6fKb1gLeoU6tlCkG+ya0TbrIcxC/Intu0ZSqWhkEX8sLlP89wji30ZsfMKuVFTCmo/OpX40umLylmPxAWJgFeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org; spf=none smtp.mailfrom=ravnborg.org; dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=Himi804K; dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=JLDJWSde; arc=none smtp.client-ip=46.30.211.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=rsa2;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-	 from:date:from;
-	bh=vu84hH5wRX3+Gs3JvJLrbmmDszO+NlEAIZz3j6i15YE=;
-	b=Himi804KE7bsZ6kFLeknxwAxVJhaUDkq1b9PrxlmwGUZVdEybO2jj+2enpaSFdOSmYuUv+wxhruqk
-	 OBffDeyUKCq1mvj9fPDvxY0dEEy+LVkR3riBb43Y3cf1+aksru/NZrXwHDWqK4QE9ys3MD1btyzndd
-	 SOdpWH0uIC2NB5Bc6glcatY8+xyDfrDqFieHcw3bnz0A8TynfB2cWKlAbTCYFDrhMuyRYr3q/Pknzp
-	 Gjd7Wka2g/09ceH9epSUt9WNwN9FGJVlKecbhXO4ugcp+NuMveJdzsqjUvrDFJt9ubTgewkNZLKMlL
-	 1RcR0DxSqx6k3Y7NTv1sGMpM8Lu06Yg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=ed2;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-	 from:date:from;
-	bh=vu84hH5wRX3+Gs3JvJLrbmmDszO+NlEAIZz3j6i15YE=;
-	b=JLDJWSdeYgburo9haKco0WXEWlTU9LkFLZKrhthvQYjfNirWZI+Wd9tRPQqsdvbVYNG/LkdYoiYyR
-	 nCsTwFrDw==
-X-HalOne-ID: 323fe0ec-d283-11ee-ade9-657a30c718c6
-Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
-	by mailrelay5.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
-	id 323fe0ec-d283-11ee-ade9-657a30c718c6;
-	Fri, 23 Feb 2024 19:39:04 +0000 (UTC)
-Date: Fri, 23 Feb 2024 20:39:03 +0100
-From: Sam Ravnborg <sam@ravnborg.org>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: sparclinux <sparclinux@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	"Maciej W. Rozycki" <macro@orcam.me.uk>
-Subject: Re: sparc: patch to fix parport_pc build on 32-bit
-Message-ID: <20240223193903.GA2938185@ravnborg.org>
-References: <4c4e2845-c7a8-4d0b-aa4a-7c5e3399b3dc@infradead.org>
- <20240223093416.GA2800152@ravnborg.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48ADF1448F8;
+	Fri, 23 Feb 2024 19:39:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.68
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708717152; cv=fail; b=iI/LT6D3IBIhhH+FImYuX9BtyKhelRB51098SG1kO6TOPUrk3XFmwfNRc1vVGtAw/xZBoAetaFFoIY0YW6n4gpAXL7sH58PQfw/V792JFhC8wd7Nad1dEzVI5T/3+pKDv0pCBLKyXDncpkiUxUKpU8YxsdZPBlZd/wffamhZKv4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708717152; c=relaxed/simple;
+	bh=IPMGfsKDSvDuhhIQxSllb5iS1CSBDejTDOXSblNEmtc=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=cKUi5nd0go2i9PXlawN8wooWoNkFX0rPs+m+xNPHscvpR0YMBzhUZCi6r93qmQhFNlyZ5JYJPux/IzTHNQV4Ui3AT/OwbTMhy0TTNdEjP2E/NOvU02y/phrXWBE8zbNGwbJYzXXg+ZGg8p8GntsSnc4/Dc8ccCaLDDwJrxyRcxs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=PbpcRNIF; arc=fail smtp.client-ip=40.107.94.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CeQdvKM+AAXe4LBfePuhpHWzeS9BO1eRc9QcxVVxShmODm5DAJN25EXukqoVlEnKtJ1Z4yD8fphX+XJSAUnfoT5KoX9lHNqPiXc+FlKCzyCrME7qKpfVqxY+/pKcQIYRmV4bi2t41CgNmJMZ4BceXRsmmpfoK7fItm1W9UaHGQbfcvOD0zAc67wPjY+qj72/Ks1qHS4vh1Dq+5Y5Tk6oAaP+qKahDFMNot0sfwl//wdkqG9It/KUrirhBv5QQ+qPplySbhJNTu55rgdGTW8VXDyixtATTbq+PRrdCPG+ccIL/IP/l+taCgCGrwY4Il6NK2B/PgDl4FwRJPGq3wB9BA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=X9mO4BQawUDYUGo8SQ0qAuEnxGAbggtLBpjS7sF4Q6Y=;
+ b=H1U6xtuPo8Ydq/FZsXkF/IpsT7WIX6osM6g/qRyQn2w0rOAuiTe1v9Lk2Vu9+TokeRZi+kUSdU4YrP5Q9J45MjsrxrTZQ2KLv4h518AG9g0+YAuDvR2X3hmAy+npODesWd/BrOi9PqIuUFzUNAUVbmXxL1YZRHKxoaEvzV4/dojS2ssS4pJHEaXZGvjjXlxH2dmGxvhg8Goj4/072Jdrr+cvC3pAhoWZ1/KSdAhasEec60mDxkziKRvl9QG05Pxcz/4OLNAN++gsc0JeiQbtGYKZJ79xY6mhJvjumnECCfVyah+1F/DrayVM/VWSRNEqqIMmJOTWfOLsrfb9WumbeQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X9mO4BQawUDYUGo8SQ0qAuEnxGAbggtLBpjS7sF4Q6Y=;
+ b=PbpcRNIFgbqzOpo13YZc6HCIq89sqrPhjoblgwKz2eYqpr4HFnq/frLtM3dMOOUsND3oA9fRLrdumJWw8sFYhPcN+l5QVCFPHZ8jc/qSEHvpxSjwz6OHfZshcFgz5pEnhPx/pVkJ01fsuoATbX85o3YwrgVaLfdI+k+JFo9PJBM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by SJ1PR12MB6315.namprd12.prod.outlook.com (2603:10b6:a03:456::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.26; Fri, 23 Feb
+ 2024 19:39:08 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::f4aa:152b:b46f:80a0]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::f4aa:152b:b46f:80a0%4]) with mapi id 15.20.7316.023; Fri, 23 Feb 2024
+ 19:39:08 +0000
+Message-ID: <2c07415c-78fa-460b-8aa5-9a40536ce339@amd.com>
+Date: Fri, 23 Feb 2024 13:39:05 -0600
+User-Agent: Mozilla Thunderbird
+Reply-To: babu.moger@amd.com
+Subject: Re: [PATCH 4/4] selftests/resctrl: Skip the tests if iMC/UMC counters
+ are unavailable
+Content-Language: en-US
+To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: fenghua.yu@intel.com, Reinette Chatre <reinette.chatre@intel.com>,
+ shuah@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ linux-kselftest@vger.kernel.org,
+ =?UTF-8?Q?Maciej_Wiecz=C3=B3r-Retman?= <maciej.wieczor-retman@intel.com>,
+ peternewman@google.com, eranian@google.com
+References: <cover.1708637563.git.babu.moger@amd.com>
+ <f5c74072d96b57b10a66c01381139de453187327.1708637563.git.babu.moger@amd.com>
+ <a13f6e21-9929-a16d-bda1-533eaed8f875@linux.intel.com>
+From: "Moger, Babu" <babu.moger@amd.com>
+In-Reply-To: <a13f6e21-9929-a16d-bda1-533eaed8f875@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: DM6PR11CA0069.namprd11.prod.outlook.com
+ (2603:10b6:5:14c::46) To MW3PR12MB4553.namprd12.prod.outlook.com
+ (2603:10b6:303:2c::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240223093416.GA2800152@ravnborg.org>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|SJ1PR12MB6315:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4395304b-ebd9-4c71-0532-08dc34a71a30
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	v9u1l8BVjjri40QtbqXqGISF8OEK6ctgFB3HPhfF0RXJQpC6Mvf/DkgaKnTpxUVPxLuYW/rVLivQFeB4Mk+C4bysnlaHhxp8xgyUv9x6fhFkXzvlUtaaIx6pbnaYfWUDBDsANqOXPHsRUtAzttI5mYDZ05PEfF1V8R+OUWRvi/qnLHOhAA6QiF0JTG76CQhXhmByqL0vuIim4DI6jVRdv2NHlfhvLVhm2OQCi+3Aww/DzHGpZc4g0b5vmeD8BVRSewbg0F7z6BrfN0CgOJzxoPetNit1VAeDlTDlO5Q80nNEIvbPNOyue+bPkxXjWs0vlkZJdP+xQC1qNHb/TN5ZuQQVl4XFwngLPJXn5kKyGRTsfYrUpVkGV+W8d7tTD7BwXg8eDx4FDDJS93dnjLQwp16OpHs7uPuxJkd5nEs4KritVlpjEWCi8UcdZCefLgSQlw3TWfIrTcGhATBti0fk+TnskftCpMUfWBDKBQQrDlZqBHn78dvelLtFDJ0CXkS4AjO+wEorn4Bhyb27pDsxQctEsMQBaUPIiOhRveBiaB4=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?bFNqeHdQWnZPK0YvT3F4TTJSb0E2MHlvb1dITjFEZVV6TDRENDZlbS9DaUIx?=
+ =?utf-8?B?aVJramtmd09rMDhhTlJtZlNZRzdZdXJyZlZmTnNTd0JHclAzd3cxSy9EQW81?=
+ =?utf-8?B?VUNzcmUzdlo5WmVxNFFGblpNREdUdlpEdGkzdWgrbkdWZCt2bFhPQStFUVJw?=
+ =?utf-8?B?cGFKRlVJakF3aURQTWR1ZUNLMGU1RDlyWlZ6Ly9IZ0t2YnVmVmRLOVFQNWM0?=
+ =?utf-8?B?bnFuOERPQWU0YzFobEQrUDJESTFyRTN0S2NYd0NXQlkxNUpkUk9laFozQVZo?=
+ =?utf-8?B?N1lsMHpwNEhwWCtCRG5uVXNIenN0UU5lQkdqYjA5NktYOHV1NE1kUytBaFNk?=
+ =?utf-8?B?NVFVckpTclB0djk4eEJHV01qK0o0aDQ2VTdiallTeldDUi9IdkU2TGNDcklY?=
+ =?utf-8?B?RGtrM3RCd1NzSEN1Tkc0ZzRvQVpRUmxWdm1sS2RyVE5qbytoK3JwbGhkSWsx?=
+ =?utf-8?B?bVhPZjFyeFg4SkVOUHpXengyUStRZEJvOC9FY2xiWDJIUmluTDltVTVtNE9D?=
+ =?utf-8?B?aE80dFNjS05tUWdZL3lPUGIrOXpGRU52cStybVdFODdVV3ZWSi8wcFJ5bEdh?=
+ =?utf-8?B?T2lJMmwwUUo3N25YRUZsc2ROUFFPdm03aXY4Vzc4amtoWWRITzhLUDV6SlEv?=
+ =?utf-8?B?OXkzdmRaSDFWcEd1VGNLaEZ0MGJldmhPSjY2SFlzbFovU3BaU3pFaXcxbkhi?=
+ =?utf-8?B?ZEQrRWYxazAyZnlEVm5Qa2ZNeWxoYVY1TE5ObGVyV1VPdWQ4TTI5MDNrdXUx?=
+ =?utf-8?B?QVphN282eGtqaCtwQWhsUlJWM2NnWlVkMEgzd0NLTTBiVzRCSFhrMFZqaUtv?=
+ =?utf-8?B?R3hDMVBoVHFmRWZ0Y2lLNUd4YXIwME9NWkxqZUdTSzlCbS9qcDZmTm84YzdW?=
+ =?utf-8?B?YlFJSUhEaUM3VHlmKy9sa3o2RzY4Mis1TG55WFExRWZDanlMUkVPZVRuWlZP?=
+ =?utf-8?B?eEdxSkRCdm9QT2xyS1NVUzlmY1RkM0pnSlB0aTUwN2ZyckYvSUJJcXlDTmpX?=
+ =?utf-8?B?RmsrdmpkdGpSMHBLa1h0NTBoblJWaGNFRnBKc0k5TlZUbXV3OHhNTEsvT2Zw?=
+ =?utf-8?B?U09wSXl5Ymc3RWI5S1dSVUxLWHNyYUt4RDFFTWVYaDE3NUl5MW91Zk8zeWk0?=
+ =?utf-8?B?anRnTkxObk1oQ3o5Nmc2Q05vNTZOU01DZ1poVUh2cXR1RzlwTVE4czNKTUZz?=
+ =?utf-8?B?ZVI5WWgzcUFHN2VWSE1XRVpGMGJ4N1hzYTNnMjhDYlE0QlJhTS9KbHBDdC9j?=
+ =?utf-8?B?TnpLd1BvZVBPK2c4bUIyUWZLalgwYzVPTGgwekxLVkcycE9VMW9heXVudTd0?=
+ =?utf-8?B?M1NpRnVaQUF0MmpBLzJneDlBby9kWlhKZldHaHNyKzNNNGpVZUFDRkRvSDl2?=
+ =?utf-8?B?dm5JWTNGNGlvRHJyUU9GTGo5cTQwR1RKOG5JVzJWS0JPM2xicGZjTG5KTXQz?=
+ =?utf-8?B?YTFUYmZtbWZUY2VCT3JHeVBDbURtZGdGV1d1dlJMTDYwTXNkY29VTm5aMUhy?=
+ =?utf-8?B?cXZ4cjcyQmY1MTdUNFpqMmlOb2VFdnBUYUlhdy96WVNtRXhGWmsrTTVJVTI0?=
+ =?utf-8?B?OG11WVpaZmNXcnZTaDdKeDQ5UEVuWVdZdnBpY0JXZjIwRlJKYitzWitGSUZW?=
+ =?utf-8?B?Vmk2OUY0VzFsRjRtZGl2a3Uwa2JPYmF6eTBpamk4aG9tV3N6cThHU0NmVDJO?=
+ =?utf-8?B?Mk1BcnFrOG01T2pyNmVGMGdsT0ZOcC9vL05Db3N0TWRRdHp1RDVFRHZSUEZh?=
+ =?utf-8?B?bzVrRVM2VEV4VjhrSStScGhhaFlCSS9xc2hlanN1VnFMcTJ4MUVqNDhhbW5P?=
+ =?utf-8?B?VmgxRlljWFhDeUMyOVJOMDByMXR0cUFDOW5DV0VNK2RPOW1ZQkpYbHhFWkxF?=
+ =?utf-8?B?L21GZkUxalgvbUU5V00xZklFY0JkUy81ZUJaNmpOMXVGMmlTaXpqOG5aWUVL?=
+ =?utf-8?B?WUFtYVpxMzdUYU1rUUJrS3VEUldKeGRTNFM0Q2xXL0J4Rk54dkdrMSs5VG1Z?=
+ =?utf-8?B?bi8rMHh4SGxtajV4MjEyZW9BeERvbTJpczdjOEVRaDN4Z2xqaGJMNUtEU2Fv?=
+ =?utf-8?B?RTlwaW1obEtNdzFOODZnNUlMbWZBTCtkaVBXQkdmUU9KeGoyQVF0UXNYb1pm?=
+ =?utf-8?Q?41TI=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4395304b-ebd9-4c71-0532-08dc34a71a30
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2024 19:39:08.4859
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GrZI+qFMSFQDliXcccvg/sG4DxihbJYH2Lqy60ep4weeEeHzOcbG65E1y+CDyRQG
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6315
 
-Hi Randy,
+Hi Ilpo,
 
-On Fri, Feb 23, 2024 at 10:34:16AM +0100, Sam Ravnborg wrote:
-> Hi Randy/Andreas.
+On 2/23/24 04:56, Ilpo Järvinen wrote:
+> On Thu, 22 Feb 2024, Babu Moger wrote:
 > 
-> On Thu, Feb 22, 2024 at 09:15:28PM -0800, Randy Dunlap wrote:
-> > Hi Andreas,
-> > 
-> > Please pick up this patch from June/2023. I have already replied to
-> > the patch with:
-> > 
-> > Acked-by: Randy Dunlap <rdunlap@infradead.org>
-> > Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-> > 
-> > and I just rechecked it on linux-next-20240223 to make sure that it
-> > builds cleanly. It does; however, there is one trivial merge warning:
-> > 
-> > patching file arch/sparc/include/asm/parport.h
-> > Hunk #1 succeeded at 20 (offset 1 line).
-> > Hunk #2 succeeded at 252 (offset 1 line).
-> > 
-> > The patch:
-> > https://lore.kernel.org/lkml/alpine.DEB.2.21.2306190121540.14084@angie.orcam.me.uk/
+>> Older systems do not support UMC (Unified Memory Controller) perf counters.
+>> Skip the tests if the system does not support UMC counters.
+>>
+>> Signed-off-by: Babu Moger <babu.moger@amd.com>
+>> ---
+>>  tools/testing/selftests/resctrl/resctrl.h       |  1 +
+>>  tools/testing/selftests/resctrl/resctrl_tests.c | 10 ++++++++++
+>>  tools/testing/selftests/resctrl/resctrl_val.c   |  4 ++--
+>>  3 files changed, 13 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
+>> index a33f414f6019..5c2556af0649 100644
+>> --- a/tools/testing/selftests/resctrl/resctrl.h
+>> +++ b/tools/testing/selftests/resctrl/resctrl.h
+>> @@ -116,5 +116,6 @@ int show_cache_info(unsigned long sum_llc_val, int no_of_bits,
+>>  		    size_t cache_span, unsigned long max_diff,
+>>  		    unsigned long max_diff_percent, unsigned long num_of_runs,
+>>  		    bool platform, bool cmt);
+>> +int get_number_of_mem_ctrls(void);
+>>  
+>>  #endif /* RESCTRL_H */
+>> diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
+>> index 231233b8d354..5423882529ec 100644
+>> --- a/tools/testing/selftests/resctrl/resctrl_tests.c
+>> +++ b/tools/testing/selftests/resctrl/resctrl_tests.c
+>> @@ -98,6 +98,11 @@ static void run_mbm_test(const char * const *benchmark_cmd, int cpu_no)
+>>  
+>>  	ksft_print_msg("Starting MBM BW change ...\n");
+>>  
+>> +	if (get_number_of_mem_ctrls() < 0) {
+>> +		ksft_test_result_skip("Unable find iMC/UMC counters!\n");
+>> +		return;
+>> +	}
+>> +
+>>  	if (test_prepare()) {
+>>  		ksft_exit_fail_msg("Abnormal failure when preparing for the test\n");
+>>  		return;
+>> @@ -124,6 +129,11 @@ static void run_mba_test(const char * const *benchmark_cmd, int cpu_no)
+>>  
+>>  	ksft_print_msg("Starting MBA Schemata change ...\n");
+>>  
+>> +	if (get_number_of_mem_ctrls() < 0) {
+>> +		ksft_test_result_skip("Unable find iMC/UMC counters!\n");
+>> +		return;
+>> +	}
+>> +
+>>  	if (test_prepare()) {
+>>  		ksft_exit_fail_msg("Abnormal failure when preparing for the test\n");
+>>  		return;
 > 
-> I took a quick look at the patch. It does the minimal to fix the build
-> but the ebus_dma thing is only used by sparc64 an should not be visible
-> at all for sparc32.
-> 
-> I think the right fix is to make the current
-> arch/sparc/include/asm/parport.h sparc64 specific and use
-> asm-generic/parport.h for sparc32.
+> This also needs rebasing and adaptation to the generic test framework.
 
-I posted a set of fixes here, including an updated parport fix.
-https://lore.kernel.org/sparclinux/20240223-sam-fix-sparc32-all-builds-v1-0-5c60fd5c9250@ravnborg.org/T/#t
-
-	Sam
+Looks like I need to wait for your patches to merge first.
+Thanks
+Babu Moger
 
