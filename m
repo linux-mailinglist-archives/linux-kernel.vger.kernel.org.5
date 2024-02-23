@@ -1,97 +1,92 @@
-Return-Path: <linux-kernel+bounces-77700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC630860933
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:10:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBFF386093C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 04:12:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 377FD1F25181
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:10:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0ADF286616
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 03:12:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 591B6D30B;
-	Fri, 23 Feb 2024 03:10:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bIcewTEm"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55CE810A0F;
+	Fri, 23 Feb 2024 03:12:17 +0000 (UTC)
+Received: from gentwo.org (gentwo.org [62.72.0.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97E5BC2C6;
-	Fri, 23 Feb 2024 03:10:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D303B10A01
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 03:12:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.72.0.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708657826; cv=none; b=EXZzjSzG4CPu7qcmepvNATDsSUR6sdL/Ofq+iUCsD5KDfMOwyxB1XtM+RmKCtIy5PrGMGfAJZ2lwsTLz5EQTNVFC3Q9fSl+f9Rb6RZ03tY2ReXfcuKnK4fMpnd00GwH4SoLWF5UUGicr/FL5adARcyv9L9YRxvuOL7P/IwKhk+0=
+	t=1708657936; cv=none; b=UCue/DJQz0K9Iy50P6c2tUuLSitMEeAW8T/8ej7pyUJ1hDfmqprTUaKFB+yYOJB/vXqAR6nJ5Nl78Ti3c1B2nr+uFc/jd/xvZvqzlZVMbwzHrnKqLMc10Npw0cl5dby+P4E+Lvwwg9XQgPhr6yae5tr7onReH+w+qFhwPHKDtFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708657826; c=relaxed/simple;
-	bh=ShyPs+sk9cjghhKS+XmCdRWwHN7rYc+/GlEjmNvnqUM=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=o9YjxDmmTeFMgFo1+bd5MHMws21gYHAZg6R9N91sgJauurJidMXqF+4YjANBjL0od+yipJHXvgVD0Ln4yTyrI6aI5cFd/tQjz135XjmNmK0FIywp4yJA4p1OsAVxGFZPO56mUtWYj317s0R/gO6o6zIYumcbNf04E7Pit9wApq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bIcewTEm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 66A49C43390;
-	Fri, 23 Feb 2024 03:10:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708657826;
-	bh=ShyPs+sk9cjghhKS+XmCdRWwHN7rYc+/GlEjmNvnqUM=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=bIcewTEme+9ObupVYZoPyDLHY731JB2tvS1z2pUHm+T3TRz7pwNIaHbkZMgGGLPIl
-	 W1FwjhhuQMl1k8QTADCEHb/EY1UyNxl9X8mWj26mcZ4jLLXdyiFY8Z3t4jmBk8otv0
-	 EUmldRYB1qcff7S1YscfCGBqrr7xIXMGdrC9cdhNBBpWt49fWeir/IsftVJWHoAqpt
-	 4OphOD/O4RXE955nF+hr2LpkXZEf3uXS1vo9cOehQIt5BbyOeO0fY8B3bfNCvq7kv2
-	 Dq8hQF1NsPlYJX+TQM5k6IxThjYMsHyY2l1QF5oQqvfcjBhlQfDatAy9sU22XyTg9V
-	 W7Bnj8qqUbCOw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4D0C2D84BB8;
-	Fri, 23 Feb 2024 03:10:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1708657936; c=relaxed/simple;
+	bh=IfE0Mw15HNypz38gIE6amDvs+YXN4zqJPoCZprGys4c=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=ji17z+6ODoc9o8LG51wngk2U8B/XCmmcftITpvq8Dz33RLCXtTIqJ1rJWcdQ+XuTpswbozSaqxNSbztnzPTx80kjq6DCjbyOA5bZEY/58lQznsBJh88Lz0RkKFJlVLA/uC5Jn72w+pTYVY9e7GW3mrrw5KeC9hzeDxJqUv/r7EE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com; spf=fail smtp.mailfrom=linux.com; arc=none smtp.client-ip=62.72.0.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.com
+Received: by gentwo.org (Postfix, from userid 1003)
+	id 155E640AA8; Thu, 22 Feb 2024 19:12:14 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+	by gentwo.org (Postfix) with ESMTP id 14C8D40788;
+	Thu, 22 Feb 2024 19:12:14 -0800 (PST)
+Date: Thu, 22 Feb 2024 19:12:14 -0800 (PST)
+From: "Christoph Lameter (Ampere)" <cl@linux.com>
+To: Vlastimil Babka <vbabka@suse.cz>
+cc: Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>, 
+    Joonsoo Kim <iamjoonsoo.kim@lge.com>, 
+    Andrew Morton <akpm@linux-foundation.org>, 
+    Roman Gushchin <roman.gushchin@linux.dev>, 
+    Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+    Andrey Ryabinin <ryabinin.a.a@gmail.com>, 
+    Alexander Potapenko <glider@google.com>, 
+    Andrey Konovalov <andreyknvl@gmail.com>, 
+    Dmitry Vyukov <dvyukov@google.com>, 
+    Vincenzo Frascino <vincenzo.frascino@arm.com>, 
+    Zheng Yejian <zhengyejian1@huawei.com>, 
+    Xiongwei Song <xiongwei.song@windriver.com>, 
+    Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, 
+    linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com
+Subject: Re: [PATCH 2/3] mm, slab: use an enum to define SLAB_ cache creation
+ flags
+In-Reply-To: <20240220-slab-cleanup-flags-v1-2-e657e373944a@suse.cz>
+Message-ID: <8bc31ec7-5d6e-b4c0-9d6e-42849673f35f@linux.com>
+References: <20240220-slab-cleanup-flags-v1-0-e657e373944a@suse.cz> <20240220-slab-cleanup-flags-v1-2-e657e373944a@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] netlink: Fix kernel-infoleak-after-free in
- __skb_datagram_iter
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170865782631.16544.1371911549002746191.git-patchwork-notify@kernel.org>
-Date: Fri, 23 Feb 2024 03:10:26 +0000
-References: <20240221074053.1794118-1-ryasuoka@redhat.com>
-In-Reply-To: <20240221074053.1794118-1-ryasuoka@redhat.com>
-To: Ryosuke Yasuoka <ryasuoka@redhat.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, horms@kernel.org, anjali.k.kulkarni@oracle.com,
- lirongqing@baidu.com, dhowells@redhat.com, pctammela@mojatatu.com,
- kuniyu@amazon.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- syzbot+34ad5fab48f7bf510349@syzkaller.appspotmail.com
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 
-Hello:
+On Tue, 20 Feb 2024, Vlastimil Babka wrote:
 
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 2ef88bbf56a3..a93c5a17cbbb 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -306,13 +306,13 @@ static inline bool kmem_cache_has_cpu_partial(struct kmem_cache *s)
+>
+> /* Internal SLUB flags */
+> /* Poison object */
+> -#define __OBJECT_POISON		((slab_flags_t __force)0x80000000U)
+> +#define __OBJECT_POISON		__SF_BIT(_SLAB_OBJECT_POISON)
+> /* Use cmpxchg_double */
+>
+> #ifdef system_has_freelist_aba
+> -#define __CMPXCHG_DOUBLE	((slab_flags_t __force)0x40000000U)
+> +#define __CMPXCHG_DOUBLE	__SF_BIT(_SLAB_CMPXCHG_DOUBLE)
+> #else
+> -#define __CMPXCHG_DOUBLE	((slab_flags_t __force)0U)
+> +#define __CMPXCHG_DOUBLE	0
+> #endif
 
-On Wed, 21 Feb 2024 16:40:48 +0900 you wrote:
-> syzbot reported the following uninit-value access issue [1]:
-> 
-> netlink_to_full_skb() creates a new `skb` and puts the `skb->data`
-> passed as a 1st arg of netlink_to_full_skb() onto new `skb`. The data
-> size is specified as `len` and passed to skb_put_data(). This `len`
-> is based on `skb->end` that is not data offset but buffer offset. The
-> `skb->end` contains data and tailroom. Since the tailroom is not
-> initialized when the new `skb` created, KMSAN detects uninitialized
-> memory area when copying the data.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net] netlink: Fix kernel-infoleak-after-free in __skb_datagram_iter
-    https://git.kernel.org/netdev/net/c/661779e1fcaf
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Maybe its good to put these internal flags together with the other flags. 
+After all there is no other slab allocator available anymore and having 
+them all together avoids confusion.
 
 
