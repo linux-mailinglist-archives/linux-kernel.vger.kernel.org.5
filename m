@@ -1,206 +1,173 @@
-Return-Path: <linux-kernel+bounces-78229-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E72F861081
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:37:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DC2786107F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 12:36:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1658E1F22C79
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:37:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCB052822E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 11:36:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB86A7B3DE;
-	Fri, 23 Feb 2024 11:36:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3A6B7A70B;
+	Fri, 23 Feb 2024 11:36:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="VURsqpMD"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="WznBUKJC"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75AF67A725;
-	Fri, 23 Feb 2024 11:36:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4C8A1758D;
+	Fri, 23 Feb 2024 11:36:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708688200; cv=none; b=VAdAzv5NbQZpn8XNIuNmYjP1PC1r61rglnn8KqUnNOX6Z4qOChJ6SxSyBbAf8X53Xw2BwPb/xNtG0NCCIN120NGDQYCUdtdbYkgjkFphfFVKTpB44DFJhukx13YU/FrM3yXihT6qRuId4p/ODInU1LGcnVNIrNDGY3OO/cIxeSE=
+	t=1708688197; cv=none; b=Tr+2BVzeWJYPWiWegL4+B76YGSZktRp150kpfJtGspg+Perqi156L419z2tKkkfznOrs/D6yvVKlozysd5rIya2iAsMrvfvALrYrYOQo82gPx4ARQ97UpiSMnSaxCSpmxK5T+3CpR8bmPv3ZjwhnL0t4QjrMtiouIZNqTG7VCso=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708688200; c=relaxed/simple;
-	bh=rD5j6z4UXyN4KDu0BktxVBBRuPzEK0pA5vDMoVfxJxE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=rL/Ub5DX/GpYP0MeyBkfHiC8ounYHrTmE4FlAnNq6b1FlcVhSzxjEmsnYqO+wlGKqDha9T8il99d+rBMMZoyHA2aAMoiS8bPZcryn05+S8KJqByof7m0vFb1Eo8OPHsWy7m0RMwgFbe+io1EcoCa0nn5Z2Zl5B5edFM8/u5J/XI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=VURsqpMD; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41NBFOfj031519;
-	Fri, 23 Feb 2024 11:36:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=5ir3WNsd+5toDv8bs5/TXD7VZCLRGGsdWGLbCSN2DQQ=; b=VU
-	RsqpMDg2z7IahFTQ3pAbMaie1xgwwrMJE11nSYunFEZpkCfiMjOB5DWVfdW/Ai3Q
-	wkHRKl1n9aRBTJ2als03nLsHR+pZfXPlILQFNf+nsSnR+d6Pw+SgKJVArJto2efJ
-	vy1dvd8CYR57bACkpxk37U3mn4FeXbpv2o8LS9wwpHsg4Nh08LLE6DfTqm+60zny
-	jJH+ndEFLua8ofEKyIw9jcIpo81cL+OeXI0z2lmCYArxYewMrWrfEtDXRy2OUJEE
-	mtfaZMkqdW1VWKNPMWMXPg//QjIcHJBjYDtL9HK87nwc4V/ho+GJNK5YknD6YitC
-	QlwigPvVYMBoH7xEcZcA==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wekverxjj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 11:36:16 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41NBaFkL023154
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 11:36:15 GMT
-Received: from [10.217.218.85] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 23 Feb
- 2024 03:36:10 -0800
-Message-ID: <d2f40e2d-cbbd-41f9-9aa6-41d0f251ffda@quicinc.com>
-Date: Fri, 23 Feb 2024 17:05:59 +0530
+	s=arc-20240116; t=1708688197; c=relaxed/simple;
+	bh=cDc7U7GcuQWoMk6L+ou7gQSSvAw1xIOtj2z4l+2dVAI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EN+A8e6fOscDeKwfZXHFpV1sIzc0lEzGskeWoLQKy1xgxWadzQfBq8DqWHFQrKdYD7RgEdnL4MdmTYksFJSMVYcB0KAre1Ttr+NI/lbkQEr/HYY0emtkmTk//kLYbfSbpixREa8OAVJD7FKaBkLM4av6K2sGm5kYVVQkOKJh0XY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=WznBUKJC; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id C9B662E7;
+	Fri, 23 Feb 2024 12:36:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1708688185;
+	bh=cDc7U7GcuQWoMk6L+ou7gQSSvAw1xIOtj2z4l+2dVAI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WznBUKJCCNNkzo+TNJTpcmhwi9mKmdT5Xi9UsPHhCaKcAboi3zgc0zLuO476a3c/N
+	 Ax5XW/b4bUHTCv56KEqee+UlLwDrPxoFJAQq21qcYzx/L5Rt4UdYqTiZ0NlG/xJZNy
+	 xYelyWxVKPeYjeUezIgGapKfLi8wJOzwEKJMzxys=
+Date: Fri, 23 Feb 2024 13:36:37 +0200
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Mikhail Rudenko <mike.rudenko@gmail.com>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Jacopo Mondi <jacopo@jmondi.org>,
+	Tommaso Merciai <tomm.merciai@gmail.com>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Dave Stevenson <dave.stevenson@raspberrypi.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH v2 15/20] media: i2c: ov4689: Move pixel array size out
+ of struct ov4689_mode
+Message-ID: <20240223113637.GA14575@pendragon.ideasonboard.com>
+References: <20231218174042.794012-1-mike.rudenko@gmail.com>
+ <20231218174042.794012-16-mike.rudenko@gmail.com>
+ <20240223113300.GS31348@pendragon.ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] usb: gadget: f_fs: Fix NULL pointer dereference in
- ffs_epfile_async_io_complete()
-To: Greg KH <gregkh@linuxfoundation.org>
-CC: <brauner@kernel.org>, <axboe@kernel.dk>, <jack@suse.cz>,
-        <jlayton@kernel.org>, <keescook@chromium.org>, <peter@korsgaard.com>,
-        <hayama@lineo.co.jp>, <dmantipov@yandex.ru>,
-        <quic_linyyuan@quicinc.com>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_ppratap@quicinc.com>,
-        <quic_wcheng@quicinc.com>, <quic_jackp@quicinc.com>
-References: <20240223054809.2379-1-quic_selvaras@quicinc.com>
- <2024022302-routine-schematic-b4fd@gregkh>
-Content-Language: en-US
-From: Selvarasu Ganesan <quic_selvaras@quicinc.com>
-In-Reply-To: <2024022302-routine-schematic-b4fd@gregkh>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: vbfXIqZrfokxrUvaLB29KADRC0BcAcxR
-X-Proofpoint-ORIG-GUID: vbfXIqZrfokxrUvaLB29KADRC0BcAcxR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-22_15,2024-02-23_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 adultscore=0
- impostorscore=0 clxscore=1015 spamscore=0 phishscore=0 mlxlogscore=999
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402230083
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240223113300.GS31348@pendragon.ideasonboard.com>
 
-
-On 2/23/2024 11:28 AM, Greg KH wrote:
-> On Thu, Feb 22, 2024 at 09:48:09PM -0800, Selvarasu Ganesan wrote:
->> In scenarios of continuous and parallel usage of multiple FFS interfaces
->> and concurrent adb operations (e.g., adb root, adb reboot), there's a
->> chance that ffs_epfile_async_io_complete() might be processed after
->> ffs_epfile_release(). This could lead to a NULL pointer dereference of
->> ffs when accessing the ffs pointer in ffs_epfile_async_io_complete(), as
->> ffs is freed as part of ffs_epfile_release(). This epfile release is
->> part of file operation and is triggered when user space daemons restart
->> themselves or a reboot is initiated.
->>
->> Fix this issue by adding a NULL pointer check for ffs in
->> ffs_epfile_async_io_complete().
->>
->> [  9981.393115] Unable to handle kernel NULL pointer dereference at virtual address 00000000000001e0
->> [  9981.402854] Mem abort info:
->> ...
->> [  9981.532540] Hardware name: Qualcomm Technologies,
->> [  9981.540579] pstate: 204000c5 (nzCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
->> [  9981.548438] pc : ffs_epfile_async_io_complete+0x38/0x4c
->> [  9981.554529] lr : usb_gadget_giveback_request+0x30/0xd0
->> ...
->> [  9981.645057] Call trace:
->> [  9981.648282]  ffs_epfile_async_io_complete+0x38/0x4c
->> [  9981.654004]  usb_gadget_giveback_request+0x30/0xd0
->> [  9981.659637]  dwc3_gadget_endpoint_trbs_complete+0x1a8/0x48c
->> [  9981.666074]  dwc3_process_event_entry+0x378/0x648
->> [  9981.671622]  dwc3_process_event_buf+0x6c/0x288
->> [  9981.676903]  dwc3_thread_interrupt+0x3c/0x68
->> [  9981.682003]  irq_thread_fn+0x2c/0x8c
->> [  9981.686388]  irq_thread+0x198/0x2ac
->> [  9981.690685]  kthread+0x154/0x218
->> [  9981.694717]  ret_from_fork+0x10/0x20
->>
->> Signed-off-by: Selvarasu Ganesan <quic_selvaras@quicinc.com>
+On Fri, Feb 23, 2024 at 01:33:01PM +0200, Laurent Pinchart wrote:
+> Hi Mikhail,
 > 
-> What commit id does this fix?  Should it go to stable kernels?
-
-Fixes: 2e4c7553cd6f9 ("usb: gadget: f_fs: add aio support"). Yes it's
-required to propagate to stable kernel as well.
+> Thank you for the patch.
 > 
->> ---
->>   drivers/usb/gadget/function/f_fs.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/function/f_fs.c
->> index be3851cffb73..d8c8e88628f9 100644
->> --- a/drivers/usb/gadget/function/f_fs.c
->> +++ b/drivers/usb/gadget/function/f_fs.c
->> @@ -849,7 +849,9 @@ static void ffs_epfile_async_io_complete(struct usb_ep *_ep,
->>   	usb_ep_free_request(_ep, req);
->>   
->>   	INIT_WORK(&io_data->work, ffs_user_copy_worker);
->> -	queue_work(ffs->io_completion_wq, &io_data->work);
->> +
->> +	if (ffs && ffs->io_completion_wq)
->> +		queue_work(ffs->io_completion_wq, &io_data->work);
+> On Mon, Dec 18, 2023 at 08:40:36PM +0300, Mikhail Rudenko wrote:
+> > Pixel array dimensions and default crop size do not belong to the
+> > ov4689_mode structure, since they are mode independent. Make them
+> > defines instead.
+> > 
+> > Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
+> > ---
+> >  drivers/media/i2c/ov4689.c | 29 +++++++++++++----------------
+> >  1 file changed, 13 insertions(+), 16 deletions(-)
+> > 
+> > diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
+> > index b43fb1d7b15f..475508559e3e 100644
+> > --- a/drivers/media/i2c/ov4689.c
+> > +++ b/drivers/media/i2c/ov4689.c
+> > @@ -70,6 +70,11 @@
+> >  #define OV4689_LANES			4
+> >  #define OV4689_XVCLK_FREQ		24000000
+> >  
+> > +#define OV4689_PIXEL_ARRAY_WIDTH	2720
+> > +#define OV4689_PIXEL_ARRAY_HEIGHT	1536
+> > +#define OV4689_DUMMY_ROWS		8
+> > +#define OV4689_DUMMY_COLUMNS		16
 > 
-> What happens if ffs->io_compleation_wq goes away right after you test
-> it but before you call queue_work()?
+> Adding a comment here to indicate that there are dummy columns in each
+> side would be useful:
 > 
-> Where is the locking here to prevent that?
+> #define OV4689_DUMMY_ROWS		8	/* 8 dummy rows on each side */
+> #define OV4689_DUMMY_COLUMNS		16	/* 16 dummy columns on each side */
 > 
-> thanks,
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 > 
-> greg k-h
+> > +
+> >  static const char *const ov4689_supply_names[] = {
+> >  	"avdd", /* Analog power */
+> >  	"dovdd", /* Digital I/O power */
+> > @@ -90,10 +95,6 @@ struct ov4689_mode {
+> >  	u32 vts_def;
+> >  	u32 exp_def;
+> >  	u32 pixel_rate;
+> > -	u32 sensor_width;
+> > -	u32 sensor_height;
+> > -	u32 crop_top;
+> > -	u32 crop_left;
+> >  	const struct cci_reg_sequence *reg_list;
+> >  	unsigned int num_regs;
+> >  };
+> > @@ -254,10 +255,6 @@ static const struct ov4689_mode supported_modes[] = {
+> >  		.id = OV4689_MODE_2688_1520,
+> >  		.width = 2688,
+> >  		.height = 1520,
+> > -		.sensor_width = 2720,
+> > -		.sensor_height = 1536,
+> > -		.crop_top = 8,
+> > -		.crop_left = 16,
+> >  		.exp_def = 1536,
+> >  		.hts_def = 10296,
+> >  		.hts_min = 3432,
+> > @@ -385,8 +382,6 @@ static int ov4689_get_selection(struct v4l2_subdev *sd,
+> >  				struct v4l2_subdev_state *state,
+> >  				struct v4l2_subdev_selection *sel)
+> >  {
+> > -	const struct ov4689_mode *mode = to_ov4689(sd)->cur_mode;
+> > -
+> >  	if (sel->which != V4L2_SUBDEV_FORMAT_ACTIVE)
+> >  		return -EINVAL;
+> >  
+> > @@ -394,15 +389,17 @@ static int ov4689_get_selection(struct v4l2_subdev *sd,
+> >  	case V4L2_SEL_TGT_CROP_BOUNDS:
+> >  		sel->r.top = 0;
+> >  		sel->r.left = 0;
+> > -		sel->r.width = mode->sensor_width;
+> > -		sel->r.height = mode->sensor_height;
+> > +		sel->r.width = OV4689_PIXEL_ARRAY_WIDTH;
+> > +		sel->r.height = OV4689_PIXEL_ARRAY_HEIGHT;
+> >  		return 0;
+> >  	case V4L2_SEL_TGT_CROP:
+> >  	case V4L2_SEL_TGT_CROP_DEFAULT:
+> > -		sel->r.top = mode->crop_top;
+> > -		sel->r.left = mode->crop_left;
+> > -		sel->r.width = mode->width;
+> > -		sel->r.height = mode->height;
+> > +		sel->r.top = OV4689_DUMMY_ROWS;
+> > +		sel->r.left = OV4689_DUMMY_COLUMNS;
+> > +		sel->r.width =
+> > +			OV4689_PIXEL_ARRAY_WIDTH - 2 * OV4689_DUMMY_COLUMNS;
+> > +		sel->r.height =
+> > +			OV4689_PIXEL_ARRAY_WIDTH - 2 * OV4689_DUMMY_ROWS;
 
-Hi Greg,
+I spoke too fast: this should be OV4689_PIXEL_ARRAY_HEIGHT, not
+OV4689_PIXEL_ARRAY_WIDTH.
 
-Thank you for your feedback. I understand your concern about the
-potential race condition with ffs->io_completion_wq. I’m considering
-introducing a lock to protect this section of the code, but I wanted to
-get your opinion on this.
-In the f_fs.c driver, there are pre-existing locks. Would it be suitable 
-to utilize these locks, or do you suggest the creation of a new lock 
-specifically for ffs->io_completion_wq? We anticipate a performance 
-impact if we use the existing lock, as it might be held by different
-threads. What are your thoughts on this?"
+> >  		return 0;
+> >  	}
+> >  
 
-Here’s what the code might look like with a new lock:
+-- 
+Regards,
 
-static void ffs_epfile_async_io_complete(struct usb_ep *_ep,
-                                          struct usb_request *req)
-{
-...
-spin_lock(&ffs->new_lock);
-if (ffs && ffs->io_completion_wq)
-     queue_work(ffs->io_completion_wq, &io_data->work);
-spin_unlock(&ffs->new_lock);
-...
-}
-
-
-
-static void ffs_data_put(struct ffs_data *ffs) {
-..
-destroy_workqueue(ffs->io_completion_wq);
-kfree(ffs->dev_name);
-spin_lock(&ffs->new_lock);
-kfree(ffs);
-spin_unlock(&ffs->new_lock);
-..
-}
-
-Thanks,
-Selva
-
+Laurent Pinchart
 
