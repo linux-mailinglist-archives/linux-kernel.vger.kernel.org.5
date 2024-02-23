@@ -1,80 +1,76 @@
-Return-Path: <linux-kernel+bounces-78915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-78917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE425861A98
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:51:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D23C861A9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 18:51:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA7402831B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:51:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F6DE1C25956
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 17:51:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB77B143C76;
-	Fri, 23 Feb 2024 17:49:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 032AF14037B;
+	Fri, 23 Feb 2024 17:50:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BB2z76Of"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Eu0rUko+"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECB5F12DD86;
-	Fri, 23 Feb 2024 17:49:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC6CB12D758;
+	Fri, 23 Feb 2024 17:50:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708710561; cv=none; b=qw01NNbl4/DhM/76gyFkuYXTYnrOwFnrjZDQsIUVlHvo6InffC865uHwvrS60d2wGDYrqBIu8BNrS2lziGgTr1u5fC1po3AEgX7Y+ZmcfE5r+4GWuH2fJaPYy7MkLHKNvOeb6Ll0+0vuIYcwlC8shDD3Z2rvbmesVlawSAQDFHY=
+	t=1708710635; cv=none; b=rk1dOl9OOmk5UAQ6bGkooNaHz1Va8vMlVLS4rrzViqLe1AQWGGwOpSAG9XWuwIv4ZmFGkdpJyvihTOpcoHuM6I+8YgdDfbOM+uZVJLOCp1n8+SP8r2q1ZwZubcgye6CeTBmsNqNfvFJr6d0eS8BoMZCdngCaspb9ff9DTpPSQd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708710561; c=relaxed/simple;
-	bh=VvNeYnAwtvXOKfFrax2KDN3vOg/BZkU++ZaxRRjRLKc=;
+	s=arc-20240116; t=1708710635; c=relaxed/simple;
+	bh=B6DmhEttlW8Mu2glpPfxHo63S9rUwJ+jcUzzSCLsRmg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=skiTiUtNWkIIzGaJulU7W5zPhGFRV3SJxFG8iyv0RX24yGxpRKCclCDqIdJ9Y7Di82E+YZmyBxzILbUeoKZC+4G/S01Xy6LWSUvqoeJqnqHqNpO53c/gPuJx2vxTCvqLkBZgxVjr8MOvtNNQIYXZbNY7Vs68JppBwy2DwkcmSjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BB2z76Of; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=VI8w7fwI4CtMRT38r0URoppsrEMp29U3AlAU0R5tbwtWcIcbrl/e8XuBGMMnpBMCd67ejUwGwrv95n8gcwrCpbRVQnmDuP/nkNJAzVN7Y6pydIP3O9lyUiHk+NyBH1dRStC2yrmJ8t9DQKIQMhU69Im1b393KCrHAq9lJhiemnI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Eu0rUko+; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708710559; x=1740246559;
+  t=1708710632; x=1740246632;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=VvNeYnAwtvXOKfFrax2KDN3vOg/BZkU++ZaxRRjRLKc=;
-  b=BB2z76OfHIiQ/FdCEW5ciS8E8TJF+9/K57UcQduhBiJwvsREMOpEh7d0
-   PePo/xSAGDTzoIQ1j0wYz4COOLMKVQbswjCXyiESxBmGv2Gc79DUzN5wd
-   k9+Io0HbMw2EjLdW80IgWFWQ/NGo/fbqnZ6LH5NnO3iK+1kyzR5ZDm7QM
-   MnpwvhHBMGj3vf4bgzs+p/CmlMQhezvXTeoxK9kS4xXfGGNBGAvi4G3vW
-   m/W99fCQ3tzU5BvEh5LYnU1pruTFVj2WkpG8Ea3LV8Q2OPClnV+exV+tx
-   /e883cckTcaZrwHW/oCZ/qgYmaCjcEiIQ+kJtw0F+gMxSAoOn4UHeWmL7
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="6854525"
+  bh=B6DmhEttlW8Mu2glpPfxHo63S9rUwJ+jcUzzSCLsRmg=;
+  b=Eu0rUko+nImkEm/asxct11KJmADnNSLX1TVr98AtOPvW5DoW27dg7/xC
+   iovCDlc2qxak1JT/TquMQCH5WjZF+M9AU4qehHVslkI0hN+qILdxd0MV6
+   zO8uJIanKsmhqmW71psrLSxFAfI6zK7xE6SOUIwJoYpgYAtBDgawRXJXb
+   r9dYoeQH5gKf0t+tg9uBcQYl5nRybdD4EuUdEhGQc90LAPXl8inoFcBR7
+   az1LJM9A9zxaRtzgyUC3PXNiVHw8Ig95F7Z3dm8XJpFwiADckOHJKDAXd
+   9LNrtBz7S2vJC+K69mRUZE+usAKQDx8u03zI6PeCzgpHEaSndqMrPr00D
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="2925139"
 X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="6854525"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 09:49:18 -0800
+   d="scan'208";a="2925139"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 09:50:32 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="913752364"
 X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="913752364"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 09:49:14 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rdZfb-00000006xlV-0qQz;
-	Fri, 23 Feb 2024 19:49:11 +0200
-Date: Fri, 23 Feb 2024 19:49:10 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-	linux-iio@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>, llvm@lists.linux.dev,
-	Tomislav Denis <tomislav.denis@avl.com>,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] iio: pressure: dlhl60d: Initialize empty DLH bytes
-Message-ID: <ZdjallR88R5KkATw@smile.fi.intel.com>
-References: <20240223172936.it.875-kees@kernel.org>
- <ZdjaOLVd1yxNXhsp@smile.fi.intel.com>
+   d="scan'208";a="6454681"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by orviesa008.jf.intel.com with ESMTP; 23 Feb 2024 09:50:27 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rdZgm-0007jH-1L;
+	Fri, 23 Feb 2024 17:50:24 +0000
+Date: Sat, 24 Feb 2024 01:49:40 +0800
+From: kernel test robot <lkp@intel.com>
+To: Richard Gobert <richardbgobert@gmail.com>, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	idosch@nvidia.com, razor@blackwall.org, amcohen@nvidia.com,
+	petrm@nvidia.com, jbenc@redhat.com, b.galvani@gmail.com,
+	bpoirier@nvidia.com, gavinl@nvidia.com, martin.lau@kernel.org,
+	daniel@iogearbox.net, herbert@gondor.apana.org.au,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH net-next 1/2] net: vxlan: enable local address bind for
+ vxlan sockets
+Message-ID: <202402240119.AR4eT8mt-lkp@intel.com>
+References: <a4cd1adb-74d4-4eea-9f74-0d0ac3d79e44@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,41 +79,79 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZdjaOLVd1yxNXhsp@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <a4cd1adb-74d4-4eea-9f74-0d0ac3d79e44@gmail.com>
 
-On Fri, Feb 23, 2024 at 07:47:36PM +0200, Andy Shevchenko wrote:
-> On Fri, Feb 23, 2024 at 09:29:39AM -0800, Kees Cook wrote:
-> > 3 bytes were being read but 4 were being written. Explicitly initialize
-> > the unused bytes to 0 and refactor the loop to use direct array
-> > indexing, which appears to silence a Clang false positive warning[1].
+Hi Richard,
 
-..
+kernel test robot noticed the following build errors:
 
-> >  	for_each_set_bit(chn, indio_dev->active_scan_mask,
-> > -		indio_dev->masklength) {
-> > -		memcpy(tmp_buf + i,
-> > +			 indio_dev->masklength) {
-> > +		memcpy(&tmp_buf[i++],
-> >  			&st->rx_buf[1] + chn * DLH_NUM_DATA_BYTES,
-> >  			DLH_NUM_DATA_BYTES);
-> > -		i++;
-> >  	}
-> 
-> Not that I'm against the changes, but they (in accordance with the commit
-> message) are irrelevant to this fix. I prefer fixes to be more focused on
-> the real issues.
+[auto build test ERROR on net-next/main]
 
-Ah, sorry, there are two changes here:
-- indentation (which is indeed irrelevant)
-- and indexing, which seems the needed one.
+url:    https://github.com/intel-lab-lkp/linux/commits/Richard-Gobert/net-vxlan-enable-local-address-bind-for-vxlan-sockets/20240223-045600
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/a4cd1adb-74d4-4eea-9f74-0d0ac3d79e44%40gmail.com
+patch subject: [PATCH net-next 1/2] net: vxlan: enable local address bind for vxlan sockets
+config: arc-randconfig-r133-20240223 (https://download.01.org/0day-ci/archive/20240224/202402240119.AR4eT8mt-lkp@intel.com/config)
+compiler: arc-elf-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20240224/202402240119.AR4eT8mt-lkp@intel.com/reproduce)
 
-Whatever,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402240119.AR4eT8mt-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   drivers/net/vxlan/vxlan_core.c: In function 'vxlan_create_sock':
+>> drivers/net/vxlan/vxlan_core.c:3498:34: error: 'struct udp_port_cfg' has no member named 'local_ip6'; did you mean 'local_ip'?
+    3498 |                 memcpy(&udp_conf.local_ip6.s6_addr32,
+         |                                  ^~~~~~~~~
+         |                                  local_ip
+
+
+vim +3498 drivers/net/vxlan/vxlan_core.c
+
+  3482	
+  3483	static struct socket *vxlan_create_sock(struct net *net, bool ipv6, __be16 port,
+  3484						u32 flags, int ifindex,
+  3485						union vxlan_addr addr)
+  3486	{
+  3487		struct socket *sock;
+  3488		struct udp_port_cfg udp_conf;
+  3489		int err;
+  3490	
+  3491		memset(&udp_conf, 0, sizeof(udp_conf));
+  3492	
+  3493		if (ipv6) {
+  3494			udp_conf.family = AF_INET6;
+  3495			udp_conf.use_udp6_rx_checksums =
+  3496			    !(flags & VXLAN_F_UDP_ZERO_CSUM6_RX);
+  3497			udp_conf.ipv6_v6only = 1;
+> 3498			memcpy(&udp_conf.local_ip6.s6_addr32,
+  3499			       &addr.sin6.sin6_addr.s6_addr32,
+  3500			       sizeof(addr.sin6.sin6_addr.s6_addr32));
+  3501		} else {
+  3502			udp_conf.family = AF_INET;
+  3503			udp_conf.local_ip.s_addr = addr.sin.sin_addr.s_addr;
+  3504			memcpy(&udp_conf.local_ip.s_addr,
+  3505			       &addr.sin.sin_addr.s_addr,
+  3506			       sizeof(addr.sin.sin_addr.s_addr));
+  3507		}
+  3508	
+  3509		udp_conf.local_udp_port = port;
+  3510		udp_conf.bind_ifindex = ifindex;
+  3511	
+  3512		/* Open UDP socket */
+  3513		err = udp_sock_create(net, &udp_conf, &sock);
+  3514		if (err < 0)
+  3515			return ERR_PTR(err);
+  3516	
+  3517		udp_allow_gso(sock->sk);
+  3518		return sock;
+  3519	}
+  3520	
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
