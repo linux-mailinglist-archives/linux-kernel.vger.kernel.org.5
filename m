@@ -1,195 +1,195 @@
-Return-Path: <linux-kernel+bounces-79070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A33BF861D1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:00:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92758861D39
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 21:02:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18F3D1F26B06
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:00:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E08C2899F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Feb 2024 20:02:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA93B145B33;
-	Fri, 23 Feb 2024 20:00:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EF7A146904;
+	Fri, 23 Feb 2024 20:02:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Yu2zAFZT"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="iaVljmeP"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D7FA1448FF
-	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 20:00:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708718451; cv=fail; b=bC0ZyLPCjL8Om7UqCkdnHBu4XmHWwlhV9qy7rlsPzSnFFMF+BqK6nW+QtHDnJ+pIad0TzTPmd5VeZjMLzR9t6Fk21acTUC4lCUvcKUsvUzgEfhW/9u2KiwelazFpRaxW1BjQsOrexJLdF/bMINBtqPspl7/wk8MDWf3U/IavzSE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708718451; c=relaxed/simple;
-	bh=C0/vK+bR4lSNZBRBgahnvchEKZF7PFwmQnVzqp0pAOQ=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=BPOGQp5AZsBtQx1xgGRztFD+OoV4fwL6z7uqS9VtS68RkYfzCx7ut8p+0GYpIzWu16OiSJB6hGOurwFaz0lF9j3xOFjhfrw8TtOBeINKwRtqs2Mrwm6S1WUa6MFSKEGKuQ4+sJU+kUabQlmBvwOcoY29JeP/wXskk1Q8aTGMrlg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Yu2zAFZT; arc=fail smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708718449; x=1740254449;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=C0/vK+bR4lSNZBRBgahnvchEKZF7PFwmQnVzqp0pAOQ=;
-  b=Yu2zAFZTjeYZwOX55dJKwOe3aP5Bxnxi35xmo7CMyBDpNNGROXOx+r+o
-   gdyGqFyaCjwUUWzCpZFhUEctHLgrD9PTc82tTk2te1MT6uDLNtHhmI4Mr
-   cEUof8gVeghbdvnFHjX/jUt+hVDsSrwuD0gBgq/6EmqaKdqHS5ScwcGGv
-   cg0RbH/TQCGQ7lv5jWC4xl9FmU3F4mYTnpBn7IRZqDzmPKKsmAReuc2ho
-   Js4vNd7ed08+Ig/7eYfjyFz6pJvzZFd3B5oWqi9PzmOfNtpOtylVY7fAI
-   V4SbKSY6WZ7F7OiYu1mKh7Ndx9M76I+V/Nh8yX+Fnv56+XxVyv3mC1sH1
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="3215296"
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="3215296"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 12:00:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="6014258"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmviesa010.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 23 Feb 2024 12:00:48 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 23 Feb 2024 12:00:47 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 23 Feb 2024 12:00:47 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 23 Feb 2024 12:00:47 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 23 Feb 2024 12:00:46 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XzXU78BNwqMfZiHuFIe2Qe7uzusikpMVQ0PyzTcyraZolQ9JlfgN4mQSAeehTcqYDZ0tHv08X7/2g/EXicVeXXdxvYn2Gm2KMnlYSf/QtNmi4sI9X1AHiyITH+DtDuG4pjBFGCuHaxceHz77Q8lGQdLqepgO8PjpzZj9UmOj/xkMcMRUnGOYbw7m3bKpLr7N5dlMECiV9P33a98m9YwfDlco+62GGnU5VOINrN5CPuEqaNWckejBcPwRCfYxBO317M+sVxWRAaFRg8pzE+iStMmDIO7FzS0oQXaGa9oAVVNuxjr5EZjVbFAoaHuIWSceVIOq+5+2g7GelkESOYRRwg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zzeCXkfdGkL2u0Y6MFzgFETT/p8sB5WhY/vOMXVE8ts=;
- b=YJlKs4oYcdW6SYZgKWkUDUdUbPQvPiO0MZBxINVH+7StTYgz3EsqOkSmnX6sUhWue8lPiND+3QQcGpXstJYmRWIrd0c242/LLGLluNc6uNUy3EcJiUONEypILG97PkcRLhLUhpcJ03yxw2nQOdnpf41eW/Kr5La6uH3DQN0Ni5JLjsewa71Bzgg1GeAHRXcLZ8Jg3h/DOisrO4iAe0myxV3smwNG9cn5EVQL5lBNI87VMINz5KxgwM6i23pAunp+KZLyPjMz7mpZKZ+1oBqn7IMHteeX2qMgzVKduNVStXM+kCGWL0iNXpMnQy7KPzDVQjMiIZyW1yS+Jd6oBeuJNA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by DM4PR11MB5456.namprd11.prod.outlook.com (2603:10b6:5:39c::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.10; Fri, 23 Feb
- 2024 20:00:43 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::c903:6ee5:ed69:f4fa]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::c903:6ee5:ed69:f4fa%7]) with mapi id 15.20.7292.036; Fri, 23 Feb 2024
- 20:00:43 +0000
-Message-ID: <9055ee27-0860-4701-9ae9-801c25cf2aef@intel.com>
-Date: Fri, 23 Feb 2024 12:00:40 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] x86/resctrl: Rename pseudo_lock_event.h to trace.h
-Content-Language: en-US
-To: Haifeng Xu <haifeng.xu@shopee.com>
-CC: <fenghua.yu@intel.com>, <babu.moger@amd.com>, <peternewman@google.com>,
-	<x86@kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240221092101.90740-1-haifeng.xu@shopee.com>
- <20240221092101.90740-2-haifeng.xu@shopee.com>
-From: Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <20240221092101.90740-2-haifeng.xu@shopee.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MWH0EPF00056D12.namprd21.prod.outlook.com
- (2603:10b6:30f:fff2:0:1:0:15) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD46714535D
+	for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 20:02:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708718557; cv=none; b=EU9jH56WXAsuwA0e6E9cF5GcTjgjKcCnnPgmL3mrSsbbq86esYkGgOTk6CCj3mcbSMF/TPZt7MRiUTgg/noIfylM3Gy11/i3rqtoO0rscXRWD4Yr2xd0YucscvAV2BVk3xTLB7MRydVyOCND1O5wWDqC5dgp/NnkpQeROMc2wTY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708718557; c=relaxed/simple;
+	bh=IwFibWqp0dwgFWN3Q2SCVS4mMjNTktVCU+aOq/rgAfQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lrg0na7QuJxondhKSZ0dcXfElwIOrvPxn5OZTiz6hbigaARXBn8rn2crWIL6poseIgfdCR+GhM7WNfYmj0mV1iUkGXuXwfaZy6zYvumgI14S3iUylyLeEWmp7ydr/sPrYZ+Y4JzeHBWxms3mO9ch7OFPO4D60o+GtYsdoty0AZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iaVljmeP; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-564fe0273e4so813818a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 12:02:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708718554; x=1709323354; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6Mb5cz3ojHnIgcbz7pp9PaVuRGwOWu7mamHfEE2Gos4=;
+        b=iaVljmeP662qsA2unP+5qSiSsdCEklDePiE3OzvcWPaxOhwZN98BHh7+MYZK6hbLH9
+         E3kQzJ+9v5/cJe8vVC+Y68RBhpJ/ShYxo5Qj+iEhQQTyM6a91Y490iu/cYeHPa0LDcNm
+         FgemT3uNPxK269+Pyv0Dflvz8dcVP+BTyV+Vf5hpb2160DPZhOaBcGgOYD5pMkj7h61l
+         ahACOs3nyB1yvT4TfPYlPNXSqpQmbVPNn3u7M7qQv0jdI5F5WnNvfRTr4805c249bZ7e
+         gqECcyeKWk1z4zPDjvbj9BrJmKWXl4WeWH36JaQm/sOCNZ02QmsXEgdqFSChcBdXePLd
+         ZD0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708718554; x=1709323354;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6Mb5cz3ojHnIgcbz7pp9PaVuRGwOWu7mamHfEE2Gos4=;
+        b=KxK3SOF8OjzYjZHowKl85dW4I0YiMSJsR/xzpj1K37HkLuHAQEjuz98wIzmQMXRnFb
+         OEz3kTz/feOPml4cjiW37JXZ58Rj5HgnkwzNTd6KSGhjs1EHCM6I4aAJ+8Js7aS8jtJv
+         SZsKdWJuLoKOuAw37fkKNDpzO+4p7TQ1YeMC9mdA0Qg1fOzzZ2cOfZJH7s9wj3GFLG4o
+         TqLMhnG6vepoWxULJl/v6HdfMTEE8PuL2v/p1438ITnbk0s60UPxWRnNsahMrhUYUseM
+         FPOZh548NK2IEyJdZ2khnE+xBeUWM692fXFaP06qCX0RcDu+4WfmHFbsDg+Jzb/nTTky
+         EqGw==
+X-Forwarded-Encrypted: i=1; AJvYcCUezQ4JPhrpLysOUtJKE4+cpJMkj9bjbKWOB0jADfN0R0uWWDrCZ16oCOIkNkcW9u5k/BiyE1dTyLaFy9QT/aKX1rwCGJvvfPm2S0pD
+X-Gm-Message-State: AOJu0Ywu8PSZ5jmPjAtZ++QOzGjOGUbsEbj+G//2FVM+y5c5Ko4gbhPt
+	N/TKbbySfgTzL7uLpxUc5Q+EaN6lohkoIJShO6xUeaV0wl3ahyLT9z14ffXitgsYvag1aE2vuGy
+	up5ZSHhLRW0R1KOd/RRuAa/C2lR1SdQp3CiP4
+X-Google-Smtp-Source: AGHT+IH+/uyKSsN1ofQFJZfvOtibsO+r/FzbRmfjQZLGWFvPQu00SDorUUbKZkVPPMMHLMMpnKQSmd+1y+TSJcHPeb8=
+X-Received: by 2002:a17:906:3609:b0:a3e:f00c:ee25 with SMTP id
+ q9-20020a170906360900b00a3ef00cee25mr492276ejb.25.1708718553929; Fri, 23 Feb
+ 2024 12:02:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|DM4PR11MB5456:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0628b9af-c569-4b27-8e36-08dc34aa1dfb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 93za/iS7OoPjoWdKYw32DR5YuTdXa+bsQBfaWS1kIojtPFCLmLtzeUnqqrPYK86gD1d7/meO1qzMv/L7a1+1XpMYu+QZH30bYIIYq90ip0RV6GgvMIqkknFFR+whH7bYACdDU+PWinXyZRYNCEaesLI4Bf10uQ6wq5fipQEUZN22HNEpa0KFSvwK9jzcWbjwGdFM/6Ehb/MMjtYGZJZTVWiM2jJOY8xa+81qLVEz6ChrPC101fAN3PKvDgBF+jKPb6qunzQdxhbwL14169e4mzrvlG2eDbG0HNCnGcMg/3X/mDvj5E3oPR/hyu6RKOPjS/Mok3ckzRZk4rbdkCLYw73rDM8lzAn08mXgQ+AjwatyyT6483/4CzwRb3olrtTtC5AKIWLZbspvB+LevS0KM///L53iLyYDkAO2LVglJsz7yxjVzGYvZn7mHEvsghl1RqApMczKQ8zMFWI+0KZfJjTZDNtCdwt6jgN4YIzTB9o4Xs8h/6FWTg1oF4YzVdNoxdeDh9XwkK0w3VWs2jJdeQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Z0NvQjFLT1FrVEQwS3RNRC9tVEJTLzFnaEFMKzVTWm1yQzAxeTZYRXNFTk9C?=
- =?utf-8?B?UEprUEdEbTZFTmEzWmNRa3JiQXY4aTVmVXhSUFI4SlNWM2UzMk4xSWtmaTZ3?=
- =?utf-8?B?YWU4ZVdOSXdrWU5KTWI4Y3BZV1Y1NkJsdkYyRnVHbUU1VEdNRG1Pa0tDWmhS?=
- =?utf-8?B?OENsUVZWQkxmdmJVM1gwekc3LzFGcTdIZjFvTThPNmcyd1h6NWNwUVRaQ0VY?=
- =?utf-8?B?VWZpV29yL3h1RFoyTmdleFVrclZPRlBhMGRkV0t2alYxVHpkeHA1QytxdVJJ?=
- =?utf-8?B?WTFUajFuMXVlRUxpT0VVeHVMeTJOK24zMXlSRGlvTzd4Q0wzc0dwcVNOVmg1?=
- =?utf-8?B?MWVNNUYvbllhVFNuY0NQTUp6N0Jvem92YmgyRlFUTGpQb25IdnF3TmNqZjRh?=
- =?utf-8?B?YzEybVBpWEtEQTRHUlFjWS9JaXJObm0rd2xjWVoxcHRZbHBicVFGaDJOWW5x?=
- =?utf-8?B?N0ZGZGtMdXZ3UC9mdkc5T3A2WktFemVCZkRhUVZCeS9MOFBZZ2lzWTRKV2pK?=
- =?utf-8?B?TU1EZGdEdlhjTHp3cHVIUThmcjNIM0JXZ1RmS2ZHZFpHNU1qcHNKTzdNalFS?=
- =?utf-8?B?TTRMZ05pOXAzeGhLQUs2bnJhRTc5VVd0V1NIWUgxWTFXQy8rck41U1hQU3JT?=
- =?utf-8?B?S0V1MUlwWkYvQk92WFRQd2hZVlVpZkRRNkp3MXJWMGU0ZjFrcVdQWWNaaVBN?=
- =?utf-8?B?c1N5Vm9tTEtiTUJmdVp0MDdkbEMrTE5STXFrRWhCKzE5b0RyQjRmTU83UUFY?=
- =?utf-8?B?N2pidktrbmlsOEpuM2wrdWtneG1QUXFTdEhORVc0VEtWUU1VcHdsZkNDRU5L?=
- =?utf-8?B?UFl0UlR6c08wZGJPUWlTbnV4YVgvMU44OHZwZ1UvdlFsNWQrSWRvQlNQMGht?=
- =?utf-8?B?dmNaMlJMclB1OU12OEpaYldpN3RtalRINVFlWEZZQWNyQ0Ivckc2TXhDbDY1?=
- =?utf-8?B?K091c0VhcmQzNDNhR1g0a2lCYlJRQTdLaSs3UStVTDdCOXBaTUxhaGlEMGx1?=
- =?utf-8?B?bzlTMllqT2lJbTlodWQwU1FleEl0YUZyazJaV05HRTV3UUlOd0xxYWJJcE81?=
- =?utf-8?B?ME1rOTVmNGhqc3ZlaVVlTVA1RG9HMDdpMkVxQUp4cnRSWWJrQXF2YUM1WDc3?=
- =?utf-8?B?ZFB2QW51WnpmSGhyeXRTZ1VmRUU1MWdOcDVtNExjWllKWWlnK1BCZ1ZCNEdx?=
- =?utf-8?B?ME0yWmtxSjBNNzYwdmhQS2V0NytXdXpWbEl6UWlZMUMrdG5kM3BFaXoxcmdR?=
- =?utf-8?B?eVNYMy9VRGdJM3dtek1TQXlaS01xVHNNemFXSUxzMDZ2b2FtTGZid3lEQXly?=
- =?utf-8?B?d1RSK1ZlSE1TOWZQbEpzU0JOc0hNYStlR2xnSkdNQmRiNDRMSHp3UkhySHUy?=
- =?utf-8?B?clJSeXdBYmhscWUyV2tjUVVYZXJ1K1M0bDBFQWhSdlRLM0tyRVFLY3JCQUxu?=
- =?utf-8?B?VmJsRFVoR1N0Rmc3M3psRU0yNWcvZUxMR0FDaUczcmIyVy9rbk4xaE11SGVp?=
- =?utf-8?B?MzZNVTNtMGQ0TjR5c3c3blVZbmZkdHFGbXN6R3BTdnFkMlFtcFVOT0NxbXFS?=
- =?utf-8?B?Y2ZwQU5wMzFvcytOVjJPb0xrVXRtZEZQc0s1UHcrTnpaVmRPNTFLMmZUd3JH?=
- =?utf-8?B?ay9TdmUzNUMrMVM2UUF3Vkk5cHEzNFl0bkdMcmhpQjV6RXJEaEFlWm8zZ0xq?=
- =?utf-8?B?Uy9jaWg2OVV0Uk9HK3pEVTZjU29aZ0VUdmZzajNkR0VnVFJ0ZmtXMi91VlU3?=
- =?utf-8?B?b1pZRnNEdisyNE1sLzBHT2RoRGpacllDVUY5Ym1qN1BPOHBWaFR4aVUvcy9s?=
- =?utf-8?B?VnZhN1NLeGVKUXN1ODd2SHIreXBobVRFeHU3ME5NRTBzTXB3MEZqaHBqT3A4?=
- =?utf-8?B?OUhMUkFlOEpaQjVndENIemlMSktEbkF2K2VrVDBBelkySHEvSjcyekh1RHkx?=
- =?utf-8?B?VlBmdHMzT2RNUkhVVnJSZlRSMlhValhJN0I4ZW8wZFV1SWQ4S0ZCUjRRcERF?=
- =?utf-8?B?SFB2bXBlOGoyMS80b2lGMU9SbFJSSkt0enBGbUNMS2tVT1dabE1IbDZTeURw?=
- =?utf-8?B?R0lQNS9COEJzOHlyOWRTZkpwak5DbnNkL0dRUnkrL0crenlwYjZCUkVxbk5S?=
- =?utf-8?B?SHI5MDZLN3ZXcEw2eDBSdDN1U25lU2hvMXN1QUV0b0lTU1owUWdsSHF0MEJn?=
- =?utf-8?B?a2c9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0628b9af-c569-4b27-8e36-08dc34aa1dfb
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2024 20:00:43.4864
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: w+wok9pQuRC2Od29yqzRYY1Va7tpsx/CVGz3ClwGuEe7DPCOuejJ7d9sd1jZQM1SYlZBsknsr6tfu/uSql67nAOoJIigCaAa6mHMClQJyPM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5456
-X-OriginatorOrg: intel.com
+References: <20240222-strncpy-drivers-scsi-lpfc-lpfc_ct-c-v1-1-20c685bd1b43@google.com>
+ <BE9C61AA-633F-4CD1-BE5E-B01DC947626E@kernel.org>
+In-Reply-To: <BE9C61AA-633F-4CD1-BE5E-B01DC947626E@kernel.org>
+From: Justin Stitt <justinstitt@google.com>
+Date: Fri, 23 Feb 2024 12:02:22 -0800
+Message-ID: <CAFhGd8rTBqqQvr9vhpbfcSv6cpj5JSPVPSftqOPyWkZEWBP1AQ@mail.gmail.com>
+Subject: Re: [PATCH] scsi: lpfc: replace deprecated strncpy with strscpy
+To: Kees Cook <kees@kernel.org>
+Cc: James Smart <james.smart@broadcom.com>, Dick Kennedy <dick.kennedy@broadcom.com>, 
+	"James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
+	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Haifeng,
+Hi,
 
-On 2/21/2024 1:21 AM, Haifeng Xu wrote:
-> Now only pseudo-lock part uses tracepoints to do event tracking, but
-> other parts of resctrl may need new tracepoints. It is unnecessary to
-> create separate header files and define CREATE_TRACE_POINTS in different
-> c files which fragments the resctrl tracing.
-> 
-> Therefore, the new tracepoints should be placed in the same header file,
-> and the header file needs a more generic name.
+On Wed, Feb 21, 2024 at 6:38=E2=80=AFPM Kees Cook <kees@kernel.org> wrote:
+>
+>
+>
+> On February 21, 2024 4:41:52 PM PST, Justin Stitt <justinstitt@google.com=
+> wrote:
+> >strncpy() is deprecated for use on NUL-terminated destination strings
+> >[1] and as such we should prefer more robust and less ambiguous string
+> >interfaces.
+> >
+> >We expect ae->value_string to be NUL-terminated because there's a
+> >comment that says as much; these attr strings are also used with other
+> >string APIs, further cementing the fact.
+> >
+> >Now, the question of whether or not to NUL-pad the destination buffer:
+> >lpfc_fdmi_rprt_defer() initializes vports (all zero-initialized), then
+> >we call lpfc_fdmi_cmd() with each vport and a mask. Then, inside of
+> >lpfc_fdmi_cmd() we check each bit in the mask to invoke the proper
+> >callback. Importantly, the zero-initialized vport is passed in as the
+> >"attr" parameter. Seeing this:
+> >|      struct lpfc_fdmi_attr_string *ae =3D attr;
+> >... we can tell that ae->value_string is entirely zero-initialized. Due
+> >to this, NUL-padding is _not_ required as it would be redundant.
+> >
+> >Conveniently, strscpy also returns the number of bytes copied into the
+> >destination buffer, eliminating the need for strnlen!
+> >
+> >Considering the above, a suitable replacement is `strscpy` [2].
+> >
+> >Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#str=
+ncpy-on-nul-terminated-strings [1]
+> >Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.=
+html [2]
+> >Link: https://github.com/KSPP/linux/issues/90
+> >Cc: linux-hardening@vger.kernel.org
+> >Signed-off-by: Justin Stitt <justinstitt@google.com>
+> >---
+> > drivers/scsi/lpfc/lpfc_ct.c | 5 ++---
+> > 1 file changed, 2 insertions(+), 3 deletions(-)
+> >
+> >diff --git a/drivers/scsi/lpfc/lpfc_ct.c b/drivers/scsi/lpfc/lpfc_ct.c
+> >index baae1f8279e0..42594ec87290 100644
+> >--- a/drivers/scsi/lpfc/lpfc_ct.c
+> >+++ b/drivers/scsi/lpfc/lpfc_ct.c
+> >@@ -2569,9 +2569,8 @@ lpfc_fdmi_set_attr_string(void *attr, uint16_t att=
+rtype, char *attrstring)
+> >        * 64 bytes or less.
+> >        */
+> >
+> >-      strncpy(ae->value_string, attrstring, sizeof(ae->value_string));
+> >-      len =3D strnlen(ae->value_string, sizeof(ae->value_string));
+> >-      /* round string length to a 32bit boundary. Ensure there's a NULL=
+ */
+> >+      len =3D strscpy(ae->value_string, attrstring, sizeof(ae->value_st=
+ring));
+>
+> This could be < 0 on error, and at least lpfc_fdmi_hba_attr_os_ver() may =
+present more than 64 bytes...
 
-Please do stick with imperative mood [1]. For example, something like:
-"Give the resctrl tracepoint header file a generic name to support
- its use for tracepoints that are not specific to pseudo-locking."
+Am I putting too much faith in this comment?
 
-(Please feel free to improve.)
+static inline int lpfc_fdmi_set_attr_string(void *attr, uint16_t
+attrtype, char *attrstring)
+..
+/*
+* We are trusting the caller that if a fdmi string field
+* is capped at 64 bytes, the caller passes in a string of
+* 64 bytes or less.
+*/
+..
 
-Reinette
+I see lpfc_fdmi_hba_attr_os_ver() calls lpfc_fdmi_set_attr_string()
+with an attrstring sized at 256 bytes:
+char buf[256] =3D { 0 };
 
-[1] https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#changelog
+Can we really return -E2BIG from strscpy() if the dest buffer is the
+same size as the source buffer?
 
+I'm happy to just make the standard strncpy -> strscpy replacement and
+drop the len assignment. Let me know what you think, Kees.
+
+>
+> -Kees
+>
+>
+> >+      /* round string length to a 32bit boundary */
+> >       len +=3D (len & 3) ? (4 - (len & 3)) : 4;
+> >       /* size is Type/Len (4 bytes) plus string length */
+> >       size =3D FOURBYTES + len;
+> >
+> >---
+> >base-commit: 39133352cbed6626956d38ed72012f49b0421e7b
+> >change-id: 20240222-strncpy-drivers-scsi-lpfc-lpfc_ct-c-f54b67eeeb68
+> >
+> >Best regards,
+> >--
+> >Justin Stitt <justinstitt@google.com>
+> >
+> >
+>
+> --
+> Kees Cook
+
+Thanks
+Justin
 
