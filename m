@@ -1,172 +1,169 @@
-Return-Path: <linux-kernel+bounces-79331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45BE08620E6
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:01:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F05B8620EA
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:02:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 412531C222B3
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 00:01:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E03B61F27476
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 00:02:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A29542074;
-	Sat, 24 Feb 2024 00:01:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6669F6FB1;
+	Sat, 24 Feb 2024 00:02:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Qj2fsIX8"
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vOlUYHHT"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 081162208E
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 00:01:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC8A5138A
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 00:02:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708732882; cv=none; b=Vwq6hXOULA6nthTJxyY2GP+IcOwCDvG0geWfb0Nsfaa2k8qeuMjx8LtVjI+DTFqKOI7WzbxXS4EeNjIhVeUibm3DbH1QF/Vcu308kOhq/sRGPmnnyA1ih/1WtOHA36M+xAvopSQJgxrC/zbABtzTK4pFTsaNeaOMPv24xot971U=
+	t=1708732930; cv=none; b=lpudAQ47/rX/WNntfPl6KJ5d4jhOClBvnGkcYRiWXqxj64ec/Zp1PatTeE50BLAl/qGG2Fnfzt8huA7owuwvHmQkz8VFbSwAmqbTy2SqdXoY5r+eOtM/xu8qtqq3JZkYCmnCeG9DaFqmRZDs+6zYzLbF/c02lgv/IfDOq+24QV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708732882; c=relaxed/simple;
-	bh=UJWe2ubR9EeG9OLfsfg8jP7GUJZQt+mG036oE86qbt4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q85KboHtd9ZgwFtpq+1jzsQo0RTpkEBSr07OSscWNKP4B8C2eFZVWSLkEbZf+suOGdqxjl2AL06U3+eZShMSfmO6bNXLC6t9i0kyJwgoseQ8gTRNdUmFKLMnzZsDepzZqrMMiAMCXxtMUJ98QnMmFApAk0PuZbY7S08WBmMGosg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Qj2fsIX8; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5cddfe0cb64so977820a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 16:01:20 -0800 (PST)
+	s=arc-20240116; t=1708732930; c=relaxed/simple;
+	bh=UbVxq4wTDHlpK8UWuiEzg3/9BzAum9YoZK0MzyDnies=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=s6TLS5lZiGPKxWaXc606D1ID5no228CdYSf+3uvSxzusQ17YDhic3JbkvOQDM6jtMbgEdNV1JQD50Ys83k4uC/WdwADhoHgdIE7X7WZsEI1YaSzm4a1df8UtcX/l7p44F7y9gAJbNrAhEIokS7SzHVegtMQ9neUMeiVjbRhPf6k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vOlUYHHT; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-512c2e8c6cfso1677865e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 16:02:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708732880; x=1709337680; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HZWnhZfLrYBNGaitWH9PS92YgltdabR+chQohhbMUEQ=;
-        b=Qj2fsIX8sW1e/StkitcjAJJx0MgWNLBIfmJjIsKgNU2QEIXFzADkawgHgi46h6iBPc
-         B0JxbeYtc/H4pxrtWl7Jyh7yNZEbiAjoG+QlJpRY4ONZ+xj8XvP5y3H+6k72mZuijCnt
-         1Y4Wjv5ZoJrQyJcAHfs+7pzcG9AZql6ArTCDg=
+        d=linaro.org; s=google; t=1708732926; x=1709337726; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vhD3DAWbNML3SlHPwjoNnwcDxDI9+wbM/QZnrMUkqLY=;
+        b=vOlUYHHTqPwK5KiY7ZkcKCx1y0LiAA1nbk3AureYlkhU7V9P8DJ++8I5QenxAv9ljE
+         cu7KxTJaweLjuKvUvGvdp4Y51djzkOOqRAmxgM0zXZgHR/jdA17kSiQQ0xPz7+JW8MdF
+         xB0VQLaSvCUNyS+z1NLAJ0nrJtmAArcif2D/lNYWc9A3AbX5i9dR7ZN6shL3ylWfl7YG
+         RsCx+UN44ry9jasSLwvop93Y0Ggkt1aMaKxqwWlO6RS4jQxHRzXDDz/ACxJwrUEkZNlT
+         AWxvRk6yoiiMh8tw9FM5HfelVCqntT2vCwL08e1Ib4+90W7GFihQ0+ezsG6Lg1C8xJQH
+         vvKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708732880; x=1709337680;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HZWnhZfLrYBNGaitWH9PS92YgltdabR+chQohhbMUEQ=;
-        b=j+fflsm8RxRzKegTlrGIXgHEFezaV8n+Wc5sgaCCL2oQnXRkyXJPro8XK9F1npeoiv
-         CEjCmH/djauikC6MgOJe2GWi4bt+Exx56ITGLGmO26yhNyfT5vGFEhzIqLKFYG1GIWqp
-         k+9ZdKM7YyKLPKKQ8mfHHRY0i1FhrWSwRje0L4AKQ+Rc4HMUXXak2DiU4WngJEpWY4Fc
-         6Kq7q3+6oufu/2OCGyDG9crkVu5dAPVX6ndhkv5IZ3gFOu24R6bSpAqYyjGaY1q30jQ0
-         EBuwCCLwWbdJuZ2Mh0igfxSNnongdorh9Vdt1A+oqo7RpB9ZP67fBDV4HJVPzI0grAN8
-         kYPw==
-X-Forwarded-Encrypted: i=1; AJvYcCWUa5cDKXCdycbKYKlpKy04eEA1MTE9IsCbG/o4sohqlhinSqGM0cIguYxln8NQofGc8IcsTv43vKyzSCrgSnL25XjpoCu1CoeJC6VX
-X-Gm-Message-State: AOJu0YwR7/us97KJ1opG6RlXHwwOVqrZKZVcSgan7tAWdkZQRhiRhNIH
-	fwM34AUKYzvSo5gv2S3xYsloPHsPR6d+G+P74+vuDBcrcVN6fsMVc0w58ArD3A==
-X-Google-Smtp-Source: AGHT+IETYvJa4jCu7s6VQ1h/zjgBKc/QzjFKDXibxNeQ000X1/v877/hoosAzF63YVPEIj4E046yYw==
-X-Received: by 2002:a17:90a:4413:b0:29a:56d5:230 with SMTP id s19-20020a17090a441300b0029a56d50230mr1211745pjg.25.1708732879965;
-        Fri, 23 Feb 2024 16:01:19 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id y1-20020a17090ad70100b0029a71e7ef55sm97566pju.10.2024.02.23.16.01.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 16:01:19 -0800 (PST)
-Date: Fri, 23 Feb 2024 16:01:18 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: Justin Stitt <justinstitt@google.com>,
-	Sathya Prakash Veerichetty <sathya.prakash@broadcom.com>,
-	Kashyap Desai <kashyap.desai@broadcom.com>,
-	Sumit Saxena <sumit.saxena@broadcom.com>,
-	Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Suganath Prabu Subramani <suganath-prabu.subramani@broadcom.com>,
-	Ariel Elior <aelior@marvell.com>,
-	Manish Chopra <manishc@marvell.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Saurav Kashyap <skashyap@marvell.com>,
-	Javed Hasan <jhasan@marvell.com>,
-	GR-QLogic-Storage-Upstream@marvell.com,
-	Nilesh Javali <njavali@marvell.com>,
-	Manish Rangankar <mrangankar@marvell.com>,
-	Don Brace <don.brace@microchip.com>,
-	mpi3mr-linuxdrv.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-	MPT-FusionLinux.pdl@broadcom.com, netdev@vger.kernel.org,
-	storagedev@microchip.com
-Subject: Re: [PATCH 7/7] scsi: wd33c93: replace deprecated strncpy with
- strscpy
-Message-ID: <202402231556.7DBA6E1@keescook>
-References: <20240223-strncpy-drivers-scsi-mpi3mr-mpi3mr_fw-c-v1-0-9cd3882f0700@google.com>
- <20240223-strncpy-drivers-scsi-mpi3mr-mpi3mr_fw-c-v1-7-9cd3882f0700@google.com>
- <4a52a2ae-8abf-30e2-5c2a-d57280cb6028@linux-m68k.org>
+        d=1e100.net; s=20230601; t=1708732926; x=1709337726;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vhD3DAWbNML3SlHPwjoNnwcDxDI9+wbM/QZnrMUkqLY=;
+        b=TN9zADoL2oV+O6ro3drStJchMT9NNOyYQWTAORRWJIFBt3jqK4YsIx8jAF34jK5zD0
+         ZgUFb2gG2IoPOBFbbjMn6lQisMu0S2xozCpEL7HKy8/YnT+vOhMa0b4avW9hE2AEUYUq
+         tFQ5lxwQ232cOUb9ZZ3WvSs15/+4ztD6l9Tnlak5CmUXqEm5CzolOUFQKjJBXiCfWyFi
+         rSLlcmBL44pCLJFA4SA9t71JXB0oohdf9/UmH9C3wYdy+7TeoOSGEONoE+33TFjLBt29
+         IjiFY1zJPi+aXpiaDpaqIk4fT+cHEOHiktEouEomRGkP6YLUtwSFiP4kgoTFO8fpaRyq
+         eeyw==
+X-Forwarded-Encrypted: i=1; AJvYcCVInK3lTFbMJX1zZUjuBIhmLAYTSBUQoRsZNZUBL6e8FatnZESDInSBdgoupjhujvGgvDWl1C5vkXw9jtPT6QwT3LFZ0brU+tG1Jr9V
+X-Gm-Message-State: AOJu0Yzh20qjloqbTjmoQ7lhVxt4PtdPbJHjyCmsj0rumg50+56LIu99
+	oQEYvtC+AW5bo7z4xc5wNFxkht6PSizNmjO/1KWRba9GGL0zFYLeQzzZtD2BDlc=
+X-Google-Smtp-Source: AGHT+IFkK2ZqsQ+kADx4LKX6bQQeA6NKG9CpBHfwrTSpoNCuI4y35aQUf0eZ1nkkqJ2R+HZWqarpUQ==
+X-Received: by 2002:a05:6512:242:b0:512:b935:c542 with SMTP id b2-20020a056512024200b00512b935c542mr774317lfo.59.1708732925952;
+        Fri, 23 Feb 2024 16:02:05 -0800 (PST)
+Received: from [192.168.179.2] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id r7-20020a170906350700b00a3ecfef7f1esm61330eja.189.2024.02.23.16.02.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Feb 2024 16:02:05 -0800 (PST)
+Message-ID: <53f486d1-94c7-4dd9-89fc-d80a92301700@linaro.org>
+Date: Sat, 24 Feb 2024 01:02:03 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4a52a2ae-8abf-30e2-5c2a-d57280cb6028@linux-m68k.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 3/7] PCI: qcom: Add ICC bandwidth vote for CPU to PCIe
+ path
+Content-Language: en-US
+To: Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>, Johan Hovold <johan+linaro@kernel.org>,
+ Brian Masney <bmasney@redhat.com>, Georgi Djakov <djakov@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ vireshk@kernel.org, quic_vbadigan@quicinc.com, quic_skananth@quicinc.com,
+ quic_nitegupt@quicinc.com, quic_parass@quicinc.com,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+References: <20240223-opp_support-v7-0-10b4363d7e71@quicinc.com>
+ <20240223-opp_support-v7-3-10b4363d7e71@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
+ BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
+ HGWdmtO+RvadOVi6CoUDqALsmfS3MUG5Pj2Ne9+0jRg4hEnB92AyF9rW2G3qisFcwPgvatt7
+ TXD5E38mLyOPOUyXNj9XpDbt1hNwKQfiidmPh5e7VNAWRnW1iCMMoKqzM1Anzq7e5Afyeifz
+ zRcQPLaqrPjnKqZGL2BKQSZDh6NkI5ZLRhhHQf61fkWcUpTp1oDC6jWVfT7hwRVIQLrrNj9G
+ MpPzrlN4YuAqKeIer1FMt8cq64ifgTzxHzXsMcUdclzq2LTk2RXaPl6Jg/IXWqUClJHbamSk
+ t1bfif3SnmhA6TiNvEpDKPiT3IDs42THU6ygslrBxyROQPWLI9IL1y8S6RtEh8H+NZQWZNzm
+ UQ3imZirlPjxZtvz1BtnnBWS06e7x/UEAguj7VHCuymVgpl2Za17d1jj81YN5Rp5L9GXxkV1
+ aUEwONM3eCI3qcYm5JNc5X+JthZOWsbIPSC1Rhxz3JmWIwP1udr5E3oNRe9u2LIEq+wH/toH
+ kpPDhTeMkvt4KfE5m5ercid9+ZXAqoaYLUL4HCEw+HW0DXcKDwARAQABzShLb25yYWQgRHli
+ Y2lvIDxrb25yYWQuZHliY2lvQGxpbmFyby5vcmc+wsGOBBMBCAA4FiEEU24if9oCL2zdAAQV
+ R4cBcg5dfFgFAmQ5bqwCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQR4cBcg5dfFjO
+ BQ//YQV6fkbqQCceYebGg6TiisWCy8LG77zV7DB0VMIWJv7Km7Sz0QQrHQVzhEr3trNenZrf
+ yy+o2tQOF2biICzbLM8oyQPY8B///KJTWI2khoB8IJSJq3kNG68NjPg2vkP6CMltC/X3ohAo
+ xL2UgwN5vj74QnlNneOjc0vGbtA7zURNhTz5P/YuTudCqcAbxJkbqZM4WymjQhe0XgwHLkiH
+ 5LHSZ31MRKp/+4Kqs4DTXMctc7vFhtUdmatAExDKw8oEz5NbskKbW+qHjW1XUcUIrxRr667V
+ GWH6MkVceT9ZBrtLoSzMLYaQXvi3sSAup0qiJiBYszc/VOu3RbIpNLRcXN3KYuxdQAptacTE
+ mA+5+4Y4DfC3rUSun+hWLDeac9z9jjHm5rE998OqZnOU9aztbd6zQG5VL6EKgsVXAZD4D3RP
+ x1NaAjdA3MD06eyvbOWiA5NSzIcC8UIQvgx09xm7dThCuQYJR4Yxjd+9JPJHI6apzNZpDGvQ
+ BBZzvwxV6L1CojUEpnilmMG1ZOTstktWpNzw3G2Gis0XihDUef0MWVsQYJAl0wfiv/0By+XK
+ mm2zRR+l/dnzxnlbgJ5pO0imC2w0TVxLkAp0eo0LHw619finad2u6UPQAkZ4oj++iIGrJkt5
+ Lkn2XgB+IW8ESflz6nDY3b5KQRF8Z6XLP0+IEdLOOARkOW7yEgorBgEEAZdVAQUBAQdAwmUx
+ xrbSCx2ksDxz7rFFGX1KmTkdRtcgC6F3NfuNYkYDAQgHwsF2BBgBCAAgFiEEU24if9oCL2zd
+ AAQVR4cBcg5dfFgFAmQ5bvICGwwACgkQR4cBcg5dfFju1Q//Xta1ShwL0MLSC1KL1lXGXeRM
+ 8arzfyiB5wJ9tb9U/nZvhhdfilEDLe0jKJY0RJErbdRHsalwQCrtq/1ewQpMpsRxXzAjgfRN
+ jc4tgxRWmI+aVTzSRpywNahzZBT695hMz81cVZJoZzaV0KaMTlSnBkrviPz1nIGHYCHJxF9r
+ cIu0GSIyUjZ/7xslxdvjpLth16H27JCWDzDqIQMtg61063gNyEyWgt1qRSaK14JIH/DoYRfn
+ jfFQSC8bffFjat7BQGFz4ZpRavkMUFuDirn5Tf28oc5ebe2cIHp4/kajTx/7JOxWZ80U70mA
+ cBgEeYSrYYnX+UJsSxpzLc/0sT1eRJDEhI4XIQM4ClIzpsCIN5HnVF76UQXh3a9zpwh3dk8i
+ bhN/URmCOTH+LHNJYN/MxY8wuukq877DWB7k86pBs5IDLAXmW8v3gIDWyIcgYqb2v8QO2Mqx
+ YMqL7UZxVLul4/JbllsQB8F/fNI8AfttmAQL9cwo6C8yDTXKdho920W4WUR9k8NT/OBqWSyk
+ bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
+ nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
+ izWDgYvmBE8=
+In-Reply-To: <20240223-opp_support-v7-3-10b4363d7e71@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, Feb 24, 2024 at 10:44:12AM +1100, Finn Thain wrote:
+On 23.02.2024 15:48, Krishna chaitanya chundru wrote:
+> To access PCIe registers, PCIe BAR space, config space the CPU-PCIe
+> ICC(interconnect consumers) path should be voted otherwise it may
+> lead to NoC(Network on chip) timeout. We are surviving because of
+> other driver vote for this path.
+> As there is less access on this path compared to PCIe to mem path
+> add minimum vote i.e 1KBps bandwidth always.
 > 
-> On Fri, 23 Feb 2024, Justin Stitt wrote:
+> In suspend remove the disable this path after register space access
+> is done.
 > 
-> > @p1 is assigned to @setup_buffer and then we manually assign a NUL-byte
-> > at the first index. This renders the following strlen() call useless.
-> > Moreover, we don't need to reassign p1 to setup_buffer for any reason --
-> > neither do we need to manually set a NUL-byte at the end. strscpy()
-> > resolves all this code making it easier to read.
-> > 
-> > Even considering the path where @str is falsey, the manual NUL-byte
-> > assignment is useless 
-> 
-> And yet your patch would only remove one of those assignments...
+> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+> ---
 
-The first is needed in case it is called again.
+[...]
 
-> 
-> > as setup_buffer is declared with static storage
-> > duration in the top-level scope which should NUL-initialize the whole
-> > buffer.
-> > 
-> 
-> So, in order to review this patch, to try to avoid regressions, I would 
-> have to check your assumption that setup_buffer cannot change after being 
-> statically initialized. (The author of this code apparently was not 
-> willing to make that assumption.) It seems that patch review would require 
-> exhaustively searching for functions using the buffer, and examining the 
-> call graphs involving those functions. Is it really worth the effort?
+>  
+> +	/* Remove cpu path vote after all the register access is done */
+> +	ret = icc_disable(pcie->icc_cpu);
+> +	if (ret) {
+> +		dev_err(dev, "failed to disable icc path of cpu-pcie: %d\n", ret);
+> +		if (pcie->suspended) {
+> +			qcom_pcie_host_init(&pcie->pci->pp);
+> +			pcie->suspended = false;
+> +		}
+> +		qcom_pcie_icc_opp_update(pcie);
 
-It seems to be run for each device? Regardless, I think leaving the
-initial "*p1 = '\0';" solves this. (Though I fear for parallel
-initializations, but that was already buggy: this code is from pre-git
-history...)
+This doesn't compile (you rename it in patch 6, this is patch 3)
 
-> 
-> > Signed-off-by: Justin Stitt <justinstitt@google.com>
-> > ---
-> >  drivers/scsi/wd33c93.c | 4 +---
-> >  1 file changed, 1 insertion(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/scsi/wd33c93.c b/drivers/scsi/wd33c93.c
-> > index e4fafc77bd20..a44b60c9004a 100644
-> > --- a/drivers/scsi/wd33c93.c
-> > +++ b/drivers/scsi/wd33c93.c
-> > @@ -1721,9 +1721,7 @@ wd33c93_setup(char *str)
-> >  	p1 = setup_buffer;
-> >  	*p1 = '\0';
-> >  	if (str)
-> > -		strncpy(p1, str, SETUP_BUFFER_SIZE - strlen(setup_buffer));
-> > -	setup_buffer[SETUP_BUFFER_SIZE - 1] = '\0';
-> > -	p1 = setup_buffer;
-> > +		strscpy(p1, str, SETUP_BUFFER_SIZE);
-> >  	i = 0;
-> >  	while (*p1 && (i < MAX_SETUP_ARGS)) {
-> >  		p2 = strchr(p1, ',');
-> > 
-> > 
-
-I think this conversion looks right.
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--- 
-Kees Cook
+Konrad
 
