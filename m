@@ -1,116 +1,136 @@
-Return-Path: <linux-kernel+bounces-79457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BAB7862283
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 04:27:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 48A62862284
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 04:38:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8433285931
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 03:27:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EED1286877
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 03:38:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DFD4134DB;
-	Sat, 24 Feb 2024 03:27:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7334B134C7;
+	Sat, 24 Feb 2024 03:38:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="W9fJ6Bc+"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f7iEKudf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9D51D2E0;
-	Sat, 24 Feb 2024 03:27:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6681AD54
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 03:38:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708745253; cv=none; b=LhoT2K42OZwjbtI8w6etIi/QhdRHGSWxBqStI1hxjYjh75czsgvqHc0AsGxfa+J6ccqUU2hFxGe7jz+pSYRgoewWcrzpbpQdcgdrlmsPt55K+95XN9s7jVq0ho3Q1FfcFNgeXMa6oPvXvxuqNWp2wFsx5+USwIirEOO6UbykyPU=
+	t=1708745896; cv=none; b=S0nVLRvDvScysCm6JZSYRs+T8cOoMmZhxrSWhrnrxpRSWoKT4YcIRXFEQeXMVDoWgkhcWUvwuC52Qo6JqBq9WcSUQg06znJWeN9/MwkSRId4whDXBqUsQvlzw2zZQSej2f+k6TX1McL0aavFVSmPdFCjeWtM/2PqARo/3wX7Xrs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708745253; c=relaxed/simple;
-	bh=qhDNlIMq5CO7aNNTqnWBMffCMqCKzQlbjb1J1+ZjR6s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SmEHb1MmpH1KPQpHrZyky9LmVzAzLk4i7kmftceIuDS2d+h1GdKZGZB96dsDOhEGoSB3sigy6RpOGH3DfKYuCZDKtD+F/N4x0UG+GURmJPsJt3o9siqA5gHcgy40C9KqosawKUdLqkC6jz9ai4ydiOATGuOhl433wtNMYqnJpeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=W9fJ6Bc+; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=0VCkszg+LKLjIPkU+C6CKrRV3Fp8J43nYtNQiylBN10=; b=W9fJ6Bc+K8wkC50wnuBCuysytl
-	BtgBPCcY1O3Zj0LxNhyI1VpNJ1aPrnobfR/MYuEuS8SX8J2NFq81W7iICYNaGNEs00/WbO/rf3Rpl
-	rXu1GmA/7Gv2iMXWOaFGY+healOF8T0q2ZlWiH5L6FIJsYejY1YG42QfvtkQJ12Blv4ZzgnuBoq7L
-	Vhx6QIp93YVyxtoBXrwJ2IAZ40MU8IDO5S2zvkpfyGPDdZw81LNF9Y7Aog++JYbWJ+nhsuhifiM6M
-	hayGF+PsoqHCrNH1RA3CDbSj9XVaAnz4Q1Ro76/XJ0YinBM/q+PTpLNC9FSWWnYntvPFgLw4zdLIj
-	JHt0flNw==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rdih9-0000000Bwos-10f0;
-	Sat, 24 Feb 2024 03:27:23 +0000
-Message-ID: <97cde8f6-21ed-45b9-9618-568933102f05@infradead.org>
-Date: Fri, 23 Feb 2024 19:27:22 -0800
+	s=arc-20240116; t=1708745896; c=relaxed/simple;
+	bh=0UyBVbjjB7xZ7/uiZ6nqYEtd67m13HSbB9f2AsarlwI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=e3f4IDpyInhKmZLj0LUXsxDrKgO6kdBpDtb8z5DRp58f3B3BUOVE9m+z8b7uZCCD0WjeA9k0nCH+yxt0vK3Okzf3haQWXwSMj9j6E7Gp/Uomuib0Qc3HUcUvL2Kmgv8HpX+ubfguj2Yh0kHdnb67E6KKZJ9Zl7h8otH8zttjkDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f7iEKudf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2661DC43399
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 03:38:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708745896;
+	bh=0UyBVbjjB7xZ7/uiZ6nqYEtd67m13HSbB9f2AsarlwI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=f7iEKudfDaChDcQf9i96NUqzTUg9WsuvD+PUSCL2i3TAttePQa1+D563WT2unIKAd
+	 FHgAqlD4l/hZAJfgdTlA8Kso8r5k+7cBrAAWORTrHxDHPwMvxJOvI6XNRp+PpydJvJ
+	 UcJ6ig2DYgqgBFutktoU+mg2usQd2mY5DVkNqsWqs0CUNuRC04WFONe3buyqfXjyGg
+	 E866aMbDGm4Prst2pivIoH2HsU8ZQ4sgdr8HW6AMha2tIHEiHtsX/kRnh5jGFobsUw
+	 oi8K6roPY1P5BfKjDW2on+B/Ucp+bl99eVYrHtZJrR0DVP9saC1gczpEe5Rhh/6Y//
+	 2QDfrupX6hk2A==
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-512f3e75391so14616e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 19:38:16 -0800 (PST)
+X-Gm-Message-State: AOJu0Yy+sJCepNRD7UkeLBDYqAEO919T7F4fXsRGsGhZwEIlMSYsJCg2
+	rGqr5zvqhA8V9U+TQdSJFfKVny0gzott5ISxTba4lcyPsOGDxLnBhqTAQa46l2o9aTn3ch0KCbn
+	rNbJFQT3yiTQTPaWl+WB1/l+NpcM=
+X-Google-Smtp-Source: AGHT+IF1YHlALszowlOjSXLQhJwz872+dn+dGasb9uen+19ee3lm9MCkJGP4q8NuMluRVvXYtxvnsbABpPv2bg82/A4=
+X-Received: by 2002:a05:6512:1053:b0:512:bf09:624a with SMTP id
+ c19-20020a056512105300b00512bf09624amr953640lfb.66.1708745894613; Fri, 23 Feb
+ 2024 19:38:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 07/20] famfs: Add include/linux/famfs_ioctl.h
-Content-Language: en-US
-To: John Groves <John@groves.net>
-Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>,
- Dan Williams <dan.j.williams@intel.com>,
- Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- Matthew Wilcox <willy@infradead.org>, linux-cxl@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, john@jagalactic.com,
- Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>,
- dave.hansen@linux.intel.com, gregory.price@memverge.com
-References: <cover.1708709155.git.john@groves.net>
- <b40ca30e4bf689249a8c237909d9a7aaca9861e4.1708709155.git.john@groves.net>
- <8f62b688-6c14-4eab-b039-7d9a112893f8@infradead.org>
- <7onhdq4spd7mnkr5c443sbvnr7l4n34amtterg4soiey2qubyl@r2ppa6fsohnk>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <7onhdq4spd7mnkr5c443sbvnr7l4n34amtterg4soiey2qubyl@r2ppa6fsohnk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231117125807.1058477-1-masahiroy@kernel.org> <CAK7LNAStoCja1gnoFmsKikbzGZmKTcTu+Vc7v9zg8B9hwsH+iQ@mail.gmail.com>
+In-Reply-To: <CAK7LNAStoCja1gnoFmsKikbzGZmKTcTu+Vc7v9zg8B9hwsH+iQ@mail.gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sat, 24 Feb 2024 12:37:35 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATVAcj-pa_G-NGBTr9doCACGk1nKCNbxM50-M0mi9q=7w@mail.gmail.com>
+Message-ID: <CAK7LNATVAcj-pa_G-NGBTr9doCACGk1nKCNbxM50-M0mi9q=7w@mail.gmail.com>
+Subject: Re: [PATCH] riscv: compat_vdso: install compat_vdso.so.dbg to /lib/modules/*/vdso/
+To: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi John,
+Ping x 2 ?
 
-On 2/23/24 18:23, John Groves wrote:
->>> +
->>> +#define FAMFSIOC_MAGIC 'u'
->> This 'u' value should be documented in
->> Documentation/userspace-api/ioctl/ioctl-number.rst.
->>
->> and if possible, you might want to use values like 0x5x or 0x8x
->> that don't conflict with the ioctl numbers that are already used
->> in the 'u' space.
-> Will do. I was trying to be too clever there, invoking "mu" for
-> micron. 
 
-I might have been unclear about this one.
-It's OK to use 'u' but the values 1-4 below conflict in the 'u' space:
 
-'u'   00-1F  linux/smb_fs.h                                          gone
-'u'   20-3F  linux/uvcvideo.h                                        USB video class host driver
-'u'   40-4f  linux/udmabuf.h
 
-so if you could use
-'u'   50-5f
-or
-'u'   80-8f
 
-then those conflicts wouldn't be there.
-HTH.
+On Sun, Jan 21, 2024 at 6:48=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.o=
+rg> wrote:
+>
+> On Fri, Nov 17, 2023 at 9:58=E2=80=AFPM Masahiro Yamada <masahiroy@kernel=
+org> wrote:
+> >
+> > 'make vdso_install' installs debug vdso files to /lib/modules/*/vdso/.
+> >
+> > Only for the compat vdso on riscv, the installation destination differs=
+;
+> > compat_vdso.so.dbg is installed to /lib/module/*/compat_vdso/.
+> >
+> > To follow the standard install destination and simplify the vdso_instal=
+l
+> > logic, change the install destination to standard /lib/modules/*/vdso/.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+>
+>
+> Ping?
+> (in case "yet more RISC-V updates" happens)
+>
+>
+>
+>
+> >
+> >  arch/riscv/Makefile | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+> > index a74be78678eb..5cbe596345c1 100644
+> > --- a/arch/riscv/Makefile
+> > +++ b/arch/riscv/Makefile
+> > @@ -146,7 +146,7 @@ endif
+> >  endif
+> >
+> >  vdso-install-y                 +=3D arch/riscv/kernel/vdso/vdso.so.dbg
+> > -vdso-install-$(CONFIG_COMPAT)  +=3D arch/riscv/kernel/compat_vdso/comp=
+at_vdso.so.dbg:../compat_vdso/compat_vdso.so
+> > +vdso-install-$(CONFIG_COMPAT)  +=3D arch/riscv/kernel/compat_vdso/comp=
+at_vdso.so.dbg
+> >
+> >  ifneq ($(CONFIG_XIP_KERNEL),y)
+> >  ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_ARCH_CANAAN),yy)
+> > --
+> > 2.40.1
+> >
+>
+>
+> --
+> Best Regards
+> Masahiro Yamada
 
->>> +
->>> +/* famfs file ioctl opcodes */
->>> +#define FAMFSIOC_MAP_CREATE    _IOW(FAMFSIOC_MAGIC, 1, struct famfs_ioc_map)
->>> +#define FAMFSIOC_MAP_GET       _IOR(FAMFSIOC_MAGIC, 2, struct famfs_ioc_map)
->>> +#define FAMFSIOC_MAP_GETEXT    _IOR(FAMFSIOC_MAGIC, 3, struct famfs_extent)
->>> +#define FAMFSIOC_NOP           _IO(FAMFSIOC_MAGIC,  4)
 
--- 
-#Randy
+
+--
+Best Regards
+Masahiro Yamada
 
