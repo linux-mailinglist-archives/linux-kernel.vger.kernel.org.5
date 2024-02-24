@@ -1,152 +1,140 @@
-Return-Path: <linux-kernel+bounces-79821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FF4A86272F
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 21:02:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17DED862730
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 21:03:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6AAE1F21849
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 20:02:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6A3D2839A7
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 20:03:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D79EB4CDEB;
-	Sat, 24 Feb 2024 20:02:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9B334CDE5;
+	Sat, 24 Feb 2024 20:02:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M4EJfrEu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GO3LnLyC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1596C4D107;
-	Sat, 24 Feb 2024 20:02:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A6B84317B;
+	Sat, 24 Feb 2024 20:02:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708804953; cv=none; b=Fcm80jeLhCNw4Ntg+P8byEf/9XxTvut8SlFPPB7zstdS/omH9K9x38GwE7m31kATuHU3i06iKrl88eDrfN2pOR52G/xs948b8yI0a242XMjmDyk8zM4exC2jIhPe1B2ibTDd8V5feNrs/2Obf1w1zNuRuLNeuQyKz69iFVW8m88=
+	t=1708804976; cv=none; b=oFujsX7MwcuYIJx88PDKf5T6SGQli+lSt8NISHpl2ayIUik9XmAM24u90k/jZHzoY4RVnucvrDOYqZjyjvJagn/inTFsF6pxBha3WjfFgi5A7xXDECfTDWb91u4OPcMQa3Ihr3L3l6ZamJVzmUoDG6C9zqqRfzB8BGfEjphYSJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708804953; c=relaxed/simple;
-	bh=tpvjkEKYJLAWc8r/kFlJlpJPF2ji+9TFnmJFk47EZlk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K3+O4VicqeRWTlyqgRXx0BKFu6Cfl14jOWuTuWFBOAnEp1/817tscmWZm37lXewsE6DVDy+6FFP8p6LyWG/5d6nlT9qsY969iy5MHWRXCae0iu4pOluNcP0k06uzDGPbeB0bC8nWRPABffzM5ULgue0wNJUDyWvsUhFYe6lkgo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M4EJfrEu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 476DFC433F1;
-	Sat, 24 Feb 2024 20:02:29 +0000 (UTC)
+	s=arc-20240116; t=1708804976; c=relaxed/simple;
+	bh=Lyx+jlo3VcjazLK7FnQNRJu5zo/lPcZOySRjMGj+3Zo=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=mI/adKOyloo5bMs6wWJyOrzppkNucAItMQ8U/UDrXnm+D8Eumq2ChMXypAtM1182oOxuUkyxNvPo2PQF0MgCwS5vzdQ7eFsaCYfGQ2P2Q0r8dENxV2lkVovarbednutROWZ/xR7Kt4RRSbT+Fw4OYabaG/UsE+ofQOL2mzjx6nE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GO3LnLyC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7D66C433F1;
+	Sat, 24 Feb 2024 20:02:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708804952;
-	bh=tpvjkEKYJLAWc8r/kFlJlpJPF2ji+9TFnmJFk47EZlk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=M4EJfrEukmXbwH6vbe4k1OZ9uAkIti2PK99vA7IODObK94M/+dWtj7ewfRKkVCzBe
-	 C07PLANm15udqZOyj0fM2A+5/64AqnNp3y7OEZ3m3qx2LWwmuSym2P3mmbLbMCEoKW
-	 ZkeTkEvJD+E0tqJ7Gei3Ggez2ugzAV+DBBYd++cVQBzLxvTkNqUIGzbRdGOQ571d/l
-	 K2ZCQTYsYFh6ibAlxc+Gnr56XzXoeytPVFeMjE8PDfI0+iAV7a/LICTWNMVF0McfNw
-	 LpwUA2ZTyv3N3EV5tpPt4xQ8FJJcAUG9iSwZPjoDy2T18+4IVkB1Mr/mckTL/hvbzv
-	 vljH/6Y+VYOZA==
-Date: Sat, 24 Feb 2024 20:02:26 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Varshini Rajendran <varshini.rajendran@microchip.com>
-Cc: radu_nicolae.pirea@upb.ro, richard.genoud@gmail.com,
-	gregkh@linuxfoundation.org, jirislaby@kernel.org,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, nicolas.ferre@microchip.com,
-	alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
-	linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-	linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 12/39] dt-bindings: serial: atmel,at91-usart: add
- compatible for sam9x7.
-Message-ID: <20240224-kimono-stress-898eae80abd3@spud>
-References: <20240223171342.669133-1-varshini.rajendran@microchip.com>
- <20240223172559.672142-1-varshini.rajendran@microchip.com>
+	s=k20201202; t=1708804975;
+	bh=Lyx+jlo3VcjazLK7FnQNRJu5zo/lPcZOySRjMGj+3Zo=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=GO3LnLyCVMf46dnvqDxxfaXQJmLSC/y21eTEmcUy97WIlimYqNFHYqkAFAz41gW3a
+	 Rk4Q4KzKxa8IdiptKMEaObfYFnu84PMWHvJTtjt+au5ZLOVsqJFju9d+8+3yCXhZsd
+	 TJ0W7QMWcR9eCEbXO54SmRRW6A468yVm1GSZTcn7qv8WxPn7/X7sdmghe7ivAFxQvQ
+	 V3phuCbt2eBOELhQIrrhfRHhoPvsSqvneebbBmG2G8n/SDJTVF3I4U6h9ixZjFP48y
+	 ARZ2U7zsjiI52R2+O7KwO3wbbYrGXUb8fElgV/THkK5lnu4iL1xcxW3FcVF3gi+TlG
+	 bTZ3PfSil9ddw==
+From: SeongJae Park <sj@kernel.org>
+To: Barry Song <21cnbao@gmail.com>
+Cc: SeongJae Park <sj@kernel.org>,
+	akpm@linux-foundation.org,
+	damon@lists.linux.dev,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	minchan@kernel.org,
+	mhocko@suse.com,
+	hannes@cmpxchg.org,
+	Barry Song <v-songbaohua@oppo.com>
+Subject: Re: [PATCH RFC] mm: madvise: pageout: ignore references rather than clearing young
+Date: Sat, 24 Feb 2024 12:02:52 -0800
+Message-Id: <20240224200252.46329-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <CAGsJ_4x-p+8SzyHQq_EJpbq+hSEu5MCtwpGWvafpk4xfpB1gKg@mail.gmail.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="8c64jTTjW0j3INUS"
-Content-Disposition: inline
-In-Reply-To: <20240223172559.672142-1-varshini.rajendran@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+On Sun, 25 Feb 2024 03:50:48 +0800 Barry Song <21cnbao@gmail.com> wrote:
 
---8c64jTTjW0j3INUS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Sun, Feb 25, 2024 at 3:02 AM SeongJae Park <sj@kernel.org> wrote:
+> >
+> > On Fri, 23 Feb 2024 17:15:50 +1300 Barry Song <21cnbao@gmail.com> wrote:
+> >
+> > > From: Barry Song <v-songbaohua@oppo.com>
+> > >
+> > > While doing MADV_PAGEOUT, the current code will clear PTE young
+> > > so that vmscan won't read young flags to allow the reclamation
+> > > of madvised folios to go ahead.
+> > > It seems we can do it by directly ignoring references, thus we
+> > > can remove tlb flush in madvise and rmap overhead in vmscan.
+> > >
+> > > Regarding the side effect, in the original code, if a parallel
+> > > thread runs side by side to access the madvised memory with the
+> > > thread doing madvise, folios will get a chance to be re-activated
+> > > by vmscan. But with the patch, they will still be reclaimed. But
+> > > this behaviour doing PAGEOUT and doing access at the same time is
+> > > quite silly like DoS. So probably, we don't need to care.
+> >
+> > I think we might need to take care of the case, since users may use just a
+> > best-effort estimation like DAMON for the target pages.  In such cases, the
+> > page granularity re-check of the access could be helpful.  So I concern if this
+> > could be a visible behavioral change for some valid use cases.
+> 
+> Hi SeongJae,
+> 
+> If you read the code of MADV_PAGEOUT,  you will find it is not the best-effort.
 
-On Fri, Feb 23, 2024 at 10:55:59PM +0530, Varshini Rajendran wrote:
-> Add sam9x7 compatible to DT bindings documentation.
->=20
-> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
-> ---
-> Changes in v4:
-> - Fixed the wrong addition of compatible
-> - Added further compatibles that are possible correct (as per DT)
-> ---
->  .../devicetree/bindings/serial/atmel,at91-usart.yaml | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/serial/atmel,at91-usart.ya=
-ml b/Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml
-> index 65cb2e5c5eee..30af537e8e81 100644
-> --- a/Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml
-> +++ b/Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml
-> @@ -23,11 +23,17 @@ properties:
->            - const: atmel,at91sam9260-dbgu
->            - const: atmel,at91sam9260-usart
->        - items:
-> -          - const: microchip,sam9x60-usart
-> +          - enum:
-> +              - microchip,sam9x60-usart
-> +              - microchip,sam9x7-usart
->            - const: atmel,at91sam9260-usart
->        - items:
-> -          - const: microchip,sam9x60-dbgu
-> -          - const: microchip,sam9x60-usart
-> +          - enum:
-> +              - microchip,sam9x60-dbgu
-> +              - microchip,sam9x7-dbgu
+I'm not saying about MADV_PAGEOUT, but the logic of ther user of MADV_PAGEOUT,
+which being used for finding the pages to reclaim.
 
-> +          - enum:
-> +              - microchip,sam9x60-usart
-> +              - microchip,sam9x7-usart
+> It does clearing pte  young and immediately after the ptes are cleared, it reads
+> pte and checks if the ptes are young. If not, reclaim it. So the
+> purpose of clearing
+> PTE young is helping the check of young in folio_references to return false.
+> The gap between clearing ptes and re-checking ptes is quite small at
+> microseconds
+> level.
+> 
+> >
+> > >
+> > > A microbench as below has shown 6% decrement on the latency of
+> > > MADV_PAGEOUT,
+> >
+> > I assume some of the users may use MADV_PAGEOUT for proactive reclamation of
+> > the memory.  In the use case, I think latency of MADV_PAGEOUT might be not that
+> > important.
+> >
+> > Hence I think the cons of the behavioral change might outweigh the pros of the
+> > latench improvement, for such best-effort proactive reclamation use case.  Hope
+> > to hear and learn from others' opinions.
+> 
+> I don't see  the behavioral change for MADV_PAGEOUT as just the ping-pong
+> is removed. The only chance is in that very small time gap, somebody accesses
+> the cleared ptes and makes it young again, considering this time gap
+> is so small,
+> i don't think it is worth caring.  thus, i don't see pros for MADV_PAGEOUT
+> case, but we improve the efficiency of MADV_PAGEOUT and save the power of
+> Android phones.
 
-This doesn't make sense - this enum should be a const.
-I don't really understand the idea behind of the original binding here that
-allowed:
-"microchip,sam9x60-dbgu", "microchip,sam9x60-usart", "atmel,at91sam9260-dbg=
-u", "atmel,at91sam9260-usart"
+Ok, I agree the time gap is small enough and the benefit could be significant
+on such use case.  Thank you for enlightening me with the nice examples and the
+numbers :)
 
-Specifically, I don't get the purpose of the "microchip,sam9x60-usart".
-Either make it
-      - items:
-          - enum:
-              - microchip,sam9x60-dbgu
-              - microchip,sam9x7-dbgu
-          - const: microchip,sam9x60-usart
-          - const: atmel,at91sam9260-dbgu
-          - const: atmel,at91sam9260-usart
-or add
-      - items:
-          - const: microchip,sam9x60-dbgu
-          - const: atmel,at91sam9260-dbgu
-          - const: atmel,at91sam9260-usart
-or explain exactly why this needs to be
-"chipa-dgbu", "chipa-usart", "chipb-dbgu", "chipb-dbgu"
 
 Thanks,
-Conor.
+SJ
 
-
---8c64jTTjW0j3INUS
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZdpLUgAKCRB4tDGHoIJi
-0gcuAPwKJcQi8VunTtf+c2HxMwJnzd/VcSM1qfFZR7t6Y2RTxwD/UV6+lcP8ArXQ
-HqrqN+g0Ua0mQyRSLJa+cfksxbl88wY=
-=PXng
------END PGP SIGNATURE-----
-
---8c64jTTjW0j3INUS--
+[...]
 
