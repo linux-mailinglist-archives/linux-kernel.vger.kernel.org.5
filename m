@@ -1,160 +1,199 @@
-Return-Path: <linux-kernel+bounces-79570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79571-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 373C3862451
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:41:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED1ED862454
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:45:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9DCA4B21A61
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 10:41:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACFD7284335
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 10:45:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A55122EE3;
-	Sat, 24 Feb 2024 10:41:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53645249EE;
+	Sat, 24 Feb 2024 10:45:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uq2+nPV2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lFOsAdzu"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB0041B59C;
-	Sat, 24 Feb 2024 10:41:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22F0421A0A;
+	Sat, 24 Feb 2024 10:45:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708771300; cv=none; b=LoFuZZ5C7OLbjlH4WDbm9QK8b2LxHkUr6u/xWtMsQtLOC1zDUVciOUtmVHsA0VspTgr/cGSWbGZV8nMQwfbcrZZsgWd23YZI6ICpMptux1cslf6BYidLnNkFMcsd4DZs29GWbKDjWPBkEDXDgzaGPHQkssLgKLI/eUu2ecThWaQ=
+	t=1708771512; cv=none; b=YL5xOXOBsgPHLBXUczVcvjFjoYtrjjNeOIeKNw3WS9/eCWvv3seJZ0bqilEbTPWyd8y/rAOmqMvvPGoaC6jJE0c5EjKBmDdqyJT0CN9yPuSw6wMVKrdXDQ1sEPqClxXE4ms5OaPQjh17xl9dIX9jR/oNe1XiBvxLU2ah2owhZbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708771300; c=relaxed/simple;
-	bh=El8Tx8z+w76H7TlIq7DwaR1/BFADl77wHAkdidcCCz8=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MDuiEca6lIWBxyZadc/Q82ccyj4QV3ZYlJFjG9Lzr3W4hn6TyV8q86tKL1pgGQmFU6F3Oi3bAKwVSWkjMrUP1Khop4JEMNdjXwJ14MbOTR0csHmD5SvnTHJZDQuVFA2XvjUCid3KJrUctMegy/wgtFTEqklgnXdkRXPL+i94Qo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uq2+nPV2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C44DC433F1;
-	Sat, 24 Feb 2024 10:41:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708771300;
-	bh=El8Tx8z+w76H7TlIq7DwaR1/BFADl77wHAkdidcCCz8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Uq2+nPV2qDwwRd+8SJWZySXM2Z+a7VuqZIuLvLBUsVm72UcgEzLzd6O+4FgUsAwol
-	 dqSU6YsThde29eWsnyRpckCzQWrMh8NwZ7zOdzesnILnuKtbLwbt4DN/6QzvUvsJ0e
-	 oXasKsvHbQwZlCRpVVAc2WkvEgkcoVfNh67W5HiWgWo0JpXxBGSur4dfWen0AiUUfC
-	 3kfS5OVx9+qfov6D0xne2nZimNoepeBVtGcZkSg3lePyOkiF6hqWNp04b3YSf5uSlu
-	 IdiIKAZCMeHXcHYijfvEsbPgplSdwgj1TFVfOVD9lymGN9NPZkn5dZMHr9mFV+/uvj
-	 O+cyHr8F1D4GQ==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rdpTN-006Lh6-RL;
-	Sat, 24 Feb 2024 10:41:37 +0000
-Date: Sat, 24 Feb 2024 10:41:36 +0000
-Message-ID: <87bk869man.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Oliver Upton <oliver.upton@linux.dev>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	kvmarm@lists.linux.dev,
-	Jing Zhang <jingzhangos@google.com>
-Subject: Re: [PATCH 3/3] irqchip/gic-v3-its: Print the vPE table installed in redistributor
-In-Reply-To: <20240219185809.286724-4-oliver.upton@linux.dev>
-References: <20240219185809.286724-1-oliver.upton@linux.dev>
-	<20240219185809.286724-4-oliver.upton@linux.dev>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1708771512; c=relaxed/simple;
+	bh=5svl/D2cmebuOMxgI6OVmNsXDJ7Bg4jtKgMY2jlkomw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nQoKOuKbgXqqQ3ANeFa3mB9+/AWfUBribwcMuil807ACgX+/FfswVKluiCHjjCUrQPF/LphDY1t2F8FMA7A7mhP54yM9cDho4UVibcbcwyy9jBxWVWTfeG4hC2A1OFn4v1ZHvuOYtKcm0FMg2lwIqugW9xblUJF0lKTj5NLfzgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lFOsAdzu; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d934c8f8f7so15013695ad.2;
+        Sat, 24 Feb 2024 02:45:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708771510; x=1709376310; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XVqOjvQSDEDKq31auMq76nWKFY0pe+j+Ca5udl4+VwU=;
+        b=lFOsAdzu2PzGKlSknYTx3LvcOJXMe340niA+mO8cdHCHaELj/VqMBbD3P2M/IxGoVi
+         Qc1sxCKu0RYTxKTvgkA9cuTXhEY7G3iTqNFG4erUZFdvpph3pj1bRt95yglKNnE6eTkx
+         bjqqMWRMj/p+mIiYwYPNYEktyZQcg1ZG9oz5+MJMAW/4R+Gq95klXFsvft7wGZq6ybg4
+         6LRFVvadYXdYw4JTJkbNWvpB2zJLO0XEQKEuYLakbGijWy6xZMZxtel0tNmHncPlPJyK
+         LWKzpDkOxRQ/Cvk3G0oKlYj4EynL4z18WtTAFJyUCMADmNhN51D8V5GCc2McfkdtUcZY
+         6Oag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708771510; x=1709376310;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XVqOjvQSDEDKq31auMq76nWKFY0pe+j+Ca5udl4+VwU=;
+        b=SuUpNc7QbHjKJGwJHOAf7TlfoUx7ArHJ2QdTFaH+5po/BttgiAe5DWSOtrVywwiZrT
+         YV+Dh4M5pweth6VUdyGH8eMsuXTDQpnLfvtAIhyD5tHPCDmA0zUK3qwGYDWffE0VuD/f
+         zMJz9LGj2ZjjHmaRQQWSPJ+ihix2/X4Hs5Tltfh11vWCLLH2ZeEA3VowihwHjDDukTTk
+         KtjldgMrICA/02ro/mwK2buxFboX9GQNbzw11B82019EfjBqx/Uc+b/OYKiWV3X0cHBk
+         mcTmO4SjI7paKM+rcZco4uWUv/gsm+KaOSPKiUoEWcxIZh4BkMGimkJseW311xaswxBK
+         jZ7A==
+X-Forwarded-Encrypted: i=1; AJvYcCVQGZqrfVt/AbUYlmV64bZuuyDd+/EgNiBonHm56culPncv3EjoTKiRWxFPY3mAapRRFY02X3+cywMQvW2f5WLtZHOIhll1pUZzH6Uqx3OPuWgGWqTDywYaUVBEATex7XGvlzO+SYgZva0lK4Gr0KwpIbeRFekqqpJ2pdvQNq3OfTsDSA==
+X-Gm-Message-State: AOJu0YyCJx45OeI4DOomFXj8AEQXnxrpkRIcvtz8bTSAtrZEHfro8lBb
+	AMghfvtM+bkTP7e4ZgX/SDG0JQoMgbMdIF2h0ZtEtOQgO0+Nym2i
+X-Google-Smtp-Source: AGHT+IGTCcw1nPo5uilPjR3XkAVmnW1KGl5IrYp5yQPGFpjcH9vaGA0Owygfz8dt8AbR2tyHeqGzQw==
+X-Received: by 2002:a17:903:2607:b0:1db:c6a0:d023 with SMTP id jd7-20020a170903260700b001dbc6a0d023mr1849674plb.8.1708771510260;
+        Sat, 24 Feb 2024 02:45:10 -0800 (PST)
+Received: from linux-8mug (220-129-204-58.dynamic-ip.hinet.net. [220.129.204.58])
+        by smtp.gmail.com with ESMTPSA id ko8-20020a17090307c800b001db3361bc1dsm795726plb.102.2024.02.24.02.45.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Feb 2024 02:45:09 -0800 (PST)
+Date: Sat, 24 Feb 2024 18:44:55 +0800
+From: Chester Lin <chester62515@gmail.com>
+To: Ghennadi Procopciuc <ghennadi.procopciuc@oss.nxp.com>
+Cc: Andreas Farber <afaerber@suse.de>, Matthias Brugger <mbrugger@suse.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, NXP S32 Linux Team <s32@nxp.com>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+	Ghennadi Procopciuc <ghennadi.procopciuc@nxp.com>,
+	Ciprian Costea <ciprianmarian.costea@nxp.com>
+Subject: Re: [PATCH v2 2/2] arm64: dts: s32g: add uSDHC node
+Message-ID: <ZdnIp8PPtfbuIzwP@linux-8mug>
+References: <20240122140602.1006813-1-ghennadi.procopciuc@oss.nxp.com>
+ <20240122140602.1006813-3-ghennadi.procopciuc@oss.nxp.com>
+ <ZdmnQTtUxOEUy06L@linux-8mug>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, tglx@linutronix.de, yuzenghui@huawei.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, jingzhangos@google.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZdmnQTtUxOEUy06L@linux-8mug>
 
-On Mon, 19 Feb 2024 18:58:08 +0000,
-Oliver Upton <oliver.upton@linux.dev> wrote:
->=20
-> Hindsight is 20/20 of course, but the recent vPE table programming bug
-> could've been root caused a bit more quickly if we print the table
-> getting installed at every redistributor.
->=20
-> Promote to pr_info() and add some additional context, such as the
-> provenance of the installed vPE table.
->=20
-> Signed-off-by: Oliver Upton <oliver.upton@linux.dev>
-> ---
->  drivers/irqchip/irq-gic-v3-its.c | 16 +++++++++++-----
->  1 file changed, 11 insertions(+), 5 deletions(-)
->=20
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v=
-3-its.c
-> index 63d1743f08cc..c3ef9665a2ad 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -2835,7 +2835,8 @@ static int allocate_vpe_l1_table(void)
->  	u64 val, gpsz, npg, pa;
->  	unsigned int psz =3D SZ_64K;
->  	unsigned int np, epp, esz;
-> -	struct page *page;
-> +	struct page *page =3D NULL;
-> +	bool from_its =3D false;
-> =20
->  	if (!gic_rdists->has_rvpeid)
->  		return 0;
-> @@ -2865,8 +2866,10 @@ static int allocate_vpe_l1_table(void)
->  		return -ENOMEM;
-> =20
->  	val =3D inherit_vpe_l1_table_from_its();
-> -	if (val & GICR_VPROPBASER_4_1_VALID)
-> +	if (val & GICR_VPROPBASER_4_1_VALID) {
-> +		from_its =3D true;
->  		goto out;
-> +	}
+Hi Ghennadi,
 
-nit:
-	from_its =3D val & GICR_VPROPBASER_4_1_VALID;
-	if (from_its)
-		...
+On Sat, Feb 24, 2024 at 04:22:30PM +0800, Chester Lin wrote:
+> Hi Ghennadi,
+> 
+> On Mon, Jan 22, 2024 at 04:06:01PM +0200, Ghennadi Procopciuc wrote:
+> > From: Ghennadi Procopciuc <ghennadi.procopciuc@nxp.com>
+> > 
+> > Add the uSDHC node for the boards that are based on S32G SoCs.
+> > 
+> > Signed-off-by: Ciprian Costea <ciprianmarian.costea@nxp.com>
+> > Signed-off-by: Ghennadi Procopciuc <ghennadi.procopciuc@nxp.com>
+> > ---
+> >  arch/arm64/boot/dts/freescale/s32g2.dtsi        | 10 ++++++++++
+> >  arch/arm64/boot/dts/freescale/s32g274a-evb.dts  |  6 +++++-
+> >  arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts |  6 +++++-
+> >  3 files changed, 20 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/arm64/boot/dts/freescale/s32g2.dtsi b/arch/arm64/boot/dts/freescale/s32g2.dtsi
+> > index ef1a1d61f2ba..fc19ae2e8d3b 100644
+> > --- a/arch/arm64/boot/dts/freescale/s32g2.dtsi
+> > +++ b/arch/arm64/boot/dts/freescale/s32g2.dtsi
+> > @@ -138,6 +138,16 @@ uart2: serial@402bc000 {
+> >  			status = "disabled";
+> >  		};
+> >  
+> > +		usdhc0: mmc@402f0000 {
+> > +			compatible = "nxp,s32g2-usdhc";
+> > +			reg = <0x402f0000 0x1000>;
+> > +			interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
+> > +			clocks = <&clks 32>, <&clks 31>, <&clks 33>;
+> 
+> Same as I have mentioned in [PATCH v2 1/2], could we have fixed dt-bindings to
+> replace with these raw clock id values (32, 31, 33)?
+> 
 
-> =20
->  	/* First probe the page size */
->  	val =3D FIELD_PREP(GICR_VPROPBASER_4_1_PAGE_SIZE, GIC_PAGE_SIZE_64K);
-> @@ -2945,9 +2948,12 @@ static int allocate_vpe_l1_table(void)
->  	gicr_write_vpropbaser(val, vlpi_base + GICR_VPROPBASER);
->  	cpumask_set_cpu(smp_processor_id(), gic_data_rdist()->vpe_table_mask);
-> =20
-> -	pr_debug("CPU%d: VPROPBASER =3D %llx %*pbl\n",
-> -		 smp_processor_id(), val,
-> -		 cpumask_pr_args(gic_data_rdist()->vpe_table_mask));
-> +	pr_info("CPU%d: Using %s vPE table @%llx (%s)\n",
-> +		smp_processor_id(),
-> +		(val & GICR_VPROPBASER_4_1_INDIRECT) ? "indirect" : "direct",
-> +		val & GICR_VPROPBASER_4_1_ADDR,
-> +		(page) ? "allocated" :
-> +			 ((from_its) ? "inherited from ITS" : "inherited from RD"));
+Just found the previous review discussion in v1:
+https://lore.kernel.org/all/f54d947c-58dc-498f-8871-b472f97be4a8@oss.nxp.com/
 
-=46rom past experience, having the vpe_table_mask value displayed did
-help tracking VPE table affinity bugs.
+What I'm worried is that, could these raw clock IDs be rearranged in the
+downstream TF-A? If so it would cause ABI inconsistency and clock issues
+since the kernel is not aware of any raw ID changes in downstream TF-A.
 
-This said, my problem with this patch is that we already have tons of
-these statement printed once per CPU/RD. This is really huge and
-accounts for a significant part of the boot time on large machines
-(64+ CPUs).
+Chester
 
-Before we add more of those, I'd really want to have a way to tone
-them down and only print them at runtime *if* required by the user.
-Kind of a dymanic debug, but driven from the command-line and present
-early enough.
-
-What do you think?
-
-	M.
-
---=20
-Without deviation from the norm, progress is not possible.
+> > +			clock-names = "ipg", "ahb", "per";
+> > +			bus-width = <8>;
+> > +			status = "disabled";
+> > +		};
+> > +
+> >  		gic: interrupt-controller@50800000 {
+> >  			compatible = "arm,gic-v3";
+> >  			reg = <0x50800000 0x10000>,
+> > diff --git a/arch/arm64/boot/dts/freescale/s32g274a-evb.dts b/arch/arm64/boot/dts/freescale/s32g274a-evb.dts
+> > index 9118d8d2ee01..00070c949e2a 100644
+> > --- a/arch/arm64/boot/dts/freescale/s32g274a-evb.dts
+> > +++ b/arch/arm64/boot/dts/freescale/s32g274a-evb.dts
+> > @@ -1,7 +1,7 @@
+> >  // SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> >  /*
+> >   * Copyright (c) 2021 SUSE LLC
+> > - * Copyright (c) 2019-2021 NXP
+> > + * Copyright 2019-2021, 2024 NXP
+> >   */
+> >  
+> >  /dts-v1/;
+> > @@ -32,3 +32,7 @@ memory@80000000 {
+> >  &uart0 {
+> >  	status = "okay";
+> >  };
+> > +
+> > +&usdhc0 {
+> > +	status = "okay";
+> > +};
+> > diff --git a/arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts b/arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts
+> > index e05ee854cdf5..b3fc12899cae 100644
+> > --- a/arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts
+> > +++ b/arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts
+> > @@ -1,7 +1,7 @@
+> >  // SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> >  /*
+> >   * Copyright (c) 2021 SUSE LLC
+> > - * Copyright (c) 2019-2021 NXP
+> > + * Copyright 2019-2021, 2024 NXP
+> >   */
+> >  
+> >  /dts-v1/;
+> > @@ -38,3 +38,7 @@ &uart0 {
+> >  &uart1 {
+> >  	status = "okay";
+> >  };
+> > +
+> > +&usdhc0 {
+> > +	status = "okay";
+> > +};
+> > -- 
+> > 2.43.0
+> > 
 
