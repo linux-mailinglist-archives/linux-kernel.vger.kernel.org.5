@@ -1,440 +1,452 @@
-Return-Path: <linux-kernel+bounces-79713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DA558625B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 16:06:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 952178625C7
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 16:14:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3DA9B2188C
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 15:06:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21371282B22
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 15:14:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 214B447A5D;
-	Sat, 24 Feb 2024 15:06:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4C1D46521;
+	Sat, 24 Feb 2024 15:14:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="FH2xtBV9"
-Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bw2m32dw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 439C845BF1
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 15:06:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD942E559;
+	Sat, 24 Feb 2024 15:14:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708787174; cv=none; b=AgS211C13SZkAnBHM+CpmJsvUN5CAO8Yzz7f4gA6pMktO6uiQEIn+PmIrR/HtJ6REA9KYSRxAzVhNZZ1rnyimno/LxrEwyDY/fcUKfqLtKDf11DHH0H5A5GNt6WR33WmaNw8s0BF3Cgu8lxG0S9ifiAgLrxbypcnUc4eFAWqfWQ=
+	t=1708787642; cv=none; b=NAj7bs6j0xWMv50iVGPxXk7NxkSk4eWIUE82jKZaoG4ni8/FhR24GuQ7S8EjBOfY16V2C4bDxq2X3Ue+y+TKgITakUm8T76cd6HqZFOlzPRPtDwRCHoPeXUlHPeFv+fUZexk4LE++0zUZD4FMQnWsnP5sSme0qGXS6MH/oaVXu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708787174; c=relaxed/simple;
-	bh=Q9SrX86zQBhe2kUdguButB8vQWP6AxlFFgogUXGLSXg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hucIP4MFOJ7xVyIIcwzlopbp0RPUsQCeL3DX6gS7dtj75rHF6TN2NXNVpOfRUAwQq3YsTxJVELehfqPmEQjK8ctepbSdP8GaotoXVikQoae1D9QUfDwrkVNHN9dSGaPXbl3ISd3Qw49Ay3QgCjKAwcl4WF9pkiGAu7lI4YXk790=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=FH2xtBV9; arc=none smtp.client-ip=195.181.215.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-	t=1708787168; bh=Q9SrX86zQBhe2kUdguButB8vQWP6AxlFFgogUXGLSXg=;
-	h=From:To:Cc:Subject:Date:References:From;
-	b=FH2xtBV96s+MQ/h8BDgC0Qt5cWu1LxwDvCiUwEQ9BJP6dsQZxf1n9g6vHmOa9+agR
-	 cvRrm6HaOGJhtukSydgJLcnz+30E8g/FuuDRe0MCJBZhMxsqzeHXjftxR7Exyl84Hc
-	 1yIQ2xFSS9U0Xh061kZxFcqJ0gsqHLewKtdkcHws=
-From: =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megi@xff.cz>
-To: linux-kernel@vger.kernel.org,
-	Maxime Ripard <mripard@kernel.org>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>
-Cc: Ondrej Jirman <megi@xff.cz>,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-sunxi@lists.linux.dev
-Subject: [PATCH v2 3/3] drm/sun4i: Fix layer zpos change/atomic modesetting
-Date: Sat, 24 Feb 2024 16:06:00 +0100
-Message-ID: <20240224150604.3855534-4-megi@xff.cz>
-In-Reply-To: <20240224150604.3855534-1-megi@xff.cz>
-References: <20240224150604.3855534-1-megi@xff.cz>
+	s=arc-20240116; t=1708787642; c=relaxed/simple;
+	bh=LYTswCYwGiUPqj0hP+seBEAuBuZy43MNvVr8kKMlJKg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=uHbFVxC9v1joqoYex7K0ws8SVFT75Qhopsnl6i/FTku98Af4qntS80bZWaneX5FhTHO+Z9hecTqokMSNFmjWvmlrlXVQHekTOib464aj4ko24sAo6/q6sr8N9cf0hByYc27mbyFLmu0UlKEYzetRQf1Ob0aIcUNXW/v5WH+xCpE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bw2m32dw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC9FAC433F1;
+	Sat, 24 Feb 2024 15:13:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708787642;
+	bh=LYTswCYwGiUPqj0hP+seBEAuBuZy43MNvVr8kKMlJKg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Bw2m32dwtbhFOh88jtTl4rKfD91QOF3TVDkW6MalPxdEfWyOQF6pwA7jUFYu6Ho4J
+	 YhNo/njO8ufhPhg+RIuvgRURvvx4mrA5kW60kwUrOX2VCB2wQIuaaOUDQe2iF7HA5M
+	 G+x5/i0kRqQyPnySqZLS52H9Vv6LiEqac6k5pkM03jH/6MfgjnGASaWTJRnDrA5HPR
+	 HFAzwV7rb5EGj9dinzKhP6gbGLq37CAkDb+GSZ3doaf8t+NbE4LwF1WsyGdOc9rUmp
+	 SCktJNBeiOjwqcAm/zb12++f5j8HFyz91o8w/IcnjUQoYF9p/ru/m5/236/lpO4Uqd
+	 xGLwZvPHb+5Tw==
+Date: Sat, 24 Feb 2024 15:13:40 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, Matti Vaittinen <mazziesaccount@gmail.com>, Andy
+ Shevchenko <andriy.shevchenko@linux.intel.com>, Marek Vasut
+ <marex@denx.de>, Anshul Dalal <anshulusr@gmail.com>, Javier Carrasco
+ <javier.carrasco.cruz@gmail.com>, Matt Ranostay <matt@ranostay.sg>, Stefan
+ Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 5/5] iio: light: Add support for APDS9306 Light
+ Sensor
+Message-ID: <20240224151340.3f2f51e8@jic23-huawei>
+In-Reply-To: <20240218054826.2881-6-subhajit.ghosh@tweaklogic.com>
+References: <20240218054826.2881-1-subhajit.ghosh@tweaklogic.com>
+	<20240218054826.2881-6-subhajit.ghosh@tweaklogic.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: Ondrej Jirman <megi@xff.cz>
+On Sun, 18 Feb 2024 16:18:26 +1030
+Subhajit Ghosh <subhajit.ghosh@tweaklogic.com> wrote:
 
-Identical configurations of planes can lead to different (and wrong)
-layer -> pipe routing at HW level, depending on the order of atomic
-plane changes.
+> Driver support for Avago (Broadcom) APDS9306 Ambient Light Sensor.
+> It has two channels - ALS and CLEAR. The ALS (Ambient Light Sensor)
+> channel approximates the response of the human-eye providing direct
+> read out where the output count is proportional to ambient light levels.
+> It is internally temperature compensated and rejects 50Hz and 60Hz flicker
+> caused by artificial light sources. Hardware interrupt configuration is
+> optional. It is a low power device with 20 bit resolution and has
+> configurable adaptive interrupt mode and interrupt persistence mode.
+> The device also features inbuilt hardware gain, multiple integration time
+> selection options and sampling frequency selection options.
+> 
+> This driver also uses the IIO GTS (Gain Time Scale) Helpers Namespace for
+> Scales, Gains and Integration time implementation.
+> 
+> Signed-off-by: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+I applied this but then got some build warnings that made me look
+more closely at the int_src handling.
 
-For example:
+This is confusing because of the less than helpful datasheet defintion
+of a 2 bit register that takes values 0 and 1 only.
 
-- Layer 1 is configured to zpos 0 and thus uses pipe 0. No other layer
-  is enabled. This is a typical situation at boot.
+I thought about trying to fix this up whilst applying but the event code
+issue is too significant to do without a means to test it.
 
-- When a compositor takes over and layer 3 is enabled,
-  sun8i_ui_layer_enable() will get called with old_zpos=0 zpos=1, which
-  will lead to incorrect disabling of pipe 0 and enabling of pipe 1.
+Jonathan
 
-What happens is that sun8i_ui_layer_enable() function may disable
-blender pipes even if it is no longer assigned to its layer.
 
-To correct this, move the routing setup out of individual plane's
-atomic_update into crtc's atomic_update, where it can be calculated
-and updated all at once.
 
-Remove the atomic_disable callback because it is no longer needed.
+> diff --git a/drivers/iio/light/apds9306.c b/drivers/iio/light/apds9306.c
+> new file mode 100644
+> index 000000000000..c18e0d48556b
+> --- /dev/null
+> +++ b/drivers/iio/light/apds9306.c
+> @@ -0,0 +1,1336 @@
+>
+...
 
-Signed-off-by: Ondrej Jirman <megi@xff.cz>
-Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
----
- drivers/gpu/drm/sun4i/sun8i_mixer.c    | 61 +++++++++++++++++++++
- drivers/gpu/drm/sun4i/sun8i_mixer.h    |  6 +++
- drivers/gpu/drm/sun4i/sun8i_ui_layer.c | 73 +------------------------
- drivers/gpu/drm/sun4i/sun8i_vi_layer.c | 74 +-------------------------
- 4 files changed, 71 insertions(+), 143 deletions(-)
+> +
+> +static struct iio_event_spec apds9306_event_spec_als[] = {
+> +	{
+> +		.type = IIO_EV_TYPE_THRESH,
+> +		.dir = IIO_EV_DIR_RISING,
+> +		.mask_shared_by_all = BIT(IIO_EV_INFO_VALUE),
+> +	}, {
+> +		.type = IIO_EV_TYPE_THRESH,
+> +		.dir = IIO_EV_DIR_FALLING,
+> +		.mask_shared_by_all = BIT(IIO_EV_INFO_VALUE),
+> +	}, {
+> +		.type = IIO_EV_TYPE_THRESH,
+> +		.dir = IIO_EV_DIR_EITHER,
+> +		.mask_shared_by_all = BIT(IIO_EV_INFO_PERIOD),
+> +		.mask_separate = BIT(IIO_EV_INFO_ENABLE),
+> +	}, {
+> +		.type = IIO_EV_TYPE_THRESH_ADAPTIVE,
+> +		.mask_shared_by_all = BIT(IIO_EV_INFO_VALUE) |
+> +			BIT(IIO_EV_INFO_ENABLE),
+> +	},
+> +};
+> +
+> +static struct iio_event_spec apds9306_event_spec_clear[] = {
+> +	{
+> +		.type = IIO_EV_TYPE_THRESH,
 
-diff --git a/drivers/gpu/drm/sun4i/sun8i_mixer.c b/drivers/gpu/drm/sun4i/sun8i_mixer.c
-index bdeb9b80e038..bd0fe2c6624e 100644
---- a/drivers/gpu/drm/sun4i/sun8i_mixer.c
-+++ b/drivers/gpu/drm/sun4i/sun8i_mixer.c
-@@ -250,12 +250,73 @@ int sun8i_mixer_drm_format_to_hw(u32 format, u32 *hw_format)
- 	return -EINVAL;
- }
- 
-+static void sun8i_layer_enable(struct sun8i_layer *layer, bool enable)
-+{
-+	u32 ch_base = sun8i_channel_base(layer->mixer, layer->channel);
-+	u32 val, reg, mask;
-+
-+	if (layer->type == SUN8I_LAYER_TYPE_UI) {
-+		val = enable ? SUN8I_MIXER_CHAN_UI_LAYER_ATTR_EN : 0;
-+		mask = SUN8I_MIXER_CHAN_UI_LAYER_ATTR_EN;
-+		reg = SUN8I_MIXER_CHAN_UI_LAYER_ATTR(ch_base, layer->overlay);
-+	} else {
-+		val = enable ? SUN8I_MIXER_CHAN_VI_LAYER_ATTR_EN : 0;
-+		mask = SUN8I_MIXER_CHAN_VI_LAYER_ATTR_EN;
-+		reg = SUN8I_MIXER_CHAN_VI_LAYER_ATTR(ch_base, layer->overlay);
-+	}
-+
-+	regmap_update_bits(layer->mixer->engine.regs, reg, mask, val);
-+}
-+
- static void sun8i_mixer_commit(struct sunxi_engine *engine,
- 			       struct drm_crtc *crtc,
- 			       struct drm_atomic_state *state)
- {
-+	struct sun8i_mixer *mixer = engine_to_sun8i_mixer(engine);
-+	u32 bld_base = sun8i_blender_base(mixer);
-+	struct drm_plane_state *plane_state;
-+	struct drm_plane *plane;
-+	u32 route = 0, pipe_en = 0;
-+
- 	DRM_DEBUG_DRIVER("Committing changes\n");
- 
-+	drm_for_each_plane(plane, state->dev) {
-+		struct sun8i_layer *layer = plane_to_sun8i_layer(plane);
-+		bool enable;
-+		int zpos;
-+
-+		if (!(plane->possible_crtcs & drm_crtc_mask(crtc)) || layer->mixer != mixer)
-+			continue;
-+
-+		plane_state = drm_atomic_get_new_plane_state(state, plane);
-+		if (!plane_state)
-+			plane_state = plane->state;
-+
-+		enable = plane_state->crtc && plane_state->visible;
-+		zpos = plane_state->normalized_zpos;
-+
-+		DRM_DEBUG_DRIVER("  plane %d: chan=%d ovl=%d en=%d zpos=%d\n",
-+				 plane->base.id, layer->channel, layer->overlay,
-+				 enable, zpos);
-+
-+		/*
-+		 * We always update the layer enable bit, because it can clear
-+		 * spontaneously for unknown reasons.
-+		 */
-+		sun8i_layer_enable(layer, enable);
-+
-+		if (!enable)
-+			continue;
-+
-+		/* Route layer to pipe based on zpos */
-+		route |= layer->channel << SUN8I_MIXER_BLEND_ROUTE_PIPE_SHIFT(zpos);
-+		pipe_en |= SUN8I_MIXER_BLEND_PIPE_CTL_EN(zpos);
-+	}
-+
-+	regmap_write(mixer->engine.regs, SUN8I_MIXER_BLEND_ROUTE(bld_base), route);
-+	regmap_write(mixer->engine.regs, SUN8I_MIXER_BLEND_PIPE_CTL(bld_base),
-+		     pipe_en | SUN8I_MIXER_BLEND_PIPE_CTL_FC_EN(0));
-+
- 	regmap_write(engine->regs, SUN8I_MIXER_GLOBAL_DBUFF,
- 		     SUN8I_MIXER_GLOBAL_DBUFF_ENABLE);
- }
-diff --git a/drivers/gpu/drm/sun4i/sun8i_mixer.h b/drivers/gpu/drm/sun4i/sun8i_mixer.h
-index 5a610ee30301..d7898c9c9cc0 100644
---- a/drivers/gpu/drm/sun4i/sun8i_mixer.h
-+++ b/drivers/gpu/drm/sun4i/sun8i_mixer.h
-@@ -186,9 +186,15 @@ struct sun8i_mixer {
- 	struct clk			*mod_clk;
- };
- 
-+enum {
-+	SUN8I_LAYER_TYPE_UI,
-+	SUN8I_LAYER_TYPE_VI,
-+};
-+
- struct sun8i_layer {
- 	struct drm_plane	plane;
- 	struct sun8i_mixer	*mixer;
-+	int			type;
- 	int			channel;
- 	int			overlay;
- };
-diff --git a/drivers/gpu/drm/sun4i/sun8i_ui_layer.c b/drivers/gpu/drm/sun4i/sun8i_ui_layer.c
-index 248fbb606ede..b90e5edef4e8 100644
---- a/drivers/gpu/drm/sun4i/sun8i_ui_layer.c
-+++ b/drivers/gpu/drm/sun4i/sun8i_ui_layer.c
-@@ -24,55 +24,6 @@
- #include "sun8i_ui_layer.h"
- #include "sun8i_ui_scaler.h"
- 
--static void sun8i_ui_layer_enable(struct sun8i_mixer *mixer, int channel,
--				  int overlay, bool enable, unsigned int zpos,
--				  unsigned int old_zpos)
--{
--	u32 val, bld_base, ch_base;
--
--	bld_base = sun8i_blender_base(mixer);
--	ch_base = sun8i_channel_base(mixer, channel);
--
--	DRM_DEBUG_DRIVER("%sabling channel %d overlay %d\n",
--			 enable ? "En" : "Dis", channel, overlay);
--
--	if (enable)
--		val = SUN8I_MIXER_CHAN_UI_LAYER_ATTR_EN;
--	else
--		val = 0;
--
--	regmap_update_bits(mixer->engine.regs,
--			   SUN8I_MIXER_CHAN_UI_LAYER_ATTR(ch_base, overlay),
--			   SUN8I_MIXER_CHAN_UI_LAYER_ATTR_EN, val);
--
--	if (!enable || zpos != old_zpos) {
--		regmap_update_bits(mixer->engine.regs,
--				   SUN8I_MIXER_BLEND_PIPE_CTL(bld_base),
--				   SUN8I_MIXER_BLEND_PIPE_CTL_EN(old_zpos),
--				   0);
--
--		regmap_update_bits(mixer->engine.regs,
--				   SUN8I_MIXER_BLEND_ROUTE(bld_base),
--				   SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(old_zpos),
--				   0);
--	}
--
--	if (enable) {
--		val = SUN8I_MIXER_BLEND_PIPE_CTL_EN(zpos);
--
--		regmap_update_bits(mixer->engine.regs,
--				   SUN8I_MIXER_BLEND_PIPE_CTL(bld_base),
--				   val, val);
--
--		val = channel << SUN8I_MIXER_BLEND_ROUTE_PIPE_SHIFT(zpos);
--
--		regmap_update_bits(mixer->engine.regs,
--				   SUN8I_MIXER_BLEND_ROUTE(bld_base),
--				   SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(zpos),
--				   val);
--	}
--}
--
- static void sun8i_ui_layer_update_alpha(struct sun8i_mixer *mixer, int channel,
- 					int overlay, struct drm_plane *plane)
- {
-@@ -259,36 +210,18 @@ static int sun8i_ui_layer_atomic_check(struct drm_plane *plane,
- 						   true, true);
- }
- 
--static void sun8i_ui_layer_atomic_disable(struct drm_plane *plane,
--					  struct drm_atomic_state *state)
--{
--	struct drm_plane_state *old_state = drm_atomic_get_old_plane_state(state,
--									   plane);
--	struct sun8i_layer *layer = plane_to_sun8i_layer(plane);
--	unsigned int old_zpos = old_state->normalized_zpos;
--	struct sun8i_mixer *mixer = layer->mixer;
--
--	sun8i_ui_layer_enable(mixer, layer->channel, layer->overlay, false, 0,
--			      old_zpos);
--}
- 
- static void sun8i_ui_layer_atomic_update(struct drm_plane *plane,
- 					 struct drm_atomic_state *state)
- {
--	struct drm_plane_state *old_state = drm_atomic_get_old_plane_state(state,
--									   plane);
- 	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state,
- 									   plane);
- 	struct sun8i_layer *layer = plane_to_sun8i_layer(plane);
- 	unsigned int zpos = new_state->normalized_zpos;
--	unsigned int old_zpos = old_state->normalized_zpos;
- 	struct sun8i_mixer *mixer = layer->mixer;
- 
--	if (!new_state->visible) {
--		sun8i_ui_layer_enable(mixer, layer->channel,
--				      layer->overlay, false, 0, old_zpos);
-+	if (!new_state->crtc || !new_state->visible)
- 		return;
--	}
- 
- 	sun8i_ui_layer_update_coord(mixer, layer->channel,
- 				    layer->overlay, plane, zpos);
-@@ -298,13 +231,10 @@ static void sun8i_ui_layer_atomic_update(struct drm_plane *plane,
- 				      layer->overlay, plane);
- 	sun8i_ui_layer_update_buffer(mixer, layer->channel,
- 				     layer->overlay, plane);
--	sun8i_ui_layer_enable(mixer, layer->channel, layer->overlay,
--			      true, zpos, old_zpos);
- }
- 
- static const struct drm_plane_helper_funcs sun8i_ui_layer_helper_funcs = {
- 	.atomic_check	= sun8i_ui_layer_atomic_check,
--	.atomic_disable	= sun8i_ui_layer_atomic_disable,
- 	.atomic_update	= sun8i_ui_layer_atomic_update,
- };
- 
-@@ -390,6 +320,7 @@ struct sun8i_layer *sun8i_ui_layer_init_one(struct drm_device *drm,
- 
- 	drm_plane_helper_add(&layer->plane, &sun8i_ui_layer_helper_funcs);
- 	layer->mixer = mixer;
-+	layer->type = SUN8I_LAYER_TYPE_UI;
- 	layer->channel = channel;
- 	layer->overlay = 0;
- 
-diff --git a/drivers/gpu/drm/sun4i/sun8i_vi_layer.c b/drivers/gpu/drm/sun4i/sun8i_vi_layer.c
-index 0c0f1ac80517..9c09d9c08496 100644
---- a/drivers/gpu/drm/sun4i/sun8i_vi_layer.c
-+++ b/drivers/gpu/drm/sun4i/sun8i_vi_layer.c
-@@ -18,55 +18,6 @@
- #include "sun8i_vi_layer.h"
- #include "sun8i_vi_scaler.h"
- 
--static void sun8i_vi_layer_enable(struct sun8i_mixer *mixer, int channel,
--				  int overlay, bool enable, unsigned int zpos,
--				  unsigned int old_zpos)
--{
--	u32 val, bld_base, ch_base;
--
--	bld_base = sun8i_blender_base(mixer);
--	ch_base = sun8i_channel_base(mixer, channel);
--
--	DRM_DEBUG_DRIVER("%sabling VI channel %d overlay %d\n",
--			 enable ? "En" : "Dis", channel, overlay);
--
--	if (enable)
--		val = SUN8I_MIXER_CHAN_VI_LAYER_ATTR_EN;
--	else
--		val = 0;
--
--	regmap_update_bits(mixer->engine.regs,
--			   SUN8I_MIXER_CHAN_VI_LAYER_ATTR(ch_base, overlay),
--			   SUN8I_MIXER_CHAN_VI_LAYER_ATTR_EN, val);
--
--	if (!enable || zpos != old_zpos) {
--		regmap_update_bits(mixer->engine.regs,
--				   SUN8I_MIXER_BLEND_PIPE_CTL(bld_base),
--				   SUN8I_MIXER_BLEND_PIPE_CTL_EN(old_zpos),
--				   0);
--
--		regmap_update_bits(mixer->engine.regs,
--				   SUN8I_MIXER_BLEND_ROUTE(bld_base),
--				   SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(old_zpos),
--				   0);
--	}
--
--	if (enable) {
--		val = SUN8I_MIXER_BLEND_PIPE_CTL_EN(zpos);
--
--		regmap_update_bits(mixer->engine.regs,
--				   SUN8I_MIXER_BLEND_PIPE_CTL(bld_base),
--				   val, val);
--
--		val = channel << SUN8I_MIXER_BLEND_ROUTE_PIPE_SHIFT(zpos);
--
--		regmap_update_bits(mixer->engine.regs,
--				   SUN8I_MIXER_BLEND_ROUTE(bld_base),
--				   SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(zpos),
--				   val);
--	}
--}
--
- static void sun8i_vi_layer_update_alpha(struct sun8i_mixer *mixer, int channel,
- 					int overlay, struct drm_plane *plane)
- {
-@@ -393,36 +344,17 @@ static int sun8i_vi_layer_atomic_check(struct drm_plane *plane,
- 						   true, true);
- }
- 
--static void sun8i_vi_layer_atomic_disable(struct drm_plane *plane,
--					  struct drm_atomic_state *state)
--{
--	struct drm_plane_state *old_state = drm_atomic_get_old_plane_state(state,
--									   plane);
--	struct sun8i_layer *layer = plane_to_sun8i_vi_layer(plane);
--	unsigned int old_zpos = old_state->normalized_zpos;
--	struct sun8i_mixer *mixer = layer->mixer;
--
--	sun8i_vi_layer_enable(mixer, layer->channel, layer->overlay, false, 0,
--			      old_zpos);
--}
--
- static void sun8i_vi_layer_atomic_update(struct drm_plane *plane,
- 					 struct drm_atomic_state *state)
- {
--	struct drm_plane_state *old_state = drm_atomic_get_old_plane_state(state,
--									   plane);
- 	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state,
- 									   plane);
- 	struct sun8i_layer *layer = plane_to_sun8i_layer(plane);
- 	unsigned int zpos = new_state->normalized_zpos;
--	unsigned int old_zpos = old_state->normalized_zpos;
- 	struct sun8i_mixer *mixer = layer->mixer;
- 
--	if (!new_state->visible) {
--		sun8i_vi_layer_enable(mixer, layer->channel,
--				      layer->overlay, false, 0, old_zpos);
-+	if (!new_state->crtc || !new_state->visible)
- 		return;
--	}
- 
- 	sun8i_vi_layer_update_coord(mixer, layer->channel,
- 				    layer->overlay, plane, zpos);
-@@ -432,13 +364,10 @@ static void sun8i_vi_layer_atomic_update(struct drm_plane *plane,
- 				      layer->overlay, plane);
- 	sun8i_vi_layer_update_buffer(mixer, layer->channel,
- 				     layer->overlay, plane);
--	sun8i_vi_layer_enable(mixer, layer->channel, layer->overlay,
--			      true, zpos, old_zpos);
- }
- 
- static const struct drm_plane_helper_funcs sun8i_vi_layer_helper_funcs = {
- 	.atomic_check	= sun8i_vi_layer_atomic_check,
--	.atomic_disable	= sun8i_vi_layer_atomic_disable,
- 	.atomic_update	= sun8i_vi_layer_atomic_update,
- };
- 
-@@ -613,6 +542,7 @@ struct sun8i_layer *sun8i_vi_layer_init_one(struct drm_device *drm,
- 
- 	drm_plane_helper_add(&layer->plane, &sun8i_vi_layer_helper_funcs);
- 	layer->mixer = mixer;
-+	layer->type = SUN8I_LAYER_TYPE_VI;
- 	layer->channel = index;
- 	layer->overlay = 0;
- 
--- 
-2.44.0
+Specify dir.
+
+> +		.mask_separate = BIT(IIO_EV_INFO_ENABLE),
+> +	},
+> +};
+> +
+> +#define APDS9306_CHANNEL(_type) \
+
+I think the code would be easier to read without this macro.  It will 
+be a few lines longer but simpler
+
+> +	.type = _type, \
+> +	.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_INT_TIME) | \
+> +		BIT(IIO_CHAN_INFO_SAMP_FREQ), \
+> +	.info_mask_shared_by_all_available = BIT(IIO_CHAN_INFO_INT_TIME) | \
+> +		BIT(IIO_CHAN_INFO_SAMP_FREQ), \
+> +
+> +static struct iio_chan_spec apds9306_channels_with_events[] = {
+> +	{
+> +		APDS9306_CHANNEL(IIO_LIGHT)
+> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+> +				      BIT(IIO_CHAN_INFO_SCALE),
+> +		.info_mask_separate_available = BIT(IIO_CHAN_INFO_SCALE),
+> +		.event_spec = apds9306_event_spec_als,
+> +		.num_event_specs = ARRAY_SIZE(apds9306_event_spec_als),
+> +	}, {
+> +		APDS9306_CHANNEL(IIO_INTENSITY)
+> +		.channel2 = IIO_MOD_LIGHT_CLEAR,
+> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+> +		.modified = 1,
+> +		.event_spec = apds9306_event_spec_clear,
+> +		.num_event_specs = ARRAY_SIZE(apds9306_event_spec_clear),
+> +	},
+> +};
+> +
+> +static struct iio_chan_spec apds9306_channels_without_events[] = {
+> +	{
+> +		APDS9306_CHANNEL(IIO_LIGHT)
+> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+> +				      BIT(IIO_CHAN_INFO_SCALE),
+> +		.info_mask_separate_available = BIT(IIO_CHAN_INFO_SCALE),
+> +	}, {
+> +		APDS9306_CHANNEL(IIO_INTENSITY)
+> +		.channel2 = IIO_MOD_LIGHT_CLEAR,
+> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+> +		.modified = 1,
+> +	},
+> +};
+> +
+> +/* INT_PERSISTENCE available */
+> +IIO_CONST_ATTR(thresh_either_period_available, "[0 1 15]");
+> +
+> +/* ALS_THRESH_VAR available */
+> +IIO_CONST_ATTR(thresh_adaptive_either_values_available, "[0 1 7]");
+
+These need to be static
+
+> +
+> +static struct attribute *apds9306_event_attributes[] = {
+> +	&iio_const_attr_thresh_either_period_available.dev_attr.attr,
+> +	&iio_const_attr_thresh_adaptive_either_values_available.dev_attr.attr,
+> +	NULL
+> +};
+
+> +static int apds9306_read_data(struct apds9306_data *data, int *val, int reg)
+> +{
+> +	struct device *dev = data->dev;
+> +	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+> +	struct apds9306_regfields *rf = &data->rf;
+> +	int ret, delay, intg_time, intg_time_idx, repeat_rate_idx, int_src;
+> +	int status = 0;
+> +	u8 buff[3];
+> +
+> +	ret = pm_runtime_resume_and_get(data->dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = regmap_field_read(rf->intg_time, &intg_time_idx);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = regmap_field_read(rf->repeat_rate, &repeat_rate_idx);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = regmap_field_read(rf->int_src, &int_src);
+> +	if (ret)
+> +		return ret;
+> +
+> +	intg_time = iio_gts_find_int_time_by_sel(&data->gts, intg_time_idx);
+> +	if (intg_time < 0)
+> +		return intg_time;
+> +
+> +	/* Whichever is greater - integration time period or sampling period. */
+> +	delay = max(intg_time, apds9306_repeat_rate_period[repeat_rate_idx]);
+> +
+> +	/*
+> +	 * Clear stale data flag that might have been set by the interrupt
+> +	 * handler if it got data available flag set in the status reg.
+> +	 */
+> +	data->read_data_available = 0;
+> +
+> +	/*
+> +	 * If this function runs parallel with the interrupt handler, either
+> +	 * this reads and clears the status registers or the interrupt handler
+> +	 * does. The interrupt handler sets a flag for read data available
+> +	 * in our private structure which we read here.
+> +	 */
+> +	ret = regmap_read_poll_timeout(data->regmap, APDS9306_MAIN_STATUS_REG,
+> +				       status, data->read_data_available ||
+> +				       (status & (APDS9306_ALS_DATA_STAT_MASK |
+> +						  APDS9306_ALS_INT_STAT_MASK)),
+> +				       APDS9306_ALS_READ_DATA_DELAY_US, delay * 2);
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* If we reach here before the interrupt handler we push an event */
+> +	if ((status & APDS9306_ALS_INT_STAT_MASK))
+> +		iio_push_event(indio_dev, IIO_UNMOD_EVENT_CODE(IIO_LIGHT,
+> +			       int_src, IIO_EV_TYPE_THRESH, IIO_EV_DIR_EITHER),
+
+You are pushing an event on channel 0 or 1 (which is non obvious as that
+int_src is a 2 bit value again).  However you don't use indexed channels
+so this is wrong.
+It's also pushing IIO_LIGHT for both channels which makes no sense as you
+only have one IIO_LIGHT channel.
+
+
+> +			       iio_get_time_ns(indio_dev));
+> +
+> +	ret = regmap_bulk_read(data->regmap, reg, buff, sizeof(buff));
+> +	if (ret) {
+> +		dev_err_ratelimited(dev, "read data failed\n");
+> +		return ret;
+> +	}
+> +
+> +	*val = get_unaligned_le24(&buff);
+> +
+> +	pm_runtime_mark_last_busy(data->dev);
+> +	pm_runtime_put_autosuspend(data->dev);
+> +
+> +	return 0;
+> +}
+> +
+
+..
+
+> +
+> +static irqreturn_t apds9306_irq_handler(int irq, void *priv)
+> +{
+> +	struct iio_dev *indio_dev = priv;
+> +	struct apds9306_data *data = iio_priv(indio_dev);
+> +	struct apds9306_regfields *rf = &data->rf;
+> +	int ret, status, int_ch;
+> +
+> +	/*
+> +	 * The interrupt line is released and the interrupt flag is
+> +	 * cleared as a result of reading the status register. All the
+> +	 * status flags are cleared as a result of this read.
+> +	 */
+> +	ret = regmap_read(data->regmap, APDS9306_MAIN_STATUS_REG, &status);
+> +	if (ret < 0) {
+> +		dev_err_ratelimited(data->dev, "status reg read failed\n");
+> +		return IRQ_HANDLED;
+> +	}
+> +
+> +	ret = regmap_field_read(rf->int_src, &int_ch);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if ((status & APDS9306_ALS_INT_STAT_MASK))
+> +		iio_push_event(indio_dev, IIO_UNMOD_EVENT_CODE(IIO_LIGHT,
+> +			       int_ch, IIO_EV_TYPE_THRESH, IIO_EV_DIR_EITHER),
+> +			       iio_get_time_ns(indio_dev));
+
+As commented on elsewhere I'm not seeing the relationship between the event
+pushed here and the channels this device provides (one of which is modified
+for starters).
+
+> +
+> +	/*
+> +	 * If a one-shot read through sysfs is underway at the same time
+> +	 * as this interrupt handler is executing and a read data available
+> +	 * flag was set, this flag is set to inform read_poll_timeout()
+> +	 * to exit.
+> +	 */
+> +	if ((status & APDS9306_ALS_DATA_STAT_MASK))
+> +		data->read_data_available = 1;
+> +
+> +	return IRQ_HANDLED;
+> +}
+
+..
+
+> +static int apds9306_read_event_config(struct iio_dev *indio_dev,
+> +				      const struct iio_chan_spec *chan,
+> +				      enum iio_event_type type,
+> +				      enum iio_event_direction dir)
+> +{
+> +	struct apds9306_data *data = iio_priv(indio_dev);
+> +	struct apds9306_regfields *rf = &data->rf;
+> +	int int_en, event_ch_is_light, ret;
+> +
+> +	switch (type) {
+> +	case IIO_EV_TYPE_THRESH:
+> +		guard(mutex)(&data->mutex);
+> +
+> +		ret = regmap_field_read(rf->int_src, &event_ch_is_light);
+
+Call the local value int_src - it's not obvious to a reviewer what 
+relationship between that and int_src is. I had to go read the datasheet
+to find out.
+
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = regmap_field_read(rf->int_en, &int_en);
+> +		if (ret)
+> +			return ret;
+> +
+> +		if (chan->type == IIO_LIGHT)
+> +			return int_en & event_ch_is_light;
+> +
+> +		if (chan->type == IIO_INTENSITY)
+> +			return int_en & !event_ch_is_light;
+This is the specific line the compiler doesn't like
+drivers/iio/light/apds9306.c:1036:39: warning: dubious: x & !y   
+
+I would match int_src against specific values rather than using tricks
+based on what those values happen to be.
+
+			return int_en && (int_src == APDS9306_INT_SRC_CLEAR);
+                                                      
+
+
+> +
+> +		return -EINVAL;
+> +	case IIO_EV_TYPE_THRESH_ADAPTIVE:
+> +		ret = regmap_field_read(rf->int_thresh_var_en, &int_en);
+> +		if (ret)
+> +			return ret;
+> +
+> +		return int_en;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static int apds9306_write_event_config(struct iio_dev *indio_dev,
+> +				       const struct iio_chan_spec *chan,
+> +				       enum iio_event_type type,
+> +				       enum iio_event_direction dir,
+> +				       int state)
+> +{
+> +	struct apds9306_data *data = iio_priv(indio_dev);
+> +	struct apds9306_regfields *rf = &data->rf;
+> +	int ret, val;
+> +
+> +	state = !!state;
+> +
+> +	switch (type) {
+> +	case IIO_EV_TYPE_THRESH:
+> +		guard(mutex)(&data->mutex);
+Better to add explicit scope if you are going to use a guard.
+	case IIO_EV_TYPE_THRESH: {
+		guard(mutex)(&data->mutex);
+so we can see where the scope ends more clearly.
+
+> +
+> +		/*
+> +		 * If interrupt is enabled, the channel is set before enabling
+> +		 * the interrupt. In case of disable, no need to switch
+> +		 * channels. In case of different channel is selected while
+> +		 * interrupt in on, just change the channel.
+> +		 */
+> +		if (state) {
+> +			if (chan->type == IIO_LIGHT)
+> +				val = 1;
+> +			else if (chan->type == IIO_INTENSITY)
+> +				val = 0;
+> +			else
+> +				return -EINVAL;
+> +
+> +			ret = regmap_field_write(rf->int_src, val);
+> +			if (ret)
+> +				return ret;
+> +		}
+> +
+> +		ret = regmap_field_read(rf->int_en, &val);
+> +		if (ret)
+> +			return ret;
+> +
+> +		if (val == state)
+> +			return 0;
+> +
+> +		ret = regmap_field_write(rf->int_en, state);
+> +		if (ret)
+> +			return ret;
+> +
+> +		if (state)
+> +			return pm_runtime_resume_and_get(data->dev);
+> +
+> +		pm_runtime_mark_last_busy(data->dev);
+> +		pm_runtime_put_autosuspend(data->dev);
+> +
+> +		return 0;
+> +	case IIO_EV_TYPE_THRESH_ADAPTIVE:
+> +		return regmap_field_write(rf->int_thresh_var_en, state);
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+
 
 
