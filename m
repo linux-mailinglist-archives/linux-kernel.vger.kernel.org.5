@@ -1,186 +1,126 @@
-Return-Path: <linux-kernel+bounces-79510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BDA386236C
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 09:22:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FCB2862373
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 09:40:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BB1B284A95
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 08:22:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C24628359B
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 08:40:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3A1517744;
-	Sat, 24 Feb 2024 08:22:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61589175AE;
+	Sat, 24 Feb 2024 08:40:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DXN0k9fz"
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eLhWWwk1"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80F7A17580;
-	Sat, 24 Feb 2024 08:22:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C308910A25
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 08:40:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708762952; cv=none; b=sJBru5gE6zszRrjL0zAwflIoL+OVm6lbdXI0QJVw2MoeufSkQwbgTy6bpXVSblulob0cPeHMXmFH8mHfh6sHXZ3EjLF7Q0GWriwffRY2FnrZKThkGjGP4EpfO2S6CoN4upQaY+S3OJKzTH3Flq03DOyg68wv/9eBNchai3kUx5M=
+	t=1708764037; cv=none; b=ior5jGk7JmJc0QpQzmvemf/ciiZ4+mmojCy3JJ7isbV+eOmF4olikfR1+Ct61+rNkLD0oF+KT2pweX85ULfqNJNOZEHOWXiaPNbMTv9qytmsTDD8HLGIDGMgwaWiIdz1NP4BbriVpbVCJfmcZPwoAxxQOnwwi+yKKKU98kRXdbA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708762952; c=relaxed/simple;
-	bh=URQiZBMD2Fog4Ey8pXzKaHpx20U64riFuuWTUw5UwvE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=boZA+gf5ChksedYpWutqH5xjWlayqUeFof4kRhrATs6uIIjJXYtJeoy4urElXW6rc7omZqoGhkHPwTA8pup9nmSnzVHtxkKzNX3gj1DAQGfUHPuSsqevCbFS1tRSYtxrubHDJTqKrJuB3ijSwJmGgxNgRfXpSO+OyQs0TNOdCMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DXN0k9fz; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-53fa455cd94so890608a12.2;
-        Sat, 24 Feb 2024 00:22:30 -0800 (PST)
+	s=arc-20240116; t=1708764037; c=relaxed/simple;
+	bh=uX3vEx6MRrc9d64luCegnAYitKVAyJ5fR1QXwdhRkNo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ahNz6mhcyTo1g4RZXHeXGnQJXP+2SkPCvu8tZQRZRDikFP3Zx7nOD8OBpldD99yLNqNNp3RYy0cFskbwvGRVHugARZmVeJA9wlDknTN4e7RVh47UkJwI0lJcztxVXtluP7jVGetq2ofWOwsqSlMGaHYBn1oPSnjL5dfwItMA3mI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=eLhWWwk1; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5656e5754ccso1773403a12.0
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 00:40:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708762950; x=1709367750; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=m+cjQi/gR/Rij9z4IYqT76yUA9ZBG8wKYNwhgxvzNpA=;
-        b=DXN0k9fzaro8LTazevqLn0VgJoy0UzZjx90Bcc5mAMFb3QUvAIqOzC1W+9LspOrdmL
-         3olnmtwvR9m4kZciHAG4eGu92oAN0KFBaxZxu12iK6WKyg2Nb5rrDCap+n7rYfbHUcj8
-         qqapA3hWlcdVDUCK1kRTLlT7+dcNzsB973SQeH0BOD9cejNc1PFCndiuO+8Sj4hnmDUK
-         0DJ7Y3lSi9D0+f5mbiweQ+38xB8yX99fezbcEVe/j3yLgxMCwOQgUXQrgWlTiUcFTj8D
-         yy+fMzvh6DYEn8WEDLEyCPh3tt3jmkaNhGqqG/bZMx9jYsVQ7JawRQV4w+LvNODk9F9v
-         HNIQ==
+        d=linaro.org; s=google; t=1708764034; x=1709368834; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IvJH37YjGS48Ib/CmPNjZ447xJqMURoFa7cg6zI1jYA=;
+        b=eLhWWwk15LnmWBHSFC2hXMjkOSlRq07qzcKQ/Y8hMrNjMOcwo8DSbEfr7VF5CGZdaf
+         t1BpzYE2WPgVc+tEGuXvrmHlHzX5RAaJoshhcZGgQpzRab4dnRRSQbviQ/7FZ53pNEVk
+         SUv6OlFOHgg8N9rwudJaYqZ0euizzcqtd5vbly+Xdi9h9YsJkE8QhfyJQ/VnAHQVJY5c
+         DZM2vEv6ndROO5NFMWWJEUiVomLR30JwDRV5DDb9Hahux5o8ifdUbAf4AibBe4p0u4q0
+         5LcftCMU0CyXv8TVMo/Ut0tHSQqxWgWglNuFJInSLsQWt8WiN8J8C1he/PZKxJIZV/eJ
+         kzrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708762950; x=1709367750;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m+cjQi/gR/Rij9z4IYqT76yUA9ZBG8wKYNwhgxvzNpA=;
-        b=Ftqnw1Rab9ci69SBo3+9gJn59K1H0YjBbtmFtKpqunzi7X1/xpSEZ/CpIzPL6b3oMz
-         +l8scqhOyf9KTjjebZ17eczv3OfiRuOib1/yBTUZ+rafaN09hFv66inD25prWoWd4tmj
-         uX+7B4j7WJHfjZ/9rQhRTonGB5Y/sqS0TmkTZAaAa+y9l011vMB95j/8hERWisgulUcd
-         XFGaHfS04pakHNXYwwetvONdpAvJ5VYTFDmm0O1mLSbWkNuVQvSUgRmDO6MlxBTm6k9m
-         XB9kPLarSGvO88YvAEq33aw/FEOnXpBsYpRi+7kY1iXvB24ngZpdnzyqMQXwNdQDm5mO
-         o69A==
-X-Forwarded-Encrypted: i=1; AJvYcCU3o3W0ljHiFA5rKFfCeCx2jV9YdYqGZM9zF+bns2hH5aXYyQgUqENMM4FOdvmzgPOQl9ZV9MnMgIbqyj6Cjyt5RjAReUZgC3nWPZqAh8gZYKIiH4IIh3KwaWB9RQKhFiFHGvkKqeScDzalzYnzHH8dUaD8mXoyxl1/AzE/3M3GOpU7ug==
-X-Gm-Message-State: AOJu0YyPOHkNz0ykW3oh0wkreFNzhPXxwlh6RX4d+9nPBKEPCfXFYfUy
-	qcGHuU3Qv8W/EAfVjWutgVDuq2AUjr94ZcZeNW1asVwvLMji7JJo
-X-Google-Smtp-Source: AGHT+IHxejnlqw/pNJAX9X/KU1/Cnfg20mLZoFcxZvSsEuxhvcSwELoBUgKHY4SAmDatTq3aJM68Dw==
-X-Received: by 2002:a05:6a00:3305:b0:6e4:8ea9:5e5c with SMTP id cq5-20020a056a00330500b006e48ea95e5cmr2299586pfb.27.1708762950181;
-        Sat, 24 Feb 2024 00:22:30 -0800 (PST)
-Received: from linux-8mug (220-129-204-58.dynamic-ip.hinet.net. [220.129.204.58])
-        by smtp.gmail.com with ESMTPSA id f17-20020a056a001ad100b006e47664b05dsm645247pfv.212.2024.02.24.00.22.26
+        d=1e100.net; s=20230601; t=1708764034; x=1709368834;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IvJH37YjGS48Ib/CmPNjZ447xJqMURoFa7cg6zI1jYA=;
+        b=iJKR8wkNHD38g9DiCQcKBdBtckGFx3XtqWXwjDB+VfISjAey0yVsd7m8GDgd2U8l26
+         +emv00krHPx4yvjSCbtN7v2R6SrktWMQrCtAr+as89jOxGm8qnjE3D87SNUvUwqeQkfJ
+         He6qnl/mf9NCkkjMoNY18nkLvXeH5I+kSNteorfeny6c3dILL74sciDAtyLnt99MMNbQ
+         jIDlr5oM08A7Gy0NwceImK1XF9zedzA43+YroPrOYrPCbLe+8GASrsvhpQvOMqN7iOyD
+         MtPcmESgzEiNnPG47lUMcYTLosSDYYw/5oX7A+iXYDxUsegxzQGDb9D7y/gqQbEIfupg
+         mvPA==
+X-Forwarded-Encrypted: i=1; AJvYcCV58i+bGJ1KRZ7+agGQOYYzlzSEXMq0Kmz1zTEyS5jdOL2bSHbuOuaAavRqhsKH48cIMZR7xK24DjAjAtf/6IarNMrAOf03ebKfyaH6
+X-Gm-Message-State: AOJu0YxJ829fDYTq2h2mEBk602e+UlR9DMBhb7n2QIj5svqbcKC2wTAF
+	kLWsh1LOxwce/2hPaVjLfVGqsKYTgJxzfK+2SgV3R0p/zDQ6vkxJE1Cz+mlNxe6a3gE9M47YyjK
+	yYNA=
+X-Google-Smtp-Source: AGHT+IFIU7s+LjT6/xTV8xWct55epk/sIPhbKkNF5wKGi/vPldzFYrr5+qQKxMuA/dqrHswAQzx5iQ==
+X-Received: by 2002:a17:906:3b86:b0:a3f:7c3f:7681 with SMTP id u6-20020a1709063b8600b00a3f7c3f7681mr1270333ejf.36.1708764033910;
+        Sat, 24 Feb 2024 00:40:33 -0800 (PST)
+Received: from krzk-bin.. ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id c17-20020a170906695100b00a3dab486a19sm383309ejs.118.2024.02.24.00.40.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Feb 2024 00:22:29 -0800 (PST)
-Date: Sat, 24 Feb 2024 16:22:25 +0800
-From: Chester Lin <chester62515@gmail.com>
-To: Ghennadi Procopciuc <ghennadi.procopciuc@oss.nxp.com>
-Cc: Andreas Farber <afaerber@suse.de>, Matthias Brugger <mbrugger@suse.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
+        Sat, 24 Feb 2024 00:40:33 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>, NXP S32 Linux Team <s32@nxp.com>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-	Ghennadi Procopciuc <ghennadi.procopciuc@nxp.com>,
-	Ciprian Costea <ciprianmarian.costea@nxp.com>
-Subject: Re: [PATCH v2 2/2] arm64: dts: s32g: add uSDHC node
-Message-ID: <ZdmnQTtUxOEUy06L@linux-8mug>
-References: <20240122140602.1006813-1-ghennadi.procopciuc@oss.nxp.com>
- <20240122140602.1006813-3-ghennadi.procopciuc@oss.nxp.com>
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	Jerome Brunet <jbrunet@baylibre.com>,
+	Kevin Hilman <khilman@baylibre.com>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 1/2] dt-bindings: arm: amlogic: remove unstable remark
+Date: Sat, 24 Feb 2024 09:40:29 +0100
+Message-Id: <20240224084030.5867-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240122140602.1006813-3-ghennadi.procopciuc@oss.nxp.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Ghennadi,
+Amlogic bindings were marked as work-in-progress / unstable in 2017 in
+commit 7e8634e821e1 ("dt-bindings: amlogic: add unstable statement").
+Almost seven years is enough, so drop the "unstable" remark and expect
+usual ABI rules.
 
-On Mon, Jan 22, 2024 at 04:06:01PM +0200, Ghennadi Procopciuc wrote:
-> From: Ghennadi Procopciuc <ghennadi.procopciuc@nxp.com>
-> 
-> Add the uSDHC node for the boards that are based on S32G SoCs.
-> 
-> Signed-off-by: Ciprian Costea <ciprianmarian.costea@nxp.com>
-> Signed-off-by: Ghennadi Procopciuc <ghennadi.procopciuc@nxp.com>
-> ---
->  arch/arm64/boot/dts/freescale/s32g2.dtsi        | 10 ++++++++++
->  arch/arm64/boot/dts/freescale/s32g274a-evb.dts  |  6 +++++-
->  arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts |  6 +++++-
->  3 files changed, 20 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/s32g2.dtsi b/arch/arm64/boot/dts/freescale/s32g2.dtsi
-> index ef1a1d61f2ba..fc19ae2e8d3b 100644
-> --- a/arch/arm64/boot/dts/freescale/s32g2.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/s32g2.dtsi
-> @@ -138,6 +138,16 @@ uart2: serial@402bc000 {
->  			status = "disabled";
->  		};
->  
-> +		usdhc0: mmc@402f0000 {
-> +			compatible = "nxp,s32g2-usdhc";
-> +			reg = <0x402f0000 0x1000>;
-> +			interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&clks 32>, <&clks 31>, <&clks 33>;
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ Documentation/devicetree/bindings/arm/amlogic.yaml | 11 -----------
+ 1 file changed, 11 deletions(-)
 
-Same as I have mentioned in [PATCH v2 1/2], could we have fixed dt-bindings to
-replace with these raw clock id values (32, 31, 33)?
+diff --git a/Documentation/devicetree/bindings/arm/amlogic.yaml b/Documentation/devicetree/bindings/arm/amlogic.yaml
+index ce0ea36de0c0..edbc21159588 100644
+--- a/Documentation/devicetree/bindings/arm/amlogic.yaml
++++ b/Documentation/devicetree/bindings/arm/amlogic.yaml
+@@ -9,17 +9,6 @@ title: Amlogic SoC based Platforms
+ maintainers:
+   - Kevin Hilman <khilman@baylibre.com>
+ 
+-description: |+
+-  Work in progress statement:
+-
+-  Device tree files and bindings applying to Amlogic SoCs and boards are
+-  considered "unstable". Any Amlogic device tree binding may change at
+-  any time. Be sure to use a device tree binary and a kernel image
+-  generated from the same source tree.
+-
+-  Please refer to Documentation/devicetree/bindings/ABI.rst for a definition of a
+-  stable binding/ABI.
+-
+ properties:
+   $nodename:
+     const: '/'
+-- 
+2.34.1
 
-Chester
-> +			clock-names = "ipg", "ahb", "per";
-> +			bus-width = <8>;
-> +			status = "disabled";
-> +		};
-> +
->  		gic: interrupt-controller@50800000 {
->  			compatible = "arm,gic-v3";
->  			reg = <0x50800000 0x10000>,
-> diff --git a/arch/arm64/boot/dts/freescale/s32g274a-evb.dts b/arch/arm64/boot/dts/freescale/s32g274a-evb.dts
-> index 9118d8d2ee01..00070c949e2a 100644
-> --- a/arch/arm64/boot/dts/freescale/s32g274a-evb.dts
-> +++ b/arch/arm64/boot/dts/freescale/s32g274a-evb.dts
-> @@ -1,7 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0-or-later OR MIT
->  /*
->   * Copyright (c) 2021 SUSE LLC
-> - * Copyright (c) 2019-2021 NXP
-> + * Copyright 2019-2021, 2024 NXP
->   */
->  
->  /dts-v1/;
-> @@ -32,3 +32,7 @@ memory@80000000 {
->  &uart0 {
->  	status = "okay";
->  };
-> +
-> +&usdhc0 {
-> +	status = "okay";
-> +};
-> diff --git a/arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts b/arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts
-> index e05ee854cdf5..b3fc12899cae 100644
-> --- a/arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts
-> +++ b/arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts
-> @@ -1,7 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0-or-later OR MIT
->  /*
->   * Copyright (c) 2021 SUSE LLC
-> - * Copyright (c) 2019-2021 NXP
-> + * Copyright 2019-2021, 2024 NXP
->   */
->  
->  /dts-v1/;
-> @@ -38,3 +38,7 @@ &uart0 {
->  &uart1 {
->  	status = "okay";
->  };
-> +
-> +&usdhc0 {
-> +	status = "okay";
-> +};
-> -- 
-> 2.43.0
-> 
 
