@@ -1,202 +1,153 @@
-Return-Path: <linux-kernel+bounces-79432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6076862225
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 03:00:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71A4F86222A
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 03:02:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9ABA7287F3C
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:00:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 007651F246C4
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:02:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB7A0DF59;
-	Sat, 24 Feb 2024 01:59:58 +0000 (UTC)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E0D3DF67;
+	Sat, 24 Feb 2024 02:02:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="YClsuH4q"
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1EB2DDA5;
-	Sat, 24 Feb 2024 01:59:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 051688BEA
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 02:02:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708739998; cv=none; b=cptkBh1qpzCdnfk3C+/qBFHp/3c/XURQY/Fc6p5nD81OfIwdxVrDjpaNxyZk4H8oYYTyr7Gd38CRqXAMJpLhGpmK0ksr6DK5WZYIt0jK+gxe/GWgadpO7+dVpMtMfYd+YBOkN47Yg9y/YmR6E0dVQ7GIV9PNXGXB2kOFU/XNnFY=
+	t=1708740158; cv=none; b=ObrDeaG0TwG1Mq6P/tZqwkq5c8J6pAhYbaJDvyq3TLO9m5U/66MZCm1+uRfmy/+EiOs7SAEYU3dvZXu2DOlIr0L4utwkXougbHhtuLr1FiAyUOvsLvliDSXt4dD99urXMLQH20TGhtXq1MjKaXbPO2aJl/8I7HGVq+gC8ecze4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708739998; c=relaxed/simple;
-	bh=mnMiHBn0y39a92eL4ZSkfvmb1Sgg82b+E2Gq5G6h6yM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=rR1d32R/7XQyCIeR6aWSh9Llqj16r9lHWmkuqxy6/nrK2LFuU6pazIjFOHDAcQ0SpaZ9UK4tKh6EivdDoXa3P1A3M4wZKuA4FMtqjlwu/GgCcksWrcOJXFtTdNgtd3RLenHY3X7NI6zyLTuq3F5p9IMfMsUyFlTg1FjMr+RSABw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4ThVQN1HKCz18MJM;
-	Sat, 24 Feb 2024 09:58:04 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0C87E1400DD;
-	Sat, 24 Feb 2024 09:59:47 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sat, 24 Feb 2024 09:59:46 +0800
-Message-ID: <cdebc1cc-68cf-e429-42a4-4eaeb72c3aec@huawei.com>
-Date: Sat, 24 Feb 2024 09:59:46 +0800
+	s=arc-20240116; t=1708740158; c=relaxed/simple;
+	bh=aU9FbwN1S9//HRHbhdmeF+fyYNkS7K9J/zpvYfRP3hA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ENK5JuIX0LghoRCQ+7VHT97yi5TxbOXybbW6Hu0hOa45JsvFwP1Aa6X1fb1bfL+tDV6hZ48u76wpHh3r0f/ysqDn1EM1tqJ7SfI/ge9sBmoP/xKVyYh23qCpN44Xd1v6AN17BK4kjJIwHoqklrO35r2zzxMCb6aO2ecGiPje5AY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YClsuH4q; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dcc73148611so1567535276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 18:02:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708740156; x=1709344956; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9PYgxetUjHOrEBE3OyfXnw/V4oH+FzaVrAptzS8yqHg=;
+        b=YClsuH4qi+9Hbah7mEVNCxqPVcCh1T8fgiGQbuJcRakQfLjheg2rmtv16S3OI6V4sQ
+         nlaUliNA1qA63z6vOZ6V7JomJp43uouyQOdEgd2pkPDnyJDjRgZcN66pvWp2GruffhWc
+         CIBRI1tO6ZfFH2Z60sHRNNqlE06wOVp9jAkvkKMlc9QY2DSOKmGD75kn7V2D5MAg4Jia
+         fausVUyE1OVR7gE3WJ1wOZM6I1dbiS3GSUPM0S3Ap+vHIhOrkHl16fOaXSGmE5XfDxg+
+         +MYYpw01Ar1XB+euQdjKPPl7Xfo62jG9xoAT4Tn9iqq81a8td3y9txJl6eLlnqiy+wlz
+         8DKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708740156; x=1709344956;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9PYgxetUjHOrEBE3OyfXnw/V4oH+FzaVrAptzS8yqHg=;
+        b=ApDUFHLVoJQzlL8YpgK/y8JxLm+e2zK1Z7g94Xq9HtP/GaaqwQf0obpod6iW7UIZqa
+         4dSysApu16a5Fdf3DyBvd+24aqzoadimiqHKqAcWYhvQ/F/2zhQlWwYxVmcUcV8k4qi3
+         x22MJrexQqixk740+wooVaOlLlvKIiLehpL258D1QItnpMzYWBw8pFYNEtIux3h86kNG
+         QWsONNK8wGaoQLebtOPSaCEK8Gg1gd2FLGJr57oog8kNEnJIHZTJSREpE+bVwu0rgHCu
+         KwUrwlkp3metSjFoFG2jCK6gwfG48tJ6QlQPK3KWqbIAZrF63kbxfiZa9xHiIoMJBTbL
+         hRtg==
+X-Forwarded-Encrypted: i=1; AJvYcCV+EKtJDuUR8ZAt0grPCPdNl5nu9uy4UpCaYxUmD6wfXQkUhlzYzR1oOJFKM9drPfta76Z+yrXJiGNG1r3kgG+kpzPyeib/v+0g3Mel
+X-Gm-Message-State: AOJu0YwD5EEvmrwrZmlGb4dLxPnTY6jbOAMp4hLI2UClwHKTtorYTO4w
+	Cv4v5FtgRw5FF9KOD/JPpJ/pB/ujngyjIedsoqqlbHRGDE7Aabi5qfU5YpSaZlRW/EqXZWuqRqX
+	qgak4HihGMbHJryeh8+Z6dWShJ4CrzLkwwUJg
+X-Google-Smtp-Source: AGHT+IHeD7s1jl7nDLOSZG0y9kCuKTd3u0TtUWQK/hX08wsrnwTSQEZdy4JG7wuGlK1ABvMhJVtPl8BOIpukOXAnbmk=
+X-Received: by 2002:a25:9986:0:b0:dc7:4758:7802 with SMTP id
+ p6-20020a259986000000b00dc747587802mr1258940ybo.48.1708740155772; Fri, 23 Feb
+ 2024 18:02:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH 1/7] ext4: avoid overflow when setting values via sysfs
-To: Jan Kara <jack@suse.cz>
-CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
-	<yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
-References: <20240126085716.1363019-1-libaokun1@huawei.com>
- <20240126085716.1363019-2-libaokun1@huawei.com>
- <20240213160554.35cpsfqqeqpgtux2@quack3>
- <81081ec9-3aab-ecd1-c2f6-9a3835ea4fda@huawei.com>
- <20240223115443.spaztzcv7llmfl77@quack3>
-Content-Language: en-US
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20240223115443.spaztzcv7llmfl77@quack3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+References: <20240221194052.927623-1-surenb@google.com> <20240221194052.927623-4-surenb@google.com>
+ <CA+CK2bD8Cr1V2=PWAsf6CwDnakZ54Qaf_q5t4aVYV-jXQPtPbg@mail.gmail.com>
+In-Reply-To: <CA+CK2bD8Cr1V2=PWAsf6CwDnakZ54Qaf_q5t4aVYV-jXQPtPbg@mail.gmail.com>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Fri, 23 Feb 2024 18:02:24 -0800
+Message-ID: <CAJuCfpHBgZeJN_O1ZQg_oLbAXc-Y+jmUpB02jznkEySpd4rzvw@mail.gmail.com>
+Subject: Re: [PATCH v4 03/36] mm/slub: Mark slab_free_freelist_hook() __always_inline
+To: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/2/23 19:54, Jan Kara wrote:
-> On Sat 17-02-24 15:09:06, Baokun Li wrote:
->> On 2024/2/14 0:05, Jan Kara wrote:
->>> On Fri 26-01-24 16:57:10, Baokun Li wrote:
->>>> When setting values of type unsigned int through sysfs, we use kstrtoul()
->>>> to parse it and then truncate part of it as the final set value, when the
->>>> set value is greater than UINT_MAX, the set value will not match what we
->>>> see because of the truncation. As follows:
->>>>
->>>>     $ echo 4294967296 > /sys/fs/ext4/sda/mb_max_linear_groups
->>>>     $ cat /sys/fs/ext4/sda/mb_max_linear_groups
->>>>       0
->>>>
->>>> So when the value set is outside the variable type range, -EINVAL is
->>>> returned to avoid the inconsistency described above. In addition, a
->>>> judgment is added to avoid setting s_resv_clusters less than 0.
->>>>
->>>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->>>> ---
->>>>    fs/ext4/sysfs.c | 4 +++-
->>>>    1 file changed, 3 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
->>>> index 6d332dff79dd..3671a8aaf4af 100644
->>>> --- a/fs/ext4/sysfs.c
->>>> +++ b/fs/ext4/sysfs.c
->>>> @@ -104,7 +104,7 @@ static ssize_t reserved_clusters_store(struct ext4_sb_info *sbi,
->>>>    	int ret;
->>>>    	ret = kstrtoull(skip_spaces(buf), 0, &val);
->>>> -	if (ret || val >= clusters)
->>>> +	if (ret || val >= clusters || (s64)val < 0)
->>>>    		return -EINVAL;
->>> This looks a bit pointless, doesn't it? 'val' is u64, clusters is u64. We
->>> know that val < clusters so how could (s64)val be < 0?
->> When clusters is bigger than LLONG_MAX, (s64)val may be less than 0.
->> Of course we don't have such a large storage device yet, so it's only
->> theoretically possible to overflow here. But the previous patches in this
->> patch set were intended to ensure that the values set via sysfs did not
->> exceed the range of the variable type, so I've modified that here as well.
-> Well, my point was that the on disk format is limited to much less than
-> 2^63 blocks. But I guess having the additional check does not matter.
-OK.
->>>> @@ -463,6 +463,8 @@ static ssize_t ext4_attr_store(struct kobject *kobj,
->>>>    		ret = kstrtoul(skip_spaces(buf), 0, &t);
->>>>    		if (ret)
->>>>    			return ret;
->>>> +		if (t != (unsigned int)t)
->>>> +			return -EINVAL;
->>>>    		if (a->attr_ptr == ptr_ext4_super_block_offset)
->>>>    			*((__le32 *) ptr) = cpu_to_le32(t);
->>>>    		else
->>> I kind of agree with Alexey that using kstrtouint() here instead would look
->>> nicer. And it isn't like you have to define many new variables. You just
->>> need unsigned long for attr_pointer_ul and unsigned int for
->>> attr_pointer_ui.
->> If we use both kstrtouint() and kstrtoul(), then we need to add
->> kstrtouint() or kstrtoul() to each case, which would be a lot of
->> duplicate code as follows:
-> Well, it is 5 more lines if I'm counting right :) (3x 3 lines of conversion
-> - 2x 2 lines of boundary checks). I kind of find it easier to oversee the
-> boundary checks when everything is together at each parameter. But frankly
-> this is a bit of nitpicking so if you feel strongly about this I won't
-> insist.
-Makes sense, there may be some implicit checks that look unintuitive
-this way in the original patch. Now keep the string to number conversion
-inside the switch does look better. Let me send v2.
->> static ssize_t ext4_generic_attr_store(struct ext4_attr *a,
->>                                         struct ext4_sb_info *sbi,
->>                                         const char *buf, size_t len)
->> {
->>          int ret;
->>          unsigned int t;
->>          unsigned long lt;
->>          void *ptr = calc_ptr(a, sbi);
->>
->>          if (!ptr)
->>                  return 0;
->>
->>          switch (a->attr_id) {
->>          case attr_group_prealloc:
->>                  ret = kstrtouint(skip_spaces(buf), 0, &t);
->>                  if (ret)
->>                          return ret;
->>                  if (t > sbi->s_clusters_per_group)
->>                          return -EINVAL;
->>                  return len;
->>          case attr_pointer_pi:
->>                  ret = kstrtouint(skip_spaces(buf), 0, &t);
->>                  if (ret)
->>                          return ret;
->>                  if ((int)t < 0)
->>                          return -EINVAL;
->>                  return len;
->>          case attr_pointer_ui:
->>                  ret = kstrtouint(skip_spaces(buf), 0, &t);
->>                  if (ret)
->>                          return ret;
->>                  if (t != (unsigned int)t)
->>                          return -EINVAL;
-> 		  ^^^ this can go away
-I forgot to delete this, thanks!
->>                  if (a->attr_ptr == ptr_ext4_super_block_offset)
->>                          *((__le32 *) ptr) = cpu_to_le32(t);
->>                  else
->>                          *((unsigned int *) ptr) = t;
->>                  return len;
->>          case attr_pointer_ul:
->>                  ret = kstrtoul(skip_spaces(buf), 0, &lt);
->>                  if (ret)
->>                          return ret;
->>                  *((unsigned long *) ptr) = lt;
->>                  return len;
->>          }
->>          return 0;
->>
->> }
->>
->> Also, both kstrtouint() and kstrtoul() are based on the kstrtoull()
->> implementation, so it feels better to opencode kstrtoul() and
->> kstrtouint() to reduce duplicate code.
->> Why is it better to distinguish uint and ulong cases here?
-> Hopefully explained above :)
+On Wed, Feb 21, 2024 at 1:16=E2=80=AFPM Pasha Tatashin
+<pasha.tatashin@soleen.com> wrote:
 >
+> On Wed, Feb 21, 2024 at 2:41=E2=80=AFPM Suren Baghdasaryan <surenb@google=
+com> wrote:
+> >
+> > From: Kent Overstreet <kent.overstreet@linux.dev>
+> >
+> > It seems we need to be more forceful with the compiler on this one.
+> > This is done for performance reasons only.
+> >
+> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  mm/slub.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/mm/slub.c b/mm/slub.c
+> > index 2ef88bbf56a3..d31b03a8d9d5 100644
+> > --- a/mm/slub.c
+> > +++ b/mm/slub.c
+> > @@ -2121,7 +2121,7 @@ bool slab_free_hook(struct kmem_cache *s, void *x=
+, bool init)
+> >         return !kasan_slab_free(s, x, init);
+> >  }
+> >
+> > -static inline bool slab_free_freelist_hook(struct kmem_cache *s,
+> > +static __always_inline bool slab_free_freelist_hook(struct kmem_cache =
+*s,
 >
-> 								Honza
-Yes, now I understand what you're considering. 😊
+> __fastpath_inline seems to me more appropriate here. It prioritizes
+> memory vs performance.
 
-Thank you for your explanation!
--- 
-With Best Regards,
-Baokun Li
-.
+Hmm. AFAIKT this function is used only in one place and we do not add
+any additional users, so I don't think changing to __fastpath_inline
+here would gain us anything.
+
+>
+> >                                            void **head, void **tail,
+> >                                            int *cnt)
+> >  {
+> > --
+> > 2.44.0.rc0.258.g7320e95886-goog
+> >
 
