@@ -1,121 +1,226 @@
-Return-Path: <linux-kernel+bounces-79788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DD2C8626B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 19:20:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C4778626BF
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 19:22:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6F23B21822
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 18:20:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC7911F21370
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 18:22:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED75B4C62E;
-	Sat, 24 Feb 2024 18:20:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57BF14C3D0;
+	Sat, 24 Feb 2024 18:22:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YcH25fuP"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="puNCuUNB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D311311701;
-	Sat, 24 Feb 2024 18:20:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84D08481D0;
+	Sat, 24 Feb 2024 18:22:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708798826; cv=none; b=TO1lHHKf7mbDeNpytJ7fmj/abK6lMDUE6zPiMd32W8yxj/u96LSyV1Ji5JJDFEAubYrgBTpXcttLqc9V9qxMc1N8q9wuzKU9B1DGMK4UcS5s/KW6Vb2H8kqeC9Ro2Q3QkbPS0rgGbomriAYhEEXABvCWfmdYoycae5gWVfXFeFU=
+	t=1708798951; cv=none; b=pR8wbUAU+wE6R4VwtaGGJKwwW2H7V9CnuLyAVxRBbypDeqM0pP1HrnnWnsDi/tzsMN2b0JMMbtHh2/YDtXP5FyEA+0fnL9TN9x2Q7fSZB5D3gSYaMr6Izjt/S4abE8poslx+U4JDI2zqo3Jc77VvPUKljUWRqK50LseELojWTzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708798826; c=relaxed/simple;
-	bh=wcDBodcg+t6zV2TdVa+A97rNAPiwo4viJqElc/m+rF0=;
-	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=fsFztj8QVbYYXlvUwkFrDXmp+g0COAwoOhFyEkGJedqeAIsw7LK1USVZjxdDESmFK72xJnxOt+fvpjc+knYiDOrWpwCiYHg44UIflhXLJbWGjVlGgwxDz9r2bC31Uc5o2kQA4wrMHtUZifuchdsXA27Rcp8YwcLEeK2oOfkWk7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YcH25fuP; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1dbd32cff0bso11389245ad.0;
-        Sat, 24 Feb 2024 10:20:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708798824; x=1709403624; darn=vger.kernel.org;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=u8CYf+uZ9YH86t+xERuTMGB2gPG/8kNfKskED5Hz07I=;
-        b=YcH25fuPMQA2/7Wadqsn45YeF5WZtOLIcY3i5+FILZD+dT2dhfRhHO5/vNQcykhasr
-         CnPy7JrJtGNQY/+4IVy14TJRHtlsA2GC4enEHiwKbz+6MU4AIEvuOP4gwEQHfpdayd+0
-         eo5AL+ITcWYDcLowm62ZwKv1GEGQSLiTgk70dyiIlMFaOMSj6ftR6ri/HZ+H/K4ckJTP
-         s/eSG1AMxaMvpGsO1DDR+C9aQhX7UN0Iq93VxtFDw4S6hwNwwKoVY1xeAFjik/pjgGEk
-         j6ZamWA7NnJk+l68cjJU6TrXYaqxoYfMDx2k8PBDyK9TIMkHthJA/calLHueFvuvufBN
-         Y/oA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708798824; x=1709403624;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=u8CYf+uZ9YH86t+xERuTMGB2gPG/8kNfKskED5Hz07I=;
-        b=AZ/u+EayoeIp/FzXM5SR09YSIZ/+uLQ6ipZkBFTtWC86z0wvuD83906SSGtNIC4nZE
-         hulfNOLEz5FEtqVXoyOadKUWmA2fEYIC003jlNsj8cbrMj81CfSMBAQ9WCI3KdwDsLpK
-         89z6ZLywhKQPJJjP/M3o9dRO6UCb+WCAonAyKVexSTZko4WJAF6jMahe/HCz0jgzKjy8
-         B7hS93DSasOrlysoFPEU5Z7tN8l+zvVYSCFzuy1l0dGGUeOwZj6uGZDpNEkKtCoPRt1v
-         +5iZpx1AKmCSq7EOyiD3B/+ecFA27Y509609GqCkoyvlw9rqDdhz4eNOxyET9FslDsCm
-         PWzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXwhT+xKVyb3cjqD8hiQsxcXdKzyK7IBVj5buo8p5MpyFKm0R+f9J4c64qtAXzEOkWW1XaSoOqLCr8E6I4pOJ13yjskltMt6OozEihV6dOLHReqAAiTWE3vjHw6f4c95Y2cRGOjt4thJSMY67lCz77y/0VJwhfmH6cnZrmpFYrqgmFz5cdCg37xrkNyPt2GxPBjBf8oK1ILGYyAqmLX85q20PSm92am+MLvgs9d1zMazcbwZcN2Xr7HgnWsWbjn
-X-Gm-Message-State: AOJu0Yx6tz1ZqYWLQr1+IBc3Sw4bw+MFgmvQPsbMCh6zlsNmN+HAko1H
-	6f44o7HpAPeXuM9fzcLb7QOhHH11ydF2rtuAiJyHRH1pfum/fiNr
-X-Google-Smtp-Source: AGHT+IEWtpD6myPgKLDzuAWT+he2KacsEUL8k60CFxfg0quwBYfzNP4UtrxXc/p0r7aXaWfevFWhPQ==
-X-Received: by 2002:a17:903:2281:b0:1d9:ce46:6ebd with SMTP id b1-20020a170903228100b001d9ce466ebdmr3808331plh.16.1708798824035;
-        Sat, 24 Feb 2024 10:20:24 -0800 (PST)
-Received: from dw-tp ([171.76.80.106])
-        by smtp.gmail.com with ESMTPSA id g2-20020a170902740200b001d9537cf238sm1264709pll.295.2024.02.24.10.20.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Feb 2024 10:20:23 -0800 (PST)
-Date: Sat, 24 Feb 2024 23:50:15 +0530
-Message-Id: <87r0h12080.fsf@doe.com>
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: John Garry <john.g.garry@oracle.com>, axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com, jack@suse.cz
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com, linux-aio@kvack.org, linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org, nilay@linux.ibm.com, Prasad Singamsetty <prasad.singamsetty@oracle.com>, John Garry <john.g.garry@oracle.com>
-Subject: Re: [PATCH v4 03/11] fs: Initial atomic write support
-In-Reply-To: <87v86d20ek.fsf@doe.com>
+	s=arc-20240116; t=1708798951; c=relaxed/simple;
+	bh=vITQDNHGejyqlMVNnPYBxyzzJU5RBoH076vJprzwKp0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=PvbN7fBXWYUu3FqDH0evUmDTG9QoGVa54ohxhBzdTRGTxLjLJLjUk7/1jHWIAith+apRccSGVHwJiu+03N0bbXgoQe33QQbsnJXX1rsi8Wac0MXfRlJPHneIu+XCpbT5V83Igkde8VwxU5zKtresSwDKnjvfNDMSBBZ6TTlSEJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=puNCuUNB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DECAC433C7;
+	Sat, 24 Feb 2024 18:22:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708798951;
+	bh=vITQDNHGejyqlMVNnPYBxyzzJU5RBoH076vJprzwKp0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=puNCuUNBtjbmwNa9S5Zz8I5sBpVY8EFbGj0mYnM1BxHYs4giFO8FK62F1eZFQ66OF
+	 fulO2ZdQr09QEzLrFY+p/Fves3PROh2Xz2zMxVmxvkTuC9O3KJ/BIlELPhXgicJtid
+	 0RFLCBYkt2zr/lDcDwLwLRSEeOoQuzB3UxBKrFwFngxKxUWSu92ZKNkaxmZENkRI0Z
+	 fK86TDfWjLztOK59S4N1AYib1OyitZvZYSkry6LcfOkjFK2ZVN6fbt/Thw2HPgC9e0
+	 TEpkvTQ8RlIaYue5s/LNyHTfNNs7Xn2JyCE8Wj8bkg6RegiQF+W6J6CS0bnTcyBl2N
+	 YsgrW2b8+heIw==
+Date: Sat, 24 Feb 2024 18:22:15 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Li peiyu <579lpy@gmail.com>, Rob
+ Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/4] iio: humidity: hdc3020: add power management
+Message-ID: <20240224182215.058aaecb@jic23-huawei>
+In-Reply-To: <20240220-hdc3020-pm-v1-2-d8e60dbe79e9@gmail.com>
+References: <20240220-hdc3020-pm-v1-0-d8e60dbe79e9@gmail.com>
+	<20240220-hdc3020-pm-v1-2-d8e60dbe79e9@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
+On Tue, 20 Feb 2024 22:14:56 +0100
+Javier Carrasco <javier.carrasco.cruz@gmail.com> wrote:
 
-> John Garry <john.g.garry@oracle.com> writes:
+> The HDC3020 sensor carries out periodic measurements during normal
+> operation, but as long as the power supply is enabled, it will carry on
+> in low-power modes. In order to avoid that and reduce power consumption,
+> the device can be switched to Trigger-on Demand mode, and if possible,
+> turn off its regulator.
+> 
+> According to the datasheet, the maximum "Power Up Ready" is 5 ms.
+> 
+> Add resume/suspend pm operations to manage measurement mode and
+> regulator state.
+> 
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Hi Javier,
+
+Comments inline. Mainly that you should not have side effects if the power
+up fails and you should fail probe.
+
+Thanks,
+
+Jonathan
+
+> ---
+>  drivers/iio/humidity/hdc3020.c | 81 +++++++++++++++++++++++++++++++++---------
+>  1 file changed, 65 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/iio/humidity/hdc3020.c b/drivers/iio/humidity/hdc3020.c
+> index 11ede97a31d7..0da5c5c41cd2 100644
+> --- a/drivers/iio/humidity/hdc3020.c
+> +++ b/drivers/iio/humidity/hdc3020.c
+> @@ -20,6 +20,8 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/module.h>
+>  #include <linux/mutex.h>
+> +#include <linux/pm.h>
+> +#include <linux/regulator/consumer.h>
+>  #include <linux/units.h>
+>  
+>  #include <asm/unaligned.h>
+> @@ -68,6 +70,7 @@
+>  
+>  struct hdc3020_data {
+>  	struct i2c_client *client;
+> +	struct regulator *vdd_supply;
+>  	/*
+>  	 * Ensure that the sensor configuration (currently only heater is
+>  	 * supported) will not be changed during the process of reading
+> @@ -551,9 +554,39 @@ static const struct iio_info hdc3020_info = {
+>  	.write_event_value = hdc3020_write_thresh,
+>  };
+>  
+> -static void hdc3020_stop(void *data)
+> +static int hdc3020_power_on(struct hdc3020_data *data)
+>  {
+> -	hdc3020_exec_cmd((struct hdc3020_data *)data, HDC3020_EXIT_AUTO);
+> +	int ret;
+> +
+> +	ret = regulator_enable(data->vdd_supply);
+> +	if (ret)
+> +		return ret;
+> +
+> +	fsleep(5000);
+> +
+> +	if (data->client->irq) {
+> +		/*
+> +		 * The alert output is activated by default upon power up,
+> +		 * hardware reset, and soft reset. Clear the status register.
+> +		 */
+> +		ret = hdc3020_exec_cmd(data, HDC3020_S_STATUS);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	return hdc3020_exec_cmd(data, HDC3020_S_AUTO_10HZ_MOD0);
+Expectation of a power on fail, in probe at least is it should cleanup after
+itself.  It's messier in resume because there isn't anything sensible to do
+about it, but we should keep to the convention of no side effects on
+failure.
+
+As such if either of the later parts of this fail, you should power
+down the regulator before returning.
+
+
+> +}
+> +
+> +static int hdc3020_power_off(struct hdc3020_data *data)
+> +{
+> +	hdc3020_exec_cmd(data, HDC3020_EXIT_AUTO);
+> +
+> +	return regulator_disable(data->vdd_supply);
+> +}
+> +
+> +static void hdc3020_exit(void *data)
+> +{
+> +	hdc3020_power_off((struct hdc3020_data *)data);
+
+Trivial but no need to cast a void * to anything as the C standard says this
+is fine as implicit.
+
+>  }
+>  
+>  static int hdc3020_probe(struct i2c_client *client)
+> @@ -569,6 +602,8 @@ static int hdc3020_probe(struct i2c_client *client)
+>  	if (!indio_dev)
+>  		return -ENOMEM;
+>  
+> +	dev_set_drvdata(&client->dev, (void *)indio_dev);
+> +
+>  	data = iio_priv(indio_dev);
+>  	data->client = client;
+>  	mutex_init(&data->lock);
+> @@ -580,6 +615,14 @@ static int hdc3020_probe(struct i2c_client *client)
+>  	indio_dev->info = &hdc3020_info;
+>  	indio_dev->channels = hdc3020_channels;
+>  	indio_dev->num_channels = ARRAY_SIZE(hdc3020_channels);
+> +
+> +	data->vdd_supply = devm_regulator_get(&client->dev, "vdd");
+> +	if (IS_ERR(data->vdd_supply))
+> +		return dev_err_probe(&client->dev, PTR_ERR(data->vdd_supply),
+> +				     "Unable to get VDD regulator\n");
+> +
+> +	hdc3020_power_on(data)
+
+Check return value. We want to fail probe if the power up didn't work!
+
+> +
+>  	if (client->irq) {
+>  		ret = devm_request_threaded_irq(&client->dev, client->irq,
+>  						NULL, hdc3020_interrupt_handler,
+> @@ -588,22 +631,9 @@ static int hdc3020_probe(struct i2c_client *client)
+>  		if (ret)
+>  			return dev_err_probe(&client->dev, ret,
+>  					     "Failed to request IRQ\n");
+> -
+> -		/*
+> -		 * The alert output is activated by default upon power up,
+> -		 * hardware reset, and soft reset. Clear the status register.
+> -		 */
+> -		ret = hdc3020_exec_cmd(data, HDC3020_S_STATUS);
+> -		if (ret)
+> -			return ret;
+>  	}
+>  
+> -	ret = hdc3020_exec_cmd(data, HDC3020_S_AUTO_10HZ_MOD0);
+> -	if (ret)
+> -		return dev_err_probe(&client->dev, ret,
+> -				     "Unable to set up measurement\n");
+> -
+> -	ret = devm_add_action_or_reset(&data->client->dev, hdc3020_stop, data);
+> +	ret = devm_add_action_or_reset(&data->client->dev, hdc3020_exit, data);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -614,6 +644,24 @@ static int hdc3020_probe(struct i2c_client *client)
+>  	return 0;
+>  }
 >
->> From: Prasad Singamsetty <prasad.singamsetty@oracle.com>
->>
->> An atomic write is a write issued with torn-write protection, meaning
->> that for a power failure or any other hardware failure, all or none of the
->> data from the write will be stored, but never a mix of old and new data.
->>
->> Userspace may add flag RWF_ATOMIC to pwritev2() to indicate that the
->> write is to be issued with torn-write prevention, according to special
->> alignment and length rules.
->>
->> For any syscall interface utilizing struct iocb, add IOCB_ATOMIC for
->> iocb->ki_flags field to indicate the same.
->>
->> A call to statx will give the relevant atomic write info for a file:
->> - atomic_write_unit_min
->> - atomic_write_unit_max
->> - atomic_write_segments_max
->>
->> Both min and max values must be a power-of-2.
->>
->> Applications can avail of atomic write feature by ensuring that the total
->> length of a write is a power-of-2 in size and also sized between
->> atomic_write_unit_min and atomic_write_unit_max, inclusive. Applications
->> must ensure that the write is at a naturally-aligned offset in the file
->> wrt the total write length. The value in atomic_write_segments_max
->> indicates the upper limit for IOV_ITER iovcnt.
->>
->> Add file mode flag FMODE_CAN_ATOMIC_WRITE, so files which do not have the
->> flag set will have RWF_ATOMIC rejected and not just ignored.
->>
->> Add a type argument to kiocb_set_rw_flags() to allows reads which have
->> RWF_ATOMIC set to be rejected.
->>
->> Helper function atomic_write_valid() can be used by FSes to verify
->> compliant writes.
-
-Minor nit. 
-maybe generic_atomic_write_valid()? 
 
