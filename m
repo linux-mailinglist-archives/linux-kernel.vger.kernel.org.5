@@ -1,73 +1,93 @@
-Return-Path: <linux-kernel+bounces-79508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22D43862361
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 08:59:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B0D4862367
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 09:14:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7ED8283E9A
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 07:59:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CF231C222BF
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 08:14:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29F44171AC;
-	Sat, 24 Feb 2024 07:59:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09B461759C;
+	Sat, 24 Feb 2024 08:14:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="biI3Or3M";
-	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="Qm5OuQ19"
-Received: from mailrelay5-1.pub.mailoutpod2-cph3.one.com (mailrelay5-1.pub.mailoutpod2-cph3.one.com [46.30.211.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pnv9z4lQ"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0CDE13FEA
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 07:59:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.211.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE2681400B;
+	Sat, 24 Feb 2024 08:14:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708761564; cv=none; b=TIyxWGxHw8bwHcUP9LlvUMVdNTKXBhJqiCcTZnASd01y36MV6kRAbhVz9i5zdSzKoObhoQxJbTMhvnBksn4peJTqxnBYh9A5i46oFAzh4fjuAWueMOyoSknncpedAK0pF13GxtlmZmHW28J73IDGAYoTU2+cBI/jID4wsfODAMI=
+	t=1708762485; cv=none; b=sM4GyO8l+1aoAcTvYqDXQx55j0Fskd58Eb6IXPWe/S+B9olY2pd3kud58hX6fvVQNczQxKs6cafiIlwRgXfQB28pnYHwP763YuJZEGbKxKBzOlq38tU3SQTYQVw9wouJC/cr4nwlgrUlFZLcHDxdRi8O1tAH9M9RsSDl/dDiRSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708761564; c=relaxed/simple;
-	bh=IqUhJWwmMonEc4OhD9ftFsdV7ar9wnvzL/o/+DIhCYA=;
+	s=arc-20240116; t=1708762485; c=relaxed/simple;
+	bh=Qhz9N/fmoRItK8W7Ipwzkn/wGHgDt+GnC9r4h0Wl+7o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lQbUMHdD3mAFnQE5REqNRKCQEv9WyguB4pNiI/hEu/bcT1cYZuedtQm0iFKvwjJCy3letaeXkw9P1afHaPPLbYMAjXWkdvl9zpgiUcQ0hagVEem2LWWh4nM1GJOQOljTRdTcYu7HOTNdpd2FudPWUGjzA6cRORhQQPIM5voL40s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org; spf=none smtp.mailfrom=ravnborg.org; dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=biI3Or3M; dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=Qm5OuQ19; arc=none smtp.client-ip=46.30.211.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZebBevVcBzzvDFW3lXkOKiha0+doyIeUWiKSuSdq04h1nbNjtZ1KhjhVbMpavqui8VVYyxRTs2UlH/9NfoSr5TZmdMpgwqYlK0/xZf+BQWLuoXAr2yBwmhGbdBFgA5woRMr1gxfjYRQyMY8oWK66UFIlnPKUZ789wxNY3ykMU/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pnv9z4lQ; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e4ca46ab04so747916b3a.3;
+        Sat, 24 Feb 2024 00:14:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=rsa2;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-	 from:date:from;
-	bh=o1C0+AUnLT8vTzsLkx6TlC4ol/MArNCmdQKVohEbTME=;
-	b=biI3Or3MPGuNThyjSNHLBfM+7SAl7NgxbyRm84iNa8Qi4Ygtd+Sb0zDCrAGETln1hhQyweMNnTMyC
-	 O/62jNcK1EZxtQjYvVcmnVuuY15vjnlFd6wxKxHEUVoM6EvAkWLgimgLwJWcIWcBNfderduy/mVQwc
-	 jegtqJB6zRk2iK14XYIGCDIBtfn51SNNZnfhSJ+/bkvBI6KxQCVXB9qVSj7qyZ+szW4RITSX1HrbBQ
-	 zO2ACtB4gH8aBsDc6HtQoE/QPsbbyof8QPjMlYlpeGkrdziMr53e1N4ImGJdLM5T2gwGdgjDfEvMm8
-	 c1CIQ4F2tIINy5CBvXyzTY3HQ0YWjGw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=ed2;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-	 from:date:from;
-	bh=o1C0+AUnLT8vTzsLkx6TlC4ol/MArNCmdQKVohEbTME=;
-	b=Qm5OuQ19rFGKkAWIAgie/8SWj3TvXY5EkixcA8OYt8qG5b8sqYs+fCVlBR3Iwyz7Z9WiQFBZ0PxV0
-	 GYOW35SDA==
-X-HalOne-ID: 9c373c13-d2ea-11ee-b3bd-657a30c718c6
-Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
-	by mailrelay5.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
-	id 9c373c13-d2ea-11ee-b3bd-657a30c718c6;
-	Sat, 24 Feb 2024 07:59:19 +0000 (UTC)
-Date: Sat, 24 Feb 2024 08:59:18 +0100
-From: Sam Ravnborg <sam@ravnborg.org>
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, sparclinux@vger.kernel.org,
-	linux-parport@lists.infradead.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Randy Dunlap <rdunlap@infradead.org>, Arnd Bergmann <arnd@arndb.de>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/6] sparc32: Do not select GENERIC_ISA_DMA
-Message-ID: <20240224075918.GB2959352@ravnborg.org>
-References: <20240223-sam-fix-sparc32-all-builds-v1-0-5c60fd5c9250@ravnborg.org>
- <20240223-sam-fix-sparc32-all-builds-v1-5-5c60fd5c9250@ravnborg.org>
- <alpine.DEB.2.21.2402240235570.61493@angie.orcam.me.uk>
- <alpine.DEB.2.21.2402240458100.61493@angie.orcam.me.uk>
+        d=gmail.com; s=20230601; t=1708762483; x=1709367283; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Li+1ch1KmBlW/URGhiU4Afn1fK88RrMkohfrJAlOTqA=;
+        b=Pnv9z4lQp5WhBwTfiRGK2M/ojsXboTOjc3kjPDv3b0oqS/NEfWxl7tX+BcQJFTW0t9
+         yDUTt1Adwctm6AwA0XuPKhmvfsLJVrz9EciQc8+CypqzvO+tfCJq8gGMy6YUcrsgAaBT
+         Gi0N8+yoEpN51t1K9HJbHUTSShHwm7ply3TSjSNgwxGPo/PhiuLv7Vdekg4clIm2unZt
+         qQW5O7NfdVK2hde5RhbolgVqDHSpc2lH79xkdAgE7SLIxWlyUDMlHrzSdav06aFtUYFk
+         aBjZTcRUVTW6ibhkrZ8xKLPvIJ5XB3WWNSP7/C7Em1Zmnxm/rtFlRvv5ZxGTRvCMUovD
+         qKUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708762483; x=1709367283;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Li+1ch1KmBlW/URGhiU4Afn1fK88RrMkohfrJAlOTqA=;
+        b=EU7uzZvTMGCqolHNZM9d0AebY2SR5MjTj4FXAnAIIwuI+tvNiitiOKTyKH/oERIzP+
+         L5zragIGCIhMJQYYus8B+b7uSlatEfi/tcFuGpL02FkNfN/ktTtbofyMSb8UCM2m3cVM
+         c19HuLtOBPim1K0I/FP68eF31G4olDV58hMyKYkDcOubjnMDCf7Rej3f4C3EG/l1oYeZ
+         a9jB6Hb7PZlm5B+eQ+v7nOk8VW+YqCpYYqsVpJW4cyqf7iKa3Gs6Mz/fjc+q0tJHi87D
+         rY0clHbRnXbsmgUOS4rnDyIMqU0C7SCZvevRn+zy/HmOpB6btGw4uVGxYAIkG4Cy9pWe
+         HlSw==
+X-Forwarded-Encrypted: i=1; AJvYcCWDHkvEildx0yORAQlJc0x1fNsJlGIi3klSrP8P/demHoPXcyJ38EgnHC6YiqeAaIcUSUkX+rf+G9tEQ+pvIPHuk0CQxYjm+KjlDqzTx5UyBPKcOYqYdZNjE5ZFZPBFCojCchqI6/SChWgAa9fj09YvEbRfzaks1cp4CzyKHD57qTyYZw==
+X-Gm-Message-State: AOJu0YxA+tjBh5SaqJAmWa3HMOcXfY2ba+5SXFbBg0eXjN5xyPCXnGg8
+	Hzmo9p3jnun09zg8C/NE7AuQmp3EctGgDTDV9wJRxy70k5VUnXqD
+X-Google-Smtp-Source: AGHT+IFAhkrYbVSfRBTZ/EXXjiDnKExGzM6P/79vWS26AYFoZIC/I3bnnsgAxFkQCVZs+EDNz4NvsA==
+X-Received: by 2002:a05:6a21:33a9:b0:19c:90fc:f0d3 with SMTP id yy41-20020a056a2133a900b0019c90fcf0d3mr2936969pzb.46.1708762483141;
+        Sat, 24 Feb 2024 00:14:43 -0800 (PST)
+Received: from linux-8mug (220-129-204-58.dynamic-ip.hinet.net. [220.129.204.58])
+        by smtp.gmail.com with ESMTPSA id dj8-20020a17090ad2c800b00297138f0496sm2802436pjb.31.2024.02.24.00.14.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Feb 2024 00:14:42 -0800 (PST)
+Date: Sat, 24 Feb 2024 16:14:21 +0800
+From: Chester Lin <chester62515@gmail.com>
+To: Matthias Brugger <mbrugger@suse.com>
+Cc: Ghennadi Procopciuc <ghennadi.procopciuc@oss.nxp.com>,
+	Andreas Farber <afaerber@suse.de>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, NXP S32 Linux Team <s32@nxp.com>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+	Ghennadi Procopciuc <ghennadi.procopciuc@nxp.com>,
+	Catalin Udma <catalin-dan.udma@nxp.com>
+Subject: Re: [PATCH v2 1/2] arm64: dts: s32g: add SCMI firmware node
+Message-ID: <ZdmlXYq962azlVRe@linux-8mug>
+References: <20240122140602.1006813-1-ghennadi.procopciuc@oss.nxp.com>
+ <20240122140602.1006813-2-ghennadi.procopciuc@oss.nxp.com>
+ <94742ebd-bc3a-4726-9ba7-5954203e4da1@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,66 +96,84 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2402240458100.61493@angie.orcam.me.uk>
+In-Reply-To: <94742ebd-bc3a-4726-9ba7-5954203e4da1@suse.com>
 
-Hi Marciej,
+Hi Ghennadi,
 
-On Sat, Feb 24, 2024 at 05:29:43AM +0000, Maciej W. Rozycki wrote:
-> On Sat, 24 Feb 2024, Maciej W. Rozycki wrote:
+On Mon, Jan 22, 2024 at 03:39:09PM +0100, Matthias Brugger wrote:
 > 
-> > > sparc32 do not support generic isa dma, so do not select the symbol.
-> > > Without this fix, the following patch would break the build with a
-> > > missing prototype.
+> 
+> On 22/01/2024 15:06, Ghennadi Procopciuc wrote:
+> > From: Ghennadi Procopciuc <ghennadi.procopciuc@nxp.com>
 > > 
-> >  Not according to my observations, kernel/dma.c is always built for 
-> > GENERIC_ISA_DMA configurations, so:
-> > 
-> > kernel/dma.c:70:5: error: no previous prototype for 'request_dma' [-Werror=missing-prototypes]
-> >    70 | int request_dma(unsigned int dmanr, const char * device_id)
-> >       |     ^~~~~~~~~~~
-> > kernel/dma.c:88:6: error: no previous prototype for 'free_dma' [-Werror=missing-prototypes]
-> >    88 | void free_dma(unsigned int dmanr)
-> >       |      ^~~~~~~~
-> > 
-> > are issued regardless (and FAOD with PARPORT_PC unset).
-> > 
-> >  I can't speak for SPARC support for ISA DMA, but it seems to me like the 
-> > second sentence would best be removed, as would the Fixes: tag (in favour 
-> > to:
-> > 
-> > Fixes: 0fcb70851fbf ("Makefile.extrawarn: turn on missing-prototypes globally")
-> > 
-> > I presume), and possibly the messages quoted above included instead.
+> > Linux controls the clocks over SCMI on S32G SoCs. Therefore,
+> > add the SCMI device tree node and the reserved region for SCMI
 
-Thanks, I will update in v2.
+Is there any dt-binding required to match the SCMI clock IDs declared in
+SCMI? I assume that s32g series will need fixed dt-bindings for clocks to make
+sure there will be no kabi issue in the future.
 
-> 
->  Actually I think ZONE_DMA should go too (it's linked to GENERIC_ISA_DMA, 
-> isn't it? -- cf. commit 5ac6da669e24 ("[PATCH] Set CONFIG_ZONE_DMA for 
-> arches with GENERIC_ISA_DMA")), and the whole thing use:
-> 
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> 
-> The GENERIC_ISA_DMA option itself was added to arch/sparc/config.in with 
-> 2.5.31 as:
-> 
-> define_bool CONFIG_GENERIC_ISA_DMA y
-> 
-> despite of:
-> 
-> define_bool CONFIG_ISA n
-> 
-> for a reason not clear to me (BLK_DEV_FD? -- but on SPARC that uses some 
-> hacks to work in the absence of ISA DMA anyway).
-> 
->  Am I missing anything here?
-Nice find - the code below conforms you are right:
+Thanks,
+Chester
 
-	max_zone_pfn[ZONE_DMA] = max_low_pfn;
-	max_zone_pfn[ZONE_NORMAL] = max_low_pfn;
-
-As they are set to the same value there is no smaller ZONE_DMA area.
-I will add an extra patch for this in v2.
-
-	Sam
+> > messages.
+> > 
+> > Signed-off-by: Catalin Udma <catalin-dan.udma@nxp.com>
+> > Signed-off-by: Ghennadi Procopciuc <ghennadi.procopciuc@nxp.com>
+> 
+> Reviewed-by: Matthias Brugger <mbrugger@suse.com>
+> 
+> > ---
+> >   arch/arm64/boot/dts/freescale/s32g2.dtsi | 27 +++++++++++++++++++++++-
+> >   1 file changed, 26 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm64/boot/dts/freescale/s32g2.dtsi b/arch/arm64/boot/dts/freescale/s32g2.dtsi
+> > index 5ac1cc9ff50e..ef1a1d61f2ba 100644
+> > --- a/arch/arm64/boot/dts/freescale/s32g2.dtsi
+> > +++ b/arch/arm64/boot/dts/freescale/s32g2.dtsi
+> > @@ -3,7 +3,7 @@
+> >    * NXP S32G2 SoC family
+> >    *
+> >    * Copyright (c) 2021 SUSE LLC
+> > - * Copyright (c) 2017-2021 NXP
+> > + * Copyright 2017-2021, 2024 NXP
+> >    */
+> >   #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > @@ -14,6 +14,18 @@ / {
+> >   	#address-cells = <2>;
+> >   	#size-cells = <2>;
+> > +	reserved-memory  {
+> > +		#address-cells = <2>;
+> > +		#size-cells = <2>;
+> > +		ranges;
+> > +
+> > +		scmi_buf: shm@d0000000 {
+> > +			compatible = "arm,scmi-shmem";
+> > +			reg = <0x0 0xd0000000 0x0 0x80>;
+> > +			no-map;
+> > +		};
+> > +	};
+> > +
+> >   	cpus {
+> >   		#address-cells = <1>;
+> >   		#size-cells = <0>;
+> > @@ -77,6 +89,19 @@ timer {
+> >   	};
+> >   	firmware {
+> > +		scmi {
+> > +			compatible = "arm,scmi-smc";
+> > +			arm,smc-id = <0xc20000fe>;
+> > +			#address-cells = <1>;
+> > +			#size-cells = <0>;
+> > +			shmem = <&scmi_buf>;
+> > +
+> > +			clks: protocol@14 {
+> > +				reg = <0x14>;
+> > +				#clock-cells = <1>;
+> > +			};
+> > +		};
+> > +
+> >   		psci {
+> >   			compatible = "arm,psci-1.0";
+> >   			method = "smc";
 
