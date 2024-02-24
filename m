@@ -1,125 +1,130 @@
-Return-Path: <linux-kernel+bounces-79879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1BFA8627DD
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 22:39:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F2998627E0
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 22:50:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8152D1F217EF
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 21:39:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 375AEB212CC
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 21:50:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B27C4D59C;
-	Sat, 24 Feb 2024 21:39:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E04154D131;
+	Sat, 24 Feb 2024 21:50:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MaX6G8k2"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TXycU5pK"
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C30C6C2D0;
-	Sat, 24 Feb 2024 21:39:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCFF54317B;
+	Sat, 24 Feb 2024 21:50:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708810764; cv=none; b=s+1MhwIIdNVB9VzrM6REWBriUlJPaPqATUmI2P5J1BZ6brNvw+3JT9A8q15iDZ2XWkOdJ7jP0x5tUNFkjafNSowCHrLJ2YaOhEE9iZWumKI3xf1CuQhO3LbBwegsBG56cy60rpY5In7UJks72sxElH+J/f3Lcu2apdhaWk87EGs=
+	t=1708811443; cv=none; b=C6VOuARGVJBrUiD1MqhDehyZOjLYwubPYrQvZXv66//sd4HgeZLeTvfsqVIevAdKUeLPmjqDXl0n2LPCBGNWIRo8zCnczfxZfRgSjQZ7wp9X0o14b/Nq4JTRGjVFM/SJ1mNgYAyciTJxj1zqlyBNyoYLbNeV6gK/sOzYkybI3iM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708810764; c=relaxed/simple;
-	bh=Tu9OK29VGpH/7RoDqIIppvvxvciKCRwxT2ehQJXmT5o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HtF1mc4xtC4IeWXwAxDDtuXCV4MSwL+byvFiiSh8jmES/2d/3tyNdRxu9sMpISDQLyz/O3W95EjxCzGmkougjn9sOpm7Si6B3J7txl+QoTa+a/hkahWi919IZ48rtpybpX1whHusHGXaBF5H/gSRW6Uxp/mvG0OGCfG35htZWhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MaX6G8k2; arc=none smtp.client-ip=209.85.221.45
+	s=arc-20240116; t=1708811443; c=relaxed/simple;
+	bh=4BPgwLpKQTq/0vxcQXG57XBxOy8tRWhOr/7YSpHpNIM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rb6iGGb0plh92Sl6GZ5/+XL9XZlgETMBvgT7r2pXEgIlUqaWAVPFUGcn5Mk6Nk+5J4SrYOdjqQ0BYG0M2CtHVCPFrQYl0dmVvdnT8niUlC/pgjjUX95O9gw2/T4ySmHGaHfnMS9axvzbleb981q9+Mtkfl3RYTc8fwhPPfo60Dg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TXycU5pK; arc=none smtp.client-ip=209.85.210.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-33da51fd636so1202016f8f.3;
-        Sat, 24 Feb 2024 13:39:22 -0800 (PST)
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e48e42a350so478054a34.1;
+        Sat, 24 Feb 2024 13:50:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708810761; x=1709415561; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DkdGdhFoc0akFM5OFRz9BIUNFYP570NY+QU/9XQ+PN4=;
-        b=MaX6G8k2PaZ9wKEn1jDcQEeQYWRKqQtSGVQH8ugWWi1A4Qq/trSEx5rjW6/TFiwuHz
-         VPwBgaf1wOetj7qbvj3KFcTjS3oaoa/0ZU7nRx3zeCdL40kKpwOSFrT2aBCgYG58ZKBY
-         dAbthhLMBsNux4cBF+0R49gqRgchQ/ESn0HtsZp+5w34b3+UBEI4gbLB9el5U4MIeYgp
-         NKWrtDwlqBDaYVtbRjtIBFh4i9+SjXkIM3+dMRassVnkA62ds4Y87zXCba2r2oQU+9LY
-         1MDI9KURF5rdqFtpuNsRx/j2bpG2dqPggCR/b3zDlf3TzcQA0ZNNo+i3KUykTgMlaWQo
-         vpXw==
+        d=gmail.com; s=20230601; t=1708811441; x=1709416241; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ydh9YpZ5plBfJp+BJ1ZlCj0CTUl0s4YGZgmpPJqLx+E=;
+        b=TXycU5pKDv/TsuTt59MUGQfQpxXtqiaJGkmVKq6wBP7k9ouN5muAJf0fYHHqilQIZ6
+         JeJL8IW7zYfLAETQX9yqFYDQYqAgpCpUY3/CDM6g24jFotZaXJL05se37zLtAqUq8REy
+         ZrnBvZzT8i97q12CXWv/QxE+aM9ndQfgs4zo5NGlZvvx0TFf15NGGjk9Yc7TmRBtQ+rm
+         wxwPrnauDqXEUuZ9eZ4SGHPnLV5xQRFwujFRf3IwX4YtXY6W8zw9XkgjW8y63uKQUzur
+         0HxTp4NI8C33s1rg4Ace3x/Jc2ekuBqXzD5dZexpPssVHvm3PmvSkjh8mrCIev9umZOi
+         mXQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708810761; x=1709415561;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DkdGdhFoc0akFM5OFRz9BIUNFYP570NY+QU/9XQ+PN4=;
-        b=heZ1PpqWKz6dZpARjRrmxPVXe7DN0otYlPEOsVzV80wLRNE3GX8Ju7DZke4HcIoMn+
-         iGXKiLe191IPnsRPJ4wQ1NLgs6YfBnPuPIYVKeg1XtkySuN1it3T/Evou8YATlfKmyis
-         rrjegLHRFRCRWR3gPiTIUVRHZUd4eRVXy/CtAz1S0adEEsiOh/bQeOCS1yjY8d0YiUi+
-         nueg7En9SzFttX01KJ7lD994cWZQLaVVV1WCniHkh1quM3AndPVOM2v//gdhIDA6DqQz
-         5lnbE3T6KfowyzEW+nfNiDbOlEl2kEeGr5WaxLt1Pyk1H5Ec0mGU7qmG9AoSo2UK0oz6
-         QDmw==
-X-Forwarded-Encrypted: i=1; AJvYcCXIpB+bWXDFYY0QZl2iRRZ2yeo+fUft2KqjwfR0woXR428IDrwSCYzS4ZDdSOoh9GarQ7rjT4MRZ96bhvc0gMuhQVCZkEs1tw3b7QHGiocYGLYuzt9Fsc1egu2TNiALJX+pA3rSCuFgampJh6Wq
-X-Gm-Message-State: AOJu0YxxdEBC6h2PlqPkm02Y/jiMCoeqtKlm/i+EH7nMDeQ8D9XB1OFJ
-	mau/8JUrPp7FiUESuiZh6CQSjOA5tA/bNFsFsQxTm24yZAazeO5k
-X-Google-Smtp-Source: AGHT+IGKhvrP5vmS7jSBHkidmWWgYtbYT6cKOJlGMZk3qh7TyfIvHiiBl6iNO1h7JSeMCU2HYMI4OQ==
-X-Received: by 2002:adf:e284:0:b0:33a:eb25:31a2 with SMTP id v4-20020adfe284000000b0033aeb2531a2mr2396019wri.67.1708810760877;
-        Sat, 24 Feb 2024 13:39:20 -0800 (PST)
-Received: from [192.168.0.2] ([69.6.8.124])
-        by smtp.gmail.com with ESMTPSA id k2-20020a5d6d42000000b0033b79d385f6sm3190973wri.47.2024.02.24.13.39.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Feb 2024 13:39:20 -0800 (PST)
-Message-ID: <81dc43d9-1a65-4cf3-967c-9ee3458de26a@gmail.com>
-Date: Sat, 24 Feb 2024 23:39:22 +0200
+        d=1e100.net; s=20230601; t=1708811441; x=1709416241;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ydh9YpZ5plBfJp+BJ1ZlCj0CTUl0s4YGZgmpPJqLx+E=;
+        b=wBroVYs8X6nnhtnGFiTOlP91DxuE4WHZXnlH0kNIb4Xa78g+F/q6J4I8+33a2CrZJr
+         SfTXzfOwgRou68o8qMz8j5kyFaJGRjbug1pqwgNEVxcpebiS9VzzT8WtF6dCK4k6vbuA
+         V8nW4B7E1drD7B2hpS9Y8p/jChbw+RWNQC1aZIQLp+Pti7vQEQZOf8T6Oh3z/tHmzOcp
+         zr6lfcMo7VKWLSM2FThJ5yq4JysbjzE/mDtYhYpODybro9tyI/Og9nJWXFzQgxZVjYDs
+         LeErN5VuSnTuZVTjO46fC9G9gF9drKbe4u58RRnvnhzAslzHBNrPBXgsQNTCYk3IqJf6
+         kKPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV9ZbrwYx5xtjn81JuDKFyL4mopX+//bBx5yfKNyZ3gaOsgyzAss73Oe2NvBLqTb32PUlXKRFk42gv2OtqW7aHGu4Fopg2+j/A8
+X-Gm-Message-State: AOJu0YwN9MsOzGhFMnjJhboweCQwbAEsBgVcjsvWjyslULW8dQkGCLEe
+	v9GQNnrYhDg7RwmoqYMBwMBluCzOaXUbFwfzWLcStY3e0PaLIhOp
+X-Google-Smtp-Source: AGHT+IFibMKAm7HJ/s6TRaLHq4riuHRV1LaOYrAXiM9s7Vh3AFlvSPBPKaMqLJjA0MKvOhsC6rc4jw==
+X-Received: by 2002:a05:6830:4414:b0:6e4:82a4:742e with SMTP id q20-20020a056830441400b006e482a4742emr4515589otv.0.1708811440809;
+        Sat, 24 Feb 2024 13:50:40 -0800 (PST)
+Received: from barry-desktop.hub ([2407:7000:8942:5500:fae4:3bff:fecb:410])
+        by smtp.gmail.com with ESMTPSA id du15-20020a056a002b4f00b006e4bcdcff43sm1509866pfb.78.2024.02.24.13.50.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Feb 2024 13:50:40 -0800 (PST)
+From: Barry Song <21cnbao@gmail.com>
+To: corbet@lwn.net,
+	linux-mm@kvack.org,
+	akpm@linux-foundation.org,
+	damon@lists.linux.dev,
+	linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Barry Song <v-songbaohua@oppo.com>,
+	SeongJae Park <sj@kernel.org>,
+	Minchan Kim <minchan@kernel.org>,
+	Michal Hocko <mhocko@suse.com>,
+	Johannes Weiner <hannes@cmpxchg.org>
+Subject: [PATCH] Docs/mm/damon/design: describe the differences for pageout's virtual address and physcial address
+Date: Sun, 25 Feb 2024 10:50:23 +1300
+Message-Id: <20240224215023.5271-1-21cnbao@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net: wwan: t7xx: Prefer struct_size over open coded
- arithmetic
-Content-Language: en-US
-To: Erick Archer <erick.archer@gmx.com>,
- Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
- Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
- Liu Haijun <haijun.liu@mediatek.com>,
- M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
- Ricardo Martinez <ricardo.martinez@linux.intel.com>,
- Loic Poulain <loic.poulain@linaro.org>,
- Johannes Berg <johannes@sipsolutions.net>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Kees Cook <keescook@chromium.org>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-References: <20240224181932.2720-1-erick.archer@gmx.com>
-From: Sergey Ryazanov <ryazanov.s.a@gmail.com>
-In-Reply-To: <20240224181932.2720-1-erick.archer@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 24.02.2024 20:19, Erick Archer wrote:
-> This is an effort to get rid of all multiplications from allocation
-> functions in order to prevent integer overflows [1][2].
-> 
-> As the "port_prox" variable is a pointer to "struct port_proxy" and
-> this structure ends in a flexible array:
-> 
-> struct port_proxy {
-> 	[...]
-> 	struct t7xx_port ports[];
-> };
-> 
-> the preferred way in the kernel is to use the struct_size() helper to
-> do the arithmetic instead of the argument "size + size * count" in the
-> devm_kzalloc() function.
-> 
-> This way, the code is more readable and safer.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
-> Link: https://github.com/KSPP/linux/issues/160 [2]
-> 
-> Signed-off-by: Erick Archer <erick.archer@gmx.com>
+From: Barry Song <v-songbaohua@oppo.com>
 
-Reviewed-by: Sergey Ryazanov <ryazanov.s.a@gmail.com>
+The doc needs update. As only in the case of virtual address, we are
+calling madvise() with MADV_PAGEOUT; but in the case of physical
+address, we are actually calling reclaim_pages() directly. And
+madvise() with MADV_PAGEOUT is much more aggresive on reclamation
+compared to reclaim_pages() on paddr.
+
+Cc: SeongJae Park <sj@kernel.org>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+---
+ Documentation/mm/damon/design.rst | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/mm/damon/design.rst b/Documentation/mm/damon/design.rst
+index 8c89d26f0baa..6c50743552f5 100644
+--- a/Documentation/mm/damon/design.rst
++++ b/Documentation/mm/damon/design.rst
+@@ -315,7 +315,13 @@ that supports each action are as below.
+    Supported by ``vaddr`` and ``fvaddr`` operations set.
+  - ``cold``: Call ``madvise()`` for the region with ``MADV_COLD``.
+    Supported by ``vaddr`` and ``fvaddr`` operations set.
+- - ``pageout``: Call ``madvise()`` for the region with ``MADV_PAGEOUT``.
++ - ``pageout``: Call ``madvise()`` for the region with ``MADV_PAGEOUT`` if
++   the region is using virtual address; otherwise, call ``reclaim_pages()``
++   for the region if physical address is used.
++   ``madvise()``  with ``MADV_PAGEOUT``  is aggressively reclaiming memory
++   when pages are not shared by multiple processes. Differently, paddr's
++   pageout  will do the best-effort reclamation by scanning PTEs to figure
++   out if pages are young, if not, pages are reclaimed.
+    Supported by ``vaddr``, ``fvaddr`` and ``paddr`` operations set.
+  - ``hugepage``: Call ``madvise()`` for the region with ``MADV_HUGEPAGE``.
+    Supported by ``vaddr`` and ``fvaddr`` operations set.
+-- 
+2.34.1
+
 
