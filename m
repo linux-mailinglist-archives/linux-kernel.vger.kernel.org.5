@@ -1,106 +1,167 @@
-Return-Path: <linux-kernel+bounces-79408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A47288621AE
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C73058621AC
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:15:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34264B23D76
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:16:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68440B2344B
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:15:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B71215B7;
-	Sat, 24 Feb 2024 01:15:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 638BA53A6;
+	Sat, 24 Feb 2024 01:15:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Z0erciKR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zp4KSLCQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 666476FB8;
-	Sat, 24 Feb 2024 01:15:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F32717FE;
+	Sat, 24 Feb 2024 01:15:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708737315; cv=none; b=DWQWs2B1PBMLSMF/361WPvYDRu5v1Pe6BJyj/0pAfAMeNJtZsBogkU7azgUC+3w8x9gyd1WB+0EaFNFo/veO3fzBKyRoTYMBfIa3wJbO4owpmknrlOfEvxoXW162Htwhhi1m4me79gqeITmstprUgotDA3bY0gWFKVFtgacniLg=
+	t=1708737303; cv=none; b=XGtwkJvIm7cWHc13rX+0jGQ4DvokLVxUUHU5PawGVS3epdpjMAF0mrTMGbCT9JjFw/gGe5qv0j2Gq25G2f0tHztMJUkKuU4msjnoK640j3yUX+batRmfOeYA7v+rfE/26Ym9QURrrUWFruY7Zx1RmMhkJAlcYxq8acuYzBPZsXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708737315; c=relaxed/simple;
-	bh=+9h2xKjOMwpJ6vwxTee5GD98+h73IuypecWdP3G2C1s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=u9CDyxZEFYpzTfp+6kilbHhy17SWp2uIouIbBgcd0x/tIN+jLf97deVL1GbQdDbQ+pfJmkVdIEv2qbQnzuWixsk+7J403f+PEiwrkN74n6+tfocikoOKnSFB78ATC67ObwIiTdzqbLVhzkcTwLJCDBl0ErJqFzrrYu0K6VfoeZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=Z0erciKR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 143CBC43394;
-	Sat, 24 Feb 2024 01:15:15 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Z0erciKR"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1708737310;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CGk4NO32L+GTr1TJMRmS6aztEVWTdCZhKoXaii4F4RU=;
-	b=Z0erciKRHPcL03p/Km/9laNjKwRKAAKzxR/3cuVhoON+3+vQXgmmw61V83+ZOcmcqM+1/f
-	NWLqfHwaqdar+ay2Murv7jjYPjZiQ0aLyYpAjaAJ9Ja+Mx72TeEwSw5Fb2vSn0KBcFz1PJ
-	jTs91fAt5OxAsYyk0Wb34Lckpm4yDKA=
-Received: 
-	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 8615405f (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Sat, 24 Feb 2024 01:15:09 +0000 (UTC)
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-60853ad17f9so16506907b3.0;
-        Fri, 23 Feb 2024 17:15:09 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWap626kgmEYf7VRI2uAc8KLNSFXhTENYLIW3nB4cJthcpfDKcJz8FuWF/PmDG424DOul5LxAyubCqMdFK9C80LdwdVo3mRQ+oA8p8YGubMSCQlGRCw9ZNOOnoJa3tM57QsgrLL
-X-Gm-Message-State: AOJu0YyvYfyPyiXrF+RqPpjukk1dthhlYZy3uUdt5APMCtJLiS9SfvWB
-	1vHoya125MBylKclqjIy2mRXORI4xwU9RTTISEJeBOLJKG5RBIJKIYoQRPijukjJ/bTs0gb9+HE
-	k+rBzuppn4rRsyMyFlzhrOVSnZ5s=
-X-Google-Smtp-Source: AGHT+IEgMvsUKNoqUqJ8XZiWuzsWmr4gdvUGtKEu7ZPJUyYRkG+YxkdPu+bBfZBw/GzEuvyVQeQr+XYSMf9dj0FgxVM=
-X-Received: by 2002:a81:f20e:0:b0:607:7c26:7e14 with SMTP id
- i14-20020a81f20e000000b006077c267e14mr1356621ywm.34.1708737307407; Fri, 23
- Feb 2024 17:15:07 -0800 (PST)
+	s=arc-20240116; t=1708737303; c=relaxed/simple;
+	bh=5yQIyVqpWQrFoHd5KjccM3zKxOtIF5WCoB+ju21X2Zo=;
+	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=mAjPAgrWVTtpLaUb9F3Um6BZpd2k92DRyLlQtZQIRnaVRKQJO2pkSb+pEzbIQuR5esB2ChX1IiKO/I+t4rJPVSEDMoBqbnCJMTB73dQwbULFsP77ghlYNfBvKpYRyQ/Vn0fB+S58/tWdJFs25fcx1Wtroc3Egi+GwQmlLGBl+Zg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zp4KSLCQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38E01C433C7;
+	Sat, 24 Feb 2024 01:15:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708737303;
+	bh=5yQIyVqpWQrFoHd5KjccM3zKxOtIF5WCoB+ju21X2Zo=;
+	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
+	b=Zp4KSLCQJ0jF7mwO0/PiYYwwqUlSIqJueOWx27wzftDP2h1/o9iDqsFnvwKFogqk9
+	 lCe8EEL7hsaP1CX2kNNzrjWwoTd3flo3pBgIOuCGED3Yyvs7g1daIJI82D13kaHc+5
+	 eQ3EwTGy6wvpx3nqF6PC6+pt+j/yNegxD1vIH/Hp/mF/HTB9ZUqnwLQPai0qFlKFMB
+	 Pb0SpNjgIbFSNEjxOQ0gpGyoSTC+7W5RlKYvR1fQBsCpt58WQS1KhmmXn213Y/jsfM
+	 TwhlAYdlcFBnJO8uXkv2hh6Cw5DNBpHSpzGNeHiv6TSAZA9+vL3UsLhE5gYl2H0Iwx
+	 Swn3wMNMbEb1Q==
+Date: Fri, 23 Feb 2024 17:15:02 -0800
+Subject: [PATCH 05/10] bcachefs: Thread with file documentation
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: akpm@linux-foundation.org, daniel@gluo.nz, kent.overstreet@linux.dev,
+ djwong@kernel.org
+Cc: linux-xfs@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <170873668966.1861398.3623023711677925127.stgit@frogsfrogsfrogs>
+In-Reply-To: <170873668859.1861398.2367011381778949840.stgit@frogsfrogsfrogs>
+References: <170873668859.1861398.2367011381778949840.stgit@frogsfrogsfrogs>
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <5648f43d-76e4-4396-b626-411d60657c93@intel.com>
- <20240222020616.2315199-1-Jason@zx2c4.com> <9cec487f-ce7d-809d-b4a7-9b7a8a6c9c93@amd.com>
-In-Reply-To: <9cec487f-ce7d-809d-b4a7-9b7a8a6c9c93@amd.com>
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date: Sat, 24 Feb 2024 02:14:55 +0100
-X-Gmail-Original-Message-ID: <CAHmME9oN+7rbLYcvQN=+KMjwrokvARy_7khLWJvDK=K_S5uHqg@mail.gmail.com>
-Message-ID: <CAHmME9oN+7rbLYcvQN=+KMjwrokvARy_7khLWJvDK=K_S5uHqg@mail.gmail.com>
-Subject: Re: [PATCH v4] x86/coco: Require seeding RNG with RDRAND on CoCo systems
-To: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: x86@kernel.org, linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	Borislav Petkov <bp@alien8.de>, =?UTF-8?Q?Daniel_P_=2E_Berrang=C3=A9?= <berrange@redhat.com>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, 
-	Ingo Molnar <mingo@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org, 
-	Elena Reshetova <elena.reshetova@intel.com>, 
-	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>, "Theodore Ts'o" <tytso@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-Hi Tom,
+From: Kent Overstreet <kent.overstreet@linux.dev>
 
-On Fri, Feb 23, 2024 at 11:05=E2=80=AFPM Tom Lendacky <thomas.lendacky@amd.=
-com> wrote:
->
-> On 2/21/24 20:05, Jason A. Donenfeld wrote:
-> > +
-> > +     if (cc_vendor =3D=3D CC_VENDOR_NONE)
->
-> I responded to an earlier version of this patch, adding that response her=
-e:
->
-> You probably want to use:
->
->      if (!cc_platform_has(CC_GUEST_MEM_ENCRYPT))
->          return;
->
-> Otherwise, you can hit the bare-metal case where AMD SME is active and
-> then cc_vendor will not be CC_VENDOR_NONE.
-
-Nice catch, thanks. I'll do that for v+1.
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Signed-off-by: Darrick J. Wong <djwong@kernel.org>
+---
+ fs/bcachefs/thread_with_file.c |   15 ++++++++-------
+ fs/bcachefs/thread_with_file.h |   32 ++++++++++++++++++++++++++++++++
+ 2 files changed, 40 insertions(+), 7 deletions(-)
 
 
-Jason
+diff --git a/fs/bcachefs/thread_with_file.c b/fs/bcachefs/thread_with_file.c
+index 830efb06ef0be..dde9679b68b42 100644
+--- a/fs/bcachefs/thread_with_file.c
++++ b/fs/bcachefs/thread_with_file.c
+@@ -76,16 +76,16 @@ static bool stdio_redirect_has_output(struct stdio_redirect *stdio)
+ 	return stdio->output.buf.nr || stdio->done;
+ }
+ 
+-#define WRITE_BUFFER		4096
++#define STDIO_REDIRECT_BUFSIZE		4096
+ 
+ static bool stdio_redirect_has_input_space(struct stdio_redirect *stdio)
+ {
+-	return stdio->input.buf.nr < WRITE_BUFFER || stdio->done;
++	return stdio->input.buf.nr < STDIO_REDIRECT_BUFSIZE || stdio->done;
+ }
+ 
+ static bool stdio_redirect_has_output_space(struct stdio_redirect *stdio)
+ {
+-	return stdio->output.buf.nr < WRITE_BUFFER || stdio->done;
++	return stdio->output.buf.nr < STDIO_REDIRECT_BUFSIZE || stdio->done;
+ }
+ 
+ static void stdio_buf_init(struct stdio_buf *buf)
+@@ -171,11 +171,12 @@ static ssize_t thread_with_stdio_write(struct file *file, const char __user *ubu
+ 		}
+ 
+ 		spin_lock(&buf->lock);
+-		if (buf->buf.nr < WRITE_BUFFER)
+-			darray_make_room_gfp(&buf->buf, min(b, WRITE_BUFFER - buf->buf.nr), __GFP_NOWARN);
++		if (buf->buf.nr < STDIO_REDIRECT_BUFSIZE)
++			darray_make_room_gfp(&buf->buf,
++				min(b, STDIO_REDIRECT_BUFSIZE - buf->buf.nr), GFP_NOWAIT);
+ 		b = min(len, darray_room(buf->buf));
+ 
+-		if (b && !copy_from_user_nofault(&buf->buf.data[buf->buf.nr], ubuf, b)) {
++		if (b && !copy_from_user_nofault(&darray_top(buf->buf), ubuf, b)) {
+ 			buf->buf.nr += b;
+ 			ubuf	+= b;
+ 			len	-= b;
+@@ -338,7 +339,7 @@ void bch2_stdio_redirect_vprintf(struct stdio_redirect *stdio, bool nonblocking,
+ 		return;
+ 
+ 	spin_lock_irqsave(&buf->lock, flags);
+-	bch2_darray_vprintf(&buf->buf, nonblocking ? __GFP_NOWARN : GFP_KERNEL, fmt, args);
++	bch2_darray_vprintf(&buf->buf, nonblocking ? GFP_NOWAIT : GFP_KERNEL, fmt, args);
+ 	spin_unlock_irqrestore(&buf->lock, flags);
+ 
+ 	wake_up(&buf->wait);
+diff --git a/fs/bcachefs/thread_with_file.h b/fs/bcachefs/thread_with_file.h
+index 66212fcae226a..f06f8ff19a790 100644
+--- a/fs/bcachefs/thread_with_file.h
++++ b/fs/bcachefs/thread_with_file.h
+@@ -4,6 +4,38 @@
+ 
+ #include "thread_with_file_types.h"
+ 
++/*
++ * Thread with file: Run a kthread and connect it to a file descriptor, so that
++ * it can be interacted with via fd read/write methods and closing the file
++ * descriptor stops the kthread.
++ *
++ * We have two different APIs:
++ *
++ * thread_with_file, the low level version.
++ * You get to define the full file_operations, including your release function,
++ * which means that you must call bch2_thread_with_file_exit() from your
++ * .release method
++ *
++ * thread_with_stdio, the higher level version
++ * This implements full piping of input and output, including .poll.
++ *
++ * Notes on behaviour:
++ *  - kthread shutdown behaves like writing or reading from a pipe that has been
++ *    closed
++ *  - Input and output buffers are 4096 bytes, although buffers may in some
++ *    situations slightly exceed that limit so as to avoid chopping off a
++ *    message in the middle in nonblocking mode.
++ *  - Input/output buffers are lazily allocated, with GFP_NOWAIT allocations -
++ *    should be fine but might change in future revisions.
++ *  - Output buffer may grow past 4096 bytes to deal with messages that are
++ *    bigger than 4096 bytes
++ *  - Writing may be done blocking or nonblocking; in nonblocking mode, we only
++ *    drop entire messages.
++ *
++ * To write, use stdio_redirect_printf()
++ * To read, use stdio_redirect_read() or stdio_redirect_readline()
++ */
++
+ struct task_struct;
+ 
+ struct thread_with_file {
+
 
