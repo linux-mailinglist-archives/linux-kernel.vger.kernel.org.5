@@ -1,163 +1,147 @@
-Return-Path: <linux-kernel+bounces-79592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79593-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38113862492
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:41:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2244B862495
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:41:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE2F51F22E96
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:41:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4127283B13
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:41:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C3AA3A8F5;
-	Sat, 24 Feb 2024 11:41:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="l8oztB5N"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06753374F8;
+	Sat, 24 Feb 2024 11:41:26 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76E8328E3C
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 11:40:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D09829437;
+	Sat, 24 Feb 2024 11:41:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708774859; cv=none; b=DemoPXbOfQ6QWZGzllKqUaaEeCRNyvP3pjlEGUCQM4hc8z7cKi38SJcFY1ZqRHlzf/FEsl6ctE/nIVSdJUj33TDIS9r4oa0+zQSW2BhSChoBoN1hYymiPo7g9EbPUgEll3xUx7lpR/2o9lTjZlT2RPvK6JnTTtKWll8F+z71FOM=
+	t=1708774885; cv=none; b=DZRf8mbN/wqemAKlBUwzJrXPoPCO6P8CbhURY2p1EsyQ4fDOO9s6LF0Vq87BtzL026afJUQJbv71Blt2DwU5v5bivfnJnQ6ZiJsSDybZwa1Wis2mQYzfqiGkWYT344lYOiCfvER3MSnnuDLXlfFIyzAV3udp8DIyek89qyGqZdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708774859; c=relaxed/simple;
-	bh=ylGBRgBKlf7zqEum8qz3cmgz4fiIdpr66g9UmUjC3yY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=K6gfguupNl/7xDl6G6UWYA2pqa0RrPDqlCnPIxIWLy/qIlumgbkmVAZEw9fl4h5z/QLpSI7BK+rMR2DMGIHT9sgH7ijt6fhkfoNcCSjcq0OofJZs/egsVb0SNth6KOlFhIdere6jAEl1sEIc45ffmtKIK30mVIn1EkN/zKUKEG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=l8oztB5N; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3e550ef31cso195755666b.3
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 03:40:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708774856; x=1709379656; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kLf1bZRvPVBFsx9bIK9Q5wCkUaQ96MfiepUQxmTKpHI=;
-        b=l8oztB5NAVJW8k2+PEUUuR8cY+/d5yKt18HSdNvAQ8/nouSmmdRK4C+DjmOdICSxno
-         Lv5yDlvj9MUs8ia/cSpFqv0JwbQGCQYglp7YsEwMAWN1pjh3B82AqnXir4Eh/Ss4+Pqo
-         i08IpGfkNBxkrvOrshArh++BloImStc0nC6e3W9ZjWv3Ib9vlutm6uO+2tWh9AXoGefv
-         UHYaRRJ7EktPjQNR4IyuJVmhVUXVqVT8F8uiFbSip3t9gcUocMMl6T31qV0dl0pdL07Z
-         HfHSt4nMIVVcbpLHfdWHOVyaBcmYZTKaRiCQpTrRXE2lqn7AeoMAsvktqdsWAJ7pGuuT
-         QlRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708774856; x=1709379656;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kLf1bZRvPVBFsx9bIK9Q5wCkUaQ96MfiepUQxmTKpHI=;
-        b=MKO8K9lPIrdzc0XJ+p/Oe7eXV8Lg9iPz1AHnmj40cV1/R7CIwxFatRHnLtaJwCEXrx
-         GytByloYti6p53Rz0x/M95aiaAqAzka782PY46MeXaYKwVbZdXWeq8YI7oXU3gHi2XQv
-         X5TS1icTCEkvd+V0A+HE5XVz/JAU0ijmQsxgp70H2lJe8Z/XcMLa8dR0Ms1GAaupVpY7
-         wZR/hyIHgTM3flaDhP/7CEs6ictih1YcCqceGalObJuxvnYehcrYmMk2EuxS+7H6whtm
-         yZdnSbqj1Ox+sNNcmnzjwqMQ42BSV0EH1UluKElLJpKKtH5z7ujxTlpsG/CmNRbM5JWy
-         KVJQ==
-X-Gm-Message-State: AOJu0YwYyt33JFI0dS7RwXCM5i/UJpLspjyqfz37F/R5VY+YZOSuEp3X
-	1vIIxW+eQdh8v6Vhnb2xljy/Y8bqdfgGeCiRQXRPWMjQpGebg1968Ho5zqCEREY=
-X-Google-Smtp-Source: AGHT+IEl1fLPEPpa5yDqJAlZGIWtJI7AKuvrlUW22SPic9KZSVTWhkY5euUk4uhmQJZLwQHhTeZDew==
-X-Received: by 2002:a17:906:16cd:b0:a3e:a951:4087 with SMTP id t13-20020a17090616cd00b00a3ea9514087mr1466517ejd.76.1708774855853;
-        Sat, 24 Feb 2024 03:40:55 -0800 (PST)
-Received: from localhost.localdomain (82-132-212-111.dab.02.net. [82.132.212.111])
-        by smtp.gmail.com with ESMTPSA id k8-20020a1709063e0800b00a412d3d509fsm509335eji.181.2024.02.24.03.40.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Feb 2024 03:40:55 -0800 (PST)
-From: srinivas.kandagatla@linaro.org
-To: gregkh@linuxfoundation.org
-Cc: linux-kernel@vger.kernel.org,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Stable@vger.kernel.org,
-	Arnd Bergmann <arnd@arndb.de>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 1/1] nvmem: meson-efuse: fix function pointer type mismatch
-Date: Sat, 24 Feb 2024 11:40:23 +0000
-Message-Id: <20240224114023.85535-2-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240224114023.85535-1-srinivas.kandagatla@linaro.org>
-References: <20240224114023.85535-1-srinivas.kandagatla@linaro.org>
+	s=arc-20240116; t=1708774885; c=relaxed/simple;
+	bh=nE5DSH/2ELYK1JvZqCj67vENYb9LS+DdBt1/Q4hymUQ=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=uXh38iezLL1IYPRy9/O3is6b3711R2Qv+Qu3K+W5xeXbcENwMOzOOv16/Qy5FcfjknUrbFtuFZmxdYl38hrSELetCgGsbrOtUBcgw1bBRgBKf71yCwdVLCp5mgVnJTOtH17cvLARDNBD/hAtSdwJHUknvFjTQqX4Tiuc9ZjBJyg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ThlM92nS9z4f3jqj;
+	Sat, 24 Feb 2024 19:41:09 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id A34B71A0175;
+	Sat, 24 Feb 2024 19:41:12 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP3 (Coremail) with SMTP id _Ch0CgBnc5vV1dll0EKvEw--.15558S2;
+	Sat, 24 Feb 2024 19:41:12 +0800 (CST)
+Subject: Re: [PATCH] virtiofs: limit the length of ITER_KVEC dio by
+ max_nopage_rw
+To: Miklos Szeredi <miklos@szeredi.hu>, Stefan Hajnoczi <stefanha@redhat.com>
+Cc: linux-fsdevel@vger.kernel.org, Vivek Goyal <vgoyal@redhat.com>,
+ "Michael S . Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org,
+ virtualization@lists.linux.dev, houtao1@huawei.com
+References: <20240103105929.1902658-1-houtao@huaweicloud.com>
+ <CAJfpegsM2ViQb1A2HNMJLsgVDs1UScd7p04MOLSkSMRNeshm0A@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <cacbafa1-c229-f4e8-2fcc-ec1127bb3f26@huaweicloud.com>
+Date: Sat, 24 Feb 2024 19:41:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2401; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=jqd2R16EWEqdcbDXcRsGdVV9252ZH7ZMdbnqJsQFjug=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBl2dWne6ybY8wxwLxYkBZD6tyXVyvXMQ4nJKWi7 7ix/YkJO6iJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZdnVpwAKCRB6of1ZxzRV Nw1IB/9v//b/yEDwizGp5L2Bcgb+7csEIjS8lW7y8ahfS5F+GwkrwyPQfBM2nWgPNyLf3nMaFJ/ gl7qQMcrySIX7Mj6EDe1cC6Q0FKfpSRH3sOgVInijnBCD5HSQOFDbWDHpepEhnCBaboONrrgPDv 1BiM8cIXNYoP29qB2k9CZW75u4YqX3y2kjXDinisWoH5yJ71JVSsSqk4jJoxUH5oMh7uRFy0Af2 hEdccIXXAMr4+P3wRxacyW3u9AM3hRt2ysdUOooXQaqnaXjBSSlRt6lmXufYDjz5ZXiQuNjSnHI sYymOhO++/kSkVHnvRJD3NhT3Ae1Cq5ZmNn+zImo5X0bZg8U
-X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp; fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJfpegsM2ViQb1A2HNMJLsgVDs1UScd7p04MOLSkSMRNeshm0A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID:_Ch0CgBnc5vV1dll0EKvEw--.15558S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uw18Wr4kCw4DXFW7JFWrZrb_yoW5Jr1rpr
+	Z3Ka17Zrs5JrWUAayxtFyqgFyxAws7KF47JrnYgw1fu3WUAwn7tF1UWF48uFy7CrZ7JayF
+	krs5KwnFv398ZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
+	7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-From: Jerome Brunet <jbrunet@baylibre.com>
+Hi,
 
-clang-16 warns about casting functions to incompatible types, as is done
-here to call clk_disable_unprepare:
+On 2/23/2024 5:42 PM, Miklos Szeredi wrote:
+> On Wed, 3 Jan 2024 at 11:58, Hou Tao <houtao@huaweicloud.com> wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> When trying to insert a 10MB kernel module kept in a virtiofs with cache
+>> disabled, the following warning was reported:
+>>
+>>   ------------[ cut here ]------------
+>>   WARNING: CPU: 2 PID: 439 at mm/page_alloc.c:4544 ......
+>>   Modules linked in:
+>>   CPU: 2 PID: 439 Comm: insmod Not tainted 6.7.0-rc7+ #33
+>>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), ......
+>>   RIP: 0010:__alloc_pages+0x2c4/0x360
+>>   ......
+>>   Call Trace:
+>>    <TASK>
+>>    ? __warn+0x8f/0x150
+>>    ? __alloc_pages+0x2c4/0x360
+>>    __kmalloc_large_node+0x86/0x160
+>>    __kmalloc+0xcd/0x140
+>>    virtio_fs_enqueue_req+0x240/0x6d0
+>>    virtio_fs_wake_pending_and_unlock+0x7f/0x190
+>>    queue_request_and_unlock+0x58/0x70
+>>    fuse_simple_request+0x18b/0x2e0
+>>    fuse_direct_io+0x58a/0x850
+>>    fuse_file_read_iter+0xdb/0x130
+>>    __kernel_read+0xf3/0x260
+>>    kernel_read+0x45/0x60
+>>    kernel_read_file+0x1ad/0x2b0
+>>    init_module_from_file+0x6a/0xe0
+>>    idempotent_init_module+0x179/0x230
+>>    __x64_sys_finit_module+0x5d/0xb0
+>>    do_syscall_64+0x36/0xb0
+>>    entry_SYSCALL_64_after_hwframe+0x6e/0x76
+>>    ......
+>>    </TASK>
+>>   ---[ end trace 0000000000000000 ]---
+>>
+>> The warning happened as follow. In copy_args_to_argbuf(), virtiofs uses
+>> kmalloc-ed memory as bound buffer for fuse args, but
+> So this seems to be the special case in fuse_get_user_pages() when the
+> read/write requests get a piece of kernel memory.
+>
+> I don't really understand the comment in virtio_fs_enqueue_req():  /*
+> Use a bounce buffer since stack args cannot be mapped */
+>
+> Stefan, can you explain?  What's special about the arg being on the stack?
+>
+> What if the arg is not on the stack (as is probably the case for big
+> args like this)?   Do we need the bounce buffer in that case?
 
-drivers/nvmem/meson-efuse.c:78:12: error: cast from 'void (*)(struct clk *)' to 'void (*)(void *)' converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-   78 |                                        (void(*)(void *))clk_disable_unprepare,
+I will try to answer these two questions. Correct me if I am wrong. The
+main reason for the bounce buffer is that virtiofs passes a scatter list
+to the virtiofsd through virtio eventually, so it needs to get the page
+(namely struct page) for these args. If the arg is placed in the stack,
+there is no way to get the page. For ITER_KVEC dio mentioned in the
+patch, the data buffer is still allocated through vmalloc(), so the
+bounce buffer is still necessary.
 
-The pattern of getting, enabling and setting a disable callback for a
-clock can be replaced with devm_clk_get_enabled(), which also fixes
-this warning.
 
-Fixes: 611fbca1c861 ("nvmem: meson-efuse: add peripheral clock")
-Cc: <Stable@vger.kernel.org>
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Justin Stitt <justinstitt@google.com>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/nvmem/meson-efuse.c | 25 +++----------------------
- 1 file changed, 3 insertions(+), 22 deletions(-)
-
-diff --git a/drivers/nvmem/meson-efuse.c b/drivers/nvmem/meson-efuse.c
-index b922df99f9bc..33678d0af2c2 100644
---- a/drivers/nvmem/meson-efuse.c
-+++ b/drivers/nvmem/meson-efuse.c
-@@ -47,7 +47,6 @@ static int meson_efuse_probe(struct platform_device *pdev)
- 	struct nvmem_config *econfig;
- 	struct clk *clk;
- 	unsigned int size;
--	int ret;
- 
- 	sm_np = of_parse_phandle(pdev->dev.of_node, "secure-monitor", 0);
- 	if (!sm_np) {
-@@ -60,27 +59,9 @@ static int meson_efuse_probe(struct platform_device *pdev)
- 	if (!fw)
- 		return -EPROBE_DEFER;
- 
--	clk = devm_clk_get(dev, NULL);
--	if (IS_ERR(clk)) {
--		ret = PTR_ERR(clk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get efuse gate");
--		return ret;
--	}
--
--	ret = clk_prepare_enable(clk);
--	if (ret) {
--		dev_err(dev, "failed to enable gate");
--		return ret;
--	}
--
--	ret = devm_add_action_or_reset(dev,
--				       (void(*)(void *))clk_disable_unprepare,
--				       clk);
--	if (ret) {
--		dev_err(dev, "failed to add disable callback");
--		return ret;
--	}
-+	clk = devm_clk_get_enabled(dev, NULL);
-+	if (IS_ERR(clk))
-+		return dev_err_probe(dev, PTR_ERR(clk), "failed to get efuse gate");
- 
- 	if (meson_sm_call(fw, SM_EFUSE_USER_MAX, &size, 0, 0, 0, 0, 0) < 0) {
- 		dev_err(dev, "failed to get max user");
--- 
-2.25.1
+>
+> Thanks,
+> Miklos
 
 
