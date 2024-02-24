@@ -1,148 +1,147 @@
-Return-Path: <linux-kernel+bounces-79428-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79429-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F61A862213
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:47:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCCB5862217
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:50:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3621B23A20
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:47:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17E071C24591
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:50:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBCE9C148;
-	Sat, 24 Feb 2024 01:47:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F007DDD1;
+	Sat, 24 Feb 2024 01:50:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KBwhNIaF"
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="TVYB3G0c"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2576C122
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 01:47:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DD28CA4A;
+	Sat, 24 Feb 2024 01:50:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708739235; cv=none; b=HaslJO+zZzlHostsv0O36RWbZveh7xB/H8We3GZHmisx2nbj/Dsa0dTv/ImWHF6YmU/+JpVmyQ68S1HHOeTQ60/NwGXENWDClBsOWeeuRrDPiZVo7lx0ln13cBW8lFygBgmFjLUktHIkuGJGSewOJ973sK2FB9iw2OTb8EMc2No=
+	t=1708739432; cv=none; b=uaJ/5lP+CXmcr6E7ruR2BHnIoyFoozwmx8csFEOmzY8G+bNaKkey9o2NGXnixzpLPPKHw84SOgSbKXGpjA7IiDKdLWQCIWa6JLf52n/5hjLxgjHcaSn5PYdkkrS69LsISpiWEK4w1fZZ9PLp/Ut8UOhymartqmz9NVJJD4HdDXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708739235; c=relaxed/simple;
-	bh=vFpzgojmUbe9cDCthy2dUr66zBP2Jp8OIks+itwmIvk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OpKff5D3mFSRXtvlq+1s69H0AMIbL6wKX0CeA89TYbCSypBUQleXqUG2ugjSZhk2cduJDPixvwcsHc10+AOjBr7Kj7VPYhqkql6gCvaZMkemcScU5ijGcFWNz/+SN3a24tGkPF1lrgPSYv54j247+nOSwNAPvIQdHbmvpjCcs5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KBwhNIaF; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso1276726a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 17:47:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708739233; x=1709344033; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qkj8iOEXqlkPOJBxGRSAsQOYHNO+Nb1TKrnbkl8DtW8=;
-        b=KBwhNIaFn1MgQccK0rj2Da9sg98BGI06ownBvdVtmNTlbqzRHBsY5nMplxLHj1pCwQ
-         p1rHFaqOj9JTTIDBUaiNOml8PYKF+xaF/3u5FqZi/n5yjL5qelHckCOSAw9HQm+WaaAx
-         kA7JpZbMZHkqBF/5N/oC2LeEDGxqyFr4UqU2tTFtGlMMpBVkpY/x/Oi4KlctPAgnHzgL
-         HpkyK/8QIyDVE5myjBbKLxx7PgARLyVPWjSNw+cdyCqKxyfbugkryo9r4kQBpiipz6a+
-         w1lclmEnGGgBjDPWEZo14agZ/E7bb1+Dy2fFMOo2F3WXxKFVMybkiqJurOLZPGoqkfiu
-         oEuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708739233; x=1709344033;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qkj8iOEXqlkPOJBxGRSAsQOYHNO+Nb1TKrnbkl8DtW8=;
-        b=ABixtZ/4NR8t6FaaXCIe/kauy78kx0xQxam99p/nJCwC6Jvcf5ziObZ4EbMZeIVi2A
-         cZXe31Ny3ZlIapD+zfwHi3za6s/p/W6vUJeb44dKFxAIehLfyG++gb8peYhxmGKVJx+5
-         8FZMWquz1YncIUfNgCzkk/FVwAHgT35EvAs+p6G+AWej6X6QKMxto+be0f5lBSlDwQhp
-         8ngJl2gDOo1i/bXVwen0cS1cNAAOtY0+1zjX8CGTV+MX1ReaiPTIAw/fkbRwFD/dMJCF
-         NWujFcOKfL0xPh5LQUAmDEZ+PczApgrMXaA5n5Hrm0DKOqU5xSSjETnUKsmGosOJ5yyX
-         ioRg==
-X-Forwarded-Encrypted: i=1; AJvYcCU8KkQLcM1C7WPpEA5FLj28z6YoxahmM7wkpJYDcd2+wA2TmQWIwmvv6SEp9lA73d3rOHo+ax6bbnhwJSnpXTT2WwoGRoDYCnYwRDJF
-X-Gm-Message-State: AOJu0Yzaa919Pfrf2ibNMWMancaajTyh9lwKDn9A9WkWa4pUr2sb7Jm+
-	Az7Bs3DCbuS6QA6W/TnuvnepoFIEl70bP/To3SBKh0bAKpc7wn3fHeNreFXHL/cc5LLVTxWsECy
-	0hukD/yQssY976RTM+dFx6Wd8Ioc=
-X-Google-Smtp-Source: AGHT+IEP7gcCCpQNjrEB28hlDf4J34twTAsEPpYz/mnuIH65dfjWR+Yl75K0kg95K+//RlWFyXjwqXAG9AS0OZ8vnmU=
-X-Received: by 2002:a17:90a:d242:b0:299:4a62:548a with SMTP id
- o2-20020a17090ad24200b002994a62548amr1690765pjw.34.1708739232891; Fri, 23 Feb
- 2024 17:47:12 -0800 (PST)
+	s=arc-20240116; t=1708739432; c=relaxed/simple;
+	bh=xi6nVk0C04NkzR7H2GZk/dICTy1LUs3OH0IEQVV1NDc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eSTFGLQYGTjq0D6gqAUqR7yf9Niux7r7ApalwB9ERo63n8kBBNrSM2F8LUkYZ71wvNjZPRLsCELhWyw/ynTOJ6a+H8ZX6dskOGWjOEU0JRSgwf0OYylbdpXHOlxGUPKs/al9vAShYjFUrtbeZW7ObT3zI+GT1L4D/Sel+WwOMOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=TVYB3G0c; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=06UnnJyhnElyuP2IJrtOSRTp1BF1dFG21xSI11X6/3g=; b=TVYB3G0c87xVqJOIVHuyTu8RtT
+	fDG2tL0IzR9zpeos133a6nAsWtGMB4xc2zcpXBEKl7OopDPtSiayNNt3Dc6wgo6x5N4AwqFfkJUDU
+	cwKAJW3PqqcytmKt/8vjUHPnuHYjwapv0JpBW6x7ZViJOfGM3GuxGaRtWKKIM1u6VJqhNp6gc1c9N
+	okBZ/NHOYZinVgYsOcUFmvUkArxlD6/o1aM7zdeo19BxJ1Lt0wc03VApp71yd8x8xp/R+OR39ro1r
+	aVA+z1/Xn7tE9md4VocP5NoEciGjGg8kQa/k2stXGYmlTvlj/cXU0FWCywXf7TiXFmAJ0y7+1qCGp
+	Lnf++ZSQ==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rdhBL-0000000BpTS-26Er;
+	Sat, 24 Feb 2024 01:50:27 +0000
+Message-ID: <161f53c9-65ba-422d-b08e-2e5d88a208a2@infradead.org>
+Date: Fri, 23 Feb 2024 17:50:26 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129054551.57728-1-ioworker0@gmail.com> <CAK1f24keWtJNVv37r2vNsqnmMLRMvF-F76WR5RD_Y-BbAgEaYQ@mail.gmail.com>
- <CAK1f24nk19eciysFqvTd=rqpiKePhstDWEEQ_mvT89WCDNrWNQ@mail.gmail.com>
- <CAHbLzkoNFn6UE4Hn0gXTm2pLHD7pK4gYUe1zVh3247m30A5u2g@mail.gmail.com> <20240222131151.4d24563d58240e76a3b535db@linux-foundation.org>
-In-Reply-To: <20240222131151.4d24563d58240e76a3b535db@linux-foundation.org>
-From: Yang Shi <shy828301@gmail.com>
-Date: Fri, 23 Feb 2024 17:47:01 -0800
-Message-ID: <CAHbLzkoJLGMbTsksNyj=u+15VWvVJFdM5K09ObN75wSd7K2t4g@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm/khugepaged: bypassing unnecessary scans with
- MMF_DISABLE_THP check
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Lance Yang <ioworker0@gmail.com>, mhocko@suse.com, zokeefe@google.com, 
-	david@redhat.com, songmuchun@bytedance.com, peterx@redhat.com, 
-	minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 20/20] famfs: Add Kconfig and Makefile plumbing
+Content-Language: en-US
+To: John Groves <John@Groves.net>, John Groves <jgroves@micron.com>,
+ Jonathan Corbet <corbet@lwn.net>, Dan Williams <dan.j.williams@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ Matthew Wilcox <willy@infradead.org>, linux-cxl@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev
+Cc: john@jagalactic.com, Dave Chinner <david@fromorbit.com>,
+ Christoph Hellwig <hch@infradead.org>, dave.hansen@linux.intel.com,
+ gregory.price@memverge.com
+References: <cover.1708709155.git.john@groves.net>
+ <1225d42bc8756c016bb73f8a43095a384b08524a.1708709155.git.john@groves.net>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <1225d42bc8756c016bb73f8a43095a384b08524a.1708709155.git.john@groves.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 22, 2024 at 1:11=E2=80=AFPM Andrew Morton <akpm@linux-foundatio=
-n.org> wrote:
->
-> On Thu, 22 Feb 2024 12:23:21 -0800 Yang Shi <shy828301@gmail.com> wrote:
->
-> > > VMA Count |   Old   |   New   |  Change
-> > > ---------------------------------------
-> > >     50     |   23us  |    9us  |  -60.9%
-> > >    100     |   32us  |    9us  |  -71.9%
-> > >    200     |   44us  |    9us  |  -79.5%
-> > >    400     |   75us  |    9us  |  -88.0%
-> > >    800     |   98us  |    9us  |  -90.8%
-> > >
-> > > IIUC, once the count of VMAs for the process
-> > > exceeds page_to_scan, khugepaged needs to
-> > > wait for scan_sleep_millisecs ms before scanning
-> > > the next process. IMO, unnecessary scans could
-> > > actually be skipped with a very inexpensive
-> > > mm->flags check in this case.
-> >
-> > Thanks for following up on this, can you please capture all the
-> > information in the commit log?
->
-> I added it.
->
-> --- a/txt/mm-khugepaged-bypassing-unnecessary-scans-with-mmf_disable_thp-=
-check.txt
-> +++ b/txt/mm-khugepaged-bypassing-unnecessary-scans-with-mmf_disable_thp-=
-check.txt
-> @@ -9,6 +9,24 @@ and the MMF_DISABLE_THP flag is set later, this scanning=
- process
->  becomes unnecessary for that mm and can be skipped to avoid redundant
->  operations, especially in scenarios with a large address space.
->
-> +On an Intel Core i5 CPU, the time taken by khugepaged to scan the
-> +address space of the process, which has been set with the
-> +MMF_DISABLE_THP flag after being added to the mm_slots list, is as
-> +follows (shorter is better):
-> +
-> +VMA Count |   Old   |   New   |  Change
-> +---------------------------------------
-> +    50    |   23us  |    9us  |  -60.9%
-> +   100    |   32us  |    9us  |  -71.9%
-> +   200    |   44us  |    9us  |  -79.5%
-> +   400    |   75us  |    9us  |  -88.0%
-> +   800    |   98us  |    9us  |  -90.8%
-> +
-> +Once the count of VMAs for the process exceeds page_to_scan, khugepaged
-> +needs to wait for scan_sleep_millisecs ms before scanning the next
-> +process.  IMO, unnecessary scans could actually be skipped with a very
-> +inexpensive mm->flags check in this case.
-> +
+Hi,
 
-Thanks, Andrew.
+On 2/23/24 09:42, John Groves wrote:
+> Add famfs Kconfig and Makefile, and hook into fs/Kconfig and fs/Makefile
+> 
+> Signed-off-by: John Groves <john@groves.net>
+> ---
+>  fs/Kconfig        |  2 ++
+>  fs/Makefile       |  1 +
+>  fs/famfs/Kconfig  | 10 ++++++++++
+>  fs/famfs/Makefile |  5 +++++
+>  4 files changed, 18 insertions(+)
+>  create mode 100644 fs/famfs/Kconfig
+>  create mode 100644 fs/famfs/Makefile
+> 
+> diff --git a/fs/Kconfig b/fs/Kconfig
+> index 89fdbefd1075..8a11625a54a2 100644
+> --- a/fs/Kconfig
+> +++ b/fs/Kconfig
+> @@ -141,6 +141,8 @@ source "fs/autofs/Kconfig"
+>  source "fs/fuse/Kconfig"
+>  source "fs/overlayfs/Kconfig"
+>  
+> +source "fs/famfs/Kconfig"
+> +
+>  menu "Caches"
+>  
+>  source "fs/netfs/Kconfig"
+> diff --git a/fs/Makefile b/fs/Makefile
+> index c09016257f05..382c1ea4f4c3 100644
+> --- a/fs/Makefile
+> +++ b/fs/Makefile
+> @@ -130,3 +130,4 @@ obj-$(CONFIG_EFIVAR_FS)		+= efivarfs/
+>  obj-$(CONFIG_EROFS_FS)		+= erofs/
+>  obj-$(CONFIG_VBOXSF_FS)		+= vboxsf/
+>  obj-$(CONFIG_ZONEFS_FS)		+= zonefs/
+> +obj-$(CONFIG_FAMFS)             += famfs/
+> diff --git a/fs/famfs/Kconfig b/fs/famfs/Kconfig
+> new file mode 100644
+> index 000000000000..e450928d8912
+> --- /dev/null
+> +++ b/fs/famfs/Kconfig
+> @@ -0,0 +1,10 @@
+> +
+> +
+> +config FAMFS
+> +       tristate "famfs: shared memory file system"
+> +       depends on DEV_DAX && FS_DAX
+> +       help
+> +         Support for the famfs file system. Famfs is a dax file system that
+> +	 can support scale-out shared access to fabric-attached memory
+> +	 (e.g. CXL shared memory). Famfs is not a general purpose file system;
+> +	 it is an enabler for data sets in shared memory.
 
->  This commit introduces a check before each scanning process to test the
->  MMF_DISABLE_THP flag for the given mm; if the flag is set, the scanning
->  process is bypassed, thereby improving the efficiency of khugepaged.
->
+Please use one tab + 2 spaces to indent help text (below the "help" keyword)
+as documented in Documentation/process/coding-style.rst.
+
+> diff --git a/fs/famfs/Makefile b/fs/famfs/Makefile
+> new file mode 100644
+> index 000000000000..8cac90c090a4
+> --- /dev/null
+> +++ b/fs/famfs/Makefile
+> @@ -0,0 +1,5 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +obj-$(CONFIG_FAMFS) += famfs.o
+> +
+> +famfs-y := famfs_inode.o famfs_file.o
+
+-- 
+#Randy
 
