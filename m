@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-79526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79527-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63B2D8623A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 10:06:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D65428623A7
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 10:07:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B18F8B22A39
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 09:06:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 761761F22E28
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 09:07:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF7793CF73;
-	Sat, 24 Feb 2024 09:04:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F2113EA8D;
+	Sat, 24 Feb 2024 09:04:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="b5O5EhPW"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="Jx4GLIgY"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40CA036AF3
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 09:04:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 820661B81F
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 09:04:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708765496; cv=none; b=BX0MiKVizBRt317sk8htA4wWueJh32rmUlDuKWPMWIcF2s+swKquTobeprCslqN2QHM/3HXXllesBaaPrXGAq94KiEGQj53LLp/OItE+KxsWo6mwkC8wflpvr6DnjTJQDuSSwM7mMrVA5wXd3QeZxg8lixmyAJJ6BrdC4cDE5Ao=
+	t=1708765497; cv=none; b=iY3hSKM0soP88+Z+FfW4YCApAwFpYTiExX6+iv7MVv3JO7mI9dTxpAyO9M4LQp9o5QVtYeVVD0bZPmemEGs7rDRt9wwnUcZGJtgXY6jT+BgbbxDnqQF0sqxv9i9qAfxVxt7YDuR7ObyHzIzPqCt6zNl8nAwUhXy+OYGo01Ay4tY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708765496; c=relaxed/simple;
-	bh=ONxj7Z5bQEyPpk/sK690IPfrd/nKeK9bQ4FibvhzH/w=;
+	s=arc-20240116; t=1708765497; c=relaxed/simple;
+	bh=ekmIBLlaWKu+GWzGOa6EvRs4/d/ZpqSM2Pqyjmg1O/Q=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rg8cZp6qBRfhlp6NUpdKY7bBsDsgpT9oyolrRBDTNHrKs8rwligzrzsIiTw1B6S0rfjiINY8cRf+2YIoHCr3i2KpnFiiF3zPI5qb5nNEjZjygZBlj9uSfFOjpPkoTlBkc8lIS1FnuVD4icQs8CxSj/c/82qNd9vhGkjEpxkvrGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com; spf=pass smtp.mailfrom=arista.com; dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b=b5O5EhPW; arc=none smtp.client-ip=209.85.128.47
+	 MIME-Version:Content-Type; b=kbJmZE6LSTdu7pdFROGl7Tes1MwJN8D01j/RJRuvZAAMwUeq/dD3p7hM5koB1qLiNwrCf1GKus56oYMm9lAIZfkpHk0trllvZl/hltxmgIL2daN8SMCxgjizc7ddhI2Lh4VIxHqHw8u4mHX3B389pm55UDarmv/z6a2NNqPKp/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com; spf=pass smtp.mailfrom=arista.com; dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b=Jx4GLIgY; arc=none smtp.client-ip=209.85.128.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41282f05409so7819165e9.0
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 01:04:53 -0800 (PST)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4129f28a09fso349795e9.3
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 01:04:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1708765492; x=1709370292; darn=vger.kernel.org;
+        d=arista.com; s=google; t=1708765494; x=1709370294; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DfQPvdG/1knhuB2wdxd38i85RMYhhb/ulQhTX77Xabw=;
-        b=b5O5EhPWnVR2ykOEHHgrIzkS5V1Hb1ov8m+Q52/l9GxGNsmJtCRf+OLbnTnVUcnjQi
-         pNBPOBlDXd5rLeGJ1qfwE9K/47IsQPJ3gGlJgG+EAB7OAXHyB+l+pSUJCNKY13wOKwQj
-         8wwPuiMqkaWsdiEsG5g0mxWTBvgzItSNXpcHjA0cahQvc7y2Ic9EDCOazDXJ+axfEsFj
-         iUKmHijJ/hTGm99RpDMZI9KQKNOZb7iZxF00h1ztBJvgKQazM8AQ2OqwRpacjOA879qE
-         8y9rDtlmavThdfEnisdz3uMMrocE48fJGzdLyQuCGw29CB5kdrzoiQ/Ax8beHMGQybbb
-         LEBw==
+        bh=FuTwnbzDtMh7F3yHVkzWlgR2wGNYW8RXz1s/mbtmpWk=;
+        b=Jx4GLIgYHXyqmSu+OLh3pBMYkyFh05gOApUjpjYqiq3SMBmdZtwStujpVvwYpgXj46
+         vTJ1XNFWAKUTxLG7ObcnOkUHrOKGNQ+WNNnRF1xRm2u3kl1l1u0L0wwt2nsQgyA0yl4X
+         8QF4JLmr+zmywRCPfaybQw8sa+D9vdHV0EzaIjc6AV4nV/EStm2BikHDa2V4DO0UWKP2
+         V6P3MOnQMF6kTZLdr4szK6JuRVknVxNNRVTvzUbpYqmsg1d9M0fCjZVoJFtUIYYY0UIX
+         XY5CT7iO22ZBDCkwooaiH8Hvooz2geCtZPfAQIl1U2IknKg/v2U5Lmt+UtGb3D+Bv+gs
+         MbEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708765492; x=1709370292;
+        d=1e100.net; s=20230601; t=1708765494; x=1709370294;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DfQPvdG/1knhuB2wdxd38i85RMYhhb/ulQhTX77Xabw=;
-        b=hlcm1LLE3j+2Wc4Dwe+CkJ5ZLTGWvssPaHWi6NXsBp1AAQBG3AtsPh3wVKqtBQVEgW
-         bEpCFCu+htlR7zvKCLMsmhRSEStye4Xq3Tq1/LpVNFrCPnfxIpqLli3ZzksV7CJ0e1Gu
-         EDevUWpqxTwjt43sfkUDmMvRefjgUrij6P6upyOHu3CMtod/Cp24msRb2EP3Y4yTjj2T
-         vPjhHkP/IHV58pWadTIfV1FExFrGisbB/FLoBLlJfFONWmy/tezMQ7UE4a3YYP4O6nmM
-         QUECLzy7DSXfFUAZHUwYE5OClVdlij+tqrNr388uJPUlyN4s+oUZ6yOEUZlEm9K+Vh5V
-         59vw==
-X-Forwarded-Encrypted: i=1; AJvYcCUZ1UnN9y8cZ3UCD1T2/7+5UNboCq+nOqHau0D8m1oj99GmNgnNkDCThmGa4ds2HkeEv7l6/sUtAlabwZdaf0awPLrq4GHpUouvhsoe
-X-Gm-Message-State: AOJu0YzNosV5ZxQYV+uRFtuLZ0jbTUOJ45bKme0pClsSA1WHiQU1S2ys
-	JhW+SysYY2Bprck7EjAdYz8bXfIRJwRmzJZ7AGObsvvcKU2sihusEubx6TLNGw==
-X-Google-Smtp-Source: AGHT+IFSkxATvfxvoXpDJxSlMvUknkklMdh5OB6Hod5HFKIXcAkHG5kSo9ueF/pxNq6xZIhvsXOYyg==
-X-Received: by 2002:a05:600c:1d9c:b0:412:99a9:efa3 with SMTP id p28-20020a05600c1d9c00b0041299a9efa3mr1038094wms.2.1708765492693;
-        Sat, 24 Feb 2024 01:04:52 -0800 (PST)
+        bh=FuTwnbzDtMh7F3yHVkzWlgR2wGNYW8RXz1s/mbtmpWk=;
+        b=X8v+TLn7ywcokbNzi9hMveo51mzFJu/R5389s4YzYcG13kEmJVTGwaJyBXefaDZyG2
+         gl03EKVX+CGiCrwzEJISSns5pq6+SPF69wfV5BlSTrlbKlJHCNEMv5emrYtCDaAiVJye
+         NE/5gyV3h7Q61mkjNRWxW7oh4gHrhlwzX4DrqxTlobMNac8kL95+d3vFr3zWj87YQJwy
+         CZIuP0jxeMZM1FvxSfWUj2ICWaC8I0u7eNmlze8XQ2mwpkFGHVNfdONlqCvV5rgYz2cW
+         zmjg9SPupjUJ8sWv5NW4iRmrRcAcepMbb3ziONCD8Jmmi9kIyQS4RKufCxnOTkbnGQbB
+         cMSA==
+X-Forwarded-Encrypted: i=1; AJvYcCVtUOUUDhE94IZMS5WXc0JNBHus2mpKcsNwCW+5+bmY3tlKWzRMU6vbH2kMuQwzdKHmVCQNBQR+wIyxKLpaqCSypLS75ygt+fKdwx/U
+X-Gm-Message-State: AOJu0Yw0Ohw/qBTV7uwvV6M39aI2lBc1gvrtM6TbZ+2hvbAFIIQYvlz0
+	BWkFK29ZYqRFcPp/PJRFd7M6bvd9sTdK8MjbIFTT4MfgJt9IT7S0QHuGs5Wn7A==
+X-Google-Smtp-Source: AGHT+IFjmi7saCM/UfHVyR0TQt+nRXG9hiKhS1Hy2SCvXp/ltJpiumI8VzAUgAFN+AtiuS5NZuYetw==
+X-Received: by 2002:a05:600c:3b90:b0:412:6488:bbff with SMTP id n16-20020a05600c3b9000b004126488bbffmr1332546wms.30.1708765494014;
+        Sat, 24 Feb 2024 01:04:54 -0800 (PST)
 Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id m6-20020a7bce06000000b00410bca333b7sm5320593wmc.27.2024.02.24.01.04.50
+        by smtp.gmail.com with ESMTPSA id m6-20020a7bce06000000b00410bca333b7sm5320593wmc.27.2024.02.24.01.04.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Feb 2024 01:04:51 -0800 (PST)
+        Sat, 24 Feb 2024 01:04:53 -0800 (PST)
 From: Dmitry Safonov <dima@arista.com>
 To: Eric Dumazet <edumazet@google.com>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -81,11 +81,10 @@ Cc: Dmitry Safonov <dima@arista.com>,
 	linux-kernel@vger.kernel.org,
 	linux-kselftest@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,
-	Dmitry Safonov <0x7f454c46@gmail.com>,
-	"Nassiri, Mohammad" <mnassiri@ciena.com>
-Subject: [PATCH net-next 06/10] selftests/net: Clean-up double assignment
-Date: Sat, 24 Feb 2024 09:04:14 +0000
-Message-ID: <20240224-tcp-ao-tracepoints-v1-6-15f31b7f30a7@arista.com>
+	Dmitry Safonov <0x7f454c46@gmail.com>
+Subject: [PATCH net-next 07/10] selftests/net: Provide test_snprintf() helper
+Date: Sat, 24 Feb 2024 09:04:15 +0000
+Message-ID: <20240224-tcp-ao-tracepoints-v1-7-15f31b7f30a7@arista.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240224-tcp-ao-tracepoints-v1-0-15f31b7f30a7@arista.com>
 References: <20240224-tcp-ao-tracepoints-v1-0-15f31b7f30a7@arista.com>
@@ -97,31 +96,91 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.13-dev-b6b4b
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708765347; l=887; i=dima@arista.com; s=20231212; h=from:subject:message-id; bh=ONxj7Z5bQEyPpk/sK690IPfrd/nKeK9bQ4FibvhzH/w=; b=ApyCZf2dRuD/UzWSTFlquW9P+8yF76Z2re53ax/cuKzDykILrZj070hC8QcMGoC4IwTtCZu8w C1GlruS6OfTBeWvbTf2OlH7qHOZ+wdNLNRJO1kOLmqM21rYvr8mhC+V
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708765347; l=1992; i=dima@arista.com; s=20231212; h=from:subject:message-id; bh=ekmIBLlaWKu+GWzGOa6EvRs4/d/ZpqSM2Pqyjmg1O/Q=; b=SGrLpjSzyoyJAX0/GI418io3uNbysLNAQ/zBPgtrgvHzRmp5sbt/Fl6o4nB0s9pLOE0EsixHB WIzmgkJA7qtATuXNnV7O0XD+Jk0vg11taa5p18BPXzBk167YiCxddP+
 X-Developer-Key: i=dima@arista.com; a=ed25519; pk=hXINUhX25b0D/zWBKvd6zkvH7W2rcwh/CH6cjEa3OTk=
 Content-Transfer-Encoding: 8bit
 
-Yeah, copy'n'paste typo.
+Re-invented std::stringstream :-)
 
-Reported-by: Nassiri, Mohammad <mnassiri@ciena.com>
-Closes: https://lore.kernel.org/all/DM6PR04MB4202BC58A9FD5BDD24A16E8EC56F2@DM6PR04MB4202.namprd04.prod.outlook.com/
+No need for buffer array - malloc() it.
+It's going to be helpful of path concat printings.
+
 Signed-off-by: Dmitry Safonov <dima@arista.com>
 ---
- tools/testing/selftests/net/tcp_ao/lib/sock.c | 1 -
- 1 file changed, 1 deletion(-)
+ tools/testing/selftests/net/tcp_ao/lib/aolib.h | 56 ++++++++++++++++++++++----
+ 1 file changed, 49 insertions(+), 7 deletions(-)
 
-diff --git a/tools/testing/selftests/net/tcp_ao/lib/sock.c b/tools/testing/selftests/net/tcp_ao/lib/sock.c
-index 15aeb0963058..0ffda966c677 100644
---- a/tools/testing/selftests/net/tcp_ao/lib/sock.c
-+++ b/tools/testing/selftests/net/tcp_ao/lib/sock.c
-@@ -379,7 +379,6 @@ int test_get_tcp_ao_counters(int sk, struct tcp_ao_counters *out)
+diff --git a/tools/testing/selftests/net/tcp_ao/lib/aolib.h b/tools/testing/selftests/net/tcp_ao/lib/aolib.h
+index fbc7f6111815..fdf44d176e0b 100644
+--- a/tools/testing/selftests/net/tcp_ao/lib/aolib.h
++++ b/tools/testing/selftests/net/tcp_ao/lib/aolib.h
+@@ -37,17 +37,59 @@ extern void __test_xfail(const char *buf);
+ extern void __test_error(const char *buf);
+ extern void __test_skip(const char *buf);
  
- 	key_dump[0].nkeys = nr_keys;
- 	key_dump[0].get_all = 1;
--	key_dump[0].get_all = 1;
- 	err = getsockopt(sk, IPPROTO_TCP, TCP_AO_GET_KEYS,
- 			 key_dump, &key_dump_sz);
- 	if (err) {
++static inline char *test_snprintf(const char *fmt, va_list vargs)
++{
++	char *ret = NULL;
++	size_t size = 0;
++	va_list tmp;
++	int n = 0;
++
++	va_copy(tmp, vargs);
++	n = vsnprintf(ret, size, fmt, tmp);
++	if (n < 0)
++		return NULL;
++
++	size = (size_t) n + 1;
++	ret = malloc(size);
++	if (ret == NULL)
++		return NULL;
++
++	n = vsnprintf(ret, size, fmt, vargs);
++	if (n < 0 || n > size - 1) {
++		free(ret);
++		return NULL;
++	}
++	return ret;
++}
++
++__attribute__((__format__(__printf__, 1, 2)))
++static inline char *test_sprintf(const char *fmt, ...)
++{
++	va_list vargs;
++	char *ret;
++
++	va_start(vargs, fmt);
++	ret = test_snprintf(fmt, vargs);
++	va_end(vargs);
++
++	return ret;
++}
++
+ __attribute__((__format__(__printf__, 2, 3)))
+ static inline void __test_print(void (*fn)(const char *), const char *fmt, ...)
+ {
+-#define TEST_MSG_BUFFER_SIZE 4096
+-	char buf[TEST_MSG_BUFFER_SIZE];
+-	va_list arg;
++	va_list vargs;
++	char *msg;
+ 
+-	va_start(arg, fmt);
+-	vsnprintf(buf, sizeof(buf), fmt, arg);
+-	va_end(arg);
+-	fn(buf);
++	va_start(vargs, fmt);
++	msg = test_snprintf(fmt, vargs);
++	va_end(vargs);
++
++	if (!msg)
++		return;
++
++	fn(msg);
++	free(msg);
+ }
+ 
+ #define test_print(fmt, ...)						\
 
 -- 
 2.43.0
