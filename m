@@ -1,131 +1,104 @@
-Return-Path: <linux-kernel+bounces-79888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0A498627EE
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 23:14:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBD8D8627F1
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 23:28:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B8391F217AB
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 22:14:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E67D1F218BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 22:28:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 620204D5A2;
-	Sat, 24 Feb 2024 22:14:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="W7ynp6m2"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E70D64D9E0;
+	Sat, 24 Feb 2024 22:28:45 +0000 (UTC)
+Received: from relay.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5536D12B82
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 22:14:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A540481C6;
+	Sat, 24 Feb 2024 22:28:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708812851; cv=none; b=KePkqdxPkbhefhZ8Hs3YUDAvsv2D/xHvlwhQuNy/G+3eX6DB1o5vwjhMC9n8W034X14XYpE92BpIlKJhipOpeLI6uHAva0pwfGvMPSgbnTSghKSkYdjLpuHXiVK+iwItMXVKW8zAClyLyktqmdbPjRGDjOVHyAWHD3oMsyHMk+M=
+	t=1708813725; cv=none; b=ngfYuXklIrMds4GbQq/aU2cu+slPSiLfS3ywh/Sx+t4e5sDdhKJy7AIhECukUKZaWMQeIYk4Ck89naJZFOPgjNFVqs4Rh2zN98ORMDQ6RIeSfqYNRHEKaZiyjOMMk/d3jho2kYXNqSYlH8gykhmswC5gHvBPij/XXvsY2qWDA2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708812851; c=relaxed/simple;
-	bh=H7b5l4k9/6SZt3QJyEiuOu7Wd2+/s736lfq1d5HMfLQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Dn715RT0M/ISJkJlwU8fOS7QhBnDhGmL6iDQNg5bd2vhT0ZtnRsnZL4vr++Ue2eeQUo3v/LcpHC7/A9Hw7k7bXfFwYMzK2j551Uh9tZhQWtAnLH0egM5x15asrFx+2AFbAsQb4FHUJ0lk3XMS1UCm6qfRBTAmBxKgZzYABrP7GQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=W7ynp6m2; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d746ce7d13so18020795ad.0
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 14:14:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1708812849; x=1709417649; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HKKftM11Q8FUPYjtMVMlWVKIv3n23lTpjxtRvPGFQBY=;
-        b=W7ynp6m2hW+ZQS1+Lc4aA/HbbCzZ7qH9xxsArNwc4w8ed2BRfa1j3NSkFusS8DafSO
-         r5Vb6PDym/+IsIZ8325q8G6vcTXCnYCDKbcKWGsme2jlBisX/JZ+zJ+hOyKgh5vQOYHE
-         WamnbT+CHaVblmzy5Pbhd89x687UZ//PWJVKnJhuf3wLU6E6eBHp/zsD2X47nysEXk8T
-         wGzgfjtRos6i9rMSAwjj7PTVG2VfZCACW3qgbrzZjoWDCxBKD0nNGXXef9ACXmTefiLa
-         gXgjkJiJQZG1LLY5BE7IQxWrUXeSX9WQ5vutXbd4woA3Jji/4aBKzM8jqUZ8/vsiQFyE
-         DuiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708812849; x=1709417649;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HKKftM11Q8FUPYjtMVMlWVKIv3n23lTpjxtRvPGFQBY=;
-        b=IyvJ2FyzfzwO2+F4hTtuoFfrLfnscnlUpMpT3rriTza6Dn3aKt6g0khMDlZN8G0roK
-         Oeo9OyLYpsjwl3tbBhiQreKV1a8C045DFwbsSta3gzEMeWTzQJJjJSAYcbNTUtyjkEdj
-         1fkdKGKvri4TQtSu023JPNx7rtpLHV1g3v/TyKVwnCsvi7iI1Pl7Uo6QVcDaNNq60rEk
-         F6cXLrpahyf+WTouhdOm60KG6eCiuOUicCYZ1RCxcZfpULON8UFv4m8SvNG2XBHV/3x8
-         X88kBNDPgXOyueLTbQi++DAht2u+Wfh4WZQwvBfOpAmif1UL/9n6AiXxILVNYhrp4eek
-         3dnw==
-X-Forwarded-Encrypted: i=1; AJvYcCWwU/OfuOEDo1PhIEhQBOoWECNgFpe81y1XDbv4XrRTHAsnpgXM1O8JEtnbjwoIcz0NzdCBTVDvXCai9ZQQ8zUrf1N710z2H7L9DcfU
-X-Gm-Message-State: AOJu0Yw73WTXB3KEgpZzwjTO5u2ZQKrfRgdCbG4U/w1kqXmpy+kdWC2L
-	5wtQifY+2hdefCvbJo26l/TOtcpl4HvarARaW3qKGgeNsMCVMd57kbHrH/TTwia3oCfoNco+E+R
-	h+tvlFHkHZ2E2vbEQiS1aJgQyHc0=
-X-Google-Smtp-Source: AGHT+IEvm2XnjVvxcMKZldLM/QJ0hxIyCRdFdTmLuEgheCKTUmseUf1M9RKdujtLxbSu3kjdskuGi0vxj0PVFvmJWLY=
-X-Received: by 2002:a17:903:2291:b0:1dc:6754:52ce with SMTP id
- b17-20020a170903229100b001dc675452cemr4501493plh.60.1708812849554; Sat, 24
- Feb 2024 14:14:09 -0800 (PST)
+	s=arc-20240116; t=1708813725; c=relaxed/simple;
+	bh=XFvUuIiArPZtcIaAv5GeV7fVRjc1Q38QRdmJEDP+YqI=;
+	h=Message-ID:Subject:From:To:Cc:Date:Content-Type:MIME-Version; b=j27zvObdMaK9yPEibBE5keEkEkfHYxHf26cATsX9GbUkjkBlVSfcLeP2xLjO5ydyd/vJ1MNswSY4NfalJtrw6AyZmRgi8DYdjSWrJtMkS+EF4ki3mY79dgnlPHp/i9s7RvgF0d9Ew0jFS0DnDwpr514oulCXXHx/K3eL2Zp1/5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com; spf=pass smtp.mailfrom=perches.com; arc=none smtp.client-ip=216.40.44.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=perches.com
+Received: from omf17.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay09.hostedemail.com (Postfix) with ESMTP id DF5C780453;
+	Sat, 24 Feb 2024 22:28:35 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf17.hostedemail.com (Postfix) with ESMTPA id DAB2317;
+	Sat, 24 Feb 2024 22:28:33 +0000 (UTC)
+Message-ID: <2cf0b77f51b907969ae83993854773961b4e159c.camel@perches.com>
+Subject: sibyte: pointless if tests
+From: Joe Perches <joe@perches.com>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Date: Sat, 24 Feb 2024 14:28:32 -0800
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240224213529.2601333-1-martin.blumenstingl@googlemail.com> <eb54b791-05d7-4eee-825d-373cc78df689@linaro.org>
-In-Reply-To: <eb54b791-05d7-4eee-825d-373cc78df689@linaro.org>
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Sat, 24 Feb 2024 23:13:58 +0100
-Message-ID: <CAFBinCB6+=PThAUz+BdfeD+DqCpscw3pSwrK2pue+J07vhPh_A@mail.gmail.com>
-Subject: Re: [PATCH v2] clocksource/drivers/arm_global_timer: Simplify
- prescaler register access
-To: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: tglx@linutronix.de, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, patrice.chotard@foss.st.com, 
-	linux-amlogic@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: DAB2317
+X-Rspamd-Server: rspamout02
+X-Stat-Signature: rbkbkkufbwqdzrt4f99nfrgmpaseaoh4
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+8vWvWo4t1B6xMC3gg99zgB4EFce9pg9I=
+X-HE-Tag: 1708813713-824061
+X-HE-Meta: U2FsdGVkX1+Uaj7nWPg01jMtq1aN1QyBgqKd4hIUp8kgnnMMpD8AQgkQ59G1gLz5gLxSsCdBlwN/sAaz/Lwq8H7tNI/yngwf54hagJEGeHuKHIgN+g7yHdDMLGgwKOD4bovS0jUzMoVAcGMPRmn0o/oASUxLXmy1UzRtbuXh+DV16aIRowGpzBL7xtyo56qsOyC1koZ6uBGROzytO87qxOCse/lvk3pO7j6D4vN7RyepyXOUWJaM8Jjp1KOdxhLgnLNMH5jrMNtn3OPb3Sxfm54iOnRiG1P/JUejNr6wc3JbqenSKq6P01tF5xuDH/Uc
 
-On Sat, Feb 24, 2024 at 10:55=E2=80=AFPM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
-[...]
-> > @@ -301,7 +298,7 @@ static int gt_clk_rate_change_cb(struct notifier_bl=
-ock *nb,
-> >               psv--;
-> >
-> >               /* prescaler within legal range? */
-> > -             if (psv < 0 || psv > GT_CONTROL_PRESCALER_MAX)
-> > +             if (psv < 0 || !FIELD_FIT(GT_CONTROL_PRESCALER_MASK, psv)=
-)
-> >                       return NOTIFY_BAD;
->
-> Won't FIELD_FIT cover psv < 0 also ?
-Hmm, I wanted to reply that it doesn't because internally FIELD_FIT()
-uses a cast:
-((typeof(_mask))(_val) << __bf_shf(_mask)) & (_mask)
-My original thought was that the cast would clear the sign bit when in
-fact (I think) it will not - it will result in the signed number and
-BIT(31) set.
-So I think you're right, FIELD_FIT() does cover it.
+A checkpatch modification was suggested privately about
+braces around an if test like
 
-However, there's something else odd with this code:
-We're dividing two frequencies (using DIV_ROUND_CLOSEST) which are two
-unsigned values. So the result of the division can never be negative:
-  psv =3D DIV_ROUND_CLOSEST(ndata->new_rate, gt_target_rate);
-However, we're additionally decrementing psv by one:
-  psv--;
-So in reality it can only ever be negative if the result of the
-division was zero (for example if new_rate is smaller than
-gt_target_rate).
-However, in that case we would have crashed - with a division by zero
-- in the statement right in the middle of the two mentioned above:
-  if (abs(gt_target_rate - (ndata->new_rate / psv)) > MAX_F_ERR)
+	if (foo)
+		;
 
-So I think we need another patch (it's best to order that before this
-one): make psv an unsigned int and error out before trying to divide
-by zero.
-If you have any objections: let me know, otherwise I'll prepare a
-patch tomorrow.
+so I thought I'd see how many of these possibly pointless
+if tests exist.  There aren't many.
 
+Here are a couple in sibyte:
 
-Best regards,
-Martin
+Maybe this should be documented as:
+
+	"well, don't know what to do here"
+
+$ cat if_semi.cocci
+@@
+expression e;
+@@
+
+*	if (e) ;
+
+$ spatch --very-quiet -sp-file if_semi.cocci .
+diff -u -p ./arch/mips/sibyte/common/cfe_console.c /tmp/nothing/arch/mips/s=
+ibyte/common/cfe_console.c
+--- ./arch/mips/sibyte/common/cfe_console.c
++++ /tmp/nothing/arch/mips/sibyte/common/cfe_console.c
+@@ -22,8 +22,6 @@ static void cfe_console_write(struct con
+ 		if (str[i] =3D=3D '\n') {
+ 			do {
+ 				written =3D cfe_write(cfe_cons_handle, &str[last], i-last);
+-				if (written < 0)
+-					;
+ 				last +=3D written;
+ 			} while (last < i);
+ 			while (cfe_write(cfe_cons_handle, "\r", 1) <=3D 0)
+@@ -33,8 +31,6 @@ static void cfe_console_write(struct con
+ 	if (last !=3D count) {
+ 		do {
+ 			written =3D cfe_write(cfe_cons_handle, &str[last], count-last);
+-			if (written < 0)
+-				;
+ 			last +=3D written;
+ 		} while (last < count);
+ 	}
+
 
