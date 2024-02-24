@@ -1,145 +1,138 @@
-Return-Path: <linux-kernel+bounces-79774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE717862680
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 18:55:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87381862684
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 18:57:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E08281C21535
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 17:55:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 390F21F21E7C
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 17:57:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CA05482DA;
-	Sat, 24 Feb 2024 17:55:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hfYKydJB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE4BF481C6;
+	Sat, 24 Feb 2024 17:57:51 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A907D45030;
-	Sat, 24 Feb 2024 17:55:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A25E1362
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 17:57:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708797306; cv=none; b=mSJ96atme+B7kcYTh6PK7E+n9m7Kv4hTYeLWXI4UJkMgthYmEgoIqFEpHJWj2bVO8yDu1voy8xFGF5rAbitlTOOJG+3ZaOXTjg9EqtUa8/KNM4Gh8+wSr7c1ZYipT+ccrlidvPOzbhlUS8b+lxbG0gOUlOMC93aW6nf9d3R/IDM=
+	t=1708797471; cv=none; b=p57Ohfrgj+ustYeFDfPO7I71NVJHAdX+6pUNTPOnXsRr9FQdTn9QEOMRPtwO44NhqlZEy7iJomZCG+aKdMkdAKa1e9bQfyEs8eDtBevVQKU7Ki/GyP7kEH0lE3mBpyaAIpAZCwhxt1pC6DL/2LaJSC7xpJt07iNABdWALxJwXV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708797306; c=relaxed/simple;
-	bh=+U3p6XWhKPzjcH7Ryeh4baGD5MBCZbaDNuBKMlXSTiY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GexZAxFEipFhs8n6i4vnfOjg+YgxPsGzRiOqmiLmhrytfgvxlldKr+KQoaMqQs9eQB42/F9LQ+qooHwZ0IlCmEZCGdQemnm3Rq44FuWA9i1KVZI2jUzZs+SyTReBd5JmEkEl7W/5OkEDdEqkZbyK2cSWwrPxVpP1sJTgKWclSxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hfYKydJB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84DB7C433C7;
-	Sat, 24 Feb 2024 17:55:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708797306;
-	bh=+U3p6XWhKPzjcH7Ryeh4baGD5MBCZbaDNuBKMlXSTiY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=hfYKydJBIyHctRmSVuD74MPe0Z6ZiutZnZUXuyuAY327y1buIlBjT8cAKXdzXrmYl
-	 KCpLlG2ySbaIcRPkgks+h0AjlvmwDWIAzqF1Va879cXgW9Tl4qSXYZwJYpyp2Sv5ls
-	 V6fLg4I5UAhjSGvxdhGsl1JfyxDrDBziiF9HwXrJmzXd0JOqG8TQWgpSc2nShKzaiJ
-	 PwWrby8wu2SKHAZZ47+OuRR77nMNAK6SQ3/ZinLrkpKC8JuTiVaUIYFxKmkKhWhvVp
-	 1zPRshqqJszVHHNUFzmrm3A9mdOToAYP/USWka0v/1OPEHbtrQKQ5ZSX2t+FtGpM9e
-	 EiHoZ0g20o/CA==
-Date: Sat, 24 Feb 2024 17:54:48 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Nuno =?UTF-8?B?U8Oh?= <noname.nuno@gmail.com>
-Cc: Dumitru Ceclan <mitrutzceclan@gmail.com>, Lars-Peter Clausen
- <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Ceclan Dumitru <dumitru.ceclan@analog.com>
-Subject: Re: [PATCH v5 5/5] iio: amplifiers: hmc425a: add support for
- LTC6373 Instrumentation Amplifier
-Message-ID: <20240224175448.484ccd10@jic23-huawei>
-In-Reply-To: <c92c4c71f433c7375588e832d3c084a50190a1b5.camel@gmail.com>
-References: <20240220153553.2432-1-mitrutzceclan@gmail.com>
-	<20240220153553.2432-6-mitrutzceclan@gmail.com>
-	<c92c4c71f433c7375588e832d3c084a50190a1b5.camel@gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708797471; c=relaxed/simple;
+	bh=tR5PRCTus2EF210gXUkGX6tXvo6hwHDBhRUrqzTaugI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AZTUyYuVlz8nZk8PTMlndtgmv4KA4DUrbRj7n4EPmrHkj9X8kFLJ61O6OucuZLE+DI0IdiAeXqrQwnQdccsH5ZM8bRhb/orNzztlYMyIXqfVc8FfewT+B0vmXYwMa2mD5J+35/ZRGNlYD2ZIt4ccHQW6J8+gW9oNee1hht7rs4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rdwH0-0001uP-7w; Sat, 24 Feb 2024 18:57:18 +0100
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rdwGu-002ef9-Po; Sat, 24 Feb 2024 18:57:12 +0100
+Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rdwGu-005pID-2F;
+	Sat, 24 Feb 2024 18:57:12 +0100
+Date: Sat, 24 Feb 2024 18:57:12 +0100
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
+	Andrew Lunn <andrew@lunn.ch>, Wei Fang <wei.fang@nxp.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>, kernel@pengutronix.de,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	Shenwei Wang <shenwei.wang@nxp.com>,
+	Clark Wang <xiaoning.wang@nxp.com>,
+	NXP Linux Team <linux-imx@nxp.com>
+Subject: Re: [PATCH net-next v6 5/8] net: phy: Immediately call adjust_link
+ if only tx_lpi_enabled changes
+Message-ID: <Zdot-Mqw1z4ZEo8v@pengutronix.de>
+References: <20240223094425.691209-1-o.rempel@pengutronix.de>
+ <20240223094425.691209-6-o.rempel@pengutronix.de>
+ <Zdh1nMWZDynP/AMc@shell.armlinux.org.uk>
+ <84e1368d-ec6a-48af-945b-509528c45dff@lunn.ch>
+ <Zdic+ua5LnWxjLPn@shell.armlinux.org.uk>
+ <6af3406a-7968-41e5-bf6e-71d020d8b28a@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <6af3406a-7968-41e5-bf6e-71d020d8b28a@broadcom.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Wed, 21 Feb 2024 14:23:51 +0100
-Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
-
-> On Tue, 2024-02-20 at 17:34 +0200, Dumitru Ceclan wrote:
-> > This adds support for LTC6373 36 V Fully-Differential Programmable-Gain
-> > Instrumentation Amplifier with 25 pA Input Bias Current.
-> > The user can program the gain to one of seven available settings through
-> > a 3-bit parallel interface (A2 to A0).
+On Fri, Feb 23, 2024 at 09:53:06AM -0800, Florian Fainelli wrote:
+> On 2/23/24 05:26, Russell King (Oracle) wrote:
+> > On Fri, Feb 23, 2024 at 02:17:59PM +0100, Andrew Lunn wrote:
+> > > On Fri, Feb 23, 2024 at 10:38:20AM +0000, Russell King (Oracle) wrote:
+> > > > On Fri, Feb 23, 2024 at 10:44:22AM +0100, Oleksij Rempel wrote:
+> > > > > +static void phy_ethtool_set_eee_noneg(struct phy_device *phydev,
+> > > > > +				      struct ethtool_keee *data)
+> > > > > +{
+> > > > > +	if (phydev->eee_cfg.tx_lpi_enabled !=3D
+> > > > > +	    data->tx_lpi_enabled) {
+> > > > > +		eee_to_eeecfg(data, &phydev->eee_cfg);
+> > > > > +		phydev->enable_tx_lpi =3D eeecfg_mac_can_tx_lpi(&phydev->eee_c=
+fg);
+> > > > > +		if (phydev->link)
+> > > > > +			phy_link_up(phydev);
+> > > >=20
+> > > > I'm not convinced this is a good idea. Hasn't phylib previously had
+> > > > the guarantee that the link will go down between two link-up events?
+> > > > So calling phy_link_up() may result in either the MAC driver ignori=
+ng
+> > > > it, or modifying registers that are only supposed to be modified wh=
+ile
+> > > > the MAC side is down.
+> > >=20
+> > > When auto-neg is used, we expect the link to go down and come back up
+> > > again.
+> > >=20
+> > > Here we are dealing with the case that autoneg is not used. The MAC
+> > > needs informing somehow. If we want to preserve the down/up, we could
+> > > call phy_link_down() and then phy_link_up() back to back.
 > >=20
-> > Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
-> > --- =20
+> > Would it be better to have a separate callback for EEE state (as I
+> > mentioned in another comment on this series?) That would be better
+> > for future SmartEEE support.
 >=20
-> Just one minor comment. With that:
->=20
-> Reviewed-by: Nuno Sa <nuno.sa@analog.com>
->=20
-> > =C2=A0drivers/iio/amplifiers/hmc425a.c | 124 ++++++++++++++++++++++++++=
-++++-
-> > =C2=A01 file changed, 120 insertions(+), 4 deletions(-)
-> >=20
-> > diff --git a/drivers/iio/amplifiers/hmc425a.c b/drivers/iio/amplifiers/=
-hmc425a.c
-> > index 77872e2dfdfe..50c86c2d28d7 100644
-> > --- a/drivers/iio/amplifiers/hmc425a.c
-> > +++ b/drivers/iio/amplifiers/hmc425a.c
-> > @@ -2,9 +2,10 @@
-> > =C2=A0/*
-> > =C2=A0 * HMC425A and similar Gain Amplifiers
-> > =C2=A0 *
-> > - * Copyright 2020 Analog Devices Inc.
-> > + * Copyright 2020, 2024 Analog Devices Inc.
-> > =C2=A0 */ =20
->=20
-> ...
->=20
-> >=20
-> > =C2=A0
-> > +static ssize_t ltc6373_read_powerdown(struct iio_dev *indio_dev,
-> > +				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 uintptr_t private,
-> > +				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const struct iio_chan_spec *chan,
-> > +				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 char *buf)
-> > +{
-> > +	struct hmc425a_state *st =3D iio_priv(indio_dev);
-> > +
-> > +	return sysfs_emit(buf, "%d\n", st->powerdown); =20
->=20
-> Well, in theory the read should also be protected with the lock...
+> That sounds like a good approach to me. The additional callback also helps
+> figure out which drivers use the API and it should be simpler to audit for
+> changes in the future, too.
 
-Only reason I can think of for that is potential read tearing.
-If that happens on a bool we are going to be in a mess so I think this
-is in practice fine without, though paranoia might suggest locking.
+At this point I need help to understand how to proceed.
+What exactly do you have in mind? Some description like following would
+be helpful:
+Add callback with name phy_link_set_eee(), which should be executed in
+function bla/blup..
 
-It can race against it being powered down but that effectively happens
-even if we do have a lock as we either see the value before or after
-a racing power down event and we have no way of knowing which.
-
-Applied rest series to iio.git togreg branch and pushed out as testing.
-
-Duitru, if you can figure out what happened to your message thread before
-sending more patches that would be great. The IDs for patches 0-5 go
-
-20240220153553.2432-1-mitrutzceclan@gmail.com
-20240220153553.2432-3-mitrutzceclan@gmail.com
-20240220153553.2432-5-mitrutzceclan@gmail.com
-20240220153553.2432-2-mitrutzceclan@gmail.com
-20240220153553.2432-4-mitrutzceclan@gmail.com
-20240220153553.2432-6-mitrutzceclan@gmail.com
-
-Which really confuses my email client and patchwork.
-https://patchwork.kernel.org/project/linux-iio/list/?series=3D827901
-
-
-
->=20
-> - Nuno S=C3=A1
->=20
-
+Regards,
+Oleksij
+--=20
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
