@@ -1,197 +1,100 @@
-Return-Path: <linux-kernel+bounces-79720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B05C8625C3
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 16:08:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F4158625B7
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 16:06:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CDA61C21171
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 15:08:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D03AA1C20C3B
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 15:06:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BA604EB20;
-	Sat, 24 Feb 2024 15:07:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05C364778E;
+	Sat, 24 Feb 2024 15:06:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="k8Z5dSS1"
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2073.outbound.protection.outlook.com [40.107.95.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="L9I4meje"
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 073F54E1C5;
-	Sat, 24 Feb 2024 15:07:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.73
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708787231; cv=fail; b=LpJHhop8QJLeqIchuN65SZa+gnkSKRVWCne1BKgeO9nRlJScf9CDwlaqAgb89Wg374TVJ0XOZHLy/c/igKrJBXt4ry4M53rh7YainhCuUU5Y4osA861wj16MlXewWJd0EHT76m3P/iyykGffsONpmJ++3DIrXWMCLX/pbDsHl20=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708787231; c=relaxed/simple;
-	bh=e0FhdWZczG3jNlJwaIceTYNLqtq7kTP1clVnsfufh/Y=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CXHExDqyHOM88LQWkwJwZtCVlLgMKDLZQqc5qvwe0AUOVgHRzw3OH6vJQvphYFWt9EDR8Zn7s+9gIGLUPDJ5aMQnky8dnAkmpUdYbYbeeZR5NGHTVkFVGfJSYNM/WpJ5jt4LvTiPfTprNV9v+rrlG0SCQI62JJ9EBDNB68cCcL0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=k8Z5dSS1; arc=fail smtp.client-ip=40.107.95.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OcnfSWyOFQggSiPTsES65PhBheOmwfvj3zgWuTC9GWHqsJ2j2mjY4ZwNU4SJUwhc9x53l1C6biFXWtziQw+WxYDOpWWnrbUjItzDBD1qLLs1+qt5I/FYjojRZmqkBbWNeSP3GebSLtthUIt6fMEGQuv2XuoHLDYl5bztSPdR0p07cciaTEaMvlsIcqUGPRzqf9SHjgZOqDG2ph5IJvqINHVfwYwLG+zMpWW1pu/8nPX8wqe6X0Mc3mUkMJSOVIcBd41zIycC4Dp410PSG9loxEx08tWvvgIOhDb9wk09hEqj0Y9OTmv+0Pda7VgDDmLjZmEu/1Tr4+NVc0swjTgRwQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vrVed4bH4ZNo5+WAlGpRDDR5GnNw8bBIVXunyFMfGm8=;
- b=imUB0lDCeJbrMEpP74471V1uwXeC6zSjztnlULNvXgyu0dv3ZBz5AKFRnmvIbvzmYKO4kokxcRkX3vtJY9M1eLn54YsvQ3HNr4qUfKV8zwsMG9SlFd3LUqhokzJ4HmZpc4cpI83shk39unNjyXFjFFD4OygZJKHv3+ji6S2n9qKnYeK0QoNx/xZrTnsP4tCURd1GJ39WkVciDPEP2CNlSb5DeRLOl1fxoO9CNaUl1W6mw1kM/Qq7AAvLdD+JMmEcJ6R9AelNZhpNc0E4tQyRrjqt8tynH7EmxphT0QJE3U7oFi8P1uXlzlViBXb2MlaCjwFm66aktIEcKpyznax8CA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vrVed4bH4ZNo5+WAlGpRDDR5GnNw8bBIVXunyFMfGm8=;
- b=k8Z5dSS1+XZWFfeyb7JtGwpF6xBbsOykuKYdSiI4lG1DjI2pLyD//987TA9VAmaEbOW4OqO7/nuY/0+wLeYfUe9mH7PqW6E9Ndo4XEI5Ycv4naE+HCJyn26NiadmBQZYr0cehi8skRdt2O9W4E+IhZp3sgMmCgu2qjOy748G/qGnEg4iOjTRiF9Z+F5kUUjUqB7oJG95Ow6JasVtqYxlKXRwyL946X4dBBBFPgHl8b30BS+1ZPCRo5MA3NmcgdHB4PmuPJ6eee0pUWyL/7zBuXeGpakWYlI7dtfN8z+lVw2CbkK7sKGkd2p+Eit51cjIaxuyKXh3cI232QcVzrtlDw==
-Received: from DM5PR08CA0052.namprd08.prod.outlook.com (2603:10b6:4:60::41) by
- BY5PR12MB5511.namprd12.prod.outlook.com (2603:10b6:a03:1d8::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.33; Sat, 24 Feb
- 2024 15:07:04 +0000
-Received: from DS3PEPF000099D3.namprd04.prod.outlook.com
- (2603:10b6:4:60:cafe::71) by DM5PR08CA0052.outlook.office365.com
- (2603:10b6:4:60::41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.48 via Frontend
- Transport; Sat, 24 Feb 2024 15:07:04 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- DS3PEPF000099D3.mail.protection.outlook.com (10.167.17.4) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7292.25 via Frontend Transport; Sat, 24 Feb 2024 15:07:04 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Sat, 24 Feb
- 2024 07:06:52 -0800
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Sat, 24 Feb
- 2024 07:06:50 -0800
-Received: from sgarnayak-dt.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12 via Frontend
- Transport; Sat, 24 Feb 2024 07:06:38 -0800
-From: <ankita@nvidia.com>
-To: <ankita@nvidia.com>, <jgg@nvidia.com>, <maz@kernel.org>,
-	<oliver.upton@linux.dev>, <james.morse@arm.com>, <suzuki.poulose@arm.com>,
-	<yuzenghui@huawei.com>, <reinette.chatre@intel.com>, <surenb@google.com>,
-	<stefanha@redhat.com>, <brauner@kernel.org>, <catalin.marinas@arm.com>,
-	<will@kernel.org>, <mark.rutland@arm.com>, <alex.williamson@redhat.com>,
-	<kevin.tian@intel.com>, <yi.l.liu@intel.com>, <ardb@kernel.org>,
-	<akpm@linux-foundation.org>, <andreyknvl@gmail.com>,
-	<wangjinchao@xfusion.com>, <gshan@redhat.com>, <shahuang@redhat.com>,
-	<ricarkol@google.com>, <linux-mm@kvack.org>, <lpieralisi@kernel.org>,
-	<rananta@google.com>, <ryan.roberts@arm.com>, <david@redhat.com>,
-	<linus.walleij@linaro.org>, <bhe@redhat.com>
-CC: <aniketa@nvidia.com>, <cjia@nvidia.com>, <kwankhede@nvidia.com>,
-	<targupta@nvidia.com>, <vsethi@nvidia.com>, <acurrid@nvidia.com>,
-	<apopple@nvidia.com>, <jhubbard@nvidia.com>, <danw@nvidia.com>,
-	<kvmarm@lists.linux.dev>, <mochs@nvidia.com>, <zhiw@nvidia.com>,
-	<kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v9 4/4] vfio: Convey kvm that the vfio-pci device is wc safe
-Date: Sat, 24 Feb 2024 20:35:46 +0530
-Message-ID: <20240224150546.368-5-ankita@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240224150546.368-1-ankita@nvidia.com>
-References: <20240224150546.368-1-ankita@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A0091E894
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 15:06:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708787174; cv=none; b=p1BwMjqmPRVgge2k1OpuvGn6B5BolgAyht6/UqCyfqrgcYgwJ+BbfKMS7Uh5IysipZ079XKUfiDWJ/ZUScOuXYNAorRtvyH6dtsv8/9VPG8bMuuI3YDmV4OdA2NxZK1LEax2qcGlLMtoM2bHYXkjt62JKa/nc6Ac9lk5Nma5+J0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708787174; c=relaxed/simple;
+	bh=Uryo3XdwAekEHSVjuMlMntBb6I1zHeuqUQ7N7xRLv/U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qkNCdSsiUgRRf1iW+ydq2WMHtzCZRE7wozxAwtaNaBddtO58Y8/hB0ILOB+mDarYW7DIH0QUJtcs5Fp0pF/ntKodGVbO7mTaQ27BnwF+ufni7iesmSqJ2Ee3UF6ndPPXuN2mzUazo0Cfovopw0tLKspes//84Td7OzRKKbjhNbE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=L9I4meje; arc=none smtp.client-ip=195.181.215.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+	t=1708787167; bh=Uryo3XdwAekEHSVjuMlMntBb6I1zHeuqUQ7N7xRLv/U=;
+	h=From:To:Cc:Subject:Date:From;
+	b=L9I4meje818PMKLYF5UA9Z980dPtZPCvuEHAL7MwqojCWJPc7xFfL2iAoX8mXD2fI
+	 DeaNRvSzDJnxkEngB9cioOYKej5HrJ/2mEcDFCTHdkyh6ddvPadR/JinhQSd0GZPyh
+	 yZe5GBB4MjEO5Qhzgsisj4VGB/McpYIn3o4yjQ+8=
+From: =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megi@xff.cz>
+To: linux-kernel@vger.kernel.org,
+	Maxime Ripard <mripard@kernel.org>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>
+Cc: Ondrej Jirman <megi@xff.cz>,
+	dri-devel@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev
+Subject: [PATCH v2 0/3] Move blender setup from individual planes to crtc commit in sun4i-drm
+Date: Sat, 24 Feb 2024 16:05:57 +0100
+Message-ID: <20240224150604.3855534-1-megi@xff.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099D3:EE_|BY5PR12MB5511:EE_
-X-MS-Office365-Filtering-Correlation-Id: a1b01687-e8ad-4423-fd11-08dc354a4307
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	GxjN7Bwq1Hwv/A/mtDSKWWm4FjbCfLkQvpJEyuKbzX9Y6HdylNrePnfdtgf55bu9XhhbP6bLnOFqWF9i6xaIvdW7BvhuCWgdvoxhyq43q5a7orbA/0bSt95gkrspg2sPSGRrQuzL5mCEwyzmBYEgtTHmsSEm2yH4jU+N+H+Pjfb9EgWy/wHIHVRrvCxzQDccTcqD4WfTgWGZ7b5g38jcfd/asoc8kboPe1C/BMJTk/n8DCAwHf0xjRhCAD09b1KrNMA0zc9kmK5PnNvMmIOa7Vqbbad+RwMFuZDbDYjMg1c2bmomp7ZacCqQquXLOuinEn3dLlssscL0qF6deYGQOwyTIjNFDuib/i7Ld1xpwPEtIczzLZ3ab/KFz3/o8xb5C+5SU7ttaTD93P/ggwca9IGPRjSxe9eFv8JpCZVyzPI6KOoFc5N7KwTJvGunhtl/5QjGRPfMMENd6K4s+dYtIUfPo1ynL2fcxG+v4lMwFRaO/82ttdnhFvM/1JBG+wnMc9JxzTtJqSTtZU+fjzEzIxiOB0jrZEB3lE1XS28DR/fhn/1+MAN4k9ZRLRWUKaQ2yvtvU0QoU/J4u7xe9HnxmV2Q95zJgJbXPfbSbi/7bdKFH6Tlwwc9kS+nhkfk/mmdsaS8elePZESo6uhoynwlMKv7pHgt6TVbfCObTclF/JA=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(36860700004)(40470700004)(46966006)(921011);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Feb 2024 15:07:04.6499
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1b01687-e8ad-4423-fd11-08dc354a4307
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS3PEPF000099D3.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB5511
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-From: Ankit Agrawal <ankita@nvidia.com>
+From: Ondrej Jirman <megi@xff.cz>
 
-The VM_ALLOW_ANY_UNCACHED flag is implemented for ARM64,
-allowing KVM stage 2 device mapping attributes to use Normal-NC
-rather than DEVICE_nGnRE, which allows guest mappings supporting
-write-combining attributes (WC). ARM does not architecturally
-guarantee this is safe, and indeed some MMIO regions like the GICv2
-VCPU interface can trigger uncontained faults if Normal-NC is used.
+This series refactors blender setup from individual planes to a common
+place where it can be performed at once and is easier to reason about.
 
-To safely use VFIO in KVM the platform must guarantee full safety
-in the guest where no action taken against a MMIO mapping can
-trigger an uncontained failure. The expectation is that most VFIO PCI
-platforms support this for both mapping types, at least in common
-flows, based on some expectations of how PCI IP is integrated. So
-make vfio-pci set the VM_ALLOW_ANY_UNCACHED flag.
+In the process this fixes a few bugs that allowed blender pipes to be
+disabled while corresponding DRM planes were requested to be enabled.
 
-Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
-Acked-by: Jason Gunthorpe <jgg@nvidia.com>
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-Acked-by: Alex Williamson <alex.williamson@redhat.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
----
- drivers/vfio/pci/vfio_pci_core.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+Please take a look. :)
 
-diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
-index 1cbc990d42e0..df6f99bdf70d 100644
---- a/drivers/vfio/pci/vfio_pci_core.c
-+++ b/drivers/vfio/pci/vfio_pci_core.c
-@@ -1862,8 +1862,25 @@ int vfio_pci_core_mmap(struct vfio_device *core_vdev, struct vm_area_struct *vma
- 	/*
- 	 * See remap_pfn_range(), called from vfio_pci_fault() but we can't
- 	 * change vm_flags within the fault handler.  Set them now.
-+	 *
-+	 * VM_ALLOW_ANY_UNCACHED: The VMA flag is implemented for ARM64,
-+	 * allowing KVM stage 2 device mapping attributes to use Normal-NC
-+	 * rather than DEVICE_nGnRE, which allows guest mappings
-+	 * supporting write-combining attributes (WC). ARM does not
-+	 * architecturally guarantee this is safe, and indeed some MMIO
-+	 * regions like the GICv2 VCPU interface can trigger uncontained
-+	 * faults if Normal-NC is used.
-+	 *
-+	 * To safely use VFIO in KVM the platform must guarantee full
-+	 * safety in the guest where no action taken against a MMIO
-+	 * mapping can trigger an uncontained failure. The assumption is
-+	 * that most VFIO PCI platforms support this for both mapping types,
-+	 * at least in common flows, based on some expectations of how
-+	 * PCI IP is integrated. Hence VM_ALLOW_ANY_UNCACHED is set in
-+	 * the VMA flags.
- 	 */
--	vm_flags_set(vma, VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP);
-+	vm_flags_set(vma, VM_ALLOW_ANY_UNCACHED | VM_IO | VM_PFNMAP |
-+			VM_DONTEXPAND | VM_DONTDUMP);
- 	vma->vm_ops = &vfio_pci_mmap_ops;
- 
- 	return 0;
+v2:
+- use regmap_write where possible
+- add review tags
+
+Thank you very much,
+	Ondřej Jirman
+
+Ondrej Jirman (3):
+  drm/sun4i: Unify sun8i_*_layer structs
+  drm/sun4i: Add more parameters to sunxi_engine commit callback
+  drm/sun4i: Fix layer zpos change/atomic modesetting
+
+ drivers/gpu/drm/sun4i/sun4i_backend.c  |  4 +-
+ drivers/gpu/drm/sun4i/sun4i_crtc.c     |  2 +-
+ drivers/gpu/drm/sun4i/sun8i_mixer.c    | 70 ++++++++++++++++++++-
+ drivers/gpu/drm/sun4i/sun8i_mixer.h    | 20 ++++++
+ drivers/gpu/drm/sun4i/sun8i_ui_layer.c | 85 +++----------------------
+ drivers/gpu/drm/sun4i/sun8i_ui_layer.h | 20 ++----
+ drivers/gpu/drm/sun4i/sun8i_vi_layer.c | 86 +++-----------------------
+ drivers/gpu/drm/sun4i/sun8i_vi_layer.h | 20 ++----
+ drivers/gpu/drm/sun4i/sunxi_engine.h   | 13 +++-
+ 9 files changed, 125 insertions(+), 195 deletions(-)
+
 -- 
-2.34.1
+2.44.0
 
 
