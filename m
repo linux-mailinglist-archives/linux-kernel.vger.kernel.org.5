@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-79868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79867-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 588C68627CF
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 22:34:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 226D48627CD
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 22:34:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1244528253F
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 21:34:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D131E2825FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 21:34:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08D2752F77;
-	Sat, 24 Feb 2024 21:33:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBD5E52F6E;
+	Sat, 24 Feb 2024 21:33:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kjOqLu+u"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="klIfjP51"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E93CF4EB5D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E939C4EB5C;
 	Sat, 24 Feb 2024 21:33:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708810396; cv=none; b=MHizt+UyeAnIKc0UH47cL2CB+Rtl56PIQ3DavYBTK5hidkhaCP5wuMQkvz2LYFOcHezoEqNvODd8KrsOxbcMwFV+FHLQnRjw+whHQpWNX5zZFr0v1VY/nv6bXsiVQ84qrxXyKG/L7Ep1TIHb8jWz6bMhRCiitV6F237gaJE9oyA=
+	t=1708810396; cv=none; b=lpYxPqXuc5Jw9C6Tm8iwD0OnMSBFnH+AEhMWKhE+7qAqeYEjD9qhud2d3ruXLd7CewyBCWV2jxXIAmQ+N9QqkUWCMaXQ+LECjM38Yqh1dAiZHzw5McC6dxKnqqwDmO8hB4tlaLAzVExxINe15FX0GQoX8r1Y/CkapSzN/XXDhYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708810396; c=relaxed/simple;
-	bh=RJWvlSP6BsU9o2+sb1U+a07qsHtOTURxzuqmLpqHlu4=;
+	bh=rUmJV8kGaEHJUfJDmv7OgUPHvh7znQWSM5zbc3u5TGM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NniliG8a0HWjvFNEmSc6JFc6ukB7RlpBdioitwwXqPAyunde5L78vg/3ufrGGEBXIFgPSYOODJ3X9Xk4wolD7ufN227jIKkjtn8OFKGFRQLUhf9O3cgieQ6uDz4xy67x5zj/prF33G+XqbLbUB8v0H4/eSSwvj7mEB+SNbFYR/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kjOqLu+u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BF45C43394;
+	 MIME-Version; b=Y3ma53HtXkZ1+1pkHPCgEpxav4jv1OCzky39rvVTAPe/9HwFOOB28OfSXoYzHfjTMtF1wMpxRBhhQFhogVsqK54Jv/1YV/jAkGDADy5GtT2XUxq4fLolI97yZ4ICsa6bAIlHRawMHb3uHv+Gko0ZLFBtFmbNKBXElCZRFC11vY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=klIfjP51; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52AAEC433C7;
 	Sat, 24 Feb 2024 21:33:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1708810395;
-	bh=RJWvlSP6BsU9o2+sb1U+a07qsHtOTURxzuqmLpqHlu4=;
+	bh=rUmJV8kGaEHJUfJDmv7OgUPHvh7znQWSM5zbc3u5TGM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kjOqLu+uHM4d+W/Se6odN4WXKol5SbtQaPSmwK6EF3keW++qBVeySz/+qSPoU7uSW
-	 CcqNf2tZOs4uK3R76Cv8Xn7LA86SUyIbKpAfWn3xf8/6Isq0uDXP8BCQ+Y6IDIRghU
-	 rLdYhY3I8kdxKsCe9sOFKYZnN/qEZnvF/OmNdkBWAYDAi2al/XskajzvMjZ6Xx9xh/
-	 WBEc2ULY/6iRi58Y5Mj23oH1LWe9027Ymcxo3sToCZzj3aItp+yOTZqsWP8z1j7YNN
-	 xpFvOwauScsZQCcrjEosnx0IsVJBUFU22bHlgO5S6NNFCGCJhPg00E2nhQIIJ7OKHr
-	 FKRroXtW7wDwA==
+	b=klIfjP51Mh7RZ5+C2clA7j6wOd8d2GqenlD+9Sj0PrJbzd4Gx9rUa0Z7vvuRvBGwM
+	 wTDCO2+P0V5h0WB60rZhl1w4zimDGNDWdxs5pqw78g4cEEdkzF8riw5F8fAg2NiHFr
+	 zDuRuEsqgRTAiBVRxGRUeCqZY2/+bAbJuGTbSw6IRoVXb+LsoSo6V+tcMsqu8KoXxz
+	 m/UwvHZolhMi4wEz4ftPABo6ehmHE9/CeSB1haa4e2Tw3x4rFbC7kcrfvPgIgmTTbQ
+	 JQBHQMcu2OflRbe5c7UYm91oEWDqHU1SMyRIjd3e+XLYUcm3qPYf1r/egqbNmkmwAu
+	 uhCM5FC3cg4mg==
 Received: by mercury (Postfix, from userid 1000)
-	id 05B3E1060E5B; Sat, 24 Feb 2024 22:33:10 +0100 (CET)
+	id 0B5B11060E89; Sat, 24 Feb 2024 22:33:10 +0100 (CET)
 From: Sebastian Reichel <sre@kernel.org>
 To: Sebastian Reichel <sre@kernel.org>,
 	Rob Herring <robh+dt@kernel.org>,
@@ -59,10 +59,10 @@ Cc: Dong Aisheng <aisheng.dong@nxp.com>,
 	linux-arm-kernel@lists.infradead.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Rob Herring <robh@kernel.org>
-Subject: [PATCH v4 05/16] dt-bindings: soc: imx: fsl,imx-iomuxc-gpr: add imx6
-Date: Sat, 24 Feb 2024 22:29:37 +0100
-Message-ID: <20240224213240.1854709-6-sre@kernel.org>
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v4 06/16] dt-bindings: lcdif: Do not require power-domains for i.MX6ULL
+Date: Sat, 24 Feb 2024 22:29:38 +0100
+Message-ID: <20240224213240.1854709-7-sre@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240224213240.1854709-1-sre@kernel.org>
 References: <20240224213240.1854709-1-sre@kernel.org>
@@ -74,44 +74,45 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add compatibles used by different i.MX6 variants to the i.MX IOMUX
-Controller GPR binding.
+i.MX6UL(L) uses "fsl,imx6sx-lcdif" as fallback compatible string,
+but has only very lightweight DISPLAY power domain. Its DISPLAY
+power domain is not supported by the binding / Linux kernel at
+the moment. Since the current setup is working, let's remove the
+power-domain from being required for that platform to fix the warning
+printed by CHECK_DTBS=y.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Fixes: f62678a77d58 ("dt-bindings: mxsfb: Document i.MX8M/i.MX6SX/i.MX6SL power-domains property")
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Sebastian Reichel <sre@kernel.org>
 ---
- .../bindings/soc/imx/fsl,imx-iomuxc-gpr.yaml   | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/display/fsl,lcdif.yaml | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/soc/imx/fsl,imx-iomuxc-gpr.yaml b/Documentation/devicetree/bindings/soc/imx/fsl,imx-iomuxc-gpr.yaml
-index 1da1b758b4ae..8451cb4dd87c 100644
---- a/Documentation/devicetree/bindings/soc/imx/fsl,imx-iomuxc-gpr.yaml
-+++ b/Documentation/devicetree/bindings/soc/imx/fsl,imx-iomuxc-gpr.yaml
-@@ -17,7 +17,23 @@ properties:
-   compatible:
-     oneOf:
-       - items:
--          - const: fsl,imx8mq-iomuxc-gpr
-+          - enum:
-+              - fsl,imx6q-iomuxc-gpr
-+              - fsl,imx8mq-iomuxc-gpr
-+          - const: syscon
-+          - const: simple-mfd
-+      - items:
-+          - enum:
-+              - fsl,imx6sl-iomuxc-gpr
-+              - fsl,imx6sll-iomuxc-gpr
-+              - fsl,imx6ul-iomuxc-gpr
-+          - const: fsl,imx6q-iomuxc-gpr
-+          - const: syscon
-+      - items:
-+          - enum:
-+              - fsl,imx6sx-iomuxc-gpr
-+              - fsl,imx7d-iomuxc-gpr
-+          - const: fsl,imx6q-iomuxc-gpr
-           - const: syscon
-           - const: simple-mfd
-       - items:
+diff --git a/Documentation/devicetree/bindings/display/fsl,lcdif.yaml b/Documentation/devicetree/bindings/display/fsl,lcdif.yaml
+index 1c2be8d6f633..0681fc49aa1b 100644
+--- a/Documentation/devicetree/bindings/display/fsl,lcdif.yaml
++++ b/Documentation/devicetree/bindings/display/fsl,lcdif.yaml
+@@ -120,13 +120,19 @@ allOf:
+           maxItems: 1
+         clock-names:
+           maxItems: 1
++  - if:
++      properties:
++        compatible:
++          const: fsl,imx6sx-lcdif
++    then:
++      required:
++        - power-domains
+   - if:
+       properties:
+         compatible:
+           contains:
+             enum:
+               - fsl,imx6sl-lcdif
+-              - fsl,imx6sx-lcdif
+               - fsl,imx8mm-lcdif
+               - fsl,imx8mn-lcdif
+               - fsl,imx8mp-lcdif
 -- 
 2.43.0
 
