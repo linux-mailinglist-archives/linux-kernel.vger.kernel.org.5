@@ -1,119 +1,133 @@
-Return-Path: <linux-kernel+bounces-79587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10E56862481
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:29:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A63E4862483
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:31:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA5F4283604
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:29:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 478001F22FD6
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:31:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84B8225756;
-	Sat, 24 Feb 2024 11:29:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9B325756;
+	Sat, 24 Feb 2024 11:31:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QyTK5cBN"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qBoXj187"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 493BC250EB;
-	Sat, 24 Feb 2024 11:29:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A8071B977;
+	Sat, 24 Feb 2024 11:31:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708774165; cv=none; b=Zf/3FtF6L0BzZi6IFQarlG2m2VA0cWEn6nZx5bWn/BknkUfQyRtQi90xlkP0vBTL95j8G9w/u4N/iODgNKa8nyGwXFWgMz0ZbEy/MZmjJgbC7kHNhFUY1SE9TDAFljnVLSze+yHpEqsoZtcDuFqLaW/PId3SJvVljfoTygNkdhQ=
+	t=1708774269; cv=none; b=pzgKj67CnwbEtT/gRykQ9NcOexXhks81Sw3ZAQ8MmgIKXzBBqw9Y+CvZFDc+m9OJrEwG9OEPZi1Nnr+yVWQJKTFiwt5sdQi/W7OLmYKXRTALzGgMnISFqsMXMTWcPRQqLsWgQ189KLRrOTfRO5Apmfn31sU+Nr9DIuwDcklaLvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708774165; c=relaxed/simple;
-	bh=oLDwwbjlfldA8YTQKnJROMeakHh9GmORvJ1FZwNxLQI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FOGwdlMw0QvT4EAWfH7CLVzHobaLEIljuXoKG4uwcD3oWNCDQk3fKtQSuYdISNibscVexGocorcuU2ZdWVoeGIfPo4jGOJ7HgVicdlyXv5XQjrdK9FhpJ6QgnkbnfDKPxtxPNfBKd4AeSLBSjpd5P7Yhf1thwGyNPxr7iXriEbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QyTK5cBN; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55a5e7fa471so2116350a12.1;
-        Sat, 24 Feb 2024 03:29:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708774162; x=1709378962; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4MmK3Tpm9+5KttJbHDCWPd/7vMZzGKkTnGzOOVkaN4Y=;
-        b=QyTK5cBNd+V4/72EdyRSZjyYIQkT0EvAM8EpS03PVsfDyO24mIjDkTMXkiiRuxYO3m
-         1oWu9ckdD86DH6cFjzTZBCF1V6kT2S0N0mvSqniIV+11BmVNFtBdjlHBxgmw/CSt0cNf
-         PQIb1f0ka/aiBVFDPqGcZCXYHyI94tYD46hsqr4/rpRveQj6vOeV01CVCOSQE7TblzOW
-         GmNGCrKpXSzd4J01HvpF15Jtvhjzr6ZwTQEz5+jiHQhPKftrPsDLwRooSiireOJ5hkw4
-         Zol9mboP2mxH3kEKYQvQYSz9hKd1Y1ilFP6xBKETs3enqiUacIZF3rBL389sB5EB5f4m
-         9yUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708774162; x=1709378962;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4MmK3Tpm9+5KttJbHDCWPd/7vMZzGKkTnGzOOVkaN4Y=;
-        b=CTB3TdLsdSidA4RZwAsfRzarZZ3ECbcGJsTpJZ2eHF6wou3db/aFd4/ODGj0Lny7pP
-         N1AAZqVFvXYHSvbw625LRdnmXI++lm9y+FTwvRyut4Ap4PoHKYZruaKb1wx0Sb5cI+8y
-         ACjSGJDqwbmXzr1Z0utdpiLkMiBidRNNO3nxwZ0XZFS000018oSRvmavBaK3sT8x8xZu
-         9cRn/N5sbpI+a29jyx+933/N16r7MT94eyAlm0Gw7vGDI7tBhTCTnFD0DQZ2H82gsMAs
-         Slwvio6Dxeg8gbrRyu75WIXlx+ifWJ4CsDVlgAMP/NlvHuq6G/Cwex72966lxqsq5kB4
-         88aQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXrrztE18pTD05NPJWW/4zUY+2GMw7ZUJrVvwccJ2C7FsTHiMLFcBHe3jqiOx1FqxV8/jq+vfxk8zOeXFHiVTENUPJYrWTOjgnLyOJO997dgkXI998uWQB8J1I/pk47xwBrH2O26UJa
-X-Gm-Message-State: AOJu0YyYF/v8oFLzq9LEClZcyk6Bo2OI7FNmOtkXX/s9rwiKrO8NYtU+
-	qyv2OpqCsyG0canakju7+qNkTu2bRPlzyzPzoKCAOU48QlPl5Iwc
-X-Google-Smtp-Source: AGHT+IFdt8w/I4I+8iNW3l4ElfaKirBq2vMB34N6h/jQwawqdL4WS7C2NJySq62HtK3H5NIQ3aOaRQ==
-X-Received: by 2002:a17:906:3449:b0:a41:31ed:acd5 with SMTP id d9-20020a170906344900b00a4131edacd5mr1438285ejb.50.1708774162367;
-        Sat, 24 Feb 2024 03:29:22 -0800 (PST)
-Received: from localhost.localdomain (p5dc68d61.dip0.t-ipconnect.de. [93.198.141.97])
-        by smtp.gmail.com with ESMTPSA id s1-20020a170906060100b00a3d9e6e9983sm507181ejb.174.2024.02.24.03.29.21
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sat, 24 Feb 2024 03:29:21 -0800 (PST)
-From: Leif Middelschulte <leif.middelschulte@gmail.com>
-X-Google-Original-From: Leif Middelschulte <Leif.Middelschulte@gmail.com>
-To: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>
-Cc: Leif Middelschulte <Leif.Middelschulte@gmail.com>,
-	linux-pwm@vger.kernel.org,
+	s=arc-20240116; t=1708774269; c=relaxed/simple;
+	bh=bcm3DdqghLXqV1NDYxNhc4E3ZjWsODb7HUSJWc8HasI=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=hYqbLzB0s/PsqWimPqVEW+rI0fS8l/gfYMrU+1YYoo5nTLcPozPGb5DUGHhhpdLZdNk/FoIvRW15RZDYakDQKA99rp9nDJ4F+che8w8EcwwE17ECMhr769myzpMJOp0ZqjkxAS+Mp41LfXkPo0lphtaBOT4/2Ku1zKe0Gj8RQ2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qBoXj187; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9E56C433C7;
+	Sat, 24 Feb 2024 11:31:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708774268;
+	bh=bcm3DdqghLXqV1NDYxNhc4E3ZjWsODb7HUSJWc8HasI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=qBoXj187P+E9luvr9Axsx9150L4De7EaN940cIVttWMr7c7jJL8NXQgF8/raWWXNl
+	 Eq/F4upq5KMG93mJLniOyY0Je2IXCLhD7wNx/1VnJB/9hPIngT+tkA/qzhHoDfpmVR
+	 XTAfZm9tHemT/6HM+4nr34cEq8HHy7/iL8H9TSh8WiHSvhz121huf7QADtQbDrIU29
+	 KjGqs7oUnoAV2bnIgsQgJ2ya7XEIILD9abEaTYa+a64uSce8Cdix5fvOwPGJLqfL7E
+	 vzZH420bTizVHF6dPO8NqgrsWdVwafztNrTkORK2q0GU4dRwU/ICGWOxFXnbfgkRsX
+	 7ToAAzBRglDcw==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rdqFG-006M9n-Jj;
+	Sat, 24 Feb 2024 11:31:06 +0000
+Date: Sat, 24 Feb 2024 11:31:05 +0000
+Message-ID: <878r3a9k06.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Oliver Upton <oliver.upton@linux.dev>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	Zenghui Yu <yuzenghui@huawei.com>,
 	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/2] pwm: imx27: avoid PWM consumer API
-Date: Sat, 24 Feb 2024 12:29:01 +0100
-Message-Id: <20240224112902.55539-2-Leif.Middelschulte@gmail.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-145)
-In-Reply-To: <20240224112902.55539-1-Leif.Middelschulte@gmail.com>
-References: <20230906154215.4ikrrbx4xgx2nmu5@pengutronix.de>
- <20240224112902.55539-1-Leif.Middelschulte@gmail.com>
+	linux-kernel@vger.kernel.org,
+	kvmarm@lists.linux.dev,
+	Jing Zhang <jingzhangos@google.com>
+Subject: Re: [PATCH 3/3] irqchip/gic-v3-its: Print the vPE table installed in redistributor
+In-Reply-To: <ZdnO7QIYkxgDdl0i@linux.dev>
+References: <20240219185809.286724-1-oliver.upton@linux.dev>
+	<20240219185809.286724-4-oliver.upton@linux.dev>
+	<87bk869man.wl-maz@kernel.org>
+	<ZdnO7QIYkxgDdl0i@linux.dev>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, tglx@linutronix.de, yuzenghui@huawei.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, jingzhangos@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-Access struct members directly.
+On Sat, 24 Feb 2024 11:11:41 +0000,
+Oliver Upton <oliver.upton@linux.dev> wrote:
+> 
+> On Sat, Feb 24, 2024 at 10:41:36AM +0000, Marc Zyngier wrote:
+> > On Mon, 19 Feb 2024 18:58:08 +0000, Oliver Upton <oliver.upton@linux.dev> wrote:
+> > > -	pr_debug("CPU%d: VPROPBASER = %llx %*pbl\n",
+> > > -		 smp_processor_id(), val,
+> > > -		 cpumask_pr_args(gic_data_rdist()->vpe_table_mask));
+> > > +	pr_info("CPU%d: Using %s vPE table @%llx (%s)\n",
+> > > +		smp_processor_id(),
+> > > +		(val & GICR_VPROPBASER_4_1_INDIRECT) ? "indirect" : "direct",
+> > > +		val & GICR_VPROPBASER_4_1_ADDR,
+> > > +		(page) ? "allocated" :
+> > > +			 ((from_its) ? "inherited from ITS" : "inherited from RD"));
+> > 
+> > From past experience, having the vpe_table_mask value displayed did
+> > help tracking VPE table affinity bugs.
+> 
+> My reasoning behind it was that the change expanded the table mask by
+> way of printing what's going on at every RD. But easy enough to throw
+> back in!
 
-Signed-off-by: Leif Middelschulte <Leif.Middelschulte@gmail.com>
----
- drivers/pwm/pwm-imx27.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yeah, true enough. But the mask presents a nice, concise way to
+express the affinities that comparing a bunch of lines doesn't exactly
+convey.
 
-diff --git a/drivers/pwm/pwm-imx27.c b/drivers/pwm/pwm-imx27.c
-index cb564460b79c..d00d79a5edb1 100644
---- a/drivers/pwm/pwm-imx27.c
-+++ b/drivers/pwm/pwm-imx27.c
-@@ -255,7 +255,7 @@ static void pwm_imx27_wait_fifo_slot(struct pwm_chip *chip,
- 	sr = readl(imx->mmio_base + MX3_PWMSR);
- 	fifoav = FIELD_GET(MX3_PWMSR_FIFOAV, sr);
- 	if (fifoav == MX3_PWMSR_FIFOAV_4WORDS) {
--		period_ms = DIV_ROUND_UP_ULL(pwm_get_period(pwm),
-+		period_ms = DIV_ROUND_UP_ULL(pwm->state.period,
- 					 NSEC_PER_MSEC);
- 		msleep(period_ms);
- 
+> 
+> > This said, my problem with this patch is that we already have tons of
+> > these statement printed once per CPU/RD. This is really huge and
+> > accounts for a significant part of the boot time on large machines
+> > (64+ CPUs).
+> > 
+> > Before we add more of those, I'd really want to have a way to tone
+> > them down and only print them at runtime *if* required by the user.
+> > Kind of a dymanic debug, but driven from the command-line and present
+> > early enough.
+> 
+> Yeah, what'd be really nice is a way to enable pr_debug() on a per
+> file / driver / whatever basis, since turning on all of it becomes a bit
+> of a firehose... But I guess that's what grep is for.
+> 
+> WDYT about leaving it at pr_debug() for now, with the additional context
+> of what exactly VPROPBASE is getting programmend with?
+
+Yup, I'm all for that. Hopefully we can find a good way to way to
+control the debug output in the near future.
+
+Thanks,
+
+	M.
+
 -- 
-2.39.3 (Apple Git-145)
-
+Without deviation from the norm, progress is not possible.
 
