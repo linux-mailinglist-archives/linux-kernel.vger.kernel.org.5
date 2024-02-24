@@ -1,172 +1,142 @@
-Return-Path: <linux-kernel+bounces-79890-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79891-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 955288627F3
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 23:34:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51B668627FD
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 23:34:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C116282368
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 22:34:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEBE61F21974
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 22:34:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78CFC4D9F7;
-	Sat, 24 Feb 2024 22:33:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26EE54E1C3;
+	Sat, 24 Feb 2024 22:34:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m0+W48qr"
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SFUX6wpq"
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DA9C14B820;
-	Sat, 24 Feb 2024 22:33:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E1941CD12
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 22:34:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708814034; cv=none; b=VTEIl0aGjM8xqXZKPlbcudnS0HdNzEWrvh9dmdE7Z8bK26bnWqCsp6Tr8N1XuHFd1KL3jxWKy3PkTn6d4Ktpg548jlSUVygzMmaoWYxNuh/5NVEMXmXFjFQRZ70oCJeCBEuQERBy1/0zBwk6mSBIcUqBxAm8XKheEL6kln6J6RY=
+	t=1708814089; cv=none; b=BF1O64DtepcFDGfeNK5EG41ShZYuel8QQ8e2zFgKfYAY0SdcMnXKSj2c9G99maak7dxbp0VqkK1l4gWoa/yRkSCd0aA8TPb1sSWCZZydwaLYcIAFP3BmfQNbf5byFlSDakfx2aL4p4nmVeZl6HEqUw00FpVXSR4EleyQ/P6miCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708814034; c=relaxed/simple;
-	bh=5cN6RyEs305wtcE1lbo5oKHKBFN5ZgQUw5ebMX49fcA=;
+	s=arc-20240116; t=1708814089; c=relaxed/simple;
+	bh=eulGHgL6SA7y7GwoqKwqLFCs+wque3qqAtEd/9jIavI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Dpkp4orUAT9Pe9hJaPMnArlhTOtUXeqZcI4pcl1Of/0+DALs2JLOgsXku12i2XpshLe+epV3impY7I3aEOtBihPwzkccjlDXwlt5D/XxydGAncVntjF34DPZdDZBPnVqIfbXjmdQzUCkjXa1a6ewXFXVuOIf8gv6IgKLDdwlW5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m0+W48qr; arc=none smtp.client-ip=209.85.167.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3c15dd2a1fdso1640873b6e.2;
-        Sat, 24 Feb 2024 14:33:53 -0800 (PST)
+	 To:Cc:Content-Type; b=cq/JEGmrhZ30GNvUAhJJwWs7h05GVMaxfwgLSNDgVvbQRRWmqA4q9idrCdJ/qyfHK04YaCA7UNxNnqn29UYaJ8NqVRQ11dexYR3wVg9nrpHNd4hZetWG77vM1K2StD4osCDDrzwCN5hKes8ww3fMXNjgdqgyunYT8zMFSX3CWvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SFUX6wpq; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-608e3530941so2155547b3.1
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 14:34:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708814032; x=1709418832; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l6gPHmRlLFFQMWkc4uxPzbDvlnlcPP+R+SMH5i+OHHA=;
-        b=m0+W48qrZXIP10G3IPrRV13842HLA905e4lknjVsLjtv5aoufmDItk6BR+7cK9QtEH
-         UeSs7H2IZBu+ZEUkkJe1pCr5zw7ALF6NoBhuaFqEUagtQbfiu3La89mWnb3ZpthC0/td
-         uZFmLfdPonw1/lDRWcuQdXYptP/iFtIPIeySBscRKycYRhjFoOuedZwVc8qmV0BWEFjW
-         4u9whgA3vPhtpSnwDqLKhE3iVdC2djIYbmloB7jhkdiTp6YpP56ELwXOqTqXna5Mz/S4
-         zx6bgWkUFs/Ev1uWtDkPdZNwX+4a8jRQUaA8JGJl8wWOVbvdYcZzSryVUXM318kVQRIv
-         HE1Q==
+        d=linaro.org; s=google; t=1708814086; x=1709418886; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=fSWAzifwmBABORc4RLjDBXc5wdSEcZlyZ0ioROWY0qc=;
+        b=SFUX6wpqAPCSrbTryE7iUsXUBgaOrQ2fcKq//h465qYsvEUVFZpPH28XevuOxzkmxq
+         Wu1R7KcKZHiOgTjvvhgM4/Q1yn2pueQDl7y1q9lW+DzwAr5dXDOFINu9u9MOAPEVfEce
+         ye4IuPqcphUwQsAAvSX59A+Ua7O3tO4HVxeZAKf116mVYl17mbxAkPTgYv8T8bsXi04T
+         Y/Q4mL6paqMFhQDjjI+QVFJgRo87l0xOHJ8ULNY9zsRIMZlf24OwnkVsuqom7UEJ8M6I
+         XJ/H4bXccMgCqjQywnC8CxIMS+nFxfcTAtSOKXY7p4wuGtOnBKtSqCukwpsMavNcybCS
+         fLew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708814032; x=1709418832;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l6gPHmRlLFFQMWkc4uxPzbDvlnlcPP+R+SMH5i+OHHA=;
-        b=tL1GKgseW/16RV8KnoC5Ji9PNKBJ+LlM2atj823pvG2ii5HQ6g3g2CBeXBwR4+0cvj
-         CVU697pB3ePdXyew5DTrcBGYFUS3G3PFtpD7NZozIGltm1Hog/xpFBTrIRVLxPNFzZ68
-         maSlD43W9IKzGSlzXIip3UWBtNHmudQw1j97OOlz5NCruzj8vZugY0NApfAfojA4gcGG
-         w83ACyJbXgz6q6WACZADvMqX+MHcMfFhRkW/pExVzQN2XBo0b3FRB9QSFc3LFWK22H0D
-         3tVoXUwWlL5aHv2ZVMoEN9gz4dRmHdksU6jPpGJYuAnX0oGLSSSZuD2TR8kUmFMZtgGd
-         dMcQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWkSAo4gXy7k+jTaN/leeZ/Hd86Pw7JqBdMePDOZ5m+SDLsJJ6G3LRkTXSXT7XFIdobJ9f6x1zjalEvA5/kvDTa2CajBosmjBjs4D0f/Lto50qWrqvFRrxVNIbvn8wprqlOqWLWWoRn
-X-Gm-Message-State: AOJu0Yxchio4s0yQb0BQYfSyXkSZgxPWc2UrDWVYsJJGpif/rGwNL5WQ
-	gIq5lO0I17Gdh9cBlZj2d6rBWId8Q5KYD4rQv0Y05Vm4KmGRnuQ78MHe3EvD5438NWfKDj33D4U
-	IXuE9fDvaCbqtnXoRjpoBPe+j3vA=
-X-Google-Smtp-Source: AGHT+IEixbNflSAfDemWTfeO2tzJy5oyppYUIZrtnSDDjXS2qZU3KwpIovwEEi3NVJMYFTxUs4wxrPGKGjadb4aHu9Q=
-X-Received: by 2002:a05:6808:238b:b0:3be:a516:6ed5 with SMTP id
- bp11-20020a056808238b00b003bea5166ed5mr3578004oib.57.1708814032281; Sat, 24
- Feb 2024 14:33:52 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708814086; x=1709418886;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fSWAzifwmBABORc4RLjDBXc5wdSEcZlyZ0ioROWY0qc=;
+        b=Wgde+xCYjwKrXw+zpw4mKS6iJQ8V3GW+vntq7nox1d5B6+6iZfSK6uEBGL/cw8KRwm
+         gPvz+9cXjXzD/Me1cR9bZXVe2T3TjJCdje8F8EIL6IrP0VPsAO30A79hvXNtaUafJ3sw
+         QqZ37vJXVM2bM3NPtnHoaMLPujc/MqeEpwb2CoKbTzxeF+9/ZtlsM3NkSFe2tI5SiHa4
+         jkrIYhSmd5iRqVwHk9yK/sxjGhOQK3TTyxwPq647ORKpuwzmPqSWE3j0r/AYQP84EZ1F
+         XgQyLJ++zBjJfVakj1R73rKbfBfaSUF4Jz9Bk9j1JC+6bcqdVNpVl1G+/eQVo7rxysyb
+         FsEw==
+X-Forwarded-Encrypted: i=1; AJvYcCXDe4pxCGvGouGZ31UvRVzHu4gqKPCimLWwES4plnefa8Zp2YpsNgoK8KMy8kNc+KBJ5sdFghFjQrjMripym1zFCnFqbmEWYCtTgGum
+X-Gm-Message-State: AOJu0Yy7rjCPspi9qOp/ihskuEO+AiW4Qwsjw7h1dLBBMuIZoUBKIDUU
+	srY8HnUvKf8BtvFNMnY+wiGcKzGFwB8e7koazD7D5YFKlpJN57OVrRonwz3JAEH2minzouz6F84
+	1FXIlN4paHnwoj5wTwf8eDthIXC0/61DzHTnxVTHL/YncdZJV
+X-Google-Smtp-Source: AGHT+IEt0J5rY6GTeFZWhG/mY3NWmwow/MGIgHtdSvjrLUVIVDeFiV4UIk5CN4JD9H1JkWvYeScpNmeVrxVqVCTFU04=
+X-Received: by 2002:a05:690c:c1b:b0:608:3c43:9186 with SMTP id
+ cl27-20020a05690c0c1b00b006083c439186mr3300115ywb.45.1708814086115; Sat, 24
+ Feb 2024 14:34:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240224215023.5271-1-21cnbao@gmail.com> <20240224220819.49277-1-sj@kernel.org>
-In-Reply-To: <20240224220819.49277-1-sj@kernel.org>
-From: Barry Song <21cnbao@gmail.com>
-Date: Sun, 25 Feb 2024 11:33:40 +1300
-Message-ID: <CAGsJ_4wAx4fA3oR4=JogZ1HAj6fBFRH2c_KmvwSceuPiUWBYFQ@mail.gmail.com>
-Subject: Re: [PATCH] Docs/mm/damon/design: describe the differences for
- pageout's virtual address and physcial address
-To: SeongJae Park <sj@kernel.org>
-Cc: corbet@lwn.net, linux-mm@kvack.org, akpm@linux-foundation.org, 
-	damon@lists.linux.dev, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>, 
-	Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>
+References: <20240222-x1e80100-display-refactor-connector-v2-0-bd4197dfceab@linaro.org>
+ <20240222-x1e80100-display-refactor-connector-v2-1-bd4197dfceab@linaro.org>
+In-Reply-To: <20240222-x1e80100-display-refactor-connector-v2-1-bd4197dfceab@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Sun, 25 Feb 2024 00:34:34 +0200
+Message-ID: <CAA8EJppOBHhaZpS_Z34fmFmGr4aRe0-k8w=5ScquNhCrnzRDgw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: display: msm: dp-controller: document
+ X1E80100 compatible
+To: Abel Vesa <abel.vesa@linaro.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>
+Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, Kuogee Hsieh <quic_khsieh@quicinc.com>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Johan Hovold <johan@kernel.org>, linux-arm-msm@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Feb 25, 2024 at 11:08=E2=80=AFAM SeongJae Park <sj@kernel.org> wrot=
-e:
+On Thu, 22 Feb 2024 at 17:55, Abel Vesa <abel.vesa@linaro.org> wrote:
 >
-> Hi Barry,
+> Add the X1E80100 to the list of compatibles and document the is-edp
+> flag. The controllers are expected to operate in DP mode by default,
+> and this flag can be used to select eDP mode.
 >
-> On Sun, 25 Feb 2024 10:50:23 +1300 Barry Song <21cnbao@gmail.com> wrote:
->
-> > From: Barry Song <v-songbaohua@oppo.com>
-> >
-> > The doc needs update. As only in the case of virtual address, we are
-> > calling madvise() with MADV_PAGEOUT; but in the case of physical
-> > address, we are actually calling reclaim_pages() directly. And
-> > madvise() with MADV_PAGEOUT is much more aggresive on reclamation
-> > compared to reclaim_pages() on paddr.
->
-> Thank you for this nice patch :)
->
-> >
-> > Cc: SeongJae Park <sj@kernel.org>
-> > Cc: Minchan Kim <minchan@kernel.org>
-> > Cc: Michal Hocko <mhocko@suse.com>
-> > Cc: Johannes Weiner <hannes@cmpxchg.org>
-> > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> > ---
-> >  Documentation/mm/damon/design.rst | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/mm/damon/design.rst b/Documentation/mm/damon=
-/design.rst
-> > index 8c89d26f0baa..6c50743552f5 100644
-> > --- a/Documentation/mm/damon/design.rst
-> > +++ b/Documentation/mm/damon/design.rst
-> > @@ -315,7 +315,13 @@ that supports each action are as below.
-> >     Supported by ``vaddr`` and ``fvaddr`` operations set.
-> >   - ``cold``: Call ``madvise()`` for the region with ``MADV_COLD``.
-> >     Supported by ``vaddr`` and ``fvaddr`` operations set.
-> > - - ``pageout``: Call ``madvise()`` for the region with ``MADV_PAGEOUT`=
-`.
-> > + - ``pageout``: Call ``madvise()`` for the region with ``MADV_PAGEOUT`=
-` if
-> > +   the region is using virtual address; otherwise, call ``reclaim_page=
-s()``
-> > +   for the region if physical address is used.
-> > +   ``madvise()``  with ``MADV_PAGEOUT``  is aggressively reclaiming me=
-mory
-> > +   when pages are not shared by multiple processes. Differently, paddr=
-'s
-> > +   pageout  will do the best-effort reclamation by scanning PTEs to fi=
-gure
-> > +   out if pages are young, if not, pages are reclaimed.
->
-> I think this might be too much details.  Especially, explanation of
-> ``MADV_PAGEOUT`` might better to be done on it's document.  We wouldn't w=
-ant to
-> update two places for future changes to ``MADV_PAGEOUT``.  What do you th=
-ink
-> about making it simple and independent from the implementation detail?  F=
-or
-> example,
->
->     - - ``pageout``: Call ``madvise()`` for the region with ``MADV_PAGEOU=
-T``.
->     + - ``pageout``: Reclaim the region.
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 
-make sense. as someday we might rename reclaim_pages to reclaim_folios or
-something else. and we might not use madvise() for vaddr any more, who know=
-s:-)
-so it is more sensible to remove the details.
-I will send v2 to follow your proposal.
+Rob, Krzysztof, Connor, gracious ping for the review. It would be
+really nice to merge this patchset during the next cycle. It also
+unbreaks several other patches.
 
+> ---
+>  Documentation/devicetree/bindings/display/msm/dp-controller.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
 >
-> Thanks,
-> SJ
+> diff --git a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
+> index ae53cbfb2193..ed11852e403d 100644
+> --- a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
+> +++ b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
+> @@ -27,6 +27,7 @@ properties:
+>            - qcom,sdm845-dp
+>            - qcom,sm8350-dp
+>            - qcom,sm8650-dp
+> +          - qcom,x1e80100-dp
+>        - items:
+>            - enum:
+>                - qcom,sm8150-dp
+> @@ -73,6 +74,11 @@ properties:
+>        - description: phy 0 parent
+>        - description: phy 1 parent
 >
-> >     Supported by ``vaddr``, ``fvaddr`` and ``paddr`` operations set.
-> >   - ``hugepage``: Call ``madvise()`` for the region with ``MADV_HUGEPAG=
-E``.
-> >     Supported by ``vaddr`` and ``fvaddr`` operations set.
-> > --
-> > 2.34.1
+> +  is-edp:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      Tells the controller to switch to eDP mode
+> +
+>    phys:
+>      maxItems: 1
+>
+>
+> --
+> 2.34.1
+>
 
-Thanks
-Barry
+
+-- 
+With best wishes
+Dmitry
 
