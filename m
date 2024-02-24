@@ -1,136 +1,139 @@
-Return-Path: <linux-kernel+bounces-79900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79901-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B341862870
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 00:12:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8A36862873
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 00:20:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4B731F21A5D
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 23:12:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78F40B212C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 23:20:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1027A4DA1C;
-	Sat, 24 Feb 2024 23:12:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CD214EB20;
+	Sat, 24 Feb 2024 23:20:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="Wz/SoFsQ"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gr4Dx+q3"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F3CC4DA15
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 23:12:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37D691B59A;
+	Sat, 24 Feb 2024 23:20:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708816338; cv=none; b=G2JJRfDHsRtI5uvWu7xCeDhUa8mqKYV6Qf/HjkSS16eTknhsXoo08bPBl9vE2Zsoj4dxHzadYluqDsNLJh/Cwyx6puexUXdDw6wmfDf6kUXnEfI2+B4LwN8ICelwPP5RliwJjMR2X3qWR+/KnVMxaTAPvefBNqVUWfQdvTwq3sc=
+	t=1708816817; cv=none; b=ZWK2BAO0Tw+yFUNS5Pi7ZP7Qq1c2WGe/t2Q4FrzVYKlSoammQLLo3NxdeLBmeBdBOG8mJYJUc6v6hVOw2S/C7tbRco5x6yoX2h/ZW+NNEyEYXo+ANqmn0yzjHbER2IoHrCHLg/KLudu8u+iZRKHxmY9I5RiraqYbHaG6MZ/2t9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708816338; c=relaxed/simple;
-	bh=1G6UBPQOt1jMUOLwIKI1YddODQf7olQpZNiocdqVRrc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MhqOthT9b6CBgiAPE53RUVx4hs6z9ujDksxbDMkdv7lusZ+muq6+e6QXVMoP75bTbnP/+gv5RL+I1L3Tq/Gqkz1AL9QzrqhYN0ZsSX1ErYJcHc8X9CKCDzbA/DPK3aw4I1oYpSW/J8JtREI2CvEVr4Ce3zuPFirasPInz1RdqT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=Wz/SoFsQ; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d2770e44d0so15758691fa.2
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 15:12:16 -0800 (PST)
+	s=arc-20240116; t=1708816817; c=relaxed/simple;
+	bh=ddpbApfXPnRAvt72tIRg9a0nGvs0psYM9aIpXQBkLgY=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=uicnWJpbdTiGb8txOMUuOA7GuJpR72ksIiXajfMwjr3YhU7yUoq5i0VWqzTxNSAP2uKdrzhCzfgzG0eB8vim0k9bO+uupxEJJc4MQT/kBcwMXXw6jY7Rsvh8DW/RrNC/rN9+b8xho7/grHt+9Cfyes40M2izhBLMCvxDXGw/Xc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gr4Dx+q3; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-512a65cd2c7so2797387e87.0;
+        Sat, 24 Feb 2024 15:20:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1708816335; x=1709421135; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Uyo66Ikrhwk+3TAWwFJQUJfWyVOGzjT5F7h+oNDShA=;
-        b=Wz/SoFsQaBL3n4nG90Pm3wvoxP9OHLi0Hw0BbBN7gBqZPsakZpmVuqimcYuauMH1Ro
-         +gaDE+zV9HWHgwo84BLD3Dz2DPjc2bRDrzhjzNUEcvQ7Wsb3vwEkDkdc/DReBTHRwkAH
-         llzVfBgbimy2XU4zPLCXBKlYjDPpwOSLAquO+xtDQ0eQmGO+iB7NvB+qezXmkJosRLA8
-         aKOAdF1CyMwN0w5ue1UznfYQqO2iWiikxSF9nbWDwqmwXWooXZcObAOMnlv6ctP5Vjql
-         0v9O9acJKltnVbRprAVY2I4LRTKDW/KarRqKj9fk2XLbRCZsjZuWyYNs0gznKB6DlYIQ
-         1oKg==
+        d=gmail.com; s=20230601; t=1708816814; x=1709421614; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ewC5em/L4cp2/EK3EgWgLTwF3e1USIQQRxwh9lx3yRY=;
+        b=Gr4Dx+q3AHyF/zawHHmeTctgVUQTrk8BYWmbxihnweavCClSAmaIUafRBAIFrzh7f1
+         ifRmPL/VVpMLz2AKX/H0Mpp9Sp9IR5GOyeZHk7xsuVKZgZ+09w3ihEDPE4bwpc2ffdbQ
+         q3A2jrHVDF7BtJx4PGWII4SQ9j6c6iHqSLfuHxEeRaTjrTohs9lVKD0yuoNzrBotIS12
+         UGl1v3ZnWzlIK6/HZltGedFpI9UFUuqLsF6VuXVbt47vNIcf1eOjwpiUYttHZxDOUuZc
+         OmmLWRMfXeNjBN8IdEo1jB/gvq2bzHYaMqizro37BPDxBXDW+axujjMwyFwKA7wKoSg+
+         JjLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708816335; x=1709421135;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+Uyo66Ikrhwk+3TAWwFJQUJfWyVOGzjT5F7h+oNDShA=;
-        b=JJmC0tQ2EAGmdwe2QTuhnO4qiRIhptSl/K0GRj7PtweHp9gWw/RBvZL/w1veLS1bpl
-         iVVQ+gaLBk4hSb7YDQ0gPeIEcht6uYCWMZ9ubav6AR5HzDCmrkSqq1AG6+r4FuSOgb1k
-         BBTHKlXIgg7oHRJ0GCSRE/VSoURUwbccYmykWqAgAF+VY41DE470svmp1cjZE3qB8wfi
-         tiy0hsHpO6598jWpKkMmRiBLmihvrafq3l0EcrmhcmMzmefKXqGdoPm7TB8cwjkNjIa5
-         jt5dCaRUlEeLIg2Os4DwQqCMXSYwzPL604badhlL/TA4cGh6HeHlcWzXhMk4SI6leRPQ
-         8zrw==
-X-Gm-Message-State: AOJu0YwPxNFlVKK5r2EcriAxZMnU4u4voZwvRXfT+3KQo8W0nzO/NcfY
-	7Ku3AhzvDoqHswXYbvvmbmR9X7Vbz2he77oVRIOO79a293asfpLROHAuKe0q9FM3K9BuMopvKgB
-	O
-X-Google-Smtp-Source: AGHT+IEGUEiM1Td2l08D5DZPTBAcbK/Z5mNG2Kxs7gu0Tbs6Fv0kqittUkx1PuvP4tyHOX3WN3jUgw==
-X-Received: by 2002:a2e:9209:0:b0:2d2:3a8e:e2b4 with SMTP id k9-20020a2e9209000000b002d23a8ee2b4mr1581862ljg.42.1708816334594;
-        Sat, 24 Feb 2024 15:12:14 -0800 (PST)
-Received: from airbuntu (host109-154-46-208.range109-154.btcentralplus.com. [109.154.46.208])
-        by smtp.gmail.com with ESMTPSA id t8-20020a05600c198800b00412a218a68fsm379464wmq.31.2024.02.24.15.12.13
+        d=1e100.net; s=20230601; t=1708816814; x=1709421614;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ewC5em/L4cp2/EK3EgWgLTwF3e1USIQQRxwh9lx3yRY=;
+        b=MFB4jJnbPAFr7e37oYdcT5hbEQXjXw0FVS9D/NKVmx8ubIE3RVZyb3wCgyidBYW84A
+         e9uq2YLfEVD8MVijHYIDtMuVUx/m8bBWCfD3twfGQMNRTROHEqm/yIS6WsuWdqamh1yY
+         wiXsfFKIlkBxSrY+qyZqggOPo15HRcRDPg1mg/fmrr54uad0drx6ih67p2vGYESaTSby
+         /8pEjZg4ccDqHtdbucvQgE+gKnuex5SFHlurlai8A7dHgLfh3yEltuIX2XlBuawWATXG
+         v8Y4DrjSjfEqusRqTrJ0BqB2tr30LBpvUR50UB82sdJTmQRr3NVfRWHrpvidGgxujlkv
+         SIVg==
+X-Forwarded-Encrypted: i=1; AJvYcCUBnivK1dfv3vlccC2MqLBfiZ4D+VnG3hNzKAm0L3PVIX999SQbJXvJUE+ieI6kMR9Hznf6flFllybLgz0P2RY7rQmzPG0kYAiamAGSxCPjNdjm/ZwGvFX7/rWYhNCPJCVSPJUXQGk5
+X-Gm-Message-State: AOJu0Ywxk46lcchqEqnW2EKuGSDxALLF8jtAStqQ+c6Qpd/Hu7uXh2sV
+	c4jWlCDFHd7zeg/SvQrS82B/Dru/E30kkty4LdVjXk0qNBCzT8wQ
+X-Google-Smtp-Source: AGHT+IFZ3ISb+iAdCSF6RROWczKAp5Me66N/c0/Abte9/kVtdGpQs7KuFb8Ryxa+5C3vL+a+Xlxvyw==
+X-Received: by 2002:ac2:4c36:0:b0:512:ae9b:559 with SMTP id u22-20020ac24c36000000b00512ae9b0559mr1705374lfq.34.1708816814128;
+        Sat, 24 Feb 2024 15:20:14 -0800 (PST)
+Received: from [127.0.1.1] (2a02-8389-41cf-e200-75bf-ebcd-fec9-7873.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:75bf:ebcd:fec9:7873])
+        by smtp.gmail.com with ESMTPSA id vh9-20020a170907d38900b00a4323d1b18fsm75344ejc.34.2024.02.24.15.20.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Feb 2024 15:12:14 -0800 (PST)
-Date: Sat, 24 Feb 2024 23:12:13 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: Shrikanth Hegde <sshegde@linux.ibm.com>
-Cc: linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-	Sudeep Holla <sudeep.holla@arm.com>, Wei Wang <wvw@google.com>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Christoph Hellwig <hch@infradead.org>, Jens Axboe <axboe@kernel.dk>,
-	Ingo Molnar <mingo@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>
-Subject: Re: [PATCH v2 0/2] sched: blk: Handle HMP systems when completing IO
-Message-ID: <20240224231213.7zszol4lfq2zc7ey@airbuntu>
-References: <20240223155749.2958009-1-qyousef@layalina.io>
- <1bb797ef-573b-4bda-98bf-1eb63f6f4ffe@linux.ibm.com>
+        Sat, 24 Feb 2024 15:20:13 -0800 (PST)
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Date: Sun, 25 Feb 2024 00:20:06 +0100
+Subject: [PATCH] net: usb: dm9601: fix wrong return value in
+ dm9601_mdio_read
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1bb797ef-573b-4bda-98bf-1eb63f6f4ffe@linux.ibm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240225-dm9601_ret_err-v1-1-02c1d959ea59@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAKV52mUC/x3MSwqAMAwA0atI1hbSoEK9ikiRNmoWfkhFBOndL
+ S7fYuaFxCqcoK9eUL4lybEX2LqCsE77wkZiMRBSg0SNiZvr0Hrly7OqwckFF10bokUo0ak8y/M
+ PhzHnD/syCglgAAAA
+To: Peter Korsgaard <peter@korsgaard.com>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org, linux-usb@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>
+X-Mailer: b4 0.14-dev
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708816813; l=1563;
+ i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
+ bh=ddpbApfXPnRAvt72tIRg9a0nGvs0psYM9aIpXQBkLgY=;
+ b=LQY/Y23hWUYaQe2RKybVLCRW+6QDIdyppqxDWZ0SdXIX5gWkG7IdeMab+0+8M5Cm2Up+roC8c
+ 4KcWpnmHFr+CusG+Qvae0a1tmKeSIdMyytGYCZpMAv9MZlsav6wiDUn
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
 
-On 02/24/24 19:13, Shrikanth Hegde wrote:
-> 
-> 
-> On 2/23/24 9:27 PM, Qais Yousef wrote:
-> > Due to recent changes in how topology is represented on asymmetric multi
-> > processing systems like big.LITTLE where all cpus share the last LLC, there is
-> > a performance regression as cpus with different compute capacities appear under
-> > the same LLC and we no longer send an IPI when the requester is running on
-> > a different cluster with different compute capacity.
-> > 
-> > Restore the old behavior by adding a new cpus_equal_capacity() function to help
-> > check for the new condition for these systems.
-> > 
-> > Changes since v1:
-> > 
-> > 	* Split the patch per subsystem.
-> > 	* Convert cpus_gte_capacity() to cpus_equal_capacity()
-> > 	* Make cpus_equal_capacity() return immediately for SMP systems.
-> > 
-> 
-> nit: Did you mean !SMP systems here? 
-> Because in changes i see its returning true directly if its in !CONFIG_SMP path. 
+The MII code does not check the return value of mdio_read (among
+others), and therefore no error code should be sent. A previous fix to
+the use of an uninitialized variable propagates negative error codes,
+that might lead to wrong operations by the MII library.
 
-I was referring to this hunk
+An example of such issues is the use of mii_nway_restart by the dm9601
+driver. The mii_nway_restart function does not check the value returned
+by mdio_read, which in this case might be a negative number which could
+contain the exact bit the function checks (BMCR_ANENABLE = 0x1000).
 
-+       if (!sched_asym_cpucap_active())
-+               return true;
+Return zero in case of error, as it is common practice in users of
+mdio_read to avoid wrong uses of the return value.
 
-in cpus_equal_capacity(). In SMP system the condition is always true and
-there's a static key that tells us if the system is asymmetric.
+Fixes: 8f8abb863fa5 ("net: usb: dm9601: fix uninitialized variable use in dm9601_mdio_read")
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+---
+ drivers/net/usb/dm9601.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> > Qais Yousef (2):
-> >   sched: Add a new function to compare if two cpus have the same
-> >     capacity
-> >   block/blk-mq: Don't complete locally if capacities are different
-> > 
-> >  block/blk-mq.c                 |  5 +++--
-> >  include/linux/sched/topology.h |  6 ++++++
-> >  kernel/sched/core.c            | 11 +++++++++++
-> >  3 files changed, 20 insertions(+), 2 deletions(-)
-> > 
+diff --git a/drivers/net/usb/dm9601.c b/drivers/net/usb/dm9601.c
+index 99ec1d4a972d..8b6d6a1b3c2e 100644
+--- a/drivers/net/usb/dm9601.c
++++ b/drivers/net/usb/dm9601.c
+@@ -232,7 +232,7 @@ static int dm9601_mdio_read(struct net_device *netdev, int phy_id, int loc)
+ 	err = dm_read_shared_word(dev, 1, loc, &res);
+ 	if (err < 0) {
+ 		netdev_err(dev->net, "MDIO read error: %d\n", err);
+-		return err;
++		return 0;
+ 	}
+ 
+ 	netdev_dbg(dev->net,
+
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20240224-dm9601_ret_err-0a9c9d95cd10
+
+Best regards,
+-- 
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
+
 
