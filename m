@@ -1,115 +1,118 @@
-Return-Path: <linux-kernel+bounces-79472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF1C38622B5
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 06:22:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCB6B8622B8
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 06:25:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAF6D1C21B1B
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 05:22:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7172B227F2
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 05:25:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9020C168D2;
-	Sat, 24 Feb 2024 05:22:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 527DE17541;
+	Sat, 24 Feb 2024 05:25:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BGS3zr0D"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="d8y47D9g"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4CBB1FAA;
-	Sat, 24 Feb 2024 05:22:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C31DF1FAA
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 05:24:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708752134; cv=none; b=QcfMG9OIwzHh4NYMiEZNakzWyY/hiWLefV4MiwrkEETZ2kJafSll8hqptFiyx2v1dF7SO2DXR38qJDhAltLkKtnksFaVtHM2Z5++OIUR15F2g3XbuHBaxrlJjqZ63we/LKv1/Ou1Z7e0lM6ftAFfWkgnFkaj6T/fpGC/J9Sue2w=
+	t=1708752319; cv=none; b=Omwn4/Y74FK87RVxfJT9bDNqO+NhkvwJXp7u/qSG63nn3FOcPRjFn096AqvDg+bhOQRnfMPf8eOR6ZICIkRqPe7vWcjAa9w783aJ9nadNokojfzaPPp09/xaSPOL8mW+IPpEDm8LMkcIm3ql2kbT1EVvk4xNzrRgVDFdBFUfZRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708752134; c=relaxed/simple;
-	bh=HHtLlzJRzglu7AQ6pOsFiUQ6vA11VIbiU2QckkHsOCE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FltVOfvUj8Imhl9FD5uRox1niJiRDT2hfpnxoH+NhzzY6QiZC6gX4oSoPf/Xn90yDGux7n1pHgF0blYUPIjmDuVbwOJb2dfJ8VX4R2yg6RWifudVfFoDBHFjovdkMcfHgnYVuK1UQqy+sIdxp2ZLxKaCrH5bEMer+oV+Ehj0A/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BGS3zr0D; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AF8BC433C7;
-	Sat, 24 Feb 2024 05:22:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708752134;
-	bh=HHtLlzJRzglu7AQ6pOsFiUQ6vA11VIbiU2QckkHsOCE=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=BGS3zr0Dc2B8CEcSjLJZWSAuMc7gjQc+c7Z6nUd6h8bEM/aYwFphEW6tNOjE9ykxv
-	 9EUnESBKrjJNbFdlI7d57A8D85/zOYGu3mMMKNWJh10iTdmJ4F/G7UhwOCbAPAifPO
-	 wr5TKwkNNlTW4johOgGw9xUrBzVjUkjunWXqHcdhRtyOVM+gBgc5fsUNtxio5WyWgX
-	 rTtf80OwPZNxaPmXjUNNqqf5QIsEwxcGkviNe9NS3bvJiWuATLuhBLAZTNUxAobGlw
-	 qqiVywhMfpqIv+Ar5f9YaYntvLaa1n2Re3ccW09mW7BV3uAB7ad9Rw1C3Jt6xKQai3
-	 OLz67S7C02KrQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E938ACE1113; Fri, 23 Feb 2024 21:22:13 -0800 (PST)
-Date: Fri, 23 Feb 2024 21:22:13 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: neeraj.upadhyay@kernel.org, frederic@kernel.org, boqun.feng@gmail.com,
-	josh@joshtriplett.org, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Update Neeraj's email address
-Message-ID: <1e44377c-70f6-484d-895c-7ad17439fa09@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240224045730.29812-1-neeraj.upadhyay@kernel.org>
- <cfe9394d-8144-48d0-a8f1-de9fb54eabc5@joelfernandes.org>
+	s=arc-20240116; t=1708752319; c=relaxed/simple;
+	bh=QUVWQXF4RnbcTmcdlBVlHaewtgXiBHCNt2bTtC2kEk4=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Cc:Content-Type; b=l5Fbp1LJCVpG+f+d5jqi8BowB7gTsVvztUjuPj/1DYjFuTj4a+Xjp91v8TA8sygw6oTCziRCQrhCPFXHwt6p4yPWRfmgT0Y2n4AZXP6rV0F3V4HVYdNapWX78HyO3MnnElwAf1ZFgQjAooiZPiT3mOTTZxu3IlRBGXPpjbJprJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=d8y47D9g; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5ee22efe5eeso27489517b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 21:24:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708752278; x=1709357078; darn=vger.kernel.org;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=NmM7cCBUfnsEzWOUWxpGwPzttTnkh5grF+m9vEmGQ0Y=;
+        b=d8y47D9g19pxlwzf3UZp5qNEWdXp+nZZas5JoZkAfClrGXIGtrAYXV8pNLdm2nxAj3
+         8IrVgVOoBUKWbvv8Vmd2al8w2TZZBOJiZtoX5LYY0hDn5JlcebyBGB2Kq8NAo8HFk3Ym
+         S+7Zf4O5Y/xJv39jJ0eZg8IFxAniSKd5YsRHURy61xLKG6y0y0v/tHlM9+7J9w06Yb6F
+         kz29u8V3udFhKs0A1NlvQXNltcPcj3ig+AMgpdd6iLozBLvxTIS5a4wlwj5cu0I9JJma
+         jLCLa3zW18s/HmCvQb3jbpGCthe+sZ/OalBeFr0cWPu0vp5GoV0SArPTRXinJvFDGX2j
+         +Ahg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708752278; x=1709357078;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NmM7cCBUfnsEzWOUWxpGwPzttTnkh5grF+m9vEmGQ0Y=;
+        b=LVu8U00J4E6l5unVhg7JftD5Oj+Q/IMfgssH/h1tknpUYuqH/k86MfrGLR1cVweDRM
+         XKv8I8er0tob3BfOmGKKOL+2iGTO7hx3IVS5nzdslYfmOckpmXs8zgZFxNMaCjIVrcyM
+         F0Q4yIS9lyNDyzksuMGE62MLxiaux0YjpKoKJA03AUvkRCQZ98d73LJ5Ygw/krlbkA8M
+         5Oi5MIez2mWHAd+umKxvBte5CIp4sHY+yek1cOXIiCTxajRKe2CB8gmR98jiCFZZ5avo
+         UpqMf86hEGAfVStT7E9f2NYC24t5pa+VwB+nQ4wvo7xWKYEZnr1UU/RULT9LVtwtV1tw
+         7z2w==
+X-Forwarded-Encrypted: i=1; AJvYcCX4rq317mc3FIC0848Xc2f2RemqNBikbASZUpSNWa0HkccSNRwg2kZEtToNdQYJOQ3H0BDp+fTKKaVHp4lJkd0fbJrET7LqEJlqE+r4
+X-Gm-Message-State: AOJu0Yypt6a7UulJFdzxGMlPrlnkaZRQzWby7RJGcU1AB6nDxS1TbG4e
+	kTyZYFeNzqDUofc/Aq8peiR2yYvAo4X+nPqcR+UT/s4EDo0yzVqNKDv9OrYRP10klXRbj4t536n
+	kmtMPnhJtjpSQUA==
+X-Google-Smtp-Source: AGHT+IF/Tvc+aSFvYXsoNow2jwI9jQmjjkYlV+3vhEkPuK71n5NIXCH3E3EHqzGZ8X0dHGjMQaNQndcX2ubrEKE=
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:935f:fca4:5a22:7b7])
+ (user=saravanak job=sendgmr) by 2002:a05:690c:338b:b0:608:c3f4:1fb9 with SMTP
+ id fl11-20020a05690c338b00b00608c3f41fb9mr363187ywb.3.1708752278758; Fri, 23
+ Feb 2024 21:24:38 -0800 (PST)
+Date: Fri, 23 Feb 2024 21:24:35 -0800
+Message-Id: <20240224052436.3552333-1-saravanak@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cfe9394d-8144-48d0-a8f1-de9fb54eabc5@joelfernandes.org>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
+Subject: [PATCH] of: property: fw_devlink: Fix stupid bug in remote-endpoint parsing
+From: Saravana Kannan <saravanak@google.com>
+To: Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
+	Saravana Kannan <saravanak@google.com>
+Cc: "=?UTF-8?q?Herv=C3=A9=20Codina?=" <herve.codina@bootlin.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
+	kernel-team@android.com, Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Feb 23, 2024 at 11:58:58PM -0500, Joel Fernandes wrote:
-> 
-> 
-> On 2/23/2024 11:57 PM, neeraj.upadhyay@kernel.org wrote:
-> > From: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
-> > 
-> > Update my email-address in MAINTAINERS and .mailmap entries to my
-> > kernel.org account.
-> > 
-> > Signed-off-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
-> > ---
-> >  .mailmap    | 3 ++-
-> >  MAINTAINERS | 2 +-
-> >  2 files changed, 3 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/.mailmap b/.mailmap
-> > index 08f28f2999f0..dd6ea71c9271 100644
-> > --- a/.mailmap
-> > +++ b/.mailmap
-> > @@ -441,7 +441,8 @@ Mythri P K <mythripk@ti.com>
-> >  Nadia Yvette Chambers <nyc@holomorphy.com> William Lee Irwin III <wli@holomorphy.com>
-> >  Naoya Horiguchi <naoya.horiguchi@nec.com> <n-horiguchi@ah.jp.nec.com>
-> >  Nathan Chancellor <nathan@kernel.org> <natechancellor@gmail.com>
-> > -Neeraj Upadhyay <quic_neeraju@quicinc.com> <neeraju@codeaurora.org>
-> > +Neeraj Upadhyay <neeraj.upadhyay@kernel.org> <quic_neeraju@quicinc.com>
-> > +Neeraj Upadhyay <neeraj.upadhyay@kernel.org> <neeraju@codeaurora.org>
-> >  Neil Armstrong <neil.armstrong@linaro.org> <narmstrong@baylibre.com>
-> >  Nguyen Anh Quynh <aquynh@gmail.com>
-> >  Nicholas Piggin <npiggin@gmail.com> <npiggen@suse.de>
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 189184ecdb11..1006a6973320 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -18461,7 +18461,7 @@ F:	tools/testing/selftests/resctrl/
-> >  READ-COPY UPDATE (RCU)
-> >  M:	"Paul E. McKenney" <paulmck@kernel.org>
-> >  M:	Frederic Weisbecker <frederic@kernel.org> (kernel/rcu/tree_nocb.h)
-> > -M:	Neeraj Upadhyay <quic_neeraju@quicinc.com> (kernel/rcu/tasks.h)
-> > +M:	Neeraj Upadhyay <neeraj.upadhyay@kernel.org> (kernel/rcu/tasks.h)
-> 
-> Reviewed-by: Joel Fernandes <joel@joelfernandes.org>
+Introduced a stupid bug in commit 782bfd03c3ae ("of: property: Improve
+finding the supplier of a remote-endpoint property") due to a last minute
+incorrect edit of "index !=0" into "!index". This patch fixes it to be
+"index > 0" to match the comment right next to it.
 
-I have pulled this in, thank you both!
+Reported-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+Link: https://lore.kernel.org/lkml/20240223171849.10f9901d@booty/
+Fixes: 782bfd03c3ae ("of: property: Improve finding the supplier of a remote-endpoint property")
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+Using Link: instead of Closes: because Luca reported two separate issues.
 
-If someone else wants to take it:
+Sorry about introducing a stupid bug in an -rcX Rob.
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+-Saravana
 
-							Thanx, Paul
+ drivers/of/property.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/of/property.c b/drivers/of/property.c
+index b71267c6667c..fa8cd33be131 100644
+--- a/drivers/of/property.c
++++ b/drivers/of/property.c
+@@ -1304,7 +1304,7 @@ static struct device_node *parse_remote_endpoint(struct device_node *np,
+ 						 int index)
+ {
+ 	/* Return NULL for index > 0 to signify end of remote-endpoints. */
+-	if (!index || strcmp(prop_name, "remote-endpoint"))
++	if (index > 0 || strcmp(prop_name, "remote-endpoint"))
+ 		return NULL;
+ 
+ 	return of_graph_get_remote_port_parent(np);
+-- 
+2.44.0.rc0.258.g7320e95886-goog
+
 
