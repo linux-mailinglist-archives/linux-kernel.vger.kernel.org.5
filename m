@@ -1,104 +1,164 @@
-Return-Path: <linux-kernel+bounces-79548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C8518623FD
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 10:53:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05355862400
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:01:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B2271F22F49
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 09:53:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 722BF1F22D6E
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 10:01:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB0C61B814;
-	Sat, 24 Feb 2024 09:53:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF62F1C680;
+	Sat, 24 Feb 2024 10:01:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mFzZTdey"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RhpoUe8V"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0153C179AA;
-	Sat, 24 Feb 2024 09:53:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A1711B965
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 10:01:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708768393; cv=none; b=YErM48GAq2XK2sYC7IMu7q1smyJE/IAoOw90jBO65dd7qyt74w59zhIK56JUnM1Fj5sNdBXrq36IGlBiJ1xb5biUywx0ifxOhHPKU+0MgaSLudY1VS4hweAuEfOa2MyqX1S0owl+DmIpUJSG5xalPZ8QC6hW+a8pL7I9Y4HPebQ=
+	t=1708768903; cv=none; b=ZglPdL7a9l3B8qphNuDauWdD/JDhlkFS/YrHoVtLmPCKznY5TUgWjVNuqyim04aNbiqhqGL3Z+UpmwmWrhHAw35rkBFb2dKbEZB44KfJlAiF1309GWRSFXUgdaDDbnlevFCgZigpRhnJjH5HtSj/LH9tBVDCvhNVBa41rtESy4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708768393; c=relaxed/simple;
-	bh=PDHqNXMuRCqPjNS5bWxWkSAMWcKkWDnn+jOnhXHQmZ4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EqMvUB8hXlzSGhxL5iBlffUtM8087XphO5xjDXqyMj4BB/0WNIpt7RWsXzgcR6tRo9LfGOpXmt1B+QNwjx97CCsTrQzcpiLsdxGKF/DX5bAAAiN0Kwcb/DNR4y3Oj54R5JzhlfifQRB5ud9DsEnZfCENxbcXR7ipKzQFPdWFdlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mFzZTdey; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e45d0c9676so819387b3a.0;
-        Sat, 24 Feb 2024 01:53:11 -0800 (PST)
+	s=arc-20240116; t=1708768903; c=relaxed/simple;
+	bh=3nMkR5dJcVD2Urhl5MgrFW+pMF7H/cPlbsNlgABcQQ8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Z/MEsoesnoP/sjqhgMSj2PV+/goPINKc8wgZAgrtolRMW07pOajmneuqd6ZmPk7muOp/FBjjWLd6XtS8tfo8J7endge5OkJY3WQgJrVzT8Py0nLxOZeSlwPm6KaztunRkvYAo4tM/FlYLphyhcCkd5g9IEMMexgInD8vCPCKweY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=RhpoUe8V; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-565a2c4cc1aso461100a12.2
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 02:01:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708768391; x=1709373191; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Pty+fRQQYtpnB6eAjS+4AxQbLg5aAO/xeli1234qY4A=;
-        b=mFzZTdeymeZ5QED/xG/RsLeCntLkHdZ1zghSYrJrFEFzYVaV7fZyo16O+ssGRn2AAL
-         n/gQibmTFcLTWRI70HaBPyae61XjkrsPKL8SrasHy2bHQFtRUTcnuYYkyIXEEaKCT2PU
-         mTXXSpRtyfxe5PlozaQLVms+1tCtrBDjrJd5HCyr664/KN2mVZ4FXv8Yz+IoXmfWIaSV
-         kDZ7INVIwFgH/xkYkZDruIflIspMtnYFs+lOc1dk7tMrNEVI3K7swjUXg8CChHV1Y+Pg
-         4jWFNsJC6KwV+6nEkvrt2yL2JFkeM87sQWHlMrHuOtA1eb6KblZEbbdyfzzirpfKIyAY
-         QHxw==
+        d=linaro.org; s=google; t=1708768901; x=1709373701; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TLrO/bnxkuSUgm8muCOM3+Hdg03aFgJjfgi0takGu6U=;
+        b=RhpoUe8VCKDovq3UWRDNEtaiBUTL5MeDKcoxXtf4cGANgZekV0pHBGsDvigm+XhXve
+         ZWeOaco4L2sWPvYVuTod9JiBYk0BSYPPs8xFc7+sQxmM1pZDdK0P0cwAmsb2zC37bnX4
+         8M2Y7yf6Rk9hmXExWh7MedljEEn+WhM7yNShZ2DTudMfv7MKYjJyKNm2WYeMr5lB5xPm
+         AoubEw5cOXLnozOyjrEirxASZEdbk42q9NTsf222yzRrez7gqnCVNzJWithMOOJgcTwL
+         tnvWCbs4kWgW9yKLx0YH7of4R/VvN7j3+/M/xXFs+Uf5Ogn1/Jths4xGg4QPHl3ENZ7Q
+         hSEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708768391; x=1709373191;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Pty+fRQQYtpnB6eAjS+4AxQbLg5aAO/xeli1234qY4A=;
-        b=bcnMUNxwMuUKPxYml8hoiDa/7ndtqG5PGj6ZbwpKb7sz8RgkYVxWQpFWB9PQmlcW8y
-         9ELQIA1f+E78XOYLa7Aw8e79BwhOQpAhwLyMv06efaIZSHjGLNSe2o/GkD2uS/MJ4FEf
-         p31fF6PbPUTiGbbEKPH/+7sKLK1CuHVXTiiodsd1ccpXAFxqLWqC3uNOPGzOY3FuHm4O
-         GChOtfoT9S9MZqbMGUoY6U0l797d01s/Gorj5CwonhqCesmssTYy+C5BiIuzNMLL2gwI
-         a9QYFW364zJfQNECvFcNmmxbMtW+sj/r6tYnJIQ6UCaURqtDHpZvHwCxeJ+sHI087vaY
-         2k8A==
-X-Forwarded-Encrypted: i=1; AJvYcCUDy+5FI9rMBenlybkn8HfYFVS5YABFvLT8M2DMkDknjMhijhhDKFwdcbG7+S92o3RaOKE6qUbP05y2cfgkQW5tpWmAKBNx96Y/2/DRL3cELflmZAvXimtipHasseK1k1yVIlK/
-X-Gm-Message-State: AOJu0YzUQjxtELHKhopVeOvAgn8y92EClHrIJbfEvulFp7l9RisXfidz
-	BdgMR7j70eHQteR6/l+oT/DpTLtxYHC9T1jXHwDTVgLQs7rB5LlHFgrNddK3895nGFq+2mlSvhm
-	5fG9T0CfCcoVqZYKOVUqnbObsc4o=
-X-Google-Smtp-Source: AGHT+IHVXYk9F0m3bDnCQOKUCRIOPOHERGPSbQZaEGYRpKDE8Vot+IL1bTRi9biZKNNN8qkFk0diUTiDUusQG3vW8kI=
-X-Received: by 2002:a17:90a:f009:b0:29a:90ef:66f4 with SMTP id
- bt9-20020a17090af00900b0029a90ef66f4mr2691924pjb.17.1708768391196; Sat, 24
- Feb 2024 01:53:11 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708768901; x=1709373701;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TLrO/bnxkuSUgm8muCOM3+Hdg03aFgJjfgi0takGu6U=;
+        b=YqeHBeit9owcsLmRBr++LHsq+Jc6/s0uqRgssSA4wYEW3CWQlUfmtQNVTjRx3Xoqq5
+         PSdNgzD0LxBwlfVz5+aqwgqbTvAzd7ZcEPq9NYYRMLbmVGpKY8DknYfXFnJ8EmaGAYJB
+         91Ejy82q265lTx21HzAuK3Hrp54LQdqvlDSQII030OVSjeahBHKU8UN+smLOyXqvZmsg
+         EUJo3a+KY9oJaEkVj2bRVYTMvHwVkmAJkul8M9RW7nw6oF2vse36c+3G9qE02EPzUYI9
+         AdGKA3hbQuILOKufvAQoJlRHrPUbBgrqXYRRoGd4L/LyBjdIAUr8Y1DUaQkMCdvuEEVi
+         fJjA==
+X-Forwarded-Encrypted: i=1; AJvYcCXC3heSqIuf6iP6w/xk+iw4Fg3v24w5CRuEmnm/zhQw97DOPSHyJPVsHIN1FzFVs+g+alCVAkfECg/rL7+AmL5vxOQSVU7+6E1Fydd6
+X-Gm-Message-State: AOJu0YwILwlqzuJmA2g/s4ehyqBpWcZKKmBgNxWEGph+aT4O+neWEiIH
+	n7O5fnlxICtL+M/tSInvetmtQnSlk/GF41YTi1LcoCoNgKMeG1hN5Um9TYfsqqg=
+X-Google-Smtp-Source: AGHT+IEOaVGuf4rEyUWIa2XD5k/ZOel8kCOB1hnm9mITwxBIcyi1g42hF1s5jQIqTrbTzeBHuoZU3g==
+X-Received: by 2002:a50:ef15:0:b0:565:6e46:2c9e with SMTP id m21-20020a50ef15000000b005656e462c9emr1425700eds.5.1708768900694;
+        Sat, 24 Feb 2024 02:01:40 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id q32-20020a05640224a000b00564fa936b2bsm398120eda.94.2024.02.24.02.01.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 24 Feb 2024 02:01:39 -0800 (PST)
+Message-ID: <eb772e32-7ecb-433a-a449-0aaae067963a@linaro.org>
+Date: Sat, 24 Feb 2024 11:01:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ed9e1bca-d07b-42fa-9ceb-d0eef3976168@gmx.de> <CADo9pHg2jgYqE1qxpV40E6GHL1s+G+mNm1JCcB9GgA-4XM59+w@mail.gmail.com>
- <2cc27421-8791-47bd-a3d6-83188332ad3c@gmx.de> <2024022326-wheat-heat-e4ba@gregkh>
- <CADo9pHgvjr6-=heOBuhjZqW0W2nhC1zBbaqYq9bWis9J-6SBAA@mail.gmail.com> <2024022432-fleshy-mumps-3b65@gregkh>
-In-Reply-To: <2024022432-fleshy-mumps-3b65@gregkh>
-From: Luna Jernberg <droidbittin@gmail.com>
-Date: Sat, 24 Feb 2024 10:52:58 +0100
-Message-ID: <CADo9pHh+PxY9_0=naTCtUSbsMyo+YmrHpcEqiKX1y7M4bGnV+A@mail.gmail.com>
-Subject: Re: [PATCH 6.7 000/313] 6.7.6-rc2 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Luna Jernberg <droidbittin@gmail.com>
-Cc: Ronald Warsow <rwarsow@gmx.de>, stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v4 1/6] dt-bindings: net: hisilicon-femac-mdio:
+ convert to YAML
+Content-Language: en-US
+To: Yang Xiwen <forbidden405@outlook.com>,
+ Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta
+ <salil.mehta@huawei.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+ Heiner Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20240222-net-v4-0-eea68f93f090@outlook.com>
+ <20240222-net-v4-1-eea68f93f090@outlook.com>
+ <e053448f-2b58-408a-af22-d7b464c52781@linaro.org>
+ <SEZPR06MB6959B0A21A1B601644E2836496562@SEZPR06MB6959.apcprd06.prod.outlook.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <SEZPR06MB6959B0A21A1B601644E2836496562@SEZPR06MB6959.apcprd06.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Alright i promise i will do that before posting next time, thanks for the h=
-elp
+On 22/02/2024 19:19, Yang Xiwen wrote:
+> On 2/23/2024 2:14 AM, Krzysztof Kozlowski wrote:
+>> On 22/02/2024 13:43, Yang Xiwen via B4 Relay wrote:
+>>> From: Yang Xiwen <forbidden405@outlook.com>
+>>>
+>>> For some FEMAC cores, MDIO bus is integrated to the MAC controller. So
+>>> We don't have a dedicated MDIO bus clock.
+>> Hm, this means you miss compatibles for these different cores.
+> 
+> 
+> So you mean adding a new compatible like 
+> "hisilicon,hisi-femac-mdio-integrated" for these ones without dedicated 
+> clocks?
 
-Den l=C3=B6r 24 feb. 2024 kl 10:22 skrev Greg Kroah-Hartman
-<gregkh@linuxfoundation.org>:
->
-> On Sat, Feb 24, 2024 at 10:01:36AM +0100, Luna Jernberg wrote:
-> > How do i change to bottom instead of top posting in the gmail webinterf=
-ace?
->
-> Move to the bottom when responding, or use a different tool to access
-> your gmail account.  There's a whole document in the kernel
-> documentation directory for how to deal with email clients, I recommend
-> reading that.
->
-> thanks,
->
-> gre gk-h
+This is a part of a SoC, right? So compatibles should be SoC specific,
+thus I expect some hisilicon,SoC-femac-mdio.
+
+Best regards,
+Krzysztof
+
 
