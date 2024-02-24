@@ -1,59 +1,67 @@
-Return-Path: <linux-kernel+bounces-79755-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F25B862643
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 18:08:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6649D862640
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 18:07:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E312DB21A2F
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 17:08:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 969791C21293
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 17:07:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1B4141238;
-	Sat, 24 Feb 2024 17:08:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2786A47A55;
+	Sat, 24 Feb 2024 17:07:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=sysophe.eu header.i=@sysophe.eu header.b="mRH73Vp8"
-Received: from hygieia.sysophe.eu (hygieia.sysophe.eu [138.201.91.14])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JkpaewT3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93A0D4879B;
-	Sat, 24 Feb 2024 17:08:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=138.201.91.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ED341EB34;
+	Sat, 24 Feb 2024 17:07:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708794501; cv=none; b=piXFt5K4hnFh/bhOjjrp2Q6bruoprkUmZ6hWfuSXlKWBwnrsWx0fdXfUj7zKGEIVfvfG0/UnulkBLWCOIn3sxykBuEC3wzLEU0dnZyGYs346KRZX3nste6sSPXuGrFB2OfqLMAir6TB1xJL6Fe/tuIsbWJeCDFrWjJ2e+DVAYNY=
+	t=1708794445; cv=none; b=QxuJMrsavDoYK44ZePvnaJ2/vsvVwb9Wxd3ySVnECQwCaxQe+mJeSpPawE3koipvp7UACpP8ZTh5af97HNCWFehDKB07B7JF4Q/Wicji7+lcBLhQKNogS8N5puhN12tUsgnVJMLrJVWd7g5P7f9Xscjt8/l/jtHdYw7LxdGLLUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708794501; c=relaxed/simple;
-	bh=UmoOY0WXEH/Ir+XdmtPrWmUTuq7p3/sTYgdrJ9Ydluk=;
+	s=arc-20240116; t=1708794445; c=relaxed/simple;
+	bh=eeYrfwWrvmfry0lGfIaaBnx0Xj+7Z5pHDan2aTVa8+I=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GztsuAeadX+LPWsz271N7hNQnxtln3KeFrWx0KS7ZN5snulBeiCMUWqE5CMichAgU/wfhljSjqZaPu2wg2C7dHGZzbFsVV4zC+iuTr/toOoF4fnBznnstwTlGaoBoE+QxuPm/YYnoUvJuVdEa3l0olF+p+CF12QW1WMGbx8rRdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sysophe.eu; spf=pass smtp.mailfrom=sysophe.eu; dkim=pass (1024-bit key) header.d=sysophe.eu header.i=@sysophe.eu header.b=mRH73Vp8; arc=none smtp.client-ip=138.201.91.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sysophe.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sysophe.eu
-Received: from hemera.lan.sysophe.eu (unknown [IPv6:2001:a18:2cf:c101:a2ce:c8ff:fe62:fc79])
-	by smtp.sysophe.eu (Postfix) with ESMTPSA id F0C9C2281C0;
-	Sat, 24 Feb 2024 17:59:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=sysophe.eu; s=201205;
-	t=1708793980; x=1708880380;
-	bh=UmoOY0WXEH/Ir+XdmtPrWmUTuq7p3/sTYgdrJ9Ydluk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=mRH73Vp8rv5+Cu3wIVme/OOAZW+igNMOmvlrg5R6m5rjG1N1z3Til1PpcnGiTVDY6
-	 IXsQM/eMKgiNlMLO9dxnG9k7qqUa9NL/orV7S8/IqaSozX8XjGb6t5IRbMdWcmUb00
-	 TDCbzOMZcPRwSZlS8ZWxhKzUfQGax/5Es5M2kwUA=
-Date: Sat, 24 Feb 2024 17:59:29 +0100
-From: Bruno =?UTF-8?B?UHLDqW1vbnQ=?= <bonbons@sysophe.eu>
-To: Li Zhijian <lizhijian@fujitsu.com>
-Cc: linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>, Benjamin
- Tissoires <benjamin.tissoires@redhat.com>, Jonathan Cameron
- <jic23@kernel.org>, Srinivas Pandruvada
- <srinivas.pandruvada@linux.intel.com>, linux-input@vger.kernel.org
-Subject: Re: [PATCH 11/42] drivers/hid: Convert snprintf to sysfs_emit
-Message-ID: <20240224175929.6ea8d4f9@hemera.lan.sysophe.eu>
-In-Reply-To: <20240116045151.3940401-9-lizhijian@fujitsu.com>
-References: <20240116041129.3937800-1-lizhijian@fujitsu.com>
-	<20240116045151.3940401-1-lizhijian@fujitsu.com>
-	<20240116045151.3940401-9-lizhijian@fujitsu.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.39; x86_64-pc-linux-gnu)
+	 MIME-Version:Content-Type; b=qPKPFySMYMXYrdcB69Bxd3jALU0K+p7HVcGaziAUsAGyxLDm0vgXzCdRs/o0uF9Nf3Ia8YKEqPBwhfKjfs8Ufl2Un/BBxa418m3C08ht8TuatrLLgaj5aH5+zHu5ukdXgPIwyJ/NMKtDW4i7qT9AwjIyGkRyy2qg0sRGr8R7Cns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JkpaewT3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AB6AC433C7;
+	Sat, 24 Feb 2024 17:07:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708794445;
+	bh=eeYrfwWrvmfry0lGfIaaBnx0Xj+7Z5pHDan2aTVa8+I=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=JkpaewT3OUJ2LYRrRKYiGZ62iq7pxMqURkDolTc8o17I5DbxGHgwjDdelaWrH8vl/
+	 kuV9Wo0qgEbkhCqha8x9VLGMIVSIc4Khw4EbtBIA22UpAC/yFONVr2VZsASAfnpu0I
+	 dcXPBkoB1dMMYQyM0MX5MSrkauZ6O15TEN8VWm+7ZLzvZfzF528+bsMD8wP/gw//m2
+	 ywxBIDwnexfQjxp9Lj++wdsHvHC1itGK99Nf2Lc49E9/qFhS/RtirkaV1kJX8Lm5qr
+	 a9LDQNN8mYIPytlJ8erMO26DLQpgzXAF5hTSzXiC1HPz4JP9v7P+24wKg2pcEbe5wz
+	 XAQYY05pGaXng==
+Date: Sat, 24 Feb 2024 17:07:07 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Ceclan Dumitru <mitrutzceclan@gmail.com>
+Cc: David Lechner <dlechner@baylibre.com>, linus.walleij@linaro.org,
+ brgl@bgdev.pl, andy@kernel.org, linux-gpio@vger.kernel.org, Lars-Peter
+ Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, Michael Walle <michael@walle.cc>, Andy Shevchenko
+ <andy.shevchenko@gmail.com>, Arnd Bergmann <arnd@arndb.de>, ChiaEn Wu
+ <chiaen_wu@richtek.com>, Niklas Schnelle <schnelle@linux.ibm.com>, Leonard
+ =?UTF-8?B?R8O2aHJz?= <l.goehrs@pengutronix.de>, Mike Looijmans
+ <mike.looijmans@topic.nl>, Haibo Chen <haibo.chen@nxp.com>, Hugo Villeneuve
+ <hvilleneuve@dimonoff.com>, Ceclan Dumitru <dumitru.ceclan@analog.com>,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v13 1/3] dt-bindings: adc: add AD7173
+Message-ID: <20240224170707.4ffcec19@jic23-huawei>
+In-Reply-To: <0fa819d1-2a0f-4243-8e5f-a098528278c3@gmail.com>
+References: <20240220094344.17556-1-mitrutzceclan@gmail.com>
+	<CAMknhBEZ7Y1Yx=wJGnfvYWGKPLas3pbCyY+sN8vrBzdkYO-A4w@mail.gmail.com>
+	<0fa819d1-2a0f-4243-8e5f-a098528278c3@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,118 +71,80 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-Hi Li,
+On Wed, 21 Feb 2024 10:29:30 +0200
+Ceclan Dumitru <mitrutzceclan@gmail.com> wrote:
 
-While only looking for the snprintf() in your coccinelle analysis you
-probably also want to look for sprintf() (see e.g. else clause in
-hid-sensor-custom.c and scnprintf() (see picolcd_fb_update_rate_show
-in hid-picolcd_fb.c) to replace more s*printf() calls with sysfs_emit*
-variants.
-
-
-
-diff --git a/drivers/hid/hid-picolcd_fb.c b/drivers/hid/hid-picolcd_fb.c
-index d726aaafb146..03074d25d662 100644
---- a/drivers/hid/hid-picolcd_fb.c
-+++ b/drivers/hid/hid-picolcd_fb.c
-@@ -459,9 +459,9 @@ static ssize_t picolcd_fb_update_rate_show(struct devic=
-e *dev,
- 		if (ret >=3D PAGE_SIZE)
- 			break;
- 		else if (i =3D=3D fb_update_rate)
--			ret +=3D scnprintf(buf+ret, PAGE_SIZE-ret, "[%u] ", i);
-+			ret +=3D sysfs_emit_at(buf, ret, "[%u] ", i);
- 		else
--			ret +=3D scnprintf(buf+ret, PAGE_SIZE-ret, "%u ", i);
-+			ret +=3D sysfs_emit_at(buf, ret, "%u ", i);
- 	if (ret > 0)
- 		buf[min(ret, (size_t)PAGE_SIZE)-1] =3D '\n';
- 	return ret;
-
-
-For hid-picolcd-*.c,
-  Acked-by: Bruno Pr=C3=A9mont <bonbons@linux-vserver.org>
-but preferably with the scnprintf() case is covered too.
-
-
-Cheers,
-Bruno
-
-On Tue, 16 Jan 2024 12:51:20 +0800 Li Zhijian wrote:
-> Per Documentation/filesystems/sysfs.rst, show() should only use sysfs_emi=
-t()
-> or sysfs_emit_at() when formatting the value to be returned to user space.
+> On 2/20/24 22:54, David Lechner wrote:
+> > On Tue, Feb 20, 2024 at 3:43=E2=80=AFAM Dumitru Ceclan <mitrutzceclan@g=
+mail.com> wrote: =20
 >=20
-> coccinelle complains that there are still a couple of functions that use
-> snprintf(). Convert them to sysfs_emit().
+> ...
 >=20
-> > ./drivers/hid/hid-picolcd_core.c:259:9-17: WARNING: please use sysfs_em=
-it
-> > ./drivers/hid/hid-picolcd_core.c:304:8-16: WARNING: please use sysfs_em=
-it
-> > ./drivers/hid/hid-sensor-custom.c:375:10-18: WARNING: please use sysfs_=
-emi =20
+> >> +  clocks:
+> >> +    maxItems: 1
+> >> +    description: | =20
+> >=20
+> > Don't need `|` here.
+> >  =20
+> The description contains ": ". Without '|' yaml syntax considers the
+> whole string before ':' as another attribute
 >=20
-> No functional change intended
+> >> +      Optional external clock source. Can include one clock source: e=
+xternal
+> >> +      clock or external crystal.
+> >> + =20
 >=20
-> CC: "Bruno Pr=C3=A9mont" <bonbons@linux-vserver.org>
-> CC: Jiri Kosina <jikos@kernel.org>
-> CC: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> CC: Jonathan Cameron <jic23@kernel.org>
-> CC: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> CC: linux-input@vger.kernel.org
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-> ---
->  drivers/hid/hid-picolcd_core.c  | 6 +++---
->  drivers/hid/hid-sensor-custom.c | 3 +--
->  2 files changed, 4 insertions(+), 5 deletions(-)
+> ...
 >=20
-> diff --git a/drivers/hid/hid-picolcd_core.c b/drivers/hid/hid-picolcd_cor=
-e.c
-> index bbda231a7ce3..fa46fb6eab3f 100644
-> --- a/drivers/hid/hid-picolcd_core.c
-> +++ b/drivers/hid/hid-picolcd_core.c
-> @@ -256,9 +256,9 @@ static ssize_t picolcd_operation_mode_show(struct dev=
-ice *dev,
->  	struct picolcd_data *data =3D dev_get_drvdata(dev);
-> =20
->  	if (data->status & PICOLCD_BOOTLOADER)
-> -		return snprintf(buf, PAGE_SIZE, "[bootloader] lcd\n");
-> +		return sysfs_emit(buf, "[bootloader] lcd\n");
->  	else
-> -		return snprintf(buf, PAGE_SIZE, "bootloader [lcd]\n");
-> +		return sysfs_emit(buf, "bootloader [lcd]\n");
->  }
-> =20
->  static ssize_t picolcd_operation_mode_store(struct device *dev,
-> @@ -301,7 +301,7 @@ static ssize_t picolcd_operation_mode_delay_show(stru=
-ct device *dev,
->  {
->  	struct picolcd_data *data =3D dev_get_drvdata(dev);
-> =20
-> -	return snprintf(buf, PAGE_SIZE, "%hu\n", data->opmode_delay);
-> +	return sysfs_emit(buf, "%hu\n", data->opmode_delay);
->  }
-> =20
->  static ssize_t picolcd_operation_mode_delay_store(struct device *dev,
-> diff --git a/drivers/hid/hid-sensor-custom.c b/drivers/hid/hid-sensor-cus=
-tom.c
-> index d85398721659..4fe8dccf671d 100644
-> --- a/drivers/hid/hid-sensor-custom.c
-> +++ b/drivers/hid/hid-sensor-custom.c
-> @@ -372,8 +372,7 @@ static ssize_t show_value(struct device *dev, struct =
-device_attribute *attr,
->  				     sizeof(struct hid_custom_usage_desc),
->  				     usage_id_cmp);
->  		if (usage_desc)
-> -			return snprintf(buf, PAGE_SIZE, "%s\n",
-> -					usage_desc->desc);
-> +			return sysfs_emit(buf, "%s\n", usage_desc->desc);
->  		else
->  			return sprintf(buf, "not-specified\n");
+> >> +
+> >> +      diff-channels:
+> >> +        items:
+> >> +          minimum: 0
+> >> +          maximum: 31
+> >> + =20
+> >=20
+> > Are we missing `bipolar: true` here? (since we have
+> > unevaluatedProperties: false)
+> >  =20
+>=20
+> No, since we are referencing the adc schema "$ref: adc.yaml"
+> Which contains:
+> """
+>   bipolar:
+>=20
+>     $ref: /schemas/types.yaml#/definitions/flag
+>=20
+>     description: If provided, the channel is to be used in bipolar mode.
+> """
+>=20
+>=20
+> ...
+>=20
+> >> +
+> >> +required:
+> >> +  - compatible
+> >> +  - reg =20
+> >=20
+> > Aren't the various power supplies supposed to be required?
+> >=20
+> > - avdd-supply
+> > - avdd2-supply
+> > - iovdd-supply =20
+>=20
+> From my point of view, if someone uses a single supply (avdd =3D=3D avdd2=
+ =3D=3D
+> iovdd), and uses only the internal reference then the supplies should
+> not necessarily be required.
 
-Shouldn't the sprintf() in the else clause be replaced as well?
+Convention is that anything that represent a voltage on a pin that
+is needed for operation should be required.  Key here is the difference
+from optional supplies where the driver does something different.
+vref is a good example of this. The ones above are always needed I
+think.
 
->  	 } else
+Obviously they may all say the same thing if they are connected
+externally.
+
+
 
 
