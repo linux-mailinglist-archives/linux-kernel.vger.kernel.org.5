@@ -1,165 +1,110 @@
-Return-Path: <linux-kernel+bounces-79903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83E3886287C
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 00:40:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BC9C862881
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 00:44:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB3351C20CC5
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 23:40:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F348A1F218AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 23:44:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 918FD4EB3A;
-	Sat, 24 Feb 2024 23:40:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D617E4EB2C;
+	Sat, 24 Feb 2024 23:44:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="FuL6Ae3f"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="P1n2qbfR"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E2CD12B82;
-	Sat, 24 Feb 2024 23:40:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90F5D4E1CA
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 23:44:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708818031; cv=none; b=M+O4T4ZKfNjOE+3sXLKg+L8jvCksWillT+SUmsmQ9HMHTLrjcCoPZbvgNeePOhr9MSyWkes+mj2q6fyxFpdF+oP+WvYcz/0Rgi5arxpCk/mqGO+OSbt2Lhfk9ecNIKiaCpWJnzdOVovpGhaali94CN/+iQFCoHMaff0ppQUQSeo=
+	t=1708818244; cv=none; b=fiERDjeQeheCJ91rIvfrFv268OfT2gbBM9/5r3RFKeOYZoiA8Vz22oziSWKX+AJMInf9gdlhqWmrAT7zSqmbywiIKFQu0aacZQQGMo1zh1NC4nkYSSOzbP5SS+FBCKXeyVbIvud8l9BcCB6rLcjX4MT90w67I/u7MI6yB3Cw1qg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708818031; c=relaxed/simple;
-	bh=OYw2ByYVVHvBoCVIfIWdB7pG17J1LlNmfxFwVKBACEQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L+s62MbiainDs+6BxUyl1tIW0pinDMqdwLa1JrX1KpVPkN8VePoEhwmXi2//i7U+Z0Z3VGSzvivN/FX3MzUEsZYcFByqMKU90vcfWvFuQzeLZprI06T9Z2sqdaV5GK5VHRQaCyx3rWKX1h6FCKUQu5hSx08m4mnlUL9Dvj9FhwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=FuL6Ae3f; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=TI5u+hB8IqJPV1NXXXiHCj1H8nEjuxpLgMV7QWNQhGk=; b=FuL6Ae3fH6sehiIobvIeA2t2bf
-	cncxTnJTyw0IHXpzN8sufwgSnKg2jUMaDxJ0hATMrjfW+0n6NwP/pO6T0gtaGujbERbYn+u+0i6X+
-	8MLtw8e5wY7Z3YYlPzos+/xQI4CECLE80kci01A0Uk1UR++i8zKHKujjDrmM5Ddt51en5El5gYEaL
-	3cr5WzXhu7hPDrGl5hLexOaE+fhvj4RGicHqYE5LyUWSncZn16pQQ8yUZy6KXiJ9yIdClDhx5VQHG
-	VQFVgO1VV4VSL+xI5ENAlFWjM5j6CqRZuTu7BpygZ4y7SqTb4TUH70Li9sgiZ0pMyaXFZSyN8LZ0/
-	t57Bv54Q==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1re1cs-0000000DrjE-1TMs;
-	Sat, 24 Feb 2024 23:40:14 +0000
-Message-ID: <121d0ce8-e542-4a1c-85e9-0d1863f36741@infradead.org>
-Date: Sat, 24 Feb 2024 15:40:11 -0800
+	s=arc-20240116; t=1708818244; c=relaxed/simple;
+	bh=0ndlmRNxvgqmudYDAQDRY+8XWH+i1OJkw4ZkBFWvYg8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=b30pN3p2Hov0baKPESs8B0peHQKYQFLA5h3BQ4HAS8jTuQkvQ8bqibvGsInb9AGkbnNqMJB7gb/Rhh7Mr1TduQN+6MoR8s9wpoFQIFMffwgO3AErcr+aE2YLI5tS6dR14rYTvCHpWlcJBWjVV+zpgkejVGr5uFVpJ1G9skJ/hbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=P1n2qbfR; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-563d56ee65cso2385353a12.2
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 15:44:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1708818240; x=1709423040; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kqv7MLKTQYTKAbyJaXLJ3NjnKr158GpyjOGnut0vOtM=;
+        b=P1n2qbfRPOAoXDIL93Z1Z2Cr/McC+kkfO1mhGiCIoV9IvzZxV0/SYKk6gTXzWU8jql
+         7F2GA+u+ap3nY3gouplc2TfoATHLlu8cv/83lPU/cqSxYWOYUWeeoLwT8GTl2DELSY2L
+         CqmEOIIJrsmhEzthp6DHUFSSlcXer73fNMG+Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708818240; x=1709423040;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Kqv7MLKTQYTKAbyJaXLJ3NjnKr158GpyjOGnut0vOtM=;
+        b=vssgkWRL+6b2feILLajmX5b5BsUbds7kHyvKAHOmctV+ZvWgf0wMFatMKiKKGJmbH1
+         URM1PzyKytBPMjpmLUjRHQ5FrMpJkT4PJPTf6kcuMTmhrbHpblzYcfRIeyeSJpAYrkoM
+         NAepawe7aTIDCwbDuTz1DPsZwFvno4nsDQivVREt9PIDzQlJtsufJ8SVYKHAqBBqyZBq
+         0nYM4Nf7C5zmMHeXDavHYu6L4nlY0Ld1T5xKJVB5XmKh+9PxAX/0kCzeoC1oP5tnfWjH
+         EV3idMkHTr/am6p95aqKdfuSk4ywIgL238qyKDj17ODqyLgDVcpQk/QWmZMCfw1WNU93
+         RKZw==
+X-Forwarded-Encrypted: i=1; AJvYcCVGROsWHA/jSZrohKwbdJGrGvLJ7oCA4B6VRIj4HOJNm+wPxYOSQx3s3f2fl/y9jW5tTJxg2ofBVPmDYPATW15Cop3Epkmqaul+es4w
+X-Gm-Message-State: AOJu0YwsNnNJ9GiApIsvyhUKcjKFWbFt0qju126JP4f8PU7SxEhzL42e
+	HW0OE311DQoJ87tXVKf5nP98qxnz2hLNAjRU8hEEJx4vksLNp/0jIB7QbB2pAQwHkrBEBbuTU/m
+	K174=
+X-Google-Smtp-Source: AGHT+IEo5InecJ10XscxKcKRdMoG6clnufqW/w3t8R/VOVrnKlxj67VfgrJovCFFl409uhpeJyx0/w==
+X-Received: by 2002:a17:906:6da:b0:a42:f6f5:d10d with SMTP id v26-20020a17090606da00b00a42f6f5d10dmr1315567ejb.12.1708818240704;
+        Sat, 24 Feb 2024 15:44:00 -0800 (PST)
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
+        by smtp.gmail.com with ESMTPSA id cu4-20020a170906ba8400b00a42ebdfda56sm940290ejd.100.2024.02.24.15.43.59
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 24 Feb 2024 15:43:59 -0800 (PST)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-55a5e7fa471so2569491a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 15:43:59 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU0NBigo0FatD73mwQriTSPtp0atgVhJJy6N9HblkqeDZwQ4OPSIYDlFRrPi/nVnbk7LJQtEVdOyMf2EYbepHTd21xbML59zmeRJIH1
+X-Received: by 2002:a17:906:c7d4:b0:a43:20ae:9123 with SMTP id
+ dc20-20020a170906c7d400b00a4320ae9123mr202316ejb.50.1708818239390; Sat, 24
+ Feb 2024 15:43:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 07/20] famfs: Add include/linux/famfs_ioctl.h
-Content-Language: en-US
-To: John Groves <John@groves.net>
-Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>,
- Dan Williams <dan.j.williams@intel.com>,
- Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- Matthew Wilcox <willy@infradead.org>, linux-cxl@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, john@jagalactic.com,
- Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>,
- dave.hansen@linux.intel.com, gregory.price@memverge.com
-References: <cover.1708709155.git.john@groves.net>
- <b40ca30e4bf689249a8c237909d9a7aaca9861e4.1708709155.git.john@groves.net>
- <8f62b688-6c14-4eab-b039-7d9a112893f8@infradead.org>
- <7onhdq4spd7mnkr5c443sbvnr7l4n34amtterg4soiey2qubyl@r2ppa6fsohnk>
- <97cde8f6-21ed-45b9-9618-568933102f05@infradead.org>
- <7rkmolss5vkdljnh6uksfkepklwofe3bkdsf36qhokyltjoxlx@xqgef734pidg>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <7rkmolss5vkdljnh6uksfkepklwofe3bkdsf36qhokyltjoxlx@xqgef734pidg>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <6a150ddd-3267-4f89-81bd-6807700c57c1@redhat.com>
+ <652928aa-0fb8-425e-87b0-d65176dd2cfa@redhat.com> <9b92706b-14c2-4761-95fb-7dbbaede57f4@leemhuis.info>
+ <e733c14e-0bdd-41b2-82aa-90c0449aff25@redhat.com> <f15ee051-2cfe-461f-991d-d09fd53bad4f@leemhuis.info>
+ <c0cbf518-c6d4-4792-ad04-f8b535d41f4e@leemhuis.info>
+In-Reply-To: <c0cbf518-c6d4-4792-ad04-f8b535d41f4e@leemhuis.info>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sat, 24 Feb 2024 15:43:43 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wg9nqLqxr7bPFt4CUzb+w4TqENb+0G1-yJfZbwvRhi29A@mail.gmail.com>
+Message-ID: <CAHk-=wg9nqLqxr7bPFt4CUzb+w4TqENb+0G1-yJfZbwvRhi29A@mail.gmail.com>
+Subject: Re: [REGRESSION] 6.8-rc process is unable to exit and consumes a lot
+ of cpu
+To: Linux regressions mailing list <regressions@lists.linux.dev>, Al Viro <viro@kernel.org>
+Cc: "Christian Brauner (Microsoft)" <brauner@kernel.org>, Matt Heon <mheon@redhat.com>, 
+	Ed Santiago <santiago@redhat.com>, Linux-fsdevel <linux-fsdevel@vger.kernel.org>, 
+	Paul Holzinger <pholzing@redhat.com>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
+On Fri, 23 Feb 2024 at 23:00, Thorsten Leemhuis
+<regressions@leemhuis.info> wrote:
+>
+> TWIMC, the quoted mail apparently did not get delivered to Al (I got a
+> "48 hours on the queue" warning from my hoster's MTA ~10 hours ago).
 
+Al's email has been broken for the last almost two weeks - the machine
+went belly-up in a major way.
 
-On 2/24/24 15:32, John Groves wrote:
-> On 24/02/23 07:27PM, Randy Dunlap wrote:
->> Hi John,
->>
->> On 2/23/24 18:23, John Groves wrote:
->>>>> +
->>>>> +#define FAMFSIOC_MAGIC 'u'
->>>> This 'u' value should be documented in
->>>> Documentation/userspace-api/ioctl/ioctl-number.rst.
->>>>
->>>> and if possible, you might want to use values like 0x5x or 0x8x
->>>> that don't conflict with the ioctl numbers that are already used
->>>> in the 'u' space.
->>> Will do. I was trying to be too clever there, invoking "mu" for
->>> micron. 
->>
->> I might have been unclear about this one.
->> It's OK to use 'u' but the values 1-4 below conflict in the 'u' space:
->>
->> 'u'   00-1F  linux/smb_fs.h                                          gone
->> 'u'   20-3F  linux/uvcvideo.h                                        USB video class host driver
->> 'u'   40-4f  linux/udmabuf.h
->>
->> so if you could use
->> 'u'   50-5f
->> or
->> 'u'   80-8f
->>
->> then those conflicts wouldn't be there.
->> HTH.
->>
->>>>> +
->>>>> +/* famfs file ioctl opcodes */
->>>>> +#define FAMFSIOC_MAP_CREATE    _IOW(FAMFSIOC_MAGIC, 1, struct famfs_ioc_map)
->>>>> +#define FAMFSIOC_MAP_GET       _IOR(FAMFSIOC_MAGIC, 2, struct famfs_ioc_map)
->>>>> +#define FAMFSIOC_MAP_GETEXT    _IOR(FAMFSIOC_MAGIC, 3, struct famfs_extent)
->>>>> +#define FAMFSIOC_NOP           _IO(FAMFSIOC_MAGIC,  4)
->>
->> -- 
->> #Randy
-> 
-> Thanks Randy; I think I'm the one that didn't read carefully enough.
-> 
-> Does this look right?
-> 
-> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> index 457e16f06e04..44a44809657b 100644
-> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
-> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> @@ -288,6 +288,7 @@ Code  Seq#    Include File                                           Comments
->  'u'   00-1F  linux/smb_fs.h                                          gone
->  'u'   20-3F  linux/uvcvideo.h                                        USB video class host driver
->  'u'   40-4f  linux/udmabuf.h                                         userspace dma-buf misc device
-> +'u'   50-5F  linux/famfs_ioctl.h                                     famfs shared memory file system
->  'v'   00-1F  linux/ext2_fs.h                                         conflict!
->  'v'   00-1F  linux/fs.h                                              conflict!
->  'v'   00-0F  linux/sonypi.h                                          conflict!
-> diff --git a/include/uapi/linux/famfs_ioctl.h b/include/uapi/linux/famfs_ioctl.h
-> index 6b3e6452d02f..57521898ed57 100644
-> --- a/include/uapi/linux/famfs_ioctl.h
-> +++ b/include/uapi/linux/famfs_ioctl.h
-> @@ -48,9 +48,9 @@ struct famfs_ioc_map {
->  #define FAMFSIOC_MAGIC 'u'
-> 
->  /* famfs file ioctl opcodes */
-> -#define FAMFSIOC_MAP_CREATE    _IOW(FAMFSIOC_MAGIC, 1, struct famfs_ioc_map)
-> -#define FAMFSIOC_MAP_GET       _IOR(FAMFSIOC_MAGIC, 2, struct famfs_ioc_map)
-> -#define FAMFSIOC_MAP_GETEXT    _IOR(FAMFSIOC_MAGIC, 3, struct famfs_extent)
-> -#define FAMFSIOC_NOP           _IO(FAMFSIOC_MAGIC,  4)
-> +#define FAMFSIOC_MAP_CREATE    _IOW(FAMFSIOC_MAGIC, 0x50, struct famfs_ioc_map)
-> +#define FAMFSIOC_MAP_GET       _IOR(FAMFSIOC_MAGIC, 0x51, struct famfs_ioc_map)
-> +#define FAMFSIOC_MAP_GETEXT    _IOR(FAMFSIOC_MAGIC, 0x52, struct famfs_extent)
-> +#define FAMFSIOC_NOP           _IO(FAMFSIOC_MAGIC,  0x53)
-> 
-> Thank you!
-> John
-> 
+I bounced the email to his kernel.org email that seems to work, but I
+also think Al ends up being busy trying to get through everything else
+he missed, in addition to trying to get the machine working again...
 
-Yes, that looks good.
-Thanks.
-
--- 
-#Randy
+             Linus
 
