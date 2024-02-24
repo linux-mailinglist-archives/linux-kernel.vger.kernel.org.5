@@ -1,245 +1,227 @@
-Return-Path: <linux-kernel+bounces-79483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79484-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67CC28622E6
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 07:23:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 94BD08622F9
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 07:54:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6D671F23A73
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 06:23:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21AD91F232E9
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 06:54:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D41717C8D;
-	Sat, 24 Feb 2024 06:23:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06514522D;
+	Sat, 24 Feb 2024 06:54:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="J4TSy+Mm"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GnYXEgOO"
+Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0DE513FFF;
-	Sat, 24 Feb 2024 06:23:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 455A3524C
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 06:54:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708755812; cv=none; b=bN+/on8d/N/vq9zOcyHVRsDrMyHk+EaNKM10Gx+ULTdEztlMECy/6kqAKVFYkGLLCMImU7tKKiRxom3BlRtvtwQQ6AQ0YACOCSS1BlKIV6Qg38IfMobRLZMdUZpAbIdJRnLA6P938BegO+0/qk5pb5ygGnG24IgyZWY2vPXTnfc=
+	t=1708757668; cv=none; b=qwnjbHZEukWwk1snIg5y7p6bhTFX2ngLoz5OsGQPi4SCkxQH66uC60+Gf1f36Fb991kNrqT9Y6BTuvWHRg0v/nS1oZfkV6w69OecAGFD94CSzYzfo0MWFtSNbwN4SqsGudXB3sXB3Z6NaXsYHqEx95Bh0GYy04LtRisgPZZDj9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708755812; c=relaxed/simple;
-	bh=W0u5IT/H5hLXinO/B5FelGXdqlc5c1QwMVi0wEyDxCc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=OTzUWSACK4WTMvdwK7tB8K2rbTgdVz5ijhNdRVg/4Nyu8BejrMgVIEWJX0bcXGotLXh0UDNTeYEeGi7UgwDUjwQiM+RPaL96d5GnqMdmJN3YlpEOIlYjTV4/buj6N0NQMmR6KY9xQaBXTZ3AmbxkFBAn3FwA0x72Sqg9ytJUn6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=J4TSy+Mm; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41O5pM72004828;
-	Sat, 24 Feb 2024 06:22:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=QCYPc8ZRVSnAHVFnIu3U13dqMb2KRmhi+yyRJZMHU5M=; b=J4
-	TSy+MmWnctP1jtu2cXW9nSBuUjYMjc3VRLXJdbd3ywzS0ZW8jiRGtT2HY56pI8HF
-	b1/g3fTj0RAGMyGNv6IjywbpmWNlF6bdeobrLbiFM/MhZbbTEDPud84mRYMQiiTP
-	jGRz4AHhqhfNjwQXt7tOWgPmRbC0XaJf0bchSnUWrMfGfiZ3T6hBF6hHF/19msue
-	LXyvwcVBniQzj5XzuZaoEbs8W6FFIuCBfPLU4z2IcKGTaYbOZk5FVwDzDZva2Spe
-	qwXVcbzHuzpzymPJqTm4nVXKpCwpVRYVZbZ3nX0XGb81r+wbyfWq0pPKMNSYnRGD
-	pMZ2hdiQ2XECFTNQw42A==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wf65hrbbj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 24 Feb 2024 06:22:57 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41O6MuwG006607
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 24 Feb 2024 06:22:56 GMT
-Received: from [10.110.15.108] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 23 Feb
- 2024 22:22:55 -0800
-Message-ID: <76922981-88ec-a376-ce61-ea1ff85f43d2@quicinc.com>
-Date: Fri, 23 Feb 2024 22:22:50 -0800
+	s=arc-20240116; t=1708757668; c=relaxed/simple;
+	bh=x754MZuCG5B4tIf+C0S5CY+BH4+h4u4WEZxh/Gpxfvg=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=jPNIX8gvXKXEekIlqwu9yo1J8V8V7La7AhpbjrjzHoua9X4hypMU457PhOMMwFd74jE1wa6091AxO0yTdlwUA2a7v7bCXG3VrLCziSvnVVTUuuZp8swQWorHmXDdqT/7EiAFfGPkvJ2/vFb56hb960qjzUFnoG72jA1v4mPoW/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GnYXEgOO; arc=none smtp.client-ip=209.85.160.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-21ea1aae402so712292fac.1
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 22:54:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708757665; x=1709362465; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GWgl52BYCJ4PwBk/V86UifQusawgYoQTONtG8UzIO9M=;
+        b=GnYXEgOOc5xlZKy0UQfJUzDot5toSA1U5mYw/ANbhN0qnQAU27mF61lg2tgR5XH1ZA
+         rcbb/lflS8VrBmGhuBIdvIOzBO4iq1qfQBLzJYNRzMVS9bSC6XhxLkV7d/BFa12zPD9n
+         ygAFWD1QwNVLPCzeUrSpB6sHB0GvhT9a+MIC0DE6HZo4RIDu5u5msrJKUZpsq6m5OzIq
+         P8o37Ki2S4CBGB2wyWtmWNnvR6JtdV52tuI2eUtrt0DUH8e7KtFGt1qflg9wfjHFfERu
+         dXPTyWDlIBZszXY9AjUeF9K4ObZGIWkpg2UxxGTDgAOGeu9454cMrTtNPUDhMVGI7Laq
+         4JTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708757665; x=1709362465;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GWgl52BYCJ4PwBk/V86UifQusawgYoQTONtG8UzIO9M=;
+        b=IljEkkQY/n4s/g/GB87MJetsE6/psvGrW2yV3oysbLXK/xvn6+O1LVRnFWRCxOwBID
+         1IQMcM6TfjnI7I5EcvWweoyE4DttFwB7bj2vOMiiNTeB0CTkp5KCSWN5s03O+xb6mKJ7
+         XIj2rdwlGr3riGRZG3B92dLp4CVg87alOYfeR+sMeRDJjxjSQ38Ny1X99PXL6l9ADYD9
+         J9WfVS8ciBIEVmjWkBLqD5Rpg4JeeUbxa/nBtFx6fKHB+XXdBlecmzuHdRMFWwVwc0AE
+         0l1Bie2wBDtC9nIcq0UAZ5EYzGM7SKwQWMD/OahUGXlkRGA4J7PyViJla9uLPAk1SHHg
+         9/vw==
+X-Forwarded-Encrypted: i=1; AJvYcCXn6GmnDHef3K6r/9ZlwUjUVL/pgJpBeyYseuKlkvOhgsx1fckIzHeFJz63zGPYq5kL9b7Iz1luQ2tGVe82tSw3gQkgqacvQsW83Ukj
+X-Gm-Message-State: AOJu0YxLg7sHq1INtvMtfcAGAKV0TDSGObxEgzz43iwhVItz0YJ34Xf7
+	kRr5KwG5EHPHZoJMcVAst38qrWU6sqfrEErusAjuaA4l81OB8ED+oqnRHFbh+w==
+X-Google-Smtp-Source: AGHT+IF06E9v7eucC47KNmijoQVmhjzoq9rivDk5iXaa+yfwLA6gzHHWi6ef9Qq7OZDo1ytULmGgdQ==
+X-Received: by 2002:a05:6358:7618:b0:17b:304f:b3d with SMTP id r24-20020a056358761800b0017b304f0b3dmr2293513rwg.23.1708757665005;
+        Fri, 23 Feb 2024 22:54:25 -0800 (PST)
+Received: from [127.0.1.1] ([120.138.12.46])
+        by smtp.gmail.com with ESMTPSA id r5-20020aa78b85000000b006e4cb7f4393sm502932pfd.165.2024.02.23.22.54.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 22:54:24 -0800 (PST)
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v8 00/10] PCI: dwc: ep: Fix DBI access failure for drivers
+ requiring refclk from host
+Date: Sat, 24 Feb 2024 12:24:06 +0530
+Message-Id: <20240224-pci-dbi-rework-v8-0-64c7fd0cfe64@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH v14 32/53] ALSA: usb-audio: Check for support for
- requested audio format
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>
-CC: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
-        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
-        <lgirdwood@gmail.com>, <andersson@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
-        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
-        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
-        <konrad.dybcio@linaro.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-sound@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>
-References: <20240208231406.27397-1-quic_wcheng@quicinc.com>
- <20240208231406.27397-33-quic_wcheng@quicinc.com>
- <87v86x2a27.wl-tiwai@suse.de>
- <cb3b7857-dc6c-80db-4fa7-6772a856f328@quicinc.com>
- <7f0c4f85-5a63-4643-8553-e3f5d6af67ec@quicinc.com>
- <87y1bjpfn0.wl-tiwai@suse.de>
-From: Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <87y1bjpfn0.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Q1NKQpUrdoWd5O5aWBixNCa6-08HgSIz
-X-Proofpoint-GUID: Q1NKQpUrdoWd5O5aWBixNCa6-08HgSIz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-24_02,2024-02-23_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
- bulkscore=0 mlxlogscore=949 suspectscore=0 adultscore=0 priorityscore=1501
- impostorscore=0 malwarescore=0 phishscore=0 lowpriorityscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
- definitions=main-2402240050
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAI6S2WUC/x3MMQqAMAxA0auUzAZKFLFeRRxsjRoELSmoULy7x
+ fEN/2dIrMIJepNB+ZIk51HQVQbCNh0ro8zFQJYaS9RgDIKzF1S+T93REzs3teRqG6BEUXmR5x8
+ O4/t+RAjzGGAAAAA=
+To: Jingoo Han <jingoohan1@gmail.com>, 
+ Gustavo Pimentel <gustavo.pimentel@synopsys.com>, 
+ Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+ =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
+ Marek Vasut <marek.vasut+renesas@gmail.com>, 
+ Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, 
+ Thierry Reding <thierry.reding@gmail.com>, 
+ Jonathan Hunter <jonathanh@nvidia.com>, 
+ Kishon Vijay Abraham I <kishon@ti.com>, Vidya Sagar <vidyas@nvidia.com>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, Richard Zhu <hongxing.zhu@nxp.com>, 
+ Lucas Stach <l.stach@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
+ Minghuan Lian <minghuan.Lian@nxp.com>, Mingkai Hu <mingkai.hu@nxp.com>, 
+ Roy Zang <roy.zang@nxp.com>, 
+ Kunihiko Hayashi <hayashi.kunihiko@socionext.com>, 
+ Masami Hiramatsu <mhiramat@kernel.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+ linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, 
+ Niklas Cassel <cassel@kernel.org>, 
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4532;
+ i=manivannan.sadhasivam@linaro.org; h=from:subject:message-id;
+ bh=x754MZuCG5B4tIf+C0S5CY+BH4+h4u4WEZxh/Gpxfvg=;
+ b=owEBbQGS/pANAwAKAVWfEeb+kc71AcsmYgBl2ZKQE8Qt4hWcXaLPZGKeHcZfe3X7OduUiUiV0
+ oFeVosxH6eJATMEAAEKAB0WIQRnpUMqgUjL2KRYJ5dVnxHm/pHO9QUCZdmSkAAKCRBVnxHm/pHO
+ 9Tg+B/9h+50d00vh+TLHKGgy9bamVqprezEgWpVebuQtbPLH+0qaZ/yinkzuIHcFOSIYsepmyoF
+ oxctWzI4aBO+ljYpcYNwRyR0U9rV/u4BaiB/PSHZyb/rV2K80Rnhwpg1H9T0rgaW5J9euOgIDYs
+ QG2g/9pkqHm/o6enI9UHI1m4SNbYFo+qJGtSy8sWX0kPlfITYqKbKoMsJiT13Uo8mJIK9m32aLx
+ XUeyXu7WaeT6766mCCWMuM04zRG+wA8qsTIEdw/DgXK0GfQa3HctlA/x04RvKdeIIqqzW+y6Vz3
+ ys9mXnb7Q06Mk0kRPmzAWj3CCFOqVHo4+1bh2WFBOiVr7dkh
+X-Developer-Key: i=manivannan.sadhasivam@linaro.org; a=openpgp;
+ fpr=C668AEC3C3188E4C611465E7488550E901166008
 
-Hi Takashi,
+Hello,
 
-On 2/17/2024 2:08 AM, Takashi Iwai wrote:
-> On Sat, 17 Feb 2024 00:42:18 +0100,
-> Wesley Cheng wrote:
->>
->> Hi Takashi,
->>
->> On 2/9/2024 1:34 PM, Wesley Cheng wrote:
->>> Hi Takashi,
->>>
->>> On 2/9/2024 2:42 AM, Takashi Iwai wrote:
->>>> On Fri, 09 Feb 2024 00:13:45 +0100,
->>>> Wesley Cheng wrote:
->>>>>
->>>>> Allow for checks on a specific USB audio device to see if a
->>>>> requested PCM
->>>>> format is supported.  This is needed for support when playback is
->>>>> initiated by the ASoC USB backend path.
->>>>>
->>>>> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
->>>>> ---
->>>>>    sound/usb/card.c | 31 +++++++++++++++++++++++++++++++
->>>>>    sound/usb/card.h | 11 +++++++++++
->>>>>    2 files changed, 42 insertions(+)
->>>>>
->>>>> diff --git a/sound/usb/card.c b/sound/usb/card.c
->>>>> index 7dc8007ba839..1ad99a462038 100644
->>>>> --- a/sound/usb/card.c
->>>>> +++ b/sound/usb/card.c
->>>>> @@ -155,6 +155,37 @@ int snd_usb_unregister_platform_ops(void)
->>>>>    }
->>>>>    EXPORT_SYMBOL_GPL(snd_usb_unregister_platform_ops);
->>>>> +/*
->>>>> + * Checks to see if requested audio profile, i.e sample rate, # of
->>>>> + * channels, etc... is supported by the substream associated to the
->>>>> + * USB audio device.
->>>>> + */
->>>>> +struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
->>>>> +            struct snd_pcm_hw_params *params, int direction)
->>>>> +{
->>>>> +    struct snd_usb_audio *chip;
->>>>> +    struct snd_usb_substream *subs;
->>>>> +    struct snd_usb_stream *as;
->>>>> +
->>>>> +    /*
->>>>> +     * Register mutex is held when populating and clearing usb_chip
->>>>> +     * array.
->>>>> +     */
->>>>> +    guard(mutex)(&register_mutex);
->>>>> +    chip = usb_chip[card_idx];
->>>>> +
->>>>> +    if (chip && enable[card_idx]) {
->>>>> +        list_for_each_entry(as, &chip->pcm_list, list) {
->>>>> +            subs = &as->substream[direction];
->>>>> +            if (snd_usb_find_substream_format(subs, params))
->>>>> +                return as;
->>>>> +        }
->>>>> +    }
->>>>> +
->>>>> +    return NULL;
->>>>> +}
->>>>> +EXPORT_SYMBOL_GPL(snd_usb_find_suppported_substream);
->>>>> +
->>>>>    /*
->>>>>     * disconnect streams
->>>>>     * called from usb_audio_disconnect()
->>>>> diff --git a/sound/usb/card.h b/sound/usb/card.h
->>>>> index 02e4ea898db5..ed4a664e24e5 100644
->>>>> --- a/sound/usb/card.h
->>>>> +++ b/sound/usb/card.h
->>>>> @@ -217,4 +217,15 @@ struct snd_usb_platform_ops {
->>>>>    int snd_usb_register_platform_ops(struct snd_usb_platform_ops *ops);
->>>>>    int snd_usb_unregister_platform_ops(void);
->>>>> +
->>>>> +#if IS_ENABLED(CONFIG_SND_USB_AUDIO)
->>>>> +struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
->>>>> +            struct snd_pcm_hw_params *params, int direction);
->>>>> +#else
->>>>> +static struct snd_usb_stream
->>>>> *snd_usb_find_suppported_substream(int card_idx,
->>>>> +            struct snd_pcm_hw_params *params, int direction)
->>>>> +{
->>>>> +    return NULL;
->>>>> +}
->>>>> +#endif /* IS_ENABLED(CONFIG_SND_USB_AUDIO) */
->>>>
->>>> The usefulness of ifdef guard here is doubtful, IMO.  This header is
->>>> only for USB-audio driver enablement, and not seen as generic
->>>> helpers.  So, just add the new function declarations without dummy
->>>> definitions.
->>>>
->>>
->>> Got it, will remove it.  We also have a dependency in place for the
->>> qc_audio_offload driver and SND USB AUDIO in the Kconfig.
->>>
->>
->> Looking at this again after trying some mixed Kconfig settings.  These
->> declarations aren't specific for USB-audio.  They are helpers that are
->> exposed to soc usb, so that it can do some basic verification with soc
->> usb before allowing the enable stream to continue.
-> 
-> Then rather the question is why snd-soc-usb calls those functions
-> *unconditionally*.  No matter whether we have dependencies in Kconfig,
-> calling the function means that the callee shall be drug when the
-> corresponding code is running.
-> 
-> If it were generic core API stuff such as power-management or ACPI,
-> it'd make sense to define dummy functions without the enablement, as
-> many code may have optional calls.  If the API is enabled, it's anyway
-> in the core.  If not, it's optional.  That'll be fine.
-> 
-> OTOH, the stuff you're calling certainly belongs to snd-usb-audio.
-> Even if the call is really optional, it means that you'll have a hard
-> dependency when snd-usb-audio is built, no matter whether you need or
-> not.
-> 
->> Since the ASoC
->> layer doesn't have insight on what audio profiles are supported by the
->> usb device, this API will ensure that the request profile is
->> supported.
->>
->> Issues are seen when we disable SND USB audio config and enable the
->> ASoC parts.
-> 
-> If snd-usb-audio is disabled, what snd-soc-usb would serve at all?
-> Does it still make sense to keep it enabled?
-> That said, the statement above (building snd-soc-usb without
-> snd-usb-audio) looks already dubious; isn't it better to have a proper
-> dependency in Kconfig, instead?
-> 
+This series is the continuation of previous work by Vidya Sagar [1] to fix the
+issues related to accessing DBI register space before completing the core
+initialization in some EP platforms like Tegra194/234 and Qcom EP.
 
-Ok, took a look at it a bit more and should have gotten all the 
-dependencies addressed through Kconfigs.  Thanks for the review comments 
-and feedback.
+Since Vidya is busy, I took over the series based on his consent (off-list
+discussion).
 
-Thanks
-Wesley Cheng
+NOTE
+====
+
+Based on the comments received in v7 [2], I've heavily modified the series
+to fix several other issues reported by Bjorn and Niklas. One noticeable
+change is getting rid of the 'core_init_notifer' flag added to differentiate
+between glue drivers requiring refclk from host and drivers getting refclk
+locally.
+
+By getting rid of this flag, now both the DWC EP driver and the EPF drivers
+can use a single flow and need not distinguish between the glue drivers.
+
+We can also get rid of the 'link_up_notifier' flag in the future by following
+the same convention.
+
+Testing
+=======
+
+I've tested the series on Qcom SM8450 based dev board that depends on refclk
+from host with EPF_MHI driver. It'd be good to test this series on platforms
+that generate refclk locally and also with EPF_TEST driver.
+
+- Mani
+
+[1] https://lore.kernel.org/linux-pci/20221013175712.7539-1-vidyas@nvidia.com/
+[2] https://lore.kernel.org/linux-pci/20231120084014.108274-1-manivannan.sadhasivam@linaro.org/
+
+Changes in v8:
+
+- Rebased on top of v6.8-rc1
+- Removed the deinit callback from struct dw_pcie_ep_ops
+- Renamed dw_pcie_ep_exit() to dw_pcie_ep_deinit()
+- Introduced dw_pcie_ep_cleanup() API for drivers supporting PERST#
+- Renamed dw_pcie_ep_init_complete() to dw_pcie_ep_init_registers()
+- Called dw_pcie_ep_init_registers() API directly from all glue drivers
+- Removed "core_init_notifier" flag
+- Added a generic dw_pcie_ep_linkdown() API to handle LINK_DOWN event and used
+  it in qcom driver
+- Added Kernel-doc comments for DWC EP APIs
+
+Changes in v7:
+
+- Rebased on top of v6.7-rc1
+- Kept the current dw_pcie_ep_init_complete() API instead of renaming it to
+  dw_pcie_ep_init_late(), since changing the name causes a slight ambiguity.
+- Splitted the change that moves pci_epc_init_notify() inside
+  dw_pcie_ep_init_notify() to help bisecting and also to avoid build issue.
+- Added a new patch that moves pci_epc_init_notify() inside
+  dw_pcie_ep_init_notify().
+- Took over the authorship and dropped the previous Ack as the patches are
+  heavily modified.
+
+Changes in v6:
+
+- Rebased on top of pci/next (6e2fca71e187)
+- removed ep_init_late() callback as it is no longer necessary
+
+For previous changelog, please refer [1].
+
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+Manivannan Sadhasivam (10):
+      PCI: dwc: ep: Remove deinit() callback from struct dw_pcie_ep_ops
+      PCI: dwc: ep: Rename dw_pcie_ep_exit() to dw_pcie_ep_deinit()
+      PCI: dwc: ep: Introduce dw_pcie_ep_cleanup() API for drivers supporting PERST#
+      PCI: dwc: ep: Fix DBI access failure for drivers requiring refclk from host
+      PCI: dwc: ep: Rename dw_pcie_ep_init_complete() to dw_pcie_ep_init_registers()
+      PCI: dwc: ep: Call dw_pcie_ep_init_registers() API directly from all glue drivers
+      PCI: dwc: ep: Remove "core_init_notifier" flag
+      PCI: dwc: ep: Add a generic dw_pcie_ep_linkdown() API to handle LINK_DOWN event
+      PCI: qcom-ep: Use the generic dw_pcie_ep_linkdown() API to handle LINK_DOWN event
+      PCI: dwc: ep: Add Kernel-doc comments for APIs
+
+ drivers/pci/controller/dwc/pci-dra7xx.c           |   9 +
+ drivers/pci/controller/dwc/pci-imx6.c             |  10 +
+ drivers/pci/controller/dwc/pci-keystone.c         |  11 +
+ drivers/pci/controller/dwc/pci-layerscape-ep.c    |   9 +
+ drivers/pci/controller/dwc/pcie-designware-ep.c   | 307 +++++++++++++++-------
+ drivers/pci/controller/dwc/pcie-designware-plat.c |  11 +
+ drivers/pci/controller/dwc/pcie-designware.h      |  19 +-
+ drivers/pci/controller/dwc/pcie-qcom-ep.c         |   6 +-
+ drivers/pci/controller/dwc/pcie-rcar-gen4.c       |  28 +-
+ drivers/pci/controller/dwc/pcie-tegra194.c        |   5 +-
+ drivers/pci/controller/dwc/pcie-uniphier-ep.c     |  15 +-
+ drivers/pci/endpoint/functions/pci-epf-test.c     |  18 +-
+ include/linux/pci-epc.h                           |   3 -
+ 13 files changed, 321 insertions(+), 130 deletions(-)
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20240224-pci-dbi-rework-b2e99a62930c
+
+Best regards,
+-- 
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
 
