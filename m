@@ -1,72 +1,71 @@
-Return-Path: <linux-kernel+bounces-79334-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0FF38620F2
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:04:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0774D8620F4
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:05:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70983B23A9B
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 00:04:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 957DB2863C3
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 00:05:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83B8410F2;
-	Sat, 24 Feb 2024 00:04:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A50239B;
+	Sat, 24 Feb 2024 00:05:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="RyjJkMUy"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="h5dT+U2j"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82ACD38D
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 00:04:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CB51391
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 00:05:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708733064; cv=none; b=ZHw5WxQUyOSlcp3ORI78BzeQ+Y8iE1zeEU8Ku4pzpdqcOXzl2L7hlkC5szyC7uOb9Q66bGJPvK97o+LDiKAcLBEhvAUkHLBfoqr9sI8tET7F+L/VfIoY0PILfv0fZJmohmd7B0CLOfpdbJPZ7OoNhtG9V5rbL+qyrNEWSP3SM9c=
+	t=1708733142; cv=none; b=GFC829s9LCqQktQGqyUlExtvRY9ZrtaSIOtVdI1SpPRmEx6IvWYttORhQlZlgtDAuvwhA0I1jL9KhFOD51koi2vh4Kduqieu1ex70XuCAMIvHo8AXZ6bnhwasXCwzb4ENYQEIi6r63g/5SmEH9gtz/6tu/b+pfPBU3WIUYegSE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708733064; c=relaxed/simple;
-	bh=0ds54stYRJYXdcupiGXNSBbXhWKSZRXX9xz6jkYlvbE=;
+	s=arc-20240116; t=1708733142; c=relaxed/simple;
+	bh=BtNLLDRfUzf0j5Xx0MzJGDSaQOP9BLR490iANSNKg3I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wg1IPLaKeG75FD5k1hQ+qeJ/5NPyQV7sD7HPjVIV+b5RNlCSslPM1WEhZia58FaSZmCkiG2drI6aBWIZ49PE/qjE55QpBIpSeJcF4jHCtej8mhK4tPwsijrUNnDJrvFbLMFCF3rfN7rlYL/eAOejoq4vWsCrzSRF5imokxBNy+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=RyjJkMUy; arc=none smtp.client-ip=209.85.210.174
+	 Content-Type:Content-Disposition:In-Reply-To; b=Raab9Q9X8WfhC2Y65UElfJxOJ8dkxVS/s1mbuHSw8wja3YLVXhJtQkFWM8mvz+ExshBCGKtT0swZ5L0UrBcu5yun9XCuED+VE73XVEokMPTpgB3zI0Em3nr7XOs7YtGlj1O9krzJfjnErgEaoxujBgnXQMKcmyxwN6pY/Xhtjo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=h5dT+U2j; arc=none smtp.client-ip=209.85.210.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e4d48a5823so1247864b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 16:04:23 -0800 (PST)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e47a104c2eso971779b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 16:05:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708733063; x=1709337863; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1708733140; x=1709337940; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5zKbRfawyxNOTLG6sLvZY1qVECMzEB4oUCp6oCLj67s=;
-        b=RyjJkMUyBvWNJHKolip2EkDAn92pF2xO7O7uTFhIE1+BbOVWinvPSfWRTBeTP01+Nl
-         8rNWJYATufI/XWMRuMPEMgof5lNy1LMWB5gGyZ6eWFEFgOzwxWe9B6xeo+Rukwx2PPtq
-         Mh+etN7MVMG0RAhY4Ur4Gt2vmPrXu26JGQ9vA=
+        bh=ISFcMVB4Pi1paX6ZB9XWvqasqvLqqrENosxnYhDGUTM=;
+        b=h5dT+U2jOHgOh3n6I9Ce0rEW+mNzvHrbQUjqc+yCvqNMMG8bvW2as2dZb4mNmAQAPc
+         MAh8dE8aRop4mHXczQP83Y10OjSlouO8niFtdvwjZEfbML0vHWv+H1KWam1RyWscDCjk
+         hMsooris10osvVDd7CqTdxeqtu+IYeQhLtwT8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708733063; x=1709337863;
+        d=1e100.net; s=20230601; t=1708733140; x=1709337940;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5zKbRfawyxNOTLG6sLvZY1qVECMzEB4oUCp6oCLj67s=;
-        b=wczvD5DVlRnsOWmNccaXokAWVHsD3+8+L3swtD4fnMY/+STkuVBjavc0pVs7cMyyQz
-         /g084hWRgIji4ZK38zSP4lGupwvwMlSswaHbteRHDkz2TIiNhfBJfnt5nC7l80sH+nLd
-         EnRVxGuJjku8vaqcBN3zg8mOYH1zZtKikdwUyCOfVcoAbljMFhD5pzjgxQXB4KdCnp7N
-         C/YThhz7uL9GDj3oNAtpZUxia5wtpU9zZQ6YczQ/R6UMJCZfXDBT2qr1UlIMsG+ju17y
-         XXPvnMWN3tQucDIWASp5BL7UdvdAMI6uTL+4YFk7voHGnSljJLT/k0qnT429d+79YYd4
-         1bIg==
-X-Forwarded-Encrypted: i=1; AJvYcCVSaiVcenMjqUMPGjlY5X2tFC6z3X45r9FQsIK9xJgzVObT/KvivNehfM7BROOJeR+BvjW3W27ftWqWiQVp8wfFBpKqiu6wPR3XsvOa
-X-Gm-Message-State: AOJu0YwP8ripH+K6xIszFFNF3aOLErUVCA84FZIGn323WQOsaXviZukz
-	gDw9eeDb1HmLL7VoDhZawCih8UfojDXs024G3ktyoG7/Y87RLiXHCWUfFkfeYg==
-X-Google-Smtp-Source: AGHT+IHo5R8UEkP5waaUA9rFjuVosSU5ZEjKaimTg1nvTAlM5UVPe02qZg/kFBCfFuPu/PquVW6dIA==
-X-Received: by 2002:a05:6a20:d393:b0:1a0:a43b:cbdb with SMTP id iq19-20020a056a20d39300b001a0a43bcbdbmr1502973pzb.27.1708733062756;
-        Fri, 23 Feb 2024 16:04:22 -0800 (PST)
+        bh=ISFcMVB4Pi1paX6ZB9XWvqasqvLqqrENosxnYhDGUTM=;
+        b=MM46N3p42RjzFFxndrpzu/n8ri8ZAqfKOjzLvVIDQFDgbgCoD4F8w9rJQErgGHEYB+
+         iX2YpkbVwP//DRumJ1SzwcCFqCJK9/dM9Cexz/rt70zyEMimgc4yfqSrLVzUrv1A+hAo
+         Q98Wc3AWDjrjEEKlpzAYDanIzMIefCbDJAxoTH5ULJKzdXdvqHaHaSZO6zs8Kv9okYVN
+         dQSzfqhkqFhv1Xo8+a9jBVTVPrZw8yXDMGATA3EEPK9UkgNW2JnOiRjqcU8zbV7o0TaA
+         B/kR0whtfnLGXmoiD56pE+SQhqzl1AWG//jxNySEnA6kKybu5DyHODrAZcIDAaCW67HY
+         GtPg==
+X-Forwarded-Encrypted: i=1; AJvYcCWdCQpDdIu12nB5MsugyefyoWzS2T7W9HVrhc0c2K9FwTSE5yxtWBWD/ZvZ3vlOBEdsdtnd2bZh2spomWHyTqARJuCxu6BUUhsC/SnW
+X-Gm-Message-State: AOJu0Yx/KJBg2+F1XjUgUS8Yfe/7Zdi9Izso7AQFRtK7Xn4tre5L0W9O
+	F1OU4cz6Q/sTRDvW5qHNCUXOW2DHT2XPFiqvzoUmPOGQr+9wfok8TAeK6BLOeQ==
+X-Google-Smtp-Source: AGHT+IEYGoG8kuObm+K6CkUKu1PoKg+VjgXJU4uccu5PNgmBbCgBxkplrCyKKdgTzkD1guBLILMifA==
+X-Received: by 2002:a05:6a00:9396:b0:6e3:b7cb:b105 with SMTP id ka22-20020a056a00939600b006e3b7cbb105mr1558704pfb.18.1708733139964;
+        Fri, 23 Feb 2024 16:05:39 -0800 (PST)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id f19-20020a056a00229300b006e3a9bdeb99sm46910pfe.40.2024.02.23.16.04.22
+        by smtp.gmail.com with ESMTPSA id w67-20020a626246000000b006e25d43630asm46314pfb.108.2024.02.23.16.05.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 16:04:22 -0800 (PST)
-Date: Fri, 23 Feb 2024 16:04:21 -0800
+        Fri, 23 Feb 2024 16:05:39 -0800 (PST)
+Date: Fri, 23 Feb 2024 16:05:39 -0800
 From: Kees Cook <keescook@chromium.org>
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: Justin Stitt <justinstitt@google.com>,
-	Sathya Prakash Veerichetty <sathya.prakash@broadcom.com>,
+To: Justin Stitt <justinstitt@google.com>
+Cc: Sathya Prakash Veerichetty <sathya.prakash@broadcom.com>,
 	Kashyap Desai <kashyap.desai@broadcom.com>,
 	Sumit Saxena <sumit.saxena@broadcom.com>,
 	Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
@@ -88,11 +87,11 @@ Cc: Justin Stitt <justinstitt@google.com>,
 	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
 	MPT-FusionLinux.pdl@broadcom.com, netdev@vger.kernel.org,
 	storagedev@microchip.com
-Subject: Re: [PATCH 1/7] scsi: mpi3mr: replace deprecated strncpy with strscpy
-Message-ID: <202402231603.152B165@keescook>
+Subject: Re: [PATCH 2/7] scsi: mpt3sas: replace deprecated strncpy with
+ strscpy
+Message-ID: <202402231605.3DABED3@keescook>
 References: <20240223-strncpy-drivers-scsi-mpi3mr-mpi3mr_fw-c-v1-0-9cd3882f0700@google.com>
- <20240223-strncpy-drivers-scsi-mpi3mr-mpi3mr_fw-c-v1-1-9cd3882f0700@google.com>
- <512c1700-b333-8aea-f19b-707523ac3a6e@linux-m68k.org>
+ <20240223-strncpy-drivers-scsi-mpi3mr-mpi3mr_fw-c-v1-2-9cd3882f0700@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -101,27 +100,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <512c1700-b333-8aea-f19b-707523ac3a6e@linux-m68k.org>
+In-Reply-To: <20240223-strncpy-drivers-scsi-mpi3mr-mpi3mr_fw-c-v1-2-9cd3882f0700@google.com>
 
-On Sat, Feb 24, 2024 at 10:58:07AM +1100, Finn Thain wrote:
+On Fri, Feb 23, 2024 at 10:23:07PM +0000, Justin Stitt wrote:
+> The replacement in mpt3sas_base.c is a trivial one because desc is
+> already zero-initialized meaning there is no functional change here.
 > 
-> On Fri, 23 Feb 2024, Justin Stitt wrote:
+> For mpt3sas_transport.c, we know edev is zero-initialized as well while
+> manufacture_reply comes from dma_alloc_coherent(). No functional change
+> here either.
 > 
-> > Really, there's no bug with the current code. 
+> For all cases, use the more idiomatic strscpy() usage of:
+> strscpy(dest, src, sizeof(dest))
 > 
-> If (hypothetically) you needed to reduce stack size, just copy the char 
-> pointer instead of copying the chars onto the stack.
-> 
-> If (hypothetically) strncpy() was banned altogether (rather than merely 
-> deprecated) I would do the same -- but I'm not the maintainer.
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-I'd agree. This can just be using:
-
-const char *personality;
-..
-	personality = "RAID";
-
-etc
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
 -- 
 Kees Cook
