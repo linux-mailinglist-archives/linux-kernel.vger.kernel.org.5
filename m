@@ -1,143 +1,212 @@
-Return-Path: <linux-kernel+bounces-79703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44EF786259A
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 15:24:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3322786259E
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 15:25:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD0261F22A72
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 14:24:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B64341F229DA
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 14:25:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FC1E40BFE;
-	Sat, 24 Feb 2024 14:24:06 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27E7842051;
+	Sat, 24 Feb 2024 14:25:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="cRKvV5DA"
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01olkn2051.outbound.protection.outlook.com [40.92.53.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A43018021
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 14:24:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708784645; cv=none; b=bAv3o/jY/BQ9Tfpm6DDtiuMmMwMNn/uB943I6YQI2KHNc1XmLIx8oNqE23/VzQpIQPl/q94vYmB1Nww3PhEUP3IVCGoqYstTmfOeEUzyUeEu7iCD/WYNIrDpjkANnKfPhtFpn/tJrU0nhTyiMS+YSyTyU7vM3WHYKSywSl+8D+0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708784645; c=relaxed/simple;
-	bh=851VqcKdOfVPcPDI8JuEunjY6TUKrKwwJlIAhWRQKQ8=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=PrTqRYxPdJk1ZaMx2w4rrNChoZIdwaGF4O3/+bRrKPwYmvRWdsnyZOYmRhsvpvyjoYGg9xGb/hznFZDUDVZncGpRN60kBfEQS2HgzJwGfUkKQ3EX3g+8ylkgv6s/BXciREf4AGVL8AzucaxJfeoiQyXnloCU8jd1+GurMCeZD2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3652275e581so16205225ab.3
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 06:24:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708784643; x=1709389443;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=W39+hLgLH41fg9W1DOITQVtw03A/WBIPdMExKjxbzAU=;
-        b=INuJOdENT5ZZUcqhAnwxX2xzTbpQJoM5GrVZwTpKFNT9tj53NQVQmqelWLBeDw17Hz
-         ypTQGxk/u6lrKQ/PpGHJixByAbpjrfrpPp5IDcU8E6LJGNUifWTzjYG8AIhd4qFVSyba
-         zFabl4t77pOVjkYRK99fLqd8BJYkTXtPJwmgMshVfivkwUt2PnLZumfPCuuLhA41ik+X
-         7Jx7XbrXoTEX7MoKpnhJWRGToB2Mk1ehlrbUg4ncb3ZO5PjYhkF12xT//sCKqWS97tF1
-         w4u7JrfbxB4avmYdeiBdRPQ4ZUU8H0I81dBTk1Y87BUjkwp3XCoTu9VuUdT+E/V7vnH2
-         QenA==
-X-Gm-Message-State: AOJu0YxILZrdtpQGLFrUd3k9q/cNDmU8aPlLNL1HnrGSPf6h4MWK8X3R
-	/YCB5YP3FcC+gD1uuZgyUycOlANlNhYQCy7nelBxBf5xAR4ktN0L+on4iVOMdUfKXtY6WNrdppP
-	QZqL6VuUh/1NHJqJqVv4VMiipoTEVSLSdWBo5YxfD3yRVu0hBbWRVaUK7cw==
-X-Google-Smtp-Source: AGHT+IHo0dUNbK0cOaK6I3IMewqSTalhlclg9Cp/g0dUUFY87Nz+fZQXi73NqX3S3skRuLXGEiC4000fTVLQ4I7iyQ5kVCtA/sKj
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EBC21B7E8;
+	Sat, 24 Feb 2024 14:25:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.53.51
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708784714; cv=fail; b=fBMrf/8BOqPK0ZjleswX9IOlnG9moRhM3Wma//CIYHF/LVULaWHFyybRHmBgutAi4aYAkFnbiQ5EM7qCq7CEUByZ4Z0Ae5lu8n0pv3FE3wZd+0taSU2H2kGGx00I+L3lcWJ8gS7lC75DuN68alDJ8N5OzGdwntkRM66jab8mHEY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708784714; c=relaxed/simple;
+	bh=hKmSto5gzz5vSykVEqxPINQylCV3Ax0e9MfU0qCVgHI=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=pPL8O21eT4XZMjfEjYvd9mSID2PzZORRQqxhYRuZMXUnyLy5fKjkdI7KtteGkT6OY9I+mwA83NdOGf6t3/P+YWL2L1ud0GpYFkZ20bN9VYlyUEAwzTJHkTnbsvElQq+xIUQjdg2XPAJ4ikwArJYjHYPV4pIGmKKcNqjNXjbdMFQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=cRKvV5DA; arc=fail smtp.client-ip=40.92.53.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NOH7vOKa90CkR2+xh1vaONbHso8/CO0eZvE86iGNWKlfM6Gqnl3sy5MH7JpfMCN4QJSQdXIZ7px3L3jfiR4UIpXHPhYw5ZEyCpJYtVPGaHoQwL54Anj3mLS8y68RXu9GSAVwMo9x6608fUWsh36UphAWZSeUiOCwYJmdamVn60zIoWWRn863ux5zSip+1cuCdr67hBg53GlT7lKS/g7gFn6Q0k0x/crh3zFwnzsT20tyQUknAny4v97hwnsaRAh7R1O+8aO+TfChSBtcZES6OIjvHOD8r2XE4NU97PflwpEdjrrsq3xU6F2iB6/SohbUTQjP1SrovTVf6e8fgnBUnA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PD2TXALPo56+s0ML7xMWW0yjulhU6krJS0obHzyNXBQ=;
+ b=OZKQpXKcBRFmkx/UahKtIaCF6NWcO5HVccl3DVjtq3IVjPwm9gM8xp3eOjvx0ptX6xXlW/0ko0gswHTQmFJbsRK1R7Yn0dLZyFfE6RWfRh0ASzAQBpghqIhE1R9KB8p5KKoQLsTtEIuSgjiWgC7Lw0C0XxdUXVbcZQQO7P5P+FAsUNuhbpd1s+l99dF5jsbn9XVkT57aGCROj1o2M65qbX7e+3kPkPHkdMyen45+ZMKvsLNrdOWH2FMhcR38FWFZFF8+xhe34g3aWeAZSe7YUqKve4fCWdGJyOJQ4bXscUqlfKC3ulQ/5rB5O96nik61c/48eidC0A+onVlEBQ/Nhw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PD2TXALPo56+s0ML7xMWW0yjulhU6krJS0obHzyNXBQ=;
+ b=cRKvV5DAmDa9zTFbpG4MbywV5zXCvNbR+5g5l5bCPfXyZkXRCrTGIyDEwICYJttTK6nPOraymhrIsVXdCNLdQc/IMHBtqqSt/zoQPme802YfEcPWkHaLObgIMOnnjQ/D4fD0+Xz3EyF/STPLjvYh1rzSK2agSAlMoe1k/2hTRAXhb14uSXxCE0tG5Hzgrj3Foyl2mgttrdWThIVcOKQjbnuYY5wngCWh6XgUxeIwzy3+w6NITTnTSaQ095chF8b77AZZKSOQjfbKf+SAof3Bda7syDJuQExuKdy0aGgt3TVJ+U+/6ZUhhyY/ZWvYaQP0dNfgYadGYcz8jknDgWzcFg==
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
+ by TYZPR06MB5869.apcprd06.prod.outlook.com (2603:1096:400:330::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Sat, 24 Feb
+ 2024 14:25:06 +0000
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::53da:a8a:83cb:b9ad]) by SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::53da:a8a:83cb:b9ad%4]) with mapi id 15.20.7316.023; Sat, 24 Feb 2024
+ 14:25:06 +0000
+Message-ID:
+ <SEZPR06MB69591E1D33137D0FE215941296542@SEZPR06MB6959.apcprd06.prod.outlook.com>
+Date: Sat, 24 Feb 2024 22:25:04 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 0/6] clk: hisilicon: add support for Hi3798MV200
+Content-Language: en-US
+To: Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: David Yang <mmyangfl@gmail.com>, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+References: <20240224-clk-mv200-v5-0-79f586d6e1a2@outlook.com>
+From: Yang Xiwen <forbidden405@outlook.com>
+In-Reply-To: <20240224-clk-mv200-v5-0-79f586d6e1a2@outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TMN:
+ [ohyICwd+ZsQ4/3eZl3tyW1SbWdqWN93/jpUTXaIwlxPJ24tOJFnvHZuSdb9udVCEMQp0NDjREpY=]
+X-ClientProxiedBy: TY1PR01CA0189.jpnprd01.prod.outlook.com (2603:1096:403::19)
+ To SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
+X-Microsoft-Original-Message-ID:
+ <de81559a-35ab-496e-9fc2-5d55da0c8edf@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c549:0:b0:365:1f2b:7be8 with SMTP id
- a9-20020a92c549000000b003651f2b7be8mr218181ilj.5.1708784643445; Sat, 24 Feb
- 2024 06:24:03 -0800 (PST)
-Date: Sat, 24 Feb 2024 06:24:03 -0800
-In-Reply-To: <c72f390a-47a1-4a2d-b789-223fbb5a3add@I-love.SAKURA.ne.jp>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ab9c9d0612216d78@google.com>
-Subject: Re: [syzbot] [mm] KMSAN: uninit-value in virtqueue_add (4)
-From: syzbot <syzbot+d7521c1e3841ed075a42@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, penguin-kernel@i-love.sakura.ne.jp, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|TYZPR06MB5869:EE_
+X-MS-Office365-Filtering-Correlation-Id: d4c352a8-7f01-492e-7165-08dc35446532
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	uLeTZBl/kkM3xFYt5QiDXZRpBts7cY8R+ra30WCGcazGgt19+KOBeg2fyXO5tEJuukykK8G/t4B/XJ4KQq9ZjzRy81MHsAy6KSVN4p+GRevvGdSBNqjBUicWhrnzwuN3Pn0/p/A3z304SG3Vu7j88SpE9/964hGWcE6Z458R9gnWpqVKB1ruv6+xTTGVsm8vQi1rk4oHgR11aMyJKknlTcX39d5OLTYjW89anOwPvxZjezf3I8b7Lv7xDiQbpdNdEycYAcv7oZwAdqaKgfvQ7vl/LLwcZRC05QxkHZWpQbdMjygPO0hdW8Hb6RkoNt4/NxB1tn9PN+OjPz09N0yyixpous8cOEWSAttSg7CWFuDCC/ntKJGGpiA6OpclLBZ7JeO13wqmrcOL5b/2HAhOHiwc+knJssLYDyO5wERpBf4fWQ53ImGGpSlEFcGkoLmayYlpc6XZSdykvSw6Rqx3kXWQcqH3QVYxDnCQIlMs1dQBYRdz1Sk6R/hHaQyR4cyDYTBD/L7pGn73sl5Y8+IipvtrVLWyf26zsTPS1kYcTSM=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?TkVuUmhlQzNkVXUrZ1N4bXQvMG5CVExYYmR5eldFUHJETDVreTRwc0JHemR6?=
+ =?utf-8?B?OFh5K2swK2FqaUkrVzBtYnBXamRsdXJISUtndzJWbnNRL2FPcmFsV2h6dmJY?=
+ =?utf-8?B?M3lhSm5ENGI5eHl0VjNWSFgwbTlPV2pzbDIxZG1ldkxjeGxodXVjdUIvU3pm?=
+ =?utf-8?B?VEVobGIxb2RNZWEwaks4VkVpQ0FzRVBualZnNk1lRi9ZSmtac2R2dXAvNEtF?=
+ =?utf-8?B?cHhCUERsMENmcjI5TUVSdVh0NGtTcWFBNDl4VmVGVmZ0ZGdHV3R5S3lMRGMz?=
+ =?utf-8?B?dy9RRXJFRzZZRnNLMHBOdElFM1Q5OHpSU1pTTU42VytxR2tqZHkwTGwvanJs?=
+ =?utf-8?B?TmVYOEdsMGZ6QVJ2a1NDakwwQm1yWGhjTVVFUXZlSitDQi9WdGloOURtblgz?=
+ =?utf-8?B?U1V1WitBcWF4QVdUbVVPbXQyOXZEM3pGNDlJai9oUDBXaTJNWFFrZGdQVmRq?=
+ =?utf-8?B?ZzBwVkVTM1RrMW5ITXlBUTdpUkc1NSt1TnJYREVwc2h5VXhwVFd1alNsaWlt?=
+ =?utf-8?B?YTcxUy9URk1XK1c5dFI3L3NjeHZlZGFJVWYvZk9jYnlOTWsyZlNQaFQ2Nmgv?=
+ =?utf-8?B?V0VrdFR3L3NtejJCNnhJbUpMNTdKaEdHc2JzUlMydVdtSnMza1c5RjFaUjV4?=
+ =?utf-8?B?eWlZSzd1SFdPZG80cENVTloxeXRGbW1RTUtCSm5Pc2RnZGxxclBiNnpoNnpt?=
+ =?utf-8?B?MlN4ZE9oNXllbk5HdksrcmlrWHB1SmtFTmNFbUV1TEtKK2FqWWhhcDVETk85?=
+ =?utf-8?B?NjVnd2YwMDB3YVJwaEo0a2orUEEwT1lCbWtFRW1xQlpGZWtzR3lYQmZFdDV3?=
+ =?utf-8?B?QmxWN1JCRHRRVDZwbWxEZUZXektUSXBBZm03T1pPTGw2WHZFUUxramZjYU1O?=
+ =?utf-8?B?TXFHVXBpdm5hYzZhL25vbWxzQjdpajVHL3REMEdtRFYyRUszaGFVamVCM1FJ?=
+ =?utf-8?B?bG5qYzJmVnBmTHlKd2JKcUsyRFVKb2I4TkRmNTBvd1ZiN2REOGhPbDFqTThZ?=
+ =?utf-8?B?ZEpjNU5wNmw4R1F6OVNPcE9tRmpKclRCZVNGWnAzNnRCaU1nTEdUNHpxcGd0?=
+ =?utf-8?B?aHF1dFNtUFVMdjFIZ0lGZnBiMFZLRmhqYXJTNXNoTWlzOWRlSytOK2p2WitQ?=
+ =?utf-8?B?MEF5VmRhWFBpK2xwelVEREcrWmlkMHlYNXFyb000elJua0hHSzdKZ0p0NkQ1?=
+ =?utf-8?B?VHZvQUtHeGptQzlmdE5YbytTa0pycWZ4dXc3WkoyNHpMOHRoZjFQKy9nVXBB?=
+ =?utf-8?B?VkxTZVE3Ym83bHpwblgvS0hsdWQ3dGZ6Vlc4RXhNY09ndTNDOWxuQlM0TEZT?=
+ =?utf-8?B?QVdzRDhybU5vcFI4QkppbTJ4UXB0bXZ5YXFjZW1qN2pJVTRjck1XY3hVSllT?=
+ =?utf-8?B?dGIrczNqUTJ6OUM5ZG9oYXdlUGpnd3kxaU4rRE1QTUFFeUVzODhlYzd5V2Rl?=
+ =?utf-8?B?MWJWWUU3K09yYThLQk5xSU5BN0t0YmRzWkFNOFowR1liUEdhSUFvejgyY2NY?=
+ =?utf-8?B?R2NJOWhpMnlRZVBoNlBrMEcxWVJSOC9aZE9ubjRtV1pqdVUyM3QvcGFGL0NF?=
+ =?utf-8?B?ZHRPMTNwWC9SL0FZZUVOMUcxK0U3ZjBFaHFablo1eDNwYmFzRDhNaENSWjFM?=
+ =?utf-8?B?NzhUbVdvYXFuR244Yml5WVBtcCt6NEZMNFRiUnhxVmZUZmpPTlNyOG9hbzVh?=
+ =?utf-8?B?dEhnN2h5eFdLOXZmbmhuNXhuRTJBNnEzNFlsZUcyVndjVW92eVhwNERGcXhj?=
+ =?utf-8?Q?E5CXA+wcJ3ZGYiR35eOHx1Sm5HrBBv90LC8Zg5A?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d4c352a8-7f01-492e-7165-08dc35446532
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Feb 2024 14:25:05.3481
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB5869
 
-Hello,
+On 2/24/2024 1:12 AM, Yang Xiwen via B4 Relay wrote:
+> This SoC is similar to Hi3798CV200 with a few more clocks in CRG module.
+>
+> Note this driver is still ongoing, many clocks are not registered in the
+> driver now. Feedback is welcomed, especially from HiSilicon people.
+>
+> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+> ---
+> Changes in v5:
+> - sort compatibles alphabetically (Rob Herring)
+> - squash patch 5&6 (Rob Herring)
+> - Link to v4: https://lore.kernel.org/r/20240223-clk-mv200-v4-0-3e37e501d407@outlook.com
+>
+> Changes in v4:
+> - dt-bindings: hisi-crg: add reg and #reset-cells to required, add reset-controller to required for cv200
+> - dt-bindings: hisi-crg: do not add "simple-mfd" and "syscon" for hi3519 (Krzysztof Kozlowski)
+> - dt-bindings: hi3798mv200: replace spaces with tabs (Krzysztof Kozlowski)
+> - dt-bindings: s/DTS/DT_BINDINGS_CLOCK (Krzysztof Kozlowski)
+> - Link to v3: https://lore.kernel.org/r/20240222-clk-mv200-v3-0-f30795b50318@outlook.com
+>
+> Changes in v3:
+> - remove RFC (Krzysztof Kozlowski)
+> - rearrange patches so dt-binding comes before drivers (Krzysztof Kozlowski)
+> - dt-bindings: Remove lots of properties
+> - dt-bindings: stop merging all hisi-clock bindings, only convert hisi-crg.txt for now.
+> - dt-bindings: remove hisilicon,hisi-sdmmc-dll subnode (Rob Herring, Krzysztof Kozlowski)
+> - split histb-clock.h into two files, deprecate this header file
+> - fix all users (hi3798cv200.dtsi and hi3798cv200 CRG driver)
+> - hi3798mv200-crg: add a few missing clocks
+> - Link to v2: https://lore.kernel.org/r/20240217-clk-mv200-v2-0-b782e4eb66f7@outlook.com
+>
+> Changes in v2:
+> - s/dt-binding/dt-bindings in commit logs: (Krzysztof Kozlowski)
+> - fix bot error by adding "hisilicon,hisi-sdmmc-dll" to syscon.yaml (Rob Herring)
+> - hi3798mv200-crg: assign fixed rate parents to some gates
+> - hi3798mv200-crg: s/ETH/FEMAC, add GMAC ctrl clock
+> - Link to v1: https://lore.kernel.org/r/20240216-clk-mv200-v1-0-a29ace29e636@outlook.com
+>
+> ---
+> Yang Xiwen (6):
+>        dt-bindings: clock: convert hisi-crg.txt to YAML
+>        dt-bindings: clock: histb-clock: split into two header files
+>        arm64: dts: hisilicon: fix include path
+>        clk: hisilicon: fix include path for crg-hi3798cv200
+>        dt-bindings: clock: hisilicon,hisi-crg: add Hi3798MV200 SoC
+>        clk: hisilicon: add CRG driver for Hi3798MV200 SoC
+>
+>   .../devicetree/bindings/clock/hisi-crg.txt         |  50 ---
+>   .../bindings/clock/hisilicon,hisi-crg.yaml         |  76 ++++
+>   arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi     |   3 +-
+>   drivers/clk/hisilicon/Kconfig                      |   8 +
+>   drivers/clk/hisilicon/Makefile                     |   1 +
+>   drivers/clk/hisilicon/crg-hi3798cv200.c            |   3 +-
+>   drivers/clk/hisilicon/crg-hi3798mv200.c            | 462 +++++++++++++++++++++
+>   .../dt-bindings/clock/hisilicon,hi3798cv200-crg.h  |  62 +++
+>   .../clock/hisilicon,hi3798cv200-sysctrl.h          |  17 +
+>   .../dt-bindings/clock/hisilicon,hi3798mv200-crg.h  | 150 +++++++
+>   .../clock/hisilicon,hi3798mv200-sysctrl.h          |  21 +
+>   include/dt-bindings/clock/histb-clock.h            |  70 +---
+>   12 files changed, 810 insertions(+), 113 deletions(-)
+> ---
+> base-commit: 8d3dea210042f54b952b481838c1e7dfc4ec751d
+> change-id: 20240216-clk-mv200-cc8cae396ee0
+>
+> Best regards,
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KMSAN: uninit-value in virtqueue_add
 
-=====================================================
-BUG: KMSAN: uninit-value in vring_map_one_sg drivers/virtio/virtio_ring.c:380 [inline]
-BUG: KMSAN: uninit-value in virtqueue_add_split drivers/virtio/virtio_ring.c:614 [inline]
-BUG: KMSAN: uninit-value in virtqueue_add+0x21c6/0x6530 drivers/virtio/virtio_ring.c:2210
- vring_map_one_sg drivers/virtio/virtio_ring.c:380 [inline]
- virtqueue_add_split drivers/virtio/virtio_ring.c:614 [inline]
- virtqueue_add+0x21c6/0x6530 drivers/virtio/virtio_ring.c:2210
- virtqueue_add_sgs+0x186/0x1a0 drivers/virtio/virtio_ring.c:2244
- __virtscsi_add_cmd drivers/scsi/virtio_scsi.c:467 [inline]
- virtscsi_add_cmd+0x838/0xad0 drivers/scsi/virtio_scsi.c:501
- virtscsi_queuecommand+0x896/0xa60 drivers/scsi/virtio_scsi.c:598
- scsi_dispatch_cmd drivers/scsi/scsi_lib.c:1516 [inline]
- scsi_queue_rq+0x4874/0x5790 drivers/scsi/scsi_lib.c:1758
- blk_mq_dispatch_rq_list+0x13f8/0x3600 block/blk-mq.c:2049
- __blk_mq_do_dispatch_sched block/blk-mq-sched.c:170 [inline]
- blk_mq_do_dispatch_sched block/blk-mq-sched.c:184 [inline]
- __blk_mq_sched_dispatch_requests+0x10af/0x2500 block/blk-mq-sched.c:309
- blk_mq_sched_dispatch_requests+0x160/0x2d0 block/blk-mq-sched.c:333
- blk_mq_run_work_fn+0xd0/0x280 block/blk-mq.c:2434
- process_one_work kernel/workqueue.c:2627 [inline]
- process_scheduled_works+0x104e/0x1e70 kernel/workqueue.c:2700
- worker_thread+0xf45/0x1490 kernel/workqueue.c:2781
- kthread+0x3ed/0x540 kernel/kthread.c:388
- ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+Please do not merge this series. Some critical clocks are found missing. 
+dt-binding indexes needs update.
 
-Uninit was created at:
- __alloc_pages+0x9a4/0xe00 mm/page_alloc.c:4591
- alloc_pages_mpol+0x62b/0x9d0 mm/mempolicy.c:2133
- alloc_pages mm/mempolicy.c:2204 [inline]
- folio_alloc+0x1da/0x380 mm/mempolicy.c:2211
- filemap_alloc_folio+0xa5/0x430 mm/filemap.c:974
- __filemap_get_folio+0xa5a/0x1760 mm/filemap.c:1918
- ext4_da_write_begin+0x7f8/0xec0 fs/ext4/inode.c:2891
- generic_perform_write+0x3f5/0xc40 mm/filemap.c:3927
- ext4_buffered_write_iter+0x564/0xaa0 fs/ext4/file.c:299
- ext4_file_write_iter+0x20f/0x3460
- __kernel_write_iter+0x329/0x930 fs/read_write.c:517
- dump_emit_page fs/coredump.c:888 [inline]
- dump_user_range+0x593/0xcd0 fs/coredump.c:915
- elf_core_dump+0x528d/0x5a40 fs/binfmt_elf.c:2077
- do_coredump+0x32c9/0x4920 fs/coredump.c:764
- get_signal+0x2185/0x2d10 kernel/signal.c:2890
- arch_do_signal_or_restart+0x53/0xca0 arch/x86/kernel/signal.c:309
- exit_to_user_mode_loop+0xe8/0x320 kernel/entry/common.c:168
- exit_to_user_mode_prepare+0x163/0x220 kernel/entry/common.c:204
- irqentry_exit_to_user_mode+0xd/0x30 kernel/entry/common.c:309
- irqentry_exit+0x16/0x40 kernel/entry/common.c:412
- exc_page_fault+0x246/0x6f0 arch/x86/mm/fault.c:1566
- asm_exc_page_fault+0x2b/0x30 arch/x86/include/asm/idtentry.h:570
-
-Bytes 0-4095 of 4096 are uninitialized
-Memory access of size 4096 starts at ffff88803438f000
-
-CPU: 0 PID: 51 Comm: kworker/0:1H Not tainted 6.7.0-syzkaller-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-Workqueue: kblockd blk_mq_run_work_fn
-=====================================================
-
-
-Tested on:
-
-commit:         0dd3ee31 Linux 6.7
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git v6.7
-console output: https://syzkaller.appspot.com/x/log.txt?x=147162c4180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=373206b1ae2fe3d4
-dashboard link: https://syzkaller.appspot.com/bug?extid=d7521c1e3841ed075a42
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=12a294c4180000
+-- 
+Regards,
+Yang Xiwen
 
 
