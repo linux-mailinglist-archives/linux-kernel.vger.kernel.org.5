@@ -1,165 +1,128 @@
-Return-Path: <linux-kernel+bounces-79884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F0178627E6
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 23:06:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF6B38627E8
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 23:08:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8260DB2150E
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 22:06:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BC36282271
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 22:08:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF7434D59E;
-	Sat, 24 Feb 2024 22:06:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11D104D5A2;
+	Sat, 24 Feb 2024 22:08:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b="ROllbFbJ"
-Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F6B84CDFB
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 22:06:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.250.239
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708812397; cv=none; b=ghfPqA8kZor5z1zlx1LQexJgIov/BlxZ9yVsHydsW8BsoqJpQTYvqa2yTUuugjUHHG1BiiaexXYRQRtdjh1eeT4l+yXAcFP79aEOZdr55y56qdnNTl77dGzGJUGBpxJ4WmXWljyj4SHssP8b7drTwK2IT13MDpAxQLcZNhEglDQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708812397; c=relaxed/simple;
-	bh=ieBA33WGs4Kt+fmMNbz2jVA32D/Ax2LrmYRtNByr9rc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=NFz/wzCEwZ5XxFmXC8OJ1F1LvAvwXW3daHwVW61m8DB+UXS/YlnvOuxibjWXeRYhduGFr1pwESiV+9XPL754mqrsykMyM5WtwWOvM9O9s3wD9uH21OB9w2ZLCuuQiTnuFQscb6hhtf2XlLSF5zXXzrffxSmqNc1hl/zf8iiuZEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org; spf=pass smtp.mailfrom=8bytes.org; dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b=ROllbFbJ; arc=none smtp.client-ip=85.214.250.239
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8bytes.org
-Received: from 8bytes.org (p4ffe0c3c.dip0.t-ipconnect.de [79.254.12.60])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yi1+wEyM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.8bytes.org (Postfix) with ESMTPSA id 829C61C62A2;
-	Sat, 24 Feb 2024 23:06:27 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
-	s=default; t=1708812387;
-	bh=ieBA33WGs4Kt+fmMNbz2jVA32D/Ax2LrmYRtNByr9rc=;
-	h=Date:From:To:Cc:Subject:From;
-	b=ROllbFbJ35aqzbPD3ZW7uSn6QnQ1C1I5d8buXPTOJjwFspYZXSWcIVeMKI61xbj+8
-	 aik7e6UclKzAJ64zFvsnN2Ul7BGwO5v4LEkaikSky3rQolXn6s8JOAH4mo41Q2JN8q
-	 lx7/4yky/uDPoA6Uc9oRTTr24qkyJOOMs/nE7/IYTBnKnaaS8HxKHG1aEmyaOCiPty
-	 xfpJXbVIkLKnAunZUzoKt7Wyk2YcqSxwO0+9O0W/FhPSdLde6g/jRCRa77d2/kLaTp
-	 GDY2N3Y3O6uOk0YsYb1oH+089a/859Mhs82UC3BZXU+JT1xeiJPw//DiU9gABN90pm
-	 AqmtI4UaBEFEQ==
-Date: Sat, 24 Feb 2024 23:06:26 +0100
-From: Joerg Roedel <joro@8bytes.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-	iommu@lists.linux.dev
-Subject: [git pull] IOMMU Fixes for Linux v6.8-rc5
-Message-ID: <ZdpoYsivgpf_zdax@8bytes.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 434FD1400B;
+	Sat, 24 Feb 2024 22:08:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708812502; cv=none; b=suQG0gDYXlV9OAxdnr+ClCdJ+FbNVz3XLVbqOuYstcQtMO5j06xo5419nN79BhtycqQPYAvx2xeq786SeMnolGcYxphtBrZh5C4HkGSVVvRUOsJRNOnUO1Qd0SL+lF+I1GdcvMSczf6RPg5MG1mY8qBZurEUnwwlUBo0bsIuK1g=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708812502; c=relaxed/simple;
+	bh=ADFjQxG/AhdapZ5PMm8RKhbeE27ny3x7l4wkghgcu7c=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=tmLi++T9tCtgm/ghapXZPhKu3liYzWEMrRJyb5e7hcGib1o/SiBLRBUwW8+3oM1Ut70o8B8kLPqpIBlbP/AG6o1DqCfc1sXOyrL/2lQj8qQwIpahTMDmvflbrx+wU5aN6WbRYTj21zmChTJ6ord1sXdU1HM62D4jrI7nR3XrPE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yi1+wEyM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E302BC433C7;
+	Sat, 24 Feb 2024 22:08:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708812501;
+	bh=ADFjQxG/AhdapZ5PMm8RKhbeE27ny3x7l4wkghgcu7c=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Yi1+wEyMJe0GOA+eqYdg02KZKznkZ4hezi7j2W5FOnOnpKDoeQ3LApOJq5Qv1nzf8
+	 YGqwCArnPPyP1xiQbsJUwG77txta95HaLoPNAtZL/T6O1qbcp2UvA2Ozi0nXzCgz3G
+	 FEQ0vEGa7bdUfAe4OBhykIZXKMeU4jMpSdmQsfr4y8so+M70X53NerfbEPN6W6jN3d
+	 evoOoeDSt3gvMPheVjhSl9r23WS6dxLFjzb7Qz6CT6781HhU93m9reCbGnfk0SmZtc
+	 KjF14ap2ioX2PWXBI/gJwV5/shTGuSihvgeitBB3VvLbuucBFMhPDhvKRvO3gwVPUN
+	 MNRBusuCmEeig==
+From: SeongJae Park <sj@kernel.org>
+To: Barry Song <21cnbao@gmail.com>
+Cc: corbet@lwn.net,
+	linux-mm@kvack.org,
+	akpm@linux-foundation.org,
+	damon@lists.linux.dev,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Barry Song <v-songbaohua@oppo.com>,
+	SeongJae Park <sj@kernel.org>,
+	Minchan Kim <minchan@kernel.org>,
+	Michal Hocko <mhocko@suse.com>,
+	Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH] Docs/mm/damon/design: describe the differences for pageout's virtual address and physcial address
+Date: Sat, 24 Feb 2024 14:08:19 -0800
+Message-Id: <20240224220819.49277-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240224215023.5271-1-21cnbao@gmail.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="8udg5sVDv6UBipkG"
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
+Hi Barry,
 
---8udg5sVDv6UBipkG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Sun, 25 Feb 2024 10:50:23 +1300 Barry Song <21cnbao@gmail.com> wrote:
 
-Hi Linus,
+> From: Barry Song <v-songbaohua@oppo.com>
+> 
+> The doc needs update. As only in the case of virtual address, we are
+> calling madvise() with MADV_PAGEOUT; but in the case of physical
+> address, we are actually calling reclaim_pages() directly. And
+> madvise() with MADV_PAGEOUT is much more aggresive on reclamation
+> compared to reclaim_pages() on paddr.
 
-The following changes since commit b401b621758e46812da61fa58a67c3fd8d91de0d:
+Thank you for this nice patch :)
 
-  Linux 6.8-rc5 (2024-02-18 12:56:25 -0800)
+> 
+> Cc: SeongJae Park <sj@kernel.org>
+> Cc: Minchan Kim <minchan@kernel.org>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> ---
+>  Documentation/mm/damon/design.rst | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/mm/damon/design.rst b/Documentation/mm/damon/design.rst
+> index 8c89d26f0baa..6c50743552f5 100644
+> --- a/Documentation/mm/damon/design.rst
+> +++ b/Documentation/mm/damon/design.rst
+> @@ -315,7 +315,13 @@ that supports each action are as below.
+>     Supported by ``vaddr`` and ``fvaddr`` operations set.
+>   - ``cold``: Call ``madvise()`` for the region with ``MADV_COLD``.
+>     Supported by ``vaddr`` and ``fvaddr`` operations set.
+> - - ``pageout``: Call ``madvise()`` for the region with ``MADV_PAGEOUT``.
+> + - ``pageout``: Call ``madvise()`` for the region with ``MADV_PAGEOUT`` if
+> +   the region is using virtual address; otherwise, call ``reclaim_pages()``
+> +   for the region if physical address is used.
+> +   ``madvise()``  with ``MADV_PAGEOUT``  is aggressively reclaiming memory
+> +   when pages are not shared by multiple processes. Differently, paddr's
+> +   pageout  will do the best-effort reclamation by scanning PTEs to figure
+> +   out if pages are young, if not, pages are reclaimed.
 
-are available in the Git repository at:
+I think this might be too much details.  Especially, explanation of
+``MADV_PAGEOUT`` might better to be done on it's document.  We wouldn't want to
+update two places for future changes to ``MADV_PAGEOUT``.  What do you think
+about making it simple and independent from the implementation detail?  For
+example,
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fixes-v6.8-rc5
-
-for you to fetch changes up to 65d4418c5002ec5b0e529455bf4152fd43459079:
-
-  iommu/sva: Restore SVA handle sharing (2024-02-23 16:45:05 +0100)
-
-----------------------------------------------------------------
-IOMMU Fixes for Linux v6.8-rc5
-
-Including:
-
-	- Intel VT-d fixes for nested domain handling:
-	  - Cache invalidation for changes in a parent domain
-	  - Dirty tracking setting for parent and nested domains
-	  - Fix a constant-out-of-range warning
-
-	- ARM SMMU fixes:
-	  - Fix CD allocation from atomic context when using SVA with SMMUv3
-	  - Revert the conversion of SMMUv2 to domain_alloc_paging(), as it
-	    breaks the boot for Qualcomm MSM8996 devices
-
-	- Restore SVA handle sharing in core code as it turned out there are
-	  still drivers relying on it
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      iommu/vt-d: Fix constant-out-of-range warning
-
-Dmitry Baryshkov (1):
-      Revert "iommu/arm-smmu: Convert to domain_alloc_paging()"
-
-Jason Gunthorpe (2):
-      iommu/arm-smmu-v3: Do not use GFP_KERNEL under as spinlock
-      iommu/sva: Restore SVA handle sharing
-
-Joerg Roedel (1):
-      Merge tag 'arm-smmu-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/will/linux into iommu/fixes
-
-Yi Liu (9):
-      iommu/vt-d: Track nested domains in parent
-      iommu/vt-d: Add __iommu_flush_iotlb_psi()
-      iommu/vt-d: Add missing iotlb flush for parent domain
-      iommu/vt-d: Update iotlb in nested domain attach
-      iommu/vt-d: Add missing device iotlb flush for parent domain
-      iommu/vt-d: Remove domain parameter for intel_pasid_setup_dirty_tracking()
-      iommu/vt-d: Wrap the dirty tracking loop to be a helper
-      iommu/vt-d: Add missing dirty tracking set for parent domain
-      iommu/vt-d: Set SSADE when attaching to a parent with dirty tracking
-
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c |  38 ++---
- drivers/iommu/arm/arm-smmu/arm-smmu.c           |  17 +-
- drivers/iommu/intel/iommu.c                     | 214 ++++++++++++++++++------
- drivers/iommu/intel/iommu.h                     |   7 +
- drivers/iommu/intel/nested.c                    |  16 +-
- drivers/iommu/intel/pasid.c                     |   5 +-
- drivers/iommu/intel/pasid.h                     |   1 -
- drivers/iommu/iommu-sva.c                       |  17 ++
- include/linux/iommu.h                           |   3 +
- 9 files changed, 225 insertions(+), 93 deletions(-)
-
-Please pull.
+    - - ``pageout``: Call ``madvise()`` for the region with ``MADV_PAGEOUT``.
+    + - ``pageout``: Reclaim the region.
 
 Thanks,
+SJ
 
-	Joerg
-
---8udg5sVDv6UBipkG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEr9jSbILcajRFYWYyK/BELZcBGuMFAmXaaGIACgkQK/BELZcB
-GuN9fBAAjszaR5P6P941H8PXC1JOUMDQVdFK3kuxrS9+t0KL1C6NbyalkkYkVV8x
-TbQ8dh0R8ZxVoM5E+vFYM6QlE1DPsUw9a3K6h4JGZJwfOqHCGncK8rAWa+30/MtM
-Tam+gaHy4TvSwRwHXe0oY2s0L03ETyLTGoa5SumHL69vaWSQM6GGOvC/CzHcoTTX
-LhZwsajEzwDVenqCnEdCdxKqhVVQoLwpvudmXuEIUkk8BEJ4/OgZMm+hQlAE6MTB
-9He43DzzIgb5ikLHNV1E0ReERNyK+jUKgdgVfp4Fi5Gyfap7qMPycPCOD/CdPf2u
-sJYrZyYLjWXJXwbt6+Iz0tZ0duPnEx89NdtR75P4tRssrxSdCmwauKdEd9CvYjCO
-frTNBpftVlhosapkdBCPtN+BMPIFRCpgALCxxfbzeegD7KN4KAIh03CUbM2mWU07
-Ok80Wm94RzphE/ObmvNH53mhz2QBUrsfLiBX02mdjwGz3sJ/ZgLg4E9NQn+KIAMr
-lNsxkGTSlMuNkPqS3XCMDQLUpiZRdmD7rOX72dvz6RGmKnU0X9X2EIDjPZF4P/cO
-aQVquRnmFS+55B0+AokqODlwqmhYTsMd440EeyaIfxAIz7rNUgFENiPvatqkV1+l
-7UWkcw72I5t2hw7wQ1mo9OVXOXRWLaxoxyudEtNQwj1yEJor8P4=
-=3AY4
------END PGP SIGNATURE-----
-
---8udg5sVDv6UBipkG--
+>     Supported by ``vaddr``, ``fvaddr`` and ``paddr`` operations set.
+>   - ``hugepage``: Call ``madvise()`` for the region with ``MADV_HUGEPAGE``.
+>     Supported by ``vaddr`` and ``fvaddr`` operations set.
+> -- 
+> 2.34.1
 
