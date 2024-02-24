@@ -1,321 +1,160 @@
-Return-Path: <linux-kernel+bounces-79494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9B5F86233B
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 07:57:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86648862342
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 08:00:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47EADB22CD2
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 06:57:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 173FCB2307C
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 07:00:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98CE917748;
-	Sat, 24 Feb 2024 06:56:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40BCCD52F;
+	Sat, 24 Feb 2024 07:00:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Xeq+Vggr"
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="aOxtT090"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC86A1118F
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 06:55:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 610384C64;
+	Sat, 24 Feb 2024 07:00:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708757776; cv=none; b=U8WcNeOXJjeXezQp40uBIGavW6mVVucEEtIMN3B1RgPXTXrg5jzDQNtlS+qqKNBFZ8h742CKltkRQSZ6LKBuWdIJ9zL6Dlvlgkal9t2mhCDbZTOytUZC7KztmfroafAHcT1vdy5dI5dFfrbwbFSVhnvVjFvhuG4daW6Jc8ePHWc=
+	t=1708758042; cv=none; b=TH46GksPb1+YLf0S1+QC2J1gflTDAfnHjr7L3M5iM8535VdkMevNIu6ztQhd6Tqwv8wq5IXQbKtosaCCtfvS+8jCsvvaDRUTp9lMyhhHD/yJ/sPgHKt9goZfDqVWdFyjiNmZtycqh4F2dZV25FwhNn23lfyQ2WyDFSRRgRSWEII=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708757776; c=relaxed/simple;
-	bh=RlSifbzPxBtpu7PujRxYQXRm0HNOIzR8xSzjMWcC9aI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=L+CRxD9XIE2JaVU8oFiN45qXhHzpoLggougodHgXEPP0iVVNmbPIqcPjiJlqfUVS3LV9G+aspjWC3qMtEngHRYHGC5p8alZe7rQWt4RjFaOh9TK1ySxkQQCuB01lzGzP10Y17ypXXAM+ri2CvhW6/IXk5dO+qclZmfHDDx+QDiM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Xeq+Vggr; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5d81b08d6f2so1472915a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 22:55:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708757751; x=1709362551; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=x7a40LFXPNdbxmfoEEZhDO4KpnySFv1la0Joe27Qfts=;
-        b=Xeq+VggrPuLNeTEqB88/Z2mswIxo95t9YlexWB2/PqhuvdkMZgUFzbKiiPssx/C8ZT
-         a4olQvY7tKZdDELxa7krnfaa9uY9G1EI4xj3rScVTiAQfn+bntULZqq3GKgHRSqeVpUP
-         uj0m7m/GZJF4dOWWWNLItsVCzpHL5TKdxAj7sYCaDBOi9pv000PeEv+c6ncaas8hWKJm
-         KFrAEWd1uJQSBcyjRwLhhqtRweIGt56KpurrjinDx9yzihkmajhQFB7/MVDdplN6hntu
-         HLtMkUtpsy8OscyeOSn6pgVg0EbTgh+XS4m00CRCLFphKt6AZ/I/dpdWmVL7+jltsN1F
-         Dd4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708757751; x=1709362551;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x7a40LFXPNdbxmfoEEZhDO4KpnySFv1la0Joe27Qfts=;
-        b=i+m2YzBbEuPmfZK5gEWGm6t9jdCoKeQOXJY8q0q3Rzbj+0mbrqN6Px/MAjDl/5EVrS
-         znG/QA7hMdkG+tRRBsdbpenFESxkAzfdL74ZidVc55Mz/Uy4UvVMwdfUpRNc2iiZjNqy
-         Ij5g6NcjUrUAZjwR+ZGPV0dLf4MIA2AuiIch44401cv7+B9tn1PtHGyJHyHwKxkhFvvd
-         YQSmlr3IkDLxV3YHdIUvqZV47qkD0fTRLuwd7aoTUNU3uK8hKtTJE+V3XCLnUgXf17yl
-         mbwzdZJZdn6hdhe9qA3Xu0W2xoB5oFXcYfsD3YwnlVM5N815M96faSqwjfbpB6Ed1/pG
-         mEQw==
-X-Forwarded-Encrypted: i=1; AJvYcCXc60Tq4V3BMGWTotdtfBKr6OyjlaKVMjbr2l9PerDlNpkhWWgqxfDxZebF861WkNP7i1or50mmknhnusHEHcwCvCYLAJXUABMmeZVE
-X-Gm-Message-State: AOJu0Yw9RD6fJ9nDS4OOQ/WAfRbhF9fL6p+3u7JDAUIO7sd60h94GboR
-	yAPuQVbr25lmt2hCJafrbQ1lV+u6atU1YRqwF9j0IziqSZrJGA+nOM9oMToqbA==
-X-Google-Smtp-Source: AGHT+IEnmjPufGU7gBJ9H9QW+12UD2lgzlRAOajQe9hGXsq6LLeTPTiiOQarSarYh6PhYynFshwacg==
-X-Received: by 2002:a05:6a20:9598:b0:19e:a9e6:bfa with SMTP id iu24-20020a056a20959800b0019ea9e60bfamr3027765pzb.0.1708757750928;
-        Fri, 23 Feb 2024 22:55:50 -0800 (PST)
-Received: from [127.0.1.1] ([120.138.12.46])
-        by smtp.gmail.com with ESMTPSA id r5-20020aa78b85000000b006e4cb7f4393sm502932pfd.165.2024.02.23.22.55.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 22:55:50 -0800 (PST)
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Date: Sat, 24 Feb 2024 12:24:16 +0530
-Subject: [PATCH v8 10/10] PCI: dwc: ep: Add Kernel-doc comments for APIs
+	s=arc-20240116; t=1708758042; c=relaxed/simple;
+	bh=274OjcGhqqvLhljdp6duAIrxTZju4G8b8t5E2V8XKyA=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=urJshLi394o5xqXH5t/RauKJl/AgXVZB/x11Nr7FzM6ZKKAmsOFHjQ5PgccwkCUnXFkszUwW4o0czGNrY21O5w3Ww2xTFyr0+uoG4JVxRDcvMVY/N52D4eBj2tzR+LZqk8lzgCJ1CD7Yg1dBQ+/2qh2zwRddRzaUb9ZioMA73cQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=aOxtT090; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:References:Reply-To:Cc:To:From:Subject:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=6ZLkgbwJWG402shRNmQgM7t1ff3qC1484QmYAQ5fASg=;
+	t=1708758040; x=1709190040; b=aOxtT090ER9I8s0iDfJtuITcUaGIW798t3m70YE9LBr9jU/
+	J74s2/kC5ZNNS56rbpiju5mSyysseh/uayLJzACYr9Xk8WSErcQMMdVPthL1hZ3R7bNJWe4T1zcug
+	qRqvBhuggr920MCLNc65zX75xEmmg67KH6k9hKSrVw5CEU1M3kF8ckLznE9+dv7/k9tqZ1kcHleBE
+	sszMc1yCNL+7mjtpPppXY8iWVOyCPFsDum+pHs+rPcea71m04CtCHbmeI16JMqXLB9Z4hSQeA806q
+	pKdAUVyyi2FKhQdxA+7KzuiUoOJrT4/7p4W2WYPeYCXO2h5ibtdVXjGC98Vk9+hg==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rdm1M-00042C-Ez; Sat, 24 Feb 2024 08:00:28 +0100
+Message-ID: <c0cbf518-c6d4-4792-ad04-f8b535d41f4e@leemhuis.info>
+Date: Sat, 24 Feb 2024 08:00:27 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [REGRESSION] 6.8-rc process is unable to exit and consumes a lot
+ of cpu
+Content-Language: en-US, de-DE
+From: Thorsten Leemhuis <regressions@leemhuis.info>
+To: "Christian Brauner (Microsoft)" <brauner@kernel.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Matt Heon <mheon@redhat.com>, Ed Santiago <santiago@redhat.com>,
+ Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Paul Holzinger <pholzing@redhat.com>,
+ Linux regressions mailing list <regressions@lists.linux.dev>,
+ LKML <linux-kernel@vger.kernel.org>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+References: <6a150ddd-3267-4f89-81bd-6807700c57c1@redhat.com>
+ <652928aa-0fb8-425e-87b0-d65176dd2cfa@redhat.com>
+ <9b92706b-14c2-4761-95fb-7dbbaede57f4@leemhuis.info>
+ <e733c14e-0bdd-41b2-82aa-90c0449aff25@redhat.com>
+ <f15ee051-2cfe-461f-991d-d09fd53bad4f@leemhuis.info>
+In-Reply-To: <f15ee051-2cfe-461f-991d-d09fd53bad4f@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240224-pci-dbi-rework-v8-10-64c7fd0cfe64@linaro.org>
-References: <20240224-pci-dbi-rework-v8-0-64c7fd0cfe64@linaro.org>
-In-Reply-To: <20240224-pci-dbi-rework-v8-0-64c7fd0cfe64@linaro.org>
-To: Jingoo Han <jingoohan1@gmail.com>, 
- Gustavo Pimentel <gustavo.pimentel@synopsys.com>, 
- Lorenzo Pieralisi <lpieralisi@kernel.org>, 
- =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
- Marek Vasut <marek.vasut+renesas@gmail.com>, 
- Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, 
- Thierry Reding <thierry.reding@gmail.com>, 
- Jonathan Hunter <jonathanh@nvidia.com>, 
- Kishon Vijay Abraham I <kishon@ti.com>, Vidya Sagar <vidyas@nvidia.com>, 
- Vignesh Raghavendra <vigneshr@ti.com>, Richard Zhu <hongxing.zhu@nxp.com>, 
- Lucas Stach <l.stach@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>, 
- Sascha Hauer <s.hauer@pengutronix.de>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>, 
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
- Minghuan Lian <minghuan.Lian@nxp.com>, Mingkai Hu <mingkai.hu@nxp.com>, 
- Roy Zang <roy.zang@nxp.com>, 
- Kunihiko Hayashi <hayashi.kunihiko@socionext.com>, 
- Masami Hiramatsu <mhiramat@kernel.org>, 
- Kishon Vijay Abraham I <kishon@kernel.org>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
- linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, 
- Niklas Cassel <cassel@kernel.org>, 
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6191;
- i=manivannan.sadhasivam@linaro.org; h=from:subject:message-id;
- bh=RlSifbzPxBtpu7PujRxYQXRm0HNOIzR8xSzjMWcC9aI=;
- b=owEBbQGS/pANAwAKAVWfEeb+kc71AcsmYgBl2ZKYnORPJAWrZSvv2GaYNbEOsO2cd6ddhplS2
- ocQMoz+VY+JATMEAAEKAB0WIQRnpUMqgUjL2KRYJ5dVnxHm/pHO9QUCZdmSmAAKCRBVnxHm/pHO
- 9YJTB/4v7GuuRmbe0Zwxyo+tPfe7wHbF32OdBIEyJDAlpDhSmzu3hPTLA+GHTrWRvAi6LR1NxT2
- Geo7LAwfZyhTd9XHUj1LW6nZrP8HaeDHPpDeXdvury4TXEt/nJzaT6X46L8T4ZPVWeZjpnIAAUO
- VaRk25wB0GFN7qHOWP519/7zTqgE1Nvq8NwsPFJ0L+qF9PyDM5JQwqErlcoaeDE1ydE5VlfzHYY
- S0NyUgjfXf6OXkZduIxZ1Nre1D9jeGRMFFCPfwgmlDMMTWa2NPAg4BZtJhmQTJ3EZfldk6/srKQ
- baoBX4atAMnwFSU17XOzGeL6mEXH21rwVc7gH//Kc3x3mXaT
-X-Developer-Key: i=manivannan.sadhasivam@linaro.org; a=openpgp;
- fpr=C668AEC3C3188E4C611465E7488550E901166008
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1708758040;08c21b20;
+X-HE-SMSGID: 1rdm1M-00042C-Ez
 
-All of the APIs are missing the Kernel-doc comments. Hence, add them.
+On 21.02.24 17:32, Linux regression tracking (Thorsten Leemhuis) wrote:
+> [adding Al, Christian and a few lists to the list of recipients to
+> ensure all affected parties are aware of this new report about a bug for
+> which a fix is committed, but not yet mainlined]
+> 
+> Thread starts here:
+> https://lore.kernel.org/all/6a150ddd-3267-4f89-81bd-6807700c57c1@redhat.com/
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/pci/controller/dwc/pcie-designware-ep.c | 92 +++++++++++++++++++++++++
- 1 file changed, 92 insertions(+)
+[adding Linus now as well]
 
-diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-index fed4c2936c78..cdcb33a279db 100644
---- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-@@ -14,6 +14,11 @@
- #include <linux/pci-epc.h>
- #include <linux/pci-epf.h>
- 
-+/**
-+ * dw_pcie_ep_init_notify - Notify EPF drivers about EPC initialization
-+ *			    complete
-+ * @ep: DWC EP device
-+ */
- void dw_pcie_ep_init_notify(struct dw_pcie_ep *ep)
- {
- 	struct pci_epc *epc = ep->epc;
-@@ -22,6 +27,14 @@ void dw_pcie_ep_init_notify(struct dw_pcie_ep *ep)
- }
- EXPORT_SYMBOL_GPL(dw_pcie_ep_init_notify);
- 
-+/**
-+ * dw_pcie_ep_get_func_from_ep - Get the struct dw_pcie_ep_func corresponding to
-+ *				 the endpoint function
-+ * @ep: DWC EP device
-+ * @func_no: Function number of the endpoint device
-+ *
-+ * Return: struct dw_pcie_ep_func if success, NULL otherwise.
-+ */
- struct dw_pcie_ep_func *
- dw_pcie_ep_get_func_from_ep(struct dw_pcie_ep *ep, u8 func_no)
- {
-@@ -52,6 +65,11 @@ static void __dw_pcie_ep_reset_bar(struct dw_pcie *pci, u8 func_no,
- 	dw_pcie_dbi_ro_wr_dis(pci);
- }
- 
-+/**
-+ * dw_pcie_ep_reset_bar - Reset endpoint BAR
-+ * @pci: DWC PCI device
-+ * @bar: BAR number of the endpoint
-+ */
- void dw_pcie_ep_reset_bar(struct dw_pcie *pci, enum pci_barno bar)
- {
- 	u8 func_no, funcs;
-@@ -431,6 +449,13 @@ static const struct pci_epc_ops epc_ops = {
- 	.get_features		= dw_pcie_ep_get_features,
- };
- 
-+/**
-+ * dw_pcie_ep_raise_intx_irq - Raise INTx IRQ to the host
-+ * @ep: DWC EP device
-+ * @func_no: Function number of the endpoint
-+ *
-+ * Return: 0 if success, errono otherwise.
-+ */
- int dw_pcie_ep_raise_intx_irq(struct dw_pcie_ep *ep, u8 func_no)
- {
- 	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
-@@ -442,6 +467,14 @@ int dw_pcie_ep_raise_intx_irq(struct dw_pcie_ep *ep, u8 func_no)
- }
- EXPORT_SYMBOL_GPL(dw_pcie_ep_raise_intx_irq);
- 
-+/**
-+ * dw_pcie_ep_raise_msi_irq - Raise MSI IRQ to the host
-+ * @ep: DWC EP device
-+ * @func_no: Function number of the endpoint
-+ * @interrupt_num: Interrupt number to be raised
-+ *
-+ * Return: 0 if success, errono otherwise.
-+ */
- int dw_pcie_ep_raise_msi_irq(struct dw_pcie_ep *ep, u8 func_no,
- 			     u8 interrupt_num)
- {
-@@ -490,6 +523,15 @@ int dw_pcie_ep_raise_msi_irq(struct dw_pcie_ep *ep, u8 func_no,
- }
- EXPORT_SYMBOL_GPL(dw_pcie_ep_raise_msi_irq);
- 
-+/**
-+ * dw_pcie_ep_raise_msix_irq_doorbell - Raise MSIX to the host using Doorbell
-+ *					method
-+ * @ep: DWC EP device
-+ * @func_no: Function number of the endpoint device
-+ * @interrupt_num: Interrupt number to be raised
-+ *
-+ * Return: 0 if success, errno otherwise.
-+ */
- int dw_pcie_ep_raise_msix_irq_doorbell(struct dw_pcie_ep *ep, u8 func_no,
- 				       u16 interrupt_num)
- {
-@@ -509,6 +551,14 @@ int dw_pcie_ep_raise_msix_irq_doorbell(struct dw_pcie_ep *ep, u8 func_no,
- 	return 0;
- }
- 
-+/**
-+ * dw_pcie_ep_raise_msix_irq - Raise MSIX to the host
-+ * @ep: DWC EP device
-+ * @func_no: Function number of the endpoint device
-+ * @interrupt_num: Interrupt number to be raised
-+ *
-+ * Return: 0 if success, errno otherwise.
-+ */
- int dw_pcie_ep_raise_msix_irq(struct dw_pcie_ep *ep, u8 func_no,
- 			      u16 interrupt_num)
- {
-@@ -556,6 +606,12 @@ int dw_pcie_ep_raise_msix_irq(struct dw_pcie_ep *ep, u8 func_no,
- 	return 0;
- }
- 
-+/**
-+ * dw_pcie_ep_cleanup - Cleanup DWC EP resources
-+ * @ep: DWC EP device
-+ *
-+ * Cleans up the DWC EP specific resources like eDMA etc...
-+ */
- void dw_pcie_ep_cleanup(struct dw_pcie_ep *ep)
- {
- 	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
-@@ -564,6 +620,13 @@ void dw_pcie_ep_cleanup(struct dw_pcie_ep *ep)
- }
- EXPORT_SYMBOL_GPL(dw_pcie_ep_cleanup);
- 
-+/**
-+ * dw_pcie_ep_deinit - Deinitialize the endpoint device
-+ * @ep: DWC EP device
-+ *
-+ * Deinitialize the endpoint device. EPC device is not destroyed since that will
-+ * taken care by Devres.
-+ */
- void dw_pcie_ep_deinit(struct dw_pcie_ep *ep)
- {
- 	struct pci_epc *epc = ep->epc;
-@@ -635,6 +698,14 @@ static void dw_pcie_ep_init_non_sticky_registers(struct dw_pcie *pci)
- 	dw_pcie_dbi_ro_wr_dis(pci);
- }
- 
-+/**
-+ * dw_pcie_ep_init_registers - Initialize DWC EP specific registers
-+ * @ep: DWC EP device
-+ *
-+ * Initialize the registers (CSRs) specific to DWC EP. This API should be called
-+ * only when the endpoint receives an active refclk (either from host or
-+ * generated locally).
-+ */
- int dw_pcie_ep_init_registers(struct dw_pcie_ep *ep)
- {
- 	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
-@@ -718,6 +789,10 @@ int dw_pcie_ep_init_registers(struct dw_pcie_ep *ep)
- }
- EXPORT_SYMBOL_GPL(dw_pcie_ep_init_registers);
- 
-+/**
-+ * dw_pcie_ep_linkup - Notify EPF drivers about link up event
-+ * @ep: DWC EP device
-+ */
- void dw_pcie_ep_linkup(struct dw_pcie_ep *ep)
- {
- 	struct pci_epc *epc = ep->epc;
-@@ -726,6 +801,14 @@ void dw_pcie_ep_linkup(struct dw_pcie_ep *ep)
- }
- EXPORT_SYMBOL_GPL(dw_pcie_ep_linkup);
- 
-+/**
-+ * dw_pcie_ep_linkdown - Notify EPF drivers about link down event
-+ * @ep: DWC EP device
-+ *
-+ * Non-sticky registers are also initialized before sending the notification to
-+ * the EPF drivers. This is needed since the registers need to be initialized
-+ * before the link comes back again.
-+ */
- void dw_pcie_ep_linkdown(struct dw_pcie_ep *ep)
- {
- 	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
-@@ -743,6 +826,15 @@ void dw_pcie_ep_linkdown(struct dw_pcie_ep *ep)
- }
- EXPORT_SYMBOL_GPL(dw_pcie_ep_linkdown);
- 
-+/**
-+ * dw_pcie_ep_init - Initialize the endpoint device
-+ * @ep: DWC EP device
-+ *
-+ * Initialize the endpoint device. Allocate resources and create the EPC
-+ * device with the endpoint framework.
-+ *
-+ * Return: 0 if success, errno otherwise.
-+ */
- int dw_pcie_ep_init(struct dw_pcie_ep *ep)
- {
- 	int ret;
+TWIMC, the quoted mail apparently did not get delivered to Al (I got a
+"48 hours on the queue" warning from my hoster's MTA ~10 hours ago).
 
--- 
-2.25.1
+Ohh, and there is some suspicion that the problem Calvin[1] and Paul
+(this thread, see quote below for the gist) encountered also causes
+problems for bwrap (used by Flapak)[2].
+[1] https://lore.kernel.org/all/ZcKOGpTXnlmfplGR@gmail.com/
+[2] https://github.com/containers/bubblewrap/issues/620
 
+Christian, Linus, all that makes me wonder if it might be wise to pick
+up the revert[1] Al queued directly in case Al does not submit a PR
+today or tomorrow for -rc6.
+
+[1]
+https://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git/commit/?h=fixes&id=7e4a205fe56b9092f0143dad6aa5fee081139b09
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
+
+#regzbot poke
+
+> On 21.02.24 16:56, Paul Holzinger wrote:
+>> Hi Thorsten,
+>>
+>> On 21/02/2024 15:42, Linux regression tracking (Thorsten Leemhuis) wrote:
+>>> On 21.02.24 15:31, Paul Holzinger wrote:
+>>>> On 21/02/2024 15:20, Paul Holzinger wrote:
+>>>>> we are seeing problems with the 6.8-rc kernels[1] in our CI systems,
+>>>>> we see random process timeouts across our test suite. It appears that
+>>>>> sometimes a process is unable to exit, nothing happens even if we send
+>>>>> SIGKILL and instead the process consumes a lof of cpu.
+>>>> [...]
+>>> Thx for the report.
+>>>
+>>> Warning, this is not my area of expertise, so this might send you in the
+>>> totally wrong direction.
+>>>
+>>> I briefly checked lore for similar reports and noticed this one when I
+>>> searched for shrink_dcache_parent:
+>>>
+>>> https://lore.kernel.org/all/ZcKOGpTXnlmfplGR@gmail.com/
+>>
+>>> Do you think that might be related? A fix for this is pending in vfs.git.
+>>>
+>> yes that does seem very relevant. Running the sysrq command I get the
+>> same backtrace as the reporter there so I think it is fair to assume
+>> this is the same bug. Looking forward to get the fix into mainline.
+> 
+> FWIW, "the fix" afaics is 7e4a205fe56b90 ("Revert "get rid of
+> DCACHE_GENOCIDE"") sitting 'fixes' of
+> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git for more than
+> a week now.
+> 
+> I assume Al or Christian will send this to Linus soon. Christian in fact
+> already mentioned that he plans to send another vfs fix to Linux, but
+> that one iirc was sitting in another repo (but I might be mistaken there!).
+> 
+> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+> --
+> Everything you wanna know about Linux kernel regression tracking:
+> https://linux-regtracking.leemhuis.info/about/#tldr
+> If I did something stupid, please tell me, as explained on that page.
+> 
+> P.S.: let me update regzbot while at it:
+> 
+> #regzbot introduced 57851607326a2beef21e67f83f4f53a90df8445a.
+> #regzbot fix: Revert "get rid of DCACHE_GENOCIDE"
 
