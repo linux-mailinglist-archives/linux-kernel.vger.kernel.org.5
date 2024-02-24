@@ -1,59 +1,57 @@
-Return-Path: <linux-kernel+bounces-79683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97C5D862568
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 14:54:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4F11862569
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 14:55:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5212F28314D
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 13:54:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DE2D1F2305A
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 13:55:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D4E94C62E;
-	Sat, 24 Feb 2024 13:52:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1ADE4E1D0;
+	Sat, 24 Feb 2024 13:52:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kVMssjGL"
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GsrWa2qo"
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88D7129425
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 13:52:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0BFA4E1BD
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 13:52:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708782740; cv=none; b=jCSvJRnVBZAGAaWbkfD6QLGnAhMI+TuTnMD5GMEaGPELfGaT1AIWeY+Iei9mco/F9WkhH/uA1VSB3dAHGkaPJGSTQnORrBfDerdtZKygW3/h3NKJ9qvjnHoq6eJhrfJONI/bnHEkUJyEAMb90z+5oiV1louaTjWlBO7hburk1eQ=
+	t=1708782751; cv=none; b=Sm7CmIYSn7Sur/uqVGXFZzZ0Mn6dm/HwfQQqGZkMTqJNKSO+3N5qLQCzZc9vUYXg+ZATxSIkrdrm2MrwEa/bVStWbG77mpFvUm1+l1gYOIhNsLnL45fzeGkAxJSmguYDXUXWuqggHw7MU28r0ItgbLrMMSEfrNusP5yAiVvyjLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708782740; c=relaxed/simple;
-	bh=DWi/G6XObbnCjNhmKkVSdlq47mBz56V2FUFcf6XTH/A=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=I5HzeRlotb004rlaMpOj4RE07n+E4QnPpzlNST73TizUA5h292P+wpjKs9OQPSaXnGpYoIksPNgUjvGZLfxNxl5Tv0RB9OdwoOB2KjKEYGwIJTgplBSlW8KR7VoJAPtGkIiSY+G6losI5h8+QXzMPRrnTWvB+eSsHHV2h0s1KKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kVMssjGL; arc=none smtp.client-ip=95.215.58.179
+	s=arc-20240116; t=1708782751; c=relaxed/simple;
+	bh=Tz6THqrHvtchIgwhGtEJU01NYlucwhimzkFZKcdzw5w=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZDZ9ujS4oIEh4pqwkzPzTZdzRi95Pao2sZa1inT9GqffnRQXgDrTMq5aVkuJzkepvAVo/Afz/x8N2xR0/6dNZqqz7KMgasRp4IEBbqJ/9NpDD9vXNct2NDp1+AjEEyc9zxNwWJd+x0NnVl+Pwc+250qE21A84GCaiKunn4AyAAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GsrWa2qo; arc=none smtp.client-ip=91.218.175.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708782736;
+	t=1708782748;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding;
-	bh=YFtXqFDS+/V/pPxlyQ29yAaA1FKzrLsOqyZdEIxRYN0=;
-	b=kVMssjGLzngjIBFQ9FRjhikv4a2uzoSirFwYHZMbVlFcT7N0QQCxtPPwpZgXlmfXPCm7Oo
-	5V99R5ge64NI3xnA+A4h4hM43P5/iLVGF0lT/8uEGkvHfMzXl0wLEMnynqpbibMiLTHRR0
-	bW2fuW2DyaIMBf2+KwdE8LCc9F2cXQE=
+	bh=URTB6rIWK/XPxRdAWncFE1qTwzE1f3lanP0572+Z/9s=;
+	b=GsrWa2qoDfJGxu2TTHaWuOK9G9PAz7e3ZFqKC1y/RVkFjvDZzpxngfDyWPUHtkB6mCSf9d
+	++vFoldKPsG2M8FsluhNQjO7pvS7fIdyPvZXaPlgfKi+GNWmDawTCFrIR7rjRDUzeIaO2X
+	pz/tdDyWBiLwppsBcW7jbq+6WLSt11U=
 From: chengming.zhou@linux.dev
-To: rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
+To: richard@nod.at
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org,
 	vbabka@suse.cz,
 	roman.gushchin@linux.dev,
 	Xiongwei.Song@windriver.com,
 	chengming.zhou@linux.dev,
 	Chengming Zhou <zhouchengming@bytedance.com>
-Subject: [PATCH] tracefs: remove SLAB_MEM_SPREAD flag usage
-Date: Sat, 24 Feb 2024 13:52:06 +0000
-Message-Id: <20240224135206.830300-1-chengming.zhou@linux.dev>
+Subject: [PATCH] ubifs: remove SLAB_MEM_SPREAD flag usage
+Date: Sat, 24 Feb 2024 13:52:17 +0000
+Message-Id: <20240224135217.830331-1-chengming.zhou@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,21 +68,24 @@ its usage so we can delete it from slab. No functional change.
 
 Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 ---
- fs/tracefs/inode.c | 1 -
- 1 file changed, 1 deletion(-)
+ fs/ubifs/super.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
-index d65ffad4c327..5545e6bf7d26 100644
---- a/fs/tracefs/inode.c
-+++ b/fs/tracefs/inode.c
-@@ -731,7 +731,6 @@ static int __init tracefs_init(void)
- 	tracefs_inode_cachep = kmem_cache_create("tracefs_inode_cache",
- 						 sizeof(struct tracefs_inode),
- 						 0, (SLAB_RECLAIM_ACCOUNT|
--						     SLAB_MEM_SPREAD|
- 						     SLAB_ACCOUNT),
- 						 init_once);
- 	if (!tracefs_inode_cachep)
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index f780729eec06..8ae7648021a8 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -2433,8 +2433,8 @@ static int __init ubifs_init(void)
+ 
+ 	ubifs_inode_slab = kmem_cache_create("ubifs_inode_slab",
+ 				sizeof(struct ubifs_inode), 0,
+-				SLAB_MEM_SPREAD | SLAB_RECLAIM_ACCOUNT |
+-				SLAB_ACCOUNT, &inode_slab_ctor);
++				SLAB_RECLAIM_ACCOUNT | SLAB_ACCOUNT,
++				&inode_slab_ctor);
+ 	if (!ubifs_inode_slab)
+ 		return -ENOMEM;
+ 
 -- 
 2.40.1
 
