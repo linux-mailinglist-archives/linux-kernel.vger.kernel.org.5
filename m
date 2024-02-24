@@ -1,130 +1,161 @@
-Return-Path: <linux-kernel+bounces-79572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90169862456
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:47:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4722A862461
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:00:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A6E6284790
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 10:47:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 694701C20F99
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:00:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C20CF241E0;
-	Sat, 24 Feb 2024 10:47:44 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7546425764;
+	Sat, 24 Feb 2024 11:00:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tum.de header.i=@tum.de header.b="Scx8/Edg"
+Received: from postout2.mail.lrz.de (postout2.mail.lrz.de [129.187.255.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7C7F2260B
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 10:47:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 637B61B7E8
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 11:00:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.187.255.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708771664; cv=none; b=h7j7+iTuRPPqbFlfK2mkfLXfLRJf4IJWgN01/IOyZi5tKXzDJK2MDq+IGcBftAsqmF62PDJwpAKEbr+XOS4x9GMLLVYMlLDkr7EcHp9Nkw7vwO+Efg//qEBKtuQDx78A+kJGNCwoFJRKnlRWWFywObiVfwYs77DOFSta+sg48xQ=
+	t=1708772419; cv=none; b=ATKCjbMmjYNVYpCwgNJm9Kx+yWhUC9vvFUdk5vcz6M+FifLCldFCF4V3B1UL1kxVqVwKk/GNAjB1PDYx7jhMESuftJX/8dzYASdDwJYsuNNBf4sy8RTx2CMz2XYvvtHqMiqhP94b1DZtX6PYUxH91YPVd9m3/U9n79Noz2au9Qw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708771664; c=relaxed/simple;
-	bh=dvEbx0Z33d2jDzKx3kAWpiJpk8zWg6aIgMEPDWz0db0=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=KM7lfqJLNtLrBDoQQYpVs7AWyXSv6mSz0ReobGFc7t5YKmX/UD51ybMOQWUo9l2Y0OdlN6qWEr6zNa4UygzCKDH4pVXlYWV/pH8Rh08QaYZtt59MxSL2K6EMKgRvWjCZQ2u6dfOt3Z9o+DOmqZ3nlhyggk/CgUNRmjpwpWyZ1jY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav117.sakura.ne.jp (fsav117.sakura.ne.jp [27.133.134.244])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 41OAlZib055623;
-	Sat, 24 Feb 2024 19:47:35 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav117.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp);
- Sat, 24 Feb 2024 19:47:35 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 41OAlZ0D055620
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Sat, 24 Feb 2024 19:47:35 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <e34d2e40-de98-4736-bae9-7271fe9cf242@I-love.SAKURA.ne.jp>
-Date: Sat, 24 Feb 2024 19:47:33 +0900
+	s=arc-20240116; t=1708772419; c=relaxed/simple;
+	bh=TZfMEar/WGv3z6Vr+zFmVB2K7TNo7XIS9DBxR4kHKAM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dd+q70NVEF4om+RldyV+m4SOrDILEhKCSKWmk0yXrB/RFNM384EQXnWh22rvcb+NKe0lJcMQBGgL8ikZv4modhVIUEx/ixhUr99bRugspq/2ihdlrSPpmLCc0cl3pjH3yM8kuA5+q4kJhmCjGtn1cPgfcjwqWzu82fiqglb6tEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tum.de; spf=pass smtp.mailfrom=tum.de; dkim=pass (2048-bit key) header.d=tum.de header.i=@tum.de header.b=Scx8/Edg; arc=none smtp.client-ip=129.187.255.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tum.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tum.de
+Received: from lxmhs52.srv.lrz.de (localhost [127.0.0.1])
+	by postout2.mail.lrz.de (Postfix) with ESMTP id 4ThkK95Rs3zyZG;
+	Sat, 24 Feb 2024 11:54:21 +0100 (CET)
+Authentication-Results: postout.lrz.de (amavisd-new); dkim=pass (2048-bit key)
+	reason="pass (just generated, assumed good)" header.d=tum.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tum.de; h=
+	content-transfer-encoding:content-type:content-type:mime-version
+	:references:in-reply-to:x-mailer:message-id:date:date:subject
+	:subject:from:from:received:received; s=tu-postout21; t=
+	1708772061; bh=TZfMEar/WGv3z6Vr+zFmVB2K7TNo7XIS9DBxR4kHKAM=; b=S
+	cx8/Edgu2nmGsS4l7bzFuVLeZygh4C5RVN7X0385BXX0YcaMDMGFBRcwcBofkFcK
+	abzN375IT+cn+QMTgM4E6YKnis9fnZgmPZtc3Rt+D2SQVjfr4S0hiC6gX9gY4eYs
+	Aps6ZlPnGCv8pfJuMW8G221NmA8cG8q9FVp2jtU9GwvdxYDKw7pZcPe3fwOvdge3
+	i+zfPPMjaDsC4B7Jxaxy7dhFINOXAAZme3xwEXUtdboZBPI5GIaPiiqD1+lofJSE
+	1PXWbcwvLOunAb+QWe+DkQUOiZjcQBxJK9d1HsvpEwxbFPBjrm++tCLtSeKSVk2r
+	+pofugRBOoMfjFbyVQDmg==
+X-Virus-Scanned: by amavisd-new at lrz.de in lxmhs52.srv.lrz.de
+X-Spam-Flag: NO
+X-Spam-Score: -0.382
+X-Spam-Level:
+Received: from postout2.mail.lrz.de ([127.0.0.1])
+	by lxmhs52.srv.lrz.de (lxmhs52.srv.lrz.de [127.0.0.1]) (amavisd-new, port 20024)
+	with LMTP id t3smiUimcLMl; Sat, 24 Feb 2024 11:54:21 +0100 (CET)
+Received: from sienna.fritz.box (ppp-93-104-78-110.dynamic.mnet-online.de [93.104.78.110])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by postout2.mail.lrz.de (Postfix) with ESMTPSA id 4ThkK821SYzyZF;
+	Sat, 24 Feb 2024 11:54:20 +0100 (CET)
+From: =?UTF-8?q?Paul=20Heidekr=C3=BCger?= <paul.heidekrueger@tum.de>
+To: akpm@linux-foundation.org
+Cc: andreyknvl@gmail.com,
+	dvyukov@google.com,
+	elver@google.com,
+	glider@google.com,
+	kasan-dev@googlegroups.com,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	mark.rutland@arm.com,
+	paul.heidekrueger@tum.de,
+	ryabinin.a.a@gmail.com,
+	vincenzo.frascino@arm.com
+Subject: [PATCH] kasan: fix a2 allocation and remove explicit cast in atomic tests
+Date: Sat, 24 Feb 2024 10:54:14 +0000
+Message-Id: <20240224105414.211995-1-paul.heidekrueger@tum.de>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240223161020.9b4184e1e74b35f906e0ec78@linux-foundation.org>
+References: <20240223161020.9b4184e1e74b35f906e0ec78@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [virtualization?] KMSAN: uninit-value in virtqueue_add
- (4)
-Content-Language: en-US
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To: syzbot <syzbot+d7521c1e3841ed075a42@syzkaller.appspotmail.com>,
-        syzkaller-bugs@googlegroups.com
-Cc: linux-kernel@vger.kernel.org
-References: <000000000000fd588e060de27ef4@google.com>
- <be634ab4-58aa-40e4-8ab0-0e2685537525@I-love.SAKURA.ne.jp>
-In-Reply-To: <be634ab4-58aa-40e4-8ab0-0e2685537525@I-love.SAKURA.ne.jp>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+Address the additional feedback since "kasan: add atomic tests"
+(4e76c8cc3378a20923965e3345f40f6b8ae0bdba) by removing an explicit cast
+and fixing the size as well as the check of the allocation of `a2`.
 
-diff --git a/arch/x86/include/asm/page_64.h b/arch/x86/include/asm/page_64.h
-index cc6b8e087192..f13bba3a9dab 100644
---- a/arch/x86/include/asm/page_64.h
-+++ b/arch/x86/include/asm/page_64.h
-@@ -58,7 +58,16 @@ static inline void clear_page(void *page)
- 			   : "cc", "memory", "rax", "rcx");
- }
- 
-+#ifdef CONFIG_KMSAN
-+/* Use of non-instrumented assembly version confuses KMSAN. */
-+void *memcpy(void *to, const void *from, __kernel_size_t len);
-+static inline void copy_page(void *to, void *from)
-+{
-+	memcpy(to, from, PAGE_SIZE);
-+}
-+#else
- void copy_page(void *to, void *from);
-+#endif
- 
- #ifdef CONFIG_X86_5LEVEL
- /*
-diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-index 5caa1f566553..48277029c282 100644
---- a/lib/stackdepot.c
-+++ b/lib/stackdepot.c
-@@ -592,22 +592,27 @@ static inline struct stack_record *find_stack(struct list_head *bucket,
- 
- 		/*
- 		 * This may race with depot_free_stack() accessing the freelist
--		 * management state unioned with @entries. The refcount is zero
--		 * in that case and the below refcount_inc_not_zero() will fail.
-+		 * management state unioned with @entries.
- 		 */
- 		if (data_race(stackdepot_memcmp(entries, stack->entries, size)))
- 			continue;
- 
- 		/*
--		 * Try to increment refcount. If this succeeds, the stack record
--		 * is valid and has not yet been freed.
-+		 * Check if an invalid record had the same {hash, size, entries}
-+		 * by testing whether the refcount is already 0.
-+		 * Also, try to increment refcount if STACK_DEPOT_FLAG_GET is used.
- 		 *
- 		 * If STACK_DEPOT_FLAG_GET is not used, it is undefined behavior
- 		 * to then call stack_depot_put() later, and we can assume that
- 		 * a stack record is never placed back on the freelist.
- 		 */
--		if ((flags & STACK_DEPOT_FLAG_GET) && !refcount_inc_not_zero(&stack->count))
--			continue;
-+		if (flags & STACK_DEPOT_FLAG_GET) {
-+			if (!refcount_inc_not_zero(&stack->count))
-+				continue;
-+		} else {
-+			if (!refcount_read(&stack->count))
-+				continue;
-+		}
- 
- 		ret = stack;
- 		break;
+CC: Marco Elver <elver@google.com>
+CC: Andrey Konovalov <andreyknvl@gmail.com>
+Link: https://lore.kernel.org/all/20240131210041.686657-1-paul.heidekrueger@tum.de/T/#u
+Fixes: 4e76c8cc3378a20923965e3345f40f6b8ae0bdba
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=214055
+Reviewed-by: Marco Elver <elver@google.com>
+Tested-by: Marco Elver <elver@google.com>
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
+Signed-off-by: Paul Heidekrüger <paul.heidekrueger@tum.de>
+---
+@Andrew: 
+I wasn't sure whether you'd be squashing this patch into v1 or
+if it'll end up as a separate commit. Hope this works either way!
 
+Changes PATCH v2 -> PATCH v3:
+* Fix the wrong variable being used when checking a2 after allocation
+* Add Andrey's reviewed-by tag
+
+Changes PATCH v1 -> PATCH v2:
+* Make explicit cast implicit as per Mark's feedback
+* Increase the size of the "a2" allocation as per Andrey's feedback
+* Add tags 
+
+Changes PATCH RFC v2 -> PATCH v1:
+* Remove casts to void*
+* Remove i_safe variable
+* Add atomic_long_* test cases
+* Carry over comment from kasan_bitops_tags()
+
+Changes PATCH RFC v1 -> PATCH RFC v2:
+* Adjust size of allocations to make kasan_atomics() work with all KASan modes
+* Remove comments and move tests closer to the bitops tests
+* For functions taking two addresses as an input, test each address in a separate function call.
+* Rename variables for clarity
+* Add tests for READ_ONCE(), WRITE_ONCE(), smp_load_acquire() and smp_store_release()
+
+ mm/kasan/kasan_test.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/mm/kasan/kasan_test.c b/mm/kasan/kasan_test.c
+index 4ef2280c322c..7f0f87a2c3c4 100644
+--- a/mm/kasan/kasan_test.c
++++ b/mm/kasan/kasan_test.c
+@@ -1152,7 +1152,7 @@ static void kasan_bitops_tags(struct kunit *test)
+ 
+ static void kasan_atomics_helper(struct kunit *test, void *unsafe, void *safe)
+ {
+-	int *i_unsafe = (int *)unsafe;
++	int *i_unsafe = unsafe;
+ 
+ 	KUNIT_EXPECT_KASAN_FAIL(test, READ_ONCE(*i_unsafe));
+ 	KUNIT_EXPECT_KASAN_FAIL(test, WRITE_ONCE(*i_unsafe, 42));
+@@ -1218,8 +1218,8 @@ static void kasan_atomics(struct kunit *test)
+ 	 */
+ 	a1 = kzalloc(48, GFP_KERNEL);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, a1);
+-	a2 = kzalloc(sizeof(int), GFP_KERNEL);
+-	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, a1);
++	a2 = kzalloc(sizeof(atomic_long_t), GFP_KERNEL);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, a2);
+ 
+ 	/* Use atomics to access the redzone. */
+ 	kasan_atomics_helper(test, a1 + 48, a2);
+-- 
+2.40.1
 
 
