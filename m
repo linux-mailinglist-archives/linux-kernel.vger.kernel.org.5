@@ -1,175 +1,128 @@
-Return-Path: <linux-kernel+bounces-79797-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73CB38626E2
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 20:08:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AC5E8626E8
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 20:15:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 534701C20D05
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 19:08:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B25001F21C44
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 19:15:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A090D481BD;
-	Sat, 24 Feb 2024 19:08:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C41F5495EC;
+	Sat, 24 Feb 2024 19:14:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3WhUedBj"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cPMmzZA9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2276E2907
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 19:08:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00C1113FF6;
+	Sat, 24 Feb 2024 19:14:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708801693; cv=none; b=rHK9elwCKSZTpmlGKhWtvAmyX2rNNgNK13oaQQLV/Tql1k71lDPcX41wN9sdqw1Na0FBTIe4QrmhibgpvH2hwO7dUPnkLcyrtN27ngyyoAPK1OguZQlFTjeVknNiRhevyQj5M/lgNoosncGtfMgdMJXHws1GucYm+6nbi+uYCho=
+	t=1708802095; cv=none; b=PoMNUxn3y4d5nSMlHo66LMC6QuvaLZfPNG/DQdF6n0PgL/AsFxdwODuSN1fqhG0epb5CH75mO2YEmVEoVR5p0yKBaFBf+W66mukz10oIr9nfDokU222QAidFw70kNFUg8cK6zXqKx4SYjHOrwxIPg4rcUnNfTMnOexBvVgqCyUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708801693; c=relaxed/simple;
-	bh=ywTdtlsxaTGNOg/0ykAO9vIS5LDXi2sRHe/FWPBh5EQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nIOfjZMXNqO6+15m5WGUb+BwJco/93TByxRnR0wiEyoPpQkHWOuqWT2uaigIIB8Wah9vgKT+zsVuowv4CSkLtTELAupagint2WEBcJI8kY2mrrZs0qHNPlncoCtTL03/T8x/o0MVXBm+VyTI5dfQ2dSghdoWRKYBwTfxwOXjXPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3WhUedBj; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5654ef0c61fso8129a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 11:08:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708801690; x=1709406490; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ITGZMfMCrb1CACtG+hsG+yIMHew98TIZDUao5iyuYr0=;
-        b=3WhUedBjqzEaV+GIc8Fo0weNfdmcJDXzJFnHJ/4JjZ99UIM9f8svwzDI0Os/HqaX61
-         r5CHUYUXX1ETICr/sXoFFNfqb4EA/xA26FeLHoRbgTD+TjT0HgzsjpGXDsB0LWWEDuj0
-         GeASO1S64GfNx7IXcYNanQTDbGE5+PVIwvP/xuq4rP9bn4L5ZE4LGCyegiINKlHBQNYo
-         2SsDYAiDFAOWYXJURfgODaYQqlgmGEUdICcyPQssSZ46/AnD7pJZa6+ynMS0+6G9dcQU
-         HRQT7RA4F+4qPYm9KIYtMS3k7U+WTya05JlbovrUQhVlKDCfolDQH1tvrq/zAy+OvM2y
-         WqYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708801690; x=1709406490;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ITGZMfMCrb1CACtG+hsG+yIMHew98TIZDUao5iyuYr0=;
-        b=XUTuYLNuI8iEQasgr4bVyeH/OGhVNoIOjpnfikeX8HUxa8IOhx5dlNwlrtktmVulg2
-         7KRt/926Zj3Jl3BvGzabTlxfXh0XyfVud8RcncLFzHoqowZ7aWXiRGXPg7gY+xTrPI8+
-         ptgl4yB0hg2uKePzU66LXLMA8NGenl7etDwSrAlmxNaXdE8GkY6Z9HOgJelC3RgIU5OW
-         wSqjtA5pcUBTDrDxxRSd3lx4dbQ2P1LLgAOoLNeOAI/5X0rWW1NmkrfJ9+8N3gPpbS7r
-         UhAXgoJi0FC6UuWIEf4ZhJfJtHZ3GBPgLI/uL3r7ozWYDFL6MMGT0pQ7pFp6bJM0kM5+
-         zERA==
-X-Forwarded-Encrypted: i=1; AJvYcCWOZlY6sK7D/l3nECR9z4KycD4bIEuJ+Nf9F1kqJ5U9byqM/Z8uN4xu1SA7Vpq7nXMgwPPG2QAsj8MHUB31SaDIybmUerz2BVgWA0Nj
-X-Gm-Message-State: AOJu0YzSIRJtMJnNpUeRxR3OMTzQ4HYG9BS5q9/2yZBiFRYl2KOIUejB
-	C7/+fhqfqqyXlLi6xxJS1pLYEg2C0GEPZZ/K/PxoFW0jK+Artn5fw+tfKSagAPNiZfXUETOf5yT
-	38Gwk7CidZNq7HttMkNx0AFPlqqKWdcvEmB2+
-X-Google-Smtp-Source: AGHT+IH+MnlNwa+mKfnYWerJnvT+05mEc77N4U0sR7aT0piVfxvgGgL3543LPKu18wSlD+rtznF7C60YsTeC8sBQrKY=
-X-Received: by 2002:a50:c355:0:b0:565:123a:ccec with SMTP id
- q21-20020a50c355000000b00565123accecmr139505edb.3.1708801689070; Sat, 24 Feb
- 2024 11:08:09 -0800 (PST)
+	s=arc-20240116; t=1708802095; c=relaxed/simple;
+	bh=DE8KrClwq6wxRdpm6x7a+e27Q4gxgHfZ6zudnPnE/z0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=AaXDCJFa63tarodCIo0WevMu0ANMA7jP9/alQy4K8rouU/AP1gddt62n04mWO897EyGhGvdvYA01e6h1SXmkwnZfK9rn7HZhjbvc7cJj9sL4HO6jl2UvK9bAXarUf+97LRi1Wt4AwuxWm1xwowTn9pUWasUuyi458JjKdUgwdEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cPMmzZA9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DB13C433F1;
+	Sat, 24 Feb 2024 19:14:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708802094;
+	bh=DE8KrClwq6wxRdpm6x7a+e27Q4gxgHfZ6zudnPnE/z0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=cPMmzZA9aMdrio3t9Y8uKJrwNTRepXyrtolW+v0KmTiiWsT32GcvH9ZouCdZ7JJp7
+	 pjN5OcXwo/xRKtC75napxxFg1VNLHEStC//PR+1YQsnVC8yyrahttCKr2qRWsCNzsp
+	 gJ3ru0xcxLiPPTSmJBG1fI4FKoSuqDLyUsE688cPE2HleErbibHX7rh8nnl0PbuQnp
+	 8FU41GN249DNRTlbbNCAtrc5eggXPgu2Xy3ZALxMow3n3/Lv0fwR0TLRgr7a/4ZEke
+	 nYzWJfIIe8wrE6T9+bJ8NRGd5ZJYV6yARySVG6fIXFvxVc8EKzJ/RBWhCKuWyrPTGZ
+	 BJiyJqTH2DxAA==
+Date: Sat, 24 Feb 2024 19:14:39 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: kernel test robot <lkp@intel.com>
+Cc: marius.cristea@microchip.com, lars@metafoo.de, robh+dt@kernel.org,
+ jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
+ oe-kbuild-all@lists.linux.dev, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/2] dt-bindings: iio: adc: adding support for
+ PAC193X
+Message-ID: <20240224191439.18e32ec2@jic23-huawei>
+In-Reply-To: <202402241545.xf7CnlPz-lkp@intel.com>
+References: <20240222164206.65700-2-marius.cristea@microchip.com>
+	<202402241545.xf7CnlPz-lkp@intel.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220021804.9541-1-shijie@os.amperecomputing.com>
- <CANn89iJoHDzfYfhcwVvR4m7DiVG-UfFNqm+D1WD-2wjOttk6ew@mail.gmail.com>
- <bea860f8-a196-4dff-a655-4da920e2ebfa@amperemail.onmicrosoft.com>
- <CANn89i+1uMAL_025rNc3C1Ut-E5S8Nat6KhKEzcFeC1xxcFWaA@mail.gmail.com> <c2bd73b6-b21f-4ad8-a176-eec677bc6cf3@amperemail.onmicrosoft.com>
-In-Reply-To: <c2bd73b6-b21f-4ad8-a176-eec677bc6cf3@amperemail.onmicrosoft.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Sat, 24 Feb 2024 20:07:55 +0100
-Message-ID: <CANn89i+Cr1Tbdxqy6fB-sOLca+AHFc-3-0xGktVUsQFFMVsC0A@mail.gmail.com>
-Subject: Re: [PATCH] net: skbuff: allocate the fclone in the current NUMA node
-To: Shijie Huang <shijie@amperemail.onmicrosoft.com>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Huang Shijie <shijie@os.amperecomputing.com>, kuba@kernel.org, 
-	patches@amperecomputing.com, davem@davemloft.net, horms@kernel.org, 
-	ast@kernel.org, dhowells@redhat.com, linyunsheng@huawei.com, 
-	aleksander.lobakin@intel.com, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, cl@os.amperecomputing.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 20, 2024 at 9:37=E2=80=AFAM Shijie Huang
-<shijie@amperemail.onmicrosoft.com> wrote:
->
->
-> =E5=9C=A8 2024/2/20 16:17, Eric Dumazet =E5=86=99=E9=81=93:
-> > On Tue, Feb 20, 2024 at 7:26=E2=80=AFAM Shijie Huang
-> > <shijie@amperemail.onmicrosoft.com> wrote:
-> >>
-> >> =E5=9C=A8 2024/2/20 13:32, Eric Dumazet =E5=86=99=E9=81=93:
-> >>> On Tue, Feb 20, 2024 at 3:18=E2=80=AFAM Huang Shijie
-> >>> <shijie@os.amperecomputing.com> wrote:
-> >>>> The current code passes NUMA_NO_NODE to __alloc_skb(), we found
-> >>>> it may creates fclone SKB in remote NUMA node.
-> >>> This is intended (WAI)
-> >> Okay. thanks a lot.
-> >>
-> >> It seems I should fix the issue in other code, not the networking.
-> >>
-> >>> What about the NUMA policies of the current thread ?
-> >> We use "numactl -m 0" for memcached, the NUMA policy should allocate
-> >> fclone in
-> >>
-> >> node 0, but we can see many fclones were allocated in node 1.
-> >>
-> >> We have enough memory to allocate these fclones in node 0.
-> >>
-> >>> Has NUMA_NO_NODE behavior changed recently?
-> >> I guess not.
-> >>> What means : "it may creates" ? Please be more specific.
-> >> When we use the memcached for testing in NUMA, there are maybe 20% ~ 3=
-0%
-> >> fclones were allocated in
-> >>
-> >> remote NUMA node.
-> > Interesting, how was it measured exactly ?
->
-> I created a private patch to record the status for each fclone allocation=
-.
->
->
-> > Are you using SLUB or SLAB ?
->
-> I think I use SLUB. (CONFIG_SLUB=3Dy,
-> CONFIG_SLAB_MERGE_DEFAULT=3Dy,CONFIG_SLUB_CPU_PARTIAL=3Dy)
->
+On Sat, 24 Feb 2024 15:34:51 +0800
+kernel test robot <lkp@intel.com> wrote:
 
-A similar issue comes from tx_action() calling __napi_kfree_skb() on
-arbitrary skbs
-including ones that were allocated on a different NUMA node.
+> Hi,
+> 
+> kernel test robot noticed the following build warnings:
+> 
+> [auto build test WARNING on b1a1eaf6183697b77f7243780a25f35c7c0c8bdf]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/marius-cristea-microchip-com/dt-bindings-iio-adc-adding-support-for-PAC193X/20240223-004332
+> base:   b1a1eaf6183697b77f7243780a25f35c7c0c8bdf
+> patch link:    https://lore.kernel.org/r/20240222164206.65700-2-marius.cristea%40microchip.com
+> patch subject: [PATCH v5 1/2] dt-bindings: iio: adc: adding support for PAC193X
+> compiler: loongarch64-linux-gcc (GCC) 13.2.0
+> reproduce: (https://download.01.org/0day-ci/archive/20240224/202402241545.xf7CnlPz-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202402241545.xf7CnlPz-lkp@intel.com/
+> 
+> dtcheck warnings: (new ones prefixed by >>)
+> >> Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml:51:9: [warning] wrong indentation: expected 6 but found 8 (indentation)  
 
-This pollutes per-cpu caches with not optimally placed sk_buff :/
 
-Although this should not impact fclones, __napi_kfree_skb() only ?
+>     45	
+>     46	patternProperties:
+>     47	  "^channel@[1-4]+$":
+>     48	    type: object
+>     49	    $ref: adc.yaml
+>     50	    description:
+>   > 51	        Represents the external channels which are connected to the ADC.  
+I've fixed this up whilst applying.
 
-commit 15fad714be86eab13e7568fecaf475b2a9730d3e
-Author: Jesper Dangaard Brouer <brouer@redhat.com>
-Date:   Mon Feb 8 13:15:04 2016 +0100
+>     52	
+>     53	    properties:
+>     54	      reg:
+>     55	        items:
+>     56	          minimum: 1
+>     57	          maximum: 4
+>     58	
+>     59	      shunt-resistor-micro-ohms:
+>     60	        description:
+>     61	          Value in micro Ohms of the shunt resistor connected between
+>     62	          the SENSE+ and SENSE- inputs, across which the current is measured.
+>     63	          Value is needed to compute the scaling of the measured current.
+>     64	
+>     65	    required:
+>     66	      - reg
+>     67	      - shunt-resistor-micro-ohms
+>     68	
+>     69	    unevaluatedProperties: false
+>     70	
+>     71	required:
+>     72	  - compatible
+>     73	  - reg
+>     74	  - "#address-cells"
+>     75	  - "#size-cells"
+>     76	
+> 
 
-    net: bulk free SKBs that were delay free'ed due to IRQ context
-
-What about :
-
-diff --git a/net/core/dev.c b/net/core/dev.c
-index c588808be77f563c429eb4a2eaee5c8062d99582..63165138c6f690e14520f11e32d=
-c16f2845abad4
-100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -5162,11 +5162,7 @@ static __latent_entropy void
-net_tx_action(struct softirq_action *h)
-                                trace_kfree_skb(skb, net_tx_action,
-                                                get_kfree_skb_cb(skb)->reas=
-on);
-
--                       if (skb->fclone !=3D SKB_FCLONE_UNAVAILABLE)
--                               __kfree_skb(skb);
--                       else
--                               __napi_kfree_skb(skb,
--                                                get_kfree_skb_cb(skb)->rea=
-son);
-+                       __kfree_skb(skb);
-                }
-        }
 
