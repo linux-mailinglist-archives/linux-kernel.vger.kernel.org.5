@@ -1,103 +1,124 @@
-Return-Path: <linux-kernel+bounces-79594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79595-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB731862496
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:41:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E5A7862498
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:42:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9019A1F2289E
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:41:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F9171C21792
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:42:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 593B02941B;
-	Sat, 24 Feb 2024 11:41:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF1C636AF3;
+	Sat, 24 Feb 2024 11:41:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BS4O7zGd"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wr6LcHWr"
 Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3C2011190
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 11:41:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 684C137156
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 11:41:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708774909; cv=none; b=OdokVoLdmRDcoZghOVvqS5ktBV3LFcNBshIAAWIWQnaQA/6v63BnBB/5OTkl55HnOUZ/9aSTDcU+T07GO6CtX7d1e8mhypz615saWw7TCQgO4SQz32CuGlZis90Pw/uxq5QfrOWuVfGvyY6CTe3Xid8hR69q+sCXvFNPjzGzPZ8=
+	t=1708774913; cv=none; b=gYljNLgXxCJ1H4Q6D9jtA075dgIo/A/apdd6o+cE54LxwrmiLSzn8cf9jHBoR3HpSdR1JTFuwpjFXWVC4GjQzmjx3uGQqmmarFRVZCaVw4GwLMiBFS5hJjlEPcFq/O9LCa8CRA9ZSDDSlMNsJQjgmbTKvaTsuJ60teGnR7MWOQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708774909; c=relaxed/simple;
-	bh=T5+7su8OL+BSlnLb+xk8JBsir9UeXXFZWsV34OPpYAg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hgQb/JdAIoxE0M4CG13C+JQypz0vGmrb/RflgCDIImmJZ7qI61ciw0MU9edra8r/hlVZRgTOCMFz48bP+5BEmJf23m6H+VJdxVsEb+rmE3R+nnUouzqUT6NS+L/LQDk0vp3nNCwbU1qm5PtQ+/PFLxaC7TEm3vAusRJXteakTVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BS4O7zGd; arc=none smtp.client-ip=209.85.208.50
+	s=arc-20240116; t=1708774913; c=relaxed/simple;
+	bh=Lrcpd/5UpAf/i4hlW7coh7EUhBfakwpQOHR0r4s+vcQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=CMZ00Ut3EoHGni04AQtJ19z9TzEW+JnVhprftzRNHwyZnsD0QhVY6Traebxl7zeNA4GzTWCIqmB+M9WWmBB+N6w/xIUGjc8SHqCT+yQaudiGUaivnjXiPJVG4M7v4TO3aFzQhHuI6e/QGM5CQ8C7SvfiREOZOBYjXmw83qgBDJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wr6LcHWr; arc=none smtp.client-ip=209.85.208.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-565a2c4cc1aso549382a12.2
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 03:41:47 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-565a3910f86so547807a12.3
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 03:41:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708774906; x=1709379706; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ayWCuc2qo/ZlHTh56uOukdvuY2tQIy9SUAF8WGg+0bM=;
-        b=BS4O7zGdy0HHoh5meCallLfItFEqO3ow/K789plkA/saez1YXv+AFa1Pp0RxX8ULZf
-         THeJD7aP5z7B7o9neZUzQbAuSGOOMWXJELlf04EWvlgzxXrbHf7RMV5nIRuo4OWN1p4+
-         iN0KrB1Wpit8wuKajsQ2RuLQunEowYAMqlP9ZkYU13k5CX0TxKYHxjII60pwKpDgvNsm
-         DrS+uEvAN2Ens2z23S3I1DAfsieCBD0Cq5srFTG5eSnBDmmrbIBnkIvfSMJxHG+VHoCA
-         Ib/IzI1xNAIT/gbHknbAaaoD+rkS5cFhqzru0wo69awU58QbxUo9/eNGjbsMQxwoRPLc
-         UP7Q==
+        d=linaro.org; s=google; t=1708774910; x=1709379710; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3Yath7VHW7z/WtxSbQ8YWwyCMrpMBbCsul+1XKfwfDA=;
+        b=wr6LcHWr0XI26HFXXhUx4NlKrPA3HJIC7fRSWvmhOGawqST+kOnoWw8CFTalf6fPKf
+         HzpuF/WeqhZDK+GJHHPCDxtCsxC7burWLsURDX52zmK6Gp+MFYk9Bo4B99VljefdLoS/
+         oOe7kAsTn5FqzR/+SHwwRtx+NrWxVsc/nnxFZTnddnTXfb4QoPxcGSzptO0rABM7kjQK
+         /9Jg4/8dWJ31RyKqzcPGh1+F7Zfj84ZPHkWmdb7FYxFxA8BsUB/LCqZt6s9Z5ORfKQ2J
+         N2Q29gmWlaJf1RLUSMsEVRU8bCkXc3OCD09o3Yr2ncXk0DnIv2iJawIdAbytZsqToaPs
+         8rqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708774906; x=1709379706;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ayWCuc2qo/ZlHTh56uOukdvuY2tQIy9SUAF8WGg+0bM=;
-        b=RbOnv9BMeV9HyxX54HXHN1fHcfr8YaAb0+5AEGtLrUsi4t2q/4kbjG+2wsvflb1AqL
-         aQ+pfwuTDOZRa/hFOy+MGf/ehh0n65AOvKCqpBG9stbjisrrAKiqxQslWxwlO2GNxeY1
-         c+9E9tXiVxXdHVatdsYRTa+pgT6iWRqf0IFLJwbwNMIaYeIOG23aVi8DZSPkJAfc42ap
-         IPLH/A59sK/awC0/EyA5x9n4ZMZyLMwefpCeeV2DDWcEKnRZlaTfWxvKtDft5CwT4oed
-         U6wuMzv3XtLZ/AIWcSDipJcyr1omesLmytMhmvAtM+rxtww0GJafT3JD/Fve274W53F8
-         /HUA==
-X-Gm-Message-State: AOJu0YxcJcik8w2mkE5VmEpymQk6raw/pYrbHZXpCTZlRPZ2MNgG1O/Q
-	+GbEW3cypzjYsNlv2p7OGtP16Zk17zip8R451C+UgxKpxi5Qg2CSAMCftoEea30=
-X-Google-Smtp-Source: AGHT+IF2gh9s7ufTdr6aWFabo//dk/uCN6qDluG/c192KfugeaKu/KSk21Ep5cbSXZCxhc7tOHDkqA==
-X-Received: by 2002:aa7:df83:0:b0:564:73e9:a9cd with SMTP id b3-20020aa7df83000000b0056473e9a9cdmr1569839edy.31.1708774906324;
-        Sat, 24 Feb 2024 03:41:46 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708774910; x=1709379710;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3Yath7VHW7z/WtxSbQ8YWwyCMrpMBbCsul+1XKfwfDA=;
+        b=aWfxnuhYjBYxzTZoq/8r2tLUOol3CiR4+Z+v1prBw/UKUsaUDk4zLN2+WcqaKa3rp+
+         6BC/w+PL7RvjXcdYyh1Zyp368DvT6SE3Wrm7oMQgkFL44mMU/slxHlPO92ZqvfOyVw2P
+         Xg/c/KO39Fq729EWqTylZec35uo+AJJJ9pqL5ujLdkOV6KdVn5BxsJTyRgBl4i45ozuo
+         xYnEh3hqRHOEERP/vDGv/I8ArLcrGhR10sMvV7Hv4z5bVNySi5MPnxFjYeluP1etSLlx
+         2xdiAySS0AaGZaMTUBXqVDdrvW1vBCWkknarIqzfgHzH34Y4KIS+mXOXI34b6vIIY2qY
+         VqAg==
+X-Gm-Message-State: AOJu0YwGWWG8Sfd+If8hs0mxlQo/RN7euK6+w50gdBfICsFJFxCLXaCT
+	yvVodd1LPND63QDfREGIAsWgWrd2p7OLTves1xsGGaFh7l59m67V7KRWfzSw0+s=
+X-Google-Smtp-Source: AGHT+IEeat1QReLUI0OyR0PeXa141FDVBDhat8pXwxedQ9Ty16jxR8KZCZ0Pg1jr590YNaIeoxzpeg==
+X-Received: by 2002:a05:6402:1513:b0:565:6e34:da30 with SMTP id f19-20020a056402151300b005656e34da30mr1283503edw.21.1708774910083;
+        Sat, 24 Feb 2024 03:41:50 -0800 (PST)
 Received: from localhost.localdomain (82-132-212-111.dab.02.net. [82.132.212.111])
-        by smtp.gmail.com with ESMTPSA id et8-20020a056402378800b005655c44ac01sm453779edb.89.2024.02.24.03.41.43
+        by smtp.gmail.com with ESMTPSA id et8-20020a056402378800b005655c44ac01sm453779edb.89.2024.02.24.03.41.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Feb 2024 03:41:45 -0800 (PST)
+        Sat, 24 Feb 2024 03:41:49 -0800 (PST)
 From: srinivas.kandagatla@linaro.org
 To: gregkh@linuxfoundation.org
 Cc: linux-kernel@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Stable@vger.kernel.org,
 	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 0/1] slimbus: fixes for v6.8
-Date: Sat, 24 Feb 2024 11:41:36 +0000
-Message-Id: <20240224114137.85781-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 1/1] slimbus: core: Remove usage of the deprecated ida_simple_xx() API
+Date: Sat, 24 Feb 2024 11:41:37 +0000
+Message-Id: <20240224114137.85781-2-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240224114137.85781-1-srinivas.kandagatla@linaro.org>
+References: <20240224114137.85781-1-srinivas.kandagatla@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=454; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=q68fp9cxpUfcGl9UVjMSD1DJZRLv2hmSpRDMuo+MhVU=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBl2dXxT7zUhB8tScbHSjBaS30pB6D61cKMEN3R2 ltw/ZhDuc2JATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZdnV8QAKCRB6of1ZxzRV N5DAB/0e1snZhSzqw634uxGRhahDKldEDKG20R4TtMiiBkrGailzLo5XCxFKs7nx7R13nfPibLl 3kFCAB8bh9Y8GFfhhj1XqnDFOs4GWLnbiWiOtDSaz4PlJGoHARVcUdGaFM2/xoUwYgM4CirM2tg LcqIp2HMsoB4pupmYQk4C5ECqinAKi1XeuwJhM8xkDnbr1wBEpBWf/VyIA0b0Efm5gJ3wx6W38S 1BuWgtuaV8d2a76mjDSCToAYASPCfR7yzw6rn3OEmtFZF+2FkwUUJeA2m9K05Jt6KRa9rx097Ea 4YkAZ5pEh+/dAUiK5K2Hhhfqtgr7ARewRNSNIt0oWJrO4gCn
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1170; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=Xh3R9iRbEMjVSCJR4o35AiNg3AXIY41qxHjPnz3p3P0=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBl2dXx2ClmF1Dgnr9A4F8aF4fEGwACTo7uSqyx2 cpKXGePNLKJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZdnV8QAKCRB6of1ZxzRV N1OiCACOOZw18PUi2Wx+xXUG35htO/lLZReHvqGvYJbZmDkjr4gnyZp753E9yv0wcqowcNShTHl ShEzVfb+2Bvj52u1L7+2A6w9Ak97PWnTatr+z4T97AK9NggecaoKmzKNo/fzUR1TCECzSjCIK7N cHYLbPLMRQH5KvPMeE8/sHpXOH0h82YVd2RHDNUWkm+GLnaymYLvEIwpa88OM84hsVB9yiWXGTY FcMA2A+eyCpnD1DpvAMPqVyce/jjKe5auCm/sBb5BHrXXxc4DXvtbiX/k9eVHMVsi94VcZZflph iSLvxWaH8IOzzM6fOTYMEt6ucfova0DLgh+2snfIqQhKS8nq
 X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp; fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
 Content-Transfer-Encoding: 8bit
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Here are one fix in slimbus for 6.8, Could you queue
-these for next possible rc.
+ida_alloc() and ida_free() should be preferred to the deprecated
+ida_simple_get() and ida_simple_remove().
 
-This patch fixes one off bug in range of logical address assigned to the
-device, which is why am sending for v6.8 rather than next release.
+Note that the upper limit of ida_simple_get() is exclusive, but the one of
+ida_alloc_range() is inclusive. So change this change allows one more
+device. Previously address 0xFE was never used.
 
-Thanks,
-Srini
-
-Christophe JAILLET (1):
-  slimbus: core: Remove usage of the deprecated ida_simple_xx() API
-
+Fixes: 46a2bb5a7f7e ("slimbus: core: Add slim controllers support")
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
  drivers/slimbus/core.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/slimbus/core.c b/drivers/slimbus/core.c
+index d43873bb5fe6..01cbd4621981 100644
+--- a/drivers/slimbus/core.c
++++ b/drivers/slimbus/core.c
+@@ -436,8 +436,8 @@ static int slim_device_alloc_laddr(struct slim_device *sbdev,
+ 		if (ret < 0)
+ 			goto err;
+ 	} else if (report_present) {
+-		ret = ida_simple_get(&ctrl->laddr_ida,
+-				     0, SLIM_LA_MANAGER - 1, GFP_KERNEL);
++		ret = ida_alloc_max(&ctrl->laddr_ida,
++				    SLIM_LA_MANAGER - 1, GFP_KERNEL);
+ 		if (ret < 0)
+ 			goto err;
+ 
 -- 
 2.25.1
 
