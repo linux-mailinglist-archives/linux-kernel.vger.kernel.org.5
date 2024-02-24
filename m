@@ -1,70 +1,78 @@
-Return-Path: <linux-kernel+bounces-79635-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79636-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D59158624F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 13:16:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2C0E862500
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 13:44:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12C2E1C20BCD
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:16:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 776981F22302
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:44:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A90823E480;
-	Sat, 24 Feb 2024 12:16:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1DB93F9C3;
+	Sat, 24 Feb 2024 12:44:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XjL/ME58"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="X9kOIPc7"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE0B73D988
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 12:16:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C44D3C099
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 12:44:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708776972; cv=none; b=u053Gdx03//Pn+CAwXaD/8As7D5f8RbJhi9V6uZWDxMdF/llzqTgPeQaEk8b1VhF84nwvGk5XbM2OEsntGuZCONqfc1x+v274HW6V49X2/4sKY+8dimIM+zf2ORlLZnc8z3mMw0DTxaC4vOOjFmIyA/O2rxE+TN+VS12AmSJDMU=
+	t=1708778665; cv=none; b=kjNWGOV0a/NdwBq5XtJIKjqf2/dVcvSG3RxGY7zFxfS/By4uAvYlUuSFW1JI7krwSreHlZNZETVBNUN/KPT6nbMdRDHsjU5TP/xVvPyryshJb5RtB61YDaNdbWBswhtZULfOXSXa6t+9LmnD4uc1TmPvDUu5HiYbvt6UdsL/fnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708776972; c=relaxed/simple;
-	bh=FVqwkjBGiGZ+FrnuOmvhnP6hzKLmcnGCY/w4xZTohpY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=sPS4YZx5U3/C4eZezkzkXOzPNXZZxGuYqulaUwEbB//1N8OdY088lDtCqqGKKt0MvE3qYjv4bsmK+QeTCyQDrSeAhdyURXEM5KevY4rCIc1ioW5HJqfetPuV0Mqz1AOeHQQGg4iBuCXEj5Wkf/Lekegz2RxpP0TWnfqNwS9aI1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XjL/ME58; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6462C433F1;
-	Sat, 24 Feb 2024 12:16:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708776971;
-	bh=FVqwkjBGiGZ+FrnuOmvhnP6hzKLmcnGCY/w4xZTohpY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XjL/ME582gBj+PnpaYTcAJdRjWCltO0ujLpFGlmYasM9RQuSkdzve0IpVw+2qvHrb
-	 4oqTU1S+Iep91HOzIAgIb+hHbKAhsa9/b3uTFbcowMuARdI3FpC4SAwzG/DR+zo3CV
-	 aPrwkUhUDsQrdBsTyE5lAkwd3Rp5jpwNDIcIfx1X7WaWscenCVj97SVKk16zJe3L5U
-	 KF8z9/nNbY+1dQFiuJEnfp/+cJnxufDun68bUW1FNO2I8JVGO3cbkJ12p3x1s3Az1S
-	 IjrNd3LUfFkHv4PjvnnH+cDfNE5fHimeCIxJu5w8by24eFIaNEYMXmosPgkoyqsmSS
-	 MrYuj+UrUAwKQ==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Lucas De Marchi <lucas.demarchi@intel.com>,
-	Oded Gabbay <ogabbay@kernel.org>,
-	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Matt Roper <matthew.d.roper@intel.com>,
-	Matthew Brost <matthew.brost@intel.com>,
-	Himal Prasad Ghimiray <himal.prasad.ghimiray@intel.com>,
-	Francois Dugast <francois.dugast@intel.com>,
-	Dave Airlie <airlied@redhat.com>,
-	intel-xe@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
+	s=arc-20240116; t=1708778665; c=relaxed/simple;
+	bh=OmOCpzykCGpZfmK48YnLPvj1ug65eRzDoYKAnvWOBBM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oIt3cj9zc9PJg/AI4ScnIOwKzeny8dwlPT4cUYE+XX9/To/HqqI6650VrciQhZ+Bj5BUAMcJu1pLVix/PUIjigy8gPORqs055ZKYWEnui9BZ171DI9eplRCFRwvGWQmEyJGeC/bOY4VxElG3AImwV75AxIGQ8huLKqMXxiGrnLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=X9kOIPc7; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708778662;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=/8cJq6gJYr9fItMmms3ESiKT1OC7cypwGkdjoZcf+Rc=;
+	b=X9kOIPc7igOAVTMZKuUEAsIKPuLGtOAEHwOlehXTP/udzGifEdxk7JOQLTA61Sfv7UXCmZ
+	X5WeL56KcppzOPG335uDrViIpuJnGvOF+dI/N+Fu4VNjmZTmVtgb3PKjiT41Je2lVNapX0
+	WlXQIx0jNp/A7QwGrxYFys2cfO82M4k=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-627-dqKOwW8dOVeR3GCN4KkXGg-1; Sat, 24 Feb 2024 07:44:17 -0500
+X-MC-Unique: dqKOwW8dOVeR3GCN4KkXGg-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7E9E9800074;
+	Sat, 24 Feb 2024 12:44:16 +0000 (UTC)
+Received: from ksundara-mac.redhat.com (unknown [10.74.16.76])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 3C9AB492BC6;
+	Sat, 24 Feb 2024 12:44:09 +0000 (UTC)
+From: Karthik Sundaravel <ksundara@redhat.com>
+To: jesse.brandeburg@intel.com,
+	anthony.l.nguyen@intel.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] drm/xe/xe2: fix 64-bit division in pte_update_size
-Date: Sat, 24 Feb 2024 13:15:01 +0100
-Message-Id: <20240224121528.1972719-3-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240224121528.1972719-1-arnd@kernel.org>
-References: <20240224121528.1972719-1-arnd@kernel.org>
+Cc: pmenzel@molgen.mpg.de,
+	jiri@resnulli.us,
+	michal.swiatkowski@linux.intel.com,
+	rjarry@redhat.com,
+	aharivel@redhat.com,
+	vchundur@redhat.com,
+	ksundara@redhat.com,
+	cfontain@redhat.com
+Subject: [PATCH v4] ice: Add get/set hw address for VFs using devlink commands
+Date: Sat, 24 Feb 2024 18:14:06 +0530
+Message-Id: <20240224124406.11369-1-ksundara@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,41 +80,124 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-From: Arnd Bergmann <arnd@arndb.de>
+Changing the MAC address of the VFs are not available
+via devlink. Add the function handlers to set and get
+the HW address for the VFs.
 
-This function does not build on 32-bit targets when the compiler
-fails to reduce DIV_ROUND_UP() into a shift:
-
-ld.lld: error: undefined symbol: __aeabi_uldivmod
->>> referenced by xe_migrate.c
->>>               drivers/gpu/drm/xe/xe_migrate.o:(pte_update_size) in archive vmlinux.a
-
-There are two instances in this function. Change the first to
-use an open-coded shift with the same behavior, and the second
-one to a 32-bit calculation, which is sufficient here as the size
-is never more than 2^32 pages (16TB).
-
-Fixes: ea97a66a2218 ("drm/xe: Disable 32bits build")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Karthik Sundaravel <ksundara@redhat.com>
 ---
- drivers/gpu/drm/xe/xe_migrate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/intel/ice/ice_devlink.c | 88 +++++++++++++++++++-
+ 1 file changed, 87 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/xe/xe_migrate.c b/drivers/gpu/drm/xe/xe_migrate.c
-index a66fdf2d2991..ee1bb938c493 100644
---- a/drivers/gpu/drm/xe/xe_migrate.c
-+++ b/drivers/gpu/drm/xe/xe_migrate.c
-@@ -462,7 +462,7 @@ static u32 pte_update_size(struct xe_migrate *m,
- 	} else {
- 		/* Clip L0 to available size */
- 		u64 size = min(*L0, (u64)avail_pts * SZ_2M);
--		u64 num_4k_pages = DIV_ROUND_UP(size, XE_PAGE_SIZE);
-+		u32 num_4k_pages = (size + XE_PAGE_SIZE - 1) >> XE_PTE_SHIFT;
+diff --git a/drivers/net/ethernet/intel/ice/ice_devlink.c b/drivers/net/ethernet/intel/ice/ice_devlink.c
+index 80dc5445b50d..c3813edd6a76 100644
+--- a/drivers/net/ethernet/intel/ice/ice_devlink.c
++++ b/drivers/net/ethernet/intel/ice/ice_devlink.c
+@@ -1576,6 +1576,91 @@ void ice_devlink_destroy_pf_port(struct ice_pf *pf)
+ 	devlink_port_unregister(&pf->devlink_port);
+ }
  
- 		*L0 = size;
- 		*L0_ofs = xe_migrate_vm_addr(pt_ofs, 0);
++/**
++ * ice_devlink_port_get_vf_mac_address - .port_fn_hw_addr_get devlink handler
++ * @port: devlink port structure
++ * @hw_addr: MAC address of the port
++ * @hw_addr_len: length of MAC address
++ * @extack: extended netdev ack structure
++ *
++ * Callback for the devlink .port_fn_hw_addr_get operation
++ * Return: zero on success or an error code on failure.
++ */
++
++static int ice_devlink_port_get_vf_mac_address(struct devlink_port *port,
++					       u8 *hw_addr, int *hw_addr_len,
++					       struct netlink_ext_ack *extack)
++{
++	struct devlink_port_attrs *attrs = &port->attrs;
++	struct devlink_port_pci_vf_attrs *pci_vf;
++	struct devlink *devlink = port->devlink;
++	struct ice_pf *pf;
++	struct ice_vf *vf;
++	int vf_id;
++
++	pf = devlink_priv(devlink);
++	if (attrs->flavour == DEVLINK_PORT_FLAVOUR_PCI_VF) {
++		pci_vf = &attrs->pci_vf;
++		vf_id = pci_vf->vf;
++	} else {
++		NL_SET_ERR_MSG_MOD(extack, "Unable to get the vf id");
++		return -EADDRNOTAVAIL;
++	}
++	vf = ice_get_vf_by_id(pf, vf_id);
++	if (!vf) {
++		NL_SET_ERR_MSG_MOD(extack, "Unable to get the vf");
++		return -EINVAL;
++	}
++	ether_addr_copy(hw_addr, vf->dev_lan_addr);
++	*hw_addr_len = ETH_ALEN;
++
++	ice_put_vf(vf);
++	return 0;
++}
++
++/**
++ * ice_devlink_port_set_vf_mac_address - .port_fn_hw_addr_set devlink handler
++ * @port: devlink port structure
++ * @hw_addr: MAC address of the port
++ * @hw_addr_len: length of MAC address
++ * @extack: extended netdev ack structure
++ *
++ * Callback for the devlink .port_fn_hw_addr_set operation
++ * Return: zero on success or an error code on failure.
++ */
++static int ice_devlink_port_set_vf_mac_address(struct devlink_port *port,
++					       const u8 *hw_addr,
++					       int hw_addr_len,
++					       struct netlink_ext_ack *extack)
++{
++	struct net_device *netdev = port->type_eth.netdev;
++	struct devlink_port_attrs *attrs = &port->attrs;
++	struct devlink_port_pci_vf_attrs *pci_vf;
++	u8 mac[ETH_ALEN];
++	int vf_id;
++
++	if (attrs->flavour == DEVLINK_PORT_FLAVOUR_PCI_VF) {
++		pci_vf = &attrs->pci_vf;
++		vf_id = pci_vf->vf;
++	} else {
++		NL_SET_ERR_MSG_MOD(extack, "Unable to get the vf id");
++		return -EADDRNOTAVAIL;
++	}
++
++	if (!netdev) {
++		NL_SET_ERR_MSG_MOD(extack, "Unable to get the netdev");
++		return -EADDRNOTAVAIL;
++	}
++	ether_addr_copy(mac, hw_addr);
++
++	return ice_set_vf_mac(netdev, vf_id, mac);
++}
++
++static const struct devlink_port_ops ice_devlink_vf_port_ops = {
++	.port_fn_hw_addr_get = ice_devlink_port_get_vf_mac_address,
++	.port_fn_hw_addr_set = ice_devlink_port_set_vf_mac_address,
++};
++
+ /**
+  * ice_devlink_create_vf_port - Create a devlink port for this VF
+  * @vf: the VF to create a port for
+@@ -1611,7 +1696,8 @@ int ice_devlink_create_vf_port(struct ice_vf *vf)
+ 	devlink_port_attrs_set(devlink_port, &attrs);
+ 	devlink = priv_to_devlink(pf);
+ 
+-	err = devlink_port_register(devlink, devlink_port, vsi->idx);
++	err = devlink_port_register_with_ops(devlink, devlink_port,
++					     vsi->idx, &ice_devlink_vf_port_ops);
+ 	if (err) {
+ 		dev_err(dev, "Failed to create devlink port for VF %d, error %d\n",
+ 			vf->vf_id, err);
 -- 
-2.39.2
+2.39.3 (Apple Git-145)
 
 
