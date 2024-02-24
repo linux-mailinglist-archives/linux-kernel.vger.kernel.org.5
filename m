@@ -1,126 +1,175 @@
-Return-Path: <linux-kernel+bounces-79437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0D34862240
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 03:13:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B9DB862245
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 03:21:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71913B241BC
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:13:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 567531C22F37
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:21:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B247410A2C;
-	Sat, 24 Feb 2024 02:13:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CFE7DF6C;
+	Sat, 24 Feb 2024 02:20:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="epJrPS6A"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="DSybjcX9"
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9F5CDF5A;
-	Sat, 24 Feb 2024 02:13:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E1ED5398
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 02:20:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708740810; cv=none; b=eSV7tUmEDNuuzSm53mxa6y4jDasPt0tErsYtO5NBQpp8i5VLbPYrdMlPthXqXS8kW8fQdt0Xb9v5XhyHKjc6O/L5taSdW41+C0dtDwCOD9RtPfZfoG8wWwD+pYb5oTYao6+jYKxRWcKCfJ57QvLNcQWx59xZAZBPyjSm6CRiaAc=
+	t=1708741254; cv=none; b=a+NJmIBgl011hBc75L89ZBdKf2B/HVgq33yp8X/0QL+V8pR2KQIXcF4YJmYvURV6wXzGGImPcnCAROcmKn5vC68yPhl/k0mUE2q/GTi6AR05LZIup0JFz0DT8gvW/nqq0u30lI5jTH9BuuqZP9hAAK3MVddVrsojg5vruFU4+yQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708740810; c=relaxed/simple;
-	bh=X67Qts2eYsMFcbAMnSp7VaC/EkqgWhHXXWuQo770d2A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hc5svJW3tDtAP8urmLa8+m/MT7fEI3fIf433Z1tqseaZ5rXKClyhIVI4i2J/Bwf6J8fLowE6weQekGm2gFG30BNyAYLqoH3fv3ZpkametgeMPQEPCUYBat6ewvXFFJCdfp/DjIEdz/UaVeSg7briFXRpy0/foUBKxCuGn3hwAuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=epJrPS6A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F410C43390;
-	Sat, 24 Feb 2024 02:13:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708740809;
-	bh=X67Qts2eYsMFcbAMnSp7VaC/EkqgWhHXXWuQo770d2A=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=epJrPS6A1G6bhoIZjuzU/0ubkgBn07/pCB5RR8HXzDWXrG/xEvxUHYmcLXGfU/imQ
-	 yb07Bd8uXulcrwxp7aNSgzcQBG2+We+oKXCANEBeFVFkVqYjdpLyM0y/nq+pFM67JD
-	 3OpCquGADVgzVl8p3bXdxUsaosy4lW9/nrjXL7O8eSTqAiicRNdQxXUNlerxC0Jf7E
-	 nDkXxiI8s3ubv+oXywnwEH98e3D7axWyqtVtfK68a1PZxFqQIPN0NNOIV1rpoi2Ajj
-	 ELilxBNyOKFe3CJmdbuUIMKtjwQlj0xJ88g3CkehpyNkX8OTjdFIoKF8yargSJNXSW
-	 2MsK+9AK959lQ==
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d23114b19dso19496791fa.3;
-        Fri, 23 Feb 2024 18:13:29 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVgAstgcztgI5+scEVFLyCwOQTudLIgKPDglQub1CEs6Z+D7jjpml/VA4NlXYEQ4uUlWNYh+UWuXF3eqCG7au+83Op16aLG+r141mUEAhX0Stc0DMJZ8htpVCVh6WnPDVE1E6XuVj8KdW/UrOgoR+UaGLu3efXsInIvZqxc9eXGMA==
-X-Gm-Message-State: AOJu0Yx3Q+O1pADBglGqEwGk/IgHBjnt2NirdI2NlqrNqGarMlfh16PQ
-	IjOEdXI0BHGj2BiOsO8zQmtcInZnwE6j61vYFAcSinLJ4yyXFEnMHeHwzyxrfDAyEwOTh069wPj
-	cdX7KjMCqB4VbO7NaDHEmf99VGK8=
-X-Google-Smtp-Source: AGHT+IHbx3gA6OyO539gNo1sNSfaF1AyeEak6jD3EkmuCjjvLRhSzK5c5KY4qJTW9EiP3SWDHxOeEPsGqtLi/aA7Mzk=
-X-Received: by 2002:a2e:a227:0:b0:2d2:63bc:952 with SMTP id
- i7-20020a2ea227000000b002d263bc0952mr450013ljm.35.1708740807610; Fri, 23 Feb
- 2024 18:13:27 -0800 (PST)
+	s=arc-20240116; t=1708741254; c=relaxed/simple;
+	bh=C9KTnoIvzRirFFoTDsfaGkbmhPKX12ljHuTJlzd3+zE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HCL6HDjrRcuhTXQQp8YPwQugT7AUPIQyldob1k/jW9XFapAlufqfnSCrloO6j8BkLVoF45HrXEyKLkJlcOdS9yNoMAEzUHTrU1YwNcnLqqUyVmG14TxYBBxCX8mbNshf7baW+z+BABLxCdNO83n2LFTLPyXh7+FyF5iRjIQ0Ayg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=DSybjcX9; arc=none smtp.client-ip=195.181.215.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+	t=1708741243; bh=C9KTnoIvzRirFFoTDsfaGkbmhPKX12ljHuTJlzd3+zE=;
+	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
+	b=DSybjcX9AMbSWU68OgBepSRjYo9ujw93XLgZS/y7mGfXOoL3gocWSDxffIWE9ar6t
+	 8K50jFqwd7EF7CPrf/tOvhAS8SM1uYQVZKoMBG0yMKMgGtyeMu09UwQP4VQWQbIxro
+	 Q8d4nN2Enei26NrAreLFaTImyqwvDI82JjlB8VVY=
+Date: Sat, 24 Feb 2024 03:20:43 +0100
+From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+To: Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>
+Cc: Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Samuel Holland <samuel@sholland.org>, dri-devel@lists.freedesktop.org, 
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] drm/sun4i: Fix layer zpos change/atomic modesetting
+Message-ID: <5h7jcwsdlpe7w2xylbhlw2asfww3znqlmlnszwvvosz5ssokkq@dxhn4v4sy4nq>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
+	Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>, Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Samuel Holland <samuel@sholland.org>, dri-devel@lists.freedesktop.org, 
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
+References: <20240216190430.1374132-1-megi@xff.cz>
+ <20240216190430.1374132-4-megi@xff.cz>
+ <inuhwnlexpt6dpre4uailtvytjhms4uqeerzehbntczurhcxol@fc4nvkdwffdd>
+ <2448947.jE0xQCEvom@jernej-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123005700.9302-1-dan@danm.net> <20240220230658.11069-1-dan@danm.net>
- <7efac6e0-32df-457e-9d21-4945c69328f8@leemhuis.info>
-In-Reply-To: <7efac6e0-32df-457e-9d21-4945c69328f8@leemhuis.info>
-From: Song Liu <song@kernel.org>
-Date: Fri, 23 Feb 2024 18:13:16 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW5QYTjBvjAjf8SdcKmPGO20e5-p57n6af5FaXudSiOCmg@mail.gmail.com>
-Message-ID: <CAPhsuW5QYTjBvjAjf8SdcKmPGO20e5-p57n6af5FaXudSiOCmg@mail.gmail.com>
-Subject: Re: [REGRESSION] 6.7.1: md: raid5 hang and unresponsive system;
- successfully bisected
-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: gregkh@linuxfoundation.org, junxiao.bi@oracle.com, 
-	linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org, 
-	stable@vger.kernel.org, Dan Moulding <dan@danm.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2448947.jE0xQCEvom@jernej-laptop>
 
-Hi,
+On Thu, Feb 22, 2024 at 09:02:53PM +0100, Jernej Škrabec wrote:
+> Dne sreda, 21. februar 2024 ob 14:45:20 CET je Maxime Ripard napisal(a):
+> > Hi,
+> > 
+> > On Fri, Feb 16, 2024 at 08:04:26PM +0100, Ondřej Jirman wrote:
+> > > From: Ondrej Jirman <megi@xff.cz>
+> > > 
+> > > Identical configurations of planes can lead to different (and wrong)
+> > > layer -> pipe routing at HW level, depending on the order of atomic
+> > > plane changes.
+> > > 
+> > > For example:
+> > > 
+> > > - Layer 1 is configured to zpos 0 and thus uses pipe 0. No other layer
+> > >   is enabled. This is a typical situation at boot.
+> > > 
+> > > - When a compositor takes over and layer 3 is enabled,
+> > >   sun8i_ui_layer_enable() will get called with old_zpos=0 zpos=1, which
+> > >   will lead to incorrect disabling of pipe 0 and enabling of pipe 1.
+> > > 
+> > > What happens is that sun8i_ui_layer_enable() function may disable
+> > > blender pipes even if it is no longer assigned to its layer.
+> > > 
+> > > To correct this, move the routing setup out of individual plane's
+> > > atomic_update into crtc's atomic_update, where it can be calculated
+> > > and updated all at once.
+> > > 
+> > > Remove the atomic_disable callback because it is no longer needed.
+> > > 
+> > > Signed-off-by: Ondrej Jirman <megi@xff.cz>
+> > 
+> > I don't have enough knowledge about the mixers code to comment on your
+> > patch, so I'll let Jernej review it. However, this feels to me like the
+> > pipe assignment is typically the sort of things that should be dealt
+> > with device-wide, and in atomic_check.
+> 
+> In DE2 and DE3.0, you cannot move planes between mixers (crtcs), because each
+> one is hardwired to specific mixer. Movable planes are the feature of DE3.3
+> and one of the pain points for upstreaming the code. Anyway, this commit only
+> addresses current issue of enabling and disabling planes and handling zpos.
+> 
+> In atomic check you can only precalculate final register values, but I don't
+> see any benefit doing that. I think that this code elegantly solves current
+> issue of enabling or disabling wrong plane in certain situations, so:
+> 
+> Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+> 
+> Note, if there is new revision, please rewrite blender regmap_update_bits()
+> to regmap_write(). Since there is HW issue with reads, I would like to
+> get rid of regmap_update_bits() calls eventually.
 
-On Fri, Feb 23, 2024 at 12:07=E2=80=AFAM Linux regression tracking (Thorste=
-n
-Leemhuis) <regressions@leemhuis.info> wrote:
->
-> On 21.02.24 00:06, Dan Moulding wrote:
-> > Just a friendly reminder that this regression still exists on the
-> > mainline. It has been reverted in 6.7 stable. But I upgraded a
-> > development system to 6.8-rc5 today and immediately hit this issue
-> > again. Then I saw that it hasn't yet been reverted in Linus' tree.
->
-> Song Liu, what's the status here? I aware that you fixed with quite a
-> few regressions recently, but it seems like resolving this one is
-> stalled. Or were you able to reproduce the issue or make some progress
-> and I just missed it?
+I've looked into it and I can probably rewrite these quite readily:
 
-Sorry for the delay with this issue. I have been occupied with some
-other stuff this week.
++	regmap_update_bits(mixer->engine.regs,
++			   SUN8I_MIXER_BLEND_ROUTE(bld_base),
++			   SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(0) |
++			   SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(1) |
++			   SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(2) |
++			   SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(3),
++			   route);
 
-I haven't got luck to reproduce this issue. I will spend more time looking
-into it next week.
+The mask here covers all implemented bits in the register.
 
->
-> And if not, what's the way forward here wrt to the release of 6.8?
-> Revert the culprit and try again later? Or is that not an option for one
-> reason or another?
++	regmap_update_bits(mixer->engine.regs,
++			   SUN8I_MIXER_BLEND_PIPE_CTL(bld_base),
++			   SUN8I_MIXER_BLEND_PIPE_CTL_EN(0) |
++			   SUN8I_MIXER_BLEND_PIPE_CTL_EN(1) |
++			   SUN8I_MIXER_BLEND_PIPE_CTL_EN(2) |
++			   SUN8I_MIXER_BLEND_PIPE_CTL_EN(3),
++			   pipe_en);
++
 
-If we don't make progress with it in the next week, we will do the revert,
-same as we did with stable kernels.
+The mask here doesn't cover BLD_FILL_COLOR_CTL.Px_FCEN bits that implement solid
+color filling. But those can be 0 anyway except for pipe0 which is hardcoded by
+the driver to 1, I think:
 
->
-> Or do we assume that this is not a real issue? That it's caused by some
-> oddity (bit-flip in the metadata or something like that?) only to be
-> found in Dan's setup?
+631         /*
+632          * Set fill color of bottom plane to black. Generally not needed
+633          * except when VI plane is at bottom (zpos = 0) and enabled.
+634          */
+635         regmap_write(mixer->engine.regs, SUN8I_MIXER_BLEND_PIPE_CTL(base),
+636                      SUN8I_MIXER_BLEND_PIPE_CTL_FC_EN(0));
 
-I don't think this is because of oddities. Hopefully we can get more
-information about this soon.
+I will not be able to get rid of regmap_update_bits in sun8i_layer_enable
+because that register there has other important things in it like framebuffer
+pixel format, etc.
 
-Thanks,
-Song
+kind regards,
+	o.
 
->
-> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
-> --
-> Everything you wanna know about Linux kernel regression tracking:
-> https://linux-regtracking.leemhuis.info/about/#tldr
-> If I did something stupid, please tell me, as explained on that page.
->
-> #regzbot poke
->
+> Best regards,
+> Jernej
+> 
+> > 
+> > If I'm talking non-sense, it would be great to mention at least why that
+> > can't be an option in the commit log.
+> > 
+> > Maxime
+> > 
+> 
+> 
+> 
+> 
 
