@@ -1,81 +1,80 @@
-Return-Path: <linux-kernel+bounces-79607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D832B8624AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:46:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE85C8624AD
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:46:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92B0B283C49
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:46:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A0E91F2202D
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:46:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49DB53F9D7;
-	Sat, 24 Feb 2024 11:45:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8C9B40BFE;
+	Sat, 24 Feb 2024 11:45:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mSW3TjKI"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MMvyNwe6"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B48EB3CF73
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 11:45:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04CC53E480
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 11:45:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708775149; cv=none; b=ldvK+kroS4I/9Ria1WIF1AOcMDAr/5d+fJmvzLCfPHLjf/RZI9jATb3m1UkAIj5+Mof2MwELoDTUNpOlc6pFLyfGWMxUz6PxuEAgwRBEoS89SkhMtFWn/2+IREyLmLOo04+UuaP+6YPikHpyvfjYbkfXWyrz+Imsj8syOzg25FI=
+	t=1708775150; cv=none; b=dNC4yj914iL5WV61NcIZwGize39GEB34ogIuOZP2RcrlJw4uWLkv2K/VGcUe8LDq32R5blKJklRdZyqSrWmwnLVSnVGYkgSNhsGleGHSbaMF+aNNni37gjtiT7zhBR002tOdNnrtsF+x2LJSUxJ9N9QqdNgRvjQxL1yGPy3SbQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708775149; c=relaxed/simple;
-	bh=5dyZQ4Vh9bJV/vcHRhq/mZBaQkKJnsxChAlx3FjeSIQ=;
+	s=arc-20240116; t=1708775150; c=relaxed/simple;
+	bh=TbDZm2pwUw8Ya9qzVKpSjCAgn7dP8FU3JF75JugC5nU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=f2WKKlRPppgu7EY1q+1++nn1cNqD7bphcXgIIZQr6bRWQR3EFF3QVMd+YhZcqc9zNkCbI00xSpVDYcG9gQ8KZErucWKD7zidtSrpyq+L0w3hXSgF4OIhGO3QP4PFCgtQbb6fmaJ3cV5zd8xdJ2RsxSug/AohpKDhWFB70qIp1Zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mSW3TjKI; arc=none smtp.client-ip=209.85.218.54
+	 MIME-Version; b=uWkkoNZUJ5C4wtsvpyPSvtLpM2HxeNI3W9MC75awugB6Ql+IXqxRHJ/JJzc08AJFA8LsnOKlwIeYBeiVdvQleSNA2sPQxjQAH2tZVfW6IDHGDMIZKUgzegBJA/S0V+ZJDrEC2RJ9d9Qao/VIw+hz/nxL8S3bGVZvZoWkq1o2oSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MMvyNwe6; arc=none smtp.client-ip=209.85.208.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so185793266b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 03:45:47 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-565b86c9943so157072a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 03:45:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708775146; x=1709379946; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1708775147; x=1709379947; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bzveBIxLakGfD0cdsIZlA0dFteMRKWG3Vk1FrE3imik=;
-        b=mSW3TjKIYY+7ZSEo1F2LR3XHUoL5dV/nM0ICKVQpRWlQtKSY2ABeh1mLESqX1jhdhv
-         A65HuSsbdP8AUKavIe3IMquPZWUbI5PA9XslbL7pZTd+u6J3H4nXnrkoFAWuLvT2Z//I
-         9Uc6o1bK1Azq9efn6UbCp+yM2l8scGpSYWHPo4zVJhaAQGiFG+KX0v8NXxLwzxKmqFgj
-         9tjO1muQ34D7bAruZ7MvvI9rnOVQSHwyPpqU1KegkKR7euodPZO0ZeoueDSmd9ZqTgiR
-         0VYY6dwY9wDwGhhOTqeFU/WA6F4RqjufTG3GpFR+JLKE2weOI5/XUgjZIB/OVgJi7FXW
-         uojg==
+        bh=KS7rA/j/L/KU0dU/sRV2PuU9yP8zgIZOoE7Q38qopHQ=;
+        b=MMvyNwe6GUpxO6s0RoNG3cbLH9ak5cfjT3ha1dIGTZU2KtTPQxA5n56vXx11pImZ52
+         ACqty84BQUfr1c/58aHzOGwNWVCVnOJD7yvk7Do1VbhXaI3RnvYqw3M0PogBYeIMam4C
+         HegkGq+LN+ZRMMxDMH1MW64s1nGmczT3j38V1he4qB1gSH/vQJ4FmwpPWLuedJz/7tT4
+         uuG7gwoRaiYnBMMB5vrjgwdkuLS2qVh/p1ZTCFhjRyFL6NH2Z0WgtyJLYaKrfHpomh9H
+         AHxu+IVnMWMGEezij8iCgxJNP7r0IblJqL+TM5ihOsFM0dJDLrRGwd2+zmoYSUj178AU
+         9X0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708775146; x=1709379946;
+        d=1e100.net; s=20230601; t=1708775147; x=1709379947;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bzveBIxLakGfD0cdsIZlA0dFteMRKWG3Vk1FrE3imik=;
-        b=ECPnwMui8IHktpzj05lnGMuUo8BZ1rbt0FqrEPJ0RupUxF1gsUuDJ9lpcrtzuaVvcj
-         32XBZ1YPPWWDDNnKVt+nFj+tI85x4Os2h8AfdI4RrMdok3l4Wb3bXXdjD0koS+Wj0Y6x
-         57nsC4i5Gf6Rk78XX+Srf4+KDvkuogUadRCvL/wRBX32m0g3O19h9P+OcJoNposDlolB
-         t+XecAXxl6iWoqtnjx0lZIsFDPqxd8a6xW1I2xK+nhSHgt4Ty7/IGIl+crDsWyCbPpKl
-         N/yOefcmnjb6jq1q/rcwjKZYWh6uIg/wuuFfIhIlfTBe1P0/8JZ7/Ne9CsuARQGT3dnW
-         PDUQ==
-X-Gm-Message-State: AOJu0YxVQntupO2/UpTzaO+qQPkIKEUM97THfFG7G0rcbtRoepVvwFLD
-	mOsrekcHxfmNWH7F6T2YtRN9YQ9GE5y9gsJD7J4/YcNzElwsDnX8cIUi2tGeCyM=
-X-Google-Smtp-Source: AGHT+IEpd5PlPRsGDHw+PzofE5h5q0BHl1i6M7E+yEJ8KzdfntNMAQFH1d8ia8zh8Sdjycc5kMTsmg==
-X-Received: by 2002:a17:906:b154:b0:a3f:d1e3:b906 with SMTP id bt20-20020a170906b15400b00a3fd1e3b906mr1207657ejb.25.1708775146148;
-        Sat, 24 Feb 2024 03:45:46 -0800 (PST)
+        bh=KS7rA/j/L/KU0dU/sRV2PuU9yP8zgIZOoE7Q38qopHQ=;
+        b=vuAtTplW2I4KkuN6XzA0w4Tr4uOJcRa8M4uxlZu+sKvVYVJOISCQWkCr3piFlUiHhX
+         VFgUgRqmYzbpyLVu11TUJuUzizohU6pZi691NtYDkrMn/RgY7dfqvkY6nfE7NHLwN/hW
+         3fsEKr63EcB/hwoeVTyQP2BNKZe6IZ9zdpSJCZSCl5mJy5EUbbUhrE9zYtziyoO6NAI7
+         2IqII6/YYyV+ON0EUMAWrLlOPqK7+J36WMYbngQ/fvxPsXKVyXGiIb+1XNSJCQ5/kTkV
+         SooJtbhk5bg0AF9/zCxyEBVgG8ULmtptLudAYLgjZNvoQ0t54/oLpUf4fjQ/RM6eyoCe
+         DoDA==
+X-Gm-Message-State: AOJu0YzuvPNjvazUgZ5FK0n4oYtsniRPJNX0KZ+bdUIxwRH7DhcgiAHG
+	42SGuJZDz1KhKFgg0C+vcMmXxCF5l5PVxnmFne5N+8aVnYiokAzX0LSMQFeb6r7U7DvsbUMNYUk
+	E
+X-Google-Smtp-Source: AGHT+IGGXp7l/I31C/VlsYaCuo5sbMZaFSqsucSFLKG3ppQpFIuibVZOVuOe1ukRwXSBIUYD7QtGnw==
+X-Received: by 2002:a17:907:208f:b0:a3f:421:26a5 with SMTP id pv15-20020a170907208f00b00a3f042126a5mr2049003ejb.12.1708775147368;
+        Sat, 24 Feb 2024 03:45:47 -0800 (PST)
 Received: from localhost.localdomain (82-132-212-111.dab.02.net. [82.132.212.111])
-        by smtp.gmail.com with ESMTPSA id jp10-20020a170906f74a00b00a3e209b225asm517826ejb.43.2024.02.24.03.45.44
+        by smtp.gmail.com with ESMTPSA id jp10-20020a170906f74a00b00a3e209b225asm517826ejb.43.2024.02.24.03.45.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Feb 2024 03:45:45 -0800 (PST)
+        Sat, 24 Feb 2024 03:45:46 -0800 (PST)
 From: srinivas.kandagatla@linaro.org
 To: gregkh@linuxfoundation.org
 Cc: linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+	Praveen Teja Kundanala <praveen.teja.kundanala@amd.com>,
+	Michal Simek <michal.simek@amd.com>,
 	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 04/11] dt-bindings: nvmem: add common definition of nvmem-cell-cells
-Date: Sat, 24 Feb 2024 11:45:09 +0000
-Message-Id: <20240224114516.86365-5-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 05/11] firmware: xilinx: Add ZynqMP efuse access API
+Date: Sat, 24 Feb 2024 11:45:10 +0000
+Message-Id: <20240224114516.86365-6-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240224114516.86365-1-srinivas.kandagatla@linaro.org>
 References: <20240224114516.86365-1-srinivas.kandagatla@linaro.org>
@@ -85,55 +84,106 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1691; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=P2NyplVumNiZcg9Mp9j9BQ+uKvSsw6Ugatz/uYFEo5g=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBl2dbLP88NrJkVscZYIWbXKQs9FH11RQ745UlG+ Ddwg/LmySqJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZdnWywAKCRB6of1ZxzRV N5yzCACCYmIcLpgKardB0yXudbiR8EXRIABl++s0xY87Y/nZdne0nZPCHlSDiZXbbYPF+LXcFro sbuUBAWgRH++oHq/FaDaAZW8M2SQ95mNEucN5rIz5N5LaOpQ24NirQ/blwp8nH/uZh49iauHRIl dATWX9FgT4rFZXtdJRZe7J2zGPEksVWlQZV6xRIwHNW8qu9cglGTiZcf7GaERaQ0Op55ki4JFlL aksxd81gKuHSabOhyAQsK2b2LwMicwlNughluqrG1rlFjiW476zS+Jg7bogNr/jg2+htCmtzW1S 7fxYAdivFDFVmxBK9u19YdcGV07gOkRAXq9/x4oVDwtmv+LW
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3247; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=ztYMB5wlPQ7riX2muOA67ef80NdW44Fd2iBr8KYguME=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBl2dbLlGDOcJPROfJzSEXMs0DTxp5duuzEnVdNw 2oaDOxR3vmJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZdnWywAKCRB6of1ZxzRV N6JzCAC3GZfAyTzAGLMBlClY2F68xTQYaHOEYMk2pdwdLlXg4VySFjldXzkgZ8BGVNtpSOePFAu C9UJx+VSfM2w89AvpgywCzWhdC7hBipyZ3g6OKEsxWOgfJaC3gYc9LqqIH+LBgE/zRkS0ITfdUr FrZzBzyO/zY5rbopj25K4lNhn20QBalmqZF8QSVLyrNGI0tb3xJLMEcV2YdN/qD6woC6WSbjPAA yrX3EBy6/QLd95BCMva9HBTxh1DYyyb9saHTJ4nlmHdXnyeWvy5Gaowf21ugUA5R93/ySJ5Dz6W gFrLTJDRD4r0wq+IJvND3MaqeH0px4JoDhW/PmQIjIgNinwc
 X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp; fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
 Content-Transfer-Encoding: 8bit
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+From: Praveen Teja Kundanala <praveen.teja.kundanala@amd.com>
 
-Linux kernel NVMEM consumer bindings define phandle to NVMEM cells
-("nvmem-cells"), thus we also want the common definition of property
-defining number of cells encoding that specifier, so the
+Add zynqmp_pm_efuse_access API in the ZynqMP
+firmware for read/write access of efuse memory.
 
-Suggested-by: Rob Herring <robh@kernel.org>
-Reported-by: Michael Walle <michael@walle.cc>
-Closes: https://github.com/devicetree-org/dt-schema/pull/89
-Reported-by: Rafał Miłecki <zajec5@gmail.com>
-Closes: https://lore.kernel.org/linux-arm-kernel/20221121105830.7411-1-zajec5@gmail.com/#r
-Closes: https://lore.kernel.org/all/bdf7751b-0421-485d-8382-26c084f09d7d@gmail.com/
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Praveen Teja Kundanala <praveen.teja.kundanala@amd.com>
+Acked-by: Michal Simek <michal.simek@amd.com>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../bindings/nvmem/nvmem-provider.yaml         | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/nvmem/nvmem-provider.yaml
+ drivers/firmware/xilinx/zynqmp.c     | 25 +++++++++++++++++++++++++
+ include/linux/firmware/xlnx-zynqmp.h |  8 ++++++++
+ 2 files changed, 33 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/nvmem/nvmem-provider.yaml b/Documentation/devicetree/bindings/nvmem/nvmem-provider.yaml
-new file mode 100644
-index 000000000000..4009a9a03841
---- /dev/null
-+++ b/Documentation/devicetree/bindings/nvmem/nvmem-provider.yaml
-@@ -0,0 +1,18 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/nvmem/nvmem-provider.yaml#
-+$schema: http://devicetree.org/meta-schemas/base.yaml#
+diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
+index 79789f0563f6..9bc45357e1a8 100644
+--- a/drivers/firmware/xilinx/zynqmp.c
++++ b/drivers/firmware/xilinx/zynqmp.c
+@@ -3,6 +3,7 @@
+  * Xilinx Zynq MPSoC Firmware layer
+  *
+  *  Copyright (C) 2014-2022 Xilinx, Inc.
++ *  Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
+  *
+  *  Michal Simek <michal.simek@amd.com>
+  *  Davorin Mista <davorin.mista@aggios.com>
+@@ -1384,6 +1385,30 @@ int zynqmp_pm_aes_engine(const u64 address, u32 *out)
+ }
+ EXPORT_SYMBOL_GPL(zynqmp_pm_aes_engine);
+ 
++/**
++ * zynqmp_pm_efuse_access - Provides access to efuse memory.
++ * @address:	Address of the efuse params structure
++ * @out:		Returned output value
++ *
++ * Return:	Returns status, either success or error code.
++ */
++int zynqmp_pm_efuse_access(const u64 address, u32 *out)
++{
++	u32 ret_payload[PAYLOAD_ARG_CNT];
++	int ret;
 +
-+title: NVMEM (Non Volatile Memory) Provider
++	if (!out)
++		return -EINVAL;
 +
-+maintainers:
-+  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
++	ret = zynqmp_pm_invoke_fn(PM_EFUSE_ACCESS, ret_payload, 2,
++				  upper_32_bits(address),
++				  lower_32_bits(address));
++	*out = ret_payload[1];
 +
-+select: true
++	return ret;
++}
++EXPORT_SYMBOL_GPL(zynqmp_pm_efuse_access);
 +
-+properties:
-+  '#nvmem-cell-cells':
-+    enum: [0, 1]
+ /**
+  * zynqmp_pm_sha_hash - Access the SHA engine to calculate the hash
+  * @address:	Address of the data/ Address of output buffer where
+diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
+index 9a7e52739251..1a069a56c961 100644
+--- a/include/linux/firmware/xlnx-zynqmp.h
++++ b/include/linux/firmware/xlnx-zynqmp.h
+@@ -3,6 +3,7 @@
+  * Xilinx Zynq MPSoC Firmware layer
+  *
+  *  Copyright (C) 2014-2021 Xilinx
++ *  Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
+  *
+  *  Michal Simek <michal.simek@amd.com>
+  *  Davorin Mista <davorin.mista@aggios.com>
+@@ -171,6 +172,7 @@ enum pm_api_id {
+ 	PM_CLOCK_GETPARENT = 44,
+ 	PM_FPGA_READ = 46,
+ 	PM_SECURE_AES = 47,
++	PM_EFUSE_ACCESS = 53,
+ 	PM_FEATURE_CHECK = 63,
+ };
+ 
+@@ -562,6 +564,7 @@ int zynqmp_pm_set_requirement(const u32 node, const u32 capabilities,
+ 			      const u32 qos,
+ 			      const enum zynqmp_pm_request_ack ack);
+ int zynqmp_pm_aes_engine(const u64 address, u32 *out);
++int zynqmp_pm_efuse_access(const u64 address, u32 *out);
+ int zynqmp_pm_sha_hash(const u64 address, const u32 size, const u32 flags);
+ int zynqmp_pm_fpga_load(const u64 address, const u32 size, const u32 flags);
+ int zynqmp_pm_fpga_get_status(u32 *value);
+@@ -749,6 +752,11 @@ static inline int zynqmp_pm_aes_engine(const u64 address, u32 *out)
+ 	return -ENODEV;
+ }
+ 
++static inline int zynqmp_pm_efuse_access(const u64 address, u32 *out)
++{
++	return -ENODEV;
++}
 +
-+additionalProperties: true
+ static inline int zynqmp_pm_sha_hash(const u64 address, const u32 size,
+ 				     const u32 flags)
+ {
 -- 
 2.25.1
 
