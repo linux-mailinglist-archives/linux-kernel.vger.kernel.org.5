@@ -1,156 +1,111 @@
-Return-Path: <linux-kernel+bounces-79855-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 191BF8627A3
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 22:02:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F7808627A5
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 22:02:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7198282406
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 21:02:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6CA74B21AF6
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 21:02:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2E9D4D131;
-	Sat, 24 Feb 2024 21:02:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C33994CB57;
+	Sat, 24 Feb 2024 21:02:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LIXU0YxG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="evNOEqwE"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E51C44CDFB;
-	Sat, 24 Feb 2024 21:02:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B47BD4C615
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 21:02:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708808549; cv=none; b=l8V9A9v7+5S+N3kQYeLsdiFjBNVgEplLIjtrDl1K2meanIi1Izs5LKMEnpJYBGJUDU8InA/PHV0kS8/tpVbExfU23u2L4N48npI5++QQZ/W6PO09XkI3WbVUuDQDA/a1QtgLKXpOpYlZtHuCg9gsy0SC3IisZd/Yt4oJgDviiuo=
+	t=1708808561; cv=none; b=Wtf3nMoHW5mwXROwFZTj1PlBA4VLfqXjLpXpRN1gnpIHU81Qo9o4npd3vf9bvAJlkehU21YP386InMDDssrsmVcVDpnzzQnRI2AFofGRGxHhZgaZI8LxaxHLsvC+fsa/SP+3YpW6mbYdgu+/IUG8Cs0GLT8LzDwa3IMkZka8NBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708808549; c=relaxed/simple;
-	bh=DBksNLTYfjt6+EX3HN5+PfdJ9HZ1Fi3NzTEwfk1Wj9o=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uMO6Nz9+6hJNURGc12d5COIPaWmkG0uzGZpP6FaWVkhM2D+DhzkIP3/3PfF5okAvMy5+WZ8j/xXoUMfG0NWxE0xAfXoYscOryyENbIN20OEn/7xVSAxnElvqN/Re8In86EwsFgIsfWvmdl/3am8aMxVM81zwtfCbZgkvw+uUVAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LIXU0YxG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93603C433C7;
-	Sat, 24 Feb 2024 21:02:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708808548;
-	bh=DBksNLTYfjt6+EX3HN5+PfdJ9HZ1Fi3NzTEwfk1Wj9o=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LIXU0YxGcL2vXyF1XOBoBcPw3rrkRPzvqdj/mE4SgPvlIj/lK4sF7d93bkGTngfuQ
-	 qSlm74y0cI0vOODSbKmMFEKHyuFlrlxpsrcteyCwPGXBtfPaoFrt3w0Pp79VvePY7e
-	 Buk7Yfguhg5My1B56YP+UVna4Dcuy+OS537MGhwCji7vzPTvVGGsVx0pfQZuDhe0pj
-	 BwBw95v4h8+dUFHz3wh0yfMWeVijLI8OKvzOn1M90jQRHLEac670wYptO1Ut4FV7aq
-	 6OzpcYwkOJz39eJJnPqA8lhyez6C0tGKVZKh4D9zdxkkghpN+h77XLqCCVTE+8ZDka
-	 0Qic/paZ8CRSw==
-From: SeongJae Park <sj@kernel.org>
-To: Barry Song <21cnbao@gmail.com>
-Cc: SeongJae Park <sj@kernel.org>,
-	Minchan Kim <minchan@kernel.org>,
-	akpm@linux-foundation.org,
-	damon@lists.linux.dev,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	mhocko@suse.com,
-	hannes@cmpxchg.org,
-	Barry Song <v-songbaohua@oppo.com>
-Subject: Re: [PATCH RFC] mm: madvise: pageout: ignore references rather than clearing young
-Date: Sat, 24 Feb 2024 13:02:25 -0800
-Message-Id: <20240224210225.47149-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <CAGsJ_4w4wnbryJaAKRtNGNMg_YTGkeG3QwL9_JkT=wtwq1+_+Q@mail.gmail.com>
-References: 
+	s=arc-20240116; t=1708808561; c=relaxed/simple;
+	bh=JeSfqNzV+hjrodRVul1OWjCnx52kVLE0+GAVqZKqcsQ=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=NxFNZaLLtkbWoHeVKIcJeF5VLVmgW8rfJqYw7oj9SsM/ByhD2XRLWQAK+byTM1+GF2jlYeFkfHvy33z8BeaPvBGZy042Hgs3m6a4lacd3uZX4CkvQifrrnYoKqzWmHV1Ye/wJU6ehUWwq4wv1N+NXWjwe/xN8UECkqdRDIMdKWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=evNOEqwE; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1dbe7e51f91so84325ad.1
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 13:02:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708808559; x=1709413359; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1bYqSsxfIR9raHGk2lM7F1xz8yf+qiSkrL7Pgn11QAY=;
+        b=evNOEqwETZDHqwn16aQKkzF7wU3KJK23BJ77MUTyxfbybr+lBSOIW5GXw8z+8QYG0v
+         Pj9SCbXxI5HnivJEAyCs+l0EKPUFaGG3zQRMZhPRn3/BFtDlAZTKciTqQ8usxa23a1bX
+         p0AtxWrllprUa/049wKdicdFRl50yPLPibarsDRwrh9raubA7/mw/J0lCBuidikdlsN3
+         ZteKs/Fmihcqa0RTlU/rLyBP79A8VGzh3wdSCQIDspeD8X24D3CJolka6PuF2o02hKQM
+         mesCWLLG9JQ1SW5ZCbDU0TUzc0cHMG+2pJOZ9pbzQAo0HIoUK5myJ4cDHvAQi6E93zBM
+         Bhdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708808559; x=1709413359;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1bYqSsxfIR9raHGk2lM7F1xz8yf+qiSkrL7Pgn11QAY=;
+        b=vchuZ6vQRcXeuwAWyYf222sFe/8iZ7JwBx3Wv6pc+a8I/jGjK8ZRhslyzzxV37yK6h
+         Y/TTLM17/0Ca8tICgMM1k4eILxVhUjV3YYx6hu7Z6hsMXACytEYL8GNbSViJhTKJfyRQ
+         L53BafY8RKqun1vZcbTAqHYkcJ2f3CKipF5xFtkfZ3UxL6oIFqvLIlyZAFYTdLcYz2Yd
+         zzNu8pq8SqFlObWQsuK242AWrUfPIETGLWIny1s4WpnbI3GCTYi7kIDLL9xOU8Xm3+RK
+         gYxtcwkUNyT6KO1udHme9i51AfjXQVoS0iUi/8kakXHjlsrjsQt53Dl8+RXLJoxloxvZ
+         c5Ig==
+X-Forwarded-Encrypted: i=1; AJvYcCWe+6s5AD/NbKX8MydREc/FCzb56+9MMF2Isi7iJcDAHbTpigb9JnOnHY9fI06w96WgeZFYz3TbqxYxcxLTR4uPaYyQR0S5mDD7yqcW
+X-Gm-Message-State: AOJu0YzYIrPKb1c91QdBO0adjq/lkXIjvyBJIIJy3q7TvSk9Ri5q0udi
+	qnZHgVJ9wFtMkiGuj7ocoQNEzJWTnotIMm87M6Lem0gRSR2uKci+nKoM7KvqZw==
+X-Google-Smtp-Source: AGHT+IGGyN0+Lq0dJjkH/u6UzcVRpqCLoMm58Et5/84c8134LsHcFyGkJu9hOwFdD4fqhywSU7MU+Q==
+X-Received: by 2002:a17:903:32cc:b0:1dc:7b9:196d with SMTP id i12-20020a17090332cc00b001dc07b9196dmr190478plr.18.1708808558515;
+        Sat, 24 Feb 2024 13:02:38 -0800 (PST)
+Received: from [2620:0:1008:15:ce41:1384:fbb2:c9bc] ([2620:0:1008:15:ce41:1384:fbb2:c9bc])
+        by smtp.gmail.com with ESMTPSA id c10-20020aa781ca000000b006e4ce93dc28sm1468928pfn.104.2024.02.24.13.02.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Feb 2024 13:02:37 -0800 (PST)
+Date: Sat, 24 Feb 2024 13:02:37 -0800 (PST)
+From: David Rientjes <rientjes@google.com>
+To: Vlastimil Babka <vbabka@suse.cz>
+cc: Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, 
+    Joonsoo Kim <iamjoonsoo.kim@lge.com>, 
+    Andrew Morton <akpm@linux-foundation.org>, 
+    Roman Gushchin <roman.gushchin@linux.dev>, 
+    Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+    Andrey Ryabinin <ryabinin.a.a@gmail.com>, 
+    Alexander Potapenko <glider@google.com>, 
+    Andrey Konovalov <andreyknvl@gmail.com>, 
+    Dmitry Vyukov <dvyukov@google.com>, 
+    Vincenzo Frascino <vincenzo.frascino@arm.com>, 
+    Zheng Yejian <zhengyejian1@huawei.com>, 
+    Xiongwei Song <xiongwei.song@windriver.com>, 
+    Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, 
+    linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com
+Subject: Re: [PATCH v2 3/3] mm, slab, kasan: replace kasan_never_merge() with
+ SLAB_NO_MERGE
+In-Reply-To: <20240223-slab-cleanup-flags-v2-3-02f1753e8303@suse.cz>
+Message-ID: <78910de2-097d-9dea-4e00-acaf40af0299@google.com>
+References: <20240223-slab-cleanup-flags-v2-0-02f1753e8303@suse.cz> <20240223-slab-cleanup-flags-v2-3-02f1753e8303@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 
-On Sun, 25 Feb 2024 04:33:25 +0800 Barry Song <21cnbao@gmail.com> wrote:
+On Fri, 23 Feb 2024, Vlastimil Babka wrote:
 
-> On Sun, Feb 25, 2024 at 4:12 AM SeongJae Park <sj@kernel.org> wrote:
-> >
-> > On Sat, 24 Feb 2024 11:07:23 -0800 SeongJae Park <sj@kernel.org> wrote:
-> >
-> > > Hi Barry,
-> > >
-> > > On Sat, 24 Feb 2024 12:37:59 +0800 Barry Song <21cnbao@gmail.com> wrote:
-> > >
-> > > [...]
-> > > >
-> > > > BTW\uff0c
-> > > > Hi SeongJae,
-> > > > I am not quite sure if damon also needs this, so I have kept damon as is by
-> > > > setting ignore_references = false.  MADV_PAGEOUT is an explicit hint users
-> > > > don't want the memory to be reclaimed, I don't know if it is true for damon as
-> > > > well. If you have some comments, please chime in.
-> > >
-> > > Thank you for calling my name :)
-> > >
-> > > For DAMON's usecase, the document simply says the behavior would be same to
-> > > MADV_PAGEOUT, so if we conclude to change MADV_PAGEOUT, I think same change
-> > > should be made for DAMON's usecase, or update DAMON document.
-> >
-> > Thanks to Barry's nice explanation on my other reply to the patch, now I think
-> > the change is modest, and therefore I'd prefer the first way: Changing DAMON's
-> > usecase, and keep the document as is.
+> The SLAB_KASAN flag prevents merging of caches in some configurations,
+> which is handled in a rather complicated way via kasan_never_merge().
+> Since we now have a generic SLAB_NO_MERGE flag, we can instead use it
+> for KASAN caches in addition to SLAB_KASAN in those configurations,
+> and simplify the SLAB_NEVER_MERGE handling.
 > 
-> Hi SeongJae,
-> 
-> thanks! I actually blindly voted for keeping DAMON's behaviour but
-> slightly updated the
-> document as I set ignore_references to false for the DAMON case in the RFC :-)
-> 
-> --- a/mm/damon/paddr.c
-> +++ b/mm/damon/paddr.c
-> @@ -249,7 +249,7 @@ static unsigned long damon_pa_pageout(struct
-> damon_region *r, struct damos *s)
->  put_folio:
->   folio_put(folio);
->   }
-> - applied = reclaim_pages(&folio_list);
-> + applied = reclaim_pages(&folio_list, false);
->   cond_resched();
->   return applied * PAGE_SIZE;
->  }
-> 
-> MADV_PAGEOUT comes from userspace by a specific process to tell the kernel
-> to reclaim its own memory(actually focus on non-shared memory as it
-> skips folios with
-> mapcount>1).
-> The range is a virtual address and the app does know it doesn't want
-> to access the
-> range in the foreseeable future.  and the affected app is itself not global.
-> 
-> In the DAMON case,  it seems the range is the physical address.  if
-> the pa is mapped
-> by more than one process, it seems safer to double-check in the kernel
-> as it might
-> affect multiple processes?
-> 
-> Please correct me if I am wrong.
+> Tested-by: Xiongwei Song <xiongwei.song@windriver.com>
+> Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
+> Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
-You're correct.  Please consider below in my previous reply[1] as my opinion.
-
-    let's keep the change for paddr.c in your patch as is.
-
-[1] https://lore.kernel.org/r/20240224205453.47096-1-sj@kernel.org
-
-
-Thanks,
-SJ
-
-> 
-> >
-> >
-> > Thanks,
-> > SJ
-> >
-> > >
-> > >
-> > > Thanks,
-> > > SJ
-> 
-> Thanks
->  Barry
+Tested-by: David Rientjes <rientjes@google.com>
 
