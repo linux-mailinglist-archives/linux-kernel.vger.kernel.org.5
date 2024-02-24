@@ -1,139 +1,174 @@
-Return-Path: <linux-kernel+bounces-79901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79902-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8A36862873
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 00:20:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C551F862879
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 00:32:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78F40B212C8
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 23:20:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E71CB1C20A93
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 23:32:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CD214EB20;
-	Sat, 24 Feb 2024 23:20:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D02D4EB32;
+	Sat, 24 Feb 2024 23:32:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gr4Dx+q3"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nWmpwxha"
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37D691B59A;
-	Sat, 24 Feb 2024 23:20:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F8411DDC3;
+	Sat, 24 Feb 2024 23:32:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708816817; cv=none; b=ZWK2BAO0Tw+yFUNS5Pi7ZP7Qq1c2WGe/t2Q4FrzVYKlSoammQLLo3NxdeLBmeBdBOG8mJYJUc6v6hVOw2S/C7tbRco5x6yoX2h/ZW+NNEyEYXo+ANqmn0yzjHbER2IoHrCHLg/KLudu8u+iZRKHxmY9I5RiraqYbHaG6MZ/2t9U=
+	t=1708817559; cv=none; b=cQpy7zC4QCe1SaIEdni+pbkLuwZwzbexdTmicpjLktOu8TpT7A19azMqi2H0pVHZYRtE+aIm8KBHd+WkGPWF0cZOOLeakyNKiF0qM5yYDWli7CIaRXRf54aqTKzoXX0BFrYVD7cGmE3y9+3viq0nzfOMFz6Zc5WZX4xvMZoMlQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708816817; c=relaxed/simple;
-	bh=ddpbApfXPnRAvt72tIRg9a0nGvs0psYM9aIpXQBkLgY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=uicnWJpbdTiGb8txOMUuOA7GuJpR72ksIiXajfMwjr3YhU7yUoq5i0VWqzTxNSAP2uKdrzhCzfgzG0eB8vim0k9bO+uupxEJJc4MQT/kBcwMXXw6jY7Rsvh8DW/RrNC/rN9+b8xho7/grHt+9Cfyes40M2izhBLMCvxDXGw/Xc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gr4Dx+q3; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1708817559; c=relaxed/simple;
+	bh=LEJEA5dmOEKMUGOVAggOyjwSEs5lMEzUNwq2DFUkuYk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SN2LYxot8lAnqXUz2fdSERN5oTNOO507I7TbeOSmdf9si53mSMcnkJ1rtUSWuk7rBVHPYtZBVed644f4D9gGQuJHdn9+C4zJ00OYP/m29K+djTuHE9fK48R2x9dTo5TeAPlWoMq3VPE8eUCOYYOCNOWesGo7mMo0MlOz/odmb6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nWmpwxha; arc=none smtp.client-ip=209.85.160.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-512a65cd2c7so2797387e87.0;
-        Sat, 24 Feb 2024 15:20:15 -0800 (PST)
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-21fdf31a154so362114fac.3;
+        Sat, 24 Feb 2024 15:32:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708816814; x=1709421614; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ewC5em/L4cp2/EK3EgWgLTwF3e1USIQQRxwh9lx3yRY=;
-        b=Gr4Dx+q3AHyF/zawHHmeTctgVUQTrk8BYWmbxihnweavCClSAmaIUafRBAIFrzh7f1
-         ifRmPL/VVpMLz2AKX/H0Mpp9Sp9IR5GOyeZHk7xsuVKZgZ+09w3ihEDPE4bwpc2ffdbQ
-         q3A2jrHVDF7BtJx4PGWII4SQ9j6c6iHqSLfuHxEeRaTjrTohs9lVKD0yuoNzrBotIS12
-         UGl1v3ZnWzlIK6/HZltGedFpI9UFUuqLsF6VuXVbt47vNIcf1eOjwpiUYttHZxDOUuZc
-         OmmLWRMfXeNjBN8IdEo1jB/gvq2bzHYaMqizro37BPDxBXDW+axujjMwyFwKA7wKoSg+
-         JjLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708816814; x=1709421614;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1708817556; x=1709422356; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ewC5em/L4cp2/EK3EgWgLTwF3e1USIQQRxwh9lx3yRY=;
-        b=MFB4jJnbPAFr7e37oYdcT5hbEQXjXw0FVS9D/NKVmx8ubIE3RVZyb3wCgyidBYW84A
-         e9uq2YLfEVD8MVijHYIDtMuVUx/m8bBWCfD3twfGQMNRTROHEqm/yIS6WsuWdqamh1yY
-         wiXsfFKIlkBxSrY+qyZqggOPo15HRcRDPg1mg/fmrr54uad0drx6ih67p2vGYESaTSby
-         /8pEjZg4ccDqHtdbucvQgE+gKnuex5SFHlurlai8A7dHgLfh3yEltuIX2XlBuawWATXG
-         v8Y4DrjSjfEqusRqTrJ0BqB2tr30LBpvUR50UB82sdJTmQRr3NVfRWHrpvidGgxujlkv
-         SIVg==
-X-Forwarded-Encrypted: i=1; AJvYcCUBnivK1dfv3vlccC2MqLBfiZ4D+VnG3hNzKAm0L3PVIX999SQbJXvJUE+ieI6kMR9Hznf6flFllybLgz0P2RY7rQmzPG0kYAiamAGSxCPjNdjm/ZwGvFX7/rWYhNCPJCVSPJUXQGk5
-X-Gm-Message-State: AOJu0Ywxk46lcchqEqnW2EKuGSDxALLF8jtAStqQ+c6Qpd/Hu7uXh2sV
-	c4jWlCDFHd7zeg/SvQrS82B/Dru/E30kkty4LdVjXk0qNBCzT8wQ
-X-Google-Smtp-Source: AGHT+IFZ3ISb+iAdCSF6RROWczKAp5Me66N/c0/Abte9/kVtdGpQs7KuFb8Ryxa+5C3vL+a+Xlxvyw==
-X-Received: by 2002:ac2:4c36:0:b0:512:ae9b:559 with SMTP id u22-20020ac24c36000000b00512ae9b0559mr1705374lfq.34.1708816814128;
-        Sat, 24 Feb 2024 15:20:14 -0800 (PST)
-Received: from [127.0.1.1] (2a02-8389-41cf-e200-75bf-ebcd-fec9-7873.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:75bf:ebcd:fec9:7873])
-        by smtp.gmail.com with ESMTPSA id vh9-20020a170907d38900b00a4323d1b18fsm75344ejc.34.2024.02.24.15.20.13
+        bh=NxHV763dz9Q7LJ++FquVhbgQ4BRtn7/8LZkcmHpqxlI=;
+        b=nWmpwxhaVb3yhOFmG/mtjhbbgA466K2scWdk9RE0tgWV8w4eXHngJ57j4FbEvz+pLo
+         iI80u/LgBF8ZcCvOIG6L71FDEUtbzcfCB+cm3E5c2fLMPNQQLHjVWyb5x75koglRlZ+j
+         s9hyr5HvMiHw9I7z8poQhhqX3RL1cVm7v6Z+6z3g8ARlk2qr3iU7DWVBteqPB7oIW3L3
+         YJk+Od3kA1y2kHT0iZ4IzPNXA440VNm5bbJIHMLlAgQa6CU87eLM5hmyfDnIMPVXCwyu
+         fA2J2Q3JmmpBoTREEeFgPa8WSXvlCuNQSQEE6TMiFh3+U5p/S2TFRRGN71FodQgbi46t
+         IRyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708817556; x=1709422356;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NxHV763dz9Q7LJ++FquVhbgQ4BRtn7/8LZkcmHpqxlI=;
+        b=UyqiOibkK6vLqyUgrkgRa0duz8c7+gMbhh1gdQMkFR9HOwJQsVj3KILyt1gxIG+hsq
+         z4tvF0V5ayDYYGLyiRmSRSseFQ5okiN196fO4+1WGZdsgQV9HXXwqau1tbOhvR/DRTRx
+         NFUtSf3m60cnMae8VTvSH/7Pqg6U9eHdMznfMhqOWVUEmYvmVMEwmkFFqzyo8ob3RU9v
+         GhH0xhWT636Atu1YAKORMA/f62gu495z6cdXcMFeAa2MZT43dvOoW+1wedhqEcrCzomk
+         Lm5s7/mwp2deND8bODeIUCNGFp7uEZdo8z20li4hL3gf7Zo4QW3srlQN6XTO+Ratoihj
+         e0ew==
+X-Forwarded-Encrypted: i=1; AJvYcCU/qc4WCgZI1FiuyJkMOEVebJTCfRvuBulltBlGwbwaoWgcb0/AsUjAAHg5iJFWAWkQChpMmLqsvepZDD6cdpi+xucq+PQkwE8ul2D953AeeSticbN55bLGfEUKwGi1+HlGCwRvh9VEnDzV+Kj5qrJgWLszdjnTCBYnj8aLZm4kLutqKioVkILY0UusdeCGuDYbTzBVIvcEgedjSSP9hZcmxA==
+X-Gm-Message-State: AOJu0YyeT0BqMB3W0W4lTBXNBc57kY790ieH7dw159JUFrFQGz/i8pYz
+	cyosswzVJOpgo4Bov+F0n6dkiU5RKhONoinRTIyZtcx1xtmNPPAC
+X-Google-Smtp-Source: AGHT+IFgGjRCDoxSg69EZFQFbC7XME7J+69ucMF12PN+7CvU7QfaaV6FrKP1iBGDQ6mg0+wAmxYHiw==
+X-Received: by 2002:a05:6871:88f:b0:21e:b98f:4501 with SMTP id r15-20020a056871088f00b0021eb98f4501mr4120324oaq.22.1708817556586;
+        Sat, 24 Feb 2024 15:32:36 -0800 (PST)
+Received: from Borg-9.local (070-114-203-196.res.spectrum.com. [70.114.203.196])
+        by smtp.gmail.com with ESMTPSA id nw15-20020a056870bb0f00b0021ebd810c92sm670213oab.41.2024.02.24.15.32.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Feb 2024 15:20:13 -0800 (PST)
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date: Sun, 25 Feb 2024 00:20:06 +0100
-Subject: [PATCH] net: usb: dm9601: fix wrong return value in
- dm9601_mdio_read
+        Sat, 24 Feb 2024 15:32:36 -0800 (PST)
+Sender: John Groves <grovesaustin@gmail.com>
+Date: Sat, 24 Feb 2024 17:32:34 -0600
+From: John Groves <John@groves.net>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
+	Dave Jiang <dave.jiang@intel.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, 
+	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, john@jagalactic.com, 
+	Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>, 
+	dave.hansen@linux.intel.com, gregory.price@memverge.com
+Subject: Re: [RFC PATCH 07/20] famfs: Add include/linux/famfs_ioctl.h
+Message-ID: <7rkmolss5vkdljnh6uksfkepklwofe3bkdsf36qhokyltjoxlx@xqgef734pidg>
+References: <cover.1708709155.git.john@groves.net>
+ <b40ca30e4bf689249a8c237909d9a7aaca9861e4.1708709155.git.john@groves.net>
+ <8f62b688-6c14-4eab-b039-7d9a112893f8@infradead.org>
+ <7onhdq4spd7mnkr5c443sbvnr7l4n34amtterg4soiey2qubyl@r2ppa6fsohnk>
+ <97cde8f6-21ed-45b9-9618-568933102f05@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240225-dm9601_ret_err-v1-1-02c1d959ea59@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAKV52mUC/x3MSwqAMAwA0atI1hbSoEK9ikiRNmoWfkhFBOndL
- S7fYuaFxCqcoK9eUL4lybEX2LqCsE77wkZiMRBSg0SNiZvr0Hrly7OqwckFF10bokUo0ak8y/M
- PhzHnD/syCglgAAAA
-To: Peter Korsgaard <peter@korsgaard.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org, linux-usb@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708816813; l=1563;
- i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=ddpbApfXPnRAvt72tIRg9a0nGvs0psYM9aIpXQBkLgY=;
- b=LQY/Y23hWUYaQe2RKybVLCRW+6QDIdyppqxDWZ0SdXIX5gWkG7IdeMab+0+8M5Cm2Up+roC8c
- 4KcWpnmHFr+CusG+Qvae0a1tmKeSIdMyytGYCZpMAv9MZlsav6wiDUn
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <97cde8f6-21ed-45b9-9618-568933102f05@infradead.org>
 
-The MII code does not check the return value of mdio_read (among
-others), and therefore no error code should be sent. A previous fix to
-the use of an uninitialized variable propagates negative error codes,
-that might lead to wrong operations by the MII library.
+On 24/02/23 07:27PM, Randy Dunlap wrote:
+> Hi John,
+> 
+> On 2/23/24 18:23, John Groves wrote:
+> >>> +
+> >>> +#define FAMFSIOC_MAGIC 'u'
+> >> This 'u' value should be documented in
+> >> Documentation/userspace-api/ioctl/ioctl-number.rst.
+> >>
+> >> and if possible, you might want to use values like 0x5x or 0x8x
+> >> that don't conflict with the ioctl numbers that are already used
+> >> in the 'u' space.
+> > Will do. I was trying to be too clever there, invoking "mu" for
+> > micron. 
+> 
+> I might have been unclear about this one.
+> It's OK to use 'u' but the values 1-4 below conflict in the 'u' space:
+> 
+> 'u'   00-1F  linux/smb_fs.h                                          gone
+> 'u'   20-3F  linux/uvcvideo.h                                        USB video class host driver
+> 'u'   40-4f  linux/udmabuf.h
+> 
+> so if you could use
+> 'u'   50-5f
+> or
+> 'u'   80-8f
+> 
+> then those conflicts wouldn't be there.
+> HTH.
+> 
+> >>> +
+> >>> +/* famfs file ioctl opcodes */
+> >>> +#define FAMFSIOC_MAP_CREATE    _IOW(FAMFSIOC_MAGIC, 1, struct famfs_ioc_map)
+> >>> +#define FAMFSIOC_MAP_GET       _IOR(FAMFSIOC_MAGIC, 2, struct famfs_ioc_map)
+> >>> +#define FAMFSIOC_MAP_GETEXT    _IOR(FAMFSIOC_MAGIC, 3, struct famfs_extent)
+> >>> +#define FAMFSIOC_NOP           _IO(FAMFSIOC_MAGIC,  4)
+> 
+> -- 
+> #Randy
 
-An example of such issues is the use of mii_nway_restart by the dm9601
-driver. The mii_nway_restart function does not check the value returned
-by mdio_read, which in this case might be a negative number which could
-contain the exact bit the function checks (BMCR_ANENABLE = 0x1000).
+Thanks Randy; I think I'm the one that didn't read carefully enough.
 
-Return zero in case of error, as it is common practice in users of
-mdio_read to avoid wrong uses of the return value.
+Does this look right?
 
-Fixes: 8f8abb863fa5 ("net: usb: dm9601: fix uninitialized variable use in dm9601_mdio_read")
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
----
- drivers/net/usb/dm9601.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
+index 457e16f06e04..44a44809657b 100644
+--- a/Documentation/userspace-api/ioctl/ioctl-number.rst
++++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+@@ -288,6 +288,7 @@ Code  Seq#    Include File                                           Comments
+ 'u'   00-1F  linux/smb_fs.h                                          gone
+ 'u'   20-3F  linux/uvcvideo.h                                        USB video class host driver
+ 'u'   40-4f  linux/udmabuf.h                                         userspace dma-buf misc device
++'u'   50-5F  linux/famfs_ioctl.h                                     famfs shared memory file system
+ 'v'   00-1F  linux/ext2_fs.h                                         conflict!
+ 'v'   00-1F  linux/fs.h                                              conflict!
+ 'v'   00-0F  linux/sonypi.h                                          conflict!
+diff --git a/include/uapi/linux/famfs_ioctl.h b/include/uapi/linux/famfs_ioctl.h
+index 6b3e6452d02f..57521898ed57 100644
+--- a/include/uapi/linux/famfs_ioctl.h
++++ b/include/uapi/linux/famfs_ioctl.h
+@@ -48,9 +48,9 @@ struct famfs_ioc_map {
+ #define FAMFSIOC_MAGIC 'u'
 
-diff --git a/drivers/net/usb/dm9601.c b/drivers/net/usb/dm9601.c
-index 99ec1d4a972d..8b6d6a1b3c2e 100644
---- a/drivers/net/usb/dm9601.c
-+++ b/drivers/net/usb/dm9601.c
-@@ -232,7 +232,7 @@ static int dm9601_mdio_read(struct net_device *netdev, int phy_id, int loc)
- 	err = dm_read_shared_word(dev, 1, loc, &res);
- 	if (err < 0) {
- 		netdev_err(dev->net, "MDIO read error: %d\n", err);
--		return err;
-+		return 0;
- 	}
- 
- 	netdev_dbg(dev->net,
+ /* famfs file ioctl opcodes */
+-#define FAMFSIOC_MAP_CREATE    _IOW(FAMFSIOC_MAGIC, 1, struct famfs_ioc_map)
+-#define FAMFSIOC_MAP_GET       _IOR(FAMFSIOC_MAGIC, 2, struct famfs_ioc_map)
+-#define FAMFSIOC_MAP_GETEXT    _IOR(FAMFSIOC_MAGIC, 3, struct famfs_extent)
+-#define FAMFSIOC_NOP           _IO(FAMFSIOC_MAGIC,  4)
++#define FAMFSIOC_MAP_CREATE    _IOW(FAMFSIOC_MAGIC, 0x50, struct famfs_ioc_map)
++#define FAMFSIOC_MAP_GET       _IOR(FAMFSIOC_MAGIC, 0x51, struct famfs_ioc_map)
++#define FAMFSIOC_MAP_GETEXT    _IOR(FAMFSIOC_MAGIC, 0x52, struct famfs_extent)
++#define FAMFSIOC_NOP           _IO(FAMFSIOC_MAGIC,  0x53)
 
----
-base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
-change-id: 20240224-dm9601_ret_err-0a9c9d95cd10
-
-Best regards,
--- 
-Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Thank you!
+John
 
 
