@@ -1,80 +1,79 @@
-Return-Path: <linux-kernel+bounces-79608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE85C8624AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:46:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E0BD8624AE
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:47:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A0E91F2202D
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:46:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5674CB21852
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:47:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8C9B40BFE;
-	Sat, 24 Feb 2024 11:45:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C72CE44362;
+	Sat, 24 Feb 2024 11:45:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MMvyNwe6"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GuVkbI/f"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04CC53E480
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 11:45:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FC2D3F9D4
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 11:45:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708775150; cv=none; b=dNC4yj914iL5WV61NcIZwGize39GEB34ogIuOZP2RcrlJw4uWLkv2K/VGcUe8LDq32R5blKJklRdZyqSrWmwnLVSnVGYkgSNhsGleGHSbaMF+aNNni37gjtiT7zhBR002tOdNnrtsF+x2LJSUxJ9N9QqdNgRvjQxL1yGPy3SbQw=
+	t=1708775152; cv=none; b=mYZ7ndDyFABaZZOzfi5d8sA4FGdAAtgpkTV3aKYCooYXF6MbTLtjIpiDZW82xStmVPgYcY1GK/mSERD1O5b/RnrayA/NOwj9KtX2lYJ9ymVqMhTq81IEdj+S3zYTefSB82W8bfAelQiilAfnmQtbUKcfUoh0L69DfVh32u/RKew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708775150; c=relaxed/simple;
-	bh=TbDZm2pwUw8Ya9qzVKpSjCAgn7dP8FU3JF75JugC5nU=;
+	s=arc-20240116; t=1708775152; c=relaxed/simple;
+	bh=LBYbJJcKNkovxCNxqMFmQnZVJ0MhhcOaMIIez5oaN/0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=uWkkoNZUJ5C4wtsvpyPSvtLpM2HxeNI3W9MC75awugB6Ql+IXqxRHJ/JJzc08AJFA8LsnOKlwIeYBeiVdvQleSNA2sPQxjQAH2tZVfW6IDHGDMIZKUgzegBJA/S0V+ZJDrEC2RJ9d9Qao/VIw+hz/nxL8S3bGVZvZoWkq1o2oSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MMvyNwe6; arc=none smtp.client-ip=209.85.208.50
+	 MIME-Version; b=KUokQgrWDc7nk5gKa6pp6vm3C8lh0VURq7Q6MvX3T2+n77k36Rp2PxyItxe38LyQAqa27JE/FdQzZ4DIFMy865VFwjdf0F6dp6VoGiLo2+/MOYqWnHO710+ORvbJz0MFf9o0kSsUvqDidWnME9T5BmY8QrtSpC0nXLhNl5YJFHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GuVkbI/f; arc=none smtp.client-ip=209.85.218.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-565b86c9943so157072a12.1
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 03:45:48 -0800 (PST)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a3e75e30d36so319555566b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 03:45:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708775147; x=1709379947; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1708775148; x=1709379948; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KS7rA/j/L/KU0dU/sRV2PuU9yP8zgIZOoE7Q38qopHQ=;
-        b=MMvyNwe6GUpxO6s0RoNG3cbLH9ak5cfjT3ha1dIGTZU2KtTPQxA5n56vXx11pImZ52
-         ACqty84BQUfr1c/58aHzOGwNWVCVnOJD7yvk7Do1VbhXaI3RnvYqw3M0PogBYeIMam4C
-         HegkGq+LN+ZRMMxDMH1MW64s1nGmczT3j38V1he4qB1gSH/vQJ4FmwpPWLuedJz/7tT4
-         uuG7gwoRaiYnBMMB5vrjgwdkuLS2qVh/p1ZTCFhjRyFL6NH2Z0WgtyJLYaKrfHpomh9H
-         AHxu+IVnMWMGEezij8iCgxJNP7r0IblJqL+TM5ihOsFM0dJDLrRGwd2+zmoYSUj178AU
-         9X0Q==
+        bh=1mR91Nlk8bU7hN1mKQvT/jofMFqB5jMPs1+IzmpRfSw=;
+        b=GuVkbI/fjSAXY/O+/Wkp5ShwKRPx8j2PanpK8m/lK8FLdfR93EAlF5oC75ss2vKKyL
+         Atx5DiHRPqS5MGcqgVgchZbAzDpvEy7a7RfO3CcfMhXUiVrtSjwkWzu4Z28KnPOYLN+h
+         xlKnuNxkC7dsfrSJ1PDjO6X+96mO3PzZOPgzSgJJkTpecIVDWpVHZVabYIEwPjxwMV7U
+         /XM2DTIjaez9ynCn34LB6mErhRkJpxGLrv45/P4auRcYaFhHDSK5f5A0qzfbQWA8o0mR
+         6bs7q04auqpN8/LYSFQhRd6RK+R12OJ7uhDT0O/70yR9+WxCVVOIBb8kw275Ew3JJn2p
+         Xydg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708775147; x=1709379947;
+        d=1e100.net; s=20230601; t=1708775148; x=1709379948;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KS7rA/j/L/KU0dU/sRV2PuU9yP8zgIZOoE7Q38qopHQ=;
-        b=vuAtTplW2I4KkuN6XzA0w4Tr4uOJcRa8M4uxlZu+sKvVYVJOISCQWkCr3piFlUiHhX
-         VFgUgRqmYzbpyLVu11TUJuUzizohU6pZi691NtYDkrMn/RgY7dfqvkY6nfE7NHLwN/hW
-         3fsEKr63EcB/hwoeVTyQP2BNKZe6IZ9zdpSJCZSCl5mJy5EUbbUhrE9zYtziyoO6NAI7
-         2IqII6/YYyV+ON0EUMAWrLlOPqK7+J36WMYbngQ/fvxPsXKVyXGiIb+1XNSJCQ5/kTkV
-         SooJtbhk5bg0AF9/zCxyEBVgG8ULmtptLudAYLgjZNvoQ0t54/oLpUf4fjQ/RM6eyoCe
-         DoDA==
-X-Gm-Message-State: AOJu0YzuvPNjvazUgZ5FK0n4oYtsniRPJNX0KZ+bdUIxwRH7DhcgiAHG
-	42SGuJZDz1KhKFgg0C+vcMmXxCF5l5PVxnmFne5N+8aVnYiokAzX0LSMQFeb6r7U7DvsbUMNYUk
-	E
-X-Google-Smtp-Source: AGHT+IGGXp7l/I31C/VlsYaCuo5sbMZaFSqsucSFLKG3ppQpFIuibVZOVuOe1ukRwXSBIUYD7QtGnw==
-X-Received: by 2002:a17:907:208f:b0:a3f:421:26a5 with SMTP id pv15-20020a170907208f00b00a3f042126a5mr2049003ejb.12.1708775147368;
-        Sat, 24 Feb 2024 03:45:47 -0800 (PST)
+        bh=1mR91Nlk8bU7hN1mKQvT/jofMFqB5jMPs1+IzmpRfSw=;
+        b=UKDLN0g2Z9gFxA/tBZHZR7uQj0Gc22GWV5KXZzacumKJ15VA0gnNbKjAN7cNBPHl1z
+         Isj5oPRYvJGlIuZVoDVgR4rfQw98ejlRm+uO4h8dd9vOabjYmPA1ZYBZfGNtW+0BdSE2
+         h0kJsUlVHEKuOJsGmkfDSEFPkqYLlbfg/5Q31HwqiTTfAHLfcrlPWA0IyIP4ZoZ658gR
+         5kTaqwC4JQbIAzteuq/hQLpygGTAJdN7J0sLGzY2nrURglV4KG3lrGp0NFnQ2lchUZv4
+         WoqIN8CRxGI7CDwSjpbUTQRXZQwdtUwoqIhg3Dy1W+UHRnjx7+0qY+PDHYpCyH/Les+4
+         470A==
+X-Gm-Message-State: AOJu0YwufAth07UWmM3NIWYZ2k/xEk+6fkLefgDVjxj8D7JEP+azwiGL
+	Cr6y8gdHEFCyuuDdpLdJz5ADZPYs057ZwujzhHhS8b0IMcqZxeVGdxcBDNr4uyo=
+X-Google-Smtp-Source: AGHT+IGjxNzgWdBFt5aeuD4+4+BjQWvnRAhU55i8TgSI08FiXYgOuTbPsxjtLH6gFKSzuTkeVMItVw==
+X-Received: by 2002:a17:906:718d:b0:a3f:8dea:85f7 with SMTP id h13-20020a170906718d00b00a3f8dea85f7mr1958294ejk.15.1708775148504;
+        Sat, 24 Feb 2024 03:45:48 -0800 (PST)
 Received: from localhost.localdomain (82-132-212-111.dab.02.net. [82.132.212.111])
-        by smtp.gmail.com with ESMTPSA id jp10-20020a170906f74a00b00a3e209b225asm517826ejb.43.2024.02.24.03.45.46
+        by smtp.gmail.com with ESMTPSA id jp10-20020a170906f74a00b00a3e209b225asm517826ejb.43.2024.02.24.03.45.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Feb 2024 03:45:46 -0800 (PST)
+        Sat, 24 Feb 2024 03:45:48 -0800 (PST)
 From: srinivas.kandagatla@linaro.org
 To: gregkh@linuxfoundation.org
 Cc: linux-kernel@vger.kernel.org,
 	Praveen Teja Kundanala <praveen.teja.kundanala@amd.com>,
-	Michal Simek <michal.simek@amd.com>,
+	Kalyani Akula <Kalyani.akula@amd.com>,
 	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 05/11] firmware: xilinx: Add ZynqMP efuse access API
-Date: Sat, 24 Feb 2024 11:45:10 +0000
-Message-Id: <20240224114516.86365-6-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 06/11] nvmem: zynqmp_nvmem: zynqmp_nvmem_probe cleanup
+Date: Sat, 24 Feb 2024 11:45:11 +0000
+Message-Id: <20240224114516.86365-7-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240224114516.86365-1-srinivas.kandagatla@linaro.org>
 References: <20240224114516.86365-1-srinivas.kandagatla@linaro.org>
@@ -84,106 +83,104 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3247; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=ztYMB5wlPQ7riX2muOA67ef80NdW44Fd2iBr8KYguME=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBl2dbLlGDOcJPROfJzSEXMs0DTxp5duuzEnVdNw 2oaDOxR3vmJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZdnWywAKCRB6of1ZxzRV N6JzCAC3GZfAyTzAGLMBlClY2F68xTQYaHOEYMk2pdwdLlXg4VySFjldXzkgZ8BGVNtpSOePFAu C9UJx+VSfM2w89AvpgywCzWhdC7hBipyZ3g6OKEsxWOgfJaC3gYc9LqqIH+LBgE/zRkS0ITfdUr FrZzBzyO/zY5rbopj25K4lNhn20QBalmqZF8QSVLyrNGI0tb3xJLMEcV2YdN/qD6woC6WSbjPAA yrX3EBy6/QLd95BCMva9HBTxh1DYyyb9saHTJ4nlmHdXnyeWvy5Gaowf21ugUA5R93/ySJ5Dz6W gFrLTJDRD4r0wq+IJvND3MaqeH0px4JoDhW/PmQIjIgNinwc
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2643; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=P2cGF0VtfcCt36gLWA03f5z+B2HP6m3MQtEOR09ei5k=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBl2dbLtUXHVO3V0pwG/elzGVXwkjhsvd+/Oq7tJ sXVBhpvAyeJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZdnWywAKCRB6of1ZxzRV N9SQB/4v0TpoIJ/h4H9frZHRj07Cv7m/Xs4KHhUbSNlOiTTOqlDYYFwliOI5GYjjEbFAiPZI8ce k/wToFqt2g88Ezdg1SB9soMp+tQEvJ3vqSkCFTm7vqUFZcBL52mVbh42O+HK0JTrLkUsDqTuYN8 3F+ljhIIXWfx6pim4kXdR1rXv9HBrIUkajLy/4tToHCgmz9HpmcvEOp6U8gA96duF8M54LTxEly klKtR5hqwaZCX21dy8owqvYwfcK6pzBAQBBn+xuwcu/XZA7hNc2PoX6OrBPtspaBFHH9Gbg/0Sr 0L0/CVx2v7Y9wDaDTTgmHCWXGW7YzSKS1uTQiCSNYPAikHOS
 X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp; fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
 Content-Transfer-Encoding: 8bit
 
 From: Praveen Teja Kundanala <praveen.teja.kundanala@amd.com>
 
-Add zynqmp_pm_efuse_access API in the ZynqMP
-firmware for read/write access of efuse memory.
+- Remove static nvmem_config declaration
+- Remove zynqmp_nvmem_data
 
 Signed-off-by: Praveen Teja Kundanala <praveen.teja.kundanala@amd.com>
-Acked-by: Michal Simek <michal.simek@amd.com>
+Acked-by: Kalyani Akula <Kalyani.akula@amd.com>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/firmware/xilinx/zynqmp.c     | 25 +++++++++++++++++++++++++
- include/linux/firmware/xlnx-zynqmp.h |  8 ++++++++
- 2 files changed, 33 insertions(+)
+ drivers/nvmem/zynqmp_nvmem.c | 37 ++++++++++++------------------------
+ 1 file changed, 12 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
-index 79789f0563f6..9bc45357e1a8 100644
---- a/drivers/firmware/xilinx/zynqmp.c
-+++ b/drivers/firmware/xilinx/zynqmp.c
-@@ -3,6 +3,7 @@
-  * Xilinx Zynq MPSoC Firmware layer
-  *
-  *  Copyright (C) 2014-2022 Xilinx, Inc.
-+ *  Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
-  *
-  *  Michal Simek <michal.simek@amd.com>
-  *  Davorin Mista <davorin.mista@aggios.com>
-@@ -1384,6 +1385,30 @@ int zynqmp_pm_aes_engine(const u64 address, u32 *out)
- }
- EXPORT_SYMBOL_GPL(zynqmp_pm_aes_engine);
+diff --git a/drivers/nvmem/zynqmp_nvmem.c b/drivers/nvmem/zynqmp_nvmem.c
+index 7f15aa89a9d0..391d8e88b270 100644
+--- a/drivers/nvmem/zynqmp_nvmem.c
++++ b/drivers/nvmem/zynqmp_nvmem.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+  * Copyright (C) 2019 Xilinx, Inc.
++ * Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
+  */
  
-+/**
-+ * zynqmp_pm_efuse_access - Provides access to efuse memory.
-+ * @address:	Address of the efuse params structure
-+ * @out:		Returned output value
-+ *
-+ * Return:	Returns status, either success or error code.
-+ */
-+int zynqmp_pm_efuse_access(const u64 address, u32 *out)
-+{
-+	u32 ret_payload[PAYLOAD_ARG_CNT];
-+	int ret;
-+
-+	if (!out)
-+		return -EINVAL;
-+
-+	ret = zynqmp_pm_invoke_fn(PM_EFUSE_ACCESS, ret_payload, 2,
-+				  upper_32_bits(address),
-+				  lower_32_bits(address));
-+	*out = ret_payload[1];
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(zynqmp_pm_efuse_access);
-+
- /**
-  * zynqmp_pm_sha_hash - Access the SHA engine to calculate the hash
-  * @address:	Address of the data/ Address of output buffer where
-diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
-index 9a7e52739251..1a069a56c961 100644
---- a/include/linux/firmware/xlnx-zynqmp.h
-+++ b/include/linux/firmware/xlnx-zynqmp.h
-@@ -3,6 +3,7 @@
-  * Xilinx Zynq MPSoC Firmware layer
-  *
-  *  Copyright (C) 2014-2021 Xilinx
-+ *  Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
-  *
-  *  Michal Simek <michal.simek@amd.com>
-  *  Davorin Mista <davorin.mista@aggios.com>
-@@ -171,6 +172,7 @@ enum pm_api_id {
- 	PM_CLOCK_GETPARENT = 44,
- 	PM_FPGA_READ = 46,
- 	PM_SECURE_AES = 47,
-+	PM_EFUSE_ACCESS = 53,
- 	PM_FEATURE_CHECK = 63,
- };
+ #include <linux/module.h>
+@@ -11,36 +12,25 @@
  
-@@ -562,6 +564,7 @@ int zynqmp_pm_set_requirement(const u32 node, const u32 capabilities,
- 			      const u32 qos,
- 			      const enum zynqmp_pm_request_ack ack);
- int zynqmp_pm_aes_engine(const u64 address, u32 *out);
-+int zynqmp_pm_efuse_access(const u64 address, u32 *out);
- int zynqmp_pm_sha_hash(const u64 address, const u32 size, const u32 flags);
- int zynqmp_pm_fpga_load(const u64 address, const u32 size, const u32 flags);
- int zynqmp_pm_fpga_get_status(u32 *value);
-@@ -749,6 +752,11 @@ static inline int zynqmp_pm_aes_engine(const u64 address, u32 *out)
- 	return -ENODEV;
- }
+ #define SILICON_REVISION_MASK 0xF
  
-+static inline int zynqmp_pm_efuse_access(const u64 address, u32 *out)
-+{
-+	return -ENODEV;
-+}
-+
- static inline int zynqmp_pm_sha_hash(const u64 address, const u32 size,
- 				     const u32 flags)
+-struct zynqmp_nvmem_data {
+-	struct device *dev;
+-	struct nvmem_device *nvmem;
+-};
+ 
+ static int zynqmp_nvmem_read(void *context, unsigned int offset,
+ 			     void *val, size_t bytes)
  {
++	struct device *dev = context;
+ 	int ret;
+-	int idcode, version;
+-	struct zynqmp_nvmem_data *priv = context;
++	int idcode;
++	int version;
+ 
+ 	ret = zynqmp_pm_get_chipid(&idcode, &version);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	dev_dbg(priv->dev, "Read chipid val %x %x\n", idcode, version);
++	dev_dbg(dev, "Read chipid val %x %x\n", idcode, version);
+ 	*(int *)val = version & SILICON_REVISION_MASK;
+ 
+ 	return 0;
+ }
+ 
+-static struct nvmem_config econfig = {
+-	.name = "zynqmp-nvmem",
+-	.owner = THIS_MODULE,
+-	.word_size = 1,
+-	.size = 1,
+-	.read_only = true,
+-};
+-
+ static const struct of_device_id zynqmp_nvmem_match[] = {
+ 	{ .compatible = "xlnx,zynqmp-nvmem-fw", },
+ 	{ /* sentinel */ },
+@@ -50,21 +40,18 @@ MODULE_DEVICE_TABLE(of, zynqmp_nvmem_match);
+ static int zynqmp_nvmem_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+-	struct zynqmp_nvmem_data *priv;
++	struct nvmem_config econfig = {};
+ 
+-	priv = devm_kzalloc(dev, sizeof(struct zynqmp_nvmem_data), GFP_KERNEL);
+-	if (!priv)
+-		return -ENOMEM;
+-
+-	priv->dev = dev;
++	econfig.name = "zynqmp-nvmem";
++	econfig.owner = THIS_MODULE;
++	econfig.word_size = 1;
++	econfig.size = 1;
+ 	econfig.dev = dev;
+ 	econfig.add_legacy_fixed_of_cells = true;
++	econfig.read_only = true;
+ 	econfig.reg_read = zynqmp_nvmem_read;
+-	econfig.priv = priv;
+-
+-	priv->nvmem = devm_nvmem_register(dev, &econfig);
+ 
+-	return PTR_ERR_OR_ZERO(priv->nvmem);
++	return PTR_ERR_OR_ZERO(devm_nvmem_register(dev, &econfig));
+ }
+ 
+ static struct platform_driver zynqmp_nvmem_driver = {
 -- 
 2.25.1
 
