@@ -1,229 +1,153 @@
-Return-Path: <linux-kernel+bounces-79430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79431-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2510C86221A
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:58:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4303C862221
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:59:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7E0D1C24EF9
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:58:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 668F11C24E8C
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:59:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AB4ED52A;
-	Sat, 24 Feb 2024 01:58:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CF98E559;
+	Sat, 24 Feb 2024 01:59:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="38R61QQb"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zntyXLY0"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03E18BA2D
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 01:58:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A773ADDA5
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 01:59:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708739887; cv=none; b=qgCoS8CZkIkVFfaJAtU9wK3DbkMmHT/bIngRe2mUtsqZyKcqZ4ZFWlj7BWbKssMTSmDc6vBPCXXAnuGJSfJG3FCw3mITC/tzZS8vmazHz3aGF5+/b8PqllplJJbUnSUsDm8sD7nqJSiIlku8kXZzZpKVDEJO8/313LQUd+fFm/w=
+	t=1708739982; cv=none; b=jiSis0Is0kbww2klns01ts7GIyw9C8MLQf+5/rVgGYlMN+lkBPPojX3WP0lV+huF8Q2OMAT1ZAohMLwVXTz5q5yC78fusfOa/l63ejMX2b8pGn0b0pjEs7CYiqIhehDDtKU7/GtvjY3EfQ6gTRpnjGFLIwcYITBeN4BEFPgG6zQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708739887; c=relaxed/simple;
-	bh=N6DyOMTvel8vbAFMjgcPbdhcWu1jczGqyPQOF1LJJKQ=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=IwfYA2o/XDW/6LxRr4kcZX3WFGUQzcwau42PefBrlc+aWAAVRVqXBVFXEMJS7mzJEZ1uBqXl6x9d+aFpwEJKL73orwDY8y7S4MMF8B6R7YiUN1oBfSLUT7ugcd3auWBVMfY4ktwgbYSIvBVMyI4o/1G1VJ9aEVMrKHH0Mb6051w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=38R61QQb; arc=none smtp.client-ip=209.85.128.202
+	s=arc-20240116; t=1708739982; c=relaxed/simple;
+	bh=T+a2SRS9CYU21NdR/LXMyfpfOaFxGBggdHbbvAXJGNw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cqaZ52BV4sBSXRt4S4XPObhZv3hggS82LB6faSQ5urPudKNeB78xXjbIhpjfGb7VmR/lizdwnZ9Kl4ePg3UHQwuwwo4OivsjllhliGkLkui/MrP7LmNYfbOS+Mj7Uev+yn209/CiZTgRy3/ot6L4jwC1BH6NyB5nMDVTRWwU4+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zntyXLY0; arc=none smtp.client-ip=209.85.219.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-608d2cffc7eso1685397b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 17:58:05 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc6e080c1f0so1007422276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 17:59:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708739885; x=1709344685; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OxJAE1uSiuAHKlkfqA5vMwgno+A6UVTMYqvcjH6/eSk=;
-        b=38R61QQbnd3A69HdlIOrSe5OzLKU59RjRJHKp6814X22WrgVGb6Zd4SIAv3wE/rpXo
-         a4d4bUQUeTJ4mn0Y8OB1eJP1J64Yt8ipxpFiHo+oMaZHVS9y28/Sw8E4vKGKr9IKhgdm
-         +AA/gnDtlHhEqjzS0z70nCjyC7auJmDZaR7kG2GDHz/qQMht9FEe5cMHQYb+0BT3557J
-         Zr7NOACBbRBA5m4uUnf5Swed600s1SgbHWZlB6/NQZEeZddV2LKJ3XmWfkOuwsxo6EQR
-         qVMTlH8xEYNOjrcYNXHOX6NBqrlhQt0OjLlkihn0/0+YGBjI0gHiyVjwMYpogKr5Eds9
-         2v5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708739885; x=1709344685;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1708739979; x=1709344779; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OxJAE1uSiuAHKlkfqA5vMwgno+A6UVTMYqvcjH6/eSk=;
-        b=r0lvZA5CfdyyEg8wCpb6xcWvKAh5S9NWHP1Yayp04xDVHnwmjus/bOuREHBrLUDElr
-         dIwb+utF8NRInd2+SsZa+rhVExMILlhQqtwiWuFTNPhrxqIDpFfeke6PM0yo3Svm5WBP
-         xh8COY0JVsqtTxl6eT/gBtw+wPEQpHrJJQcNUxIGo/Qf5HPukcu6IcXZCrA+XaImujh3
-         TbUmTGkiL5MucyC4+5/B9fXLlZVx1Q/WsX6gL5fuaNCFjshGyg1Ff9vYZQ/ps/N2iKdE
-         DbVDCik6DMIIbdGLHmeIOU/XqSTyVG+krp7IrMdBsXFP+I1mbdYzdcyucsIiaaA4TIsI
-         ACTg==
-X-Forwarded-Encrypted: i=1; AJvYcCVIR8f1asG+Dv1X/KILguGRZG8PoHlJ9keyDx1WR7ZMT7jbScIHYKBsjf69J+8/KgPyg5whHD+xzvTh3m7L+xfpzk+L+KB3D2EE6dQc
-X-Gm-Message-State: AOJu0Yyjfv0CoDiya+lk9f8rpAuN6TuxVnRM4jk1Z6PLLM979uOTDgDs
-	jCSUWdNSq+OHayesOSzemOnNScdlD+JGdxNRtRxilLsK1PSc6x7jzEWQ9Xn7cuZwHSPJOhiSabh
-	/+A==
-X-Google-Smtp-Source: AGHT+IGtBbMVCifF1ia9ZEGs0SLu3LluxNX6gDLjJVev8hxlcSexXU2441mZZZig36JIPLE066jJNPvrMc0=
-X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:77e1:98cf:e33c:dd99])
- (user=surenb job=sendgmr) by 2002:a0d:d98f:0:b0:607:b85e:5a92 with SMTP id
- b137-20020a0dd98f000000b00607b85e5a92mr335723ywe.5.1708739884991; Fri, 23 Feb
- 2024 17:58:04 -0800 (PST)
-Date: Fri, 23 Feb 2024 17:58:00 -0800
+        bh=T+a2SRS9CYU21NdR/LXMyfpfOaFxGBggdHbbvAXJGNw=;
+        b=zntyXLY0prDLuWUAhvw7ixaIAkbzjzN//FBBd3O1inJndHdJNJMleIJeV7pmILIE3j
+         H1sZwAVtjmK4UL17vQLGrErXQgtH9PEo56eebJxhiRdq5oKHMvaMmWnyndxXsxaPDXpP
+         B0G+/TPLtQdYA+tqWpY1HLN0IUBPlHROJ6oEHXFr4bBEs5NbLPiYkVxGTthTCwdI89AD
+         BsSQ+baqISaQvSdgEpLz+sjf7DYzOqk9VgIBOYVwAc0IiEDMsCy1yTyDzz4GGOko2bpL
+         LXdoK1umc4qmBuz/eYU/H3495v3656CSywMDPyRHm/YcM7FljiuX4s/TNoB7YqCFRu8+
+         lwmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708739979; x=1709344779;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=T+a2SRS9CYU21NdR/LXMyfpfOaFxGBggdHbbvAXJGNw=;
+        b=rTPpCAS0XC2jXbnErotUkbEP4m59tf3XjzBfGLr2M3WtgOFj82Bv0JGOU88JDKeXG3
+         aquoZU6OVs4if8Thsa6utlAUaGlBvRaZ5h3nW8d03/s9kz6IZ1xNkLMuOL4bW4FKuYeO
+         3KzrKQX2jEol/NpsRdFy5xJcT7hzJx8/v8jvOyDLJEs81UroEUEJUDgVvuC6+UVvQ4D0
+         xfGFVJij4mXIphF/o/3/Pk7pB4qbpJgWNcGPMJKnA5i9JmUW//PiUL/FfkJRRkY5b5Wh
+         dj7Ng516O5NI6il9bNfncQwnDRajdGYHsGDv/UMw9T2E8kfOtne+4tZoJ5D9+l+LEzHr
+         GArg==
+X-Forwarded-Encrypted: i=1; AJvYcCXGssQX/kzivWt73Rjm/ul7jT1ezK9rdLmTJpIGMgvrlyqU9k0NTUNGw3z20nkXX/n9gjB7v4UX2Th8GH4K69aR7uGCBtru4Jo/JuZt
+X-Gm-Message-State: AOJu0YyRmNKzasuU0zqHwIzo9pFhR0VtonqZrVV4/KFyTv93KLC5IxbL
+	MWfvfCTI70o5YFGc6P8ZTuVDN9VQvCzTC01DLf2iM2yawTxl0RymOtRW3OJaJDdmSWe66ucsgG2
+	KNxncfaLUpGBLqz5EQZNNfkSVfbJT86u95nfk
+X-Google-Smtp-Source: AGHT+IE96gofthBIDY1zcxV1fCC6ZYb0ubhfQdxrWxQDA5xXy9sf7lsJXU+uVwoyJAnzh9d/485wU5tc9VrVgvYEwvY=
+X-Received: by 2002:a25:aa67:0:b0:dcc:b69c:12e1 with SMTP id
+ s94-20020a25aa67000000b00dccb69c12e1mr1515692ybi.59.1708739979162; Fri, 23
+ Feb 2024 17:59:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <20240224015800.2569851-1-surenb@google.com>
-Subject: [PATCH v5 1/1] mm: enumerate all gfp flags
+MIME-Version: 1.0
+References: <20240221194052.927623-1-surenb@google.com> <20240221194052.927623-7-surenb@google.com>
+ <Zdc6LUWnPOBRmtZH@tiehlicka> <20240222132410.6e1a2599@meshulam.tesarici.cz> <CAJuCfpGNoMa4G3o_us+Pn2wvAKxA2L=7WEif2xHT7tR76Mbw5g@mail.gmail.com>
+In-Reply-To: <CAJuCfpGNoMa4G3o_us+Pn2wvAKxA2L=7WEif2xHT7tR76Mbw5g@mail.gmail.com>
 From: Suren Baghdasaryan <surenb@google.com>
-To: akpm@linux-foundation.org
-Cc: kent.overstreet@linux.dev, petr@tesarici.cz, keescook@chromium.org, 
-	pasha.tatashin@soleen.com, mhocko@suse.com, surenb@google.com, 
-	kernel-team@android.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Date: Fri, 23 Feb 2024 17:59:26 -0800
+Message-ID: <CAJuCfpHY1T2jCCitt7cufKSeXP7zhh_f9gVN0UNZoOQz1cNBjw@mail.gmail.com>
+Subject: Re: [PATCH v4 06/36] mm: enumerate all gfp flags
+To: =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>
+Cc: Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org, kent.overstreet@linux.dev, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Introduce GFP bits enumeration to let compiler track the number of used
-bits (which depends on the config options) instead of hardcoding them.
-That simplifies __GFP_BITS_SHIFT calculation.
+On Fri, Feb 23, 2024 at 11:26=E2=80=AFAM Suren Baghdasaryan <surenb@google.=
+com> wrote:
+>
+> On Thu, Feb 22, 2024 at 4:24=E2=80=AFAM 'Petr Tesa=C5=99=C3=ADk' via kern=
+el-team
+> <kernel-team@android.com> wrote:
+> >
+> > On Thu, 22 Feb 2024 13:12:29 +0100
+> > Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > > On Wed 21-02-24 11:40:19, Suren Baghdasaryan wrote:
+> > > > Introduce GFP bits enumeration to let compiler track the number of =
+used
+> > > > bits (which depends on the config options) instead of hardcoding th=
+em.
+> > > > That simplifies __GFP_BITS_SHIFT calculation.
+> > > >
+> > > > Suggested-by: Petr Tesa=C5=99=C3=ADk <petr@tesarici.cz>
+> > > > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > > > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > >
+> > > I thought I have responded to this patch but obviously not the case.
+> > > I like this change. Makes sense even without the rest of the series.
+> > > Acked-by: Michal Hocko <mhocko@suse.com>
+> >
+> > Thank you, Michal. I also hope it can be merged without waiting for the
+> > rest of the series.
+>
+> Thanks Michal! I can post it separately. With the Ack I don't think it
+> will delay the rest of the series.
 
-Suggested-by: Petr Tesa=C5=99=C3=ADk <petr@tesarici.cz>
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
----
-Changes from v4 [1]:
-- Split from the series [2] as a stand-alone patch, per Michal Hocko
-- Added Reviewed-by, per Pasha Tatashin
-- Added Acked-by, per Michal Hocko
+Stand-alone version is posted as v5 here:
+https://lore.kernel.org/all/20240224015800.2569851-1-surenb@google.com/
 
-[1] https://lore.kernel.org/all/20240221194052.927623-7-surenb@google.com/
-[2] https://lore.kernel.org/all/20240221194052.927623-1-surenb@google.com/
-
- include/linux/gfp_types.h | 90 +++++++++++++++++++++++++++------------
- 1 file changed, 62 insertions(+), 28 deletions(-)
-
-diff --git a/include/linux/gfp_types.h b/include/linux/gfp_types.h
-index 1b6053da8754..868c8fb1bbc1 100644
---- a/include/linux/gfp_types.h
-+++ b/include/linux/gfp_types.h
-@@ -21,44 +21,78 @@ typedef unsigned int __bitwise gfp_t;
-  * include/trace/events/mmflags.h and tools/perf/builtin-kmem.c
-  */
-=20
-+enum {
-+	___GFP_DMA_BIT,
-+	___GFP_HIGHMEM_BIT,
-+	___GFP_DMA32_BIT,
-+	___GFP_MOVABLE_BIT,
-+	___GFP_RECLAIMABLE_BIT,
-+	___GFP_HIGH_BIT,
-+	___GFP_IO_BIT,
-+	___GFP_FS_BIT,
-+	___GFP_ZERO_BIT,
-+	___GFP_UNUSED_BIT,	/* 0x200u unused */
-+	___GFP_DIRECT_RECLAIM_BIT,
-+	___GFP_KSWAPD_RECLAIM_BIT,
-+	___GFP_WRITE_BIT,
-+	___GFP_NOWARN_BIT,
-+	___GFP_RETRY_MAYFAIL_BIT,
-+	___GFP_NOFAIL_BIT,
-+	___GFP_NORETRY_BIT,
-+	___GFP_MEMALLOC_BIT,
-+	___GFP_COMP_BIT,
-+	___GFP_NOMEMALLOC_BIT,
-+	___GFP_HARDWALL_BIT,
-+	___GFP_THISNODE_BIT,
-+	___GFP_ACCOUNT_BIT,
-+	___GFP_ZEROTAGS_BIT,
-+#ifdef CONFIG_KASAN_HW_TAGS
-+	___GFP_SKIP_ZERO_BIT,
-+	___GFP_SKIP_KASAN_BIT,
-+#endif
-+#ifdef CONFIG_LOCKDEP
-+	___GFP_NOLOCKDEP_BIT,
-+#endif
-+	___GFP_LAST_BIT
-+};
-+
- /* Plain integer GFP bitmasks. Do not use this directly. */
--#define ___GFP_DMA		0x01u
--#define ___GFP_HIGHMEM		0x02u
--#define ___GFP_DMA32		0x04u
--#define ___GFP_MOVABLE		0x08u
--#define ___GFP_RECLAIMABLE	0x10u
--#define ___GFP_HIGH		0x20u
--#define ___GFP_IO		0x40u
--#define ___GFP_FS		0x80u
--#define ___GFP_ZERO		0x100u
-+#define ___GFP_DMA		BIT(___GFP_DMA_BIT)
-+#define ___GFP_HIGHMEM		BIT(___GFP_HIGHMEM_BIT)
-+#define ___GFP_DMA32		BIT(___GFP_DMA32_BIT)
-+#define ___GFP_MOVABLE		BIT(___GFP_MOVABLE_BIT)
-+#define ___GFP_RECLAIMABLE	BIT(___GFP_RECLAIMABLE_BIT)
-+#define ___GFP_HIGH		BIT(___GFP_HIGH_BIT)
-+#define ___GFP_IO		BIT(___GFP_IO_BIT)
-+#define ___GFP_FS		BIT(___GFP_FS_BIT)
-+#define ___GFP_ZERO		BIT(___GFP_ZERO_BIT)
- /* 0x200u unused */
--#define ___GFP_DIRECT_RECLAIM	0x400u
--#define ___GFP_KSWAPD_RECLAIM	0x800u
--#define ___GFP_WRITE		0x1000u
--#define ___GFP_NOWARN		0x2000u
--#define ___GFP_RETRY_MAYFAIL	0x4000u
--#define ___GFP_NOFAIL		0x8000u
--#define ___GFP_NORETRY		0x10000u
--#define ___GFP_MEMALLOC		0x20000u
--#define ___GFP_COMP		0x40000u
--#define ___GFP_NOMEMALLOC	0x80000u
--#define ___GFP_HARDWALL		0x100000u
--#define ___GFP_THISNODE		0x200000u
--#define ___GFP_ACCOUNT		0x400000u
--#define ___GFP_ZEROTAGS		0x800000u
-+#define ___GFP_DIRECT_RECLAIM	BIT(___GFP_DIRECT_RECLAIM_BIT)
-+#define ___GFP_KSWAPD_RECLAIM	BIT(___GFP_KSWAPD_RECLAIM_BIT)
-+#define ___GFP_WRITE		BIT(___GFP_WRITE_BIT)
-+#define ___GFP_NOWARN		BIT(___GFP_NOWARN_BIT)
-+#define ___GFP_RETRY_MAYFAIL	BIT(___GFP_RETRY_MAYFAIL_BIT)
-+#define ___GFP_NOFAIL		BIT(___GFP_NOFAIL_BIT)
-+#define ___GFP_NORETRY		BIT(___GFP_NORETRY_BIT)
-+#define ___GFP_MEMALLOC		BIT(___GFP_MEMALLOC_BIT)
-+#define ___GFP_COMP		BIT(___GFP_COMP_BIT)
-+#define ___GFP_NOMEMALLOC	BIT(___GFP_NOMEMALLOC_BIT)
-+#define ___GFP_HARDWALL		BIT(___GFP_HARDWALL_BIT)
-+#define ___GFP_THISNODE		BIT(___GFP_THISNODE_BIT)
-+#define ___GFP_ACCOUNT		BIT(___GFP_ACCOUNT_BIT)
-+#define ___GFP_ZEROTAGS		BIT(___GFP_ZEROTAGS_BIT)
- #ifdef CONFIG_KASAN_HW_TAGS
--#define ___GFP_SKIP_ZERO	0x1000000u
--#define ___GFP_SKIP_KASAN	0x2000000u
-+#define ___GFP_SKIP_ZERO	BIT(___GFP_SKIP_ZERO_BIT)
-+#define ___GFP_SKIP_KASAN	BIT(___GFP_SKIP_KASAN_BIT)
- #else
- #define ___GFP_SKIP_ZERO	0
- #define ___GFP_SKIP_KASAN	0
- #endif
- #ifdef CONFIG_LOCKDEP
--#define ___GFP_NOLOCKDEP	0x4000000u
-+#define ___GFP_NOLOCKDEP	BIT(___GFP_NOLOCKDEP_BIT)
- #else
- #define ___GFP_NOLOCKDEP	0
- #endif
--/* If the above are modified, __GFP_BITS_SHIFT may need updating */
-=20
- /*
-  * Physical address zone modifiers (see linux/mmzone.h - low four bits)
-@@ -249,7 +283,7 @@ typedef unsigned int __bitwise gfp_t;
- #define __GFP_NOLOCKDEP ((__force gfp_t)___GFP_NOLOCKDEP)
-=20
- /* Room for N __GFP_FOO bits */
--#define __GFP_BITS_SHIFT (26 + IS_ENABLED(CONFIG_LOCKDEP))
-+#define __GFP_BITS_SHIFT ___GFP_LAST_BIT
- #define __GFP_BITS_MASK ((__force gfp_t)((1 << __GFP_BITS_SHIFT) - 1))
-=20
- /**
-
-base-commit: 603c04e27c3e9891ce7afa5cd6b496bfacff4206
---=20
-2.44.0.rc0.258.g7320e95886-goog
-
+> Thanks,
+> Suren.
+>
+> >
+> > Petr T
+> >
+> > --
+> > To unsubscribe from this group and stop receiving emails from it, send =
+an email to kernel-team+unsubscribe@android.com.
+> >
 
