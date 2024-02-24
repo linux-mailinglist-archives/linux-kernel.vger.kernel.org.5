@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-79875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B902E8627D8
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 22:36:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2EE68627D9
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 22:36:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49998B2194F
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 21:36:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CA20281D94
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 21:36:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BDC354F8C;
-	Sat, 24 Feb 2024 21:33:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B24E4D58A;
+	Sat, 24 Feb 2024 21:33:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fmleCXU/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NRqOpcrv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACFE250A80;
-	Sat, 24 Feb 2024 21:33:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBDFA53391;
+	Sat, 24 Feb 2024 21:33:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708810396; cv=none; b=ExKASN0BXIa+LfIXh5zsCNFT8TLFNSuBslXYsI0K8Beb923pm+qhydxjSPOo0vjbQRw30KRMx8C2l6uSI2fZaxyQm4lVhYNtOoaOb8O3byWxdkea1k1epXxbsOFqNnjPNem8sNkBw28kOnN+tpEFKEcAnv3KrRZqZ/cb4M+pDH8=
+	t=1708810398; cv=none; b=aMkigSyh8pHm8MBaTQLtoGfU88pXejJK5wtU/fh7I/DOYs46bDH4gRiOH4QVW/24zXGHsOJlK54m3xc+PiOXv4zj6i7CpFGVwDb8LsWdfllSBRF+Ga0Xor3/LucovKjELDLs5n2x84E6drP9jqB2pa9vtVtvpWzo8KiV29+gjBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708810396; c=relaxed/simple;
-	bh=4k5fPYp42gH3QLf+/maLO3ezxAAlAX85NAtYohge+G8=;
+	s=arc-20240116; t=1708810398; c=relaxed/simple;
+	bh=JzqwkQRLgk7k3EhjNENSRph/tpijOyPkAp/qgI/FbTw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CLOdr6QOjBjlsiWW6H40owcSQXEsYhggJPXx5ipj3p/X/tWNF0m4aqeiOKLLSg51ApCWACTZxRtMfZLr7F58TgKNp/ERVfRQVoWvkzbMjREt3kgGm2TEX1UExMDUKYYeg7Td+Ax6SoIK2GB8gFPMkS0tfzV0921hssaGpZQ0my8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fmleCXU/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 131D6C43609;
-	Sat, 24 Feb 2024 21:33:16 +0000 (UTC)
+	 MIME-Version; b=I/iwbPnp0vsWWRPBw2yNmLPYQ3BvfyTbGEL3Yoc/pFrHamHYk1Ik2p+o25RTMryn4LEE8Vw81wI322iAu05P6urHTW4iFWCY/S1CufJ2ruHK3gncpBxUGhnf7DrkS8+L5w72qnfrBdjDq+TZHmUIsCuvcerhMCtrUFF2AI90gu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NRqOpcrv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32E8FC43141;
+	Sat, 24 Feb 2024 21:33:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708810396;
-	bh=4k5fPYp42gH3QLf+/maLO3ezxAAlAX85NAtYohge+G8=;
+	s=k20201202; t=1708810398;
+	bh=JzqwkQRLgk7k3EhjNENSRph/tpijOyPkAp/qgI/FbTw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fmleCXU/t8V0jrOZUtQTkApfX0xT5LbeQZ9jCZ5dzH3yYUeO4shKdgR1aXUQqeecL
-	 NXxmvkRBDdRmbp0jM/9+C06mNJWi6qlusLDqrkW7iO3pHCrbXt4fDBa0gucDroCuyC
-	 0uOIkNmH3tKp63gBQt8m2SE8SYktRifv8a/Bp9TdJR2etOja+coyu8CNFFl4p7e9pJ
-	 VC8Tx5yQFQMzXfT7phNpVCRbeO0vFk4fsJYfE9hmRlDAUWC/fXwVuVvRTbPLNSGede
-	 eBMQRfKe42vbB4IWjf/Ywp8e2g25Db3CtBImwLaXzVtpk9+zZztbmwsoiQ0er8mMwg
-	 rhGVQMz4AUFCg==
+	b=NRqOpcrv68im30SahywHhKVh6UtBgd42RFGW9T6/sGbZvlO7CrHGkrhIAPwdJ8xCz
+	 43QAE1TqS0ArwKg/Q59pcrUlNF35ulQ5NoswD/jqnhnrjZYify1u1IthNs9UemjuLc
+	 ztqrCTvSxnKGpxjwMJdLJCBMeOn7jgbE293aIfz9Qyri7mmHFb1eQdR+9U4KnHjK7O
+	 Ou86Hr5ikvRIf41oDc+Z66sqysNm9iKSVa8uLy9IPLxMyeTT3ieaUahIZc27NaKSLq
+	 cWTsCKJl6wcPwZBt2ztpOE6ZgPLpXuzS646ZyR2lYX2gXxPkF6GjE1+0L/JAY+sgAA
+	 s4VBlH7kgS/hg==
 Received: by mercury (Postfix, from userid 1000)
-	id 3F95C1061140; Sat, 24 Feb 2024 22:33:10 +0100 (CET)
+	id 45B681061142; Sat, 24 Feb 2024 22:33:10 +0100 (CET)
 From: Sebastian Reichel <sre@kernel.org>
 To: Sebastian Reichel <sre@kernel.org>,
 	Rob Herring <robh+dt@kernel.org>,
@@ -60,9 +60,9 @@ Cc: Dong Aisheng <aisheng.dong@nxp.com>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v4 14/16] dt-bindings: vendor-prefixes: add UNI-T
-Date: Sat, 24 Feb 2024 22:29:46 +0100
-Message-ID: <20240224213240.1854709-15-sre@kernel.org>
+Subject: [PATCH v4 15/16] dt-bindings: arm: add UNI-T UTi260B
+Date: Sat, 24 Feb 2024 22:29:47 +0100
+Message-ID: <20240224213240.1854709-16-sre@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240224213240.1854709-1-sre@kernel.org>
 References: <20240224213240.1854709-1-sre@kernel.org>
@@ -74,28 +74,26 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Uni-Trend Technology is a manufacturer of measurement
-and testing tools.
+Add compatible value for i.MX6ULL based UNI-T UTi260B thermal camera.
 
 Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Sebastian Reichel <sre@kernel.org>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 1a0dc04f1db4..e945e76696c2 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -1484,6 +1484,8 @@ patternProperties:
-     description: Ufi Space Co., Ltd.
-   "^ugoos,.*":
-     description: Ugoos Industrial Co., Ltd.
-+  "^uni-t,.*":
-+    description: Uni-Trend Technology (China) Co., Ltd.
-   "^uniwest,.*":
-     description: United Western Technologies Corp (UniWest)
-   "^upisemi,.*":
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 228dcc5c7d6f..7b65f9c9c1a5 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -708,6 +708,7 @@ properties:
+               - toradex,colibri-imx6ull      # Colibri iMX6ULL Modules
+               - toradex,colibri-imx6ull-emmc # Colibri iMX6ULL 1GB (eMMC) Module
+               - toradex,colibri-imx6ull-wifi # Colibri iMX6ULL Wi-Fi / BT Modules
++              - uni-t,uti260b             # UNI-T UTi260B Thermal Camera
+           - const: fsl,imx6ull
+ 
+       - description: i.MX6ULL Armadeus Systems OPOS6ULDev Board
 -- 
 2.43.0
 
