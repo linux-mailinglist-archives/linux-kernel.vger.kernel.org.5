@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-79777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56DB0862689
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 18:59:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24C6A86268C
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 19:01:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 112F2282C3A
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 17:59:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 510E91C20EB8
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 18:01:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 358B1482DD;
-	Sat, 24 Feb 2024 17:59:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E12D482ED;
+	Sat, 24 Feb 2024 18:01:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BhuG9zt4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NCcrhlsH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 797E5ECE;
-	Sat, 24 Feb 2024 17:59:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5064E1E497;
+	Sat, 24 Feb 2024 18:01:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708797585; cv=none; b=JTjuvV71/CDk5NTXKCrmDGA2eNZUw3dEKhYYoD3Dz+9HN2lDDqA9bh6f6NahwgL0GV5Lbn13FFJFVCKZfxORPi9oUIrIEyAxi9FXjhLYvjgcB7AvdUaCSDAQvPmR0GRvKLg3KqxO9GJCk0f6KE7i0nEPhZYGHewUGHsRBdptn80=
+	t=1708797679; cv=none; b=QMnbeVo1i58sLogho2FR6P1cGZs4nB2JMa+ajUuwkc4CBr/UxmYBjejvcTCGXK4e0Fw78ql7rrVr5xl4yC/CT0hoAQT7eRD6yL/4sd5fTJMfjZwy/gowsS0RD9nBk+JV+pkVq9YXYdq141nLLSk5Ii3mq0DKYi7VcA/TJ6b0sSU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708797585; c=relaxed/simple;
-	bh=8G4raxEorwHg1cIbMoXqVqp32zreKMBGcCu9RJbSZKE=;
+	s=arc-20240116; t=1708797679; c=relaxed/simple;
+	bh=udt29uG8DZdVdCXOm1/tLL2iD2xGRx1dlaQjSixcwp4=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pmQu5BH8bRY7f0M5RRtWUUhygPn+x841rYSNbzmUu0g0C3O7LLxQbKw7XUO8//VtM3BMEPHvdhcTkdmwq5iVrS4jMU3gPfUrHt2DcpgnYDDkHVpG9djrvUvlmXYaCvw/8OOSh16YqUIP19a9pTRH5vEmtwVnSSpqstd46tyzemE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BhuG9zt4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01CBCC433C7;
-	Sat, 24 Feb 2024 17:59:41 +0000 (UTC)
+	 MIME-Version:Content-Type; b=ithCmKGDCVPQABKbUick3Ns6EwHsSI4FpJIYMSoBkm1CedkXLtesyk2Zvda6hGp+3CUil5tNVw9QFY1rTuy3BjZN8gaxw/36++i5fGMsvr6nQvkitcTHd1Ks8bbxuPlnoyVWXYfvcBQJf51Gae3iAXZd6qaTAKf05b9elju1HbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NCcrhlsH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A75FCC433F1;
+	Sat, 24 Feb 2024 18:01:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708797585;
-	bh=8G4raxEorwHg1cIbMoXqVqp32zreKMBGcCu9RJbSZKE=;
+	s=k20201202; t=1708797678;
+	bh=udt29uG8DZdVdCXOm1/tLL2iD2xGRx1dlaQjSixcwp4=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=BhuG9zt4vDDzXoDlbdnJWdljq3A4RYauEz3oZ34gQx3IwLdia6R+yozUxFFUIBGGW
-	 Ei74tTFSSBeJJIC5zDaLYsx12MaLXXZ0u+4RO3Gtl2H5Xp+TQMp7ZeTFp0hBo+x15g
-	 c5PF2f4isrZj5JMHGbgLahrG7D4JPRX+IM5iocWw5EXZPJjpHf7ihWNVHEQwkao4PW
-	 VMoHQEHxSYkl6RDdkyFkcdtYDg3ThV7MNiNVJ9XAFUZfM1EfU0HJEgDojmjjOtApX1
-	 elR7Zy5G8M3deuvY7Yos4IPhMauVBKaZLgHRccFcQjvGJCriB3yH4FNKGj8OldkrRC
-	 ll/IkKFaZfuFQ==
-Date: Sat, 24 Feb 2024 17:59:30 +0000
+	b=NCcrhlsHBDAcvTYepFo+mmNATX7nQpLQMMrMgArKlcgWN1rsDI78AidqtiGBk6frl
+	 SM35JHQSwIlW5WFKts0FYXYzSrZYaqHCqo2SAu+su6/NlinldPVXZ+CxcwMXTetceL
+	 ghefknXJJBDA5uIvfULn3TIjBZni2LCkErWSwWF318FV342l94aVoQtrl6DCHj1V5X
+	 /lplR+HtYS1h0VJM+ILDIxrAAOX6dSOqou9mFelA+LLR7yw6xqhEpUN6nhmSZNjnzz
+	 LlMsp2P7ZTRNr86FwjhQ7SCLZmB1n2O2wmMtleM+m5j2l9EozdR7mGtnN8xiTHjauu
+	 MdTlVsbVKmNzQ==
+Date: Sat, 24 Feb 2024 18:01:03 +0000
 From: Jonathan Cameron <jic23@kernel.org>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc: Vasileios Amoiridis <vassilisamir@gmail.com>, lars@metafoo.de,
  ang.iglesiasg@gmail.com, linus.walleij@linaro.org,
  semen.protsenko@linaro.org, linux-iio@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] drivers: iio: pressure: Sort headers of BMPxxx SPI
- driver
-Message-ID: <20240224175930.5c283586@jic23-huawei>
-In-Reply-To: <ZdUD3yI7I7uj3Nhp@smile.fi.intel.com>
-References: <20240220184125.32602-1-vassilisamir@gmail.com>
-	<20240220184125.32602-2-vassilisamir@gmail.com>
-	<ZdUD3yI7I7uj3Nhp@smile.fi.intel.com>
+Subject: Re: [PATCH 2/2] drivers: iio: pressure: Fixes BMP38x and BMP390 SPI
+ support
+Message-ID: <20240224180103.3e522481@jic23-huawei>
+In-Reply-To: <ZdX45xqSlz1oQQ-R@smile.fi.intel.com>
+References: <20240220224329.53729-1-vassilisamir@gmail.com>
+	<20240220224329.53729-2-vassilisamir@gmail.com>
+	<ZdX45xqSlz1oQQ-R@smile.fi.intel.com>
 X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -64,34 +64,24 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Tue, 20 Feb 2024 21:56:15 +0200
+On Wed, 21 Feb 2024 15:21:43 +0200
 Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-> On Tue, Feb 20, 2024 at 07:41:25PM +0100, Vasileios Amoiridis wrote:
-> > Alphabetical sorting and separation of headers for the BMPxxx
-> > SPI driver.  
+> On Tue, Feb 20, 2024 at 11:43:29PM +0100, Vasileios Amoiridis wrote:
+> > According to the datasheet of BMP38x and BMP390 devices, for an SPI
+> > read operation the first byte that is returned needs to be dropped,
+> > and the rest of the bytes are the actual data returned from the
+> > sensor.  
 > 
-> ...
+> LGTM,
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > 
-> > -#include <linux/module.h>
-> > -#include <linux/spi/spi.h>
-> > +#include <linux/bits.h>
-> >  #include <linux/err.h>
-> > +#include <linux/module.h>
-> >  #include <linux/regmap.h>  
-> 
-> > -#include <linux/bits.h>  
-> 
-> That's what I meant. Please do not add it into the wrong place to begin with.
-> 
-> > +#include <linux/spi/spi.h>  
+> (If you got tags in the previous rounds of review, it's your responsibility
+>  to carry them, in case code is not _drastically_ changed.)
 > 
 
-This isn't going be something I rush in with the fix, so
-plenty of time to revisit this next cycle.
+Version numbers! Otherwise poor maintainers like me have no
+idea which one to pick up.
 
-Thanks,
-
-Jonathan
-
+Anyhow, I got the much earlier one so will ignore newer versions.
 
