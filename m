@@ -1,133 +1,97 @@
-Return-Path: <linux-kernel+bounces-79588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A63E4862483
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:31:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 233ED862488
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:32:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 478001F22FD6
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:31:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8E42283E59
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:32:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9B325756;
-	Sat, 24 Feb 2024 11:31:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qBoXj187"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1913D288DB;
+	Sat, 24 Feb 2024 11:32:26 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A8071B977;
-	Sat, 24 Feb 2024 11:31:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA4E125565;
+	Sat, 24 Feb 2024 11:32:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708774269; cv=none; b=pzgKj67CnwbEtT/gRykQ9NcOexXhks81Sw3ZAQ8MmgIKXzBBqw9Y+CvZFDc+m9OJrEwG9OEPZi1Nnr+yVWQJKTFiwt5sdQi/W7OLmYKXRTALzGgMnISFqsMXMTWcPRQqLsWgQ189KLRrOTfRO5Apmfn31sU+Nr9DIuwDcklaLvw=
+	t=1708774345; cv=none; b=nMbYfGaM+8TwjhFi6A59dIzm3tBHpXxfzR4bxsflG5ykS3rk7PYijXjxDhM1sPDHInvX/6VdhSlkjKbF3gxx+Pkkrl5KsLvupLMn+m9yNmuRisnEjSEUZEfK5LY3e7238JTQA9cR1CckD8/Ta2qgVBLhR07b3shXZsqk9/vZt7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708774269; c=relaxed/simple;
-	bh=bcm3DdqghLXqV1NDYxNhc4E3ZjWsODb7HUSJWc8HasI=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hYqbLzB0s/PsqWimPqVEW+rI0fS8l/gfYMrU+1YYoo5nTLcPozPGb5DUGHhhpdLZdNk/FoIvRW15RZDYakDQKA99rp9nDJ4F+che8w8EcwwE17ECMhr769myzpMJOp0ZqjkxAS+Mp41LfXkPo0lphtaBOT4/2Ku1zKe0Gj8RQ2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qBoXj187; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9E56C433C7;
-	Sat, 24 Feb 2024 11:31:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708774268;
-	bh=bcm3DdqghLXqV1NDYxNhc4E3ZjWsODb7HUSJWc8HasI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=qBoXj187P+E9luvr9Axsx9150L4De7EaN940cIVttWMr7c7jJL8NXQgF8/raWWXNl
-	 Eq/F4upq5KMG93mJLniOyY0Je2IXCLhD7wNx/1VnJB/9hPIngT+tkA/qzhHoDfpmVR
-	 XTAfZm9tHemT/6HM+4nr34cEq8HHy7/iL8H9TSh8WiHSvhz121huf7QADtQbDrIU29
-	 KjGqs7oUnoAV2bnIgsQgJ2ya7XEIILD9abEaTYa+a64uSce8Cdix5fvOwPGJLqfL7E
-	 vzZH420bTizVHF6dPO8NqgrsWdVwafztNrTkORK2q0GU4dRwU/ICGWOxFXnbfgkRsX
-	 7ToAAzBRglDcw==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rdqFG-006M9n-Jj;
-	Sat, 24 Feb 2024 11:31:06 +0000
-Date: Sat, 24 Feb 2024 11:31:05 +0000
-Message-ID: <878r3a9k06.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Oliver Upton <oliver.upton@linux.dev>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	kvmarm@lists.linux.dev,
-	Jing Zhang <jingzhangos@google.com>
-Subject: Re: [PATCH 3/3] irqchip/gic-v3-its: Print the vPE table installed in redistributor
-In-Reply-To: <ZdnO7QIYkxgDdl0i@linux.dev>
-References: <20240219185809.286724-1-oliver.upton@linux.dev>
-	<20240219185809.286724-4-oliver.upton@linux.dev>
-	<87bk869man.wl-maz@kernel.org>
-	<ZdnO7QIYkxgDdl0i@linux.dev>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1708774345; c=relaxed/simple;
+	bh=qiUyNOxOsyW8Q0pv98stm8EGK98wmzKW8rG06TDEmOM=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=mxc7NSJlPtlC12JV67mWQyg9cFsZCWBn08NOk+aE3h4vOr5Bg4J23JAp2WSgTgx+IkD3v3EMSf+73x2IMfFUt1HZgBSY1tyYb4O857kdROv1NasTWRjxxVqkhXMwTKlviLLMLXUKthVtvcI3xjKIFZt68Ri2W8MMb99LUXMHIfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Thl6S0htHz1h0Ct;
+	Sat, 24 Feb 2024 19:30:08 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (unknown [7.185.36.229])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6E0851A016B;
+	Sat, 24 Feb 2024 19:32:19 +0800 (CST)
+Received: from [10.174.178.247] (10.174.178.247) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sat, 24 Feb 2024 19:32:18 +0800
+Subject: Re: [PATCH v3 0/7] dma-mapping: Simplify arch_setup_dma_ops()
+To: Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
+	Christoph Hellwig <hch@lst.de>
+CC: Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Thomas
+ Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley
+	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
+	<aou@eecs.berkeley.edu>, Lorenzo Pieralisi <lpieralisi@kernel.org>, Sudeep
+ Holla <sudeep.holla@arm.com>, "K. Y. Srinivasan" <kys@microsoft.com>, Haiyang
+ Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui
+	<decui@microsoft.com>, Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+	David Woodhouse <dwmw2@infradead.org>, Lu Baolu <baolu.lu@linux.intel.com>,
+	Niklas Schnelle <schnelle@linux.ibm.com>, Matthew Rosato
+	<mjrosato@linux.ibm.com>, Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, Rob Herring
+	<robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Marek Szyprowski
+	<m.szyprowski@samsung.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-acpi@vger.kernel.org>, <iommu@lists.linux.dev>,
+	<devicetree@vger.kernel.org>
+References: <cover.1707493264.git.robin.murphy@arm.com>
+From: Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <1ae0973c-a440-3f12-6d78-e780ddc0a16d@huawei.com>
+Date: Sat, 24 Feb 2024 19:32:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, tglx@linutronix.de, yuzenghui@huawei.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, jingzhangos@google.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+In-Reply-To: <cover.1707493264.git.robin.murphy@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
 
-On Sat, 24 Feb 2024 11:11:41 +0000,
-Oliver Upton <oliver.upton@linux.dev> wrote:
+On 2024/2/10 0:49, Robin Murphy wrote:
+> v2: https://lore.kernel.org/linux-iommu/cover.1702486837.git.robin.murphy@arm.com/
 > 
-> On Sat, Feb 24, 2024 at 10:41:36AM +0000, Marc Zyngier wrote:
-> > On Mon, 19 Feb 2024 18:58:08 +0000, Oliver Upton <oliver.upton@linux.dev> wrote:
-> > > -	pr_debug("CPU%d: VPROPBASER = %llx %*pbl\n",
-> > > -		 smp_processor_id(), val,
-> > > -		 cpumask_pr_args(gic_data_rdist()->vpe_table_mask));
-> > > +	pr_info("CPU%d: Using %s vPE table @%llx (%s)\n",
-> > > +		smp_processor_id(),
-> > > +		(val & GICR_VPROPBASER_4_1_INDIRECT) ? "indirect" : "direct",
-> > > +		val & GICR_VPROPBASER_4_1_ADDR,
-> > > +		(page) ? "allocated" :
-> > > +			 ((from_its) ? "inherited from ITS" : "inherited from RD"));
-> > 
-> > From past experience, having the vpe_table_mask value displayed did
-> > help tracking VPE table affinity bugs.
+> Hi all,
 > 
-> My reasoning behind it was that the change expanded the table mask by
-> way of printing what's going on at every RD. But easy enough to throw
-> back in!
+> Here's v3, rebased and fixing the thinko from v2, so unless anything
+> else has changed behind my back I hope it's good to go (via the IOMMU
+> tree, as mentioned before).
 
-Yeah, true enough. But the mask presents a nice, concise way to
-express the affinities that comparing a bunch of lines doesn't exactly
-convey.
+Compiled with/without ACPI enabled, and test this patch set on an
+ARM64 server with ACPI booting, looks good.
 
-> 
-> > This said, my problem with this patch is that we already have tons of
-> > these statement printed once per CPU/RD. This is really huge and
-> > accounts for a significant part of the boot time on large machines
-> > (64+ CPUs).
-> > 
-> > Before we add more of those, I'd really want to have a way to tone
-> > them down and only print them at runtime *if* required by the user.
-> > Kind of a dymanic debug, but driven from the command-line and present
-> > early enough.
-> 
-> Yeah, what'd be really nice is a way to enable pr_debug() on a per
-> file / driver / whatever basis, since turning on all of it becomes a bit
-> of a firehose... But I guess that's what grep is for.
-> 
-> WDYT about leaving it at pr_debug() for now, with the additional context
-> of what exactly VPROPBASE is getting programmend with?
+Tested-by: Hanjun Guo <guohanjun@huawei.com>
 
-Yup, I'm all for that. Hopefully we can find a good way to way to
-control the debug output in the near future.
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+Thanks
+Hanjun
 
