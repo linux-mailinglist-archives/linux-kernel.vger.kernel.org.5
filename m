@@ -1,230 +1,230 @@
-Return-Path: <linux-kernel+bounces-79496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80795862346
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 08:03:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC07986234A
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 08:15:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11CD8B23046
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 07:03:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D97EA284AC2
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 07:15:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A19779EE;
-	Sat, 24 Feb 2024 07:03:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1284810A35;
+	Sat, 24 Feb 2024 07:15:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="VSvZBdZK"
-Received: from smtp.smtpout.orange.fr (smtp-22.smtpout.orange.fr [80.12.242.22])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QvNw15f0"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1A894C64
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 07:03:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DA19D52F
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 07:15:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708758205; cv=none; b=RoxKPgZA8YPTzZAbdtl8QoNrDNNxvQNfoUrKiqOHzgbGPJfLjXOf9Kfn5GUyfKzKOPS73VV/y9U8J/EkA7leigxBzEt7809qzkqFU4D8c22B06EWAIyPONrZFhJddcWXGvxtElmU+DvTFwHz4Kfz7aXl7X7i3PUMNnt6H/MjOV0=
+	t=1708758920; cv=none; b=Qvid77Og/G3k0Y21RM1vDJuUXTvMdluRIsODBd1JOkV1jnXin6BbXRDOUsy7dqqlwzlY+WONZdyiSKs/l7mcEPsraIWsUWPfGsCkSBGHwnPxvokDq85WZUZphLqtJ5kuhfwq0dGlao/18Zl7D4mu76Hkoh1UHqqFsrvNBnQZk8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708758205; c=relaxed/simple;
-	bh=utaGe6uiwmTzfIPUETzW6TdxvHgjXUvrLSvV7bTUk1M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bPPt0PxLqse5PsVvegirPUONMTYIqVsJaUj3r6NN1njfUh2GVMlkpzeN1N44X/cYau7c2JSS6YEPurIROVeWlF4G26vZrPXyOJ07oKiQmbbfGdPwI16ZDs2cwUZtRMhcYUgOzA0Wz2wy27yiUSA0QQF5MTIBvJ2SNvVnI8gZGNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=VSvZBdZK; arc=none smtp.client-ip=80.12.242.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.18] ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id dm40rzOJHZc8Edm40rwRmA; Sat, 24 Feb 2024 08:03:14 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1708758194;
-	bh=zaAjgqWRp0nSEMfAmosrEZOp1z8vjHJIuWxUPoa7WkA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=VSvZBdZKYhsNiDW8JxPaQzxWnHDOaMaKcAM4JqFg4F8d/+vG7jv38iWioTRuuUQfC
-	 iveiJ+tP6CGRu92fGMWoyQuc7AuEYUP1SsAUfHg/MAd7zHj1z/ZItqswOSUxYbdptC
-	 Vf17LRufwaS6QS7q+ietTgBokFSY8o8U1+7/p/pdU+MSIupxCZThLpFweD77KA9OY1
-	 dXr6/qUlsEZy8XocbC1FFuAF8H7qpP972BOtd8ZebxEo6LVNkVd+oLy6WexFwrx7DL
-	 U9GpjYXnJZTjocKqkpE2lCBmo6Rlp3S3/dEWaxeMBTy0kOeTtyBmSe/B8On8FaVKIC
-	 eIoaEw9xkOOyg==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 24 Feb 2024 08:03:14 +0100
-X-ME-IP: 92.140.202.140
-Message-ID: <c45d16c6-abab-4132-a499-c231dcedebb2@wanadoo.fr>
-Date: Sat, 24 Feb 2024 08:03:11 +0100
+	s=arc-20240116; t=1708758920; c=relaxed/simple;
+	bh=0HAot224t49qJekPYxrS9uVB+eTCHcXufJIXNedY8jg=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BFzrO9nqH5MTLRY6dNs4c9x/uM9DHzhn8r/7tBquJvPU23tDNaVPySNDSczcMMnp3lhDqw/7y3Ad8DPEPQBb81JnxG2D656MOrJ0+QgHsQmrueZ1vaoNwtZeW2v1gxxSnQVgYHSG6ANyXfvUdvzQ6LhLW8SJEKBeL7X+O8mLTqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QvNw15f0; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a3e8c1e4aa7so148807466b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 23:15:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708758917; x=1709363717; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Q/l3rdHHadZ15R5gzk5CAjldRNRZfc44ldL/qVb2ZY4=;
+        b=QvNw15f0fh9yL1sQ1qojMMQah4nht1Om+nDBLEFEosOlCof9MJT50aNP0lGI1EbEsK
+         N2MNs/4KEbCqVvRNb+toayU3W4RFImulYUPTrRdldkMVZcH38ctUZdPbSfDy/rU2clQ+
+         H59YNTtHekq9YDzUzm4MmM7nUdlUsdAje7ZdSnGezRyVOY89DqAT3ksv3gUaNP2fW/kW
+         2jUVsK4L1F8w667ZQuSeJL96lmIlcCDkPKfUar4kQUkEq8M3bxQXREaPBcjYqjwnt1+5
+         NwMGXnhQN+Xd9OpG0GZzjS9gzYoFLnyCHnk8hnTEZUB/eaDK48dBRRpGhQB8px+U9jC1
+         V7qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708758917; x=1709363717;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Q/l3rdHHadZ15R5gzk5CAjldRNRZfc44ldL/qVb2ZY4=;
+        b=vSkxFUPXp+2ZFg+w5JdIBTSFZcUK9wrtqrKp5d1jXRWuJ1XLh9Y140GKHJXyvLTmK+
+         KJ98Pwe5pDxN9oePVMufzMnlgKdwMryjw8ccCVchyYZATf3+5P9qH4dFDZzuBkt/gp7q
+         jGmpQ3+l98KcvDWVR1iVNe1TStw5ncKrse7lBJemqvZLw7gBX9IjLwu3q2QB4FV3g+X6
+         250v7AwIgx1WldChbSWkUh12W4HS+08zjXySmX5x0G6FSUscDAvqCr2Nix9yUPDOtPnc
+         su3YFzxu4mNDt5uWV0YBqUaYzNExRyRJVd0lO70GZv3KKYoPlaUxxCQmm8Wwa1K88wVf
+         GJ4w==
+X-Forwarded-Encrypted: i=1; AJvYcCX8gBK50iLCVXAAYUjdYw/h/sGBQ3PMgUMea/BC21TC8w/8a1ICF7LDJiCfKS6TWdrPWAWYJ2y3emcg0Iz6BLiHMBG7c7XnzQvEe3Zt
+X-Gm-Message-State: AOJu0YzrF+LUsVyX7g+NrvGiD5CuLPMh4fmGjocLhMclz9ORa3XoiPRr
+	RXJIFG70V861GM7YfFTKAjKcsB125HdjSL+4Ytw1mK0kxkynz/Jg
+X-Google-Smtp-Source: AGHT+IEchw50Yy6f2MPM1hIEjVE7JLq6sTy83bT2bvXfzjJTJuftRJidWkflr7PgJW7pu0uhxM1szg==
+X-Received: by 2002:a17:906:5910:b0:a3f:583c:b00c with SMTP id h16-20020a170906591000b00a3f583cb00cmr1144362ejq.43.1708758916491;
+        Fri, 23 Feb 2024 23:15:16 -0800 (PST)
+Received: from archlinux.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
+        by smtp.gmail.com with ESMTPSA id jx20-20020a170906ca5400b00a3d777aa8fesm322779ejb.69.2024.02.23.23.15.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 23:15:15 -0800 (PST)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: =?utf-8?B?T25kxZllag==?= Jirman <megi@xff.cz>,
+ Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Samuel Holland <samuel@sholland.org>,
+ dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
+ linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+ Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+Subject: Re: [PATCH 3/3] drm/sun4i: Fix layer zpos change/atomic modesetting
+Date: Sat, 24 Feb 2024 08:10:05 +0100
+Message-ID: <6018948.lOV4Wx5bFT@archlinux>
+In-Reply-To: <5h7jcwsdlpe7w2xylbhlw2asfww3znqlmlnszwvvosz5ssokkq@dxhn4v4sy4nq>
+References:
+ <20240216190430.1374132-1-megi@xff.cz> <2448947.jE0xQCEvom@jernej-laptop>
+ <5h7jcwsdlpe7w2xylbhlw2asfww3znqlmlnszwvvosz5ssokkq@dxhn4v4sy4nq>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/1] mm: enumerate all gfp flags
-To: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
-Cc: kent.overstreet@linux.dev, petr@tesarici.cz, keescook@chromium.org,
- pasha.tatashin@soleen.com, mhocko@suse.com, kernel-team@android.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240224015800.2569851-1-surenb@google.com>
-Content-Language: en-MW
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20240224015800.2569851-1-surenb@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 
-Le 24/02/2024 à 02:58, Suren Baghdasaryan a écrit :
-> Introduce GFP bits enumeration to let compiler track the number of used
-> bits (which depends on the config options) instead of hardcoding them.
-> That simplifies __GFP_BITS_SHIFT calculation.
-> 
-> Suggested-by: Petr Tesařík <petr@tesarici.cz>
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> ---
-> Changes from v4 [1]:
-> - Split from the series [2] as a stand-alone patch, per Michal Hocko
-> - Added Reviewed-by, per Pasha Tatashin
-> - Added Acked-by, per Michal Hocko
-> 
-> [1] https://lore.kernel.org/all/20240221194052.927623-7-surenb@google.com/
-> [2] https://lore.kernel.org/all/20240221194052.927623-1-surenb@google.com/
-> 
->   include/linux/gfp_types.h | 90 +++++++++++++++++++++++++++------------
->   1 file changed, 62 insertions(+), 28 deletions(-)
-> 
-> diff --git a/include/linux/gfp_types.h b/include/linux/gfp_types.h
-> index 1b6053da8754..868c8fb1bbc1 100644
-> --- a/include/linux/gfp_types.h
-> +++ b/include/linux/gfp_types.h
-> @@ -21,44 +21,78 @@ typedef unsigned int __bitwise gfp_t;
->    * include/trace/events/mmflags.h and tools/perf/builtin-kmem.c
->    */
->   
-> +enum {
-> +	___GFP_DMA_BIT,
-> +	___GFP_HIGHMEM_BIT,
-> +	___GFP_DMA32_BIT,
-> +	___GFP_MOVABLE_BIT,
-> +	___GFP_RECLAIMABLE_BIT,
-> +	___GFP_HIGH_BIT,
-> +	___GFP_IO_BIT,
-> +	___GFP_FS_BIT,
-> +	___GFP_ZERO_BIT,
-> +	___GFP_UNUSED_BIT,	/* 0x200u unused */
-
-Hi,
-
-what is the need to have this ___GFP_UNUSED_BIT now?
-
-> +	___GFP_DIRECT_RECLAIM_BIT,
-> +	___GFP_KSWAPD_RECLAIM_BIT,
-> +	___GFP_WRITE_BIT,
-> +	___GFP_NOWARN_BIT,
-> +	___GFP_RETRY_MAYFAIL_BIT,
-> +	___GFP_NOFAIL_BIT,
-> +	___GFP_NORETRY_BIT,
-> +	___GFP_MEMALLOC_BIT,
-> +	___GFP_COMP_BIT,
-> +	___GFP_NOMEMALLOC_BIT,
-> +	___GFP_HARDWALL_BIT,
-> +	___GFP_THISNODE_BIT,
-> +	___GFP_ACCOUNT_BIT,
-> +	___GFP_ZEROTAGS_BIT,
-> +#ifdef CONFIG_KASAN_HW_TAGS
-> +	___GFP_SKIP_ZERO_BIT,
-> +	___GFP_SKIP_KASAN_BIT,
-> +#endif
-> +#ifdef CONFIG_LOCKDEP
-> +	___GFP_NOLOCKDEP_BIT,
-> +#endif
-> +	___GFP_LAST_BIT
-> +};
-
-Does it make sense to have something like:
-   BUILD_BUG_ON(___GFP_LAST_BIT > BITS_PER_LONG, "blah");
-(should we need to use BIT_ULL() one day)
-
+On Saturday, February 24, 2024 3:20:43 AM CET Ond=C5=99ej Jirman wrote:
+> On Thu, Feb 22, 2024 at 09:02:53PM +0100, Jernej =C5=A0krabec wrote:
+> > Dne sreda, 21. februar 2024 ob 14:45:20 CET je Maxime Ripard napisal(a):
+> > > Hi,
+> > >=20
+> > > On Fri, Feb 16, 2024 at 08:04:26PM +0100, Ond=C5=99ej Jirman wrote:
+> > > > From: Ondrej Jirman <megi@xff.cz>
+> > > >=20
+> > > > Identical configurations of planes can lead to different (and wrong)
+> > > > layer -> pipe routing at HW level, depending on the order of atomic
+> > > > plane changes.
+> > > >=20
+> > > > For example:
+> > > >=20
+> > > > - Layer 1 is configured to zpos 0 and thus uses pipe 0. No other la=
+yer
+> > > >   is enabled. This is a typical situation at boot.
+> > > >=20
+> > > > - When a compositor takes over and layer 3 is enabled,
+> > > >   sun8i_ui_layer_enable() will get called with old_zpos=3D0 zpos=3D=
+1, which
+> > > >   will lead to incorrect disabling of pipe 0 and enabling of pipe 1.
+> > > >=20
+> > > > What happens is that sun8i_ui_layer_enable() function may disable
+> > > > blender pipes even if it is no longer assigned to its layer.
+> > > >=20
+> > > > To correct this, move the routing setup out of individual plane's
+> > > > atomic_update into crtc's atomic_update, where it can be calculated
+> > > > and updated all at once.
+> > > >=20
+> > > > Remove the atomic_disable callback because it is no longer needed.
+> > > >=20
+> > > > Signed-off-by: Ondrej Jirman <megi@xff.cz>
+> > >=20
+> > > I don't have enough knowledge about the mixers code to comment on your
+> > > patch, so I'll let Jernej review it. However, this feels to me like t=
+he
+> > > pipe assignment is typically the sort of things that should be dealt
+> > > with device-wide, and in atomic_check.
+> >=20
+> > In DE2 and DE3.0, you cannot move planes between mixers (crtcs), becaus=
+e each
+> > one is hardwired to specific mixer. Movable planes are the feature of D=
+E3.3
+> > and one of the pain points for upstreaming the code. Anyway, this commi=
+t only
+> > addresses current issue of enabling and disabling planes and handling z=
+pos.
+> >=20
+> > In atomic check you can only precalculate final register values, but I =
+don't
+> > see any benefit doing that. I think that this code elegantly solves cur=
+rent
+> > issue of enabling or disabling wrong plane in certain situations, so:
+> >=20
+> > Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+> >=20
+> > Note, if there is new revision, please rewrite blender regmap_update_bi=
+ts()
+> > to regmap_write(). Since there is HW issue with reads, I would like to
+> > get rid of regmap_update_bits() calls eventually.
+>=20
+> I've looked into it and I can probably rewrite these quite readily:
+>=20
+> +	regmap_update_bits(mixer->engine.regs,
+> +			   SUN8I_MIXER_BLEND_ROUTE(bld_base),
+> +			   SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(0) |
+> +			   SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(1) |
+> +			   SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(2) |
+> +			   SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(3),
+> +			   route);
+>=20
+> The mask here covers all implemented bits in the register.
+>=20
+> +	regmap_update_bits(mixer->engine.regs,
+> +			   SUN8I_MIXER_BLEND_PIPE_CTL(bld_base),
+> +			   SUN8I_MIXER_BLEND_PIPE_CTL_EN(0) |
+> +			   SUN8I_MIXER_BLEND_PIPE_CTL_EN(1) |
+> +			   SUN8I_MIXER_BLEND_PIPE_CTL_EN(2) |
+> +			   SUN8I_MIXER_BLEND_PIPE_CTL_EN(3),
+> +			   pipe_en);
 > +
->   /* Plain integer GFP bitmasks. Do not use this directly. */
-> -#define ___GFP_DMA		0x01u
-> -#define ___GFP_HIGHMEM		0x02u
-> -#define ___GFP_DMA32		0x04u
-> -#define ___GFP_MOVABLE		0x08u
-> -#define ___GFP_RECLAIMABLE	0x10u
-> -#define ___GFP_HIGH		0x20u
-> -#define ___GFP_IO		0x40u
-> -#define ___GFP_FS		0x80u
-> -#define ___GFP_ZERO		0x100u
-> +#define ___GFP_DMA		BIT(___GFP_DMA_BIT)
-> +#define ___GFP_HIGHMEM		BIT(___GFP_HIGHMEM_BIT)
-> +#define ___GFP_DMA32		BIT(___GFP_DMA32_BIT)
-> +#define ___GFP_MOVABLE		BIT(___GFP_MOVABLE_BIT)
-> +#define ___GFP_RECLAIMABLE	BIT(___GFP_RECLAIMABLE_BIT)
-> +#define ___GFP_HIGH		BIT(___GFP_HIGH_BIT)
-> +#define ___GFP_IO		BIT(___GFP_IO_BIT)
-> +#define ___GFP_FS		BIT(___GFP_FS_BIT)
-> +#define ___GFP_ZERO		BIT(___GFP_ZERO_BIT)
->   /* 0x200u unused */
+>=20
+> The mask here doesn't cover BLD_FILL_COLOR_CTL.Px_FCEN bits that implemen=
+t solid
+> color filling. But those can be 0 anyway except for pipe0 which is hardco=
+ded by
+> the driver to 1, I think:
+>=20
+> 631         /*
+> 632          * Set fill color of bottom plane to black. Generally not nee=
+ded
+> 633          * except when VI plane is at bottom (zpos =3D 0) and enabled.
+> 634          */
+> 635         regmap_write(mixer->engine.regs, SUN8I_MIXER_BLEND_PIPE_CTL(b=
+ase),
+> 636                      SUN8I_MIXER_BLEND_PIPE_CTL_FC_EN(0));
 
-Keeping this comment here is now useless, IMHO.
+Correct on all counts. That's what I've meant.
 
-CJ
+>=20
+> I will not be able to get rid of regmap_update_bits in sun8i_layer_enable
+> because that register there has other important things in it like framebu=
+ffer
+> pixel format, etc.
 
-> -#define ___GFP_DIRECT_RECLAIM	0x400u
-> -#define ___GFP_KSWAPD_RECLAIM	0x800u
-> -#define ___GFP_WRITE		0x1000u
-> -#define ___GFP_NOWARN		0x2000u
-> -#define ___GFP_RETRY_MAYFAIL	0x4000u
-> -#define ___GFP_NOFAIL		0x8000u
-> -#define ___GFP_NORETRY		0x10000u
-> -#define ___GFP_MEMALLOC		0x20000u
-> -#define ___GFP_COMP		0x40000u
-> -#define ___GFP_NOMEMALLOC	0x80000u
-> -#define ___GFP_HARDWALL		0x100000u
-> -#define ___GFP_THISNODE		0x200000u
-> -#define ___GFP_ACCOUNT		0x400000u
-> -#define ___GFP_ZEROTAGS		0x800000u
-> +#define ___GFP_DIRECT_RECLAIM	BIT(___GFP_DIRECT_RECLAIM_BIT)
-> +#define ___GFP_KSWAPD_RECLAIM	BIT(___GFP_KSWAPD_RECLAIM_BIT)
-> +#define ___GFP_WRITE		BIT(___GFP_WRITE_BIT)
-> +#define ___GFP_NOWARN		BIT(___GFP_NOWARN_BIT)
-> +#define ___GFP_RETRY_MAYFAIL	BIT(___GFP_RETRY_MAYFAIL_BIT)
-> +#define ___GFP_NOFAIL		BIT(___GFP_NOFAIL_BIT)
-> +#define ___GFP_NORETRY		BIT(___GFP_NORETRY_BIT)
-> +#define ___GFP_MEMALLOC		BIT(___GFP_MEMALLOC_BIT)
-> +#define ___GFP_COMP		BIT(___GFP_COMP_BIT)
-> +#define ___GFP_NOMEMALLOC	BIT(___GFP_NOMEMALLOC_BIT)
-> +#define ___GFP_HARDWALL		BIT(___GFP_HARDWALL_BIT)
-> +#define ___GFP_THISNODE		BIT(___GFP_THISNODE_BIT)
-> +#define ___GFP_ACCOUNT		BIT(___GFP_ACCOUNT_BIT)
-> +#define ___GFP_ZEROTAGS		BIT(___GFP_ZEROTAGS_BIT)
->   #ifdef CONFIG_KASAN_HW_TAGS
-> -#define ___GFP_SKIP_ZERO	0x1000000u
-> -#define ___GFP_SKIP_KASAN	0x2000000u
-> +#define ___GFP_SKIP_ZERO	BIT(___GFP_SKIP_ZERO_BIT)
-> +#define ___GFP_SKIP_KASAN	BIT(___GFP_SKIP_KASAN_BIT)
->   #else
->   #define ___GFP_SKIP_ZERO	0
->   #define ___GFP_SKIP_KASAN	0
->   #endif
->   #ifdef CONFIG_LOCKDEP
-> -#define ___GFP_NOLOCKDEP	0x4000000u
-> +#define ___GFP_NOLOCKDEP	BIT(___GFP_NOLOCKDEP_BIT)
->   #else
->   #define ___GFP_NOLOCKDEP	0
->   #endif
-> -/* If the above are modified, __GFP_BITS_SHIFT may need updating */
->   
->   /*
->    * Physical address zone modifiers (see linux/mmzone.h - low four bits)
-> @@ -249,7 +283,7 @@ typedef unsigned int __bitwise gfp_t;
->   #define __GFP_NOLOCKDEP ((__force gfp_t)___GFP_NOLOCKDEP)
->   
->   /* Room for N __GFP_FOO bits */
-> -#define __GFP_BITS_SHIFT (26 + IS_ENABLED(CONFIG_LOCKDEP))
-> +#define __GFP_BITS_SHIFT ___GFP_LAST_BIT
->   #define __GFP_BITS_MASK ((__force gfp_t)((1 << __GFP_BITS_SHIFT) - 1))
->   
->   /**
-> 
-> base-commit: 603c04e27c3e9891ce7afa5cd6b496bfacff4206
+Yeah, this rework would certainly be more involved, so it's out of the scop=
+e of
+this series.
+
+Best regards,
+Jernej
+
+>=20
+> kind regards,
+> 	o.
+>=20
+> > Best regards,
+> > Jernej
+> >=20
+> > >=20
+> > > If I'm talking non-sense, it would be great to mention at least why t=
+hat
+> > > can't be an option in the commit log.
+> > >=20
+> > > Maxime
+> > >=20
+> >=20
+> >=20
+> >=20
+> >=20
+>=20
+
+
+
 
 
