@@ -1,90 +1,113 @@
-Return-Path: <linux-kernel+bounces-79791-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79792-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20BF38626C2
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 19:26:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 846318626C4
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 19:28:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA7EA1F2141B
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 18:26:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D7271F21A54
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 18:28:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DB3A4C618;
-	Sat, 24 Feb 2024 18:25:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YVCvPsWZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76EDA48CCC;
-	Sat, 24 Feb 2024 18:25:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA9B7495EC;
+	Sat, 24 Feb 2024 18:28:08 +0000 (UTC)
+Received: from mail.parknet.co.jp (mail.parknet.co.jp [210.171.160.6])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6984F4502E
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 18:28:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.171.160.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708799157; cv=none; b=p2Jd1X/cb/N1Xi6Gc0Zq4xZYUtVA9pF4Kh4+41PxWoETi1ruobHRkMho7q4k7R4+c+UmxcWSfMSbCWTPEDQf4Mi1WgcS/cJ7epFBm4ubvLdHvTiTdACUYWBmdopIeEvh7yJmI1FbgxMqI9BRzEJhW7u5VJuS/Zgtsy/UK+DonX0=
+	t=1708799288; cv=none; b=lM5sYY+TVIARQJvY2w1GzkfhNDDQdpurS2BPY+h5wvx3XHwOl1vUGYvgmRBKKW2eu9gu4MfyTlUxDypVAnuKwFgxJOS2pV6KzctmZt00zxbbOqLARVLx8IqOwWQP+fWPJZvLrjz/2FqwYmnH+bFBy/KSS22lB2zti1ItQXjNSXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708799157; c=relaxed/simple;
-	bh=6qIEIBbnamDZsAni6xH7hZKxfCne9tGbYo0M8AKGDio=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KhY2+NnKDJbcWdPT0f6ngU76UjUIL3NZY1O1ZAJANC//v3P/hAt/x3j/JfQeNL10qxutsS5MuRoRjZzGvyQg7dmHl1VRMVtIxQkX9a3N0f38O6E1NVUKSpziF9devTwv9wXQlVJBKPmdOU6MAKEiGpVkjuiPuMuAtHSOnDrAPQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YVCvPsWZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C6C8C433F1;
-	Sat, 24 Feb 2024 18:25:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708799157;
-	bh=6qIEIBbnamDZsAni6xH7hZKxfCne9tGbYo0M8AKGDio=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=YVCvPsWZZua6/EShBz8R/yPVNFZgPS7hwwx/yOw2+RNybu73DsqPNUUIEvGMdcKbU
-	 2VmM5V1TCIn7qi9VrAm4Qjr6NmvJAFBGjwSRtJpjV/2ZImtutGUiAMkAreBGvgPWSy
-	 05XCSl0qXWm3JzYiITqFOv0V+5POcPJSX2th2alnJUxn97gYR8wG/BkU4ykfEynJUK
-	 5WAqIVBzsHylv+sMow3TY0dBsY4WIiM4HPRWyq3UiaJJ/RKsNz96zVYLcUd8w8h/Ll
-	 Apaoow/NAu3pJROifOTjB3ndsS4iAsi9Fosdhwgr7KVVF3b6G4/bpwjDkq4ixzexCj
-	 CfDHhdlgmPlvQ==
-Date: Sat, 24 Feb 2024 18:25:41 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Li peiyu <579lpy@gmail.com>, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org
-Subject: Re: [PATCH 4/4] iio: humidity: hdc3020: add reset management
-Message-ID: <20240224182541.577133a5@jic23-huawei>
-In-Reply-To: <20240220-hdc3020-pm-v1-4-d8e60dbe79e9@gmail.com>
-References: <20240220-hdc3020-pm-v1-0-d8e60dbe79e9@gmail.com>
-	<20240220-hdc3020-pm-v1-4-d8e60dbe79e9@gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708799288; c=relaxed/simple;
+	bh=4jZ/BLa1iPoTrZvcjp+5vmhJc+TXEuPgx41L+2YC7jo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=bxPG5+aeQw8WKj245IkvF7O/WeOVw8tv+lghp07jiVHgxIq8y0G1oxFlwEzTalZr/XKMM1wpCjSLYT6IYCfJKEjJ08DHrVlaDNRR5w1ZtyOgo8yrdaqqmo60LF4T16vSfMSuJsJf9G1QSKZ5U0jSEqZXen9hXQ7vWNwfi3vSxs8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mail.parknet.co.jp; spf=pass smtp.mailfrom=parknet.co.jp; arc=none smtp.client-ip=210.171.160.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mail.parknet.co.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=parknet.co.jp
+Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
+	by mail.parknet.co.jp (Postfix) with ESMTPSA id E70D3233CCB9;
+	Sun, 25 Feb 2024 03:27:57 +0900 (JST)
+Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
+	by ibmpc.myhome.or.jp (8.18.1/8.18.1/Debian-1) with ESMTPS id 41OIRsU4094238
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Sun, 25 Feb 2024 03:27:55 +0900
+Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
+	by devron.myhome.or.jp (8.18.1/8.18.1/Debian-1) with ESMTPS id 41OIRsIi308651
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Sun, 25 Feb 2024 03:27:54 +0900
+Received: (from hirofumi@localhost)
+	by devron.myhome.or.jp (8.18.1/8.18.1/Submit) id 41OIRsIL308642;
+	Sun, 25 Feb 2024 03:27:54 +0900
+From: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: chengming.zhou@linux.dev, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        vbabka@suse.cz, roman.gushchin@linux.dev, Xiongwei.Song@windriver.com,
+        Chengming Zhou
+ <zhouchengming@bytedance.com>
+Subject: Re: [PATCH] fat: remove SLAB_MEM_SPREAD flag usage
+In-Reply-To: <20240224134828.829481-1-chengming.zhou@linux.dev> (chengming
+	zhou's message of "Sat, 24 Feb 2024 13:48:28 +0000")
+References: <20240224134828.829481-1-chengming.zhou@linux.dev>
+Date: Sun, 25 Feb 2024 03:27:54 +0900
+Message-ID: <87msrpaf9x.fsf@mail.parknet.co.jp>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On Tue, 20 Feb 2024 22:14:58 +0100
-Javier Carrasco <javier.carrasco.cruz@gmail.com> wrote:
+chengming.zhou@linux.dev writes:
 
-> The HDC3020 provides an active low reset signal that must be handled if
-> connected. Asserting this signal turns the device into Trigger-on Demand
-> measurement mode, reducing its power consumption when no measurements
-> are required like in low-power modes.
-> 
-> According to the datasheet, the longest "Reset Ready" is 3 ms, which is
-> only taken into account if the reset signal is defined.
-> 
-> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Rest of this series looks good to me.
+> From: Chengming Zhou <zhouchengming@bytedance.com>
+>
+> The SLAB_MEM_SPREAD flag is already a no-op as of 6.8-rc1, remove
+> its usage so we can delete it from slab. No functional change.
+>
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 
-Hopefully you'll soon have a sensible base and can drop patch 1.
-Ideal is Greg takes my pull request shortly and I rebase the tree
-asap so that I can get a clean base for a second pull request late
-this week.  The aim is 1 week in linux-next (usually in via char-misc
-not my tree) before the merge window opens.  So busy week ;)
+Looks good.
 
-Thanks,
+Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
 
-Jonathan
+Thanks.
+
+> ---
+>  fs/fat/cache.c | 2 +-
+>  fs/fat/inode.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/fat/cache.c b/fs/fat/cache.c
+> index 738e427e2d21..2af424e200b3 100644
+> --- a/fs/fat/cache.c
+> +++ b/fs/fat/cache.c
+> @@ -47,7 +47,7 @@ int __init fat_cache_init(void)
+>  {
+>  	fat_cache_cachep = kmem_cache_create("fat_cache",
+>  				sizeof(struct fat_cache),
+> -				0, SLAB_RECLAIM_ACCOUNT|SLAB_MEM_SPREAD,
+> +				0, SLAB_RECLAIM_ACCOUNT,
+>  				init_once);
+>  	if (fat_cache_cachep == NULL)
+>  		return -ENOMEM;
+> diff --git a/fs/fat/inode.c b/fs/fat/inode.c
+> index 5c813696d1ff..d9e6fbb6f246 100644
+> --- a/fs/fat/inode.c
+> +++ b/fs/fat/inode.c
+> @@ -787,7 +787,7 @@ static int __init fat_init_inodecache(void)
+>  	fat_inode_cachep = kmem_cache_create("fat_inode_cache",
+>  					     sizeof(struct msdos_inode_info),
+>  					     0, (SLAB_RECLAIM_ACCOUNT|
+> -						SLAB_MEM_SPREAD|SLAB_ACCOUNT),
+> +						SLAB_ACCOUNT),
+>  					     init_once);
+>  	if (fat_inode_cachep == NULL)
+>  		return -ENOMEM;
+
+-- 
+OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
 
