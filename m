@@ -1,127 +1,92 @@
-Return-Path: <linux-kernel+bounces-79545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A6D18623F3
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 10:33:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2630E8623F4
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 10:37:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4BC81F21AA0
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 09:33:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC2F12842A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 09:37:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C34571AAD7;
-	Sat, 24 Feb 2024 09:33:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="U/5SIqsF"
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B4C31B81E;
+	Sat, 24 Feb 2024 09:37:05 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C039817995
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 09:33:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85C8A4C9F
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 09:37:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708767182; cv=none; b=EN99949+HggsxAJEYubyaKl3TZbAVz4N4vOka1du/PnPcUqqKLSIGSajyej4QXVINOZPhzHlUbBw1W0rHQ4pcwA3ZB1mjot2Oe4AsuS73kZJF8HhjZe8y+zj7BF4xg0k35+KKXzZjDHyqkkUDoFCQDheCsDszMUYpfVRh68eHMk=
+	t=1708767424; cv=none; b=fsZUQ4h/q6GeKRMD8cFzhuatWPIoZDD2so8fAC3gVOx1hIhdZ8GvHWVGHFDBu0c+l94N94AY4e2lWbtADh79NuB++zrHw/OoZsC57kuuA9d8GFDa3TjRXUEESB5GjRvj2BX7p3m9rjkda7A+v1GU4kJpzf5o6zqCiN3P4Y2trTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708767182; c=relaxed/simple;
-	bh=yobnoCxe2oqRMlBuWssGh9lK2tMG7dzpuL0hIybyM5g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RSp8WD0WHmsiYcPLFSI8rKRIq/IL2v+9HmMOW3iGdO/dqT/sU30e21gCjdXyr+g9bHE2pp+ptl9owD8H7wBid4EflzhyP+v21lbQ8mmHa4ENPmIq5AWx80mUSvzy3M1ifNV2owhB8PQWYtRiEa6Qal9I/5ZGfTVPCHCXTRa68Ec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=U/5SIqsF; arc=none smtp.client-ip=91.218.175.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e63166ef-4aff-485d-8c32-4e4ad3384563@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708767178;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=w5CbQ+eZHnRkInbsJ83G0MenQ1/0DqwIekM9Cx5ZW3Q=;
-	b=U/5SIqsFSOxdX9GeE99DeSkUhKxMm/M0NSpx9+5xsxSOO1n5b15ZC8EFMT+rEzKVxB4Lt+
-	VrjYjDqNIBkmBxH6SyVOb3vrsFc+QTsASp9Ec7GM5Edjh5YRJoWkpBSv6csOOnIZYHvMTC
-	ZWvRiGBP7jrM7SjZDQUBn/z6wegbKOw=
-Date: Sat, 24 Feb 2024 17:32:20 +0800
+	s=arc-20240116; t=1708767424; c=relaxed/simple;
+	bh=bQcvBHdiqv3sc7EMZ18rDY7euDY+0vzbiFh1lTvFOc0=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=s8i/NZyRtyLH73TRFkft/4SHuRBrkcCiEsx6HtaQ/Wc0mtkNGl44hd6CnYoUkIV3s51WQ7TfFYC5m+ZR06/Ewz0uW4bVoQuS6AXKOwY3cVU0nu+EWghj6rChEBpf2/qkcYXm/Kq2qczqwn43Sqktmy8DeaVGVs94ccHRfaIrP44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36520abf45eso15850815ab.2
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 01:37:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708767422; x=1709372222;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bG7CeMIcBz4R8ZPtnOBeZeGddzoAFYbCqM2qbx+aFUk=;
+        b=Dcqgq71gNqeYLMGOxLbOJAhR7nZtTTPtzBbpi9YStEDl0+1zVh0JhlI5k1syAlmO3Y
+         97KpXB6FdZBsc6GiPpPL2PwTIN/it3hYOt2L7Ao+2XdWN6XMy+2npUklRPJ9tTBoHabc
+         d96mB0+UWqE3Y7aoUyJEF08JaWWzVUvvWhyzsT/jTtUlu1USCxQAWaZspgyRel7pmeCq
+         /JOSgHJs2kE3xXGVQeRweE860bsiZIlsuNqYqQb9diP/wn5aC8ebJijTYIs1/EzLmfPH
+         +qQY+xUnzDefs2AZ8DxrrfgLEYQB9nYakq6Fv4Y3wSB50NbEvAikOV/PRnM53rc9dC5f
+         l1RA==
+X-Forwarded-Encrypted: i=1; AJvYcCUdppXfN3LA1yXnnArv3O33OsY6vNwmAK8HjxmPoHASfsd/isnqU3ObCwh9q9Zwb/VjPFAyndDn+YAjm9KM6MpkgqZHNelxB/vU4D0S
+X-Gm-Message-State: AOJu0YxTV8icEfrhqyDcxcbviTmYJwvFVFkUHOp6cAjkegHptV5LeHix
+	Qmhc8aqE0Tveq6GEaNo5lcZw9MZLBntD+4z/fSeqJoqwNWa1bltN/a6USTDWhd0dPJwZsmNlhJk
+	5BTwz/6wDDym3+8pG/M7MN7P6UjG/CVYv8CK9LvH177RKJx9UFCOvZuE=
+X-Google-Smtp-Source: AGHT+IEG4Kedn7F25zgN4YUskZq2LX2rfkeUfsalxNe/VS6JPzQ2RdSSdm5g6h0m31uE7VgpGMxYnyG3dRO63YrdzJUIq1ZriKy9
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/3] mm, slab: deprecate SLAB_MEM_SPREAD flag
-Content-Language: en-US
-To: Vlastimil Babka <vbabka@suse.cz>,
- "Song, Xiongwei" <Xiongwei.Song@windriver.com>,
- Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
- David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>, Andrey Ryabinin
- <ryabinin.a.a@gmail.com>, Alexander Potapenko <glider@google.com>,
- Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
- Vincenzo Frascino <vincenzo.frascino@arm.com>,
- Zheng Yejian <zhengyejian1@huawei.com>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
- Steven Rostedt <rostedt@goodmis.org>
-References: <20240220-slab-cleanup-flags-v1-0-e657e373944a@suse.cz>
- <20240220-slab-cleanup-flags-v1-1-e657e373944a@suse.cz>
- <ZdZBN_K8yJTVIbtC@P9FQF9L96D.corp.robot.car>
- <CO1PR11MB51854DA6F03753F12A540293EC562@CO1PR11MB5185.namprd11.prod.outlook.com>
- <7e27b853-e10f-4034-bc81-2d5e5a03361a@linux.dev>
- <beb2b051-af97-4a6a-864c-e2c03cd8f624@suse.cz>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <beb2b051-af97-4a6a-864c-e2c03cd8f624@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6e02:12c8:b0:363:a059:670b with SMTP id
+ i8-20020a056e0212c800b00363a059670bmr130398ilm.4.1708767422776; Sat, 24 Feb
+ 2024 01:37:02 -0800 (PST)
+Date: Sat, 24 Feb 2024 01:37:02 -0800
+In-Reply-To: <000000000000cf826706067d18fd@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003d0afb06121d6b34@google.com>
+Subject: Re: [syzbot] [btrfs?] WARNING in btrfs_release_global_block_rsv
+From: syzbot <syzbot+10e8dae9863cb83db623@syzkaller.appspotmail.com>
+To: anand.jain@oracle.com, brauner@kernel.org, clm@fb.com, dsterba@suse.com, 
+	johannes.thumshirn@wdc.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	nborisov@suse.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 2024/2/24 00:41, Vlastimil Babka wrote:
-> On 2/22/24 03:32, Chengming Zhou wrote:
->> On 2024/2/22 09:10, Song, Xiongwei wrote:
->>> Hi Vlastimil,
->>>
->>>> On Tue, Feb 20, 2024 at 05:58:25PM +0100, Vlastimil Babka wrote:
->>>> 0;95;0c> The SLAB_MEM_SPREAD flag used to be implemented in SLAB, which was
->>>>> removed.  SLUB instead relies on the page allocator's NUMA policies.
->>>>> Change the flag's value to 0 to free up the value it had, and mark it
->>>>> for full removal once all users are gone.
->>>>>
->>>>> Reported-by: Steven Rostedt <rostedt@goodmis.org>
->>>>> Closes: https://lore.kernel.org/all/20240131172027.10f64405@gandalf.local.home/
->>>>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
->>>>
->>>> Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
->>>>
->>>> Do you plan to follow up with a patch series removing all usages?
->>>
->>> If you are not available with it, I can do.
->>
->> Actually, I have done it yesterday. Sorry, I just forgot this task. :)
->>
->> I plan to send out it after this series merged in the slab branch. And
->> I'm wondering is it better to put all diffs in one huge patch or split
->> every diff to each patch?
-> 
-> I'd suggest you do a patch per subsystem (mostly different filesystems) and
-> send them out to respective maintainers to pick in their trees. I've talked
-> to David from btrfs and he suggested this way.
+syzbot suspects this issue was fixed by commit:
 
-Ok, will send out individually.
+commit a6a8f22a4af6c572d9e01ca9f7b515bf0cbb63b1
+Author: Josef Bacik <josef@toxicpanda.com>
+Date:   Wed Nov 22 17:17:40 2023 +0000
 
-> 
-> You don't need to wait for this series to be merged. The flag is already a
-> no-op as of 6.8-rc1. Also I'd suggest sending the patches individually. In a
-> series they wouldn't depend on each other anyway, and you would either have
-> to Cc maintainers separately per patch of the series, or everyone on
-> everything, and there would always be somebody who would prefer the other
-> way that you pick.
+    btrfs: move space cache settings into open_ctree
 
-Right, thanks for your instructions!
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=100fec54180000
+start commit:   23dfa043f6d5 Merge tag 'i2c-for-6.7-rc2' of git://git.kern..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d05dd66e2eb2c872
+dashboard link: https://syzkaller.appspot.com/bug?extid=10e8dae9863cb83db623
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17722e24e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11201350e80000
 
-> 
->> Thanks!
-> 
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: btrfs: move space cache settings into open_ctree
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
