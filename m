@@ -1,117 +1,160 @@
-Return-Path: <linux-kernel+bounces-79569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 518B186244F
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:37:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 373C3862451
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:41:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07A6028282C
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 10:37:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9DCA4B21A61
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 10:41:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6C6D3D75;
-	Sat, 24 Feb 2024 10:37:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A55122EE3;
+	Sat, 24 Feb 2024 10:41:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bewilderbeest.net header.i=@bewilderbeest.net header.b="XuZ0DvGR"
-Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [71.19.156.171])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uq2+nPV2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC9A622301;
-	Sat, 24 Feb 2024 10:37:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=71.19.156.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB0041B59C;
+	Sat, 24 Feb 2024 10:41:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708771045; cv=none; b=SbqPpsGaZLvGLuh8bvwJUiTda7w0t/4fSLUZrfp4N78nAoMH+asHKlaBocDGiA0RSpcMgrHgKKSLwiZbPK4lKHkiwBq2xAxvQzhnYg5redT25PR0ggUufRZT73geYf2CkKk1xmVDjhLiAiyOtSswGGtvhqKvNrsQN3jcvuL8P98=
+	t=1708771300; cv=none; b=LoFuZZ5C7OLbjlH4WDbm9QK8b2LxHkUr6u/xWtMsQtLOC1zDUVciOUtmVHsA0VspTgr/cGSWbGZV8nMQwfbcrZZsgWd23YZI6ICpMptux1cslf6BYidLnNkFMcsd4DZs29GWbKDjWPBkEDXDgzaGPHQkssLgKLI/eUu2ecThWaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708771045; c=relaxed/simple;
-	bh=fWqZNEar9N0goNDbvcwSQjOGSY3rI92CNJCz+cIZIDw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Xjy3g5GFTnpZgIt9zUc60q+9y7t6vph9qH6EUiMJzyldEynCYAqqY1fx6gH4KSvRgYRpMhal8mC4btHoCxQddEWq/OB9QWIgkvYShmpr26pkZT3SQ8JqLw6aYczarQFUtiM+0r071JNDP1afB13UelJgWP2Fo3j4w15ead4e0vA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bewilderbeest.net; spf=pass smtp.mailfrom=bewilderbeest.net; dkim=pass (1024-bit key) header.d=bewilderbeest.net header.i=@bewilderbeest.net header.b=XuZ0DvGR; arc=none smtp.client-ip=71.19.156.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bewilderbeest.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bewilderbeest.net
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:61:712b:6300::2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: zev)
-	by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 72D8A33F;
-	Sat, 24 Feb 2024 02:37:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-	s=thorn; t=1708771041;
-	bh=WAN0Rojvl/Ox9LSN3FFZ7ka8EkTa4ejvkvMOzuGgctA=;
-	h=From:To:Cc:Subject:Date:From;
-	b=XuZ0DvGR63N+RR4B7W1fM8PVo6V1ltV0vx5hyhT+cd9hr8wCNbrwSkelG9y9ZsFGq
-	 OVha8HXII8JEw9Hg7FXCGiacGhQmR0PRUalZHl3YEPs+i8CdsJrH8+nzIt3c2sTAdR
-	 CEPSCnXwtNPPgFNVyXSg8VdWAJ08hsCBmbV5YwbY=
-From: Zev Weiss <zev@bewilderbeest.net>
-To: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Joel Stanley <joel@jms.id.au>
-Cc: Zev Weiss <zev@bewilderbeest.net>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	devicetree@vger.kernel.org,
+	s=arc-20240116; t=1708771300; c=relaxed/simple;
+	bh=El8Tx8z+w76H7TlIq7DwaR1/BFADl77wHAkdidcCCz8=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MDuiEca6lIWBxyZadc/Q82ccyj4QV3ZYlJFjG9Lzr3W4hn6TyV8q86tKL1pgGQmFU6F3Oi3bAKwVSWkjMrUP1Khop4JEMNdjXwJ14MbOTR0csHmD5SvnTHJZDQuVFA2XvjUCid3KJrUctMegy/wgtFTEqklgnXdkRXPL+i94Qo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uq2+nPV2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C44DC433F1;
+	Sat, 24 Feb 2024 10:41:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708771300;
+	bh=El8Tx8z+w76H7TlIq7DwaR1/BFADl77wHAkdidcCCz8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Uq2+nPV2qDwwRd+8SJWZySXM2Z+a7VuqZIuLvLBUsVm72UcgEzLzd6O+4FgUsAwol
+	 dqSU6YsThde29eWsnyRpckCzQWrMh8NwZ7zOdzesnILnuKtbLwbt4DN/6QzvUvsJ0e
+	 oXasKsvHbQwZlCRpVVAc2WkvEgkcoVfNh67W5HiWgWo0JpXxBGSur4dfWen0AiUUfC
+	 3kfS5OVx9+qfov6D0xne2nZimNoepeBVtGcZkSg3lePyOkiF6hqWNp04b3YSf5uSlu
+	 IdiIKAZCMeHXcHYijfvEsbPgplSdwgj1TFVfOVD9lymGN9NPZkn5dZMHr9mFV+/uvj
+	 O+cyHr8F1D4GQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rdpTN-006Lh6-RL;
+	Sat, 24 Feb 2024 10:41:37 +0000
+Date: Sat, 24 Feb 2024 10:41:36 +0000
+Message-ID: <87bk869man.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Oliver Upton <oliver.upton@linux.dev>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	Zenghui Yu <yuzenghui@huawei.com>,
 	linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: dts: aspeed: Add vendor prefixes to lm25066 compat strings
-Date: Sat, 24 Feb 2024 02:37:07 -0800
-Message-ID: <20240224103712.20864-2-zev@bewilderbeest.net>
-X-Mailer: git-send-email 2.43.2
+	linux-kernel@vger.kernel.org,
+	kvmarm@lists.linux.dev,
+	Jing Zhang <jingzhangos@google.com>
+Subject: Re: [PATCH 3/3] irqchip/gic-v3-its: Print the vPE table installed in redistributor
+In-Reply-To: <20240219185809.286724-4-oliver.upton@linux.dev>
+References: <20240219185809.286724-1-oliver.upton@linux.dev>
+	<20240219185809.286724-4-oliver.upton@linux.dev>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, tglx@linutronix.de, yuzenghui@huawei.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, jingzhangos@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-Due to the way i2c driver matching works (falling back to the driver's
-id_table if of_match_table fails) this didn't actually cause any
-misbehavior, but let's add the vendor prefixes so things actually work
-the way they were intended to.
+On Mon, 19 Feb 2024 18:58:08 +0000,
+Oliver Upton <oliver.upton@linux.dev> wrote:
+>=20
+> Hindsight is 20/20 of course, but the recent vPE table programming bug
+> could've been root caused a bit more quickly if we print the table
+> getting installed at every redistributor.
+>=20
+> Promote to pr_info() and add some additional context, such as the
+> provenance of the installed vPE table.
+>=20
+> Signed-off-by: Oliver Upton <oliver.upton@linux.dev>
+> ---
+>  drivers/irqchip/irq-gic-v3-its.c | 16 +++++++++++-----
+>  1 file changed, 11 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v=
+3-its.c
+> index 63d1743f08cc..c3ef9665a2ad 100644
+> --- a/drivers/irqchip/irq-gic-v3-its.c
+> +++ b/drivers/irqchip/irq-gic-v3-its.c
+> @@ -2835,7 +2835,8 @@ static int allocate_vpe_l1_table(void)
+>  	u64 val, gpsz, npg, pa;
+>  	unsigned int psz =3D SZ_64K;
+>  	unsigned int np, epp, esz;
+> -	struct page *page;
+> +	struct page *page =3D NULL;
+> +	bool from_its =3D false;
+> =20
+>  	if (!gic_rdists->has_rvpeid)
+>  		return 0;
+> @@ -2865,8 +2866,10 @@ static int allocate_vpe_l1_table(void)
+>  		return -ENOMEM;
+> =20
+>  	val =3D inherit_vpe_l1_table_from_its();
+> -	if (val & GICR_VPROPBASER_4_1_VALID)
+> +	if (val & GICR_VPROPBASER_4_1_VALID) {
+> +		from_its =3D true;
+>  		goto out;
+> +	}
 
-Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
----
- arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-romed8hm3.dts | 4 ++--
- arch/arm/boot/dts/aspeed/aspeed-bmc-delta-ahe50dc.dts    | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+nit:
+	from_its =3D val & GICR_VPROPBASER_4_1_VALID;
+	if (from_its)
+		...
 
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-romed8hm3.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-romed8hm3.dts
-index 4554abf0c7cd..9aa2de3723b5 100644
---- a/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-romed8hm3.dts
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-romed8hm3.dts
-@@ -98,14 +98,14 @@ w83773g@4c {
- 
- 	/* IPB PMIC */
- 	lm25066@40 {
--		compatible = "lm25066";
-+		compatible = "ti,lm25066";
- 		reg = <0x40>;
- 		shunt-resistor-micro-ohms = <1000>;
- 	};
- 
- 	/* 12VSB PMIC */
- 	lm25066@41 {
--		compatible = "lm25066";
-+		compatible = "ti,lm25066";
- 		reg = <0x41>;
- 		shunt-resistor-micro-ohms = <10000>;
- 	};
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-delta-ahe50dc.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-delta-ahe50dc.dts
-index 6600f7e9bf5e..e830fec0570f 100644
---- a/arch/arm/boot/dts/aspeed/aspeed-bmc-delta-ahe50dc.dts
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-delta-ahe50dc.dts
-@@ -14,7 +14,7 @@ efuse##n {					\
- 
- #define EFUSE(hexaddr, num)							\
- 	efuse@##hexaddr {							\
--		compatible = "lm25066";						\
-+		compatible = "ti,lm25066";					\
- 		reg = <0x##hexaddr>;						\
- 		shunt-resistor-micro-ohms = <675>;				\
- 		regulators {							\
--- 
-2.43.2
+> =20
+>  	/* First probe the page size */
+>  	val =3D FIELD_PREP(GICR_VPROPBASER_4_1_PAGE_SIZE, GIC_PAGE_SIZE_64K);
+> @@ -2945,9 +2948,12 @@ static int allocate_vpe_l1_table(void)
+>  	gicr_write_vpropbaser(val, vlpi_base + GICR_VPROPBASER);
+>  	cpumask_set_cpu(smp_processor_id(), gic_data_rdist()->vpe_table_mask);
+> =20
+> -	pr_debug("CPU%d: VPROPBASER =3D %llx %*pbl\n",
+> -		 smp_processor_id(), val,
+> -		 cpumask_pr_args(gic_data_rdist()->vpe_table_mask));
+> +	pr_info("CPU%d: Using %s vPE table @%llx (%s)\n",
+> +		smp_processor_id(),
+> +		(val & GICR_VPROPBASER_4_1_INDIRECT) ? "indirect" : "direct",
+> +		val & GICR_VPROPBASER_4_1_ADDR,
+> +		(page) ? "allocated" :
+> +			 ((from_its) ? "inherited from ITS" : "inherited from RD"));
 
+=46rom past experience, having the vpe_table_mask value displayed did
+help tracking VPE table affinity bugs.
+
+This said, my problem with this patch is that we already have tons of
+these statement printed once per CPU/RD. This is really huge and
+accounts for a significant part of the boot time on large machines
+(64+ CPUs).
+
+Before we add more of those, I'd really want to have a way to tone
+them down and only print them at runtime *if* required by the user.
+Kind of a dymanic debug, but driven from the command-line and present
+early enough.
+
+What do you think?
+
+	M.
+
+--=20
+Without deviation from the norm, progress is not possible.
 
