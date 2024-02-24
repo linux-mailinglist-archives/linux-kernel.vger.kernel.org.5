@@ -1,114 +1,180 @@
-Return-Path: <linux-kernel+bounces-79577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AF6B862467
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:10:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 14B0086246B
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:11:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B624281DCE
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:10:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEEC7283B4F
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:11:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8E0E24B59;
-	Sat, 24 Feb 2024 11:10:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C1B325575;
+	Sat, 24 Feb 2024 11:11:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ir74/rFK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FiNZ2KZ0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 387312260B;
-	Sat, 24 Feb 2024 11:10:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FFFC2260B;
+	Sat, 24 Feb 2024 11:11:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708773025; cv=none; b=a502LBAUQLj1jEDoqxnh1STfZ/oOAX+5yjcXxa4VyoREkYCbe9GRX70lYRbe5Q1unyGFK6DjHs7njplcEL24kROwfwLzJ7coGYusmdZjn6mLFVFIYLQZQZePg6yGq0pp+gXc9tBMDufZS11vElVKX7QVATDrEnR5wahejw6ACB4=
+	t=1708773100; cv=none; b=HQzWhTyTak1X7M0qd1rR7Dt2wO4JCvOZTJATWsP2KDcteOXVXIwM6KlS/poy2RCncCeJo7mQzc196pqO+VgdXVQeUoF0m5x0ePLT7hKss11/XvGRuOox9jbIGafsme3LQj2zCOEvQb/b9+Hftau+mUHWFKLjkIqA3avbwXT1LTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708773025; c=relaxed/simple;
-	bh=m49QT+idwaeh0In0nycFo1IXbGgzrKJZswe/n72NjQ0=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JhPCbpU2hyEvSR7hWMQVakj3PlvchX/oFpisFiD87OcK6q+uTGgujz8kMwhFCPn4j08siOKsCdao6FidGPtauzAKsyFUhYuBsqkB5XTEKQ8Y4OrimB7xs1BaFxpxmPwxNoxdroHqyc1nhDadNu2dE/PLsHUpCEQxE/LnNHjwa+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ir74/rFK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A83E2C433C7;
-	Sat, 24 Feb 2024 11:10:24 +0000 (UTC)
+	s=arc-20240116; t=1708773100; c=relaxed/simple;
+	bh=TAtRQi+l4Sj9/DzrNgyATnGTs3432p6TwmIDVHp3tnQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=K2he6P4lacyl3B+IAH7IQFfpmOex4KZhpgQERhMPD4mbLVyvB/snvXNfPE3/pJzxe6F4n3S2oPO6EcAnCuDymhftL2cjossr+sBwhvBOOQ1bohcRN8Dcj7v653k1JuLovM8AgQhPCOs04/2qI1VtlpazxtdTGy4LvteMK0Rlcp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FiNZ2KZ0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C582C433C7;
+	Sat, 24 Feb 2024 11:11:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708773024;
-	bh=m49QT+idwaeh0In0nycFo1IXbGgzrKJZswe/n72NjQ0=;
+	s=k20201202; t=1708773100;
+	bh=TAtRQi+l4Sj9/DzrNgyATnGTs3432p6TwmIDVHp3tnQ=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Ir74/rFKX8LjcfnIudalqZ1q8xK5ha8zdz5j+QLlCC8o6JgVifNggcG1W94cbzOVu
-	 aJlVZyGxmLQvvBvTT5seofDYJ9pGay8h9ByZ1XehfNL/Vy/n03E2FhmOL0EAGNTMbs
-	 O8HA2DxYhETMakF6o/DmbB7i+qywv0VScrOOUJHOihvyZvqMu9jvEgKH/h7ww6IQNR
-	 f96Ha9M8h2vdm01olw1R6sILnsYPSzWvF6pqhXG16F54P9gdZq/Ni/x7XPreIGqFAA
-	 +Tp5yboP34eASil67VQIlW8yUt0u9lxXyc3C7uCJPxBdKb9IQh91IRip29etG1Gpdw
-	 nXnpmK73ld0CA==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rdpvC-006Lvp-JE;
-	Sat, 24 Feb 2024 11:10:22 +0000
-Date: Sat, 24 Feb 2024 11:10:21 +0000
-Message-ID: <87a5nq9kyq.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Oliver Upton <oliver.upton@linux.dev>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	kvmarm@lists.linux.dev,
-	Jing Zhang <jingzhangos@google.com>
-Subject: Re: [PATCH 2/3] irqchip/gic-v3-its: Spin off GICv4 init into a separate function
-In-Reply-To: <ZdnM0DDsGCTPMpwl@linux.dev>
-References: <20240219185809.286724-1-oliver.upton@linux.dev>
-	<20240219185809.286724-3-oliver.upton@linux.dev>
-	<87cysm9mtv.wl-maz@kernel.org>
-	<ZdnM0DDsGCTPMpwl@linux.dev>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	b=FiNZ2KZ0ZxiYZruinUZyso9Fz1N0ZcOZzBhGQFTR3Lh3X/6Ph73xSFyK/fgicmNWS
+	 Gi3lJGNE8W/BMaGr7zljo3aAh777rZpIBek+0YlChC1neCVhXfxIMLBdG1gmXfvVZw
+	 Vs29PQpkNop3NNoh1maQE2/jl1R4j7Vkw1U6rrzSKiYvqVmYdltJ3lnA98g2phaxCC
+	 9f11SiN2wFWyM7vDJ723+jv0ZpYfU7JGpdQ/yZLZTpncvD7VFo0bBRpVAYtTiohHQz
+	 A4W8uLpN35jC8QIjE5PIPcui5/ydIHO8HgwrGNYoEoCBES1lIK52qSfw+8U7gMjAbZ
+	 AjbHTPoTzvJAg==
+Date: Sat, 24 Feb 2024 11:11:25 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Max Filippov <jcmvbkbc@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-gpio@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>, Bartosz
+ Golaszewski <brgl@bgdev.pl>, Kent Gibson <warthog618@gmail.com>, Lars-Peter
+ Clausen <lars@metafoo.de>, stable@vger.kernel.org
+Subject: Re: [PATCH v2] kbuild: tools: drop overridden CFLAGS from
+ MAKEOVERRIDES
+Message-ID: <20240224111125.6e17305c@jic23-huawei>
+In-Reply-To: <CAMo8BfLXW1tYG9bNQZciBC+NSS+1debXLSYkjNOQe200+aWFEg@mail.gmail.com>
+References: <20240131042509.4034723-1-jcmvbkbc@gmail.com>
+	<CAMo8BfLXW1tYG9bNQZciBC+NSS+1debXLSYkjNOQe200+aWFEg@mail.gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, tglx@linutronix.de, yuzenghui@huawei.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, jingzhangos@google.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 24 Feb 2024 11:02:40 +0000,
-Oliver Upton <oliver.upton@linux.dev> wrote:
-> 
-> On Sat, Feb 24, 2024 at 10:30:04AM +0000, Marc Zyngier wrote:
-> > On Mon, 19 Feb 2024 18:58:07 +0000, Oliver Upton <oliver.upton@linux.dev> wrote:
-> > > @@ -3193,7 +3210,8 @@ static void its_cpu_init_lpis(void)
-> > >  		 * ancient programming gets left in and has possibility of
-> > >  		 * corrupting memory.
-> > >  		 */
-> > > -		val = its_clear_vpend_valid(vlpi_base, 0, 0);
-> > > +		its_clear_vpend_valid(vlpi_base, 0, 0);
-> > > +		return;
-> > 
-> > I'm not sure about the necessity of this return statement.
-> > allocate_vpe_l1_table() checks for rvpeid already, so it should be
-> > fine to carry on.
-> 
-> Yup, definitely not necessary. My aim was to have the control flow make
-> it a bit more obvious to the reader what's going on.
-> 
-> Having what reads as an allocation helper do a feature check isn't
-> entirely obvious.
-> 
-> I have no opinion either way though.
+On Wed, 21 Feb 2024 20:47:33 -0800
+Max Filippov <jcmvbkbc@gmail.com> wrote:
 
-You could move the if (allocate_vpe_l1_table()) as an 'else' branch,
-as the two are mutually exclusive.
+> Ping?
+>=20
+> On Tue, Jan 30, 2024 at 8:25=E2=80=AFPM Max Filippov <jcmvbkbc@gmail.com>=
+ wrote:
+> >
+> > Some Makefiles under tools/ use the 'override CFLAGS +=3D ...' construct
+> > to add a few required options to CFLAGS passed by the user.
+> > Unfortunately that only works when user passes CFLAGS as an environment
+> > variable, i.e.
+> >   CFLAGS=3D... make ...
+> > and not in case when CFLAGS are passed as make command line arguments:
+> >   make ... CFLAGS=3D...
+> > It happens because in the latter case CFLAGS=3D... is recorded in the m=
+ake
+> > variable MAKEOVERRIDES and this variable is passed in its original form
+> > to all $(MAKE) subcommands, taking precedence over modified CFLAGS value
+> > passed in the environment variable. E.g. this causes build failure for
+> > gpio and iio tools when the build is run with user CFLAGS because of
+> > missing _GNU_SOURCE definition needed for the asprintf().
+> >
+> > One way to fix it is by removing overridden variables from the
+> > MAKEOVERRIDES. Add macro 'drop-var-from-overrides' that removes a
+> > definition of a variable passed to it from the MAKEOVERRIDES and use it
+> > to fix CFLAGS passing for tools/gpio and tools/iio.
+> >
+> > This implementation tries to be precise in string processing and handle
+> > variables with embedded spaces and backslashes correctly. To achieve
+> > that it replaces every '\\' sequence with '\-' to make sure that every
+> > '\' in the resulting string is an escape character. It then replaces
+> > every '\ ' sequence with '\_' to turn string values with embedded spaces
+> > into single words. After filtering the overridden variable definition
+> > out of the resulting string these two transformations are reversed.
+> >
+> > Cc: stable@vger.kernel.org
+> > Fixes: 4ccc98a48958 ("tools gpio: Allow overriding CFLAGS")
+> > Fixes: 572974610273 ("tools iio: Override CFLAGS assignments")
+> > Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+I'm fine with this, but it's out of my area of expertise - rarely
+write Makefiles etc!  So I'd like some more inputs from others.
 
-Thanks,
+With that in mind,
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-	M.
 
--- 
-Without deviation from the norm, progress is not possible.
+> > ---
+> > Changes v1->v2:
+> > - make drop-var-from-overrides-code work correctly with arbitrary
+> >   variables, including thoses ending with '\'.
+> >
+> >  tools/gpio/Makefile            | 1 +
+> >  tools/iio/Makefile             | 1 +
+> >  tools/scripts/Makefile.include | 9 +++++++++
+> >  3 files changed, 11 insertions(+)
+> >
+> > diff --git a/tools/gpio/Makefile b/tools/gpio/Makefile
+> > index d29c9c49e251..46fc38d51639 100644
+> > --- a/tools/gpio/Makefile
+> > +++ b/tools/gpio/Makefile
+> > @@ -24,6 +24,7 @@ ALL_PROGRAMS :=3D $(patsubst %,$(OUTPUT)%,$(ALL_TARGE=
+TS))
+> >  all: $(ALL_PROGRAMS)
+> >
+> >  export srctree OUTPUT CC LD CFLAGS
+> > +$(call drop-var-from-overrides,CFLAGS)
+> >  include $(srctree)/tools/build/Makefile.include
+> >
+> >  #
+> > diff --git a/tools/iio/Makefile b/tools/iio/Makefile
+> > index fa720f062229..04307588dd3f 100644
+> > --- a/tools/iio/Makefile
+> > +++ b/tools/iio/Makefile
+> > @@ -20,6 +20,7 @@ ALL_PROGRAMS :=3D $(patsubst %,$(OUTPUT)%,$(ALL_TARGE=
+TS))
+> >  all: $(ALL_PROGRAMS)
+> >
+> >  export srctree OUTPUT CC LD CFLAGS
+> > +$(call drop-var-from-overrides,CFLAGS)
+> >  include $(srctree)/tools/build/Makefile.include
+> >
+> >  #
+> > diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.in=
+clude
+> > index 6fba29f3222d..0f68b95cf55c 100644
+> > --- a/tools/scripts/Makefile.include
+> > +++ b/tools/scripts/Makefile.include
+> > @@ -51,6 +51,15 @@ define allow-override
+> >      $(eval $(1) =3D $(2)))
+> >  endef
+> >
+> > +# When a Makefile overrides a variable and exports it for the nested $=
+(MAKE)
+> > +# invocations to use its modified value, it must remove that variable =
+definition
+> > +# from the MAKEOVERRIDES variable, otherwise the original definition f=
+rom the
+> > +# MAKEOVERRIDES takes precedence over the exported value.
+> > +drop-var-from-overrides =3D $(eval $(drop-var-from-overrides-code))
+> > +define drop-var-from-overrides-code
+> > +MAKEOVERRIDES :=3D $(subst \-,\\,$(subst \_,\ ,$(filter-out $(1)=3D%,$=
+(subst \ ,\_,$(subst \\,\-,$(MAKEOVERRIDES))))))
+> > +endef
+> > +
+> >  ifneq ($(LLVM),)
+> >  ifneq ($(filter %/,$(LLVM)),)
+> >  LLVM_PREFIX :=3D $(LLVM)
+> > --
+> > 2.39.2
+> > =20
+>=20
+>=20
+
 
