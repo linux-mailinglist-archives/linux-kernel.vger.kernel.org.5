@@ -1,87 +1,90 @@
-Return-Path: <linux-kernel+bounces-79758-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8186186264C
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 18:26:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F566862652
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 18:28:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 977271C21392
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 17:26:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40DDD1C2149F
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 17:28:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4F6647A40;
-	Sat, 24 Feb 2024 17:25:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCDD447F57;
+	Sat, 24 Feb 2024 17:28:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ePDxcQG7"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KRChGv6D"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D5E33D97D;
-	Sat, 24 Feb 2024 17:25:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E3AB3E493;
+	Sat, 24 Feb 2024 17:28:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708795558; cv=none; b=Lpagb/XKcpJ+CgL65NW7sKD6VA+opobU0Snrty+MCYKpwc8PNPhMrq+kg/wnyaMxWxRDQFwS+CmiX4fsix+aIfmjuzlWcJHTOxStvG35S27Oeiph0s+FXVI57gn8u7EugIUx1qQ5CN1le68WLuWqmkPMjOAoIDWDJt51wPs+nWA=
+	t=1708795691; cv=none; b=F0DfIt656o1RuJJSFUjuhyNvYUJ230Rn6mqYh9pCXFzNcX4sLu0Cs+MbIvHL5oyx4rm77jFCf/eRTouWPyo2SPxvEdlOQ8dFxjOVQzp8kvvtkWYBTgs02R25QIda92So5xGovBdOZi8yadQZPzEVLzkuT6Fvd0V426iqXdtYkaE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708795558; c=relaxed/simple;
-	bh=LKdxKMRX99gZWFFua9mb0elqag115969gvdZU7QCa4Q=;
+	s=arc-20240116; t=1708795691; c=relaxed/simple;
+	bh=lZLFoN2o/7Bh5V2P/MDZ6DXG/68LWwm2sR0wXwBlbDQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TUWb5ish6muy1iGCgz5PNbSOz2b52hLze+NXn3AKdRFUdiLR10iW6cop3WIKPUE6IO7DQQYL/HPXB8lLTLcyn/z3yYqjgnG+7Ikvu3fcsi9RBOZGnMWPjkvqEDpoXgG+xFvmhMBjFJVUYQR0OmvB6XRydBeLq+qfk3Ji5RKbxCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ePDxcQG7; arc=none smtp.client-ip=209.85.210.179
+	 Content-Type:Content-Disposition:In-Reply-To; b=I3E2mA6ABkDa4hNZ3nM4k+ZKryJrqZj3e8peisK9X8GEkDAdp52q+uYjh/u4DrON09CuScUPGORrWRF5kpVfSmPFnmfzWmU8HwBAHRweJ6KEQ4s5w8Z7Jby1riKTTIKCI88DqOtHaGhYUkG9IObF0pvuviPlhksOUdxsGpoQ6gU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KRChGv6D; arc=none smtp.client-ip=209.85.210.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e4670921a4so890562b3a.0;
-        Sat, 24 Feb 2024 09:25:56 -0800 (PST)
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e4d48a5823so1633887b3a.1;
+        Sat, 24 Feb 2024 09:28:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708795556; x=1709400356; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708795689; x=1709400489; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=uAeCo/AcYCYLlxx+rUC55TzelkJiG1qBUO3+Q6Qt12M=;
-        b=ePDxcQG7upTVkbX2vitIODqgA0a4V5Z219yFaRVoiyRX3jycb8DMlC7IuuF31WDcs+
-         RhipKKiMjySCkeAaDOGPXolKRGQ2sf0U+g/TePGN6Ss2nK8ra8EHlMB6YSLjF/EZVZtw
-         d/bEulWwP1QzFoiCNrj4S1tjxlH6TD5Oo1ETbALppGFiRdeFwOaN+UEkhPbBVQiy+2WC
-         jV9oYIdMFrLlNRxl7Tmt6zcZhVo5drKzifIej37coyTy5qEQ09oJP5Rw8wfRHeqjGZ32
-         4q/dAa4HT+h6C+S7qBjl0XAli/oozijDxJr3lnQ4iizyz/fyv9hH0arFC9HsPRyALgr1
-         Z9hw==
+        bh=FBTVttVDeRWNKwSDXEonmoNtCTsLj/ECLXtjLB5/OKM=;
+        b=KRChGv6DB+x9hNVfCfCvizEGULXOLhysHB/IFlaGysm8pIJNlM8Xg9F5eBqtPLOCvW
+         1nRGrwy5hxBW/LYeHf0LnX0K++UM7+7P/ma2KYA5hQ8OuCy0/rQMZootxQdzqACLEGxR
+         rolFHFQ3E8S6fumeFdsGyjInVr8CPhBpCd/LVrCHqb/bnZpeOzVgkob/QIEDPUkDMnsn
+         8slQwsyEiC1XTCGHQ1+tNk2rwBf5Mnjjh0Bgi4cZzhwRk55SMjnsZa1SlnFQ8pFvJwFB
+         sfir0tIAx/BkPvyh6js9/L0J0rWS5f39yxpCw155fROej+HsmiXIxZOYfTyy7JlspUMw
+         8MJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708795556; x=1709400356;
+        d=1e100.net; s=20230601; t=1708795689; x=1709400489;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=uAeCo/AcYCYLlxx+rUC55TzelkJiG1qBUO3+Q6Qt12M=;
-        b=gzXQx3Uw06l3Z53BE4GzoIJLYStZKyELb2MYCx8OAy4fRHWiArw/n2YOmERl76A5/S
-         YKEkfB76XrK6HrNtKse5VjkmDnJE6z1kAwO936WgqQiloJY2lcBHiwE3V6ZCw8Tiktug
-         RKXIi1XlX/fPozkctlIF1KOrmGqE785mMzcRZSiMnGTXH3zAeD2QPcm8vk3/mKVmfmzC
-         XSWSJMLgOasWeP7Ys2pVP++gymAvruO+JOwG5vd2zl+g7iOtn8hg5y97IOOk8NyyBzfx
-         ufPOK32ZdOtw59Ld+MAJ4bl/2ffB1gCJkr0gKmynDWZdr0FgQ0+Ow9AyV+jWj8BfEtu1
-         U46Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWfhhmWGv7oQmYtO2VGGKnikevzmfSReZoTam+sQ/kNtGnfBLTGA818YlQ+opuvhu8W98dVjNQNE2f5XtsfOHZ2aAWT5Hsx3i/AahOkXYvRVd1PLQHbUlgQQAtDFkrgWmM43+8sjTqEHw2kVdU=
-X-Gm-Message-State: AOJu0YzlocIji6U6NZ2CWo1AH059h/I+1S1/Hi70blW4lo0BijQnq+xg
-	5prcKhu5kj2I21gmvv1yvEvzRn5tyTPy2r55rXzyl0PXXelyBDx2BAlIx43E
-X-Google-Smtp-Source: AGHT+IFHAZ6Onc4/jz06fLhmV7F5y4tSzKDk0ZvOW3DZTlJYxFVdIJvW2CRUWn9iUEj173ih0xR5MA==
-X-Received: by 2002:a05:6a00:290c:b0:6e4:8ffc:e31f with SMTP id cg12-20020a056a00290c00b006e48ffce31fmr4024068pfb.20.1708795555765;
-        Sat, 24 Feb 2024 09:25:55 -0800 (PST)
+        bh=FBTVttVDeRWNKwSDXEonmoNtCTsLj/ECLXtjLB5/OKM=;
+        b=m+yPK8Frg7xGvJY0MUY5UEkViCA+debDG0sNE7COqZ8VkYmVV6x/R+DYTo3Vx92pHW
+         hsimKTqgaInKHu+f99WLFZOO/tmz0RCG9+3F13WNAHxwurXmXpj7HusekQtEPnzFD9IR
+         UUEsyNRHZ77OFeKlT9jJzxEg5YhdNwhH3/3DgREh+3Y//Uqt7J0foIYmWqV+/i74diyi
+         wAX+w6ynReC43CbQYOG5ojJdto5iDZtlYlL5UKY14viWSrNh/sBn0Ho2cDHV6nHwQjHR
+         3BlEqB7enEJIxJffZujR5ltZzBEqBv1d41eZZSnI0o0iKd/UXcgjA67T0jcxAy0W0te3
+         mUYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWSPy6m5F7Jgbjz5D2XLrZx2NreMwQ0FVbU0t1r/aAjuTUaf7sZHFvQ7krAEn4/3RJ1Aoa6+z+msgmKVgiYfkvtbw44NwQ2xVYSteFvei5k6suNZiS72gHGYd7W4Hs4NNNwGzHkwSLyLY12BdF/8nJ9Fmn6Y/4S2IU0XDNKbMnxpB2CBlc+JU/DvMwdfWGMETHNtqoIqCy2X3pjKjOIwYMq
+X-Gm-Message-State: AOJu0YyvtZnFdusxwEBN6gDeeeUp6hTxnJwJDqr+Hs4uuL6q9p5wo75t
+	9CP0AcaqPl02pG/IDzJw2eJArp6r8lWidHsrGVEvmFdH7sGorfcw6GYYdB+w
+X-Google-Smtp-Source: AGHT+IH0qYSphUifbMcUGlkzty63pSCh1lZeRlZ/UGkSGkBvcHXyzlTtoVG/f9snsZ+nT7aZVvRShg==
+X-Received: by 2002:a05:6a20:d04b:b0:1a0:dfcc:ca95 with SMTP id hv11-20020a056a20d04b00b001a0dfccca95mr3250898pzb.18.1708795688952;
+        Sat, 24 Feb 2024 09:28:08 -0800 (PST)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id ks1-20020a056a004b8100b006e471ade144sm1324264pfb.188.2024.02.24.09.25.55
+        by smtp.gmail.com with ESMTPSA id b10-20020a170902ed0a00b001d91d515dffsm1242719pld.156.2024.02.24.09.28.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Feb 2024 09:25:55 -0800 (PST)
+        Sat, 24 Feb 2024 09:28:08 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Sat, 24 Feb 2024 09:25:54 -0800
+Date: Sat, 24 Feb 2024 09:28:07 -0800
 From: Guenter Roeck <linux@roeck-us.net>
-To: David Ober <dober@lenovo.com>
-Cc: Mark Pearson <mpearson-lenovo@squebb.ca>,
-	David Ober <dober6023@gmail.com>,
-	"wim@linux-watchdog.org" <wim@linux-watchdog.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v2] watchdog: add in watchdog for nct6686
-Message-ID: <9d670c24-4897-4a02-87c1-98e366075e83@roeck-us.net>
-References: <20230912112747.285393-1-dober6023@gmail.com>
- <78da7ad0-cc11-4e6f-bf25-12bd5ec247a0@app.fastmail.com>
- <8458d626-8862-44ed-8966-2f60852c92bb@app.fastmail.com>
- <e6d0fda7-09db-4955-92dd-def2df768da6@roeck-us.net>
- <SEYPR03MB7192ED993D9A15244EF22D9FDA542@SEYPR03MB7192.apcprd03.prod.outlook.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Jean Delvare <jdelvare@suse.com>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	Robert Marko <robert.marko@sartura.hr>,
+	Luka Perkov <luka.perkov@sartura.hr>,
+	Zev Weiss <zev@bewilderbeest.net>,
+	Eric Tremblay <etremblay@distech-controls.com>,
+	linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+	linux-i2c@vger.kernel.org
+Subject: Re: [PATCH v2 0/5] dt-bindings: hwmon: common schema
+Message-ID: <41d6821c-74a0-4bee-9be1-8ddef729a9fe@roeck-us.net>
+References: <20240224-dt-bindings-hwmon-common-v2-0-b446eecf5480@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,20 +93,21 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <SEYPR03MB7192ED993D9A15244EF22D9FDA542@SEYPR03MB7192.apcprd03.prod.outlook.com>
+In-Reply-To: <20240224-dt-bindings-hwmon-common-v2-0-b446eecf5480@linaro.org>
 
-On Sat, Feb 24, 2024 at 05:00:04PM +0000, David Ober wrote:
-> Hi
+On Sat, Feb 24, 2024 at 11:14:49AM +0100, Krzysztof Kozlowski wrote:
+> Changes in v2:
+> - Add acks.
+> - Patch #1: add also shunt-resistor-micro-ohms.
+> - New patches #3, #4 and #5.
+> - Link to v1: https://lore.kernel.org/r/20240216-dt-bindings-hwmon-common-v1-0-3c2c24ff1260@linaro.org
 > 
->    I understand the issue of the first come first grab but when I attempted to add this to the hwmon you insisted that that was not the correct place and to create a watchdog module so if both can not be loaded then would it have not been better to add it to the hwmon like some of the other chips.
+> All device bindings could soon get a label like:
+> https://lore.kernel.org/all/20240215-mbly-i2c-v1-3-19a336e91dca@bootlin.com/
 > 
 
-Two options:
+Series applied to hwmon-next.
 
-- Add it to the hwmon driver. Not a preferred solution.
-- Implement a mfd driver which controls access to the chip
-  (preferrably through regmap) and instantiates both the hwmon
-  driver and the watchdog driver.
-
+Thanks,
 Guenter
 
