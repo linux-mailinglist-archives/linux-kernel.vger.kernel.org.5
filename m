@@ -1,180 +1,178 @@
-Return-Path: <linux-kernel+bounces-79500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA5FA86234F
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 08:31:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2F2A862353
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 08:35:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5BCB5B22312
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 07:31:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3991F1F23E40
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 07:35:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E66013FFF;
-	Sat, 24 Feb 2024 07:31:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA770168CD;
+	Sat, 24 Feb 2024 07:35:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="m9BvGJeZ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HHxUgCVd"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A0A68487;
-	Sat, 24 Feb 2024 07:31:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4941D10A2B;
+	Sat, 24 Feb 2024 07:35:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708759873; cv=none; b=X1wCtNpcOhmgbDmk3ieg7ArvwcRuGnSQ0DHYJfpDPHIdsiAGuCg+kwezrwnMpQcUxtMbxUxtn3u02Lfsizw/ag+T+xVjR1UnkIct/A9wCNLWkaxDMCPCkIiy+k7YxJDR8mS+XZkU50gG/brpLa/GR2RcLUJVIHv0U1Enqrhwcdk=
+	t=1708760131; cv=none; b=eG8doVW4Ri1nql9nSlN6CDhPfIBipEQbNdHwH3fTakh+aWWZpWb/KovieouWum3orWNKq7LpStOO6TF4yfvOM/F40etfJ5orfBAnQUiS0I/Zt763tgUpYltHXFvt5k1xrVy/2negTH9Ntx2CotjJS7nFQr2vhu0t/8IsicQkXiY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708759873; c=relaxed/simple;
-	bh=buu8SVznffYLooKd5ucCOXhekw/UjP+3E944rGDQ+L8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Gkb9c/p/V4LQCH2LXG7RuF4wa44jaT979TX/7LzvEHd0kSI+iPgHTk7QYo29I8n70r0d3ysOGMJeb8CrA3TP79MF+spvBqsdLC6zA6r5bOVrfNWtk2CWZG+RIk7PyJpvtqZfomb38R2Zs07pxwLjh5ObHfyKIC09Ejp9WhlcMOQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=m9BvGJeZ; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1708760131; c=relaxed/simple;
+	bh=q2/5MqZPz2HDD14dYiI1H5yCstXYofd3cv/H8+6ocWU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=p2KojHwquEGOcSOUvog++2D5eYYOdibOTWvWeXe9WqE5Cbxnyqm+26WBWcj2N96BSJSoqCu3YPFkCtMNfkkG5b8aRRWhbVSE4w6g/GyfY0+OMkcMX/la1yA+IBItqDNjHR8PnYvWNGWMfMkOWssO4SR4ux2NWrfIyFUTZfF8oAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HHxUgCVd; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708759872; x=1740295872;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=buu8SVznffYLooKd5ucCOXhekw/UjP+3E944rGDQ+L8=;
-  b=m9BvGJeZNCEHXs0XeE0lJ893NEld56Hc8Qfo3vE+1HattXi6WyEYasj2
-   iIFZM0Gc1R1spChZSdYgFXEn450gZE01fCndmDyB+eEm7GEmHHDba1LQz
-   8eBFsder0y148MqqB9Q4MD0YDBSf0P5wU56edlgxjl3zyiOniNPFgQqGq
-   U/bVWnncJETPIjCm+3UEUnyuOUPvAnP+nMCO9og0r6TFq8hpkHBJ5k74n
-   b4dyVlN3OHhPZzJYJ/lD030pZFsdCdO7HOPFepnFqRjUdxt1jaJmQwxDZ
-   IVEpv51ZwjvJkS6TteLAVsG5H/GEJ0m3OyIetNUbxSotYZhQjrT5S1Y20
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="6908083"
+  t=1708760129; x=1740296129;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=q2/5MqZPz2HDD14dYiI1H5yCstXYofd3cv/H8+6ocWU=;
+  b=HHxUgCVdIuIVKmdZap7AHR0BAoekH5voFIdpgd8p/1bQlM0KDS6q0RCu
+   6xDaAg4Q/E5G7S1uimLHJzs7zEYlxbNltbDZur7e9C6vM1AHErK9R+HvW
+   5AS796TtPEdcMFUANQyrWalpu7eH6rgj8GD86WUxV3noBn6vxnnqtliR9
+   nBKQW0dJNlK3QTBZpM5KElwShQ1WZG5V+avsr3jnH2Ur8ZvdrevNsrMyk
+   Yho1WQlAEysSx2YdIl+/xF8XJ6YpXL+dDiVaI9X/oNqo0SKr1tgWX8eBP
+   8cTa2AF5l400U1cxRTtjPvpwzqkO2JbCTSCy4rPPRdJwfUbILv/0aRsvs
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="6045032"
 X-IronPort-AV: E=Sophos;i="6.06,181,1705392000"; 
-   d="scan'208";a="6908083"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 23:31:11 -0800
+   d="scan'208";a="6045032"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 23:35:28 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,181,1705392000"; 
-   d="scan'208";a="37150062"
-Received: from bafghani-mobl.amr.corp.intel.com (HELO [10.255.231.229]) ([10.255.231.229])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 23:31:11 -0800
-Message-ID: <3b8113ac-e44c-4b11-b494-9e473352037a@linux.intel.com>
-Date: Fri, 23 Feb 2024 23:31:10 -0800
+   d="scan'208";a="6143052"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmviesa010.fm.intel.com with ESMTP; 23 Feb 2024 23:35:25 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rdmZ4-0008L2-2j;
+	Sat, 24 Feb 2024 07:35:20 +0000
+Date: Sat, 24 Feb 2024 15:34:51 +0800
+From: kernel test robot <lkp@intel.com>
+To: marius.cristea@microchip.com, jic23@kernel.org, lars@metafoo.de,
+	robh+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
+	linux-hwmon@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	marius.cristea@microchip.com
+Subject: Re: [PATCH v5 1/2] dt-bindings: iio: adc: adding support for PAC193X
+Message-ID: <202402241545.xf7CnlPz-lkp@intel.com>
+References: <20240222164206.65700-2-marius.cristea@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] efi/libstub: Add get_event_log() support for CC
- platforms
-Content-Language: en-US
-To: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc: Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org,
- linux-efi@vger.kernel.org
-References: <20240215030002.281456-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20240215030002.281456-3-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAC_iWjJ_TS66KG7uGOQFiKGfZNKjnod6u7zua4LVK-EJHEUv8w@mail.gmail.com>
- <7feb889f-f78e-4caa-a2f4-9d41acf6ca76@linux.intel.com>
- <CAC_iWj+9eWesWD62krdhLwj58fpjptpnnG5JpUJUpFsg7_GzOA@mail.gmail.com>
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <CAC_iWj+9eWesWD62krdhLwj58fpjptpnnG5JpUJUpFsg7_GzOA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240222164206.65700-2-marius.cristea@microchip.com>
 
+Hi,
 
-On 2/23/24 5:24 AM, Ilias Apalodimas wrote:
-> Apologies for the late reply,
->
->
-> On Mon, 19 Feb 2024 at 09:34, Kuppuswamy Sathyanarayanan
-> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
->> Hi Ilias,
->>
->> On 2/18/24 11:03 PM, Ilias Apalodimas wrote:
->>> On Thu, 15 Feb 2024 at 05:02, Kuppuswamy Sathyanarayanan
->>> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
->>>> To allow event log info access after boot, EFI boot stub extracts
->>>> the event log information and installs it in an EFI configuration
->>>> table. Currently, EFI boot stub only supports installation of event
->>>> log only for TPM 1.2 and TPM 2.0 protocols. Extend the same support
->>>> for CC protocol. Since CC platform also uses TCG2 format, reuse TPM2
->>>> support code as much as possible.
->>>>
->>>> Link: https://uefi.org/specs/UEFI/2.10/38_Confidential_Computing.html#efi-cc-measurement-protocol [1]
->>>> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->>> [...]
->>>
->>>> +void efi_retrieve_eventlog(void)
->>>> +{
->>>> +       efi_physical_addr_t log_location = 0, log_last_entry = 0;
->>>> +       efi_guid_t cc_guid = EFI_CC_MEASUREMENT_PROTOCOL_GUID;
->>>> +       efi_guid_t tpm2_guid = EFI_TCG2_PROTOCOL_GUID;
->>>> +       int version = EFI_TCG2_EVENT_LOG_FORMAT_TCG_2;
->>>> +       efi_tcg2_protocol_t *tpm2 = NULL;
->>>> +       efi_cc_protocol_t *cc = NULL;
->>>> +       efi_bool_t truncated;
->>>> +       efi_status_t status;
->>>> +
->>>> +       status = efi_bs_call(locate_protocol, &tpm2_guid, NULL, (void **)&tpm2);
->>>> +       if (status == EFI_SUCCESS) {
->>>> +               status = efi_call_proto(tpm2, get_event_log, version, &log_location,
->>>> +                                       &log_last_entry, &truncated);
->>>> +
->>>> +               if (status != EFI_SUCCESS || !log_location) {
->>>> +                       version = EFI_TCG2_EVENT_LOG_FORMAT_TCG_1_2;
->>>> +                       status = efi_call_proto(tpm2, get_event_log, version,
->>>> +                                               &log_location, &log_last_entry,
->>>> +                                               &truncated);
->>>> +                       if (status != EFI_SUCCESS || !log_location)
->>>> +                               return;
->>>> +               }
->>>> +
->>>> +               efi_retrieve_tcg2_eventlog(version, log_location, log_last_entry,
->>>> +                                          truncated);
->>>> +               return;
->>>> +       }
->>>> +
->>>> +       status = efi_bs_call(locate_protocol, &cc_guid, NULL, (void **)&cc);
->>>> +       if (status == EFI_SUCCESS) {
->>>> +               version = EFI_CC_EVENT_LOG_FORMAT_TCG_2;
->>>> +               status = efi_call_proto(cc, get_event_log, version, &log_location,
->>>> +                                       &log_last_entry, &truncated);
->>>> +               if (status != EFI_SUCCESS || !log_location)
->>>> +                       return;
->>>> +
->>>> +               efi_retrieve_tcg2_eventlog(version, log_location, log_last_entry,
->>>> +                                          truncated);
->>>> +               return;
->>>> +       }
->>>> +}
->>> [...]
->>>
->>> I haven't looked into CC measurements much, but do we always want to
->>> prioritize the tcg2 protocol? IOW if you have firmware that implements
->>> both, shouldn't we prefer the CC protocol for VMs?
->> According the UEFI specification, sec "Conidential computing", if a firmware implements
->> the TPM, then it should be used and CC interfaces should not be published. So I think
->> we should check for TPM first, if it does not exist then try for CC.
-> Ok thanks, that makes sense. That document also says the services
-> should be implemented on a virtual firmware.
-> I am unsure at the moment though if it's worth checking that and
-> reporting an error otherwise. Thoughts?
+kernel test robot noticed the following build warnings:
 
-IMO, it is not fatal for the firmware to implement both protocols. Although, it
-violates the specification, does it makes sense to return error and skip
-measurements? I think for such case, we can add a warning and proceed
-with TPM if it exists.
+[auto build test WARNING on b1a1eaf6183697b77f7243780a25f35c7c0c8bdf]
 
->
-> Thanks
-> /Ilias
->> https://uefi.org/specs/UEFI/2.10/38_Confidential_Computing.html#confidential-computing
->>
->>> Thanks
->>> /Ilias
->> --
->> Sathyanarayanan Kuppuswamy
->> Linux Kernel Developer
->>
+url:    https://github.com/intel-lab-lkp/linux/commits/marius-cristea-microchip-com/dt-bindings-iio-adc-adding-support-for-PAC193X/20240223-004332
+base:   b1a1eaf6183697b77f7243780a25f35c7c0c8bdf
+patch link:    https://lore.kernel.org/r/20240222164206.65700-2-marius.cristea%40microchip.com
+patch subject: [PATCH v5 1/2] dt-bindings: iio: adc: adding support for PAC193X
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20240224/202402241545.xf7CnlPz-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402241545.xf7CnlPz-lkp@intel.com/
+
+dtcheck warnings: (new ones prefixed by >>)
+>> Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml:51:9: [warning] wrong indentation: expected 6 but found 8 (indentation)
+
+vim +51 Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml
+
+     8	
+     9	maintainers:
+    10	  - Marius Cristea <marius.cristea@microchip.com>
+    11	
+    12	description: |
+    13	  This device is part of the Microchip family of Power Monitors with
+    14	  Accumulator.
+    15	  The datasheet for PAC1931, PAC1932, PAC1933 and PAC1934 can be found here:
+    16	    https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/ProductDocuments/DataSheets/PAC1931-Family-Data-Sheet-DS20005850E.pdf
+    17	
+    18	properties:
+    19	  compatible:
+    20	    enum:
+    21	      - microchip,pac1931
+    22	      - microchip,pac1932
+    23	      - microchip,pac1933
+    24	      - microchip,pac1934
+    25	
+    26	  reg:
+    27	    maxItems: 1
+    28	
+    29	  "#address-cells":
+    30	    const: 1
+    31	
+    32	  "#size-cells":
+    33	    const: 0
+    34	
+    35	  interrupts:
+    36	    maxItems: 1
+    37	
+    38	  slow-io-gpios:
+    39	    description:
+    40	      A GPIO used to trigger a change is sampling rate (lowering the chip power
+    41	      consumption). If configured in SLOW mode, if this pin is forced high,
+    42	      sampling rate is forced to eight samples/second. When it is forced low,
+    43	      the sampling rate is 1024 samples/second unless a different sample rate
+    44	      has been programmed.
+    45	
+    46	patternProperties:
+    47	  "^channel@[1-4]+$":
+    48	    type: object
+    49	    $ref: adc.yaml
+    50	    description:
+  > 51	        Represents the external channels which are connected to the ADC.
+    52	
+    53	    properties:
+    54	      reg:
+    55	        items:
+    56	          minimum: 1
+    57	          maximum: 4
+    58	
+    59	      shunt-resistor-micro-ohms:
+    60	        description:
+    61	          Value in micro Ohms of the shunt resistor connected between
+    62	          the SENSE+ and SENSE- inputs, across which the current is measured.
+    63	          Value is needed to compute the scaling of the measured current.
+    64	
+    65	    required:
+    66	      - reg
+    67	      - shunt-resistor-micro-ohms
+    68	
+    69	    unevaluatedProperties: false
+    70	
+    71	required:
+    72	  - compatible
+    73	  - reg
+    74	  - "#address-cells"
+    75	  - "#size-cells"
+    76	
+
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
