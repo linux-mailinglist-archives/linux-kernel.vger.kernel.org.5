@@ -1,47 +1,73 @@
-Return-Path: <linux-kernel+bounces-79566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93584862441
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:31:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64BEC86244D
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:36:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D4A51C2187F
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 10:31:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F13AC1F21914
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 10:36:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 071FC1AACE;
-	Sat, 24 Feb 2024 10:31:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01B7822301;
+	Sat, 24 Feb 2024 10:36:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bxC+4EYF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cvM4iiLn"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DBB0256A;
-	Sat, 24 Feb 2024 10:31:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D85D12B7B
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 10:36:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708770676; cv=none; b=ZLYT1nY7rU8caphpuqG2SyB/f4WGdQqNCz6JyFVHTkxDYsV5UA/ifACdUInaAyU/nu4Wq1OflDnToCD2FRvcUPhstEb74oCBM9YvAIpnNAe1mmOh4IY3LoGdHWblrSeRb/QpUYAuB6qePnJB1cnyOIXIqcWudnShHRwS+tZM9mU=
+	t=1708771001; cv=none; b=c8pqqSeNfCXgPgzGAWNddnEVwfJYBeAEi5cgIML8HCYtYh30cC7o84j1zdaVHvuWb3nQ/5FQ8WoqlbkMaYRG8WtP/Yho+dmDr/3xv/XGJyBdgwwNevAjAczyahCLYO7tVuZGJdeBB3mb1Ftz7FWJUi01IUvh0SyagDdPN/ZOFuk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708770676; c=relaxed/simple;
-	bh=TZhQthnHkKwNMI4yroPtQ74XaWWynkFwbBDf/2R0uvk=;
+	s=arc-20240116; t=1708771001; c=relaxed/simple;
+	bh=58adu5hvmmb2LOEQiDHsQjLazEwZVBt1UbSh0UkM2No=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kt+C0Mso/u84g+z2EhG+kHQht/yNDr7LfJRgkdEy0CDu2Kl9escjttiWs6lMv3S5XMje683MfABHzIUFmFF07WpbnOKIqRVoFqrlU0H4qNp8aqJkUipBen5sy92ruJBoU4GBZAC1vWRXybMTtI6tsd6NLhncnT7hkncf7TKnJVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bxC+4EYF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFD11C433F1;
-	Sat, 24 Feb 2024 10:31:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708770675;
-	bh=TZhQthnHkKwNMI4yroPtQ74XaWWynkFwbBDf/2R0uvk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=bxC+4EYFJxWaNf/G6e4OGhVbsI0QmGH28VsMqNshP4keEY3Ygk7LhbHw5Pm1ozymL
-	 IUKiVa0ZI262TJzTAGeckk85MaFoBn+JbFgBxqxSzVqaCaeFAYHlRLDqrLnadCzeHt
-	 MQWmB1SG8rdu8qqvPEx+SQ7yWzAsBY0mUSSkOHXkm4vpCxt98cXb6UO5W73d/5aUDP
-	 w3DnLlOMVe661Wyjqd1LEwBQb9DsubqRq1l11XfKyfSzLkU4ZC6wgYW3KUzvhR3oVf
-	 fA1MhUgP68MqBWuE08vlK38ku42IixypkWeLJsZEmSl5RDvU2n262ozWWZLs/YK19N
-	 TnVEej9fWNeGg==
-Message-ID: <42d3ac7d-4b51-4332-8892-a4f03a315a80@kernel.org>
-Date: Sat, 24 Feb 2024 11:31:07 +0100
+	 In-Reply-To:Content-Type; b=ST86bs6wjQLKtrEwLPL9HL5m6xPlmDcq60160wlQ639yRwCuDNT0UVigIXpICC/ERcpbgF9vuG+QBvG9xKH9B8hrwh6N2GDPxQNht9yZYXirgzHD8/86ELcrnY4msJeo4zZsAj7F3GQB1PCLU0Ti0mpY6Sf+SFs9Dxyj4Etwx5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cvM4iiLn; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5643ae47cd3so2041509a12.3
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 02:36:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708770996; x=1709375796; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oywdlN7ttlpIa6C90/nFZJ1AJJorSsP7MnjdUxAPcfI=;
+        b=cvM4iiLnm2HJ0QXVBt+rbbaaMsgYa7UE3KCX4pcLsgfVGBpD0colpOaaObMzlUkX5q
+         uQ8SnEQYbp8A0LjXDcIzFPzd71A3W4Eo8QlpsnwMv85mxvsupKsu3dtlKCKcuhqlATNz
+         uBrF0es1hsYVK2zxUfSXLxyFM+3Lq7xC3uFNTyd0yBxn4wBUG0+LL3WB6SfiCayH7FfM
+         YeH41UezyadaqvhXAz45JPqWXmVgin5D48I6HCYdr2PqOZ28oYs/2H+gg7Y+6gtmzbz5
+         l9fumB1urr0uxKldon25rf1AARbSLY6AOnRgRqNTFxXzEO7d/4f5SIWglqIjORLV4SLJ
+         1Mgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708770996; x=1709375796;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oywdlN7ttlpIa6C90/nFZJ1AJJorSsP7MnjdUxAPcfI=;
+        b=iqZJPCGU/ytmgL//FQEpaPdzhLMHiyrupBkdMnfXGMoRqiSFpC7Q3uZbcXgpXg92EF
+         O3xC4zxXPef83tH4AKzNx4LB9nzRFtuz8r5Ib9KcnJGsvPVFyi1pvWWL+Uu2UKMpD0/4
+         gQyIvrRgiFBae+b4uEMYhJraRxqvkElTC/Pk3BfILhgvZdAacHI+HzuzOc3gdF1EGHBI
+         gLvZzWGMd8o4tmyV+u8Q7r/X9azxTuKh/JkmV9n2UQjfNd0kuPE8g86Hxxtvg6anH/2s
+         drSH1JocRsapeGuODDxYVRfn9K7fTh3svi7Bq2AxUhVEN5PCU+vfKE5bVFvPI/BdO8Ki
+         x3FA==
+X-Forwarded-Encrypted: i=1; AJvYcCVvlJg+4OmCr+jTe4jE9Kb3BW0r8poaRZEnYjjr5fNMYBYSZHu5pVD2uMXbmKMu+1y6z4RDhc62b6VX1rTiRBXpihJ3E+mWEpVc3bzx
+X-Gm-Message-State: AOJu0YzWS2scbFzKC+hDDSeReb8AgjU+95vXH+bNOyms3sy/bM1oYnO1
+	o+XWzE3ENXJFltatdoWNqK9evEOuOMjXA+hRMzP00ZIf7nO7rrooRz/YT9sWQQo=
+X-Google-Smtp-Source: AGHT+IFQ1CTLhVHev3X3ZsNIvWOvLmOq9DnNPyZNr2LsttwMkZxgcML6EMs7YR3aM8ssnQ0Gl1q6og==
+X-Received: by 2002:a05:6402:5201:b0:565:a5e1:3a12 with SMTP id s1-20020a056402520100b00565a5e13a12mr740380edd.3.1708770996394;
+        Sat, 24 Feb 2024 02:36:36 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id k1-20020a05640212c100b005653fe3f180sm416424edx.70.2024.02.24.02.36.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 24 Feb 2024 02:36:35 -0800 (PST)
+Message-ID: <fb14acfa-5b43-4ce7-93f4-9f6681152ca7@linaro.org>
+Date: Sat, 24 Feb 2024 11:36:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,22 +75,18 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/5] dt-bindings: sound: Add jack-type property to
- sun8i-a33-codec
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: add TP-Link Archer AX55 v1
 Content-Language: en-US
-To: =?UTF-8?Q?Ond=C5=99ej_Jirman?= <megi@xff.cz>,
- linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-Cc: Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>,
- Arnaud Ferraris <arnaud.ferraris@collabora.com>,
- linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev
-References: <20240223015219.3618111-1-megi@xff.cz>
- <20240223015219.3618111-2-megi@xff.cz>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
+To: Gabor Juhos <j4g8y7@gmail.com>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240223-archer-ax55-v1-v1-0-99f8fa2c3858@gmail.com>
+ <20240223-archer-ax55-v1-v1-2-99f8fa2c3858@gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
  cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
  JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
@@ -74,71 +96,118 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  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
- 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 fv0=
-In-Reply-To: <20240223015219.3618111-2-megi@xff.cz>
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240223-archer-ax55-v1-v1-2-99f8fa2c3858@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 23/02/2024 02:52, Ondřej Jirman wrote:
-> From: Ondrej Jirman <megi@xff.cz>
+On 23/02/2024 09:17, Gabor Juhos wrote:
+> Add device tree source for the TP-Link Archer AX55 v1 [1]
+> which is a dual-band WiFi router based on the IPQ5018 SoC.
 > 
-> The codec driver needs to know what jack connector is connected to
-> on the board. Add proprty to describe the type of connector.
+> At the moment, only the UART, the GPIO LEDs and buttons
+> are usable, but it makes it possible to boot an initramfs
+> image on the device.
 > 
-> Signed-off-by: Ondrej Jirman <megi@xff.cz>
+> The device tree can be extended in the future, once support
+> for other periherals will be available for the platform.
+> 
+> 1. https://www.tp-link.com/en/home-networking/wifi-router/archer-ax55/v1/
+> 
+> Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
 > ---
+> Note: running 'make CHECK_DTBS=y qcom/ipq5018-tplink-archer-ax55-v1.dtb'
+> shows the following:
+> 
+>     DTC_CHK arch/arm64/boot/dts/qcom/ipq5018-tplink-archer-ax55-v1.dtb
+>   <...>/arch/arm64/boot/dts/qcom/ipq5018-tplink-archer-ax55-v1.dtb: usb@8af8800: interrupts: [[0, 62, 4]] is too short
+>   	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
+>   <...>/arch/arm64/boot/dts/qcom/ipq5018-tplink-archer-ax55-v1.dtb: usb@8af8800: interrupt-names: ['hs_phy_irq'] is too short
+>   	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
+>   <...>/arch/arm64/boot/dts/qcom/ipq5018-tplink-archer-ax55-v1.dtb: usb@8af8800: interrupts: [[0, 62, 4]] is too short
+>   	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
+>   <...>/arch/arm64/boot/dts/qcom/ipq5018-tplink-archer-ax55-v1.dtb: usb@8af8800: interrupt-names:0: 'pwr_event' was expected
+>   	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
+>   <...>/arch/arm64/boot/dts/qcom/ipq5018-tplink-archer-ax55-v1.dtb: usb@8af8800: interrupt-names: ['hs_phy_irq'] is too short
+>   	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
+> 
+> This is not caused by the new device tree per se but comes from
+> the usb@8af8800 node defined in ipq5018.dtsi. Running the check
+> on 'qcom/ipq5018-rdp432-c2.dtb' shows the same.
 
-Please use scripts/get_maintainers.pl to get a list of necessary people
-and lists to CC. It might happen, that command when run on an older
-kernel, gives you outdated entries. Therefore please be sure you base
-your patches on recent Linux kernel.
+Thanks for noticing and describing. Appreciated!
 
-Tools like b4 or scripts/get_maintainer.pl provide you proper list of
-people, so fix your workflow. Tools might also fail if you work on some
-ancient tree (don't, instead use mainline), work on fork of kernel
-(don't, instead use mainline) or you ignore some maintainers (really
-don't). Just use b4 and everything should be fine, although remember
-about `b4 prep --auto-to-cc` if you added new patches to the patchset.
+> ---
+>  arch/arm64/boot/dts/qcom/Makefile                  |   1 +
+>  .../dts/qcom/ipq5018-tplink-archer-ax55-v1.dts     | 133 +++++++++++++++++++++
+>  2 files changed, 134 insertions(+)
 
-You missed at least devicetree list (maybe more), so this won't be
-tested by automated tooling. Performing review on untested code might be
-a waste of time, thus I will skip this patch entirely till you follow
-the process allowing the patch to be tested.
+..
 
-Please kindly resend and include all necessary To/Cc entries.
+> +
+> +		button-wps {
+> +			debounce-interval = <60>;
+> +			gpios = <&tlmm 31 GPIO_ACTIVE_LOW>;
+> +			label = "wps";
+> +			linux,code = <KEY_WPS_BUTTON>;
+> +		};
+> +	};
+> +};
+> +
+> +&blsp1_uart1 {
+> +	pinctrl-0 = <&uart1_pins>;
+> +	pinctrl-names = "default";
+> +	status = "okay";
+> +};
+> +
+> +&sleep_clk {
+> +	clock-frequency = <32000>;
+> +};
+> +
+> +&tlmm {
+> +	button_pins: button-pins-state {
+> +		pins = "gpio25", "gpio31";
+> +		bias-pull-up;
+> +		drive-strength = <8>;
+> +		function = "gpio";
 
+Usually we keep 'function' as second property, after 'pins', but there
+is no need to send new version just for that.
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
