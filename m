@@ -1,136 +1,167 @@
-Return-Path: <linux-kernel+bounces-79446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B93E862258
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 03:45:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD49486225B
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 03:46:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19A9F1F2475E
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:45:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A1411F22BB6
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:46:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56F01111A0;
-	Sat, 24 Feb 2024 02:45:22 +0000 (UTC)
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9741D125AB;
+	Sat, 24 Feb 2024 02:46:26 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A81B113AE9;
-	Sat, 24 Feb 2024 02:45:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 907834416;
+	Sat, 24 Feb 2024 02:46:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708742718; cv=none; b=IM6vRWt9XaGq98Kw+zLLVkWVPDoxNiSgMPYP+bdAKozOcVWQ0zwPsB83ugMd1wxl4clc9tDe41U84blM+z6nOBsGoimZc9q5mgMQR36NDOG3DNq1wAaY6213jEoy2UHSkWukzjcS2v3nyMV1LX8dsRfOqlvh5u9+7qNS8kOuJVU=
+	t=1708742786; cv=none; b=Tqp46cNzBz8ooBkEu9E9VCKnGNYZof9h5OT4CZYYvS+yUdgg5CRfEwMuNg4Fz7Ic5+Hi7AriiLl4rOOmBuOPel0WKQ16bgUS9Ns0iwZ08ZtmJBirHBGojNZvlRIfIn0Fvpu/c2/M0NjYP1PJ3/bNlW2vlEjZ2n5bCUrcaJvuJGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708742718; c=relaxed/simple;
-	bh=tkQEf05oq2kmii+ClsY92Oy+mus+/9mjeSBNHOROiwo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JHbz/vljEzcOEpEzUlRpZH3oU2KFtmDZagBcV/dwf+IbqwIVPuNYqmiYqDCogcOwS1c1PZ4k60Xz9/8dE4sfRmDgp2iZuiyRizk0z6oWN8IbBnz6ruiAnS4FU56KNnQYcdQkXJ6DG5+Uql1rI4vW4KhCuXJIeOklTzyUc4z80Yc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2995fa850ddso712637a91.0;
-        Fri, 23 Feb 2024 18:45:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708742706; x=1709347506;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mPPv8r1RSsDRM/zfoDy7ZupsBXVuitqH/rRRBSdP66M=;
-        b=cNekbBS/dpwTLfeP9nBHN6gNpak+307Fe9YkpOoXw3tJR6yNM4op8kDdfTBneOK4Lc
-         ekNu1PCc7whro2zJGVIP7VCsvj/XcbjBGvyCmY7ZgoMRdbur7S0q/e7k+L1xdviL7dqr
-         tCI05kquDiJVPfMI6u+Hwk/mDtUoDZADA78/cUgVl8MRv7kd8PCSbB2YIhRgGQsYG15Q
-         xIQxtfoDFxbYTkkIJZ4bBJp4T5UpC0STjbbY9VeI0fFA6WG1PH8ZLDakvu8PR+VIEVdc
-         B9Fs6y9sbRnkmN3nYdi+JM92oyHr2EnEhQP01TIMFHqLh6JQnl/Smyj+oXxjN29p6Y0g
-         pEDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVtWyaOQ5X5DHwP20CiA4fQ4qOzk4rvRNnLhG0PKETYRPJ7IISTYmiLgvJ/kz1KLyvJ2XJFGDIzH7p5DfMmdn2+ireorQM2c6sa4VRY73a7fmGxZizuHQcdmlhC65625Y9bc8tCuOD8UdZJ7gldjw==
-X-Gm-Message-State: AOJu0YyXqduRP2LXpIXFL5mGSDQEI8HxZUoknt9lNqv/KZb4R1i2PUE8
-	+GhDSyypmzj4i6pKRW/3n3sN8WCBuz5Q1CdGa58lO1WTa3KuQ+m9qNU9H2ULCUCahEjOIevgjxb
-	aTZSYOGOUUfn73KGh7ILvp2k11ao=
-X-Google-Smtp-Source: AGHT+IFR/f3udUFSXOTvTpD+RswtOEM5KE3C5Ak2h+Y+7fUTo0ahihL6PLsWilwsOPmnpeeRyGDSNst8cMjrPmTxeUY=
-X-Received: by 2002:a17:90a:5b07:b0:29a:89db:7581 with SMTP id
- o7-20020a17090a5b0700b0029a89db7581mr1985562pji.13.1708742705745; Fri, 23 Feb
- 2024 18:45:05 -0800 (PST)
+	s=arc-20240116; t=1708742786; c=relaxed/simple;
+	bh=HWJlQsFECB33Mr/v6+zkBFxjz6TamDpqLpDUv+jZaMw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=YPCuY67tiNSzBCpAGpbB3FdoSMUgWkY8gwcqDHwRi4MFDzvqSAuL8VQfbfgC/PGZBVPQgVzzRFVmURHocT/n4g8ORxOCBAwPjUJbsXY6VlVIae23S+Xc/cjYtz8lyDdnDbOyJQYCiYbDg6CTu6ns021smppATJXAN7PDsSGRymk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4ThWSP50FtzNlln;
+	Sat, 24 Feb 2024 10:44:53 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id 9C3791400DD;
+	Sat, 24 Feb 2024 10:46:19 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sat, 24 Feb 2024 10:46:18 +0800
+Message-ID: <c276f6d9-38e0-0113-a134-bedd3f16298f@huawei.com>
+Date: Sat, 24 Feb 2024 10:46:18 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221072100.412939-1-weilin.wang@intel.com>
- <20240221072100.412939-3-weilin.wang@intel.com> <ZdY4a5yx-C9ziobq@x1>
- <CAP-5=fU5JVki4OCYvYyPoBLguwHSwXripiO3Gq+MddV9ZWfnTQ@mail.gmail.com>
- <CAM9d7ch3E=hNbX6=xUHZ+B_Dphy_sALzaCki1he3-O00DAoYXg@mail.gmail.com> <CAP-5=fWf4YxOZUmuZsUt9na=CpXL-eLkd9d6OvtsgJkONC1gzQ@mail.gmail.com>
-In-Reply-To: <CAP-5=fWf4YxOZUmuZsUt9na=CpXL-eLkd9d6OvtsgJkONC1gzQ@mail.gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Fri, 23 Feb 2024 18:44:54 -0800
-Message-ID: <CAM9d7chwXoBjkEb7itS84UUDzbARETvU7w4d0Mni4vbGHURFxA@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 2/5] perf stat: Fork and launch perf record when
- perf stat needs to get retire latency value for a metric.
-To: Ian Rogers <irogers@google.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, weilin.wang@intel.com, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
-	Caleb Biggers <caleb.biggers@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH 4/7] ext4: add positive int attr pointer to avoid sysfs
+ variables overflow
+Content-Language: en-US
+To: Jan Kara <jack@suse.cz>
+CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
+	<yukuai3@huawei.com>, <stable@vger.kernel.org>, Baokun Li
+	<libaokun1@huawei.com>
+References: <20240126085716.1363019-1-libaokun1@huawei.com>
+ <20240126085716.1363019-5-libaokun1@huawei.com>
+ <20240213165810.3k4lnxaqzdwrdj35@quack3>
+ <83c16b1a-832d-2ffd-6100-1f2b80ca2f35@huawei.com>
+ <20240223120547.lojc4ccfewi6iotw@quack3>
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20240223120547.lojc4ccfewi6iotw@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-On Thu, Feb 22, 2024 at 11:48=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
+On 2024/2/23 20:05, Jan Kara wrote:
+> On Sat 17-02-24 15:41:43, Baokun Li wrote:
+>> On 2024/2/14 0:58, Jan Kara wrote:
+>>> On Fri 26-01-24 16:57:13, Baokun Li wrote:
+>>>> We can easily trigger a BUG_ON by using the following commands:
+>>>>
+>>>>       mount /dev/$disk /tmp/test
+>>>>       echo 2147483650 > /sys/fs/ext4/$disk/mb_group_prealloc
+>>>>       echo test > /tmp/test/file && sync
+>>>>
+>>>> ==================================================================
+>>>> kernel BUG at fs/ext4/mballoc.c:2029!
+>>>> invalid opcode: 0000 [#1] PREEMPT SMP PTI
+>>>> CPU: 3 PID: 320 Comm: kworker/u36:1 Not tainted 6.8.0-rc1 #462
+>>>> RIP: 0010:mb_mark_used+0x358/0x370
+>>>> [...]
+>>>> Call Trace:
+>>>>    ext4_mb_use_best_found+0x56/0x140
+>>>>    ext4_mb_complex_scan_group+0x196/0x2f0
+>>>>    ext4_mb_regular_allocator+0xa92/0xf00
+>>>>    ext4_mb_new_blocks+0x302/0xbc0
+>>>>    ext4_ext_map_blocks+0x95a/0xef0
+>>>>    ext4_map_blocks+0x2b1/0x680
+>>>>    ext4_do_writepages+0x733/0xbd0
+>>>> [...]
+>>>> ==================================================================
+>>>>
+>>>> In ext4_mb_normalize_group_request():
+>>>>       ac->ac_g_ex.fe_len = EXT4_SB(sb)->s_mb_group_prealloc;
+>>>>
+>>>> Here fe_len is of type int, but s_mb_group_prealloc is of type unsigned
+>>>> int, so setting s_mb_group_prealloc to 2147483650 overflows fe_len to a
+>>>> negative number, which ultimately triggers a BUG_ON() in mb_mark_used().
+>>>>
+>>>> Therefore, we add attr_pointer_pi (aka positive int attr pointer) with a
+>>>> value range of 0-INT_MAX to avoid the above problem. In addition to the
+>>>> mb_group_prealloc sysfs interface, the following interfaces also have uint
+>>>> to int conversions that result in overflows, and are also fixed.
+>>>>
+>>>>     err_ratelimit_burst
+>>>>     msg_ratelimit_burst
+>>>>     warning_ratelimit_burst
+>>>>     err_ratelimit_interval_ms
+>>>>     msg_ratelimit_interval_ms
+>>>>     warning_ratelimit_interval_ms
+>>>>     mb_best_avail_max_trim_order
+>>>>
+>>>> CC: stable@vger.kernel.org
+>>>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>>> I don't think you need to change s_mb_group_prealloc here and then restrict
+>>> it even further in the next patch. I'd just leave it alone here.
+>> Yes, we could put the next patch before this one, but using
+>> s_mb_group_prealloc as an example makes it easier to understand
+>> why the attr_pointer_pi case is added here.There are several other
+>> variables that don't have more convincing examples.
+> Yes, I think reordering would be good. Because I've read the convertion and
+> started wondering: "is this enough?"
+Well, I will put the next patch before this one in the next version.
+>>> Also I think that limiting mb_best_avail_max_trim_order to 64 instead of
+>>> INT_MAX will make us more resilient to surprises in the future :) But I
+>>> don't really insist.
+>>>
+>>> 								Honza
+>> I think it's enough here to make sure that mb_best_avail_max_trim_order
+>> is a positive number, since we always make sure that min_order
+>> is not less than 0, as follows:
+>>
+>>           order = fls(ac->ac_g_ex.fe_len) - 1;
+>>           min_order = order - sbi->s_mb_best_avail_max_trim_order;
+>>           if (min_order < 0)
+>>                   min_order = 0;
+>>
+>> An oversized mb_best_avail_max_trim_order can be interpreted as
+>> always being CR_ANY_FREE. 😄
+> Well, s_mb_best_avail_max_trim_order is not about allocation passes but
+> about how many times are we willing to shorten the goal extent to half and
+> still use the advanced free blocks search.
+Yes, this means that in CR1.5, in case the original request is satisfied,
+we allow allocation of blocks with an order of (goal_extent_order -
+s_mb_best_avail_max_trim_order) to accelerate block allocation.
+> And I agree that the mballoc
+> code is careful enough that large numbers don't matter there but still why
+> allowing storing garbage values? It is nicer to tell sysadmin he did
+> something wrong right away.
 >
-> On Thu, Feb 22, 2024 at 11:03=E2=80=AFPM Namhyung Kim <namhyung@kernel.or=
-g> wrote:
-> >
-> > Hi,
-> >
-> > On Wed, Feb 21, 2024 at 12:34=E2=80=AFPM Ian Rogers <irogers@google.com=
-> wrote:
-> > > Weilin raised the TPEBS problem in the LPC 2023 talk, the issue being
-> > > that sampling and counting don't really exist in the current perf too=
-l
-> > > code at the same time. BPF could be a workaround but permissions are
-> > > an issue. Perhaps leader sampling but then what to do if two latencie=
-s
-> > > are needed. Forking perf to do this is an expedient and ideally we'd
-> > > not do it.
-> >
-> > Even with BPF, I think it needs two instances of an event - one for
-> > counting and the other for sampling, right?  I wonder if it can just
-> > use a single event for sampling and show the sum of periods in
-> > PERF_SAMPLE_READ.
-> >
-> > I'm not sure if an event group can have sampling and non-sampling
-> > events at the same time.  But it can be done without groups then.
-> > Anyway what's the issue with two latencies?
->
-> The latencies come from samples and with leader sampling only the
-> leader gets sampled so we can't get two latencies. For 2 latencies
-> we'd need 2 groups for 2 leaders or to modify leader sampling
+> 								Honza
+Yes, we shouldn't allow storing rubbish values, otherwise it may
+mislead admins, I will add an extra type to check it.
 
-Do those 2 latencies come from 2 events or a single event?
 
-But I realized that PERF_SAMPLE_READ would return the period
-only and I guess the latency is in PERF_SAMPLE_WEIGHT(_STRUCT), right?
-Then it won't work with PERF_SAMPLE_READ unless we extend the
-read format to include the weights.
-
-> - if we
-> could encode that we want to sample but don't need the sample in the
-> mmap, just want the latency being available to be read, etc. This and
-> BPF are both long-term viable solutions, but forking is the expedient
-> solution to get something going - we'd likely want it as a fallback
-> anyway.
-
-Maybe we can add it to the read format, but I'm not sure how the
-kernel maintains the value.  PERF_SAMPLE_READ would be fine
-to return the value in the sample.  But it should support read(2) too.
-
-Simply adding the values might not be what users want.  Maybe
-average latency/weight is meaningful but it could depend on
-what the event measures..
-
-Thanks,
-Namhyung
+Thanks!
+-- 
+With Best Regards,
+Baokun Li
+.
 
