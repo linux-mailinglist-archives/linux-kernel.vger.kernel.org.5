@@ -1,106 +1,121 @@
-Return-Path: <linux-kernel+bounces-79905-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79906-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF8EA862882
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 00:53:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24A99862886
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 00:59:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65326282475
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 23:53:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5CF728233F
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 23:59:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78B1E4E1DC;
-	Sat, 24 Feb 2024 23:53:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0CFA4EB33;
+	Sat, 24 Feb 2024 23:59:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="QJl9jSue"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uOTLlu9o"
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EA544E1BD
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 23:53:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C4BE4D9E8
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 23:59:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708818792; cv=none; b=an4+d+0pbLnSWMKsgz9mqSz48UgSR5R0Ylegi134ymg7n4EpFqqH11gv25sd2hmrwETYhaVm5mI+sZgPhkYbdFEGNRJMobMRmSCe9uHXaU0mDB8I9vvx7v6HHz9Hs1u9remDrS6LcndGz2GZzNZYtpDWA3umLQu4fN6dEK+G7XI=
+	t=1708819176; cv=none; b=iXFdCdfaEN3/fX+QTr5o5TQrtTI99g/bBzSXoHnAZAWJx96OgPUdF3RMohIefV+uqi95cWL8AXkO3G2YTzrzvlJIxfO/GUxEnlnoJ1ip24hJSoFrD/AA33A1eEkIVVHoNVjQdNaoaHCz3fwacIlh+Pn6LjAeMxpXLvL8FmGyA8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708818792; c=relaxed/simple;
-	bh=1nyHqj0QOBXadNL1hyU/ColE1K5lSLjIwFZkoy6rtag=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=bOvFjzPcWhPDeYNWtrD/1rCct/+hw/+5+dqz7jK8X/tcuVyZ1HiB78N7X8I0QYuqDL0uI2tjwwjBlyGiPbPuqSHjORXoSAwrhPxp6FqoLne/MtvKM9BQLDbmzNnXdR+kPyQ3HfhyDm8a9D7AqRG06a+m1vN4p+uTpseAJXmt81M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=QJl9jSue; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1708818781;
-	bh=1nyHqj0QOBXadNL1hyU/ColE1K5lSLjIwFZkoy6rtag=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=QJl9jSuexI8C7+aTFRi4Uw3JVm/OzPKx0XyDV4jzYQ5bpBMXjczt1ClZljxOfF4Ik
-	 srsogx7TfrD/T0zSjTW1cbU5tAitE6G+eqhAuNYBxrpbqSMfigcsr5KqSsBJng9W8J
-	 0+4Wq2O6c/6wyMdoJ6futCIzZC7xIg9YLGsEZegDUZAFH5I6zApLSSEp0D0L4ETpEr
-	 l2YNvJgsngE7EmCM7kLJT5IRXDbhZLBEuwLzUhbH4R6362It5/InBWPKnnXudXmOdP
-	 5bgDUiVXJ4ilpMy5qr2hYBR8mrzDhk6lLExiZYOh2x3JcX5hG2gsOFtuuWqN2nm4l7
-	 8UnXfG7bI+vNQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tj3bc4br7z4wc6;
-	Sun, 25 Feb 2024 10:52:58 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Nicholas
- Piggin <npiggin@gmail.com>, "jbglaw@lug-owl.de" <jbglaw@lug-owl.de>
-Subject: Re: [PATCH v1 4/5] powerpc: Remove cpu-as-y completely
-In-Reply-To: <94d19157-a343-425f-906f-546b1f4def6f@csgroup.eu>
-References: <38a8d765ed9149bc6b5484a7142e3bc59ffa3b1a.1671475543.git.christophe.leroy@csgroup.eu>
- <9e43ad8b173c2fdb540e2555a8ba3e375419f3cf.1671475543.git.christophe.leroy@csgroup.eu>
- <873570zxio.fsf@mpe.ellerman.id.au>
- <94d19157-a343-425f-906f-546b1f4def6f@csgroup.eu>
-Date: Sun, 25 Feb 2024 10:52:58 +1100
-Message-ID: <87msrpa085.fsf@mail.lhotse>
+	s=arc-20240116; t=1708819176; c=relaxed/simple;
+	bh=ckUxIr9E2HFFDl6qjsUCpotsMkiROkeR/piYuNBuUg4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dmBAN17tC+zXIjhMiyk+RM1+0m2wbdMBEjdTACep7v4DXSkH84jaae5fJR7T/yCzFmuNPMj0qFp6GO1vV73kPHYSQCl1cfaZ2UNaqBfHJ4dTTVXEoAvBQyAdPxmiLa1H56DJ1TNTs9vStbwjbDiTjY7Rao8Cb1LNa/o0lBO63zk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uOTLlu9o; arc=none smtp.client-ip=209.85.219.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc6cbe1ac75so1661144276.1
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 15:59:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708819173; x=1709423973; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xok2xXQ0vGr1pj2FsmN5nCeRHn6DxQhEZTwOzT6wsCM=;
+        b=uOTLlu9o6w36ilT07ANXYLrnkYqH1fy+yGL6NJj9bFpElpO8alJUbWnRhfic3Qr/RL
+         VzEaZ2ML8cAeni1nt25I5688ncIScT2SyfxSnfOrsqGJqT4am6qORSXUwp1wKtxi7hyj
+         uEFnkKh4Y0TmRwaASZqhg/l6AIct7fY1fW8vI6vjOApud3xeAa454+XVdIpqTGQ7Pe02
+         het4FSEj8+ouv4vFpm4WpBALE5WW70d+QdnKdaiKPUuzCByuUo1azNDodKUx+ZHITQpX
+         ptBJ4Gr6C8fhYlxAM6Dm2X0MZnF2FgQh4TytWtHogydCFqpRMNHWDnskMLXVUwivU72g
+         ei1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708819173; x=1709423973;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xok2xXQ0vGr1pj2FsmN5nCeRHn6DxQhEZTwOzT6wsCM=;
+        b=q7SAYYfNLvqlPorVR6KZ5GjylTa0hNgH8k6ZWoFfdvZwse12ybQ4xmIkMQo4wBD4W0
+         jLiZx5j7ho3YLThGigTVM8aYS94Eg+faJeQUPm9w3gcXOmfuFpMmevRZ/mr1xUs3/h29
+         V/X7Fd3BaRECgPM/46F0SeNy66d0Ktrw8zb+g0jARZ7DVawcHrw6dR5Zt0F3Q0FZ2SVC
+         Pkpv9+Vkgfu5gOxAiZCz+eugO4zgkSYwjzCBuWVBC+BwHvtCzugBnE0Wv1854UNShFy0
+         X2clgOyUEo88fwUqvunen3TMkg5zMIiNbShcG254wVR3P6OoCRDZbNJ3bkFlZXm+uP0v
+         tENw==
+X-Forwarded-Encrypted: i=1; AJvYcCVouuBucvo4K/RZkEHRasmPG5u2eHsFDWRzZXYbmkkTifoATWQXqHvMuAiCInxi/y9hePuXOc2yGPxxdgbFVyCpbIs+k/noD5sY4P8K
+X-Gm-Message-State: AOJu0YzXL+/AkiILXPpJIpI3nu7g4DZ/JGDQUZiNf99kv7lQ3ra6sndq
+	cjNglnTQTnnDC+px1UyHNCkNr1l0yolzhZyYrThFxUKh98pMmONhJKGibl56Yt8/hNkGpT3KD24
+	uQ0ID9Kj2tRIuWbGaNsxTEemk+HWtlCXi6+UxAMl3xcFVw+UcyxZTqA==
+X-Google-Smtp-Source: AGHT+IEEWF/q9H4leTyQIxxYbOYmfgX2cTUmaIFRHf6/R5fcAuCr/SEsDzojC5RZar1CMevNhZK72yt+54/VUNSLZJw=
+X-Received: by 2002:a25:ada8:0:b0:dc7:4988:6c77 with SMTP id
+ z40-20020a25ada8000000b00dc749886c77mr2044340ybi.21.1708819173625; Sat, 24
+ Feb 2024 15:59:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20240216070555.2483977-1-tudor.ambarus@linaro.org>
+ <20240216070555.2483977-13-tudor.ambarus@linaro.org> <10f692ae-ac7a-4243-aadc-80712f781d39@linaro.org>
+In-Reply-To: <10f692ae-ac7a-4243-aadc-80712f781d39@linaro.org>
+From: Sam Protsenko <semen.protsenko@linaro.org>
+Date: Sat, 24 Feb 2024 17:59:22 -0600
+Message-ID: <CAPLW+4=PYEHC3+Am1=xjtERsGcXmLsVAH218JryecaJdw8ER6g@mail.gmail.com>
+Subject: Re: [PATCH v3 12/12] spi: s3c64xx: switch exynos850 to new port
+ config data
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: broonie@kernel.org, robh@kernel.org, andi.shyti@kernel.org, 
+	krzysztof.kozlowski@linaro.org, conor+dt@kernel.org, alim.akhtar@samsung.com, 
+	linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	andre.draszik@linaro.org, peter.griffin@linaro.org, kernel-team@android.com, 
+	willmcvicker@google.com, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Le 20/02/2023 =C3=A0 07:00, Michael Ellerman a =C3=A9crit=C2=A0:
->> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->>> cpu-as-y is there to force assembler building options.
->>> But there is no need for that. Gcc is passed the necessary
->>> options and it automatically pass the appropriate option to
->>> GAS.
->>>
->>> GCC is given -maltivec when relevant, so no need
->>> for -Wa,-maltivec in addition
->>>
->>> And -Wa,-many is wrong as it will hide innapropriate
->>> instructions. Better to detect them and handle them on a
->>> case by case basis.
->>> -Wa,-many was added by commit 960e30029863 ("powerpc/Makefile:
->>> Fix PPC_BOOK3S_64 ASFLAGS") in order to fix an issue with
->>> clang and the passed -Wa,-mpower4 option. But we have now
->>> removed it expecting the compiler to automatically pass the
->>> proper options and instructions based on -mcpu=3Dpower4
->>=20
->> I wanted to apply this one, but it caused a lot of breakage for big
->> endian Book3S-64 builds - where we build for power4 but have lots of
->> code that uses >=3D power5 instructions.
->>=20
->> I'll try and get those all fixed and pick this up for the next merge
->> window.
+On Wed, Feb 21, 2024 at 11:56=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linar=
+o.org> wrote:
 >
-> ping ?
+>
+> Hey, Sam,
+>
+>
+> On 2/16/24 07:05, Tudor Ambarus wrote:
+> > Exynos850 has the same version of USI SPI (v2.1) as GS101.
+>
+> I tested GS101 and it worked, I guess exynos850 SPI shall work too as it
+> uses the same SPI version, v2.1. Can you run a test on your side too see
+> if works? If not, Mark can drop this patch I guess. Please let us know
+> your preference.
+>
 
-Brutal :)
+Tested the series on E850-96:
+  * All 3 SPI instances were tested
+  * Tested using loopback mode only
+  * Used spidev_test tool + spidev devices in dts
+  * Polling, IRQ and DMA transfers were tested
+  * Works fine even with no SPI aliases in dts
 
-There's still a few issues, I have patches for most of them I think.
-Will post this week.
+Feel free to add:
 
-cheers
+Tested-by: Sam Protsenko <semen.protsenko@linaro.org>
+
+Don't have time to review the patches right now, sadly.
+
+[snip]
 
