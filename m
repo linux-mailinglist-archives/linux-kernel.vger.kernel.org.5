@@ -1,105 +1,114 @@
-Return-Path: <linux-kernel+bounces-79576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B958862464
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:07:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AF6B862467
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:10:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E596282928
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:07:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B624281DCE
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:10:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56692250FE;
-	Sat, 24 Feb 2024 11:06:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8E0E24B59;
+	Sat, 24 Feb 2024 11:10:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SEckkG1T"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ir74/rFK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EC0C210E8;
-	Sat, 24 Feb 2024 11:06:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 387312260B;
+	Sat, 24 Feb 2024 11:10:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708772817; cv=none; b=HMx+hcoTPpaRVrym1ltl2HmP/KLmBI1pg+R557YiOFqnf162oeRZIH7XbqOEcBsirmvHKjmxg2oR8SFzQ5FIyMG/Tmw5n2+mPH0hJahyl/hYZ8z/nKGU7rFx1z4Jhu9ArPHm+MFAQqU5w/uFfdPlatN21sI51zRVsRo3D4DhMbk=
+	t=1708773025; cv=none; b=a502LBAUQLj1jEDoqxnh1STfZ/oOAX+5yjcXxa4VyoREkYCbe9GRX70lYRbe5Q1unyGFK6DjHs7njplcEL24kROwfwLzJ7coGYusmdZjn6mLFVFIYLQZQZePg6yGq0pp+gXc9tBMDufZS11vElVKX7QVATDrEnR5wahejw6ACB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708772817; c=relaxed/simple;
-	bh=cIB4znCddR1qjmuiBmTbiIoYuJDVKe+FBFWQftUxBM0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=i62Kjd9i+XnKUmT+EISWqcwy6qVsQ/eZqgQ7Ka1qkxbVv1W85m43RZQS4VuxKypXf+LdfTdNAOphSrFvyvWR9kaqbd6jtLQZO8z+J87r+V2sRamRuMC/ayhLkuDmVIUJn1s+6F+wjUiQS/+h4MYwfcdbOITXMaPEmW/tbBNsHI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SEckkG1T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49027C433C7;
-	Sat, 24 Feb 2024 11:06:53 +0000 (UTC)
+	s=arc-20240116; t=1708773025; c=relaxed/simple;
+	bh=m49QT+idwaeh0In0nycFo1IXbGgzrKJZswe/n72NjQ0=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=JhPCbpU2hyEvSR7hWMQVakj3PlvchX/oFpisFiD87OcK6q+uTGgujz8kMwhFCPn4j08siOKsCdao6FidGPtauzAKsyFUhYuBsqkB5XTEKQ8Y4OrimB7xs1BaFxpxmPwxNoxdroHqyc1nhDadNu2dE/PLsHUpCEQxE/LnNHjwa+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ir74/rFK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A83E2C433C7;
+	Sat, 24 Feb 2024 11:10:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708772816;
-	bh=cIB4znCddR1qjmuiBmTbiIoYuJDVKe+FBFWQftUxBM0=;
+	s=k20201202; t=1708773024;
+	bh=m49QT+idwaeh0In0nycFo1IXbGgzrKJZswe/n72NjQ0=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=SEckkG1TSUc8e8L34eytMZdolSDt5McplEXt4l9EmI09MQzp+dNKaEMdKfUNKmblM
-	 JP8EVMTn9k/6oQBVghZmzN6eEi1WQcZ3FZZAX4Kqf8LVa1v0+RvD8dfWiXQaxRXSr9
-	 Dn4Nzq7vSu38JN0yYyaQXhi5sDVm70HpK68D2oBrJm5XT8/Y2WeAD185YmmECIE4gN
-	 RDJLmQxkLgNkiD/y+oCEkNmCYdvQJtJlz7TCEcOtdaIrxG8U9zYBtdYRdSozQmgWXY
-	 CD/MDh+WUHNRj26XJ6jZ7qvUPsTnQEfXWghSVGad18Diln1uhxc0p35mchq5JXo9Bw
-	 OjiWCKsmdaxsw==
-Date: Sat, 24 Feb 2024 11:06:40 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: David Lechner <dlechner@baylibre.com>
-Cc: linux-iio@vger.kernel.org, devicetree@vger.kernel.org, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Michael Hennerich <michael.hennerich@analog.com>, Nuno =?UTF-8?B?U8Oh?=
- <nuno.sa@analog.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
- <broonie@kernel.org>, linux-kernel@vger.kernel.org, Stefan Popa
- <stefan.popa@analog.com>, Julien Stephan <jstephan@baylibre.com>
-Subject: Re: [PATCH v4 2/2] iio: adc: ad7380: new driver for AD7380 ADCs
-Message-ID: <20240224110640.03f3b857@jic23-huawei>
-In-Reply-To: <CAMknhBGkUP2Tdze5Fa_0qTcCP_OgcTxtczKYZiH1icfuTAEe+g@mail.gmail.com>
-References: <20240110-ad7380-mainline-v4-0-93a1d96b50fa@baylibre.com>
-	<20240110-ad7380-mainline-v4-2-93a1d96b50fa@baylibre.com>
-	<CAMknhBGkUP2Tdze5Fa_0qTcCP_OgcTxtczKYZiH1icfuTAEe+g@mail.gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	b=Ir74/rFKX8LjcfnIudalqZ1q8xK5ha8zdz5j+QLlCC8o6JgVifNggcG1W94cbzOVu
+	 aJlVZyGxmLQvvBvTT5seofDYJ9pGay8h9ByZ1XehfNL/Vy/n03E2FhmOL0EAGNTMbs
+	 O8HA2DxYhETMakF6o/DmbB7i+qywv0VScrOOUJHOihvyZvqMu9jvEgKH/h7ww6IQNR
+	 f96Ha9M8h2vdm01olw1R6sILnsYPSzWvF6pqhXG16F54P9gdZq/Ni/x7XPreIGqFAA
+	 +Tp5yboP34eASil67VQIlW8yUt0u9lxXyc3C7uCJPxBdKb9IQh91IRip29etG1Gpdw
+	 nXnpmK73ld0CA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rdpvC-006Lvp-JE;
+	Sat, 24 Feb 2024 11:10:22 +0000
+Date: Sat, 24 Feb 2024 11:10:21 +0000
+Message-ID: <87a5nq9kyq.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Oliver Upton <oliver.upton@linux.dev>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	kvmarm@lists.linux.dev,
+	Jing Zhang <jingzhangos@google.com>
+Subject: Re: [PATCH 2/3] irqchip/gic-v3-its: Spin off GICv4 init into a separate function
+In-Reply-To: <ZdnM0DDsGCTPMpwl@linux.dev>
+References: <20240219185809.286724-1-oliver.upton@linux.dev>
+	<20240219185809.286724-3-oliver.upton@linux.dev>
+	<87cysm9mtv.wl-maz@kernel.org>
+	<ZdnM0DDsGCTPMpwl@linux.dev>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, tglx@linutronix.de, yuzenghui@huawei.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, jingzhangos@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Mon, 19 Feb 2024 13:47:03 -0600
-David Lechner <dlechner@baylibre.com> wrote:
+On Sat, 24 Feb 2024 11:02:40 +0000,
+Oliver Upton <oliver.upton@linux.dev> wrote:
+> 
+> On Sat, Feb 24, 2024 at 10:30:04AM +0000, Marc Zyngier wrote:
+> > On Mon, 19 Feb 2024 18:58:07 +0000, Oliver Upton <oliver.upton@linux.dev> wrote:
+> > > @@ -3193,7 +3210,8 @@ static void its_cpu_init_lpis(void)
+> > >  		 * ancient programming gets left in and has possibility of
+> > >  		 * corrupting memory.
+> > >  		 */
+> > > -		val = its_clear_vpend_valid(vlpi_base, 0, 0);
+> > > +		its_clear_vpend_valid(vlpi_base, 0, 0);
+> > > +		return;
+> > 
+> > I'm not sure about the necessity of this return statement.
+> > allocate_vpe_l1_table() checks for rvpeid already, so it should be
+> > fine to carry on.
+> 
+> Yup, definitely not necessary. My aim was to have the control flow make
+> it a bit more obvious to the reader what's going on.
+> 
+> Having what reads as an allocation helper do a feature check isn't
+> entirely obvious.
+> 
+> I have no opinion either way though.
 
-> On Wed, Jan 10, 2024 at 2:29=E2=80=AFPM David Lechner <dlechner@baylibre.=
-com> wrote:
->=20
-> ...
->=20
-> > +
-> > +/* fully differential */
-> > +DEFINE_AD7380_DIFFERENTIAL_2_CHANNEL(ad7380_channels, 16);
-> > +DEFINE_AD7380_DIFFERENTIAL_2_CHANNEL(ad7381_channels, 14);
-> > +/* pseudo differential */
-> > +DEFINE_AD7380_DIFFERENTIAL_2_CHANNEL(ad7383_channels, 16);
-> > +DEFINE_AD7380_DIFFERENTIAL_2_CHANNEL(ad7384_channels, 14);
-> > + =20
->=20
-> Similar question to [1] in light of [2]: Since AD7383 and AD7384 are
-> pseudo-differential, should we handle them differently? I.e. add
-> aina-supply and ainb-supply DT properties for the negative inputs
-> (typically a V_REF / 2 supply) and remove the differential flag from
-> the channel spec.
->=20
-> [1]: https://lore.kernel.org/linux-iio/CAMknhBH2Pqa9xpPxnTCxJegVTbOG-QDeJ=
-A4YrQUPfj+hfSs73A@mail.gmail.com/
-> [2]: https://lore.kernel.org/linux-iio/CAMknhBF5mAsN1c-194Qwa5oKmqKzef2kh=
-XnqA1cSdKpWHKWp0w@mail.gmail.com/
+You could move the if (allocate_vpe_l1_table()) as an 'else' branch,
+as the two are mutually exclusive.
 
-Yes. I think that gives a more intuitive interface for users.
-I don't think we need to 'fix' any drivers already upstream as
-presenting these as differential is not an ABI error as far as I
-am concerned. It's just less than ideal choices given our views
-now! (as a result of these discussions on what pseudo differential
-means in practice)
+Thanks,
 
-Jonathan
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
