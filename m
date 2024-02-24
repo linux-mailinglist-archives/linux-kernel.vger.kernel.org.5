@@ -1,452 +1,132 @@
-Return-Path: <linux-kernel+bounces-79721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 952178625C7
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 16:14:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66D248625C9
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 16:17:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21371282B22
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 15:14:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84C461C20FCA
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 15:17:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4C1D46521;
-	Sat, 24 Feb 2024 15:14:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B5BE4653A;
+	Sat, 24 Feb 2024 15:17:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bw2m32dw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b="du0Gha4L"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD942E559;
-	Sat, 24 Feb 2024 15:14:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6290145033;
+	Sat, 24 Feb 2024 15:17:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708787642; cv=none; b=NAj7bs6j0xWMv50iVGPxXk7NxkSk4eWIUE82jKZaoG4ni8/FhR24GuQ7S8EjBOfY16V2C4bDxq2X3Ue+y+TKgITakUm8T76cd6HqZFOlzPRPtDwRCHoPeXUlHPeFv+fUZexk4LE++0zUZD4FMQnWsnP5sSme0qGXS6MH/oaVXu4=
+	t=1708787848; cv=none; b=sey7UNfVmIk/OeRFAiyqa45vuPXe7NdGhpdKsEBgbg7PWJvrLw42/1jBkcYwgBHL6hWMTthc2Q30E1/vvhnPr/S8nYMbTlsjhOGZsp+6tPYUy3v5tQ5uMLCtmaJEKarzg6wzqny0NGdOKBatHDhoRsyMv+524/8RegJI1vrGtcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708787642; c=relaxed/simple;
-	bh=LYTswCYwGiUPqj0hP+seBEAuBuZy43MNvVr8kKMlJKg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uHbFVxC9v1joqoYex7K0ws8SVFT75Qhopsnl6i/FTku98Af4qntS80bZWaneX5FhTHO+Z9hecTqokMSNFmjWvmlrlXVQHekTOib464aj4ko24sAo6/q6sr8N9cf0hByYc27mbyFLmu0UlKEYzetRQf1Ob0aIcUNXW/v5WH+xCpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bw2m32dw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC9FAC433F1;
-	Sat, 24 Feb 2024 15:13:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708787642;
-	bh=LYTswCYwGiUPqj0hP+seBEAuBuZy43MNvVr8kKMlJKg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Bw2m32dwtbhFOh88jtTl4rKfD91QOF3TVDkW6MalPxdEfWyOQF6pwA7jUFYu6Ho4J
-	 YhNo/njO8ufhPhg+RIuvgRURvvx4mrA5kW60kwUrOX2VCB2wQIuaaOUDQe2iF7HA5M
-	 G+x5/i0kRqQyPnySqZLS52H9Vv6LiEqac6k5pkM03jH/6MfgjnGASaWTJRnDrA5HPR
-	 HFAzwV7rb5EGj9dinzKhP6gbGLq37CAkDb+GSZ3doaf8t+NbE4LwF1WsyGdOc9rUmp
-	 SCktJNBeiOjwqcAm/zb12++f5j8HFyz91o8w/IcnjUQoYF9p/ru/m5/236/lpO4Uqd
-	 xGLwZvPHb+5Tw==
-Date: Sat, 24 Feb 2024 15:13:40 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Matti Vaittinen <mazziesaccount@gmail.com>, Andy
- Shevchenko <andriy.shevchenko@linux.intel.com>, Marek Vasut
- <marex@denx.de>, Anshul Dalal <anshulusr@gmail.com>, Javier Carrasco
- <javier.carrasco.cruz@gmail.com>, Matt Ranostay <matt@ranostay.sg>, Stefan
- Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
- linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 5/5] iio: light: Add support for APDS9306 Light
- Sensor
-Message-ID: <20240224151340.3f2f51e8@jic23-huawei>
-In-Reply-To: <20240218054826.2881-6-subhajit.ghosh@tweaklogic.com>
-References: <20240218054826.2881-1-subhajit.ghosh@tweaklogic.com>
-	<20240218054826.2881-6-subhajit.ghosh@tweaklogic.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708787848; c=relaxed/simple;
+	bh=/Ai4/Q7V0MmW3HXmJ0iBatCL69uChHgdEWoGbQ5ItZk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mNVBnz3RLy4v8a/rbUowr85M/DNW9WdsC7jZYNHt3LVrciDj2PlR6c9Bx1S7NS2kM+hgWi8YIUuHe1R0DciyAUIUnoZ5evu7tisfiHJYgLL701ZG5x7PqFAdfFTITm2UupZuzZMM3dxUmkVYcW0j+wYMzAYZtF7hkzKRE66C9gE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b=du0Gha4L; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1708787837; x=1709392637; i=erick.archer@gmx.com;
+	bh=/Ai4/Q7V0MmW3HXmJ0iBatCL69uChHgdEWoGbQ5ItZk=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=du0Gha4LrGTzIR1VjWKkV4JBqPp0HYcNFkXAKgp+S3lsY8SwP7umMaZ78i9Stqu7
+	 qpRWmhdqGKhlG0Ep3tVnIGZ79/1OqGqOCI7q7TTcsbM0L2jO1zBEgkjz+iX73g8gS
+	 KI5IM7kAtv6MY1hChDP3fLhNfWUjh+LiBluTRmsfbwIIX8MtVicXKEutSwK5xHIVk
+	 flrMqemW8jr/1ZXdmfy4mmPQejNBfPvMImaRNVSy5fTKK+04BwtaOC6rtw+9SEOaB
+	 FxE4BUzgqR+zVXD+CsMGwTw6dTatuc5yEQDYA+Nao6BrDDSWk04nP8Y5OcIT2mFlz
+	 MPYk2qFTBaDYbYYNhA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from localhost.localdomain ([79.157.194.183]) by mail.gmx.net
+ (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1MA7Ka-1rjyZb2BfW-00Bahh; Sat, 24 Feb 2024 16:17:17 +0100
+From: Erick Archer <erick.archer@gmx.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Kees Cook <keescook@chromium.org>
+Cc: Erick Archer <erick.archer@gmx.com>,
+	linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH] bcachefs: Prefer struct_size over open coded arithmetic
+Date: Sat, 24 Feb 2024 16:16:58 +0100
+Message-Id: <20240224151658.8272-1-erick.archer@gmx.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:GZsbmeNaBr0xi5hRenKf+OJZBVs7DEAPKRYS0/rm+w2gCsyic61
+ sKzfT0VaJ1bEMsEzPS3S/0HJHtkPltI5lPA6sMy5wVX9Ijd+Q4xe3KPZMGRf3ml8q8jXU/A
+ fBM/4SBTCpwMSd0FHnXym5s/sL97mYr+tqflhcsJxu2CwINqeMfx+pQYNNNTFBVW6humkHu
+ 8+J5Txcy1n2/uiIkPmS8w==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:14ZWeun70VM=;TIYijmmwBT7pG+DaqiuWItPhcrR
+ /jGH1gmGcYxnW87plh7Zp11dc3WxGVEO97WpWyDhrGNq9kxH20NvUNJqDcU68mE+z/hO+hFJP
+ +DGt+W0bKJXjqomZtkKW57QQYbyQ4Lr+a/thOD9MR+wC5OB39LpDaD+oQ4xg6CoAf28bvcmda
+ CvwGmkTAAy8ebfUOq1TnjaUjGU34gWKOL8+PL0s8l2+dqU+91TEMtwgYcdMLPTWkH5DEM1iC5
+ TBIK42NpvSk8za3ioZTjnGsozgnaxD3t4aR2WkpeMX2nBfIuaurJItNCMdr0ABqpbPB0LLzv1
+ 61BZlCmZzjppZE6oPdv34YyVaB4tgxQGyiu35Nrx8xcXixLtnHrnT/PvARLp1zaRx6gan6jpu
+ yaU4/Z1eoRWttKnzMqTfE0XXtdh/cZNqIcngNl/8tH1eOGttpFo5Sd4eyAconTt3R8zR4TsSv
+ 7dZLyaxNrOVk29f7pqIRm80ruENzAFKZ4iRcJHBE7xAgUvgy35duHfkynyatpqIZRsPJLg4sy
+ DuBhJ3EjeouU7DlyHEYB1uXToSeEFt/VAnzXDgs5VJvQ+ajtHmj9W6qH8OclwLW3WvZioPzVI
+ 7DHr4kXWF4HhB0BAvazwMVdGxFpF2zNp2VIuDnI8Gn5ZYP7m8+oizkqQcpu5vU+nfnkz+ewHi
+ 9mEjwfjooGigD10VYkUwBuEH61QMQyFj6/tkbVdXoJaDYQva2wiZq6C5tHpVS6F7jVTayzqCS
+ 1x8iFqGGvuv4jHtq+HoEAKex6c2Sk7zqlIjLA4mzxiCyGm5O2kVh6aBnZ0loMJLKZaXmFWJXu
+ MuGIoefpWN7I62/e7nQ8XoM0c1oImJ0Ut9kOrDEiBPXSk=
 
-On Sun, 18 Feb 2024 16:18:26 +1030
-Subhajit Ghosh <subhajit.ghosh@tweaklogic.com> wrote:
+This is an effort to get rid of all multiplications from allocation
+functions in order to prevent integer overflows [1][2].
 
-> Driver support for Avago (Broadcom) APDS9306 Ambient Light Sensor.
-> It has two channels - ALS and CLEAR. The ALS (Ambient Light Sensor)
-> channel approximates the response of the human-eye providing direct
-> read out where the output count is proportional to ambient light levels.
-> It is internally temperature compensated and rejects 50Hz and 60Hz flicker
-> caused by artificial light sources. Hardware interrupt configuration is
-> optional. It is a low power device with 20 bit resolution and has
-> configurable adaptive interrupt mode and interrupt persistence mode.
-> The device also features inbuilt hardware gain, multiple integration time
-> selection options and sampling frequency selection options.
-> 
-> This driver also uses the IIO GTS (Gain Time Scale) Helpers Namespace for
-> Scales, Gains and Integration time implementation.
-> 
-> Signed-off-by: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-I applied this but then got some build warnings that made me look
-more closely at the int_src handling.
+As the "t" variable is a pointer to "struct journal_seq_blacklist_table"
+and this structure ends in a flexible array:
 
-This is confusing because of the less than helpful datasheet defintion
-of a 2 bit register that takes values 0 and 1 only.
+struct journal_seq_blacklist_table {
+	[...]
+	struct journal_seq_blacklist_table_entry {
+		u64		start;
+		u64		end;
+		bool		dirty;
+	}			entries[];
+};
 
-I thought about trying to fix this up whilst applying but the event code
-issue is too significant to do without a means to test it.
+the preferred way in the kernel is to use the struct_size() helper to
+do the arithmetic instead of the argument "size + size * count" in the
+kzalloc() function.
 
-Jonathan
+This way, the code is more readable and safer.
 
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open-=
+coded-arithmetic-in-allocator-arguments [1]
+Link: https://github.com/KSPP/linux/issues/160 [2]
+Signed-off-by: Erick Archer <erick.archer@gmx.com>
+=2D--
+ fs/bcachefs/journal_seq_blacklist.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
+diff --git a/fs/bcachefs/journal_seq_blacklist.c b/fs/bcachefs/journal_seq=
+_blacklist.c
+index 024c9b1b323f..2c2490aa15fe 100644
+=2D-- a/fs/bcachefs/journal_seq_blacklist.c
++++ b/fs/bcachefs/journal_seq_blacklist.c
+@@ -165,8 +165,7 @@ int bch2_blacklist_table_initialize(struct bch_fs *c)
+ 	if (!bl)
+ 		return 0;
 
-> diff --git a/drivers/iio/light/apds9306.c b/drivers/iio/light/apds9306.c
-> new file mode 100644
-> index 000000000000..c18e0d48556b
-> --- /dev/null
-> +++ b/drivers/iio/light/apds9306.c
-> @@ -0,0 +1,1336 @@
->
-...
+-	t =3D kzalloc(sizeof(*t) + sizeof(t->entries[0]) * nr,
+-		    GFP_KERNEL);
++	t =3D kzalloc(struct_size(t, entries, nr), GFP_KERNEL);
+ 	if (!t)
+ 		return -BCH_ERR_ENOMEM_blacklist_table_init;
 
-> +
-> +static struct iio_event_spec apds9306_event_spec_als[] = {
-> +	{
-> +		.type = IIO_EV_TYPE_THRESH,
-> +		.dir = IIO_EV_DIR_RISING,
-> +		.mask_shared_by_all = BIT(IIO_EV_INFO_VALUE),
-> +	}, {
-> +		.type = IIO_EV_TYPE_THRESH,
-> +		.dir = IIO_EV_DIR_FALLING,
-> +		.mask_shared_by_all = BIT(IIO_EV_INFO_VALUE),
-> +	}, {
-> +		.type = IIO_EV_TYPE_THRESH,
-> +		.dir = IIO_EV_DIR_EITHER,
-> +		.mask_shared_by_all = BIT(IIO_EV_INFO_PERIOD),
-> +		.mask_separate = BIT(IIO_EV_INFO_ENABLE),
-> +	}, {
-> +		.type = IIO_EV_TYPE_THRESH_ADAPTIVE,
-> +		.mask_shared_by_all = BIT(IIO_EV_INFO_VALUE) |
-> +			BIT(IIO_EV_INFO_ENABLE),
-> +	},
-> +};
-> +
-> +static struct iio_event_spec apds9306_event_spec_clear[] = {
-> +	{
-> +		.type = IIO_EV_TYPE_THRESH,
-
-Specify dir.
-
-> +		.mask_separate = BIT(IIO_EV_INFO_ENABLE),
-> +	},
-> +};
-> +
-> +#define APDS9306_CHANNEL(_type) \
-
-I think the code would be easier to read without this macro.  It will 
-be a few lines longer but simpler
-
-> +	.type = _type, \
-> +	.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_INT_TIME) | \
-> +		BIT(IIO_CHAN_INFO_SAMP_FREQ), \
-> +	.info_mask_shared_by_all_available = BIT(IIO_CHAN_INFO_INT_TIME) | \
-> +		BIT(IIO_CHAN_INFO_SAMP_FREQ), \
-> +
-> +static struct iio_chan_spec apds9306_channels_with_events[] = {
-> +	{
-> +		APDS9306_CHANNEL(IIO_LIGHT)
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
-> +				      BIT(IIO_CHAN_INFO_SCALE),
-> +		.info_mask_separate_available = BIT(IIO_CHAN_INFO_SCALE),
-> +		.event_spec = apds9306_event_spec_als,
-> +		.num_event_specs = ARRAY_SIZE(apds9306_event_spec_als),
-> +	}, {
-> +		APDS9306_CHANNEL(IIO_INTENSITY)
-> +		.channel2 = IIO_MOD_LIGHT_CLEAR,
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
-> +		.modified = 1,
-> +		.event_spec = apds9306_event_spec_clear,
-> +		.num_event_specs = ARRAY_SIZE(apds9306_event_spec_clear),
-> +	},
-> +};
-> +
-> +static struct iio_chan_spec apds9306_channels_without_events[] = {
-> +	{
-> +		APDS9306_CHANNEL(IIO_LIGHT)
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
-> +				      BIT(IIO_CHAN_INFO_SCALE),
-> +		.info_mask_separate_available = BIT(IIO_CHAN_INFO_SCALE),
-> +	}, {
-> +		APDS9306_CHANNEL(IIO_INTENSITY)
-> +		.channel2 = IIO_MOD_LIGHT_CLEAR,
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
-> +		.modified = 1,
-> +	},
-> +};
-> +
-> +/* INT_PERSISTENCE available */
-> +IIO_CONST_ATTR(thresh_either_period_available, "[0 1 15]");
-> +
-> +/* ALS_THRESH_VAR available */
-> +IIO_CONST_ATTR(thresh_adaptive_either_values_available, "[0 1 7]");
-
-These need to be static
-
-> +
-> +static struct attribute *apds9306_event_attributes[] = {
-> +	&iio_const_attr_thresh_either_period_available.dev_attr.attr,
-> +	&iio_const_attr_thresh_adaptive_either_values_available.dev_attr.attr,
-> +	NULL
-> +};
-
-> +static int apds9306_read_data(struct apds9306_data *data, int *val, int reg)
-> +{
-> +	struct device *dev = data->dev;
-> +	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> +	struct apds9306_regfields *rf = &data->rf;
-> +	int ret, delay, intg_time, intg_time_idx, repeat_rate_idx, int_src;
-> +	int status = 0;
-> +	u8 buff[3];
-> +
-> +	ret = pm_runtime_resume_and_get(data->dev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = regmap_field_read(rf->intg_time, &intg_time_idx);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = regmap_field_read(rf->repeat_rate, &repeat_rate_idx);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = regmap_field_read(rf->int_src, &int_src);
-> +	if (ret)
-> +		return ret;
-> +
-> +	intg_time = iio_gts_find_int_time_by_sel(&data->gts, intg_time_idx);
-> +	if (intg_time < 0)
-> +		return intg_time;
-> +
-> +	/* Whichever is greater - integration time period or sampling period. */
-> +	delay = max(intg_time, apds9306_repeat_rate_period[repeat_rate_idx]);
-> +
-> +	/*
-> +	 * Clear stale data flag that might have been set by the interrupt
-> +	 * handler if it got data available flag set in the status reg.
-> +	 */
-> +	data->read_data_available = 0;
-> +
-> +	/*
-> +	 * If this function runs parallel with the interrupt handler, either
-> +	 * this reads and clears the status registers or the interrupt handler
-> +	 * does. The interrupt handler sets a flag for read data available
-> +	 * in our private structure which we read here.
-> +	 */
-> +	ret = regmap_read_poll_timeout(data->regmap, APDS9306_MAIN_STATUS_REG,
-> +				       status, data->read_data_available ||
-> +				       (status & (APDS9306_ALS_DATA_STAT_MASK |
-> +						  APDS9306_ALS_INT_STAT_MASK)),
-> +				       APDS9306_ALS_READ_DATA_DELAY_US, delay * 2);
-> +
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* If we reach here before the interrupt handler we push an event */
-> +	if ((status & APDS9306_ALS_INT_STAT_MASK))
-> +		iio_push_event(indio_dev, IIO_UNMOD_EVENT_CODE(IIO_LIGHT,
-> +			       int_src, IIO_EV_TYPE_THRESH, IIO_EV_DIR_EITHER),
-
-You are pushing an event on channel 0 or 1 (which is non obvious as that
-int_src is a 2 bit value again).  However you don't use indexed channels
-so this is wrong.
-It's also pushing IIO_LIGHT for both channels which makes no sense as you
-only have one IIO_LIGHT channel.
-
-
-> +			       iio_get_time_ns(indio_dev));
-> +
-> +	ret = regmap_bulk_read(data->regmap, reg, buff, sizeof(buff));
-> +	if (ret) {
-> +		dev_err_ratelimited(dev, "read data failed\n");
-> +		return ret;
-> +	}
-> +
-> +	*val = get_unaligned_le24(&buff);
-> +
-> +	pm_runtime_mark_last_busy(data->dev);
-> +	pm_runtime_put_autosuspend(data->dev);
-> +
-> +	return 0;
-> +}
-> +
-
-..
-
-> +
-> +static irqreturn_t apds9306_irq_handler(int irq, void *priv)
-> +{
-> +	struct iio_dev *indio_dev = priv;
-> +	struct apds9306_data *data = iio_priv(indio_dev);
-> +	struct apds9306_regfields *rf = &data->rf;
-> +	int ret, status, int_ch;
-> +
-> +	/*
-> +	 * The interrupt line is released and the interrupt flag is
-> +	 * cleared as a result of reading the status register. All the
-> +	 * status flags are cleared as a result of this read.
-> +	 */
-> +	ret = regmap_read(data->regmap, APDS9306_MAIN_STATUS_REG, &status);
-> +	if (ret < 0) {
-> +		dev_err_ratelimited(data->dev, "status reg read failed\n");
-> +		return IRQ_HANDLED;
-> +	}
-> +
-> +	ret = regmap_field_read(rf->int_src, &int_ch);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if ((status & APDS9306_ALS_INT_STAT_MASK))
-> +		iio_push_event(indio_dev, IIO_UNMOD_EVENT_CODE(IIO_LIGHT,
-> +			       int_ch, IIO_EV_TYPE_THRESH, IIO_EV_DIR_EITHER),
-> +			       iio_get_time_ns(indio_dev));
-
-As commented on elsewhere I'm not seeing the relationship between the event
-pushed here and the channels this device provides (one of which is modified
-for starters).
-
-> +
-> +	/*
-> +	 * If a one-shot read through sysfs is underway at the same time
-> +	 * as this interrupt handler is executing and a read data available
-> +	 * flag was set, this flag is set to inform read_poll_timeout()
-> +	 * to exit.
-> +	 */
-> +	if ((status & APDS9306_ALS_DATA_STAT_MASK))
-> +		data->read_data_available = 1;
-> +
-> +	return IRQ_HANDLED;
-> +}
-
-..
-
-> +static int apds9306_read_event_config(struct iio_dev *indio_dev,
-> +				      const struct iio_chan_spec *chan,
-> +				      enum iio_event_type type,
-> +				      enum iio_event_direction dir)
-> +{
-> +	struct apds9306_data *data = iio_priv(indio_dev);
-> +	struct apds9306_regfields *rf = &data->rf;
-> +	int int_en, event_ch_is_light, ret;
-> +
-> +	switch (type) {
-> +	case IIO_EV_TYPE_THRESH:
-> +		guard(mutex)(&data->mutex);
-> +
-> +		ret = regmap_field_read(rf->int_src, &event_ch_is_light);
-
-Call the local value int_src - it's not obvious to a reviewer what 
-relationship between that and int_src is. I had to go read the datasheet
-to find out.
-
-> +		if (ret)
-> +			return ret;
-> +
-> +		ret = regmap_field_read(rf->int_en, &int_en);
-> +		if (ret)
-> +			return ret;
-> +
-> +		if (chan->type == IIO_LIGHT)
-> +			return int_en & event_ch_is_light;
-> +
-> +		if (chan->type == IIO_INTENSITY)
-> +			return int_en & !event_ch_is_light;
-This is the specific line the compiler doesn't like
-drivers/iio/light/apds9306.c:1036:39: warning: dubious: x & !y   
-
-I would match int_src against specific values rather than using tricks
-based on what those values happen to be.
-
-			return int_en && (int_src == APDS9306_INT_SRC_CLEAR);
-                                                      
-
-
-> +
-> +		return -EINVAL;
-> +	case IIO_EV_TYPE_THRESH_ADAPTIVE:
-> +		ret = regmap_field_read(rf->int_thresh_var_en, &int_en);
-> +		if (ret)
-> +			return ret;
-> +
-> +		return int_en;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static int apds9306_write_event_config(struct iio_dev *indio_dev,
-> +				       const struct iio_chan_spec *chan,
-> +				       enum iio_event_type type,
-> +				       enum iio_event_direction dir,
-> +				       int state)
-> +{
-> +	struct apds9306_data *data = iio_priv(indio_dev);
-> +	struct apds9306_regfields *rf = &data->rf;
-> +	int ret, val;
-> +
-> +	state = !!state;
-> +
-> +	switch (type) {
-> +	case IIO_EV_TYPE_THRESH:
-> +		guard(mutex)(&data->mutex);
-Better to add explicit scope if you are going to use a guard.
-	case IIO_EV_TYPE_THRESH: {
-		guard(mutex)(&data->mutex);
-so we can see where the scope ends more clearly.
-
-> +
-> +		/*
-> +		 * If interrupt is enabled, the channel is set before enabling
-> +		 * the interrupt. In case of disable, no need to switch
-> +		 * channels. In case of different channel is selected while
-> +		 * interrupt in on, just change the channel.
-> +		 */
-> +		if (state) {
-> +			if (chan->type == IIO_LIGHT)
-> +				val = 1;
-> +			else if (chan->type == IIO_INTENSITY)
-> +				val = 0;
-> +			else
-> +				return -EINVAL;
-> +
-> +			ret = regmap_field_write(rf->int_src, val);
-> +			if (ret)
-> +				return ret;
-> +		}
-> +
-> +		ret = regmap_field_read(rf->int_en, &val);
-> +		if (ret)
-> +			return ret;
-> +
-> +		if (val == state)
-> +			return 0;
-> +
-> +		ret = regmap_field_write(rf->int_en, state);
-> +		if (ret)
-> +			return ret;
-> +
-> +		if (state)
-> +			return pm_runtime_resume_and_get(data->dev);
-> +
-> +		pm_runtime_mark_last_busy(data->dev);
-> +		pm_runtime_put_autosuspend(data->dev);
-> +
-> +		return 0;
-> +	case IIO_EV_TYPE_THRESH_ADAPTIVE:
-> +		return regmap_field_write(rf->int_thresh_var_en, state);
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-
+=2D-
+2.25.1
 
 
