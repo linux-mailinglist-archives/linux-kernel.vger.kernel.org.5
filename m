@@ -1,59 +1,56 @@
-Return-Path: <linux-kernel+bounces-79629-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B5878624E3
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 13:11:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FDF78624E5
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 13:12:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E05691F2344B
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:11:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A500E1F21FA1
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:12:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E033E16429;
-	Sat, 24 Feb 2024 12:11:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 034CF3CF73;
+	Sat, 24 Feb 2024 12:12:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jMYusG9z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qUfeJxt1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2276D3B79E;
-	Sat, 24 Feb 2024 12:11:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39F7911701;
+	Sat, 24 Feb 2024 12:12:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708776706; cv=none; b=g6mp9N6YA9LyJ0eLeBnfB68huIqTHCRp9x0rHD9MQzp6Ez6iUKGVB3JumZ1E2jWPR7wUaWNpM6R3+ESpAzSd+6dfLMDOYLNJOx+mYQZHGE7eEUySXXo5Fzq7dQ4gHI4qHlobnL28fKRvytvB9obZCoFajIuY+uKx+YOa+r/oqZM=
+	t=1708776754; cv=none; b=VvYOUj1K/zemSFPF7LmFY6QpxjauePXbNMmdmPBUUlQLpQoskc4GhAIAqvxeQCFgqu90okvxWxxmqPtbwrvwX41oo7ooth56H72ieiM2x5zu/TM2HdS74EFRAIa8EHM/7BCGNbvDN+lbWHvIXASvH8ktv7CfV8yA5wg5N0UWdtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708776706; c=relaxed/simple;
-	bh=rpYOVLIlw2+edCfnGPgTidNvVsmfYwWsDaMoVPZVr8E=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IF+Dzp9vRoFu0re0AfrHOjd9SgktBxy6UKRWtAWexklJCjPQeEtxKpNiH3xEif5GMkBRWa1s+fo3/lWz2T9Q7g4LnhFzn00PldxDa4KHyOiVX2MsYI19ikHO1IUiHxymHWSQYps8gPviuT9PXP2Lm0S66Bgb59C0SW895ZjGABY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jMYusG9z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4786FC433F1;
-	Sat, 24 Feb 2024 12:11:43 +0000 (UTC)
+	s=arc-20240116; t=1708776754; c=relaxed/simple;
+	bh=W9xsZJD7YcnkkKcjvki79L57zBBOz+m+R5LU7SHYrDw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=D08n5cttzVVp0EucHGJ4L5c50B9aTsXg5fOhc+v7uZcbdTV7xjoW16yh3fn3kYIjm9n6efMFJyGwoTxaBirygOjt9FtImFeTZToKMeMG6sfGFlKRH8EPw164D8a0u8CJKlfglCb0ZUDBdzV6U3MArZ10uE7V5YDufgU8TdxaLkw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qUfeJxt1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC6FDC433F1;
+	Sat, 24 Feb 2024 12:12:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708776705;
-	bh=rpYOVLIlw2+edCfnGPgTidNvVsmfYwWsDaMoVPZVr8E=;
+	s=k20201202; t=1708776753;
+	bh=W9xsZJD7YcnkkKcjvki79L57zBBOz+m+R5LU7SHYrDw=;
 	h=From:To:Cc:Subject:Date:From;
-	b=jMYusG9zU120ZBb9vkTnb0qG6A/UiiTaSGVoqNWGurOliBSjvBWVryKy64I+HsV5g
-	 ec3yKfFqRpoRkYCyzp4fmpQBvd82X98XRoJZkGt7l80ESU6NovDz6G3SC6R/pxcjUc
-	 WWjMesOnL+QL2nUL7rjaJWRaULmaM1/SpDkMNvRO+40HJwmmBWjpOeG/icgHV4kxiJ
-	 hfFiCLEyaufNjEirGF2iX50SNMN9EOKoqhZlQC8Waqcb+QJMWMVctgvZMtdkSsdkPY
-	 ELCFD8sW8eK/DziA6ATVbxz5xLI/fod5LI0n/s1SzCx+mTXh1wxBX5fFb6ehxdx/9b
-	 lZc8XbGFs7ang==
+	b=qUfeJxt12Jdebx8coAIJDJOyRJqGwCkqVkxgZNDbQsTJcRxeFkrOZuATpQQGORb7A
+	 7oOfrFj/4H8y0Zzhp2UTT/0QJkERtrkGXEae4cKkp3D6scSOqjtBI8EkurqiPu2bkw
+	 Woat3gWsXQ5FjV+k1ROaGfnfSHiKHw63AlAhhAiisZQHFoyVBqAFHNhIfAgAZQ7ZjP
+	 YDVdeCO/zrSYZa8X0jdajG/sX05ElV9ajOzY1ScIhHd5S7/+lRRFE1eqkIHMA0j+cE
+	 isKJJBLaMTrvwbi8SXIxw2J3agKR/kdICuj/kDWoZcT+0f0DqpXwpWMOR8s5T8b1pU
+	 N1Ejmp4etFQ5Q==
 From: Arnd Bergmann <arnd@kernel.org>
-To: Jonathan Cameron <jic23@kernel.org>
+To: Alasdair Kergon <agk@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>,
+	Mikulas Patocka <mpatocka@redhat.com>,
+	dm-devel@lists.linux.dev
 Cc: Arnd Bergmann <arnd@arndb.de>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH] iio: avoid fortify-string overflow error
-Date: Sat, 24 Feb 2024 13:11:34 +0100
-Message-Id: <20240224121140.1883201-1-arnd@kernel.org>
+	Eric Biggers <ebiggers@google.com>,
+	Yu Zhe <yuzhe@nfschina.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] dm-integrity: reduce stack usage for recheck
+Date: Sat, 24 Feb 2024 13:12:14 +0100
+Message-Id: <20240224121228.1904859-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -65,37 +62,65 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The memcpy() call in dlhl60d.c triggers a check with clang-19:
+The newly added integrity_recheck() function has another larger stack
+allocation, just like its caller integrity_metadata(). When it gets
+inlined, the combination of the two exceeds the warning limit for 32-bit
+architectures and possibly risks an overflow when this is called from
+a deep call chain through a file system:
 
-In file included from drivers/iio/pressure/dlhl60d.c:11:
-In file included from include/linux/module.h:17:
-include/linux/fortify-string.h:553:4: error: call to '__write_overflow_field' declared with 'warning' attribute: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror,-Wattribute-warning]
-  553 |                         __write_overflow_field(p_size_field, size);
-      |                         ^
+drivers/md/dm-integrity.c:1767:13: error: stack frame size (1048) exceeds limit (1024) in 'integrity_metadata' [-Werror,-Wframe-larger-than]
+ 1767 | static void integrity_metadata(struct work_struct *w)
 
-It writes into a two member array from a loop over a linked list
-that likely has some indication of having more than two entries.
+Since the caller at this point is done using its checksum buffer,
+just reuse the same buffer in the new function to avoid the double
+allocation.
 
-Add a conditional check there to avoid the overflow.
-
+Fixes: c88f5e553fe3 ("dm-integrity: recheck the integrity tag after a failure")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/iio/pressure/dlhl60d.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/md/dm-integrity.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/iio/pressure/dlhl60d.c b/drivers/iio/pressure/dlhl60d.c
-index 28c8269ba65d..a43ecda849db 100644
---- a/drivers/iio/pressure/dlhl60d.c
-+++ b/drivers/iio/pressure/dlhl60d.c
-@@ -262,6 +262,8 @@ static irqreturn_t dlh_trigger_handler(int irq, void *private)
- 			&st->rx_buf[1] + chn * DLH_NUM_DATA_BYTES,
- 			DLH_NUM_DATA_BYTES);
- 		i++;
-+		if (i >= ARRAY_SIZE(tmp_buf))
-+			break;
- 	}
+diff --git a/drivers/md/dm-integrity.c b/drivers/md/dm-integrity.c
+index 143f6c223b0e..82023f1f3df0 100644
+--- a/drivers/md/dm-integrity.c
++++ b/drivers/md/dm-integrity.c
+@@ -1691,14 +1691,13 @@ static void integrity_sector_checksum(struct dm_integrity_c *ic, sector_t sector
+ 	get_random_bytes(result, ic->tag_size);
+ }
  
- 	iio_push_to_buffers(indio_dev, tmp_buf);
+-static void integrity_recheck(struct dm_integrity_io *dio)
++static void integrity_recheck(struct dm_integrity_io *dio, char *checksum)
+ {
+ 	struct bio *bio = dm_bio_from_per_bio_data(dio, sizeof(struct dm_integrity_io));
+ 	struct dm_integrity_c *ic = dio->ic;
+ 	struct bvec_iter iter;
+ 	struct bio_vec bv;
+ 	sector_t sector, logical_sector, area, offset;
+-	char checksum_onstack[max_t(size_t, HASH_MAX_DIGESTSIZE, MAX_TAG_SIZE)];
+ 	struct page *page;
+ 	void *buffer;
+ 
+@@ -1735,8 +1734,8 @@ static void integrity_recheck(struct dm_integrity_io *dio)
+ 			}
+ 
+ 			integrity_sector_checksum(ic, logical_sector, buffer,
+-						  checksum_onstack);
+-			r = dm_integrity_rw_tag(ic, checksum_onstack, &dio->metadata_block,
++						  checksum);
++			r = dm_integrity_rw_tag(ic, checksum, &dio->metadata_block,
+ 						&dio->metadata_offset, ic->tag_size, TAG_CMP);
+ 			if (r) {
+ 				if (r > 0) {
+@@ -1851,7 +1850,7 @@ static void integrity_metadata(struct work_struct *w)
+ 						checksums_ptr - checksums, dio->op == REQ_OP_READ ? TAG_CMP : TAG_WRITE);
+ 			if (unlikely(r)) {
+ 				if (r > 0) {
+-					integrity_recheck(dio);
++					integrity_recheck(dio, checksums);
+ 					goto skip_io;
+ 				}
+ 				if (likely(checksums != checksums_onstack))
 -- 
 2.39.2
 
