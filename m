@@ -1,117 +1,104 @@
-Return-Path: <linux-kernel+bounces-79547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 209CD8623F9
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 10:41:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C8518623FD
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 10:53:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3ABFC1C21BBE
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 09:41:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B2271F22F49
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 09:53:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CF411BC3B;
-	Sat, 24 Feb 2024 09:41:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB0C61B814;
+	Sat, 24 Feb 2024 09:53:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="HmdkCEdD"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mFzZTdey"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED8E1AAD0
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 09:41:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0153C179AA;
+	Sat, 24 Feb 2024 09:53:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708767667; cv=none; b=RTOFPCeHlMgjya2ENPt7lloS/s7F8QpS/L+94axKMhjGRHRnxnWyzllGk11mxkY3UtVIOu175d7gjBZ7Ayt9og4hbrCw95ZikvlK//SsfwbAgS2nj/Mk3+barzKU7lxYo7rG7BXUva26yZr/hC7husbXCydDOuhvwksMwRfCqZM=
+	t=1708768393; cv=none; b=YErM48GAq2XK2sYC7IMu7q1smyJE/IAoOw90jBO65dd7qyt74w59zhIK56JUnM1Fj5sNdBXrq36IGlBiJ1xb5biUywx0ifxOhHPKU+0MgaSLudY1VS4hweAuEfOa2MyqX1S0owl+DmIpUJSG5xalPZ8QC6hW+a8pL7I9Y4HPebQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708767667; c=relaxed/simple;
-	bh=UEFxROxE6KP7hbsHlQuKhYmjvKut4tKaZLEG/90dHnY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kLo+9NtE76/xjI5FigUCyJ8dy0Q4DIWxPTMLB+Bx6KnO/Zmhv5KwvkadQ2pfvG2xnYD7T7LvTHCS0BNPTmJvKadP+ewhaYYY4Jt7njmBlsn0qlqPUHzk5k9iHwS2o2E9WGYkTNAGskLOR4WbWNjdm8G7k053gvLn14V/Ul06aE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com; spf=pass smtp.mailfrom=arista.com; dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b=HmdkCEdD; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4129f291fa7so477885e9.0
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 01:41:04 -0800 (PST)
+	s=arc-20240116; t=1708768393; c=relaxed/simple;
+	bh=PDHqNXMuRCqPjNS5bWxWkSAMWcKkWDnn+jOnhXHQmZ4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EqMvUB8hXlzSGhxL5iBlffUtM8087XphO5xjDXqyMj4BB/0WNIpt7RWsXzgcR6tRo9LfGOpXmt1B+QNwjx97CCsTrQzcpiLsdxGKF/DX5bAAAiN0Kwcb/DNR4y3Oj54R5JzhlfifQRB5ud9DsEnZfCENxbcXR7ipKzQFPdWFdlM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mFzZTdey; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e45d0c9676so819387b3a.0;
+        Sat, 24 Feb 2024 01:53:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1708767663; x=1709372463; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9v4R1LcjkjY5cWdbqRcV+KS7qfSyvUTSBFeDxDIrljY=;
-        b=HmdkCEdDBEb0hUoPXbEx8PLuzMUGEp+YK5OOFbuDLvD4AuJz56an7hZApsCef3o7hH
-         XR4Q0+Hwt+ARkoS65145mXVm8QpemZUbVvdFURaLbm8KbK4CW+gE+M/gZab8REYL4kWI
-         Ja/EGOjPaXDjavbcZDaS310vFcCAUjUlu7Qc9HBYdvzy7eZEmLYu2hKHYiLNeNqsAM/R
-         FBq2NY7nNa3OS38RipInsdZ3xPVyY7op8qo+X4ssGXp/URVRWtuOAtM2p+XXDNN44KFo
-         lMKq6QdwffH31Wdsof+9MZRO/81LwWE3jNAWPSCcMQ7o1q5xSCKL8aA/0U0WyI22G54o
-         RxJg==
+        d=gmail.com; s=20230601; t=1708768391; x=1709373191; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Pty+fRQQYtpnB6eAjS+4AxQbLg5aAO/xeli1234qY4A=;
+        b=mFzZTdeymeZ5QED/xG/RsLeCntLkHdZ1zghSYrJrFEFzYVaV7fZyo16O+ssGRn2AAL
+         n/gQibmTFcLTWRI70HaBPyae61XjkrsPKL8SrasHy2bHQFtRUTcnuYYkyIXEEaKCT2PU
+         mTXXSpRtyfxe5PlozaQLVms+1tCtrBDjrJd5HCyr664/KN2mVZ4FXv8Yz+IoXmfWIaSV
+         kDZ7INVIwFgH/xkYkZDruIflIspMtnYFs+lOc1dk7tMrNEVI3K7swjUXg8CChHV1Y+Pg
+         4jWFNsJC6KwV+6nEkvrt2yL2JFkeM87sQWHlMrHuOtA1eb6KblZEbbdyfzzirpfKIyAY
+         QHxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708767663; x=1709372463;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9v4R1LcjkjY5cWdbqRcV+KS7qfSyvUTSBFeDxDIrljY=;
-        b=dObSUVVUFI05em7gRYk0YiaFFBu3EmUOILPTTSYyDCA2PB9fnNBUKOSpaK0SKGNgop
-         3MUQGjHoekZ1Ouk8aPEHWGgkeTHApDUWaJ47D74hvxQi8zTjjF4qDt7OoBh13+4VXvSv
-         HCOp7jO8KqywJjWH6JwUylXb0ipL1JrjQ72ns6CRSaernIbMkkqqn4XZCptE/WxMZnjN
-         KzNG38HJLRAarQBVkZQq5PVGKZC6DJIw1GJCUU42U3QDG4B1ihrb6NWMY3i0td6Oegdv
-         6syrRsF8ExUZGh7bO8yxIS/WdK5gPjMnuilEqZGCHxfrDqlTqs94HUnsL9b+N+xu/1iD
-         RHXg==
-X-Forwarded-Encrypted: i=1; AJvYcCUhSxUf0XK81hUr40QY2QreCSDthP0HtiiX8CyoCOND1zE/bgeZk/Jgb/sdkzcCItMYPXUytSNWPIck8l8RruIALhSKAuqfTD9AuEQZ
-X-Gm-Message-State: AOJu0YxgeAd+2gsi+NsQzWaaOt4wEzaNsIg950LAfFWRiJxik64tjsAT
-	oWKYNgARyuOYzKM7UOME8Yn376DdqchTY02CzlwQf3pt1rNKqlUknwWkln5neg==
-X-Google-Smtp-Source: AGHT+IEyK9H6qTd17qmPlYqNBSh17XoUaXYRRxKBzbl5Zs/nMraTHjuqZ5EBJfQ2dbtVFWQsGALWug==
-X-Received: by 2002:a05:600c:1d07:b0:412:6015:3dc5 with SMTP id l7-20020a05600c1d0700b0041260153dc5mr1121291wms.14.1708767662930;
-        Sat, 24 Feb 2024 01:41:02 -0800 (PST)
-Received: from [10.83.37.178] ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id f14-20020adff98e000000b0033cf60e268fsm1509225wrr.116.2024.02.24.01.41.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Feb 2024 01:41:02 -0800 (PST)
-Message-ID: <ff642d38-17b8-4b12-b2ff-a819b193b2e6@arista.com>
-Date: Sat, 24 Feb 2024 09:40:55 +0000
+        d=1e100.net; s=20230601; t=1708768391; x=1709373191;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Pty+fRQQYtpnB6eAjS+4AxQbLg5aAO/xeli1234qY4A=;
+        b=bcnMUNxwMuUKPxYml8hoiDa/7ndtqG5PGj6ZbwpKb7sz8RgkYVxWQpFWB9PQmlcW8y
+         9ELQIA1f+E78XOYLa7Aw8e79BwhOQpAhwLyMv06efaIZSHjGLNSe2o/GkD2uS/MJ4FEf
+         p31fF6PbPUTiGbbEKPH/+7sKLK1CuHVXTiiodsd1ccpXAFxqLWqC3uNOPGzOY3FuHm4O
+         GChOtfoT9S9MZqbMGUoY6U0l797d01s/Gorj5CwonhqCesmssTYy+C5BiIuzNMLL2gwI
+         a9QYFW364zJfQNECvFcNmmxbMtW+sj/r6tYnJIQ6UCaURqtDHpZvHwCxeJ+sHI087vaY
+         2k8A==
+X-Forwarded-Encrypted: i=1; AJvYcCUDy+5FI9rMBenlybkn8HfYFVS5YABFvLT8M2DMkDknjMhijhhDKFwdcbG7+S92o3RaOKE6qUbP05y2cfgkQW5tpWmAKBNx96Y/2/DRL3cELflmZAvXimtipHasseK1k1yVIlK/
+X-Gm-Message-State: AOJu0YzUQjxtELHKhopVeOvAgn8y92EClHrIJbfEvulFp7l9RisXfidz
+	BdgMR7j70eHQteR6/l+oT/DpTLtxYHC9T1jXHwDTVgLQs7rB5LlHFgrNddK3895nGFq+2mlSvhm
+	5fG9T0CfCcoVqZYKOVUqnbObsc4o=
+X-Google-Smtp-Source: AGHT+IHVXYk9F0m3bDnCQOKUCRIOPOHERGPSbQZaEGYRpKDE8Vot+IL1bTRi9biZKNNN8qkFk0diUTiDUusQG3vW8kI=
+X-Received: by 2002:a17:90a:f009:b0:29a:90ef:66f4 with SMTP id
+ bt9-20020a17090af00900b0029a90ef66f4mr2691924pjb.17.1708768391196; Sat, 24
+ Feb 2024 01:53:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 03/10] net/tcp: Move tcp_inbound_hash() from
- headers
-To: Eric Dumazet <edumazet@google.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski
- <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- David Ahern <dsahern@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- Dmitry Safonov <0x7f454c46@gmail.com>
-References: <20240224-tcp-ao-tracepoints-v1-0-15f31b7f30a7@arista.com>
- <20240224-tcp-ao-tracepoints-v1-3-15f31b7f30a7@arista.com>
- <CANn89iKB3ov_rthyscWn=h4yxmhReXAJzHu9+dOdpzPA8F=C-w@mail.gmail.com>
-Content-Language: en-US
-From: Dmitry Safonov <dima@arista.com>
-In-Reply-To: <CANn89iKB3ov_rthyscWn=h4yxmhReXAJzHu9+dOdpzPA8F=C-w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <ed9e1bca-d07b-42fa-9ceb-d0eef3976168@gmx.de> <CADo9pHg2jgYqE1qxpV40E6GHL1s+G+mNm1JCcB9GgA-4XM59+w@mail.gmail.com>
+ <2cc27421-8791-47bd-a3d6-83188332ad3c@gmx.de> <2024022326-wheat-heat-e4ba@gregkh>
+ <CADo9pHgvjr6-=heOBuhjZqW0W2nhC1zBbaqYq9bWis9J-6SBAA@mail.gmail.com> <2024022432-fleshy-mumps-3b65@gregkh>
+In-Reply-To: <2024022432-fleshy-mumps-3b65@gregkh>
+From: Luna Jernberg <droidbittin@gmail.com>
+Date: Sat, 24 Feb 2024 10:52:58 +0100
+Message-ID: <CADo9pHh+PxY9_0=naTCtUSbsMyo+YmrHpcEqiKX1y7M4bGnV+A@mail.gmail.com>
+Subject: Re: [PATCH 6.7 000/313] 6.7.6-rc2 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Luna Jernberg <droidbittin@gmail.com>
+Cc: Ronald Warsow <rwarsow@gmx.de>, stable@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/24/24 09:30, Eric Dumazet wrote:
-> On Sat, Feb 24, 2024 at 10:04 AM Dmitry Safonov <dima@arista.com> wrote:
->>
->> Two reasons:
->> 1. It's grown up enough
->> 2. In order to not do header spaghetti by including
->>    <trace/events/tcp.h>, which is necessary for TCP tracepoints.
->>
->> Signed-off-by: Dmitry Safonov <dima@arista.com>
-> 
-> Okay, but what about CONFIG_IPV6=m ?
-> 
-> I do not see any EXPORT_SYMBOL() in this patch.
+Alright i promise i will do that before posting next time, thanks for the h=
+elp
 
-Ouch. I keep forgetting about that case, will fix in v2.
-
-Thanks,
-             Dmitry
-
+Den l=C3=B6r 24 feb. 2024 kl 10:22 skrev Greg Kroah-Hartman
+<gregkh@linuxfoundation.org>:
+>
+> On Sat, Feb 24, 2024 at 10:01:36AM +0100, Luna Jernberg wrote:
+> > How do i change to bottom instead of top posting in the gmail webinterf=
+ace?
+>
+> Move to the bottom when responding, or use a different tool to access
+> your gmail account.  There's a whole document in the kernel
+> documentation directory for how to deal with email clients, I recommend
+> reading that.
+>
+> thanks,
+>
+> gre gk-h
 
