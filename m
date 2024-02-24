@@ -1,115 +1,156 @@
-Return-Path: <linux-kernel+bounces-79854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C84598627A2
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 22:02:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 191BF8627A3
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 22:02:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 660BC1F21B0C
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 21:02:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7198282406
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 21:02:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63AB0481C6;
-	Sat, 24 Feb 2024 21:02:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2E9D4D131;
+	Sat, 24 Feb 2024 21:02:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Nqh/+g+P"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LIXU0YxG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AAA4C2D0
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 21:02:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E51C44CDFB;
+	Sat, 24 Feb 2024 21:02:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708808533; cv=none; b=NDACHEibQPqjFFaD6L2e1WPTmEvU8sE93ke7usQfylYSR2V5UD+Ehdsg0usgVCSRohsDrMtd1sMO8l2KQKVGnJ0Oyo903K2gEAG6iTjbb8gLGPrwoYkyvUauokuWkFf+0v67Ac2MghyMkslpYPD4aFV67+lDTVstcrqw5724hxM=
+	t=1708808549; cv=none; b=l8V9A9v7+5S+N3kQYeLsdiFjBNVgEplLIjtrDl1K2meanIi1Izs5LKMEnpJYBGJUDU8InA/PHV0kS8/tpVbExfU23u2L4N48npI5++QQZ/W6PO09XkI3WbVUuDQDA/a1QtgLKXpOpYlZtHuCg9gsy0SC3IisZd/Yt4oJgDviiuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708808533; c=relaxed/simple;
-	bh=WiBv8N82kcLZuhS9znenjc2QK2P06cLRxM1o/FwZOqU=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=TCA29pOKnFWAf7Ec7fyo96GP/jU7GZtidnvUAY3XCGRNs2/WTIsa3V9F+eqmyleMDerBp3GhUXsSQiJP9AVXvYPzebmmGimcnHYLkdqnpbVguodFaiObJdItekgUkhwOeXsLPNv5DcX64nnHvakDuPJyMN71z1SaxXjToj4rF9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Nqh/+g+P; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1dbe7e51f91so84205ad.1
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 13:02:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708808531; x=1709413331; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ePcRftl5sVDiYzrpHJ3u0w2CefDD/b0RFj0UwX8i7Ys=;
-        b=Nqh/+g+PI5JNNYzdTMFlZxemS+vltwg0ng47ivl3QsSh4iLSIZ7t72a53NDHBOUr/E
-         b1zRBS9DgW98bmdgDzcBXJClZtHXhk0osOIRs9yg/V/a9R+C6Z2x8fguar8Y80quDqh3
-         eBQNyNkciqGLj8qU/u5IjePCNv7ghcy+RCgYh0DoW+A7L9jqD1wqT61oypwgEO9MPdTJ
-         aGlJSxmEHQIjIRbig9wC5mUnuX9i11wl5le3QF0GsfL43ipBaZIk8nK2GdsEToGD6ovO
-         SaMZjeOV60ETndFcMW4+GZd3yNZhSwj+3fPvuQOr8YRLWxS90yx2/nBbG21z8efEvwQS
-         YIlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708808531; x=1709413331;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ePcRftl5sVDiYzrpHJ3u0w2CefDD/b0RFj0UwX8i7Ys=;
-        b=ufiJ/IQAqWrEi7OKun2f/0gi60jg3oO5izRqNuZP4G3aYS8ivbU100vDPGuqP2kCaF
-         AmsbZ+r/LCNu0YQWJMbJfsfD2xujuY4tbpIe3rpnJs837LfYiWcCGBopEZLS7vH2LUD4
-         /DiIaxt7xdoGqUCJCiVild4Bf9AXr9KB8Gbs7FU84Myhh4Vr+gcqJtcSbolKJlOZ48Zd
-         S0xcXj8pVaAg9EPO7HoFKY170ukmZkyWLeL8a3tBnascqppfUD22IYhzYSYwfVaFJkJw
-         iZ8zQloJYPkYyrmML2LJ4uWE+dm+PYF8oHqksdnNzy3HiXi1CPcue0oO/mzG3gXQFoJP
-         GdIg==
-X-Forwarded-Encrypted: i=1; AJvYcCW1oPfH1J7vlj1zlY/C54BOtI0YZvKg9qIR6vtQcI7CvRCaFcof22P0hrG0kKEFkt1+8VsBe057DIITLLENkrA7LVLNk4xOfqYqQN0b
-X-Gm-Message-State: AOJu0YysBp8qj/XhCrwJyOu4jyQWysR4NhuG9q5G69CHIwsxx0wRX5Wo
-	La23+lfjajGMREhflJCBiXqU0KFTvcJCKBTsZGJFeRZhSwYFsnoNIUx4FYQU8Q==
-X-Google-Smtp-Source: AGHT+IENt6y3xMZdPidcytahM/DYB9CW9Wn2djHjVN8SOPgNVka0WghH09kEdgaru+hlSeLMJP3RPg==
-X-Received: by 2002:a17:902:d203:b0:1d9:907f:635a with SMTP id t3-20020a170902d20300b001d9907f635amr183529ply.13.1708808531154;
-        Sat, 24 Feb 2024 13:02:11 -0800 (PST)
-Received: from [2620:0:1008:15:ce41:1384:fbb2:c9bc] ([2620:0:1008:15:ce41:1384:fbb2:c9bc])
-        by smtp.gmail.com with ESMTPSA id r32-20020a632060000000b005d30550f954sm1474292pgm.31.2024.02.24.13.02.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Feb 2024 13:02:10 -0800 (PST)
-Date: Sat, 24 Feb 2024 13:02:09 -0800 (PST)
-From: David Rientjes <rientjes@google.com>
-To: Vlastimil Babka <vbabka@suse.cz>
-cc: Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, 
-    Joonsoo Kim <iamjoonsoo.kim@lge.com>, 
-    Andrew Morton <akpm@linux-foundation.org>, 
-    Roman Gushchin <roman.gushchin@linux.dev>, 
-    Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
-    Andrey Ryabinin <ryabinin.a.a@gmail.com>, 
-    Alexander Potapenko <glider@google.com>, 
-    Andrey Konovalov <andreyknvl@gmail.com>, 
-    Dmitry Vyukov <dvyukov@google.com>, 
-    Vincenzo Frascino <vincenzo.frascino@arm.com>, 
-    Zheng Yejian <zhengyejian1@huawei.com>, 
-    Xiongwei Song <xiongwei.song@windriver.com>, 
-    Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, 
-    linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com
-Subject: Re: [PATCH v2 2/3] mm, slab: use an enum to define SLAB_ cache
- creation flags
-In-Reply-To: <20240223-slab-cleanup-flags-v2-2-02f1753e8303@suse.cz>
-Message-ID: <9e2e6912-5778-2e34-5f63-3ccaebdbe576@google.com>
-References: <20240223-slab-cleanup-flags-v2-0-02f1753e8303@suse.cz> <20240223-slab-cleanup-flags-v2-2-02f1753e8303@suse.cz>
+	s=arc-20240116; t=1708808549; c=relaxed/simple;
+	bh=DBksNLTYfjt6+EX3HN5+PfdJ9HZ1Fi3NzTEwfk1Wj9o=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=uMO6Nz9+6hJNURGc12d5COIPaWmkG0uzGZpP6FaWVkhM2D+DhzkIP3/3PfF5okAvMy5+WZ8j/xXoUMfG0NWxE0xAfXoYscOryyENbIN20OEn/7xVSAxnElvqN/Re8In86EwsFgIsfWvmdl/3am8aMxVM81zwtfCbZgkvw+uUVAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LIXU0YxG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93603C433C7;
+	Sat, 24 Feb 2024 21:02:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708808548;
+	bh=DBksNLTYfjt6+EX3HN5+PfdJ9HZ1Fi3NzTEwfk1Wj9o=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=LIXU0YxGcL2vXyF1XOBoBcPw3rrkRPzvqdj/mE4SgPvlIj/lK4sF7d93bkGTngfuQ
+	 qSlm74y0cI0vOODSbKmMFEKHyuFlrlxpsrcteyCwPGXBtfPaoFrt3w0Pp79VvePY7e
+	 Buk7Yfguhg5My1B56YP+UVna4Dcuy+OS537MGhwCji7vzPTvVGGsVx0pfQZuDhe0pj
+	 BwBw95v4h8+dUFHz3wh0yfMWeVijLI8OKvzOn1M90jQRHLEac670wYptO1Ut4FV7aq
+	 6OzpcYwkOJz39eJJnPqA8lhyez6C0tGKVZKh4D9zdxkkghpN+h77XLqCCVTE+8ZDka
+	 0Qic/paZ8CRSw==
+From: SeongJae Park <sj@kernel.org>
+To: Barry Song <21cnbao@gmail.com>
+Cc: SeongJae Park <sj@kernel.org>,
+	Minchan Kim <minchan@kernel.org>,
+	akpm@linux-foundation.org,
+	damon@lists.linux.dev,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	mhocko@suse.com,
+	hannes@cmpxchg.org,
+	Barry Song <v-songbaohua@oppo.com>
+Subject: Re: [PATCH RFC] mm: madvise: pageout: ignore references rather than clearing young
+Date: Sat, 24 Feb 2024 13:02:25 -0800
+Message-Id: <20240224210225.47149-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <CAGsJ_4w4wnbryJaAKRtNGNMg_YTGkeG3QwL9_JkT=wtwq1+_+Q@mail.gmail.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, 23 Feb 2024, Vlastimil Babka wrote:
+On Sun, 25 Feb 2024 04:33:25 +0800 Barry Song <21cnbao@gmail.com> wrote:
 
-> The values of SLAB_ cache creation flags are defined by hand, which is
-> tedious and error-prone. Use an enum to assign the bit number and a
-> __SLAB_FLAG_BIT() macro to #define the final flags.
+> On Sun, Feb 25, 2024 at 4:12 AM SeongJae Park <sj@kernel.org> wrote:
+> >
+> > On Sat, 24 Feb 2024 11:07:23 -0800 SeongJae Park <sj@kernel.org> wrote:
+> >
+> > > Hi Barry,
+> > >
+> > > On Sat, 24 Feb 2024 12:37:59 +0800 Barry Song <21cnbao@gmail.com> wrote:
+> > >
+> > > [...]
+> > > >
+> > > > BTW\uff0c
+> > > > Hi SeongJae,
+> > > > I am not quite sure if damon also needs this, so I have kept damon as is by
+> > > > setting ignore_references = false.  MADV_PAGEOUT is an explicit hint users
+> > > > don't want the memory to be reclaimed, I don't know if it is true for damon as
+> > > > well. If you have some comments, please chime in.
+> > >
+> > > Thank you for calling my name :)
+> > >
+> > > For DAMON's usecase, the document simply says the behavior would be same to
+> > > MADV_PAGEOUT, so if we conclude to change MADV_PAGEOUT, I think same change
+> > > should be made for DAMON's usecase, or update DAMON document.
+> >
+> > Thanks to Barry's nice explanation on my other reply to the patch, now I think
+> > the change is modest, and therefore I'd prefer the first way: Changing DAMON's
+> > usecase, and keep the document as is.
 > 
-> This renumbers the flag values, which is OK as they are only used
-> internally.
+> Hi SeongJae,
 > 
-> Also define a __SLAB_FLAG_UNUSED macro to assign value to flags disabled
-> by their respective config options in a unified and sparse-friendly way.
+> thanks! I actually blindly voted for keeping DAMON's behaviour but
+> slightly updated the
+> document as I set ignore_references to false for the DAMON case in the RFC :-)
 > 
-> Reviewed-and-tested-by: Xiongwei Song <xiongwei.song@windriver.com>
-> Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
-> Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> --- a/mm/damon/paddr.c
+> +++ b/mm/damon/paddr.c
+> @@ -249,7 +249,7 @@ static unsigned long damon_pa_pageout(struct
+> damon_region *r, struct damos *s)
+>  put_folio:
+>   folio_put(folio);
+>   }
+> - applied = reclaim_pages(&folio_list);
+> + applied = reclaim_pages(&folio_list, false);
+>   cond_resched();
+>   return applied * PAGE_SIZE;
+>  }
+> 
+> MADV_PAGEOUT comes from userspace by a specific process to tell the kernel
+> to reclaim its own memory(actually focus on non-shared memory as it
+> skips folios with
+> mapcount>1).
+> The range is a virtual address and the app does know it doesn't want
+> to access the
+> range in the foreseeable future.  and the affected app is itself not global.
+> 
+> In the DAMON case,  it seems the range is the physical address.  if
+> the pa is mapped
+> by more than one process, it seems safer to double-check in the kernel
+> as it might
+> affect multiple processes?
+> 
+> Please correct me if I am wrong.
 
-Acked-by: David Rientjes <rientjes@google.com>
+You're correct.  Please consider below in my previous reply[1] as my opinion.
+
+    let's keep the change for paddr.c in your patch as is.
+
+[1] https://lore.kernel.org/r/20240224205453.47096-1-sj@kernel.org
+
+
+Thanks,
+SJ
+
+> 
+> >
+> >
+> > Thanks,
+> > SJ
+> >
+> > >
+> > >
+> > > Thanks,
+> > > SJ
+> 
+> Thanks
+>  Barry
 
