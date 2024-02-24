@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-79865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79861-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D4D38627C2
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 22:33:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40CF48627C0
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 22:33:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D078B212C8
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 21:33:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A523B1F21F33
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 21:33:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB8F94E1CE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 486594DA0F;
 	Sat, 24 Feb 2024 21:33:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kqyAltnU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HautrxRg"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA3674D58A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F5064CDFB;
 	Sat, 24 Feb 2024 21:33:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708810393; cv=none; b=GISiV2Vk3X1my1CibLtNTgkT9waq9Q0snzOK5ozbeJOqxv8kml1quPLQ3y/NrLjpfNvjUEbT4CWXttQOHENY5LTwFWN+3J82auFWGfAR065GVCCCPN7peQrhs+J2B7aRCx2LwJm97ZETUANHfBCxo7PQn3M5UakglPiRNF+ghrE=
+	t=1708810393; cv=none; b=kHlQm6QJQPn8FZl0zV68IyfE5T/KLF/GYnCIGzH7zkRKgd97HlcQ4RCV7+pJT1HqyOueV5N7DvbuWth8xQy7CIB+pCJkQ20lwaazi0bY6606EVnVIca3HdlpJ9ggIrzYYRvoWHSLn6GAR4+XJ7XPPPzHWoc2hjeIUSXCVHyB9iA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708810393; c=relaxed/simple;
-	bh=snnR1gu7w8P9G0LSlc7qZ8AC7qVf+H2XXxGnseGSLOA=;
+	bh=wsCtGpiDTocW4vbleg11KHxRFROoKpRqbaZuvc+TfiA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=l588XkW8d93uKmTuUuZ5bOj1ylrmI2T5oK3NeKvOuJoRaA5XOt4CrMgXHXcjWfdxRVE9pgwV9vcx6F05osBt4c8QCFzKvpS8RsNKaiQmA2Vhrw8H49vZmRSYYJ2MIwvJbH5W2f7XmAI+NpU5zVN2iqk4psuYOeIwuZ4MfaPpkX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kqyAltnU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D95B9C43394;
+	 MIME-Version; b=dX6MJ3lS3ATeU1v4MdNk8/PJx6puKwNYJhic7sHLn/AQjhnRIHDSiE4dl80feDm+iZEs2JKQf3J1bBhe/qUcrKSozdk+yVHbn14DL26WHlts5wjUwKK7QPJ+H8Pxgek3+WypMuXmixv2yIMr+NG20kKDq6vTFXXAo+flEtVjiAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HautrxRg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4C80C43390;
 	Sat, 24 Feb 2024 21:33:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1708810393;
-	bh=snnR1gu7w8P9G0LSlc7qZ8AC7qVf+H2XXxGnseGSLOA=;
+	bh=wsCtGpiDTocW4vbleg11KHxRFROoKpRqbaZuvc+TfiA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kqyAltnUfQbgJrDsIFpty7TUqzKP3H9/RP/BOD8p4zJbGNZvtY0TVBg4AdUfNaue+
-	 ynb3+xRZZ1wp5RupDO0rvHOdRAGrIIrcz5aAOpI7aSeYC3hTDgcJrK5YEsikZBezvQ
-	 lLK22NfnPrVqO0QOJeLrVpEjEhXKTbHp9wtjUqr0HG1Gmd+EQN0ySI7iwn9lg35WnX
-	 AHezQuXPKqvdJ8HIXJTi0Pvl2bZRAm+xLFewqAuNbR8fiZTZXfvW2pDVDbr/ov3EV2
-	 N/GTqIDnW3uhTH8jeZlnhEGgGtsCDYP74kh3TQfUB7H9MIiIrP4mpwqAt3guS3ICtv
-	 XI+FhXK+s/cGw==
+	b=HautrxRg2EjpVUHAPlVkDDD1i0dNFdPJiHpJ8CXRgFetwTw3/SBIGbrHK5dSLaUMJ
+	 3Kx3WKnE7sbz1JJQMdxKjYrQAcCgPFFSfTZRCZeWrYw6gBH6OEFlhHGKDTUPBXDhOH
+	 40ZYUKCYUmOugWcQLsOB36xd5cNWNi3NL8oohsQ/BnHNMMT+v7ejGwsm3xCtN+CirL
+	 j+yNySWRznMgKrg/V7BG7NwtgISOY6uxSeTigGQ0Cujb82sUEtquQK2SxXRBFOwTar
+	 heifzNvUOxMSnUO/BP2yuJ6axbFeE+/iihG2SHQJhXRl1PYvuQqBhG1ODPW3cxTmse
+	 G4F6QVCWvZnJg==
 Received: by mercury (Postfix, from userid 1000)
-	id E5B391060D95; Sat, 24 Feb 2024 22:33:09 +0100 (CET)
+	id EBB9A1060DAA; Sat, 24 Feb 2024 22:33:09 +0100 (CET)
 From: Sebastian Reichel <sre@kernel.org>
 To: Sebastian Reichel <sre@kernel.org>,
 	Rob Herring <robh+dt@kernel.org>,
@@ -58,10 +58,11 @@ Cc: Dong Aisheng <aisheng.dong@nxp.com>,
 	Mark Brown <broonie@kernel.org>,
 	linux-arm-kernel@lists.infradead.org,
 	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 02/16] dt-bindings: bus: imx-weim: convert to YAML
-Date: Sat, 24 Feb 2024 22:29:34 +0100
-Message-ID: <20240224213240.1854709-3-sre@kernel.org>
+	linux-kernel@vger.kernel.org,
+	Rob Herring <robh@kernel.org>
+Subject: [PATCH v4 03/16] dt-bindings: input: touchscreen: fsl,imx6ul-tsc convert to YAML
+Date: Sat, 24 Feb 2024 22:29:35 +0100
+Message-ID: <20240224213240.1854709-4-sre@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240224213240.1854709-1-sre@kernel.org>
 References: <20240224213240.1854709-1-sre@kernel.org>
@@ -73,414 +74,164 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Convert the i.MX  Wireless External Interface Module binding to YAML.
+Convert the i.MX6UL touchscreen DT binding to YAML.
 
+Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Sebastian Reichel <sre@kernel.org>
 ---
- .../devicetree/bindings/bus/imx-weim.txt      | 117 ----------
- .../fsl/fsl,imx-weim-peripherals.yaml         |  31 +++
- .../memory-controllers/fsl/fsl,imx-weim.yaml  | 204 ++++++++++++++++++
- .../mc-peripheral-props.yaml                  |   1 +
- .../fieldbus/arcx,anybus-controller.txt       |   2 +-
- 5 files changed, 237 insertions(+), 118 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/bus/imx-weim.txt
- create mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/fsl,imx-weim-peripherals.yaml
- create mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/fsl,imx-weim.yaml
+ .../input/touchscreen/fsl,imx6ul-tsc.yaml     | 97 +++++++++++++++++++
+ .../bindings/input/touchscreen/imx6ul_tsc.txt | 38 --------
+ 2 files changed, 97 insertions(+), 38 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/fsl,imx6ul-tsc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/imx6ul_tsc.txt
 
-diff --git a/Documentation/devicetree/bindings/bus/imx-weim.txt b/Documentation/devicetree/bindings/bus/imx-weim.txt
-deleted file mode 100644
-index e7f502070d77..000000000000
---- a/Documentation/devicetree/bindings/bus/imx-weim.txt
-+++ /dev/null
-@@ -1,117 +0,0 @@
--Device tree bindings for i.MX Wireless External Interface Module (WEIM)
--
--The term "wireless" does not imply that the WEIM is literally an interface
--without wires. It simply means that this module was originally designed for
--wireless and mobile applications that use low-power technology.
--
--The actual devices are instantiated from the child nodes of a WEIM node.
--
--Required properties:
--
-- - compatible:		Should contain one of the following:
--			  "fsl,imx1-weim"
--			  "fsl,imx27-weim"
--			  "fsl,imx51-weim"
--			  "fsl,imx50-weim"
--			  "fsl,imx6q-weim"
-- - reg:			A resource specifier for the register space
--			(see the example below)
-- - clocks:		the clock, see the example below.
-- - #address-cells:	Must be set to 2 to allow memory address translation
-- - #size-cells:		Must be set to 1 to allow CS address passing
-- - ranges:		Must be set up to reflect the memory layout with four
--			integer values for each chip-select line in use:
--
--			   <cs-number> 0 <physical address of mapping> <size>
--
--Optional properties:
--
-- - fsl,weim-cs-gpr:	For "fsl,imx50-weim" and "fsl,imx6q-weim" type of
--			devices, it should be the phandle to the system General
--			Purpose Register controller that contains WEIM CS GPR
--			register, e.g. IOMUXC_GPR1 on i.MX6Q.  IOMUXC_GPR1[11:0]
--			should be set up as one of the following 4 possible
--			values depending on the CS space configuration.
--
--			IOMUXC_GPR1[11:0]    CS0    CS1    CS2    CS3
--			---------------------------------------------
--				05	    128M     0M     0M     0M
--				033          64M    64M     0M     0M
--				0113         64M    32M    32M     0M
--				01111        32M    32M    32M    32M
--
--			In case that the property is absent, the reset value or
--			what bootloader sets up in IOMUXC_GPR1[11:0] will be
--			used.
--
-- - fsl,burst-clk-enable	For "fsl,imx50-weim" and "fsl,imx6q-weim" type of
--			devices, the presence of this property indicates that
--			the weim bus should operate in Burst Clock Mode.
--
-- - fsl,continuous-burst-clk	Make Burst Clock to output continuous clock.
--			Without this option Burst Clock will output clock
--			only when necessary. This takes effect only if
--			"fsl,burst-clk-enable" is set.
--
--Timing property for child nodes. It is mandatory, not optional.
--
-- - fsl,weim-cs-timing:	The timing array, contains timing values for the
--			child node. We get the CS indexes from the address
--			ranges in the child node's "reg" property.
--			The number of registers depends on the selected chip:
--			For i.MX1, i.MX21 ("fsl,imx1-weim") there are two
--			registers: CSxU, CSxL.
--			For i.MX25, i.MX27, i.MX31 and i.MX35 ("fsl,imx27-weim")
--			there are three registers: CSCRxU, CSCRxL, CSCRxA.
--			For i.MX50, i.MX53 ("fsl,imx50-weim"),
--			i.MX51 ("fsl,imx51-weim") and i.MX6Q ("fsl,imx6q-weim")
--			there are six registers: CSxGCR1, CSxGCR2, CSxRCR1,
--			CSxRCR2, CSxWCR1, CSxWCR2.
--
--Example for an imx6q-sabreauto board, the NOR flash connected to the WEIM:
--
--	weim: weim@21b8000 {
--		compatible = "fsl,imx6q-weim";
--		reg = <0x021b8000 0x4000>;
--		clocks = <&clks 196>;
--		#address-cells = <2>;
--		#size-cells = <1>;
--		ranges = <0 0 0x08000000 0x08000000>;
--		fsl,weim-cs-gpr = <&gpr>;
--
--		nor@0,0 {
--			compatible = "cfi-flash";
--			reg = <0 0 0x02000000>;
--			#address-cells = <1>;
--			#size-cells = <1>;
--			bank-width = <2>;
--			fsl,weim-cs-timing = <0x00620081 0x00000001 0x1c022000
--					0x0000c000 0x1404a38e 0x00000000>;
--		};
--	};
--
--Example for an imx6q-based board, a multi-chipselect device connected to WEIM:
--
--In this case, both chip select 0 and 1 will be configured with the same timing
--array values.
--
--	weim: weim@21b8000 {
--		compatible = "fsl,imx6q-weim";
--		reg = <0x021b8000 0x4000>;
--		clocks = <&clks 196>;
--		#address-cells = <2>;
--		#size-cells = <1>;
--		ranges = <0 0 0x08000000 0x02000000
--			  1 0 0x0a000000 0x02000000
--			  2 0 0x0c000000 0x02000000
--			  3 0 0x0e000000 0x02000000>;
--		fsl,weim-cs-gpr = <&gpr>;
--
--		acme@0 {
--			compatible = "acme,whatever";
--			reg = <0 0 0x100>, <0 0x400000 0x800>,
--				<1 0x400000 0x800>;
--			fsl,weim-cs-timing = <0x024400b1 0x00001010 0x20081100
--				0x00000000 0xa0000240 0x00000000>;
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/memory-controllers/fsl/fsl,imx-weim-peripherals.yaml b/Documentation/devicetree/bindings/memory-controllers/fsl/fsl,imx-weim-peripherals.yaml
+diff --git a/Documentation/devicetree/bindings/input/touchscreen/fsl,imx6ul-tsc.yaml b/Documentation/devicetree/bindings/input/touchscreen/fsl,imx6ul-tsc.yaml
 new file mode 100644
-index 000000000000..82fc5f4a1ed6
+index 000000000000..678756ad0f92
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/memory-controllers/fsl/fsl,imx-weim-peripherals.yaml
-@@ -0,0 +1,31 @@
++++ b/Documentation/devicetree/bindings/input/touchscreen/fsl,imx6ul-tsc.yaml
+@@ -0,0 +1,97 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/memory-controllers/fsl/fsl,imx-weim-peripherals.yaml#
++$id: http://devicetree.org/schemas/input/touchscreen/fsl,imx6ul-tsc.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: i.MX WEIM Bus Peripheral Nodes
++title: Freescale i.MX6UL Touch Controller
 +
 +maintainers:
++  - Haibo Chen <haibo.chen@nxp.com>
 +  - Shawn Guo <shawnguo@kernel.org>
 +  - Sascha Hauer <s.hauer@pengutronix.de>
 +
-+description:
-+  This binding is meant for the child nodes of the WEIM node. The node
-+  represents any device connected to the WEIM bus. It may be a Flash chip,
-+  RAM chip or Ethernet controller, etc. These properties are meant for
-+  configuring the WEIM settings/timings and will accompany the bindings
-+  supported by the respective device.
-+
 +properties:
-+  reg: true
-+
-+  fsl,weim-cs-timing:
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    description:
-+      Timing values for the child node.
-+    minItems: 2
-+    maxItems: 6
-+
-+# the WEIM child will have its own native properties
-+additionalProperties: true
-diff --git a/Documentation/devicetree/bindings/memory-controllers/fsl/fsl,imx-weim.yaml b/Documentation/devicetree/bindings/memory-controllers/fsl/fsl,imx-weim.yaml
-new file mode 100644
-index 000000000000..3f40ca5b13f6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/memory-controllers/fsl/fsl,imx-weim.yaml
-@@ -0,0 +1,204 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/memory-controllers/fsl/fsl,imx-weim.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: i.MX Wireless External Interface Module (WEIM)
-+
-+maintainers:
-+  - Shawn Guo <shawnguo@kernel.org>
-+  - Sascha Hauer <s.hauer@pengutronix.de>
-+
-+description:
-+  The term "wireless" does not imply that the WEIM is literally an interface
-+  without wires. It simply means that this module was originally designed for
-+  wireless and mobile applications that use low-power technology. The actual
-+  devices are instantiated from the child nodes of a WEIM node.
-+
-+properties:
-+  $nodename:
-+    pattern: "^memory-controller@[0-9a-f]+$"
-+
 +  compatible:
-+    oneOf:
-+      - enum:
-+          - fsl,imx1-weim
-+          - fsl,imx27-weim
-+          - fsl,imx50-weim
-+          - fsl,imx51-weim
-+          - fsl,imx6q-weim
-+      - items:
-+          - enum:
-+              - fsl,imx31-weim
-+              - fsl,imx35-weim
-+          - const: fsl,imx27-weim
-+      - items:
-+          - enum:
-+              - fsl,imx6sx-weim
-+              - fsl,imx6ul-weim
-+          - const: fsl,imx6q-weim
-+
-+  "#address-cells":
-+    const: 2
-+
-+  "#size-cells":
-+    const: 1
++    const: fsl,imx6ul-tsc
 +
 +  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
++    items:
++      - description: touch controller address
++      - description: ADC2 address
 +
 +  interrupts:
++    items:
++      - description: touch controller address
++      - description: ADC2 address
++
++  clocks:
++    maxItems: 2
++
++  clock-names:
++    items:
++      - const: tsc
++      - const: adc
++
++  xnur-gpios:
 +    maxItems: 1
-+
-+  ranges: true
-+
-+  fsl,weim-cs-gpr:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: |
-+      Phandle to the system General Purpose Register controller that contains
-+      WEIM CS GPR register, e.g. IOMUXC_GPR1 on i.MX6Q. IOMUXC_GPR1[11:0]
-+      should be set up as one of the following 4 possible values depending on
-+      the CS space configuration.
-+
-+      IOMUXC_GPR1[11:0]    CS0    CS1    CS2    CS3
-+      ---------------------------------------------
-+              05          128M     0M     0M     0M
-+              033          64M    64M     0M     0M
-+              0113         64M    32M    32M     0M
-+              01111        32M    32M    32M    32M
-+
-+      In case that the property is absent, the reset value or what bootloader
-+      sets up in IOMUXC_GPR1[11:0] will be used.
-+
-+  fsl,burst-clk-enable:
-+    type: boolean
 +    description:
-+      The presence of this property indicates that the weim bus should operate
-+      in Burst Clock Mode.
++      The X- gpio this controller connect to. This xnur-gpio returns to
++      low once the finger leave the touch screen (The last touch event
++      the touch controller capture).
 +
-+  fsl,continuous-burst-clk:
-+    type: boolean
++  measure-delay-time:
++    $ref: /schemas/types.yaml#/definitions/uint32
 +    description:
-+      Make Burst Clock to output continuous clock. Without this option Burst
-+      Clock will output clock only when necessary.
++      The value of measure delay time. Before X-axis or Y-axis measurement,
++      the screen need some time before even potential distribution ready.
++    default: 0xffff
++    minimum: 0
++    maximum: 0xffffff
 +
-+patternProperties:
-+  "^.*@[0-7],[0-9a-f]+$":
-+    type: object
-+    description: Devices attached to chip selects are represented as subnodes.
-+    $ref: fsl,imx-weim-peripherals.yaml
-+    additionalProperties: true
-+    required:
-+      - fsl,weim-cs-timing
++  pre-charge-time:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      The touch screen need some time to precharge.
++    default: 0xfff
++    minimum: 0
++    maximum: 0xffffffff
++
++  touchscreen-average-samples:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: Number of data samples which are averaged for each read.
++    enum: [ 1, 4, 8, 16, 32 ]
 +
 +required:
 +  - compatible
 +  - reg
++  - interrupts
 +  - clocks
-+  - "#address-cells"
-+  - "#size-cells"
-+  - ranges
++  - clock-names
++  - xnur-gpios
 +
 +allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          not:
-+            contains:
-+              enum:
-+                - fsl,imx50-weim
-+                - fsl,imx6q-weim
-+    then:
-+      properties:
-+        fsl,weim-cs-gpr: false
-+        fsl,burst-clk-enable: false
-+  - if:
-+      not:
-+        required:
-+          - fsl,burst-clk-enable
-+    then:
-+      properties:
-+        fsl,continuous-burst-clk: false
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: fsl,imx1-weim
-+    then:
-+      patternProperties:
-+        "^.*@[0-7],[0-9a-f]+$":
-+          properties:
-+            fsl,weim-cs-timing:
-+              items:
-+                items:
-+                  - description: CSxU
-+                  - description: CSxL
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - fsl,imx27-weim
-+              - fsl,imx31-weim
-+              - fsl,imx35-weim
-+    then:
-+      patternProperties:
-+        "^.*@[0-7],[0-9a-f]+$":
-+          properties:
-+            fsl,weim-cs-timing:
-+              items:
-+                items:
-+                  - description: CSCRxU
-+                  - description: CSCRxL
-+                  - description: CSCRxA
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - fsl,imx50-weim
-+              - fsl,imx51-weim
-+              - fsl,imx6q-weim
-+              - fsl,imx6sx-weim
-+              - fsl,imx6ul-weim
-+    then:
-+      patternProperties:
-+        "^.*@[0-7],[0-9a-f]+$":
-+          properties:
-+            fsl,weim-cs-timing:
-+              items:
-+                items:
-+                  - description: CSxGCR1
-+                  - description: CSxGCR2
-+                  - description: CSxRCR1
-+                  - description: CSxRCR2
-+                  - description: CSxWCR1
-+                  - description: CSxWCR2
++  - $ref: touchscreen.yaml#
 +
 +additionalProperties: false
 +
 +examples:
 +  - |
-+    memory-controller@21b8000 {
-+        compatible = "fsl,imx6q-weim";
-+        reg = <0x021b8000 0x4000>;
-+        clocks = <&clks 196>;
-+        #address-cells = <2>;
-+        #size-cells = <1>;
-+        ranges = <0 0 0x08000000 0x08000000>;
-+        fsl,weim-cs-gpr = <&gpr>;
-+
-+        flash@0,0 {
-+            compatible = "cfi-flash";
-+            reg = <0 0 0x02000000>;
-+            #address-cells = <1>;
-+            #size-cells = <1>;
-+            bank-width = <2>;
-+            fsl,weim-cs-timing = <0x00620081 0x00000001 0x1c022000
-+                                  0x0000c000 0x1404a38e 0x00000000>;
-+        };
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/clock/imx6ul-clock.h>
++    #include <dt-bindings/gpio/gpio.h>
++    touchscreen@2040000 {
++        compatible = "fsl,imx6ul-tsc";
++        reg = <0x02040000 0x4000>, <0x0219c000 0x4000>;
++        interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&clks IMX6UL_CLK_IPG>,
++                 <&clks IMX6UL_CLK_ADC2>;
++        clock-names = "tsc", "adc";
++        pinctrl-names = "default";
++        pinctrl-0 = <&pinctrl_tsc>;
++        xnur-gpios = <&gpio1 3 GPIO_ACTIVE_LOW>;
++        measure-delay-time = <0xfff>;
++        pre-charge-time = <0xffff>;
++        touchscreen-average-samples = <32>;
 +    };
-diff --git a/Documentation/devicetree/bindings/memory-controllers/mc-peripheral-props.yaml b/Documentation/devicetree/bindings/memory-controllers/mc-peripheral-props.yaml
-index 8d9dae15ade0..00deeb09f87d 100644
---- a/Documentation/devicetree/bindings/memory-controllers/mc-peripheral-props.yaml
-+++ b/Documentation/devicetree/bindings/memory-controllers/mc-peripheral-props.yaml
-@@ -37,5 +37,6 @@ allOf:
-   - $ref: ingenic,nemc-peripherals.yaml#
-   - $ref: intel,ixp4xx-expansion-peripheral-props.yaml#
-   - $ref: ti,gpmc-child.yaml#
-+  - $ref: fsl/fsl,imx-weim-peripherals.yaml
- 
- additionalProperties: true
-diff --git a/drivers/staging/fieldbus/Documentation/devicetree/bindings/fieldbus/arcx,anybus-controller.txt b/drivers/staging/fieldbus/Documentation/devicetree/bindings/fieldbus/arcx,anybus-controller.txt
-index b1f9474f36d5..f34a95611645 100644
---- a/drivers/staging/fieldbus/Documentation/devicetree/bindings/fieldbus/arcx,anybus-controller.txt
-+++ b/drivers/staging/fieldbus/Documentation/devicetree/bindings/fieldbus/arcx,anybus-controller.txt
-@@ -48,7 +48,7 @@ Example of usage:
- -----------------
- 
- This example places the bridge on top of the i.MX WEIM parallel bus, see:
--Documentation/devicetree/bindings/bus/imx-weim.txt
-+Documentation/devicetree/bindings/memory-controllers/fsl/fsl,imx-weim.yaml
- 
- &weim {
- 	controller@0,0 {
+diff --git a/Documentation/devicetree/bindings/input/touchscreen/imx6ul_tsc.txt b/Documentation/devicetree/bindings/input/touchscreen/imx6ul_tsc.txt
+deleted file mode 100644
+index 164915004424..000000000000
+--- a/Documentation/devicetree/bindings/input/touchscreen/imx6ul_tsc.txt
++++ /dev/null
+@@ -1,38 +0,0 @@
+-* Freescale i.MX6UL Touch Controller
+-
+-Required properties:
+-- compatible: must be "fsl,imx6ul-tsc".
+-- reg: this touch controller address and the ADC2 address.
+-- interrupts: the interrupt of this touch controller and ADC2.
+-- clocks: the root clock of touch controller and ADC2.
+-- clock-names; must be "tsc" and "adc".
+-- xnur-gpio: the X- gpio this controller connect to.
+-  This xnur-gpio returns to low once the finger leave the touch screen (The
+-  last touch event the touch controller capture).
+-
+-Optional properties:
+-- measure-delay-time: the value of measure delay time.
+-  Before X-axis or Y-axis measurement, the screen need some time before
+-  even potential distribution ready.
+-  This value depends on the touch screen.
+-- pre-charge-time: the touch screen need some time to precharge.
+-  This value depends on the touch screen.
+-- touchscreen-average-samples: Number of data samples which are averaged for
+-  each read. Valid values are 1, 4, 8, 16 and 32.
+-
+-Example:
+-	tsc: tsc@2040000 {
+-		compatible = "fsl,imx6ul-tsc";
+-		reg = <0x02040000 0x4000>, <0x0219c000 0x4000>;
+-		interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
+-			     <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>;
+-		clocks = <&clks IMX6UL_CLK_IPG>,
+-			 <&clks IMX6UL_CLK_ADC2>;
+-		clock-names = "tsc", "adc";
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&pinctrl_tsc>;
+-		xnur-gpio = <&gpio1 3 GPIO_ACTIVE_LOW>;
+-		measure-delay-time = <0xfff>;
+-		pre-charge-time = <0xffff>;
+-		touchscreen-average-samples = <32>;
+-	};
 -- 
 2.43.0
 
