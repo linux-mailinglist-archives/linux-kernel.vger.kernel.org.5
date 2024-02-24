@@ -1,92 +1,136 @@
-Return-Path: <linux-kernel+bounces-79474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 196C48622B9
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 06:27:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FAE88622BC
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 06:29:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43B3C1C21E07
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 05:27:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F6301C21F68
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 05:29:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEB3017541;
-	Sat, 24 Feb 2024 05:27:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 096AB17586;
+	Sat, 24 Feb 2024 05:29:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="n1q17bxb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gbDQ0hTm"
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D942113AD9;
-	Sat, 24 Feb 2024 05:27:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D41B417588
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 05:28:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708752461; cv=none; b=COemDjXO5nrH/MKvqmX5zpSqNKqYlAt6M2Gt8jFraGWYOIPovyYXZZMUqK6XSUuXXBVTVDDvVyxOE5Uz8yI3PdOfIX1dT8TOpr4UXVa0sZ9gnwR2Ca3t5iAeF7p5r4nZkVtrEXtesdl6/Cr9IxskLCUyE51A8PTjFZBAYnj74hA=
+	t=1708752577; cv=none; b=b0/fYRv1+67FxT5cDFZvJ1VFKj85psmXR7srIBro3a/buSztEgqSekKyYDcW32WjMAmfGqwELDG2oKMx/KdE6wg78jW3/DcqGCutHeK4XLqcXs96HfnQGePJXgbwZD+ye5hXA3tnn1u3FktO40k4uYXMJR6uDGlygxJc+EwuMMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708752461; c=relaxed/simple;
-	bh=X2Voa/lGxk4ES7nWY51+cmiznqb71ZDPT59P/2/VOWk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZX6ff/BAUZO3uzZZ6L86U0A2BmJFki37Uc3gqodNtpJGm9tFoSdxLUDVf363E7uFu6BnTb2fl/wB4dVIyhK+cdvVFmjGbvqOtL0/5DQTRW5rWzoTMnGsSKEWQH43hLvrjnYKqqwu5duNA6Vn5w0jSMe6qxgBf2BGzSkm2CfFmAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=n1q17bxb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0A6DC433F1;
-	Sat, 24 Feb 2024 05:27:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1708752460;
-	bh=X2Voa/lGxk4ES7nWY51+cmiznqb71ZDPT59P/2/VOWk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=n1q17bxbv9DOyF8yrOzXlPxbjV/F25EohVgvSMjx/+HZYHbRScGXfP/nQvtLqp4wM
-	 NcP62jBsbkWB+D1tukg1I/ynhx4iZv3wtNTM2TfHtutFCHNPhfzOmAcJ3cz4GRrqC3
-	 /KNqyL1jJqJEwKiN+S/quzWCax1Hs0XZZw2Nhk0w=
-Date: Sat, 24 Feb 2024 06:27:41 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Dileep Sankhla <dileepsankhla.ds@gmail.com>
-Cc: greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org, pure.logic@nexus-software.ie,
-	johan@kernel.org, elder@kernel.org
-Subject: Re: tree for the greybus subsystem
-Message-ID: <2024022427-abruptly-vastness-ed23@gregkh>
-References: <CAHxc4buV_UieeVVBhua3vmT2+2e6qf2B9uoxpSPAg6faGBa=Ww@mail.gmail.com>
+	s=arc-20240116; t=1708752577; c=relaxed/simple;
+	bh=QkXAVadBbbhC7bhRBuY+zfwSKeZe3vRCZjDqgT/q5E4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NyhiBy/5mTbL0Ex5zsAlrmPEzIUk4zrwm0PjMAN+Sne+fPuNk2Cpkf9QD+jnxKnxEKHSekgd7mc6RuKPTc7FwETD/AumrHimqyUqG5VC3BR4pXuH/IHzPjC23vvxAV7uAepHQ7IFZCbn7i/e4HBDTBucATTVribj10ob4Bb8O/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gbDQ0hTm; arc=none smtp.client-ip=209.85.160.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-42e0b1b11bbso91831cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 21:28:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708752538; x=1709357338; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=K4n0EEX8jNZZC2pFBMoUXcztzFChc13lSIA8SSXtQGY=;
+        b=gbDQ0hTmEDJJkN4Rn+l/tjzGEcrhkJEwyJFLzHTGEbnn/tjoXYn0NKKn41X+gmpVd1
+         sKe9N5sSLZcA8X2ut5zIJ6EgDf0EVmiVs9m8RqwwF4+IoLF5S/2LR3s/oWCAgd+P2dNB
+         pVyq90wnZbcYu+3ge7duRBffT1EL1d9kqjlBGjJPfe9aiRkDUA8SOtKYcWkZIuOEWvYj
+         60dGKhJMsBj3j12FtW6Ufyf7UVJxBQlagFngR3iKxtRf/0dttEBKQHGv4uS0/rKuGoFx
+         yYrEYCtR6aLU9i2iGCHrI7ZQOz2EXkMUe1cP5VWd87VJhwLjQ+Y7g0b1I3Y6fdGkKj3W
+         GC7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708752538; x=1709357338;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=K4n0EEX8jNZZC2pFBMoUXcztzFChc13lSIA8SSXtQGY=;
+        b=L/LUXnX46IPvcXT4ralP7cR0WN6ZeQcdFSw8PbDXb3YpdofIrMOHkS3D5nRpV5O7Jg
+         aiqY1jT5v0R+BMvtxEZKoTBF1yxLT85vygfJ1Iwen4nefA61M+L2Ntz9Q4sFnUO0SY+P
+         IQIrCNcG3ev1dkWPZKPzfJclG2AqaKQQh/qMwEzpZWjMXK+b8f4a+2HgJJCgRURCyRwR
+         IEOlc6q2hUKV/RBBZnYcVa29vTh/BNXL+lOG4ChWHPmOv9SD84+svKtVf/O85xajC2hQ
+         itfr4Qxh8YDGYUXCDVSnUBnMMaFCeA0odp0cKwcDAusqspys4tFQkKlad6n8Db7dS5rR
+         NLpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUNtA1bX58VbotHtGU2vERFqWoRinqxrUGAUJuFghk/LozlyvEuvChSohQoCwdQoXWEVU+OTU+bDJN3D1T0NG7MI3fCzeoDhYlg0zUG
+X-Gm-Message-State: AOJu0Ywc1IpT5HVBz8kN3g7I9U0Yzzhem/T+jgL9617Be48u+7mSxbl/
+	9FlhgdmBFAn/Z6LHcZ+u6l8DAL4HRZLibpkFaRbq5e3+0zxjBRdYgMmSRf7nUw9KO5wJskwvKLQ
+	OLVJJHmyNkLk0wrDDKb3jEfzm5ua3CJJ4Q9r5
+X-Google-Smtp-Source: AGHT+IGpkNG50duu4FZuxCsRIzu/MxR/r2Jlc+Yz2igEuZwxMMi6sJnFQEo2easuFJxkbpyENtnHU5eQlCmFdM642q8=
+X-Received: by 2002:ac8:524c:0:b0:42e:6b39:9df0 with SMTP id
+ y12-20020ac8524c000000b0042e6b399df0mr162594qtn.1.1708752537610; Fri, 23 Feb
+ 2024 21:28:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHxc4buV_UieeVVBhua3vmT2+2e6qf2B9uoxpSPAg6faGBa=Ww@mail.gmail.com>
+References: <20240224052436.3552333-1-saravanak@google.com>
+In-Reply-To: <20240224052436.3552333-1-saravanak@google.com>
+From: Saravana Kannan <saravanak@google.com>
+Date: Fri, 23 Feb 2024 21:28:18 -0800
+Message-ID: <CAGETcx_m22xLSDz_kk9ovw5veKaij49+LdcRx0iyzEk8iEz_+A@mail.gmail.com>
+Subject: Re: [PATCH] of: property: fw_devlink: Fix stupid bug in
+ remote-endpoint parsing
+To: Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
+	Saravana Kannan <saravanak@google.com>
+Cc: =?UTF-8?Q?Herv=C3=A9_Codina?= <herve.codina@bootlin.com>, 
+	Luca Ceresoli <luca.ceresoli@bootlin.com>, kernel-team@android.com, 
+	Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 23, 2024 at 11:44:48PM +0530, Dileep Sankhla wrote:
-> Hello,
-> 
-> I am fixing a coding style problem in the loopback bridge driver for
-> the Greybus loopback module. The source code file (please see [0]) is
-> located in the staging tree for the linux-next.
-> 
-> In order to create the patch, I need to find the right development
-> tree. I checked the MAINTAINERS file for the Greybus subsystem
-> development tree but could not find one. I also searched [1] for
-> "greybus", but without success.
-> 
-> What is the development tree for the greybus subsystem?
+On Fri, Feb 23, 2024 at 9:24=E2=80=AFPM Saravana Kannan <saravanak@google.c=
+om> wrote:
+>
+> Introduced a stupid bug in commit 782bfd03c3ae ("of: property: Improve
+> finding the supplier of a remote-endpoint property") due to a last minute
+> incorrect edit of "index !=3D0" into "!index". This patch fixes it to be
+> "index > 0" to match the comment right next to it.
 
-As the staging subsystem is how this code flows into the tree:
+Greg, this needs to land in the stable branches once Rob picks it up
+for the next 6.8-rc.
 
-	$ ./scripts/get_maintainer.pl drivers/staging/greybus/loopback.c
-	"Bryan O'Donoghue" <pure.logic@nexus-software.ie> (maintainer:GREYBUS LOOPBACK DRIVER)
-	Johan Hovold <johan@kernel.org> (maintainer:GREYBUS SUBSYSTEM)
-	Alex Elder <elder@kernel.org> (maintainer:GREYBUS SUBSYSTEM)
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org> (maintainer:GREYBUS SUBSYSTEM)
-	greybus-dev@lists.linaro.org (moderated list:GREYBUS SUBSYSTEM)
-	linux-staging@lists.linux.dev (open list:STAGING SUBSYSTEM)
-	linux-kernel@vger.kernel.org (open list)
+-Saravana
 
-Then the staging.git tree as shown in MAINTAINERS is the correct one.
-
-But you should always be able to just use linux-next as a default if you
-can't figure out what tree to use.
-
-thanks,
-
-greg k-h
+>
+> Reported-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+> Link: https://lore.kernel.org/lkml/20240223171849.10f9901d@booty/
+> Fixes: 782bfd03c3ae ("of: property: Improve finding the supplier of a rem=
+ote-endpoint property")
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> ---
+> Using Link: instead of Closes: because Luca reported two separate issues.
+>
+> Sorry about introducing a stupid bug in an -rcX Rob.
+>
+> -Saravana
+>
+>  drivers/of/property.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/of/property.c b/drivers/of/property.c
+> index b71267c6667c..fa8cd33be131 100644
+> --- a/drivers/of/property.c
+> +++ b/drivers/of/property.c
+> @@ -1304,7 +1304,7 @@ static struct device_node *parse_remote_endpoint(st=
+ruct device_node *np,
+>                                                  int index)
+>  {
+>         /* Return NULL for index > 0 to signify end of remote-endpoints. =
+*/
+> -       if (!index || strcmp(prop_name, "remote-endpoint"))
+> +       if (index > 0 || strcmp(prop_name, "remote-endpoint"))
+>                 return NULL;
+>
+>         return of_graph_get_remote_port_parent(np);
+> --
+> 2.44.0.rc0.258.g7320e95886-goog
+>
 
