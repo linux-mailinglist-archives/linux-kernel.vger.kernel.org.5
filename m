@@ -1,239 +1,102 @@
-Return-Path: <linux-kernel+bounces-79596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79597-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 786D986249A
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:43:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A393986249B
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:43:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45B34B216E6
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:43:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43E281F22E11
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:43:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FE12288DB;
-	Sat, 24 Feb 2024 11:42:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D36A32E3FD;
+	Sat, 24 Feb 2024 11:43:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="sJIS0hOY";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="oBVD06uX"
-Received: from fhigh8-smtp.messagingengine.com (fhigh8-smtp.messagingengine.com [103.168.172.159])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ca6+OlIP"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F3CB1AAD7
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 11:42:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72D571AAD7
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 11:43:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708774974; cv=none; b=E154X0IJ6IDpVJU4aWXpVIJKt+Kaad4muMOgQW5+AET8TqT88aEehzzYvVIzQfUxAMwY9djIjdsCLOTZATcbRqkh76YESvyamglBLAw90EdX2zetb6XpgkTJR5W+arGb7RZIRsqYV8uPgP7QyUIxwgzzFKIlEudjYC8IQ8vICR8=
+	t=1708774985; cv=none; b=fiw4oUtDOS1bKk3Awjq5QVjO3AmeCNZW1rLDEVwP9//20J/Ad6iU+GjekCtIeLrsLbaE6gVvY72cNlP/7pBbHaffXSpp/FRaArnz+d+ilmvOnXr9hZBv3MXz02KYh9MtCXtZGP/Ya0Tb2QfS3K1mF5Oo56y9KJDg2mQd1eKgs9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708774974; c=relaxed/simple;
-	bh=gNuru8qH8aH+IhljLTlr8gaCo/ZRMHSObhPUegMrpuA=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=cjvOXeUYpPJbgZj9+PhPXnwec4oLEEyZlWci8HRDd1YBbtJIQGPaiw0HgLvMxs/GllgwPyybUX0PGH3f+WJcML8j56em2rgcXpcjw3re5OMd8taIRBIlYxRFYEZZ8q7KtDE5jFIaCI6fxRhxgiuc8FZBJdcxv4Vzd1Sd9t/O8y4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=sJIS0hOY; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=oBVD06uX; arc=none smtp.client-ip=103.168.172.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 518D911400C8;
-	Sat, 24 Feb 2024 06:42:51 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Sat, 24 Feb 2024 06:42:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1708774971;
-	 x=1708861371; bh=VHLGUt2+JC3h08E8q7nB+/pBA0spYS2QQsxczsx8+bI=; b=
-	sJIS0hOYOEYoiGDjKndBQrQRmYHbGaA3IwhjtwOGq7KpuQf9jS3KzElBJ1z4c8LP
-	Mx87HqXF2N82bN898Myg7QIIDie/XAqc99OqATRN5jbmnd8hsbsCMPXx9R8I/TOH
-	72QaminAX4MtUEYWwNRQvG+a5uYk9/VYJqqhAHdywKLfNyXGJY+PFK9sbxYHl1+q
-	c5FJRB8wZLZqsp8kErPro2NtzFzPdDcBAInqakJHx34jGPM9zY1J0GdbECIW6tdx
-	cVd/TvttDe6AYT+HqFt/FwqaVWDrVzLexT1WtqpR4XYNRTNiRnF6kF8NK4sYL+Ap
-	tBx6MpOjCgxlS/HlSCjR0Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1708774971; x=
-	1708861371; bh=VHLGUt2+JC3h08E8q7nB+/pBA0spYS2QQsxczsx8+bI=; b=o
-	BVD06uX3Hg2bBf1flcHgX4E+8NkjkIqZXJFdPdtmRjhKAl9EBG7bUQ+lxA/GNe3y
-	bf2rZnbsREasSrhUWF1DmT7RUuIdEOavNg3ri7yfYJ9hvClqxf6bX0MpMH6yNMjs
-	f3uC5oqWosyfpZcmkXFAnJj8dL7hdKBOfU1ehMYHRXJFG0jRNLlf+MyXLQSfncQh
-	l7Dlrz73ZOTHKE6hjxlA+dIR74cGuUFrLKu6HNxguoX6HeksSHbVhONWRgY7vG4G
-	CGuVUvra3pC/2eaWglIPjVCqO4KvUohiez/6k4y4N41QDXiwaVc9RO6gw3t0lzAi
-	NlW5ZOSFRdiwzxkh+muqQ==
-X-ME-Sender: <xms:OtbZZfrUvaJcP4SW5WLteDKse2XJaA1qo_uUBP5iE7USYubJ5rry7Q>
-    <xme:OtbZZZpmmkI5N_aMS3RaU1rlyFTNA4_swxLJQklWyUMnHa0dyt63KjcLa_kjB9HB6
-    ByDWmJpS6FS8_CAAGw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfeekgdefudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
-    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:OtbZZcNjRC2SHGM8mqdhnqAwO2NWFurgTa3TE_NhSSWAgCM8FoNlDQ>
-    <xmx:OtbZZS4YZw4dxtwuqUIpxzqe32fuub45yricTlXE1ALjLTXsaRBBXw>
-    <xmx:OtbZZe5jSixGWel2qPNfFmCj1MqBNlT5sgfYh8fb9rieqozvBef0hA>
-    <xmx:O9bZZbw63IAOQTOKoyJVHGyPcr2PwP3QAMHon208tP89gBBwmh8fnA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id A8840B6008D; Sat, 24 Feb 2024 06:42:50 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-153-g7e3bb84806-fm-20240215.007-g7e3bb848
+	s=arc-20240116; t=1708774985; c=relaxed/simple;
+	bh=Xr9Q1kHyIXarWf9Yt/Tx3cmsbXKsClDj7IWw9Wh0BR4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cUQwx3iucEz4NFDFeZuKQys4AcuuW3kxeRp2xjCEuN7kjRFvh+QJgm0oUYzFDelEz2ZXgZGrV4EBVDanvu5+WpXxk4VcOehbvqwZ7gh4wkGg8r6LMeK9V1ZapeuRHCr9E6CFyRoXrfPQljoSBWROMjwsBlC/aiIz/emiWf9u6y4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ca6+OlIP; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a3e5d82ad86so233598566b.2
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 03:43:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708774982; x=1709379782; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2uxGcLrkBHPXM66GKa6HAeIjDFhpW0i+YCi2p9SiA+8=;
+        b=ca6+OlIPBGlAyHAP4BVLWg1/6NLxk/uHxjK9Y1z0LLnbUvW0L4Gpefx5hQDIEjMsW7
+         ID+FWmhJtMA7bNqSD/tgcw41rulHeHaTtYt29/qx1XzFivGpujxKQGcnQgDa8kVmSWE1
+         cvWsAeLu59djTBjuPs+15NkJMWugeDe3MwUt2bIAp23ebROVmxhs8A1PWz+TH3JNgz/Q
+         BDNKFK6+/iMakTKKRoMhy1NU9dDOy22/hPoai5vrzObf1zblZq0nGEunfkEg/Wwn7fYe
+         4DD30ctNnSNZqWiP/focUqJi5S1J1cR6YBnbHFXYc8lz6ZW5L1T9j8+QMiP7qt61mxV9
+         MYjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708774982; x=1709379782;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2uxGcLrkBHPXM66GKa6HAeIjDFhpW0i+YCi2p9SiA+8=;
+        b=UTn2UlHVo3ax9f9+E9uKRlQDhdbnBEe8nCSKPwmNyqdTFeOswuyshfDU5NABuQDp8N
+         00YpUss/mEdpZSE4B5CSnKTvNJiJedZIqUInUvkR73vlPm25yoqXsqz5ZZ5Gv89cv/W9
+         gNdMkxI9i8djTWaFLPWCBmSWcD5qvUqpnlt5seMpdc95PZCisyy72zcXnSyqaQ9xSnH7
+         1Z+geikDdSVIFTmCuhhZGZxZVmsYm34C2XCvmSzCHIOQ9191uWKbpJ6dMUQ32K1GC5Jt
+         htIksEPizrtO9JIVjiiD95hzfCUwm5Nq+y91gtj4yatAPtDzgSQt/pBVFXXJYX58p2iX
+         rLDg==
+X-Gm-Message-State: AOJu0Yx/+aeVhDnasvPpozAmjrvbkEPqn65Z39kgn9AOpCcHgCwLTMOG
+	4JPdMHTPUXcMjw28QolAUG/Gug5U3mUfdu/6gYjQ4FNjQD0tdMauVgLPJOqCamo=
+X-Google-Smtp-Source: AGHT+IEKC7IfFNatktFFqrYdYB9hruVm3dYLjZ9GJHLJ9ImHJXSBiMrUSClbOvlzAq8RKE2D671tcA==
+X-Received: by 2002:a17:906:eb4d:b0:a3f:47a9:481d with SMTP id mc13-20020a170906eb4d00b00a3f47a9481dmr1850875ejb.76.1708774981783;
+        Sat, 24 Feb 2024 03:43:01 -0800 (PST)
+Received: from localhost.localdomain (82-132-212-111.dab.02.net. [82.132.212.111])
+        by smtp.gmail.com with ESMTPSA id r27-20020a170906351b00b00a41a314f052sm508149eja.192.2024.02.24.03.43.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Feb 2024 03:43:01 -0800 (PST)
+From: srinivas.kandagatla@linaro.org
+To: gregkh@linuxfoundation.org
+Cc: linux-kernel@vger.kernel.org,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 0/1] misc: fastrpc: fixes for v6.8
+Date: Sat, 24 Feb 2024 11:42:46 +0000
+Message-Id: <20240224114247.85953-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <57dce440-d24b-4638-9395-62dfb03ec002@app.fastmail.com>
-In-Reply-To: <ZdmZ4JC0CsX2qs5C@linux-8mug>
-References: <20240221120123.1118552-2-ghennadi.procopciuc@oss.nxp.com>
- <f4465547-1fb1-4578-9a69-7d399e7661b3@linaro.org>
- <403e32c2-910e-4745-9ebe-fbf377c3fde8@linaro.org>
- <ad856766-8903-46c0-93af-24e101ad51dc@oss.nxp.com>
- <e538ded0-bd3a-4ca4-b2bd-8d20d8c8c3fe@linaro.org>
- <bcb79af4-56d9-4204-9503-cff996f1ba41@oss.nxp.com>
- <e6f6070e-8355-4a0b-a904-1a24970f249b@linaro.org>
- <e530d504-dfa3-4d39-b903-b2570bb8b014@suse.com>
- <c3e68c62-b81f-475b-9b15-c983c94aed8b@app.fastmail.com>
- <Zdiu8s5Cgz9s6dLP@dragon> <ZdmZ4JC0CsX2qs5C@linux-8mug>
-Date: Sat, 24 Feb 2024 12:42:30 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Chester Lin" <chester62515@gmail.com>, "Shawn Guo" <shawnguo2@yeah.net>
-Cc: "Matthias Brugger" <mbrugger@suse.com>,
- "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
- "Ghennadi Procopciuc" <ghennadi.procopciuc@oss.nxp.com>,
- "Olof Johansson" <olof@lixom.net>, krzysztof.kozlowski+dt@linaro.org,
- =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
- "Rob Herring" <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, soc@kernel.org,
- "NXP S32 Linux Team" <s32@nxp.com>,
- "Ghennadi Procopciuc" <ghennadi.procopciuc@nxp.com>,
- "Shawn Guo" <shawnguo@kernel.org>,
- "Pengutronix Kernel Team" <kernel@pengutronix.de>,
- "Sascha Hauer" <s.hauer@pengutronix.de>,
- "Fabio Estevam" <festevam@gmail.com>, "NXP Linux Team" <linux-imx@nxp.com>
-Subject: Re: [PATCH 1/1] MAINTAINERS: Add maintainer for NXP S32G boards
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-Developer-Signature: v=1; a=openpgp-sha256; l=296; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=/QzucFTBKjw6ma1vI8yCtQKjfl4XAwG8OcubZfrFOiE=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBl2dY3EWpTspxcgThu+vRJ/W8Yan3pOc6GVFRSg HAyvOs+4F+JATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZdnWNwAKCRB6of1ZxzRV N221B/4vCGq3aQDh8yfp02Xfoc+T8fK3lkqnpW5ASM1HBVlwN8HnjK3rcuoDUUfY1wUdiVTkMT5 ViNYn06VVt1Zl5fgCNqsI1LgxkGSnudp2EZxgldovEVOwPvUYmF4wRgYzuxAIyTq7Af/oE7lc0J 5ZQgFK2wLNSFEnYqMRK8h0woFfbEieNYDIZ4paahWkUZdrUZgWdarzbUTSNSeNRr5AuH6kmr/y5 rryTN2FLZV75A7G7kXMibpIATiLQhirNxA6VvbH8zvY/znu3PglfJE6w1wlpaur30iWeONB4RWt 6MwLhDTz5yg+ViqNTlcMAasxFKQwCtsCfQ4yF6zBY/Qy57gD
+X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp; fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
+Content-Transfer-Encoding: 8bit
 
-On Sat, Feb 24, 2024, at 08:25, Chester Lin wrote:
-> Hi all,
->
-> Sorry for the late reply since I lost connection with upstream due to a
-> health condition, which affected my eyesights for a while so I tried t=
-o use
-> my eyes as less as possible. Please accept my apologies anyway.
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-No worries, and thanks for the clarifications.
+Here are one fix in fastrpc for 6.8, Could you queue
+these for next possible rc.
 
-> On Fri, Feb 23, 2024 at 10:42:58PM +0800, Shawn Guo wrote:
->> On Fri, Feb 23, 2024 at 01:29:10PM +0100, Arnd Bergmann wrote:
->
-> Before leaving SUSE I reached NXP to see if anyone could take over it =
-but I
-> didn't get response unfortunately. Maybe it was too rush to find a rig=
-ht person
-> at the moment but I still wish that someone can take over this role ba=
-sed on the
-> following reasons:
->
-> - Since I have returned my S32G boards to SUSE, currently I do not hav=
-e=20
-> a platform
-> to verify S32G patches unless I could get a new one. I wish I could=20
-> still help
-> out but hardware & doc resources will be the biggest challenge to me.
->
-> - My current employee may have competitive relationship with NXP in au=
-tomotive
-> field, which means I may not be fit in this role unless nobody cares.
+Thanks,
+Srini
 
-In general, there no problem to just retire from a maintainer
-position or mark it as 'Odd fixes' instead of 'Maintained' when
-you are no longer planning to actively maintain it.
 
->> >=20
->> > Added everyone there to Cc, having any s32 patches go through
->> > the imx tree would be the easiest way as far as I'm concerned.
->> > I've added the maintainers to Cc, let's see what they think.
->>=20
->> It's unintentional that IMX entry covers s32 dts files, as they have a
->> dedicated entry.
->>=20
->> ARM/NXP S32G ARCHITECTURE
->> M:      Chester Lin <chester62515@gmail.com>
->> R:      Andreas F=C3=A4rber <afaerber@suse.de>
->> R:      Matthias Brugger <mbrugger@suse.com>
->> R:      NXP S32 Linux Team <s32@nxp.com>
->> L:      linux-arm-kernel@lists.infradead.org (moderated for non-subsc=
-ribers)
->> S:      Maintained
->> F:      arch/arm64/boot/dts/freescale/s32g*.dts*
->>=20
->> However I'm fine with collecting and sending patches through IMX tree,
->> if S32G folks help review them.
->>=20
->
-> This looks good to me as well.
+Ekansh Gupta (1):
+  misc: fastrpc: Pass proper arguments to scm call
 
-Ok, in this case I would suggest we change this section to
-only have 'R:' entries and no 'M:' for the moment.
+ drivers/misc/fastrpc.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Between the four of you (Chester, Andreas, Matthias, Ghennadi),
-I think we can choose to keep everyone or drop those that are
-unlikely to actually review patches. Please let us know you
-would like to be included as a reviewer or not.
+-- 
+2.25.1
 
-For the pinctrl driver, I would add the files to the "freescale"
-pinctrl entry in a similar way and end up with
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index efeaeb51f183..c1924c0053bc 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2555,13 +2555,14 @@ F:      drivers/*/*/*wpcm*
- F:     drivers/*/*wpcm*
-=20
- ARM/NXP S32G ARCHITECTURE
--M:     Chester Lin <chester62515@gmail.com>
-+R:     Chester Lin <chester62515@gmail.com>
- R:     Andreas F=C3=A4rber <afaerber@suse.de>
- R:     Matthias Brugger <mbrugger@suse.com>
- R:     NXP S32 Linux Team <s32@nxp.com>
- L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscrib=
-ers)
- S:     Maintained
- F:     arch/arm64/boot/dts/freescale/s32g*.dts*
-+F:     drivers/pinctrl/nxp/
-=20
- ARM/Orion SoC/Technologic Systems TS-78xx platform support
- M:     Alexander Clouter <alex@digriz.org.uk>
-@@ -17415,7 +17416,9 @@ R:      Pengutronix Kernel Team <kernel@pengutro=
-nix.de>
- L:     linux-gpio@vger.kernel.org
- S:     Maintained
- F:     Documentation/devicetree/bindings/pinctrl/fsl,*
-+F:     Documentation/devicetree/bindings/pinctrl/nxp,s32*
- F:     drivers/pinctrl/freescale/
-+F:     drivers/pinctrl/nxp/
-=20
- PIN CONTROLLER - INTEL
- M:     Mika Westerberg <mika.westerberg@linux.intel.com>
-@@ -17469,14 +17472,6 @@ S:     Supported
- F:     drivers/gpio/gpio-sama5d2-piobu.c
- F:     drivers/pinctrl/pinctrl-at91*
-=20
--PIN CONTROLLER - NXP S32
--M:     Chester Lin <clin@suse.com>
--R:     NXP S32 Linux Team <s32@nxp.com>
--L:     linux-gpio@vger.kernel.org
--S:     Maintained
--F:     Documentation/devicetree/bindings/pinctrl/nxp,s32*
--F:     drivers/pinctrl/nxp/
--
- PIN CONTROLLER - QUALCOMM
- M:     Bjorn Andersson <andersson@kernel.org>
- L:     linux-arm-msm@vger.kernel.org
 
