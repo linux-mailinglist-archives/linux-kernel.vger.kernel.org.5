@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-79413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BD148621B9
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:17:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFC988621BB
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:17:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20DFA1F27105
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:17:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2684AB2182C
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:17:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4391CD52A;
-	Sat, 24 Feb 2024 01:16:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43B29DDCF;
+	Sat, 24 Feb 2024 01:16:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EoRxnbZK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DvNUddRa"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C71BC147;
-	Sat, 24 Feb 2024 01:16:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71DC14C6B;
+	Sat, 24 Feb 2024 01:16:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708737381; cv=none; b=F6kqG2XM+wDneoYMxZSa5+7ZXZzHyZ9gW4tpCXj0OzDYgUek6YGb8ZRo+qXzEW5zo4DBJnVVoVeo8oQ6q+wBjoxCkM/xgLVeGNMH63r7DVLGEQazBx3ke0GEiKMwXkaLzNAbDWupchFrBfTCDbC+Erfec1fEsd9BuiNVJEmm+EU=
+	t=1708737397; cv=none; b=JFw3tBGAlLla/XdtAcN1cRAq1bTMh4aX8h/VzN2+rp3LC3oMpcqKKAaTMB3ORjDMT3hdzzyLmKOEdc7+ZF7Eg69znF4Y/ZMvt9PWRfAWdnVM3oFGyYFfc6FofMQ3ZlDPy5ea7D4b2Qqxoph8cQ8SemoVKhCfKmCFfv0ExCz/88c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708737381; c=relaxed/simple;
-	bh=t+A4fuSyZmpKgcoiyVGvJurKhFdfR6NSDpq/Eq4fqh8=;
+	s=arc-20240116; t=1708737397; c=relaxed/simple;
+	bh=N5BbLf22VJJFUcs1rkRIy9TnRfixcYINsE+roESUlYY=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PsZkhfyZDPojUFRDjoLWKReRdRlJcLDdTZiSvhHtmVVQWSmpJU1/b38FPJXX3ixGAjD26ACh6qPNFduRXPfksP3C0EbZWdDS/c7uUyJLQbRg+wghxC6++6JLbH0z+rVZmmRGWB8Zo1VgBP0nsNlBiS3KDvnx/fMHFKBLRCQjvf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EoRxnbZK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E225C43399;
-	Sat, 24 Feb 2024 01:16:21 +0000 (UTC)
+	 MIME-Version:Content-Type; b=jaeUZ2oilxeu413c/acIcd2T+klIGWMnoZ12gw7mIBbUtSih5hBtdEPiNoFKyp05lyNyv8wLjBt+ugyCDnKwwDocWDDPQKQiXmfbsOpayqJtOaOEveQxx2iQVHVSOsIAljYub9A01mH93jZAMZATB8OfFso8PSoU692/EbrCzIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DvNUddRa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F11D8C433C7;
+	Sat, 24 Feb 2024 01:16:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708737381;
-	bh=t+A4fuSyZmpKgcoiyVGvJurKhFdfR6NSDpq/Eq4fqh8=;
+	s=k20201202; t=1708737397;
+	bh=N5BbLf22VJJFUcs1rkRIy9TnRfixcYINsE+roESUlYY=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=EoRxnbZKmfu1bsYK1Q5UbSC01cBn6XZ1TgE1TnePN5bIcvfPiYfIhyUVnrrduUrPf
-	 oK58BvBt+rBr/d2Gob1cyRBJI8gwvlC/zI6Id1SHgT/ttTOL8dqlUlWyNe6yQbB7kW
-	 LC0mZxAO4aPVMsCnHpszl4Zq7VULCA5+bbn+jCQJmeQRJgWasv3OnDUIrnw5Q2iI/o
-	 LU3KHY+SaISVU8oMKAY0qmgPwceQ1+9mTko/dqFh1y87x0vdJAwscNSEtaX7SFHy87
-	 cdpyVPfNgsGm3xnuvC8CXEm82fdUnqaLaEsmtpizBJiHH4yBnBrwZxfcdBnj640UsT
-	 kcAKk1V3LRaBw==
-Date: Fri, 23 Feb 2024 17:16:20 -0800
-Subject: [PATCH 10/10] thread_with_stdio: suppress hung task warning
+	b=DvNUddRaPdKJD636x3F8T/hFYH/97iqVGwp9X+vFguzGI54dKbE7Zf5UpnHnUICfh
+	 Phm71WuHorVTVBFYF8EJEaShJDE1Jq9MKDLuKrn2BzhKm6IDyplKcHd2I5mEpZ4GSW
+	 F8nYrdWu6u+Udgz94PIJquvZed0396HvfI5qVcKJcPenRgF4BetRKf76gemB/UufK2
+	 ZBMGmb/emxXL6PlQAWEgtKLaLH9VjU7fKJf0+7ywSSKNq+82y/GrjPi4OVxKVSYK66
+	 P5QPjPsRdaRDDSgENW+3qKagiKyx/5k5ZWC+LrYdfI6DWNTjX7NtnBzOacfOuHQnkF
+	 wkMDZude8VKqw==
+Date: Fri, 23 Feb 2024 17:16:36 -0800
+Subject: [PATCH 1/5] thread_with_file: allow creation of readonly files
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: akpm@linux-foundation.org, daniel@gluo.nz, kent.overstreet@linux.dev,
  djwong@kernel.org
 Cc: linux-xfs@vger.kernel.org, linux-bcachefs@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Message-ID: <170873669050.1861398.1460620236602264758.stgit@frogsfrogsfrogs>
-In-Reply-To: <170873668859.1861398.2367011381778949840.stgit@frogsfrogsfrogs>
-References: <170873668859.1861398.2367011381778949840.stgit@frogsfrogsfrogs>
+Message-ID: <170873669417.1861696.15370508953432477102.stgit@frogsfrogsfrogs>
+In-Reply-To: <170873669390.1861696.14195299906744951144.stgit@frogsfrogsfrogs>
+References: <170873669390.1861696.14195299906744951144.stgit@frogsfrogsfrogs>
 User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -60,57 +60,94 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
-From: Kent Overstreet <kent.overstreet@linux.dev>
+From: Darrick J. Wong <djwong@kernel.org>
 
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Create a new run_thread_with_stdout function that opens a file in
+O_RDONLY mode so that the kernel can write things to userspace but
+userspace cannot write to the kernel.  This will be used to convey xfs
+health event information to userspace.
+
 Signed-off-by: Darrick J. Wong <djwong@kernel.org>
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- lib/thread_with_file.c |   17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ include/linux/thread_with_file.h |    3 +++
+ lib/thread_with_file.c           |   36 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 39 insertions(+)
 
 
+diff --git a/include/linux/thread_with_file.h b/include/linux/thread_with_file.h
+index 54091f7ff3383..5f7e85bc8322b 100644
+--- a/include/linux/thread_with_file.h
++++ b/include/linux/thread_with_file.h
+@@ -62,6 +62,9 @@ struct thread_with_stdio {
+ int run_thread_with_stdio(struct thread_with_stdio *,
+ 			  void (*exit)(struct thread_with_stdio *),
+ 			  void (*fn)(struct thread_with_stdio *));
++int run_thread_with_stdout(struct thread_with_stdio *,
++			  void (*exit)(struct thread_with_stdio *),
++			  void (*fn)(struct thread_with_stdio *));
+ int stdio_redirect_read(struct stdio_redirect *, char *, size_t);
+ int stdio_redirect_readline(struct stdio_redirect *, char *, size_t);
+ 
 diff --git a/lib/thread_with_file.c b/lib/thread_with_file.c
-index f4946a437332a..b09dc60ba6280 100644
+index b09dc60ba6280..71028611b8d59 100644
 --- a/lib/thread_with_file.c
 +++ b/lib/thread_with_file.c
-@@ -9,6 +9,7 @@
- #include <linux/module.h>
- #include <linux/pagemap.h>
- #include <linux/poll.h>
-+#include <linux/sched/sysctl.h>
- #include <linux/thread_with_file.h>
+@@ -344,6 +344,22 @@ static int thread_with_stdio_release(struct inode *inode, struct file *file)
+ 	return 0;
+ }
  
- /* stdio_redirect */
-@@ -46,7 +47,15 @@ int stdio_redirect_read(struct stdio_redirect *stdio, char *ubuf, size_t len)
++static __poll_t thread_with_stdout_poll(struct file *file, struct poll_table_struct *wait)
++{
++	struct thread_with_stdio *thr =
++		container_of(file->private_data, struct thread_with_stdio, thr);
++
++	poll_wait(file, &thr->stdio.output.wait, wait);
++
++	__poll_t mask = 0;
++
++	if (stdio_redirect_has_output(&thr->stdio))
++		mask |= EPOLLIN;
++	if (thr->thr.done)
++		mask |= EPOLLHUP|EPOLLERR;
++	return mask;
++}
++
+ static const struct file_operations thread_with_stdio_fops = {
+ 	.llseek		= no_llseek,
+ 	.read		= thread_with_stdio_read,
+@@ -352,6 +368,13 @@ static const struct file_operations thread_with_stdio_fops = {
+ 	.release	= thread_with_stdio_release,
+ };
+ 
++static const struct file_operations thread_with_stdout_fops = {
++	.llseek		= no_llseek,
++	.read		= thread_with_stdio_read,
++	.poll		= thread_with_stdout_poll,
++	.release	= thread_with_stdio_release,
++};
++
+ static int thread_with_stdio_fn(void *arg)
  {
- 	struct stdio_buf *buf = &stdio->input;
+ 	struct thread_with_stdio *thr = arg;
+@@ -375,5 +398,18 @@ int run_thread_with_stdio(struct thread_with_stdio *thr,
+ }
+ EXPORT_SYMBOL_GPL(run_thread_with_stdio);
  
--	wait_event(buf->wait, stdio_redirect_has_input(stdio));
-+	/*
-+	 * we're waiting on user input (or for the file descriptor to be
-+	 * closed), don't want a hung task warning:
-+	 */
-+	do {
-+		wait_event_timeout(buf->wait, stdio_redirect_has_input(stdio),
-+				   sysctl_hung_task_timeout_secs * HZ / 2);
-+	} while (!stdio_redirect_has_input(stdio));
++int run_thread_with_stdout(struct thread_with_stdio *thr,
++			  void (*exit)(struct thread_with_stdio *),
++			  void (*fn)(struct thread_with_stdio *))
++{
++	stdio_buf_init(&thr->stdio.input);
++	stdio_buf_init(&thr->stdio.output);
++	thr->exit	= exit;
++	thr->fn		= fn;
 +
- 	if (stdio->done)
- 		return -1;
- 
-@@ -67,7 +76,11 @@ int stdio_redirect_readline(struct stdio_redirect *stdio, char *ubuf, size_t len
- 	size_t copied = 0;
- 	ssize_t ret = 0;
- again:
--	wait_event(buf->wait, stdio_redirect_has_input(stdio));
-+	do {
-+		wait_event_timeout(buf->wait, stdio_redirect_has_input(stdio),
-+				   sysctl_hung_task_timeout_secs * HZ / 2);
-+	} while (!stdio_redirect_has_input(stdio));
++	return run_thread_with_file(&thr->thr, &thread_with_stdout_fops, thread_with_stdio_fn);
++}
++EXPORT_SYMBOL_GPL(run_thread_with_stdout);
 +
- 	if (stdio->done) {
- 		ret = -1;
- 		goto out;
+ MODULE_AUTHOR("Kent Overstreet");
+ MODULE_LICENSE("GPL");
 
 
