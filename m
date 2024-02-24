@@ -1,175 +1,210 @@
-Return-Path: <linux-kernel+bounces-79438-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79439-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B9DB862245
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 03:21:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90F6E86224A
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 03:23:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 567531C22F37
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:21:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C760B24278
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:23:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CFE7DF6C;
-	Sat, 24 Feb 2024 02:20:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C5B011190;
+	Sat, 24 Feb 2024 02:23:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="DSybjcX9"
-Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VWJnzOft"
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E1ED5398
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 02:20:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75625C129;
+	Sat, 24 Feb 2024 02:23:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708741254; cv=none; b=a+NJmIBgl011hBc75L89ZBdKf2B/HVgq33yp8X/0QL+V8pR2KQIXcF4YJmYvURV6wXzGGImPcnCAROcmKn5vC68yPhl/k0mUE2q/GTi6AR05LZIup0JFz0DT8gvW/nqq0u30lI5jTH9BuuqZP9hAAK3MVddVrsojg5vruFU4+yQ=
+	t=1708741408; cv=none; b=bMqdt4GY0Q7/RcerqVUfd5d5y/yjAXmYaSmzJEqIVDLALdgIaWaPxsJu5WjYQLiobj6oFLniqD9+YuyQ0Wt7PlZ6AtR5U69dQfub73inTYgmoirLS65L9Y1q9kHeVfNfFRb0kT3qBhE7qDBU5Y6Y8BEYZYuGiScMcWdcCqV+B4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708741254; c=relaxed/simple;
-	bh=C9KTnoIvzRirFFoTDsfaGkbmhPKX12ljHuTJlzd3+zE=;
+	s=arc-20240116; t=1708741408; c=relaxed/simple;
+	bh=EWzIBMOYZahpCUPse8Ld+LyDtQlXxNMeWHPAUOF8KvA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HCL6HDjrRcuhTXQQp8YPwQugT7AUPIQyldob1k/jW9XFapAlufqfnSCrloO6j8BkLVoF45HrXEyKLkJlcOdS9yNoMAEzUHTrU1YwNcnLqqUyVmG14TxYBBxCX8mbNshf7baW+z+BABLxCdNO83n2LFTLPyXh7+FyF5iRjIQ0Ayg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=DSybjcX9; arc=none smtp.client-ip=195.181.215.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-	t=1708741243; bh=C9KTnoIvzRirFFoTDsfaGkbmhPKX12ljHuTJlzd3+zE=;
-	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
-	b=DSybjcX9AMbSWU68OgBepSRjYo9ujw93XLgZS/y7mGfXOoL3gocWSDxffIWE9ar6t
-	 8K50jFqwd7EF7CPrf/tOvhAS8SM1uYQVZKoMBG0yMKMgGtyeMu09UwQP4VQWQbIxro
-	 Q8d4nN2Enei26NrAreLFaTImyqwvDI82JjlB8VVY=
-Date: Sat, 24 Feb 2024 03:20:43 +0100
-From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
-To: Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>
-Cc: Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Samuel Holland <samuel@sholland.org>, dri-devel@lists.freedesktop.org, 
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] drm/sun4i: Fix layer zpos change/atomic modesetting
-Message-ID: <5h7jcwsdlpe7w2xylbhlw2asfww3znqlmlnszwvvosz5ssokkq@dxhn4v4sy4nq>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
-	Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>, Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Samuel Holland <samuel@sholland.org>, dri-devel@lists.freedesktop.org, 
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
-References: <20240216190430.1374132-1-megi@xff.cz>
- <20240216190430.1374132-4-megi@xff.cz>
- <inuhwnlexpt6dpre4uailtvytjhms4uqeerzehbntczurhcxol@fc4nvkdwffdd>
- <2448947.jE0xQCEvom@jernej-laptop>
+	 Content-Type:Content-Disposition:In-Reply-To; b=UrOLD6lTfkwjHdQImUzoDvfyb7V3+O05pA8XSEeqZclh9GGdRzpk3y5HUyUBDlU8devbppzGT4ifEypQU2SNYjg2BSBw+E3m24i1Fpt08R9WDccaxHqV2ZBwTrUR0AlrmN20vvBOP2TtJhpkUU25jgYyOGQaav0hA71HcwyLmMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VWJnzOft; arc=none smtp.client-ip=209.85.210.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6e480fe439aso667003a34.0;
+        Fri, 23 Feb 2024 18:23:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708741404; x=1709346204; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8+9bHGR06XHBSUgitwSrQmp0adstHwb6bNPHQIZNo6s=;
+        b=VWJnzOftiHFBh46JUTtdix6DbZ0x9buVO8rYCw/uiIRannBvkgqPjj0UhZP/yc2pup
+         YBixkfFfkyC2wEw6b0vfyP8ktW+QE2TXmFsvbrNBd78t9oy+kdKURWNjQ2zD4fbFyQEe
+         3c34h0rOH9NNw+yo2oqibKs16T8axuu+QO09gYdthAauiLDcaGODETvT5Xh1OoJBtzm+
+         KOcc2i6bRa5gXW3Ol5W01G9hg0omn0gcThq4LZGxidbryKrGqwLpl184PNZ+5M2KHOvE
+         a7ShngZQohXd8HdagABHrKgly9Mvz0aLHyL66hNuO0FWqw4E0sdbi0iFahI8n/l++yH/
+         fngQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708741404; x=1709346204;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8+9bHGR06XHBSUgitwSrQmp0adstHwb6bNPHQIZNo6s=;
+        b=CZui+3NMtlqg6UkDoYkduFs6KRkLu+0LSvl1UB+FWGAGdtmrGIYNXrUdjMl05kFpxP
+         8RrsTuxQLN2MwTxMNWXNY2xQ6n8Wj+YPusc0c6R5MYmKng40G500WDBc5JajO/jnDngl
+         KH+XT3d8qqkzTDhc9ij/TGYW6ihdpXZTZcOCrzNaOrmVmKvV8FAzdgxTP5VXHHk5C8Xh
+         oLxOqfAbli6xh5z8QcVgkye9Jo5H/eSpCjnq0us3mfWkredazwZBPHpUcS94KUlL4DQb
+         1yvwhWHnBkKRK2bSxL6HMTZ8vPCMD9SGMPUOJPZHaNbPrCMxy7JrBnzwJUzfvbdl+kfp
+         lpew==
+X-Forwarded-Encrypted: i=1; AJvYcCXjV/sygJsOhLkHXyGxpX0JGkOA8RpG76QB/nxPHnfw5515niuDQu8wQ2RRCmqRvilKC+w0TinDq9MMTg8rn3tRZLVw4AsS233BeclATSgsSZ+z6G2GHLDyBszv84UT0LcWo0oDcItnYjk3zLkk08O9LL95yRmBX/VSfRIcKHgQ1vZnyf64tmpQGEl+EbVFsxCAIwC26SjrdncZ2638yX9GnA==
+X-Gm-Message-State: AOJu0YzpyRo5J/ultiiYuuiQtwrjB3Hvc/Vd3GK/drMtgM2Ne1MrUQPn
+	DxXQLEY5PNd4OUfEtn08ktmSFy6e4CQjNzQGKBfSMP6PstLrt2fL
+X-Google-Smtp-Source: AGHT+IHsTo8lMNP09wsnI8P9igNi5kOPRrCfIRMTWkyNPOwyqA7p4iXPWhKj47VAFaSP8TaYIv7d4Q==
+X-Received: by 2002:a9d:6246:0:b0:6e4:7aa6:1432 with SMTP id i6-20020a9d6246000000b006e47aa61432mr1537909otk.28.1708741404420;
+        Fri, 23 Feb 2024 18:23:24 -0800 (PST)
+Received: from Borg-9.local (070-114-203-196.res.spectrum.com. [70.114.203.196])
+        by smtp.gmail.com with ESMTPSA id d7-20020a9d4f07000000b006e42884bad9sm91752otl.1.2024.02.23.18.23.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Feb 2024 18:23:23 -0800 (PST)
+Sender: John Groves <grovesaustin@gmail.com>
+Date: Fri, 23 Feb 2024 20:23:21 -0600
+From: John Groves <John@groves.net>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
+	Dave Jiang <dave.jiang@intel.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, 
+	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, john@jagalactic.com, 
+	Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>, 
+	dave.hansen@linux.intel.com, gregory.price@memverge.com
+Subject: Re: [RFC PATCH 07/20] famfs: Add include/linux/famfs_ioctl.h
+Message-ID: <7onhdq4spd7mnkr5c443sbvnr7l4n34amtterg4soiey2qubyl@r2ppa6fsohnk>
+References: <cover.1708709155.git.john@groves.net>
+ <b40ca30e4bf689249a8c237909d9a7aaca9861e4.1708709155.git.john@groves.net>
+ <8f62b688-6c14-4eab-b039-7d9a112893f8@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2448947.jE0xQCEvom@jernej-laptop>
+In-Reply-To: <8f62b688-6c14-4eab-b039-7d9a112893f8@infradead.org>
 
-On Thu, Feb 22, 2024 at 09:02:53PM +0100, Jernej Škrabec wrote:
-> Dne sreda, 21. februar 2024 ob 14:45:20 CET je Maxime Ripard napisal(a):
-> > Hi,
+On 24/02/23 05:39PM, Randy Dunlap wrote:
+> Hi--
+> 
+> On 2/23/24 09:41, John Groves wrote:
+> > Add uapi include file for famfs. The famfs user space uses ioctl on
+> > individual files to pass in mapping information and file size. This
+> > would be hard to do via sysfs or other means, since it's
+> > file-specific.
 > > 
-> > On Fri, Feb 16, 2024 at 08:04:26PM +0100, Ondřej Jirman wrote:
-> > > From: Ondrej Jirman <megi@xff.cz>
-> > > 
-> > > Identical configurations of planes can lead to different (and wrong)
-> > > layer -> pipe routing at HW level, depending on the order of atomic
-> > > plane changes.
-> > > 
-> > > For example:
-> > > 
-> > > - Layer 1 is configured to zpos 0 and thus uses pipe 0. No other layer
-> > >   is enabled. This is a typical situation at boot.
-> > > 
-> > > - When a compositor takes over and layer 3 is enabled,
-> > >   sun8i_ui_layer_enable() will get called with old_zpos=0 zpos=1, which
-> > >   will lead to incorrect disabling of pipe 0 and enabling of pipe 1.
-> > > 
-> > > What happens is that sun8i_ui_layer_enable() function may disable
-> > > blender pipes even if it is no longer assigned to its layer.
-> > > 
-> > > To correct this, move the routing setup out of individual plane's
-> > > atomic_update into crtc's atomic_update, where it can be calculated
-> > > and updated all at once.
-> > > 
-> > > Remove the atomic_disable callback because it is no longer needed.
-> > > 
-> > > Signed-off-by: Ondrej Jirman <megi@xff.cz>
+> > Signed-off-by: John Groves <john@groves.net>
+> > ---
+> >  include/uapi/linux/famfs_ioctl.h | 56 ++++++++++++++++++++++++++++++++
+> >  1 file changed, 56 insertions(+)
+> >  create mode 100644 include/uapi/linux/famfs_ioctl.h
 > > 
-> > I don't have enough knowledge about the mixers code to comment on your
-> > patch, so I'll let Jernej review it. However, this feels to me like the
-> > pipe assignment is typically the sort of things that should be dealt
-> > with device-wide, and in atomic_check.
+> > diff --git a/include/uapi/linux/famfs_ioctl.h b/include/uapi/linux/famfs_ioctl.h
+> > new file mode 100644
+> > index 000000000000..6b3e6452d02f
+> > --- /dev/null
+> > +++ b/include/uapi/linux/famfs_ioctl.h
+> > @@ -0,0 +1,56 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> > +/*
+> > + * famfs - dax file system for shared fabric-attached memory
+> > + *
+> > + * Copyright 2023-2024 Micron Technology, Inc.
+> > + *
+> > + * This file system, originally based on ramfs the dax support from xfs,
 > 
-> In DE2 and DE3.0, you cannot move planes between mixers (crtcs), because each
-> one is hardwired to specific mixer. Movable planes are the feature of DE3.3
-> and one of the pain points for upstreaming the code. Anyway, this commit only
-> addresses current issue of enabling and disabling planes and handling zpos.
+>       This is confusing to me. Is it just me? ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Thanks Randy. I think I was trying to say "based on ramfs *plus* the dax
+support from xfs. But I'll try to come up with something more clear than
+that...
+
 > 
-> In atomic check you can only precalculate final register values, but I don't
-> see any benefit doing that. I think that this code elegantly solves current
-> issue of enabling or disabling wrong plane in certain situations, so:
+> > + * is intended to allow multiple host systems to mount a common file system
+> > + * view of dax files that map to shared memory.
+> > + */
+> > +#ifndef FAMFS_IOCTL_H
+> > +#define FAMFS_IOCTL_H
+> > +
+> > +#include <linux/ioctl.h>
+> > +#include <linux/uuid.h>
+> > +
+> > +#define FAMFS_MAX_EXTENTS 2
+> > +
+> > +enum extent_type {
+> > +	SIMPLE_DAX_EXTENT = 13,
+> > +	INVALID_EXTENT_TYPE,
+> > +};
+> > +
+> > +struct famfs_extent {
+> > +	__u64              offset;
+> > +	__u64              len;
+> > +};
+> > +
+> > +enum famfs_file_type {
+> > +	FAMFS_REG,
+> > +	FAMFS_SUPERBLOCK,
+> > +	FAMFS_LOG,
+> > +};
+> > +
+> > +/**
 > 
-> Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+> "/**" is used to begin kernel-doc comments, but this comment block is missing
+> a few entries to make it be kernel-doc compatible. Please either add them
+> or just use "/*" to begin the comment.
+
+Will do, thanks. And I'll check the whole code base for other instances;
+I won't be surprise if I was sloop about that in more than one place.
+
 > 
-> Note, if there is new revision, please rewrite blender regmap_update_bits()
-> to regmap_write(). Since there is HW issue with reads, I would like to
-> get rid of regmap_update_bits() calls eventually.
-
-I've looked into it and I can probably rewrite these quite readily:
-
-+	regmap_update_bits(mixer->engine.regs,
-+			   SUN8I_MIXER_BLEND_ROUTE(bld_base),
-+			   SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(0) |
-+			   SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(1) |
-+			   SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(2) |
-+			   SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(3),
-+			   route);
-
-The mask here covers all implemented bits in the register.
-
-+	regmap_update_bits(mixer->engine.regs,
-+			   SUN8I_MIXER_BLEND_PIPE_CTL(bld_base),
-+			   SUN8I_MIXER_BLEND_PIPE_CTL_EN(0) |
-+			   SUN8I_MIXER_BLEND_PIPE_CTL_EN(1) |
-+			   SUN8I_MIXER_BLEND_PIPE_CTL_EN(2) |
-+			   SUN8I_MIXER_BLEND_PIPE_CTL_EN(3),
-+			   pipe_en);
-+
-
-The mask here doesn't cover BLD_FILL_COLOR_CTL.Px_FCEN bits that implement solid
-color filling. But those can be 0 anyway except for pipe0 which is hardcoded by
-the driver to 1, I think:
-
-631         /*
-632          * Set fill color of bottom plane to black. Generally not needed
-633          * except when VI plane is at bottom (zpos = 0) and enabled.
-634          */
-635         regmap_write(mixer->engine.regs, SUN8I_MIXER_BLEND_PIPE_CTL(base),
-636                      SUN8I_MIXER_BLEND_PIPE_CTL_FC_EN(0));
-
-I will not be able to get rid of regmap_update_bits in sun8i_layer_enable
-because that register there has other important things in it like framebuffer
-pixel format, etc.
-
-kind regards,
-	o.
-
-> Best regards,
-> Jernej
+> > + * struct famfs_ioc_map
+> > + *
+> > + * This is the metadata that indicates where the memory is for a famfs file
+> > + */
+> > +struct famfs_ioc_map {
+> > +	enum extent_type          extent_type;
+> > +	enum famfs_file_type      file_type;
+> > +	__u64                     file_size;
+> > +	__u64                     ext_list_count;
+> > +	struct famfs_extent       ext_list[FAMFS_MAX_EXTENTS];
+> > +};
+> > +
+> > +#define FAMFSIOC_MAGIC 'u'
 > 
-> > 
-> > If I'm talking non-sense, it would be great to mention at least why that
-> > can't be an option in the commit log.
-> > 
-> > Maxime
-> > 
+> This 'u' value should be documented in
+> Documentation/userspace-api/ioctl/ioctl-number.rst.
 > 
+> and if possible, you might want to use values like 0x5x or 0x8x
+> that don't conflict with the ioctl numbers that are already used
+> in the 'u' space.
+
+Will do. I was trying to be too clever there, invoking "mu" for
+micron. 
+
 > 
+> > +
+> > +/* famfs file ioctl opcodes */
+> > +#define FAMFSIOC_MAP_CREATE    _IOW(FAMFSIOC_MAGIC, 1, struct famfs_ioc_map)
+> > +#define FAMFSIOC_MAP_GET       _IOR(FAMFSIOC_MAGIC, 2, struct famfs_ioc_map)
+> > +#define FAMFSIOC_MAP_GETEXT    _IOR(FAMFSIOC_MAGIC, 3, struct famfs_extent)
+> > +#define FAMFSIOC_NOP           _IO(FAMFSIOC_MAGIC,  4)
+> > +
+> > +#endif /* FAMFS_IOCTL_H */
 > 
-> 
+> -- 
+> #Randy
+
+Thank you for taking the time to look it over, Randy.
+
+John
+
 
