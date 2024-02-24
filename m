@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-79586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5567386247F
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:29:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10E56862481
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:29:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9FDF1F22F55
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:29:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA5F4283604
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:29:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3E9825756;
-	Sat, 24 Feb 2024 11:29:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84B8225756;
+	Sat, 24 Feb 2024 11:29:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lnITihWZ"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QyTK5cBN"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF08425565;
-	Sat, 24 Feb 2024 11:29:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 493BC250EB;
+	Sat, 24 Feb 2024 11:29:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708774153; cv=none; b=UASbM7ixlcXLnMRdW7fuBnLYL+t8UeW/RNsyA84KKj8BtsyfE2ObPEGBDjDmTApRRquuQtBDSnG4R9oo0B90hOWwHEQRRcHmsMbfYOzGq7YEQGxJNHrQArkFb5kZsMF27r1FOAO6v1YHtwtgoDOX5v3pHuPjSduX6bQJ+O32uhs=
+	t=1708774165; cv=none; b=Zf/3FtF6L0BzZi6IFQarlG2m2VA0cWEn6nZx5bWn/BknkUfQyRtQi90xlkP0vBTL95j8G9w/u4N/iODgNKa8nyGwXFWgMz0ZbEy/MZmjJgbC7kHNhFUY1SE9TDAFljnVLSze+yHpEqsoZtcDuFqLaW/PId3SJvVljfoTygNkdhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708774153; c=relaxed/simple;
-	bh=8Wmjz1P/B2yK+9hfRLUJbl27WLHSx0xp5D2G5Vt/aLY=;
+	s=arc-20240116; t=1708774165; c=relaxed/simple;
+	bh=oLDwwbjlfldA8YTQKnJROMeakHh9GmORvJ1FZwNxLQI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XnZMXaRHeBCNxS7Yc6ETRsaw/ESC+XYbSdeBa25rt8sRkrNUoA5aEouB4ooFHmXc2hfU5wW1pK0IYA6NaYBj8FRNOAXyiu3BXrrZzBnzm5yXP9TJtm/gIosfkeyxLS6BrMe9w2X78aposIxShpN5daR3V1uOeyDFi/fYlX7fNQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lnITihWZ; arc=none smtp.client-ip=209.85.218.51
+	 MIME-Version; b=FOGwdlMw0QvT4EAWfH7CLVzHobaLEIljuXoKG4uwcD3oWNCDQk3fKtQSuYdISNibscVexGocorcuU2ZdWVoeGIfPo4jGOJ7HgVicdlyXv5XQjrdK9FhpJ6QgnkbnfDKPxtxPNfBKd4AeSLBSjpd5P7Yhf1thwGyNPxr7iXriEbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QyTK5cBN; arc=none smtp.client-ip=209.85.208.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a3566c0309fso151004666b.1;
-        Sat, 24 Feb 2024 03:29:10 -0800 (PST)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55a5e7fa471so2116350a12.1;
+        Sat, 24 Feb 2024 03:29:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708774149; x=1709378949; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708774162; x=1709378962; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JYAho2X90qK7tOrS84lGLoReElvfwN9Vc1VtqG59PbA=;
-        b=lnITihWZyVM8tLIkUE552jG2HVHhER9n8blbPFNfDqHIRArSD31rH1VUaeD2BGP+aB
-         MYCU0lpg5ObZ7e9Odmw3+4MyqCvC5TnNR2xEj/I+fyAMaYaoLvyR5nrf/uuL4DhLlnUX
-         P7z6BjIE0KwWmLCsrs3StImyToOgueBvXALM5r5mPk9OscdNkTkgeaF45zsTvubB5iC5
-         L9oil7N8OBZ3NQ1VSsf3irRrhBtw0Ve/YfT1bEsew+99KzImf4vAkvC48oNXAezu9vkA
-         +l8gZ/+cAoERGQCuSML/5dh4yHjFcvDyx9BX81Da/t8bSMljF551lqUOLj8mWXHtxczT
-         ZaMA==
+        bh=4MmK3Tpm9+5KttJbHDCWPd/7vMZzGKkTnGzOOVkaN4Y=;
+        b=QyTK5cBNd+V4/72EdyRSZjyYIQkT0EvAM8EpS03PVsfDyO24mIjDkTMXkiiRuxYO3m
+         1oWu9ckdD86DH6cFjzTZBCF1V6kT2S0N0mvSqniIV+11BmVNFtBdjlHBxgmw/CSt0cNf
+         PQIb1f0ka/aiBVFDPqGcZCXYHyI94tYD46hsqr4/rpRveQj6vOeV01CVCOSQE7TblzOW
+         GmNGCrKpXSzd4J01HvpF15Jtvhjzr6ZwTQEz5+jiHQhPKftrPsDLwRooSiireOJ5hkw4
+         Zol9mboP2mxH3kEKYQvQYSz9hKd1Y1ilFP6xBKETs3enqiUacIZF3rBL389sB5EB5f4m
+         9yUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708774149; x=1709378949;
+        d=1e100.net; s=20230601; t=1708774162; x=1709378962;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JYAho2X90qK7tOrS84lGLoReElvfwN9Vc1VtqG59PbA=;
-        b=TMxtfKDXdyxTeUws2tbzoF2dBk3s0bLfQYfxj3ZsZgjDLTjk9XG5nHhivOKpLb4248
-         V4Wa66/B3/bp+ZMv5z5wICxXu034ITixqk4YHZ3TJR+RuD3LViAYriK+AtMJjIxKouWQ
-         yZqv1jUYoGOrG1FyIqxF5iJFNBXJMB/2txXLh+Zw5vvPvsrw0kdteEZIZe5ScuHde3HP
-         oZ819OHJkx9dYp0v361oh1EnuRrf9vte1F+lOAE1+TVsde6Nk23zghZsT9arOsHgC4sc
-         aCRRnPJaV9X1zSRLXoaEPphHSfsiKcADbKzjsT1/fGQcQ+qUNklcCu+ToPgtkiWZhHbn
-         e2FA==
-X-Forwarded-Encrypted: i=1; AJvYcCXk8BUpE9hlgWDNJvZn9gN+3O5Jf6z6IjBt9l1+VJcG6P7G7pX2XP8cK7PMUIk3FHjsb9KVaNoUArATyZv59ZxFscfmkwvJ5LQ99nDIFhyeAWzarl3R/64maXwsftSeFZF2cEuX1UZR
-X-Gm-Message-State: AOJu0Yy/kBt3CxUuuOgd+vUuejBWyH1thI0yJaRDycKAuby8J5VdS8hZ
-	2xEA8FgG8IwF63/h9UHu4psfvbTaAjLQkKgNpqQuUiNKTF+lksCsBJpqku1HmNI=
-X-Google-Smtp-Source: AGHT+IFcZLVXuxBLLhhHFucSHV65YF5jlbWZN8OnRT43E3B5IERyuxH8H2URJWvmWc9ECMJuLJGqQg==
-X-Received: by 2002:a17:906:2b05:b0:a40:65ea:61 with SMTP id a5-20020a1709062b0500b00a4065ea0061mr1475681ejg.46.1708774148756;
-        Sat, 24 Feb 2024 03:29:08 -0800 (PST)
+        bh=4MmK3Tpm9+5KttJbHDCWPd/7vMZzGKkTnGzOOVkaN4Y=;
+        b=CTB3TdLsdSidA4RZwAsfRzarZZ3ECbcGJsTpJZ2eHF6wou3db/aFd4/ODGj0Lny7pP
+         N1AAZqVFvXYHSvbw625LRdnmXI++lm9y+FTwvRyut4Ap4PoHKYZruaKb1wx0Sb5cI+8y
+         ACjSGJDqwbmXzr1Z0utdpiLkMiBidRNNO3nxwZ0XZFS000018oSRvmavBaK3sT8x8xZu
+         9cRn/N5sbpI+a29jyx+933/N16r7MT94eyAlm0Gw7vGDI7tBhTCTnFD0DQZ2H82gsMAs
+         Slwvio6Dxeg8gbrRyu75WIXlx+ifWJ4CsDVlgAMP/NlvHuq6G/Cwex72966lxqsq5kB4
+         88aQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXrrztE18pTD05NPJWW/4zUY+2GMw7ZUJrVvwccJ2C7FsTHiMLFcBHe3jqiOx1FqxV8/jq+vfxk8zOeXFHiVTENUPJYrWTOjgnLyOJO997dgkXI998uWQB8J1I/pk47xwBrH2O26UJa
+X-Gm-Message-State: AOJu0YyYF/v8oFLzq9LEClZcyk6Bo2OI7FNmOtkXX/s9rwiKrO8NYtU+
+	qyv2OpqCsyG0canakju7+qNkTu2bRPlzyzPzoKCAOU48QlPl5Iwc
+X-Google-Smtp-Source: AGHT+IFdt8w/I4I+8iNW3l4ElfaKirBq2vMB34N6h/jQwawqdL4WS7C2NJySq62HtK3H5NIQ3aOaRQ==
+X-Received: by 2002:a17:906:3449:b0:a41:31ed:acd5 with SMTP id d9-20020a170906344900b00a4131edacd5mr1438285ejb.50.1708774162367;
+        Sat, 24 Feb 2024 03:29:22 -0800 (PST)
 Received: from localhost.localdomain (p5dc68d61.dip0.t-ipconnect.de. [93.198.141.97])
-        by smtp.gmail.com with ESMTPSA id s1-20020a170906060100b00a3d9e6e9983sm507181ejb.174.2024.02.24.03.29.08
+        by smtp.gmail.com with ESMTPSA id s1-20020a170906060100b00a3d9e6e9983sm507181ejb.174.2024.02.24.03.29.21
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sat, 24 Feb 2024 03:29:08 -0800 (PST)
+        Sat, 24 Feb 2024 03:29:21 -0800 (PST)
 From: Leif Middelschulte <leif.middelschulte@gmail.com>
 X-Google-Original-From: Leif Middelschulte <Leif.Middelschulte@gmail.com>
 To: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
@@ -74,16 +74,17 @@ To: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
 	Pengutronix Kernel Team <kernel@pengutronix.de>,
 	Fabio Estevam <festevam@gmail.com>,
 	NXP Linux Team <linux-imx@nxp.com>
-Cc: Leif Middelschulte <Leif.Middelschulte@klsmartin.com>,
+Cc: Leif Middelschulte <Leif.Middelschulte@gmail.com>,
 	linux-pwm@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 1/2] pwm: imx27: fix race condition .apply,.get_state
-Date: Sat, 24 Feb 2024 12:29:00 +0100
-Message-Id: <20240224112902.55539-1-Leif.Middelschulte@gmail.com>
+Subject: [PATCH v4 2/2] pwm: imx27: avoid PWM consumer API
+Date: Sat, 24 Feb 2024 12:29:01 +0100
+Message-Id: <20240224112902.55539-2-Leif.Middelschulte@gmail.com>
 X-Mailer: git-send-email 2.39.3 (Apple Git-145)
-In-Reply-To: <20230906154215.4ikrrbx4xgx2nmu5@pengutronix.de>
+In-Reply-To: <20240224112902.55539-1-Leif.Middelschulte@gmail.com>
 References: <20230906154215.4ikrrbx4xgx2nmu5@pengutronix.de>
+ <20240224112902.55539-1-Leif.Middelschulte@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,111 +93,26 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Leif Middelschulte <Leif.Middelschulte@klsmartin.com>
+Access struct members directly.
 
-With CONFIG_PWM_DEBUG=y after writing a value to the PWMSAR
-register in .apply(), the register is read in .get_state().
-Unless a period completed in the meantime, this read yields the
-previously used duty cycle configuration. As the PWM_DEBUG code
-applies the read out configuration for testing purposes this
-effectively undoes the intended effect by rewriting the previous
-hardware state.
-
-Note that this change merely implements a sensible heuristic.
-The i.MX has a 4 slot FIFO to configure the duty cycle. This FIFO
-cannot be read back in its entirety. The "write x then read back
-x from hw" semantics are therefore not easily applicable.
-With this change, the .get_state() function tries to wait for some
-stabilization in the FIFO (empty state). In this state it keeps
-applying the last value written to the sample register.
-
-Signed-off-by: Leif Middelschulte <Leif.Middelschulte@klsmartin.com>
+Signed-off-by: Leif Middelschulte <Leif.Middelschulte@gmail.com>
 ---
- drivers/pwm/pwm-imx27.c | 55 +++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 53 insertions(+), 2 deletions(-)
+ drivers/pwm/pwm-imx27.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/pwm/pwm-imx27.c b/drivers/pwm/pwm-imx27.c
-index 7d9bc43f12b0..cb564460b79c 100644
+index cb564460b79c..d00d79a5edb1 100644
 --- a/drivers/pwm/pwm-imx27.c
 +++ b/drivers/pwm/pwm-imx27.c
-@@ -75,6 +75,7 @@
- 						   (x)) + 1)
+@@ -255,7 +255,7 @@ static void pwm_imx27_wait_fifo_slot(struct pwm_chip *chip,
+ 	sr = readl(imx->mmio_base + MX3_PWMSR);
+ 	fifoav = FIELD_GET(MX3_PWMSR_FIFOAV, sr);
+ 	if (fifoav == MX3_PWMSR_FIFOAV_4WORDS) {
+-		period_ms = DIV_ROUND_UP_ULL(pwm_get_period(pwm),
++		period_ms = DIV_ROUND_UP_ULL(pwm->state.period,
+ 					 NSEC_PER_MSEC);
+ 		msleep(period_ms);
  
- #define MX3_PWM_SWR_LOOP		5
-+#define MX3_PWM_FIFOAV_EMPTY_LOOP	4
- 
- /* PWMPR register value of 0xffff has the same effect as 0xfffe */
- #define MX3_PWMPR_MAX			0xfffe
-@@ -118,6 +119,31 @@ static void pwm_imx27_clk_disable_unprepare(struct pwm_imx27_chip *imx)
- 	clk_disable_unprepare(imx->clk_ipg);
- }
- 
-+static int pwm_imx27_wait_fifo_empty(struct pwm_chip *chip,
-+				     struct pwm_device *pwm)
-+{
-+	struct pwm_imx27_chip *imx = to_pwm_imx27_chip(chip);
-+	struct device *dev = chip->dev;
-+	unsigned int period_ms = DIV_ROUND_UP_ULL(pwm->state.period, NSEC_PER_MSEC);
-+	int tries = MX3_PWM_FIFOAV_EMPTY_LOOP;
-+	int fifoav, previous_fifoav = INT_MAX;
-+	u32 sr;
-+
-+	while (tries--) {
-+		sr = readl(imx->mmio_base + MX3_PWMSR);
-+		fifoav = FIELD_GET(MX3_PWMSR_FIFOAV, sr);
-+		if (fifoav == MX3_PWMSR_FIFOAV_EMPTY)
-+			return 0;
-+		/* if the FIFO value does not decrease, there is another problem */
-+		if (previous_fifoav == fifoav)
-+			break;
-+		previous_fifoav = fifoav;
-+		msleep(period_ms);
-+	}
-+
-+	return -EAGAIN;
-+}
-+
- static int pwm_imx27_get_state(struct pwm_chip *chip,
- 			       struct pwm_device *pwm, struct pwm_state *state)
- {
-@@ -161,10 +187,35 @@ static int pwm_imx27_get_state(struct pwm_chip *chip,
- 	 * PWMSAR can be read only if PWM is enabled. If the PWM is disabled,
- 	 * use the cached value.
- 	 */
--	if (state->enabled)
-+	if (state->enabled) {
-+		/*
-+		 * From the i.MX PWM reference manual:
-+		 * "A read on the sample register yields the current FIFO value that
-+		 *  is being used, or will be used, by the PWM for generation on the
-+		 *  output signal. Therefore, a write and a subsequent read on the
-+		 *  sample register may result in different values being obtained."
-+		 * Furthermore:
-+		 * "When a new value is written, the duty cycle changes after the
-+		 *  current period is over."
-+		 * Note "changes" vs. "changes to the given value"!
-+		 * Finally:
-+		 * "The PWM will run at the last set duty-cycle setting if all the
-+		 *  values of the FIFO has been utilized, until the FIFO is reloaded
-+		 *  or the PWM is disabled."
-+		 * Try to be at least a bit more deterministic about which value is
-+		 * read by waiting until the FIFO is empty. In this state the last/most
-+		 * recently pushed sample (duty cycle) value is continuously applied.
-+		 * Beware that this approach is still racy, as a new value could have
-+		 * been supplied and a period expired between the call of the wait
-+		 * function and the subsequent readl.
-+		 */
-+		ret = pwm_imx27_wait_fifo_empty(chip, pwm);
-+		if (ret)
-+			return ret;
- 		val = readl(imx->mmio_base + MX3_PWMSAR);
--	else
-+	} else {
- 		val = imx->duty_cycle;
-+	}
- 
- 	tmp = NSEC_PER_SEC * (u64)(val) * prescaler;
- 	state->duty_cycle = DIV_ROUND_UP_ULL(tmp, pwm_clk);
 -- 
 2.39.3 (Apple Git-145)
 
