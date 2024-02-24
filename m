@@ -1,109 +1,106 @@
-Return-Path: <linux-kernel+bounces-79363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28AF2862134
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:28:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAFF7862136
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:29:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A5CC1C245F5
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 00:28:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 290C61C246C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 00:29:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F3E11373;
-	Sat, 24 Feb 2024 00:28:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0F0410F2;
+	Sat, 24 Feb 2024 00:29:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VRFq04Cv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sqgJdwNE"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41D7310F2;
-	Sat, 24 Feb 2024 00:28:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B876EA55;
+	Sat, 24 Feb 2024 00:29:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708734505; cv=none; b=jjxLI0/nLGIsqNzCQyxvKlBOUlaQZ6XWrp4pUjQWN9o00LCT0a9QMx8f8ciRC+C6mfpQEvi8Mouyomq97cRRHMlkZGbJQCRW3xWCqs+N3jP5tlvsMt4KC+q1A9FO896SOyB1JwRLdnumTmhZWwvxUj8xqdBzOL+5DXjQZkgDylk=
+	t=1708734551; cv=none; b=j6+LzqZacbgkE0bZDoJhINxjEX7qY4PB0LJDaQlZi5NSnycgwq3xmLrEu9jz+wT80hrldDF+RHtiv3FF+UqYpJ2RWsYMBu/f/8+K3hWTAXX/AOgbt0ffLnhMeFICfcg98ETV4/Xqm9tpHHA0LPi4JToQ+RBudpUPZvsbYDyTRXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708734505; c=relaxed/simple;
-	bh=NfXtG/1GMXbQ2yBn2k0Gm8LXQ6d0gmiTwMDv0HaP6Y8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iMDyYpY+gq6jzARRClsDkZDsJz2dM1sAOj6sV9wY2PK1+cGQil+Q0Ydp6D67yPTT+ZtcFC4HpDQdoGC/mkCAm24fJnNZ41Q2rjBt0rV6GD7v0xEauGRuH4UUasEycfY3nuMaSzyitLuj2tc8aq/fFyRBnrJfAUNsxsLBP3z9q2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VRFq04Cv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F5DDC433C7;
-	Sat, 24 Feb 2024 00:28:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708734504;
-	bh=NfXtG/1GMXbQ2yBn2k0Gm8LXQ6d0gmiTwMDv0HaP6Y8=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=VRFq04CvhZ3G0DEDfladC2Pth55Hp8itifcNJuADVOl65dYXrWqJgGghGyU5g/8wW
-	 wglNojhhmItEA2QXQDxJLNeuA7qPa0WAjTxytJRXd05+8VCE3hiBazML8nBhPo5Iri
-	 EAxSKfBcN4KoxXdOXooKVUSxpcb+kZb/psYzrl58GxusG+wTmvt176AwnL7CIwg0A7
-	 CgbSciL1mV2MBIw2RufWmoNG6NUrhyRZEwOl+tc5tcGyuje026XKMpil2NODz4bF8/
-	 AskIkeT1Ea0cTViK/hJ+2A061DM9JvpCJ5EOWBNOeV6OvNNgfw/h89c90z7xUhpR9E
-	 ezyYZ0SpPKr/Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 290F5CE1113; Fri, 23 Feb 2024 16:28:19 -0800 (PST)
-Date: Fri, 23 Feb 2024 16:28:19 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org, Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
-	Chen Zhongjin <chenzhongjin@huawei.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH v2 4/6] rcu-tasks: Maintain lists to eliminate
- RCU-tasks/do_exit() deadlocks
-Message-ID: <dcea0803-7f9d-4d27-af68-1efb9015dbff@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240217012745.3446231-1-boqun.feng@gmail.com>
- <20240217012745.3446231-5-boqun.feng@gmail.com>
- <ZdiNXmO3wRvmzPsr@lothringen>
+	s=arc-20240116; t=1708734551; c=relaxed/simple;
+	bh=D2Ymr1Fwng5x+vRge2/L1d/O2ki9hen1IPOBEBlpFvM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=H2wErn+xSZEBM3lKfxXzJeWPmXrc7KcRQd/gi6x5k1WZ0p8t87nmMc8Crs/HhQevxM55lUvV1jbjF3sDHFSsdrU7Ko6rNa/vPZ4+IDawei95tHm5PMQ7Z7TGueR2yV285h8m6qcSU1FOppa2Na9fMpFh7y7x09gK1BVArXk2lA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=sqgJdwNE; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=4uXKqvbumEDVF3TL2P92MblTjGuDcJSAWiwkp0vmwGg=; b=sqgJdwNEq94uZLqCwsaLQbZQNg
+	XUHWwWW+d+FrT/eqaVjc1+01H+jWWpxKt4UROHPE0I0JQCVFkAD+f3MAuniCKpQJiMVFmjXkxiGSY
+	1tBC6jbM1d6tbVrTRz2Smo9eyeWQdnjTiMseymqqTtqA23x63jugZzelC4Roledj1ozBTL3lGgitC
+	mm7xiJDyQV+NcCM6vEVDHcVHuNSa4uf/gyunKgA2Fc83ppEL3rd22SHmB/KyYB9khyJ18F8pc6fnk
+	QU9iJ5NZjLpQZLCFBKiGJCTw2dbfQk+bABWuRweCDmizZb1DZqeJcev2BR2Cr/wdfa1WQ7QgGtp2U
+	LsF520bA==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rdfue-0000000BgUh-2bC8;
+	Sat, 24 Feb 2024 00:29:08 +0000
+Message-ID: <e6238416-0a4f-4374-ad9a-1f6ce5c34b49@infradead.org>
+Date: Fri, 23 Feb 2024 16:29:08 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZdiNXmO3wRvmzPsr@lothringen>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/6] sparc32: Fix build with trapbase
+Content-Language: en-US
+To: sam@ravnborg.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: sparclinux@vger.kernel.org, linux-parport@lists.infradead.org,
+ "David S. Miller" <davem@davemloft.net>,
+ Andreas Larsson <andreas@gaisler.com>, Arnd Bergmann <arnd@arndb.de>,
+ linux-kernel@vger.kernel.org
+References: <20240223-sam-fix-sparc32-all-builds-v1-0-5c60fd5c9250@ravnborg.org>
+ <20240223-sam-fix-sparc32-all-builds-v1-2-5c60fd5c9250@ravnborg.org>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240223-sam-fix-sparc32-all-builds-v1-2-5c60fd5c9250@ravnborg.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 23, 2024 at 01:19:42PM +0100, Frederic Weisbecker wrote:
-> On Fri, Feb 16, 2024 at 05:27:39PM -0800, Boqun Feng wrote:
-> > -void exit_tasks_rcu_start(void) __acquires(&tasks_rcu_exit_srcu)
-> > +void exit_tasks_rcu_start(void)
-> >  {
-> > -	current->rcu_tasks_idx = __srcu_read_lock(&tasks_rcu_exit_srcu);
-> > +	unsigned long flags;
-> > +	struct rcu_tasks_percpu *rtpcp;
-> > +	struct task_struct *t = current;
-> > +
-> > +	WARN_ON_ONCE(!list_empty(&t->rcu_tasks_exit_list));
-> > +	preempt_disable();
-> > +	rtpcp = this_cpu_ptr(rcu_tasks.rtpcpu);
-> > +	t->rcu_tasks_exit_cpu = smp_processor_id();
-> > +	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
-> > +	if (!rtpcp->rtp_exit_list.next)
+
+
+On 2/23/24 11:36, Sam Ravnborg via B4 Relay wrote:
+> From: Sam Ravnborg <sam@ravnborg.org>
 > 
-> And then you might want to turn that into a WARN_ONCE.
-
-Excellent point, thank you!
-
-I am queueing a separate patch for this with your Reported-by.  (This
-change can lag behind, just in case this series needs to go in quickly.)
-
-						Thanx, Paul
-
-> Thanks.
+> Fix the following build errors:
+> irq_32.c:258:7: error: array subscript [16, 79] is outside array bounds of 'struct tt_entry[1]
+> irq_32.c:271:14: error: assignment to 'struct tt_entry *' from incompatible pointer type 'struct tt_entry (*)[]
 > 
-> > +		INIT_LIST_HEAD(&rtpcp->rtp_exit_list);
-> > +	list_add(&t->rcu_tasks_exit_list, &rtpcp->rtp_exit_list);
-> > +	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
-> > +	preempt_enable();
-> >  }
+> trapbase is a pointer to an array of tt_entry, but the code declared it
+> as a pointer so the compiler see a single entry and not an array.
+> Fix this by modifyinf the declaration to be an array, and modify all
+> users to take the address of the first member.
+> 
+> Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+> Cc: Andreas Larsson <andreas@gaisler.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+Thanks.
+
+> ---
+>  arch/sparc/kernel/irq_32.c   | 6 +++---
+>  arch/sparc/kernel/kernel.h   | 8 ++++----
+>  arch/sparc/kernel/kgdb_32.c  | 4 ++--
+>  arch/sparc/kernel/leon_smp.c | 6 +++---
+>  arch/sparc/kernel/setup_32.c | 4 ++--
+>  5 files changed, 14 insertions(+), 14 deletions(-)
+> 
+
+
+-- 
+#Randy
 
