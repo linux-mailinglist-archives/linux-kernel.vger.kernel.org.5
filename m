@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-79580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13E3C86246F
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:13:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B79A8862472
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 12:14:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8417E1F22C39
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:13:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30FD21F22A70
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 11:14:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB5FC25565;
-	Sat, 24 Feb 2024 11:13:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC6F6250EB;
+	Sat, 24 Feb 2024 11:14:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="t0eIfeI1"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="us9/Sf6s"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8AF722339
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 11:13:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A99B24B59
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 11:14:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708773228; cv=none; b=aCwGUz3rLJ1+9eSkmHqxsIXxElPkQZFxj6OOwJ+8jj0uQon4++4Vp7Nwt41CIg8lRisEHWrM08gOUYEfstWUabsi7PBWpPCeEUZBW+BdN+KBUs3hhuUmBk44gvvBz8BG4sGfcdPQUHwHk8KQzA8WiXpjs6JShpUuHad1Mzet8lQ=
+	t=1708773246; cv=none; b=mmOdk2XFc2CMvoAttihnv2Q/14Ca3RORXLCjhAo3J9W1zbdd7/yz3oxkbhtHo8kLaO/K6Ahdcs7PGHIJ4s9B6hIcugdSMMHVFG4/0c6lCQAge8wrGBWcs2pHKrFpKQHBwFfMOzQJ3I65tEAwLKj4nCJsQOR/Cn5XipXBAt2O8ZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708773228; c=relaxed/simple;
-	bh=0fpD9n/frVr7ljFFukzv4yz4QAErro6+EAt8bD0V85M=;
+	s=arc-20240116; t=1708773246; c=relaxed/simple;
+	bh=16tNo1nwUaKP7RUdss7358PFuUriGN5dnFAL7/DCQPU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QfnacxgEoBsN4ln+iPOS9UXHTTG6GP4djbT4Rbfo5EYekyNUmZXF8geSNsUtFfoAQBe/Ha0hFAyyFg1+IWlB1514kEW6xp7hdk+M4UBhILc1PVT04tbf6nNDRUF2on638Ji/jqT8OpVO9JphSsQ1PGR3M1wDGW2qhPjjaTJ5I/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=t0eIfeI1; arc=none smtp.client-ip=209.85.167.43
+	 In-Reply-To:Content-Type; b=uKL5SHgjCvlpYdpOp8ZtoTF7roJZMg2fAU3LMsLm5nfU6NfERW6/KSvUq5LDRN+EE4bRv0GBrwpjOJSzLlSCqcbMo4L2Tr/EHjzZozzeoLw/xmJUeXNjEgXj98SpEwVo5wo28UXN9xsT81ItTmJXMTYgk1zmIwUUh0iaDDB9qXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=us9/Sf6s; arc=none smtp.client-ip=209.85.167.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-512f4e1a6e3so106680e87.2
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 03:13:44 -0800 (PST)
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-512bc0e8ce1so1321458e87.0
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 03:14:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708773223; x=1709378023; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1708773243; x=1709378043; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=AQNPJbwxd8jfq5v746wdDlx4tQYU8cADwmK934FmLC4=;
-        b=t0eIfeI1w95C7cl16CFQ/IUkTth/zmKMCEnDGdx6QaiMl99Qq4GreHRJHx32TGMkY/
-         HMvFRl7WVV1lKpebaPYuWWcHdaL2N5/voY6eyWsq7/mzlYCGNzHQdPYxlmVWmtQU+jT9
-         5L1UKkwRHomIX3HRKHwG59RnUT9VNTjQBEGkl2hIM4YhB+mtONf3bM635z9MVIdtw8z7
-         cgefKRBd9VYsihy6X+UXCm/CjdBXEnm4w/paQkm3+dUOpoC/GBEbdKW11ojEukAqRpko
-         wW7IHcG1LxFK7cpx8N0Xq/3cg+rIJJUjOAdPUlqnz1lr6RArDf/rZgMn4dL1ZgMDPidl
-         vPVg==
+        bh=x60cKKba0FOBLBccNYhCrTkKANTv2lRFI0vfK5nUgCg=;
+        b=us9/Sf6s36zbOL8sRPSUIh4rAqikxMshYBxJUkAY/7coU7Tt59NZpiQ3OtNsBLqYzE
+         SzuHNAU7o18o6p0JqazeNhM4Rq7uWL/wGFaJDaT3BLiZrENPeFtm4c3jcRmMxVvHcCBB
+         HxlJpfQbl8ADBoD3yjEtpUCG5iCnsxytng2nXjLfYCLqjasZviItEN4e8edEKqhltSLl
+         JgnuQb8+9WLaOdb95D5nNAqEEzYLSEbt/XwZE+8yu3F3sMn1ZN+MAURYypKToewrb85u
+         /AQieRDqN6YoNiEmy/eIyF/jFuwXG1lhcI0NoC+sxxExiNFATdXS3C63K2p23Y9lmv2Z
+         omnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708773223; x=1709378023;
+        d=1e100.net; s=20230601; t=1708773243; x=1709378043;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AQNPJbwxd8jfq5v746wdDlx4tQYU8cADwmK934FmLC4=;
-        b=nOzBtQKc0UHhYXO21DoNhHAOZqWDUa3vN3208qOMDrkp11gUhWUcjmuR8u4XDJgZKf
-         qKo+cFxdPRihF1RTKQyNgJqZmhJE3kMMvVmkIXCSJEa5CLjAKnLPqsyhvJu0kPV9HYwH
-         MP4Tk7mMZRRArO6t/LdE1NACeuU0noylwgB4pPUaY9L7nEbak8OA3WRiC7j3YuWiKX43
-         LxFYPQcW2Dup29CkjDdn4aW+IcZPmQzsqTHT/8Ahh8zFcUuwZTlJsbbOlcofnqdNrYHX
-         dRob+NgFVhnvmxMubzYbTB99zPmrnbbhQ41Yu1gxUJRe2gdRaCRMlsVXd0nCOOJDHGRR
-         t8hQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXY9hBtMc0nUDgLK0dEc/f2bwekqNB7SQUJBeONm9ryESmKP9YhpA9JnVA4t6cXvF5omDPhsPi2XxaQoFYvDowPFEr9uNohI+1/KyiR
-X-Gm-Message-State: AOJu0Yzl9J4ADvvNTQX+uOVVLM4MjUdFWSJt6QOQnVa+B2fd9gy+OW2p
-	sLT/n/eXQy+iNcJZqKsJgKx52EkZ4Uk2pCdT0MyAfVcIp2PKoDefoLuYhStkwkE=
-X-Google-Smtp-Source: AGHT+IGB/1d46W5Sg4vNEZP+Tf0rjhjkfX7T0q7HXRKcZ98HPZvWJ0vbsCpwDSPc3i4Nerg46EbvTw==
-X-Received: by 2002:a05:6512:2349:b0:512:a013:12f0 with SMTP id p9-20020a056512234900b00512a01312f0mr1635982lfu.64.1708773222975;
-        Sat, 24 Feb 2024 03:13:42 -0800 (PST)
+        bh=x60cKKba0FOBLBccNYhCrTkKANTv2lRFI0vfK5nUgCg=;
+        b=JA8ljB/NGwM0R/SmQYPje8V/qR66ga22fQnuPDPv6a2nMMYh0ynqgvb/iFqcHebdEJ
+         l77FRe0S7ocDYCjgPiKHjHwuA9gPrHCyNBhjYntKCVN/5h0/YeNxdb6NbQ5o1ew2kB0d
+         g684+jfqryhV0fxl51ymJ4ybhKeKUQ8ip2ycOy2VGJnVI/uDwz+AX1pIltWRRJz2VTMo
+         KErz8TGszvYgp7asy0l5MKatPwF8KDgMG+WM6Sz2LTD5syrJlAT+c5HaRzsCi6iMk4MG
+         k16dAa8V5mmyHP8Mtftlahhcz0r4246km/uT+WpKYrsEVfSU0HFKB2bzebYX4tWY0JUI
+         oGMw==
+X-Forwarded-Encrypted: i=1; AJvYcCVYl6gNIxlQC8UqnQskyOL5+/c8Av7S9sgwaC1n8sMRzFWjoJ+8eeCmfLJWVT5VmvCDjr5qOihZnFLhfJGoRH7CBWni9gGG3Mn0z5af
+X-Gm-Message-State: AOJu0YwgPsOLLOxhGL0Ld0EDIOjmS5PK8LlRn/hqSrzFtQkfvy5W2l2F
+	W73IjpMneP876Yx4OL+bU3HyakoFpsrzE4u1gjqdWQRBXVx9EyxY+wMg7ndOY1k=
+X-Google-Smtp-Source: AGHT+IE8Ss+mINiXBJZusuYnODyKVNvVcgEEP8KA3QHKfwidwzPrWFqZ8I5wfBWngArlK01Il0FMTQ==
+X-Received: by 2002:a05:6512:2010:b0:512:cbae:4e05 with SMTP id a16-20020a056512201000b00512cbae4e05mr1202927lfb.60.1708773243206;
+        Sat, 24 Feb 2024 03:14:03 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id f17-20020a05651201d100b00512ed75e780sm172945lfp.249.2024.02.24.03.13.40
+        by smtp.gmail.com with ESMTPSA id f17-20020a05651201d100b00512ed75e780sm172945lfp.249.2024.02.24.03.14.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Feb 2024 03:13:42 -0800 (PST)
-Message-ID: <490c8499-c082-437a-88e4-2b66b27bb951@linaro.org>
-Date: Sat, 24 Feb 2024 12:13:39 +0100
+        Sat, 24 Feb 2024 03:14:02 -0800 (PST)
+Message-ID: <d6aa0673-5dce-4a04-b9d9-f7ff204c06f9@linaro.org>
+Date: Sat, 24 Feb 2024 12:14:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,8 +75,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/5] dt-bindings: hwmon/pmbus: ti,lm25066: document
- regulators
+Subject: Re: [PATCH v2 2/5] regulator: dt-bindings: promote infineon buck
+ converters to their own binding
 Content-Language: en-US
 To: Conor Dooley <conor@kernel.org>, linux@roeck-us.net
 Cc: Conor Dooley <conor.dooley@microchip.com>,
@@ -90,7 +90,7 @@ Cc: Conor Dooley <conor.dooley@microchip.com>,
  linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org
 References: <20240223-moonrise-feminist-de59b9e1b3ba@spud>
- <20240223-tingling-mutt-dd55dd87ff5e@spud>
+ <20240223-blabber-obnoxious-353e519541a6@spud>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -136,21 +136,19 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240223-tingling-mutt-dd55dd87ff5e@spud>
+In-Reply-To: <20240223-blabber-obnoxious-353e519541a6@spud>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 23/02/2024 17:21, Conor Dooley wrote:
 > From: Conor Dooley <conor.dooley@microchip.com>
 > 
-> All devices documented in the lm25066 binding are intended for use with
-> a regulator, be that for purely monitoring purposes (lm25056) or, for
-> the other devices, as the controller of that regulator. The binding does
-> not currently allow regulator child nodes, so add one.
+> These devices are regulators may need to make use of the common
+> regulator properties, but these are not permitted while only documented
+> in trivial-devices.yaml
 > 
-> Each of these devices interacts with only a single regulator and
-> documentation refers to it as "Vout", hence the choice of child node
-> name.
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> ---
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
