@@ -1,153 +1,136 @@
-Return-Path: <linux-kernel+bounces-79445-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79446-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27A86862256
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 03:44:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B93E862258
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 03:45:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82074284C2F
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:44:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19A9F1F2475E
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:45:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F8DE11184;
-	Sat, 24 Feb 2024 02:44:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FwS44Elu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56F01111A0;
+	Sat, 24 Feb 2024 02:45:22 +0000 (UTC)
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2C784416
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 02:44:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A81B113AE9;
+	Sat, 24 Feb 2024 02:45:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708742651; cv=none; b=lDYzzjZFz7AbQLwCk4wGzXPZ8Ogg3vxTOf3PI4JbcdmHIR+8i1WsnAvhGmQn7gMr1gPfwTY31YYRAlyRzIyMsAJHhalJFDVWwS8XVAA21PUqtx7y7iPQjibVcF/jyzJDhHK2O1kil94RCeLR+hClrz9+XZ18nbavseuD65hiKIY=
+	t=1708742718; cv=none; b=IM6vRWt9XaGq98Kw+zLLVkWVPDoxNiSgMPYP+bdAKozOcVWQ0zwPsB83ugMd1wxl4clc9tDe41U84blM+z6nOBsGoimZc9q5mgMQR36NDOG3DNq1wAaY6213jEoy2UHSkWukzjcS2v3nyMV1LX8dsRfOqlvh5u9+7qNS8kOuJVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708742651; c=relaxed/simple;
-	bh=vPLniLjpLYV1iC3ZNPw0abKioJ9PbEc7sZpP/vIBGZo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SDBzVfnLEyEP1AvAHZAefSnpFedAdfKZqFh5f3yM/YrPlNWuK11Mis3P7vegYhqmSXnG+6xAOnnNLN/GWIU1tduXgssNHmLJVEYXCFjwnlrG9VHJcGodMTlYvKgGPeR2jQtSOrOcmI9T6GqniL0aW4XWrr4wc1VwBuDmKLgnRJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FwS44Elu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85A46C433F1;
-	Sat, 24 Feb 2024 02:44:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708742651;
-	bh=vPLniLjpLYV1iC3ZNPw0abKioJ9PbEc7sZpP/vIBGZo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=FwS44EluClAssjw8TBxzOmh8+30ILoCeAi1bqlF5peVNIHpeXS+kPRfH20J/KhXuc
-	 tUsWeomKiZ/im3Tz31SEaxPGamJSfFuOistG9FYZPt4k9n+XdiM+veu3+5i3IjjlrQ
-	 O47VdfEdg7KWx7FgNuAPgc1w9N3T+bM1PU28bSfDT5AOSIFaP9QGlGecQJQfYpNRVf
-	 enSKqsrQmsK8+uzJadgO6zE6XHHSq8iqpEA7DwnbiB2taklv/oNyWdds69zzy1aBrs
-	 hikUJWAANTCn2KR1jzcWC9h0wqC640/A50uFFKrG/uxNhMYG8t7kXEyzR9i2OoxE4+
-	 HF4Cs5iKEh2SA==
-Message-ID: <cf91de4a-91e3-47c5-a51e-217562f2cca9@kernel.org>
-Date: Sat, 24 Feb 2024 10:44:09 +0800
+	s=arc-20240116; t=1708742718; c=relaxed/simple;
+	bh=tkQEf05oq2kmii+ClsY92Oy+mus+/9mjeSBNHOROiwo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JHbz/vljEzcOEpEzUlRpZH3oU2KFtmDZagBcV/dwf+IbqwIVPuNYqmiYqDCogcOwS1c1PZ4k60Xz9/8dE4sfRmDgp2iZuiyRizk0z6oWN8IbBnz6ruiAnS4FU56KNnQYcdQkXJ6DG5+Uql1rI4vW4KhCuXJIeOklTzyUc4z80Yc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2995fa850ddso712637a91.0;
+        Fri, 23 Feb 2024 18:45:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708742706; x=1709347506;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mPPv8r1RSsDRM/zfoDy7ZupsBXVuitqH/rRRBSdP66M=;
+        b=cNekbBS/dpwTLfeP9nBHN6gNpak+307Fe9YkpOoXw3tJR6yNM4op8kDdfTBneOK4Lc
+         ekNu1PCc7whro2zJGVIP7VCsvj/XcbjBGvyCmY7ZgoMRdbur7S0q/e7k+L1xdviL7dqr
+         tCI05kquDiJVPfMI6u+Hwk/mDtUoDZADA78/cUgVl8MRv7kd8PCSbB2YIhRgGQsYG15Q
+         xIQxtfoDFxbYTkkIJZ4bBJp4T5UpC0STjbbY9VeI0fFA6WG1PH8ZLDakvu8PR+VIEVdc
+         B9Fs6y9sbRnkmN3nYdi+JM92oyHr2EnEhQP01TIMFHqLh6JQnl/Smyj+oXxjN29p6Y0g
+         pEDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVtWyaOQ5X5DHwP20CiA4fQ4qOzk4rvRNnLhG0PKETYRPJ7IISTYmiLgvJ/kz1KLyvJ2XJFGDIzH7p5DfMmdn2+ireorQM2c6sa4VRY73a7fmGxZizuHQcdmlhC65625Y9bc8tCuOD8UdZJ7gldjw==
+X-Gm-Message-State: AOJu0YyXqduRP2LXpIXFL5mGSDQEI8HxZUoknt9lNqv/KZb4R1i2PUE8
+	+GhDSyypmzj4i6pKRW/3n3sN8WCBuz5Q1CdGa58lO1WTa3KuQ+m9qNU9H2ULCUCahEjOIevgjxb
+	aTZSYOGOUUfn73KGh7ILvp2k11ao=
+X-Google-Smtp-Source: AGHT+IFR/f3udUFSXOTvTpD+RswtOEM5KE3C5Ak2h+Y+7fUTo0ahihL6PLsWilwsOPmnpeeRyGDSNst8cMjrPmTxeUY=
+X-Received: by 2002:a17:90a:5b07:b0:29a:89db:7581 with SMTP id
+ o7-20020a17090a5b0700b0029a89db7581mr1985562pji.13.1708742705745; Fri, 23 Feb
+ 2024 18:45:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] f2fs: fix to use correct segment type in
- f2fs_allocate_data_block()
-Content-Language: en-US
-To: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-References: <20240223025403.1180558-1-chao@kernel.org>
- <ZdkFnLirvxRdenX0@google.com>
-From: Chao Yu <chao@kernel.org>
-Autocrypt: addr=chao@kernel.org; keydata=
- xsFNBFYs6bUBEADJuxYGZRMvAEySns+DKVtVQRKDYcHlmj+s9is35mtlhrLyjm35FWJY099R
- 6DL9bp8tAzLJOMBn9RuTsu7hbRDErCCTiyXWAsFsPkpt5jgTOy90OQVyTon1i/fDz4sgGOrL
- 1tUfcx4m5i5EICpdSuXm0dLsC5lFB2KffLNw/ZfRuS+nNlzUm9lomLXxOgAsOpuEVps7RdYy
- UEC81IYCAnweojFbbK8U6u4Xuu5DNlFqRFe/MBkpOwz4Nb+caCx4GICBjybG1qLl2vcGFNkh
- eV2i8XEdUS8CJP2rnp0D8DM0+Js+QmAi/kNHP8jzr7CdG5tje1WIVGH6ec8g8oo7kIuFFadO
- kwy6FSG1kRzkt4Ui2d0z3MF5SYgA1EWQfSqhCPzrTl4rJuZ72ZVirVxQi49Ei2BI+PQhraJ+
- pVXd8SnIKpn8L2A/kFMCklYUaLT8kl6Bm+HhKP9xYMtDhgZatqOiyVV6HFewfb58HyUjxpza
- 1C35+tplQ9klsejuJA4Fw9y4lhdiFk8y2MppskaqKg950oHiqbJcDMEOfdo3NY6/tXHFaeN1
- etzLc1N3Y0pG8qS/mehcIXa3Qs2fcurIuLBa+mFiFWrdfgUkvicSYqOimsrE/Ezw9hYhAHq4
- KoW4LQoKyLbrdOBJFW0bn5FWBI4Jir1kIFHNgg3POH8EZZDWbQARAQABzRlDaGFvIFl1IDxj
- aGFvQGtlcm5lbC5vcmc+wsF3BBMBCgAhBQJWLOm1AhsDBQsJCAcDBRUKCQgLBRYCAwEAAh4B
- AheAAAoJEKTPgB1/p52Gm2MP/0zawCU6QN7TZuJ8R1yfdhYr0cholc8ZuPoGim69udQ3otet
- wkTNARnpuK5FG5la0BxFKPlazdgAU1pt+dTzCTS6a3/+0bXYQ5DwOeBPRWeFFklm5Frmk8sy
- wSTxxEty0UBMjzElczkJflmCiDfQunBpWGy9szn/LZ6jjIVK/BiR7CgwXTdlvKcCEkUlI7MD
- vTj/4tQ3y4Vdx+p7P53xlacTzZkP+b6D2VsjK+PsnsPpKwaiPzVFMUwjt1MYtOupK4bbDRB4
- NIFSNu2HSA0cjsu8zUiiAvhd/6gajlZmV/GLJKQZp0MjHOvFS5Eb1DaRvoCf27L+BXBMH4Jq
- 2XIyBMm+xqDJd7BRysnImal5NnQlKnDeO4PrpFq4JM0P33EgnSOrJuAb8vm5ORS9xgRlshXh
- 2C0MeyQFxL6l+zolEFe2Nt2vrTFgjYLsm2vPL+oIPlE3j7ToRlmm7DcAqsa9oYMlVTTnPRL9
- afNyrsocG0fvOYFCGvjfog/V56WFXvy9uH8mH5aNOg5xHB0//oG9vUyY0Rv/PrtW897ySEPh
- 3jFP/EDI0kKjFW3P6CfYG/X1eaw6NDfgpzjkCf2/bYm/SZLV8dL2vuLBVV+hrT1yM1FcZotP
- WwLEzdgdQffuQwJHovz72oH8HVHD2yvJf2hr6lH58VK4/zB/iVN4vzveOdzlzsFNBFYs6bUB
- EADZTCTgMHkb6bz4bt6kkvj7+LbftBt5boKACy2mdrFFMocT5zM6YuJ7Ntjazk5z3F3IzfYu
- 94a41kLY1H/G0Y112wggrxem6uAtUiekR9KnphsWI9lRI4a2VbbWUNRhCQA8ag7Xwe5cDIV5
- qb7r7M+TaKaESRx/Y91bm0pL/MKfs/BMkYsr3wA1OX0JuEpV2YHDW8m2nFEGP6CxNma7vzw+
- JRxNuyJcNi+VrLOXnLR6hZXjShrmU88XIU2yVXVbxtKWq8vlOSRuXkLh9NQOZn7mrR+Fb1EY
- DY1ydoR/7FKzRNt6ejI8opHN5KKFUD913kuT90wySWM7Qx9icc1rmjuUDz3VO+rl2sdd0/1h
- Q2VoXbPFxi6c9rLiDf8t7aHbYccst/7ouiHR/vXQty6vSUV9iEbzm+SDpHzdA8h3iPJs6rAb
- 0NpGhy3XKY7HOSNIeHvIbDHTUZrewD2A6ARw1VYg1vhJbqUE4qKoUL1wLmxHrk+zHUEyLHUq
- aDpDMZArdNKpT6Nh9ySUFzlWkHUsj7uUNxU3A6GTum2aU3Gh0CD1p8+FYlG1dGhO5boTIUsR
- 6ho73ZNk1bwUj/wOcqWu+ZdnQa3zbfvMI9o/kFlOu8iTGlD8sNjJK+Y/fPK3znFqoqqKmSFZ
- aiRALjAZH6ufspvYAJEJE9eZSX7Rtdyt30MMHQARAQABwsFfBBgBCgAJBQJWLOm1AhsMAAoJ
- EKTPgB1/p52GPpoP/2LOn/5KSkGHGmdjzRoQHBTdm2YV1YwgADg52/mU68Wo6viStZqcVEnX
- 3ALsWeETod3qeBCJ/TR2C6hnsqsALkXMFFJTX8aRi/E4WgBqNvNgAkWGsg5XKB3JUoJmQLqe
- CGVCT1OSQA/gTEfB8tTZAGFwlw1D3W988CiGnnRb2EEqU4pEuBoQir0sixJzFWybf0jjEi7P
- pODxw/NCyIf9GNRNYByUTVKnC7C51a3b1gNs10aTUmRfQuu+iM5yST5qMp4ls/yYl5ybr7N1
- zSq9iuL13I35csBOn13U5NE67zEb/pCFspZ6ByU4zxChSOTdIJSm4/DEKlqQZhh3FnVHh2Ld
- eG/Wbc1KVLZYX1NNbXTz7gBlVYe8aGpPNffsEsfNCGsFDGth0tC32zLT+5/r43awmxSJfx2P
- 5aGkpdszvvyZ4hvcDfZ7U5CBItP/tWXYV0DDl8rCFmhZZw570vlx8AnTiC1v1FzrNfvtuxm3
- 92Qh98hAj3cMFKtEVbLKJvrc2AO+mQlS7zl1qWblEhpZnXi05S1AoT0gDW2lwe54VfT3ySon
- 8Klpbp5W4eEoY21tLwuNzgUMxmycfM4GaJWNCncKuMT4qGVQO9SPFs0vgUrdBUC5Pn5ZJ46X
- mZA0DUz0S8BJtYGI0DUC/jAKhIgy1vAx39y7sAshwu2VILa71tXJ
-In-Reply-To: <ZdkFnLirvxRdenX0@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240221072100.412939-1-weilin.wang@intel.com>
+ <20240221072100.412939-3-weilin.wang@intel.com> <ZdY4a5yx-C9ziobq@x1>
+ <CAP-5=fU5JVki4OCYvYyPoBLguwHSwXripiO3Gq+MddV9ZWfnTQ@mail.gmail.com>
+ <CAM9d7ch3E=hNbX6=xUHZ+B_Dphy_sALzaCki1he3-O00DAoYXg@mail.gmail.com> <CAP-5=fWf4YxOZUmuZsUt9na=CpXL-eLkd9d6OvtsgJkONC1gzQ@mail.gmail.com>
+In-Reply-To: <CAP-5=fWf4YxOZUmuZsUt9na=CpXL-eLkd9d6OvtsgJkONC1gzQ@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Fri, 23 Feb 2024 18:44:54 -0800
+Message-ID: <CAM9d7chwXoBjkEb7itS84UUDzbARETvU7w4d0Mni4vbGHURFxA@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 2/5] perf stat: Fork and launch perf record when
+ perf stat needs to get retire latency value for a metric.
+To: Ian Rogers <irogers@google.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, weilin.wang@intel.com, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
+	Caleb Biggers <caleb.biggers@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/2/24 4:52, Jaegeuk Kim wrote:
-> On 02/23, Chao Yu wrote:
->> @type in f2fs_allocate_data_block() indicates log header's type, it
->> can be CURSEG_COLD_DATA_PINNED or CURSEG_ALL_DATA_ATGC, rather than
->> type of data/node, however IS_DATASEG()/IS_NODESEG() only accept later
->> one, fix it.
->>
->> Fixes: 093749e296e2 ("f2fs: support age threshold based garbage collection")
->> Signed-off-by: Chao Yu <chao@kernel.org>
->> ---
->>   fs/f2fs/segment.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->> index d0209ea77dd2..76422f50e6cc 100644
->> --- a/fs/f2fs/segment.c
->> +++ b/fs/f2fs/segment.c
->> @@ -3505,12 +3505,12 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
->>   	locate_dirty_segment(sbi, GET_SEGNO(sbi, old_blkaddr));
->>   	locate_dirty_segment(sbi, GET_SEGNO(sbi, *new_blkaddr));
->>   
->> -	if (IS_DATASEG(type))
->> +	if (IS_DATASEG(se->type))
-> 
-> We have se only when type is CURSEG_ALL_DATA_ATGC. We may need to change
+On Thu, Feb 22, 2024 at 11:48=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
+>
+> On Thu, Feb 22, 2024 at 11:03=E2=80=AFPM Namhyung Kim <namhyung@kernel.or=
+g> wrote:
+> >
+> > Hi,
+> >
+> > On Wed, Feb 21, 2024 at 12:34=E2=80=AFPM Ian Rogers <irogers@google.com=
+> wrote:
+> > > Weilin raised the TPEBS problem in the LPC 2023 talk, the issue being
+> > > that sampling and counting don't really exist in the current perf too=
+l
+> > > code at the same time. BPF could be a workaround but permissions are
+> > > an issue. Perhaps leader sampling but then what to do if two latencie=
+s
+> > > are needed. Forking perf to do this is an expedient and ideally we'd
+> > > not do it.
+> >
+> > Even with BPF, I think it needs two instances of an event - one for
+> > counting and the other for sampling, right?  I wonder if it can just
+> > use a single event for sampling and show the sum of periods in
+> > PERF_SAMPLE_READ.
+> >
+> > I'm not sure if an event group can have sampling and non-sampling
+> > events at the same time.  But it can be done without groups then.
+> > Anyway what's the issue with two latencies?
+>
+> The latencies come from samples and with leader sampling only the
+> leader gets sampled so we can't get two latencies. For 2 latencies
+> we'd need 2 groups for 2 leaders or to modify leader sampling
 
-Oops, correct.
+Do those 2 latencies come from 2 events or a single event?
 
-> IS_DATASEG()?
+But I realized that PERF_SAMPLE_READ would return the period
+only and I guess the latency is in PERF_SAMPLE_WEIGHT(_STRUCT), right?
+Then it won't work with PERF_SAMPLE_READ unless we extend the
+read format to include the weights.
 
-Sure, I guess one other way is to use curseg->seg_type, let me know if
-you prefer to change IS_DATASEG().
+> - if we
+> could encode that we want to sample but don't need the sample in the
+> mmap, just want the latency being available to be read, etc. This and
+> BPF are both long-term viable solutions, but forking is the expedient
+> solution to get something going - we'd likely want it as a fallback
+> anyway.
+
+Maybe we can add it to the read format, but I'm not sure how the
+kernel maintains the value.  PERF_SAMPLE_READ would be fine
+to return the value in the sample.  But it should support read(2) too.
+
+Simply adding the values might not be what users want.  Maybe
+average latency/weight is meaningful but it could depend on
+what the event measures..
 
 Thanks,
-
-> 
->>   		atomic64_inc(&sbi->allocated_data_blocks);
->>   
->>   	up_write(&sit_i->sentry_lock);
->>   
->> -	if (page && IS_NODESEG(type)) {
->> +	if (page && IS_NODESEG(se->type)) {
->>   		fill_node_footer_blkaddr(page, NEXT_FREE_BLKADDR(sbi, curseg));
->>   
->>   		f2fs_inode_chksum_set(sbi, page);
->> -- 
->> 2.40.1
+Namhyung
 
