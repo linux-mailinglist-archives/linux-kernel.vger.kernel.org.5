@@ -1,92 +1,110 @@
-Return-Path: <linux-kernel+bounces-79691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAF0A862574
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 14:56:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2325862578
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 14:57:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9634C2831D4
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 13:56:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FF6A1C2142C
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 13:57:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DD23487B6;
-	Sat, 24 Feb 2024 13:53:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0F864502A;
+	Sat, 24 Feb 2024 13:55:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PzBVaEnI"
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="ghV2nPFV"
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E44CC482DD
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 13:53:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A20FD3F9D8;
+	Sat, 24 Feb 2024 13:55:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708782818; cv=none; b=dLY6Z7KpganYl9zrs1dFCZu8uh/hRSbe3384Zq8oAnum23jGwjUp6OuJFUxq9Q1XVmVBVMgF/55R+pwitQ3H5D4K+v6xCWdMsvbIIRIzqM8Bd88jwaliYz5utDVgLVruvJ3l+UvL4N068bUUqo69rtWcuB+o7R3yGkCHot61RUM=
+	t=1708782912; cv=none; b=WULfPpypaG+J1Vp+Eun1iYF+Ybd9H4+iD6kV61Ht4ysHDul/t7G1rhb57OQufz77JsvoAtaaEeVotn9Z2fpvSqkqX9Rj7WIYaW719xcwJs/PSbIs8ewvV2BBqm56zyjsTgOshyP7ajxsMC6/qCipo4k3WYqUHLcxB3z0nomja6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708782818; c=relaxed/simple;
-	bh=U66kr6J4Xq7Aw3fsGVEcaok7KkVh3ioU+5ONvHiibDI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Qp+IYfydEaGhnQ+stl0Zai7EV0Ch0l7E14XkLLbL4RrV1QRItee4FelFBzmi4QStuT5gqOnyIe0CGLG4Y9LKtAoO11TjtD2PW5qk7RcaEYFEsSa9MKD107M1yEXZrP7caRZ8AmjU+xaEq3dcL/KFahl0g65oAw1QbciODB73bdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PzBVaEnI; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708782815;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=JPQpelQkRwVwQd7AppThQpLrhs0U/sTtYtQXs0u9nsM=;
-	b=PzBVaEnI9n6QdqNHZMs6nFD9E4j+sDjXp0ZDKGxn8rCv5UMzNExSQNkoD6PmiTUpfkx1O5
-	Zk3Gw+dYaKx0fk6ljZpRznDYsVrvdByGWazuytqBnjahpgNTmc3R9BxL247tZeH1IpuIJp
-	mpTENvMCPAQWqNHPP5gqGNWuYO/Y4Zk=
-From: chengming.zhou@linux.dev
-To: dlemoal@kernel.org,
-	naohiro.aota@wdc.com,
-	jth@kernel.org
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	vbabka@suse.cz,
-	roman.gushchin@linux.dev,
-	Xiongwei.Song@windriver.com,
-	chengming.zhou@linux.dev,
-	Chengming Zhou <zhouchengming@bytedance.com>
-Subject: [PATCH] zonefs: remove SLAB_MEM_SPREAD flag usage
-Date: Sat, 24 Feb 2024 13:53:29 +0000
-Message-Id: <20240224135329.830543-1-chengming.zhou@linux.dev>
+	s=arc-20240116; t=1708782912; c=relaxed/simple;
+	bh=ZdTOrLkg/qf7wFKH1nhH7OcmYSUdowUaRsJjf+n31IQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dqvOn/VPi9Hnc2fgT5fy26zG/4k9A3GUF6ERlq91wq8H/43v28rbwaSJAmCgLSnx2tYTazBdf6aPvMp5Pr3QpU//4HDAnAxPKWN1q+8KqYD/irrOUhQVyNRrJQXpFyclsGuT3e+MCo98ZFvfX3xocsgk0VNI7xCtUgyYtkmKD5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=ghV2nPFV; arc=none smtp.client-ip=195.181.215.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+	t=1708782907; bh=ZdTOrLkg/qf7wFKH1nhH7OcmYSUdowUaRsJjf+n31IQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ghV2nPFVjKO14UGccN3rXpU5361OkGdsnlFc+EPQiEijflmKOSJvXVVnOWqERaLia
+	 v8SBR8AvGUndbw/tLtwCjCu9YOR9GSD0/g/k87i40dulFob/BqRh9sn1Qv7W5KbhpD
+	 rJArs/+k/ODf+1XKCMRUT/LMNlw7oWZswM53gSVk=
+From: =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megi@xff.cz>
+To: linux-kernel@vger.kernel.org,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: Ondrej Jirman <megi@xff.cz>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Arnaud Ferraris <arnaud.ferraris@collabora.com>,
+	linux-sound@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-sunxi@lists.linux.dev
+Subject: [RESEND PATCH v2 0/5] Add support for jack detection to codec present in A64 SoC
+Date: Sat, 24 Feb 2024 14:54:53 +0100
+Message-ID: <20240224135501.3822390-1-megi@xff.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-From: Chengming Zhou <zhouchengming@bytedance.com>
+From: Ondrej Jirman <megi@xff.cz>
 
-The SLAB_MEM_SPREAD flag is already a no-op as of 6.8-rc1, remove
-its usage so we can delete it from slab. No functional change.
+This series adds support for jack detection to this codec. I used
+and tested this on Pinephone. It works quite nicely. I tested it
+against Android headset mic button resistor specification.
 
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
----
- fs/zonefs/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The patches are improved and debugged version of the original
+ones from Arnaud Ferraris and Samuel Holland, imrpoved to better
+handle headset button presses and with more robust plug-in/out
+event debouncing.
 
-diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
-index 236a6d88306f..c6a124e8d565 100644
---- a/fs/zonefs/super.c
-+++ b/fs/zonefs/super.c
-@@ -1422,7 +1422,7 @@ static int __init zonefs_init_inodecache(void)
- {
- 	zonefs_inode_cachep = kmem_cache_create("zonefs_inode_cache",
- 			sizeof(struct zonefs_inode_info), 0,
--			(SLAB_RECLAIM_ACCOUNT | SLAB_MEM_SPREAD | SLAB_ACCOUNT),
-+			SLAB_RECLAIM_ACCOUNT | SLAB_ACCOUNT,
- 			NULL);
- 	if (zonefs_inode_cachep == NULL)
- 		return -ENOMEM;
+Please take a look. :)
+
+v2:
+- use set_jack/get_jack_type
+- get rid of some custom poking inside card internals to figure
+  out what kind of jack port we should setup the codec for
+- read jack-type from OF as suggested here: 
+  https://elixir.bootlin.com/linux/latest/source/sound/soc/soc-component.c#L288
+- add DT bindings
+
+Thank you very much,
+	Ondřej Jirman
+
+Arnaud Ferraris (2):
+  ASoC: sun50i-codec-analog: Enable jack detection on startup
+  ASoC: sun8i-codec: Implement jack and accessory detection
+
+Ondrej Jirman (1):
+  dt-bindings: sound: Add jack-type property to sun8i-a33-codec
+
+Samuel Holland (2):
+  ASoC: sun50i-codec-analog: Move suspend/resume to set_bias_level
+  ASoC: sun8i-codec: Enable bus clock at STANDBY and higher bias
+
+ .../sound/allwinner,sun8i-a33-codec.yaml      |   9 +
+ sound/soc/sunxi/sun50i-codec-analog.c         |  73 +++-
+ sound/soc/sunxi/sun8i-codec.c                 | 359 +++++++++++++++++-
+ 3 files changed, 421 insertions(+), 20 deletions(-)
+
 -- 
-2.40.1
+2.43.0
 
 
