@@ -1,110 +1,106 @@
-Return-Path: <linux-kernel+bounces-79904-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79905-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BC9C862881
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 00:44:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF8EA862882
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 00:53:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F348A1F218AF
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 23:44:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65326282475
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 23:53:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D617E4EB2C;
-	Sat, 24 Feb 2024 23:44:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78B1E4E1DC;
+	Sat, 24 Feb 2024 23:53:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="P1n2qbfR"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="QJl9jSue"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90F5D4E1CA
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 23:44:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EA544E1BD
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 23:53:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708818244; cv=none; b=fiERDjeQeheCJ91rIvfrFv268OfT2gbBM9/5r3RFKeOYZoiA8Vz22oziSWKX+AJMInf9gdlhqWmrAT7zSqmbywiIKFQu0aacZQQGMo1zh1NC4nkYSSOzbP5SS+FBCKXeyVbIvud8l9BcCB6rLcjX4MT90w67I/u7MI6yB3Cw1qg=
+	t=1708818792; cv=none; b=an4+d+0pbLnSWMKsgz9mqSz48UgSR5R0Ylegi134ymg7n4EpFqqH11gv25sd2hmrwETYhaVm5mI+sZgPhkYbdFEGNRJMobMRmSCe9uHXaU0mDB8I9vvx7v6HHz9Hs1u9remDrS6LcndGz2GZzNZYtpDWA3umLQu4fN6dEK+G7XI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708818244; c=relaxed/simple;
-	bh=0ndlmRNxvgqmudYDAQDRY+8XWH+i1OJkw4ZkBFWvYg8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=b30pN3p2Hov0baKPESs8B0peHQKYQFLA5h3BQ4HAS8jTuQkvQ8bqibvGsInb9AGkbnNqMJB7gb/Rhh7Mr1TduQN+6MoR8s9wpoFQIFMffwgO3AErcr+aE2YLI5tS6dR14rYTvCHpWlcJBWjVV+zpgkejVGr5uFVpJ1G9skJ/hbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=P1n2qbfR; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-563d56ee65cso2385353a12.2
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 15:44:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1708818240; x=1709423040; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Kqv7MLKTQYTKAbyJaXLJ3NjnKr158GpyjOGnut0vOtM=;
-        b=P1n2qbfRPOAoXDIL93Z1Z2Cr/McC+kkfO1mhGiCIoV9IvzZxV0/SYKk6gTXzWU8jql
-         7F2GA+u+ap3nY3gouplc2TfoATHLlu8cv/83lPU/cqSxYWOYUWeeoLwT8GTl2DELSY2L
-         CqmEOIIJrsmhEzthp6DHUFSSlcXer73fNMG+Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708818240; x=1709423040;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Kqv7MLKTQYTKAbyJaXLJ3NjnKr158GpyjOGnut0vOtM=;
-        b=vssgkWRL+6b2feILLajmX5b5BsUbds7kHyvKAHOmctV+ZvWgf0wMFatMKiKKGJmbH1
-         URM1PzyKytBPMjpmLUjRHQ5FrMpJkT4PJPTf6kcuMTmhrbHpblzYcfRIeyeSJpAYrkoM
-         NAepawe7aTIDCwbDuTz1DPsZwFvno4nsDQivVREt9PIDzQlJtsufJ8SVYKHAqBBqyZBq
-         0nYM4Nf7C5zmMHeXDavHYu6L4nlY0Ld1T5xKJVB5XmKh+9PxAX/0kCzeoC1oP5tnfWjH
-         EV3idMkHTr/am6p95aqKdfuSk4ywIgL238qyKDj17ODqyLgDVcpQk/QWmZMCfw1WNU93
-         RKZw==
-X-Forwarded-Encrypted: i=1; AJvYcCVGROsWHA/jSZrohKwbdJGrGvLJ7oCA4B6VRIj4HOJNm+wPxYOSQx3s3f2fl/y9jW5tTJxg2ofBVPmDYPATW15Cop3Epkmqaul+es4w
-X-Gm-Message-State: AOJu0YwsNnNJ9GiApIsvyhUKcjKFWbFt0qju126JP4f8PU7SxEhzL42e
-	HW0OE311DQoJ87tXVKf5nP98qxnz2hLNAjRU8hEEJx4vksLNp/0jIB7QbB2pAQwHkrBEBbuTU/m
-	K174=
-X-Google-Smtp-Source: AGHT+IEo5InecJ10XscxKcKRdMoG6clnufqW/w3t8R/VOVrnKlxj67VfgrJovCFFl409uhpeJyx0/w==
-X-Received: by 2002:a17:906:6da:b0:a42:f6f5:d10d with SMTP id v26-20020a17090606da00b00a42f6f5d10dmr1315567ejb.12.1708818240704;
-        Sat, 24 Feb 2024 15:44:00 -0800 (PST)
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
-        by smtp.gmail.com with ESMTPSA id cu4-20020a170906ba8400b00a42ebdfda56sm940290ejd.100.2024.02.24.15.43.59
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Feb 2024 15:43:59 -0800 (PST)
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-55a5e7fa471so2569491a12.1
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 15:43:59 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU0NBigo0FatD73mwQriTSPtp0atgVhJJy6N9HblkqeDZwQ4OPSIYDlFRrPi/nVnbk7LJQtEVdOyMf2EYbepHTd21xbML59zmeRJIH1
-X-Received: by 2002:a17:906:c7d4:b0:a43:20ae:9123 with SMTP id
- dc20-20020a170906c7d400b00a4320ae9123mr202316ejb.50.1708818239390; Sat, 24
- Feb 2024 15:43:59 -0800 (PST)
+	s=arc-20240116; t=1708818792; c=relaxed/simple;
+	bh=1nyHqj0QOBXadNL1hyU/ColE1K5lSLjIwFZkoy6rtag=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=bOvFjzPcWhPDeYNWtrD/1rCct/+hw/+5+dqz7jK8X/tcuVyZ1HiB78N7X8I0QYuqDL0uI2tjwwjBlyGiPbPuqSHjORXoSAwrhPxp6FqoLne/MtvKM9BQLDbmzNnXdR+kPyQ3HfhyDm8a9D7AqRG06a+m1vN4p+uTpseAJXmt81M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=QJl9jSue; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1708818781;
+	bh=1nyHqj0QOBXadNL1hyU/ColE1K5lSLjIwFZkoy6rtag=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=QJl9jSuexI8C7+aTFRi4Uw3JVm/OzPKx0XyDV4jzYQ5bpBMXjczt1ClZljxOfF4Ik
+	 srsogx7TfrD/T0zSjTW1cbU5tAitE6G+eqhAuNYBxrpbqSMfigcsr5KqSsBJng9W8J
+	 0+4Wq2O6c/6wyMdoJ6futCIzZC7xIg9YLGsEZegDUZAFH5I6zApLSSEp0D0L4ETpEr
+	 l2YNvJgsngE7EmCM7kLJT5IRXDbhZLBEuwLzUhbH4R6362It5/InBWPKnnXudXmOdP
+	 5bgDUiVXJ4ilpMy5qr2hYBR8mrzDhk6lLExiZYOh2x3JcX5hG2gsOFtuuWqN2nm4l7
+	 8UnXfG7bI+vNQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tj3bc4br7z4wc6;
+	Sun, 25 Feb 2024 10:52:58 +1100 (AEDT)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Nicholas
+ Piggin <npiggin@gmail.com>, "jbglaw@lug-owl.de" <jbglaw@lug-owl.de>
+Subject: Re: [PATCH v1 4/5] powerpc: Remove cpu-as-y completely
+In-Reply-To: <94d19157-a343-425f-906f-546b1f4def6f@csgroup.eu>
+References: <38a8d765ed9149bc6b5484a7142e3bc59ffa3b1a.1671475543.git.christophe.leroy@csgroup.eu>
+ <9e43ad8b173c2fdb540e2555a8ba3e375419f3cf.1671475543.git.christophe.leroy@csgroup.eu>
+ <873570zxio.fsf@mpe.ellerman.id.au>
+ <94d19157-a343-425f-906f-546b1f4def6f@csgroup.eu>
+Date: Sun, 25 Feb 2024 10:52:58 +1100
+Message-ID: <87msrpa085.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <6a150ddd-3267-4f89-81bd-6807700c57c1@redhat.com>
- <652928aa-0fb8-425e-87b0-d65176dd2cfa@redhat.com> <9b92706b-14c2-4761-95fb-7dbbaede57f4@leemhuis.info>
- <e733c14e-0bdd-41b2-82aa-90c0449aff25@redhat.com> <f15ee051-2cfe-461f-991d-d09fd53bad4f@leemhuis.info>
- <c0cbf518-c6d4-4792-ad04-f8b535d41f4e@leemhuis.info>
-In-Reply-To: <c0cbf518-c6d4-4792-ad04-f8b535d41f4e@leemhuis.info>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sat, 24 Feb 2024 15:43:43 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wg9nqLqxr7bPFt4CUzb+w4TqENb+0G1-yJfZbwvRhi29A@mail.gmail.com>
-Message-ID: <CAHk-=wg9nqLqxr7bPFt4CUzb+w4TqENb+0G1-yJfZbwvRhi29A@mail.gmail.com>
-Subject: Re: [REGRESSION] 6.8-rc process is unable to exit and consumes a lot
- of cpu
-To: Linux regressions mailing list <regressions@lists.linux.dev>, Al Viro <viro@kernel.org>
-Cc: "Christian Brauner (Microsoft)" <brauner@kernel.org>, Matt Heon <mheon@redhat.com>, 
-	Ed Santiago <santiago@redhat.com>, Linux-fsdevel <linux-fsdevel@vger.kernel.org>, 
-	Paul Holzinger <pholzing@redhat.com>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 23 Feb 2024 at 23:00, Thorsten Leemhuis
-<regressions@leemhuis.info> wrote:
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> Le 20/02/2023 =C3=A0 07:00, Michael Ellerman a =C3=A9crit=C2=A0:
+>> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+>>> cpu-as-y is there to force assembler building options.
+>>> But there is no need for that. Gcc is passed the necessary
+>>> options and it automatically pass the appropriate option to
+>>> GAS.
+>>>
+>>> GCC is given -maltivec when relevant, so no need
+>>> for -Wa,-maltivec in addition
+>>>
+>>> And -Wa,-many is wrong as it will hide innapropriate
+>>> instructions. Better to detect them and handle them on a
+>>> case by case basis.
+>>> -Wa,-many was added by commit 960e30029863 ("powerpc/Makefile:
+>>> Fix PPC_BOOK3S_64 ASFLAGS") in order to fix an issue with
+>>> clang and the passed -Wa,-mpower4 option. But we have now
+>>> removed it expecting the compiler to automatically pass the
+>>> proper options and instructions based on -mcpu=3Dpower4
+>>=20
+>> I wanted to apply this one, but it caused a lot of breakage for big
+>> endian Book3S-64 builds - where we build for power4 but have lots of
+>> code that uses >=3D power5 instructions.
+>>=20
+>> I'll try and get those all fixed and pick this up for the next merge
+>> window.
 >
-> TWIMC, the quoted mail apparently did not get delivered to Al (I got a
-> "48 hours on the queue" warning from my hoster's MTA ~10 hours ago).
+> ping ?
 
-Al's email has been broken for the last almost two weeks - the machine
-went belly-up in a major way.
+Brutal :)
 
-I bounced the email to his kernel.org email that seems to work, but I
-also think Al ends up being busy trying to get through everything else
-he missed, in addition to trying to get the machine working again...
+There's still a few issues, I have patches for most of them I think.
+Will post this week.
 
-             Linus
+cheers
 
