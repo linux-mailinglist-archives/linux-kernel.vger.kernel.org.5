@@ -1,130 +1,106 @@
-Return-Path: <linux-kernel+bounces-79406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F9DB8621AA
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:15:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A47288621AE
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:16:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8956AB229B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:15:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34264B23D76
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:16:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0E4F4A12;
-	Sat, 24 Feb 2024 01:14:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B71215B7;
+	Sat, 24 Feb 2024 01:15:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rabPkwEp"
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Z0erciKR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DB403C39;
-	Sat, 24 Feb 2024 01:14:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 666476FB8;
+	Sat, 24 Feb 2024 01:15:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708737288; cv=none; b=FekCrNqSVph9WfIYmitViIB/i/in7WN/1/RJdNlIEfDBtOYFE1ZzwQ6Eny6WMEPn3+uElO4oXq+ALdH+r+FtmW4UlPm57Li6/hli6lZSj52nJzsIcU62oOIlkP023yAZ3I47dfrfynG4CP9NK0WDWkag6FTtRmpUPLGSq+54Ktc=
+	t=1708737315; cv=none; b=DWQWs2B1PBMLSMF/361WPvYDRu5v1Pe6BJyj/0pAfAMeNJtZsBogkU7azgUC+3w8x9gyd1WB+0EaFNFo/veO3fzBKyRoTYMBfIa3wJbO4owpmknrlOfEvxoXW162Htwhhi1m4me79gqeITmstprUgotDA3bY0gWFKVFtgacniLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708737288; c=relaxed/simple;
-	bh=WrJLvBrJN6c+u26aFr/AFgdi3noYUY58rrqupm7VACE=;
-	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Ta56BMH9rDbd5041QKwaYr/3h2/inTTipB9ckVAyVy+8Ze6QRW90oQpRH/UNWGrvhe3ftazB6hpLVUygdIxkWHI0AKPZXlD/ABpZLkKS1rIYy3Ved63/VdVhMdIgADtN1tVsBn1yW7oGcNeEOymS6ANTwyQDhwzJqH3w6bic+B4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rabPkwEp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F876C433F1;
-	Sat, 24 Feb 2024 01:14:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708737287;
-	bh=WrJLvBrJN6c+u26aFr/AFgdi3noYUY58rrqupm7VACE=;
-	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=rabPkwEpUOEP551icQaUSJYixrIFwuCuW8iGr8AKhmy2rZdJYpmTS3ohjLNTTbbG+
-	 bMjmqziTVJVe+MpL/FPOIkTqPh5KE6a2MDlfbHP8fw8ZiJDB4HLRR1xwtoVs2KN70+
-	 Xw+YZ9HhnyOkVjTqqru1Csa/DkKwLFRu6m6Fdyq5xP/h1GsMjSebjrmzQXRVr+8V4J
-	 iMt0fBR66fpj4EV1zdAIALki9SbXn/7wPVQHJCm0Rv/i6vU6lrH1pQyTDcgM4o7A+y
-	 Kj1FAtnw09D5dsQOZr96iORae+EhMCkmFELaohq0mS+ILZo7xEAui1hry13DcuPij3
-	 TAr3jv1rdC+hw==
-Date: Fri, 23 Feb 2024 17:14:47 -0800
-Subject: [PATCH 04/10] bcachefs: thread_with_stdio: fix
- bch2_stdio_redirect_readline()
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: akpm@linux-foundation.org, daniel@gluo.nz, kent.overstreet@linux.dev,
- djwong@kernel.org
-Cc: linux-xfs@vger.kernel.org, linux-bcachefs@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <170873668950.1861398.18421058347092974314.stgit@frogsfrogsfrogs>
-In-Reply-To: <170873668859.1861398.2367011381778949840.stgit@frogsfrogsfrogs>
-References: <170873668859.1861398.2367011381778949840.stgit@frogsfrogsfrogs>
-User-Agent: StGit/0.19
+	s=arc-20240116; t=1708737315; c=relaxed/simple;
+	bh=+9h2xKjOMwpJ6vwxTee5GD98+h73IuypecWdP3G2C1s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=u9CDyxZEFYpzTfp+6kilbHhy17SWp2uIouIbBgcd0x/tIN+jLf97deVL1GbQdDbQ+pfJmkVdIEv2qbQnzuWixsk+7J403f+PEiwrkN74n6+tfocikoOKnSFB78ATC67ObwIiTdzqbLVhzkcTwLJCDBl0ErJqFzrrYu0K6VfoeZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=Z0erciKR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 143CBC43394;
+	Sat, 24 Feb 2024 01:15:15 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Z0erciKR"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1708737310;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CGk4NO32L+GTr1TJMRmS6aztEVWTdCZhKoXaii4F4RU=;
+	b=Z0erciKRHPcL03p/Km/9laNjKwRKAAKzxR/3cuVhoON+3+vQXgmmw61V83+ZOcmcqM+1/f
+	NWLqfHwaqdar+ay2Murv7jjYPjZiQ0aLyYpAjaAJ9Ja+Mx72TeEwSw5Fb2vSn0KBcFz1PJ
+	jTs91fAt5OxAsYyk0Wb34Lckpm4yDKA=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 8615405f (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Sat, 24 Feb 2024 01:15:09 +0000 (UTC)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-60853ad17f9so16506907b3.0;
+        Fri, 23 Feb 2024 17:15:09 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWap626kgmEYf7VRI2uAc8KLNSFXhTENYLIW3nB4cJthcpfDKcJz8FuWF/PmDG424DOul5LxAyubCqMdFK9C80LdwdVo3mRQ+oA8p8YGubMSCQlGRCw9ZNOOnoJa3tM57QsgrLL
+X-Gm-Message-State: AOJu0YyvYfyPyiXrF+RqPpjukk1dthhlYZy3uUdt5APMCtJLiS9SfvWB
+	1vHoya125MBylKclqjIy2mRXORI4xwU9RTTISEJeBOLJKG5RBIJKIYoQRPijukjJ/bTs0gb9+HE
+	k+rBzuppn4rRsyMyFlzhrOVSnZ5s=
+X-Google-Smtp-Source: AGHT+IEgMvsUKNoqUqJ8XZiWuzsWmr4gdvUGtKEu7ZPJUyYRkG+YxkdPu+bBfZBw/GzEuvyVQeQr+XYSMf9dj0FgxVM=
+X-Received: by 2002:a81:f20e:0:b0:607:7c26:7e14 with SMTP id
+ i14-20020a81f20e000000b006077c267e14mr1356621ywm.34.1708737307407; Fri, 23
+ Feb 2024 17:15:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <5648f43d-76e4-4396-b626-411d60657c93@intel.com>
+ <20240222020616.2315199-1-Jason@zx2c4.com> <9cec487f-ce7d-809d-b4a7-9b7a8a6c9c93@amd.com>
+In-Reply-To: <9cec487f-ce7d-809d-b4a7-9b7a8a6c9c93@amd.com>
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date: Sat, 24 Feb 2024 02:14:55 +0100
+X-Gmail-Original-Message-ID: <CAHmME9oN+7rbLYcvQN=+KMjwrokvARy_7khLWJvDK=K_S5uHqg@mail.gmail.com>
+Message-ID: <CAHmME9oN+7rbLYcvQN=+KMjwrokvARy_7khLWJvDK=K_S5uHqg@mail.gmail.com>
+Subject: Re: [PATCH v4] x86/coco: Require seeding RNG with RDRAND on CoCo systems
+To: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: x86@kernel.org, linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	Borislav Petkov <bp@alien8.de>, =?UTF-8?Q?Daniel_P_=2E_Berrang=C3=A9?= <berrange@redhat.com>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, 
+	Ingo Molnar <mingo@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org, 
+	Elena Reshetova <elena.reshetova@intel.com>, 
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>, "Theodore Ts'o" <tytso@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Kent Overstreet <kent.overstreet@linux.dev>
+Hi Tom,
 
-This fixes a bug where we'd return data without waiting for a newline,
-if data was present but a newline was not.
+On Fri, Feb 23, 2024 at 11:05=E2=80=AFPM Tom Lendacky <thomas.lendacky@amd.=
+com> wrote:
+>
+> On 2/21/24 20:05, Jason A. Donenfeld wrote:
+> > +
+> > +     if (cc_vendor =3D=3D CC_VENDOR_NONE)
+>
+> I responded to an earlier version of this patch, adding that response her=
+e:
+>
+> You probably want to use:
+>
+>      if (!cc_platform_has(CC_GUEST_MEM_ENCRYPT))
+>          return;
+>
+> Otherwise, you can hit the bare-metal case where AMD SME is active and
+> then cc_vendor will not be CC_VENDOR_NONE.
 
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-Signed-off-by: Darrick J. Wong <djwong@kernel.org>
----
- fs/bcachefs/thread_with_file.c |   33 ++++++++++++++++++++++-----------
- 1 file changed, 22 insertions(+), 11 deletions(-)
+Nice catch, thanks. I'll do that for v+1.
 
 
-diff --git a/fs/bcachefs/thread_with_file.c b/fs/bcachefs/thread_with_file.c
-index eb8ab4c47a94b..830efb06ef0be 100644
---- a/fs/bcachefs/thread_with_file.c
-+++ b/fs/bcachefs/thread_with_file.c
-@@ -277,25 +277,36 @@ int bch2_stdio_redirect_read(struct stdio_redirect *stdio, char *ubuf, size_t le
- int bch2_stdio_redirect_readline(struct stdio_redirect *stdio, char *ubuf, size_t len)
- {
- 	struct stdio_buf *buf = &stdio->input;
--
-+	size_t copied = 0;
-+	ssize_t ret = 0;
-+again:
- 	wait_event(buf->wait, stdio_redirect_has_input(stdio));
--	if (stdio->done)
--		return -1;
-+	if (stdio->done) {
-+		ret = -1;
-+		goto out;
-+	}
- 
- 	spin_lock(&buf->lock);
--	int ret = min(len, buf->buf.nr);
--	char *n = memchr(buf->buf.data, '\n', ret);
--	if (!n)
--		ret = min(ret, n + 1 - buf->buf.data);
--	buf->buf.nr -= ret;
--	memcpy(ubuf, buf->buf.data, ret);
-+	size_t b = min(len, buf->buf.nr);
-+	char *n = memchr(buf->buf.data, '\n', b);
-+	if (n)
-+		b = min_t(size_t, b, n + 1 - buf->buf.data);
-+	buf->buf.nr -= b;
-+	memcpy(ubuf, buf->buf.data, b);
- 	memmove(buf->buf.data,
--		buf->buf.data + ret,
-+		buf->buf.data + b,
- 		buf->buf.nr);
-+	ubuf += b;
-+	len -= b;
-+	copied += b;
- 	spin_unlock(&buf->lock);
- 
- 	wake_up(&buf->wait);
--	return ret;
-+
-+	if (!n && len)
-+		goto again;
-+out:
-+	return copied ?: ret;
- }
- 
- __printf(3, 0)
-
+Jason
 
