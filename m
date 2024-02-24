@@ -1,49 +1,48 @@
-Return-Path: <linux-kernel+bounces-79689-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0852B862571
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 14:56:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FC64862573
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 14:56:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CE421F21C08
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 13:56:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D06A51C20E62
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 13:56:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68E384EB5C;
-	Sat, 24 Feb 2024 13:53:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C4EA52F6E;
+	Sat, 24 Feb 2024 13:53:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Nxghxwh8"
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QRESwJby"
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3294D4EB44
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 13:53:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F302F52F6D
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 13:53:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708782806; cv=none; b=uPoqc9UspTPomvcvHFoQBg2s1C0J79Mi72OZCD5AQOdkGwE0I8p0JjZMw4ttp1nOSVYoNOzeeZLSH+vsdg8d7sv8uUfiukhDHp/kJ9wClfZIBqi+f3XAJmcunUGFLk9oDMd/s7D7fhq5mxFhHnZXFspRs5jDtBYGVxeEde15P2A=
+	t=1708782811; cv=none; b=T2n1V1mrOoG95O9QTVL/aRNudaTzZqeQi2vIMTiytPm37jAltpwFZUrDOxicrk7ooXw3L/IX1T0ateuQLvwMSFozaq4n84sEhcuaCPKjqLkNQ/0wPrdifzhpbieGpplq2oZh+EXMS8t7gZeTCit3OHW/ZBi0vvRinsRf+RxlX+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708782806; c=relaxed/simple;
-	bh=bEGn2J5/QbumsNiNGa6Dgx6ckOXPMfjFRZxIVpHJI3U=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=N86j07EB0JvN/OmiMHWkn9jSE5rVILx0wJWYrRXc/NZwwZ8AxcH57HI4D7fopoVvP+dVoZpR6ajjhXPtubndEy2AP6JhGMnTEnousPOJZJS4uXck+B9NsDxnuyF7sFokvlSnxrJEAGyDwDuNS+CCMQNnASe6Ws4CKdXMGFCFmmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Nxghxwh8; arc=none smtp.client-ip=95.215.58.175
+	s=arc-20240116; t=1708782811; c=relaxed/simple;
+	bh=+C2QW/f0RI+8Ygnvj/1ns6kexgt5mz3fEZ9jYLuct24=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JZ+WPYC0nu4k3WfwdhP0VAuiZlIVup/au+dGy63T2sfxZ2HuSKUTGKtNgR44ujRH5mXc8NCc6uA+1FBDvM1j+qSP7F24GkPJ6ZBGhW8N0Zu4mcKh8ctkwhVNxEfPjfPweDWNRz3gEDBG4LD4dHmadYfJG0C6jgg78TIWifZTxHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QRESwJby; arc=none smtp.client-ip=91.218.175.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708782802;
+	t=1708782808;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding;
-	bh=SZzDSQYEVw7qQaWV6Jin3tdxUrvj5JLzXNMOrmaw1cs=;
-	b=Nxghxwh8BomOvEVqvRFU9rM5RXLd1spVtFnx2sixHfrlTcIZ8C2XRf99P74E1E4ZY2SnIz
-	nOj06ILSxCkSY7DTW78ShdLsBClP3ZaNCYNJYhROOEjYdXxSS66SrPFean4T3Fq7tEKlwV
-	J71bXYgC6Uvhd09IVpVLlMaHAmWxRRM=
+	bh=LxCxkx8l5yBZAVu2gvV0cjhc3YekJfohK1yANvznAjs=;
+	b=QRESwJbyP+miss2loec0KjAl5QsJNBFdOpteW4uXGVzcdIm12aY/XS66CQQ/zNLLZIOy/I
+	aOlHjd+4h7t1XlrKB2jUtZhg6fwi+B77O/XIE5baysYaGb1DM5CPtsY2A2SPEp8tJpBcep
+	uDKxFEm/ZrJURewL2JVNVNexGYzscmo=
 From: chengming.zhou@linux.dev
-To: viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz
-Cc: linux-fsdevel@vger.kernel.org,
+To: chandan.babu@oracle.com,
+	djwong@kernel.org
+Cc: linux-xfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org,
 	vbabka@suse.cz,
@@ -51,9 +50,9 @@ Cc: linux-fsdevel@vger.kernel.org,
 	Xiongwei.Song@windriver.com,
 	chengming.zhou@linux.dev,
 	Chengming Zhou <zhouchengming@bytedance.com>
-Subject: [PATCH] vfs: remove SLAB_MEM_SPREAD flag usage
-Date: Sat, 24 Feb 2024 13:53:15 +0000
-Message-Id: <20240224135315.830477-1-chengming.zhou@linux.dev>
+Subject: [PATCH] xfs: remove SLAB_MEM_SPREAD flag usage
+Date: Sat, 24 Feb 2024 13:53:23 +0000
+Message-Id: <20240224135323.830509-1-chengming.zhou@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,65 +69,40 @@ its usage so we can delete it from slab. No functional change.
 
 Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 ---
- fs/buffer.c  | 2 +-
- fs/dcache.c  | 2 +-
- fs/inode.c   | 2 +-
- fs/mbcache.c | 3 +--
- 4 files changed, 4 insertions(+), 5 deletions(-)
+ fs/xfs/xfs_super.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/fs/buffer.c b/fs/buffer.c
-index b55dea034a5d..9a54077de87d 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -3122,7 +3122,7 @@ void __init buffer_init(void)
- 	int ret;
+diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+index 56006b877a5d..171a1287b296 100644
+--- a/fs/xfs/xfs_super.c
++++ b/fs/xfs/xfs_super.c
+@@ -2042,8 +2042,7 @@ xfs_init_caches(void)
  
- 	bh_cachep = KMEM_CACHE(buffer_head,
--				SLAB_RECLAIM_ACCOUNT|SLAB_PANIC|SLAB_MEM_SPREAD);
-+				SLAB_RECLAIM_ACCOUNT|SLAB_PANIC);
- 	/*
- 	 * Limit the bh occupancy to 10% of ZONE_NORMAL
- 	 */
-diff --git a/fs/dcache.c b/fs/dcache.c
-index 6ebccba33336..71a8e943a0fa 100644
---- a/fs/dcache.c
-+++ b/fs/dcache.c
-@@ -3139,7 +3139,7 @@ static void __init dcache_init(void)
- 	 * of the dcache.
- 	 */
- 	dentry_cache = KMEM_CACHE_USERCOPY(dentry,
--		SLAB_RECLAIM_ACCOUNT|SLAB_PANIC|SLAB_MEM_SPREAD|SLAB_ACCOUNT,
-+		SLAB_RECLAIM_ACCOUNT|SLAB_PANIC|SLAB_ACCOUNT,
- 		d_iname);
+ 	xfs_buf_cache = kmem_cache_create("xfs_buf", sizeof(struct xfs_buf), 0,
+ 					 SLAB_HWCACHE_ALIGN |
+-					 SLAB_RECLAIM_ACCOUNT |
+-					 SLAB_MEM_SPREAD,
++					 SLAB_RECLAIM_ACCOUNT,
+ 					 NULL);
+ 	if (!xfs_buf_cache)
+ 		goto out;
+@@ -2108,14 +2107,14 @@ xfs_init_caches(void)
+ 					   sizeof(struct xfs_inode), 0,
+ 					   (SLAB_HWCACHE_ALIGN |
+ 					    SLAB_RECLAIM_ACCOUNT |
+-					    SLAB_MEM_SPREAD | SLAB_ACCOUNT),
++					    SLAB_ACCOUNT),
+ 					   xfs_fs_inode_init_once);
+ 	if (!xfs_inode_cache)
+ 		goto out_destroy_efi_cache;
  
- 	/* Hash may have been set up in dcache_init_early */
-diff --git a/fs/inode.c b/fs/inode.c
-index 6d0d54230363..d2e8e3884b36 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -2286,7 +2286,7 @@ void __init inode_init(void)
- 					 sizeof(struct inode),
- 					 0,
- 					 (SLAB_RECLAIM_ACCOUNT|SLAB_PANIC|
--					 SLAB_MEM_SPREAD|SLAB_ACCOUNT),
-+					 SLAB_ACCOUNT),
- 					 init_once);
- 
- 	/* Hash may have been set up in inode_init_early */
-diff --git a/fs/mbcache.c b/fs/mbcache.c
-index fe2624e17253..e60a840999aa 100644
---- a/fs/mbcache.c
-+++ b/fs/mbcache.c
-@@ -426,8 +426,7 @@ EXPORT_SYMBOL(mb_cache_destroy);
- 
- static int __init mbcache_init(void)
- {
--	mb_entry_cache = KMEM_CACHE(mb_cache_entry,
--					 SLAB_RECLAIM_ACCOUNT | SLAB_MEM_SPREAD);
-+	mb_entry_cache = KMEM_CACHE(mb_cache_entry, SLAB_RECLAIM_ACCOUNT);
- 	if (!mb_entry_cache)
- 		return -ENOMEM;
- 	return 0;
+ 	xfs_ili_cache = kmem_cache_create("xfs_ili",
+ 					 sizeof(struct xfs_inode_log_item), 0,
+-					 SLAB_RECLAIM_ACCOUNT | SLAB_MEM_SPREAD,
++					 SLAB_RECLAIM_ACCOUNT,
+ 					 NULL);
+ 	if (!xfs_ili_cache)
+ 		goto out_destroy_inode_cache;
 -- 
 2.40.1
 
