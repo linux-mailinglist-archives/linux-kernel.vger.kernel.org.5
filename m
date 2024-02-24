@@ -1,55 +1,58 @@
-Return-Path: <linux-kernel+bounces-79471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79472-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF60D8622B2
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 06:10:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF1C38622B5
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 06:22:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 967EF284221
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 05:10:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAF6D1C21B1B
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 05:22:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F863171A9;
-	Sat, 24 Feb 2024 05:10:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9020C168D2;
+	Sat, 24 Feb 2024 05:22:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tuLBCVtc"
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BGS3zr0D"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B47D125A7
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 05:10:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4CBB1FAA;
+	Sat, 24 Feb 2024 05:22:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708751446; cv=none; b=HPrMGkPvvUk3FpZn9hgPn2xxKd4n3YZXXKPofXg2E2wTx0gIMStu4ccTKrrvkBalRUwIm+MhQDs1XutMUHtLoYmyLIUohr5GhzV4S5dmW4SZ2xOI6WCwP/CO1luejTuSd3SQvuMnx5YaNmisToIvUsk8Q+rsM0GZAjp3gm2osjc=
+	t=1708752134; cv=none; b=QcfMG9OIwzHh4NYMiEZNakzWyY/hiWLefV4MiwrkEETZ2kJafSll8hqptFiyx2v1dF7SO2DXR38qJDhAltLkKtnksFaVtHM2Z5++OIUR15F2g3XbuHBaxrlJjqZ63we/LKv1/Ou1Z7e0lM6ftAFfWkgnFkaj6T/fpGC/J9Sue2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708751446; c=relaxed/simple;
-	bh=2vD98sT+UQ2yQWG56xKXb7srFiVLS6GuDr6TzcoR/go=;
+	s=arc-20240116; t=1708752134; c=relaxed/simple;
+	bh=HHtLlzJRzglu7AQ6pOsFiUQ6vA11VIbiU2QckkHsOCE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rR8IwU2oYBv6ICfNOxyjFn/z5Cu8rVqoIlEWfOqM6Dkjik6l3pCYkVr/nyjqwMaT/cK1jXOpOtIpdm6CVQIML3OQQM98X5JF90YSPRGzvEim7g0bASi9kWDRz6FkRnxtsl9hklQdYv3ORmNPa0A+2W+weg00nt5TR9SIQ2zsVfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tuLBCVtc; arc=none smtp.client-ip=95.215.58.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Sat, 24 Feb 2024 00:10:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708751442;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FwT1c3JSEQOWuaUP6z8lJns3QADyY2PvY4E2x0VTTzo=;
-	b=tuLBCVtcSGFdCEuUEohXMOUMjK2i0SyBEYFVNe7wS9cDQFafwoEAjsHjrtrJOxQJ6zczNt
-	hLWfzOtaJNUqZBVW4n5k1n4eQR4pZP9Itj9v8X+H52cDa0lE8hMKkjFzbcxbpBVlmV6eYQ
-	2somZ+jRP1ysbvaY5H7LitwK2/1xoUM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: akpm@linux-foundation.org, daniel@gluo.nz, linux-xfs@vger.kernel.org, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 09/10] time_stats: report information in json format
-Message-ID: <hf4u56xx3riqz2wyx3qxqiidccocu6cs5z5qdla3zgo5v3wcbl@dldlaaamx2kn>
-References: <170873667916.1860949.11027844260383646446.stgit@frogsfrogsfrogs>
- <170873668085.1860949.11659237532415596101.stgit@frogsfrogsfrogs>
- <20240224041545.GC616564@frogsfrogsfrogs>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FltVOfvUj8Imhl9FD5uRox1niJiRDT2hfpnxoH+NhzzY6QiZC6gX4oSoPf/Xn90yDGux7n1pHgF0blYUPIjmDuVbwOJb2dfJ8VX4R2yg6RWifudVfFoDBHFjovdkMcfHgnYVuK1UQqy+sIdxp2ZLxKaCrH5bEMer+oV+Ehj0A/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BGS3zr0D; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AF8BC433C7;
+	Sat, 24 Feb 2024 05:22:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708752134;
+	bh=HHtLlzJRzglu7AQ6pOsFiUQ6vA11VIbiU2QckkHsOCE=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=BGS3zr0Dc2B8CEcSjLJZWSAuMc7gjQc+c7Z6nUd6h8bEM/aYwFphEW6tNOjE9ykxv
+	 9EUnESBKrjJNbFdlI7d57A8D85/zOYGu3mMMKNWJh10iTdmJ4F/G7UhwOCbAPAifPO
+	 wr5TKwkNNlTW4johOgGw9xUrBzVjUkjunWXqHcdhRtyOVM+gBgc5fsUNtxio5WyWgX
+	 rTtf80OwPZNxaPmXjUNNqqf5QIsEwxcGkviNe9NS3bvJiWuATLuhBLAZTNUxAobGlw
+	 qqiVywhMfpqIv+Ar5f9YaYntvLaa1n2Re3ccW09mW7BV3uAB7ad9Rw1C3Jt6xKQai3
+	 OLz67S7C02KrQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id E938ACE1113; Fri, 23 Feb 2024 21:22:13 -0800 (PST)
+Date: Fri, 23 Feb 2024 21:22:13 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: neeraj.upadhyay@kernel.org, frederic@kernel.org, boqun.feng@gmail.com,
+	josh@joshtriplett.org, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: Update Neeraj's email address
+Message-ID: <1e44377c-70f6-484d-895c-7ad17439fa09@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240224045730.29812-1-neeraj.upadhyay@kernel.org>
+ <cfe9394d-8144-48d0-a8f1-de9fb54eabc5@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,200 +61,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240224041545.GC616564@frogsfrogsfrogs>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <cfe9394d-8144-48d0-a8f1-de9fb54eabc5@joelfernandes.org>
 
-On Fri, Feb 23, 2024 at 08:15:45PM -0800, Darrick J. Wong wrote:
-> On Fri, Feb 23, 2024 at 05:12:26PM -0800, Darrick J. Wong wrote:
-> > From: Darrick J. Wong <djwong@kernel.org>
+On Fri, Feb 23, 2024 at 11:58:58PM -0500, Joel Fernandes wrote:
+> 
+> 
+> On 2/23/2024 11:57 PM, neeraj.upadhyay@kernel.org wrote:
+> > From: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
 > > 
-> > Export json versions of time statistics information.  Given the tabular
-> > nature of the numbers exposed, this will make it a lot easier for higher
-> > (than C) level languages (e.g. python) to import information without
-> > needing to write yet another clumsy string parser.
+> > Update my email-address in MAINTAINERS and .mailmap entries to my
+> > kernel.org account.
 > > 
-> > Signed-off-by: Darrick J. Wong <djwong@kernel.org>
-> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > Signed-off-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
 > > ---
-> >  include/linux/time_stats.h |    2 +
-> >  lib/time_stats.c           |   87 ++++++++++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 89 insertions(+)
+> >  .mailmap    | 3 ++-
+> >  MAINTAINERS | 2 +-
+> >  2 files changed, 3 insertions(+), 2 deletions(-)
 > > 
-> > 
-> > diff --git a/include/linux/time_stats.h b/include/linux/time_stats.h
-> > index b3c810fff963a..4e1f5485ed039 100644
-> > --- a/include/linux/time_stats.h
-> > +++ b/include/linux/time_stats.h
-> > @@ -156,6 +156,8 @@ static inline bool track_event_change(struct time_stats *stats, bool v)
-> >  struct seq_buf;
-> >  void time_stats_to_seq_buf(struct seq_buf *, struct time_stats *,
-> >  		const char *epoch_name, unsigned int flags);
-> > +void time_stats_to_json(struct seq_buf *, struct time_stats *,
-> > +		const char *epoch_name, unsigned int flags);
-> >  
-> >  void time_stats_exit(struct time_stats *);
-> >  void time_stats_init(struct time_stats *);
-> > diff --git a/lib/time_stats.c b/lib/time_stats.c
-> > index 0fb3d854e503b..c0f209dd9f6dd 100644
-> > --- a/lib/time_stats.c
-> > +++ b/lib/time_stats.c
-> > @@ -266,6 +266,93 @@ void time_stats_to_seq_buf(struct seq_buf *out, struct time_stats *stats,
-> >  }
-> >  EXPORT_SYMBOL_GPL(time_stats_to_seq_buf);
-> >  
-> > +void time_stats_to_json(struct seq_buf *out, struct time_stats *stats,
-> > +		const char *epoch_name, unsigned int flags)
-> > +{
-> > +	struct quantiles *quantiles = time_stats_to_quantiles(stats);
-> > +	s64 f_mean = 0, d_mean = 0;
-> > +	u64 f_stddev = 0, d_stddev = 0;
-> > +
-> > +	if (stats->buffer) {
-> > +		int cpu;
-> > +
-> > +		spin_lock_irq(&stats->lock);
-> > +		for_each_possible_cpu(cpu)
-> > +			__time_stats_clear_buffer(stats, per_cpu_ptr(stats->buffer, cpu));
-> > +		spin_unlock_irq(&stats->lock);
-> > +	}
-> > +
-> > +	if (stats->freq_stats.n) {
-> > +		/* avoid divide by zero */
-> > +		f_mean = mean_and_variance_get_mean(stats->freq_stats);
-> > +		f_stddev = mean_and_variance_get_stddev(stats->freq_stats);
-> > +		d_mean = mean_and_variance_get_mean(stats->duration_stats);
-> > +		d_stddev = mean_and_variance_get_stddev(stats->duration_stats);
-> > +	} else if (flags & TIME_STATS_PRINT_NO_ZEROES) {
-> > +		/* unless we didn't want zeroes anyway */
-> > +		return;
-> > +	}
-> > +
-> > +	seq_buf_printf(out, "{\n");
-> > +	seq_buf_printf(out, "  \"epoch\":       \"%s\",\n", epoch_name);
-> > +	seq_buf_printf(out, "  \"count\":       %llu,\n", stats->duration_stats.n);
-> > +
-> > +	seq_buf_printf(out, "  \"duration_ns\": {\n");
-> > +	seq_buf_printf(out, "    \"min\":       %llu,\n", stats->min_duration);
-> > +	seq_buf_printf(out, "    \"max\":       %llu,\n", stats->max_duration);
-> > +	seq_buf_printf(out, "    \"total\":     %llu,\n", stats->total_duration);
-> > +	seq_buf_printf(out, "    \"mean\":      %llu,\n", d_mean);
-> > +	seq_buf_printf(out, "    \"stddev\":    %llu\n", d_stddev);
-> > +	seq_buf_printf(out, "  },\n");
-> > +
-> > +	d_mean = mean_and_variance_weighted_get_mean(stats->duration_stats_weighted, TIME_STATS_MV_WEIGHT);
-> > +	d_stddev = mean_and_variance_weighted_get_stddev(stats->duration_stats_weighted, TIME_STATS_MV_WEIGHT);
-> > +
-> > +	seq_buf_printf(out, "  \"duration_ewma_ns\": {\n");
-> > +	seq_buf_printf(out, "    \"mean\":      %llu,\n", d_mean);
-> > +	seq_buf_printf(out, "    \"stddev\":    %llu\n", d_stddev);
-> > +	seq_buf_printf(out, "  },\n");
-> > +
-> > +	seq_buf_printf(out, "  \"frequency_ns\": {\n");
+> > diff --git a/.mailmap b/.mailmap
+> > index 08f28f2999f0..dd6ea71c9271 100644
+> > --- a/.mailmap
+> > +++ b/.mailmap
+> > @@ -441,7 +441,8 @@ Mythri P K <mythripk@ti.com>
+> >  Nadia Yvette Chambers <nyc@holomorphy.com> William Lee Irwin III <wli@holomorphy.com>
+> >  Naoya Horiguchi <naoya.horiguchi@nec.com> <n-horiguchi@ah.jp.nec.com>
+> >  Nathan Chancellor <nathan@kernel.org> <natechancellor@gmail.com>
+> > -Neeraj Upadhyay <quic_neeraju@quicinc.com> <neeraju@codeaurora.org>
+> > +Neeraj Upadhyay <neeraj.upadhyay@kernel.org> <quic_neeraju@quicinc.com>
+> > +Neeraj Upadhyay <neeraj.upadhyay@kernel.org> <neeraju@codeaurora.org>
+> >  Neil Armstrong <neil.armstrong@linaro.org> <narmstrong@baylibre.com>
+> >  Nguyen Anh Quynh <aquynh@gmail.com>
+> >  Nicholas Piggin <npiggin@gmail.com> <npiggen@suse.de>
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 189184ecdb11..1006a6973320 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -18461,7 +18461,7 @@ F:	tools/testing/selftests/resctrl/
+> >  READ-COPY UPDATE (RCU)
+> >  M:	"Paul E. McKenney" <paulmck@kernel.org>
+> >  M:	Frederic Weisbecker <frederic@kernel.org> (kernel/rcu/tree_nocb.h)
+> > -M:	Neeraj Upadhyay <quic_neeraju@quicinc.com> (kernel/rcu/tasks.h)
+> > +M:	Neeraj Upadhyay <neeraj.upadhyay@kernel.org> (kernel/rcu/tasks.h)
 > 
-> I took the variable names too literally here; these labels really ought
-> to be "between_ns" and "between_ewma_ns" to maintain consistency with
-> the labels in the table format.
-> 
-> > +	seq_buf_printf(out, "    \"min\":       %llu,\n", stats->min_freq);
-> > +	seq_buf_printf(out, "    \"max\":       %llu,\n", stats->max_freq);
-> > +	seq_buf_printf(out, "    \"mean\":      %llu,\n", f_mean);
-> > +	seq_buf_printf(out, "    \"stddev\":    %llu\n", f_stddev);
-> > +	seq_buf_printf(out, "  },\n");
-> > +
-> > +	f_mean = mean_and_variance_weighted_get_mean(stats->freq_stats_weighted, TIME_STATS_MV_WEIGHT);
-> > +	f_stddev = mean_and_variance_weighted_get_stddev(stats->freq_stats_weighted, TIME_STATS_MV_WEIGHT);
-> > +
-> > +	seq_buf_printf(out, "  \"frequency_ewma_ns\": {\n");
-> > +	seq_buf_printf(out, "    \"mean\":      %llu,\n", f_mean);
-> > +	seq_buf_printf(out, "    \"stddev\":    %llu\n", f_stddev);
-> > +
-> > +	if (quantiles) {
-> > +		u64 last_q = 0;
-> > +
-> > +		/* close frequency_ewma_ns but signal more items */
-> 
-> (also this comment)
-> 
-> > +		seq_buf_printf(out, "  },\n");
-> > +
-> > +		seq_buf_printf(out, "  \"quantiles_ns\": [\n");
-> > +		eytzinger0_for_each(i, NR_QUANTILES) {
-> > +			bool is_last = eytzinger0_next(i, NR_QUANTILES) == -1;
-> > +
-> > +			u64 q = max(quantiles->entries[i].m, last_q);
-> > +			seq_buf_printf(out, "    %llu", q);
-> > +			if (!is_last)
-> > +				seq_buf_printf(out, ", ");
-> > +			last_q = q;
-> > +		}
-> > +		seq_buf_printf(out, "  ]\n");
-> > +	} else {
-> > +		/* close frequency_ewma_ns without dumping further */
-> 
-> (this one too)
-> 
-> Kent, would you mind making that edit the next time you reflow your
-> branch?
-> 
-> --D
-> 
-> > +		seq_buf_printf(out, "  }\n");
-> > +	}
-> > +
-> > +	seq_buf_printf(out, "}\n");
-> > +}
-> > +EXPORT_SYMBOL_GPL(time_stats_to_json);
-> > +
-> >  void time_stats_exit(struct time_stats *stats)
-> >  {
-> >  	free_percpu(stats->buffer);
-> > 
-> > 
+> Reviewed-by: Joel Fernandes <joel@joelfernandes.org>
 
+I have pulled this in, thank you both!
 
-From 5885a65fa5a0aace7bdf1a8fa58ac2bca3b15900 Mon Sep 17 00:00:00 2001
-From: Kent Overstreet <kent.overstreet@linux.dev>
-Date: Sat, 24 Feb 2024 00:10:06 -0500
-Subject: [PATCH] fixup! time_stats: report information in json format
+If someone else wants to take it:
 
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
-diff --git a/lib/time_stats.c b/lib/time_stats.c
-index 0b90c80cba9f..d7dd64baebb8 100644
---- a/lib/time_stats.c
-+++ b/lib/time_stats.c
-@@ -313,7 +313,7 @@ void time_stats_to_json(struct seq_buf *out, struct time_stats *stats,
- 	seq_buf_printf(out, "    \"stddev\":    %llu\n", d_stddev);
- 	seq_buf_printf(out, "  },\n");
- 
--	seq_buf_printf(out, "  \"frequency_ns\": {\n");
-+	seq_buf_printf(out, "  \"between_ns\": {\n");
- 	seq_buf_printf(out, "    \"min\":       %llu,\n", stats->min_freq);
- 	seq_buf_printf(out, "    \"max\":       %llu,\n", stats->max_freq);
- 	seq_buf_printf(out, "    \"mean\":      %llu,\n", f_mean);
-@@ -323,14 +323,14 @@ void time_stats_to_json(struct seq_buf *out, struct time_stats *stats,
- 	f_mean = mean_and_variance_weighted_get_mean(stats->freq_stats_weighted, TIME_STATS_MV_WEIGHT);
- 	f_stddev = mean_and_variance_weighted_get_stddev(stats->freq_stats_weighted, TIME_STATS_MV_WEIGHT);
- 
--	seq_buf_printf(out, "  \"frequency_ewma_ns\": {\n");
-+	seq_buf_printf(out, "  \"between_ewma_ns\": {\n");
- 	seq_buf_printf(out, "    \"mean\":      %llu,\n", f_mean);
- 	seq_buf_printf(out, "    \"stddev\":    %llu\n", f_stddev);
- 
- 	if (quantiles) {
- 		u64 last_q = 0;
- 
--		/* close frequency_ewma_ns but signal more items */
-+		/* close between_ewma_ns but signal more items */
- 		seq_buf_printf(out, "  },\n");
- 
- 		seq_buf_printf(out, "  \"quantiles_ns\": [\n");
-@@ -345,7 +345,7 @@ void time_stats_to_json(struct seq_buf *out, struct time_stats *stats,
- 		}
- 		seq_buf_printf(out, "  ]\n");
- 	} else {
--		/* close frequency_ewma_ns without dumping further */
-+		/* close between_ewma_ns without dumping further */
- 		seq_buf_printf(out, "  }\n");
- 	}
- 
+							Thanx, Paul
 
