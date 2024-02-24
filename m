@@ -1,147 +1,229 @@
-Return-Path: <linux-kernel+bounces-79429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCCB5862217
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:50:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2510C86221A
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:58:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17E071C24591
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:50:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7E0D1C24EF9
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:58:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F007DDD1;
-	Sat, 24 Feb 2024 01:50:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AB4ED52A;
+	Sat, 24 Feb 2024 01:58:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="TVYB3G0c"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="38R61QQb"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DD28CA4A;
-	Sat, 24 Feb 2024 01:50:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03E18BA2D
+	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 01:58:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708739432; cv=none; b=uaJ/5lP+CXmcr6E7ruR2BHnIoyFoozwmx8csFEOmzY8G+bNaKkey9o2NGXnixzpLPPKHw84SOgSbKXGpjA7IiDKdLWQCIWa6JLf52n/5hjLxgjHcaSn5PYdkkrS69LsISpiWEK4w1fZZ9PLp/Ut8UOhymartqmz9NVJJD4HdDXY=
+	t=1708739887; cv=none; b=qgCoS8CZkIkVFfaJAtU9wK3DbkMmHT/bIngRe2mUtsqZyKcqZ4ZFWlj7BWbKssMTSmDc6vBPCXXAnuGJSfJG3FCw3mITC/tzZS8vmazHz3aGF5+/b8PqllplJJbUnSUsDm8sD7nqJSiIlku8kXZzZpKVDEJO8/313LQUd+fFm/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708739432; c=relaxed/simple;
-	bh=xi6nVk0C04NkzR7H2GZk/dICTy1LUs3OH0IEQVV1NDc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eSTFGLQYGTjq0D6gqAUqR7yf9Niux7r7ApalwB9ERo63n8kBBNrSM2F8LUkYZ71wvNjZPRLsCELhWyw/ynTOJ6a+H8ZX6dskOGWjOEU0JRSgwf0OYylbdpXHOlxGUPKs/al9vAShYjFUrtbeZW7ObT3zI+GT1L4D/Sel+WwOMOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=TVYB3G0c; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=06UnnJyhnElyuP2IJrtOSRTp1BF1dFG21xSI11X6/3g=; b=TVYB3G0c87xVqJOIVHuyTu8RtT
-	fDG2tL0IzR9zpeos133a6nAsWtGMB4xc2zcpXBEKl7OopDPtSiayNNt3Dc6wgo6x5N4AwqFfkJUDU
-	cwKAJW3PqqcytmKt/8vjUHPnuHYjwapv0JpBW6x7ZViJOfGM3GuxGaRtWKKIM1u6VJqhNp6gc1c9N
-	okBZ/NHOYZinVgYsOcUFmvUkArxlD6/o1aM7zdeo19BxJ1Lt0wc03VApp71yd8x8xp/R+OR39ro1r
-	aVA+z1/Xn7tE9md4VocP5NoEciGjGg8kQa/k2stXGYmlTvlj/cXU0FWCywXf7TiXFmAJ0y7+1qCGp
-	Lnf++ZSQ==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rdhBL-0000000BpTS-26Er;
-	Sat, 24 Feb 2024 01:50:27 +0000
-Message-ID: <161f53c9-65ba-422d-b08e-2e5d88a208a2@infradead.org>
-Date: Fri, 23 Feb 2024 17:50:26 -0800
+	s=arc-20240116; t=1708739887; c=relaxed/simple;
+	bh=N6DyOMTvel8vbAFMjgcPbdhcWu1jczGqyPQOF1LJJKQ=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=IwfYA2o/XDW/6LxRr4kcZX3WFGUQzcwau42PefBrlc+aWAAVRVqXBVFXEMJS7mzJEZ1uBqXl6x9d+aFpwEJKL73orwDY8y7S4MMF8B6R7YiUN1oBfSLUT7ugcd3auWBVMfY4ktwgbYSIvBVMyI4o/1G1VJ9aEVMrKHH0Mb6051w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=38R61QQb; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-608d2cffc7eso1685397b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 17:58:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708739885; x=1709344685; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OxJAE1uSiuAHKlkfqA5vMwgno+A6UVTMYqvcjH6/eSk=;
+        b=38R61QQbnd3A69HdlIOrSe5OzLKU59RjRJHKp6814X22WrgVGb6Zd4SIAv3wE/rpXo
+         a4d4bUQUeTJ4mn0Y8OB1eJP1J64Yt8ipxpFiHo+oMaZHVS9y28/Sw8E4vKGKr9IKhgdm
+         +AA/gnDtlHhEqjzS0z70nCjyC7auJmDZaR7kG2GDHz/qQMht9FEe5cMHQYb+0BT3557J
+         Zr7NOACBbRBA5m4uUnf5Swed600s1SgbHWZlB6/NQZEeZddV2LKJ3XmWfkOuwsxo6EQR
+         qVMTlH8xEYNOjrcYNXHOX6NBqrlhQt0OjLlkihn0/0+YGBjI0gHiyVjwMYpogKr5Eds9
+         2v5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708739885; x=1709344685;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OxJAE1uSiuAHKlkfqA5vMwgno+A6UVTMYqvcjH6/eSk=;
+        b=r0lvZA5CfdyyEg8wCpb6xcWvKAh5S9NWHP1Yayp04xDVHnwmjus/bOuREHBrLUDElr
+         dIwb+utF8NRInd2+SsZa+rhVExMILlhQqtwiWuFTNPhrxqIDpFfeke6PM0yo3Svm5WBP
+         xh8COY0JVsqtTxl6eT/gBtw+wPEQpHrJJQcNUxIGo/Qf5HPukcu6IcXZCrA+XaImujh3
+         TbUmTGkiL5MucyC4+5/B9fXLlZVx1Q/WsX6gL5fuaNCFjshGyg1Ff9vYZQ/ps/N2iKdE
+         DbVDCik6DMIIbdGLHmeIOU/XqSTyVG+krp7IrMdBsXFP+I1mbdYzdcyucsIiaaA4TIsI
+         ACTg==
+X-Forwarded-Encrypted: i=1; AJvYcCVIR8f1asG+Dv1X/KILguGRZG8PoHlJ9keyDx1WR7ZMT7jbScIHYKBsjf69J+8/KgPyg5whHD+xzvTh3m7L+xfpzk+L+KB3D2EE6dQc
+X-Gm-Message-State: AOJu0Yyjfv0CoDiya+lk9f8rpAuN6TuxVnRM4jk1Z6PLLM979uOTDgDs
+	jCSUWdNSq+OHayesOSzemOnNScdlD+JGdxNRtRxilLsK1PSc6x7jzEWQ9Xn7cuZwHSPJOhiSabh
+	/+A==
+X-Google-Smtp-Source: AGHT+IGtBbMVCifF1ia9ZEGs0SLu3LluxNX6gDLjJVev8hxlcSexXU2441mZZZig36JIPLE066jJNPvrMc0=
+X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:77e1:98cf:e33c:dd99])
+ (user=surenb job=sendgmr) by 2002:a0d:d98f:0:b0:607:b85e:5a92 with SMTP id
+ b137-20020a0dd98f000000b00607b85e5a92mr335723ywe.5.1708739884991; Fri, 23 Feb
+ 2024 17:58:04 -0800 (PST)
+Date: Fri, 23 Feb 2024 17:58:00 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 20/20] famfs: Add Kconfig and Makefile plumbing
-Content-Language: en-US
-To: John Groves <John@Groves.net>, John Groves <jgroves@micron.com>,
- Jonathan Corbet <corbet@lwn.net>, Dan Williams <dan.j.williams@intel.com>,
- Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- Matthew Wilcox <willy@infradead.org>, linux-cxl@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev
-Cc: john@jagalactic.com, Dave Chinner <david@fromorbit.com>,
- Christoph Hellwig <hch@infradead.org>, dave.hansen@linux.intel.com,
- gregory.price@memverge.com
-References: <cover.1708709155.git.john@groves.net>
- <1225d42bc8756c016bb73f8a43095a384b08524a.1708709155.git.john@groves.net>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <1225d42bc8756c016bb73f8a43095a384b08524a.1708709155.git.john@groves.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
+Message-ID: <20240224015800.2569851-1-surenb@google.com>
+Subject: [PATCH v5 1/1] mm: enumerate all gfp flags
+From: Suren Baghdasaryan <surenb@google.com>
+To: akpm@linux-foundation.org
+Cc: kent.overstreet@linux.dev, petr@tesarici.cz, keescook@chromium.org, 
+	pasha.tatashin@soleen.com, mhocko@suse.com, surenb@google.com, 
+	kernel-team@android.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Introduce GFP bits enumeration to let compiler track the number of used
+bits (which depends on the config options) instead of hardcoding them.
+That simplifies __GFP_BITS_SHIFT calculation.
 
-On 2/23/24 09:42, John Groves wrote:
-> Add famfs Kconfig and Makefile, and hook into fs/Kconfig and fs/Makefile
-> 
-> Signed-off-by: John Groves <john@groves.net>
-> ---
->  fs/Kconfig        |  2 ++
->  fs/Makefile       |  1 +
->  fs/famfs/Kconfig  | 10 ++++++++++
->  fs/famfs/Makefile |  5 +++++
->  4 files changed, 18 insertions(+)
->  create mode 100644 fs/famfs/Kconfig
->  create mode 100644 fs/famfs/Makefile
-> 
-> diff --git a/fs/Kconfig b/fs/Kconfig
-> index 89fdbefd1075..8a11625a54a2 100644
-> --- a/fs/Kconfig
-> +++ b/fs/Kconfig
-> @@ -141,6 +141,8 @@ source "fs/autofs/Kconfig"
->  source "fs/fuse/Kconfig"
->  source "fs/overlayfs/Kconfig"
->  
-> +source "fs/famfs/Kconfig"
-> +
->  menu "Caches"
->  
->  source "fs/netfs/Kconfig"
-> diff --git a/fs/Makefile b/fs/Makefile
-> index c09016257f05..382c1ea4f4c3 100644
-> --- a/fs/Makefile
-> +++ b/fs/Makefile
-> @@ -130,3 +130,4 @@ obj-$(CONFIG_EFIVAR_FS)		+= efivarfs/
->  obj-$(CONFIG_EROFS_FS)		+= erofs/
->  obj-$(CONFIG_VBOXSF_FS)		+= vboxsf/
->  obj-$(CONFIG_ZONEFS_FS)		+= zonefs/
-> +obj-$(CONFIG_FAMFS)             += famfs/
-> diff --git a/fs/famfs/Kconfig b/fs/famfs/Kconfig
-> new file mode 100644
-> index 000000000000..e450928d8912
-> --- /dev/null
-> +++ b/fs/famfs/Kconfig
-> @@ -0,0 +1,10 @@
-> +
-> +
-> +config FAMFS
-> +       tristate "famfs: shared memory file system"
-> +       depends on DEV_DAX && FS_DAX
-> +       help
-> +         Support for the famfs file system. Famfs is a dax file system that
-> +	 can support scale-out shared access to fabric-attached memory
-> +	 (e.g. CXL shared memory). Famfs is not a general purpose file system;
-> +	 it is an enabler for data sets in shared memory.
+Suggested-by: Petr Tesa=C5=99=C3=ADk <petr@tesarici.cz>
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+---
+Changes from v4 [1]:
+- Split from the series [2] as a stand-alone patch, per Michal Hocko
+- Added Reviewed-by, per Pasha Tatashin
+- Added Acked-by, per Michal Hocko
 
-Please use one tab + 2 spaces to indent help text (below the "help" keyword)
-as documented in Documentation/process/coding-style.rst.
+[1] https://lore.kernel.org/all/20240221194052.927623-7-surenb@google.com/
+[2] https://lore.kernel.org/all/20240221194052.927623-1-surenb@google.com/
 
-> diff --git a/fs/famfs/Makefile b/fs/famfs/Makefile
-> new file mode 100644
-> index 000000000000..8cac90c090a4
-> --- /dev/null
-> +++ b/fs/famfs/Makefile
-> @@ -0,0 +1,5 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +obj-$(CONFIG_FAMFS) += famfs.o
-> +
-> +famfs-y := famfs_inode.o famfs_file.o
+ include/linux/gfp_types.h | 90 +++++++++++++++++++++++++++------------
+ 1 file changed, 62 insertions(+), 28 deletions(-)
 
--- 
-#Randy
+diff --git a/include/linux/gfp_types.h b/include/linux/gfp_types.h
+index 1b6053da8754..868c8fb1bbc1 100644
+--- a/include/linux/gfp_types.h
++++ b/include/linux/gfp_types.h
+@@ -21,44 +21,78 @@ typedef unsigned int __bitwise gfp_t;
+  * include/trace/events/mmflags.h and tools/perf/builtin-kmem.c
+  */
+=20
++enum {
++	___GFP_DMA_BIT,
++	___GFP_HIGHMEM_BIT,
++	___GFP_DMA32_BIT,
++	___GFP_MOVABLE_BIT,
++	___GFP_RECLAIMABLE_BIT,
++	___GFP_HIGH_BIT,
++	___GFP_IO_BIT,
++	___GFP_FS_BIT,
++	___GFP_ZERO_BIT,
++	___GFP_UNUSED_BIT,	/* 0x200u unused */
++	___GFP_DIRECT_RECLAIM_BIT,
++	___GFP_KSWAPD_RECLAIM_BIT,
++	___GFP_WRITE_BIT,
++	___GFP_NOWARN_BIT,
++	___GFP_RETRY_MAYFAIL_BIT,
++	___GFP_NOFAIL_BIT,
++	___GFP_NORETRY_BIT,
++	___GFP_MEMALLOC_BIT,
++	___GFP_COMP_BIT,
++	___GFP_NOMEMALLOC_BIT,
++	___GFP_HARDWALL_BIT,
++	___GFP_THISNODE_BIT,
++	___GFP_ACCOUNT_BIT,
++	___GFP_ZEROTAGS_BIT,
++#ifdef CONFIG_KASAN_HW_TAGS
++	___GFP_SKIP_ZERO_BIT,
++	___GFP_SKIP_KASAN_BIT,
++#endif
++#ifdef CONFIG_LOCKDEP
++	___GFP_NOLOCKDEP_BIT,
++#endif
++	___GFP_LAST_BIT
++};
++
+ /* Plain integer GFP bitmasks. Do not use this directly. */
+-#define ___GFP_DMA		0x01u
+-#define ___GFP_HIGHMEM		0x02u
+-#define ___GFP_DMA32		0x04u
+-#define ___GFP_MOVABLE		0x08u
+-#define ___GFP_RECLAIMABLE	0x10u
+-#define ___GFP_HIGH		0x20u
+-#define ___GFP_IO		0x40u
+-#define ___GFP_FS		0x80u
+-#define ___GFP_ZERO		0x100u
++#define ___GFP_DMA		BIT(___GFP_DMA_BIT)
++#define ___GFP_HIGHMEM		BIT(___GFP_HIGHMEM_BIT)
++#define ___GFP_DMA32		BIT(___GFP_DMA32_BIT)
++#define ___GFP_MOVABLE		BIT(___GFP_MOVABLE_BIT)
++#define ___GFP_RECLAIMABLE	BIT(___GFP_RECLAIMABLE_BIT)
++#define ___GFP_HIGH		BIT(___GFP_HIGH_BIT)
++#define ___GFP_IO		BIT(___GFP_IO_BIT)
++#define ___GFP_FS		BIT(___GFP_FS_BIT)
++#define ___GFP_ZERO		BIT(___GFP_ZERO_BIT)
+ /* 0x200u unused */
+-#define ___GFP_DIRECT_RECLAIM	0x400u
+-#define ___GFP_KSWAPD_RECLAIM	0x800u
+-#define ___GFP_WRITE		0x1000u
+-#define ___GFP_NOWARN		0x2000u
+-#define ___GFP_RETRY_MAYFAIL	0x4000u
+-#define ___GFP_NOFAIL		0x8000u
+-#define ___GFP_NORETRY		0x10000u
+-#define ___GFP_MEMALLOC		0x20000u
+-#define ___GFP_COMP		0x40000u
+-#define ___GFP_NOMEMALLOC	0x80000u
+-#define ___GFP_HARDWALL		0x100000u
+-#define ___GFP_THISNODE		0x200000u
+-#define ___GFP_ACCOUNT		0x400000u
+-#define ___GFP_ZEROTAGS		0x800000u
++#define ___GFP_DIRECT_RECLAIM	BIT(___GFP_DIRECT_RECLAIM_BIT)
++#define ___GFP_KSWAPD_RECLAIM	BIT(___GFP_KSWAPD_RECLAIM_BIT)
++#define ___GFP_WRITE		BIT(___GFP_WRITE_BIT)
++#define ___GFP_NOWARN		BIT(___GFP_NOWARN_BIT)
++#define ___GFP_RETRY_MAYFAIL	BIT(___GFP_RETRY_MAYFAIL_BIT)
++#define ___GFP_NOFAIL		BIT(___GFP_NOFAIL_BIT)
++#define ___GFP_NORETRY		BIT(___GFP_NORETRY_BIT)
++#define ___GFP_MEMALLOC		BIT(___GFP_MEMALLOC_BIT)
++#define ___GFP_COMP		BIT(___GFP_COMP_BIT)
++#define ___GFP_NOMEMALLOC	BIT(___GFP_NOMEMALLOC_BIT)
++#define ___GFP_HARDWALL		BIT(___GFP_HARDWALL_BIT)
++#define ___GFP_THISNODE		BIT(___GFP_THISNODE_BIT)
++#define ___GFP_ACCOUNT		BIT(___GFP_ACCOUNT_BIT)
++#define ___GFP_ZEROTAGS		BIT(___GFP_ZEROTAGS_BIT)
+ #ifdef CONFIG_KASAN_HW_TAGS
+-#define ___GFP_SKIP_ZERO	0x1000000u
+-#define ___GFP_SKIP_KASAN	0x2000000u
++#define ___GFP_SKIP_ZERO	BIT(___GFP_SKIP_ZERO_BIT)
++#define ___GFP_SKIP_KASAN	BIT(___GFP_SKIP_KASAN_BIT)
+ #else
+ #define ___GFP_SKIP_ZERO	0
+ #define ___GFP_SKIP_KASAN	0
+ #endif
+ #ifdef CONFIG_LOCKDEP
+-#define ___GFP_NOLOCKDEP	0x4000000u
++#define ___GFP_NOLOCKDEP	BIT(___GFP_NOLOCKDEP_BIT)
+ #else
+ #define ___GFP_NOLOCKDEP	0
+ #endif
+-/* If the above are modified, __GFP_BITS_SHIFT may need updating */
+=20
+ /*
+  * Physical address zone modifiers (see linux/mmzone.h - low four bits)
+@@ -249,7 +283,7 @@ typedef unsigned int __bitwise gfp_t;
+ #define __GFP_NOLOCKDEP ((__force gfp_t)___GFP_NOLOCKDEP)
+=20
+ /* Room for N __GFP_FOO bits */
+-#define __GFP_BITS_SHIFT (26 + IS_ENABLED(CONFIG_LOCKDEP))
++#define __GFP_BITS_SHIFT ___GFP_LAST_BIT
+ #define __GFP_BITS_MASK ((__force gfp_t)((1 << __GFP_BITS_SHIFT) - 1))
+=20
+ /**
+
+base-commit: 603c04e27c3e9891ce7afa5cd6b496bfacff4206
+--=20
+2.44.0.rc0.258.g7320e95886-goog
+
 
