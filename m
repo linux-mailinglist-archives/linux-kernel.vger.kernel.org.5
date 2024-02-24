@@ -1,94 +1,141 @@
-Return-Path: <linux-kernel+bounces-79740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79742-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCAFA862609
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 17:36:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDB6A86261E
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 17:49:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09FA71C20D9D
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 16:36:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DD401F21FEF
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 16:49:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8663224B29;
-	Sat, 24 Feb 2024 16:36:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8B973F8FB;
+	Sat, 24 Feb 2024 16:49:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eS2pHSNT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HudwQ5Er"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9D6FC129;
-	Sat, 24 Feb 2024 16:36:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C1E612B69;
+	Sat, 24 Feb 2024 16:48:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708792595; cv=none; b=P9xTRp230hvnudXI7A0Z2hTbKejWZptBVhny++vKir2gzOR37skgLfKf/yAlKokxBIhIDq37fJgRf124FFK2oL05cNH6XujnWegEozNcyYOEqgtbawMVcigbSQK640O2DpDZ1sNhiyryJuX5AUi/8p/IgsMXFdDpA7LnN6uu0BA=
+	t=1708793340; cv=none; b=PLyhDPT5xOLhmgR03oTLHk7LlyY2Bz1vanQUXOD8dmembe9Y/ueCukNTf8IoabYNnBby4SCFq3mNkft2lFhWcwZ3UMuoZCjPT5zXvx4exTGF0sxdxtsJ+Haj3wztkK8S+GF+XvN2wIx17wCEnSXvdT4ncxKD8qRHmyC/1bSFxFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708792595; c=relaxed/simple;
-	bh=gM276SnHL2yQRhjWluMy72+pHXOACMKdHCyQEkwDvW0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qbnqZ0HfLxlH2MlbbDqDMHitzQGuMMV+E/NtZmER6xV7J0K2ohL1rNLdBryon37vyXbLrJ+H67l2Adm6nfpu+l8n8GWTZ6Wc4YT/JJlg6qG1bpiOxSIl7HiABWPjUpPXT5Klwk2vWCO3RGQJTri3SF7+Wl95MkOqdxDivhOW/KM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eS2pHSNT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 625D2C433C7;
-	Sat, 24 Feb 2024 16:36:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708792595;
-	bh=gM276SnHL2yQRhjWluMy72+pHXOACMKdHCyQEkwDvW0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=eS2pHSNTctVqZzjxj55wZ7G7ek+cOc48r61zURdfat6qlFaGzGcVpU3AyLll0ReE8
-	 m687ScBjqS9ptwEn7+/GQS0vXXvQERJbTmzekOQMPsAE+Rm5l7xqdUBQsIFTpNvVan
-	 tGNBuon5fdADFZjSTB3syn4s8w553xVYOtAQ8lhfvCJTPMwr0QY6llrhkVCuzlKIi7
-	 HYNWKvi1US/l8T+p5PsbZn2jOKMLJhEF4ybzMMJboMSz5z41h1MSBhTqFKvjzRIZbj
-	 Suv2ANY/0FEO5GbXSBdxnIveTn4HZI1JuPPeveMFAcZvNZ39uRuR7yXC5C4kJM3+qa
-	 uWjP+05puz6Sg==
-Date: Sat, 24 Feb 2024 16:36:22 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: David Lechner <dlechner@baylibre.com>
-Cc: Mark Brown <broonie@kernel.org>, Martin Sperl <kernel@martin.sperl.org>,
- David Jander <david@protonic.nl>, Michael Hennerich
- <michael.hennerich@analog.com>, Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
- Alain Volmat <alain.volmat@foss.st.com>, Maxime Coquelin
- <mcoquelin.stm32@gmail.com>, Alexandre Torgue
- <alexandre.torgue@foss.st.com>, linux-spi@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] spi: add spi_optimize_message() APIs
-Message-ID: <20240224163622.7499cdd0@jic23-huawei>
-In-Reply-To: <20240219-mainline-spi-precook-message-v2-1-4a762c6701b9@baylibre.com>
-References: <20240219-mainline-spi-precook-message-v2-0-4a762c6701b9@baylibre.com>
-	<20240219-mainline-spi-precook-message-v2-1-4a762c6701b9@baylibre.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708793340; c=relaxed/simple;
+	bh=F6MSB9VABa4MbtFG0Ul6QlwES73vt/bIlHb9ZQ2Si5I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z9AlS4zZ6WYJMxZN50uW9CbNs5FKVu6aCd95g+vDzTTxTB0lUJ1NHwCv2hemEJ+54wT/sgsqrGZ7PPpOJBW246im2a2r0vMdFPfYjpXpdIT1JdaCpevkmrpHPVIIZFb257hzmh2uC3JufQUy8NX1cAjIH/cxC37dZE9Y+ZwOONY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HudwQ5Er; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708793338; x=1740329338;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=F6MSB9VABa4MbtFG0Ul6QlwES73vt/bIlHb9ZQ2Si5I=;
+  b=HudwQ5ErbwujZVtVe3CLBJB2s4Qdzrupl9ZCmmVjN1BLi/2Rl6NVabpj
+   a/8VuNubrRPQ4LLsE9JWVlMh79jg6e5QnecikYpJRCfN0uh4jDihRirdD
+   UELfjHZVTxPFl8m3Q2Ul2GpHzPhGl4MpV9KZ4CamvReLDNLGyaYpxrIhm
+   XoQSwiMAdfWlirPUkZdJgy64xDgoG7V84qLPbSkffjiwlZ8VnSLe1O0px
+   zrCqwj5ALPYG8NC+6lgaAV+mbAbkGim1tnPni51raheYmNbsAmAqWn4sm
+   4amWg+yQH6R57rpA0JyHGvBs5kzLEdZx786iN6M9ic4d2qjknoQsX8lhT
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10994"; a="6064434"
+X-IronPort-AV: E=Sophos;i="6.06,181,1705392000"; 
+   d="scan'208";a="6064434"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2024 08:48:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,181,1705392000"; 
+   d="scan'208";a="43682090"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by orviesa001.jf.intel.com with ESMTP; 24 Feb 2024 08:48:55 -0800
+Date: Sun, 25 Feb 2024 00:44:55 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Yan Zhao <yan.y.zhao@intel.com>,
+	Friedrich Weber <f.weber@proxmox.com>,
+	Kai Huang <kai.huang@intel.com>,
+	Yuan Yao <yuan.yao@linux.intel.com>
+Subject: Re: [PATCH v5] KVM: x86/mmu: Retry fault before acquiring mmu_lock
+ if mapping is changing
+Message-ID: <ZdodB3YbM1bJm+wQ@yilunxu-OptiPlex-7050>
+References: <20240222012640.2820927-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240222012640.2820927-1-seanjc@google.com>
 
-On Mon, 19 Feb 2024 16:33:18 -0600
-David Lechner <dlechner@baylibre.com> wrote:
-
-> This adds a new spi_optimize_message() function that can be used to
-> optimize SPI messages that are used more than once. Peripheral drivers
-> that use the same message multiple times can use this API to perform SPI
-> message validation and controller-specific optimizations once and then
-> reuse the message while avoiding the overhead of revalidating the
-> message on each spi_(a)sync() call.
+On Wed, Feb 21, 2024 at 05:26:40PM -0800, Sean Christopherson wrote:
+> Retry page faults without acquiring mmu_lock, and without even faulting
+> the page into the primary MMU, if the resolved gfn is covered by an active
+> invalidation.  Contending for mmu_lock is especially problematic on
+> preemptible kernels as the mmu_notifier invalidation task will yield
+> mmu_lock (see rwlock_needbreak()), delay the in-progress invalidation, and
+> ultimately increase the latency of resolving the page fault.  And in the
+> worst case scenario, yielding will be accompanied by a remote TLB flush,
+> e.g. if the invalidation covers a large range of memory and vCPUs are
+> accessing addresses that were already zapped.
 > 
-> Internally, the SPI core will also call this function for each message
-> if the peripheral driver did not explicitly call it. This is done to so
-> that controller drivers don't have to have multiple code paths for
-> optimized and non-optimized messages.
+> Faulting the page into the primary MMU is similarly problematic, as doing
+> so may acquire locks that need to be taken for the invalidation to
+> complete (the primary MMU has finer grained locks than KVM's MMU), and/or
+> may cause unnecessary churn (getting/putting pages, marking them accessed,
+> etc).
 > 
-> A hook is provided for controller drivers to perform controller-specific
-> optimizations.
+> Alternatively, the yielding issue could be mitigated by teaching KVM's MMU
+> iterators to perform more work before yielding, but that wouldn't solve
+> the lock contention and would negatively affect scenarios where a vCPU is
+> trying to fault in an address that is NOT covered by the in-progress
+> invalidation.
 > 
-> Suggested-by: Martin Sperl <kernel@martin.sperl.org>
-> Link: https://lore.kernel.org/linux-spi/39DEC004-10A1-47EF-9D77-276188D2580C@martin.sperl.org/
-> Signed-off-by: David Lechner <dlechner@baylibre.com>
+> Add a dedicated lockess version of the range-based retry check to avoid
+> false positives on the sanity check on start+end WARN, and so that it's
+> super obvious that checking for a racing invalidation without holding
+> mmu_lock is unsafe (though obviously useful).
+> 
+> Wrap mmu_invalidate_in_progress in READ_ONCE() to ensure that pre-checking
+> invalidation in a loop won't put KVM into an infinite loop, e.g. due to
+> caching the in-progress flag and never seeing it go to '0'.
+> 
+> Force a load of mmu_invalidate_seq as well, even though it isn't strictly
+> necessary to avoid an infinite loop, as doing so improves the probability
+> that KVM will detect an invalidation that already completed before
+> acquiring mmu_lock and bailing anyways.
+> 
+> Do the pre-check even for non-preemptible kernels, as waiting to detect
+> the invalidation until mmu_lock is held guarantees the vCPU will observe
+> the worst case latency in terms of handling the fault, and can generate
+> even more mmu_lock contention.  E.g. the vCPU will acquire mmu_lock,
+> detect retry, drop mmu_lock, re-enter the guest, retake the fault, and
+> eventually re-acquire mmu_lock.  This behavior is also why there are no
+> new starvation issues due to losing the fairness guarantees provided by
+> rwlocks: if the vCPU needs to retry, it _must_ drop mmu_lock, i.e. waiting
+> on mmu_lock doesn't guarantee forward progress in the face of _another_
+> mmu_notifier invalidation event.
+> 
+> Note, adding READ_ONCE() isn't entirely free, e.g. on x86, the READ_ONCE()
+> may generate a load into a register instead of doing a direct comparison
+> (MOV+TEST+Jcc instead of CMP+Jcc), but practically speaking the added cost
+> is a few bytes of code and maaaaybe a cycle or three.
+> 
+> Reported-by: Yan Zhao <yan.y.zhao@intel.com>
+> Closes: https://lore.kernel.org/all/ZNnPF4W26ZbAyGto@yzhao56-desk.sh.intel.com
+> Reported-by: Friedrich Weber <f.weber@proxmox.com>
+> Cc: Kai Huang <kai.huang@intel.com>
+> Cc: Yan Zhao <yan.y.zhao@intel.com>
+> Cc: Yuan Yao <yuan.yao@linux.intel.com>
+> Cc: Xu Yilun <yilun.xu@linux.intel.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-Very nice.
-
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Xu Yilun <yilun.xu@linux.intel.com>
 
