@@ -1,170 +1,98 @@
-Return-Path: <linux-kernel+bounces-79338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79339-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3823F8620FF
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:07:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7C1A862102
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:08:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C6EB1C24619
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 00:07:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3FEBBB24520
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 00:08:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07FD410F2;
-	Sat, 24 Feb 2024 00:07:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B72F7625;
+	Sat, 24 Feb 2024 00:08:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hLMTI8JS"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="poc3sjpR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E37C19A
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 00:07:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01040182;
+	Sat, 24 Feb 2024 00:08:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708733254; cv=none; b=QO3Aa7JL4rAI0goRbTWTdffc6DVQCfu3JlvG9gqjivb0YUhccvQXEzdztzCdkyvnigfG/5uw/2seNpW7+/XZF9s1jysEuoWPvrrvbrAqfgY64x69mCLtY4QPFYGm63+0bGjdj+/c3N24bI6t1hf2OCqEtPyXwBeCwG3/7mnsP+A=
+	t=1708733293; cv=none; b=jCLovEcyACF8SJCyyFnMnnxKrnpeQc5PhdpN/5AdIX6XZwddg/QPKWJ8ZWrJQaSVG4LigV4wQPr0Xwu10UFuhhvVQA1D0ZkpuP078xqdCsnbpUEGbxh92GNcrndLdFOMzDqVOeXSDule1aMVqQUWvVVhWsn1I70JrkhnZlkJDtg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708733254; c=relaxed/simple;
-	bh=2o21MVF3HyO3lY0XRfIs2jlh9WAVsOYPA8puXNidXdw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aNnHI4ny061cFPVP1fo7l9z3O2GXYGoAXawgU9LFu/bgWlKAty32Ix8cqtQOFTCEQFCBWxkWonjszvsTz4XXvibk84MYm6APYkuah+mIp6bfTX15+A++TZFhNWZesTxUcLktFYRsRnCkqVM4G4+IZ3xTX4Q+rD9MfxZIpH6AiuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hLMTI8JS; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56454c695e6so2533617a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Feb 2024 16:07:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708733251; x=1709338051; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6SOHcP8DrDhZ2e1SgGmWFGExWevqxMGqoGRYxVcIJl8=;
-        b=hLMTI8JSpC6OyOCpDQqlWMeZMs2/xNJ+McMAZDnKJd+QLq/X/JhT90b5QJqGZlidyi
-         MEI7Daan/CrTW/ifqAmmwkO87/aTRs6UTY29pZX7sXPI9vV2DE3AmDMkEMC/kEAidGFF
-         IoQNJ6xTVOyLn59kduEdwnQa/2UXkJv8YZUKa+JuecC+eIugIJlVz0gOUbNZObD5RUYH
-         D4NDAjLDunMTn24GV+NRYhDDz3Xk7aJdol+x8CqhRGPuEgJUoWlc1Kxb749WkdxhZhbp
-         vvPv67SDxgvW3q7J1bMzI+WXfCS9Ddw9zP24WG9DZuHIRS7/NwYUw+zfpAtvXohAexef
-         4kzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708733251; x=1709338051;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6SOHcP8DrDhZ2e1SgGmWFGExWevqxMGqoGRYxVcIJl8=;
-        b=qCZseNm7g1/d/cN9Z6zPL/NqvzUs5juubv3ykKY9pEp4mnAUyRCmByAwrX5jeN/oO5
-         3+1COu59LR21ExuMfiA7jGgHk4iXwb3O+Hcp7Jhcyp82zoRnyeCfhGMqIZPC0k2aH7lc
-         Mp65Aj4yMIhm6fwfhqWw37+ggflNAAOLOpj/N6bTW8MK3CRBf2qJpji8MqhyfAgbw1Rw
-         w9qVlQy5Y5xEvSMwG2RRq1vSnnypPyswTa501EqVKEhX9MyGMoyDMUuPc4kLu8r3iLBW
-         qfloeKOHvJErPQwhebQHTI0SjUXDgyxAAPJdwvUE9tg5Ea7nKjpdLzETEbBUmRdhDw27
-         u78A==
-X-Forwarded-Encrypted: i=1; AJvYcCV55xsP1dx1VQDgbsRcL/BNNOjUcDbrYaxCFbKobJDKFkMiSqpUxLsncuy3Nv1ZduXFh2K/yjuUKuldU5Y6CeDcJV9GwZL9I88Aikce
-X-Gm-Message-State: AOJu0YxV8NaUY4gcXv2+4wE+ZM7wBWfRvuTp/dZnEMezR3jSxhewII/W
-	H+B11jztgbSCcOzwNVpyOVykWqIg6G4kCrHTHCAsSeBw17Hey4KE2v4N4pjiEsE=
-X-Google-Smtp-Source: AGHT+IEIadmHk63HemoRWWxsA7Fy0W6ljpj9vbzDd37Xdks0UbSJKjAuyBp4GlqH/FgPBWYb2ydAGg==
-X-Received: by 2002:a05:6402:528c:b0:565:26e7:4987 with SMTP id en12-20020a056402528c00b0056526e74987mr1257577edb.5.1708733250749;
-        Fri, 23 Feb 2024 16:07:30 -0800 (PST)
-Received: from [192.168.179.2] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id z6-20020a50cd06000000b00563918a48cfsm40041edi.40.2024.02.23.16.07.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Feb 2024 16:07:30 -0800 (PST)
-Message-ID: <640775cb-3508-4228-aa94-2e4b7b6b2b6d@linaro.org>
-Date: Sat, 24 Feb 2024 01:07:26 +0100
+	s=arc-20240116; t=1708733293; c=relaxed/simple;
+	bh=ajpTJsTTp0MgBwoG+Xc7ugNQltQSLk5IW3xSgWzGdRc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nHiy7G/jNSRpAzypZP3LQzZuiLBTb0cq7WnE70lo/HGmfkDEsVjXqLylKOQtf/CSCt3lRNebCWRqVuPNeRxIOZ7dglDDnUA+wG+dIKsS5cnpNSSERXUhvrRTtsqE7h0NDeXjqLFBxu8m+6kLzlzhxewG9dHnBc+ewk07Xox130M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=poc3sjpR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 435B1C433C7;
+	Sat, 24 Feb 2024 00:08:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708733292;
+	bh=ajpTJsTTp0MgBwoG+Xc7ugNQltQSLk5IW3xSgWzGdRc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=poc3sjpRxABHFj6+RdIKH9bzBibIM3yiGZza+h9X+eoTrswGlkGvP8MQejfsFzRN+
+	 LneOiVAxpgJIexV7pjx4QTKbViOB3lwg3HVvchX8e3BIKpCwtr9EMcbXK+Mm9FUpOf
+	 N/l7lznQNIc/DEbfXLbxyPDrODaobq+vYdXYU08uL0InuCm0OyWQyGMdOBs4wPpiLK
+	 7ZmQQt0l6gchvLZcJGIS5lWIGYhjugoF7eBCNFG5r+AuhU7czHqbpopKhhEtlo6rrs
+	 n1e3AFGyFq6B0VX9cylw7rPalbPZx0sdGIx7hlIHou1p5CkCRWFgSMOX6gcjFsRD9z
+	 ZGtkhtSF8FmZw==
+From: Rob Herring <robh@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH] regulators: dt-bindings: gpio-regulator: Fix "gpios-states" and "states" array bounds
+Date: Fri, 23 Feb 2024 17:07:51 -0700
+Message-ID: <20240224000752.3830665-1-robh@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/3] PCI: qcom-ep: Enable cache coherency for SA8775P
- EP
-Content-Language: en-US
-To: Mrinmay Sarkar <quic_msarkar@quicinc.com>, andersson@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- manivannan.sadhasivam@linaro.org, robh@kernel.org
-Cc: quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
- quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
- dmitry.baryshkov@linaro.org, quic_krichai@quicinc.com,
- quic_vbadigan@quicinc.com, quic_schintav@quicinc.com,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Bjorn Helgaas <bhelgaas@google.com>, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-pci@vger.kernel.org
-References: <1708697021-16877-1-git-send-email-quic_msarkar@quicinc.com>
- <1708697021-16877-3-git-send-email-quic_msarkar@quicinc.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <1708697021-16877-3-git-send-email-quic_msarkar@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 23.02.2024 15:03, Mrinmay Sarkar wrote:
-> Due to some hardware changes, SA8775P has set the NO_SNOOP attribute
-> in its TLP for all the PCIe controllers. NO_SNOOP attribute when set,
-> the requester is indicating that there no cache coherency issues exit
-> for the addressed memory on the host i.e., memory is not cached. But
-> in reality, requester cannot assume this unless there is a complete
-> control/visibility over the addressed memory on the host.
-> 
-> And worst case, if the memory is cached on the host, it may lead to
-> memory corruption issues. It should be noted that the caching of memory
-> on the host is not solely dependent on the NO_SNOOP attribute in TLP.
-> 
-> So to avoid the corruption, this patch overrides the NO_SNOOP attribute
-> by setting the PCIE_PARF_NO_SNOOP_OVERIDE register. This patch is not
-> needed for other upstream supported platforms since they do not set
-> NO_SNOOP attribute by default.
-> 
-> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom-ep.c | 20 +++++++++++++++++---
->  1 file changed, 17 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> index 89d06a3e6e06..369954649254 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> @@ -45,6 +45,7 @@
->  #define PARF_SLV_ADDR_MSB_CTRL			0x2c0
->  #define PARF_DBI_BASE_ADDR			0x350
->  #define PARF_DBI_BASE_ADDR_HI			0x354
-> +#define PARF_NO_SNOOP_OVERIDE			0x3d4
+The minimum number of array entries for "gpios-states" was not not
+specified, so the the default is the same as the max (8).
 
-Any reason for this to be unsorted?
+The minimum is also missing from "states", and the maximum is also wrong
+as it should be 2^(# of GPIO lines). Since there can be 1 to 8 GPIOs,
+the "states" range should be 2 to 256.
 
-Konrad
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ .../devicetree/bindings/regulator/gpio-regulator.yaml         | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/regulator/gpio-regulator.yaml b/Documentation/devicetree/bindings/regulator/gpio-regulator.yaml
+index f4c1f36e52e9..a34e85754658 100644
+--- a/Documentation/devicetree/bindings/regulator/gpio-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/gpio-regulator.yaml
+@@ -47,6 +47,7 @@ properties:
+         1: HIGH
+       Default is LOW if nothing else is specified.
+     $ref: /schemas/types.yaml#/definitions/uint32-array
++    minItems: 1
+     maxItems: 8
+     items:
+       enum: [0, 1]
+@@ -57,7 +58,8 @@ properties:
+       regulator and matching GPIO configurations to achieve them. If there are
+       no states in the "states" array, use a fixed regulator instead.
+     $ref: /schemas/types.yaml#/definitions/uint32-matrix
+-    maxItems: 8
++    minItems: 2
++    maxItems: 256
+     items:
+       items:
+         - description: Voltage in microvolts
+-- 
+2.43.0
+
 
