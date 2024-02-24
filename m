@@ -1,90 +1,121 @@
-Return-Path: <linux-kernel+bounces-79516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66B64862388
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 09:54:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A889986238A
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 09:59:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21CD82834B2
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 08:54:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB0131C21337
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 08:59:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB700179A8;
-	Sat, 24 Feb 2024 08:54:15 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1552B17C6E;
+	Sat, 24 Feb 2024 08:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="XvrGDp03"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B2F02563;
-	Sat, 24 Feb 2024 08:54:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0C186FDC;
+	Sat, 24 Feb 2024 08:59:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708764855; cv=none; b=bVsgPCvs6QtaGramP7OKI4kcZEakgD3PGU9ElFP9JHYjoMATnVVzGQHYPbdlSL6CymPaNy9TShG/NU0M1qdfzmO7Gpq32UPZwkXCy3qn3fpNDqlMWZ7eHN3UpjK1iRUJ7yNiL361K1MDqJHYkIXE4tV48bFPEUZzberdHPSC5eg=
+	t=1708765164; cv=none; b=FnsPiopWcx1FTjrOPogL2Lbg1YE/vNQtDi5o+FZ3f8Gmsx6B9Z+U68zXT4uNuI9fVeXA3awgxT/zBip9Pznf1kQ5JiOVartdM3R5kToben01b+FHfxd7DdU3T2fWcCZ0DRSBUf+WszXzDOcOLGs2KiHaxgfu3oR1DxAvjIh1Als=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708764855; c=relaxed/simple;
-	bh=EGe9UYsEr/9yfU000DGqVOgAZaeuzfLn2Tyry0Qc094=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=i09fGzKlN9DVzlIYC0dLowgNLdztROOD3lZ/Jr5VzrN6k/DIgic9ivF7cMNR95KqtSKgJ85Is9HBzKKro8ghDlTibbEJL1a5M/IjV79Eo+tAls70rGWodEiNd4KekjglaltUy1RLSbXKNmMNCuvwQYw7BTtgfIedsjdwiIDQTc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5ACF4C433C7;
-	Sat, 24 Feb 2024 08:54:12 +0000 (UTC)
-From: Huacai Chen <chenhuacai@loongson.cn>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Huacai Chen <chenhuacai@kernel.org>
-Cc: loongarch@lists.linux.dev,
-	linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Guo Ren <guoren@kernel.org>,
-	Xuerui Wang <kernel@xen0n.name>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Huacai Chen <chenhuacai@loongson.cn>
-Subject: [GIT PULL] LoongArch fixes for v6.8-rc6
-Date: Sat, 24 Feb 2024 16:53:53 +0800
-Message-ID: <20240224085353.2066777-1-chenhuacai@loongson.cn>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1708765164; c=relaxed/simple;
+	bh=jRwcTTeNNZoy82MiJGTI/8OataEYJx2/rcMXqLB54uw=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V2ap0Uskn7ZGF763E/f4OJKGLc3dM0TIHJ3yP78JpLvy4loV/JqDEsaYyvxI1QhBpoFlMDtzuxG+IZ88FUUDF9+sTh3Obmp0Bv6WeMQSqxljwnzXJxF25L7IsYFIE+PkSruGr4DfwRhCo2xWV+bCrrTQ0P4lDr9h5Xw51O59Jfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=XvrGDp03; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41O8x6sm030540;
+	Sat, 24 Feb 2024 02:59:06 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1708765146;
+	bh=s3DvfR+dgFcUMcE14p+BGppF2mRtLuO4aTC7Xqj/Pj8=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=XvrGDp03JC5fT/Z7aeOCYO+yn1XJiEx0EAodVBS13hDd7c+SzhXbCYPJjK8x3R7dX
+	 03BgFyimpTdiXa5jVjn/zbX9oV6O8tE1FrGetQlOPIoWRhg7RMrq3cKJK/6Pjr6G6k
+	 OHo7X3JrGgdICNrFrng4A6kcEBHKfJ4xIbgMcaQc=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41O8x6uH011030
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Sat, 24 Feb 2024 02:59:06 -0600
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sat, 24
+ Feb 2024 02:59:06 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sat, 24 Feb 2024 02:59:06 -0600
+Received: from localhost (uda0492258.dhcp.ti.com [172.24.227.9])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41O8x5SZ049711;
+	Sat, 24 Feb 2024 02:59:06 -0600
+Date: Sat, 24 Feb 2024 14:29:05 +0530
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+To: Roger Quadros <rogerq@kernel.org>
+CC: Chintan Vankar <c-vankar@ti.com>,
+        Dan Carpenter
+	<dan.carpenter@linaro.org>,
+        Siddharth Vadapalli <s-vadapalli@ti.com>,
+        Richard
+ Cochran <richardcochran@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>, Jakub
+ Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S.
+ Miller" <davem@davemloft.net>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Pekka Varis <p-varis@ti.com>
+Subject: Re: [PATCH net-next 2/2] net: ethernet: ti: am65-cpsw: Enable RX HW
+ timestamp only for PTP packets
+Message-ID: <03d53049-e649-4714-8ad4-49619a5e9475@ti.com>
+References: <20240215110953.3225099-1-c-vankar@ti.com>
+ <20240215110953.3225099-2-c-vankar@ti.com>
+ <4c82705d-b05c-4ee8-88ed-42f944a023ac@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <4c82705d-b05c-4ee8-88ed-42f944a023ac@kernel.org>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-The following changes since commit b401b621758e46812da61fa58a67c3fd8d91de0d:
+On Mon, Feb 19, 2024 at 12:59:55PM +0200, Roger Quadros wrote:
+> Hi,
+> 
+> On 15/02/2024 13:09, Chintan Vankar wrote:
+> > The CPSW peripherals on J7AHP, J7VCL, J7AEP, J7ES, AM64 SoCs have
+> > an errata i2401 "CPSW: Host Timestamps Cause CPSW Port to Lock up".
+> 
+..
 
-  Linux 6.8-rc5 (2024-02-18 12:56:25 -0800)
+> >  
+> > @@ -856,6 +852,9 @@ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_common *common,
+> >  		ndev_priv = netdev_priv(ndev);
+> >  		am65_cpsw_nuss_set_offload_fwd_mark(skb, ndev_priv->offload_fwd_mark);
+> >  		skb_put(skb, pkt_len);
+> > +		skb_reset_mac_header(skb);
+> 
+> Why do you need to add skb_reset_mac_header here?
+> 
+> > +		if (port->rx_ts_enabled)
+> > +			am65_cpts_rx_timestamp(common->cpts, skb);
+> 
+> The timestamp should be added before you do skb_put().
 
-are available in the Git repository at:
+Roger,
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-fixes-6.8-3
+Could you please clarify why the timestamp should be added before
+skb_put()?
 
-for you to fetch changes up to f0f5c4894f89bac9074b45bccc447c3659a0fa6f:
-
-  LoongArch: KVM: Streamline kvm_check_cpucfg() and improve comments (2024-02-23 14:36:31 +0800)
-
-----------------------------------------------------------------
-LoongArch fixes for v6.8-rc6
-
-Fix two cpu-hotplug issues, fix the init sequence about FDT system, fix
-the coding style of dts, and fix the wrong CPUCFG ID handling of KVM.
-----------------------------------------------------------------
-Huacai Chen (3):
-      LoongArch: Disable IRQ before init_fn() for nonboot CPUs
-      LoongArch: Update cpu_sibling_map when disabling nonboot CPUs
-      LoongArch: Call early_init_fdt_scan_reserved_mem() earlier
-
-Krzysztof Kozlowski (1):
-      LoongArch: dts: Minor whitespace cleanup
-
-WANG Xuerui (3):
-      LoongArch: KVM: Fix input validation of _kvm_get_cpucfg() & kvm_check_cpucfg()
-      LoongArch: KVM: Rename _kvm_get_cpucfg() to _kvm_get_cpucfg_mask()
-      LoongArch: KVM: Streamline kvm_check_cpucfg() and improve comments
-
- arch/loongarch/boot/dts/loongson-2k0500-ref.dts |   2 +-
- arch/loongarch/boot/dts/loongson-2k1000-ref.dts |   2 +-
- arch/loongarch/kernel/setup.c                   |   4 +-
- arch/loongarch/kernel/smp.c                     | 122 ++++++++++++++----------
- arch/loongarch/kvm/vcpu.c                       |  81 ++++++++--------
- 5 files changed, 113 insertions(+), 98 deletions(-)
+Regards,
+Siddharth.
 
