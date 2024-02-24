@@ -1,53 +1,54 @@
-Return-Path: <linux-kernel+bounces-79411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1ADB8621B4
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:16:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB2258621B7
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 02:17:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EE8D2855DC
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:16:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6ED241F26BA2
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 01:17:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AFA74A34;
-	Sat, 24 Feb 2024 01:15:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCE314C85;
+	Sat, 24 Feb 2024 01:16:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C9afMtX6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="siWXoDh6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C6D7625;
-	Sat, 24 Feb 2024 01:15:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 170048F58;
+	Sat, 24 Feb 2024 01:16:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708737350; cv=none; b=ffcG17frEOdWLwvP1TWpSC5xEcfuBZDNgGie9FwxzHnpE4y6jyaWBwKYJqDLb8WgZjTj/8G7dgWntOEMvSlQVF7+x5rzAKj50VOmkK6yO2tcl8lyI6NUCyKYy2ry6La6My1qBFHFqijAn0wX/W4EarIKtEJJp10qkl70uPmfr90=
+	t=1708737366; cv=none; b=DjTV/sWmWXc3/5GAtV0y2RPE1xfHQkHd7/ntwJwjxPtM/EA4BC3tyNy9hYjFVeDyXw4mFWGef0jF9v7lY3rL31MUWAtP1fihQCtfGevg3S0nN2oxVVHWLVAbikGVJHGFCneDfdn/8DHP2e46Sv9DXujn2ZoFKsHEZNT+NVnCJMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708737350; c=relaxed/simple;
-	bh=SqW/eE4ssRbXCZM7r2fVia0zdNVyh9xWEqJ5//VHBpk=;
+	s=arc-20240116; t=1708737366; c=relaxed/simple;
+	bh=YYvJrol7FIU10J6nT0nMYbutoEnKpSEot6WG6TgCjxk=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=t+cIjOpmQILHLzDeYe+umwdbRXAKjNL0+lg9D3kV9CNBXPp5rLCWyvj4Iyu3KdUG+BUJNP57mUsMhODdlcdhWKdB7+5aTje7A2H1bIwLZF+AMI7tUih2o6WGrmji3R3N4eZ3hdng2S9wiNkVVW0u2cgKC54fPW0OflU7wErVj08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C9afMtX6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16619C433C7;
-	Sat, 24 Feb 2024 01:15:50 +0000 (UTC)
+	 MIME-Version:Content-Type; b=Bx7nO/Y7Ho8lzfwQ6/RxXYguG6wHyWFZkKAwUuerf1k4pKbRN9f7pu4oHeaitK6gCofASXzXX2tE/avWooqi2g86S0jXhuwiWCY0FAIFrFjPROisU7wTTWlAeInuUyVdkqHTtF51khG4ftFhTegffyYDg3D92xUJxtFDhL88Lq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=siWXoDh6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2E1CC433C7;
+	Sat, 24 Feb 2024 01:16:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708737350;
-	bh=SqW/eE4ssRbXCZM7r2fVia0zdNVyh9xWEqJ5//VHBpk=;
+	s=k20201202; t=1708737365;
+	bh=YYvJrol7FIU10J6nT0nMYbutoEnKpSEot6WG6TgCjxk=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=C9afMtX6n6yz2v4DMQFskWpvmgaS8RYnt/l5D7tY1Tm/wOJBz5T4JI+62sEFGpmd5
-	 HLvHZvCF8x1mTG0RmjZIKSJs3P1ycDsLdnZtkf41EImNCVvneaDDHKrVos3EYzWmku
-	 kd0EPO1U15z7uF/5Xhf7FJuRdbtAuXzPXc0Q+h3p8GM9lCENk8HnQmzyIP0ZsXWJ1J
-	 j3/LiKmmzR2nUkcb2+DDxKyNvFR6yPJvHwcXGENM3JjKRq56Ww8lPr/iZuPYiaOZDl
-	 vo3+J1fS1cJ4Efh03Bd5pbwe4SY0qay+r1u7cOwHc8LTV27qg985MRzBsz6XUFc9Hi
-	 ewT6meZI3/ORg==
-Date: Fri, 23 Feb 2024 17:15:49 -0800
-Subject: [PATCH 08/10] thread_with_stdio: Mark completed in ->release()
+	b=siWXoDh6HKxNuMQh5M7rE1hVP1E5wpey2YEybBYnNWE/9LU+eI9Bmzv8YuZPPY5Ga
+	 niL92Oeea4JW8Xxx0gLfm+tNFNYZ1fJ+OLoXrf7o/IQ2mUlWPzp4mymg9KeGBiqXPI
+	 +tKLMlzk3lYQi0+je4XHYWem+oLy9nTGTQ6l4u0X44qD3tvX6TPOtGHW0n3SZahXlG
+	 ZEjGuGxCpIMlGVgvHdjwG6SDPVto5W5E2MVqzGkGf2r/og/F+6ySumL6qmGbso4kXO
+	 HR2Icls/gjq93UGTa6PUkpg/oXJqjAlEkxNKWJ0Nmv5Wa0vLZlljzI23hPJPMELc75
+	 1iRL7T6dTjDoA==
+Date: Fri, 23 Feb 2024 17:16:05 -0800
+Subject: [PATCH 09/10] kernel/hung_task.c: export
+ sysctl_hung_task_timeout_secs
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: akpm@linux-foundation.org, daniel@gluo.nz, kent.overstreet@linux.dev,
  djwong@kernel.org
-Cc: linux-xfs@vger.kernel.org, linux-bcachefs@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <170873669018.1861398.16986816951760275853.stgit@frogsfrogsfrogs>
+Cc: fuyuanli <fuyuanli@didiglobal.com>, linux-xfs@vger.kernel.org,
+ linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <170873669034.1861398.8097801489286284855.stgit@frogsfrogsfrogs>
 In-Reply-To: <170873668859.1861398.2367011381778949840.stgit@frogsfrogsfrogs>
 References: <170873668859.1861398.2367011381778949840.stgit@frogsfrogsfrogs>
 User-Agent: StGit/0.19
@@ -62,55 +63,33 @@ Content-Transfer-Encoding: 7bit
 
 From: Kent Overstreet <kent.overstreet@linux.dev>
 
-This fixes stdio_redirect_read() getting stuck, not noticing that the
-pipe has been closed.
+needed for thread_with_file; also rare but not unheard of to need this
+in module code, when blocking on user input.
+
+one workaround used by some code is wait_event_interruptible() - but
+that can be buggy if the outer context isn't expecting unwinding.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: fuyuanli <fuyuanli@didiglobal.com>
 Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 Signed-off-by: Darrick J. Wong <djwong@kernel.org>
 ---
- lib/thread_with_file.c |   14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ kernel/hung_task.c |    1 +
+ 1 file changed, 1 insertion(+)
 
 
-diff --git a/lib/thread_with_file.c b/lib/thread_with_file.c
-index 092996ca43fe7..f4946a437332a 100644
---- a/lib/thread_with_file.c
-+++ b/lib/thread_with_file.c
-@@ -201,6 +201,14 @@ EXPORT_SYMBOL_GPL(run_thread_with_file);
+diff --git a/kernel/hung_task.c b/kernel/hung_task.c
+index 9a24574988d23..b2fc2727d6544 100644
+--- a/kernel/hung_task.c
++++ b/kernel/hung_task.c
+@@ -43,6 +43,7 @@ static int __read_mostly sysctl_hung_task_check_count = PID_MAX_LIMIT;
+  * Zero means infinite timeout - no checking done:
+  */
+ unsigned long __read_mostly sysctl_hung_task_timeout_secs = CONFIG_DEFAULT_HUNG_TASK_TIMEOUT;
++EXPORT_SYMBOL_GPL(sysctl_hung_task_timeout_secs);
  
- /* thread_with_stdio */
- 
-+static void thread_with_stdio_done(struct thread_with_stdio *thr)
-+{
-+	thr->thr.done = true;
-+	thr->stdio.done = true;
-+	wake_up(&thr->stdio.input.wait);
-+	wake_up(&thr->stdio.output.wait);
-+}
-+
- static ssize_t thread_with_stdio_read(struct file *file, char __user *ubuf,
- 				      size_t len, loff_t *ppos)
- {
-@@ -315,6 +323,7 @@ static int thread_with_stdio_release(struct inode *inode, struct file *file)
- 	struct thread_with_stdio *thr =
- 		container_of(file->private_data, struct thread_with_stdio, thr);
- 
-+	thread_with_stdio_done(thr);
- 	thread_with_file_exit(&thr->thr);
- 	darray_exit(&thr->stdio.input.buf);
- 	darray_exit(&thr->stdio.output.buf);
-@@ -336,10 +345,7 @@ static int thread_with_stdio_fn(void *arg)
- 
- 	thr->fn(thr);
- 
--	thr->thr.done = true;
--	thr->stdio.done = true;
--	wake_up(&thr->stdio.input.wait);
--	wake_up(&thr->stdio.output.wait);
-+	thread_with_stdio_done(thr);
- 	return 0;
- }
- 
+ /*
+  * Zero (default value) means use sysctl_hung_task_timeout_secs:
 
 
