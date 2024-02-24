@@ -1,59 +1,58 @@
-Return-Path: <linux-kernel+bounces-79798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AC5E8626E8
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 20:15:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48C528626ED
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 20:16:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B25001F21C44
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 19:15:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C87A1C20A89
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 19:16:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C41F5495EC;
-	Sat, 24 Feb 2024 19:14:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 061064A9BF;
+	Sat, 24 Feb 2024 19:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cPMmzZA9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UwLXVzvj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00C1113FF6;
-	Sat, 24 Feb 2024 19:14:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28179EDE;
+	Sat, 24 Feb 2024 19:16:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708802095; cv=none; b=PoMNUxn3y4d5nSMlHo66LMC6QuvaLZfPNG/DQdF6n0PgL/AsFxdwODuSN1fqhG0epb5CH75mO2YEmVEoVR5p0yKBaFBf+W66mukz10oIr9nfDokU222QAidFw70kNFUg8cK6zXqKx4SYjHOrwxIPg4rcUnNfTMnOexBvVgqCyUU=
+	t=1708802174; cv=none; b=IbBDr80QRmdEarFQZV704TYN6keY17ckkEpkMd2IlSZk8tJK23L8v1gCm5+SnPk0KA6TgH9wefRZBo7LV+aqufjtvQsjYuiBIIBOXf3eC0Q/ksGsaS2epnBh9x+l1286e7fs1346hYvW1EeFVxiS9uA+PAFBiN6BLs6xfBvzd1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708802095; c=relaxed/simple;
-	bh=DE8KrClwq6wxRdpm6x7a+e27Q4gxgHfZ6zudnPnE/z0=;
+	s=arc-20240116; t=1708802174; c=relaxed/simple;
+	bh=5FBe6gIH2VSgqewGABuk95/AUKFSgRWfUj0Hvjtw1T8=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=AaXDCJFa63tarodCIo0WevMu0ANMA7jP9/alQy4K8rouU/AP1gddt62n04mWO897EyGhGvdvYA01e6h1SXmkwnZfK9rn7HZhjbvc7cJj9sL4HO6jl2UvK9bAXarUf+97LRi1Wt4AwuxWm1xwowTn9pUWasUuyi458JjKdUgwdEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cPMmzZA9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DB13C433F1;
-	Sat, 24 Feb 2024 19:14:49 +0000 (UTC)
+	 MIME-Version:Content-Type; b=qtAnRMqin0bOtUvTvjiurD68AAeeuUeGa/eNaAHZkoKIKi7FscRUq3tB+hVYFHSmOCUqWEfZjqO8MPE3JFyrlhSdDHxHaz8gf+j19slhjNEAuIpyuWizOzz/tXd5i0BzYcAN0ivp6NWiD8qvIcFhjLbYaSPUJB8i/6nqWsknqWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UwLXVzvj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A510C433F1;
+	Sat, 24 Feb 2024 19:16:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708802094;
-	bh=DE8KrClwq6wxRdpm6x7a+e27Q4gxgHfZ6zudnPnE/z0=;
+	s=k20201202; t=1708802173;
+	bh=5FBe6gIH2VSgqewGABuk95/AUKFSgRWfUj0Hvjtw1T8=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=cPMmzZA9aMdrio3t9Y8uKJrwNTRepXyrtolW+v0KmTiiWsT32GcvH9ZouCdZ7JJp7
-	 pjN5OcXwo/xRKtC75napxxFg1VNLHEStC//PR+1YQsnVC8yyrahttCKr2qRWsCNzsp
-	 gJ3ru0xcxLiPPTSmJBG1fI4FKoSuqDLyUsE688cPE2HleErbibHX7rh8nnl0PbuQnp
-	 8FU41GN249DNRTlbbNCAtrc5eggXPgu2Xy3ZALxMow3n3/Lv0fwR0TLRgr7a/4ZEke
-	 nYzWJfIIe8wrE6T9+bJ8NRGd5ZJYV6yARySVG6fIXFvxVc8EKzJ/RBWhCKuWyrPTGZ
-	 BJiyJqTH2DxAA==
-Date: Sat, 24 Feb 2024 19:14:39 +0000
+	b=UwLXVzvjPu3+50+gP9yY2+lwUwblz2EK67plRHFNMyAEXlsFcpl3BTJUHIxCqX+PM
+	 fc0/BvKcLSi47cvp7p8Nf3/A1l7zbjnVfEmhqgePdunVhTbiA1U7xit9pbOO+44NWh
+	 NnvymaCH3aWUYgGun1gZpfKj0W4lduLO3B8z3VT03GaJKPfC62sIgWBmmRpHcB2BzF
+	 sFSMzUKUFAx/p9WOQ9vyW+FM005RE1Aqb0w0LsJREIOLuikD8MxOvkYb5vGeXmfhTl
+	 QgQUj90zt/ZZw6IxZ56n+HJOdUdNDBnirX54Oii50CUHvC7qkBmgHGLPedHua1wO6v
+	 e4JS8Iph3ygVw==
+Date: Sat, 24 Feb 2024 19:15:59 +0000
 From: Jonathan Cameron <jic23@kernel.org>
-To: kernel test robot <lkp@intel.com>
-Cc: marius.cristea@microchip.com, lars@metafoo.de, robh+dt@kernel.org,
- jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
- oe-kbuild-all@lists.linux.dev, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/2] dt-bindings: iio: adc: adding support for
- PAC193X
-Message-ID: <20240224191439.18e32ec2@jic23-huawei>
-In-Reply-To: <202402241545.xf7CnlPz-lkp@intel.com>
-References: <20240222164206.65700-2-marius.cristea@microchip.com>
-	<202402241545.xf7CnlPz-lkp@intel.com>
+To: <marius.cristea@microchip.com>
+Cc: <lars@metafoo.de>, <robh+dt@kernel.org>, <jdelvare@suse.com>,
+ <linux@roeck-us.net>, <linux-hwmon@vger.kernel.org>,
+ <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+ <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 2/2] iio: adc: adding support for PAC193x
+Message-ID: <20240224191559.40d233db@jic23-huawei>
+In-Reply-To: <20240222164206.65700-3-marius.cristea@microchip.com>
+References: <20240222164206.65700-1-marius.cristea@microchip.com>
+	<20240222164206.65700-3-marius.cristea@microchip.com>
 X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -64,65 +63,160 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Sat, 24 Feb 2024 15:34:51 +0800
-kernel test robot <lkp@intel.com> wrote:
+On Thu, 22 Feb 2024 18:42:06 +0200
+<marius.cristea@microchip.com> wrote:
 
-> Hi,
+> From: Marius Cristea <marius.cristea@microchip.com>
 > 
-> kernel test robot noticed the following build warnings:
+> This is the iio driver for Microchip
+> PAC193X series of Power Monitor with Accumulator chip family.
 > 
-> [auto build test WARNING on b1a1eaf6183697b77f7243780a25f35c7c0c8bdf]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/marius-cristea-microchip-com/dt-bindings-iio-adc-adding-support-for-PAC193X/20240223-004332
-> base:   b1a1eaf6183697b77f7243780a25f35c7c0c8bdf
-> patch link:    https://lore.kernel.org/r/20240222164206.65700-2-marius.cristea%40microchip.com
-> patch subject: [PATCH v5 1/2] dt-bindings: iio: adc: adding support for PAC193X
-> compiler: loongarch64-linux-gcc (GCC) 13.2.0
-> reproduce: (https://download.01.org/0day-ci/archive/20240224/202402241545.xf7CnlPz-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202402241545.xf7CnlPz-lkp@intel.com/
-> 
-> dtcheck warnings: (new ones prefixed by >>)
-> >> Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml:51:9: [warning] wrong indentation: expected 6 but found 8 (indentation)  
+> Signed-off-by: Marius Cristea <marius.cristea@microchip.com>
+So I had a few comments on this, but nothing that can't be cleaned up later.
++ I'll fix the thing the bots didn't like on the bindings.
+
+Series applied to the togreg branch of iio.git and pushed out
+as testing for 0-day to take a look at it.
+
+Thanks,
+
+Jonathan
 
 
->     45	
->     46	patternProperties:
->     47	  "^channel@[1-4]+$":
->     48	    type: object
->     49	    $ref: adc.yaml
->     50	    description:
->   > 51	        Represents the external channels which are connected to the ADC.  
-I've fixed this up whilst applying.
+> diff --git a/drivers/iio/adc/pac1934.c b/drivers/iio/adc/pac1934.c
+> new file mode 100644
+> index 000000000000..a67fdaba940d
+> --- /dev/null
+> +++ b/drivers/iio/adc/pac1934.c
 
->     52	
->     53	    properties:
->     54	      reg:
->     55	        items:
->     56	          minimum: 1
->     57	          maximum: 4
->     58	
->     59	      shunt-resistor-micro-ohms:
->     60	        description:
->     61	          Value in micro Ohms of the shunt resistor connected between
->     62	          the SENSE+ and SENSE- inputs, across which the current is measured.
->     63	          Value is needed to compute the scaling of the measured current.
->     64	
->     65	    required:
->     66	      - reg
->     67	      - shunt-resistor-micro-ohms
->     68	
->     69	    unevaluatedProperties: false
->     70	
->     71	required:
->     72	  - compatible
->     73	  - reg
->     74	  - "#address-cells"
->     75	  - "#size-cells"
->     76	
-> 
+
+> +
+> +/*
+> + * documentation related to the ACPI device definition
+> + * https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/ApplicationNotes/ApplicationNotes/PAC1934-Integration-Notes-for-Microsoft-Windows-10-and-Windows-11-Driver-Support-DS00002534.pdf
+> + */
+> +static bool pac1934_acpi_parse_channel_config(struct i2c_client *client,
+> +					      struct pac1934_chip_info *info)
+> +{
+This should probably also return an int with 0 good and anything else having
+a more meaningful error value if we can come up with one.
+
+> +static bool pac1934_of_parse_channel_config(struct i2c_client *client,
+> +					    struct pac1934_chip_info *info)
+
+pac1934_fw_parse_channel_config seeing as code isn't of specific now.
+
+Also return negative error or zero so that you can provide a more
+meaningful return value in probe + it will be handy when
+we make use of the device_for_each_child_node_scoped() in here
+(that's so new I'm not asking people to use it this cycle).
+
+Can make these changes later as part of the changes to use
+new infrastructure I mention below.
+
+> +{
+> +	struct fwnode_handle *node, *fwnode;
+> +	struct device *dev = &client->dev;
+> +	unsigned int current_channel;
+> +	int idx, ret;
+> +
+> +	info->sample_rate_value = 1024;
+> +	current_channel = 1;
+> +
+> +	fwnode = dev_fwnode(dev);
+> +	fwnode_for_each_available_child_node(fwnode, node) {
+
+Ah this. Did we discuss this in earlier versions?
+Been a while so I've forgotten.
+
+	device_for_each_child_node() is actually implemented to only
+allow for available nodes.  So you can use that directly here.
+It's weird, and we've raised it several times with the fwnode
+folk.
+
+Seeing as we'll probably convert this shortly to
+device_for_each_child_node_scoped() we can deal with that detail
+as part of that patch.
+
+
+> +		ret = fwnode_property_read_u32(node, "reg", &idx);
+> +		if (ret) {
+> +			dev_err_probe(dev, ret,
+> +				      "reading invalid channel index\n");
+> +			goto err_fwnode;
+> +		}
+> +		/* adjust idx to match channel index (1 to 4) from the datasheet */
+> +		idx--;
+> +
+> +		if (current_channel >= (info->phys_channels + 1) ||
+> +		    idx >= info->phys_channels || idx < 0) {
+> +			dev_err_probe(dev, -EINVAL,
+> +				      "%s: invalid channel_index %d value\n",
+> +				      fwnode_get_name(node), idx);
+> +			goto err_fwnode;
+> +		}
+> +
+> +		/* enable channel */
+> +		info->active_channels[idx] = true;
+> +
+> +		ret = fwnode_property_read_u32(node, "shunt-resistor-micro-ohms",
+> +					       &info->shunts[idx]);
+> +		if (ret) {
+> +			dev_err_probe(dev, ret,
+> +				      "%s: invalid shunt-resistor value: %d\n",
+> +				      fwnode_get_name(node), info->shunts[idx]);
+> +			goto err_fwnode;
+> +		}
+> +
+> +		if (fwnode_property_present(node, "label")) {
+> +			ret = fwnode_property_read_string(node, "label",
+> +							  (const char **)&info->labels[idx]);
+> +			if (ret) {
+> +				dev_err_probe(dev, ret,
+> +					      "%s: invalid rail-name value\n",
+> +					      fwnode_get_name(node));
+> +				goto err_fwnode;
+> +			}
+> +		}
+> +
+> +		info->bi_dir[idx] = fwnode_property_read_bool(node, "bipolar");
+> +
+> +		current_channel++;
+> +	}
+> +
+> +	return true;
+> +
+> +err_fwnode:
+> +	fwnode_handle_put(node);
+> +
+> +	return false;
+> +}
+
+> +static int pac1934_prep_iio_channels(struct pac1934_chip_info *info, struct iio_dev *indio_dev)
+> +{
+> +	struct iio_chan_spec *ch_sp;
+> +	int channel_size, attribute_count, cnt;
+> +	void *dyn_ch_struct, *tmp_data;
+> +	struct device *dev = &info->client->dev;
+> +
+> +	/* find out dynamically how many IIO channels we need */
+> +	attribute_count = 0;
+> +	channel_size = 0;
+> +	for (cnt = 0; cnt < info->phys_channels; cnt++) {
+> +		if (!info->active_channels[cnt])
+> +			continue;
+> +
+> +		/* add the size of the properties of one chip physical channel */
+> +		channel_size += sizeof(pac1934_single_channel);
+> +		/* count how many enabled channels we have */
+> +		attribute_count += ARRAY_SIZE(pac1934_single_channel);
+> +		dev_info(dev, ":%s: Channel %d active\n",
+dev_dbg()
+This is too noisy really given I'd assume that's easy to establish
+after the driver is loaded. If nothing else comes up I'll make this dev_dbg
+whilst applying.
+> +			 __func__, cnt + 1);
+> +	}
+
 
 
