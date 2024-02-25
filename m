@@ -1,165 +1,158 @@
-Return-Path: <linux-kernel+bounces-80220-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8B72862C2F
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:57:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16B94862C34
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:09:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D81A41C21242
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:57:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81E6CB210ED
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:09:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 726531B957;
-	Sun, 25 Feb 2024 16:57:12 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 355E618637;
+	Sun, 25 Feb 2024 17:09:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wu05TE0Y"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ABE1182D4
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 16:57:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E1E917756;
+	Sun, 25 Feb 2024 17:09:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708880232; cv=none; b=KjBekuj2Yl4gVKTGZ6o55r+1pUvxKFbafedZJ6dlrDv7YeSE89OBHpLHvbUD9j7O6UQyjCpkwtMfpresrdku99GOjA38AIYIdl6U0KsSV277+tYjkXHnevCtY/2ywwQzrfhxC4TlFOkKIOG/FN2Zo3x+Il4FUeQuWg4WoZVTemc=
+	t=1708880983; cv=none; b=APW012DDKAaJ1ejGCf5eXYKMXNiYVqsY60s0KnyCbRUdADnNeBO7LYD7w/AU9PIHT8C5S1yXjl/j6b9PvqilaBGXqarPWw3n97C6m3Z4SfB6wZTul2TI+2hGBYvw9FOMt6OgeU69/GDEuBJWq5+ydIPiFXeWwDdkQnV7520TiUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708880232; c=relaxed/simple;
-	bh=ldiOEy1AqqZRm2jpxplq9I8qQHwbubdPAOsFwLgRl3Q=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=UZ4KMA78Pkf0Xx4aIBjXSX5UVT3zLrXbA9LLdBBJ+A306e+5+MgilN90aZJW9A0G4l/YIXZ3nu84yHHgoJffJsAULZvNPTjIGenC8IdPKCBvxlS/zXlFXUWHYNyfB0kR5USXpu6Z1E8N7MPIM1Ja6M1hkveTiDiv2WtvviSnV3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-209-DBxHGHkZP8yW0XsruhqEOw-1; Sun, 25 Feb 2024 16:57:00 +0000
-X-MC-Unique: DBxHGHkZP8yW0XsruhqEOw-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 25 Feb
- 2024 16:56:59 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 25 Feb 2024 16:56:59 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>, "'Linus
- Torvalds'" <torvalds@linux-foundation.org>, 'Netdev'
-	<netdev@vger.kernel.org>, "'dri-devel@lists.freedesktop.org'"
-	<dri-devel@lists.freedesktop.org>
-CC: 'Jens Axboe' <axboe@kernel.dk>, "'Matthew Wilcox (Oracle)'"
-	<willy@infradead.org>, 'Christoph Hellwig' <hch@infradead.org>,
-	"'linux-btrfs@vger.kernel.org'" <linux-btrfs@vger.kernel.org>, "'Andrew
- Morton'" <akpm@linux-foundation.org>, 'Andy Shevchenko'
-	<andriy.shevchenko@linux.intel.com>, "'David S . Miller'"
-	<davem@davemloft.net>, 'Dan Carpenter' <dan.carpenter@linaro.org>, "'Jani
- Nikula'" <jani.nikula@linux.intel.com>
-Subject: [PATCH next v2 11/11] minmax: min() and max() don't need to return
- constant expressions
-Thread-Topic: [PATCH next v2 11/11] minmax: min() and max() don't need to
- return constant expressions
-Thread-Index: AdpoC6KUHy5Z1N7yRkiaBkc7ZdEdRQ==
-Date: Sun, 25 Feb 2024 16:56:58 +0000
-Message-ID: <a18dcae310f74dcb9c6fc01d5bdc0568@AcuMS.aculab.com>
-References: <0fff52305e584036a777f440b5f474da@AcuMS.aculab.com>
-In-Reply-To: <0fff52305e584036a777f440b5f474da@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1708880983; c=relaxed/simple;
+	bh=AuzeUpAuvt0i584TLDXKXK/SGBp3CXpbKtMT3HhI5CU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=c0f9yap/3pCBKaXJW7E20j/r9/fL2wMGerxetRTVPdCZVdikfUjoZejKXGJIqpvmuF3m3SQ6VQ1jN1nIUsG7FqFaHd/t3O1WCilHhjBUE9BqTVsx0LUPh4eYTnzKKnU/+462MIF5rxbuVg675k42D1z99XtIBGxd/GO6JktO1Pk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wu05TE0Y; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a26ed1e05c7so376619566b.2;
+        Sun, 25 Feb 2024 09:09:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708880978; x=1709485778; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Kkn6pd7i45J0ICc+RJDxPZ9ytlkUDwXcvF4anYGRf8c=;
+        b=Wu05TE0Y79et+4vYhxEucbG5Gbdbqn6++DlKcDrhNISrLp3imRVkSSv5yunySHyaP2
+         mBes0RuNpsE72uxiTTKjBccQi0DJWmCXSX3VRxuYZ350eJiTAbRin6GeSCUv1SQdmAhs
+         utjPbYvTLdZ30yS1A1diFoZoVs47NIOSMz2Shf+ZgdS9QbPilj9nwNp2ASal1xFiwBV9
+         0aparemQxMLmFnaoTn6kK6mvyqhTjOHLvO6zxqtTWSYwi7q+s8lfJY3XzSeh1JYS/qhN
+         22EGwY3mgvpYFIuZCvFc9Kup39ChIVUnJ/vGxy3JYMlY7f4eqTrqpzQNtBG5NzDlkcNg
+         lUhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708880978; x=1709485778;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kkn6pd7i45J0ICc+RJDxPZ9ytlkUDwXcvF4anYGRf8c=;
+        b=vTt1XbgBhowT+z1hZzoLuREFm3w9Gu+HYp25JyKXJ800FYOwVL3/7OEGG2hWpRzd9C
+         88ovl08ISpdwPYchgzmw8zKQvB6n6M8ahfzMNPgX4dgHdqWWSX6VGBX5KjGfCB2++Gd0
+         4ePv6eI55fPciaoq3licHHp12kpxnErfiAOCYI32gmxi3XyHqDJj/3lsycL+J1SLoCGl
+         GCK0GxUj1tX6aLN047gF1d85e0WP+8XFFYSLjwe84rtJj5Gsp7VwjicpDbADWeVKlfh3
+         9nN/IqPY+EX5KDTiEfO5bJ1AYrHEtaYq7Xt107+pFhBnDsCv8FRy4qg/IpYA0cE8Q+FJ
+         JOGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXoJnjB7oQMShigiTDm+s6z2WlXY6QttZRHwqaptGaTk8V3rvJHi9SDJ/kKePWUG+FXcghFauNLFFG4aRoKFYpIcT5Mk0vOn65KHw8Q6pSnOm7FDMXQLM/lG6++vw9c5G3G8rKB7xzfPA==
+X-Gm-Message-State: AOJu0Yx+MI2wG7MgJ1xNVF5jxJtXpfdKBBrVwmxQtdBoKQfzBv7a2/Rx
+	lbEeQbELGuRGYzUoukyu4Dwe/UDoAdI+o3mRXGTLE4QOK09b23GN
+X-Google-Smtp-Source: AGHT+IGszEAq6BHv80snpKx/oNaWod/Norc7ugu9RaQQjfW1h7yVcb61ikCupAMtWez9i6TQpfioDQ==
+X-Received: by 2002:a17:906:3653:b0:a3e:9df6:7f0a with SMTP id r19-20020a170906365300b00a3e9df67f0amr3589352ejb.68.1708880978429;
+        Sun, 25 Feb 2024 09:09:38 -0800 (PST)
+Received: from [192.168.20.170] (57657817.catv.pool.telekom.hu. [87.101.120.23])
+        by smtp.gmail.com with ESMTPSA id jw4-20020a17090776a400b00a434cae86ebsm187939ejc.219.2024.02.25.09.09.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 25 Feb 2024 09:09:37 -0800 (PST)
+Message-ID: <c5556062-1761-48ae-a028-6180637f9cc7@gmail.com>
+Date: Sun, 25 Feb 2024 18:09:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: add TP-Link Archer AX55 v1
+Content-Language: hu
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240223-archer-ax55-v1-v1-0-99f8fa2c3858@gmail.com>
+ <20240223-archer-ax55-v1-v1-2-99f8fa2c3858@gmail.com>
+ <fb14acfa-5b43-4ce7-93f4-9f6681152ca7@linaro.org>
+From: Gabor Juhos <j4g8y7@gmail.com>
+In-Reply-To: <fb14acfa-5b43-4ce7-93f4-9f6681152ca7@linaro.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-After changing the handful of places max() was used to size an on-stack
-array to use max_const() it is no longer necessary for min() and max()
-to return constant expressions from constant inputs.
-Remove the associated logic to reduce the expanded text.
+Hi Krzysztof,
 
-Remove the 'hack' that allowed max(bool, bool).
+> On 23/02/2024 09:17, Gabor Juhos wrote:
 
-Fixup the initial block comment to match current reality.
+<snip>
 
-Signed-off-by: David Laight <david.laight@aculab.com>
----
- include/linux/minmax.h | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+>> ---
+>> Note: running 'make CHECK_DTBS=y qcom/ipq5018-tplink-archer-ax55-v1.dtb'
+>> shows the following:
+>>
+>>     DTC_CHK arch/arm64/boot/dts/qcom/ipq5018-tplink-archer-ax55-v1.dtb
+>>   <...>/arch/arm64/boot/dts/qcom/ipq5018-tplink-archer-ax55-v1.dtb: usb@8af8800: interrupts: [[0, 62, 4]] is too short
+>>   	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
+>>   <...>/arch/arm64/boot/dts/qcom/ipq5018-tplink-archer-ax55-v1.dtb: usb@8af8800: interrupt-names: ['hs_phy_irq'] is too short
+>>   	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
+>>   <...>/arch/arm64/boot/dts/qcom/ipq5018-tplink-archer-ax55-v1.dtb: usb@8af8800: interrupts: [[0, 62, 4]] is too short
+>>   	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
+>>   <...>/arch/arm64/boot/dts/qcom/ipq5018-tplink-archer-ax55-v1.dtb: usb@8af8800: interrupt-names:0: 'pwr_event' was expected
+>>   	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
+>>   <...>/arch/arm64/boot/dts/qcom/ipq5018-tplink-archer-ax55-v1.dtb: usb@8af8800: interrupt-names: ['hs_phy_irq'] is too short
+>>   	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
+>>
+>> This is not caused by the new device tree per se but comes from
+>> the usb@8af8800 node defined in ipq5018.dtsi. Running the check
+>> on 'qcom/ipq5018-rdp432-c2.dtb' shows the same.
+> 
+> Thanks for noticing and describing. Appreciated!
 
-Changes for v2:
-- Typographical and spelling corrections to the commit messages.
-  Patches unchanged.
+FWIW, I have checked that in the meantime. The warning happens since commit
+53c6d854be4e ("dt-bindings: usb: dwc3: Clean up hs_phy_irq in binding").
+Reverting that eliminates the warning.
 
-diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index c08916588425..5e65c98ff256 100644
---- a/include/linux/minmax.h
-+++ b/include/linux/minmax.h
-@@ -8,13 +8,10 @@
- #include <linux/types.h>
-=20
- /*
-- * min()/max()/clamp() macros must accomplish three things:
-+ * min()/max()/clamp() macros must accomplish several things:
-  *
-  * - Avoid multiple evaluations of the arguments (so side-effects like
-  *   "x++" happen only once) when non-constant.
-- * - Retain result as a constant expressions when called with only
-- *   constant expressions (to avoid tripping VLA warnings in stack
-- *   allocation usage).
-  * - Perform signed v unsigned type-checking (to generate compile
-  *   errors instead of nasty runtime surprises).
-  * - Unsigned char/short are always promoted to signed int and can be
-@@ -22,13 +19,19 @@
-  * - Unsigned arguments can be compared against non-negative signed consta=
-nts.
-  * - Comparison of a signed argument against an unsigned constant fails
-  *   even if the constant is below __INT_MAX__ and could be cast to int.
-+ *
-+ * The return value of min()/max() is not a constant expression for
-+ * constant parameters - so will trigger a VLA warging if used to size
-+ * an on-stack array.
-+ * Instead use min_const() or max_const() which do generate constant
-+ * expressions and are also valid for static initialisers.
-  */
- #define __typecheck(x, y) \
- =09(!!(sizeof((typeof(x) *)1 =3D=3D (typeof(y) *)1)))
-=20
- /* Allow unsigned compares against non-negative signed constants. */
- #define __is_ok_unsigned(x) \
--=09(is_unsigned_type(typeof(x)) || (__is_constexpr(x) ? (x) + 0 >=3D 0 : 0=
-))
-+=09(is_unsigned_type(typeof(x)) || (__is_constexpr(x) ? (x) >=3D 0 : 0))
-=20
- /* Check for signed after promoting unsigned char/short to int */
- #define __is_ok_signed(x) is_signed_type(typeof((x) + 0))
-@@ -53,12 +56,10 @@
- =09typeof(y) __y_##uniq =3D (y);=09=09\
- =09__cmp(op, __x_##uniq, __y_##uniq); })
-=20
--#define __careful_cmp(op, x, y, uniq)=09=09=09=09\
--=09__builtin_choose_expr(__is_constexpr((x) - (y)),=09\
--=09=09__cmp(op, x, y),=09=09=09=09\
--=09=09({ _Static_assert(__types_ok(x, y),=09=09\
--=09=09=09#op "(" #x ", " #y ") signedness error, fix types or consider u" =
-#op "() before " #op "_t()"); \
--=09=09__cmp_once(op, x, y, uniq); }))
-+#define __careful_cmp(op, x, y, uniq) ({=09\
-+=09_Static_assert(__types_ok(x, y),=09\
-+=09=09#op "(" #x ", " #y ") signedness error, fix types or consider u" #op=
- "() before " #op "_t()"); \
-+=09__cmp_once(op, x, y, uniq); })
-=20
- #define __careful_cmp_const(op, x, y)=09=09=09=09\
- =09(BUILD_BUG_ON_ZERO(!__is_constexpr((x) - (y))) +=09\
---=20
-2.17.1
+> 
+>> ---
+>>  arch/arm64/boot/dts/qcom/Makefile                  |   1 +
+>>  .../dts/qcom/ipq5018-tplink-archer-ax55-v1.dts     | 133 +++++++++++++++++++++
+>>  2 files changed, 134 insertions(+)
+> 
+> ...
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
+<snip>
 
+>> +
+>> +&tlmm {
+>> +	button_pins: button-pins-state {
+>> +		pins = "gpio25", "gpio31";
+>> +		bias-pull-up;
+>> +		drive-strength = <8>;
+>> +		function = "gpio";
+> 
+> Usually we keep 'function' as second property, after 'pins', but there
+> is no need to send new version just for that.
+
+Sorry, it is my fault. I should have noticed that pattern based on the other dts
+files. Nevertheless, I can send a v2 or a follow-up patch to fix the ordering so
+we can avoid having a bad example in the tree.
+
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Thank you for the review!
+
+Regards,
+Gabor
 
