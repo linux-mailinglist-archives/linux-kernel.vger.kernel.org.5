@@ -1,85 +1,80 @@
-Return-Path: <linux-kernel+bounces-80125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFC42862AF2
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:14:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EDA6862AF4
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:14:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 759111F21854
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 15:14:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFEE91C20E44
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 15:14:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB8D17551;
-	Sun, 25 Feb 2024 15:14:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA9C614292;
+	Sun, 25 Feb 2024 15:14:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="SsA9qhLH"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fkWiVz1G"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B22D51429F
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 15:13:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74912134A9;
+	Sun, 25 Feb 2024 15:14:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708874039; cv=none; b=Y2fY4dRPF1PoGcH+yz3EM6SVKPt4/3qaU2/VsV9gvXd6v9fPwyCJ05WpAj63CIrKj2ouEuGlyeoDvxbzdaeebqleLuWnlEnHrlhQyKH+ld4Quz8Cdsd78proCMZtSbj0Mh5idfOrprAki2CDDVLlO5TvANfEYSX/xvlqKnd41hM=
+	t=1708874080; cv=none; b=mozd/zwTv1a0XqWFgRfOWmAo8URwF7jnTJ4LvFFLht0A2ujLswWxjzwOO3NTmt3ziNF6eV5cRoEeCrQFjoV+q5z2d7J9+VPdZW+dpogBXMn1+ka6QHJJPF7JlEew54HKlgO4vDGMj2PW/4mOg+AMvDKsQjN8dy2F4l3wIEEoZg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708874039; c=relaxed/simple;
-	bh=34fqCyhh3jqb4x7nW9o9+UwmXajc9gCRDRf8jM7y+IE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UHY4bPNDXH3LK/U0QMrTM5Cw9lH7MZnbXREO/dyqkvwOy+mUFmxraiXY21cFr8AAc4Nk+2CKv58ZjaTZj+U1nQG5xKJudsVKIXdYDujBvRzicTY1lVFf3guQwtfGIcOgrOX8ZF5mmB5U83pH+TsFGMs7FYjwhuPudMEJYNLhM9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=SsA9qhLH; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-564fe0273e4so1869652a12.2
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 07:13:57 -0800 (PST)
+	s=arc-20240116; t=1708874080; c=relaxed/simple;
+	bh=TpyL4kQVxe3uBdq1klt+8d1vmiRINhKLOGIAiZVoUdE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=R20ZRuakLYyQE4xJPKab80UZF3jB+WcN5uUhFJd0/S/iTgOaipJhLsvvOhduq47irOwH1HtaFRgL6jXGAmQNB92kaQZMKFtca+I5iEr9xmdaqVlcQBBKVxOtm31BCOsMtxy+IHpYrPmFk232rR7jkr0uenhvASHOrJx/xrmR1cE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fkWiVz1G; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d09cf00214so36997431fa.0;
+        Sun, 25 Feb 2024 07:14:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1708874036; x=1709478836; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sRqUqyxM5BwYZ552SwBc1mEqP/KlJT+duufn8/IdCwI=;
-        b=SsA9qhLHYGx8UzUziXrHHe1EskwMizR+bphY1PFueEBUqoCz/uDBfC+Na9SiBoCk0l
-         MLUXfp7B0EFibQ1R/afHCkbI2mjPYdgNQ1lT0A76G95fBBE1prndGEzeBrjYuj75UTdJ
-         ylzcI1dXD0JbNcJs5mlCalG5kHojD9UvQFmezCAEN7W0xR3OIhahuZYtqkZ1Ni2HgKoS
-         f7mNPOjXmqdQv7zrz3spe5/0l/L9scvCwQOjRH3qa8QNFja7bWRbC3rR9GbTkGOw1508
-         6XmB178PdtSytoGiPJ93Pxz6PU2Iz3dvlRFDGtvNNv5SmgEW6K9UAGbDIyVSqXcUcOg9
-         SfWQ==
+        d=gmail.com; s=20230601; t=1708874076; x=1709478876; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1WcXyxSf5IgU8jdpiPrHseEASR6WgEzsyYofdlCO6+I=;
+        b=fkWiVz1GZ2fYkMBsTpiP3pntkQIb0wpMTi2NPKFxPIoZhGcRUujPZjxQnGutmrGIDi
+         WtCq7AwtclfpT4xEyXDJpjQEuVV8Hy6ys5A3EVvKJHARzun7Gddr3NlolQ6zgZOLrULJ
+         VmxnTaKpd2q8wn7qp83vK+7Wq/Sqwp+TpEvA4ncvrCa7C1YkkSQbF87kCzylzF7AxVyw
+         zTvZUbAI2Chc9UppWyAmeuIhEtG5TnLDo1/vivB4HW7ErBW6pqA8fWbT835nXRo5GF53
+         S/syNlWdiWiC/yAqhf1bNg82zp4j8DfYr0Pa6I31NSF+zNL8Apg/a4d3HUmVY1y9Vl/e
+         EbjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708874036; x=1709478836;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sRqUqyxM5BwYZ552SwBc1mEqP/KlJT+duufn8/IdCwI=;
-        b=mxSdmHV40llMLqUQ7bXK4gDHqeaxK5v0v4leP4RtiXqBQeyj5OXiIHzDVb+J7IHUYD
-         IAXoqokZYLLfMpXBXEHBp2X0StjdFhW7BVj9xk8pQw3Dq3Wmizkz+YKBg5u0yVbTs2Wp
-         CiQt8kGj3odSaIIWOutKfBTaFsBfZMvA9uAuHhsAb5YUgrGlu20C34ik0PJeuo4daN5h
-         51DNqwmuM18fQJF8RxJP8ekN6ZyxXbXHjB0JKmw9fBgEVrt8t+ddI/m7nONTDKMPMMn1
-         F2SM/x/vaAyjkw48PczS6lUOqVZCDjbbDvDET02BahiU8OtchUK6U76K3kna5ea2zBrA
-         2tFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVZsx/6gukg32iilNSGrP/hZwx7VKgVo44AeNNE1xgorn1b+ZEuMZNeSp6ogc1k6nr2Opt/69UirTqcNKgZ5OzP/KXEC3Ud6wUs4W4w
-X-Gm-Message-State: AOJu0YxCGrloBiIQywWB1RwT1i3E4rImosWH9OPwnIyRwa7DKijyGvpp
-	9gvuJKZU2D/vNokslW4yvRfMKYvXDa7FdYzcLClSQB18qIbBPihDvO7KU34o
-X-Google-Smtp-Source: AGHT+IH/nJnTUXso9xp8HekK1IjRVINalYAkwjwR4Jk7//muUbYijeHEbdBfJgf96o6NZ6fJ/+967A==
-X-Received: by 2002:aa7:da09:0:b0:565:cd29:dd30 with SMTP id r9-20020aa7da09000000b00565cd29dd30mr1166096eds.30.1708874035965;
-        Sun, 25 Feb 2024 07:13:55 -0800 (PST)
-Received: from localhost.localdomain (dynamic-2a02-3100-94e3-d600-0000-0000-0000-0e63.310.pool.telefonica.de. [2a02:3100:94e3:d600::e63])
-        by smtp.googlemail.com with ESMTPSA id f5-20020a50d545000000b005651ae4ac91sm1588450edj.41.2024.02.25.07.13.55
+        d=1e100.net; s=20230601; t=1708874076; x=1709478876;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1WcXyxSf5IgU8jdpiPrHseEASR6WgEzsyYofdlCO6+I=;
+        b=wSqgOGz+ge9qBG7TWpCkWd2bDttgC3yA6ViXG1/DjYv6I5oyitDYOAS4KQw04yvpoT
+         8OZ0UUSmR9zcim/OdieFkB3halPf2ruQAKveXcieoFN4cR4udTZ+rkwOh6c1Bw5eABFp
+         BfcaNLa106ynEWT0RO37AiVK6yODlc89/uZmjGYDfTVwKG5v/2FSNHKZ5Y11L2pul1DY
+         nOtuPXYEzFaeW0Lw3bYOO90vw8OKc/v4NKFyKtoWoxdLlokCt+CvJk2D1oWGdPEeAYBP
+         OFH2AvXC3JaRCX2oUXaFrqK1pSRGzGK+UXFzTIWL5u+QsUQUIsSHZgDKmkSGOgyTZk4N
+         F6yg==
+X-Forwarded-Encrypted: i=1; AJvYcCXxTCvjkoMBZ7kr684OCt2sopcNLa7OoDUqu2iEvKBGvx10fjXrhN6hpxRdzRO/LLIJinL6MzSgIVCV07OXrpIzakECxK1iMiED68J9
+X-Gm-Message-State: AOJu0YxA27gvyE2jFX7K6e76bwFjxR0wZQeGSPaTcRIJBttVY91+BKhK
+	tMKMSN69z9jSxJtSZX8n0yYTHT3kg1ofcN8ZZdzaixTplIgBYZpVQ99OXEzy
+X-Google-Smtp-Source: AGHT+IGwRu9t58O662cNWh7HIbYa2m5/h6TXMcVXKCW8V1EBpoKyYaTm1oJOrVYN4o1vH4MvArjQxg==
+X-Received: by 2002:a19:700e:0:b0:512:d91f:2e57 with SMTP id h14-20020a19700e000000b00512d91f2e57mr2453525lfc.55.1708874076216;
+        Sun, 25 Feb 2024 07:14:36 -0800 (PST)
+Received: from localhost (dslb-002-205-020-122.002.205.pools.vodafone-ip.de. [2.205.20.122])
+        by smtp.gmail.com with ESMTPSA id s1-20020a170906060100b00a3d9e6e9983sm1565616ejb.174.2024.02.25.07.14.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Feb 2024 07:13:55 -0800 (PST)
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To: daniel.lezcano@linaro.org,
-	tglx@linutronix.de
-Cc: linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	patrice.chotard@foss.st.com,
-	linux-amlogic@lists.infradead.org,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH v3 3/3] clocksource/drivers/arm_global_timer: Simplify prescaler register access
-Date: Sun, 25 Feb 2024 16:13:36 +0100
-Message-ID: <20240225151336.2728533-4-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240225151336.2728533-1-martin.blumenstingl@googlemail.com>
-References: <20240225151336.2728533-1-martin.blumenstingl@googlemail.com>
+        Sun, 25 Feb 2024 07:14:35 -0800 (PST)
+From: Jonas Gorski <jonas.gorski@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>
+Subject: [PATCH 1/2] serial: core: introduce uart_port_tx_limited_flags()
+Date: Sun, 25 Feb 2024 16:14:25 +0100
+Message-Id: <20240225151426.1342285-1-jonas.gorski@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,81 +83,46 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Use GENMASK() to define the prescaler mask and make the whole driver use
-the mask (together with helpers such as FIELD_{GET,PREP,FIT}) instead of
-needing an additional shift and max value constant.
+Analogue to uart_port_tx_flags() introduced in commit 3ee07964d407
+("serial: core: introduce uart_port_tx_flags()"), add a _flags variant
+for uart_port_tx_limited().
 
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Fixes: d11cc8c3c4b6 ("tty: serial: use uart_port_tx_limited()")
+Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
 ---
- drivers/clocksource/arm_global_timer.c | 19 ++++++++-----------
- 1 file changed, 8 insertions(+), 11 deletions(-)
+ include/linux/serial_core.h | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/clocksource/arm_global_timer.c b/drivers/clocksource/arm_global_timer.c
-index 257599d682f0..8a82b60b467b 100644
---- a/drivers/clocksource/arm_global_timer.c
-+++ b/drivers/clocksource/arm_global_timer.c
-@@ -9,6 +9,7 @@
+diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
+index 55b1f3ba48ac..e25e20034a19 100644
+--- a/include/linux/serial_core.h
++++ b/include/linux/serial_core.h
+@@ -825,6 +825,24 @@ enum UART_TX_FLAGS {
+ 			__count--);					      \
+ })
  
- #include <linux/init.h>
- #include <linux/interrupt.h>
-+#include <linux/bitfield.h>
- #include <linux/clocksource.h>
- #include <linux/clockchips.h>
- #include <linux/cpu.h>
-@@ -31,10 +32,7 @@
- #define GT_CONTROL_COMP_ENABLE		BIT(1)	/* banked */
- #define GT_CONTROL_IRQ_ENABLE		BIT(2)	/* banked */
- #define GT_CONTROL_AUTO_INC		BIT(3)	/* banked */
--#define GT_CONTROL_PRESCALER_SHIFT      8
--#define GT_CONTROL_PRESCALER_MAX        0xFF
--#define GT_CONTROL_PRESCALER_MASK       (GT_CONTROL_PRESCALER_MAX << \
--					 GT_CONTROL_PRESCALER_SHIFT)
-+#define GT_CONTROL_PRESCALER_MASK	GENMASK(15, 8)
- 
- #define GT_INT_STATUS	0x0c
- #define GT_INT_STATUS_EVENT_FLAG	BIT(0)
-@@ -248,7 +246,7 @@ static void gt_write_presc(u32 psv)
- 
- 	reg = readl(gt_base + GT_CONTROL);
- 	reg &= ~GT_CONTROL_PRESCALER_MASK;
--	reg |= psv << GT_CONTROL_PRESCALER_SHIFT;
-+	reg |= FIELD_PREP(GT_CONTROL_PRESCALER_MASK, psv);
- 	writel(reg, gt_base + GT_CONTROL);
- }
- 
-@@ -257,8 +255,7 @@ static u32 gt_read_presc(void)
- 	u32 reg;
- 
- 	reg = readl(gt_base + GT_CONTROL);
--	reg &= GT_CONTROL_PRESCALER_MASK;
--	return reg >> GT_CONTROL_PRESCALER_SHIFT;
-+	return FIELD_GET(GT_CONTROL_PRESCALER_MASK, reg);
- }
- 
- static void __init gt_delay_timer_init(void)
-@@ -273,9 +270,9 @@ static int __init gt_clocksource_init(void)
- 	writel(0, gt_base + GT_COUNTER0);
- 	writel(0, gt_base + GT_COUNTER1);
- 	/* set prescaler and enable timer on all the cores */
--	writel(((CONFIG_ARM_GT_INITIAL_PRESCALER_VAL - 1) <<
--		GT_CONTROL_PRESCALER_SHIFT)
--	       | GT_CONTROL_TIMER_ENABLE, gt_base + GT_CONTROL);
-+	writel(FIELD_PREP(GT_CONTROL_PRESCALER_MASK,
-+			  CONFIG_ARM_GT_INITIAL_PRESCALER_VAL - 1) |
-+	       GT_CONTROL_TIMER_ENABLE, gt_base + GT_CONTROL);
- 
- #ifdef CONFIG_CLKSRC_ARM_GLOBAL_TIMER_SCHED_CLOCK
- 	sched_clock_register(gt_sched_clock_read, 64, gt_target_rate);
-@@ -301,7 +298,7 @@ static int gt_clk_rate_change_cb(struct notifier_block *nb,
- 		psv--;
- 
- 		/* prescaler within legal range? */
--		if (psv > GT_CONTROL_PRESCALER_MAX)
-+		if (!FIELD_FIT(GT_CONTROL_PRESCALER_MASK, psv))
- 			return NOTIFY_BAD;
- 
- 		/*
++/**
++ * uart_port_tx_limited_flags -- transmit helper for uart_port with count limiting with flags
++ * @port: uart port
++ * @ch: variable to store a character to be written to the HW
++ * @flags: %UART_TX_NOSTOP or similar
++ * @count: a limit of characters to send
++ * @tx_ready: can HW accept more data function
++ * @put_char: function to write a character
++ * @tx_done: function to call after the loop is done
++ *
++ * See uart_port_tx_limited() for more details.
++ */
++#define uart_port_tx_limited_flags(port, ch, flags, count, tx_ready, put_char, tx_done) ({ \
++	unsigned int __count = (count);							   \
++	__uart_port_tx(port, ch, flags, tx_ready, put_char, tx_done, __count,		   \
++			__count--);							   \
++})
++
+ /**
+  * uart_port_tx -- transmit helper for uart_port
+  * @port: uart port
 -- 
-2.44.0
+2.34.1
 
 
