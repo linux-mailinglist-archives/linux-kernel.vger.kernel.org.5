@@ -1,108 +1,133 @@
-Return-Path: <linux-kernel+bounces-80299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24A6F862D11
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 22:09:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 19E1E862D14
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 22:10:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9EC21F21C41
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 21:09:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3CE61F21A77
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 21:10:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C6271B95D;
-	Sun, 25 Feb 2024 21:09:37 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D03891B950;
+	Sun, 25 Feb 2024 21:10:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="JDGQ42iZ"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11921182AE
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 21:09:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87394D2FE;
+	Sun, 25 Feb 2024 21:10:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708895377; cv=none; b=MIB/sXOzvupPxOFkER+cMfyzubr0PMKOwgO2QiaFpp12QYm7ci5axaKu1Tg6iiFD1R6Oe/KWy6c9F+dRSYCHOWrwFbsDE2ztth17Bub00Ku++1hto02YPkpGZlolXlB31XnB5Srz35xq91vVSGGzOrRO4aAMX5r4SfI4CdbAXaw=
+	t=1708895440; cv=none; b=V0CFP/6BneXsTQmJUuoBaGhJMfYtQBYLAVecKLLh0cXZgvSEfmDHAscH4alCETYjh2qI2PiJey6wCZhVqGeVu70LCLBVLo+lszwzSmH9hNBfXAN3j6RP5VRQdJ7YiPno1db6itCGWVfdoZ/ECznItrTxYZDdAfPWxsYDAImcis8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708895377; c=relaxed/simple;
-	bh=5MF9bougW33Z1HHpQQco5/NgIxFQQq3pUp/4ChKgQ3s=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=ljAo7f8U8r/rRRsb6DuaIlKUXPfvXyHbhc8oz15JekgSgQZ6/KHvmOFzfTGSMgrrIAD7trUSr9Zi63ibsz6eQZmRzHzuuouSZ6tDMa5IFdji9QQL7Q15DTB5XvBsp7I37XPxIUsYfxecZTlxMBMpDPW3HY0sTEu7QrulVwSaI9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-25-AJDdc1O7Pimm9mrvmQ8LqA-1; Sun, 25 Feb 2024 21:09:30 +0000
-X-MC-Unique: AJDdc1O7Pimm9mrvmQ8LqA-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 25 Feb
- 2024 21:09:29 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 25 Feb 2024 21:09:29 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Linus Torvalds' <torvalds@linux-foundation.org>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Netdev
-	<netdev@vger.kernel.org>, "dri-devel@lists.freedesktop.org"
-	<dri-devel@lists.freedesktop.org>, Jens Axboe <axboe@kernel.dk>, "Matthew
- Wilcox (Oracle)" <willy@infradead.org>, Christoph Hellwig
-	<hch@infradead.org>, "linux-btrfs@vger.kernel.org"
-	<linux-btrfs@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "David S . Miller"
-	<davem@davemloft.net>, Dan Carpenter <dan.carpenter@linaro.org>, Jani Nikula
-	<jani.nikula@linux.intel.com>
-Subject: RE: [PATCH next v2 08/11] minmax: Add min_const() and max_const()
-Thread-Topic: [PATCH next v2 08/11] minmax: Add min_const() and max_const()
-Thread-Index: AdpoCy246SYrYUdtTu+AtQRSWe90RAAAtXgAAAgCCqA=
-Date: Sun, 25 Feb 2024 21:09:29 +0000
-Message-ID: <056cfcf737e344acb47d612f642d58b3@AcuMS.aculab.com>
-References: <0fff52305e584036a777f440b5f474da@AcuMS.aculab.com>
- <c6924533f157497b836bff24073934a6@AcuMS.aculab.com>
- <CAHk-=wgNh5Gw7RTuaRe7mvf3WrSGDRKzdA55KKdTzKt3xPCnLg@mail.gmail.com>
-In-Reply-To: <CAHk-=wgNh5Gw7RTuaRe7mvf3WrSGDRKzdA55KKdTzKt3xPCnLg@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1708895440; c=relaxed/simple;
+	bh=ryofm9AyC66ppNGNCwpZaLes36i3wdGJU2nOHNj7U7Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QXTVCzXSNW7MgSsscDQIj5MrT/uOuDT5/Vevp5rv90beADV8elCsYISyskOVdrBDIOf27GWxJI0XJFglfQ9epuNMz9PKrV86V9zGxwiY+WJlwxyqRImXRSGdhC4GNxASHQvinuWH6WCW3Am26PqAKBDFxfkrJ4o0HM2q99+S51Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=JDGQ42iZ; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708895431;
+	bh=ryofm9AyC66ppNGNCwpZaLes36i3wdGJU2nOHNj7U7Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JDGQ42iZF9z9zvzCL5m1pkvzT+1qD6P8H6wOv+VUegTaqiJq4+BizCI7MNmF1GsSS
+	 lk7tCPFlXoJBF3jqlaWFAuaf+5kCXt48/g9XgbSgHE7f49N2aqEHjxvvs7gtum/mww
+	 nFS1dZhs0jT+Y5ST8JOT5gmrvT5xUGboplqgkA6fdWTJ5mdbawfdbzTI3fIhT/6VCI
+	 jZTgo26gWSsIeMlbbh4IBUPNjTzCmUvOEs/pgGKkqzIauAqhx0gcimWF/nVxL08ovT
+	 mvjE9q4ojyNeIOp7zrIP/EY7VYn+V1I4jyi3ft2SZ13UW2yAO4PYiOy1MBCNQz2jIU
+	 TL6jPJTJjEeIA==
+Received: from mercury (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sre)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4A78C3781FD9;
+	Sun, 25 Feb 2024 21:10:31 +0000 (UTC)
+Received: by mercury (Postfix, from userid 1000)
+	id C300F1060D21; Sun, 25 Feb 2024 22:10:30 +0100 (CET)
+Date: Sun, 25 Feb 2024 22:10:30 +0100
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+To: Hermes Zhang <chenhuiz@axis.com>
+Cc: Hermes Zhang <Hermes.Zhang@axis.com>, kernel@axis.com, 
+	Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] power: supply: bq27xxx: Introduce parameter to config
+ cache regs
+Message-ID: <op5ovg3cv4raqy4zmol7wfy7hm72ptgxleh2ykoyg5qvnbhfcl@pxfzkij5xkkw>
+References: <20240219100541.48453-1-Hermes.Zhang@axis.com>
+ <eh34cvorgnrw4v5a6emzjk2p6om2ybkn627bpmh775z4ubw63h@nbxgpm767u4x>
+ <1fe2c4b3-9dd2-a961-4198-45aca3449c36@axis.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="aqiglmpeyh36bxal"
+Content-Disposition: inline
+In-Reply-To: <1fe2c4b3-9dd2-a961-4198-45aca3449c36@axis.com>
 
-RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMjUgRmVicnVhcnkgMjAyNCAxNzoxNA0KPiAN
-Cj4gT24gU3VuLCAyNSBGZWIgMjAyNCBhdCAwODo1MywgRGF2aWQgTGFpZ2h0IDxEYXZpZC5MYWln
-aHRAYWN1bGFiLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBUaGUgZXhwYW5zaW9ucyBvZiBtaW4oKSBh
-bmQgbWF4KCkgY29udGFpbiBzdGF0ZW1lbnQgZXhwcmVzc2lvbnMgc28gYXJlDQo+ID4gbm90IHZh
-bGlkIGZvciBzdGF0aWMgaW50aWFsaXNlcnMuDQo+ID4gbWluX2NvbnN0KCkgYW5kIG1heF9jb25z
-dCgpIGFyZSBleHByZXNzaW9ucyBzbyBjYW4gYmUgdXNlZCBmb3Igc3RhdGljDQo+ID4gaW5pdGlh
-bGlzZXJzLg0KPiANCj4gSSBoYXRlIHRoZSBuYW1lLg0KDQpQaWNraW5nIG5hbWUgaXMgYWx3YXlz
-IGhhcmQuLi4NCg0KPiBOYW1pbmcgc2hvdWxkbid0IGJlIGFib3V0IGFuIGltcGxlbWVudGF0aW9u
-IGRldGFpbCwgcGFydGljdWxhcmx5IG5vdA0KPiBhbiBlc290ZXJpYyBvbmUgbGlrZSB0aGUgIkMg
-Y29uc3RhbnQgZXhwcmVzc2lvbiIgcnVsZS4gVGhhdCBjYW4gYmUNCj4gdXNlZnVsIGZvciBzb21l
-IGludGVybmFsIGhlbHBlciBmdW5jdGlvbnMgb3IgbWFjcm9zLCBidXQgbm90IGZvcg0KPiBzb21l
-dGhpbmcgdGhhdCByYW5kb20gcGVvcGxlIGFyZSBzdXBwb3NlZCB0byBVU0UuDQo+IA0KPiBUZWxs
-aW5nIHNvbWUgcmFuZG9tIGRldmVsb3BlciB0aGF0IGluc2lkZSBhbiBhcnJheSBzaXplIGRlY2xh
-cmF0aW9uIG9yDQo+IGEgc3RhdGljIGluaXRpYWxpemVyIHlvdSBuZWVkIHRvIHVzZSAibWF4X2Nv
-bnN0KCkiIGJlY2F1c2UgaXQgbmVlZHMgdG8NCj4gc3ludGFjdGljYWxseSBiZSBhIGNvbnN0YW50
-IGV4cHJlc3Npb24sIGFuZCBvdXIgcmVndWxhciAibWF4KCkiDQo+IGZ1bmN0aW9uIGlzbid0IHRo
-YXQsIGlzIGp1c3QgKmhvcnJpZCouDQo+IA0KPiBObywgcGxlYXNlIGp1c3QgdXNlIHRoZSB0cmFk
-aXRpb25hbCBDIG1vZGVsIG9mIGp1c3QgdXNpbmcgQUxMIENBUFMgZm9yDQo+IG1hY3JvIG5hbWVz
-IHRoYXQgZG9uJ3QgYWN0IGxpa2UgYSBmdW5jdGlvbi4NCj4gDQo+IFllcywgeWVzLCB0aGF0IG1h
-eSBlbmQgdXAgcmVxdWlyaW5nIGdldHRpbmcgcmlkIG9mIHNvbWUgY3VycmVudCB1c2VycyBvZg0K
-PiANCj4gICAjZGVmaW5lIE1JTihhLGIpICgoYSk8KGIpID8gKGEpOihiKSkNCj4gDQo+IGJ1dCBk
-YW1taXQsIHdlIGRvbid0IGFjdHVhbGx5IGhhdmUgX3RoYXRfIG1hbnkgb2YgdGhlbSwgYW5kIHdo
-eSBzaG91bGQNCj4gd2UgaGF2ZSByYW5kb20gZHJpdmVycyBkb2luZyB0aGF0IGFueXdheT8NCg0K
-SSdsbCBoYXZlIGEgbG9vayBhdCB3aGF0IGlzIHRoZXJlLg0KSXQgbWlnaHQgdGFrZSBhIHRocmVl
-IHBhcnQgcGF0Y2ggdGhvdWdoLg0KVW5sZXNzIHlvdSBhcHBseSBpdCBhcyBhIHRyZWUtd2lkZSBw
-YXRjaD8NCg0KT25lIG9wdGlvbiBpcyB0byBhZGQgYXMgbWF4X2NvbnN0KCksIHRoZW4gY2hhbmdl
-IGFueSBleGlzdGluZyBNQVgoKQ0KdG8gYmUgbWF4KCkgb3IgbWF4X2NvbnN0KCkgYW5kIHRoZW4g
-ZmluYWxseSByZW5hbWUgdG8gTUFYKCk/DQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJl
-c3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsx
-IDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
+--aqiglmpeyh36bxal
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Fri, Feb 23, 2024 at 04:40:18PM +0800, Hermes Zhang wrote:
+> On 2024/2/22 7:03, Sebastian Reichel wrote:
+> > On Mon, Feb 19, 2024 at 06:05:40PM +0800, Hermes Zhang wrote:
+> > > Since all of the regs in the bq27xxx_reg_cache are now cached, a simp=
+le
+> > > property read (such as temperature) will need nine I2C transmissions.
+> > > Introduce a new module parameter to enable the reg cache to be config=
+ured,
+> > > which decrease the amount of unnecessary I2C transmission and prevent=
+ing
+> > > the error -16 (EBUSY) happen when working on an I2C bus that is share=
+d by
+> > > many devices.
+> > So the problem is not the caching, but the grouping. So instead
+> > of adding this hack, please change the code to do the caching
+> > per register. That way you can just keep the caching enabled and
+> > don't need any custom module parameters.
+>=20
+> Thanks for the reply. Yes, the key is the grouping. So do you suggest to
+> drop the bq27xxx_reg_cache struct totally and handle the cache for each
+> register in e.g. bq27xxx_battery_get_property()? Then it will require an
+> extra time info for each register, will that be a big cost? Or am I
+> misunderstanding?
+
+Yes, this requires time info for each cached register. I don't think
+the added memory is a big deal. There usually is only a single
+battery and we are caching 10 timestamps. So that's 80 bytes.
+
+-- Sebastian
+
+--aqiglmpeyh36bxal
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmXbrLkACgkQ2O7X88g7
++pocVA//Q3NWvrv9EnteHXjrW328s/R0Hdu1cPyVLAEt1j7UCWIMBwo38e5JuZuf
+sEKkvFNDgGe+jJzVS2DRkvky8J+JvUZ4L0pgXdbGHPKhM/vIRjyD1RhJneIc6U3S
+q3e7hUOSj0YrKBHO/GbDpyB77p1Uo23E+e7Fs9EWPEc9ZawvOqBxb6b9O29Dyf3x
+ZbliWPS6JZ2cIZ7RFtUMHc8e1AItmluyHTHMxJz9d2gL1vPrUBT7gmD6PzZl/u1o
+EI7c4DXDUUKb2Cvqh04pXMrVMU8z+u6SIhZExFtijs5VZjzn3BjREIo8Vj046shC
+ggB2awWdekGzLw0qjiRlRicy2eP76lCKFfeDt1MGwLxDLExVi1vwQcxsjKBjNUfK
+QzwZgIGQUc/zzKwhGagjh+oJebCqnUgd8K9S/226Z/m1oDona/Rt1aJios780UA4
+NyeI7O2BgnpDzRoFJnqLduzFiXuW5KakLkRqwrQeb14HucMvWDxILGBmJPH+Y11W
+ZHlBML5F2VYYxx7qgpgM/nYmKPM+g3uJXuGLlubdkV2rrwVcy4uB1kZNjhFJblCh
+hn/0JNoSJtjnzmwYRvOEOAcuAHgDEyjaLkNs+LwDtrQkEeIcFI/+TU3vqdU+sFxJ
+n0yEeuGxMdC3dk9nE6bAn9DJ7DrynifbW74RVxrtaWGlY5uCrus=
+=e0sY
+-----END PGP SIGNATURE-----
+
+--aqiglmpeyh36bxal--
 
