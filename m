@@ -1,114 +1,193 @@
-Return-Path: <linux-kernel+bounces-80181-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80182-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D19F862B69
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:07:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08A5D862B71
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:09:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B62112814EE
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:07:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C1C31C20F9D
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:09:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89A15175B6;
-	Sun, 25 Feb 2024 16:07:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 906CA175B6;
+	Sun, 25 Feb 2024 16:09:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z0fzgpB0"
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="asg93LvR"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4017F10979;
-	Sun, 25 Feb 2024 16:07:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D903317736
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 16:09:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708877242; cv=none; b=ALrcdIrQcuHNS4iRYAf6ClV+7qV8feTA8qTt3SOoX63O2detpGCLy9/CRqLICLR8Fd+4AhsR8bhUhe3EjBbWBtXsXwRFlC7QVOwhFZrmzLhebUBET4+Fq6QP20gJNSvW4H9CpOkCFoOChKf6OlUEvBbxj3kNBE2WoumpyFsdf3c=
+	t=1708877375; cv=none; b=tUvFtJrieH2G7GXqtVAM9Cvz95MhETv6RjXE8piylLco8EaP+nM+oyOhEmGBuKClzRoO2RVNgyo5f0S2MDNKt528oeajpLQYCmfLg2c2cQGOZnm/0vQCCTzd7HgbJc2iTbi6h51r8pMuf+4ewNRM4PXvBXAv3aYWCuagBvlC1pw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708877242; c=relaxed/simple;
-	bh=ojvq2a2lJ8LluXCTGBiPZiYk+1YnG7ZSb6t6D/YYrEc=;
+	s=arc-20240116; t=1708877375; c=relaxed/simple;
+	bh=CXVFzfxGpn9qFW0iQ3fUvAoQ4Dnr+o7skXfAk4DfHeM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V7SK54+gltpXN3C5K7rIuSg7DPv7XlQZov5bRQ9eCL8QlaEHkcfR38rzhPv9y2xVomJs41nj19I5Y1CoWhU84P5kfMi9Igmbfz491F2qPOKS4lYO+KruAyknTVVUwHTBq0B/7aim20qauJhL1LD/5Enoz0/pEyVk3scF+/GKSzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z0fzgpB0; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5d4d15ec7c5so1728310a12.1;
-        Sun, 25 Feb 2024 08:07:21 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=IlNu9krSfXOuXeAs5C+xNOIyEemRk63cpguAtUKbiYHyhShAOOt3CcJWwGfH5wtxkvFHqDTqzF2+WYizik/7wDnKN0KBA24VLa6IWj0GBoXj6p83qEPVbmq712BmzlrB0F/eJEFcJWPe/4FDQp2vN0vEDXyFlTtnZ+T5m8kz0z4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=asg93LvR; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e4f45d4369so163081b3a.0
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 08:09:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708877240; x=1709482040; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gRB5mRoUZdjLcMpcOzyXA/yV9oCYtE3HK3r97520qXw=;
-        b=Z0fzgpB0ilqmQnLxQA3Sr8OdNiV/TKkjxCVfjudwePXhn3Z/QqSoWVvjhp9PGX3fyc
-         VmRnWCA86LeDsRW5Yr0M6g1T7yzvVoxk5wUuaPf5J/UHgrDouGL0DojxM86sGRawJi5J
-         f7HxXKUrHRC4Cjp+2jppve5kGgm+DaaN5Srl78DbSTN7vaDmXk7h4srJXT8nWPAO+BKM
-         CQ8eBmGCZGoS7mnV7onttq2uIKXvj2/OvyZWubSar1boPZultHY1DvTxzb/fvMdZuhMY
-         KOnNV7ZwEHJRjOPpITQs2TErNSlUPtZQceRCMXJVI1i8miSjbLU+C5iTKanzSut4ECkc
-         t+Eg==
+        d=linaro.org; s=google; t=1708877373; x=1709482173; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=2cB6oxKBDQvRDzfa7GxlQ1uXrMwFDIwByZ0N4Dfmmns=;
+        b=asg93LvRQqCxfd8oyh9AGARiAEXBHex8qNukHySCUNnHXpSy3WiVeU3i/nOy5O3Q5H
+         ShSKa+bJ7ZNmfyGcAarfCfnDrtr+9PGtNgTbQoBJAYUKO+1o4DoUf9z5WiqiYlCpicm6
+         OMYGmFjf9gIXkvsPxy4xMXyhk0/tNJFVk5EQ7sOZT0z4eIz10KHPnT7xBEGf/1X+o5Y1
+         aN+YjgzlBIjZl4jcrNW2W2ewY/YaY2/h6HI6UDa7wRw7YHJDarPn/FgiZn7EjgiXjO/Y
+         49Ozi1GnFdAUd+eMqMiz7cfoVi5UuHQl40qOoKWad2dL9Sz53xBJssCDbkhexsvF8tXk
+         Yrkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708877240; x=1709482040;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gRB5mRoUZdjLcMpcOzyXA/yV9oCYtE3HK3r97520qXw=;
-        b=Xx1eu+FBaU6bDbvGXJJYsZ3ctzpRtoCmj7sTRXIxflvScwlb7uOvx80XMEMSMAb1wN
-         Ww36jHUpZwZQvronvF02XKwAlz/cLbHrL6znCRL6cFQSKt73ALMnBHfRwQBkCNM6pavf
-         54UzG9ezYIOMg/++s15/rTkIeENwxHEDoSuNtIx98C2tZNqldy/O8mqJkXiq0KSZkmlE
-         af1u4FkYdHcSPrw3mhWVehITKkR5JL8dYmM+k73TDwbeol6ifeagZlQPDZHDs7oFq+1M
-         JXZxunKvAtRYt+NohiTk4dlhij6guxyo+hMEiIwotCfEGpQadjt4aUlRMSx8//3e6d81
-         J9pg==
-X-Forwarded-Encrypted: i=1; AJvYcCUugYzXCBc+/fujMZBlWDY9LsxtvMyL6ahVpc+cr/lVqCoeLwFBAHx91gEFyiM4oxBo9rBel9/QknJ3+vqCo9zhkPR30NLauT/PmYCguRLoOkevH41NPwkGb76eDOlq1PeBVk+F+V54nQ==
-X-Gm-Message-State: AOJu0YzT0hkg7rAtTqiAJrQe1Kal9LsxhrUPXUeDamWmgm3VI716YPMY
-	Tsb64dBkX9YlXafzmuFzTtTpT3VbcnLxz1m10tsEEg6wmXf0C+ML6dMz17ng
-X-Google-Smtp-Source: AGHT+IFySaw8RVbLMVPmMTHCP6+zcKpDhaLX1sNJZSMoh3WH2MZUrDZ40yNwEiDyvTgH3yq7AIZwxg==
-X-Received: by 2002:a05:6a21:3987:b0:1a0:ebbd:9aeb with SMTP id ad7-20020a056a21398700b001a0ebbd9aebmr6781904pzc.5.1708877240600;
-        Sun, 25 Feb 2024 08:07:20 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a21-20020a63e415000000b005bd980cca56sm2430625pgi.29.2024.02.25.08.07.19
+        d=1e100.net; s=20230601; t=1708877373; x=1709482173;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2cB6oxKBDQvRDzfa7GxlQ1uXrMwFDIwByZ0N4Dfmmns=;
+        b=FnxuFMApueqeSmBddFJs1jF9ZSpMzBXLm0lbeCoIUttD0s1VsFgHx0kA3r6MxKFPZF
+         Oj4+ndzOrfqePtU8N71NgTXCqYKmtvRDgF6ZSKqGFXu+rsKEc7v36TyLPsE3lWOwWtxU
+         NgwljqlSXI4+nUQe7HWnPdeWNVckuFhtnPSE6IFHflByLMHJCBtKbgcvdGOy7hzRtJyR
+         FxMEP7m/60pUkRQhBrfTZCxPiTdX/9lVKPglOdrueUaXGj2wnhtXGEGfyx/5NSn+jkKW
+         KGxzy0XiTW8LpaGt/gCbrqb90R6mz0VxfvQ5jGFKB+Y4S/2147mjZTjQfeWOmTEw8wgO
+         Zekw==
+X-Forwarded-Encrypted: i=1; AJvYcCXAQ8FfPfzgaMuWj5XBM/eHZRKk7xWPqEnGSW+KBhYAlQe1f1gu3OZMBq8BAVRUSuQk+3wc0EN2M4gMlTdg0N4S7pWPiMAStDeLXV37
+X-Gm-Message-State: AOJu0YxX42x4G1SONlHj15MDKTJpkvj+EokDukHDjTmMJ5PH49ZF8JvR
+	0EnelM1dMBYdyySptrXUHtWAKS3e/7d8fALlwXGoxmrsLJw58gNsaGSN2WLpOQ==
+X-Google-Smtp-Source: AGHT+IGQbcNzjmDRKIKLEdITzXTWaRNodmOp/SEhRlcPD3qZCwGAjUzjwC35n9gDwnqOyp00/kTIEA==
+X-Received: by 2002:a05:6a20:9f03:b0:1a0:a61d:1230 with SMTP id mk3-20020a056a209f0300b001a0a61d1230mr4242673pzb.23.1708877373021;
+        Sun, 25 Feb 2024 08:09:33 -0800 (PST)
+Received: from thinkpad ([103.246.195.16])
+        by smtp.gmail.com with ESMTPSA id f26-20020aa79d9a000000b006e4f0e2cc52sm2470639pfq.168.2024.02.25.08.09.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Feb 2024 08:07:20 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Sun, 25 Feb 2024 08:07:19 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/5] More unit test for mballoc
-Message-ID: <2e7f5498-1a75-49c7-9217-74eac8895a0c@roeck-us.net>
-References: <20240103104900.464789-1-shikemeng@huaweicloud.com>
+        Sun, 25 Feb 2024 08:09:32 -0800 (PST)
+Date: Sun, 25 Feb 2024 21:39:26 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Wadim Mueller <wafgo01@gmail.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Jonathan Corbet <corbet@lwn.net>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Damien Le Moal <dlemoal@kernel.org>, Shunsuke Mie <mie@igel.co.jp>,
+	linux-pci@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [PATCH 0/3] Add support for Block Passthrough Endpoint function
+ driver
+Message-ID: <20240225160926.GA58532@thinkpad>
+References: <20240224210409.112333-1-wafgo01@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240103104900.464789-1-shikemeng@huaweicloud.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240224210409.112333-1-wafgo01@gmail.com>
 
-On Wed, Jan 03, 2024 at 06:48:55PM +0800, Kemeng Shi wrote:
-> This series covers more function to mark on-disk bitmap. Besides, some
-> code which is relevant to buddy cache is also tested.
-> Before more work is done, I want to be sure I'm not on a wrong
-> direction!
+On Sat, Feb 24, 2024 at 10:03:59PM +0100, Wadim Mueller wrote:
+> Hello,
 > 
-> v1->v2:
-> -Fix unused variable warning which is reported at
-> https://lore.kernel.org/lkml/202311260042.kMxL6DnL-lkp@intel.com/T/
+> This series adds support for the Block Passthrough PCI(e) Endpoint functionality.
+> PCI Block Device Passthrough allows one Linux Device running in EP mode to expose its Block devices to the PCI(e) host (RC). The device can export either the full disk or just certain partitions.
+> Also an export in readonly mode is possible. This is useful if you want to share the same blockdevice between different SoCs, providing each SoC its own partition(s).
+> 
+> 
+> Block Passthrough
+> ==================
+> The PCI Block Passthrough can be a useful feature if you have multiple SoCs in your system connected
+> through a PCI(e) link, one running in RC mode, the other in EP mode.
+> If the block devices are connected to one SoC (SoC2 in EP Mode from the diagramm below) and you want to access
+> those from the other SoC (SoC1 in RC mode below), without having any direct connection to
+> those block devices (e.g. if you want to share an NVMe between two SoCs). An simple example of such a configurationis is shown below:
+> 
+> 
+>                                                            +-------------+
+>                                                            |             |
+>                                                            |   SD Card   |
+>                                                            |             |
+>                                                            +------^------+
+>                                                                   |
+>                                                                   |
+>     +--------------------------+                +-----------------v----------------+
+>     |                          |      PCI(e)    |                                  |
+>     |         SoC1 (RC)        |<-------------->|            SoC2 (EP)             |
+>     | (CONFIG_PCI_REMOTE_DISK) |                |(CONFIG_PCI_EPF_BLOCK_PASSTHROUGH)|
+>     |                          |                |                                  |
+>     +--------------------------+                +-----------------^----------------+
+>                                                                   |
+>                                                                   |
+>                                                            +------v------+
+>                                                            |             |
+>                                                            |    NVMe     |
+>                                                            |             |
+>                                                            +-------------+
+> 
+> 
+> This is to a certain extent a similar functionality which NBD exposes over Network, but on the PCI(e) bus utilizing the EPC/EPF Kernel Framework.
+> 
+> The Endpoint Function driver creates parallel Queues which run on seperate CPU Cores using percpu structures. The number of parallel queues is limited
+> by the number of CPUs on the EP device. The actual number of queues is configurable (as all other features of the driver) through CONFIGFS.
+> 
+> A documentation about the functional description as well as a user guide showing how both drivers can be configured is part of this series.
+> 
+> Test setup
+> ==========
+> 
+> This series has been tested on an NXP S32G2 SoC running in Endpoint mode with a direct connection to an ARM64 host machine.
+> 
+> A performance measurement on the described setup shows good performance metrics. The S32G2 SoC has a 2xGen3 link which has a maximum Bandwidth of ~2GiB/s.
+> With the explained setup a Read Datarate of 1.3GiB/s (with DMA ... without DMA the speed saturated at ~200MiB/s) was achieved using an 512GiB Kingston NVMe
+> when accessing the NVMe from the ARM64 (SoC1) Host. The local Read Datarate accessing the NVMe dirctly from the S32G2 (SoC2) was around 1.5GiB.
+> 
+> The measurement was done through the FIO tool [1] with 4kiB Blocks.
+> 
+> [1] https://linux.die.net/man/1/fio
 > 
 
-With this patch series in linux-text, and with various debug options
-enabled, unit tests for ext4 fail widely and result in crashes.
+Thanks for the proposal! We are planning to add virtio function support to
+endpoint subsystem to cover usecases like this. I think your usecase can be
+satisfied using vitio-blk. Maybe you can add the virtio-blk endpoint function
+support once we have the infra in place. Thoughts?
 
-[    4.798582]         # Subtest: test_new_blocks_simple
-[    4.803166] BUG: key 00000000000000a8 has not been registered!
-[    4.803443] ------------[ cut here ]------------
-ILLOPC: ffffffff9050cbf4: 0f 0b
-[    4.803521] DEBUG_LOCKS_WARN_ON(1)
-[    4.803720] WARNING: CPU: 0 PID: 154 at kernel/locking/lockdep.c:4895 lockdep_init_map_type+0x224/0x250
-..
-[    4.833277]         # Subtest: test_mb_mark_used
-[    4.835875] ------------[ cut here ]------------
-[    4.836055] kernel BUG at fs/ext4/mballoc.c:2053!
+- Mani
 
-Guenter
+> Wadim Mueller (3):
+>   PCI: Add PCI Endpoint function driver for Block-device passthrough
+>   PCI: Add PCI driver for a PCI EP remote Blockdevice
+>   Documentation: PCI: Add documentation for the PCI Block Passthrough
+> 
+>  .../function/binding/pci-block-passthru.rst   |   24 +
+>  Documentation/PCI/endpoint/index.rst          |    3 +
+>  .../pci-endpoint-block-passthru-function.rst  |  331 ++++
+>  .../pci-endpoint-block-passthru-howto.rst     |  158 ++
+>  MAINTAINERS                                   |    8 +
+>  drivers/block/Kconfig                         |   14 +
+>  drivers/block/Makefile                        |    1 +
+>  drivers/block/pci-remote-disk.c               | 1047 +++++++++++++
+>  drivers/pci/endpoint/functions/Kconfig        |   12 +
+>  drivers/pci/endpoint/functions/Makefile       |    1 +
+>  .../functions/pci-epf-block-passthru.c        | 1393 +++++++++++++++++
+>  include/linux/pci-epf-block-passthru.h        |   77 +
+>  12 files changed, 3069 insertions(+)
+>  create mode 100644 Documentation/PCI/endpoint/function/binding/pci-block-passthru.rst
+>  create mode 100644 Documentation/PCI/endpoint/pci-endpoint-block-passthru-function.rst
+>  create mode 100644 Documentation/PCI/endpoint/pci-endpoint-block-passthru-howto.rst
+>  create mode 100644 drivers/block/pci-remote-disk.c
+>  create mode 100644 drivers/pci/endpoint/functions/pci-epf-block-passthru.c
+>  create mode 100644 include/linux/pci-epf-block-passthru.h
+> 
+> -- 
+> 2.25.1
+> 
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
