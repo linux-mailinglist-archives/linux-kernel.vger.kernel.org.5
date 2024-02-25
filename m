@@ -1,131 +1,142 @@
-Return-Path: <linux-kernel+bounces-80236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D9D7862C5D
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:40:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2774B862C5F
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:44:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F6871C20AA6
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:40:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 530881C20B99
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:44:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83A2D18B1A;
-	Sun, 25 Feb 2024 17:40:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F2B518EB3;
+	Sun, 25 Feb 2024 17:44:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="j/WsUxsI"
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cmSoAl8x"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A07B1862E
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 17:40:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40F1D1862E
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 17:44:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708882845; cv=none; b=LIy23qTPGJTpuU98g9Au0mC1uYW/VeyvGLks7DdSWz+BzJ0L0mBSxfi6a0YmALJ+Ls42KxO4IDyjwhJ0NhvRlMvOzLkHvy1icoiiOBCAw444tOUf/Wx2kS7D3HlyfXGHIcBnat2p0PeVwTsl7K2qMfKqCG4SR1rsIwCMErPlW+M=
+	t=1708883060; cv=none; b=BakQJo2x3pqBefJ45OQVvNa84bYxvrt3009DRBeNeCVjT2cAsm/iqPt2jmKDPb+NjdJRDmcnCa3B6H01i98UqqS95uokOQjWV5UqBNeT2GAgujpxtKDDk5AUfEdQQuO9CqxfgGtsUWtdr9KGmjgkRT9UJ5ApKIB48DP+8vRgNTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708882845; c=relaxed/simple;
-	bh=M5ueI4rE4FkA0cMsA2V/WQsiAfStdcGMf7luW6cgZjM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eQ3Ol+G+7k0z4uPnZJvNmokWvzMWNAWguF7HGvkEaSCjRFsi22QK5t8bcd6Gh4vIzRibKWehmW0SbKe6jWJ1av06hwcgJkO9/vr0D4lftQqDxQwx37nO5a9r33Szwfwomr5OC3fd1hzHz3CYzciFETCNyRw/eOdptiD8s4PO1to=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=j/WsUxsI; arc=none smtp.client-ip=209.85.210.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6e2d83d2568so2062875a34.3
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 09:40:44 -0800 (PST)
+	s=arc-20240116; t=1708883060; c=relaxed/simple;
+	bh=0K5xMPOYequh7ZQp99U8co9tYPwwBbzQ3CMMu8+kdV8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Qq9/XcxTDrn2J6CuBX02+CXMdwwtqIlbfpMCuzkca9KucnJVv/GfUx1Aud38FuRk+FjZWmwG8OylyTF2Ap1q3suJf0ukcW7nRGzjMcL+ajYdyYnh/jIHPGKwtoVu6jOHVzFZ/hmHbvM24LooIfIoGAW0Lerpd8lvhO2d5K4y36k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cmSoAl8x; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dc744f54d0so163895ad.0
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 09:44:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708882843; x=1709487643; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=im7JPg/kdSuHr65BMEB/5JgpND5OUK4g3Oon83ZAQbE=;
-        b=j/WsUxsIHnSGXSNX9juM07N/s6+qZ2lFzvRCsuK4yzy5v6BqGlN6adGBRUVC6aQvkH
-         q+kbNL/Cjhf69HcINJ1UlsoWM4zkfbE/hCHJR7MNHfIQWKa9C019QpDT1K+ru2Ti9+xJ
-         IiRQzk/F9MshO5kOVd24JPn9wgrxWea9kGDPM=
+        d=google.com; s=20230601; t=1708883058; x=1709487858; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qStKuBILkLY1v8oXdUPbeQuvbfRqjxTb+0Ot/9pOfvc=;
+        b=cmSoAl8xMrLxnh2LpC+Vcwyk5RHfzVdB4lZ3GKIPeTqCqpMglEj3/ZYv9a9N+w7uif
+         avTr62blqQcTHzI1nLp16p2rQsi8ilC6I+Jr+DIETdXon4WagO/wEDw3zX17oCGp4ugG
+         +FwMRcsHS7UJ9CGc+4cxOZwrN5QoDlNM0Pw1wvcFzsycRLkIUgrjtBURDKFSjDJbc8RP
+         za6xZI6L/rtrJRx0Y/hfOJQNyOynDrR+rTFQ3J6Z2Z3wlCsWb9+bua2rJNPjU99EB3fg
+         LbysNdpYiV+99iip/9inGO3UQ7J1ubskXBvk9m6ByLOatAFPCZR/jL5hRttv/pUhxkLH
+         M86g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708882843; x=1709487643;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=im7JPg/kdSuHr65BMEB/5JgpND5OUK4g3Oon83ZAQbE=;
-        b=mOtladzVNhi5zByIgVxeeHssPMjQMYchlY2OvymNC66miv+9Qwa6FZMLf+8YfbDT95
-         xSv3L67A5GX6PQxWVDnNrXMPp1BFbWsbEd0qEv+eNiqGFktvOXAzRZlJeyoOSdGTwwyf
-         WWoF37GVSjzue1v3XapPzr7G89K1JOba2ouu8gBSUCc9FduuIHUFQh3e2g/b77fHzbNa
-         Z88zfOgInfr1bGklCUIQbQIFZKScLBzpGCzGAIzymQLbMzQvKLob2ELhKHRxuQ+ihJs/
-         V9Jzt/FTMoyMRmH76uGa2QjG3cw12zvuaU62Pl3sEjB9NHx6Crm4lezWAYNeuB53LUGu
-         bR4g==
-X-Forwarded-Encrypted: i=1; AJvYcCU/abqGVnylQHT+xNaVWbO8IdZ8NRs3ru6kXzXbffQk+S8ybRcHzPUY1r5UNLekUOotAjw56g8i718W3LNZTkve3oLqS1gFy8i2ti2J
-X-Gm-Message-State: AOJu0YzSAOZVTcEjkX+QchDZN1bW8E3JbgTDuovjDDI90uO6Sn5PNIer
-	UBTsNxGqvAyQpMGbBup7rdTAj1s5CtD6IGG72xbOHG+XjBEbZTCHTagJipZrbGxG0raagD1LfhA
-	=
-X-Google-Smtp-Source: AGHT+IG1ii6o0hewhZOta9UOelNTuMqxYGm5gx1XBmzTSnwG7wWQcfGg2tbZQy7lNoWTwkw+EDPmxw==
-X-Received: by 2002:a05:6358:190a:b0:17b:2bc6:e843 with SMTP id w10-20020a056358190a00b0017b2bc6e843mr7852953rwm.18.1708882843251;
-        Sun, 25 Feb 2024 09:40:43 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id e1-20020a635001000000b0059b2316be86sm2556856pgb.46.2024.02.25.09.40.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Feb 2024 09:40:42 -0800 (PST)
-Date: Sun, 25 Feb 2024 09:40:41 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Allen <allen.lkml@gmail.com>
-Cc: Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
-	torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-	kernel-team@meta.com
-Subject: Re: [PATCHSET wq/for-6.9,6.10] workqueue: Implement
- disable/enable_work()
-Message-ID: <202402250940.15C634D27@keescook>
-References: <20240216180559.208276-1-tj@kernel.org>
- <ZdUK1jhMUSyC7yUj@slm.duckdns.org>
- <CAJhGHyC8Y7QU3TWDA1jz3D5VB3BDG9JcZ4XB_9rft1UiMF7uYw@mail.gmail.com>
- <ZdWMd2rHjCEUOfAp@slm.duckdns.org>
- <CAOMdWS+7=qD9e=Q+Rv65rMXJ1uc_KPVN43uWrJ+xUdoXoV-D4Q@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1708883058; x=1709487858;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qStKuBILkLY1v8oXdUPbeQuvbfRqjxTb+0Ot/9pOfvc=;
+        b=wHoHpMZWj6LO4Cv9eZsfq/nYKZ7rWHeISoeA5V42PMINdJVFuXGqC/woYbLdnFs5p+
+         CnKG3njOpZcyCRsgtmywnWJ6mnetmLfAm+d65jT96cXMTqunOapKdp+eUokkQZOn2sV1
+         lawUdyZCBPq2fMizhFh7rWLk6i2OcznZTi5fHbMvm6IIBRMfkDEAIlt0+Y3unQ/jFg+w
+         Wb0sIslUREn8tknQboEM6sJ7+d29+s+xtTt9VpZB3f2aSey4HwnZtWqDQgtdKTfEegIP
+         kiOASv0pLnJZpRkpDUEr7idi5/MT3cAZqozPu3Tp4uibKrcIReBM+JIcG9FKtKpw+6FT
+         RiWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUzttjzXZk4EkafFMlKZ6N3HgEaPPMOJ/XWOPTcSAFWBFiC8qU+SHvvSQP85H3lsGzWc/evHvFAZ+B5CLioSfWlQSKrGfoBTaIm5HZi
+X-Gm-Message-State: AOJu0Yx7sWyijimdpQZ7che5SVKzba/KUTYb/LLaBt/7mTQYE70Lo2U0
+	/rEndlu1tx7ecAF+4ahc7V8fb7urRLWrWRjKWleDtVmDK8sYq29luimbSdg8CVUK3vcD42Bn7Q1
+	rV1g/MDhD0MHj76ykPOkYUFGyG0I7P605pncJ5B2/lbdPb97Bulot
+X-Google-Smtp-Source: AGHT+IErOGEY0ni+ULakJAaE+x5eBVu1gsfbzxfzy3KLUCvMo87Nc+2OWz/bDWgTxXZssUbPaDS0WS4CaFvvsNOJJik=
+X-Received: by 2002:a17:902:fc4c:b0:1db:971b:cb62 with SMTP id
+ me12-20020a170902fc4c00b001db971bcb62mr239463plb.8.1708883058352; Sun, 25 Feb
+ 2024 09:44:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOMdWS+7=qD9e=Q+Rv65rMXJ1uc_KPVN43uWrJ+xUdoXoV-D4Q@mail.gmail.com>
+References: <9538b2b634894c33168dfe9d848d4df31fd4d801.1693085544.git.christophe.jaillet@wanadoo.fr>
+ <3e1ed5a3-55dc-4652-936d-fd36e0442d79@wanadoo.fr>
+In-Reply-To: <3e1ed5a3-55dc-4652-936d-fd36e0442d79@wanadoo.fr>
+From: Ian Rogers <irogers@google.com>
+Date: Sun, 25 Feb 2024 09:44:04 -0800
+Message-ID: <CAP-5=fWEQdgOsVioWEHr6QNPv81r6VjAR5vyA3OGSuF09RsXBg@mail.gmail.com>
+Subject: Re: [PATCH] perf pmu: Fix a potential memory leak in perf_pmu__lookup()
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, 
+	Arnaldo Carvalho de Melo <acme@redhat.com>, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 21, 2024 at 09:03:47AM -0800, Allen wrote:
-> Tejun,
-> 
-> > > For 0001-00010:
-> > >
-> > > Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
+On Sun, Feb 25, 2024 at 7:42=E2=80=AFAM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+>
+> Le 26/08/2023 =C3=A0 23:32, Christophe JAILLET a =C3=A9crit :
+> > The commit in Fixes has reordered some code, but missed an error handli=
+ng
+> > path.
 > >
-> > Applied 0001-0010 to wq/for-6.9.
+> > 'goto err' now, in order to avoid a memory leak in case of error.
 > >
-> > Thanks.
-> 
-> I have rebased the conversion work based on
-> 
->  git://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git disable_work-v1
-> 
-> 0001-dma-Convert-from-tasklet-to-BH-workqueue.patch
-> 0002-IB-Convert-from-tasklet-to-BH-workqueue.patch
-> 0003-USB-Convert-from-tasklet-to-BH-workqueue.patch
-> 0004-mailbox-Convert-from-tasklet-to-BH-workqueue.patch
-> 0005-ipmi-Convert-from-tasklet-to-BH-workqueue.patch
-> 0006-s390-Convert-from-tasklet-to-BH-workqueue.patch
-> 0007-drivers-media-Convert-from-tasklet-to-BH-workqueue.patch
-> 0008-mmc-Convert-from-tasklet-to-BH-workqueue.patch
-> 
-> Patches: https://github.com/allenpais/for-6.9-bh-conversions
-> KSPP Issue: refactor all tasklet users into other APIs · Issue #94 ·
-> https://github.com/KSPP/linux/issues/94
-> 
-> I am working on drivers/crypto/* and drivers/net/*. This might a
-> day or two more. Please provide guidance on the types of testing I
-> should perform.
+> > Fixes: f63a536f03a2 ("perf pmu: Merge JSON events with sysfs at load ti=
+me")
+> > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> > ---
+>
+> Hi,
+>
+> polite reminder.
 
-Great! What's the plan for these? Will they go to subsystem maintainers
-after the next merge window, or is Tejun carrying them?
+Apologies for the delay.
 
--Kees
+Reviewed-by: Ian Rogers <irogers@google.com>
 
--- 
-Kees Cook
+Thanks,
+Ian
+
+> CJ
+>
+>
+> >   tools/perf/util/pmu.c | 7 +++----
+> >   1 file changed, 3 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> > index bb2ca29cd7bd..8dfce84ad9fe 100644
+> > --- a/tools/perf/util/pmu.c
+> > +++ b/tools/perf/util/pmu.c
+> > @@ -1018,10 +1018,9 @@ struct perf_pmu *perf_pmu__lookup(struct list_he=
+ad *pmus, int dirfd, const char
+> >        * type value and format definitions. Load both right
+> >        * now.
+> >        */
+> > -     if (pmu_format(pmu, dirfd, name)) {
+> > -             free(pmu);
+> > -             return NULL;
+> > -     }
+> > +     if (pmu_format(pmu, dirfd, name))
+> > +             goto err;
+> > +
+> >       pmu->is_core =3D is_pmu_core(name);
+> >       pmu->cpus =3D pmu_cpumask(dirfd, name, pmu->is_core);
+> >
+>
 
