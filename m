@@ -1,43 +1,43 @@
-Return-Path: <linux-kernel+bounces-80216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81958862BFC
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:53:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B187862BFE
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:53:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 381531F21CBE
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:53:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9D23281AFF
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:53:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9EA418AF8;
-	Sun, 25 Feb 2024 16:53:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 298851802E;
+	Sun, 25 Feb 2024 16:53:47 +0000 (UTC)
 Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14A6D17BD4
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 16:53:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1771017BDC
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 16:53:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708879990; cv=none; b=koGTeg7itJeDGJ4I4YsDciiaoCX6eiYX7w9TUIVb2YBIzd+34BdhS5qo3hoTvv7ppB6bclrSCO3q/leNPn5os1hymgECF9PGrlAV1LJnG9ub8wPHOpTwBwcKTxO0BM17BnkzRZyY7fpATfXpWbHpRA5hrKtBY7w5a1ug1cyClvk=
+	t=1708880026; cv=none; b=EdTmzlKCJBVw8JnohLD2NCRG/a9TgwUiKE3D4kil3qQU2GCq6SRgp9XlcgOCIvrN+59HiegFd/QeTyip+KqWp87OvuLT/la50d9I9xlPomRCS/6dEUJRamgHCvQFWdsB7Q1STU58S5lXuTtYN4Up3WVW6s4ZVP1XPaSgV19c4hY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708879990; c=relaxed/simple;
-	bh=KLXPJ9GI3IiXMwtDo1lDQylD+73wL23r9MozaWaBREk=;
+	s=arc-20240116; t=1708880026; c=relaxed/simple;
+	bh=yzk8hJGS5EAJboFzprtLjoWXpcFk7Mo9VpW2lpjOHHE=;
 	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=Ta+cCKTjPyqilkIn5fOREZtWQ/rzb4WCLuypt7RsrYhQ/UD/7THTT5qEFQwrUITdR8e43XJp/Gc9xMkLKIwsQq8h5IU3Tnkg2OHOKnpUdWPHEKFL8Sgv1v0nUkPKB9pFJ5dUCoR86fVMr8bes1jcP7YI4Qwj8ljqC2Bk+eWGQuQ=
+	 MIME-Version:Content-Type; b=tbhcj8o6+VU53Xnupdx8JdVDr2+BDlpbNQ0DaxZoTmuCnM9PL7edSV7H+7DCC/OWri6ORCh1htHEoGvuIwFhhslbVKVMns0BWCEETh5zYFPN1xIRQaMkj9/Q5YSJm+uR9IJHnMg6QIgZr0uYZaONmPdRFnMZ9w5dLeCE0t7+kNU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
 Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
  relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-274-USz1BRr9PyCo79CglO0c6g-1; Sun, 25 Feb 2024 16:53:04 +0000
-X-MC-Unique: USz1BRr9PyCo79CglO0c6g-1
+ uk-mta-66-E8tAd1F8OPi8n5OgxZplNA-1; Sun, 25 Feb 2024 16:53:41 +0000
+X-MC-Unique: E8tAd1F8OPi8n5OgxZplNA-1
 Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
  (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 25 Feb
- 2024 16:53:03 +0000
+ 2024 16:53:41 +0000
 Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 25 Feb 2024 16:53:03 +0000
+ id 15.00.1497.048; Sun, 25 Feb 2024 16:53:41 +0000
 From: David Laight <David.Laight@ACULAB.COM>
 To: "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>, "'Linus
  Torvalds'" <torvalds@linux-foundation.org>, 'Netdev'
@@ -50,13 +50,11 @@ CC: 'Jens Axboe' <axboe@kernel.dk>, "'Matthew Wilcox (Oracle)'"
 	<andriy.shevchenko@linux.intel.com>, "'David S . Miller'"
 	<davem@davemloft.net>, 'Dan Carpenter' <dan.carpenter@linaro.org>, "'Jani
  Nikula'" <jani.nikula@linux.intel.com>
-Subject: [PATCH next v2 07/11] minmax: minmax: Add __types_ok3() and optimise
- defines with 3 arguments
-Thread-Topic: [PATCH next v2 07/11] minmax: minmax: Add __types_ok3() and
- optimise defines with 3 arguments
-Thread-Index: AdpoCxYgUiRnRfJCT+mB8NVd2q416Q==
-Date: Sun, 25 Feb 2024 16:53:03 +0000
-Message-ID: <e0f39cf4fbaf4c2f88471ca56935e30a@AcuMS.aculab.com>
+Subject: [PATCH next v2 08/11] minmax: Add min_const() and max_const()
+Thread-Topic: [PATCH next v2 08/11] minmax: Add min_const() and max_const()
+Thread-Index: AdpoCy246SYrYUdtTu+AtQRSWe90RA==
+Date: Sun, 25 Feb 2024 16:53:40 +0000
+Message-ID: <c6924533f157497b836bff24073934a6@AcuMS.aculab.com>
 References: <0fff52305e584036a777f440b5f474da@AcuMS.aculab.com>
 In-Reply-To: <0fff52305e584036a777f440b5f474da@AcuMS.aculab.com>
 Accept-Language: en-GB, en-US
@@ -75,86 +73,68 @@ Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-min3() and max3() were added to optimise nested min(x, min(y, z))
-sequences, but only moved where the expansion was requiested.
+The expansions of min() and max() contain statement expressions so are
+not valid for static intialisers.
+min_const() and max_const() are expressions so can be used for static
+initialisers.
+The arguments are checked for being constant and for negative signed
+values being converted to large unsigned values.
 
-Add a separate implementation for 3 argument calls.
-These are never required to generate constant expressions to
-remove that logic.
+Using these to size on-stack arrays lets min/max be simplified.
+Zero is added before the compare to convert enum values to integers
+avoinding the need for casts when enums have been used for constants.
 
 Signed-off-by: David Laight <david.laight@aculab.com>
 ---
- include/linux/minmax.h | 23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
+ include/linux/minmax.h | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
 Changes for v2:
 - Typographical and spelling corrections to the commit messages.
   Patches unchanged.
 
 diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index 5c7fce76abe5..278a390b8a4c 100644
+index 278a390b8a4c..c08916588425 100644
 --- a/include/linux/minmax.h
 +++ b/include/linux/minmax.h
-@@ -38,6 +38,11 @@
- =09((__is_ok_signed(x) && __is_ok_signed(y)) ||=09\
- =09 (__is_ok_unsigned(x) && __is_ok_unsigned(y)))
+@@ -60,19 +60,34 @@
+ =09=09=09#op "(" #x ", " #y ") signedness error, fix types or consider u" =
+#op "() before " #op "_t()"); \
+ =09=09__cmp_once(op, x, y, uniq); }))
 =20
-+/* Check three values for min3(), max3() and clamp() */
-+#define __types_ok3(x, y, z)=09=09=09=09=09=09=09\
-+=09((__is_ok_signed(x) && __is_ok_signed(y) && __is_ok_signed(z)) ||=09\
-+=09 (__is_ok_unsigned(x) && __is_ok_unsigned(y) && __is_ok_unsigned(z)))
-+
- #define __cmp_op_min <
- #define __cmp_op_max >
-=20
-@@ -87,13 +92,24 @@
- #define umax(x, y)=09\
- =09__careful_cmp(max, __zero_extend(x), _zero_extend(y), __COUNTER__)
-=20
-+#define __cmp_once3(op, x, y, z, uniq) ({=09\
-+=09typeof(x) __x_##uniq =3D (x);=09=09\
-+=09typeof(x) __y_##uniq =3D (y);=09=09\
-+=09typeof(x) __z_##uniq =3D (z);=09=09\
-+=09__cmp(op, __cmp(op, __x_##uniq, __y_##uniq), __z_##uniq); })
-+
-+#define __careful_cmp3(op, x, y, z, uniq) ({=09=09=09=09\
-+=09static_assert(__types_ok3(x, y, z),=09=09=09=09\
-+=09=09#op "3(" #x ", " #y ", " #z ") signedness error");=09\
-+=09__cmp_once3(op, x, y, z, uniq); })
++#define __careful_cmp_const(op, x, y)=09=09=09=09\
++=09(BUILD_BUG_ON_ZERO(!__is_constexpr((x) - (y))) +=09\
++=09=09BUILD_BUG_ON_ZERO(!__types_ok(x, y)) +=09=09\
++=09=09__cmp(op, (x) + 0, (y) + 0))
 +
  /**
-  * min3 - return minimum of three values
+  * min - return minimum of two values of the same or compatible types
   * @x: first value
   * @y: second value
-  * @z: third value
++ *
++ * If @x and @y are constants the return value is constant, but not 'const=
+ant
++ * enough' for things like static initialisers.
++ * min_const(@x, @y) is a constant expression for constant inputs.
   */
--#define min3(x, y, z) min((typeof(x))min(x, y), z)
-+#define min3(x, y, z) __careful_cmp3(min, x, y, z, __COUNTER__)
+ #define min(x, y)=09__careful_cmp(min, x, y, __COUNTER__)
++#define min_const(x, y)=09__careful_cmp_const(min, x, y)
 =20
  /**
-  * max3 - return maximum of three values
-@@ -101,7 +117,7 @@
+  * max - return maximum of two values of the same or compatible types
+  * @x: first value
   * @y: second value
-  * @z: third value
++ *
++ * If @x and @y are constants the return value is constant, but not 'const=
+ant
++ * enough' for things like static initialisers.
++ * max_const(@x, @y) is a constant expression for constant inputs.
   */
--#define max3(x, y, z) max((typeof(x))max(x, y), z)
-+#define max3(x, y, z) __careful_cmp3(max, x, y, z, __COUNTER__)
+ #define max(x, y)=09__careful_cmp(max, x, y, __COUNTER__)
++#define max_const(x, y)=09__careful_cmp_const(max, x, y)
 =20
  /**
-  * min_t - return minimum of two values, using the specified type
-@@ -142,8 +158,7 @@
- =09__clamp(__val_##uniq, __lo_##uniq, __hi_##uniq); })
-=20
- #define __careful_clamp(val, lo, hi, uniq) ({=09=09=09=09=09\
--=09_Static_assert(__types_ok(val, lo), "clamp() 'lo' signedness error");=
-=09\
--=09_Static_assert(__types_ok(val, hi), "clamp() 'hi' signedness error");=
-=09\
-+=09_Static_assert(__types_ok3(val, lo, hi), "clamp() signedness error");=
-=09\
- =09__clamp_once(val, lo, hi, uniq); })
-=20
- /**
+  * umin - return minimum of two non-negative values
 --=20
 2.17.1
 
