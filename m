@@ -1,101 +1,100 @@
-Return-Path: <linux-kernel+bounces-80286-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80287-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F0B2862CE8
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 21:46:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13105862CEB
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 21:47:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 500021C21332
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 20:46:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAD0F2831AD
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 20:47:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B161C1B81D;
-	Sun, 25 Feb 2024 20:46:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11B451B953;
+	Sun, 25 Feb 2024 20:46:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Vduig1bT"
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JbMcQ7Ii"
+Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74C1817BBD
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 20:46:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED4551B947
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 20:46:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708894004; cv=none; b=GWeFEn5T9YY8sFRE3jat+ePYrIKM/moyTDVaY5caHCvz/ye6+hsCuQ4qpeYAZz8W3XykHOesBUveIPFSVTbOfvLy+UHHeUH/Q0HhZM0a0FBLQnbNGcDv98SpCJt/cwH2DETkY3WEhhhWMQVzDv22OoD/YnauBzLvhQWixvXhq84=
+	t=1708894018; cv=none; b=SQxoy9B5R9O17TupaN2vl87Qi6FRlVqE0IEz3idDctW/uqqNsBXzqCemHZUZhqoF6/CnH+WgY+hlw5he6bXoeEVtlLL7nntKhy8EF1HCs+F/m3wk+xep7oJrtE3uHbOyq2lRk/hHKOAjG2ClBG5FHj4n/nArvAVnJ9VqixCj8bE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708894004; c=relaxed/simple;
-	bh=SrPQRCzhMvMmii9hQdPXD1YvNqRI54qycQwonRLO1ck=;
+	s=arc-20240116; t=1708894018; c=relaxed/simple;
+	bh=sE7UpPpq14m6j1C5fjYJz6pL/gBGgixJwDk3zBLz1LE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SEaR1betTMXo1/YktbJTKGQv61n2STsbLNu7o6XkcLGbxtm3zf/EP+cznkCcoojQqn48TTHplXkrEXyh1g63Hr3WpeItL5RRXcxxHlWTyBmqOPb4lflVIA7hL/WsJwB39Xa80t4GNNaxVVkDj3sstBFiskrhlP9Kx8sShHvvjB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Vduig1bT; arc=none smtp.client-ip=209.85.167.172
+	 To:Cc:Content-Type; b=fMo8ESBQkIt60ahvf0tWow7x6vUtVH7p6guWct5LuNCbPVZVdytoq4Eeh58SkuumZRDkknjb8F2ApHNNgTr/Rvp8v0Ix83yXnlXQAnjMZoM5/25Wa7Mei7qHhlJd8gfP6lNcWe9QXe7NOF9k0jbpEV+9qpM9KGZj9XWmXb2eIQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JbMcQ7Ii; arc=none smtp.client-ip=209.85.166.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3c1a172e46bso189857b6e.3
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 12:46:42 -0800 (PST)
+Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7c72294e3d1so116536939f.1
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 12:46:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708894001; x=1709498801; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1708894016; x=1709498816; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=jaoEWYXtOjOULbW2yMrOmnPYIPrfPlzxVubLNRsgJlQ=;
-        b=Vduig1bTlKQbu0yvrCM/lHROy/o0ypR163cnclNvudv3dUoUjENn0cFSdPIeQm89s8
-         q4btaB2uktWptukeVFh/71G45Z1czfj/K3/XagmBfqv/sWCbG+uWbv7xzGv2vxxJWsq0
-         J9+eXFOoWaer0ppit8cWeRTwY25TQ7qDS73DvvWtSMx6wLWzEq3KI5Ci3x85MbrZO3fo
-         svQ2x81PE5dKpA+XFlXONBlVrq8JWLynaA9C1/TQFa5ZKqpufA8wA6U6INGM4Kr1qSOb
-         w5HM9ksyVKdxyUZaO3RbhyWXWoTH8qtCuoB7f8eIJdH2FAd7SaHG3RBBavDT16+ClqIZ
-         F6yw==
+        bh=fP0+4HWFw0qnQgXN16N53EqzsauNUwws4Q93UfRzHx8=;
+        b=JbMcQ7Ii6vhGOHKqIk/6ZKZCvrQtQinhqyfUalCOBgLhp+xha6WiAYbgAxq2lbkjjh
+         IYJqIxhKggDPDOn39oiBavH6Z2w0lmCt+Sb1ajpeAv58Rf6ihPvCSYu1nD5aRS4EfmFf
+         XqLEFX6nSiDMQzAmIz5a7MNbllY3Zbhx0BPv3+ZGSc255EREFlYboJ3SbThSEOXD5yZa
+         0OG7Vgd53BGzDY2oOohzvBTmNGdn3N79Ou8SqO5/55oQyfb81u70nN7oMjukG7Av220R
+         aDBdFUh3fQ5W2Lde566NDygA3Iw5G3l+/sQgpeoCFTa8H/Zp7ypqk5hcSrgRaG8uE72I
+         +pIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708894001; x=1709498801;
+        d=1e100.net; s=20230601; t=1708894016; x=1709498816;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=jaoEWYXtOjOULbW2yMrOmnPYIPrfPlzxVubLNRsgJlQ=;
-        b=u4JFIMZFtsy7BFlmjEeKOsRVONoC8gVG0pARiFK6Rkb9Rlg/EWnl3+Id8kWZ62SPba
-         canE8yO85URK28L21FydcmLuWTKU2TQAvBtOlxY0Oc6F+J4zmvhSwaMjwxPHRAC+MiK6
-         F3FC6YzFoviFqoqk0b97P5QKlGKqnReK4WujUllJJjsEyVeISYv+ZAPuF+n2vbjGZjt6
-         stPuaq0UT9QXIUMUNJzKlflsc8dOiRCu4ks345M8Pb4nSwaOSkfyhKEiQvr5L19wEuFU
-         VM1iMNqm5jsDX2L5QByN0AxfEqT4W8mEaZE2PBFfxzQAB2K4XjkjGcJukslAAgcJ05L8
-         TWMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXb8E06c6l7ycO31d8aEpiQ7aOr/fQKFJxWGzc3BTrwmwj/rY194p4vphNM7yTYBkHpeUw1jXNc/isDk1t/SnpNdwyM3OjOOC1EIOD1
-X-Gm-Message-State: AOJu0Ywi4sc5+6DxwMOb+cy0oGzuglxeoI34UVDM2EJQfG54EC5IYhjA
-	D/W6X07AWjfPJAKbauCQgLJLakXU1TjPWj6c3Zp3scG/Tu55QX/QPN6AchY9c7l0ETTe+p/L4/D
-	ns3mdbQ+LQzcZh6GCTlrHFGYJs8HEV5FMl/MpbQ==
-X-Google-Smtp-Source: AGHT+IHiHD4DCI2MPVcMU8ZdLBW9A24hnVLA6ZCjQvJY+jivSwWXTU1+Dm3VJmojw/adwKuuhVJDjGQVaJJkaIHmpPw=
-X-Received: by 2002:a05:6808:d49:b0:3c1:9caf:c0b2 with SMTP id
- w9-20020a0568080d4900b003c19cafc0b2mr3215443oik.7.1708894001601; Sun, 25 Feb
- 2024 12:46:41 -0800 (PST)
+        bh=fP0+4HWFw0qnQgXN16N53EqzsauNUwws4Q93UfRzHx8=;
+        b=hhjZ4sWJ59eQQCbPqOLqPIynp055QNvKu91G3Gldc9X8bOIJ9evDn22FBZxVPVb0xY
+         rjEav5M6RALpcrZLzPMurRNloNv2+v/dye/0GjUmicc4No7XzmVvCtO/x1mzUN8EiepC
+         XTb789iD4hFB25/mnZ0tPrqoDdpOBL5iGRknZYvF8Jktf1LtcsLq656DwlidsOV0Mswj
+         0Y8DPnwpiC/4U1g5YzaEvqRYd9IIirMLMP2GXutcnhNjpqhjDXyQpNnHPNU4HtDWEsqG
+         nKO2CwRR/CEl7530Fz5MAK30NwSS4Y7811ol+uc8bHpgJnetIhQOxc7vgihcsbQDgyPd
+         rCLA==
+X-Forwarded-Encrypted: i=1; AJvYcCV/VwPi07HRC9kuEQ6X0zFJqqLmKToEEMXe1+pDbE9RTD3rqfZUwITerXN5W0ZV45MHn3pHiaoAfEfqXtWJxm7KTPhcFCkpoEHlEif7
+X-Gm-Message-State: AOJu0YxwAAOQw/Z4ei3zhY5RsrSPFgy7SIhLa6Sqn0CbYY8P/4r7RgFp
+	1drJk5eWRmMFg9fAyuEUMPYhZ9HM7x28IAokik+eB36hsEmn+G5psLWJ7ZvfV/wzBsL/+BqxQOm
+	Ko9+Cpqadntszzt/pOyx8fv5aA6tCx12f1gi5/PPKfsi45cPjxLw=
+X-Google-Smtp-Source: AGHT+IH30JucjSV92EMaK6FP3kuwTYaUFcc6+QVaz4blJzc7lhZK3wG5byZhUyFYLDGqCziSm3HL8i5G+2N6h2Bqk2I=
+X-Received: by 2002:a05:6602:2c86:b0:7c7:97e5:48ad with SMTP id
+ i6-20020a0566022c8600b007c797e548admr8177997iow.16.1708894016207; Sun, 25 Feb
+ 2024 12:46:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240225202744.60500-1-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240225202744.60500-1-krzysztof.kozlowski@linaro.org>
+References: <20240225202545.59113-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240225202545.59113-1-krzysztof.kozlowski@linaro.org>
 From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Sun, 25 Feb 2024 22:46:30 +0200
-Message-ID: <CAA8EJppAKRiSoHi3icFymSQjP-TQrOF2LcMEnE=BmK+=nv330w@mail.gmail.com>
-Subject: Re: [PATCH] iio: adc: qcom-pm8xxx-xoadc: drop unused kerneldoc struct
- pm8xxx_chan_info member
+Date: Sun, 25 Feb 2024 22:46:45 +0200
+Message-ID: <CAA8EJppVN72sfz_rjn2K4Za+nBUva3KqP4RRaus3Cs3U+UZQiw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] soc: qcom: geni-se: drop unused kerneldoc struct
+ geni_wrapper param
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, linux-arm-msm@vger.kernel.org, 
-	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+	Chris Lew <quic_clew@quicinc.com>, linux-arm-msm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Sun, 25 Feb 2024 at 22:27, Krzysztof Kozlowski
+On Sun, 25 Feb 2024 at 22:25, Krzysztof Kozlowski
 <krzysztof.kozlowski@linaro.org> wrote:
 >
-> Drop description of non-existing 'struct pm8xxx_chan_info' member:
+> Drop description of non-existing 'struct geni_wrapper' member:
 >
->   qcom-pm8xxx-xoadc.c:386: warning: Excess struct member 'scale_fn_type' description in 'pm8xxx_chan_info'
+>   qcom-geni-se.c:99: warning: Excess struct member 'to_core' description in 'geni_wrapper'
 >
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
->  drivers/iio/adc/qcom-pm8xxx-xoadc.c | 1 -
+>  drivers/soc/qcom/qcom-geni-se.c | 1 -
 >  1 file changed, 1 deletion(-)
 
 Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
 
 -- 
 With best wishes
