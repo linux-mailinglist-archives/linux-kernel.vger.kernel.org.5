@@ -1,81 +1,100 @@
-Return-Path: <linux-kernel+bounces-80074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA689862A76
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 14:31:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5049E862A77
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 14:47:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DFA1281B50
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 13:31:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9485B20FE7
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 13:46:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20DB912E5D;
-	Sun, 25 Feb 2024 13:31:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A9C312E47;
+	Sun, 25 Feb 2024 13:46:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="IFbcwGvF"
-Received: from mail-177132.yeah.net (mail-177132.yeah.net [123.58.177.132])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E37F810A09;
-	Sun, 25 Feb 2024 13:31:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.132
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M7TNzUul"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D173812B95
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 13:46:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708867882; cv=none; b=XUh+lHqNtw22i9OHgtOUt3z8FjOk6/gg83TnWvuXa8nXlnCRFdP1SvW86qYi/Z4FzCsP/BEluAopbPMEcueoP82wc5TSMW3IcoNi9w9VR5sy56NgAExEIkg5BkFy7l3RJB7mt/mjdv2KqNELo6Dc7DR/kPIHQ5NICk3AZBQKzjw=
+	t=1708868810; cv=none; b=DfSXUzZp3wxFGUJow+b9Psg3DLCg0x8dI8WJlGYTpw2MQDw6nQzrsWw9K5/srxiMxzIYA1KFL/NdF+zWAjsGlVxommw930P4QfsPknjkQhnzdcN7s3et6mvWDMRx5bHIXyG22HaMcE3V+PskBAnf4tqx6LsvyaYx/NeuqJb22f0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708867882; c=relaxed/simple;
-	bh=/W1pq4XEAdapNX8RFQqTdUzolkOfaKYU0fjOypQ1DXA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RrnGfPo1mzxGNy81w2QncnShRQvlb2LIrsJYlkgFa+Blb6DdUtts8b+5/yUSFB/DRS2XM0z9Dbbmbw5N2eurVQEZCIodgNW7p0J7ejJkr4UjMPfjXjQuqMw95pqS/o7+IiEI6lFedjQ7AV3u5mwIcGEAT4TGvycu8au5Krk/bKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=IFbcwGvF; arc=none smtp.client-ip=123.58.177.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=Cqu2ZXIBpNqsbAWhTsCIwqllICow9j095X0PIZjZnB0=;
-	b=IFbcwGvFysP5yCkTVFfbX8xbcLL8qfhWe3zVG+aMXo9E7+EvuHt20Y2B1te9vB
-	BW2fWwBaKqJxal/ckNVVm9P21SbdXxMNVV5z9jzwJWIsOhoLblJX0S34t/whp0q8
-	SSZtNKlXYLgVaL32GWCjlsI7XQyUEXncm8HOmZlHibtBo=
-Received: from dragon (unknown [183.213.196.200])
-	by smtp2 (Coremail) with SMTP id C1UQrACXvwcIQdtlGnBWBA--.10980S3;
-	Sun, 25 Feb 2024 21:30:50 +0800 (CST)
-Date: Sun, 25 Feb 2024 21:30:48 +0800
-From: Shawn Guo <shawnguo2@yeah.net>
-To: Liu Ying <victor.liu@nxp.com>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-	festevam@gmail.com, linux-imx@nxp.com, l.stach@pengutronix.de,
-	alexander.stein@ew.tq-group.com, marex@denx.de
-Subject: Re: [PATCH] arm64: dts: imx8mp: Fix LDB clocks property
-Message-ID: <ZdtBCEwjonmRV0+X@dragon>
-References: <20240223091522.2880155-1-victor.liu@nxp.com>
+	s=arc-20240116; t=1708868810; c=relaxed/simple;
+	bh=EKsadki2iNG4Syzhlhtr+rJTqBhxRey8Twe4U6+4Wqc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=GHZwbAbrZD/8D3IriaPWzhmROt2rVfnKtTTBMK2XePSmTSPq7XXUil/tmDlnaugJ9f31NnV2HzkyVc0nfn/SNpLRAB9vbrPNXNmh4F6PuyVGauNcpFBKh0FfYlLdgWqMptvtNJNcaVg4jNvdBIYQwATpwsO7C2nVsh6sh1c91Xs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M7TNzUul; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96EB7C433F1;
+	Sun, 25 Feb 2024 13:46:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708868810;
+	bh=EKsadki2iNG4Syzhlhtr+rJTqBhxRey8Twe4U6+4Wqc=;
+	h=Date:From:To:Cc:Subject:From;
+	b=M7TNzUuldXkWTht6AigEB7Bks3NsIrFyL7SgpQThL7YVDn/k9mxq1OdvYQ2ANxULS
+	 cdm5taY4N8xIgx1des8RCFoolZZrC4dR7HP7habnfU68ktNYUs48zb7GRpB3WUSDuV
+	 h0alij2IGwr8aFIL0rH7/eHoKlFcgsxmqQMBg8/LUPQXODxTvKMFl/ifDmL0dqnBS5
+	 MWkLLvAbzCXjBSeDFo08+7bBRHpkxRAENgs7FJLgyfXpQvoiz7HodjZHRcQ0erNPcq
+	 CR2LmgAM/RJPRE5qEGogQ9dZlAUppVekOk8vl1+YrunDv+4VKjRQwgq/ImZTgMUtnv
+	 Wk6AD6fQWgXvQ==
+Date: Sun, 25 Feb 2024 21:46:42 +0800
+From: Gao Xiang <xiang@kernel.org>
+To: Linus Torvalds <torvalds@linuxfoundation.org>
+Cc: linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
+	Sandeep Dhavale <dhavale@google.com>, Chao Yu <chao@kernel.org>,
+	Jingbo Xu <jefflexu@linux.alibaba.com>, Yue Hu <huyue2@coolpad.com>
+Subject: [GIT PULL] erofs fix for 6.8-rc6
+Message-ID: <ZdtEwtN2BsCYnCeY@debian>
+Mail-Followup-To: Linus Torvalds <torvalds@linuxfoundation.org>,
+	linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
+	Sandeep Dhavale <dhavale@google.com>, Chao Yu <chao@kernel.org>,
+	Jingbo Xu <jefflexu@linux.alibaba.com>, Yue Hu <huyue2@coolpad.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240223091522.2880155-1-victor.liu@nxp.com>
-X-CM-TRANSID:C1UQrACXvwcIQdtlGnBWBA--.10980S3
-X-Coremail-Antispam: 1Uf129KBjvdXoWrCryDuF4UJF18Zr13Wr45KFg_yoWxGwb_G3
-	4DZF1DWw1DGrWay3srGr43A34DKr98Zr17Wr4fGw4vgw1xAr17A3WkZ3s8ZF4rXanIgw1q
-	9as8Gay7JFnI9jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0wvttUUUUU==
-X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiFQqPZV6Nm6ZxKQAAsD
 
-On Fri, Feb 23, 2024 at 05:15:22PM +0800, Liu Ying wrote:
-> The "media_ldb_root_clk" is the gate clock to enable or disable the clock
-> provided by CCM(Clock Control Module) to LDB instead of the "media_ldb"
-> clock which is the parent of the "media_ldb_root_clk" clock as a composite
-> clock.  Fix LDB clocks property by referencing the "media_ldb_root_clk"
-> clock instead of the "media_ldb" clock.
-> 
-> Fixes: e7567840ecd3 ("arm64: dts: imx8mp: Reorder clock and reg properties")
-> Fixes: 94e6197dadc9 ("arm64: dts: imx8mp: Add LCDIF2 & LDB nodes")
-> Signed-off-by: Liu Ying <victor.liu@nxp.com>
+Hi Linus,
 
-Applied, thanks!
+Could you consider this fix for 6.8-rc6?
 
+The detailed description is as below and I think it'd be
+much better to be landed now than later.
+
+It has been in -next and no potential merge conflict is observed.
+
+Thanks,
+Gao Xiang
+
+The following changes since commit 841c35169323cd833294798e58b9bf63fa4fa1de:
+
+  Linux 6.8-rc4 (2024-02-11 12:18:13 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-6.8-rc6-fixes
+
+for you to fetch changes up to 56ee7db31187dc36d501622cb5f1415e88e01c2a:
+
+  erofs: fix refcount on the metabuf used for inode lookup (2024-02-22 15:54:21 +0800)
+
+----------------------------------------------------------------
+Change since last update:
+
+ - Fix page refcount leak when looking up specific inodes
+   introduced by metabuf reworking.
+
+----------------------------------------------------------------
+Sandeep Dhavale (1):
+      erofs: fix refcount on the metabuf used for inode lookup
+
+ fs/erofs/namei.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
