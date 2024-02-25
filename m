@@ -1,93 +1,94 @@
-Return-Path: <linux-kernel+bounces-80010-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80011-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D02EC862998
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 08:10:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A31FD8629A3
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 08:28:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CAD5282292
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 07:09:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 443C6B21576
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 07:28:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C805DDA8;
-	Sun, 25 Feb 2024 07:09:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="Rfu2PQZ3";
-	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="NunEaSdb"
-Received: from mailrelay1-1.pub.mailoutpod3-cph3.one.com (mailrelay1-1.pub.mailoutpod3-cph3.one.com [46.30.211.240])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B996DF46;
+	Sun, 25 Feb 2024 07:28:05 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA5F6D520
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 07:09:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.211.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AAD12563
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 07:28:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708844995; cv=none; b=Toyym1S+p7+vYOooXYoUUnFxQ1TxrS0xqFbdhXYZ279846Szy9v4m7BJk127wsh0yX1i+FIjIo8imqY+gGl3P2Nl1Yj9GNRy/0jGMmtLtxsjFgkVHH9gQgFEfqw6qwJHuSu0tEmgd9gSoa4coanvy+I0RAHVlpRMTCUz8NKYrFk=
+	t=1708846085; cv=none; b=h4nxa2YrlC9W5c5wYdTtO18wO4vZ5fhDpcfZZ9iePXDCzqJ5yVVtCEos0bXDFr2vPoAQyDaKVtc67sA8uNPvhJcnBYZs3/LpzMi2ZLtW0AGrndQWCpVOfROVFH24jRj1/B9YzkXq0rxfu2Py8MZxNhYCEklVegxt0U+iIs/dlJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708844995; c=relaxed/simple;
-	bh=0FUFsz4uDZAK1Sl12+biTMRPK7VhZ7JHdp3gkoGj7DI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZETBcbMnOnZ8qO9gKvKwQpK6EZShGsgk2r/XolLCd6Vo9LsCi4pmGC6QEQ/noxAgc8MF1OK721U0VfRV/sWXT38BzPgh8JLyrM9hLaRH5wnVmjGCafIpkdcm/Tw8YLB95YNjy10ieiU8vm1MOOw446EpjHjrPB5bE7NEs80UpCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org; spf=none smtp.mailfrom=ravnborg.org; dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=Rfu2PQZ3; dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=NunEaSdb; arc=none smtp.client-ip=46.30.211.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=rsa2;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-	 from:date:from;
-	bh=Cin/Uf9ak7PCvyqTlXlZCVpDcwmQDiV7m8pTpIkBwqs=;
-	b=Rfu2PQZ3AL9NJAJ9EhzNSO7Xpbk3RyB+i1ZJBnflhgNjZkwpYlWA9UzkTVPA+6HmPZepQgp9pI4D3
-	 C658nJLv7LYCeajqJg+LfMSMpmDXwhBKRdo83wzjihaSx0/RGBYmXvddJE3+WySd8Odgnvh9UWEAi8
-	 zL1/5N3UNJ6nmvCRP5iuU8C1MHT0q6p4eryB5ztKEcKiwsqiaaWeVmm+L+z4vT7Kf+56ADrPSjgKwL
-	 9FkUNvp9IiMDUKUlsofaTb/MTTud026wLL9ysz+X7dLj3X/emg0sMTs5lkWJkS/xdivNBTZKM1Wwht
-	 6AspWQ+ZylLqIPKeYRaF0OGXHJEHdcQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=ed2;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-	 from:date:from;
-	bh=Cin/Uf9ak7PCvyqTlXlZCVpDcwmQDiV7m8pTpIkBwqs=;
-	b=NunEaSdby6jDWWB8FMh4cOjuWmQn3EMG0buvjl9UhcLT+auOBzcLO9Xy9Tiq6v/VXGtlfqhX5sZ71
-	 oevCq8QBg==
-X-HalOne-ID: b2acc480-d3ac-11ee-934f-1ff1563c5748
-Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
-	by mailrelay1.pub.mailoutpod3-cph3.one.com (Halon) with ESMTPSA
-	id b2acc480-d3ac-11ee-934f-1ff1563c5748;
-	Sun, 25 Feb 2024 07:08:40 +0000 (UTC)
-Date: Sun, 25 Feb 2024 08:08:39 +0100
-From: Sam Ravnborg <sam@ravnborg.org>
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc: sparclinux@vger.kernel.org, Andreas Larsson <andreas@gaisler.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	linux-parport@lists.infradead.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/7] sparc32: Do not select ZONE_DMA
-Message-ID: <20240225070839.GA3364529@ravnborg.org>
-References: <20240224-sam-fix-sparc32-all-builds-v2-0-1f186603c5c4@ravnborg.org>
- <20240224-sam-fix-sparc32-all-builds-v2-4-1f186603c5c4@ravnborg.org>
- <alpine.DEB.2.21.2402250054030.36563@angie.orcam.me.uk>
+	s=arc-20240116; t=1708846085; c=relaxed/simple;
+	bh=unoUZHnNLWo85kVwRNGfukzNpxB9UQvc6x3BLRWDZdI=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=hX2I3fP2pUB7exXtahiEjnjUx2uXvrjXFuwTFvuBYphSLzJ/T18aOtgZC/umKeDBcuajG9nzmB/84qoUad8SO7OOcruJ0A7+qjwXntbr23wdvnTq9XuAr/GLQXpuC/U5B2dGDtTpFUwnQC11O7mrnwDvFlSCgFAXB+n3pJ2uT8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3657cf730a0so20677485ab.2
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 23:28:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708846083; x=1709450883;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TzsFQMYU8YtNGOBZjM6fd0mO1h4UtTBUtieIA5+iT0w=;
+        b=VLvlm/kwSTpA30hZ4pOw9id0oLmJ2nTQoh9FMu7+TXxIPccnJ2RL92X0DWrFKB1kPD
+         +5p37/bV0XQeYDF3LukiJ5zeaEDcvcIQkIfK3J2giDunqpZURGYt0ayLhcxqrVMUqa93
+         CWXh3Z8IJVLAEZDtPup6Zmlwb6lcGvaWhf1/Hy3CtqKitYl/MCcJTTVMY9i1ayc/cEZ4
+         td1GnSGx1ngYpmTmxvTLYXwjk1UNbuUmDbEvKZOwYmpcO3TUGQBNM4qA1keeDCk/wBED
+         XzEw0yuYIC4A/xnM/Yh34Us8kY1/of3wLUeu8dSEFZnQHntkQUga5XwXM4D0uvs6p/Px
+         kfZw==
+X-Forwarded-Encrypted: i=1; AJvYcCWQ7rvMRFvqKBiJOwivVYQlxOXQwm55TvT8b+Win32B2hI9zAXLl4ER33dUmqiXdVyfzTe4C1d6NE6/6Bk/J/Y7uOVkoIvAWXk0VxH5
+X-Gm-Message-State: AOJu0Yzg7yPSl0jzbmaezup+ixkYBK2+Lpbk2xNQ64/68NH04fL9ETl7
+	QKEQost1BIrnrnY8n0s4dD0jfPMGURRR595QLuPdRSE5d6wqQzCSQOCDdPp+JyLMNrgTlwyhuYG
+	hfKEUIqJ5a+t6qwkJae74Ux5dRpJnzynkIgoC1ljFAHsbJBPqn9Op3tc=
+X-Google-Smtp-Source: AGHT+IHMzsSTbqyGkWMdz6rESKzE7k0hvpJkoDrMjtx+4rAEl5iPtoYZeEnv9sgMQieN4CN0vwu7qeu/Lc7SMTpoBQs9YEgIvxul
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2402250054030.36563@angie.orcam.me.uk>
+X-Received: by 2002:a05:6e02:1d0a:b0:365:4d61:fe6 with SMTP id
+ i10-20020a056e021d0a00b003654d610fe6mr251453ila.1.1708846082942; Sat, 24 Feb
+ 2024 23:28:02 -0800 (PST)
+Date: Sat, 24 Feb 2024 23:28:02 -0800
+In-Reply-To: <0000000000006c9d500608b2c62b@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bfed0206122fbb7c@google.com>
+Subject: Re: [syzbot] [x25?] [reiserfs?] general protection fault in lapbeth_data_transmit
+From: syzbot <syzbot+6062afbf92a14f75d88b@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, brauner@kernel.org, davem@davemloft.net, 
+	edumazet@google.com, jack@suse.cz, kuba@kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-x25@vger.kernel.org, ms@dev.tdt.de, netdev@vger.kernel.org, 
+	pabeni@redhat.com, reiserfs-devel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Sun, Feb 25, 2024 at 12:57:42AM +0000, Maciej W. Rozycki wrote:
-> On Sat, 24 Feb 2024, Sam Ravnborg via B4 Relay wrote:
-> 
-> > sparc32 has no limited DMA zone so there is no need to select ZONE_DMA.
-> > 
-> > Based on analysis from Marciej:
-> 
->  Can you please use the correct spelling of my name in change descriptions 
-> (and preferably everywhere)?  Thank you.
+syzbot suspects this issue was fixed by commit:
 
-Sorry, will fix in v3.
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-	Sam
+    fs: Block writes to mounted block devices
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12dcaac4180000
+start commit:   1b29d271614a Merge tag 'staging-6.4-rc7' of git://git.kern..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ac246111fb601aec
+dashboard link: https://syzkaller.appspot.com/bug?extid=6062afbf92a14f75d88b
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=150a0f73280000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=107fcaff280000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fs: Block writes to mounted block devices
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
