@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-80188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D24BB862B89
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:12:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D555D862B8E
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:12:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D3D1281709
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:12:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89E661F212B3
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:12:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DFF01B80C;
-	Sun, 25 Feb 2024 16:11:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90F511BC20;
+	Sun, 25 Feb 2024 16:11:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="l6cTyOrU"
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sH0/TJ9J"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1EAA1AACD
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 16:11:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 028DA1B807
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 16:11:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708877462; cv=none; b=ZEjZxYJpZH+FHO6Lfnag1VM4/9Rm/DjZ3HpTzo405G/1i8G5UzPUR9GGXwk/k5I+Q2VqMiwN2QJHMNEka6AJ7Uci5ofYkP620LnKIdsXZPxXxu3F9vLTRQHWplt/Q11r1zjtt629cHODUen5KdpRzTgVmhtpG0xQo9TRBE89DxI=
+	t=1708877464; cv=none; b=E2u2Ffk7ZGUENm8ZBzOherIU14IzKp3hkQtjybe5eCEroHC6l9tGlS79kT6i9QJL+2X8BM6sZ4bYJXNw+yiJiWZNSy83K72Vi3U+YZT2qEIegTF+nw5nPTbVCpWQj6/9ptwoBeEljfLSRr96c1fJ+UM5SqtZUBERYpt1quiEvPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708877462; c=relaxed/simple;
-	bh=QBa7Y3AGR9N0gR69nFXfx/CX8Gh6cMWpZsRsN/2yQSo=;
+	s=arc-20240116; t=1708877464; c=relaxed/simple;
+	bh=TXaocwDZwWC94dxCxgh1lD1LjbtYnVPhJX4H4hTuSkY=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=oM/yy7g89GwIdO5oK+Yv0UBChEe3OBlLzvyxEMGbHwQuwH7KhMadV6aj5jYRgxb+igIn6g8tDwmmtIsM41nmAHjqI6uCO1mCGjZmDhfHVy5GH1rOJWAZBGbl5jpY6lLFinHIZXylnrHqcxRrqLe0UFuCOUrk/DQvbY+hweQLxTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=l6cTyOrU; arc=none smtp.client-ip=209.85.208.170
+	 MIME-Version:Content-Type; b=ZNEXGJuoPoCvvX9F9m2ghkGJGsBtqMoAcaCc146as31xpeB2ntOpJnIHuSKSyph0z8u7PJGh6Q+MkdQtWyjnY2KjtO20d16vMgpjK6Xz0A5nWI/iQb/genTzE87JcAwg6cJ6O6jcWPRXQEIfwDvcS7sAH8eqyxaalcVBNYLqzLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sH0/TJ9J; arc=none smtp.client-ip=209.85.208.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d2305589a2so33829791fa.1
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 08:11:00 -0800 (PST)
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d23d301452so33386391fa.1
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 08:11:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708877459; x=1709482259; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1708877461; x=1709482261; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=y5YyMqPimo9XUHgL83+xZtwboRxx5/IrUrU5gbAjYaw=;
-        b=l6cTyOrUUtKpmUjEw35t90DPpeGc+HYmcYGXc+mLQ/tXaa1OYrN6P+oGrxZCtoHnlZ
-         EziIyIob7WYEkTtYwMQPoZUy4JTaWwCWR6E9ix0lJPA0SHIg+tkzYqeFUaeB0eQF5wXI
-         UfABURC08UnzC3JEyVYzMCEi4R2Ph62C6kOd/HlfM+Zj0s2oYLjKJIh2+94RzUYLquoo
-         KdKXSpRIYFYuRyvzq962SMv5xd2ezuG95n5wEGs2OTKegPLj6589PcN3ro3Szo2H+KZr
-         03NVng4iObqydVs1Q+WElQsr1skK54M34SfaTkzVi4b52LJji1ff+MHGxW04InVhmLvM
-         tByA==
+        bh=txzUoVNp86IgACLI+fWKJm3IORGCynctjjPSZgxX3Og=;
+        b=sH0/TJ9JsrREP6EbQdMkaINAN1EwNOtU1n4g00tpUArKKgWsEgfNm85N9X1B5SReRY
+         FkBB3k9Jfg0HwnlvqvKmknSQKUSUgjwXPy448josCPAthfpPBuLZq8JYfV5o2jJah1Ek
+         KvLdJpu9uJtpcVw5CIktrlDt2cvPfmX6u7s2MulyhpNFxyZO/HH1gv1/VnB0QMpda50u
+         MVqFMBX09qTwYnEWiGQrFm8N+w4+yyHMx68touG8KrMz4pdPCTeCOovVNdI0lhrYxFqn
+         f7vqwO6bFvnFMWknswOMl2xU9tCyN46/0UvCiKWTh+hmoY8PHIhCuQTvSPo57wTpcHbc
+         dtjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708877459; x=1709482259;
+        d=1e100.net; s=20230601; t=1708877461; x=1709482261;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=y5YyMqPimo9XUHgL83+xZtwboRxx5/IrUrU5gbAjYaw=;
-        b=kWCBoS1hX4RrSm0nL+XJe+rRRemY0C8rjPUCi0Gsyvk1RuHtFHAUX1PQsv1kte4YVB
-         xrerDV2qJG/yRE9F/EbcBd6bbV6iku6Y47bfEMbPT3A6xZCqw4xBotPnjRY4g0GzWKpm
-         mDhVEAXoaafJP9FBaBXjz/E2uDRdsNbtb6g9m/HVThOWEh1LkaCL8fFzPqjYMmghP2IH
-         f2kewsTRRKnw37f/wcSLfmV+Ba4phZyYX+GOqXqeGkjAk4MOEL2o5x/SkXb35guadMCK
-         pxw6RFgR1kCITxgHDSkstbWHmWSbrV/IOPhNxRAtezMzwd7NnrwW4yWfnhM/+5tBKFMc
-         5aqw==
-X-Forwarded-Encrypted: i=1; AJvYcCXpX0R3jdJsqf/iXcPCzFtsIk1MIzX29Vxyis1IE2afB7vqhhBCOHot0X0FlPS/QkfIvIqpQe6kfgxWcIHEeChk/Gx4KxjWNaQmOkSG
-X-Gm-Message-State: AOJu0YwBSpN8VSZxWMwl2fKCwW0iE7I/jkP0Ofn8M5Mzxvbs00aECtfo
-	jN1utgQtR7rcLkB5qs5HiHcANP99i9Y1yONxmyuEN2BQPJAmId99ZvnrNpCYQ0M=
-X-Google-Smtp-Source: AGHT+IFLY64OJZ09kr5YonBW3qBy4LeKF5vqhWb20kSxzQsvNK4am8dCdGHvlpfqKNUziIRdPCfQ7w==
-X-Received: by 2002:a2e:3213:0:b0:2d2:4054:2fab with SMTP id y19-20020a2e3213000000b002d240542fabmr2649973ljy.37.1708877459151;
-        Sun, 25 Feb 2024 08:10:59 -0800 (PST)
+        bh=txzUoVNp86IgACLI+fWKJm3IORGCynctjjPSZgxX3Og=;
+        b=wTAcrrH/vO+qqtKgXis9jdqKKA6TswD6cawqnY/tZWnY+9Y3NK0GCVfo1cMIveV3gg
+         pX5iWJn9/khzT2Gru8GQUo2x4zgfzb/bSLqB5l2/2oLddJv1P9Qzt0GiIeUJmnHz6F+P
+         qMU4UY2K6OAO9+Tf9EaAAHlwKJf5tSbJQful2cMxYf2bwsAM8LBR2zjjXj00lQsySnSc
+         ZBYrpH8fluRKVVxaN3BixrQTIfK7TZAD+HTT3TB3yJFmvSROVZbHqJDfbe6+2g7cVlzF
+         yc9vMqk1+Hg09axkuasElQlgiZeF4rvobBivD9ClFWhyVregUT2AE0aRYbc6lFjwd61P
+         Kahw==
+X-Forwarded-Encrypted: i=1; AJvYcCWkCih1iJnBSKOwNdBPr7YUy5ukm72b3rvhLvc/gr7ZbXJqKcDdToXU2JdZIuy3R/hIFkd6FLi6ys14VjgwqcilDtB720FfYnxAUm9Z
+X-Gm-Message-State: AOJu0YzK+cAsqqFxP0/7C/F1AOk1hhb1LeUAE6Nfapx0OPoY735X055p
+	wQwBG/aMU7Ya+y1e7T5pdX4CWdJIUN8aVJOuwPrAxV9ARgfdB037yepxhx8y+8U=
+X-Google-Smtp-Source: AGHT+IGZUf06Jp1TAh+C+FZ9U0O5PY7DChQElQBeFj7nMxhUWpuHesCcwBoTIsNce2oxSMdZ8UvS0A==
+X-Received: by 2002:a2e:86d7:0:b0:2d2:64e5:8447 with SMTP id n23-20020a2e86d7000000b002d264e58447mr2408560ljj.42.1708877461341;
+        Sun, 25 Feb 2024 08:11:01 -0800 (PST)
 Received: from [127.0.1.1] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id n21-20020a2e7215000000b002d2697570fcsm579184ljc.93.2024.02.25.08.10.57
+        by smtp.gmail.com with ESMTPSA id n21-20020a2e7215000000b002d2697570fcsm579184ljc.93.2024.02.25.08.10.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Feb 2024 08:10:58 -0800 (PST)
+        Sun, 25 Feb 2024 08:11:00 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Sylwester Nawrocki <s.nawrocki@samsung.com>, 
  Chanwoo Choi <cw00.choi@samsung.com>, 
@@ -77,13 +77,13 @@ Cc: Alim Akhtar <alim.akhtar@samsung.com>,
  linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
  devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
  linux-kernel@vger.kernel.org
-In-Reply-To: <20240224202053.25313-6-semen.protsenko@linaro.org>
+In-Reply-To: <20240224202053.25313-7-semen.protsenko@linaro.org>
 References: <20240224202053.25313-1-semen.protsenko@linaro.org>
- <20240224202053.25313-6-semen.protsenko@linaro.org>
-Subject: Re: (subset) [PATCH v3 05/15] clk: samsung: Use single CPU clock
- notifier callback for all chips
-Message-Id: <170887745713.215710.13782897214681477333.b4-ty@linaro.org>
-Date: Sun, 25 Feb 2024 17:10:57 +0100
+ <20240224202053.25313-7-semen.protsenko@linaro.org>
+Subject: Re: (subset) [PATCH v3 06/15] clk: samsung: Group CPU clock
+ functions by chip
+Message-Id: <170887745923.215710.8750487017286129944.b4-ty@linaro.org>
+Date: Sun, 25 Feb 2024 17:10:59 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,20 +95,20 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.4
 
 
-On Sat, 24 Feb 2024 14:20:43 -0600, Sam Protsenko wrote:
-> Reduce the code duplication by making all chips use a single version of
-> exynos_cpuclk_notifier_cb() function. That will prevent the code bloat
-> when adding new chips support too.
+On Sat, 24 Feb 2024 14:20:44 -0600, Sam Protsenko wrote:
+> clk-cpu.c is going to get messy as new chips support is added.
+> Restructure the code by pulling related functions and definitions
+> together, grouping those by their relation to a particular chip or other
+> categories, to simplify the code navigation.
 > 
-> Also don't pass base address to pre/post rate change functions, as it
-> can be easily derived from already passed cpuclk param.
+> No functional change.
 > 
 > [...]
 
 Applied, thanks!
 
-[05/15] clk: samsung: Use single CPU clock notifier callback for all chips
-        https://git.kernel.org/krzk/linux/c/c9bc1f778625b0ae93641e6d14d83b62d16e549d
+[06/15] clk: samsung: Group CPU clock functions by chip
+        https://git.kernel.org/krzk/linux/c/be20ccc17f41240b52106bf3dad01734a7f11080
 
 Best regards,
 -- 
