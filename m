@@ -1,96 +1,120 @@
-Return-Path: <linux-kernel+bounces-79987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D75D6862941
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 07:05:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0585E862945
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 07:14:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C640281B80
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 06:05:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCF041C209DC
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 06:14:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24B4ABA41;
-	Sun, 25 Feb 2024 06:05:24 +0000 (UTC)
-Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78851944C
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 06:05:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.101.248.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DC66CA64;
+	Sun, 25 Feb 2024 06:14:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WQf5+p03"
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B77CD944E
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 06:14:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708841123; cv=none; b=IW4IJOL1UvGOow7t/lHAKgsqvm6PAoY7frgR1lsP1NwEhouMPcm5jpTNkjCcabyTJlBt7elCkZqMKZwBWaJzE6eMNs2yYFJwwIEh7tvvoq4zcn/1IG/Uy9w9lK5nqnIDkrkhJKBjaX0MMWlY7He4lOivdLGGfbMcJnARN2FHQ7U=
+	t=1708841685; cv=none; b=H4b9h+kIfxniScmyQKWHt/HuYRuIF9YVIJBdxXXVi6b5w3yj0U94qwKEYMtvf7/3LlGmDEgV/ud6Y3E9e0zSadxnq/xgcJPzqPUfqJjRPj7TlbHVmnGrrBwQjbTx6Xz521wKD0i1nLXwZcVWlAJapEGPEe6ZpEOBY3kRguo5AfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708841123; c=relaxed/simple;
-	bh=ifytgLKVyzupiyqK0UXfu9ql9qICwiWLNDCvwtpaIxo=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=RErROj+W0qlJt90NLJIC0xgb3VnarcEk7+O47sa3u6jGv8UogjuJFhWALQrCknZtatK1rFfawxpg2tRNNm10AeUFk+SABLqlvah5qSFaxD09wy37MDH/u2BNiZBGgm6oWIsRXl/34BcTnJfK2jcYimE+LuwZWrBH5oStLZeO2uY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=46.101.248.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from ubuntu.localdomain (unknown [218.12.16.226])
-	by mail-app4 (Coremail) with SMTP id cS_KCgD3732D2NpliIKXAQ--.22731S2;
-	Sun, 25 Feb 2024 14:05:02 +0800 (CST)
-From: Duoming Zhou <duoming@zju.edu.cn>
-To: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
-	andrew@lunn.ch,
-	gregory.clement@bootlin.com,
-	sebastian.hesselbarth@gmail.com,
-	linux@armlinux.org.uk,
-	Duoming Zhou <duoming@zju.edu.cn>
-Subject: [PATCH] ARM: mvebu: Add check in coherency.c to prevent null pointer dereference
-Date: Sun, 25 Feb 2024 14:04:50 +0800
-Message-Id: <20240225060450.53044-1-duoming@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:cS_KCgD3732D2NpliIKXAQ--.22731S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZF1DtF1rZryfJrW7Zr1UKFg_yoWDGrcEkw
-	4ft3yDur1Sqw45ur1UGa17Wr9Iyws3Zry8AayIqFZ8C3yY9r43Ar9rtr1fAry7Zrs3KrW3
-	tas7KF15Aw1UWjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbskFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWU
-	AVWUtwCY02Avz4vE14v_GF1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-	1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-	14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-	IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
-	87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
-	IFyTuYvjfUeXdbDUUUU
-X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwMBAWXY6VIJRQBEsO
+	s=arc-20240116; t=1708841685; c=relaxed/simple;
+	bh=Thhad8bOoqBfWRyLRqhOVbSKV7YzETTjZwmrfCBuc+w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JgbwImpTJABef3V1B+f1+bxyWFXpNACiMCHKgehWpoUAZh5+GUG45A1NsRofTpjfJBGy/6+2ctjsTj5Va46GymO0wPWYWpumpGctULAwqLgvaVf33lckfN+zDmZrcTwhP0o+5GAS32U2+Nhqt2d4px/HQhWLKH5tMBAVMLeTbHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WQf5+p03; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Sun, 25 Feb 2024 01:14:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708841682;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fUUif9KcYlLFn7lITsjP4DXv1Tc/bfc10B0pakN5FX0=;
+	b=WQf5+p03sTi/0WL/y9jKjAJvaQTUQiPIImuFYpcY5QqD/vQIjhCnXfZfAdTODQ4DnIxPz0
+	0IejpthyZSx3chxfUEWymAtMRGpn0FI6lWZnp29OGxEODUkmWyNYK0hvBRvlvBs7ragNM6
+	9kyb9LoPtTgc/zu4+l5LOHw78ysYvO4=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Matthew Wilcox <willy@infradead.org>, 
+	David Laight <David.Laight@aculab.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	Thomas Graf <tgraf@suug.ch>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, 
+	"maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>
+Subject: Re: [PATCH 0/1] Rosebush, a new hash table
+Message-ID: <awtiorxst6k5skhzzvrrt5kfhz67cqza2x5acuc7xiejo4sasw@vd6ohpsx76fd>
+References: <20240222203726.1101861-1-willy@infradead.org>
+ <Zdk2YgIoAGOEvcJi@gondor.apana.org.au>
+ <4a1416fcb3c547eb9612ce07da6a77ed@AcuMS.aculab.com>
+ <2s73sed5n6kxg42xqceenjtcwxys4j2r5dc5x4fdtwkmhkw3go@7viy7qli43wd>
+ <ZdrJn0lkFeYGuYIC@casper.infradead.org>
+ <5p5sypt3y643rr7kp66lhmgksgtuvdgijrryh53mqiiqkrgyty@d4zcnya22owg>
+ <ZdrV3+kNz/ez4iai@gondor.apana.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZdrV3+kNz/ez4iai@gondor.apana.org.au>
+X-Migadu-Flow: FLOW_OUT
 
-The kzalloc() in armada_375_380_coherency_init() will return
-null if the physical memory has run out. As a result, if we
-dereference the property pointer, the null pointer dereference
-bug will happen.
+On Sun, Feb 25, 2024 at 01:53:35PM +0800, Herbert Xu wrote:
+> On Sun, Feb 25, 2024 at 12:51:06AM -0500, Kent Overstreet wrote:
+> >
+> > but your distribution actually is accurate in general, golden ratio hash
+> > is relly nice for sequential integers. the actual problem with your test
+> > is that you're testing 100% occupancy - no one does that.
+> > 
+> > 75% occupancy, siphash:
+> > 0: 933
+> > 1: 60
+> > 2: 6
+> > 3: 1
+> > 4: 0
+> > 
+> > that looks about right to me.
+> 
+> The point is that the worst-case length grows with the size of
+> the table so it won't always be 3.  You need to take into account
+> the largest table size that you will support.
 
-This patch adds a check to avoid null pointer dereference.
+ok, but - one million entries, siphash, 75% fill factor
 
-Fixes: 497a92308af8 ("ARM: mvebu: implement L2/PCIe deadlock workaround")
-Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
----
- arch/arm/mach-mvebu/coherency.c | 2 ++
- 1 file changed, 2 insertions(+)
+0: 472053
+1: 354786
+2: 132663
+3: 33267
+4: 6218
+5: 884
+6: 110
+7: 17
+8: 2
+9: 0
 
-diff --git a/arch/arm/mach-mvebu/coherency.c b/arch/arm/mach-mvebu/coherency.c
-index a6b621ff0b8..a81a3c8c19a 100644
---- a/arch/arm/mach-mvebu/coherency.c
-+++ b/arch/arm/mach-mvebu/coherency.c
-@@ -191,6 +191,8 @@ static void __init armada_375_380_coherency_init(struct device_node *np)
- 		struct property *p;
- 
- 		p = kzalloc(sizeof(*p), GFP_KERNEL);
-+		if (!p)
-+			continue;
- 		p->name = kstrdup("arm,io-coherent", GFP_KERNEL);
- 		of_add_property(cache_dn, p);
- 	}
--- 
-2.17.1
+100 million:
 
+0: 51342703
+1: 34224025
+2: 11413241
+3: 2534946
+4: 421816
+5: 56271
+6: 6346
+7: 593
+8: 56
+9: 3
+10: 0
+
+it's a log curve - chain length of 16 means you picked a bad hash
+function.
 
