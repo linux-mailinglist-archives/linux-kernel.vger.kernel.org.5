@@ -1,144 +1,104 @@
-Return-Path: <linux-kernel+bounces-80015-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C94CC8629BF
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 09:40:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 054948629B5
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 09:33:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A90C1F21BCF
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 08:40:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3011E1C20B76
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 08:33:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB3DAEADD;
-	Sun, 25 Feb 2024 08:40:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4786EEED0;
+	Sun, 25 Feb 2024 08:33:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="k1PYwpu1";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="NYTbIS6R";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ksRXk5YP";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="P7auLrYg"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="SrwdVzOf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0BA2DF46;
-	Sun, 25 Feb 2024 08:40:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DB6CDDC9
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 08:33:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708850425; cv=none; b=Gsf7jtgMnwTXk35jsu3oKVvz00OsVJj4gKti1h5yJwrdIyiISmWwy2lX8g9HM960ZCzHOVCCF9lRvNDOu3+fsVIrx4+Z1EOSQOBYiHObt3j5XDfdvOq5hLksmSQ16fVtl7FcGegWLy4vpg9wZSqPohYT2GHhfJMe8/FiF1ADqgk=
+	t=1708850005; cv=none; b=i5I+lvrkJmmek58gwRGklIg7DqrkOPeegs5RWdd0NCX+3AihRfiYDwbvZjUvqPVy72gbt9rSzfTIlPH2fVheGRxT9wZ/Vttm5oqU3Z2AWnluMjxU6XtSIV8QGND3OXEo//dTS89h0tT9RAbPtdJZCyHH5zb4sY/nKtkWnBIN0m8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708850425; c=relaxed/simple;
-	bh=ketke7tFLj0W8MMVEzVgtUROAbel8yTey4ilIGnwHrU=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tNdhgR3GlOSJqOxqJBv6P2ajLfZ5cT/QUi55Cyq6Qoi2OTxrw8S6Y8JqF9rqkH0Erlv5z5G/DaYhGwwfyvtpsNcsp3AKxOe4EfOKutPSYxnB+Znm3vf5WXtH3Ttdc+seYpy9RCF4F78JmYJVErByITHFZr1FDqQlAMcUmkrKDVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=k1PYwpu1; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=NYTbIS6R; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ksRXk5YP; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=P7auLrYg; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C0951222F4;
-	Sun, 25 Feb 2024 08:30:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708849830; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WDxev0PzOXwqIR40xYrI8UNdhC0AQO6nDkCM+OfJivk=;
-	b=k1PYwpu1b7NJaS+JByRbY3PK482Mq4ex0XgaLxYHL8zDG6w8md7Hcb3fE2QdnsUI3Whrep
-	7J//GcFCY8Mb69IvhmGf08LZ+01akiNF9CGpbEyFQS9fzxuFsk6accg1PoknJYRd4yINxZ
-	nwdwxeeE28e5g0qcuAbHPjuO6FJa6jQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708849830;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WDxev0PzOXwqIR40xYrI8UNdhC0AQO6nDkCM+OfJivk=;
-	b=NYTbIS6RDdj0mwR+M2V4qNjN4z7fa+Wx9AjRc9i0t+j770jyPnwmDiqd1b4gwA53ZlzAlm
-	HChCV9SIB9rRLhDg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708849828; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WDxev0PzOXwqIR40xYrI8UNdhC0AQO6nDkCM+OfJivk=;
-	b=ksRXk5YPcn1hazrhtyUby9e8MzsOIdBjnfVA4DIrBTW4OL1t9CGm/mQiLRdAtLF9Vw56Vf
-	7v+L5jozHmi/M1d3hHS1CcT915QoIa+5FBO3y1TjapdhAJUmSYLPc9jLl4esSLI0cwGjwm
-	YEUGPja0hlcMCJaK7kwMsSjlLqn06ys=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708849828;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WDxev0PzOXwqIR40xYrI8UNdhC0AQO6nDkCM+OfJivk=;
-	b=P7auLrYgY4e3P8wEmCINY5ybv9rtJsO6qKIRvrksvS4PFO4QfVGmIC01iZE+r+Yd85TzYQ
-	bjtYIrwHvdlgXiAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 85DC313A5B;
-	Sun, 25 Feb 2024 08:30:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id IRbeHqT62mUkdQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Sun, 25 Feb 2024 08:30:28 +0000
-Date: Sun, 25 Feb 2024 09:30:28 +0100
-Message-ID: <87frxh0wuz.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Willian Wang <git@willian.wang>
-Cc: linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	tiwai@suse.com,
-	perex@perex.cz,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v3] ALSA: hda/realtek: Add special fixup for Lenovo 14IRP8
-In-Reply-To: <170879111795.8.6687687359006700715.273812184@willian.wang>
-References: <170879111795.8.6687687359006700715.273812184@willian.wang>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1708850005; c=relaxed/simple;
+	bh=6hgAzKoh0X8Vc/PxuhnIWRzdvMEeWy6T9l/qi5QFODY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ApKyY9yZtFEpbDliFWP6QkOjnwkBlLtiwl4sjVI6ikizni3ot14aI9x23jA7ix9sQsAY6IWeLmahXK6PzFsTiYr2QVy8D0iGW3HKDDPVXNQZMMRpHJncirUK2YswFlB4wqneIc9b8vBpV/DK6aR20WZph3aQkFLV42TdkOcQsVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=SrwdVzOf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13B3BC433F1;
+	Sun, 25 Feb 2024 08:33:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1708850004;
+	bh=6hgAzKoh0X8Vc/PxuhnIWRzdvMEeWy6T9l/qi5QFODY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SrwdVzOfqd39q8MknfoPT1MJBqXSmE+Jqa3cvGdq571eBG8OqIpJ/+3NR2koZdB99
+	 Kg0OLwXYXR2wUthYisXnjlweeu0+Ahb73Hp0iprI26+t3Nfnsy9if0y51jjm4vWfeh
+	 kgvJErhgUrN3nRiRrEMlCDHK3XW/c7ja6kpCX+HA=
+Date: Sun, 25 Feb 2024 09:33:22 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: Alex Elder <elder@ieee.org>, Johan Hovold <johan@kernel.org>,
+	Alex Elder <elder@kernel.org>, greybus-dev@lists.linaro.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] greybus: constify the struct device_type usage
+Message-ID: <2024022553-deepness-sublevel-73de@gregkh>
+References: <20240219-device_cleanup-greybus-v1-1-babb3f65e8cc@marliere.net>
+ <cf5b2696-d7ca-40fc-856a-52f352cd270c@ieee.org>
+ <ids3525jm5zkwkgizt2xtg3do37kqqtfdy5gc2cptdduexoe7r@cr4yxh3tykkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-2.06 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[willian.wang:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.96)[99.83%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -2.06
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ids3525jm5zkwkgizt2xtg3do37kqqtfdy5gc2cptdduexoe7r@cr4yxh3tykkh>
 
-On Sat, 24 Feb 2024 17:11:49 +0100,
-Willian Wang wrote:
+On Sat, Feb 24, 2024 at 05:22:39PM -0300, Ricardo B. Marliere wrote:
+> On 24 Feb 09:43, Alex Elder wrote:
+> > On 2/19/24 6:40 AM, Ricardo B. Marliere wrote:
+> > > Since commit aed65af1cc2f ("drivers: make device_type const"), the driver
+> > > core can properly handle constant struct device_type. Move the
+> > > greybus_hd_type, greybus_module_type, greybus_interface_type,
+> > > greybus_control_type, greybus_bundle_type and greybus_svc_type variables to
+> > > be constant structures as well, placing it into read-only memory which can
+> > > not be modified at runtime.
+> > > 
+> > > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> > 
+> > This looks good to me.  Assuming it compiles cleanly:
+> > 
+> > Reviewed-by: Alex Elder <elder@linaro.org>
 > 
-> Lenovo Slim/Yoga Pro 9 14IRP8 requires a special fixup because there is
-> a collision of its PCI SSID (17aa:3802) with Lenovo Yoga DuetITL 2021
-> codec SSID.
+> Hi Alex!
 > 
-> Fixes: 3babae915f4c ("ALSA: hda/tas2781: Add tas2781 HDA driver")
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=208555
-> Link: https://lore.kernel.org/all/d5b42e483566a3815d229270abd668131a0d9f3a.camel@irl.hu
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Willian Wang <git@willian.wang>
+> Thanks for reviewing.
+> 
+> > 
+> > On another subject:
+> > 
+> > Johan might disagree, but I think it would be nice to make
+> > the definitions of the Greybus device types as static (private)
+> > and make the is_gb_host_device() etc. functions real functions
+> > rather than static inlines in <linux/greybus.h>.
+> > 
+> > It turns out that all of the is_gb_*() functions are called only
+> > from drivers/greybus/core.c; they could all be moved there rather
+> > than advertising them in <linux/greybus.h>.
+> 
+> I guess it depends whether they would be used somewhere else in the
+> future. Perhaps it was left there with that intention when it was first
+> being developed? I agree, though. Will happily send a patch with this if
+> desired.
 
-Applied now.  Thanks.
+Let's clean the code up for what we have today.  If it's needed in the
+future, we can move the structures then.
 
+thanks,
 
-Takashi
+greg k-h
 
