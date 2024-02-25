@@ -1,94 +1,135 @@
-Return-Path: <linux-kernel+bounces-80011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80012-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A31FD8629A3
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 08:28:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B5498629A6
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 08:32:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 443C6B21576
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 07:28:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1BCC1C20F36
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 07:32:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B996DF46;
-	Sun, 25 Feb 2024 07:28:05 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3454DDC7;
+	Sun, 25 Feb 2024 07:32:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="TK+l+50W"
+Received: from xry111.site (xry111.site [89.208.246.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AAD12563
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 07:28:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 944BAD512;
+	Sun, 25 Feb 2024 07:32:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708846085; cv=none; b=h4nxa2YrlC9W5c5wYdTtO18wO4vZ5fhDpcfZZ9iePXDCzqJ5yVVtCEos0bXDFr2vPoAQyDaKVtc67sA8uNPvhJcnBYZs3/LpzMi2ZLtW0AGrndQWCpVOfROVFH24jRj1/B9YzkXq0rxfu2Py8MZxNhYCEklVegxt0U+iIs/dlJM=
+	t=1708846358; cv=none; b=g4XbPxDn6WeqRpRGIhwp1BCWskuKGs3RKrhBa9mpSRVOYJkFP4pOwkRsZQZgzD80rXr3BLO57ekBCr0sjq6xtigkCwQ+VVCCePoexJc4OEkGRdml3YmKJ+0idTQcCT0jJrqSUKhJpY0zOyD3vfKj9bvFH21SzKEOC1QS+mgtA/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708846085; c=relaxed/simple;
-	bh=unoUZHnNLWo85kVwRNGfukzNpxB9UQvc6x3BLRWDZdI=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=hX2I3fP2pUB7exXtahiEjnjUx2uXvrjXFuwTFvuBYphSLzJ/T18aOtgZC/umKeDBcuajG9nzmB/84qoUad8SO7OOcruJ0A7+qjwXntbr23wdvnTq9XuAr/GLQXpuC/U5B2dGDtTpFUwnQC11O7mrnwDvFlSCgFAXB+n3pJ2uT8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3657cf730a0so20677485ab.2
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 23:28:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708846083; x=1709450883;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TzsFQMYU8YtNGOBZjM6fd0mO1h4UtTBUtieIA5+iT0w=;
-        b=VLvlm/kwSTpA30hZ4pOw9id0oLmJ2nTQoh9FMu7+TXxIPccnJ2RL92X0DWrFKB1kPD
-         +5p37/bV0XQeYDF3LukiJ5zeaEDcvcIQkIfK3J2giDunqpZURGYt0ayLhcxqrVMUqa93
-         CWXh3Z8IJVLAEZDtPup6Zmlwb6lcGvaWhf1/Hy3CtqKitYl/MCcJTTVMY9i1ayc/cEZ4
-         td1GnSGx1ngYpmTmxvTLYXwjk1UNbuUmDbEvKZOwYmpcO3TUGQBNM4qA1keeDCk/wBED
-         XzEw0yuYIC4A/xnM/Yh34Us8kY1/of3wLUeu8dSEFZnQHntkQUga5XwXM4D0uvs6p/Px
-         kfZw==
-X-Forwarded-Encrypted: i=1; AJvYcCWQ7rvMRFvqKBiJOwivVYQlxOXQwm55TvT8b+Win32B2hI9zAXLl4ER33dUmqiXdVyfzTe4C1d6NE6/6Bk/J/Y7uOVkoIvAWXk0VxH5
-X-Gm-Message-State: AOJu0Yzg7yPSl0jzbmaezup+ixkYBK2+Lpbk2xNQ64/68NH04fL9ETl7
-	QKEQost1BIrnrnY8n0s4dD0jfPMGURRR595QLuPdRSE5d6wqQzCSQOCDdPp+JyLMNrgTlwyhuYG
-	hfKEUIqJ5a+t6qwkJae74Ux5dRpJnzynkIgoC1ljFAHsbJBPqn9Op3tc=
-X-Google-Smtp-Source: AGHT+IHMzsSTbqyGkWMdz6rESKzE7k0hvpJkoDrMjtx+4rAEl5iPtoYZeEnv9sgMQieN4CN0vwu7qeu/Lc7SMTpoBQs9YEgIvxul
+	s=arc-20240116; t=1708846358; c=relaxed/simple;
+	bh=LbYhaKq7d6bXAqiyvWbizJuhbnKxuNLIU02M3y8Swcs=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=HLOacz9tEyTrMDfJ6yVsLbqs+BAh6EXyB3LmSxNU0uBSE7U458b+DMYXAm9HsxrF9SYnwogehdHZD1i6rRLIbQ7fdTqas7RbyTV0parjyAKtVgxhcU8rOIvJrXa9pTO+PCj1u35T1v9JTifSaEl7hDuoDyZG8PzXb84+gO/+3wM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=TK+l+50W; arc=none smtp.client-ip=89.208.246.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+	s=default; t=1708846348;
+	bh=LbYhaKq7d6bXAqiyvWbizJuhbnKxuNLIU02M3y8Swcs=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=TK+l+50WWwXr8ks4dAV5JQieBO4oLWZV5/s59mdb7rr39ago66iuFwT9eif2fJArs
+	 Vy7/2uGWx3NiZJtQvpSi04KfGCF8fiEUe12ByW5iVUcmyXqnLREf/+aEkq/mOnkwo+
+	 Ac5e3DL5QRkTxGQlzTtSjmNAnuCJPfTqTw+9p7m0=
+Received: from [127.0.0.1] (unknown [IPv6:2001:470:683e::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
+	(Client did not present a certificate)
+	(Authenticated sender: xry111@xry111.site)
+	by xry111.site (Postfix) with ESMTPSA id F3F1966D60;
+	Sun, 25 Feb 2024 02:32:24 -0500 (EST)
+Message-ID: <24c47463f9b469bdc03e415d953d1ca926d83680.camel@xry111.site>
+Subject: Re: Chromium sandbox on LoongArch and statx -- seccomp deep
+ argument inspection again?
+From: Xi Ruoyao <xry111@xry111.site>
+To: Icenowy Zheng <uwu@icenowy.me>, Huacai Chen <chenhuacai@kernel.org>, 
+	WANG Xuerui <kernel@xen0n.name>
+Cc: linux-api@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Christian
+ Brauner <brauner@kernel.org>, Kees Cook <keescook@chromium.org>, Xuefeng Li
+ <lixuefeng@loongson.cn>, Jianmin Lv <lvjianmin@loongson.cn>, Xiaotian Wu
+ <wuxiaotian@loongson.cn>, WANG Rui <wangrui@loongson.cn>, Miao Wang
+ <shankerwangmiao@gmail.com>, "loongarch@lists.linux.dev"
+ <loongarch@lists.linux.dev>, linux-arch <linux-arch@vger.kernel.org>, Linux
+ Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date: Sun, 25 Feb 2024 15:32:23 +0800
+In-Reply-To: <f063e65df92228cac6e57b0c21de6b750cf47e42.camel@icenowy.me>
+References: <599df4a3-47a4-49be-9c81-8e21ea1f988a@xen0n.name>
+	 <CAAhV-H4oW70y-2ZSp=b-Ed3A7Jrxfg6xvO8YpjED6To=PF0NwA@mail.gmail.com>
+	 <f063e65df92228cac6e57b0c21de6b750cf47e42.camel@icenowy.me>
+Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
+ keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d0a:b0:365:4d61:fe6 with SMTP id
- i10-20020a056e021d0a00b003654d610fe6mr251453ila.1.1708846082942; Sat, 24 Feb
- 2024 23:28:02 -0800 (PST)
-Date: Sat, 24 Feb 2024 23:28:02 -0800
-In-Reply-To: <0000000000006c9d500608b2c62b@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bfed0206122fbb7c@google.com>
-Subject: Re: [syzbot] [x25?] [reiserfs?] general protection fault in lapbeth_data_transmit
-From: syzbot <syzbot+6062afbf92a14f75d88b@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, davem@davemloft.net, 
-	edumazet@google.com, jack@suse.cz, kuba@kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-x25@vger.kernel.org, ms@dev.tdt.de, netdev@vger.kernel.org, 
-	pabeni@redhat.com, reiserfs-devel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
 
-syzbot suspects this issue was fixed by commit:
+On Sun, 2024-02-25 at 14:51 +0800, Icenowy Zheng wrote:
+> > From my point of view, I prefer to "restore fstat", because we need
+> > to
+> > use the Chrome sandbox everyday (even though it hasn't been upstream
+> > by now). But I also hope "seccomp deep argument inspection" can be
+> > solved in the future.
+>=20
+> My idea is this problem needs syscalls to be designed with deep
+> argument inspection in mind; syscalls before this should be considered
+> as historical error and get fixed by resotring old syscalls.
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+I'd not consider fstat an error as using statx for fstat has a
+performance impact (severe for some workflows), and Linus has concluded
+"if the user wants fstat, give them fstat" for the performance issue:
 
-    fs: Block writes to mounted block devices
+https://sourceware.org/pipermail/libc-alpha/2023-September/151365.html
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12dcaac4180000
-start commit:   1b29d271614a Merge tag 'staging-6.4-rc7' of git://git.kern..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ac246111fb601aec
-dashboard link: https://syzkaller.appspot.com/bug?extid=6062afbf92a14f75d88b
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=150a0f73280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=107fcaff280000
+However we only want fstat (actually "newfstat" in fs/stat.c), and it
+seems we don't want to resurrect newstat, newlstat, newfstatat, etc. (or
+am I missing any benefit - performance or "just pleasing seccomp" - of
+them comparing to statx?) so we don't want to just define
+__ARCH_WANT_NEW_STAT.  So it seems we need to add some new #if to
+fs/stat.c and include/uapi/asm-generic/unistd.h.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+And no, it's not a design issue of all other syscalls.  It's just the
+design issue of seccomp.  There's no way to design a syscall allowing
+seccomp to inspect a 100-character path in its argument unless
+refactoring seccomp entirely because we cannot fit a 100-character path
+into 8 registers.
 
-#syz fix: fs: Block writes to mounted block devices
+As at now people do use PTRACE_PEEKDATA for "deep inspection" (actually
+"debugging" the target process) but it obviously makes a very severe
+performance impact.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+<rant>
+
+Today the entire software industry is saying "do things in a declarative
+way" but seccomp is completely the opposite.  It's auditing *how* the
+sandboxed application is doing things instead of *what* will be done.
+
+I've raised my against to seccomp and/or syscall allowlisting several
+times after seeing so many breakages like:
+
+- https://github.com/NetworkConfiguration/dhcpcd/issues/120
+- https://gitlab.gnome.org/GNOME/tracker-miners/-/issues/252
+- https://blog.pintia.cn/2018/06/27/glibc-segmentation-fault/
+- http://web.archive.org/web/20210126121421/http://acm.xidian.edu.cn/discus=
+s/thread.php?tid=3D148&cid=3D# (comment 3)
+
+but people just keep telling me "you are wrong, you don't understand
+security".  Some of them even complain "seccomp is broken" as well but
+still keep using it.
+
+</rant>
+
+--=20
+Xi Ruoyao <xry111@xry111.site>
+School of Aerospace Science and Technology, Xidian University
 
