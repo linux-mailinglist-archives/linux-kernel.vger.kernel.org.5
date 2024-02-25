@@ -1,132 +1,173 @@
-Return-Path: <linux-kernel+bounces-80255-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80256-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 395A7862C9C
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 20:44:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA7A3862C9F
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 20:46:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E13AB1F21A35
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 19:44:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 644FF2819A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 19:46:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2256519BBA;
-	Sun, 25 Feb 2024 19:44:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DECD31A5BA;
+	Sun, 25 Feb 2024 19:46:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="CPJnfu4S"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RkMg9EZx"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52FE11864D;
-	Sun, 25 Feb 2024 19:44:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 287E21367;
+	Sun, 25 Feb 2024 19:46:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708890259; cv=none; b=EyfMbOahl7kP24vxi0F4ZRAkViVG37v7bHxu5wgMSufgkFOok8eTghSjwnLOawc10x0fCDRiRg/xw7uFQziRwC+5jw2TdM9LrgW24ROr4D0YdplpanutBIPT2wwTTWdEoA9v61LgHxCvvIeznosSRN4Kv+4flVaIimAaqaxh8kw=
+	t=1708890371; cv=none; b=pFNVcsrk3xnsNTS0zYWdsM1M5HD9uLK8+Jh1OPL99V8IXS8L0elOA9PKWSffA9qXK3McMc7FnK8hEW20qm+hnQvdT9gBnhUE0U15PayO+oRELDaTA7lAp9sh8kNGix2sJaJLDROGD3bUc510roUWGpxejWdTCFNo6TD+y8q+A8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708890259; c=relaxed/simple;
-	bh=ciuTi7LqTCsMuTd4Gtbp53g6WN/ZJwFyYlYg8N43gSs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=fgqHVgI0C2vWBtEswJkms+cFMXuH64WW86Gy5JwggBEeRkCLd98x+q3un+7M7kcrvJ/8ov8zbR1taA2Br/zRXYlQ76VrwYXZpt5Dd5ABDcGzF6wFNiYnVoDeBku8PC+fXPb9g4GGyuxBaEQI/QiZbMefP4X6fuRxpPT4hy4Xwjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=CPJnfu4S; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41PJgIjI015512;
-	Sun, 25 Feb 2024 19:44:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=fIuZiDVUC5BxEMNoUKW/xi6MICo1paQfVTKIDQKp2M0=; b=CP
-	Jnfu4SIwT8en1/Ltz8KyjTaeD31G93lWCxafMOW7yY0/gnUlQgT+YzDQLhJ/ejAr
-	HtvYpf8xjv3CdsI1TaEwc1gkmvCTgyT5KcGB53Mr6dJdy+mZlUMcABweGRYnwy88
-	CNOYHFq9ksSWalct1JUUWJUzQ1uzQ9+PWmCnxpfuVIxHZI8ROrvmhTv3ZEAZ4CRF
-	iFjvafZ0g/KTBaejGZLlf3Oo2BFTVuK5YhXm0sSO0DcXu+IXdd3diJWXFFfQ/QSc
-	Sv6tNJyJZLRUV4CPxwz0CmYtmRn5wEQiOJLdHXVhIIoXy4i58Y4/gh7uwvXZe7YG
-	nskE4EiPAETwhu01aHZg==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wf7dv2cwc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 25 Feb 2024 19:43:59 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41PJhxPo023034
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 25 Feb 2024 19:43:59 GMT
-Received: from [10.110.76.211] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 25 Feb
- 2024 11:43:58 -0800
-Message-ID: <4e6b41f4-27a6-4c65-dc03-67437a9716ed@quicinc.com>
-Date: Sun, 25 Feb 2024 11:43:57 -0800
+	s=arc-20240116; t=1708890371; c=relaxed/simple;
+	bh=XCasjtMWxULI0q12pSVTKCODcbYjr1nwdvbMM85j5iU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Y4iWfqFFdFTX2gyy/VwuneYJ6egk8ATmHeaqkzBPXYtE2KcghDtfmMaaGzgBDfOdB5sZVa36RwY17/kdyGZ9gYK40NGnUlRoTYIPR8lStIGL5qQlCCqU0mV9G7httACNpgF8ZOrW+vJ8EyuocWuxNMbLqrMLRtvdEfSuIYOhm/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RkMg9EZx; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708890369; x=1740426369;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=XCasjtMWxULI0q12pSVTKCODcbYjr1nwdvbMM85j5iU=;
+  b=RkMg9EZxKUYxzX52B5bj5IZkaa7OkWQPwhmP8Dr9vT749wD07O+DZDoe
+   VSsTg/lwJ90ULgkhecjE1fp0X0EWG4nq4H0aYYKukodOsTBGZ+pMn2FPw
+   RcpUB1Q69bo1pyuiMam2qELmcYDCYd8PwiKCIfx43KtNt/N6M/B1dp9Ev
+   D00pShMBtcrgC0ZzBe3X7f2eh51qXGD5M4xYhQ5M07nKDcKX/sU0exAfn
+   groY8cvYTazzUUYQyRMQwFcLfTInvo92rWsV73kwdhLpcuvV956BPkiW1
+   j2jYP+22tQMfrohhhbFe/Fmy43HGZnHgMxh1kmZIr8jNENtQMFiMkl4HO
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3321159"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="3321159"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 11:46:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="11048625"
+Received: from gcsargen-mobl1.amr.corp.intel.com (HELO [10.255.228.214]) ([10.255.228.214])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 11:46:08 -0800
+Message-ID: <b81b1e5b-81fa-4df0-926d-1d75323cf47b@linux.intel.com>
+Date: Sun, 25 Feb 2024 11:46:07 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v3 1/3] drm/msm/dpu: make "vblank timeout" more useful
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] PCI/DPC: Request DPC only if also requesting AER
 Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark
-	<robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Marijn Suijten
-	<marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>, Daniel
- Vetter <daniel@ffwll.ch>
-CC: Steev Klimaszewski <steev@kali.org>, <linux-arm-msm@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <freedreno@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20240225-fd-dpu-debug-timeout-v3-0-252f2b21cdcc@linaro.org>
- <20240225-fd-dpu-debug-timeout-v3-1-252f2b21cdcc@linaro.org>
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <20240225-fd-dpu-debug-timeout-v3-1-252f2b21cdcc@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Matthew W Carlis <mattc@purestorage.com>,
+ Keith Busch <kbusch@kernel.org>, Lukas Wunner <lukas@wunner.de>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Jesse Brandeburg <jesse.brandeburg@intel.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org
+References: <20240222221521.32159-1-helgaas@kernel.org>
+ <20240222221521.32159-2-helgaas@kernel.org>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240222221521.32159-2-helgaas@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: gXNin3qXAJOwLsvYK6UlQHd4mP-BJYoC
-X-Proofpoint-ORIG-GUID: gXNin3qXAJOwLsvYK6UlQHd4mP-BJYoC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-25_22,2024-02-23_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- bulkscore=0 mlxlogscore=949 phishscore=0 adultscore=0 suspectscore=0
- clxscore=1011 lowpriorityscore=0 priorityscore=1501 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402250157
 
 
+On 2/22/24 2:15 PM, Bjorn Helgaas wrote:
+> From: Bjorn Helgaas <bhelgaas@google.com>
+>
+> When booting with "pci=noaer", we don't request control of AER, but we
+> previously *did* request control of DPC, as in the dmesg log attached at
+> the bugzilla below:
+>
+>   Command line: ... pci=noaer
+>   acpi PNP0A08:00: _OSC: OS supports [ExtendedConfig ASPM ClockPM Segments MSI EDR HPX-Type3]
+>   acpi PNP0A08:00: _OSC: OS now controls [PCIeHotplug SHPCHotplug PME PCIeCapability LTR DPC]
+>
+> That's illegal per PCI Firmware Spec, r3.3, sec 4.5.1, table 4-5, which
+> says:
+>
+>   If the operating system sets this bit [OSC_PCI_EXPRESS_DPC_CONTROL], it
+>   must also set bit 7 of the Support field (indicating support for Error
+>   Disconnect Recover notifications) and bits 3 and 4 of the Control field
+>   (requesting control of PCI Express Advanced Error Reporting and the PCI
+>   Express Capability Structure).
 
-On 2/25/2024 6:12 AM, Dmitry Baryshkov wrote:
-> We have several reports of vblank timeout messages. However after some
-> debugging it was found that there might be different causes to that.
-> To allow us to identify the DPU block that gets stuck, include the
-> actual CTL_FLUSH value into the timeout message.
-> 
+IIUC, this dependency is discussed in sec 4.5.2.4. "Dependencies Between
+_OSC Control Bits".
 
-the flush register shall also be part of the coredump in patch 3. so why 
-is this needed?
+Because handling of Downstream Port Containment has a dependency on Advanced Error
+Reporting, the operating system is required to request control over Advanced Error Reporting (bit 3
+of the Control field) while requesting control over Downstream Port Containment Configuration
+(bit 7 of the Control field). If the operating system attempts to claim control of Downstream Port
+Containment Configuration without also claiming control over Advanced Error Reporting, firmware
+is required to refuse control of the feature being illegally claimed and mask the corresponding bit.
+Firmware is required to maintain ownership of Advanced Error Reporting if it retains ownership of
+Downstream Port Containment Configuration.
+If the operating system sets bit 7 of the Control field, it must set bit 7 of the Support field, indicating
+support for the Error Disconnect Recover event.
 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>
+> Request DPC control only if we have also requested AER control.
+>
+> Fixes: ac1c8e35a326 ("PCI/DPC: Add Error Disconnect Recover (EDR) support")
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=218491#c12
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: <stable@vger.kernel.org>	# v5.7+
+> Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Cc: Matthew W Carlis <mattc@purestorage.com>
+> Cc: Keith Busch <kbusch@kernel.org>
+> Cc: Lukas Wunner <lukas@wunner.de>
+> Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+> Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
 > ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
-> index 2aa72b578764..6058706f03e4 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
-> @@ -480,7 +480,7 @@ static int dpu_encoder_phys_vid_wait_for_commit_done(
->   		(hw_ctl->ops.get_flush_register(hw_ctl) == 0),
->   		msecs_to_jiffies(50));
->   	if (ret <= 0) {
-> -		DPU_ERROR("vblank timeout\n");
-> +		DPU_ERROR("vblank timeout: %x\n", hw_ctl->ops.get_flush_register(hw_ctl));
->   		return -ETIMEDOUT;
->   	}
->   
-> 
+Code wise it looks fine to me.
+
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>  drivers/acpi/pci_root.c | 20 +++++++++++---------
+>  1 file changed, 11 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
+> index 58b89b8d950e..efc292b6214e 100644
+> --- a/drivers/acpi/pci_root.c
+> +++ b/drivers/acpi/pci_root.c
+> @@ -518,17 +518,19 @@ static u32 calculate_control(void)
+>  	if (IS_ENABLED(CONFIG_HOTPLUG_PCI_SHPC))
+>  		control |= OSC_PCI_SHPC_NATIVE_HP_CONTROL;
+>  
+> -	if (pci_aer_available())
+> +	if (pci_aer_available()) {
+>  		control |= OSC_PCI_EXPRESS_AER_CONTROL;
+>  
+> -	/*
+> -	 * Per the Downstream Port Containment Related Enhancements ECN to
+> -	 * the PCI Firmware Spec, r3.2, sec 4.5.1, table 4-5,
+> -	 * OSC_PCI_EXPRESS_DPC_CONTROL indicates the OS supports both DPC
+> -	 * and EDR.
+> -	 */
+> -	if (IS_ENABLED(CONFIG_PCIE_DPC) && IS_ENABLED(CONFIG_PCIE_EDR))
+> -		control |= OSC_PCI_EXPRESS_DPC_CONTROL;
+> +		/*
+> +		 * Per PCI Firmware Spec, r3.3, sec 4.5.1, table 4-5, the
+> +		 * OS can request DPC control only if it has advertised
+> +		 * OSC_PCI_EDR_SUPPORT and requested both
+> +		 * OSC_PCI_EXPRESS_CAPABILITY_CONTROL and
+> +		 * OSC_PCI_EXPRESS_AER_CONTROL.
+> +		 */
+> +		if (IS_ENABLED(CONFIG_PCIE_DPC))
+> +			control |= OSC_PCI_EXPRESS_DPC_CONTROL;
+> +	}
+>  
+>  	return control;
+>  }
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
+
 
