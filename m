@@ -1,116 +1,104 @@
-Return-Path: <linux-kernel+bounces-80343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BB04862D85
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 23:58:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 798BD862D87
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 23:58:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4807C28209F
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 22:58:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB48228207B
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 22:58:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AE814D9EA;
-	Sun, 25 Feb 2024 22:55:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7904D1BC58;
+	Sun, 25 Feb 2024 22:56:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cw9SWUL6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b="yiePqQic"
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [178.238.236.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 734774D5A0
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 22:55:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 331CE4EB20;
+	Sun, 25 Feb 2024 22:56:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.238.236.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708901748; cv=none; b=iDkVeZ9+7wOXfn5htAQJ0FyqVPpDI3cxVWre7TTFp6OSBJxTaG859K5dLFIoG5NK3aiFT+p10n+2icgd0rif4pk5MyNovtQzCpy6PcjrQ3HnGNpZ92b6deyNBghrgU59hW+gdNhBED4vDpAAMfWH/S4vky6UNcUlhlOGBQb1Ry0=
+	t=1708901796; cv=none; b=gG4rK86lD2u4Oq9YCRRkhKm3lT+Sl8/SMLk1zZMMT9CaAJerzsXxO3iQxZ9iNkK3hNMzO/xmGRnYOlscJdZYSDmusfKzpii80H76fvE9wWtVmQSpDU8sIeW34pjuc5WugtbGzePhvD/kxI7HrnOnhASnJqPK+776RUoWio7wBog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708901748; c=relaxed/simple;
-	bh=0ATute8e6VvAt1imtugny66nHYVAoAroOYlbqbrp6NU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VxScetmMguGjvpK9X/qYoyZAKdnf1tGgqfWz18luJRpTLcmr9BC87ehPtH4JaQii4KOwcSO65XhyHwhI6jNW9sw0+DU69RQXhx+lCsD9zVSBaEiF3qV5JE81RXB1O1BjWlYlpOLld+iWrv3MkmjwgQHu8Rq5c4iz8wc6QRux9Bc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cw9SWUL6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3464C433C7;
-	Sun, 25 Feb 2024 22:55:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708901748;
-	bh=0ATute8e6VvAt1imtugny66nHYVAoAroOYlbqbrp6NU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cw9SWUL6v04yVpISlBEFC9hi2sYD4jXHK2xhyoCpkpTQRnH6PeLXCklz1EHkjIWnF
-	 A4ponYwyRyvgHO6QC6mNhM8Q9dYaG7Y5IIy8S/ONqx1ZRfMTgZ/lsY20XuwtxwmEJ2
-	 APKhijkKfHuKi9v5wdx2UEJJ0pcQPVrM6wI7vAWpWUodHhEhqd7hwJeZhX43lS8Nvw
-	 kjAUkPsPo6pv1gu/4oX+YEBudLrQXxjAJAg5SIpVJErUW7Cgq3kVHSsqi0wmgmlw8c
-	 f3HAbhIhyxsN2KhsHhPQvv+BTGqn7GOaNK38kLt8IUJG9k6O8HLU5Ko9GGMctZBSwE
-	 XJw7x/bECQ5tQ==
-From: Frederic Weisbecker <frederic@kernel.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@kernel.org>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Peng Liu <liupeng17@lenovo.com>,
-	Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH 16/16] timers: Assert no next dyntick timer look-up while CPU is offline
-Date: Sun, 25 Feb 2024 23:55:08 +0100
-Message-ID: <20240225225508.11587-17-frederic@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240225225508.11587-1-frederic@kernel.org>
-References: <20240225225508.11587-1-frederic@kernel.org>
+	s=arc-20240116; t=1708901796; c=relaxed/simple;
+	bh=O9Vngy+bRYX7Ci9h3aCm4vsF88501smM+7GrX3xVzCE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NC7IuXzq3cey3slfuN463P0Eg2fUKVEqB2+goF49J4cLGyfu5DlBQRSBg50k2mwuhhQxTRxU1nLb+zn1pVGaKVpzOmqTrkR1qohy8XYGogv8v5KbraH+DKb1RlIBD/xSwhgye1O3TH7AEKshrQ2U4xdTJvvRz/QXYYwKfW8ysbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info; spf=pass smtp.mailfrom=kemnade.info; dkim=pass (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b=yiePqQic; arc=none smtp.client-ip=178.238.236.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kemnade.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=kemnade.info; s=20220719; h=Content-Transfer-Encoding:MIME-Version:
+	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=ftFJcb2j+YtxD2/aw3NjN29F+pLKQHFtVTPjEz6SDiU=; b=yiePqQic1lFEU17BujkHphzNkQ
+	9bsdehHZGSImUmm4lL/TPM52v4Nlk42e00+WCqXOt9TQA0CUiZzVYM9WaXZojkSvv9Vzga33HCUih
+	MSN9FUjNQYDBxWT20/qc9644L1cCculAhKgtOcXkZ/jRQXOYa8HPTLFT9k3Gq4CKs2suLeCoBtPAw
+	OOAFh/70dT/I+Ooy4RKHxVQihhTt//E22LWvFXIQYAMfYC3q3vBkSSCMfsO6mHjolW+RYLvkQtbYd
+	pmw7pS9xhrlClKXivdqwTwUPeSYXYRiXvBJ87aNJA7I003CLKB1ujJKQLKkuZPbcK4ljePa55JPOz
+	Cd1/Jagg==;
+Received: from p200301077700b1001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:107:7700:b100:1a3d:a2ff:febf:d33a] helo=aktux)
+	by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <andreas@kemnade.info>)
+	id 1reNQ3-009mDd-CD; Sun, 25 Feb 2024 23:56:27 +0100
+Received: from andi by aktux with local (Exim 4.96)
+	(envelope-from <andreas@kemnade.info>)
+	id 1reNQ2-00ELT3-22;
+	Sun, 25 Feb 2024 23:56:26 +0100
+From: Andreas Kemnade <andreas@kemnade.info>
+To: robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	shawnguo@kernel.org,
+	s.hauer@pengutronix.de,
+	kernel@pengutronix.de,
+	festevam@gmail.com,
+	linux-imx@nxp.com,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Andreas Kemnade <andreas@kemnade.info>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH] ARM: dts: imx6sl: tolino-shine2hd: fix IRQ config of touchscreen
+Date: Sun, 25 Feb 2024 23:56:22 +0100
+Message-Id: <20240225225622.3419104-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The next timer (re-)evaluation, with the purpose of entering/updating
-the dyntick mode, can happen from 3 sites and none of them are relevant
-while the CPU is offline:
+Correctly describe the interrupt as level low. Driver enforces that
+anyways, but do not rely on that in the devicetree.
 
-1) The idle loop:
-	a) From the quick check helping the cpuidle governor to heuristically
-	   predict the best C-state.
-	b) While stopping the tick.
-
-   But if the CPU is offline, the tick has been cancelled and there is
-   consequently no need to further stop the tick.
-
-2) Remote expiry: when a CPU remotely expires global timers on behalf of
-   another CPU, the latter target's next timer is re-evaluated
-   afterwards. However remote expîry doesn't happen on offline CPUs.
-
-3) IRQ exit: on nohz_full mode, the tick is (re-)evaluated on IRQ exit.
-   But full dynticks is disabled on offline CPUs.
-
-Therefore it is safe to assume that no next dyntick timer lookup can
-be performed on offline CPUs.
-
-Assert this expectation to report any surprise.
-
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Suggested-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
 ---
- kernel/time/timer.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/nxp/imx/imx6sl-tolino-shine2hd.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 4f4930da6448..e69e75d3858c 100644
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -2233,10 +2233,10 @@ static inline u64 __get_next_timer_interrupt(unsigned long basej, u64 basem,
- 	bool idle_is_possible;
- 
- 	/*
--	 * Pretend that there is no timer pending if the cpu is offline.
--	 * Possible pending timers will be migrated later to an active cpu.
-+	 * When the CPU is offline, the tick is cancelled and nothing is supposed
-+	 * to try to stop it.
- 	 */
--	if (cpu_is_offline(smp_processor_id())) {
-+	if (WARN_ON_ONCE(cpu_is_offline(smp_processor_id()))) {
- 		if (idle)
- 			*idle = true;
- 		return tevt.local;
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6sl-tolino-shine2hd.dts b/arch/arm/boot/dts/nxp/imx/imx6sl-tolino-shine2hd.dts
+index 815119c12bd48..922749bf11bc1 100644
+--- a/arch/arm/boot/dts/nxp/imx/imx6sl-tolino-shine2hd.dts
++++ b/arch/arm/boot/dts/nxp/imx/imx6sl-tolino-shine2hd.dts
+@@ -138,7 +138,7 @@ zforce: touchscreen@50 {
+ 		pinctrl-0 = <&pinctrl_zforce>;
+ 		reg = <0x50>;
+ 		interrupt-parent = <&gpio5>;
+-		interrupts = <6 IRQ_TYPE_EDGE_FALLING>;
++		interrupts = <6 IRQ_TYPE_LEVEL_LOW>;
+ 		vdd-supply = <&ldo1_reg>;
+ 		reset-gpios = <&gpio5 9 GPIO_ACTIVE_LOW>;
+ 		x-size = <1072>;
 -- 
-2.43.0
+2.39.2
 
 
