@@ -1,105 +1,84 @@
-Return-Path: <linux-kernel+bounces-79964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B3A3862906
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 04:39:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1049B862908
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 04:53:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D1A81F217C3
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 03:39:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1E5A1C20D25
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 03:53:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C8DD63CF;
-	Sun, 25 Feb 2024 03:39:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94D087465;
+	Sun, 25 Feb 2024 03:53:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="N/eA0FLM"
-Received: from mail-177132.yeah.net (mail-177132.yeah.net [123.58.177.132])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0F1B53A0;
-	Sun, 25 Feb 2024 03:39:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.132
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qyzi2t2l"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D00A328F1;
+	Sun, 25 Feb 2024 03:53:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708832360; cv=none; b=oSvpsz82uZIgkQ9wODldGnQheO1ZVxdZwypJQScLz4Wyan6kmN5BfpnLn9qxPcnkLhlyY/qQtdIGkUlzUhIH279LRGSxIiri70uz2zEpkYtRKUl/TgvbQ7+tS2eFQqWt5VO3NjoV2JhwrE/ONtU57QN1/BLIiz5MfMSoJUL2qUI=
+	t=1708833201; cv=none; b=QAsApYLTfc5BPEsPQwMIgFgO4FDvbPhNV7c88sGSsNeRoVisaX1/qIgjRM5FWtMNX7VcfQY3BTU53BEPqDg1oNqhqGYp+Ay698mskLrJ16PYUsO0JBB0Dg9uujMnDmqEDUK6IZjI4corZSQO+R+9dkbUpjbfGICFbjscYrBiNE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708832360; c=relaxed/simple;
-	bh=u7WCIjEpOQKsg1ni3/puehCB5TErmSAdlAtba0R5QoI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RCbm5ANqCCUIeEbRAR0DiWVavYw3xhKLa9pnUcpnqB5QVgOvqed+SpqTc+e9vKVq/YS6StzRl5BH+uwSsq/wU97FSFisid+R0ClRBuOg7UQ1KAXAfh9Y/rz0ZPsSImajq6PQwwg5p0t2bZWrG6YcRd5Kw97LZCw5Y2lr6N7AuqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=N/eA0FLM; arc=none smtp.client-ip=123.58.177.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=3BZz6CYSY0RLqb7uGYPPOD2+QTos9rTXVXkguc6zZB0=;
-	b=N/eA0FLMYrdF1EIPQ0boc+Y934+F9NBus66NuyAGB+fDulTvyBJWp6v8z06ySp
-	tY1vJriSBjIq7l4nWGMQek+rA4DlgEf3xQ5+Z8chVYF7twSFhGtZEyGe9G1LApom
-	hZWvhIJLyoRSyKCYeVUEYqoHScxSZMwkL9mEqDiEznOdw=
-Received: from dragon (unknown [183.213.196.200])
-	by smtp2 (Coremail) with SMTP id C1UQrAD3H0A7ttplRc1PBA--.39055S3;
-	Sun, 25 Feb 2024 11:38:36 +0800 (CST)
-Date: Sun, 25 Feb 2024 11:38:34 +0800
-From: Shawn Guo <shawnguo2@yeah.net>
-To: Francesco Dolcini <francesco@dolcini.it>
-Cc: Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Francesco Dolcini <francesco.dolcini@toradex.com>,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Marco Felsch <m.felsch@pengutronix.de>,
-	Roland Hieber <rhi@pengutronix.de>,
-	Hiago De Franco <hiagofranco@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v1] ARM: dts: imx7: remove DSI port endpoints
-Message-ID: <Zdq2OhFYa7BOhXxt@dragon>
-References: <20240216104255.21052-1-francesco@dolcini.it>
- <20240223171901.GA22584@francesco-nb>
+	s=arc-20240116; t=1708833201; c=relaxed/simple;
+	bh=F6vftM2HPJ8p+RYO+nyfuI65MLY2TTCXZc5JFILU3xA=;
+	h=MIME-Version:In-Reply-To:References:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TYR8guvWQ8dGhRDQ3BvRaP3DoIu8rnUSnGuW7cFyE9CxOzgk1oDrhOLhuRZtrhAM5n/X1ot8FdifoV1islxVxr+QLq/nZE/Lf8Q8KGzdn2YbKMy/XcW3ncHZ8a/wFGXuVuzcjdwz36crFfijUOSaSbZ1gNLll8EB6zTfTRKxgDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qyzi2t2l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4247EC433A6;
+	Sun, 25 Feb 2024 03:53:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708833201;
+	bh=F6vftM2HPJ8p+RYO+nyfuI65MLY2TTCXZc5JFILU3xA=;
+	h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+	b=Qyzi2t2lulHWB6gJY3MezHuJm/VDo8E4YOQqMEh+hjeEyzA5CsO2zHO/wgHB9LF5s
+	 bME1HQVl56eCmNuHsL4V9I4SJTCe61/3iowpb5LSx3RVcnZeNrmpLVdVrOO325WXDm
+	 fZyZoVELt6Vs9GvyUYhBUnEHNsATLJBkBQ533WI63IDh09s+xdQHcc814Q7MDvziKo
+	 Rm5lhwdYlGCsnPcj33ENnqfzx/KAXI+57uzyjsB9kCUVAsqL2O7JFVhfC1AQ9/Y0PK
+	 pV+Y/2tvR3cIt5ORPbmygQ8t9P8mGHvu26Q0NiyVgZmHbSMYmw6Toqfwf69+u/4I71
+	 VBB3TzMUv2+6g==
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6e49332d014so316109a34.3;
+        Sat, 24 Feb 2024 19:53:21 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWFX48qac5d8CY/Ue+wElKMyF8KgGoK94ulddqTCQ5GqYT6YNOf/vUrGB3mnjvdb2asYDPUdhy6snaTlpMTrpu59pmb8GMV78ewkaCP4THvqRHVWyfavwxLJo72rECKtWOn81BgZtvjkaK/Nw==
+X-Gm-Message-State: AOJu0YxJ6UL03QZ4MW3xvo/cJ/NoG7XeDKlnxu7nu6gNB2s08ONfTYdS
+	1O6iNR16Y2fJRGalQeHtCOVBrwuidnLRs18FDrxikgM3cgaPygIojaGvAvHqnDS3M9D+tfcOiG3
+	cY55wO/F21Nck17aaihnzWzuPwmQ=
+X-Google-Smtp-Source: AGHT+IEY8bmu/ADERIYfcAcW72NKdjxEWQ1Xl7Q6LIrlQ9QtIuS0T/ius1jFVisYmAhFYie1O04ctUoGI1mPj66IHMw=
+X-Received: by 2002:a9d:6955:0:b0:6e4:92a8:1fae with SMTP id
+ p21-20020a9d6955000000b006e492a81faemr2392454oto.0.1708833200511; Sat, 24 Feb
+ 2024 19:53:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240223171901.GA22584@francesco-nb>
-X-CM-TRANSID:C1UQrAD3H0A7ttplRc1PBA--.39055S3
-X-Coremail-Antispam: 1Uf129KBjvdXoW7JF48ZF1rKw1DGw4UXFW7CFg_yoWkCFX_uF
-	1Sv3yIgw4UWFW0q39FqF1F9rWxW3yrJ34jqFWagr43Za4fA34UJF93KryDXwn3Wayftrsx
-	u3Z5Krn0vr1qvjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUn7fQtUUUUU==
-X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiFQ2PZV6Nm6WPWwABsK
+Received: by 2002:a8a:c10:0:b0:51d:7041:beda with HTTP; Sat, 24 Feb 2024
+ 19:53:19 -0800 (PST)
+In-Reply-To: <20240224134803.829394-1-chengming.zhou@linux.dev>
+References: <20240224134803.829394-1-chengming.zhou@linux.dev>
+From: Namjae Jeon <linkinjeon@kernel.org>
+Date: Sun, 25 Feb 2024 12:53:19 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd_HUcSrFv1q6HvPkOBdENkK+Hjih-KiwZMc97mPaiGPHA@mail.gmail.com>
+Message-ID: <CAKYAXd_HUcSrFv1q6HvPkOBdENkK+Hjih-KiwZMc97mPaiGPHA@mail.gmail.com>
+Subject: Re: [PATCH] exfat: remove SLAB_MEM_SPREAD flag usage
+To: chengming.zhou@linux.dev
+Cc: sj1557.seo@samsung.com, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz, 
+	roman.gushchin@linux.dev, Xiongwei.Song@windriver.com, 
+	Chengming Zhou <zhouchengming@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Feb 23, 2024 at 06:19:01PM +0100, Francesco Dolcini wrote:
-> On Fri, Feb 16, 2024 at 11:42:55AM +0100, Francesco Dolcini wrote:
-> > From: Francesco Dolcini <francesco.dolcini@toradex.com>
-> > 
-> > This fixes the display not working on colibri imx7, the driver fails to
-> > load with the following error:
-> > 
-> >   mxsfb 30730000.lcdif: error -ENODEV: Cannot connect bridge
-> > 
-> > NXP i.MX7 LCDIF is connected to both the Parallel LCD Display and to a
-> > MIPI DSI IP block, currently it's not possible to describe the
-> > connection to both.
-> > 
-> > Remove the port endpoint from the SOC dtsi to prevent regressions, this
-> > would need to be defined on the board DTS.
-> > 
-> > Reported-by: Hiago De Franco <hiagofranco@gmail.com>
-> > Closes: https://lore.kernel.org/r/34yzygh3mbwpqr2re7nxmhyxy3s7qmqy4vhxvoyxnoguktriur@z66m7gvpqlia/
-> > Fixes: edbbae7fba49 ("ARM: dts: imx7: add MIPI-DSI support")
-> > Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-> 
-> Hello Shawn, what do you plan to do with this?
-> 
-> This fixes a regression from v6.8-rc1 and would be nice to have it into
-> the final v6.8.
-
-Applied as a fix for 6.8, thanks!
-
+2024-02-24 22:48 GMT+09:00, chengming.zhou@linux.dev <chengming.zhou@linux.dev>:
+> From: Chengming Zhou <zhouchengming@bytedance.com>
+>
+> The SLAB_MEM_SPREAD flag is already a no-op as of 6.8-rc1, remove
+> its usage so we can delete it from slab. No functional change.
+>
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+Applied it to #dev.
+Thanks for your patch!
 
