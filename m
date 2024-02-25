@@ -1,115 +1,101 @@
-Return-Path: <linux-kernel+bounces-80315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80316-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70DE1862D47
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 22:48:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68AB7862D49
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 22:52:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A262E1C20DE2
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 21:48:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BF931C20859
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 21:52:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B4841BC26;
-	Sun, 25 Feb 2024 21:48:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D4E91B968;
+	Sun, 25 Feb 2024 21:52:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Mjt0ivCt"
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dLZo7J00"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4A801B950
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 21:48:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A2241B94E;
+	Sun, 25 Feb 2024 21:52:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708897713; cv=none; b=Xq1q3GFEQwKNzBlBrwMoQRuDusxii9Db42WdzJaiDj1JU99OjX/WCVflf2MbgzrTxWs+wOrU+gM61tKalFp4PNjCsJziVV66uPKOPmdroecwA8h0reJJzwWK7Xxp2CYrCmieZ9GcdLj997OcObvbGonSEThYurIK1Wu9g7GFxPI=
+	t=1708897963; cv=none; b=gYhmb1Ifi7u9tpuMfIlRL42dfifLXUYE9EYbDt6aBDXL5hbICf8YYcVf1fJAK7HI39i40snc2M6bbTtRN0ACLeEbqnHMlM51K8Pi/EKIexGK0lcg2LF0/OOGbnTNxkR0ckOvK8M6rTndkSjgidEmbRQh1YN8lNslIaiROaAWmQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708897713; c=relaxed/simple;
-	bh=dvUDecwBMflNx4CehdCSDahY5V9l4jB2UPQiq5FVREc=;
+	s=arc-20240116; t=1708897963; c=relaxed/simple;
+	bh=ximVVDVSkTdhIQPOy7oFobVeW12EKfl7i+5B7/RQeR0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PrGO3lKtdX8cNFIsxe3qkcJpl2fAp1yoZey4wcbRZpsCZb9YsekUILfwa8Ku/zyHxMKtJz02+jKGgURr9rF6K5YR5q0ZUj9A0FY+qkaHztyAXw3X8Rky9V8nnMljwYVejAAM4KC9+u8NTHK3Z8o61sD3yJ/qouZpX33gSEa8sto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Mjt0ivCt; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Sun, 25 Feb 2024 16:48:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708897709;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hZLPGWILyQb0uie5XWZz0sri12gIiwEuygESDSHUCVk=;
-	b=Mjt0ivCt7EdkAJ/tpZ4vBCFUaqud0EetWM2nBfj0PDARbuDEYfLiwPCmO+8FQyUf1FXdfK
-	FVg/OoP8xi3mQ8sb+oDtygwMJ6YTysy3H6B6s8jKttLHwjCDctJ7K1/6COxMO8MIW170zO
-	y1pGGRjGU3Mg12gJagPvuo4QwPQgzCU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: David Laight <David.Laight@aculab.com>
-Cc: 'Herbert Xu' <herbert@gondor.apana.org.au>, 
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	Thomas Graf <tgraf@suug.ch>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, 
-	"maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>
-Subject: Re: [PATCH 0/1] Rosebush, a new hash table
-Message-ID: <22nvcwzzfq3ae2eva6m43wolfo3b3pit7xsauuux267hxciigi@52zuwg5yorg5>
-References: <20240222203726.1101861-1-willy@infradead.org>
- <Zdk2YgIoAGOEvcJi@gondor.apana.org.au>
- <4a1416fcb3c547eb9612ce07da6a77ed@AcuMS.aculab.com>
- <2s73sed5n6kxg42xqceenjtcwxys4j2r5dc5x4fdtwkmhkw3go@7viy7qli43wd>
- <2a6001442b354c2fb5b881c2a9d75895@AcuMS.aculab.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FaphVLFp2VIQsriQ3BJhNW3UFv9dl706Z4QpdVM4M7uR4N8jrtq6vYnHvjIfck9VkC0FEnzPYhQWS6FijBcaY6jiDEtfFIsGHpbnycM3edaHmMkh+L066A4ykTrvHMCtlW7TU7CSiKO3ieQJdDRs4ZFNBCjLR3q7cgE//dn0e04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dLZo7J00; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9233C433C7;
+	Sun, 25 Feb 2024 21:52:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708897962;
+	bh=ximVVDVSkTdhIQPOy7oFobVeW12EKfl7i+5B7/RQeR0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dLZo7J001ZR4ecvTvfGGCNNVlcw0ks3ElC2FK3G0FkJFwj2+UyhqtuS4eXjrsRHTB
+	 lKKDWy/MnkXAkrrntimJTqxw5MYmaZ+QtcXaS3ZuesEqfIEPqtudcjkBvaYBL6lECL
+	 LdIsXiOffhmG69PrcIa4U/3XtdCCAD5UdUtZbvT+TAYYjxYJi37ywMKKit4NduUtf8
+	 wuYOo1M2GPcl4EdtYUtzVLc6d6DaRayAX87cqdnhO6UU1xRn8/X0ggy/4i8qny9Cl1
+	 GhqnIFxVXigJ174baiyX9KE8kLGxGFpOQEt/WD6tzxh0cGXnrSyUChbaUGIuNUx2ib
+	 ii2NpWPqcRLCg==
+Date: Sun, 25 Feb 2024 21:52:39 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Conor Dooley <Conor.Dooley@microchip.com>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: duplicate patch in the riscv-soc-fixes tree
+Message-ID: <20240225-retriever-stunning-b1bebf658c92@spud>
+References: <20240226080721.48140d3f@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="pIfFv1KDzs+tGoum"
+Content-Disposition: inline
+In-Reply-To: <20240226080721.48140d3f@canb.auug.org.au>
+
+
+--pIfFv1KDzs+tGoum
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2a6001442b354c2fb5b881c2a9d75895@AcuMS.aculab.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Feb 25, 2024 at 02:47:45PM +0000, David Laight wrote:
-> From: Kent Overstreet
-> > Sent: 25 February 2024 03:19
-> ..
-> > when I implemented cuckoo (which is more obviously sensitive to a weak
-> > hash function), I had to go with siphash, even jhash wasn't giving me
-> > great reslts. and looking at the code it's not hard to see why, it's all
-> > adds, and the rotates are byte aligned... you want mixed adds and xors
-> > and the rotates to be more prime-ish.
-> > 
-> > right idea, just old...
-> > 
-> > what would be ideal is something more like siphash, but with fewer
-> > rounds, so same number of instructions as jhash. xxhash might fit the
-> > bill, I haven't looked at the code yet...
-> 
-> There is likely to be a point where scanning a list of values
-> for the right hash value is faster than executing a hash function
-> that is good enough to separate them to separate buckets.
+On Mon, Feb 26, 2024 at 08:07:21AM +1100, Stephen Rothwell wrote:
+> Hi all,
+>=20
+> The following commit is also in Linus Torvalds' tree as a different commit
+> (but the same patch):
+>=20
+>   8bbccdd8c264 ("cache: ax45mp_cache: Align end size to cache boundary in=
+ ax45mp_dma_cache_wback()")
+>=20
+> This is commit
+>=20
+>   9bd405c48b0a ("cache: ax45mp_cache: Align end size to cache boundary in=
+ ax45mp_dma_cache_wback()")
+>=20
+> in Linus' tree.
 
-Executing a bunch of alu ops that parallelize nicely is _fast_
-(it's all xors/adds/rotates, chacha20 is a good example of how
-the modern stuff works).
+Ah, I rebased out an accidental merge commit before sending a PR.
+I'll go drop the duplicate, thanks.
 
-Also, for 2-way cuckoo there's an xor trick so you don't need to compute
-a second hash.
 
-But the key thing about cuckoo is that the loads on lookup _aren't
-dependent_ - they can run in parallel. Every cache miss that goes all
-the way to DRAM is stupidly expensive, remember - hundreds of
-instructions, had you been able to keep the pipeline fed.
+--pIfFv1KDzs+tGoum
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> You don't want to scan a linked list because they have horrid
-> cache footprints.
-> The locking is equally horrid - especially for remove.
-> Arrays of pointers ar ethe way forward :-)
+-----BEGIN PGP SIGNATURE-----
 
-Well, maybe; I'm waiting to see fill factor numbers and benchmarks. Fill
-factor was my concern when I was playing around with the concept; I used
-it in a place where the hash table didn't need to be that big, and the
-point was to avoid having to separately allocate the entries (and it
-avoids the hassle of tombstone entries with linear/quadratic probing).
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZdu2lwAKCRB4tDGHoIJi
+0lQsAPwMMkkGMObCH+k85N3y0+joNtEXxBd8rTDTqivfRXbc6wD/bNhGBaK2kl8H
+tKAggsbLqxAEOpF8QqREGzY42RJP9QA=
+=NGlb
+-----END PGP SIGNATURE-----
 
-The fact that it requires a second dependent load, because buckets are
-separately allocated, also looks like a big negative to me. I still
-think a good lockless cuckoo hashing implementation ought to beat it.
+--pIfFv1KDzs+tGoum--
 
