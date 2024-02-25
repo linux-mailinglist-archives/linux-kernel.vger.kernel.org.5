@@ -1,479 +1,518 @@
-Return-Path: <linux-kernel+bounces-80047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD3F8862A1E
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 12:45:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94E2B862A27
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 12:57:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 680E01F21592
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 11:45:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBA66281BAE
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 11:57:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F866101E6;
-	Sun, 25 Feb 2024 11:45:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD62310957;
+	Sun, 25 Feb 2024 11:56:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J6exCQdL"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="BvP/dm6y"
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01olkn2066.outbound.protection.outlook.com [40.92.53.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2971C2ED
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 11:45:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708861523; cv=none; b=f7F/+AIEOSSP/53mO7+YuwGTr+Q68X+CziitsRFz1hBBGShRBiUOhOxB3wvM/P1SWgmnkKw/tz8tpZ25M0I8BqCUbufdnj8HXn6miGkzflbqLlQpDag1/iub6CNYIhSJFBrWKfgSYSYwdqcsKWMUg41Svw3P8RYz8rd9dRGUAYo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708861523; c=relaxed/simple;
-	bh=gOZhPgC0V+pYzVMrEwaPhfJykj0gYCQdTnks0fedWTg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=VvRl8Lkqamdl+oMKRd0T6VwB8ZPVaUgueFfXNhwlGmKcOHHolaSbQIRUCv0ePVuppEUa5tRlxZ/WPSkRbqx7a80bsEJ/gj2/bOvRmiZOcxDeSFyNr6LL/GmRsRJW3JyLVJrRKssj3IOUiCYNTB3iTz4/bF6ykB6ifqSxqVtDbiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J6exCQdL; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708861521; x=1740397521;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=gOZhPgC0V+pYzVMrEwaPhfJykj0gYCQdTnks0fedWTg=;
-  b=J6exCQdLYfDzzNDm6g7Fr1y1RkdN+GsEKCVRXJQWVHlX7nGISrSvO5Vc
-   AJLerFAr8TWTF1quCfh9mz6LbeFRkJ6Lue5H9WZEHkssxMlnUuqkA+BjE
-   L9hmjfv/3nM9YMjAy+a2U8GcfDHqgtC9b7bsTgFf8xhoTPF9HbtU7ufaU
-   Llichqa/bJJHVPQ+XvEk0K5Ui9HZryv40QHkWOxMkOLVVYsZt+GHUIbyG
-   PqAcrP8BjqqxhFsqZtir340/BF4Bb3th8oNS1vYyDAmoR0RQU6V7b6lLy
-   D5uSeelqDyKAiiCrpnfhjpz6eOoqpqHKUOGEVOXBIivtd5iQuF80Gl2d0
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10994"; a="20597687"
-X-IronPort-AV: E=Sophos;i="6.06,183,1705392000"; 
-   d="scan'208";a="20597687"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 03:45:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,183,1705392000"; 
-   d="scan'208";a="6730759"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by orviesa007.jf.intel.com with ESMTP; 25 Feb 2024 03:45:19 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1reCwW-0009V6-0O;
-	Sun, 25 Feb 2024 11:45:16 +0000
-Date: Sun, 25 Feb 2024 19:44:39 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev,
-	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars:testing/WFAMNAE-next20240223 1/1]
- drivers/scsi/megaraid/megaraid_sas_fp.c:103:29: error: 'struct
- MR_DRV_RAID_MAP_hdr' has no member named 'ldSpanMap'
-Message-ID: <202402251943.zGBJ7sEO-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07EE110949;
+	Sun, 25 Feb 2024 11:56:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.53.66
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708862217; cv=fail; b=k7x1S8Tw9t5sRtRVsdUGB+LZJezYlI6dq9R69CJy1KV4DZm65hR+6E7oPRyiO4D90NYwDniL0VuKF0jvxPywStGcCaXoO0xT0eGFmyLPyrgcH2UdfXNmcrwDYSjVQ/Dr9vXfYvudls88N5Oq4y33FjxkHh0z8sfwx9rgfaUS6sg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708862217; c=relaxed/simple;
+	bh=E1xddv760UHhquhoNIcOl3g6fTneUR8YapzhPVNr5ys=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=N27M/wLwzCtHT5m8geqeWZVgq3kirZsCyj6n5TORULzpzfEl7eolWWD5K/c9vRNpNAezUu3+MHPZvk70OiV2XtAWnSUwwf484Y+196wA2VAuiLOvB6IahZtHISlCxzcmdlKte06416CkvLZLcAfQ6VIyUWgO07H3WMd0ufbRONA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=BvP/dm6y; arc=fail smtp.client-ip=40.92.53.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LWA/yBsIGE5iqFvUELfP4MhY7Eh602dWib8tF5TbdnRYjmC3zxo11r8aYedfA/yUVsynYNendv7HxR5ejhj9HSiD4ap+QGdrfFKUQmHwwrVpRZnvTCl5d7O5owBSsiu/3rbrvxpwRQXn4F0qzaKnzTHLazrUt3p2LacgQjvamF5FyqzMo/5fJb2bVxYorNKl1ioh46hP58XHqtkNr6jRqkCjHjT6tWsAWu9RQZCSHvnO/3qQUFti2a7rItKrtsg561pDnrkiQZ+a6G/sgtF1/lXSPNYP5dDjZNrSNwegI3Xxbg4g+Cxl4mRulLmVsobWNDgLXJUhstnghZ8dTTpNeA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=21mcUmN7fW6uCFWlZg5Rbj1zg30jAbPY7AaFmjdG3e4=;
+ b=Isr90OLa8Mr0etNGQplh4xxRMQwTwCsJ3BVgWZcb2M7K92Woogp+la5XpoCBiIYf0ECycuahpaHmINwmF+dg6DFEEt8ITHfxY1N49GmE7Fo3V5rT2P+bFklfZOdvFx99O94Wdqw0WLWktOuSQlR5gH9JUiVfNtOswHyUCb6Upq4USEclCGhYL56/vouLbf9t5DsVnAAktVbAk0hQg+4g+Toy8JCQBYLmz0BqtLJN9FzSLhtE+/s3uD5gjgpw9whJIk0zKqLECy9A9xxF4c1pIEUUY+Wnp90DxycLXaUQ5536VgQHidbhr8JW4AprWroCIlWpeZ6T5nDDR0Os/hxt/Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=21mcUmN7fW6uCFWlZg5Rbj1zg30jAbPY7AaFmjdG3e4=;
+ b=BvP/dm6yHSiHaKcDRGm6wP+Vwjr29wxGB8fL6rtu3GNRxPb/fM0rcOgp9G8zYkHYn5ERBmCidlVlLc+3jJOe7ipyqn9775WBWsXs87tk/n6lIqQvQujHHdDLfr8WiU6qHQxl4sm77UF/3OpEex9SqewduePQ00lu+gutZpz5BolA0eu2qpZEX4iOX6nVnlri6oB9igPp6UfcUQYIprZEos+9k15r4+PhI72WYEpHczUGSJFHRo8d2S6OnadNOlDMJWt7a9K+1PDrBhqgSnlgUHaWb140kPVhLIH/7MgvihSLTGnWYoeLVmyt2Xjx9VpKWBulLwRNJl9OFEz+0Pxr9w==
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
+ by TYSPR06MB6411.apcprd06.prod.outlook.com (2603:1096:400:42a::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Sun, 25 Feb
+ 2024 11:56:51 +0000
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::53da:a8a:83cb:b9ad]) by SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::53da:a8a:83cb:b9ad%4]) with mapi id 15.20.7316.023; Sun, 25 Feb 2024
+ 11:56:51 +0000
+Message-ID:
+ <SEZPR06MB6959206A186224697CD13971965B2@SEZPR06MB6959.apcprd06.prod.outlook.com>
+Date: Sun, 25 Feb 2024 19:56:48 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 01/13] clk: hisilicon: Add helper functions for
+ platform driver
+Content-Language: en-US
+To: David Yang <mmyangfl@gmail.com>, linux-clk@vger.kernel.org
+Cc: Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
+References: <20240225065234.413687-1-mmyangfl@gmail.com>
+ <20240225065234.413687-2-mmyangfl@gmail.com>
+From: Yang Xiwen <forbidden405@outlook.com>
+In-Reply-To: <20240225065234.413687-2-mmyangfl@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TMN:
+ [aGCSJdmPpWI2qZCsY4BSahyItDtmi10oG9MeLxO8ymTSPSUUpIf8Hs5hV1XhYu6iUi9vMp2b/sg=]
+X-ClientProxiedBy: TYCPR01CA0198.jpnprd01.prod.outlook.com
+ (2603:1096:405:7a::19) To SEZPR06MB6959.apcprd06.prod.outlook.com
+ (2603:1096:101:1ed::14)
+X-Microsoft-Original-Message-ID:
+ <54586912-3f1c-4f39-afe9-36b0d2bb4035@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|TYSPR06MB6411:EE_
+X-MS-Office365-Filtering-Correlation-Id: cc1ea1a2-364e-431f-40f7-08dc35f8d9f7
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	BAZXnCXqLnEtizaxrkeQ0W0v81GIqd8YNYLBkTZD2icuGcQv7Jpko3VrNg+sDoyTzKRcsx8537Z9GKU2ALF5tu1SQU4QwxgHyAL9QSQvvaPAKCVZmWNzwoGB5zrFo/0JoNhAzxZoT0JhmWFtDSOJQ+vcSCJ6akUmhX22qZO6A0liGSLB6KupsaNIlAMhgeSylnd8pp21GNdUBXJmlx6jbdwBxycTPtkMDNHl4wAsaFxiTvptv+n/aPD+9Vq1WxPHD/6Nm1s98CBaEvnHyHXcCBqGRRxhaqBSDnHTPV7wbeRRhSPWahCj2XU7rWbsVWaO6rOlrW82yMwVt9fZf4SLA/gRwLXmcdgwww8KZan59xiIVDH9A4hDHRFZkOrx42AIhzySozlsTnVonkwPlTi4XevulkR+c6ImVxYXhqYP2AY4RbQTDivFesl3Pd3LNGz8YdMLdAuCVDo4wKEtcEMul/ONcwvFPDy2G323PcsVxwvop3vJli/NqOoCzcGe9XIXHV70YiY2wu20qxOMSHbqZM8euRMDPhTCmkNktClaBd1xlgMIhZXAT3sXYetLmEX2
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?U09nbStHYWo4Q2EwYVlVU20wUDM5ZmRZNU1xbDZVdkxzZ3dPN2x2R1M2ZElY?=
+ =?utf-8?B?MTNwcFZ3bUdjUHJzcWk5SWNISWJ0Z1pPb1VpL0lUUG05MXBXSEl2d0o4bStZ?=
+ =?utf-8?B?LzkwVHFZZ3BnZCsyUjgxSU1iZlg3MnBzZW55bUEvaXl5bWpSazVra3cvbjFu?=
+ =?utf-8?B?MUhlTlFkRGhRemxFSUVITHExQm1tRW5TRWw1RHBOUi9pOWlPS29mZHF1Mklw?=
+ =?utf-8?B?Z3JNcFhYdU9COCtqc2ZnSHhHZ1JjOHhSdkpuTmpzQUNwNU5yVSthZU5VK2Rl?=
+ =?utf-8?B?Uy9BVFZ3OHNGemY2aUZVYUJOMC9wMVVZbXkxRzNpYVo4YnhuTEIvVlF3ei8z?=
+ =?utf-8?B?L2FENzlRcE5oR2l3ZGg5eS9iTlgxTWtSMDJXRFFaUHA4a2d2Zlk3RDFidk8w?=
+ =?utf-8?B?TE44UkdZcVZoMnBsTk9vLzIwV2lFK3E2Q1d2d3drQTg4NlFnL00reFJPMWhM?=
+ =?utf-8?B?RmF3OXVwRnRya1FKQjhwT2ZvWmZlZ3dEeFh5bUE0UlQ2NGVCUUFGbXZoVDVn?=
+ =?utf-8?B?UzUwVGJpakx3Tk5ucWE2Yy85UFhtZ2c1dGRSMG1HbjFOODBQYTVMNmN4aUdJ?=
+ =?utf-8?B?NlR3aUY1dUZzZ1BpcW9sRWdwSlFoQTBlMnJEQ1ZhVUMrU3c5RjhZbGZaMllT?=
+ =?utf-8?B?dWROWU9ieExRcGNhQi9mU1U4eTJDSGZwUmtscmgzMndhVDFlaksxam9HOENr?=
+ =?utf-8?B?Rms3amUxRnljdkFIRklsVTllaGxGMzgzam9qcVdxYXljVFEwdzkzQWNuVkRJ?=
+ =?utf-8?B?SWlRNGtQdmF3ajFYS1BEdVM3OFJ0bnVIZXp0Q0VweDJ4eHN0Vjd2Y3VVNlN6?=
+ =?utf-8?B?cE1ZbUs0SStHM0c3WC9qVTIyRktXWG9wTG15RERUUlVySHdaU2RHaldkNkcy?=
+ =?utf-8?B?djJXZzZwT0tuMTVLSUFhN2FIa3ZyUVBqTUplNng5SytKcThjMElCMVRNa3VL?=
+ =?utf-8?B?Y1pkVnJRRDZHWmpDUzNpUTFmeng2Y0djWkhhSWlGM09DMzRubDNTb2VyRk1q?=
+ =?utf-8?B?ZnhqZTJsNjlOYjJhc3pUOWd6cjlWa1dUOEVoWkdoS2s3eFVUQVVPSWFmUXZX?=
+ =?utf-8?B?blNzbWlXR2ZLcVhnRzBlak5OaUVLTEJMQUdVR2MyeHZ3VEh4MFVrSWFzejF0?=
+ =?utf-8?B?d1FLWUszWnNjcXBOVWZkRE5lK00rY2p1NE1jMHNwaG1iWC82ZnFQdXpyUXg4?=
+ =?utf-8?B?bFNPTXlmdGRwMTYwbTdIeUdYWWNXOVVFMTh5dGc5aGV3RndCMm01dFh1YkF6?=
+ =?utf-8?B?UG5DYTNuQy9PNVF4S0FMVHNaVDFUM1FZNVZEbWxGTGxCbDdYdzRKNmFJTDRi?=
+ =?utf-8?B?cFhqem9SVFhPRFoxRWtGK2NSNjRmNDFNZXppdGYyQUdLamZwOW43K0UvcTYx?=
+ =?utf-8?B?bklkSG50T0dJT002ZS9FekRVeCttSkwyU2RTQnRSVzRmeGlRdkhLY0ZlV1ZB?=
+ =?utf-8?B?a1FUWm9uMzV2bHVzZEpVcndaVzBOaWZaVmFyWnFzQjQ0UG1SUCtPRW0reDhC?=
+ =?utf-8?B?L2RXemlTakx5MXVCb0I2NzlNR0VWM2JDNlRROEJZWjBzaGN4TEt4VW0zRXNK?=
+ =?utf-8?B?Y1BqQklYdFBOSDJ2bDZMSWs0alYvT0MrTDVHaG1Gd3ZnczVBQjd2NHMwMXZq?=
+ =?utf-8?B?Qm9uMnhaQUkwTUx5ZG9INUtQam1RSzk1TzVhQUw2K2ErVTA0RVE5UTQySGhz?=
+ =?utf-8?B?OW40U2wvbUJ5UlRFVWlleldYb2UwaFY0KzNHVzJXVVB3dmNkTVpUOXZoaENL?=
+ =?utf-8?Q?GBL584SA11QRdWihom3tsDrxTpAqroq4Qta9iT1?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cc1ea1a2-364e-431f-40f7-08dc35f8d9f7
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Feb 2024 11:56:50.6700
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR06MB6411
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/WFAMNAE-next20240223
-head:   b23fc9e6ff31f4ef9e8de5580963cf53579ef0d4
-commit: b23fc9e6ff31f4ef9e8de5580963cf53579ef0d4 [1/1] treewide: Address -Wflexible-array-member-not-at-end warnings
-config: i386-buildonly-randconfig-001-20240225 (https://download.01.org/0day-ci/archive/20240225/202402251943.zGBJ7sEO-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240225/202402251943.zGBJ7sEO-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402251943.zGBJ7sEO-lkp@intel.com/
-
-All error/warnings (new ones prefixed by >>):
-
-   drivers/scsi/megaraid/megaraid_sas_fp.c: In function 'MR_LdRaidGet':
->> drivers/scsi/megaraid/megaraid_sas_fp.c:103:29: error: 'struct MR_DRV_RAID_MAP_hdr' has no member named 'ldSpanMap'
-     103 |         return &map->raidMap.ldSpanMap[ld].ldRaid;
-         |                             ^
->> drivers/scsi/megaraid/megaraid_sas_fp.c:101:37: warning: parameter 'ld' set but not used [-Wunused-but-set-parameter]
-     101 | struct MR_LD_RAID *MR_LdRaidGet(u32 ld, struct MR_DRV_RAID_MAP_ALL *map)
-         |                                 ~~~~^~
-   drivers/scsi/megaraid/megaraid_sas_fp.c: In function 'MR_LdSpanInfoGet':
-   drivers/scsi/megaraid/megaraid_sas_fp.c:110:29: error: 'struct MR_DRV_RAID_MAP_hdr' has no member named 'ldSpanMap'
-     110 |         return &map->raidMap.ldSpanMap[ld].spanBlock[0];
-         |                             ^
-   drivers/scsi/megaraid/megaraid_sas_fp.c:106:56: warning: parameter 'ld' set but not used [-Wunused-but-set-parameter]
-     106 | static struct MR_SPAN_BLOCK_INFO *MR_LdSpanInfoGet(u32 ld,
-         |                                                    ~~~~^~
-   drivers/scsi/megaraid/megaraid_sas_fp.c: In function 'MR_LdDataArmGet':
-   drivers/scsi/megaraid/megaraid_sas_fp.c:115:28: error: 'struct MR_DRV_RAID_MAP_hdr' has no member named 'ldSpanMap'
-     115 |         return map->raidMap.ldSpanMap[ld].dataArmMap[armIdx];
-         |                            ^
-   drivers/scsi/megaraid/megaraid_sas_fp.c:113:31: warning: parameter 'ld' set but not used [-Wunused-but-set-parameter]
-     113 | static u8 MR_LdDataArmGet(u32 ld, u32 armIdx, struct MR_DRV_RAID_MAP_ALL *map)
-         |                           ~~~~^~
->> drivers/scsi/megaraid/megaraid_sas_fp.c:113:39: warning: parameter 'armIdx' set but not used [-Wunused-but-set-parameter]
-     113 | static u8 MR_LdDataArmGet(u32 ld, u32 armIdx, struct MR_DRV_RAID_MAP_ALL *map)
-         |                                   ~~~~^~~~~~
-   In file included from include/linux/byteorder/little_endian.h:5,
-                    from arch/x86/include/uapi/asm/byteorder.h:5,
-                    from include/asm-generic/bitops/le.h:6,
-                    from arch/x86/include/asm/bitops.h:436,
-                    from include/linux/bitops.h:68,
-                    from include/linux/kernel.h:23,
-                    from drivers/scsi/megaraid/megaraid_sas_fp.c:21:
-   drivers/scsi/megaraid/megaraid_sas_fp.c: In function 'MR_LdSpanArrayGet':
-   drivers/scsi/megaraid/megaraid_sas_fp.c:125:40: error: 'struct MR_DRV_RAID_MAP_hdr' has no member named 'ldSpanMap'
-     125 |         return le16_to_cpu(map->raidMap.ldSpanMap[ld].spanBlock[span].span.arrayRef);
-         |                                        ^
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: in definition of macro '__le16_to_cpu'
-      37 | #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-         |                                                   ^
-   drivers/scsi/megaraid/megaraid_sas_fp.c:125:16: note: in expansion of macro 'le16_to_cpu'
-     125 |         return le16_to_cpu(map->raidMap.ldSpanMap[ld].spanBlock[span].span.arrayRef);
-         |                ^~~~~~~~~~~
-   drivers/scsi/megaraid/megaraid_sas_fp.c:123:27: warning: parameter 'ld' set but not used [-Wunused-but-set-parameter]
-     123 | u16 MR_LdSpanArrayGet(u32 ld, u32 span, struct MR_DRV_RAID_MAP_ALL *map)
-         |                       ~~~~^~
->> drivers/scsi/megaraid/megaraid_sas_fp.c:123:35: warning: parameter 'span' set but not used [-Wunused-but-set-parameter]
-     123 | u16 MR_LdSpanArrayGet(u32 ld, u32 span, struct MR_DRV_RAID_MAP_ALL *map)
-         |                               ~~~~^~~~
-   drivers/scsi/megaraid/megaraid_sas_fp.c: In function 'MR_GetLDTgtId':
-   drivers/scsi/megaraid/megaraid_sas_fp.c:140:40: error: 'struct MR_DRV_RAID_MAP_hdr' has no member named 'ldSpanMap'
-     140 |         return le16_to_cpu(map->raidMap.ldSpanMap[ld].ldRaid.targetId);
-         |                                        ^
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: in definition of macro '__le16_to_cpu'
-      37 | #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-         |                                                   ^
-   drivers/scsi/megaraid/megaraid_sas_fp.c:140:16: note: in expansion of macro 'le16_to_cpu'
-     140 |         return le16_to_cpu(map->raidMap.ldSpanMap[ld].ldRaid.targetId);
-         |                ^~~~~~~~~~~
-   drivers/scsi/megaraid/megaraid_sas_fp.c:138:23: warning: parameter 'ld' set but not used [-Wunused-but-set-parameter]
-     138 | u16 MR_GetLDTgtId(u32 ld, struct MR_DRV_RAID_MAP_ALL *map)
-         |                   ~~~~^~
-   drivers/scsi/megaraid/megaraid_sas_fp.c: In function 'MR_LdSpanPtrGet':
-   drivers/scsi/megaraid/megaraid_sas_fp.c:151:29: error: 'struct MR_DRV_RAID_MAP_hdr' has no member named 'ldSpanMap'
-     151 |         return &map->raidMap.ldSpanMap[ld].spanBlock[span].span;
-         |                             ^
-   drivers/scsi/megaraid/megaraid_sas_fp.c:148:47: warning: parameter 'ld' set but not used [-Wunused-but-set-parameter]
-     148 | static struct MR_LD_SPAN *MR_LdSpanPtrGet(u32 ld, u32 span,
-         |                                           ~~~~^~
-   drivers/scsi/megaraid/megaraid_sas_fp.c:148:55: warning: parameter 'span' set but not used [-Wunused-but-set-parameter]
-     148 | static struct MR_LD_SPAN *MR_LdSpanPtrGet(u32 ld, u32 span,
-         |                                                   ~~~~^~~~
-   drivers/scsi/megaraid/megaraid_sas_fp.c: In function 'MR_PopulateDrvRaidMap':
->> drivers/scsi/megaraid/megaraid_sas_fp.c:171:47: error: initialization of 'struct MR_DRV_RAID_MAP *' from incompatible pointer type 'struct MR_DRV_RAID_MAP_hdr *' [-Werror=incompatible-pointer-types]
-     171 |         struct MR_DRV_RAID_MAP *pDrvRaidMap = &drv_map->raidMap;
-         |                                               ^
->> drivers/scsi/megaraid/megaraid_sas_fp.c:272:28: error: assignment to 'struct MR_FW_RAID_MAP *' from incompatible pointer type 'struct MR_FW_RAID_MAP_hdr *' [-Werror=incompatible-pointer-types]
-     272 |                 pFwRaidMap = &fw_map_old->raidMap;
-         |                            ^
-   drivers/scsi/megaraid/megaraid_sas_fp.c: In function 'MR_ValidateMapInfo':
->> drivers/scsi/megaraid/megaraid_sas_fp.c:319:21: error: assignment to 'struct MR_DRV_RAID_MAP *' from incompatible pointer type 'struct MR_DRV_RAID_MAP_hdr *' [-Werror=incompatible-pointer-types]
-     319 |         pDrvRaidMap = &drv_map->raidMap;
-         |                     ^
-   drivers/scsi/megaraid/megaraid_sas_fp.c: In function 'mr_spanset_get_span_block':
-   drivers/scsi/megaraid/megaraid_sas_fp.c:443:53: error: 'struct MR_DRV_RAID_MAP_hdr' has no member named 'ldSpanMap'
-     443 |                         if (le32_to_cpu(map->raidMap.ldSpanMap[ld].spanBlock[span].
-         |                                                     ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: in definition of macro '__le32_to_cpu'
-      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-         |                                                   ^
-   drivers/scsi/megaraid/megaraid_sas_fp.c:443:29: note: in expansion of macro 'le32_to_cpu'
-     443 |                         if (le32_to_cpu(map->raidMap.ldSpanMap[ld].spanBlock[span].
-         |                             ^~~~~~~~~~~
-   drivers/scsi/megaraid/megaraid_sas_fp.c:445:53: error: 'struct MR_DRV_RAID_MAP_hdr' has no member named 'ldSpanMap'
-     445 |                                 quad = &map->raidMap.ldSpanMap[ld].
-         |                                                     ^
-   drivers/scsi/megaraid/megaraid_sas_fp.c: In function 'get_row_from_strip':
-   drivers/scsi/megaraid/megaraid_sas_fp.c:510:53: error: 'struct MR_DRV_RAID_MAP_hdr' has no member named 'ldSpanMap'
-     510 |                         if (le32_to_cpu(map->raidMap.ldSpanMap[ld].spanBlock[span].
-         |                                                     ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: in definition of macro '__le32_to_cpu'
-      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-         |                                                   ^
-   drivers/scsi/megaraid/megaraid_sas_fp.c:510:29: note: in expansion of macro 'le32_to_cpu'
-     510 |                         if (le32_to_cpu(map->raidMap.ldSpanMap[ld].spanBlock[span].
-         |                             ^~~~~~~~~~~
-   drivers/scsi/megaraid/megaraid_sas_fp.c: In function 'get_strip_from_row':
-   drivers/scsi/megaraid/megaraid_sas_fp.c:563:53: error: 'struct MR_DRV_RAID_MAP_hdr' has no member named 'ldSpanMap'
-     563 |                         if (le32_to_cpu(map->raidMap.ldSpanMap[ld].spanBlock[span].
-         |                                                     ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: in definition of macro '__le32_to_cpu'
-      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-         |                                                   ^
-   drivers/scsi/megaraid/megaraid_sas_fp.c:563:29: note: in expansion of macro 'le32_to_cpu'
-     563 |                         if (le32_to_cpu(map->raidMap.ldSpanMap[ld].spanBlock[span].
-         |                             ^~~~~~~~~~~
-   drivers/scsi/megaraid/megaraid_sas_fp.c:565:53: error: 'struct MR_DRV_RAID_MAP_hdr' has no member named 'ldSpanMap'
-     565 |                                 quad = &map->raidMap.ldSpanMap[ld].
-         |                                                     ^
-   drivers/scsi/megaraid/megaraid_sas_fp.c: In function 'get_arm_from_strip':
-   drivers/scsi/megaraid/megaraid_sas_fp.c:626:53: error: 'struct MR_DRV_RAID_MAP_hdr' has no member named 'ldSpanMap'
-     626 |                         if (le32_to_cpu(map->raidMap.ldSpanMap[ld].spanBlock[span].
-         |                                                     ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: in definition of macro '__le32_to_cpu'
-      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-         |                                                   ^
-   drivers/scsi/megaraid/megaraid_sas_fp.c:626:29: note: in expansion of macro 'le32_to_cpu'
-     626 |                         if (le32_to_cpu(map->raidMap.ldSpanMap[ld].spanBlock[span].
-         |                             ^~~~~~~~~~~
-   drivers/scsi/megaraid/megaraid_sas_fp.c: In function 'mr_update_span_set':
-   drivers/scsi/megaraid/megaraid_sas_fp.c:1240:61: error: 'struct MR_DRV_RAID_MAP_hdr' has no member named 'ldSpanMap'
-    1240 |                                 if (le32_to_cpu(map->raidMap.ldSpanMap[ld].spanBlock[span].
-         |                                                             ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: in definition of macro '__le32_to_cpu'
-      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-         |                                                   ^
-   drivers/scsi/megaraid/megaraid_sas_fp.c:1240:37: note: in expansion of macro 'le32_to_cpu'
-    1240 |                                 if (le32_to_cpu(map->raidMap.ldSpanMap[ld].spanBlock[span].
-         |                                     ^~~~~~~~~~~
-   drivers/scsi/megaraid/megaraid_sas_fp.c:1245:53: error: 'struct MR_DRV_RAID_MAP_hdr' has no member named 'ldSpanMap'
-    1245 |                                 quad = &map->raidMap.ldSpanMap[ld].
-         |                                                     ^
-   drivers/scsi/megaraid/megaraid_sas_fp.c:1253:69: error: 'struct MR_DRV_RAID_MAP_hdr' has no member named 'ldSpanMap'
-    1253 |                                         if (le32_to_cpu(map->raidMap.ldSpanMap[ld].
-         |                                                                     ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: in definition of macro '__le32_to_cpu'
-      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-         |                                                   ^
-   drivers/scsi/megaraid/megaraid_sas_fp.c:1253:45: note: in expansion of macro 'le32_to_cpu'
-    1253 |                                         if (le32_to_cpu(map->raidMap.ldSpanMap[ld].
-         |                                             ^~~~~~~~~~~
-   drivers/scsi/megaraid/megaraid_sas_fp.c: In function 'MR_LdRaidGet':
->> drivers/scsi/megaraid/megaraid_sas_fp.c:104:1: warning: control reaches end of non-void function [-Wreturn-type]
-     104 | }
-         | ^
-   drivers/scsi/megaraid/megaraid_sas_fp.c: In function 'MR_LdSpanArrayGet':
-   drivers/scsi/megaraid/megaraid_sas_fp.c:126:1: warning: control reaches end of non-void function [-Wreturn-type]
-     126 | }
-         | ^
-   drivers/scsi/megaraid/megaraid_sas_fp.c: In function 'MR_GetLDTgtId':
-   drivers/scsi/megaraid/megaraid_sas_fp.c:141:1: warning: control reaches end of non-void function [-Wreturn-type]
-     141 | }
-         | ^
-   drivers/scsi/megaraid/megaraid_sas_fp.c: In function 'MR_LdSpanPtrGet':
-   drivers/scsi/megaraid/megaraid_sas_fp.c:152:1: warning: control reaches end of non-void function [-Wreturn-type]
-     152 | }
-         | ^
-   drivers/scsi/megaraid/megaraid_sas_fp.c: In function 'MR_LdSpanInfoGet':
-   drivers/scsi/megaraid/megaraid_sas_fp.c:111:1: warning: control reaches end of non-void function [-Wreturn-type]
-     111 | }
-         | ^
-   drivers/scsi/megaraid/megaraid_sas_fp.c: In function 'MR_LdDataArmGet':
-   drivers/scsi/megaraid/megaraid_sas_fp.c:116:1: warning: control reaches end of non-void function [-Wreturn-type]
-     116 | }
-         | ^
-   cc1: some warnings being treated as errors
+On 2/25/2024 2:52 PM, David Yang wrote:
+> Helper functions extract common operations on platform drivers.
+>
+> During migration to devm APIs, (virtual) fixed clocks were found hard on
+> devm APIs, since they often depended by crucial peripherals, thus require
+> early initialization before device probing, and cannot use devm APIs.
 
 
-vim +103 drivers/scsi/megaraid/megaraid_sas_fp.c
+We have core_initcall() in drivers so CRGs are probed very early. This 
+shouldn't be a problem.
 
-9c915a8c99bce6 Adam Radford               2010-12-21  100  
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12 @101  struct MR_LD_RAID *MR_LdRaidGet(u32 ld, struct MR_DRV_RAID_MAP_ALL *map)
-9c915a8c99bce6 Adam Radford               2010-12-21  102  {
-9c915a8c99bce6 Adam Radford               2010-12-21 @103  	return &map->raidMap.ldSpanMap[ld].ldRaid;
-9c915a8c99bce6 Adam Radford               2010-12-21 @104  }
-9c915a8c99bce6 Adam Radford               2010-12-21  105  
-9c915a8c99bce6 Adam Radford               2010-12-21  106  static struct MR_SPAN_BLOCK_INFO *MR_LdSpanInfoGet(u32 ld,
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  107  						   struct MR_DRV_RAID_MAP_ALL
-9c915a8c99bce6 Adam Radford               2010-12-21  108  						   *map)
-9c915a8c99bce6 Adam Radford               2010-12-21  109  {
-9c915a8c99bce6 Adam Radford               2010-12-21  110  	return &map->raidMap.ldSpanMap[ld].spanBlock[0];
-9c915a8c99bce6 Adam Radford               2010-12-21  111  }
-9c915a8c99bce6 Adam Radford               2010-12-21  112  
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12 @113  static u8 MR_LdDataArmGet(u32 ld, u32 armIdx, struct MR_DRV_RAID_MAP_ALL *map)
-9c915a8c99bce6 Adam Radford               2010-12-21  114  {
-9c915a8c99bce6 Adam Radford               2010-12-21 @115  	return map->raidMap.ldSpanMap[ld].dataArmMap[armIdx];
-9c915a8c99bce6 Adam Radford               2010-12-21  116  }
-9c915a8c99bce6 Adam Radford               2010-12-21  117  
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  118  u16 MR_ArPdGet(u32 ar, u32 arm, struct MR_DRV_RAID_MAP_ALL *map)
-9c915a8c99bce6 Adam Radford               2010-12-21  119  {
-94cd65ddf4d70b Sumit.Saxena@lsi.com       2013-09-06  120  	return le16_to_cpu(map->raidMap.arMapInfo[ar].pd[arm]);
-9c915a8c99bce6 Adam Radford               2010-12-21  121  }
-9c915a8c99bce6 Adam Radford               2010-12-21  122  
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12 @123  u16 MR_LdSpanArrayGet(u32 ld, u32 span, struct MR_DRV_RAID_MAP_ALL *map)
-9c915a8c99bce6 Adam Radford               2010-12-21  124  {
-94cd65ddf4d70b Sumit.Saxena@lsi.com       2013-09-06 @125  	return le16_to_cpu(map->raidMap.ldSpanMap[ld].spanBlock[span].span.arrayRef);
-9c915a8c99bce6 Adam Radford               2010-12-21  126  }
-9c915a8c99bce6 Adam Radford               2010-12-21  127  
-9ab9ed38f6186c Christoph Hellwig          2015-04-23  128  __le16 MR_PdDevHandleGet(u32 pd, struct MR_DRV_RAID_MAP_ALL *map)
-9c915a8c99bce6 Adam Radford               2010-12-21  129  {
-9c915a8c99bce6 Adam Radford               2010-12-21  130  	return map->raidMap.devHndlInfo[pd].curDevHdl;
-9c915a8c99bce6 Adam Radford               2010-12-21  131  }
-9c915a8c99bce6 Adam Radford               2010-12-21  132  
-33203bc4d61b33 Shivasharan S              2017-02-10  133  static u8 MR_PdInterfaceTypeGet(u32 pd, struct MR_DRV_RAID_MAP_ALL *map)
-33203bc4d61b33 Shivasharan S              2017-02-10  134  {
-33203bc4d61b33 Shivasharan S              2017-02-10  135  	return map->raidMap.devHndlInfo[pd].interfaceType;
-33203bc4d61b33 Shivasharan S              2017-02-10  136  }
-33203bc4d61b33 Shivasharan S              2017-02-10  137  
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  138  u16 MR_GetLDTgtId(u32 ld, struct MR_DRV_RAID_MAP_ALL *map)
-9c915a8c99bce6 Adam Radford               2010-12-21  139  {
-be26374beff8b4 Sumit.Saxena@lsi.com       2014-02-12  140  	return le16_to_cpu(map->raidMap.ldSpanMap[ld].ldRaid.targetId);
-9c915a8c99bce6 Adam Radford               2010-12-21  141  }
-9c915a8c99bce6 Adam Radford               2010-12-21  142  
-d2d0358bcd0913 Shivasharan S              2017-02-10  143  u16 MR_TargetIdToLdGet(u32 ldTgtId, struct MR_DRV_RAID_MAP_ALL *map)
-9c915a8c99bce6 Adam Radford               2010-12-21  144  {
-be26374beff8b4 Sumit.Saxena@lsi.com       2014-02-12  145  	return map->raidMap.ldTgtIdToLd[ldTgtId];
-9c915a8c99bce6 Adam Radford               2010-12-21  146  }
-9c915a8c99bce6 Adam Radford               2010-12-21  147  
-9c915a8c99bce6 Adam Radford               2010-12-21 @148  static struct MR_LD_SPAN *MR_LdSpanPtrGet(u32 ld, u32 span,
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  149  					  struct MR_DRV_RAID_MAP_ALL *map)
-9c915a8c99bce6 Adam Radford               2010-12-21  150  {
-9c915a8c99bce6 Adam Radford               2010-12-21  151  	return &map->raidMap.ldSpanMap[ld].spanBlock[span].span;
-9c915a8c99bce6 Adam Radford               2010-12-21  152  }
-9c915a8c99bce6 Adam Radford               2010-12-21  153  
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  154  /*
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  155   * This function will Populate Driver Map using firmware raid map
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  156   */
-5f19f7c879c4aa Shivasharan S              2018-01-05  157  static int MR_PopulateDrvRaidMap(struct megasas_instance *instance, u64 map_id)
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  158  {
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  159  	struct fusion_context *fusion = instance->ctrl_context;
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  160  	struct MR_FW_RAID_MAP_ALL     *fw_map_old    = NULL;
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  161  	struct MR_FW_RAID_MAP         *pFwRaidMap    = NULL;
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  162  	int i, j;
-200aed582d6170 Sumit.Saxena@avagotech.com 2015-01-05  163  	u16 ld_count;
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  164  	struct MR_FW_RAID_MAP_DYNAMIC *fw_map_dyn;
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  165  	struct MR_FW_RAID_MAP_EXT *fw_map_ext;
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  166  	struct MR_RAID_MAP_DESC_TABLE *desc_table;
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  167  
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  168  
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  169  	struct MR_DRV_RAID_MAP_ALL *drv_map =
-5f19f7c879c4aa Shivasharan S              2018-01-05  170  			fusion->ld_drv_map[(map_id & 1)];
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12 @171  	struct MR_DRV_RAID_MAP *pDrvRaidMap = &drv_map->raidMap;
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  172  	void *raid_map_data = NULL;
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  173  
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  174  	memset(drv_map, 0, fusion->drv_map_sz);
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  175  	memset(pDrvRaidMap->ldTgtIdToLd,
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  176  	       0xff, (sizeof(u16) * MAX_LOGICAL_DRIVES_DYN));
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  177  
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  178  	if (instance->max_raid_mapsize) {
-5f19f7c879c4aa Shivasharan S              2018-01-05  179  		fw_map_dyn = fusion->ld_map[(map_id & 1)];
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  180  		desc_table =
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  181  		(struct MR_RAID_MAP_DESC_TABLE *)((void *)fw_map_dyn + le32_to_cpu(fw_map_dyn->desc_table_offset));
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  182  		if (desc_table != fw_map_dyn->raid_map_desc_table)
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  183  			dev_dbg(&instance->pdev->dev, "offsets of desc table are not matching desc %p original %p\n",
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  184  				desc_table, fw_map_dyn->raid_map_desc_table);
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  185  
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  186  		ld_count = (u16)le16_to_cpu(fw_map_dyn->ld_count);
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  187  		pDrvRaidMap->ldCount = (__le16)cpu_to_le16(ld_count);
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  188  		pDrvRaidMap->fpPdIoTimeoutSec =
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  189  			fw_map_dyn->fp_pd_io_timeout_sec;
-a174118b7a97c5 Shivasharan S              2017-02-10  190  		pDrvRaidMap->totalSize =
-a174118b7a97c5 Shivasharan S              2017-02-10  191  			cpu_to_le32(sizeof(struct MR_DRV_RAID_MAP_ALL));
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  192  		/* point to actual data starting point*/
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  193  		raid_map_data = (void *)fw_map_dyn +
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  194  			le32_to_cpu(fw_map_dyn->desc_table_offset) +
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  195  			le32_to_cpu(fw_map_dyn->desc_table_size);
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  196  
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  197  		for (i = 0; i < le32_to_cpu(fw_map_dyn->desc_table_num_elements); ++i) {
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  198  			switch (le32_to_cpu(desc_table->raid_map_desc_type)) {
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  199  			case RAID_MAP_DESC_TYPE_DEVHDL_INFO:
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  200  				fw_map_dyn->dev_hndl_info =
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  201  				(struct MR_DEV_HANDLE_INFO *)(raid_map_data + le32_to_cpu(desc_table->raid_map_desc_offset));
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  202  				memcpy(pDrvRaidMap->devHndlInfo,
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  203  					fw_map_dyn->dev_hndl_info,
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  204  					sizeof(struct MR_DEV_HANDLE_INFO) *
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  205  					le32_to_cpu(desc_table->raid_map_desc_elements));
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  206  			break;
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  207  			case RAID_MAP_DESC_TYPE_TGTID_INFO:
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  208  				fw_map_dyn->ld_tgt_id_to_ld =
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  209  					(u16 *)(raid_map_data +
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  210  					le32_to_cpu(desc_table->raid_map_desc_offset));
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  211  				for (j = 0; j < le32_to_cpu(desc_table->raid_map_desc_elements); j++) {
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  212  					pDrvRaidMap->ldTgtIdToLd[j] =
-a174118b7a97c5 Shivasharan S              2017-02-10  213  						le16_to_cpu(fw_map_dyn->ld_tgt_id_to_ld[j]);
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  214  				}
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  215  			break;
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  216  			case RAID_MAP_DESC_TYPE_ARRAY_INFO:
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  217  				fw_map_dyn->ar_map_info =
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  218  					(struct MR_ARRAY_INFO *)
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  219  					(raid_map_data + le32_to_cpu(desc_table->raid_map_desc_offset));
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  220  				memcpy(pDrvRaidMap->arMapInfo,
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  221  				       fw_map_dyn->ar_map_info,
-41064f1bf8886b Shivasharan S              2017-02-10  222  				       sizeof(struct MR_ARRAY_INFO) *
-41064f1bf8886b Shivasharan S              2017-02-10  223  				       le32_to_cpu(desc_table->raid_map_desc_elements));
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  224  			break;
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  225  			case RAID_MAP_DESC_TYPE_SPAN_INFO:
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  226  				fw_map_dyn->ld_span_map =
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  227  					(struct MR_LD_SPAN_MAP *)
-41064f1bf8886b Shivasharan S              2017-02-10  228  					(raid_map_data +
-41064f1bf8886b Shivasharan S              2017-02-10  229  					le32_to_cpu(desc_table->raid_map_desc_offset));
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  230  				memcpy(pDrvRaidMap->ldSpanMap,
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  231  				       fw_map_dyn->ld_span_map,
-41064f1bf8886b Shivasharan S              2017-02-10  232  				       sizeof(struct MR_LD_SPAN_MAP) *
-41064f1bf8886b Shivasharan S              2017-02-10  233  				       le32_to_cpu(desc_table->raid_map_desc_elements));
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  234  			break;
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  235  			default:
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  236  				dev_dbg(&instance->pdev->dev, "wrong number of desctableElements %d\n",
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  237  					fw_map_dyn->desc_table_num_elements);
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  238  			}
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  239  			++desc_table;
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  240  		}
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  241  
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  242  	} else if (instance->supportmax256vd) {
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  243  		fw_map_ext =
-5f19f7c879c4aa Shivasharan S              2018-01-05  244  			(struct MR_FW_RAID_MAP_EXT *)fusion->ld_map[(map_id & 1)];
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  245  		ld_count = (u16)le16_to_cpu(fw_map_ext->ldCount);
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  246  		if (ld_count > MAX_LOGICAL_DRIVES_EXT) {
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  247  			dev_dbg(&instance->pdev->dev, "megaraid_sas: LD count exposed in RAID map in not valid\n");
-7ada701d0d5e5c Shivasharan S              2018-01-05  248  			return 1;
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  249  		}
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  250  
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  251  		pDrvRaidMap->ldCount = (__le16)cpu_to_le16(ld_count);
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  252  		pDrvRaidMap->fpPdIoTimeoutSec = fw_map_ext->fpPdIoTimeoutSec;
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  253  		for (i = 0; i < (MAX_LOGICAL_DRIVES_EXT); i++)
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  254  			pDrvRaidMap->ldTgtIdToLd[i] =
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  255  				(u16)fw_map_ext->ldTgtIdToLd[i];
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  256  		memcpy(pDrvRaidMap->ldSpanMap, fw_map_ext->ldSpanMap,
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  257  		       sizeof(struct MR_LD_SPAN_MAP) * ld_count);
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  258  		memcpy(pDrvRaidMap->arMapInfo, fw_map_ext->arMapInfo,
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  259  		       sizeof(struct MR_ARRAY_INFO) * MAX_API_ARRAYS_EXT);
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  260  		memcpy(pDrvRaidMap->devHndlInfo, fw_map_ext->devHndlInfo,
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  261  		       sizeof(struct MR_DEV_HANDLE_INFO) *
-d889344e4e59eb Sasikumar Chandrasekaran   2017-01-10  262  		       MAX_RAIDMAP_PHYSICAL_DEVICES);
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  263  
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  264  		/* New Raid map will not set totalSize, so keep expected value
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  265  		 * for legacy code in ValidateMapInfo
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  266  		 */
-6e755ddc2935d9 Sumit.Saxena@avagotech.com 2014-11-17  267  		pDrvRaidMap->totalSize =
-6e755ddc2935d9 Sumit.Saxena@avagotech.com 2014-11-17  268  			cpu_to_le32(sizeof(struct MR_FW_RAID_MAP_EXT));
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  269  	} else {
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  270  		fw_map_old = (struct MR_FW_RAID_MAP_ALL *)
-5f19f7c879c4aa Shivasharan S              2018-01-05  271  				fusion->ld_map[(map_id & 1)];
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12 @272  		pFwRaidMap = &fw_map_old->raidMap;
-200aed582d6170 Sumit.Saxena@avagotech.com 2015-01-05  273  		ld_count = (u16)le32_to_cpu(pFwRaidMap->ldCount);
-7ada701d0d5e5c Shivasharan S              2018-01-05  274  		if (ld_count > MAX_LOGICAL_DRIVES) {
-7ada701d0d5e5c Shivasharan S              2018-01-05  275  			dev_dbg(&instance->pdev->dev,
-7ada701d0d5e5c Shivasharan S              2018-01-05  276  				"LD count exposed in RAID map in not valid\n");
-7ada701d0d5e5c Shivasharan S              2018-01-05  277  			return 1;
-7ada701d0d5e5c Shivasharan S              2018-01-05  278  		}
-7ada701d0d5e5c Shivasharan S              2018-01-05  279  
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  280  		pDrvRaidMap->totalSize = pFwRaidMap->totalSize;
-200aed582d6170 Sumit.Saxena@avagotech.com 2015-01-05  281  		pDrvRaidMap->ldCount = (__le16)cpu_to_le16(ld_count);
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  282  		pDrvRaidMap->fpPdIoTimeoutSec = pFwRaidMap->fpPdIoTimeoutSec;
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  283  		for (i = 0; i < MAX_RAIDMAP_LOGICAL_DRIVES + MAX_RAIDMAP_VIEWS; i++)
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  284  			pDrvRaidMap->ldTgtIdToLd[i] =
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  285  				(u8)pFwRaidMap->ldTgtIdToLd[i];
-200aed582d6170 Sumit.Saxena@avagotech.com 2015-01-05  286  		for (i = 0; i < ld_count; i++) {
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  287  			pDrvRaidMap->ldSpanMap[i] = pFwRaidMap->ldSpanMap[i];
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  288  		}
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  289  		memcpy(pDrvRaidMap->arMapInfo, pFwRaidMap->arMapInfo,
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  290  			sizeof(struct MR_ARRAY_INFO) * MAX_RAIDMAP_ARRAYS);
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  291  		memcpy(pDrvRaidMap->devHndlInfo, pFwRaidMap->devHndlInfo,
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  292  			sizeof(struct MR_DEV_HANDLE_INFO) *
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  293  			MAX_RAIDMAP_PHYSICAL_DEVICES);
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  294  	}
-7ada701d0d5e5c Shivasharan S              2018-01-05  295  
-7ada701d0d5e5c Shivasharan S              2018-01-05  296  	return 0;
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  297  }
-51087a8617fef1 Sumit.Saxena@avagotech.com 2014-09-12  298  
 
-:::::: The code at line 103 was first introduced by commit
-:::::: 9c915a8c99bce637226aa09cb05fc18486b229cb [SCSI] megaraid_sas: Add 9565/9285 specific code
+>
+> One solution to this problem is to add a "fixed-clock" node to device tree,
+> independent to clock device, and make those peripherals depend on that.
+> However, there is also some devices that do use fixed clocks provided by
+> drivers, for example clk-hi3660.c .
+>
+> To simplify codes, we migrate clocks of other types to devm APIs, while
+> keep fixed clocks self-managed, alongside with struct hisi_clock_data, and
+> remove devm-managed hisi_clock_data.
 
-:::::: TO: adam radford <aradford@gmail.com>
-:::::: CC: James Bottomley <James.Bottomley@suse.de>
+
+Do we really want? How about leave old SoCs alone and just introduce a 
+new set of APIs for new SoCs?
+
+
+Just like CCF, devm_ functions are simply wrappers of old APIs with the 
+help of devres, the old APIs are still available.
+
+
+So for HiSilicon, I think we can take a similar approach, i.e., add a 
+new set of wrapper functions with the help of devres rather than 
+modifying old code.
+
+
+The implementation of officially provided devm_ APIs can be a good example.
+
+
+>
+> `hisi_clk_alloc` will be removed in the following patch.
+>
+> Signed-off-by: David Yang <mmyangfl@gmail.com>
+> ---
+>   drivers/clk/hisilicon/clk.c   | 157 ++++++++++++++++++++++++++++++++++
+>   drivers/clk/hisilicon/clk.h   |  46 +++++++++-
+>   drivers/clk/hisilicon/crg.h   |   5 ++
+>   drivers/clk/hisilicon/reset.c |  42 +++++++++
+>   4 files changed, 248 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/clk/hisilicon/clk.c b/drivers/clk/hisilicon/clk.c
+> index 09368fd32bef..e50115f8e236 100644
+> --- a/drivers/clk/hisilicon/clk.c
+> +++ b/drivers/clk/hisilicon/clk.c
+> @@ -88,6 +88,25 @@ struct hisi_clock_data *hisi_clk_init(struct device_node *np,
+>   }
+>   EXPORT_SYMBOL_GPL(hisi_clk_init);
+>   
+> +void hisi_clk_free(struct device_node *np, struct hisi_clock_data *data)
+> +{
+> +	if (data->clks) {
+> +		if (data->clks->fixed_rate_clks_num)
+> +			hisi_clk_unregister_fixed_rate(data->clks->fixed_rate_clks,
+> +						       data->clks->fixed_rate_clks_num,
+> +						       data);
+> +		if (data->clks->fixed_factor_clks_num)
+> +			hisi_clk_unregister_fixed_factor(data->clks->fixed_factor_clks,
+> +							 data->clks->fixed_factor_clks_num,
+> +							 data);
+> +	}
+> +
+> +	of_clk_del_provider(np);
+> +	kfree(data->clk_data.clks);
+> +	kfree(data);
+> +}
+> +EXPORT_SYMBOL_GPL(hisi_clk_free);
+> +
+>   int hisi_clk_register_fixed_rate(const struct hisi_fixed_rate_clock *clks,
+>   					 int nums, struct hisi_clock_data *data)
+>   {
+> @@ -341,3 +360,141 @@ void __init hi6220_clk_register_divider(const struct hi6220_divider_clock *clks,
+>   		data->clk_data.clks[clks[i].id] = clk;
+>   	}
+>   }
+> +
+> +static size_t hisi_clocks_get_nr(const struct hisi_clocks *clks)
+> +{
+> +	if (clks->nr)
+> +		return clks->nr;
+> +
+> +	return clks->fixed_rate_clks_num + clks->fixed_factor_clks_num +
+> +		clks->mux_clks_num + clks->phase_clks_num +
+> +		clks->divider_clks_num + clks->gate_clks_num +
+> +		clks->gate_sep_clks_num + clks->customized_clks_num;
+> +}
+> +
+> +int hisi_clk_early_init(struct device_node *np, const struct hisi_clocks *clks)
+> +{
+> +	struct hisi_clock_data *data;
+> +	int ret;
+> +
+> +	data = hisi_clk_init(np, hisi_clocks_get_nr(clks));
+> +	if (!data)
+> +		return -ENOMEM;
+> +	data->clks = clks;
+> +
+> +	ret = hisi_clk_register_fixed_rate(clks->fixed_rate_clks,
+> +					   clks->fixed_rate_clks_num, data);
+> +	if (ret)
+> +		goto err;
+> +
+> +	ret = hisi_clk_register_fixed_factor(clks->fixed_factor_clks,
+> +					     clks->fixed_factor_clks_num, data);
+> +	if (ret)
+> +		goto err;
+> +
+> +	np->data = data;
+> +	return 0;
+> +
+> +err:
+> +	hisi_clk_free(np, data);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(hisi_clk_early_init);
+> +
+> +static int hisi_clk_register(struct device *dev, const struct hisi_clocks *clks,
+> +			     struct hisi_clock_data *data)
+> +{
+> +	int ret;
+> +
+> +	if (clks->mux_clks_num) {
+> +		ret = hisi_clk_register_mux(clks->mux_clks,
+> +					    clks->mux_clks_num, data);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	if (clks->phase_clks_num) {
+> +		ret = hisi_clk_register_phase(dev, clks->phase_clks,
+> +					      clks->phase_clks_num, data);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	if (clks->divider_clks_num) {
+> +		ret = hisi_clk_register_divider(clks->divider_clks,
+> +						clks->divider_clks_num, data);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	if (clks->gate_clks_num) {
+> +		ret = hisi_clk_register_gate(clks->gate_clks,
+> +					     clks->gate_clks_num, data);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	if (clks->gate_sep_clks_num) {
+> +		hisi_clk_register_gate_sep(clks->gate_sep_clks,
+> +					   clks->gate_sep_clks_num, data);
+> +	}
+> +
+> +	if (clks->clk_register_customized && clks->customized_clks_num) {
+> +		ret = clks->clk_register_customized(dev, clks->customized_clks,
+> +						    clks->customized_clks_num, data);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int hisi_clk_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *np = dev->of_node;
+> +	const struct hisi_clocks *clks;
+> +	struct hisi_clock_data *data;
+> +	int ret;
+> +
+> +	clks = of_device_get_match_data(dev);
+> +	if (!clks)
+> +		return -ENOENT;
+> +
+> +	if (!np->data) {
+> +		ret = hisi_clk_early_init(np, clks);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	data = np->data;
+> +	np->data = NULL;
+> +
+> +	if (clks->prologue) {
+> +		ret = clks->prologue(dev, data);
+> +		if (ret)
+> +			goto err;
+> +	}
+> +
+> +	ret = hisi_clk_register(dev, clks, data);
+> +	if (ret)
+> +		goto err;
+> +
+> +	platform_set_drvdata(pdev, data);
+> +	return 0;
+> +
+> +err:
+> +	hisi_clk_free(np, data);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(hisi_clk_probe);
+> +
+> +void hisi_clk_remove(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *np = dev->of_node;
+> +	struct hisi_clock_data *data = platform_get_drvdata(pdev);
+> +
+> +	hisi_clk_free(np, data);
+> +}
+> +EXPORT_SYMBOL_GPL(hisi_clk_remove);
+> diff --git a/drivers/clk/hisilicon/clk.h b/drivers/clk/hisilicon/clk.h
+> index 7a9b42e1b027..87b17e9b79a3 100644
+> --- a/drivers/clk/hisilicon/clk.h
+> +++ b/drivers/clk/hisilicon/clk.h
+> @@ -17,10 +17,12 @@
+>   #include <linux/spinlock.h>
+>   
+>   struct platform_device;
+> +struct hisi_clocks;
+>   
+>   struct hisi_clock_data {
+> -	struct clk_onecell_data	clk_data;
+> -	void __iomem		*base;
+> +	struct clk_onecell_data		clk_data;
+> +	void __iomem			*base;
+> +	const struct hisi_clocks	*clks;
+>   };
+>   
+>   struct hisi_fixed_rate_clock {
+> @@ -103,6 +105,39 @@ struct hisi_gate_clock {
+>   	const char		*alias;
+>   };
+>   
+> +struct hisi_clocks {
+> +	/* if 0, sum all *_num */
+> +	size_t nr;
+> +
+> +	int (*prologue)(struct device *dev, struct hisi_clock_data *data);
+> +
+> +	const struct hisi_fixed_rate_clock *fixed_rate_clks;
+> +	size_t fixed_rate_clks_num;
+> +
+> +	const struct hisi_fixed_factor_clock *fixed_factor_clks;
+> +	size_t fixed_factor_clks_num;
+> +
+> +	const struct hisi_mux_clock *mux_clks;
+> +	size_t mux_clks_num;
+> +
+> +	const struct hisi_phase_clock *phase_clks;
+> +	size_t phase_clks_num;
+> +
+> +	const struct hisi_divider_clock *divider_clks;
+> +	size_t divider_clks_num;
+> +
+> +	const struct hisi_gate_clock *gate_clks;
+> +	size_t gate_clks_num;
+> +
+> +	const struct hisi_gate_clock *gate_sep_clks;
+> +	size_t gate_sep_clks_num;
+> +
+> +	const void *customized_clks;
+> +	size_t customized_clks_num;
+> +	int (*clk_register_customized)(struct device *dev, const void *clks,
+> +				       size_t num, struct hisi_clock_data *data);
+> +};
+> +
+>   struct clk *hisi_register_clkgate_sep(struct device *, const char *,
+>   				const char *, unsigned long,
+>   				void __iomem *, u8,
+> @@ -113,6 +148,7 @@ struct clk *hi6220_register_clkdiv(struct device *dev, const char *name,
+>   
+>   struct hisi_clock_data *hisi_clk_alloc(struct platform_device *, int);
+>   struct hisi_clock_data *hisi_clk_init(struct device_node *, int);
+> +void hisi_clk_free(struct device_node *np, struct hisi_clock_data *data);
+>   int hisi_clk_register_fixed_rate(const struct hisi_fixed_rate_clock *,
+>   				int, struct hisi_clock_data *);
+>   int hisi_clk_register_fixed_factor(const struct hisi_fixed_factor_clock *,
+> @@ -154,4 +190,10 @@ hisi_clk_unregister(mux)
+>   hisi_clk_unregister(divider)
+>   hisi_clk_unregister(gate)
+>   
+> +/* helper functions for platform driver */
+> +
+> +int hisi_clk_early_init(struct device_node *np, const struct hisi_clocks *clks);
+> +int hisi_clk_probe(struct platform_device *pdev);
+> +void hisi_clk_remove(struct platform_device *pdev);
+> +
+>   #endif	/* __HISI_CLK_H */
+> diff --git a/drivers/clk/hisilicon/crg.h b/drivers/clk/hisilicon/crg.h
+> index 803f6ba6d7a2..bd8e76b1f6d7 100644
+> --- a/drivers/clk/hisilicon/crg.h
+> +++ b/drivers/clk/hisilicon/crg.h
+> @@ -22,4 +22,9 @@ struct hisi_crg_dev {
+>   	const struct hisi_crg_funcs *funcs;
+>   };
+>   
+> +/* helper functions for platform driver */
+> +
+> +int hisi_crg_probe(struct platform_device *pdev);
+> +void hisi_crg_remove(struct platform_device *pdev);
+> +
+>   #endif	/* __HISI_CRG_H */
+> diff --git a/drivers/clk/hisilicon/reset.c b/drivers/clk/hisilicon/reset.c
+> index 93cee17db8b1..c7d4c9ea7183 100644
+> --- a/drivers/clk/hisilicon/reset.c
+> +++ b/drivers/clk/hisilicon/reset.c
+> @@ -6,11 +6,15 @@
+>    */
+>   
+>   #include <linux/io.h>
+> +#include <linux/kernel.h>
+>   #include <linux/of_address.h>
+>   #include <linux/platform_device.h>
+>   #include <linux/reset-controller.h>
+>   #include <linux/slab.h>
+>   #include <linux/spinlock.h>
+> +
+> +#include "clk.h"
+> +#include "crg.h"
+>   #include "reset.h"
+>   
+>   #define	HISI_RESET_BIT_MASK	0x1f
+> @@ -116,3 +120,41 @@ void hisi_reset_exit(struct hisi_reset_controller *rstc)
+>   	reset_controller_unregister(&rstc->rcdev);
+>   }
+>   EXPORT_SYMBOL_GPL(hisi_reset_exit);
+> +
+> +int hisi_crg_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct hisi_crg_dev *crg;
+> +	int ret;
+> +
+> +	crg = devm_kmalloc(dev, sizeof(*crg), GFP_KERNEL);
+> +	if (!crg)
+> +		return -ENOMEM;
+> +
+> +	ret = hisi_clk_probe(pdev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	crg->rstc = hisi_reset_init(pdev);
+> +	if (!crg->rstc) {
+> +		ret = -ENOMEM;
+> +		goto err;
+> +	}
+> +
+> +	platform_set_drvdata(pdev, crg);
+> +	return 0;
+> +
+> +err:
+> +	hisi_clk_remove(pdev);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(hisi_crg_probe);
+> +
+> +void hisi_crg_remove(struct platform_device *pdev)
+> +{
+> +	struct hisi_crg_dev *crg = platform_get_drvdata(pdev);
+> +
+> +	hisi_reset_exit(crg->rstc);
+> +	hisi_clk_remove(pdev);
+> +}
+> +EXPORT_SYMBOL_GPL(hisi_crg_remove);
+
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards,
+Yang Xiwen
+
 
