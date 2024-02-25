@@ -1,142 +1,96 @@
-Return-Path: <linux-kernel+bounces-80266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45033862CB9
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 21:07:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1783E862CBC
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 21:12:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AB981C21437
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 20:07:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CAA82823D3
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 20:12:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 795231B7FB;
-	Sun, 25 Feb 2024 20:06:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50BA51B947;
+	Sun, 25 Feb 2024 20:11:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="If1PKg6K"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NPUeLmKO"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58607175A6;
-	Sun, 25 Feb 2024 20:06:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FF181B800;
+	Sun, 25 Feb 2024 20:11:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708891615; cv=none; b=evaW2iob8mGD6b/1XBy1TlqPcbOCTxMoNAQssLMjvsqgPgxa3NQHuwxH5MVdMxaJVgObAVySMpUsN/79jZuQ6k8TpMxFQYILd89FFMPVMI0ZVcQsrN+ot0DPJNki27Hx6FZWEXJqhC+2+CsqfQEdoXqMga5k7sMOuLmRAS5E3WI=
+	t=1708891914; cv=none; b=dYBXw37otS2m5AaJRLXC6nazTIJKZr5CbPtOXd3c2DY8Yzf328B6S+pudPq/fL72u4707YF5VNgmdV8qAp74y9mLTaWrh2pOGmbm7gv+vbI4Khctd2TdcNtFWcFoxvws220llNqkHe60phD0whrT7GSCHuXSIO3FmnvUAXE+oKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708891615; c=relaxed/simple;
-	bh=O6vcBGiENNkdA0mo0YmFkQXQyNfGepxUp1HmgXTRVys=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iS0NMPCsWoDhHGP31rBWqZs6CYVGkR+OsxZiLTw7z1+oWGAn4Fh93jGHKo4z6U6zpzG42069wtWr0+XF0J8EVSdeCM437HjjHBRsF7GkL6WfuvkW5VmDPXeYE5rxCeYtlmMFAigLyfWJB4EtU0Eep51Tjxf+e3lf1eZeI4jDYNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=If1PKg6K; arc=none smtp.client-ip=192.198.163.17
+	s=arc-20240116; t=1708891914; c=relaxed/simple;
+	bh=ipeSeJEnGh8gKOqj8bEZj+meMRjyyaDgYj/HDJhNvV0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gsOdmyV2XBfDv4lNsdmdsxLTNwvxPSSVN8lidpidKfIjKXJFUMpbRsa/zTrl85nN2jjUjqLMlZDOItM2R6qcTo1qGRAdtOur4/g0emQLHTIZ62/v0fTdYFyovltBZj0UIunR54Gkcg0MlS0TiQKG3SEB7OYgIhqdsFKGkAW3C0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NPUeLmKO; arc=none smtp.client-ip=198.175.65.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708891614; x=1740427614;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=O6vcBGiENNkdA0mo0YmFkQXQyNfGepxUp1HmgXTRVys=;
-  b=If1PKg6KV8tYXfxC/MCebr5jy//xORGmpdHUaLNXe6rP/UIOx213MP6Y
-   1Hqo3rtNz5CnUN7Qw4T+aVBXbB1X4pIuIMfYqx23zb9Uew8lE75i8xEhR
-   f3SW150xxDQwdwSPFS/X90OdX5294eDF4yk9H8DLovU4/uSfRC3u350aP
-   hf6VW2S2JSxnhlG8X01KLnnlhHyUIvZzH31iR/dp4vBuITqKBH9YUkoak
-   KX1w6ZE5p5qvLicbhBrU6lmamQa6NcX89qw4OIX31vtQrebV6+BZvMP8E
-   LpmhGigFM7ApIzHMjErw+OCLZ6UIlZ8NZwCrkBQZAFE3Hi4eTd6O2cYJ2
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3011965"
+  t=1708891914; x=1740427914;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ipeSeJEnGh8gKOqj8bEZj+meMRjyyaDgYj/HDJhNvV0=;
+  b=NPUeLmKO+oRNw2j2I4podqsa05LUZNdy1I5QTqob6jBEMU9AsbkZzfLn
+   /pwAOTYMegkHOE4xOp65/9nF7qZzNwcTQIahR8IYUYrwwoFA15gsT3oM6
+   z1nD0n7MEfApTsSl8bEGW9HxQYawi1Ux9DrDxr2BAmFGw0Q/Y9LoRWASR
+   fDO/ncvok8sOYY4NNF93vU/xIdqwbFbmO7DfMrbYI9+NjfZiwSnRleV/6
+   o6Jh32lu10seFUsMHs62j08bpk5iU6s5Wei2bK9iJBuK54AjXtVBqnSnw
+   LdBzPjTunw8+8waz7s8aY4iVYNTC2+ZACWd+O7LZa5S39n8lNgKq+NGTF
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="25639526"
 X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="3011965"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 12:06:53 -0800
+   d="scan'208";a="25639526"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 12:11:53 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="6590003"
-Received: from gcsargen-mobl1.amr.corp.intel.com (HELO [10.255.228.214]) ([10.255.228.214])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 12:06:53 -0800
-Message-ID: <572af7f6-2544-4708-a90d-e18c58eb2762@linux.intel.com>
-Date: Sun, 25 Feb 2024 12:06:52 -0800
+   d="scan'208";a="29632546"
+Received: from rfredric-mobl.amr.corp.intel.com (HELO tzanussi-mobl1.amr.corp.intel.com) ([10.213.171.152])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 12:11:51 -0800
+From: Tom Zanussi <tom.zanussi@linux.intel.com>
+To: herbert@gondor.apana.org.au,
+	davem@davemloft.net
+Cc: rex.zhang@intel.com,
+	andre.glover@linux.intel.com,
+	linux-kernel@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	dmaengine@vger.kernel.org
+Subject: [PATCH 0/2] crypto: Intel Analytics Accelerator (IAA) bugfixes
+Date: Sun, 25 Feb 2024 14:11:32 -0600
+Message-Id: <20240225201134.759335-1-tom.zanussi@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] PCI/DPC: Encapsulate pci_acpi_add_edr_notifier()
-Content-Language: en-US
-To: Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Matthew W Carlis <mattc@purestorage.com>,
- Keith Busch <kbusch@kernel.org>, Lukas Wunner <lukas@wunner.de>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Bjorn Helgaas <bhelgaas@google.com>
-References: <20240222221521.32159-1-helgaas@kernel.org>
- <20240222221521.32159-4-helgaas@kernel.org>
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20240222221521.32159-4-helgaas@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+Hi Herbert,
 
-On 2/22/24 2:15 PM, Bjorn Helgaas wrote:
-> From: Bjorn Helgaas <bhelgaas@google.com>
->
-> pci_acpi_add_edr_notifier() and pci_acpi_remove_edr_notifier() are only
-> referenced inside drivers/pci/.  Move their declarations from
-> include/linux/pci-acpi.h to drivers/pci/pci.h so they're not visible
-> outside drivers/pci/.
->
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> ---
->  drivers/pci/pci.h        | 4 ++++
->  include/linux/pci-acpi.h | 8 --------
->  2 files changed, 4 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index 2336a8d1edab..03bf2776d73b 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -432,11 +432,15 @@ void pci_dpc_init(struct pci_dev *pdev);
->  void dpc_process_error(struct pci_dev *pdev);
->  pci_ers_result_t dpc_reset_link(struct pci_dev *pdev);
->  bool pci_dpc_recovered(struct pci_dev *pdev);
-> +void pci_acpi_add_edr_notifier(struct pci_dev *pdev);
-> +void pci_acpi_remove_edr_notifier(struct pci_dev *pdev);
+Here are a couple of bugfixes for some minor problems discovered while
+testing.
 
-Protect them with CONFIG_ACPI?
+Thanks,
 
->  #else
->  static inline void pci_save_dpc_state(struct pci_dev *dev) { }
->  static inline void pci_restore_dpc_state(struct pci_dev *dev) { }
->  static inline void pci_dpc_init(struct pci_dev *pdev) { }
->  static inline bool pci_dpc_recovered(struct pci_dev *pdev) { return false; }
-> +static inline void pci_acpi_add_edr_notifier(struct pci_dev *pdev) { }
-> +static inline void pci_acpi_remove_edr_notifier(struct pci_dev *pdev) { }
->  #endif
->  
->  #ifdef CONFIG_PCIEPORTBUS
-> diff --git a/include/linux/pci-acpi.h b/include/linux/pci-acpi.h
-> index 92e196ba0249..f447ce215adf 100644
-> --- a/include/linux/pci-acpi.h
-> +++ b/include/linux/pci-acpi.h
-> @@ -122,14 +122,6 @@ extern const guid_t pci_acpi_dsm_guid;
->  #define DSM_PCI_POWER_ON_RESET_DELAY		0x08
->  #define DSM_PCI_DEVICE_READINESS_DURATIONS	0x09
->  
-> -#ifdef CONFIG_PCIE_DPC
-> -void pci_acpi_add_edr_notifier(struct pci_dev *pdev);
-> -void pci_acpi_remove_edr_notifier(struct pci_dev *pdev);
-> -#else
-> -static inline void pci_acpi_add_edr_notifier(struct pci_dev *pdev) { }
-> -static inline void pci_acpi_remove_edr_notifier(struct pci_dev *pdev) { }
-> -#endif /* CONFIG_PCIE_DPC */
-> -
->  int pci_acpi_set_companion_lookup_hook(struct acpi_device *(*func)(struct pci_dev *));
->  void pci_acpi_clear_companion_lookup_hook(void);
->  
+Tom
+
+Tom Zanussi (2):
+  crypto: iaa - Fix async_disable descriptor leak
+  crypto: iaa - Fix comp/decomp delay statistics
+
+ drivers/crypto/intel/iaa/iaa_crypto_main.c  | 13 ++++++++--
+ drivers/crypto/intel/iaa/iaa_crypto_stats.c | 28 ---------------------
+ drivers/crypto/intel/iaa/iaa_crypto_stats.h |  8 +++---
+ 3 files changed, 15 insertions(+), 34 deletions(-)
 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.34.1
 
 
