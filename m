@@ -1,142 +1,221 @@
-Return-Path: <linux-kernel+bounces-80237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2774B862C5F
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:44:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B57B862C67
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:50:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 530881C20B99
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:44:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA2371F21EFF
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:50:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F2B518EB3;
-	Sun, 25 Feb 2024 17:44:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D649518EB0;
+	Sun, 25 Feb 2024 17:50:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cmSoAl8x"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="y6MsJnBj";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="OrM9zNRK"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40F1D1862E
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 17:44:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 234DD18045;
+	Sun, 25 Feb 2024 17:50:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708883060; cv=none; b=BakQJo2x3pqBefJ45OQVvNa84bYxvrt3009DRBeNeCVjT2cAsm/iqPt2jmKDPb+NjdJRDmcnCa3B6H01i98UqqS95uokOQjWV5UqBNeT2GAgujpxtKDDk5AUfEdQQuO9CqxfgGtsUWtdr9KGmjgkRT9UJ5ApKIB48DP+8vRgNTk=
+	t=1708883433; cv=none; b=AhWBaIPKmJvrcaaM9W7AUTj8Q5oInkjC1arGdmTlEufF8mSeSEzcvqxCnOhIzEDsM2uHExEaxsQgGM2KKG2XAEzFnVj8fUcIZhmvIBw4fIGmjwepUHUlHxR43dcGfU1j8x9UhfEiqF0F3LahLFIr8GOPyrNfcKHOWQVQa/ETNBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708883060; c=relaxed/simple;
-	bh=0K5xMPOYequh7ZQp99U8co9tYPwwBbzQ3CMMu8+kdV8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Qq9/XcxTDrn2J6CuBX02+CXMdwwtqIlbfpMCuzkca9KucnJVv/GfUx1Aud38FuRk+FjZWmwG8OylyTF2Ap1q3suJf0ukcW7nRGzjMcL+ajYdyYnh/jIHPGKwtoVu6jOHVzFZ/hmHbvM24LooIfIoGAW0Lerpd8lvhO2d5K4y36k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cmSoAl8x; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dc744f54d0so163895ad.0
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 09:44:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708883058; x=1709487858; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qStKuBILkLY1v8oXdUPbeQuvbfRqjxTb+0Ot/9pOfvc=;
-        b=cmSoAl8xMrLxnh2LpC+Vcwyk5RHfzVdB4lZ3GKIPeTqCqpMglEj3/ZYv9a9N+w7uif
-         avTr62blqQcTHzI1nLp16p2rQsi8ilC6I+Jr+DIETdXon4WagO/wEDw3zX17oCGp4ugG
-         +FwMRcsHS7UJ9CGc+4cxOZwrN5QoDlNM0Pw1wvcFzsycRLkIUgrjtBURDKFSjDJbc8RP
-         za6xZI6L/rtrJRx0Y/hfOJQNyOynDrR+rTFQ3J6Z2Z3wlCsWb9+bua2rJNPjU99EB3fg
-         LbysNdpYiV+99iip/9inGO3UQ7J1ubskXBvk9m6ByLOatAFPCZR/jL5hRttv/pUhxkLH
-         M86g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708883058; x=1709487858;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qStKuBILkLY1v8oXdUPbeQuvbfRqjxTb+0Ot/9pOfvc=;
-        b=wHoHpMZWj6LO4Cv9eZsfq/nYKZ7rWHeISoeA5V42PMINdJVFuXGqC/woYbLdnFs5p+
-         CnKG3njOpZcyCRsgtmywnWJ6mnetmLfAm+d65jT96cXMTqunOapKdp+eUokkQZOn2sV1
-         lawUdyZCBPq2fMizhFh7rWLk6i2OcznZTi5fHbMvm6IIBRMfkDEAIlt0+Y3unQ/jFg+w
-         Wb0sIslUREn8tknQboEM6sJ7+d29+s+xtTt9VpZB3f2aSey4HwnZtWqDQgtdKTfEegIP
-         kiOASv0pLnJZpRkpDUEr7idi5/MT3cAZqozPu3Tp4uibKrcIReBM+JIcG9FKtKpw+6FT
-         RiWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUzttjzXZk4EkafFMlKZ6N3HgEaPPMOJ/XWOPTcSAFWBFiC8qU+SHvvSQP85H3lsGzWc/evHvFAZ+B5CLioSfWlQSKrGfoBTaIm5HZi
-X-Gm-Message-State: AOJu0Yx7sWyijimdpQZ7che5SVKzba/KUTYb/LLaBt/7mTQYE70Lo2U0
-	/rEndlu1tx7ecAF+4ahc7V8fb7urRLWrWRjKWleDtVmDK8sYq29luimbSdg8CVUK3vcD42Bn7Q1
-	rV1g/MDhD0MHj76ykPOkYUFGyG0I7P605pncJ5B2/lbdPb97Bulot
-X-Google-Smtp-Source: AGHT+IErOGEY0ni+ULakJAaE+x5eBVu1gsfbzxfzy3KLUCvMo87Nc+2OWz/bDWgTxXZssUbPaDS0WS4CaFvvsNOJJik=
-X-Received: by 2002:a17:902:fc4c:b0:1db:971b:cb62 with SMTP id
- me12-20020a170902fc4c00b001db971bcb62mr239463plb.8.1708883058352; Sun, 25 Feb
- 2024 09:44:18 -0800 (PST)
+	s=arc-20240116; t=1708883433; c=relaxed/simple;
+	bh=hKjDaiAmBsLSksi6PPVIwrSv1B11206xJhwkAlMhZK4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=HrKLaK6L2DHGQ+15PHvjLmhsStxuV64Yr0A0sDkfM5uIuBkqVtwSsYrtF1VIp5m//Nw5+glwlGZ5seJWfurudOks7a5w7rbr7Ub7NEGRf0hNV5ougW6dsN/Ms+3OdE4hdZfTiOlY1d+S36wqiyckT3KygeVrmXzFabF2t18ij4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=y6MsJnBj; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=OrM9zNRK; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708883429;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s4AgxkOV8a1w0nLTDYUiF91kDwuNF+KspPzrm/WXg9U=;
+	b=y6MsJnBjlsaP6RXfTagm0XJanqTTETXhEI5yfqKnvd1knMpf1ANPi+/436CbqEmGAYXCQC
+	s7rRZ7Eu/URi6bLJuzpZPRR1/LKwjFqq69gBBuL3k1JZ4m8Uz8YKa9i9Z1m85+7Uc3SmbI
+	eisP5Bzpd0G4PX4i5wCSwCgxfxFTa58ODGsYeSQPux/phX8OXjPa/smciVvqtSXq+nzoZm
+	JfdKiaGxxAGWM5wZ+mUC+E8Rf3yuvtkabByuTh7vDV3kgedY2FPz9+a41YnB9GBFyTIYWT
+	uihSoiCdSFlJcp61IioZ8LkRTLF4P1miW7XjIMYhhbW48+C9hAtOsxw5akXp+Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708883429;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s4AgxkOV8a1w0nLTDYUiF91kDwuNF+KspPzrm/WXg9U=;
+	b=OrM9zNRKeV51KC1EcE7alYHbKhU5ehh5F74+AsDHvGoRHCbRNsomUpbIDgH1+MKrj/glJH
+	EooABNPGRZc3Q6Bg==
+To: Tianyang Zhang <zhangtianyang@loongson.cn>, chenhuacai@kernel.org,
+ jiaxun.yang@flygoat.com
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, Baoqi Zhang
+ <zhangbaoqi@loongson.cn>, Zhang Tianyang <zhangtianyang@loongson.cn>, Biao
+ Dong <dongbiao@loongson.cn>
+Subject: Re: [PATCH] irqchip/loongson-pch-pic: Update interrupt registration
+ policy
+In-Reply-To: <20240223102612.1499-1-zhangtianyang@loongson.cn>
+References: <20240223102612.1499-1-zhangtianyang@loongson.cn>
+Date: Sun, 25 Feb 2024 18:50:28 +0100
+Message-ID: <875xyccu1n.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <9538b2b634894c33168dfe9d848d4df31fd4d801.1693085544.git.christophe.jaillet@wanadoo.fr>
- <3e1ed5a3-55dc-4652-936d-fd36e0442d79@wanadoo.fr>
-In-Reply-To: <3e1ed5a3-55dc-4652-936d-fd36e0442d79@wanadoo.fr>
-From: Ian Rogers <irogers@google.com>
-Date: Sun, 25 Feb 2024 09:44:04 -0800
-Message-ID: <CAP-5=fWEQdgOsVioWEHr6QNPv81r6VjAR5vyA3OGSuF09RsXBg@mail.gmail.com>
-Subject: Re: [PATCH] perf pmu: Fix a potential memory leak in perf_pmu__lookup()
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, 
-	Arnaldo Carvalho de Melo <acme@redhat.com>, linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Sun, Feb 25, 2024 at 7:42=E2=80=AFAM Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
+On Fri, Feb 23 2024 at 18:26, Tianyang Zhang wrote:
+> From: Baoqi Zhang <zhangbaoqi@loongson.cn>
 >
-> Le 26/08/2023 =C3=A0 23:32, Christophe JAILLET a =C3=A9crit :
-> > The commit in Fixes has reordered some code, but missed an error handli=
-ng
-> > path.
-> >
-> > 'goto err' now, in order to avoid a memory leak in case of error.
-> >
-> > Fixes: f63a536f03a2 ("perf pmu: Merge JSON events with sysfs at load ti=
-me")
-> > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > ---
->
-> Hi,
->
-> polite reminder.
+> We have removed the fixed mapping between the 7A interrupt source
+> and the HT interrupt vector, and replaced it with a dynamically
+> allocated approach. This will be more conducive to fully utilizing
+> existing vectors to support more devices
 
-Apologies for the delay.
+You are describing _WHAT_ the patch is doing, but you fail to explain
+the context and the _WHY_.
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+> Signed-off-by: Baoqi Zhang <zhangbaoqi@loongson.cn>
+> Signed-off-by: Zhang Tianyang <zhangtianyang@loongson.cn>
+> Signed-off-by: Biao Dong <dongbiao@loongson.cn>
+
+This Signed-off-by chain is wrong. You, Tianyang, are sending this,
+right?
+
+See
+
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
+
+and the following chapters.
+
+> ---
+>  drivers/irqchip/irq-loongson-pch-pic.c | 64 +++++++++++++++++++-------
+>  1 file changed, 47 insertions(+), 17 deletions(-)
+>
+> diff --git a/drivers/irqchip/irq-loongson-pch-pic.c b/drivers/irqchip/irq-loongson-pch-pic.c
+> index 63db8e2172e0..86549356e76e 100644
+> --- a/drivers/irqchip/irq-loongson-pch-pic.c
+> +++ b/drivers/irqchip/irq-loongson-pch-pic.c
+
+> @@ -34,6 +34,8 @@
+>  #define PIC_REG_IDX(irq_id)	((irq_id) / PIC_COUNT_PER_REG)
+>  #define PIC_REG_BIT(irq_id)	((irq_id) % PIC_COUNT_PER_REG)
+>  
+> +#define hwirq_to_bit(priv, hirq)	(((priv)->table)[(hirq)])
+
+Make this a static inline please.
+
+>  static int nr_pics;
+>  
+>  struct pch_pic {
+> @@ -46,6 +48,8 @@ struct pch_pic {
+>  	u32			saved_vec_en[PIC_REG_COUNT];
+>  	u32			saved_vec_pol[PIC_REG_COUNT];
+>  	u32			saved_vec_edge[PIC_REG_COUNT];
+> +	u8			table[PIC_COUNT];
+> +	int			inuse;
+>  };
+>  
+>  static struct pch_pic *pch_pic_priv[MAX_IO_PICS];
+> @@ -80,45 +84,47 @@ static void pch_pic_mask_irq(struct irq_data *d)
+>  {
+>  	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
+>  
+> -	pch_pic_bitset(priv, PCH_PIC_MASK, d->hwirq);
+> +	pch_pic_bitset(priv, PCH_PIC_MASK, hwirq_to_bit(priv, d->hwirq));
+>  	irq_chip_mask_parent(d);
+>  }
+>  
+>  static void pch_pic_unmask_irq(struct irq_data *d)
+>  {
+> +	int bit = hwirq_to_bit(priv, d->hwirq);
+>  	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
+
+How does this even compile?
+
+>  
+> -	writel(BIT(PIC_REG_BIT(d->hwirq)),
+> -			priv->base + PCH_PIC_CLR + PIC_REG_IDX(d->hwirq) * 4);
+> +	writel(BIT(PIC_REG_BIT(bit)),
+> +			priv->base + PCH_PIC_CLR + PIC_REG_IDX(bit) * 4);
+>  
+>  	irq_chip_unmask_parent(d);
+> -	pch_pic_bitclr(priv, PCH_PIC_MASK, d->hwirq);
+> +	pch_pic_bitclr(priv, PCH_PIC_MASK, bit);
+>  }
+>  
+>  static int pch_pic_set_type(struct irq_data *d, unsigned int type)
+>  {
+> +	int bit = hwirq_to_bit(priv, d->hwirq);
+>  	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
+
+And this?
+
+By chance because you used a macro instead of an inline function. But
+it's still incorrect and wrong.
+
+> @@ -157,6 +164,7 @@ static int pch_pic_domain_translate(struct irq_domain *d,
+>  					unsigned long *hwirq,
+>  					unsigned int *type)
+>  {
+> +	int i;
+>  	struct pch_pic *priv = d->host_data;
+>  	struct device_node *of_node = to_of_node(fwspec->fwnode);
+
+Please see:
+
+https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#variable-declarations
+  
+> @@ -171,6 +179,20 @@ static int pch_pic_domain_translate(struct irq_domain *d,
+>  			return -EINVAL;
+>  
+>  		*hwirq = fwspec->param[0] - priv->gsi_base;
+> +
+> +		raw_spin_lock(&priv->pic_lock);
+
+This was clearly never tested with lockdep enabled. Why?
+
+Because lockdep would have told you that this takes the spinlock with
+interrupts enabled while it is taken in the mask()/unmask() callbacks
+from hard interrupt context.
+
+> +		for (i = 0; i < priv->inuse; i++) {
+> +			if (priv->table[i] == *hwirq) {
+> +				*hwirq = i;
+> +				break;
+> +			}
+> +		}
+> +		if (i == priv->inuse && priv->inuse < PIC_COUNT) {
+> +			priv->table[priv->inuse] = *hwirq;
+> +			*hwirq = priv->inuse++;
+> +		}
+
+So in case that priv->inuse == PIC_COUNT this does not set hwirq and
+returns with bogus values.
+
+> +		raw_spin_unlock(&priv->pic_lock);
+> +
+> @@ -294,6 +320,10 @@ static int pch_pic_init(phys_addr_t addr, unsigned long size, int vec_base,
+>  	if (!priv->base)
+>  		goto free_priv;
+>  
+> +	priv->inuse = 0;
+> +	for (i = 0; i < PIC_COUNT; i++)
+> +		priv->table[i] = -1;
+
+table is an array of u8. So how does -1 make sense? Even if it would
+make sense, then you can't ever have 256 interrupts in use because the
+truncated -1 is equivalent to hwirq 255.
 
 Thanks,
-Ian
 
-> CJ
->
->
-> >   tools/perf/util/pmu.c | 7 +++----
-> >   1 file changed, 3 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> > index bb2ca29cd7bd..8dfce84ad9fe 100644
-> > --- a/tools/perf/util/pmu.c
-> > +++ b/tools/perf/util/pmu.c
-> > @@ -1018,10 +1018,9 @@ struct perf_pmu *perf_pmu__lookup(struct list_he=
-ad *pmus, int dirfd, const char
-> >        * type value and format definitions. Load both right
-> >        * now.
-> >        */
-> > -     if (pmu_format(pmu, dirfd, name)) {
-> > -             free(pmu);
-> > -             return NULL;
-> > -     }
-> > +     if (pmu_format(pmu, dirfd, name))
-> > +             goto err;
-> > +
-> >       pmu->is_core =3D is_pmu_core(name);
-> >       pmu->cpus =3D pmu_cpumask(dirfd, name, pmu->is_core);
-> >
->
+        tglx
+
+
 
