@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-79967-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC35286290A
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 05:06:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9994886290B
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 05:06:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59EBB282007
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 04:06:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AA62281FF3
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 04:06:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB70F63C1;
-	Sun, 25 Feb 2024 04:06:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D02D0944E;
+	Sun, 25 Feb 2024 04:06:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="MWg1CTzB"
-Received: from out203-205-221-233.mail.qq.com (out203-205-221-233.mail.qq.com [203.205.221.233])
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="gzfGNrbQ"
+Received: from out203-205-221-191.mail.qq.com (out203-205-221-191.mail.qq.com [203.205.221.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6835233E1
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 04:06:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A2BF8F55
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 04:06:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708833992; cv=none; b=R/amVBWB5z0xudoyUSD7/Q/tUAd25BSYfAwRQcSYulbFFGwB+KjqaIgZwlAMPHPPo3WxR0xDU6T0judC/XZE0dGX2EVNZbjqas7kDJbBmUBFQ0jgY0Sgm8d5Ld799TUt6p5ewTPFvrgB2Ne6S7Luj5QM/0neqGYxs0NoZaWaQxI=
+	t=1708833997; cv=none; b=LuQXC4cfSmyfzSyXbY58Zwr8kFvXbIP9cdg8BDtmRpR0QWbiuF7MvE33FBlEdhu2CgBC+FT4ung4EXGUftMbLsxPQadd5yyZD4Be/EjTK02sr9JJRlLHj9zN8hTM0E+pjZjPOQcmahAX7UGPEGqglfrc8Adi5Rkt4YDSz/PAzX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708833992; c=relaxed/simple;
-	bh=v0u0UY6IZLeK7m5DJpMpA2gcsbr5QD2SeoS8vKGYb4s=;
+	s=arc-20240116; t=1708833997; c=relaxed/simple;
+	bh=e5AVl2ANYvMw9N2sa9FyVacc4tJHJrJOSKOahOrMncE=;
 	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=j7mLz8t595u7dPQ3Olj5yqwYIRlyW7L1rxa0U+PB+vnSCYj1QQNW5B8TgF/I30c0S3LoLPSKm0aefA7EXeHOfCxEDyiEJ856REXSE7C5JVJvBDLNN+6iSgh9YjyifQGpctbbwdnRdx/gwRYZ1kpSPT9pBdXnXkOXGkAVKOqtmmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=MWg1CTzB; arc=none smtp.client-ip=203.205.221.233
+	 MIME-Version; b=NOmxTkPSGHdQbCTqWrb3GTxmbItbv4uo8pebbnZZlnB6AoHH/zrsoJwEi1OIW3iisC6UHjhL4fjawfmh/o2KfkE7cdKJes5RHFH4wfzvXJ6QmnMOyoc7PC/2cegXSzBbBlSi/C44xSgill5tcUcyD9l1mga0rw/bLYxW/qB9h70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=gzfGNrbQ; arc=none smtp.client-ip=203.205.221.191
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1708833981;
-	bh=eeuZJq6Fxo2cYyc6x11JY0tSqm747i90EQ3x4JLdDpA=;
+	s=s201512; t=1708833992;
+	bh=kz5lRhDy5wWwgey/c2k6rCr2dAMwayc5iymGADo4jSo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=MWg1CTzBCcYkNXIeWTckng8BjAbOVlYgk158ElE+Vt8ArDpGlcViwMkRMQpqthccZ
-	 W/nncZjO8yhbo3iNSutc8OuH6kXRRJUyYaH5MHSLMOK577r/6+f/e5Pe3YfJg0ZF6h
-	 3POEwVzul5tPfpwvaH7ZpO6zkLH0CE8AOwfejP00=
+	b=gzfGNrbQrLQfxGpqUi3kyJOObNozSeKh0+SuDwY2wzUQ77pnPebWEXaLfuHTfnMqo
+	 jeQ8pLi8YibV7PiKeXun6nYSWdi5Z8f40uE5YrWtuREb2jFm90HuVhf7woKIoVwYvl
+	 36VeRhhewqaDgogYZxxBSBfx2POw5ojH/TM5eiUQ=
 Received: from localhost.localdomain ([2409:8a60:2a61:ef40:480f:5c56:cca3:1b20])
 	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
 	id 18993038; Sun, 25 Feb 2024 12:06:09 +0800
-X-QQ-mid: xmsmtpt1708833973tqo6zfhr6
-Message-ID: <tencent_95D22FF919A42A99DA3C886B322CBD983905@qq.com>
-X-QQ-XMAILINFO: OQ59tfF64tJLisGDfjHLssboL2wrAS+OJRngdWOM2ugGCBYT8TEY4f7nQdWleK
-	 PZVJRFePG7rTc/H+tpBH+NvaJHtnD83UM6gNBWzQM990fbc40e+g4u3PweR79sjfEm6iCPdrF2si
-	 mQtoR7zWd4JJQtkYm6YzFCyU+6JHD9hi/6A1S+Er1yDoeg57zcHZUNNEhF2JHmhjb3bKP/FIzE4/
-	 AULq5O9opHJxz0dp+qwsX08fJHP5FgOToRSBE1F/VFqh2Wl8FnA8ENIErQvKdfG6wRn0jxuCUCwt
-	 aEaxjWRpKGGczA2grKZ0ynSRZrQf+8PRJBjRDdyOLGXqsH69itJeDIYf71HMse992xWfC4giiyAX
-	 TDX+qkmNG7YY3jrfcg5/wvXfv+pnOZU3qIdiDAylAgPS5zBWMBJzHFH/BAyIdb51vkusD2Ww/7sp
-	 q1MY7uPGasrnH2Z0/NbUBj7g7BV1fDL/ghsuBOZVKaP5RFfUzjKaNrt2LcrMHVh+blNgW8N9SXhF
-	 OYziCHd7hKAq8t+it2WdV6Vi/Qiv1MVltuY6Fat14O811aUOb7rQK+ovLCpoHVyHH71f4E8rJ9h+
-	 ONVj7VwwAZyqcKkHrHWeVs7lol0BObISUSCfY2B2MVi/y2X2gVmWScumxI4+Pg5XXU4XfQypyNS8
-	 TjlRCks2BCiY+1xGFVr/E4aLwopXT5Hx7vy94CAGtIuH446umSkDsW9H9trWt5wAbCqlj9uhXG4D
-	 uYaeG/pNU23GE4AEY5WLueV4tyt7pdkIEIA6MyWZcIOHUZJcteqzAvMmfciM95smvStIx7OLcWpc
-	 eNk8KnNpmPHRo6c2CEtmSiRMgBLZtazBB2hjogd3PWRAzhBrJdEzLOVvJaY0AuciMRkxc5Q6hCh+
-	 4SChtu1tXpw5VXGqKxBqCUxWxJv55w1qJFuTrsqasjWtFhW7Yeo7HGnzyt2JirbVk1v76FPVUV9m
-	 /lNPJ0+PJlZJqpuu8Qvd77dFceAqi0Pu0We1raKJAOL2E8cFaRwFarZbT/OZTnF+nKlTmLvIs+yW
-	 XojuIqRzpZK1wegq8+qa0jwh3Y/PHGj0lcx/jwC0xiL1XUeqJN
-X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+X-QQ-mid: xmsmtpt1708833981tm17norn6
+Message-ID: <tencent_B6BFA2E7C5AA16EAADA0A44999743B661B07@qq.com>
+X-QQ-XMAILINFO: MvTK+AXQ7a4FI67fVnk9OUz74OFyJLvk50+sgH3sj0llM/pitKfIOnKai3pgXx
+	 d+3RDni8PSTEcgoQ9KvJ+JTAymJ4VlkbSWmgEsrunFiJJVcJWeGIXOlctAGE7uymymcDddT4H347
+	 tIRPeVgS2geeYp+6nH4psXGaklXTRP3sDRkaRwHw/ygagR0oQZmAy2EDMmHZpS6Pf3y6Y8PWei+G
+	 61u774YEeiaRSmI0x54MAHrMxMn2rRBxXarkezVwVzEBKds1wDzF671WsjThSCJyvxcuRD8m+Ood
+	 GYqWF8oyF2VjLrBQnGyn2XSf8MLMm7xxstr+Fk/xa0CyU4yH+1+wJVTYqv8yFT4XG4CSXmF/0JWB
+	 P2Faocdx5W0qxzc55ZzmjjeUzQD0nTEAjYjVuHtnym6dzrbQoq4fdkg+fLOrqNLlULX7sH8bShC2
+	 MrmGRs0a583gPrg+tA2SXydBRLGt6OwUZ8ru0qncgjblaRkvUQk9e/l9J0tyE9ummBP5GG89MLIe
+	 GX/d/8pPgGa6/eynEmVyMGipizz8MuFMh1ojS7Pg+Qx+IjsJgV3ZMPZcdvill4K77C1RylR7v6sA
+	 rVvmVeYrEzE9SAzmAPSNv0aKs2avWNJyT5q+IfV9aEKexUbY2bsmZINfQtdvxyJ/keSyXVIlOFPE
+	 kFBFg1wDqCEZWV+r7w+dSIrXA+JuHTsHz1g3B50KiQK5F9Ag0zP0DDJrMHUClKLSrpUMWyQ92J6x
+	 Y9s8sQHSA4UzOG4MKSfPs3nPfOvQlNTEF1/pIUejFg1K9bOdbLZlDzzCv/l5eK24z9rjxyGJsQLk
+	 TYJ9EMu9Q5y5eDUI2YN0wqaWmuCdsr0wCkyh+lLVzu7tSQxbhWLV7cqgz6GAVohSZ6wwlkmKRrHV
+	 tRhmeePFST51Sl94/btuB5Wm5dlx5KjeNufXfwAsL74VIOBjJJjcxYrVutui5K06PRoBwOfWH68U
+	 +tZdhdA5ImngJySh42JoD9T2zv340IlKF6U19A+wmQwzP6Ycp5EELlKdCmbejKHg+sj0eS156ZM8
+	 3skNmb8y3n9rWo1pYYvFW8lkJUR3yyr3mZvXFp1A==
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
 From: wenyang.linux@foxmail.com
 To: Luis Chamberlain <mcgrof@kernel.org>,
 	Kees Cook <keescook@chromium.org>,
@@ -69,11 +69,12 @@ To: Luis Chamberlain <mcgrof@kernel.org>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>
 Cc: Wen Yang <wenyang.linux@foxmail.com>,
-	netdev@vger.kernel.org,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/8] sysctl: introduce sysctl SYSCTL_U8_MAX and SYSCTL_LONG_S32_MAX
-Date: Sun, 25 Feb 2024 12:05:31 +0800
-X-OQ-MSGID: <20240225040538.845899-2-wenyang.linux@foxmail.com>
+Subject: [PATCH 2/8] rxrpc: delete these duplicate static variables n_65535 and four
+Date: Sun, 25 Feb 2024 12:05:32 +0800
+X-OQ-MSGID: <20240225040538.845899-3-wenyang.linux@foxmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240225040538.845899-1-wenyang.linux@foxmail.com>
 References: <20240225040538.845899-1-wenyang.linux@foxmail.com>
@@ -87,80 +88,82 @@ Content-Transfer-Encoding: 8bit
 
 From: Wen Yang <wenyang.linux@foxmail.com>
 
-The boundary check of multiple modules uses these static variables (such as
-two_five_five, n_65535, ue_int_max, etc), and they are also not changed.
-Therefore, add them to the shared sysctl_vals and sysctl_long_vals to avoid
-duplication.
-
-Also rearranged sysctl_vals and sysctl_long_vals in numerical order.
+Since these static variables (n_65535 and four) are only used for
+boundary checks and will not be changed, remove them and use the ones
+in our shared const array.
 
 Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
 Cc: Luis Chamberlain <mcgrof@kernel.org>
 Cc: Kees Cook <keescook@chromium.org>
 Cc: Joel Granados <j.granados@samsung.com>
 Cc: Christian Brauner <brauner@kernel.org>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Marc Dionne <marc.dionne@auristor.com>
 Cc: "David S. Miller" <davem@davemloft.net>
-Cc: David Ahern <dsahern@kernel.org>
 Cc: Eric Dumazet <edumazet@google.com>
 Cc: Jakub Kicinski <kuba@kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 ---
- include/linux/sysctl.h | 15 +++++++++------
- kernel/sysctl.c        |  4 ++--
- 2 files changed, 11 insertions(+), 8 deletions(-)
+ net/rxrpc/sysctl.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
-diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
-index ee7d33b89e9e..b7a13e4c411c 100644
---- a/include/linux/sysctl.h
-+++ b/include/linux/sysctl.h
-@@ -45,19 +45,22 @@ struct ctl_dir;
- #define SYSCTL_FOUR			((void *)&sysctl_vals[4])
- #define SYSCTL_ONE_HUNDRED		((void *)&sysctl_vals[5])
- #define SYSCTL_TWO_HUNDRED		((void *)&sysctl_vals[6])
--#define SYSCTL_ONE_THOUSAND		((void *)&sysctl_vals[7])
--#define SYSCTL_THREE_THOUSAND		((void *)&sysctl_vals[8])
--#define SYSCTL_INT_MAX			((void *)&sysctl_vals[9])
-+#define SYSCTL_U8_MAX			((void *)&sysctl_vals[7])
-+#define SYSCTL_ONE_THOUSAND		((void *)&sysctl_vals[8])
-+#define SYSCTL_THREE_THOUSAND		((void *)&sysctl_vals[9])
-+#define SYSCTL_U16_MAX			((void *)&sysctl_vals[10])
-+#define SYSCTL_INT_MAX			((void *)&sysctl_vals[11])
-+#define SYSCTL_NEG_ONE			((void *)&sysctl_vals[12])
+diff --git a/net/rxrpc/sysctl.c b/net/rxrpc/sysctl.c
+index ecaeb4ecfb58..4e2230cf6ff6 100644
+--- a/net/rxrpc/sysctl.c
++++ b/net/rxrpc/sysctl.c
+@@ -11,9 +11,7 @@
+ #include "ar-internal.h"
  
- /* this is needed for the proc_dointvec_minmax for [fs_]overflow UID and GID */
--#define SYSCTL_MAXOLDUID		((void *)&sysctl_vals[10])
--#define SYSCTL_NEG_ONE			((void *)&sysctl_vals[11])
-+#define SYSCTL_MAXOLDUID		SYSCTL_U16_MAX
- 
- extern const int sysctl_vals[];
- 
- #define SYSCTL_LONG_ZERO	((void *)&sysctl_long_vals[0])
- #define SYSCTL_LONG_ONE		((void *)&sysctl_long_vals[1])
--#define SYSCTL_LONG_MAX		((void *)&sysctl_long_vals[2])
-+#define SYSCTL_LONG_S32_MAX	((void *)&sysctl_long_vals[2])
-+#define SYSCTL_LONG_MAX		((void *)&sysctl_long_vals[3])
- 
- extern const unsigned long sysctl_long_vals[];
- 
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 157f7ce2942d..e1e00937cb29 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -82,10 +82,10 @@
- #endif
- 
- /* shared constants to be used in various sysctls */
--const int sysctl_vals[] = { 0, 1, 2, 3, 4, 100, 200, 1000, 3000, INT_MAX, 65535, -1 };
-+const int sysctl_vals[] = { 0, 1, 2, 3, 4, 100, 200, U8_MAX, 1000, 3000, 65535, INT_MAX, -1, };
- EXPORT_SYMBOL(sysctl_vals);
- 
--const unsigned long sysctl_long_vals[] = { 0, 1, LONG_MAX };
-+const unsigned long sysctl_long_vals[] = { 0, 1, S32_MAX, LONG_MAX, };
- EXPORT_SYMBOL_GPL(sysctl_long_vals);
- 
- #if defined(CONFIG_SYSCTL)
+ static struct ctl_table_header *rxrpc_sysctl_reg_table;
+-static const unsigned int four = 4;
+ static const unsigned int max_backlog = RXRPC_BACKLOG_MAX - 1;
+-static const unsigned int n_65535 = 65535;
+ static const unsigned int n_max_acks = 255;
+ static const unsigned long one_jiffy = 1;
+ static const unsigned long max_jiffies = MAX_JIFFY_OFFSET;
+@@ -86,8 +84,8 @@ static struct ctl_table rxrpc_sysctl_table[] = {
+ 		.maxlen		= sizeof(unsigned int),
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_dointvec_minmax,
+-		.extra1		= (void *)SYSCTL_ONE,
+-		.extra2		= (void *)&n_65535,
++		.extra1		= SYSCTL_ONE,
++		.extra2		= SYSCTL_U16_MAX,
+ 	},
+ 	{
+ 		.procname	= "max_backlog",
+@@ -95,7 +93,7 @@ static struct ctl_table rxrpc_sysctl_table[] = {
+ 		.maxlen		= sizeof(unsigned int),
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_dointvec_minmax,
+-		.extra1		= (void *)&four,
++		.extra1		= SYSCTL_FOUR,
+ 		.extra2		= (void *)&max_backlog,
+ 	},
+ 	{
+@@ -113,8 +111,8 @@ static struct ctl_table rxrpc_sysctl_table[] = {
+ 		.maxlen		= sizeof(unsigned int),
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_dointvec_minmax,
+-		.extra1		= (void *)SYSCTL_ONE,
+-		.extra2		= (void *)&n_65535,
++		.extra1		= SYSCTL_ONE,
++		.extra2		= SYSCTL_U16_MAX,
+ 	},
+ 	{
+ 		.procname	= "rx_jumbo_max",
+@@ -122,8 +120,8 @@ static struct ctl_table rxrpc_sysctl_table[] = {
+ 		.maxlen		= sizeof(unsigned int),
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_dointvec_minmax,
+-		.extra1		= (void *)SYSCTL_ONE,
+-		.extra2		= (void *)&four,
++		.extra1		= SYSCTL_ONE,
++		.extra2		= SYSCTL_FOUR,
+ 	},
+ 	{ }
+ };
 -- 
 2.25.1
 
