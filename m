@@ -1,111 +1,246 @@
-Return-Path: <linux-kernel+bounces-80167-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1C2C862B4C
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:46:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1190862AEC
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:05:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AF241F215F3
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 15:46:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 031F31C20E04
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 15:05:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 500AC1758E;
-	Sun, 25 Feb 2024 15:46:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F8401426F;
+	Sun, 25 Feb 2024 15:04:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F2E+HvhU"
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZL0LTO/O"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45C8914276;
-	Sun, 25 Feb 2024 15:46:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00102101F2;
+	Sun, 25 Feb 2024 15:04:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708875969; cv=none; b=H+Y4issQ5fY6V5YI7FskvZTSHG3W2fLIUxqo2RUp7Au9jixp6WXJ/Uii4XGUCzCBUiR4vDUnlE0HbGd2U3XsFvOoYDWyH0V9wVwDQg5VnuEn8NzmVzKdwhcoRRrDwmVUTgBAho6MrQOB0h7nkPYBu3b8FYbRh0A0Dcagh1S2RhA=
+	t=1708873495; cv=none; b=gCG0j38ju5w00RWZWAFkbaBzbmzA3+rBzu9b9telFESp0PlV8tFX/dMF8slSC8ZuoKy+zanUXOxviqILXeK/0aQxpVay2axgFuzkpSl44jAYgd/FVI3UIsH6rxF/PkN7iIZanbTuz5X+BqUCBtPdw2FhF8gLzx7oDv1UCjsUqKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708875969; c=relaxed/simple;
-	bh=t9F39Ikr4dVm3edibCROfCU2YuulRER1E6uwGvflmoY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UvhaT4L30rwCExmvGuiTsJg/QGjrXjUCJvWN2DLdFU8h+z7PKCGYJidf9utTnCt8MHWomtJ9MyREqOPqEVwUWgsSJ1jZxA8lGD6LnGtx+cygz7LBlDjte5P4BkiMhbpONBGnkKplEQw1MRxrAdAUXdlSmX4iPCi3H1P/87dCE9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F2E+HvhU; arc=none smtp.client-ip=209.85.161.44
+	s=arc-20240116; t=1708873495; c=relaxed/simple;
+	bh=Qz3Hg3/pmrTsxW4lQR9gRwsvt0zyVvdL92XoMUAcjpA=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type; b=RTzT3imLp0BV06FZ28JuTunyoK9M3JZKZ9a+BHjUJrUTk/657jZ7feeAxhAC96nib/V0khRAHizlfne4qWvBKynLZ4rA9RPILmdCevMCnwrmnWbftBdYC1t36YrVcKGBFNt6KaFPwKbW7slnj160whDl1AfzB3aR+/wmNNHnMr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZL0LTO/O; arc=none smtp.client-ip=209.85.167.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-58e256505f7so2419007eaf.3;
-        Sun, 25 Feb 2024 07:46:08 -0800 (PST)
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-512fd840142so204040e87.2;
+        Sun, 25 Feb 2024 07:04:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708875967; x=1709480767; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5Ie9GBSxINBIsyz8X4p5mFdB/eNwrXZ+fsuhlbACghM=;
-        b=F2E+HvhUprOU0YyJsYG3NBVPRAbh7YHtS9xxQZQ+zAmGZl0jCk/xJKtWP6PjuvSWxK
-         NQG8iE0ivfEWsRm22D/2BcwEjSeE98W2LjoOJUdNhoNEJzqO4ttbQ2KZXpYLiQqfPB7i
-         3hFtsZNWZ/5r1ZnrhJ0Xx++foU+rUK4Iat+aJoCwaA/9FnQYyJYEUuSYt5NxpuXQ2pgy
-         nOOXSMiE0MWfXyifHJlh9M+hnjXam6V+2MdkRlTkT0svHxuU/NLzHGDUEufFEgqfQBkV
-         DveFwhljOrztVadXDGUlieO9T890I3FJ1bVcDZxywU3DwX/RemgS63eflnzEMMNprIHV
-         q9zA==
+        d=gmail.com; s=20230601; t=1708873492; x=1709478292; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=RkMg7AWMyrEAw/Fmf6lRCrkWxcJYIt/urKvuCiI7gXI=;
+        b=ZL0LTO/OYSTltvavf4VT95Nr6+QQsTqjl2A1c3gKfii5QktJntRDENNIqupg1Dtlc/
+         jImQTKvc92/7fBJcuMgAPK4iSsFbTu0IFVHScSL/3R2YwS2MrNceihKQ8nojfjko8IKQ
+         qImCmVn9n8HrbNGP6WUOvpWNaip0VeGELEkySsh8sYe4LojXrSUe6JqvChzvHBjwzQ/5
+         rK6Yl/oo1XDKtDdLGBQPAiSdwRt+ArfWgreryhDWvM8f9PB6yl1bCL9MKmRTXVKhIPxk
+         hHVTtRFTr3tiHn8fgCLGu3p/YP/jHQMbr6fahDbxQxS8eIzI2E2QMhGqJ9pQ1U5EIjDg
+         6cUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708875967; x=1709480767;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5Ie9GBSxINBIsyz8X4p5mFdB/eNwrXZ+fsuhlbACghM=;
-        b=FaghQzoAZRdhMsE6JdlLJQSIWuS6IHJQVEZNlXkhRMaGdRD+m7mZzsktg/Jjwn/pv9
-         fe0RLrmLFlUuFiwDNmXCiGDUp5YfU2gwtWfzQpQMf4T6lPqgqiZSUS9uS6q/Rwj7MAih
-         NJuq20FAssExd+OxuYyeMsIISGWgjr9vWELbh1UxlJA9uHxBW0aLL5jdoDkRqUT61qZF
-         W++TRC59dlYfuvYLkodDk5mBI/YYnhQYzmDErcvvFkNecaehXZxvY0AnCoRJHbmlCZ5T
-         W+A7qXToY8Ij0FzngLooHnCcUfsxI/6L9xOK1vmQs82nyK2Yj7DOoVWsm4RyvnW/2Ytc
-         iBJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWKidxCdxGXTkxYT3T0tLfEd3FCgU3LsCGUgERTcomqYObU3WKqKejvGnKDjYgDOp7QnTtmS0mZLyicec/xSkuF73nHd4bGhMCnQjMfeEhZ2xD0wQriaHN9Ie4SAQMI1qqTH5KxdbGSUkdNG+BXLOy5EC+W8pfyX0+bLtFk7JanC0o=
-X-Gm-Message-State: AOJu0Yw+D1e3LNjXN0iRZl7IhTcTsc80vu/o4DFIPi3HIcM+1pNaLS2j
-	tFBZbqp4/qddGwP1s0KtL0rE/EtKFPWfMFvxnacLoFrfLsGWNGg/
-X-Google-Smtp-Source: AGHT+IFWhLZfdDmqeXxHV2Hz5s5QMMfN88PxbrSK4NtiVrje2/QYuuUDVC/eIo94JaLTYSpskqYCow==
-X-Received: by 2002:a05:6358:6386:b0:17b:57fd:ec5d with SMTP id k6-20020a056358638600b0017b57fdec5dmr7714634rwh.24.1708875967244;
-        Sun, 25 Feb 2024 07:46:07 -0800 (PST)
-Received: from localhost.localdomain (123-193-217-197.dynamic.kbronet.com.tw. [123.193.217.197])
-        by smtp.gmail.com with ESMTPSA id h18-20020a056a00219200b006e468cd0a5asm2541701pfi.178.2024.02.25.07.46.05
+        d=1e100.net; s=20230601; t=1708873492; x=1709478292;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RkMg7AWMyrEAw/Fmf6lRCrkWxcJYIt/urKvuCiI7gXI=;
+        b=Te8kEgQFNmqo344FLVsUVa6Jlue88ycNgi6kKs7qT+EGNhDeVj6yTZdi8ZJLOoirrj
+         lOhyRRvLctowuGzCxPU6MHerbFvJgt4MwE0QPLjtitE5gKhKyCVv6Gk8ys56A9iYjtQ5
+         vJp5HbHIIssfjSZZnetN/Op9a2knV7XYNq32rWyRf517ne5W9+FAKBqgqWeB783NdTO0
+         Bwuo2msOkuJUbBHGEe3NbIhEqNrFtYLgQv+/lmtDWyTa3w2OIwmhvkGGxn2fcsel91tm
+         sPoWDTP5NwBwAMpfaE7Ieaf7BM03px8NWnx2trwFIp6RwRwgvq/c34+YZbNaBpoyTfiE
+         sd9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV2vnBwzktnEGwDb2sG0i562hFEcoIUbQSZRnwktyzPjcw600jvt+/skIhv+s11RPLl36piqDVAMRUIE7BHOHxeJMo5Lw8vfGZVaoZeuqeT/J4FvqQXCBl4WmkH7eMYkTp/y0EXENUK6kE=
+X-Gm-Message-State: AOJu0Yxx3heNEFAHGzHKaF3owlT07r56X/ADhHSjfI/XOKQFLDXLMHDZ
+	Z+owF3lqvI+HSuBbhxJEJN+yaobfPN0H0+Bq1OJmxO3/d8Wg913v
+X-Google-Smtp-Source: AGHT+IGjfNo0/awdjbV9i4IP6ZRmhNydv2WOonsqkcDUmc/+mjhy8rxCxzRRnZV2AtT9PrBZ1FKKiA==
+X-Received: by 2002:ac2:410a:0:b0:512:bf98:b44a with SMTP id b10-20020ac2410a000000b00512bf98b44amr2638397lfi.49.1708873491811;
+        Sun, 25 Feb 2024 07:04:51 -0800 (PST)
+Received: from razdolb ([89.208.103.172])
+        by smtp.gmail.com with ESMTPSA id eo2-20020a056512480200b00512fcc54a1csm137896lfb.288.2024.02.25.07.04.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Feb 2024 07:46:06 -0800 (PST)
-From: Yiwei Lin <s921975628@gmail.com>
-To: rafael@kernel.org
-Cc: corbet@lwn.net,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	s921975628@gmail.com
-Subject: [PATCH] Documentation: PM: Fix runtime_pm.rst markdown syntax
-Date: Sun, 25 Feb 2024 21:00:57 +0800
-Message-Id: <20240225130057.42633-1-s921975628@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Sun, 25 Feb 2024 07:04:51 -0800 (PST)
+References: <20231218174042.794012-1-mike.rudenko@gmail.com>
+ <20231218174042.794012-10-mike.rudenko@gmail.com>
+ <ZZvaDyGSMrjb6e75@valkosipuli.retiisi.eu> <878r4z4ysb.fsf@gmail.com>
+ <ZdhVAEElqzmJAynB@kekkonen.localdomain> <87le7bdsk4.fsf@gmail.com>
+ <ZdpFwtU0iJEFWxhu@kekkonen.localdomain>
+User-agent: mu4e 1.10.8; emacs 29.2.50
+From: Mikhail Rudenko <mike.rudenko@gmail.com>
+To: Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc: Sakari Ailus <sakari.ailus@iki.fi>, linux-media@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Laurent Pinchart
+ <laurent.pinchart@ideasonboard.com>, Jacopo Mondi <jacopo@jmondi.org>,
+ Tommaso Merciai <tomm.merciai@gmail.com>, Christophe JAILLET
+ <christophe.jaillet@wanadoo.fr>, Dave Stevenson
+ <dave.stevenson@raspberrypi.com>, Mauro Carvalho Chehab
+ <mchehab@kernel.org>
+Subject: Re: [PATCH v2 09/20] media: i2c: ov4689: Use runtime PM autosuspend
+Date: Sun, 25 Feb 2024 17:58:43 +0300
+In-reply-to: <ZdpFwtU0iJEFWxhu@kekkonen.localdomain>
+Message-ID: <87edd0d1pq.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-The '7. Generic subsystem callbacks' should be
-a section title, but the markdown syntax now is wrong to show
-this as expected. Fix it so we can to link the chapter
-at docs.kernel.org correctly.
 
-Signed-off-by: Yiwei Lin <s921975628@gmail.com>
----
- Documentation/power/runtime_pm.rst | 1 +
- 1 file changed, 1 insertion(+)
+On 2024-02-24 at 19:38 GMT, Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
 
-diff --git a/Documentation/power/runtime_pm.rst b/Documentation/power/runtime_pm.rst
-index 65b86e487..82bc76d3d 100644
---- a/Documentation/power/runtime_pm.rst
-+++ b/Documentation/power/runtime_pm.rst
-@@ -730,6 +730,7 @@ out the following operations:
-     for it, respectively.
- 
- 7. Generic subsystem callbacks
-+==============================
- 
- Subsystems may wish to conserve code space by using the set of generic power
- management callbacks provided by the PM core, defined in
--- 
-2.34.1
+> Hi Mikhail,
+>
+> On Fri, Feb 23, 2024 at 06:18:12PM +0300, Mikhail Rudenko wrote:
+>>
+>> Hi Sakari,
+>>
+>> and thanks for the review!
+>>
+>> On 2024-02-23 at 08:19 GMT, Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
+>>
+>> > Hi Mikhail,
+>> >
+>> > On Mon, Jan 08, 2024 at 06:06:52PM +0300, Mikhail Rudenko wrote:
+>> >> Hi Sakari,
+>> >>
+>> >> Thanks for the review!
+>> >>
+>> >> On 2024-01-08 at 11:18 GMT, Sakari Ailus <sakari.ailus@iki.fi> wrote:
+>> >>
+>> >> > Hi Mikhail,
+>> >> >
+>> >> > On Mon, Dec 18, 2023 at 08:40:30PM +0300, Mikhail Rudenko wrote:
+>> >> >> Use runtime PM autosuspend to avoid powering off the sensor during
+>> >> >> fast stop-reconfigure-restart cycles.
+>> >> >>
+>> >> >> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
+>> >> >> ---
+>> >> >>  drivers/media/i2c/ov4689.c | 22 +++++++++++++++-------
+>> >> >>  1 file changed, 15 insertions(+), 7 deletions(-)
+>> >> >>
+>> >> >> diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
+>> >> >> index 5300e621ff90..64cc6d9e48cc 100644
+>> >> >> --- a/drivers/media/i2c/ov4689.c
+>> >> >> +++ b/drivers/media/i2c/ov4689.c
+>> >> >> @@ -407,26 +407,27 @@ static int ov4689_s_stream(struct v4l2_subdev *sd, int on)
+>> >> >>  					  ov4689->cur_mode->num_regs,
+>> >> >>  					  NULL);
+>> >> >>  		if (ret) {
+>> >> >> -			pm_runtime_put(dev);
+>> >> >> +			pm_runtime_put_sync(dev);
+>> >> >
+>> >> > Why are you switching to pm_runtime_put_sync() here? That isn't covered by
+>> >> > the commit message (nor I think should be done).
+>> >>
+>> >> PM autosuspend conversion was suggested earlier by Laurent in his review
+>> >> of this series [1], and he adviced looking at how it was done for the
+>> >> imx290 driver. I followed along the lines of the corresponding patch
+>> >> [2].
+>> >
+>> > There's no need to use the _sync() variant here. And at least it wouldn't
+>> > be related to autosuspend, were you to switch to that.
+>>
+>> Ok, will use pm_runtime_put in v3. Or do you suggest dropping this patch
+>> altogether? Laurent?
+>
+> Using autosuspend is preferred.
+>
+> Much of the benefit come from avoiding redundant register writes but that's
+> a separate matter.
 
+I see, will try to do it in a separate patch outside this series. Could
+you please point to a driver which does this right?
+
+>
+>>
+>> >>
+>> >> >>  			goto unlock_and_return;
+>> >> >>  		}
+>> >> >>
+>> >> >>  		ret = __v4l2_ctrl_handler_setup(&ov4689->ctrl_handler);
+>> >> >>  		if (ret) {
+>> >> >> -			pm_runtime_put(dev);
+>> >> >> +			pm_runtime_put_sync(dev);
+>> >> >>  			goto unlock_and_return;
+>> >> >>  		}
+>> >> >>
+>> >> >>  		ret = cci_write(ov4689->regmap, OV4689_REG_CTRL_MODE,
+>> >> >>  				OV4689_MODE_STREAMING, NULL);
+>> >> >>  		if (ret) {
+>> >> >> -			pm_runtime_put(dev);
+>> >> >> +			pm_runtime_put_sync(dev);
+>> >> >>  			goto unlock_and_return;
+>> >> >>  		}
+>> >> >>  	} else {
+>> >> >>  		cci_write(ov4689->regmap, OV4689_REG_CTRL_MODE,
+>> >> >>  			  OV4689_MODE_SW_STANDBY, NULL);
+>> >> >> -		pm_runtime_put(dev);
+>> >> >> +		pm_runtime_mark_last_busy(dev);
+>> >> >> +		pm_runtime_put_autosuspend(dev);
+>> >> >>  	}
+>> >> >>
+>> >> >>  unlock_and_return:
+>> >> >> @@ -606,7 +607,9 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
+>> >> >>  		break;
+>> >> >>  	}
+>> >> >>
+>> >> >> -	pm_runtime_put(dev);
+>> >> >> +	pm_runtime_mark_last_busy(dev);
+>> >> >> +	pm_runtime_put_autosuspend(dev);
+>> >> >
+>> >> > Also note that with runtime PM autosuspend,  you have to use
+>> >> > pm_runtime_get_if_active() instead of pm_runtime_get_if_in_use().
+>> >>
+>> >> Noted, will do so in v3.
+>> >>
+>> >> >> +
+>> >> >>  	return ret;
+>> >> >>  }
+>> >> >>
+>> >> >> @@ -877,8 +880,10 @@ static int ov4689_probe(struct i2c_client *client)
+>> >> >>  	}
+>> >> >>
+>> >> >>  	pm_runtime_set_active(dev);
+>> >> >> +	pm_runtime_get_noresume(dev);
+>> >> >>  	pm_runtime_enable(dev);
+>> >> >> -	pm_runtime_idle(dev);
+>> >> >> +	pm_runtime_set_autosuspend_delay(dev, 1000);
+>> >> >> +	pm_runtime_use_autosuspend(dev);
+>> >> >>
+>> >> >>  	ret = v4l2_async_register_subdev_sensor(sd);
+>> >> >>  	if (ret) {
+>> >> >> @@ -886,11 +891,14 @@ static int ov4689_probe(struct i2c_client *client)
+>> >> >>  		goto err_clean_subdev_pm;
+>> >> >>  	}
+>> >> >>
+>> >> >> +	pm_runtime_mark_last_busy(dev);
+>> >> >> +	pm_runtime_put_autosuspend(dev);
+>> >> >> +
+>> >> >>  	return 0;
+>> >> >>
+>> >> >>  err_clean_subdev_pm:
+>> >> >>  	pm_runtime_disable(dev);
+>> >> >> -	pm_runtime_set_suspended(dev);
+>> >> >> +	pm_runtime_put_noidle(dev);
+>> >> >>  	v4l2_subdev_cleanup(sd);
+>> >> >>  err_clean_entity:
+>> >> >>  	media_entity_cleanup(&sd->entity);
+>> >>
+>> >> [1] https://lore.kernel.org/all/20231211181935.GG27535@pendragon.ideasonboard.com/
+>> >> [2] https://lore.kernel.org/all/20230116144454.1012-14-laurent.pinchart@ideasonboard.com/
+>> >>
+>>
+>>
+
+
+--
+Best regards,
+Mikhail Rudenko
 
