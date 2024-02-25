@@ -1,234 +1,154 @@
-Return-Path: <linux-kernel+bounces-79995-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE5AC862976
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 07:51:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BE76862979
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 07:53:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45B311F215B8
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 06:51:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44D31282369
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 06:53:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBFFCDDB3;
-	Sun, 25 Feb 2024 06:51:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33FD5D2E5;
+	Sun, 25 Feb 2024 06:53:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=icenowy.me header.i=uwu@icenowy.me header.b="eI+5MeRm"
-Received: from sender4-op-o12.zoho.com (sender4-op-o12.zoho.com [136.143.188.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="llf+f5p9"
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03438D2E5;
-	Sun, 25 Feb 2024 06:51:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.12
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708843908; cv=pass; b=WYqoIOGc+eAxPZGkZNZa9224avFXa5vZ0aUqYl8HDyx1AU1Nbxo9atjlmDiWzV4x/Kg8XuDgqp7ittckZZ7Wfb3+a6xGVWoWJ68wbLSVFlvnxZnaT3IJPckU4eSISsMJmcCGJCcBRCUUQbH1UFAMqOY4cgysuUBg4lMJ+elhydM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708843908; c=relaxed/simple;
-	bh=jx8A+6qk9M52TPmO5VORSWR7NjQm1UNXTBRRmCxfeE0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=pOXQ5dZD2/4ayhW/FuUgUYwFDucFxzeD6wh6VVDCN4FJb8hvxP4FPFks3XQ41Q7Y7y1jDPZ5KhOFGj/tJHrF++4xuV60NxPglS3f6GaOZw0SSxH8yLBkun/4XsZTQvJ04FW/qmMUWs0z5Q78ifibxa7vkoEvifQ5tvoYG9Ur+d0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=icenowy.me; spf=pass smtp.mailfrom=icenowy.me; dkim=pass (2048-bit key) header.d=icenowy.me header.i=uwu@icenowy.me header.b=eI+5MeRm; arc=pass smtp.client-ip=136.143.188.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=icenowy.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=icenowy.me
-ARC-Seal: i=1; a=rsa-sha256; t=1708843872; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=Nd740hxcMyhDsi/gek143O+hXjPm0QGoZR8xLfScTVJDQDVIfYn3FV2AeBw3qezj82Zb8UvBdbgIE1LfI9N4KUaFjmwMcFQUGBYiP1y61I4cdh4zXbo86/O8U6kTfWQ55OCan8jzeAlELua/mXwUN3xyaHridnRE3rZEle4kY+E=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1708843872; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=jx8A+6qk9M52TPmO5VORSWR7NjQm1UNXTBRRmCxfeE0=; 
-	b=GFSOdYj2NySST7l30ryLYVsyEWrWW3TcEzE15WvR0ZCq5IGe18v14g+5OlTnfo5h6EfW5ZXXLFKJzvimzSdAsiKMsI62L0bJn5yASSpA+eC63KPOJqHC07QRCjqJSc9/HU4mlVLrJ79TfIH6RKAs5RtecAezVcD7kZuWqd1B998=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=icenowy.me;
-	spf=pass  smtp.mailfrom=uwu@icenowy.me;
-	dmarc=pass header.from=<uwu@icenowy.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1708843872;
-	s=zmail2; d=icenowy.me; i=uwu@icenowy.me;
-	h=Message-ID:Subject:Subject:From:From:To:To:Cc:Cc:Date:Date:In-Reply-To:References:Content-Type:Content-Transfer-Encoding:MIME-Version:Message-Id:Reply-To;
-	bh=jx8A+6qk9M52TPmO5VORSWR7NjQm1UNXTBRRmCxfeE0=;
-	b=eI+5MeRm/okgPz13la2RFz8jGxlpKjeMIOJKzUHLHEtAOf+uwqu/UCe1GXJAZOV7
-	xblx5AtaNBgZ3zeIhk3D3sTCTQd4QsFJ+0s1TfW1AuJGVPToy/uUMzwJ12i3d4vaX9W
-	Ro5L7dlJD+A4vXWWbjtw0vBCGUfuL6KtR+A1cPbKNCXyMDIuRZAKeLQ4HATyjuZhV/Z
-	YBVyIXC3+HTijMb+Ox8gZWRSCheJ4a2Of2TJsGDUuK2iBlqKk4zgGSeC8PwAeHjbflk
-	ujyt5Wlds0zvIZYlAhr7/hpdUg1nw2Scu5qRXX1PvAgE66uK/rEj/PrAUoxecZJks4s
-	jybuXkOa4g==
-Received: from edelgard.fodlan.icenowy.me (112.94.103.221 [112.94.103.221]) by mx.zohomail.com
-	with SMTPS id 1708843870885956.8294126820598; Sat, 24 Feb 2024 22:51:10 -0800 (PST)
-Message-ID: <f063e65df92228cac6e57b0c21de6b750cf47e42.camel@icenowy.me>
-Subject: Re: Chromium sandbox on LoongArch and statx -- seccomp deep
- argument inspection again?
-From: Icenowy Zheng <uwu@icenowy.me>
-To: Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>
-Cc: linux-api@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Christian
- Brauner <brauner@kernel.org>, Kees Cook <keescook@chromium.org>, Xuefeng Li
- <lixuefeng@loongson.cn>, Jianmin Lv <lvjianmin@loongson.cn>, Xiaotian Wu
- <wuxiaotian@loongson.cn>, WANG Rui <wangrui@loongson.cn>, Miao Wang
- <shankerwangmiao@gmail.com>, "loongarch@lists.linux.dev"
- <loongarch@lists.linux.dev>, linux-arch <linux-arch@vger.kernel.org>, Linux
- Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date: Sun, 25 Feb 2024 14:51:05 +0800
-In-Reply-To: <CAAhV-H4oW70y-2ZSp=b-Ed3A7Jrxfg6xvO8YpjED6To=PF0NwA@mail.gmail.com>
-References: <599df4a3-47a4-49be-9c81-8e21ea1f988a@xen0n.name>
-	 <CAAhV-H4oW70y-2ZSp=b-Ed3A7Jrxfg6xvO8YpjED6To=PF0NwA@mail.gmail.com>
-Organization: Anthon Open-Source Community
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09E72DDA0;
+	Sun, 25 Feb 2024 06:53:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708843996; cv=none; b=qvXy1wDdWkF68UpuMiYqpiBUHHzCKskGI7z2mY2bW6UmbDZblxFsszorPj11z9M9XpWLt1rqihfV/85oEH08wy0mrO2X7VaA4qzKtFWhyda99lqSrrZFy4ZYy7dbBK7NMz3GrIZ0J83YdNZavqlt8Hs3f15X0p5FD9JGLVCgFO8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708843996; c=relaxed/simple;
+	bh=x5wqZxeWxQ1HDm+fAeMhlm6rEFJshl+5WF7xO5IgVz4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DZ9t4SfA21XA/Lf8pXPRpn3RG6mwxjjHNX12HszaF5FgHkAk2oMH0KnXpNvD8R6HFrgphaieDq3H48EXCuz/TsK66Aw9YzRbTMOzFIN/gM0lC/PWLFIZTBxtENn5GPsVDys5QsUaQXoOyWLjlcNeqRlwrdZcjIdjEqT7nAAAMcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=llf+f5p9; arc=none smtp.client-ip=209.85.167.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3bd72353d9fso1309022b6e.3;
+        Sat, 24 Feb 2024 22:53:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708843993; x=1709448793; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yyJtFNAMcaV/bHkegnktooOwrMmoOwyEbQlBmTfIDJs=;
+        b=llf+f5p9jDenFvD5jNy8tXLcz1T1grAeQZcFjNki5x45xxNWUB9iPBYLju8GBy05d3
+         Vlp1k40eCHQS0xOEqBCIqBtbB1SDtZrXQfiwSmPumZa8z/JLpxqelPbppul0L9jJ30/I
+         BtHuta9gwVm7bx6GVlFTsDRex2ByKhXttUTQYmuXUysNDPR/WMr8+ZelnnWf81BcRkQl
+         kuh8a9OJdJFfDFCtj8CJYt1qqPrLV9gwrf51zad4k63FevjAl+V+BP7J3qNYa3UQbL4/
+         mQ6+OAztZu3U1t4Dxd0rhHPHDKW3Eo0mTwlrjfRrwdkp5qZajDvjIl54etDUqww+PuIa
+         sSAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708843993; x=1709448793;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yyJtFNAMcaV/bHkegnktooOwrMmoOwyEbQlBmTfIDJs=;
+        b=Njdl9sC7GBY0HKPUiSOTcF+YTTnZB8D74Iw6o2uj5zhJhRj9kXM305HPyaeNHKu21u
+         YzRgANCAG4jcYH1EijU23ROT6jVlsPzUKXgBQyINkYnrHqy2hQOn/NtEP5fshn1Bksie
+         gP1JjCXEFF5X0tbo22Riz2oFoUT4q9QBGZnPPPtTSnoayTmcdDp+9og8D4C21m5mZJUf
+         RIsmra1KeVFkP0Dm7oo4hXeGd9sY+gys92nUHvI+EuB6xA9A/gb8/5B0Jcw3GerQD3zR
+         vJyBUxHwgC0KDmJKXvFW+XmMC0uuk9Kup8e2LqJM91Ky7qn14Ru34YhX/Alcg1Sr5mEq
+         u3Lw==
+X-Forwarded-Encrypted: i=1; AJvYcCWl2S7Tb/YGvxL7qtL02vAq1vHoQzG0UwU+M5CTF2nno5mQ8lGV3MJa86n//Ol7tS/ZG8CrJ13+Bq54iwDvsTaIARJrEyRWtDTSjodX
+X-Gm-Message-State: AOJu0YyJk2nWW6zmUzks85+wZWdkA7lJ3fZEO+CiyqVOQZps0e925Vwb
+	f+U7PgLsEF6iO9OJ3qW3haZXJBBGXsN2v+w+/groVgFv49r+sBoDTSVOzPshZlKMBQ==
+X-Google-Smtp-Source: AGHT+IHdMXWqRoBxb9oIxOk2PE2IqASOZeOS2KfP3t96iNh1R+ASEMiWIPBe91eAoE7nZ2A8YJ2zUg==
+X-Received: by 2002:a05:6808:f8b:b0:3c1:9c5b:749f with SMTP id o11-20020a0568080f8b00b003c19c5b749fmr1558420oiw.56.1708843993566;
+        Sat, 24 Feb 2024 22:53:13 -0800 (PST)
+Received: from localhost.localdomain ([171.218.176.26])
+        by smtp.gmail.com with ESMTPSA id p18-20020a056a0026d200b006e45b910a98sm1930313pfw.6.2024.02.24.22.53.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Feb 2024 22:53:13 -0800 (PST)
+From: David Yang <mmyangfl@gmail.com>
+To: linux-clk@vger.kernel.org
+Cc: Yang Xiwen <forbidden405@outlook.com>,
+	David Yang <mmyangfl@gmail.com>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v7 00/13] clk: hisilicon: Migrate devm APIs
+Date: Sun, 25 Feb 2024 14:52:15 +0800
+Message-ID: <20240225065234.413687-1-mmyangfl@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ZohoMailClient: External
+Content-Transfer-Encoding: 8bit
 
-=E5=9C=A8 2024-02-24=E6=98=9F=E6=9C=9F=E5=85=AD=E7=9A=84 19:51 +0800=EF=BC=
-=8CHuacai Chen=E5=86=99=E9=81=93=EF=BC=9A
-> Hi, Xuerui,
->=20
-> On Wed, Feb 21, 2024 at 2:10=E2=80=AFPM WANG Xuerui <kernel@xen0n.name>
-> wrote:
-> >=20
-> > Hi,
-> >=20
-> > Recently, we -- community LoongArch porters -- have noticed a
-> > problem
-> > where the Chromium sandbox apparently wants to deny statx [^1] so
-> > it
-> > could properly inspect arguments after the sandboxed process later
-> > falls
-> > back to fstat. The reasoning behind the change was not clear in the
-> > patch; but we found out it's basically because there's currently
-> > not a
-> > "fd-only" version of statx, so that the sandbox has no way to
-> > ensure the
-> > path argument is empty without being able to peek into the
-> > sandboxed
-> > process's memory. For architectures able to do newfstatat though,
-> > the
-> > glibc falls back to newfstatat after getting -ENOSYS for statx,
-> > then the
-> > respective SIGSYS handler [^2] takes care of inspecting the path
-> > argument, transforming allowed newfstatat's into fstat instead
-> > which is
-> > allowed and has the same type of return value.
-> >=20
-> > But, as loongarch is the first architecture to not have fstat nor
-> > newfstatat, the LoongArch glibc does not attempt falling back at
-> > all
-> > when it gets -ENOSYS for statx -- and you see the problem there!
-> >=20
-> > Actually, back when the loongarch port was under review, people
-> > were
-> > aware of the same problem with sandboxing clone3 [^3], so clone was
-> > eventually kept. Unfortunately it seemed at that time no one had
-> > noticed
-> > statx, so besides restoring fstat/newfstatat to loongarch uapi (and
-> > postponing the problem further), it seems inevitable that we would
-> > need
-> > to tackle seccomp deep argument inspection; this is obviously a
-> > decision
-> > that shouldn't be taken lightly, so I'm posting this to restart the
-> > conversation to figure out a way forward together. We basically
-> > could do
-> > one of below:
-> >=20
-> > - just restore fstat and be done with it;
-> > - add a flag to statx so we can do the equivalent of just fstat(fd,
-> > &out) with statx, and ensuring an error happens if path is not
-> > empty in
-> > that case;
-> > - tackle the long-standing problem of seccomp deep argument
-> > inspection (!).
-> From my point of view, I prefer to "restore fstat", because we need
-> to
-> use the Chrome sandbox everyday (even though it hasn't been upstream
-> by now). But I also hope "seccomp deep argument inspection" can be
-> solved in the future.
+Migrate devm APIs for HiSilicon clock drivers and remove redundant codes.
 
-My idea is this problem needs syscalls to be designed with deep
-argument inspection in mind; syscalls before this should be considered
-as historical error and get fixed by resotring old syscalls.
+This series is a partial improvement of [1]
 
->=20
->=20
-> Huacai
->=20
-> >=20
-> > Obviously, the simplest solution would be to "just restore fstat".
-> > But
-> > again, in my opinion this is not quite a solution but a workaround
-> > -- we
-> > have good reasons to keep just statx (mainly because its feature
-> > set is
-> > a strict superset of those of fstat/newfstatat), and we're not
-> > quite in
-> > a hurry to resolve this. Because one of the prerequisites for a new
-> > Chromium port is "inclusion in Debian stable" -- as the loong64
-> > port
-> > [^4] is progressing and the next Debian release would not happen
-> > until
-> > 2025, we still have time for a more "elegant" solution.
-> >=20
-> > Alternatively, we could also introduce a new flag for statx, maybe
-> > named
-> > AT_STATX_NO_PATH or something like that, so that statx would ignore
-> > the
-> > path altogether or error on non-empty paths if called with flags
-> > containing AT_EMPTY_PATH | AT_STATX_NO_PATH. This way a seccomp
-> > policy
-> > could allow statx calls only with such flags (that are passed via
-> > register and accessible) and maintain the same level of safety as
-> > with
-> > fstat. But there is also disadvantage to this approach: the flag
-> > would
-> > be useful only for sandboxes, because in other cases there's no
-> > need to
-> > avoid reading from &path. This is also more of a workaround to
-> > avoid the
-> > deep argument inspection problem.
-> >=20
-> > Lastly, should we decide to go the hardest way, according to a
-> > previous
-> > mail [^5] (about clone3) and the LPC 2019 discussion [^6] [^7], we
-> > probably would try the metadata-annotation-based and piece-by-piece
-> > approach, as it's expected to provide the most benefit and involve
-> > less
-> > code changes. The implementation, as I surmise, will involve
-> > modifying
-> > the generic syscall entrypoint for early copying of user data, and
-> > corresponding changes to seccomp plumbing so this information is
-> > properly exposed. I don't have a roadmap for non-generic-entry
-> > arches
-> > right now, and I also haven't started designing the new seccomp ABI
-> > for
-> > that. As a matter of fact, members of the LoongArch community
-> > (myself
-> > included) are still fresh to this area of expertise, so a bit more
-> > of
-> > your feedback will be appreciated.
-> >=20
-> > Thanks to Miao Wang from AOSC for doing much of the investigation.
-> >=20
-> > [^1]:
-> > https://chromium-review.googlesource.com/c/chromium/src/+/2823150
-> > [^2]:
-> > https://chromium.googlesource.com/chromium/src/sandbox/+/c085b51940bd/l=
-inux/seccomp-bpf-helpers/sigsys_handlers.cc#355
-> > [^3]:
-> > https://lore.kernel.org/linux-arch/20220511211231.GG7074@brightrain.aer=
-ifal.cx/
-> > [^4]: https://wiki.debian.org/Ports/loong64
-> > [^5]:
-> > https://lwn.net/ml/linux-kernel/201905301122.88FD40B3@keescook/
-> > [^6]: https://lwn.net/Articles/799557/
-> > [^7]:
-> > https://lpc.events/event/4/contributions/560/attachments/397/640/deep-a=
-rg-inspection.pdf
-> >=20
-> > --
-> > WANG "xen0n" Xuerui
-> >=20
-> > Linux/LoongArch mailing list:https://lore.kernel.org/loongarch/
-> >=20
+v2: fix test robot error
+v3:
+  * size_t for all these num types
+  * hisi_clk_unregister() change into separate patch
+  * keep relevant header inclusions
+  * split driver files changes into separate patches
+  * explain hisi_clk_register_fn() checkpatch warnings
+  * not fixed: MODULE_LICENSE("GPL v2"), as stated in SPDX-License-Identifier
+  * not fixed: "hisilicon,hip04-clock" un-documented, as none of dts files in
+    arch/ use it, better to ask hisi people why they pushed this driver
+v4:
+  * typo: hisi_clocks_get_nr() should check clks->nr first
+  * unexport hisi_clk_unregister_fn() as no one use them outside
+v5: catch up with remove_new refactoring
+v6: fix compilation error and expand macros
+v7: rebase and use mod_devicetable.h instead
+
+Links:
+[1]: https://lore.kernel.org/r/20230322164201.2454771-1-mmyangfl@gmail.com
+v1: https://lore.kernel.org/r/20230326052757.297551-1-mmyangfl@gmail.com
+v2: https://lore.kernel.org/r/20230329075104.165176-1-mmyangfl@gmail.com
+v3: https://lore.kernel.org/r/20230410110733.192151-1-mmyangfl@gmail.com
+v4: https://lore.kernel.org/r/20230411174329.424763-1-mmyangfl@gmail.com
+v5: https://lore.kernel.org/r/20230723162245.35033-1-mmyangfl@gmail.com
+v6: https://lore.kernel.org/r/20230731121821.22242-1-mmyangfl@gmail.com
+
+David Yang (13):
+  clk: hisilicon: Add helper functions for platform driver
+  clk: hisilicon: hi3516cv300: Use helper functions
+  clk: hisilicon: hi3798cv200: Use helper functions
+  clk: hisilicon: Remove hisi_crg_funcs
+  clk: hisilicon: hi3519: Use helper functions
+  clk: hisilicon: hi3559a: Use helper functions
+  clk: hisilicon: hi3660: Convert into module
+  clk: hisilicon: hi3670: Convert into module
+  clk: hisilicon: hi3620: Convert into platform driver module
+  clk: hisilicon: hi6220: Convert into platform driver module
+  clk: hisilicon: hip04: Convert into platform driver module
+  clk: hisilicon: hix5hd2: Convert into platform driver module
+  clk: hisilicon: Migrate devm APIs
+
+ drivers/clk/hisilicon/clk-hi3519.c        | 127 +-----
+ drivers/clk/hisilicon/clk-hi3559a.c       | 252 +++---------
+ drivers/clk/hisilicon/clk-hi3620.c        | 215 +++++-----
+ drivers/clk/hisilicon/clk-hi3660.c        | 194 +++------
+ drivers/clk/hisilicon/clk-hi3670.c        | 250 ++++--------
+ drivers/clk/hisilicon/clk-hi6220-stub.c   |   9 +-
+ drivers/clk/hisilicon/clk-hi6220.c        | 228 ++++++-----
+ drivers/clk/hisilicon/clk-hip04.c         |  38 +-
+ drivers/clk/hisilicon/clk-hisi-phase.c    |  13 +-
+ drivers/clk/hisilicon/clk-hix5hd2.c       |  98 +++--
+ drivers/clk/hisilicon/clk.c               | 457 +++++++++++-----------
+ drivers/clk/hisilicon/clk.h               | 141 ++++---
+ drivers/clk/hisilicon/clkdivider-hi6220.c |  24 +-
+ drivers/clk/hisilicon/clkgate-separated.c |  26 +-
+ drivers/clk/hisilicon/crg-hi3516cv300.c   | 171 +-------
+ drivers/clk/hisilicon/crg-hi3798cv200.c   | 200 ++--------
+ drivers/clk/hisilicon/crg.h               |  11 +-
+ drivers/clk/hisilicon/reset.c             |  42 ++
+ 18 files changed, 944 insertions(+), 1552 deletions(-)
+
+-- 
+2.43.0
 
 
