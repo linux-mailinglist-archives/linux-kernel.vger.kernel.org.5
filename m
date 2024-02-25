@@ -1,78 +1,145 @@
-Return-Path: <linux-kernel+bounces-80240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D63C9862C6A
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:58:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F2773862C6F
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:58:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DF4F1F21488
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:58:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C3211F21982
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:58:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D7E1B7FB;
-	Sun, 25 Feb 2024 17:58:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB5AD19BA5;
+	Sun, 25 Feb 2024 17:58:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lPmzk/2U"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bWACk36R";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="uNRu4Cxy"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61077175AA
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 17:57:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73C75171BB;
+	Sun, 25 Feb 2024 17:58:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708883879; cv=none; b=koeo8Dbrm4/0oPPzAEsjRnNECfGqvuYTgZxCEs8JMHgILw5JnCtK7lo7ekd4ASK1a4YPcK8Re93ARKyA3F2PDFKiqFUne5CirQKqQ1SyXBDmazHylJJDsVDaBc8Cl54OO5A/NRD0OL3zkWez1yCDdc9HF14mW7V9jINmC8Fy7eg=
+	t=1708883914; cv=none; b=rNPkSgYsrAiLvtjRUOC7VwqXWkWzJcjOqJE+Zd/xU//x8wsVQTzfenK6qr7DU+hmCI2xe0azcdorFiydMdcXOdDPARxT0n/nS97da+WrKz1xKCCcjgOgl0vZmAJPJMio22FzcldgGkcm4lTm3ACyPoP4ep6XOcZoiz4VCsfiC18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708883879; c=relaxed/simple;
-	bh=Tlli2nQbyZyMNmz5Q3DJIVV4D/y6FRnznxHtHXDK99o=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=t6K931FVCb/4fY6vPBsIIreW/qedfW8Y/XlTXIYNQdDyjLoB3KStVqBwIG18N3o4k6+dzj5srz8YaKsn62VDyEfb1yGig5FfI+3JlIBCmE1uUQN9cvcGvgRAoVQwfrGXz4HaTsiP3y3obKQmqZR+IOLu8ZZFX7e/c465uYpfiL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lPmzk/2U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3D868C43390;
-	Sun, 25 Feb 2024 17:57:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708883879;
-	bh=Tlli2nQbyZyMNmz5Q3DJIVV4D/y6FRnznxHtHXDK99o=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=lPmzk/2UF0F6JSPrx7cCffW0nBZ14t4lDZMtJc7upuEJXe49AhXs2/Q7U2BVl66BD
-	 do1VeaTxmrROyX8dGNZcLRzM04A5YSVpGbpjDQ8mp6JucfnC4+9JYl6oFcdvzcAQ4+
-	 qLne/k22u8EUvBal14MExsh53Q+6ZP28tPN2oOUonNz1Uc4AfThJUIuIuyFVfY1D07
-	 1jYRgNRpK9TD+x3nD8nf+Kn0hcR79E5zCJwfNMF3crrAXcIZF5Ag8BMWVHuUstAJ9h
-	 YJg8L4M7tA3hZTd1PmbO1+DHb+XZHxL+3RvbKeqyb/N8WmNTuA4nThbnGrqQSh6ueF
-	 sJrn+wfDJDlwg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2B581C04D3F;
-	Sun, 25 Feb 2024 17:57:59 +0000 (UTC)
-Subject: Re: [GIT PULL] erofs fix for 6.8-rc6
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <ZdtEwtN2BsCYnCeY@debian>
-References: <ZdtEwtN2BsCYnCeY@debian>
-X-PR-Tracked-List-Id: Development of Linux EROFS file system <linux-erofs.lists.ozlabs.org>
-X-PR-Tracked-Message-Id: <ZdtEwtN2BsCYnCeY@debian>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-6.8-rc6-fixes
-X-PR-Tracked-Commit-Id: 56ee7db31187dc36d501622cb5f1415e88e01c2a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4ca0d9894fd517a2f2c0c10d26ebe99ab4396fe3
-Message-Id: <170888387916.1439.4286947576052324363.pr-tracker-bot@kernel.org>
-Date: Sun, 25 Feb 2024 17:57:59 +0000
-To: Gao Xiang <xiang@kernel.org>
-Cc: Linus Torvalds <torvalds@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, Yue Hu <huyue2@coolpad.com>, linux-erofs@lists.ozlabs.org
+	s=arc-20240116; t=1708883914; c=relaxed/simple;
+	bh=472xf2OqAqsnb8f5NspBuhlX9Z+q0YjWrpV1JR9Szyc=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=NO43FIUQyklmWcUE8mpU5Zrnzu+nySZqMke3wAe4rbAwTW3hgJxBZZZy+5f0cP5wksbK2w6v9N8lfmMUc+rWdOaOYw6FS0g51wJlaDyK+QPuW4OWbNtylwbNHqbDvUtYcxT0FDIeUPjw/yt5l91uHpX05TDosaiZJLVDdPvTnSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bWACk36R; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=uNRu4Cxy; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Sun, 25 Feb 2024 17:58:29 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708883910;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VXjJ/yLSDKkAyllwMWv7UrxuK11qrnr7cHr/R7Ucfmw=;
+	b=bWACk36RKnC3ViCuFpaNrfi0/ALLx1Ua4VDayAOjibptVuN0ftNpKvm5xD0cw8AkTfNeY7
+	nGb1xMvVTx7MXEX2aOqBsMF0RD7PN23sJtIGC26ISoMgnx2dR+aKvGn+h2iheD1L+iHAcY
+	ygY8VAOAx4lG4WA7s1ye1D+QvSNE1ltBlBcEvdV2u1Oc/JJhDOOFdaymdasIPR0EScB54I
+	7UYaY6ZabXWYqz1DPhm0fjpwY23uPd2vd8APVfc+0jhD0H+XKL2OLeLKBiO/w47lifvNqf
+	q/Pam/afLyw7fLt+qW/xB/KwNXiLN14jLlhS6fY1OSYGz1LcnGlVAOjXtQX4Jg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708883910;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VXjJ/yLSDKkAyllwMWv7UrxuK11qrnr7cHr/R7Ucfmw=;
+	b=uNRu4Cxyu+6cClX4n6yY4Ca8+AAOdVCr7EoCzQXeyAGdQuiGWM17F+lFyzEJFdfxC0xkZK
+	JRVDjwsDcWa5eGDw==
+From: "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/msi] x86/apic/msi: Use DOMAIN_BUS_GENERIC_MSI for
+ HPET/IO-APIC domain search
+Cc: "Borislav Petkov (AMD)" <bp@alien8.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <878r38cy8n.ffs@tglx>
+References: <878r38cy8n.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Message-ID: <170888390974.398.7311200606480641097.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-The pull request you sent on Sun, 25 Feb 2024 21:46:42 +0800:
+The following commit has been merged into the irq/msi branch of tip:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-6.8-rc6-fixes
+Commit-ID:     c147e1ef59d4751a60687074e4268ecc0ef31b5c
+Gitweb:        https://git.kernel.org/tip/c147e1ef59d4751a60687074e4268ecc0ef31b5c
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Sun, 25 Feb 2024 16:56:12 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Sun, 25 Feb 2024 18:53:08 +01:00
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4ca0d9894fd517a2f2c0c10d26ebe99ab4396fe3
+x86/apic/msi: Use DOMAIN_BUS_GENERIC_MSI for HPET/IO-APIC domain search
 
-Thank you!
+The recent restriction to invoke irqdomain_ops::select() only when the
+domain bus token is not DOMAIN_BUS_ANY breaks the search for the parent MSI
+domain of HPET and IO-APIC. The latter causes a full boot fail.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+The restriction itself makes sense to avoid adding DOMAIN_BUS_ANY matches
+into the various ARM specific select() callbacks. Reverting this change
+would obviously break ARM platforms again and require DOMAIN_BUS_ANY
+matches added to various places.
+
+A simpler solution is to use the DOMAIN_BUS_GENERIC_MSI token for the HPET
+and IO-APIC parent domain search. This works out of the box because the
+affected parent domains check only for the firmware specification content
+and not for the bus token.
+
+Fixes: 5aa3c0cf5bba ("genirq/irqdomain: Don't call ops->select for DOMAIN_BUS_ANY tokens")
+Reported-by: Borislav Petkov (AMD) <bp@alien8.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Borislav Petkov (AMD) <bp@alien8.de>
+Reviewed-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/878r38cy8n.ffs@tglx
+---
+ arch/x86/kernel/apic/io_apic.c | 2 +-
+ arch/x86/kernel/hpet.c         | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
+index 40c7cf1..e66c775 100644
+--- a/arch/x86/kernel/apic/io_apic.c
++++ b/arch/x86/kernel/apic/io_apic.c
+@@ -2354,7 +2354,7 @@ static int mp_irqdomain_create(int ioapic)
+ 	fwspec.param_count = 1;
+ 	fwspec.param[0] = mpc_ioapic_id(ioapic);
+ 
+-	parent = irq_find_matching_fwspec(&fwspec, DOMAIN_BUS_ANY);
++	parent = irq_find_matching_fwspec(&fwspec, DOMAIN_BUS_GENERIC_MSI);
+ 	if (!parent) {
+ 		if (!cfg->dev)
+ 			irq_domain_free_fwnode(fn);
+diff --git a/arch/x86/kernel/hpet.c b/arch/x86/kernel/hpet.c
+index a38d0c9..c96ae8f 100644
+--- a/arch/x86/kernel/hpet.c
++++ b/arch/x86/kernel/hpet.c
+@@ -568,7 +568,7 @@ static struct irq_domain *hpet_create_irq_domain(int hpet_id)
+ 	fwspec.param_count = 1;
+ 	fwspec.param[0] = hpet_id;
+ 
+-	parent = irq_find_matching_fwspec(&fwspec, DOMAIN_BUS_ANY);
++	parent = irq_find_matching_fwspec(&fwspec, DOMAIN_BUS_GENERIC_MSI);
+ 	if (!parent) {
+ 		irq_domain_free_fwnode(fn);
+ 		kfree(domain_info);
 
