@@ -1,95 +1,91 @@
-Return-Path: <linux-kernel+bounces-80305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80306-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF896862D22
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 22:26:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1FE3862D25
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 22:26:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6EF86B20F31
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 21:26:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DE97281C71
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 21:26:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D92351B951;
-	Sun, 25 Feb 2024 21:25:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Zq5XArrv"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09A0D1B970;
+	Sun, 25 Feb 2024 21:26:39 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 705EF1B948
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 21:25:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D89B41B94E
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 21:26:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708896353; cv=none; b=CfsDut/UmMhAPScSfbKLBAdk9IXnBnrij2A17Xfi+1ewY8uA7EA96pv0XxkLF2GtMA/qrwGMSYeGOnfq/EiZs5l16FAe9s4ySZIO6YZtqcAisjIPG8ITyeyFNt72ChdYnotI7FEvpGg3lrCwbknoKS3h0b00xQanFbFQGfCmv0E=
+	t=1708896398; cv=none; b=BCgVbArlj+ZwyFcJbC8I5Y2QomKdcsZt6msmhv09pm9AXM+dCoTcJwE9U9i/QQLbk4mLB36lVsam1XbWgFW0LVAMSKli6ftI6bXo5mRLkTMwrlb3ON4tkeXTZKH8yqaAB/N/qUnLu1ZK+vVC1OJvR5BqllYjG9a6oxxBZ6K14xI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708896353; c=relaxed/simple;
-	bh=0NhjJB89qwc9JEgWWlZvaFoTsa6L2AfOSvzSLCNvD6U=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=WuDE7uKNgZ4rHaiUWDmgw3GU2dBxThk7VGa96LFraR5AoQ2AHSmFLj06OvecH3ak33DGR3LdfKG5AXPI5/Hsg1xE1SCwVqANaYJkJZJlzAbRSwpqljqxjqXPlETiU0jD5LIzVvH7qq+dFuBUS8WV1Q+SvfkxtRqyy34h2eCR2L8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Zq5XArrv; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708896352; x=1740432352;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=0NhjJB89qwc9JEgWWlZvaFoTsa6L2AfOSvzSLCNvD6U=;
-  b=Zq5XArrvxyMp95rqwzUwd7P5FAYk4ZaH5rE0g8IvEimTJkMY0JwjNpMU
-   +m+hXrglg9tVitbFYucTr0KHpTpCQgxlc2mdwBkF/QJtld19KxPPUOAFD
-   tB10VY+z2Iqjk0dlNFXI6Vn1l4eVZgfrje4w83/vthcucUvUdy8Zl7Bk9
-   Q79lbhyz0qtEwqhko5laRyf8gNNKP6rxB4YmOOPKP9NlWNmTuq8uadcyh
-   y4YFHrKU08y/ytwa5p8baMTxbUfZjkSmgzrkvRW5Z0K4Thb5kIMQXdYlf
-   p7HiFwjGVX2qhQPaiVa1r9Qm8z+OEaVAJuMjCUmtA/NiqfVN7ILfEGyQE
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3015460"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="3015460"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 13:25:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="11110898"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa004.fm.intel.com with ESMTP; 25 Feb 2024 13:25:50 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1reM0J-0009nR-1r;
-	Sun, 25 Feb 2024 21:25:47 +0000
-Date: Mon, 26 Feb 2024 05:25:25 +0800
-From: kernel test robot <lkp@intel.com>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: fs/overlayfs/copy_up.o: warning: objtool: ovl_copy_up_tmpfile()
- falls through to next function ovl_create_index.cold()
-Message-ID: <202402260556.0rujs05e-lkp@intel.com>
+	s=arc-20240116; t=1708896398; c=relaxed/simple;
+	bh=awr8kJdI5qgszjd7wAljG4lLyehoh2HbKi7+xw41HO4=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=KvdzkBVwVcaLZdslzgKyyP2JDnZoc8z5SdYiyO7dWs/jklbrLsz5GDlB862Kw3rAir0OOPPxk86ehv2XPJuAQfIPhC8Vn5nG2fRjLMQNHhIFu8b932/Tqp0Y72NdKsR6RA2JxvmFWuLoq3K8QDmo7ILHu5fdiCsYNTw9RICdoUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-274-tAV88Qm8MBmPtn9Zj4ylcQ-1; Sun, 25 Feb 2024 21:26:33 +0000
+X-MC-Unique: tAV88Qm8MBmPtn9Zj4ylcQ-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 25 Feb
+ 2024 21:26:32 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sun, 25 Feb 2024 21:26:32 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Linus Torvalds' <torvalds@linux-foundation.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Netdev
+	<netdev@vger.kernel.org>, "dri-devel@lists.freedesktop.org"
+	<dri-devel@lists.freedesktop.org>, Jens Axboe <axboe@kernel.dk>, "Matthew
+ Wilcox (Oracle)" <willy@infradead.org>, Christoph Hellwig
+	<hch@infradead.org>, "linux-btrfs@vger.kernel.org"
+	<linux-btrfs@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "David S . Miller"
+	<davem@davemloft.net>, Dan Carpenter <dan.carpenter@linaro.org>, Jani Nikula
+	<jani.nikula@linux.intel.com>
+Subject: RE: [PATCH next v2 08/11] minmax: Add min_const() and max_const()
+Thread-Topic: [PATCH next v2 08/11] minmax: Add min_const() and max_const()
+Thread-Index: AdpoCy246SYrYUdtTu+AtQRSWe90RAAAtXgAAAim0gA=
+Date: Sun, 25 Feb 2024 21:26:31 +0000
+Message-ID: <59ae7d89368a4dd5a8b8b3f7bc2ae957@AcuMS.aculab.com>
+References: <0fff52305e584036a777f440b5f474da@AcuMS.aculab.com>
+ <c6924533f157497b836bff24073934a6@AcuMS.aculab.com>
+ <CAHk-=wgNh5Gw7RTuaRe7mvf3WrSGDRKzdA55KKdTzKt3xPCnLg@mail.gmail.com>
+In-Reply-To: <CAHk-=wgNh5Gw7RTuaRe7mvf3WrSGDRKzdA55KKdTzKt3xPCnLg@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   70ff1fe626a166dcaadb5a81bfe75e22c91f5dbf
-commit: 5b02bfc1e7e3811c5bf7f0fa626a0694d0dbbd77 ovl: do not encode lower fh with upper sb_writers held
-date:   4 months ago
-config: x86_64-buildonly-randconfig-r001-20230616 (https://download.01.org/0day-ci/archive/20240226/202402260556.0rujs05e-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240226/202402260556.0rujs05e-lkp@intel.com/reproduce)
+Li4uDQo+IFllcywgeWVzLCB0aGF0IG1heSBlbmQgdXAgcmVxdWlyaW5nIGdldHRpbmcgcmlkIG9m
+IHNvbWUgY3VycmVudCB1c2VycyBvZg0KPiANCj4gICAjZGVmaW5lIE1JTihhLGIpICgoYSk8KGIp
+ID8gKGEpOihiKSkNCj4gDQo+IGJ1dCBkYW1taXQsIHdlIGRvbid0IGFjdHVhbGx5IGhhdmUgX3Ro
+YXRfIG1hbnkgb2YgdGhlbSwgYW5kIHdoeSBzaG91bGQNCj4gd2UgaGF2ZSByYW5kb20gZHJpdmVy
+cyBkb2luZyB0aGF0IGFueXdheT8NCg0KVGhleSBsb29rIGxpa2UgdGhleSBjb3VsZCBiZSBjaGFu
+Z2VkIHRvIG1pbigpLg0KSXQgaXMgZXZlbiBsaWtlbHkgdGhlIGhlYWRlciBnZXRzIHB1bGxlZCBp
+biBzb21ld2hlcmUuDQoNCkknbSBub3Qgc3VyZSBhYm91dCB0aGUgb25lcyBpbiBkcml2ZXJzL2dw
+dS9kcm0vYW1kL2Rpc3BsYXkvKi4uKi8qLmMsIGJ1dCBpdA0Kd291bGRuJ3Qgc3VycHJpc2UgbWUg
+aWYgdGhhdCBjb2RlIGRvZXNuJ3QgdXNlIGFueSBzdGFuZGFyZCBrZXJuZWwgaGVhZGVycy4NCklz
+bid0IHRoYXQgYWxzbyB0aGUgY29kZSB0aGF0IG1hbmFnZXMgdG8gcGFzcyA0MiBpbnRlZ2VyIHBh
+cmFtZXRlcnMNCnRvIGZ1bmN0aW9ucz8NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVz
+cyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEg
+MVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402260556.0rujs05e-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> fs/overlayfs/copy_up.o: warning: objtool: ovl_copy_up_tmpfile() falls through to next function ovl_create_index.cold()
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
