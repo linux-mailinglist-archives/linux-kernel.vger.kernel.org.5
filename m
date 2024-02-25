@@ -1,81 +1,138 @@
-Return-Path: <linux-kernel+bounces-80059-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF478862A48
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 13:20:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A72B2862A4E
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 13:22:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A058B20E9A
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 12:20:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4802B1F2167C
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 12:22:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D63511718;
-	Sun, 25 Feb 2024 12:20:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7139412E71;
+	Sun, 25 Feb 2024 12:21:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="m7q0sqr6"
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fBus6tpb"
+Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26D25EED5
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 12:20:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A13B10A09;
+	Sun, 25 Feb 2024 12:21:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708863634; cv=none; b=YH7mfqRLhOZWCiZbYMlO7w9hJDNRjrE99Fvl8ZvARrmZOXeaazILyg+VplnVKP1P0cgxG7ZDom8gdniskYO8tv+zThcFyEMZ8gFCrEVlh/tDVTzY3XaKcS5V8qeorQsx9FfGeZPa/q5X/r8hSmEG2/MQUPFT9Fn2B0jrGuSY6Wc=
+	t=1708863705; cv=none; b=mfLEPbhoKFm0BNk8BSzskDL1MlEOFivE6rh+7ggQgeV2afDzBML9VgwZuGeepsymUOcwZA0HJwZlb9KmhpnKF4F548x+7033vCuysF5GNyboyzJOVgGMjUGEMGrVPUjgelTMRGzd6pLnMxBXbhzTgw7ibetPfZN5lka4Mkiix/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708863634; c=relaxed/simple;
-	bh=Kjsv2XsAlGtN7DuVxONeUs7AVYi7gGV67LWznxIsNa8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NwDQLj1xCUNndCTS/VwVmb8rXDCmbPaiHbdxhIMd9KuZ8jfkQF4rZVfOibNr4bHqVQY0UnO25FL8JcOs/746A7V9YObZJUmtLpnmR69vdBTbTEPiWUonMpLBKRsMxd1vrvhl8KVD+VQ49GgmS26Qr7S8yz43taRavi75FySy0xI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=m7q0sqr6; arc=none smtp.client-ip=115.124.30.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1708863624; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=z8NCW97MDZslc0cbz27LqjT3AFfM9lssW1OxcL4phSY=;
-	b=m7q0sqr6QREfbKMVJOzbrYIQPD5LwCkmQEivdsC4KiMTFk6FbBQ1oDV5IHs+TMnOZ5MZ3S7SFanCYObQdHQkRsfpXs8mRH4Hw4INOS/4g1K8wNa40r7O5NG/vQpSMh/iC97UFafOgm8FRXimGff93fEm/cHaGBoE9BDy0voXxfU=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0W18htbR_1708863592;
-Received: from 30.121.39.217(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0W18htbR_1708863592)
-          by smtp.aliyun-inc.com;
-          Sun, 25 Feb 2024 20:20:22 +0800
-Message-ID: <aee616f4-40fc-4d24-9010-d0589d59f664@linux.alibaba.com>
-Date: Sun, 25 Feb 2024 20:20:21 +0800
+	s=arc-20240116; t=1708863705; c=relaxed/simple;
+	bh=ELyAkhv5yDMxG88tr/ySEunJISyDJdrT7sB2ZiE2whs=;
+	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=CFcZiVoQdtXddN14S6V9lqVfsEMToQRe4xs86r3qFJyaDi4yD2DVcnA8CVStZDMdAIoEPU1iDFteAHiS/1TW9/oWhn2gOrthmOHfQFqIbq/hQB0mk9Q/d865sNJ8p0u4Jz5hEwHEKOUWMJyZKqVXypTW63ubz1Md9ORYNHXUmMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fBus6tpb; arc=none smtp.client-ip=209.85.161.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-599f5e71d85so1715145eaf.3;
+        Sun, 25 Feb 2024 04:21:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708863703; x=1709468503; darn=vger.kernel.org;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=1VsrEW364NLFbMOpVdWrVpVClR5o3UGDnlsGXHcP8Ms=;
+        b=fBus6tpbeT6ZIZEBFtwssqdxwrmZEaa9+fRR+I+D1R5ZDIAH8CP+UVL5URm6ic5+vw
+         FVdJgozosVxpccoLeL2QxG49Tboo1GUSp/dxKGL/G9qZ7BXAszhGrEsZYVHGNnZuc4w5
+         yoGMGB6fK+oeSEUYDvKr9uKJjY5sl9n+Araizfl4flnfOIZx6oTPEygq8Cyrxkj/u4FC
+         gQp9z093dRCRJch5scXagcXJkLZ9tNVKNKg2OaVKfk4OSnWjweRAa5oyQklNkHILgCKb
+         2yKYEBbpVHZKMaXAcd1j+YcJCRfGoEEhaw7PreElAE9CZJbBx1MO5MJ9HjL+7Ik8UyG9
+         rdoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708863703; x=1709468503;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1VsrEW364NLFbMOpVdWrVpVClR5o3UGDnlsGXHcP8Ms=;
+        b=swiDKTqbktQ+jQUl6RiDjpA190xcjH/uHl5pCdfkRbxcyIJC5OdeHu+LalTSr/Rge+
+         rm+oLAaGH7O/vJAwNN0tNy6hrBr1cbrCOnzxkT8SQnnOhHac9RiCunfj/Q3NLIKPKTIq
+         2V8a9VvMQxlI83r12U+/yWspH6tSlK5+OdkpkpL8hDN/DdjSfPEb1vXYEJzpSWJJj311
+         61spMicFCQSOtwW337mdTja5Wjw8U9MrM5fdULZZeRGxhUxfAV8FglMQF+9JC+5Phr+S
+         +BHS1BPQORNDQ9aNRXYmAi8XSlXwNQPiqIuW1CIzkZ+zVl09hfGc9Ir3aFPQ3PeWMxJU
+         U7uQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUSM7hI11rug8wJgKUi1mBiXB8vpDkzWKTqQiXr2ak2ROqPO77NH1SfEHvEOi0UuIcIsvIqdblxsqSzYZjUtOq78QdF9MjNQDlBAslQYt2AWAOBBin2Twnibhe21jpIiFBUnWl9IwPOgXL8p+FzFB4zwv2AVqF4S3zOCEkYRS0KC72OI3W8hpxEBhOTg6y0Icd7ATDFkJRocg/JaC65jf4YOZ0ymWzm0j/Lj7R7vlv0f62mmPWOlA5vDSowtrrI
+X-Gm-Message-State: AOJu0YxzKFbcjfzO9zRBbrbe+aZLGzeIH3s2lwpUC7PARAKsRLcr7YbO
+	1zL/8/tl4XOR58USGq2Bpl+jhFT4A9QrAmjOknn56Jyb3a1PYBfZ
+X-Google-Smtp-Source: AGHT+IHCCjz5G11xwMXvR57ze0SaNofitVx3jUtjCSoTmI46aCxCdio39YUhl9mRABM4LyLCND/KWQ==
+X-Received: by 2002:a05:6358:5413:b0:17b:79ee:f9dc with SMTP id u19-20020a056358541300b0017b79eef9dcmr6073415rwe.3.1708863703133;
+        Sun, 25 Feb 2024 04:21:43 -0800 (PST)
+Received: from dw-tp ([171.76.80.106])
+        by smtp.gmail.com with ESMTPSA id t124-20020a628182000000b006e43b99a6c6sm2395792pfd.118.2024.02.25.04.21.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Feb 2024 04:21:42 -0800 (PST)
+Date: Sun, 25 Feb 2024 17:51:34 +0530
+Message-Id: <87il2c20q9.fsf@doe.com>
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: John Garry <john.g.garry@oracle.com>, axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com, jack@suse.cz
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com, linux-aio@kvack.org, linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org, nilay@linux.ibm.com, John Garry <john.g.garry@oracle.com>
+Subject: Re: [PATCH v4 05/11] block: Add core atomic write support
+In-Reply-To: <87le7821ad.fsf@doe.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ocfs2: remove SLAB_MEM_SPREAD flag usage
-Content-Language: en-US
-To: chengming.zhou@linux.dev, mark@fasheh.com, jlbec@evilplan.org,
- brauner@kernel.org, jlayton@kernel.org, keescook@chromium.org
-Cc: jack@suse.cz, zhouchengming@bytedance.com, azeemshaikh38@gmail.com,
- ocfs2-devel@lists.linux.dev, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, vbabka@suse.cz, roman.gushchin@linux.dev,
- Xiongwei.Song@windriver.com
-References: <20240224135008.829878-1-chengming.zhou@linux.dev>
-From: Joseph Qi <joseph.qi@linux.alibaba.com>
-In-Reply-To: <20240224135008.829878-1-chengming.zhou@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
+Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
 
+> John Garry <john.g.garry@oracle.com> writes:
+>
+>> +
+>> +	mask = boundary - 1;
+>> +
+>> +	/* start/end are boundary-aligned, so cannot be crossing */
+>> +	if (!(start & mask) || !(end & mask))
+>> +		return false;
+>> +
+>> +	imask = ~mask;
+>> +
+>> +	/* Top bits are different, so crossed a boundary */
+>> +	if ((start & imask) != (end & imask))
+>> +		return true;
+>
+> The last condition looks wrong. Shouldn't it be end - 1?
+>
+>> +
+>> +	return false;
+>> +}
+>
+> Can we do something like this?
+>
+> static bool rq_straddles_atomic_write_boundary(struct request *rq,
+> 					       unsigned int start_adjust,
+> 					       unsigned int end_adjust)
+> {
+> 	unsigned int boundary = queue_atomic_write_boundary_bytes(rq->q);
+> 	unsigned long boundary_mask;
+> 	unsigned long start_rq_pos, end_rq_pos;
+>
+> 	if (!boundary)
+> 		return false;
+>
+> 	start_rq_pos = blk_rq_pos(rq) << SECTOR_SHIFT;
+> 	end_rq_pos = start_rq_pos + blk_rq_bytes(rq);
 
-On 2/24/24 9:50 PM, chengming.zhou@linux.dev wrote:
-> From: Chengming Zhou <zhouchengming@bytedance.com>
-> 
-> The SLAB_MEM_SPREAD flag is already a no-op as of 6.8-rc1, remove
-> its usage so we can delete it from slab. No functional change.
-> 
-If I understand correctly, you are referring the following patch:
-https://lore.kernel.org/all/20240223-slab-cleanup-flags-v2-1-02f1753e8303@suse.cz/
+my bad. I meant this...
 
-But it seems that the above patch is not included in mainline yet.
-Or am I missing something?
+   end_rq_pos = start_rq_pos + blk_rq_bytes(rq) - 1;
+>
+> 	start_rq_pos -= start_adjust;
+> 	end_rq_pos += end_adjust;
+>
+> 	boundary_mask = boundary - 1;
+>
+> 	if ((start_rq_pos | boundary_mask) != (end_rq_pos | boundary_mask))
+> 		return true;
+>
+> 	return false;
+> }
+>
+> I was thinking this check should cover all cases? Thoughts?
+>
+>
 
-Joseph
-
+-ritesh
 
