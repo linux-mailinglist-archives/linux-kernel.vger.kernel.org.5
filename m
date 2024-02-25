@@ -1,147 +1,148 @@
-Return-Path: <linux-kernel+bounces-80323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80324-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4203862D6B
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 23:27:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58690862D6D
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 23:31:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0EDC0B20E5A
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 22:27:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86A5A1C20C85
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 22:31:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7ACB1BC23;
-	Sun, 25 Feb 2024 22:27:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05C46D271;
+	Sun, 25 Feb 2024 22:31:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="U7yM1PEb"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K3HkDmtg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51AB11B951;
-	Sun, 25 Feb 2024 22:27:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EE5018B1B;
+	Sun, 25 Feb 2024 22:31:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708900039; cv=none; b=MBKMeh4eiESAllIWuE6hbV5qIkdRfOR+3zmpfbW2sHy9uqUBSg5ZUxA/4nb2kDBQPMorTzDU9imbL3AuaJuq5isj8hN900BCOrZmpgDABjQoPyskr5TBabV6pJeebntl/izZEhMmxVKt/+JII3rFTg/VfjQcBrt55XHE7rqIrPw=
+	t=1708900265; cv=none; b=isytdxBDwHEQqFt13EZaISPUzR+OAI+brEat4ztG9KrAhaac/mHUwyynpXN0VoGqZgQK3iWmUS63pbvwNyb5Z2sOBRKkXSTklnH2U1HDzlvLnBieE8eHF2t1IonQlTH4wNZH8Ag0DqtqsycQZRYaPpuZJPIRzXKda8v0svLMtvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708900039; c=relaxed/simple;
-	bh=pb+HxfIZ3gglynzChQW2WPTybqDXwGbehB3zBJPZYCM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=jsNw1vQDJESF3THdDkas3ktGqm4S/MZZ/OTWOR6LV/f/kRJZoWyX1YhN65zdgdYFjaXdGBUa+0rdbzqOnvOXwn2fcGXXOYeLDmBWNVEiRWFF/XS8Es7c//r0Vddj5mM5UxmRKEgvv478lraaoTruH29dJOT2hI4no+Qc3t8a30E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=U7yM1PEb; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1708900034;
-	bh=50wi3HOWe5IN3zpn4H6jAsntjTCSdTrhMpYbEOU5cuI=;
-	h=Date:From:To:Cc:Subject:From;
-	b=U7yM1PEbW2o0t5QLajuo6dCvGQkVEV9q5vMcVT2JkjGFAs4KifL5jrw2/ZVAQCaSG
-	 yKtDebuW0w9/mHVbBzC2O8KKxydMLLe0YFIbPxQLsgbJijaEMrlzm9MXKvgjuV5Yso
-	 W1Uau7vFBvdznp2NpaPXlEpV7Led56ZQXOjzR0dihBmM0+YYNU+bDH36IcMzkPT38N
-	 9RDIePVssrY4MQGz4AG8rEcU5OvJ++rFx3+AMR1YsawEm54UgRTe74CuOjYGTMjo0F
-	 NhQzGBrTHfJ2GmiAwjiLsynQ6N5eU4T4YoI9/H+eiQ1Nh0zgth6F0wNp7mmndXXqIo
-	 b++oDmejNE5OA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tjdf91NCVz4wcr;
-	Mon, 26 Feb 2024 09:27:12 +1100 (AEDT)
-Date: Mon, 26 Feb 2024 09:27:11 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Andrew Morton <akpm@linux-foundation.org>, Palmer Dabbelt
- <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>, Nathan Chancellor
- <nathan@kernel.org>, Palmer Dabbelt <palmer@rivosinc.com>, Zong Li
- <zong.li@sifive.com>
-Subject: linux-next: manual merge of the mm-nonmm-stable tree with the
- risc-v-fixes tree
-Message-ID: <20240226092711.7985af2e@canb.auug.org.au>
+	s=arc-20240116; t=1708900265; c=relaxed/simple;
+	bh=O4RTJudC8dhdXwVBJwoOhnqRe04W05XJHkcn8rJWNQ4=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=mYzYaaOzuniag+1JjD5d8xnynj0lxrLgcBJ0O0jEO/d7FOhH4c3BN4JgafKDo0c2TQUMM1uJq7bltZiIBzKk4e3sSQ3DJFPqPzF3KV5Jic+6IRBz1KvUwe6NsHvttRY79ofbHSeGP7TfzUmJd3IGYkBxgNOEJl7SRRuFdEMgxBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K3HkDmtg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E205C433C7;
+	Sun, 25 Feb 2024 22:31:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708900264;
+	bh=O4RTJudC8dhdXwVBJwoOhnqRe04W05XJHkcn8rJWNQ4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=K3HkDmtgDxqylZDyENqH3z+Xa6NVEcHQ50hLSBnTmV2fdif/el1XHPPbZobaKKizk
+	 SkL7qII/cWlmo29ZsGFkluc9tu/m1/Hqu1nDqJ0Q1eBSPXEmJrK+/iB7XVBfobY4fG
+	 ETHZDeV51hyx0tacQf+kVlDHpgr6ACBxN/2Ar8wvzjsCxIZ//2+p5MPvotjUMdRcK/
+	 Zy4qjv6fpaUEg5bQsL5hhhYamF5iitZQZVWWf09sylMFSOmhGfd/CqKFPzNcmiWHDm
+	 NDoMBGc/Jeg2aOXgQXaADgk6FIfsAlcNQwAJoY3dM/9nVdf0D86TPz6fUp42JeszR0
+	 RgnA4vpyX7/Ww==
+Date: Mon, 26 Feb 2024 07:30:59 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Yuanhe Shu <xiangzao@linux.alibaba.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Shuah Khan
+ <skhan@linuxfoundation.org>, mhiramat@kernel.org,
+ mathieu.desnoyers@efficios.com, shuah@kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] selftests/ftrace: Limit length in subsystem-enable
+ tests
+Message-Id: <20240226073059.ad066900241022e704f72955@kernel.org>
+In-Reply-To: <7420f9b5-2283-419f-8c6b-705f8b0c53f6@linux.alibaba.com>
+References: <20240205131233.13686-1-xiangzao@linux.alibaba.com>
+	<20240205082120.4144fb6f@rorschach.local.home>
+	<7420f9b5-2283-419f-8c6b-705f8b0c53f6@linux.alibaba.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/cUSGj6cmxZg.4tY6SC_cXVH";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/cUSGj6cmxZg.4tY6SC_cXVH
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-Hi all,
+On Thu, 22 Feb 2024 20:14:56 +0800
+Yuanhe Shu <xiangzao@linux.alibaba.com> wrote:
 
-Today's linux-next merge of the mm-nonmm-stable tree got a conflict in:
+> 
+> 
+> On 2024/2/5 21:21, Steven Rostedt wrote:
+> > On Mon,  5 Feb 2024 21:12:33 +0800
+> > Yuanhe Shu <xiangzao@linux.alibaba.com> wrote:
+> > 
+> >> While sched* events being traced and sched* events continuously happen,
+> >> "[xx] event tracing - enable/disable with subsystem level files" would
+> >> never stop as it cat an endless output.
+> >> Select the first 100 lines of output would be enough to judge whether
+> >> there are more than 3 types of sched events.
+> > 
+> > It's not that it never stops but on some slower systems it does seem to
+> > take forever.
+> > 
+> > Acked-by: Steven Rostedt (Google) <rostedt@org>
+> > 
+> > Shuah,
+> > 
+> > Can you take this through your tree?
+> > 
+> > Thanks,
+> > 
+> > -- Steve
+> > 
+> 
+> Thanks for your ack but I found that I missed the 2nd and 3rd 'trace' 
+> after 'head -n 100' in code. Should I resend a new patch to fix this and 
+> meanwhile modify commit messages according to Steve's words?
 
-  arch/riscv/include/asm/ftrace.h
+Yeah, please fix that and resend. This also should have Cc: stable with Fixed: tag.
 
-between commit:
+Thank you,
 
-  680341382da5 ("riscv: add CALLER_ADDRx support")
+> 
+> > 
+> >>
+> >> Signed-off-by: Yuanhe Shu <xiangzao@linux.alibaba.com>
+> >> ---
+> >>   .../selftests/ftrace/test.d/event/subsystem-enable.tc       | 6 +++---
+> >>   1 file changed, 3 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/tools/testing/selftests/ftrace/test.d/event/subsystem-enable.tc b/tools/testing/selftests/ftrace/test.d/event/subsystem-enable.tc
+> >> index b1ede6249866..74c1114603a7 100644
+> >> --- a/tools/testing/selftests/ftrace/test.d/event/subsystem-enable.tc
+> >> +++ b/tools/testing/selftests/ftrace/test.d/event/subsystem-enable.tc
+> >> @@ -18,7 +18,7 @@ echo 'sched:*' > set_event
+> >>   
+> >>   yield
+> >>   
+> >> -count=`cat trace | grep -v ^# | awk '{ print $5 }' | sort -u | wc -l`
+> >> +count=`head -n 100 trace | grep -v ^# | awk '{ print $5 }' | sort -u | wc -l`
+> >>   if [ $count -lt 3 ]; then
+> >>       fail "at least fork, exec and exit events should be recorded"
+> >>   fi
+> >> @@ -29,7 +29,7 @@ echo 1 > events/sched/enable
+> >>   
+> >>   yield
+> >>   
+> >> -count=`cat trace | grep -v ^# | awk '{ print $5 }' | sort -u | wc -l`
+> >> +count=`head -n 100 | grep -v ^# | awk '{ print $5 }' | sort -u | wc -l`
+> >>   if [ $count -lt 3 ]; then
+> >>       fail "at least fork, exec and exit events should be recorded"
+> >>   fi
+> >> @@ -40,7 +40,7 @@ echo 0 > events/sched/enable
+> >>   
+> >>   yield
+> >>   
+> >> -count=`cat trace | grep -v ^# | awk '{ print $5 }' | sort -u | wc -l`
+> >> +count=`head -n 100 | grep -v ^# | awk '{ print $5 }' | sort -u | wc -l`
+> >>   if [ $count -ne 0 ]; then
+> >>       fail "any of scheduler events should not be recorded"
+> >>   fi
 
-from the risc-v-fixes tree and commit:
 
-  de5f3984664e ("riscv: remove MCOUNT_NAME workaround")
-
-from the mm-nonmm-stable tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/riscv/include/asm/ftrace.h
-index 15055f9df4da,cf5b63e789fa..000000000000
---- a/arch/riscv/include/asm/ftrace.h
-+++ b/arch/riscv/include/asm/ftrace.h
-@@@ -13,24 -13,9 +13,14 @@@
-  #endif
-  #define HAVE_FUNCTION_GRAPH_RET_ADDR_PTR
- =20
-- /*
--  * Clang prior to 13 had "mcount" instead of "_mcount":
--  * https://reviews.llvm.org/D98881
--  */
-- #if defined(CONFIG_CC_IS_GCC) || CONFIG_CLANG_VERSION >=3D 130000
-- #define MCOUNT_NAME _mcount
-- #else
-- #define MCOUNT_NAME mcount
-- #endif
--=20
-  #define ARCH_SUPPORTS_FTRACE_OPS 1
-  #ifndef __ASSEMBLY__
- +
- +extern void *return_address(unsigned int level);
- +
- +#define ftrace_return_address(n) return_address(n)
- +
-- void MCOUNT_NAME(void);
-+ void _mcount(void);
-  static inline unsigned long ftrace_call_adjust(unsigned long addr)
-  {
-  	return addr;
-
---Sig_/cUSGj6cmxZg.4tY6SC_cXVH
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXbvr8ACgkQAVBC80lX
-0Gzg/gf+OQ0JHqSwC+sIoieCYIftEwnkc3IR1SDUF1APuB7neyMIKVgB+4JGZzux
-AYk/QqqE5uzJf77h0g9VMHreHWrh6HXaT7P5A/vmGlahEdq/JcaqxXnkOh0/QeVJ
-vj0T3/ZY6iKJUVuvx9L4DcrbsXcZg2DGxD0a7B8QA/vzniL/tFWoyPYqR9K4385h
-42uSEiOnB71Vni2WpJH7VZaPdkpPmPduN/33TRLwH3AxFjhExdJGQk8NoN33jOab
-RSsA3cJNEJcMqPC5SH7PN7uOxPyeywHhSj1agSkCT59HUL0pVpc4GB8ToE/ReOGW
-It0Kcq4PCeeD28fxvmH5GRZRu3Yl0w==
-=XRVo
------END PGP SIGNATURE-----
-
---Sig_/cUSGj6cmxZg.4tY6SC_cXVH--
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
