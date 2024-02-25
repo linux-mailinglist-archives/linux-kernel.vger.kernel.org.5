@@ -1,160 +1,153 @@
-Return-Path: <linux-kernel+bounces-80271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7C74862CC6
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 21:16:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FE8F862CC9
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 21:17:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 368E5B21529
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 20:16:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19FDEB214DB
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 20:17:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D3121B7FB;
-	Sun, 25 Feb 2024 20:16:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54F501B80A;
+	Sun, 25 Feb 2024 20:17:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="P29Ipmfl"
-Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="f5vSG4qX"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F20AF19BCA
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 20:16:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.165.51.139
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9AD81B94A
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 20:16:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708892202; cv=none; b=ssYfTWluM5rAjFlYISKbUBZlnLL4dzIRKvGjqJRvKhRCqtptePJ6d0tgsp35kKd7CaOyplonjuasaK2NwIiEakZpUNOx/7wb+dTXjSMwqa0GIqYq2KEkhQn39EUsrHE63BqJgkEHWZBgR7RjWbNX7ArtnRsVcZLljAx3h2r3oFw=
+	t=1708892220; cv=none; b=EpI3FubBARiFHDwoEcx409HNkmVkqdP60lKhsxaU8PLbW4eF8hcChdyau7/9RzITlVfp8i5YU8yzk34DmO8NnRQJG9Xso5xT4hJrj1syaFKfI9hIkNHFQbhCe2YqowcOFOIidLaBoiLEEUjMVh6ureDyYnrgv3ZL8HSoqJWJCq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708892202; c=relaxed/simple;
-	bh=cPbPG3uOvlFXj7CQ8vLSlhfo46pBPzqgKu0g5fXAYM8=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qRZsrmntlclP2N+el5jeG49XX6ecUP/C6jxQuM0yIO0otcfLQLW1xS80ch0OkTQZgzjxXjKLzkkGnRhkUaWhBMDJ4ituvJoizq/z8RdZB7G5JhvOjwnaN71NtYTw9aWqz9khBCg6i4gm+umbK2EmnqVUIuI/+OxJeDZBKRp6tos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=P29Ipmfl; arc=none smtp.client-ip=188.165.51.139
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1708892190; x=1709151390;
-	bh=cPbPG3uOvlFXj7CQ8vLSlhfo46pBPzqgKu0g5fXAYM8=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=P29IpmflpJfyZiJQm3j6juYz6/e+zOKi0E5LqEKSENaPU84I9QtxcGWjezFQ1Ko3j
-	 aBBjjH47hs1inq9Xgp+jNJlVrXGxDAV9QxI18jq4e3UhUvtV/RJWNQxYfPQRRO4zPK
-	 JLaHyQ68hkZr2PNk8CfyYq1i8OKg2B5nViM83iAtWyOCiKXlPFYXC4Jw4dtX0SmtaW
-	 B2kamzYH2BXF4Aqbj5sUWTRE5MODkLjHtLvHYRDR+7Okqka9N/zuA2IYK3QlmYXIV+
-	 lxZeMupsQSeFo1jtRncvPawNHdFsSHF1YjnsR/YUSgn4kwBzOPZ3HmdLR220Tmt2HF
-	 qntk5mKjDEhbQ==
-Date: Sun, 25 Feb 2024 20:16:08 +0000
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-From: Michael Pratt <mcpratt@pm.me>
-Cc: devicetree@vger.kernel.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, saravanak@google.com, abel.vesa@linaro.org, alexander.stein@ew.tq-group.com, andriy.shevchenko@linux.intel.com, bigunclemax@gmail.com, brgl@bgdev.pl, colin.foster@in-advantage.com, djrscally@gmail.com, dmitry.baryshkov@linaro.org, festevam@gmail.com, fido_max@inbox.ru, frowand.list@gmail.com, geert@linux-m68k.org, heikki.krogerus@linux.intel.com, kernel@pengutronix.de, linus.walleij@linaro.org, linux@roeck-us.net, luca.weiss@fairphone.com, magnus.damm@gmail.com, martin.kepplinger@puri.sm, rafal@milecki.pl, ansuelsmth@gmail.com, richard@nod.at, sakari.ailus@linux.intel.com, sudeep.holla@arm.com, tglx@linutronix.de, tony@atomide.com, vigneshr@ti.com, dianders@chromium.org, jpb@kernel.org, rafael@kernel.org
-Subject: Re: [PATCH v1 2/4] driver core: fw_devlink: Link to supplier ancestor if no device
-Message-ID: <iAkBSgwuEqM4V5DeWWTplkq23zj8zBgHebmwIbpQl7MiojKNiMDtJxN_SaQ2F4CjD42K2gR5wxG-63JiUX0mcZ48UrZY2augArDt-II5_TQ=@pm.me>
-In-Reply-To: <20240205160011.42d1cf80@xps-13>
-References: <20240123014517.5787-1-mcpratt@pm.me> <20240123014517.5787-3-mcpratt@pm.me> <20240205160011.42d1cf80@xps-13>
-Feedback-ID: 27397442:user:proton
+	s=arc-20240116; t=1708892220; c=relaxed/simple;
+	bh=VxLZ7RsZpLYYQuSI66FP3nhHczQ7j/5oRGLYsnKLyxA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HCDxdeZBuwuBuUpGDsvYpFZtzkuDNiltLvdtNVF+OfIGmZxUjqjvZCDsXhtNB2PsD7UXVPPu6bQk6UvEzeIOmzR7Y3efGY8FEw3DCb7w5aOLsU2IJDNSaKc0eSt3W8NnGfVoyzENXkLPbS3FEtbR91LExpx4NdLhHBp92DVzElU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=f5vSG4qX; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-563c403719cso2887415a12.2
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 12:16:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708892217; x=1709497017; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=g0BL3CAb54Q9PTk8ioTJQE7FsRhBBa8lLja7tu/HP78=;
+        b=f5vSG4qXd9pUCvhlxp9v/GNYyIsxtY0mIpf+5wDoVjNO0xmTJL8Ll71Xur6TdQsWOa
+         w3/KV52CoI9ubi2RVgOI2fgfRuhm3VJo3tJc1lbmkymcqpWzMPTVOYyYtXWeL4n+G2/S
+         eGeaLoZdF7Z6xoHbfUVbe8HdwEE3Iz18vE0gIWuanYnVDgzIqTuIKkgT8EQYTkYFjuKy
+         Y/PyH69ZQJix5qFnMZYmuNN0mZteKNVOsDIVZzBlpkHlKJrsbVzrTVjbB5vuyP0LNJ5q
+         726cAKZNiZve9zoNktBU7BwX/jIqJc8dTbJ7Resu/8dc/iStWP8dNaNjmbSvS7DFOUMH
+         bKZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708892217; x=1709497017;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g0BL3CAb54Q9PTk8ioTJQE7FsRhBBa8lLja7tu/HP78=;
+        b=MoPSHaMDAuavwlmuZd46QWGlC7KIsbzltoz12UaVAJjF64YiHFG4RAzg624KFXye38
+         Ra0xjtZYnlxgQOMZshVXb6jueFb1dBJye+uqRqIEpVzWFitxxnp12twKJpi+TxLylBJ/
+         RIM/ZBySHrBRAWLbSDHn0oxVOAlEMQGKk5O34AqU8WTyr80DPDRFYKBpoCe5p+Hyu8Kw
+         zCT02m7AJBLr8EHFIo4QHGjMBRb9xyFfiBQJ/DRf3fLuVazsBfXGTy8vPE0u7iayAiEw
+         +57mAXtqyMU/rEEbxmSI50gM0/qIZycTz+gc+IBMyGWNnJrmu4fWqRdQ/jWuj7DwH66D
+         owXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVNdAq1P2dhrhq992MbbGiNMT+uASrVlLzqF1lNIY1nQeBpS9pSlvtV86T916g7qF0W39K7+EzYX6cLHETFscGslNuRftjsUQOeHRft
+X-Gm-Message-State: AOJu0Yw0UgWgylct82rwaYsy3TkJDOUwfgeMirTiPuV8tHHwrLtUr5eL
+	1pLznb8JFP7u4G+kiJII5pPLSqSoRqNo86NxxsFSrv+1yQOVi41TQk/oyD4AWuk=
+X-Google-Smtp-Source: AGHT+IHwvup2ahGbonMPPRSZ4YpMn5V9B0o/2DNB+FUiQxsAjMoxZAEys1BsJfv7CQ90Ezd9DISwOg==
+X-Received: by 2002:a17:906:f804:b0:a3f:c0bd:b7bd with SMTP id kh4-20020a170906f80400b00a3fc0bdb7bdmr3933047ejb.43.1708892217056;
+        Sun, 25 Feb 2024 12:16:57 -0800 (PST)
+Received: from krzk-bin.. ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id ck13-20020a170906c44d00b00a3d7bcfb9a1sm1741045ejb.128.2024.02.25.12.16.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Feb 2024 12:16:56 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Lars-Peter Clausen <lars@metafoo.de>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 1/2] iio: dac: ad5755: make use of of_device_id table
+Date: Sun, 25 Feb 2024 21:16:53 +0100
+Message-Id: <20240225201654.49450-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Miquel,
+Populate the of_device_id table with match data, reference it in the
+spi_driver struct and use spi_get_device_match_data() to perform the
+type matching to fix warning:
 
-Thanks for taking a look at what I have so far.
+  ad5755.c:866:34: error: unused variable 'ad5755_of_match' [-Werror,-Wunused-const-variable]
 
-On Monday, February 5th, 2024 at 10:00, Miquel Raynal <miquel.raynal@bootli=
-n.com> wrote:
+This is also preferred way of matching device variants, then relying on
+fallback via spi_device_id.
 
->=20
->=20
-> Hi Michael,
->=20
-> mcpratt@pm.me wrote on Tue, 23 Jan 2024 01:46:40 +0000:
->=20
-> > If a fwnode is flagged as FWNODE_FLAG_NOT_DEVICE
-> > by the time a device link is to be made with it,
-> > but not flagged as FWNODE_FLAG_PARENT_IS_DEV,
-> > the link is dropped, otherwise the device link
-> > is still made with the original supplier fwnode.
-> > Theoretically, we can also handle linking to an ancestor
-> > of the supplier fwnode when forming device links, but there
-> > are still cases where the necessary fwnode flags are still missing
-> > because the real supplier device did not probe yet.
->=20
->=20
-> I am not sure I follow this. In the following case, I would expect any
-> dependency towards node-c to be made against node-a. But the above
-> paragraph seems to tell otherwise: that the link would be dropped
-> (and thus, not enforced) because recursively searching for a parent
-> that would be a device could be endless? It feels wrong, so I probably
-> mis
->=20
-> node-a {
->=09# IS DEV
->=09node-b {
->=09=09# PARENT IS DEV
->=09=09node-c {
->=09=09=09# PARENT IS DEV
->=09=09};
->=09};
->};
->
-> Besides that, the commit feels like a good idea.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
+---
 
-The link is dropped _in order to_ make the dependency towards node-c
-become a dependency towards node-a instead.
+Rework according to comments.
 
-The "recursive searching" happens after links are dropped in order to
-create the new fwnode links, and it depends on the new flag
-being placed when the supplier device (node-a) probes, which can happen
-before the links are re-attempted, or after a single probe defer of the con=
-sumer.
+An old v1:
+https://lore.kernel.org/all/20230810111933.205619-1-krzysztof.kozlowski@linaro.org/
+---
+ drivers/iio/dac/ad5755.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-I placed all the logic that decides whether to drop links and retry linking
-to the consumer immediately before a probe defer of the consumer would occu=
-r.
-That logic could be distributed around multiple functions for fw_devlink,
-but I'm concerned about false positives. The only reason I didn't use or ma=
-ke
-a new function in order to "move" the links is that in this position in the=
- driver core
-which I believe is the right place to do the fixup function, we don't have =
-direct access
-to the fwnode that the links should go to, it would have to be discovered b=
-y recursively
-walking up the tree looking for the flag in the new fixup function
-instead of where the fwnode links are made.
+diff --git a/drivers/iio/dac/ad5755.c b/drivers/iio/dac/ad5755.c
+index 404865e35460..877c1125d892 100644
+--- a/drivers/iio/dac/ad5755.c
++++ b/drivers/iio/dac/ad5755.c
+@@ -809,7 +809,7 @@ static struct ad5755_platform_data *ad5755_parse_fw(struct device *dev)
+ 
+ static int ad5755_probe(struct spi_device *spi)
+ {
+-	enum ad5755_type type = spi_get_device_id(spi)->driver_data;
++	enum ad5755_type type = (kernel_ulong_t)spi_get_device_match_data(spi);
+ 	const struct ad5755_platform_data *pdata;
+ 	struct iio_dev *indio_dev;
+ 	struct ad5755_state *st;
+@@ -864,11 +864,11 @@ static const struct spi_device_id ad5755_id[] = {
+ MODULE_DEVICE_TABLE(spi, ad5755_id);
+ 
+ static const struct of_device_id ad5755_of_match[] = {
+-	{ .compatible = "adi,ad5755" },
+-	{ .compatible = "adi,ad5755-1" },
+-	{ .compatible = "adi,ad5757" },
+-	{ .compatible = "adi,ad5735" },
+-	{ .compatible = "adi,ad5737" },
++	{ .compatible = "adi,ad5755", (void *)ID_AD5755 },
++	{ .compatible = "adi,ad5755-1", (void *)ID_AD5755 },
++	{ .compatible = "adi,ad5757", (void *)ID_AD5757 },
++	{ .compatible = "adi,ad5735", (void *)ID_AD5735 },
++	{ .compatible = "adi,ad5737", (void *)ID_AD5737 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, ad5755_of_match);
+@@ -876,6 +876,7 @@ MODULE_DEVICE_TABLE(of, ad5755_of_match);
+ static struct spi_driver ad5755_driver = {
+ 	.driver = {
+ 		.name = "ad5755",
++		.of_match_table = ad5755_of_match,
+ 	},
+ 	.probe = ad5755_probe,
+ 	.id_table = ad5755_id,
+-- 
+2.34.1
 
-To me, it doesn't matter which order we call the functions,
-but if we are starting with fwnode links that refuse
-to be converted to device links, we need to do more than just move the fwno=
-de links
-because after a probe defer there is no hook to automatically try switching=
- them
-to device links again. Driver core expects that to have already happened by=
- then.
-I imagine that without having to add a lot more code in a lot of places,
-I would have to call fw_devlink_link_device() after "moving" links anyway..=
-.
-
-It's possible to call that function only when the bad link is still a fwnod=
-e_link
-and do a "move" function when the bad link is a device_link, that is,
-if "moving" a finished device_link is possible or good practice at all
-since it would be skipping quite a few checks that occur before a device_li=
-nk is made.
-It seems to me that making a device_link is a multiple-step process, so a n=
-ew function
-to only move the supplier of a device_link might be a big one as well.
-I tend to try to reuse as many core functions as I could.
-
->=20
-> Thanks,
-> Miqu=C3=A8l
-
---
-MCP
 
