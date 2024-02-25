@@ -1,81 +1,82 @@
-Return-Path: <linux-kernel+bounces-80242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80244-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88837862C72
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 19:01:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43DD8862C78
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 19:07:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E006D2818D5
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:00:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEC271F21A92
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:07:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 484281AACD;
-	Sun, 25 Feb 2024 18:00:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35EA9182AE;
+	Sun, 25 Feb 2024 18:07:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KN/pNew2"
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QJk3G/t/"
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF0671A587;
-	Sun, 25 Feb 2024 18:00:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CD7B1B81E;
+	Sun, 25 Feb 2024 18:06:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708884049; cv=none; b=ckHbeuFNKzr/1mi2X/bp52SUIgtPKPP8dQT6bM9IYDOdZtQTEuxjVgBfMJDUJqLSh8U0GhrV74yx2Rg2iv35DUPQxgoMvE5qnPAMUBCZn7Sf18BiiYgecACmaEUme8mNiPuY0u1JiKZKDs5Sygm3t4N8vf3C2x/lsM0qDJi7KPU=
+	t=1708884420; cv=none; b=SHzTJZdApuPJjQymMycMgAb+b3brW24f2LmYH2Tm8MQkSYMs+y2kVn8o9c4ulrcuiM1jhBmyp6xmzr+XP64LQ3Hw3e5vZtjpNo8HMS3vmX8W/3LABSrTAj892CdX3IRNR08VCnqwuqBu9/67SNes4LY6kuMI8bPHXfT0lWL67Q0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708884049; c=relaxed/simple;
-	bh=XVXmQHxDwwhLMNgrggoXqfBw6ZNbYOVLfUxnvLnwnjE=;
+	s=arc-20240116; t=1708884420; c=relaxed/simple;
+	bh=t9TH3IO25i1kABmwESoqJSXOGpunpKDuFCDvVlM+yrk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JJeDQVcPYgMfbTFY6kEpPGii0zgrLknECZaUuNRQ1lnd34zGIO9vwQby8PMwJiwprZSuPmnVz1obmQsVuWm55Zw+xgRIvGXB+ZCRaJWKFTxFe6+pZ4ooLC2hfei2uXuO+h79JuornKlepN731UyHXSyRwwd0cts3ZiXwiRVH05k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KN/pNew2; arc=none smtp.client-ip=209.85.219.170
+	 To:Cc:Content-Type; b=LzR4tp3ZaYyiyAqzyEj1bwgpw0hr8TVDv7QWoDThhCp6UzZ4US3mTo/rRD3N7GrimJ11V6S+i2TJffXOdRIsoipaF3DLy5cnn5rAEqVgYQZOaaLa2ME+gSfCF1539/863giZgWT2Z1u57Y3lEWfQZ9AuyMs0x/P6k9iclaQg7i0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QJk3G/t/; arc=none smtp.client-ip=209.85.219.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dc745927098so2195591276.3;
-        Sun, 25 Feb 2024 10:00:47 -0800 (PST)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dcd9e34430cso2524772276.1;
+        Sun, 25 Feb 2024 10:06:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708884047; x=1709488847; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708884418; x=1709489218; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=v7hj3qPHZDiFNqcyMxHDzUtXEC97xlVmyESxHtz3Chs=;
-        b=KN/pNew2HQv2m0c9wKR4fAwLYSez1xy2Hu4vg3KdQ6dygfQeZb6GtL5YH0Z9T1idiM
-         QkHs9J1aptsCG1oJ5gfkcOLgmZM43wGpSBo2wi2XRMQ+79VJLuvuT2+VJIxc1Czpt+ZI
-         Rg91RqSVmiSAWVCUHlTeqPngU0BJGJnP2aYy1c9ny+E1AHfXQBbCVlSvenELcZQVMBzy
-         aQP1iE5HRktcJlgbRcHu15DYiXTVSO8d5iEHnylpnIx/iqgkICmRZ3r/WWq0ihU9NHhJ
-         3+NZDyKsiqX2dgEynB8LPlWMdGnvVAX4oiFe9+Snx0RVUC/C6HVEiT1wU5G4RAAQB/4f
-         d1pw==
+        bh=UyB5v20Xvkeo8vLOJ5G7Ayw3XFpy9UxBMT1oM+PlACI=;
+        b=QJk3G/t/tSpXjTrNWAoYGQMlwyHV2ltR0Vnmk+7L+vObELPIH50GGigV6RQd8WPZKe
+         4BKM5hnvIdwTXRpEBTMXRoFTzeGhVapL5qen11OkzTuMTkfKxqEnaaHcOJCIzejTxhKE
+         gFIqZLCDh8uqQDqJE+Uha5T17qJzQFfui7DCEEAnl4pHcFdeZf7smLx8tRaUM8uc1AOf
+         8avm8huruiC6zfcAI2qPSBxEumz0IsjdZQ+bSRbMmP+MSgTtvifxnRCpxJmT9sopSxyA
+         m9jBsOzrgmBj8ahClSuSfH3CYjy/luXHkImE0MgcmZEX6m0pTwsQrFBLPFoZuxgWZaic
+         SPTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708884047; x=1709488847;
+        d=1e100.net; s=20230601; t=1708884418; x=1709489218;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=v7hj3qPHZDiFNqcyMxHDzUtXEC97xlVmyESxHtz3Chs=;
-        b=GVyalSsqZ87MOsRreB3YC1juqTHC1PWfKVfHQZvOrW+ZkQxynEt7EYs5UMICsEcoA+
-         Q5egUroA4KlJO3P/pHus1rRoR3zr3Xds99l1sZGV1o9g3l1bpGXCX3lgIoMbx/I88c2/
-         Rgo5lb8jf5uLKmbLoqElTK65xspLQk4cOll2kGEmdJ1ot/FnaXZrlqpGeg82AjofErWK
-         Hvb2opr3fmACxTMBEXWPEbqaU10qxjpwtSQMvR9cGhBK8xFtpCjq51NZkl7i1Haab3k0
-         D8UqiQ4F5hja2v42El/LWe0rJCs/OEFPraukpjXeTmzxsj77JM7J0PAeGVb37GO3FopY
-         NWLw==
-X-Forwarded-Encrypted: i=1; AJvYcCUfWjcI3Uy94anP8qREjfY4OBS4SzK0Xee6W7mEvt5z5bO+J2QRMPzdPtamWTIuM3jmM9ncbaLFC9dVB1UaPElszPZRcohs+rk+YitrxRKI1pIE/o3EKYBGr1aGSWw7a/5/9HGFMID34Lsby6E8jEVEpZV0lBrVSrb0Z73POaxcYWlLGg==
-X-Gm-Message-State: AOJu0YzL+npf9C6HItfCAgitEBndZEWxWyGLaKXIagUpRd36D1MAs3ZU
-	LuAOrU8rNcY02URU2I6zHdh+2KbTKOmxtnpt749LT3SZhy/6AGq4DzPNyaOaCl/UWeeWIgUMz8y
-	4TYN4eLJJXUANI7W3DRKXjr67ofVWgNjpgRs=
-X-Google-Smtp-Source: AGHT+IF4EvwHUZxVL9CRSsQW/MThQust/DkQXRqtjG4TICjIiIZP4vpENrHjQNHjq734sFRem08C/FQu+uxH2rgBN5M=
-X-Received: by 2002:a25:e0d6:0:b0:dc7:4067:9f85 with SMTP id
- x205-20020a25e0d6000000b00dc740679f85mr3160931ybg.58.1708884046001; Sun, 25
- Feb 2024 10:00:46 -0800 (PST)
+        bh=UyB5v20Xvkeo8vLOJ5G7Ayw3XFpy9UxBMT1oM+PlACI=;
+        b=QD+EtY/bRiIiqIslAeawZgbkqDzPv7AzN60pkvskruO/EdIgvvlVf+YEN0AeRrbbP1
+         JaSytUJwvQh0n97QtCCI0gU2M1gAjkaODGkNKp2lleoRBdCF1V7gt93mkSo3yb9JtOR/
+         WHLRqitrKdDE6rffkSh8pAgwtD9WjPumeP1qpReFNE5dqyJq1z16DmKKNfc2MakyCrj/
+         Mwmxu0G5M7CpSEy969Wz9tVIvPaI8YMPWrC4m5x784XUehvsq0vhxAaW3lM5bE5dVZ9f
+         dQBJznKXQcWYlJdlDwRyuB2hiw0HRbi2YrgfPodXsWVuvZJ4PyjrUT8I+N5XZyoW0NVi
+         Gw3g==
+X-Forwarded-Encrypted: i=1; AJvYcCUlRsLmB2J/231pyEL4atMrCwO+KZ6EPX9hNUMujAxO5/zoO6pF39/pG7kLFi+5jfG+X9YLRrwW0u0Z71QZNPp4DxTEg27oCAdtwyc85jY+Oc2f6n4NjgylVJ69KW0R7uIjo+CKPlZ4TbBYIZ6lNcrXearGsKsQjKO3Bvs5ZOJ/IP55Lw==
+X-Gm-Message-State: AOJu0YxxfN4KYMsyoHcGjRJ7WkXdbCy6mjGvMUSyVOLT0oQ4LT8WeTiY
+	kpz+u8EzAIw+IG20V4OIQmPlpVChbsOSCY9q35oq3rbCOC6PNNEH4AZjXMKKPLkqfrHCQZkUIIb
+	NE9BlQ6a/U+2dRsKROg7hR4zS04M=
+X-Google-Smtp-Source: AGHT+IG+svL+R0QQtjbfole4iAKAk0sCbIV/24aVRBshgzy9tOplCpuFeVEJTnIBol1v6+b0OREk9APWtD3AvDe4zXI=
+X-Received: by 2002:a25:9012:0:b0:dcf:464d:8ec3 with SMTP id
+ s18-20020a259012000000b00dcf464d8ec3mr2767391ybl.3.1708884418030; Sun, 25 Feb
+ 2024 10:06:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131182653.2673554-1-tmaimon77@gmail.com> <20240131182653.2673554-4-tmaimon77@gmail.com>
- <74e003c6d80611ddd826ac21f48b4b3a.sboyd@kernel.org>
-In-Reply-To: <74e003c6d80611ddd826ac21f48b4b3a.sboyd@kernel.org>
+References: <20240131182653.2673554-1-tmaimon77@gmail.com> <20240131182653.2673554-2-tmaimon77@gmail.com>
+ <bea8b72f61caaeac0ce112b57c28297b.sboyd@kernel.org>
+In-Reply-To: <bea8b72f61caaeac0ce112b57c28297b.sboyd@kernel.org>
 From: Tomer Maimon <tmaimon77@gmail.com>
-Date: Sun, 25 Feb 2024 20:00:35 +0200
-Message-ID: <CAP6Zq1g5gwXvYzO5fnHxG-6__gSCpNBY7VeEPyr4Qtijya6EfQ@mail.gmail.com>
-Subject: Re: [PATCH v23 3/3] clk: npcm8xx: add clock controller
+Date: Sun, 25 Feb 2024 20:06:47 +0200
+Message-ID: <CAP6Zq1jtYAg11EDrhJtzEOM+trKSpLuSbHPOx5ON93UDtr9JVg@mail.gmail.com>
+Subject: Re: [PATCH v23 1/3] dt-bindings: clock: npcm845: Add reference 25m
+ clock property
 To: Stephen Boyd <sboyd@kernel.org>
 Cc: benjaminfair@google.com, joel@jms.id.au, krzysztof.kozlowski+dt@linaro.org, 
 	mturquette@baylibre.com, robh+dt@kernel.org, tali.perry1@gmail.com, 
@@ -86,121 +87,8 @@ Content-Type: text/plain; charset="UTF-8"
 
 Hi Stephen,
 
-On Thu, 22 Feb 2024 at 07:58, Stephen Boyd <sboyd@kernel.org> wrote:
->
-> Quoting Tomer Maimon (2024-01-31 10:26:53)
-> > diff --git a/drivers/clk/clk-npcm8xx.c b/drivers/clk/clk-npcm8xx.c
-> > new file mode 100644
-> > index 000000000000..eacb579d30af
-> > --- /dev/null
-> > +++ b/drivers/clk/clk-npcm8xx.c
-> > @@ -0,0 +1,509 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Nuvoton NPCM8xx Clock Generator
-> > + * All the clocks are initialized by the bootloader, so this driver allows only
-> [...]
-> > +
-> > +/* external clock definition */
-> > +#define NPCM8XX_CLK_S_REFCLK   "refclk"
-> > +
-> > +/* pll definition */
-> > +#define NPCM8XX_CLK_S_PLL0     "pll0"
-> > +#define NPCM8XX_CLK_S_PLL1     "pll1"
-> > +#define NPCM8XX_CLK_S_PLL2     "pll2"
-> > +#define NPCM8XX_CLK_S_PLL_GFX  "pll_gfx"
-> > +
-> > +/* early divider definition */
-> > +#define NPCM8XX_CLK_S_PLL2_DIV2                "pll2_div2"
-> > +#define NPCM8XX_CLK_S_PLL_GFX_DIV2     "pll_gfx_div2"
-> > +#define NPCM8XX_CLK_S_PLL1_DIV2                "pll1_div2"
-> > +
-> > +/* mux definition */
-> > +#define NPCM8XX_CLK_S_CPU_MUX     "cpu_mux"
-> > +
-> > +/* div definition */
-> > +#define NPCM8XX_CLK_S_TH          "th"
-> > +#define NPCM8XX_CLK_S_AXI         "axi"
->
-> Please inline all these string #defines to the place they're used.
-The version V21 you mention using define only when the definition is
-used more than once
-https://www.spinics.net/lists/kernel/msg5045826.html
-Should I remove all the string definitions and add the string to the array?
->
-> > +
-> > +static struct clk_hw hw_pll1_div2, hw_pll2_div2, hw_gfx_div2, hw_pre_clk;
-> [..]
-> > +static struct clk_hw *
-> > +npcm8xx_clk_register(struct device *dev, const char *name,
-> > +                    struct regmap *clk_regmap, unsigned int offset,
-> > +                    unsigned long flags, const struct clk_ops *npcm8xx_clk_ops,
-> > +                    const struct clk_parent_data *parent_data,
-> > +                    const struct clk_hw *parent_hw, u8 num_parents,
-> > +                    u8 shift, u32 mask, unsigned long width,
-> > +                    const u32 *table, unsigned long clk_flags)
-> > +{
-> > +       struct npcm8xx_clk *clk;
-> > +       struct clk_init_data init = {};
-> > +       int ret;
-> > +
-> > +       clk = devm_kzalloc(dev, sizeof(*clk), GFP_KERNEL);
-> > +       if (!clk)
-> > +               return ERR_PTR(-ENOMEM);
-> > +
-> > +       init.name = name;
-> > +       init.ops = npcm8xx_clk_ops;
-> > +       init.parent_data = parent_data;
-> > +       init.parent_hws = parent_hw ? &parent_hw : NULL;
->
-> Is it necessary to check? Can't it be set unconditionally?
-Will remove
->
-> > +       init.num_parents = num_parents;
-> > +       init.flags = flags;
-> > +
-> > +       clk->clk_regmap = clk_regmap;
-> > +       clk->hw.init = &init;
-> > +       clk->offset = offset;
-> > +       clk->shift = shift;
-> > +       clk->mask = mask;
-> > +       clk->width = width;
-> > +       clk->table = table;
-> > +       clk->flags = clk_flags;
-> > +
-> > +       ret = devm_clk_hw_register(dev, &clk->hw);
-> > +       if (ret)
-> > +               return ERR_PTR(ret);
-> > +
-> > +       return &clk->hw;
-> [...]
-> > +
-> > +static unsigned long npcm8xx_clk_div_get_parent(struct clk_hw *hw,
-> > +                                               unsigned long parent_rate)
-> > +{
-> > +       struct npcm8xx_clk *div = to_npcm8xx_clk(hw);
-> > +       unsigned int val;
-> > +
-> > +       regmap_read(div->clk_regmap, div->offset, &val);
-> > +       val = val >> div->shift;
-> > +       val &= clk_div_mask(div->width);
-> > +
-> > +       return divider_recalc_rate(hw, parent_rate, val, NULL, div->flags,
-> > +                                  div->width);
-> > +}
-> > +
-> > +static const struct clk_ops npcm8xx_clk_div_ops = {
-> > +       .recalc_rate = npcm8xx_clk_div_get_parent,
-> > +};
-> > +
-> > +static int npcm8xx_clk_probe(struct platform_device *pdev)
-> > +{
-> > +       struct device_node *parent_np = of_get_parent(pdev->dev.of_node);
->
-> The parent of this device is not a syscon.
-Once I have registered the map that handles both reset and the clock
-in general is syscon, this is why we will modify the DTS so the clock
-and the reset will be under syscon father node
+The plan is for both the clock and reset will be under only the memory
+region handle like
                 sysctrl: system-controller@f0801000 {
                         compatible = "syscon", "simple-mfd";
                         reg = <0x0 0xf0801000 0x0 0x1000>;
@@ -219,58 +107,29 @@ and the reset will be under syscon father node
                                 clock-names = "refclk";
                         };
                 };
-You can see other drivers that using the same method like
-https://elixir.bootlin.com/linux/v6.8-rc5/source/Documentation/devicetree/bindings/clock/socionext,uniphier-clock.yaml
->
-> > +       struct clk_hw_onecell_data *npcm8xx_clk_data;
-> > +       struct device *dev = &pdev->dev;
-> > +       struct regmap *clk_regmap;
-> > +       struct clk_hw *hw;
-> > +       unsigned int i;
-> > +
-> > +       npcm8xx_clk_data = devm_kzalloc(dev, struct_size(npcm8xx_clk_data, hws,
-> > +                                                        NPCM8XX_NUM_CLOCKS),
-> > +                                       GFP_KERNEL);
-> > +       if (!npcm8xx_clk_data)
-> > +               return -ENOMEM;
-> > +
-> > +       clk_regmap = syscon_node_to_regmap(parent_np);
-> > +       of_node_put(parent_np);
->
-> Is there another binding update that is going to move this node to be a
-> child of the syscon?
->
->                 gcr: system-controller@f0800000 {
->                         compatible = "nuvoton,npcm845-gcr", "syscon";
->                         reg = <0x0 0xf0800000 0x0 0x1000>;
->                 };
-No, sorry but I'm not going to use the GCR node the handle the clock
-and reset modules, the GCR has different memory space.
-the clock driver will have the following device tree
-               sysctrl: system-controller@f0801000 {
-                        compatible = "syscon", "simple-mfd";
-                        reg = <0x0 0xf0801000 0x0 0x1000>;
 
-                        rstc: reset-controller {
-                                compatible = "nuvoton,npcm845-reset";
-                                reg = <0x0 0xf0801000 0x0 0xC4>;
-                                #reset-cells = <2>;
-                                nuvoton,sysgcr = <&gcr>;
-                        };
+is it problematic?
 
-                        clk: clock-controller {
-                                compatible = "nuvoton,npcm845-clk";
-                                #clock-cells = <1>;
-                                clocks = <&refclk>;
-                                clock-names = "refclk";
-                        };
-                };
-
-Stephen appreciate it if you could speed this upstream and apply it in
-this kernel version.
-hope the clarification is understood and if it is fine I can send V24 this week.
+But this commit is not related to it.
 
 Thanks,
 
 Tomer
+
+On Thu, 22 Feb 2024 at 07:58, Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Tomer Maimon (2024-01-31 10:26:51)
+> > diff --git a/Documentation/devicetree/bindings/clock/nuvoton,npcm845-clk.yaml b/Documentation/devicetree/bindings/clock/nuvoton,npcm845-clk.yaml
+> > index b901ca13cd25..7060891d0c32 100644
+> > --- a/Documentation/devicetree/bindings/clock/nuvoton,npcm845-clk.yaml
+> > +++ b/Documentation/devicetree/bindings/clock/nuvoton,npcm845-clk.yaml
+> > @@ -44,6 +54,8 @@ examples:
+> >              compatible = "nuvoton,npcm845-clk";
+> >              reg = <0x0 0xf0801000 0x0 0x1000>;
+> >              #clock-cells = <1>;
+> > +            clocks = <&refclk>;
+> > +            clock-names = "refclk";
+>
+> The driver seems to want this to be a child of the mfd syscon. Is that
+> right?
 
