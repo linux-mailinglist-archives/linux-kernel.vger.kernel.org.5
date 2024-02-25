@@ -1,65 +1,56 @@
-Return-Path: <linux-kernel+bounces-79979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E18F86291F
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 06:01:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FE7D862923
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 06:04:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FCC9B212BB
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 05:01:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6BD6CB20F2B
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 05:04:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A82739457;
-	Sun, 25 Feb 2024 05:01:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30B61944C;
+	Sun, 25 Feb 2024 05:04:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="rFDRrDPf"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JFNtONFw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95C5F8BF7;
-	Sun, 25 Feb 2024 05:01:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 477CB8F49;
+	Sun, 25 Feb 2024 05:04:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708837287; cv=none; b=lxUfIIvK0sI6/YZ8HWRO9wJXs5hkrEAJOO76zTvhAdUfb0VygLCIXMOEb83v3Qwnl7J9M+mezWK2+H1rZAi4XJVUwjhbu5uOVpCZQcI+syFO4uWzlmLRCYdAIcco6VfLMnfX7IQoHPDtR6hEOir8GjbL3IRFIyBXR/mQXLt46pI=
+	t=1708837463; cv=none; b=HzUbeU3h3+SYFzUVrrVwK/8zZD1ro9bL5lvk/T1m/ERa/SlQKUh40O8yDdR6VMDtU9J8l+TGNxW6exe1fRXmkVYZX7qe1MCHIgGPlWjVxtndQq7MrE/eD4BwIUT/NhkMjFZZ43d+iLrd9kSoS770GnCWP0Cu967jhRB3UaGkVKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708837287; c=relaxed/simple;
-	bh=fGZltGZNoJBL0qVbGmPCoIkPh0GK+3Eoei2TVfZIXgA=;
+	s=arc-20240116; t=1708837463; c=relaxed/simple;
+	bh=PdNwwCg558iqeuTBDu5R3JB3xjnvzCi/WTZ16LnG+gc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o6Yb3/FAX7waF5yK+tgKGcOTY+lcPrIZouUGPTWDkY3xXVHVmCGarSHmwbub89tp15x1ckiwewHeVTbDUn0HNV5MuCsAmZM/ulp2hOJXB0ff50lyYVGHWUkfg62V7COVW6oeio5o5hG8KOwC1YhJNPrXWBGCjoI5w/FXlgHju+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=rFDRrDPf; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=s5ZqZD7A6lH7mWMZnVXwTZc0c5NMrcq/moxPl8tGVLs=; b=rFDRrDPf8tWfYxe+lK4UGzVEDL
-	xGoCs8oYxMni+++XQVt4UltsjPu0WZMp8RJe/6YA9aYCak6FucCUSy4cfUFniup07o59MJccPJ/4Z
-	BSdCt/BWIET2vV8cjvdujdTd5kNLenAeV09P/GhWOMIe6numy2xPzJiUkmY3PR6lbAP0TP0LrfU/a
-	/MbKWjMgIbJPjiPr9sQVymuuKBa1VCnTpxY2ohh0hvN964qDY9+3/y7IYiDTrGAArbhrhm3MNhOWU
-	AyqViMWne7YOY3o8h9uy90VlFWFdflh5HuK4syEpROrKEdRYpq5cvhCOhtbpMoLva2+2rstZ9jgBF
-	KH5dEY9g==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1re6db-0000000D1Ox-0Pfe;
-	Sun, 25 Feb 2024 05:01:19 +0000
-Date: Sun, 25 Feb 2024 05:01:19 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: David Laight <David.Laight@aculab.com>,
-	'Herbert Xu' <herbert@gondor.apana.org.au>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Thomas Graf <tgraf@suug.ch>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
-	"rcu@vger.kernel.org" <rcu@vger.kernel.org>
-Subject: Re: [PATCH 0/1] Rosebush, a new hash table
-Message-ID: <ZdrJn0lkFeYGuYIC@casper.infradead.org>
-References: <20240222203726.1101861-1-willy@infradead.org>
- <Zdk2YgIoAGOEvcJi@gondor.apana.org.au>
- <4a1416fcb3c547eb9612ce07da6a77ed@AcuMS.aculab.com>
- <2s73sed5n6kxg42xqceenjtcwxys4j2r5dc5x4fdtwkmhkw3go@7viy7qli43wd>
+	 Content-Type:Content-Disposition:In-Reply-To; b=e/Bl5YHpgYshEXg2zn/BWfSB29WW2hUHp1h8YHCqNhwy9ekpOEfCh8bjU4JRYbhc/Q6tZLsPrL2FoFAlUxO81kAwUpj2PmXR1sMJgdiIDh8DrNGhxquT3JUcLmKmRmOM4FgRV6Np6QY1RYUyW9sQoyveJdR2/LHJjfYWuwNYwUU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JFNtONFw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF383C433F1;
+	Sun, 25 Feb 2024 05:04:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708837462;
+	bh=PdNwwCg558iqeuTBDu5R3JB3xjnvzCi/WTZ16LnG+gc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JFNtONFwjEAKdwMsHzGHg9Iwgkh+n8EOxliWq7Z0IAO3MP8tEwNnCmRHRGR+2VmWz
+	 DfZ2qwieEFPlzzVNk9oEg8brQWd7EBgGMeJlNwNamB3G6NeXKccm4YZWiUxdn9IfW+
+	 6ooHfrLDTN7f6Wf21NXzb3ATc5La4ET0znmZpuudSnNJy1AWG+VLF4cUXbny7FcPvB
+	 44BtBrnhtQdU07Nngp/W/dqRKMTLT48zpDsTt5uk3djs0N1jY7x5rt+DO3PHVUPwTm
+	 DNtCNgJs43EPRihLDgbeNEYKcfwPrC/tgc1NlDAQAfkbky1moJGqU9nkoG4w9ZFzsv
+	 LkUfU93EmDDRQ==
+Date: Sat, 24 Feb 2024 23:04:20 -0600
+From: Bjorn Andersson <andersson@kernel.org>
+To: David Collins <quic_collinsd@quicinc.com>
+Cc: Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
+Subject: Re: [PATCH] dt-bindings: nvmem: qcom,spmi-sdam: update maintainer
+Message-ID: <u2z42cj2jlq6wf4ke3d3qxyoycy7lcqqgjjhcym3xudy3vck3s@vk7gkfl6rbpk>
+References: <20240223232955.1907552-1-quic_collinsd@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,73 +59,41 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2s73sed5n6kxg42xqceenjtcwxys4j2r5dc5x4fdtwkmhkw3go@7viy7qli43wd>
+In-Reply-To: <20240223232955.1907552-1-quic_collinsd@quicinc.com>
 
-On Sat, Feb 24, 2024 at 10:18:31PM -0500, Kent Overstreet wrote:
-> On Sat, Feb 24, 2024 at 10:10:27PM +0000, David Laight wrote:
-> > I remember playing around with the elf symbol table for a browser
-> > and all its shared libraries.
-> > While the hash function is pretty trivial, it really didn't matter
-> > whether you divided 2^n, 2^n-1 or 'the prime below 2^n' some hash
-> > chains were always long.
+On Fri, Feb 23, 2024 at 03:29:55PM -0800, David Collins wrote:
+> Emails to Shyam bounce (reason: 585 5.1.1 <sthella@codeaurora.org>:
+> Recipient address rejected: undeliverable address: No such user here.)
+> so change the maintainer to be me.  I work on qcom,spmi-sdam as well
+> as other PMIC peripheral devices.
 > 
-> that's a pretty bad hash, even golden ratio hash would be better, but
-> still bad; you really should be using at least jhash.
+> Signed-off-by: David Collins <quic_collinsd@quicinc.com>
 
-There's a "fun" effect; essentially the "biased observer" effect which
-leads students to erroneously conclude that the majority of classes are
-oversubscribed.  As somebody observed in this thread, for some usecases
-you only look up hashes which actually exist.
+Thanks David!
 
-Task a trivial example where you have four entries unevenly distributed
-between two buckets, three in one bucket and one in the other.  Now 3/4
-of your lookups hit in one bucket and 1/4 in the other bucket.
-Obviously it's not as pronounced if you have 1000 buckets with 1000
-entries randomly distributed between the buckets.  But that distribution
-is not nearly as even as you might expect:
+Reviewed-by: Bjorn Andersson <andersson@kernel.org>
 
-$ ./distrib
-0: 362
-1: 371
-2: 193
-3: 57
-4: 13
-5: 4
+Regards,
+Bjorn
 
-That's using lrand48() to decide which bucket to use, so not even a
-"quality of hash" problem, just a "your mathematical intuition may not
-be right here".
-
-To put this data another way, 371 entries are in a bucket with a single
-entry, 384 are in a bucket with two entries, 171 are in a 3-entry
-bucket, 52 are in a 4-entry bucket and 20 are in a 5-entry bucket.
-
-$ cat distrib.c
-#define _GNU_SOURCE
-#include <stdio.h>
-#include <stdlib.h>
-
-int bucket[1000];
-int freq[10];
-
-int main(int argc, char **argv)
-{
-	int i;
-
-	for (i = 0; i < 1000; i++)
-		bucket[lrand48() % 1000]++;
-
-	for (i = 0; i < 1000; i++)
-		freq[bucket[i]]++;
-
-	for (i = 0; i < 10; i++)
-		printf("%d: %d\n", i, freq[i]);
-
-	return 0;
-}
-
-(ok, quibble about "well, 1000 doesn't divide INT_MAX evenly so your
-random number generation is biased", but i maintain that will not
-materially affect these results due to it affecting only 0.00003% of
-numbers generated)
+> ---
+>  Documentation/devicetree/bindings/nvmem/qcom,spmi-sdam.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/nvmem/qcom,spmi-sdam.yaml b/Documentation/devicetree/bindings/nvmem/qcom,spmi-sdam.yaml
+> index 068bedf5dbc9..5d7be0b34536 100644
+> --- a/Documentation/devicetree/bindings/nvmem/qcom,spmi-sdam.yaml
+> +++ b/Documentation/devicetree/bindings/nvmem/qcom,spmi-sdam.yaml
+> @@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  title: Qualcomm Technologies, Inc. SPMI SDAM
+>  
+>  maintainers:
+> -  - Shyam Kumar Thella <sthella@codeaurora.org>
+> +  - David Collins <quic_collinsd@quicinc.com>
+>  
+>  description: |
+>    The SDAM provides scratch register space for the PMIC clients. This
+> -- 
+> 2.25.1
+> 
 
