@@ -1,107 +1,172 @@
-Return-Path: <linux-kernel+bounces-80106-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6781E862AD3
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 15:48:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D43D8862AD5
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 15:50:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9482B1C20BC4
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 14:48:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FBF42818CB
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 14:50:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34FD614276;
-	Sun, 25 Feb 2024 14:47:58 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0438E13FF6;
+	Sun, 25 Feb 2024 14:50:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UeXeU/uj"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E529411718
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 14:47:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8443713FFC
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 14:50:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708872477; cv=none; b=p7BFd3AEbUhjwE2QvI8DKKfWymoWvkYMVs/kwJsHq0N7ZoCi5HL/CG2bYVWmmUmDTYOy8sFpiTKT0Jea6dYR7hypiPTEQwrYcMkP2qYT/rz94o7izv/2Mr02sM90mPasbn+AKeHjNN9lo3yjK9dMhTS3QMiWXshZk2Ec+RrM1FI=
+	t=1708872614; cv=none; b=GSBhNACEM7aOR68cRgNX4uPSMyBtmlLBGnsB/GhC3BIhyAQdkFXD5aKeJDSoHkAy2Ysn4Pcb26y7Kiy+pWPCkjPiZItuTouYn8rlPoXJvWtNGGwOx98yW+oBzg9lBYITTL2SbYK2dq2geP7WCFcnrwl14MJ/cDlU7g4PIj0k5o4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708872477; c=relaxed/simple;
-	bh=34Eq+uHp5yJqj4VGBsCh+xInlxIzSmCOpKaV0p3dL+M=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=NsadL2fVNrWzbKWI3xAoIecbTT1OtgwLDGMc5f+0Aj7JsaI0hIGI8HKlBIXGbuTYOlmGtPbAXzwlhjWk+GT4r0Vz+Wvpx/7WJENx0/YTmEGgupANtNaO0VnCNak7Icy2Sp9t2kJ9yp8EtB5VIIWd3nmQsEmNLq+/Lb6w4xeda2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-304-9wbhQDAnMhGhNXbq82bMeg-1; Sun, 25 Feb 2024 14:47:46 +0000
-X-MC-Unique: 9wbhQDAnMhGhNXbq82bMeg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 25 Feb
- 2024 14:47:45 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 25 Feb 2024 14:47:45 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Kent Overstreet' <kent.overstreet@linux.dev>
-CC: 'Herbert Xu' <herbert@gondor.apana.org.au>, "Matthew Wilcox (Oracle)"
-	<willy@infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Thomas Graf <tgraf@suug.ch>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
-	"rcu@vger.kernel.org" <rcu@vger.kernel.org>
-Subject: RE: [PATCH 0/1] Rosebush, a new hash table
-Thread-Topic: [PATCH 0/1] Rosebush, a new hash table
-Thread-Index: AQHaZrdg3OPv1gzlbEiBbQpUz0xlprEaCpvwgABak4CAAL43MA==
-Date: Sun, 25 Feb 2024 14:47:45 +0000
-Message-ID: <2a6001442b354c2fb5b881c2a9d75895@AcuMS.aculab.com>
-References: <20240222203726.1101861-1-willy@infradead.org>
- <Zdk2YgIoAGOEvcJi@gondor.apana.org.au>
- <4a1416fcb3c547eb9612ce07da6a77ed@AcuMS.aculab.com>
- <2s73sed5n6kxg42xqceenjtcwxys4j2r5dc5x4fdtwkmhkw3go@7viy7qli43wd>
-In-Reply-To: <2s73sed5n6kxg42xqceenjtcwxys4j2r5dc5x4fdtwkmhkw3go@7viy7qli43wd>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1708872614; c=relaxed/simple;
+	bh=J+pLIlngGfLO+JlpRqNVIODVfFbVdIZjyQl3d4TQToY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uXA7Y5ARu6gywIZVgghtAk2UYqfB5hXNrmBFIQM2g18B/eKPBakY0RBUg27ksWG37rPIu6iqSDicZEERPKkdWklekMUor2x0hPHQbotYmISMhWooxFq1M+raFZu0bwtUjtE0ys4EbEMpnoE9v+RZ611aSX4jVdVZdfGPXUWgcU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UeXeU/uj; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcdb210cb6aso2566116276.2
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 06:50:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708872611; x=1709477411; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8ZtuRq6cAfTAvOtymIsospr++soOYmb+Wj6Ig36bcNk=;
+        b=UeXeU/ujnX45VMXsBV3cDs92J2Lme4VZJnQPy0kmNUgIf0yvpp2GZ49XyKDI00ZxfD
+         ZTDzb2d2OOLMIWvqEC7Vjv8t89mb90LdmOi2NejTxB4TaeQFDA51CFA/ruoa9cBHqAqf
+         lAzdrxoYtUQDOwSpXa96U4JZLHUj6gO5M0bfHUsB3ovV2przg6IDwR4/ENkJ4E1thCv1
+         bf+BQgLFXGurZuyCFrA/LiaEr1fTAzZVxg5AbWnQwR2jWTHZf1rpE2uvFIDRvAQYtEtZ
+         qyN0/wtBtBfEgc8MMaN10g74GlZiy8d0PQvLqCo2ONPgZTL1CAo5hP7AYZVui+A+Xn9n
+         pEvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708872611; x=1709477411;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8ZtuRq6cAfTAvOtymIsospr++soOYmb+Wj6Ig36bcNk=;
+        b=QyPfZ0bxScCmd1l5pSWrjmBkOZRUW2z6A3PPWcR+c9mz9XGhqSGdqkBIcK7mMggNHA
+         3iGo4pUkRmgGZ1JiDp5TNA5j9a0M5xjul6i5zeOoOAu/OkDh2xWGB7pwPp23nXTg4OFD
+         Fms0Ym5Xpk4baZfzoqGGq0a/P9viCp8E+z7DciRPcFJlgUN7Z/W4a4M4Ixbjsxh8/S5A
+         Xy1XICeZ/pI51ziwIdtFnq1wjQNvJtpSPx3JXeLp5q92CoPmAI2HtUa0TYcyNmGf2N3v
+         NbMaYEhJbrYZzjbFlxRotZawVRHZeVZssWjKBhrsVu2lgi/XYNEUQY/f5vwXHMtEiXD+
+         rcyw==
+X-Forwarded-Encrypted: i=1; AJvYcCXcCejEN/Ap4e2Ep5QeYWqVis5QnEEPHqGIYYJNoJijfAFvUziMlUmPWYlTOh5cRAE5JTgGtdzS4uM2W3B+6QF/Fs80wE/+j+HJDZM9
+X-Gm-Message-State: AOJu0YypXm/3nYgOvNKbJ41M7nUWuHhkKWnYhhsbyFLgOoQPj5I1K1oa
+	8I/rj+ed5sff9m37BZpomWwblj66tkBCXnM110UGXqxetzWpAV5nRBViR7IPRq4MG8V1tfOHlSk
+	Htk/sGOGdgZ8Vs44a1xgvA8j28fQwVx5NLiNr0A==
+X-Google-Smtp-Source: AGHT+IEsDNKJglOwjpcbwuPET3jv5CNNyGpNaZEJmoSwiU0M4Hi3m/yyoB9WQeO9FCl6owi4EWs5iQnCZDMYGCJpGJQ=
+X-Received: by 2002:a25:e0cf:0:b0:dc2:2e01:4ff0 with SMTP id
+ x198-20020a25e0cf000000b00dc22e014ff0mr2897191ybg.45.1708872611551; Sun, 25
+ Feb 2024 06:50:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20240222-kms-hdmi-connector-state-v7-0-8f4af575fce2@kernel.org>
+In-Reply-To: <20240222-kms-hdmi-connector-state-v7-0-8f4af575fce2@kernel.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Sun, 25 Feb 2024 16:50:00 +0200
+Message-ID: <CAA8EJpqB+Mf4jp88__r5dfsRSuGdAB+Q3vK5MBfBXysvRB92iQ@mail.gmail.com>
+Subject: Re: [PATCH v7 00/36] drm/connector: Create HDMI Connector infrastructure
+To: Maxime Ripard <mripard@kernel.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Abhinav Kumar <quic_abhinavk@quicinc.com>, freedreno <freedreno@lists.freedesktop.org>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Jonathan Corbet <corbet@lwn.net>, Sandy Huang <hjc@rock-chips.com>, =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, 
+	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	Samuel Holland <samuel@sholland.org>, Hans Verkuil <hverkuil@xs4all.nl>, 
+	Sebastian Wick <sebastian.wick@redhat.com>, 
+	=?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>, 
+	dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org, 
+	linux-sunxi@lists.linux.dev, Dave Stevenson <dave.stevenson@raspberrypi.com>, 
+	Sui Jingfeng <sui.jingfeng@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Kent Overstreet
-> Sent: 25 February 2024 03:19
-.
-> when I implemented cuckoo (which is more obviously sensitive to a weak
-> hash function), I had to go with siphash, even jhash wasn't giving me
-> great reslts. and looking at the code it's not hard to see why, it's all
-> adds, and the rotates are byte aligned... you want mixed adds and xors
-> and the rotates to be more prime-ish.
->=20
-> right idea, just old...
->=20
-> what would be ideal is something more like siphash, but with fewer
-> rounds, so same number of instructions as jhash. xxhash might fit the
-> bill, I haven't looked at the code yet...
+Hi Maxime,
 
-There is likely to be a point where scanning a list of values
-for the right hash value is faster than executing a hash function
-that is good enough to separate them to separate buckets.
+On Thu, 22 Feb 2024 at 20:14, Maxime Ripard <mripard@kernel.org> wrote:
+>
+> Hi,
+>
+> Here's a series that creates some extra infrastructure specifically
+> targeted at HDMI controllers.
+>
+> The idea behind this series came from a recent discussion on IRC during
+> which we discussed infoframes generation of i915 vs everything else.
+>
+> Infoframes generation code still requires some decent boilerplate, with
+> each driver doing some variation of it.
+>
+> In parallel, while working on vc4, we ended up converting a lot of i915
+> logic (mostly around format / bpc selection, and scrambler setup) to
+> apply on top of a driver that relies only on helpers.
+>
+> While currently sitting in the vc4 driver, none of that logic actually
+> relies on any driver or hardware-specific behaviour.
+>
+> The only missing piece to make it shareable are a bunch of extra
+> variables stored in a state (current bpc, format, RGB range selection,
+> etc.).
+>
+> The initial implementation was relying on some generic subclass of
+> drm_connector to address HDMI connectors, with a bunch of helpers that
+> will take care of all the "HDMI Spec" related code. Scrambler setup is
+> missing at the moment but can easily be plugged in.
+>
+> The feedback was that creating a connector subclass like was done for
+> writeback would prevent the adoption of those helpers since it couldn't
+> be used in all situations (like when the connector driver can implement
+> multiple output) and required more churn to cast between the
+> drm_connector and its subclass. The decision was thus to provide a set
+> of helper and to store the required variables in drm_connector and
+> drm_connector_state. This what has been implemented now.
+>
+> Hans Verkuil also expressed interest in implementing a mechanism in v4l2
+> to retrieve infoframes from HDMI receiver and implementing a tool to
+> decode (and eventually check) infoframes. His current work on
+> edid-decode to enable that based on that series can be found here:
+> https://git.linuxtv.org/hverkuil/edid-decode.git/log/?h=hverkuil
+>
+> And some more context here:
+> https://lore.kernel.org/dri-devel/50db7366-cd3d-4675-aaad-b857202234de@xs4all.nl/
+>
+> This series thus leverages the infoframe generation code to expose it
+> through debugfs.
 
-You don't want to scan a linked list because they have horrid
-cache footprints.
-The locking is equally horrid - especially for remove.
-Arrays of pointers ar ethe way forward :-)
+[...]
 
-=09David
+>
+> Let me know what you think,
+> Maxime
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
+The overall idea looks great. I've started checking how I can use that
+for our msm devices family, which makes use of bridges and
+drm_bridge_connector.
+My current idea is to extend the drm_bridge_funcs with the new
+callback to be called once the drm_connector has been instantiated.
+This way all the bridges can influence new connector.
+Another possibility is to follow drm_bridge_connector design closely
+and let it call into drm_connector_hdmi code if it detects that the
+last bridge is the HDMI one.
+WDYT?
 
+Some context, older MSM devices have an on-die HDMI encoder,
+implemented as drm_bridge at drivers/gpu/drm/msm/hdmi. Newer
+generation of devices has dropped the on-die HDMI implementation in
+favour of using external DSI-to-HDMI bridges, like Lontium LT9611 or
+LT9611UXC. I'm looking at enabling new HDMI infrastructure for both
+cases.
+
+-- 
+With best wishes
+Dmitry
 
