@@ -1,106 +1,134 @@
-Return-Path: <linux-kernel+bounces-80037-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FA95862A04
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 11:47:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C360C862A05
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 11:53:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5FEB1C20A23
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 10:47:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 783AF281DF7
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 10:53:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75DCAFC1A;
-	Sun, 25 Feb 2024 10:47:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46476FC15;
+	Sun, 25 Feb 2024 10:53:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="PPkO4O+u"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="IWQ3P+Pd"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5242CFBE5;
-	Sun, 25 Feb 2024 10:47:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93A139445
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 10:53:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708858058; cv=none; b=QlF7q9XaEQtmwyx5pYuHYAyhiqXnUefC0qzsqKAJEDeiCQCqZR0Uk7OHFM++0R4nU4aGwSJmc9Mn52IzKkX2jPpTdst+hbnWYSs/jto0Bhb38IzZ8WAKN0Hfjo34J54ZxeCFCgRzBxGcgOOb7x/UBAUviL5yQUJnzf3NEXSU5D8=
+	t=1708858411; cv=none; b=RSyV8LuCM3YxsSt0r3oGcMmeAwaDKsIFVN8MQYVeLBYoYmwrLW9K9f+DuAIEjvUZPzxHf78xSEHj3I+m7U/Hu7S3qoEIE6WUpNrIc5H6TZnp5eVZ5deGdw2FkLEVZz0PCGOMwENt4R2q/XyI7l8ARW5tiiLgXF2Dfclyn22OYJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708858058; c=relaxed/simple;
-	bh=uUcuYqjCTeb1ugX+riKAIX3o7pOCGZNVL9mvJt1yjDs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Je57WNhJL1e1i9E8rdnvxtYfua8nDb9Ro9xvu9/3E+QTaQqkTBKqqYfUIibUOz8v+7cs0lJel/2jH8xpdg33+EkpXYseNrJNvwA1C1c13W3jYvtPA/CfNL4ijXgEf6J/pmzyIdMuNsvgNn0L9CRROpX1mzIompeEKS+m7kXZxy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=PPkO4O+u; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-	s=s31663417; t=1708858051; x=1709462851; i=wahrenst@gmx.net;
-	bh=uUcuYqjCTeb1ugX+riKAIX3o7pOCGZNVL9mvJt1yjDs=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=PPkO4O+uKo8zQag0O6zBB6Out/TIIk/rrJg8YQmev3m3kfubM0ZyZVUz6h109q6S
-	 4a1Ka5oR9uUMjU9RUisJAlXd6bSp9oIXLd83+kVIFoZMOb+lYBXmcve2x3HQ3OQs4
-	 sSIs2eJWFE7IT2p1XotyK780CKJDpjFQZa/RI+d5wPPTRChEJHEdqeVf4wiSlwDF7
-	 S2ySEYeBgvwfsle7Oa/DGEyDoy7nsq7vInt2MNQgLyMK4R2yR21t1siGURtos/7mF
-	 scYXKbWRT9A5muJx+Y+Be6vUHJkmXdeiBtGItQIfhKJgMaKzOsr+LA8dV2vwlF7SO
-	 JITpz+YVRxlGDFeYCg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.1.167] ([37.4.248.43]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MiacH-1r0zg42jvb-00fn1d; Sun, 25
- Feb 2024 11:47:31 +0100
-Message-ID: <c51a282a-bdbf-4ced-9fcf-e38a33152761@gmx.net>
-Date: Sun, 25 Feb 2024 11:47:30 +0100
+	s=arc-20240116; t=1708858411; c=relaxed/simple;
+	bh=FDViOf7yySsA0lA+J0nHOdO54+k5g9sHwCPBqiFyg3E=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=PGv8WXxVnpPfvgTysbl0jtedZiblIsr4UfSSHJHohXlEVUDJdZpnGTbt2uGVwQC9mE+UYTVkUyzV6lpm7Hcf+8CEevAJJvolIY/PkaNuVnAj0Wc0dhRxZ3v0l0ohyl4NNA2kaQxahjvEcm5R8HDJPIMl5kRFEg3g9PT6XRuBl9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=IWQ3P+Pd; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 6307240E0192;
+	Sun, 25 Feb 2024 10:53:27 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id mNyxTFXOPTfI; Sun, 25 Feb 2024 10:53:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1708858404; bh=VzhZtmJDxXcu6WUzL2Z6aDKOD8My4jQtElr8IuGtEag=;
+	h=Date:From:To:Cc:Subject:From;
+	b=IWQ3P+PdvTLgm4YIvxBYJk4zmHlmW/svoml2NP7mDTvS+sw7OqVRWQ7ffo9lgMGn0
+	 NmlMQLaP2edoViaFqBGHiewcV1X74xwl5ZvELKKFEt1fzksAGJgCSP37/z/Q5qL7kE
+	 FY/4lczP3DeTKuo2GdLfuQzEK6g4ln53dSWN2hafKfGWduPaIqfS8v/jJK6NjSzooc
+	 J0l3OsDpTDIOH6xvzrME9OvALr8Fi3ys8/ZTCXR0wKu7JJhfw2UF/kqyVn8ndlsPOg
+	 N0qsjsOex7aN1YmlQ2bXLVkvwoKRQLXYMLkTsqk0muGLwh7qv7wjHN1bDaXLLVA5OO
+	 ezDzUqt7Gsm1CwkuTadWEpe1z8OtmvoHuhezV4RFKCl1wDXWxq9H9KL5+xk9fptmTs
+	 RmjAM4XWHc9DFBjLPUlK/R04RjyYrn9ozA7Fx/JqzJAEk40hEjW/xEJI1ON9Z68DPR
+	 nYd6cs4Q5fMRtrPUpWV8LldwtVzBXzfMDMtS8xsZSyV7d+XzuZiM38hlM0GEDldCUK
+	 3dGEScO3X8J2bEQWKLQ2Y0+Gv65G9zidZet6McFKq2YLF7VSg/KuSeeulWqq+0D8lg
+	 gihl7gV8No38PD0WpkjdcKGqWZ6hRXESrUwO07Rpd2UegBk/nUGQiGEQH3Ozznxg3F
+	 ZY+U6RmhoaEZzI2f4FU3Z/Lc=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4914C40E00B2;
+	Sun, 25 Feb 2024 10:53:21 +0000 (UTC)
+Date: Sun, 25 Feb 2024 11:53:20 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/urgent for v6.8-rc6
+Message-ID: <20240225105320.GAZdscIJ3wxkU8_6At@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: WARNING: fs/proc/generic.c:173 __xlate_proc_name
-Content-Language: en-US
-To: Alexey Dobriyan <adobriyan@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Kent Gibson <warthog618@gmail.com>,
- linux-gpio@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <CACVxJT8T8u+XK7GnyCus19KDVqfquGbAM-0x8bSFgKTeqhD2Ug@mail.gmail.com>
-From: Stefan Wahren <wahrenst@gmx.net>
-In-Reply-To: <CACVxJT8T8u+XK7GnyCus19KDVqfquGbAM-0x8bSFgKTeqhD2Ug@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:IELdsSLR+NFbCh9yElhseAfVmWhYyoixGwwFKPVHbwC7CS25RTd
- EQUQRRm1ltniT0f+XBOoVf0Uqx1dfnQPo+dZrYwE58dMDEVMQp7yxkarOkpBBQIwGXEvHVe
- iyu/vf13RZ1pObgJW8K1hPepoon/HbzChGemI/3rW9Eo2z+vwETfGci90aTYGhG0ykwhFjx
- IkIvwnZlsk01yyNHXyRug==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:dhkRUMWhQwg=;HrQL903rxlwldUPHEusVgq4ZtMd
- cvyEys01wUHFTZlq34ZVuiJHbUwgG9lS+1Ql4RfdczGlIYaQQFaHzTauHt7bS7JFDkhtjkKFT
- WEo/bxt/i/Hqau9wettFXQwq6THQjcfI4Tv4GJYIZvCBHb0EZ80hQXBofLPIrnSCQAI9QZX6o
- qEJ7ghCrHzhnWARY3D2maxTFGvCTrYezvqjfQyD1Yvf6fvjOJvH5imBDvuqzO6nLwP+wwokdp
- 2F/kT4UGNSTzt8e2Nt8vBrcrPCcY/S9lSP6pc2r/62oY+XzbzIrZgibS6iFlqfoCltXCxVSDP
- 9EYzJTfgfEhvWQmS4nSnI8Edege+OBPyWJxY3GLEihTUv5nlGFIhvvSsaObfncT/8DDeCSOcg
- elpj8+v4NWft+lOhDL9zNf4Z5nXcNATtJC3fCTJkFIoG7K4qv/fDBVT1pDHYd/TClD0C7luVX
- nMxjEIsgXIqbERIkkivmYF7Orv4nrXenoID5qnbXpHn/paJgypwebIy//7kAjV4AHh9CenElG
- T2bik2RJUWvKe9GHHhijNSZ53WkD2sy8qzzzGZFz0a5DQzs4RzLM54Af93JsIkEMw7Op1AkaK
- kovp05bllgQb4rJ4KZm/fIVQ0PewImI4vSiqbp/K3s3ipw3MQX9QT1EgyXFszmmaaBPwyqisa
- vjSpHFqpUm5A36wk3yKLBQRf5U1ohW9CcVGMZbY/bvBDwKM/YaNi/8/bVgOtGyuyMHajU8XVy
- tkxzaUO23QYMsf7HMV5iCHhHhoP/r3hxNZ5FwDJEmj5VuYYCUo7WEvfNL6miXIEz/icPiQn0T
- tWfjSp8JQ05vjQmLthfC7oWzmXi7LzeWgSTSiZSw89YDw=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-Hi Alexey,
+Hi Linus,
 
-Am 25.02.24 um 11:37 schrieb Alexey Dobriyan:
->> WARNING: CPU: 0 PID: 429 at fs/proc/generic.c:173
->> __xlate_proc_name+0x78/0x98 name 'R1/S1'
-> proc_mkdir() didn't find 'R1' directory.
->
-> In other words, you can't have slashes in irq names.
-we already came to the point in the discussion before (link in my last
-mail). The problem is no libgpiod user (userspace) is aware of this. So
-the next question is where it should be fixed?
+please pull a bunch of urgent x86 fixes for v6.8-rc6.
 
-Sorry, i took my original message because posting the last message to
-linux-fsdevel without context would be pointless.
+Thx.
 
-Regards
+---
 
+The following changes since commit b401b621758e46812da61fa58a67c3fd8d91de0d:
+
+  Linux 6.8-rc5 (2024-02-18 12:56:25 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v6.8_rc6
+
+for you to fetch changes up to 43fb862de8f628c5db5e96831c915b9aebf62d33:
+
+  KVM/VMX: Move VERW closer to VMentry for MDS mitigation (2024-02-19 16:31:59 -0800)
+
+----------------------------------------------------------------
+- Make sure clearing CPU buffers using VERW happens at the latest possible
+  point in the return-to-userspace path, otherwise memory accesses after
+  the VERW execution could cause data to land in CPU buffers again
+
+----------------------------------------------------------------
+Pawan Gupta (5):
+      x86/bugs: Add asm helpers for executing VERW
+      x86/entry_64: Add VERW just before userspace transition
+      x86/entry_32: Add VERW just before userspace transition
+      x86/bugs: Use ALTERNATIVE() instead of mds_user_clear static key
+      KVM/VMX: Move VERW closer to VMentry for MDS mitigation
+
+Sean Christopherson (1):
+      KVM/VMX: Use BT+JNC, i.e. EFLAGS.CF to select VMRESUME vs. VMLAUNCH
+
+ Documentation/arch/x86/mds.rst       | 38 +++++++++++++++++++++++++-----------
+ arch/x86/entry/entry.S               | 23 ++++++++++++++++++++++
+ arch/x86/entry/entry_32.S            |  3 +++
+ arch/x86/entry/entry_64.S            | 11 +++++++++++
+ arch/x86/entry/entry_64_compat.S     |  1 +
+ arch/x86/include/asm/cpufeatures.h   |  2 +-
+ arch/x86/include/asm/entry-common.h  |  1 -
+ arch/x86/include/asm/nospec-branch.h | 25 ++++++++++++------------
+ arch/x86/kernel/cpu/bugs.c           | 15 ++++++--------
+ arch/x86/kernel/nmi.c                |  3 ---
+ arch/x86/kvm/vmx/run_flags.h         |  7 +++++--
+ arch/x86/kvm/vmx/vmenter.S           |  9 ++++++---
+ arch/x86/kvm/vmx/vmx.c               | 20 +++++++++++++++----
+ 13 files changed, 112 insertions(+), 46 deletions(-)
+
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
