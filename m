@@ -1,109 +1,95 @@
-Return-Path: <linux-kernel+bounces-79985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79986-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBAEA86293D
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 06:57:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35F4D862940
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 07:04:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14B4EB21365
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 05:57:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8F11B21382
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 06:04:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BBA2C13B;
-	Sun, 25 Feb 2024 05:57:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="XtVGY8p+"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 519B39443;
-	Sun, 25 Feb 2024 05:57:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D11FC2ED;
+	Sun, 25 Feb 2024 06:04:44 +0000 (UTC)
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [207.46.229.174])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E852FBE4D
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 06:04:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.46.229.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708840652; cv=none; b=bfOynNLa3iVIjDKR+NFiOXvMBIoiAxX5fz3ClvGJH/cZka5nwhgnnGpEsFRtyyi+bWd9b/yTd5QmCdW0OyiPKMPIlCNSvS8gY8jr7ctauFBKR4Bz6joupGj42CF4uClmnolK56rqYEDL3QooLwXHAAAEHQDng0k3HBhGwUFef04=
+	t=1708841083; cv=none; b=Anh60/+XYwZHIRraRexAIOMp/du2t9yOz/O2KAh5kb6Tw2wS4J9Rd3GQgDF2j4raKsBM1VSNU4jSR69pTDeDnopmXnCuZXIaknry7nogGaSl97PYAZBfrX67u3kpZcMWET8fS7U6bcaHd9IFxbVk3LnZykRvmrPgUwersSpXZJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708840652; c=relaxed/simple;
-	bh=QpPrkM0hEknnX9z72cr5X4Rw6BoHmRfdBG6lB27sycw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=V/anwuwg27rgecC/WIReylC05SU448YJKzT+jXzAJWRIK8VYSqbDY2i895hPX3RuXl+TFfcQAxD2Urj6saM5WNxwG/YsW7do0BGEtkoUCgQ/x5lNt64nS+N7byJGLYXwbh3OJIyxcvuu4LnVz14NZqwsSpJRLZrehrgMiHx5+uI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=XtVGY8p+; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=5tyQLvMNT9E4Tr/AbhbZm9ixo5fjkwiuVvjkmXED5iE=;
-	t=1708840650; x=1709272650; b=XtVGY8p+effF1uS+uC43CF3IHdFhk/H1r2SiZiEGRS9088L
-	3GYR/amv3y4tWVxfbduSwXoRYXo2uMt59MjM5Nw7IfuW1sRto9MnJ8YKhfETHvXBpDoKl/zI59iSS
-	dKlDQppV324nD1HMaX9Ddfx01uqasC4vrgEBkZoxccDnNU2JsE3HmE7dJWjWUCcugX1zZyjzF++Ep
-	YxZqTm1DUGp351MrI9s+aHfeatcl/3JBv2qPOf4UXqYF8gA8tJEG7gEdboHy80xkVpdiWGGXEnou0
-	zZZSQJHPQb5t04P7ADSMpiTXuy9/XXTSBQt7ZJvfIpk+FNXbjVtzp1l1aytSPfWw==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1re7Vv-0008GL-J5; Sun, 25 Feb 2024 06:57:27 +0100
-Message-ID: <5b67d22f-ddd6-4b9d-9c86-00976d6b53ca@leemhuis.info>
-Date: Sun, 25 Feb 2024 06:57:26 +0100
+	s=arc-20240116; t=1708841083; c=relaxed/simple;
+	bh=O9pYAacf0RkkUX8+kCmmHElwjDQBmkf/X5szzSGN1hs=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=N3PLdCvlQx9ggcVUa4fnqZTJkRgq2L69pkNWGoWJFIZVzLmUstWl0YVotJAzfcIXxGyOTZfUDogbC1LD7XQ9OY1El/yA6GU77Tq71iDq651NJZvLi7wODyeR+juIzEhmeDq8UoJM2fPpmdNBeSBWhHDPE6X4SCxQyK7+DRAqwOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=207.46.229.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from ubuntu.localdomain (unknown [218.12.16.226])
+	by mail-app4 (Coremail) with SMTP id cS_KCgC3sH5S2Npl6IGXAQ--.50019S2;
+	Sun, 25 Feb 2024 14:04:10 +0800 (CST)
+From: Duoming Zhou <duoming@zju.edu.cn>
+To: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+	andrew@lunn.ch,
+	gregory.clement@bootlin.com,
+	sebastian.hesselbarth@gmail.com,
+	linux@armlinux.org.uk,
+	Duoming Zhou <duoming@zju.edu.cn>
+Subject: [PATCH] ARM: mvebu: Prevent null pointer dereference caused by kzalloc failure
+Date: Sun, 25 Feb 2024 14:04:01 +0800
+Message-Id: <20240225060401.52768-1-duoming@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:cS_KCgC3sH5S2Npl6IGXAQ--.50019S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtw1fCry8CFW3Zw1xJw17GFg_yoWDGwbEkw
+	s7Aws7u3s3Xwn5Zr13Ca13ur9Iyan8uryxZrn7XF1Fy3yY9Fnrur4vqrZ3Ar43urZFgFWf
+	ArWrur4Yvw1jgjkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb48FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWU
+	AVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkG
+	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4U
+	MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbSfO7UUUU
+	U==
+X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwMBAWXY6VIJRQBCsI
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [REGRESSION] 6.8-rc process is unable to exit and consumes a lot
- of cpu
-Content-Language: en-US, de-DE
-To: Al Viro <viro@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Linux regressions mailing list <regressions@lists.linux.dev>,
- "Christian Brauner (Microsoft)" <brauner@kernel.org>,
- Matt Heon <mheon@redhat.com>, Ed Santiago <santiago@redhat.com>,
- Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- Paul Holzinger <pholzing@redhat.com>, LKML <linux-kernel@vger.kernel.org>
-References: <6a150ddd-3267-4f89-81bd-6807700c57c1@redhat.com>
- <652928aa-0fb8-425e-87b0-d65176dd2cfa@redhat.com>
- <9b92706b-14c2-4761-95fb-7dbbaede57f4@leemhuis.info>
- <e733c14e-0bdd-41b2-82aa-90c0449aff25@redhat.com>
- <f15ee051-2cfe-461f-991d-d09fd53bad4f@leemhuis.info>
- <c0cbf518-c6d4-4792-ad04-f8b535d41f4e@leemhuis.info>
- <CAHk-=wg9nqLqxr7bPFt4CUzb+w4TqENb+0G1-yJfZbwvRhi29A@mail.gmail.com>
- <ZdqWYplgbHL7xSch@duke.home>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <ZdqWYplgbHL7xSch@duke.home>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1708840650;e30ad12f;
-X-HE-SMSGID: 1re7Vv-0008GL-J5
 
-On 25.02.24 02:22, Al Viro wrote:
-> On Sat, Feb 24, 2024 at 03:43:43PM -0800, Linus Torvalds wrote:
->> On Fri, 23 Feb 2024 at 23:00, Thorsten Leemhuis
->> <regressions@leemhuis.info> wrote:
->>>
->>> TWIMC, the quoted mail apparently did not get delivered to Al (I got a
->>> "48 hours on the queue" warning from my hoster's MTA ~10 hours ago).
->>
->> Al's email has been broken for the last almost two weeks - the machine
->> went belly-up in a major way.
->>
->> I bounced the email to his kernel.org email that seems to work,
+The kzalloc() in i2c_quirk() will return null if the physical
+memory has run out. As a result, if we dereference the new_compat
+pointer, the null pointer dereference bug will happen.
 
-Thx!
+This patch adds a check to avoid null pointer dereference.
 
->> but I
->> also think Al ends up being busy trying to get through everything else
->> he missed, in addition to trying to get the machine working again...
-> 
-> FWIW, I'm pretty sure that it's fixed by #fixes^ (7e4a205fe56b) in
-> my tree; I'll send a pull request, both for #fixes and #fixes.pathwalk.rcu
+Fixes: 5fd62066d290 ("ARM: mvebu: Add thermal quirk for the Armada 375 DB board")
+Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
+---
+ arch/arm/mach-mvebu/board-v7.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Great, thank you, too!
-
-Ciao, Thorsten
-
+diff --git a/arch/arm/mach-mvebu/board-v7.c b/arch/arm/mach-mvebu/board-v7.c
+index fd5d0c8ff69..7d2cb12e349 100644
+--- a/arch/arm/mach-mvebu/board-v7.c
++++ b/arch/arm/mach-mvebu/board-v7.c
+@@ -125,6 +125,8 @@ static void __init i2c_quirk(void)
+ 		struct property *new_compat;
+ 
+ 		new_compat = kzalloc(sizeof(*new_compat), GFP_KERNEL);
++		if (!new_compat)
++			continue;
+ 
+ 		new_compat->name = kstrdup("compatible", GFP_KERNEL);
+ 		new_compat->length = sizeof("marvell,mv78230-a0-i2c");
+-- 
+2.17.1
 
 
