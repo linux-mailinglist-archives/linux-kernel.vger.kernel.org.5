@@ -1,121 +1,166 @@
-Return-Path: <linux-kernel+bounces-79906-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79907-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24A99862886
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 00:59:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33B86862888
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 01:01:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5CF728233F
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Feb 2024 23:59:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBCFA1F2198D
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 00:01:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0CFA4EB33;
-	Sat, 24 Feb 2024 23:59:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uOTLlu9o"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B99B800;
+	Sun, 25 Feb 2024 00:01:35 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C4BE4D9E8
-	for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 23:59:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0B34624
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 00:01:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708819176; cv=none; b=iXFdCdfaEN3/fX+QTr5o5TQrtTI99g/bBzSXoHnAZAWJx96OgPUdF3RMohIefV+uqi95cWL8AXkO3G2YTzrzvlJIxfO/GUxEnlnoJ1ip24hJSoFrD/AA33A1eEkIVVHoNVjQdNaoaHCz3fwacIlh+Pn6LjAeMxpXLvL8FmGyA8o=
+	t=1708819294; cv=none; b=Me3naggRI0LcxeBCFvMr+zF2NcDNRD7iUuocBOSMUGVxru4OXfiINCH7PGJ1Cz9kIC/K4K328Jm+ba+kZhaO+5FNWlMlYiuHFCthrQ2D0wqnoE8Aytkg4xjOMGtp3mYoS5TMIQ1/mrbTou804fZS7T5MUoBua7eCRnoBSzRPKQM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708819176; c=relaxed/simple;
-	bh=ckUxIr9E2HFFDl6qjsUCpotsMkiROkeR/piYuNBuUg4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dmBAN17tC+zXIjhMiyk+RM1+0m2wbdMBEjdTACep7v4DXSkH84jaae5fJR7T/yCzFmuNPMj0qFp6GO1vV73kPHYSQCl1cfaZ2UNaqBfHJ4dTTVXEoAvBQyAdPxmiLa1H56DJ1TNTs9vStbwjbDiTjY7Rao8Cb1LNa/o0lBO63zk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uOTLlu9o; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc6cbe1ac75so1661144276.1
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 15:59:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708819173; x=1709423973; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xok2xXQ0vGr1pj2FsmN5nCeRHn6DxQhEZTwOzT6wsCM=;
-        b=uOTLlu9o6w36ilT07ANXYLrnkYqH1fy+yGL6NJj9bFpElpO8alJUbWnRhfic3Qr/RL
-         VzEaZ2ML8cAeni1nt25I5688ncIScT2SyfxSnfOrsqGJqT4am6qORSXUwp1wKtxi7hyj
-         uEFnkKh4Y0TmRwaASZqhg/l6AIct7fY1fW8vI6vjOApud3xeAa454+XVdIpqTGQ7Pe02
-         het4FSEj8+ouv4vFpm4WpBALE5WW70d+QdnKdaiKPUuzCByuUo1azNDodKUx+ZHITQpX
-         ptBJ4Gr6C8fhYlxAM6Dm2X0MZnF2FgQh4TytWtHogydCFqpRMNHWDnskMLXVUwivU72g
-         ei1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708819173; x=1709423973;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xok2xXQ0vGr1pj2FsmN5nCeRHn6DxQhEZTwOzT6wsCM=;
-        b=q7SAYYfNLvqlPorVR6KZ5GjylTa0hNgH8k6ZWoFfdvZwse12ybQ4xmIkMQo4wBD4W0
-         jLiZx5j7ho3YLThGigTVM8aYS94Eg+faJeQUPm9w3gcXOmfuFpMmevRZ/mr1xUs3/h29
-         V/X7Fd3BaRECgPM/46F0SeNy66d0Ktrw8zb+g0jARZ7DVawcHrw6dR5Zt0F3Q0FZ2SVC
-         Pkpv9+Vkgfu5gOxAiZCz+eugO4zgkSYwjzCBuWVBC+BwHvtCzugBnE0Wv1854UNShFy0
-         X2clgOyUEo88fwUqvunen3TMkg5zMIiNbShcG254wVR3P6OoCRDZbNJ3bkFlZXm+uP0v
-         tENw==
-X-Forwarded-Encrypted: i=1; AJvYcCVouuBucvo4K/RZkEHRasmPG5u2eHsFDWRzZXYbmkkTifoATWQXqHvMuAiCInxi/y9hePuXOc2yGPxxdgbFVyCpbIs+k/noD5sY4P8K
-X-Gm-Message-State: AOJu0YzXL+/AkiILXPpJIpI3nu7g4DZ/JGDQUZiNf99kv7lQ3ra6sndq
-	cjNglnTQTnnDC+px1UyHNCkNr1l0yolzhZyYrThFxUKh98pMmONhJKGibl56Yt8/hNkGpT3KD24
-	uQ0ID9Kj2tRIuWbGaNsxTEemk+HWtlCXi6+UxAMl3xcFVw+UcyxZTqA==
-X-Google-Smtp-Source: AGHT+IEEWF/q9H4leTyQIxxYbOYmfgX2cTUmaIFRHf6/R5fcAuCr/SEsDzojC5RZar1CMevNhZK72yt+54/VUNSLZJw=
-X-Received: by 2002:a25:ada8:0:b0:dc7:4988:6c77 with SMTP id
- z40-20020a25ada8000000b00dc749886c77mr2044340ybi.21.1708819173625; Sat, 24
- Feb 2024 15:59:33 -0800 (PST)
+	s=arc-20240116; t=1708819294; c=relaxed/simple;
+	bh=PA3f8p9PSQOP+huvK5/WKeQuDFz8b1e9dTDMnaE8xqs=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=gzW1vEMTuWbJt7uhU0/SITnhuWPIr8U+Um41W43qkq+xjwebHP2DgvUyAlIbYML8QOCh3xtMwg7i+yeKADN5gNZxzEv2FQ2oiwuRUXiFlLmoy/cHPhuj13cpLU7JOV9eCqZ2NEAIU8NXQVEtAwMb9YnaF0OlamIbMuAJw65m7X8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from fsav311.sakura.ne.jp (fsav311.sakura.ne.jp [153.120.85.142])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 41P01JUB022406;
+	Sun, 25 Feb 2024 09:01:19 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav311.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav311.sakura.ne.jp);
+ Sun, 25 Feb 2024 09:01:19 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav311.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 41P01IsN022399
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Sun, 25 Feb 2024 09:01:19 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <b912d540-d689-4c6b-af4b-7c6fbc0f263d@I-love.SAKURA.ne.jp>
+Date: Sun, 25 Feb 2024 09:01:19 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240216070555.2483977-1-tudor.ambarus@linaro.org>
- <20240216070555.2483977-13-tudor.ambarus@linaro.org> <10f692ae-ac7a-4243-aadc-80712f781d39@linaro.org>
-In-Reply-To: <10f692ae-ac7a-4243-aadc-80712f781d39@linaro.org>
-From: Sam Protsenko <semen.protsenko@linaro.org>
-Date: Sat, 24 Feb 2024 17:59:22 -0600
-Message-ID: <CAPLW+4=PYEHC3+Am1=xjtERsGcXmLsVAH218JryecaJdw8ER6g@mail.gmail.com>
-Subject: Re: [PATCH v3 12/12] spi: s3c64xx: switch exynos850 to new port
- config data
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: broonie@kernel.org, robh@kernel.org, andi.shyti@kernel.org, 
-	krzysztof.kozlowski@linaro.org, conor+dt@kernel.org, alim.akhtar@samsung.com, 
-	linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	andre.draszik@linaro.org, peter.griffin@linaro.org, kernel-team@android.com, 
-	willmcvicker@google.com, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [virtualization?] KMSAN: uninit-value in virtqueue_add
+ (4)
+Content-Language: en-US
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+To: syzbot <syzbot+d7521c1e3841ed075a42@syzkaller.appspotmail.com>,
+        syzkaller-bugs@googlegroups.com
+Cc: linux-kernel@vger.kernel.org
+References: <000000000000fd588e060de27ef4@google.com>
+ <be634ab4-58aa-40e4-8ab0-0e2685537525@I-love.SAKURA.ne.jp>
+ <e34d2e40-de98-4736-bae9-7271fe9cf242@I-love.SAKURA.ne.jp>
+ <c72f390a-47a1-4a2d-b789-223fbb5a3add@I-love.SAKURA.ne.jp>
+In-Reply-To: <c72f390a-47a1-4a2d-b789-223fbb5a3add@I-love.SAKURA.ne.jp>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 21, 2024 at 11:56=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linar=
-o.org> wrote:
->
->
-> Hey, Sam,
->
->
-> On 2/16/24 07:05, Tudor Ambarus wrote:
-> > Exynos850 has the same version of USI SPI (v2.1) as GS101.
->
-> I tested GS101 and it worked, I guess exynos850 SPI shall work too as it
-> uses the same SPI version, v2.1. Can you run a test on your side too see
-> if works? If not, Mark can drop this patch I guess. Please let us know
-> your preference.
->
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git v6.7
 
-Tested the series on E850-96:
-  * All 3 SPI instances were tested
-  * Tested using loopback mode only
-  * Used spidev_test tool + spidev devices in dts
-  * Polling, IRQ and DMA transfers were tested
-  * Works fine even with no SPI aliases in dts
+diff --git a/arch/x86/include/asm/page_64.h b/arch/x86/include/asm/page_64.h
+index cc6b8e087192..f13bba3a9dab 100644
+--- a/arch/x86/include/asm/page_64.h
++++ b/arch/x86/include/asm/page_64.h
+@@ -58,7 +58,16 @@ static inline void clear_page(void *page)
+ 			   : "cc", "memory", "rax", "rcx");
+ }
+ 
++#ifdef CONFIG_KMSAN
++/* Use of non-instrumented assembly version confuses KMSAN. */
++void *memcpy(void *to, const void *from, __kernel_size_t len);
++static inline void copy_page(void *to, void *from)
++{
++	memcpy(to, from, PAGE_SIZE);
++}
++#else
+ void copy_page(void *to, void *from);
++#endif
+ 
+ #ifdef CONFIG_X86_5LEVEL
+ /*
+diff --git a/mm/kmsan/hooks.c b/mm/kmsan/hooks.c
+index 5d6e2dee5692..0b09daa188ef 100644
+--- a/mm/kmsan/hooks.c
++++ b/mm/kmsan/hooks.c
+@@ -359,6 +359,12 @@ void kmsan_handle_dma_sg(struct scatterlist *sg, int nents,
+ }
+ 
+ /* Functions from kmsan-checks.h follow. */
++
++/*
++ * To create an origin, kmsan_poison_memory() unwinds the stacks and stores it
++ * into the stack depot. This may cause deadlocks if done from within KMSAN
++ * runtime, therefore we bail out if kmsan_in_runtime().
++ */
+ void kmsan_poison_memory(const void *address, size_t size, gfp_t flags)
+ {
+ 	if (!kmsan_enabled || kmsan_in_runtime())
+@@ -371,47 +377,31 @@ void kmsan_poison_memory(const void *address, size_t size, gfp_t flags)
+ }
+ EXPORT_SYMBOL(kmsan_poison_memory);
+ 
++/*
++ * Unlike kmsan_poison_memory(), this function can be used from within KMSAN
++ * runtime, because it does not trigger allocations or call instrumented code.
++ */
+ void kmsan_unpoison_memory(const void *address, size_t size)
+ {
+ 	unsigned long ua_flags;
+ 
+-	if (!kmsan_enabled || kmsan_in_runtime())
++	if (!kmsan_enabled)
+ 		return;
+ 
+ 	ua_flags = user_access_save();
+-	kmsan_enter_runtime();
+ 	/* The users may want to poison/unpoison random memory. */
+ 	kmsan_internal_unpoison_memory((void *)address, size,
+ 				       KMSAN_POISON_NOCHECK);
+-	kmsan_leave_runtime();
+ 	user_access_restore(ua_flags);
+ }
+ EXPORT_SYMBOL(kmsan_unpoison_memory);
+ 
+ /*
+- * Version of kmsan_unpoison_memory() that can be called from within the KMSAN
+- * runtime.
+- *
+- * Non-instrumented IRQ entry functions receive struct pt_regs from assembly
+- * code. Those regs need to be unpoisoned, otherwise using them will result in
+- * false positives.
+- * Using kmsan_unpoison_memory() is not an option in entry code, because the
+- * return value of in_task() is inconsistent - as a result, certain calls to
+- * kmsan_unpoison_memory() are ignored. kmsan_unpoison_entry_regs() ensures that
+- * the registers are unpoisoned even if kmsan_in_runtime() is true in the early
+- * entry code.
++ * Version of kmsan_unpoison_memory() called from IRQ entry functions.
+  */
+ void kmsan_unpoison_entry_regs(const struct pt_regs *regs)
+ {
+-	unsigned long ua_flags;
+-
+-	if (!kmsan_enabled)
+-		return;
+-
+-	ua_flags = user_access_save();
+-	kmsan_internal_unpoison_memory((void *)regs, sizeof(*regs),
+-				       KMSAN_POISON_NOCHECK);
+-	user_access_restore(ua_flags);
++	kmsan_unpoison_memory((void *)regs, sizeof(*regs));
+ }
+ 
+ void kmsan_check_memory(const void *addr, size_t size)
 
-Feel free to add:
 
-Tested-by: Sam Protsenko <semen.protsenko@linaro.org>
-
-Don't have time to review the patches right now, sadly.
-
-[snip]
 
