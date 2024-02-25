@@ -1,128 +1,140 @@
-Return-Path: <linux-kernel+bounces-79978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BA4086291B
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 05:57:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E18F86291F
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 06:01:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87C82281CE9
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 04:57:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FCC9B212BB
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 05:01:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 014A19454;
-	Sun, 25 Feb 2024 04:57:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A82739457;
+	Sun, 25 Feb 2024 05:01:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X12hB1tt"
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="rFDRrDPf"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4B2B9445
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 04:57:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95C5F8BF7;
+	Sun, 25 Feb 2024 05:01:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708837042; cv=none; b=nCNLsF5Fn1RTLNT6YdhJ5lAWkrmobxbvZWMcptEtL0GtvELivwq855ADYpsML1rMwwzwT9ysd7KfdQewAuqqED84X750gpCbCJFQ7PYRZYa+7opc2R8/KgbDyw09nwt4MYthyxHNokmmoSsDtRZiJbpy11sk6HebVBlsvvJeuUk=
+	t=1708837287; cv=none; b=lxUfIIvK0sI6/YZ8HWRO9wJXs5hkrEAJOO76zTvhAdUfb0VygLCIXMOEb83v3Qwnl7J9M+mezWK2+H1rZAi4XJVUwjhbu5uOVpCZQcI+syFO4uWzlmLRCYdAIcco6VfLMnfX7IQoHPDtR6hEOir8GjbL3IRFIyBXR/mQXLt46pI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708837042; c=relaxed/simple;
-	bh=lh8wIdWDLhbdeIx1kIiqoQGhmSU8f0uE7eLpPZ+2Vy4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jcT7aQ9XjLEwaV3RadGafhE7KJ8NwK/mzYZTVAPbb4JmxypfbptHLpKMnvcHnLtaZpb7KHvcH0MSJXktQauzzQoQRrVJrXnZr2W+AaptyaPxEOfjq7j+zKPtcWKNA9h8UiFaGqrrgNR4o+QSFNbhfmt3mzjtgNcYyJlm7HAF1Ao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X12hB1tt; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5dcc4076c13so1659692a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 20:57:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708837040; x=1709441840; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QBAbEO8N8UoJFU0GI3O78KlTzRGmo0GxF/Kd2SEwLGE=;
-        b=X12hB1ttKA1bSyim2funw87r2H5xLfHFClSVZpmY7YEQeE4aKueWk8iVOEEGC9l0di
-         6gqlUbL6lOU3+p44VheBQQvLcsc3sPdkkOmknaldjE+jT7ZvhfaYcauWnLVx3tlkWYhh
-         IVmxo5zHwMRxxB9aJVXP9bFXwMFzjGg3kRpbW6Bs3R6IGQIdX1SOFjrkLhTai2XklpqG
-         CCZAZxO2lLCCF4I5PFtop1zgaAt9+3KHFOpHf0N1J7puh5eYghRfHEB265yrFtuZ828Z
-         OGtWo9b4/Iv8+6tOoeEN012ME1U/yIZ1ZaVpZ96MimucrQbcaDbmbj6LWBmEf+NL09cI
-         C+ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708837040; x=1709441840;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QBAbEO8N8UoJFU0GI3O78KlTzRGmo0GxF/Kd2SEwLGE=;
-        b=CRKl4ut433rfcQdsR9SgkrmYbBMYxX85uWClKcAC7o3ykmdAjhRbTdRhIvshpr0/Lt
-         aQrWBZ4vRptnSzAn8EgeQQ7B9jQmi9Nb9ZarvpIZ6YOU5Rl1UcPVqLw0r1dpRJP7WhaD
-         wamG+cxxnfDAdvDvPWYoH6fq5Za4NtXwqcCeDG7qgDTMnjxuYGffWuAQPx0ZZ9BH4JhD
-         /aPMYvPKvT1CFsjo7CPpiYlSk0VX+H9AIXwU+yl778qkbhXNR3AJWuxOybTRa8KzJTRj
-         8EMw+PF0NZq9ivKO/Ba+Tc5jvuvpkKadWOKQiIEczxRKy5lN1uhSaPKb4gpLNnIWvrWs
-         mMLg==
-X-Forwarded-Encrypted: i=1; AJvYcCXCKygHAo/LMqqF/YY68SDPwyFayZ3HHW32p7Do+CGmdX3V9QJPu438aLEPKWer5EFo9QUz0F2gchNmt3C6W1hXItooc5hflpxhLzF2
-X-Gm-Message-State: AOJu0YyCOQNYuDGlYhQS+QBgb8DEm5yXi/ux6nJEvunxIhSsfescWHMb
-	W1fTGYaNpclaqrIkCxOCvyLrG/yQSy4/W9AjGAf8QpjMxkM5RnAO
-X-Google-Smtp-Source: AGHT+IFgN4daKjGulDEbP34bF8Wqdjxb7tb2e2NhZ8VHoy6T4niJZv2NOzn72x6PMJwrD4FG6pZnbQ==
-X-Received: by 2002:a17:90a:cb16:b0:299:cafa:5e8b with SMTP id z22-20020a17090acb1600b00299cafa5e8bmr4986126pjt.6.1708837040211;
-        Sat, 24 Feb 2024 20:57:20 -0800 (PST)
-Received: from LancedeMBP.lan ([112.10.225.117])
-        by smtp.gmail.com with ESMTPSA id q6-20020a17090a2e0600b0029681231ae1sm1978635pjd.28.2024.02.24.20.57.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Feb 2024 20:57:19 -0800 (PST)
-From: Lance Yang <ioworker0@gmail.com>
-To: akpm@linux-foundation.org,
-	shy828301@gmail.com
-Cc: ioworker0@gmail.com,
-	david@redhat.com,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	mhocko@suse.com,
-	minchan@kernel.org,
-	peterx@redhat.com,
-	songmuchun@bytedance.com,
-	zokeefe@google.com
-Subject: Re: [PATCH 1/1] mm/khugepaged: bypassing unnecessary scans with MMF_DISABLE_THP check
-Date: Sun, 25 Feb 2024 12:56:01 +0800
-Message-Id: <20240225045601.79244-1-ioworker0@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <CAK1f24=2z9tk4cCCSobVpExZ+uV6N8gbGx+xiJ7p_UjrZvSv3g@mail.gmail.com>
-References: <CAK1f24=2z9tk4cCCSobVpExZ+uV6N8gbGx+xiJ7p_UjrZvSv3g@mail.gmail.com>
+	s=arc-20240116; t=1708837287; c=relaxed/simple;
+	bh=fGZltGZNoJBL0qVbGmPCoIkPh0GK+3Eoei2TVfZIXgA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o6Yb3/FAX7waF5yK+tgKGcOTY+lcPrIZouUGPTWDkY3xXVHVmCGarSHmwbub89tp15x1ckiwewHeVTbDUn0HNV5MuCsAmZM/ulp2hOJXB0ff50lyYVGHWUkfg62V7COVW6oeio5o5hG8KOwC1YhJNPrXWBGCjoI5w/FXlgHju+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=rFDRrDPf; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=s5ZqZD7A6lH7mWMZnVXwTZc0c5NMrcq/moxPl8tGVLs=; b=rFDRrDPf8tWfYxe+lK4UGzVEDL
+	xGoCs8oYxMni+++XQVt4UltsjPu0WZMp8RJe/6YA9aYCak6FucCUSy4cfUFniup07o59MJccPJ/4Z
+	BSdCt/BWIET2vV8cjvdujdTd5kNLenAeV09P/GhWOMIe6numy2xPzJiUkmY3PR6lbAP0TP0LrfU/a
+	/MbKWjMgIbJPjiPr9sQVymuuKBa1VCnTpxY2ohh0hvN964qDY9+3/y7IYiDTrGAArbhrhm3MNhOWU
+	AyqViMWne7YOY3o8h9uy90VlFWFdflh5HuK4syEpROrKEdRYpq5cvhCOhtbpMoLva2+2rstZ9jgBF
+	KH5dEY9g==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1re6db-0000000D1Ox-0Pfe;
+	Sun, 25 Feb 2024 05:01:19 +0000
+Date: Sun, 25 Feb 2024 05:01:19 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: David Laight <David.Laight@aculab.com>,
+	'Herbert Xu' <herbert@gondor.apana.org.au>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Thomas Graf <tgraf@suug.ch>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
+	"rcu@vger.kernel.org" <rcu@vger.kernel.org>
+Subject: Re: [PATCH 0/1] Rosebush, a new hash table
+Message-ID: <ZdrJn0lkFeYGuYIC@casper.infradead.org>
+References: <20240222203726.1101861-1-willy@infradead.org>
+ <Zdk2YgIoAGOEvcJi@gondor.apana.org.au>
+ <4a1416fcb3c547eb9612ce07da6a77ed@AcuMS.aculab.com>
+ <2s73sed5n6kxg42xqceenjtcwxys4j2r5dc5x4fdtwkmhkw3go@7viy7qli43wd>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2s73sed5n6kxg42xqceenjtcwxys4j2r5dc5x4fdtwkmhkw3go@7viy7qli43wd>
 
-As a diff against mm-stable.
+On Sat, Feb 24, 2024 at 10:18:31PM -0500, Kent Overstreet wrote:
+> On Sat, Feb 24, 2024 at 10:10:27PM +0000, David Laight wrote:
+> > I remember playing around with the elf symbol table for a browser
+> > and all its shared libraries.
+> > While the hash function is pretty trivial, it really didn't matter
+> > whether you divided 2^n, 2^n-1 or 'the prime below 2^n' some hash
+> > chains were always long.
+> 
+> that's a pretty bad hash, even golden ratio hash would be better, but
+> still bad; you really should be using at least jhash.
 
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 2771fc043b3b..1c0073daad82 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -920,7 +920,7 @@ static int hugepage_vma_revalidate(struct mm_struct *mm, unsigned long address,
- {
- 	struct vm_area_struct *vma;
- 
--	if (unlikely(hpage_collapse_test_exit(mm)))
-+	if (unlikely(hpage_collapse_test_exit_or_disable(mm)))
- 		return SCAN_ANY_PROCESS;
- 
- 	*vmap = vma = find_vma(mm, address);
-@@ -1428,7 +1428,7 @@ static void collect_mm_slot(struct khugepaged_mm_slot *mm_slot)
- 
- 	lockdep_assert_held(&khugepaged_mm_lock);
- 
--	if (hpage_collapse_test_exit_or_disable(mm)) {
-+	if (hpage_collapse_test_exit(mm)) {
- 		/* free mm_slot */
- 		hash_del(&slot->hash);
- 		list_del(&slot->mm_node);
-@@ -2456,7 +2456,7 @@ static unsigned int khugepaged_scan_mm_slot(unsigned int pages, int *result,
- 	 * Release the current mm_slot if this mm is about to die, or
- 	 * if we scanned all vmas of this mm.
- 	 */
--	if (hpage_collapse_test_exit_or_disable(mm) || !vma) {
-+	if (hpage_collapse_test_exit(mm) || !vma) {
- 		/*
- 		 * Make sure that if mm_users is reaching zero while
- 		 * khugepaged runs here, khugepaged_exit will find
+There's a "fun" effect; essentially the "biased observer" effect which
+leads students to erroneously conclude that the majority of classes are
+oversubscribed.  As somebody observed in this thread, for some usecases
+you only look up hashes which actually exist.
+
+Task a trivial example where you have four entries unevenly distributed
+between two buckets, three in one bucket and one in the other.  Now 3/4
+of your lookups hit in one bucket and 1/4 in the other bucket.
+Obviously it's not as pronounced if you have 1000 buckets with 1000
+entries randomly distributed between the buckets.  But that distribution
+is not nearly as even as you might expect:
+
+$ ./distrib
+0: 362
+1: 371
+2: 193
+3: 57
+4: 13
+5: 4
+
+That's using lrand48() to decide which bucket to use, so not even a
+"quality of hash" problem, just a "your mathematical intuition may not
+be right here".
+
+To put this data another way, 371 entries are in a bucket with a single
+entry, 384 are in a bucket with two entries, 171 are in a 3-entry
+bucket, 52 are in a 4-entry bucket and 20 are in a 5-entry bucket.
+
+$ cat distrib.c
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+
+int bucket[1000];
+int freq[10];
+
+int main(int argc, char **argv)
+{
+	int i;
+
+	for (i = 0; i < 1000; i++)
+		bucket[lrand48() % 1000]++;
+
+	for (i = 0; i < 1000; i++)
+		freq[bucket[i]]++;
+
+	for (i = 0; i < 10; i++)
+		printf("%d: %d\n", i, freq[i]);
+
+	return 0;
+}
+
+(ok, quibble about "well, 1000 doesn't divide INT_MAX evenly so your
+random number generation is biased", but i maintain that will not
+materially affect these results due to it affecting only 0.00003% of
+numbers generated)
 
