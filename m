@@ -1,158 +1,139 @@
-Return-Path: <linux-kernel+bounces-80262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80263-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D58DF862CB2
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 20:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E17A2862CB4
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 21:03:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 131471C210E0
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 19:57:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E9431C20F6B
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 20:03:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A92611B95D;
-	Sun, 25 Feb 2024 19:57:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="k5uQwNMa"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A4751AADB;
+	Sun, 25 Feb 2024 20:03:06 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 734891B948;
-	Sun, 25 Feb 2024 19:57:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B64C38C10;
+	Sun, 25 Feb 2024 20:03:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708891051; cv=none; b=lm2venVpwVh4sk3+etmYPO71E3vwRDRI4R25wcO8kr5RLyfuTXVfvRiESlGeweZaj8tXK4oJ2eqgk3R/trSiyaSlzX87egMWTAEnhDfAo/ysMO5tT871XhCeb6XKfh7IEbZD88tb/uNrVSjcM44YVVMxfsrw/QNvan80Y7XmyR8=
+	t=1708891385; cv=none; b=ZCzvkFjI5MFerBUNZ7kCd/nnjzLbPsHiPBhOP/X+hk9ZUEYDXzn4t/ppjEM5OPSm8BxQKCtR+BafFoT7MPkBrUGCv9ncps7eMuQzwrmqTfOAYhdepc/M+lC5NktRQNyN39TS5WzFsy13nVw2FyX3BuNwA6QYTqS3yFcWhsEsV3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708891051; c=relaxed/simple;
-	bh=GPbhxPGQ8WjKkNX6KVf5ljpJ7euE7GoIQJaemJZK+X8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=TOB7lyPHK9kd5n2q/aZrVJ3Fgged24SBixGROAsMuDLmXVZMG0onyh8cJkHvSD2bT8tfFW/X2JmFWabdWNkc6CIJxIc8AgpirqDbOeEOaW8iqfc+eiGvSv3SpnthOPo2AiuylkoURI57B3ju7Btfy6IWsVNYJNmhBPwUxKu7oX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=k5uQwNMa; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41PJqlr2023991;
-	Sun, 25 Feb 2024 19:57:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=bzbwxhBL3/ANprITyQ8JbsOn+1U7PpwwKhIsh+TwLn0=; b=k5
-	uQwNMayS8SPJrXP8N+Iku0IiFQfkByOZJKEI8o30Zgqiebh4W6oaKEw555KVxdGf
-	1zXut/ztli66m3slz1vpub83J7gfhYaSLVUlKytMdOuyxATqS5maytcFPIQpifqW
-	s+kqFc4aRBKUXQ+GPT+QN12W1G+I/CkLg2H61ueEhq0kmEmkSkAsv5lRu0925y3f
-	vbJtc2+ZUJrpdk2M/5tSuCD9el3Z0/2i5FRlRXaHCNzXhdFAKrXz6zz2SNEWHHXv
-	n2cLkAn45DK5cWv4CgveM0c177wOSfxMqys7Kg2ugl7R7oYy0BhTv/D1hC9+dT8s
-	PkLgAg+YyDwKU6nnMPZA==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wf65htg1d-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 25 Feb 2024 19:57:20 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41PJvKxt011190
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 25 Feb 2024 19:57:20 GMT
-Received: from [10.110.76.211] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 25 Feb
- 2024 11:57:19 -0800
-Message-ID: <33e38ac8-f41e-ca66-0b75-e72990691a80@quicinc.com>
-Date: Sun, 25 Feb 2024 11:57:18 -0800
+	s=arc-20240116; t=1708891385; c=relaxed/simple;
+	bh=JdjL58AeruKy3wjRZCMa8HNnw48yFKwrynnIiyQwEXI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dA10lzhWNr3lP/9BBQvuD/Nr0jkJIIWclpVGqChbxkCDMkafhgm56yRyFHLMkvrtDgKLdFmfW+kDYa76utbFUjRkXzqlAtLJ1sv9h2mSVAlZczYGZVeoa1QVoVCABhBlUBEFshe5MX3fL3h+JxZtlUghFMsFNLSNOgCz8NLZ8NM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 343BAC433F1;
+	Sun, 25 Feb 2024 20:03:04 +0000 (UTC)
+Date: Sun, 25 Feb 2024 15:03:02 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linke li <lilinke99@qq.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH] ring-buffer: use READ_ONCE() to read
+ cpu_buffer->commit_page in concurrent environment
+Message-ID: <20240225150302.23c3c3c2@rorschach.local.home>
+In-Reply-To: <tencent_5EC64EB49686EE61593AE541DB14CE490A08@qq.com>
+References: <lilinke99@qq.com>
+	<tencent_5EC64EB49686EE61593AE541DB14CE490A08@qq.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v3 3/3] drm/msm/dpu: capture snapshot on the first
- commit_done timeout
-Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark
-	<robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Marijn Suijten
-	<marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>, Daniel
- Vetter <daniel@ffwll.ch>
-CC: Steev Klimaszewski <steev@kali.org>, <linux-arm-msm@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <freedreno@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20240225-fd-dpu-debug-timeout-v3-0-252f2b21cdcc@linaro.org>
- <20240225-fd-dpu-debug-timeout-v3-3-252f2b21cdcc@linaro.org>
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <20240225-fd-dpu-debug-timeout-v3-3-252f2b21cdcc@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: vlGMjNgEnjeSetryRp6Ml3GVa7Vzu-Jh
-X-Proofpoint-GUID: vlGMjNgEnjeSetryRp6Ml3GVa7Vzu-Jh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-25_23,2024-02-23_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
- bulkscore=0 mlxlogscore=999 suspectscore=0 adultscore=0 priorityscore=1501
- impostorscore=0 malwarescore=0 phishscore=0 lowpriorityscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
- definitions=main-2402250159
 
+On Sun, 25 Feb 2024 11:05:06 +0800
+linke li <lilinke99@qq.com> wrote:
 
-
-On 2/25/2024 6:12 AM, Dmitry Baryshkov wrote:
-> In order to debug commit_done timeouts, capture the devcoredump state
-> when the first timeout occurs after the encoder has been enabled.
+> In function ring_buffer_iter_empty(), cpu_buffer->commit_page and
+> curr_commit_page->page->time_stamp is read using READ_ONCE() in 
+> line 4354, 4355
 > 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 9 +++++++++
->   1 file changed, 9 insertions(+)
+> 4354    curr_commit_page = READ_ONCE(cpu_buffer->commit_page);
+> 4355    curr_commit_ts = READ_ONCE(curr_commit_page->page->time_stamp);
+> 
+> while they are read directly in line 4340, 4341
+> 
+> 4340    commit_page = cpu_buffer->commit_page;
+> 4341    commit_ts = commit_page->page->time_stamp;
+
+Just because it's used in one place does not mean it's required in
+another.
+
+> 
+> There is patch similar to this. commit c1c0ce31b242 ("r8169: fix the KCSAN reported data-race in rtl_tx() while reading tp->cur_tx")
+> This patch find two read of same variable while one is protected, another
+> is not. And READ_ONCE() is added to protect.
 > 
 
-This looks fine now. Once we discuss patch 2, I can ack this.
+Here's the entire code:
 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> index 30f349c8a1e5..3cae07bf0b9b 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> @@ -126,6 +126,8 @@ enum dpu_enc_rc_states {
->    * @base:		drm_encoder base class for registration with DRM
->    * @enc_spinlock:	Virtual-Encoder-Wide Spin Lock for IRQ purposes
->    * @enabled:		True if the encoder is active, protected by enc_lock
-> + * @commit_done_timedout: True if there has been a timeout on commit after
-> + *			enabling the encoder.
->    * @num_phys_encs:	Actual number of physical encoders contained.
->    * @phys_encs:		Container of physical encoders managed.
->    * @cur_master:		Pointer to the current master in this mode. Optimization
-> @@ -172,6 +174,7 @@ struct dpu_encoder_virt {
->   	spinlock_t enc_spinlock;
->   
->   	bool enabled;
-> +	bool commit_done_timedout;
->   
->   	unsigned int num_phys_encs;
->   	struct dpu_encoder_phys *phys_encs[MAX_PHYS_ENCODERS_PER_VIRTUAL];
-> @@ -1226,6 +1229,8 @@ static void dpu_encoder_virt_atomic_enable(struct drm_encoder *drm_enc,
->   	else if (disp_info->intf_type == INTF_DSI)
->   		dpu_enc->wide_bus_en = msm_dsi_wide_bus_enabled(priv->dsi[index]);
->   
-> +	dpu_enc->commit_done_timedout = false;
-> +
->   	mutex_lock(&dpu_enc->enc_lock);
->   	cur_mode = &dpu_enc->base.crtc->state->adjusted_mode;
->   
-> @@ -2436,6 +2441,10 @@ int dpu_encoder_wait_for_commit_done(struct drm_encoder *drm_enc)
->   			DPU_ATRACE_BEGIN("wait_for_commit_done");
->   			ret = phys->ops.wait_for_commit_done(phys);
->   			DPU_ATRACE_END("wait_for_commit_done");
-> +			if (ret == -ETIMEDOUT && !dpu_enc->commit_done_timedout) {
-> +				dpu_enc->commit_done_timedout = true;
-> +				msm_disp_snapshot_state(drm_enc->dev);
-> +			}
->   			if (ret)
->   				return ret;
->   		}
-> 
+        cpu_buffer = iter->cpu_buffer;
+        reader = cpu_buffer->reader_page;
+        head_page = cpu_buffer->head_page;
+        commit_page = cpu_buffer->commit_page;
+        commit_ts = commit_page->page->time_stamp;
+
+        /*
+         * When the writer goes across pages, it issues a cmpxchg which
+         * is a mb(), which will synchronize with the rmb here.
+         * (see rb_tail_page_update())
+         */
+        smp_rmb();
+
+The above smp_rmb() is a full read barrier. The commit_page and
+timestamp are not going to be read again after this.
+
+        commit = rb_page_commit(commit_page);
+        /* We want to make sure that the commit page doesn't change */
+        smp_rmb();
+
+        /* Make sure commit page didn't change */
+        curr_commit_page = READ_ONCE(cpu_buffer->commit_page);
+        curr_commit_ts = READ_ONCE(curr_commit_page->page->time_stamp);
+
+Now the reason for the above READ_ONCE() is because the variables *are*
+going to be used again. We do *not* want the compiler to play any games
+with that.
+
+Thus, the first read of commit_page and time_stamp are read properly as
+the compiler will not do anything that can hurt us beyond that
+smp_rmb(). The second time we read those variables, we are using them
+in the below code.
+
+
+        /* If the commit page changed, then there's more data */
+        if (curr_commit_page != commit_page ||
+            curr_commit_ts != commit_ts)
+                return 0;
+
+        /* Still racy, as it may return a false positive, but that's OK */
+        return ((iter->head_page == commit_page && iter->head >= commit) ||
+                (iter->head_page == reader && commit_page == head_page &&
+                 head_page->read == commit &&
+                 iter->head == rb_page_commit(cpu_buffer->reader_page)));
+}
+
+*But* looking at this deeper, the commit_page may need a READ_ONCE()
+but not for the reason you suggested.
+
+        commit_page = cpu_buffer->commit_page;
+        commit_ts = commit_page->page->time_stamp;
+
+The commit_page above *is* used again, and we want commit_ts to be part
+of the commit_page that was originally read and not a second reading.
+
+So, I think for the commit_page we do need a READ_ONCE() but that's
+because it is referenced again just below it and we don't want the
+compiler to read the memory location again for the second reference.
+
+-- Steve
 
