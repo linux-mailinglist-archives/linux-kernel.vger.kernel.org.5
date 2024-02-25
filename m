@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-80332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 890A2862D7A
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 23:56:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61124862D7B
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 23:56:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BE0EB20F13
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 22:56:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 137E51F22A58
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 22:56:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C37721EB27;
-	Sun, 25 Feb 2024 22:55:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BF061F94B;
+	Sun, 25 Feb 2024 22:55:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rr7isJqi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oDxXy8zs"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16DA21CD1A
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 22:55:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7ADC1F608
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 22:55:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708901725; cv=none; b=VxEPXX6wNl46Neidqc2E0cwufMNgex61j7gLdBTBUEWXGBe7EyPUPrPTczGLAnkDz7mnViKDXogzl09cLXsbb8ybVlu1+OZ1QaXd1RuFYA8kyx2yUuTC7boMox4rvGQWdjF0V8xiJX6kFullJTVLDp3xiWKKBQfMxQRMJxPUocg=
+	t=1708901727; cv=none; b=VyfMoNwM05CLJRd/qE4Z1nTUM3RIaTtENO8I/Q3izXRthztrzbLkwvynad7iTV99RNmQJtACxHgdOzsU9ZB9YviuNAH5L7rAhSyBbfgp6WLY94oIsMI5bDq3M3ihum1SeCazJT+4aL6gzFS26qRuO87wy5s5phRIY1sBXBmXiWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708901725; c=relaxed/simple;
-	bh=IamgszwyZ3IggU9+C9+L0AHD8yJxSmoVUB5dySoZ5Bg=;
+	s=arc-20240116; t=1708901727; c=relaxed/simple;
+	bh=elCK0+UoX/y8indul9dlqt/x3/BB/vOLFTEHdirzUYU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=p4M2D3xpw0j5V+aiE1AMsLBbqdMxGaoHwVgeTjW0ICkl1KxI3tn4Hc6fJSpIiYZsAtKV37D+0pJITbO6hglQOrdpkWdltkPD2nKxlRaWDSAPV9l5yss7J9MZNCCnlLDRT+Yf1U69+j6LvGSOVBS1g7AV+Id+56AhWP6LKNUCLgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rr7isJqi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24A0AC433F1;
-	Sun, 25 Feb 2024 22:55:22 +0000 (UTC)
+	 MIME-Version; b=owVZCcIXh4uUoX/AVS9qizvkH0wesUzxPc0VtChgKFLUUK+9nhFcU2ivmT4iZv0bsv/Ab+MPuw5e/rg5zP9eHtb2HP+H6Lmc1zIxRS5m1xQshl47WIsRvC1mq/gYv4QpHYfIT8K38nbDS5AmQu3WsDuRKgmNl3sg023e+oHRb5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oDxXy8zs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35B06C433C7;
+	Sun, 25 Feb 2024 22:55:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708901724;
-	bh=IamgszwyZ3IggU9+C9+L0AHD8yJxSmoVUB5dySoZ5Bg=;
+	s=k20201202; t=1708901726;
+	bh=elCK0+UoX/y8indul9dlqt/x3/BB/vOLFTEHdirzUYU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Rr7isJqiDhIDuwueOypOg8KMlIwexB8lFBwW6JDcheReDFJIAwiF9oMKhwR3hn5m4
-	 6kjrKILkI8H8+slfeeQgWj3RXKnXHBMup23qMYJ/v7et58hB+WXGPnvGyXVgO3lAfg
-	 iVz6jjvFdasMsVUL4YTGL50zhFjP7auQKSNSkg3ny+BirlxSZyWg7iUFANKU+QTGco
-	 fPypIq2Cr6Lsiu59j1PXby4azbkRFhQR5QhDACyprCPu6bW98bun6Jbmpty5DBukLv
-	 8fPUUr0qfcTQRUj1GjpgAvTfeOvWPHArfoRtiuDKYhxJGmVdzVJaAcpLiH/lz1Kfbt
-	 XnMVKHhbjo+qg==
+	b=oDxXy8zs+PD/0lFXaeh+O7GkIW/2o2BmLXGid5juParGagr6D/1nuC1RpV/4D/KRV
+	 Jv7qk9e13MvoUXQUvt4gnxtdZx0xh2/gt59C+ZxP71ylsVMpSTThjcIT/jTic64+jO
+	 S21gfq2BPBG1Yj3HWuHVKqM8rGgZZ32yssOa9BfVRDrQrytFI9oXNIfsno5DHxceUD
+	 sVv6Sp9TWvIctBEeZMuaZXpDn4INZE0tDFVuK023M43zPseubxNB6w3uwWk4LjmUaT
+	 HxNa9xd+WRRmJDx263Ie4UN4ajiGbplFKA3GTzyqsLlXmzKpK5JA+QQ1Okb2aBJOtO
+	 JXEMQmz38YtFg==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -48,9 +48,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Anna-Maria Behnsen <anna-maria@linutronix.de>,
 	Peng Liu <liupeng17@lenovo.com>,
 	Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH 05/16] tick: s/tick_nohz_stop_sched_tick/tick_nohz_full_stop_tick
-Date: Sun, 25 Feb 2024 23:54:57 +0100
-Message-ID: <20240225225508.11587-6-frederic@kernel.org>
+Subject: [PATCH 06/16] tick: No need to clear ts->next_tick again
+Date: Sun, 25 Feb 2024 23:54:58 +0100
+Message-ID: <20240225225508.11587-7-frederic@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240225225508.11587-1-frederic@kernel.org>
 References: <20240225225508.11587-1-frederic@kernel.org>
@@ -62,37 +62,32 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-tick_nohz_stop_sched_tick() is only about nohz_full and not about
-dynticks-idle. Reflect that in the function name to avoid confusion.
+The tick sched structure is already cleared from
+tick_cancel_sched_timer(), so there is no need to clear that field
+again.
 
 Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/time/tick-sched.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/time/tick-sched.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
 diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 4e34967edc0d..9f75f5621965 100644
+index 9f75f5621965..b17895de26b9 100644
 --- a/kernel/time/tick-sched.c
 +++ b/kernel/time/tick-sched.c
-@@ -1040,7 +1040,7 @@ static void tick_nohz_retain_tick(struct tick_sched *ts)
- }
+@@ -1143,11 +1143,6 @@ static bool can_stop_idle_tick(int cpu, struct tick_sched *ts)
+ 	if (unlikely(!cpu_online(cpu))) {
+ 		if (cpu == tick_do_timer_cpu)
+ 			tick_do_timer_cpu = TICK_DO_TIMER_NONE;
+-		/*
+-		 * Make sure the CPU doesn't get fooled by obsolete tick
+-		 * deadline if it comes back online later.
+-		 */
+-		ts->next_tick = 0;
+ 		return false;
+ 	}
  
- #ifdef CONFIG_NO_HZ_FULL
--static void tick_nohz_stop_sched_tick(struct tick_sched *ts, int cpu)
-+static void tick_nohz_full_stop_tick(struct tick_sched *ts, int cpu)
- {
- 	if (tick_nohz_next_event(ts, cpu))
- 		tick_nohz_stop_tick(ts, cpu);
-@@ -1075,7 +1075,7 @@ static void __tick_nohz_full_update_tick(struct tick_sched *ts,
- 	int cpu = smp_processor_id();
- 
- 	if (can_stop_full_tick(cpu, ts))
--		tick_nohz_stop_sched_tick(ts, cpu);
-+		tick_nohz_full_stop_tick(ts, cpu);
- 	else if (ts->tick_stopped)
- 		tick_nohz_restart_sched_tick(ts, now);
- #endif
 -- 
 2.43.0
 
