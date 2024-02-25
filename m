@@ -1,134 +1,106 @@
-Return-Path: <linux-kernel+bounces-80036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80037-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD7E8862A01
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 11:47:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FA95862A04
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 11:47:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B3AB1C20A97
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 10:47:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5FEB1C20A23
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 10:47:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22189FC1A;
-	Sun, 25 Feb 2024 10:47:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75DCAFC1A;
+	Sun, 25 Feb 2024 10:47:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="TBYHVhbM"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="PPkO4O+u"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF0B9D528
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 10:46:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5242CFBE5;
+	Sun, 25 Feb 2024 10:47:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708858022; cv=none; b=mMiVkXD9eq7tt4hquK9nAdlx+fLwFkbg2vLd9HvuVWvjFHw0cfSr45wmBpnw+QT+tWEls4x6ePFqskC8PVctIrNjIgtZlSNgJBOUU/qETPg0N45dye/sohlhtMDDM0xnKGNBB0ymyvwUdMsXESSwFJsemTZ0BFE3JF7XcDaw5HQ=
+	t=1708858058; cv=none; b=QlF7q9XaEQtmwyx5pYuHYAyhiqXnUefC0qzsqKAJEDeiCQCqZR0Uk7OHFM++0R4nU4aGwSJmc9Mn52IzKkX2jPpTdst+hbnWYSs/jto0Bhb38IzZ8WAKN0Hfjo34J54ZxeCFCgRzBxGcgOOb7x/UBAUviL5yQUJnzf3NEXSU5D8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708858022; c=relaxed/simple;
-	bh=BO4AiwQWsQ/NTNc9hAjv+tHy0UZ+LgIgao5FalbyKl4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=NItC38ek4kAvwKjTFjoIqr3KBSlsQ5dJ3E2pVPcrKKCNG9UItkBAk63rzGnLUOxIJBIWqVyKW0ngtpu4PfgEdm3xm0tBW2cS4s0NFkZccrICQ5dVVE1O9qM2DDtxoD2+uoC1MjAktCaMcSxumpGmC73v8Lbh6FLIc3zOGn+74Uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=TBYHVhbM; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 6C00C40E00B2;
-	Sun, 25 Feb 2024 10:46:51 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id qqvXSSXQOSM7; Sun, 25 Feb 2024 10:46:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1708858009; bh=b5M5UMzTb6ZvTZ5Fe3UalurJ9+5PLjRl2ExnJnelVvw=;
-	h=Date:From:To:Cc:Subject:From;
-	b=TBYHVhbMmgrotugy2DfN12qEvdfqUQjB+mLTibuZqsD3BMDv31KCiUwZUo5Dw20H1
-	 9UAksyudLuki/w+4hOD+cBeMGU3oo3Z2c49mdsHhenPXfZRHL0/bK4IUkLKPeVQx+a
-	 XtSuo8OyuN/tyM2tzQEeSs52RbnhsJIiH9AeqGW45i5QpNfK68pK60nsaG3cyqLRiN
-	 3AImOyfGwOlUFQb2Udc6lEv1jYjWoO5YFklkfax0lE9di8Y1+jZRTtArmyHOjhV4OK
-	 vAnlYPNZgkx0dy/FeA2pit78ldxYgzNLhlYXS/sR8oVRXaSB9JUcVMxDK0P5xptmjO
-	 L4MLwMsjPenTTX3bb/W72PzChEyTnE5tk44b5Ylif8O532gqlc33a6lrkLMZaODlqf
-	 Yhe8MO6mwOuJNLTYbstqjJFS+wtRxOfMN/vBHZiK/s/2IBk91bjMqxYt/l1idRdHlB
-	 Tb+1I0IpRBxWrqWyYgCnhboXZ55VfgRUMROLHBfS8n+tjaQZFZ2E/jbhCdeRH0IO/M
-	 wkaKVrvwNVQoGIE0DOVOksM5seD5Wc5gncmFWO+5s/dIV0Mv9ZRBoL9e2X4LjLSTwK
-	 IxwOor9TafIPT1yn7CYX9lxawDrmcIk2wR4ZZ5U5rAMh0TKGolpADZyXJcFz2Uj2PU
-	 z63yaW+o032vy/D9JOjhi3VM=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1490940E016C;
-	Sun, 25 Feb 2024 10:46:46 +0000 (UTC)
-Date: Sun, 25 Feb 2024 11:46:38 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] irq/urgent for v6.8-rc6
-Message-ID: <20240225104638.GAZdsajv3v8YcNNqJt@fat_crate.local>
+	s=arc-20240116; t=1708858058; c=relaxed/simple;
+	bh=uUcuYqjCTeb1ugX+riKAIX3o7pOCGZNVL9mvJt1yjDs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Je57WNhJL1e1i9E8rdnvxtYfua8nDb9Ro9xvu9/3E+QTaQqkTBKqqYfUIibUOz8v+7cs0lJel/2jH8xpdg33+EkpXYseNrJNvwA1C1c13W3jYvtPA/CfNL4ijXgEf6J/pmzyIdMuNsvgNn0L9CRROpX1mzIompeEKS+m7kXZxy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=PPkO4O+u; arc=none smtp.client-ip=212.227.15.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+	s=s31663417; t=1708858051; x=1709462851; i=wahrenst@gmx.net;
+	bh=uUcuYqjCTeb1ugX+riKAIX3o7pOCGZNVL9mvJt1yjDs=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=PPkO4O+uKo8zQag0O6zBB6Out/TIIk/rrJg8YQmev3m3kfubM0ZyZVUz6h109q6S
+	 4a1Ka5oR9uUMjU9RUisJAlXd6bSp9oIXLd83+kVIFoZMOb+lYBXmcve2x3HQ3OQs4
+	 sSIs2eJWFE7IT2p1XotyK780CKJDpjFQZa/RI+d5wPPTRChEJHEdqeVf4wiSlwDF7
+	 S2ySEYeBgvwfsle7Oa/DGEyDoy7nsq7vInt2MNQgLyMK4R2yR21t1siGURtos/7mF
+	 scYXKbWRT9A5muJx+Y+Be6vUHJkmXdeiBtGItQIfhKJgMaKzOsr+LA8dV2vwlF7SO
+	 JITpz+YVRxlGDFeYCg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.1.167] ([37.4.248.43]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MiacH-1r0zg42jvb-00fn1d; Sun, 25
+ Feb 2024 11:47:31 +0100
+Message-ID: <c51a282a-bdbf-4ced-9fcf-e38a33152761@gmx.net>
+Date: Sun, 25 Feb 2024 11:47:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: WARNING: fs/proc/generic.c:173 __xlate_proc_name
+Content-Language: en-US
+To: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, Kent Gibson <warthog618@gmail.com>,
+ linux-gpio@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <CACVxJT8T8u+XK7GnyCus19KDVqfquGbAM-0x8bSFgKTeqhD2Ug@mail.gmail.com>
+From: Stefan Wahren <wahrenst@gmx.net>
+In-Reply-To: <CACVxJT8T8u+XK7GnyCus19KDVqfquGbAM-0x8bSFgKTeqhD2Ug@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:IELdsSLR+NFbCh9yElhseAfVmWhYyoixGwwFKPVHbwC7CS25RTd
+ EQUQRRm1ltniT0f+XBOoVf0Uqx1dfnQPo+dZrYwE58dMDEVMQp7yxkarOkpBBQIwGXEvHVe
+ iyu/vf13RZ1pObgJW8K1hPepoon/HbzChGemI/3rW9Eo2z+vwETfGci90aTYGhG0ykwhFjx
+ IkIvwnZlsk01yyNHXyRug==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:dhkRUMWhQwg=;HrQL903rxlwldUPHEusVgq4ZtMd
+ cvyEys01wUHFTZlq34ZVuiJHbUwgG9lS+1Ql4RfdczGlIYaQQFaHzTauHt7bS7JFDkhtjkKFT
+ WEo/bxt/i/Hqau9wettFXQwq6THQjcfI4Tv4GJYIZvCBHb0EZ80hQXBofLPIrnSCQAI9QZX6o
+ qEJ7ghCrHzhnWARY3D2maxTFGvCTrYezvqjfQyD1Yvf6fvjOJvH5imBDvuqzO6nLwP+wwokdp
+ 2F/kT4UGNSTzt8e2Nt8vBrcrPCcY/S9lSP6pc2r/62oY+XzbzIrZgibS6iFlqfoCltXCxVSDP
+ 9EYzJTfgfEhvWQmS4nSnI8Edege+OBPyWJxY3GLEihTUv5nlGFIhvvSsaObfncT/8DDeCSOcg
+ elpj8+v4NWft+lOhDL9zNf4Z5nXcNATtJC3fCTJkFIoG7K4qv/fDBVT1pDHYd/TClD0C7luVX
+ nMxjEIsgXIqbERIkkivmYF7Orv4nrXenoID5qnbXpHn/paJgypwebIy//7kAjV4AHh9CenElG
+ T2bik2RJUWvKe9GHHhijNSZ53WkD2sy8qzzzGZFz0a5DQzs4RzLM54Af93JsIkEMw7Op1AkaK
+ kovp05bllgQb4rJ4KZm/fIVQ0PewImI4vSiqbp/K3s3ipw3MQX9QT1EgyXFszmmaaBPwyqisa
+ vjSpHFqpUm5A36wk3yKLBQRf5U1ohW9CcVGMZbY/bvBDwKM/YaNi/8/bVgOtGyuyMHajU8XVy
+ tkxzaUO23QYMsf7HMV5iCHhHhoP/r3hxNZ5FwDJEmj5VuYYCUo7WEvfNL6miXIEz/icPiQn0T
+ tWfjSp8JQ05vjQmLthfC7oWzmXi7LzeWgSTSiZSw89YDw=
 
-Hi Linus,
+Hi Alexey,
 
-please pull a couple of urgent IRQ fixes for v6.8-rc6.
+Am 25.02.24 um 11:37 schrieb Alexey Dobriyan:
+>> WARNING: CPU: 0 PID: 429 at fs/proc/generic.c:173
+>> __xlate_proc_name+0x78/0x98 name 'R1/S1'
+> proc_mkdir() didn't find 'R1' directory.
+>
+> In other words, you can't have slashes in irq names.
+we already came to the point in the discussion before (link in my last
+mail). The problem is no libgpiod user (userspace) is aware of this. So
+the next question is where it should be fixed?
 
-Thx.
+Sorry, i took my original message because posting the last message to
+linux-fsdevel without context would be pointless.
 
----
+Regards
 
-The following changes since commit b401b621758e46812da61fa58a67c3fd8d91de0d:
-
-  Linux 6.8-rc5 (2024-02-18 12:56:25 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/irq_urgent_for_v6.8_rc6
-
-for you to fetch changes up to ec4308ecfc887128a468f03fb66b767559c57c23:
-
-  irqchip/gic-v3-its: Do not assume vPE tables are preallocated (2024-02-21 21:11:20 +0100)
-
-----------------------------------------------------------------
-- Make sure GICv4 always gets initialized to prevent a kexec-ed kernel
-  from silently failing to set it up
-
-- Do not call bus_get_dev_root() for the mbigen irqchip as it always
-  returns NULL - use NULL directly
-
-- Fix hardware interrupt number truncation when assigning MSI interrupts
-
-- Correct sending end-of-interrupt messages to disabled interrupts lines on
-  RISC-V PLIC
-
-----------------------------------------------------------------
-Chen Jun (1):
-      irqchip/mbigen: Don't use bus_get_dev_root() to find the parent
-
-Nam Cao (1):
-      irqchip/sifive-plic: Enable interrupt if needed before EOI
-
-Oliver Upton (1):
-      irqchip/gic-v3-its: Do not assume vPE tables are preallocated
-
-Vidya Sagar (1):
-      PCI/MSI: Prevent MSI hardware interrupt number truncation
-
- drivers/irqchip/irq-gic-v3-its.c  | 2 +-
- drivers/irqchip/irq-mbigen.c      | 8 +-------
- drivers/irqchip/irq-sifive-plic.c | 8 +++++++-
- drivers/pci/msi/irqdomain.c       | 2 +-
- 4 files changed, 10 insertions(+), 10 deletions(-)
-
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
 
