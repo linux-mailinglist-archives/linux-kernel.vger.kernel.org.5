@@ -1,150 +1,120 @@
-Return-Path: <linux-kernel+bounces-79952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDE3C8628E8
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 03:51:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1014A8628ED
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 04:05:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6674CB212F2
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 02:51:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84A0AB212BC
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 03:05:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC8E953A0;
-	Sun, 25 Feb 2024 02:51:17 +0000 (UTC)
-Received: from irl.hu (irl.hu [95.85.9.111])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AAF44C96;
+	Sun, 25 Feb 2024 03:05:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="mk/W/+vb"
+Received: from out203-205-221-191.mail.qq.com (out203-205-221-191.mail.qq.com [203.205.221.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0501810F4;
-	Sun, 25 Feb 2024 02:51:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.85.9.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D7AA63A5;
+	Sun, 25 Feb 2024 03:05:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708829477; cv=none; b=ePOL8KHWIACol63WngJqS9hTkq/HippwRihoVu+Z8DOj6vw8KNDJfe70Egt0W17o0A3VV/kfVjUoplDwsQXUqdwxK7yfuZdIX/zRGaEYYs2ITJ0SioN877MEwCa2ncq+3BJKbZH0BsooULpMjMD8nbuSb3WkgmK1RHaninrYhH0=
+	t=1708830333; cv=none; b=D/ES1/qeGtRZKxREA7TChSTAn1b2jCKOnFV7CFIPuLnJMKgiCtEAC/dwFBjZ0OAQZzvZ08gTIjT50pftTStYMkLQzoNLZ6MXFc5CAr1De1puqroJozbyHU3dD4rSpnQcNiJZ3EmNrDVc2iuVj9FgPkvWe7QD3jJUxvQ8W+aMr2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708829477; c=relaxed/simple;
-	bh=6aWbXWwDnTIBCUXTmZIxvXi/QjPi1BY7aUu7t00Edb0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=aYnjJXacKm+HRCuNH3bLZws9HeAsDdjFTugvbZLwZQG2ysTGq0Zt753v2jKVljvSwLPGFwyPffy3+v+Y4FIxZz9IAwLTUzSD9RjSxoo1uTD5ArN2ZLDS5Sz2xexguJ5gfYdT+6Bccv8sUzGJGyAhIuq+pqoFWhQ+HyIIfNmcYik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu; spf=pass smtp.mailfrom=irl.hu; arc=none smtp.client-ip=95.85.9.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=irl.hu
-Received: from [192.168.2.4] (51b68dc5.dsl.pool.telekom.hu [::ffff:81.182.141.197])
-  (AUTH: CRAM-MD5 soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 0000000000073ABF.0000000065DAAB20.001E12A8; Sun, 25 Feb 2024 03:51:12 +0100
-Message-ID: <7fb3bd72ec06f29608e43cc75128dd2374ad8ff7.camel@irl.hu>
-Subject: Re: [PATCH v3] ALSA: hda/realtek: Add special fixup for Lenovo
- 14IRP8
-From: Gergo Koteles <soyer@irl.hu>
-To: Willian Wang <git@willian.wang>, linux-sound@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, tiwai@suse.com, perex@perex.cz,
-  stable@vger.kernel.org
-Date: Sun, 25 Feb 2024 03:51:11 +0100
-In-Reply-To: <170879111795.8.6687687359006700715.273812184@willian.wang>
-References: <170879111795.8.6687687359006700715.273812184@willian.wang>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1708830333; c=relaxed/simple;
+	bh=L20Dun7FleQn4bkO5h+YiLlfoH0K6st2YbTELaAGEqM=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=iVm7ZdP0dGWMAWmzMOlGW+ot/FGaXoC3IeLWhOVonQq275X/rbVEpssWPFSxpPpWqE+lSmP8t5f2a6cEy5+kHNQIpx4YvYAqfGmC16+j8jZG9SdxXgmIk0PVH2eG4UJoaes92k7Obrg5po6U/pl5BnWljaF0qkTOYqIizemYUXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=mk/W/+vb; arc=none smtp.client-ip=203.205.221.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1708830328; bh=HoHJVcHPbLUtsuObsC+KQhu8jDUrXcUZFTBUuEmCeaA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=mk/W/+vbGbtOzQQN6i5kEQAxaNlNJZ1/n4jYnPCu4GSW0NjfXAuSBUPS61digJoVd
+	 JqB3dwpgACXtFeNWeV1rPTTO9426b1GktJlN51qSxDF4CzQNm4tHq8yeCM8b682DNl
+	 0qgnTh2XioMUi1+PtEUT4URIeM5btqD6vjoZnNMI=
+Received: from localhost.localdomain ([153.3.164.50])
+	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
+	id 15A1B477; Sun, 25 Feb 2024 11:05:26 +0800
+X-QQ-mid: xmsmtpt1708830326tp7ufxdrg
+Message-ID: <tencent_5EC64EB49686EE61593AE541DB14CE490A08@qq.com>
+X-QQ-XMAILINFO: MmpliBmRb3iCgVxZIjut2UWdWGFmMiPQDVVN+2H3V+OxYT5Nqc+gbRQEf/z8pD
+	 9TWf4TPSWy5Xmdu/12ppK37qbc9/wJ1LqFOKIixGIOr8Fip2tn09TtwYcp35UARxggvJyveKRhXA
+	 qlHe+73mDD7q1qknJGDShXFcNbUcBWgRepwawvTaGIRcp9dt2jrYrOMUyBvRp7ajx0F1IGCuW4Zb
+	 +h/CweK4mNQXlZ2t6KGOse0OKaCcocegTrjSJS18tAWN/XIHxDnYk+0CgETK+vYmkEBCrWqU9M1C
+	 /e9GNcpAsbaX9T+wZF4jCem/XSbAjugQrH2kp4Q5FMDwkV+XKAJotN1SJkxTYnHaxok7AnkuKvcY
+	 qRUo+xN/lFq1JuC00khm6P4++pEseQo6/Pfy9gyxTqaPKrmQrk+0YmsDqfpjETsT48QX9CQxphmk
+	 /EDI/D03I43Lkv9YnQTEDdq8ldUkJHwq5OFFK7wdie01XzrkXeo5CCiHenXdKnegDZvF4sawuV+2
+	 TxAZRGCr4Kgz3AuX7/HvxZoKEKJsYB7gh8+IGNgXUfHcZhVBWg+B9hf0VBdi0CfNYpIR79thlOl2
+	 sbSJzJ+rgcDFnydIUcpJJu0nrYVg/SyZjcFdMgl7WMeO+R2tQG4yya6F3KsjgeTuW8ehjZgdGGQB
+	 +gqb3/b/HM5AxzZ+HzpVfJo3J6l4VEQhh2x/gUOjop38vg6mAVzpVUFwNkR1/j23C7LJ6oGf87ox
+	 tLyS6SNAEbaaJoXdOSRHo9+O4xpQCG8U+6O70bD9VT1MzxQd+MhFUqiMmxOz6J4Wt058x9FMRJZn
+	 Nv04yR/Bso4LpuXwTwgSj32QWJSV1SPSCiKRmpMgJ8xLmU9jXQMTmsrY7DbGLB48xgZxbMDcbbAL
+	 LZHfJEkfOkbG75gNxS74uVSsqra6nYZj3PdCdnwcHvlJIA05Q7Kgx5VMYzSeXfd/OZlmrM9BHb4k
+	 PWK/NGIW65EUURpT6ecCqYXf/x0FbJsYTZvQZdoiQHxjsjODJW3PX+mCbYkCDh1fejzaa8PBI=
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From: linke li <lilinke99@qq.com>
+To: 
+Cc: lilinke99@qq.com,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH] ring-buffer: use READ_ONCE() to read cpu_buffer->commit_page in concurrent environment
+Date: Sun, 25 Feb 2024 11:05:06 +0800
+X-OQ-MSGID: <20240225030507.97911-1-lilinke99@qq.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-145)
+In-Reply-To: <lilinke99@qq.com>
+References: <lilinke99@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Sat, 2024-02-24 at 13:11 -0300, Willian Wang wrote:
-> Lenovo Slim/Yoga Pro 9 14IRP8 requires a special fixup because there is
-> a collision of its PCI SSID (17aa:3802) with Lenovo Yoga DuetITL 2021
-> codec SSID.
->=20
-> Fixes: 3babae915f4c ("ALSA: hda/tas2781: Add tas2781 HDA driver")
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D208555
-> Link: https://lore.kernel.org/all/d5b42e483566a3815d229270abd668131a0d9f3=
-a.camel@irl.hu
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Willian Wang <git@willian.wang>
+In function ring_buffer_iter_empty(), cpu_buffer->commit_page and
+curr_commit_page->page->time_stamp is read using READ_ONCE() in 
+line 4354, 4355
 
-Reviewed-by: Gergo Koteles <soyer@irl.hu>
+4354    curr_commit_page = READ_ONCE(cpu_buffer->commit_page);
+4355    curr_commit_ts = READ_ONCE(curr_commit_page->page->time_stamp);
 
-> ---
->  sound/pci/hda/patch_realtek.c | 27 ++++++++++++++++++++++++++-
->  1 file changed, 26 insertions(+), 1 deletion(-)
->=20
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.=
-c
-> index 0ec1312bffd5..f3b847f38153 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -7444,6 +7444,7 @@ enum {
->  	ALC287_FIXUP_LEGION_15IMHG05_AUTOMUTE,
->  	ALC287_FIXUP_YOGA7_14ITL_SPEAKERS,
->  	ALC298_FIXUP_LENOVO_C940_DUET7,
-> +	ALC287_FIXUP_LENOVO_14IRP8_DUETITL,
->  	ALC287_FIXUP_13S_GEN2_SPEAKERS,
->  	ALC256_FIXUP_SET_COEF_DEFAULTS,
->  	ALC256_FIXUP_SYSTEM76_MIC_NO_PRESENCE,
-> @@ -7495,6 +7496,26 @@ static void alc298_fixup_lenovo_c940_duet7(struct =
-hda_codec *codec,
->  	__snd_hda_apply_fixup(codec, id, action, 0);
->  }
-> =20
-> +/* A special fixup for Lenovo Slim/Yoga Pro 9 14IRP8 and Yoga DuetITL 20=
-21;
-> + * 14IRP8 PCI SSID will mistakenly be matched with the DuetITL codec SSI=
-D,
-> + * so we need to apply a different fixup in this case. The only DuetITL =
-codec
-> + * SSID reported so far is the 17aa:3802 while the 14IRP8 has the 17aa:3=
-8be
-> + * and 17aa:38bf. If it weren't for the PCI SSID, the 14IRP8 models woul=
-d
-> + * have matched correctly by their codecs.
-> + */
-> +static void alc287_fixup_lenovo_14irp8_duetitl(struct hda_codec *codec,
-> +					      const struct hda_fixup *fix,
-> +					      int action)
-> +{
-> +	int id;
-> +
-> +	if (codec->core.subsystem_id =3D=3D 0x17aa3802)
-> +		id =3D ALC287_FIXUP_YOGA7_14ITL_SPEAKERS; /* DuetITL */
-> +	else
-> +		id =3D ALC287_FIXUP_TAS2781_I2C; /* 14IRP8 */
-> +	__snd_hda_apply_fixup(codec, id, action, 0);
-> +}
-> +
->  static const struct hda_fixup alc269_fixups[] =3D {
->  	[ALC269_FIXUP_GPIO2] =3D {
->  		.type =3D HDA_FIXUP_FUNC,
-> @@ -9379,6 +9400,10 @@ static const struct hda_fixup alc269_fixups[] =3D =
-{
->  		.type =3D HDA_FIXUP_FUNC,
->  		.v.func =3D alc298_fixup_lenovo_c940_duet7,
->  	},
-> +	[ALC287_FIXUP_LENOVO_14IRP8_DUETITL] =3D {
-> +		.type =3D HDA_FIXUP_FUNC,
-> +		.v.func =3D alc287_fixup_lenovo_14irp8_duetitl,
-> +	},
->  	[ALC287_FIXUP_13S_GEN2_SPEAKERS] =3D {
->  		.type =3D HDA_FIXUP_VERBS,
->  		.v.verbs =3D (const struct hda_verb[]) {
-> @@ -10247,7 +10272,7 @@ static const struct snd_pci_quirk alc269_fixup_tb=
-l[] =3D {
->  	SND_PCI_QUIRK(0x17aa, 0x31af, "ThinkCentre Station", ALC623_FIXUP_LENOV=
-O_THINKSTATION_P340),
->  	SND_PCI_QUIRK(0x17aa, 0x334b, "Lenovo ThinkCentre M70 Gen5", ALC283_FIX=
-UP_HEADSET_MIC),
->  	SND_PCI_QUIRK(0x17aa, 0x3801, "Lenovo Yoga9 14IAP7", ALC287_FIXUP_YOGA9=
-_14IAP7_BASS_SPK_PIN),
-> -	SND_PCI_QUIRK(0x17aa, 0x3802, "Lenovo Yoga DuetITL 2021", ALC287_FIXUP_=
-YOGA7_14ITL_SPEAKERS),
-> +	SND_PCI_QUIRK(0x17aa, 0x3802, "Lenovo Yoga Pro 9 14IRP8 / DuetITL 2021"=
-, ALC287_FIXUP_LENOVO_14IRP8_DUETITL),
->  	SND_PCI_QUIRK(0x17aa, 0x3813, "Legion 7i 15IMHG05", ALC287_FIXUP_LEGION=
-_15IMHG05_SPEAKERS),
->  	SND_PCI_QUIRK(0x17aa, 0x3818, "Lenovo C940 / Yoga Duet 7", ALC298_FIXUP=
-_LENOVO_C940_DUET7),
->  	SND_PCI_QUIRK(0x17aa, 0x3819, "Lenovo 13s Gen2 ITL", ALC287_FIXUP_13S_G=
-EN2_SPEAKERS),
+while they are read directly in line 4340, 4341
+
+4340    commit_page = cpu_buffer->commit_page;
+4341    commit_ts = commit_page->page->time_stamp;
+
+There is patch similar to this. commit c1c0ce31b242 ("r8169: fix the KCSAN reported data-race in rtl_tx() while reading tp->cur_tx")
+This patch find two read of same variable while one is protected, another
+is not. And READ_ONCE() is added to protect.
+
+Signed-off-by: linke li <lilinke99@qq.com>
+---
+ kernel/trace/ring_buffer.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 0699027b4f4c..eb3fa629b837 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -4337,8 +4337,8 @@ int ring_buffer_iter_empty(struct ring_buffer_iter *iter)
+ 	cpu_buffer = iter->cpu_buffer;
+ 	reader = cpu_buffer->reader_page;
+ 	head_page = cpu_buffer->head_page;
+-	commit_page = cpu_buffer->commit_page;
+-	commit_ts = commit_page->page->time_stamp;
++	commit_page = READ_ONCE(cpu_buffer->commit_page);
++	commit_ts = READ_ONCE(commit_page->page->time_stamp);
+ 
+ 	/*
+ 	 * When the writer goes across pages, it issues a cmpxchg which
+-- 
+2.39.3 (Apple Git-145)
 
 
