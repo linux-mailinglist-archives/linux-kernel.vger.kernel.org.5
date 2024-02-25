@@ -1,158 +1,110 @@
-Return-Path: <linux-kernel+bounces-80178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80179-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF517862B5B
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:58:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4F55862B5D
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:59:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E89A1C210A3
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 15:58:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 522B9B217C6
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 15:58:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 657871758E;
-	Sun, 25 Feb 2024 15:58:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F1FC175A5;
+	Sun, 25 Feb 2024 15:58:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kEGNttgS"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WymMGjSi"
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0126716427;
-	Sun, 25 Feb 2024 15:58:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A387414280;
+	Sun, 25 Feb 2024 15:58:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708876692; cv=none; b=NpcwEXvnB+jMDiWzhQkIaPf+KLrglkQDojbA5Cmc6qxtJUsGwHynKxU39IM77Lv1v8CdIswiKl619SpSn8G9L1KpxKBLr5eneJYqQVSJqZsgyXj9Zg6JTchSKtbYBSFGOL7bhY+fGZoN7fjqs55x11JaC205C6SdP2I1x8fXC2k=
+	t=1708876727; cv=none; b=GnQSYtE6i2rledHEgxkq8u4D6pQZaER4ufhLBWodAIxDJowFJjbxGMAIo9Xi2Ar3asduNAhC+mb6ZOfoLK2PTcYpnjmL1DVIHMZJi1Uc8nhvva3RldawmoRnhGK8gSnJJ/LnCQ27yuF+EECtxAC6mcKG69qXiQsUQ6tpLyjUSYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708876692; c=relaxed/simple;
-	bh=fxntaAlaNoORGg4Yti1Rnj8spJy2frmT6XkMpzimGD8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RLtxHBWahub+vG+F33iV2aisY0Bkr8Qr98dkX52wfBCqqZv43w1Y+SsxWVbjnAZGbYJxiEehPLQ6Dxyf6+HX09oGom3MDTeG4M8mUGPVhrd0VaulD6HF9wMTK3ZaldpWPkPHw9C6iSFWJXPUO9jCNlZgokMMaGrGSAxaO6LnLHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kEGNttgS; arc=none smtp.client-ip=209.85.215.182
+	s=arc-20240116; t=1708876727; c=relaxed/simple;
+	bh=oWPwKUfFaUKDvLe8z6kb5kll3d3LDHDHamj9jCZzWf4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k4Rhj6/jINreWFGDbt3Q8Q8+Ca1ukwRjzAxihFUvrguJ/we28dOjE2EXkFpOsKYNCAA+KBJms/4cJfoCR7777yf5cezChCRkd4NDbACFShgH7IkIpi1bbzEzgfmYro3GvEYJ1KV9xcpJP2wvcgwqOcVzH1z/4IN/Gs4CLcAv4Is=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WymMGjSi; arc=none smtp.client-ip=209.85.160.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5d42e7ab8a9so1442406a12.3;
-        Sun, 25 Feb 2024 07:58:10 -0800 (PST)
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-21fdf31a154so651032fac.3;
+        Sun, 25 Feb 2024 07:58:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708876690; x=1709481490; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=kF6rP2xfdv/6N4QkVaNiBDdDiZRDh2pGQVheDyIMBTM=;
-        b=kEGNttgSTp/mZUm+T73GSH6KdsR/BirEVT/3ddf/RMmGDQmxD2mUkurinyOagbQAsW
-         zkx4OtlbwTMJ/DxNF1GBXKeM/iJj0MqoZ22C40cdLXQqM8gWnIC0diRjiWwmCbaoKKCE
-         oRXjZhZA6iDtRhHBzLlLritFswkCldCUfMQm0PkvQ8TfTYcGbvwh/wGNHMeOnSIEFngX
-         hPROJIq+CBjEmLgl+6NUJQvYU9E8i35yb6+gM0f42ylmbssI5n8l3DVSl8ugAatdwX6R
-         BFAHBM5qAIMannVKhWKX5zWnhOpT2ExrqMrS2xk9MdRXb7ODD9Bla6v7EY78H7+duNKV
-         yqtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708876690; x=1709481490;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1708876725; x=1709481525; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=kF6rP2xfdv/6N4QkVaNiBDdDiZRDh2pGQVheDyIMBTM=;
-        b=SenwULutjJ4jsrX+1iFhXIzXcTdWLkoTeMYe1oKTJoeBi/o4Oo3RtDfi5pV2GDYHMf
-         BuSk0aUcSDGeDbYyg+xFKsdF5pqbQ9Qh2rd2r2+R0YZuLeJMlSBmKhCkjDSfpKG0kX3q
-         W6gFtmrWoW326wSXcQBhMXaKry7vGyt1+vUrPjDWZvVCSkwaJ05nzOlgCT1e5nLUsPxL
-         bxsl/FirXl37K2B1/sMwl1wBPReNAahpdR5I+GBJoAT85eXYWa7NGep2UR7HU3wBWvID
-         XnR7Zi0tB8RXPkbbwIqB1sjhVVSTqhwIHpUeXa1xiBXXQ9H/DVP4iSAsnZbvzLsbj156
-         iA+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXV0Li8+TfrM46ov23k7XskZVd1W5jiffX7W9ahMKd+V9yUAyV+tA1nPet30g7xM7N2MBzjtdT3sOt+gE4LVTqzv3YguhNk8+ewZnPG
-X-Gm-Message-State: AOJu0YwZEGRSz5AEdNaNrSgCZGsFpi26W66gJBKEUFYR9Br/UwtU1dIJ
-	EPWqp/1bTE1sqEgCstwdya/er/oJgJJd/VYbGxVbj+hdzXqm5gENldMoN33i
-X-Google-Smtp-Source: AGHT+IHLyvt6vXzjVu0opxn5tBHuKnJs9NvsjCEGqYT4SAWxzhRzMpNG9AxsobFPXXwejbTpPlZdMw==
-X-Received: by 2002:a05:6a00:3d10:b0:6e4:e0d1:2c6a with SMTP id lo16-20020a056a003d1000b006e4e0d12c6amr4913248pfb.31.1708876690195;
-        Sun, 25 Feb 2024 07:58:10 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y7-20020a62ce07000000b006e45c823660sm2603089pfg.122.2024.02.25.07.58.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 25 Feb 2024 07:58:09 -0800 (PST)
+        bh=idPAAJ96XdV4kQvBDm67FrrO1sdpsDxXupC8T/KxzXY=;
+        b=WymMGjSiwOyYc+W8UEWbRf8Ty0TWjteLlRsUIq6AAe/tXyOwEtJcKjnBXxflsvhpXq
+         L4s0qdQqHxGywzUPcTgOLwEFMJ2faf2Gw73JqqYeNvObQnR8t65kucYEclIiqNbsU3WB
+         10ptyMwY3h3SrgTkEbkSNAbXnMj4kv25P9zu7CU1xa2jXz5WlEl8OBIGev74dqXMxBRy
+         L7Moh3BTxjVoKrpR5GLOYBBBZvMDsiTqyrZAygXrMDyKPjGMhMkG6rxH9ov3uYK85T8J
+         Fl9JyNywpOf4aQRBJpSxSqOh1rqvBer6ymy/vqQJUpi10THB136t6jv8/yUyypXyqejh
+         vl3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708876725; x=1709481525;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=idPAAJ96XdV4kQvBDm67FrrO1sdpsDxXupC8T/KxzXY=;
+        b=r/x3mHRsdkym390h01i1xUa1xWQheJtGS8V8m0PSyZezyKA1SNa+PZ2t4lHSbVRI8L
+         nyanO9G1JbCNLQNzhy7BX9FCJgPR5/0u1WyuVNcXpE7txCZ0k/F7odpGtk2TeUcsSg/V
+         yof3s2FaCludF6Keusz+tXZmJ9HdDMaLqg1ybXzzt4JLkVxXv0umPZw5GrjvnJOqFAx6
+         MVcmt3qYBY+an9WLdn5dpg+aDK3vuYPnUsYBN6rAnxCP16RExrOe5tNIdZNVov3yG4Wn
+         DlHYts/OgUbjzf+d2IbLok6Bl16xUiO3Mg+ChGXCyjWgw1/jvTR5qgxYsMcz1pyauitv
+         g58g==
+X-Forwarded-Encrypted: i=1; AJvYcCWzSbr0J7a0BNgir15jnjayTXLBYEL219DUqsvzRCQcEqi9U+YNrmeqDNSqSAkf/niej1SXlCqI/cpxVqwClN7uzt0etc9cBvj+mPhUCXDx549gr8mr3BXgJaSGCXyyIau1JNn3
+X-Gm-Message-State: AOJu0YynTrsttKIFt0pWEF/TK0VaJHXm9VuWCUVHB5WKz953AFk3MbkL
+	VuxvdqU/+K3WHUgeSVpQsr0oQ3KyLx+z5gaYjzITdX0dV4Jv8I6hWeoUP9yy
+X-Google-Smtp-Source: AGHT+IHG6YNLTj/YF9EppSR8plKWQXM3ymd76N7wy9J7i7mq3+f6Ljk9ryZxtjo1bfNt3q9zrvVCYw==
+X-Received: by 2002:a05:6870:c6aa:b0:21e:e583:25e1 with SMTP id cv42-20020a056870c6aa00b0021ee58325e1mr6105925oab.32.1708876724618;
+        Sun, 25 Feb 2024 07:58:44 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z2-20020aa78882000000b006e47ab9b2e5sm2445339pfe.215.2024.02.25.07.58.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Feb 2024 07:58:44 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <b6337a96-e434-4a72-a196-2d758f4d431c@roeck-us.net>
-Date: Sun, 25 Feb 2024 07:58:07 -0800
+Date: Sun, 25 Feb 2024 07:58:43 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	Charlie Jenkins <charlie@rivosinc.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Erhard Furtner <erhard_f@mailbox.org>
+Subject: Re: [PATCH net] kunit: Fix again checksum tests on big endian CPUs
+Message-ID: <56565259-906b-490c-8543-5009e0a555d8@roeck-us.net>
+References: <73df3a9e95c2179119398ad1b4c84cdacbd8dfb6.1708684443.git.christophe.leroy@csgroup.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10] lib: checksum: Use aligned accesses for ip_fast_csum
- and csum_ipv6_magic tests
-Content-Language: en-US
-To: Charlie Jenkins <charlie@rivosinc.com>,
- David Laight <David.Laight@aculab.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Andrew Morton <akpm@linux-foundation.org>, Helge Deller <deller@gmx.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Parisc List <linux-parisc@vger.kernel.org>,
- Christophe Leroy <christophe.leroy@csgroup.eu>, Arnd Bergmann <arnd@arndb.de>
-Cc: linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>
-References: <20240223-fix_sparse_errors_checksum_tests-v10-1-b6a45914b7d8@rivosinc.com>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20240223-fix_sparse_errors_checksum_tests-v10-1-b6a45914b7d8@rivosinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <73df3a9e95c2179119398ad1b4c84cdacbd8dfb6.1708684443.git.christophe.leroy@csgroup.eu>
 
-On 2/23/24 14:11, Charlie Jenkins wrote:
-> The test cases for ip_fast_csum and csum_ipv6_magic were not properly
-> aligning the IP header, which were causing failures on architectures
-> that do not support misaligned accesses like some ARM platforms. To
-> solve this, align the data along (14 + NET_IP_ALIGN) bytes which is the
-> standard alignment of an IP header and must be supported by the
-> architecture.
+On Fri, Feb 23, 2024 at 11:41:52AM +0100, Christophe Leroy wrote:
+> Commit b38460bc463c ("kunit: Fix checksum tests on big endian CPUs")
+> fixed endianness issues with kunit checksum tests, but then
+> commit 6f4c45cbcb00 ("kunit: Add tests for csum_ipv6_magic and
+> ip_fast_csum") introduced new issues on big endian CPUs. Those issues
+> are once again reflected by the warnings reported by sparse.
 > 
-> Furthermore, all architectures except the m68k pad "struct
-> csum_ipv6_magic_data" to 44 bits. To make compatible with the m68k,
-> manually pad this structure to 44 bits.
+> So, fix them with the same approach, perform proper conversion in
+> order to support both little and big endian CPUs. Once the conversions
+> are properly done and the right types used, the sparse warnings are
+> cleared as well.
 > 
+> Reported-by: Erhard Furtner <erhard_f@mailbox.org>
 > Fixes: 6f4c45cbcb00 ("kunit: Add tests for csum_ipv6_magic and ip_fast_csum")
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
 Tested-by: Guenter Roeck <linux@roeck-us.net>
-
 
