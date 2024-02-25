@@ -1,85 +1,120 @@
-Return-Path: <linux-kernel+bounces-79954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 893D18628EF
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 04:12:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 40AC28628F0
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 04:13:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F2B31F215AD
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 03:12:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D41761F21532
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 03:13:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BEDF5382;
-	Sun, 25 Feb 2024 03:12:06 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 776FA8C07;
+	Sun, 25 Feb 2024 03:12:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="nvh++8F9"
+Received: from out203-205-221-191.mail.qq.com (out203-205-221-191.mail.qq.com [203.205.221.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688CD2FB2
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 03:12:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EAE78BF6
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 03:12:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708830725; cv=none; b=TQy6gOISQ5eOVgkaVHSxYpZCoWfIDNoxwW2e/i/bfPdL4Evdyf6bqdY40/HtY3u4K4AnKvPlo9dQuDKyvBHV1k6ubC868O0YzkBNVerlWSg6i18O1gxpIE869ML7/9k914+OWwcNsGyegYZSvbYeZPCNGcOkS6Gky7NF8WoY6KE=
+	t=1708830778; cv=none; b=fWsy2PcI8+NMm9ov3fZ7/QsFMUm2+jfbr6xUoQKSctFypmtqFjfK9+n/OWsi9oURJHWk2ysg9T3GtxiK4tT0JR4IRhQmOkUCBTd7eBfiUJylIejJCY8rVT+hk0Evmi5PRwia3xPaeEqWWpG6vJJOVGi1sXQCZNlSm+14wUduVlk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708830725; c=relaxed/simple;
-	bh=EMzaupCH/vKKODQcuZVYe1pZpWPxWhDxD02ETJbgfOA=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=jF89wV0LkOG2EHI1FBdrKfrMdSPyVA8Unr84JWf2uG5d9sSGiNuOjF6bbI4o8npY9/yIFJ4N45QJTWuJWhYXUoFu3uTETW1ScXJ1Sx1psdd6BOAdOnTH92bjvDRTjs9e25HcGc6oKW8D48I58gxywWjN3vjrBKoPEdRZXRrnp0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7c78573f2e9so248842339f.2
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 19:12:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708830723; x=1709435523;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vXJwngd7F9kg0wq/CBywGg8JyW8eN+CIcC7q8Yl1r3M=;
-        b=eo0/gpYzHE7BI6zPg7SLvrjd0OyUwPe8SHsFpPbpGwJZ/y3eghziaR8sCXUupDc8mB
-         i1Y5vkcDoxN1ZsrrP+H1D5l8jKSoMwkwFn8onJngIKQ5cyxy29DmQ0PvNmyO/5z+gqCg
-         jvrOLcpkvMOFZrZZgVgBEJZAtl5QybeWRfFxujZmEumI7r6oEsvatEBjFiONuZG9I7gL
-         lyYOjqGJPq8UCvc3IxuTAxE+Nnv2ap/3wbB1hbF1TDnAxl246+b6zeyn0BCk3m99Ux/L
-         HaA7VrEUsQ2P6brXdj9PSCZJ96oV+rhzN/UKlwba3RGMXu9Pv2z3Sakmf8yGgYtCc+d1
-         sanw==
-X-Gm-Message-State: AOJu0Yw5Ct5PAhR8tPVmrRmidMxUr3JCeUVEEmx/PWqBK74PfOzwJIiG
-	ualzDBeD4WdfJ7kISS1J1aApk1BYsUTIzc0++8C1lXOjgifteqALMxAlKl1fUuueM9XZYUOEKpz
-	DEslVmIOKO33FLM7NoP373zzXafdnQyNZE6EYVKr0j0NL3ZynOpwzKpTP0g==
-X-Google-Smtp-Source: AGHT+IGs+PEkSsD7DJLirwNGRXiXsC6fQ6wrlnobLVYLpJ+UFWcdt9nKnYqRP1qOItoaPXBscox+KwMPiSjXVAqI4hIgn0oYXa26
+	s=arc-20240116; t=1708830778; c=relaxed/simple;
+	bh=U4i+i9PdBw8hS+mhrV5wIJhHZ+uVQK46IFdaQMNvLmA=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=tQdviae4w6ugQ5et1tPTp5em+IA1JgBVf9TMNmDlkC9j1sqV4TfFOPqqpIR8ArIHRXdy7ikq0nCRZoFdZ4fYLEFiI6JhPr7BbArtnS0Spypqm0KDN9h1+iafJDoy2a0WXzgunznm3VJL1o9GvGG3RpYJFjoCx+GA09bfWVkfhvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=nvh++8F9; arc=none smtp.client-ip=203.205.221.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1708830774; bh=A/IxJBZi27mtkrsoxOZws5nHnODjFxtLyQdPu2a35uU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=nvh++8F9zKycX2w3RdPceEsb0wHDDofJIs3hAodH8Elub/SuncE5O1OFA1/zmuXtL
+	 qi5TPcno55Up0+KxhFzDhrg7xgiiOgGPZSKueIJr2LfWnLD35AuxSmRykd564FIBAm
+	 7Zm39RatLbVNRma8OwO0fwSJzOut4m7hbLFiHYv8=
+Received: from localhost.localdomain ([153.3.164.50])
+	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
+	id 33487E60; Sun, 25 Feb 2024 11:12:52 +0800
+X-QQ-mid: xmsmtpt1708830772td52svu9a
+Message-ID: <tencent_8B422629CF388976D1303D2C5B0720089305@qq.com>
+X-QQ-XMAILINFO: NQR8mRxMnur91Jl8O5fz+Bb1i2ZaLpyIhNB7YV8SfRiLgwNQd1ahEc/2me8sSw
+	 2Ltka2+r+ZOX6aMyZ9BXnUERzXeW/YeO/OtEs59JoTDgIpSchtqWKX6px3YDCLo3cQuw/zNdtsvT
+	 3HRPEoBCgxGd2j46tEnUEn9NxGsAeao2qAUSAzBxxBiq4Gdt6ReDDLOxAhZWKnAxZ0eFr7I+Fy+y
+	 ibOc0oL6CB8OGoD8csgVq2NiWIBXKlW2iZIpIUwuBOH48G1k0OjQx4lVNQ+7YjsTs3/uTuBcUdNw
+	 I1CbM+l2Ir+WJ21+PppLWW+tBkUeU5Nrkd2oTKeSNBIxZw6b46nb3DsuYNKzeRUDzXmufomrOt0B
+	 LtNXbYLfSeyWPmXaWtN90Oe8DQelPjWifknj9LaL6QTG/9tjGbCF4FUBqZrg/EYG6c4rmwAhcDNA
+	 IGitLOXHWOObh7XyFA7uTvdCPY6sRnziFs6Ck0OD9ZVcXmQCNS0D+DYPWQFIGjw084L86yAeYrLv
+	 1hKVM3UotzqDPYVZlZ/ZlFshFTx1+QWmwm4fMt5RGlWupYinKjaO6pZz8coykeSAjx9GTDCsfcdZ
+	 VI57tcf9K1ccfUBe/uJu0OYxRNZ86mhyulDghdEfvrltBJ0JgiU1BHEenViEv7Ln63ZE/2UyH5UK
+	 O3ZGVP1WVPwZuutrGsHeSixVqDR6eHG44hH5MS0EIHkjvn8/7ttLUirq0VoGq79yhLAE5jTmZUD5
+	 aL4L/MelBa4gyCT/37Xi0yz9q181SWonCHDsdmHnocIR2dfdUYkOBipUqYnnbmYgUMyPVTlh/Z9V
+	 +PYo/18oOFZiSyR6nUoKhcb0j0ZwUJh5EFoxQDW6i40vQQv/Fxv7BcmMY102P+Q3vCMMpGBBxk7n
+	 1DQUbd3HqSX368nn20jl0fijlX7fjehYQzoix/W8W+HZL4utjDkiAlAiBpv5syPO/0VMYgoo6Kl2
+	 wBQvshHckPUs2m27W6hyQ+y+SsaOITW/i1fAhwtQHIE0VVqH3gn3+8sZmNSOmLIDw1bN6Un7+4XN
+	 3GEO+xGnS9qqHzF17s
+X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
+From: linke li <lilinke99@qq.com>
+To: 
+Cc: lilinke99@qq.com,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@kernel.org>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] tick: use READ_ONCE() to read jiffies in concurrent environment
+Date: Sun, 25 Feb 2024 11:12:50 +0800
+X-OQ-MSGID: <20240225031250.99386-1-lilinke99@qq.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-145)
+In-Reply-To: <lilinke99@qq.com>
+References: <lilinke99@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2488:b0:474:7eb2:f0f with SMTP id
- x8-20020a056638248800b004747eb20f0fmr13283jat.0.1708830723587; Sat, 24 Feb
- 2024 19:12:03 -0800 (PST)
-Date: Sat, 24 Feb 2024 19:12:03 -0800
-In-Reply-To: <554675d7-afc8-445f-94b1-8bba0a774dc3@I-love.SAKURA.ne.jp>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000042c3c306122c289c@google.com>
-Subject: Re: [syzbot] [mm] KMSAN: uninit-value in virtqueue_add (4)
-From: syzbot <syzbot+d7521c1e3841ed075a42@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, penguin-kernel@i-love.sakura.ne.jp, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+In function tick_sched_do_timer(), jiffies is read using READ_ONCE()
+in line 224, while read directly in line 217
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+217	if (ts->last_tick_jiffies != jiffies) {
+218		ts->stalled_jiffies = 0;
+219		ts->last_tick_jiffies = READ_ONCE(jiffies);
+220	} else {
+221		if (++ts->stalled_jiffies == MAX_STALLED_JIFFIES) {
+222			tick_do_update_jiffies64(now);
+223			ts->stalled_jiffies = 0;
+224			ts->last_tick_jiffies = READ_ONCE(jiffies);
+225		}
+226	}
 
-Reported-and-tested-by: syzbot+d7521c1e3841ed075a42@syzkaller.appspotmail.com
+There is patch similar to this. commit c1c0ce31b242 ("r8169: fix the KCSAN reported data-race in rtl_tx() while reading tp->cur_tx")
+This patch find two read of same variable while one is protected, another
+is not. And READ_ONCE() is added to protect.
 
-Tested on:
+Signed-off-by: linke li <lilinke99@qq.com>
+---
+ kernel/time/tick-sched.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit:         0dd3ee31 Linux 6.7
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git v6.7
-console output: https://syzkaller.appspot.com/x/log.txt?x=13efd0c4180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=373206b1ae2fe3d4
-dashboard link: https://syzkaller.appspot.com/bug?extid=d7521c1e3841ed075a42
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=179789d8180000
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index 01fb50c1b17e..aa684511c25a 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -214,7 +214,7 @@ static void tick_sched_do_timer(struct tick_sched *ts, ktime_t now)
+ 	 * If the jiffies update stalled for too long (timekeeper in stop_machine()
+ 	 * or VMEXIT'ed for several msecs), force an update.
+ 	 */
+-	if (ts->last_tick_jiffies != jiffies) {
++	if (ts->last_tick_jiffies != READ_ONCE(jiffies)) {
+ 		ts->stalled_jiffies = 0;
+ 		ts->last_tick_jiffies = READ_ONCE(jiffies);
+ 	} else {
+-- 
+2.39.3 (Apple Git-145)
 
-Note: testing is done by a robot and is best-effort only.
 
