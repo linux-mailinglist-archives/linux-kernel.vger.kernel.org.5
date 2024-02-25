@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-80226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80227-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BDAC862C4B
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:33:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBD8C862C4E
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:33:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC9A61F21AA7
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:33:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 664C51F218FC
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:33:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B0F51B597;
-	Sun, 25 Feb 2024 17:33:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE6A81B95A;
+	Sun, 25 Feb 2024 17:33:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E9jzupH8"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CTSHE6E+"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A584E17C7F;
-	Sun, 25 Feb 2024 17:33:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 635F018EB3;
+	Sun, 25 Feb 2024 17:33:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708882399; cv=none; b=ntDqskW59NPL7LLDbArsw8pLT0H7PJuR1STzU+FF0yQcTZ20oNOgaNY6SinXgBsMNF47NNngoVCB1XYLxQg38D6lJOn0ACBuuIt2rwxC3SkHSk+z9yZlQQKBAE/1bEz6u156XsC3TYLRP3Fd7E5XwQdc8ss1qIc2gzo8RsaaU1k=
+	t=1708882401; cv=none; b=NAmmV8nPJdJ/C5cMfXXspdXha45tKNqiYXAmPgwO+AugpDHbOEsm9npxsAHGEYZkNRcZca5z+m+eNunIVy8SFL+Vo7dUTslXBwx3tr0Q8PjRORu5euHkaKf2Th5Nj+x4NscBXm/X7kjshoGqC+/LfX81xJFeco7pObK294Hjz2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708882399; c=relaxed/simple;
-	bh=BgSFijZKhA2ufG2qmUVQ6xxgoG3VAnT3dyE2UsJjYvs=;
+	s=arc-20240116; t=1708882401; c=relaxed/simple;
+	bh=u13Abosjh0ga614pMN+V5dneBLpTZCOLofp1E7MVTPQ=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=sFC3tCySr3AHDXrd0F4Z0NYyCruZA3vcZYF/6bR8MA+TcN7I5yhmTU2OEOMn8Vmp+d9g6N28lZQqh9kGTViba543g7He4qgeQmkAgnR22og/l6z7oULkOcifZYJuxvYdiQ4xPS2UD1355Xeoen+7JYgXN1jpGqv/M5DXywoEHoQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E9jzupH8; arc=none smtp.client-ip=209.85.218.42
+	 In-Reply-To:To:Cc; b=gN7uzIb/ZyQB/dnAxKHw9iYx9G7d18pB/4QcgoATw6z5hDkpvOYY7vh6O/UWUCt+iNMlVGsU4kYNJ6q15YnVYZ67xRTSwI2aKmQP9kuTpRNiDuZth85nWUi1qpNNI7G9kx1USgcyl3MCBxTFfiepAGc/utRss7cJJWUwW+laJJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CTSHE6E+; arc=none smtp.client-ip=209.85.208.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a3d01a9a9a2so248474566b.1;
-        Sun, 25 Feb 2024 09:33:17 -0800 (PST)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-565c6cf4819so986247a12.1;
+        Sun, 25 Feb 2024 09:33:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708882396; x=1709487196; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708882397; x=1709487197; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=EuE43dLqTxHSUlJvt5Y7Dme+S2ucf6kxW2kDutXSIZw=;
-        b=E9jzupH8COfAB6GHsU++aF2NoY5/UW/DjshtQfgF8LcSUUeZo1m7s3Si93NFOqRFR7
-         Z7zp3BFjEzhrbw37wc0PnwxcDGg5YwB3p4O19/jJdqYCJdphJRfgGRsqZBxs2aSuwIND
-         CLHxYOqKxeeg0iDzkAXuTGz+BeWJ0RwmNJnmHkEze27hv+osuFW/ZfLZRvP8Sdimyasq
-         VTie0K+UV1eIBfxGqrojCIkljGy/GGDOP3lJFLQHe/E5B/V7HH3n3te/F2Je18Gf3uRt
-         uxgUNDmSJFwpfEiAcixn4tucofmkO0x7DgTcZkrV6ZRUQz+wtUH7iCA6ohcTFPPH2fh/
-         BSmw==
+        bh=u98TGKSGxMD5MBX7AoX+yh5eBYy610WHJxOYWlsyDu8=;
+        b=CTSHE6E+atDbBAaTek/Et+y/D8x+ejXzMM4bzMo9S0tMyo1rxUlQr0Us2By9ICAf/3
+         ZlC0t8b8gJNcq1G016YErXW07hBumDA/jNhKTHQp5NGRqJQusQaSC1iAt7cNJdzVTAF8
+         ft2EvOaDcRhP+xNElCtxiPbc4lYQfDw4RYCf48A1Vdzatd8Nr52YYMtLTIm98E1oqhaU
+         pxcOaugMva8UMVc88O/T29abmCkMf8GbMHCWXMiIraOkVd9FUCKCOVbDfvNXQbvDhP/k
+         DN8+WDNoychVuiIfLdKMNkWdG2AAC5XbvlVgSVKsgYKYG02Yrjcux/Ag8p2m2T81rht7
+         X5Ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708882396; x=1709487196;
+        d=1e100.net; s=20230601; t=1708882397; x=1709487197;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EuE43dLqTxHSUlJvt5Y7Dme+S2ucf6kxW2kDutXSIZw=;
-        b=gLRwaFcGIrZB01SyhHp0bTQG6mcBhXft4Xlm//JNQ7YNJQIDRTt6RGq1LPTrU8yahR
-         u1Kq8MwWvgxKKZp+dU5KJLkJFGGxCFrWlINOJFU/dUBttn0RBQTEqulBAErj+K0AFARs
-         ZhR307YWyXhPA9E/aw7RpGb10v+BE+hlwrmyM5pAe74ylU0DlXacB7xKWVJlxFDRE96/
-         dNOSapSeZST3cm0uc9fwe6pkrdelpNOtOoR4I9U3kxph5We0iA1NfVo12Rtc6KKliMKO
-         KtXuGQG0LofUwQ8XtHcKZMjzJlj3YjtFiLob4jTr/GkTE0Wi9V4x40lL4gf/nE6HO2qg
-         S2+w==
-X-Forwarded-Encrypted: i=1; AJvYcCV9np+7wQ2QnpiYp6H5wcKJsHMKNe/4O94g9BbiVt8s6+vWYwoxgqVlnRqy7KcnpZlELiBwJnBYasA8rydeZrvB/vGo5ycY1/uC0TRn2YrmvWVGL3+TQGeNBjS9DqkCXgPGRjczlEJQ
-X-Gm-Message-State: AOJu0YwZGspOL5r1YbzbmZA3gqxYjmvP4G/fM36+Davye8MXE4UhvljE
-	iBSzrc+9SvXxG+Fn1IzJERemO1/TwRhGL1nDgFI7YqgWqZ6u5Yuq
-X-Google-Smtp-Source: AGHT+IGIpqOBt7fQjwIMj081kucds8Wp+cwRdl8dbWAwFNJPtz929Q1DLouOmc3Nz7Isc8b18o/Ctw==
-X-Received: by 2002:a17:906:558:b0:a43:2418:2ab5 with SMTP id k24-20020a170906055800b00a4324182ab5mr1020247eja.60.1708882395871;
-        Sun, 25 Feb 2024 09:33:15 -0800 (PST)
+        bh=u98TGKSGxMD5MBX7AoX+yh5eBYy610WHJxOYWlsyDu8=;
+        b=gsAVjBOaS61gIezdigNWIM1WwOeER49KjsB9UAESPos3gVLgcyO/A55qjkDSccbrN0
+         YT4C8EQdXfrafb/PaGlJL4WlgEo92/Ua9qyoIXpkH43GiiWUl0Dpgq5raX7n+c5qRZSm
+         Bij9FwkRhVIrCU/47aZLD54Nd+7DAKo7IHT0foy0fEZmN3+JlIXfFk5CYoQNZTjpy4DB
+         G0T5JrbQpKN0fclxRqNCHVm/ApFw1ETPvK2GeDGLWrj+IMqJdTTXUyGfKsWk5wOhYpbm
+         nVfeizWDJpx+V3ezcYa1j1AUlwfYkll7E1+sYB/dPFJ6hMwdLpRe+pDDr3jv1YfeYpPr
+         o3Ug==
+X-Forwarded-Encrypted: i=1; AJvYcCX8oumgwBicj7IjtKz2Lj1d7VgVn4PZd4S+WnQY8UTSSYpCMyFbPHn1ml22rHjluhLsi5OXh6wtXgwPQVFSbbdX/3itVAvMtnUzJUlJ+eGo744ICEIPC1Vu8LlbohNdnBnMXIO3PAAy
+X-Gm-Message-State: AOJu0YwpF+PfL035sCocdDvziXOqs99jfXBKY1nfnRz+BYmgmllpAudq
+	ckaseaDh+eoj61WeteRxzyNZeO75nsjgtgi2d7UBQQhByCHGXZv2
+X-Google-Smtp-Source: AGHT+IF9xvmeRkngW8HgN9QJ8ja1/uQuYQMA3p+UHNLddikjuLZBWi9qZwv/pr+xVo9KTAeZAdQ17w==
+X-Received: by 2002:a17:906:918:b0:a3f:ae09:5f8a with SMTP id i24-20020a170906091800b00a3fae095f8amr4367654ejd.14.1708882397499;
+        Sun, 25 Feb 2024 09:33:17 -0800 (PST)
 Received: from [192.168.20.102] (57657817.catv.pool.telekom.hu. [87.101.120.23])
-        by smtp.googlemail.com with ESMTPSA id cw16-20020a170907161000b00a4306ac853fsm1182007ejd.206.2024.02.25.09.33.14
+        by smtp.googlemail.com with ESMTPSA id cw16-20020a170907161000b00a4306ac853fsm1182007ejd.206.2024.02.25.09.33.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Feb 2024 09:33:15 -0800 (PST)
+        Sun, 25 Feb 2024 09:33:16 -0800 (PST)
 From: Gabor Juhos <j4g8y7@gmail.com>
-Date: Sun, 25 Feb 2024 18:32:54 +0100
-Subject: [PATCH 1/3] clk: qcom: gcc-ipq5018: fix 'enable_reg' offset of
- 'gcc_gmac0_sys_clk'
+Date: Sun, 25 Feb 2024 18:32:55 +0100
+Subject: [PATCH 2/3] clk: qcom: gcc-ipq5018: fix 'halt_reg' offset of
+ 'gcc_pcie1_pipe_clk'
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,7 +78,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240225-gcc-ipq5018-register-fixes-v1-1-3c191404d9f0@gmail.com>
+Message-Id: <20240225-gcc-ipq5018-register-fixes-v1-2-3c191404d9f0@gmail.com>
 References: <20240225-gcc-ipq5018-register-fixes-v1-0-3c191404d9f0@gmail.com>
 In-Reply-To: <20240225-gcc-ipq5018-register-fixes-v1-0-3c191404d9f0@gmail.com>
 To: Bjorn Andersson <andersson@kernel.org>, 
@@ -92,24 +92,39 @@ Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
  linux-kernel@vger.kernel.org, Gabor Juhos <j4g8y7@gmail.com>
 X-Mailer: b4 0.12.3
 
-The value of the 'enable_reg' field in the 'gcc_gmac0_sys_clk'
-clock definition seems wrong as it is greater than the
-'max_register' value defined in the regmap configuration.
-Additionally, all other gmac specific branch clock definitions
-within the driver uses the same value both for the 'enable_reg'
-and for the 'halt_reg' fields.
+The following table shows the values of the 'halt_reg' and the
+'enable_reg' fields from the pcie clocks defined in the current
+driver:
 
-Due to the lack of documentation the correct value is not known.
-Looking into the downstream driver does not help either, as that
-uses the same (presumably wrong) value [1].
+  clock                        halt_reg    enable_reg
 
-Nevertheless, change the 'enable_reg' field of 'gcc_gmac0_sys_clk'
-to use the value from the 'halt_reg' field so it follows the pattern
-used in other gmac clock definitions. The change is based on the
-assumption that the register layout of this clock is the same
-as the other gmac clocks.
+  gcc_pcie0_ahb_clk            0x75010     0x75010
+  gcc_pcie0_aux_clk            0x75014     0x75014
+  gcc_pcie0_axi_m_clk          0x75008     0x75008
+  gcc_pcie0_axi_s_bridge_clk   0x75048     0x75048
+  gcc_pcie0_axi_s_clk          0x7500c     0x7500c
+  gcc_pcie0_pipe_clk           0x75018     0x75018
 
-1. https://git.codelinaro.org/clo/qsdk/oss/kernel/linux-ipq-5.4/-/blob/NHSS.QSDK.12.4.r4/drivers/clk/qcom/gcc-ipq5018.c?ref_type=heads#L1889
+  gcc_pcie1_ahb_clk            0x76010     0x76010
+  gcc_pcie1_aux_clk            0x76014     0x76014
+  gcc_pcie1_axi_m_clk          0x76008     0x76008
+  gcc_pcie1_axi_s_bridge_clk   0x76048     0x76048
+  gcc_pcie1_axi_s_clk          0x7600c     0x7600c
+  gcc_pcie1_pipe_clk                 8*    0x76018
+
+Based on the table, it is quite likely that the pcie0 and the pci1
+clocks are using the same register layout, however it seems that
+the value of the 'halt_reg' field in the 'gcc_pcie1_pipe_clk' clock
+is wrong.
+
+In the downstream driver [1], the same '0x76018' value is used for
+both the 'halt_reg' and for the 'enable_reg' fields of the
+'gcc_pcie1_pipe_clk' clock.
+
+Update the current driver to use the same value used downstream as
+probably that is the correct value.
+
+1. https://git.codelinaro.org/clo/qsdk/oss/kernel/linux-ipq-5.4/-/blob/NHSS.QSDK.12.4.r4/drivers/clk/qcom/gcc-ipq5018.c?ref_type=heads#L2316
 
 Fixes: e3fdbef1bab8 ("clk: qcom: Add Global Clock controller (GCC) driver for IPQ5018")
 Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
@@ -118,18 +133,18 @@ Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/clk/qcom/gcc-ipq5018.c b/drivers/clk/qcom/gcc-ipq5018.c
-index 4aba47e8700d2..cef9a1e7c9fdb 100644
+index cef9a1e7c9fdb..5e81cfa77293a 100644
 --- a/drivers/clk/qcom/gcc-ipq5018.c
 +++ b/drivers/clk/qcom/gcc-ipq5018.c
-@@ -1754,7 +1754,7 @@ static struct clk_branch gcc_gmac0_sys_clk = {
+@@ -2180,7 +2180,7 @@ static struct clk_branch gcc_pcie1_axi_s_clk = {
+ };
+ 
+ static struct clk_branch gcc_pcie1_pipe_clk = {
+-	.halt_reg = 8,
++	.halt_reg = 0x76018,
  	.halt_check = BRANCH_HALT_DELAY,
  	.halt_bit = 31,
  	.clkr = {
--		.enable_reg = 0x683190,
-+		.enable_reg = 0x68190,
- 		.enable_mask = BIT(0),
- 		.hw.init = &(struct clk_init_data) {
- 			.name = "gcc_gmac0_sys_clk",
 
 -- 
 2.43.2
