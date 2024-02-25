@@ -1,92 +1,209 @@
-Return-Path: <linux-kernel+bounces-79928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A31668628CB
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 03:28:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F06DC8628CE
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 03:38:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 517D41F217A3
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 02:28:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79E461F217AB
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 02:38:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91BBD7460;
-	Sun, 25 Feb 2024 02:28:04 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FF6E7484;
+	Sun, 25 Feb 2024 02:38:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uvwcLTA/"
+Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B91B04C96
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 02:28:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5631228F1
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 02:38:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708828084; cv=none; b=lpMfGNy5mDt/mnQzEueYVfNGtwA0v2+GRJLVCjUhidMw9Btx1pEgN0x1+uO06GiIEdAZTz8qZDNwQ9cqVeRZ2MHLPrO1QqefoQzXh6rsxOJYsOrRluRSPZOn2q2w9gxEb43ivhz1pciG01tt7dAzwMZlNoNwDtzTuln+beN800E=
+	t=1708828719; cv=none; b=XUqvLDapLLU650Ivv4tbHtOi5/CXpbQ59BWi5+RDOUVsHqMNVCD01Gmbfy/L+c4b82Zu2kAs6WUN7XKI07C7LQtz3pi6lWXfXz/dJyyMJBOra5KQGEBuc6IPGxK2qkccheNjdOByRrx3TfxH0Wwda7rW+rr2CDUC4EEvA+NMvKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708828084; c=relaxed/simple;
-	bh=3aKaHbYMteihl+U5QPccjJuoz28iAXGcuSjcPWIAdYM=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Nj+Bh764GbmDobW4sWLVIyuKyGT52qPNmasywGqWqbY47m2M/99GyPkRJ4JjoCHjtv+sJHhonRrwYO6+msDGV+/Zrl/7xSmIAgnkrRj2jnNmkYuqpIIdAZF3r4dq0AzgXXMNWioU6daEPi5ISUWeUz75f2fX8Ljzq3IF2QatPYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3657dff68d6so21609295ab.0
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 18:28:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708828082; x=1709432882;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=69jxe5/lbItSx/8NI9A2BEbecQ+1y4zcJUS034QABIU=;
-        b=pGX1O2jZ2JEDi+fdnveukA5mKJtyWogVZzvkn6neZAWAga0GJLv+ZyUcsi9YLdYBDh
-         AhMPc6nLFlCHHvQkLQz+I495Hjc/hGOkzZBtLjTg4yrXygglozvoaNh+2Z33C3bGFyLA
-         BWjwcOFzd92Ae13xZNWwYx8LEaukTM61Al3HUd2vD+Hi8rEIZBZQDSSjTrP/W4kA8VAK
-         tbQofM0Fnro+AeQHdciCfRaUXzUXP9gk/EMRxTlaVtKWiHS0G2vHon8cSXFCeSLtiLwZ
-         iQ4JlIktuB3a4s+KDyLTDV2Of4SAfWjWjRgJn6QlmWq0JBnTc7AKtv92dOeuIg2Sk2ND
-         eQAg==
-X-Forwarded-Encrypted: i=1; AJvYcCVgZCtO1f+5F/nw9PpzFn4fjOI043IPj5dE8Rt7AYc/BSmzo3zmqNMMI4vX7aiSCAD0v5l79CwORC8gCIpRBMm4tdbMumNTzm0rR44n
-X-Gm-Message-State: AOJu0Yw4BOt3xSLdbl9twumthf80nmq6OkZqpZ6ajvSAdMRK92K812Xa
-	GtwcCXGO1flZXPftrNlTDZ35Atqi9bxIXas3IlLpTXQt98R4KbGqSe2Kt3J8kzciLlsbxRvJjrv
-	Hrk0WAdx3mG8eWomWXwSn7FiaPDqwjJ+yM84fJk+POr2LrcAYOclJoZM=
-X-Google-Smtp-Source: AGHT+IEG8FPgH/7NK/GAXHzyqfV7repgm9p6T8Oh150j3NsDupdAxMqK6KEkh/wv/1TTMVWJk7WkKE5lfntNKFj4Rm9OXT9ei4b9
+	s=arc-20240116; t=1708828719; c=relaxed/simple;
+	bh=JoV9DJ+vFR1r4GaiacG2hqDz+lqO9SZK4X/J6Hh6ANI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CbgyrGvb7cIiIarKuTLePV5sjGambE7uZX7RsB7nmacn9jJMQa3ZJFvbDLp1DtowqNbcDEnlvv7HJ8PKOzv2vJjxOhgxEdfMTvTRIXDQA0cgQKQFyQ0TFhjF9Xj3jo4lrMamqIWEHCx7BUyFJxOxTQUiOf4tGtr3VTvw9P+4hzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uvwcLTA/; arc=none smtp.client-ip=95.215.58.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708828714;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=V5+DSdY0aRNEv/2+yTdFbM0tH4++AQae7Dw+EEJHSY8=;
+	b=uvwcLTA/FEYN7cQhp0+DJgmyNTxQzHXzQcPOnzdacjXH9q08bX/38vNHprJikRJ/V1Rn4Z
+	PvREeBNAPNBb39BzEPLVcbpB5A2F6t1yyKPL8b5HDDIQ5tmjq/h69jnBsTULrLBQbrQ4/6
+	l9xrarlLJ5u49AJ9HDVZ+V04c0xldrA=
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: linux-bcachefs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	djwong@kernel.org,
+	bfoster@redhat.com
+Subject: [PATCH 00/21] bcachefs disk accounting rewrite
+Date: Sat, 24 Feb 2024 21:38:02 -0500
+Message-ID: <20240225023826.2413565-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:160d:b0:365:df1:840d with SMTP id
- t13-20020a056e02160d00b003650df1840dmr239448ilu.4.1708828081920; Sat, 24 Feb
- 2024 18:28:01 -0800 (PST)
-Date: Sat, 24 Feb 2024 18:28:01 -0800
-In-Reply-To: <00000000000071ce7305ee97ad81@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ce24de06122b8a39@google.com>
-Subject: Re: [syzbot] [fs?] BUG: sleeping function called from invalid context
- in __bread_gfp
-From: syzbot <syzbot+5869fb71f59eac925756@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, hch@infradead.org, jack@suse.cz, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-syzbot suspects this issue was fixed by commit:
+here it is; the disk accounting rewrite I've been talking about since
+forever.
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+git link:
+https://evilpiepirate.org/git/bcachefs.git/log/?h=bcachefs-disk-accounting-rewrite
 
-    fs: Block writes to mounted block devices
+test dashboard (just rebased, results are regenerating as of this
+writing but shouldn't be any regressions left):
+https://evilpiepirate.org/~testdashboard/ci?branch=bcachefs-disk-accounting-rewrite
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=164a0a54180000
-start commit:   a92b7d26c743 Merge tag 'drm-fixes-2023-06-23' of git://ano..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2cbd298d0aff1140
-dashboard link: https://syzkaller.appspot.com/bug?extid=5869fb71f59eac925756
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17fa78c7280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17e73723280000
+The old disk accounting scheme was fast, but had some limitations:
 
-If the result looks correct, please mark the issue as fixed by replying with:
+ - lack of scalability: it was based on percpu counters additionally
+   sharded by outstanding journal buffer, and then just prior to journal
+   write we'd roll up the counters and add them to the journal entry.
 
-#syz fix: fs: Block writes to mounted block devices
+   But this meant that all counters were added to every journal write,
+   which meant it'd never be able to support per-snapshot counters.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+ - it was a pain to extend
+   this was why, until now, we didn't have proper compressed accounting,
+   and getting compression ratio required a full btree scan
+
+In the new scheme:
+ - every set of counters is a bkey, a key in a btree
+   (BTREE_ID_accounting).
+
+   this means they aren't pinned in the journal
+
+ - the key has structure, and is extensible
+   disk_accounting_key is a tagged union, and it's just union'd over
+   bpos
+
+ - counters are deltas, until flushed to the underlying btree
+
+   this means counter updates are normal btree updates; the btree write
+   buffer makes counter updates efficient.
+
+Since reading counters from the btree would be expensive - it'd require
+a write buffer flush to get up-to-date counters - we also maintain a
+parallel set of accounting in memory, a bit like the old scheme but
+without the per-journal-buffer sharding. The in memory accounters
+indexed in an eytzinger tree by disk_accounting_key/bpos, with the
+counters themselves being percpu u64s.
+
+Reviewers: do a "is this adequately documented, can I find my way
+around, do things make sense", not line-by-line "does this have bugs".
+
+Compatibility: this is in no way compatible with the old disk accounting
+on disk format, and it's not feasible to write out accounting in the old
+format - that means we have to regenerate accounting when upgrading or
+downgrading past this version.
+
+That should work more or less seamlessly with the most recent compat
+bits (bch_sb_field downgrade, so we can tell older versions what
+recovery psases to run and what to fix); additionally, userspace fsck
+now checks if the kernel bcachefs version better matches the on disk
+version than itself and if so uses the kernle fsck implementation with
+the OFFLINE_FSCK ioctl - so we shouldn't be bouncing back and forth
+between versions if your tools and kernel don't match.
+
+upgrade/downgrade still need a bit more testing, but transparently using
+kernel fsck is well tested as of latest versions.
+
+but: 6.7 users (& possibly 6.8) beware, the sb_downgrade section is in
+6.7 but BCH_IOCTL_OFFLINE_FSCK is not, and backporting that doesn't look
+likely given current -stable process fiasco.
+
+merge ETA - this stuff may make the next merge window; I'd like to get
+per-snapshot-id accounting done with it, that should be the biggest item
+left.
+
+Cheers,
+Kent
+
+Kent Overstreet (21):
+  bcachefs: KEY_TYPE_accounting
+  bcachefs: Accumulate accounting keys in journal replay
+  bcachefs: btree write buffer knows how to accumulate bch_accounting
+    keys
+  bcachefs: Disk space accounting rewrite
+  bcachefs: dev_usage updated by new accounting
+  bcachefs: Kill bch2_fs_usage_initialize()
+  bcachefs: Convert bch2_ioctl_fs_usage() to new accounting
+  bcachefs: kill bch2_fs_usage_read()
+  bcachefs: Kill writing old accounting to journal
+  bcachefs: Delete journal-buf-sharded old style accounting
+  bcachefs: Kill bch2_fs_usage_to_text()
+  bcachefs: Kill fs_usage_online
+  bcachefs: Kill replicas_journal_res
+  bcachefs: Convert gc to new accounting
+  bcachefs: Convert bch2_replicas_gc2() to new accounting
+  bcachefs: bch2_verify_accounting_clean()
+  bcachefs: Eytzinger accumulation for accounting keys
+  bcachefs: bch_acct_compression
+  bcachefs: Convert bch2_compression_stats_to_text() to new accounting
+  bcachefs: bch2_fs_accounting_to_text()
+  bcachefs: bch2_fs_usage_base_to_text()
+
+ fs/bcachefs/Makefile                   |   3 +-
+ fs/bcachefs/alloc_background.c         | 137 +++--
+ fs/bcachefs/alloc_background.h         |   2 +
+ fs/bcachefs/bcachefs.h                 |  22 +-
+ fs/bcachefs/bcachefs_format.h          |  81 +--
+ fs/bcachefs/bcachefs_ioctl.h           |   7 +-
+ fs/bcachefs/bkey_methods.c             |   1 +
+ fs/bcachefs/btree_gc.c                 | 259 ++++------
+ fs/bcachefs/btree_iter.c               |   9 -
+ fs/bcachefs/btree_journal_iter.c       |  23 +-
+ fs/bcachefs/btree_journal_iter.h       |  15 +
+ fs/bcachefs/btree_trans_commit.c       |  71 ++-
+ fs/bcachefs/btree_types.h              |   1 -
+ fs/bcachefs/btree_update.h             |  22 +-
+ fs/bcachefs/btree_write_buffer.c       | 120 ++++-
+ fs/bcachefs/btree_write_buffer.h       |  50 +-
+ fs/bcachefs/btree_write_buffer_types.h |   2 +
+ fs/bcachefs/buckets.c                  | 663 ++++---------------------
+ fs/bcachefs/buckets.h                  |  70 +--
+ fs/bcachefs/buckets_types.h            |  14 +-
+ fs/bcachefs/chardev.c                  |  75 +--
+ fs/bcachefs/disk_accounting.c          | 584 ++++++++++++++++++++++
+ fs/bcachefs/disk_accounting.h          | 203 ++++++++
+ fs/bcachefs/disk_accounting_format.h   | 145 ++++++
+ fs/bcachefs/disk_accounting_types.h    |  20 +
+ fs/bcachefs/ec.c                       | 166 ++++---
+ fs/bcachefs/inode.c                    |  42 +-
+ fs/bcachefs/journal_io.c               |  13 +-
+ fs/bcachefs/recovery.c                 | 126 +++--
+ fs/bcachefs/recovery_types.h           |   1 +
+ fs/bcachefs/replicas.c                 | 242 ++-------
+ fs/bcachefs/replicas.h                 |  16 +-
+ fs/bcachefs/replicas_format.h          |  21 +
+ fs/bcachefs/replicas_types.h           |  16 -
+ fs/bcachefs/sb-clean.c                 |  62 ---
+ fs/bcachefs/sb-downgrade.c             |  12 +-
+ fs/bcachefs/sb-errors_types.h          |   4 +-
+ fs/bcachefs/super.c                    |  74 ++-
+ fs/bcachefs/sysfs.c                    | 109 ++--
+ 39 files changed, 1873 insertions(+), 1630 deletions(-)
+ create mode 100644 fs/bcachefs/disk_accounting.c
+ create mode 100644 fs/bcachefs/disk_accounting.h
+ create mode 100644 fs/bcachefs/disk_accounting_format.h
+ create mode 100644 fs/bcachefs/disk_accounting_types.h
+ create mode 100644 fs/bcachefs/replicas_format.h
+
+-- 
+2.43.0
+
 
