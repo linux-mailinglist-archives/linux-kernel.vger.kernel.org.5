@@ -1,147 +1,195 @@
-Return-Path: <linux-kernel+bounces-80168-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95544862B4F
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:54:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 216EF862B50
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:54:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CCA201C20AB6
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 15:54:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAEEA2819E3
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 15:54:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 197851759E;
-	Sun, 25 Feb 2024 15:54:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 781A21759F;
+	Sun, 25 Feb 2024 15:54:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T9bZPlIM"
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LTNlvJm4"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B547C16427;
-	Sun, 25 Feb 2024 15:54:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA7E6168DC
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 15:54:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708876456; cv=none; b=JNS7TbU8O3+quslYnrAL8mB3RHa0eGYJPakMW2SP2tBAP03kjoelzOUHUEMlLPJzgVpxXJ5quC0bjWDeL4vGzMnFBriHhxzMtE+7d60R06q7RZlOL0m+bO68fWZT84U5X7PqdRV6Ny7gjwBiXBb3Hy0XsghIe71VXyRUBZaUZsY=
+	t=1708876486; cv=none; b=IhhZWzON26O4BP/jjbMmDC/q4pTjv9DNj9DFDD+8EaDWAU3lxi8mSRcEN4tbDVpPT2lXAXXPPq2yid5CIvkm07kdKqAgi7Vld2aKMQw3OBufelkXOU3WSaUM5DGicSRm7A+3WlFR3gNPZvTnRmCBJSjQJtj0v3YaTqi3J31IFrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708876456; c=relaxed/simple;
-	bh=z9nMvV8Br/f5lbsA6JG4GUMN22pmv5RVa5MEsG7AZxQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FWzTfebLUdmeu594j8BLi432P1G3lMOedwgmoMsNaeZrsByYU8swJmia/gh2eUtMkwgukZ4AUazVWOrvcFJZWQBqE2F0cTbvAiIaraVGQsie/sI2Mlmr0qjAubZJghxhGmAjdtBC9BUv1qUJxJxQ0cof+kCOT1alPj47muXVbro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T9bZPlIM; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d28051376eso12513781fa.0;
-        Sun, 25 Feb 2024 07:54:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708876453; x=1709481253; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=U+RTNbDlxLiVpFh7JBKRa3eX6T1fmXSslJ2kwaJm/ow=;
-        b=T9bZPlIMILbo6I80T47MqvzvJtd1zLzKFAP63yaJ5Boxvo6aPMVUhRd1+hU5ADv4Qk
-         oibkfdZboU9oNvOhghRgLFJutW/Xw+iLAnoBSHYbaxOURrK4LF6SQg3tRHKL0wcEdhph
-         m/r4sAFYQQnp3jZTC+6chxq3SFEhFtDYkZ2CEykwlFUSyWqqDQy910Qtk8rKZKScHlrP
-         O4Als3bbKKbV3Owe5LfRpJ09n/cfKtpB2OZwWPeYOxuPl5MCDVHV7rsF3ZQTJ7e+3kQH
-         vHkuCV7jJOiL7TwjeFvPsj+/+ty9OkPgnaMHJ7W2SmJsXB1riXgoIwbApRk/Hu6I4jAC
-         8xGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708876453; x=1709481253;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=U+RTNbDlxLiVpFh7JBKRa3eX6T1fmXSslJ2kwaJm/ow=;
-        b=i12dnh5/sTi4zWjATwnNWNoqL6ets72lVR8SNz6kjJjGY2CkiceP+AUoz4OVifokIy
-         5HApk/bTrn1HYNrZfWz7u0i2MBadgq3Jxg/mmDPDbGO8/n9cVik2ReC9rhahxF3/ZJnb
-         eYibEG/FW5a5fXGbS1z3ygHz8pUj/ouOisaB219CfgyqkWdFg92pNvUaj8LRRweandez
-         IDq1hGDYM/JlLX6sE4MpWyaAVVwXAAT5CawYZdI16R83T0pQTWrCgamS1O4puQHc/do+
-         xqbYA32r3XCnCaGrqtazUBhjLgdswcblcpphLxFPQMoVjfKaQ27yVjRDcGjn7dZ4Xx7C
-         CGOA==
-X-Forwarded-Encrypted: i=1; AJvYcCWzlRuCQb7+FHfmpFesN3vm4iE/d8NvIGaon+dJ2T4pwGNYrs80hEk5eXOFDpLBznM5U8GRKwggeluh9nRHrgWr7QreMlD7zC2Ctq3nNvwvKPd3cGWzRj+05uLDx5EC5xB+rAuTitBxpDE=
-X-Gm-Message-State: AOJu0YyFE96pOCRlfnFllcB+IlSRxe/W0zxlXskdwopkYZyKPtei68JU
-	SYrYBFJpB1Pk0In7yFEEu96wn02EBRNv3bRN3zWhk/tUela3sQbh
-X-Google-Smtp-Source: AGHT+IH8J4Ezb3RxlZuDNF6SENZAlokznIDvMIbMLfNGU+6SI4X4wE287gT8kWe01PNnQb8I60xGkw==
-X-Received: by 2002:a05:651c:10d1:b0:2d2:2012:1fef with SMTP id l17-20020a05651c10d100b002d220121fefmr2281728ljn.47.1708876452671;
-        Sun, 25 Feb 2024 07:54:12 -0800 (PST)
-Received: from localhost.localdomain (c83-255-24-248.bredband.tele2.se. [83.255.24.248])
-        by smtp.googlemail.com with ESMTPSA id p6-20020a2e93c6000000b002d221041b59sm585179ljh.51.2024.02.25.07.54.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Feb 2024 07:54:12 -0800 (PST)
-From: Jonathan Bergh <bergh.jonathan@gmail.com>
-To: hdegoede@redhat.com
-Cc: mchehab@kernel.org,
-	linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jonathan Bergh <bergh.jonathan@gmail.com>
-Subject: [PATCH] staging: media: atomisp: Fix formatting issues and minor code issue
-Date: Sun, 25 Feb 2024 16:53:59 +0100
-Message-Id: <20240225155359.41435-1-bergh.jonathan@gmail.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1708876486; c=relaxed/simple;
+	bh=a8WuHvI6h6kLGhcZUjOjqEaaYOLzg47IYOWKmjJs8cw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=W13GRoZ4+/Ckqf0FA7KxqL4rdRb8lxsynQGgxifo4egZwIVs97qGjp6vnqtkT2EPJ+4KWucfb1x6NtInNZyW+scsGioTy0DKV1yy3w3TCS01jfBj7JVHRPfvWqd7Dtkt73gkUgB1VaeUOLRDZXDli94gypGWrzwC12FwUEV7S0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LTNlvJm4; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708876483; x=1740412483;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=a8WuHvI6h6kLGhcZUjOjqEaaYOLzg47IYOWKmjJs8cw=;
+  b=LTNlvJm4il71MKR7KW6lxlggxAIjLTTQ4Wm0NZpIFcQkVvaO1WwCRhLg
+   btvOz9FSuEnucqJ8VFsgauBQa2fJ66B32xtzwanl7LFyJUn1h1GxOBSZJ
+   JJHW1PU1GNXgv6zfrlaGsRkIxlyj8TCHC28xP7aRRTR9PAztM/+RMoKnM
+   e6aEghrOzQNL1zN+hK30+tWfDEmhO1bueJQElw6vzUJkV2BLmDxarieVw
+   85fRcWbonQTB8tvcJxDj51o0vKUnpn20qz8cxIqR244Qccutid9R97RCM
+   wBm36HRE7n+u5HBueP8nIWzmk+poeSAvo42brlrMTXltj05oXPSizBQAf
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3296457"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="3296457"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 07:54:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="937028120"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="937028120"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 25 Feb 2024 07:54:38 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id B60FB425; Sun, 25 Feb 2024 17:54:36 +0200 (EET)
+Date: Sun, 25 Feb 2024 17:54:36 +0200
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, 
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, Elena Reshetova <elena.reshetova@intel.com>, 
+	Jun Nakajima <jun.nakajima@intel.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish" <ashish.kalra@amd.com>, 
+	Sean Christopherson <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>, 
+	kexec@lists.infradead.org, linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv7 08/16] x86/tdx: Account shared memory
+Message-ID: <z6dsqhxzj4beyv4vj5uq6khpt6ti4mvs3uxunvli5cvi2hgfmv@rqbyr4wlzb6f>
+References: <20240212104448.2589568-1-kirill.shutemov@linux.intel.com>
+ <20240212104448.2589568-9-kirill.shutemov@linux.intel.com>
+ <a69a3d67-7352-4bf4-8766-a55ce97e46bd@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a69a3d67-7352-4bf4-8766-a55ce97e46bd@intel.com>
 
-This patch fixes the following code style and formatting issues:
- * Ensure multiline block comments are correctly formatted
- * Remove extra braces not required for single line conditional statements
+On Fri, Feb 23, 2024 at 11:08:18AM -0800, Dave Hansen wrote:
+> On 2/12/24 02:44, Kirill A. Shutemov wrote:
+> > The kernel will convert all shared memory back to private during kexec.
+> > The direct mapping page tables will provide information on which memory
+> > is shared.
+> > 
+> > It is extremely important to convert all shared memory. If a page is
+> > missed, it will cause the second kernel to crash when it accesses it.
+> > 
+> > Keep track of the number of shared pages. This will allow for
+> > cross-checking against the shared information in the direct mapping and
+> > reporting if the shared bit is lost.
+> > 
+> > Include a debugfs interface that allows for the check to be performed at
+> > any point.
+> 
+> When I read this, I thought you were going to do some automatic
+> checking.  Could you make it more clear here that it's 100% up to the
+> user to figure out if the numbers in debugfs match and whether there's a
+> problem?  This would also be a great place to mention that the whole
+> thing is racy.
 
-Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
----
- drivers/staging/media/atomisp/pci/atomisp_drvfs.c         | 2 +-
- drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c | 7 +++----
- drivers/staging/media/atomisp/pci/atomisp_subdev.c        | 3 ++-
- 3 files changed, 6 insertions(+), 6 deletions(-)
+What about this:
 
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_drvfs.c b/drivers/staging/media/atomisp/pci/atomisp_drvfs.c
-index 1df534bf54d3..8ef25d2f8b87 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_drvfs.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_drvfs.c
-@@ -34,7 +34,7 @@
-  *        bit 0: binary list
-  *        bit 1: running binary
-  *        bit 2: memory statistic
--*/
-+ */
- struct _iunit_debug {
- 	struct device_driver	*drv;
- 	struct atomisp_device	*isp;
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c b/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c
-index 139ad7ad1dcf..804ffff245f3 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c
-@@ -1416,13 +1416,12 @@ static int gmin_get_config_var(struct device *maindev,
- 	if (efi_rt_services_supported(EFI_RT_SUPPORTED_GET_VARIABLE))
- 		status = efi.get_variable(var16, &GMIN_CFG_VAR_EFI_GUID, NULL,
- 					  (unsigned long *)out_len, out);
--	if (status == EFI_SUCCESS) {
-+	if (status == EFI_SUCCESS)
- 		dev_info(maindev, "found EFI entry for '%s'\n", var8);
--	} else if (is_gmin) {
-+	else if (is_gmin)
- 		dev_info(maindev, "Failed to find EFI gmin variable %s\n", var8);
--	} else {
-+	else
- 		dev_info(maindev, "Failed to find EFI variable %s\n", var8);
--	}
- 
- 	return ret;
- }
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_subdev.c b/drivers/staging/media/atomisp/pci/atomisp_subdev.c
-index a87fc74159e2..f8efaef2c055 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_subdev.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_subdev.c
-@@ -394,7 +394,8 @@ int atomisp_subdev_set_selection(struct v4l2_subdev *sd,
- 			 * (of the desired captured image before
- 			 * scaling, or 1 / 6 of what we get from the
- 			 * sensor) in both width and height. Remove
--			 * it. */
-+			 * it.
-+			 */
- 			crop[pad]->width = roundup(crop[pad]->width * 5 / 6,
- 						   ATOM_ISP_STEP_WIDTH);
- 			crop[pad]->height = roundup(crop[pad]->height * 5 / 6,
+  Include a debugfs interface to dump the number of shared pages in the
+  direct mapping and the expected number. There is no serialization
+  against memory conversion. The numbers might not match if access to the
+  debugfs interface races with the conversion.
+
+> > +static atomic_long_t nr_shared;
+> > +
+> > +static inline bool pte_decrypted(pte_t pte)
+> > +{
+> > +	return cc_mkdec(pte_val(pte)) == pte_val(pte);
+> > +}
+> 
+> Name this pte_is_decrypted(), please.
+
+But why? pte_decrypted() is consistent with other pte helpers pte_none(),
+pte_present, pte_dirty(), ...
+
+> >  /* Called from __tdx_hypercall() for unrecoverable failure */
+> >  noinstr void __noreturn __tdx_hypercall_failed(void)
+> >  {
+> > @@ -821,6 +829,11 @@ static int tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
+> >  	if (!enc && !tdx_enc_status_changed(vaddr, numpages, enc))
+> >  		return -EIO;
+> >  
+> > +	if (enc)
+> > +		atomic_long_sub(numpages, &nr_shared);
+> > +	else
+> > +		atomic_long_add(numpages, &nr_shared);
+> > +
+> >  	return 0;
+> >  }
+> >  
+> > @@ -896,3 +909,59 @@ void __init tdx_early_init(void)
+> >  
+> >  	pr_info("Guest detected\n");
+> >  }
+> > +
+> > +#ifdef CONFIG_DEBUG_FS
+> > +static int tdx_shared_memory_show(struct seq_file *m, void *p)
+> > +{
+> > +	unsigned long addr, end;
+> > +	unsigned long found = 0;
+> > +
+> > +	addr = PAGE_OFFSET;
+> > +	end  = PAGE_OFFSET + get_max_mapped();
+> > +
+> > +	while (addr < end) {
+> > +		unsigned long size;
+> > +		unsigned int level;
+> > +		pte_t *pte;
+> > +
+> > +		pte = lookup_address(addr, &level);
+> > +		size = page_level_size(level);
+> > +
+> > +		if (pte && pte_decrypted(*pte))
+> > +			found += size / PAGE_SIZE;
+> > +
+> > +		addr += size;
+> > +
+> > +		cond_resched();
+> > +	}
+> 
+> This is totally racy, right?  Nothing prevents the PTE from
+> flip-flopping all over the place.
+
+Yes.
+
+> > +	seq_printf(m, "Number of shared pages in kernel page tables:  %16lu\n",
+> > +		   found);
+> > +	seq_printf(m, "Number of pages accounted as shared:           %16ld\n",
+> > +		   atomic_long_read(&nr_shared));
+> > +	return 0;
+> > +}
+> 
+> Ditto with 'nr_shared'.  There's nothing to say that the page table walk
+> has anything to do with 'nr_shared' by the time we get down here.
+> 
+> That's not _fatal_ for a debug interface, but the pitfalls need to at
+> least be discussed.  Better yet would be to make sure this and the cpa
+> code don't stomp on each other.
+
+Serializing is cumbersome here. I can also just drop the interface.
+
 -- 
-2.40.1
-
+  Kiryl Shutsemau / Kirill A. Shutemov
 
