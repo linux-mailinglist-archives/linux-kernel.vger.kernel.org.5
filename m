@@ -1,67 +1,108 @@
-Return-Path: <linux-kernel+bounces-80023-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 200598629D8
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 10:05:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84F738629DA
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 10:07:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B06B51F216AA
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 09:04:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23C7F1F217EA
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 09:07:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C73ADE556;
-	Sun, 25 Feb 2024 09:04:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA087EAFA;
+	Sun, 25 Feb 2024 09:07:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b="QBLB3GFk"
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j8RcAZpG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4CC78BF1
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 09:04:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E50E3DF4E;
+	Sun, 25 Feb 2024 09:07:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708851893; cv=none; b=CeiGajxZs6suZ0RGcfbyVGIhTiD82G0r8esoc6bIR8Bji3xFz3tsHt3guFMnar5jd6FZvyPbVaa2aENpu8gCOghZcyFikdWUi5bdKTuaxrFBljO4opo3KEEf1MjjJpozoJhz14taIsXIi20X06ME3npr60xNdY+VPHxOKvwDCBw=
+	t=1708852048; cv=none; b=M+VovOXvxg7jd3QymRR1EvBGrV/cDGvfnUnxRrUZW7avPqzaTLAQM/MVh29iCpiTHmQILpxWF+vP6j48meZkMNsFQqbu+yxxeMg9RavxV4xpCu5Sbi18EH4zz45epydfFlekmBCLSeJG54Fouvdo+kIH82pgwd3yLKs4yqVzDCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708851893; c=relaxed/simple;
-	bh=6Vi8Vn81IR6RDv9GlgF7+lupUmamlBU674vTJFQBCws=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=GiFlZU/N2mM6P7gMFXxFsCCkaJu3Ab96b8lvReyQqbxdqiytpF1qmNrhP54eno/b6z8YWAy1mxjB0dUHpb0hy+G5wtQOiY6AjtDqF7xzLK83nxQ/0YhRlVGtdz9T8M5VvhvZqlVs2u+09CpfJvCd2aQJiwM/hmJOBmhty8s7W+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org; spf=pass smtp.mailfrom=cu-phil.org; dkim=pass (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b=QBLB3GFk; arc=none smtp.client-ip=194.63.252.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cu-phil.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cu-phil.org
-	; s=ds202401; h=Content-Transfer-Encoding:Content-Type:Subject:From:To:
-	MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=6Vi8Vn81IR6RDv9GlgF7+lupUmamlBU674vTJFQBCws=; b=QBLB3GFkqUqru4/ABm2BdJvFLB
-	/IH7cUwe8auA3PYTOi2TRouPx6iIKICXBXjlJlM+MKq5TkoZoQZOvSYZ8QuVDQ9UWQUg2qQn+FnNb
-	xE1sL8MM7XMa/D932NxsfK/l21GcXHX077m3RaoO8oCBFf9QcBaWmOg6odIptHGPxjT3v3F02a1Io
-	qkdYDEcxQZxEEksURCzBy6A4cWyvnQuH3y308ySX60829z+WtTfjzq4Le64iBEU1lpEhJhXAMOURN
-	UKOe+OYxBNrgDixQxIrZfgECmgULqAY2m0+e3YytiO7WEbwH2xUrPe5i3STc+qjtQVFs5FGf0NbiW
-	jMEeNrXw==;
-Received: from [2a02:fe1:7001:f100:ccef:d53a:cfe3:be8b] (port=60965)
-	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <Ywe_Caerlyn@cu-phil.org>)
-	id 1reAR8-00FUlb-Hr
-	for linux-kernel@vger.kernel.org;
-	Sun, 25 Feb 2024 10:04:42 +0100
-Message-ID: <499a0907-c391-4f50-9710-50c68c3a76be@cu-phil.org>
-Date: Sun, 25 Feb 2024 10:04:41 +0100
+	s=arc-20240116; t=1708852048; c=relaxed/simple;
+	bh=PYK/d9GwUG1mPcQe3ZSvAjL+kdi6v41hYRadhrWMKaM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JHBfV5R0IPkw/l69zWSvFnoDTQflZITQWaXxvCrPemf3QJEhE7oxxheHALTJVVzMZ5qyfGkGTWGmr0tN24400fskDpInSDc8P5qf9DU+bmUBoR7juyzSFCVGUNjeitJQWxW064mlaIB7dfXnPoV6PQhWlj/vy4OHR+BG5A9hMSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j8RcAZpG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C58FC43399;
+	Sun, 25 Feb 2024 09:07:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708852047;
+	bh=PYK/d9GwUG1mPcQe3ZSvAjL+kdi6v41hYRadhrWMKaM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=j8RcAZpGwLd2HviVumLnMaaQdIBIvHfRd5kzSpeUrxoiYW+LzRTK4URuZBUSwhVM1
+	 MyiUxu2S1bm/SQEXinZ7LLCbt5Hd8fk78FZBoFSGN0eq+nliIOnYv1q97aQtPdHZTT
+	 YqBpaGj3VfarXuMHuYksR0jBRHuj8oYVmnlpYvaIppNpkhCUDJ/zwYbwallZNFKXgG
+	 YwnywV2YnHSlV3QaDaN2F0DdLrjIIIg3gRMjXkN2YszFkovM7L+HRnwULp8sg9sxUM
+	 Yu+LTmsZrj1dLcKBs+/KDgOQ5XEDtEov3aNu2WIRctomT25sEnDcXkTiQYE87jO3pY
+	 YIMkoBz5+VtAw==
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-512a65cd2c7so3063135e87.0;
+        Sun, 25 Feb 2024 01:07:27 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUDBprfBhsx6ZV4N6aPDzpUKKpLLpxDjQSxMul3HRQDRgA0HTiBAzcDWbZi5HkGWWjK+mxJuaKXI4BzqLmTtEZAvo6RK31L0iI6HugQsmLdrT0qBTX33K08B6TGBjlxTe1qJJkERS1jiaq9
+X-Gm-Message-State: AOJu0YxxZqsIqiCLMSCeoysXJlDLRg2+Gg9101lBt4pq/rmF7HVFGcuf
+	18hIEcZ9SiA2aTEHWI2+wTc243Kmi1KquJHbLIIlyiA9uRTz1JTrIKnQPQoKOCgQhWlUW81Bcf+
+	U5hcWwhKKc5zHPbo8N0tXqlNO85A=
+X-Google-Smtp-Source: AGHT+IFnlVAISkYxu41DDGpI/dXUNkSShlRW36T9wUCotoPmKbIAiJ4Zz699FS5RJkp9Ejt1UmH21RgWH6sSPcmdUTg=
+X-Received: by 2002:a05:6512:40e:b0:512:ae0c:6a89 with SMTP id
+ u14-20020a056512040e00b00512ae0c6a89mr2413785lfk.9.1708852045973; Sun, 25 Feb
+ 2024 01:07:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-kernel@vger.kernel.org
-From: Ywe Caerlyn <Ywe_Caerlyn@cu-phil.org>
-Subject: San OS Youtube playlist on Background (Fair Source)
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240222133500.16991-1-petr.pavlu@suse.com>
+In-Reply-To: <20240222133500.16991-1-petr.pavlu@suse.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sun, 25 Feb 2024 18:06:49 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS+p-4X-ns6XnsjA+UMhUOv7sZzd3oTVfZwPe1t_sSeFA@mail.gmail.com>
+Message-ID: <CAK7LNAS+p-4X-ns6XnsjA+UMhUOv7sZzd3oTVfZwPe1t_sSeFA@mail.gmail.com>
+Subject: Re: [PATCH v3] kbuild: Use -fmin-function-alignment when available
+To: Petr Pavlu <petr.pavlu@suse.com>
+Cc: nathan@kernel.org, nicolas@fjasle.eu, mark.rutland@arm.com, 
+	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-https://www.youtube.com/playlist?list=PLkx2Fi-LyBi1KFKeO860eb09YF_d3BGAJ
+On Thu, Feb 22, 2024 at 10:35=E2=80=AFPM Petr Pavlu <petr.pavlu@suse.com> w=
+rote:
+>
+> GCC recently added option -fmin-function-alignment, which should appear
+> in GCC 14. Unlike -falign-functions, this option causes all functions to
+> be aligned at the specified value, including the cold ones.
+>
+> In particular, when an arm64 kernel is built with
+> DYNAMIC_FTRACE_WITH_CALL_OPS=3Dy, the 8-byte function alignment is
+> required for correct functionality. This was done by -falign-functions=3D=
+8
+> and having workarounds in the kernel to force the compiler to follow
+> this alignment. The new -fmin-function-alignment option directly
+> guarantees it.
+>
+> Detect availability of -fmin-function-alignment and use it instead of
+> -falign-functions when present. Introduce CC_HAS_SANE_FUNCTION_ALIGNMENT
+> and enable __cold to work as expected when it is set.
+>
+> Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> Acked-by: Mark Rutland <mark.rutland@arm.com>
+> ---
+
+
+
+
+
+Applied to linux-kbuild.
+Thanks.
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
