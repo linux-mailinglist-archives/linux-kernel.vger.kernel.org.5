@@ -1,75 +1,91 @@
-Return-Path: <linux-kernel+bounces-80067-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFF50862A67
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 14:04:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8AA4862A6C
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 14:13:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B241281B31
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 13:04:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 635A21F21647
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 13:13:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C175125CC;
-	Sun, 25 Feb 2024 13:04:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="MUb9elrz"
-Received: from mail-177132.yeah.net (mail-177132.yeah.net [123.58.177.132])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1454DDDA;
-	Sun, 25 Feb 2024 13:04:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4976D125CC;
+	Sun, 25 Feb 2024 13:12:57 +0000 (UTC)
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [207.46.229.174])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD8CB79D3
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 13:12:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.46.229.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708866289; cv=none; b=p/OLEYtvlzndTSrSyy0oc96OPX+2dHq9F7hodw2Nba4lfcDx2ukDmXiJ4sMFK6DYSyDjDOXwVvE7u4QSqhO2Tn9eakCozPy1Laven8H/TECV9XaknaBXHr48f3xFgr9Utba17VfzAwHlcx8H/VQrF3Exl77y7dv2twTaTcQiqOs=
+	t=1708866776; cv=none; b=t1CnonBcMDou+BUnFrEJNaFbiCuEENv36N+yQz+oLmjtpS8Ikhh/Y9wxnDg1ZUXFbCgV33vWZwOYrPHOc/f5QbtoMnflmF2p79ZmstxWS5oqkWbaHwQ6k5KkSVJd8ZO+Wv5gakKxTVb4RoA4PDWQjaZ14FP8Mfqe9Dsqtvtx444=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708866289; c=relaxed/simple;
-	bh=ln45ZHPv8+YkWi3VQQc0vg+57IBMoHqUd07YiLVFH48=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D/C1mXpkEBPfSwPc46srQNq1A0/y6dUL3SSP6ZETudPnkjRhA5Wc7Oi1HviV2ByLUkHqgPc4aA4HmYbn8Rj9Nz/X2N/WybS9XOkRFoxjWiZW3+5GKO+BJShnENu99mErNwHdJd4PDWj9PgNrVPgC5kK1JZKjsXoMcN3vqB9ZLWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=MUb9elrz; arc=none smtp.client-ip=123.58.177.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=jOX14Uu7tHrKUE0P91Wze9hvWOxj3jqvdUZ1ym6LhD4=;
-	b=MUb9elrzC2VUkwtnyy5ExQcS4xhA9QB2WC0pzvi42XuDbEtYqKRVJPCczzFds1
-	FLfk6fv1QnuibCFXRxrSBXSEAejI6qF1FFFVbqHWRLvvts5YRFJksrf8Bi5hXB0H
-	0qEEIW3IqzVOjB8rP7red7EJjsaCdv5u3Oq1OKQU4lt2M=
-Received: from dragon (unknown [183.213.196.200])
-	by smtp2 (Coremail) with SMTP id C1UQrADnjy+vOttlOjhWBA--.41198S3;
-	Sun, 25 Feb 2024 21:03:44 +0800 (CST)
-Date: Sun, 25 Feb 2024 21:03:43 +0800
-From: Shawn Guo <shawnguo2@yeah.net>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-	kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, shengjiu.wang@gmail.com
-Subject: Re: [PATCH] arm64: dts: imx8mm-evk: Add spdif sound card support
-Message-ID: <Zds6rztD3msV/gId@dragon>
-References: <1708582633-6969-1-git-send-email-shengjiu.wang@nxp.com>
+	s=arc-20240116; t=1708866776; c=relaxed/simple;
+	bh=pv7W/DbqNjN8kHhj+3BlNysGTjdk4pEKt/ggevfzQ4Y=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
+	 MIME-Version:Message-ID; b=e7kKeR5daPEXogCVYZudieu+er1H53hnxYjxBjvJWLDk0s1CAy4Mv8GrmVtiM46Z+P4MuVuoVdbn/tXxm2Zdnwp7PLWFOwGzlXF8hSBh/SEgQlTEGOpElk1E9kZZQ28BCMjMwu4jeYo/4cF3EX1X/TdUNpQCx8GC2JHU6Kc4fmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=207.46.229.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from duoming$zju.edu.cn ( [218.12.16.226] ) by
+ ajax-webmail-mail-app2 (Coremail) ; Sun, 25 Feb 2024 21:12:29 +0800
+ (GMT+08:00)
+Date: Sun, 25 Feb 2024 21:12:29 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From: duoming@zju.edu.cn
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	andrew@lunn.ch, gregory.clement@bootlin.com,
+	sebastian.hesselbarth@gmail.com
+Subject: Re: [PATCH] ARM: mvebu: Prevent null pointer dereference caused by
+ kzalloc failure
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.4-cmXT5 build
+ 20231205(37e20f0e) Copyright (c) 2002-2024 www.mailtech.cn
+ mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
+In-Reply-To: <ZdsksQG/vMS0lWGq@shell.armlinux.org.uk>
+References: <20240225060401.52768-1-duoming@zju.edu.cn>
+ <ZdsksQG/vMS0lWGq@shell.armlinux.org.uk>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1708582633-6969-1-git-send-email-shengjiu.wang@nxp.com>
-X-CM-TRANSID:C1UQrADnjy+vOttlOjhWBA--.41198S3
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxU3jjgUUUUU
-X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiDhCPZVszYWKNtAAAsm
+Message-ID: <7b00c2ef.133fb.18de065459c.Coremail.duoming@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:by_KCgAnaai+PNtlDSI0Ag--.35587W
+X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwICAWXaOtIIuQAAsk
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+	daVFxhVjvjDU=
 
-On Thu, Feb 22, 2024 at 02:17:13PM +0800, Shengjiu Wang wrote:
-> Add spdif sound card support, configure the pinmux.
-> 
-> This sound card supports recording and playing sound
-> through spdif interface.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-
-Applied, thanks!
-
+T24gU3VuLCAyNSBGZWIgMjAyNCAxMToyOTo1MyArMDAwMCBSdXNzZWxsIEtpbmcgKE9yYWNsZSkg
+d3JvdGU6Cj4gPiBUaGUga3phbGxvYygpIGluIGkyY19xdWlyaygpIHdpbGwgcmV0dXJuIG51bGwg
+aWYgdGhlIHBoeXNpY2FsCj4gPiBtZW1vcnkgaGFzIHJ1biBvdXQuIEFzIGEgcmVzdWx0LCBpZiB3
+ZSBkZXJlZmVyZW5jZSB0aGUgbmV3X2NvbXBhdAo+ID4gcG9pbnRlciwgdGhlIG51bGwgcG9pbnRl
+ciBkZXJlZmVyZW5jZSBidWcgd2lsbCBoYXBwZW4uCj4gPiAKPiA+IFRoaXMgcGF0Y2ggYWRkcyBh
+IGNoZWNrIHRvIGF2b2lkIG51bGwgcG9pbnRlciBkZXJlZmVyZW5jZS4KPiAKPiBZZXQgYWdhaW4g
+YW5vdGhlciBqYW5pdG9yaWFsIHBhdGNoIHRoYXQgaXMgV2F5IHRvbyBmb2N1c2VkIG9uIGEgc2lu
+Z2xlCj4gaXNzdWUsIHJhdGhlciB0aGFuIGFuYWx5c2luZyB0aGUgY29kZSBhbmQgcHJvcG9zaW5n
+IHRoZSBiZXN0IGZpeC4gOigKPiAKPiBXaGF0IGlmIHRoZSB0d28ga3N0cmR1cCgpIGZhaWw/CgpU
+aGFuayB5b3UgZm9yIHlvdXIgc3VnZ2VzdGlvbnMsIEkgd2lsbCBhbHNvIGFkZCBhIGNoZWNrIHRv
+IGp1ZGdlCndoZXRoZXIgdHdvIGtzdHJkdXAoKSBmYWlsLiBUaGUgZGV0YWlsIGlzIHNob3duIGJl
+bG93OgoKQEAgLTEyNSwxMiArMTI1LDIwIEBAIHN0YXRpYyB2b2lkIF9faW5pdCBpMmNfcXVpcmso
+dm9pZCkKICAgICAgICAgICAgICAgIHN0cnVjdCBwcm9wZXJ0eSAqbmV3X2NvbXBhdDsKCiAgICAg
+ICAgICAgICAgICBuZXdfY29tcGF0ID0ga3phbGxvYyhzaXplb2YoKm5ld19jb21wYXQpLCBHRlBf
+S0VSTkVMKTsKKyAgICAgICAgICAgICAgIGlmKCFuZXdfY29tcGF0KQorICAgICAgICAgICAgICAg
+ICAgICAgICBjb250aW51ZTsKCiAgICAgICAgICAgICAgICBuZXdfY29tcGF0LT5uYW1lID0ga3N0
+cmR1cCgiY29tcGF0aWJsZSIsIEdGUF9LRVJORUwpOwogICAgICAgICAgICAgICAgbmV3X2NvbXBh
+dC0+bGVuZ3RoID0gc2l6ZW9mKCJtYXJ2ZWxsLG12NzgyMzAtYTAtaTJjIik7CiAgICAgICAgICAg
+ICAgICBuZXdfY29tcGF0LT52YWx1ZSA9IGtzdHJkdXAoIm1hcnZlbGwsbXY3ODIzMC1hMC1pMmMi
+LAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBHRlBfS0VS
+TkVMKTsKCisgICAgICAgICAgICAgICBpZiAoIW5ld19jb21wYXQtPm5hbWUgfHwgIW5ld19jb21w
+YXQtPnZhbHVlKSB7CisgICAgICAgICAgICAgICAgICAgICAgIGtmcmVlKG5ld19jb21wYXQtPm5h
+bWUpOworICAgICAgICAgICAgICAgICAgICAgICBrZnJlZShuZXdfY29tcGF0LT52YWx1ZSk7Cisg
+ICAgICAgICAgICAgICAgICAgICAgIGtmcmVlKG5ld19jb21wYXQpOworICAgICAgICAgICAgICAg
+ICAgICAgICBjb250aW51ZTsKKyAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIG9mX3Vw
+ZGF0ZV9wcm9wZXJ0eShucCwgbmV3X2NvbXBhdCk7CiAgICAgICAgfQogfQoKQmVzdCByZWdhcmRz
+LApEdW9taW5nIFpob3UK
 
