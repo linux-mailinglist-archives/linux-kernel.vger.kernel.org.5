@@ -1,110 +1,169 @@
-Return-Path: <linux-kernel+bounces-80312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66226862D3A
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 22:39:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F74B862D3E
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 22:41:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97E291C20891
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 21:39:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 582DB1C210BA
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 21:41:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 794041B960;
-	Sun, 25 Feb 2024 21:38:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 595F31B960;
+	Sun, 25 Feb 2024 21:41:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="kH22xdVB"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="iQAV4WGH"
 Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93C4ED2FE;
-	Sun, 25 Feb 2024 21:38:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DF201C11;
+	Sun, 25 Feb 2024 21:41:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708897136; cv=none; b=RkojXUSDSa0UuD5G9wWZcU2/cxIc0g02eyytHbPWr/QIjLW+1oARLhum94UrvKh4Pe1uHl0esoz62zHWkkFzz/lLSV01BPwMTrJd96M1RweTTymHppYgsuibTs7QxdYuXk/cCM/FM2oqw23rYIXlDGcvX849IDMN9Kw7k3Qn7XU=
+	t=1708897282; cv=none; b=OALYETm//tsuEEDA4N7ro5eB2GGAu78Y2II0RzDeHNLwVXWDy747a40xwlfQ6/T3RiUI2Ot7lSSOKmAQtC2UcSAPf4gxo5oGUdYmcwwK5YSbDzNszfQWulFrmAe2u2TCo0tFXUI3Kla0xxB1ME+56CslKBESBOVz6KucLs++abs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708897136; c=relaxed/simple;
-	bh=C6ZRlr4hhwzZi76Oe0YZb2r5RybeBtFmwf4TAP7UQbM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=gxjws9aYLmLgq0/giLBBzfmvJMFlAxOiNyH0fMNfwyXpqv49YT4JmsPElWXIPborowajgfrHCcL2tHyXX0QRDNBocRZhAG8tRXTugA7/j1DFXafgfzo/G3iMLKd0thaIfa/iBiRN6NO1o1Vl0ZukD/qr6rgjqvy4EEp8NI/q9wY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=kH22xdVB; arc=none smtp.client-ip=150.107.74.76
+	s=arc-20240116; t=1708897282; c=relaxed/simple;
+	bh=YwpjBPpU5r3u7l7biBeUr66zMvlrd3TckSoNXnLS+xI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=JlFSPgLh5XUGmn5GDi3FVDtlJPn2jE4AMcG4KS6WHyqv0K5jBZYFah2RARQUn3V/bov2McBsAwTujN2ZvYxwcdm5Zm2Of/1HIvlWpjMA9ZgGLVKxOuE0GyYPnOeWsP6yfAJ4Nryyx4iNszlCTSghdT1co4xLpHFHn5FlpSZmMOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=iQAV4WGH; arc=none smtp.client-ip=150.107.74.76
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1708897130;
-	bh=1/jCEWG+8g2pJX5P5neA7Evh2tbbkvcFKwZoV8Ds+OU=;
-	h=Date:From:To:Cc:Subject:From;
-	b=kH22xdVBg6+NWvwOgXvkVrJZdtxw1VPly6ayq+S4K29vNUEfQiUKpT4sWyESsgslO
-	 CvJUZdmX6n/VsO97ygPKWcaA7XczYCMb9bXv72w1MfQhMXPPjm5qPf2tWttK7ReCtR
-	 AAYdK7GbeLjn+m+2nDo8Dbp59zutrO2zOQLBKWFYCiqXh6cRRAOzWOmdN9rbQfncfb
-	 JCWQ1DxHjLVH3dLuVNDgUJhqAnbfNxfE7l5HUlc4TDjJPZOSsFTWKP+z7uHVltRryf
-	 mcUxZGo33wCKgPfYoXR7zXjXiOAJICgzyaCuNkU8+lucdUtPijggVr2IzxrGriJR15
-	 tJ4fPisnp3hVQ==
+	s=201702; t=1708897278;
+	bh=5+ZKEJt2lEuyeGEsKA+q6VLLnaKfdfonhOD+op5DBFs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=iQAV4WGHDyVkBbDLR31KKV9X/vZb+b0VGWmVbJX7XPo7rwLJ5ETdF3aoU/e4jMXjG
+	 Jo4P9qTtu5cXqNW/SWU+DOmxyyxvh8d5UYFgfZEZRJP5evBAmdcrLohHoAMLKFj7zF
+	 nin2V18GwMgm9kZC/Z16EHLS7uhDb9B+II5boLuOrgYOUpfcwxcwQCMYd7R12Wqa45
+	 38NWSCSlsg7Z5yqLmHscFsoO8TiZwAkzaMgoafbFAVpHSD+g6AO2F/oRq2FxjB/Zw4
+	 eWCbFyly0dnsh4GQCnqJqcFoWJEfD+HYzxqWlWXKLSfAH063MVj5nTDpKSakqG7kft
+	 217ihrmUMP9RA==
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TjcZL167Jz4wc6;
-	Mon, 26 Feb 2024 08:38:49 +1100 (AEDT)
-Date: Mon, 26 Feb 2024 08:38:48 +1100
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tjcd907Xjz4wcD;
+	Mon, 26 Feb 2024 08:41:16 +1100 (AEDT)
+Date: Mon, 26 Feb 2024 08:41:16 +1100
 From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Sakari Ailus <sakari.ailus@linux.intel.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the pm tree
-Message-ID: <20240226083848.3d864885@canb.auug.org.au>
+To: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>, Christian =?UTF-8?B?S8O2bmln?=
+ <christian.koenig@amd.com>, Somalapuram Amaranath
+ <Amaranath.Somalapuram@amd.com>, Intel Graphics
+ <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>, zack.rusin@broadcom.com,
+ tzimmermann@suse.de, thomas.hellstrom@linux.intel.com, Joonas Lahtinen
+ <joonas.lahtinen@linux.intel.com>, Tvrtko Ursulin
+ <tvrtko.ursulin@linux.intel.com>
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+Message-ID: <20240226084116.4a41527d@canb.auug.org.au>
+In-Reply-To: <20240220084821.1c852736@canb.auug.org.au>
+References: <20240206152850.333f620d@canb.auug.org.au>
+	<87y1bp962d.fsf@intel.com>
+	<20240220084821.1c852736@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/TVNqU9ib/INJfkAjCfrViHl";
+Content-Type: multipart/signed; boundary="Sig_/.dDX5vFifkGrhZOnmdXK3G+";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 
---Sig_/TVNqU9ib/INJfkAjCfrViHl
+--Sig_/.dDX5vFifkGrhZOnmdXK3G+
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
 Hi all,
 
-In commit
+On Tue, 20 Feb 2024 08:48:21 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>=20
+> On Mon, 12 Feb 2024 15:15:54 +0200 Jani Nikula <jani.nikula@linux.intel.c=
+om> wrote:
+> >
+> > On Tue, 06 Feb 2024, Stephen Rothwell <sfr@canb.auug.org.au> wrote: =20
+> > >
+> > > After merging the drm-misc tree, today's linux-next build (i386 defco=
+nfig)
+> > > failed like this:
+> > >
+> > > In function 'i915_ttm_placement_from_obj',
+> > >     inlined from 'i915_ttm_get_pages' at drivers/gpu/drm/i915/gem/i91=
+5_gem_ttm.c:847:2:
+> > > drivers/gpu/drm/i915/gem/i915_gem_ttm.c:165:18: error: 'places[0].fla=
+gs' is used uninitialized [-Werror=3Duninitialized]
+> > >   165 |         places[0].flags |=3D TTM_PL_FLAG_DESIRED;
+> > >       |         ~~~~~~~~~^~~~~~
+> > > drivers/gpu/drm/i915/gem/i915_gem_ttm.c: In function 'i915_ttm_get_pa=
+ges':
+> > > drivers/gpu/drm/i915/gem/i915_gem_ttm.c:837:26: note: 'places' declar=
+ed here
+> > >   837 |         struct ttm_place places[I915_TTM_MAX_PLACEMENTS + 1];
+> > >       |                          ^~~~~~
+> > >
+> > > Caused by commit
+> > >
+> > >   a78a8da51b36 ("drm/ttm: replace busy placement with flags v6")   =20
+> >=20
+> > Cc: more people.
+> >  =20
+> > >
+> > > I applied the following hack for today:
+> > >
+> > > From: Stephen Rothwell <sfr@canb.auug.org.au>
+> > > Date: Tue, 6 Feb 2024 15:17:54 +1100
+> > > Subject: [PATCH] drm/ttm: initialise places
+> > >
+> > > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> > > ---
+> > >  drivers/gpu/drm/i915/gem/i915_gem_ttm.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/i915/gem/i915_gem_ttm.c b/drivers/gpu/dr=
+m/i915/gem/i915_gem_ttm.c
+> > > index 80c6cafc8887..34e699e67c25 100644
+> > > --- a/drivers/gpu/drm/i915/gem/i915_gem_ttm.c
+> > > +++ b/drivers/gpu/drm/i915/gem/i915_gem_ttm.c
+> > > @@ -834,7 +834,7 @@ static int __i915_ttm_get_pages(struct drm_i915_g=
+em_object *obj,
+> > > =20
+> > >  static int i915_ttm_get_pages(struct drm_i915_gem_object *obj)
+> > >  {
+> > > -	struct ttm_place places[I915_TTM_MAX_PLACEMENTS + 1];
+> > > +	struct ttm_place places[I915_TTM_MAX_PLACEMENTS + 1] =3D {};
+> > >  	struct ttm_placement placement;
+> > > =20
+> > >  	/* restricted by sg_alloc_table */
+> > > --=20
+> > > 2.43.0   =20
+>=20
+> I am still applying the above patch ...
 
-  43b549c5d8de ("ACPI: property: Polish ignoring bad data nodes")
-
-Fixes tag
-
-  Fixes: 6018731b04ca ("ACPI: property: Ignore bad graph port nodes on Dell=
- XPS 9315")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: 5bd4edbbf920 ("ACPI: property: Ignore bad graph port nodes on Dell X=
-PS 9315")
+Any progress?
 
 --=20
 Cheers,
 Stephen Rothwell
 
---Sig_/TVNqU9ib/INJfkAjCfrViHl
+--Sig_/.dDX5vFifkGrhZOnmdXK3G+
 Content-Type: application/pgp-signature
 Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXbs2gACgkQAVBC80lX
-0GyKyAf/YypIwFEV6aHy37F3mgm5pvHsze3towl3PULRTixdhCKcuR+vPi6v5e3l
-NaSVq2Kc7hi9VKNoeQ9aC5M1GsjqAg8nvHAnFQLeiY0BLznmWfF3Zd6p80ei9+QN
-tWeXssAyUZfsFcoFhW7l3KYiyD9oJIsnJHuLKDOmhoW1FBeqshC95BeBgvcL48V3
-vfijsKPkSzKOEYBqh+2H1ERj/CD94iimO/pewze9aTsD1g+hM+KZtorQLhzdySMQ
-/+o1xzLfToucuQx2qpWBxWa5xrgwDMgvU5KHmwrCV+wyOw9kYii1hkLTAEofmTD6
-ap2OvLK4F/TbEmhOKIn5Xkd4wHpe0Q==
-=MEyt
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXbs/wACgkQAVBC80lX
+0GzVNAf+NA5dVgLq87RWtvqT6p13nZ1XBU+lhzY1TyrQ6HnAk4MxDUyrgsuG1x9S
+isf4VzgO4JJ82ryYBxBOeEpWqZjCRJm0rFJ/Bopbc+9nO9oaxMF/2QuXM7fheOQU
+FkmZjf9k3fqrkhzO7EpnERgPYPaEODOwLHq0tbl9sqagNW3xN0vwq7QgSJ/quN43
+z3xEJ/2sGJz3F73adPCnYUhWMUHH477OjWB8Mqgjguov5scDu77zS0gEr/PTnOYA
+pNDGC/sh0jJAeVh5Yt6w+mbGSCjWRKKy25Yszh/yKGsaeZE5sP7gy9cH/QrfL8Ig
+GYpWdXwnhA7Hk0DlVVNaDvWnibdhjQ==
+=FX83
 -----END PGP SIGNATURE-----
 
---Sig_/TVNqU9ib/INJfkAjCfrViHl--
+--Sig_/.dDX5vFifkGrhZOnmdXK3G+--
 
