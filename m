@@ -1,65 +1,93 @@
-Return-Path: <linux-kernel+bounces-79916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A12098628A1
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 01:57:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F16D88628BE
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 02:22:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40F4E1F214CA
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 00:57:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 928031F216A4
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 01:22:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BDE71C01;
-	Sun, 25 Feb 2024 00:57:48 +0000 (UTC)
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4BEE10E4;
-	Sun, 25 Feb 2024 00:57:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96C7E53A0;
+	Sun, 25 Feb 2024 01:22:20 +0000 (UTC)
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B5DF10E4;
+	Sun, 25 Feb 2024 01:22:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708822668; cv=none; b=SxfBUTFNd9u9teRd2r9oIUPNiBvK8FFpJFmmsMuuxuW1PEvEIZmSFVF/IqD73nuGjDw32jXnuXwo4lCwuo/u3bdN99fbk4em1GXJhDT7DToZlTiNqrhkVP2Y6evD0cM28VkHHhh1I9EvEhfoCbeso9LNwYKMd2ysEEkiesKSJzQ=
+	t=1708824140; cv=none; b=KHU3sOVhBiUH/JVQf0qq2MSW6GiWyYSwv9vnBtY5KTucuOwDZdYviMx0SFxfl37qkqezTO292Ykg++WrO6C6iiGB3RvJvAoR9514U80geQgg58J2cxrpM0NFio7up8Vs7R58/jIOl0p/ds8um6wbpz1MdFJOwzL9I2ST/wH/blQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708822668; c=relaxed/simple;
-	bh=ioMTznDwM8Bf83NeluICXPdCkl4fF07yGYnYlYsOynU=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=jDAlyiH1+lZsCfVeX5BFkUb5RRs3JHnA4gnwHCSig8opPn/CqT7KYepkfJibT+gvmYoJIwoEb969+AjRUzj2t2Zzz/xSt7fSrTwq6xkMr/fF1cBBeKU/ii15vKAJGwRFizZS2hXFp9u37q4qeaWspRVjxUC6ZJhI5b9JQKqp3nI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id 9A11892009C; Sun, 25 Feb 2024 01:57:42 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id 92FD092009B;
-	Sun, 25 Feb 2024 00:57:42 +0000 (GMT)
-Date: Sun, 25 Feb 2024 00:57:42 +0000 (GMT)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: Sam Ravnborg <sam@ravnborg.org>
-cc: sparclinux@vger.kernel.org, Andreas Larsson <andreas@gaisler.com>, 
-    Randy Dunlap <rdunlap@infradead.org>, 
-    Miquel Raynal <miquel.raynal@bootlin.com>, 
-    linux-parport@lists.infradead.org, "David S. Miller" <davem@davemloft.net>, 
-    Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/7] sparc32: Do not select ZONE_DMA
-In-Reply-To: <20240224-sam-fix-sparc32-all-builds-v2-4-1f186603c5c4@ravnborg.org>
-Message-ID: <alpine.DEB.2.21.2402250054030.36563@angie.orcam.me.uk>
-References: <20240224-sam-fix-sparc32-all-builds-v2-0-1f186603c5c4@ravnborg.org> <20240224-sam-fix-sparc32-all-builds-v2-4-1f186603c5c4@ravnborg.org>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	s=arc-20240116; t=1708824140; c=relaxed/simple;
+	bh=8MxMrxDjatcZ9KrlHxfNOi3v9JyPHdQJ3JtwZyYIXhM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zt77nqfgl2MyzI0N3+BgYEVMenMMHKWX3WVO66WI4FHHUqqf33306BdiuM+KOJqKth5jobvfM+zjQQkda0BYEWkkKHUNvyxYk69XpXFkH0Ek4KuybcAcRsY0Z8xCEaFf9eZi4p/IUilPmvuuJNw2eT4rxZUqviiJHPXrphuQ0lE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+	id 1re2ij-00HTZ9-Uf; Sun, 25 Feb 2024 08:50:23 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 25 Feb 2024 08:50:36 +0800
+Date: Sun, 25 Feb 2024 08:50:36 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: David Laight <David.Laight@aculab.com>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Thomas Graf <tgraf@suug.ch>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
+	"rcu@vger.kernel.org" <rcu@vger.kernel.org>
+Subject: Re: [PATCH 0/1] Rosebush, a new hash table
+Message-ID: <ZdqO3G6Fb4wYhVEj@gondor.apana.org.au>
+References: <20240222203726.1101861-1-willy@infradead.org>
+ <Zdk2YgIoAGOEvcJi@gondor.apana.org.au>
+ <4a1416fcb3c547eb9612ce07da6a77ed@AcuMS.aculab.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4a1416fcb3c547eb9612ce07da6a77ed@AcuMS.aculab.com>
 
-On Sat, 24 Feb 2024, Sam Ravnborg via B4 Relay wrote:
-
-> sparc32 has no limited DMA zone so there is no need to select ZONE_DMA.
+On Sat, Feb 24, 2024 at 10:10:27PM +0000, David Laight wrote:
+>
+> > Normally an rhashtable gets resized when it reaches 75% capacity
+> > so the average chain length should always be one.
 > 
-> Based on analysis from Marciej:
+> The average length of non-empty hash chains is more interesting.
+> You don't usually search for items in empty chains.
+> The only way you'll get all the chains of length one is if you've
+> carefully picked the data so that it hashed that way.
 
- Can you please use the correct spelling of my name in change descriptions 
-(and preferably everywhere)?  Thank you.
+Sure.  But given the 75% capacity, you'd need a really bad hash
+function to get an *average* (not worst-case) chain length of
+10.
 
-  Maciej
+> I remember playing around with the elf symbol table for a browser
+> and all its shared libraries.
+> While the hash function is pretty trivial, it really didn't matter
+> whether you divided 2^n, 2^n-1 or 'the prime below 2^n' some hash
+> chains were always long.
+
+Even in the unlikely event of bad luck and everything bunches up
+together, we change theh hash function (through hash_rnd) every
+time we resize so you would expect things to even out after the
+resize event.
+
+A rehash is also automatically triggered if the worst-case chain
+length exceeds 16.
+
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
