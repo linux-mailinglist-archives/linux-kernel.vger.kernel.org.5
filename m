@@ -1,44 +1,45 @@
-Return-Path: <linux-kernel+bounces-80097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C70C862AB5
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 15:27:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 758B4862AB8
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 15:28:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE4531F21503
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 14:27:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3006D281ACA
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 14:27:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED8613AC5;
-	Sun, 25 Feb 2024 14:27:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEE7514A82;
+	Sun, 25 Feb 2024 14:27:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C9VInWVb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EIbuUKf4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05DF7C2D0;
-	Sun, 25 Feb 2024 14:27:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3576214280;
+	Sun, 25 Feb 2024 14:27:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708871255; cv=none; b=hsBNPE37ofWWyk0I6XmBoMv1eUzZX9flivGuXfhwNPvkvHVhdVJW8bX4zfx/IOFZ6+wCnhTY6y7XUlfbXmwyL30BcmAxYJPrXj1ABHuTRSbe5HNT6ocCTmVQoHgOZCU374vpYyghm9t90KDcBPxep8L/cEAhVgrlSl8IBBxPngA=
+	t=1708871258; cv=none; b=lozC34kN4ME3mu4ouBayGd626KnOKvMHV4Fa0TO6pt9J9KSiQpMF6LUK/6CZa+6usaDdbrE58kHngL04QJ5Lfc4YpSfW+YAVSQTE8Z54VXhMkbb5VuBoi46WRX99s3cJp1Mvyipi86e0FF7jOEqwcULPV19wdBcqjTG1RfgAu4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708871255; c=relaxed/simple;
-	bh=YxLQapaQ7vM/KWmbNZ9Y8e8vat8a+7NhANYH7fHpT9o=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pAMWmT7FQVQz8HoKR5nfbBnZYr2ei/tbeFtKK1Dvov+NOP+AmVySkdfc/OOq0QJVG1NYN13vWf+GOTc3ZZCYpHfGvniB4c/yqjS85IdWu6j5JLNJ3nJSblsqV88iVdYx3bNtFkVA4/VtTuwXsEGmOdbmdBEkCHhrQSMNozzEdiM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C9VInWVb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32D20C433F1;
-	Sun, 25 Feb 2024 14:27:31 +0000 (UTC)
+	s=arc-20240116; t=1708871258; c=relaxed/simple;
+	bh=HAT98xnSwLDAnpvodaMTdqxT64M67j1g0X6shQNezLg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ZF7olYEI7dZiRzbO+QRdpI38BN+HZAemE+yOgfgHpxXcLaC2P05xst2MD8ed4VTYC5sNuJSBoxF3bCv6A9V3ZpUxVsSk4AQdrjQYFUfSpDlLS6eNRkvmyuOZmIDsrG66wc61hubUO2vng1l0FcZZyuO9wmB3ewV7/7oiGjXQsuY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EIbuUKf4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53840C43390;
+	Sun, 25 Feb 2024 14:27:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708871254;
-	bh=YxLQapaQ7vM/KWmbNZ9Y8e8vat8a+7NhANYH7fHpT9o=;
-	h=From:To:Cc:Subject:Date:From;
-	b=C9VInWVbwXhq7/VYYsr5CFe0MbZ/D3QJ11XJD8Ofysdo2Qy4HBJpzrWpvio5TO632
-	 4zypRlIztvW/0Mmf4voX7SGP+gbOled8Jz7CIJk6FkE/aOZRgP/6SYsKU30K+Nnw8P
-	 egT8P15d0dWwcdK54Pbb8m504gFgK67faJIPj/rTYCPksaSoLJBzQZ9omjn1/nLx6/
-	 sWYqqNbMOPMS1aLhu07W0idkEmHdVGEarcoj/+9NVJVgjwhc6lOP8X+yiznxlH52UY
-	 kMaDIy7pIx7W9ebs3SYr+ctnMcvZZUB1NAjWKmvTHqmItlXKHB1bGQHLgavKGvgv+X
-	 RhHOuAkZLVM+Q==
+	s=k20201202; t=1708871257;
+	bh=HAT98xnSwLDAnpvodaMTdqxT64M67j1g0X6shQNezLg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=EIbuUKf4y/pyYsjG9hm5YQtRuJ+jRGEDKz0LyJSGSgCYl7GMGtEKsNgSvlyhPE7VT
+	 gjg1AGMvcM9tkJTDSjtJAaRWLUDHJe7+eRIYtGe1/Ba3DzDztt0FUjxFuEnGDzHBRo
+	 ckofUhmRYZQY9angGKOPvspLMtrocVDHCl4KRa9sojUOn/oYbzZYRp4JoIvPzmhTR8
+	 E2Z5Rwfu+oQi26eKAo2/Iw1g/jI/MBDZfnWpFBJ3nt1LExcck6xa3oTZGSBPuAgfgb
+	 UQsCsHrT1UysEFxyvUxOIZUtZo5t/vcli98lJY22HTRLk8CPVt2cv3++RInceSR4S2
+	 jFYjQ75vN5zsQ==
 From: Jonathan Cameron <jic23@kernel.org>
 To: devicetree@vger.kernel.org,
 	linux-iio@vger.kernel.org,
@@ -51,10 +52,12 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	marek.vasut@gmail.com,
 	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [RESEND PATCH v2 0/4] of: automate of_node_put() - new approach to loops.
-Date: Sun, 25 Feb 2024 14:27:10 +0000
-Message-ID: <20240225142714.286440-1-jic23@kernel.org>
+Subject: [RESEND PATCH v2 1/4] of: Add cleanup.h based auto release via __free(device_node) markings.
+Date: Sun, 25 Feb 2024 14:27:11 +0000
+Message-ID: <20240225142714.286440-2-jic23@kernel.org>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240225142714.286440-1-jic23@kernel.org>
+References: <20240225142714.286440-1-jic23@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,80 +68,61 @@ Content-Transfer-Encoding: 8bit
 
 From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-Some discussion occured on previous posting.
-https://lore.kernel.org/linux-iio/20240223124432.26443-1-Jonathan.Cameron@huawei.com/
+The recent addition of scope based cleanup support to the kernel
+provides a convenient tool to reduce the chances of leaking reference
+counts where of_node_put() should have been called in an error path.
 
-Summary:
-* fwnode conversions should be considered when applying this
-  infrastructure to a driver. Perhaps better to move directly to
-  the generic FW property handling rather than improve existing
-  of specific code.
-* There are lots of potential places to use this based on detections
-  from Julia's coccinelle scripts linked below.
+This enables
+	struct device_node *child __free(device_node) = NULL;
 
-The equivalent device_for_each_child_node_scoped() series for
-fwnode will be queued up in IIO for the merge window shortly as
-it has gathered sufficient tags. Hopefully the precdent set there
-for the approach will reassure people that instantiating the
-child variable inside the macro definition is the best approach.
-https://lore.kernel.org/linux-iio/20240217164249.921878-1-jic23@kernel.org/
+	for_each_child_of_node(np, child) {
+		if (test)
+			return test;
+	}
 
-v2: Andy suggested most of the original converted set should move to
-    generic fwnode / property.h handling.  Within IIO that was
-    a reasonable observation given we've been trying to move away from
-    firmware specific handling for some time. Patches making that change
-    to appropriate drivers posted.
-    As we discussed there are cases which are not suitable for such
-    conversion and this infrastructure still provides clear benefits
-    for them.
+with no need for a manual call of of_node_put().
+A following patch will reduce the scope of the child variable to the
+for loop, to avoid an issues with ordering of autocleanup, and make it
+obvious when this assigned a non NULL value.
 
-Ideally it would be good if this introductory series adding the
-infrastructure makes the 6.9 merge window. There are no dependencies
-on work queued in the IIO tree, so this can go via devicetree
-if the maintainers would prefer. I've had some off list messages
-asking when this would be merged, as there is interest in building
-on it next cycle for other parts of the kernel (where conversion to
-fwnode handling may be less appropriate).
+In this simple example the gains are small but there are some very
+complex error handling cases buried in these loops that will be
+greatly simplified by enabling early returns with out the need
+for this manual of_node_put() call.
 
-The outputs of Julia's scripts linked below show how widely this can be
-easily applied and give a conservative estimate of the complexity reduction
-and code savings. In some cases those drivers should move to fwnode
-and use the equivalent infrastructure there, but many will be unsuitable
-for conversion so this is still good win.
+Note that there are coccinelle checks in
+scripts/coccinelle/iterators/for_each_child.cocci to detect a failure
+to call of_node_put(). This new approach does not cause false positives.
+Longer term we may want to add scripting to check this new approach is
+done correctly with no double of_node_put() calls being introduced due
+to the auto cleanup. It may also be useful to script finding places
+this new approach is useful.
 
-Edited cover letter from v1:
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+---
+ include/linux/of.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Thanks to Julia Lawal who also posted coccinelle for both types (loop and
-non loop cases)
-
-https://lore.kernel.org/all/alpine.DEB.2.22.394.2401312234250.3245@hadrien/
-https://lore.kernel.org/all/alpine.DEB.2.22.394.2401291455430.8649@hadrien/
-
-The cover letter of the RFC includes information on the various approaches
-considered.
-https://lore.kernel.org/all/20240128160542.178315-1-jic23@kernel.org/
-
-Whilst these macros produce nice reductions in complexity the loops
-still have the unfortunate side effect of hiding the local declaration
-of a struct device_node * which is then used inside the loop.
-
-Julia suggested making that a little more visible via
- #define for_each_child_of_node_scoped(parent, struct device_node *, child)
-but in discussion we both expressed that this doesn't really make things
-all that clear either so I haven't adopted this suggestion.
-
-Jonathan Cameron (4):
-  of: Add cleanup.h based auto release via __free(device_node) markings.
-  of: Introduce for_each_*_child_of_node_scoped() to automate
-    of_node_put() handling
-  of: unittest: Use for_each_child_of_node_scoped()
-  iio: adc: rcar-gyroadc: use for_each_available_child_node_scoped()
-
- drivers/iio/adc/rcar-gyroadc.c | 21 ++++++---------------
- drivers/of/unittest.c          | 11 +++--------
- include/linux/of.h             | 15 +++++++++++++++
- 3 files changed, 24 insertions(+), 23 deletions(-)
-
+diff --git a/include/linux/of.h b/include/linux/of.h
+index 6a9ddf20e79a..50e882ee91da 100644
+--- a/include/linux/of.h
++++ b/include/linux/of.h
+@@ -13,6 +13,7 @@
+  */
+ #include <linux/types.h>
+ #include <linux/bitops.h>
++#include <linux/cleanup.h>
+ #include <linux/errno.h>
+ #include <linux/kobject.h>
+ #include <linux/mod_devicetable.h>
+@@ -134,6 +135,7 @@ static inline struct device_node *of_node_get(struct device_node *node)
+ }
+ static inline void of_node_put(struct device_node *node) { }
+ #endif /* !CONFIG_OF_DYNAMIC */
++DEFINE_FREE(device_node, struct device_node *, if (_T) of_node_put(_T))
+ 
+ /* Pointer for first entry in chain of all nodes. */
+ extern struct device_node *of_root;
 -- 
 2.44.0
 
