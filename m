@@ -1,85 +1,134 @@
-Return-Path: <linux-kernel+bounces-79976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C79F0862918
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 05:33:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A63886291A
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 05:51:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 112B6281EBF
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 04:33:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C486AB21284
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 04:51:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5CBC8BE5;
-	Sun, 25 Feb 2024 04:33:04 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DAA88F6A;
+	Sun, 25 Feb 2024 04:51:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tZdU18OU"
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1BF51391
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 04:33:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97DD133E8
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 04:50:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708835584; cv=none; b=TFxLNVLjRvjGctL+kMMcangHQcL2q3HT+EnSaQhjOVp/dTGkdGg8O2FhgxRKrX0O9y13xn+OXFJjcaSWbw/+9n/ERhNhR+Zb0czVrRg4LW8xqzSc7YKJOGDUD7vKUbwMF/8pqTv3PfVaVlXW53aeMRv0rXuFzCX0j5tO/71K1I0=
+	t=1708836659; cv=none; b=Y/AnC8VEdNe9teiuB0Z4WWgxS9RxvgLSOvS5x6lx3+IbD+HqNTXzECLVko8mIwyhkTHRGejxwBrFl+IUQernXANq6YZsFxW9DR2Fqtzlx7pUydMbC1JBTE0CHsoSygAfArKGGnrpneDYqmWj28Ecknn9sTNqAxPJblD2HlW9zgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708835584; c=relaxed/simple;
-	bh=S4ce2P6MUe5mD8ZBiA9pkBV1r99fMRw8HnSSTL+gIM8=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=S/nBi/PkRyc/dgV57CLz5Qoysnv/jAn+km+tmaFIeSeTUzQTuIACpngDGR7u1lmy7YCquJ1If9Mwck76gPUtlyCw0uPcm3EjodwCIUAcvR1hmNxLrliY6bpvAQPKnHpEEnSDr0svk4ryZsKbQUitn9epxmzldyA9IEBM5SQxt6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7bfffd9b47fso215731039f.1
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Feb 2024 20:33:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708835582; x=1709440382;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MY+QipqJtlC5G96EVHf+xLsuLydsGm4Pmqrje57nWCk=;
-        b=MluyG+vR8tsxX2GpKnMKpebtYM0yKwCIXWaX+PJfM7XMdWRKvGVJa63CeywCi4cj/f
-         OX+iZ7KSAgdUSZwtVq0pC+VQlVd2Yc/WVcpn6YWJ71xX+4DzBY6LyvVoWw1Bhsueijav
-         8QyPkTjkOqvQzTskCt3CNmiAvRjkhfHOXwDWYdgyW07s2BbFpGzdApN+iebVUpfeAT9Z
-         BwodvWaInLVDMkB77o7pIc0wYhKXMd3hsWX3UGucYRcn3/tX5991LUqoz9vcthrjV6ye
-         Tjxpjqjn0Z95DBr7fIRQqiFeKidi1IyNAf5I+47r5EfqMPcS5ysZLJL+jPjtj48YDjvq
-         lDhw==
-X-Gm-Message-State: AOJu0YyGrBt6RyfEFzs2chCFzwZUJ3eBF3I+CQwhZWxopoNNv+AnEIug
-	Lo1xUl/Nkywn1MNbwfTdUftgvOMcTleFtvhwzBneVw3f2QLXfPT7Ku8X4PP+pdbLsVA6If7mPNk
-	RkOx74tR0Jp9JtZIifdQzAMEzY67KGEa5yYWDTMMSxDcUEBnQ4TMnOoUgfA==
-X-Google-Smtp-Source: AGHT+IHmWEx+olBbrGx7evZCoCx4jDV1/G9KNimr6rSjLyyeQBlhwk67JfZywqJ/FhykB/EqkHV9O9gj8XF5wt4FDnQmxpgkoyuv
+	s=arc-20240116; t=1708836659; c=relaxed/simple;
+	bh=kYm60k44TDOflCOI69MPiKPn3EEjAVAaxCL4eVJlSdQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=L8VCZNQWS4cI5aXBwEuszdZdoNUvc2544xMw/tjkfrrIr1Woj9xhyy00xlhrQlQZK7+0TAgSTqVD/3BEQ/BN07pGdbQlzpseFMf0yQGEjIgLVnCPPvZXGlp30urmkHLxXKwq6dWEZdjjiq2jBcw0oZR71M9t5HuDtEvocop/R7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tZdU18OU; arc=none smtp.client-ip=95.215.58.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <ed50835c-80be-491f-a5f9-9a669a84cac5@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708836655;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C06gSC6P/Rwm/k9Z3WJ2+aHSbmkMvV5GJOz0ep+CZ0U=;
+	b=tZdU18OUvJpqWrrtwP23W9ROblmTtoli30JqKc7d/W86K18fgROGZg2F2W33mUe9hhWho7
+	e1yqQSFVeRa1AWuo3e+nhc+HMnx4rqZa8H2gp39PsVngGVmEwcnBSsN+KupC3NrokvH+Vu
+	wPif1tGqwZcQ7k6rOrMZNAv3myN+y4Q=
+Date: Sun, 25 Feb 2024 12:50:18 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:34a9:b0:474:78a9:778f with SMTP id
- t41-20020a05663834a900b0047478a9778fmr90654jal.4.1708835582030; Sat, 24 Feb
- 2024 20:33:02 -0800 (PST)
-Date: Sat, 24 Feb 2024 20:33:02 -0800
-In-Reply-To: <2eccab0b-c251-4094-8f2b-2bc9ac3def8e@I-love.SAKURA.ne.jp>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d8ba9406122d49f9@google.com>
-Subject: Re: [syzbot] [mm] KMSAN: uninit-value in virtqueue_add (4)
-From: syzbot <syzbot+d7521c1e3841ed075a42@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, penguin-kernel@i-love.sakura.ne.jp, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] xfs: remove SLAB_MEM_SPREAD flag usage
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: chandan.babu@oracle.com, linux-xfs@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz,
+ roman.gushchin@linux.dev, Xiongwei.Song@windriver.com,
+ Chengming Zhou <zhouchengming@bytedance.com>
+References: <20240224135323.830509-1-chengming.zhou@linux.dev>
+ <20240224170306.GI616564@frogsfrogsfrogs>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <20240224170306.GI616564@frogsfrogsfrogs>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
+On 2024/2/25 01:03, Darrick J. Wong wrote:
+> On Sat, Feb 24, 2024 at 01:53:23PM +0000, chengming.zhou@linux.dev wrote:
+>> From: Chengming Zhou <zhouchengming@bytedance.com>
+>>
+>> The SLAB_MEM_SPREAD flag is already a no-op as of 6.8-rc1, remove
+>> its usage so we can delete it from slab. No functional change.
+>>
+>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> 
+> Acked-by: Darrick J. Wong <djwong@kernel.org>
+> 
+> (acked, as in "this looks right, i don't know why it wasn't removed when
+> slab went away, and from the -mm list traffic this seems to be in line
+> with [1] but i still had to dig for details)
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Right, I think it was just forgotten when slab went away. Then Steven reported
+this when he found it obsolete. As discussed in [1], we submit these patches
+independently to remove its usages.
 
-Reported-and-tested-by: syzbot+d7521c1e3841ed075a42@syzkaller.appspotmail.com
+[1] https://lore.kernel.org/all/20240220-slab-cleanup-flags-v1-0-e657e373944a@suse.cz/
 
-Tested on:
+Thanks!
 
-commit:         0dd3ee31 Linux 6.7
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git v6.7
-console output: https://syzkaller.appspot.com/x/log.txt?x=115dcc5c180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=373206b1ae2fe3d4
-dashboard link: https://syzkaller.appspot.com/bug?extid=d7521c1e3841ed075a42
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1018e874180000
-
-Note: testing is done by a robot and is best-effort only.
+> 
+> [1] https://lore.kernel.org/linux-mm/20240131172027.10f64405@gandalf.local.home/T/#u
+> 
+> --D
+> 
+>> ---
+>>  fs/xfs/xfs_super.c | 7 +++----
+>>  1 file changed, 3 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+>> index 56006b877a5d..171a1287b296 100644
+>> --- a/fs/xfs/xfs_super.c
+>> +++ b/fs/xfs/xfs_super.c
+>> @@ -2042,8 +2042,7 @@ xfs_init_caches(void)
+>>  
+>>  	xfs_buf_cache = kmem_cache_create("xfs_buf", sizeof(struct xfs_buf), 0,
+>>  					 SLAB_HWCACHE_ALIGN |
+>> -					 SLAB_RECLAIM_ACCOUNT |
+>> -					 SLAB_MEM_SPREAD,
+>> +					 SLAB_RECLAIM_ACCOUNT,
+>>  					 NULL);
+>>  	if (!xfs_buf_cache)
+>>  		goto out;
+>> @@ -2108,14 +2107,14 @@ xfs_init_caches(void)
+>>  					   sizeof(struct xfs_inode), 0,
+>>  					   (SLAB_HWCACHE_ALIGN |
+>>  					    SLAB_RECLAIM_ACCOUNT |
+>> -					    SLAB_MEM_SPREAD | SLAB_ACCOUNT),
+>> +					    SLAB_ACCOUNT),
+>>  					   xfs_fs_inode_init_once);
+>>  	if (!xfs_inode_cache)
+>>  		goto out_destroy_efi_cache;
+>>  
+>>  	xfs_ili_cache = kmem_cache_create("xfs_ili",
+>>  					 sizeof(struct xfs_inode_log_item), 0,
+>> -					 SLAB_RECLAIM_ACCOUNT | SLAB_MEM_SPREAD,
+>> +					 SLAB_RECLAIM_ACCOUNT,
+>>  					 NULL);
+>>  	if (!xfs_ili_cache)
+>>  		goto out_destroy_inode_cache;
+>> -- 
+>> 2.40.1
+>>
+>>
 
