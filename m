@@ -1,73 +1,75 @@
-Return-Path: <linux-kernel+bounces-80225-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80226-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD70C862C48
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:33:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BDAC862C4B
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:33:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 322DCB20EEE
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:33:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC9A61F21AA7
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:33:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 978AC18B1A;
-	Sun, 25 Feb 2024 17:33:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B0F51B597;
+	Sun, 25 Feb 2024 17:33:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U8E7mzWI"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E9jzupH8"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EB2813FE7;
-	Sun, 25 Feb 2024 17:33:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A584E17C7F;
+	Sun, 25 Feb 2024 17:33:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708882397; cv=none; b=HeizG91QWpy67F9s5tCLcWb7Xb/UQpPGf7zcIg+LQ+SrCsreZDJ18q9rPNVd5LKy5GGuOhriT0B7dT/NpKx2Eec9bkiMvJykbBVApQaxNGr0axT8IqOn+bG80/G2IXII2tJsgGlc3HIM+VmiAl3geuegUaTHW0+x3OaxzyVCL2w=
+	t=1708882399; cv=none; b=ntDqskW59NPL7LLDbArsw8pLT0H7PJuR1STzU+FF0yQcTZ20oNOgaNY6SinXgBsMNF47NNngoVCB1XYLxQg38D6lJOn0ACBuuIt2rwxC3SkHSk+z9yZlQQKBAE/1bEz6u156XsC3TYLRP3Fd7E5XwQdc8ss1qIc2gzo8RsaaU1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708882397; c=relaxed/simple;
-	bh=6G1QXHrfF3PrUu8EJMiV6E2rCJyUs76wIVXZXtRfU10=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=G6nMoc2m8VXcSOeDFpcVdZWsdk2JfxXGAh95K4FexBVDy++514oRdEqVRTPkDEZDNvF2T/tc7qtHRuxUlKhRc/wxilEvEWTYLgjk39KkR13av02njygv5qzgmChBKC9ive973S2wbf7TEZ/s9m0kbZ4lSd/b9hxn1WPn3YwXaFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U8E7mzWI; arc=none smtp.client-ip=209.85.167.52
+	s=arc-20240116; t=1708882399; c=relaxed/simple;
+	bh=BgSFijZKhA2ufG2qmUVQ6xxgoG3VAnT3dyE2UsJjYvs=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=sFC3tCySr3AHDXrd0F4Z0NYyCruZA3vcZYF/6bR8MA+TcN7I5yhmTU2OEOMn8Vmp+d9g6N28lZQqh9kGTViba543g7He4qgeQmkAgnR22og/l6z7oULkOcifZYJuxvYdiQ4xPS2UD1355Xeoen+7JYgXN1jpGqv/M5DXywoEHoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E9jzupH8; arc=none smtp.client-ip=209.85.218.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-512ed314881so1941398e87.2;
-        Sun, 25 Feb 2024 09:33:16 -0800 (PST)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a3d01a9a9a2so248474566b.1;
+        Sun, 25 Feb 2024 09:33:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708882394; x=1709487194; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=guZl2SPxCQZuSLI8sxbmLDgy6Gf8KaBzLtPq3zTulKk=;
-        b=U8E7mzWI+Lj4L7uASItdPRj5y67+x4eBNy23KMX+lf0ufBdbJyyGmNl8oBROKICtNq
-         pDWHUvC9ohYZB1j/avYeGFDQbXWFbUdqY7akaB3fIt7IvGW2OaxarpW4e41aJttvbGlG
-         fp2jfiYDuk0mzdnQKHoWPycoZubBtnk/I7OcGew45KKbFY3q8CHGD2xqKKOf4zLjJfjR
-         /4RLXpl7czexxptMZNK/yQL8owjcWahaY61IGUKnUozZtmvVSsr2EksUbutkLDfguwBr
-         pfrgPnHBHFitUmGDm1n8PMIuJemKPm5Pby6GKrO5btANrxj8Ez/Rz9Yy+Hjyo2VmZ1Ww
-         fSQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708882394; x=1709487194;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1708882396; x=1709487196; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=guZl2SPxCQZuSLI8sxbmLDgy6Gf8KaBzLtPq3zTulKk=;
-        b=R3w5/VIXnYDdaIrllCSkqNcF2+UNtd8D77Tf4d+m2QMXN5B/APICIkH0Z7YrSH1vTN
-         eDuWlt8Itys8NnDxoaIanw9WiDh3bC9JNtD7cGG2zP7Er1Fv/6ksLGS8pusppV4HFb/E
-         wKf3wpo4XQcKCI6J3p2bQKrbgozDP1vE2fQYe/9bw76dkByWPq9sSDqbi9rtv5+xW0wA
-         4jquzJiJEKjUC8Luq3s/MwqplyLdUXxEoifWMWwbedbTzJ4VLhIjuR5bD8vE7CDlq914
-         lzMpvllPV+LXa5WiPRWMbSiXVkXVsMx/qSDxwSh+fky65pj5l7/y6NRnuPprIe1YUaDM
-         iyLw==
-X-Forwarded-Encrypted: i=1; AJvYcCWg66XkVddM1e81kwb9OpVqAcvF0eCdrNfQQ5vuGYNCmmmloPH0ts0uJaGMd3Dv0wVS1V3Splbwv3uj5g7QdfHk5b6tCV+PWMINihrWSSL3RzsEtrU18HylPkGY1AFsMwnw+09nL7Nr
-X-Gm-Message-State: AOJu0Yy7lpVhUeLmKL6iMCferCSLuxNQMpWin6N6Ofu6fgMl2YN4F51e
-	LHhxDkTMgX9XaCMfw9+ReGDUsCY8OxBNiWrcCURKVl6JdWJRKeqh
-X-Google-Smtp-Source: AGHT+IEOB/A4CBDtTq4B7V56JsdIwuBT64zm0RXlGsqaRZc7kyEeglcGgSWT4OVjYzg44bllC9ofTg==
-X-Received: by 2002:a19:9103:0:b0:512:caa2:18db with SMTP id t3-20020a199103000000b00512caa218dbmr2787232lfd.35.1708882394136;
-        Sun, 25 Feb 2024 09:33:14 -0800 (PST)
+        bh=EuE43dLqTxHSUlJvt5Y7Dme+S2ucf6kxW2kDutXSIZw=;
+        b=E9jzupH8COfAB6GHsU++aF2NoY5/UW/DjshtQfgF8LcSUUeZo1m7s3Si93NFOqRFR7
+         Z7zp3BFjEzhrbw37wc0PnwxcDGg5YwB3p4O19/jJdqYCJdphJRfgGRsqZBxs2aSuwIND
+         CLHxYOqKxeeg0iDzkAXuTGz+BeWJ0RwmNJnmHkEze27hv+osuFW/ZfLZRvP8Sdimyasq
+         VTie0K+UV1eIBfxGqrojCIkljGy/GGDOP3lJFLQHe/E5B/V7HH3n3te/F2Je18Gf3uRt
+         uxgUNDmSJFwpfEiAcixn4tucofmkO0x7DgTcZkrV6ZRUQz+wtUH7iCA6ohcTFPPH2fh/
+         BSmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708882396; x=1709487196;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EuE43dLqTxHSUlJvt5Y7Dme+S2ucf6kxW2kDutXSIZw=;
+        b=gLRwaFcGIrZB01SyhHp0bTQG6mcBhXft4Xlm//JNQ7YNJQIDRTt6RGq1LPTrU8yahR
+         u1Kq8MwWvgxKKZp+dU5KJLkJFGGxCFrWlINOJFU/dUBttn0RBQTEqulBAErj+K0AFARs
+         ZhR307YWyXhPA9E/aw7RpGb10v+BE+hlwrmyM5pAe74ylU0DlXacB7xKWVJlxFDRE96/
+         dNOSapSeZST3cm0uc9fwe6pkrdelpNOtOoR4I9U3kxph5We0iA1NfVo12Rtc6KKliMKO
+         KtXuGQG0LofUwQ8XtHcKZMjzJlj3YjtFiLob4jTr/GkTE0Wi9V4x40lL4gf/nE6HO2qg
+         S2+w==
+X-Forwarded-Encrypted: i=1; AJvYcCV9np+7wQ2QnpiYp6H5wcKJsHMKNe/4O94g9BbiVt8s6+vWYwoxgqVlnRqy7KcnpZlELiBwJnBYasA8rydeZrvB/vGo5ycY1/uC0TRn2YrmvWVGL3+TQGeNBjS9DqkCXgPGRjczlEJQ
+X-Gm-Message-State: AOJu0YwZGspOL5r1YbzbmZA3gqxYjmvP4G/fM36+Davye8MXE4UhvljE
+	iBSzrc+9SvXxG+Fn1IzJERemO1/TwRhGL1nDgFI7YqgWqZ6u5Yuq
+X-Google-Smtp-Source: AGHT+IGIpqOBt7fQjwIMj081kucds8Wp+cwRdl8dbWAwFNJPtz929Q1DLouOmc3Nz7Isc8b18o/Ctw==
+X-Received: by 2002:a17:906:558:b0:a43:2418:2ab5 with SMTP id k24-20020a170906055800b00a4324182ab5mr1020247eja.60.1708882395871;
+        Sun, 25 Feb 2024 09:33:15 -0800 (PST)
 Received: from [192.168.20.102] (57657817.catv.pool.telekom.hu. [87.101.120.23])
-        by smtp.googlemail.com with ESMTPSA id cw16-20020a170907161000b00a4306ac853fsm1182007ejd.206.2024.02.25.09.33.12
+        by smtp.googlemail.com with ESMTPSA id cw16-20020a170907161000b00a4306ac853fsm1182007ejd.206.2024.02.25.09.33.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Feb 2024 09:33:13 -0800 (PST)
+        Sun, 25 Feb 2024 09:33:15 -0800 (PST)
 From: Gabor Juhos <j4g8y7@gmail.com>
-Subject: [PATCH 0/3] clk: qcom: gcc-ipq5018: fix some register offsets
-Date: Sun, 25 Feb 2024 18:32:53 +0100
-Message-Id: <20240225-gcc-ipq5018-register-fixes-v1-0-3c191404d9f0@gmail.com>
+Date: Sun, 25 Feb 2024 18:32:54 +0100
+Subject: [PATCH 1/3] clk: qcom: gcc-ipq5018: fix 'enable_reg' offset of
+ 'gcc_gmac0_sys_clk'
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,9 +78,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAMV522UC/x2MQQqDQAwAvyI5G4jpLrj9SvEga1xz2dqkFEH8u
- 0uPwzBzgoupODy7E0x+6vquDYa+g7zNtQjq0hiYOBBzwJIz6v6JNIxoUtS/YrjqIY6PFBLFyLQ
- uM7TBbvIXrX9N13UDakE50mwAAAA=
+Message-Id: <20240225-gcc-ipq5018-register-fixes-v1-1-3c191404d9f0@gmail.com>
+References: <20240225-gcc-ipq5018-register-fixes-v1-0-3c191404d9f0@gmail.com>
+In-Reply-To: <20240225-gcc-ipq5018-register-fixes-v1-0-3c191404d9f0@gmail.com>
 To: Bjorn Andersson <andersson@kernel.org>, 
  Konrad Dybcio <konrad.dybcio@linaro.org>, 
  Michael Turquette <mturquette@baylibre.com>, 
@@ -90,26 +92,46 @@ Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
  linux-kernel@vger.kernel.org, Gabor Juhos <j4g8y7@gmail.com>
 X-Mailer: b4 0.12.3
 
-The purpose of this small series is to fix some, presumably wrong
-register offsets in the 'gcc-ipq5018' driver.
+The value of the 'enable_reg' field in the 'gcc_gmac0_sys_clk'
+clock definition seems wrong as it is greater than the
+'max_register' value defined in the regmap configuration.
+Additionally, all other gmac specific branch clock definitions
+within the driver uses the same value both for the 'enable_reg'
+and for the 'halt_reg' fields.
 
-The patches are based on v6.8-rc5.
+Due to the lack of documentation the correct value is not known.
+Looking into the downstream driver does not help either, as that
+uses the same (presumably wrong) value [1].
 
+Nevertheless, change the 'enable_reg' field of 'gcc_gmac0_sys_clk'
+to use the value from the 'halt_reg' field so it follows the pattern
+used in other gmac clock definitions. The change is based on the
+assumption that the register layout of this clock is the same
+as the other gmac clocks.
+
+1. https://git.codelinaro.org/clo/qsdk/oss/kernel/linux-ipq-5.4/-/blob/NHSS.QSDK.12.4.r4/drivers/clk/qcom/gcc-ipq5018.c?ref_type=heads#L1889
+
+Fixes: e3fdbef1bab8 ("clk: qcom: Add Global Clock controller (GCC) driver for IPQ5018")
 Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
 ---
-Gabor Juhos (3):
-      clk: qcom: gcc-ipq5018: fix 'enable_reg' offset of 'gcc_gmac0_sys_clk'
-      clk: qcom: gcc-ipq5018: fix 'halt_reg' offset of 'gcc_pcie1_pipe_clk'
-      clk: qcom: gcc-ipq5018: fix register offset for GCC_UBI0_AXI_ARES reset
+ drivers/clk/qcom/gcc-ipq5018.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/clk/qcom/gcc-ipq5018.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
----
-base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
-change-id: 20240224-gcc-ipq5018-register-fixes-394905520fda
+diff --git a/drivers/clk/qcom/gcc-ipq5018.c b/drivers/clk/qcom/gcc-ipq5018.c
+index 4aba47e8700d2..cef9a1e7c9fdb 100644
+--- a/drivers/clk/qcom/gcc-ipq5018.c
++++ b/drivers/clk/qcom/gcc-ipq5018.c
+@@ -1754,7 +1754,7 @@ static struct clk_branch gcc_gmac0_sys_clk = {
+ 	.halt_check = BRANCH_HALT_DELAY,
+ 	.halt_bit = 31,
+ 	.clkr = {
+-		.enable_reg = 0x683190,
++		.enable_reg = 0x68190,
+ 		.enable_mask = BIT(0),
+ 		.hw.init = &(struct clk_init_data) {
+ 			.name = "gcc_gmac0_sys_clk",
 
-Best regards,
 -- 
-Gabor Juhos <j4g8y7@gmail.com>
+2.43.2
 
 
