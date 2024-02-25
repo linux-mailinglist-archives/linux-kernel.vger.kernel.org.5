@@ -1,148 +1,115 @@
-Return-Path: <linux-kernel+bounces-80224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF985862C44
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:23:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD70C862C48
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:33:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3A4B1C20AD2
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:23:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 322DCB20EEE
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:33:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FEBE1862E;
-	Sun, 25 Feb 2024 17:23:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 978AC18B1A;
+	Sun, 25 Feb 2024 17:33:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RpiRkISU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U8E7mzWI"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A88FC17BB5
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 17:23:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EB2813FE7;
+	Sun, 25 Feb 2024 17:33:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708881805; cv=none; b=Y9lkdMsAZd089hzDV2y5pqTyrhikbNVn2PzIBtmc2IjigaZybXNDE+2CLJ4MgjjGOsH1Eb6vwKxzu5RLE4OVJlpBmnkpZU0Jk1XgHBkbAt1gmckWVw3IAboNEpn5flK6hdLJ3DihJJvUtnjUU5tOCwJxwi3j8mjIfMh1CPsLEaA=
+	t=1708882397; cv=none; b=HeizG91QWpy67F9s5tCLcWb7Xb/UQpPGf7zcIg+LQ+SrCsreZDJ18q9rPNVd5LKy5GGuOhriT0B7dT/NpKx2Eec9bkiMvJykbBVApQaxNGr0axT8IqOn+bG80/G2IXII2tJsgGlc3HIM+VmiAl3geuegUaTHW0+x3OaxzyVCL2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708881805; c=relaxed/simple;
-	bh=n31uvN3EKuNhBVZlFx/PskpErcQNgwBocvUs9RbSYdg=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=A51p/E7sYUfND6YjoNRA0seAsHny5PICGA9NhyOINGkuHI8TEu0dS9M49LfXOgRMZKh220XZ+Y+CLFJCeWK+odgH2q3V6PzmvSvnZH6Eg5bR8T0v7D3eo4a+wd6hNJ2y5pIIHwEOaN6I6y7MPHF0N3ssRMXI98Sb4VSEA5S3em4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RpiRkISU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2636DC433F1;
-	Sun, 25 Feb 2024 17:23:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708881805;
-	bh=n31uvN3EKuNhBVZlFx/PskpErcQNgwBocvUs9RbSYdg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=RpiRkISUdj3iEqSwXNudFslC9mMhLzKP3W5IvtmX5LMpaMQw1DjyadIng4AKgYcFs
-	 4UFGym95EpeHutT0kLuqNyW5pYQD5JcPCPo/3khiDQLXxY7JRIHMeEb73MjiFX5pts
-	 0v8Lue0CzdySt2FXPBQdcEwneVDK52DS0ZyXBjB/e2MJQowDU2oHjqraP4Jj6Io9bI
-	 /ZNyrPaH4MtV9aakyCw5z3LTl6dHFt0q5XBjA3zPxIzD6TWJCbIGsiBRjAFa0Mcv9T
-	 ov706avBCJE4M4C6ovbQNzE4VwXOKbWFvGU+rbVibG2ZKGzsBDyQHX4gJVpo/YhF9M
-	 ztP1wNI5WVTxw==
-Received: from disco-boy.misterjones.org ([217.182.43.188] helo=www.loen.fr)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1reIDi-006bWb-PT;
-	Sun, 25 Feb 2024 17:23:22 +0000
+	s=arc-20240116; t=1708882397; c=relaxed/simple;
+	bh=6G1QXHrfF3PrUu8EJMiV6E2rCJyUs76wIVXZXtRfU10=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=G6nMoc2m8VXcSOeDFpcVdZWsdk2JfxXGAh95K4FexBVDy++514oRdEqVRTPkDEZDNvF2T/tc7qtHRuxUlKhRc/wxilEvEWTYLgjk39KkR13av02njygv5qzgmChBKC9ive973S2wbf7TEZ/s9m0kbZ4lSd/b9hxn1WPn3YwXaFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U8E7mzWI; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-512ed314881so1941398e87.2;
+        Sun, 25 Feb 2024 09:33:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708882394; x=1709487194; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=guZl2SPxCQZuSLI8sxbmLDgy6Gf8KaBzLtPq3zTulKk=;
+        b=U8E7mzWI+Lj4L7uASItdPRj5y67+x4eBNy23KMX+lf0ufBdbJyyGmNl8oBROKICtNq
+         pDWHUvC9ohYZB1j/avYeGFDQbXWFbUdqY7akaB3fIt7IvGW2OaxarpW4e41aJttvbGlG
+         fp2jfiYDuk0mzdnQKHoWPycoZubBtnk/I7OcGew45KKbFY3q8CHGD2xqKKOf4zLjJfjR
+         /4RLXpl7czexxptMZNK/yQL8owjcWahaY61IGUKnUozZtmvVSsr2EksUbutkLDfguwBr
+         pfrgPnHBHFitUmGDm1n8PMIuJemKPm5Pby6GKrO5btANrxj8Ez/Rz9Yy+Hjyo2VmZ1Ww
+         fSQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708882394; x=1709487194;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=guZl2SPxCQZuSLI8sxbmLDgy6Gf8KaBzLtPq3zTulKk=;
+        b=R3w5/VIXnYDdaIrllCSkqNcF2+UNtd8D77Tf4d+m2QMXN5B/APICIkH0Z7YrSH1vTN
+         eDuWlt8Itys8NnDxoaIanw9WiDh3bC9JNtD7cGG2zP7Er1Fv/6ksLGS8pusppV4HFb/E
+         wKf3wpo4XQcKCI6J3p2bQKrbgozDP1vE2fQYe/9bw76dkByWPq9sSDqbi9rtv5+xW0wA
+         4jquzJiJEKjUC8Luq3s/MwqplyLdUXxEoifWMWwbedbTzJ4VLhIjuR5bD8vE7CDlq914
+         lzMpvllPV+LXa5WiPRWMbSiXVkXVsMx/qSDxwSh+fky65pj5l7/y6NRnuPprIe1YUaDM
+         iyLw==
+X-Forwarded-Encrypted: i=1; AJvYcCWg66XkVddM1e81kwb9OpVqAcvF0eCdrNfQQ5vuGYNCmmmloPH0ts0uJaGMd3Dv0wVS1V3Splbwv3uj5g7QdfHk5b6tCV+PWMINihrWSSL3RzsEtrU18HylPkGY1AFsMwnw+09nL7Nr
+X-Gm-Message-State: AOJu0Yy7lpVhUeLmKL6iMCferCSLuxNQMpWin6N6Ofu6fgMl2YN4F51e
+	LHhxDkTMgX9XaCMfw9+ReGDUsCY8OxBNiWrcCURKVl6JdWJRKeqh
+X-Google-Smtp-Source: AGHT+IEOB/A4CBDtTq4B7V56JsdIwuBT64zm0RXlGsqaRZc7kyEeglcGgSWT4OVjYzg44bllC9ofTg==
+X-Received: by 2002:a19:9103:0:b0:512:caa2:18db with SMTP id t3-20020a199103000000b00512caa218dbmr2787232lfd.35.1708882394136;
+        Sun, 25 Feb 2024 09:33:14 -0800 (PST)
+Received: from [192.168.20.102] (57657817.catv.pool.telekom.hu. [87.101.120.23])
+        by smtp.googlemail.com with ESMTPSA id cw16-20020a170907161000b00a4306ac853fsm1182007ejd.206.2024.02.25.09.33.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Feb 2024 09:33:13 -0800 (PST)
+From: Gabor Juhos <j4g8y7@gmail.com>
+Subject: [PATCH 0/3] clk: qcom: gcc-ipq5018: fix some register offsets
+Date: Sun, 25 Feb 2024 18:32:53 +0100
+Message-Id: <20240225-gcc-ipq5018-register-fixes-v1-0-3c191404d9f0@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Sun, 25 Feb 2024 17:23:22 +0000
-From: Marc Zyngier <maz@kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Biju Das
- <biju.das.jz@bp.renesas.com>, x86@kernel.org
-Subject: Re: [PATCH] genirq/irqdomain: Don't call ops->select for
- DOMAIN_BUS_ANY tokens
-In-Reply-To: <878r38cy8n.ffs@tglx>
-References: <20240220114731.1898534-1-maz@kernel.org> <878r38cy8n.ffs@tglx>
-User-Agent: Roundcube Webmail/1.4.15
-Message-ID: <6792b2913a47b6ceb5650cdde3deecf2@kernel.org>
-X-Sender: maz@kernel.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 217.182.43.188
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, dmitry.baryshkov@linaro.org, biju.das.jz@bp.renesas.com, x86@kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-B4-Tracking: v=1; b=H4sIAMV522UC/x2MQQqDQAwAvyI5G4jpLrj9SvEga1xz2dqkFEH8u
+ 0uPwzBzgoupODy7E0x+6vquDYa+g7zNtQjq0hiYOBBzwJIz6v6JNIxoUtS/YrjqIY6PFBLFyLQ
+ uM7TBbvIXrX9N13UDakE50mwAAAA=
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, 
+ Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>, 
+ Varadarajan Narayanan <quic_varada@quicinc.com>, 
+ Sricharan Ramabadhran <quic_srichara@quicinc.com>
+Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Gabor Juhos <j4g8y7@gmail.com>
+X-Mailer: b4 0.12.3
 
-On 2024-02-25 16:19, Thomas Gleixner wrote:
-> On Tue, Feb 20 2024 at 11:47, Marc Zyngier wrote:
->> Users of the IRQCHIP_PLATFORM_DRIVER_{BEGIN,END} helpers rely
->> on a fwspec containing only the fwnode (and crucially a number
->> of parameters set to 0) together with a DOMAIN_BUS_ANY token
->> to check whether a parent irqchip has probed and registered
->> a domain.
->> 
->> Since de1ff306dcf4 ("genirq/irqdomain: Remove the param count
->> restriction from select()"), we call ops->select unconditionally,
->> meaning that irqchips implementing select now need to handle
->> ANY as a match.
->> 
->> Instead of adding more esoteric checks to the individual drivers,
->> add that condition to irq_find_matching_fwspec(), and let it
->> handle the corner case, as per the comment in the function.
->> 
->> This restores the functionnality of the above helpers.
->> 
->> Reported-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->> Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->> Reported-by: Biju Das <biju.das.jz@bp.renesas.com>
->> Fixes: de1ff306dcf4 ("genirq/irqdomain: Remove the param count 
->> restriction from select()")
->> Signed-off-by: Marc Zyngier <maz@kernel.org>
->> Link: 
->> https://lore.kernel.org/r/20240219-gic-fix-child-domain-v1-1-09f8fd2d9a8f@linaro.org
-> 
-> Bah. That breaks x86 because it uses DOMAIN_BUS_ANY to find the MSI
-> parent for a fwspec (IOAPIC and HPET) which gets either picked up by 
-> the
-> interrupt remapping or by the root vector domain.
-> 
-> Fix below.
-> 
-> Thanks,
-> 
->         tglx
-> ---
-> Subject: x86/apic/msi: Use DOMAIN_BUS_GENERIC_MSI for HPET/IO-APIC 
-> domain search
-> From: Thomas Gleixner <tglx@linutronix.de>
-> Date: Sun, 25 Feb 2024 16:56:12 +0100
-> 
-> The recent restriction to invoke irqdomain_ops::select() only when the
-> domain bus toke is DOMAIN_BUS_ANY breaks the search for the parent MSI
-> domain of HPET and IO-APIC. The latter causes a full boot fail.
-> 
-> The restriction itself makes sense to avoid adding DOMAIN_BUS_ANY 
-> matches
-> into the various ARM specific select() callbacks. Reverting this change
-> would obviously break ARM platforms again and require DOMAIN_BUS_ANY
-> matches added to various places.
-> 
-> A simpler solution is to use the DOMAIN_BUS_GENERIC_MSI token for the 
-> HPET
-> and IO-APIC parent domain search. This works out of the box because the
-> affected parent domains check only for the firmware specification 
-> content
-> and not for the bus token.
-> 
-> Fixes: 5aa3c0cf5bba ("genirq/irqdomain: Don't call ops->select for
-> DOMAIN_BUS_ANY tokens")
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+The purpose of this small series is to fix some, presumably wrong
+register offsets in the 'gcc-ipq5018' driver.
 
-Looks good to me.
+The patches are based on v6.8-rc5.
 
-Reviewed-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
+---
+Gabor Juhos (3):
+      clk: qcom: gcc-ipq5018: fix 'enable_reg' offset of 'gcc_gmac0_sys_clk'
+      clk: qcom: gcc-ipq5018: fix 'halt_reg' offset of 'gcc_pcie1_pipe_clk'
+      clk: qcom: gcc-ipq5018: fix register offset for GCC_UBI0_AXI_ARES reset
 
-         M.
+ drivers/clk/qcom/gcc-ipq5018.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+---
+base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
+change-id: 20240224-gcc-ipq5018-register-fixes-394905520fda
+
+Best regards,
 -- 
-Jazz is not dead. It just smells funny...
+Gabor Juhos <j4g8y7@gmail.com>
+
 
