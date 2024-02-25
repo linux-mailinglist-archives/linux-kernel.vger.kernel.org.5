@@ -1,97 +1,95 @@
-Return-Path: <linux-kernel+bounces-80304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D164862D21
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 22:23:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF896862D22
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 22:26:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E24D1C212EF
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 21:23:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6EF86B20F31
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 21:26:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9705F1B966;
-	Sun, 25 Feb 2024 21:23:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D92351B951;
+	Sun, 25 Feb 2024 21:25:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="MYWCgT6u"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Zq5XArrv"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF340199B8;
-	Sun, 25 Feb 2024 21:23:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 705EF1B948
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 21:25:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708896186; cv=none; b=rxxSe+lO/FLMbuNqAoyGz1nJeSkls57ZDeJ6M+7iJxojh81XLjpoajjZq05M7K/EXUNq5CdvTvGly3Bl2F5WL763damT3ED5Xyb1pkR/TH5aduwvQD6/qOMcPpeCVaIURFfTP0xGy9fkOqMlZnb/FewhZYlBMQVh+xyOPIoY6gU=
+	t=1708896353; cv=none; b=CfsDut/UmMhAPScSfbKLBAdk9IXnBnrij2A17Xfi+1ewY8uA7EA96pv0XxkLF2GtMA/qrwGMSYeGOnfq/EiZs5l16FAe9s4ySZIO6YZtqcAisjIPG8ITyeyFNt72ChdYnotI7FEvpGg3lrCwbknoKS3h0b00xQanFbFQGfCmv0E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708896186; c=relaxed/simple;
-	bh=UJESa6nXsG5fKadRTfGrJMPoVGOOHVPhoJw9wam7syc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=bz8A0suNf6DMUgfBx1iEDboZvqCZtQcl9CcKjxyHDsAj/sSIBYRT7HWkEvih4JS2sVW+s0E5ua5v+/uul11januxySp0tTtrb4nsSdTUIE7rrCO0qoDHqw1gM9p1DiY7bOFZiYp3/xwMbfgpyu2nk2Iyoa7SuKxfJ6CtOaTDE60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=MYWCgT6u; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1708896182;
-	bh=t4chhhaRRYfLEcO/AqGAKRoWv4Qt5yAuFWUhU6ico7s=;
-	h=Date:From:To:Cc:Subject:From;
-	b=MYWCgT6uIb4dHhczzwDizDI+YrEUNKofXBSzJp6yUSoOo6/IkPGpkL/ClvXRQYZTm
-	 q5UInp1A+qvFVxXLvfQczcwYsy2ii8pDMPGlxOZm+6E1rHjxhtd/1bywFxg3w1211u
-	 +3hARKzGLcgOyDSGRILDtUrVp2vdQl1yfsiqAdr/VEzdYoDl+fFGMPNR465O7ktPR7
-	 bYnIVqMgqwW1ZX//cIsZXWqMQD8dXzZsM4jKaQ6hLtc8s6ydf9ropJJ+vPSlXHBKx8
-	 DvaAy4kMa/104Kh3AY386vpyGZoKQHmjUX9M9DCd2CY4C9RD3K+GSOIFY3C8R2u5U7
-	 Ybgxa87o+TYJg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TjcD65tgKz4wcD;
-	Mon, 26 Feb 2024 08:23:02 +1100 (AEDT)
-Date: Mon, 26 Feb 2024 08:23:01 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Shawn Guo <shawnguo@kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the imx-mxs tree
-Message-ID: <20240226082301.245a91e3@canb.auug.org.au>
+	s=arc-20240116; t=1708896353; c=relaxed/simple;
+	bh=0NhjJB89qwc9JEgWWlZvaFoTsa6L2AfOSvzSLCNvD6U=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=WuDE7uKNgZ4rHaiUWDmgw3GU2dBxThk7VGa96LFraR5AoQ2AHSmFLj06OvecH3ak33DGR3LdfKG5AXPI5/Hsg1xE1SCwVqANaYJkJZJlzAbRSwpqljqxjqXPlETiU0jD5LIzVvH7qq+dFuBUS8WV1Q+SvfkxtRqyy34h2eCR2L8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Zq5XArrv; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708896352; x=1740432352;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=0NhjJB89qwc9JEgWWlZvaFoTsa6L2AfOSvzSLCNvD6U=;
+  b=Zq5XArrvxyMp95rqwzUwd7P5FAYk4ZaH5rE0g8IvEimTJkMY0JwjNpMU
+   +m+hXrglg9tVitbFYucTr0KHpTpCQgxlc2mdwBkF/QJtld19KxPPUOAFD
+   tB10VY+z2Iqjk0dlNFXI6Vn1l4eVZgfrje4w83/vthcucUvUdy8Zl7Bk9
+   Q79lbhyz0qtEwqhko5laRyf8gNNKP6rxB4YmOOPKP9NlWNmTuq8uadcyh
+   y4YFHrKU08y/ytwa5p8baMTxbUfZjkSmgzrkvRW5Z0K4Thb5kIMQXdYlf
+   p7HiFwjGVX2qhQPaiVa1r9Qm8z+OEaVAJuMjCUmtA/NiqfVN7ILfEGyQE
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3015460"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="3015460"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 13:25:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="11110898"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmviesa004.fm.intel.com with ESMTP; 25 Feb 2024 13:25:50 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1reM0J-0009nR-1r;
+	Sun, 25 Feb 2024 21:25:47 +0000
+Date: Mon, 26 Feb 2024 05:25:25 +0800
+From: kernel test robot <lkp@intel.com>
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: fs/overlayfs/copy_up.o: warning: objtool: ovl_copy_up_tmpfile()
+ falls through to next function ovl_create_index.cold()
+Message-ID: <202402260556.0rujs05e-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/uRIhJ_PhZsxgTkDOh4Nf=uH";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
---Sig_/uRIhJ_PhZsxgTkDOh4Nf=uH
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   70ff1fe626a166dcaadb5a81bfe75e22c91f5dbf
+commit: 5b02bfc1e7e3811c5bf7f0fa626a0694d0dbbd77 ovl: do not encode lower fh with upper sb_writers held
+date:   4 months ago
+config: x86_64-buildonly-randconfig-r001-20230616 (https://download.01.org/0day-ci/archive/20240226/202402260556.0rujs05e-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240226/202402260556.0rujs05e-lkp@intel.com/reproduce)
 
-Hi all,
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402260556.0rujs05e-lkp@intel.com/
 
-Commit
+All warnings (new ones prefixed by >>):
 
-  35eb2b23824e ("ARM: dts: ls1021a: Enable usb3-lpm-capable for usb3 node")
+>> fs/overlayfs/copy_up.o: warning: objtool: ovl_copy_up_tmpfile() falls through to next function ovl_create_index.cold()
 
-is missing a Signed-off-by from its committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/uRIhJ_PhZsxgTkDOh4Nf=uH
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXbr7UACgkQAVBC80lX
-0GxVFwf/VqtVRJgM4MNWFiJFKYyg+cKkRAAUD/Svuj1CYVTll5wpgR+8QcfGLT9V
-RxDwCY/JDDt65Fq5f32tiVyCKSIRRhvs94yL3jQJQ/Zbkm6eBmcgBNTeACg9o5Tp
-jvPVADS/Sd6OiKNd4+TPtdcdAv3i4xa/lCziKEsOBMc/SAcJDM7hc3JSknIOiKon
-pumEb2evek3T7HxvZlGHaln0mlmUtKqw/H7Hn8zGihMcAcYMeNASbUlKHOmjIiZ5
-kdJXCNliV7ZYUHa8J8zPEfnQFrnG3MGYxghdDNlH7+uC8lz3Djy14ErbDdkDYu4D
-OZUzVZiUSpAqsdRTrIx/ybg53C7dwQ==
-=u0r6
------END PGP SIGNATURE-----
-
---Sig_/uRIhJ_PhZsxgTkDOh4Nf=uH--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
