@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-80193-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80195-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AB4A862B9F
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:13:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D7BD862BA5
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:14:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2AB8CB21990
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:13:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40921281CF8
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:14:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D3CF1CA83;
-	Sun, 25 Feb 2024 16:11:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6E621F933;
+	Sun, 25 Feb 2024 16:11:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TtA5/lQG"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eMacf//O"
 Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 209A617BBD
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 16:11:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E87A617BD6
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 16:11:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708877475; cv=none; b=a6S+Lf2jlT7Bvo+5Jrzilu/ZPCuGQl19X6o1kRfl5YRm2Gq2jFas/ky6D2b6m5qanUdsJUYeTMabMUPCWpBLWf+R1Id/dumQyGS8xmd8MdYb8aT7VSpsXCG/lDAVRG4tLQy04pZ7ILUfpRWaWninyAgAfT8cql8rj4EW7Yp0Gt8=
+	t=1708877479; cv=none; b=KipMKvQJoikYM99k0S9gSKf38L4Mp3r5I6hy5LmSmkLlDfykZBe8eEU8EnliF+oheESaV27wBC0NVzdQL9r7EHzjHcmrhm+tmuCEf26UL/Dw9Nd1Fhmi8lK7AoC2c1CiKXHIy6P+azucEJ8q0a/LsHK1nBuvvnWoGrBd1N2OGVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708877475; c=relaxed/simple;
-	bh=u8Qpi5YiOy9kRaDr0ChX2/pXA1mqNLtMkVDkNl61WfQ=;
+	s=arc-20240116; t=1708877479; c=relaxed/simple;
+	bh=P80jgCoJx97whY8RZv7ltxiyxidW6ExA+D1/++A5684=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=L45FdIZIID6cQhOks8uPKdFywtmn37rRARinm/VG13Bag002wESC+G29SxJCWdJ2d5mSlzDPUWGO8/x+KOYrZsc7WjywHM3opoq1jx8r6zN9I9TKsygm+JHRjRDaSmedYHEh8OdJVf7EEkN1N44eVytsbwFXxoF3iiVdd0VdMo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TtA5/lQG; arc=none smtp.client-ip=209.85.208.174
+	 MIME-Version:Content-Type; b=SvpZNLjn2isUkMsuv9g36VsaP3B9c1QEc4oYU7DjTMZsMRyoQMKJ4Tx1qPoDHdpeopNCovlPImBRe9pmcuoLjg/AWuLp0ZvTAZuEGi/GWyyzyVxzmkchYvXfSzOFVmKGOyaBfZ8LbhlxNUTJ6StKRF+6uAWmOoBeLSuxaHUo76o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=eMacf//O; arc=none smtp.client-ip=209.85.208.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d21a68dd3bso31898451fa.1
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 08:11:11 -0800 (PST)
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d09cf00214so37503481fa.0
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 08:11:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708877470; x=1709482270; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1708877472; x=1709482272; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=REeTwuyBteq5+THLDDm+N0sqW9JR2kC2T9JOUPzqTZQ=;
-        b=TtA5/lQGRL/UROVJ/pSLyqTWZi8F3bCyMVnVhz0pnCGV0BUoPx/ggCNfqn8pXwM7jb
-         dxUTXzK/LD3lammTvA+qWT1h4m8gKZ+rlQQVZ+4HRMMIbgkbbKZTn/k/ECxI1FMFHYdt
-         gzKPLI9brf9nH0wzc/HgWlVte7iXafghvuYVikVjJ48MNleEcBGpLBEg4xy/A6VFbua6
-         FZV35UhnmwMZDj757//pwHTUcynXcO6oGYhA33GMj3kX3eqk5/btyzuNixEKXO1WFSlc
-         dhTk7fqPGQrDMEVaRvdmTr3MTAmo+jylzAwRRk4D4N1+0bTC3Ca8mcGrlz8nzatVRKVB
-         TT8A==
+        bh=PzgKojf3trYLunnGeLiGp/WQF9mJK3e1ky7A6J0BwN0=;
+        b=eMacf//OK2/Z+1jPCjCNCQs240fETw+moV7bNsSpyW6U7it6+s5eEDQ7cTWPw8XTWs
+         NaFADShrjMOGiJXAmeyzAjytIWN6KLe4wMZ2PdgMxjbG3GxJ2l3Jyz2l+vRws/SN1xjr
+         EHcGcjTsj2+KVWDBWnhYNwUvC0f7+j6FZ5GGu6GJV3ZrcITTcUZLRzG9uy+gcd+I2FjD
+         g64gurCdvbHmmZAz3sGm1EIHq1PFFlMXnIIpSRmI+SshgcFlBUVc8Agw9QKo5ttEHMhU
+         SBytp+SKRQIc/ahwkunEwkraN50+u6wGXc39CsIMOlF9o7aq8r66P2NGwlCXyFchhN11
+         wfJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708877470; x=1709482270;
+        d=1e100.net; s=20230601; t=1708877472; x=1709482272;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=REeTwuyBteq5+THLDDm+N0sqW9JR2kC2T9JOUPzqTZQ=;
-        b=MAGGTPjOgEaspHwaiD0rcr4LhUE092v8aZn6HfkOO1BOcHC2V4wF3iPbbZUxpFouoe
-         l/lsIyQSVM4tVhZYj+x4SdkURsI/08ZsiVrTcYOYK+RIVGOYkSRzrOyIZuilu0Wy7wRm
-         Vv/Fg896D9IK7qCktmkZ5kEk3x8PBcvbVSwY9BsxxkpH/BTQv8ZL1g+oLATo1xnCC91A
-         TvBxM8tiWQ4nNZmj9f7x9M1jK6pD5BZgFeURnJQO4dhQXBUCubBdM7gJBKMhcKuTPuLh
-         jDo+jv88dxJcMAZecAsfkGyLy6mCtCxMSRGL8UvqhNPfpTL90RL8+64ZqYH5r1q4JUQG
-         l9KQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXtjTyL97fsIfIiwxVc31HhmuKGqk9dHjLwM+P2w7tv4V6Jz71GuCNR9paFTw/ZJmzY/O04M+wvDgvHkJ58NAwn63hypH4Jf7aTtTIj
-X-Gm-Message-State: AOJu0YwGHeUyOH9ce5TpNqoAdyvB3QLCj1EaEvRHOmKthtBs0SijR35l
-	817ZQwpkYiPPRe6IzS1Ex2qOoNJ1V4+r44fZpC+P4OCde4NazTRGoIguoByxfmY=
-X-Google-Smtp-Source: AGHT+IH5ysbPnEAR4gSNi9Y8xJXQNzwoFma6m8b1/S0CcoLGSmBaXXI9IRTtAoynqulT2fdbH///4g==
-X-Received: by 2002:a2e:b170:0:b0:2d2:4cb2:59e4 with SMTP id a16-20020a2eb170000000b002d24cb259e4mr2790327ljm.31.1708877470466;
-        Sun, 25 Feb 2024 08:11:10 -0800 (PST)
+        bh=PzgKojf3trYLunnGeLiGp/WQF9mJK3e1ky7A6J0BwN0=;
+        b=vuAMhHZCBOQ7Q87REvybAPMlxM3baJZuOeI2J/vtJ/YRBuJdDRp5n78vBMVxmgbnsb
+         mT4UdmVwSWQq7UjacvFlnqtonrP/wv068xTTZzyguQ4dOfMifGr0H3/TLhSFW2qwdSvP
+         6zWSKgRtPGxLz0UPAR4HQPRoSb11WqFyh8qhL4LZlBFkBq3rVPQ9jqDqkJSyj9jLxbdc
+         bj6mNM8gFfOQZJbxEc+kxGzQfccn0LxbBLtfPZEiqGV7kabFut4ux8GGOOH9Q5oA555x
+         RFAyRk7lH7U9FFQcWaDgnQ2+OuhO1svaZcQoVDulsTZxZLoUFAwfWXPf0CXqzvCKVY1x
+         4ttg==
+X-Forwarded-Encrypted: i=1; AJvYcCURb8t95cd4gKB4S3a+mffQN+HlBz8NSNkvalDfhlxmtCmWmgZ2uYQw8qsM4wIOb4qCzvTFbxIDGvtOKfaIbtkZe70ETt0eLD8+mNpc
+X-Gm-Message-State: AOJu0Yx+S6XXFCb6BOiMS9H28B3q+zwFwN1CoSclSHYSrwcF1pc2WlCl
+	Y6U1WR+h1JZRY9plNOS8K3FfbfOTziFssOIEosnhqwwj63I/sglEa69AZMO7bOA=
+X-Google-Smtp-Source: AGHT+IEaAI1AU10HJTP05nLv6Cuo24RSPsM278RNSVdPqNxpfxcrIfDk93zPcr82zgNkjNqS+LG+7Q==
+X-Received: by 2002:a05:651c:2211:b0:2d2:8814:e3fb with SMTP id y17-20020a05651c221100b002d28814e3fbmr1056659ljq.49.1708877472590;
+        Sun, 25 Feb 2024 08:11:12 -0800 (PST)
 Received: from [127.0.1.1] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id n21-20020a2e7215000000b002d2697570fcsm579184ljc.93.2024.02.25.08.11.08
+        by smtp.gmail.com with ESMTPSA id n21-20020a2e7215000000b002d2697570fcsm579184ljc.93.2024.02.25.08.11.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Feb 2024 08:11:09 -0800 (PST)
+        Sun, 25 Feb 2024 08:11:12 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Sylwester Nawrocki <s.nawrocki@samsung.com>, 
  Chanwoo Choi <cw00.choi@samsung.com>, 
@@ -77,13 +77,13 @@ Cc: Alim Akhtar <alim.akhtar@samsung.com>,
  linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
  devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
  linux-kernel@vger.kernel.org
-In-Reply-To: <20240224202053.25313-11-semen.protsenko@linaro.org>
+In-Reply-To: <20240224202053.25313-12-semen.protsenko@linaro.org>
 References: <20240224202053.25313-1-semen.protsenko@linaro.org>
- <20240224202053.25313-11-semen.protsenko@linaro.org>
-Subject: Re: (subset) [PATCH v3 10/15] clk: samsung: Keep register offsets
- in chip specific structure
-Message-Id: <170887746854.215710.5270227845876951742.b4-ty@linaro.org>
-Date: Sun, 25 Feb 2024 17:11:08 +0100
+ <20240224202053.25313-12-semen.protsenko@linaro.org>
+Subject: Re: (subset) [PATCH v3 11/15] clk: samsung: Pass mask to
+ wait_until_mux_stable()
+Message-Id: <170887747056.215710.9176001640764201554.b4-ty@linaro.org>
+Date: Sun, 25 Feb 2024 17:11:10 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,23 +95,20 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.4
 
 
-On Sat, 24 Feb 2024 14:20:48 -0600, Sam Protsenko wrote:
-> Abstract CPU clock registers by keeping their offsets in a dedicated
-> chip specific structure to accommodate for oncoming Exynos850 support,
-> which has different offsets for cluster 0 and cluster 1. This rework
-> also makes it possible to use exynos_set_safe_div() for all chips, so
-> exynos5433_set_safe_div() is removed here to reduce the code
-> duplication. The ".regs" field has to be (void *) as different Exynos
-> chips can have very different register layout, so this way it's possible
-> for ".regs" to point to different structures, each representing its own
-> chip's layout.
+On Sat, 24 Feb 2024 14:20:49 -0600, Sam Protsenko wrote:
+> Make it possible to use wait_until_mux_stable() for MUX registers where
+> the mask is different from MUX_MASK (e.g. in upcoming CPU clock
+> implementation for Exynos850).
+> 
+> No functional change.
+> 
 > 
 > [...]
 
 Applied, thanks!
 
-[10/15] clk: samsung: Keep register offsets in chip specific structure
-        https://git.kernel.org/krzk/linux/c/78bc2312ef9cea4af1073dfab4c71d91b2015b5d
+[11/15] clk: samsung: Pass mask to wait_until_mux_stable()
+        https://git.kernel.org/krzk/linux/c/152cc7478677dee6a11685585fd17efbce6e9db5
 
 Best regards,
 -- 
