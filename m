@@ -1,78 +1,65 @@
-Return-Path: <linux-kernel+bounces-79915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-79916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED48286289F
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 01:57:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A12098628A1
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 01:57:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F527B211F5
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 00:57:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40F4E1F214CA
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 00:57:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B2341373;
-	Sun, 25 Feb 2024 00:57:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SCXRGvA7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C62E10E4
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 00:57:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BDE71C01;
+	Sun, 25 Feb 2024 00:57:48 +0000 (UTC)
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4BEE10E4;
+	Sun, 25 Feb 2024 00:57:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708822636; cv=none; b=fo00dSqCzN8rEVvWIwfOnj/Oma1E5SlOyac36063gDfhT0TLW/j2wq+K/JSpHsWzYB4t8GS3s2/Gvru3J/x4foMyQJlyDVdiYRVj/Zyq/Hq1b2BOv+DLA82PREiPec7UqaW/W7YpZ3bNMES3pXNFsGawneaiI7n12SW+2v8GQDM=
+	t=1708822668; cv=none; b=SxfBUTFNd9u9teRd2r9oIUPNiBvK8FFpJFmmsMuuxuW1PEvEIZmSFVF/IqD73nuGjDw32jXnuXwo4lCwuo/u3bdN99fbk4em1GXJhDT7DToZlTiNqrhkVP2Y6evD0cM28VkHHhh1I9EvEhfoCbeso9LNwYKMd2ysEEkiesKSJzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708822636; c=relaxed/simple;
-	bh=gskYjTtZz1RQxCoilkwn5p3RZlAHtJoAXwW7n3t8sHA=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=Wx+b5tzlxNex8KXCvqLI68Nv/XMDHGrVGquOIoJn6SDRW1sGLS5Z8VLsGymVtH98gkQ30k7CU0VvygQxvd3NNZpVtm+Z6Y+AKj/jDbdUIUZ99Xkr1OOVqafd28GRU9FVRkALr1a0A/teDaA18XWOYC3mmI7ANBYcdIdcOS7v0eg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SCXRGvA7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BCB56C433C7;
-	Sun, 25 Feb 2024 00:57:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708822635;
-	bh=gskYjTtZz1RQxCoilkwn5p3RZlAHtJoAXwW7n3t8sHA=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=SCXRGvA7q7VbLko6MU5akV/Rdy8/54cJr8ZnWAL9yTqAiouS2UG9nVjBzkM02d/0J
-	 47qlaZTV9dRO/m9zNn+rC8jc26LR3wNTdxVBW74VSY1ZjkN02ktsdKJj5Op3mBBT3e
-	 ALNhdVJab3b9Pz6CS+WysWiih1jJ+ygS/BSYeUkFZAo2s38Qh98WB4PfLiUd+B1TRv
-	 QgTa3CwqM4K+UGGn+HMX2DZoWsM91oIwZNaexNur2Cf+v8zlol5Z82o1YDz02D47LJ
-	 4gF5+hjIDb5lkudcStJiI+Tt9EuwmUStu4S6CF8NtVwMgOhgxBolViUAx6Pg7GPDnm
-	 HggSLA3jp6xjQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9EB0FC04E32;
-	Sun, 25 Feb 2024 00:57:15 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-6.8-4 tag
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <87jzmt9y9p.fsf@mail.lhotse>
-References: <87jzmt9y9p.fsf@mail.lhotse>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <87jzmt9y9p.fsf@mail.lhotse>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-6.8-4
-X-PR-Tracked-Commit-Id: 20c8c4dafe93e82441583e93bd68c0d256d7bed4
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ab0a97cffa0bb3b529ca08b0caea772ddb3e0b5c
-Message-Id: <170882263555.8321.1129219517275240699.pr-tracker-bot@kernel.org>
-Date: Sun, 25 Feb 2024 00:57:15 +0000
-To: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, amachhiw@linux.ibm.com, gbatra@linux.ibm.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+	s=arc-20240116; t=1708822668; c=relaxed/simple;
+	bh=ioMTznDwM8Bf83NeluICXPdCkl4fF07yGYnYlYsOynU=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=jDAlyiH1+lZsCfVeX5BFkUb5RRs3JHnA4gnwHCSig8opPn/CqT7KYepkfJibT+gvmYoJIwoEb969+AjRUzj2t2Zzz/xSt7fSrTwq6xkMr/fF1cBBeKU/ii15vKAJGwRFizZS2hXFp9u37q4qeaWspRVjxUC6ZJhI5b9JQKqp3nI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+	id 9A11892009C; Sun, 25 Feb 2024 01:57:42 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by angie.orcam.me.uk (Postfix) with ESMTP id 92FD092009B;
+	Sun, 25 Feb 2024 00:57:42 +0000 (GMT)
+Date: Sun, 25 Feb 2024 00:57:42 +0000 (GMT)
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
+To: Sam Ravnborg <sam@ravnborg.org>
+cc: sparclinux@vger.kernel.org, Andreas Larsson <andreas@gaisler.com>, 
+    Randy Dunlap <rdunlap@infradead.org>, 
+    Miquel Raynal <miquel.raynal@bootlin.com>, 
+    linux-parport@lists.infradead.org, "David S. Miller" <davem@davemloft.net>, 
+    Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/7] sparc32: Do not select ZONE_DMA
+In-Reply-To: <20240224-sam-fix-sparc32-all-builds-v2-4-1f186603c5c4@ravnborg.org>
+Message-ID: <alpine.DEB.2.21.2402250054030.36563@angie.orcam.me.uk>
+References: <20240224-sam-fix-sparc32-all-builds-v2-0-1f186603c5c4@ravnborg.org> <20240224-sam-fix-sparc32-all-builds-v2-4-1f186603c5c4@ravnborg.org>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 
-The pull request you sent on Sun, 25 Feb 2024 11:35:14 +1100:
+On Sat, 24 Feb 2024, Sam Ravnborg via B4 Relay wrote:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-6.8-4
+> sparc32 has no limited DMA zone so there is no need to select ZONE_DMA.
+> 
+> Based on analysis from Marciej:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ab0a97cffa0bb3b529ca08b0caea772ddb3e0b5c
+ Can you please use the correct spelling of my name in change descriptions 
+(and preferably everywhere)?  Thank you.
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+  Maciej
 
