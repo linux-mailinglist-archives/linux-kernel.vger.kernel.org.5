@@ -1,51 +1,73 @@
-Return-Path: <linux-kernel+bounces-80029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21DA18629E2
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 10:52:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 615DC8629E5
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 11:01:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 139BD1C20A72
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 09:52:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46EE7B20DE7
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 10:00:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D4CEED5;
-	Sun, 25 Feb 2024 09:52:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12C96EED0;
+	Sun, 25 Feb 2024 10:00:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="RTuZimLD"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b="LctiBb6D"
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E1FEC8C4
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 09:52:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A9B5DDC7
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 10:00:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708854748; cv=none; b=utlvfw/V2tAUctb4BWoZmJhTuTKNKi7DwbgeiHgTmquxnFLJ8vWahe5Oeu/b3zCU2xQM/tyZOdjP9lkoQEaUG4AgFit0L/QE8CZ5xAXL5JzVO7pi1D148eWfTMvAWslwttFlzy44KydPwkX+jffgG5+YrHwk7oJ3V5B2pbNhUJA=
+	t=1708855252; cv=none; b=tsZeH7orz/RSQM4sbO/bk31K4S8k8pAppJTpPg72XfFFJjKPRaqSLBcV5lVnZuUH8nwML5NVjiY6GU3xKwPEgxNEbqZ+Se61pd3J2a5TOK7T9y+S4MGh+Q5nSo3533YZgV4u7UaStQ0cwgviKR/tBTZEdDp5USTeU4uCNzZv2f4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708854748; c=relaxed/simple;
-	bh=+Y/Fvt+IAnPbl3/L5nkRo+CVGZJkpOEu7LbIGkbFp1E=;
+	s=arc-20240116; t=1708855252; c=relaxed/simple;
+	bh=/7ROqcMSn7+eefwRCGL5v8cIELANz7UrqEWv2EQRSpI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MXaOqCz79cznND1uIVeJv/bqtYEipbgF+k9JSA/W9v6PX2xXvPEVT3WkYrSJ8YWD4jkUWcrsWR9tPAj970Pr1wPBjD6n2sE2iTcB2Jsj8hTLSzt4R+9ag7m6dNTQ9y/lVzYUGzjBKrzvdH8zVl459UXGNg5IeKiSikvVUB+oKxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=RTuZimLD; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:
-	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
-	References; bh=C8Vnb5dhGHEkK7LfR6Bpr359LyIu9LMqi05VCVsfsKY=; t=1708854746;
-	x=1709286746; b=RTuZimLDZGKS5lI3q9XW2kjHEE0HmHzTaKRmDkeU5HTea0XSW3d/VfkIN+1yu
-	wKit43gzz6NGYitJk8jDlqIxf9qlqgcke52sskzSJcperK6AjLH/fQqscKqtDCclE40D3fu185RCS
-	aiNVSRSuveXjuUPiAP8GLZVCHd1KOH4QwxLKs3hsjIr4U2SBV4iGo7ucbCtuK0v3Izc2YMGzCAGpW
-	CnKBQ/eN25ChLaI/bacEAy9oJQuKVcRthVrc2zLoZLDODh2W/P06GGUissFdhiaGmQI29b6Hthhxx
-	o1PW3st4TAkmXpgbjGy2ZhKG4//I/LzcPy5gKxDx5zawiOY1TQ==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1reBBI-0000x2-BL; Sun, 25 Feb 2024 10:52:24 +0100
-Message-ID: <4c82dd8b-aa66-4edb-afbd-cfff6afc39dc@leemhuis.info>
-Date: Sun, 25 Feb 2024 10:52:23 +0100
+	 In-Reply-To:Content-Type; b=P81q+Gf2vBnlgzhvZJNgVbLV6sVAE1MkT9bfx9wNvjDjqJy+cHd0KDnStz05XeDIJq2J/FAOXrIM/qcLRUY3yD+7BBbjy4yQHnjBsb4/XGBNAj+Opc0Y8E+P2cynOpPIX5KG+RQJb3J9eE8gZTqtrIs/Yr7zENqaH+r2yM+k3NU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com; spf=pass smtp.mailfrom=tweaklogic.com; dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b=LctiBb6D; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tweaklogic.com
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5dbcfa0eb5dso2122145a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 02:00:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tweaklogic.com; s=google; t=1708855250; x=1709460050; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jfognGjDDICd8wr8gaW7qWbOVoXyCLnVM/vY1jjtmwI=;
+        b=LctiBb6Do0PG99kHGlzLufGn+AGO4NJmDxbXXNalLtcrjRYWNAhKq8lwWH+JIF5iMB
+         9rdlse/uRdJaaet1O/dFuWvTKpySXBlqxB5LI3tdWN3yUUgXyQ2X+DUEfLZXBO1YRK53
+         nC8EzbgbXjNTHozE5LGSrMBZNnPkdh29Mc1+IY4TwkHS4JOfUjXbMWv7txPQ+mXjl6lc
+         acOLGd+5wNIQsGP1ALYszRVysImPGxkbPmRRMT8yBMO5En4VNS2wdiTqh968Za/cCnb+
+         4uOVH3Ev/kE//LLxxOuU7QCDHv9PM8n90huBxeDdWo8bJhVmy1Dr76tqJz1wsJXd0GBT
+         +0pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708855250; x=1709460050;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jfognGjDDICd8wr8gaW7qWbOVoXyCLnVM/vY1jjtmwI=;
+        b=aI4N4Kq+W1sfL99qbx0lWkdnv2B35RpvTUguHKK5YvsxXzCcIVzU3Fab7DcY/8nLhF
+         5Pa9TuXlNoqYYg4f7LkDdhTMdM+s/GWvA9OaK4P8oUzhNZijH9G9Occa0UyTwKGu+zB6
+         OrAkznaqAKOBcy+e/k7PkSSRNLc7QQ6NgNmpm9JJCtnK26wSEcxHdya5o0U24xrSjBeh
+         MjJ0hAoPzF2XAYdvETtJJjVOppjdmWiPTBoNRsDcEoWYMl/Hv9aeEmXC3yvafo84s8s4
+         nz63pydWAD/QtTdNtPHlhlBhnhxFUx/ECLz6vv9waG8jOWqeMjfXD2TMFmPIO2FS0AOY
+         /Qmg==
+X-Forwarded-Encrypted: i=1; AJvYcCVHTyXNRPTGw0tSZl0rWXsfWgzwCT8bM3yZXcJu7388Uk2tECGy4dfR+8e1TgbuMUy/7XcLvUi8HoNX1wu3rp3NGrCMI49nMbQ5sFCA
+X-Gm-Message-State: AOJu0YyR8GfGE7QjKdZt1BP/okJditVuRGa2uNpEbtQ75faTe2WF2dLC
+	lekmRly1sRBywYNnb01fs7KRrVkq0GJ6m5Vqjnqkc/v8PmbsPf4xRjzHs+LssTk=
+X-Google-Smtp-Source: AGHT+IGIJYCYE8Yhoths6NxLp99D7So38TByNErxBWK/xxaGu9NWcpLIJpHsaH+tfVnpRg5rIRsdmA==
+X-Received: by 2002:a05:6a20:c90a:b0:1a0:d3a8:6dfb with SMTP id gx10-20020a056a20c90a00b001a0d3a86dfbmr3930340pzb.19.1708855249665;
+        Sun, 25 Feb 2024 02:00:49 -0800 (PST)
+Received: from [192.168.20.11] ([180.150.112.31])
+        by smtp.gmail.com with ESMTPSA id jb14-20020a170903258e00b001d8fe6cd0f0sm2042175plb.150.2024.02.25.02.00.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 25 Feb 2024 02:00:49 -0800 (PST)
+Message-ID: <15a46491-d126-4998-88f0-1720316f0a6c@tweaklogic.com>
+Date: Sun, 25 Feb 2024 20:30:40 +1030
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,99 +75,163 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: CVE-2024-26602: sched/membarrier: reduce the ability to hammer on
- sys_membarrier
-Content-Language: en-US, de-DE
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: cve@kernel.org, linux-kernel@vger.kernel.org
-References: <2024022414-CVE-2024-26602-5e76@gregkh>
- <22f42e54-d791-42aa-88f3-172f616b8316@leemhuis.info>
- <2024022510-goofy-entering-12e3@gregkh>
-From: Thorsten Leemhuis <linux@leemhuis.info>
-Autocrypt: addr=linux@leemhuis.info; keydata=
- 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 n7RI
-In-Reply-To: <2024022510-goofy-entering-12e3@gregkh>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v7 5/5] iio: light: Add support for APDS9306 Light Sensor
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Matti Vaittinen <mazziesaccount@gmail.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Marek Vasut <marex@denx.de>, Anshul Dalal <anshulusr@gmail.com>,
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+ Matt Ranostay <matt@ranostay.sg>,
+ Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240218054826.2881-1-subhajit.ghosh@tweaklogic.com>
+ <20240218054826.2881-6-subhajit.ghosh@tweaklogic.com>
+ <20240224151340.3f2f51e8@jic23-huawei>
+Content-Language: en-US
+From: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+In-Reply-To: <20240224151340.3f2f51e8@jic23-huawei>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1708854746;6b02fc35;
-X-HE-SMSGID: 1reBBI-0000x2-BL
 
-On 25.02.24 10:47, Greg Kroah-Hartman wrote:
-> On Sun, Feb 25, 2024 at 10:31:19AM +0100, Thorsten Leemhuis wrote:
->> On 24.02.24 15:57, Greg Kroah-Hartman wrote:
-> [...]
->>> Affected and fixed versions
->>> ===========================
->>>
->>> 	Issue introduced in 4.14 with commit c5f58bd58f43 and fixed in 4.19.307 with commit 3cd139875e9a
->>> 	Issue introduced in 4.14 with commit c5f58bd58f43 and fixed in 5.4.269 with commit 2441a64070b8
->>> 	Issue introduced in 4.14 with commit c5f58bd58f43 and fixed in 5.10.210 with commit db896bbe4a9c
->>> 	Issue introduced in 4.14 with commit c5f58bd58f43 and fixed in 5.15.149 with commit 50fb4e17df31
->>> 	Issue introduced in 4.14 with commit c5f58bd58f43 and fixed in 6.1.79 with commit 24ec7504a08a
->>> 	Issue introduced in 4.14 with commit c5f58bd58f43 and fixed in 6.6.18 with commit b6a2a9cbb675
->>> 	Issue introduced in 4.14 with commit c5f58bd58f43 and fixed in 6.7.6 with commit c5b2063c65d0
->>>
->>> Please see [...]
->> Greg, JFYI, I noticed that this announcement did not refer to the fix in
->> mainline (944d5fe50f3f03 ("sched/membarrier: reduce the ability to
->> hammer on sys_membarrier")) while most of the others do that. I don't
->> care at all, just noticed this by chance and wanted to let you know in
->> case it's due to a bug in a script or something. I hope there is not a
->> good reason for that difference I just failed to spot... (if that's the
->> case: apologies in advance for the noise!).
+On 25/2/24 01:43, Jonathan Cameron wrote:
+> On Sun, 18 Feb 2024 16:18:26 +1030
+> Subhajit Ghosh <subhajit.ghosh@tweaklogic.com> wrote:
 > 
-> The json entry will be updated when the commit shows up in a tagged
-> release (i.e. the next -rc release), and then when the real release
-> happens from Linus (i.e. 6.8), it will be updated then as well.
+>> Driver support for Avago (Broadcom) APDS9306 Ambient Light Sensor.
+>> It has two channels - ALS and CLEAR. The ALS (Ambient Light Sensor)
+>> channel approximates the response of the human-eye providing direct
+>> read out where the output count is proportional to ambient light levels.
+>> It is internally temperature compensated and rejects 50Hz and 60Hz flicker
+>> caused by artificial light sources. Hardware interrupt configuration is
+>> optional. It is a low power device with 20 bit resolution and has
+>> configurable adaptive interrupt mode and interrupt persistence mode.
+>> The device also features inbuilt hardware gain, multiple integration time
+>> selection options and sampling frequency selection options.
+>>
+>> This driver also uses the IIO GTS (Gain Time Scale) Helpers Namespace for
+>> Scales, Gains and Integration time implementation.
+>>
+>> Signed-off-by: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+> I applied this but then got some build warnings that made me look
+> more closely at the int_src handling.
 > 
-> But for now, the mainline commit is not in any "real" release so we
-> can't reference it here in the message or in the json record as per the
-> rules from CVE.
+> This is confusing because of the less than helpful datasheet defintion
+> of a 2 bit register that takes values 0 and 1 only.
+> 
+> I thought about trying to fix this up whilst applying but the event code
+> issue is too significant to do without a means to test it.
+> 
+> Jonathan
+Appreciate that you tried to fix all the issues for me.
+> 
+..
+> ...
+> 
+>> +
+>> +static irqreturn_t apds9306_irq_handler(int irq, void *priv)
+>> +{
+>> +	struct iio_dev *indio_dev = priv;
+>> +	struct apds9306_data *data = iio_priv(indio_dev);
+>> +	struct apds9306_regfields *rf = &data->rf;
+>> +	int ret, status, int_ch;
+>> +
+>> +	/*
+>> +	 * The interrupt line is released and the interrupt flag is
+>> +	 * cleared as a result of reading the status register. All the
+>> +	 * status flags are cleared as a result of this read.
+>> +	 */
+>> +	ret = regmap_read(data->regmap, APDS9306_MAIN_STATUS_REG, &status);
+>> +	if (ret < 0) {
+>> +		dev_err_ratelimited(data->dev, "status reg read failed\n");
+>> +		return IRQ_HANDLED;
+>> +	}
+>> +
+>> +	ret = regmap_field_read(rf->int_src, &int_ch);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	if ((status & APDS9306_ALS_INT_STAT_MASK))
+>> +		iio_push_event(indio_dev, IIO_UNMOD_EVENT_CODE(IIO_LIGHT,
+>> +			       int_ch, IIO_EV_TYPE_THRESH, IIO_EV_DIR_EITHER),
+>> +			       iio_get_time_ns(indio_dev));
+> 
+> As commented on elsewhere I'm not seeing the relationship between the event
+> pushed here and the channels this device provides (one of which is modified
+> for starters).
+Yes, I will check which interrupt channel is enabled then push appropriate
+event. Earlier versions wrongly had both channels as IIO_LIGHT which were fixed in
+later revisions. I forgot to change the event part!
+> 
+>> +
+>> +	/*
+>> +	 * If a one-shot read through sysfs is underway at the same time
+>> +	 * as this interrupt handler is executing and a read data available
+>> +	 * flag was set, this flag is set to inform read_poll_timeout()
+>> +	 * to exit.
+>> +	 */
+>> +	if ((status & APDS9306_ALS_DATA_STAT_MASK))
+>> +		data->read_data_available = 1;
+>> +
+>> +	return IRQ_HANDLED;
+>> +}
+> 
+> ...
+> 
+>> +static int apds9306_read_event_config(struct iio_dev *indio_dev,
+>> +				      const struct iio_chan_spec *chan,
+>> +				      enum iio_event_type type,
+>> +				      enum iio_event_direction dir)
+>> +{
+>> +	struct apds9306_data *data = iio_priv(indio_dev);
+>> +	struct apds9306_regfields *rf = &data->rf;
+>> +	int int_en, event_ch_is_light, ret;
+>> +
+>> +	switch (type) {
+>> +	case IIO_EV_TYPE_THRESH:
+>> +		guard(mutex)(&data->mutex);
+>> +
+>> +		ret = regmap_field_read(rf->int_src, &event_ch_is_light);
+> 
+> Call the local value int_src - it's not obvious to a reviewer what
+> relationship between that and int_src is. I had to go read the datasheet
+> to find out.
+This unique name was suggested in a previous review:
+https://lore.kernel.org/all/20240121152332.6b15666a@jic23-huawei/
+I will change it next version. int_src is logical.
+> 
+>> +		if (ret)
+>> +			return ret;
+>> +
+>> +		ret = regmap_field_read(rf->int_en, &int_en);
+>> +		if (ret)
+>> +			return ret;
+>> +
+>> +		if (chan->type == IIO_LIGHT)
+>> +			return int_en & event_ch_is_light;
+>> +
+>> +		if (chan->type == IIO_INTENSITY)
+>> +			return int_en & !event_ch_is_light;
+> This is the specific line the compiler doesn't like
+> drivers/iio/light/apds9306.c:1036:39: warning: dubious: x & !y
+I am using gcc 12.2.0 for cross compiling. I definitely do not want to send
+patches with warnings in them. Can you please let me know the gcc version
+or flags using which you got the above warning? Should I always use the
+latest released version?
+> 
+> I would match int_src against specific values rather than using tricks
+> based on what those values happen to be.
+> 
+> 			return int_en && (int_src == APDS9306_INT_SRC_CLEAR);
+I will implement this.
 
-Ohh, interesting and somewhat understandable.
 
-Thx for your answer!
+Thank you for taking time to review the code in detail and also appreciate
+your suggestions.
 
-Ciao, Thorsten
+Regards,
+Subhajit Ghosh
 
