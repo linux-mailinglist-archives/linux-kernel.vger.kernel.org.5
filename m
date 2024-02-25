@@ -1,124 +1,148 @@
-Return-Path: <linux-kernel+bounces-80223-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7244862C3A
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:14:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF985862C44
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:23:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0792281827
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:14:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3A4B1C20AD2
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:23:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D4F318EB3;
-	Sun, 25 Feb 2024 17:14:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FEBE1862E;
+	Sun, 25 Feb 2024 17:23:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="DpqlcBhM"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RpiRkISU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E78CD18AF9
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 17:14:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A88FC17BB5
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 17:23:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708881257; cv=none; b=LjfezynKV522AOiBMmXwKWQmZwXatnXIFeDzDtXrRmO9zvWWKdP+0saZSab4OIKHNxGKjz5GzmcFexNa9GlF6Erdf/y7ArO6TvGMb4T1jgSu7JJCX1uqhBVRvV22/JxEga1RYmZV302GfZ1DJNvsyZvaT7qTTz7GewGhJ5kgwY0=
+	t=1708881805; cv=none; b=Y9lkdMsAZd089hzDV2y5pqTyrhikbNVn2PzIBtmc2IjigaZybXNDE+2CLJ4MgjjGOsH1Eb6vwKxzu5RLE4OVJlpBmnkpZU0Jk1XgHBkbAt1gmckWVw3IAboNEpn5flK6hdLJ3DihJJvUtnjUU5tOCwJxwi3j8mjIfMh1CPsLEaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708881257; c=relaxed/simple;
-	bh=WWHe62jqpP7qRkfkrLQuEDOnSdiAq/+HGLtVLP+TA+c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=X4goSVlzZ6nguYp+uwVqo/EyW6IsKpekpOaC+zqjNsPOSNH2sW71vy/juLvGG8+/sUTQJqrYnJ2pfum4eV+7rbd5peKxysazVJZVDZIQtQt9YepvpE/Jgh1FYWG7ImBDRRzSIzbeEDJd/8xV//0d5kJjeEsRXgFCTHFiCAIhE/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=DpqlcBhM; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3f893ad5f4so334598866b.2
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 09:14:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1708881254; x=1709486054; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0eZgSeXgV3xfMa5j0GZq4dgMO8aNM+WGN0zJZjS5h1g=;
-        b=DpqlcBhMhLvtUpYRG+XScFGBv00VhXEQ5QUMSjnWXs3FaOF6AyB3DWV0wfs2oQbZJ4
-         9QRGb99QBH79/DE/uZ7vLv94zt0ApT5kYvA7/znY+RlgUA/GnGFC7FuxIvhHCK/tiFeT
-         mymG87sOzZpru/vrlHCq5K2UXkvUqNCWLaeoQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708881254; x=1709486054;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0eZgSeXgV3xfMa5j0GZq4dgMO8aNM+WGN0zJZjS5h1g=;
-        b=GfbuJWzIR4kV3bIrfSd3UYtIb+A23oUd5KEHL1q/tWDEiaw6MjRBtGZQAAgqBz3CPq
-         4KmtNiKvS3AvZ5hBVwJh9Z5e4FfTOGW0AR31Re962jLeA6xHjgVIvL1OerYAwxRda+7o
-         mugxp8uEs1aa1tpKymyX038nH8st2s8vj/3xWpQ2e1hgg+0P1Vlg7PsQ1pcDpilJR87c
-         RqUUTpngSj6j73dJZADuQsoPp4vpG8DAskIkD2h6I6uhk81WYpnw2cx9RDHGKUNOBcwp
-         b8BcFgY90dPlG9hUM2q/MCxD8y/K/uFjnkDTulsIys5AqIwPWs5377qdCPA063wCiEfq
-         SWjw==
-X-Gm-Message-State: AOJu0Yy3D4O1zaoc8gzG+WeJsBSYyJkqtrfK9hXPLfGf+zoYVNVZlKnt
-	962mesPxJ+Y9h4F0YBUcuYbZKufaQ+SaXfCRCpEkwKlLZtA/h0pdC1W27fJDBpvYkfrTdnT04W+
-	SeMFTUQ==
-X-Google-Smtp-Source: AGHT+IF4Wxq1vawBjQRDvfI8ol+WIYIOu8IswNiW4nVKXx8cVbDNmEpGPqJsUb+1bJDgw2C2QKoMng==
-X-Received: by 2002:a17:906:f55:b0:a3b:eaa3:ecc4 with SMTP id h21-20020a1709060f5500b00a3beaa3ecc4mr3239790ejj.60.1708881254184;
-        Sun, 25 Feb 2024 09:14:14 -0800 (PST)
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
-        by smtp.gmail.com with ESMTPSA id qk8-20020a170906d9c800b00a3f1cb81dc6sm1618674ejb.84.2024.02.25.09.14.13
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 25 Feb 2024 09:14:13 -0800 (PST)
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-564fc495d83so2607748a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 09:14:13 -0800 (PST)
-X-Received: by 2002:a17:906:4f01:b0:a43:1201:6287 with SMTP id
- t1-20020a1709064f0100b00a4312016287mr1617440eju.73.1708881252681; Sun, 25 Feb
- 2024 09:14:12 -0800 (PST)
+	s=arc-20240116; t=1708881805; c=relaxed/simple;
+	bh=n31uvN3EKuNhBVZlFx/PskpErcQNgwBocvUs9RbSYdg=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=A51p/E7sYUfND6YjoNRA0seAsHny5PICGA9NhyOINGkuHI8TEu0dS9M49LfXOgRMZKh220XZ+Y+CLFJCeWK+odgH2q3V6PzmvSvnZH6Eg5bR8T0v7D3eo4a+wd6hNJ2y5pIIHwEOaN6I6y7MPHF0N3ssRMXI98Sb4VSEA5S3em4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RpiRkISU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2636DC433F1;
+	Sun, 25 Feb 2024 17:23:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708881805;
+	bh=n31uvN3EKuNhBVZlFx/PskpErcQNgwBocvUs9RbSYdg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=RpiRkISUdj3iEqSwXNudFslC9mMhLzKP3W5IvtmX5LMpaMQw1DjyadIng4AKgYcFs
+	 4UFGym95EpeHutT0kLuqNyW5pYQD5JcPCPo/3khiDQLXxY7JRIHMeEb73MjiFX5pts
+	 0v8Lue0CzdySt2FXPBQdcEwneVDK52DS0ZyXBjB/e2MJQowDU2oHjqraP4Jj6Io9bI
+	 /ZNyrPaH4MtV9aakyCw5z3LTl6dHFt0q5XBjA3zPxIzD6TWJCbIGsiBRjAFa0Mcv9T
+	 ov706avBCJE4M4C6ovbQNzE4VwXOKbWFvGU+rbVibG2ZKGzsBDyQHX4gJVpo/YhF9M
+	 ztP1wNI5WVTxw==
+Received: from disco-boy.misterjones.org ([217.182.43.188] helo=www.loen.fr)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1reIDi-006bWb-PT;
+	Sun, 25 Feb 2024 17:23:22 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0fff52305e584036a777f440b5f474da@AcuMS.aculab.com> <c6924533f157497b836bff24073934a6@AcuMS.aculab.com>
-In-Reply-To: <c6924533f157497b836bff24073934a6@AcuMS.aculab.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 25 Feb 2024 09:13:56 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgNh5Gw7RTuaRe7mvf3WrSGDRKzdA55KKdTzKt3xPCnLg@mail.gmail.com>
-Message-ID: <CAHk-=wgNh5Gw7RTuaRe7mvf3WrSGDRKzdA55KKdTzKt3xPCnLg@mail.gmail.com>
-Subject: Re: [PATCH next v2 08/11] minmax: Add min_const() and max_const()
-To: David Laight <David.Laight@aculab.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Netdev <netdev@vger.kernel.org>, 
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Jens Axboe <axboe@kernel.dk>, 
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Christoph Hellwig <hch@infradead.org>, 
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	"David S . Miller" <davem@davemloft.net>, Dan Carpenter <dan.carpenter@linaro.org>, 
-	Jani Nikula <jani.nikula@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Date: Sun, 25 Feb 2024 17:23:22 +0000
+From: Marc Zyngier <maz@kernel.org>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Biju Das
+ <biju.das.jz@bp.renesas.com>, x86@kernel.org
+Subject: Re: [PATCH] genirq/irqdomain: Don't call ops->select for
+ DOMAIN_BUS_ANY tokens
+In-Reply-To: <878r38cy8n.ffs@tglx>
+References: <20240220114731.1898534-1-maz@kernel.org> <878r38cy8n.ffs@tglx>
+User-Agent: Roundcube Webmail/1.4.15
+Message-ID: <6792b2913a47b6ceb5650cdde3deecf2@kernel.org>
+X-Sender: maz@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 217.182.43.188
+X-SA-Exim-Rcpt-To: tglx@linutronix.de, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, dmitry.baryshkov@linaro.org, biju.das.jz@bp.renesas.com, x86@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Sun, 25 Feb 2024 at 08:53, David Laight <David.Laight@aculab.com> wrote:
->
-> The expansions of min() and max() contain statement expressions so are
-> not valid for static intialisers.
-> min_const() and max_const() are expressions so can be used for static
-> initialisers.
+On 2024-02-25 16:19, Thomas Gleixner wrote:
+> On Tue, Feb 20 2024 at 11:47, Marc Zyngier wrote:
+>> Users of the IRQCHIP_PLATFORM_DRIVER_{BEGIN,END} helpers rely
+>> on a fwspec containing only the fwnode (and crucially a number
+>> of parameters set to 0) together with a DOMAIN_BUS_ANY token
+>> to check whether a parent irqchip has probed and registered
+>> a domain.
+>> 
+>> Since de1ff306dcf4 ("genirq/irqdomain: Remove the param count
+>> restriction from select()"), we call ops->select unconditionally,
+>> meaning that irqchips implementing select now need to handle
+>> ANY as a match.
+>> 
+>> Instead of adding more esoteric checks to the individual drivers,
+>> add that condition to irq_find_matching_fwspec(), and let it
+>> handle the corner case, as per the comment in the function.
+>> 
+>> This restores the functionnality of the above helpers.
+>> 
+>> Reported-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>> Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>> Reported-by: Biju Das <biju.das.jz@bp.renesas.com>
+>> Fixes: de1ff306dcf4 ("genirq/irqdomain: Remove the param count 
+>> restriction from select()")
+>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+>> Link: 
+>> https://lore.kernel.org/r/20240219-gic-fix-child-domain-v1-1-09f8fd2d9a8f@linaro.org
+> 
+> Bah. That breaks x86 because it uses DOMAIN_BUS_ANY to find the MSI
+> parent for a fwspec (IOAPIC and HPET) which gets either picked up by 
+> the
+> interrupt remapping or by the root vector domain.
+> 
+> Fix below.
+> 
+> Thanks,
+> 
+>         tglx
+> ---
+> Subject: x86/apic/msi: Use DOMAIN_BUS_GENERIC_MSI for HPET/IO-APIC 
+> domain search
+> From: Thomas Gleixner <tglx@linutronix.de>
+> Date: Sun, 25 Feb 2024 16:56:12 +0100
+> 
+> The recent restriction to invoke irqdomain_ops::select() only when the
+> domain bus toke is DOMAIN_BUS_ANY breaks the search for the parent MSI
+> domain of HPET and IO-APIC. The latter causes a full boot fail.
+> 
+> The restriction itself makes sense to avoid adding DOMAIN_BUS_ANY 
+> matches
+> into the various ARM specific select() callbacks. Reverting this change
+> would obviously break ARM platforms again and require DOMAIN_BUS_ANY
+> matches added to various places.
+> 
+> A simpler solution is to use the DOMAIN_BUS_GENERIC_MSI token for the 
+> HPET
+> and IO-APIC parent domain search. This works out of the box because the
+> affected parent domains check only for the firmware specification 
+> content
+> and not for the bus token.
+> 
+> Fixes: 5aa3c0cf5bba ("genirq/irqdomain: Don't call ops->select for
+> DOMAIN_BUS_ANY tokens")
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-I hate the name.
+Looks good to me.
 
-Naming shouldn't be about an implementation detail, particularly not
-an esoteric one like the "C constant expression" rule. That can be
-useful for some internal helper functions or macros, but not for
-something that random people are supposed to USE.
+Reviewed-by: Marc Zyngier <maz@kernel.org>
 
-Telling some random developer that inside an array size declaration or
-a static initializer you need to use "max_const()" because it needs to
-syntactically be a constant expression, and our regular "max()"
-function isn't that, is just *horrid*.
-
-No, please just use the traditional C model of just using ALL CAPS for
-macro names that don't act like a function.
-
-Yes, yes, that may end up requiring getting rid of some current users of
-
-  #define MIN(a,b) ((a)<(b) ? (a):(b))
-
-but dammit, we don't actually have _that_ many of them, and why should
-we have random drivers doing that anyway?
-
-              Linus
+         M.
+-- 
+Jazz is not dead. It just smells funny...
 
