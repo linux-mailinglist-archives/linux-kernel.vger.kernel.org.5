@@ -1,175 +1,196 @@
-Return-Path: <linux-kernel+bounces-80163-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEF65862B3F
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:24:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE223862B41
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:27:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49CF01F213AE
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 15:24:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85E75281659
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 15:27:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA1AA1BC5B;
-	Sun, 25 Feb 2024 15:21:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 729B215E8B;
+	Sun, 25 Feb 2024 15:27:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bnARb9D2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="VgBh4Y3M"
+Received: from out203-205-251-73.mail.qq.com (out203-205-251-73.mail.qq.com [203.205.251.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 072E220337;
-	Sun, 25 Feb 2024 15:21:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0256A14A8E
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 15:27:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708874493; cv=none; b=FCeKAZJD5VAp8+icWID72IuhtJeHMw6O0hhiH20VWbsR3O8oAEitgdPeKwwAaE0Y9srPSogHqpb1wBSiQFaAw9baF7jhyWkwsE7VCOAop5bfH/NyD/xqt56HJnJr6XpL6fYQac1Gyl7TWZmJOhd8l1stypUjJw114GrO3V+Vqiw=
+	t=1708874827; cv=none; b=odu7v1DG3eef+Ytz6fWiFm2bDM2Wq5V5+9Wa4pce/+UzC0/XZgolu2dYXiZO1uf6UVs/yxHrlQ4idW8sK1hKkIGkJYrk8qgK/oW/W8fHcxim3scootKGX52XZCKdM+aKlhjd70HpEHfxi9f5qwABUDJPyyfF5of1+1c8ORYDhDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708874493; c=relaxed/simple;
-	bh=8t7YVZmoVUR7dCk/2nFP4SmQbrkuMwJVZH30PnGw0sc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=K78RsHeD4KACQo2ttVL17D0KYOq4gwpEz6DYrTdJAcpT2fgxQ3H+1GfkMCLY/Y7Ge5X0p6u2diLs8LPpOX4XaMg/8jTxflTHocRbT4KWeX3bh2GKM1bB8xpOR3bjca8KkuNwZVPizfiI3ha85kT8qS8RVD70IC/sc6JJhjbisNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bnARb9D2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36A58C433C7;
-	Sun, 25 Feb 2024 15:21:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708874492;
-	bh=8t7YVZmoVUR7dCk/2nFP4SmQbrkuMwJVZH30PnGw0sc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bnARb9D2cWVEPl1cN2QGngW/vksydLMFzPGRjD1FKG/7XwUofwrqOv+MpV3ijchKp
-	 ATIIzgNMiZ0TTNMlc4KCjiyS9hf1yBQ1SRqMI5de1ynam2RFRhTc64Nq/jGmLjFaNr
-	 uWjalqMYmuSegzUe7680VOghKhklFXXstGAO2UpAw6NgsH0o1uRCj1mkFyNwS/gu42
-	 aTl+8o/KkVr+XjPoKBbeNSbbDEQ2VNBru80YvQBA+DoRUqOjEGORe/BHGI1CAbissU
-	 VLdoyf1bZtvZCPD9H7it1M6sKf+UUI9+K5dSoXtrxK1+/DVh2neGZIuPnBOwGcOt1j
-	 7eIniwHHJM9gQ==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf <bpf@vger.kernel.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v8 35/35] Documentation: probes: Update fprobe on function-graph tracer
-Date: Mon, 26 Feb 2024 00:21:27 +0900
-Message-Id: <170887448688.564249.10243428644704000282.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <170887410337.564249.6360118840946697039.stgit@devnote2>
-References: <170887410337.564249.6360118840946697039.stgit@devnote2>
-User-Agent: StGit/0.19
+	s=arc-20240116; t=1708874827; c=relaxed/simple;
+	bh=jeNfjnxxcRqnXlrHUNKilYLZvsnJbVm+H0bw7X1E9+A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QbvFmDh1yoAs67ayuefZVn1twzcBus2Wt1+8rMstMdBw1teDyt1ZGTCPtm9CfbLhIfoCbvZ/jIMHueyfhQTjFPlmzrJc04eZZTWiao62762UXhNKMkgKW7raro09GwfJ8qy8ZVnon5vt348uO3Ad/Ey+x4x079KLD+lpGqI31kE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=VgBh4Y3M; arc=none smtp.client-ip=203.205.251.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1708874515;
+	bh=FYkb2WUYghXygfrJl++b1n88w6e+biYY2vkpHFfOpno=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=VgBh4Y3Ml7NLeiarcuxQ/dkDWKBsYhVFV2EAqIpNnb4eflrFjxI8uxULByJc9VQTR
+	 0mz8zzyXLtx3HrXssdFyEAOJaoRO2ABLQmS1mcpuB1s/xt15LYGKdgy2NDN50fj57/
+	 le/cR+bTwsnVW2tkiYWbPmgYkoidWqpdBg+WPLb8=
+Received: from [IPV6:2409:8a60:2a61:ef40:ff0d:5ef6:e160:29d5] ([2409:8a60:2a61:ef40:ff0d:5ef6:e160:29d5])
+	by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
+	id 573986EC; Sun, 25 Feb 2024 23:21:51 +0800
+X-QQ-mid: xmsmtpt1708874511td34wbheo
+Message-ID: <tencent_19AD2A877A2E286032273D82D9CDCFE9B905@qq.com>
+X-QQ-XMAILINFO: M7uElAZZZMmFWqisWlR7nkfQJyrWg9Qs1NDe9POvBoKvb9jVkhcOVKLkWW866p
+	 zo8iPQsO4//0wFfSpMdfEnALu4/wD8bzQwmsSO5Mwl9MnSSdaTe6xIzewsr54OVwiTOK/zuOJtE8
+	 GLPbG1rT0QR5r+fGSSBuprt+1HIBrMfrI8xPLmreXmAlr6j2zlZf4po4kgSvi6Fcmre7SpFbPMEK
+	 3ya/k9zcjHiD1EFTN10UgLV0yKnjAK7aVQsTCkX9hxqBqJSfXEBXHGqfE2BSc/cHC8p1Jp00gcZS
+	 6cpeqnCP1sYdwfq/pFGUkQrSznRGnzAEqEb7tMi8hq1k5f00mfexwe7qmr42KDqB9g+VRabrFusU
+	 XLbksApnQ3XaHlxIMUmi4x2WREIqSeeebJk/+BkJB0yPoQp2wqEVBJwIg2xJnWy/INw3xxZou10P
+	 nVleW7x6yDeSHk0EQf5dteLMdv4cgVCWPv5Bs7Z731KNyAhJLtc80kXWbc4rt9dGra6UPi37W0c9
+	 cbpdqM5dIGvTTF1yzLzKWheiYO7bkkUzhq4JzmZ5Oh40XfP+K+cgwPnHeoaKoeF70aIwrIUjziie
+	 /tR1C/x7atrlvwgbdN7AhVO3gYoAjP5s/NFJivANU3KdDzF+xlzWiwFbpVEiB2FFHm7vBCQ6/uqm
+	 /qgvE+oQq6ZEvzuQjkSTFnMFmirf1f4Q46y8e/RqMnwpbzZDVKgj3MhHVMTc3GTCs0aJyjMmXALD
+	 oRSFaiaNZezPw6wDn81bjE/9T+Egzm56hamtYBO1g0zXfyEwXDvS2JHL035mN6Ay+HYvGyEW5uzD
+	 P4piC2/EpjXG7QR/nooTHdggoCIXm4T74ms1G7kBXGoQGXBV/Q3pdYeHwQ5Ro4aRhMJbvXQVeL55
+	 rPX2GvPSASJzZHM7v5NJjUjydxD0YJzvZNvra+VPj+Uj4GcujsyKIyxPD8gR1zesLIahUwWyEHk3
+	 vof1kUOftMakxFCIo2rzkVk1Br7aBCxXRuG+bhjmX4vRpLB//q8ahK524NC06SOcC5rLcrlqSYBs
+	 EB3ENYtQ==
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+X-OQ-MSGID: <3dc8aa60-36a3-b118-578c-873253ceee06@foxmail.com>
+Date: Sun, 25 Feb 2024 23:21:51 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 8/8] ucounts: delete these duplicate static variables
+ ue_zero and ue_int_max
+Content-Language: en-US
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>,
+ Joel Granados <j.granados@samsung.com>,
+ Christian Brauner <brauner@kernel.org>, davem@davemloft.net,
+ David Ahern <dsahern@kernel.org>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Shuah Khan <skhan@linuxfoundation.org>, linux-kernel@vger.kernel.org
+References: <20240225040538.845899-1-wenyang.linux@foxmail.com>
+ <tencent_AA60553AD4DF41859328E9CACC367EFDCF08@qq.com>
+ <875xyczpzm.fsf@email.froward.int.ebiederm.org>
+From: Wen Yang <wenyang.linux@foxmail.com>
+In-Reply-To: <875xyczpzm.fsf@email.froward.int.ebiederm.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Update fprobe documentation for the new fprobe on function-graph
-tracer. This includes some bahvior changes and pt_regs to
-ftrace_regs interface change.
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- Changes in v2:
-  - Update @fregs parameter explanation.
----
- Documentation/trace/fprobe.rst |   42 ++++++++++++++++++++++++++--------------
- 1 file changed, 27 insertions(+), 15 deletions(-)
+On 2024/2/25 20:29, Eric W. Biederman wrote:
+> wenyang.linux@foxmail.com writes:
+> 
+>> From: Wen Yang <wenyang.linux@foxmail.com>
+>>
+>> Since these static variables (ue_zero and ue_int_max) are only used for
+>> boundary checks and will not be changed, remove it and use the ones in
+>> our shared const array.
+> 
+> What happened to the plans to kill the shared const array?
+> 
+> You can still save a lot more by turning .extra1 and .extra2
+> into longs instead of keeping them as pointers and needing
+> constants to be pointed at somewhere.
+> 
+> As I recall the last version of this actually broke the code,
+> (but not on little endian).
+>
+Thank you. While developing a driver recently, we accidentally 
+discovered some redundant code related to extra1/extra2, so we tried to 
+optimize it a bit.
 
-diff --git a/Documentation/trace/fprobe.rst b/Documentation/trace/fprobe.rst
-index 196f52386aaa..f58bdc64504f 100644
---- a/Documentation/trace/fprobe.rst
-+++ b/Documentation/trace/fprobe.rst
-@@ -9,9 +9,10 @@ Fprobe - Function entry/exit probe
- Introduction
- ============
- 
--Fprobe is a function entry/exit probe mechanism based on ftrace.
--Instead of using ftrace full feature, if you only want to attach callbacks
--on function entry and exit, similar to the kprobes and kretprobes, you can
-+Fprobe is a function entry/exit probe mechanism based on the function-graph
-+tracer.
-+Instead of tracing all functions, if you want to attach callbacks on specific
-+function entry and exit, similar to the kprobes and kretprobes, you can
- use fprobe. Compared with kprobes and kretprobes, fprobe gives faster
- instrumentation for multiple functions with single handler. This document
- describes how to use fprobe.
-@@ -91,12 +92,14 @@ The prototype of the entry/exit callback function are as follows:
- 
- .. code-block:: c
- 
-- int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
-+ int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
- 
-- void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
-+ void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
- 
--Note that the @entry_ip is saved at function entry and passed to exit handler.
--If the entry callback function returns !0, the corresponding exit callback will be cancelled.
-+Note that the @entry_ip is saved at function entry and passed to exit
-+handler.
-+If the entry callback function returns !0, the corresponding exit callback
-+will be cancelled.
- 
- @fp
-         This is the address of `fprobe` data structure related to this handler.
-@@ -112,12 +115,10 @@ If the entry callback function returns !0, the corresponding exit callback will
-         This is the return address that the traced function will return to,
-         somewhere in the caller. This can be used at both entry and exit.
- 
--@regs
--        This is the `pt_regs` data structure at the entry and exit. Note that
--        the instruction pointer of @regs may be different from the @entry_ip
--        in the entry_handler. If you need traced instruction pointer, you need
--        to use @entry_ip. On the other hand, in the exit_handler, the instruction
--        pointer of @regs is set to the current return address.
-+@fregs
-+        This is the `ftrace_regs` data structure at the entry and exit. This
-+        includes the function parameters, or the return values. So user can
-+        access thos values via appropriate `ftrace_regs_*` APIs.
- 
- @entry_data
-         This is a local storage to share the data between entry and exit handlers.
-@@ -125,6 +126,17 @@ If the entry callback function returns !0, the corresponding exit callback will
-         and `entry_data_size` field when registering the fprobe, the storage is
-         allocated and passed to both `entry_handler` and `exit_handler`.
- 
-+Entry data size and exit handlers on the same function
-+======================================================
-+
-+Since the entry data is passed via per-task stack and it is has limited size,
-+the entry data size per probe is limited to `15 * sizeof(long)`. You also need
-+to take care that the different fprobes are probing on the same function, this
-+limit becomes smaller. The entry data size is aligned to `sizeof(long)` and
-+each fprobe which has exit handler uses a `sizeof(long)` space on the stack,
-+you should keep the number of fprobes on the same function as small as
-+possible.
-+
- Share the callbacks with kprobes
- ================================
- 
-@@ -165,8 +177,8 @@ This counter counts up when;
-  - fprobe fails to take ftrace_recursion lock. This usually means that a function
-    which is traced by other ftrace users is called from the entry_handler.
- 
-- - fprobe fails to setup the function exit because of the shortage of rethook
--   (the shadow stack for hooking the function return.)
-+ - fprobe fails to setup the function exit because of failing to allocate the
-+   data buffer from the per-task shadow stack.
- 
- The `fprobe::nmissed` field counts up in both cases. Therefore, the former
- skips both of entry and exit callback and the latter skips the exit
+
+Thank you for your comments. This plan (kill the shared const array) 
+seems meaningful and should require some work. We are very willing to 
+participate.
+
+I am glad to receive your feedback. This plan (kill the shared const 
+array) seems meaningful and should require a lot of work. We are very 
+willing to participate.
+
+
+> This one if the constants are properly named looks better
+> than that, but I don't see any reason why you want shared
+> constants for such a handful of things.  Especially when
+> it has proven to be error prone in the past.
+>
+
+
+This patch series replaces multiple static variables (such as zero, 
+two_five_five, n_65535, ue_int_max, etc) with some unified macros (such 
+as SYSCTL_U8_ZERO, SYSCTL_U8_MAX, SYSCTL_U16_MAX, etc.).
+
+Although according to the current implementation of sysctl, these macros 
+are currently defined as pointers to the elements of this shared array, 
+and they can also be easily switched from pointers to appropriate 
+numbers when the shared array of sysctl is removed according to the 
+above plan.
+
+So the current patch series is also beneficial for subsequent 
+optimization, that is, deleting this shared const array.
+
+
+> The only people I can see who find a significant benefit by
+> consolidating all of the constants into one place are people who know
+> how to stomp kernel memory.
+> 
+
+As above, thanks.
+
+
+--
+Best wishes,
+Wen
+
+> 
+> 
+>>
+>> Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
+>> Cc: Luis Chamberlain <mcgrof@kernel.org>
+>> Cc: Kees Cook <keescook@chromium.org>
+>> Cc: Joel Granados <j.granados@samsung.com>
+>> Cc: Christian Brauner <brauner@kernel.org>
+>> Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+>> Cc: Shuah Khan <skhan@linuxfoundation.org>
+>> Cc: linux-kernel@vger.kernel.org
+>> ---
+>>   kernel/ucount.c | 7 ++-----
+>>   1 file changed, 2 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/kernel/ucount.c b/kernel/ucount.c
+>> index 4aa6166cb856..05bbba02ae4f 100644
+>> --- a/kernel/ucount.c
+>> +++ b/kernel/ucount.c
+>> @@ -58,17 +58,14 @@ static struct ctl_table_root set_root = {
+>>   	.permissions = set_permissions,
+>>   };
+>>   
+>> -static long ue_zero = 0;
+>> -static long ue_int_max = INT_MAX;
+>> -
+>>   #define UCOUNT_ENTRY(name)					\
+>>   	{							\
+>>   		.procname	= name,				\
+>>   		.maxlen		= sizeof(long),			\
+>>   		.mode		= 0644,				\
+>>   		.proc_handler	= proc_doulongvec_minmax,	\
+>> -		.extra1		= &ue_zero,			\
+>> -		.extra2		= &ue_int_max,			\
+>> +		.extra1		= SYSCTL_LONG_ZERO,		\
+>> +		.extra2		= SYSCTL_LONG_S32_MAX,		\
+>>   	}
+>>   static struct ctl_table user_table[] = {
+>>   	UCOUNT_ENTRY("max_user_namespaces"),
 
 
