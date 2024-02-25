@@ -1,116 +1,116 @@
-Return-Path: <linux-kernel+bounces-80326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A806862D73
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 23:52:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B835862D74
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 23:55:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C63071F21C1C
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 22:52:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 800E21F21BA6
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 22:55:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 260141B96E;
-	Sun, 25 Feb 2024 22:51:56 +0000 (UTC)
-Received: from hydra.ck.polsl.pl (hydra.ck.polsl.pl [157.158.1.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CB0C1BC27;
+	Sun, 25 Feb 2024 22:55:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D0Ko0lot"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C51DBDDDF
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 22:51:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=157.158.1.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DCC01B947
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 22:55:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708901515; cv=none; b=i9M2IhBZFzel5Cv6WWKisn2NXG7js71KWGk+7Uoe3buQUsePfV8aGuhLZhjk3Oc6gJGl4S1PMG7/5bG5iY123rQr4jWL6vL2bAiOBqaGQXvkzx1+guySvBLLngAHpeIgR3Cp0/kG5khQ2yBAYL3JZ1zsTo83L7CIb4EOe1+dmm0=
+	t=1708901714; cv=none; b=KgER/X/sqhGnysh1Lga0mNHrRwmMMWgKhtCWe98IVwmoX0CJKQzkMonoEsQYw7h1fTqT4SSMq/rc+hApJv1Eu0A/CljRsUoOLKzxSaxkwTqP/3Pc4uPySzdmtBhTMRAbd+1lR4wCQDrlFK4zLxg2p/HPTY7Utl6axFsWXtvOi2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708901515; c=relaxed/simple;
-	bh=MmSI0khVFn94+4xziUkxD5/d0qrrljJdspJHlFz5rNU=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=b9+C2LGxXI/X7OLVYFu/lHXMOnjJXW0Bp4VfCOTZkpYPHifkcQXXs7D8C0kGbvFvMbJiP+zB65N9itIYNpjMY86ms5QZYiySLD/ITWglX0c7WOoe0a+OzDhAIGAdCSWLI41e/82J6ryfcSF17SYxN24Tqh6ff2WbHuOZ39U82Z8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zonk.pl; spf=pass smtp.mailfrom=zonk.pl; arc=none smtp.client-ip=157.158.1.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zonk.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zonk.pl
-Received: from hydra.ck.polsl.pl (localhost [127.0.0.1])
-	by hydra.ck.polsl.pl (8.17.1/8.17.1) with ESMTPS id 41PMpRrp006987
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO)
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 23:51:27 +0100
-Date: Sun, 25 Feb 2024 23:51:27 +0100
-From: Adam Osuchowski <adwol@zonk.pl>
-To: linux-kernel@vger.kernel.org
-Subject: seq_file_path() invocations and backslash escaping
-Message-ID: <f306fe7e-487e-4995-8386-6cbe9eb465a0@zonk.pl>
+	s=arc-20240116; t=1708901714; c=relaxed/simple;
+	bh=xN5KqWF8+jxp1fVahcYZnWcHbDF58rr/ulFRlSkcI94=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kMEcobsdD8zJoLirACKGmp1HP26Gd6Y1MlDalvbICd3psjrfKE35aK20euk0O2qhGVjm1c2m8F/OuOmRkw8MwaPvAiP7/nrSFdHIG497iCQ4IaeHy5vH1EcwlyvbcfxTQVi37cDWThO9fyelrbnYUOUvr2Y/dRPlbzbI3oO0TrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D0Ko0lot; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AB25C433F1;
+	Sun, 25 Feb 2024 22:55:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708901713;
+	bh=xN5KqWF8+jxp1fVahcYZnWcHbDF58rr/ulFRlSkcI94=;
+	h=From:To:Cc:Subject:Date:From;
+	b=D0Ko0lotlxlU6WvQvSIeVlDm9SZdRG2grGjk9HXI239//mxgzIU/su6dlH3BuNiFN
+	 FE/SV4/QGTMqW0X0Euj9foNU4e3LuS0V8BmETDsVH4hpJmqVecaUF45Bx2hhXUNu9w
+	 22oPcaH8bQG1+6UHof8fhW1mFNDhXC+gF5OLR2PUxNtqORosv5BhmcKzd3PjpZvcN8
+	 KwhJPpae2tWxbajFXenM+KDGtEaTOW9Fnw6iqh93psANqWfVM87TC+OVDqrdh7Ytiu
+	 BO5x/R8mcP9FGgk10F8ueuoY00FoW0g6W5Wb5Eefq+I87XX5bPCt3oEClX4OowMMAv
+	 h4sD/gu30w1Kg==
+From: Frederic Weisbecker <frederic@kernel.org>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@kernel.org>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Peng Liu <liupeng17@lenovo.com>,
+	Joel Fernandes <joel@joelfernandes.org>
+Subject: [PATCH 00/16 v3] timers/nohz cleanups and hotplug reorganization
+Date: Sun, 25 Feb 2024 23:54:52 +0100
+Message-ID: <20240225225508.11587-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="--60E5o0XT1ebBAEahD7ZK"
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+Hi,
 
-----60E5o0XT1ebBAEahD7ZK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Here are some cleanups here and there and also some more rational tick
+related CPU hotplug code reorganization.
 
-Hi all,
+Changes since v3:
 
-seq_file_path() invocations in several places have not specified proper
-characters set to escape. It leads to potentially ambiguous content in
-/proc/<pid>/maps, /proc/<pid>/smaps /proc/<pid>/numa_maps, and also in
-/proc/mdstat files. In corner cases contents of these files may be unparseable
-in correct way and may give invalid results (non-existing paths).
+* Rebase against latest tip:timers/core (after tmigr introduction)
+* New patch "timers: Assert no next dyntick timer look-up while CPU"
 
-The reason is that if any of sensitive characters (space, TAB, NL, etc.) are
-escaped as octal using backslash character (ASCII 0x5C), the backslash itself
-should be escaped as well.
+git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+        timers/hotplug-v3
 
-Find attached a patch for this issue.
+HEAD: a0d432ebab0b7f75e03049d5d2baabff7f39ee1d
 
-Additionally, paths in contents of /proc/<pid>/{,s}maps files may have
-" (deleted)" string appended to them to indicate that path is non-existing.
-Maybe one should consider escaping space in paths in this files to distinguish
-non-existing path case from case when real path name ends with " (deleted)"
-string. Of course, then space in this suffix must not be escaped, only path
-part.
+Frederic Weisbecker (14):
+  tick: Remove useless oneshot ifdeffery
+  tick: Use IS_ENABLED() whenever possible
+  tick: s/tick_nohz_stop_sched_tick/tick_nohz_full_stop_tick
+  tick: No need to clear ts->next_tick again
+  tick: Start centralizing tick related CPU hotplug operations
+  tick: Move tick cancellation up to CPUHP_AP_TICK_DYING
+  tick: Move broadcast cancellation up to CPUHP_AP_TICK_DYING
+  tick: Assume the tick can't be stopped in NOHZ_MODE_INACTIVE mode
+  tick: Move got_idle_tick away from common flags
+  tick: Move individual bit features to debuggable mask accesses
+  tick: Split nohz and highres features from nohz_mode
+  tick: Shut down low-res tick from dying CPU
+  tick: Assume timekeeping is correctly handed over upon last offline
+    idle call
+  timers: Assert no next dyntick timer look-up while CPU is offline
 
-Regards,
-Adam
+Peng Liu (2):
+  tick/nohz: Remove duplicate between tick_nohz_switch_to_nohz() and
+    tick_setup_sched_timer()
+  tick/nohz: Remove duplicate between lowres and highres handlers
 
-----60E5o0XT1ebBAEahD7ZK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment;
-	filename="seq_file_path-escaping_backslash.patch"
+ include/linux/cpuhotplug.h  |   1 +
+ include/linux/tick.h        |  16 +-
+ kernel/cpu.c                |  11 +-
+ kernel/sched/idle.c         |   1 -
+ kernel/time/hrtimer.c       |   4 +-
+ kernel/time/tick-common.c   |  31 ++--
+ kernel/time/tick-internal.h |   2 +
+ kernel/time/tick-sched.c    | 297 +++++++++++++++++-------------------
+ kernel/time/tick-sched.h    |  40 ++---
+ kernel/time/timer.c         |   6 +-
+ kernel/time/timer_list.c    |  10 +-
+ 11 files changed, 215 insertions(+), 204 deletions(-)
 
---- a/fs/proc/task_mmu.c	2024-01-15 18:57:06.000000000 +0100
-+++ b/fs/proc/task_mmu.c	2024-02-25 21:53:39.825517588 +0100
-@@ -296,7 +296,7 @@
- 		if (anon_name)
- 			seq_printf(m, "[anon_shmem:%s]", anon_name->name);
- 		else
--			seq_file_path(m, file, "\n");
-+			seq_file_path(m, file, "\n\\");
- 		goto done;
- 	}
- 
-@@ -1967,7 +1967,7 @@
- 
- 	if (file) {
- 		seq_puts(m, " file=");
--		seq_file_path(m, file, "\n\t= ");
-+		seq_file_path(m, file, "\n\t= \\");
- 	} else if (vma_is_initial_heap(vma)) {
- 		seq_puts(m, " heap");
- 	} else if (vma_is_initial_stack(vma)) {
---- a/drivers/md/md-bitmap.c	2024-01-15 18:57:06.000000000 +0100
-+++ b/drivers/md/md-bitmap.c	2024-02-25 21:52:31.974675003 +0100
-@@ -2115,7 +2115,7 @@
- 		   chunk_kb ? "KB" : "B");
- 	if (bitmap->storage.file) {
- 		seq_printf(seq, ", file: ");
--		seq_file_path(seq, bitmap->storage.file, " \t\n");
-+		seq_file_path(seq, bitmap->storage.file, " \t\n\\");
- 	}
- 
- 	seq_printf(seq, "\n");
+-- 
+2.43.0
 
-----60E5o0XT1ebBAEahD7ZK--
 
