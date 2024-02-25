@@ -1,109 +1,151 @@
-Return-Path: <linux-kernel+bounces-80028-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DEDB8629E1
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 10:50:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21DA18629E2
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 10:52:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F3A128150E
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 09:50:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 139BD1C20A72
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 09:52:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CA8BEED0;
-	Sun, 25 Feb 2024 09:50:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D4CEED5;
+	Sun, 25 Feb 2024 09:52:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CvhgI2up"
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="RTuZimLD"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 533C5DDC7
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 09:50:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E1FEC8C4
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 09:52:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708854602; cv=none; b=POZbYP+WLQlPjMA/4mDq55XJ55Ke9cNNKEP/sWJUV2OlDXpPRbNy1RWtF/QyGkP61LKkrq9VkSAlqFdmAEbt/pLTYqDcfv0sc+4QKkZEZYSueou9Fe3hSVLtIvD/O3IoM7eZGSA7hWgW3tUz1Tsw+tkB2NxkyZ7xj0OwToTEvas=
+	t=1708854748; cv=none; b=utlvfw/V2tAUctb4BWoZmJhTuTKNKi7DwbgeiHgTmquxnFLJ8vWahe5Oeu/b3zCU2xQM/tyZOdjP9lkoQEaUG4AgFit0L/QE8CZ5xAXL5JzVO7pi1D148eWfTMvAWslwttFlzy44KydPwkX+jffgG5+YrHwk7oJ3V5B2pbNhUJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708854602; c=relaxed/simple;
-	bh=PjhNiUkoD3+h2lHi+yUUNRpw9+3krebCCi9rOPTdNfo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=E4BxuB7sxptkpN0IAHivw338Tlpq63pNJmUvv6+wrJykOst2BYjo6cTWT2X6R0frjumWTl7V+cxNmmTiZo3J49WV4Qw/XOLHwt9KIpCRuJ2EBYbt/yQKxAAXPQce5SwR6Rtsnc6A3lyPp6Jg1Nns7q6SNTENCNrRcS51jI2O/WI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CvhgI2up; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-608d490a64aso8493787b3.3
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 01:50:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708854600; x=1709459400; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E4MwmdceTTW6yTK6dn3O1uN2xQAdcjCnqlQIDQJMZQo=;
-        b=CvhgI2upn4GgRANejk7M7iQLZx1qyt2v5s2BuNQr90o5UTiKXvcWgFkM/j29bEmRxG
-         LKKJKEv/vDz+/aiuPrnhtV+rxpBdV+xNazfxPtWZYWcI2jpnMlh2Lh3lcPuv51WJy6s0
-         9k+Ckc72LGc+RO1oN4X/Sqdn0wv4cE4cnKsMLfiAGBQFdNEwHF4L5hGxggYB+l2XLxel
-         Vrce/KCxIeNNNG9OhcOOewElXisywC2hlcuCKREeyO+9rQtX7EkgOXeeMmlSsJFhjfj9
-         w6wSf8l4TcolwZeKSzCCoUrUFAYH0SOQ/MhT+N1NpDd1OJWTSsmQdQvr6FsEptM4Wz0H
-         fMEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708854600; x=1709459400;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E4MwmdceTTW6yTK6dn3O1uN2xQAdcjCnqlQIDQJMZQo=;
-        b=rY/GUra9p2Pru3Zf4R8hRaFsNXyQutrDgbu+RekSAK6ao5+yx/KvfI9NLTNPJcjB1v
-         RLZvpyjEA/LHQRUJQJWrGP6jLfO6CS4MCX8VB4z3YVLCMrNyno3t7goODYQqfnQKcAnP
-         60y+FKuJXUCgN3oRjfk0wKrJ1WSV050g47YUzvffJUCmX2msMYAz5EsKywqnfmXGtAVS
-         YReCDVS9W8wxMrtQDQ930lCKqlzpypuobAik2LJpR++aIj+BmY7qb9sJBk/diJECQp4L
-         G5olOWlkXkgOxpAyNaRtGqRlIUHt+gvtBifsT+V/wwigntg4th+dec/fTIZeFTKYX6A3
-         wEZg==
-X-Forwarded-Encrypted: i=1; AJvYcCWjSEM/byAOxhhSrclSrhAL5RrID19nSue9Opawqj/y9TOaut1S+Z+iXhzApMo7+XGTVniiQwSJQ1VNbPsnWRvCYxFhMXVIW1zTsl8B
-X-Gm-Message-State: AOJu0YxuAZxx9KjuApA8kz0EkXjatZfVveECPqQqZX9T6ViV9Lol3QBJ
-	qAi3dnywazdWWjvr0PXYgv4kfqQqPy1M78f5y5A7pyrFXO/VFvRAIGnRPneB5Bu1Sn3wgbOHXe8
-	ArCPFmQc5Z9ILDBKKlHPYglR1Adc=
-X-Google-Smtp-Source: AGHT+IGliUFzZzSMB8+3Z2QJ9rdqkRgFL0iBBELGWFni7I8zkucsPnyVtOLt5vCl0HnYHKO9ztyFFZNjBPCDyrJR8WM=
-X-Received: by 2002:a81:be0e:0:b0:607:87cd:9395 with SMTP id
- i14-20020a81be0e000000b0060787cd9395mr3610315ywn.17.1708854600306; Sun, 25
- Feb 2024 01:50:00 -0800 (PST)
+	s=arc-20240116; t=1708854748; c=relaxed/simple;
+	bh=+Y/Fvt+IAnPbl3/L5nkRo+CVGZJkpOEu7LbIGkbFp1E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MXaOqCz79cznND1uIVeJv/bqtYEipbgF+k9JSA/W9v6PX2xXvPEVT3WkYrSJ8YWD4jkUWcrsWR9tPAj970Pr1wPBjD6n2sE2iTcB2Jsj8hTLSzt4R+9ag7m6dNTQ9y/lVzYUGzjBKrzvdH8zVl459UXGNg5IeKiSikvVUB+oKxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=RTuZimLD; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
+	References; bh=C8Vnb5dhGHEkK7LfR6Bpr359LyIu9LMqi05VCVsfsKY=; t=1708854746;
+	x=1709286746; b=RTuZimLDZGKS5lI3q9XW2kjHEE0HmHzTaKRmDkeU5HTea0XSW3d/VfkIN+1yu
+	wKit43gzz6NGYitJk8jDlqIxf9qlqgcke52sskzSJcperK6AjLH/fQqscKqtDCclE40D3fu185RCS
+	aiNVSRSuveXjuUPiAP8GLZVCHd1KOH4QwxLKs3hsjIr4U2SBV4iGo7ucbCtuK0v3Izc2YMGzCAGpW
+	CnKBQ/eN25ChLaI/bacEAy9oJQuKVcRthVrc2zLoZLDODh2W/P06GGUissFdhiaGmQI29b6Hthhxx
+	o1PW3st4TAkmXpgbjGy2ZhKG4//I/LzcPy5gKxDx5zawiOY1TQ==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1reBBI-0000x2-BL; Sun, 25 Feb 2024 10:52:24 +0100
+Message-ID: <4c82dd8b-aa66-4edb-afbd-cfff6afc39dc@leemhuis.info>
+Date: Sun, 25 Feb 2024 10:52:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240225084017.418773-1-dileepsankhla.ds@gmail.com> <2024022538-buffoon-praising-f748@gregkh>
-In-Reply-To: <2024022538-buffoon-praising-f748@gregkh>
-From: Dileep Sankhla <dileepsankhla.ds@gmail.com>
-Date: Sun, 25 Feb 2024 15:19:49 +0530
-Message-ID: <CAHxc4bsFj1=VFVDWbdwo3W3CmSyPG1585p2zBePpsD9qy6VKdA@mail.gmail.com>
-Subject: Re: [PATCH] staging: greybus: put macro in a do - while loop
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, pure.logic@nexus-software.ie, johan@kernel.org, 
-	elder@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: CVE-2024-26602: sched/membarrier: reduce the ability to hammer on
+ sys_membarrier
+Content-Language: en-US, de-DE
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: cve@kernel.org, linux-kernel@vger.kernel.org
+References: <2024022414-CVE-2024-26602-5e76@gregkh>
+ <22f42e54-d791-42aa-88f3-172f616b8316@leemhuis.info>
+ <2024022510-goofy-entering-12e3@gregkh>
+From: Thorsten Leemhuis <linux@leemhuis.info>
+Autocrypt: addr=linux@leemhuis.info; keydata=
+ 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 n7RI
+In-Reply-To: <2024022510-goofy-entering-12e3@gregkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1708854746;6b02fc35;
+X-HE-SMSGID: 1reBBI-0000x2-BL
 
-On Sun, Feb 25, 2024 at 2:26=E2=80=AFPM Greg KH <gregkh@linuxfoundation.org=
-> wrote:
-> Did you test build this?
+On 25.02.24 10:47, Greg Kroah-Hartman wrote:
+> On Sun, Feb 25, 2024 at 10:31:19AM +0100, Thorsten Leemhuis wrote:
+>> On 24.02.24 15:57, Greg Kroah-Hartman wrote:
+> [...]
+>>> Affected and fixed versions
+>>> ===========================
+>>>
+>>> 	Issue introduced in 4.14 with commit c5f58bd58f43 and fixed in 4.19.307 with commit 3cd139875e9a
+>>> 	Issue introduced in 4.14 with commit c5f58bd58f43 and fixed in 5.4.269 with commit 2441a64070b8
+>>> 	Issue introduced in 4.14 with commit c5f58bd58f43 and fixed in 5.10.210 with commit db896bbe4a9c
+>>> 	Issue introduced in 4.14 with commit c5f58bd58f43 and fixed in 5.15.149 with commit 50fb4e17df31
+>>> 	Issue introduced in 4.14 with commit c5f58bd58f43 and fixed in 6.1.79 with commit 24ec7504a08a
+>>> 	Issue introduced in 4.14 with commit c5f58bd58f43 and fixed in 6.6.18 with commit b6a2a9cbb675
+>>> 	Issue introduced in 4.14 with commit c5f58bd58f43 and fixed in 6.7.6 with commit c5b2063c65d0
+>>>
+>>> Please see [...]
+>> Greg, JFYI, I noticed that this announcement did not refer to the fix in
+>> mainline (944d5fe50f3f03 ("sched/membarrier: reduce the ability to
+>> hammer on sys_membarrier")) while most of the others do that. I don't
+>> care at all, just noticed this by chance and wanted to let you know in
+>> case it's due to a bug in a script or something. I hope there is not a
+>> good reason for that difference I just failed to spot... (if that's the
+>> case: apologies in advance for the noise!).
+> 
+> The json entry will be updated when the commit shows up in a tagged
+> release (i.e. the next -rc release), and then when the real release
+> happens from Linus (i.e. 6.8), it will be updated then as well.
+> 
+> But for now, the mainline commit is not in any "real" release so we
+> can't reference it here in the message or in the json record as per the
+> rules from CVE.
 
-Hello Greg,
+Ohh, interesting and somewhat understandable.
 
-Yes. No new warning/error was encountered on building the kernel.
+Thx for your answer!
 
-> >  #define gb_loopback_attr(field, type)                                 =
-       \
-> >  static ssize_t field##_show(struct device *dev,                       =
-       \
->
-> Why did you only change one if you thought this was a valid change?
-
-1. As per my C background, I think no other macros in the above source
-code file need to be enclosed in a do - while loop.
-2. I am writing the patch because of the Eudyptula Challenge, and I
-have to fix "one coding style problem" in any of the files in
-drivers/staging/. The above one was one of them.
-
-Regards,
-Dileep
+Ciao, Thorsten
 
