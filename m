@@ -1,221 +1,223 @@
-Return-Path: <linux-kernel+bounces-80238-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80239-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B57B862C67
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:50:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB71F862C69
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:52:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA2371F21EFF
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:50:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32D9EB21553
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:52:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D649518EB0;
-	Sun, 25 Feb 2024 17:50:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61D4D18EB0;
+	Sun, 25 Feb 2024 17:52:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="y6MsJnBj";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="OrM9zNRK"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="DkTpxScZ"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 234DD18045;
-	Sun, 25 Feb 2024 17:50:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C9ED18641;
+	Sun, 25 Feb 2024 17:52:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708883433; cv=none; b=AhWBaIPKmJvrcaaM9W7AUTj8Q5oInkjC1arGdmTlEufF8mSeSEzcvqxCnOhIzEDsM2uHExEaxsQgGM2KKG2XAEzFnVj8fUcIZhmvIBw4fIGmjwepUHUlHxR43dcGfU1j8x9UhfEiqF0F3LahLFIr8GOPyrNfcKHOWQVQa/ETNBc=
+	t=1708883535; cv=none; b=US37/zeoDTs+buZXDHgoa5EviRHKJWCRVwk+5EAjfs0RYqszN8KADRsK7p/q3/nVIuwwvJdrAftofWwa6Q3IlAmHIXQYRNre2ikT/Im2aKbHHi+zHB43koFeR3V0MnkHp3VgRof1z/p9RKbfGF4075SOUyfCk+L1UDL5On47DaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708883433; c=relaxed/simple;
-	bh=hKjDaiAmBsLSksi6PPVIwrSv1B11206xJhwkAlMhZK4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=HrKLaK6L2DHGQ+15PHvjLmhsStxuV64Yr0A0sDkfM5uIuBkqVtwSsYrtF1VIp5m//Nw5+glwlGZ5seJWfurudOks7a5w7rbr7Ub7NEGRf0hNV5ougW6dsN/Ms+3OdE4hdZfTiOlY1d+S36wqiyckT3KygeVrmXzFabF2t18ij4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=y6MsJnBj; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=OrM9zNRK; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708883429;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=s4AgxkOV8a1w0nLTDYUiF91kDwuNF+KspPzrm/WXg9U=;
-	b=y6MsJnBjlsaP6RXfTagm0XJanqTTETXhEI5yfqKnvd1knMpf1ANPi+/436CbqEmGAYXCQC
-	s7rRZ7Eu/URi6bLJuzpZPRR1/LKwjFqq69gBBuL3k1JZ4m8Uz8YKa9i9Z1m85+7Uc3SmbI
-	eisP5Bzpd0G4PX4i5wCSwCgxfxFTa58ODGsYeSQPux/phX8OXjPa/smciVvqtSXq+nzoZm
-	JfdKiaGxxAGWM5wZ+mUC+E8Rf3yuvtkabByuTh7vDV3kgedY2FPz9+a41YnB9GBFyTIYWT
-	uihSoiCdSFlJcp61IioZ8LkRTLF4P1miW7XjIMYhhbW48+C9hAtOsxw5akXp+Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708883429;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=s4AgxkOV8a1w0nLTDYUiF91kDwuNF+KspPzrm/WXg9U=;
-	b=OrM9zNRKeV51KC1EcE7alYHbKhU5ehh5F74+AsDHvGoRHCbRNsomUpbIDgH1+MKrj/glJH
-	EooABNPGRZc3Q6Bg==
-To: Tianyang Zhang <zhangtianyang@loongson.cn>, chenhuacai@kernel.org,
- jiaxun.yang@flygoat.com
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, Baoqi Zhang
- <zhangbaoqi@loongson.cn>, Zhang Tianyang <zhangtianyang@loongson.cn>, Biao
- Dong <dongbiao@loongson.cn>
-Subject: Re: [PATCH] irqchip/loongson-pch-pic: Update interrupt registration
- policy
-In-Reply-To: <20240223102612.1499-1-zhangtianyang@loongson.cn>
-References: <20240223102612.1499-1-zhangtianyang@loongson.cn>
-Date: Sun, 25 Feb 2024 18:50:28 +0100
-Message-ID: <875xyccu1n.ffs@tglx>
+	s=arc-20240116; t=1708883535; c=relaxed/simple;
+	bh=DprT2EmKP7xzuk3iXRz7q9pQHdysT2wdx1/bw0FVk7E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=COMHWzInYNUDiKP//SyGhqeUVkuonu4DyyE7wnPZo9TC5rBzx85sH+YD1TFjhCp2Gkvoh+uhcoOFKmyTFODGW72AQJJuzvy5JnBNKUHX92UAgSaX7LdYZ8tEZJNzhKCPcfcG26YBBgTGo79VpiAWUibLgWtBVvH8bTQHM0rfc4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=DkTpxScZ; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41PAU7KW018594;
+	Sun, 25 Feb 2024 17:52:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=sh/Pt35h1I42Kj5tCDDQbqe5oBCkhBYlGZsAwyHfnM8=;
+ b=DkTpxScZi6+IuQP98qE6OdAx4VovM2ZvtPRmN2sqUltSWW+gDoInsip6l0SVUr1MZezt
+ KXqb8bsPtGyN6T5Y+xxYECCPjYT5QAiEiFKmwxh0DGbDemxlIVtn/nTl+0nhEBLBXCXI
+ cd/cEB/6emakyp1nguYQakrjikju/tEiOeFQ5drjBSPKv0Os6BI/uIyDh2zT5xxLN4+1
+ c94IVjRPQbLodruNd6XjLlkJBBhLNn7H5pVx2x6+8y2qrAIwjLD++vEsHbEC0VMNa6iC
+ Ino29YSlcAIZZupPMxGc4WJP0SeOs07YxGIKWVMMFWc+NPGh3C73PZQ4OD4egn8r1D0z 0A== 
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wg0bgpm29-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 25 Feb 2024 17:52:05 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41PGdsdu024154;
+	Sun, 25 Feb 2024 17:52:04 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wfw0jup3q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 25 Feb 2024 17:52:04 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41PHpwgu59441616
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sun, 25 Feb 2024 17:52:01 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D1C622004B;
+	Sun, 25 Feb 2024 17:51:58 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 453A820040;
+	Sun, 25 Feb 2024 17:51:58 +0000 (GMT)
+Received: from osiris (unknown [9.171.48.174])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Sun, 25 Feb 2024 17:51:58 +0000 (GMT)
+Date: Sun, 25 Feb 2024 18:51:56 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: open list <linux-kernel@vger.kernel.org>, linux-s390@vger.kernel.org,
+        lkft-triage@lists.linaro.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Sven Schnelle <svens@linux.ibm.com>,
+        Andreas Krebbel <krebbel@linux.ibm.com>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: Re: s390: s390x-linux-gnu-ld: Unexpected GOT/PLT entries detected!
+Message-ID: <20240225175156.11025-A-hca@linux.ibm.com>
+References: <CA+G9fYvWp8TY-fMEvc3UhoVtoR_eM5VsfHj3+n+kexcfJJ+Cvw@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYvWp8TY-fMEvc3UhoVtoR_eM5VsfHj3+n+kexcfJJ+Cvw@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: LQXSFwhnYikiqOg8cJgSoU2rjG1vsRao
+X-Proofpoint-GUID: LQXSFwhnYikiqOg8cJgSoU2rjG1vsRao
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-25_20,2024-02-23_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 mlxscore=0 adultscore=0 clxscore=1011
+ lowpriorityscore=0 malwarescore=0 spamscore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2402250142
 
-On Fri, Feb 23 2024 at 18:26, Tianyang Zhang wrote:
-> From: Baoqi Zhang <zhangbaoqi@loongson.cn>
->
-> We have removed the fixed mapping between the 7A interrupt source
-> and the HT interrupt vector, and replaced it with a dynamically
-> allocated approach. This will be more conducive to fully utilizing
-> existing vectors to support more devices
+On Fri, Feb 23, 2024 at 03:11:50PM +0530, Naresh Kamboju wrote:
+> [ Please ignore this email if it is already reported ]
+> 
+> The s390 gcc-8 builds failed on Linux next tag next-20240215..next-20240223.
+> First build failures noticed on tag next-20240215 for both gcc-13 and gcc-8.
+> But from the next tag next-20240216 gcc-13 passed but gcc-8 failed.
+> 
+> s390:
+>     - defconfig-fe40093d - gcc-8 - Failed
+>     - tinyconfig - gcc-8 - Failed
+>     - allnoconfig - gcc-8 - Failed
+..
+> Build log:
+> ---------
+> s390x-linux-gnu-ld: Unexpected GOT/PLT entries detected!
+> make[3]: *** [/builds/linux/arch/s390/boot/Makefile:87:
+> arch/s390/boot/vmlinux.syms] Error 1
+> make[3]: Target 'arch/s390/boot/bzImage' not remade because of errors.
+..
+> Steps to reproduce:
+>  $ tuxmake --runtime podman --target-arch s390 --toolchain gcc-8
+> --kconfig tinyconfig
+> 
+> Links:
+>  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240223/testrun/22812529/suite/build/test/gcc-8-defconfig-fe40093d/details/
+>  - https://storage.tuxsuite.com/public/linaro/lkft/builds/2cl8pys1B3Vc4oOB2yXcaYkfnKw/
 
-You are describing _WHAT_ the patch is doing, but you fail to explain
-the context and the _WHY_.
+Thanks should hopefully be fixed with the patch below, which should be
+part of the next linux-next release.
 
-> Signed-off-by: Baoqi Zhang <zhangbaoqi@loongson.cn>
-> Signed-off-by: Zhang Tianyang <zhangtianyang@loongson.cn>
-> Signed-off-by: Biao Dong <dongbiao@loongson.cn>
+https://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git/commit/?h=features&id=a795e5d2347def129734a7f247ac70339d50d8c2
 
-This Signed-off-by chain is wrong. You, Tianyang, are sending this,
-right?
+From a795e5d2347def129734a7f247ac70339d50d8c2 Mon Sep 17 00:00:00 2001
+From: Heiko Carstens <hca@linux.ibm.com>
+Date: Sun, 25 Feb 2024 17:39:12 +0100
+Subject: [PATCH] s390: vmlinux.lds.S: fix .got.plt assertion
 
-See
+Naresh reported this build error on linux-next:
 
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
+s390x-linux-gnu-ld: Unexpected GOT/PLT entries detected!
+make[3]: *** [/builds/linux/arch/s390/boot/Makefile:87:
+arch/s390/boot/vmlinux.syms] Error 1
+make[3]: Target 'arch/s390/boot/bzImage' not remade because of errors.
 
-and the following chapters.
+The reason for the build error is an incorrect/incomplete assertion which
+checks the size of the .got.plt section. Similar to x86 the size is either
+zero or 24 bytes (three entries).
 
-> ---
->  drivers/irqchip/irq-loongson-pch-pic.c | 64 +++++++++++++++++++-------
->  1 file changed, 47 insertions(+), 17 deletions(-)
->
-> diff --git a/drivers/irqchip/irq-loongson-pch-pic.c b/drivers/irqchip/irq-loongson-pch-pic.c
-> index 63db8e2172e0..86549356e76e 100644
-> --- a/drivers/irqchip/irq-loongson-pch-pic.c
-> +++ b/drivers/irqchip/irq-loongson-pch-pic.c
+See commit 262b5cae67a6 ("x86/boot/compressed: Move .got.plt entries out of
+the .got section") for more details. The three reserved/additional entries
+for s390 are described in chapter 3.2.2 of the s390x ABI [1] (thanks to
+Andreas Krebbel for pointing this out!).
 
-> @@ -34,6 +34,8 @@
->  #define PIC_REG_IDX(irq_id)	((irq_id) / PIC_COUNT_PER_REG)
->  #define PIC_REG_BIT(irq_id)	((irq_id) % PIC_COUNT_PER_REG)
->  
-> +#define hwirq_to_bit(priv, hirq)	(((priv)->table)[(hirq)])
+[1] https://github.com/IBM/s390x-abi/releases/download/v1.6.1/lzsabi_s390x.pdf
 
-Make this a static inline please.
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Closes: https://lore.kernel.org/all/CA+G9fYvWp8TY-fMEvc3UhoVtoR_eM5VsfHj3+n+kexcfJJ+Cvw@mail.gmail.com
+Fixes: 30226853d6ec ("s390: vmlinux.lds.S: explicitly handle '.got' and '.plt' sections")
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+---
+ arch/s390/boot/vmlinux.lds.S   | 11 ++++++++---
+ arch/s390/kernel/vmlinux.lds.S | 11 ++++++++---
+ 2 files changed, 16 insertions(+), 6 deletions(-)
 
->  static int nr_pics;
->  
->  struct pch_pic {
-> @@ -46,6 +48,8 @@ struct pch_pic {
->  	u32			saved_vec_en[PIC_REG_COUNT];
->  	u32			saved_vec_pol[PIC_REG_COUNT];
->  	u32			saved_vec_edge[PIC_REG_COUNT];
-> +	u8			table[PIC_COUNT];
-> +	int			inuse;
->  };
->  
->  static struct pch_pic *pch_pic_priv[MAX_IO_PICS];
-> @@ -80,45 +84,47 @@ static void pch_pic_mask_irq(struct irq_data *d)
->  {
->  	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
->  
-> -	pch_pic_bitset(priv, PCH_PIC_MASK, d->hwirq);
-> +	pch_pic_bitset(priv, PCH_PIC_MASK, hwirq_to_bit(priv, d->hwirq));
->  	irq_chip_mask_parent(d);
->  }
->  
->  static void pch_pic_unmask_irq(struct irq_data *d)
->  {
-> +	int bit = hwirq_to_bit(priv, d->hwirq);
->  	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
-
-How does this even compile?
-
->  
-> -	writel(BIT(PIC_REG_BIT(d->hwirq)),
-> -			priv->base + PCH_PIC_CLR + PIC_REG_IDX(d->hwirq) * 4);
-> +	writel(BIT(PIC_REG_BIT(bit)),
-> +			priv->base + PCH_PIC_CLR + PIC_REG_IDX(bit) * 4);
->  
->  	irq_chip_unmask_parent(d);
-> -	pch_pic_bitclr(priv, PCH_PIC_MASK, d->hwirq);
-> +	pch_pic_bitclr(priv, PCH_PIC_MASK, bit);
->  }
->  
->  static int pch_pic_set_type(struct irq_data *d, unsigned int type)
->  {
-> +	int bit = hwirq_to_bit(priv, d->hwirq);
->  	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
-
-And this?
-
-By chance because you used a macro instead of an inline function. But
-it's still incorrect and wrong.
-
-> @@ -157,6 +164,7 @@ static int pch_pic_domain_translate(struct irq_domain *d,
->  					unsigned long *hwirq,
->  					unsigned int *type)
->  {
-> +	int i;
->  	struct pch_pic *priv = d->host_data;
->  	struct device_node *of_node = to_of_node(fwspec->fwnode);
-
-Please see:
-
-https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#variable-declarations
-  
-> @@ -171,6 +179,20 @@ static int pch_pic_domain_translate(struct irq_domain *d,
->  			return -EINVAL;
->  
->  		*hwirq = fwspec->param[0] - priv->gsi_base;
-> +
-> +		raw_spin_lock(&priv->pic_lock);
-
-This was clearly never tested with lockdep enabled. Why?
-
-Because lockdep would have told you that this takes the spinlock with
-interrupts enabled while it is taken in the mask()/unmask() callbacks
-from hard interrupt context.
-
-> +		for (i = 0; i < priv->inuse; i++) {
-> +			if (priv->table[i] == *hwirq) {
-> +				*hwirq = i;
-> +				break;
-> +			}
-> +		}
-> +		if (i == priv->inuse && priv->inuse < PIC_COUNT) {
-> +			priv->table[priv->inuse] = *hwirq;
-> +			*hwirq = priv->inuse++;
-> +		}
-
-So in case that priv->inuse == PIC_COUNT this does not set hwirq and
-returns with bogus values.
-
-> +		raw_spin_unlock(&priv->pic_lock);
-> +
-> @@ -294,6 +320,10 @@ static int pch_pic_init(phys_addr_t addr, unsigned long size, int vec_base,
->  	if (!priv->base)
->  		goto free_priv;
->  
-> +	priv->inuse = 0;
-> +	for (i = 0; i < PIC_COUNT; i++)
-> +		priv->table[i] = -1;
-
-table is an array of u8. So how does -1 make sense? Even if it would
-make sense, then you can't ever have 256 interrupts in use because the
-truncated -1 is equivalent to hwirq 255.
-
-Thanks,
-
-        tglx
-
+diff --git a/arch/s390/boot/vmlinux.lds.S b/arch/s390/boot/vmlinux.lds.S
+index e3208893ba6b..3d7ea585ab99 100644
+--- a/arch/s390/boot/vmlinux.lds.S
++++ b/arch/s390/boot/vmlinux.lds.S
+@@ -144,13 +144,18 @@ SECTIONS
+ 	ELF_DETAILS
+ 
+ 	/*
+-	 * Sections that should stay zero sized, which is safer to
+-	 * explicitly check instead of blindly discarding.
++	 * Make sure that the .got.plt is either completely empty or it
++	 * contains only the three reserved double words.
+ 	 */
+ 	.got.plt : {
+ 		*(.got.plt)
+ 	}
+-	ASSERT(SIZEOF(.got.plt) == 0, "Unexpected GOT/PLT entries detected!")
++	ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0x18, "Unexpected GOT/PLT entries detected!")
++
++	/*
++	 * Sections that should stay zero sized, which is safer to
++	 * explicitly check instead of blindly discarding.
++	 */
+ 	.plt : {
+ 		*(.plt) *(.plt.*) *(.iplt) *(.igot .igot.plt)
+ 	}
+diff --git a/arch/s390/kernel/vmlinux.lds.S b/arch/s390/kernel/vmlinux.lds.S
+index 404883b1b023..9c59715d1745 100644
+--- a/arch/s390/kernel/vmlinux.lds.S
++++ b/arch/s390/kernel/vmlinux.lds.S
+@@ -266,13 +266,18 @@ SECTIONS
+ 	ELF_DETAILS
+ 
+ 	/*
+-	 * Sections that should stay zero sized, which is safer to
+-	 * explicitly check instead of blindly discarding.
++	 * Make sure that the .got.plt is either completely empty or it
++	 * contains only the three reserved double words.
+ 	 */
+ 	.got.plt : {
+ 		*(.got.plt)
+ 	}
+-	ASSERT(SIZEOF(.got.plt) == 0, "Unexpected GOT/PLT entries detected!")
++	ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0x18, "Unexpected GOT/PLT entries detected!")
++
++	/*
++	 * Sections that should stay zero sized, which is safer to
++	 * explicitly check instead of blindly discarding.
++	 */
+ 	.plt : {
+ 		*(.plt) *(.plt.*) *(.iplt) *(.igot .igot.plt)
+ 	}
+-- 
+2.43.2
 
 
