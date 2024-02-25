@@ -1,51 +1,60 @@
-Return-Path: <linux-kernel+bounces-80275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E503862CCF
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 21:23:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45033862CB9
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 21:07:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1324D1F226F6
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 20:23:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AB981C21437
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 20:07:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C00871B800;
-	Sun, 25 Feb 2024 20:23:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 795231B7FB;
+	Sun, 25 Feb 2024 20:06:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sw-optimization.com header.i=@sw-optimization.com header.b="edXJWmE/"
-Received: from mx11lb.world4you.com (mx11lb.world4you.com [81.19.149.121])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="If1PKg6K"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38D72D2FE;
-	Sun, 25 Feb 2024 20:23:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=81.19.149.121
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58607175A6;
+	Sun, 25 Feb 2024 20:06:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708892593; cv=none; b=eQ1vZPPQVFDQ0jaWQRgYmN/l82v+BEiy8ERQHdXz9O/qzEOGbjVENJhWgziABrPpVDrIUtbQzWpRwfaFueVcP55q9Tra04DkfaJiK0UnP17RtPiCX9Eu1mjtPsyHWjPYqjpXv7Z5IGWf5QMFiXpTEE20BoLZ6XDpazYaEmssUgs=
+	t=1708891615; cv=none; b=evaW2iob8mGD6b/1XBy1TlqPcbOCTxMoNAQssLMjvsqgPgxa3NQHuwxH5MVdMxaJVgObAVySMpUsN/79jZuQ6k8TpMxFQYILd89FFMPVMI0ZVcQsrN+ot0DPJNki27Hx6FZWEXJqhC+2+CsqfQEdoXqMga5k7sMOuLmRAS5E3WI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708892593; c=relaxed/simple;
-	bh=yW/+obWtXZSHaK0Je1F5WkuDWcXhnWjrtjf+VbTL55I=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=mMfQ0Kw9Fgrt13u/s3V54YjJBMhtVI+Ibd6X8dVlVUaGNEFB1MnhOW7aa67VHK5XeU4wBHOunin0TAlhr1YbkYW29MLcAOOjMFmIhDJS3v2nyESOkaEVhYm0OwoB3II55i1smKtOWBzvxC8VUq0SYKfESKSu4yD9YCvfvULXoss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sw-optimization.com; spf=pass smtp.mailfrom=sw-optimization.com; dkim=pass (1024-bit key) header.d=sw-optimization.com header.i=@sw-optimization.com header.b=edXJWmE/; arc=none smtp.client-ip=81.19.149.121
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sw-optimization.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sw-optimization.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sw-optimization.com; s=dkim11; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=ECMTj4d0RwuHIR6RVnxKDJNLLn5ad3xX9dN37q8WZfk=; b=edXJWmE/j2+9KN6qSnOzuJ2cHo
-	cotC8/3KLRovQiwfhhrdtKZClEeOFBhE2BtXx/BKrsE4vJ240ZAiffmNmJ618+l++GnK7ap42JQqz
-	OR+84dsQPF5WezZHAjkVd3uBM35J0UXLrIJAYU+L2JNsLO/BbKJNB/dLOTu1qv3BoSnk=;
-Received: from [82.194.150.36] (helo=[192.168.0.145])
-	by mx11lb.world4you.com with esmtpa (Exim 4.96.2)
-	(envelope-from <eas@sw-optimization.com>)
-	id 1reKkj-0006le-1n;
-	Sun, 25 Feb 2024 21:05:37 +0100
-Message-ID: <245a848c-5bbc-463d-b7e1-b82cea2c4dba@sw-optimization.com>
-Date: Sun, 25 Feb 2024 21:05:37 +0100
+	s=arc-20240116; t=1708891615; c=relaxed/simple;
+	bh=O6vcBGiENNkdA0mo0YmFkQXQyNfGepxUp1HmgXTRVys=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iS0NMPCsWoDhHGP31rBWqZs6CYVGkR+OsxZiLTw7z1+oWGAn4Fh93jGHKo4z6U6zpzG42069wtWr0+XF0J8EVSdeCM437HjjHBRsF7GkL6WfuvkW5VmDPXeYE5rxCeYtlmMFAigLyfWJB4EtU0Eep51Tjxf+e3lf1eZeI4jDYNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=If1PKg6K; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708891614; x=1740427614;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=O6vcBGiENNkdA0mo0YmFkQXQyNfGepxUp1HmgXTRVys=;
+  b=If1PKg6KV8tYXfxC/MCebr5jy//xORGmpdHUaLNXe6rP/UIOx213MP6Y
+   1Hqo3rtNz5CnUN7Qw4T+aVBXbB1X4pIuIMfYqx23zb9Uew8lE75i8xEhR
+   f3SW150xxDQwdwSPFS/X90OdX5294eDF4yk9H8DLovU4/uSfRC3u350aP
+   hf6VW2S2JSxnhlG8X01KLnnlhHyUIvZzH31iR/dp4vBuITqKBH9YUkoak
+   KX1w6ZE5p5qvLicbhBrU6lmamQa6NcX89qw4OIX31vtQrebV6+BZvMP8E
+   LpmhGigFM7ApIzHMjErw+OCLZ6UIlZ8NZwCrkBQZAFE3Hi4eTd6O2cYJ2
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3011965"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="3011965"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 12:06:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="6590003"
+Received: from gcsargen-mobl1.amr.corp.intel.com (HELO [10.255.228.214]) ([10.255.228.214])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 12:06:53 -0800
+Message-ID: <572af7f6-2544-4708-a90d-e18c58eb2762@linux.intel.com>
+Date: Sun, 25 Feb 2024 12:06:52 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,156 +62,81 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dmaengine: altera-msgdma: fix descriptors freeing logic
-From: Eric Schwarz <eas@sw-optimization.com>
-To: Olivier Dautricourt <olivierdautricourt@gmail.com>
-Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
- Vinod Koul <vkoul@kernel.org>, Stefan Roese <sr@denx.de>
-References: <20230920200636.32870-3-olivierdautricourt@gmail.com>
- <22402987-305b-024b-044e-53db17037d90@sw-optimization.com>
- <ZQyWsvcQCJgmG5aO@freebase>
- <8d18106d-444e-9346-26cc-3767540df5d8@sw-optimization.com>
- <ZQ3B9NWVmLvaVhJX@freebase>
- <5e2404d4-f36c-7718-c0fc-d226aefdf2f6@sw-optimization.com>
-Content-Language: de-DE
-In-Reply-To: <5e2404d4-f36c-7718-c0fc-d226aefdf2f6@sw-optimization.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-AV-Do-Run: Yes
-
-Hello Olivier,
-
-just a ping on getting the patches / fixes below mainline. - Were you 
-able to get hardware for testing?
-
-Many thanks
-Eric
+Subject: Re: [PATCH v2 3/3] PCI/DPC: Encapsulate pci_acpi_add_edr_notifier()
+Content-Language: en-US
+To: Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Matthew W Carlis <mattc@purestorage.com>,
+ Keith Busch <kbusch@kernel.org>, Lukas Wunner <lukas@wunner.de>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Jesse Brandeburg <jesse.brandeburg@intel.com>,
+ Bjorn Helgaas <bhelgaas@google.com>
+References: <20240222221521.32159-1-helgaas@kernel.org>
+ <20240222221521.32159-4-helgaas@kernel.org>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240222221521.32159-4-helgaas@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
-Am 28.09.2023 um 09:57 schrieb Eric Schwarz:
-> Hello Olivier,
-> 
-> Am 22.09.2023 um 18:33 schrieb Olivier Dautricourt:
->> Hi Eric,
->>
->> On Fri, Sep 22, 2023 at 09:49:59AM +0200, Eric Schwarz wrote:
->>> Hello Olivier,
->>>
->>>>> Am 20.09.2023 um 21:58 schrieb Olivier Dautricourt:
->>>>>> Sparse complains because we first take the lock in msgdma_tasklet 
->>>>>> -> move
->>>>>> locking to msgdma_chan_desc_cleanup.
->>>>>> In consequence, move calling of msgdma_chan_desc_cleanup outside 
->>>>>> of the
->>>>>> critical section of function msgdma_tasklet.
->>>>>>
->>>>>> Use spin_unlock_irqsave/restore instead of just spinlock/unlock to 
->>>>>> keep
->>>>>> state of irqs while executing the callbacks.
->>>>>
->>>>> What about the locking in the IRQ handler msgdma_irq_handler() 
->>>>> itself? -
->>>>> Shouldn't spin_unlock_irqsave/restore() be used there as well 
->>>>> instead of
->>>>> just spinlock/unlock()?
->>>>
->>>> IMO no:
->>>> It is covered by [1]("Locking Between Hard IRQ and Softirqs/Tasklets")
->>>> The irq handler cannot be preempted by the tasklet, so the
->>>> spin_lock/unlock version is ok. However the tasklet could be 
->>>> interrupted
->>>> by the Hard IRQ hence the disabling of irqs with save/restore when
->>>> entering critical section.
->>>>
->>>> It should not be needed to keep interrupts locally disabled while 
->>>> invoking
->>>> callbacks, will add this to the commit description.
->>>>
->>>> [1] https://www.kernel.org/doc/Documentation/kernel-hacking/locking.rst
->>>
->>> Thanks for the link. I have read differently here [2] w/ special 
->>> emphasis on
->>> "Lesson 3: spinlocks revisited.".
->>>
->>> [2] https://www.kernel.org/doc/Documentation/locking/spinlocks.txt
->>>
->>
->> This chapter [2] says that our code must use irq versions of spin_lock
->> because our handler does indeed play with the lock. However this
->> requirement does not apply to the irq handler itself, as we know that the
->> interrupt line is disabled during the execution of the handler (and our
->> handler is not shared with another irq).
-> 
-> "... as we know that the interrupt line is disabled during the execution 
-> of the handler (and our handler is not shared with another irq)."
-> 
-> That was the point I wanted to be sure about. So if the IRQ handler 
-> cannot be called twice ensured by architecture neither on single or 
-> multi CPU systems (SMP or others) I am fine.
-> Thanks for your response on that. Appreciated.
-> 
-> Because you take the effort to set up hardware and environment again you 
-> may also test following fixes/improvements from zynqmp driver which 
-> could then be merged into altera-msgdma driver. Please check yourself:
-> 
-> f2b816a1dfb8 ("dmaengine: zynqmp_dma: Add device_synchronize support")
-> # Caught by your patchset
-> #9558cf4ad07e ("dmaengine: zynqmp_dma: fix lockdep warning in tasklet")
-> # Caught by your patchset
-> #16ed0ef3e931 ("dmaengine: zynqmp_dma: cleanup after completing all 
-> descriptors")
-> # Caught by your patchset - For the altera-msgdma driver it is a real 
-> fix not an optimization.
-> #48594dbf793a ("dmaengine: zynqmp_dma: Use list_move_tail instead of 
-> list_del/list_add_tail")
-> 5ba080aada5e ("dmaengine: zynqmp_dma: Fix race condition in the probe")
-> 
-> Note: If the sequence is applied in reverse order the log would be 
-> comparable to zynqmp driver's log.
-> 
-> IMHO your patchset could/should be extended by two more patches and 
-> split into small junks as mentioned. Then history would stay intact to 
-> be compared to zynqmp driver.
-> 
-> Note: Take care about "Developer’s Certificate of Origin 1.1". IMHO 
-> "Signed-off-by" tags from the other patches might/must be copied at 
-> least for most of the patches then, which would make it easier to get it 
-> into mainline.
-> 
-> Btw, some cosmetic changes could be made in the mainlined driver:
-> 
-> 30s/implements/Implements/
-> 31s/data/Data/
-> 32s/data/Data/
-> 33s/the/The/
-> 39s/data/Data/
-> 40s/data/Data/
-> 41s/characteristics/Characteristics/
-> 109s/response/Response/
-> 154s/implements/Implements/
-> 154s/sw\ /SW\ /
-> 155s/support/Support/
-> 155s/api/API/
-> 156s/assosiated/Associated/
-> 157s/node\ /Node\ /
-> 158s/transmit/Transmit/
-> 259s/Hw/HW/
-> 291s/Hw/HW/
-> 322s/prepare/Prepare/
-> 327s/transfer/Transfer/
-> 378s/prepare/Prepare/
-> 384s/transfer/Transfer/
-> 385s/transfer/Transfer/
-> 502s/its/it\'s/
-> 514s/oder/order/
-> 530s/copy\ /Copy\ /
-> 680s/sSGDMA/mSGDMA/
-> 723s/Interrupt/interrupt/
-> 752s/\(\)//
-> 921s/\(\)//
-> 
-> ... and another patch, if that is taken into account.
-> 
-> Cheers
-> Eric
+On 2/22/24 2:15 PM, Bjorn Helgaas wrote:
+> From: Bjorn Helgaas <bhelgaas@google.com>
+>
+> pci_acpi_add_edr_notifier() and pci_acpi_remove_edr_notifier() are only
+> referenced inside drivers/pci/.  Move their declarations from
+> include/linux/pci-acpi.h to drivers/pci/pci.h so they're not visible
+> outside drivers/pci/.
+>
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> ---
+>  drivers/pci/pci.h        | 4 ++++
+>  include/linux/pci-acpi.h | 8 --------
+>  2 files changed, 4 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index 2336a8d1edab..03bf2776d73b 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -432,11 +432,15 @@ void pci_dpc_init(struct pci_dev *pdev);
+>  void dpc_process_error(struct pci_dev *pdev);
+>  pci_ers_result_t dpc_reset_link(struct pci_dev *pdev);
+>  bool pci_dpc_recovered(struct pci_dev *pdev);
+> +void pci_acpi_add_edr_notifier(struct pci_dev *pdev);
+> +void pci_acpi_remove_edr_notifier(struct pci_dev *pdev);
+
+Protect them with CONFIG_ACPI?
+
+>  #else
+>  static inline void pci_save_dpc_state(struct pci_dev *dev) { }
+>  static inline void pci_restore_dpc_state(struct pci_dev *dev) { }
+>  static inline void pci_dpc_init(struct pci_dev *pdev) { }
+>  static inline bool pci_dpc_recovered(struct pci_dev *pdev) { return false; }
+> +static inline void pci_acpi_add_edr_notifier(struct pci_dev *pdev) { }
+> +static inline void pci_acpi_remove_edr_notifier(struct pci_dev *pdev) { }
+>  #endif
+>  
+>  #ifdef CONFIG_PCIEPORTBUS
+> diff --git a/include/linux/pci-acpi.h b/include/linux/pci-acpi.h
+> index 92e196ba0249..f447ce215adf 100644
+> --- a/include/linux/pci-acpi.h
+> +++ b/include/linux/pci-acpi.h
+> @@ -122,14 +122,6 @@ extern const guid_t pci_acpi_dsm_guid;
+>  #define DSM_PCI_POWER_ON_RESET_DELAY		0x08
+>  #define DSM_PCI_DEVICE_READINESS_DURATIONS	0x09
+>  
+> -#ifdef CONFIG_PCIE_DPC
+> -void pci_acpi_add_edr_notifier(struct pci_dev *pdev);
+> -void pci_acpi_remove_edr_notifier(struct pci_dev *pdev);
+> -#else
+> -static inline void pci_acpi_add_edr_notifier(struct pci_dev *pdev) { }
+> -static inline void pci_acpi_remove_edr_notifier(struct pci_dev *pdev) { }
+> -#endif /* CONFIG_PCIE_DPC */
+> -
+>  int pci_acpi_set_companion_lookup_hook(struct acpi_device *(*func)(struct pci_dev *));
+>  void pci_acpi_clear_companion_lookup_hook(void);
+>  
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
+
 
