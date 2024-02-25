@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-80229-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80230-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40ACC862C52
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:34:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2A3C862C53
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:34:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 782DA2813E1
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:34:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BC21281567
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:34:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9216019BA5;
-	Sun, 25 Feb 2024 17:33:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC2D51B81F;
+	Sun, 25 Feb 2024 17:33:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OGS+H85B"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EGWtt3a5"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E07A18AF8
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 17:33:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B43CC18B1B
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 17:33:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708882427; cv=none; b=cv8O23LiVxRKxcPzPKbdbyMFkNikX8Vg07cID5AJCnBIVX/kWn6WaLJP5msudfBhStqfHL9ToUJzdfjrJZOiXGKshxUnUCcWaVOR1D8xTgxBTjfL4nyYHM6zAttd9Nhf5SRpgUaqE0RO7a3zfYmqjLBfRbmaNpIZEl+fiodHP9Q=
+	t=1708882429; cv=none; b=JUg78ljRYjCUBLScDdsTI3h73rq3bkyS0Q4xvXnhYMYlIlUVMdEIXHp7pHu4fTo4sY36C46ng0dU5SoEFK0BDc3d1PnTXAGEpb68dqHaDi214lr/OSEfusNy65HWUBDN5vqtxZ1bCoFCh2Zc9j2UobN4a87VIrdBabXHucZipvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708882427; c=relaxed/simple;
-	bh=qjkOQIYrB+b3SDuD/Mmb+CjT+hxWEsGBCNd0xK0IDgI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HP6UoYLrqGE5a8IJe7Cnk0Hn3mii0KCHTASuZzCBSZNeLR30Ef0+G8jzRngPJoC/HD9sqgYUxf0EcyrJywaFLbQTZaxHlqT6Cy6uRkavhWzJ/CIdsFe7R7dnEV4H+kvSwwGy0ZdDFTHnKB5dv44SA8QUCn7P51Jqsih7PC64Vu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OGS+H85B; arc=none smtp.client-ip=209.85.128.41
+	s=arc-20240116; t=1708882429; c=relaxed/simple;
+	bh=hW1hBb+c5MG+qi1RYxCxybzyrw2JmdBqXGgpDRxc9L8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Sza295z5Rti7zU8HmaM0+x3mcCIuqLn5dvE4isjJNVlZIpFs5k3FaHZfVmMyZ45X3+quoXnwbbT14BmIZIHHOTWbRevdMLjb8Xl6Sq3kMKvjt8tb4p7k4j1znPKZZq2fTZ6k+PlpXML9KTPdgfPmVWikjYckGh+a/IyAGkYYRLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EGWtt3a5; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-41296dce264so14965145e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 09:33:46 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-412a4b86f5fso1257385e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 09:33:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708882425; x=1709487225; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ytGyvZO1YlLW5fNgsIpaBkD9SXVxmGLiy1vtvLCSkQ8=;
-        b=OGS+H85BvEvLlQ7pH0nenaH+j4KathprLiM2gPUfhkYRFhKRT325vQTRrAQv1GMIF/
-         dIHsdNQvA1dbdEqqi65KgQMA+bz6s5xypG0FwyFj0u0VcnarKCNKcjz4F1BepkVOuwRr
-         wnAzGZZbyPkbBDT4Z6LYigMrved/QHA297uzZ55HaJNCH5MUp7D5OFjxOsMuUUBTbEAi
-         kKZcjDZMIHfp2SCe5l2Rlos0skniIqwxHxGhc/UwvSQo6Qza5Setz2hgC1YeIZ1aOfN4
-         vHgWTw6W8mWdCvDQmqIsNxJ6C1NM4EYdz4ubvsRg5hLoeNJQSnd0TRT77d+17KL5XZ6K
-         qmdA==
+        d=gmail.com; s=20230601; t=1708882426; x=1709487226; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WxAitMAlksvcfjA+ht28Uc2cND52s9jJweHCl49uv/0=;
+        b=EGWtt3a5CcLnOVGo4Khh5t2pGjgnTP4OsBBCNq5KWjrEmc1p6JWfrEQq1UXgv0LBHf
+         p02PHvsIE9wzj9tNtc3AAr6XbCt+WeDvfliwjjTBq4m2LQF7BGCoCGWnsElz8e5sUdEg
+         wbvmTnZbfxQoNzJlbshD9VhpcPMkkkbnr0ad23tavAy4qOm3QJJ2T+G9zGFDTtF3NgoF
+         hQcwP46YcwOgB4NlVYSLlsBi//KQwUF9352TZwqabFP1N4AQ3iw9zROzUXxBvnPSpK4V
+         +hJ9e93eyHQM0nERzQ+LdzZGUNBXnzjLRgEc9e9GXc+i6SMg7UWNL69xYoOPdD+Em5Ms
+         WIJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708882425; x=1709487225;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ytGyvZO1YlLW5fNgsIpaBkD9SXVxmGLiy1vtvLCSkQ8=;
-        b=tYa7g88kyhfoWa4pCu6zim+36/m+s08KlyJHGCTyqrjKxcZQkMZ7tOtSikGkVpEml+
-         NhJPJkIiewOayZX0PeEAYaF5apLU2P2oiWapDa3H9PWX6qD17rBHGsYT4ySalRLFBML5
-         OTOBMifo5kGtfB7ijfWrxtlDS585BEvwivRuvLiNroHCTyFlS0iUYpYiSeyrHiywH3BH
-         BPD2+mEd4SQ3Du7oxwxlKrjpA/G7F8cX/5lc48OLI6v83rv9uMPhR5h4zdcjpGELRXtc
-         aP3wHSEwcXORwuN5DYoUUpPYAiFilpYxCELRfUTTTfPmVTC5T6Q8Tk38HhSDolofE/H/
-         8MLA==
-X-Forwarded-Encrypted: i=1; AJvYcCV4UuSyyFHOmvZyYq7Qc3d8ppxHr8uQqE5P84roiRr4XsYgabTXyHpOArYZlCIHo9Q0F2LQY3c289GVBAObIin4SYx4UF7XylNrSVo7
-X-Gm-Message-State: AOJu0YxGeLT31/iZpoyXDntWpLvmKt+avtGae4ranZatbK5E6zoGy2gE
-	pEeg1ukCl4PGYvbMnN1tG7eYolQKrZlM4A1ZWa1qW58FIci3VEEg
-X-Google-Smtp-Source: AGHT+IG3Fzm7unubc19KRHGByezVBRcxLtmEKwPtHEZJeLOKIByYV2vnHk7uw9gbD3KuukGJSUYqWg==
-X-Received: by 2002:a05:600c:450c:b0:412:981d:8da2 with SMTP id t12-20020a05600c450c00b00412981d8da2mr3462869wmo.36.1708882424628;
-        Sun, 25 Feb 2024 09:33:44 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708882426; x=1709487226;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WxAitMAlksvcfjA+ht28Uc2cND52s9jJweHCl49uv/0=;
+        b=w8chXlAST4jG8R3RbKXeKx27zg7d9kBLDg/90ehRxQaZTqQnz+sS2HG+zgB/HZLSIS
+         4lLnzgz9S2yCDzjkRcXxOq79xO2dc09vE9RVgMJAyH528Z3VEgLsqQhCFfRxFfYF6xIs
+         xTFo4zf8OX7HyuQW8u2kEBPmRcp0C2Gjb7VHoi5bv2AZZGxzpnRqEoTokI6sT8dDIXpd
+         o+LysdExYRfQdWN52efRY+kY6HP1Pr3dTisDPaQqIeZMkoFCGJ6pz0Uyj7hNkKnyoYNH
+         LPU+WZ1eVy1ZF7NoABU/RTo3wMd1E1lm3a4OW9W7ZiSk5P9WcC8r9SfBAE8Yuu1jB3es
+         8aHg==
+X-Forwarded-Encrypted: i=1; AJvYcCWKPK/Cj885hRfM2Iyg0b5Vgsppr6diYkSqNQcdn8UrEzmXTPYl7WIR7RPcpVzk6GclbaVDG9WAXYm72ROfJBYRfzjGBdnPaCk1jYXU
+X-Gm-Message-State: AOJu0YwqDbCTu3HpeWizH72H/ddb/rJSDOFplhM5z8euAHVbhlXtd/ci
+	LCEx6AOY5uWydeFNuFWOHnmT5wZtRbdveUAt5xybTm/0itPg5kIV
+X-Google-Smtp-Source: AGHT+IFatI2Mw1RwfVTugJjlPgmMizsnbu6KzRUHvlM62cOfiV0IypdKK4huN9qvklZnjlHFG9496g==
+X-Received: by 2002:a05:600c:1c1c:b0:412:64cb:eff3 with SMTP id j28-20020a05600c1c1c00b0041264cbeff3mr3262561wms.3.1708882426004;
+        Sun, 25 Feb 2024 09:33:46 -0800 (PST)
 Received: from YOGA.local ([2a06:c701:736b:f200:79c9:6db8:8198:3c60])
-        by smtp.gmail.com with ESMTPSA id m6-20020a7bce06000000b00410bca333b7sm9400108wmc.27.2024.02.25.09.33.43
+        by smtp.gmail.com with ESMTPSA id m6-20020a7bce06000000b00410bca333b7sm9400108wmc.27.2024.02.25.09.33.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Feb 2024 09:33:44 -0800 (PST)
+        Sun, 25 Feb 2024 09:33:45 -0800 (PST)
 From: Shahar Avidar <ikobh7@gmail.com>
 To: gregkh@linuxfoundation.org,
 	luca.ceresoli@bootlin.com,
@@ -73,10 +75,12 @@ To: gregkh@linuxfoundation.org,
 	robh@kernel.org
 Cc: linux-staging@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 0/4] Fix defines in rf69.h
-Date: Sun, 25 Feb 2024 19:33:37 +0200
-Message-Id: <20240225173341.1278918-1-ikobh7@gmail.com>
+Subject: [PATCH 1/4] staging: pi433: Remove a duplicated F_OSC define
+Date: Sun, 25 Feb 2024 19:33:38 +0200
+Message-Id: <20240225173341.1278918-2-ikobh7@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240225173341.1278918-1-ikobh7@gmail.com>
+References: <20240225173341.1278918-1-ikobh7@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,24 +89,40 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patchset fixes several misuses of the define statement in rf69.h
-Duplicted defines.
-Define in header instead of source file.
-Unused define.
+F_OSC is already defined & only used by rf69.c source file
+Also fix define comment
 
-Shahar Avidar (4):
-  staging: pi433: Remove a duplicated F_OSC define
-  staging: pi433: Remove the unused FREQUENCY define
-  staging: pi433: Remove a duplicated FIFO_SIZE define
-  staging: pi433: Move FIFO_THRESHOLD define to source file
+Signed-off-by: Shahar Avidar <ikobh7@gmail.com>
+---
+ drivers/staging/pi433/rf69.c | 2 +-
+ drivers/staging/pi433/rf69.h | 1 -
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
- drivers/staging/pi433/pi433_if.c | 1 +
- drivers/staging/pi433/rf69.c     | 3 +--
- drivers/staging/pi433/rf69.h     | 4 ----
- 3 files changed, 2 insertions(+), 6 deletions(-)
-
-
-base-commit: 455c5e12a3b7d08c2ab47b7dd54944901c69cdcd
+diff --git a/drivers/staging/pi433/rf69.c b/drivers/staging/pi433/rf69.c
+index 8c7fab6a46bb..d7e2dbe70d7c 100644
+--- a/drivers/staging/pi433/rf69.c
++++ b/drivers/staging/pi433/rf69.c
+@@ -12,7 +12,7 @@
+ #include "rf69.h"
+ #include "rf69_registers.h"
+ 
+-#define F_OSC	  32000000 /* in Hz */
++#define F_OSC	  32000000 /* Hz */
+ #define FIFO_SIZE 66	   /* in byte */
+ 
+ /*-------------------------------------------------------------------------*/
+diff --git a/drivers/staging/pi433/rf69.h b/drivers/staging/pi433/rf69.h
+index 78fa0b8bab8b..52e43a909b03 100644
+--- a/drivers/staging/pi433/rf69.h
++++ b/drivers/staging/pi433/rf69.h
+@@ -12,7 +12,6 @@
+ #include "rf69_registers.h"
+ 
+ /* NOTE: Modifying FREQUENCY value impacts CE certification */
+-#define F_OSC		32000000	/* Hz */
+ #define FREQUENCY	433920000	/* Hz */
+ #define FIFO_SIZE	66		/* bytes */
+ #define FIFO_THRESHOLD	15		/* bytes */
 -- 
 2.34.1
 
