@@ -1,127 +1,139 @@
-Return-Path: <linux-kernel+bounces-80233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9042862C57
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:35:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C181862C58
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 18:35:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 811C32813FC
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:35:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3264C2818BA
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:35:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5262C1CAA7;
-	Sun, 25 Feb 2024 17:33:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 245351AAA5;
+	Sun, 25 Feb 2024 17:34:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZZY56VC/"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AgZkAZO2"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECB5C1C6A1
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 17:33:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0C3018EA8
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 17:34:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708882433; cv=none; b=b71BpG12jj2GIoB/ysUdhj+qNwwUYcLZwWq+peKbNNR8P54iRX+4l5jO2JUhzxNdN5jloG7y2/7NRiCRHv0s3FD42WJjzoHLTyA8LCLJJjWS8B4hPSUe0hzbIx1yORdAkGYQIXthcx9HvgvukonaHzLEC3RzOk+Do9gooOfJHs8=
+	t=1708882480; cv=none; b=tDKk3lRWjzRN/A3l5IhghRkzbkV8RGEpojBQeN0GdZkfRh2yKFNo1laTqkRyGnUm+qx1tmNObQgKep7NVo20N1SpafQ95jknONeGtxvFZp1gpB8kLLfQt5t7ZbN6qgD5prZS1WTI+N9zr0+8X/er7BnDipn5UZjIlFVpV3qTMBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708882433; c=relaxed/simple;
-	bh=TDp9wJFgJFP1/5qnvZLn+D5nq97yBt9qKvB9FbuNoGU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ApFmZ7tfZRmSgqOORn/DPdeDxjS/HVNrRwuPckDAizat6XYd4PtCaEbVnLrbeqIKN43qrBfBuGtOGDK/HH1attxhQIWUPR/aq2n1LOVVZEKlIRctIRUYdkIvzuOC5m21equX+6os6bMCJiIWu8u+w26JiZQAktpj5+kJSompZto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZZY56VC/; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-412a57823b3so95245e9.1
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 09:33:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708882430; x=1709487230; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zxPiVCr0B1dvFMvQofRHKAWb8GEUA/MUQ1QDdLDBjQY=;
-        b=ZZY56VC/BaLP+aLKif1Nq5Ptrt1fbXSuZaO7G7CV4MX2q/102L1zMddtlYQEylCWS6
-         OUpCKddBE7g0X+c4ItiOzZ/WX623asV2RaTiF2GIL/LO4NHF011SvyOOF+02z4rbXV98
-         k/0K/B+msn9LI6/K3umIhhk7HJTp852x+ydNSATAM4SFhtSKlPBUzPPsv05j7m2Vez3K
-         HRPUDsz02FZlfRBfr3YP114qPalgC/wszJiP8dZ4IXWo6hO8Gl64+HcM6qsyxorCOHr6
-         4FqRRtdAsmoam5QPoc9eOjiTsGlV6DRjb5WLWKgERssdqd9TsaQOmn6UUDQH7PgEru0w
-         50IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708882430; x=1709487230;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zxPiVCr0B1dvFMvQofRHKAWb8GEUA/MUQ1QDdLDBjQY=;
-        b=B+j8MvTnAl/pm/I5a6N7e3FkstrU6Yb/Tcoz/fq5dVqbV2QLY0QXlelVAmJgrWDbqN
-         /9h7OOenFj0x5H1k8uJ/adV+Fx9AmLaVj23Nyi08IwSiIF1usFXPA5qOUDyHIrIfY6Rv
-         ObJuIuy6I/ggaykxrzIjDL9LnPC98SfQRqWw2GPWxd0lJm5r6TZXibEPk3wrVHN1yVPS
-         ksGpPLSb31aXTsUdbRme3w1wKlW0NGLxecLrzgiNvDIpWxrof2QDVqm7KxuWPDWBUpD6
-         8G8+8ncf/7N2ZKumSPR1YEjdhp21TlRY3DxPAgzVrUM9xfhadCPwEQzuBLvweZhDtZkd
-         gZQA==
-X-Forwarded-Encrypted: i=1; AJvYcCWxgn35Wmf4/t8Snd4HoFZX3/1y7KOtLyngN9qxqa/AN8Y+++52s71tlrbQ7QoL98dcKZNbMi+WibdyfBUXv3gpVL9at8Sw5wvW/oEr
-X-Gm-Message-State: AOJu0YzjoIl9JpSqrO+X9jGlYgQLs5V/Ty6YD8c0mmw2cSFj3fdhlC6j
-	Y2BCnhn+kLorZcWQalUubahcDPXxHpCHTuvHqLIxJnD35WFUAyYq
-X-Google-Smtp-Source: AGHT+IHanCuwRE7xw5G8B5NKLZXGJUPdG0ikeirrDEkNe42/zl1H3JHvTpS51Qh4TDMqfcM77dd7EQ==
-X-Received: by 2002:a05:600c:3595:b0:412:a22a:c12a with SMTP id p21-20020a05600c359500b00412a22ac12amr1431655wmq.0.1708882430192;
-        Sun, 25 Feb 2024 09:33:50 -0800 (PST)
-Received: from YOGA.local ([2a06:c701:736b:f200:79c9:6db8:8198:3c60])
-        by smtp.gmail.com with ESMTPSA id m6-20020a7bce06000000b00410bca333b7sm9400108wmc.27.2024.02.25.09.33.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Feb 2024 09:33:49 -0800 (PST)
-From: Shahar Avidar <ikobh7@gmail.com>
-To: gregkh@linuxfoundation.org,
-	luca.ceresoli@bootlin.com,
-	benjamin.tissoires@redhat.com,
-	elder@linaro.org,
-	andriy.shevchenko@linux.intel.com,
-	robh@kernel.org
-Cc: linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] staging: pi433: Move FIFO_THRESHOLD define to source file
-Date: Sun, 25 Feb 2024 19:33:41 +0200
-Message-Id: <20240225173341.1278918-5-ikobh7@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240225173341.1278918-1-ikobh7@gmail.com>
-References: <20240225173341.1278918-1-ikobh7@gmail.com>
+	s=arc-20240116; t=1708882480; c=relaxed/simple;
+	bh=hgMJe3enS5/Uzvt29W2EFMjVadDFicH6D3rkFOdeUsQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=F4fGjwaSw7rGxdWj+ypmZOTlLE7GJlAZWomGbZ8mb1wLXRhpeS+XLmrcI5vL0Ls12Eup0RQo1uXTD5MSyfXq697AEMK4tO8sXDGYrA70f8/dYMbQHzEOnJpBhHUPTALdMAnPq1yk67qxmxa49NGe/YIIPt48F/XexZC/VTo0NCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AgZkAZO2; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708882479; x=1740418479;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=hgMJe3enS5/Uzvt29W2EFMjVadDFicH6D3rkFOdeUsQ=;
+  b=AgZkAZO2dXTsLx46WO00HEI1bR6e7iG+RhOvkSInGOEE8TBu+ZC2gptw
+   rNgQ5zZp0Q6pNzL+cRZLnYTeUyHNAcjoFjz9MPjPAuuzXGBOKrqqAhtZg
+   d80NONkk8/T8AUjK4tHB7cKhxsSx0oOHY5FkyaDY/DS6d9lHVTym/Ep8K
+   UkzKBt0XxJ+YtegDqE40LjeFdeCZMMi5opjeYfMDFujCrHuVTrcM3iuDj
+   7bc/RTKPLsTQVvaUq/Ip4j5Zk18ea1GUnglM5H7K1EWvt0HtnD/sykLVj
+   0jzLaFjceZWsARjGmk8Rc1SmVSxmtwpiaz41pmzE9FBx7dZ68qjs6u2pk
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3078968"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="3078968"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 09:34:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="6446231"
+Received: from sharany2-mobl.amr.corp.intel.com (HELO [10.209.72.8]) ([10.209.72.8])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 09:34:32 -0800
+Message-ID: <c6f8f84f-6396-4e0a-9ba9-726d18711dcb@intel.com>
+Date: Sun, 25 Feb 2024 09:34:31 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHv7 08/16] x86/tdx: Account shared memory
+Content-Language: en-US
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+ Elena Reshetova <elena.reshetova@intel.com>,
+ Jun Nakajima <jun.nakajima@intel.com>,
+ Rick Edgecombe <rick.p.edgecombe@intel.com>,
+ Tom Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish"
+ <ashish.kalra@amd.com>, Sean Christopherson <seanjc@google.com>,
+ "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
+ kexec@lists.infradead.org, linux-coco@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <20240212104448.2589568-1-kirill.shutemov@linux.intel.com>
+ <20240212104448.2589568-9-kirill.shutemov@linux.intel.com>
+ <a69a3d67-7352-4bf4-8766-a55ce97e46bd@intel.com>
+ <z6dsqhxzj4beyv4vj5uq6khpt6ti4mvs3uxunvli5cvi2hgfmv@rqbyr4wlzb6f>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzUVEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gKEludGVsIFdvcmsgQWRkcmVzcykgPGRhdmUuaGFuc2VuQGludGVs
+ LmNvbT7CwXgEEwECACIFAlQ+9J0CGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEGg1
+ lTBwyZKwLZUP/0dnbhDc229u2u6WtK1s1cSd9WsflGXGagkR6liJ4um3XCfYWDHvIdkHYC1t
+ MNcVHFBwmQkawxsYvgO8kXT3SaFZe4ISfB4K4CL2qp4JO+nJdlFUbZI7cz/Td9z8nHjMcWYF
+ IQuTsWOLs/LBMTs+ANumibtw6UkiGVD3dfHJAOPNApjVr+M0P/lVmTeP8w0uVcd2syiaU5jB
+ aht9CYATn+ytFGWZnBEEQFnqcibIaOrmoBLu2b3fKJEd8Jp7NHDSIdrvrMjYynmc6sZKUqH2
+ I1qOevaa8jUg7wlLJAWGfIqnu85kkqrVOkbNbk4TPub7VOqA6qG5GCNEIv6ZY7HLYd/vAkVY
+ E8Plzq/NwLAuOWxvGrOl7OPuwVeR4hBDfcrNb990MFPpjGgACzAZyjdmYoMu8j3/MAEW4P0z
+ F5+EYJAOZ+z212y1pchNNauehORXgjrNKsZwxwKpPY9qb84E3O9KYpwfATsqOoQ6tTgr+1BR
+ CCwP712H+E9U5HJ0iibN/CDZFVPL1bRerHziuwuQuvE0qWg0+0SChFe9oq0KAwEkVs6ZDMB2
+ P16MieEEQ6StQRlvy2YBv80L1TMl3T90Bo1UUn6ARXEpcbFE0/aORH/jEXcRteb+vuik5UGY
+ 5TsyLYdPur3TXm7XDBdmmyQVJjnJKYK9AQxj95KlXLVO38lczsFNBFRjzmoBEACyAxbvUEhd
+ GDGNg0JhDdezyTdN8C9BFsdxyTLnSH31NRiyp1QtuxvcqGZjb2trDVuCbIzRrgMZLVgo3upr
+ MIOx1CXEgmn23Zhh0EpdVHM8IKx9Z7V0r+rrpRWFE8/wQZngKYVi49PGoZj50ZEifEJ5qn/H
+ Nsp2+Y+bTUjDdgWMATg9DiFMyv8fvoqgNsNyrrZTnSgoLzdxr89FGHZCoSoAK8gfgFHuO54B
+ lI8QOfPDG9WDPJ66HCodjTlBEr/Cwq6GruxS5i2Y33YVqxvFvDa1tUtl+iJ2SWKS9kCai2DR
+ 3BwVONJEYSDQaven/EHMlY1q8Vln3lGPsS11vSUK3QcNJjmrgYxH5KsVsf6PNRj9mp8Z1kIG
+ qjRx08+nnyStWC0gZH6NrYyS9rpqH3j+hA2WcI7De51L4Rv9pFwzp161mvtc6eC/GxaiUGuH
+ BNAVP0PY0fqvIC68p3rLIAW3f97uv4ce2RSQ7LbsPsimOeCo/5vgS6YQsj83E+AipPr09Caj
+ 0hloj+hFoqiticNpmsxdWKoOsV0PftcQvBCCYuhKbZV9s5hjt9qn8CE86A5g5KqDf83Fxqm/
+ vXKgHNFHE5zgXGZnrmaf6resQzbvJHO0Fb0CcIohzrpPaL3YepcLDoCCgElGMGQjdCcSQ+Ci
+ FCRl0Bvyj1YZUql+ZkptgGjikQARAQABwsFfBBgBAgAJBQJUY85qAhsMAAoJEGg1lTBwyZKw
+ l4IQAIKHs/9po4spZDFyfDjunimEhVHqlUt7ggR1Hsl/tkvTSze8pI1P6dGp2XW6AnH1iayn
+ yRcoyT0ZJ+Zmm4xAH1zqKjWplzqdb/dO28qk0bPso8+1oPO8oDhLm1+tY+cOvufXkBTm+whm
+ +AyNTjaCRt6aSMnA/QHVGSJ8grrTJCoACVNhnXg/R0g90g8iV8Q+IBZyDkG0tBThaDdw1B2l
+ asInUTeb9EiVfL/Zjdg5VWiF9LL7iS+9hTeVdR09vThQ/DhVbCNxVk+DtyBHsjOKifrVsYep
+ WpRGBIAu3bK8eXtyvrw1igWTNs2wazJ71+0z2jMzbclKAyRHKU9JdN6Hkkgr2nPb561yjcB8
+ sIq1pFXKyO+nKy6SZYxOvHxCcjk2fkw6UmPU6/j/nQlj2lfOAgNVKuDLothIxzi8pndB8Jju
+ KktE5HJqUUMXePkAYIxEQ0mMc8Po7tuXdejgPMwgP7x65xtfEqI0RuzbUioFltsp1jUaRwQZ
+ MTsCeQDdjpgHsj+P2ZDeEKCbma4m6Ez/YWs4+zDm1X8uZDkZcfQlD9NldbKDJEXLIjYWo1PH
+ hYepSffIWPyvBMBTW2W5FRjJ4vLRrJSUoEfJuPQ3vW9Y73foyo/qFoURHO48AinGPZ7PC7TF
+ vUaNOTjKedrqHkaOcqB185ahG2had0xnFsDPlx5y
+In-Reply-To: <z6dsqhxzj4beyv4vj5uq6khpt6ti4mvs3uxunvli5cvi2hgfmv@rqbyr4wlzb6f>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-FIFO_THRESHOLD is only being used by pi433_if.c source file
+On 2/25/24 07:54, Kirill A. Shutemov wrote:
+> Serializing is cumbersome here. I can also just drop the interface.
 
-Signed-off-by: Shahar Avidar <ikobh7@gmail.com>
----
- drivers/staging/pi433/pi433_if.c | 1 +
- drivers/staging/pi433/rf69.h     | 1 -
- 2 files changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/pi433/pi433_if.c b/drivers/staging/pi433/pi433_if.c
-index 0ec3130225db..b6c4917d515e 100644
---- a/drivers/staging/pi433/pi433_if.c
-+++ b/drivers/staging/pi433/pi433_if.c
-@@ -49,6 +49,7 @@
- #define N_PI433_MINORS		BIT(MINORBITS) /*32*/	/* ... up to 256 */
- #define MAX_MSG_SIZE		900	/* min: FIFO_SIZE! */
- #define MSG_FIFO_SIZE		65536   /* 65536 = 2^16  */
-+#define FIFO_THRESHOLD	15		/* bytes */
- #define NUM_DIO			2
- 
- static dev_t pi433_dev;
-diff --git a/drivers/staging/pi433/rf69.h b/drivers/staging/pi433/rf69.h
-index e63e87fd6cce..76f0f9896a52 100644
---- a/drivers/staging/pi433/rf69.h
-+++ b/drivers/staging/pi433/rf69.h
-@@ -12,7 +12,6 @@
- #include "rf69_registers.h"
- 
- #define FIFO_SIZE	66		/* bytes */
--#define FIFO_THRESHOLD	15		/* bytes */
- 
- u8 rf69_read_reg(struct spi_device *spi, u8 addr);
- int rf69_get_version(struct spi_device *spi);
--- 
-2.34.1
-
+Just drop it for now.  We can come back after the fact and debate how to
+do the debugging.
 
