@@ -1,107 +1,281 @@
-Return-Path: <linux-kernel+bounces-80207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5431862BDB
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:47:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C2F47862BE0
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 17:48:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0C631C21042
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:47:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DB0E1C2123A
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:48:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2C5D17C95;
-	Sun, 25 Feb 2024 16:47:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="neG5QkzO"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BDA8182D8;
+	Sun, 25 Feb 2024 16:48:34 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35896125CD;
-	Sun, 25 Feb 2024 16:47:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60874175A7
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 16:48:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708879626; cv=none; b=sglMk4/7by95Zs9d7CemIs2tjfOnSaRwyUrIWPj+qaGk8ORsRtvQN+d4rDsmORccy8HvS+IL8eKlUc036ODCfRJVSsI7xR52CiKvaMZBVC+1aylkpMB/bdUTw1s+CbWjx7ZQenCy3TGD0ycITFYZ/V4v/VY9D29hyhFC4xoAPow=
+	t=1708879713; cv=none; b=HuD3PRUu+b1mgBc6FE45GMFSKxqXcbxSQlhTZwJkm6deUJWU/Bo3Gi1X/q+Hq00ENmFgZGnaHvPKG9pHcWWV86Xkmu+RY8CrjyMS+dYntrQybS3XaU0wFrgFpPQxQrJ/FE605vydMsrQrKmqgS/0N0weyXY/muvuwI6wXQBGLys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708879626; c=relaxed/simple;
-	bh=oHFuvFIbyuifb1IfxbA0QJfSY1OIHY2vHjkTUxN4Vl0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=u5mxVkvS4CwB1qtLzzeGPDxVt4GoH2FfwSqelLoRkliryQSW2s3Idz+nZGmgVUPCCybKwrkMAxY+diJVatklvod3iMqoIO8XvTRvFNxmMT6C/83gjjsqL/v1f+aUxIW3oiYZ/wxTzebnq11CXRG7V1DuHDxHimOMEbQef/tYl2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=neG5QkzO; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-563b7b3e3ecso3156058a12.0;
-        Sun, 25 Feb 2024 08:47:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708879622; x=1709484422; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GTJ/2sbZu8Xl5LKEUThJlLy2IUqFITvOG9DeGSFG5Sw=;
-        b=neG5QkzO5VFx5zS+icmanTmlTyioOrtW8ki4MfqgzuvrU6js2hbCB3dwEb0+Z2UAxR
-         /oDVB3iA03x9cWIDcoFpLUJiqA6cpLUnWH8G1XnbCz9GPUMuP29hPQtUUshNNHcxShmH
-         MP2c74gdo8aquJfexdPgi0Yj6wtT3Nv8MdzKGZenRerNBrouFwGEcgcSevBxMuYhIVVW
-         Rrg1UUO/eW5kCHHAdtP/xWZRzYNLnop0SBi1PPKL7uIbyLgMJiZv4Sdx1PhUCjdlEWUB
-         sC764t4C6juWHE2F1qTaP0IiD9uGlQRQ0qxh/+KwQ7ooP443/+cHWT+kIhpnOM2EFtq0
-         bvtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708879622; x=1709484422;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GTJ/2sbZu8Xl5LKEUThJlLy2IUqFITvOG9DeGSFG5Sw=;
-        b=GwA8eu9338KvVu9xmqRAAlE7LnIvacMf/DtP/brpHaJoZO1LxpP/YjeT03Dsm2PA2F
-         SHPv7opTqOgsdpWU3hkwabU31dTOsyzh0Rcx+otj+1Imi3VeEYsEUeCBCPXs5uGyFWdN
-         zreSw6SAqRf6RYSrBQHgTjanGwId9gvA04rGz1Dbp0TlOQQTrORge3cIPPWSwMTtlM+O
-         RMyoyi4oGjxPejf7e4hAeAa8aa6OGV/vt4jtIlnjYi1cjNDFh7ts7zzuOTk0bUs+QhrG
-         E8u1Qiypq4WGBhkunajZ3W9X46v0fkDe6lxwg7CQOiPeC6QKdd4atbUeCPlyiNO1cGkT
-         zgFw==
-X-Forwarded-Encrypted: i=1; AJvYcCXSY66T8e60utwYAPFaKcGkHsqkNNT+Y+F5MDYuEy2tf3H8ztcBfkA3wBOlN3EQnk/+Cx8vw4n2nVonaTKE6JrJixUXoMZpKbTd4LWc9VuP2gZvpInvGnHWVK6bBHSSm/oCDWWKtFJ7rt8c6dJCpK7ySXlhgmG022pXMjVHnTaucNmIsVOny4Y=
-X-Gm-Message-State: AOJu0YyO1a3zQSu0SD1Rw6362FLUNseoK0oGQ6YLDs6MyCAbL2Aw6I6T
-	NbV/kdm5j3ZamKS03NufJUsFmlDvpPSj7sp8f07rYZb7Vggy2+UP
-X-Google-Smtp-Source: AGHT+IGCsJnb1EjoTPequaCTzQkEN/R1+zL+LJh7iDOJtQVZ7e4AOPZGfVksISA0eEyPZoAPASsqVw==
-X-Received: by 2002:aa7:d5d5:0:b0:565:3aa7:565f with SMTP id d21-20020aa7d5d5000000b005653aa7565fmr3156986eds.8.1708879622286;
-        Sun, 25 Feb 2024 08:47:02 -0800 (PST)
-Received: from [192.168.20.170] (57657817.catv.pool.telekom.hu. [87.101.120.23])
-        by smtp.gmail.com with ESMTPSA id fd13-20020a056402388d00b00562d908daf4sm1537101edb.84.2024.02.25.08.47.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 25 Feb 2024 08:47:01 -0800 (PST)
-Message-ID: <b214bff0-5c5e-48a0-9ec8-c0daeeb99165@gmail.com>
-Date: Sun, 25 Feb 2024 17:47:01 +0100
+	s=arc-20240116; t=1708879713; c=relaxed/simple;
+	bh=SJk05chMvHIM7h2a0Arw6QAOXw57PvSclVLAHf7X5q0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=RFGv922f9SuRZHlbHX7GAbsVnFBa5RD7kIp4jTeS2KeP9EA7pnZ0WRJ5nTN2r4/dxmfQ1YPv8eRY7LcpEYg9ATBsTP1wAahLmAdjI1J+xeiEW7gg8r7ls1Y3MZNrNwYOug1zLnggJUVsZaghteO26fEFFRISVRsXE4fB1TgWrsw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-19-8gIlxzicO1CVPGcbetDvRg-1; Sun, 25 Feb 2024 16:48:26 +0000
+X-MC-Unique: 8gIlxzicO1CVPGcbetDvRg-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 25 Feb
+ 2024 16:48:25 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sun, 25 Feb 2024 16:48:25 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>, "'Linus
+ Torvalds'" <torvalds@linux-foundation.org>, 'Netdev'
+	<netdev@vger.kernel.org>, "'dri-devel@lists.freedesktop.org'"
+	<dri-devel@lists.freedesktop.org>
+CC: 'Jens Axboe' <axboe@kernel.dk>, "'Matthew Wilcox (Oracle)'"
+	<willy@infradead.org>, 'Christoph Hellwig' <hch@infradead.org>,
+	"'linux-btrfs@vger.kernel.org'" <linux-btrfs@vger.kernel.org>, "'Andrew
+ Morton'" <akpm@linux-foundation.org>, 'Andy Shevchenko'
+	<andriy.shevchenko@linux.intel.com>, "'David S . Miller'"
+	<davem@davemloft.net>, 'Dan Carpenter' <dan.carpenter@linaro.org>, "'Jani
+ Nikula'" <jani.nikula@linux.intel.com>
+Subject: [PATCH next v2 01/11] minmax: Put all the clamp() definitions
+ together
+Thread-Topic: [PATCH next v2 01/11] minmax: Put all the clamp() definitions
+ together
+Thread-Index: AdpoCm8Wmg56GH/rTS2Es3+C4P05mA==
+Date: Sun, 25 Feb 2024 16:48:25 +0000
+Message-ID: <90a35ff389a34c69852528f32063077c@AcuMS.aculab.com>
+References: <0fff52305e584036a777f440b5f474da@AcuMS.aculab.com>
+In-Reply-To: <0fff52305e584036a777f440b5f474da@AcuMS.aculab.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom: add TP-Link Archer AX55 v1
-Content-Language: hu
-To: Conor Dooley <conor@kernel.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240223-archer-ax55-v1-v1-0-99f8fa2c3858@gmail.com>
- <20240223-archer-ax55-v1-v1-1-99f8fa2c3858@gmail.com>
- <20240223-enchanted-marmalade-04effab0909c@spud>
-From: Gabor Juhos <j4g8y7@gmail.com>
-In-Reply-To: <20240223-enchanted-marmalade-04effab0909c@spud>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 
-2024. 02. 23. 19:39 keltezéssel, Conor Dooley írta:
-> On Fri, Feb 23, 2024 at 09:17:44AM +0100, Gabor Juhos wrote:
->> Document the TP-Link Archer AX55 v1 which is a dual-band
->> WiFi router based on the IPQ5018 SoC.
->>
->> Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
-> 
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+The defines for clamp() have got separated, move togther for readability.
+Update description of signedness check.
 
-Thank you!
+Signed-off-by: David Laight <david.laight@aculab.com>
+---
+ include/linux/minmax.h | 120 +++++++++++++++++++----------------------
+ 1 file changed, 56 insertions(+), 64 deletions(-)
 
-Regards,
-Gabor
+Changes for v2:
+- Typographical and spelling corrections to the commit messages.
+  Patches unchanged.
+
+diff --git a/include/linux/minmax.h b/include/linux/minmax.h
+index 2ec559284a9f..63c45865b48a 100644
+--- a/include/linux/minmax.h
++++ b/include/linux/minmax.h
+@@ -57,26 +57,6 @@
+ =09=09__cmp(op, x, y),=09=09=09=09\
+ =09=09__cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
+=20
+-#define __clamp(val, lo, hi)=09\
+-=09((val) >=3D (hi) ? (hi) : ((val) <=3D (lo) ? (lo) : (val)))
+-
+-#define __clamp_once(val, lo, hi, unique_val, unique_lo, unique_hi) ({=09=
+=09\
+-=09typeof(val) unique_val =3D (val);=09=09=09=09=09=09\
+-=09typeof(lo) unique_lo =3D (lo);=09=09=09=09=09=09\
+-=09typeof(hi) unique_hi =3D (hi);=09=09=09=09=09=09\
+-=09static_assert(__builtin_choose_expr(__is_constexpr((lo) > (hi)), =09\
+-=09=09=09(lo) <=3D (hi), true),=09=09=09=09=09\
+-=09=09"clamp() low limit " #lo " greater than high limit " #hi);=09\
+-=09static_assert(__types_ok(val, lo), "clamp() 'lo' signedness error");=09=
+\
+-=09static_assert(__types_ok(val, hi), "clamp() 'hi' signedness error");=09=
+\
+-=09__clamp(unique_val, unique_lo, unique_hi); })
+-
+-#define __careful_clamp(val, lo, hi) ({=09=09=09=09=09\
+-=09__builtin_choose_expr(__is_constexpr((val) - (lo) + (hi)),=09\
+-=09=09__clamp(val, lo, hi),=09=09=09=09=09\
+-=09=09__clamp_once(val, lo, hi, __UNIQUE_ID(__val),=09=09\
+-=09=09=09     __UNIQUE_ID(__lo), __UNIQUE_ID(__hi))); })
+-
+ /**
+  * min - return minimum of two values of the same or compatible types
+  * @x: first value
+@@ -124,6 +104,22 @@
+  */
+ #define max3(x, y, z) max((typeof(x))max(x, y), z)
+=20
++/**
++ * min_t - return minimum of two values, using the specified type
++ * @type: data type to use
++ * @x: first value
++ * @y: second value
++ */
++#define min_t(type, x, y)=09__careful_cmp(min, (type)(x), (type)(y))
++
++/**
++ * max_t - return maximum of two values, using the specified type
++ * @type: data type to use
++ * @x: first value
++ * @y: second value
++ */
++#define max_t(type, x, y)=09__careful_cmp(max, (type)(x), (type)(y))
++
+ /**
+  * min_not_zero - return the minimum that is _not_ zero, unless both are z=
+ero
+  * @x: value1
+@@ -134,39 +130,60 @@
+ =09typeof(y) __y =3D (y);=09=09=09\
+ =09__x =3D=3D 0 ? __y : ((__y =3D=3D 0) ? __x : min(__x, __y)); })
+=20
++#define __clamp(val, lo, hi)=09\
++=09((val) >=3D (hi) ? (hi) : ((val) <=3D (lo) ? (lo) : (val)))
++
++#define __clamp_once(val, lo, hi, unique_val, unique_lo, unique_hi) ({=09=
+=09\
++=09typeof(val) unique_val =3D (val);=09=09=09=09=09=09\
++=09typeof(lo) unique_lo =3D (lo);=09=09=09=09=09=09\
++=09typeof(hi) unique_hi =3D (hi);=09=09=09=09=09=09\
++=09static_assert(__builtin_choose_expr(__is_constexpr((lo) > (hi)),=09\
++=09=09=09(lo) <=3D (hi), true),=09=09=09=09=09\
++=09=09"clamp() low limit " #lo " greater than high limit " #hi);=09\
++=09static_assert(__types_ok(val, lo), "clamp() 'lo' signedness error");=09=
+\
++=09static_assert(__types_ok(val, hi), "clamp() 'hi' signedness error");=09=
+\
++=09__clamp(unique_val, unique_lo, unique_hi); })
++
++#define __careful_clamp(val, lo, hi) ({=09=09=09=09=09\
++=09__builtin_choose_expr(__is_constexpr((val) - (lo) + (hi)),=09\
++=09=09__clamp(val, lo, hi),=09=09=09=09=09\
++=09=09__clamp_once(val, lo, hi, __UNIQUE_ID(__val),=09=09\
++=09=09=09     __UNIQUE_ID(__lo), __UNIQUE_ID(__hi))); })
++
+ /**
+  * clamp - return a value clamped to a given range with strict typecheckin=
+g
+  * @val: current value
+  * @lo: lowest allowable value
+  * @hi: highest allowable value
+  *
+- * This macro does strict typechecking of @lo/@hi to make sure they are of=
+ the
+- * same type as @val.  See the unnecessary pointer comparisons.
++ * This macro checks that @val, @lo and @hi have the same signedness.
+  */
+ #define clamp(val, lo, hi) __careful_clamp(val, lo, hi)
+=20
+-/*
+- * ..and if you can't take the strict
+- * types, you can specify one yourself.
+- *
+- * Or not use min/max/clamp at all, of course.
+- */
+-
+ /**
+- * min_t - return minimum of two values, using the specified type
+- * @type: data type to use
+- * @x: first value
+- * @y: second value
++ * clamp_t - return a value clamped to a given range using a given type
++ * @type: the type of variable to use
++ * @val: current value
++ * @lo: minimum allowable value
++ * @hi: maximum allowable value
++ *
++ * This macro does no typechecking and uses temporary variables of type
++ * @type to make all the comparisons.
+  */
+-#define min_t(type, x, y)=09__careful_cmp(min, (type)(x), (type)(y))
++#define clamp_t(type, val, lo, hi) __careful_clamp((type)(val), (type)(lo)=
+, (type)(hi))
+=20
+ /**
+- * max_t - return maximum of two values, using the specified type
+- * @type: data type to use
+- * @x: first value
+- * @y: second value
++ * clamp_val - return a value clamped to a given range using val's type
++ * @val: current value
++ * @lo: minimum allowable value
++ * @hi: maximum allowable value
++ *
++ * This macro does no typechecking and uses temporary variables of whateve=
+r
++ * type the input argument @val is.  This is useful when @val is an unsign=
+ed
++ * type and @lo and @hi are literals that will otherwise be assigned a sig=
+ned
++ * integer type.
+  */
+-#define max_t(type, x, y)=09__careful_cmp(max, (type)(x), (type)(y))
++#define clamp_val(val, lo, hi) clamp_t(typeof(val), val, lo, hi)
+=20
+ /*
+  * Do not check the array parameter using __must_be_array().
+@@ -211,31 +228,6 @@
+  */
+ #define max_array(array, len) __minmax_array(max, array, len)
+=20
+-/**
+- * clamp_t - return a value clamped to a given range using a given type
+- * @type: the type of variable to use
+- * @val: current value
+- * @lo: minimum allowable value
+- * @hi: maximum allowable value
+- *
+- * This macro does no typechecking and uses temporary variables of type
+- * @type to make all the comparisons.
+- */
+-#define clamp_t(type, val, lo, hi) __careful_clamp((type)(val), (type)(lo)=
+, (type)(hi))
+-
+-/**
+- * clamp_val - return a value clamped to a given range using val's type
+- * @val: current value
+- * @lo: minimum allowable value
+- * @hi: maximum allowable value
+- *
+- * This macro does no typechecking and uses temporary variables of whateve=
+r
+- * type the input argument @val is.  This is useful when @val is an unsign=
+ed
+- * type and @lo and @hi are literals that will otherwise be assigned a sig=
+ned
+- * integer type.
+- */
+-#define clamp_val(val, lo, hi) clamp_t(typeof(val), val, lo, hi)
+-
+ static inline bool in_range64(u64 val, u64 start, u64 len)
+ {
+ =09return (val - start) < len;
+--=20
+2.17.1
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
+
 
