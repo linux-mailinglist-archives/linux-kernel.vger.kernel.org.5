@@ -1,195 +1,110 @@
-Return-Path: <linux-kernel+bounces-80169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 216EF862B50
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:54:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30D1B862B51
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 16:55:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAEEA2819E3
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 15:54:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 698171C20B17
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Feb 2024 15:55:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 781A21759F;
-	Sun, 25 Feb 2024 15:54:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LTNlvJm4"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7457817584;
+	Sun, 25 Feb 2024 15:55:17 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA7E6168DC
-	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 15:54:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D6A510979
+	for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 15:55:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708876486; cv=none; b=IhhZWzON26O4BP/jjbMmDC/q4pTjv9DNj9DFDD+8EaDWAU3lxi8mSRcEN4tbDVpPT2lXAXXPPq2yid5CIvkm07kdKqAgi7Vld2aKMQw3OBufelkXOU3WSaUM5DGicSRm7A+3WlFR3gNPZvTnRmCBJSjQJtj0v3YaTqi3J31IFrE=
+	t=1708876517; cv=none; b=sXccqd67kaBSmoSPlEKo35ZQx/OHDWzNpV62ENDmMLXykZhb5iBoFyFxZplwwvMDXdJVeQL0h8yiDoylB0cd+L9u6nRZ6bjBp5hp98vgMLOrJMBy6kYJELkEbOSmpPKeZ8tfYfj/IZU9ix/OaIkoInddN9mWlWiCGS6wO/C3ftI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708876486; c=relaxed/simple;
-	bh=a8WuHvI6h6kLGhcZUjOjqEaaYOLzg47IYOWKmjJs8cw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W13GRoZ4+/Ckqf0FA7KxqL4rdRb8lxsynQGgxifo4egZwIVs97qGjp6vnqtkT2EPJ+4KWucfb1x6NtInNZyW+scsGioTy0DKV1yy3w3TCS01jfBj7JVHRPfvWqd7Dtkt73gkUgB1VaeUOLRDZXDli94gypGWrzwC12FwUEV7S0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LTNlvJm4; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708876483; x=1740412483;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=a8WuHvI6h6kLGhcZUjOjqEaaYOLzg47IYOWKmjJs8cw=;
-  b=LTNlvJm4il71MKR7KW6lxlggxAIjLTTQ4Wm0NZpIFcQkVvaO1WwCRhLg
-   btvOz9FSuEnucqJ8VFsgauBQa2fJ66B32xtzwanl7LFyJUn1h1GxOBSZJ
-   JJHW1PU1GNXgv6zfrlaGsRkIxlyj8TCHC28xP7aRRTR9PAztM/+RMoKnM
-   e6aEghrOzQNL1zN+hK30+tWfDEmhO1bueJQElw6vzUJkV2BLmDxarieVw
-   85fRcWbonQTB8tvcJxDj51o0vKUnpn20qz8cxIqR244Qccutid9R97RCM
-   wBm36HRE7n+u5HBueP8nIWzmk+poeSAvo42brlrMTXltj05oXPSizBQAf
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3296457"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="3296457"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 07:54:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="937028120"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="937028120"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 25 Feb 2024 07:54:38 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id B60FB425; Sun, 25 Feb 2024 17:54:36 +0200 (EET)
-Date: Sun, 25 Feb 2024 17:54:36 +0200
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, 
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, Elena Reshetova <elena.reshetova@intel.com>, 
-	Jun Nakajima <jun.nakajima@intel.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
-	Tom Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish" <ashish.kalra@amd.com>, 
-	Sean Christopherson <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>, 
-	kexec@lists.infradead.org, linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv7 08/16] x86/tdx: Account shared memory
-Message-ID: <z6dsqhxzj4beyv4vj5uq6khpt6ti4mvs3uxunvli5cvi2hgfmv@rqbyr4wlzb6f>
-References: <20240212104448.2589568-1-kirill.shutemov@linux.intel.com>
- <20240212104448.2589568-9-kirill.shutemov@linux.intel.com>
- <a69a3d67-7352-4bf4-8766-a55ce97e46bd@intel.com>
+	s=arc-20240116; t=1708876517; c=relaxed/simple;
+	bh=1JpHSpddy36EcQ6+aJdq28iICB9b0TQZtbuvPq3JZ+g=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TZ2vSlFHqhZerVsKc5UZmMlxxUMXVSOAXnbYEq3Mpts4SRVuGAyuiKrLdWlNG6s+Ul/4fR4tWaNeUCAen387IWxSl2xJDFx47nGuQ2DRpVTt5roH8tHv8Q9RHw7KEMblB6Ywp6h5kxZKLRymO7awRsYxNCc1Lg3Ygft2uFpzL/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1reGqN-00006U-Rj; Sun, 25 Feb 2024 16:55:11 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1reGqM-002pK7-Hd; Sun, 25 Feb 2024 16:55:10 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1reGqM-00BKoo-1R;
+	Sun, 25 Feb 2024 16:55:10 +0100
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: MyungJoo Ham <myungjoo.ham@samsung.com>,
+	Chanwoo Choi <cw00.choi@samsung.com>
+Cc: linux-kernel@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Benson Leung <bleung@chromium.org>,
+	Guenter Roeck <groeck@chromium.org>,
+	chrome-platform@lists.linux.dev
+Subject: [PATCH 0/7] extcon: Convert to platform remove callback returning void
+Date: Sun, 25 Feb 2024 16:54:49 +0100
+Message-ID: <cover.1708876186.git.u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a69a3d67-7352-4bf4-8766-a55ce97e46bd@intel.com>
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1563; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=1JpHSpddy36EcQ6+aJdq28iICB9b0TQZtbuvPq3JZ+g=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBl22LJ3SQ+x2V90+4T3aiRyKJf8uPBLY+8QQ18X kMMIsX98W+JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZdtiyQAKCRCPgPtYfRL+ TqBVB/9kn69bbAsltKLjjJyB0zB8C8k48RFkzSSAiaXs9ShL2josYmzWvDfyyBNCYjsfnFUy3DJ GwEDsHxDndmsjbgOFK715uxVJfZIb4u5PRg/fHOkUALjH7dnXuUnsbCtWOrrGh3eUK0on1hfHMB upxuD2fqaHqPKmmpnwbn3GQmQtycxFfnQu8mXUAS8xVwjhd4k1KIApgSETjwPy6zHekj+tY7ZSD aBilDE2LMNPEslOPU6rRqO+4csWI5gEHVnD2hbC0YBrpTpYSxFPvn9dTIbeosYhZdwmZFbrFlSz uk934IGcKsNvlXvTawQGzP6O008H2I/EUv/00UxJTqAhMFPF
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Fri, Feb 23, 2024 at 11:08:18AM -0800, Dave Hansen wrote:
-> On 2/12/24 02:44, Kirill A. Shutemov wrote:
-> > The kernel will convert all shared memory back to private during kexec.
-> > The direct mapping page tables will provide information on which memory
-> > is shared.
-> > 
-> > It is extremely important to convert all shared memory. If a page is
-> > missed, it will cause the second kernel to crash when it accesses it.
-> > 
-> > Keep track of the number of shared pages. This will allow for
-> > cross-checking against the shared information in the direct mapping and
-> > reporting if the shared bit is lost.
-> > 
-> > Include a debugfs interface that allows for the check to be performed at
-> > any point.
-> 
-> When I read this, I thought you were going to do some automatic
-> checking.  Could you make it more clear here that it's 100% up to the
-> user to figure out if the numbers in debugfs match and whether there's a
-> problem?  This would also be a great place to mention that the whole
-> thing is racy.
+Hello,
 
-What about this:
+this series converts all drivers below drivers/extcon to struct
+platform_driver::remove_new(). See commit 5c5a7680e67b ("platform:
+Provide a remove callback that returns no value") for an extended
+explanation and the eventual goal.
 
-  Include a debugfs interface to dump the number of shared pages in the
-  direct mapping and the expected number. There is no serialization
-  against memory conversion. The numbers might not match if access to the
-  debugfs interface races with the conversion.
+All conversations are trivial, because their .remove() callbacks
+returned zero unconditionally.
 
-> > +static atomic_long_t nr_shared;
-> > +
-> > +static inline bool pte_decrypted(pte_t pte)
-> > +{
-> > +	return cc_mkdec(pte_val(pte)) == pte_val(pte);
-> > +}
-> 
-> Name this pte_is_decrypted(), please.
+There are no interdependencies between these patches, so they could be
+picked up individually. But I'd hope that they get picked up all
+together by the extcon maintainer team.
 
-But why? pte_decrypted() is consistent with other pte helpers pte_none(),
-pte_present, pte_dirty(), ...
+Best regards
+Uwe
 
-> >  /* Called from __tdx_hypercall() for unrecoverable failure */
-> >  noinstr void __noreturn __tdx_hypercall_failed(void)
-> >  {
-> > @@ -821,6 +829,11 @@ static int tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
-> >  	if (!enc && !tdx_enc_status_changed(vaddr, numpages, enc))
-> >  		return -EIO;
-> >  
-> > +	if (enc)
-> > +		atomic_long_sub(numpages, &nr_shared);
-> > +	else
-> > +		atomic_long_add(numpages, &nr_shared);
-> > +
-> >  	return 0;
-> >  }
-> >  
-> > @@ -896,3 +909,59 @@ void __init tdx_early_init(void)
-> >  
-> >  	pr_info("Guest detected\n");
-> >  }
-> > +
-> > +#ifdef CONFIG_DEBUG_FS
-> > +static int tdx_shared_memory_show(struct seq_file *m, void *p)
-> > +{
-> > +	unsigned long addr, end;
-> > +	unsigned long found = 0;
-> > +
-> > +	addr = PAGE_OFFSET;
-> > +	end  = PAGE_OFFSET + get_max_mapped();
-> > +
-> > +	while (addr < end) {
-> > +		unsigned long size;
-> > +		unsigned int level;
-> > +		pte_t *pte;
-> > +
-> > +		pte = lookup_address(addr, &level);
-> > +		size = page_level_size(level);
-> > +
-> > +		if (pte && pte_decrypted(*pte))
-> > +			found += size / PAGE_SIZE;
-> > +
-> > +		addr += size;
-> > +
-> > +		cond_resched();
-> > +	}
-> 
-> This is totally racy, right?  Nothing prevents the PTE from
-> flip-flopping all over the place.
+Uwe Kleine-König (7):
+  extcon: adc-jack: Convert to platform remove callback returning void
+  extcon: intel-cht-wc: Convert to platform remove callback returning void
+  extcon: intel-mrfld: Convert to platform remove callback returning void
+  extcon: max3355: Convert to platform remove callback returning void
+  extcon: max77843: Convert to platform remove callback returning void
+  extcon: usb-gpio: Convert to platform remove callback returning void
+  extcon: usbc-cros-ec: Convert to platform remove callback returning void
 
-Yes.
+ drivers/extcon/extcon-adc-jack.c     | 6 ++----
+ drivers/extcon/extcon-intel-cht-wc.c | 6 ++----
+ drivers/extcon/extcon-intel-mrfld.c  | 6 ++----
+ drivers/extcon/extcon-max3355.c      | 6 ++----
+ drivers/extcon/extcon-max77843.c     | 6 ++----
+ drivers/extcon/extcon-usb-gpio.c     | 6 ++----
+ drivers/extcon/extcon-usbc-cros-ec.c | 6 ++----
+ 7 files changed, 14 insertions(+), 28 deletions(-)
 
-> > +	seq_printf(m, "Number of shared pages in kernel page tables:  %16lu\n",
-> > +		   found);
-> > +	seq_printf(m, "Number of pages accounted as shared:           %16ld\n",
-> > +		   atomic_long_read(&nr_shared));
-> > +	return 0;
-> > +}
-> 
-> Ditto with 'nr_shared'.  There's nothing to say that the page table walk
-> has anything to do with 'nr_shared' by the time we get down here.
-> 
-> That's not _fatal_ for a debug interface, but the pitfalls need to at
-> least be discussed.  Better yet would be to make sure this and the cpa
-> code don't stomp on each other.
-
-Serializing is cumbersome here. I can also just drop the interface.
-
+base-commit: 33e1d31873f87d119e5120b88cd350efa68ef276
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+2.43.0
+
 
