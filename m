@@ -1,119 +1,134 @@
-Return-Path: <linux-kernel+bounces-81406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B4B5867588
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:48:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23C58867585
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:47:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 107821F2551D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:48:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B83931F2469A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:47:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3E6E7F7DB;
-	Mon, 26 Feb 2024 12:48:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A95BA7FBB0;
+	Mon, 26 Feb 2024 12:47:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bq8V8bu+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="yorHxad0"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FA89EC7;
-	Mon, 26 Feb 2024 12:48:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73BCA604D4
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 12:47:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708951700; cv=none; b=tcu0ilXoIQ2jLg6I0LOsTXOaehD9yAEeQMRen/JzVOgdVfMuek1Djvi9QqNkkxvddE6hNPtmjGhrnmFHpiB3uomZtHVFM3Q0ODgaKHG2tukDiUrcpSm8JPA8Tfpl/FHmDDoCbEjQfTK0n4aoSS7gr247tHpbRFs/eNYhIvQX9o0=
+	t=1708951656; cv=none; b=RpC31xlIpxlOv+RXni4l2QoVE08pjTX/6LJbynQK0HYWnIPCKKzUwABO/SpPsI0ZcCM4JlzwE4Xfb8HdkqcPyEMkatg0qES6/ZqHhhKaAHE1MPOrToaxY5zLCLqGdv6La5BSoTyk+IXQUfaKtHmIee1wU5OVU87zHjv30cDIaM4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708951700; c=relaxed/simple;
-	bh=nwHarD6e/noK0RLpyMyg49ecLqGeQ0DNCXP39VJcJnU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=VMpDgaGtCjOt6YmNCOE1b4ur/Q/TS9SEKDsUFSojHU5+2yETA2EA92wGQVbsufu+oepad+JbbdqWm18lSnVFXyd7I5Osf/9oJzHCTVhaxTjgtxrNYtuWFTVCOH8tHtodHfa7Swo0p/kl/4SzkjtQcf6Qr/lkiDtB4GOSBm66BeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bq8V8bu+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87566C433F1;
-	Mon, 26 Feb 2024 12:48:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708951699;
-	bh=nwHarD6e/noK0RLpyMyg49ecLqGeQ0DNCXP39VJcJnU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Bq8V8bu+AnNPQ618fedRUM7MYXae1yTLy649cK81/fffiV4+DdQr+B6CwBXjv1QA/
-	 9XwitYZerkPdzT5oQ/BMnkEy4pIshL73oouNzyIJoPfQp9+cQuhHNB3RpERuh9m4fH
-	 E9M8scMGqCESeLu8Ph8VEitEHpGBWF+T8lMDqXAWow9kDmXkSJ2EMmuDiOL61oW5ak
-	 8GXdCtwNHiGHcJIJA6zt7gf/AdcrTa9iQtsvwNLiQU3QsjS7Nq5smBFZwrq9/k7ZvA
-	 uB0u6Yts0KZNO9gSsCmBl/IqxfViSV3BHGkV+4r+G1t7huI2eVrHUs+49XbtkKfIzY
-	 CjL4rZQN+bcqg==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Lucas De Marchi <lucas.demarchi@intel.com>,
-	Oded Gabbay <ogabbay@kernel.org>,
-	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Matt Roper <matthew.d.roper@intel.com>,
-	Matthew Auld <matthew.auld@intel.com>,
-	Matthew Brost <matthew.brost@intel.com>,
-	intel-xe@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH 2/3] [v2] drm/xe/mmio: fix build warning for BAR resize on 32-bit
-Date: Mon, 26 Feb 2024 13:46:37 +0100
-Message-Id: <20240226124736.1272949-2-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240226124736.1272949-1-arnd@kernel.org>
-References: <20240226124736.1272949-1-arnd@kernel.org>
+	s=arc-20240116; t=1708951656; c=relaxed/simple;
+	bh=dN7vlfm2CWuP7gytdhzY1G0iMgJePvyOPGhA6GCsXPU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ExBzrDQHF+kGiEJAfoKEsxy7i+kZ6AKPXCGZLC2Rd/zugQDT0AeO8wc/88WfAi+T6+1qrNMNITuOmpMKFvr0EDRUA4/gLQPdD3KuUDN2HzSPiyiCj//Vpqn4REjDT6qUYoTGPVAxs4LhL3qv2kQTzwoWmHfGWFGKPabz4Huv6Ws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=yorHxad0; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e459b39e2cso1640137b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 04:47:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1708951654; x=1709556454; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nyrubZrd+iQQ9LRdmGo0pLnE0GnOJFu8Ms2d6zdohTc=;
+        b=yorHxad0Q2CTEfzncY+ztjfHw/nemFR33fL9via7ohGcaIULF0x3HojLZf/UqW3S4z
+         9bZI0jUT9fM48y4aBcJE/Gs5ACGUaat0xkeo0mKou5B0L5hr47wgWceI3dRhhkuuJNQY
+         zN/kSt8OXwj9SJ+M5wRKvCbrgxivjyceI0OGGEx5FdJP9I6btAhUdFYNuAXEPz7DVsVt
+         lXAlBbHxLl1dEU1Ahc265wpsNvn9I/DVyFXrPWbv2o5QTOs0gJutv9aDECKWyvZxyEoM
+         FWshhAUN7+kJp4m0HJBJG70taftd1XZadPI//NOZQsXPAOhHQVCGqW0qL/1wG/+V74gq
+         UI5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708951654; x=1709556454;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nyrubZrd+iQQ9LRdmGo0pLnE0GnOJFu8Ms2d6zdohTc=;
+        b=Xkv4eSXBrAgqK5VF6WtFzq4onBaKCLivsxTL1+xNUd2kKf6PueLhg6N2ziIHV/GihD
+         X9T9N9OIglcDK2XILIxkB27kE4Y41Ga2j9ftzh7SWuw2hgi3Ox5rYyuqB8DxB+GjLA/p
+         PL/nc5CiNRVX228qmTiuyOh9QRM0niykCmXrcpmL2Ue603xxRKj/mwwX15YoQ7R+jjxr
+         Rt+h/NHbkr7Aptw+/KjUtJ0txXchRR0LsZRxuA7r5ttzh5mjDHjb6S86jTK/ffc11lSV
+         mGbBUV7NijWGAPYfFF8z5hJ3VLYPre4Kdhu/fdRKY7MzB7BZ9Q1n5As3y4XWIgO+mkHm
+         stzg==
+X-Forwarded-Encrypted: i=1; AJvYcCUKNqCVcen54IXOJJG1YKGvrBV7+4e11e40k21FDA7d8z7+/1nL3q4thstktXXB4sUfL5Rax8fC6RtBqZyhO/0Aqv+GMutYvVgB31Hk
+X-Gm-Message-State: AOJu0YzTZ3eJD4ICYWSmeSP3yqnTEdR04YTV0wlfTfUGCTiyqzv3FPz6
+	yaUmBe3srK9AKAPJ0rdQfdEaxMsGReJkHsgGQgBD9VGi+Ibx2SvMcLPh8AfpfVw=
+X-Google-Smtp-Source: AGHT+IFX/dKtzGRqrmOKHZtigWLQqswOK9f44At5pPNmVA4fazaZ6Tbtk13iEH+Bwie50vdjALOU8A==
+X-Received: by 2002:a05:6a21:1584:b0:1a1:5ad:4129 with SMTP id nr4-20020a056a21158400b001a105ad4129mr1274023pzb.15.1708951653839;
+        Mon, 26 Feb 2024 04:47:33 -0800 (PST)
+Received: from dread.disaster.area (pa49-181-247-196.pa.nsw.optusnet.com.au. [49.181.247.196])
+        by smtp.gmail.com with ESMTPSA id l3-20020a62be03000000b006e4432027d1sm4030530pff.142.2024.02.26.04.47.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 04:47:33 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1reaOI-00BkxF-2y;
+	Mon, 26 Feb 2024 23:47:30 +1100
+Date: Mon, 26 Feb 2024 23:47:30 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, chandan.babu@oracle.com,
+	akpm@linux-foundation.org, mcgrof@kernel.org, ziy@nvidia.com,
+	hare@suse.de, djwong@kernel.org, gost.dev@samsung.com,
+	linux-mm@kvack.org, willy@infradead.org,
+	Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH 12/13] xfs: make the calculation generic in
+ xfs_sb_validate_fsb_count()
+Message-ID: <ZdyIYrei4QWvAMpx@dread.disaster.area>
+References: <20240226094936.2677493-1-kernel@pankajraghav.com>
+ <20240226094936.2677493-13-kernel@pankajraghav.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226094936.2677493-13-kernel@pankajraghav.com>
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Feb 26, 2024 at 10:49:35AM +0100, Pankaj Raghav (Samsung) wrote:
+> From: Pankaj Raghav <p.raghav@samsung.com>
+> 
+> Instead of assuming that PAGE_SHIFT is always higher than the blocklog,
+> make the calculation generic so that page cache count can be calculated
+> correctly for LBS.
+> 
+> Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
+> ---
+>  fs/xfs/xfs_mount.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/xfs/xfs_mount.c b/fs/xfs/xfs_mount.c
+> index aabb25dc3efa..69af3b06be99 100644
+> --- a/fs/xfs/xfs_mount.c
+> +++ b/fs/xfs/xfs_mount.c
+> @@ -133,9 +133,15 @@ xfs_sb_validate_fsb_count(
+>  {
+>  	ASSERT(PAGE_SHIFT >= sbp->sb_blocklog);
+>  	ASSERT(sbp->sb_blocklog >= BBSHIFT);
+> +	uint64_t mapping_count;
+> +	uint64_t bytes;
+>  
+> +	if (check_mul_overflow(nblocks, (1 << sbp->sb_blocklog), &bytes))
+> +		return -EFBIG;
+> +
+> +	mapping_count = bytes >> PAGE_SHIFT;
 
-clang complains about a nonsensical test on builds with a 32-bit phys_addr_t,
-which means resizing will always fail:
+max_index, not a "mapping count". Also, put this after this comment:
 
-drivers/gpu/drm/xe/xe_mmio.c:109:23: error: result of comparison of constant 4294967296 with expression of type 'resource_size_t' (aka 'unsigned int') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
-  109 |                     root_res->start > 0x100000000ull)
-      |                     ~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+>  	/* Limited by ULONG_MAX of page cache index */
 
-Previously, BAR resize was always disallowed on 32-bit kernels, but
-this apparently changed recently. Since 32-bit machines can in theory
-support PAE/LPAE for large address spaces, this may end up useful,
-so change the driver to shut up the warning but still work when
-phys_addr_t/resource_size_t is 64 bit wide.
+So it is obvious what the max_index we are calculating belongs to.
 
-Fixes: 9a6e6c14bfde ("drm/xe/mmio: Use non-atomic writeq/readq variant for 32b")
-Fixes: 237412e45390 ("drm/xe: Enable 32bits build")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-v2: use correct Fixes tag
----
- drivers/gpu/drm/xe/xe_mmio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/xe/xe_mmio.c b/drivers/gpu/drm/xe/xe_mmio.c
-index e3db3a178760..7ba2477452d7 100644
---- a/drivers/gpu/drm/xe/xe_mmio.c
-+++ b/drivers/gpu/drm/xe/xe_mmio.c
-@@ -106,7 +106,7 @@ static void xe_resize_vram_bar(struct xe_device *xe)
- 
- 	pci_bus_for_each_resource(root, root_res, i) {
- 		if (root_res && root_res->flags & (IORESOURCE_MEM | IORESOURCE_MEM_64) &&
--		    root_res->start > 0x100000000ull)
-+		    (u64)root_res->start > 0x100000000ul)
- 			break;
- 	}
- 
+-Dave.
 -- 
-2.39.2
-
+Dave Chinner
+david@fromorbit.com
 
