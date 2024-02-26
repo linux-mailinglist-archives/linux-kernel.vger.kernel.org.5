@@ -1,159 +1,173 @@
-Return-Path: <linux-kernel+bounces-81942-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1354D867C9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:51:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65C81867C7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:50:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4509F1C2B820
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:51:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04A431F298EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:50:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 195FC12C81A;
-	Mon, 26 Feb 2024 16:50:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jzVIbQ+Y";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jzVIbQ+Y"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8DD412D765;
+	Mon, 26 Feb 2024 16:49:43 +0000 (UTC)
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F92012C522;
-	Mon, 26 Feb 2024 16:50:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE15B12CDB8;
+	Mon, 26 Feb 2024 16:49:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708966236; cv=none; b=ETNbZqpz5XpyLIhepbdIlOrptW19JddyiJz67d34OzqPQY467fO1Ejh+DWYJlRanrfLXGOdWqcdeF87OqX2fEJosXcbmHCOMZnRelUn9y/dVSWgrjVQjUHX1I5hb8Q4AxXjidOUUPlSeLMbo6JhGECaFEiqv9fwnBZe5ejzRTLI=
+	t=1708966183; cv=none; b=HhnoibVq/854MVEe4AjrotlwnJ1p/uFJbNMO3iD4L+gGHrDhsG4dWkofMSqbN/NecMkcXSB/onwuTJYFhMLeh0Ik1pyxWExdSEklLB6pbfm4/i4fnLcbf+xojOhVJlPh0KB8JwYeQW2lM7lHZKbshmqdOV43Gc38Nj6scl7kzaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708966236; c=relaxed/simple;
-	bh=zFDIMUC+lqSpZcHbyK06xZsz4qOXYCnZ94ay5MgE1fU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Xf8B36xMXLZJdP/VeDx5aBN0tWTtRmzjpd0s6lgADEVUOZyJnIdDxo4CKyszfbLmXXI7eI2kSMyKJE5syHh2oU6QXANpyDEMBwKtgsvkEdOYHCj26jlAd1iDz+IbTSnoUnPMQOL3R0VB3wbGLgDlQEUygWkE0KFhCyvdqYxbcUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jzVIbQ+Y; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jzVIbQ+Y; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id AEA1F22234;
-	Mon, 26 Feb 2024 16:50:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708966231; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=vSafhwLE+1aCEASRiDt9ClUCXjXwFnHWlE/OOquVbwU=;
-	b=jzVIbQ+YuBJxiqK/9P59wPFCUqphbhgCNjuzwAG3PwzG4LqztEIPytAIUKvJxMtJ357Zfc
-	3AJ1CFGm39C8eOc0MrbiBQW9noo6kRWAyBOswvblE37y4sc34ufmMXHlbge8q+1+KwOTtN
-	Uc7k5uWGzBveLcuA7EI3dGBF2F3QIcU=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708966231; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=vSafhwLE+1aCEASRiDt9ClUCXjXwFnHWlE/OOquVbwU=;
-	b=jzVIbQ+YuBJxiqK/9P59wPFCUqphbhgCNjuzwAG3PwzG4LqztEIPytAIUKvJxMtJ357Zfc
-	3AJ1CFGm39C8eOc0MrbiBQW9noo6kRWAyBOswvblE37y4sc34ufmMXHlbge8q+1+KwOTtN
-	Uc7k5uWGzBveLcuA7EI3dGBF2F3QIcU=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A48CD1329E;
-	Mon, 26 Feb 2024 16:50:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id oD7kJ1fB3GUVAwAAn2gu4w
-	(envelope-from <dsterba@suse.com>); Mon, 26 Feb 2024 16:50:31 +0000
-From: David Sterba <dsterba@suse.com>
-To: torvalds@linux-foundation.org
-Cc: David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 6.8-rc7
-Date: Mon, 26 Feb 2024 17:49:20 +0100
-Message-ID: <cover.1708962398.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.42.1
+	s=arc-20240116; t=1708966183; c=relaxed/simple;
+	bh=CC8Bq496gBK0CbLLvpBBLkKHW8DXcXn0l6RFjvn84dI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dZ+HCN38WFQtRGwg54SLIRYSW6CjaJmF+LkcjwhujaJixykbFRnS1W2sHIeJqZCHpV878EoK+7iUKhTHLLXcjaLeetwnHtMZJQ/86qNB3ox/tbcFG/rnrvWF2zlgIKP9DTBifr+gJTICVhxngopan831Mz7bWthJT0b/qan4mwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-59fc31c57easo1118768eaf.1;
+        Mon, 26 Feb 2024 08:49:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708966181; x=1709570981;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6auEU26+vrivbR5NR8j7v17Mmzz73LvUwHdwC5AeGQI=;
+        b=OAvrJH7nrH+LBpnk81rIE6CXBSzWAoLIm2SIwQq4Td8ZaibsTXUZVqmWpacwxDdjCo
+         5FJN3t8ifF9ptfm2IKTunY9aKKL8WenmrA3X56GRJ6Uj94672nklD8CrgZX4j59BNdWG
+         EPiaYei7SOhfmQXL50IiWqkMJ736gMdD+w4ceWLFkvj0IIcYaAq6HdpsKjmK+XExpKl2
+         ILKQJ3xXMKhxXoS2ZzCCe8xfPCH6Ow9ZhJYgJPO4qWSFsz2DAhLX8WgMee2N8eytE+z6
+         OGKW/Xfgsltz1ArZ/Ixlox9gFFZg1zXW72nLtKlVHmDKS3hh8E4bNO5UFQWI1w3gZXwT
+         IZEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWgrAtDCHjAib0yfTYpF7QmOpFx/yKbLSzOStPpTxxpCVMjvTO81eS8OcSYhomh4yYeZTugt4epIjRWUnnYqQwmdnwA7O49ULXUnoc3
+X-Gm-Message-State: AOJu0YzgORBijK5sMRLtNxjz1/fXx1La/ZczLoTM3k34Ai9MWMUfzifC
+	ipuhGupJmM5ZqZStQ5JTmUvqehD4wo3EJRt5hdOus2l+laZJPz5bNVc0f6X5p3nSNDdP3pML1QF
+	+7fhrSEG6pzJ8J7otTWLb+k/hFZQ=
+X-Google-Smtp-Source: AGHT+IF2JQco6zQ78x+kKOkBl2hjfXBvWl2zy1rri4zCpwQhTQK5Go5bYKfIaVFZrCNjNDYo5dR0t5I1Qcxzy4qw5Ek=
+X-Received: by 2002:a4a:d996:0:b0:5a0:4216:c5f0 with SMTP id
+ k22-20020a4ad996000000b005a04216c5f0mr6957887oou.0.1708966180928; Mon, 26 Feb
+ 2024 08:49:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=jzVIbQ+Y
-X-Spamd-Result: default: False [1.69 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DWL_DNSWL_BLOCKED(0.00)[suse.com:dkim];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 1.69
-X-Rspamd-Queue-Id: AEA1F22234
-X-Spam-Level: *
-X-Spam-Flag: NO
-X-Spamd-Bar: +
+References: <6021126.lOV4Wx5bFT@kreacher> <2175138.irdbgypaU6@kreacher>
+In-Reply-To: <2175138.irdbgypaU6@kreacher>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 26 Feb 2024 17:49:29 +0100
+Message-ID: <CAJZ5v0hbSMQVaBry_hye9wrEOjMq2_anhbV0B48eTF8FWYpFXw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/5] ACPI: scan: Relocate acpi_bus_trim_one()
+To: Jonathan Cameron <jonathan.cameron@huawei.com>
+Cc: Linux ACPI <linux-acpi@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Mika Westerberg <mika.westerberg@linux.intel.com>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	"Russell King (Oracle)" <linux@armlinux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Mon, Feb 26, 2024 at 5:47=E2=80=AFPM Rafael J. Wysocki <rjw@rjwysocki.ne=
+t> wrote:
+>
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> Relocate acpi_bus_trim_one() (without modifications) so as to avoid the
+> need to add a forward declaration of it in a subsequent patch.
+>
+> No functional changes.
+>
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>
+> v1 -> v2: Add R-by from Jonathan.
 
-a few more fixes for recently reported or discovered problems. Please
-pull, thanks.
+I actually forgot to add the R-bys, but let's assume they are here (no
+need to look at the first two patches again).
 
-- fix corner case of send that would generate potentially large stream
-  of zeros if there's a hole at the end of the file
-
-- fix chunk validation in zoned mode on conventional zones, it was
-  possible to create chunks that would not be allowed on sequential
-  zones
-
-- fix validation of dev-replace ioctl filenames
-
-- fix KCSAN warnings about access to block reserve struct members
-
-----------------------------------------------------------------
-The following changes since commit b0ad381fa7690244802aed119b478b4bdafc31dd:
-
-  btrfs: fix deadlock with fiemap and extent locking (2024-02-19 11:20:00 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.8-rc6-tag
-
-for you to fetch changes up to c7bb26b847e5b97814f522686068c5628e2b3646:
-
-  btrfs: fix data race at btrfs_use_block_rsv() when accessing block reserve (2024-02-22 12:15:12 +0100)
-
-----------------------------------------------------------------
-David Sterba (1):
-      btrfs: dev-replace: properly validate device names
-
-Filipe Manana (3):
-      btrfs: send: don't issue unnecessary zero writes for trailing hole
-      btrfs: fix data races when accessing the reserved amount of block reserves
-      btrfs: fix data race at btrfs_use_block_rsv() when accessing block reserve
-
-Johannes Thumshirn (1):
-      btrfs: zoned: don't skip block group profile checks on conventional zones
-
- fs/btrfs/block-rsv.c   |  2 +-
- fs/btrfs/block-rsv.h   | 32 ++++++++++++++++++++++++++++++++
- fs/btrfs/dev-replace.c | 24 ++++++++++++++++++++----
- fs/btrfs/send.c        | 17 +++++++++++++----
- fs/btrfs/space-info.c  | 26 +++++++++++++-------------
- fs/btrfs/zoned.c       |  9 +++++++++
- 6 files changed, 88 insertions(+), 22 deletions(-)
+> ---
+>  drivers/acpi/scan.c |   52 ++++++++++++++++++++++++++-------------------=
+-------
+>  1 file changed, 26 insertions(+), 26 deletions(-)
+>
+> Index: linux-pm/drivers/acpi/scan.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- linux-pm.orig/drivers/acpi/scan.c
+> +++ linux-pm/drivers/acpi/scan.c
+> @@ -244,6 +244,32 @@ static int acpi_scan_try_to_offline(stru
+>         return 0;
+>  }
+>
+> +static int acpi_bus_trim_one(struct acpi_device *adev, void *not_used)
+> +{
+> +       struct acpi_scan_handler *handler =3D adev->handler;
+> +
+> +       acpi_dev_for_each_child_reverse(adev, acpi_bus_trim_one, NULL);
+> +
+> +       adev->flags.match_driver =3D false;
+> +       if (handler) {
+> +               if (handler->detach)
+> +                       handler->detach(adev);
+> +
+> +               adev->handler =3D NULL;
+> +       } else {
+> +               device_release_driver(&adev->dev);
+> +       }
+> +       /*
+> +        * Most likely, the device is going away, so put it into D3cold b=
+efore
+> +        * that.
+> +        */
+> +       acpi_device_set_power(adev, ACPI_STATE_D3_COLD);
+> +       adev->flags.initialized =3D false;
+> +       acpi_device_clear_enumerated(adev);
+> +
+> +       return 0;
+> +}
+> +
+>  static int acpi_scan_hot_remove(struct acpi_device *device)
+>  {
+>         acpi_handle handle =3D device->handle;
+> @@ -2547,32 +2573,6 @@ int acpi_bus_scan(acpi_handle handle)
+>  }
+>  EXPORT_SYMBOL(acpi_bus_scan);
+>
+> -static int acpi_bus_trim_one(struct acpi_device *adev, void *not_used)
+> -{
+> -       struct acpi_scan_handler *handler =3D adev->handler;
+> -
+> -       acpi_dev_for_each_child_reverse(adev, acpi_bus_trim_one, NULL);
+> -
+> -       adev->flags.match_driver =3D false;
+> -       if (handler) {
+> -               if (handler->detach)
+> -                       handler->detach(adev);
+> -
+> -               adev->handler =3D NULL;
+> -       } else {
+> -               device_release_driver(&adev->dev);
+> -       }
+> -       /*
+> -        * Most likely, the device is going away, so put it into D3cold b=
+efore
+> -        * that.
+> -        */
+> -       acpi_device_set_power(adev, ACPI_STATE_D3_COLD);
+> -       adev->flags.initialized =3D false;
+> -       acpi_device_clear_enumerated(adev);
+> -
+> -       return 0;
+> -}
+> -
+>  /**
+>   * acpi_bus_trim - Detach scan handlers and drivers from ACPI device obj=
+ects.
+>   * @adev: Root of the ACPI namespace scope to walk.
+>
+>
+>
 
