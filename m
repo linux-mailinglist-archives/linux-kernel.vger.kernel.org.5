@@ -1,228 +1,145 @@
-Return-Path: <linux-kernel+bounces-81911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81912-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 840FE867C04
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:30:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42D13867C05
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:30:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F27C61F2DFF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:30:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC44D1F2E10D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:30:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A60C012F58F;
-	Mon, 26 Feb 2024 16:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23A8912F5BB;
+	Mon, 26 Feb 2024 16:30:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="IPFypEV8"
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2070.outbound.protection.outlook.com [40.107.7.70])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UP2T5gRo"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9ABE819;
-	Mon, 26 Feb 2024 16:30:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.70
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708965029; cv=fail; b=qw+EnKyDXvZhEeAjmFOH2goqBWpd59KSYp8lc5+I3AgbJuxXudkVwVSlRU4G6wYbvJfxtg5bSYcIhXRLIGbH7JGm6fMAZW8A2LIlBmyzI9UmKUDaEF3ZFqQ8ilTEni2o3kNAuM8OA4Ep2X4KGbSzOJbZjDV9rIdeX/LIkXjqs2c=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708965029; c=relaxed/simple;
-	bh=KHtdWTX86L1aVtjJ6hFfwQ0MiaEkSZdphGRFRSkgJoM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Qi4wIXytKb0R3d6E9Ur6vqDhmGVzrAqAtoS+sRv28DYNRwEYQTCJLGWfTcB9J+fJBQ4rz7muSYciuF+LqDr1aPUIYeCrtvda/CuaXsr+RqfmgQq3vLgLQtnvrmlbWEED1z1vs1SjmjPYD2LuiBDkiQiv5TrNVRIJjCvUh4g4LuM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=IPFypEV8; arc=fail smtp.client-ip=40.107.7.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ldUdruHL6OE3Zy3nqBQopc2IGCcsliwQqMCkKefDtOQvT8crycgWYnQ7dfvqQKb0e/isZAaXEzgEKdl7c+fA0YMX3jT0nP/rx8VsK9PT3Vr9GoiReE+jwPpz/4kNuMjx6yK//tw8dZ58pTVFvM+3U+ANBA0LyESV+tpuSmKjOTSu+4yQ0VYBLVsuXTWzQRsrVub2J9+p1Z2PsNJgxtDhxbD70rUE1Kr1fxUUOK3CLDqBXBmPrAYZ3b+LCtLGoj4pnQeWRp5aTT2zJnzpoMVggA4CUP+me6+XQ53sIRAewthIMAz/Kgpr1PdkWsIsqmmc5zlKuS/2YNXJ+0N+4Qgx6g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mLPVBVM0ZqSsxV6Q+cAeBbV36ajULFmjHpOllaWnbJ8=;
- b=fRG/iG0i4aQQRRaY96pGf5FU8bpZsc6KP6ATFb8kaszaamo+uZ9HwgspMofaakO92tDJaFEyEWVLsWycA9n+PlHBVG6lAAgoNW/8eTKuiw0sUF2Vq3Y8IzmWdOvZoURe7YVa/4s0Ay6jPOFFgsqAO2roRk0J60mPt7dL10fbhMAAhZcTZViz92Dn0t8UUEjyp8jMhmKpugIcaabvgVhuPXKgMSCYm1/X7dY5qAS6dhfg1/bDEnRqavH+88YVvxVCmTUZKx4GdAFHb9tfTtpJZjSPhU5BJoy36LU93y9Nuwn7VJ+XyP4zlG/fNJG6rP5Q6PV1v9Ml+jeVuwLYlBmbCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mLPVBVM0ZqSsxV6Q+cAeBbV36ajULFmjHpOllaWnbJ8=;
- b=IPFypEV8p/MtlcVIpcEJW5I5wDAL/5r4PDwfELujZGXs8DETdqx+b5KB+8VEjfflBDty/uTKLNSuDEmePN0VIKSPgXRFM4ECU9ZP4p2H3wvV3S5EwzBqikrQua7hyVfsCJ0TaH9FgBRbkrTJbHzv9K0ZwhLab60z9YXoW7zphow=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by VI1PR04MB6831.eurprd04.prod.outlook.com (2603:10a6:803:135::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.34; Mon, 26 Feb
- 2024 16:30:23 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9af4:87e:d74:94aa]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9af4:87e:d74:94aa%7]) with mapi id 15.20.7316.032; Mon, 26 Feb 2024
- 16:30:23 +0000
-Date: Mon, 26 Feb 2024 11:30:13 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Serge Semin <fancer.lancer@gmail.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, mhi@lists.linux.dev,
-	Siddharth Vadapalli <s-vadapalli@ti.com>
-Subject: Re: [PATCH v3 3/5] PCI: dwc: Pass the eDMA mapping format flag
- directly from glue drivers
-Message-ID: <Zdy8lVU6r+JO6OSJ@lizhi-Precision-Tower-5810>
-References: <20240226-dw-hdma-v3-0-cfcb8171fc24@linaro.org>
- <20240226-dw-hdma-v3-3-cfcb8171fc24@linaro.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240226-dw-hdma-v3-3-cfcb8171fc24@linaro.org>
-X-ClientProxiedBy: BY5PR16CA0033.namprd16.prod.outlook.com
- (2603:10b6:a03:1a0::46) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E46C212F5A8
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:30:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708965034; cv=none; b=EUeAdtpsLO9KGzbxUrOzL7/WpfKpNDe6gMQhjMpwYAu64jPYjVTcx8gHb4HrT7bmSbHt7avJ/PpRXWJkzgca4OQ0xWhpekK5dogC9YoOOghM5qVJZO2t4VY5gUUwhq2Vw81QL2d77ZmubgWQLYfo5znEJLM7rDlTGJfgAjcJylc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708965034; c=relaxed/simple;
+	bh=WkaRCtgixD/AVecS0IPHxFCKd9hFe12qK+vvbOWbbW0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CDAp5clezJLe4QLrHGSP3gT3AU6KfhzaPOlo9EeNUXaSsENaQ27EP1bj+m2O2SDs0A69JXt0//JFDYWc7KtmQiUylTqwDv/xr08QQREHEfE02nqfndlIh0JmEzRbdzV6Gs4r6Eqok30f25oFk7dW14rIzJdkX+ZL6IaUAte52kg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UP2T5gRo; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708965033; x=1740501033;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=WkaRCtgixD/AVecS0IPHxFCKd9hFe12qK+vvbOWbbW0=;
+  b=UP2T5gRoAKEtI03IV9PvaJjlP92WqFY5mkSvHUpVDbtTG2dDmoto+3jS
+   YRsN0+dHrS6LWgLy/0OL6NplJtpHIJhWLL4Sj66PDVw2uFLaQ8AsMPLcY
+   TLmX3UszKZtDORRVgCePs1GLfNcK4kNQUyCYJb/WLUUcjqtnaeKQv1yjc
+   jIkuNVF6d0u31PL4yx4dIEGXwPVKQSRNHgW02Ea5nd/jZ4KQZ1+R32UtP
+   PscjWjJnQttG8aenMOO8qhX5AGNWoBbS91fJXIno1tLb5tT+iZPMqr/Pa
+   tULglp6mGysqZKmkzBXCgfLJ7zGxe5nzMYgk+RbgMl/FDqy6KTgd1EwJ8
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3185271"
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="3185271"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 08:30:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="913881165"
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="913881165"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 08:30:29 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1reds2-00000007jUm-1XIb;
+	Mon, 26 Feb 2024 18:30:26 +0200
+Date: Mon, 26 Feb 2024 18:30:26 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	intel-gfx@lists.freedesktop.org, Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/12] drm/i915: Indicate which pipe failed the fastset
+ check overall
+Message-ID: <Zdy8osVL-KnB2tV4@smile.fi.intel.com>
+References: <20240215164055.30585-1-ville.syrjala@linux.intel.com>
+ <20240215164055.30585-2-ville.syrjala@linux.intel.com>
+ <ZdfApN1h97GTfL1t@intel.com>
+ <Zdj2ONs8BZ6959Xb@intel.com>
+ <87bk83mfwp.fsf@intel.com>
+ <ZdyqAMfEfhyk6zm2@smile.fi.intel.com>
+ <878r37me5k.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|VI1PR04MB6831:EE_
-X-MS-Office365-Filtering-Correlation-Id: 37a35a0e-550f-41ce-6889-08dc36e83b04
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	eCiTzO8eY11qmPIpycjbpyeUu8v5g4D7qyFegqjadKp5ldpdoQAEtSA2if6z0AE01QzidB57tZRFqCFgjZG8OAYWKoXb+Sj1JyB+4S6Zfy9a66KQH1OmMg/Vr79BqTbAtUv2rJ9SYmsX/4Srla8G4ucI6FF08pv3C7wwQJBF2yzC9XLPkYmHbv2ku7we3C9eRyaffWtgfn0lnVM99bFhRhDyY61G6Heuy/QvrsuQOderMTMA7eomMbxS2oTvs8RPkTv9AVAJU3DNlUSZvgSd4+ysFyxW1BY259MdER1O6xgioXVYYiUOL/18fr54d0s4YlJ+d2IMGBtTBeF9sMYm3hMddjzOg7zyCtAQepwKrY3wJRGg5J579m6MoxdyePhsxuvL5cIEL/eEEEcPmVFpjQYLOOzK6snHtlm4caS4RTCAvb1npZnmNAsKqO+8H9SuFPxYdvgWzGUbLBBvo01J3kdYll9ZMpMkJM6txUbjy6U8IktvILokmtajToFYjQJwxQxjnSh1PoIqaeLdt8lXVNGQ9ZiFhVS82Q1QlXTw6JFIhPeybMOUwhRLaBxsbH5DVGFTDai1FYg2uDZBL6OzKBYunKG14XwDyCmXYSk1GzwskHpskunZMPFeZrJ++4lsHwtih3OILUza+dS9q4A/egYzuwZv5OkJsZj1SN/P+MqNwRCwm+faFtocCxh4VFv7gMN+jJ7THhfjmnU0ks7JV6ikcalrWUJpwWntuNvjzDQ=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?SLOMenApXHLfyQyFsgR6E/tL0D18L4iqWlDkVqmBdcBcYjzO78OCwGzZQhNd?=
- =?us-ascii?Q?7F5D27TrfjD6vzaj6InKnv5dM/5DUf1MX9aO/c3QjRnmyV1n9OO7xMHsIbHu?=
- =?us-ascii?Q?dlyJcMQajlpVG6J88fZfqqmBjGg393cYxweg19z2Po59BO5cO9WOfcM4VBJO?=
- =?us-ascii?Q?G852AS+DfEzF1NX6AOv1bJ1XqTbNEG/drcTsDEr6vawFbLJRVjJv3oyMjzBj?=
- =?us-ascii?Q?u+8uGcuFIIC8XEfpmXhQfV2Mt2ITPSnylj2IHyf2jlc2iw0uFk1PnKHR9A4x?=
- =?us-ascii?Q?aWKST5ToxFuc4STZaWhQjwFgNPKQyGfsQthoO6DbEmw5VKFJj1y2BABudvO1?=
- =?us-ascii?Q?9ksbWJ5LlT4E2CJUAKy4v9u8ZHzW1CxPAIXyEusFWxX53v1J4t57++RuXSMT?=
- =?us-ascii?Q?BzbAM2KRWtXotYN7sNGP4ig+Qjf8BMxrGhOAEq8jqIbGGyI7Hf/Hlc5S35CI?=
- =?us-ascii?Q?koVTW6wApSfyCNxxtcr3jhFBADHL68aYesPuOkWh7xx7zQaa07LV/1xrRyoV?=
- =?us-ascii?Q?p2Yp1fApcULyG6FzuuoqUGFbH/Vi6CxbldRXzVjQ6Halru2gwBoMlX/XKKOv?=
- =?us-ascii?Q?rIfCGaZBYDUd2aEsbScjS6U7k7bAZs5zZqXWJdwJ90KXYv6sqh1pAxJEgRTX?=
- =?us-ascii?Q?MVxzlNmE72LhFrC6KTSoKrdaQdbUvipgjuDPRP9Ux6380fP+Hr0x+8L1EgQ6?=
- =?us-ascii?Q?2xI0CzJewVwPv8t6LVibcCqIXz9azN/rzAigd7e8ajdhEOp78nLDsHOGsvBW?=
- =?us-ascii?Q?0nYfKGZtv/koZjfCCcYr8LgzHzpPmn7WRwntkjFV9Nq1MA2VUpthPAehaC4X?=
- =?us-ascii?Q?WG3GfmXqEzRq1TC/HS1hTXUD+BcHm/Pw4HGp9tAwg5NLlfrUEDVecEanclOz?=
- =?us-ascii?Q?PEAn79rEePaU/v3dTKBxI8hBPAXs5psbiERWEP+ntwy0auaHUVsXIFY+I/W6?=
- =?us-ascii?Q?8l5LrdQDmZQjSdx8KOVdGI/oF5Sb2ypvUycw6ziQoybRj0GpPGUMq5ZlqHR+?=
- =?us-ascii?Q?kqc2TFobup8x7LRi7JvaN0waulVB3w+QPc6DFOuCNNPv7Fy8KwNs6CFi3COz?=
- =?us-ascii?Q?WSfY14krBmvYGomwhs0BZggb7XYbLpmBqiAYIhNj7Fy8FIopfQSU3N40DPb0?=
- =?us-ascii?Q?j0qp70NqI91rR6LWOsfvqqzeSqi0MzK5wvegz7Gsc/1jwC5/qt9BGO0bo802?=
- =?us-ascii?Q?yqjRhdiGoZVOULyoeK6IHRrqwanuMdx/vmF+j9iTJGD2tR6ksCpoR1e2CnD2?=
- =?us-ascii?Q?+LzAoneJxOqPRNy4ErIzNqXPZdQoGLcxdQy+9gD0ta0ve+uPO84xr9a2NjQ/?=
- =?us-ascii?Q?BeI0YXXs645XdIv8sok2PsP5vPCLgKMVyhrULPpxDQk8Mj5dho6ANWdYpbvB?=
- =?us-ascii?Q?8XIJ5OHqmNrz719onnuLJ+rLfoqKntC+rjAwzuOftEdcIvSZGlEwXo/2F2f7?=
- =?us-ascii?Q?UUXiRMuifztyokuVVNAcW9qrCI1qNPZXYPZ+lhhkToA0rb/VfTt5WrWL9I0M?=
- =?us-ascii?Q?Olj9bC9RidIMBz1wVCvWtpsXbplVDQ2uTiQ1eLSIuCv4MkqT48CILEoAKIal?=
- =?us-ascii?Q?2sDNbLU8tftOngaOs5g=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 37a35a0e-550f-41ce-6889-08dc36e83b04
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 16:30:23.1210
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mLYcgFdI+hCJaR02TEWXqwHaxHg7bCHZ5FWsXIEMb25WFX3VJDvxyFEujfJKXK3897NW3YUZo3TIdIV2/LAvGg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6831
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <878r37me5k.fsf@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Mon, Feb 26, 2024 at 05:07:28PM +0530, Manivannan Sadhasivam wrote:
-> Instead of maintaining a separate capability for glue drivers that cannot
-> support auto detection of the eDMA mapping format, let's pass the mapping
-> format directly from them.
+On Mon, Feb 26, 2024 at 05:35:51PM +0200, Jani Nikula wrote:
+> On Mon, 26 Feb 2024, Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > On Mon, Feb 26, 2024 at 04:57:58PM +0200, Jani Nikula wrote:
+> >> On Fri, 23 Feb 2024, Ville Syrjälä <ville.syrjala@linux.intel.com> wrote:
+> >> > On Thu, Feb 22, 2024 at 04:46:12PM -0500, Rodrigo Vivi wrote:
 
-Sorry, what's mapping? is it register address layout?
+..
 
-Frank
+> >> > I think the proper solution would be to have actually
+> >> > sensible conversion specifiers in the format string.
+> >> > So instead of %<set of random characters> we'd have something
+> >> > more like %{drm_crtc} (or whatever color you want to throw
+> >> > on that particular bikeshed).
+> >> 
+> >> Personally I suck at remembering even the standard printf conversion
+> >> specifiers, let alone all the kernel extensions. I basically have to
+> >> look them up every time. I'd really love some %{name} format for named
+> >> pointer things. And indeed preferrably without the %p. Just %{name}.
+> >
+> > It will become something like %{name[:subextensions]}, where subextensions
+> > is what we now have with different letters/numbers after %pX (X is a letter
+> > which you proposed to have written as name AFAIU).
+> 
+> Thanks, I appreciate it, a lot!
 
+Oh, I meant "can" rather than "will".
+
+> But could you perhaps try to go with just clean %{name} only instead of
+> adding [:subextensions] right away, please?
 > 
-> This will simplify the code and also allow adding HDMA support that also
-> doesn't support auto detection of mapping format.
+> I presume the suggestion comes from an implementation detail, and I
+> guess it would be handy to reuse the current implementation for
+> subextension.
 > 
-> Suggested-by: Serge Semin <fancer.lancer@gmail.com>
-> Reviewed-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/pci/controller/dwc/pcie-designware.c | 16 +++++++++-------
->  drivers/pci/controller/dwc/pcie-designware.h |  5 ++---
->  drivers/pci/controller/dwc/pcie-rcar-gen4.c  |  2 +-
->  3 files changed, 12 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> index ce273c3c5421..3e90b9947a13 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> @@ -894,18 +894,20 @@ static int dw_pcie_edma_find_mf(struct dw_pcie *pci)
->  {
->  	u32 val;
->  
-> +	/*
-> +	 * Bail out finding the mapping format if it is already set by the glue
-> +	 * driver. Also ensure that the edma.reg_base is pointing to a valid
-> +	 * memory region.
-> +	 */
-> +	if (pci->edma.mf != EDMA_MF_EDMA_LEGACY)
-> +		return pci->edma.reg_base ? 0 : -ENODEV;
-> +
->  	/*
->  	 * Indirect eDMA CSRs access has been completely removed since v5.40a
->  	 * thus no space is now reserved for the eDMA channels viewport and
->  	 * former DMA CTRL register is no longer fixed to FFs.
-> -	 *
-> -	 * Note that Renesas R-Car S4-8's PCIe controllers for unknown reason
-> -	 * have zeros in the eDMA CTRL register even though the HW-manual
-> -	 * explicitly states there must FFs if the unrolled mapping is enabled.
-> -	 * For such cases the low-level drivers are supposed to manually
-> -	 * activate the unrolled mapping to bypass the auto-detection procedure.
->  	 */
-> -	if (dw_pcie_ver_is_ge(pci, 540A) || dw_pcie_cap_is(pci, EDMA_UNROLL))
-> +	if (dw_pcie_ver_is_ge(pci, 540A))
->  		val = 0xFFFFFFFF;
->  	else
->  		val = dw_pcie_readl_dbi(pci, PCIE_DMA_VIEWPORT_BASE + PCIE_DMA_CTRL);
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> index 26dae4837462..995805279021 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> @@ -51,9 +51,8 @@
->  
->  /* DWC PCIe controller capabilities */
->  #define DW_PCIE_CAP_REQ_RES		0
-> -#define DW_PCIE_CAP_EDMA_UNROLL		1
-> -#define DW_PCIE_CAP_IATU_UNROLL		2
-> -#define DW_PCIE_CAP_CDM_CHECK		3
-> +#define DW_PCIE_CAP_IATU_UNROLL		1
-> +#define DW_PCIE_CAP_CDM_CHECK		2
->  
->  #define dw_pcie_cap_is(_pci, _cap) \
->  	test_bit(DW_PCIE_CAP_ ## _cap, &(_pci)->caps)
-> diff --git a/drivers/pci/controller/dwc/pcie-rcar-gen4.c b/drivers/pci/controller/dwc/pcie-rcar-gen4.c
-> index e9166619b1f9..3c535ef5ea91 100644
-> --- a/drivers/pci/controller/dwc/pcie-rcar-gen4.c
-> +++ b/drivers/pci/controller/dwc/pcie-rcar-gen4.c
-> @@ -255,7 +255,7 @@ static struct rcar_gen4_pcie *rcar_gen4_pcie_alloc(struct platform_device *pdev)
->  	rcar->dw.ops = &dw_pcie_ops;
->  	rcar->dw.dev = dev;
->  	rcar->pdev = pdev;
-> -	dw_pcie_cap_set(&rcar->dw, EDMA_UNROLL);
-> +	rcar->dw.edma.mf = EDMA_MF_EDMA_UNROLL;
->  	dw_pcie_cap_set(&rcar->dw, REQ_RES);
->  	platform_set_drvdata(pdev, rcar);
->  
-> 
-> -- 
-> 2.25.1
-> 
+> For example, %pb -> %{bitmap} and %pbl -> %{bitmap:l}. But really I
+> think the better option would be for the latter to become, say,
+> %{bitmap-list}. The goal here is to make them easy to remember and
+> understand, without resorting to looking up the documentation!
+
+Okay, so it seems you have something in mind, perhaps you can submit a draft
+of the list of those "names"?
+
+> >> And then we could discuss adding support for drm specific things. I
+> >> guess one downside is that the functions to do this would have to be in
+> >> vsprintf.c instead of drm. Unless we add some code in drm for this
+> >> that's always built-in.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
