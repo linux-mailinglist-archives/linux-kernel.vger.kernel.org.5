@@ -1,223 +1,127 @@
-Return-Path: <linux-kernel+bounces-81730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81729-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB609867976
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:06:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3D01867975
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:06:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDF0D1C2AE7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:06:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D14D299BB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:06:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D542131E29;
-	Mon, 26 Feb 2024 14:44:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B1BD13174A;
+	Mon, 26 Feb 2024 14:44:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RHh+Jln/"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oqqs7shT"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C28B612BF29
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 14:44:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE42B12BF29
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 14:44:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708958692; cv=none; b=dWJl9wvNa5bN637v06FXtdY1wmHpv79B4aZNyMLlGhq8e7eOK/nXvJttE38Mv4jjKnGqUlJWDu+S3UHxmhzUigMU/hzfQEpdt9EFoNuBUIriU/tYmD/QY5iUXRix8vtHkbwALHPdoHp+RN0xdC3ondiKvGJlAEKE4S5QuaPNtMI=
+	t=1708958687; cv=none; b=lLKvkb10Gf2x9ZpvzBhrVGHXAfyefz4sptP38LUXuk1oo6pKTzkWwDNUJduGyXxt1NhEPjYg8UKUnzGtq/D0ibONA44wZ4XalZGkj+SJTfRB7yjO3IQ95Xz9EMx4c/AY85GWlVLXHQBeLhQSWaKf9Z9GPIl+papxRM2wOJLt9UE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708958692; c=relaxed/simple;
-	bh=oRQ9v7kB5bqRxTK8PhLxJf5eEHNOuOC6up/KxjKjbJg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=X6fNp3yViK8iN7rF/wdWqQcDkHCwipcqq6BW4yCMznEx4VKlpT4H8upzdfKiFeu+CJbxZp+Qe3seW5wmI4qoFPKz8Xcm8zlrvvAIaavD6Pb7PKb9kt3FA+zen17udJ68gdLTZyBAaf2smjChOqDSoBelwVNU5JIJa+EXJ3/z3nQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RHh+Jln/; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708958689;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WVAz6OqM9YBIHNwy968Ocu5br0K4GggiejttotLLqFo=;
-	b=RHh+Jln/hKWOlEqC8rYEhnGHMlVlzkJ/MrWipY10zjZ0s2M0p2dgAyB7GXe9dWKGYZ00/p
-	pyjp1CdklRURxc3n14pUYhubScFaR7tqWqQZhWt+UKpm2f3r0iHE64ia7YgMuwujL+l7nC
-	CIJgpApTddd4dsEc4/tUY7j62DlAEE8=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-557-21C21rZKMhKTakSEKwNy6Q-1; Mon, 26 Feb 2024 09:44:48 -0500
-X-MC-Unique: 21C21rZKMhKTakSEKwNy6Q-1
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5c6245bc7caso2582708a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 06:44:48 -0800 (PST)
+	s=arc-20240116; t=1708958687; c=relaxed/simple;
+	bh=+7EGPxI8njojWIFtKK0niBxOgiA/ror8Zq84fmjVI+s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kxTicjA7QnTghOeWGSu4ENmf0AzjY6G/rviaYKu6D/zvAFVKTNA8R4PUGjwFr9mKs/qFT2IJENQq6eD7SVnFCkVc6o0eknDxeh3eLKsmZa7JaS8MgxCCncmdcB3DfCHQm1WiKzbA/0vzveTLKGFkO9oacu/VfP3cBmQhVT+za1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oqqs7shT; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-41241f64c6bso24698905e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 06:44:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708958683; x=1709563483; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xebCF9Rlp7+lnTRinKmQM1qUIifmCWo6oOreD/07nk0=;
+        b=oqqs7shTGESEKQNn6q9EY0l+JAG9rPGh9KneyUKyY1Gb/QVjOzpdbXgc9gc7TdXgKW
+         yzIWcNlbH0QNXTfH55/oeUkSA1Tx2roq1KL9bb/smfdYRgPWuJF8PZ6MDMP/uuKJAMHA
+         lL9g43jLJKeyD0Ktc9YGjAfYUKYb5iq0jcA4DMRU3JtaiU9D1IcP6OwsMqApQtRx+y6Y
+         CMZpIne3ANYaKB5apSijLkgSG5F/hbVOAHoqcC01KkFhcdM4jp9S18Ezj4fYVac1DTB5
+         HAmUafG5tWnWHduUJf9Yfa2J3nnR2v+bOez0FE4dCY2m0t5bLf3dAegtdkwsVSsAy6Li
+         0vVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708958687; x=1709563487;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WVAz6OqM9YBIHNwy968Ocu5br0K4GggiejttotLLqFo=;
-        b=uIigPFMEle7C9nckYzqQkm5xshfX6ukX01yS+MLZWwP3rNCqSHqA13LUf1mrSzanKb
-         4zojojbArku9mV+tgsBgLJjMOzzKdxwMhq19LlsGj8pHthXZa3JwO6bsxSMKQVuI3SYS
-         dEeJ00zUCQNHKl/gY+tBlqCnALMitKFfluSR64up/ey/PE7i5xmZF2kAC6g7N2LnyXC4
-         pG6lF6lRXq9GUDNx9kxC+f7WJRSTYpLqdDTxQG+jT9JJz/YO4HrLiRYbrl9PHwSLlbtP
-         FAlZOKliI4c0icr5Dc/4e5Gmnm+IQOHDjNLARxWLNWfi1scFRvsk3WF+bIe/Q8cOI3+h
-         NjSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUGr/wdS6ZrsRLB8fehd+EZkTvczTRCUxswcqnQLlwPincuHxIvZeOX6hFcq6QbS4lMfrH4eea2PPvuqhbD1uIqJlEAmFzyRmg6ImwU
-X-Gm-Message-State: AOJu0YzQkR1Hb6JCsbnfKDK8YTue12wPxCII1kcoIJ7cqDghjJgQjadU
-	Q1sXf7AreK/SDHwFBMJwNDrWyLPsJt8O4+YY6F0rVoG+UsCGa+P06X2FPJSKQUK3e8qvZAPIp1W
-	FYfAakkR5Urp8Qmn6nxKl7wIlYL+MFZNsRFI34wSCBL+DNtYZ0N+s6vp9T57T1dZl8+f7pKLymU
-	sxAtb1ODQ21tvmctRLUmKsBPvinYM3/nESXNCF
-X-Received: by 2002:a17:902:e841:b0:1dc:1c81:1b19 with SMTP id t1-20020a170902e84100b001dc1c811b19mr9002132plg.3.1708958687290;
-        Mon, 26 Feb 2024 06:44:47 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG7cionqfGU4TMZnBAEDSHJq9kGuFCGsOtY/uktnXaRrzbGASDaU/mnx+5J/yKR+IzenDmrRXpXREZPNo0jbEo=
-X-Received: by 2002:a17:902:e841:b0:1dc:1c81:1b19 with SMTP id
- t1-20020a170902e84100b001dc1c811b19mr9002102plg.3.1708958686977; Mon, 26 Feb
- 2024 06:44:46 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708958683; x=1709563483;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xebCF9Rlp7+lnTRinKmQM1qUIifmCWo6oOreD/07nk0=;
+        b=PxPV1Y2oL7qICSaKdB40kz+U5f+bMGgrdX88bCB5viCXZT547Hre8DV10bWr3LPxSx
+         voDPhk4+9N24oBAD1cZ+BqUXSy9l4mUggCV9VNBhxFVQhpZSLmMCZ7UzV2UKCN2yt5Nv
+         B7UngCpSJuE3xpHGnLb+Dak/lOwkglC2EmY44VYKp8NMkXYIhptCYZi/+8RyM2vP9N9X
+         bR6Ppe+t/93ZJ+DkA8cTHt6XDkglm6Y7EzoIUubD5vScvyz8Kieah9aMicC3vU8PCSZb
+         aKBEs8FCkGLCe8alxvqUdHcTeXwD9Q8wIhninFlQlOb6ofhtXPBG81buEhelxnahkEPK
+         N8rw==
+X-Forwarded-Encrypted: i=1; AJvYcCV36UTE9sLR8a1xLLxYEbnxSBuZuZrSU2wHLaqmeSnXd9qD4EVmfOIEVP+8B6T3m+wskutdLi2wkKkJZuvkItldaUDiWIaQtOBPXe/f
+X-Gm-Message-State: AOJu0YycLGqG2RyJ9z/Hl+Rw/Dqprq0WmmVENNjvij0CT8uw0dkmh+jU
+	eVDM9AkTvKbJlQZ+Cr8jYe4deD6WPNiAsBayzLJNPAcAemaVwHteOvxZFl0kTBU=
+X-Google-Smtp-Source: AGHT+IG9SpqrImlSczgJxnpgDOf0lff+zMPddH3C9S1iodwRZL/rSMYdzPAPbQ3AXMmt1pT+Z1JJIw==
+X-Received: by 2002:a05:600c:35d1:b0:412:a927:a646 with SMTP id r17-20020a05600c35d100b00412a927a646mr582114wmq.24.1708958683167;
+        Mon, 26 Feb 2024 06:44:43 -0800 (PST)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id n1-20020a05600c4f8100b004127ead18aasm8586036wmq.22.2024.02.26.06.44.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 06:44:42 -0800 (PST)
+Message-ID: <46630fa5-381a-4006-ade4-2c18e76331ff@linaro.org>
+Date: Mon, 26 Feb 2024 15:44:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240222075806.1816400-1-yukuai1@huaweicloud.com> <20240222075806.1816400-8-yukuai1@huaweicloud.com>
-In-Reply-To: <20240222075806.1816400-8-yukuai1@huaweicloud.com>
-From: Xiao Ni <xni@redhat.com>
-Date: Mon, 26 Feb 2024 22:44:35 +0800
-Message-ID: <CALTww2-jdEos2HHgBHYHc0VOh1tWYuWTztmvW4iaBi6bS8B-YQ@mail.gmail.com>
-Subject: Re: [PATCH md-6.9 07/10] md/raid1: factor out choose_slow_rdev() from read_balance()
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: paul.e.luse@linux.intel.com, song@kernel.org, neilb@suse.com, shli@fb.com, 
-	linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, yukuai3@huawei.com, 
-	yi.zhang@huawei.com, yangerkun@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] dt-bindings: timer: Add support for cadence TTC PWM
+Content-Language: en-US
+To: Mubin Sayyed <mubin.sayyed@amd.com>, krzysztof.kozlowski+dt@linaro.org,
+ robh+dt@kernel.org, conor+dt@kernel.org, devicetree@vger.kernel.org
+Cc: tglx@linutronix.de, michal.simek@amd.com, linux-kernel@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+References: <20240226093333.2581092-1-mubin.sayyed@amd.com>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <20240226093333.2581092-1-mubin.sayyed@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 22, 2024 at 4:04=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
-rote:
->
-> From: Yu Kuai <yukuai3@huawei.com>
->
-> read_balance() is hard to understand because there are too many status
-> and branches, and it's overlong.
->
-> This patch factor out the case to read the slow rdev from
-> read_balance(), there are no functional changes.
->
-> Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
-> Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+On 26/02/2024 10:33, Mubin Sayyed wrote:
+> Cadence TTC can act as PWM device, it will be supported through
+> separate PWM framework based driver. Decision to configure
+> specific TTC device as PWM or clocksource/clockevent would
+> be done based on presence of "#pwm-cells" property.
+> 
+> Also, interrupt property is not required for TTC PWM driver.
+> Update bindings to support TTC PWM configuration.
+> 
+> Signed-off-by: Mubin Sayyed <mubin.sayyed@amd.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
->  drivers/md/raid1.c | 69 ++++++++++++++++++++++++++++++++++------------
->  1 file changed, 52 insertions(+), 17 deletions(-)
->
-> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-> index 08c45ca55a7e..bc2f8fcbe5b3 100644
-> --- a/drivers/md/raid1.c
-> +++ b/drivers/md/raid1.c
-> @@ -620,6 +620,53 @@ static int choose_first_rdev(struct r1conf *conf, st=
-ruct r1bio *r1_bio,
->         return -1;
->  }
->
-> +static int choose_slow_rdev(struct r1conf *conf, struct r1bio *r1_bio,
-> +                           int *max_sectors)
-> +{
-> +       sector_t this_sector =3D r1_bio->sector;
-> +       int bb_disk =3D -1;
-> +       int bb_read_len =3D 0;
-> +       int disk;
-> +
-> +       for (disk =3D 0 ; disk < conf->raid_disks * 2 ; disk++) {
-> +               struct md_rdev *rdev;
-> +               int len;
-> +               int read_len;
-> +
-> +               if (r1_bio->bios[disk] =3D=3D IO_BLOCKED)
-> +                       continue;
-> +
-> +               rdev =3D conf->mirrors[disk].rdev;
-> +               if (!rdev || test_bit(Faulty, &rdev->flags) ||
-> +                   !test_bit(WriteMostly, &rdev->flags))
-> +                       continue;
-> +
-> +               /* there are no bad blocks, we can use this disk */
-> +               len =3D r1_bio->sectors;
-> +               read_len =3D raid1_check_read_range(rdev, this_sector, &l=
-en);
-> +               if (read_len =3D=3D r1_bio->sectors) {
-> +                       update_read_sectors(conf, disk, this_sector, read=
-_len);
-> +                       return disk;
-> +               }
-> +
-> +               /*
-> +                * there are partial bad blocks, choose the rdev with lar=
-gest
-> +                * read length.
-> +                */
-> +               if (read_len > bb_read_len) {
-> +                       bb_disk =3D disk;
-> +                       bb_read_len =3D read_len;
-> +               }
-> +       }
-> +
-> +       if (bb_disk !=3D -1) {
-> +               *max_sectors =3D bb_read_len;
-> +               update_read_sectors(conf, bb_disk, this_sector, bb_read_l=
-en);
-> +       }
-> +
-> +       return bb_disk;
-> +}
-> +
->  /*
->   * This routine returns the disk from which the requested read should
->   * be done. There is a per-array 'next expected sequential IO' sector
-> @@ -672,23 +719,8 @@ static int read_balance(struct r1conf *conf, struct =
-r1bio *r1_bio, int *max_sect
->                 if (!test_bit(In_sync, &rdev->flags) &&
->                     rdev->recovery_offset < this_sector + sectors)
->                         continue;
-> -               if (test_bit(WriteMostly, &rdev->flags)) {
-> -                       /* Don't balance among write-mostly, just
-> -                        * use the first as a last resort */
-> -                       if (best_dist_disk < 0) {
-> -                               if (is_badblock(rdev, this_sector, sector=
-s,
-> -                                               &first_bad, &bad_sectors)=
-) {
-> -                                       if (first_bad <=3D this_sector)
-> -                                               /* Cannot use this */
-> -                                               continue;
-> -                                       best_good_sectors =3D first_bad -=
- this_sector;
-> -                               } else
-> -                                       best_good_sectors =3D sectors;
-> -                               best_dist_disk =3D disk;
-> -                               best_pending_disk =3D disk;
-> -                       }
-> +               if (test_bit(WriteMostly, &rdev->flags))
->                         continue;
-> -               }
->                 /* This is a reasonable device to use.  It might
->                  * even be best.
->                  */
-> @@ -799,7 +831,10 @@ static int read_balance(struct r1conf *conf, struct =
-r1bio *r1_bio, int *max_sect
->         }
->         *max_sectors =3D sectors;
->
-> -       return best_disk;
-> +       if (best_disk >=3D 0)
-> +               return best_disk;
-> +
-> +       return choose_slow_rdev(conf, r1_bio, max_sectors);
->  }
->
->  static void wake_up_barrier(struct r1conf *conf)
-> --
-> 2.39.2
->
->
+> Changes for v3:
+>    Add Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>    tag
+>    Remove bindings from subject
+>    1/3 and 3/3 are dropped as of now (WIP).
+> 
+> Changes for v2:
+>    Update subject
+>    Modify #pwm-cells to constant 3
+>    Update example to use generic name
+> 
+> link for v2:
+>    https://lore.kernel.org/linux-arm-kernel/20231114124748.581850-2-mubin.sayyed@amd.com/T/
+> ---
 
-This patch looks good to me.
-Reviewed-by: Xiao Ni <xni@redhat.com>
+Applied, thanks
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
 
