@@ -1,135 +1,153 @@
-Return-Path: <linux-kernel+bounces-81885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5403867B8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:17:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0346A867B97
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:20:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4524C1F269E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:17:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD3E81F2D394
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:20:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69F1512C55B;
-	Mon, 26 Feb 2024 16:17:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95EB012C7E1;
+	Mon, 26 Feb 2024 16:20:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CI8sybhw"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="FMpQvOIQ";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="dMXS6r4T"
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9951D531;
-	Mon, 26 Feb 2024 16:17:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFE9E1D531
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:20:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708964254; cv=none; b=Z5kldy+lCodJi4WsEmA2w9b3j8Dc3wlrVM/lpxROFVbvdWwFyPFGJOy6VXfxFgjE27xizzSfR0VNxxSYOHRPhftuc5MXnkMvoQ2RTq1OUSnkmjkjwCOIrSkbG5fPgo1xODdGnGjVU/5VMywdBMlaK5fNepj96eFvlzaxVr8F47Q=
+	t=1708964413; cv=none; b=hd5uP6fMfgy7HSDaVrlYxz+Qqe+GeF6o11bAwlVirAn2T1prQQd9K6xyvYnGz9cFwyEqYgh2PVbLjRYl7OPy11BfJVoLm35PqB2bKOIdoMAWJpLXTFTw2vwsID8u2FrJ6CBw01yd/uerLLDZGjS0k8uoOtKJun0USs74zmRvIQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708964254; c=relaxed/simple;
-	bh=kL7LUNB8fATmqEvONvO/82NaFVfnKvx48g056TlSyro=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bof3YUEGuaN6HEpKqIg28zDbBDA02ZhhPJh07EHXI8oICG7rz2GXpukur1fq8Nw3jxPdrPVKLEGYwhXNgXqLQxcbbAgDzynp2SKVRj6vXagHVzGbWpifrZZ0/V1qN+hrVIRom4N0UewgOjAvLqN3oQwBjVWgLxMKCHAMlWp/umA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CI8sybhw; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708964253; x=1740500253;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=kL7LUNB8fATmqEvONvO/82NaFVfnKvx48g056TlSyro=;
-  b=CI8sybhw7h0PxMW09zqSMrvgRfPV46ORsL/2+5U5Ol9FDDK1tx7sHQ+V
-   NdyIXSRBPZdgsXnpbX7yjX1mBulCW428ZvapBs4bvVYtPoGIw+nUn3tFf
-   q7YCE0Yk7LDT7LlxIOn4I/uhi9EQ21p880qkbx6iMW42oF6Xd8Tzz87lH
-   EhPUrwDkXeea6X5Gz4MBqnSxkimKl7WzJFLkMnNypKaH5IFe1pJrL0gB4
-   uWD+vVyRnKpTrEFXw6uCSWCS5WM9wEPQzQPeEzgcNZk5j3UkOJ1pKn2Wf
-   aEhZnCi0shyxmd1BHaWJv6x1X2xCZ7mZE7Wlg4+bURCG0zBqEMvS51u7U
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3182520"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="3182520"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 08:17:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="913880217"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="913880217"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 08:17:27 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1redfR-00000007jJy-0pXI;
-	Mon, 26 Feb 2024 18:17:25 +0200
-Date: Mon, 26 Feb 2024 18:17:24 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Robin van der Gracht <robin@protonic.nl>,
-	Paul Burton <paulburton@kernel.org>
-Subject: Re: [PATCH v3 9/9] auxdisplay: Add driver for MAX695x 7-segment LED
- controllers
-Message-ID: <Zdy5lDOBrQ9XFCpm@smile.fi.intel.com>
-References: <20240219170337.2161754-1-andriy.shevchenko@linux.intel.com>
- <20240219170337.2161754-10-andriy.shevchenko@linux.intel.com>
- <CAMuHMdWpepH0P8g9dPfq1rsZRJsvOnoZ7VnjqTL9nkSGtKFpYQ@mail.gmail.com>
+	s=arc-20240116; t=1708964413; c=relaxed/simple;
+	bh=8dhDVusp0XZbE+eQwLC50NnsBrC+t2MqBEurbP/qAq0=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=YAM/OF2D3+xOOuMODKD1IvLGmQ1MbnjahBAvFHSrFx4w7EhDYjjRegCir9YWAL4ALg6Z4WCjGBmLTdr1GmpDHjgUOZhgiDfMaDkLwzafy/s1QmfY4yYtbgmThbnCLX8rBSYTuxFp9glGzRz+pmB7Jv4hs3bV20H6N0AFFljConM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=FMpQvOIQ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=dMXS6r4T; arc=none smtp.client-ip=66.111.4.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.nyi.internal (Postfix) with ESMTP id AE8F15C0096;
+	Mon, 26 Feb 2024 11:20:10 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 26 Feb 2024 11:20:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1708964410; x=1709050810; bh=FOYwtQibxg
+	xYSfvclhSVGEeajepdg7/RrzYTrMq4NWw=; b=FMpQvOIQdYgHL9DDnr7VNBUl05
+	g/KNW8dhdBZ8/ONAVmH+kyw0/+SsRJn0HvfWbcH4PxeFEaNUSb2oOPyiCGimlnxm
+	cOapmXiy4Gxmi0meOwG4uR0UXAR7Z4iotUwKmx1jwBvs9uYUtV6gFby7DZLzZIYa
+	wGMtpOPtZ8KlUC7GhrCwuGg+wEtJuM43YkriUaJvI7wfO829Kd5hu5asf4TrWbeW
+	xFSLQOUeSfpQyrTidpSt69G6vsbh8ayRYYmNNjn4UUcyEzLNLDOPrdLFUTNZVOJR
+	r31ElVXbBXWXOT3/jlKAVaTtW/YBvbbpJlDGz1U1quF68LcH80YRMADvuing==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1708964410; x=1709050810; bh=FOYwtQibxgxYSfvclhSVGEeajepd
+	g7/RrzYTrMq4NWw=; b=dMXS6r4Tq8yi2r2uQWj7keJv2WNT4HIOr74u5y9bQ5bQ
+	mU35O57e2/ZyLHNNYtKBUATl4X5L4Km2ZROs07YR0nHi/jaGd4gzmsprzBkyC2ns
+	1/35Rvw2Y5+lSOVJTq9IyT5GB579ei4zHEkTInONqDiZjWLeZX+si6nAPPOEBRey
+	r4B8LRi34zTbJ7nlvVY1k4ir/KaSjfOJvOXwjjj9bh4RAk1XD30QgdiTj2cK0E5G
+	UAItg+IUmqL1yxgrjxLI5ZOakFOGed/ukb3OdXDcvFXWyRQP1D5yjAmfhEbJS9UP
+	osgHJwv1FoAHfUExI6HSCAlLyJbCQdUZxR0E7vJTmQ==
+X-ME-Sender: <xms:OrrcZU3ntLpyoKrXJEB6_1BS1kKpuyRglEvT8x8hmrd1yu8v9hAUCw>
+    <xme:OrrcZfHFx09a0vR8yV71iqJgWIgTfqcxAEsdwOp5voBxDS68j0AwEtExkEZXmlpcH
+    k4aH_oBQHYOuVK4MuM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgedvgdekhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:OrrcZc4lcuMkyty9kNcygoV_x86ikKImmzva1v7UubM0vNBZio-VhQ>
+    <xmx:OrrcZd2YXCik-CVm9xQ0zsMk26X6yufHq76sHm8HBFq7rfK179NrGg>
+    <xmx:OrrcZXFowy6EdUQs6S0XxazsaRz7EHKjg8aDYxHVfPQ_Bn6XrUtXcw>
+    <xmx:OrrcZdYdTj3syY3eTkgYr7tzD0xFLowElZIpOzjuf0uSS2YAR1jZNw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 58A0BB6008D; Mon, 26 Feb 2024 11:20:10 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-153-g7e3bb84806-fm-20240215.007-g7e3bb848
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdWpepH0P8g9dPfq1rsZRJsvOnoZ7VnjqTL9nkSGtKFpYQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-Id: <23e6b40b-deb4-4e94-b454-cb2af0543af1@app.fastmail.com>
+In-Reply-To: <871q8zkygb.fsf@somnus>
+References: 
+ <CA+G9fYtrXXm_KO9fNPz3XaRxHV7UD_yQp-TEuPQrNRHU+_0W_Q@mail.gmail.com>
+ <0fe0add2-6b17-441f-a0e1-7c1ee9b0ea71@app.fastmail.com>
+ <871q8zkygb.fsf@somnus>
+Date: Mon, 26 Feb 2024 17:19:49 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Anna-Maria Gleixner" <anna-maria@linutronix.de>,
+ "Naresh Kamboju" <naresh.kamboju@linaro.org>,
+ "open list" <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
+ "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
+ "Thomas Gleixner" <tglx@linutronix.de>,
+ "Vincenzo Frascino" <vincenzo.frascino@arm.com>
+Cc: "Ard Biesheuvel" <ardb@kernel.org>,
+ "Catalin Marinas" <catalin.marinas@arm.com>,
+ "Kees Cook" <keescook@chromium.org>
+Subject: Re: arch/arm64/include/asm/atomic_ll_sc.h:298:9: error: unknown type name
+ 'u128'
+Content-Type: text/plain
 
-On Mon, Feb 26, 2024 at 05:01:46PM +0100, Geert Uytterhoeven wrote:
-> On Mon, Feb 19, 2024 at 6:03 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > Add initial driver for the MAX6958 and MAX6959 7-segment LED
-> > controllers.
+On Mon, Feb 26, 2024, at 17:00, Anna-Maria Behnsen wrote:
+> "Arnd Bergmann" <arnd@arndb.de> writes:
+>> Commit a0d2fcd62ac2 ("vdso/ARM: Make union vdso_data_store
+>> available for all architectures") introduced a reference to
+>> the asm/page.h in include/vdso/datapage.h, but this is outside
+>> of the vdso/*.h namespace and doesn't work in the compat vdso.
+>
+> But the asm namespace works for the vdso namespace. Only linux headers
+> do not work, or am I wrong?
 
-> LGTM, so
-> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+The vdso namespace was added to have something that works for
+userspace code in both compat 32-bit mode and native (32 or
+64) bit mode, while anything outside of include/vdso may not
+work here.
 
-Thanks, but see below.
 
-..
-
-> > +       u8 buf[4];
-> > +
-> > +       /* Map segments according to datasheet */
-> > +       buf[0] = bitrev8(map_to_seg7(&map->map.seg7, *s++)) >> 1;
-> > +       buf[1] = bitrev8(map_to_seg7(&map->map.seg7, *s++)) >> 1;
-> > +       buf[2] = bitrev8(map_to_seg7(&map->map.seg7, *s++)) >> 1;
-> > +       buf[3] = bitrev8(map_to_seg7(&map->map.seg7, *s++)) >> 1;
+> PAGE_SIZE is defined in asm/page-def.h for arm64. So this could be a
+> fast fix (tested with clang-14):
+>
+> ---8<----
+> --- a/include/vdso/datapage.h
+> +++ b/include/vdso/datapage.h
+> @@ -19,7 +19,11 @@
+>  #include <vdso/time32.h>
+>  #include <vdso/time64.h>
 > 
-> for (unsigned int i = 0; i < linedisp->num_chars; i++) { ... }
+> +#ifdef CONFIG_ARM64
+> +#include <asm/page-def.h>
+> +#else
+>  #include <asm/page.h>
+> +#endif
 > 
-> > +
-> > +       regmap_bulk_write(priv->regmap, REG_DIGIT(0), buf, ARRAY_SIZE(buf));
-> 
-> linedisp->num_chars
+>  #ifdef CONFIG_ARCH_HAS_VDSO_DATA
+>  #include <asm/vdso/data.h>
+> ---8<---
 
-Maybe, but then we probably want to synchronize the 4 there and here as we
-can't have VLA on stack.
+I've sent my own patch now, which is something we probably want
+anyway, but is obviously much more invasive thank your four-line
+patch.
 
-> > +}
+Maybe we can put your quick fix in the tip tree for the moment
+and I put my patches into the asm-generic tree, then
+we can do the trivial cleanup from my final patch later.
 
-..
-
-> > +       ret = linedisp_register(&priv->linedisp, dev, 4, &max6959_linedisp_ops);
-> 
-> + device_property_read_u32(dev, "display-width-chars", ...) handling.
-
-Not sure it should be part of this series.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+     Arnd
 
