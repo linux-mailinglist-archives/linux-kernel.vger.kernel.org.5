@@ -1,94 +1,282 @@
-Return-Path: <linux-kernel+bounces-81204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B516D867309
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:28:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A49E8672AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:09:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86305B359FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:51:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A484B368D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:54:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EEFB55E72;
-	Mon, 26 Feb 2024 10:45:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0485F4F214;
+	Mon, 26 Feb 2024 10:49:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="TRaofYXQ"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="7m+vXXzy"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 619E455C3F;
-	Mon, 26 Feb 2024 10:45:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5820F4EB45;
+	Mon, 26 Feb 2024 10:49:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708944305; cv=none; b=oZyehISizpJS4mqNZXGwxOneMdSvsKopSSR5DEGhEQnF16sWhn52Oz8PtR8TaXbVPJxRElBPOMpBgcLw10mMPlHuRtpH1byZt1RBA0ItItacPoe7wXutdYBk4+/Q7IBVC8h4Mz4VO36RCensA/t7fVxz9ZfjN5VPgP0WyMJan2Y=
+	t=1708944587; cv=none; b=IRA8W4WIp1Q8/MlKKy7qldnA4+75YRwjk0HLOLeb7eS2hRPorYeVTwM0/uDK5QZwCkNzgM3JHC6U+xCwX4fOeI7BtsF7v7JfGVS0E3GaCY2agviO4dwQcUDbr9R6sjcc4ETS3BqQ9I7pXGqDdfBhiImar1skUmQubwGtnAWWBdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708944305; c=relaxed/simple;
-	bh=snSn7ccEbLZ+7kSkKsYvWViDDDORgIjM64c02g9kvwE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fFH2M28VgcbSycvFnlmBgvBYPiiKft9oYXc7BPVVtZTAA/NUMQ/9sa6pXxA3WKYlmFmdgo48htLOOGu+5sv3uRbJACX7bVfnwioPip569+3a1YNRH/S6vf66sVz3n41ofBLB//ZSFrGW4/zzVizaLMWOM/Vj+3lVifgUoQjOyPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=TRaofYXQ; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0A7AA60009;
-	Mon, 26 Feb 2024 10:45:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708944302;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fPexO6DRjAqEh41hFAbTYxuEnPMPjtTxwMJrh7MLMNs=;
-	b=TRaofYXQ2zaSq+Ppu6StTVFrg1zN2D0YPWob5XALDQrTurFWqQcigGboAQdnVCPwhZNcqf
-	40B1yCw8sqby8K7KbFd2GP7zaYzyOMvi6XbUKGNjiSP/zd21Q9MoM2iIZyQDI7oPipQAcC
-	nNppCVoDguyhEZf1As6CmfcvFf/a+OTPpbMPEHrK1yTtZjCnWPX7wZSsi8sWCIU8E46oMz
-	1ZnI8InnR/Peru/Jv6fF9PDB4qtAJGebmpb8yHkSovZxaq87t/GAMOhJUlOM9wIBiW6LEq
-	4fM8kjOb23t6L7TSXNl9VCmL85fKqlbPeuu4uzJw12yvh7IHYpvKDPSE1Rtb/Q==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Arseniy Krasnov <avkrasnov@salutedevices.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	Yixun Lan <yixun.lan@amlogic.com>,
-	Jianxin Pan <jianxin.pan@amlogic.com>
-Cc: oxffffaa@gmail.com,
-	linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-amlogic@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	kernel@sberdevices.ru,
-	Stable@vger.kernel.org
-Subject: Re: [PATCH v1] mtd: rawnand: meson: fix scrambling mode value in command macro
-Date: Mon, 26 Feb 2024 11:45:00 +0100
-Message-Id: <20240226104500.490108-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240210214551.441610-1-avkrasnov@salutedevices.com>
-References: 
+	s=arc-20240116; t=1708944587; c=relaxed/simple;
+	bh=twuwkRyRHslPFywmVO+y38lM6opxhSMBvIUj8FgdjtU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
+	 In-Reply-To:To:CC; b=k9LlFfhEhK7Jsm6IYqI5S5UfYOM9YSidX45UMtHl+xOIDGXJWkA6905KeOoZCdwQF9tqvmxCNsOe8uryU7hbPc81LQCreev2xJh981yV/S6FuFSyHer8h6KADY31CbNwPTmqTTYN2uZyybU6Q8Carpv//b5Od1VOv/Hx/m4CjT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=7m+vXXzy; arc=none smtp.client-ip=185.132.182.106
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41QALFRK004526;
+	Mon, 26 Feb 2024 11:49:17 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	from:date:subject:mime-version:content-type
+	:content-transfer-encoding:message-id:references:in-reply-to:to
+	:cc; s=selector1; bh=LS0fC07Uerxobb1Hl9X+Or5HXmC5pJ+PVXGLcG2X85I
+	=; b=7m+vXXzyeFnQa8iAl3RxC71EJ0r/V84QTpMiBXdhcDL2BWP0eNPg82zi+Tl
+	BB9XmFGdjEoB9on+yUyMSSE652EU7pUt8ANI0bRsZ5/JJ4JuOW6CwyW47o2bbyzJ
+	mIyVZvEC7AF3wBiWnCerhEwEAYlWzglUI1RMVJ7vo3xuIEoRQBmq+1YpBKcbY5kU
+	g4Q+7+mn22ucu/uFMvl1nyOPOL7PrIHtjMTYxiJB3g3JhDypnrV0FiQU5G0MRP8U
+	fMLXs8DcC69zfhKjIxguMlaVsor8/asgf0qNIIn8bj05B70EfG2uogPDonjPwdRO
+	I5nTdBqFfSx1G1X6uDbslNtqeIQ==
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3wf6rkeyc9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Feb 2024 11:49:17 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id EA29840047;
+	Mon, 26 Feb 2024 11:49:12 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 80B93265EF5;
+	Mon, 26 Feb 2024 11:48:09 +0100 (CET)
+Received: from localhost (10.252.9.163) by SHFDAG1NODE2.st.com (10.75.129.70)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 26 Feb
+ 2024 11:48:09 +0100
+From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Date: Mon, 26 Feb 2024 11:48:05 +0100
+Subject: [PATCH v6 1/3] dt-bindings: display: add STM32 LVDS device
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'ef6f463599e16924cdd02ce5056ab52879dc008c'
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240226-lvds-v6-1-15e3463fbe70@foss.st.com>
+References: <20240226-lvds-v6-0-15e3463fbe70@foss.st.com>
+In-Reply-To: <20240226-lvds-v6-0-15e3463fbe70@foss.st.com>
+To: David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard
+	<mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Herring
+	<robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue
+	<alexandre.torgue@foss.st.com>,
+        Yannick Fertre <yannick.fertre@foss.st.com>,
+        Philippe Cornu <philippe.cornu@foss.st.com>,
+        Philipp Zabel
+	<p.zabel@pengutronix.de>
+CC: <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
+        Conor Dooley
+	<conor.dooley@microchip.com>
+X-Mailer: b4 0.12.4
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-26_07,2024-02-26_01,2023-05-22_02
 
-On Sat, 2024-02-10 at 21:45:51 UTC, Arseniy Krasnov wrote:
-> Scrambling mode is enabled by value (1 << 19). NFC_CMD_SCRAMBLER_ENABLE
-> is already (1 << 19), so there is no need to shift it again in CMDRWGEN
-> macro.
-> 
-> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
-> Cc: <Stable@vger.kernel.org>
-> Fixes: 8fae856c5350 ("mtd: rawnand: meson: add support for Amlogic NAND flash controller")
+Add "st,stm32mp25-lvds" compatible.
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+---
+Depends on: "dt-bindings: stm32: add clocks and reset binding for
+	    stm32mp25 platform" by Gabriel Fernandez
 
-Miquel
+Changes in v6:
+	- Added Conor's Reviewed-by
+
+Changes in v5:
+	- Fixed path in MAINTAINERS
+
+Changes in v4:
+	- Align filename to compatible
+	- Fix compatible in the example
+	- Remove redundant word in the subject
+
+Changes in v3:
+	- Clarify commit dependency
+	- Fix includes in the example
+	- Fix YAML
+	- Add "clock-cells" description
+	- s/regroups/is composed of/
+	- Changed compatible to show SoC specificity
+
+Changes in v2:
+	- Switch compatible and clock-cells related areas
+	- Remove faulty #include in the example.
+	- Add entry in MAINTAINERS
+---
+ .../bindings/display/st,stm32mp25-lvds.yaml        | 119 +++++++++++++++++++++
+ MAINTAINERS                                        |   1 +
+ 2 files changed, 120 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/display/st,stm32mp25-lvds.yaml b/Documentation/devicetree/bindings/display/st,stm32mp25-lvds.yaml
+new file mode 100644
+index 000000000000..6736f93256b5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/st,stm32mp25-lvds.yaml
+@@ -0,0 +1,119 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/st,stm32mp25-lvds.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: STMicroelectronics STM32 LVDS Display Interface Transmitter
++
++maintainers:
++  - Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
++  - Yannick Fertre <yannick.fertre@foss.st.com>
++
++description: |
++  The STMicroelectronics STM32 LVDS Display Interface Transmitter handles the
++  LVDS protocol: it maps the pixels received from the upstream Pixel-DMA (LTDC)
++  onto the LVDS PHY.
++
++  It is composed of three sub blocks:
++    - LVDS host: handles the LVDS protocol (FPD / OpenLDI) and maps its input
++      pixels onto the data lanes of the PHY
++    - LVDS PHY: parallelize the data and drives the LVDS data lanes
++    - LVDS wrapper: handles top-level settings
++
++  The LVDS controller driver supports the following high-level features:
++    - FDP-Link-I and OpenLDI (v0.95) protocols
++    - Single-Link or Dual-Link operation
++    - Single-Display or Double-Display (with the same content duplicated on both)
++    - Flexible Bit-Mapping, including JEIDA and VESA
++    - RGB888 or RGB666 output
++    - Synchronous design, with one input pixel per clock cycle
++
++properties:
++  compatible:
++    const: st,stm32mp25-lvds
++
++  "#clock-cells":
++    const: 0
++    description:
++      Provides the internal LVDS PHY clock to the framework.
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: APB peripheral clock
++      - description: Reference clock for the internal PLL
++
++  clock-names:
++    items:
++      - const: pclk
++      - const: ref
++
++  resets:
++    maxItems: 1
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++
++    properties:
++      port@0:
++        $ref: /schemas/graph.yaml#/properties/port
++        description:
++          LVDS input port node, connected to the LTDC RGB output port.
++
++      port@1:
++        $ref: /schemas/graph.yaml#/properties/port
++        description:
++          LVDS output port node, connected to a panel or bridge input port.
++
++    required:
++      - port@0
++      - port@1
++
++required:
++  - compatible
++  - "#clock-cells"
++  - reg
++  - clocks
++  - clock-names
++  - resets
++  - ports
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/st,stm32mp25-rcc.h>
++    #include <dt-bindings/reset/st,stm32mp25-rcc.h>
++
++    lvds: lvds@48060000 {
++        compatible = "st,stm32mp25-lvds";
++        reg = <0x48060000 0x2000>;
++        #clock-cells = <0>;
++        clocks = <&rcc CK_BUS_LVDS>, <&rcc CK_KER_LVDSPHY>;
++        clock-names = "pclk", "ref";
++        resets = <&rcc LVDS_R>;
++
++        ports {
++            #address-cells = <1>;
++            #size-cells = <0>;
++
++            port@0 {
++                reg = <0>;
++                lvds_in: endpoint {
++                   remote-endpoint = <&ltdc_ep1_out>;
++                };
++            };
++
++            port@1 {
++                reg = <1>;
++                lvds_out0: endpoint {
++                   remote-endpoint = <&lvds_panel_in>;
++                };
++            };
++        };
++    };
++
++...
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 3527a2ece6cd..ff5c945f206e 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7240,6 +7240,7 @@ L:	dri-devel@lists.freedesktop.org
+ S:	Maintained
+ T:	git git://anongit.freedesktop.org/drm/drm-misc
+ F:	Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
++F:	Documentation/devicetree/bindings/display/st,stm32mp25-lvds.yaml
+ F:	drivers/gpu/drm/stm
+ 
+ DRM DRIVERS FOR TI KEYSTONE
+
+-- 
+2.25.1
+
 
