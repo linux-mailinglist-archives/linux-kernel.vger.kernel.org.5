@@ -1,108 +1,124 @@
-Return-Path: <linux-kernel+bounces-80430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BA08866861
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:55:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A81BA86681D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:24:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 056F7281AF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:55:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 483B51F216CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:24:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EECD11B279;
-	Mon, 26 Feb 2024 02:55:11 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E03E9EAE5;
+	Mon, 26 Feb 2024 02:23:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RThGUQnS"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15D911AAB1;
-	Mon, 26 Feb 2024 02:55:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 643F13233;
+	Mon, 26 Feb 2024 02:23:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708916111; cv=none; b=MtdUP33kehb6fs4SRPyAD3mEp2U6yAgzp63ozM6+LdBJuTYtzplPuIdLNiYpb7g8DjAP/kzfXOuFP3DoAnJ1jbfpJobBs5jits7tR25S9dFy2B+aPje+9UnS+IQ4m7TjFSHr5uNGa8NqKMzRHM5rlt48KPQB4w7NIryuMLgmAWU=
+	t=1708914235; cv=none; b=JLBkdl+/a4PIMaN6BrbqkxK5gMPbhDwrGhRb2JcbT4C/5sAOLQ6REX0x0OCtJWWTTKJ/wihNGzaZn4Yy4Lj1sYPllaA2M2pOceXDL/EYyT1rVaTR2k3SiZxvKvV/GgoPlnGfcaZWLBz5WmVsoFFy3BDydxhm+pyTm3kJyOiveLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708916111; c=relaxed/simple;
-	bh=tbnDJSmrkota+0h34QQWBs6KGLOigNzHb9e9sHBP7nM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=A2x1eiuktn/Q0zyALx3Hsl6KOAGPglJIRrGej9c9vumXAoqXey6YGFR8opRaZJbmhtoW1XeTS1KA55W7009nAaLo+dlGASbDjxCPc7ilTi4RWvnpiAG2Peq0D1fIz/rTLZi3y9/Pde1IWIVxOTF0yV7sVja6gVh3oD3pmyH3nzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: cd6f21063eea4d909cd0db4c58a0fafd-20240226
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:af9dbba1-f6a7-4adc-a51c-1807b965315c,IP:10,
-	URL:0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
-	ION:release,TS:20
-X-CID-INFO: VERSION:1.1.37,REQID:af9dbba1-f6a7-4adc-a51c-1807b965315c,IP:10,UR
-	L:0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:20
-X-CID-META: VersionHash:6f543d0,CLOUDID:79f44d84-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:240226102255YBXUWZHW,BulkQuantity:0,Recheck:0,SF:24|17|19|44|66|38|1
-	02,TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:
-	nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: cd6f21063eea4d909cd0db4c58a0fafd-20240226
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 1075076401; Mon, 26 Feb 2024 10:22:54 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 0EF0FE000EBC;
-	Mon, 26 Feb 2024 10:22:54 +0800 (CST)
-X-ns-mid: postfix-65DBF5FD-853442222
-Received: from kernel.. (unknown [172.20.15.254])
-	by mail.kylinos.cn (NSMail) with ESMTPA id B2D6EE000EBC;
-	Mon, 26 Feb 2024 10:22:52 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: inki.dae@samsung.com,
-	sw0312.kim@samsung.com,
-	kyungmin.park@samsung.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	krzysztof.kozlowski@linaro.org,
-	alim.akhtar@samsung.com
-Cc: dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH] drm/exynos: use KMEM_CACHE() to create g2d_runqueue_node cache
-Date: Mon, 26 Feb 2024 10:22:51 +0800
-Message-Id: <20240226022251.1781070-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1708914235; c=relaxed/simple;
+	bh=WRNR2Yde+eM1MDT0PjmQe6YBmq8+6bOG11aatMwggeQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=l9BOI7ddKJrTgqwTeWCCoHucgmgWStdQOF4kcipC1C6nDc6f5n5qDsv0511Se8STWFbOyPqk+hClQBkFjRgztxiNmvtoWptnjpCuT4gHvzUYY/38CA28UKue5tu88of45OItldzPylH0+SWKZQP8cBR+gQiQdQPISqWgMpSUJdA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RThGUQnS; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a26fa294e56so445380266b.0;
+        Sun, 25 Feb 2024 18:23:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708914232; x=1709519032; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WRNR2Yde+eM1MDT0PjmQe6YBmq8+6bOG11aatMwggeQ=;
+        b=RThGUQnSObw1HgwnOAT1PXWlnJk1QN9XPg2tIwZIPwWykwgUd68tHIHP2plpa0tE7B
+         7WZe1cpoGsRXzt+eQtJQZBrV5nGoAZR3YeRlEEfGZxKWF1c6vCDBXNSdYjDg88LougIT
+         JFHbpA827r5S+3/GE/8YRRJGOzlI9Yfyh+uFhB/94GQJmlKBis5gzExneODuyND4WBd6
+         JCrBjJa1y825JF25uTBqgkyVS6biyuzk+kJZPfA3s+x5Nlmzg450mg9yOqEny+WQ14vs
+         VIeVWNpZ89vCvcquU3ZDyxTfT0iW/zvjzDg9q/5xUPjg3tSLzAuVgcfUUDv7w6oZ9373
+         HHqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708914232; x=1709519032;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WRNR2Yde+eM1MDT0PjmQe6YBmq8+6bOG11aatMwggeQ=;
+        b=AZe/6uMlETpRmA1zMty43DpMwDVDn+MMY2AvF8pp6vnFxy75ev/ZbR47h7TW96/Eas
+         5WCKvr3pihyxS+95yjM1G0jCQIx7aHb0/EUlnLXdTY5ItVN5ropSITxTca+E0sXNTWmo
+         UvdvpNeYxAIphtQmGgELyW0tVuYitgG8FbrQdSJ1gKzv43MwccKjCIIZqTmy3xkdr4Hf
+         tat1CiKpz4d4nHft/Nzr0IFidiLCeY1rUp/tdiIbtsf2+YeYBTGVcaLm2bQAwfWu75e8
+         wlYR8mgdlRSGVABa2AZpvPiZN/Wab/AzOC8ZdOU1Haaf4h1kajqR1NAwCnpoaIDpxzdG
+         QzFw==
+X-Forwarded-Encrypted: i=1; AJvYcCUPbhhIb2ttt6UE0T/SUfJlGiXON8MD0KJqWIZOqfy/3zYvzRvIBtzKIH38fdKN0UCwRzCnTGQuDiFC2vVizbjvjj+OWL9lXFcD4tIXgeaUxL4QFUvJzvjHKSRJ/JCTqT7GJxBdcXs6qWXiAexAI8OE6H2mp/oqyCn8w9q8L3dYQsaBG5s=
+X-Gm-Message-State: AOJu0Yy+wcDAKeCU5JQV/SAdQ/evKf61rHKU59PvZu0C7YMjVY0k5aq2
+	SCM9cZAFPpNnLzdINR4hmWniaWDfXYGh4lcn4BzlvyqNqf6JVQYfvUzZ2qyIPLDa5CSTkgKtdWi
+	BGmdb2SP+6W/Odz6FjXXcVMvlGb0=
+X-Google-Smtp-Source: AGHT+IF1LO8GFispgremVVqbGf6oZjhb/+i4rsMZg2vxLPqRMyLjKiB/rkSWNNcmVULSYlt8LOTOEKMK167ekpSbAVo=
+X-Received: by 2002:a17:906:688a:b0:a43:4ac2:f16b with SMTP id
+ n10-20020a170906688a00b00a434ac2f16bmr895377ejr.13.1708914231478; Sun, 25 Feb
+ 2024 18:23:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240225213423.690561-1-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20240225213423.690561-1-chris.packham@alliedtelesis.co.nz>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Mon, 26 Feb 2024 04:23:15 +0200
+Message-ID: <CAHp75Vc9OBtxdKSmk9Uu9G3j+mfN8+9prTEVx3LyUcdBYFEqwg@mail.gmail.com>
+Subject: Re: [PATCH 0/3] auxdisplay: 7 segment LED display
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: ojeda@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+	conor+dt@kernel.org, andrew@lunn.ch, gregory.clement@bootlin.com, 
+	sebastian.hesselbarth@gmail.com, geert@linux-m68k.org, pavel@ucw.cz, 
+	lee@kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-leds@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Use the KMEM_CACHE() macro instead of kmem_cache_create() to simplify
-the creation of SLAB caches when the default values are used.
+On Sun, Feb 25, 2024 at 11:34=E2=80=AFPM Chris Packham
+<chris.packham@alliedtelesis.co.nz> wrote:
+>
+> This series adds a driver for a 7 segment LED display.
+>
+> I'd like to get some feedback on how this could be extended to support >1
+> character. The driver as presented is sufficient for my hardware which on=
+ly has
+> a single character display but I can see that for this to be generically =
+useful
+> supporting more characters would be desireable.
+>
+> Earlier I posted an idea that the characters could be represended by
+> sub-nodes[1] but there doesn't seem to be a way of having that and keepin=
+g the
+> convenience of using devm_gpiod_get_array() (unless I've missed something=
+).
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- drivers/gpu/drm/exynos/exynos_drm_g2d.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+It seems you didn't know that the tree for auxdisplay has been changed.
+Can you rebase your stuff on top of
+https://git.kernel.org/pub/scm/linux/kernel/git/andy/linux-auxdisplay.git/l=
+og/?h=3Dfor-next?
+It will reduce your code base by ~50%.
 
-diff --git a/drivers/gpu/drm/exynos/exynos_drm_g2d.c b/drivers/gpu/drm/ex=
-ynos/exynos_drm_g2d.c
-index f3138423612e..a5818ed6a6f7 100644
---- a/drivers/gpu/drm/exynos/exynos_drm_g2d.c
-+++ b/drivers/gpu/drm/exynos/exynos_drm_g2d.c
-@@ -1456,8 +1456,7 @@ static int g2d_probe(struct platform_device *pdev)
- 	if (!g2d)
- 		return -ENOMEM;
-=20
--	g2d->runqueue_slab =3D kmem_cache_create("g2d_runqueue_slab",
--			sizeof(struct g2d_runqueue_node), 0, 0, NULL);
-+	g2d->runqueue_slab =3D KMEM_CACHE(g2d_runqueue_node, 0);
- 	if (!g2d->runqueue_slab)
- 		return -ENOMEM;
-=20
+WRT subnodes, you can go with device_for_each_child_node() and
+retrieve gpio array per digit. It means you will have an array of
+arrays of GPIOs.
+
+> [1] - https://lore.kernel.org/lkml/2a8d19ee-b18b-4b7c-869f-7d601cea30b6@a=
+lliedtelesis.co.nz/
+
+
+
 --=20
-2.39.2
-
+With Best Regards,
+Andy Shevchenko
 
