@@ -1,116 +1,216 @@
-Return-Path: <linux-kernel+bounces-81419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D0248675BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:56:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 359898675C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:56:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A33B3289718
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:56:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E156D28D3C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:56:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D34D80BE4;
-	Mon, 26 Feb 2024 12:56:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 498A07FBAA;
+	Mon, 26 Feb 2024 12:56:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="lE8evt7L"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="bmiiWaGV"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBAE880020
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 12:56:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708952180; cv=none; b=dTdWmW4Ey0lZgH352qECtVWN/EZorElpcUBtFl89BjWs4yw9QQ3Rgp3/8VdBJCliJrzMRn3KldHWn80hXZKn8V1KbjzZvI041FIp9J6dubDhefIZMOomNmTNECtA9YrvQaPld4ok6nPyA89LBmpVpWHugBuVaPihAmXljtT6NYI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708952180; c=relaxed/simple;
-	bh=ut35o+2oN2Qn7bwysQIKI2sLMViTmOjyvxHNEvySY7Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=A4UaDDF6jouzM0wKZlEP+Lca8pu54KnnZCQW11sOGXH10k0vIlh8lzyQxCpJhijIT0kyeC5CwHQ8VbBMxzOn1b7ed0utyBEuT5ApWYctzcpXvLlJ3rh9W5q8xen8dc/7UTNs51DQOCItqMqF3EGYwcQizSmRf/gIZlTjgVZbcPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=lE8evt7L; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-412a9a3dba2so348835e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 04:56:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1708952176; x=1709556976; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jFrxQiHYrsfnghwiEcly4TZu16vAe3cS7xn00Nu2N2Q=;
-        b=lE8evt7LLhyMPL62h4NGBKC4vv6pX9/fPeiU+Sh1t2NpN4jSDha5bhnzKAE6EsiXxp
-         ul440nSrSQuSuYaHtkPnG6fGRJBNOq+mHXH69jCNQbNgMXAGEGh7bvboUhpaL6I4hrBW
-         xZtGcpMgyxDD8m/gMlrPUdRi4gW2UDwwVjyQxR7BXYOb0pj/YdDwuemRZpzhpSI/1JVB
-         mIG50iuB5YgYw961yz2J3xi/CzPhRkBsa/y/y02tdY+jkRy9VWDa5i6nwna0sj3/UUAb
-         VwJfI3WNfpizPPMOG7rwkLC4U6MLPbv6vrKGkHYQkOYAPjocB4zvNnIXwD5aUJwvAiQr
-         nCsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708952176; x=1709556976;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jFrxQiHYrsfnghwiEcly4TZu16vAe3cS7xn00Nu2N2Q=;
-        b=Rgr30xND+8dfabRXPqccVjLoBzzvTno7t4eBHCk+SGX8tt/NejpZMjcoMJMR44J/Sg
-         6ayoj+SiUTDRD4O3WsoWNrwrsKl2Tb7PLJ7S/8q251zL5oTA4a5WGkb50jSDfPy3a9No
-         5Z1tQyOCMfXXOeMzcFJMREGd0wAThtN5EVAoDWVIQ3r/bVJx4lXCYMqJBcDsKbiM9M0H
-         IV91fXniJNqkLmcUI3/+7MPaWBtC8Y0ReO/9qC9IYuUSekRVP8hABjC2qO2Iogj87gSS
-         wE9KJh4zrcZxO5DPR1g8zFsZbWU8sJVxFJ2xh+ngkDW0oiyoIz8jQ3HpnFjsCuLtfHWy
-         ygqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXDMt8soqHdEPcj90m17q48j4f5u054/A2uSR+Yy5XSvKO3MlBZBlT+okv3Gvv+N2DXYk5XZf0h+ICdmzODYsIh10nm5R6vjIsQtGxE
-X-Gm-Message-State: AOJu0YwwtjfLdMryN2zFFNSB7u55YSYly2Y27OodeM20hyOjU8WQk315
-	Qu7bSikaewR27DEZAclTCkYmlD50QX45+NzwFBP5Yv2yZrB3nt4apsG+xTK6j0c=
-X-Google-Smtp-Source: AGHT+IHHeQtzlf12UyB07V/94hJb/CYNRe0xn/CubKev2viMPRPmMtQuMJ19vTXAxZluxRqI7qeKdQ==
-X-Received: by 2002:a05:600c:4751:b0:412:985b:a1c2 with SMTP id w17-20020a05600c475100b00412985ba1c2mr3887098wmo.14.1708952176153;
-        Mon, 26 Feb 2024 04:56:16 -0800 (PST)
-Received: from [192.168.1.70] ([84.102.31.43])
-        by smtp.gmail.com with ESMTPSA id n37-20020a05600c3ba500b004126ca2a1cbsm12348515wms.48.2024.02.26.04.56.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 04:56:15 -0800 (PST)
-Message-ID: <53abcb16-20f4-469f-b2d9-63544cbe1e9e@baylibre.com>
-Date: Mon, 26 Feb 2024 13:56:13 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97EDA7F46F;
+	Mon, 26 Feb 2024 12:56:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.40
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708952194; cv=fail; b=l7WTUmUCyCYXI1L3a83mxzi5lxPTPvd0hs2Z6P/53roBlBPhRiZO1OukwQLmxOGyGWKpk7xg2rONQpgZ2K4P/swhrV7jDkZCNTXrb90o2rxkwTCurwiwpoJq0RVB1ZFRdeD7iZbH0LEkEVmw4Gpw6GQ7Wm47DRHGob5rtxyD08w=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708952194; c=relaxed/simple;
+	bh=RISwSIppONst1r39Qo9csS8r5a4/6DXAJgsAxZWRzr4=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=bsM7J3IfSFY4O8PRmxe0rTtd8FN+cr2pIyPom2hmFS93EF5RAGzJ6tpfJcgJeDpDqA0Ja51FooypSbeiYlGN225EfGapyEI2ucQQRWQcqqvmC1oXoY1XU4zH+PXqTdrzoz0KS0apjf3cCpT3XTCT/FhdTJEaUnnb58ZhpxLiH+Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=bmiiWaGV; arc=fail smtp.client-ip=40.107.236.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GGZmhQ+OR9r7hbFF7vZKdeFC3ZQP1b8DsFICjZTAMKfnpiSMMKklbf2t87+qZbIA1objXBIYg7zqgL0uef6krB3c6tWz+rNrVIliXbll9+zGbYYDmUgoNf1pVgvi4SkwATbJR9Xmg58k/hTeLPPwntD4pDli/TL3BU3QfM9nn2rsSiAxG5H23Nxa9LBt+UUS3BJ/n5kRvuXSIw/dql/yJHzV//nHK5fu5KFTtIok90kh8lGrvzzsvO+Fvzj7Csfo4NSpah0M8TXHDPzbo17AthGX/Y8JXSA0lTCb+LzGyHrTc8D2SEXgUle+XsiNUlzX4F7vRqTAXbvUTqSggZkxqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Y3Erolc2rOIk8SMl7pN/DETK51Zipakj39GbXHvFRmM=;
+ b=jv5mTnRy7NTmC8zUX+9xbCRAoxyXh/zXx1MXioA3VnmRyhiAn+ec9i96zl+Dv1xLhj01oigNlVopvhbisYfO8k8oEldDV03WkAgjGlTvo/ke2Nb4OIhD7x9R/xXXEBNoVLHj4ThqSOWlfP2ww50MiCaQePQkiQGNHHmQ4adWnLQyjTRGFpyKivkEanI3k2Xlenr0Uyv9wtie/DehOziI3wADov1FInlXzCJVYdRTmgZ4tIrSkP1yEqWGoK5iFarJAHlcAsPr2n0hiYYadCnlseyKFOdUPj/6oX8iASgZp5Lbbp/715X6IAhMnZqGnwch8A+WptNKwwJV+VBbbt0t5w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y3Erolc2rOIk8SMl7pN/DETK51Zipakj39GbXHvFRmM=;
+ b=bmiiWaGVwV9qRivtmLxBKUSPrNyo9IkaLUOh5DTbRQT3dOz8inqTc3eG/QdmsjNPRYBuAHjE8gKie4uohd0eRjnk5yxtjjm5rJ4JvC+6+MQFTmBMub1ezmO5eXbh3INuRUdNoY8CZtqQO8AiLpWiI5suIhhyxlTYmWV571lvQS0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by DM4PR12MB7670.namprd12.prod.outlook.com (2603:10b6:8:105::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.31; Mon, 26 Feb
+ 2024 12:56:28 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::f2b6:1034:76e8:f15a]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::f2b6:1034:76e8:f15a%6]) with mapi id 15.20.7316.031; Mon, 26 Feb 2024
+ 12:56:28 +0000
+Message-ID: <ab7bd677-e5e1-425f-8b13-301ae712a662@amd.com>
+Date: Mon, 26 Feb 2024 13:56:21 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+Content-Language: en-US
+To: Stephen Rothwell <sfr@canb.auug.org.au>,
+ Jani Nikula <jani.nikula@linux.intel.com>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>,
+ Somalapuram Amaranath <Amaranath.Somalapuram@amd.com>,
+ Intel Graphics <intel-gfx@lists.freedesktop.org>,
+ DRI <dri-devel@lists.freedesktop.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>,
+ zack.rusin@broadcom.com, tzimmermann@suse.de,
+ thomas.hellstrom@linux.intel.com,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+ Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+ Dave Airlie <airlied@redhat.com>
+References: <20240206152850.333f620d@canb.auug.org.au>
+ <87y1bp962d.fsf@intel.com> <20240220084821.1c852736@canb.auug.org.au>
+ <20240226084116.4a41527d@canb.auug.org.au>
+ <20240226084741.2df4d18b@canb.auug.org.au>
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20240226084741.2df4d18b@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR0P281CA0040.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:48::11) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 09/14] misc: tps6594-esm: reversion check limited to
- TPS6594 family
-Content-Language: en-US
-To: Bhargav Raviprakash <bhargav.r@ltts.com>, linux-kernel@vger.kernel.org
-Cc: m.nirmaladevi@ltts.com, lee@kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- devicetree@vger.kernel.org, arnd@arndb.de, gregkh@linuxfoundation.org,
- lgirdwood@gmail.com, broonie@kernel.org, linus.walleij@linaro.org,
- linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org, nm@ti.com,
- vigneshr@ti.com, kristo@kernel.org
-References: <20240223093701.66034-1-bhargav.r@ltts.com>
- <20240223093701.66034-10-bhargav.r@ltts.com>
-From: Julien Panis <jpanis@baylibre.com>
-In-Reply-To: <20240223093701.66034-10-bhargav.r@ltts.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|DM4PR12MB7670:EE_
+X-MS-Office365-Filtering-Correlation-Id: 93094a3d-9c13-4cb4-cab2-08dc36ca5922
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	5VRgJ+rSEWA7ZFL/kDv06AVCQt7huK8w3H9mIFiHiArYTxzpUFrh6cImztHSeBnbGtusKr8P9bpFChzqmG6Nx6YwcfVg9a0CBhC/38R2TKXCkoh7mPYMCGxqBJ509KIgiL+ifxt0xGBhkXY6+NLlGtM6mmOBYryXbMZgx8vGqZEn1mj8YqNTQa7JvotrGXItQdalzPGznLBMTHTIRoi2MTAD92fN6kRsLejyp+Acyj4xuPdeN1M8C/DmkLuL1eiZNtFMqQJxRuajuAPVvz8izVfRvUlZWMfdLt9AUTwLE1pr8HDVWuW+iZqH6QtiJHIByjHWqSAzgOGRzYRsPXeXcXitDIvC8HsFONkPKALo/EU7Pj1Xjg9PpCAFCh5N6dGyP8tN6FOg+BIxAIs7cswESLM1Ecq/GR470C0NY4p6uJMmSqCkSHIFClLicMwDzmN0EWVWQV1RpZsXs7QoOYgRMdOR+iZfziz8N6OYvbD4c8uogdAKSmcxxIeMuZLhg12voH1hBdhKxlCn1E/fyre72LK0xVR5kOCW29ejpA2DU5Fjq6TRW1cBO1WFj7PnN0773/aEZWhFfnX96wZxUYa7soAYW6Wpp0KAHiy12Zj4Sq0jBFdDiOe/GyR7Hlh8jLL0
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?dVZRbnl1RDdWczUwMHV6SFN0RVh5emRPUjRmVlJQUVIyV081azZLN0JCSXA4?=
+ =?utf-8?B?UER5bU9FbncrOTdaR2lNMElFMW1nRWJRMndEMm03OTd4WHBOS2E0RTJlUnoy?=
+ =?utf-8?B?bCtpYXI1OUJ2aERwNWI5bFFRU3Zyb1BKc3UwZnREcmNVdXcvRWtUVmdwTDl5?=
+ =?utf-8?B?ckV5VEZnaUM3NXNDOXNVeDMzL2dGajdLaXdPZWlMZUVEb0ZGaTk2bWk2K3l5?=
+ =?utf-8?B?NUliVVQ3dXhhUnlpUi9UYjZta05kZG9tc2JyVEhrT29vY3YzMmFaS25LeVhD?=
+ =?utf-8?B?bTV5Ym52SENkNDNZbWFheVlrQVVkaDdtNThOWDBnUzZsTDVYVWRJQ1lHUklO?=
+ =?utf-8?B?aTJLOHMxMHBEOE1kVml2OFBGZFI5UUdINDZYNVlrUVhXYXNnWGtxUkFDTTkv?=
+ =?utf-8?B?UjhDbzQzWnlyN2NkUGp5M0k4S0ljUlZSZU81VW5nQUN5TUNYWXkyNGZSbHh6?=
+ =?utf-8?B?a1FMQTJoaHdhR1JHUndDVWpmQTJCcUhBTHJOUUp5ekhDYXMxRHRoWlFYRmc4?=
+ =?utf-8?B?WDFla0xjOStLWUVwU0Evb2J1TGRRQUh0RWZPWUtMTmRhS0R1L0twZ1RGUlNQ?=
+ =?utf-8?B?N0hPUkI4SFBEZll2YkgrWlFRbG5ydU83RkNWREVWc1VtelJaY21obTZDUnA5?=
+ =?utf-8?B?cmt0aDR0WGtDZC9NcDd2UXVRVG9XK3Nhbk9TUnUzeDdobWE0cFdDVGhqK0ZE?=
+ =?utf-8?B?WHhDQWVGVk5FZWlSRjRyY1I5VHh1V3hXVEV1TWc1eWZxNWNSemFoeGEyRHBQ?=
+ =?utf-8?B?bCt0SjJCdE5BYUFUTndUMXV2QlBSY3pXTXNZa2FxWHl5N3E1VTFLTHo5U0E3?=
+ =?utf-8?B?Sk9qUG1oOVBmdjY4WVZLREE3ZEJQTGFvSjdZcEhVQmVmemliaWxJVjFXcU8y?=
+ =?utf-8?B?MVdzY3ZDa3NpYXdnU1hHYXhWZ1ZvTHQvSE8zNFpUN1dKaWw4WEpJNXR4WElL?=
+ =?utf-8?B?emM0d0F3QjBBTGdtZTBTR1BsaVpONEJ1SE5TMG96ZXZiaXFPN3JzajFZRUFF?=
+ =?utf-8?B?b2hGRXg0cnlOL2pxUitZbFV4Q0o3ZzNkOWZTZStyaE1TSHFYZVlMVFJ0c01i?=
+ =?utf-8?B?My9ZSVJLUkpuc1ZaM3dCMVVVQUdDWDZCTHhXRVBOSVFURDlqMjhUc0VSSU9z?=
+ =?utf-8?B?aE53aGVGUG1aVjQrZkNYZVliM0E5RkFBajQ0NHdaaTY0MFBQME1nVDdpZFhl?=
+ =?utf-8?B?T2FuWGNGT2I0SFVWcWI1S21WSEovM2VHMmtQdmtLbTJjbExvS2lXUmd4WHdQ?=
+ =?utf-8?B?NitSTUV5Nm9pRmJNU2gvaEswV2JCL3Ztc2JnYXRzZGtVR3RoNFl6SW11aUsv?=
+ =?utf-8?B?T3VYSUtKSVJzUk5DS2YzT2pVWTRRVG5VanlMYnpqUXBWRmRxNjZ1ZFZrWFFi?=
+ =?utf-8?B?VFlINEVndEVqU0htbno1d2VPRjRSV2JaZUVRei9adkNUKzNzT0VxTE1nOGRK?=
+ =?utf-8?B?MHFGL0svU0NkWVd4ckxKb3RLNzFsWmVqUFd6dWIzZS8zbHMxdFA3czVBdmFs?=
+ =?utf-8?B?ejBFZWI4dHdiUzRlZkJoR0IxV2F4REo0WnJPbCs2ZkJhNmtxM1hNZEY0R2Zp?=
+ =?utf-8?B?SUhIeDZqSGRHTVV6ODZwMURYWUFrN0JQblF0SW9PZ3R2MG5qenEwUmhzWjkr?=
+ =?utf-8?B?TisxOWlsQk8vTnNQTGw4aDlWc3Q0QTYwYW9NcjZuUlA0eFAzTzdjY0pWYWxU?=
+ =?utf-8?B?eEFvRlhLSDBma2FDeHBNTlJhcVhjMVNEbkpQbWRFTHBQUEd2c3VJSnZYcFBW?=
+ =?utf-8?B?bWNIMXBJSWVjdVBFcVhUd0hnNG1LU09TVzd0dFhJSUxTSEVrSUUveFlqejFU?=
+ =?utf-8?B?RjJodFRvZEpWaWxVQXB2amkyY1cyR2tYSWVDejB5cXFkcC9VQlFWbHpzZmZ0?=
+ =?utf-8?B?Mm8rZFRzZ1lsSXJpRDhiZGl5UjhHelA3czBySFMzRDR1V1U5NEpmcVAvelox?=
+ =?utf-8?B?Q2Y4eVZEc1NQNEVZbW9tL1U0OXJwN1hDWnkyNno2WE9mT1kyZ3p1WlFWdWZY?=
+ =?utf-8?B?YVdPdW9DSm8zZ015aDhpZVJ0eW1xSE9iY0xOUUJ6UzZzajdxU0JZNWNTNGtX?=
+ =?utf-8?B?a1pZb1NTdGQvTCs4SERoUEhMK3ZYM0NySlQ4Sld5VHJhN3NlcXRWTFBCSHhw?=
+ =?utf-8?Q?hnTeOaKD3SseJv9CWZNv0DXz4?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 93094a3d-9c13-4cb4-cab2-08dc36ca5922
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 12:56:28.7905
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YCh+njYBGbRlPues6hepyue4OGf5u6sXBdsfTAhxVBefNIsWf8C1L4iU+6PUERyz
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7670
 
-On 2/23/24 10:36, Bhargav Raviprakash wrote:
-> The reversion check is only applicable on TPS6594 family of PMICs.
-> Conditionally add that check if the chip_id is one of the PMIC in
-> the TPS6594 family.
+Am 25.02.24 um 22:47 schrieb Stephen Rothwell:
+> Hi all,
 >
-> Signed-off-by: Bhargav Raviprakash <bhargav.r@ltts.com>
-> ---
->   drivers/misc/tps6594-esm.c | 18 +++++++++++-------
->   1 file changed, 11 insertions(+), 7 deletions(-)
+> On Mon, 26 Feb 2024 08:41:16 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>> On Tue, 20 Feb 2024 08:48:21 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>>> On Mon, 12 Feb 2024 15:15:54 +0200 Jani Nikula <jani.nikula@linux.intel.com> wrote:
+>>>> On Tue, 06 Feb 2024, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>>>>> After merging the drm-misc tree, today's linux-next build (i386 defconfig)
+>>>>> failed like this:
+>>>>>
+>>>>> In function 'i915_ttm_placement_from_obj',
+>>>>>      inlined from 'i915_ttm_get_pages' at drivers/gpu/drm/i915/gem/i915_gem_ttm.c:847:2:
+>>>>> drivers/gpu/drm/i915/gem/i915_gem_ttm.c:165:18: error: 'places[0].flags' is used uninitialized [-Werror=uninitialized]
+>>>>>    165 |         places[0].flags |= TTM_PL_FLAG_DESIRED;
+>>>>>        |         ~~~~~~~~~^~~~~~
+>>>>> drivers/gpu/drm/i915/gem/i915_gem_ttm.c: In function 'i915_ttm_get_pages':
+>>>>> drivers/gpu/drm/i915/gem/i915_gem_ttm.c:837:26: note: 'places' declared here
+>>>>>    837 |         struct ttm_place places[I915_TTM_MAX_PLACEMENTS + 1];
+>>>>>        |                          ^~~~~~
+>>>>>
+>>>>> Caused by commit
+>>>>>
+>>>>>    a78a8da51b36 ("drm/ttm: replace busy placement with flags v6")
+>>>> Cc: more people.
+>>>>      
+>>>>> I applied the following hack for today:
+>>>>>
+>>>>> From: Stephen Rothwell <sfr@canb.auug.org.au>
+>>>>> Date: Tue, 6 Feb 2024 15:17:54 +1100
+>>>>> Subject: [PATCH] drm/ttm: initialise places
+>>>>>
+>>>>> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+>>>>> ---
+>>>>>   drivers/gpu/drm/i915/gem/i915_gem_ttm.c | 2 +-
+>>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_ttm.c b/drivers/gpu/drm/i915/gem/i915_gem_ttm.c
+>>>>> index 80c6cafc8887..34e699e67c25 100644
+>>>>> --- a/drivers/gpu/drm/i915/gem/i915_gem_ttm.c
+>>>>> +++ b/drivers/gpu/drm/i915/gem/i915_gem_ttm.c
+>>>>> @@ -834,7 +834,7 @@ static int __i915_ttm_get_pages(struct drm_i915_gem_object *obj,
+>>>>>   
+>>>>>   static int i915_ttm_get_pages(struct drm_i915_gem_object *obj)
+>>>>>   {
+>>>>> -	struct ttm_place places[I915_TTM_MAX_PLACEMENTS + 1];
+>>>>> +	struct ttm_place places[I915_TTM_MAX_PLACEMENTS + 1] = {};
+>>>>>   	struct ttm_placement placement;
+>>>>>   
+>>>>>   	/* restricted by sg_alloc_table */
+>>>>> -- 
+>>>>> 2.43.0
+>>> I am still applying the above patch ...
+>> Any progress?
+> And this commit is now in the drm tree.
 
-Following my comment related to ESM_MCU interrupts for 'tps6594.h':
-Does it really make sense to add tps65224 ESM_MCU support in linux ?
+Sorry for the delay. Oring in the flag needs to come after the call and 
+not before it.
 
-For tps6594. TI requested a linux driver for ESM_SOC only (the "main" ESM).
-No linux driver was requested for ESM_MCU.
+Going to fix this.
 
-Since tps65224 does not have ESM_SOC, I'm not sure that anything should
-be done in linux for tps65224 ESM. Maybe you should discuss this point with
-TI analog team (our TI contact for tps6594 was Chris Sterzik).
+Thanks,
+Christian.
 
-Julien
 
