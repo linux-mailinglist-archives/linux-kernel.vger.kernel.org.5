@@ -1,173 +1,116 @@
-Return-Path: <linux-kernel+bounces-82014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E811A867DC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:13:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DE72867DD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:15:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 745FC1F24887
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:13:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE127B2AD27
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:14:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71FA412DDA8;
-	Mon, 26 Feb 2024 17:02:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6394C134CE9;
+	Mon, 26 Feb 2024 17:03:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="zozBNRb9"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g3tzPsg/"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB77112BE9F
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 17:02:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCE4812CDAE;
+	Mon, 26 Feb 2024 17:03:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708966967; cv=none; b=X7nwc6YuNVt1+KPAYHmV4X2nWyJ82ScWcDaB0mRU8ozsLZHsBtJjLlnKyTLzsJ/Po2I/6kSa89Tedf3gs/rUNsHKBrUUvuzjaDxYgpnWgAKLTX6ZkGaUJAffByniIasVY22Vo9cATRnjZHgZki02leTcvByKhWwFbJ2vyqcwl40=
+	t=1708966993; cv=none; b=HH3lCU0GG05JtttK0FMn+yV8FT6VpO/rl60mSRYglwl4UTdVHf7xk3dTR8hPOM/Zb3bNjQ/Sxft+4dWIohDJtzrMoVJ7f2Np2MgyBt9J0gRDbbtDlKyIYhL+fm8yOu3FLkkxTc2dni8FJ499KTt676CczyPMLeonTEj8YOaN2OQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708966967; c=relaxed/simple;
-	bh=PtOqPsnVzJ1VY1JY7qLS12ZY7lQ1eJRkNRobbhPJDEY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=sCQWFstQGJrjm7dmNNFAMdXX/+GHh+sBkgq4kqdC/a8seYk9vwAonduIh9K87UtBRGDe31yZLgi+jB1tlhHay+NglIR2ifs7aWHNBWsXjwUoayv3KsCdL7Z/FgQiIQy5HxnoqTTHB9r5oTysQsgtKY8kOXAhVzbokMvadga1X40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=zozBNRb9; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+	s=arc-20240116; t=1708966993; c=relaxed/simple;
+	bh=NUzHR+U4SYb2lE4JHpxCjO2+K8X+/FKb4mt4Sicx7s0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mIRv7JdH/1A/bRtlUvLObFv8guvh2rUyOy0hdXw8zAh3+chfO4jC5TU1VKTx3r8cP83wy2C601/dCDQ7XrCawMVzU4rda2sN4jWAbbPDiREk6b3ie39N/yUkEWeMyEGEP6xK56SVEn5OxljvHR16XNKRH6VdMUmkZuuzOPHoCZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g3tzPsg/; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1708966966; x=1740502966;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=PtOqPsnVzJ1VY1JY7qLS12ZY7lQ1eJRkNRobbhPJDEY=;
-  b=zozBNRb96n6uzb0FXmkpuhZEWVkbMJF25xgtFcf8fGc6B5gPR7fHUOkw
-   G+NQzPYP8eTzV0h11xfSPVocjc5RW22S+DjTs0mjuiMCRXN8BvZffmoPJ
-   qRCf3NkcICcGxa2VBChQXUPoJnTSr+wo7yCwKfZOgHyB5y9slhcoKRxtO
-   eaYCWfutfS8JHhxaUavru9S3b9plplyuegQUwRw1GRHWsZLVVGOcbxuty
-   nYBBQ2N4vCxCE91kI1mV4hWKldghhb1QxcVSIe0AmqZeAu6Yf5k7KM6Wg
-   qEAnDHP5peMP/jU6bxeorsjnvv/iuzRP2/aErOsB2mn93bMxAiECDc9MW
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708966992; x=1740502992;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=NUzHR+U4SYb2lE4JHpxCjO2+K8X+/FKb4mt4Sicx7s0=;
+  b=g3tzPsg//Pg+Pza2arRbxD+ppjDi0Vbz95htOS6LezOASQm0UkgRIvpP
+   NOH5k03/lScFkFXsZ2nDgEwFR8OJh1xBV4bHbtHp6sF9HyWg45Cqb0XS1
+   q/Qk0JOkqC3WCi+WSp5tH9iynxe9/wxqUQxIBaP3D4tJNYf9g0LtZD6F9
+   IzC4kOoxnXOTWojqzdT7nGC2OsnqhoFkqhZVA6076NTQ+Qj7mPPYsKhuC
+   yLn5AGs+PNB9uzZZfMKRxkcNdbUOFlhCqUoGdxZNi0vjOKpWUByHvRVy1
+   LOb843Q5cw6rVhXIqAYVUx7VJ0h8kObqOVWidzaDqVTm4Jwp1V6TO8u8h
    Q==;
-X-CSE-ConnectionGUID: +usMHQQ3RByG3mwbmXRohw==
-X-CSE-MsgGUID: Coq3DASSR1qrFD28x3eO4g==
-X-IronPort-AV: E=Sophos;i="6.06,186,1705388400"; 
-   d="scan'208";a="16839304"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 26 Feb 2024 10:02:45 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 26 Feb 2024 10:02:37 -0700
-Received: from [10.159.245.205] (10.10.85.11) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Mon, 26 Feb 2024 10:02:36 -0700
-Message-ID: <798ca59b-5d91-41b4-a49f-1f11af14e7ee@microchip.com>
-Date: Mon, 26 Feb 2024 18:01:38 +0100
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="13905714"
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="13905714"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 09:03:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="913882086"
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="913882086"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 09:03:08 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1reeNe-00000007k6Q-0DB5;
+	Mon, 26 Feb 2024 19:03:06 +0200
+Date: Mon, 26 Feb 2024 19:03:05 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Robin van der Gracht <robin@protonic.nl>,
+	Paul Burton <paulburton@kernel.org>
+Subject: Re: [PATCH v3 8/9] dt-bindings: auxdisplay: Add Maxim MAX6958/6959
+Message-ID: <ZdzESR_sELGcHsi7@smile.fi.intel.com>
+References: <20240219170337.2161754-1-andriy.shevchenko@linux.intel.com>
+ <20240219170337.2161754-9-andriy.shevchenko@linux.intel.com>
+ <CAMuHMdVjh3jofcf2SdjRO5bAfokEzjoxv_z89JJyyfwwt5DZsw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 20/39] ARM: at91: add support in SoC driver for new
- sam9x7
-Content-Language: en-US, fr-FR
-To: Varshini Rajendran <varshini.rajendran@microchip.com>,
-	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC: Claudiu Beznea <claudiu.beznea@microchip.com>
-References: <20240223171342.669133-1-varshini.rajendran@microchip.com>
- <20240223172722.672592-1-varshini.rajendran@microchip.com>
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-In-Reply-To: <20240223172722.672592-1-varshini.rajendran@microchip.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdVjh3jofcf2SdjRO5bAfokEzjoxv_z89JJyyfwwt5DZsw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On 23/02/2024 at 18:27, Varshini Rajendran - I67070 wrote:
-> Add support for SAM9X7 SoC in the SoC driver.
+On Mon, Feb 26, 2024 at 04:52:34PM +0100, Geert Uytterhoeven wrote:
+> On Mon, Feb 19, 2024 at 6:03 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+
+..
+
+> To handle cases where less than 4 characters are wired
+> (based on hit,hd44780.yaml):
 > 
-> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
-> Reviewed-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-> ---
-> Changes in v4:
-> - Sorted the entries alphabetically as per comment from Claudiu
-> - Updated EXID
-> Note: Did not remove the Reviewed-by tag since the changes were only
-> cosmetic and did not affect functionality
-> ---
->   drivers/soc/atmel/soc.c | 23 +++++++++++++++++++++++
->   drivers/soc/atmel/soc.h |  9 +++++++++
->   2 files changed, 32 insertions(+)
-> 
-> diff --git a/drivers/soc/atmel/soc.c b/drivers/soc/atmel/soc.c
-> index cc9a3e107479..cae3452cbc60 100644
-> --- a/drivers/soc/atmel/soc.c
-> +++ b/drivers/soc/atmel/soc.c
-> @@ -101,6 +101,29 @@ static const struct at91_soc socs[] __initconst = {
->   		 AT91_CIDR_VERSION_MASK, SAM9X60_D6K_EXID_MATCH,
->   		 "sam9x60 8MiB SDRAM SiP", "sam9x60"),
->   #endif
-> +#ifdef CONFIG_SOC_SAM9X7
-> +	AT91_SOC(SAM9X7_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
-> +		 AT91_CIDR_VERSION_MASK, SAM9X75_EXID_MATCH,
-> +		 "sam9x75", "sam9x7"),
-> +	AT91_SOC(SAM9X7_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
-> +		 AT91_CIDR_VERSION_MASK, SAM9X72_EXID_MATCH,
-> +		 "sam9x72", "sam9x7"),
-> +	AT91_SOC(SAM9X7_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
-> +		 AT91_CIDR_VERSION_MASK, SAM9X70_EXID_MATCH,
-> +		 "sam9x70", "sam9x7"),
-> +	AT91_SOC(SAM9X7_CIDR_MATCH, SAM9X75_D1G_EXID_MATCH,
-> +		 AT91_CIDR_VERSION_MASK, SAM9X75_EXID_MATCH,
-> +		 "sam9x75 1Gb DDR3L SiP ", "sam9x7"),
-> +	AT91_SOC(SAM9X7_CIDR_MATCH, SAM9X75_D5M_EXID_MATCH,
-> +		 AT91_CIDR_VERSION_MASK, SAM9X75_EXID_MATCH,
-> +		 "sam9x75 512Mb DDR2 SiP", "sam9x7"),
-> +	AT91_SOC(SAM9X7_CIDR_MATCH, SAM9X75_D1M_EXID_MATCH,
-> +		 AT91_CIDR_VERSION_MASK, SAM9X75_EXID_MATCH,
-> +		 "sam9x75 128Mb DDR2 SiP", "sam9x7"),
-> +	AT91_SOC(SAM9X7_CIDR_MATCH, SAM9X75_D2G_EXID_MATCH,
-> +		 AT91_CIDR_VERSION_MASK, SAM9X75_EXID_MATCH,
-> +		 "sam9x75 2Gb DDR3L SiP", "sam9x7"),
+>     display-width-chars:
+>       description: Width of the display, in character cells.
+>       minimum: 1
+>       maximum: 4
+>       default: 4
 
-(as highlighted in previous review of this patch):
-https://lore.kernel.org/linux-arm-kernel/20230728102905.267131-1-varshini.rajendran@microchip.com/T/#m2dac0ce9e1991c3d714785062a76ccdce11a02a6
+As discussed in the patch 9 this seems to be a material for other update.
 
-I want RAM size in Bytes.
+> The rest LGTM, so
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Sorry but NACK.
+I'll take this tag when applying the patch. Tell me if it's not the case.
+Thank you!
 
-Best regards,
-   Nicolas
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> +#endif
->   #ifdef CONFIG_SOC_SAMA5
->   	AT91_SOC(SAMA5D2_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
->   		 AT91_CIDR_VERSION_MASK, SAMA5D21CU_EXID_MATCH,
-> diff --git a/drivers/soc/atmel/soc.h b/drivers/soc/atmel/soc.h
-> index 7a9f47ce85fb..fc4157c5f6e3 100644
-> --- a/drivers/soc/atmel/soc.h
-> +++ b/drivers/soc/atmel/soc.h
-> @@ -44,6 +44,7 @@ at91_soc_init(const struct at91_soc *socs);
->   #define AT91SAM9X5_CIDR_MATCH		0x019a05a0
->   #define AT91SAM9N12_CIDR_MATCH		0x019a07a0
->   #define SAM9X60_CIDR_MATCH		0x019b35a0
-> +#define SAM9X7_CIDR_MATCH		0x09750020
->   #define SAMA7G5_CIDR_MATCH		0x00162100
->   
->   #define AT91SAM9M11_EXID_MATCH		0x00000001
-> @@ -74,6 +75,14 @@ at91_soc_init(const struct at91_soc *socs);
->   #define SAMA7G54_D2G_EXID_MATCH		0x00000020
->   #define SAMA7G54_D4G_EXID_MATCH		0x00000028
->   
-> +#define SAM9X70_EXID_MATCH		0x00000005
-> +#define SAM9X72_EXID_MATCH		0x00000004
-> +#define SAM9X75_D1G_EXID_MATCH		0x00000018
-> +#define SAM9X75_D2G_EXID_MATCH		0x00000020
-> +#define SAM9X75_D1M_EXID_MATCH		0x00000003
-> +#define SAM9X75_D5M_EXID_MATCH		0x00000010
-> +#define SAM9X75_EXID_MATCH		0x00000000
-> +
->   #define AT91SAM9XE128_CIDR_MATCH	0x329973a0
->   #define AT91SAM9XE256_CIDR_MATCH	0x329a93a0
->   #define AT91SAM9XE512_CIDR_MATCH	0x329aa3a0
 
 
