@@ -1,268 +1,118 @@
-Return-Path: <linux-kernel+bounces-80368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A706C866766
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 01:58:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E06A86676E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:06:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B93C2816A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 00:58:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7B3C281167
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 01:06:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B35D2FA;
-	Mon, 26 Feb 2024 00:57:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RsmE5a/O"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE5427460;
+	Mon, 26 Feb 2024 01:06:48 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495068BF1
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 00:57:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75B38323D
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 01:06:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708909078; cv=none; b=ckcyTBklbMRJItPx/FiUtPWzWXkQqyxHyigB9sE+avssFfCEr56KkDhOHbvPAeXLsflPb5leyCVyhjD9L0Qp26SZK95GnZ8w/pkrxA/ApZtQ1+RVQQwRCQNFDDD/J1QGP0Fd6NsYspcbBbXkcLb3deAvBXLWvxGhAZuebAAPMtQ=
+	t=1708909608; cv=none; b=pU38ZBNe6ZZhM/G5JmP8f2v3lzGhCpSwX8kG32Ga8vokLy30EM/vdCfcSqB/tFTbp/WduzsXbTtJABDUZ46bxfb22QcjBBASgpJUpcxhUmwmZP9GUrELnPuPTvdTeW014AYk0/qBycI3+WPhO/pUI63UUIIxCIQpTeOSlfHLYZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708909078; c=relaxed/simple;
-	bh=CtX34RBUciFcsMKMYUdNAjqsFbos8BsafvSXZJzhT38=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WPTirWAdYNuPIotVwuF41/9LiLy/PU2QWTZZbD/YdcIZlbr4HE0FOjQVXnP/SN5miHABXXRJh6wSaz6enoofd2HtaKQ7ifDX/IFSdbaamo1Y1fUZmXsnqvu/PkX7ZKzlEZludikoOfA504201YtVM1pa6P1N/Bl4kGF+CLGNrlw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RsmE5a/O; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d93edfa76dso21787365ad.1
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 16:57:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708909075; x=1709513875; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=o+qnvS94w9j3asRgT4N2c6CzHzKjC/brNsXbrYMqqhc=;
-        b=RsmE5a/OyeGMlF1veD1yuXCK8zwkwqeRxLGpTLO5UjG8Qa/dTrzjNzkqEEgLhjmG/s
-         Z6hL1xmLIib1bLrY4OF9QqYnwbMD6Dvx1eTRAq0Gtt9laW6ZS6QGHKPQo1mmslRBpplp
-         +cFbZWbZs3YVBm2ZLxZg3lkTtm0+t3Onpvr9B3pNS9X7Y3gt0UOAhFtzcJ8qYVqixRUj
-         b4yYimHjyWscea19CBkPfpcYswmeUi1ko1WsnsmaXZ0CHpOcXL7MkZR58LGLOKrIbtDQ
-         65hMLooXvx9SnwEvKVmcC19GxJnembv1pprXrIylCllx69TtRxR/9ZTA9LGWqkUcwvJq
-         a1Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708909075; x=1709513875;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=o+qnvS94w9j3asRgT4N2c6CzHzKjC/brNsXbrYMqqhc=;
-        b=pmnIcLUmfftm1c9lrfNZToBl8biKyJ7K8brIDkEqE0M/mVYld5WmrfbrJo0GZUjUhg
-         wjXbyC+u2Piuk94JadpnBoCLlnZj9CCfy1DmJ9yXvodPzd3xKVCUYGcbAWnMMvm+eI+1
-         xCauZi9/T/QRqHxZH5ey5cjKruBsz6divbF+VMpwrXkzSpZmu7Z6xNWinZY4P3Kg1Mub
-         MGMScLl+AHK/+cV5j4EOomTBykiC/gmaZaedWXyCIDdmY+C076SpG6h31EXVrqX8qo0D
-         /NtZ7hdSmojKqqQDFemz1CGpXbQXxcUFXQIv/rQCxo6kvPw9NsylusQbegwc/tHAVObM
-         TAXw==
-X-Gm-Message-State: AOJu0YwIsi2JNXGqWam6V2jFtEFYFuNxWTI6VcwQRxneDpSBK1X0Malj
-	RAF1ILXbMha3y/b7F4zxgE9tXqXRrzjoYKGMjegJaUSm5PwZfNVj
-X-Google-Smtp-Source: AGHT+IEEnPIrezItgpQtz9vMVuK973GBAY4uUa4MDgiciRSiYNpMa0fD9CU4OWpdrUxvsNp+guEXdg==
-X-Received: by 2002:a17:903:11c9:b0:1dc:7887:7723 with SMTP id q9-20020a17090311c900b001dc78877723mr8144378plh.61.1708909075362;
-        Sun, 25 Feb 2024 16:57:55 -0800 (PST)
-Received: from barry-desktop.hub ([2407:7000:8942:5500:fae4:3bff:fecb:410])
-        by smtp.gmail.com with ESMTPSA id mq3-20020a170902fd4300b001d949e663d5sm2741392plb.31.2024.02.25.16.57.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Feb 2024 16:57:55 -0800 (PST)
-From: Barry Song <21cnbao@gmail.com>
-To: akpm@linux-foundation.org,
-	damon@lists.linux.dev,
-	sj@kernel.org,
-	linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org,
-	Barry Song <v-songbaohua@oppo.com>,
-	Minchan Kim <minchan@kernel.org>,
-	Michal Hocko <mhocko@suse.com>,
-	Johannes Weiner <hannes@cmpxchg.org>
-Subject: [PATCH v2] mm: madvise: pageout: ignore references rather than clearing young
-Date: Mon, 26 Feb 2024 13:57:39 +1300
-Message-Id: <20240226005739.24350-1-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1708909608; c=relaxed/simple;
+	bh=SEXPvnaY7yd34ru/qiOeLlmHyc5xD9+6IPA0q8XSUK4=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=F0TtZiv64lI3Sw24fvgQnLcC/LHSusyqALS4rJ+/f4u2AeELDvYeYALtcAZAM1F1Z3lbpxV5vkVRwUdJvsX2NpJFtOco2bRXyr9Mz9wYd7F4oATz4doEPK2e0HpTKBQZ3uego3iQgUUDXwuQQ6kgswO2CoI3E/jFtQCGdJ+N/Jk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Tjj8N4PHwz1xpNJ;
+	Mon, 26 Feb 2024 09:05:08 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (unknown [7.193.23.202])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2EAC214040F;
+	Mon, 26 Feb 2024 09:06:36 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 26 Feb 2024 09:06:35 +0800
+Subject: Re: [PATCH v2] hwtracing: hisi_ptt: Move type check to the beginning
+ of hisi_ptt_pmu_event_init()
+To: Suzuki Poulouse <suzuki.poulose@arm.com>
+CC: <wangkefeng.wang@huawei.com>, <yangyicong@huawei.com>,
+	<yangyicong@hisilicon.com>, <jonathan.cameron@huawei.com>,
+	<alexander.shishkin@linux.intel.com>, <mathieu.poirier@linaro.org>,
+	<john.garry@huawei.com>, <linux-kernel@vger.kernel.org>
+References: <20240108121906.3514820-1-yangjihong1@huawei.com>
+From: Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <979bdbe5-f01a-dfa8-6550-0f684d8f3b08@huawei.com>
+Date: Mon, 26 Feb 2024 09:06:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240108121906.3514820-1-yangjihong1@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
 
-From: Barry Song <v-songbaohua@oppo.com>
+Hello,
 
-While doing MADV_PAGEOUT, the current code will clear PTE young
-so that vmscan won't read young flags to allow the reclamation
-of madvised folios to go ahead.
-It seems we can do it by directly ignoring references, thus we
-can remove tlb flush in madvise and rmap overhead in vmscan.
+PING.
 
-Regarding the side effect, in the original code, if a parallel
-thread runs side by side to access the madvised memory with the
-thread doing madvise, folios will get a chance to be re-activated
-by vmscan (though the time gap is actually quite small since
-checking PTEs is done immediately after clearing PTEs young). But
-with this patch, they will still be reclaimed. But this behaviour
-doing PAGEOUT and doing access at the same time is quite silly
-like DoS. So probably, we don't need to care. Or ignoring the
-new access during the quite small time gap is even better.
+Thanks,
+Yang
 
-For DAMON's DAMOS_PAGEOUT based on physical address region, we
-still keep its behaviour as is since a physical address might
-be mapped by multiple processes. MADV_PAGEOUT based on virtual
-address is actually much more aggressive on reclamation. To
-untouch paddr's DAMOS_PAGEOUT, we simply pass ignore_references
-as false in reclaim_pages().
-
-A microbench as below has shown 6% decrement on the latency of
-MADV_PAGEOUT,
-
- #define PGSIZE 4096
- main()
- {
- 	int i;
- #define SIZE 512*1024*1024
- 	volatile long *p = mmap(NULL, SIZE, PROT_READ | PROT_WRITE,
- 			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-
- 	for (i = 0; i < SIZE/sizeof(long); i += PGSIZE / sizeof(long))
- 		p[i] =  0x11;
-
- 	madvise(p, SIZE, MADV_PAGEOUT);
- }
-
-w/o patch                    w/ patch
-root@10:~# time ./a.out      root@10:~# time ./a.out
-real	0m49.634s            real   0m46.334s
-user	0m0.637s             user   0m0.648s
-sys	0m47.434s            sys    0m44.265s
-
-Cc: SeongJae Park <sj@kernel.org>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Signed-off-by: Barry Song <v-songbaohua@oppo.com>
----
- -v2:
- Add description about paddr's pageout of DAMON in commit message (Thanks
- for SeongJae's help on clarifying lots of things about DAMON)
-
- mm/damon/paddr.c |  2 +-
- mm/internal.h    |  2 +-
- mm/madvise.c     |  8 ++++----
- mm/vmscan.c      | 12 +++++++-----
- 4 files changed, 13 insertions(+), 11 deletions(-)
-
-diff --git a/mm/damon/paddr.c b/mm/damon/paddr.c
-index 081e2a325778..5e6dc312072c 100644
---- a/mm/damon/paddr.c
-+++ b/mm/damon/paddr.c
-@@ -249,7 +249,7 @@ static unsigned long damon_pa_pageout(struct damon_region *r, struct damos *s)
- put_folio:
- 		folio_put(folio);
- 	}
--	applied = reclaim_pages(&folio_list);
-+	applied = reclaim_pages(&folio_list, false);
- 	cond_resched();
- 	return applied * PAGE_SIZE;
- }
-diff --git a/mm/internal.h b/mm/internal.h
-index 93e229112045..36c11ea41f47 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -868,7 +868,7 @@ extern unsigned long  __must_check vm_mmap_pgoff(struct file *, unsigned long,
-         unsigned long, unsigned long);
- 
- extern void set_pageblock_order(void);
--unsigned long reclaim_pages(struct list_head *folio_list);
-+unsigned long reclaim_pages(struct list_head *folio_list, bool ignore_references);
- unsigned int reclaim_clean_pages_from_list(struct zone *zone,
- 					    struct list_head *folio_list);
- /* The ALLOC_WMARK bits are used as an index to zone->watermark */
-diff --git a/mm/madvise.c b/mm/madvise.c
-index abde3edb04f0..44a498c94158 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -386,7 +386,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
- 			return 0;
- 		}
- 
--		if (pmd_young(orig_pmd)) {
-+		if (!pageout && pmd_young(orig_pmd)) {
- 			pmdp_invalidate(vma, addr, pmd);
- 			orig_pmd = pmd_mkold(orig_pmd);
- 
-@@ -410,7 +410,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
- huge_unlock:
- 		spin_unlock(ptl);
- 		if (pageout)
--			reclaim_pages(&folio_list);
-+			reclaim_pages(&folio_list, true);
- 		return 0;
- 	}
- 
-@@ -490,7 +490,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
- 
- 		VM_BUG_ON_FOLIO(folio_test_large(folio), folio);
- 
--		if (pte_young(ptent)) {
-+		if (!pageout && pte_young(ptent)) {
- 			ptent = ptep_get_and_clear_full(mm, addr, pte,
- 							tlb->fullmm);
- 			ptent = pte_mkold(ptent);
-@@ -524,7 +524,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
- 		pte_unmap_unlock(start_pte, ptl);
- 	}
- 	if (pageout)
--		reclaim_pages(&folio_list);
-+		reclaim_pages(&folio_list, true);
- 	cond_resched();
- 
- 	return 0;
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 402c290fbf5a..ba2f37f46a73 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2102,7 +2102,8 @@ static void shrink_active_list(unsigned long nr_to_scan,
- }
- 
- static unsigned int reclaim_folio_list(struct list_head *folio_list,
--				      struct pglist_data *pgdat)
-+				      struct pglist_data *pgdat,
-+				      bool ignore_references)
- {
- 	struct reclaim_stat dummy_stat;
- 	unsigned int nr_reclaimed;
-@@ -2115,7 +2116,7 @@ static unsigned int reclaim_folio_list(struct list_head *folio_list,
- 		.no_demotion = 1,
- 	};
- 
--	nr_reclaimed = shrink_folio_list(folio_list, pgdat, &sc, &dummy_stat, false);
-+	nr_reclaimed = shrink_folio_list(folio_list, pgdat, &sc, &dummy_stat, ignore_references);
- 	while (!list_empty(folio_list)) {
- 		folio = lru_to_folio(folio_list);
- 		list_del(&folio->lru);
-@@ -2125,7 +2126,7 @@ static unsigned int reclaim_folio_list(struct list_head *folio_list,
- 	return nr_reclaimed;
- }
- 
--unsigned long reclaim_pages(struct list_head *folio_list)
-+unsigned long reclaim_pages(struct list_head *folio_list, bool ignore_references)
- {
- 	int nid;
- 	unsigned int nr_reclaimed = 0;
-@@ -2147,11 +2148,12 @@ unsigned long reclaim_pages(struct list_head *folio_list)
- 			continue;
- 		}
- 
--		nr_reclaimed += reclaim_folio_list(&node_folio_list, NODE_DATA(nid));
-+		nr_reclaimed += reclaim_folio_list(&node_folio_list, NODE_DATA(nid),
-+						   ignore_references);
- 		nid = folio_nid(lru_to_folio(folio_list));
- 	} while (!list_empty(folio_list));
- 
--	nr_reclaimed += reclaim_folio_list(&node_folio_list, NODE_DATA(nid));
-+	nr_reclaimed += reclaim_folio_list(&node_folio_list, NODE_DATA(nid), ignore_references);
- 
- 	memalloc_noreclaim_restore(noreclaim_flag);
- 
--- 
-2.34.1
-
+On 2024/1/8 20:19, Yang Jihong wrote:
+> When perf_init_event() calls perf_try_init_event() to init pmu driver,
+> searches for the next pmu driver only when the return value is -ENOENT.
+> Therefore, hisi_ptt_pmu_event_init() needs to check the type at the
+> beginning of the function.
+> Otherwise, in the case of perf-task mode, perf_try_init_event() returns
+> -EOPNOTSUPP and skips subsequent pmu drivers, causes perf_init_event() to
+> fail.
+> 
+> Fixes: ff0de066b463 ("hwtracing: hisi_ptt: Add trace function support for HiSilicon PCIe Tune and Trace device")
+> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+> ---
+> 
+> Changes since v1:
+>   - Add fixes tag.
+> 
+>   drivers/hwtracing/ptt/hisi_ptt.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/ptt/hisi_ptt.c b/drivers/hwtracing/ptt/hisi_ptt.c
+> index a991ecb7515a..24a1f7797aeb 100644
+> --- a/drivers/hwtracing/ptt/hisi_ptt.c
+> +++ b/drivers/hwtracing/ptt/hisi_ptt.c
+> @@ -995,6 +995,9 @@ static int hisi_ptt_pmu_event_init(struct perf_event *event)
+>   	int ret;
+>   	u32 val;
+>   
+> +	if (event->attr.type != hisi_ptt->hisi_ptt_pmu.type)
+> +		return -ENOENT;
+> +
+>   	if (event->cpu < 0) {
+>   		dev_dbg(event->pmu->dev, "Per-task mode not supported\n");
+>   		return -EOPNOTSUPP;
+> @@ -1003,9 +1006,6 @@ static int hisi_ptt_pmu_event_init(struct perf_event *event)
+>   	if (event->attach_state & PERF_ATTACH_TASK)
+>   		return -EOPNOTSUPP;
+>   
+> -	if (event->attr.type != hisi_ptt->hisi_ptt_pmu.type)
+> -		return -ENOENT;
+> -
+>   	ret = hisi_ptt_trace_valid_filter(hisi_ptt, event->attr.config);
+>   	if (ret < 0)
+>   		return ret;
+> 
 
