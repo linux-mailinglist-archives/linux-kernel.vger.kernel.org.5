@@ -1,41 +1,41 @@
-Return-Path: <linux-kernel+bounces-80939-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80940-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97673866E49
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:25:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 134BE866E41
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:24:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BF47B27918
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:23:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44AD11C2349C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:24:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD17858229;
-	Mon, 26 Feb 2024 08:44:31 +0000 (UTC)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AF6258AB2;
+	Mon, 26 Feb 2024 08:44:33 +0000 (UTC)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8385B57892;
-	Mon, 26 Feb 2024 08:44:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.121.34.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD4758136;
+	Mon, 26 Feb 2024 08:44:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.121.34.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708937071; cv=none; b=l/Tsmrees2QZiJqZ7KNN65vl7SLqANtBBx9xewCJREemhR4woc5s++m/8VIooCs716S9r0CLY0STydt8kGhQZsF0uQdV3scHR6VGy+cbEhYv5CX2K/n4Jcxw5zL5pX+K1v8eeZazBNs6fO1VEQOcw/FqhCXhhdw3YEl9PfjHu3I=
+	t=1708937072; cv=none; b=Fv4c32MGWcU1JhTqU6PSdECkLsj9EjWc8NGu2lSQQJpQDLsFCDA5YMBQeArrLFSwZmgh/SbHcmmhauiWhdsZgE2sQEtwhvTMyrdCdophgMcKqr1qv4STSLgLJznp6luZCjlmagEAQquO7SrEpPc+jYTsXbLEL/SdUPTfqoghZhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708937071; c=relaxed/simple;
-	bh=fgYQVMxpAmTgYDCZIFPEaCK+FRLJh6UXAq9wyXsuRvM=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References; b=HeDlH8pXMtw1Y+q5XcI/ANuA+M76WXa93yySRMDvxPaoIeoMGAlDnzvcJ1cpsERbGe5WDvOsDV8NGAPdLwfFmabk7w4U7qMmP47wY0DjLT+VzG3N2miwECbua5yA5+mfCwh7CoW5l1BafCdA29f2PuXNZUN1WJevSnBM8XSsoCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; arc=none smtp.client-ip=92.121.34.13
+	s=arc-20240116; t=1708937072; c=relaxed/simple;
+	bh=ODVqP+lwq6xFwMgn2BlGi8UA6y56bCAsF8FKu0VoNGM=;
+	h=From:To:Subject:Date:Message-Id:In-Reply-To:References; b=VdmVI924K/ducScc62d+5/dkUfG6+YUcbzJ0wJ+09xbmWz1uoS2vaDEcouQPiSIMnjH09nFT5aMCsswABFscpziFwNS9r26o5TdTXPDwV9R94xvBEPAiXTjIdLx0YTZr2i25gju5HilqhBWDbDIHQ2XbeJWVvqMVUtrEaaTVla4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; arc=none smtp.client-ip=92.121.34.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id F01A31A06F5;
-	Mon, 26 Feb 2024 09:44:27 +0100 (CET)
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id AD4A72010FE;
+	Mon, 26 Feb 2024 09:44:29 +0100 (CET)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 8BF4E1A0138;
-	Mon, 26 Feb 2024 09:44:27 +0100 (CET)
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 73DCE200B23;
+	Mon, 26 Feb 2024 09:44:29 +0100 (CET)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 811F8183AD17;
-	Mon, 26 Feb 2024 16:44:25 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 135DE1820F56;
+	Mon, 26 Feb 2024 16:44:27 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: hverkuil@xs4all.nl,
 	sakari.ailus@iki.fi,
@@ -54,9 +54,9 @@ To: hverkuil@xs4all.nl,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v13 12/16] media: uapi: Declare interface types for Audio
-Date: Mon, 26 Feb 2024 16:28:25 +0800
-Message-Id: <1708936109-11587-13-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH v13 13/16] media: uapi: Add an entity type for audio resampler
+Date: Mon, 26 Feb 2024 16:28:26 +0800
+Message-Id: <1708936109-11587-14-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1708936109-11587-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1708936109-11587-1-git-send-email-shengjiu.wang@nxp.com>
@@ -67,91 +67,51 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-Declare the interface types that will be used by Audio.
-The type is MEDIA_INTF_T_V4L_AUDIO.
+Add and document a media entity type for an audio resampler.
+It is MEDIA_ENT_F_PROC_AUDIO_RESAMPLER.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- .../userspace-api/media/mediactl/media-types.rst    |  5 +++++
- drivers/media/v4l2-core/v4l2-dev.c                  |  4 ++++
- drivers/media/v4l2-core/v4l2-mem2mem.c              | 13 +++++++++----
- include/uapi/linux/media.h                          |  1 +
- 4 files changed, 19 insertions(+), 4 deletions(-)
+ Documentation/userspace-api/media/mediactl/media-types.rst | 6 ++++++
+ include/uapi/linux/media.h                                 | 1 +
+ 2 files changed, 7 insertions(+)
 
 diff --git a/Documentation/userspace-api/media/mediactl/media-types.rst b/Documentation/userspace-api/media/mediactl/media-types.rst
-index 6332e8395263..adfb37430f8e 100644
+index adfb37430f8e..d353f17c3344 100644
 --- a/Documentation/userspace-api/media/mediactl/media-types.rst
 +++ b/Documentation/userspace-api/media/mediactl/media-types.rst
-@@ -265,6 +265,7 @@ Types and flags used to represent the media graph elements
- .. _MEDIA-INTF-T-V4L-SUBDEV:
- .. _MEDIA-INTF-T-V4L-SWRADIO:
- .. _MEDIA-INTF-T-V4L-TOUCH:
-+.. _MEDIA-INTF-T-V4L-AUDIO:
- .. _MEDIA-INTF-T-ALSA-PCM-CAPTURE:
- .. _MEDIA-INTF-T-ALSA-PCM-PLAYBACK:
- .. _MEDIA-INTF-T-ALSA-CONTROL:
-@@ -322,6 +323,10 @@ Types and flags used to represent the media graph elements
-        -  Device node interface for Touch device (V4L)
-        -  typically, /dev/v4l-touch?
+@@ -40,6 +40,7 @@ Types and flags used to represent the media graph elements
+ .. _MEDIA-ENT-F-PROC-VIDEO-ENCODER:
+ .. _MEDIA-ENT-F-PROC-VIDEO-DECODER:
+ .. _MEDIA-ENT-F-PROC-VIDEO-ISP:
++.. _MEDIA-ENT-F-PROC-AUDIO-RESAMPLER:
+ .. _MEDIA-ENT-F-VID-MUX:
+ .. _MEDIA-ENT-F-VID-IF-BRIDGE:
+ .. _MEDIA-ENT-F-DV-DECODER:
+@@ -208,6 +209,11 @@ Types and flags used to represent the media graph elements
+ 	  combination of custom V4L2 controls and IOCTLs, and parameters
+ 	  supplied in a metadata buffer.
  
-+    *  -  ``MEDIA_INTF_T_V4L_AUDIO``
-+       -  Device node interface for Audio device (V4L)
-+       -  typically, /dev/v4l-audio?
++    *  -  ``MEDIA_ENT_F_PROC_AUDIO_RESAMPLER``
++       -  An Audio Resampler device. An entity capable of
++	  resampling an audio stream from one sample rate to another sample
++	  rate. Must have one sink pad and at least one source pad.
 +
-     *  -  ``MEDIA_INTF_T_ALSA_PCM_CAPTURE``
-        -  Device node interface for ALSA PCM Capture
-        -  typically, /dev/snd/pcmC?D?c
-diff --git a/drivers/media/v4l2-core/v4l2-dev.c b/drivers/media/v4l2-core/v4l2-dev.c
-index bac008fcedc6..ca8462a61e1f 100644
---- a/drivers/media/v4l2-core/v4l2-dev.c
-+++ b/drivers/media/v4l2-core/v4l2-dev.c
-@@ -844,6 +844,10 @@ static int video_register_media_controller(struct video_device *vdev)
- 		intf_type = MEDIA_INTF_T_V4L_SUBDEV;
- 		/* Entity will be created via v4l2_device_register_subdev() */
- 		break;
-+	case VFL_TYPE_AUDIO:
-+		intf_type = MEDIA_INTF_T_V4L_AUDIO;
-+		/* Entity will be created via v4l2_device_register_subdev() */
-+		break;
- 	default:
- 		return 0;
- 	}
-diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
-index 75517134a5e9..cda5e255305f 100644
---- a/drivers/media/v4l2-core/v4l2-mem2mem.c
-+++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
-@@ -1143,10 +1143,15 @@ int v4l2_m2m_register_media_controller(struct v4l2_m2m_dev *m2m_dev,
- 	if (ret)
- 		goto err_rm_links0;
- 
--	/* Create video interface */
--	m2m_dev->intf_devnode = media_devnode_create(mdev,
--			MEDIA_INTF_T_V4L_VIDEO, 0,
--			VIDEO_MAJOR, vdev->minor);
-+	if (vdev->vfl_type == VFL_TYPE_AUDIO)
-+		m2m_dev->intf_devnode = media_devnode_create(mdev,
-+				MEDIA_INTF_T_V4L_AUDIO, 0,
-+				VIDEO_MAJOR, vdev->minor);
-+	else
-+		/* Create video interface */
-+		m2m_dev->intf_devnode = media_devnode_create(mdev,
-+				MEDIA_INTF_T_V4L_VIDEO, 0,
-+				VIDEO_MAJOR, vdev->minor);
- 	if (!m2m_dev->intf_devnode) {
- 		ret = -ENOMEM;
- 		goto err_rm_links1;
+     *  -  ``MEDIA_ENT_F_VID_MUX``
+        - Video multiplexer. An entity capable of multiplexing must have at
+          least two sink pads and one source pad, and must pass the video
 diff --git a/include/uapi/linux/media.h b/include/uapi/linux/media.h
-index 1c80b1d6bbaf..9ff6dec7393a 100644
+index 9ff6dec7393a..a8266eaa8042 100644
 --- a/include/uapi/linux/media.h
 +++ b/include/uapi/linux/media.h
-@@ -260,6 +260,7 @@ struct media_links_enum {
- #define MEDIA_INTF_T_V4L_SUBDEV			(MEDIA_INTF_T_V4L_BASE + 3)
- #define MEDIA_INTF_T_V4L_SWRADIO		(MEDIA_INTF_T_V4L_BASE + 4)
- #define MEDIA_INTF_T_V4L_TOUCH			(MEDIA_INTF_T_V4L_BASE + 5)
-+#define MEDIA_INTF_T_V4L_AUDIO			(MEDIA_INTF_T_V4L_BASE + 6)
+@@ -125,6 +125,7 @@ struct media_device_info {
+ #define MEDIA_ENT_F_PROC_VIDEO_ENCODER		(MEDIA_ENT_F_BASE + 0x4007)
+ #define MEDIA_ENT_F_PROC_VIDEO_DECODER		(MEDIA_ENT_F_BASE + 0x4008)
+ #define MEDIA_ENT_F_PROC_VIDEO_ISP		(MEDIA_ENT_F_BASE + 0x4009)
++#define MEDIA_ENT_F_PROC_AUDIO_RESAMPLER	(MEDIA_ENT_F_BASE + 0x400a)
  
- #define MEDIA_INTF_T_ALSA_BASE			0x00000300
- #define MEDIA_INTF_T_ALSA_PCM_CAPTURE		(MEDIA_INTF_T_ALSA_BASE)
+ /*
+  * Switch and bridge entity functions
 -- 
 2.34.1
 
