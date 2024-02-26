@@ -1,102 +1,226 @@
-Return-Path: <linux-kernel+bounces-80570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80571-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 813338669BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:54:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 097B78669C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:54:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C9DD1C2158A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:54:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1336281865
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:54:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 638571B978;
-	Mon, 26 Feb 2024 05:54:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C3C1BDD6;
+	Mon, 26 Feb 2024 05:54:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="IVgxQX5Q"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="eSZ3zZ5L"
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2075.outbound.protection.outlook.com [40.107.7.75])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9294A18B1A;
-	Mon, 26 Feb 2024 05:54:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708926860; cv=none; b=DXFZu/ghcKv+zvXrb0jdQJ2QaSng/8IT0b8GMXf97gz2z9l5Wxiis8Y2klywSVpUcnWTx4Egc52w0eBW5tPbFpl6Njd7qKlvRl21BJyJXgQh5DsbDmLFm5dsP2iYIy0qKHG6QKewnEpFrV9S0pbETasR83abNBS/7SCfsnJCkIk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708926860; c=relaxed/simple;
-	bh=ziO5kqnT5u7rj2sL7Ro1i1857NkKBcyWaJgBElXIe/Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uzu0Fbpc/fONdJ7BPejR8Sjpw9rEzUEzg7hEGDxeSEvVvZYM/caMpkKU2HbOyxsPRI9QZ5dC6mVqluqIjYLmBeC+jcDabq2HpHd43Gb91/WpQV5+uJv851sGzgh9KLNlVnv0IJP92TWUuhlEDU9gbT359EKaShxjdfKtwegVbeQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=IVgxQX5Q; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=ziO5kqnT5u7rj2sL7Ro1i1857NkKBcyWaJgBElXIe/Y=;
-	t=1708926858; x=1709358858; b=IVgxQX5QfB3GWPM5oFteva3LL+zb888O4EIhXCegTEDBpTO
-	2AZR+sfOnhU5dnfkzROmcIDQWF7KB5wnH3HZ5Sn/2Q+6d3KY/5FwCrebK5OunumJ+wqJBNW8CpNOn
-	3az4JE6/8T5aVjs3/Jb0RbudjRcDpF8JnOGxt9lPK3ikUQ3Ctj2DL2Ub0EkxLIuv4ObUUZhJkIG4M
-	0PS8rgxJ2Qss4n3MQVjolBLvggVpTxs/VLAaVLEEa4Hej2btts2QVU1r0wcHK1aScwViiZuHGPj/B
-	OFae+wi2FNd3sXGzCQS+jWTxP3BmSyy1qJH1cVRFmPaQqt7IaJVuvHI/NzhIm1EQ==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1reTwM-0007nl-6e; Mon, 26 Feb 2024 06:54:14 +0100
-Message-ID: <ebcdfcf3-e63d-43c3-a770-d87678282cdf@leemhuis.info>
-Date: Mon, 26 Feb 2024 06:54:13 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 861241BC5E;
+	Mon, 26 Feb 2024 05:54:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.75
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708926868; cv=fail; b=bQSQJvseJsnuwDllV02SyPOYhhAHWw/RgYcZr61Z5Mrt+nXbDCMHjqDO1m+W5HgUURHqji52cbKcNE/exfmTfjfh/0rJMm+F44W+aptgpxmbP+bytWGq48AV05Ugxzh3XA7zHbubv/c2st3GEBVqx8F3hso2D16/rvrqt7Ynq3Y=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708926868; c=relaxed/simple;
+	bh=dScSyiohX7TFWeLWY2B8OJix7eku4Kw3uUn1eo3EauY=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=i7vOGkYW7nyAxdLTR3leFzgy7T/lRiK5qqvfUzO7EDGcLPjCQqhkYQv97nR5ZWfhj9pOXUVG/HNxtCdXzc4y4fflUeJtwG+Rb1CWsO2wmN+9ZfPhU5vdTN8SZ7j/KLu3VXwZQwOMu/VFg03KnepopdSS+aOANwmULFIUfHsxogk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=eSZ3zZ5L; arc=fail smtp.client-ip=40.107.7.75
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UH75WvNf2WGfdBm9LstA9qJCWp3PJIF1kUzztLxQPooLcYoNvnigxRtSc0mMvEFF5oBDTNf1luNZzbsrP/Ry1W87jozGCFvXkvRhMdCcqi3cb5M+F8UCy+a8DxTVj7PLnkWh/hpcoR+nvq72wnFENT7VAGZq/+u1iv4eEFKKLx9hlLaSpVe6vmUL+HgIGTuUpl43/Q+HhEEGnez8q8Rq7pASqABNYDxSZyXWiLkgXZ/rm9LWYyoJl4K1vAQCGuwWsAcuSUdRqs3ynNoe2zZyWT9OKWh+B+V7bq+cj+jCNa8ccyz9PnQhpxq+PSepqXwSnOafydRKp8p/6T56PpxZTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BYp0lvzJm1hP5C1USdVkpI1UKlYu3pQ3aRAiZNbMsJA=;
+ b=MCWptj5vHbn1sDXbotJY7WmWA4xWMrwwqiTtvSSOVfSR7WrxiKAcu1Wrv334MhLvvyvYErDGcegAhHPfnUjyj3vGtNzadafXOMtZaYVrpcD6fI6bLdtXASWb3iYm1vjN8xqaAohlGh8EHrgQVJNEx21CkQB6U0EbG5OZ7ffjIKjSBpQceJXWDBr3snFa8thpWE6ceQEDuQZrRYwzqxdrD94SH5z+7Bl/UizIpMpW1uQUlNO7qQHTH0L1ujqk1PU+8PaJh28FX6gpHsXYbBF7mC5WSVwLGHeaai8Y+msDsR65gJS6o5nJpQYSy1CYk8u2qf/kYfZKMdheMBBL1NbqWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BYp0lvzJm1hP5C1USdVkpI1UKlYu3pQ3aRAiZNbMsJA=;
+ b=eSZ3zZ5LBT3mrcJP3Mqj23HYKZy2l3E0JtQE4W2jSiNLciuIeaBOJFfXDa30s/f4TSLW2OdcEzuhVcW8MszlNMIAF9wh0pTGFrTDu5OXWQ0nWYGNzg0BXhK6qyttG+1WgHz8fUWx76QJnjuwyA3YWoyFXd19yO6yHqam5gsZwkU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB5005.eurprd04.prod.outlook.com (2603:10a6:803:57::30)
+ by DU2PR04MB9068.eurprd04.prod.outlook.com (2603:10a6:10:2f3::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.34; Mon, 26 Feb
+ 2024 05:54:23 +0000
+Received: from VI1PR04MB5005.eurprd04.prod.outlook.com
+ ([fe80::e906:b7e4:26c0:5ed9]) by VI1PR04MB5005.eurprd04.prod.outlook.com
+ ([fe80::e906:b7e4:26c0:5ed9%7]) with mapi id 15.20.7316.034; Mon, 26 Feb 2024
+ 05:54:23 +0000
+From: carlos.song@nxp.com
+To: andi.shyti@kernel.org,
+	aisheng.dong@nxp.com,
+	shawnguo@kernel.org,
+	s.hauer@pengutronix.de,
+	kernel@pengutronix.de,
+	festevam@gmail.com
+Cc: carlos.song@nxp.com,
+	xiaoning.wang@nxp.com,
+	haibo.chen@nxp.com,
+	linux-imx@nxp.com,
+	linux-i2c@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] i2c: imx-lpi2c: add generic GPIO recovery for LPI2C
+Date: Mon, 26 Feb 2024 13:54:18 +0800
+Message-Id: <20240226055418.3314913-1-carlos.song@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR02CA0041.apcprd02.prod.outlook.com
+ (2603:1096:3:18::29) To VI1PR04MB5005.eurprd04.prod.outlook.com
+ (2603:10a6:803:57::30)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Recent-ish changes in binfmt_elf made my program segfault
-Content-Language: en-US, de-DE
-To: Kees Cook <keescook@chromium.org>,
- Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>, Jan Bujak <j@exia.io>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
- brauner@kernel.org, linux-fsdevel@vger.kernel.org
-References: <c7209e19-89c4-446a-b364-83100e30cc00@exia.io>
- <874jf5co8g.fsf@email.froward.int.ebiederm.org>
- <202401221226.DAFA58B78@keescook>
- <87v87laxrh.fsf@email.froward.int.ebiederm.org>
- <202401221339.85DBD3931@keescook>
- <95eae92a-ecad-4e0e-b381-5835f370a9e7@leemhuis.info>
- <202402041526.23118AD@keescook>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <202402041526.23118AD@keescook>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1708926858;6d7274d8;
-X-HE-SMSGID: 1reTwM-0007nl-6e
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1PR04MB5005:EE_|DU2PR04MB9068:EE_
+X-MS-Office365-Filtering-Correlation-Id: ba1431cb-ba31-4e20-7ae6-08dc368f61cf
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	ZJ+8GGe4WUPjpxZki7YcQDk242LNZGtpxNkwNI8JlREfpF3fXZpBrbZCDTkRGtKfp1dZQ4J643XpZayOd8ayVZo97Zv9nbSI+69Li/4JRbhbNl50N8O3jimgu6D0WNvD7bdCUBo4exx0MVRrEU2EeidNXiYL6TT4C54vsjIY3eobSg9NKSKVUcLG9Kzo4U4yLvtSTQles1QHl4G8XO1Et4sqDqmcvXrnm5e2jLPq9sLlFnOHl3tVWFjgc+yA4N9AjYeqTFcb5+9YC6R+9ickLYp//GhV5ICwckGi2gBLuXchD5KVB8bPy1vbeKVbiukm65gwT3GxdgMqvDcT8Wkz5JjXuZn5eq6sFX/dLIxJDOIYnRu/UMhQyGXJZCfIJ/jNdyHTn7D9ih3NLuv3UMmeFrqIoPmtZ8pEmjF0L58l/qOIbsD1CK1CTp2xFbgsGVQsFnsEPkpIRoichU6N/TXm0AWYeOYTpCkluSZ69XMWlG6Cp0ttc30EggCaAH1zeuKHKInzy8NtTxnO1vrhf4nFJy3ES5xOv6tAH41Mi+A5TXaCEyjJkvLo3B5jN3GLu8AUntEQfGxYCYtNpv7ENdVLJMbqDU3AeB1VF9NMyv/8Id+rGPJL5JKJ/hnQj77TdBF3ZtwZp+2RcrGBMXjk0Oyffsh1kGsxAbkxUyK1y/MJ6xuQOiI+9nhLcAX2McHnCBkoLHhwPCcInSM60P95Ina8Z5YxxD62q8ZF+k7GYLwQwBQ=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5005.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?+42pfFuE/RA06d4VMApfRZ6udx2SXm+kuI6j1G5m6LNDgFGn6Iz0wIa6PUV8?=
+ =?us-ascii?Q?2Np4HzuSkUUSc2TUD8NQSWSbT99RX9m/TqtyzNIGfglDQR2zt2AW/nUjqfcS?=
+ =?us-ascii?Q?cPIjlpDycE1oFp+gsiywxFf0z5f9mtCht/GoOe4walBt2ZbDzGt1ULHSzdAT?=
+ =?us-ascii?Q?gw0SzVW9G2bThwV8AQ9csEsx+PYlxtDvja/I4dUcpvZv2ebaILFc4+QmMD4y?=
+ =?us-ascii?Q?YG52mCQ9QsroB1GMFG63gZkzjrnNhVe8fxTI/iMk1PlwyEzWe7+pXLt2fxnS?=
+ =?us-ascii?Q?iypRyoD2JTHzmlbvaC75/5ZAIaSrE2he5W9L9FRSrIcHpkINR2WuqoZWOl9y?=
+ =?us-ascii?Q?UeLLSF4Xolzio7bkl9sJnpOdLvsAVFLvlpWwtmaEVBSADph+K2oz9W8M02Uf?=
+ =?us-ascii?Q?scDAS9bARUcCEAWZH+mz9BNCVAe9aG+EfsII3OnZV4GQ2jEEFsb6+/L9Sm2R?=
+ =?us-ascii?Q?U/UyPS+c7arLDWTLLavlJI49W730faHt4eAsR6fFAeXsBX0M5pA14MjH52cz?=
+ =?us-ascii?Q?F4qPZJyMRDZM3z2tCLUyHMWFg2ktFrh8ZuLJ3IFqLv9Nb94XiHq5lRLWD8WF?=
+ =?us-ascii?Q?PdMkkta4jfMHNL7gwLqagSeoudXb/0acclGSEI7vsBcubxXi3AU8hFfEQNu1?=
+ =?us-ascii?Q?qNEMrT7RzpE/nhNbC1yJwOvbVm8azDkgpBUIPIhyZu1gwejSPPKCQOnZ6I9E?=
+ =?us-ascii?Q?gm/exql2XOjZBFKWgNViTqp4xeRD8WDaPnYpVmuvx4yqLANlYXouDGMXXJFh?=
+ =?us-ascii?Q?Y6eRHQtvOu1uRCC5O1Hkikb0PmB2vKX311r0N6qDv+YOUSIG9F0tOwtbdaZV?=
+ =?us-ascii?Q?t+0jhuOSUa/ZIdTeIrk734/aEAVELN5kNS1yip0sqM9Ju2xpn6NC4hokOb1k?=
+ =?us-ascii?Q?9rsL2we9C9/t/0qzXLvPyB3/n0tsMQmD7kMRd9FnFjb06uAtNdexoQjXNQkp?=
+ =?us-ascii?Q?3MPOzYv3qo+5ciOKaFcGaWa40QbWocBjQsLY0elV1JFGiRNOzsQLmUCaa8V+?=
+ =?us-ascii?Q?BUQ9b2LK2x2MhZJirYRcSw1F07+BYEUUVkPuyGkaJ6KFmd/U8BRoek/a+8k2?=
+ =?us-ascii?Q?l+5/yKfwUlL6jCFnALQJPIgASacd4SEGiGOtitk9wcscRpoLIX40E+D3dQnx?=
+ =?us-ascii?Q?mcja+5KaNS2nfjqe+NsSBJ0U+SXjU8L2F00938c9mJsYEP8XcpanogWCmB01?=
+ =?us-ascii?Q?x2wYswswhIAf6npqyeBtj6b6WAzlNTp7zerFmpVlrXhUsg7E+nyXI9WLzkj7?=
+ =?us-ascii?Q?8ZBKbXF2u4Xa7uHQP1/5vrGpA4Yq94FmcdB+q6fgEpq5tARatoEJgc7r6g2Z?=
+ =?us-ascii?Q?OB2xa9Sn5uMClhT0fHDA+vZaRYQZGvxsb/BQnM+2Hh0GK9fcyZPUfPVBSSVQ?=
+ =?us-ascii?Q?NHvn9C9Xd6ftWxy8eTdFQ3DwTTlEwnQ+ShKH6JIasKcFCaEu0CY5o51nArZJ?=
+ =?us-ascii?Q?pplTr6MGnHBS/3M5Q4oLctf2/C6dMxvUY06mSWpHxqR9kVO2r+owBOhWtDQn?=
+ =?us-ascii?Q?74RrcO40VY0AMjbRhKsTyZVCWGR7OSPlrgc85PaHvOitI87UPdf+SVKCOvfO?=
+ =?us-ascii?Q?T45+yAEx1gI12ZNtHGMx823QpGBWx063byWPKdKc?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba1431cb-ba31-4e20-7ae6-08dc368f61cf
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5005.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 05:54:23.0739
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cKcws288pTMGanAELZ67pOVTH+5uePeZrGnH4Dqz1OZy3f4C6aJLRelKEyKTdI9yOMBJDGikp3OF5KuUbX0jQg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB9068
 
-On 05.02.24 00:27, Kees Cook wrote:
-> On Thu, Feb 01, 2024 at 11:47:02AM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
->> Hi, Thorsten here, the Linux kernel's regression tracker. Top-posting
->> for once, to make this easily accessible to everyone.
->>
->> Eric, what's the status wrt. to this regression? Things from here look
->> stalled, but I might be missing something.
->>
-> If Eric doesn't beat me to it, I'm hoping to look at this more this
-> coming week.
+From: Carlos Song <carlos.song@nxp.com>
 
-Friendly reminder that this regression is still out there, as it seems
-things stalled. Or was there some progress or even a fix? Then please
-tell me!
+This adds i2c bus recovery to the lpi2c driver.
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+Uses the generic recovery function setting the SCL/SDA pads as
+GPIO pins and sending 9 clocks to try and recover the bus.
 
-#regzbot poke
+Signed-off-by: Carlos Song <carlos.song@nxp.com>
+Reviewed-by: Clark Wang <xiaoning.wang@nxp.com>
+---
+ drivers/i2c/busses/i2c-imx-lpi2c.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+diff --git a/drivers/i2c/busses/i2c-imx-lpi2c.c b/drivers/i2c/busses/i2c-imx-lpi2c.c
+index 678b30e90492..6d72e4e126dd 100644
+--- a/drivers/i2c/busses/i2c-imx-lpi2c.c
++++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
+@@ -106,6 +106,7 @@ struct lpi2c_imx_struct {
+ 	unsigned int		txfifosize;
+ 	unsigned int		rxfifosize;
+ 	enum lpi2c_imx_mode	mode;
++	struct i2c_bus_recovery_info rinfo;
+ };
+ 
+ static void lpi2c_imx_intctrl(struct lpi2c_imx_struct *lpi2c_imx,
+@@ -133,6 +134,8 @@ static int lpi2c_imx_bus_busy(struct lpi2c_imx_struct *lpi2c_imx)
+ 
+ 		if (time_after(jiffies, orig_jiffies + msecs_to_jiffies(500))) {
+ 			dev_dbg(&lpi2c_imx->adapter.dev, "bus not work\n");
++			if (lpi2c_imx->adapter.bus_recovery_info)
++				i2c_recover_bus(&lpi2c_imx->adapter);
+ 			return -ETIMEDOUT;
+ 		}
+ 		schedule();
+@@ -190,6 +193,8 @@ static void lpi2c_imx_stop(struct lpi2c_imx_struct *lpi2c_imx)
+ 
+ 		if (time_after(jiffies, orig_jiffies + msecs_to_jiffies(500))) {
+ 			dev_dbg(&lpi2c_imx->adapter.dev, "stop timeout\n");
++			if (lpi2c_imx->adapter.bus_recovery_info)
++				i2c_recover_bus(&lpi2c_imx->adapter);
+ 			break;
+ 		}
+ 		schedule();
+@@ -325,6 +330,8 @@ static int lpi2c_imx_txfifo_empty(struct lpi2c_imx_struct *lpi2c_imx)
+ 
+ 		if (time_after(jiffies, orig_jiffies + msecs_to_jiffies(500))) {
+ 			dev_dbg(&lpi2c_imx->adapter.dev, "txfifo empty timeout\n");
++			if (lpi2c_imx->adapter.bus_recovery_info)
++				i2c_recover_bus(&lpi2c_imx->adapter);
+ 			return -ETIMEDOUT;
+ 		}
+ 		schedule();
+@@ -526,6 +533,20 @@ static irqreturn_t lpi2c_imx_isr(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
++static int lpi2c_imx_init_recovery_info(struct lpi2c_imx_struct *lpi2c_imx,
++				  struct platform_device *pdev)
++{
++	struct i2c_bus_recovery_info *bri = &lpi2c_imx->rinfo;
++
++	bri->pinctrl = devm_pinctrl_get(&pdev->dev);
++	if (IS_ERR(bri->pinctrl))
++		return PTR_ERR(bri->pinctrl);
++
++	lpi2c_imx->adapter.bus_recovery_info = bri;
++
++	return 0;
++}
++
+ static u32 lpi2c_imx_func(struct i2c_adapter *adapter)
+ {
+ 	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL |
+@@ -600,6 +621,12 @@ static int lpi2c_imx_probe(struct platform_device *pdev)
+ 	lpi2c_imx->txfifosize = 1 << (temp & 0x0f);
+ 	lpi2c_imx->rxfifosize = 1 << ((temp >> 8) & 0x0f);
+ 
++	/* Init optional bus recovery function */
++	ret = lpi2c_imx_init_recovery_info(lpi2c_imx, pdev);
++	/* Give it another chance if pinctrl used is not ready yet */
++	if (ret == -EPROBE_DEFER)
++		goto rpm_disable;
++
+ 	ret = i2c_add_adapter(&lpi2c_imx->adapter);
+ 	if (ret)
+ 		goto rpm_disable;
+-- 
+2.34.1
 
 
