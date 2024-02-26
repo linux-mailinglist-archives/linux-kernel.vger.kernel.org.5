@@ -1,145 +1,118 @@
-Return-Path: <linux-kernel+bounces-80753-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1869F866C14
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:26:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5DAC866C2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:28:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E96E1C21364
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:26:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FBD028118E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:28:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2558A1CA9C;
-	Mon, 26 Feb 2024 08:26:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22A521DA5F;
+	Mon, 26 Feb 2024 08:27:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="rem6OKKw"
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HzQYTdDz"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75FF41CA87;
-	Mon, 26 Feb 2024 08:26:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A43A1DA3F;
+	Mon, 26 Feb 2024 08:27:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708935964; cv=none; b=jbRs3Hn7Dz+eaqIUHgJizVclMS5RlAu9QGk1HNrAt0zDP8VzI69xJPzG+bUHnD1UlHxZIYV4978H1RMw/2t+tam1ZLScfA4zJFEbTB4zYTnEPtmR8CJ2Dw/byHlt5NHctR7LALXHkjnyL+1BEgj3DzY7x+89aCW34VsfHPbrYWo=
+	t=1708936057; cv=none; b=DBRIxIiCZ/xZa3c+dbSNWWcCO+SNPCkNKv9yyzNCgdHFJe/K/LSxbP4nHngBpl9K69LjJ7xyd34wbxkL2H+thDQ+e2gyAwqsCjEqmFfmPLWo3HaOyeQweIvryIHazXsY1V+T9q7k4a0EyaKW4X8FxBjChc9pNU1JnL05kq7se3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708935964; c=relaxed/simple;
-	bh=I+M+uyV5FpwwpkemvG8PFA89tmGoOFufVYcPptG81kg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=cXMqESCL9C81oPg5yhs+FYE6eEa5jU88kbYYncDkj2IlI7ih7R7zs5gXwFZWMIn59fwM4Lf9EX5XLgQS6pRt57JvNdsAkN+pXBx5VWgwXjTXe+t22hZhJvnDc4Vnb/AiAXqrmXzy0pkr0d7VHSfHob3UM67Z9fZVElaqrtrx0CM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=rem6OKKw; arc=none smtp.client-ip=185.132.182.106
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41Q3T6cD001925;
-	Mon, 26 Feb 2024 09:25:42 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=ipjqMNVCa6S6fgiDE7vR21a99GdkTx/G11g4uP/BcWo=; b=re
-	m6OKKwNwvCp2pW4u/6mMlfjuS8RNmSFjVPAmlz2bPp9F+JqJox3Hc/SBI2Q5yadI
-	dGPwtVG/NEKZEs3agmVqVQ5BcX2oxwPMMkbh65QGAV4GlAyHist0zk+J59ucHGin
-	FmAFH6qAfwOzUf2ONh9hKbTwgE0qMQbNSzWuCL1QAlBJ6OaWCzZMcyc9x3BQAkii
-	+3+u4SVAdfy1xN413PoKsb3nvp+/sAmqIg415Wk/Dx6UPvlzlgelKuOlxI9tweoL
-	UBeFFz/9GKvnTn6kU8fqc9Dg6w1Juv2LbZfBxpfKbUs3nfY1pmg2NT9YMF2q6rYa
-	dQETh34CLS96SptsmWZA==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3wf6rke8dn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 Feb 2024 09:25:42 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 492164002D;
-	Mon, 26 Feb 2024 09:25:38 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C3E12243FD1;
-	Mon, 26 Feb 2024 09:25:07 +0100 (CET)
-Received: from [10.201.21.177] (10.201.21.177) by SHFDAG1NODE3.st.com
- (10.75.129.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 26 Feb
- 2024 09:25:07 +0100
-Message-ID: <9859023c-57bf-4316-911c-c5f5ade1ebb4@foss.st.com>
-Date: Mon, 26 Feb 2024 09:25:02 +0100
+	s=arc-20240116; t=1708936057; c=relaxed/simple;
+	bh=w4lY8P57h5k6ODIw2ePbR3iDGqUeK20stwm2wWMGTNQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=SGd9ir5hsXH8d/PcqEDgpwjgLW08nK9feJhBcrpRMEBezT4xvYIOke3PDh57lmTKJgYVChkZ0IImTGLqTBi/trivctplD5gHuJZwIjvfEFrFgCHwfe5yeziXY5ckIMzhOEyCKT3S0Tgzf6sCdWQpDN6u4l9t4K/EWx1h1cfK9EQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HzQYTdDz; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708936056; x=1740472056;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=w4lY8P57h5k6ODIw2ePbR3iDGqUeK20stwm2wWMGTNQ=;
+  b=HzQYTdDz1vU34CU77d53Ae1ZlSJLHE/pHMokY5oREH05Tr2Rq1WkHf5W
+   b6n3rpcLCFsIYFAFKMSlTqlqz7vkOwM1L3ag1Tqa8cfgfUuJ9ZTM/PvNQ
+   gVkLr+DCLi/T4ylRUOI+T30jCGVjgD3MJTOgBV2JBVrOmOxx7zeV1xVeM
+   Ud2mBuwTJPx7dTVOORBjRTnYQ6/J5STDpQITkXCFKaJqr3RPQvP+EGczE
+   EvNFDl64H+p8z7LuiS0vcOxBx3/W100ax6Mc+lqtj7AjTWuf8gBAZ2EbY
+   Hdjz7Wa40zBOIOOknW9GdVKvqVF88mdTytMSjaMSQm9liAeD/3rRQECiT
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3340694"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="3340694"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 00:27:34 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="7020034"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 00:27:33 -0800
+From: isaku.yamahata@intel.com
+To: kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: isaku.yamahata@intel.com,
+	isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>,
+	Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com,
+	hang.yuan@intel.com,
+	tina.zhang@intel.com,
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [PATCH v19 001/130] x86/virt/tdx: Rename _offset to _member for TD_SYSINFO_MAP() macro
+Date: Mon, 26 Feb 2024 00:25:03 -0800
+Message-Id: <eab766ea1477d87a5985039e8fbe81ec5a45bac9.1708933498.git.isaku.yamahata@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1708933498.git.isaku.yamahata@intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/5] memory: stm32-fmc2-ebi: check regmap_read return
- value
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
-        <devicetree@vger.kernel.org>
-References: <20240219140202.85680-1-christophe.kerello@foss.st.com>
- <20240219140202.85680-3-christophe.kerello@foss.st.com>
- <1c4ab974-2b72-45ce-ab20-de158b91e356@linaro.org>
-Content-Language: en-US
-From: Christophe Kerello <christophe.kerello@foss.st.com>
-In-Reply-To: <1c4ab974-2b72-45ce-ab20-de158b91e356@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE3.st.com
- (10.75.129.71)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-26_05,2024-02-23_01,2023-05-22_02
+Content-Transfer-Encoding: 8bit
 
-Hi Krzysztof,
+From: Kai Huang <kai.huang@intel.com>
 
-On 2/21/24 09:29, Krzysztof Kozlowski wrote:
-> On 19/02/2024 15:01, Christophe Kerello wrote:
->> Check regmap_read return value to avoid to use uninitialized local
->> variables.
->>
->> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
->> ---
->> Changes in v2:
->>   - New patch added
->>
->>   drivers/memory/stm32-fmc2-ebi.c | 128 +++++++++++++++++++++++---------
->>   1 file changed, 94 insertions(+), 34 deletions(-)
->>
-> 
-> ...
-> 
->> -static void stm32_fmc2_ebi_save_setup(struct stm32_fmc2_ebi *ebi)
->> +static int stm32_fmc2_ebi_save_setup(struct stm32_fmc2_ebi *ebi)
->>   {
->>   	unsigned int cs;
->> +	int ret;
->>   
->>   	for (cs = 0; cs < FMC2_MAX_EBI_CE; cs++) {
->> -		regmap_read(ebi->regmap, FMC2_BCR(cs), &ebi->bcr[cs]);
->> -		regmap_read(ebi->regmap, FMC2_BTR(cs), &ebi->btr[cs]);
->> -		regmap_read(ebi->regmap, FMC2_BWTR(cs), &ebi->bwtr[cs]);
->> +		ret = regmap_read(ebi->regmap, FMC2_BCR(cs), &ebi->bcr[cs]);
->> +		if (ret)
->> +			return ret;
->> +
->> +		ret = regmap_read(ebi->regmap, FMC2_BTR(cs), &ebi->btr[cs]);
->> +		if (ret)
->> +			return ret;
->> +
->> +		ret = regmap_read(ebi->regmap, FMC2_BWTR(cs), &ebi->bwtr[cs]);
->> +		if (ret)
->> +			return ret;
-> 
-> These are just:
-> 
-> ret |= regmapr_read()
-> and one "if (ret)" clause.
-> 
+TD_SYSINFO_MAP() macro actually takes the member of the 'struct
+tdx_tdmr_sysinfo' as the second argument and uses the offsetof() to
+calculate the offset for that member.
 
-Ok, it will be done in V3.
+Rename the macro argument _offset to _member to reflect this.
 
-Regards,
-Christophe Kerello.
+Signed-off-by: Kai Huang <kai.huang@intel.com>
+Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+---
+ arch/x86/virt/vmx/tdx/tdx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
+diff --git a/arch/x86/virt/vmx/tdx/tdx.c b/arch/x86/virt/vmx/tdx/tdx.c
+index 4d6826a76f78..2aee64d2f27f 100644
+--- a/arch/x86/virt/vmx/tdx/tdx.c
++++ b/arch/x86/virt/vmx/tdx/tdx.c
+@@ -297,9 +297,9 @@ struct field_mapping {
+ 	int offset;
+ };
+ 
+-#define TD_SYSINFO_MAP(_field_id, _offset) \
++#define TD_SYSINFO_MAP(_field_id, _member) \
+ 	{ .field_id = MD_FIELD_ID_##_field_id,	   \
+-	  .offset   = offsetof(struct tdx_tdmr_sysinfo, _offset) }
++	  .offset   = offsetof(struct tdx_tdmr_sysinfo, _member) }
+ 
+ /* Map TD_SYSINFO fields into 'struct tdx_tdmr_sysinfo': */
+ static const struct field_mapping fields[] = {
+-- 
+2.25.1
+
 
