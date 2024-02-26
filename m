@@ -1,266 +1,142 @@
-Return-Path: <linux-kernel+bounces-81399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEFED867573
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:44:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C92EB8675AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:54:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24EB01F2164A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:44:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1EB4B2A3FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:44:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69B4780056;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C9188005E;
 	Mon, 26 Feb 2024 12:44:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="U+ZHKIbv"
-Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="XG8c2qGw"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE4257F497
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 12:44:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F16F7F498
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 12:44:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708951461; cv=none; b=fynT4P1cOAObIvldxxNKhNnJY/jvRcZOZfUu8EEhWPSCLkFrzQLvHaQBoVAMa0+6HsM6dwridDN6lXuvWQJAUdWrRI214imVvJUz2HMn2TD1DHTPA8qcCaYpJaw1Z9HqlHLLGe+A1zy41xtLpQ7T2+XqR6RaqSafih6K3Iw2Vh8=
+	t=1708951461; cv=none; b=mf7+DEmznfq30OyPswRBG7ARWqQqlC6R29lkvzItJlUbXSMPw4cBdmyk5cjUsKO5njjqIlHwEv+VXrADZln/jn0RBUG+wrV6G2rfHpvwO6HM7hIoM9+/ma+74iud+VJfpIkI4BOfl7eKVzgVJOVYtAcQ0INckynFfvg+EMBSY00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708951461; c=relaxed/simple;
-	bh=Olm5WKHxqb6QWM5isUwceIC1qHYorkTL+1j53UzOYwM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mk2lBVMW1x4d7hQ0XBOzpB97Mc/DpXZfqLFMHBOFwAvXeJfqeSfIz5zEpTomQv1BihFT9e2FgkGMznBHL+atU8NLSLi3OD8UUjjyGjuvjQAeF6aPdEgaRn8BmA89s7dEkZQ9wPAMUJWOKuCj0P/BLIUx1UngW4l9dBV0vURAllw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=U+ZHKIbv; arc=none smtp.client-ip=198.252.153.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
-Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx0.riseup.net (Postfix) with ESMTPS id 4Tk0g03Nykz9skq;
-	Mon, 26 Feb 2024 12:44:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1708951453; bh=Olm5WKHxqb6QWM5isUwceIC1qHYorkTL+1j53UzOYwM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=U+ZHKIbv8yeH0OkbgiicBpxM20nR/wWIEK9lHoVwQ9quuV58ENWdTvmBYBB90pIug
-	 WM0/KhiBqeyD8kdk5UzSV81TmSaAPZZII2wIedU6J8XjzNyimn8M2/m2KkoucbDSQX
-	 HBKBdU3UmiFFpPx955RkbeOVMrO2GDw6QtRyEDVg=
-X-Riseup-User-ID: 68748640731C1B3F7536CAFC2F5550E7BC852D84B3E84E299E7BD83344413D0A
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4Tk0ft1d19zJsBS;
-	Mon, 26 Feb 2024 12:44:05 +0000 (UTC)
-Message-ID: <848f2690-2f20-4a92-82ff-64cdee8cb2ee@riseup.net>
-Date: Mon, 26 Feb 2024 09:44:02 -0300
+	bh=uDBv6eovvwNdT+3GaN9kzuRnFK1pxbxDzvh1+/xK5Pc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LTkOFWT3NnEqxiZT5dljiUzRMEApNknMpyRKo35BYISpzb1A9FjFumdtXd39ufA2RIAJIIBNuTOPl9HKdk9Lrt6+RxqbW132AndaRFvdvBmP2hN5fN/bpCH10m4QGs6/iGwz6vbAgLjCAi3IDYSxB2Hy/krTs9MYtxGuJDkeLCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=XG8c2qGw; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6d9f94b9186so2658481b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 04:44:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1708951459; x=1709556259; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=V9GRrB7FsQKdoO/mCKPDN/I5gsB0+aF7FI7yJuEpIP4=;
+        b=XG8c2qGwwog5aCdlYX22/9iHp1fPnl1zSe8AdP372N4BQhGeyQmhNl2lfBfviQaLUo
+         HzJ1egMGO13VCCXpDg7QTGDNHMhlyHeC0xEv8ANxIZDIqru/U4SsESDGyeKlMKDNHJS2
+         3AwzKJ8Irf2fp+X6BE28hZ6N3cUCovGHG+EtZFfgHYwX5JirOTu4B4pEruuMUiaxsBpA
+         Xq7hz+dAte7cIJ0TX4t9GN4zeWzd1ZetN1houW4wQ0TesMNg7GQeRrvh95kIVU/bRsWw
+         j+HAs9msJTgQplj8kkiW+nzjGgzXK3GsZtcwBVSBVdNKwjWiPb8DH6YuMRjU7CRoltUA
+         z+rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708951459; x=1709556259;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V9GRrB7FsQKdoO/mCKPDN/I5gsB0+aF7FI7yJuEpIP4=;
+        b=gsmFI1XAvtECPHNi0Tm+py1LcUVfTTBfHvGBUkQsHjtCp2+q8HaGGUmpfs8Dd34Jc1
+         HON6PdiKdQoyQRorc5KacyrHwiBWwK5bl0io0zkIi3HXEXOgoTTgjC/NtzPWzVofe9Hh
+         HYIQPuNE2QUNqIAOAHcILhvQ/mIcTtZ27MUkTN7b5XqmDbV9priJWUSA2XFJxJ1ZZSwq
+         TVazQ4YE3qbE5lHoCthPFowWdm8kq4DF4g6Z33XWpbRdPcYmXOij35eeWcpDFGkZxs8W
+         SRMulYi3zl7DQ3O8+M2UWG7imkCowdvTfA+PMXQd/S9eKfuLPQm3spo5vKhILIn66qZS
+         qJLg==
+X-Forwarded-Encrypted: i=1; AJvYcCUNQ9tpBDpKe+GgQd5QxXyCfGOUE3j2UasXBFfXqtTK6dWmUXBbd70bsB9hM4f/tqTl7nhfSACGkhUQ+zpskRe+PjOsSRuivZwxfwwT
+X-Gm-Message-State: AOJu0YyAEubu9dLXCOtwEYD4Vb9OMMs8l9Fhe1hn4wK2MYSchZYy01d4
+	6VWSXznpbQIP6G3FvHl3/FB0VXbXV6kcI+QM6qlHhLU4Fag3qXlZ8QvrMa5h1w8=
+X-Google-Smtp-Source: AGHT+IGVIPYZ6gPZ6GL6KlSqg0tncDkt7FDH+J+n2o4zbqRm8gNCsIbUHWADIPqxmkwXqGjloP0o5A==
+X-Received: by 2002:aa7:9d9a:0:b0:6e4:59b7:1dd4 with SMTP id f26-20020aa79d9a000000b006e459b71dd4mr7434462pfq.31.1708951459543;
+        Mon, 26 Feb 2024 04:44:19 -0800 (PST)
+Received: from dread.disaster.area (pa49-181-247-196.pa.nsw.optusnet.com.au. [49.181.247.196])
+        by smtp.gmail.com with ESMTPSA id b27-20020aa78edb000000b006e4195cccb5sm1385769pfr.133.2024.02.26.04.44.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 04:44:19 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1reaLA-00Bkux-1O;
+	Mon, 26 Feb 2024 23:44:16 +1100
+Date: Mon, 26 Feb 2024 23:44:16 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, chandan.babu@oracle.com,
+	akpm@linux-foundation.org, mcgrof@kernel.org, ziy@nvidia.com,
+	hare@suse.de, djwong@kernel.org, gost.dev@samsung.com,
+	linux-mm@kvack.org, willy@infradead.org,
+	Dave Chinner <dchinner@redhat.com>
+Subject: Re: [PATCH 11/13] xfs: expose block size in stat
+Message-ID: <ZdyHoOHBQ19JJap2@dread.disaster.area>
+References: <20240226094936.2677493-1-kernel@pankajraghav.com>
+ <20240226094936.2677493-12-kernel@pankajraghav.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 4/9] drm/vkms: Add typedef and documentation for
- pixel_read and pixel_write functions
-Content-Language: en-US
-To: Louis Chauvet <louis.chauvet@bootlin.com>,
- Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
- Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- pekka.paalanen@haloniitty.fi
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
- nicolejadeyee@google.com
-References: <20240226-yuv-v3-0-ff662f0994db@bootlin.com>
- <20240226-yuv-v3-4-ff662f0994db@bootlin.com>
-From: Arthur Grillo <arthurgrillo@riseup.net>
-In-Reply-To: <20240226-yuv-v3-4-ff662f0994db@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226094936.2677493-12-kernel@pankajraghav.com>
 
+On Mon, Feb 26, 2024 at 10:49:34AM +0100, Pankaj Raghav (Samsung) wrote:
+> From: Dave Chinner <dchinner@redhat.com>
+> 
+> For block size larger than page size, the unit of efficient IO is
+> the block size, not the page size. Leaving stat() to report
+> PAGE_SIZE as the block size causes test programs like fsx to issue
+> illegal ranges for operations that require block size alignment
+> (e.g. fallocate() insert range). Hence update the preferred IO size
+> to reflect the block size in this case.
+> 
+> Signed-off-by: Dave Chinner <dchinner@redhat.com>
+> dd2d535e3fb29d ("xfs: cleanup calculating the stat optimal I/O size")]
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 
+Something screwed up there, and you haven't put your own SOB on
+this.
 
-On 26/02/24 05:46, Louis Chauvet wrote:
-> Introduce two typedefs: pixel_read_t and pixel_write_t. It allows the
-> compiler to check if the passed functions take the correct arguments.
-> Such typedefs will help ensuring consistency across the code base in
-> case of update of these prototypes.
-> 
-> Introduce a check around the get_pixel_*_functions to avoid using a
-> nullptr as a function.
-> 
-> Document for those typedefs.
-> 
-> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
 > ---
->  drivers/gpu/drm/vkms/vkms_drv.h       | 23 +++++++++++++++++++++--
->  drivers/gpu/drm/vkms/vkms_formats.c   |  8 ++++----
->  drivers/gpu/drm/vkms/vkms_formats.h   |  4 ++--
->  drivers/gpu/drm/vkms/vkms_plane.c     |  9 ++++++++-
->  drivers/gpu/drm/vkms/vkms_writeback.c |  9 ++++++++-
->  5 files changed, 43 insertions(+), 10 deletions(-)
+>  fs/xfs/xfs_iops.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
-> index 18086423a3a7..886c885c8cf5 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.h
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
-> @@ -53,12 +53,31 @@ struct line_buffer {
->  	struct pixel_argb_u16 *pixels;
->  };
->  
-> +/**
-> + * typedef pixel_write_t - These functions are used to read a pixel from a
-> + * `struct pixel_argb_u16*`, convert it in a specific format and write it in the @dst_pixels
-> + * buffer.
-> + *
-> + * @dst_pixel: destination address to write the pixel
-> + * @in_pixel: pixel to write
-> + */
-> +typedef void (*pixel_write_t)(u8 *dst_pixels, struct pixel_argb_u16 *in_pixel);
-> +
->  struct vkms_writeback_job {
->  	struct iosys_map data[DRM_FORMAT_MAX_PLANES];
->  	struct vkms_frame_info wb_frame_info;
-> -	void (*pixel_write)(u8 *dst_pixels, struct pixel_argb_u16 *in_pixel);
-> +	pixel_write_t pixel_write;
->  };
->  
-> +/**
-> + * typedef pixel_read_t - These functions are used to read a pixel in the source frame,
-> + * convert it to `struct pixel_argb_u16` and write it to @out_pixel.
-> + *
-> + * @src_pixels: Pointer to the pixel to read
-> + * @out_pixel: Pointer to write the converted pixel
-> + */
-> +typedef void (*pixel_read_t)(u8 *src_pixels, struct pixel_argb_u16 *out_pixel);
-> +
->  /**
->   * vkms_plane_state - Driver specific plane state
->   * @base: base plane state
-> @@ -69,7 +88,7 @@ struct vkms_writeback_job {
->  struct vkms_plane_state {
->  	struct drm_shadow_plane_state base;
->  	struct vkms_frame_info *frame_info;
-> -	void (*pixel_read)(u8 *src_buffer, struct pixel_argb_u16 *out_pixel);
-> +	pixel_read_t pixel_read;
->  };
->  
->  struct vkms_plane {
-> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
-> index cb7a49b7c8e7..1f5aeba57ad6 100644
-> --- a/drivers/gpu/drm/vkms/vkms_formats.c
-> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
-> @@ -262,7 +262,7 @@ void vkms_writeback_row(struct vkms_writeback_job *wb,
->   *
->   * @format: 4cc of the format
->   */
-> -void *get_pixel_conversion_function(u32 format)
-> +pixel_read_t get_pixel_read_function(u32 format)
->  {
->  	switch (format) {
->  	case DRM_FORMAT_ARGB8888:
-> @@ -276,7 +276,7 @@ void *get_pixel_conversion_function(u32 format)
->  	case DRM_FORMAT_RGB565:
->  		return &RGB565_to_argb_u16;
->  	default:
-> -		return NULL;
-> +		return (pixel_read_t)NULL;
+> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> index a0d77f5f512e..1b4edfad464f 100644
+> --- a/fs/xfs/xfs_iops.c
+> +++ b/fs/xfs/xfs_iops.c
+> @@ -543,7 +543,7 @@ xfs_stat_blksize(
+>  			return 1U << mp->m_allocsize_log;
 >  	}
+>  
+> -	return PAGE_SIZE;
+> +	return max_t(unsigned long, PAGE_SIZE, mp->m_sb.sb_blocksize);
 >  }
->  
-> @@ -287,7 +287,7 @@ void *get_pixel_conversion_function(u32 format)
->   *
->   * @format: 4cc of the format
->   */
-> -void *get_pixel_write_function(u32 format)
-> +pixel_write_t get_pixel_write_function(u32 format)
->  {
->  	switch (format) {
->  	case DRM_FORMAT_ARGB8888:
-> @@ -301,6 +301,6 @@ void *get_pixel_write_function(u32 format)
->  	case DRM_FORMAT_RGB565:
->  		return &argb_u16_to_RGB565;
->  	default:
-> -		return NULL;
-> +		return (pixel_write_t)NULL;
->  	}
->  }
-> diff --git a/drivers/gpu/drm/vkms/vkms_formats.h b/drivers/gpu/drm/vkms/vkms_formats.h
-> index cf59c2ed8e9a..3ecea4563254 100644
-> --- a/drivers/gpu/drm/vkms/vkms_formats.h
-> +++ b/drivers/gpu/drm/vkms/vkms_formats.h
-> @@ -5,8 +5,8 @@
->  
->  #include "vkms_drv.h"
->  
-> -void *get_pixel_conversion_function(u32 format);
-> +pixel_read_t get_pixel_read_function(u32 format);
->  
-> -void *get_pixel_write_function(u32 format);
-> +pixel_write_t get_pixel_write_function(u32 format);
->  
->  #endif /* _VKMS_FORMATS_H_ */
-> diff --git a/drivers/gpu/drm/vkms/vkms_plane.c b/drivers/gpu/drm/vkms/vkms_plane.c
-> index d5203f531d96..f68b1b03d632 100644
-> --- a/drivers/gpu/drm/vkms/vkms_plane.c
-> +++ b/drivers/gpu/drm/vkms/vkms_plane.c
-> @@ -106,6 +106,13 @@ static void vkms_plane_atomic_update(struct drm_plane *plane,
->  		return;
->  
->  	fmt = fb->format->format;
-> +	pixel_read_t pixel_read = get_pixel_read_function(fmt);
-> +
-> +	if (!pixel_read) {
-> +		DRM_WARN("Pixel format is not supported by VKMS planes. State is inchanged\n");
 
-s/inchanged/unchanged/
+This function returns a uint32_t, same type as
+mp->m_sb.sb_blocksize. The comparision should use uint32_t casts,
+not unsigned long.
 
-> +		return;
-> +	}
-> +
->  	vkms_plane_state = to_vkms_plane_state(new_state);
->  	shadow_plane_state = &vkms_plane_state->base;
->  
-> @@ -124,7 +131,7 @@ static void vkms_plane_atomic_update(struct drm_plane *plane,
->  	drm_rect_rotate(&frame_info->rotated, drm_rect_width(&frame_info->rotated),
->  			drm_rect_height(&frame_info->rotated), frame_info->rotation);
->  
-> -	vkms_plane_state->pixel_read = get_pixel_conversion_function(fmt);
-> +	vkms_plane_state->pixel_read = pixel_read;
->  }
->  
->  static int vkms_plane_atomic_check(struct drm_plane *plane,
-> diff --git a/drivers/gpu/drm/vkms/vkms_writeback.c b/drivers/gpu/drm/vkms/vkms_writeback.c
-> index c8582df1f739..c92b9f06c4a4 100644
-> --- a/drivers/gpu/drm/vkms/vkms_writeback.c
-> +++ b/drivers/gpu/drm/vkms/vkms_writeback.c
-> @@ -140,6 +140,13 @@ static void vkms_wb_atomic_commit(struct drm_connector *conn,
->  	if (!conn_state)
->  		return;
->  
-> +	pixel_write_t pixel_write = get_pixel_write_function(wb_format);
-> +
-> +	if (!pixel_write) {
-> +		DRM_WARN("Pixel format is not supported by VKMS writeback. State is inchanged\n");
+ALso, this bears no resemblence to the original patch I wrote back in
+2018. Please remove my SOB from it - you can state that "this change
+is based on a patch originally from Dave Chinner" to credit the
+history of it, but it's certainly not the patch I wrote 6 years ago
+and so my SOB does not belong on it.
 
-Same here
-
-Best Regards,
-~Arthur Grillo
-
-> +		return;
-> +	}
-> +
->  	vkms_set_composer(&vkmsdev->output, true);
->  
->  	active_wb = conn_state->writeback_job->priv;
-> @@ -150,7 +157,7 @@ static void vkms_wb_atomic_commit(struct drm_connector *conn,
->  	crtc_state->wb_pending = true;
->  	spin_unlock_irq(&output->composer_lock);
->  	drm_writeback_queue_job(wb_conn, connector_state);
-> -	active_wb->pixel_write = get_pixel_write_function(wb_format);
-> +	active_wb->pixel_write = pixel_write;
->  	drm_rect_init(&wb_frame_info->src, 0, 0, crtc_width, crtc_height);
->  	drm_rect_init(&wb_frame_info->dst, 0, 0, crtc_width, crtc_height);
->  }
-> 
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
