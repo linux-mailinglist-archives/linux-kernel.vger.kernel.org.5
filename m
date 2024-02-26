@@ -1,116 +1,101 @@
-Return-Path: <linux-kernel+bounces-80602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 099D0866A35
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:45:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70675866A38
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:46:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9C842825AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:45:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 060AF282A96
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:46:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D2681BC22;
-	Mon, 26 Feb 2024 06:45:27 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C51901B7FF;
+	Mon, 26 Feb 2024 06:46:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="ubwh1ieu"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 817C418E2A;
-	Mon, 26 Feb 2024 06:45:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C522717BCB;
+	Mon, 26 Feb 2024 06:46:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708929927; cv=none; b=OpihSQFR9UiM5HP/NWDKrMpWjUxhhVBWoF2/XdNC6LuHEyfI6WjfBhU5tujaAB0FlX5hr9TDRvOC7NIh6lUNsz+Frh8NYc9JLaD1HsovpQ+PRLshbG4dFXeN0Rm7OkcgLZktRJTnM/iFRBj7BEzfq1oXpk64vyiOhdfUUhccFLQ=
+	t=1708929989; cv=none; b=Zb6h0E+YY54RTQZ6el/gAnDI5CS0/iMaahQgY41+82ppJzdeBZa8TZBCW/hwEmpZK2+qpoMuTX3r/MKgk29gBXNQuLgmXeu7pBEqPjWUulm+Qu1WNhbsgPTO5Q/saUpb+Iy8XpX3RwSTY/NewN96JGbmaRtQMUa+JxjnmtMj4M8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708929927; c=relaxed/simple;
-	bh=bG/RoSHx8Aj05SCpiRuRNhObfYppzS0/xR+nU9px41s=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=N5bQ5wmUq0WbGq3NOhlWF+U7LDhh4Hp+84H3LB/yrjtOAx0srWX/mTmUwOIGZHSZYR8ldzB/S7khmUnac3JBGhJ9B1oe/A5Hiba0yU7BFWrRz9mSaszULKSDsIFGUF1rnFoyWjesGAee5XWtia9/YsMSmqhtCJJ9dIgfSkU/ffY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from msexch01.omp.ru (10.188.4.12) by msexch02.omp.ru (10.188.4.13)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Mon, 26 Feb
- 2024 09:45:13 +0300
-Received: from msexch01.omp.ru ([fe80::485b:1c4a:fb7f:c753]) by
- msexch01.omp.ru ([fe80::485b:1c4a:fb7f:c753%5]) with mapi id 15.02.1258.012;
- Mon, 26 Feb 2024 09:45:13 +0300
-From: Roman Smirnov <r.smirnov@omp.ru>
-To: "stable@vger.kernel.org" <stable@vger.kernel.org>, Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>
-CC: "Matthew Wilcox (Oracle)" <willy@infradead.org>, Andrew Morton
-	<akpm@linux-foundation.org>, Alexey Khoroshilov <khoroshilov@ispras.ru>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>, Karina Yankevich <k.yankevich@omp.ru>,
-	"lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH 5.10/5.15 v2 0/1 RESEND] mm/truncate: fix WARNING in
- ext4_set_page_dirty()
-Thread-Topic: [PATCH 5.10/5.15 v2 0/1 RESEND] mm/truncate: fix WARNING in
- ext4_set_page_dirty()
-Thread-Index: AQHaXoZYls/GR/0zTEaYvL5Vg1anPrEcPxk2
-Date: Mon, 26 Feb 2024 06:45:12 +0000
-Message-ID: <f406f7b3901e4471ab1ecd432aba695b@omp.ru>
-References: <20240213140933.632481-1-r.smirnov@omp.ru>
-In-Reply-To: <20240213140933.632481-1-r.smirnov@omp.ru>
-Accept-Language: ru-RU, en-US
-Content-Language: ru-RU
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-kse-serverinfo: msexch02.omp.ru, 9
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: Clean, bases: 2/26/2024 4:56:00 AM
-x-kse-attachment-filter-triggered-rules: Clean
-x-kse-attachment-filter-triggered-filters: Clean
-x-kse-bulkmessagesfiltering-scan-result: InTheLimit
-Content-Type: text/plain; charset="koi8-r"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1708929989; c=relaxed/simple;
+	bh=4JQdMRdXPGOg6wErfZZgo+dbrhFcSXhjDwpdnFEwKWo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=FSN6kx4KkccsxS0o8tjohWvW8GkbiIKA7cD1Zjv4rF7mrPE+W2YPL2cMQdLhIqqevJ+SwWN5f9Fve4b3MuwtLb4N6TOBmFctF6s8PAJMLrtesFa9i46wdshbl8+lLIwvbYeu6CqEt3gI8Hc7Qi88Qm1w2+lGAtHwbHtoxnzEe1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=ubwh1ieu; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1708929985;
+	bh=EnC58pb8OdSuXwDHDJ8jGc501Z2pV3db0m/2bPCC2aY=;
+	h=Date:From:To:Cc:Subject:From;
+	b=ubwh1ieuICciZian52EcWd0dlhUx7TF5Tt/6dzaKJQFCws389IWfSXQme79GXfFVC
+	 3keYfpRJyaO4tDzehj8Fkh3f0OdBoN4qbNP4TTvaN1ITtK9Km+BKmZe1JEmiIWYahe
+	 TDefz36xz7TxenuaiFXChpcC3B2YOy+3lGJv0d88deKu+MXSpblMvScCSK9x/ZZgYM
+	 JZiEOl5EQTQFjbWh9JTa01Pcowmvflo7RxzPh8lssU6ampID9ULBdgWK/yDnlXAS29
+	 R9drVvJuuo3xpFY9kdry8LBAZIbHwz2x1UhluSE+9T0R2YXIlRikiQ0dpzarUcplZw
+	 D1y1R1fSEEFKw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tjrk917v0z4wcC;
+	Mon, 26 Feb 2024 17:46:24 +1100 (AEDT)
+Date: Mon, 26 Feb 2024 17:46:24 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the bcachefs tree
+Message-ID: <20240226174624.0d759818@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/rZ/AJNN_SJNc3_jOHfDc9LC";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Tue, 13 Feb, 2024 14:09:33 +0000, Roman Smirnov wrote:
-> Syzkaller reports warning in ext4_set_page_dirty() in 5.10 and 5.15
-> stable releases. It happens because invalidate_inode_page() frees pages
-> that are needed for the system. To fix this we need to add additional
-> checks to the function. page_mapped() checks if a page exists in the
-> page tables, but this is not enough. The page can be used in other places=
-:
-> https://elixir.bootlin.com/linux/v6.8-rc1/source/include/linux/page_ref.h=
-#L71
->
-> Kernel outputs an error line related to direct I/O:
-> https://syzkaller.appspot.com/text?tag=3DCrashLog&x=3D14ab52dac80000
->
-> The problem can be fixed in 5.10 and 5.15 stable releases by the
-> following patch.
->
-> The patch replaces page_mapped() call with check that finds additional
-> references to the page excluding page cache and filesystem private data.
-> If additional references exist, the page cannot be freed.
->
-> This version does not include the first patch from the first version.
-> The problem can be fixed without it.
->
-> Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
->
-> Link: https://syzkaller.appspot.com/bug?extid=3D02f21431b65c214aa1d6
->
-> Previous discussion:
-> https://lore.kernel.org/all/20240125130947.600632-1-r.smirnov@omp.ru/T/
->
-> Matthew Wilcox (Oracle) (1):
->   mm/truncate: Replace page_mapped() call in invalidate_inode_page()
->
->  mm/truncate.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+--Sig_/rZ/AJNN_SJNc3_jOHfDc9LC
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hello.=20
+Hi all,
 
-Sorry to bother you, do you have any comments on the patch?
+After merging the bcachefs tree, today's linux-next build (htmldocs)
+produced this warning:
 
+Documentation/filesystems/bcachefs/errorcodes.rst: WARNING: document isn't =
+included in any toctree
+
+Introduced by commit
+
+  8869a56a0158 ("bcachefs: Errcode tracepoint, documentation")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/rZ/AJNN_SJNc3_jOHfDc9LC
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXcM8AACgkQAVBC80lX
+0Gy/bgf7BM41I9IEdFbB3upzFN6eD7Suxeu1U45Hy9YsTr/JW7rRvFRmzW3jsw5I
+b/ySUEBLPvzwaVFJ2HsJm1QbDgDpvEdTzCtTGFD22cGpmGNSxHUW7MTzZCbNurRP
+3DW7x9YQE47ALL0Tethq3sDJ0lpZAr1uoGtVhJ5ZhSoSu2sufenSKy+RKQV2Q+gZ
+Vtaf8oG6EZwvuFPjqf3my3T3KxXeDxYd9bCy0fO6kVEYV7XcKe3ZsyWGPHVUSwv/
+wditUKhWSNpbusHHciMlV0UfMHmo8WjoYl7iQyrxRrDqvuBBbEkDS97U2f3H93rS
+cDvBeJcbiMu/eZILePTQa2+c1nnzlw==
+=aIRF
+-----END PGP SIGNATURE-----
+
+--Sig_/rZ/AJNN_SJNc3_jOHfDc9LC--
 
