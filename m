@@ -1,142 +1,300 @@
-Return-Path: <linux-kernel+bounces-81363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4748C8674EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:29:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BA688674DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:28:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 628C6B259DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:28:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 310E3285055
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:28:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F283604D3;
-	Mon, 26 Feb 2024 12:27:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 676BD60863;
+	Mon, 26 Feb 2024 12:28:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Djy+2Vc6"
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="mB6dP2If"
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8305604DA
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 12:27:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21498604C5;
+	Mon, 26 Feb 2024 12:27:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708950468; cv=none; b=j3GZQXw9UEvhwteDtUDXk4v0Ndvq6JX4lQuoYmkB4ooLQABsOFWxMBbr128p7jy0MP1FN4J2cjQQCSLh9IbuF3YrCtF0CGmz1KDvVra8E+0h61w15914uDWpEEhMTMZcQyl32uD3+t1b6HKnvx7aU1Fg1d95aqQhy0clYD3UiQI=
+	t=1708950482; cv=none; b=UeUM6534UWZEwIGTaC5KfXBo9EAiNtkexaqDgLf871y73TklpJW31+j/RHyLv11h26JQHyZBxLEwktaToLpUkU3tXkR7WhUnM3qxj/60aEvomyeGnziWUjzClUGOsawFUbi5Pwc0RHzlFeexgoSbORrqsi/t7WjhMxmBJPpjvPc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708950468; c=relaxed/simple;
-	bh=BHKUodbD8Bj5QFPxPd50B2p1oIY5ll5UwHoPYKL3J7Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BW+xfpQSoFpG6QL3kQ488KBAjGfN+0PbW+LVwEsHnkHTlwO4ZcNgDL2cTel2MHFa6E4Q7ngGynOlMDYS2cha+u/sA9GcCDC8YTLnDQbfi9vuBOvh690nIDERHEqgETLkfYE+1LdX/iwlr2q3hEIcEgXnWlC+XfzhQ1EAW84dmZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Djy+2Vc6; arc=none smtp.client-ip=209.85.166.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7c48fc56752so94554239f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 04:27:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708950466; x=1709555266; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z/faix5We06aG7AM987K0dvt+ZyZCoD81fzNbsR727U=;
-        b=Djy+2Vc60+NAKyfpSMm1C7AK5j8VqvBGvSNfTe/JtNXZ1ePe9a7IAVky79Ocgb+MPj
-         ruDHDCHTzZ2sQ4x1glFaM2TP6pQTKCGnvUgOcUUB5E5BHF3PKbtIqIEUupBy8EgCccpj
-         ug1mMbxgzcLO+g2Rj1OE4mLSaiX9OZx/DzHYO2Zwe2q2K8mlNEbL/h/HiRd9v7l9NmIA
-         uD3An6A2Et8EvvnRyAhqq7Hq75/9glICzCkUpmoXj6qTx1PokVG2K+eqUuoUpwe/rljE
-         s+XzdfjHsKZhC6KNrFtPVdDYV3XDed/w0ybbnoVc5eD8/I7PSwoNfq+2eSkM7mJSREyn
-         bqFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708950466; x=1709555266;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z/faix5We06aG7AM987K0dvt+ZyZCoD81fzNbsR727U=;
-        b=hQMxqvMLgsXwuKAU7ETRl6gAxcQPmXaAh9ATBEGxrhly++h0PccKuH+WBil9oqfMhN
-         zNZGJZc00Hsqbv3+dnZn+/Ce7RSuQBVcSuEPkl7sF0Z5EBSOcV+PoJEWFNbI1zH5kFiT
-         kayX9z4lOOtgONZFPmgfZP5HBm2de92mTykiMkvjl8WmYshB/AFY91v5G/8sdQUT/Z8e
-         H2LWzVFVM5/J8lmbx2joA7jErIrRJjvYFGYwYtOx1pGAO+LwjPcN5qq6NYKyO6QrSwnX
-         asFKAQqSrRE7WZSjuZKwql5k+xYUuxjfx6dP2SaRHF1OCitthYYnLu7aeihV5tLv9JBB
-         NYLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWfiQrg4Jj2FPurShPl2LMsG0pWpjk9HWOg12TTCGUBK1ln0So9fngzbE3GgKO1DGm7zIAhSOCGnvSwGk7mXAKfsiHJegh3GRDls75d
-X-Gm-Message-State: AOJu0YyRs9pTkFd6u+vVEJS3ZMuRDJWW/uF8da8SkFLF2CLrdZ5scSLy
-	SoOOx8rLmz3qrta13iPPeUBai8T7o6ok5bvjYwqHZe2BkWAUCV2BFnaluxSHn2m19OFED2qI4o/
-	lxjvtlJYNH/wimSI//sLVHgzBfhc7rXTYTvfN
-X-Google-Smtp-Source: AGHT+IGbzgYpilRjkDEnKbvgS5UZhDNoI1XMbPezAG50YHRpmOYcGoysSkihTQvNaJRrC7lL2YXgrI5ogNuUIHDGx2E=
-X-Received: by 2002:a05:6602:3413:b0:7c7:bbfd:d843 with SMTP id
- n19-20020a056602341300b007c7bbfdd843mr5675422ioz.19.1708950466041; Mon, 26
- Feb 2024 04:27:46 -0800 (PST)
+	s=arc-20240116; t=1708950482; c=relaxed/simple;
+	bh=miy4N2ehf3wS51/2HOmrvNhD5ox2WtUJHV9WrrQzbcw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WAhgulAkZmj99lSHZqYe2mYX3vP0xKLcvndbQtrunS68Rnzi8LoaidNkFMSVet4RBiOIXidFstuEok52J9s+M5j5g6B8M2mLeHIpoZQ/tiPvDIfRTwGz1ZRNGo09q3QWBOKoFc4l0ZYuM9lkicHCk6h3g5xKXfH0HAIXLJCG7j4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=mB6dP2If; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=BehYZsTcBskWJbVJTSYJK03NQKC1Vfs2VOyvrT1egZI=; b=mB6dP2IfuiHH2mt6Om4PMPs6LD
+	+njc7OCEnWxnk188JDHYXrrtzN6ZVA/52jhCzCL7Zmyq8Au0H8Hhs1qOLmvYUC2zaernc0A4C/4q8
+	6KHeZK/Ixtp8yngEKbkrNfXn3iOWHokcG6TsPgJTxBOXahIQylM1PPqzfZN3H9vg6sSKb6W11NwE+
+	farhczgWnrfLuQdX1H7PAZP0zYJUB9H9vRj/Dzi/yS2J7z+T/ItwIb5P0gvgvd+8Dn0zCaet0Rnir
+	lrzLR5j8rAuvqoWauYbpFF3Y0hdOHR535+5MvMp1N4q/dTPTvJDyNVcGQI3AsAvsS6Z69ayquB+Ay
+	tknsYalQ==;
+Received: from [177.34.169.255] (helo=[192.168.0.139])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1rea58-003Yij-Nd; Mon, 26 Feb 2024 13:27:43 +0100
+Message-ID: <f078cbc0-f8bd-4e14-9395-09afa851a070@igalia.com>
+Date: Mon, 26 Feb 2024 09:27:36 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221160215.484151-1-panikiel@google.com> <20240221160215.484151-10-panikiel@google.com>
- <310cefcb-a4d5-4f4f-a482-ba2ff08a57f6@linaro.org> <CAM5zL5rQsYuo3+rW9+YPmvUg9PtNiR0Dy59e8Kf787ranfLh3Q@mail.gmail.com>
- <e2ae7bfc-fb51-4a60-bb52-c6ccca7a4189@linaro.org>
-In-Reply-To: <e2ae7bfc-fb51-4a60-bb52-c6ccca7a4189@linaro.org>
-From: =?UTF-8?Q?Pawe=C5=82_Anikiel?= <panikiel@google.com>
-Date: Mon, 26 Feb 2024 13:27:35 +0100
-Message-ID: <CAM5zL5pz0K5ro4-UjiYojM4h9Lqo_af5ZmH1FoZ_ajde_3+Dcg@mail.gmail.com>
-Subject: Re: [PATCH v2 9/9] ARM: dts: chameleonv3: Add video device nodes
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: airlied@gmail.com, akpm@linux-foundation.org, conor+dt@kernel.org, 
-	daniel@ffwll.ch, dinguyen@kernel.org, hverkuil-cisco@xs4all.nl, 
-	krzysztof.kozlowski+dt@linaro.org, maarten.lankhorst@linux.intel.com, 
-	mchehab@kernel.org, mripard@kernel.org, robh+dt@kernel.org, 
-	tzimmermann@suse.de, devicetree@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	linux-media@vger.kernel.org, chromeos-krk-upstreaming@google.com, 
-	ribalda@chromium.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 05/36] drm/tests: connector: Add tests for
+ drmm_connector_init
+Content-Language: en-US
+To: Maxime Ripard <mripard@kernel.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>,
+ Sandy Huang <hjc@rock-chips.com>, =?UTF-8?Q?Heiko_St=C3=BCbner?=
+ <heiko@sntech.de>, Chen-Yu Tsai <wens@csie.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>
+Cc: Hans Verkuil <hverkuil@xs4all.nl>,
+ Sebastian Wick <sebastian.wick@redhat.com>,
+ =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+ dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+ linux-sunxi@lists.linux.dev
+References: <20240222-kms-hdmi-connector-state-v7-0-8f4af575fce2@kernel.org>
+ <20240222-kms-hdmi-connector-state-v7-5-8f4af575fce2@kernel.org>
+From: =?UTF-8?Q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>
+Autocrypt: addr=mcanal@igalia.com; keydata=
+ xjMEZIsaeRYJKwYBBAHaRw8BAQdAGU6aY8oojw61KS5rGGMrlcilFqR6p6ID45IZ6ovX0h3N
+ H01haXJhIENhbmFsIDxtY2FuYWxAaWdhbGlhLmNvbT7CjwQTFggANxYhBDMCqFtIvFKVRJZQ
+ hDSPnHLaGFVuBQJkixp5BQkFo5qAAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQNI+cctoYVW5u
+ GAEAwpaC5rI3wD8zqETKwGVoXd6+AbmGfZuVD40xepy7z/8BAM5w95/oyPsHUqOsg/xUTlNp
+ rlbhA+WWoaOXA3XgR+wCzjgEZIsaeRIKKwYBBAGXVQEFAQEHQGoOK0jgh0IorMAacx6WUUWb
+ s3RLiJYWUU6iNrk5wWUbAwEIB8J+BBgWCAAmFiEEMwKoW0i8UpVEllCENI+cctoYVW4FAmSL
+ GnkFCQWjmoACGwwACgkQNI+cctoYVW6cqwD/Q9R98msvkhgRvi18fzUPFDwwogn+F+gQJJ6o
+ pwpgFkAA/R2zOfla3IT6G3SBoV5ucdpdCpnIXFpQLbmfHK7dXsAC
+In-Reply-To: <20240222-kms-hdmi-connector-state-v7-5-8f4af575fce2@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 26, 2024 at 1:07=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 26/02/2024 12:09, Pawe=C5=82 Anikiel wrote:
-> > On Mon, Feb 26, 2024 at 10:15=E2=80=AFAM Krzysztof Kozlowski
-> > <krzysztof.kozlowski@linaro.org> wrote:
-> >>
-> >> On 21/02/2024 17:02, Pawe=C5=82 Anikiel wrote:
-> >>> Add device nodes for the video system present on the Chameleon v3.
-> >>> It consists of six framebuffers and two Intel Displayport receivers.
-> >>>
-> >>> Signed-off-by: Pawe=C5=82 Anikiel <panikiel@google.com>
-> >>> ---
-> >>
-> >> ...
-> >>
-> >>> +             dprx_sst: dp-receiver@c0064000 {
-> >>> +                     compatible =3D "intel,dprx-20.0.1";
-> >>> +                     reg =3D <0xc0064000 0x800>;
-> >>> +                     interrupt-parent =3D <&dprx_sst_irq>;
-> >>> +                     interrupts =3D <0 IRQ_TYPE_EDGE_RISING>;
-> >>> +                     intel,max-link-rate =3D <0x1e>;
-> >>
-> >> Rate is not in hex! Rate is in Hz, at least usually...
-> >>
-> >> Fix your bindings...
-> >
-> > This is the DisplayPort link rate, for which the allowed values are
-> > 8.1 Gbps, 5.4 Gbps, 2.7 Gbps, or 1.62 Gbps. The standard way to encode
-> > them (used in the DisplayPort DPCD registers and this device's
->
-> Then it is in bps or some other units:
->
-> https://github.com/devicetree-org/dt-schema/blob/main/dtschema/schemas/pr=
-operty-units.yaml
->
-> > configuration) is by multiples of 0.27Gbps. This value (AFAIK) is
-> > usually represented in hex, so 8.1Gbps would be 0x1e.
->
-> No, the value is represented in logical units. Frequency in Hz. Rate in
-> bps/kbps/etc. Voltage in volts.
+On 2/22/24 15:13, Maxime Ripard wrote:
+> drmm_connector_init is the preferred function to initialize a
+> drm_connector structure. Let's add a bunch of unit tests for it.
+> 
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
 
-Okay, thanks for the info. So if I understand correctly, the max link
-rate should be represented in bps in the devicetree, and then be
-converted to the per 0.27Gbps value by the driver?
+Reviewed-by: Maíra Canal <mcanal@igalia.com>
 
-One problem is that the values here are too large to be represented in
-bps (since the datatype is uint32). Can the property be in Mbps
-instead?
+Best Regards,
+- Maíra
+
+> ---
+>   drivers/gpu/drm/tests/drm_connector_test.c | 170 ++++++++++++++++++++++++++++-
+>   1 file changed, 169 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/tests/drm_connector_test.c b/drivers/gpu/drm/tests/drm_connector_test.c
+> index c66aa2dc8d9d..a268847be8d1 100644
+> --- a/drivers/gpu/drm/tests/drm_connector_test.c
+> +++ b/drivers/gpu/drm/tests/drm_connector_test.c
+> @@ -3,10 +3,175 @@
+>    * Kunit test for drm_modes functions
+>    */
+>   
+> +#include <linux/i2c.h>
+> +
+> +#include <drm/drm_atomic_state_helper.h>
+>   #include <drm/drm_connector.h>
+> +#include <drm/drm_drv.h>
+> +#include <drm/drm_kunit_helpers.h>
+>   
+>   #include <kunit/test.h>
+>   
+> +struct drm_connector_init_priv {
+> +	struct drm_device drm;
+> +	struct drm_connector connector;
+> +	struct i2c_adapter ddc;
+> +};
+> +
+> +static const struct drm_connector_funcs dummy_funcs = {
+> +	.atomic_destroy_state	= drm_atomic_helper_connector_destroy_state,
+> +	.atomic_duplicate_state	= drm_atomic_helper_connector_duplicate_state,
+> +	.reset			= drm_atomic_helper_connector_reset,
+> +};
+> +
+> +static int dummy_ddc_xfer(struct i2c_adapter *adapter,
+> +			  struct i2c_msg *msgs, int num)
+> +{
+> +	return num;
+> +}
+> +
+> +static u32 dummy_ddc_func(struct i2c_adapter *adapter)
+> +{
+> +	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL;
+> +}
+> +
+> +static const struct i2c_algorithm dummy_ddc_algorithm = {
+> +	.master_xfer = dummy_ddc_xfer,
+> +	.functionality = dummy_ddc_func,
+> +};
+> +
+> +static void i2c_del_adapter_wrapper(void *ptr)
+> +{
+> +	struct i2c_adapter *adap = ptr;
+> +
+> +	i2c_del_adapter(adap);
+> +}
+> +
+> +static int drm_test_connector_init(struct kunit *test)
+> +{
+> +	struct drm_connector_init_priv *priv;
+> +	struct device *dev;
+> +	int ret;
+> +
+> +	dev = drm_kunit_helper_alloc_device(test);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dev);
+> +
+> +	priv = drm_kunit_helper_alloc_drm_device(test, dev,
+> +						 struct drm_connector_init_priv, drm,
+> +						 DRIVER_MODESET | DRIVER_ATOMIC);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv);
+> +
+> +	strscpy(priv->ddc.name, "dummy-connector-ddc", sizeof(priv->ddc.name));
+> +	priv->ddc.owner = THIS_MODULE;
+> +	priv->ddc.algo = &dummy_ddc_algorithm;
+> +	priv->ddc.dev.parent = dev;
+> +
+> +	ret = i2c_add_adapter(&priv->ddc);
+> +	KUNIT_ASSERT_EQ(test, ret, 0);
+> +
+> +	ret = kunit_add_action_or_reset(test, i2c_del_adapter_wrapper, &priv->ddc);
+> +	KUNIT_ASSERT_EQ(test, ret, 0);
+> +
+> +	test->priv = priv;
+> +	return 0;
+> +}
+> +
+> +/*
+> + * Test that the registration of a bog standard connector works as
+> + * expected and doesn't report any error.
+> + */
+> +static void drm_test_drmm_connector_init(struct kunit *test)
+> +{
+> +	struct drm_connector_init_priv *priv = test->priv;
+> +	int ret;
+> +
+> +	ret = drmm_connector_init(&priv->drm, &priv->connector,
+> +				  &dummy_funcs,
+> +				  DRM_MODE_CONNECTOR_HDMIA,
+> +				  &priv->ddc);
+> +	KUNIT_EXPECT_EQ(test, ret, 0);
+> +}
+> +
+> +/*
+> + * Test that the registration of a connector without a DDC adapter
+> + * doesn't report any error.
+> + */
+> +static void drm_test_drmm_connector_init_null_ddc(struct kunit *test)
+> +{
+> +	struct drm_connector_init_priv *priv = test->priv;
+> +	int ret;
+> +
+> +	ret = drmm_connector_init(&priv->drm, &priv->connector,
+> +				  &dummy_funcs,
+> +				  DRM_MODE_CONNECTOR_HDMIA,
+> +				  NULL);
+> +	KUNIT_EXPECT_EQ(test, ret, 0);
+> +}
+> +
+> +/*
+> + * Test that the registration of a connector succeeds for all possible
+> + * connector types.
+> + */
+> +static void drm_test_drmm_connector_init_type_valid(struct kunit *test)
+> +{
+> +       struct drm_connector_init_priv *priv = test->priv;
+> +       unsigned int connector_type = *(unsigned int *)test->param_value;
+> +       int ret;
+> +
+> +       ret = drmm_connector_init(&priv->drm, &priv->connector,
+> +				 &dummy_funcs,
+> +				 connector_type,
+> +				 &priv->ddc);
+> +       KUNIT_EXPECT_EQ(test, ret, 0);
+> +}
+> +
+> +static const unsigned int drm_connector_init_type_valid_tests[] = {
+> +	DRM_MODE_CONNECTOR_Unknown,
+> +	DRM_MODE_CONNECTOR_VGA,
+> +	DRM_MODE_CONNECTOR_DVII,
+> +	DRM_MODE_CONNECTOR_DVID,
+> +	DRM_MODE_CONNECTOR_DVIA,
+> +	DRM_MODE_CONNECTOR_Composite,
+> +	DRM_MODE_CONNECTOR_SVIDEO,
+> +	DRM_MODE_CONNECTOR_LVDS,
+> +	DRM_MODE_CONNECTOR_Component,
+> +	DRM_MODE_CONNECTOR_9PinDIN,
+> +	DRM_MODE_CONNECTOR_DisplayPort,
+> +	DRM_MODE_CONNECTOR_HDMIA,
+> +	DRM_MODE_CONNECTOR_HDMIB,
+> +	DRM_MODE_CONNECTOR_TV,
+> +	DRM_MODE_CONNECTOR_eDP,
+> +	DRM_MODE_CONNECTOR_VIRTUAL,
+> +	DRM_MODE_CONNECTOR_DSI,
+> +	DRM_MODE_CONNECTOR_DPI,
+> +	DRM_MODE_CONNECTOR_WRITEBACK,
+> +	DRM_MODE_CONNECTOR_SPI,
+> +	DRM_MODE_CONNECTOR_USB,
+> +};
+> +
+> +static void drm_connector_init_type_desc(const unsigned int *type, char *desc)
+> +{
+> +	sprintf(desc, "%s", drm_get_connector_type_name(*type));
+> +}
+> +
+> +KUNIT_ARRAY_PARAM(drm_connector_init_type_valid,
+> +		  drm_connector_init_type_valid_tests,
+> +		  drm_connector_init_type_desc);
+> +
+> +static struct kunit_case drmm_connector_init_tests[] = {
+> +	KUNIT_CASE(drm_test_drmm_connector_init),
+> +	KUNIT_CASE(drm_test_drmm_connector_init_null_ddc),
+> +	KUNIT_CASE_PARAM(drm_test_drmm_connector_init_type_valid,
+> +			 drm_connector_init_type_valid_gen_params),
+> +	{ }
+> +};
+> +
+> +static struct kunit_suite drmm_connector_init_test_suite = {
+> +	.name = "drmm_connector_init",
+> +	.init = drm_test_connector_init,
+> +	.test_cases = drmm_connector_init_tests,
+> +};
+> +
+>   struct drm_get_tv_mode_from_name_test {
+>   	const char *name;
+>   	enum drm_connector_tv_mode expected_mode;
+> @@ -70,7 +235,10 @@ static struct kunit_suite drm_get_tv_mode_from_name_test_suite = {
+>   	.test_cases = drm_get_tv_mode_from_name_tests,
+>   };
+>   
+> -kunit_test_suite(drm_get_tv_mode_from_name_test_suite);
+> +kunit_test_suites(
+> +	&drmm_connector_init_test_suite,
+> +	&drm_get_tv_mode_from_name_test_suite
+> +);
+>   
+>   MODULE_AUTHOR("Maxime Ripard <maxime@cerno.tech>");
+>   MODULE_LICENSE("GPL");
+> 
 
