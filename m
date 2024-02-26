@@ -1,137 +1,88 @@
-Return-Path: <linux-kernel+bounces-82229-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AB888680D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:21:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB8BD8680DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:22:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABEEE1C2371E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:21:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86336297667
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:22:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A6C212FF71;
-	Mon, 26 Feb 2024 19:21:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98DA412FB25;
+	Mon, 26 Feb 2024 19:22:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i/rGofxx"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XXAmNPaw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5BEE12DDAB;
-	Mon, 26 Feb 2024 19:21:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE59E22069;
+	Mon, 26 Feb 2024 19:22:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708975301; cv=none; b=ct4uIiPheXS8KGgKSMKX2IyQbBPDnUPE9gC/ZALzfEk8t7OzuFdkpNwtiinY86itYTnFoNkaMOlpV/PcgJPj1eLB99QAsdBmNFwYfKPR121yg5cjfWEs3zYgsQwX0U+Hpgnua+hGfX6rxQ9vmH/JlBfa/ICu1Hs9IoQW7n1LYsY=
+	t=1708975350; cv=none; b=HLqbaL9AJyKkkViul0wUsMUjTu3X9jKgvKeKp7omonSOChTPbHXLZtZOq5fE20iRXF6ZugkdRxx2FrRZRF5j66dl6OmtbL8VoGZ+t78fuS+5sXJV4uIOOiiPWrGt0kBL+u0bsVT+kWyekebqI7NIzUFJBw0lOwoj9ttgzLxLAW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708975301; c=relaxed/simple;
-	bh=BhwZDP9hYJk+cNxTWcvUP6DCeBXECSJ839dFR9fsm+0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UzxshBbMM0hq51+KA84EWMx0JADYz/+OGTgFjnvRbi2UyGiQ2fQAdFJ+fK6egkTXT3Buiw+0zSYrP02FhPXb0BB/q1E+8ap+Eg7DYUnfnnBH/n0K+7q829ZJLcTjtAgDxISo+f2QnE/WSG1jsQP+BrIkqi1N1Cp/A/MPyu4EHXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=i/rGofxx; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708975301; x=1740511301;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BhwZDP9hYJk+cNxTWcvUP6DCeBXECSJ839dFR9fsm+0=;
-  b=i/rGofxxyW+jvY6VwQ0y6CB7GqSvxPRHSMZVWACITy0axE9FT49LDAJo
-   D1pDibMZgSKDu/xLqcgB0X5V73B/9okNyWLXjlP5D0vh7fWzSQfw0f/8a
-   iXG462b/nloL7zMJ6k6RyT6dgUsVQBfF1IcYA8U0V78NqdnOiyN3LXw+U
-   KQW8i5xIh5kCL+6qs7h/QuOuIo4Xcru5/3RdJQ6wl3RULAvjMMIFOx8Wq
-   qnfE+xW4agRlp7aL0qGII/ncP/mrtYTfkpfKIUc1Dc/an8/L9Gh3BSZJf
-   D0XgX0iwU5aOXpynrGqmLUvbkqzGJEvAk2iVpE/hlRekwo++Rq16kTRDN
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="25752823"
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="25752823"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 11:21:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="11448181"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 11:21:38 -0800
-Date: Mon, 26 Feb 2024 11:21:37 -0800
-From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To: Binbin Wu <binbin.wu@linux.intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v18 060/121] KVM: TDX: TDP MMU TDX support
-Message-ID: <20240226192137.GP177224@ls.amr.corp.intel.com>
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <a47c5a9442130f45fc09c1d4ae0e4352054be636.1705965635.git.isaku.yamahata@intel.com>
- <9da45a6a-a40b-4768-90d0-d7de674baec1@linux.intel.com>
+	s=arc-20240116; t=1708975350; c=relaxed/simple;
+	bh=uzYDC3PkR80LhMG2R+USCB1BJyZffPH+9Bnan3Tu8O8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DgTbUSu1Kn56Hh0ffLinzxWl36TtHOM5XFwi0C6fMGzl/VNBmIywC8tDoV22l505auHri92mSnDY47TgdMusaHT4CbckZuDLsl5TkgUdmJhlpyqDNCrmIEoiWdeHE8LRRLESJcm9vIahAKy8ecWdPyjejOzTPCWgGJnOqJo66E4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XXAmNPaw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63742C433F1;
+	Mon, 26 Feb 2024 19:22:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708975350;
+	bh=uzYDC3PkR80LhMG2R+USCB1BJyZffPH+9Bnan3Tu8O8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=XXAmNPawBHwE0OWHHXcTAEzMRYTtG7VFX94c7mvMgP1XnzOHKjtj7cQScgNu4eAwS
+	 LziM/qxkmh4mrZUIE9ykVl04O7pSIKZj0lJ0sfFV8PjD6PLNn8t1hHZBLyaSMqEJvo
+	 b7SqV7eT/2AKaOMSckXF8bpJf06VnwcYftZ2Euc6BrEhTXBY/Bqb5BlUfU2V2e3Z6X
+	 cRO6u1gIbNmXoc+qJYGjYDjo5Wkw9smivgplHDxoRnKBgPN8wzCC8iX4wnaDw+lz6F
+	 Q5eXoU3XDuoF43wWwB2Jpv7hBOQ5aMJd0XafoPWy6TMBVO0OFxlHFNYuSXGHr7uqeh
+	 3EmGxFtG1j5qw==
+Date: Mon, 26 Feb 2024 19:22:14 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Bjorn Andersson
+ <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Lars-Peter Clausen <lars@metafoo.de>, linux-arm-msm@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: adc: qcom-pm8xxx-xoadc: drop unused kerneldoc
+ struct pm8xxx_chan_info member
+Message-ID: <20240226192214.61fbdf74@jic23-huawei>
+In-Reply-To: <CAA8EJppAKRiSoHi3icFymSQjP-TQrOF2LcMEnE=BmK+=nv330w@mail.gmail.com>
+References: <20240225202744.60500-1-krzysztof.kozlowski@linaro.org>
+	<CAA8EJppAKRiSoHi3icFymSQjP-TQrOF2LcMEnE=BmK+=nv330w@mail.gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <9da45a6a-a40b-4768-90d0-d7de674baec1@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 30, 2024 at 11:31:22PM +0800,
-Binbin Wu <binbin.wu@linux.intel.com> wrote:
+On Sun, 25 Feb 2024 22:46:30 +0200
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
 
-> > +
-> > +/*
-> > + * TLB shoot down procedure:
-> > + * There is a global epoch counter and each vcpu has local epoch counter.
-> > + * - TDH.MEM.RANGE.BLOCK(TDR. level, range) on one vcpu
-> > + *   This blocks the subsequenct creation of TLB translation on that range.
-> > + *   This corresponds to clear the present bit(all RXW) in EPT entry
-> > + * - TDH.MEM.TRACK(TDR): advances the epoch counter which is global.
-> > + * - IPI to remote vcpus
-> > + * - TDExit and re-entry with TDH.VP.ENTER on remote vcpus
-> > + * - On re-entry, TDX module compares the local epoch counter with the global
-> > + *   epoch counter.  If the local epoch counter is older than the global epoch
-> > + *   counter, update the local epoch counter and flushes TLB.
-> > + */
-> > +static void tdx_track(struct kvm *kvm)
-> > +{
-> > +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
-> > +	u64 err;
-> > +
-> > +	KVM_BUG_ON(!is_hkid_assigned(kvm_tdx), kvm);
-> > +	/* If TD isn't finalized, it's before any vcpu running. */
-> > +	if (unlikely(!is_td_finalized(kvm_tdx)))
-> > +		return;
-> > +
-> > +	/*
-> > +	 * tdx_flush_tlb() waits for this function to issue TDH.MEM.TRACK() by
-> > +	 * the counter.  The counter is used instead of bool because multiple
-> > +	 * TDH_MEM_TRACK() can be issued concurrently by multiple vcpus.
-> > +	 */
-> > +	atomic_inc(&kvm_tdx->tdh_mem_track);
-> > +	/*
-> > +	 * KVM_REQ_TLB_FLUSH waits for the empty IPI handler, ack_flush(), with
-> > +	 * KVM_REQUEST_WAIT.
-> > +	 */
-> > +	kvm_make_all_cpus_request(kvm, KVM_REQ_TLB_FLUSH);
-> > +
-> > +	do {
-> > +		/*
-> > +		 * kvm_flush_remote_tlbs() doesn't allow to return error and
-> > +		 * retry.
-> > +		 */
-> > +		err = tdh_mem_track(kvm_tdx->tdr_pa);
-> > +	} while (unlikely((err & TDX_SEAMCALL_STATUS_MASK) == TDX_OPERAND_BUSY));
+> On Sun, 25 Feb 2024 at 22:27, Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+> >
+> > Drop description of non-existing 'struct pm8xxx_chan_info' member:
+> >
+> >   qcom-pm8xxx-xoadc.c:386: warning: Excess struct member 'scale_fn_type' description in 'pm8xxx_chan_info'
+> >
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > ---
+> >  drivers/iio/adc/qcom-pm8xxx-xoadc.c | 1 -
+> >  1 file changed, 1 deletion(-)  
 > 
-> Why the sequence of the code is different from the description of the
-> function.
-> In the description, do the TDH.MEM.TRACK before IPIs.
-> But in the code, do TDH.MEM.TRACK after IPIs?
+> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> 
+> 
 
-It's intentional to handle IPI in parallel as we already introduced
-tdh_mem_track.
--- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+Applied. Thanks
+
+J
 
