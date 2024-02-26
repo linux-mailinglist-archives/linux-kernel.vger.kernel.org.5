@@ -1,122 +1,194 @@
-Return-Path: <linux-kernel+bounces-81527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1557E86771E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:47:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5070867723
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:47:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5CC4291856
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:47:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 947E91F23D0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:47:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3487212A145;
-	Mon, 26 Feb 2024 13:47:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87D5712AADA;
+	Mon, 26 Feb 2024 13:47:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GsRnmU4w"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M00khUpl"
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7F612883D;
-	Mon, 26 Feb 2024 13:47:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 384CA12A146
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 13:47:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708955232; cv=none; b=YrtKuMYDCAQZt4O432Js41OCYjNulGvKNzXdjQQjJU5QdEf8r208VP973Dg++Xu74yYRAHWQ+GbHm19/Qfs9cIYSPEOal2qu7GwWOL6cHXD3stiWLqxnNNeZ88kSTeLKu8T8gqAb2qVOFCS0pXxSWdQQAYfhqW/2pzzxh2+3JR8=
+	t=1708955234; cv=none; b=kA7R1rWYSaeDj0gv6eY5FKhB4pf5x1ssAhUNbADC7Tfu2fgYRhXCMA8yexlYkOviZqHWO6o+35UBfIHVsW6pjNLvpccwKf9jGUkzqSIkFUmgqDX8PDcEA/fYGWNQBBjOgTNGBpgCXt95SGcgQmURD1oQV9ZmWwthllzs+JCldjM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708955232; c=relaxed/simple;
-	bh=emmNAZR0TiWv4VK6jP9M06m7OTVL5Q43QTl22ARJLOU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZkJIbLwj6nnT+arUHamK81NACtAAIJPEOpKgqCzWXL6FsQpcxK2xAeYX88NOpZCeiL4hqW6OL9YhEMhsMADle+pForufH3FGjcHDy7ZeelKEYbpvmlYflVPAG0qIYwsjyic4fewYpSi1Iq9pNIA/kE6znnnA69wDcU31BH4X3MM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GsRnmU4w; arc=none smtp.client-ip=209.85.167.41
+	s=arc-20240116; t=1708955234; c=relaxed/simple;
+	bh=YfrokfUsybNY74MtugqEcnTyIb7t+vGl7tW9pWrAewY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dIdLV66ov8oPaDip2RQye4GuvZ0AmzlNimxMTH4gBnDIcdptuPq6N//p4U7CQSVy2Zi3QIM9EV+01MtH1JPbMPE31wQ+hERmiJClHSq0wwlUM60pjb2yWpBlfS2KiuY4ImjpexXED6qpqWtTzC4Nz1FpLJd2vslkmgt93p+P3n0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M00khUpl; arc=none smtp.client-ip=209.85.128.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51197ca63f5so4659160e87.1;
-        Mon, 26 Feb 2024 05:47:10 -0800 (PST)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-607e54b6cf5so20602347b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 05:47:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708955229; x=1709560029; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gSizykDxdC8x5yUdc/x3m/4mR390jcmCw+184ntuZ5s=;
-        b=GsRnmU4wqHZE87CalYzriwPOiMhj3fTw218ng1RwhX0f1XpAaGRdevLJkl/VsnxQoz
-         6Qt4WfkVZ7cY5qeVnDVT+/Yh7afjTLheuSJZ1pBkTex4ssUtDiyoWZJy69VUgJjyEOnI
-         /moblCFM6cNkrzPbmX1h0M7Czc2xDc2VJcZprhMJzP2QUSVEKitOB0JYlhH9w3SYBFg4
-         x/HXXHY881J8EXzd3D7bfif7eJbEHKSmwYoNex0Le2esije0qgj9k6OMi6Ylo9RCxdqb
-         NK0YpR96UIKRAtB1UXdbKpGbpKypWyIa3Sqywm5MLijHdLc3/7I3F22c9Ui+eV6fYvnU
-         vR0w==
+        d=gmail.com; s=20230601; t=1708955232; x=1709560032; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z3VNu3jbt2E2dPwyMwWXLjmnd7lyq2z8eAe3tEfU6WA=;
+        b=M00khUplfsDX+0HrTs0wwASLK9eckclBujIbeZqxIYPV/HVRT/KhAk8s5QbWmM7oyi
+         NDqzbC7rH5uC6WxF+pZPHLWouLPYIY4ZsWrTbA0KM/8vmxlWSpWPkDKhxb+ttVZA/+zF
+         Nq4/REQ/mRjnHIHHfE57Jhwhu7tSPgVtREJ8qn4mpB1C2S1tCdP2pMUrTkfUt3UTKhCE
+         vqKTz1dCWKiY1HZUiUVku9EEx6B5qHLqWKvEIY6/SqxytiB3O3m9Cr+L1x+Aamq9FJMj
+         1l0Hc/t+l/t8B+G7kmQLdk7A+c3b1f2UxSpfHnRsiIt0U90uMsb2k2xPr1mNzfbXRceb
+         9cUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708955229; x=1709560029;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gSizykDxdC8x5yUdc/x3m/4mR390jcmCw+184ntuZ5s=;
-        b=oupy5l7JxzS8bc2e7tgr1fCFRpvbsDhiKWqymJp/bN9L7Y2WZuD07acKiuN9028ebg
-         unmrQqMdsqi3gqyV0UWRueRyFavYaLHlO1Smg8tI46U9EEyzuuxZ8YoNDAP8ucXeTCxx
-         /B2Y1P1q5a1jWO2LQXxfMfgbxJ/1Yn96NOLx4KlxlglOh7JjVHom1dAvUw304U7DJ8JX
-         J6wwGhl12fsnKu9qTxVYudnU9361J0dwQUcQByiez09Jrz4APVI254z/kqEGqMr+bwoO
-         ycoVnt+9f1jQU6+qjDgUZZg+j3wB58eL/9MvU9M4l/1Q3X4lhP6YV2uOtxxmJcPnltjd
-         V+BQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVBuL723WFMHCR/sVLnB7J69M64n3v8Nz5pmi8LPNgGIjhV7ah8iZ3LB4XWQWgF+uMs78AaCSc2jiGwxjBdeq1/LhzROzRsFPOOhn8w
-X-Gm-Message-State: AOJu0YxNgIYizyMqWE8MuKJPAAp5LvrTZaPBFxzqChPebtJWi97N1Eyg
-	Y6o6QUrEMM75Yp15xJXyhC/pZoL6MqcDmhR7fbB6HdPmVlv0hz4i
-X-Google-Smtp-Source: AGHT+IHf9hAovCwUz9WxnDcvUvW4s5oVieA8gxvLqkp3SqYdyddY8vdPB/cL5mzw+tUovt4IL2keDg==
-X-Received: by 2002:ac2:4c2b:0:b0:512:bd81:80e4 with SMTP id u11-20020ac24c2b000000b00512bd8180e4mr4195304lfq.44.1708955228714;
-        Mon, 26 Feb 2024 05:47:08 -0800 (PST)
-Received: from localhost.localdomain (IN-84-15-189-254.bitemobile.lt. [84.15.189.254])
-        by smtp.gmail.com with ESMTPSA id k24-20020a17090666d800b00a3d00616e1fsm2450012ejp.193.2024.02.26.05.47.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 05:47:08 -0800 (PST)
-From: Arturas Moskvinas <arturas.moskvinas@gmail.com>
-To: fabio.estevam@nxp.com,
-	linus.walleij@linaro.org,
-	brgl@bgdev.pl,
-	u.kleine-koenig@pengutronix.de,
-	andriy.shevchenko@linux.intel.com
-Cc: linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Arturas Moskvinas <arturas.moskvinas@gmail.com>
-Subject: [PATCH] gpio: 74x164: Enable output pins after registers are reset
-Date: Mon, 26 Feb 2024 15:46:56 +0200
-Message-ID: <20240226134656.608559-1-arturas.moskvinas@gmail.com>
-X-Mailer: git-send-email 2.43.2
+        d=1e100.net; s=20230601; t=1708955232; x=1709560032;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=z3VNu3jbt2E2dPwyMwWXLjmnd7lyq2z8eAe3tEfU6WA=;
+        b=VqqknBW/23XaP/nme4bpYxOfDzB2ShGC/8jijEO34NNnq3RkvmFVeR/OpGnrimSw39
+         NJMn1KYK3hmkqe6mA7KPYHSzwMowP2JcMPzZNd1/465IgR4OJjI/OTrYCADuzY4Os4yW
+         18iuFnJtILrC5pOnzdC/Kb5wCWBROks4p8TdkgTvetDXrFXmgfz5cGfEVEpFbRz9XGIw
+         qi3iuAw37fx5VOjJX3XplWlDRyP5ji44lY31kSLqfYlGDDE6zhCDl+7S7RBiQbTDgjr9
+         R1Q+aYWKIoSaQ6i+FYhPJ1jO5sNpiWsTRzp7WR2vd0x7qCc59gWxfggZ2uI4bw9hroWJ
+         3QeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUj9B/qMVcr27kkabljXrFZ/ln72XLO8uJAxbayR9tLCDqP5tuRV8I1nuEh7VXWHgw+Xob5QSA48JM0UHNNoguagBm+Nhc9xKVkAAFq
+X-Gm-Message-State: AOJu0YwQvoqviV1oeYi+LJ0DA6ITGMRmoVTcyUweZfaiYO7W1z3u/R49
+	vN8SWMypc73cC9T0iSOV0VOwbHDmGdtkCA49h6U+pLPefniqm1eorYiQ3qf0C7P39P4GDys6vsr
+	uZPx4TcoqzwN3WTe45G1L9dLP/x8=
+X-Google-Smtp-Source: AGHT+IHVu12IKFVkB7sagqRbr02Yr/SH/2B72heqL/GYC7Lj8ZA2d9FyRXqO0S6/Xte+4CcI8bihGWkhT6PqCdJcWYM=
+X-Received: by 2002:a0d:e813:0:b0:608:e551:d9e9 with SMTP id
+ r19-20020a0de813000000b00608e551d9e9mr2190603ywe.16.1708955232261; Mon, 26
+ Feb 2024 05:47:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <df416acb-d913-4e67-b810-cd991003242e@intel.com>
+ <20240226083526.26002-1-ioworker0@gmail.com> <8b909691-ca53-43b9-aab1-dba3ef3577cd@arm.com>
+ <517e4c23-11f8-4ded-a502-354c482c4e51@redhat.com>
+In-Reply-To: <517e4c23-11f8-4ded-a502-354c482c4e51@redhat.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Mon, 26 Feb 2024 21:47:00 +0800
+Message-ID: <CAK1f24nP=g3xD=3FR11Qg0V3gsrioPcDU7a+9pjPAEORLzcd3A@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm/madvise: enhance lazyfreeing with mTHP in madvise_free
+To: David Hildenbrand <david@redhat.com>
+Cc: Ryan Roberts <ryan.roberts@arm.com>, fengwei.yin@intel.com, akpm@linux-foundation.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com, 
+	minchan@kernel.org, peterx@redhat.com, shy828301@gmail.com, 
+	songmuchun@bytedance.com, wangkefeng.wang@huawei.com, zokeefe@google.com, 
+	21cnbao@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Move output enabling after chip registers are cleared.
+On Mon, Feb 26, 2024 at 9:04=E2=80=AFPM David Hildenbrand <david@redhat.com=
+> wrote:
+>
+> On 26.02.24 13:57, Ryan Roberts wrote:
+> > On 26/02/2024 08:35, Lance Yang wrote:
+> >> Hey Fengwei,
+> >>
+> >> Thanks for taking time to review!
+> >>
+> >>> On Mon, Feb 26, 2024 at 10:38=E2=80=AFAM Yin Fengwei <fengwei.yin@int=
+el.com> wrote:
+> >>>> On Sun, Feb 25, 2024 at 8:32=E2=80=AFPM Lance Yang <ioworker0@gmail.=
+com> wrote:
+> >> [...]
+> >>>> --- a/mm/madvise.c
+> >>>> +++ b/mm/madvise.c
+> >>>> @@ -676,11 +676,43 @@ static int madvise_free_pte_range(pmd_t *pmd, =
+unsigned long addr,
+> >>>>                 */
+> >>>>                if (folio_test_large(folio)) {
+> >>>>                        int err;
+> >>>> +                     unsigned long next_addr, align;
+> >>>>
+> >>>> -                     if (folio_estimated_sharers(folio) !=3D 1)
+> >>>> -                             break;
+> >>>> -                     if (!folio_trylock(folio))
+> >>>> -                             break;
+> >>>> +                     if (folio_estimated_sharers(folio) !=3D 1 ||
+> >>>> +                         !folio_trylock(folio))
+> >>>> +                             goto skip_large_folio;
+> >>>> +
+> >>>> +                     align =3D folio_nr_pages(folio) * PAGE_SIZE;
+> >>>> +                     next_addr =3D ALIGN_DOWN(addr + align, align);
+> >>> There is a possible corner case:
+> >>> If there is a cow folio associated with this folio and the cow folio
+> >>> has smaller size than this folio for whatever reason, this change can=
+'t
+> >>> handle it correctly.
+> >>
+> >> Thanks for pointing that out; it's very helpful to me!
+> >> I made some changes. Could you please check if this corner case is now=
+ resolved?
+> >>
+> >> As a diff against this patch.
+> >>
+> >> diff --git a/mm/madvise.c b/mm/madvise.c
+> >> index bcbf56595a2e..c7aacc9f9536 100644
+> >> --- a/mm/madvise.c
+> >> +++ b/mm/madvise.c
+> >> @@ -686,10 +686,12 @@ static int madvise_free_pte_range(pmd_t *pmd, un=
+signed long addr,
+> >>                      next_addr =3D ALIGN_DOWN(addr + align, align);
+> >>
+> >>                      /*
+> >> -                     * If we mark only the subpages as lazyfree,
+> >> -                     * split the large folio.
+> >> +                     * If we mark only the subpages as lazyfree, or
+> >> +                     * if there is a cow folio associated with this f=
+olio,
+> >> +                     * then split the large folio.
+> >>                       */
+> >> -                    if (next_addr > end || next_addr - addr !=3D alig=
+n)
+> >> +                    if (next_addr > end || next_addr - addr !=3D alig=
+n ||
+> >> +                        folio_total_mapcount(folio) !=3D folio_nr_pag=
+es(folio))
+> >
+> > I still don't think this is correct. I think you were previously assumi=
+ng that
+> > if you see a page from a large folio then the whole large folio should =
+be
+> > contiguously mapped? This new check doesn't validate that assumption re=
+liably;
+> > you need to iterate through every pte to generate a batch, like David d=
+oes in
+> > folio_pte_batch() for this to be safe.
+> >
+> > An example of when this check is insufficient; let's say you have a 4 p=
+age anon
+> > folio mapped contiguously in a process (total_mapcount=3D4). The proces=
+s is forked
+> > (total_mapcount=3D8). Then each process munmaps the second 2 pages
+> > (total_mapcount=3D4). In place of the munmapped 2 pages, 2 new pages ar=
+e mapped.
+> > Then call madvise. It's probably even easier to trigger for file-backed=
+ memory
+> > (I think this code path is used for both file and anon?)
+>
+> What would work here is using folio_pte_batch() to get how many PTEs are
+> mapped *here*, then comparing the the batch size to folio_nr_pages(). If
+> both match, we are mapping all subpages.
 
-Signed-off-by: Arturas Moskvinas <arturas.moskvinas@gmail.com>
----
- drivers/gpio/gpio-74x164.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thanks! I'll use folio_pte_batch() here in v2.
 
-diff --git a/drivers/gpio/gpio-74x164.c b/drivers/gpio/gpio-74x164.c
-index e00c33310517..753e7be039e4 100644
---- a/drivers/gpio/gpio-74x164.c
-+++ b/drivers/gpio/gpio-74x164.c
-@@ -127,8 +127,6 @@ static int gen_74x164_probe(struct spi_device *spi)
- 	if (IS_ERR(chip->gpiod_oe))
- 		return PTR_ERR(chip->gpiod_oe);
- 
--	gpiod_set_value_cansleep(chip->gpiod_oe, 1);
--
- 	spi_set_drvdata(spi, chip);
- 
- 	chip->gpio_chip.label = spi->modalias;
-@@ -153,6 +151,8 @@ static int gen_74x164_probe(struct spi_device *spi)
- 		goto exit_destroy;
- 	}
- 
-+	gpiod_set_value_cansleep(chip->gpiod_oe, 1);
-+
- 	ret = gpiochip_add_data(&chip->gpio_chip, chip);
- 	if (!ret)
- 		return 0;
+Best,
+Lance
 
-base-commit: d206a76d7d2726f3b096037f2079ce0bd3ba329b
--- 
-2.43.2
-
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
 
