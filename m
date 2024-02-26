@@ -1,94 +1,94 @@
-Return-Path: <linux-kernel+bounces-81339-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4021786747D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:12:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C1B286748C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:14:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FA401C248E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:12:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA797B264CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:14:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E454605A0;
-	Mon, 26 Feb 2024 12:12:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="gFs4D2ZC"
-Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B03D5604D0;
+	Mon, 26 Feb 2024 12:13:05 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26C12604CA;
-	Mon, 26 Feb 2024 12:12:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9887B604C0
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 12:13:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708949539; cv=none; b=czsXzWF3W0UaXMcBoR8uDwphKN7Zo1QNQML/llehEO+yE+BsO2KVPkzKLdWlmXU3BDM9MG+dOJtSUtufinwXKpq36R/SM88lDP8YhbHRXGMJFhcSiIbyb3/xq3d6GPE1/wSBqxfBCssS9yJ4hIKdvEysqg7u5NdLnd56MtgIzq4=
+	t=1708949585; cv=none; b=Lj4/IKjpp4bt3aKwSLDqYNU8TTvTy6ITTT/nk311OhCFCo0t5kjJSxjca9iFKQ54JGHFiG31xNdt7WLoegvHWozUboh2jYVVkevmXZvBS2EYyvw9kkB7MAVUlU0pPA8nGNexq8Cfi+BSb0OqoHyocXhrG95IEICWqkE+l7tKao4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708949539; c=relaxed/simple;
-	bh=iuGzS6WlYi9TtdofL6bGGFT5c4OI29PZWGoXll9ZowM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A6RuP8qNUQZAc6ienTx8au2DCCULNjqQPi/wmW8NnchDdNc4ViZFOHMTwCjLJ06Sqnz/w55LbffM107jBO/2yPvI2Xr7yo1ICwOH7qcI5vjFDmajxKPYP1VmjCt5sPCVnkfd+9u+pB9lklwDtRQF3qlrkfnosnR9YIcRiJOpF1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=gFs4D2ZC; arc=none smtp.client-ip=74.50.62.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
-Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
-	by mail5.25mail.st (Postfix) with ESMTPSA id 7531A604E8;
-	Mon, 26 Feb 2024 12:11:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
-	s=25mailst; t=1708949537;
-	bh=iuGzS6WlYi9TtdofL6bGGFT5c4OI29PZWGoXll9ZowM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gFs4D2ZCrYF/SWVPKAVRLsOfeKMzT0AaJNpC9WwLQdR7h20yN/u9x+LYHMzCO4cAD
-	 EQ6mcAig/6atIDcj3UkOQgj42nUoVl3vYzWEgVidQRPuf3RbEUIM5yFRK8Ahoz47ln
-	 vHRSfUpwapzWNiqpF5J3cZcff7INBpwekxhysLB9DdYVK4o6kTvdsMSGmKaQJc/6Q+
-	 o58CvFgQbjCAfIfyboAhuOEf0Yqh81d8iwfbx71fB4cF5DNAsy6HBsC2TeX1idpS8i
-	 3vRiq0bXo3i5yMrOGP/R84RSxP9fn5RzTt87Jp5mFrqz9OVpXV11qCgArKf8lehsKY
-	 tzuDnjjOknfjA==
-Date: Mon, 26 Feb 2024 14:11:56 +0200
-From: Tony Lindgren <tony@atomide.com>
-To: Lee Jones <lee@kernel.org>
-Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, bcousson@baylibre.com,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-omap@vger.kernel.org, Andreas Kemnade <andreas@kemnade.info>
-Subject: Re: (subset) [PATCH v4 0/5] mfd: twl: system-power-controller
-Message-ID: <20240226121156.GA52537@atomide.com>
-References: <20240217082007.3238948-1-andreas@kemnade.info>
- <170870473441.1731639.3240676194817206962.b4-ty@kernel.org>
+	s=arc-20240116; t=1708949585; c=relaxed/simple;
+	bh=Zqo04H2DzDvwYeQ4VzSXFZIweYrrWsFzk6udQWidsg0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=g+Y8Ch7kCn2tTY9+zrgYtaWm6xMJ8GUJinb28b1Erlc8YmE51zDVc1DE/1DnCg1KJN5agSd0yTVhM7viHDkcoCdZKc4IeZmCdsuHC7ThRidXtT0/Xq/Lg1CTMDtG6TwrwoCKZtrdFVtYfmc+EK/mMADPw+dC4mgGygTKpJlGbLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from dude02.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::28])
+	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
+	(envelope-from <m.felsch@pengutronix.de>)
+	id 1reZqj-0001Kj-8b; Mon, 26 Feb 2024 13:12:49 +0100
+From: Marco Felsch <m.felsch@pengutronix.de>
+To: puranjay12@gmail.com,
+	jic23@kernel.org,
+	lars@metafoo.de,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org
+Cc: kernel@pengutronix.de,
+	linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] dt-bindings: iio: ti,tmp117: add optional label property
+Date: Mon, 26 Feb 2024 13:12:33 +0100
+Message-Id: <20240226121234.545662-1-m.felsch@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <170870473441.1731639.3240676194817206962.b4-ty@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:1101:1d::28
+X-SA-Exim-Mail-From: m.felsch@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-* Lee Jones <lee@kernel.org> [240223 16:12]:
-> On Sat, 17 Feb 2024 09:20:02 +0100, Andreas Kemnade wrote:
-> > Add system-power-controller property in the bindings and
-> > the corresponding implementation and use it where
-> > appropriate.
-> > Not all cases are hit yet, there has probably to be a
-> > separate series after going through with a brush.
-> > 
-> > Changes in v4:
-> > - fix spelling/grammar
-> > - drop twl4030 dts cleanup, it would need an IB
-> >   or be postponed till next release
-> > 
-> > [...]
-> 
-> Applied, thanks!
-> 
-> [1/5] dt-bindings: mfd: ti,twl: Document system-power-controller
->       commit: 0c7cc7497f6f62a65037e94cf0d885ab0af3c0d3
-> [2/5] twl-core: add power off implementation for twl603x
->       commit: ca9414a1d08756c8392f9219caee607e1b7bade1
-> [5/5] mfd: twl4030-power: accept standard property for power controller
->       commit: 8ba560ec14267af1169e1f5407fbce514fd4f6f6
+Add the support to provide an optional label like we do for ADC
+channels to identify the device more easily.
 
-Applying the two dts changes into omap-for-v6.9/dt thanks.
+Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+---
+Hi,
 
-Tony
+patchset [1] should be applied first to avoid merge conflicts.
+[1] https://lore.kernel.org/all/20240219131114.134607-1-m.felsch@pengutronix.de/#t
+
+Regards,
+  Marco
+
+ .../devicetree/bindings/iio/temperature/ti,tmp117.yaml         | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/iio/temperature/ti,tmp117.yaml b/Documentation/devicetree/bindings/iio/temperature/ti,tmp117.yaml
+index 33f2e9c5bd81..58aa1542776b 100644
+--- a/Documentation/devicetree/bindings/iio/temperature/ti,tmp117.yaml
++++ b/Documentation/devicetree/bindings/iio/temperature/ti,tmp117.yaml
+@@ -27,6 +27,9 @@ properties:
+   vcc-supply:
+     description: provide VCC power to the sensor.
+ 
++  label:
++    description: Unique name to identify which device this is.
++
+ required:
+   - compatible
+   - reg
+-- 
+2.39.2
+
 
