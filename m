@@ -1,277 +1,156 @@
-Return-Path: <linux-kernel+bounces-82317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B370868255
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:00:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1041D86825A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:02:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FC3628B555
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:00:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 255F31C24BFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:02:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CCFB131735;
-	Mon, 26 Feb 2024 21:00:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 761CE131E26;
+	Mon, 26 Feb 2024 21:02:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kGZNP0aB"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="jUmAv6cT"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47F1212F388;
-	Mon, 26 Feb 2024 21:00:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E42E405CE;
+	Mon, 26 Feb 2024 21:02:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708981248; cv=none; b=C7bfsT81AEA01indV9GgH9nTrTPlpRUpBLHqzZ3hullBFpgf6ONMVbjGV/7M+zDCXPb8WE+vvaPlAY4b8dATxsnmD+ssoRsWpwV3seNcMf373/j/a88ACbowravkHdgSIGyt/g/StFuUeIUL9x5+5Zg+wOhjXwPcYmoLOL06x5k=
+	t=1708981353; cv=none; b=J5IqeOY3Fv1uMYWjufuWcUk5RBceHyM9Vcv5X6xmVcA3YM+SapbYls/aBYXyQvB+KdXB5fotv5/EgZlHDfesO1KTzwFr2VDOyXW5sDUzFXKpDi/WjEk6hkpAzxgYNBGmvsuI4J8FH6SGG5bYBxVIhFB3Is0c5udZMuG9jum3BD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708981248; c=relaxed/simple;
-	bh=+W/0O7WuVT+UyHpzMl4HcX6s22lBLQB0RYLJNwkggJ4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OiZgCnKgChSx/dE6A52B95sApNDLiTZUCp5HoSYSta0wNDPjbLIKLbg4lj68a30MxtzL+V9JylmLeAEo/Ou/kAWoxUCcctjOjDuhaIquyPFX157j1M3auaGWe4j/ITkZAUP4VncoN6g51anN/UKsWSZBADM4eQU4ct1+3zPLjYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kGZNP0aB; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-512fd840142so1764476e87.2;
-        Mon, 26 Feb 2024 13:00:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708981244; x=1709586044; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=A0nKmbQkUe18dfPF3HGk5d2W421zTO2IH69qRYWbZuQ=;
-        b=kGZNP0aBn2oDjjBP6e4kOSQaaSiaTSvSfrqMJGly/5S/I2BWsC5nugiY5/qtn2Tuwg
-         Va8PidHyeOCcNt1OKlk/JHnNTvB4rmM/9pMAKaWa1G3//+8qUQS2d4DnryDVdRrgdyMf
-         iWukPbGmiGnvHBO2SB3DM8m56c5qGaD0EOSBFPJoDRVssD10QU8AUYIXYdpeBu2Aq/v3
-         uqxwwm4VHYPjxv7vGDuUrRtkKkqwe6uBs23hGvTwwHozSsjtvAJSOWWSRkDx7EMyGUmX
-         NLYk1BdXEV68x9wxnd03Hu7wE9AJ1dHJMCPWHMJecQvxQjBc71bDAdQvadb2/kuH0m//
-         Qilw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708981244; x=1709586044;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=A0nKmbQkUe18dfPF3HGk5d2W421zTO2IH69qRYWbZuQ=;
-        b=oKX0ltQRWYtME9ODblWqavHpFJV7wK85UFAH+dKwBS2wU8RPNnqPpvW6dB7JWeQHkR
-         jLgJ6ihw0Dh0riyYDwWcsbM5i2F6iY6mgWFCjblP7I1ldwh7YfVaK9NdczJ5Jj8bhkX0
-         Z1a8VnonerC1pfANJHLRxHglp+6LYU5YYd1ZDC19k3bFssZ17sWiZvV3CRDpJycaf7MS
-         V4czSy71MMOtkZZQHWAHjg0OuEy/0DMidplOCK/nbqaueAYReduSg54asNhWQ0X4r8S6
-         le1NhBprln86E6rojAkHd1dGqWOLyxctrmZkk8GQGCST2UGsKTQvF252k0HmsEi6MywR
-         0yqg==
-X-Forwarded-Encrypted: i=1; AJvYcCVbue28cFi3NpHkTEf1SaIQSjG6cINB4yoQ28NQWT68xYLKCWgEBlEq3MoEFu9vB59XNTAIgwjLTZw9E83AarR2BllM5J6VgjoJaeijndsDKOQOLpbHmSnfLMYj4ISeukDgCbBBZcM9tBsmxd8UsfGSOK8ErtpD00RcV3vpUVL4/JKnH4pCYm6ooyVUrL9lhPKbt2Cz46tgBS1eMWCMMbHLCKm/v7WG7e5U
-X-Gm-Message-State: AOJu0YxmK/mL5t5DzlJ7WIDJS/rOSxk2wBnh1qnwtnnJsUkJ84lE9KN9
-	yePpovvfewjmdHIeyIvgEZsmipVjHz3qIjXKZQDsr6IUYxwwW5RX
-X-Google-Smtp-Source: AGHT+IG2CImQkqVQxd6ssoaZRcwh+i9k2qjnbEW465k4VFAlfiuJmCJysPvX5Urg5QLGl0NPz44FlQ==
-X-Received: by 2002:a05:6512:a95:b0:513:a6:2f4 with SMTP id m21-20020a0565120a9500b0051300a602f4mr2236792lfu.13.1708981244044;
-        Mon, 26 Feb 2024 13:00:44 -0800 (PST)
-Received: from mobilestation ([95.79.226.168])
-        by smtp.gmail.com with ESMTPSA id br35-20020a056512402300b0051186a82fc1sm953312lfb.171.2024.02.26.13.00.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 13:00:43 -0800 (PST)
-Date: Tue, 27 Feb 2024 00:00:41 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Siddharth Vadapalli <s-vadapalli@ti.com>, 
-	Jingoo Han <jingoohan1@gmail.com>, Gustavo Pimentel <gustavo.pimentel@synopsys.com>, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>, 
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
-	Marek Vasut <marek.vasut+renesas@gmail.com>, Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, 
-	Kishon Vijay Abraham I <kishon@kernel.org>, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org, mhi@lists.linux.dev
-Subject: Re: [PATCH v3 1/5] PCI: dwc: Refactor dw_pcie_edma_find_chip() API
-Message-ID: <6r7kquumuaga5j2hosyi6fla6frdzm5e4iobt7dtftjuwm7wku@7wij7dfhneob>
-References: <20240226-dw-hdma-v3-0-cfcb8171fc24@linaro.org>
- <20240226-dw-hdma-v3-1-cfcb8171fc24@linaro.org>
- <fielxplkgrvz5qmqrrq5ahmah5yqx7anjylrlcqyev2z2cl2wo@3ltyl242vkba>
- <20240226152757.GF8422@thinkpad>
+	s=arc-20240116; t=1708981353; c=relaxed/simple;
+	bh=A7PRublYTk9mFqh5r3xgnvZLW5vvAp5cJyd1arhzfOU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=FpfQY/rUF40A/Qt/01jp0Y4kkfz9m2AWohg3ucR55mW1fTEgui2gkNcmAcUrIZo94ECY53Za0GqQZOb7WiuF5ScLrSKfm/njA8y81kMpZ08X+ShdIFb5gFtQG3uyVP7c3YxHl1Cy3J2BdkZwsuDrciYelUEOyM1vVHp0pk0FeFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=jUmAv6cT; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41QGhw9s010029;
+	Mon, 26 Feb 2024 21:02:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:date:subject:mime-version:content-type
+	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=iLr
+	i/+mCTqTZgvVwhFdKyztQ7pBz1bs9wWlBzJYoMss=; b=jUmAv6cTScKEJe7tE6e
+	9L2/OqPOfnItUQpB0RtSwU7OUDK3lnEv0AB93ZC0z7jwqVd2YgwPBmg3+Kv63y2l
+	zA6RDUZEmif9wWKtlMF3v2qTeBC8xtbckkygUrbkjTv1rL+a8Xa3w3FEsn+tUEnJ
+	ATwxSWVI0lABJyjNlU0/pz8MSBtD5GTlVhjSVQiLvzoCddGSrNoAVNmBh2Vgh/2n
+	Q6aCMl6TS2L+7VAn8Mnb6U4GbJmssJO/ihzb8AZ8sGwEfhIi29xWBAQlKztvbUvP
+	ENTv3dLlS0ID0Q66sMVFfPxyZZiTL4TRVRgjbbJbqySY4z1XKjn6zOHSy/3AkOa7
+	0rA==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wgkxpa2sv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Feb 2024 21:02:24 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41QL1ujA019544
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Feb 2024 21:02:08 GMT
+Received: from [169.254.0.1] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 26 Feb
+ 2024 13:01:56 -0800
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+Date: Mon, 26 Feb 2024 13:01:56 -0800
+Subject: [PATCH] wifi: ath11k: remove obsolete struct wmi_start_scan_arg
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240226152757.GF8422@thinkpad>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240226-ath11k-obsolete-wmi_start_scan_arg-v1-1-c0b94c6e191d@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAEP83GUC/5WNSw7CIBQAr9Kw9hmgH4wr72GaBumjfdGCAlZN0
+ 7uLvYHLmcXMwiIGwsiOxcICzhTJuwxiVzAzajcgUJ+ZSS4rLmUDOo1CXMFfor9hQnhN1MWkQ+q
+ i0a7TYQBVN6q3kltbc5ZD94CW3tvk3GYeKSYfPttzFj/7V34WIKBWtsSyVLo6NKfHkww5szd+Y
+ u26rl9CPJ0A1gAAAA==
+To: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <quic_jjohnson@quicinc.com>
+CC: <ath11k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+X-Mailer: b4 0.13.0
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: NnjY68zs3LXtfQYj2si6rPjfB-AGIKm9
+X-Proofpoint-GUID: NnjY68zs3LXtfQYj2si6rPjfB-AGIKm9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-26_11,2024-02-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=707 suspectscore=0 phishscore=0 adultscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402260162
 
-On Mon, Feb 26, 2024 at 08:57:57PM +0530, Manivannan Sadhasivam wrote:
-> On Mon, Feb 26, 2024 at 03:45:16PM +0300, Serge Semin wrote:
-> > Hi Manivannan
-> > 
-> > On Mon, Feb 26, 2024 at 05:07:26PM +0530, Manivannan Sadhasivam wrote:
-> > > In order to add support for Hyper DMA (HDMA), let's refactor the existing
-> > > dw_pcie_edma_find_chip() API by moving the common code to separate
-> > > functions.
-> > > 
-> > > No functional change.
-> > > 
-> > > Suggested-by: Serge Semin <fancer.lancer@gmail.com>
-> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > ---
-> > >  drivers/pci/controller/dwc/pcie-designware.c | 52 +++++++++++++++++++++-------
-> > >  1 file changed, 39 insertions(+), 13 deletions(-)
-> > > 
-> > > diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> > > index 250cf7f40b85..193fcd86cf93 100644
-> > > --- a/drivers/pci/controller/dwc/pcie-designware.c
-> > > +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> > > @@ -880,7 +880,17 @@ static struct dw_edma_plat_ops dw_pcie_edma_ops = {
-> > >  	.irq_vector = dw_pcie_edma_irq_vector,
-> > >  };
-> > >  
-> > > -static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
-> > > +static void dw_pcie_edma_init_data(struct dw_pcie *pci)
-> > > +{
-> > > +	pci->edma.dev = pci->dev;
-> > > +
-> > > +	if (!pci->edma.ops)
-> > > +		pci->edma.ops = &dw_pcie_edma_ops;
-> > > +
-> > > +	pci->edma.flags |= DW_EDMA_CHIP_LOCAL;
-> > > +}
-> > > +
-> > > +static int dw_pcie_edma_find_mf(struct dw_pcie *pci)
-> > >  {
-> > >  	u32 val;
-> > >  
-> > > @@ -900,24 +910,27 @@ static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
-> > >  	else
-> > >  		val = dw_pcie_readl_dbi(pci, PCIE_DMA_VIEWPORT_BASE + PCIE_DMA_CTRL);
-> > > 
-> > 
-> > > -	if (val == 0xFFFFFFFF && pci->edma.reg_base) {
-> > > -		pci->edma.mf = EDMA_MF_EDMA_UNROLL;
-> > > -
-> > > -		val = dw_pcie_readl_dma(pci, PCIE_DMA_CTRL);
-> > > -	} else if (val != 0xFFFFFFFF) {
-> > > -		pci->edma.mf = EDMA_MF_EDMA_LEGACY;
-> > > +	/* Set default mapping format here and update it below if needed */
-> > > +	pci->edma.mf = EDMA_MF_EDMA_LEGACY;
-> > >  
-> > > +	if (val == 0xFFFFFFFF && pci->edma.reg_base)
-> > > +		pci->edma.mf = EDMA_MF_EDMA_UNROLL;
-> > > +	else if (val != 0xFFFFFFFF)
-> > >  		pci->edma.reg_base = pci->dbi_base + PCIE_DMA_VIEWPORT_BASE;
-> > > -	} else {
-> > > +	else
-> > >  		return -ENODEV;
-> > > -	}
-> > 
-> > Sorry for not posting my opinion about this earlier, but IMO v2 code
-> > was more correct than this one. This version makes the code being not
-> > linear as it was in v2, thus harder to comprehend:
-> > 
-> > 1. Setting up a default value and then overriding it or not makes the
-> > reader to keep in mind the initialized value which is harder than to
-> > just read what is done in the respective branch.
-> > 
-> 
-> No, I disagree. Whether we set the default value or not, EDMA_MF_EDMA_LEGACY is
-> indeed the default mapping format (this is one of the reasons why the enums
-> should start from 1 instead of 0). So initializing it to legacy is not changing
-> anything, rather making it explicit.
-> 
-> > 2. Splitting up the case clause with respective inits and the mapping
-> > format setting up also makes it harder to comprehend what's going on.
-> > In the legacy case the reg-base address and the mapping format init are
-> > split up while they should have been done simultaneously only if (val
-> > != 0xFFFFFFFF).
-> > 
-> 
-> Well again, this doesn't matter since the default mapping format is legacy. But
-> somewhat agree that the two clauses are setting different fields, but even if
-> the legacy mapping format is set inside the second clause, it still differs from
-> the first one since we are not setting reg_base.
-> 
-> > 3. The most of the current devices has the unrolled mapping (available
-> > since v4.9 IP-core), thus having the mf field pre-initialized produces
-> > a redundant store operation for the most of the modern devices.
-> > 
-> 
-> Ok, this one I agree. We could avoid the extra assignment.
-> 
-> > 4. Getting rid from the curly braces isn't something what should be
-> > avoided at any cost and doesn't give any optimization really. It
-> > doesn't cause having less C-lines of the source code and doesn't
-> > improve the code readability.
-> > 
-> 
-> Yeah, there is no benefit other than a simple view of the code. But for point
-> (3), I agree to roll back to v2 version.
-> 
-> > So to speak, I'd suggest to get back the v2 implementation here.
-> > 
-> > >  
-> > > -	pci->edma.dev = pci->dev;
-> > > +	return 0;
-> > > +}
-> > >  
-> > > -	if (!pci->edma.ops)
-> > > -		pci->edma.ops = &dw_pcie_edma_ops;
-> > > +static int dw_pcie_edma_find_channels(struct dw_pcie *pci)
-> > > +{
-> > > +	u32 val;
-> > >  
-> > > -	pci->edma.flags |= DW_EDMA_CHIP_LOCAL;
-> > 
-> > > +	if (pci->edma.mf == EDMA_MF_EDMA_LEGACY)
-> > > +		val = dw_pcie_readl_dbi(pci, PCIE_DMA_VIEWPORT_BASE + PCIE_DMA_CTRL);
-> > > +	else
-> > > +		val = dw_pcie_readl_dma(pci, PCIE_DMA_CTRL);
-> > 
-> > Just dw_pcie_readl_dma(pci, PCIE_DMA_CTRL)
-> > 
-> 
-> 'val' is uninitialized. Why should the assignment be skipped?
+ath11k inherited struct wmi_start_scan_arg from ath10k. However, in
+ath11k, this struct is unused -- struct scan_req_params is used for
+this functionality. So remove the unused struct.
 
-The entire
+No functional changes, compile tested only.
 
-+	if (pci->edma.mf == EDMA_MF_EDMA_LEGACY)
-+		val = dw_pcie_readl_dbi(pci, PCIE_DMA_VIEWPORT_BASE + PCIE_DMA_CTRL);
-+	else
-+		val = dw_pcie_readl_dma(pci, PCIE_DMA_CTRL);
+Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+---
+ drivers/net/wireless/ath/ath11k/wmi.h | 30 +-----------------------------
+ 1 file changed, 1 insertion(+), 29 deletions(-)
 
-can be replaced with a single line
+diff --git a/drivers/net/wireless/ath/ath11k/wmi.h b/drivers/net/wireless/ath/ath11k/wmi.h
+index bb419e3abb00..1c980f56bc72 100644
+--- a/drivers/net/wireless/ath/ath11k/wmi.h
++++ b/drivers/net/wireless/ath/ath11k/wmi.h
+@@ -1,7 +1,7 @@
+ /* SPDX-License-Identifier: BSD-3-Clause-Clear */
+ /*
+  * Copyright (c) 2018-2019 The Linux Foundation. All rights reserved.
+- * Copyright (c) 2021-2023 Qualcomm Innovation Center, Inc. All rights reserved.
++ * Copyright (c) 2021-2024 Qualcomm Innovation Center, Inc. All rights reserved.
+  */
+ 
+ #ifndef ATH11K_WMI_H
+@@ -3444,34 +3444,6 @@ struct wmi_bssid_arg {
+ 	const u8 *bssid;
+ };
+ 
+-struct wmi_start_scan_arg {
+-	u32 scan_id;
+-	u32 scan_req_id;
+-	u32 vdev_id;
+-	u32 scan_priority;
+-	u32 notify_scan_events;
+-	u32 dwell_time_active;
+-	u32 dwell_time_passive;
+-	u32 min_rest_time;
+-	u32 max_rest_time;
+-	u32 repeat_probe_time;
+-	u32 probe_spacing_time;
+-	u32 idle_time;
+-	u32 max_scan_time;
+-	u32 probe_delay;
+-	u32 scan_ctrl_flags;
+-
+-	u32 ie_len;
+-	u32 n_channels;
+-	u32 n_ssids;
+-	u32 n_bssids;
+-
+-	u8 ie[WLAN_SCAN_PARAMS_MAX_IE_LEN];
+-	u32 channels[64];
+-	struct wmi_ssid_arg ssids[WLAN_SCAN_PARAMS_MAX_SSID];
+-	struct wmi_bssid_arg bssids[WLAN_SCAN_PARAMS_MAX_BSSID];
+-};
+-
+ #define WMI_SCAN_STOP_ONE       0x00000000
+ #define WMI_SCN_STOP_VAP_ALL    0x01000000
+ #define WMI_SCAN_STOP_ALL       0x04000000
 
-+	val = dw_pcie_readl_dma(pci, PCIE_DMA_CTRL);
+---
+base-commit: 3ab6aff5793c3c7bdf6535d9b0024544a4abbdd5
+change-id: 20240226-ath11k-obsolete-wmi_start_scan_arg-7567df20ff50
 
-since in the legacy case (reg_base = PCIE_DMA_VIEWPORT_BASE) and the
-reg_base has been initialized by now.
-
--Serge(y)
-
-> 
-> - Mani
-> 
-> > -Serge(y)
-> > 
-> > >  
-> > >  	pci->edma.ll_wr_cnt = FIELD_GET(PCIE_DMA_NUM_WR_CHAN, val);
-> > >  	pci->edma.ll_rd_cnt = FIELD_GET(PCIE_DMA_NUM_RD_CHAN, val);
-> > > @@ -930,6 +943,19 @@ static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
-> > >  	return 0;
-> > >  }
-> > >  
-> > > +static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
-> > > +{
-> > > +	int ret;
-> > > +
-> > > +	dw_pcie_edma_init_data(pci);
-> > > +
-> > > +	ret = dw_pcie_edma_find_mf(pci);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	return dw_pcie_edma_find_channels(pci);
-> > > +}
-> > > +
-> > >  static int dw_pcie_edma_irq_verify(struct dw_pcie *pci)
-> > >  {
-> > >  	struct platform_device *pdev = to_platform_device(pci->dev);
-> > > 
-> > > -- 
-> > > 2.25.1
-> > > 
-> 
-> -- 
-> மணிவண்ணன் சதாசிவம்
 
