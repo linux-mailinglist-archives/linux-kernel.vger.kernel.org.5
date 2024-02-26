@@ -1,185 +1,145 @@
-Return-Path: <linux-kernel+bounces-80751-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDB9B866C0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:25:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1869F866C14
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:26:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82CA31F23AFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:25:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E96E1C21364
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:26:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9C381CA91;
-	Mon, 26 Feb 2024 08:25:07 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2558A1CA9C;
+	Mon, 26 Feb 2024 08:26:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="rem6OKKw"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EC7B1C6A3
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:25:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75FF41CA87;
+	Mon, 26 Feb 2024 08:26:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708935907; cv=none; b=QJ6ylM8CbDlFAzqx3DSkL08PomoGxD5cWKiDvaoaCCXbibyv3D23/hfXnu7ngutxSk7BWLGVs2osnDhwv61fedBaT/wfDTmTd4FamWGpzHPD5HTxTeBH7RUkmUjbwizIy3mCKty0tj1FlsNy8GGUcjaFZsKy46K5O1PgzoTMNzk=
+	t=1708935964; cv=none; b=jbRs3Hn7Dz+eaqIUHgJizVclMS5RlAu9QGk1HNrAt0zDP8VzI69xJPzG+bUHnD1UlHxZIYV4978H1RMw/2t+tam1ZLScfA4zJFEbTB4zYTnEPtmR8CJ2Dw/byHlt5NHctR7LALXHkjnyL+1BEgj3DzY7x+89aCW34VsfHPbrYWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708935907; c=relaxed/simple;
-	bh=ILUzmi0yWEnHp6QLN0s99nRQRgTcB6WDFt8VQe6DRwA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nJsglSFe6uY75dZUzk4wAv9l9mAiq326/UGWmQKsXx8qAev6OVfkGxUzFhzxUTI+xcQ3d+3ZLiPXHV9DsK/owSxL2FqP23zOEihiAIdvbTe+Abuvf9qH69NM4sjqs0oi9vo+GlOnZlhFhOC7cbroaDJ9kYBk4b0A4CYQrQMDs88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1reWIE-0001Gf-H9; Mon, 26 Feb 2024 09:24:58 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1reWID-002xJH-M7; Mon, 26 Feb 2024 09:24:57 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1reWID-00BVMf-1u;
-	Mon, 26 Feb 2024 09:24:57 +0100
-Date: Mon, 26 Feb 2024 09:24:57 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Leif Middelschulte <leif.middelschulte@gmail.com>
-Cc: Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
-	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
-	NXP Linux Team <linux-imx@nxp.com>, Leif Middelschulte <Leif.Middelschulte@klsmartin.com>, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] pwm: imx27: fix race condition .apply,.get_state
-Message-ID: <jm73itlefa5dmqxhe35tbzohg3vr7pog6kt7ieuiw3a2q2p6ml@ngwtwz2aawyn>
-References: <20230906154215.4ikrrbx4xgx2nmu5@pengutronix.de>
- <20240224112902.55539-1-Leif.Middelschulte@gmail.com>
+	s=arc-20240116; t=1708935964; c=relaxed/simple;
+	bh=I+M+uyV5FpwwpkemvG8PFA89tmGoOFufVYcPptG81kg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=cXMqESCL9C81oPg5yhs+FYE6eEa5jU88kbYYncDkj2IlI7ih7R7zs5gXwFZWMIn59fwM4Lf9EX5XLgQS6pRt57JvNdsAkN+pXBx5VWgwXjTXe+t22hZhJvnDc4Vnb/AiAXqrmXzy0pkr0d7VHSfHob3UM67Z9fZVElaqrtrx0CM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=rem6OKKw; arc=none smtp.client-ip=185.132.182.106
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41Q3T6cD001925;
+	Mon, 26 Feb 2024 09:25:42 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=ipjqMNVCa6S6fgiDE7vR21a99GdkTx/G11g4uP/BcWo=; b=re
+	m6OKKwNwvCp2pW4u/6mMlfjuS8RNmSFjVPAmlz2bPp9F+JqJox3Hc/SBI2Q5yadI
+	dGPwtVG/NEKZEs3agmVqVQ5BcX2oxwPMMkbh65QGAV4GlAyHist0zk+J59ucHGin
+	FmAFH6qAfwOzUf2ONh9hKbTwgE0qMQbNSzWuCL1QAlBJ6OaWCzZMcyc9x3BQAkii
+	+3+u4SVAdfy1xN413PoKsb3nvp+/sAmqIg415Wk/Dx6UPvlzlgelKuOlxI9tweoL
+	UBeFFz/9GKvnTn6kU8fqc9Dg6w1Juv2LbZfBxpfKbUs3nfY1pmg2NT9YMF2q6rYa
+	dQETh34CLS96SptsmWZA==
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3wf6rke8dn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Feb 2024 09:25:42 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 492164002D;
+	Mon, 26 Feb 2024 09:25:38 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C3E12243FD1;
+	Mon, 26 Feb 2024 09:25:07 +0100 (CET)
+Received: from [10.201.21.177] (10.201.21.177) by SHFDAG1NODE3.st.com
+ (10.75.129.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 26 Feb
+ 2024 09:25:07 +0100
+Message-ID: <9859023c-57bf-4316-911c-c5f5ade1ebb4@foss.st.com>
+Date: Mon, 26 Feb 2024 09:25:02 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="c5aqstpagj445og2"
-Content-Disposition: inline
-In-Reply-To: <20240224112902.55539-1-Leif.Middelschulte@gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/5] memory: stm32-fmc2-ebi: check regmap_read return
+ value
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
+        <devicetree@vger.kernel.org>
+References: <20240219140202.85680-1-christophe.kerello@foss.st.com>
+ <20240219140202.85680-3-christophe.kerello@foss.st.com>
+ <1c4ab974-2b72-45ce-ab20-de158b91e356@linaro.org>
+Content-Language: en-US
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+In-Reply-To: <1c4ab974-2b72-45ce-ab20-de158b91e356@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE3.st.com
+ (10.75.129.71)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-26_05,2024-02-23_01,2023-05-22_02
 
+Hi Krzysztof,
 
---c5aqstpagj445og2
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 2/21/24 09:29, Krzysztof Kozlowski wrote:
+> On 19/02/2024 15:01, Christophe Kerello wrote:
+>> Check regmap_read return value to avoid to use uninitialized local
+>> variables.
+>>
+>> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+>> ---
+>> Changes in v2:
+>>   - New patch added
+>>
+>>   drivers/memory/stm32-fmc2-ebi.c | 128 +++++++++++++++++++++++---------
+>>   1 file changed, 94 insertions(+), 34 deletions(-)
+>>
+> 
+> ...
+> 
+>> -static void stm32_fmc2_ebi_save_setup(struct stm32_fmc2_ebi *ebi)
+>> +static int stm32_fmc2_ebi_save_setup(struct stm32_fmc2_ebi *ebi)
+>>   {
+>>   	unsigned int cs;
+>> +	int ret;
+>>   
+>>   	for (cs = 0; cs < FMC2_MAX_EBI_CE; cs++) {
+>> -		regmap_read(ebi->regmap, FMC2_BCR(cs), &ebi->bcr[cs]);
+>> -		regmap_read(ebi->regmap, FMC2_BTR(cs), &ebi->btr[cs]);
+>> -		regmap_read(ebi->regmap, FMC2_BWTR(cs), &ebi->bwtr[cs]);
+>> +		ret = regmap_read(ebi->regmap, FMC2_BCR(cs), &ebi->bcr[cs]);
+>> +		if (ret)
+>> +			return ret;
+>> +
+>> +		ret = regmap_read(ebi->regmap, FMC2_BTR(cs), &ebi->btr[cs]);
+>> +		if (ret)
+>> +			return ret;
+>> +
+>> +		ret = regmap_read(ebi->regmap, FMC2_BWTR(cs), &ebi->bwtr[cs]);
+>> +		if (ret)
+>> +			return ret;
+> 
+> These are just:
+> 
+> ret |= regmapr_read()
+> and one "if (ret)" clause.
+> 
 
-Hello Leif,
+Ok, it will be done in V3.
 
-thanks for this new round addressing the identified issues.
+Regards,
+Christophe Kerello.
 
-On Sat, Feb 24, 2024 at 12:29:00PM +0100, Leif Middelschulte wrote:
-> From: Leif Middelschulte <Leif.Middelschulte@klsmartin.com>
->=20
-> With CONFIG_PWM_DEBUG=3Dy after writing a value to the PWMSAR
-> register in .apply(), the register is read in .get_state().
-> Unless a period completed in the meantime, this read yields the
-> previously used duty cycle configuration. As the PWM_DEBUG code
-> applies the read out configuration for testing purposes this
-> effectively undoes the intended effect by rewriting the previous
-> hardware state.
->=20
-> Note that this change merely implements a sensible heuristic.
-> The i.MX has a 4 slot FIFO to configure the duty cycle. This FIFO
-> cannot be read back in its entirety. The "write x then read back
-> x from hw" semantics are therefore not easily applicable.
-> With this change, the .get_state() function tries to wait for some
-> stabilization in the FIFO (empty state). In this state it keeps
-> applying the last value written to the sample register.
->=20
-> Signed-off-by: Leif Middelschulte <Leif.Middelschulte@klsmartin.com>
-> ---
->  drivers/pwm/pwm-imx27.c | 55 +++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 53 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/pwm/pwm-imx27.c b/drivers/pwm/pwm-imx27.c
-> index 7d9bc43f12b0..cb564460b79c 100644
-> --- a/drivers/pwm/pwm-imx27.c
-> +++ b/drivers/pwm/pwm-imx27.c
-> @@ -75,6 +75,7 @@
->  						   (x)) + 1)
-> =20
->  #define MX3_PWM_SWR_LOOP		5
-> +#define MX3_PWM_FIFOAV_EMPTY_LOOP	4
-
-This looks like a register definition, but it's only a number that
-defines the iterations waiting for the FIFO to empty. (The same critic
-applies to MX3_PWM_SWR_LOOP, though.)
-
->  /* PWMPR register value of 0xffff has the same effect as 0xfffe */
->  #define MX3_PWMPR_MAX			0xfffe
-> @@ -118,6 +119,31 @@ static void pwm_imx27_clk_disable_unprepare(struct p=
-wm_imx27_chip *imx)
->  	clk_disable_unprepare(imx->clk_ipg);
->  }
-> =20
-> +static int pwm_imx27_wait_fifo_empty(struct pwm_chip *chip,
-> +				     struct pwm_device *pwm)
-> +{
-> +	struct pwm_imx27_chip *imx =3D to_pwm_imx27_chip(chip);
-> +	struct device *dev =3D chip->dev;
-> +	unsigned int period_ms =3D DIV_ROUND_UP_ULL(pwm->state.period, NSEC_PER=
-_MSEC);
-
-Given that waiting here is unfortunate it would be nice so reduce the
-waiting as much as possible. So it might make sense to read the actual
-period from the hardware and use that as it might be smaller that
-pwm->state.period.
-
-> +	int tries =3D MX3_PWM_FIFOAV_EMPTY_LOOP;
-> +	int fifoav, previous_fifoav =3D INT_MAX;
-> +	u32 sr;
-
-Most variables can go into the while loop.
-
-> +	while (tries--) {
-> +		sr =3D readl(imx->mmio_base + MX3_PWMSR);
-> +		fifoav =3D FIELD_GET(MX3_PWMSR_FIFOAV, sr);
-> +		if (fifoav =3D=3D MX3_PWMSR_FIFOAV_EMPTY)
-> +			return 0;
-> +		/* if the FIFO value does not decrease, there is another problem */
-> +		if (previous_fifoav =3D=3D fifoav)
-> +			break;
-> +		previous_fifoav =3D fifoav;
-> +		msleep(period_ms);
-> +	}
-
-I wonder if a loop is necessary at all. Why not use
-msleep(FIELD_GET(MX3_PWMSR_FIFOAV, sr) * period_ms)?
-
-Maybe take PWMCNR into account to shorten the sleep a bit.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---c5aqstpagj445og2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXcStgACgkQj4D7WH0S
-/k4LJQf8C6hwy1sFY7yKjt5wCPoZpghfOG/zBrFyrz3Jqvu7i20/owaMN0m6BB+C
-r97/XMyUd/fCzXjrY0cFiwKHki35Q77xRGfHlpx317t4MnjHQ+RQf7L5sfhpbf3p
-1JCsDNp0Y3GJTgY5YsLzgfLIjdZyzcsN0Gsa2/5tW95Yg1Je0gDEToFTH8usggxp
-ijJ38OBCkf4qRpvNRRIVEmu2VEsS+5dLVgfS7dnX8CzRdWfo4Yhwlex58awCQZLw
-MT9DriSKhkPZXSClCkv7s3HdWRt6EQdWi0NIdsmKJsY1zZREvYDbtnSQrqW7/5xt
-D0/hgkLI8bIORFVZpF4Vi14glnLF1A==
-=TplP
------END PGP SIGNATURE-----
-
---c5aqstpagj445og2--
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
 
