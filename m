@@ -1,216 +1,135 @@
-Return-Path: <linux-kernel+bounces-80925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80934-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BA95866E23
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:20:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62AE2866E35
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:22:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E268BB242E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:20:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E5362852F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:22:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CB2C1D535;
-	Mon, 26 Feb 2024 08:43:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="p/94khlF";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="bWNTJkTO"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB37354BEF;
+	Mon, 26 Feb 2024 08:44:25 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B91CE1CAA2
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:43:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBA8255C05
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:44:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708937019; cv=none; b=k+OJy/yCWH672cTSb/LY12k1GQ/hxTz2BWdjbDOqHbqz3IoEAwCeISDjxIgajs0kHwqXmxYMjoe9ZzlUEG8+Xdh4PU4HKECpDPJvd7alzWU352nfZ183uI5zgOSDG+gK2DqQpu4Cl3ODlW5RUmouHLLNXE69oSfGsW2LUlQlavU=
+	t=1708937065; cv=none; b=jV2LiBceANYOGf9O/+0R5foX060/Tl3WzV6gjzrN6lEau9iDxK+C4FDheA07x2EDQ9jesMe8QvUqtnEJne82M29U/ovblZ7CkyX88ytQRFrpb/LY0AFON7E2Mj+4XKgAF8JRguONZTPQ4b7DtDwOg6iMneX6vHv31113nBLAp70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708937019; c=relaxed/simple;
-	bh=ff9YDknUAfWbL+Qlzh7JnnvIMBsX8B6h0Cy2E6mlWLk=;
+	s=arc-20240116; t=1708937065; c=relaxed/simple;
+	bh=14h6bEt9kyYrSJWXkUqMar7Y0aGg2X9iIPMlMIea9ZE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o0beSrk6JpQ6ziO9RHI/woDZK1/Day9A6Z9wFgJ/eKIfOJLM0jlJWzMVhI3gc06QdDyFvu91Axse/+A1DKUQ3CI3UkwJbWn5f9WPq1kqUHWrkPRn3MzGbGAyf3AEi9czMxp3Fnr9fX24LRwt/nhWv2/ZlIOmC/ZmoF75b21Epf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=p/94khlF; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=bWNTJkTO; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id CE9701FB3D;
-	Mon, 26 Feb 2024 08:43:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708937016; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lCro49qKFb96ctGGHx0sMJf91QqvH7dMQtCRbD9/a3Y=;
-	b=p/94khlFMrPoU8svplFmUmTUb8/+VJ9NtDtg9Nv120CoQt12J5AKgAaJQTDCzD0PAqYsEB
-	HSKeuUyLUMu1GZlJFzHpWBylEGdjGuL86bvtkqgCFyzL67wal/MfNiUm/T+8UJlVNOdVrK
-	oCjAlSjY33goDle8rpo+m5nb+3/eaOM=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708937015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lCro49qKFb96ctGGHx0sMJf91QqvH7dMQtCRbD9/a3Y=;
-	b=bWNTJkTOWTfd1NIXZT1FXBRV0jUN7QWza9A6QAZIcqK2h5L2BNdf8bB0+xmaeNtn8hoCwL
-	1V+XcMv+GpwcCaZK6344GJImjy2FF9jlfq8gss9FmXHoCvJAag20KAwvUhgP2wWF7xLVPU
-	KxcxIBFHJGKtsaGI0YmDv6DNQL4mh54=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C250513A58;
-	Mon, 26 Feb 2024 08:43:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Rdf/LjdP3GUJFQAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Mon, 26 Feb 2024 08:43:35 +0000
-Date: Mon, 26 Feb 2024 09:43:35 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	akpm@linux-foundation.org, kent.overstreet@linux.dev,
-	petr@tesarici.cz, keescook@chromium.org, pasha.tatashin@soleen.com,
-	kernel-team@android.com, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/1] mm: enumerate all gfp flags
-Message-ID: <ZdxPN4RpNW54ckTE@tiehlicka>
-References: <20240224015800.2569851-1-surenb@google.com>
- <c45d16c6-abab-4132-a499-c231dcedebb2@wanadoo.fr>
- <CAJuCfpFskKqCGj4imMMLjUQJWR_8-KHuYc=xAZ4e20+57Zf5Rg@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=SvSYgKqK8Z7WoeoRMCdxFj7RTbWBO8L9jYWYuvDwQcloWt3AHr513nEA34vO50Ori2QHPOeFLGfuBlZTKNcnbTFHcN7TLYkNPaWNCRQ1fb1T4ODoHo80FkBIDtnVDGIGFn+P2o8/PDzsud2ezh1CtI8pVXYqwlTW49nnvFw5GSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1reWav-00043K-Bh; Mon, 26 Feb 2024 09:44:17 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1reWau-002xOT-CL; Mon, 26 Feb 2024 09:44:16 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1reWau-00BVlo-0w;
+	Mon, 26 Feb 2024 09:44:16 +0100
+Date: Mon, 26 Feb 2024 09:44:16 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Leif Middelschulte <leif.middelschulte@gmail.com>
+Cc: Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
+	NXP Linux Team <linux-imx@nxp.com>, Leif Middelschulte <Leif.Middelschulte@klsmartin.com>, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] pwm: imx27: fix race condition .apply,.get_state
+Message-ID: <qucbpwau55tuaf5m5fqpsbub2bbtxcye4djxwrwkabssd2vc4j@weuiawrzbbnn>
+References: <20230906154215.4ikrrbx4xgx2nmu5@pengutronix.de>
+ <20240224112902.55539-1-Leif.Middelschulte@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="gx6q65kgn6hbj44y"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJuCfpFskKqCGj4imMMLjUQJWR_8-KHuYc=xAZ4e20+57Zf5Rg@mail.gmail.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-2.60 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[wanadoo.fr];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[wanadoo.fr,linux-foundation.org,linux.dev,tesarici.cz,chromium.org,soleen.com,android.com,kvack.org,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -2.60
+In-Reply-To: <20240224112902.55539-1-Leif.Middelschulte@gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Sun 25-02-24 01:12:46, Suren Baghdasaryan wrote:
-> On Sat, Feb 24, 2024 at 7:03 AM Christophe JAILLET
-> <christophe.jaillet@wanadoo.fr> wrote:
-> >
-> > Le 24/02/2024 à 02:58, Suren Baghdasaryan a écrit :
-> > > Introduce GFP bits enumeration to let compiler track the number of used
-> > > bits (which depends on the config options) instead of hardcoding them.
-> > > That simplifies __GFP_BITS_SHIFT calculation.
-> > >
-> > > Suggested-by: Petr Tesařík <petr@tesarici.cz>
-> > > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > > Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-> > > Acked-by: Michal Hocko <mhocko@suse.com>
-> > > ---
-> > > Changes from v4 [1]:
-> > > - Split from the series [2] as a stand-alone patch, per Michal Hocko
-> > > - Added Reviewed-by, per Pasha Tatashin
-> > > - Added Acked-by, per Michal Hocko
-> > >
-> > > [1] https://lore.kernel.org/all/20240221194052.927623-7-surenb@google.com/
-> > > [2] https://lore.kernel.org/all/20240221194052.927623-1-surenb@google.com/
-> > >
-> > >   include/linux/gfp_types.h | 90 +++++++++++++++++++++++++++------------
-> > >   1 file changed, 62 insertions(+), 28 deletions(-)
-> > >
-> > > diff --git a/include/linux/gfp_types.h b/include/linux/gfp_types.h
-> > > index 1b6053da8754..868c8fb1bbc1 100644
-> > > --- a/include/linux/gfp_types.h
-> > > +++ b/include/linux/gfp_types.h
-> > > @@ -21,44 +21,78 @@ typedef unsigned int __bitwise gfp_t;
-> > >    * include/trace/events/mmflags.h and tools/perf/builtin-kmem.c
-> > >    */
-> > >
-> > > +enum {
-> > > +     ___GFP_DMA_BIT,
-> > > +     ___GFP_HIGHMEM_BIT,
-> > > +     ___GFP_DMA32_BIT,
-> > > +     ___GFP_MOVABLE_BIT,
-> > > +     ___GFP_RECLAIMABLE_BIT,
-> > > +     ___GFP_HIGH_BIT,
-> > > +     ___GFP_IO_BIT,
-> > > +     ___GFP_FS_BIT,
-> > > +     ___GFP_ZERO_BIT,
-> > > +     ___GFP_UNUSED_BIT,      /* 0x200u unused */
-> >
-> > Hi,
-> >
-> > what is the need to have this ___GFP_UNUSED_BIT now?
-> 
-> Hi!
-> We can remove it but then all values will shift. That should be safe
-> to do now but I prefer one patch to do only one thing. We can add a
-> separate patch to do further cleanup of unused values.
 
-Agreed!
+--gx6q65kgn6hbj44y
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > > +     ___GFP_DIRECT_RECLAIM_BIT,
-> > > +     ___GFP_KSWAPD_RECLAIM_BIT,
-> > > +     ___GFP_WRITE_BIT,
-> > > +     ___GFP_NOWARN_BIT,
-> > > +     ___GFP_RETRY_MAYFAIL_BIT,
-> > > +     ___GFP_NOFAIL_BIT,
-> > > +     ___GFP_NORETRY_BIT,
-> > > +     ___GFP_MEMALLOC_BIT,
-> > > +     ___GFP_COMP_BIT,
-> > > +     ___GFP_NOMEMALLOC_BIT,
-> > > +     ___GFP_HARDWALL_BIT,
-> > > +     ___GFP_THISNODE_BIT,
-> > > +     ___GFP_ACCOUNT_BIT,
-> > > +     ___GFP_ZEROTAGS_BIT,
-> > > +#ifdef CONFIG_KASAN_HW_TAGS
-> > > +     ___GFP_SKIP_ZERO_BIT,
-> > > +     ___GFP_SKIP_KASAN_BIT,
-> > > +#endif
-> > > +#ifdef CONFIG_LOCKDEP
-> > > +     ___GFP_NOLOCKDEP_BIT,
-> > > +#endif
-> > > +     ___GFP_LAST_BIT
-> > > +};
-> >
-> > Does it make sense to have something like:
-> >    BUILD_BUG_ON(___GFP_LAST_BIT > BITS_PER_LONG, "blah");
-> 
-> I suppose that would not hurt, except gfp_t is unsigned int, not long.
-> Something like this would work I think:
-> 
-> BUILD_BUG_ON_MSG(___GFP_LAST_BIT > BITS_PER_TYPE(gfp_t), "GFP bit overflow");
-> 
-> except I'm not sure where to put this check. One of the __init
-> functions in page_alloc.c would probably work but none seem to be
-> appropriate. mm_core_init() perhaps? Other ideas?
+Hello,
 
-Would that check add much? We currently cannot use the full width of the
-gfp_t because radix tree code needs to fit also its own tag into the
-same word (see radix_tree_init). If the radix tree constrain is lifted
-then we should add something like the above.
--- 
-Michal Hocko
-SUSE Labs
+On Sat, Feb 24, 2024 at 12:29:00PM +0100, Leif Middelschulte wrote:
+> From: Leif Middelschulte <Leif.Middelschulte@klsmartin.com>
+>=20
+> With CONFIG_PWM_DEBUG=3Dy after writing a value to the PWMSAR
+> register in .apply(), the register is read in .get_state().
+> Unless a period completed in the meantime, this read yields the
+> previously used duty cycle configuration. As the PWM_DEBUG code
+> applies the read out configuration for testing purposes this
+> effectively undoes the intended effect by rewriting the previous
+> hardware state.
+>=20
+> Note that this change merely implements a sensible heuristic.
+> The i.MX has a 4 slot FIFO to configure the duty cycle. This FIFO
+> cannot be read back in its entirety. The "write x then read back
+> x from hw" semantics are therefore not easily applicable.
+> With this change, the .get_state() function tries to wait for some
+> stabilization in the FIFO (empty state). In this state it keeps
+> applying the last value written to the sample register.
+>=20
+> Signed-off-by: Leif Middelschulte <Leif.Middelschulte@klsmartin.com>
+
+Another few things I noticed only after replying to this patch and
+trying to apply #2:
+
+ - Please make sure you have a S-o-b line for the sender (i.e. you with
+   your gmail identity).
+ - My reply to your klsmartin.com address couldn't be delivered, The MS
+   mailserver told: "leif.middelschulte wasn't found at klsmartin.com."
+ - Please start a new thread if you send a v5, as applying patches from
+   a thread containing many patches is a bit less trivial.
+ - Consider using git format-patch's --base parameter to document your
+   patch base.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--gx6q65kgn6hbj44y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXcT18ACgkQj4D7WH0S
+/k5/1AgAsv7GIPFu33eJYqefznjKB5CWEDraqN7l2mBgZ1sW9MPtWm9AvON87WET
+0az+MsQVtH4wN1BcZa+3SgKY+Q1r56+FOaD3Y3GUdkEvEvIWLK+EQppYooHMaacK
+IaS+hRJwoFqzrGjjzlqQRE5vXN0szSjgOn/zFYq0vfMsQohd8ibY+5SdtaBwfSlh
+bTPt5MnqBCfzMEG9r9MVwZrdyojy3/BSgeutK5AKZr1KWsNQ3pwDm4414ChL2tVw
+pjxRedvVYk6ThHO77XOxXzjrietgeh5D6Bg4r5wWwTrjENtK//h+843O8C0dCT6v
+QnBgwigIWpRgcen7zPGO7VfclV8pQg==
+=+JRg
+-----END PGP SIGNATURE-----
+
+--gx6q65kgn6hbj44y--
 
