@@ -1,166 +1,94 @@
-Return-Path: <linux-kernel+bounces-81338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81339-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15E40867473
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:10:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4021786747D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:12:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B99C51F22632
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:10:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FA401C248E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:12:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9FC260254;
-	Mon, 26 Feb 2024 12:10:41 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E454605A0;
+	Mon, 26 Feb 2024 12:12:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="gFs4D2ZC"
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2C865FF15;
-	Mon, 26 Feb 2024 12:10:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26C12604CA;
+	Mon, 26 Feb 2024 12:12:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708949441; cv=none; b=eFNV8+JmQlkEYLhjEga1zAwWtD7DAga+3Cc0pqCsLSjM7JKVyYqFGpcoP7v32pdAZTFuNr64pP6zWcIUHBwuOj2Cdn4OO03Hn4IFm+Kd+8uvchiOfRm/b9QZzdDLJmp7s3UXyHywfJY0Ub3ZQTZ5SqoTu4kN0K9u1Wm42ocjNuE=
+	t=1708949539; cv=none; b=czsXzWF3W0UaXMcBoR8uDwphKN7Zo1QNQML/llehEO+yE+BsO2KVPkzKLdWlmXU3BDM9MG+dOJtSUtufinwXKpq36R/SM88lDP8YhbHRXGMJFhcSiIbyb3/xq3d6GPE1/wSBqxfBCssS9yJ4hIKdvEysqg7u5NdLnd56MtgIzq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708949441; c=relaxed/simple;
-	bh=ghthQB9VdSgFeOK/mgD0fV9zUBPGih/cqEwrsOB0Wyk=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=svfR0FZsoNIDLDU6AXpRGbQdjbPcdOWKTcsvmuIRUs6/W3GPHl0YcuVKxqvgR9YbWBIBh2MPj0m7jcXFO9jARjafmsgqJrekMueQ9mgBlo7jBeADINyBLBtZMpWjhq/67cMBh8vdkUGIcy13x5e4wIcIDudAU6qwhc/rO3pJ/KU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Tjzpz1h6rz6JBSD;
-	Mon, 26 Feb 2024 20:06:03 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id D2255141388;
-	Mon, 26 Feb 2024 20:10:36 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 26 Feb
- 2024 12:10:36 +0000
-Date: Mon, 26 Feb 2024 12:10:35 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: John Groves <John@Groves.net>
-CC: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, "Dan
- Williams" <dan.j.williams@intel.com>, Vishal Verma
-	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Alexander
- Viro" <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, "Jan
- Kara" <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
-	<linux-cxl@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<nvdimm@lists.linux.dev>, <john@jagalactic.com>, Dave Chinner
-	<david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>,
-	<dave.hansen@linux.intel.com>, <gregory.price@memverge.com>
-Subject: Re: [RFC PATCH 03/20] dev_dax_iomap: Move dax_pgoff_to_phys from
- device.c to bus.c since both need it now
-Message-ID: <20240226121035.00007ca4@Huawei.com>
-In-Reply-To: <8d062903cded81cba05cc703f61160a0edb4578a.1708709155.git.john@groves.net>
-References: <cover.1708709155.git.john@groves.net>
-	<8d062903cded81cba05cc703f61160a0edb4578a.1708709155.git.john@groves.net>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1708949539; c=relaxed/simple;
+	bh=iuGzS6WlYi9TtdofL6bGGFT5c4OI29PZWGoXll9ZowM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=A6RuP8qNUQZAc6ienTx8au2DCCULNjqQPi/wmW8NnchDdNc4ViZFOHMTwCjLJ06Sqnz/w55LbffM107jBO/2yPvI2Xr7yo1ICwOH7qcI5vjFDmajxKPYP1VmjCt5sPCVnkfd+9u+pB9lklwDtRQF3qlrkfnosnR9YIcRiJOpF1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=gFs4D2ZC; arc=none smtp.client-ip=74.50.62.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+	by mail5.25mail.st (Postfix) with ESMTPSA id 7531A604E8;
+	Mon, 26 Feb 2024 12:11:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+	s=25mailst; t=1708949537;
+	bh=iuGzS6WlYi9TtdofL6bGGFT5c4OI29PZWGoXll9ZowM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gFs4D2ZCrYF/SWVPKAVRLsOfeKMzT0AaJNpC9WwLQdR7h20yN/u9x+LYHMzCO4cAD
+	 EQ6mcAig/6atIDcj3UkOQgj42nUoVl3vYzWEgVidQRPuf3RbEUIM5yFRK8Ahoz47ln
+	 vHRSfUpwapzWNiqpF5J3cZcff7INBpwekxhysLB9DdYVK4o6kTvdsMSGmKaQJc/6Q+
+	 o58CvFgQbjCAfIfyboAhuOEf0Yqh81d8iwfbx71fB4cF5DNAsy6HBsC2TeX1idpS8i
+	 3vRiq0bXo3i5yMrOGP/R84RSxP9fn5RzTt87Jp5mFrqz9OVpXV11qCgArKf8lehsKY
+	 tzuDnjjOknfjA==
+Date: Mon, 26 Feb 2024 14:11:56 +0200
+From: Tony Lindgren <tony@atomide.com>
+To: Lee Jones <lee@kernel.org>
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, bcousson@baylibre.com,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-omap@vger.kernel.org, Andreas Kemnade <andreas@kemnade.info>
+Subject: Re: (subset) [PATCH v4 0/5] mfd: twl: system-power-controller
+Message-ID: <20240226121156.GA52537@atomide.com>
+References: <20240217082007.3238948-1-andreas@kemnade.info>
+ <170870473441.1731639.3240676194817206962.b4-ty@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500001.china.huawei.com (7.191.163.213) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <170870473441.1731639.3240676194817206962.b4-ty@kernel.org>
 
-On Fri, 23 Feb 2024 11:41:47 -0600
-John Groves <John@Groves.net> wrote:
-
-> bus.c can't call functions in device.c - that creates a circular linkage
-> dependency.
+* Lee Jones <lee@kernel.org> [240223 16:12]:
+> On Sat, 17 Feb 2024 09:20:02 +0100, Andreas Kemnade wrote:
+> > Add system-power-controller property in the bindings and
+> > the corresponding implementation and use it where
+> > appropriate.
+> > Not all cases are hit yet, there has probably to be a
+> > separate series after going through with a brush.
+> > 
+> > Changes in v4:
+> > - fix spelling/grammar
+> > - drop twl4030 dts cleanup, it would need an IB
+> >   or be postponed till next release
+> > 
+> > [...]
 > 
-> Signed-off-by: John Groves <john@groves.net>
-
-This also adds the export which you should mention!
-
-Do they need it already? Seems like tense of patch title
-may be wrong.
-
-> ---
->  drivers/dax/bus.c    | 24 ++++++++++++++++++++++++
->  drivers/dax/device.c | 23 -----------------------
->  2 files changed, 24 insertions(+), 23 deletions(-)
+> Applied, thanks!
 > 
-> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-> index 1ff1ab5fa105..664e8c1b9930 100644
-> --- a/drivers/dax/bus.c
-> +++ b/drivers/dax/bus.c
-> @@ -1325,6 +1325,30 @@ static const struct device_type dev_dax_type = {
->  	.groups = dax_attribute_groups,
->  };
->  
-> +/* see "strong" declaration in tools/testing/nvdimm/dax-dev.c  */
-> +__weak phys_addr_t dax_pgoff_to_phys(struct dev_dax *dev_dax, pgoff_t pgoff,
-> +			      unsigned long size)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < dev_dax->nr_range; i++) {
-> +		struct dev_dax_range *dax_range = &dev_dax->ranges[i];
-> +		struct range *range = &dax_range->range;
-> +		unsigned long long pgoff_end;
-> +		phys_addr_t phys;
-> +
-> +		pgoff_end = dax_range->pgoff + PHYS_PFN(range_len(range)) - 1;
-> +		if (pgoff < dax_range->pgoff || pgoff > pgoff_end)
-> +			continue;
-> +		phys = PFN_PHYS(pgoff - dax_range->pgoff) + range->start;
-> +		if (phys + size - 1 <= range->end)
-> +			return phys;
-> +		break;
-> +	}
-> +	return -1;
+> [1/5] dt-bindings: mfd: ti,twl: Document system-power-controller
+>       commit: 0c7cc7497f6f62a65037e94cf0d885ab0af3c0d3
+> [2/5] twl-core: add power off implementation for twl603x
+>       commit: ca9414a1d08756c8392f9219caee607e1b7bade1
+> [5/5] mfd: twl4030-power: accept standard property for power controller
+>       commit: 8ba560ec14267af1169e1f5407fbce514fd4f6f6
 
-Not related to your patch but returning -1 in a phys_addr_t isn't ideal.
-I assume aim is all bits set as a marker, in which case
-PHYS_ADDR_MAX from limits.h would make things clearer.
+Applying the two dts changes into omap-for-v6.9/dt thanks.
 
-> +}
-> +EXPORT_SYMBOL_GPL(dax_pgoff_to_phys);
-> +
->  struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
->  {
->  	struct dax_region *dax_region = data->dax_region;
-> diff --git a/drivers/dax/device.c b/drivers/dax/device.c
-> index 93ebedc5ec8c..40ba660013cf 100644
-> --- a/drivers/dax/device.c
-> +++ b/drivers/dax/device.c
-> @@ -50,29 +50,6 @@ static int check_vma(struct dev_dax *dev_dax, struct vm_area_struct *vma,
->  	return 0;
->  }
->  
-> -/* see "strong" declaration in tools/testing/nvdimm/dax-dev.c */
-> -__weak phys_addr_t dax_pgoff_to_phys(struct dev_dax *dev_dax, pgoff_t pgoff,
-> -		unsigned long size)
-> -{
-> -	int i;
-> -
-> -	for (i = 0; i < dev_dax->nr_range; i++) {
-> -		struct dev_dax_range *dax_range = &dev_dax->ranges[i];
-> -		struct range *range = &dax_range->range;
-> -		unsigned long long pgoff_end;
-> -		phys_addr_t phys;
-> -
-> -		pgoff_end = dax_range->pgoff + PHYS_PFN(range_len(range)) - 1;
-> -		if (pgoff < dax_range->pgoff || pgoff > pgoff_end)
-> -			continue;
-> -		phys = PFN_PHYS(pgoff - dax_range->pgoff) + range->start;
-> -		if (phys + size - 1 <= range->end)
-> -			return phys;
-> -		break;
-> -	}
-> -	return -1;
-> -}
-> -
->  static void dax_set_mapping(struct vm_fault *vmf, pfn_t pfn,
->  			      unsigned long fault_size)
->  {
-
+Tony
 
