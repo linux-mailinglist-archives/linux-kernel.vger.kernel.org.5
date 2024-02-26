@@ -1,168 +1,230 @@
-Return-Path: <linux-kernel+bounces-81150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1CC1867125
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:33:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7F0E867129
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:33:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B57228871D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:33:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 569081F2D9EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:33:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C35721CFA9;
-	Mon, 26 Feb 2024 10:18:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD6A54CE05;
+	Mon, 26 Feb 2024 10:19:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S8LsbQBT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="gLydUfzo"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FAA11CABF;
-	Mon, 26 Feb 2024 10:18:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D6C3249EE
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 10:19:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708942700; cv=none; b=u9HYPPnXy6QLSSnDPqhdZ3ejMLs8Pz4faflqmnDyL+b3SK7fWwF8wQ/tAQ7JezAFNQdwiv6xvcleohuShuYkt4Wjn/GRcdUAqLNtcgiKg7DJOzY/jH6fAYOXO0Z/G3W6yUvBLZC0LgmF6KhfTqBl+ZBLPVlaOsvjQJQwqVCrgxw=
+	t=1708942791; cv=none; b=DqXEmVpBXiQzx7W4cKijv/z3mKMBdAJmQOY4WnTwaTRLHBXpQHCaD/MAoztHrKUQb/sIJYA7+rp782KiDCUk9EAWQSjqTRfOUtrocix6ujZDNLnB/NSJEOlc/58PBLQZZZyLteLsChw4RX7916DNlOH452jdeV88x5BeGEaMrSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708942700; c=relaxed/simple;
-	bh=mFO7+G0tEjbg4M4mUtn7+xGTlT36Az3/BD2MVuIpse4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SSmFmrt5vSoZ8+UG4bOj9dZt0x28zLJ1G6HKT4mlm5btpR5Om7X/xNVR20Vk8vcUIXhri8lUSeOQjRcPRyMGEKQdMPWK69f3Kd4tFA1yZvNf496ApGiN4JA8pxQQ+5szA49JmDI5xzLSxN247ReN3jUBMNTu3AxZBbhQmox94J8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S8LsbQBT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25517C433F1;
-	Mon, 26 Feb 2024 10:18:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708942699;
-	bh=mFO7+G0tEjbg4M4mUtn7+xGTlT36Az3/BD2MVuIpse4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=S8LsbQBTdYmj8SyRiLaflK/cml3rC77ADNJ482G2pHTuRPtkjhrFBNXWd9NGaZSUF
-	 r57kf12lEEYkR/9I4ZvHLw1XjeEZh0kpmxSWThvUVo/FhXQoF2IuHdK8oVBXPV/Eai
-	 vfplAvuhy44dLK5zFZ/rdi8cLtC0U6aSO8XAeH/B3wzdHQeXo3V1Zb3PW/lWQXeCeC
-	 4s6L2JfXYzwZ/Hugf2dg+NlyeUiUYQjXpbWdL8DbC7YmUDjJ4Fi/t9vd4bRuZL4CK4
-	 9hncXE8VDdk+n5YIWXkyYeDetHIBrT+gc1vSZ29l0SACkRoqPvlXiKwv1Cg2vJHYzi
-	 wC7D0PmK2uWlg==
-Message-ID: <bd0a9d66-783d-4936-a5b0-cd4082704137@kernel.org>
-Date: Mon, 26 Feb 2024 11:18:15 +0100
+	s=arc-20240116; t=1708942791; c=relaxed/simple;
+	bh=naM3nrCEoGKVPNMnNa/U9dLb592lAQ5Uqmk/rEeHMTM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=U3UDEqkMiOLGCZLcmYS2IwZ44ukGEPVEFr2TRPG9wSMpkGfkp0zNM4TjkZlJea83FtYhcnzJtvlQnPKvJMbsLn4bNCnoIOnSdOIb9s2jpfgP95PiTsnCaga6TWoOYWgQwi2dIqSSTRMBEETBvjNutkyoOWs57HW2N1PFIF5bLUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com; spf=pass smtp.mailfrom=amarulasolutions.com; dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b=gLydUfzo; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-563d32ee33aso3764899a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 02:19:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google; t=1708942787; x=1709547587; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mAMdRwp6uD10Sj7sMKu/Xy/lMXUaiG3hTaGl/25oH/w=;
+        b=gLydUfzo7OQI1HYHR9I8mNS5rg/lgN81c8XQA9Lbk6ic8y9ZHFBu61h80CmAhm8OOn
+         8kyVC5veJw//5lcOb+6jPU64ZLokp333agmf004uRKiSbVOmPk0Ukj2k/UlVn0lU7Ucf
+         sOZTMd3MSqEM4QtulQCNJq8VOnqt+HCbGKxgU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708942787; x=1709547587;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mAMdRwp6uD10Sj7sMKu/Xy/lMXUaiG3hTaGl/25oH/w=;
+        b=dri/X0c7irutFh8JpGdCqJRmfYOPuRzjgbyO+st27BY10z2GtKR32nxb2+mPhSto+u
+         4ngr+40MAvx/EavBar3JivU8QYqLJWh1k7BTXc2TcauyIbeiCpqFH5Z6Jxcvx2/ZD4hp
+         pMWpAKM0gE5JeWe7fSVE96Pe7CQDLjzJ+TMYp6mtsP66nffSLKL48h3mX47C0Ud13HET
+         0Gw+RHN+znlUPVL61BFZQWxYqdSoIh2cu/jpBilt4GjA52Dih6Hi4AmXYVp5BBP1MINR
+         MgousI3ieY/UrBykprMWni15ir9S757s8UVuIFIJHgsrHPSomP7LQpLg6pw0efv/UeCN
+         p6OA==
+X-Forwarded-Encrypted: i=1; AJvYcCV3l52OIk4uEQZVYbD6S4bAkuaIBNvgHo2UuNhvYsRg5zc0Rcm8czN40P3TecIudHXVMLhnJr5AMM8I/RTWU9Vz0DI0bkL/e3ca6Yq1
+X-Gm-Message-State: AOJu0Yze08+tnGO3HNY86rI+3GjggxCXBvEjb7MdZeod843mrKHyaAdI
+	CeH3iAcLOJSt908CJ8exVY6o3PAKqL2gpOiLrTUWvAjsO6bzr6A32rmrFCeABirA3MGqS0cigaE
+	oU7FtpX1Zplub7y0z4QOqvk1al3cgNzPs/Bo30Q==
+X-Google-Smtp-Source: AGHT+IE1EqdtdQGTPAKqsGiEVNv3lYWX9sCbBopDAeFZ7Civ8FBPUesqVAT7wDSWNEPhNpzhb6vML07R7iwhlPK/Gxw=
+X-Received: by 2002:aa7:d052:0:b0:565:a252:e171 with SMTP id
+ n18-20020aa7d052000000b00565a252e171mr3633761edo.39.1708942787332; Mon, 26
+ Feb 2024 02:19:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net: skbuff: allocate the fclone in the current NUMA node
-Content-Language: en-US
-To: Eric Dumazet <edumazet@google.com>, aleksander.lobakin@intel.com,
- Shijie Huang <shijie@amperemail.onmicrosoft.com>
-Cc: Huang Shijie <shijie@os.amperecomputing.com>, kuba@kernel.org,
- patches@amperecomputing.com, davem@davemloft.net, horms@kernel.org,
- ast@kernel.org, dhowells@redhat.com, linyunsheng@huawei.com,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- cl@os.amperecomputing.com
-References: <20240220021804.9541-1-shijie@os.amperecomputing.com>
- <CANn89iJoHDzfYfhcwVvR4m7DiVG-UfFNqm+D1WD-2wjOttk6ew@mail.gmail.com>
- <bea860f8-a196-4dff-a655-4da920e2ebfa@amperemail.onmicrosoft.com>
- <CANn89i+1uMAL_025rNc3C1Ut-E5S8Nat6KhKEzcFeC1xxcFWaA@mail.gmail.com>
- <c2bd73b6-b21f-4ad8-a176-eec677bc6cf3@amperemail.onmicrosoft.com>
- <CANn89i+Cr1Tbdxqy6fB-sOLca+AHFc-3-0xGktVUsQFFMVsC0A@mail.gmail.com>
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <CANn89i+Cr1Tbdxqy6fB-sOLca+AHFc-3-0xGktVUsQFFMVsC0A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240226100502.1845284-1-michael@amarulasolutions.com> <2024022609-groom-passably-909c@gregkh>
+In-Reply-To: <2024022609-groom-passably-909c@gregkh>
+From: Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
+Date: Mon, 26 Feb 2024 11:19:36 +0100
+Message-ID: <CAOf5uwnd+qh0PZgXhPN21Eng7HN+_Vjgjad7UxZ79-b1gZEhOw@mail.gmail.com>
+Subject: Re: [PATCH V3] usb: dwc3: gadget: Fix suspend/resume warning when
+ no-gadget is connected
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Thinh Nguyen <Thinh.Nguyen@synopsys.com>, linux-usb@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-amarula@amarulasolutions.com, 
+	stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Greg
+
+On Mon, Feb 26, 2024 at 11:14=E2=80=AFAM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Mon, Feb 26, 2024 at 11:05:02AM +0100, Michael Trimarchi wrote:
+> > This patch avoid to disconnect an already gadget in not connected state
+> >
+> > [   45.597274] dwc3 31000000.usb: wait for SETUP phase timed out
+> > [   45.599140] dwc3 31000000.usb: failed to set STALL on ep0out
+> > [   45.601069] ------------[ cut here ]------------
+> > [   45.601073] WARNING: CPU: 0 PID: 150 at drivers/usb/dwc3/ep0.c:289 d=
+wc3_ep0_out_start+0xcc/0xd4
+> > [   45.601102] Modules linked in: cfg80211 rfkill ipv6 rpmsg_ctrl rpmsg=
+_char crct10dif_ce rti_wdt k3_j72xx_bandgap rtc_ti_k3 omap_mailbox sa2ul au=
+thenc [last unloaded: ti_k3_r5_remoteproc]
+> > [   45.601151] CPU: 0 PID: 150 Comm: sh Not tainted 6.8.0-rc5 #1
+> > [   45.601159] Hardware name: BSH - CCM-M3 (DT)
+> > [   45.601164] pstate: 600000c5 (nZCv daIF -PAN -UAO -TCO -DIT -SSBS BT=
+YPE=3D--)
+> > [   45.601172] pc : dwc3_ep0_out_start+0xcc/0xd4
+> > [   45.601179] lr : dwc3_ep0_out_start+0x50/0xd4
+> > [   45.601186] sp : ffff8000832739e0
+> > [   45.601189] x29: ffff8000832739e0 x28: ffff800082a21000 x27: ffff800=
+0808dc630
+> > [   45.601200] x26: 0000000000000002 x25: ffff800082530a44 x24: 0000000=
+000000000
+> > [   45.601210] x23: ffff000000e079a0 x22: ffff000000e07a68 x21: 0000000=
+000000001
+> > [   45.601219] x20: ffff000000e07880 x19: ffff000000e07880 x18: 0000000=
+000000040
+> > [   45.601229] x17: ffff7fff8e1ce000 x16: ffff800080000000 x15: fffffff=
+ffffe5260
+> > [   45.601239] x14: 0000000000000000 x13: 206e6f204c4c4154 x12: 5320746=
+573206f74
+> > [   45.601249] x11: 0000000000000001 x10: 000000000000000a x9 : ffff800=
+083273930
+> > [   45.601259] x8 : 000000000000000a x7 : ffffffffffff3f0c x6 : fffffff=
+fffff3f00
+> > [   45.601268] x5 : ffffffffffff3f0c x4 : 0000000000000000 x3 : 0000000=
+000000000
+> > [   45.601278] x2 : 0000000000000000 x1 : ffff000004e7e600 x0 : 0000000=
+0ffffff92
+> > [   45.601289] Call trace:
+> > [   45.601293]  dwc3_ep0_out_start+0xcc/0xd4
+> > [   45.601301]  dwc3_ep0_stall_and_restart+0x98/0xbc
+> > [   45.601309]  dwc3_ep0_reset_state+0x5c/0x88
+> > [   45.601315]  dwc3_gadget_soft_disconnect+0x144/0x160
+> > [   45.601323]  dwc3_gadget_suspend+0x18/0xb0
+> > [   45.601329]  dwc3_suspend_common+0x5c/0x18c
+> > [   45.601341]  dwc3_suspend+0x20/0x44
+> > [   45.601350]  platform_pm_suspend+0x2c/0x6c
+> > [   45.601360]  __device_suspend+0x10c/0x34c
+> > [   45.601372]  dpm_suspend+0x1a8/0x240
+> > [   45.601382]  dpm_suspend_start+0x80/0x9c
+> > [   45.601391]  suspend_devices_and_enter+0x1c4/0x584
+> > [   45.601402]  pm_suspend+0x1b0/0x264
+> > [   45.601408]  state_store+0x80/0xec
+> > [   45.601415]  kobj_attr_store+0x18/0x2c
+> > [   45.601426]  sysfs_kf_write+0x44/0x54
+> > [   45.601434]  kernfs_fop_write_iter+0x120/0x1ec
+> > [   45.601445]  vfs_write+0x23c/0x358
+> > [   45.601458]  ksys_write+0x70/0x104
+> > [   45.601467]  __arm64_sys_write+0x1c/0x28
+> > [   45.601477]  invoke_syscall+0x48/0x114
+> > [   45.601488]  el0_svc_common.constprop.0+0x40/0xe0
+> > [   45.601498]  do_el0_svc+0x1c/0x28
+> > [   45.601506]  el0_svc+0x34/0xb8
+> > [   45.601516]  el0t_64_sync_handler+0x100/0x12c
+> > [   45.601522]  el0t_64_sync+0x190/0x194
+> > [   45.601531] ---[ end trace 0000000000000000 ]---
+> > [   45.608794] Disabling non-boot CPUs ...
+> > [   45.611029] psci: CPU1 killed (polled 0 ms)
+> > [   45.611837] Enabling non-boot CPUs ...
+> > [   45.612247] Detected VIPT I-cache on CPU1
+> >
+> > Tested on a am62x board with a usbnet gadget
+> >
+> > Fixes: 61a348857e86 ("usb: dwc3: gadget: Fix NULL pointer dereference i=
+n dwc3_gadget_suspend)
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+> > ---
+> > V2->V3:
+> >       - Change the logic of the patch using the gadget connected state
+> >       - Change of the commit message
+> > V1->V2:
+> >       - Add stable in CC
+> > ---
+> >  drivers/usb/dwc3/gadget.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> >
+> > diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+> > index 4c8dd6724678..a7316a1703ad 100644
+> > --- a/drivers/usb/dwc3/gadget.c
+> > +++ b/drivers/usb/dwc3/gadget.c
+> > @@ -2650,6 +2650,15 @@ static int dwc3_gadget_soft_disconnect(struct dw=
+c3 *dwc)
+> >       int ret;
+> >
+> >       spin_lock_irqsave(&dwc->lock, flags);
+> > +     /*
+> > +      * Attempt to disconnect a no connected gadget
+>
+> What does this mean?  And why a 3 line comment?
+>
+> > +      */
+> > +     if (!dwc->connected) {
+> > +             dev_warn(dwc->dev, "No connected device\n");
+>
+> You are printing while a spinlock is held?  What can userspace do with
+> this message?
+
+I will drop it.
+
+>
+> > +             spin_unlock_irqrestore(&dwc->lock, flags);
+> > +             return 0;
+>
+> No error handling?  Why not?
+
+The function tries to disconnect an already disconnected gadget, so in
+this case is a nop. If we want to handle
+an error I can check the impact on the dwc3 gadget.
+
+Michael
+
+>
+> thanks,
+>
+> greg k-h
 
 
 
-On 24/02/2024 20.07, Eric Dumazet wrote:
-> On Tue, Feb 20, 2024 at 9:37 AM Shijie Huang
-> <shijie@amperemail.onmicrosoft.com> wrote:
->>
->>
->> 在 2024/2/20 16:17, Eric Dumazet 写道:
->>> On Tue, Feb 20, 2024 at 7:26 AM Shijie Huang
->>> <shijie@amperemail.onmicrosoft.com> wrote:
->>>>
->>>> 在 2024/2/20 13:32, Eric Dumazet 写道:
->>>>> On Tue, Feb 20, 2024 at 3:18 AM Huang Shijie
->>>>> <shijie@os.amperecomputing.com> wrote:
->>>>>> The current code passes NUMA_NO_NODE to __alloc_skb(), we found
->>>>>> it may creates fclone SKB in remote NUMA node.
->>>>> This is intended (WAI)
->>>> Okay. thanks a lot.
->>>>
->>>> It seems I should fix the issue in other code, not the networking.
->>>>
->>>>> What about the NUMA policies of the current thread ?
->>>> We use "numactl -m 0" for memcached, the NUMA policy should allocate
->>>> fclone in
->>>>
->>>> node 0, but we can see many fclones were allocated in node 1.
->>>>
->>>> We have enough memory to allocate these fclones in node 0.
->>>>
->>>>> Has NUMA_NO_NODE behavior changed recently?
->>>> I guess not.
->>>>> What means : "it may creates" ? Please be more specific.
->>>> When we use the memcached for testing in NUMA, there are maybe 20% ~ 30%
->>>> fclones were allocated in
->>>>
->>>> remote NUMA node.
->>> Interesting, how was it measured exactly ?
->>
->> I created a private patch to record the status for each fclone allocation.
->>
->>
->>> Are you using SLUB or SLAB ?
->>
->> I think I use SLUB. (CONFIG_SLUB=y,
->> CONFIG_SLAB_MERGE_DEFAULT=y,CONFIG_SLUB_CPU_PARTIAL=y)
->>
-> 
-> A similar issue comes from tx_action() calling __napi_kfree_skb() on
-> arbitrary skbs
-> including ones that were allocated on a different NUMA node.
-> 
-> This pollutes per-cpu caches with not optimally placed sk_buff :/
-> 
-> Although this should not impact fclones, __napi_kfree_skb() only ?
-> 
-> commit 15fad714be86eab13e7568fecaf475b2a9730d3e
-> Author: Jesper Dangaard Brouer <brouer@redhat.com>
-> Date:   Mon Feb 8 13:15:04 2016 +0100
-> 
->      net: bulk free SKBs that were delay free'ed due to IRQ context
-> 
-> What about :
-> 
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index c588808be77f563c429eb4a2eaee5c8062d99582..63165138c6f690e14520f11e32dc16f2845abad4
-> 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -5162,11 +5162,7 @@ static __latent_entropy void
-> net_tx_action(struct softirq_action *h)
->                                  trace_kfree_skb(skb, net_tx_action,
->                                                  get_kfree_skb_cb(skb)->reason);
-> 
-> -                       if (skb->fclone != SKB_FCLONE_UNAVAILABLE)
-> -                               __kfree_skb(skb);
-> -                       else
-> -                               __napi_kfree_skb(skb,
-> -                                                get_kfree_skb_cb(skb)->reason);
+--=20
+Michael Nazzareno Trimarchi
+Co-Founder & Chief Executive Officer
+M. +39 347 913 2170
+michael@amarulasolutions.com
+__________________________________
 
-Yes, I think it makes sense to avoid calling __napi_kfree_skb here.
-The __napi_kfree_skb call will cache SKB slub-allocation (but "release"
-data) on a per CPU napi_alloc_cache (see code napi_skb_cache_put()).
-In net_tx_action() there is a chance this could originate from another
-CPU or even NUMA node.  I notice this is only for SKBs on the
-softnet_data->completion_queue, which have a high chance of being cache
-cold.  My patch 15fad714be86e only made sense when we bulk freed these
-SKBs, but after Olek's changes to cache freed SKBs, then this shouldn't
-be calling __napi_kfree_skb() (previously named __kfree_skb_defer).
-
-I support this RFC patch from Eric.
-
-Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
-
-> +                       __kfree_skb(skb);
->                  }
->          }
+Amarula Solutions BV
+Joop Geesinkweg 125, 1114 AB, Amsterdam, NL
+T. +31 (0)85 111 9172
+info@amarulasolutions.com
+www.amarulasolutions.com
 
