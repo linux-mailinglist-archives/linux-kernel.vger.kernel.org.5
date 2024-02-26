@@ -1,138 +1,154 @@
-Return-Path: <linux-kernel+bounces-80574-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26A438669C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:58:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E39A8669DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:03:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F48CB2154D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:58:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E65821F222A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:03:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 282B51B978;
-	Mon, 26 Feb 2024 05:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 882981BC31;
+	Mon, 26 Feb 2024 06:03:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="DZRlDEiZ"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Q6diPE+P"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60A85171BB;
-	Mon, 26 Feb 2024 05:58:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B87A11BF24;
+	Mon, 26 Feb 2024 06:03:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708927099; cv=none; b=YMpa96anYgcUps96/kD2EswkciSInYmiFbmn4tewcb5XkcshCvzXUVSUdYz0ClS6fJkEmXYXqIt4K31Ja3br5oMInk/yf/TCAgB3+4ob4PBMv8/0FpnutfHaOaTep1TGgOm3hTWqqq+rD3KZHNW0KQ4BZeFXFlttkdvMLqCKDuA=
+	t=1708927400; cv=none; b=NrM2OPTDegjVQC4TBuHSU+ZQJtpPYbF1NYG66ikpV0yFCCKTWQ2PNXgThIpwhzcpaa5CRBt3IJqa9e3tr09Zroz3i59uZah9Rf9LnkNxVjMCaAp9RkXSizbtYKGsygz1a+bGaJgOmNd55OFVKxKPHVAnQWzVkmBq1KUT9TNDc3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708927099; c=relaxed/simple;
-	bh=r4fr2FR7mibX624BrzO1Er+KB+l3Wt2/WIOEarW0yBE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=IgVqKXlXrWoYKuR9X/ttX0ng5dAD4HDBTRhFD1Cger1Zi6TsYP92tMlpB8hspUw/Uj4Qg4PgbLgDpZUmHfzQdD5UgBTSFrZK6jBy30D3g62DJso79NsM4y4YMZjT1OZcpvIY+DgW98WQ160Na4PbD4q82ZTer+Liw2l9yy7xBg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=DZRlDEiZ; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1708927094;
-	bh=qeJ5Q6qXAm6WKVnxUei/51MURT3w78lyHKsNAH5SvCI=;
-	h=Date:From:To:Cc:Subject:From;
-	b=DZRlDEiZ8VwfNSXBZjpzKPtp7q5pieIXCQVXNa+Ls3tvgUI+oh38wnifWvyEemlnr
-	 p6wjdM3hi70HGsifjN5mQ22WQF79SGcI/NA3UphYVs27cCrsECQE5e187xuxFlTB6c
-	 /TV3eD4TJrVAWKO/ScMfbh1AsUvbHBduvwXB83JpiyqVAZw7C7dDjqy0UuXCl5IcPe
-	 UhWHl8ZMyX547QAELLQREbm9LkR9am1v5zlfXKQ+pSzdJVD0ZdjwbMk32oJLpWmmJj
-	 6/YS+P2uyi+JYxFtSy+vKeghnySbuwHRzt6CEvvu1K/lpT7ZQDn7xoAOb0HU8Ttd1n
-	 oGE9NH7jrJq5w==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TjqfZ0nfPz4wcN;
-	Mon, 26 Feb 2024 16:58:13 +1100 (AEDT)
-Date: Mon, 26 Feb 2024 16:58:11 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Kees Cook <keescook@chromium.org>, Masahiro Yamada
- <masahiroy@kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the kspp tree with the kbuild tree
-Message-ID: <20240226165811.56f71171@canb.auug.org.au>
+	s=arc-20240116; t=1708927400; c=relaxed/simple;
+	bh=rQ1turlgsXFMqRMIQFeoxObihk2n1XNDtxJd21pN6NU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=buz498FLI/vIkcq260cRUQfGkd8gLhl7rQlbbcTIZM5JXvlWtq5ImLXgbF+L/TZOeKOr0sjmj1fM4PUV0aPjudKpkSTKQPhP3PzQ1afb2dlkvPRm73WKN6Kk7ZrbHrH1xzCvpzCNzxvQqmRWk2EkEdz9vZNj9OWa9TAl2I7ZTQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Q6diPE+P; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6CD3C433F1;
+	Mon, 26 Feb 2024 06:03:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1708927400;
+	bh=rQ1turlgsXFMqRMIQFeoxObihk2n1XNDtxJd21pN6NU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Q6diPE+PpN5xVxki1jdKL05t/czhdUZjwrK3wpbFsw2ZbFdA7hJShitFl8CohBKea
+	 izzRef5GkObR5ytJMXrVt0+vWnQqmpCz9fDP4lfQp+4pd8xgeMgrd0FPN5Nyl6hdF0
+	 OFyH2UDBTcC7vK7BtokNW7R5fDc5ylR6G+4naxSE=
+Date: Mon, 26 Feb 2024 07:03:17 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Michael Trimarchi <michael@amarulasolutions.com>
+Cc: Thinh Nguyen <Thinh.Nguyen@synopsys.com>, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-amarula@amarulasolutions.com
+Subject: Re: [PATCH] usb: dwc3: gadget: Fix suspend/resume warning when
+ no-gadget is connected
+Message-ID: <2024022604-shelve-uranium-4a58@gregkh>
+References: <20240225181309.1697245-1-michael@amarulasolutions.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Fh/hyUwCNLuBEw..bgQgHf5";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240225181309.1697245-1-michael@amarulasolutions.com>
 
---Sig_/Fh/hyUwCNLuBEw..bgQgHf5
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Feb 25, 2024 at 07:13:09PM +0100, Michael Trimarchi wrote:
+> This patch restore the logic but protects the variable using a spinlock
+> without moving the code
+> 
+> [   45.597274] dwc3 31000000.usb: wait for SETUP phase timed out
+> [   45.599140] dwc3 31000000.usb: failed to set STALL on ep0out
+> [   45.601069] ------------[ cut here ]------------
+> [   45.601073] WARNING: CPU: 0 PID: 150 at drivers/usb/dwc3/ep0.c:289 dwc3_ep0_out_start+0xcc/0xd4
+> [   45.601102] Modules linked in: cfg80211 rfkill ipv6 rpmsg_ctrl rpmsg_char crct10dif_ce rti_wdt k3_j72xx_bandgap rtc_ti_k3 omap_mailbox sa2ul authenc [last unloaded: ti_k3_r5_remoteproc]
+> [   45.601151] CPU: 0 PID: 150 Comm: sh Not tainted 6.8.0-rc5 #1
+> [   45.601159] Hardware name: BSH - CCM-M3 (DT)
+> [   45.601164] pstate: 600000c5 (nZCv daIF -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> [   45.601172] pc : dwc3_ep0_out_start+0xcc/0xd4
+> [   45.601179] lr : dwc3_ep0_out_start+0x50/0xd4
+> [   45.601186] sp : ffff8000832739e0
+> [   45.601189] x29: ffff8000832739e0 x28: ffff800082a21000 x27: ffff8000808dc630
+> [   45.601200] x26: 0000000000000002 x25: ffff800082530a44 x24: 0000000000000000
+> [   45.601210] x23: ffff000000e079a0 x22: ffff000000e07a68 x21: 0000000000000001
+> [   45.601219] x20: ffff000000e07880 x19: ffff000000e07880 x18: 0000000000000040
+> [   45.601229] x17: ffff7fff8e1ce000 x16: ffff800080000000 x15: fffffffffffe5260
+> [   45.601239] x14: 0000000000000000 x13: 206e6f204c4c4154 x12: 5320746573206f74
+> [   45.601249] x11: 0000000000000001 x10: 000000000000000a x9 : ffff800083273930
+> [   45.601259] x8 : 000000000000000a x7 : ffffffffffff3f0c x6 : ffffffffffff3f00
+> [   45.601268] x5 : ffffffffffff3f0c x4 : 0000000000000000 x3 : 0000000000000000
+> [   45.601278] x2 : 0000000000000000 x1 : ffff000004e7e600 x0 : 00000000ffffff92
+> [   45.601289] Call trace:
+> [   45.601293]  dwc3_ep0_out_start+0xcc/0xd4
+> [   45.601301]  dwc3_ep0_stall_and_restart+0x98/0xbc
+> [   45.601309]  dwc3_ep0_reset_state+0x5c/0x88
+> [   45.601315]  dwc3_gadget_soft_disconnect+0x144/0x160
+> [   45.601323]  dwc3_gadget_suspend+0x18/0xb0
+> [   45.601329]  dwc3_suspend_common+0x5c/0x18c
+> [   45.601341]  dwc3_suspend+0x20/0x44
+> [   45.601350]  platform_pm_suspend+0x2c/0x6c
+> [   45.601360]  __device_suspend+0x10c/0x34c
+> [   45.601372]  dpm_suspend+0x1a8/0x240
+> [   45.601382]  dpm_suspend_start+0x80/0x9c
+> [   45.601391]  suspend_devices_and_enter+0x1c4/0x584
+> [   45.601402]  pm_suspend+0x1b0/0x264
+> [   45.601408]  state_store+0x80/0xec
+> [   45.601415]  kobj_attr_store+0x18/0x2c
+> [   45.601426]  sysfs_kf_write+0x44/0x54
+> [   45.601434]  kernfs_fop_write_iter+0x120/0x1ec
+> [   45.601445]  vfs_write+0x23c/0x358
+> [   45.601458]  ksys_write+0x70/0x104
+> [   45.601467]  __arm64_sys_write+0x1c/0x28
+> [   45.601477]  invoke_syscall+0x48/0x114
+> [   45.601488]  el0_svc_common.constprop.0+0x40/0xe0
+> [   45.601498]  do_el0_svc+0x1c/0x28
+> [   45.601506]  el0_svc+0x34/0xb8
+> [   45.601516]  el0t_64_sync_handler+0x100/0x12c
+> [   45.601522]  el0t_64_sync+0x190/0x194
+> [   45.601531] ---[ end trace 0000000000000000 ]---
+> [   45.608794] Disabling non-boot CPUs ...
+> [   45.611029] psci: CPU1 killed (polled 0 ms)
+> [   45.611837] Enabling non-boot CPUs ...
+> [   45.612247] Detected VIPT I-cache on CPU1
+> 
+> Tested on a am62x board
+> 
+> Fixes: 61a348857e86 ("usb: dwc3: gadget: Fix NULL pointer dereference in dwc3_gadget_suspend)
+> Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+> ---
+>  drivers/usb/dwc3/gadget.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
 
-Hi all,
+Hi,
 
-Today's linux-next merge of the kspp tree got a conflict in:
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-  scripts/Makefile.lib
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-between commit:
+- You have marked a patch with a "Fixes:" tag for a commit that is in an
+  older released kernel, yet you do not have a cc: stable line in the
+  signed-off-by area at all, which means that the patch will not be
+  applied to any older kernel releases.  To properly fix this, please
+  follow the documented rules in the
+  Documentation/process/stable-kernel-rules.rst file for how to resolve
+  this.
 
-  bf48d9b756b9 ("kbuild: change tool coverage variables to take the path re=
-lative to $(obj)")
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
 
-from the kbuild tree and commits:
+thanks,
 
-  918327e9b7ff ("ubsan: Remove CONFIG_UBSAN_SANITIZE_ALL")
-  557f8c582a9b ("ubsan: Reintroduce signed overflow sanitizer")
-
-from the kspp tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc scripts/Makefile.lib
-index 298bd8c80d65,b4a248c20654..000000000000
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@@ -181,8 -175,11 +181,11 @@@ endi
- =20
-  ifeq ($(CONFIG_UBSAN),y)
-  _c_flags +=3D $(if $(patsubst n%,, \
-- 		$(UBSAN_SANITIZE_$(target-stem).o)$(UBSAN_SANITIZE)$(CONFIG_UBSAN_SANIT=
-IZE_ALL)), \
- -		$(UBSAN_SANITIZE_$(basetarget).o)$(UBSAN_SANITIZE)y), \
-++		$(UBSAN_SANITIZE_$(target-stem).o)$(UBSAN_SANITIZE)y), \
-  		$(CFLAGS_UBSAN))
-+ _c_flags +=3D $(if $(patsubst n%,, \
- -		$(UBSAN_SIGNED_WRAP_$(basetarget).o)$(UBSAN_SANITIZE_$(basetarget).o)$(=
-UBSAN_SIGNED_WRAP)$(UBSAN_SANITIZE)y), \
-++		$(UBSAN_SIGNED_WRAP_$(target-stem).o)$(UBSAN_SANITIZE_$(target-stem).o)=
-$(UBSAN_SIGNED_WRAP)$(UBSAN_SANITIZE)y), \
-+ 		$(CFLAGS_UBSAN_SIGNED_WRAP))
-  endif
- =20
-  ifeq ($(CONFIG_KCOV),y)
-
---Sig_/Fh/hyUwCNLuBEw..bgQgHf5
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXcKHMACgkQAVBC80lX
-0GzAQAgAlAXcMRY5vjWu76VfBIgkHbdeaQwU9E779u7Wh5IoyJMGeFmkGyC2YlT+
-xA905TR3InKukBjgk9BWBd5Vz7cMWmozvwOeRES6wHq5EsIa0KP1O0Y9jPEWdk1A
-uTwDiwV7tu+tt+BEKjJqQmooHQ7NPZwNic+3y9WrwEir4nnNoyMqewqLTrKJFw3F
-bndB/MExAwlxuzaOeJaRuf7UjWjeAS5+05rAPRpW9ZvCLGIleJdupoKplU2/r7Jz
-oXr5rVMZpQ+rFhBhWmixWmCXqehc+rTCRY9rPe1S74YZm0Pn5mAJdE87jWbRxlgg
-yNBl8LXRZlnLTlKfM0eAdvRvDrpEhA==
-=nnFF
------END PGP SIGNATURE-----
-
---Sig_/Fh/hyUwCNLuBEw..bgQgHf5--
+greg k-h's patch email bot
 
