@@ -1,119 +1,117 @@
-Return-Path: <linux-kernel+bounces-81723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 084B8867967
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:04:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 596BB867969
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:04:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A86962871F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:04:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B0CD1C29C0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:04:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BF95130AC2;
-	Mon, 26 Feb 2024 14:40:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5863A130AE6;
+	Mon, 26 Feb 2024 14:40:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="P0Igz8a1"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EZCVljQj"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D6DB12AAC5;
-	Mon, 26 Feb 2024 14:40:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C275C128379;
+	Mon, 26 Feb 2024 14:40:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708958425; cv=none; b=tpzcGrrAaU8sewnT1b+2Ka1EGVlieRvQfKH0k0FI3M1HuWYJA8oxZO3wpFsz95W92TMFPNycfW20YNAlLFF0TX9TTBagDSSQtlOfKmKdwWHcMLWfkQ8V+jnQUlxPk74Ptjb9ZxolFbIVSju9jVp9d2cdbq6raNxiIdUB/yEMj9A=
+	t=1708958448; cv=none; b=DeK0RbUonks/NN1d1CjSmaT24Dfc4DxLMn9P0R6TsKDbEAxYzwuN4mdT5CPMQLg2r7v0y5s1QaTU7zzUTh8YxhW6dYfBfC/ZdZ52YYvZXMbaRMGBQ19fA08Ydi30ZEzg61pDFcSg5p3M5qYLXLq1nOdLDtuF6OVgxOIWxxJBoNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708958425; c=relaxed/simple;
-	bh=XvQEtwLAKWGhgBGarB0Wr7PB20ORxGBoZaxk/dpNHoU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=poEwsmoPwPeh57o7q9Dc7HZWAhVG6B8+Hd893uj5ENXt+c5zK7h7i+EFddDw7SQTojga8OSwHCa8qAbhY8+bAgprFuXIxcXjyfuV2TZEeLfAWQf55DAFCt0C+yz76ASREwx4upaTeA6L+SK824pVLs6Dc6k9j8gGKr+TBThXNSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=P0Igz8a1; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41QDKxnB024671;
-	Mon, 26 Feb 2024 14:40:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-11-20; bh=PTxvjhul145awLzkBxJam1t2BqjccVZh9EDCquswOoY=;
- b=P0Igz8a1yW+3uPXed8+DqynuwvtvJZ+qYT5WYjag0clIgCLSovk1madVXhtfNX2nKtiL
- 2XU0lrnppHN/lB5A5joHDrL5SJO7m72uJN/T3T4McoZQ7Mlfmw+Eymg+r9Ektg/A/83r
- l18gI8fgMVbIIBPIaGGtQu2UszXM2W9vGyD0DPrXlYzKyHpEXGbWkN08jE+oTKBKum8G
- 7ZMetjcmZEsKYHsZFxuGTGu9wb8QivC7BHVsX9BR53i+87aoaJP2T+wcRARdM9rCEfA2
- b+RlDgKPkvY33/A0k0AAdv8vBLa5JnM1CrXxi9/o88sY/+St8LHInFOeI0PO5Z3SUgjU iA== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wf7cccq00-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 26 Feb 2024 14:40:16 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41QEUvlN019220;
-	Mon, 26 Feb 2024 14:40:15 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wgbdhfsr1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 26 Feb 2024 14:40:15 +0000
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41QEeEMA040203;
-	Mon, 26 Feb 2024 14:40:14 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3wgbdhfspg-1;
-	Mon, 26 Feb 2024 14:40:14 +0000
-From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-To: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, dan.carpenter@linaro.org,
-        Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-Subject: [PATCH] platform/x86/amd/pmf: Fix missing error code in amd_pmf_init_smart_pc()
-Date: Mon, 26 Feb 2024 06:40:10 -0800
-Message-ID: <20240226144011.2100804-1-harshit.m.mogalapalli@oracle.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1708958448; c=relaxed/simple;
+	bh=SKSApeOruZLSq1n9l0Dfe1EJrrxjXRO2Y+aMmgRnG+Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Px5lWHJ2Oelt3ueLAS8mjkpOJu8YF166iT6FqgDgswqrFSG/XwoOKRgZaNeaEdk0v+c9+rENNKJyAFodQ1qdqsRzAeQk+BXygSN4raQNyYRnO1cGgaJC6ov7fVTKMKrQkCLYa7ktBZ0MpeRyBJznd7eLofHo4Uu2/FoGmKoDlPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=EZCVljQj; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=gauGe8/AuKWwXE/zVAiOKHD6lBDudnyYUkAdQbw+0Q0=; b=EZCVljQjaZUEOkxlB+8PNfeRt1
+	NQviA1U1m56nvCuj1UZ3e4AkjgDnJFn5grtISYLOThlXZv6PlZaXJpjNypivPEdhPh0mVxz25+8Ay
+	opXth4lNOhcTliN3vGJm+HTt8x5Y4NWs0WCYjUVeLzUKY/9vMQnLZt9CPMREiWiuo0PbjUnxdU3gA
+	WvwTOKGtNsMpFEQOVpxCRG+9m2rDsPqcKCq89jMOkBTMMTlR794MeF10UDwtGhwZzUaIisCKzdxRy
+	yTcksGLDQC+gAMQw/TX7Y2Qn3BRd1rIbv607lZ+3BhHITyihcI/MXS5izrfwSc67yA0OcaWulzIhF
+	3gWCr3Mw==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rec9q-0000000HPeI-0VQI;
+	Mon, 26 Feb 2024 14:40:42 +0000
+Date: Mon, 26 Feb 2024 14:40:42 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, david@fromorbit.com,
+	chandan.babu@oracle.com, akpm@linux-foundation.org,
+	mcgrof@kernel.org, ziy@nvidia.com, hare@suse.de, djwong@kernel.org,
+	gost.dev@samsung.com, linux-mm@kvack.org,
+	Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH 03/13] filemap: align the index to mapping_min_order in
+ the page cache
+Message-ID: <Zdyi6lFDAHXi8GPz@casper.infradead.org>
+References: <20240226094936.2677493-1-kernel@pankajraghav.com>
+ <20240226094936.2677493-4-kernel@pankajraghav.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-26_10,2024-02-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0
- mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402260111
-X-Proofpoint-ORIG-GUID: G1Uc1xhAlbV6aCXUu4JMFiz46PnnPrZj
-X-Proofpoint-GUID: G1Uc1xhAlbV6aCXUu4JMFiz46PnnPrZj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226094936.2677493-4-kernel@pankajraghav.com>
 
-On the error path, assign -ENOMEM to ret when memory allocation of
-"dev->prev_data" fails.
+On Mon, Feb 26, 2024 at 10:49:26AM +0100, Pankaj Raghav (Samsung) wrote:
+> From: Luis Chamberlain <mcgrof@kernel.org>
+> 
+> Supporting mapping_min_order implies that we guarantee each folio in the
+> page cache has at least an order of mapping_min_order. So when adding new
+> folios to the page cache we must ensure the index used is aligned to the
+> mapping_min_order as the page cache requires the index to be aligned to
+> the order of the folio.
 
-Fixes: e70961505808 ("platform/x86/amd/pmf: Fixup error handling for amd_pmf_init_smart_pc()")
-Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
----
-This is based on static analysis with smatch, only compile tested
----
- drivers/platform/x86/amd/pmf/tee-if.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+This seems like a remarkably complicated way of achieving:
 
-diff --git a/drivers/platform/x86/amd/pmf/tee-if.c b/drivers/platform/x86/amd/pmf/tee-if.c
-index 8527dca9cf56..dcbe8f85e122 100644
---- a/drivers/platform/x86/amd/pmf/tee-if.c
-+++ b/drivers/platform/x86/amd/pmf/tee-if.c
-@@ -458,8 +458,10 @@ int amd_pmf_init_smart_pc(struct amd_pmf_dev *dev)
- 	amd_pmf_hex_dump_pb(dev);
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 5603ced05fb7..36105dad4440 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2427,9 +2427,11 @@ static int filemap_update_page(struct kiocb *iocb,
+ }
  
- 	dev->prev_data = kzalloc(sizeof(*dev->prev_data), GFP_KERNEL);
--	if (!dev->prev_data)
-+	if (!dev->prev_data) {
-+		ret = -ENOMEM;
- 		goto error;
-+	}
+ static int filemap_create_folio(struct file *file,
+-		struct address_space *mapping, pgoff_t index,
++		struct address_space *mapping, loff_t pos,
+ 		struct folio_batch *fbatch)
+ {
++	pgoff_t index;
++	unsigned int min_order;
+ 	struct folio *folio;
+ 	int error;
  
- 	ret = amd_pmf_start_policy_engine(dev);
- 	if (ret)
--- 
-2.39.3
-
+@@ -2451,6 +2453,8 @@ static int filemap_create_folio(struct file *file,
+ 	 * well to keep locking rules simple.
+ 	 */
+ 	filemap_invalidate_lock_shared(mapping);
++	min_order = mapping_min_folio_order(mapping);
++	index = (pos >> (min_order + PAGE_SHIFT)) << min_order;
+ 	error = filemap_add_folio(mapping, folio, index,
+ 			mapping_gfp_constraint(mapping, GFP_KERNEL));
+ 	if (error == -EEXIST)
+@@ -2511,8 +2515,7 @@ static int filemap_get_pages(struct kiocb *iocb, size_t count,
+ 	if (!folio_batch_count(fbatch)) {
+ 		if (iocb->ki_flags & (IOCB_NOWAIT | IOCB_WAITQ))
+ 			return -EAGAIN;
+-		err = filemap_create_folio(filp, mapping,
+-				iocb->ki_pos >> PAGE_SHIFT, fbatch);
++		err = filemap_create_folio(filp, mapping, iocb->ki_pos, fbatch);
+ 		if (err == AOP_TRUNCATED_PAGE)
+ 			goto retry;
+ 		return err;
 
