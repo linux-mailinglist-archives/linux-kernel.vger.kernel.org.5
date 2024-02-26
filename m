@@ -1,172 +1,117 @@
-Return-Path: <linux-kernel+bounces-81178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4687F8671B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:45:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B900867206
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:52:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB01329431D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:44:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CCAD1C28E3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:52:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96F10487BF;
-	Mon, 26 Feb 2024 10:42:17 +0000 (UTC)
-Received: from mail.tecon.ru (mail.tecon.ru [82.112.190.120])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15C441CAAE;
+	Mon, 26 Feb 2024 10:48:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="SKM4BtoY"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7E1C1DDF2
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 10:42:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.112.190.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89533EEDA
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 10:48:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708944137; cv=none; b=pmL8uEpp1ZyFROVqT/qqeL7KQnw+tXb1S96SIzZVkYzuqAPlJGAwhwOsAuuugj1NxeVUxAvabt9WreBpnr5LdUvFnQ+HYl2vFMCwPHfvurdKdatH3bkIN0VX17Lm6ho6feiOSZfLGg/qOboC/uVZyaNxOHVThSeR5REsJJg905U=
+	t=1708944505; cv=none; b=RXcMvCSbWWJvSnpqAlY69QZarzNT6aBFy79HcOko1c8UixUmIKfd8JTc7QhlHQVcr8AZccALJPbWyzrzvV1sFKc/P4Z/eJwX5yrgw8W4wP8EboOl1rmWbn8w3mqpvLAqR0Wp+LYcH5ygopI/Tvn4hSOzkmibm4IWVj/bnBGz7SU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708944137; c=relaxed/simple;
-	bh=zyNhrX2MVbvnqyKCu8lbBxzBNryOLSqO8SEiSi2jKFE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TinIiknRPhce+ioMhqhj7wc5YS9eUzu1fGXfJ6cebhTh3YGXxu6iejw7TKbFKuEFIY/mxzgaV7RoOo/D+LQBYsuok3xAUnGdnuiM6glX/mkKRIn8ktxLIT21Iz8iWV5ip5eoT02Vd9Yfxeho+N3TnDOED3BCpCs3/tw/HRNDq8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tecon.ru; spf=pass smtp.mailfrom=tecon.ru; arc=none smtp.client-ip=82.112.190.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tecon.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tecon.ru
-From: Dmitry Dunaev <dunaev@tecon.ru>
-To:
-CC: <dunaich@mail.ru>, Dmitry Dunaev <dunaev@tecon.ru>, Tudor Ambarus
-	<tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, Michael
- Walle <mwalle@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
-	<linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2] mtd: spi-nor: Add Puya Semiconductor chips driver
-Date: Mon, 26 Feb 2024 13:40:59 +0300
-Message-ID: <20240226104101.1848855-1-dunaev@tecon.ru>
-In-Reply-To: <9ebf9cdf-eeba-417a-8410-3f87a0973136@linaro.org>
-References: <9ebf9cdf-eeba-417a-8410-3f87a0973136@linaro.org>
+	s=arc-20240116; t=1708944505; c=relaxed/simple;
+	bh=93RNERpHXJfqDKfnRao1G0Tupa9b05WDZBwpyK+tePQ=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XiBfQa3mnN0qf4s5cyQU3iw+x1Gc2sRYYDzVAgmmmQgGxQa+p/kHnH3q0ddsxUMgLHBp+AxB1hUbhhZVNkBqB5sdVHWRtHvcEhLhy1gOztvNsWK0G2eZv6LMxK86GvmYgGfioNwnSZcFVEBoI7dYJaNkTzEfTcAYk7RH0w4jR6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=SKM4BtoY; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=93RN
+	ERpHXJfqDKfnRao1G0Tupa9b05WDZBwpyK+tePQ=; b=SKM4BtoYU2550UxfTSZt
+	0UTyjPz1ptTCtt7zuW1WVzx7Rx24whaM4i5b6HkE4c+e9bE5lFZVr7A2fR3qoO/2
+	1+eszLKREzh7xZUjdNLLiXEpgkcZZbIPmaJ2BRWDdApn2TEoslrzH4ssWfeV4olk
+	ZgzUXRiJS0ssjY453dXOnJrgVOkYc/iDr0snhwxEwpMjQZ61zpZsl+dSCvMZgT+0
+	lfL5sJA8REsZg0l4ysRBNM1fHj9AmTvmimzzVd5kCoSTlmfyFmrDvQ+eh4mJi+Oc
+	QV9OmnHXir9IVbkeNJnnt/XvKlfpVPgIJj6YUNymBNbNwT0VuAqjkAyoyTSXZ2bn
+	AA==
+Received: (qmail 1208504 invoked from network); 26 Feb 2024 11:41:37 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 26 Feb 2024 11:41:37 +0100
+X-UD-Smtp-Session: l3s3148p1@XPrTjUYSYHZtKPIz
+Date: Mon, 26 Feb 2024 11:41:36 +0100
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: Rob Herring <robh@kernel.org>, Andi Shyti <andi.shyti@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-i2c@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: i2c: mux: i2c-demux-pinctrl: Drop
+ i2c-mux.yaml reference
+Message-ID: <Zdxq4GnRyjC07EH8@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Rob Herring <robh@kernel.org>, Andi Shyti <andi.shyti@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-i2c@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240124190552.1551929-1-robh@kernel.org>
+ <Zb6nBYTkZmXZ0G2X@shikoro>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ZokECiHDjO7diAZl"
+Content-Disposition: inline
+In-Reply-To: <Zb6nBYTkZmXZ0G2X@shikoro>
 
-Add a SPI NOR manufacturer driver for Puya Semiconductor chips
 
-Signed-off-by: Dmitry Dunaev <dunaev@tecon.ru>
----
- drivers/mtd/spi-nor/Makefile |  1 +
- drivers/mtd/spi-nor/core.c   |  1 +
- drivers/mtd/spi-nor/core.h   |  1 +
- drivers/mtd/spi-nor/puya.c   | 64 ++++++++++++++++++++++++++++++++++++
- 4 files changed, 67 insertions(+)
- create mode 100644 drivers/mtd/spi-nor/puya.c
+--ZokECiHDjO7diAZl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index 5e68468b72fc..3e22039d0432 100644
---- a/drivers/mtd/spi-nor/Makefile
-+++ b/drivers/mtd/spi-nor/Makefile
-@@ -10,6 +10,7 @@ spi-nor-objs			+= intel.o
- spi-nor-objs			+= issi.o
- spi-nor-objs			+= macronix.o
- spi-nor-objs			+= micron-st.o
-+spi-nor-objs			+= puya.o
- spi-nor-objs			+= spansion.o
- spi-nor-objs			+= sst.o
- spi-nor-objs			+= winbond.o
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 4129764fad8c..09ad2142d004 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2045,6 +2045,7 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
- 	&spi_nor_issi,
- 	&spi_nor_macronix,
- 	&spi_nor_micron,
-+	&spi_nor_puya,
- 	&spi_nor_st,
- 	&spi_nor_spansion,
- 	&spi_nor_sst,
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index d36c0e072954..93df7a6328ca 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -609,6 +609,7 @@ extern const struct spi_nor_manufacturer spi_nor_intel;
- extern const struct spi_nor_manufacturer spi_nor_issi;
- extern const struct spi_nor_manufacturer spi_nor_macronix;
- extern const struct spi_nor_manufacturer spi_nor_micron;
-+extern const struct spi_nor_manufacturer spi_nor_puya;
- extern const struct spi_nor_manufacturer spi_nor_st;
- extern const struct spi_nor_manufacturer spi_nor_spansion;
- extern const struct spi_nor_manufacturer spi_nor_sst;
-diff --git a/drivers/mtd/spi-nor/puya.c b/drivers/mtd/spi-nor/puya.c
-new file mode 100644
-index 000000000000..2198a9ed7101
---- /dev/null
-+++ b/drivers/mtd/spi-nor/puya.c
-@@ -0,0 +1,64 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2024, Tecon MT LLC.
-+ */
-+
-+#include <linux/mtd/spi-nor.h>
-+
-+#include "core.h"
-+
-+/* Puya Semiconductor (Shanghai) Co., Ltd */
-+static const struct flash_info puya_nor_parts[] = {
-+	{
-+		.id = SNOR_ID(0x85, 0x60, 0x10),
-+		.name = "p25q05h",
-+		.size = SZ_64K,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	}, {
-+		.id = SNOR_ID(0x85, 0x60, 0x11),
-+		.name = "p25q10h",
-+		.size = SZ_128K,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	}, {
-+		.id = SNOR_ID(0x85, 0x60, 0x12),
-+		.name = "p25q20h",
-+		.size = SZ_256K,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	}, {
-+		.id = SNOR_ID(0x85, 0x60, 0x13),
-+		.name = "p25q40h",
-+		.size = SZ_512K,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	}, {
-+		.id = SNOR_ID(0x85, 0x60, 0x14),
-+		.name = "p25q80h",
-+		.size = SZ_1M,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	}, {
-+		.id = SNOR_ID(0x85, 0x60, 0x15),
-+		.name = "p25q16h",
-+		.size = SZ_2M,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	}, {
-+		.id = SNOR_ID(0x85, 0x60, 0x16),
-+		.name = "p25q32h",
-+		.size = SZ_4M,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	}, {
-+		.id = SNOR_ID(0x85, 0x60, 0x17),
-+		.name = "p25q64h",
-+		.size = SZ_8M,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	}, {
-+		.id = SNOR_ID(0x85, 0x60, 0x18),
-+		.name = "p25q128h",
-+		.size = SZ_8M,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	}
-+};
-+
-+const struct spi_nor_manufacturer spi_nor_puya = {
-+	.name = "puya",
-+	.parts = puya_nor_parts,
-+	.nparts = ARRAY_SIZE(puya_nor_parts),
-+};
--- 
-2.34.1
+On Sat, Feb 03, 2024 at 09:50:13PM +0100, Wolfram Sang wrote:
+> On Wed, Jan 24, 2024 at 01:05:50PM -0600, Rob Herring wrote:
+> > The I2C de-mux is different than an I2C mux, so i2c-mux.yaml is not
+> > relevant and shouldn't be referenced.
+> >=20
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+>=20
+> Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
+Andi, can you pick these up?
+
+Or you negotiate with Rob how you want to handle I2C DT patches. I
+agreed with him that I usually take them. Except for generic cleanups or
+so.
+
+
+
+--ZokECiHDjO7diAZl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXcatwACgkQFA3kzBSg
+KbaQnA/9E53iIf+fJ/1fcCXflR+wlGvFZPNH9q4sYiD++nUHyWWYwlw8ACIcqsVF
+1WsQhN1wFS0ClGmK6Pr3UdtsT1Dqq2Nfo2k5ceq+mWJ/fGsMk6+6Tn8iIMmioMif
+eY97O8sG3YofpN61ew6xGKuhEkf7hz+lDoh3bxdlcnECUiZ6oEzPb9GiQy9Xqgtn
+PdZAXc7oqI8U+ydTyEokdAgvurTaTBPcx8ToOf5uptk5Kt+ib77igJDcZVWwi5YB
+ZHJAMRw3Ac5n5/xYQelFnpAVnMLGaU5Bd2G+syLa63ARYw38Y8Y+bhLlqbZ22g+Z
+8rZpe+SvZGeudyRnrT8VrOu4N5vlbUimCNZCRq2dK2nNyi8pGO5UjhTrfOJIiKyr
+aGNIATsA3wN5HEslm9Y7gdjz3RbBuJ3ADeRgcvQgoP5Uvl27+XRo98Z0scxZy33v
+rOodmLUGHqal3nm0w1mU3g525QjVjXA4DzhPkipMQRg8DLFyUmmO7G5CvXz+sJZU
+7bfGN+FG8uRGFA7DdJCQXQhkP2TIMkJbuncSyAaCXSfY2w/+LYM1YtrOKOIT4GLV
+u5z17chqQlFKN2IqM6S264DI73vs6bWVfxdgBtMjsvhJtzJ4wnfk/vHPuTOCctAl
+XQKnoT3v/Tj+U5b0I+ZgcwQlGPJGpTFOu+mMrRY54kfUogxzS6g=
+=GL/q
+-----END PGP SIGNATURE-----
+
+--ZokECiHDjO7diAZl--
 
