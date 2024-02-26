@@ -1,141 +1,92 @@
-Return-Path: <linux-kernel+bounces-81498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE9F98676BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:37:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6DCC8676C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:39:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 414BC1F23F22
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:37:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 041331C24B4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:39:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EECA71292C0;
-	Mon, 26 Feb 2024 13:37:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27045128839;
+	Mon, 26 Feb 2024 13:39:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="dG97OFSY"
-Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="EZTFU3f/"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF66C7FBAA
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 13:37:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C92761AACC
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 13:39:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708954655; cv=none; b=hTpK6Dz2VIbzwxHBlMz58ef8bMw1XsL4VL5D0xvPjcukCANhBkEKTvuybwLs1/4UeDP6RawJQKEqelz72cEiFHWoQrFdaaaW61WVvB5BobwFnFvceG9kvjZOt4p9aR2bAEcAKrj+VAAh2bXcubF5e9vcNOYNeQMwI+xmEn8EKtY=
+	t=1708954774; cv=none; b=IpzSnQRXMC6dGLWOhKku/NOlsCTZ2OtmGFLiXzvj8SWyiuyoVy/FKyGjcV5bToYqTxX4Y2wU9c33EGJTX2LCZ0tDL0kD3f++sAnb6tAoD5dXUIg3f1D7Tve9iz7ENliPa1B06wey5QDAHQ0WMduPh0O1cluSTvpzhGPQoq2+kRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708954655; c=relaxed/simple;
-	bh=QdEwI9QlMgL01Ffi2DaCcAkgo345YjCp2wxa14Lk+NQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AV1Dcur/LHbNs2HJAYpv0rdXJnGC/08RzKuWqtT0Bar+p0g3F6aQ5ixVhzty/1UD1r+4LZcXIiKs5t0nH1p18DBV5cttT8P0GEL1H83gchf4ffCWSMaGvt7zRej9XAujOMwqHUHhJOd67NJKG33duDF0tE+ST7xv1Ch4CiTKR4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=dG97OFSY; arc=none smtp.client-ip=209.85.221.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-4ccfb94ee5cso302349e0c.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 05:37:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708954652; x=1709559452; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sVBescN1cuFlk0Nm2k2RUQXFNz8C6uStbKpoBsdlsAw=;
-        b=dG97OFSYAM5gOF68+MxVRAAlNhVVRx6sajFXM7Szyot9RYRDul8fXmRV56Zar9t3T0
-         yvDcOXer5iWqGjr/HR7rnR6aiA7XY+q9mqOouKWji86obG0hBYI8MUQJUHJeuIaTUYgp
-         6k+Knk8jTeGMwN9AmPZv8+L5FjnRsnjyljIrpfp1Yf0Z0WT9BJvt+afXWEQ4yxdNcvfN
-         4eBDlDpsujhphz674nw+ml/v1aZHDbqCFA1rtt7cSJmfDAm/Y2jw+82sNgoZd+EuAPkd
-         674Df78nsf9fSImrGN5kERJ2BdyHKUVDAWXk7VCExJ21QEpC+oSXRZavm/2vr2igVS8X
-         3xPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708954652; x=1709559452;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sVBescN1cuFlk0Nm2k2RUQXFNz8C6uStbKpoBsdlsAw=;
-        b=NVzfBshnLliNVqLvevdkHashQXeEsWGDHc5mwt9pPpyDWBvWM1qH60FCLWKH2pX5p7
-         Oz6zIqyI+JC3cDH/hy3ZKrzAIdzWUdyeCCmnlydsdlGJ3UK+zl7J37Bt4qfq3dHCepd/
-         b+nMTrOPSJz0R0uYZv1AwksVNaEIHUTFnLynBNMyI6WJEScKfcRBHjtQdkh/JPJOXZe6
-         5APcu0z9RvdZBAGqk98eJJo3RpDOmGdP+4lKqVAu0SVXkjr/3iDsGrreE3Y1WRlmRaPb
-         vRWoiLcZXeOvYVmO7WPtnplPro6ZTiaek1Lfe+bhZwam0hg94oV/nDn2aoCE9WTRvvdt
-         /chQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVwUBeg0ycn9tyC7pA3MVqOCy0yBsyCR4WszkLZChdVQqkRzavy7eJ8ysKNrLzs1ctv6pTPNwuldZtFHwCCrtRpzM0ZZh5VVcMQh3NR
-X-Gm-Message-State: AOJu0YzswG771Wh4qiNUKjh3STM/O1Iam0W3rry5S6bFCaC2OzlmzeBq
-	2/fWXQ7u5BSX7C6B3XLKSU8efRajH2U2ZqazZISMsF/u0SplmpKLjxqutWWfMhn+cNKxNRh1qYR
-	BjJWz1cVlAvfpjbAVbFk+SyX5pVQnwb3A3QjtHnhIbKADTRE4bpM=
-X-Google-Smtp-Source: AGHT+IEfn2RuqdpoU1z0tZbiuMJyTRGgX8/XzY8xA4xhr9R9WWQS7s+vHLTBQjEQ7TNvZhNKDomanMyhV93RZKd81I4=
-X-Received: by 2002:a1f:dd81:0:b0:4cf:19c3:c1cb with SMTP id
- u123-20020a1fdd81000000b004cf19c3c1cbmr3104603vkg.12.1708954651109; Mon, 26
- Feb 2024 05:37:31 -0800 (PST)
+	s=arc-20240116; t=1708954774; c=relaxed/simple;
+	bh=MWmAbB8K5MLgMEvoZoZEs0OnXomLIkT8UJsdf2JB0zk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KrQGxiO3DMxaC9gcEWrF3IteFBbKkQnvP1Co6QjxtHGxZ/Z2L5MuIIpUFvH80f2R1CvMgaRuXDIvp7yjQ5JmDuyJ+Uy6DVl8T3Aq5Ix7+nQbYt+ZNBHt0bQihP2vsaiHPaCWnBNzzxEeYv2Fp2KPitDptwg/E3eA7r066PXHMq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=EZTFU3f/; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=t8m8HYOpU/lqomilwTOtXcWOBIIrR/NPUPE8VHST/Ko=; b=EZTFU3f/2QzTSCqHScnAwR3o5s
+	6WESfBCmc5g6hxfZ9bznelLm8wW61U3xcbbk7niVEWtpEkONX4uh0XQKh7oTMA698ppCx/ZirLlvi
+	/Wi4AiMw+xJ/dgpdemnlhllBJ8WeteAoHraZuXP8HZ4JtkYaeWt1DEqCPf0GjbX9ieR8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rebCj-008j3N-JL; Mon, 26 Feb 2024 14:39:37 +0100
+Date: Mon, 26 Feb 2024 14:39:37 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Duoming Zhou <duoming@zju.edu.cn>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com,
+	linux@armlinux.org.uk
+Subject: Re: [PATCH] ARM: mvebu: Add check in coherency.c to prevent null
+ pointer dereference
+Message-ID: <eb036663-2109-4d75-8386-451fa5c34889@lunn.ch>
+References: <20240225060450.53044-1-duoming@zju.edu.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240226174117.722301b9@canb.auug.org.au> <CAMRc=MctN=PqM6O3GxvcFuk2ZT2YcqTiKZiuCiaTnXDEV+gXaw@mail.gmail.com>
- <20240226110424.GA120668@google.com>
-In-Reply-To: <20240226110424.GA120668@google.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Mon, 26 Feb 2024 14:37:20 +0100
-Message-ID: <CAMRc=Md3pfEWcMSoVjdj7_o9MJQUShfKL6=XyWVm3MqEWKFX9Q@mail.gmail.com>
-Subject: Re: linux-next: duplicate patch in the gpio-brgl tree
-To: Lee Jones <lee@kernel.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240225060450.53044-1-duoming@zju.edu.cn>
 
-On Mon, Feb 26, 2024 at 12:04=E2=80=AFPM Lee Jones <lee@kernel.org> wrote:
->
-> On Mon, 26 Feb 2024, Bartosz Golaszewski wrote:
->
-> > On Mon, Feb 26, 2024 at 7:41=E2=80=AFAM Stephen Rothwell <sfr@canb.auug=
-org.au> wrote:
-> > >
-> > > Hi all,
-> > >
-> > > The following commit is also in the mfd tree as A different commit
-> > > (but the same patch):
-> > >
-> > >   4a7b0850fc7a ("dt-bindings: cros-ec: Add properties for GPIO contro=
-ller")
-> > >
-> > > This is commit
-> > >
-> > >   7b79740d42e7 ("dt-bindings: mfd: cros-ec: Add properties for GPIO c=
-ontroller")
-> > >
-> > > in the mfd tree.
-> > >
-> > > --
-> > > Cheers,
-> > > Stephen Rothwell
-> >
-> > Hi Stephen, Lee!
-> >
-> > I picked it up because I was already queuing the patch adding the GPIO
-> > driver. Unless there are conflicts with the MFD branch (doesn't seem
-> > like it?), I think it should go through the GPIO branch together with
-> > the driver.
->
-> This is the first I've heard of it.  There was no reply from you, even
-> after I specifically asked you for an explanation.
->
+On Sun, Feb 25, 2024 at 02:04:50PM +0800, Duoming Zhou wrote:
+> The kzalloc() in armada_375_380_coherency_init() will return
+> null if the physical memory has run out. As a result, if we
+> dereference the property pointer, the null pointer dereference
+> bug will happen.
+> 
+> This patch adds a check to avoid null pointer dereference.
+> 
+> Fixes: 497a92308af8 ("ARM: mvebu: implement L2/PCIe deadlock workaround")
+> Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
 
-Huh, I now see your email in lore[1] but I don't have it in my inbox,
-not even in spam. I would have answered otherwise.
+I have to wounder how we can run out of memory here. This code is
+being called from:
 
-> There is no convincing reason for this to follow the C change.  It's
-> more important to avoid Linus from facing merge-conflicts during the
-> merge-window. Please remove the patch from your tree.
->
+postcore_initcall(coherency_late_init);
 
-This is why I'm asking if this caused a conflict. Whatever, I'll drop
-it alright.
+If you look at:
 
-Bartosz
+https://elixir.bootlin.com/linux/latest/source/include/linux/init.h#L299
 
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+You can see that only true kernel core stuff has been called before
+that. If that has consumed all the available memory, something is very
+seriously wrong, and the machine is not going to last another couple
+of milliseconds before it crashes no matter what checking you do.
 
-[1] https://lore.kernel.org/lkml/20240223102039.GK10170@google.com/
+So i do wounder if your time could be better spent in other places?
+
+	Andrew
 
