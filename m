@@ -1,134 +1,155 @@
-Return-Path: <linux-kernel+bounces-81171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC37A86719D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:42:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 060FF8671AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:44:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90CA7292A00
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:42:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91CD31F26C84
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:44:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13F361CF8F;
-	Mon, 26 Feb 2024 10:33:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CE8C20B38;
+	Mon, 26 Feb 2024 10:35:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="L8Qg7vKY"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JzW+ZCVs";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1f+XLGT7";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iMOS3aZ6";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4MXVJPs2"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A693D1CD06;
-	Mon, 26 Feb 2024 10:33:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6C47200CC
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 10:35:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708943599; cv=none; b=fksTuQDrmwC+INNemKi+n/aIXZqlrQODoFioWeDwqL9cNZIlh+KpuBZuVpMZIFo67ftauUXyBI1+QduW10IyBIbvrE4ZxLYlJxGRPXhXr5e7CwRBInu+Ia79CRSge588IjJhTb3zuRpubFGy81rjwNJd/+WdvLPczY6KPjK+CXE=
+	t=1708943751; cv=none; b=GTlW8NnCD1vHWMHx9oDNeTKRWaBYr837YILrrGgCxFs6ZT+FyPL6/xUoth15SjxUGJYOO5834xUIv9gA2OUdcZLkhVriYGY+8zKO7PF8T2Kpr+0bUMOvA9eVVWQb7A/thm680EEIpN30LUdgj0VtKyDKMfqr5z+jTRxyR8S4vik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708943599; c=relaxed/simple;
-	bh=F/cLez4JXgUdWT5m3qWh2VmCrp6cfEmcDY4ObW2JlEw=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
-	 References:In-Reply-To; b=eTDgZKUd6k73yoHSTHkhQlhvahPffvDHDbebkZ+ZBxHyAFKOyLfxdeZu2ZJU7VQdWesnZaoas8UsaszsN27AC0ELhFXE48n4HERxpcrh6U3mGqvexB401DU4sUL2BBX4vSYKCsYCSmHgywOO89cfHuWlcerrygdce8dDbGqRQms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=L8Qg7vKY; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4DA034000D;
-	Mon, 26 Feb 2024 10:33:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708943589;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1708943751; c=relaxed/simple;
+	bh=LqlCLXrB+fXQAIaFWCQIwXwmut2lNFW5Nj+5/ABDjH8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=j/nl+4fU++wXp11EqRIsS6TU7Wj0xYvNEgbtmF4/a3wZ26M39nKgX9vAv3Vs+KGt/zjgLkguWmbe6urwtZynQRzdBAb2s/ghmSvx7PmhPuYyWrH19+GWqxxdX+S6FliHU7fASGAwEyMakPNhY+tMVOK1E+QESzeISFQGyHBZJl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JzW+ZCVs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1f+XLGT7; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iMOS3aZ6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4MXVJPs2; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id F1D801F8C4;
+	Mon, 26 Feb 2024 10:35:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708943748; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=eQWF/v8UaHMVeCJSORx5ewLgHgdWb31Nrz6wHZlKbZw=;
-	b=L8Qg7vKYuv8tZQcHZjGL5dJirEmkocAgwKqSbZ+IqNDqnGu9Ah/1AFt6WNHvDSuORtxRSt
-	cQZIjUtFVlDWH3jOpiCG4wUl3NlrM0X7ppgRYpRLSgTfDskGH5ZZL16SBWU5pjs7Amznoy
-	WdWD/2CXJPMHLgmWXo9IBUtoNGugU2rcIxyNtk8nvCuB8wtM5fqEdUvseFrmqD3pzhK8kk
-	LCZ0RDBqKSIOmP6Q4OpvtAd+ZSMENvAEEO6qHPHYixwhZiRciUP81Ftqgf7uYJjLTZqZko
-	W5WOQpELf5dp3WH7U/UCawAPOWwtswhUcpfbSw9QIsyAFQTLihGI727GXFXX+w==
+	bh=/4dPJyMivSqkDXEmk5JjKaK7fooFIq/w/cp0enRJQ4k=;
+	b=JzW+ZCVsHOM+qqiPWdOizcYXhuVKEaB8tX6vY8Cql9t68jEncGf9yEfrHNOIb7CmK5RdIp
+	AIOtja+MaeOZag0/NEIU9OJ+5IPkKV8WzhYn7Q4R3uwX5a9oVqkAIotve10Z+x8C6n+8Vx
+	zeXSRXkVYN8HIQ55+EalrWbXQI+LNqM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708943748;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/4dPJyMivSqkDXEmk5JjKaK7fooFIq/w/cp0enRJQ4k=;
+	b=1f+XLGT7wRRPqQM0nnLoxutRslOKGiV9T0+vsh6CpjxKShADB3q7G8caLjs+d+jZx6HQPG
+	twlno35Bj3IUDYDQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708943747; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/4dPJyMivSqkDXEmk5JjKaK7fooFIq/w/cp0enRJQ4k=;
+	b=iMOS3aZ6ue7agEzuGvgBdXNF3L8juMYpKLFgCkDvJB5O5vIi61RTF753ZYXWCZm8M42xak
+	dRDwwlf3gHWASZwlCMaAPgNx2kUepzF8eR1SqTbAvAcIpZaSrp54Baquafy7m0fBVJN+83
+	0mfSQU56unQb1QfEXtG5eQjP7Ptu1V8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708943747;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/4dPJyMivSqkDXEmk5JjKaK7fooFIq/w/cp0enRJQ4k=;
+	b=4MXVJPs2b9tPyyF6TbeFHSxWHl/Bsmj/bEUJwLDksL6eQqnbQICVzNVNX23ZpDFgUcye4H
+	GkjoNOrWPxB7OqAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D510A13A58;
+	Mon, 26 Feb 2024 10:35:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id uZhhM4Jp3GWyMgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 26 Feb 2024 10:35:46 +0000
+Message-ID: <7b7c9ce0-86cf-4f68-a433-3a3a9d09ce2a@suse.cz>
+Date: Mon, 26 Feb 2024 11:35:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] freevxfs: remove SLAB_MEM_SPREAD flag usage
+To: Chengming Zhou <chengming.zhou@linux.dev>,
+ Christoph Hellwig <hch@infradead.org>
+Cc: linux-kernel@vger.kernel.org, roman.gushchin@linux.dev,
+ Xiongwei.Song@windriver.com, Chengming Zhou <zhouchengming@bytedance.com>
+References: <20240224134835.829506-1-chengming.zhou@linux.dev>
+ <ZdxiqJZY2qSRVvEU@infradead.org>
+ <e5709d61-18cf-4c6e-89b0-9615296c645a@linux.dev>
+Content-Language: en-US
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <e5709d61-18cf-4c6e-89b0-9615296c645a@linux.dev>
 Content-Type: text/plain; charset=UTF-8
-Date: Mon, 26 Feb 2024 11:33:06 +0100
-Message-Id: <CZEXXXQDZZWB.1M5CTZAFVO4YP@bootlin.com>
-Subject: Re: [PATCH v3 1/8] dt-bindings: usb: ti,j721e-usb: drop useless
- compatible list
-Cc: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, "Rob Herring"
- <robh+dt@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Roger Quadros" <rogerq@kernel.org>, "Peter Chen" <peter.chen@kernel.org>,
- "Pawel Laszczak" <pawell@cadence.com>, "Nishanth Menon" <nm@ti.com>,
- "Vignesh Raghavendra" <vigneshr@ti.com>, "Tero Kristo" <kristo@kernel.org>,
- "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
- =?utf-8?q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>, "Kevin
- Hilman" <khilman@kernel.org>, "Alan Stern" <stern@rowland.harvard.edu>,
- <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-To: "Conor Dooley" <conor@kernel.org>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: aerc 0.15.2
-References: <20240223-j7200-usb-suspend-v3-0-b41c9893a130@bootlin.com>
- <20240223-j7200-usb-suspend-v3-1-b41c9893a130@bootlin.com>
- <20240223-clarity-variably-206b01b7276a@spud>
-In-Reply-To: <20240223-clarity-variably-206b01b7276a@spud>
-X-GND-Sasl: theo.lebrun@bootlin.com
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=iMOS3aZ6;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=4MXVJPs2
+X-Spamd-Result: default: False [-0.31 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BAYES_HAM(-0.01)[45.16%];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: -0.31
+X-Rspamd-Queue-Id: F1D801F8C4
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Bar: /
 
-Hello Conor,
+On 2/26/24 11:24, Chengming Zhou wrote:
+> On 2024/2/26 18:06, Christoph Hellwig wrote:
+>> Please just do a scripted removal after next -rc1 instead of spamming
+>> everyone..
+>> 
+> Do you mean put all diffs into a single patch, send it to all people?
+> That is also a choice if it's preferable. Should it will go through
+> the slab tree then?
 
-On Fri Feb 23, 2024 at 7:12 PM CET, Conor Dooley wrote:
-> On Fri, Feb 23, 2024 at 05:05:25PM +0100, Th=C3=A9o Lebrun wrote:
-> > Compatible can be A or B, not A or B or A+B. Remove last option.
-> > A=3Dti,j721e-usb and B=3Dti,am64-usb.
-> >=20
-> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
-> > ---
-> >  Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml | 9 +++------
-> >  1 file changed, 3 insertions(+), 6 deletions(-)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml b/=
-Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-> > index 95ff9791baea..949f45eb45c2 100644
-> > --- a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-> > +++ b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-> > @@ -11,12 +11,9 @@ maintainers:
-> > =20
-> >  properties:
-> >    compatible:
-> > -    oneOf:
-> > -      - const: ti,j721e-usb
-> > -      - const: ti,am64-usb
-> > -      - items:
-> > -          - const: ti,j721e-usb
-> > -          - const: ti,am64-usb
->
-> Correct, this makes no sense. The devices seem to be compatible though,
-> so I would expect this to actually be:
-> oneOf:
->   - const: ti,j721e-usb
->   - items:
->       - const: ti,am64-usb
->       - const: ti,j721e-usb
+In case that's what Christoph means, we should exclude from that those
+subsystems that already took your patches.
 
-I need your help to grasp what that change is supposed to express? Would
-you mind turning it into english sentences?
+> Thanks.
 
-A=3Dti,j721e-usb and B=3Dti,am64-usb. My understanding of your proposal is
-that a device can either be compat with A or B. But B is compatible
-with A so you express it as a list of items. If B is compat with A then
-A is compat with B. Does the order of items matter?
-
-I've not applied your proposal to check for dtbs_check but I'd guess it
-would throw warnings for the single existing upstream DTSI (as of
-v6.8-rc6) that uses "ti,am64-usb"? See:
-arch/arm64/boot/dts/ti/k3-am64-main.dtsi.
-
-Thanks Conor!
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
 
