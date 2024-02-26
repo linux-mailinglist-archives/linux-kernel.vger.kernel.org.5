@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-81270-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E80EC867330
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:34:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AF2D3867335
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:35:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E0371F258B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:34:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 648EC1F25260
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:35:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B81A249F9;
-	Mon, 26 Feb 2024 11:33:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 789DB3839E;
+	Mon, 26 Feb 2024 11:34:08 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F87C22EE0
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:33:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 736561DA3F
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:34:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708947237; cv=none; b=FMZKd0X9urnXchZrSd2EAUMi9wu/IVnKGjZh7e6EYYCfBklSg/1Z51nr//NeFt65vjyrCXgmd/SKXsBUgXMBRDK9sq5U/gSLB7by4FGMcwpjHv0vMP9zqSoy1sIX4iLSprHhHJQWQyBgji54kWO1SgU1liPTWibPL2Yz2eJoioc=
+	t=1708947248; cv=none; b=mu+1lEBUUSn1CdihQnW76tIjFinvge1irIVRj4lezE1W1mOSI2tTNBLTPoPiwInnxVOAuS01dG/f064OrXLI6OUVd8MlY/ERD9YJFFsY/gv2kXxJfrPHHcEYf7ZcioWEeXNHtuRtArbHzrfstfqjIQKDSZMJ8ZAw/DQAViSc9e8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708947237; c=relaxed/simple;
-	bh=+nicV0g2b5jsmt8ZfpewvXZy/UwWJ4BnLx9od6RHkZg=;
+	s=arc-20240116; t=1708947248; c=relaxed/simple;
+	bh=HmUHt2eCyNcA0mVAomAcSpEcUF9JxEw4xAHbzsyB72E=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=MZu23AoYkaI6PMt6qR3oFjhP0LQmE31AGjGhPb/hOkUJjZwHQ3HeSbqfvjG1kJ4djgFEdVKDo3b5gkb5W9kkTGv7+Gq6Me/C1hXNPKnA5tvUp0x6wX/O1COO3t7tUaOFWgz4Y6YwlZGu7dOWSWNvF85OiJCZdCfokTaxWXMj4s4=
+	 MIME-Version; b=fSCutGL9SSnfVq6jidXIcQgnOMAGWV5AEBqXorNaDpEsL2ksS5HsYeOQPOGRwNTjUmrPiHv2gaJ6OTeqF9urmnqcUqJmUTBSX+Y4mNxTPcXd+NJ/E5qfua09OBuGbWVoDqMJvWsgeWWNi8uHMRL2Yxzwla+modpy+1hQRLFVNQw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4D2CFDA7;
-	Mon, 26 Feb 2024 03:34:34 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 91C7BDA7;
+	Mon, 26 Feb 2024 03:34:44 -0800 (PST)
 Received: from e127643.broadband (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 302833F6C4;
-	Mon, 26 Feb 2024 03:33:52 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 73DD43F6C4;
+	Mon, 26 Feb 2024 03:34:02 -0800 (PST)
 From: James Clark <james.clark@arm.com>
 To: coresight@lists.linaro.org,
 	linux-arm-kernel@lists.infradead.org,
@@ -52,18 +52,18 @@ Cc: James Clark <james.clark@arm.com>,
 	Miguel Luis <miguel.luis@oracle.com>,
 	Joey Gouly <joey.gouly@arm.com>,
 	Ard Biesheuvel <ardb@kernel.org>,
-	Quentin Perret <qperret@google.com>,
-	Javier Martinez Canillas <javierm@redhat.com>,
 	Mark Rutland <mark.rutland@arm.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Arnd Bergmann <arnd@arndb.de>,
+	Kalesh Singh <kaleshsingh@google.com>,
 	Vincent Donnefort <vdonnefort@google.com>,
 	Ryan Roberts <ryan.roberts@arm.com>,
 	Fuad Tabba <tabba@google.com>,
 	Jing Zhang <jingzhangos@google.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v6 5/8] arm64: KVM: Add iflag for FEAT_TRF
-Date: Mon, 26 Feb 2024 11:30:33 +0000
-Message-Id: <20240226113044.228403-6-james.clark@arm.com>
+Subject: [PATCH v6 6/8] arm64: KVM: Add interface to set guest value for TRFCR register
+Date: Mon, 26 Feb 2024 11:30:34 +0000
+Message-Id: <20240226113044.228403-7-james.clark@arm.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240226113044.228403-1-james.clark@arm.com>
 References: <20240226113044.228403-1-james.clark@arm.com>
@@ -75,89 +75,110 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add an extra iflag to signify if the TRFCR register is accessible.
-Because TRBE requires FEAT_TRF, DEBUG_STATE_SAVE_TRBE still has the same
-behavior even though it's only set when FEAT_TRF is present.
+Add an interface for the Coresight driver to use to set the value of the
+TRFCR register for the guest. This register controls the exclude
+settings for trace at different exception levels, and is used to honor
+the exclude_host and exclude_guest parameters from the Perf session.
+This will be used to later write TRFCR_EL1 on nVHE at guest switch. For
+VHE, the host trace is controlled by TRFCR_EL2 and thus we can write to
+the TRFCR_EL1 immediately. Because guest writes to the register are
+trapped, the value will persist and can't be modified.
 
-The following holes are left in struct kvm_vcpu_arch, but there aren't
-enough other 8 bit fields to rearrange it to leave any hole smaller than
-7 bytes:
+Instead of adding a load of infrastructure to share the host's per-cpu
+offsets with the hypervisor, just define the new storage as a NR_CPUS
+array.
 
-  u8                         cflags;               /*  2292     1 */
-  /* XXX 1 byte hole, try to pack */
-  u16                        iflags;               /*  2294     2 */
-  u8                         sflags;               /*  2296     1 */
-  bool                       pause;                /*  2297     1 */
-  /* XXX 6 bytes hole, try to pack */
-
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 Signed-off-by: James Clark <james.clark@arm.com>
 ---
- arch/arm64/include/asm/kvm_host.h |  4 +++-
- arch/arm64/kvm/debug.c            | 24 ++++++++++++++++++++----
- 2 files changed, 23 insertions(+), 5 deletions(-)
+ arch/arm64/include/asm/kvm_host.h |  3 +++
+ arch/arm64/kernel/image-vars.h    |  1 +
+ arch/arm64/kvm/debug.c            | 29 +++++++++++++++++++++++++++++
+ 3 files changed, 33 insertions(+)
 
 diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index 21c57b812569..85b5477bd1b4 100644
+index 85b5477bd1b4..56b7f7eca195 100644
 --- a/arch/arm64/include/asm/kvm_host.h
 +++ b/arch/arm64/include/asm/kvm_host.h
-@@ -569,7 +569,7 @@ struct kvm_vcpu_arch {
- 	u8 cflags;
+@@ -509,6 +509,7 @@ struct kvm_host_psci_config {
+ 	bool psci_0_1_cpu_off_implemented;
+ 	bool psci_0_1_migrate_implemented;
+ };
++extern u64 ____cacheline_aligned kvm_guest_trfcr[NR_CPUS];
  
- 	/* Input flags to the hypervisor code, potentially cleared after use */
--	u8 iflags;
-+	u16 iflags;
+ extern struct kvm_host_psci_config kvm_nvhe_sym(kvm_host_psci_config);
+ #define kvm_host_psci_config CHOOSE_NVHE_SYM(kvm_host_psci_config)
+@@ -1174,6 +1175,7 @@ void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu);
+ void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr);
+ void kvm_clr_pmu_events(u32 clr);
+ bool kvm_set_pmuserenr(u64 val);
++void kvm_etm_set_guest_trfcr(u64 trfcr_guest);
+ #else
+ static inline void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr) {}
+ static inline void kvm_clr_pmu_events(u32 clr) {}
+@@ -1181,6 +1183,7 @@ static inline bool kvm_set_pmuserenr(u64 val)
+ {
+ 	return false;
+ }
++static inline void kvm_etm_set_guest_trfcr(u64 trfcr_guest) {}
+ #endif
  
- 	/* State flags for kernel bookkeeping, unused by the hypervisor code */
- 	u8 sflags;
-@@ -779,6 +779,8 @@ struct kvm_vcpu_arch {
- #define DEBUG_STATE_SAVE_TRBE	__vcpu_single_flag(iflags, BIT(6))
- /* vcpu running in HYP context */
- #define VCPU_HYP_CONTEXT	__vcpu_single_flag(iflags, BIT(7))
-+/* Save trace filter controls */
-+#define DEBUG_STATE_SAVE_TRFCR	__vcpu_single_flag(iflags, BIT(8))
+ void kvm_vcpu_load_vhe(struct kvm_vcpu *vcpu);
+diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
+index 31daa1da191c..fe9e2bd7f43a 100644
+--- a/arch/arm64/kernel/image-vars.h
++++ b/arch/arm64/kernel/image-vars.h
+@@ -59,6 +59,7 @@ KVM_NVHE_ALIAS(alt_cb_patch_nops);
  
- /* SVE enabled for host EL0 */
- #define HOST_SVE_ENABLED	__vcpu_single_flag(sflags, BIT(0))
+ /* Global kernel state accessed by nVHE hyp code. */
+ KVM_NVHE_ALIAS(kvm_vgic_global_state);
++KVM_NVHE_ALIAS(kvm_guest_trfcr);
+ 
+ /* Kernel symbols used to call panic() from nVHE hyp code (via ERET). */
+ KVM_NVHE_ALIAS(nvhe_hyp_panic_handler);
 diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
-index ce8886122ed3..49a13e72ddd2 100644
+index 49a13e72ddd2..fe90bc7d6dd4 100644
 --- a/arch/arm64/kvm/debug.c
 +++ b/arch/arm64/kvm/debug.c
-@@ -332,14 +332,30 @@ void kvm_arch_vcpu_load_debug_state_flags(struct kvm_vcpu *vcpu)
- 	    !(read_sysreg_s(SYS_PMBIDR_EL1) & BIT(PMBIDR_EL1_P_SHIFT)))
- 		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_SPE);
+@@ -22,6 +22,7 @@
+ 				DBG_MDSCR_MDE)
  
--	/* Check if we have TRBE implemented and available at the host */
--	if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceBuffer_SHIFT) &&
--	    !(read_sysreg_s(SYS_TRBIDR_EL1) & TRBIDR_EL1_P))
--		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
-+	/*
-+	 * Set SAVE_TRFCR flag if FEAT_TRF (TraceFilt) exists. This flag
-+	 * signifies that the exclude_host/exclude_guest settings of any active
-+	 * host Perf session on a core running a VCPU can be written into
-+	 * TRFCR_EL1 on guest switch.
-+	 */
-+	if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceFilt_SHIFT)) {
-+		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
-+		/*
-+		 * Check if we have TRBE implemented and available at the host.
-+		 * If it's in use at the time of guest switch then trace will
-+		 * need to be completely disabled. The architecture mandates
-+		 * FEAT_TRF with TRBE, so we only need to check for TRBE after
-+		 * TRF.
-+		 */
-+		if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceBuffer_SHIFT) &&
-+		    !(read_sysreg_s(SYS_TRBIDR_EL1) & TRBIDR_EL1_P))
-+			vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
-+	}
- }
+ static DEFINE_PER_CPU(u64, mdcr_el2);
++u64 ____cacheline_aligned kvm_guest_trfcr[NR_CPUS];
  
- void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu)
- {
- 	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_SPE);
+ /*
+  * save/restore_guest_debug_regs
+@@ -359,3 +360,31 @@ void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu)
  	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
-+	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
+ 	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
  }
++
++/*
++ * Interface for the Coresight driver to use to set the value of the TRFCR
++ * register for the guest. This register controls the exclude settings for trace
++ * at different exception levels, and is used to honor the exclude_host and
++ * exclude_guest parameters from the Perf session.
++ *
++ * This will be used to later write TRFCR_EL1 on nVHE at guest switch. For VHE,
++ * the host trace is controlled by TRFCR_EL2 and thus we can write to the
++ * TRFCR_EL1 immediately. Because guest writes to the register are trapped, the
++ * value will persist and can't be modified. For pKVM, kvm_guest_trfcr can't
++ * be read by the hypervisor, so don't bother writing it.
++ */
++void kvm_etm_set_guest_trfcr(u64 trfcr_guest)
++{
++	if (WARN_ON_ONCE(!cpuid_feature_extract_unsigned_field(read_sysreg(id_aa64dfr0_el1),
++							       ID_AA64DFR0_EL1_TraceFilt_SHIFT)))
++		return;
++
++	/* Warn in invalid use of smp_processor_id() */
++	WARN_ON_ONCE(preemptible());
++
++	if (has_vhe())
++		write_sysreg_s(trfcr_guest, SYS_TRFCR_EL12);
++	else if (!is_protected_kvm_enabled())
++		kvm_guest_trfcr[smp_processor_id()] = trfcr_guest;
++}
++EXPORT_SYMBOL_GPL(kvm_etm_set_guest_trfcr);
 -- 
 2.34.1
 
