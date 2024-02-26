@@ -1,117 +1,148 @@
-Return-Path: <linux-kernel+bounces-82456-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 076368684C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:52:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E76308684CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:54:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4BF1287745
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:52:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 296F8288097
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:54:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C746135A58;
-	Mon, 26 Feb 2024 23:52:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC095135A66;
+	Mon, 26 Feb 2024 23:53:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eKmUSclU"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="Fy1d2mYM"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 658AE1E894
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 23:52:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC01012F38E
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 23:53:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708991557; cv=none; b=t0xJF52DaffL8nMiS257jBwGLE1Kyap0+kHL5uzfnGxdg1cGusyaviz6cIdnti0UyLpmj0sqZeUH3SHeb7i54OFtyHHjBOjkYdVbQ6hbm6V5CqDGkxB4c/ss0QJLkf98t0g1m7VDRrfLXSAGP6JC+08C+X7kLAx1PsoH0o4s2Xg=
+	t=1708991634; cv=none; b=N9GsJ2zv6mzNULC/EGFoiYf/u6Bf7zUVJaldbuIpesXTqCtzhC7rbHn5+qQgaP4FsJHTdgJwuUCEFXy/1lckGxtLbfg4RR5/2jT8OYVkZByawSMnTMaO2kmolQpypLFqpTaY9R6PtrjdFGWxv5xpuDCDDgbUuvMtqMIO0Vf+sNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708991557; c=relaxed/simple;
-	bh=XIVySJ6fBrUqstD49rkPpA3Y2psGokotiQmfXjTagF0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=qZ6mIpuchOR89awBO0bkhCAjSOvpjh2Swd3TYShPlZ32vs7DnXNZrrDUfEiz/KCt16VVnPRmZQxPX2OSBrt199NSSFiAOkdbYPe1IcDDrJUEHoYEVS4b8mGte07ujVgbgnDP+INF6JIG8skehWOz4aWxKX9JafyR83JLUUl26YY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eKmUSclU; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708991555; x=1740527555;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=XIVySJ6fBrUqstD49rkPpA3Y2psGokotiQmfXjTagF0=;
-  b=eKmUSclUeXutWPjCmdUxo/PKMYZ5zh4wDlXnrlhGoTI6fgvJVcldNW/t
-   geD2asjt0yNApa9/+Jtb9JSBg9TS+yEK74KEDdPmkaE4KN5d4455UmHIz
-   KKl+8Ov0GBOHEbHaDvxa1fwUP0TeIS4jtVA0xcCNM/FzZiQBW2gZfC3sM
-   2bbbrV6SruGBUAfocZswn3J322Bw00I2clCUTgL6Hr2W9hwdT7eX4c+3y
-   +cWaEohXImGpyYe3FawuXEhX+7KaIXBG4449/hi/HNcPUoesecslF4Aae
-   o+rTeR8FvdEUnChl0Ewe5d5qhxyQJ2gnozYSUXvZWS2hFSdPDqBS9j83z
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3179668"
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="3179668"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 15:52:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="11511965"
-Received: from jhaqq-mobl1.amr.corp.intel.com (HELO desk) ([10.209.17.170])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 15:52:35 -0800
-Date: Mon, 26 Feb 2024 15:52:33 -0800
-From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To: Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>
-Cc: Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	Nikolay Borisov <nik.borisov@suse.com>,
-	linux-kernel@vger.kernel.org,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Subject: [PATCH] x86/bugs: Use fixed addressing for VERW operand
-Message-ID: <20240226-verw-arg-fix-v1-1-7b37ee6fd57d@linux.intel.com>
-X-B4-Tracking: v=1; b=H4sIAPAj3WUC/x2MQQqAIBAAvxJ7bsEszPpKdBDbbC8WK1gg/T3pO
- AMzBRIJU4K5KSCUOfEZK3RtA/5wMRDyVhm00oPS2mAmudFJwJ0fHCfjTK+s9cMGNbmEqv53y/q
- +H0StzMheAAAA
-X-Mailer: b4 0.12.3
+	s=arc-20240116; t=1708991634; c=relaxed/simple;
+	bh=JeCxx3c4ppdgFDh3lp6P1rqNUJwDxT9JEo9Mm+GfI38=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=sZxKFxQZpEN6f87UymYnQSayErcVACybQGsDwIXVK2WHdagYyMc5jvzXirDEyZUmtXE+SzUqaqFUDKkV2tsOo+lOvvkarT8hRq9fjVnLXIGZU7Dl1gRrYb8Fe74LhrqtkhndhW3l6pVlHy12KaE+Y+qYKLH2OGzTVV8VwXvi2hQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Fy1d2mYM; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-608ac8c5781so64154847b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 15:53:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708991632; x=1709596432; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=S39j559seDHpHoyUT6gNBve2pYTlYnQB3wRYpD7F2CQ=;
+        b=Fy1d2mYM9bV1lszCzKF98Q2nCdK/94vBoLQjkpBqgs7WL0pb83HxuWjXTTz6vxRp6E
+         NQYYO4PIfEeSJ8bfzWG5u/Yc/Wtqix4gYedQOzAEp+0Yj1/YIuDKrrHNimbIPid9DVJi
+         zJw6/pPPofKVeRvZYOFIgLIfuZBI1d1k479azNx3HBndxJi1DH+AituoPfikWgMdWAfY
+         Xsb0S3EdK+OZjOrIesBv0/3QIV15xaY6wA/hPeTsm31ylWbuLvkGFi3ThEtXchmXwxjD
+         /PrAoR9j+KlwSPC90FU5IDCD8sctiVJOzS/SHtnPp8FGyrj+rZSdx6rqB74WiOCYlbmG
+         A4bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708991632; x=1709596432;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=S39j559seDHpHoyUT6gNBve2pYTlYnQB3wRYpD7F2CQ=;
+        b=ZMPzXmt9vCPEK5wGwN2kMZBcwhMVMGnsl5aMJvwAsNuBMeh2lW2jmY6jVMukBUMj75
+         cxpqQbLEiKv/sbuirn+KcCEexGkpp6QojhZ24lQfOtsoVbyLCZ8ZaFDXAeGPCRvWFpW4
+         I9A6vlXf2WJ20Okexx2r9uHGpWf/+6WVLRX2dDUYGOclVbsfZExJo3dImsdg/dLlfm1A
+         nfpkl9Tho39UVaO0YI9LDDAj0d4l9hoGoL2uTQZS4XYl+hZzuhFgQ5D5AMeVaos10lsc
+         qUAiVGq+zXBM7ZTcLIm7EgqbsJi7YLmVPKyp2BxLHutDwoR47F0QXaMart22oAPXWR9n
+         vT5g==
+X-Forwarded-Encrypted: i=1; AJvYcCUjRHAZKxV5xam+nY7GlWBR+rG4Re/5kdgCijWxDz5UBh9BT/712BwG3wouIWk2sYpLK0mBq4AL0vz1B5JLXWv9Y7TDYyPci6rdQSbP
+X-Gm-Message-State: AOJu0YyfPBOMsZos4xKgTUDbVH+wZ32VP/BbuU8RMqyVsi2JKT/W3SOo
+	rE9ZGx8YbcODN8A6IjFCAYr7QTg/kBdjXyGFBgLPADH3XwJOabs0+iEjbz4NVDjCybrxHoIsmin
+	GnnTdzMJm4Uf7dVTGC4evfQ==
+X-Google-Smtp-Source: AGHT+IH54DJnpJg9iPluQxwsW66Wg0QACJLoVbFpM8JyEIz57ZeMOw8tfs/bwhBt9SCw4HWibOH+XXlMWWCOk7NznQ==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6902:1887:b0:dcc:e1a6:aca9 with
+ SMTP id cj7-20020a056902188700b00dcce1a6aca9mr189067ybb.9.1708991631843; Mon,
+ 26 Feb 2024 15:53:51 -0800 (PST)
+Date: Mon, 26 Feb 2024 23:53:44 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAIck3WUC/42NQQqDMBBFryJZd4qG1GpXvUeRYsaJDlgjGQkV8
+ e5Nhe67+fD+4r1NCQUmUbdsU4EiC/spgT5lCod26gm4S6x0rk2utQZZwoTzCl3gSEFAUBjG2eE
+ xT1wAwV2MLa9EZMtKJdMcyPH7qDyaxAPL4sN6RGPxfX/+8i9/LKCAyhpTt1Q7h3jvve9HOqN/q Wbf9w8CtWNb1wAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708991630; l=2521;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=JeCxx3c4ppdgFDh3lp6P1rqNUJwDxT9JEo9Mm+GfI38=; b=aI8lYYQTCTWr5poJcPKK8qGIaYaUXNNsUPhPuHz8s+B2GXWwyabkAt5Y93G5bTZHu1TS6wyRB
+ e1Z6lu+bX0RDep2Xlb7/pIjK9b5aqj9hCE2PQ1b3XxtRQKpfxD3hgt3
+X-Mailer: b4 0.12.3
+Message-ID: <20240226-strncpy-drivers-scsi-lpfc-lpfc_ct-c-v2-1-2df2e46569b9@google.com>
+Subject: [PATCH v2] scsi: lpfc: replace deprecated strncpy with strscpy
+From: Justin Stitt <justinstitt@google.com>
+To: James Smart <james.smart@broadcom.com>, Dick Kennedy <dick.kennedy@broadcom.com>, 
+	"James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-Macro used for MDS mitigation executes VERW with relative addressing for
-the operand. This is unnecessary and creates a problem for backports on
-older kernels that don't support relocations in alternatives. Relocation
-support was added by commit 270a69c4485d ("x86/alternative: Support
-relocations in alternatives"). Also asm for fixed addressing is much
-more cleaner than relative RIP addressing.
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-Simplify the asm by using fixed addressing for VERW operand.
+We expect ae->value_string to be NUL-terminated because there's a
+comment that says as much; these attr strings are also used with other
+string APIs, further cementing the fact.
 
-Fixes: baf8361e5455 ("x86/bugs: Add asm helpers for executing VERW")
-Reported-by: Nikolay Borisov <nik.borisov@suse.com>
-Closes: https://lore.kernel.org/lkml/20558f89-299b-472e-9a96-171403a83bd6@suse.com/
-Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Now, the question of whether or not to NUL-pad the destination buffer:
+lpfc_fdmi_rprt_defer() initializes vports (all zero-initialized), then
+we call lpfc_fdmi_cmd() with each vport and a mask. Then, inside of
+lpfc_fdmi_cmd() we check each bit in the mask to invoke the proper
+callback. Importantly, the zero-initialized vport is passed in as the
+"attr" parameter. Seeing this:
+|	struct lpfc_fdmi_attr_string *ae = attr;
+.. we can tell that ae->value_string is entirely zero-initialized. Due
+to this, NUL-padding is _not_ required as it would be redundant.
+
+Considering the above, a suitable replacement is `strscpy` [2].
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
 ---
- arch/x86/include/asm/nospec-branch.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes in v2:
+- keep strnlen (thanks Kees)
+- Link to v1: https://lore.kernel.org/all/20240222-strncpy-drivers-scsi-lpfc-lpfc_ct-c-v1-1-20c685bd1b43@google.com/
+---
+ drivers/scsi/lpfc/lpfc_ct.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-index 2aa52cab1e46..ab19c7f1167b 100644
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -323,7 +323,7 @@
-  * Note: Only the memory operand variant of VERW clears the CPU buffers.
-  */
- .macro CLEAR_CPU_BUFFERS
--	ALTERNATIVE "", __stringify(verw _ASM_RIP(mds_verw_sel)), X86_FEATURE_CLEAR_CPU_BUF
-+	ALTERNATIVE "", __stringify(verw mds_verw_sel), X86_FEATURE_CLEAR_CPU_BUF
- .endm
+diff --git a/drivers/scsi/lpfc/lpfc_ct.c b/drivers/scsi/lpfc/lpfc_ct.c
+index baae1f8279e0..296d2d4796cb 100644
+--- a/drivers/scsi/lpfc/lpfc_ct.c
++++ b/drivers/scsi/lpfc/lpfc_ct.c
+@@ -2569,9 +2569,9 @@ lpfc_fdmi_set_attr_string(void *attr, uint16_t attrtype, char *attrstring)
+ 	 * 64 bytes or less.
+ 	 */
  
- #else /* __ASSEMBLY__ */
+-	strncpy(ae->value_string, attrstring, sizeof(ae->value_string));
++	strscpy(ae->value_string, attrstring, sizeof(ae->value_string));
+ 	len = strnlen(ae->value_string, sizeof(ae->value_string));
+-	/* round string length to a 32bit boundary. Ensure there's a NULL */
++	/* round string length to a 32bit boundary */
+ 	len += (len & 3) ? (4 - (len & 3)) : 4;
+ 	/* size is Type/Len (4 bytes) plus string length */
+ 	size = FOURBYTES + len;
 
 ---
-base-commit: d206a76d7d2726f3b096037f2079ce0bd3ba329b
-change-id: 20240226-verw-arg-fix-796a63088c4d
+base-commit: 39133352cbed6626956d38ed72012f49b0421e7b
+change-id: 20240222-strncpy-drivers-scsi-lpfc-lpfc_ct-c-f54b67eeeb68
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
 
