@@ -1,98 +1,134 @@
-Return-Path: <linux-kernel+bounces-81036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22BC9866F4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:53:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E84C866F4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:53:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 549C91C23DC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:53:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B08951C21FA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:53:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 029E44E1CB;
-	Mon, 26 Feb 2024 09:18:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 893514D9E3;
+	Mon, 26 Feb 2024 09:18:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bewilderbeest.net header.i=@bewilderbeest.net header.b="ZXxvFiTr"
-Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [71.19.156.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ohczpYfV"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A7FF4DA0B;
-	Mon, 26 Feb 2024 09:18:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=71.19.156.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A09F208A0
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:18:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708939124; cv=none; b=LI0EJ078MFd0aUTL2/S/PWJLAaa74rUwqrYrM2uvCkDbRsAqqFJPoetYdU63+l1VBDMiyP0JrANtb5qtcF0p6IlP3HXxWT89w5x+qstdDSAUFUvKEH2LzrUfVm2khWRZCY9XuQX5XZriPJvejZbf1bzRW/+lSnR7n9AyUQxVMm8=
+	t=1708939104; cv=none; b=m0xXwFJPHzb0beQbITls4N6GRXcmKJCUzfL2SVb2PpmUxHFkG6FNWOz4A/CqrxD3wLga6ACfkuN1O8ZjYT5/o9u6dimcDUXANsxqb9aX/tUMiU0mxNOGLXlLNKw+OMKcYoUef3/uy9tOzVtM2F8Q7f4v57bSD/97YzLcaopkf38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708939124; c=relaxed/simple;
-	bh=mf3z62tltfMzlLenaPAaqgxyWuiF6fV/UO7P1p2oRRQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dja3k6HDmFzQ5aBUMXdcaImtN/V4X7BNx2e5JuzLxEQPc5gzhZWTln92s+qFN/pvihwJK1A+y179CTmNdr4bpEu/vXxQd7hiIS6zniqse0XKDE8gggt7vKbng/y+tHiltO3kGEvNLG2WdE5JAUFfdVI5udle6kNKOd+kmWxzjLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bewilderbeest.net; spf=pass smtp.mailfrom=bewilderbeest.net; dkim=pass (1024-bit key) header.d=bewilderbeest.net header.i=@bewilderbeest.net header.b=ZXxvFiTr; arc=none smtp.client-ip=71.19.156.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bewilderbeest.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bewilderbeest.net
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:61:712b:6300::2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: zev)
-	by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 618F442D0;
-	Mon, 26 Feb 2024 01:18:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-	s=thorn; t=1708939116;
-	bh=gzTjQUu0dObSt10SZKcdNKoLWfM0zbCV3RKhSxsSPq8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=ZXxvFiTr5xOW2Y311ZVhtKPovu4hZqyoQl1/TtGUUC1hcFdl0EwBA8isXTKOSCP3p
-	 6t5D40EcDe3jD5sDzq3zBCHo+uLyMPc4RdhaerEp6qldfB7MIfUnm9jWzRUiM2kAk4
-	 EAK0gx/r0xKgrmHiOTEK+OVa+6RNfzuymNg2skf8=
-From: Zev Weiss <zev@bewilderbeest.net>
-To: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Joel Stanley <joel@jms.id.au>
-Cc: Zev Weiss <zev@bewilderbeest.net>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org,
-	Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH] ARM: dts: aspeed: ahe50dc: Update lm25066 regulator name
-Date: Mon, 26 Feb 2024 01:17:53 -0800
-Message-ID: <20240226091754.16027-2-zev@bewilderbeest.net>
-X-Mailer: git-send-email 2.43.2
+	s=arc-20240116; t=1708939104; c=relaxed/simple;
+	bh=oSSQbxewwkiCTAJJJjuwTTELqb9roNIFmZQ3BUDDy0Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rC9buNbCvdliypF1G2W94ge37em59o70xUQzxKnmLAI4mO40yprDpFnpSWgTrS1hj3QmUDPgV7RAt+aZ5pupAsajbqYhvOCIszvX0HRhw3KWwHEhJ6Ae9Prw/ysAW0suLJf5CkFTYG/0+30omF1ZfTuCfchYGWEOcESkk0FZ01I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ohczpYfV; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5640fef9fa6so3605392a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 01:18:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708939101; x=1709543901; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ucm6vFZxgjviA8ED6AOBXD2ZlZTqDUsseLQUG6Wd3NM=;
+        b=ohczpYfVmkJw4S2WTdkmnR4zvvh3hsVidtwPJRXymmBP5UjXUd1LC7pfZDo09U4yYu
+         9f8rR4u9kqASFW5Y6DS6YGX1miXcGzmhCh4wTqcBTGywGSelaU5RZ1Zjtom6DpWinX2s
+         iMCb7xVYw+Ome+H2J4fLO/zO1F6Y6WUIv0FY4qb5UwUycJoy9L19iIPjEcp83zRBDBpq
+         nar66jR5y+uFAqXSiHSSmHIoZwfXt19x70LnYuBrXC/WjIC/cOdetB4dRMmEBs0EH2n7
+         KIBPNOyYX2dU3AAK+K3FZbkLsU932me4OIrmtvFhR5X3UoGunBNZiHqfpsY3Ukcqmf8D
+         QfLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708939101; x=1709543901;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ucm6vFZxgjviA8ED6AOBXD2ZlZTqDUsseLQUG6Wd3NM=;
+        b=oi0zyEZTWWTBxLqYmmwI7OmqJF7C5ni8nnW8asKNQzdtHBpPdv8cPOj8XifsFPPaFR
+         tifh6X65fCmK6TzqIgYNxI41UccRFm3yXB2j0V5EWLKMFKzgQbbHvFzwtNxSilcSwz7x
+         P8A0HhDwMbNa1sT7oFrO+4o9tE54wfq82miXRjjUbJ8AvTzOrIMOGgBlKYv9zj7CW8m9
+         o1/CmqXtW83kik+SZsu/zuegR+pvHUF1yIb7qbh0TLaNvZADGSSnxv0UZ+AvkkGdYutt
+         PTX6I59KZtk1G+chyQmIT2ZoinqVTdxIqQAcfiun54dwbJqVTiG5UiVuBYhjfKLkMKtW
+         ZZFg==
+X-Forwarded-Encrypted: i=1; AJvYcCVyCZcIKSnb/UsxIHgYYPEP58cuQ0tyrDhjEgBjmBnnXQPsjTzH/Rb1x8K4aHWTuyLMO31ZNJItw+PyXjEDZ6xxXwJ/KqpJXVy20LBZ
+X-Gm-Message-State: AOJu0Yypj9u4E0xdxrZUWku0qiqSTWCTN7oChHDVLO8GN2fTONXl3lfe
+	wyskdoX9m3E7mKUU5eS52WtlLcIvpFt+FjoIGCy2wBNWv3gUEQQo2M7r3UeKBxs=
+X-Google-Smtp-Source: AGHT+IFSzRtV7hUd1SxBY54p3xRGDOmJfide+2i5AKgxhJIMRl1tmf+EwE1va4acICFG9JPe5pEW3w==
+X-Received: by 2002:a05:6402:1a5b:b0:564:5c90:f521 with SMTP id bf27-20020a0564021a5b00b005645c90f521mr3995439edb.14.1708939101385;
+        Mon, 26 Feb 2024 01:18:21 -0800 (PST)
+Received: from [192.168.0.173] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id t9-20020a056402240900b005648745b23bsm2150707eda.90.2024.02.26.01.18.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 01:18:21 -0800 (PST)
+Message-ID: <4c1ee741-a0e9-41f0-99e1-5c2a6da06728@linaro.org>
+Date: Mon, 26 Feb 2024 11:18:17 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 03/39] dt-bindings: crypto: add sam9x7 in Atmel AES
+Content-Language: en-US
+To: Varshini Rajendran <varshini.rajendran@microchip.com>,
+ herbert@gondor.apana.org.au, davem@davemloft.net, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+ claudiu.beznea@tuxon.dev, linux-crypto@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Cc: Rob Herring <robh@kernel.org>
+References: <20240223171342.669133-1-varshini.rajendran@microchip.com>
+ <20240223172310.671661-1-varshini.rajendran@microchip.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20240223172310.671661-1-varshini.rajendran@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-A recent change to the lm25066 driver changed the name of its
-regulator from vout0 to vout; device-tree users of lm25066's regulator
-functionality (of which ahe50dc is the only one) thus require a
-corresponding update.
 
-Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
-Cc: Conor Dooley <conor+dt@kernel.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
----
- arch/arm/boot/dts/aspeed/aspeed-bmc-delta-ahe50dc.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-delta-ahe50dc.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-delta-ahe50dc.dts
-index 6600f7e9bf5e..93f3be849071 100644
---- a/arch/arm/boot/dts/aspeed/aspeed-bmc-delta-ahe50dc.dts
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-delta-ahe50dc.dts
-@@ -18,7 +18,7 @@ efuse@##hexaddr {							\
- 		reg = <0x##hexaddr>;						\
- 		shunt-resistor-micro-ohms = <675>;				\
- 		regulators {							\
--			efuse##num: vout0 {					\
-+			efuse##num: vout {					\
- 				regulator-name = __stringify(efuse##num##-reg);	\
- 			};							\
- 		};								\
--- 
-2.43.2
+On 23.02.2024 19:23, Varshini Rajendran wrote:
+> Add DT bindings for atmel AES.
+>
 
+This would have deserved a better commit message, I (we) spent a lot of
+time deciding whether this is the correct approach.
+https://lore.kernel.org/linux-arm-kernel/342de8f3-852f-9bfa-39c4-4d820f349305@linaro.org/
+
+> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
+> Acked-by: Rob Herring <robh@kernel.org>
+
+Anyway:
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> ---
+> Changes in v4:
+> - Updated Acked-by tag
+> ---
+>  .../devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml   | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml b/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml
+> index 0b7383b3106b..7dc0748444fd 100644
+> --- a/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml
+> +++ b/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml
+> @@ -12,7 +12,11 @@ maintainers:
+>  
+>  properties:
+>    compatible:
+> -    const: atmel,at91sam9g46-aes
+> +    oneOf:
+> +      - const: atmel,at91sam9g46-aes
+> +      - items:
+> +          - const: microchip,sam9x7-aes
+> +          - const: atmel,at91sam9g46-aes
+>  
+>    reg:
+>      maxItems: 1
 
