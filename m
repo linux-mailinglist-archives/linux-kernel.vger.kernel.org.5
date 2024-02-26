@@ -1,94 +1,111 @@
-Return-Path: <linux-kernel+bounces-81294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FAA4867398
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:41:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E06986739F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:42:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 813981C25166
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:41:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DDC91F2CED3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:42:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70F7E339BF;
-	Mon, 26 Feb 2024 11:40:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CD211DA5F;
+	Mon, 26 Feb 2024 11:41:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B/xjhlNX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="tnwZ/sP4"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9192557F;
-	Mon, 26 Feb 2024 11:40:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 975541CD1B;
+	Mon, 26 Feb 2024 11:41:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708947632; cv=none; b=NSCykPwrKPd/SG2wdYNlg1KGJSCspR/jLJQAcF6dQ1+yqgRxVkazUT4qofOHJk/W0U53UxhjIdBOnU1mv2yq4PLd6YeX7aUT1jHeJip33I1pQoYq3JpGSN4kCM/lqxLhBwUlESAzj+5JFrUeOaMnT0tUwYoA/BDrD4eA/6QOm/4=
+	t=1708947685; cv=none; b=gbHtKBhgP+WFnVjVlfXfAceB87gREti7nZfmMY/SCjQ72VfclL0aW0vZwsaPNE+HA6ZMz+I8+JmJYVkbo56Empj1ircz6/P1m0yceX5/Nt/u3uDwjk4Qv5wZO/6e8/rfgk/bIpnBbFzSuCq2nwHveazhKGueam+obG/mQgkvjVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708947632; c=relaxed/simple;
-	bh=zmYoQSAAJBlRXeHR52mQWL2C4tPRmHijjrJ32Dly2QY=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=bbdDrvZ42h9RqVAFaIWlxXZyBGmzWtVfU2FndwbBAmxaFW9zL0TcaQeVzPr25MCFP5X7dTRUgr2UJIM6cUCENIWHx6MD5lJLJytBtUHLlnzDRWj7MizaBEDtV+OE95wWAiZywVvBaai0c0ZWIOmhlsoqLqtp0CnC+WZSgt/9TfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B/xjhlNX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2F467C433C7;
-	Mon, 26 Feb 2024 11:40:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708947632;
-	bh=zmYoQSAAJBlRXeHR52mQWL2C4tPRmHijjrJ32Dly2QY=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=B/xjhlNXIhha2w1LNFsnfpTcA5bdHhn+bf1G09Ob30Tfm/xuz27SAGxBQF8ObdqBp
-	 jSwl7s2EWhghB5lNuUFZ1pH5WvmUgVB5fryTdmBId4oV+22tGI+GmlYIJyP6Gad4PA
-	 2WZ9q3JZFHQu/4eq1buDkCXJ8lx+/yDJMrwPwtcGOGkLSkeIZjYqBrnb1VMM4E472h
-	 48v/ReFBnzDUPCTmJJMpjAxq/q9MpMznAYLDgM5ll3l/OqQcWtwYFJThN5/kRDC2kL
-	 15IBNvmSpiuwBpLqjTg7Nf0dMckAgIJOFf5HRDz6sn+8XqhH4PK5CHjx81wMO/hGVu
-	 mHzNDzhmguFmA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 10550D88FB6;
-	Mon, 26 Feb 2024 11:40:32 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1708947685; c=relaxed/simple;
+	bh=i0sZPE2siA+KbeFuOAnfEtNMdZnct79f6csjj2KTG+Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kDEqOYaEY6SFyc30FzhmAf/Vl0OCdPocsyUSnpWOzR9J29qOHqcZz/nAFMr0UopZU6HB8wWhQygxYs9m9zxHOG6J3z4T6gQwvTgXbwxmE1+dTa899izot/wqB8vNdkkD4nis7rWQFvPLW40iEv3KEZkOf0O4PqHOD/a1lBXFBEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=tnwZ/sP4; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=yfZTLN5C2RkxA/kaPf/m9p9YAtmZBNtR82Q6hYJPxLM=; b=tnwZ/sP4RiscbQRTfiGAaEXsqn
+	8IH5bQ2CUgY95aH0jdx/aX5gu/6OnrDygICiOEbqe0V3JeDnOG0d5erGNQPdiK97Lgg/xmJuJeRJe
+	Ae1QPU6MxN1W9mErx7LQd6aS1ytcx6OZiA9hv214YJSmM6DAKnWZr0/jOxkcoNakYdfK9o3DszvW7
+	KJI8hIIMv7KtN5DwMi5QJ1gTwEuakIM3CtJFVkaZ+7s39rqkQRThWvQIvjMKBI90ORlgVAe9abwzK
+	fRlfk8xoJdqTN1xlCs2KF2F78CVUoh0MbTeNCdUGNqQkT13ObfJLzdUCAttW8bq4oGi/u/gg3EDxX
+	3ELKMmAw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:60790)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1reZM7-00038r-2I;
+	Mon, 26 Feb 2024 11:41:11 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1reZM3-0006Op-Jk; Mon, 26 Feb 2024 11:41:07 +0000
+Date: Mon, 26 Feb 2024 11:41:07 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc: davem@davemloft.net, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
+	Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH net-next 1/2] doc: sfp-phylink: drop the mention to
+ phylink_config->pcs_poll
+Message-ID: <Zdx40zi1Qz61sCX7@shell.armlinux.org.uk>
+References: <20240220160406.3363002-1-maxime.chevallier@bootlin.com>
+ <20240220160406.3363002-2-maxime.chevallier@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v3 1/1] net: dsa: microchip: Add support for bridge
- port isolation
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170894763206.4235.9816052153130545658.git-patchwork-notify@kernel.org>
-Date: Mon, 26 Feb 2024 11:40:32 +0000
-References: <20240222075113.2564540-1-o.rempel@pengutronix.de>
-In-Reply-To: <20240222075113.2564540-1-o.rempel@pengutronix.de>
-To: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: davem@davemloft.net, andrew@lunn.ch, edumazet@google.com,
- f.fainelli@gmail.com, kuba@kernel.org, pabeni@redhat.com, olteanv@gmail.com,
- woojung.huh@microchip.com, arun.ramadoss@microchip.com,
- kernel@pengutronix.de, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- UNGLinuxDriver@microchip.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240220160406.3363002-2-maxime.chevallier@bootlin.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-Hello:
+On Tue, Feb 20, 2024 at 05:04:03PM +0100, Maxime Chevallier wrote:
+> commit 64b4a0f8b51b ("net: phylink: remove phylink_config's pcs_poll")
+> dropped the phylink_config->pcs_poll field, which is no longer required
+> to be set by MAC drivers. Remove that mention in the phylink porting
+> guide.
 
-This patch was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+The porting guide needs to be updated with the PCS, and the details for
+that moved over rather than being deleted. While it's true that this
+member is gone from phylink_config, it was only removed after the
+introduction of the similarly named member in phylink_pcs.
 
-On Thu, 22 Feb 2024 08:51:13 +0100 you wrote:
-> Implement bridge port isolation for KSZ switches. Enabling the isolation
-> of switch ports from each other while maintaining connectivity with the
-> CPU and other forwarding ports. For instance, to isolate swp1 and swp2
-> from each other, use the following commands:
-> - bridge link set dev swp1 isolated on
-> - bridge link set dev swp2 isolated on
-> 
-> [...]
+In other words, point 10 should probably read:
 
-Here is the summary with links:
-  - [net-next,v3,1/1] net: dsa: microchip: Add support for bridge port isolation
-    https://git.kernel.org/netdev/net-next/c/a7f08029e2e8
+10. Arrange for PCS link state interrupts to be forwarded into
+    phylink, via:
 
-You are awesome, thank you!
+    .. code-block:: c
+
+        phylink_pcs_change(pcs, link_is_up);
+
+    where ``link_is_up`` is true if the link is currently up or false
+    otherwise. If a PCS is unable to provide these interrupts, then
+    it should set ``pcs->pcs_poll = true;`` when creating the PCS.
+
+However, for that to make sense, we then need the guide to provide
+details about creating the PCS, and also the mac_select_pcs() method.
+Thus my comment about a much bigger update being required.
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
