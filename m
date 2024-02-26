@@ -1,91 +1,165 @@
-Return-Path: <linux-kernel+bounces-80353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F9E7866748
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 01:17:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BFEA86674B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 01:23:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B28C01F2158B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 00:17:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BCFCB20E71
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 00:23:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E72FE3D6B;
-	Mon, 26 Feb 2024 00:17:06 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E2911C36;
+	Mon, 26 Feb 2024 00:22:56 +0000 (UTC)
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21DE0EC4
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 00:17:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B56519F;
+	Mon, 26 Feb 2024 00:22:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708906626; cv=none; b=u3rlFv8fADme2LNxG8O1mDMN+HmH7sYipG4u+pfONLx3Cc4zLoKbpr+O1G/CSbUydY92QwHJVgvkbEkFaCiMl2O3x+grf8tv2w3h1sNNFwyLFPJi4JV6YOaFQuTTNAkSan7ZUrxX6yh8YuGRveBOIntCVLOuhzMCbNXut5LxgtU=
+	t=1708906975; cv=none; b=tG2S6OH83wiqxbTEcWxa8EIl6XgbqZgWtIrDT0B1UBlFRdIMDzYGofFZotZRY5fkjeRsTEsFCvB22YWfIUmTOHfWASl34yMzeuy24tHV6DqvFf6lmdPNr6109U9cXbqqAV5UGJYiIZlrPPcb5qMbEl4ll95qDbDCRVxM97Mpe1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708906626; c=relaxed/simple;
-	bh=uEPs3JVf4orzGIZKaOSre7Yc6cd3i87Gg03dlkfwZjo=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=TL0yIlB38opYkamBRICCjQudlHM0bLGPMGN+lXgp4pFAjKSQgH4QoGHqYDcewtgU5xenOoaQMPS3gAAJOX35Cn+UVGdgvmUg5+28JEbBFfn4fOM7FAngON9QlJ2moeZHELHCwQztXhoQg8x6KgMcgaIJevm4ZE74OMxYwPq4ftE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7bfe777fe22so189257739f.3
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 16:17:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708906624; x=1709511424;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+KxGTuAn7JS3VSjYdk/J4G72DLu6mPsYSoTotXdZcE8=;
-        b=lxpk+5/G0Nz9eySdzuqEvEasRSHoKMkYFmKgPaphFtyKEBbQhakUgu67KaGwUZSpzO
-         FScv63s+kt1vbp8myP/kiylSHceZHKtR9NBB6k4ncunq0BPAuRVw/iSPlkJruLZgytPp
-         NLn/I6Tjyp0ECszWMYwuk8/IVTbhjFFyKBe3U/s2sABXr2LXyYvIYY0WZfqBjuKCEkBh
-         HFPvuvNDmrJJGyrxmCSj1vYoChU6H0IhX4rC4HJpR6JF5K5uXzqqxjPA557kK2rw/QE2
-         n1NxivuRCtfymCLeYpxAUVSjIExFLyCZQcjRlr/A4flZZFwv+szRZgYO3Jxy3zwdLME2
-         Y7hQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUPMY8HSt2hKbizE5MkQO5TuPashXyaFVP8jyAyRbVqUoqt63mnW/xQgeKoZtvVoDdkkKtiBvuZLuAA3GRMMKBsKsvps/ng2Z3lHQFs
-X-Gm-Message-State: AOJu0Yygg1lREk4shdIAho9gvZKwpr18/rpVu1/kRyr0bPnpD+r6ubNW
-	XQ2dgbH5Iv410MTqitQu2lsxI6B8j5jtE+3x2EKLkBcQFh+zdNXd1o2A/wjOVT05RSztGPOy9LB
-	7YURp5rpL3GoOtifkdqhX1x7zfDuQtp4oj5QczXbm1vetRNJthG4fWUE=
-X-Google-Smtp-Source: AGHT+IEPdJiPXQk/Y5Ki4jmV6bC+J2REozS48fthEdh4ECHPMOB3DaTaQA533+TxJ4Giih0NBiJmzLT2i4axTx7Ya5eMyMIBM8aQ
+	s=arc-20240116; t=1708906975; c=relaxed/simple;
+	bh=XgpawS2kecmzLSDpMZ/VLjdoFInp94yEmYbRTjat95w=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=oWBL1eatTYhJbwbhnV/gCdzrIPi8LDmYHjqrhHjB0wLfLf4FnW8ahXdJnyJTocPM2/k2yIL4DL/wQN0E9TBFWIFpD3y9iVGUNr/osUz87G5ufSPYqRYnTFfZRBt0EYBoVtX5uNVZVDui2W3u1+W/z6/IsMFNysx7Q/O4q278v7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96.2)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1reOlW-0001nE-1i;
+	Mon, 26 Feb 2024 00:22:42 +0000
+Date: Mon, 26 Feb 2024 00:22:39 +0000
+From: Daniel Golle <daniel@makrotopia.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Daniel Golle <daniel@makrotopia.org>, linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v8 0/7] mtd: ubi: allow UBI volumes to provide NVMEM
+Message-ID: <cover.1708906456.git.daniel@makrotopia.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2710:b0:474:77e9:bb16 with SMTP id
- m16-20020a056638271000b0047477e9bb16mr134065jav.0.1708906624287; Sun, 25 Feb
- 2024 16:17:04 -0800 (PST)
-Date: Sun, 25 Feb 2024 16:17:04 -0800
-In-Reply-To: <000000000000a2c13905fda1757e@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004b8d8206123dd402@google.com>
-Subject: Re: [syzbot] [hfs?] KASAN: slab-out-of-bounds Write in hfs_bnode_read_key
-From: syzbot <syzbot+4f7a1fc5ec86b956afb4@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-syzbot suspects this issue was fixed by commit:
+Similar to how MAC addresses and Wi-Fi calibration data would be
+stored inside an MTD partition on devices coming with NOR flash, a UBI
+volume is used by some vendors in the same way on devices with NAND
+flash.
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+The goal of this series is to support such embedded Linux devices which
+got NVMEM bits stored inside a UBI volume.
 
-    fs: Block writes to mounted block devices
+Representing the UBI volume in the Device Tree and adding a phandle to
+be referenced by NVMEM consumers allows such devices to come up with
+their correct MAC addresses and device-specific Wi-Fi calibration data
+loaded.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12e81c54180000
-start commit:   e5282a7d8f6b Merge tag 'scsi-fixes' of git://git.kernel.or..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=162cf2103e4a7453
-dashboard link: https://syzkaller.appspot.com/bug?extid=4f7a1fc5ec86b956afb4
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12feb345280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=123cb2a5280000
+In order for NVMEM bits to be available for other drivers, attaching
+UBI devices has to be moved from late_initcall (which is too late for
+other drivers) to happen earlier. As an alternative to the existing
+kernel cmdline parameter the Device Tree property 'compatible =
+"linux,ubi";' inside an MTD partition can be used to have that MTD
+device attached as UBI device. MTD partitions which serve as UBI
+devices may have a "volumes" subnode with volumes, and volumes may
+have an "nvmem-layout" object which will trigger the creation of an
+emulated NVMEM device on top of the UBI volume.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+In this way, other drivers (think: Ethernet, Wi-Fi) can resolve and
+acquire NVMEM bits using the usual device tree phandle, just this time
+the NVMEM content is read from a UBI volume.
 
-#syz fix: fs: Block writes to mounted block devices
+This series is a follow-up and contains most patches of the previous
+series "mtd: ubi: behave like a good MTD citizen"[1] which was meant in
+preparation for implementing the NVMEM provider.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+As lots of time has passed NVMEM-on-UBI is by now already in-use
+downstream at OpenWrt to support reading WiFi EEPROMs and MAC
+addresses on a bunch of ASUS devices[2], [3] which laudably store all
+in UBI. That also exposed a possible issue on 32-bit platforms which
+has now been addressed in v8.
+
+[1]: https://patchwork.ozlabs.org/project/linux-mtd/list/?series=353177&state=%2A&archive=both
+[2]: https://github.com/openwrt/openwrt/pull/14676 (merged)
+[3]: https://github.com/openwrt/openwrt/pull/14729 (pending)
+
+Changes since v7:
+ * use integer types with well-defined size for use with do_div(n, base)
+   (addresses compiler warning when building on 32-bit platforms)
+
+Changes since v6:
+ * dt-bindings fixes got squashed into the wrong patch, fix that and
+   newly introduced YAML white space issues
+
+Changes since v5:
+ * fix whitespace problems in dt-schema additions
+
+Changes since v4:
+ * split ubi_open_volume_path() breaking out reusable parts for
+   new match_volume_desc() function as suggested by Richard Weinberger.
+   Doing the same for ubi_open_volume_nm() doesn't work as we are working
+   on struct ubi_volume_info in match_volume_desc() while ubi_open_volume_nm()
+   is working on struct ubi_volume. That reduces the common part to a string
+   comparision and length check which doesn't seem worth breaking out of the
+   existing function.
+ * drop patches and changes not strictly needed for NVMEM use-case:
+   - don't handle ubi detach on MTD removal notification. It was not done
+     until now and the locking hell I was facing when trying to implement
+     that is non trivial.
+   - don't relocate the call to ubiblock device creation to the
+     notification handler
+   - change ubiblock only as far as needed to handle creation from cmdline
+     parameter when a volume is added.
+ * improve commit messages and comments
+
+Changes since v3:
+ * dt-bindings fixes as requested
+
+Changes since v2:
+ * include dt-bindings additions
+
+Changes since v1:
+ * include patch to fix exiting Kconfig formatting issues
+ * fix typo and indentation in Kconfig
+
+Daniel Golle (7):
+  dt-bindings: mtd: add basic bindings for UBI
+  dt-bindings: mtd: ubi-volume: allow UBI volumes to provide NVMEM
+  mtd: ubi: block: use notifier to create ubiblock from parameter
+  mtd: ubi: attach from device tree
+  mtd: ubi: introduce pre-removal notification for UBI volumes
+  mtd: ubi: populate ubi volume fwnode
+  mtd: ubi: provide NVMEM layer over UBI volumes
+
+ .../bindings/mtd/partitions/linux,ubi.yaml    |  75 +++++++
+ .../bindings/mtd/partitions/ubi-volume.yaml   |  40 ++++
+ drivers/mtd/ubi/Kconfig                       |  13 ++
+ drivers/mtd/ubi/Makefile                      |   1 +
+ drivers/mtd/ubi/block.c                       | 136 ++++++-------
+ drivers/mtd/ubi/build.c                       | 154 ++++++++++----
+ drivers/mtd/ubi/kapi.c                        |  56 +++--
+ drivers/mtd/ubi/nvmem.c                       | 191 ++++++++++++++++++
+ drivers/mtd/ubi/ubi.h                         |   3 +
+ drivers/mtd/ubi/vmt.c                         |  44 +++-
+ include/linux/mtd/ubi.h                       |   2 +
+ 11 files changed, 583 insertions(+), 132 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+ create mode 100644 drivers/mtd/ubi/nvmem.c
+
+-- 
+2.44.0
 
