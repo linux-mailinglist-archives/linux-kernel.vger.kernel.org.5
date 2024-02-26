@@ -1,77 +1,78 @@
-Return-Path: <linux-kernel+bounces-82388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82389-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28BC3868398
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:25:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA0AC86839A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:25:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C92ADB21F13
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:25:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8368C28146F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:25:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7B371332A9;
-	Mon, 26 Feb 2024 22:24:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04DAF132491;
+	Mon, 26 Feb 2024 22:24:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="xKctK12h";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="WIyTqlVn"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="U8MSAp9n";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MYKUu0gs"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2348613249C;
-	Mon, 26 Feb 2024 22:24:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5005132C0B;
+	Mon, 26 Feb 2024 22:24:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708986273; cv=none; b=b9RIEG1N0H08R87aB1dMhfIEtAcPLe3PGN3So8FL5YjhHqQsiAVsNBt2Xct25TpWulLKa1o+FI2cbYNoVDbJrtqVPVPdYS+a6YYU3+lUBcehVumh4Lqis6V3aYj5/66AFjcxFcybDF+RKwYlfePbiqWBBEMlCSEDKxLryGjy8D4=
+	t=1708986274; cv=none; b=u2i0RN7y3MMzZU+2Q30WdJ/hu7ZM2/NdHjFAqQarxhEmVnbjqzB0arDogJRYnjYuK+IQU1QnMFNNo9tdVpGW4RhvvDc7VtXbrCU9euWeHK0x1VE/vK2Mdwe+ueHGxL9irzxQR7inM9Ff600npUl7z2YE5s+Is3klsQNhOfMCf8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708986273; c=relaxed/simple;
-	bh=YK+gb9/jyy0d4w+W35SvBsoEycHJgPqX6bWivLKiY4s=;
+	s=arc-20240116; t=1708986274; c=relaxed/simple;
+	bh=SHT+PsLK9/XAM8n7DZNptXYvukSaAfiQz+q9YEvuxzc=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=AVs2uq581RHbBkUdtJPd6wze+eJSFXnjcQApoNk22wW9Ja0gQ0MU16PcwLiDQFfj0l3FFsNALTFc6ANZCVdF5o7dnX8zNydPGhJzF9ORNtPGRawaL3s+GobvIItN+nKxxxlQYldZgRDPSAbue6eodLGPwfIMUI47SnpK17zQMIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=xKctK12h; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=WIyTqlVn; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=JJ0hGtsUtmpOPSOXmh6TuWz5eaPmbTbAdV7DDRzvJAE5RqyfNPDleB3PMYg7c5GvJl2DTZKUVaoBW7o6jPdR1hUX3esPr0DHpPIw9134DarioONhKzZkRlq453DelZuPPatXEFS3l3me48BSQf5oy2GPFMWD/wfJxqa/B5awTLw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=U8MSAp9n; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MYKUu0gs; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 26 Feb 2024 22:24:29 -0000
+Date: Mon, 26 Feb 2024 22:24:30 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708986270;
+	s=2020; t=1708986271;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7xTIw5tqjVZIpH35eKhPSVJAIAlEyQ7W8yT+EkIHaiU=;
-	b=xKctK12hz6sSi2+3JHUeonMCANn+ucQj+nDgM1lZU62YF4VFr+olrcY6ija4vWmqzBK6n7
-	GsloVN3IpREor1dN/e5f3SMHW+jhO2HAFiIZeTew+/93lu6fCjYbwv9epNiK157TUBIPSS
-	nXn97a5a9G9FHOL4Ancr+2xkzVKbPJBCHw59Jl3JRV1VqcBPg05Qr9exx8C1Y5q6p31nKs
-	oVbClVgPDy14BWOxZE0hA4ztryoWj7+NLZM2IuzZZVi1/TIslfqf/R+JjaIoqs1Jzmb224
-	xnZ5BUOdRM5CFa6iVCrdP4rTksdWOt2ZverryyU1BqW9fZSdK8Dxaai4BCg9eQ==
+	bh=s7Nb/epJU1nOd40bkU9iyOThlK/mwyumynu8JQaJsHc=;
+	b=U8MSAp9ne3QhNExXbE+klQVYFBAkoHeQc/PANwga4uD74AyXgoMoYr2B7OnyR3lCRn4NwF
+	85h8HxegNJVkv5o7GpyLQftMaJS4CM7JCNG/tQ7vmJubJIucRDSkBItzGp6fMde0cKISI4
+	AD9WxTPP3cMGDbZ+b/lvlB4ilD7Qd1auBpTNdMVgvo/VRmVNRnDcLIDVyPcchtEomsFLOQ
+	CrhW4zkNzhCfdkw4BCa6Ol4mxTRjZm0QXKDk7D7AQR6Ctz9k7IjCwGbH2UsPPnFBqXlHMM
+	aCDe2OEnXSuQ2ft/IDnfnCwRIUJSlPV1GDyinWZyJG7aEILBD8m4ibLoVz3/wQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708986270;
+	s=2020e; t=1708986271;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7xTIw5tqjVZIpH35eKhPSVJAIAlEyQ7W8yT+EkIHaiU=;
-	b=WIyTqlVnIs42Jg+6nIgywv2yvw6itLiCb3YvKpw19N714FS0zWLMZVwG49s2Q2RemhVaiC
-	sxZhyoNOIXCArKBA==
+	bh=s7Nb/epJU1nOd40bkU9iyOThlK/mwyumynu8JQaJsHc=;
+	b=MYKUu0gsQ4HtJzTykJNvsxTsxZWQ6eluuu9xHplm03BgW1bgkSoZlf1PTRawbwuvKHJFEh
+	q+cdLd8Tf3dhsqDg==
 From: "tip-bot2 for Frederic Weisbecker" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] tick: Shut down low-res tick from dying CPU
+Subject:
+ [tip: timers/core] tick: Split nohz and highres features from nohz_mode
 Cc: Frederic Weisbecker <frederic@kernel.org>,
  Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
  linux-kernel@vger.kernel.org
-In-Reply-To: <20240225225508.11587-15-frederic@kernel.org>
-References: <20240225225508.11587-15-frederic@kernel.org>
+In-Reply-To: <20240225225508.11587-14-frederic@kernel.org>
+References: <20240225225508.11587-14-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170898626934.398.2472263585670806931.tip-bot2@tip-bot2>
+Message-ID: <170898627026.398.2008623390447364745.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -81,146 +82,252 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     3f69d04e146c6e14ccdd4e7b37d93f789229202a
-Gitweb:        https://git.kernel.org/tip/3f69d04e146c6e14ccdd4e7b37d93f789229202a
+Commit-ID:     7988e5ae2be70b110db9d4b8ec163bd42e67d3be
+Gitweb:        https://git.kernel.org/tip/7988e5ae2be70b110db9d4b8ec163bd42e67d3be
 Author:        Frederic Weisbecker <frederic@kernel.org>
-AuthorDate:    Sun, 25 Feb 2024 23:55:06 +01:00
+AuthorDate:    Sun, 25 Feb 2024 23:55:05 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Mon, 26 Feb 2024 11:37:32 +01:00
 
-tick: Shut down low-res tick from dying CPU
+tick: Split nohz and highres features from nohz_mode
 
-The timekeeping duty is handed over from the outgoing CPU within stop
-machine. This works well if CONFIG_NO_HZ_COMMON=n or the tick is in
-high-res mode. However in low-res dynticks mode, the tick isn't
-cancelled until the clockevent is shut down, which can happen later. The
-tick may therefore fire again once IRQs are re-enabled on stop machine
-and until IRQs are disabled for good upon the last call to idle.
+The nohz mode field tells about low resolution nohz mode or high
+resolution nohz mode but it doesn't tell about high resolution non-nohz
+mode.
 
-That's so many opportunities for a timekeeper to go idle and the
-outgoing CPU to take over that duty. This is why
-tick_nohz_idle_stop_tick() is called one last time on idle if the CPU
-is seen offline: so that the timekeeping duty is handed over again in
-case the CPU has re-taken the duty.
+In order to retrieve the latter state, tick_cancel_sched_timer() must
+fiddle with struct hrtimer's internals to guess if the tick has been
+initialized in high resolution.
 
-This means there are two timekeeping handovers on CPU down hotplug with
-different undocumented constraints and purposes:
-
-1) A handover on stop machine for !dynticks || highres. All online CPUs
-   are guaranteed to be non-idle and the timekeeping duty can be safely
-   handed-over. The hrtimer tick is cancelled so it is guaranteed that in
-   dynticks mode the outgoing CPU won't take again the duty.
-
-2) A handover on last idle call for dynticks && lowres.  Setting the
-   duty to TICK_DO_TIMER_NONE makes sure that a CPU will take over the
-   timekeeping.
-
-Prepare for consolidating the handover to a single place (the first one)
-with shutting down the low-res tick as well from
-tick_cancel_sched_timer() as well. This will simplify the handover and
-unify the tick cancellation between high-res and low-res.
+Move instead the nohz mode field information into the tick flags and
+provide two new bits: one to know if the tick is in nohz mode and
+another one to know if the tick is in high resolution. The combination
+of those two flags provides all the needed informations to determine
+which of the three tick modes is running.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20240225225508.11587-15-frederic@kernel.org
+Link: https://lore.kernel.org/r/20240225225508.11587-14-frederic@kernel.org
 
 ---
- kernel/time/tick-common.c |  3 ++-
- kernel/time/tick-sched.c  | 32 +++++++++++++++++++++++++-------
- kernel/time/tick-sched.h  |  4 ++--
- 3 files changed, 29 insertions(+), 10 deletions(-)
+ kernel/time/hrtimer.c    |  2 +-
+ kernel/time/tick-sched.c | 32 +++++++++++++++++---------------
+ kernel/time/tick-sched.h | 13 +++++--------
+ kernel/time/timer_list.c |  5 +++--
+ 4 files changed, 26 insertions(+), 26 deletions(-)
 
-diff --git a/kernel/time/tick-common.c b/kernel/time/tick-common.c
-index 5224140..9cd09ee 100644
---- a/kernel/time/tick-common.c
-+++ b/kernel/time/tick-common.c
-@@ -410,7 +410,8 @@ int tick_cpu_dying(unsigned int dying_cpu)
- 	if (tick_do_timer_cpu == dying_cpu)
- 		tick_do_timer_cpu = cpumask_first(cpu_online_mask);
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index 3e95474..70625df 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -747,7 +747,7 @@ static void hrtimer_switch_to_hres(void)
+ 	base->hres_active = 1;
+ 	hrtimer_resolution = HIGH_RES_NSEC;
  
--	tick_cancel_sched_timer(dying_cpu);
-+	/* Make sure the CPU won't try to retake the timekeeping duty */
-+	tick_sched_timer_dying(dying_cpu);
- 
- 	/* Remove CPU from timer broadcasting */
- 	tick_offline_cpu(dying_cpu);
+-	tick_setup_sched_timer(NOHZ_MODE_HIGHRES);
++	tick_setup_sched_timer(true);
+ 	/* "Retrigger" the interrupt to get things going */
+ 	retrigger_next_event(NULL);
+ }
 diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index dcb9f03..89d16b8 100644
+index 4aa7ce0..dcb9f03 100644
 --- a/kernel/time/tick-sched.c
 +++ b/kernel/time/tick-sched.c
-@@ -308,6 +308,14 @@ static enum hrtimer_restart tick_nohz_handler(struct hrtimer *timer)
- 	return HRTIMER_RESTART;
- }
+@@ -831,7 +831,7 @@ static void tick_nohz_restart(struct tick_sched *ts, ktime_t now)
+ 	/* Forward the time to expire in the future */
+ 	hrtimer_forward(&ts->sched_timer, now, TICK_NSEC);
  
-+static void tick_sched_timer_cancel(struct tick_sched *ts)
-+{
-+	if (tick_sched_flag_test(ts, TS_FLAG_HIGHRES))
-+		hrtimer_cancel(&ts->sched_timer);
-+	else if (tick_sched_flag_test(ts, TS_FLAG_NOHZ))
-+		tick_program_event(KTIME_MAX, 1);
-+}
-+
- #ifdef CONFIG_NO_HZ_FULL
- cpumask_var_t tick_nohz_full_mask;
- EXPORT_SYMBOL_GPL(tick_nohz_full_mask);
-@@ -1040,10 +1048,7 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
+-	if (ts->nohz_mode == NOHZ_MODE_HIGHRES) {
++	if (tick_sched_flag_test(ts, TS_FLAG_HIGHRES)) {
+ 		hrtimer_start_expires(&ts->sched_timer,
+ 				      HRTIMER_MODE_ABS_PINNED_HARD);
+ 	} else {
+@@ -1040,14 +1040,14 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
  	 * the tick timer.
  	 */
  	if (unlikely(expires == KTIME_MAX)) {
--		if (tick_sched_flag_test(ts, TS_FLAG_HIGHRES))
--			hrtimer_cancel(&ts->sched_timer);
--		else
--			tick_program_event(KTIME_MAX, 1);
-+		tick_sched_timer_cancel(ts);
+-		if (ts->nohz_mode == NOHZ_MODE_HIGHRES)
++		if (tick_sched_flag_test(ts, TS_FLAG_HIGHRES))
+ 			hrtimer_cancel(&ts->sched_timer);
+ 		else
+ 			tick_program_event(KTIME_MAX, 1);
  		return;
  	}
  
-@@ -1598,14 +1603,27 @@ void tick_setup_sched_timer(bool hrtimer)
- 	tick_nohz_activate(ts);
+-	if (ts->nohz_mode == NOHZ_MODE_HIGHRES) {
++	if (tick_sched_flag_test(ts, TS_FLAG_HIGHRES)) {
+ 		hrtimer_start(&ts->sched_timer, expires,
+ 			      HRTIMER_MODE_ABS_PINNED_HARD);
+ 	} else {
+@@ -1108,7 +1108,7 @@ static void tick_nohz_full_update_tick(struct tick_sched *ts)
+ 	if (!tick_nohz_full_cpu(smp_processor_id()))
+ 		return;
+ 
+-	if (ts->nohz_mode == NOHZ_MODE_INACTIVE)
++	if (!tick_sched_flag_test(ts, TS_FLAG_NOHZ))
+ 		return;
+ 
+ 	__tick_nohz_full_update_tick(ts, ktime_get());
+@@ -1168,7 +1168,7 @@ static bool can_stop_idle_tick(int cpu, struct tick_sched *ts)
+ 		return false;
+ 	}
+ 
+-	if (unlikely(ts->nohz_mode == NOHZ_MODE_INACTIVE))
++	if (unlikely(!tick_sched_flag_test(ts, TS_FLAG_NOHZ)))
+ 		return false;
+ 
+ 	if (need_resched())
+@@ -1487,11 +1487,11 @@ static void tick_nohz_lowres_handler(struct clock_event_device *dev)
+ 		tick_program_event(hrtimer_get_expires(&ts->sched_timer), 1);
  }
  
--void tick_cancel_sched_timer(int cpu)
-+/*
-+ * Shut down the tick and make sure the CPU won't try to retake the timekeeping
-+ * duty before disabling IRQs in idle for the last time.
-+ */
-+void tick_sched_timer_dying(int cpu)
+-static inline void tick_nohz_activate(struct tick_sched *ts, int mode)
++static inline void tick_nohz_activate(struct tick_sched *ts)
  {
-+	struct tick_device *td = &per_cpu(tick_cpu_device, cpu);
- 	struct tick_sched *ts = &per_cpu(tick_cpu_sched, cpu);
-+	struct clock_event_device *dev = td->evtdev;
+ 	if (!tick_nohz_enabled)
+ 		return;
+-	ts->nohz_mode = mode;
++	tick_sched_flag_set(ts, TS_FLAG_NOHZ);
+ 	/* One update is enough */
+ 	if (!test_and_set_bit(0, &tick_nohz_active))
+ 		timers_update_nohz();
+@@ -1512,7 +1512,7 @@ static void tick_nohz_switch_to_nohz(void)
+ 	 * Recycle the hrtimer in 'ts', so we can share the
+ 	 * highres code.
+ 	 */
+-	tick_setup_sched_timer(NOHZ_MODE_LOWRES);
++	tick_setup_sched_timer(false);
+ }
+ 
+ static inline void tick_nohz_irq_enter(void)
+@@ -1540,7 +1540,7 @@ static inline void tick_nohz_irq_enter(void)
+ 
+ static inline void tick_nohz_switch_to_nohz(void) { }
+ static inline void tick_nohz_irq_enter(void) { }
+-static inline void tick_nohz_activate(struct tick_sched *ts, int mode) { }
++static inline void tick_nohz_activate(struct tick_sched *ts) { }
+ 
+ #endif /* CONFIG_NO_HZ_COMMON */
+ 
+@@ -1567,15 +1567,17 @@ early_param("skew_tick", skew_tick);
+  * tick_setup_sched_timer - setup the tick emulation timer
+  * @mode: tick_nohz_mode to setup for
+  */
+-void tick_setup_sched_timer(int mode)
++void tick_setup_sched_timer(bool hrtimer)
+ {
+ 	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
+ 
+ 	/* Emulate tick processing via per-CPU hrtimers: */
+ 	hrtimer_init(&ts->sched_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_HARD);
+ 
+-	if (IS_ENABLED(CONFIG_HIGH_RES_TIMERS) && mode == NOHZ_MODE_HIGHRES)
++	if (IS_ENABLED(CONFIG_HIGH_RES_TIMERS) && hrtimer) {
++		tick_sched_flag_set(ts, TS_FLAG_HIGHRES);
+ 		ts->sched_timer.function = tick_nohz_handler;
++	}
+ 
+ 	/* Get the next period (per-CPU) */
+ 	hrtimer_set_expires(&ts->sched_timer, tick_init_jiffy_update());
+@@ -1589,11 +1591,11 @@ void tick_setup_sched_timer(int mode)
+ 	}
+ 
+ 	hrtimer_forward_now(&ts->sched_timer, TICK_NSEC);
+-	if (IS_ENABLED(CONFIG_HIGH_RES_TIMERS) && mode == NOHZ_MODE_HIGHRES)
++	if (IS_ENABLED(CONFIG_HIGH_RES_TIMERS) && hrtimer)
+ 		hrtimer_start_expires(&ts->sched_timer, HRTIMER_MODE_ABS_PINNED_HARD);
+ 	else
+ 		tick_program_event(hrtimer_get_expires(&ts->sched_timer), 1);
+-	tick_nohz_activate(ts, mode);
++	tick_nohz_activate(ts);
+ }
+ 
+ void tick_cancel_sched_timer(int cpu)
+@@ -1602,7 +1604,7 @@ void tick_cancel_sched_timer(int cpu)
  	ktime_t idle_sleeptime, iowait_sleeptime;
  	unsigned long idle_calls, idle_sleeps;
  
--	if (tick_sched_flag_test(ts, TS_FLAG_HIGHRES))
--		hrtimer_cancel(&ts->sched_timer);
-+	/* This must happen before hrtimers are migrated! */
-+	tick_sched_timer_cancel(ts);
-+
-+	/*
-+	 * If the clockevents doesn't support CLOCK_EVT_STATE_ONESHOT_STOPPED,
-+	 * make sure not to call low-res tick handler.
-+	 */
-+	if (tick_sched_flag_test(ts, TS_FLAG_NOHZ))
-+		dev->event_handler = clockevents_handle_noop;
+-	if (IS_ENABLED(CONFIG_HIGH_RES_TIMERS) && ts->sched_timer.base)
++	if (tick_sched_flag_test(ts, TS_FLAG_HIGHRES))
+ 		hrtimer_cancel(&ts->sched_timer);
  
  	idle_sleeptime = ts->idle_sleeptime;
- 	iowait_sleeptime = ts->iowait_sleeptime;
+@@ -1652,7 +1654,7 @@ int tick_check_oneshot_change(int allow_nohz)
+ 	if (!test_and_clear_bit(0, &ts->check_clocks))
+ 		return 0;
+ 
+-	if (ts->nohz_mode != NOHZ_MODE_INACTIVE)
++	if (tick_sched_flag_test(ts, TS_FLAG_NOHZ))
+ 		return 0;
+ 
+ 	if (!timekeeping_valid_for_hres() || !tick_is_oneshot_available())
 diff --git a/kernel/time/tick-sched.h b/kernel/time/tick-sched.h
-index bbe72a0..58d8d1c 100644
+index 07a4c01..bbe72a0 100644
 --- a/kernel/time/tick-sched.h
 +++ b/kernel/time/tick-sched.h
-@@ -106,9 +106,9 @@ extern struct tick_sched *tick_get_tick_sched(int cpu);
+@@ -14,12 +14,6 @@ struct tick_device {
+ 	enum tick_device_mode mode;
+ };
  
- extern void tick_setup_sched_timer(bool hrtimer);
+-enum tick_nohz_mode {
+-	NOHZ_MODE_INACTIVE,
+-	NOHZ_MODE_LOWRES,
+-	NOHZ_MODE_HIGHRES,
+-};
+-
+ /* The CPU is in the tick idle mode */
+ #define TS_FLAG_INIDLE		BIT(0)
+ /* The idle tick has been stopped */
+@@ -31,6 +25,10 @@ enum tick_nohz_mode {
+ #define TS_FLAG_IDLE_ACTIVE	BIT(2)
+ /* CPU was the last one doing do_timer before going idle */
+ #define TS_FLAG_DO_TIMER_LAST	BIT(3)
++/* NO_HZ is enabled */
++#define TS_FLAG_NOHZ		BIT(4)
++/* High resolution tick mode */
++#define TS_FLAG_HIGHRES		BIT(5)
+ 
+ /**
+  * struct tick_sched - sched tick emulation and no idle tick control/stats
+@@ -84,7 +82,6 @@ struct tick_sched {
+ 	ktime_t				idle_entrytime;
+ 
+ 	/* Tick stop */
+-	enum tick_nohz_mode		nohz_mode;
+ 	unsigned long			last_jiffies;
+ 	u64				timer_expires_base;
+ 	u64				timer_expires;
+@@ -107,7 +104,7 @@ struct tick_sched {
+ 
+ extern struct tick_sched *tick_get_tick_sched(int cpu);
+ 
+-extern void tick_setup_sched_timer(int mode);
++extern void tick_setup_sched_timer(bool hrtimer);
  #if defined CONFIG_NO_HZ_COMMON || defined CONFIG_HIGH_RES_TIMERS
--extern void tick_cancel_sched_timer(int cpu);
-+extern void tick_sched_timer_dying(int cpu);
+ extern void tick_cancel_sched_timer(int cpu);
  #else
--static inline void tick_cancel_sched_timer(int cpu) { }
-+static inline void tick_sched_timer_dying(int cpu) { }
- #endif
+diff --git a/kernel/time/timer_list.c b/kernel/time/timer_list.c
+index 38f81d8..1c311c4 100644
+--- a/kernel/time/timer_list.c
++++ b/kernel/time/timer_list.c
+@@ -152,7 +152,8 @@ static void print_cpu(struct seq_file *m, int cpu, u64 now)
  
- #ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
+ 	{
+ 		struct tick_sched *ts = tick_get_tick_sched(cpu);
+-		P(nohz_mode);
++		P_flag(nohz, TS_FLAG_NOHZ);
++		P_flag(highres, TS_FLAG_HIGHRES);
+ 		P_ns(last_tick);
+ 		P_flag(tick_stopped, TS_FLAG_STOPPED);
+ 		P(idle_jiffies);
+@@ -259,7 +260,7 @@ static void timer_list_show_tickdevices_header(struct seq_file *m)
+ 
+ static inline void timer_list_header(struct seq_file *m, u64 now)
+ {
+-	SEQ_printf(m, "Timer List Version: v0.9\n");
++	SEQ_printf(m, "Timer List Version: v0.10\n");
+ 	SEQ_printf(m, "HRTIMER_MAX_CLOCK_BASES: %d\n", HRTIMER_MAX_CLOCK_BASES);
+ 	SEQ_printf(m, "now at %Ld nsecs\n", (unsigned long long)now);
+ 	SEQ_printf(m, "\n");
 
