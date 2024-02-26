@@ -1,79 +1,92 @@
-Return-Path: <linux-kernel+bounces-82025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC4D5867DE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:16:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03E9B867E2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:23:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CAA21C24065
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:16:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56DF7B2BE45
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:16:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 140021369A7;
-	Mon, 26 Feb 2024 17:08:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BB9312F390;
+	Mon, 26 Feb 2024 17:08:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PS6NPe48"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lqm7Mvls";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="eRSBuzih";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ociJqUVZ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="u94fmCMp"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A107612F5B8
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 17:07:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8D6E12FB14;
+	Mon, 26 Feb 2024 17:07:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708967280; cv=none; b=ldxdz8IXbGtLAoUsHTlyaVgarBZ2yKPaF9eo+kB49laOaz6TludU1dQJigh7zOf6crsEAvg0pb8EELz2VGLGLrLK5PTYYk13hGzdht86+Cf6fJKL8b0Vg+HjDxDQMZFTUTKSgzuTkHPfNjBM0KeAd7OUE0sd2e6bpP0Yegay2IE=
+	t=1708967279; cv=none; b=i/VU6hUKLGyiCpeNMkhrBBj34oHk9en+nNbLFxyPOBJkbiw/AurZSH/aMh3KB3JOMiAsXZO4zknC+0NIpy2/VA8ph1TqSQBITuQX072x63nN0sA9rJPtV9FZHfDk7Jqa/YTIddudaWNfswSgrvSm1KAx2HDgYKCWzzr8OLYckcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708967280; c=relaxed/simple;
-	bh=ot5o6Y7N8huTeeBW50wAKAxLA6DbyVtI4eOZUfS5VuE=;
+	s=arc-20240116; t=1708967279; c=relaxed/simple;
+	bh=Ghx+uTZbpHULPvh6J03M80Ievm3SPeqKg1tWQqLgkC0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=s6J1/6QoMlipBkguSS66xxC0rSzf2nDammjQTXvdRL17Lc27no8L0WP3o2mrP2CN79Yp7963u+Qszx+uQO9x4wd9DJaEuZn77YhrvjWPC5ZYGiPcVZlgtuLs8Bz6K4oM5Zc1BM9Wn2Zwe5FVDuSmTX5JQnMeyqGKEEqM4JID2D0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PS6NPe48; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708967277;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 In-Reply-To:Content-Type; b=VCG7T1KBwcBNBqyggVtI4P84natCsXV21woqOwUfhRxg0z5tZkeVynLJDFodFNbTQsj9RRYd6vjnm5l2wJtGgjoyrDSkpqlnyCNxmgSyxOR9drhm3SxyLHLNTnyTn2E4eg5pSLr6ifQU5angjI63Ymg3NGBer4j0FmUYanGDeFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lqm7Mvls; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=eRSBuzih; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ociJqUVZ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=u94fmCMp; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id EF93D22118;
+	Mon, 26 Feb 2024 17:07:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708967275; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=F2a3hAc8xbGiBkaQRR/cOD5LbSfgks1mwCtsszd3ZXQ=;
-	b=PS6NPe48WADPwE2csUWGJCBqQ/vVW0uOJ8ON+DXUiE+eM9qotlIDKsKZPktGazfh4e9ir4
-	nZ6oPmzLO+Y0/iPyafA3gpnWIPVTP5eChz3sUCYFpKvS/nq938XB3/HZGsXW23acPZ+5qw
-	f8LZ5j6uA+EnCosptnpuYLVe2eUWnL0=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-581-QP1F8dXLPeyboG6-sn4RdA-1; Mon, 26 Feb 2024 12:07:55 -0500
-X-MC-Unique: QP1F8dXLPeyboG6-sn4RdA-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-787ac304610so410157385a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:07:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708967275; x=1709572075;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F2a3hAc8xbGiBkaQRR/cOD5LbSfgks1mwCtsszd3ZXQ=;
-        b=Oi/OV2AxjZqMxgtI9Ge915xSYriYiwP+GBpwPiVX1Gqtr5UWsBpTG2fVpmDob4I9qm
-         rXTrTIaDbts2gHwqSUj4vhgXSLEzdD+tj5e3XnnrS+9RUisWOCpkolnkON1GiKAUCxOS
-         ecLfVpemHGd2arqYlxFNMYL3mYbfkgE9MnVWUZSO3i5z4D7etBAemBKB640TEzjwdVIR
-         bmzJmNiQ7aJk//tMAzHkj3IZyV5AYikCoEuZfitULCQ8Xg/NLRDbFC9LDBsqtlcQpxce
-         BBfzRJ+PJnaocpW6CuAIJeSewoEYwJtaa1YecqqKlDtH8/mYjA7agJAD2J9o/I0Z6rsY
-         ZVhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV2p1fEAahaUOAwiibVnEd7lTOOOjFhtgWEH5JVkl7yIP21xZLllB5Eg15J1DvFzoM3yqctB2V3zQbnHZ6gRFqe9oHF77RT3hnKAF5f
-X-Gm-Message-State: AOJu0YzbrciEp+wlnAKhEFBaBDWsGa9maM92P0aal8TKnZoPySlzPOVC
-	kN8Db8pkWx7ahRmp33QxK72hax9xxNOGz4tExw35k2JGrhzEzhWE/WmhgaJ1QvVHThdDM7YZ0Rz
-	OB37Zi3CS5PqgBAHh2EXPxvlLA7EadFlLWUa/kgPBOHnZOxpuSrGWvA/l40l39w==
-X-Received: by 2002:a05:620a:14ad:b0:787:91fc:f940 with SMTP id x13-20020a05620a14ad00b0078791fcf940mr9670821qkj.48.1708967275098;
-        Mon, 26 Feb 2024 09:07:55 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFwfKR70ni3GqKHB0n9AVnPWbnVBsTRIS2vJYee3RsSzLT5LaxXCqLcGs5KqQWUhaKbbzFDvw==
-X-Received: by 2002:a05:620a:14ad:b0:787:91fc:f940 with SMTP id x13-20020a05620a14ad00b0078791fcf940mr9670802qkj.48.1708967274839;
-        Mon, 26 Feb 2024 09:07:54 -0800 (PST)
-Received: from [10.0.0.33] (modemcable096.103-83-70.mc.videotron.ca. [70.83.103.96])
-        by smtp.gmail.com with ESMTPSA id po5-20020a05620a384500b00787b8820f33sm2669048qkn.30.2024.02.26.09.07.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 09:07:54 -0800 (PST)
-Message-ID: <eaef16d8-d43a-49c8-b1a0-450ab4c1ba9f@redhat.com>
-Date: Mon, 26 Feb 2024 12:07:53 -0500
+	bh=I/hQUuxQxkgRF4bShVLMfZoPBj+Cztno3mv4Ida72ys=;
+	b=lqm7MvlsGMdOnV7A0DCBCbAnV9wVNi5sPkxcsjnwm2TAhHzd8yzvwP15LeL6zBp8IXkj5O
+	prSheJklKGpTJ+aJQCX4tR4QzX2mn6cVUXIXWux9eBpu9v4ldmLgGy9ACqLYj6ubdQlNQI
+	nEvhzpAuRiEYzN4D2nVMa8/AcLOqr4A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708967275;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=I/hQUuxQxkgRF4bShVLMfZoPBj+Cztno3mv4Ida72ys=;
+	b=eRSBuzihPxqq1qI7IGAwNDlGPDFZsp+5LrwDwZP3mNyRuPHOIwE5kJ1xirGZsg/vWFNFVY
+	biRDN3OHE/W5sYAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708967274; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=I/hQUuxQxkgRF4bShVLMfZoPBj+Cztno3mv4Ida72ys=;
+	b=ociJqUVZaiwOnBmsJApQrVY4NKPWiDHcA5fWKOpgbgF8u/X37yRgEV03Je0LR/cpuUh4gg
+	4xxXqFcnLMohgek80IiWqkkj7rgbHOiecdSK3MxD7nSEmhpghcM02lBglw3nANYNZPXew4
+	93jPhYxYQ5w7D/TlaBV/VKqkou/DNe8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708967274;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=I/hQUuxQxkgRF4bShVLMfZoPBj+Cztno3mv4Ida72ys=;
+	b=u94fmCMpbUXFk4iD2JqDbDSQ8FuX0yXq4xZ/oLuHtIUtWTgurgpOaxcHwOU1mpLCtzWfcV
+	BJbGD51qmCdM5gCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4DA5C13A58;
+	Mon, 26 Feb 2024 17:07:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id qbR1EmrF3GW7GgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 26 Feb 2024 17:07:54 +0000
+Message-ID: <d6141a99-3409-447b-88ac-16c24b0a892e@suse.cz>
+Date: Mon, 26 Feb 2024 18:07:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,92 +94,90 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] platform/mellanox: mlxbf-pmc: Fix module loading
-Content-Language: en-US, en-CA
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: shravankr@nvidia.com, davthompson@nvidia.com, ndalvi@redhat.com,
- LKML <linux-kernel@vger.kernel.org>, platform-driver-x86@vger.kernel.org,
- Hans de Goede <hdegoede@redhat.com>
-References: <cover.1708635408.git.luizcap@redhat.com>
- <170895404513.2243.14840310263795846559.b4-ty@linux.intel.com>
- <def1a153-3cfb-431d-a7d2-a13bb7d65f4f@redhat.com>
- <29863354-4efe-d199-a9d4-7daf83f6cde9@linux.intel.com>
- <1608d86a-24e8-403b-b199-ce23f8411cfd@redhat.com>
- <8a05120e-fcdf-f7f2-6b60-22e3ee819d37@linux.intel.com>
-From: Luiz Capitulino <luizcap@redhat.com>
-In-Reply-To: <8a05120e-fcdf-f7f2-6b60-22e3ee819d37@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v4 15/36] lib: introduce support for page allocation
+ tagging
+Content-Language: en-US
+To: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
+Cc: kent.overstreet@linux.dev, mhocko@suse.com, hannes@cmpxchg.org,
+ roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
+ willy@infradead.org, liam.howlett@oracle.com,
+ penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
+ peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
+ will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+ dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+ david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+ nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
+ rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
+ yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+ hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+ ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
+ ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+ iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+ elver@google.com, dvyukov@google.com, shakeelb@google.com,
+ songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+ minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+ cgroups@vger.kernel.org
+References: <20240221194052.927623-1-surenb@google.com>
+ <20240221194052.927623-16-surenb@google.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240221194052.927623-16-surenb@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ociJqUVZ;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=u94fmCMp
+X-Spamd-Result: default: False [1.20 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BAYES_HAM(-0.00)[43.76%];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_GT_50(0.00)[74];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,i-love.sakura.ne.jp,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 1.20
+X-Rspamd-Queue-Id: EF93D22118
+X-Spam-Level: *
+X-Spam-Flag: NO
+X-Spamd-Bar: +
 
-On 2024-02-26 11:59, Ilpo Järvinen wrote:
-> On Mon, 26 Feb 2024, Luiz Capitulino wrote:
+On 2/21/24 20:40, Suren Baghdasaryan wrote:
+> Introduce helper functions to easily instrument page allocators by
+> storing a pointer to the allocation tag associated with the code that
+> allocated the page in a page_ext field.
 > 
->> On 2024-02-26 11:04, Ilpo Järvinen wrote:
->>> On Mon, 26 Feb 2024, Luiz Capitulino wrote:
->>>
->>>> On 2024-02-26 08:27, Ilpo Järvinen wrote:
->>>>> On Thu, 22 Feb 2024 15:57:28 -0500, Luiz Capitulino wrote:
->>>>>
->>>>>> The mlxbf-pmc driver fails to load when the firmware reports a new but
->>>>>> not
->>>>>> yet implemented performance block. I can reproduce this today with a
->>>>>> Bluefield-3 card and UEFI version 4.6.0-18-g7d063bb-BId13035, since
->>>>>> this
->>>>>> reports the new clock_measure performance block.
->>>>>>
->>>>>> This[1] patch from Shravan implements the clock_measure support and
->>>>>> will
->>>>>> solve the issue. But this series avoids the situation by ignoring and
->>>>>> logging unsupported performance blocks.
->>>>>>
->>>>>> [...]
->>>>>
->>>>>
->>>>> Thank you for your contribution, it has been applied to my local
->>>>> review-ilpo branch. Note it will show up in the public
->>>>> platform-drivers-x86/review-ilpo branch only once I've pushed my
->>>>> local branch there, which might take a while.
->>>>
->>>> Thank you Ilpo and thanks Hans for the review.
->>>>
->>>> The only detail is that we probably want this merged for 6.8 since
->>>> the driver doesn't currently load with the configuration mentioned above.
->>>
->>> Oh, sorry, I missed the mention in the coverletter.
->>>
->>> So you'd want I drop these from review-ilpo branch as there they end
->>> up into for-next branch, and they should go through Hans instead who
->>> handles fixes branch for this cycle?
->>
->> If that's the path to get this series merged for this cycle then yes,
->> but let's see if Hans agrees (sorry that I didn't know this before
->> posting).
->>
->> One additional detail is that this series is on top of linux-next, which
->> has two additional mlxbf-pmc changes:
->>
->> *
->> https://lore.kernel.org/lkml/39be055af3506ce6f843d11e45d71620f2a96e26.1707808180.git.shravankr@nvidia.com/
->> *
->> https://lore.kernel.org/lkml/d8548c70339a29258a906b2b518e5c48f669795c.1707808180.git.shravankr@nvidia.com/
->>
->> Maybe those two should be included for 6.8 as well?
-> 
-> Those look a new feature to me so they belong to for-next. So no, they
-> will not end up into 6.8 (to fixes branch). If the 2 patches in this
-> series do not apply without some for-next targetting dependencies, you
-> should rebase on top of fixes branch and send a new version.
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> Co-developed-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 
-Understood.
+The static key usage seems fine now. Even if the page_ext overhead is still
+always paid when compiled in, you mention in the cover letter there's a plan
+for boot-time toggle later, so
 
-> About those two patches, please also see my reply. I intentionally only 2
-> patches of that series because I wanted to see sysfs documentation first
-> so you should resend those two patches to for-next with sysfs
-> documentation.
-
-I'm actually not author of the other patches :)
-
-- Luiz
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
 
 
