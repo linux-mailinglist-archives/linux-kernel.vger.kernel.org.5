@@ -1,53 +1,89 @@
-Return-Path: <linux-kernel+bounces-81873-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81875-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59882867B43
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:12:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AC80867B4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:13:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F5E12892E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:12:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49B0A1F2A477
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:13:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14C1312C553;
-	Mon, 26 Feb 2024 16:12:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9567212CDBF;
+	Mon, 26 Feb 2024 16:12:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="xdo2Rm4v"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NdXL7ZpN"
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54CFD12BF1C
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:12:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CB5E12CDA2;
+	Mon, 26 Feb 2024 16:12:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708963942; cv=none; b=II+k8b2r58G34MIvvEmFENI8DhHzh+OlplqVVTfncmKlfZc1QSkvXS8b94QUqeBntquOPbMAeFfifkJDMyDtclnm7nqp8OlHi1aGqPEMVggNOul0l/vWQRLKVI6/qEtDWSkmEel0GrQuKfakQjAJccEv/7LjHdqft6/GLlcB8AY=
+	t=1708963948; cv=none; b=Aniutkgnj/Pfv6bUFo7JPEtvQENQ4kOvgrGC9Iqff0w1URJD8i8ttOleHoyNy3ejaRXC7dht39THyHmwlUz1N5ItFx1mFVmdGSKU1ym35/N57NRr2hP/FXzL8K2XEe8P2FRUAOiFCEKyx2FtEdzXjp667gKrNAU5Xiv2K2IulcU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708963942; c=relaxed/simple;
-	bh=ExcOlxxD1FEHgyOdbKFwYGAt8XNYsDupzatENSCfXDU=;
+	s=arc-20240116; t=1708963948; c=relaxed/simple;
+	bh=tQNiq/mgSFz2PUfr0gE59I6IY0MHAe5YR/fIFXdocZQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FN1bM8LReQEJLq9czSRClUA53dWCBNQcITnz8V1NeVTzQGd1YSocK91Kt5jQPrtmi6cQC4eprciihxkUqn0FOelubgjWYC+G23bvz6thhGYaypRuErBh3V2eVZz6O7buX+nI/i29ceZDotl3pvljfta/5ml03ocxqXp7VRhsaw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=xdo2Rm4v; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62CE4C433C7;
-	Mon, 26 Feb 2024 16:12:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1708963941;
-	bh=ExcOlxxD1FEHgyOdbKFwYGAt8XNYsDupzatENSCfXDU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=xdo2Rm4vy7+7SO1RGtVXcdCqXwgxhB7ciDLQzf0r5LgRZO1AKHam7h3ibl37tb6VF
-	 kRSNpVXDI5WxW7aFHRmQ0AH0zPrO1j/0LUnBB5bh8nNROdYklr2FxDuGcSosSQwSBV
-	 sys57+H/6XzsoDHt+W7u/hROM/+pdhOg7vuieu2I=
-Date: Mon, 26 Feb 2024 17:12:19 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Michal Hocko <mhocko@suse.com>
-Cc: cve@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: CVE-2023-52451: powerpc/pseries/memhp: Fix access beyond end of
- drmem array
-Message-ID: <2024022652-defective-fretful-3d13@gregkh>
-References: <2024022257-CVE-2023-52451-7bdb@gregkh>
- <Zdylmz28rZ-mCeiN@tiehlicka>
- <2024022639-wronged-grafted-6777@gregkh>
- <ZdytVTOgfvKBBvtn@tiehlicka>
+	 Content-Type:Content-Disposition:In-Reply-To; b=tvCgcKrvgZ0y0xd+FrFdwkJGx9LVZgNfTybn+ZK4xNIr32ZnjyHw1k9gNgJrkROrRgu6YtUxg1i6m8STu1fHwhi5Rng/H7msuVoNdsQxzQGRzNXNwI5p+eNWptor/wB3gCFoZAK7poLIK+XIan6XiG3EUwgXT6H3HXdlUSKXlPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NdXL7ZpN; arc=none smtp.client-ip=209.85.160.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-21fed501addso1102786fac.2;
+        Mon, 26 Feb 2024 08:12:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708963946; x=1709568746; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3G9TdB9RDZyiGXRBXvJ+nwad2XnEGLHfMJJdqndI5mg=;
+        b=NdXL7ZpNfZwNgvOZRMYu0juBam/1KL5TWe637tCz2P2ZyVtCPAPZTRtRHHBfrXKMRU
+         TZPzYjLJxox2wSzXRbQRSnbpqgT3pf6WzzRbXHcw8yR+mYD4diIifaFFL1y7++UkeAxv
+         dg1x7hFPYhqCE/Kgp49HJdRzO1SZo58EqHf8xDuYS617NekBgWSWfb0xdPFJ6AyNArTh
+         +QTv18RJgzFKePj7r6qsyfDFo0WC+r2UTNcxMtOOtIyjBmW28apJsVkbYTN8tEvW9N1M
+         Cl/TDi9Ej7LE0qYZHkCBg+ek/WRwjYn/Ng2/n4NfoOphmQJHItSYOIrQ4JiWsfGcYAew
+         YQzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708963946; x=1709568746;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3G9TdB9RDZyiGXRBXvJ+nwad2XnEGLHfMJJdqndI5mg=;
+        b=kIXnTe8ynV5uWzGaC4kto+643SOiFTy9vJg861ZBmNzDFbQwCSj34cRmu0nUUl0+V+
+         JBetcDUP81hUM/B72KQ6E1uJwc6qShoUSC9JsZgeb+Za17Sny5+eq1R+0rbdz4s58p8N
+         1pEZvHilq4euqa8DB1A3vKpBtZGgNa5qSKtLfpoapRA5lFejTAngzt8hVsmovqdnnBuY
+         rMZp2ANNflD52gS+b/tfhCP5eUcAfWNcCSeIgQ2Xu6FCkm/mu+1f1hMRpBEAp98NLpR/
+         u263+s43zE1oFn/r78vpFM+q27/y4h9ZSK8DG1gFLcAGSGGtBWSYol8jXn791eb5W6sT
+         Px1A==
+X-Forwarded-Encrypted: i=1; AJvYcCXTguJdLjT1x7SNWAnR4TgR35ZTM9//KMRPktKSD1+IPKKDa+EClvBQtz3+UfkX6wWQFJMHorJ0Fxre7nPqONMS6tgc13en2hv2Mz2GSRiRasbDCdoklfxvNiA8T4RJDfYBrWunwlDyRc/EQxahxFv3phXyB7mUwS5oE/KH9+mLKh1U6BkJ+302xzJriS7YhP1FZiHyXq2xWd53lSWPISuVRQ==
+X-Gm-Message-State: AOJu0YxC1fq81hXL1Nbgqz8fIiAWCjjFkSzlDla6ubOWL9b3/PkQClaX
+	Fp+omQgAQ0MSulCtgEvmeysyWKfJZTEZRrIAzWgzT9KiP8c4tTlGhMclqVg3XPs=
+X-Google-Smtp-Source: AGHT+IF7XFSvjH18bFGEx9CdpnvASYnU/JfYs8/rfFLnUGwRoKon7Rt5YnfmRZ/vr9pQMg4VgCwROQ==
+X-Received: by 2002:a05:6870:e413:b0:21f:ca80:52c5 with SMTP id n19-20020a056870e41300b0021fca8052c5mr7306817oag.4.1708963946299;
+        Mon, 26 Feb 2024 08:12:26 -0800 (PST)
+Received: from Borg-9.local (070-114-203-196.res.spectrum.com. [70.114.203.196])
+        by smtp.gmail.com with ESMTPSA id xd12-20020a056870ce4c00b0021f86169b99sm1583576oab.43.2024.02.26.08.12.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 08:12:25 -0800 (PST)
+Sender: John Groves <grovesaustin@gmail.com>
+Date: Mon, 26 Feb 2024 10:12:23 -0600
+From: John Groves <John@groves.net>
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
+	Dave Jiang <dave.jiang@intel.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, 
+	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, john@jagalactic.com, 
+	Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>, 
+	dave.hansen@linux.intel.com, gregory.price@memverge.com
+Subject: Re: [RFC PATCH 06/20] dev_dax_iomap: Add CONFIG_DEV_DAX_IOMAP kernel
+ build parameter
+Message-ID: <52dovqfrfdvtwa2l5oiujxoe2e7asbz2qpslq7fb3axf5hdoem@m4j32p6ttrrf>
+References: <cover.1708709155.git.john@groves.net>
+ <13365680ad42ba718c36b90165c56c3db43e8fdf.1708709155.git.john@groves.net>
+ <20240226123416.0000200f@Huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,71 +92,24 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZdytVTOgfvKBBvtn@tiehlicka>
+In-Reply-To: <20240226123416.0000200f@Huawei.com>
 
-On Mon, Feb 26, 2024 at 04:25:09PM +0100, Michal Hocko wrote:
-> On Mon 26-02-24 16:06:51, Greg KH wrote:
-> > On Mon, Feb 26, 2024 at 03:52:11PM +0100, Michal Hocko wrote:
-> > > On Thu 22-02-24 17:21:58, Greg KH wrote:
-> > > > Description
-> > > > ===========
-> > > > 
-> > > > In the Linux kernel, the following vulnerability has been resolved:
-> > > > 
-> > > > powerpc/pseries/memhp: Fix access beyond end of drmem array
-> > > > 
-> > > > dlpar_memory_remove_by_index() may access beyond the bounds of the
-> > > > drmem lmb array when the LMB lookup fails to match an entry with the
-> > > > given DRC index. When the search fails, the cursor is left pointing to
-> > > > &drmem_info->lmbs[drmem_info->n_lmbs], which is one element past the
-> > > > last valid entry in the array. The debug message at the end of the
-> > > > function then dereferences this pointer:
-> > > > 
-> > > >         pr_debug("Failed to hot-remove memory at %llx\n",
-> > > >                  lmb->base_addr);
-> > > 
-> > > While this is a reasonable fix and the stable material it is really
-> > > unclear to me why it has gained a CVE. Memory hotplug is a privileged
-> > > operation. Could you clarify please?
-> > 
-> > As you know, history has shown us that accessing out of your allocated
-> > memory can cause problems, and we can not assume use-cases, as we don't
-> > know how everyone uses our codebase, so marking places where we fix
-> > out-of-bound memory accesses is resolving a weakness in the codebase,
-> > hence a CVE assignment.
+On 24/02/26 12:34PM, Jonathan Cameron wrote:
+> On Fri, 23 Feb 2024 11:41:50 -0600
+> John Groves <John@Groves.net> wrote:
 > 
-> Does that mean that any potentially incorrect input provided by an admin is
-> considered CVE now? I guess we would need to ban interfaces like
-> /dev/mem and many others.
-
-If you have your system set up to prevent admins from accessing /dev/mem
-(isn't there a config option for that), and you can access it, then yes,
-that would be a CVE-worthy issue.
-
-But if you configure your system to allow an admin access to /dev/mem
-then you wanted that :)
-
-> > If your systems are not vulnerable to this specific issue, wonderful, no
-> > need to take it, but why wouldn't you want to take a fix that resolves a
-> > known weakness?
+> > Add the CONFIG_DEV_DAX_IOMAP kernel config parameter to control building
+> > of the iomap functionality to support fsdax on devdax.
 > 
-> I have explicitly said, the fix is reasonable. I just do not see a point
-> to mark it as CVE. I fail to see any thread model where this would
-> matter as it would require untrusted privileged actor to trigger it
-> AFAICS. I am happy to be proven wrong here.
+> I would squash with previous patch.
+> 
+> Only reason I ever see for separate Kconfig patches is when there is something
+> complex in the dependencies and you want to talk about it in depth in the
+> patch description. That's not true here so no need for separate patch.
 
-We can not determine threat models when filing CVEs as we do not know
-what your threat model is.  All we can do is determine if this resolves
-a weakness in the system.  A use-after-free is a weakness and this
-resolves that issue.
+Done
 
-It is up to others to "grade" the CVEs if they want to.  There are loads
-of other orginizations that do that type of thing, taking into
-consideration specific threat models by which they wish to enforce.  If
-your orginization thinks this is not relevent to your threat model at
-all, wonderful, you can ignore it :)
+Thanks,
+John
 
-thanks,
-
-greg k-h
 
