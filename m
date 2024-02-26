@@ -1,285 +1,317 @@
-Return-Path: <linux-kernel+bounces-82222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B31478680B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:17:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14D0C8680B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:17:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 691D729354A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:17:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77F081F27D25
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:17:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A0F112FF81;
-	Mon, 26 Feb 2024 19:16:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FA6A130AF2;
+	Mon, 26 Feb 2024 19:16:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Sg9MaEmO"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="F1evF/eM";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="KH/3LmSR"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6F1312FF64
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 19:16:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708974971; cv=none; b=c4s7JrHz5QIHx6CC5haQrR7NQJfMTdBN8pv69+S66MCJC0OQm2GunZz1WeMZ0h2JI1uezeIEq5x2zwoH0c+k7kCJhj7o+zHINCxokPyLby5ROuzEt/GF7mHKR2dWwJQ8Cr/gXf4aZR8fCOJ7A44/w0jhP2pQ/yolVeC+Y+qr/m4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708974971; c=relaxed/simple;
-	bh=cmYQX0WXe1R7g50QoJI94WraHqbUsK8xpEDc1+xbeIw=;
-	h=Mime-Version:Subject:From:In-Reply-To:Date:Cc:Message-Id:
-	 References:To:Content-Type; b=BsuFr/K1ZLAA7k6OupCGIJEREIo2/2QMfOUJ35YwaYTLk7ume0TSPiECvOccQLQjRUK6NT0g0JBkLXJUA/XpGbzJklhBF+IQH+Jd/HBBv0J2/kBbnuJgcQqPprFyFAf+MlN9mN+KqGD0P+YpPlnK/TP6bNGV/UR0w/2CLml8qps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Sg9MaEmO; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6de3141f041so2127172b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:16:09 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AC4D130AC2
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 19:16:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708974976; cv=fail; b=Om5fdMfI29vie95W+D7xW377Icunw4VEb5m292M6vskNeMbP4+zZyeCIpGUKFcnu8k8SSzKAaqOHLmRnc5teJzBl5kMXr7rtQz0Bm/a6SUhAkprvnIN8866Uc/q7On/3I8NZfATl9Rek9qHV8TQrwjDMWUQZgZROHGJTGn3iBYw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708974976; c=relaxed/simple;
+	bh=LjxeBxMV0CvJH9bU1FrhmwUii02kFLLFGPbgldPbkow=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=IB9GilIbemWEYfTZdFar2dSuMetUBcoMqZxKQG9WzLi4IqYbFm+RKfDl5+Q9OllV2tWmF7/GweY35Q5EZ9O7uix9dCtLVwVaGUtoHnv/VjViJTSbVhhfv2WHmIttUztQVJ0/GrLXFLZl1mwV1q/IvmuFqxvHM2BVq5zdnnBsj4I=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=F1evF/eM; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=KH/3LmSR; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41QGmiMi027974;
+	Mon, 26 Feb 2024 19:16:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2023-11-20;
+ bh=Y5e/DitT5X9f0SbkeL7Uylprzgj/I5HwJP0sI1/k0Ls=;
+ b=F1evF/eM2Z1+xSd+IXHOBY7dkWrTAHC6V3+dnrFsB3CbVS0bZ7L+vahM7E6da+cc7Wgb
+ uEmqXH9TK4wYMz8IOE3VAuc73JaMr7+FjwyCx9lyhJiz/NQm0Y9yqh+CxMdzxAtjk9oZ
+ hK2cTrbDmXcTcRmrE69RRbzOzLziBiBwJ0R/9/bgM4/0FGUbzo+uIQyQfzyHKHBaJgqW
+ PVN6233xZQYSOH/F68Iup6wThjmafM617xx2fZuBstajW2YESUpQNwAKY/+YWiY63kPk
+ R91YZiQGX1K3oHdiHIpnxhT7bM8c4vv2bRjS0FfGfK/HlKRSj5Uf9TM/bfV3L+B48TeH 2w== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wf6vdwehj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 26 Feb 2024 19:16:05 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41QImrJH025593;
+	Mon, 26 Feb 2024 19:16:05 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wf6wchjun-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 26 Feb 2024 19:16:05 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c8tc9Na7Xc0lub7bV1nffBSbStmfVVWAA0XRsFTGKBw3Fk5mdRkxDPkFpwSVqudX1VM4vdZaG59BsGU+qW5eWrxLpp7p2m6V0bvwm4rbDVhsAVjj0Pdv+hc02hiQRwkyaTgfJR1RdJnWgRFesMCcD3c+rlxdRJLd+dyUhRN5I2E0EwmDdkjFaED9IwvGQ3DDEMQgkrK9wVRJxUOrpngn1G0waMQmKXGcx9ohcVCYYjUjdH7znAe3EQzzJ9ZAKrK8ons0OSHoZJD/H4b1x4ByDeBHTJg9TprNolx7g/WX1el7fryRImEflCxxvReW0fXCeNJwiLp8H/OkRSQ+/rDfQg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Y5e/DitT5X9f0SbkeL7Uylprzgj/I5HwJP0sI1/k0Ls=;
+ b=Z0LfWA6FodlIVmQ9KNCUmJL/unHiU5F52y4zFhSryNLdEQWxa22z7N2n14DLgV0c+NmYOIz3Z9zg1XAY3Ak/oJxxJc8K5cZEp6kSKyydLOoLy7yXbHsZkpE9T/R+6KUNz3E0DZeR7IpoghIq7w0qj//JTpcIEVgG9YB7zgial6pqK65QGr6t50jJSbxcsBuYdgKaQ9iPlY9LLw9xSA37psPZDrJyRGq2lKQMUIUHAH6yZjbBOirYCrYQFcI8U4+4TtYvsTH1DwVFDVH+RpW01tsPaJHPJyFoTXIl58DYQN0rgB84znY1xC/NMu8kwPUtBq7lh9679yEjTAdkFeDYCg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1708974969; x=1709579769; darn=vger.kernel.org;
-        h=to:references:message-id:cc:date:in-reply-to:from:subject
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=2z8HdzzlldrzSXWl18PQfTNGb5pbDqTGOGC99h1P6kk=;
-        b=Sg9MaEmOkZuEYZoZC5hGYteAhvXRDI7X7AC36RUpMY3PRSB9rsRhPVTdIgpEPSX8Tu
-         R+7Zff6EWJyH43Nj+hTbsnHDEuuWclUYy8Ki6fs9VAmYhyCcqIiEIA+Mo2N9Mzg1x0dD
-         2gDVEDrPdPCdYRZE+aN57yxHyJ2iZTw7g40ck=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708974969; x=1709579769;
-        h=to:references:message-id:cc:date:in-reply-to:from:subject
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2z8HdzzlldrzSXWl18PQfTNGb5pbDqTGOGC99h1P6kk=;
-        b=esPEFPDrJppklzW5bIdKqfifHqNeEjXvnoReUb8Y5dOQ0egZIEx2znNlkRpkLQ2EQt
-         ixRXu9tEdPp/KgDLMBpGF6BpgO6KTD921ydpk8I0LvN9q6qLTkJBxHMt46DN/kmcie++
-         2eIvUtu39hcZsumg4HLKv6dNKT6K7CF+2FUiZeOtFqICYovQZk7OczmKx2sZ45+1XfiN
-         e9U/E+wjrzgZCE0BfKqI2aD0YpSlSvJshbpFYzgnhuChJTYytuLbxWq8TubkmuP3/orK
-         W8NLlox+8GQB5fM3g9zsXHy4yn2zgzrUBm1L4+otnnRIbaP7btSD5aDCyk4Y19V35KoP
-         yAFw==
-X-Forwarded-Encrypted: i=1; AJvYcCWkhNnmQ0/FU/6JVdynUlBLS+couwJwnHwgtdUe27AbMqidvMgY8EdsmiXtMFwYIgZtJgDOfOLoHgGDn/v2Shmk9EHE5D0q3carXo7M
-X-Gm-Message-State: AOJu0YwHSHcioewqbx3lKNGokpRb8E6AQZ8dlL4j8vlnH9Cnbw4e/kmu
-	drFTXphJw/dXYS2wFky7ohZCGh3qP7Q84TtTLNDoGOpU9lWxu3jKimOIDqmLjrdE7ega4ywAjyM
-	0lWdrYJPi9aXW9n/m5zS336qDqHVzAVlDkrnKLEOSIJ9dmU/PtbI=
-X-Google-Smtp-Source: AGHT+IEC9JcNy1ADCfpu0I9QsDQVobDzbsCBdDLCxqHOFq5A/C9c5lpIZ4W48XqvV1fDuy5xvsauQw==
-X-Received: by 2002:a05:6a00:4f96:b0:6e5:31f5:94cd with SMTP id ld22-20020a056a004f9600b006e531f594cdmr3600759pfb.0.1708974968720;
-        Mon, 26 Feb 2024 11:16:08 -0800 (PST)
-Received: from smtpclient.apple ([128.177.82.146])
-        by smtp.gmail.com with ESMTPSA id r25-20020a62e419000000b006da96503d9fsm4386073pfh.109.2024.02.26.11.16.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 26 Feb 2024 11:16:08 -0800 (PST)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y5e/DitT5X9f0SbkeL7Uylprzgj/I5HwJP0sI1/k0Ls=;
+ b=KH/3LmSRD/YqGBgNFcc/ptMuqzqQdwoBaVelgXsJ8XEEKu86vUjX3yMXGJxyKXzQ6hgQXaUiJbJCqtB/0otppUHwoGTyXELmX2De2DWkZz3RpA2QfulvgSyu0D2vECZl4W6odh6Lr0R0cUk3GndPdyeBgayxZrV5IbNeplH1Cbc=
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
+ by MW4PR10MB6440.namprd10.prod.outlook.com (2603:10b6:303:218::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.36; Mon, 26 Feb
+ 2024 19:16:02 +0000
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::ad12:a809:d789:a25b]) by BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::ad12:a809:d789:a25b%4]) with mapi id 15.20.7316.034; Mon, 26 Feb 2024
+ 19:16:02 +0000
+Date: Mon, 26 Feb 2024 14:15:59 -0500
+From: Chuck Lever <chuck.lever@oracle.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [for-next][PATCH 2/5] tracing: Remove __assign_str_len()
+Message-ID: <Zdzjb91cJKvgHUMm@manet.1015granger.net>
+References: <20240226184932.303400070@goodmis.org>
+ <20240226184950.974920801@goodmis.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226184950.974920801@goodmis.org>
+X-ClientProxiedBy: CH2PR19CA0016.namprd19.prod.outlook.com
+ (2603:10b6:610:4d::26) To BN0PR10MB5128.namprd10.prod.outlook.com
+ (2603:10b6:408:117::24)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6.1.1\))
-Subject: Re: [PATCH v2] x86/kernel: skip ROM range scans and validation for
- SEV-SNP guests
-From: Mike Stunes <mike.stunes@broadcom.com>
-In-Reply-To: <20240222202404.36206-1-kevinloughlin@google.com>
-Date: Mon, 26 Feb 2024 11:15:54 -0800
-Cc: acdunlap@google.com,
- alexander.shishkin@linux.intel.com,
- andrisaar@google.com,
- ardb@kernel.org,
- bhe@redhat.com,
- Borislav Petkov <bp@alien8.de>,
- Brijesh Singh <brijesh.singh@amd.com>,
- dave.hansen@linux.intel.com,
- Dionna Amalie Glaze <dionnaglaze@google.com>,
- grobler@google.com,
- hpa@zytor.com,
- jacobhxu@google.com,
- jpoimboe@kernel.org,
- "Huang, Kai" <kai.huang@intel.com>,
- linux-kernel@vger.kernel.org,
- Michael Roth <michael.roth@amd.com>,
- mingo@redhat.com,
- peterz@infradead.org,
- Peter Gonda <pgonda@google.com>,
- ross.lagerwall@citrix.com,
- sidtelang@google.com,
- tglx@linutronix.de,
- Thomas Lendacky <thomas.lendacky@amd.com>,
- x86@kernel.org,
- ytcoode@gmail.com
-Message-Id: <4463AFB9-58AC-4E65-BB04-EB2C9F2D9301@broadcom.com>
-References: <CAGdbjmK9WoOQSbKUvcTdLJDW-RB=qe2tHFDZ-MeD266xZOxh7w@mail.gmail.com>
- <20240222202404.36206-1-kevinloughlin@google.com>
-To: Kevin Loughlin <kevinloughlin@google.com>
-X-Mailer: Apple Mail (2.3731.700.6.1.1)
-Content-Type: text/plain; charset="ISO-8859-1"
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|MW4PR10MB6440:EE_
+X-MS-Office365-Filtering-Correlation-Id: b1a764fa-713e-4fbb-bbba-08dc36ff5f80
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	qzo6lC/Kv75g/JsXmNlQ7P25RIel1Hgt4z4u1HGUDGPNmzUcF79KB3Xa/2bbvQkX9owbQpVXQDJLNqRwifelgAVi5uirhNlR9LWbAZM+H/RVIatwSY9WJf523BczTXE8TXkyuXXFG6M/eiBveAXsxkev9bIfD2FIQeE7nylptV/e4+jeQ8VoA6EtYC2DasuTOKT0zBmJeYOWWS30flUlFmhJJAXVyt1M+T9nHsD8271zeMo4d7vE3trzbdnpv0i/s/E1sBRvkQ+GfCy84BC0Xdw2L7yyAhXouROTigtPXv8N8x2P8EWFq8E62deZqfKH/oV98IQoT2FAb1ZlutIei3ADRnnefqEOqNuHmifYoFB8jR7vFB6AcBKYG6kOeIVD2iZtqXDyA0jNIeNpZWqE5jXUDSjeR3O4EEtVealir6oS1j09sl4/9sSFTmkhfEkAFZfhTx19G/KfLU2wQgtSqoOy2Yn8oFKYC31vjYZLUmEMNuBa68DvIc/8vtTjx0RrSIqm3Fg7TJhIWO46QKkWNs9kw46k7B0y1APdTEOtHUbAo9439zRJks8+Fx5mid9cPJZo+Dww5knIlC2exZb0GVC5euL3atX485PdkajljrSxS/n6Jny5L2lVJ6Eeeia/
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?rExiuTHuGuCwDXZCuzNwtpjXKy/SSZIBMiTwPL+BHzOiWkI72z0CvHjZRNZZ?=
+ =?us-ascii?Q?G/ufcAtMW+BnKe433+7Vkbj0Pp/gfbge+x10FYdkJxqtvzygP3FX8IhVaPJM?=
+ =?us-ascii?Q?G3aPMeQAIvsJZ4eUs6Uc8CtG0V5i8B9+1pf7fjyhs769Sy8jPzpTb7hr3KkP?=
+ =?us-ascii?Q?zpVNtSyTnyDWLnP4DeLniHzVCamF3XLdi8aAKsYfsHi4AjUfgRWKWLBSPX9b?=
+ =?us-ascii?Q?r1LMdjpDI6ZOwslZmqa/xt1X06xyw5B8FicSV9SUiZOs3hKfh3VXYpoZPg+z?=
+ =?us-ascii?Q?Wgp+pL7Y90lLO1DBxwtWD482n+/A1WOxHLE3rMpl3aFBOCAK040NjePDibuP?=
+ =?us-ascii?Q?N2Ko5hDeqQD+7qdhTeQgtQzJA3aw3FDlj+lXpauhjyfuFm4R5xHvaDvsREeq?=
+ =?us-ascii?Q?C055ryvF0CsTv+7QnBIOUx++x0FShVqT26+UnrlE/1IUOWOKm/OHpNK6wbMw?=
+ =?us-ascii?Q?qbwy3u3eTLR0fLs75A60LOrNSmdDOAUW/AE0EOEsB/xV4YXBnIhv2WxwwrfA?=
+ =?us-ascii?Q?IomRB4tYOBGmuy4KlCenLFIuLqdM2KAWsG6oZ+B9O3+LOWhXgQeV3QX5m7Mi?=
+ =?us-ascii?Q?ZoXG1qUSdzrDFGB/A7SQakhAgaO73EF7FuipbOb+jQs+pBvcuZj5qJTM9O30?=
+ =?us-ascii?Q?9umIHMOYjeHJR+F5Lct1tU0CEEjqRjg51umXSrP5ZvMBu1bTTokXRjRxcVFY?=
+ =?us-ascii?Q?0Tw0g6cm2wkaV72EUwFyKtU3qawB23Xw4V+AnnyZ3l5s9BuokKlfcNnMFeVn?=
+ =?us-ascii?Q?fniPRHzWWISC/nxMTuaihPtsG1lBznMhfT6ifLOeTTeSy1nE2iwJzul7vViI?=
+ =?us-ascii?Q?nytn+b6Ex8Fj/CnEmEWKlwyrlx3ymmzBjwnhQGg5LjR3sPH0TI86cMbH4iWk?=
+ =?us-ascii?Q?8JuG+aAHvvTsiCSrEBaE/cgreZ9UC7R4cDTVxVmTMIBmgeGr2so33d3Ic2zY?=
+ =?us-ascii?Q?S2ULbJPFsYRrkWYmk98OIQmXjQuaMshlgGBzSb1HUiRnyyomb+pL776XUBxz?=
+ =?us-ascii?Q?Bq62VZgovsxEzUQEixDDVxRfp0ne2wP885LjCByCRz2dht31cLUZ54ropxZN?=
+ =?us-ascii?Q?CIEfxfIJ/uamAIdBUFUZxvFd079yZ2JFVXF6R2BQNGemOa0U/DAu7HJj2beR?=
+ =?us-ascii?Q?Ng/dImf/hd2Gt9Wa/jLd6c/hXQ5CGTHuPzZDLOZ4i1jd6P6EUCzT/mm6oizz?=
+ =?us-ascii?Q?elUHYxXwOSlV7CU9Bu/96qEvSD0hBWJ01KUzb8wVgfaOIq9JwX7XFwJBvGBt?=
+ =?us-ascii?Q?LJi5aYtQNKbQSFIJ/GcrgWBm/jiHMLxvtW/FGqfv04kxrD82zSp8HpkYSFhT?=
+ =?us-ascii?Q?gsLmsipPxriQ99ySWrT+XXDU8dld97NfftH8TUtBXLW8s4SqMfRcN2DIXUnO?=
+ =?us-ascii?Q?yjmxgqAUBrytlLGPWc5zqVur6kFpO0LQUNSQ4ogqlMvXJ1SDt64LAdAAP68M?=
+ =?us-ascii?Q?qqGuMMCJS9U9/QiGUgMMNEgAjBLm0M7DM9R1UrvOxNMz4mvsS8MVXqkf+slW?=
+ =?us-ascii?Q?6gwJm2Y5gpaPUfDdLcVF5/HJ6dnUmCHKmskZ9NxzlJDkxYQ9Wjc8DCgiUgue?=
+ =?us-ascii?Q?50s57xggP308ZY26JP29QoGPn6NGMmOhEH7XiDKBDvZYvWItxhC79nFkmpXy?=
+ =?us-ascii?Q?6w=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	PucHzyf9TjikbvaMG2LLURXVGHfBFCHQZLyJNjzMgiQGkD9VmpPNqIHSePCGY6Ss2e7WqWC44Bl3KVOVCDoCCHbL42q7eJJSVHfvkZO0XCt+Q6oRsTWsYZDDxb2/bLq5G9AyVtYOfhOSN2m32YxRpgSiiI0ppSwiP/nKcFhZAXQmP4hTwnG8Mu0X9dapImUUM7LMdX+j0vG2CvYrXWqF2xgDjZDAeIgRqNjBwlSgqy4RI1SPA2NVv6w56U6jJ7ccRSfOWFbfvCpyICet5fXVMRVK5yA5EAcWJLo32X4blXXwWCVfyO+ocqt5ZzrBQeGS41KqJtwN9bjILYuhBdQlwmWDySTMf2j526XNRa0BrN+kJo+CkVu9KinB5NXy5oXaq9TKQ5XmXXtR8T762MlvuQxaUM7yKBp8jPFtJQRjsNXIf8srM4ADodmmdTQQnTLy4D6bYOzwlV7dTwBHCFfYV+99Who/OvFuL0qRllPYu4jpcxi4uWKH8UTxSWjTkGPlho+ZFw9cDwvXNtLOO0wVVXUpUBJGsTdEaS+07boGL9dcc4X2fuiie7QPepG5hDm2rMj6fm9/W6iNMLq48pwt1HNCuB//gc7WSPupRBM+zhs=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b1a764fa-713e-4fbb-bbba-08dc36ff5f80
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 19:16:02.7317
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: y8+pIECzTIwjWJu0qLSkPVqfEstU8pD0NAFbh+sNOt3w/7Yf8D0ZNc+uzIbwJogGnCTbZqURPioR2ujTjiIFiw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR10MB6440
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-26_11,2024-02-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ adultscore=0 mlxlogscore=999 malwarescore=0 spamscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402260147
+X-Proofpoint-ORIG-GUID: ZvMYk6FJbNtakVLZPfc01y25mzE4S5IC
+X-Proofpoint-GUID: ZvMYk6FJbNtakVLZPfc01y25mzE4S5IC
 
-Hi,
+On Mon, Feb 26, 2024 at 01:49:34PM -0500, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> Now that __assign_str() gets the length from the __string() (and
+> __string_len()) macros, there's no reason to have a separate
+> __assign_str_len() macro as __assign_str() can get the length of the
+> string needed.
+> 
+> Also remove __assign_rel_str() although it had no users anyway.
+> 
+> Link: https://lore.kernel.org/linux-trace-kernel/20240223152206.0b650659@gandalf.local.home
+> 
+> Cc: Chuck Lever <chuck.lever@oracle.com>
+> Cc: Jeff Layton <jlayton@kernel.org>
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-> On Feb 22, 2024, at 12:24 PM, Kevin Loughlin <kevinloughlin@google.com> wrote:
-> 
-> SEV-SNP requires encrypted memory to be validated before access.
-> Because the ROM memory range is not part of the e820 table, it is not
-> pre-validated by the BIOS. Therefore, if a SEV-SNP guest kernel wishes
-> to access this range, the guest must first validate the range.
-> 
-> The current SEV-SNP code does indeed scan the ROM range during early
-> boot and thus attempts to validate the ROM range in probe_roms().
-> However, this behavior is neither necessary nor sufficient.
-> 
-> With regards to sufficiency, if EFI_CONFIG_TABLES are not enabled and
-> CONFIG_DMI_SCAN_MACHINE_NON_EFI_FALLBACK is set, the kernel will
-> attempt to access the memory at SMBIOS_ENTRY_POINT_SCAN_START (which
-> falls in the ROM range) prior to validation. The specific problematic
-> call chain occurs during dmi_setup() -> dmi_scan_machine() and results
-> in a crash during boot if SEV-SNP is enabled under these conditions.
-> 
-> With regards to necessity, SEV-SNP guests currently read garbage (which
-> changes across boots) from the ROM range, meaning these scans are
-> unnecessary. The guest reads garbage because the legacy ROM range
-> is unencrypted data but is accessed via an encrypted PMD during early
-> boot (where the PMD is marked as encrypted due to potentially mapping
-> actually-encrypted data in other PMD-contained ranges).
-> 
-> While one solution would be to overhaul the early PMD mapping to treat
-> the ROM region of the PMD as unencrypted, SEV-SNP guests do not rely on
-> data from the legacy ROM region during early boot (nor can they
-> currently, since the data would be garbage that changes across boots).
-> As such, this patch opts for the simpler approach of skipping the ROM
-> range scans (and the otherwise-necessary range validation) during
-> SEV-SNP guest early boot.
-> 
-> Ultimatly, the potential SEV-SNP guest crash due to lack of ROM range
-> validation is avoided by simply not accessing the ROM range.
-> 
-> Fixes: 9704c07bf9f7 ("x86/kernel: Validate ROM memory before accessing when SEV-SNP is active")
-> Signed-off-by: Kevin Loughlin <kevinloughlin@google.com>
+Acked-by: Chuck Lever <chuck.lever@oracle.com>
+
+
 > ---
-> arch/x86/include/asm/sev.h   |  2 --
-> arch/x86/kernel/mpparse.c    |  7 +++++++
-> arch/x86/kernel/probe_roms.c | 11 ++++-------
-> arch/x86/kernel/sev.c        | 15 ---------------
-> drivers/firmware/dmi_scan.c  |  7 ++++++-
-> 5 files changed, 17 insertions(+), 25 deletions(-)
+>  fs/nfsd/trace.h                              |  8 +++---
+>  include/trace/stages/stage6_event_callback.h | 28 ++++++++------------
+>  samples/trace_events/trace-events-sample.h   |  9 ++++---
+>  3 files changed, 20 insertions(+), 25 deletions(-)
 > 
-> diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
-> index 5b4a1ce3d368..474c24ba0f6f 100644
-> --- a/arch/x86/include/asm/sev.h
-> +++ b/arch/x86/include/asm/sev.h
-> @@ -203,7 +203,6 @@ void __init early_snp_set_memory_private(unsigned long vaddr, unsigned long padd
-> unsigned long npages);
-> void __init early_snp_set_memory_shared(unsigned long vaddr, unsigned long paddr,
-> unsigned long npages);
-> -void __init snp_prep_memory(unsigned long paddr, unsigned int sz, enum psc_op op);
-> void snp_set_memory_shared(unsigned long vaddr, unsigned long npages);
-> void snp_set_memory_private(unsigned long vaddr, unsigned long npages);
-> void snp_set_wakeup_secondary_cpu(void);
-> @@ -227,7 +226,6 @@ static inline void __init
-> early_snp_set_memory_private(unsigned long vaddr, unsigned long paddr, unsigned long npages) { }
-> static inline void __init
-> early_snp_set_memory_shared(unsigned long vaddr, unsigned long paddr, unsigned long npages) { }
-> -static inline void __init snp_prep_memory(unsigned long paddr, unsigned int sz, enum psc_op op) { }
-> static inline void snp_set_memory_shared(unsigned long vaddr, unsigned long npages) { }
-> static inline void snp_set_memory_private(unsigned long vaddr, unsigned long npages) { }
-> static inline void snp_set_wakeup_secondary_cpu(void) { }
-> diff --git a/arch/x86/kernel/mpparse.c b/arch/x86/kernel/mpparse.c
-> index b223922248e9..39ea771e2d4c 100644
-> --- a/arch/x86/kernel/mpparse.c
-> +++ b/arch/x86/kernel/mpparse.c
-> @@ -553,6 +553,13 @@ static int __init smp_scan_config(unsigned long base, unsigned long length)
->    base, base + length - 1);
-> BUILD_BUG_ON(sizeof(*mpf) != 16);
-> 
-> + /*
-> + * Skip scan in SEV-SNP guest if it would touch the legacy ROM region,
-> + * as this memory is not pre-validated and would thus cause a crash.
-> + */
-> + if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP) && base < 0x100000 && base + length >= 0xC0000)
-> + return 0;
-> +
-> while (length > 0) {
-> bp = early_memremap(base, length);
-> mpf = (struct mpf_intel *)bp;
-> diff --git a/arch/x86/kernel/probe_roms.c b/arch/x86/kernel/probe_roms.c
-> index 319fef37d9dc..84ff4b052fc1 100644
-> --- a/arch/x86/kernel/probe_roms.c
-> +++ b/arch/x86/kernel/probe_roms.c
-> @@ -204,14 +204,11 @@ void __init probe_roms(void)
-> int i;
-> 
-> /*
-> - * The ROM memory range is not part of the e820 table and is therefore not
-> - * pre-validated by BIOS. The kernel page table maps the ROM region as encrypted
-> - * memory, and SNP requires encrypted memory to be validated before access.
-> - * Do that here.
-> + * These probes are skipped in SEV-SNP guests because the ROM range
-> + * is not pre-validated, meaning access would cause a crash.
-> */
-> - snp_prep_memory(video_rom_resource.start,
-> - ((system_rom_resource.end + 1) - video_rom_resource.start),
-> - SNP_PAGE_STATE_PRIVATE);
-> + if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
-> + return;
-> 
-> /* video rom */
-> upper = adapter_rom_resources[0].start;
-> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-> index c67285824e82..d2362631da91 100644
-> --- a/arch/x86/kernel/sev.c
-> +++ b/arch/x86/kernel/sev.c
-> @@ -774,21 +774,6 @@ void __init early_snp_set_memory_shared(unsigned long vaddr, unsigned long paddr
-> early_set_pages_state(vaddr, paddr, npages, SNP_PAGE_STATE_SHARED);
-> }
-> 
-> -void __init snp_prep_memory(unsigned long paddr, unsigned int sz, enum psc_op op)
-> -{
-> - unsigned long vaddr, npages;
+> diff --git a/fs/nfsd/trace.h b/fs/nfsd/trace.h
+> index 2cd57033791f..98b14f30d772 100644
+> --- a/fs/nfsd/trace.h
+> +++ b/fs/nfsd/trace.h
+> @@ -102,7 +102,7 @@ TRACE_EVENT(nfsd_compound,
+>  	TP_fast_assign(
+>  		__entry->xid = be32_to_cpu(rqst->rq_xid);
+>  		__entry->opcnt = opcnt;
+> -		__assign_str_len(tag, tag, taglen);
+> +		__assign_str(tag, tag);
+>  	),
+>  	TP_printk("xid=0x%08x opcnt=%u tag=%s",
+>  		__entry->xid, __entry->opcnt, __get_str(tag)
+> @@ -483,7 +483,7 @@ TRACE_EVENT(nfsd_dirent,
+>  	TP_fast_assign(
+>  		__entry->fh_hash = fhp ? knfsd_fh_hash(&fhp->fh_handle) : 0;
+>  		__entry->ino = ino;
+> -		__assign_str_len(name, name, namlen)
+> +		__assign_str(name, name);
+>  	),
+>  	TP_printk("fh_hash=0x%08x ino=%llu name=%s",
+>  		__entry->fh_hash, __entry->ino, __get_str(name)
+> @@ -853,7 +853,7 @@ DECLARE_EVENT_CLASS(nfsd_clid_class,
+>  		__entry->flavor = clp->cl_cred.cr_flavor;
+>  		memcpy(__entry->verifier, (void *)&clp->cl_verifier,
+>  		       NFS4_VERIFIER_SIZE);
+> -		__assign_str_len(name, clp->cl_name.data, clp->cl_name.len);
+> +		__assign_str(name, clp->cl_name.data);
+>  	),
+>  	TP_printk("addr=%pISpc name='%s' verifier=0x%s flavor=%s client=%08x:%08x",
+>  		__entry->addr, __get_str(name),
+> @@ -1800,7 +1800,7 @@ TRACE_EVENT(nfsd_ctl_time,
+>  	TP_fast_assign(
+>  		__entry->netns_ino = net->ns.inum;
+>  		__entry->time = time;
+> -		__assign_str_len(name, name, namelen);
+> +		__assign_str(name, name);
+>  	),
+>  	TP_printk("file=%s time=%d\n",
+>  		__get_str(name), __entry->time
+> diff --git a/include/trace/stages/stage6_event_callback.h b/include/trace/stages/stage6_event_callback.h
+> index 2bfd49713b42..0c0f50bcdc56 100644
+> --- a/include/trace/stages/stage6_event_callback.h
+> +++ b/include/trace/stages/stage6_event_callback.h
+> @@ -32,16 +32,13 @@
+>  
+>  #undef __assign_str
+>  #define __assign_str(dst, src)						\
+> -	memcpy(__get_str(dst), __data_offsets.dst##_ptr_ ? : EVENT_NULL_STR, \
+> -	       __get_dynamic_array_len(dst))
 > -
-> - vaddr = (unsigned long)__va(paddr);
-> - npages = PAGE_ALIGN(sz) >> PAGE_SHIFT;
+> -#undef __assign_str_len
+> -#define __assign_str_len(dst, src, len)					\
+>  	do {								\
+> -		memcpy(__get_str(dst),					\
+> -		       __data_offsets.dst##_ptr_ ? : EVENT_NULL_STR, len); \
+> -		__get_str(dst)[len] = '\0';				\
+> -	} while(0)
+> +		char *__str__ = __get_str(dst);				\
+> +		int __len__ = __get_dynamic_array_len(dst) - 1;		\
+> +		memcpy(__str__, __data_offsets.dst##_ptr_ ? :		\
+> +		       EVENT_NULL_STR, __len__);			\
+> +		__str__[__len__] = '\0';				\
+> +	} while (0)
+>  
+>  #undef __assign_vstr
+>  #define __assign_vstr(dst, fmt, va)					\
+> @@ -94,15 +91,12 @@
+>  
+>  #undef __assign_rel_str
+>  #define __assign_rel_str(dst, src)					\
+> -	memcpy(__get_rel_str(dst), __data_offsets.dst##_ptr_ ? : EVENT_NULL_STR, \
+> -	       __get_rel_dynamic_array_len(dst))
 > -
-> - if (op == SNP_PAGE_STATE_PRIVATE)
-> - early_snp_set_memory_private(vaddr, paddr, npages);
-> - else if (op == SNP_PAGE_STATE_SHARED)
-> - early_snp_set_memory_shared(vaddr, paddr, npages);
-> - else
-> - WARN(1, "invalid memory op %d\n", op);
-> -}
-> -
-> static unsigned long __set_pages_state(struct snp_psc_desc *data, unsigned long vaddr,
->       unsigned long vaddr_end, int op)
-> {
-> diff --git a/drivers/firmware/dmi_scan.c b/drivers/firmware/dmi_scan.c
-> index 015c95a825d3..22e27087eb5b 100644
-> --- a/drivers/firmware/dmi_scan.c
-> +++ b/drivers/firmware/dmi_scan.c
-> @@ -703,7 +703,12 @@ static void __init dmi_scan_machine(void)
-> dmi_available = 1;
-> return;
-> }
-> - } else if (IS_ENABLED(CONFIG_DMI_SCAN_MACHINE_NON_EFI_FALLBACK)) {
-> + } else if (IS_ENABLED(CONFIG_DMI_SCAN_MACHINE_NON_EFI_FALLBACK) &&
-> + !cc_platform_has(CC_ATTR_GUEST_SEV_SNP)) {
-> + /*
-> + * This scan is skipped in SEV-SNP guests because the ROM range
-> + * is not pre-validated, meaning access would cause a crash.
-> + */
-> p = dmi_early_remap(SMBIOS_ENTRY_POINT_SCAN_START, 0x10000);
-> if (p == NULL)
-> goto error;
+> -#undef __assign_rel_str_len
+> -#define __assign_rel_str_len(dst, src, len)				\
+>  	do {								\
+> -		memcpy(__get_rel_str(dst),				\
+> -		       __data_offsets.dst##_ptr_ ? : EVENT_NULL_STR, len); \
+> -		__get_rel_str(dst)[len] = '\0';				\
+> +		char *__str__ = __get_rel_str(dst);			\
+> +		int __len__ = __get_rel_dynamic_array_len(dst) - 1;	\
+> +		memcpy(__str__, __data_offsets.dst##_ptr_ ? :		\
+> +		       EVENT_NULL_STR, __len__);			\
+> +		__str__[__len__] = '\0';				\
+>  	} while (0)
+>  
+>  #undef __rel_bitmask
+> diff --git a/samples/trace_events/trace-events-sample.h b/samples/trace_events/trace-events-sample.h
+> index 23f923ccd529..f2d2d56ce8e2 100644
+> --- a/samples/trace_events/trace-events-sample.h
+> +++ b/samples/trace_events/trace-events-sample.h
+> @@ -163,8 +163,7 @@
+>   *         __string().
+>   *
+>   *   __string_len: This is a helper to a __dynamic_array, but it understands
+> - *	   that the array has characters in it, and with the combined
+> - *         use of __assign_str_len(), it will allocate 'len' + 1 bytes
+> + *	   that the array has characters in it, it will allocate 'len' + 1 bytes
+>   *         in the ring buffer and add a '\0' to the string. This is
+>   *         useful if the string being saved has no terminating '\0' byte.
+>   *         It requires that the length of the string is known as it acts
+> @@ -174,9 +173,11 @@
+>   *
+>   *         __string_len(foo, bar, len)
+>   *
+> - *         To assign this string, use the helper macro __assign_str_len().
+> + *         To assign this string, use the helper macro __assign_str().
+> + *         The length is saved via the __string_len() and is retrieved in
+> + *         __assign_str().
+>   *
+> - *         __assign_str_len(foo, bar, len);
+> + *         __assign_str(foo, bar);
+>   *
+>   *         Then len + 1 is allocated to the ring buffer, and a nul terminating
+>   *         byte is added. This is similar to:
 > -- 
-> 2.44.0.rc0.258.g7320e95886-goog
+> 2.43.0
 > 
 > 
-
-In addition to these changes, I also had to skip pirq_find_routing_table if SEV-SNP is active.
-
-Thanks!
-Mike
-
 
 -- 
-This electronic communication and the information and any files transmitted 
-with it, or attached to it, are confidential and are intended solely for 
-the use of the individual or entity to whom it is addressed and may contain 
-information that is confidential, legally privileged, protected by privacy 
-laws, or otherwise restricted from disclosure to anyone else. If you are 
-not the intended recipient or the person responsible for delivering the 
-e-mail to the intended recipient, you are hereby notified that any use, 
-copying, distributing, dissemination, forwarding, printing, or copying of 
-this e-mail is strictly prohibited. If you received this e-mail in error, 
-please return the e-mail to the sender, delete it from your computer, and 
-destroy any printed copy of it.
+Chuck Lever
 
