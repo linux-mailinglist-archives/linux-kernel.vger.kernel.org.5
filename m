@@ -1,129 +1,89 @@
-Return-Path: <linux-kernel+bounces-81230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56568867250
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:57:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C19AE867254
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:58:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8916F1C26B83
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:57:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AE022880E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:58:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B5E81CD1D;
-	Mon, 26 Feb 2024 10:56:03 +0000 (UTC)
-Received: from mail115-76.sinamail.sina.com.cn (mail115-76.sinamail.sina.com.cn [218.30.115.76])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5057A1DA21;
+	Mon, 26 Feb 2024 10:56:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="QYGtsqgK"
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 559CC1CAAE
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 10:55:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 210831CD2F;
+	Mon, 26 Feb 2024 10:56:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708944962; cv=none; b=lGGyjasc0+1XQ+u+1I9pFIZRD4tb7nFcZZ71io0ffkCIUxJvKqQQDbndPTdOj19LF+8apmTRDUZePn7iZJB6S2p+K4l9jf6xC80ppqSjyIbz1zOZJY3ZFx2O673m93vtxX6ncFOwUma0y8A8VwutGPnG4wSNHHAkJ0+HAZtWaXU=
+	t=1708944991; cv=none; b=gLPIqTqvwSSjGh+VZW2og5BcuswEpFlHeVnYp0zJLvlp6rbwpGbHlG+TuyQFON0lIu7kSA/XR/OT2XXUCGIOhueoRU/XsvP2hsEKIa9oBcD3tW5W2BxPgVcnkREXKBwcIwbbRsteGBGiy2mx2hF/JLcXgERrsD6ricgqgTnutYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708944962; c=relaxed/simple;
-	bh=Hp2oMV39/LFmyfumxS6WCc8rlgTTMUsnMRb84o1Z+ks=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gwrgFSaqdCO3447TIpN5NbnzkBLXPD/N4/o7VAEJK5lNUzi7+0D65Zb3vhIJ3OOmsjIcFs4OmP6qWiBh0cwdeRMj0lYY/jZrxlHY0IW7twApQAl+Xr/FsPwvNIKhGciauTsJyV00gN+n97va/2oUh0P0glj+4sayqGffbwx+3oQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([113.88.50.169])
-	by sina.com (10.75.12.45) with ESMTP
-	id 65DC6E1400005AA5; Mon, 26 Feb 2024 18:55:19 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 3718231457759
-X-SMAIL-UIID: C180C45CB92344D9A4E456E3C4AA5979-20240226-185519-1
-From: Hillf Danton <hdanton@sina.com>
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: syzbot <syzbot+c2ada45c23d98d646118@syzkaller.appspotmail.com>,
-	almaz.alexandrovich@paragon-software.com,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	ntfs3@lists.linux.dev,
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [ntfs3?] possible deadlock in ntfs_set_state (2)
-Date: Mon, 26 Feb 2024 18:55:06 +0800
-Message-Id: <20240226105506.1398-1-hdanton@sina.com>
-In-Reply-To: <ZdwSXCaTrzq7mm7Z@boqun-archlinux>
-References: <000000000000998cff06113e1d91@google.com> <20240213114151.982-1-hdanton@sina.com>
+	s=arc-20240116; t=1708944991; c=relaxed/simple;
+	bh=GcGiwtr0GSF06FQDzFeQxJaRyyIH33UB0tfMn73yOMg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=M/ev/mv/FAwd9qiz163VCdv0L70GxMEvs1OP7IJApqQ6v08VNllzo9/dUSPbHdNaaG12JAc0oflUWGvTIUy1/E/oTGb6Fl5JqRIH4guvkrAzWmbJKZdQnSr46tUwRklrBPIoaz3TViynTVCVAgfeGk54kL9X4pHhnUHqfdBUDxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=QYGtsqgK; arc=none smtp.client-ip=74.50.62.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+	by mail5.25mail.st (Postfix) with ESMTPSA id 9AF0E60462;
+	Mon, 26 Feb 2024 10:56:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+	s=25mailst; t=1708944989;
+	bh=GcGiwtr0GSF06FQDzFeQxJaRyyIH33UB0tfMn73yOMg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QYGtsqgKiRkxo42HswAK3mXvf6M5+pNzVWZNOfBWCpkQUsJDdU2lyfICCUIh8ktUJ
+	 1ugev5MxOfatg+xL2VLf6VxpwBqPm77PmYL0zlNKmBQCKGcOnF34DXDpujEZKaR4SV
+	 w3WXYsR5JZaGpukQorgj4nlG19lXAd3TGVqSY12pJ4Xmir4PdxjeFaJj/hwN7ZlzuT
+	 0oReSkZkD6W3ZSn/2BjeVnyctSK9I0rMQSdgJP0Wa/x8SeTsQcvS5ICzLQr8wyRVe+
+	 tP3TwfrJGoWuMTh0BWaLjyUqPKdz9Vn3Autgt6Ch6ZdfUisCs3DzUMTGRjiDoBLXxV
+	 wYg6Yf9C7ru/g==
+Date: Mon, 26 Feb 2024 12:56:16 +0200
+From: Tony Lindgren <tony@atomide.com>
+To: Linus Walleij <linus.walleij@linaro.org>,
+	Ulf Hansson <ulf.hansson@linaro.org>
+Cc: Aaro Koskinen <aaro.koskinen@iki.fi>, linux-omap@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] Fix MMC/GPIO regression on Nokia N8x0
+Message-ID: <20240226105616.GV52537@atomide.com>
+References: <20240223181439.1099750-1-aaro.koskinen@iki.fi>
+ <CACRpkdaA9WfXJ9KGC+7RNO4iyH-6=qauYHv+uKsjLCYKmnh1OQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdaA9WfXJ9KGC+7RNO4iyH-6=qauYHv+uKsjLCYKmnh1OQ@mail.gmail.com>
 
-On Sun, 25 Feb 2024 20:23:56 -0800 Boqun Feng wrote:
-> On Tue, Feb 13, 2024 at 07:41:50PM +0800, Hillf Danton wrote:
-> > On Mon, 12 Feb 2024 23:12:22 -0800
-> > > HEAD commit:    716f4aaa7b48 Merge tag 'vfs-6.8-rc5.fixes' of git://git.ke..
-> > > git tree:       upstream
-> > > console+strace: https://syzkaller.appspot.com/x/log.txt?x=100fd062180000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=1d7c92dd8d5c7a1e
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=c2ada45c23d98d646118
-> > > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11fcbd48180000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17f6e642180000
-> > > 
-> > > ============================================
-> > > WARNING: possible recursive locking detected
-> > > 6.8.0-rc4-syzkaller-00003-g716f4aaa7b48 #0 Not tainted
-> > > --------------------------------------------
-> > > syz-executor354/5071 is trying to acquire lock:
-> > > ffff888070ee0100 (&ni->ni_lock#3){+.+.}-{3:3}, at: ntfs_set_state+0x1ff/0x6c0 fs/ntfs3/fsntfs.c:947
+* Linus Walleij <linus.walleij@linaro.org> [240223 20:47]:
+> On Fri, Feb 23, 2024 at 7:15 PM Aaro Koskinen <aaro.koskinen@iki.fi> wrote:
 > 
-> this is a mutex_lock_nested() with a subkey 0.
+> > Nokia N8x0 MMC has been pretty much broken starting from v6.3. These
+> > patches restore the functionality. Tested on N810 with eMMC and external
+> > miniSD card, and on N800 with SD card in the inner slot.
 > 
-> > > 
-> > > but task is already holding lock:
-> > > ffff888070de3c00 (&ni->ni_lock#3){+.+.}-{3:3}, at: ni_trylock fs/ntfs3/ntfs_fs.h:1141 [inline]
-> > > ffff888070de3c00 (&ni->ni_lock#3){+.+.}-{3:3}, at: ni_write_inode+0x1bc/0x1010 fs/ntfs3/frecord.c:3265
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 > 
-> These two are try locks.
+> 100% my fault, I'm sorry I couldn't dry-code any better :(
 > 
-> > > 
-> > This report looks false positive but raises the question -- what made lockedp
-> 
-> This is not a false positive by lockdep locking rules, basically it
-> reported deadlock cases as the follow:
-> 
-> 	mutex_trylock(A1);
-> 	mutex_trylock(A2);
-> 	mutex_lock(A1 /* or A2 */);
-> 
-> Two things to notice here: 1) these two trylock()s not resulting in
-> real deadlock cases must be because they are on different lock
-> instances, 2) deadlock detectors work on lock classes, so although the
-> mutex_lock() above may be on a different instance (say A3), currently
-> there is no way for lockdep to tell that. In this case, users need to
-> use subkeys to tell lockdep mutex_lock() and mutex_trylock() are on
-> different sets of instannces (i.e. sub classes). Note that subkey == 0
-> means the main class.
+> If it's any consolation, there are now no GPIOs left for me to break
+> on the Nokia N8xx:s.
 
-Test non-zero subkey.
+That's the two-step conversion by introducing bugs first :)
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  716f4aaa7b48
+Maybe Ulf can ack the mmc patches and I'll apply these all into a
+fixes branch.
 
---- x/fs/ntfs3/fsntfs.c
-+++ y/fs/ntfs3/fsntfs.c
-@@ -944,7 +944,7 @@ int ntfs_set_state(struct ntfs_sb_info *
- 	if (!ni)
- 		return -EINVAL;
- 
--	mutex_lock_nested(&ni->ni_lock, NTFS_INODE_MUTEX_DIRTY);
-+	mutex_lock_nested(&ni->ni_lock, NTFS_INODE_MUTEX_NORMAL);
- 
- 	attr = ni_find_attr(ni, NULL, NULL, ATTR_VOL_INFO, NULL, 0, NULL, &mi);
- 	if (!attr) {
---
+Regards,
+
+Tony
 
