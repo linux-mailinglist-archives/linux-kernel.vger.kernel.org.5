@@ -1,135 +1,107 @@
-Return-Path: <linux-kernel+bounces-81351-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60FED867497
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:18:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C55F2867499
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:18:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3618B236B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:18:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80B2D28655F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:18:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A439A604BB;
-	Mon, 26 Feb 2024 12:18:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34FEA604CC;
+	Mon, 26 Feb 2024 12:18:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="fTgua61J"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E3ffn9bd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 639091B27D;
-	Mon, 26 Feb 2024 12:18:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75940604BA;
+	Mon, 26 Feb 2024 12:18:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708949895; cv=none; b=l66wRw84cTI/n0EAhFtjtNQty6lc9zXfdULoD7C4HJvGCAK1gkzfbXefKeAT+Sy9pT55SVqcfDnaOWhqV0XSg26iylMDJT5y57N0ZFROE3XWewrdODgjj1KIan37XGf1HTysNe/25nEOmqaS3FwPL9PAPNOzO4YgHy3pi1wlzEU=
+	t=1708949908; cv=none; b=FxCwoznXTKdbafmL2h4ip6QY9cYvUyoADHi1wgubjbNMnSXETDg5C2c5uY+RQhrCIB6Ue4JyOaYpIPuFL9l/0a8CRQZYTAC8lqxUXHy4VJxyJzqvIzTBkW6KMxSOxKOVdOwybfRzM41amq5snZhO+QDr7LLlFR/mNir8FRaKCjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708949895; c=relaxed/simple;
-	bh=xCIWZpRxxNMSN7ob6nQ9iTG5SjMeUWZcqa1ESiv8Yps=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YK/vBnoYLxQ/Sp5ebhYbITnijcAUVG6uX9Vnubd45DRT8oNh9oOhSQO959VPnBdkZUOLV8kQ2FNQlHjKcQ+8ZFN6GOZ1Vd8vZanpE/nUbLUmXHH5HakRS64CY81EnLQIAYKwrM/NOk5PeBuWHMx+B8McCmLC4IEpTob8/bQHhm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=fTgua61J; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41QCI5TJ102410;
-	Mon, 26 Feb 2024 06:18:05 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1708949885;
-	bh=RFNVTfrO40yGnidmOJOOJB8JPl52qtzEiSN04cylThM=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=fTgua61Jk7NokrswsOrAn/pZRfeoXnlrOZJmkfBq8EZKcloAt/35uKzF8gGyJRnLU
-	 /elxbwHJiMAuaFxHsZp2ibdCQ5bnxCtR5HuosOqaS96tRAYXkxjCNJNlEjzAGeaAta
-	 r6MqNWI/F5gAu7n3wsP7FF4yh0CfSWXGBeRB6eZU=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41QCI5Oo120329
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 26 Feb 2024 06:18:05 -0600
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 26
- Feb 2024 06:18:05 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 26 Feb 2024 06:18:05 -0600
-Received: from localhost (dhruva.dhcp.ti.com [172.24.227.68])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41QCI4of081093;
-	Mon, 26 Feb 2024 06:18:05 -0600
-Date: Mon, 26 Feb 2024 17:48:03 +0530
-From: Dhruva Gole <d-gole@ti.com>
-To: Mark Brown <broonie@kernel.org>
-CC: Apurva Nandan <a-nandan@ti.com>,
-        =?utf-8?B?VGjDqW8=?= Lebrun
-	<theo.lebrun@bootlin.com>,
-        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Gregory CLEMENT
-	<gregory.clement@bootlin.com>,
-        Vladimir Kondratiev
-	<vladimir.kondratiev@mobileye.com>,
-        Thomas Petazzoni
-	<thomas.petazzoni@bootlin.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>, Nishanth <nm@ti.com>,
-        Vignesh <vigneshr@ti.com>
-Subject: Re: [PATCH v4 0/4] spi: cadence-qspi: Fix runtime PM and system-wide
- suspend
-Message-ID: <20240226121803.5a7r5wkpbbowcxgx@dhruva>
-References: <20240222-cdns-qspi-pm-fix-v4-0-6b6af8bcbf59@bootlin.com>
- <170862920925.104158.14642580909914879148.b4-ty@kernel.org>
+	s=arc-20240116; t=1708949908; c=relaxed/simple;
+	bh=VSnvGelLdUIxZaIuWRNLfdqqVKrr+uqj31Ykk1ZLMCY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=g7ng5c1FEF+5N1NsI9B0c+4QwwPRH65yTFHmwfFUWRydw/izYeSzfdwyxH4jxi7wIyCSRtc2NPYhFsVLTa2UoTwjdLhPgBPGnfA9XnrzA/qW2otUj2X8ech7KutL6pMpmZBP7Ak5Wbk9o2O/qCAj45lWeyP3KbK4qmt5Slxx3Yg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E3ffn9bd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EC11C433F1;
+	Mon, 26 Feb 2024 12:18:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708949908;
+	bh=VSnvGelLdUIxZaIuWRNLfdqqVKrr+uqj31Ykk1ZLMCY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=E3ffn9bdlAqqJECX5jOmuhuODqmMzGVocETBwQE3reLPzykSZ3ycyJ0TEf4AZ+KJb
+	 yLRnbdhjiPrrgHEcwKAv+u68lWMGraKvyP59AB4dytfWg/mjHpABqrOYxdFiIo7jxO
+	 25vwmq+dwb8iVzkGSjTsfeRvcAghQSmfRSwtzw40EPNFKNSh3LupfSzaLtWD7BUMUR
+	 Fmw4V9sOwsRMO5d6oZiRtMLskwDTYjhrZoJD6B5xYb0PIQV88SjdZO8l3XDEnFgRC+
+	 URKxKJ8vyhcnocyQDFMf9NhLtOU/ZTSvriJeQK35sgCGdSP0rz0PMrr1Fwse/g7gpY
+	 gHlpcOgeJt3Mw==
+Message-ID: <fc4f148d-d4d3-4994-8d36-c382c13ba52b@kernel.org>
+Date: Mon, 26 Feb 2024 14:18:22 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <170862920925.104158.14642580909914879148.b4-ty@kernel.org>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 2/2] net: ethernet: ti: am65-cpsw: Enable RX HW
+ timestamp only for PTP packets
+To: Siddharth Vadapalli <s-vadapalli@ti.com>
+Cc: Chintan Vankar <c-vankar@ti.com>, Dan Carpenter
+ <dan.carpenter@linaro.org>, Richard Cochran <richardcochran@gmail.com>,
+ Paolo Abeni <pabeni@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
+ Eric Dumazet <edumazet@google.com>, "David S. Miller" <davem@davemloft.net>,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ Pekka Varis <p-varis@ti.com>
+References: <20240215110953.3225099-1-c-vankar@ti.com>
+ <20240215110953.3225099-2-c-vankar@ti.com>
+ <4c82705d-b05c-4ee8-88ed-42f944a023ac@kernel.org>
+ <03d53049-e649-4714-8ad4-49619a5e9475@ti.com>
+Content-Language: en-US
+From: Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <03d53049-e649-4714-8ad4-49619a5e9475@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Mark, Theo,
 
-+ Nishanth, Vignesh (maintainers of TI K3)
 
-On Feb 22, 2024 at 19:13:29 +0000, Mark Brown wrote:
-> On Thu, 22 Feb 2024 11:12:28 +0100, Théo Lebrun wrote:
-> > This fixes runtime PM and system-wide suspend for the cadence-qspi
-> > driver. Seeing how runtime PM and autosuspend are enabled by default, I
-> > believe this affects all users of the driver.
-> > 
-> > This series has been tested on both Mobileye EyeQ5 hardware and the TI
-> > J7200 EVM board, under s2idle.
-> > 
-> > [...]
+On 24/02/2024 10:59, Siddharth Vadapalli wrote:
+> On Mon, Feb 19, 2024 at 12:59:55PM +0200, Roger Quadros wrote:
+>> Hi,
+>>
+>> On 15/02/2024 13:09, Chintan Vankar wrote:
+>>> The CPSW peripherals on J7AHP, J7VCL, J7AEP, J7ES, AM64 SoCs have
+>>> an errata i2401 "CPSW: Host Timestamps Cause CPSW Port to Lock up".
+>>
+> ...
 > 
-> Applied to
+>>>  
+>>> @@ -856,6 +852,9 @@ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_common *common,
+>>>  		ndev_priv = netdev_priv(ndev);
+>>>  		am65_cpsw_nuss_set_offload_fwd_mark(skb, ndev_priv->offload_fwd_mark);
+>>>  		skb_put(skb, pkt_len);
+>>> +		skb_reset_mac_header(skb);
+>>
+>> Why do you need to add skb_reset_mac_header here?
+>>
+>>> +		if (port->rx_ts_enabled)
+>>> +			am65_cpts_rx_timestamp(common->cpts, skb);
+>>
+>> The timestamp should be added before you do skb_put().
 > 
->    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+> Roger,
 > 
-> Thanks!
-> 
-> [1/4] spi: cadence-qspi: fix pointer reference in runtime PM hooks
->       commit: 32ce3bb57b6b402de2aec1012511e7ac4e7449dc
-> [2/4] spi: cadence-qspi: remove system-wide suspend helper calls from runtime PM hooks
->       commit: 959043afe53ae80633e810416cee6076da6e91c6
-> [3/4] spi: cadence-qspi: put runtime in runtime PM hooks names
->       commit: 4efa1250b59ebf47ce64a7b6b7c3e2e0a2a9d35a
-> [4/4] spi: cadence-qspi: add system-wide suspend and resume callbacks
->       commit: 078d62de433b4f4556bb676e5dd670f0d4103376
+> Could you please clarify why the timestamp should be added before
+> skb_put()?
 
-It seems like between 6.8.0-rc5-next-20240220 and
-6.8.0-rc5-next-20240222 some of TI K3 platform boot have been broken.
-
-It particularly seemed related to these patches because we can see
-cqspi_probe in the call trace and also cqspi_suspend toward the top.
-
-See logs for kernel crash in [0] and working in [1]
-
-
-[0] https://gist.github.com/DhruvaG2000/ed997452b41d6e5301598225fc579800
-[1] https://gist.github.com/DhruvaG2000/d4e73111aeafaca555ba2d5208deb6dd
+My bad. hwtimestamps lies after skb->end so it doesn't matter.
 
 -- 
-Best regards,
-Dhruva Gole <d-gole@ti.com>
+cheers,
+-roger
 
