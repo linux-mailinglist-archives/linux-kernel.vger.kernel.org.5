@@ -1,155 +1,115 @@
-Return-Path: <linux-kernel+bounces-82299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E58CA86820E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:50:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE0FC868210
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:50:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F2C7B216CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:50:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFC951C24774
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:50:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ABB5130E46;
-	Mon, 26 Feb 2024 20:50:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DBD8131732;
+	Mon, 26 Feb 2024 20:50:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ACnsvKAp"
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HcSqhizu"
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7034D12C55E
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 20:50:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F1F7130E3A
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 20:50:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708980613; cv=none; b=I++AoVzr9XNae6DEZruZvBJcoqfzQQMlyI3KBbl1r8g6OC9ZNJ7ph6NcjidanBziYf4nAjNZIe4hYkNE/rmVD81WLv6YQvh2Qo6hD/A7vlMQGBC7e4BM5k0J7ibIcDqL4wD2nPwcyMau1WUnD613A8xRPnaEheMdeG7TeuTOH+c=
+	t=1708980639; cv=none; b=rcF57h/8nNfQ1dWeMb6KxXirk8DyqLVd0YBC2GrMeLVRYGBvFu2BbCW6C78A63MOnOv9YTxQnAVUc9cdwXuQaiacYjfkUdcDVwyJEyB1V4nj79WC/kP2kFabbLaw400f00JDCJBnKUZHZWjj0SOpk3Ja5ZKwN2RY7wwgEE9UNHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708980613; c=relaxed/simple;
-	bh=EFzQ048XVQadnpWaezrhvIBalzckp/A18w0hw0sx5VM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VDtrBfZ5DjBAJkvHzESAfxzdg19fYQ+iypXWc7c062PVmRgl7D6vMEiYU4BYdsmRzhBCx3biHgsU/ohoZTzRAYw00Z1+/1fVaxXAVUbsdtvwt/2lZgsIISVLntKf60SizvLQ8gJGBxjOSaKdIqwmQFZRnFAnrh4u5Yw6bVbkr4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ACnsvKAp; arc=none smtp.client-ip=209.85.222.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-7da6e831977so437371241.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 12:50:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708980611; x=1709585411; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=21VVnvV+8fyMK5A5F+ykm7rHLhBGKI6x/dMJLjTkT0M=;
-        b=ACnsvKApS5YGBQM+UOys6bKszxCXB7/rBsji/kqrBMbkDthW6a3sROB8jpZaxqimS5
-         6dNVLXY+NI0pt1qF7DkxWeVsSlhmkxcX2oSDCC2bphR/zh1lmd5rTIzgrXgTuv/uTRXc
-         c5jrvsjw5ozocSiKx85rxup4H0LkEROfXYjdi8E/NwJvZOodpUJWELozxLhXM7XNJu3B
-         CFFhF21z/1yn+MeAS6+QowtyIi91MmkZa8sWu4wgjQ6tzp+S99cyGWtyYUKJdMbuFZ9m
-         +BcDW3rMiXjisegCj7hUN8Hc44uh5i7wIo0CQvzZSJSQwQNpcDXOX2PkwEoYcHM36r4o
-         V1+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708980611; x=1709585411;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=21VVnvV+8fyMK5A5F+ykm7rHLhBGKI6x/dMJLjTkT0M=;
-        b=gh4tr8aPG4mh85x4jQnJAvFkRSV9gjcfUP6HewRA+WjDGFZBqZT4/o4okDjK9G54ib
-         /z3rqC+mKZ/O2Br6VJT3nJFj8rE0Hjp9/skxKEEObA5PGHxZsZkgzDuLuTtkTGSmLwzF
-         GQX7V/iL3yrj7ts9kIB85k4zDs0ShpS1tYNAS8ww7ov4luGolSOGyV9W1D+R7oHvnJTj
-         iGkIHN8sX/vgysdqLERd3b/0MiWVkNlCEZOxsmh5jTJzfLfWs+oLk+VOTDC74JjsD8/g
-         ezyJsDbStYWgyolAKMF9ZGXVBxI/VUTXIo77hXMugl4MiaHf9BzPl2xbtA0VdNit1ykL
-         qaeg==
-X-Forwarded-Encrypted: i=1; AJvYcCWPNeEMAGeDPfocsEylRkYui7E6M0P7UCE/hN33c+XUH6j/y+TJ0TPC8MgZobrmjvx8s+nNcfDKBduhp0Y4PMfyxv8+2mZeSiHoETOJ
-X-Gm-Message-State: AOJu0YwmSEheHxVsAnZAongchMTUYfmdNTvICA0AfqggjuIKgTSAePBC
-	z4pKBVg+N69NWKlxvPrAl9weXQEe0QLfEA5uhaDxBVLDfozmT1Yw/zKCVLt5elA1RCE1S7qEwmI
-	mCXa6/c/xDt/Q+6HQsLg9pXCsYmQ=
-X-Google-Smtp-Source: AGHT+IEdCPFYY2btKi3bJxNTN4gBmARMBQKwxn/TaiW7B5j0KDJgX6OVZmbI4zx7wFjzdoqCzTgIPANPctbqrt0SXrE=
-X-Received: by 2002:a05:6102:510a:b0:472:2e63:ef2c with SMTP id
- bm10-20020a056102510a00b004722e63ef2cmr2433610vsb.9.1708980611352; Mon, 26
- Feb 2024 12:50:11 -0800 (PST)
+	s=arc-20240116; t=1708980639; c=relaxed/simple;
+	bh=+CBQCm6KmLQMuZ7o0MLaEKmbklNJJaFnLg8M+0QfYnA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uwDAFMSL80nMCZedPlh2GnP7H295ZFklVdYcUDfW2iXbC1f/1H2QuRNufADMU7W3hrMzCRimQY/Fto27nqQdnzLvyGrfZsHvMeMGNDXDvnXn29Ab8c+5QZp3W0mBNhczcMAwNGUzFC6YW99DvxbzNmKAn2Idk8UuATnNr0gUP5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HcSqhizu; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 26 Feb 2024 15:50:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708980635;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mIdkIRtnrOSnd32neZalGi5cjdozYTT6FIEdWcWsU6U=;
+	b=HcSqhizuRpNge/p4Z96mL1vYf4HBThYX/JtRwapRQvIQkUUrCJFkJbw2jiZlCrr1G01OY6
+	VEdKjsiolBcD3vnVkbSepoV1u7spOFQRwGmtRyPJ2rPlH/FFfryTukpBmQxkHJUVCq9K/U
+	bro4rJOJCyg9F/1Fe1ZUZ2cOW9BM2KM=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org, 
+	mhocko@suse.com, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, 
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, 
+	peterx@redhat.com, david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, 
+	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, tj@kernel.org, 
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, hughd@google.com, 
+	andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com, 
+	vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com, 
+	ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, 
+	cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, minchan@google.com, 
+	kaleshsingh@google.com, kernel-team@android.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
+	kasan-dev@googlegroups.com, cgroups@vger.kernel.org, 
+	Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH v4 05/36] fs: Convert alloc_inode_sb() to a macro
+Message-ID: <4uhmoltnaywbhhecnj53g5a6ye3x5acf4upbutgraxn2eg2pe2@6ab667edrl2z>
+References: <20240221194052.927623-1-surenb@google.com>
+ <20240221194052.927623-6-surenb@google.com>
+ <f68e7f17-c288-4dc9-9ae9-78015983f99c@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAGsJ_4zera4+bWuXHKjdU3QdiR3sqcUQB3gF08DPD49OCT4S9w@mail.gmail.com>
- <20240226083714.26187-1-ioworker0@gmail.com> <9bcf5141-7376-441e-bbe3-779956ef28b9@redhat.com>
- <CAK1f24mdwjz2J5VmeYSDwb4jMbrXUVCSF_0pOcWSVt1cfa0FhQ@mail.gmail.com> <318be511-06de-423e-8216-af869f27f849@arm.com>
-In-Reply-To: <318be511-06de-423e-8216-af869f27f849@arm.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Tue, 27 Feb 2024 09:49:59 +1300
-Message-ID: <CAGsJ_4z+0yXUDYwxKNAqYwxAAYpfKpKd2u_dVTDP3b-KPOQT1g@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm/madvise: enhance lazyfreeing with mTHP in madvise_free
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Lance Yang <ioworker0@gmail.com>, David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com, 
-	minchan@kernel.org, peterx@redhat.com, shy828301@gmail.com, 
-	songmuchun@bytedance.com, wangkefeng.wang@huawei.com, zokeefe@google.com, 
-	fengwei.yin@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f68e7f17-c288-4dc9-9ae9-78015983f99c@suse.cz>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Feb 27, 2024 at 2:04=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com>=
- wrote:
->
-> On 26/02/2024 08:55, Lance Yang wrote:
-> > Hey David,
-> >
-> > Thanks for your suggestion!
-> >
-> > On Mon, Feb 26, 2024 at 4:41=E2=80=AFPM David Hildenbrand <david@redhat=
-com> wrote:
-> >>
-> > [...]
-> >>> On Mon, Feb 26, 2024 at 12:00=E2=80=AFPM Barry Song <21cnbao@gmail.co=
-m> wrote:
-> >>> [...]
-> >>>> On Mon, Feb 26, 2024 at 1:33=E2=80=AFAM Lance Yang <ioworker0@gmail.=
-com> wrote:
-> >>> [...]
-> > [...]
-> >>> +static inline bool pte_range_cont_mapped(pte_t *pte, unsigned long n=
-r)
-> >>> +{
-> >>> +     pte_t pte_val;
-> >>> +     unsigned long pfn =3D pte_pfn(pte);
-> >>> +     for (int i =3D 0; i < nr; i++) {
-> >>> +             pte_val =3D ptep_get(pte + i);
-> >>> +             if (pte_none(pte_val) || pte_pfn(pte_val) !=3D (pfn + i=
-))
-> >>> +                     return false;
-> >>> +     }
-> >>> +     return true;
-> >>> +}
-> >>
-> >> I dislike the "cont mapped" terminology.
-> >>
-> >> Maybe folio_pte_batch() does what you want?
-> >
-> > folio_pte_batch() is a good choice. Appreciate it!
->
-> Agreed, folio_pte_batch() is likely to be widely useful for this change a=
-nd
-> others, so suggest exporting it from memory.c and reusing as is if possib=
-le.
+On Mon, Feb 26, 2024 at 04:44:51PM +0100, Vlastimil Babka wrote:
+> On 2/21/24 20:40, Suren Baghdasaryan wrote:
+> > From: Kent Overstreet <kent.overstreet@linux.dev>
+> > 
+> > We're introducing alloc tagging, which tracks memory allocations by
+> > callsite. Converting alloc_inode_sb() to a macro means allocations will
+> > be tracked by its caller, which is a bit more useful.
+> > 
+> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  include/linux/fs.h | 6 +-----
+> >  1 file changed, 1 insertion(+), 5 deletions(-)
+> > 
+> > diff --git a/include/linux/fs.h b/include/linux/fs.h
+> > index 023f37c60709..08d8246399c3 100644
+> > --- a/include/linux/fs.h
+> > +++ b/include/linux/fs.h
+> > @@ -3010,11 +3010,7 @@ int setattr_should_drop_sgid(struct mnt_idmap *idmap,
+> >   * This must be used for allocating filesystems specific inodes to set
+> >   * up the inode reclaim context correctly.
+> >   */
+> > -static inline void *
+> > -alloc_inode_sb(struct super_block *sb, struct kmem_cache *cache, gfp_t gfp)
+> 
+> A __always_inline wouldn't have the same effect? Just wondering.
 
-I actually missed folio_pte_batch() in cont-pte series and re-invented
-a function
-to check if a large folio is entirely mapped in MADV_PAGEOUT[1]. exporting
-folio_pte_batch() will also benefit that case. The problem space is same.
-
-[1] https://lore.kernel.org/linux-mm/20240118111036.72641-7-21cnbao@gmail.c=
-om/
-
->
-> >
-> > Best,
-> > Lance
-> >
-> >>
-> >> --
-> >> Cheers,
-> >>
-> >> David / dhildenb
-
-Thanks
-Barry
+nope, macro expansion within an inline happens once, and will show
+__func__ and __line__ of the helper, we want it expanded in the caller
 
