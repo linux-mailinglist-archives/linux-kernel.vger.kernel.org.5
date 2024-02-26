@@ -1,123 +1,117 @@
-Return-Path: <linux-kernel+bounces-82455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F7828684C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:52:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 076368684C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:52:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 907D41C22BE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:52:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4BF1287745
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:52:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46450135A6D;
-	Mon, 26 Feb 2024 23:52:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C746135A58;
+	Mon, 26 Feb 2024 23:52:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="B6X5dYA3"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eKmUSclU"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F550135419
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 23:52:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 658AE1E894
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 23:52:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708991522; cv=none; b=rmoMlx2p0qPC/I1cJMJJ6ShiCwtGdi1To2Mm+qfxS0zcHrmhL+lITXsLN7rN4uHfVnil/ZNPYDF8MYLCT0ekmh9jPk1lB7hQgcvnbfBSjnGqFFCToN71aeD/9CUPqBeFbW//tpYPOszfB+Lyhfom1vSEw8w1Em9rqT7DeR6atbw=
+	t=1708991557; cv=none; b=t0xJF52DaffL8nMiS257jBwGLE1Kyap0+kHL5uzfnGxdg1cGusyaviz6cIdnti0UyLpmj0sqZeUH3SHeb7i54OFtyHHjBOjkYdVbQ6hbm6V5CqDGkxB4c/ss0QJLkf98t0g1m7VDRrfLXSAGP6JC+08C+X7kLAx1PsoH0o4s2Xg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708991522; c=relaxed/simple;
-	bh=8lUSqlHGMqI8I1r1rpRBEXkwRpZ7oqe4M8MCNf1etHA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HdwFaAn5sET2UmSuwGSGTdyBQwtnI4DIZS1WzHLkH8yGWg9M87h3z1+X2eYzHtDnHiwnKUJRnQ7zaaaPcBoNX0piKA8ubDLhZYXek9foBEE0+ShI0beaub26MaMMPA5Egovf2aokp8iJESbwzjrsqwYmG3Z7vDcnTpRxXO0Y238=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com; spf=pass smtp.mailfrom=arista.com; dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b=B6X5dYA3; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1dc09556599so32090015ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 15:52:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1708991520; x=1709596320; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vyh7mdFRyjlmJV4fW69ox7tTTJCxGb5XPOBSz1bCTds=;
-        b=B6X5dYA3THgOp6st2c8F6tAXMRD1omasU5NmLQgv59huRvDdk544qAzWwMS1+dkokV
-         Z2aMZgwNAjX5NbwbNDjudPSys5kedeAn67NLAm8AUCM0jrckZ0l+qbSYUvrUy7EgkDc1
-         TOKRoMdkJnZ1nULU19ChI3FxdQ1yCIvUUIjc9Sf9zqvpPqeKueHG6Msr1BgA/TDROXK+
-         FpHCdJ4F8Fx36Zghr07QNGX+lIWpX4s2DX60dJ6guEdzK0K4MOXFdjTEn5Z6SMjGKwKE
-         qtyQGv0gfJTnxbKY2JsIWQEu9aOSaYfXP5mcPPCh0JL2M0ddPbNtTS8wPMyZnqeGaCaU
-         Hj7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708991520; x=1709596320;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vyh7mdFRyjlmJV4fW69ox7tTTJCxGb5XPOBSz1bCTds=;
-        b=mT4+CUm31fWnbAq/FbbTglPyMpbMdwQAQWxYVVlNhqRguv2p1/RjsjvYiuYSmaUx/C
-         85V7m8nsY4JttXGfdDarbbTchbOxlYqJEnDek83CtiMhaRIli2aOoTXeFyU4TywVhWA0
-         sFa/vCOBjYNtPl5ofS2cmvggXY/vezkF2ijYzk9Z9C1N5gqAMIOzc1op8w8+ch+ev0Xq
-         gHsI1f2gebjp94rQcOYS4tQPyYFCg21RZ+Sk4so8kGakcNSC8259tIvgnJdSHI+qLxTf
-         vov5Dx+wJn5bqlv3Gc4byu9vcUh9Slw2KHEey54Io1Smki8unmJ/0uKw3+g/5seiGiNs
-         8xdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVn0d1ArpabZsJZKLDfKIDitziQCxplbW6ojy5vpjW4vPw2DwbRbQ7EiNoUhxFz1Hj6pT7Nvyrw/bFGPE5o/55O/5hPi5h7LXm0c4d8
-X-Gm-Message-State: AOJu0YzwNfvU8iPUME2YxiGbz/5usfq25VIcEcgZ0sndaQebVk2f2gtZ
-	M7QxEqAb/pkmDuwkgwm5/p/t/4HH2NjD2tWTDr7vKBZPOaVkJ4QgfrYfyvqFjKT+MMgsIrZz72T
-	otaL4TO92s0gV+9K+GtIV+usd4M/qLae9o9k6
-X-Google-Smtp-Source: AGHT+IGcY9ko42XXIFbh54WiWMk6NMI+6vNUAaXKGgq93/tZ3zK1OHEtzgeAGptztw3FB17mOtXCnI7Z0xkxwMG3Vu8=
-X-Received: by 2002:a17:902:ebc6:b0:1dc:83b3:99a6 with SMTP id
- p6-20020a170902ebc600b001dc83b399a6mr9032283plg.41.1708991520569; Mon, 26 Feb
- 2024 15:52:00 -0800 (PST)
+	s=arc-20240116; t=1708991557; c=relaxed/simple;
+	bh=XIVySJ6fBrUqstD49rkPpA3Y2psGokotiQmfXjTagF0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=qZ6mIpuchOR89awBO0bkhCAjSOvpjh2Swd3TYShPlZ32vs7DnXNZrrDUfEiz/KCt16VVnPRmZQxPX2OSBrt199NSSFiAOkdbYPe1IcDDrJUEHoYEVS4b8mGte07ujVgbgnDP+INF6JIG8skehWOz4aWxKX9JafyR83JLUUl26YY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eKmUSclU; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708991555; x=1740527555;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=XIVySJ6fBrUqstD49rkPpA3Y2psGokotiQmfXjTagF0=;
+  b=eKmUSclUeXutWPjCmdUxo/PKMYZ5zh4wDlXnrlhGoTI6fgvJVcldNW/t
+   geD2asjt0yNApa9/+Jtb9JSBg9TS+yEK74KEDdPmkaE4KN5d4455UmHIz
+   KKl+8Ov0GBOHEbHaDvxa1fwUP0TeIS4jtVA0xcCNM/FzZiQBW2gZfC3sM
+   2bbbrV6SruGBUAfocZswn3J322Bw00I2clCUTgL6Hr2W9hwdT7eX4c+3y
+   +cWaEohXImGpyYe3FawuXEhX+7KaIXBG4449/hi/HNcPUoesecslF4Aae
+   o+rTeR8FvdEUnChl0Ewe5d5qhxyQJ2gnozYSUXvZWS2hFSdPDqBS9j83z
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3179668"
+X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
+   d="scan'208";a="3179668"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 15:52:34 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
+   d="scan'208";a="11511965"
+Received: from jhaqq-mobl1.amr.corp.intel.com (HELO desk) ([10.209.17.170])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 15:52:35 -0800
+Date: Mon, 26 Feb 2024 15:52:33 -0800
+From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To: Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>
+Cc: Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+	Nikolay Borisov <nik.borisov@suse.com>,
+	linux-kernel@vger.kernel.org,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Subject: [PATCH] x86/bugs: Use fixed addressing for VERW operand
+Message-ID: <20240226-verw-arg-fix-v1-1-7b37ee6fd57d@linux.intel.com>
+X-B4-Tracking: v=1; b=H4sIAPAj3WUC/x2MQQqAIBAAvxJ7bsEszPpKdBDbbC8WK1gg/T3pO
+ AMzBRIJU4K5KSCUOfEZK3RtA/5wMRDyVhm00oPS2mAmudFJwJ0fHCfjTK+s9cMGNbmEqv53y/q
+ +H0StzMheAAAA
+X-Mailer: b4 0.12.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240224-tcp-ao-tracepoints-v1-0-15f31b7f30a7@arista.com>
- <20240224-tcp-ao-tracepoints-v1-3-15f31b7f30a7@arista.com> <20240226204142.GJ13129@kernel.org>
-In-Reply-To: <20240226204142.GJ13129@kernel.org>
-From: Dmitry Safonov <dima@arista.com>
-Date: Mon, 26 Feb 2024 23:51:49 +0000
-Message-ID: <CAGrbwDTDfkwf40cTkXh6QgQwPpsAVVLWENYH=_eko5tHCKC5VQ@mail.gmail.com>
-Subject: Re: [PATCH net-next 03/10] net/tcp: Move tcp_inbound_hash() from headers
-To: Simon Horman <horms@kernel.org>
-Cc: Eric Dumazet <edumazet@google.com>, "David S. Miller" <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, David Ahern <dsahern@kernel.org>, 
-	Shuah Khan <shuah@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	Dmitry Safonov <0x7f454c46@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Mon, Feb 26, 2024 at 8:43=E2=80=AFPM Simon Horman <horms@kernel.org> wro=
-te:
->
-> On Sat, Feb 24, 2024 at 09:04:11AM +0000, Dmitry Safonov wrote:
-[..]
-> > +     if (req) {
-> > +             if (tcp_rsk_used_ao(req) !=3D !!aoh) {
-> > +                     u8 keyid, rnext, maclen;
-> > +
-> > +                     if (aoh) {
-> > +                             keyid =3D aoh->keyid;
-> > +                             rnext =3D aoh->rnext_keyid;
-> > +                             maclen =3D tcp_ao_hdr_maclen(aoh);
-> > +                     } else {
-> > +                             keyid =3D rnext =3D maclen =3D 0;
-> > +                     }
->
-> Hi Dmitry,
->
-> it looks like keyid is set but otherwise unused.
->
-> Flagged by W=3D1 builds with gcc-13 and clang-17.
+Macro used for MDS mitigation executes VERW with relative addressing for
+the operand. This is unnecessary and creates a problem for backports on
+older kernels that don't support relocations in alternatives. Relocation
+support was added by commit 270a69c4485d ("x86/alternative: Support
+relocations in alternatives"). Also asm for fixed addressing is much
+more cleaner than relative RIP addressing.
 
-Hi Simon,
+Simplify the asm by using fixed addressing for VERW operand.
 
-Yeah, I think I didn't notice it when I was splitting the WIP patch.
-It should be in the very next patch that uses them:
-+                       trace_tcp_ao_handshake_failure(sk, skb, keyid,
-rnext, maclen);
+Fixes: baf8361e5455 ("x86/bugs: Add asm helpers for executing VERW")
+Reported-by: Nikolay Borisov <nik.borisov@suse.com>
+Closes: https://lore.kernel.org/lkml/20558f89-299b-472e-9a96-171403a83bd6@suse.com/
+Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+---
+ arch/x86/include/asm/nospec-branch.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks for the report, going to fix in v2,
-             Dmitry
+diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+index 2aa52cab1e46..ab19c7f1167b 100644
+--- a/arch/x86/include/asm/nospec-branch.h
++++ b/arch/x86/include/asm/nospec-branch.h
+@@ -323,7 +323,7 @@
+  * Note: Only the memory operand variant of VERW clears the CPU buffers.
+  */
+ .macro CLEAR_CPU_BUFFERS
+-	ALTERNATIVE "", __stringify(verw _ASM_RIP(mds_verw_sel)), X86_FEATURE_CLEAR_CPU_BUF
++	ALTERNATIVE "", __stringify(verw mds_verw_sel), X86_FEATURE_CLEAR_CPU_BUF
+ .endm
+ 
+ #else /* __ASSEMBLY__ */
+
+---
+base-commit: d206a76d7d2726f3b096037f2079ce0bd3ba329b
+change-id: 20240226-verw-arg-fix-796a63088c4d
+
 
