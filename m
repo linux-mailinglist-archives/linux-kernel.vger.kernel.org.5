@@ -1,171 +1,288 @@
-Return-Path: <linux-kernel+bounces-80754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E2AC866C18
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:26:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DE14866CCB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:46:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E83CC1F23C0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:26:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8BE31F26140
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:46:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54C471CD11;
-	Mon, 26 Feb 2024 08:26:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7CAA60EEF;
+	Mon, 26 Feb 2024 08:28:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iDGRSOE8"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ggo4w80H"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA9AB1CA81;
-	Mon, 26 Feb 2024 08:26:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BEA2604C6;
+	Mon, 26 Feb 2024 08:28:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708935965; cv=none; b=sTmqdHIG3rMIb1NTFpbPIjmhirW9QTYRQxh7YnSeLGRS4JJKWnWFbw29MU89zNcH8ushlyZ8TqhS22prFyKE05kTCMH2TrgUTmenVP4nm1TPPPbTPSIPGnT3lXnCNJBjz5mMb693rFg1JtW9CzaHOqgxMQNt28qofPiNihBW94U=
+	t=1708936103; cv=none; b=NWd40F6+jC6pwOw0zu6NYfQPP/QFiemphaSzZTavFpwqrhUpV0fyu/cePGkB+fbjd4CDx8Yay703+cXV6PUfTv6z2zZQS+h70M3/vgJgoETPZze3dCCuvM0jBzMPJct3egGaozpV75I5xyBjdv3Pcmx7GW+EzlOq+BKOM83ypR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708935965; c=relaxed/simple;
-	bh=8aEYoORsIwQSwWsOthBtc3VFHs8XMlL/TLNLBS9ZIII=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=FGql63F4vE+Vo4mtFJILvQIKFuMFVS7CM7kaNkcAWi78IGydgxnV+61VNE6/KaX/qXODQE/QG/r0OzyPTaRuCTeKSG+gx1S6FmLzB08bULRt09mBIjRSAauSZLxq1w9koHYlMV7GW0WVUpjihR1ezasLQhQqK6GrLi4mbmMKnOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iDGRSOE8; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a3ee69976c9so336991866b.0;
-        Mon, 26 Feb 2024 00:26:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708935961; x=1709540761; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=2ttUCqTABwqmssEUu9Ok4fCv5vcEs8kW80tdvfui/rs=;
-        b=iDGRSOE8zP8zpWOmAFdLZuGAdoJr2SXOzNNUJy8Z+3Qv+IY77Sh/lEVN+A3AeCL3FA
-         27HU9dCqJBHxtwZJT1XGCbza9WAZuI9MmeuwzAOQ5kRwz1LKcVtUENC+H3V0CuDo2t0m
-         XlzqvAiLDpmqZ/k+qiUi1uGcMajRp3QvNXB6ZKTphsP1sUq4q25LZhST4Kj7WrsmBJgY
-         AOWnf9/+LJwRbLTUnaoqSWz2HVtAMuzT8Jovuc24jR+9ygdSSk6Y6oEwQMCZYvFW2iFI
-         774LBpZ3J4uhX8ES0FzGXkUQZHOR9FP70okQEebW7RA8sxkcXXm4O8XQRzYikxed1ijo
-         RTOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708935961; x=1709540761;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2ttUCqTABwqmssEUu9Ok4fCv5vcEs8kW80tdvfui/rs=;
-        b=Rjn3fE3NgNg4inYLvg8eeGHesHLodH0GE0OKLU6E1hbGr4HTKvir6DusleWeRCo4UF
-         EKivyEnc8I1pUZS+bspni7PrpiRzUqOdEd/0UJars+UhX2pg+uIvFnXBWMwTIfTuVnzV
-         TkCdm+uIxUnyTC4AiMP2O6h800muILdQuqdoDw/NygrLTA/BGRedSNhTnSl0wdqmdkrA
-         PaVcY/0yYFKWOzOK+IOLEAZTqdCuZWdmnMKSHNsUplti0GOI7WuiLGouk9UM3P5WaSR8
-         UeX0tQNXiRlJdMFo8/7q4D+aW4aWslyiB+NUOfDvcAfEcYQe55NugaiOiRMIIM9UKG2r
-         Y4OA==
-X-Forwarded-Encrypted: i=1; AJvYcCWTLqljXtUcwwGRIfBmf5ePlZdY75t43wMg7WUlG91cFUcZpOF9Vf/UnQSErom7DWN6ul1NFzQPw3p97ErKTHBor01L+P45XGeih33HFjhfbFay8ZyR74hYyN10+IHYFjlVg+iDykul12PzH4BU7ylVbQoNV8Ui95zRNGTp+XJc0/WP/Q==
-X-Gm-Message-State: AOJu0YwoSUSMir7pKuhH3vlOfr5f6Lw8Sa8toIy1h/vNlujs4MxNjkSZ
-	xIhMZhEFkQUQDrSo9qMFYPgjjWyn8TUvWAHvEPx/oiO/np75I3Go
-X-Google-Smtp-Source: AGHT+IHfZDix/7vs3eLadAmGpaat3fXEVGE5oqibwXpzt5hRoNLjvHxb0Sk87Iw4q5y1UDLbp4H3Rg==
-X-Received: by 2002:a17:906:140f:b0:a3f:c932:9c67 with SMTP id p15-20020a170906140f00b00a3fc9329c67mr4078407ejc.68.1708935960718;
-        Mon, 26 Feb 2024 00:26:00 -0800 (PST)
-Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
-        by smtp.gmail.com with ESMTPSA id hu21-20020a170907a09500b00a43389c8a1asm1057465ejc.113.2024.02.26.00.25.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 00:26:00 -0800 (PST)
-Message-ID: <2dbc4a0faaef7f4b7d1cd7d46c75e30fb563b227.camel@gmail.com>
-Subject: Re: [PATCH v5 5/5] iio: amplifiers: hmc425a: add support for
- LTC6373 Instrumentation Amplifier
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: Dumitru Ceclan <mitrutzceclan@gmail.com>, Lars-Peter Clausen
-	 <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
-	 <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Ceclan Dumitru <dumitru.ceclan@analog.com>
-Date: Mon, 26 Feb 2024 09:25:59 +0100
-In-Reply-To: <20240224175448.484ccd10@jic23-huawei>
-References: <20240220153553.2432-1-mitrutzceclan@gmail.com>
-	 <20240220153553.2432-6-mitrutzceclan@gmail.com>
-	 <c92c4c71f433c7375588e832d3c084a50190a1b5.camel@gmail.com>
-	 <20240224175448.484ccd10@jic23-huawei>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1708936103; c=relaxed/simple;
+	bh=eQXT76E/Iv2Z7iSGfh0gwWuL1GwbfdwraxK817hkAaI=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=iMV4uhUJ2UG5ErFl+9NgcqzsTCEeisDPQ5VIFs0ZZX53wAieZkAVjRBCluY5PluFd6eB9d0qrNAKF1sYNGG117v26Zy6+j6/Atw52zlP9gzZLDUZvx8cXfx+03wKiA8YJLRyp/NGy2t9tG1vXwUnYwmseNkyh/6x3IiP6Wlwek8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ggo4w80H; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708936101; x=1740472101;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=eQXT76E/Iv2Z7iSGfh0gwWuL1GwbfdwraxK817hkAaI=;
+  b=ggo4w80HNsoA2lb7IsfIRTEScdruT4XfscosPXg6SDz2An4iJtnqedSr
+   qvOeuvlb/9dauNoulXbo8L8U2xziEMCHTTd9FokpN7+gZMUB+NocKQeH2
+   5QbiCK9ciJCq2H4zrqmU7YjzzOIIowd2WTl/YoIlfG42R6L3mtwSxryF7
+   3OInRgZvas9dUBphpO8kXqWOjjwZXcyz2ldRCt/CYoZjjbHHTG8COJkmN
+   AfysKU9sFO51xSsbpz+dG5Wi7HZI0sheiBGaiG6eWdfFKsZbxXRmWTbrg
+   piierkOZU4G08U83u+gOOJx0hgO+IK9qMBslAcLBs+OdCY+LZTeUw2W73
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="6155425"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="6155425"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 00:28:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="6615886"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 00:28:17 -0800
+From: isaku.yamahata@intel.com
+To: kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: isaku.yamahata@intel.com,
+	isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>,
+	Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com,
+	hang.yuan@intel.com,
+	tina.zhang@intel.com,
+	Binbin Wu <binbin.wu@linux.intel.com>
+Subject: [PATCH v19 058/130] KVM: x86/mmu: Add a private pointer to struct kvm_mmu_page
+Date: Mon, 26 Feb 2024 00:26:00 -0800
+Message-Id: <9d86b5a2787d20ffb5a58f86e43601a660521f16.1708933498.git.isaku.yamahata@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1708933498.git.isaku.yamahata@intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Sat, 2024-02-24 at 17:54 +0000, Jonathan Cameron wrote:
-> On Wed, 21 Feb 2024 14:23:51 +0100
-> Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
->=20
-> > On Tue, 2024-02-20 at 17:34 +0200, Dumitru Ceclan wrote:
-> > > This adds support for LTC6373 36 V Fully-Differential Programmable-Ga=
-in
-> > > Instrumentation Amplifier with 25 pA Input Bias Current.
-> > > The user can program the gain to one of seven available settings thro=
-ugh
-> > > a 3-bit parallel interface (A2 to A0).
-> > >=20
-> > > Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
-> > > ---=C2=A0=20
-> >=20
-> > Just one minor comment. With that:
-> >=20
-> > Reviewed-by: Nuno Sa <nuno.sa@analog.com>
-> >=20
-> > > =C2=A0drivers/iio/amplifiers/hmc425a.c | 124 ++++++++++++++++++++++++=
-++++++-
-> > > =C2=A01 file changed, 120 insertions(+), 4 deletions(-)
-> > >=20
-> > > diff --git a/drivers/iio/amplifiers/hmc425a.c
-> > > b/drivers/iio/amplifiers/hmc425a.c
-> > > index 77872e2dfdfe..50c86c2d28d7 100644
-> > > --- a/drivers/iio/amplifiers/hmc425a.c
-> > > +++ b/drivers/iio/amplifiers/hmc425a.c
-> > > @@ -2,9 +2,10 @@
-> > > =C2=A0/*
-> > > =C2=A0 * HMC425A and similar Gain Amplifiers
-> > > =C2=A0 *
-> > > - * Copyright 2020 Analog Devices Inc.
-> > > + * Copyright 2020, 2024 Analog Devices Inc.
-> > > =C2=A0 */=C2=A0=20
-> >=20
-> > ...
-> >=20
-> > >=20
-> > > =C2=A0
-> > > +static ssize_t ltc6373_read_powerdown(struct iio_dev *indio_dev,
-> > > +				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 uintptr_t private,
-> > > +				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const struct iio_chan_spec *chan,
-> > > +				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 char *buf)
-> > > +{
-> > > +	struct hmc425a_state *st =3D iio_priv(indio_dev);
-> > > +
-> > > +	return sysfs_emit(buf, "%d\n", st->powerdown);=C2=A0=20
-> >=20
-> > Well, in theory the read should also be protected with the lock...
->=20
-> Only reason I can think of for that is potential read tearing.
-> If that happens on a bool we are going to be in a mess so I think this
-> is in practice fine without, though paranoia might suggest locking.
+From: Isaku Yamahata <isaku.yamahata@intel.com>
 
-Yeah, also mentioned it for correctness. I mean, in theory, read_once() sho=
-uld be
-more that enough in here but I often find that too much for using in "simpl=
-e" drivers
-where a lock is surely easier to understand for someone reading the code.
+For private GPA, CPU refers a private page table whose contents are
+encrypted.  The dedicated APIs to operate on it (e.g. updating/reading its
+PTE entry) are used and their cost is expensive.
 
-Now, about your bool comment, I used to think like that until I saw the LF =
-rcu
-mentorship video from Paul. I'm fairly sure he comes up with some "crazy" p=
-ossibility
-about the CPU/compiler screwing you even on a char (IIRC, he was also argui=
-ng about
-not using read_once() on a bool).
+When KVM resolves KVM page fault, it walks the page tables.  To reuse the
+existing KVM MMU code and mitigate the heavy cost to directly walk private
+page table, allocate one more page to copy the dummy page table for KVM MMU
+code to directly walk.  Resolve KVM page fault with the existing code, and
+do additional operations necessary for the private page table.  To
+distinguish such cases, the existing KVM page table is called a shared page
+table (i.e. not associated with private page table), and the page table
+with private page table is called a private page table.  The relationship
+is depicted below.
 
-Now, practically speaking, I tend to agree that for the archs we care this =
-will
-likely never be an issue but yeah, not 100% correct kernel code IMO.
+Add a private pointer to struct kvm_mmu_page for private page table and
+add helper functions to allocate/initialize/free a private page table
+page.
 
-- Nuno S=C3=A1
+              KVM page fault                     |
+                     |                           |
+                     V                           |
+        -------------+----------                 |
+        |                      |                 |
+        V                      V                 |
+     shared GPA           private GPA            |
+        |                      |                 |
+        V                      V                 |
+    shared PT root      dummy PT root            |    private PT root
+        |                      |                 |           |
+        V                      V                 |           V
+     shared PT            dummy PT ----propagate---->   private PT
+        |                      |                 |           |
+        |                      \-----------------+------\    |
+        |                                        |      |    |
+        V                                        |      V    V
+  shared guest page                              |    private guest page
+                                                 |
+                           non-encrypted memory  |    encrypted memory
+                                                 |
+PT: page table
+- Shared PT is visible to KVM and it is used by CPU.
+- Private PT is used by CPU but it is invisible to KVM.
+- Dummy PT is visible to KVM but not used by CPU.  It is used to
+  propagate PT change to the actual private PT which is used by CPU.
 
+Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
+---
+v19:
+- typo in the comment in kvm_mmu_alloc_private_spt()
+- drop CONFIG_KVM_MMU_PRIVATE
+---
+ arch/x86/include/asm/kvm_host.h |  5 +++
+ arch/x86/kvm/mmu/mmu.c          |  7 ++++
+ arch/x86/kvm/mmu/mmu_internal.h | 63 ++++++++++++++++++++++++++++++---
+ arch/x86/kvm/mmu/tdp_mmu.c      |  1 +
+ 4 files changed, 72 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index dcc6f7c38a83..efd3fda1c177 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -825,6 +825,11 @@ struct kvm_vcpu_arch {
+ 	struct kvm_mmu_memory_cache mmu_shadow_page_cache;
+ 	struct kvm_mmu_memory_cache mmu_shadowed_info_cache;
+ 	struct kvm_mmu_memory_cache mmu_page_header_cache;
++	/*
++	 * This cache is to allocate private page table. E.g.  Secure-EPT used
++	 * by the TDX module.
++	 */
++	struct kvm_mmu_memory_cache mmu_private_spt_cache;
+ 
+ 	/*
+ 	 * QEMU userspace and the guest each have their own FPU state.
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index eeebbc67e42b..0d6d4506ec97 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -685,6 +685,12 @@ static int mmu_topup_memory_caches(struct kvm_vcpu *vcpu, bool maybe_indirect)
+ 				       1 + PT64_ROOT_MAX_LEVEL + PTE_PREFETCH_NUM);
+ 	if (r)
+ 		return r;
++	if (kvm_gfn_shared_mask(vcpu->kvm)) {
++		r = kvm_mmu_topup_memory_cache(&vcpu->arch.mmu_private_spt_cache,
++					       PT64_ROOT_MAX_LEVEL);
++		if (r)
++			return r;
++	}
+ 	r = kvm_mmu_topup_memory_cache(&vcpu->arch.mmu_shadow_page_cache,
+ 				       PT64_ROOT_MAX_LEVEL);
+ 	if (r)
+@@ -704,6 +710,7 @@ static void mmu_free_memory_caches(struct kvm_vcpu *vcpu)
+ 	kvm_mmu_free_memory_cache(&vcpu->arch.mmu_pte_list_desc_cache);
+ 	kvm_mmu_free_memory_cache(&vcpu->arch.mmu_shadow_page_cache);
+ 	kvm_mmu_free_memory_cache(&vcpu->arch.mmu_shadowed_info_cache);
++	kvm_mmu_free_memory_cache(&vcpu->arch.mmu_private_spt_cache);
+ 	kvm_mmu_free_memory_cache(&vcpu->arch.mmu_page_header_cache);
+ }
+ 
+diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+index e3f54701f98d..002f3f80bf3b 100644
+--- a/arch/x86/kvm/mmu/mmu_internal.h
++++ b/arch/x86/kvm/mmu/mmu_internal.h
+@@ -101,7 +101,21 @@ struct kvm_mmu_page {
+ 		int root_count;
+ 		refcount_t tdp_mmu_root_count;
+ 	};
+-	unsigned int unsync_children;
++	union {
++		struct {
++			unsigned int unsync_children;
++			/*
++			 * Number of writes since the last time traversal
++			 * visited this page.
++			 */
++			atomic_t write_flooding_count;
++		};
++		/*
++		 * Associated private shadow page table, e.g. Secure-EPT page
++		 * passed to the TDX module.
++		 */
++		void *private_spt;
++	};
+ 	union {
+ 		struct kvm_rmap_head parent_ptes; /* rmap pointers to parent sptes */
+ 		tdp_ptep_t ptep;
+@@ -124,9 +138,6 @@ struct kvm_mmu_page {
+ 	int clear_spte_count;
+ #endif
+ 
+-	/* Number of writes since the last time traversal visited this page.  */
+-	atomic_t write_flooding_count;
+-
+ #ifdef CONFIG_X86_64
+ 	/* Used for freeing the page asynchronously if it is a TDP MMU page. */
+ 	struct rcu_head rcu_head;
+@@ -150,6 +161,50 @@ static inline bool is_private_sp(const struct kvm_mmu_page *sp)
+ 	return kvm_mmu_page_role_is_private(sp->role);
+ }
+ 
++static inline void *kvm_mmu_private_spt(struct kvm_mmu_page *sp)
++{
++	return sp->private_spt;
++}
++
++static inline void kvm_mmu_init_private_spt(struct kvm_mmu_page *sp, void *private_spt)
++{
++	sp->private_spt = private_spt;
++}
++
++static inline void kvm_mmu_alloc_private_spt(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
++{
++	bool is_root = vcpu->arch.root_mmu.root_role.level == sp->role.level;
++
++	KVM_BUG_ON(!kvm_mmu_page_role_is_private(sp->role), vcpu->kvm);
++	if (is_root)
++		/*
++		 * Because TDX module assigns root Secure-EPT page and set it to
++		 * Secure-EPTP when TD vcpu is created, secure page table for
++		 * root isn't needed.
++		 */
++		sp->private_spt = NULL;
++	else {
++		/*
++		 * Because the TDX module doesn't trust VMM and initializes
++		 * the pages itself, KVM doesn't initialize them.  Allocate
++		 * pages with garbage and give them to the TDX module.
++		 */
++		sp->private_spt = kvm_mmu_memory_cache_alloc(&vcpu->arch.mmu_private_spt_cache);
++		/*
++		 * Because mmu_private_spt_cache is topped up before starting
++		 * kvm page fault resolving, the allocation above shouldn't
++		 * fail.
++		 */
++		WARN_ON_ONCE(!sp->private_spt);
++	}
++}
++
++static inline void kvm_mmu_free_private_spt(struct kvm_mmu_page *sp)
++{
++	if (sp->private_spt)
++		free_page((unsigned long)sp->private_spt);
++}
++
+ static inline bool kvm_mmu_page_ad_need_write_protect(struct kvm_mmu_page *sp)
+ {
+ 	/*
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 87233b3ceaef..d47f0daf1b03 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -53,6 +53,7 @@ void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm)
+ 
+ static void tdp_mmu_free_sp(struct kvm_mmu_page *sp)
+ {
++	kvm_mmu_free_private_spt(sp);
+ 	free_page((unsigned long)sp->spt);
+ 	kmem_cache_free(mmu_page_header_cache, sp);
+ }
+-- 
+2.25.1
 
 
