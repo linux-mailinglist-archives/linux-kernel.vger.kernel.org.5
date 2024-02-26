@@ -1,260 +1,159 @@
-Return-Path: <linux-kernel+bounces-82009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B889867DB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:12:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7AAF867DB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:12:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10DF31F22DB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:12:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0CE01C285A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:12:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0966213B79B;
-	Mon, 26 Feb 2024 16:59:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52AAF13328B;
+	Mon, 26 Feb 2024 16:59:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="BQXNqjLC"
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2080.outbound.protection.outlook.com [40.107.7.80])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R4SNCihX"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D28AD13329A;
-	Mon, 26 Feb 2024 16:59:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.80
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708966755; cv=fail; b=jOSFgPm0egHKgHAjIYmQugZSSJIRqVPEPOoGMZNm2XdglKceKwaXtuphcQaBNEPRlfCo+W+p3VPBoQ/g1Rq9EboHWDFynXbf3BmOOkMCzTjQK27f+2zZVbHxwqqctjX1kFvif8fMbPnt2RG3NB8n3yTbW8voA+Yp8S/DFjK14lQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708966755; c=relaxed/simple;
-	bh=xryRZw20WvtTGLpfeLlmCFH779eS89kFp+E1behhcnc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=CprgDeTk/cwayDYSqr+Lwl0N37TH6w9PJQfuYjHIjOpp48KJKmBqHcN69ZcAH2FcbbtKQj0fjfzeWswowei+DKVV8VCYDCjpiyl27nF0q2dxO+uAGHN22Yc0vThcasoLM1RkxNmBxxz0CkTIIPBE1DfseF1lXW4BFc5VZ1TIXpo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=BQXNqjLC; arc=fail smtp.client-ip=40.107.7.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XQC1BiONsbiIYgKbj8tQy5vekQ39D8rkTvHsYDKPvkH1B2VpN5VPaHh0wX3iCLBJd7ILWPB5JnAbMKoeGs5B3v6AzLCO2rllf+e4MX7cr1o8c9mU0dPcrav5p7xIvI4mled1qN/pUZm1pRl0USqDZiPFUWcnrROBlc7FtEbOaYoO0/4nAwsKK/DS03PY5jufAHrotql0CxCEeifb4/T8cPZIA7VUEHFH8ysVfZGdZlDxTxAB5nU14zyNESX+MiaHWYvEJAsv91AaI+15F6ogM+ducgOw5DxgUqktwAonvSsXxzMwJx3YVYdA1y4/mI3iF7SAx8KSEv/UinLvQpOsdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RxnYoO6KlKEWzfj5f/hxd6meXhnIb0JaVQ0DTNRBz0E=;
- b=i+wtkTyhoC3xsEvKGt+a4k+oqA+ghCtXamPUqMn4wJj1sWDmNI/78gj8HIPD7mtDKaArmKF6vn0eRhdsjQdrNxnqM98wOCk/4RaS1XgA2C7cVa+mPB7lfeHIxPIKzezj5Fp5gXZ2sJA1lmRU3O099TqI1/SIf05yLylDOk067bUj8GB3yquEGv6y4vPTutQRujWrLdsi5rVLNouPjk/0z01ZyG+OVpcC0B5D7L6BY7rPyh8b3l/PDXY52xQA3L314tPS7V4f4mxcQJ9oWOr1hk88bmsyeLPUygXB8aCCPLC7j5dDdEpBpvfF4ffTHk4iWT9cs9ZltWkrOEe2nqoUyw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RxnYoO6KlKEWzfj5f/hxd6meXhnIb0JaVQ0DTNRBz0E=;
- b=BQXNqjLC061hvL+stn8QElu19ZPCZEhtR9iVk5Po2sNI5rTPKXGZlSImsNwdCmrglNkOAFBwvPr3BghQdDwbl1F69VUST1Fcjm4q057yVKlSqbzjDtUFm0O6atq+4KiEqzezqdzvBoCHCVNn37x8k8vIEIH8uwKnj6MNFdCUNfM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by DBBPR04MB7867.eurprd04.prod.outlook.com (2603:10a6:10:1e5::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.31; Mon, 26 Feb
- 2024 16:59:10 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9af4:87e:d74:94aa]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9af4:87e:d74:94aa%7]) with mapi id 15.20.7316.032; Mon, 26 Feb 2024
- 16:59:09 +0000
-Date: Mon, 26 Feb 2024 11:58:58 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kishon Vijay Abraham I <kishon@ti.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	Niklas Cassel <cassel@kernel.org>
-Subject: Re: [PATCH v8 05/10] PCI: dwc: ep: Rename dw_pcie_ep_init_complete()
- to dw_pcie_ep_init_registers()
-Message-ID: <ZdzDUq8vWUTnoHnd@lizhi-Precision-Tower-5810>
-References: <20240224-pci-dbi-rework-v8-0-64c7fd0cfe64@linaro.org>
- <20240224-pci-dbi-rework-v8-5-64c7fd0cfe64@linaro.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240224-pci-dbi-rework-v8-5-64c7fd0cfe64@linaro.org>
-X-ClientProxiedBy: BYAPR05CA0063.namprd05.prod.outlook.com
- (2603:10b6:a03:74::40) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A459712C807;
+	Mon, 26 Feb 2024 16:59:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708966750; cv=none; b=MR2yzSMAN21Co9ZJ/uNZYRnpphtPHGjciO7MnbTtHBMpZfH82HzYU2eD9UPtaXwxbHfCr7rXda0O1iJFoOhnW8ErEuGij9C1/DtcKq8az29nJBi8W1e0jLEBOQNFvUg6U8cf+AMrooFkYpnNFpI3oJeZAaFMJ/T7yT40MmwFb18=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708966750; c=relaxed/simple;
+	bh=BLAS03sOMxIrSy3dV5ost75fW5umBREUcI8rl3VAb3A=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=iUXCdLYQ8JgFQy3d/8GpC/6Z8BumUTAmFvEodAiyY1RrI/HEuIRB3UO5i16Tbz//8ZxCvxoJdSxkxrnfxRui29/y512txvtwtooB5D8aGa4EKA2JrLaNsUTnSxMQgTvLeTFQx7C45GFh/az2YPrqwqwpvpoblKUx8LffMcB7bjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=R4SNCihX; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708966749; x=1740502749;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=BLAS03sOMxIrSy3dV5ost75fW5umBREUcI8rl3VAb3A=;
+  b=R4SNCihXvVwHSornTPea3RdglxrpsuMUrA2dGwFcYuri3etLggJaLnb3
+   1DJ2gNNmVjjUCKvJr23cCXtWG4fABgFYC1CRGV1mtgVMebe4YPMf65y8i
+   wYYQ5lsJkPwj4oya+BZ12HcC+2+/12vK0uVwNTXgWNSmBwKaitMvF4ois
+   9Mw/cBFPRVRkMXlDdYYYDQ+2XNaTpAboyJrhNY8h7sgIbrGzVIFHiVDkq
+   tZMvO7+WdVyimRo3GeGDhXuCy8HswT0jrvat4hPkFnozHBx5vQ3Et9YOp
+   wxtrs0dwBx7cnxSlApcancypid0/rS7T8I47HbmWcStpIzuPSKhMRGhrx
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3133426"
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="3133426"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 08:59:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="7269610"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.48.12])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 08:59:05 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Mon, 26 Feb 2024 18:59:00 +0200 (EET)
+To: Luiz Capitulino <luizcap@redhat.com>
+cc: shravankr@nvidia.com, davthompson@nvidia.com, ndalvi@redhat.com, 
+    LKML <linux-kernel@vger.kernel.org>, platform-driver-x86@vger.kernel.org, 
+    Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 0/2] platform/mellanox: mlxbf-pmc: Fix module loading
+In-Reply-To: <1608d86a-24e8-403b-b199-ce23f8411cfd@redhat.com>
+Message-ID: <8a05120e-fcdf-f7f2-6b60-22e3ee819d37@linux.intel.com>
+References: <cover.1708635408.git.luizcap@redhat.com> <170895404513.2243.14840310263795846559.b4-ty@linux.intel.com> <def1a153-3cfb-431d-a7d2-a13bb7d65f4f@redhat.com> <29863354-4efe-d199-a9d4-7daf83f6cde9@linux.intel.com>
+ <1608d86a-24e8-403b-b199-ce23f8411cfd@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DBBPR04MB7867:EE_
-X-MS-Office365-Filtering-Correlation-Id: c1336876-c741-4897-abfa-08dc36ec4043
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	lECJoM4lDQaxlNkQTuxADwUO3YRl7GTmsRW+jS1cC3Ec3wX0tn9VEYtByKKkJdb7WRcrT+2UR9GzbcobaZjUUR4cwSf3iOiEiNUf8TYDfy+w+H0SArW4CxZx3ERtxJjnVzi2/C2RCYSt9LAmt/hyo0dhKznKdugG8Iw0oor7K1es4GaqVSP/1+aj/UktIL5WN/DAm/pLnStUAIWonsuafKH36e+bQa0arnOGHpbX99b87d3QqzFTFm/Inzt8+XJP4wwW/tvOgC5XzFmSniJNdjMb3m9MWwlKq/DSC0y3RcqGTsrd4vlUN1A+1m74HJF9UhooI2D3+too1n85UkGdrtFz3uDJ03IAOQJqdj3mwK61TkrkH/uUyrrF+yfW9lYU9XyIakY32hDRzDTdpemw0smUhkqxbaF0ZuSD0SCNdDgkeTVuuboKroVsX711DRq85S8oVZuTLLuyMqFcd8qPR6onnyXbVw2J2duw4UUkkvqrSF1VH1q7Ys0W0TXFyLeVgBt4WjCMupUcPDQpC7SeoFDT8GcV54eE8YOpDDTEzhy9MoFZReWc3yxGH+1nEM+gcyGByesU5nwga2aMpoP8BQDhM/rUsbN4QK6m4efjJ630CQtzkoxx4woUPVCWwf5bWfaho/jp5H/Dxi3mOjwNcznNgHlKNbT8O31ygjnmJHBFejaQoUB0MtAopFgfPxleEI68tvActuFfDnqU+3GZs3H90uQABXV3Q51miS9Nu3I=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?k7uWCshUUwsT+lM871dGjnuvMOYM2f+Gblr1Avt9fY8ZaQE66k4o3Wz8Bei0?=
- =?us-ascii?Q?fHRJg4ygePvW6R8/gfhZZW46AnnQ9BDrajyq4o8FDDoYYS4MHJydw6XXsrr+?=
- =?us-ascii?Q?rADYVkguh/ikWrtdpIKB5ZDgIaaqXh8G7VKfwnCgIGGTmnuJMBz42mRw6+wj?=
- =?us-ascii?Q?Ahusy7XY6ed1EerCpKnmFK2jIEcNv+mDWZGjIxFK2BFQAkhwyQ7p0rswwdbN?=
- =?us-ascii?Q?Z5LGk1kzr3xAEYG5qZ+qUXH1A3lyUh2by+CTCtkkg/pe0QRpMQKCXChv1te6?=
- =?us-ascii?Q?jvi68rSPLtNnLj6OH5Fh8bB0UeKECm7ylnkfm1M09fXdgjtpk82wzugNRfOk?=
- =?us-ascii?Q?LK5g/4JdlVuae8lPQkowTo8KaDcEJVf//orwiCFhdRRyc/0f8vObhZ1xmuEM?=
- =?us-ascii?Q?q4q77XklJlyTStBMZFvBks+7mN6f7SIGpjRkWQ54Jdv8U3G9QpWOTX9Yo6th?=
- =?us-ascii?Q?A8D6OWGTC+2RZZkDm4NK1OT12LUKYGEUgD7kMfy8wTwA2Iyc3DHLG0L0wiKJ?=
- =?us-ascii?Q?Xg4Rjn2H1XVMZWMONPSL5wQ9M2aExqr4i/zpdz9RH6dBjltTWZeOOQOtcW/S?=
- =?us-ascii?Q?9CpaCEs7Tf/lbJW6XAcQpX3HFpkQQszqZc1lerXi900djck3OqJw/uZ+QY7E?=
- =?us-ascii?Q?0wdMye+cqws62aHty3cggyDZdo8sV0uwj2g7pWUcdtm/zi5fi4pCELBWStnX?=
- =?us-ascii?Q?9vQTLiQLHEXa/jPSBq4kYB+zz3ukcDLT4bC6nqgy4FLqZNc6kxVwCounnynu?=
- =?us-ascii?Q?jzzy5DgXJAfnbNJgwE3zYtjzN2KjUcz0XOJMjNBjqjMK2y6RDX7noRLxId6N?=
- =?us-ascii?Q?+savGe1dGiOyDsi6UgZWv50xYB7qDyzeCi+TsOp43Hc5M7tndqMQNg58AOTt?=
- =?us-ascii?Q?gz0usMP6dHadFU8KvFYPrh/dRE98xZ6FT8ILJisBJSRuAfkuOzckO4TEHjLD?=
- =?us-ascii?Q?zepmFDLe9rsSdmchby1EWXCrGfofjBDbFV5EwDbvIhoFOwiQWqJATsDKhzmV?=
- =?us-ascii?Q?hA2XMTRDD3J0VZMik5tf6qaKwFJqh1yLvNl+2OPznATwyeWhq4AEiXl89Ijg?=
- =?us-ascii?Q?b8Qe+mRErrWRPyVjaPE+VB1v9XVXxeKDnIKYJpR6X6zMw9u1MIfiO3CRHDTC?=
- =?us-ascii?Q?7FhOktRijiINKE+rHSwjtDZZotsMrT8Nz5HvCCSQNojTagEgSHaphEK119s1?=
- =?us-ascii?Q?p9dHcUeXND9tv7R2/ipIJlaOr75NRrOhaHjuZoyCehn5AgeRHilrS9VYBit4?=
- =?us-ascii?Q?ih5M2w8NbvFNDHgT2kqJqzQv6JvZR5MlGjj3gwdSOK8F7+alwniwEDaLX2O5?=
- =?us-ascii?Q?Vc3wTwonJkPFvTJNtnbE61cKXmrkB5MrAjWqQHVIWaAEx9R7YbHItoRf02JA?=
- =?us-ascii?Q?gsGu5u0/EXCu8GStOhSnl7BYZChW1QFm+r6LWrbVbeXRqwHnKNdtM7C+N6vl?=
- =?us-ascii?Q?1u1kjxVbAgtBMWvdQx3w2kD3dhIST5/PeryYFpXRw3+fJV9pMGBrhGwtLpgv?=
- =?us-ascii?Q?sD3g2Gwa7EyV0waQqhwBbH+Tz93VDTbBvx9sqN7YgbcQdvyi1vBv82NsB5tI?=
- =?us-ascii?Q?1a8jWAxCWZw+YV8zM3Z4Ddp3ugnWqUzBQqc1HsJs?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c1336876-c741-4897-abfa-08dc36ec4043
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 16:59:09.9246
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6ba0TCFmi0oRbHexaowphp9Cm40fQ6z85CzdO2mLS1Oc5aUpqPZXCgUIYHAczA3YLY7llbg6gjHghrAB5EeAdg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7867
+Content-Type: multipart/mixed; BOUNDARY="8323328-730537961-1708964317=:1203"
+Content-ID: <4b808e5d-8e8a-3c86-7ca7-e69e8bd41f28@linux.intel.com>
 
-On Sat, Feb 24, 2024 at 12:24:11PM +0530, Manivannan Sadhasivam wrote:
-> The goal of the dw_pcie_ep_init_complete() API is to initialize the DWC
-> specific registers post registering the controller with the EP framework.
-> 
-> But the naming doesn't reflect its functionality and causes confusion. So,
-> let's rename it to dw_pcie_ep_init_registers() to make it clear that it
-> initializes the DWC specific registers.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Reviewed-by: Frank Li <Frank.Li@nxp.com>
+--8323328-730537961-1708964317=:1203
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-ID: <0b7f7ff4-48f1-66a2-0394-e1037cd78cc7@linux.intel.com>
 
-> ---
->  drivers/pci/controller/dwc/pcie-designware-ep.c | 6 +++---
->  drivers/pci/controller/dwc/pcie-designware.h    | 4 ++--
->  drivers/pci/controller/dwc/pcie-qcom-ep.c       | 2 +-
->  drivers/pci/controller/dwc/pcie-tegra194.c      | 2 +-
->  4 files changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> index 99d66b0fa59b..ed1f2afd830a 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> @@ -603,7 +603,7 @@ static unsigned int dw_pcie_ep_find_ext_capability(struct dw_pcie *pci, int cap)
->  	return 0;
->  }
->  
-> -int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep)
-> +int dw_pcie_ep_init_registers(struct dw_pcie_ep *ep)
->  {
->  	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
->  	struct dw_pcie_ep_func *ep_func;
-> @@ -718,7 +718,7 @@ int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep)
->  
->  	return ret;
->  }
-> -EXPORT_SYMBOL_GPL(dw_pcie_ep_init_complete);
-> +EXPORT_SYMBOL_GPL(dw_pcie_ep_init_registers);
->  
->  int dw_pcie_ep_init(struct dw_pcie_ep *ep)
->  {
-> @@ -788,7 +788,7 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
->  	 * (Ex: tegra194). Any hardware access on such platforms result
->  	 * in system hang.
->  	 */
-> -	ret = dw_pcie_ep_init_complete(ep);
-> +	ret = dw_pcie_ep_init_registers(ep);
->  	if (ret)
->  		goto err_free_epc_mem;
->  
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> index 351d2fe3ea4d..f8e5431a207b 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> @@ -669,7 +669,7 @@ static inline void __iomem *dw_pcie_own_conf_map_bus(struct pci_bus *bus,
->  #ifdef CONFIG_PCIE_DW_EP
->  void dw_pcie_ep_linkup(struct dw_pcie_ep *ep);
->  int dw_pcie_ep_init(struct dw_pcie_ep *ep);
-> -int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep);
-> +int dw_pcie_ep_init_registers(struct dw_pcie_ep *ep);
->  void dw_pcie_ep_init_notify(struct dw_pcie_ep *ep);
->  void dw_pcie_ep_deinit(struct dw_pcie_ep *ep);
->  void dw_pcie_ep_cleanup(struct dw_pcie_ep *ep);
-> @@ -693,7 +693,7 @@ static inline int dw_pcie_ep_init(struct dw_pcie_ep *ep)
->  	return 0;
->  }
->  
-> -static inline int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep)
-> +static inline int dw_pcie_ep_init_registers(struct dw_pcie_ep *ep)
->  {
->  	return 0;
->  }
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> index 59b1c0110288..3697b4a944cc 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> @@ -463,7 +463,7 @@ static int qcom_pcie_perst_deassert(struct dw_pcie *pci)
->  	      PARF_INT_ALL_LINK_UP | PARF_INT_ALL_EDMA;
->  	writel_relaxed(val, pcie_ep->parf + PARF_INT_ALL_MASK);
->  
-> -	ret = dw_pcie_ep_init_complete(&pcie_ep->pci.ep);
-> +	ret = dw_pcie_ep_init_registers(&pcie_ep->pci.ep);
->  	if (ret) {
->  		dev_err(dev, "Failed to complete initialization: %d\n", ret);
->  		goto err_disable_resources;
-> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-> index 68bfeed3429b..264ee76bf008 100644
-> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
-> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-> @@ -1897,7 +1897,7 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
->  	val = (upper_32_bits(ep->msi_mem_phys) & MSIX_ADDR_MATCH_HIGH_OFF_MASK);
->  	dw_pcie_writel_dbi(pci, MSIX_ADDR_MATCH_HIGH_OFF, val);
->  
-> -	ret = dw_pcie_ep_init_complete(ep);
-> +	ret = dw_pcie_ep_init_registers(ep);
->  	if (ret) {
->  		dev_err(dev, "Failed to complete initialization: %d\n", ret);
->  		goto fail_init_complete;
-> 
-> -- 
-> 2.25.1
-> 
+On Mon, 26 Feb 2024, Luiz Capitulino wrote:
+
+> On 2024-02-26 11:04, Ilpo J=E4rvinen wrote:
+> > On Mon, 26 Feb 2024, Luiz Capitulino wrote:
+> >=20
+> > > On 2024-02-26 08:27, Ilpo J=E4rvinen wrote:
+> > > > On Thu, 22 Feb 2024 15:57:28 -0500, Luiz Capitulino wrote:
+> > > >=20
+> > > > > The mlxbf-pmc driver fails to load when the firmware reports a ne=
+w but
+> > > > > not
+> > > > > yet implemented performance block. I can reproduce this today wit=
+h a
+> > > > > Bluefield-3 card and UEFI version 4.6.0-18-g7d063bb-BId13035, sin=
+ce
+> > > > > this
+> > > > > reports the new clock_measure performance block.
+> > > > >=20
+> > > > > This[1] patch from Shravan implements the clock_measure support a=
+nd
+> > > > > will
+> > > > > solve the issue. But this series avoids the situation by ignoring=
+ and
+> > > > > logging unsupported performance blocks.
+> > > > >=20
+> > > > > [...]
+> > > >=20
+> > > >=20
+> > > > Thank you for your contribution, it has been applied to my local
+> > > > review-ilpo branch. Note it will show up in the public
+> > > > platform-drivers-x86/review-ilpo branch only once I've pushed my
+> > > > local branch there, which might take a while.
+> > >=20
+> > > Thank you Ilpo and thanks Hans for the review.
+> > >=20
+> > > The only detail is that we probably want this merged for 6.8 since
+> > > the driver doesn't currently load with the configuration mentioned ab=
+ove.
+> >=20
+> > Oh, sorry, I missed the mention in the coverletter.
+> >=20
+> > So you'd want I drop these from review-ilpo branch as there they end
+> > up into for-next branch, and they should go through Hans instead who
+> > handles fixes branch for this cycle?
+>=20
+> If that's the path to get this series merged for this cycle then yes,
+> but let's see if Hans agrees (sorry that I didn't know this before
+> posting).
+>
+> One additional detail is that this series is on top of linux-next, which
+> has two additional mlxbf-pmc changes:
+>
+> *
+> https://lore.kernel.org/lkml/39be055af3506ce6f843d11e45d71620f2a96e26.170=
+7808180.git.shravankr@nvidia.com/
+> *
+> https://lore.kernel.org/lkml/d8548c70339a29258a906b2b518e5c48f669795c.170=
+7808180.git.shravankr@nvidia.com/
+>=20
+> Maybe those two should be included for 6.8 as well?
+
+Those look a new feature to me so they belong to for-next. So no, they=20
+will not end up into 6.8 (to fixes branch). If the 2 patches in this=20
+series do not apply without some for-next targetting dependencies, you=20
+should rebase on top of fixes branch and send a new version.
+
+About those two patches, please also see my reply. I intentionally only 2=
+=20
+patches of that series because I wanted to see sysfs documentation first=20
+so you should resend those two patches to for-next with sysfs=20
+documentation.
+
+--=20
+ i.
+--8323328-730537961-1708964317=:1203--
 
