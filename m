@@ -1,133 +1,247 @@
-Return-Path: <linux-kernel+bounces-81043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 044E8866F5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:55:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9636866F6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:55:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98D6D1F27B84
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:55:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBCD61C25446
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:55:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8584A51C47;
-	Mon, 26 Feb 2024 09:24:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uA7k9Oep"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F4A551C21
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:24:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0738253397;
+	Mon, 26 Feb 2024 09:24:21 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A0E52F7F;
+	Mon, 26 Feb 2024 09:24:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708939454; cv=none; b=ZbnoItjLoXYToWb1TYnSwnf/Tlc+D/e1BpS2HMv8azGyPijc9VlqZPRHC9oYnYtEhTvmlfdzu4i/eQDOz4uqEOS6uVbScixylVWvQiMvwzQ9Fl8n6SR9FFbptLQObfZLLd63zC57iHgtBHWnzJGmg2l4nKqkMzXNIa6eYZStkdc=
+	t=1708939460; cv=none; b=Vf/T4Khq2Y9zPQ6WPYYgcVB7+npc0YjdHjUAWJiNPQv/CBsyxZ4EppLDvqSckVS4XrPcAgSO2m1Wlj8lLMZ5X2rc3/TrFweMMll2/tcrMbugCNQmCh1Ls996FZrJckV/RaLBiES1oZqIhCYZvQMp2UHvFzMqzj/Ccb19/FQWUR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708939454; c=relaxed/simple;
-	bh=JV2wrawyeXPo4aIOiBpPMHJ26a4I93PUV7/GweGKTec=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ebBUXDEMn7ZynjRo1gp+CdPQt8Inwjg8mGTfz01IBo52o7S08Dds+YXov0m0uxiQ2NP6FznJMggHllCFQUExZETs4EkD6v0+u5su+tqWsMFdox0VD4tN03hvO5iX0bcJzFcCeR81AKDuY5wPYIO2i6BotjDTChsHHUp+WL7hBZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uA7k9Oep; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-563b7b3e3ecso3867292a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 01:24:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708939451; x=1709544251; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zJf2FW1KV5zcyVzT2YgYrCyTLzGHgmEw6n4q6HDUml8=;
-        b=uA7k9OepuNxk5J2K7o6VO0sFrcJRYYt06UsubzP9UDU9TDpOKgLMOAAr1lng1ocaa9
-         m7e8Z/bsxCYQWMGE98RdN9d0AgSpK/56MTG9tyPMay0Tl+hr4tLyljd49E+pXj12JdFB
-         N/1u+jg6WdfwsLwkQ9/oBZnxAS9oQ+/U6pSGV7KLm6axq8ByfVlgLmFyGMwxuKoPBFKm
-         yKO1nPUQMDt+Co3XV1sAjUeJIgYBBzwgxbopNBhoksxRqqDvxkufdJVrQeQo7jQ96FZu
-         12l5TKHztfddkVENAN7NgwqklRs7Y6qWgwiQd/fBND0U8erZw2Xi51A2KQZUVgM7RZMN
-         sekQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708939451; x=1709544251;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zJf2FW1KV5zcyVzT2YgYrCyTLzGHgmEw6n4q6HDUml8=;
-        b=hSqLhkSn1esioiMlRNUZiu5F7u/RXUJcY0kD14J/ozFmZD5b63CMOKEkxW1szZSfZ7
-         wZk104s26tjYIz+6/SciN17tmYKFALxGWrtTHZzbLrnAyd+y431h2G2ofODI0hizoK1f
-         n86j02d+fTS/pppqPYqm9KpRzvYCGsK4zeBPLzsmcoTGAW5x7J4pIlNIRZoU3zdJldOj
-         yFAWLTRza3UqRNRLCBWiAD6Oz7e1scGowqS1mKGwe+sNDp1lK0ocbHELJYHg/qmtKUa5
-         7Z0eMBNcz02GRAL37ldLp+OVRx6eNVLBYVhat+GHcczAT8zCdC4v/RcL/PkYeMIx+y4J
-         P95A==
-X-Forwarded-Encrypted: i=1; AJvYcCVCsAiiCRUeOTQqnCu+wR1Filkq5cYrfbROK8bfscbAhl8ZdG/L3zZcgtLBZtWa9dRPslfJBatCDmmTcwrDGVXoPGrof6htmcQJshVS
-X-Gm-Message-State: AOJu0Yw5Psgg0r4Uh1qvyWcAwkQWEt/L2TLH16o4lxvCNGayY+//zN2f
-	zBynIjn+hGI/Im3rMMnYTfbMWJoIyNlRsdyiKhQLVAs3aSffgjATxFx7VE7AVmA=
-X-Google-Smtp-Source: AGHT+IFn6o+RexLO13XYps7GlH49YQXHwq9GVtbMl5z7QBcD2ywIAisyJKdBhxCc5k1QxJ6sd1XBEA==
-X-Received: by 2002:a05:6402:2c7:b0:565:8e3a:5add with SMTP id b7-20020a05640202c700b005658e3a5addmr4140787edx.15.1708939451603;
-        Mon, 26 Feb 2024 01:24:11 -0800 (PST)
-Received: from [192.168.0.173] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id q4-20020aa7da84000000b00561c666991csm2162886eds.73.2024.02.26.01.24.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 01:24:11 -0800 (PST)
-Message-ID: <0a6fec2f-978c-4290-a189-20120a60d08b@linaro.org>
-Date: Mon, 26 Feb 2024 11:24:09 +0200
+	s=arc-20240116; t=1708939460; c=relaxed/simple;
+	bh=3L3vyjwLUBTxJ8F+6hqzqB6n+xT9bUSLXeQwycOpv64=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=LLLyq8lu1H0z43+b/yEED8POr7nahfHbor5nzdR4FonD88GntyQBsCJwQfz3saplVO8GsUSobmavREisaDrciQuWn4CLJAnVxciQbKJ/3V56k+XvxLFJFUDTCl3XmeTU4cwWCJXBRoRSOBypRLc9dANtP4+hN5+0pbvd4oQ40jc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.24])
+	by gateway (Coremail) with SMTP id _____8BxefC_WNxlWIoRAA--.45641S3;
+	Mon, 26 Feb 2024 17:24:15 +0800 (CST)
+Received: from [10.20.42.24] (unknown [10.20.42.24])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8AxTs28WNxlXABFAA--.48896S3;
+	Mon, 26 Feb 2024 17:24:12 +0800 (CST)
+Subject: Re: [PATCH] irqchip/loongson-pch-pic: Update interrupt registration
+ policy
+To: Thomas Gleixner <tglx@linutronix.de>, chenhuacai@kernel.org,
+ jiaxun.yang@flygoat.com
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Baoqi Zhang <zhangbaoqi@loongson.cn>, Biao Dong <dongbiao@loongson.cn>
+References: <20240223102612.1499-1-zhangtianyang@loongson.cn>
+ <875xyccu1n.ffs@tglx>
+From: Tianyang Zhang <zhangtianyang@loongson.cn>
+Message-ID: <a1a42903-eac1-0dfd-d500-64a93ea81da3@loongson.cn>
+Date: Mon, 26 Feb 2024 17:24:12 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 05/39] dt-bindings: crypto: add sam9x7 in Atmel TDES
+In-Reply-To: <875xyccu1n.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-To: Varshini Rajendran <varshini.rajendran@microchip.com>,
- herbert@gondor.apana.org.au, davem@davemloft.net, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
- claudiu.beznea@tuxon.dev, linux-crypto@vger.kernel.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240223171342.669133-1-varshini.rajendran@microchip.com>
- <20240223172445.671783-1-varshini.rajendran@microchip.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20240223172445.671783-1-varshini.rajendran@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:AQAAf8AxTs28WNxlXABFAA--.48896S3
+X-CM-SenderInfo: x2kd0wxwld05hdqjqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW3XFyUtr4UWrW7WF13GF43CFX_yoW7KFy3pF
+	W8Jw4akFWUJry8W392vw1UZrySva93ta45KF4ft347Xwn0vFykKFWI9ryq9F48ZrZ5Kr1Y
+	vw4Ygr909a1DAFXCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUBFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+	XVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+	8JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
+	Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
+	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
+	14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jepB-UUUUU=
+
+Hi Thomas,
+
+Thank you very much for your reply. my response below, please review
+
+在 2024/2/26 上午1:50, Thomas Gleixner 写道:
+> On Fri, Feb 23 2024 at 18:26, Tianyang Zhang wrote:
+>> From: Baoqi Zhang <zhangbaoqi@loongson.cn>
+>>
+>> We have removed the fixed mapping between the 7A interrupt source
+>> and the HT interrupt vector, and replaced it with a dynamically
+>> allocated approach. This will be more conducive to fully utilizing
+>> existing vectors to support more devices
+> You are describing _WHAT_ the patch is doing, but you fail to explain
+> the context and the _WHY_.
+I will rewrite the commit as required
+>> Signed-off-by: Baoqi Zhang <zhangbaoqi@loongson.cn>
+>> Signed-off-by: Zhang Tianyang <zhangtianyang@loongson.cn>
+>> Signed-off-by: Biao Dong <dongbiao@loongson.cn>
+> This Signed-off-by chain is wrong. You, Tianyang, are sending this,
+> right?
+>
+> See
+>
+> https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
+>
+> and the following chapters.
+sorry, I will reorganize the Signed-off-by chain
+>> ---
+>>   drivers/irqchip/irq-loongson-pch-pic.c | 64 +++++++++++++++++++-------
+>>   1 file changed, 47 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/drivers/irqchip/irq-loongson-pch-pic.c b/drivers/irqchip/irq-loongson-pch-pic.c
+>> index 63db8e2172e0..86549356e76e 100644
+>> --- a/drivers/irqchip/irq-loongson-pch-pic.c
+>> +++ b/drivers/irqchip/irq-loongson-pch-pic.c
+>> @@ -34,6 +34,8 @@
+>>   #define PIC_REG_IDX(irq_id)	((irq_id) / PIC_COUNT_PER_REG)
+>>   #define PIC_REG_BIT(irq_id)	((irq_id) % PIC_COUNT_PER_REG)
+>>   
+>> +#define hwirq_to_bit(priv, hirq)	(((priv)->table)[(hirq)])
+> Make this a static inline please.
+Okay, I will follow the suggestions and make the necessary modifications
+>>   static int nr_pics;
+>>   
+>>   struct pch_pic {
+>> @@ -46,6 +48,8 @@ struct pch_pic {
+>>   	u32			saved_vec_en[PIC_REG_COUNT];
+>>   	u32			saved_vec_pol[PIC_REG_COUNT];
+>>   	u32			saved_vec_edge[PIC_REG_COUNT];
+>> +	u8			table[PIC_COUNT];
+>> +	int			inuse;
+>>   };
+>>   
+>>   static struct pch_pic *pch_pic_priv[MAX_IO_PICS];
+>> @@ -80,45 +84,47 @@ static void pch_pic_mask_irq(struct irq_data *d)
+>>   {
+>>   	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
+>>   
+>> -	pch_pic_bitset(priv, PCH_PIC_MASK, d->hwirq);
+>> +	pch_pic_bitset(priv, PCH_PIC_MASK, hwirq_to_bit(priv, d->hwirq));
+>>   	irq_chip_mask_parent(d);
+>>   }
+>>   
+>>   static void pch_pic_unmask_irq(struct irq_data *d)
+>>   {
+>> +	int bit = hwirq_to_bit(priv, d->hwirq);
+>>   	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
+> How does this even compile?
+This is an error that occurred during the patch delivery process. I am 
+very sorry and will immediately correct and improve the submission process
+>>   
+>> -	writel(BIT(PIC_REG_BIT(d->hwirq)),
+>> -			priv->base + PCH_PIC_CLR + PIC_REG_IDX(d->hwirq) * 4);
+>> +	writel(BIT(PIC_REG_BIT(bit)),
+>> +			priv->base + PCH_PIC_CLR + PIC_REG_IDX(bit) * 4);
+>>   
+>>   	irq_chip_unmask_parent(d);
+>> -	pch_pic_bitclr(priv, PCH_PIC_MASK, d->hwirq);
+>> +	pch_pic_bitclr(priv, PCH_PIC_MASK, bit);
+>>   }
+>>   
+>>   static int pch_pic_set_type(struct irq_data *d, unsigned int type)
+>>   {
+>> +	int bit = hwirq_to_bit(priv, d->hwirq);
+>>   	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
+> And this?
+>
+> By chance because you used a macro instead of an inline function. But
+> it's still incorrect and wrong.
+Just like above, I apologize again
+>> @@ -157,6 +164,7 @@ static int pch_pic_domain_translate(struct irq_domain *d,
+>>   					unsigned long *hwirq,
+>>   					unsigned int *type)
+>>   {
+>> +	int i;
+>>   	struct pch_pic *priv = d->host_data;
+>>   	struct device_node *of_node = to_of_node(fwspec->fwnode);
+> Please see:
+>
+> https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#variable-declarations
+Thanks for reminder, this will be fixed to follow the declaration method 
+of the reverse fir tree
+>    
+>> @@ -171,6 +179,20 @@ static int pch_pic_domain_translate(struct irq_domain *d,
+>>   			return -EINVAL;
+>>   
+>>   		*hwirq = fwspec->param[0] - priv->gsi_base;
+>> +
+>> +		raw_spin_lock(&priv->pic_lock);
+> This was clearly never tested with lockdep enabled. Why?
+>
+> Because lockdep would have told you that this takes the spinlock with
+> interrupts enabled while it is taken in the mask()/unmask() callbacks
+> from hard interrupt context.
+
+Thank you for your correction. After using lockdep testing and learning 
+the details of spinlock,
+
+I will replace the original function with 
+raw_spin_lock_irqsave/raw_spin_lock_irqrestore
+
+>> +		for (i = 0; i < priv->inuse; i++) {
+>> +			if (priv->table[i] == *hwirq) {
+>> +				*hwirq = i;
+>> +				break;
+>> +			}
+>> +		}
+>> +		if (i == priv->inuse && priv->inuse < PIC_COUNT) {
+>> +			priv->table[priv->inuse] = *hwirq;
+>> +			*hwirq = priv->inuse++;
+>> +		}
+> So in case that priv->inuse == PIC_COUNT this does not set hwirq and
+> returns with bogus values.
+
+We did miss the code for exception handling here, partly because the 
+number of interrupt
+
+sources on our device is far less than PIC_COUNT. However, this will 
+still cause problems,
+
+and we will add a code to prompt error handling
+
+>> +		raw_spin_unlock(&priv->pic_lock);
+>> +
+>> @@ -294,6 +320,10 @@ static int pch_pic_init(phys_addr_t addr, unsigned long size, int vec_base,
+>>   	if (!priv->base)
+>>   		goto free_priv;
+>>   
+>> +	priv->inuse = 0;
+>> +	for (i = 0; i < PIC_COUNT; i++)
+>> +		priv->table[i] = -1;
+> table is an array of u8. So how does -1 make sense? Even if it would
+> make sense, then you can't ever have 256 interrupts in use because the
+> truncated -1 is equivalent to hwirq 255.
+
+The original intention of using -1 here was to mark the initialization 
+status of a table entry,
+
+For indicating an invalid state, we think -1 is a more prominent 
+notation compared to 255
+
+but we overlooked its original type . In next patch, we will replace 
+this immediate with a macro
+
+Thanks again
+
+                 Tianyang
 
 
-
-On 23.02.2024 19:24, Varshini Rajendran wrote:
-> Add DT bindings for atmel TDES.
-> 
-> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
-> Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-
-This would have deserved a better commit message, I (we) spent a lot of
-time deciding whether this is the correct approach.
-https://lore.kernel.org/linux-arm-kernel/342de8f3-852f-9bfa-39c4-4d820f349305@linaro.org/
-
-Anyway:
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-
-> ---
-> Changes in v4:
-> - Updated Acked-by tag
-> ---
->  .../devicetree/bindings/crypto/atmel,at91sam9g46-tdes.yaml  | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-tdes.yaml b/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-tdes.yaml
-> index 3d6ed24b1b00..6a441f79efea 100644
-> --- a/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-tdes.yaml
-> +++ b/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-tdes.yaml
-> @@ -12,7 +12,11 @@ maintainers:
->  
->  properties:
->    compatible:
-> -    const: atmel,at91sam9g46-tdes
-> +    oneOf:
-> +      - const: atmel,at91sam9g46-tdes
-> +      - items:
-> +          - const: microchip,sam9x7-tdes
-> +          - const: atmel,at91sam9g46-tdes
->  
->    reg:
->      maxItems: 1
 
