@@ -1,302 +1,351 @@
-Return-Path: <linux-kernel+bounces-80442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18A9C866879
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:05:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3F5C86687D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:06:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB79E281E46
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:05:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 258211F220FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:06:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3813613AE2;
-	Mon, 26 Feb 2024 03:05:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="kLcVw91j"
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9AA3C8C7;
-	Mon, 26 Feb 2024 03:04:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D71D415AC4;
+	Mon, 26 Feb 2024 03:06:36 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD34FDF58
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:06:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708916699; cv=none; b=BSEt57m0dxQekucnIG7birg9L0AajabOHSQaNAozjXnTafBfbb1k4V7wNB6gyCbI7BNbLmxMyjJiesjpJb2I1lR2Vo5qGXCyPIz7WPaqJXYWwS3JHFmOKXx3CnspLN5Uk4YHpo2mvd8eqhu2zTIH3MkcgtD+klI3cuGjRBtbcOY=
+	t=1708916796; cv=none; b=S3XRRZePqDJyfYxBqrmKlLyvM4z223Dp1/TOl49c8cggun1fcJu1R5b9poSfYzTnzIOoswHTcMROR94Pq8ZfzWTBMQCfr6BDm737gpHJwwKhDk03PYb1KR88lUbA5+sKEUEtUjjOgK+wQxhFJ20qyMwSmqjZf+te6dAd9M0JBLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708916699; c=relaxed/simple;
-	bh=7DPdQp+crI03h1yJx2LmjB97PDiC+mM7c78GGmSvO3s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kC2MY79QMYRgkRM4UTSmcP1mGrqFiWF07AswbUZbYkj/mGKa0Z27ATI0XFGIa36gCgU+DbhhOw8HycxYFxkGhL+zUto5YJb9h2eHpuufAdknYO3t2Mj8Qu9LHShR7+PRXLv6m26gRNGGVU2pqCVa203rQv2iDlc2AmZJvXUMsxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=kLcVw91j; arc=none smtp.client-ip=115.124.30.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1708916693; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=8fHEj3Es1WjucFLsLgdW49Mkhy0Q0HKu/7afnZ+AaHQ=;
-	b=kLcVw91j+1601OCE5O3fVMYSJUhyPt/uhiZGr6V73/plm4M5fXUqx3uRs7J/5hTIReOLsMljNdZtGlqZ5hubLv2iStOpso07wBaVrymT4OBZxtuY+vJhweXxvb3TovigJw0ULHvfffgt7rEzLiAqpH08qsLOPlaAY9EOJ9OssBc=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0W1AK4gS_1708916691;
-Received: from 30.221.129.59(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W1AK4gS_1708916691)
-          by smtp.aliyun-inc.com;
-          Mon, 26 Feb 2024 11:04:52 +0800
-Message-ID: <a1890ec0-99be-41cc-9117-46269bc6abad@linux.alibaba.com>
-Date: Mon, 26 Feb 2024 11:04:51 +0800
+	s=arc-20240116; t=1708916796; c=relaxed/simple;
+	bh=FbC23IxQvaPYKs3D5Hr55D8OA23RjvqavkSZ1N60AM0=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=NKjPn6IIbmp8k3YVzdWoNvjfiEvzeXEbncWprV46BzbcctyZmvqogFTISZb402xC1CSIDQ34OhiZB49MBPG1mEhcbcPQDXaT/Up0qupl3ZMnptUEIb5vLprsjFyWrzQ8a+TFVp19jnZXf+ebMKxcBmWHtFeXuAYWBeiHWgQbQew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-d6dff70000001748-22-65dc002f9b3e
+From: Byungchul Park <byungchul@sk.com>
+To: linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Cc: kernel_team@skhynix.com,
+	akpm@linux-foundation.org,
+	ying.huang@intel.com,
+	vernhao@tencent.com,
+	mgorman@techsingularity.net,
+	hughd@google.com,
+	willy@infradead.org,
+	david@redhat.com,
+	peterz@infradead.org,
+	luto@kernel.org,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	rjgolo@gmail.com
+Subject: [RESEND PATCH v8 0/8] Reduce TLB flushes by 94% by improving folio migration
+Date: Mon, 26 Feb 2024 12:06:05 +0900
+Message-Id: <20240226030613.22366-1-byungchul@sk.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrHLMWRmVeSWpSXmKPExsXC9ZZnoa4+w51Ugw17DC3mrF/DZvF5wz82
+	ixcb2hktvq7/xWzx9FMfi8XlXXPYLO6t+c9qcX7XWlaLHUv3MVlcOrCAyeJ47wEmi/n3PrNZ
+	bN40ldni+JSpjBa/fwAVn5w1mcVBwON7ax+Lx85Zd9k9Fmwq9di8Qstj8Z6XTB6bVnWyeWz6
+	NInd4925c+weJ2b8ZvGYdzLQ4/2+q2weW3/ZeTROvcbm8XmTXABfFJdNSmpOZllqkb5dAlfG
+	5P5ljAWzAyoOXp/N1sA4waaLkZNDQsBEYuaDfnYY+8/E+ywgNpuAusSNGz+ZQWwRATOJg61/
+	wGqYBe4ySRzoZwOxhQVCJdo+ngGrYRFQldh/bjpYnFfAVGLLqZXMEDPlJVZvOABkcwHZt9kk
+	vp85wwiRkJQ4uOIGywRG7gWMDKsYhTLzynITM3NM9DIq8zIr9JLzczcxAkN5We2f6B2Mny4E
+	H2IU4GBU4uFd8OF2qhBrYllxZe4hRgkOZiUR3nCZm6lCvCmJlVWpRfnxRaU5qcWHGKU5WJTE
+	eY2+lacICaQnlqRmp6YWpBbBZJk4OKUaGENP9NUxNb52EGO3t3E54Hc2huEaQ9TP9J7F/mf0
+	wpp/r9x79/XcB+ySTsvYtghZ5ubsXyWt1tRVPrni4WMZloV/qnalHte9EtGZF/3PRHbxbztD
+	4QNbI7V3WRzs/XK19Ebl0TqOgAVHZjbKTwmIz7szs/uMtfeZJ+ldDn83CDs8uG5g+5jXSIml
+	OCPRUIu5qDgRACCaBBJhAgAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKLMWRmVeSWpSXmKPExsXC5WfdrKvPcCfV4OIBFYs569ewWXze8I/N
+	4sWGdkaLr+t/MVs8/dTHYnF47klWi8u75rBZ3Fvzn9Xi/K61rBY7lu5jsrh0YAGTxfHeA0wW
+	8+99ZrPYvGkqs8XxKVMZLX7/ACo+OWsyi4Ogx/fWPhaPnbPusnss2FTqsXmFlsfiPS+ZPDat
+	6mTz2PRpErvHu3Pn2D1OzPjN4jHvZKDH+31X2TwWv/jA5LH1l51H49RrbB6fN8kF8Edx2aSk
+	5mSWpRbp2yVwZUzuX8ZYMDug4uD12WwNjBNsuhg5OSQETCT+TLzPAmKzCahL3LjxkxnEFhEw
+	kzjY+ocdxGYWuMskcaCfDcQWFgiVaPt4BqyGRUBVYv+56WBxXgFTiS2nVjJDzJSXWL3hAPME
+	Ro4FjAyrGEUy88pyEzNzTPWKszMq8zIr9JLzczcxAgNzWe2fiTsYv1x2P8QowMGoxMO74MPt
+	VCHWxLLiytxDjBIczEoivOEyN1OFeFMSK6tSi/Lji0pzUosPMUpzsCiJ83qFpyYICaQnlqRm
+	p6YWpBbBZJk4OKUaGKNd2k3P3Zks+MVp2mLTz06rv5Snz6j4N/H3xdeKIaJfl4scflh8b+W1
+	pdLPOjZNepm67s66x3piplwReiEvdSLdhL8dWlevlXj+8768365zJG1mnlho4/4lLOKFVF7m
+	tmuCTS6SW08fDWKafFboS2bvjIv85ZNkmVuFVSy+tilE/LRSO2+us1SJpTgj0VCLuag4EQBe
+	jiPtSAIAAA==
+X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 06/15] net/smc: implement DMB-related operations
- of loopback-ism
-To: Wenjia Zhang <wenjia@linux.ibm.com>, wintera@linux.ibm.com,
- hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, jaka@linux.ibm.com, Gerd Bayer <gbayer@linux.ibm.com>
-Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com,
- alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
- linux-s390@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240111120036.109903-1-guwen@linux.alibaba.com>
- <20240111120036.109903-7-guwen@linux.alibaba.com>
- <b5b4b96f-e512-4c1a-b749-f9fc3e7c2fcf@linux.ibm.com>
- <a06cdb50-591b-4984-b7d5-7ab758569d21@linux.alibaba.com>
- <2fe9e5e0-aa5a-41e8-a2b3-80db0208cfa9@linux.ibm.com>
-From: Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <2fe9e5e0-aa5a-41e8-a2b3-80db0208cfa9@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+
+Hi everyone,
+
+While I'm working with a tiered memory system e.g. CXL memory, I have
+been facing migration overhead esp. TLB shootdown on promotion or
+demotion between different tiers. Yeah.. most TLB shootdowns on
+migration through hinting fault can be avoided thanks to Huang Ying's
+work, commit 4d4b6d66db ("mm,unmap: avoid flushing TLB in batch if PTE
+is inaccessible"). See the following link:
+
+https://lore.kernel.org/lkml/20231115025755.GA29979@system.software.com/
+
+However, it's only for ones using hinting fault. I thought it'd be much
+better if we have a general mechanism to reduce the number of TLB
+flushes and TLB misses, that we can ultimately apply to any type of
+migration, I tried it only for tiering for now tho.
+
+I'm suggesting a mechanism called MIGRC that stands for 'Migration Read
+Copy', to reduce TLB flushes by keeping source and destination of folios
+participated in the migrations until all TLB flushes required are done,
+only if those folios are not mapped with write permission PTE entries.
+
+To achieve that:
+
+   1. For the folios that map only to non-writable TLB entries, prevent
+      TLB flush at migration by keeping both source and destination
+      folios, which will be handled later at a better time.
+
+   2. When any non-writable TLB entry changes to writable e.g. through
+      fault handler, give up migrc mechanism so as to perform TLB flush
+      required right away.
+
+I observed a big improvement of TLB flushes # and TLB misses # at the
+following evaluation using XSBench like:
+
+   1. itlb flush was reduced by 93.9%.
+   2. dtlb thread was reduced by 43.5%.
+   3. stlb flush was reduced by 24.9%.
+   4. dtlb store misses was reduced by 34.2%.
+   5. itlb load misses was reduced by 45.5%.
+   6. The runtime was reduced by 3.5%.
+
+I believe that it would help more with any real cases.
+
+---
+
+The measurement result:
+
+   Architecture - x86_64
+   QEMU - kvm enabled, host cpu
+   Numa - 2 nodes (16 CPUs 1GB, no CPUs 8GB)
+   Linux Kernel - v6.7, numa balancing tiering on, demotion enabled
+   Benchmark - XSBench -p 100000000 (-p option makes the runtime longer)
+
+   run 'perf stat' using events:
+      1) itlb.itlb_flush
+      2) tlb_flush.dtlb_thread
+      3) tlb_flush.stlb_any
+      4) dTLB-load-misses
+      5) dTLB-store-misses
+      6) iTLB-load-misses
+
+   run 'cat /proc/vmstat' and pick:
+      1) numa_pages_migrated
+      2) pgmigrate_success
+      3) nr_tlb_remote_flush
+      4) nr_tlb_remote_flush_received
+      5) nr_tlb_local_flush_all
+      6) nr_tlb_local_flush_one
+
+   BEFORE - mainline v6.7
+   ----------------------
+   $ perf stat -a \
+	   -e itlb.itlb_flush \
+	   -e tlb_flush.dtlb_thread \
+	   -e tlb_flush.stlb_any \
+	   -e dTLB-load-misses \
+	   -e dTLB-store-misses \
+	   -e iTLB-load-misses \
+	   ./XSBench -p 100000000
+
+   Performance counter stats for 'system wide':
+
+      85647229          itlb.itlb_flush
+      480981504         tlb_flush.dtlb_thread
+      323937200         tlb_flush.stlb_any
+      238381632579      dTLB-load-misses
+      601514255         dTLB-store-misses
+      2974157461        iTLB-load-misses
+
+   2252.883892112 seconds time elapsed
+
+   $ cat /proc/vmstat
+
+   ...
+   numa_pages_migrated 12790664
+   pgmigrate_success 26835314
+   nr_tlb_remote_flush 3031412
+   nr_tlb_remote_flush_received 45234862
+   nr_tlb_local_flush_all 216584
+   nr_tlb_local_flush_one 740940
+   ...
+
+   AFTER - mainline v6.7 + migrc
+   -----------------------------
+   $ perf stat -a \
+	   -e itlb.itlb_flush \
+	   -e tlb_flush.dtlb_thread \
+	   -e tlb_flush.stlb_any \
+	   -e dTLB-load-misses \
+	   -e dTLB-store-misses \
+	   -e iTLB-load-misses \
+	   ./XSBench -p 100000000
+
+   Performance counter stats for 'system wide':
+
+      5240261           itlb.itlb_flush
+      271581774         tlb_flush.dtlb_thread
+      243149389         tlb_flush.stlb_any
+      234502983364      dTLB-load-misses
+      395673680         dTLB-store-misses
+      1620215163        iTLB-load-misses
+
+   2172.283436287 seconds time elapsed
+
+   $ cat /proc/vmstat
+
+   ...
+   numa_pages_migrated 14897064
+   pgmigrate_success 30825530
+   nr_tlb_remote_flush 198290
+   nr_tlb_remote_flush_received 2820156
+   nr_tlb_local_flush_all 92048
+   nr_tlb_local_flush_one 741401
+   ...
+
+---
+
+Changes from v7:
+	1. Rewrite cover letter to explain what 'migrc' mechasism is.
+	   (feedbacked by Andrew Morton)
+	2. Supplement the commit message of a patch 'mm: Add APIs to
+	   free a folio directly to the buddy bypassing pcp'.
+	   (feedbacked by Andrew Morton)
+
+Changes from v6:
+	1. Fix build errors in case of
+	   CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH disabled by moving
+	   migrc_flush_{start,end}() calls from arch code to
+	   try_to_unmap_flush() in mm/rmap.c.
+
+Changes from v5:
+	1. Fix build errors in case of CONFIG_MIGRATION disabled or
+	   CONFIG_HWPOISON_INJECT moduled. (feedbacked by kernel test
+	   bot and Raymond Jay Golo)
+	2. Organize migrc code with two kconfigs, CONFIG_MIGRATION and
+	   CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH.
+
+Changes from v4:
+
+	1. Rebase on v6.7.
+	2. Fix build errors in arm64 that is doing nothing for TLB flush
+	   but has CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH. (reported
+	   by kernel test robot)
+	3. Don't use any page flag. So the system would give up migrc
+	   mechanism more often but it's okay. The final improvement is
+	   good enough.
+	4. Instead, optimize full TLB flush(arch_tlbbatch_flush()) by
+	   avoiding redundant CPUs from TLB flush.
+
+Changes from v3:
+
+	1. Don't use the kconfig, CONFIG_MIGRC, and remove sysctl knob,
+	   migrc_enable. (feedbacked by Nadav)
+	2. Remove the optimization skipping CPUs that have already
+	   performed TLB flushes needed by any reason when performing
+	   TLB flushes by migrc because I can't tell the performance
+	   difference between w/ the optimization and w/o that.
+	   (feedbacked by Nadav)
+	3. Minimize arch-specific code. While at it, move all the migrc
+           declarations and inline functions from include/linux/mm.h to
+           mm/internal.h (feedbacked by Dave Hansen, Nadav)
+	4. Separate a part making migrc paused when the system is in
+	   high memory pressure to another patch. (feedbacked by Nadav)
+	5. Rename:
+	      a. arch_tlbbatch_clean() to arch_tlbbatch_clear(),
+	      b. tlb_ubc_nowr to tlb_ubc_ro,
+	      c. migrc_try_flush_free_folios() to migrc_flush_free_folios(),
+	      d. migrc_stop to migrc_pause.
+	   (feedbacked by Nadav)
+	6. Use ->lru list_head instead of introducing a new llist_head.
+	   (feedbacked by Nadav)
+	7. Use non-atomic operations of page-flag when it's safe.
+	   (feedbacked by Nadav)
+	8. Use stack instead of keeping a pointer of 'struct migrc_req'
+	   in struct task, which is for manipulating it locally.
+	   (feedbacked by Nadav)
+	9. Replace a lot of simple functions to inline functions placed
+	   in a header, mm/internal.h. (feedbacked by Nadav)
+	10. Add additional sufficient comments. (feedbacked by Nadav)
+	11. Remove a lot of wrapper functions. (feedbacked by Nadav)
+
+Changes from RFC v2:
+
+	1. Remove additional occupation in struct page. To do that,
+	   unioned with lru field for migrc's list and added a page
+	   flag. I know page flag is a thing that we don't like to add
+	   but no choice because migrc should distinguish folios under
+	   migrc's control from others. Instead, I force migrc to be
+	   used only on 64 bit system to mitigate you guys from getting
+	   angry.
+	2. Remove meaningless internal object allocator that I
+	   introduced to minimize impact onto the system. However, a ton
+	   of tests showed there was no difference.
+	3. Stop migrc from working when the system is in high memory
+	   pressure like about to perform direct reclaim. At the
+	   condition where the swap mechanism is heavily used, I found
+	   the system suffered from regression without this control.
+	4. Exclude folios that pte_dirty() == true from migrc's interest
+	   so that migrc can work simpler.
+	5. Combine several patches that work tightly coupled to one.
+	6. Add sufficient comments for better review.
+	7. Manage migrc's request in per-node manner (from globally).
+	8. Add TLB miss improvement in commit message.
+	9. Test with more CPUs(4 -> 16) to see bigger improvement.
+
+Changes from RFC:
+
+	1. Fix a bug triggered when a destination folio at the previous
+	   migration becomes a source folio at the next migration,
+	   before the folio gets handled properly so that the folio can
+	   play with another migration. There was inconsistency in the
+	   folio's state. Fixed it.
+	2. Split the patch set into more pieces so that the folks can
+	   review better. (Feedbacked by Nadav Amit)
+	3. Fix a wrong usage of barrier e.g. smp_mb__after_atomic().
+	   (Feedbacked by Nadav Amit)
+	4. Tried to add sufficient comments to explain the patch set
+	   better. (Feedbacked by Nadav Amit)
+
+Byungchul Park (8):
+  x86/tlb: Add APIs manipulating tlb batch's arch data
+  arm64: tlbflush: Add APIs manipulating tlb batch's arch data
+  mm/rmap: Recognize read-only TLB entries during batched TLB flush
+  x86/tlb, mm/rmap: Separate arch_tlbbatch_clear() out of
+    arch_tlbbatch_flush()
+  mm: Separate move/undo doing on folio list from migrate_pages_batch()
+  mm: Add APIs to free a folio directly to the buddy bypassing pcp
+  mm: Defer TLB flush by keeping both src and dst folios at migration
+  mm: Pause migrc mechanism at high memory pressure
+
+ arch/arm64/include/asm/tlbflush.h |  19 ++
+ arch/x86/include/asm/tlbflush.h   |  18 ++
+ arch/x86/mm/tlb.c                 |   2 -
+ include/linux/mm.h                |  23 ++
+ include/linux/mmzone.h            |   7 +
+ include/linux/sched.h             |   9 +
+ mm/internal.h                     |  78 ++++++
+ mm/memory.c                       |   8 +
+ mm/migrate.c                      | 411 ++++++++++++++++++++++++++----
+ mm/page_alloc.c                   |  34 ++-
+ mm/rmap.c                         |  40 ++-
+ mm/swap.c                         |   7 +
+ 12 files changed, 597 insertions(+), 59 deletions(-)
 
 
+base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+-- 
+2.17.1
 
-On 2024/2/23 22:12, Wenjia Zhang wrote:
-> 
-> 
-> On 20.02.24 02:55, Wen Gu wrote:
->>
->>
->> On 2024/2/16 22:13, Wenjia Zhang wrote:
->>>
->>>
->>> On 11.01.24 13:00, Wen Gu wrote:
->>>> This implements DMB (un)registration and data move operations of
->>>> loopback-ism device.
->>>>
->>>> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
->>>> ---
->>>>   net/smc/smc_cdc.c      |   6 ++
->>>>   net/smc/smc_cdc.h      |   1 +
->>>>   net/smc/smc_loopback.c | 133 ++++++++++++++++++++++++++++++++++++++++-
->>>>   net/smc/smc_loopback.h |  13 ++++
->>>>   4 files changed, 150 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/net/smc/smc_cdc.c b/net/smc/smc_cdc.c
->>>> index 3c06625ceb20..c820ef197610 100644
->>>> --- a/net/smc/smc_cdc.c
->>>> +++ b/net/smc/smc_cdc.c
->>>> @@ -410,6 +410,12 @@ static void smc_cdc_msg_recv(struct smc_sock *smc, struct smc_cdc_msg *cdc)
->>>>   static void smcd_cdc_rx_tsklet(struct tasklet_struct *t)
->>>>   {
->>>>       struct smc_connection *conn = from_tasklet(conn, t, rx_tsklet);
->>>> +
->>>> +    smcd_cdc_rx_handler(conn);
->>>> +}
->>>> +
->>>> +void smcd_cdc_rx_handler(struct smc_connection *conn)
->>>> +{
->>>>       struct smcd_cdc_msg *data_cdc;
->>>>       struct smcd_cdc_msg cdc;
->>>>       struct smc_sock *smc;
->>>> diff --git a/net/smc/smc_cdc.h b/net/smc/smc_cdc.h
->>>> index 696cc11f2303..11559d4ebf2b 100644
->>>> --- a/net/smc/smc_cdc.h
->>>> +++ b/net/smc/smc_cdc.h
->>>> @@ -301,5 +301,6 @@ int smcr_cdc_msg_send_validation(struct smc_connection *conn,
->>>>                    struct smc_wr_buf *wr_buf);
->>>>   int smc_cdc_init(void) __init;
->>>>   void smcd_cdc_rx_init(struct smc_connection *conn);
->>>> +void smcd_cdc_rx_handler(struct smc_connection *conn);
->>>>   #endif /* SMC_CDC_H */
->>>> diff --git a/net/smc/smc_loopback.c b/net/smc/smc_loopback.c
->>>> index 353d4a2d69a1..f72e7b24fc1a 100644
->>>> --- a/net/smc/smc_loopback.c
->>>> +++ b/net/smc/smc_loopback.c
->>>> @@ -15,11 +15,13 @@
->>>>   #include <linux/types.h>
->>>>   #include <net/smc.h>
->>>> +#include "smc_cdc.h"
->>>>   #include "smc_ism.h"
->>>>   #include "smc_loopback.h"
->>>>   #if IS_ENABLED(CONFIG_SMC_LO)
->>>>   #define SMC_LO_V2_CAPABLE    0x1 /* loopback-ism acts as ISMv2 */
->>>> +#define SMC_DMA_ADDR_INVALID    (~(dma_addr_t)0)
->>>>   static const char smc_lo_dev_name[] = "loopback-ism";
->>>>   static struct smc_lo_dev *lo_dev;
->>>> @@ -50,6 +52,97 @@ static int smc_lo_query_rgid(struct smcd_dev *smcd, struct smcd_gid *rgid,
->>>>       return 0;
->>>>   }
->>>> +static int smc_lo_register_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb,
->>>> +                   void *client_priv)
->>>> +{
->>>> +    struct smc_lo_dmb_node *dmb_node, *tmp_node;
->>>> +    struct smc_lo_dev *ldev = smcd->priv;
->>>> +    int sba_idx, order, rc;
->>>> +    struct page *pages;
->>>> +
->>>> +    /* check space for new dmb */
->>>> +    for_each_clear_bit(sba_idx, ldev->sba_idx_mask, SMC_LO_MAX_DMBS) {
->>>> +        if (!test_and_set_bit(sba_idx, ldev->sba_idx_mask))
->>>> +            break;
->>>> +    }
->>>> +    if (sba_idx == SMC_LO_MAX_DMBS)
->>>> +        return -ENOSPC;
->>>> +
->>>> +    dmb_node = kzalloc(sizeof(*dmb_node), GFP_KERNEL);
->>>> +    if (!dmb_node) {
->>>> +        rc = -ENOMEM;
->>>> +        goto err_bit;
->>>> +    }
->>>> +
->>>> +    dmb_node->sba_idx = sba_idx;
->>>> +    order = get_order(dmb->dmb_len);
->>>> +    pages = alloc_pages(GFP_KERNEL | __GFP_NOWARN |
->>>> +                __GFP_NOMEMALLOC | __GFP_COMP |
->>>> +                __GFP_NORETRY | __GFP_ZERO,
->>>> +                order);
->>>> +    if (!pages) {
->>>> +        rc = -ENOMEM;
->>>> +        goto err_node;
->>>> +    }
->>>> +    dmb_node->cpu_addr = (void *)page_address(pages);
->>>> +    dmb_node->len = dmb->dmb_len;
->>>> +    dmb_node->dma_addr = SMC_DMA_ADDR_INVALID;
->>>> +
->>>> +again:
->>>> +    /* add new dmb into hash table */
->>>> +    get_random_bytes(&dmb_node->token, sizeof(dmb_node->token));
->>>> +    write_lock(&ldev->dmb_ht_lock);
->>>> +    hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb_node->token) {
->>>> +        if (tmp_node->token == dmb_node->token) {
->>>> +            write_unlock(&ldev->dmb_ht_lock);
->>>> +            goto again;
->>>> +        }
->>>> +    }
->>>> +    hash_add(ldev->dmb_ht, &dmb_node->list, dmb_node->token);
->>>> +    write_unlock(&ldev->dmb_ht_lock);
->>>> +
->>> The write_lock_irqsave()/write_unlock_irqrestore() and read_lock_irqsave()/read_unlock_irqrestore()should be used 
->>> instead of write_lock()/write_unlock() and read_lock()/read_unlock() in order to keep the lock irq-safe.
->>>
->>
->> dmb_ht_lock won't be hold in an interrupt or sockirq context. The dmb_{register|unregister},
->> dmb_{attach|detach} and data_move are all on the process context. So I think write_(un)lock
->> and read_(un)lock is safe here.
-> 
-> right, it is not directly hold in a interrupt context, but it has a dependency on conn->send_lock as you wrote below, 
-> which requires irq-safe lock. And this matches our finding from a test:
-> 
-> =====================================================
-> WARNING: SOFTIRQ-safe -> SOFTIRQ-unsafe lock order detected
-> 6.8.0-rc4-00787-g8eb4d2392609 #2 Not tainted
-> -----------------------------------------------------
-> smcapp/33802 [HC0[0]:SC0[2]:HE1:SE0] is trying to acquire:
-> 00000000a2fc0330 (&ldev->dmb_ht_lock){++++}-{2:2}, at: smc_lo_move_data+0x84/0x1d0 [>
-> and this task is already holding:
-> 00000000e4df6f28 (&smc->conn.send_lock){+.-.}-{2:2}, at: smc_tx_sndbuf_nonempty+0xaa>
-> which would create a new lock dependency:
-> (&smc->conn.send_lock){+.-.}-{2:2} -> (&ldev->dmb_ht_lock){++++}-{2:2}
-> but this new dependency connects a SOFTIRQ-irq-safe lock:
-> (&smc->conn.send_lock){+.-.}-{2:2}
-> 
-
-I understand, thank you Wenjia. I will fix it in the next version.
-
->>
->>>> +    dmb->sba_idx = dmb_node->sba_idx;
->>>> +    dmb->dmb_tok = dmb_node->token;
->>>> +    dmb->cpu_addr = dmb_node->cpu_addr;
->>>> +    dmb->dma_addr = dmb_node->dma_addr;
->>>> +    dmb->dmb_len = dmb_node->len;
->>>> +
->>>> +    return 0;
->>>> +
->>>> +err_node:
->>>> +    kfree(dmb_node);
->>>> +err_bit:
->>>> +    clear_bit(sba_idx, ldev->sba_idx_mask);
->>>> +    return rc;
->>>> +}
->>>> +
->>>> +static int smc_lo_unregister_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb)
->>>> +{
->>>> +    struct smc_lo_dmb_node *dmb_node = NULL, *tmp_node;
->>>> +    struct smc_lo_dev *ldev = smcd->priv;
->>>> +
->>>> +    /* remove dmb from hash table */
->>>> +    write_lock(&ldev->dmb_ht_lock);
->>>> +    hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb->dmb_tok) {
->>>> +        if (tmp_node->token == dmb->dmb_tok) {
->>>> +            dmb_node = tmp_node;
->>>> +            break;
->>>> +        }
->>>> +    }
->>>> +    if (!dmb_node) {
->>>> +        write_unlock(&ldev->dmb_ht_lock);
->>>> +        return -EINVAL;
->>>> +    }
->>>> +    hash_del(&dmb_node->list);
->>>> +    write_unlock(&ldev->dmb_ht_lock);
->>>> +
->>>> +    clear_bit(dmb_node->sba_idx, ldev->sba_idx_mask);
->>>> +    kfree(dmb_node->cpu_addr);
->>>> +    kfree(dmb_node);
->>>> +
->>>> +    return 0;
->>>> +}
->>>> +
->>>>   static int smc_lo_add_vlan_id(struct smcd_dev *smcd, u64 vlan_id)
->>>>   {
->>>>       return -EOPNOTSUPP;
->>>> @@ -76,6 +169,38 @@ static int smc_lo_signal_event(struct smcd_dev *dev, struct smcd_gid *rgid,
->>>>       return 0;
->>>>   }
->>>> +static int smc_lo_move_data(struct smcd_dev *smcd, u64 dmb_tok,
->>>> +                unsigned int idx, bool sf, unsigned int offset,
->>>> +                void *data, unsigned int size)
->>>> +{
->>>> +    struct smc_lo_dmb_node *rmb_node = NULL, *tmp_node;
->>>> +    struct smc_lo_dev *ldev = smcd->priv;
->>>> +
->>>> +    read_lock(&ldev->dmb_ht_lock);
->>>> +    hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb_tok) {
->>>> +        if (tmp_node->token == dmb_tok) {
->>>> +            rmb_node = tmp_node;
->>>> +            break;
->>>> +        }
->>>> +    }
->>>> +    if (!rmb_node) {
->>>> +        read_unlock(&ldev->dmb_ht_lock);
->>>> +        return -EINVAL;
->>>> +    }
->>>> +    read_unlock(&ldev->dmb_ht_lock);
->>>> +
->>>> +    memcpy((char *)rmb_node->cpu_addr + offset, data, size);
->>>> +
->>>
->>> Should this read_unlock be placed behind memcpy()?
->>>
->>
->> dmb_ht_lock is used to ensure safe access to the DMB hash table of loopback-ism.
->> The DMB hash table could be accessed by all the connections on loopback-ism, so
->> it should be protected.
->>
->> But a certain DMB is only used by one connection, and the move_data process is
->> protected by conn->send_lock (see smcd_tx_sndbuf_nonempty()), so the memcpy(rmb_node)
->> here is safe and no race with other.
->>
->> Thanks!
->>
-> sounds reasonable.
->>> <...>
 
