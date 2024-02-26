@@ -1,130 +1,133 @@
-Return-Path: <linux-kernel+bounces-81336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81325-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E740867467
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:08:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 401D386743F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:04:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB91B2852A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:08:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70F451C27D62
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:04:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 088516027B;
-	Mon, 26 Feb 2024 12:07:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 237F55B66D;
+	Mon, 26 Feb 2024 12:04:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LI3t4JJz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="IojTQrZd"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CF0E60271;
-	Mon, 26 Feb 2024 12:07:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C24775B663;
+	Mon, 26 Feb 2024 12:04:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708949273; cv=none; b=mIhvs65bZT0IDxQ7YDjYiHTGeHe+MNuNE65iWJVVc2JdeXHRgiPM5QScgiCDgwknsnjkKluMlUaHCFdrVKyJ1PIjIbLIubmbGfmuSTIkpuUyWQLNfwnwbhh+Ddi1JJzzPfPbVWTbmOYwaP7092F/h1kINDmoKOSP+0GPrb4RIjs=
+	t=1708949043; cv=none; b=P5i7Q2Ag95nsyEGx/3NJTfKzL2RCuaaG7nCmIgFCpbv71NahFpVwn5ZdJYHNXBN5uWPM5VZD+hUWpXoo6laS4BbpUbsB73hE7EDt3g8SVsHwKizem9kP3QzPMv+cUXLdUczYeMMVE1Brx74xhswuG7C9McK/uIMJjMvN7nuyit8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708949273; c=relaxed/simple;
-	bh=yhNQ8J3ezya7MzsJi4oxXaVl6ki5AxSw4uGOVzBJvnE=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=GQqR4LMpov3OcybmoQotpCOBdiygZn8P3MSWx5Ulm5i8eV9ycytyDMSARSkwu121k0C9vGwk2JIyaneCO05d0DFNnVWcSEYbm+WOMog94Edb0CucXOSB5ZvedK0ipWWfGWJblN6MzeTajfLZMYnqz2p/aLqFJFAFE/yaW+OOBR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LI3t4JJz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA94FC433F1;
-	Mon, 26 Feb 2024 12:07:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708949272;
-	bh=yhNQ8J3ezya7MzsJi4oxXaVl6ki5AxSw4uGOVzBJvnE=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=LI3t4JJzX4NkiH5Mygn0RUawrLduN2S/Kx06qHbK45Vu4TD5W7Y/1JodeZnDUbRPy
-	 eit1Lpgfpgj7rQTxUOsmCQNCgpBttNWobQdR+QUBBwGhUe+HmvHmItnpsovn3uCG6E
-	 i8KTV9iu0Hve3bzpScOEkaIWnNCNxOhAUOk/akAMobFrutk2+PaEZkZy52u8/114AR
-	 Qpu8Os25/MJcEt8sZoIOzszUbert+wP8Lt6zkOsZXvPk2PD7tMZYB6AlYdFyqH8+lq
-	 oM3m82QSkPAQbDs+f+4P16dcTz67gga9/lXUb7BuG9/20/MvbD1WAiwW3DvT89ALFo
-	 vnN3gwthQ/hog==
-From: Roger Quadros <rogerq@kernel.org>
-Date: Mon, 26 Feb 2024 14:03:10 +0200
-Subject: [PATCH v6 4/4] arm64: dts: ti: k3-am62a: Disable USB LPM
+	s=arc-20240116; t=1708949043; c=relaxed/simple;
+	bh=bSIYi307UAifxZYKBFL5Z4FCz6CO5J9gTDCXhlKnU+A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=osguSYYaaQXDiYYuMoeqArE3LOmHG1347rAiblypQV2IT08pEMXhGJZ+oh7CD3bsm+fIaxlB7RiPsLFUBZLPRaFsDuRP5mPbIJTseNAWp5+hlmtDKdUnVWDlv9YRDUxqhCv0SAA4Dk86tQJwYKchrrDaxjUZW1x7FGAQab2B5hI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=IojTQrZd; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=O7pmyULB7JZRz8A9oI6WLG3NRUVeGhF0b+0ptpd76Fs=; b=IojTQrZdEhZrWdsSrZKnx/vZRV
+	VlpJkkFC9Dhu94mGJ6dM2h3W1X6jS012IEPNx0ZyOUN+WmivBv9se9HQqxdhcmaupG+rnB0k1KUDX
+	axg2z/ZFFtH5G9HSBtQ46pW3QWVLTeFMeCph0AiGiCkuzm5QNCgcJBTLu2jXDuEUkwAfwT3pjiHPn
+	+qVDZND4xtlwfUMnhIO4vKERiyhloEAQPm9kC0o029/AP0rZMjqs3/dJV+IBDw6i9rRjSWv9WkCAe
+	ixyTdJAjXWfUPqkU5Gfu88cc0o96Lri3cC5oRu7yF2rpaZI3koypVqmS8CyMdwERP/DfOhCCk5419
+	JuUGoIRQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:39758)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1reZi1-0003F6-0X;
+	Mon, 26 Feb 2024 12:03:49 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1reZhz-0006PU-MT; Mon, 26 Feb 2024 12:03:47 +0000
+Date: Mon, 26 Feb 2024 12:03:47 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Charlie Jenkins <charlie@rivosinc.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	David Laight <David.Laight@aculab.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Palmer Dabbelt <palmer@rivosinc.com>,
+	Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v10] lib: checksum: Use aligned accesses for ip_fast_csum
+ and csum_ipv6_magic tests
+Message-ID: <Zdx+I3V9ka3EbaHq@shell.armlinux.org.uk>
+References: <20240223-fix_sparse_errors_checksum_tests-v10-1-b6a45914b7d8@rivosinc.com>
+ <7ae930a7-3b10-4470-94ee-89cb650b3349@csgroup.eu>
+ <Zdx6YMRdPmb595M2@shell.armlinux.org.uk>
+ <96b3fcfd-6932-4987-9831-5abdad8d445c@csgroup.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240226-b4-for-v6-5-am62-usb-typec-dt-v6-4-acf77fff4344@kernel.org>
-References: <20240226-b4-for-v6-5-am62-usb-typec-dt-v6-0-acf77fff4344@kernel.org>
-In-Reply-To: <20240226-b4-for-v6-5-am62-usb-typec-dt-v6-0-acf77fff4344@kernel.org>
-To: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>, 
- Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>
-Cc: Andrew Davis <afd@ti.com>, b-liu@ti.com, srk@ti.com, 
- r-gunasekaran@ti.com, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- Roger Quadros <rogerq@kernel.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1274; i=rogerq@kernel.org;
- h=from:subject:message-id; bh=yhNQ8J3ezya7MzsJi4oxXaVl6ki5AxSw4uGOVzBJvnE=;
- b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBl3H8GlZuvs1LgXW2hWF11aIrdETFf5xUjB0qFP
- WK4Tx3KxN+JAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZdx/BgAKCRDSWmvTvnYw
- k3k2EACme9ce01lZ/4fRM5/UQEahEtSPvQwmjFPD/8hiesgzz+rjM8ndty1vc/7Juu8ekFB4GWH
- 7gt1vzzhAOqsWwPUIO3dMUtGFwrTd5tAbZXikN8Zw+Mg0U5xsBDngTA8WHw/ixAsvf4tbsHum5/
- rjZcX6xzdOsVC7v7lrs3LyEY4A0DLU+3KCeRMjFc+PLehnHWV/mhTjgI7IfNw7SMZSdB3x+NOf5
- KurQxbSKOJyVNPqp8mMEeMQF+HIBF+8XToleMSYAyfKyC2TiliyEjOxfEkPHoQZN3anAzTCLYLZ
- Lfo6OZNHGz/PKPGMNcP6w1YpFpE0ms6hXNrKnu/elkhilTJQ89eA6Ynw5/XOM7eTVeFwcsIgDCa
- UTKGybEzf310tpOKMzZExM19PBH0UQKv+og17VxUMBBIirAYLhF9VWVrRhK6Zmzs7rAe+Rsx0Xe
- fZrSeeR7FG92cJH/ViN/aYJMm1qetJqEPlMjbju7caG99P5/4j3qz89b2zZG4cgORDPE48TyDbQ
- qzcfvbnQx9qcXwhvodLQUwK0PJrSpOE83UYpP80LPsho7Wcm2XpbGkPPq4HQRsxbaC2fQ1vZpsW
- Q51LWOmOjb3lUX14EuR8SbcGafdBWnLjzRQ6otHv9k5WRkl/y4EXReCBf8iSS4S6SMXHiw28sgY
- DOB9/PbpUNQwd+Q==
-X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
- fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <96b3fcfd-6932-4987-9831-5abdad8d445c@csgroup.eu>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-As per AM62A TRM [1] USB Link Power Management (LPM)
-feature is not supported. Disable it else it may
-cause enumeration failure on some devices.
+On Mon, Feb 26, 2024 at 11:57:24AM +0000, Christophe Leroy wrote:
+> 
+> 
+> Le 26/02/2024 à 12:47, Russell King (Oracle) a écrit :
+> > On Mon, Feb 26, 2024 at 11:34:51AM +0000, Christophe Leroy wrote:
+> >> Le 23/02/2024 à 23:11, Charlie Jenkins a écrit :
+> >>> The test cases for ip_fast_csum and csum_ipv6_magic were not properly
+> >>> aligning the IP header, which were causing failures on architectures
+> >>> that do not support misaligned accesses like some ARM platforms. To
+> >>> solve this, align the data along (14 + NET_IP_ALIGN) bytes which is the
+> >>> standard alignment of an IP header and must be supported by the
+> >>> architecture.
+> >>
+> >> I'm still wondering what we are really trying to fix here.
+> >>
+> >> All other tests are explicitely testing that it works with any alignment.
+> >>
+> >> Shouldn't ip_fast_csum() and csum_ipv6_magic() work for any alignment as
+> >> well ? I would expect it, I see no comment in arm code which explicits
+> >> that assumption around those functions.
+> > 
+> > No, these functions are explicitly *not* designed to be used with any
+> > alignment. They are for 16-bit alignment only.
+> > 
+> > I'm not sure where the idea that "any alignment" has come from, but it's
+> > never been the case AFAIK that we've supported that - or if we do now,
+> > that's something which has crept in under the radar.
+> > 
+> 
+> Ok, 16-bit is fine for me, then there is no need to require a (14 + 
+> NET_IP_ALIGN) ie a 16-bytes (128-bit) alignment as this patch is doing.
 
-> 4.9.2.1 USB2SS Unsupported Features
-> The following features are not supported on this family of devices:
-> ...
-> - USB 2.0 ECN: Link Power Management (LPM)
-> ...
+Looking again at these two functions, I'm mistaken - this was written for
+optimal use with 32-bit alignment, not 16-bit. However, the entire IP
+layer is written with the assumption that for maximum performance, the IP
+header will be 32-bit aligned.
 
-[1] - https://www.ti.com/lit/pdf/spruj16
-
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
----
-Changelog:
-v6 - Rebased on next-20240226
-v5 - new patch
----
- arch/arm64/boot/dts/ti/k3-am62a-main.dtsi | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-index a158df0d0ba6..adaf578280f9 100644
---- a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-@@ -621,6 +621,8 @@ usb0: usb@31000000 {
- 			interrupt-names = "host", "peripheral";
- 			maximum-speed = "high-speed";
- 			dr_mode = "otg";
-+			snps,usb2-gadget-lpm-disable;
-+			snps,usb2-lpm-disable;
- 		};
- 	};
- 
-@@ -644,6 +646,8 @@ usb1: usb@31100000 {
- 			interrupt-names = "host", "peripheral";
- 			maximum-speed = "high-speed";
- 			dr_mode = "otg";
-+			snps,usb2-gadget-lpm-disable;
-+			snps,usb2-lpm-disable;
- 		};
- 	};
- 
+However, that may not always be the case for incoming packets, and what
+saves 32-bit Arm is the ability to do unaligned loads in later revisions
+of the architecture, or the alignment fault handler (slow) on older
+revisions.
 
 -- 
-2.34.1
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
