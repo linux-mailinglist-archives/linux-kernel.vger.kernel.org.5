@@ -1,168 +1,256 @@
-Return-Path: <linux-kernel+bounces-80576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 309D28669E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:04:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CAC28669E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:06:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61DEE1C2146D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:04:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDF311F2224F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:06:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4644B1BC35;
-	Mon, 26 Feb 2024 06:04:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA5781BC30;
+	Mon, 26 Feb 2024 06:06:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=icenowy.me header.i=uwu@icenowy.me header.b="QDmAwvF+"
-Received: from sender4-op-o12.zoho.com (sender4-op-o12.zoho.com [136.143.188.12])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hTWbyVX8"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5AE363B1;
-	Mon, 26 Feb 2024 06:04:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.12
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708927477; cv=pass; b=lTutuD8hjoP5/YT5z+UnwnZUYbV4AvXbyx23geJpJ0CW3Pii903mWG+XiJE9bmKjz1JVaGvgdfb16lCa6ZI+PmYEBM0R+P24gZcSYdrYdJ0v3UqZOgr8u1muZ3JN8PlOS7m2W6hnVBzJM2qmTUNT7g1fCkhw80S4IFz6DTPHCbo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708927477; c=relaxed/simple;
-	bh=CZVTpBGF86V/SGUwaHA7h+OYsTh8TAqio3D0tYnMqbc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=BWEmFSpS9UaEHp9zyMebi5BuyeSZFBOyuP0aYef9dlpVmjeLtA260Yo5gFywvKJBPdWlo0ocMbe2f4S0cO1epZEdlnbpNVXch5ClHuGszaJdIEIRg2jWrd1YspY7fsIgqfg+GjIDuQE+3lkbt0gL+2Wfzs1ea+UAkRHfQ9aKfeM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=icenowy.me; spf=pass smtp.mailfrom=icenowy.me; dkim=pass (2048-bit key) header.d=icenowy.me header.i=uwu@icenowy.me header.b=QDmAwvF+; arc=pass smtp.client-ip=136.143.188.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=icenowy.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=icenowy.me
-ARC-Seal: i=1; a=rsa-sha256; t=1708927440; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=TcsIh9ADSLaGaizzV7Meh/U0sik1DIKqedMt5LCLU1EDdkZ2LvzM+qsEw8l+VJ8A1TcTKXyAwbia9UOmDNmEY4cVp+6/Dhoio0RsFq+xIBPAkZ0bhXkl9RxWj1d1NThHyV1zLHxL4R4Yx01mb6oMEqqgekvsx4UnmArRdRTaSvo=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1708927440; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=CZVTpBGF86V/SGUwaHA7h+OYsTh8TAqio3D0tYnMqbc=; 
-	b=ka45S8jnRfOOrzbW+F7FPqM8zRrOLq9z6pJ1dfB5WGGx2H4K8evZPWy9SREDOeEX42Jqlzsdoq0QjCeQXDBXmsFz9Tkeu3CufAFArqaf96tcnyuVDCwIDhpFvvJr0nJJQQnuuh7nFTEotRy85feH4XDxMim7iDDkbIIUsGAhKHU=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=icenowy.me;
-	spf=pass  smtp.mailfrom=uwu@icenowy.me;
-	dmarc=pass header.from=<uwu@icenowy.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1708927440;
-	s=zmail2; d=icenowy.me; i=uwu@icenowy.me;
-	h=Message-ID:Subject:Subject:From:From:To:To:Cc:Cc:Date:Date:In-Reply-To:References:Content-Type:Content-Transfer-Encoding:MIME-Version:Message-Id:Reply-To;
-	bh=CZVTpBGF86V/SGUwaHA7h+OYsTh8TAqio3D0tYnMqbc=;
-	b=QDmAwvF+V4Q9r8FMBx2ZQH+E53G1Ax9gHEBQGLrkvyRAxfv26QHtlDrdpsT6XnKP
-	GJpKmhbRedV61bI4UQ88PV1jgE66pqllfBnm/5CD+s6fyIBkXRebQx3F6naU9QOdNLZ
-	SPGpGRRfnNHNVaaxIoFOXoXfqUBjTxwwkXrt88rmOvevvy2xl/lsxkrr1iS+y2Mm+/D
-	qDeeuBLLNgkDDPpo0YwjDkaxd2kGk6Gr40jTxf/2XvGHaUcmvWL824A5F7Pl6+A+IoQ
-	P6eUXKQ+irEcf53sY5htc5Y1/zdl4fz/gMFGIqzDzatrQLTdrY/sl9Cl/n6mDkjKqiW
-	e589WQTyUw==
-Received: from edelgard.fodlan.icenowy.me (112.94.101.70 [112.94.101.70]) by mx.zohomail.com
-	with SMTPS id 1708927438859856.127358578202; Sun, 25 Feb 2024 22:03:58 -0800 (PST)
-Message-ID: <61c5b883762ba4f7fc5a89f539dcd6c8b13d8622.camel@icenowy.me>
-Subject: Re: Chromium sandbox on LoongArch and statx -- seccomp deep
- argument inspection again?
-From: Icenowy Zheng <uwu@icenowy.me>
-To: Xi Ruoyao <xry111@xry111.site>, Huacai Chen <chenhuacai@kernel.org>, 
-	WANG Xuerui <kernel@xen0n.name>
-Cc: linux-api@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Christian
- Brauner <brauner@kernel.org>, Kees Cook <keescook@chromium.org>, Xuefeng Li
- <lixuefeng@loongson.cn>, Jianmin Lv <lvjianmin@loongson.cn>, Xiaotian Wu
- <wuxiaotian@loongson.cn>, WANG Rui <wangrui@loongson.cn>, Miao Wang
- <shankerwangmiao@gmail.com>, "loongarch@lists.linux.dev"
- <loongarch@lists.linux.dev>, linux-arch <linux-arch@vger.kernel.org>, Linux
- Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date: Mon, 26 Feb 2024 14:03:48 +0800
-In-Reply-To: <24c47463f9b469bdc03e415d953d1ca926d83680.camel@xry111.site>
-References: <599df4a3-47a4-49be-9c81-8e21ea1f988a@xen0n.name>
-	 <CAAhV-H4oW70y-2ZSp=b-Ed3A7Jrxfg6xvO8YpjED6To=PF0NwA@mail.gmail.com>
-	 <f063e65df92228cac6e57b0c21de6b750cf47e42.camel@icenowy.me>
-	 <24c47463f9b469bdc03e415d953d1ca926d83680.camel@xry111.site>
-Organization: Anthon Open-Source Community
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA6841A5AC
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 06:06:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708927599; cv=none; b=sJHwIdKk3ALg3ZKPfqCEo8X62B9HwcqeuK84gkph1mvTM/tugs/eN16R5wdZyPL6HN2FUIvtFCgfxLebODOn1l5lHuDSL++k1EkQfCpGYDmEpV0vyO1ZDWxYKtMaT8k/KWu3HA4j5va1eQtrfvjKlGtC7s3hhy1NJIAKQiWHMrE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708927599; c=relaxed/simple;
+	bh=IWRwZUmQYBIgvXHr5gj3H8ECbGXuQbEwHNX97+KVQBY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=XUDAn6i8PDIXBGQ79HKWY9qZY+Nlv8X4OyATathAm/LUvyLG7enrlk5ViRGduq9pn5YFbu6eyJWeZ7NuB0s5wlw/VvYkLPHa8o9jTtQtR7jLWQ1kDoYWsmKkOZuM+kZBeXtzNyqB4P7x5rt28YZ9IGVI90yViOV6U1cEpqcy0BE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hTWbyVX8; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708927597; x=1740463597;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=IWRwZUmQYBIgvXHr5gj3H8ECbGXuQbEwHNX97+KVQBY=;
+  b=hTWbyVX80gowZzSoglVeZuydlyZqInamI01BqbEUCRxxQw1FI8ec6j3t
+   xD2S9s+Xou+h3Kbytum1spQiTLLvCNDpIMj/6Y68Eb2jy3wfek/JVEDTC
+   yUDyeSYNS+RKsk1izbTM6Y0TIWuAdbdPP8gxqUIkfSlDmi6KqPlAzkLzv
+   xwMUZs5hsroCOSml5wYNCJ/2AXetb02wKhB2rugXh171Glb+eqMQpBZ7L
+   N/lQHqGqdN6HeH8yRDJCviA+K2INgZT3worO8i5eplyF2BakYD/nAzUFl
+   2Sr7yoHVdSIXnDKTLz4xLVmppjNyhH7NvjZibDIaQWkges/qG0qYKPVGi
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3737680"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="3737680"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 22:06:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="11128153"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 22:06:33 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: "zhangpeng (AS)" <zhangpeng362@huawei.com>
+Cc: <linux-mm@kvack.org>,  <linux-kernel@vger.kernel.org>,
+  <akpm@linux-foundation.org>,  <willy@infradead.org>,
+  <fengwei.yin@intel.com>,  <aneesh.kumar@linux.ibm.com>,
+  <shy828301@gmail.com>,  <hughd@google.com>,  <david@redhat.com>,
+  <wangkefeng.wang@huawei.com>,  Nanyong Sun <sunnanyong@huawei.com>
+Subject: Re: [PATCH v2] filemap: avoid unnecessary major faults in
+ filemap_fault()
+In-Reply-To: <a905dea7-018e-80c0-ab54-85766add8d96@huawei.com> (zhangpeng's
+	message of "Mon, 26 Feb 2024 10:55:43 +0800")
+References: <20240206092627.1421712-1-zhangpeng362@huawei.com>
+	<87jznhypxy.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<a905dea7-018e-80c0-ab54-85766add8d96@huawei.com>
+Date: Mon, 26 Feb 2024 14:04:38 +0800
+Message-ID: <87frxfhibt.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ZohoMailClient: External
+Content-Type: text/plain; charset=ascii
 
-=E5=9C=A8 2024-02-25=E6=98=9F=E6=9C=9F=E6=97=A5=E7=9A=84 15:32 +0800=EF=BC=
-=8CXi Ruoyao=E5=86=99=E9=81=93=EF=BC=9A
-> On Sun, 2024-02-25 at 14:51 +0800, Icenowy Zheng wrote:
-> > > From my point of view, I prefer to "restore fstat", because we
-> > > need
-> > > to
-> > > use the Chrome sandbox everyday (even though it hasn't been
-> > > upstream
-> > > by now). But I also hope "seccomp deep argument inspection" can
-> > > be
-> > > solved in the future.
-> >=20
-> > My idea is this problem needs syscalls to be designed with deep
-> > argument inspection in mind; syscalls before this should be
-> > considered
-> > as historical error and get fixed by resotring old syscalls.
->=20
-> I'd not consider fstat an error as using statx for fstat has a
-> performance impact (severe for some workflows), and Linus has
-> concluded
+"zhangpeng (AS)" <zhangpeng362@huawei.com> writes:
 
-Sorry for clearance, I mean statx is an error in ABI design, not fstat.
+> On 2024/2/7 10:21, Huang, Ying wrote:
+>
+>> Peng Zhang <zhangpeng362@huawei.com> writes:
+>>> From: ZhangPeng <zhangpeng362@huawei.com>
+>>>
+>>> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
+>>> in application, which leading to an unexpected performance issue[1].
+>>>
+>>> This caused by temporarily cleared PTE during a read+clear/modify/write
+>>> update of the PTE, eg, do_numa_page()/change_pte_range().
+>>>
+>>> For the data segment of the user-mode program, the global variable area
+>>> is a private mapping. After the pagecache is loaded, the private anonymous
+>>> page is generated after the COW is triggered. Mlockall can lock COW pages
+>>> (anonymous pages), but the original file pages cannot be locked and may
+>>> be reclaimed. If the global variable (private anon page) is accessed when
+>>> vmf->pte is zeroed in numa fault, a file page fault will be triggered.
+>>>
+>>> At this time, the original private file page may have been reclaimed.
+>>> If the page cache is not available at this time, a major fault will be
+>>> triggered and the file will be read, causing additional overhead.
+>>>
+>>> Fix this by rechecking the PTE without acquiring PTL in filemap_fault()
+>>> before triggering a major fault.
+>>>
+>>> Testing file anonymous page read and write page fault performance in ext4
+>>> and ramdisk using will-it-scale[2] on a x86 physical machine. The data
+>>> is the average change compared with the mainline after the patch is
+>>> applied. The test results are within the range of fluctuation, and there
+>>> is no obvious difference. The test results are as follows:
+>> You still claim that there's no difference in the test results.  If so,
+>> why do you implement the patch?  IMHO, you need to prove your patch can
+>> improve the performance in some cases.
+>
+> I'm sorry that maybe I didn't express myself clearly.
+>
+> The purpose of this patch is to fix the issue that major fault may still be triggered
+> with mlockall(), thereby improving a little performance. This patch is more of a bugfix
+> than a performance improvement patch.
+>
+> This issue affects our traffic analysis service. The inbound traffic is heavy. If a major
+> fault occurs, the I/O schedule is triggered and the original I/O is suspended. Generally,
+> the I/O schedule is 0.7 ms. If other applications are operating disks, the system needs
+> to wait for more than 10 ms. However, the inbound traffic is heavy and the NIC buffer is
+> small. As a result, packet loss occurs. The traffic analysis service can't tolerate packet
+> loss.
+>
+> To prevent packet loss, we use the mlockall() function to prevent I/O. It is unreasonable
+> that major faults will still be triggered after mlockall() is used.
+>
+> In our service test environment, the baseline is 7 major faults/12 hours. After applied the
+> unlock patch, the probability of triggering the major fault is 1 major faults/12 hours. After
+> applied the lock patch, no major fault will be triggered. So only the locked patch can actually
+> solve our problem.
 
-> "if the user wants fstat, give them fstat" for the performance issue:
->=20
-> https://sourceware.org/pipermail/libc-alpha/2023-September/151365.html
->=20
-> However we only want fstat (actually "newfstat" in fs/stat.c), and it
-> seems we don't want to resurrect newstat, newlstat, newfstatat, etc.
-> (or
-> am I missing any benefit - performance or "just pleasing seccomp" -
-> of
-> them comparing to statx?) so we don't want to just define
-> __ARCH_WANT_NEW_STAT.=C2=A0 So it seems we need to add some new #if to
-> fs/stat.c and include/uapi/asm-generic/unistd.h.
->=20
-> And no, it's not a design issue of all other syscalls.=C2=A0 It's just th=
-e
-> design issue of seccomp.=C2=A0 There's no way to design a syscall allowin=
-g
-> seccomp to inspect a 100-character path in its argument unless
-> refactoring seccomp entirely because we cannot fit a 100-character
-> path
-> into 8 registers.
+This is the data I asked for.
 
-Well my meaning is that syscalls should be designed to be simple to
-prevent this kind of circumstance.
+But, you said that this is a feature bug fix instead of performance
+improvement.  So, I checked the mlock(2), and found the following words,
 
->=20
-> As at now people do use PTRACE_PEEKDATA for "deep inspection"
-> (actually
-> "debugging" the target process) but it obviously makes a very severe
-> performance impact.
->=20
-> <rant>
->=20
-> Today the entire software industry is saying "do things in a
-> declarative
-> way" but seccomp is completely the opposite.=C2=A0 It's auditing *how* th=
-e
-> sandboxed application is doing things instead of *what* will be done.
->=20
-> I've raised my against to seccomp and/or syscall allowlisting several
-> times after seeing so many breakages like:
->=20
-> - https://github.com/NetworkConfiguration/dhcpcd/issues/120
-> - https://gitlab.gnome.org/GNOME/tracker-miners/-/issues/252
-> - https://blog.pintia.cn/2018/06/27/glibc-segmentation-fault/
-> -
-> http://web.archive.org/web/20210126121421/http://acm.xidian.edu.cn/discus=
-s/thread.php?tid=3D148&cid=3D#
-> =C2=A0(comment 3)
->=20
-> but people just keep telling me "you are wrong, you don't understand
-> security".=C2=A0 Some of them even complain "seccomp is broken" as well
-> but
-> still keep using it.
->=20
-> </rant>
->=20
+"
+       mlockall() locks all pages mapped into the address space of the calling
+       process.  This includes the pages of the code, data, and stack segment,
+       as well as shared libraries, user space kernel data, shared memory, and
+       memory-mapped files.  All mapped pages are guaranteed to be resident in
+       RAM when the call returns successfully; the  pages  are  guaranteed  to
+       stay in RAM until later unlocked.
+"
 
+In theory, the locked page are in RAM.  So, IIUC, we don't violate the
+ABI.  But, in effect, we does do that.
+
+But, from git history, we have cleared the PTE during modification from
+2.6.12-rc2 at least.  I guess that because Linux isn't a hard real time
+OS, users don't expect that too.
+
+--
+Best Regards,
+Huang, Ying
+
+> The test data provided is intended to prove that the patch does not have a major impact
+> on the performance of the page fault itself.
+>
+>>> 	                 processes processes_idle threads threads_idle
+>>> ext4    private file write: -1.14%  -0.08%         -1.87%   0.13%
+>>> ext4    shared  file write:  0.14%  -0.53%          2.88%  -0.77%
+>>> ext4    private file  read:  0.03%  -0.65%         -0.51%  -0.08%
+>>> tmpfs   private file write: -0.34%  -0.11%          0.20%   0.15%
+>>> tmpfs   shared  file write:  0.96%   0.10%          2.78%  -0.34%
+>>> ramdisk private file write: -1.21%  -0.21%         -1.12%   0.11%
+>>> ramdisk private file  read:  0.00%  -0.68%         -0.33%  -0.02%
+>>>
+>>> [1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
+>>> [2] https://github.com/antonblanchard/will-it-scale/
+>>>
+>>> Suggested-by: "Huang, Ying" <ying.huang@intel.com>
+>>> Suggested-by: Yin Fengwei <fengwei.yin@intel.com>
+>>> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+>>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>>> ---
+>>> v1->v2:
+>>> - Add more test results per Huang, Ying
+>>> - Add more comments before check PTE per Huang, Ying, David Hildenbrand
+>>>    and Yin Fengwei
+>>> - Change pte_offset_map_nolock to pte_offset_map as the ptl lock won't
+>>>    be used
+>>>
+>>> RFC->v1:
+>>> - Add error handling when ptep == NULL per Huang, Ying and Matthew
+>>>    Wilcox
+>>> - Check the PTE without acquiring PTL in filemap_fault(), suggested by
+>>>    Huang, Ying and Yin Fengwei
+>>> - Add pmd_none() check before PTE map
+>>> - Update commit message and add performance test information
+>>>
+>>>   mm/filemap.c | 34 ++++++++++++++++++++++++++++++++++
+>>>   1 file changed, 34 insertions(+)
+>>>
+>>> diff --git a/mm/filemap.c b/mm/filemap.c
+>>> index 142864338ca4..a2c1a98bc771 100644
+>>> --- a/mm/filemap.c
+>>> +++ b/mm/filemap.c
+>>> @@ -3238,6 +3238,40 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+>>>   			mapping_locked = true;
+>>>   		}
+>>>   	} else {
+>>> +		if (!pmd_none(*vmf->pmd)) {
+>>> +			pte_t *ptep;
+>>> +
+>>> +			ptep = pte_offset_map(vmf->pmd, vmf->address);
+>>> +			if (unlikely(!ptep))
+>>> +				return VM_FAULT_NOPAGE;
+>>> +			/*
+>>> +			 * Recheck PTE as the PTE can be cleared temporarily
+>>> +			 * during a read+clear/modify/write update of the PTE,
+>>> +			 * eg, do_numa_page()/change_pte_range(). This will
+>>> +			 * trigger a major fault, even if we use mlockall,
+>>> +			 * which may affect performance.
+>>> +			 * We don't hold PTL here as acquiring PTL hurts
+>>> +			 * performance. So the check is still racy, but
+>>> +			 * the race window seems small enough.
+>>> +			 *
+>>> +			 * If we lose the race during the check, the page_fault
+>>> +			 * will be triggered. Butthe page table entry lock
+>>> +			 * still make sure the correctness:
+>>> +			 * - If the page cache is not reclaimed, the page_fault
+>>> +			 *   will work like the page fault was served already
+>>> +			 *   and bail out.
+>>> +			 * - If the page cache is reclaimed, the major fault
+>>> +			 *   will be triggered, page cache is filled,
+>>> +			 *   page_fault also work like the page fault was
+>>> +			 *   served already and bail out.
+>>> +			 */
+>> IMHO, this is too long.  It can be shorten to like,
+>>
+>> If we lose the race, major fault may be triggered unnecessary.  This
+>> hurts performance but not functionality.
+>
+> OK, I'll fix it in the next version.
+>
+>>> +			if (unlikely(!pte_none(ptep_get_lockless(ptep))))
+>>> +				ret = VM_FAULT_NOPAGE;
+>>> +			pte_unmap(ptep);
+>>> +			if (unlikely(ret))
+>>> +				return ret;
+>>> +		}
+>>> +
+>>>   		/* No page in the page cache at all */
+>>>   		count_vm_event(PGMAJFAULT);
+>>>   		count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
+>> --
+>> Best Regards,
+>> Huang, Ying
 
