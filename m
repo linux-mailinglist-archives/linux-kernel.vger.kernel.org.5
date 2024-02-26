@@ -1,326 +1,131 @@
-Return-Path: <linux-kernel+bounces-82177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D97F3868049
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:02:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFF84868008
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:49:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0842D1C2369E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:02:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 808591F2B528
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:49:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82B4D1E866;
-	Mon, 26 Feb 2024 19:01:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7F3112F395;
+	Mon, 26 Feb 2024 18:48:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cj8zdIjV"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AuN+tr5W"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9531912F5A0;
-	Mon, 26 Feb 2024 19:01:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 340A612E1D5;
+	Mon, 26 Feb 2024 18:48:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708974109; cv=none; b=PVKhhpsAUcD35MM5Dqduz3iEc+f+05/MO+r5QLiORIe1OYXmUUPESf06RzMuvvMsk8NaopuqI4/B6WLGRcIyA71BsDutxtH19HJ1IVfdyFPUnxDgPGa/0lITWl/HzmVsw7OIuFn8C99FtFzls3t77Np0Lkeh5AuyoetMzJysn90=
+	t=1708973337; cv=none; b=NzZHN+FzIxjNlnI28w96jk5QBcx0Fo1qbuOnuaK+75bLxS6bBKRzFw/veac+r6BkvHB7iDr6hWUJa+WcQ3t/ynx8h/v2ZeWntyeHdodDapDZJrJZCW8/2yj/55d01dGYJZLvDaNAdcMzPjIuj/8zdVib+TKt8+3KmIwSpiouKLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708974109; c=relaxed/simple;
-	bh=9j0M+ymeUq7RxwTggM61y9yRYx+xKOLcvoURJI6KkkY=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID; b=ulm7ZCcRF2lcYAzVs2dsZ8o6z2DdgsKBN0zROum74zYz6FMVqXcuv7JRsGGTkQdXpGOoR9Q246QGjZPDeUA0aGIhRXHpCVbqkxt0Km7muOs2UNOZl0rs1Kci82haRp+2pwUIo3hqQcP7OmMn377PvMydFcNd55uMJBxQH06Gwaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cj8zdIjV; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a3ddc13bbb3so517716366b.0;
-        Mon, 26 Feb 2024 11:01:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708974104; x=1709578904; darn=vger.kernel.org;
-        h=message-id:in-reply-to:date:subject:cc:to:from:user-agent
-         :references:from:to:cc:subject:date:message-id:reply-to;
-        bh=G8LMK8OmvNm1GCisv4uIp/0KVo3ky6Fv9X1ollGhF9w=;
-        b=Cj8zdIjV+JJw3Mw6SRnTbQxwX8N7JhsWBrgYi64p9rirAwX5MxNq0nQ9Gt+s/HVMvC
-         B3zH/ArkDg/xHPqxWp6ck553hxnub6Wdx1OB0rHZJRqvOjBdMQ05frdMHz9zVS6c/pIQ
-         r3bQjtndRhACyRcNoP9BHKlqeVcAC6oWHPUvl4o1HfNkT0XY2sfYrslStSRZp9bCW1kN
-         PN+ru22fLqOA/hGjDFnOFukB1jv4j9Rp2fN1iE8KfROXkQTX8IS926KIPPjKrAwS0luj
-         cdYEp0vZvPV/Q2/8K4gS09tXhcUwMzgl67CSWUxNbLrXPod7A1CSYEWuvbFPQiO7Rmyr
-         PLSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708974104; x=1709578904;
-        h=message-id:in-reply-to:date:subject:cc:to:from:user-agent
-         :references:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=G8LMK8OmvNm1GCisv4uIp/0KVo3ky6Fv9X1ollGhF9w=;
-        b=a3oyBjbTHvoq5IeTa/5d0aq/pYiu7YasB5/p0riHJmvQooJFxcrK+2w/DBVHZ9lQxM
-         VCoOVMsnLBQC64XHlB+nd85inEikHvEGq6XjIbGkrBFdLqAbx2309k+CU4s+vTAI9TT6
-         T8NDAa8k/YaqjVUnJwNufRf5bqScwNUrekJKWWOY3ZfWFPoNYSMDK3agFK4vptyow3Ra
-         8Tos2bd+F0gs5rEpW/osdg0954jiIgRtOlHac4wZaLhdIxKPWkU/UpkxBgDkmQ4wvvQT
-         jq/s1FICp4aQhAszNrsKcXQiBmMSJsXIlwa9ToXT1MdN222GnbWdtnjsFobl9fY4fp7K
-         F4qg==
-X-Forwarded-Encrypted: i=1; AJvYcCXMY7nm31d5ORFbWmwFnC12ObYSP/glpvvofZDggqv7wFRUJEUFgzzicmNTLawF6sMYkHk60M3j7u3hUYk4fsE0DQ6p4Pu7oJ4aC8IFNKJqy2QplRmfXdSUewpoz5D/uV5cY36SqfjSqnWb+lxV7e7gYbip+9RVMXERyIax/m3EdmPn8fI/GWSfwNk8foGFtIiZdO8uVY3hCQE34pRkVy4=
-X-Gm-Message-State: AOJu0Yzp5AxhRoO+MpFOeIvCqJVMNt1QhaHGpHdV2tB96kkjhK8dyAzT
-	UznLKbKINSvw5VIhU/mTroWBWrnf14Fi64FW7LjlYUFrQ6EIL/T5qQtxuxRQSoQ=
-X-Google-Smtp-Source: AGHT+IGdEIaZLKD3wdEPtPOUU82YFpEJuuWamhrWmTEfl2I1OvXx/SEnakxHT/t6WNjdl4uFzBp7ig==
-X-Received: by 2002:a17:906:fcb7:b0:a43:5499:6ac8 with SMTP id qw23-20020a170906fcb700b00a4354996ac8mr3114712ejb.20.1708974103706;
-        Mon, 26 Feb 2024 11:01:43 -0800 (PST)
-Received: from bhlegrsu ([2a02:908:2525:6ea0:3aea:4843:afab:a903])
-        by smtp.gmail.com with ESMTPSA id s18-20020a170906455200b00a3f2d8d3782sm21618ejq.180.2024.02.26.11.01.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 11:01:43 -0800 (PST)
-References: <20240224210409.112333-1-wafgo01@gmail.com>
- <20240225160926.GA58532@thinkpad>
- <20240225203917.GA4678@bhlegrsu.conti.de> <20240226094530.GA2778@thinkpad>
-User-agent: mu4e 1.8.14; emacs 29.0.92
-From: Wadim Mueller <wafgo01@gmail.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Jonathan Corbet <corbet@lwn.net>,
- Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>, Kishon Vijay Abraham
- I
- <kishon@kernel.org>, Jens Axboe <axboe@kernel.dk>, Lorenzo Pieralisi
- <lpieralisi@kernel.org>, Damien Le Moal <dlemoal@kernel.org>, Shunsuke Mie
- <mie@igel.co.jp>, linux-pci@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH 0/3] Add support for Block Passthrough Endpoint function
- driver
-Date: Mon, 26 Feb 2024 19:47:30 +0100
-In-reply-to: <20240226094530.GA2778@thinkpad>
-Message-ID: <rq85odwmqryrr4.fsf@gmail.com>
+	s=arc-20240116; t=1708973337; c=relaxed/simple;
+	bh=2iE21yaZVBmLCRtP2HeDQyOQN7fV3k0xIAcmqO7xdDs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NkYMKRZ8uPSU/Ji3pdGy460mld0gmkSrAIzTdk1/nD8SgbqIeKm36u8cvK2ARq4KsTj6sDhVdhOG8X73zf/7O6OPpIQg5YMCLaccx1pqyXRFnVdpOsXAq8IMLymPPJApE8Lsfbdblpvg19VotB210HWGhvxdCgfvBa7oIi/oJas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AuN+tr5W; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708973335; x=1740509335;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2iE21yaZVBmLCRtP2HeDQyOQN7fV3k0xIAcmqO7xdDs=;
+  b=AuN+tr5WwH5fWOyUjCoNmo7fLn0QjYQMKcVLhr6opS1SAe2U4X7EcWv8
+   PbeRkPzFGeRRhytr+TzGiQKkUyL/deiivuQ2Z6GzDnTenRkukQftKz6RD
+   Mu375kd/pRNGTexa/FUB7T9Qk6Xq0pZ6IukIzkfSFiS+u7nYCVgNhfZ1U
+   +GKm/wh0XWeR6EOe8J7f2i9/dZVkCeSwvFVH88x99t/9GojT6AwV7hsxx
+   HrVRKSrTMrgYsoV1q2dZE4f70fgWjygnYFMAo5MNyMxVSWsztx3lFXKBX
+   dlfOxLQtw6MBW1mVdRNl2HgMwG+Ma7rTJ+BfUHfgoKowKNg6D90K6WeaB
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="28723355"
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="28723355"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 10:48:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="7188026"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 10:48:54 -0800
+Date: Mon, 26 Feb 2024 10:48:52 -0800
+From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
+To: Xiaoyao Li <xiaoyao.li@intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v18 007/121] KVM: VMX: Reorder vmx initialization with
+ kvm vendor initialization
+Message-ID: <20240226184852.GH177224@ls.amr.corp.intel.com>
+References: <cover.1705965634.git.isaku.yamahata@intel.com>
+ <411a0b38c1a6f420a88b51cabf16ee871d6ca80d.1705965634.git.isaku.yamahata@intel.com>
+ <413fd812-a6e6-4aff-860a-fd8cf4654157@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-
---text follows this line--
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+In-Reply-To: <413fd812-a6e6-4aff-860a-fd8cf4654157@intel.com>
 
-Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
+On Thu, Feb 01, 2024 at 05:34:44PM +0800,
+Xiaoyao Li <xiaoyao.li@intel.com> wrote:
 
-> On Sun, Feb 25, 2024 at 09:39:17PM +0100, Wadim Mueller wrote:
->> On Sun, Feb 25, 2024 at 09:39:26PM +0530, Manivannan Sadhasivam wrote:
->> > On Sat, Feb 24, 2024 at 10:03:59PM +0100, Wadim Mueller wrote:
->> > > Hello,
->> > >=20
->> > > This series adds support for the Block Passthrough PCI(e) Endpoint f=
-unctionality.
->> > > PCI Block Device Passthrough allows one Linux Device running in EP m=
-ode to expose its Block devices to the PCI(e) host (RC). The device can exp=
-ort either the full disk or just certain partitions.
->> > > Also an export in readonly mode is possible. This is useful if you w=
-ant to share the same blockdevice between different SoCs, providing each So=
-C its own partition(s).
->> > >=20
->> > >=20
->> > > Block Passthrough
->> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> > > The PCI Block Passthrough can be a useful feature if you have multip=
-le SoCs in your system connected
->> > > through a PCI(e) link, one running in RC mode, the other in EP mode.
->> > > If the block devices are connected to one SoC (SoC2 in EP Mode from =
-the diagramm below) and you want to access
->> > > those from the other SoC (SoC1 in RC mode below), without having any=
- direct connection to
->> > > those block devices (e.g. if you want to share an NVMe between two S=
-oCs). An simple example of such a configurationis is shown below:
->> > >=20
->> > >=20
->> > >                                                            +--------=
------+
->> > >                                                            |        =
-     |
->> > >                                                            |   SD Ca=
-rd   |
->> > >                                                            |        =
-     |
->> > >                                                            +------^-=
------+
->> > >                                                                   |
->> > >                                                                   |
->> > >     +--------------------------+                +-----------------v-=
----------------+
->> > >     |                          |      PCI(e)    |                   =
-               |
->> > >     |         SoC1 (RC)        |<-------------->|            SoC2 (E=
-P)             |
->> > >     | (CONFIG_PCI_REMOTE_DISK) |                |(CONFIG_PCI_EPF_BLO=
-CK_PASSTHROUGH)|
->> > >     |                          |                |                   =
-               |
->> > >     +--------------------------+                +-----------------^-=
----------------+
->> > >                                                                   |
->> > >                                                                   |
->> > >                                                            +------v-=
------+
->> > >                                                            |        =
-     |
->> > >                                                            |    NVMe=
-     |
->> > >                                                            |        =
-     |
->> > >                                                            +--------=
------+
->> > >=20
->> > >=20
->> > > This is to a certain extent a similar functionality which NBD expose=
-s over Network, but on the PCI(e) bus utilizing the EPC/EPF Kernel Framewor=
-k.
->> > >=20
->> > > The Endpoint Function driver creates parallel Queues which run on se=
-perate CPU Cores using percpu structures. The number of parallel queues is =
-limited
->> > > by the number of CPUs on the EP device. The actual number of queues =
-is configurable (as all other features of the driver) through CONFIGFS.
->> > >=20
->> > > A documentation about the functional description as well as a user g=
-uide showing how both drivers can be configured is part of this series.
->> > >=20
->> > > Test setup
->> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> > >=20
->> > > This series has been tested on an NXP S32G2 SoC running in Endpoint =
-mode with a direct connection to an ARM64 host machine.
->> > >=20
->> > > A performance measurement on the described setup shows good performa=
-nce metrics. The S32G2 SoC has a 2xGen3 link which has a maximum Bandwidth =
-of ~2GiB/s.
->> > > With the explained setup a Read Datarate of 1.3GiB/s (with DMA ... w=
-ithout DMA the speed saturated at ~200MiB/s) was achieved using an 512GiB K=
-ingston NVMe
->> > > when accessing the NVMe from the ARM64 (SoC1) Host. The local Read D=
-atarate accessing the NVMe dirctly from the S32G2 (SoC2) was around 1.5GiB.
->> > >=20
->> > > The measurement was done through the FIO tool [1] with 4kiB Blocks.
->> > >=20
->> > > [1] https://linux.die.net/man/1/fio
->> > >=20
->> >=20
->> > Thanks for the proposal! We are planning to add virtio function suppor=
-t to
->> > endpoint subsystem to cover usecases like this. I think your usecase c=
-an be
->> > satisfied using vitio-blk. Maybe you can add the virtio-blk endpoint f=
-unction
->> > support once we have the infra in place. Thoughts?
->> >=20
->> > - Mani
->> >
->>=20
->> Hi Mani,
->> I initially had the plan to implement the virtio-blk as an endpoint
->> function driver instead of a self baked driver.=20
->>=20
->> This for sure is more elegant as we could reuse the
->> virtio-blk pci driver instead of implementing a new one (as I did)=20
->>=20
->> But I initially had some concerns about the feasibility, especially
->> that the virtio-blk pci driver is expecting immediate responses to some
->> register writes which I would not be able to satisfy, simply because we
->> do not have any kind of interrupt/event which would be triggered on the
->> EP side when the RC is accessing some BAR Registers (at least there is
->> no machanism I know of). As virtio is made mainly for Hypervisor <->
->
-> Right. There is a limitation currently w.r.t triggering doorbell from the=
- host
-> to endpoint. But I believe that could be addressed later by repurposing t=
-he
-> endpoint MSI controller [1].
->
->> As virtio is made mainly for Hypervisor <->
->> Guest communication I was afraid that a Hypersisor is able to Trap every
->> Register access from the Guest and act accordingly, which I would not be
->> able to do. I hope this make sense to you.
->>=20
->
-> I'm not worrying about the hypervisor right now. Here the endpoint is exp=
-osing
-> the virtio devices and host is consuming it. There is no virtualization p=
-lay
-> here. I talked about this in the last plumbers [2].
->
+> > diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
+> > index 18cecf12c7c8..443db8ec5cd5 100644
+> > --- a/arch/x86/kvm/vmx/main.c
+> > +++ b/arch/x86/kvm/vmx/main.c
+> > @@ -171,7 +171,7 @@ struct kvm_x86_init_ops vt_init_ops __initdata = {
+> >   static int __init vt_init(void)
+> >   {
+> >   	unsigned int vcpu_size, vcpu_align;
+> > -	int cpu, r;
+> > +	int r;
+> >   	if (!kvm_is_vmx_supported())
+> >   		return -EOPNOTSUPP;
+> > @@ -182,18 +182,14 @@ static int __init vt_init(void)
+> >   	 */
+> >   	hv_init_evmcs();
+> > -	/* vmx_hardware_disable() accesses loaded_vmcss_on_cpu. */
+> > -	for_each_possible_cpu(cpu)
+> > -		INIT_LIST_HEAD(&per_cpu(loaded_vmcss_on_cpu, cpu));
+> > -
+> > -	r = kvm_x86_vendor_init(&vt_init_ops);
+> > -	if (r)
+> > -		return r;
+> > -
+> >   	r = vmx_init();
+> >   	if (r)
+> >   		goto err_vmx_init;
+> > +	r = kvm_x86_vendor_init(&vt_init_ops);
+> > +	if (r)
+> > +		goto err_vendor_init;
+> > +
+> 
+> we cannot simply change the calling order of vmx_init() and
+> kvm_x86_vendor_init(). There is dependency between them.
+> 
+> e.g.,
+> 
+> kvm_x86_vendor_init()
+>   -> ops->hardware_setup()
+> 	-> vmx_hardware_setup()
+> 
+> will update 'enable_ept' based on hardware capability (e.g., if the hardware
+> support EPT or not), while 'enable_ept' is used in vmx_init().
 
-Okay, I understand this. The hypervisor was more of an example. I will
-try to explain.
-
-I am currently reading through the virtio spec [1].
-In chapter 4.1.4.5.1 there is the following statement:
-
-"The device MUST reset ISR status to 0 on driver read."
-
-So I was wondering, how we, as an PCI EP Device, supposed to clear a
-register when the driver reads the same register? I mean how do we detect a
-register read?
-If you are a hypervisor its easy to do so, because you can intercept
-every memory access made my the guest (the same applies if you build
-custom HW for this purpose). But for us as an EP device its
-difficult to detect this, even with MSIs and Doorbell Registers in
-place.
-
-Modifying the virtio layer to write to some doorbell register after
-reading the ISR status register would be possible, but kind of ugly.
-
-
-[1] https://docs.oasis-open.org/virtio/virtio/v1.2/csd01/virtio-v1.2-csd01.=
-pdf
-
->> But to make a long story short, yes I agree with you that virtio-blk
->> would satisfy my usecase, and I generally think it would be a better
->> solution, I just did not know that you are working on some
->> infrastructure for that. And yes I would like to implement the endpoint
->> function driver for virtio-blk. Is there already an development tree you
->> use to work on the infrastructre I could have a look at?
->>=20
->
-> Shunsuke has a WIP branch [3], that I plan to co-work in the coming days.
-> You can use it as a reference in the meantime.
->
-> - Mani
->
-> [1] https://lore.kernel.org/all/20230911220920.1817033-1-Frank.Li@nxp.com/
-> [2] https://www.youtube.com/watch?v=3D1tqOTge0eq0
-> [3] https://github.com/ShunsukeMie/linux-virtio-rdma/tree/v6.6-rc1-epf-vc=
-on
->
->> - Wadim
->>=20
->>=20
->>=20
->> > > Wadim Mueller (3):
->> > >   PCI: Add PCI Endpoint function driver for Block-device passthrough
->> > >   PCI: Add PCI driver for a PCI EP remote Blockdevice
->> > >   Documentation: PCI: Add documentation for the PCI Block Passthrough
->> > >=20
->> > >  .../function/binding/pci-block-passthru.rst   |   24 +
->> > >  Documentation/PCI/endpoint/index.rst          |    3 +
->> > >  .../pci-endpoint-block-passthru-function.rst  |  331 ++++
->> > >  .../pci-endpoint-block-passthru-howto.rst     |  158 ++
->> > >  MAINTAINERS                                   |    8 +
->> > >  drivers/block/Kconfig                         |   14 +
->> > >  drivers/block/Makefile                        |    1 +
->> > >  drivers/block/pci-remote-disk.c               | 1047 +++++++++++++
->> > >  drivers/pci/endpoint/functions/Kconfig        |   12 +
->> > >  drivers/pci/endpoint/functions/Makefile       |    1 +
->> > >  .../functions/pci-epf-block-passthru.c        | 1393 ++++++++++++++=
-+++
->> > >  include/linux/pci-epf-block-passthru.h        |   77 +
->> > >  12 files changed, 3069 insertions(+)
->> > >  create mode 100644 Documentation/PCI/endpoint/function/binding/pci-=
-block-passthru.rst
->> > >  create mode 100644 Documentation/PCI/endpoint/pci-endpoint-block-pa=
-ssthru-function.rst
->> > >  create mode 100644 Documentation/PCI/endpoint/pci-endpoint-block-pa=
-ssthru-howto.rst
->> > >  create mode 100644 drivers/block/pci-remote-disk.c
->> > >  create mode 100644 drivers/pci/endpoint/functions/pci-epf-block-pas=
-sthru.c
->> > >  create mode 100644 include/linux/pci-epf-block-passthru.h
->> > >=20
->> > > --=20
->> > > 2.25.1
->> > >=20
->> >=20
->> > --=20
->> > =E0=AE=AE=E0=AE=A3=E0=AE=BF=E0=AE=B5=E0=AE=A3=E0=AF=8D=E0=AE=A3=E0=AE=
-=A9=E0=AF=8D =E0=AE=9A=E0=AE=A4=E0=AE=BE=E0=AE=9A=E0=AE=BF=E0=AE=B5=E0=AE=
-=AE=E0=AF=8D
-
+I gave up this clean up to drop this patch with v19.
+-- 
+Isaku Yamahata <isaku.yamahata@linux.intel.com>
 
