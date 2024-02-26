@@ -1,202 +1,131 @@
-Return-Path: <linux-kernel+bounces-81997-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7FD3867D87
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:09:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64C63867E0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:20:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 219132953A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:09:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E5CCB3393A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:10:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06AD0130E3F;
-	Mon, 26 Feb 2024 16:56:49 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20511132491;
+	Mon, 26 Feb 2024 16:58:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PVsVMq1Y"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F85F12C522;
-	Mon, 26 Feb 2024 16:56:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E83F012C522
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:58:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708966608; cv=none; b=lYCm534TJv2H7hBJdQZn0IPbaXmnTPf+LrnXAXkEHYl3HZhzp9rjo4Eoi699mnA2K+F+ALemlq9Cbc/v+fpkrXpQnwADu27Sp3WR7iHMoqpXpda1z61jo67E9N6/7fP1/Ro8UroRtETGNQFZh05yyj5HIaxG62tY4xgpsUfUkJo=
+	t=1708966696; cv=none; b=JCCYjPjg8TVTsnanLbN/mTbju9CBCUg8m/I+8ikqCNEM2k+aZyak8LC3VODmvhfiG0/ea2N0D07ilQoDLBxMOKZEnNNLivIaW21tDkUxdYjl47phENRR1wKM4bi1AwwYFqiIZaB+USftyQvf0spFm8jYidQIAGH0mtyP4LqvJZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708966608; c=relaxed/simple;
-	bh=RzHsl48OLYh1aqi3F31HwLiqNz8fY9P49rMhS62lRMM=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Lc0qmehqmwrqDkYvzfI+hEJ5ZcNM5+FZZG1PJssg2wunCoj18J3rhWmvstE15YNnOEgQA2oTtwsIR0unuWa+9HncfDD66LQNpIN/2+G7pLqBQpk04iyfM177NLf31/TVMrdIepDsGX8bj2n6o2mUXyW9S5Mr8Y62X+KTGH9CR28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Tk6935sM2z6J9nb;
-	Tue, 27 Feb 2024 00:52:07 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 07DE3140B73;
-	Tue, 27 Feb 2024 00:56:42 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 26 Feb
- 2024 16:56:41 +0000
-Date: Mon, 26 Feb 2024 16:56:39 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: John Groves <John@groves.net>
-CC: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, "Dan
- Williams" <dan.j.williams@intel.com>, Vishal Verma
-	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Alexander
- Viro" <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, "Jan
- Kara" <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
-	<linux-cxl@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<nvdimm@lists.linux.dev>, <john@jagalactic.com>, Dave Chinner
-	<david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>,
-	<dave.hansen@linux.intel.com>, <gregory.price@memverge.com>
-Subject: Re: [RFC PATCH 07/20] famfs: Add include/linux/famfs_ioctl.h
-Message-ID: <20240226165639.000025c6@Huawei.com>
-In-Reply-To: <z3fx5uiv6uu4sawvxrhfvx42qetchmq4ozxhq2huwg2rrcyk5c@odbiisdhop2m>
-References: <cover.1708709155.git.john@groves.net>
-	<b40ca30e4bf689249a8c237909d9a7aaca9861e4.1708709155.git.john@groves.net>
-	<20240226123940.0000692c@Huawei.com>
-	<z3fx5uiv6uu4sawvxrhfvx42qetchmq4ozxhq2huwg2rrcyk5c@odbiisdhop2m>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1708966696; c=relaxed/simple;
+	bh=rjMSd3WxYvgOWTwaE5VTCXZ7wiN0ODta7cZDebmA1QU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=a+DzGcrw3UHMRKc0wk1+y7Vj5rw4Ig7kXBzBp8gbvFcfMWxZgkAyMxPKXYMxuuaTG2j6TcL7ZcCgjvOL/x8D9u2rAvyQeNxSEIM9UvuL+4KUufFR0QKahr1MGinFwWlLdUK6THv4TViZ7BmEFaUHR7ChxlqTVU8nZ7Gt+YRF9GA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PVsVMq1Y; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708966693;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to; bh=sSoBVhFfYf93x8huXQpUdUaaiwpj6qVsl4+myZwSTiY=;
+	b=PVsVMq1Yi+IkP/b0qAKUs8D+J687Rmk2uzfmVwmBs1VqgY9g5kiFQWw18eBNr9r0Iw77bJ
+	CIKERANdX5To2ww7MbMtClHGTaxFm2AwXW519E40qeFXFlr/QEuyk/NUmSYRNrk2TZy3nj
+	7wdSiLj+qPko11cgNdVLg8i4KfD5uuI=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-85-oTxWOuPWMYaohzELKozaAg-1; Mon,
+ 26 Feb 2024 11:58:09 -0500
+X-MC-Unique: oTxWOuPWMYaohzELKozaAg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 679BE1C04B54;
+	Mon, 26 Feb 2024 16:58:09 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.85])
+	by smtp.corp.redhat.com (Postfix) with SMTP id BB74EC01644;
+	Mon, 26 Feb 2024 16:58:07 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Mon, 26 Feb 2024 17:56:50 +0100 (CET)
+Date: Mon, 26 Feb 2024 17:56:47 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Peter Collingbourne <pcc@google.com>,
+	Wen Yang <wenyang.linux@foxmail.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] get_signal: don't abuse ksig->info.si_signo and ksig->sig
+Message-ID: <20240226165647.GA20826@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226165612.GA20787@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-On Mon, 26 Feb 2024 10:44:43 -0600
-John Groves <John@groves.net> wrote:
+Cleanup and preparation for the next changes.
 
-> On 24/02/26 12:39PM, Jonathan Cameron wrote:
-> > On Fri, 23 Feb 2024 11:41:51 -0600
-> > John Groves <John@Groves.net> wrote:
-> >   
-> > > Add uapi include file for famfs. The famfs user space uses ioctl on
-> > > individual files to pass in mapping information and file size. This
-> > > would be hard to do via sysfs or other means, since it's
-> > > file-specific.
-> > > 
-> > > Signed-off-by: John Groves <john@groves.net>
-> > > ---
-> > >  include/uapi/linux/famfs_ioctl.h | 56 ++++++++++++++++++++++++++++++++
-> > >  1 file changed, 56 insertions(+)
-> > >  create mode 100644 include/uapi/linux/famfs_ioctl.h
-> > > 
-> > > diff --git a/include/uapi/linux/famfs_ioctl.h b/include/uapi/linux/famfs_ioctl.h
-> > > new file mode 100644
-> > > index 000000000000..6b3e6452d02f
-> > > --- /dev/null
-> > > +++ b/include/uapi/linux/famfs_ioctl.h
-> > > @@ -0,0 +1,56 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > > +/*
-> > > + * famfs - dax file system for shared fabric-attached memory
-> > > + *
-> > > + * Copyright 2023-2024 Micron Technology, Inc.
-> > > + *
-> > > + * This file system, originally based on ramfs the dax support from xfs,
-> > > + * is intended to allow multiple host systems to mount a common file system
-> > > + * view of dax files that map to shared memory.
-> > > + */
-> > > +#ifndef FAMFS_IOCTL_H
-> > > +#define FAMFS_IOCTL_H
-> > > +
-> > > +#include <linux/ioctl.h>
-> > > +#include <linux/uuid.h>
-> > > +
-> > > +#define FAMFS_MAX_EXTENTS 2  
-> > Why 2?  
-> 
-> You catch everything! 
-> 
-> This limit is in place to avoid supporting somethign we're not testing. It
-> will probably be raised later.
-> 
-> Currently user space doesn't support deleting files, which makes it easy
-> to ignore whether any clients have a stale view of metadata. If there is
-> no delete, there's actually no reason to have more than 1 extent.
-Then have 1. + a Comment on why it is 1.
-> 
-> > > +
-> > > +enum extent_type {
-> > > +	SIMPLE_DAX_EXTENT = 13,  
-> > 
-> > Comment on this would be good to have  
-> 
-> Done. Basically we anticipate there being other types of extents in the
-> future.
+get_signal() uses signr or ksig->info.si_signo or ksig->sig in a chaotic
+way, this looks confusing. Change it to always use signr.
 
-I was more curious about the 13!
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+---
+ kernel/signal.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-> 
-> >   
-> > > +	INVALID_EXTENT_TYPE,
-> > > +};
-> > > +
-> > > +struct famfs_extent {
-> > > +	__u64              offset;
-> > > +	__u64              len;
-> > > +};
-> > > +
-> > > +enum famfs_file_type {
-> > > +	FAMFS_REG,
-> > > +	FAMFS_SUPERBLOCK,
-> > > +	FAMFS_LOG,
-> > > +};
-> > > +
-> > > +/**
-> > > + * struct famfs_ioc_map
-> > > + *
-> > > + * This is the metadata that indicates where the memory is for a famfs file
-> > > + */
-> > > +struct famfs_ioc_map {
-> > > +	enum extent_type          extent_type;
-> > > +	enum famfs_file_type      file_type;  
-> > 
-> > These are going to be potentially varying in size depending on arch, compiler
-> > settings etc.  Been a while, but I though best practice for uapi was always
-> > fixed size elements even though we lose the typing.  
-> 
-> I might not be following you fully here. User space is running the same
-> arch as kernel, so an enum can't be a different size, right? It could be
-> a different size on different arches, but this is just between user/kernel.
-
-I can't remember why, but this has bitten me in the past.
-Ah, should have known Daniel would have written something on it ;)
-https://www.kernel.org/doc/html/next/process/botching-up-ioctls.html
-
-It's the fun of need for compat ioctls with 32bit userspace on 64bit kernels.
-
-The alignment one is key as well. That bit me more than once due to
-32bit x86 aligning 64 bit integers at 32 bits.
-
-We could just not support these cases but it's easy to get right so why
-bother with complexity of ruling them out.
-
-> 
-> I initially thought of XDR for on-media-format, which file systems need
-> to do with on-media structs (superblocks, logs, inodes, etc. etc.). But
-> this struct is not used in that way.
-> 
-> In fact, famfs' on-media/in-memory metadata (superblock, log, log entries)
-> is only ever read read and written by user space - so it's the user space
-> code that needs XDR on-media-format handling.
-> 
-> So to clarify - do you think those enums should be u32 or the like?
-
-Yes. As it's userspace, uint32_t maybe or __u32. I 'think'
-both are acceptable in uapi headers these days.
-
-> 
-> Thanks!
-> John
-> 
+diff --git a/kernel/signal.c b/kernel/signal.c
+index c9c57d053ce4..09a6dd07cf6b 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -2842,7 +2842,7 @@ bool get_signal(struct ksignal *ksig)
+ 				spin_lock_irq(&sighand->siglock);
+ 			}
+ 
+-			if (likely(do_signal_stop(ksig->info.si_signo))) {
++			if (likely(do_signal_stop(signr))) {
+ 				/* It released the siglock.  */
+ 				goto relock;
+ 			}
+@@ -2866,7 +2866,7 @@ bool get_signal(struct ksignal *ksig)
+ 
+ 		if (sig_kernel_coredump(signr)) {
+ 			if (print_fatal_signals)
+-				print_fatal_signal(ksig->info.si_signo);
++				print_fatal_signal(signr);
+ 			proc_coredump_connector(current);
+ 			/*
+ 			 * If it was able to dump core, this kills all
+@@ -2890,7 +2890,7 @@ bool get_signal(struct ksignal *ksig)
+ 		/*
+ 		 * Death signals, no core dump.
+ 		 */
+-		do_group_exit(ksig->info.si_signo);
++		do_group_exit(signr);
+ 		/* NOTREACHED */
+ 	}
+ 	spin_unlock_irq(&sighand->siglock);
+@@ -2900,7 +2900,7 @@ bool get_signal(struct ksignal *ksig)
+ 	if (!(ksig->ka.sa.sa_flags & SA_EXPOSE_TAGBITS))
+ 		hide_si_addr_tag_bits(ksig);
+ 
+-	return ksig->sig > 0;
++	return signr > 0;
+ }
+ 
+ /**
+-- 
+2.25.1.362.g51ebf55
 
 
