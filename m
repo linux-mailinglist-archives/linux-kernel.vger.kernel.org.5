@@ -1,281 +1,265 @@
-Return-Path: <linux-kernel+bounces-80548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A19CC866958
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:25:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 990B586695B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:26:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 562B6281DD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:24:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B96AD1C21AC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:26:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 720F11AACC;
-	Mon, 26 Feb 2024 04:24:53 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 084B41BC37
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 04:24:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1C0F1AACC;
+	Mon, 26 Feb 2024 04:25:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DhUMw5zz"
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 256311759F;
+	Mon, 26 Feb 2024 04:25:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708921493; cv=none; b=emAVgZ0AYrqu70RVyZfR5QtlFNbazUADicsl+HbeunsguQNs1TDz3IPLuNlzgQUV5bffaR4HU8YnannH+9P01r6rZ/tU5tJjDGc1HP1fsgVIOs96g3Dw2vrwBG+HwO6579h0iJUZjGFMVspCNTeH8gCIAb6geKf7UsK1VyBzjRU=
+	t=1708921558; cv=none; b=PqUXmsm+qWIe31ZqzOOyJ4y8DF9i/igOPkJeaavUKP9XK0kWS1bpjH11m9+P12KAy/xBn8ssDm95yThgEIv0mXa0+zdhv9AoYDZCmwuEaKtf9AkyKRNHvU7MzF4w1lwODifYkPEJnkiks3Psp9j87gN+VQF2nqKtspx1HO+0yUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708921493; c=relaxed/simple;
-	bh=pz08OpPZftYgWwyybR8NsVdJ6Umld9QuXg1gEDEj9tk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HefvboszyK9w6+JAAAv2CUPqzdHDLMEWcob8APRKOx8/FXRzd+/8MUAGW23cRUlNsU2qZ/Tdguf0pktDSea2obfB4QdPhRVCxMYrAK6KXTOQPy6QkZKybofW+DlzoXNJO9uJ7vv5sOWcd9fLDYoSnKquTgODclw6dCEEIFs2/ts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 06C4E1FB;
-	Sun, 25 Feb 2024 20:25:29 -0800 (PST)
-Received: from a077893.blr.arm.com (a077893.blr.arm.com [10.162.40.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1D31F3F6C4;
-	Sun, 25 Feb 2024 20:24:46 -0800 (PST)
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-To: linux-arm-kernel@lists.infradead.org
-Cc: broonie@kernel.org,
-	mark.rutland@arm.com,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Marc Zyngier <maz@kernel.org>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64/sysreg: Add BRBE registers and fields
-Date: Mon, 26 Feb 2024 09:54:41 +0530
-Message-Id: <20240226042441.4098806-1-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240125094119.2542332-2-anshuman.khandual@arm.com>
-References: <20240125094119.2542332-2-anshuman.khandual@arm.com>
+	s=arc-20240116; t=1708921558; c=relaxed/simple;
+	bh=v3SlkIW6y6ipn1NCWJZvMnmhDwH0Fh2zjcrmBtZ0vWU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dNTPKlzbZvQ50oNpDm49XaX80lVFKIu0REKx0MARwCjez2nT2X2bCmwTeOqSfg0QdqhPyhSdesKTANvzJbLg5T2UALuy/mkqbDw1Qv+LXe2jXvF79m0k2hhIQfqtdDhBFhx2zf9QO8p4dvHGtqyUNEY0RkJKH0zRGmdeyGAsy9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DhUMw5zz; arc=none smtp.client-ip=209.85.222.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-787aca0b502so85563585a.1;
+        Sun, 25 Feb 2024 20:25:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708921556; x=1709526356; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DW6Gg9E4iphRs2T7njr0TuJitmVKKihxKcXnC4puSug=;
+        b=DhUMw5zzGr6ThqogwfYEY+SFnPv0YsGgobL0ItCp7cyZzJj/Yq7lAxmelVytHT3xhy
+         lTDDGlSJTmO8ebwvh5oIBIM76brt4PwuynPuCBrYWLH7yoXhpaJ/vB+yfM41E4ffPRqs
+         T3rhHPUTSTz0MO3rbhi4KYluhR8PdPAT/UCz3OtpG90g5m3UwLt1opQyQKsyyHlGmaBc
+         GauwvP7J+YNeJtkb8m/7wWMQsvMCtRIAKnzT3+86t1eWvOJagTxY4oKZeb4yh6AVBtQ7
+         4phTrP6LgLyuYECSpADufU+DTlFo2B+S1VVRsOOuXab9oFbOdi20IkiJQVo7f7S6uFL7
+         aWJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708921556; x=1709526356;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DW6Gg9E4iphRs2T7njr0TuJitmVKKihxKcXnC4puSug=;
+        b=DJeBEMwfEJczk8KK9JJ2eIRK3Gs9Z463TE/XV6J3vCiP9t3yGQbn/jgdg4gyzIIF2m
+         wkY9djPlzwRzqXB1Aod1MmYX6nlDiE1sLaa6h9TKnzKT6EbdfDHasrxzN25BPN6bMm3V
+         wtcSBkko0JVZRWLLVhjgE1vnHludy7ORh9VsK74eELjAJeX1/KJneyGcpTWd7UjR+SKI
+         M+jLwIXDoSBaWLTGKI7LeVF3hXldiQFC0rrV18hlJIIGUCH54QREXH51gf7ltiNLOIdi
+         xkrjudAk9k3VNd7mglnvQjLcp2NC1nFHKABMpIM0S8A4wtdwEMAKSI2NiwV3E7qlkxQP
+         YzVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUUopUs1xIjeNpT2qH9O2k/BBWVyxumy0EY/0xlrC84GarMsWqW4LFZ+KDlML+Q14duGSxPB947CfYkHcGhPYSsFIBIS1S8pqFCvILqQHdOqxPBfs3txx4sQql81bxFiqDUlZo/WdOl5uzv
+X-Gm-Message-State: AOJu0Yx3YGG6hR9LxmUKhFJMH/j582s5qiLYupu4PmXeszgWrHynHatN
+	9V2J+euOhGFuApPbCo3UTnyWB42MHWubVABloHRALJr8OFOIri7D
+X-Google-Smtp-Source: AGHT+IGYaQcZ1vWogncOvxWsM9WKWJ+6gvzLlVFfgpW+6iUYYpa0BdswfIujonfVUEwjHkIfPJ3kNw==
+X-Received: by 2002:a05:620a:359:b0:787:6f72:2080 with SMTP id t25-20020a05620a035900b007876f722080mr7142934qkm.26.1708921556012;
+        Sun, 25 Feb 2024 20:25:56 -0800 (PST)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id q7-20020ae9e407000000b00787ba4095dfsm2095596qkc.32.2024.02.25.20.25.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Feb 2024 20:25:55 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailauth.nyi.internal (Postfix) with ESMTP id 30DE327C005B;
+	Sun, 25 Feb 2024 23:25:55 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Sun, 25 Feb 2024 23:25:55 -0500
+X-ME-Sender: <xms:0hLcZSpIruUxrsIZhXxsTAHp1cXx8ri1j2uPUuBRUT1aGvIl36eRtw>
+    <xme:0hLcZQqSuJrnoDBXKETvEErpVTxs4s_vgZ1XMvVLfB5h2-M7kJxSdFF9QqRPSgz5F
+    YIz1JXthXq6Ze-IXg>
+X-ME-Received: <xmr:0hLcZXOCY_iRRN9adBSHNc6jtvViOygW0yzs3iIR6ciKIbAXe16fh3aRJ2Z1nQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgedugdejudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveeiudff
+    iedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
+    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
+    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
+    hmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:0xLcZR5JeWoYCVt-AiVOWgGULFcdXKgKKxYsmGRvtBAf7YG5QAqxlA>
+    <xmx:0xLcZR7aQPXkQzLUSg_UD0UPDX2PHuI6LU2f8VKTHNghR1hziMOa8A>
+    <xmx:0xLcZRhvIkm-FhxBNHYXLiMce1h8Or_xgedGK2vsCzUoCcxiQREVbQ>
+    <xmx:0xLcZcay8pjfLjb86FaYIe0Nq4_GUDGxmwRD5yZ03hK-HGIIEpuYAA>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 25 Feb 2024 23:25:54 -0500 (EST)
+Date: Sun, 25 Feb 2024 20:25:20 -0800
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Michael Kelley <mhklinux@outlook.com>
+Cc: Saurabh Singh Sengar <ssengar@linux.microsoft.com>,
+	"haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+	"wei.liu@kernel.org" <wei.liu@kernel.org>,
+	"decui@microsoft.com" <decui@microsoft.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+Subject: Re: [PATCH 1/1] Drivers: hv: vmbus: Calculate ring buffer size for
+ more efficient use of memory
+Message-ID: <ZdwSsH9bz05XztOb@boqun-archlinux>
+References: <20240213061959.782110-1-mhklinux@outlook.com>
+ <20240220063007.GA17584@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <ZdThZUUmGhY2shrX@boqun-archlinux>
+ <SN6PR02MB4157CF4A309971B21296D465D4502@SN6PR02MB4157.namprd02.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SN6PR02MB4157CF4A309971B21296D465D4502@SN6PR02MB4157.namprd02.prod.outlook.com>
 
-This adds BRBE related register definitions and various other related field
-macros there in. These will be used subsequently in a BRBE driver, which is
-being added later on. While here, this drops redundant register definitions
-from the header i.e (arch/arm64/include/asm/sysreg.h).
+On Tue, Feb 20, 2024 at 06:15:52PM +0000, Michael Kelley wrote:
+> From: Boqun Feng <boqun.feng@gmail.com> Sent: Tuesday, February 20, 2024 9:29 AM
+> > 
+> > On Mon, Feb 19, 2024 at 10:30:07PM -0800, Saurabh Singh Sengar wrote:
+> > > On Mon, Feb 12, 2024 at 10:19:59PM -0800, mhkelley58@gmail.com wrote:
+> > > > From: Michael Kelley <mhklinux@outlook.com>
+> > > >
+> > > > The VMBUS_RING_SIZE macro adds space for a ring buffer header to the
+> > > > requested ring buffer size.  The header size is always 1 page, and so
+> > > > its size varies based on the PAGE_SIZE for which the kernel is built.
+> > > > If the requested ring buffer size is a large power-of-2 size and the header
+> > > > size is small, the resulting size is inefficient in its use of memory.
+> > > > For example, a 512 Kbyte ring buffer with a 4 Kbyte page size results in
+> > > > a 516 Kbyte allocation, which is rounded to up 1 Mbyte by the memory
+> > > > allocator, and wastes 508 Kbytes of memory.
+> > > >
+> > > > In such situations, the exact size of the ring buffer isn't that important,
+> > > > and it's OK to allocate the 4 Kbyte header at the beginning of the 512
+> > > > Kbytes, leaving the ring buffer itself with just 508 Kbytes. The memory
+> > > > allocation can be 512 Kbytes instead of 1 Mbyte and nothing is wasted.
+> > > >
+> > > > Update VMBUS_RING_SIZE to implement this approach for "large" ring buffer
+> > > > sizes.  "Large" is somewhat arbitrarily defined as 8 times the size of
+> > > > the ring buffer header (which is of size PAGE_SIZE).  For example, for
+> > > > 4 Kbyte PAGE_SIZE, ring buffers of 32 Kbytes and larger use the first
+> > > > 4 Kbytes as the ring buffer header.  For 64 Kbyte PAGE_SIZE, ring buffers
+> > > > of 512 Kbytes and larger use the first 64 Kbytes as the ring buffer
+> > > > header.  In both cases, smaller sizes add space for the header so
+> > > > the ring size isn't reduced too much by using part of the space for
+> > > > the header.  For example, with a 64 Kbyte page size, we don't want
+> > > > a 128 Kbyte ring buffer to be reduced to 64 Kbytes by allocating half
+> > > > of the space for the header.  In such a case, the memory allocation
+> > > > is less efficient, but it's the best that can be done.
+> > > >
+> > > > Fixes: c1135c7fd0e9 ("Drivers: hv: vmbus: Introduce types of GPADL")
+> > > > Signed-off-by: Michael Kelley <mhklinux@outlook.com>
+> > > > ---
+> > > >  include/linux/hyperv.h | 22 +++++++++++++++++++++-
+> > > >  1 file changed, 21 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
+> > > > index 2b00faf98017..6ef0557b4bff 100644
+> > > > --- a/include/linux/hyperv.h
+> > > > +++ b/include/linux/hyperv.h
+> > > > @@ -164,8 +164,28 @@ struct hv_ring_buffer {
+> > > >  	u8 buffer[];
+> > > >  } __packed;
+> > > >
+> > > > +
+> > > > +/*
+> > > > + * If the requested ring buffer size is at least 8 times the size of the
+> > > > + * header, steal space from the ring buffer for the header. Otherwise, add
+> > > > + * space for the header so that is doesn't take too much of the ring buffer
+> > > > + * space.
+> > > > + *
+> > > > + * The factor of 8 is somewhat arbitrary. The goal is to prevent adding a
+> > > > + * relatively small header (4 Kbytes on x86) to a large-ish power-of-2 ring
+> > > > + * buffer size (such as 128 Kbytes) and so end up making a nearly twice as
+> > > > + * large allocation that will be almost half wasted. As a contrasting example,
+> > > > + * on ARM64 with 64 Kbyte page size, we don't want to take 64 Kbytes for the
+> > > > + * header from a 128 Kbyte allocation, leaving only 64 Kbytes for the ring.
+> > > > + * In this latter case, we must add 64 Kbytes for the header and not worry
+> > > > + * about what's wasted.
+> > > > + */
+> > > > +#define VMBUS_HEADER_ADJ(payload_sz) \
+> > > > +	((payload_sz) >=  8 * sizeof(struct hv_ring_buffer) ? \
+> > > > +	0 : sizeof(struct hv_ring_buffer))
+> > > > +
+> > > >  /* Calculate the proper size of a ringbuffer, it must be page-aligned */
+> > > > -#define VMBUS_RING_SIZE(payload_sz) PAGE_ALIGN(sizeof(struct hv_ring_buffer) + \
+> > > > +#define VMBUS_RING_SIZE(payload_sz) PAGE_ALIGN(VMBUS_HEADER_ADJ(payload_sz) + \
+> > > >  					       (payload_sz))
+> > 
+> > I generally see the point of this patch, however, it changes the
+> > semantics of VMBUS_RING_SIZE() (similiar as Saurabh mentioned below),
+> > before VMBUS_RING_SIZE() will give you a ring buffer size which has at
+> > least "payload_sz" bytes, but after the change, you may not get "enough"
+> > bytes for the vmbus ring buffer.
+> 
+> Storvsc and netvsc were previously not using VMBUS_RING_SIZE(),
+> so space for the ring buffer header was already being "stolen" from
+> the specified ring size.  But if this new version of VMBUS_RING_SIZE()
+> still allows the ring buffer header space to be "stolen" from the
+> large-ish ring buffers, I don't see that as a problem.  The ring buffer
+> sizes have always been a swag value for the low-speed devices with
+> small ring buffers.  For the high-speed devices (netvsc and storvsc)
+> the ring buffer sizes have been somewhat determined by perf
+> measurements, but the ring buffers are much bigger, so stealing
+> a little bit of space doesn't have any noticeable effect.  Even with
+> the perf measurements, the sizes aren't very exact. Performance
+> just isn't sensitive to the size of the ring buffer except at a gross level.
+> 
 
-BRBINFx_EL1_TYPE_IMPDEF_TRAP_EL3 register field value has been derived from
-latest ARM DDI 0601 ID121123, AKA 2023-12 instead of latest ARM ARM i.e ARM
-DDI 0487J.a. Please find the definition here.
+Fair enough.
 
-https://developer.arm.com/documentation/ddi0601/2023-12/
+> > 
+> > One cause of the waste memory is using alloc_pages() to get physical
+> > continuous, however, after a quick look into GPADL, looks like it also
+> > supports uncontinuous pages. Maybe that's the longer-term solution?
+> 
+> Yes, that seems like a desirable long-term solution.  While the GPADL
+> code handles vmalloc memory correctly (because the netvsc send and
+> receive buffers are vmalloc memory), hv_ringbuffer_init() assumes
+> physically contiguous memory.  It would need to use vmalloc_to_page()
+> in building the pages_wraparound array instead of just indexing into
+> the struct page array.  But that's an easy fix.  Another problem is the
+> uio_hv_generic.c driver, where hv_uio_ring_mmap() assumes a physically
+> contiguous ring. Maybe there's a straightforward way to fix it as well,
+> but it isn't immediately obvious to me.
+> 
+> Using vmalloc memory for ring buffers has another benefit as well.
+> Today, adding a new NIC to a VM that has been running for a while
+> could fail because of not being able to allocate 1 Mbyte contiguous
+> memory for the ring buffers used by each VMBus channel.  There
+> could be plenty of memory available, but fragmentation could prevent
+> getting 1 Mbyte contiguous.  Using vmalloc'ed ring buffers would
+> solve this problem.
+> 
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
-Please find the modified patch here for a quick review and do let me know
-if this looks good for the next version i.e V17. BRBCR_EL1/12/2 organized
-per their encoding. Thanks !
+Yep, that will be ideal.
 
- arch/arm64/include/asm/sysreg.h |  17 ++---
- arch/arm64/tools/sysreg         | 131 ++++++++++++++++++++++++++++++++
- 2 files changed, 137 insertions(+), 11 deletions(-)
+Regards,
+Boqun
 
-diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-index c3b19b376c86..481c7d186dfa 100644
---- a/arch/arm64/include/asm/sysreg.h
-+++ b/arch/arm64/include/asm/sysreg.h
-@@ -195,16 +195,8 @@
- #define SYS_DBGVCR32_EL2		sys_reg(2, 4, 0, 7, 0)
- 
- #define SYS_BRBINF_EL1(n)		sys_reg(2, 1, 8, (n & 15), (((n & 16) >> 2) | 0))
--#define SYS_BRBINFINJ_EL1		sys_reg(2, 1, 9, 1, 0)
- #define SYS_BRBSRC_EL1(n)		sys_reg(2, 1, 8, (n & 15), (((n & 16) >> 2) | 1))
--#define SYS_BRBSRCINJ_EL1		sys_reg(2, 1, 9, 1, 1)
- #define SYS_BRBTGT_EL1(n)		sys_reg(2, 1, 8, (n & 15), (((n & 16) >> 2) | 2))
--#define SYS_BRBTGTINJ_EL1		sys_reg(2, 1, 9, 1, 2)
--#define SYS_BRBTS_EL1			sys_reg(2, 1, 9, 0, 2)
--
--#define SYS_BRBCR_EL1			sys_reg(2, 1, 9, 0, 0)
--#define SYS_BRBFCR_EL1			sys_reg(2, 1, 9, 0, 1)
--#define SYS_BRBIDR0_EL1			sys_reg(2, 1, 9, 2, 0)
- 
- #define SYS_TRCITECR_EL1		sys_reg(3, 0, 1, 2, 3)
- #define SYS_TRCACATR(m)			sys_reg(2, 1, 2, ((m & 7) << 1), (2 | (m >> 3)))
-@@ -270,8 +262,6 @@
- /* ETM */
- #define SYS_TRCOSLAR			sys_reg(2, 1, 1, 0, 4)
- 
--#define SYS_BRBCR_EL2			sys_reg(2, 4, 9, 0, 0)
--
- #define SYS_MIDR_EL1			sys_reg(3, 0, 0, 0, 0)
- #define SYS_MPIDR_EL1			sys_reg(3, 0, 0, 0, 5)
- #define SYS_REVIDR_EL1			sys_reg(3, 0, 0, 0, 6)
-@@ -601,7 +591,6 @@
- #define SYS_CNTHV_CVAL_EL2		sys_reg(3, 4, 14, 3, 2)
- 
- /* VHE encodings for architectural EL0/1 system registers */
--#define SYS_BRBCR_EL12			sys_reg(2, 5, 9, 0, 0)
- #define SYS_SCTLR_EL12			sys_reg(3, 5, 1, 0, 0)
- #define SYS_CPACR_EL12			sys_reg(3, 5, 1, 0, 2)
- #define SYS_SCTLR2_EL12			sys_reg(3, 5, 1, 0, 3)
-@@ -794,6 +783,12 @@
- #define OP_COSP_RCTX			sys_insn(1, 3, 7, 3, 6)
- #define OP_CPP_RCTX			sys_insn(1, 3, 7, 3, 7)
- 
-+/*
-+ * BRBE Instructions
-+ */
-+#define BRB_IALL_INSN	__emit_inst(0xd5000000 | OP_BRB_IALL | (0x1f))
-+#define BRB_INJ_INSN	__emit_inst(0xd5000000 | OP_BRB_INJ  | (0x1f))
-+
- /* Common SCTLR_ELx flags. */
- #define SCTLR_ELx_ENTP2	(BIT(60))
- #define SCTLR_ELx_DSSBS	(BIT(44))
-diff --git a/arch/arm64/tools/sysreg b/arch/arm64/tools/sysreg
-index 4c9b67934367..60d288cbd5eb 100644
---- a/arch/arm64/tools/sysreg
-+++ b/arch/arm64/tools/sysreg
-@@ -1023,6 +1023,137 @@ UnsignedEnum	3:0	MTEPERM
- EndEnum
- EndSysreg
- 
-+
-+SysregFields BRBINFx_EL1
-+Res0	63:47
-+Field	46	CCU
-+Field	45:32	CC
-+Res0	31:18
-+Field	17	LASTFAILED
-+Field	16	T
-+Res0	15:14
-+Enum	13:8		TYPE
-+	0b000000	DIRECT_UNCOND
-+	0b000001	INDIRECT
-+	0b000010	DIRECT_LINK
-+	0b000011	INDIRECT_LINK
-+	0b000101	RET
-+	0b000111	ERET
-+	0b001000	DIRECT_COND
-+	0b100001	DEBUG_HALT
-+	0b100010	CALL
-+	0b100011	TRAP
-+	0b100100	SERROR
-+	0b100110	INSN_DEBUG
-+	0b100111	DATA_DEBUG
-+	0b101010	ALIGN_FAULT
-+	0b101011	INSN_FAULT
-+	0b101100	DATA_FAULT
-+	0b101110	IRQ
-+	0b101111	FIQ
-+	0b110000	IMPDEF_TRAP_EL3
-+	0b111001	DEBUG_EXIT
-+EndEnum
-+Enum	7:6	EL
-+	0b00	EL0
-+	0b01	EL1
-+	0b10	EL2
-+	0b11	EL3
-+EndEnum
-+Field	5	MPRED
-+Res0	4:2
-+Enum	1:0	VALID
-+	0b00	NONE
-+	0b01	TARGET
-+	0b10	SOURCE
-+	0b11	FULL
-+EndEnum
-+EndSysregFields
-+
-+SysregFields	BRBCR_ELx
-+Res0	63:24
-+Field	23 	EXCEPTION
-+Field	22 	ERTN
-+Res0	21:10
-+Field	9	FZPSS
-+Field	8 	FZP
-+Res0	7
-+Enum	6:5	TS
-+	0b01	VIRTUAL
-+	0b10	GUEST_PHYSICAL
-+	0b11	PHYSICAL
-+EndEnum
-+Field	4	MPRED
-+Field	3	CC
-+Res0	2
-+Field	1	ExBRE
-+Field	0	E0BRE
-+EndSysregFields
-+
-+Sysreg	BRBCR_EL1	2	1	9	0	0
-+Fields	BRBCR_ELx
-+EndSysreg
-+
-+Sysreg	BRBFCR_EL1	2	1	9	0	1
-+Res0	63:30
-+Enum	29:28	BANK
-+	0b00	BANK_0
-+	0b01	BANK_1
-+EndEnum
-+Res0	27:23
-+Field	22	CONDDIR
-+Field	21	DIRCALL
-+Field	20	INDCALL
-+Field	19	RTN
-+Field	18	INDIRECT
-+Field	17	DIRECT
-+Field	16	EnI
-+Res0	15:8
-+Field	7	PAUSED
-+Field	6	LASTFAILED
-+Res0	5:0
-+EndSysreg
-+
-+Sysreg	BRBTS_EL1	2	1	9	0	2
-+Field	63:0	TS
-+EndSysreg
-+
-+Sysreg	BRBINFINJ_EL1	2	1	9	1	0
-+Fields BRBINFx_EL1
-+EndSysreg
-+
-+Sysreg	BRBSRCINJ_EL1	2	1	9	1	1
-+Field	63:0 ADDRESS
-+EndSysreg
-+
-+Sysreg	BRBTGTINJ_EL1	2	1	9	1	2
-+Field	63:0 ADDRESS
-+EndSysreg
-+
-+Sysreg	BRBIDR0_EL1	2	1	9	2	0
-+Res0	63:16
-+Enum	15:12	CC
-+	0b101	20_BIT
-+EndEnum
-+Enum	11:8	FORMAT
-+	0b0	0
-+EndEnum
-+Enum	7:0		NUMREC
-+	0b00001000	8
-+	0b00010000	16
-+	0b00100000	32
-+	0b01000000	64
-+EndEnum
-+EndSysreg
-+
-+Sysreg	BRBCR_EL2	2	4	9	0	0
-+Fields	BRBCR_ELx
-+EndSysreg
-+
-+Sysreg	BRBCR_EL12	2	5	9	0	0
-+Fields	BRBCR_ELx
-+EndSysreg
-+
- Sysreg	ID_AA64ZFR0_EL1	3	0	0	4	4
- Res0	63:60
- UnsignedEnum	59:56	F64MM
--- 
-2.25.1
-
+> Michael
+> 
+> > 
+> > Regards,
+> > Boqun
+> > 
+> > > >
+> > > >  struct hv_ring_buffer_info {
+> > >
+> > > Thanks for the patch.
+> > > It's worth noting that this will affect the size of ringbuffer calculation for
+> > > some of the drivers: netvsc, storvsc_drv, hid-hyperv, and hyperv-keyboard.c.
+> > > It will be nice to have this comment added in commit for future reference.
+> > >
+> > > Looks a good improvement to me,
+> > > Reviewed-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+> > >
+> > > > --
+> > > > 2.25.1
+> > > >
 
