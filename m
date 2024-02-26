@@ -1,309 +1,383 @@
-Return-Path: <linux-kernel+bounces-81006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54375866EE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:42:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A0F8866EF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:43:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B50FC1F26B36
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:42:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9E28287847
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:43:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0319A7AE4E;
-	Mon, 26 Feb 2024 09:07:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51CCE7C0B0;
+	Mon, 26 Feb 2024 09:08:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eGBgYzeD"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="WF80fbkI";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="KghH6C3y"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BD4C1C292;
-	Mon, 26 Feb 2024 09:07:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708938423; cv=none; b=J1A08YikPw5AANH2P5GgM/rVdVGRLaJRlaVUqq5REv6IgndvoPHmVhx1VOmP0hOO/sdwbZKp8RwZa7dmoF5GjK4mrhL+hJqfc9gq/rijqDFKCTrp+j3tOvcfw29g6XZXXAoqPKWJCdpDwTYDHlJ2iHJBWik/TJF1QTzWJqVJ5wg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708938423; c=relaxed/simple;
-	bh=PxVSJM8IltCM28qJWE+APNDV9QG3SdAEpx5yqt5EDaA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A8KnhVWoi9CpegzadA9t280QT59zxoRl49fH/84tGSNdEI5ZNnNBw/fA3AI47XJ+lYxEEKKSw+Lu8TNiKXtEGs5ciWZ5Lc+Jq2HoPIqH7GiHNfSPGZO1YZX4HKc3AW+1i9iwRuv0AYjZOOLIhJGXNzBZZIMmTom07HKh3Bp7UNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eGBgYzeD; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708938421; x=1740474421;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=PxVSJM8IltCM28qJWE+APNDV9QG3SdAEpx5yqt5EDaA=;
-  b=eGBgYzeDUr45yMkQgJH5TJQpXMcC2bSxqrgcYXbZ+aWx7Lh5u2YuLso5
-   9Q/oOfpyAPSEP247dcPttZm42Hw99ABf0WsKlI0JOW4iD+tsXqpQN52hY
-   2logInPT67c5K7+WKdDZsg1PIYlQz35ri/6kLResnB3p6EdoeXgoilHEI
-   NPjo5bSL9BpuvkyUNpr7N1JSXdtXhZyI66I+uh15kqjxA7MnJ7Mmbx0he
-   B92Sq8S4zK0y8EYvhg3DOm8fU9rLCzU7/cZUynt4lKgJLzOMepIWBohJW
-   Cln8lGWj98XwwHLUVx5SRWwjdKTLZ91sQql62xxQU3MOxJbdP+PJ5RBXz
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="6997776"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="6997776"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 01:07:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="937029624"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="937029624"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga001.fm.intel.com with SMTP; 26 Feb 2024 01:06:56 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 26 Feb 2024 11:06:55 +0200
-Date: Mon, 26 Feb 2024 11:06:55 +0200
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: Jameson Thies <jthies@google.com>
-Cc: linux-usb@vger.kernel.org, pmalani@chromium.org, bleung@google.com,
-	abhishekpandit@chromium.org, andersson@kernel.org,
-	dmitry.baryshkov@linaro.org, fabrice.gasnier@foss.st.com,
-	gregkh@linuxfoundation.org, hdegoede@redhat.com,
-	neil.armstrong@linaro.org, rajaram.regupathy@intel.com,
-	saranya.gopal@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] usb: typec: ucsi: Register SOP/SOP' Discover
- Identity Responses
-Message-ID: <ZdxUr/ibI9tPdvjn@kuha.fi.intel.com>
-References: <20240223010328.2826774-1-jthies@google.com>
- <20240223010328.2826774-4-jthies@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C3A27BAE0;
+	Mon, 26 Feb 2024 09:07:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708938479; cv=fail; b=gqYxUOEeLbaU90hK2VEonOdLNibtc4LqcEI3jRDwZjNJi88ahtlYGhc4LHZcWkgQfOAFIqdDjidghonp/hOIXh5KY1HuuNSZgI++CdIfCrcKfZW64a43Qm5zmfQ8IPlT6Pwfr0aQssre/728VLcenvrJlPhYRxS0Bmt+d/wnOD4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708938479; c=relaxed/simple;
+	bh=wPfwLipZszBEcw2tAltBXl2pQPoL3is5Dbmt9JBx5DI=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=eX0CVPh8w5xvDLIbNY6qfYQKleqMqcpq3/fqgf6JzUGK9QzUQexIZXXG0fhfj3sYKtArkWb2z8D9F/Kcexv2pVGKKXllqUC0nIJW0qTuzud+5kmGVgAr7+A9acBbHokZExpvW/yh+Y3B90zD827KkZnNH8ykfl/s3x1YA7OnGwk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=WF80fbkI; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=KghH6C3y; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41PKcJaa027917;
+	Mon, 26 Feb 2024 09:07:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=HzXNsvMaujUDZTUlDiNaRt5FmKtnLzTQ27MNHsBmg/A=;
+ b=WF80fbkIFvDIvDgrouETv1MPzB9V6OsQAJd3fXSiH7KxPQg14Pr5tNX/Wosaqi/lQpm1
+ gdWES1CRqKKU0Ph4na+8UkUXKawG1ua/IznCkrV8uOk77rPg34mCyaHSzOaaz8HPIPxb
+ JD757MdALdOdgishXpOPghlFH5TV6ZeU1PHuAVvGaREA7XevU+bmWpxXd4xJ0eqPoZrB
+ Ph6WWE6ArzwBJML1aLfBFIfTfisGRgfesIz1pP0IFfC2LRV8FRb8n0vRdKyEwXIgdxdT
+ 5ft2k/DmDec77LALu1qMZh9yDulS4jKkUUEsUgmcTI0BSTjvXetbQi2z+s6enFEVe2b4 KA== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wf7ccc0dr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 26 Feb 2024 09:07:30 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41Q7bOnp040677;
+	Mon, 26 Feb 2024 09:07:29 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3wf6w5c511-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 26 Feb 2024 09:07:29 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DHYy+HPQb2m1ErtuxntQvtDshShqArEq9bPlfjZgis4joI53Mq6uDvsf4Mxz6Ob+j/vrdd0E+2yp5etcFBuopzfwFys1FD6sNpd1bOVTlswY8XZU4GaQnwZsYcNzDVOHE7RjVfzau0nH6/oxt0NO9jlu5gi2K3qp2JUWHLDI1E+lh/1D1BhUEl0nCh/ZLU2MwfjuTXZcM/5PIGDwFBVnB8odRX3tMjxAraVCRctG3lOfyZn6exDLm8HNjfmyWcY2xI3MFRMEbCggdeGWjeXt068KKEBzanic0wD5PcE0uuwhKwkfLFdYstAuN76gFHUh9QYqCAEJSqzNTvtwgPqIKA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HzXNsvMaujUDZTUlDiNaRt5FmKtnLzTQ27MNHsBmg/A=;
+ b=lPGAR0F6tzozPhSLYrbTanZDvy27UytkjNS3tqVP2cXxhNlZ/PfPMKevfMm4uBz1EFzyc/wlLPxPNC3oXjgEsmbS7ZgJjXad6zwR0kzUqoyi5IAOn8d7J2jpdTwHYE14Z4nWaWCMAzjmJnUuKRAX3UbwG6Z845XeRlrUn7TAUpXDvyuzNOETtlwSJiTbuesj1NZ5plV5dG+cvsDpMPu0sQMNqKDNderTm9elUJcNUvy724I03zA9HKpjJOwq/xmz2w55o1ORR1iU6PEIcu2bxUXyqvDdKxK6aCqBIpPtkj8jQWxyYGrQd9GmHHjmMtRZqB+ggBM173ASOzBlHQo9EQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HzXNsvMaujUDZTUlDiNaRt5FmKtnLzTQ27MNHsBmg/A=;
+ b=KghH6C3yJ/wRxqCzm9UqH2XtfYqTCGInunvGudUDGRGHgACD/aoS64FQgtVS72zjZwyGOEcR1CJ4CnX6WC01/tng7OULvo0cI8/MdGhYsAEQRWq8xstAvn0p9N1s9etsqrRx+ZnkKO5WGxvVqWUyt+923X5FQu/YRXvrke11XWk=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by PH0PR10MB7078.namprd10.prod.outlook.com (2603:10b6:510:288::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.33; Mon, 26 Feb
+ 2024 09:07:27 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::97a0:a2a2:315e:7aff]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::97a0:a2a2:315e:7aff%3]) with mapi id 15.20.7316.034; Mon, 26 Feb 2024
+ 09:07:27 +0000
+Message-ID: <b8beae0d-5439-4ab2-a4a4-7ba8f3cd190f@oracle.com>
+Date: Mon, 26 Feb 2024 09:07:21 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 04/11] fs: Add initial atomic write support info to
+ statx
+Content-Language: en-US
+To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>, axboe@kernel.dk,
+        kbusch@kernel.org, hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, djwong@kernel.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, dchinner@redhat.com, jack@suse.cz
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
+        ojaswin@linux.ibm.com, linux-aio@kvack.org,
+        linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org,
+        nilay@linux.ibm.com,
+        Prasad Singamsetty <prasad.singamsetty@oracle.com>
+References: <87o7c51yzk.fsf@doe.com>
+From: John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <87o7c51yzk.fsf@doe.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0652.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:296::13) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240223010328.2826774-4-jthies@google.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|PH0PR10MB7078:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6441e694-46b6-489b-cc7f-08dc36aa5a6f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	NVvVDgrQeVCj1L1RSO7N2y4miXMLgj+v5UZyfpPfsqm13FyTL5zIAGBk4lFgVycLfGT2Yd9SsoswvQuBf+pC2LGqPCqCfVrlrjCfQYsgIeQtWiSv2Vhgjj5hm4/Dnw+f1ggh6f8SZF6PX++hEw3AtWm0ukygwd0OrJbE9DMLufAFVCvaEYm9URL37Nvwtu6EOmZT9eUuhRB5CC2AYGxm7Ju1VRPnuu+o6yhNs3lSFVlnAoq9v6itZ1AuQ9J0IDS320ETorY17XSoaFV8O1zOfZ1t65kCVSZPnq7jYP05iKxHmc7aVtSEYOk6t6dxXIMRYM7hATXJ5J04/18ThdgUQHa/V18f0LQZkXAzS2Nlc0G4ZFxoz0ka2lywiL83df18+Cb1WojgI1Dh1uJ3AbjHliye2yf1xKx4GGk8s3h+9c1qB/fiazPm/o1/Yk3ZrwKNdPn2qUdb9HREnPwDiZMfWP2kpZSMYGoHTH6dMoHuY6toRomT52ZOKFg1avcPdlDgIUC2GcqgFqONRv3vkdVNHeS/NtruBzSD/6CC80NvJ4CVf3gu2rtnCJZQL7IXr9+b5nS1HT+17XzHsWNuaQOwbrIg1qtR4mRo41tFzIhMkyCWC9WTaCCH3/WVU7a3xmYHAJZP4PWc4DYqTAb5ekwfXDoAyNIb+4KploI30+fL0xkSEBW7K9dDNaxfkAlYNpuyw4neXxYvLREn5bf1yrjfCg==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(921011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?M29JT2oxbnUxZ25pOGNJNGFHMTBXdW0rQzJJYitRMml6Nzc0cFVQNFpuRTAr?=
+ =?utf-8?B?bmpPZElCOTJyRzY5bExMVkIxMzBDYmE5eGJPL2VJSndmWlIveTJjRFpFTE8v?=
+ =?utf-8?B?L2hGNFl1eGc4V1pzNk5ZQ0ozV1c4TTNOMUp0ZU9McVpTWXVadE52d29LUWtS?=
+ =?utf-8?B?QjRwaEVSd05LVGdhRVlJRVozcmY5eU8xMEY4TXpQenI0alNUWXFick5KOXhP?=
+ =?utf-8?B?VmtPMkVndngxdG01YWk3WmFWRElQZ2lEKzhWSEY5NlBKMUtaUWoxRDRVY2F3?=
+ =?utf-8?B?ckxmNFFVN3FWZktvbkJGOXpxRmFmaXJoMng5MGtndGlYT3pyTzNoTklvV2RM?=
+ =?utf-8?B?MjNYSFVFMTRqNG1NWXBEVmhwU3dsYXZjY0ROYXlKbHprMU4xeHlhRVF4Z0RF?=
+ =?utf-8?B?SzFyd3VFeXlHeVdKVjZCOU1LQU5oV1JiU3pkOTlTRi9zWFVOUVFxRUkyZXQw?=
+ =?utf-8?B?RXdaN29Rd3YvMVhxQUoxQ1BZVHF0VGowTUJ1cUs1YUE2aXFVNnI2M3FTdkxP?=
+ =?utf-8?B?dXVhV1F0VFovV2VuNmdiWk1GS0dUQ1JxV2libU5Dem1Jc1ZoeUN0K2dKWm0v?=
+ =?utf-8?B?RFc1VVZHMGRiSzZjcXU3QzAxWk8vbUdjQUJhWUZVREZHWUVwWktMK3NRek9v?=
+ =?utf-8?B?dzNHVVBBRFFmSVZIakZ5RHAycnRqNlRnWVdjRXVUU1htSVB5S1ZnNzlEeHJK?=
+ =?utf-8?B?MVNqVHVWR0lyZ3A0OUNaWkZ2WENIYVB6akt2ODV2RmhZVDI4dTRHd2R0UzZQ?=
+ =?utf-8?B?MkxtdS9SbnVlWnJxTmY2THhTZmw3dk9rcFo5TGRBTG9pWkNnci92Zi9XMVV6?=
+ =?utf-8?B?SlVSYXZGT2V3UDRhS2lvcXovNytCN0FMN1FlQUx2dzlvNDFtUHdFMVc4RjJU?=
+ =?utf-8?B?QkNMRGovQWJDMEV0RllyV1lxYmZEVi80RWhWTW8vd092WDFnRGNIQm5ERHUr?=
+ =?utf-8?B?cXZVbE5qdm5GQTVBekNKbGxXT3VRNUFvSnRMeW5LeDNYQmN0YjVYZHVNZFhj?=
+ =?utf-8?B?Q05IdUovaW15YlJGWng4ZHMwakpseHVwUi8ydE1wbEl1eGs3b2w2WmJPV280?=
+ =?utf-8?B?Q1Rici8vRUN1ZnkzN21HT0RuRVpFVGYyQmZQZC8yUEpyaDZKWGFLQ3BBMm9G?=
+ =?utf-8?B?eHVXV2Z4RW05cTFJTU0xK2FjUzl5VDRYVEp1MUl5cE9QNlROOVNBVS9ydGdJ?=
+ =?utf-8?B?UG5RR3ZJZmF0dXpZOFJzeEExazJqUjBPVGNWYXJneHFUSmxqeVErTFZTZS9O?=
+ =?utf-8?B?RWxhcC83dGlpbTNwQ0xjNUZYbFdCNXZmSmNsanh1bTdsQ0ltN1MzczBrcnZt?=
+ =?utf-8?B?cEQ0MmxXM0JJU2F0YU1vS1RpUUx5N2RJaDVld1ArMTZPaFJLTVFlbVQxenhk?=
+ =?utf-8?B?QlJ4by8xYW5ucE5qRWY2b0szSTBUMmc2cjBaeXFnUCt4S1AwbFVQSkprRzlB?=
+ =?utf-8?B?ZmlVMXhEbHFtUGtCQ2RYVldKVFF5RXlxWHRIMEZRTlJSWjdaWm9OZXpCNU1Q?=
+ =?utf-8?B?QStnaFJsUW41NkdORjhTdE9NWUtFTGRMZzRPUmZYZ0VyVWVFYnRLK293SEwz?=
+ =?utf-8?B?Q0x3N3VlSkQvTmxKM2krT3h3T2F2UWpIcTg4Y2pYU1g2Z1BRWlpIdjlBT0ow?=
+ =?utf-8?B?TVN5Ti94amZJYnk2aDBFWUZLZGMzZHM5VmJCRUREaVh5b3Q3Umt6NGpEZS8r?=
+ =?utf-8?B?L0ZuZ1BSRitRbEVZYmgwME1WNDRzZVlCL0VuQWdIQzY2Z2pjQ2gxS2dncEE5?=
+ =?utf-8?B?RitvN3YzamZ4YXY3eTdoVlhyMnAvZkRkaStOK0R1N0ZTRTQvSWNSUGtoUXFq?=
+ =?utf-8?B?UU5DZXdsWGEwUG1Va1ZjckdRYXZ1WmkzNTE3UDZPMnBEQThtL0JGeGhvUHV4?=
+ =?utf-8?B?QXJuQk9yZUdSUzlSaHFMUkRpNHFLZkYrOHIxSHM4QzBCRDJaeWV1SHg4R0c2?=
+ =?utf-8?B?YjZwbUVtV25JNC9zbkdIMGVZdWtvQnROQ29DR0VmNjVyZ3VxeDlhUk1jSWxr?=
+ =?utf-8?B?YU1pclNXOUNpOXQ2TVh5Sm90M0F2bG1WMG4zR3VNSUQ0YjFJQlRUWGUvQ0hD?=
+ =?utf-8?B?aEdFa2RocWgyV2l2eFJIYXoybDJNREx6M3daTnZmUVBteVgyRk5Eem5KZDRw?=
+ =?utf-8?B?ZDc4clJTL2I3R0F5dWM4cVVYLzZzNVc1SG9VTnBMeGlVRml2TkhPZlZKUlRk?=
+ =?utf-8?B?UVE9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	9Ij7oFXf0nJdqXuHVg5704FSDByuNM+GxHm+yub141Tln5kFF+MbVk2Zalv+mmht3QXcgrGj+Po7w8FAMz7qUJsc+RQWWysycgyPxTdLTFM6cNPYejnUsZarSOOHf5uoqwQaaUrTIPM3qu0cQ2KWngJPM6I5Y4vLXfZ1stozm29I40vCNrfPMHfMosjCJ1OTciVPT6mTavHV3PiiTkAxhjnHGX+x/KuoIZniu+uYc+F1biF/XqKpABK4/RH/aygJ3Fp+j7mStkqVciHGvAfTpRC9kek+QTEC4omU5hbKo6X+oTGY5sbfQiiXmsGnDxTPnjLt7A5N65W8DiOMOgL1t8GZkE8v7Myo87oAfKLjEEnUkdG3lEuF6XbOA0HhHhsNCikPAxfNt0djEFmrfGgLcDcugWC1jC/ph+4UeX3rpOnmN53cBi6afQjxoBUGYQ9+yLSehqlnrYSpRtVSCgfPFeJFGfLJa9nWW3Tb/U8toVXEJaRrSvhDvQTxd4VNLCFj3IY0j0LZS+hPxxr74yNQessMIpWKj6OLTjPsKFPbTtJxZRIZXsHwLN0O09Uv0n5DAW8LVuORLgbv6ETFUztO7OhJ0mwXLmieh1TGWyAmM1o=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6441e694-46b6-489b-cc7f-08dc36aa5a6f
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 09:07:27.1256
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ojHaD7CBRL2KBdl9HOdFXJNJoFxFqfdC4ut9c9Zr7MYCF3rRzhl3vYh7pXD7/MMlDgs5lM3wsFvhxDZy6W5Y0w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB7078
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-26_05,2024-02-23_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0 spamscore=0
+ mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402260068
+X-Proofpoint-ORIG-GUID: P9-2AA-3oJ7o9PNgujmb-XNU6kpMWhIM
+X-Proofpoint-GUID: P9-2AA-3oJ7o9PNgujmb-XNU6kpMWhIM
 
-On Fri, Feb 23, 2024 at 01:03:27AM +0000, Jameson Thies wrote:
-> Register SOP and SOP' Discover Identity responses with the USB Type-C
-> Connector Class as partner and cable identities, respectively. Discover
-> Identity responses are requested from the PPM using the GET_PD_MESSAGE
-> UCSI command.
+On 24/02/2024 18:46, Ritesh Harjani (IBM) wrote:
+> John Garry <john.g.garry@oracle.com> writes:
 > 
-> Signed-off-by: Jameson Thies <jthies@google.com>
-
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
-> ---
-> Tested on v6.6 kernel. GET_PD_MESSAGE responses from the PPM populate
-> partner and cable identity in sysfs.
-> redrix-rev3 /sys/class/typec # ls port2-partner/identity/
-> cert_stat  id_header  product  product_type_vdo1  product_type_vdo2
-> product_type_vdo3
-> redrix-rev3 /sys/class/typec # ls port2-cable/identity/
-> cert_stat  id_header  product  product_type_vdo1  product_type_vdo2
-> product_type_vdo3
+>> From: Prasad Singamsetty <prasad.singamsetty@oracle.com>
+>>
+>> Extend statx system call to return additional info for atomic write support
+>> support for a file.
+>>
+>> Helper function generic_fill_statx_atomic_writes() can be used by FSes to
+>> fill in the relevant statx fields.
+>>
+>> Signed-off-by: Prasad Singamsetty <prasad.singamsetty@oracle.com>
+>> #jpg: relocate bdev support to another patch
 > 
->  drivers/usb/typec/ucsi/ucsi.c | 77 +++++++++++++++++++++++++++++++++++
->  drivers/usb/typec/ucsi/ucsi.h | 29 +++++++++++++
->  2 files changed, 106 insertions(+)
+> ^^^ miss maybe?
+>> Signed-off-by: John Garry <john.g.garry@oracle.com>
+>> ---
+>>   fs/stat.c                 | 34 ++++++++++++++++++++++++++++++++++
+>>   include/linux/fs.h        |  3 +++
+>>   include/linux/stat.h      |  3 +++
+>>   include/uapi/linux/stat.h |  9 ++++++++-
+>>   4 files changed, 48 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/stat.c b/fs/stat.c
+>> index 77cdc69eb422..522787a4ab6a 100644
+>> --- a/fs/stat.c
+>> +++ b/fs/stat.c
+>> @@ -89,6 +89,37 @@ void generic_fill_statx_attr(struct inode *inode, struct kstat *stat)
+>>   }
+>>   EXPORT_SYMBOL(generic_fill_statx_attr);
+>>   
+>> +/**
+>> + * generic_fill_statx_atomic_writes - Fill in the atomic writes statx attributes
+>> + * @stat:	Where to fill in the attribute flags
+>> + * @unit_min:	Minimum supported atomic write length
+> + * @unit_min:	Minimum supported atomic write length in bytes
 > 
-> diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
-> index 15e82f5fab37..6d6443e61faa 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.c
-> +++ b/drivers/usb/typec/ucsi/ucsi.c
-> @@ -646,6 +646,73 @@ static int ucsi_get_src_pdos(struct ucsi_connector *con)
->  	return ret;
->  }
->  
-> +static int ucsi_read_identity(struct ucsi_connector *con, u8 recipient, struct usb_pd_identity *id)
-> +{
-> +	struct ucsi *ucsi = con->ucsi;
-> +	struct ucsi_pd_message_disc_id resp = {};
-> +	u64 command;
-> +	int ret;
-> +
-> +	/*
-> +	 * Skip identity discovery and registration if UCSI version is less than
-> +	 * v2.0. Before v2.0 MESSAGE_IN is 16 bytes which cannot fit a complete
-> +	 * 24 byte identity response.
-> +	 */
-> +	if (ucsi->version < UCSI_VERSION_2_0)
-> +		return -EPROTO;
-> +
-> +	command = UCSI_COMMAND(UCSI_GET_PD_MESSAGE) | UCSI_CONNECTOR_NUMBER(con->num);
-> +	command |= UCSI_GET_PD_MESSAGE_RECIPIENT(recipient);
-> +	/* VDM Header + 6 VDOs (0x1c bytes) without an offset */
-> +	command |= UCSI_GET_PD_MESSAGE_OFFSET(0);
-> +	command |= UCSI_GET_PD_MESSAGE_BYTES(0x1c);
-> +	command |= UCSI_GET_PD_MESSAGE_TYPE(UCSI_GET_PD_MESSAGE_TYPE_IDENTITY);
-> +
-> +	ret = ucsi_send_command(ucsi, command, &resp, sizeof(resp));
-> +	if (ret < 0) {
-> +		dev_err(ucsi->dev, "UCSI_GET_PD_MESSAGE failed (%d)\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	id->id_header = resp.id_header;
-> +	id->cert_stat = resp.cert_stat;
-> +	id->product = resp.product;
-> +	id->vdo[0] = resp.vdo[0];
-> +	id->vdo[1] = resp.vdo[1];
-> +	id->vdo[2] = resp.vdo[2];
-> +	return 0;
-> +}
-> +
-> +static int ucsi_get_partner_identity(struct ucsi_connector *con)
-> +{
-> +	int ret;
-> +
-> +	ret = ucsi_read_identity(con, UCSI_RECIPIENT_SOP, &con->partner_identity);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = typec_partner_set_identity(con->partner);
-> +	if (ret < 0)
-> +		dev_err(con->ucsi->dev, "Failed to set partner identity (%d)\n", ret);
-> +
-> +	return ret;
-> +}
-> +
-> +static int ucsi_get_cable_identity(struct ucsi_connector *con)
-> +{
-> +	int ret;
-> +
-> +	ret = ucsi_read_identity(con, UCSI_RECIPIENT_SOP_P, &con->cable_identity);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = typec_cable_set_identity(con->cable);
-> +	if (ret < 0)
-> +		dev_err(con->ucsi->dev, "Failed to set cable identity (%d)\n", ret);
-> +
-> +	return ret;
-> +}
-> +
->  static int ucsi_check_altmodes(struct ucsi_connector *con)
->  {
->  	int ret, num_partner_am;
-> @@ -754,6 +821,7 @@ static int ucsi_register_cable(struct ucsi_connector *con)
->  		break;
->  	}
->  
-> +	desc.identity = &con->cable_identity;
->  	desc.active = !!(UCSI_CABLE_PROP_FLAG_ACTIVE_CABLE & con->cable_prop.flags);
->  	desc.pd_revision = UCSI_CABLE_PROP_FLAG_PD_MAJOR_REV_AS_BCD(con->cable_prop.flags);
->  
-> @@ -776,6 +844,7 @@ static void ucsi_unregister_cable(struct ucsi_connector *con)
->  
->  	typec_unregister_cable(con->cable);
->  	con->cable = NULL;
-> +	memset(&con->cable_identity, 0, sizeof(con->cable_identity));
->  }
->  
->  static void ucsi_pwr_opmode_change(struct ucsi_connector *con)
-> @@ -825,6 +894,7 @@ static int ucsi_register_partner(struct ucsi_connector *con)
->  		break;
->  	}
->  
-> +	desc.identity = &con->partner_identity;
->  	desc.usb_pd = pwr_opmode == UCSI_CONSTAT_PWR_OPMODE_PD;
->  	desc.pd_revision = UCSI_CONCAP_FLAG_PARTNER_PD_MAJOR_REV_AS_BCD(con->cap.flags);
->  
-> @@ -854,6 +924,7 @@ static void ucsi_unregister_partner(struct ucsi_connector *con)
->  	ucsi_unregister_cable(con);
->  	typec_unregister_partner(con->partner);
->  	con->partner = NULL;
-> +	memset(&con->partner_identity, 0, sizeof(con->partner_identity));
->  }
->  
->  static void ucsi_partner_change(struct ucsi_connector *con)
-> @@ -971,6 +1042,10 @@ static int ucsi_check_cable(struct ucsi_connector *con)
->  	if (ret < 0)
->  		return ret;
->  
-> +	ret = ucsi_get_cable_identity(con);
-> +	if (ret < 0)
-> +		return ret;
-> +
->  	return 0;
->  }
->  
-> @@ -1015,6 +1090,7 @@ static void ucsi_handle_connector_change(struct work_struct *work)
->  			ucsi_register_partner(con);
->  			ucsi_partner_task(con, ucsi_check_connection, 1, HZ);
->  			ucsi_partner_task(con, ucsi_check_connector_capability, 1, HZ);
-> +			ucsi_partner_task(con, ucsi_get_partner_identity, 1, HZ);
->  			ucsi_partner_task(con, ucsi_check_cable, 1, HZ);
->  
->  			if (UCSI_CONSTAT_PWR_OPMODE(con->status.flags) ==
-> @@ -1414,6 +1490,7 @@ static int ucsi_register_port(struct ucsi *ucsi, struct ucsi_connector *con)
->  		ucsi_register_partner(con);
->  		ucsi_pwr_opmode_change(con);
->  		ucsi_port_psy_changed(con);
-> +		ucsi_get_partner_identity(con);
->  		ucsi_check_cable(con);
->  	}
->  
-> diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
-> index f0aabef0b7c6..b89fae82e8ce 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.h
-> +++ b/drivers/usb/typec/ucsi/ucsi.h
-> @@ -106,6 +106,7 @@ void ucsi_connector_change(struct ucsi *ucsi, u8 num);
->  #define UCSI_GET_CABLE_PROPERTY		0x11
->  #define UCSI_GET_CONNECTOR_STATUS	0x12
->  #define UCSI_GET_ERROR_STATUS		0x13
-> +#define UCSI_GET_PD_MESSAGE		0x15
->  
->  #define UCSI_CONNECTOR_NUMBER(_num_)		((u64)(_num_) << 16)
->  #define UCSI_COMMAND(_cmd_)			((_cmd_) & 0xff)
-> @@ -159,6 +160,18 @@ void ucsi_connector_change(struct ucsi *ucsi, u8 num);
->  #define UCSI_MAX_PDOS				(4)
->  #define UCSI_GET_PDOS_SRC_PDOS			((u64)1 << 34)
->  
-> +/* GET_PD_MESSAGE command bits */
-> +#define UCSI_GET_PD_MESSAGE_RECIPIENT(_r_)	((u64)(_r_) << 23)
-> +#define UCSI_GET_PD_MESSAGE_OFFSET(_r_)		((u64)(_r_) << 26)
-> +#define UCSI_GET_PD_MESSAGE_BYTES(_r_)		((u64)(_r_) << 34)
-> +#define UCSI_GET_PD_MESSAGE_TYPE(_r_)		((u64)(_r_) << 42)
-> +#define   UCSI_GET_PD_MESSAGE_TYPE_SNK_CAP_EXT	0
-> +#define   UCSI_GET_PD_MESSAGE_TYPE_SRC_CAP_EXT	1
-> +#define   UCSI_GET_PD_MESSAGE_TYPE_BAT_CAP	2
-> +#define   UCSI_GET_PD_MESSAGE_TYPE_BAT_STAT	3
-> +#define   UCSI_GET_PD_MESSAGE_TYPE_IDENTITY	4
-> +#define   UCSI_GET_PD_MESSAGE_TYPE_REVISION	5
-> +
->  /* -------------------------------------------------------------------------- */
->  
->  /* Error information returned by PPM in response to GET_ERROR_STATUS command. */
-> @@ -338,6 +351,18 @@ struct ucsi_connector_status {
->  	((get_unaligned_le32(&(_p_)[5]) & GENMASK(16, 1)) >> 1)
->  } __packed;
->  
-> +/*
-> + * Data structure filled by PPM in response to GET_PD_MESSAGE command with the
-> + * Response Message Type set to Discover Identity Response.
-> + */
-> +struct ucsi_pd_message_disc_id {
-> +	u32 vdm_header;
-> +	u32 id_header;
-> +	u32 cert_stat;
-> +	u32 product;
-> +	u32 vdo[3];
-> +} __packed;
-> +
->  /* -------------------------------------------------------------------------- */
->  
->  struct ucsi_debugfs_entry {
-> @@ -428,6 +453,10 @@ struct ucsi_connector {
->  	struct usb_power_delivery_capabilities *partner_sink_caps;
->  
->  	struct usb_role_switch *usb_role_sw;
-> +
-> +	/* USB PD identity */
-> +	struct usb_pd_identity partner_identity;
-> +	struct usb_pd_identity cable_identity;
->  };
->  
->  int ucsi_send_command(struct ucsi *ucsi, u64 command,
-> -- 
-> 2.44.0.rc0.258.g7320e95886-goog
+> 
+>> + * @unit_max:	Maximum supported atomic write length
+> + * @unit_max:	Maximum supported atomic write length in bytes
+> 
+> mentioning unit of the length might be useful here.
 
--- 
-heikki
+Yeah, I have already improved this as suggested.
+
+> 
+>> + *
+>> + * Fill in the STATX{_ATTR}_WRITE_ATOMIC flags in the kstat structure from
+>> + * atomic write unit_min and unit_max values.
+>> + */
+>> +void generic_fill_statx_atomic_writes(struct kstat *stat,
+>> +				      unsigned int unit_min,
+> 
+> This (unit_min) can still go above in the same line.
+
+ok
+
+> 
+>> +				      unsigned int unit_max)
+>> +{
+>> +	/* Confirm that the request type is known */
+>> +	stat->result_mask |= STATX_WRITE_ATOMIC;
+>> +
+>> +	/* Confirm that the file attribute type is known */
+>> +	stat->attributes_mask |= STATX_ATTR_WRITE_ATOMIC;
+>> +
+>> +	if (unit_min) {
+>> +		stat->atomic_write_unit_min = unit_min;
+>> +		stat->atomic_write_unit_max = unit_max;
+>> +		/* Initially only allow 1x segment */
+>> +		stat->atomic_write_segments_max = 1;
+> 
+> Please log info about this in commit message about where this limit came
+> from?
+
+ok
+
+> Is it since we only support ubuf (which IIUC, only supports 1
+> segment)? Later when we will add support for iovec, this limit can be
+> lifted?
+
+It's not that we only support ubuf, but rather we only support one 
+segment and that gives a ubuf type iter.
+
+This is all related to how can can guarantee a unit_max advertised to 
+userspace can always be written atomically.
+
+This is further mentioned in the block layer patch.
+
+> 
+>> +
+>> +		/* Confirm atomic writes are actually supported */
+>> +		stat->attributes |= STATX_ATTR_WRITE_ATOMIC;
+>> +	}
+>> +}
+>> +EXPORT_SYMBOL(generic_fill_statx_atomic_writes);
+>> +
+>>   /**
+>>    * vfs_getattr_nosec - getattr without security checks
+>>    * @path: file to get attributes from
+>> @@ -658,6 +689,9 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
+>>   	tmp.stx_mnt_id = stat->mnt_id;
+>>   	tmp.stx_dio_mem_align = stat->dio_mem_align;
+>>   	tmp.stx_dio_offset_align = stat->dio_offset_align;
+>> +	tmp.stx_atomic_write_unit_min = stat->atomic_write_unit_min;
+>> +	tmp.stx_atomic_write_unit_max = stat->atomic_write_unit_max;
+>> +	tmp.stx_atomic_write_segments_max = stat->atomic_write_segments_max;
+>>   
+>>   	return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
+>>   }
+>> diff --git a/include/linux/fs.h b/include/linux/fs.h
+>> index 7271640fd600..531140a7e27a 100644
+>> --- a/include/linux/fs.h
+>> +++ b/include/linux/fs.h
+>> @@ -3167,6 +3167,9 @@ extern const struct inode_operations page_symlink_inode_operations;
+>>   extern void kfree_link(void *);
+>>   void generic_fillattr(struct mnt_idmap *, u32, struct inode *, struct kstat *);
+>>   void generic_fill_statx_attr(struct inode *inode, struct kstat *stat);
+>> +void generic_fill_statx_atomic_writes(struct kstat *stat,
+>> +				      unsigned int unit_min,
+>> +				      unsigned int unit_max);
+> 
+> We can make 80 col. width even with unit_min in the same first line as of *stat.
+
+ok, I can check this.
+
+> 
+> 
+>>   extern int vfs_getattr_nosec(const struct path *, struct kstat *, u32, unsigned int);
+>>   extern int vfs_getattr(const struct path *, struct kstat *, u32, unsigned int);
+>>   void __inode_add_bytes(struct inode *inode, loff_t bytes);
+>> diff --git a/include/linux/stat.h b/include/linux/stat.h
+>> index 52150570d37a..2c5e2b8c6559 100644
+>> --- a/include/linux/stat.h
+>> +++ b/include/linux/stat.h
+>> @@ -53,6 +53,9 @@ struct kstat {
+>>   	u32		dio_mem_align;
+>>   	u32		dio_offset_align;
+>>   	u64		change_cookie;
+>> +	u32		atomic_write_unit_min;
+>> +	u32		atomic_write_unit_max;
+>> +	u32		atomic_write_segments_max;
+>>   };
+>>   
+>>   /* These definitions are internal to the kernel for now. Mainly used by nfsd. */
+>> diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+>> index 2f2ee82d5517..c0e8e10d1de6 100644
+>> --- a/include/uapi/linux/stat.h
+>> +++ b/include/uapi/linux/stat.h
+>> @@ -127,7 +127,12 @@ struct statx {
+>>   	__u32	stx_dio_mem_align;	/* Memory buffer alignment for direct I/O */
+>>   	__u32	stx_dio_offset_align;	/* File offset alignment for direct I/O */
+>>   	/* 0xa0 */
+>> -	__u64	__spare3[12];	/* Spare space for future expansion */
+>> +	__u32	stx_atomic_write_unit_min;
+>> +	__u32	stx_atomic_write_unit_max;
+>> +	__u32   stx_atomic_write_segments_max;
+> 
+> Let's add one liner for each of these fields similar to how it was done
+> for others?
+> 
+> /* Minimum supported atomic write length in bytes */
+> /* Maximum supported atomic write length in bytes */
+> /* Maximum no. of segments (iovecs?) supported for atomic write */
+
+ok
+
+> 
+> 
+>> +	__u32   __spare1;
+>> +	/* 0xb0 */
+>> +	__u64	__spare3[10];	/* Spare space for future expansion */
+>>   	/* 0x100 */
+>>   };
+>>   
+>> @@ -155,6 +160,7 @@ struct statx {
+>>   #define STATX_MNT_ID		0x00001000U	/* Got stx_mnt_id */
+>>   #define STATX_DIOALIGN		0x00002000U	/* Want/got direct I/O alignment info */
+>>   #define STATX_MNT_ID_UNIQUE	0x00004000U	/* Want/got extended stx_mount_id */
+>> +#define STATX_WRITE_ATOMIC	0x00008000U	/* Want/got atomic_write_* fields */
+>>   
+>>   #define STATX__RESERVED		0x80000000U	/* Reserved for future struct statx expansion */
+>>   
+>> @@ -190,6 +196,7 @@ struct statx {
+>>   #define STATX_ATTR_MOUNT_ROOT		0x00002000 /* Root of a mount */
+>>   #define STATX_ATTR_VERITY		0x00100000 /* [I] Verity protected file */
+>>   #define STATX_ATTR_DAX			0x00200000 /* File is currently in DAX state */
+>> +#define STATX_ATTR_WRITE_ATOMIC		0x00400000 /* File supports atomic write operations */
+>>   
+>>   
+>>   #endif /* _UAPI_LINUX_STAT_H */
+>> -- 
+>> 2.31.1
+
+Thanks,
+John
+
 
