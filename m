@@ -1,115 +1,203 @@
-Return-Path: <linux-kernel+bounces-81875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AC80867B4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:13:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07E01867B4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:13:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49B0A1F2A477
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:13:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B71E628CA13
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:13:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9567212CDBF;
-	Mon, 26 Feb 2024 16:12:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6253B12C548;
+	Mon, 26 Feb 2024 16:13:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NdXL7ZpN"
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fN2K994n"
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CB5E12CDA2;
-	Mon, 26 Feb 2024 16:12:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C98BA12C53E
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:13:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708963948; cv=none; b=Aniutkgnj/Pfv6bUFo7JPEtvQENQ4kOvgrGC9Iqff0w1URJD8i8ttOleHoyNy3ejaRXC7dht39THyHmwlUz1N5ItFx1mFVmdGSKU1ym35/N57NRr2hP/FXzL8K2XEe8P2FRUAOiFCEKyx2FtEdzXjp667gKrNAU5Xiv2K2IulcU=
+	t=1708964004; cv=none; b=bq1U/9HM1zF5gxfY8imvP3eFCMXRVgHVMOgZpZkR4v+EQTY6pLVrZ1AEZOtdz7LAUccMmbwdnmLL1vTo9KbAJ7mkzBuBR7XMJWntXCb3vZZukPdg68lJ4Bc9mUxLWw3Xf/I7dAnb+qNItvpv8xmfAxDtYyZtdOjWfzjv6nz/eCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708963948; c=relaxed/simple;
-	bh=tQNiq/mgSFz2PUfr0gE59I6IY0MHAe5YR/fIFXdocZQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tvCgcKrvgZ0y0xd+FrFdwkJGx9LVZgNfTybn+ZK4xNIr32ZnjyHw1k9gNgJrkROrRgu6YtUxg1i6m8STu1fHwhi5Rng/H7msuVoNdsQxzQGRzNXNwI5p+eNWptor/wB3gCFoZAK7poLIK+XIan6XiG3EUwgXT6H3HXdlUSKXlPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NdXL7ZpN; arc=none smtp.client-ip=209.85.160.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-21fed501addso1102786fac.2;
-        Mon, 26 Feb 2024 08:12:26 -0800 (PST)
+	s=arc-20240116; t=1708964004; c=relaxed/simple;
+	bh=mOK4Q3ifnIj+875T3wjIs22+dyQ5N366k6rQFEkfZdw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MjxKJ1gKJ7a3rLYze8RRAEzXjSawMUrhDUXDTNNReett9kLO5iHRdWarCf/KQBOxye6e+4XbsQ3TOjYwo+/6OHt0SUV6Iec4vELwYDeVStVgdl4teARnnL021tYNHeqZ4J/EOzbPbofe2IHzZhthpwRpJW671MjUwnv39xeafao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fN2K994n; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-608ceccb5f4so11947127b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:13:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708963946; x=1709568746; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3G9TdB9RDZyiGXRBXvJ+nwad2XnEGLHfMJJdqndI5mg=;
-        b=NdXL7ZpNfZwNgvOZRMYu0juBam/1KL5TWe637tCz2P2ZyVtCPAPZTRtRHHBfrXKMRU
-         TZPzYjLJxox2wSzXRbQRSnbpqgT3pf6WzzRbXHcw8yR+mYD4diIifaFFL1y7++UkeAxv
-         dg1x7hFPYhqCE/Kgp49HJdRzO1SZo58EqHf8xDuYS617NekBgWSWfb0xdPFJ6AyNArTh
-         +QTv18RJgzFKePj7r6qsyfDFo0WC+r2UTNcxMtOOtIyjBmW28apJsVkbYTN8tEvW9N1M
-         Cl/TDi9Ej7LE0qYZHkCBg+ek/WRwjYn/Ng2/n4NfoOphmQJHItSYOIrQ4JiWsfGcYAew
-         YQzA==
+        d=google.com; s=20230601; t=1708964002; x=1709568802; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TW2P7s5GOudhG2wB4Rb+S+Sqx8F90ikdbK5TGYSYqGw=;
+        b=fN2K994nQbcJTNegqeEuZMaodr7gB5BswWV8G8hJwrPbkD+hoc1+WiXtLYQIds1dGM
+         /bP2sP4OSt98zKPLvMe8X6HhfKz5Ms8ueQk1BZqgqHURRdrr3NMan0R92uDLD4+jONPw
+         RuDZAsGyStu9w6B/rsNHvmmuK1CvafeuUfEvDbPLEVx8EFsowAnywUNEGd7paYP5BAV3
+         l5ZGmrNaTKxrwqBGQL07PActsTuj5WHIHfBRjPrr47vJCTCxjhj1eUEqhXv+UB1llzx0
+         ghcdBzGDRlTtqsjJS5oZX4wm+0QpvciihXAZQ5K2g5HMtCtqaZXkb9fxAVBMI3ILbonf
+         W20Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708963946; x=1709568746;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1708964002; x=1709568802;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3G9TdB9RDZyiGXRBXvJ+nwad2XnEGLHfMJJdqndI5mg=;
-        b=kIXnTe8ynV5uWzGaC4kto+643SOiFTy9vJg861ZBmNzDFbQwCSj34cRmu0nUUl0+V+
-         JBetcDUP81hUM/B72KQ6E1uJwc6qShoUSC9JsZgeb+Za17Sny5+eq1R+0rbdz4s58p8N
-         1pEZvHilq4euqa8DB1A3vKpBtZGgNa5qSKtLfpoapRA5lFejTAngzt8hVsmovqdnnBuY
-         rMZp2ANNflD52gS+b/tfhCP5eUcAfWNcCSeIgQ2Xu6FCkm/mu+1f1hMRpBEAp98NLpR/
-         u263+s43zE1oFn/r78vpFM+q27/y4h9ZSK8DG1gFLcAGSGGtBWSYol8jXn791eb5W6sT
-         Px1A==
-X-Forwarded-Encrypted: i=1; AJvYcCXTguJdLjT1x7SNWAnR4TgR35ZTM9//KMRPktKSD1+IPKKDa+EClvBQtz3+UfkX6wWQFJMHorJ0Fxre7nPqONMS6tgc13en2hv2Mz2GSRiRasbDCdoklfxvNiA8T4RJDfYBrWunwlDyRc/EQxahxFv3phXyB7mUwS5oE/KH9+mLKh1U6BkJ+302xzJriS7YhP1FZiHyXq2xWd53lSWPISuVRQ==
-X-Gm-Message-State: AOJu0YxC1fq81hXL1Nbgqz8fIiAWCjjFkSzlDla6ubOWL9b3/PkQClaX
-	Fp+omQgAQ0MSulCtgEvmeysyWKfJZTEZRrIAzWgzT9KiP8c4tTlGhMclqVg3XPs=
-X-Google-Smtp-Source: AGHT+IF7XFSvjH18bFGEx9CdpnvASYnU/JfYs8/rfFLnUGwRoKon7Rt5YnfmRZ/vr9pQMg4VgCwROQ==
-X-Received: by 2002:a05:6870:e413:b0:21f:ca80:52c5 with SMTP id n19-20020a056870e41300b0021fca8052c5mr7306817oag.4.1708963946299;
-        Mon, 26 Feb 2024 08:12:26 -0800 (PST)
-Received: from Borg-9.local (070-114-203-196.res.spectrum.com. [70.114.203.196])
-        by smtp.gmail.com with ESMTPSA id xd12-20020a056870ce4c00b0021f86169b99sm1583576oab.43.2024.02.26.08.12.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 08:12:25 -0800 (PST)
-Sender: John Groves <grovesaustin@gmail.com>
-Date: Mon, 26 Feb 2024 10:12:23 -0600
-From: John Groves <John@groves.net>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
-	Dave Jiang <dave.jiang@intel.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, 
-	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, john@jagalactic.com, 
-	Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>, 
-	dave.hansen@linux.intel.com, gregory.price@memverge.com
-Subject: Re: [RFC PATCH 06/20] dev_dax_iomap: Add CONFIG_DEV_DAX_IOMAP kernel
- build parameter
-Message-ID: <52dovqfrfdvtwa2l5oiujxoe2e7asbz2qpslq7fb3axf5hdoem@m4j32p6ttrrf>
-References: <cover.1708709155.git.john@groves.net>
- <13365680ad42ba718c36b90165c56c3db43e8fdf.1708709155.git.john@groves.net>
- <20240226123416.0000200f@Huawei.com>
+        bh=TW2P7s5GOudhG2wB4Rb+S+Sqx8F90ikdbK5TGYSYqGw=;
+        b=Sgvdh0HS+1JrYzH5wLd5AjSHBSqWA6fMXgrqjWt6/RpeZ7H6QJ74MK/2nhdjUmAyrT
+         MVBRbXxYzUyRuo3b3AxNkKBNUtWevDXbyRHrOnP49cPj5sgYIeCTVcZo6NQ4kBO3Oe3w
+         bavL1ecZeMSRibNABUV8taklOtIL5TDWPbGRKfnjmKNb5lTB/tJRIder79AKzXbmO9Kg
+         A++iz6sbo2CZGGce2J6R1QwXWDsLCorumrV74/Cq6BunmaoINaUaRjTXEwvhKoNIF4tB
+         k2ky4J3w64gwpdZdda35Xxltj94X1RMDGC6V1Eqtna4iKxeMh229Kt4V6SIod0WVWMGM
+         EPjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXyFky4ZEtxCD1Vd4DDmXnP+N0BbWmqXxfXFoT37R2UurqgvS3uyzRlSLPCpBh4hWeJ6ka8vU5l5/b0R0Hy4rMWKzMp+P3NZ6ldpaqC
+X-Gm-Message-State: AOJu0YyByWzEq5Nd+tbS4QLiFWOEV6GNXuxbrWBz5XdrJkasMTil91iG
+	IE7LKw2FQlaQ1yxczTEaqp192zPzcFFpknoPdSDpzWEAjOvKzWrI/StyCTi8coQvxW6A/TMn/oR
+	eTAjlfNG0EbYU9XvoyXyI1AqPn1ZEaYkFmCdv
+X-Google-Smtp-Source: AGHT+IE9eZNSED/rVpI8+NxOvuy5es9uemnJbcDcVT26wGQR0+v2/KDTMV/LlFJZ6uABBH6ioDdEsR937b/kK1g9ugY=
+X-Received: by 2002:a25:94c:0:b0:dc6:c617:7ca with SMTP id u12-20020a25094c000000b00dc6c61707camr4740121ybm.29.1708964001501;
+ Mon, 26 Feb 2024 08:13:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240226123416.0000200f@Huawei.com>
+References: <20240224015800.2569851-1-surenb@google.com> <c45d16c6-abab-4132-a499-c231dcedebb2@wanadoo.fr>
+ <CAJuCfpFskKqCGj4imMMLjUQJWR_8-KHuYc=xAZ4e20+57Zf5Rg@mail.gmail.com> <ZdxPN4RpNW54ckTE@tiehlicka>
+In-Reply-To: <ZdxPN4RpNW54ckTE@tiehlicka>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Mon, 26 Feb 2024 08:13:10 -0800
+Message-ID: <CAJuCfpHvK4DgKqoHcB1YhQqKEZwniGsVL9LbVdLxWUxBd=9EVA@mail.gmail.com>
+Subject: Re: [PATCH v5 1/1] mm: enumerate all gfp flags
+To: Michal Hocko <mhocko@suse.com>
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, akpm@linux-foundation.org, 
+	kent.overstreet@linux.dev, petr@tesarici.cz, keescook@chromium.org, 
+	pasha.tatashin@soleen.com, kernel-team@android.com, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 24/02/26 12:34PM, Jonathan Cameron wrote:
-> On Fri, 23 Feb 2024 11:41:50 -0600
-> John Groves <John@Groves.net> wrote:
-> 
-> > Add the CONFIG_DEV_DAX_IOMAP kernel config parameter to control building
-> > of the iomap functionality to support fsdax on devdax.
-> 
-> I would squash with previous patch.
-> 
-> Only reason I ever see for separate Kconfig patches is when there is something
-> complex in the dependencies and you want to talk about it in depth in the
-> patch description. That's not true here so no need for separate patch.
+On Mon, Feb 26, 2024 at 12:43=E2=80=AFAM Michal Hocko <mhocko@suse.com> wro=
+te:
+>
+> On Sun 25-02-24 01:12:46, Suren Baghdasaryan wrote:
+> > On Sat, Feb 24, 2024 at 7:03=E2=80=AFAM Christophe JAILLET
+> > <christophe.jaillet@wanadoo.fr> wrote:
+> > >
+> > > Le 24/02/2024 =C3=A0 02:58, Suren Baghdasaryan a =C3=A9crit :
+> > > > Introduce GFP bits enumeration to let compiler track the number of =
+used
+> > > > bits (which depends on the config options) instead of hardcoding th=
+em.
+> > > > That simplifies __GFP_BITS_SHIFT calculation.
+> > > >
+> > > > Suggested-by: Petr Tesa=C5=99=C3=ADk <petr@tesarici.cz>
+> > > > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > > > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > > > Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+> > > > Acked-by: Michal Hocko <mhocko@suse.com>
+> > > > ---
+> > > > Changes from v4 [1]:
+> > > > - Split from the series [2] as a stand-alone patch, per Michal Hock=
+o
+> > > > - Added Reviewed-by, per Pasha Tatashin
+> > > > - Added Acked-by, per Michal Hocko
+> > > >
+> > > > [1] https://lore.kernel.org/all/20240221194052.927623-7-surenb@goog=
+le.com/
+> > > > [2] https://lore.kernel.org/all/20240221194052.927623-1-surenb@goog=
+le.com/
+> > > >
+> > > >   include/linux/gfp_types.h | 90 +++++++++++++++++++++++++++-------=
+-----
+> > > >   1 file changed, 62 insertions(+), 28 deletions(-)
+> > > >
+> > > > diff --git a/include/linux/gfp_types.h b/include/linux/gfp_types.h
+> > > > index 1b6053da8754..868c8fb1bbc1 100644
+> > > > --- a/include/linux/gfp_types.h
+> > > > +++ b/include/linux/gfp_types.h
+> > > > @@ -21,44 +21,78 @@ typedef unsigned int __bitwise gfp_t;
+> > > >    * include/trace/events/mmflags.h and tools/perf/builtin-kmem.c
+> > > >    */
+> > > >
+> > > > +enum {
+> > > > +     ___GFP_DMA_BIT,
+> > > > +     ___GFP_HIGHMEM_BIT,
+> > > > +     ___GFP_DMA32_BIT,
+> > > > +     ___GFP_MOVABLE_BIT,
+> > > > +     ___GFP_RECLAIMABLE_BIT,
+> > > > +     ___GFP_HIGH_BIT,
+> > > > +     ___GFP_IO_BIT,
+> > > > +     ___GFP_FS_BIT,
+> > > > +     ___GFP_ZERO_BIT,
+> > > > +     ___GFP_UNUSED_BIT,      /* 0x200u unused */
+> > >
+> > > Hi,
+> > >
+> > > what is the need to have this ___GFP_UNUSED_BIT now?
+> >
+> > Hi!
+> > We can remove it but then all values will shift. That should be safe
+> > to do now but I prefer one patch to do only one thing. We can add a
+> > separate patch to do further cleanup of unused values.
+>
+> Agreed!
+>
+> > > > +     ___GFP_DIRECT_RECLAIM_BIT,
+> > > > +     ___GFP_KSWAPD_RECLAIM_BIT,
+> > > > +     ___GFP_WRITE_BIT,
+> > > > +     ___GFP_NOWARN_BIT,
+> > > > +     ___GFP_RETRY_MAYFAIL_BIT,
+> > > > +     ___GFP_NOFAIL_BIT,
+> > > > +     ___GFP_NORETRY_BIT,
+> > > > +     ___GFP_MEMALLOC_BIT,
+> > > > +     ___GFP_COMP_BIT,
+> > > > +     ___GFP_NOMEMALLOC_BIT,
+> > > > +     ___GFP_HARDWALL_BIT,
+> > > > +     ___GFP_THISNODE_BIT,
+> > > > +     ___GFP_ACCOUNT_BIT,
+> > > > +     ___GFP_ZEROTAGS_BIT,
+> > > > +#ifdef CONFIG_KASAN_HW_TAGS
+> > > > +     ___GFP_SKIP_ZERO_BIT,
+> > > > +     ___GFP_SKIP_KASAN_BIT,
+> > > > +#endif
+> > > > +#ifdef CONFIG_LOCKDEP
+> > > > +     ___GFP_NOLOCKDEP_BIT,
+> > > > +#endif
+> > > > +     ___GFP_LAST_BIT
+> > > > +};
+> > >
+> > > Does it make sense to have something like:
+> > >    BUILD_BUG_ON(___GFP_LAST_BIT > BITS_PER_LONG, "blah");
+> >
+> > I suppose that would not hurt, except gfp_t is unsigned int, not long.
+> > Something like this would work I think:
+> >
+> > BUILD_BUG_ON_MSG(___GFP_LAST_BIT > BITS_PER_TYPE(gfp_t), "GFP bit overf=
+low");
+> >
+> > except I'm not sure where to put this check. One of the __init
+> > functions in page_alloc.c would probably work but none seem to be
+> > appropriate. mm_core_init() perhaps? Other ideas?
+>
+> Would that check add much? We currently cannot use the full width of the
+> gfp_t because radix tree code needs to fit also its own tag into the
+> same word (see radix_tree_init). If the radix tree constrain is lifted
+> then we should add something like the above.
 
-Done
-
+Ah, good point. That check in radix_tree_init() is already more strict
+than this one. Looks like we are covered.
 Thanks,
-John
+Suren.
 
+> --
+> Michal Hocko
+> SUSE Labs
 
