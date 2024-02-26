@@ -1,109 +1,116 @@
-Return-Path: <linux-kernel+bounces-81820-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81821-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27602867AC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:52:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C1BA5867B96
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:20:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2B3A3B27F03
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:38:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E35E3B29B47
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:40:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B7A412BE87;
-	Mon, 26 Feb 2024 15:38:35 +0000 (UTC)
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF8B212BE92;
+	Mon, 26 Feb 2024 15:40:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pDxVS0q8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A38121E51D;
-	Mon, 26 Feb 2024 15:38:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 874D212BEAF;
+	Mon, 26 Feb 2024 15:40:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708961915; cv=none; b=R2XNYIyJ7er0JHMmhXxr7MGaE0av3fSDHTGId/w9AlMQnHhgqpLjfoQx/5ZrhCl65XV3+qo0byh8c6m010UnUQxZRlPZecPdiclsIlG5q36RrHNSBXe2bkyhdo4zHjQDFtPF0Xe1dgnkoPB+CtwCcLbWhy/muIz7V0Z0ZdJ7z0M=
+	t=1708962032; cv=none; b=n/wr0d2PaDruVpVlnqpNnZDK63R2c+y1YtfMI7GCjpEbxj5uNR2JFAEE4bimPzyMIR39r9TNu7DhCdylPzvEFKv2GKqH+DMmDeCg3erPmiwPHNd2PlARirh7T5BocvOGHHnsA+GH0qx97BDTzlxt3vT1Ed8+dwb4YZdYyzpCBbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708961915; c=relaxed/simple;
-	bh=L7qz4q8oWIeDBkqYVr/UL7/lk3Oozt04Alwv/TxizvE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=giesBmClsADmZVwkl12SI+UgS0EjslQ7LyUhUCOlys+Bs+sgntShK8OGASaIBod0SHgwKDo8ikjfvs9NHxZYTLf5p45tMp6jCYvE8zDA4q2dzcRSLg/+KOtsnpUOOT6CM6xeoMONxIlb1IBTeM6D9T2/qk+VePAdWnMA5oZBMZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-608e3530941so16120107b3.1;
-        Mon, 26 Feb 2024 07:38:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708961912; x=1709566712;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ocbT52q9GFO3nyDUIiXOIkIiOkdC6TMGN9Xh09tUq64=;
-        b=TXVsKxyWveamTglZn6NV9ghRwlNH12YahSyyjrWu9ag3h8hLP8gEmyPPq214wyggJr
-         qBfvrh7yXFehB/z5QX2nmOF6NDm5+9DELxs3I5Yq/OkPct0IFx1xAOw2NbU/NCsVY8ni
-         fsJZ2TXH6G0l/xADLwCtnuzt1/pAm7HdNnNku5H+dBuChfX8V74lyYspKnbpVIlyOLrz
-         JiHn4mGwer84PND7p4vFCbiEnnaZX/PWIaTNBndZR7A8Y5phhlsPCJycU/UBdGqzA/pW
-         pPEdwL+rXqc9yfLZo+fDCf3GS0VZt7OlO47uq+rgCqPGi6g1xL0cym6aVPro0zhAH2IO
-         1lGw==
-X-Forwarded-Encrypted: i=1; AJvYcCVqyyJ1X2Yzp8nWa960X/8wr/+5rIay19zojCyNAvB1Y0Ds0e0gNkeIzZmL+n6u05T6Fe6fr2fSpsbzq0xaDLO7aaFHzmUrqw9wb3nnXsTp2rF42hoc6SUvgBk1WKoNd2nzbwS/hp1ifg==
-X-Gm-Message-State: AOJu0YxYa3WMEuXZoMITjD+WylkShRHD2G2zxlWdJ1DXDpFLgo4uiD3i
-	IjlgwZDr8Nt0IVZTbdx8Ln+U9gr9LT9oOC10gUHn1ZvOYsxDDdA1cL0S/2FHGNQ=
-X-Google-Smtp-Source: AGHT+IFXpz6VFtTBRq8jXZDVghK/JocQ/QKR6JfBEAwXoINcf0NPiwTmUPBtPiR6XY4h9lXXgFuD7w==
-X-Received: by 2002:a0d:d507:0:b0:607:9dd9:ce65 with SMTP id x7-20020a0dd507000000b006079dd9ce65mr6302778ywd.44.1708961911815;
-        Mon, 26 Feb 2024 07:38:31 -0800 (PST)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com. [209.85.128.176])
-        by smtp.gmail.com with ESMTPSA id c11-20020a81b54b000000b00608d9358ccbsm1085986ywk.132.2024.02.26.07.38.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 07:38:31 -0800 (PST)
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-609210a679bso483947b3.3;
-        Mon, 26 Feb 2024 07:38:31 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXKyMQPpHCM2pyByXEOF7bGoZMwJCZ4OlEjGfkkJgm6F4QmlfF+zMOnYzlNB2VhLA6B8VYBCaJDPhnqFgCIly/ynhXIf0yiLRlvC9q8DsRz4XIrqlExtk0VcwJWrkyOlPs0WPPwvmzbkg==
-X-Received: by 2002:a25:2fc3:0:b0:dcd:3a37:bdb1 with SMTP id
- v186-20020a252fc3000000b00dcd3a37bdb1mr4995732ybv.44.1708961911092; Mon, 26
- Feb 2024 07:38:31 -0800 (PST)
+	s=arc-20240116; t=1708962032; c=relaxed/simple;
+	bh=LqdZVF/5a5y9c7R0XJh34mAsJKHFvghTFVi0Kr3+2NY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nwC30FoeTXpKO/dNmwnO9GJXrNSRMXrZmgKg5AQFX/95eUR5VX2+WuDrRFU5OvLCLo7scsCVKbYanCm7Vo3IcpmhFL7qX2sTUAr0dT/t56SSBHZU0LN+NI3Ic4sd6jQNH3uVqMBjziUVb3/8SZEFRVhHhhrqNuGEv2KUFW+WdaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pDxVS0q8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38C92C433C7;
+	Mon, 26 Feb 2024 15:40:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708962032;
+	bh=LqdZVF/5a5y9c7R0XJh34mAsJKHFvghTFVi0Kr3+2NY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pDxVS0q8Z3vpInLZ2QGBmd3bVTIaQVmD0Lg1FYweLvPwIbiCpQkMP7ZsWJjB8XGxz
+	 gzfyUh1+Ri7hI47ZLD0r2BbaP4NKvMOkYaCvn8A6uukIq4ZRgoAEGku8/mMxhNqzkA
+	 yvH2C6zhpPfy58dvkw+7jlsSzx5UfhYSmHsA0+tq1nwW+D9zb3A5R/sPl88jfUmX1O
+	 C2bPKjjaN4znMiobBOe3M/Kr19GSPeS6tZECdBbtUYH87T3HRdbua3LgIychQrhL6L
+	 E4SFQz52hUoq8sS6Y1U0lSrRsoxaUm8Lk/mld0Yd6oJw3qUFfKO2RjYMYTv722TFJQ
+	 aki7mnG1lzw/g==
+Date: Mon, 26 Feb 2024 16:40:25 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Xi Ruoyao <xry111@xry111.site>, Icenowy Zheng <uwu@icenowy.me>, 
+	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, linux-api@vger.kernel.org, 
+	Kees Cook <keescook@chromium.org>, Xuefeng Li <lixuefeng@loongson.cn>, 
+	Jianmin Lv <lvjianmin@loongson.cn>, Xiaotian Wu <wuxiaotian@loongson.cn>, 
+	WANG Rui <wangrui@loongson.cn>, Miao Wang <shankerwangmiao@gmail.com>, 
+	"loongarch@lists.linux.dev" <loongarch@lists.linux.dev>, Linux-Arch <linux-arch@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Chromium sandbox on LoongArch and statx -- seccomp deep argument
+ inspection again?
+Message-ID: <20240226-sandbank-bewerben-219120323e29@brauner>
+References: <599df4a3-47a4-49be-9c81-8e21ea1f988a@xen0n.name>
+ <CAAhV-H4oW70y-2ZSp=b-Ed3A7Jrxfg6xvO8YpjED6To=PF0NwA@mail.gmail.com>
+ <f063e65df92228cac6e57b0c21de6b750cf47e42.camel@icenowy.me>
+ <24c47463f9b469bdc03e415d953d1ca926d83680.camel@xry111.site>
+ <61c5b883762ba4f7fc5a89f539dcd6c8b13d8622.camel@icenowy.me>
+ <3c396b7c-adec-4762-9584-5824f310bf7b@app.fastmail.com>
+ <6f7a8e320f3c2bd5e9b704bb8d1f311714cd8644.camel@xry111.site>
+ <b9fb0de1-bfb9-47a6-9730-325e7641c182@app.fastmail.com>
+ <20240226-graustufen-hinsehen-6c578a744806@brauner>
+ <ef732971-bf70-4d8c-9fe8-3ca163a0c29c@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240219170337.2161754-1-andriy.shevchenko@linux.intel.com> <20240219170337.2161754-4-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20240219170337.2161754-4-andriy.shevchenko@linux.intel.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 26 Feb 2024 16:38:19 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXs6eSYyvKO06=ADExrO4agSmOUvm++n077WB=FV70fUg@mail.gmail.com>
-Message-ID: <CAMuHMdXs6eSYyvKO06=ADExrO4agSmOUvm++n077WB=FV70fUg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/9] auxdisplay: ht16k33: Add default to switch-cases
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Andy Shevchenko <andy@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Robin van der Gracht <robin@protonic.nl>, Paul Burton <paulburton@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ef732971-bf70-4d8c-9fe8-3ca163a0c29c@app.fastmail.com>
 
-On Mon, Feb 19, 2024 at 6:03=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> Currently the compiler (GCC) is able to figure out that there is no
-> other choices possible than those that are already listed in the
-> switch-cases. However, if we want to move some code to the callback,
-> compiler will start complaining that no default is defined. Make
-> sure we have all switch-cases equiped with default.
->
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Mon, Feb 26, 2024 at 02:46:49PM +0100, Arnd Bergmann wrote:
+> On Mon, Feb 26, 2024, at 14:32, Christian Brauner wrote:
+> > On Mon, Feb 26, 2024 at 10:20:23AM +0100, Arnd Bergmann wrote:
+> >> On Mon, Feb 26, 2024, at 08:09, Xi Ruoyao wrote:
+> >
+> > What this tells me without knowing the exact reason is that they thought
+> > "Oh, if we just return ENOSYS then the workload or glibc will just
+> > always be able to fallback to fstat() or fstatat()". Which ultimately is
+> > the exact same thing that containers often assume.
+> >
+> > So really, just skipping on various system calls isn't going to work.
+> > You can't just implement new system calls and forget about the rest
+> > unless you know exactly what workloads your architecure will run on.
+> >
+> > Please implement fstat() or fstatat() and stop inventing hacks for
+> > statx() to make weird sandboxing rules work, please.
+> 
+> Do you mean we should add fstat64_time64() for all architectures
+> then? Would use use the same structure layout as statx for this,
+> the 64-bit version of the 'struct stat' layout from
+> include/uapi/asm-generic/stat.h, or something new that solves
+> the same problems?
+> 
+> I definitely don't want to see a new time32 API added to
+> mips64 and the 32-bit architectures, so the existing stat64
+> interface won't work as a statx replacement.
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+I don't specifically care but the same way you don't want to see newer
+time32 apis added to architectures I don't want to have hacks in our
+system calls that aren't even a clear solution to the problem outlined
+in this thread.
 
-Gr{oetje,eeting}s,
+Short of adding fstatx() the problem isn't solved by a new flag to
+statx() as explained in my other mails. But I'm probably missing
+something here because I find this notion of "design system calls for
+seccomp and the Chromium sandbox" to be an absurd notion and it makes me
+a bit impatient.
 
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+And fwiw, once mseal() lands seccomp should be a lot easier to get deep
+argument inspection.
 
