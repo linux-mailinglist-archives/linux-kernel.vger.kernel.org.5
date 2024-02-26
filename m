@@ -1,111 +1,195 @@
-Return-Path: <linux-kernel+bounces-81409-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E74068675FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:06:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 099A28675F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:06:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EED02B2B950
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:49:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 406F7B2D5BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:57:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EA6980037;
-	Mon, 26 Feb 2024 12:48:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j5gwv/oL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B7AF8526F;
+	Mon, 26 Feb 2024 12:56:49 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53F06EC7
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 12:48:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BB2A81756;
+	Mon, 26 Feb 2024 12:56:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708951734; cv=none; b=FXiyO5tFg5b/LQTLiphCILcsByvTta7ETIoBbcdWohEbkxg9AzMlylkxqpG/ZL6oMrHHITyvegmOx3ofbdlfIz5WuqlPkqP2NS7m3YQ5bZTOwRhAJjZNrTnciwgLwWOiErmoiZK3iQh7PUkI9hrqHdVj0rus92+fvevrUE6mkDk=
+	t=1708952208; cv=none; b=AVmGHMpfDRNJJXKAPACV3iplJn3JK/SRAhSwo0RCkYEmWlmYb9uNATaDi16Spv0Nbgqu/vEKfrh5G+D7dbEoCsB9fZsXlIowNTvP/ZC6atIeKT7ukl224qDz4UaCla8MjUJCBOhFgxICB4Bhy3HWRt4aJTCvnZoQz1cMUeicXQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708951734; c=relaxed/simple;
-	bh=Q3NH181a85YRTFivknWhvRlGzUVX6ut6yEVQtESkJik=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=omZEzyZRPO5y37Q3VlK2MIqXk7bypSvwVOXjfLmOsRIztJajxcFO6RcnJEcoYNiD6BNDFDJqPJ08CP/ChaiT3NPJBIqXfcMy2CDU2LSMslp4mYEQW91NjfMsIMGXomAui+o0LGzzN4mLDK8t5NilNbeuE8JpupvAidA020yzUyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j5gwv/oL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD553C43390;
-	Mon, 26 Feb 2024 12:48:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708951734;
-	bh=Q3NH181a85YRTFivknWhvRlGzUVX6ut6yEVQtESkJik=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=j5gwv/oLxGBvshYM4XJsakKQspn+4PiYoY+JB8H+VNY+uM3lMbovSewvvS7qT4pPq
-	 NSpcoaLyasTfkJ9GZE0Ekv0zTg4XXDqtbcUNwIa2GVPeWQe70PVIrWjdD6hzUaCMKg
-	 hG24PwowVape7egBViKaXaknYe26QfBheDfrpqGdB6IE4W81shxhUm6pSrLgtDMM9C
-	 +RDgNYsJh8GwsjSI8kboes7lAMcB+jJH7zl70rs8XL+f6J+pgewKs/puDY8dj2mX3U
-	 5h1Khj5tIT8dSvdkzBje5gz/b6PPaTcopUTRzqdEVRU6BHxqN8SfcOcS0G42nq+oWN
-	 54jKq5HRKHgiw==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Lucas De Marchi <lucas.demarchi@intel.com>,
-	Oded Gabbay <ogabbay@kernel.org>,
-	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Matt Roper <matthew.d.roper@intel.com>,
-	Matthew Brost <matthew.brost@intel.com>,
-	intel-xe@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] [v2] drm/xe/xe2: fix 64-bit division in pte_update_size
-Date: Mon, 26 Feb 2024 13:46:38 +0100
-Message-Id: <20240226124736.1272949-3-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240226124736.1272949-1-arnd@kernel.org>
-References: <20240226124736.1272949-1-arnd@kernel.org>
+	s=arc-20240116; t=1708952208; c=relaxed/simple;
+	bh=NC9zbuoZghbczDmZXWcpM9NU9mKbcnjtKFhuyF8fuZs=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=XmlU2Y5svXNQP2I1mmdauHhBrlOMRxZwf4b/qSDRV5vSTFMobtAggOGhjwUEYUO3ghjJbVg6k519nQPU2cYQBvW7/xSLrSY9VtN4b8MH3Y+xJO1zFwl1hztsuEqHzLeZNLaHchOGYV3w7YwqTRutHB6wYfpVWhqlLZLgxs8nSGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Tk0s85lMRz6K9JP;
+	Mon, 26 Feb 2024 20:53:00 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id F41F9140FB6;
+	Mon, 26 Feb 2024 20:56:43 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 26 Feb
+ 2024 12:56:43 +0000
+Date: Mon, 26 Feb 2024 12:56:42 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: John Groves <John@Groves.net>
+CC: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, "Dan
+ Williams" <dan.j.williams@intel.com>, Vishal Verma
+	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Alexander
+ Viro" <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, "Jan
+ Kara" <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+	<linux-cxl@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<nvdimm@lists.linux.dev>, <john@jagalactic.com>, Dave Chinner
+	<david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>,
+	<dave.hansen@linux.intel.com>, <gregory.price@memverge.com>
+Subject: Re: [RFC PATCH 10/20] famfs: famfs_open_device() &
+ dax_holder_operations
+Message-ID: <20240226125642.000076d2@Huawei.com>
+In-Reply-To: <74359fdc83688fb1aac1cb2c336fbd725590a131.1708709155.git.john@groves.net>
+References: <cover.1708709155.git.john@groves.net>
+	<74359fdc83688fb1aac1cb2c336fbd725590a131.1708709155.git.john@groves.net>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Fri, 23 Feb 2024 11:41:54 -0600
+John Groves <John@Groves.net> wrote:
 
-This function does not build on 32-bit targets when the compiler
-fails to reduce DIV_ROUND_UP() into a shift:
+> Famfs works on both /dev/pmem and /dev/dax devices. This commit introduces
+> the function that opens a block (pmem) device and the struct
+> dax_holder_operations that are needed for that ABI.
+> 
+> In this commit, support for opening character /dev/dax is stubbed. A
+> later commit introduces this capability.
+> 
+> Signed-off-by: John Groves <john@groves.net>
 
-ld.lld: error: undefined symbol: __aeabi_uldivmod
->>> referenced by xe_migrate.c
->>>               drivers/gpu/drm/xe/xe_migrate.o:(pte_update_size) in archive vmlinux.a
+Formatting comments mostly same as previous patches, so I'll stop repeating them.
 
-There are two instances in this function. Change the first to
-use an open-coded shift with the same behavior, and the second
-one to a 32-bit calculation, which is sufficient here as the size
-is never more than 2^32 pages (16TB).
+> ---
+>  fs/famfs/famfs_inode.c | 83 ++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 83 insertions(+)
+> 
+> diff --git a/fs/famfs/famfs_inode.c b/fs/famfs/famfs_inode.c
+> index 3329aff000d1..82c861998093 100644
+> --- a/fs/famfs/famfs_inode.c
+> +++ b/fs/famfs/famfs_inode.c
+> @@ -68,5 +68,88 @@ static const struct super_operations famfs_ops = {
+>  	.show_options	= famfs_show_options,
+>  };
+>  
+> +/***************************************************************************************
+> + * dax_holder_operations for block dax
+> + */
+> +
+> +static int
+> +famfs_blk_dax_notify_failure(
+> +	struct dax_device	*dax_devp,
+> +	u64			offset,
+> +	u64			len,
+> +	int			mf_flags)
+> +{
+> +
+> +	pr_err("%s: dax_devp %llx offset %llx len %lld mf_flags %x\n",
+> +	       __func__, (u64)dax_devp, (u64)offset, (u64)len, mf_flags);
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +const struct dax_holder_operations famfs_blk_dax_holder_ops = {
+> +	.notify_failure		= famfs_blk_dax_notify_failure,
+> +};
+> +
+> +static int
+> +famfs_open_char_device(
+> +	struct super_block *sb,
+> +	struct fs_context  *fc)
+> +{
+> +	pr_err("%s: Root device is %s, but your kernel does not support famfs on /dev/dax\n",
+> +	       __func__, fc->source);
+> +	return -ENODEV;
+> +}
+> +
+> +/**
+> + * famfs_open_device()
+> + *
+> + * Open the memory device. If it looks like /dev/dax, call famfs_open_char_device().
+> + * Otherwise try to open it as a block/pmem device.
+> + */
+> +static int
+> +famfs_open_device(
+> +	struct super_block *sb,
+> +	struct fs_context  *fc)
+> +{
+> +	struct famfs_fs_info *fsi = sb->s_fs_info;
+> +	struct dax_device    *dax_devp;
+> +	u64 start_off = 0;
+> +	struct bdev_handle   *handlep;
+Definitely don't force alignment in local parameter definitions.
+Always goes wrong and makes for unreadable mess in patches!
 
-Fixes: 237412e45390 ("drm/xe: Enable 32bits build")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-v2: use correct Fixes tag
----
- drivers/gpu/drm/xe/xe_migrate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +
+> +	if (fsi->dax_devp) {
+> +		pr_err("%s: already mounted\n", __func__);
+Fine to fail but worth a error message? Not sure on convention on this but seems noisy
+and maybe in userspace control which isn't good.
+> +		return -EALREADY;
+> +	}
+> +
+> +	if (strstr(fc->source, "/dev/dax")) /* There is probably a better way to check this */
+> +		return famfs_open_char_device(sb, fc);
+> +
+> +	if (!strstr(fc->source, "/dev/pmem")) { /* There is probably a better way to check this */
+> +		pr_err("%s: primary backing dev (%s) is not pmem\n",
+> +		       __func__, fc->source);
+> +		return -EINVAL;
+> +	}
+> +
+> +	handlep = bdev_open_by_path(fc->source, FAMFS_BLKDEV_MODE, fsi, &fs_holder_ops);
+> +	if (IS_ERR(handlep->bdev)) {
+> +		pr_err("%s: failed blkdev_get_by_path(%s)\n", __func__, fc->source);
+> +		return PTR_ERR(handlep->bdev);
+> +	}
+> +
+> +	dax_devp = fs_dax_get_by_bdev(handlep->bdev, &start_off,
+> +				      fsi  /* holder */,
+> +				      &famfs_blk_dax_holder_ops);
+> +	if (IS_ERR(dax_devp)) {
+> +		pr_err("%s: unable to get daxdev from handlep->bdev\n", __func__);
+> +		bdev_release(handlep);
+> +		return -ENODEV;
+> +	}
+> +	fsi->bdev_handle = handlep;
+> +	fsi->dax_devp    = dax_devp;
+> +
+> +	pr_notice("%s: root device is block dax (%s)\n", __func__, fc->source);
 
-diff --git a/drivers/gpu/drm/xe/xe_migrate.c b/drivers/gpu/drm/xe/xe_migrate.c
-index a66fdf2d2991..ee1bb938c493 100644
---- a/drivers/gpu/drm/xe/xe_migrate.c
-+++ b/drivers/gpu/drm/xe/xe_migrate.c
-@@ -462,7 +462,7 @@ static u32 pte_update_size(struct xe_migrate *m,
- 	} else {
- 		/* Clip L0 to available size */
- 		u64 size = min(*L0, (u64)avail_pts * SZ_2M);
--		u64 num_4k_pages = DIV_ROUND_UP(size, XE_PAGE_SIZE);
-+		u32 num_4k_pages = (size + XE_PAGE_SIZE - 1) >> XE_PTE_SHIFT;
- 
- 		*L0 = size;
- 		*L0_ofs = xe_migrate_vm_addr(pt_ofs, 0);
--- 
-2.39.2
+pr_debug()  Kernel log is too noisy anyway! + I'd assume we can tell this succeeded
+in lots of other ways.
+
+
+> +	return 0;
+> +}
+> +
+> +
+>  
+>  MODULE_LICENSE("GPL");
 
 
