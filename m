@@ -1,113 +1,273 @@
-Return-Path: <linux-kernel+bounces-81071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2290A866FCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:04:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94AC7866FD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:04:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3ACA1F25F7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:04:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CDE31F24C11
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:04:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B48625F464;
-	Mon, 26 Feb 2024 09:40:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nCQ3hfao"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2180B5F578;
+	Mon, 26 Feb 2024 09:40:13 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8D195DF34;
-	Mon, 26 Feb 2024 09:40:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6815B5F49A;
+	Mon, 26 Feb 2024 09:40:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708940404; cv=none; b=YMdiXEoQIjitMpNhrJeG4+unHkObkwW14O9/gp+fq7ptcpYqNjjxgeVV9YjmqlkhRHHO4HMIkrYJ7Yq3U3NgGBI9OIfw7kDPDWFtrPrj26YRIfM8IoR3h2os/C/Yz6ai4Pvyb2kVjfbsxya6BWrCGtvnlEx+c15pcZ4xhlvTqDk=
+	t=1708940412; cv=none; b=G4WOjPwexjg5B9G0YsitB2Nw9MnwRCPO9Ge3ekvYNEkk7Pff35QPNh7KleHeFmEb9bzUJcOSOqbgGQgJK2XDa6bXbTUaI4JBCDixh+nxD03a2aScV9/O4PeynBg3bKPbDD0tw/a6KjnWE0OBbvHbo3Ya8DSH/65akQCWerd5eWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708940404; c=relaxed/simple;
-	bh=8zUDVC2NMen/wlgP6Dr1a7B2WedMJqF33uyf9jialCI=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
-	 References:In-Reply-To; b=rPF8i0+HsYSGXYy5UMHY01JqmFvC6JNjEukIH+qGLaEDwec1WcA+mULKHGGzobsGvF1ot3/7qjRX3Lvi6N/WF3x2dqoDdVEwFhF1jwf2kPOgMi1IvNYTXm07hQlmviZt4+0q3tWLNNNWcY8gLa/Xt3CyPrn3BpEN3ImbP05+18g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nCQ3hfao; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75815C433C7;
-	Mon, 26 Feb 2024 09:40:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708940403;
-	bh=8zUDVC2NMen/wlgP6Dr1a7B2WedMJqF33uyf9jialCI=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=nCQ3hfaoxQPhGkyAqOk/8DPVp2E8K5hdvyML3x//bnINqrZ/POxSK4ZaJaGuuBx6s
-	 ybbFaenIobG78QQyrVesHz/QmxplrbMPExU8gc7FeYEx6UdxTe9PoANXhGewY+DPAM
-	 IqWQLm800TxEDF3pWFt2FK+52lYmV5l7QxuJUSgspyF1QlIv9G+CEZfeb34mR6zAnz
-	 Br4R+WoIBaRXNOhP431f8k0kkyvCugWHh9o5Mgoyc6K21RDpgx8EbDJp9c9LLMalEB
-	 x91A46KhLmsdrU90GOTThWJDUA1RK9JKiyvGHrvi5LAMmkvGP42aMQXdH99qvgmfaU
-	 ghPj4a87v+qKg==
+	s=arc-20240116; t=1708940412; c=relaxed/simple;
+	bh=SS5aWCEFp88J7+X6Yo4GCAC3/LyWxt3ymokDrhw+bzs=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=c/Sg6BMCnneKWt/f28jAs033CnoCLTGI7fgcr/5gyhkDuJ1V/urKVwVw0o127+hYeg1CK+mlVGLRN4g59t18I1B1hig/uKar8TI3owPQnmtKpOidIaj8/wbh7dxzPmEcHheF8w/0PK/Ud26+3oIl0Zx6WJMJWKgCqa935eUxv3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TjwZQ5tk9z4f3nVC;
+	Mon, 26 Feb 2024 17:39:58 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 1C9481A0EBB;
+	Mon, 26 Feb 2024 17:40:06 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgBXKBF1XNxlRaLOFA--.41686S3;
+	Mon, 26 Feb 2024 17:40:05 +0800 (CST)
+Subject: Re: [PATCH md-6.9 03/10] md/raid1: fix choose next idle in
+ read_balance()
+To: Xiao Ni <xni@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc: paul.e.luse@linux.intel.com, song@kernel.org, neilb@suse.com,
+ shli@fb.com, linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+ yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20240222075806.1816400-1-yukuai1@huaweicloud.com>
+ <20240222075806.1816400-4-yukuai1@huaweicloud.com>
+ <CALTww2_g5Sdxh5f=krWiZ1y2y7ud3XaSX5Hhx-mz3AU45c6rGg@mail.gmail.com>
+ <34fbafbe-a510-5193-b86c-91fac69de95f@huaweicloud.com>
+ <CALTww2929Ddf_U1z3HJ0BLK2xH=tVSdYtf3EDkdBJrX=xw5Ywg@mail.gmail.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <05fab111-7111-1dca-57a8-89069a34adc2@huaweicloud.com>
+Date: Mon, 26 Feb 2024 17:40:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 26 Feb 2024 11:39:59 +0200
-Message-Id: <CZEWT9D2Z7XN.36JUV0NGC2WR0@suppilovahvero>
-Subject: Re: [PATCH 1/3] tpm: protect against locality counter underflow
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Daniel P. Smith" <dpsmith@apertussolutions.com>, "Lino Sanfilippo"
- <l.sanfilippo@kunbus.com>, "Alexander Steffen"
- <Alexander.Steffen@infineon.com>, "Jason Gunthorpe" <jgg@ziepe.ca>, "Sasha
- Levin" <sashal@kernel.org>, <linux-integrity@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-Cc: "Ross Philipson" <ross.philipson@oracle.com>, "Kanth Ghatraju"
- <kanth.ghatraju@oracle.com>, "Peter Huewe" <peterhuewe@gmx.de>
-X-Mailer: aerc 0.15.2
-References: <20240131170824.6183-1-dpsmith@apertussolutions.com>
- <20240131170824.6183-2-dpsmith@apertussolutions.com>
- <CYU3CFW08DAA.29DJY7SJYPJJZ@suppilovahvero>
- <2ba9a96e-f93b-48e2-9ca0-48318af7f9b1@kunbus.com>
- <ae3fecc4-7b76-4607-8749-045e17941923@infineon.com>
- <91f600ef-867b-4523-89be-1c0ba34f8a4c@kunbus.com>
- <CZA9ADCGOTQT.LB5XHZZVTWVH@seitikki>
- <88b75c9c-98ab-4474-8112-6a27d11a2fdf@apertussolutions.com>
- <CZCH5V83WBBV.20JR0RC1GJVJY@suppilovahvero>
- <44267c53-496d-4e41-896a-623673d938cb@apertussolutions.com>
-In-Reply-To: <44267c53-496d-4e41-896a-623673d938cb@apertussolutions.com>
+MIME-Version: 1.0
+In-Reply-To: <CALTww2929Ddf_U1z3HJ0BLK2xH=tVSdYtf3EDkdBJrX=xw5Ywg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgBXKBF1XNxlRaLOFA--.41686S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3JrW8WFWkZrWfCr1Dur1xXwb_yoW7Ar4xpr
+	W0qanFyFWUXry5K3s2qw4UXr9aq343JF48uFykJ34Sqr90qFyqqF47KryUuFy8CFs7Jw17
+	Xr1UGrW7u3W0kFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWU
+	JwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUF9a9DUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On Sun Feb 25, 2024 at 1:23 PM EET, Daniel P. Smith wrote:
-> On 2/23/24 07:58, Jarkko Sakkinen wrote:
-> > On Fri Feb 23, 2024 at 3:58 AM EET, Daniel P. Smith wrote:
-> >>> Just adding here that I wish we also had a log transcript of bug, whi=
-ch
-> >>> is right now missing. The explanation believable enough to move forwa=
-rd
-> >>> but I still wish to see a log transcript.
-> >>
-> >> That will be forth coming.
-> >=20
-> > I did not respond yet to other responses that you've given in the past
-> > 12'ish hours or so (just woke up) but I started to think how all this
-> > great and useful information would be best kept in memory. Some of it
-> > has been discussed in the past but there is lot of small details that
-> > are too easily forgotten.
-> >=20
-> > I'd think the best "documentation" approach here would be inject the
-> > spec references to the sites where locality behaviour is changed so
-> > that it is easy in future cross-reference them, and least of risk
-> > of having code changes that would break anything. I think this way
-> > all the information that you provided is best preserved for the
-> > future.
-> >=20
-> > Thanks a lot for great and informative responses!
->
-> No problem at all.
->
-> Here is a serial output[1] from a dynamic launch using Linux Secure=20
-> Launch v7[2] with one additional patch[3] to dump TPM driver state.
+Hi,
 
-But are this fixes for a kernel tree with [2] applied.
+在 2024/02/26 17:24, Xiao Ni 写道:
+> On Mon, Feb 26, 2024 at 5:12 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>
+>> Hi,
+>>
+>> 在 2024/02/26 16:55, Xiao Ni 写道:
+>>> Hi Kuai
+>>>
+>>> Thanks for the effort!
+>>>
+>>> On Thu, Feb 22, 2024 at 4:04 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>>>
+>>>> From: Yu Kuai <yukuai3@huawei.com>
+>>>>
+>>>> Commit 12cee5a8a29e ("md/raid1: prevent merging too large request") add
+>>>> the case choose next idle in read_balance():
+>>>>
+>>>> read_balance:
+>>>>    for_each_rdev
+>>>>     if(next_seq_sect == this_sector || disk == 0)
+>>>
+>>> typo error: s/disk/dist/g
+>>>
+>>>>     -> sequential reads
+>>>>      best_disk = disk;
+>>>>      if (...)
+>>>>       choose_next_idle = 1
+>>>>       continue;
+>>>>
+>>>>    for_each_rdev
+>>>>    -> iterate next rdev
+>>>>     if (pending == 0)
+>>>>      best_disk = disk;
+>>>>      -> choose the next idle disk
+>>>>      break;
+>>>>
+>>>>     if (choose_next_idle)
+>>>>      -> keep using this rdev if there are no other idle disk
+>>>>      continue
+>>>>
+>>>> However, commit 2e52d449bcec ("md/raid1: add failfast handling for reads.")
+>>>> remove the code:
+>>>>
+>>>> -               /* If device is idle, use it */
+>>>> -               if (pending == 0) {
+>>>> -                       best_disk = disk;
+>>>> -                       break;
+>>>> -               }
+>>>>
+>>>> Hence choose next idle will never work now, fix this problem by
+>>>> following:
+>>>>
+>>>> 1) don't set best_disk in this case, read_balance() will choose the best
+>>>>      disk after iterating all the disks;
+>>>> 2) add 'pending' so that other idle disk will be chosen;
+>>>> 3) set 'dist' to 0 so that if there is no other idle disk, and all disks
+>>>>      are rotational, this disk will still be chosen;
+>>>>
+>>>> Fixes: 2e52d449bcec ("md/raid1: add failfast handling for reads.")
+>>>> Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
+>>>> Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
+>>>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>>>> ---
+>>>>    drivers/md/raid1.c | 21 ++++++++++++---------
+>>>>    1 file changed, 12 insertions(+), 9 deletions(-)
+>>>>
+>>>> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+>>>> index c60ea58ae8c5..d0bc67e6d068 100644
+>>>> --- a/drivers/md/raid1.c
+>>>> +++ b/drivers/md/raid1.c
+>>>> @@ -604,7 +604,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+>>>>           unsigned int min_pending;
+>>>>           struct md_rdev *rdev;
+>>>>           int choose_first;
+>>>> -       int choose_next_idle;
+>>>>
+>>>>           /*
+>>>>            * Check if we can balance. We can balance on the whole
+>>>> @@ -619,7 +618,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+>>>>           best_pending_disk = -1;
+>>>>           min_pending = UINT_MAX;
+>>>>           best_good_sectors = 0;
+>>>> -       choose_next_idle = 0;
+>>>>           clear_bit(R1BIO_FailFast, &r1_bio->state);
+>>>>
+>>>>           if ((conf->mddev->recovery_cp < this_sector + sectors) ||
+>>>> @@ -712,7 +710,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+>>>>                           int opt_iosize = bdev_io_opt(rdev->bdev) >> 9;
+>>>>                           struct raid1_info *mirror = &conf->mirrors[disk];
+>>>>
+>>>> -                       best_disk = disk;
+>>>>                           /*
+>>>>                            * If buffered sequential IO size exceeds optimal
+>>>>                            * iosize, check if there is idle disk. If yes, choose
+>>>> @@ -731,15 +728,21 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+>>>>                               mirror->next_seq_sect > opt_iosize &&
+>>>>                               mirror->next_seq_sect - opt_iosize >=
+>>>>                               mirror->seq_start) {
+>>>> -                               choose_next_idle = 1;
+>>>> -                               continue;
+>>>> +                               /*
+>>>> +                                * Add 'pending' to avoid choosing this disk if
+>>>> +                                * there is other idle disk.
+>>>> +                                * Set 'dist' to 0, so that if there is no other
+>>>> +                                * idle disk and all disks are rotational, this
+>>>> +                                * disk will still be chosen.
+>>>> +                                */
+>>>> +                               pending++;
+>>>> +                               dist = 0;
+>>>
+>>> There is a problem. If all disks are not idle and there is a disk with
+>>> dist=0 before the seq disk, it can't read from the seq disk. It will
+>>> read from the first disk with dist=0. Maybe we can only add the codes
+>>> which are removed from 2e52d449bcec?
+>>
+>> If there is a disk with disk=0, then best_dist_disk will be updated to
+>> the disk, and best_dist will be updated to 0 already:
+>>
+>> // in each iteration
+>> if (dist < best_dist) {
+>>          best_dist = dist;
+>>          btest_disk_disk = disk;
+>> }
+>>
+>> In this case, best_dist will be set to the first disk with dist=0, and
+>> at last, the disk will be chosen:
+>>
+>> if (best_disk == -1) {
+>>           if (has_nonrot_disk || min_pending == 0)
+>>                   best_disk = best_pending_disk;
+>>           else
+>>                   best_disk = best_dist_disk;
+>>                  -> the first disk with dist=0;
+>> }
+>>
+>> So, the problem that you concerned should not exist.
+> 
+> Hi Kuai
+> 
+> Thanks for the explanation. You're right. It chooses the first disk
+> which has dist==0. In the above, you made the same typo error disk=0
+> as the comment. I guess you want to use dist=0, right? Beside this,
+> this patch is good to me.
 
-If the bugs do not occur in the mainline tree without the out-of-tree
-feature, they are not bug fixes. They should then really be part of that
-series.
+Yes, and Paul change the name 'best_dist' to 'closest_dist_disk',
+and 'btest_disk_disk' to 'closest_dist' in the last patch to avoid typo
+like this. :)
 
-BR, Jarkko
+Thanks,
+Kuai
+
+
+> 
+> Best Regards
+> Xiao
+>>
+>> Thanks,
+>> Kuai
+>>>
+>>> Best Regards
+>>> Xiao
+>>>
+>>>> +                       } else {
+>>>> +                               best_disk = disk;
+>>>> +                               break;
+>>>>                           }
+>>>> -                       break;
+>>>>                   }
+>>>>
+>>>> -               if (choose_next_idle)
+>>>> -                       continue;
+>>>> -
+>>>>                   if (min_pending > pending) {
+>>>>                           min_pending = pending;
+>>>>                           best_pending_disk = disk;
+>>>> --
+>>>> 2.39.2
+>>>>
+>>>>
+>>>
+>>> .
+>>>
+>>
+> 
+> .
+> 
+
 
