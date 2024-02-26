@@ -1,265 +1,97 @@
-Return-Path: <linux-kernel+bounces-81444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81445-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DEF086760A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:08:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E6E686760C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:08:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B776928A3B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:08:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29A6228A36E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:08:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DF5C80037;
-	Mon, 26 Feb 2024 13:08:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DB5D80053;
+	Mon, 26 Feb 2024 13:08:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="Q9HC9gdX"
-Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i4MQPSVw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE08B7A73D
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 13:08:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EF5B7A73D;
+	Mon, 26 Feb 2024 13:08:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708952895; cv=none; b=Pk8E4U4fG7ZpVcv5U8W3n35IjSt4p/J+ro9NV/fGDYB/XHam8u0TMp1PILReVhw9cDb5QKF9DlPnQ2IboW4t1/xvILX2YZsotMsX3VRItT1/SqZmSa5S94mrL+vaa2qm8hVsC1YUoG0ZaLT1PDp9XgVPX+k/nY3MdJuFvCx5bCI=
+	t=1708952926; cv=none; b=MrcjM/vEt7LxJegoQHOZmbBClxjbOlDCVlhK9wGNmg64Flagi689YWooiITdR+IA0WBm3dYV01CQyQW+TXs75c3WzDqnvBZufCdZ76pNMjAGLUCHqiqEqVNG08TwB9XojcbyDxuCS6W3+3z0bqmaNTrePt0FHE2vl79B/4lqqBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708952895; c=relaxed/simple;
-	bh=qitPqKYHu5SkbJi3zE8S/yb2YXcoDr4Jzx8rsJA2d/g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ojTQZBov3x6lCUBM86pCFm7yINOGE4g4XWN8qwv2bzBf3TaH4xBfCXMS+bw7ITug7zRgKzSQSN2o417FijpkCZ2nuMTry26VgGRw5Nh69z1wglnsA2jVnW2v+xtuZKiNJiiI+9B/l0E6EI1emyzIJnEzMlUu60h3s3NgGJ8bOkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=Q9HC9gdX; arc=none smtp.client-ip=198.252.153.129
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
-Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx1.riseup.net (Postfix) with ESMTPS id 4Tk1BZ404zzDqG9;
-	Mon, 26 Feb 2024 13:08:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1708952887; bh=qitPqKYHu5SkbJi3zE8S/yb2YXcoDr4Jzx8rsJA2d/g=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Q9HC9gdXLpyVO/iXWdfYrJMCdrQUOQr4rdNwpkzqyHEFSDppyq0RC2XgISEqsvZ+d
-	 Mda5o7Z1F0QCzxx8Gk4NSq7mEkKh5oTpohLcpM+bae3ShSo8PGZpUTvLV7gb36tbHF
-	 1Dy7zTnM+3pb/3kICxxhLyI+Xc1QD4cGv8rs6M3U=
-X-Riseup-User-ID: 2BC69804A301033890366CE1256AF965CF62B045EC3E4EC86A117B16AAEE2F45
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4Tk1BS1GSzzJsBS;
-	Mon, 26 Feb 2024 13:07:59 +0000 (UTC)
-Message-ID: <406988be-48a4-4762-9c03-7a27c8e7b91e@riseup.net>
-Date: Mon, 26 Feb 2024 10:07:57 -0300
+	s=arc-20240116; t=1708952926; c=relaxed/simple;
+	bh=4I3RhXtBZX5OMS1orfIVhwSdCHuuX6f8mq6Wj0gtZnk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PIJrAMB1suNvHcJQ6ptvDslyRxfpCnxKRJ/dvtVMY20hg/1BolvD5gFVL0LVaxtnJE25jXZhXJuEcudjU0R4KRXTQsThlm0R5+Vt2CV32OlNXAWwfo7zXEN7coL0OUVojsknBGxq8iDZNRtcfJR+PL8ZmmMMauARysecF/X94Cc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i4MQPSVw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52256C433F1;
+	Mon, 26 Feb 2024 13:08:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708952926;
+	bh=4I3RhXtBZX5OMS1orfIVhwSdCHuuX6f8mq6Wj0gtZnk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=i4MQPSVw3XtdgHB96J2XPs1a5xP8BWaggsHWOVzkgLdhJ9jDEorKezr0o5zkC1rlU
+	 YwfUj/FgqO79fQ4FaPOCWrh44rEAaNMQ8fBCCRGFeoXkk7Q5y28TqLuVZdm3nmRfMn
+	 tFOXbboHD+2rjZcToXXaGO2h79+E5NtEEsEX9o2/gJIBVkstkmgJIbh2yYhIP4m+NP
+	 bHgSAmkRmraDvGw1k+Z+8YfhsIN2M6tsDQAxPWzfFrcEt3Uj5fXKpilhCgXntGdTNA
+	 /GGqwNOtotzSKRpNXWP/EXLqQyh4QztiOkGYrEs4f+Wy8XcsxsW450G3thi8UVedet
+	 9bGMiGH20dMag==
+Date: Mon, 26 Feb 2024 13:08:41 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH v4 0/2] ASoC: codecs: tx-macro: correct TX SMIC MUXn
+ widgets on SM8350+
+Message-ID: <ba3d3695-cde9-4aac-83ac-ee8aa949d57e@sirena.org.uk>
+References: <20240226115925.53953-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 3/9] drm/vkms: write/update the documentation for pixel
- conversion and pixel write functions
-Content-Language: en-US
-To: Louis Chauvet <louis.chauvet@bootlin.com>,
- Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
- Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- pekka.paalanen@haloniitty.fi
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
- nicolejadeyee@google.com
-References: <20240226-yuv-v3-0-ff662f0994db@bootlin.com>
- <20240226-yuv-v3-3-ff662f0994db@bootlin.com>
-From: Arthur Grillo <arthurgrillo@riseup.net>
-In-Reply-To: <20240226-yuv-v3-3-ff662f0994db@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="I5r0FAbl9DxiaVsF"
+Content-Disposition: inline
+In-Reply-To: <20240226115925.53953-1-krzysztof.kozlowski@linaro.org>
+X-Cookie: Walk softly and carry a BFG-9000.
 
 
+--I5r0FAbl9DxiaVsF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 26/02/24 05:46, Louis Chauvet wrote:
-> Add some documentation on pixel conversion functions.
-> Update of outdated comments for pixel_write functions.
-> 
-> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
-> ---
->  drivers/gpu/drm/vkms/vkms_composer.c |  4 +++
->  drivers/gpu/drm/vkms/vkms_drv.h      | 13 ++++++++
->  drivers/gpu/drm/vkms/vkms_formats.c  | 58 ++++++++++++++++++++++++++++++------
->  3 files changed, 66 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
-> index c6d9b4a65809..5b341222d239 100644
-> --- a/drivers/gpu/drm/vkms/vkms_composer.c
-> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
-> @@ -189,6 +189,10 @@ static void blend(struct vkms_writeback_job *wb,
->  
->  	size_t crtc_y_limit = crtc_state->base.crtc->mode.vdisplay;
->  
-> +	/*
-> +	 * The planes are composed line-by-line. It is a necessary complexity to avoid poor
-> +	 * blending performance.
+On Mon, Feb 26, 2024 at 12:59:23PM +0100, Krzysztof Kozlowski wrote:
+> Hi,
+>=20
+> Changelog in individual patches.
 
-At this moment in the series, you have not yet reintroduced the
-line-by-line algorithm yet. Maybe it's better to add this comment when
-you do.
+When sending a cover letter please write something in that cover letter
+describing what the series is.
 
-Also, I think it's good to give more context, like:
-"The planes are composed line-by-line, instead of pixel-by-pixel"
+--I5r0FAbl9DxiaVsF
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Best Regards,
-~Arthur Grillo
+-----BEGIN PGP SIGNATURE-----
 
-> +	 */
->  	for (size_t y = 0; y < crtc_y_limit; y++) {
->  		fill_background(&background_color, output_buffer);
->  
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
-> index b4b357447292..18086423a3a7 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.h
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
-> @@ -25,6 +25,17 @@
->  
->  #define VKMS_LUT_SIZE 256
->  
-> +/**
-> + * struct vkms_frame_info - structure to store the state of a frame
-> + *
-> + * @fb: backing drm framebuffer
-> + * @src: source rectangle of this frame in the source framebuffer
-> + * @dst: destination rectangle in the crtc buffer
-> + * @map: see drm_shadow_plane_state@data
-> + * @rotation: rotation applied to the source.
-> + *
-> + * @src and @dst should have the same size modulo the rotation.
-> + */
->  struct vkms_frame_info {
->  	struct drm_framebuffer *fb;
->  	struct drm_rect src, dst;
-> @@ -52,6 +63,8 @@ struct vkms_writeback_job {
->   * vkms_plane_state - Driver specific plane state
->   * @base: base plane state
->   * @frame_info: data required for composing computation
-> + * @pixel_read: function to read a pixel in this plane. The creator of a vkms_plane_state must
-> + * ensure that this pointer is valid
->   */
->  struct vkms_plane_state {
->  	struct drm_shadow_plane_state base;
-> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
-> index 172830a3936a..cb7a49b7c8e7 100644
-> --- a/drivers/gpu/drm/vkms/vkms_formats.c
-> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
-> @@ -9,6 +9,17 @@
->  
->  #include "vkms_formats.h"
->  
-> +/**
-> + * packed_pixels_offset() - Get the offset of the block containing the pixel at coordinates x/y
-> + * in the first plane
-> + *
-> + * @frame_info: Buffer metadata
-> + * @x: The x coordinate of the wanted pixel in the buffer
-> + * @y: The y coordinate of the wanted pixel in the buffer
-> + *
-> + * The caller must be aware that this offset is not always a pointer to a pixel. If individual
-> + * pixel values are needed, they have to be extracted from the resulting block.
-> + */
->  static size_t pixel_offset(const struct vkms_frame_info *frame_info, int x, int y)
->  {
->  	struct drm_framebuffer *fb = frame_info->fb;
-> @@ -17,12 +28,13 @@ static size_t pixel_offset(const struct vkms_frame_info *frame_info, int x, int
->  			      + (x * fb->format->cpp[0]);
->  }
->  
-> -/*
-> - * packed_pixels_addr - Get the pointer to pixel of a given pair of coordinates
-> +/**
-> + * packed_pixels_addr() - Get the pointer to the block containing the pixel at the given
-> + * coordinates
->   *
->   * @frame_info: Buffer metadata
-> - * @x: The x(width) coordinate of the 2D buffer
-> - * @y: The y(Heigth) coordinate of the 2D buffer
-> + * @x: The x(width) coordinate inside the plane
-> + * @y: The y(height) coordinate inside the plane
->   *
->   * Takes the information stored in the frame_info, a pair of coordinates, and
->   * returns the address of the first color channel.
-> @@ -53,6 +65,13 @@ static int get_x_position(const struct vkms_frame_info *frame_info, int limit, i
->  	return x;
->  }
->  
-> +/*
-> + * The following  functions take pixel data from the buffer and convert them to the format
-> + * ARGB16161616 in out_pixel.
-> + *
-> + * They are used in the `vkms_compose_row` function to handle multiple formats.
-> + */
-> +
->  static void ARGB8888_to_argb_u16(u8 *src_pixels, struct pixel_argb_u16 *out_pixel)
->  {
->  	/*
-> @@ -145,12 +164,11 @@ void vkms_compose_row(struct line_buffer *stage_buffer, struct vkms_plane_state
->  }
->  
->  /*
-> - * The following  functions take an line of argb_u16 pixels from the
-> - * src_buffer, convert them to a specific format, and store them in the
-> - * destination.
-> + * The following functions take one argb_u16 pixel and convert it to a specific format. The
-> + * result is stored in @dst_pixels.
->   *
-> - * They are used in the `compose_active_planes` to convert and store a line
-> - * from the src_buffer to the writeback buffer.
-> + * They are used in the `vkms_writeback_row` to convert and store a pixel from the src_buffer to
-> + * the writeback buffer.
->   */
->  static void argb_u16_to_ARGB8888(u8 *dst_pixels, struct pixel_argb_u16 *in_pixel)
->  {
-> @@ -216,6 +234,14 @@ static void argb_u16_to_RGB565(u8 *dst_pixels, struct pixel_argb_u16 *in_pixel)
->  	*pixels = cpu_to_le16(r << 11 | g << 5 | b);
->  }
->  
-> +/**
-> + * Generic loop for all supported writeback format. It is executed just after the blending to
-> + * write a line in the writeback buffer.
-> + *
-> + * @wb: Job where to insert the final image
-> + * @src_buffer: Line to write
-> + * @y: Row to write in the writeback buffer
-> + */
->  void vkms_writeback_row(struct vkms_writeback_job *wb,
->  			const struct line_buffer *src_buffer, int y)
->  {
-> @@ -229,6 +255,13 @@ void vkms_writeback_row(struct vkms_writeback_job *wb,
->  		wb->pixel_write(dst_pixels, &in_pixels[x]);
->  }
->  
-> +/**
-> + * Retrieve the correct read_pixel function for a specific format.
-> + * The returned pointer is NULL for unsupported pixel formats. The caller must ensure that the
-> + * pointer is valid before using it in a vkms_plane_state.
-> + *
-> + * @format: 4cc of the format
-> + */
->  void *get_pixel_conversion_function(u32 format)
->  {
->  	switch (format) {
-> @@ -247,6 +280,13 @@ void *get_pixel_conversion_function(u32 format)
->  	}
->  }
->  
-> +/**
-> + * Retrieve the correct write_pixel function for a specific format.
-> + * The returned pointer is NULL for unsupported pixel formats. The caller must ensure that the
-> + * pointer is valid before using it in a vkms_writeback_job.
-> + *
-> + * @format: 4cc of the format
-> + */
->  void *get_pixel_write_function(u32 format)
->  {
->  	switch (format) {
-> 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXcjVgACgkQJNaLcl1U
+h9Covwf+NRfuyXK8kzRR1j16coiFwpz6tb4kpW28h/xI4oxMxLg+7Fo36uOmi5pY
+fxGsJqk8KWby7nw0SLcxsvRRBZ+fkHyotIrDcLjS+hgUMMA76vZcxafKEUmu2QVu
+NJnJAwFwMd5ghEmMhCy0K3ca6uilnO26t/FF1o2UsCErxCmpw7UuRkkajluFZfdA
+uyYhYC4D9YBAlbZCYbgpohAY4+QvnLjlYaP7t4nylBP1cXGBK973g7J96n2xBaE1
+AecjWOfjyg2Y7BkjpNWN+4akAH6y/bxUMnW7PpXbW/QTVIF05ZK11zfMW1ju8fhB
+46uWNSN3NH++6KUaF61n/rSwKJdxDw==
+=fq70
+-----END PGP SIGNATURE-----
+
+--I5r0FAbl9DxiaVsF--
 
