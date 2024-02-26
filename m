@@ -1,131 +1,83 @@
-Return-Path: <linux-kernel+bounces-81914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85020867C1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:33:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43173867C1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:34:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 409202943F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:33:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE4342906F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:34:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF76912BF12;
-	Mon, 26 Feb 2024 16:33:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE92012BE95;
+	Mon, 26 Feb 2024 16:34:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="th6fRVQ0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="3+y5CG6l"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 087321E519;
-	Mon, 26 Feb 2024 16:33:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16ADB53E3B
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:34:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708965190; cv=none; b=GIn1dS96DEEMkBLhz3M4Ygk8nMdfefeftDbeK2fFcHC4oqEusHbTxUF68eyY9xUjxE0vzdwNVydksFnhWwh+HEys6GZQknkBtOORymCJcrl1OSXl3yths7JVSu5kO7ampebKJMs8oko8iOs/pGahnxe3Cyn6n6aK3pK1VemW69c=
+	t=1708965254; cv=none; b=qOZ3g8EjAzriV3ers5DESEHBlty+ScCHzmx7vCkeflKa/mYDGfuQxFN9uNI/1IbSOsyP88EPAo7fb3KpjWdSLe+XWEum505qnucsL0szuQVy+J0Ee9lfCiHjmrMtkP60eHtOUeJuY99Ofl1PgZOpxCSnfpv0VsO/0LLZ8Te8nuk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708965190; c=relaxed/simple;
-	bh=yYV+NOkGvP4l7r0h+cUCgge3vZjLcjysa5VuSKBMHg8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=G9x0vTv6Pgpelqy0+fMoPJRfT8PCoOsr4qkRrG2WHsmzu/LYGzLl+7++wc1XWH26osbOnP1EqXBZBXxFHBRnVkeBZepCbT/KClb86ioYSOTtdnyzbr4N9pw3RTuzh2ngpk7nyE5QJcOUkuBq1Omrzxul6UCu5k3auHs8b4GgwsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=th6fRVQ0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D7F8C433F1;
-	Mon, 26 Feb 2024 16:33:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708965187;
-	bh=yYV+NOkGvP4l7r0h+cUCgge3vZjLcjysa5VuSKBMHg8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=th6fRVQ0Rb4Q2YNsbKLVS7GanbHdNDCZDcqWwqnBCz2Ug8QE40TEa87/G9R7j3967
-	 OXJ5CkHwRuTC661MYNSw0jkOpwurjfNhR1HFdySBSZLM2VWvOj7IrtX1yGs3VFR+5g
-	 FyBnvMvKIRmWM3zoEZr7+KRoVVsiQgFOwpSmcHZHv51r/yRyWUp+ToE5fkvu7rceIL
-	 Pl1jXJhHR1P6XvVNt/t4aOKhH+i533BTci1PISSiuQvEpHCdvqOQALiLC7XJynMBVp
-	 QFkP45AaLhO8gXjaII30HwFgd0GQIzCpJZNyk1W0QUG9MTrqf7penpnD5gVtZSWcNv
-	 Or+VYZ7/Mylsw==
-Date: Mon, 26 Feb 2024 10:33:05 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Matthew W Carlis <mattc@purestorage.com>,
-	Keith Busch <kbusch@kernel.org>, Lukas Wunner <lukas@wunner.de>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] PCI/DPC: Request DPC only if also requesting AER
-Message-ID: <20240226163305.GA202015@bhelgaas>
+	s=arc-20240116; t=1708965254; c=relaxed/simple;
+	bh=0Je/xyJNOmt8LnetPj4GAFEnGSht95roZ4AZfCYPybM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bTUNnSEME5hS+3DAtx8lE85Uf+g45E5tsWn5GNZsvJ8xUt1SEN1eA0/95PjgpCY2PedZER5bG3zHnXosxRQsAtubIS0qTGvhX9jBhpldHnoSPpMCi5y/AiwRPuqHNTyC9ivlbFEi3qFXhCECE5vgk9+3LXX/ZP37VtjMbwUVq7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=3+y5CG6l; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=YIKBIoMShyksYDWbzXo21USJBXSV3r0b6hDsivUJBHM=; b=3+y5CG6lqh+d9k/MMPUbfVA+Uu
+	8YpH7cuXvmT4tQpvddiNI+NX/BEEKPyXzqcDI9wmIpO0F2hMb7vQegJsNsXM0YYcZ7DbUxtMOtH5T
+	ES2n7uffSMRuln3Q/H2W1zlxevTPP22x7FX4utpgKqLSyOxe+OqVdWe/ja+cpCSeDRvdJ5cHVtdk+
+	e0sgndG4edrWVs1mJLFlF5SgQ27WKcEz293nglw3DgSAP/Ekcy9c9EPZrLZj62r2X8EjmvVv5XV6D
+	33EiADc3goyCjm3HJ7UIQF7gjPXIyPyTfOwoGLIZT4F5urxLxxJhrh8hxgLDd7y+EjkwLiea4NvXs
+	b7U81N1g==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1redvc-00000001grL-2EmP;
+	Mon, 26 Feb 2024 16:34:11 +0000
+Date: Mon, 26 Feb 2024 08:34:08 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: russ.weight@linux.dev, gregkh@linuxfoundation.org, rafael@kernel.org,
+	linux-kernel@vger.kernel.org, masahiroy@kernel.org
+Subject: Re: [PATCH] firmware_loader: Use init_utsname()->release
+Message-ID: <Zdy9gKO5Q6K4IE8J@bombadil.infradead.org>
+References: <20240222145819.96646-1-john.g.garry@oracle.com>
+ <Zddt-U-6SdxkxqmD@bombadil.infradead.org>
+ <51483aaf-d64a-4eee-b256-ab126483ad6c@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dfc9692b-1a9a-4d53-9e3e-33b2e88d0d37@linux.intel.com>
+In-Reply-To: <51483aaf-d64a-4eee-b256-ab126483ad6c@oracle.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On Mon, Feb 26, 2024 at 07:46:05AM -0800, Kuppuswamy Sathyanarayanan wrote:
+On Fri, Feb 23, 2024 at 02:29:19PM +0000, John Garry wrote:
+> > Could you also test the selftests to ensure nothing is broken ?
+> > 
+> > ./tools/testing/selftests/firmware/fw_run_tests.sh
 > 
-> On 2/26/24 7:18 AM, Bjorn Helgaas wrote:
-> > On Sun, Feb 25, 2024 at 11:46:07AM -0800, Kuppuswamy Sathyanarayanan wrote:
-> >> On 2/22/24 2:15 PM, Bjorn Helgaas wrote:
-> >>> From: Bjorn Helgaas <bhelgaas@google.com>
-> >>>
-> >>> When booting with "pci=noaer", we don't request control of AER, but we
-> >>> previously *did* request control of DPC, as in the dmesg log attached at
-> >>> the bugzilla below:
-> >>>
-> >>>   Command line: ... pci=noaer
-> >>>   acpi PNP0A08:00: _OSC: OS supports [ExtendedConfig ASPM ClockPM Segments MSI EDR HPX-Type3]
-> >>>   acpi PNP0A08:00: _OSC: OS now controls [PCIeHotplug SHPCHotplug PME PCIeCapability LTR DPC]
-> >>>
-> >>> That's illegal per PCI Firmware Spec, r3.3, sec 4.5.1, table 4-5, which
-> >>> says:
-> >>>
-> >>>   If the operating system sets this bit [OSC_PCI_EXPRESS_DPC_CONTROL], it
-> >>>   must also set bit 7 of the Support field (indicating support for Error
-> >>>   Disconnect Recover notifications) and bits 3 and 4 of the Control field
-> >>>   (requesting control of PCI Express Advanced Error Reporting and the PCI
-> >>>   Express Capability Structure).
-> >>
-> >> IIUC, this dependency is discussed in sec 4.5.2.4. "Dependencies
-> >> Between _OSC Control Bits".
-> >>
-> >> Because handling of Downstream Port Containment has a dependency on
-> >> Advanced Error Reporting, the operating system is required to
-> >> request control over Advanced Error Reporting (bit 3 of the Control
-> >> field) while requesting control over Downstream Port Containment
-> >> Configuration (bit 7 of the Control field). If the operating system
-> >> attempts to claim control of Downstream Port Containment
-> >> Configuration without also claiming control over Advanced Error
-> >> Reporting, firmware is required to refuse control of the feature
-> >> being illegally claimed and mask the corresponding bit.  Firmware is
-> >> required to maintain ownership of Advanced Error Reporting if it
-> >> retains ownership of Downstream Port Containment Configuration.  If
-> >> the operating system sets bit 7 of the Control field, it must set
-> >> bit 7 of the Support field, indicating support for the Error
-> >> Disconnect Recover event.
-> >
-> > So I guess you're suggesting that there are two defects here?
-> >
-> >   1) Linux requested DPC control without requesting AER control.
-> >
-> >   2) Platform granted DPC control when it shouldn't have.
-> >
-> > I do agree with that, but obviously we can only fix 1) in Linux.
-> 
-> Sorry, maybe my comment was not clear. I was just suggesting to
-> change the spec reference from r3.3, sec 4.5.1, table 4-5 to r3.3,
-> sec 4.5.2.4 "Dependencies Between _OSC Control Bits".
+> I am running this now, but it does not seem stable on a v6.8-rc5 baseline. I
+> am seeing hangs. Are there any known issues?
 
-The requirement that the OS request AER control whenever it requests
-DPC control is mentioned in both sec 4.5.1 and sec 4.5.2.4.  IMO sec
-4.5.2.4 should not exist because the per-bit table in sec 4.5.1 is a
-better place for implementation guidance.  4.5.2.4 is easy to miss,
-mostly redundant, and hard to integrate with the 4.5.1 table.
+I tested next-20240108 and so no issues.
 
-What advantage do you see for citing 4.5.2.4 instead of 4.5.1?  The
-only real difference I see is that it also points out a firmware
-problem.  I don't think the extra text is worth it since it doesn't
-motivate the Linux change.
+Lemme upgrade.
 
-Bjorn
+Note you also need /lib/udev/rules.d/50-firmware.rules removed if
+you have it.
+
+  Luis
 
