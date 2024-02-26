@@ -1,120 +1,174 @@
-Return-Path: <linux-kernel+bounces-80550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C55086695D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:26:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 990BD866961
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:30:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5EAF1F2509F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:26:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC1321C216A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:30:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26AF41B59D;
-	Mon, 26 Feb 2024 04:26:41 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3108A1B270
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 04:26:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4F1D1B7F6;
+	Mon, 26 Feb 2024 04:30:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pwhGE8rU"
+Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F34749440
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 04:30:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708921600; cv=none; b=JN5jZojENkwbLknr2BQydIxr9xNlvG+qnHzS5/m/IEk6h3SivHDJ628EVmXSx8xlPp3VyjVOPYgF9BmDo+r6aGOAKveYl96hLPTanw9CBO+grLVyk2ICEVgHKwMvB5VuR3QirByxc5bqFdUTwucDkRt+PYCRQqsK0tVAY/cd6Ag=
+	t=1708921820; cv=none; b=ZyokTic5FlCbUB1/yuzHBiNJaY/D7QQG0tMLmD77k/0ZwYnVah4vwXg8iJPcT6A9vDo6wvkclV5LEj1sBzxJHmovmQVsBE+tusd3FttDyanV+xWJdKGUWlcRWqCfCvFgOxO+x71CPmiVV1Ls7rem5kgkVTgrMj05tzyePVXjltI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708921600; c=relaxed/simple;
-	bh=kN/30hnphBLUZUDAalCs0F00ZD4Mmo4HCmywnZe6880=;
+	s=arc-20240116; t=1708921820; c=relaxed/simple;
+	bh=q8N4ZcUXLQWjQ9n2yT19kgIHaSLe4XIYihAb9YnZAWQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=V7GBxQhqBVy8xQHzimjWUy02TZi18hsRkl8y9JCetvd26bYJI7jU8GIKdHBJeyf6IvK45JbFFAOrf7Z0HK35PK+XYeP1LkamjUcP0dbohDJKJ5/snB49adWLbmSAfBg2FZ6Pym32mztsJ1Fvn0DYq/Kxoh8ZWukGIV2k7GFSFbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 74762C15;
-	Sun, 25 Feb 2024 20:27:17 -0800 (PST)
-Received: from [10.162.40.19] (a077893.blr.arm.com [10.162.40.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9D8C73F6C4;
-	Sun, 25 Feb 2024 20:26:36 -0800 (PST)
-Message-ID: <21ee46a1-5e5a-4e8a-b1ba-e7f26c39e325@arm.com>
-Date: Mon, 26 Feb 2024 09:56:33 +0530
+	 In-Reply-To:Content-Type; b=kIhzoHoRMrvPxVBlcJdeA/VY/Gn2SNZ68A5bJjea+pqaeijJMcNH/a5rWDDCP9NeFjni4PE0l9oJUnqhfZYvn+lOKVqUmq1G803mxXOKs1X+tD+hq9sKRzuNRzEQe0wdSzjtiDK3c92WoU1nGEZuEz7Uo7kW3tiOub41bX2ea+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pwhGE8rU; arc=none smtp.client-ip=95.215.58.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <82c2553f-822e-40c2-9bf8-433689b3669d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708921815;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RgfeyY+29BFgB7d+7DJ1UYGNHFedjbusiVsI4MvBh/g=;
+	b=pwhGE8rUZfqrhbBaHVTdxP6R0+Qbotfl/KmyO6S9f2kLDLjp97gOJagXfppJ2vf0gvzt1m
+	nfQjI5hqwaISbFLPsJzciGTNHQ/Jycs/iM33wT2vH4KNGBCuvNx1cbETqqjFDlv+aFQuR6
+	YjkJu18a/oY5TOrE7qcr/lc2Sdn2K+4=
+Date: Mon, 26 Feb 2024 12:30:01 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64/hw_breakpoint: Determine lengths from generic perf
- breakpoint macros
+Subject: Re: [PATCH] ceph: remove SLAB_MEM_SPREAD flag usage
 Content-Language: en-US
-To: linux-arm-kernel@lists.infradead.org
-Cc: broonie@kernel.org, mark.rutland@arm.com, Will Deacon <will@kernel.org>,
- Catalin Marinas <catalin.marinas@arm.com>, linux-kernel@vger.kernel.org
-References: <20240125094119.2542332-2-anshuman.khandual@arm.com>
- <20240226042249.4098185-1-anshuman.khandual@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20240226042249.4098185-1-anshuman.khandual@arm.com>
+To: Xiubo Li <xiubli@redhat.com>, idryomov@gmail.com, jlayton@kernel.org
+Cc: ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, vbabka@suse.cz, roman.gushchin@linux.dev,
+ Xiongwei.Song@windriver.com, Chengming Zhou <zhouchengming@bytedance.com>
+References: <20240224134715.829225-1-chengming.zhou@linux.dev>
+ <b6083c49-5240-40e3-a028-bb1ba63ccdd7@redhat.com>
+ <d91e3235-395a-4e63-8ace-c14dfaf0a4fd@linux.dev>
+ <35df81f5-feac-4373-87a3-d3a27ba9c9d4@redhat.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <35df81f5-feac-4373-87a3-d3a27ba9c9d4@redhat.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-
-
-On 2/26/24 09:52, Anshuman Khandual wrote:
-> Both platform i.e ARM_BREAKPOINT_LEN_X and generic i.e HW_BREAKPOINT_LEN_X
-> macros are used interchangeably to convert event->attr.bp_len and platform
-> breakpoint control arch_hw_breakpoint_ctrl->len. Let's be consistent while
-> deriving one from the other. This does not cause any functional changes.
+On 2024/2/26 12:23, Xiubo Li wrote:
 > 
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> This applies on v6.8-rc5
+> On 2/26/24 10:42, Chengming Zhou wrote:
+>> On 2024/2/26 09:43, Xiubo Li wrote:
+>>> Hi Chengming,
+>>>
+>>> Thanks for your patch.
+>>>
+>>> BTW, could you share the link of the relevant patches to mark this a no-op ?
+>> Update changelog to make it clearer:
+>>
+>> The SLAB_MEM_SPREAD flag used to be implemented in SLAB, which was
+>> removed as of v6.8-rc1, so it became a dead flag. And the series[1]
+>> went on to mark it obsolete to avoid confusion for users. Here we
+>> can just remove all its users, which has no functional change.
+>>
+>> [1] https://lore.kernel.org/all/20240223-slab-cleanup-flags-v2-1-02f1753e8303@suse.cz/
 > 
->  arch/arm64/kernel/hw_breakpoint.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
+> Thanks for your quick feedback.
 > 
-> diff --git a/arch/arm64/kernel/hw_breakpoint.c b/arch/arm64/kernel/hw_breakpoint.c
-> index 35225632d70a..1ab9fc865ddd 100644
-> --- a/arch/arm64/kernel/hw_breakpoint.c
-> +++ b/arch/arm64/kernel/hw_breakpoint.c
-> @@ -301,28 +301,28 @@ static int get_hbp_len(u8 hbp_len)
->  
->  	switch (hbp_len) {
->  	case ARM_BREAKPOINT_LEN_1:
-> -		len_in_bytes = 1;
-> +		len_in_bytes = HW_BREAKPOINT_LEN_1;
->  		break;
->  	case ARM_BREAKPOINT_LEN_2:
-> -		len_in_bytes = 2;
-> +		len_in_bytes = HW_BREAKPOINT_LEN_2;
->  		break;
->  	case ARM_BREAKPOINT_LEN_3:
-> -		len_in_bytes = 3;
-> +		len_in_bytes = HW_BREAKPOINT_LEN_3;
->  		break;
->  	case ARM_BREAKPOINT_LEN_4:
-> -		len_in_bytes = 4;
-> +		len_in_bytes = HW_BREAKPOINT_LEN_4;
->  		break;
->  	case ARM_BREAKPOINT_LEN_5:
-> -		len_in_bytes = 5;
-> +		len_in_bytes = HW_BREAKPOINT_LEN_5;
->  		break;
->  	case ARM_BREAKPOINT_LEN_6:
-> -		len_in_bytes = 6;
-> +		len_in_bytes = HW_BREAKPOINT_LEN_6;
->  		break;
->  	case ARM_BREAKPOINT_LEN_7:
-> -		len_in_bytes = 7;
-> +		len_in_bytes = HW_BREAKPOINT_LEN_7;
->  		break;
->  	case ARM_BREAKPOINT_LEN_8:
-> -		len_in_bytes = 8;
-> +		len_in_bytes = HW_BREAKPOINT_LEN_8;
->  		break;
->  	}
->  
+> BTW, I couldn't find this change in Linus' tree in the master and even the v6.8-rc1 tag, please see https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/include/linux/slab.h?h=master.
+> 
+> Did I miss something ? Or has this patch been merged ?
 
-Please ignore this. Wrong patch got picked up in the git send-email :)
+You're right, this patch hasn't been merged. But it's already a dead flag as of v6.8-rc1.
+
+Update changelog to make it clearer:
+
+The SLAB_MEM_SPREAD flag used to be implemented in SLAB, which was
+removed as of v6.8-rc1, so it became a dead flag since the commit
+16a1d968358a ("mm/slab: remove mm/slab.c and slab_def.h"). And the
+series[1] went on to mark it obsolete to avoid confusion for users.
+Here we can just remove all its users, which has no functional change.
+
+[1] https://lore.kernel.org/all/20240223-slab-cleanup-flags-v2-1-02f1753e8303@suse.cz/
+
+Does this look clearer to you? I can improve it if there is still confusion.
+
+Thanks!
+
+> 
+> - Xiubo
+> 
+>> Thanks!
+>>
+>>> Thanks
+>>>
+>>> - Xiubo
+>>>
+>>> On 2/24/24 21:47, chengming.zhou@linux.dev wrote:
+>>>> From: Chengming Zhou <zhouchengming@bytedance.com>
+>>>>
+>>>> The SLAB_MEM_SPREAD flag is already a no-op as of 6.8-rc1, remove
+>>>> its usage so we can delete it from slab. No functional change.
+>>>>
+>>>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+>>>> ---
+>>>>    fs/ceph/super.c | 18 +++++++++---------
+>>>>    1 file changed, 9 insertions(+), 9 deletions(-)
+>>>>
+>>>> diff --git a/fs/ceph/super.c b/fs/ceph/super.c
+>>>> index 5ec102f6b1ac..4dcbbaa297f6 100644
+>>>> --- a/fs/ceph/super.c
+>>>> +++ b/fs/ceph/super.c
+>>>> @@ -928,36 +928,36 @@ static int __init init_caches(void)
+>>>>        ceph_inode_cachep = kmem_cache_create("ceph_inode_info",
+>>>>                          sizeof(struct ceph_inode_info),
+>>>>                          __alignof__(struct ceph_inode_info),
+>>>> -                      SLAB_RECLAIM_ACCOUNT|SLAB_MEM_SPREAD|
+>>>> -                      SLAB_ACCOUNT, ceph_inode_init_once);
+>>>> +                      SLAB_RECLAIM_ACCOUNT|SLAB_ACCOUNT,
+>>>> +                      ceph_inode_init_once);
+>>>>        if (!ceph_inode_cachep)
+>>>>            return -ENOMEM;
+>>>>    -    ceph_cap_cachep = KMEM_CACHE(ceph_cap, SLAB_MEM_SPREAD);
+>>>> +    ceph_cap_cachep = KMEM_CACHE(ceph_cap, 0);
+>>>>        if (!ceph_cap_cachep)
+>>>>            goto bad_cap;
+>>>> -    ceph_cap_snap_cachep = KMEM_CACHE(ceph_cap_snap, SLAB_MEM_SPREAD);
+>>>> +    ceph_cap_snap_cachep = KMEM_CACHE(ceph_cap_snap, 0);
+>>>>        if (!ceph_cap_snap_cachep)
+>>>>            goto bad_cap_snap;
+>>>>        ceph_cap_flush_cachep = KMEM_CACHE(ceph_cap_flush,
+>>>> -                       SLAB_RECLAIM_ACCOUNT|SLAB_MEM_SPREAD);
+>>>> +                       SLAB_RECLAIM_ACCOUNT);
+>>>>        if (!ceph_cap_flush_cachep)
+>>>>            goto bad_cap_flush;
+>>>>          ceph_dentry_cachep = KMEM_CACHE(ceph_dentry_info,
+>>>> -                    SLAB_RECLAIM_ACCOUNT|SLAB_MEM_SPREAD);
+>>>> +                    SLAB_RECLAIM_ACCOUNT);
+>>>>        if (!ceph_dentry_cachep)
+>>>>            goto bad_dentry;
+>>>>    -    ceph_file_cachep = KMEM_CACHE(ceph_file_info, SLAB_MEM_SPREAD);
+>>>> +    ceph_file_cachep = KMEM_CACHE(ceph_file_info, 0);
+>>>>        if (!ceph_file_cachep)
+>>>>            goto bad_file;
+>>>>    -    ceph_dir_file_cachep = KMEM_CACHE(ceph_dir_file_info, SLAB_MEM_SPREAD);
+>>>> +    ceph_dir_file_cachep = KMEM_CACHE(ceph_dir_file_info, 0);
+>>>>        if (!ceph_dir_file_cachep)
+>>>>            goto bad_dir_file;
+>>>>    -    ceph_mds_request_cachep = KMEM_CACHE(ceph_mds_request, SLAB_MEM_SPREAD);
+>>>> +    ceph_mds_request_cachep = KMEM_CACHE(ceph_mds_request, 0);
+>>>>        if (!ceph_mds_request_cachep)
+>>>>            goto bad_mds_req;
+>>>>    
+> 
 
