@@ -1,118 +1,134 @@
-Return-Path: <linux-kernel+bounces-81156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D306E8672FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:24:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DFF018672FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:25:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3DCEB2280B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:35:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2BB62B2E855
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:36:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB3EA4E1D3;
-	Mon, 26 Feb 2024 10:24:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD6442CCD5;
+	Mon, 26 Feb 2024 10:27:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GxRNG7f7"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SLM+liUb"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 755694E1C8;
-	Mon, 26 Feb 2024 10:24:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1704817;
+	Mon, 26 Feb 2024 10:27:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708943075; cv=none; b=VAJ0KZHG3uJACeApaTHg/F+5h+MgDyz6wzVLbSnvjxRCEoEVuxMx346FEQpPjaXUZgGbjAdcF4wqCogoca1+thSQ80hmpoP1OWti2ABxPNjeNtBE7WoTsGnDV4JT8jDrLBCXCFvdR+XPJR6VAi6PYUW+BaSp2SNUR6ssZg+hK3E=
+	t=1708943252; cv=none; b=bzBsF8t0rCsydfR1bUNQwpEucRA/Zm9pXqDOyjTyZTkFq3Upk9dDdHeUfbQwMH1t2hCoGv7R+yuz23plQJziLx/TMoR9XJbCU3AsR97QuYglDlhExwpiFhZ/L6L9Q0l5oDUHur1ZpP/xcQdKkzGGTVM8kFOlCt2vbIm1zRjNeAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708943075; c=relaxed/simple;
-	bh=pESL1qSJf5euaSX9jLXoCFrMOPcz0jvgu2n/nLLwJ7g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pY13lZiJKpvxjC5uIS+IbO6lns+LP3F4dJbYFl/1qrqbNMrJ3DODENkNLD9GFySPJktKq+jqTzjUYGrDq2UHyGbUq3oegRzrLIN+FHlhHjs9ZuZv9KA2zOPDIO+mexkUELZHc13K1OsuOkz2J4vJbIZT7l2O00qqgUmxqUB2FRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GxRNG7f7; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51197ca63f5so4357745e87.1;
-        Mon, 26 Feb 2024 02:24:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708943072; x=1709547872; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=W3YYIxyO62mYogcdCUBdDIF6VWzDuO2ZuKHtLO17Pd4=;
-        b=GxRNG7f76SDBa6o886eN0dyhdzFgz4OyzaIQXhCxj7C0uEL6IwTctRBwKRUngnLqiT
-         t8uJNKBNweKK6GFnp6cPh/nilva+E+a34yXDrDAKy/qu2UXXfSo+Wi9uJTfMjAaPWiqk
-         1lmTo+YSEky6Sw3FCjtnImsLPoYMuZZjB3Bov19pWD3OMjLDORqeD0BDnUBHluWTJoj6
-         oAU5mtNjKpraSx5GZQuDsSFs8+Mfp9DTEm3HpUQIywwVY0q+8apUnBb00UtHKC3fWS8x
-         oi/CLEywaJeRUXF97KhFoF+Qd+S6k21LSDAasNHCJ5z3TgckG+ZYfMJuTZSXmOQwWXca
-         KvFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708943072; x=1709547872;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W3YYIxyO62mYogcdCUBdDIF6VWzDuO2ZuKHtLO17Pd4=;
-        b=esOLROLI5WAV//oeCDZK6AC5w72GhWpo4KykT21GULsTFY9DK2fjuc5g/5t+R+LOn+
-         g8Mfymhh0FbdMmyy/lxkZkKRv5OfuZzbiS3TaHuaT4iuezde0irqpY44o6v3cHuI1Mcl
-         Tva6zHcrNoARM1EEZMaaW/Za+mavYijcEI9R9hhq7FfiapdriZ9EDFfevEce4i85UZbI
-         HxVZ9Stp1MM7NuIQEbJcU/UgaA0qQQGGaRX4RfglKzpsu7lztlxYNbKtpYZDNf8JvXcY
-         6NXnVlednTRdl4R/zRE3E+1ezmdgQSC7RIcwNTL4ftREr0ncJ04x8vuctrVs8UqKPkBR
-         5aHA==
-X-Forwarded-Encrypted: i=1; AJvYcCV+YrcmcpufkV6LM6bvpJOLh2LngjF8CRtbDM1YsTLCZ020WFLJ2NoQPh7jntBKiIuVD19eqU6z9ekimhLz0Wm5OeTwHo57e9BJH30Y
-X-Gm-Message-State: AOJu0Yycv6vc8gScMavUpPnYJm66utDGOoDMouLSsSmJL8zHwsLdRY0u
-	PZ17LFSxxn/y6dbTG9KKNWXnNsfO80wLGXk8jzOlo02H3/fkj0MCafO+vCJy
-X-Google-Smtp-Source: AGHT+IFO1qm6qrvV4RN1D0OPylyPVVl6gLwLdkcPJx3lGllCprzwhQXmWHSbkAKWk0/6kEbJzOl6qA==
-X-Received: by 2002:a19:7619:0:b0:512:d907:3161 with SMTP id c25-20020a197619000000b00512d9073161mr3855938lff.66.1708943071372;
-        Mon, 26 Feb 2024 02:24:31 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id br35-20020a056512402300b0051186a82fc1sm789142lfb.171.2024.02.26.02.24.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 02:24:31 -0800 (PST)
-Date: Mon, 26 Feb 2024 13:24:28 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH] bus: bt1-apb: Remove duplicate include
-Message-ID: <v5lo4g5mp2d6y7butvf7snlnbf542rpdmyacmigvdqljbrdq23@sfuludqikigx>
-References: <20240226020927.111091-1-jiapeng.chong@linux.alibaba.com>
+	s=arc-20240116; t=1708943252; c=relaxed/simple;
+	bh=5L9QNoh0f+vRtiDXMwpI8NJgAp36BLuI/7gvCVOlhwg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=k5wRLfpm0zu6UOLLrFaczmPkCy2MmWgKpHTu+zXkfaAVj570FL69udg+FhW55alcyoX6z9wSM5YPPOwvDsWVuy/ZLknuIwbTpd5ntF8mMPWCxoNSbeMF8QNjR3M3RmZ8+8akIisQJwEiF4VlQTTkPYqSb0Pq8zWngwI82dK7Ops=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SLM+liUb; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708943250; x=1740479250;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=5L9QNoh0f+vRtiDXMwpI8NJgAp36BLuI/7gvCVOlhwg=;
+  b=SLM+liUbOTfMOALNwe8Lba5XSWMgMzJPJIXsWWFwHNTC/2ZkT4MzmZKJ
+   4hCzomsahoob/7WtRLTlbsk9nRh533Em6kH+OEDA/EBocCH5k41CKZLKP
+   VgzwPPyaHui480IxgbKeVpe+T2F8+bGP/Qky5kMVRF07JXiI+SSWgnfl+
+   uB4q2Z8QIwyZxQeNClV0h5jQ5JGsdTp6w1VaU6UbN9LbkMqIRQLfxtdKz
+   VmCSYcz/rws2eioqUyNlORq1NPbO7bJtx1eMwCk2SDDwXjzjhgcbWvlIQ
+   v+cILIeekRoR8D2aSV+j0DU1SB7HtvyNRpjw+Ja3LNI3KzNGKXBzqtBxC
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3060928"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="3060928"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 02:27:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="37629455"
+Received: from hibeid-mobl.amr.corp.intel.com (HELO localhost) ([10.252.46.254])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 02:27:24 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: David Laight <David.Laight@ACULAB.COM>, "'linux-kernel@vger.kernel.org'"
+ <linux-kernel@vger.kernel.org>, 'Linus
+ Torvalds' <torvalds@linux-foundation.org>, 'Netdev'
+ <netdev@vger.kernel.org>, "'dri-devel@lists.freedesktop.org'"
+ <dri-devel@lists.freedesktop.org>
+Cc: 'Jens Axboe' <axboe@kernel.dk>, "'Matthew Wilcox (Oracle)'"
+ <willy@infradead.org>, 'Christoph Hellwig' <hch@infradead.org>,
+ "'linux-btrfs@vger.kernel.org'" <linux-btrfs@vger.kernel.org>, 'Andrew
+ Morton' <akpm@linux-foundation.org>, 'Andy Shevchenko'
+ <andriy.shevchenko@linux.intel.com>, "'David S . Miller'"
+ <davem@davemloft.net>, 'Dan Carpenter' <dan.carpenter@linaro.org>, Rasmus
+ Villemoes <linux@rasmusvillemoes.dk>
+Subject: RE: [PATCH next v2 02/11] minmax: Use _Static_assert() instead of
+ static_assert()
+In-Reply-To: <824b0f70413d4570bcc97b39aad81a93@AcuMS.aculab.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <0fff52305e584036a777f440b5f474da@AcuMS.aculab.com>
+ <8059bc04da1a45bc810ac339a1129a4c@AcuMS.aculab.com>
+ <87v86bo9qi.fsf@intel.com>
+ <824b0f70413d4570bcc97b39aad81a93@AcuMS.aculab.com>
+Date: Mon, 26 Feb 2024 12:27:22 +0200
+Message-ID: <87sf1fo705.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240226020927.111091-1-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain
 
-Hi Jiapeng
+On Mon, 26 Feb 2024, David Laight <David.Laight@ACULAB.COM> wrote:
+> From: Jani Nikula
+>> Sent: 26 February 2024 09:28
+>> 
+>> On Sun, 25 Feb 2024, David Laight <David.Laight@ACULAB.COM> wrote:
+>> > The wrapper just adds two more lines of error output when the test fails.
+>> 
+>> There are only a handful of places in kernel code that use
+>> _Static_assert() directly. Nearly 900 instances of static_assert().
+>
+> How many of those supply an error message?
 
-On Mon, Feb 26, 2024 at 10:09:27AM +0800, Jiapeng Chong wrote:
-> ./drivers/bus/bt1-apb.c: linux/clk.h is included more than once.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8312
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+At a glance, not many.
 
-Acked-by: Serge Semin <fancer.lancer@gmail.com>
+>> Are we now saying it's fine to use _Static_assert() directly all over
+>> the place? People will copy-paste and cargo cult.
+>
+> Is that actually a problem?
 
--Serge(y)
+I don't know. I'm asking.
 
-> ---
->  drivers/bus/bt1-apb.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/bus/bt1-apb.c b/drivers/bus/bt1-apb.c
-> index e97c1d1c7578..595fb22b73e0 100644
-> --- a/drivers/bus/bt1-apb.c
-> +++ b/drivers/bus/bt1-apb.c
-> @@ -22,7 +22,6 @@
->  #include <linux/clk.h>
->  #include <linux/reset.h>
->  #include <linux/time64.h>
-> -#include <linux/clk.h>
->  #include <linux/sysfs.h>
->  
->  #define APB_EHB_ISR			0x00
-> -- 
-> 2.20.1.7.g153144c
-> 
+Usually when we have compiler wrappers, they're meant to be used instead
+of the thing being wrapped.
+
+This series deviates from that, so it would seem to fair to mention it
+slightly more verbosely than just stating what's being done.
+
+> The wrapper allows the error message to be omitted and substitutes
+> the text of the conditional.
+> But it isn't 'free'.
+> As well as slightly slowing down the compilation, the error messages
+> from the compiler get more difficult to interpret.
+>
+> Most of the static_assert() will probably never generate an error.
+> But the ones in min()/max() will so it is best to make them as
+> readable as possible.
+> (Don't even look as the mess clang makes....)
+
+I'm not arguing any of this. :)
+
+
+BR,
+Jani.
+
+
+-- 
+Jani Nikula, Intel
 
