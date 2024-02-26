@@ -1,71 +1,72 @@
-Return-Path: <linux-kernel+bounces-80516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B0A5866914
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:05:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B234B866915
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:05:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA11F1F26D36
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:05:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41F2CB23DD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:05:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67EF14C631;
-	Mon, 26 Feb 2024 03:59:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF394D5A2;
+	Mon, 26 Feb 2024 03:59:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="DittovyS"
+	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="CYkNyqoM"
 Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D08E1CD3D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC99045034
 	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:59:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708919966; cv=none; b=ld6sF9Ua0l37kZurbGG8eJF2tUGZKyqgzVpD67i/5nJURSeQHOZdRJWabGJE7V7E2h/OjNnFiFmimKuqw9WVnJ3k1iaRlIaKYHqQwe10uRonyDCYjkdCN1yjQaC+U4ZmT/L4lV0uYpyOI0rYAf5xrtI5VbI+a9diN2oXaBfbedc=
+	t=1708919967; cv=none; b=WMvgWVAbC8BNclgSjkOxEugNOiyW9alOwfPlaeD1jn5PlVxJqdJEIi8T1odThM7kH7lmkhSlebjitwtuWdsa/SAfB8Gposd9pQC4Mqg6Rhs59svxTd4MEGU1KRQrffVK9O7wO++G+iDhgm6i9sAntIBpJAK4/2pK0SgzjugB7r4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708919966; c=relaxed/simple;
-	bh=rn1uhe9kSvdRl3bR99SI2tz9xfp7AgAFtEZNJ3Cph+8=;
+	s=arc-20240116; t=1708919967; c=relaxed/simple;
+	bh=aL+J9YpPCTXZjblY7lvooQHdP2S0Wbtur0yP78NWTF0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dVS0aKGj76o/WHzPs31aIADguc1ed3a4RV/YDOmnAVyyn+5RXZgmbXaEDw96BNRTjjLl0O4UNjgHZ2JxcXak3rsa7+PiJe3awcCR0UORibQcAEvCvrutgn+4VPJvG6rBLRY6xEIjS3XzuSjw4DJq2jR96wjufRceGy+Lq2Ta8Hs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net; spf=pass smtp.mailfrom=darkphysics.net; dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b=DittovyS; arc=none smtp.client-ip=209.85.214.182
+	 MIME-Version; b=D9G+BJeFpCRKkMs2ITT1OAUlMT+6Atk3bdeq0NtViiKAjH6ikZ3z3vvgNBFZ87uB5rgsAQk6v8b6EmKaXU+Vau6HCrx9ldg/lVvlCVj9ofx6izc7uCZhUeaxR2NhkbkgTpBsRRTkhdXr6IALlbaDVGeu9oSzVyCr+DdQzvltGs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net; spf=pass smtp.mailfrom=darkphysics.net; dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b=CYkNyqoM; arc=none smtp.client-ip=209.85.214.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=darkphysics.net
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d51ba18e1bso34688055ad.0
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1dc75972f25so19768045ad.1
         for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 19:59:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=darkphysics.net; s=google; t=1708919964; x=1709524764; darn=vger.kernel.org;
+        d=darkphysics.net; s=google; t=1708919965; x=1709524765; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pFPZDGKeKZyaOMKlGQ3oMS5Xrp30OXpLH+RSaWh7syU=;
-        b=DittovySr1KvV4Mi3U7gE3ZL6NqqmLMG50EfsrkEPEU8ONFfD3SxnVdujEfPIUsSN2
-         /wfYtUrfalIaZrL7AeMUKFTpLn9cchR5hKerliaa3YBRm0GIrUFUIY9apts8aBg67UhC
-         0CyEnTwmgI+W6/Az0ZSIQKWze2ZGT8I0sTuxK2N4Mp1+exuSVToIo+lobCONofz7sep2
-         EqXq6di+c03qf9q3NJnHKu+2poasu6IxEnlBuaslbC5XbF7Osk+7DONXYzbtGRMn2EU4
-         D0fcXh3HBLTOv6e4F6fQp3CLHvVNfVxGa+wQmEtuwhCuSToIdPSVHmdy5bgMNfKR0vWU
-         QtuA==
+        bh=EiLiFMfWKCcVhhDB/j6NQ7MKUt9nWfWJUvYg2/4dEk0=;
+        b=CYkNyqoMtedV2f4XjNHHb7mF/vUtz1xAKRENAzEPGq+Ij8C/3dAH0mCtlsO8XXwDut
+         /5OO415elDYFLgup08PiCPwAvwxCWKrlsKBckdInZnKN7QKH2VBJ/qQMtvz1hmlbtTAa
+         wM6tv3n0FWwxp9RbGuOFM6xRoh816QNquMOTJP4Es2zw55ODQdxk92ZX8qsddy78w5n/
+         Ftln9WARkHCLoSIcaiZheT5xUo79MXE+fMOhMXSwjIzo4yY42ln73KXYf/5pi0h7GHOW
+         H3QebflN66RRhI3mC+yfx+b7pbkLdzXJFG2ngRpbMcntcAqH5D3DvFZlhcf6/Np/WDUx
+         +RuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708919964; x=1709524764;
+        d=1e100.net; s=20230601; t=1708919965; x=1709524765;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pFPZDGKeKZyaOMKlGQ3oMS5Xrp30OXpLH+RSaWh7syU=;
-        b=bvK1DUNn6ZyAPoxS+irM/SEwZjWm953KXp0+J0RZGbMWp6op15qRBaGSiAGtSIyDu9
-         WCyNbBp/XBXjz4IU88bNyVFV3h9ZUJIOb85gHtE/pPimbLpz7VUkQingFd0NCUTxfJ/O
-         /Ms6JUavw+qcErkr9YghJ0LomI9OfRYNKPSM9gyzcTNu4VBmLPWkgT721IBGyYBLSrXH
-         qqy6oNz+A51v4YPAw2JZM91EQLQU7v63LAYbpz50P+ZmZyz5V9ZG3sQ3BeynJ6xBvY3e
-         K7E1zYwf3kCjNklLkSMVrc2EQxfUmqRJLJuyDU6salqkRbukHY6mpzA/effml9fTe7Ay
-         0drA==
-X-Forwarded-Encrypted: i=1; AJvYcCU3GoeNIwrndiSJryWNv7pFYlGNh4B8exR5QsLlAe+RQ2pTPxzsNCzealryMvs6d054L1QOzRyoQ9/qPkkH9dRx5bosqWeHCbkYRmRE
-X-Gm-Message-State: AOJu0YycpMKJiqMKxzNBlm0zjxTHF5nP27PP0sBrRHriwC/811qLJqdp
-	hBCxZCxjPJyTXr1z0n9fkhIwZKB/iELaHrBpECl9crgu7V5b4xuZKX3t4LqA4go=
-X-Google-Smtp-Source: AGHT+IHS1JmNpzgLjr+HYVQG6oOnedLl/aKpZ55VAo3nq6VEHO3q/i/7RTUC/v94uYQ/SZ0D5CB0ng==
-X-Received: by 2002:a17:903:2450:b0:1db:bbe0:9e9 with SMTP id l16-20020a170903245000b001dbbbe009e9mr8731405pls.58.1708919964699;
-        Sun, 25 Feb 2024 19:59:24 -0800 (PST)
+        bh=EiLiFMfWKCcVhhDB/j6NQ7MKUt9nWfWJUvYg2/4dEk0=;
+        b=nm3c1PeGw4JJ2/c2o7+GpV/tkE672CMA3btDbh6Y+G39Afrz9F2COKawb27DVmLdaf
+         juZFAN3MRq+OvzosbYmKzPXlOuAkMKZPzUCo5PiAz38F8Yggrxbo0CdTWrMcOCTyPuNc
+         zOTBWbCT5e3QkPZXyCG4Q997SdbQxcmJ+9g5ujPaWjCV1fJRzv3MBRXxzIhhXlBRCzb7
+         E9Fpm+BeoOcw2NHw4ffp1tcqouXL8NvcjOhvaxFbm+RXfhFjXSwabi3FSiY0fVGEgq2S
+         bNG/yJNe4caHT60un9eUgwHf+UcLn3+5TUEYurSuy5Fa5Lt28amFRe+1N6ag0t8diPLt
+         fXEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWt6QrvdJklvH5GzGQOjHjk5wC7z7mDeEFDCrZRXRMVJZCte+61Onp7078Tx+2Qkmh9XpazubVEErRsVuX4FpynoS+ceZq2YhmuhaTH
+X-Gm-Message-State: AOJu0Yy5T9T8QEXJUem2L9GGNQb5EKe2wXHMGlylEFU8P9GBh4TTscrb
+	kSMvKDKHclN1XRcOIcCykgmtPuJLnDxFWe7+xXEZ65KPEI4rKk3l17l59QMPJnLdrPN7eBRW1Fu
+	U
+X-Google-Smtp-Source: AGHT+IGN3aK7O320K7eb8MOrqC1J7wETIlCGcBQj5npNjt6jSljmKpzLvD3ApAiqfFMyQJH6CruhYQ==
+X-Received: by 2002:a17:902:e842:b0:1dc:78bc:ad0a with SMTP id t2-20020a170902e84200b001dc78bcad0amr7007029plg.36.1708919965391;
+        Sun, 25 Feb 2024 19:59:25 -0800 (PST)
 Received: from oatmeal.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
         by smtp.gmail.com with ESMTPSA id iy13-20020a170903130d00b001da105d6a83sm2893426plb.224.2024.02.25.19.59.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Feb 2024 19:59:24 -0800 (PST)
+        Sun, 25 Feb 2024 19:59:25 -0800 (PST)
 From: Tree Davies <tdavies@darkphysics.net>
 To: gregkh@linuxfoundation.org,
 	philipp.g.hortmann@gmail.com,
@@ -73,9 +74,9 @@ To: gregkh@linuxfoundation.org,
 Cc: linux-staging@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	Tree Davies <tdavies@darkphysics.net>
-Subject: [PATCH 5/8] Staging: rtl8192e: Rename goto OnADDBAReq_Fail
-Date: Sun, 25 Feb 2024 19:59:12 -0800
-Message-Id: <20240226035915.370478-6-tdavies@darkphysics.net>
+Subject: [PATCH 6/8] Staging: rtl8192e: Rename goto OnADDBARsp_Reject
+Date: Sun, 25 Feb 2024 19:59:13 -0800
+Message-Id: <20240226035915.370478-7-tdavies@darkphysics.net>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240226035915.370478-1-tdavies@darkphysics.net>
 References: <20240226035915.370478-1-tdavies@darkphysics.net>
@@ -87,49 +88,65 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Rename goto OnADDBAReq_Fail -> on_add_ba_req_fail
+Rename goto OnADDBARsp_Reject -> on_add_ba_rsp_reject
 to fix checkpatch warning Avoid CamelCase.
 
 Signed-off-by: Tree Davies <tdavies@darkphysics.net>
 ---
- drivers/staging/rtl8192e/rtl819x_BAProc.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/staging/rtl8192e/rtl819x_BAProc.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtl819x_BAProc.c b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-index c0006daa75ec..a3a2fe72d644 100644
+index a3a2fe72d644..0581ed1e9ed1 100644
 --- a/drivers/staging/rtl8192e/rtl819x_BAProc.c
 +++ b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-@@ -251,13 +251,13 @@ int rtllib_rx_add_ba_req(struct rtllib_device *ieee, struct sk_buff *skb)
- 			    "Failed to reply on ADDBA_REQ as some capability is not ready(%d, %d)\n",
- 			    ieee->current_network.qos_data.active,
- 			    ieee->ht_info->current_ht_support);
--		goto OnADDBAReq_Fail;
-+		goto on_add_ba_req_fail;
+@@ -334,14 +334,14 @@ int rtllib_rx_add_ba_rsp(struct rtllib_device *ieee, struct sk_buff *skb)
+ 			    ieee->ht_info->current_ht_support,
+ 			    ieee->ht_info->current_ampdu_enable);
+ 		reason_code = DELBA_REASON_UNKNOWN_BA;
+-		goto OnADDBARsp_Reject;
++		goto on_add_ba_rsp_reject;
  	}
+ 
  	if (!rtllib_get_ts(ieee, (struct ts_common_info **)&ts, dst,
- 			   (u8)(ba_param_set->field.tid), RX_DIR, true)) {
- 		rc = ADDBA_STATUS_REFUSED;
+ 			   (u8)(ba_param_set->field.tid), TX_DIR, false)) {
  		netdev_warn(ieee->dev, "%s(): can't get TS\n", __func__);
--		goto OnADDBAReq_Fail;
-+		goto on_add_ba_req_fail;
+ 		reason_code = DELBA_REASON_UNKNOWN_BA;
+-		goto OnADDBARsp_Reject;
++		goto on_add_ba_rsp_reject;
  	}
- 	ba = &ts->rx_admitted_ba_record;
  
-@@ -265,7 +265,7 @@ int rtllib_rx_add_ba_req(struct rtllib_device *ieee, struct sk_buff *skb)
- 		rc = ADDBA_STATUS_INVALID_PARAM;
- 		netdev_warn(ieee->dev, "%s(): BA Policy is not correct\n",
+ 	ts->add_ba_req_in_progress = false;
+@@ -358,7 +358,7 @@ int rtllib_rx_add_ba_rsp(struct rtllib_device *ieee, struct sk_buff *skb)
+ 			    "%s(): ADDBA Rsp. BA invalid, DELBA!\n",
  			    __func__);
--		goto OnADDBAReq_Fail;
-+		goto on_add_ba_req_fail;
- 	}
+ 		reason_code = DELBA_REASON_UNKNOWN_BA;
+-		goto OnADDBARsp_Reject;
++		goto on_add_ba_rsp_reject;
+ 	} else {
+ 		netdev_dbg(ieee->dev,
+ 			   "%s(): Recv ADDBA Rsp. BA is admitted! Status code:%X\n",
+@@ -371,7 +371,7 @@ int rtllib_rx_add_ba_rsp(struct rtllib_device *ieee, struct sk_buff *skb)
+ 			ts->add_ba_req_delayed = true;
+ 			deactivate_ba_entry(ieee, admitted_ba);
+ 			reason_code = DELBA_REASON_END_BA;
+-			goto OnADDBARsp_Reject;
++			goto on_add_ba_rsp_reject;
+ 		}
  
- 	rtllib_FlushRxTsPendingPkts(ieee, ts);
-@@ -287,7 +287,7 @@ int rtllib_rx_add_ba_req(struct rtllib_device *ieee, struct sk_buff *skb)
+ 		admitted_ba->dialog_token = *dialog_token;
+@@ -384,12 +384,12 @@ int rtllib_rx_add_ba_rsp(struct rtllib_device *ieee, struct sk_buff *skb)
+ 		ts->add_ba_req_delayed = true;
+ 		ts->disable_add_ba = true;
+ 		reason_code = DELBA_REASON_END_BA;
+-		goto OnADDBARsp_Reject;
++		goto on_add_ba_rsp_reject;
+ 	}
  
  	return 0;
  
--OnADDBAReq_Fail:
-+on_add_ba_req_fail:
+-OnADDBARsp_Reject:
++on_add_ba_rsp_reject:
  	{
  		struct ba_record BA;
  
