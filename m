@@ -1,49 +1,82 @@
-Return-Path: <linux-kernel+bounces-81246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81247-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC0B8867290
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:05:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B279867294
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:06:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 787F22896DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:05:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B90F1C24ED7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:06:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 684421DA20;
-	Mon, 26 Feb 2024 11:05:31 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B80591D52D
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:05:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14AA71CF92;
+	Mon, 26 Feb 2024 11:06:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="p1MrETxd"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F7DC1B966;
+	Mon, 26 Feb 2024 11:06:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708945530; cv=none; b=CvrLMpzw04kNcN8QaTRfpC7Hp476r9MD04u+CybUj1SPqqbrbUhGv3wqgFeg9Xb3taW6P+I4YEhwZ/wH6PU3dFhE6twXGlGcXBYA4NQ/b9unhttQ136Up0rEW4SlXaoyIWoo/amc5SGxswPwJXmGIJukAiB7MQ6nZJxBEU8UvOU=
+	t=1708945583; cv=none; b=dQaCCIRWAAxHP2CHA33RFDx7YAvfw1qs42ghBVoa7xb9TevFSrKzvDPCNoCm+lRZ9yXj/0+sqa7f5RUd6zOeg38j7Skjnk1xhMp7E9qjVPddRS+AQTWYt0DS8xIYM/1c8k36UyIWVcQfZZ4+pgPkuw/PmJawaNdezZNjiYkTsmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708945530; c=relaxed/simple;
-	bh=Dpvh1u6uIHD3zL72KLsDUAqLNGDPN7ZtBbRRizpzWpw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cFfQ468zJgZDz7mKOPkaPZVvrpMh4mZtPyGHvEP5Zk/zHrqBSMKrOLbep6G661CywVEJd/Wqy9AU3jL1LphWLVL6tAy8XFIUB7RqoccrFeAEA4nRNVG4iCDFIP25ABmMKaV33+GY04i7CsiJeTsX+dphR0Y09c5ZHsRxKoyptLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A4B9CDA7;
-	Mon, 26 Feb 2024 03:06:03 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.68.53])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC98B3F6C4;
-	Mon, 26 Feb 2024 03:05:23 -0800 (PST)
-Date: Mon, 26 Feb 2024 11:04:46 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org,
-	broonie@kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/hw_breakpoint: Determine lengths from generic perf
- breakpoint macros
-Message-ID: <ZdxwTkUALQfqjagf@FVFF77S0Q05N>
-References: <20240223113102.4027779-1-anshuman.khandual@arm.com>
- <20240223125224.GC10641@willie-the-truck>
- <1901fadb-1d71-4374-be8c-00935bb27854@arm.com>
+	s=arc-20240116; t=1708945583; c=relaxed/simple;
+	bh=WHdbQnlfcOYTc10sxSqdjWKBT+rdFQUDsUt4B65OTok=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nyrMZg/jy31D+tfOZnQqBlW9shit5N6MZ986/WZJWx7GHvpGEuiROWQ2nQ9/5633VUHeuKQAu8ZWdI8j3n3YrYIbjr6dfQwUdDsduiMzvljY8ywkgHyDIgs1eiV4GmP/1fpOqrPmzPIiUAiqvraBOsViLMj4fe43WVw521jFu68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=p1MrETxd; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=WHdbQnlfcOYTc10sxSqdjWKBT+rdFQUDsUt4B65OTok=; b=p1MrETxdo6Glkfbn+2vVS2RuEW
+	rinH2/GnYT9ViW/GlytDBwgUUtTmnis3fU16E3YJmEwQC9ppSayw//xMK1gh+p4YTgQjTMFqJHEq9
+	EGHfRR1+FVVXnJBKnyD5CGzrLHZzFN8poH8dC8IOvgs/LoXfchH+F3fORvbr2AItKgENhoT9g8Dau
+	OTvOqDvrbmYPADRsOV309CtAb8CVNuHcxv5itsGIy4yAQHEKYP1h/QtwFTlQOcl48BVWZwdRfhtWM
+	5j+LF4wnMJO5aqsNE4p3awTDT0ZraCyFA+kgCejP6UdgG9Dot1X7WSItWQtst1GF1lj+UpLVZen1r
+	2VWNAtIw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1reYoF-00000000Gzk-46br;
+	Mon, 26 Feb 2024 11:06:11 +0000
+Date: Mon, 26 Feb 2024 03:06:11 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Christoph Hellwig <hch@infradead.org>, Will Deacon <will@kernel.org>,
+	Quentin Perret <qperret@google.com>,
+	Chris Goldsworthy <quic_cgoldswo@quicinc.com>,
+	Android KVM <android-kvm@google.com>,
+	Patrick Daly <quic_pdaly@quicinc.com>,
+	Alex Elder <elder@linaro.org>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Murali Nalajal <quic_mnalajal@quicinc.com>,
+	Trilok Soni <quic_tsoni@quicinc.com>,
+	Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>,
+	Carl van Schaik <quic_cvanscha@quicinc.com>,
+	Philip Derrin <quic_pderrin@quicinc.com>,
+	Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Fuad Tabba <tabba@google.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org
+Subject: Re: [PATCH v17 19/35] arch/mm: Export direct {un,}map functions
+Message-ID: <Zdxwo0abvklfam-Z@infradead.org>
+References: <20240222-gunyah-v17-0-1e9da6763d38@quicinc.com>
+ <20240222-gunyah-v17-19-1e9da6763d38@quicinc.com>
+ <ZdhEtH7xzbzdhS2j@infradead.org>
+ <20240223071006483-0800.eberman@hu-eberman-lv.qualcomm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,78 +85,10 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1901fadb-1d71-4374-be8c-00935bb27854@arm.com>
+In-Reply-To: <20240223071006483-0800.eberman@hu-eberman-lv.qualcomm.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Mon, Feb 26, 2024 at 08:19:39AM +0530, Anshuman Khandual wrote:
-> On 2/23/24 18:22, Will Deacon wrote:
-> > On Fri, Feb 23, 2024 at 05:01:02PM +0530, Anshuman Khandual wrote:
-> >> Both platform i.e ARM_BREAKPOINT_LEN_X and generic i.e HW_BREAKPOINT_LEN_X
-> >> macros are used interchangeably to convert event->attr.bp_len and platform
-> >> breakpoint control arch_hw_breakpoint_ctrl->len. Let's be consistent while
-> >> deriving one from the other. This does not cause any functional changes.
-> >>
-> >> Cc: Will Deacon <will@kernel.org>
-> >> Cc: Mark Rutland <mark.rutland@arm.com>
-> >> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> >> Cc: linux-arm-kernel@lists.infradead.org
-> >> Cc: linux-kernel@vger.kernel.org
-> >> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> >> ---
-> >> This applies on v6.8-rc5
-> >>
-> >>  arch/arm64/kernel/hw_breakpoint.c | 16 ++++++++--------
-> >>  1 file changed, 8 insertions(+), 8 deletions(-)
-> >>
-> >> diff --git a/arch/arm64/kernel/hw_breakpoint.c b/arch/arm64/kernel/hw_breakpoint.c
-> >> index 35225632d70a..1ab9fc865ddd 100644
-> >> --- a/arch/arm64/kernel/hw_breakpoint.c
-> >> +++ b/arch/arm64/kernel/hw_breakpoint.c
-> >> @@ -301,28 +301,28 @@ static int get_hbp_len(u8 hbp_len)
-> >>  
-> >>  	switch (hbp_len) {
-> >>  	case ARM_BREAKPOINT_LEN_1:
-> >> -		len_in_bytes = 1;
-> >> +		len_in_bytes = HW_BREAKPOINT_LEN_1;
-> > 
-> > I don't think we should do this. The HW_BREAKPOINT_LEN_* definitions are
-> > part of the user ABI and, although they correspond to the length in bytes,
-> > that's not necessarily something we should rely on.
-> 
-> Why should not we rely on the user ABI macros if these byte lengths were
-> initially derived from them. 
+The point is that we can't we just allow modules to unmap data from
+the kernel mapping, no matter how noble your intentions are.
 
-Why should we change the clear:
-	
-	len_in_bytes = 1;
-
-.. to the longer, and less clear:
-
-	len_in_bytes = HW_BREAKPOINT_LEN_1;
-
-.. ?
-
-> But also there are similar conversions in arch_bp_generic_fields().
-
-Those are specifically for converting from the rch_hw_breakpoint_ctrl encodings
-to the perf_event_attr encodings. There we don't care about the specific value
-of the byte, just that we're using the correct encoding.
-
-> These hard coded raw byte length numbers seems cryptic, where as in reality
-> these are just inter converted from generic HW breakpoints lengths.
-
-There are three distinct concepts here:
-
-1. The length in bytes, as returned above by get_hbp_len()
-
-2. The length as encoded in the ARM_BREAKPOINT_LEN_* encoding
-
-3. The length as encoded in the HW_BREAKPOINT_LEN_* encoding.
-
-I think you're arguing that since 1 and 3 happen to have the values we should
-treat them as the same thing. I think that Will and I believe that they should
-be kept distinct because they are distinct concepts.
-
-I don't think this needs to change, and can be left as-is.
-
-Mark.
 
