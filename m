@@ -1,61 +1,55 @@
-Return-Path: <linux-kernel+bounces-81251-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81252-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64E7D8672A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:08:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16DA18672AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:09:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F7BA28BA3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:08:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDA6D1F282B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:09:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EFF71EB55;
-	Mon, 26 Feb 2024 11:08:33 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D42E11D54F;
+	Mon, 26 Feb 2024 11:09:42 +0000 (UTC)
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [195.130.137.89])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C3161EB2B
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:08:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EB8C1CD35
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:09:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.89
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708945712; cv=none; b=hsQ6LMLxkwArUkLheWwIw/i86Hh1GlO10SK1DOyZaHz0W6O2dwVRRqyCllFo4TD55Om44nm1vp2ypZsu0kqOfgeLB/hL0r61YGWAeO/eR0lXkW0Arb0GL+4Zd6HgngIzqU/xVWQi6bjfXu6MQOObhkzo7D39skO+yOjjBLjhO8s=
+	t=1708945782; cv=none; b=taeJ0q+u7zVBm6TllDW7gvgV/EE4Ws9o8b+NhIu2IQB7+V8EMhH76IjjNNgQ0nsDF7w8g1d9UcX06TdRyDA3AvS6brkYwujc1dw2zxrwhZbQ1GmuuG5L3orYrW4d32dQBOKmGN91loTTQ9H0MhTk01DL1VoVuDOSG4pCqVJeCcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708945712; c=relaxed/simple;
-	bh=qr8hL1g7sAkBTasKdRNUXXfQV4F3/3ixv1b1xAVXtwo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mONTotKO4LtyWwE/jGW7gaB77tt6MMwclYg69pKUBMnfkcMhalOkXR48I0So56uFgdZi9sDewxEFkOuEsOh/MA3pjtF/sWq2y3ovEC2i91pPHCLFTpKa44fz0snocFgR0Btu85V3OPODizEBfDcV6IsXnQ11L+kJsfiWvtieiTY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1reYqM-00077Z-Uo; Mon, 26 Feb 2024 12:08:22 +0100
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1reYqL-002yub-BQ; Mon, 26 Feb 2024 12:08:21 +0100
-Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1reYqL-008rqN-0w;
-	Mon, 26 Feb 2024 12:08:21 +0100
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Woojung Huh <woojung.huh@microchip.com>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
-	kernel@pengutronix.de,
+	s=arc-20240116; t=1708945782; c=relaxed/simple;
+	bh=QfAbmpSdPxk3PLAQItfucxGrrmocc9C9SjRrIqs0/z8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GLtC/RFl0APafKckrfRbysUf+M5c0JS6NK4/5bWBIuHDEXKceHloMG35HJgx+z56HDar9CM9+BpxttU2INdhi2A0/g2oHYFeGQlFq+HFADu1vG5DxIC4FvZDHEOtG6ZsGPCs+l1k7ikgttd9Us27xF8b8jsp0uHVcUBIWbm6ROE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.89
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:7662:e968:947d:f3d0])
+	by laurent.telenet-ops.be with bizsmtp
+	id rn9X2B00L5Kh3Z501n9XlV; Mon, 26 Feb 2024 12:09:31 +0100
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1reYrK-001lYB-29;
+	Mon, 26 Feb 2024 12:09:31 +0100
+Received: from geert by rox.of.borg with local (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1reYrT-004NKE-Ii;
+	Mon, 26 Feb 2024 12:09:31 +0100
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+To: Antonios Motakis <a.motakis@virtualopensystems.com>,
+	Eric Auger <eric.auger@redhat.com>,
+	Alex Williamson <alex.williamson@redhat.com>
+Cc: kvm@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	UNGLinuxDriver@microchip.com
-Subject: [PATCH net v1 1/1] net: lan78xx: fix "softirq work is pending" error
-Date: Mon, 26 Feb 2024 12:08:20 +0100
-Message-Id: <20240226110820.2113584-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
+	Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] vfio: amba: Rename pl330_ids[] to vfio_amba_ids[]
+Date: Mon, 26 Feb 2024 12:09:26 +0100
+Message-Id: <1d1b873b59b208547439225aee1f24d6f2512a1f.1708945194.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,36 +57,41 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Disable BH around the call to napi_schedule() to avoid following
-error:
-NOHZ tick-stop error: local softirq work is pending, handler #08!!!
+Obviously drivers/vfio/platform/vfio_amba.c started its life as a
+simplified copy of drivers/dma/pl330.c, but not all variable names were
+updated.
 
-Fixes: ec4c7e12396b ("lan78xx: Introduce NAPI polling support")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- drivers/net/usb/lan78xx.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/vfio/platform/vfio_amba.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/usb/lan78xx.c b/drivers/net/usb/lan78xx.c
-index 7d7e185d7fae..3ff430198512 100644
---- a/drivers/net/usb/lan78xx.c
-+++ b/drivers/net/usb/lan78xx.c
-@@ -1501,7 +1501,9 @@ static int lan78xx_link_reset(struct lan78xx_net *dev)
+diff --git a/drivers/vfio/platform/vfio_amba.c b/drivers/vfio/platform/vfio_amba.c
+index 6464b3939ebcfb53..485c6f9161a91be0 100644
+--- a/drivers/vfio/platform/vfio_amba.c
++++ b/drivers/vfio/platform/vfio_amba.c
+@@ -122,16 +122,16 @@ static const struct vfio_device_ops vfio_amba_ops = {
+ 	.detach_ioas	= vfio_iommufd_physical_detach_ioas,
+ };
  
- 		lan78xx_rx_urb_submit_all(dev);
+-static const struct amba_id pl330_ids[] = {
++static const struct amba_id vfio_amba_ids[] = {
+ 	{ 0, 0 },
+ };
  
-+		local_bh_disable();
- 		napi_schedule(&dev->napi);
-+		local_bh_enable();
- 	}
+-MODULE_DEVICE_TABLE(amba, pl330_ids);
++MODULE_DEVICE_TABLE(amba, vfio_amba_ids);
  
- 	return 0;
+ static struct amba_driver vfio_amba_driver = {
+ 	.probe = vfio_amba_probe,
+ 	.remove = vfio_amba_remove,
+-	.id_table = pl330_ids,
++	.id_table = vfio_amba_ids,
+ 	.drv = {
+ 		.name = "vfio-amba",
+ 		.owner = THIS_MODULE,
 -- 
-2.39.2
+2.34.1
 
 
