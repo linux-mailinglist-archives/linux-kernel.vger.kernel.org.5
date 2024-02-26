@@ -1,141 +1,161 @@
-Return-Path: <linux-kernel+bounces-80608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C97E9866A4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:50:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31C23866A4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:51:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4081F1F22862
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:50:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C771FB22148
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:51:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FE181BC53;
-	Mon, 26 Feb 2024 06:50:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F307A1BC4F;
+	Mon, 26 Feb 2024 06:51:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="LvZNwcMT"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="DVxzCw5Q"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B89731BF28;
-	Mon, 26 Feb 2024 06:50:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8512518E2A
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 06:51:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708930216; cv=none; b=gTDetIgeIMZy7f0Bnqq2uVh9k16F69/7jYN6lbEGXaIgGxV7U5JpD/TxXtiUDAZo2ofqWafmTJKrmSKDBIylPHGXSC1gSbuTGrs0x3eMQcodkPnYGE2JMkJkab3YG3eU2vr4K3MQxHbE43KiAmNSJHYTOCFi9qChZXZ2by/8y9E=
+	t=1708930285; cv=none; b=aGPRfHey7zFOejya0XrkvSp5YU2bLf0ok2ulUGGqRJ31NmIjdFHhkrR5whOJj0/2WYPhLpy7Q0EUZEBMnkf+dSvNdMUznueuvQb8Iwzue2QC05UjGpvPR0TzKp5E1bnyiIkgecIXItz5AOA8+wgTqNdCg1m1PylFGQR5q+ntaZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708930216; c=relaxed/simple;
-	bh=6oiheK8jXhJu3jEbbcTC7KYrEfi4/V3nGQUHfUKvfCs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KT0zWV9G/rv2OWMOHjnXBdVQ7BtodQsphtt7bK7TKUS0cwsdw8rb3TGMwPgJYZs+UXAQEMQSbwETnie+oiZtyMbgv9iDzJQUCmr8Qx99Gsa7kcRxZsR19LzDGaV+eLM0gh70bLM5kpGe2pixU3fu6c08oKMp51anVXwQ5kYv7ag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=LvZNwcMT; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=1kc2WcM3zb+rxch8r0ftfqGh2C9F2iUAZFnheJ+68jk=; b=LvZNwcMTQzKVcHpiPtles1wWKs
-	Z8S57J8xGJj9KeJiehkQqflREG3srrXKYZBNOA0dV2EJFCPMAJ1rFJBEa/CEdi0X+fnCe2ZA4JRbV
-	mQnSRTg9j3JRdWMjav4ma7k/6tWO5jbAAC328Vhu0A75WTKJHNLrKcmt3aMna+nk7txDYddBtaraG
-	ziEzsPkadrVJkYjRV4AjxmhO2UmMhDC2YoJcq9yosU9j7mdbvrmM2m5p2kA+9XYVW0311XBsNKdJn
-	RIPLCFgiGLDOke7cDXJhh6tL0kCoaLD+NTKtkSkiL9J6xgTTjUxMzon2WSRx3sDRakOd6MvgBHE/w
-	Ezro9YTQ==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reUoV-0000000GhjS-1wzZ;
-	Mon, 26 Feb 2024 06:50:11 +0000
-Message-ID: <77012b38-4b49-47f4-9a88-d773d52909ad@infradead.org>
-Date: Sun, 25 Feb 2024 22:50:10 -0800
+	s=arc-20240116; t=1708930285; c=relaxed/simple;
+	bh=9igl0TTc8CPKGpvm8BLQNXjtSohUSijnfRrE5EBWjbk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Yy7IQjGr8sImk1z5NyIGuZe+E2txYSjIi6iOc9+5I8HXeR7dpHwKlslY57BdBh4GLov5J04A0SlLW2oFW5O88pVtYlO3K7Uje29adYNfpO2CA5MKm39KRNd7PY9Wx7XaN8Hmk1UsgkH6cQfCkiaxk0Bex/LtBTwvtJkzSg9sRWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=DVxzCw5Q; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dca160163dso5146915ad.3
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 22:51:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1708930282; x=1709535082; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9ZJDZa4dE6I7qh1K4oWjwqQuf4TRNeOV/pDFBmxz1NI=;
+        b=DVxzCw5Q3OOqJTa1+2R1MF9fldtWZnvoTwdmBBcMT9LpKGQ7QtYTVIa9OqdnoqrZEz
+         SgW9zAMfRPei0QFmo4+iCh4UZIBCEOzEM4S0PY8OYDEoMzND8++hw6vUB9W+NiBep/go
+         0D+0GWrDkpuu+ixiSPJaHp3wlcrx5sJaSqpbgINcdFOAJE1jeBwUpdhsINfw//PeJQQz
+         lZEKc0cDCgTGU82y6ABAz80q6ku1DspxljbDoWjchV5fELBUedeaYjlSgf12qNpCC0Oo
+         CAvVnlzAsNsUeuoXS58dS1+gfFys8BGhc/SwmYJS+0VwJbYVDRBpSO7z5CDeo9D8+xDM
+         FlyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708930282; x=1709535082;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9ZJDZa4dE6I7qh1K4oWjwqQuf4TRNeOV/pDFBmxz1NI=;
+        b=VaVlKaxx7QHtalsnK9eJi0kwNxo9gBeeD3ulnXpPetT5BpQGOg4WSWKKOxxrsxcJk/
+         Vl2lWIxn0QCJ0OGHTdEQYVlUC7DAcWGW0mWYjgBAY9aQm9mU1bf9yJDOPP0TPfOwDG32
+         YkDt2DjbG7GUFHUiqMVdIeNHDn5svecOeDaXLybFEjvb5L56HAj97gXGr0bIerrGA6Cm
+         jOcC901k94wnzPj3bH6Nqn7zkooo/cRRsJ9upbGfccd6LI4DmuqcP0/zmatSKWJz30uP
+         5x3R1T6WrpJVkx1S8BUc5anKj+s3864tuMelmuq9oJKrGBmCcr9+58ddQIyBcweOvONo
+         co4w==
+X-Forwarded-Encrypted: i=1; AJvYcCVswdUVTzupK0a3lNZcSHbJ814FGeVeaHonKzLS3pAx/FERhPKt8hBATLZPlCq3edkbaS3X94Jx9ITHSk+9SC8DDRG+EbEbUcHMBMN+
+X-Gm-Message-State: AOJu0YzgVXtWMkjiGDNvV2s7MdTojrHfuefTcd03BFVZzafvymbSoggx
+	xaspjaonj+N9FQqRej9raMOMiIesXLerOhzi4WCM1Digp+El97PdFtr1oWfkgek=
+X-Google-Smtp-Source: AGHT+IG+iLuHhzs/rqyv0mUJKiLZSB9huPbBXlKg4PKw62MWaoX8Gy2Vo+Uwin2x0VVilQL/hJd7ow==
+X-Received: by 2002:a17:903:189:b0:1dc:692:2843 with SMTP id z9-20020a170903018900b001dc06922843mr8971565plg.5.1708930281569;
+        Sun, 25 Feb 2024 22:51:21 -0800 (PST)
+Received: from nickhu-X1C-TW.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
+        by smtp.gmail.com with ESMTPSA id u11-20020a170903308b00b001d937bc5602sm3238871plc.227.2024.02.25.22.51.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Feb 2024 22:51:20 -0800 (PST)
+From: Nick Hu <nick.hu@sifive.com>
+To: anup@brainfault.org,
+	rafael@kernel.org,
+	daniel.lezcano@linaro.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	linux-pm@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: zong.li@sifive.com,
+	Nick Hu <nick.hu@sifive.com>
+Subject: [PATCH] cpuidle: riscv-sbi: Add cluster_pm_enter()/exit()
+Date: Mon, 26 Feb 2024 14:51:13 +0800
+Message-Id: <20240226065113.1690534-1-nick.hu@sifive.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net: ethernet: adi: requires PHYLIB support
-To: Michal Kubecek <mkubecek@suse.cz>
-Cc: linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
- Lennart Franzen <lennart@lfdomain.com>,
- Alexandru Tachici <alexandru.tachici@analog.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- netdev@vger.kernel.org
-References: <20240215070050.2389-1-rdunlap@infradead.org>
- <20240226064440.ismpxvp5qmnskyna@lion.mk-sys.cz>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240226064440.ismpxvp5qmnskyna@lion.mk-sys.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi,
+When the cpus in the same cluster are all in the idle state, the kernel
+might put the cluster into a deeper low power state. Call the
+cluster_pm_enter() before entering the low power state and call the
+cluster_pm_exit() after the cluster woken up.
 
-On 2/25/24 22:44, Michal Kubecek wrote:
-> On Wed, Feb 14, 2024 at 11:00:50PM -0800, Randy Dunlap wrote:
->> This driver uses functions that are supplied by the Kconfig symbol
->> PHYLIB, so select it to ensure that they are built as needed.
->>
->> When CONFIG_ADIN1110=y and CONFIG_PHYLIB=m, there are multiple build
->> (linker) errors that are resolved by this Kconfig change:
->>
->>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_net_open':
->>    drivers/net/ethernet/adi/adin1110.c:933: undefined reference to `phy_start'
->>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_probe_netdevs':
->>    drivers/net/ethernet/adi/adin1110.c:1603: undefined reference to `get_phy_device'
->>    ld: drivers/net/ethernet/adi/adin1110.c:1609: undefined reference to `phy_connect'
->>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_disconnect_phy':
->>    drivers/net/ethernet/adi/adin1110.c:1226: undefined reference to `phy_disconnect'
->>    ld: drivers/net/ethernet/adi/adin1110.o: in function `devm_mdiobus_alloc':
->>    include/linux/phy.h:455: undefined reference to `devm_mdiobus_alloc_size'
->>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_register_mdiobus':
->>    drivers/net/ethernet/adi/adin1110.c:529: undefined reference to `__devm_mdiobus_register'
->>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_net_stop':
->>    drivers/net/ethernet/adi/adin1110.c:958: undefined reference to `phy_stop'
->>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_disconnect_phy':
->>    drivers/net/ethernet/adi/adin1110.c:1226: undefined reference to `phy_disconnect'
->>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_adjust_link':
->>    drivers/net/ethernet/adi/adin1110.c:1077: undefined reference to `phy_print_status'
->>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_ioctl':
->>    drivers/net/ethernet/adi/adin1110.c:790: undefined reference to `phy_do_ioctl'
->>    ld: drivers/net/ethernet/adi/adin1110.o:(.rodata+0xf60): undefined reference to `phy_ethtool_get_link_ksettings'
->>    ld: drivers/net/ethernet/adi/adin1110.o:(.rodata+0xf68): undefined reference to `phy_ethtool_set_link_ksettings'
->>
->> Fixes: bc93e19d088b ("net: ethernet: adi: Add ADIN1110 support")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Closes: https://lore.kernel.org/oe-kbuild-all/202402070626.eZsfVHG5-lkp@intel.com/
->> Cc: Lennart Franzen <lennart@lfdomain.com>
->> Cc: Alexandru Tachici <alexandru.tachici@analog.com>
->> Cc: "David S. Miller" <davem@davemloft.net>
->> Cc: Eric Dumazet <edumazet@google.com>
->> Cc: Jakub Kicinski <kuba@kernel.org>
->> Cc: Paolo Abeni <pabeni@redhat.com>
->> Cc: netdev@vger.kernel.org
->> ---
->>  drivers/net/ethernet/adi/Kconfig |    1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff -- a/drivers/net/ethernet/adi/Kconfig b/drivers/net/ethernet/adi/Kconfig
->> --- a/drivers/net/ethernet/adi/Kconfig
->> +++ b/drivers/net/ethernet/adi/Kconfig
->> @@ -7,6 +7,7 @@ config NET_VENDOR_ADI
->>  	bool "Analog Devices devices"
->>  	default y
->>  	depends on SPI
->> +	select PHYLIB
->>  	help
->>  	  If you have a network (Ethernet) card belonging to this class, say Y.
-> 
-> Shouldn't the "select PHYLIB" be added to ADIN1110 rather than
-> NET_VENDOR_ADI? Now with v6.8-rc6, PHYLIB and few other options are
-> forced to "Y" whenever NET_VENDOR_ADI is enabled (even with ADIN1110
-> disabled).
+Signed-off-by: Nick Hu <nick.hu@sifive.com>
+---
+ drivers/cpuidle/cpuidle-riscv-sbi.c | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
 
-ugh, I believe that you are correct.
-I'll send a corrected patch.
-
-Thanks.
+diff --git a/drivers/cpuidle/cpuidle-riscv-sbi.c b/drivers/cpuidle/cpuidle-riscv-sbi.c
+index e8094fc92491..298dc76a00cf 100644
+--- a/drivers/cpuidle/cpuidle-riscv-sbi.c
++++ b/drivers/cpuidle/cpuidle-riscv-sbi.c
+@@ -394,6 +394,7 @@ static int sbi_cpuidle_pd_power_off(struct generic_pm_domain *pd)
+ {
+ 	struct genpd_power_state *state = &pd->states[pd->state_idx];
+ 	u32 *pd_state;
++	int ret;
+ 
+ 	if (!state->data)
+ 		return 0;
+@@ -401,6 +402,10 @@ static int sbi_cpuidle_pd_power_off(struct generic_pm_domain *pd)
+ 	if (!sbi_cpuidle_pd_allow_domain_state)
+ 		return -EBUSY;
+ 
++	ret = cpu_cluster_pm_enter();
++	if (ret)
++		return ret;
++
+ 	/* OSI mode is enabled, set the corresponding domain state. */
+ 	pd_state = state->data;
+ 	sbi_set_domain_state(*pd_state);
+@@ -408,6 +413,19 @@ static int sbi_cpuidle_pd_power_off(struct generic_pm_domain *pd)
+ 	return 0;
+ }
+ 
++static int sbi_cpuidle_pd_power_on(struct generic_pm_domain *pd)
++{
++	struct genpd_power_state *state = &pd->states[pd->state_idx];
++
++	if (!state->data)
++		return 0;
++
++	if (!sbi_cpuidle_pd_allow_domain_state)
++		return -EBUSY;
++
++	return cpu_cluster_pm_exit();
++}
++
+ struct sbi_pd_provider {
+ 	struct list_head link;
+ 	struct device_node *node;
+@@ -433,10 +451,12 @@ static int sbi_pd_init(struct device_node *np)
+ 	pd->flags |= GENPD_FLAG_IRQ_SAFE | GENPD_FLAG_CPU_DOMAIN;
+ 
+ 	/* Allow power off when OSI is available. */
+-	if (sbi_cpuidle_use_osi)
++	if (sbi_cpuidle_use_osi) {
+ 		pd->power_off = sbi_cpuidle_pd_power_off;
+-	else
++		pd->power_on = sbi_cpuidle_pd_power_on;
++	} else {
+ 		pd->flags |= GENPD_FLAG_ALWAYS_ON;
++	}
+ 
+ 	/* Use governor for CPU PM domains if it has some states to manage. */
+ 	pd_gov = pd->states ? &pm_domain_cpu_gov : NULL;
 -- 
-#Randy
+2.34.1
+
 
