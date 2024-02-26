@@ -1,52 +1,56 @@
-Return-Path: <linux-kernel+bounces-82423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2049C868402
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:52:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00C47868404
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:52:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C83FD287446
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:52:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 248261C241E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:52:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20A22135413;
-	Mon, 26 Feb 2024 22:52:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 655CB135A5C;
+	Mon, 26 Feb 2024 22:52:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TyGRqihJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t3CJzSQI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66F231E878
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 22:52:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F6531350EC;
+	Mon, 26 Feb 2024 22:52:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708987951; cv=none; b=XR6ubW/qZAXoYB7wDhGj5PaFmSPoOvuW0XgilkLNWwx2Cm7Jom7vX6SugKDouFLU4oe7OxxiAFYZ1HxcdmM1rJtXcp8hIHkaI4vxo8pKx1E2qWVjgdwTDV40dItzwrMTPB9uxf23fxfIge36OIZBegLFGX/DSdOsUqDfqzUCQyw=
+	t=1708987956; cv=none; b=gzjUKs14HMlXb9vV/b07VWOZIqlt0YR53mNfjX0Hr63AwxIy9UsTEM1p00swM1/XHrsC6ZAkk1EAehzE6PiiPI5VdxBVasYpR1Ifx55Ep3+/3WnTdCZqsaneVz9pZJUTJP3nnEKIGsKjOyEIJQuhJjxs1M8P29lheULZKmNUTqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708987951; c=relaxed/simple;
-	bh=eARabO0/cgBRc/UGX8Aec460i0lvUced5HQ7ISeVL7M=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X16JBG8Y/HYgzbYsR2iAfBXMWLmS2JL7UE6unydnR0PD2Jn/5AGFwYT1Fb26bMgsOyhmTcptKMFnrtKVvuMYjacSIxZQEPaTlEqmMAGY8RrE7cVkEDC0WXQ5XQsA7f+8mKLTVqS5dNUf+i/G0s/LCSFuTkuyH6PRD+qjTChdUBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TyGRqihJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D6B9C433C7;
-	Mon, 26 Feb 2024 22:52:30 +0000 (UTC)
+	s=arc-20240116; t=1708987956; c=relaxed/simple;
+	bh=mrRr/EHnd3wBCeJZAJCzY7rS3AcxSJscvT6+BbwH4nc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=oFrjQQSGScmOTluncjt9nQ9bDUZMbDGOfFbAy3d/aishPoj04MtA4znNHXOs9sK+hyORg/G0KzZ/Fw6z/RshBk9LHMB41qTtpO8On0jNE2huBHTMm39Yq3fM47paJ306OVT0DRJLLWhOvEslZ9SCLHOtWT1qH7kqvSSpMvDEnAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t3CJzSQI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C771C433F1;
+	Mon, 26 Feb 2024 22:52:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708987950;
-	bh=eARabO0/cgBRc/UGX8Aec460i0lvUced5HQ7ISeVL7M=;
-	h=Date:From:To:Subject:References:In-Reply-To:From;
-	b=TyGRqihJlxSZxTTQOuDtehdRX8prJI0IhnlMRM9L4OSfv/eAnOTpr247UMlKX0fZw
-	 TfTs6BtkMhZn0Hg5NfBnw8x/BiRoQbftZcrfif9gFbDygojg4b3gOQT6u0klEJizNB
-	 zasRDGdmRGOgep0i80t8apeQJBPmEbAaf1Tl/pZK2bqE90F+4VoAYUP+uBC/+QG/Ji
-	 cNtVup4kF06tzgbQitj4wQRREOfaiLmSjS+d31GeCcm+9VrGAVsMoLtYQt9NyYFd0Q
-	 iiUWl1vhoVT80FQj1ICVh57Sum7SNY6O6mkFg88SMGAdB1VAtTw3iaXiX3uXdtRTYZ
-	 /2tyQdZOgxRtA==
-Date: Mon, 26 Feb 2024 14:52:28 -0800
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH 3/5 v2] f2fs: print zone status in string and some log
-Message-ID: <Zd0WLOe89pByO7yX@google.com>
-References: <20240223205535.307307-1-jaegeuk@kernel.org>
- <20240223205535.307307-3-jaegeuk@kernel.org>
+	s=k20201202; t=1708987956;
+	bh=mrRr/EHnd3wBCeJZAJCzY7rS3AcxSJscvT6+BbwH4nc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=t3CJzSQI05cfDnfujywkQCUbfZodHKyhFzY3h1RF0ZYR3FAOnYEtvfyf8pJT+kU4F
+	 iRAdOL6j6Z8LQOV/O9tQVbmLGRV1OT1sSZ5XQyuGXp2damrJDlVrWl9xsPVqPVm+zu
+	 kGgPjqy1p9Tc4q/FE32M15a5yV3blEQXkVlvuRkcb6nvdoTFoQC8Ueoa8XTPvNbHTt
+	 5RUkGXA36hf4q0BP/qvfAkYd0SL10Tlz7pMZA64MaIg28BUBQDuFO6oXChJUbes0qX
+	 cXrXevmtepdFCWRyoJk1wdUEoVvNqGGhEADZ4kO/ZpH16NdXfMwtHoTZXxVtGozpj6
+	 Nhh+sqtHzlnsQ==
+Date: Mon, 26 Feb 2024 16:52:34 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Ethan Zhao <haifeng.zhao@linux.intel.com>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>, baolu.lu@linux.intel.com,
+	bhelgaas@google.com, robin.murphy@arm.com, jgg@ziepe.ca,
+	kevin.tian@intel.com, dwmw2@infradead.org, will@kernel.org,
+	lukas@wunner.de, yi.l.liu@intel.com, iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v13 3/3] iommu/vt-d: improve ITE fault handling if target
+ device isn't valid
+Message-ID: <20240226225234.GA211745@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,99 +59,139 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240223205535.307307-3-jaegeuk@kernel.org>
+In-Reply-To: <2d1788da-521c-4531-a159-81d2fb801d6c@linux.intel.com>
 
-No functional change, but add some more logs.
+On Fri, Feb 23, 2024 at 10:29:28AM +0800, Ethan Zhao wrote:
+> On 2/22/2024 7:24 PM, Dan Carpenter wrote:
+> > On Thu, Feb 22, 2024 at 04:02:51AM -0500, Ethan Zhao wrote:
+> > > Because surprise removal could happen anytime, e.g. user could request safe
+> > > removal to EP(endpoint device) via sysfs and brings its link down to do
+> > > surprise removal cocurrently. such aggressive cases would cause ATS
+> > > invalidation request issued to non-existence target device, then deadly
+> > > loop to retry that request after ITE fault triggered in interrupt context.
+> > > this patch aims to optimize the ITE handling by checking the target device
+> > > presence state to avoid retrying the timeout request blindly, thus avoid
+> > > hard lockup or system hang.
+> > > 
+> > > Devices are valid ATS invalidation request target only when they reside
+> > > in the iommu->device_rbtree (probed, not released) and present.
+> >
+> > "valid invalidation" is awkward wording.  Can we instead say:
+> 
+> If you read them together, sounds like tongue twister. but here "ATS
+> invalidation request target" is one term in PCIe spec.
 
-Reviewed-by: Chao Yu <chao@kernel.org>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
+"ATS invalidation request target" does not appear in the PCIe spec.  I
+think you're trying to avoid sending ATS Invalidate Requests when you
+know they will not be completed.
 
- from v1:
-  - avoid unnecessary log per Daeho's comment
+It is impossible to reliably determine whether a device will be
+present and able to complete an Invalidate Request.  No matter what
+you check to determine that a device is present *now*, it may be
+removed before an Invalidate Request reaches it.
 
- fs/f2fs/segment.c | 27 +++++++++++++++++++++------
- fs/f2fs/super.c   |  1 +
- 2 files changed, 22 insertions(+), 6 deletions(-)
+If an Invalidate Request to a non-existent device causes a "deadly
+loop" (I'm not sure what that means) or a hard lockup or a system
+hang, something is wrong with the hardware.  There should be a
+mechanism to recover from a timeout in that situation.
 
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index d4f228e6f771..31a9e7db19e3 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -4912,6 +4912,16 @@ static int sanity_check_curseg(struct f2fs_sb_info *sbi)
- }
- 
- #ifdef CONFIG_BLK_DEV_ZONED
-+const char *f2fs_zone_status[BLK_ZONE_COND_OFFLINE + 1] = {
-+	[BLK_ZONE_COND_NOT_WP]		= "NOT_WP",
-+	[BLK_ZONE_COND_EMPTY]		= "EMPTY",
-+	[BLK_ZONE_COND_IMP_OPEN]	= "IMPLICITE_OPEN",
-+	[BLK_ZONE_COND_EXP_OPEN]	= "EXPLICITE_OPEN",
-+	[BLK_ZONE_COND_CLOSED]		= "CLOSED",
-+	[BLK_ZONE_COND_READONLY]	= "READONLY",
-+	[BLK_ZONE_COND_FULL]		= "FULL",
-+	[BLK_ZONE_COND_OFFLINE]		= "OFFLINE",
-+};
- 
- static int check_zone_write_pointer(struct f2fs_sb_info *sbi,
- 				    struct f2fs_dev_info *fdev,
-@@ -4932,14 +4942,19 @@ static int check_zone_write_pointer(struct f2fs_sb_info *sbi,
- 	 * Skip check of zones cursegs point to, since
- 	 * fix_curseg_write_pointer() checks them.
- 	 */
--	if (zone_segno >= MAIN_SEGS(sbi) ||
--	    IS_CURSEC(sbi, GET_SEC_FROM_SEG(sbi, zone_segno)))
-+	if (zone_segno >= MAIN_SEGS(sbi))
- 		return 0;
- 
- 	/*
- 	 * Get # of valid block of the zone.
- 	 */
- 	valid_block_cnt = get_valid_blocks(sbi, zone_segno, true);
-+	if (IS_CURSEC(sbi, GET_SEC_FROM_SEG(sbi, zone_segno))) {
-+		f2fs_notice(sbi, "Open zones: valid block[0x%x,0x%x] cond[%s]",
-+				zone_segno, valid_block_cnt,
-+				f2fs_zone_status[zone->cond]);
-+		return 0;
-+	}
- 
- 	if ((!valid_block_cnt && zone->cond == BLK_ZONE_COND_EMPTY) ||
- 	    (valid_block_cnt && zone->cond == BLK_ZONE_COND_FULL))
-@@ -4947,8 +4962,8 @@ static int check_zone_write_pointer(struct f2fs_sb_info *sbi,
- 
- 	if (!valid_block_cnt) {
- 		f2fs_notice(sbi, "Zone without valid block has non-zero write "
--			    "pointer. Reset the write pointer: cond[0x%x]",
--			    zone->cond);
-+			    "pointer. Reset the write pointer: cond[%s]",
-+			    f2fs_zone_status[zone->cond]);
- 		ret = __f2fs_issue_discard_zone(sbi, fdev->bdev, zone_block,
- 					zone->len >> log_sectors_per_block);
- 		if (ret)
-@@ -4965,8 +4980,8 @@ static int check_zone_write_pointer(struct f2fs_sb_info *sbi,
- 	 * selected for write operation until it get discarded.
- 	 */
- 	f2fs_notice(sbi, "Valid blocks are not aligned with write "
--		    "pointer: valid block[0x%x,0x%x] cond[0x%x]",
--		    zone_segno, valid_block_cnt, zone->cond);
-+		    "pointer: valid block[0x%x,0x%x] cond[%s]",
-+		    zone_segno, valid_block_cnt, f2fs_zone_status[zone->cond]);
- 
- 	ret = blkdev_zone_mgmt(fdev->bdev, REQ_OP_ZONE_FINISH,
- 				zone->start, zone->len, GFP_NOFS);
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 4d03ce1109ad..fc7f1a9fbbda 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -4674,6 +4674,7 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
- 	 * check zoned block devices' write pointer consistency.
- 	 */
- 	if (!f2fs_readonly(sb) && f2fs_sb_has_blkzoned(sbi)) {
-+		f2fs_notice(sbi, "Checking entire write pointers");
- 		err = f2fs_check_write_pointer(sbi);
- 		if (err)
- 			goto free_meta;
--- 
-2.44.0.rc1.240.g4c46232300-goog
+You can avoid sending Invalidate Requests to devices that have been
+removed, and that will reduce the number of timeout cases.  But if you
+rely on a check like pci_device_is_present() or
+pci_dev_is_disconnected(), there is *always* an unavoidable race
+between a device removal and the Invalidate Request.
 
+> > > @@ -1273,6 +1273,9 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
+> > >   {
+> > >   	u32 fault;
+> > >   	int head, tail;
+> > > +	u64 iqe_err, ite_sid;
+> > > +	struct device *dev = NULL;
+> > > +	struct pci_dev *pdev = NULL;
+> > >   	struct q_inval *qi = iommu->qi;
+> > >   	int shift = qi_shift(iommu);
+> > > @@ -1317,6 +1320,13 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
+> > >   		tail = readl(iommu->reg + DMAR_IQT_REG);
+> > >   		tail = ((tail >> shift) - 1 + QI_LENGTH) % QI_LENGTH;
+> > > +		/*
+> > > +		 * SID field is valid only when the ITE field is Set in FSTS_REG
+> > > +		 * see Intel VT-d spec r4.1, section 11.4.9.9
+> > > +		 */
+> > > +		iqe_err = dmar_readq(iommu->reg + DMAR_IQER_REG);
+> > > +		ite_sid = DMAR_IQER_REG_ITESID(iqe_err);
+> > > +
+> > >   		writel(DMA_FSTS_ITE, iommu->reg + DMAR_FSTS_REG);
+> > >   		pr_info("Invalidation Time-out Error (ITE) cleared\n");
+> > > @@ -1326,6 +1336,21 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
+> > >   			head = (head - 2 + QI_LENGTH) % QI_LENGTH;
+> > >   		} while (head != tail);
+> > > +		/*
+> > > +		 * If got ITE, we need to check if the sid of ITE is one of the
+> > > +		 * current valid ATS invalidation target devices, if no, or the
+> > > +		 * target device isn't presnet, don't try this request anymore.
+> > > +		 * 0 value of ite_sid means old VT-d device, no ite_sid value.
+> > > +		 */
+> > This comment is kind of confusing.
+> 
+> Really confusing ? this is typo there, resnet-> "present"
+> 
+> > 
+> > /*
+> >   * If we have an ITE, then we need to check whether the sid of the ITE
+> >   * is in the rbtree (meaning it is probed and not released), and that
+> >   * the PCI device is present.
+> >   */
+> > 
+> > My comment is slightly shorter but I think it has the necessary
+> > information.
+> > 
+> > > +		if (ite_sid) {
+> > > +			dev = device_rbtree_find(iommu, ite_sid);
+> > > +			if (!dev || !dev_is_pci(dev))
+> > > +				return -ETIMEDOUT;
+> > -ETIMEDOUT is weird.  The callers don't care which error code we return.
+> > Change this to -ENODEV or something
+> 
+> -ETIMEDOUT means prior ATS invalidation request hit timeout fault, and the
+> caller really cares about the returned value.
+> 
+> > 
+> > > +			pdev = to_pci_dev(dev);
+> > > +			if (!pci_device_is_present(pdev) &&
+> > > +				ite_sid == pci_dev_id(pci_physfn(pdev)))
+> > The && confused me, but then I realized that probably "ite_sid ==
+> > pci_dev_id(pci_physfn(pdev))" is always true.  Can we delete that part?
+> 
+> Here is the fault handling, just double confirm nothing else goes wrong --
+> beyond the assumption.
+> 
+> > 
+> > 		pdev = to_pci_dev(dev);
+> > 		if (!pci_device_is_present(pdev))
+> > 			return -ENODEV;
+> > 
+> > 
+> > > +				return -ETIMEDOUT;
+> > -ENODEV.
+> 
+> The ATS invalidation request could be sent from userland in later code,
+> the userland code will care about the returned value,  -ENODEV is one aspect
+> of the fact (target device not present), while -ETIMEDOUT is another
+> (timeout happened). we couldn't return them both.
+> 
+> > 
+> > > +		}
+> > >   		if (qi->desc_status[wait_index] == QI_ABORT)
+> > >   			return -EAGAIN;
+> > >   	}
+> > Sorry, again for nit picking a v13 patch.  I'm not a domain expert but
+> > this patchset seems reasonable to me.
+> 
+> Though this is the v13, it is based on new rbtree code, you are welcome.
+> 
+> Thanks,
+> Ethan
+> 
+> > regards,
+> > dan carpenter
 
