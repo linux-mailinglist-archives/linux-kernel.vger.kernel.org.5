@@ -1,50 +1,53 @@
-Return-Path: <linux-kernel+bounces-81361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81360-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDAAE8674D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:27:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B848C8674D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:27:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FB70B24A28
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:27:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAA921C22094
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:27:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 863AA605CB;
-	Mon, 26 Feb 2024 12:27:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBD4E605AD;
+	Mon, 26 Feb 2024 12:27:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="WVEnr1VO"
-Received: from mout.web.de (mout.web.de [212.227.15.3])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="bT79gdFi"
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABEE65FDC9;
-	Mon, 26 Feb 2024 12:27:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 281D55FDB5;
+	Mon, 26 Feb 2024 12:27:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708950425; cv=none; b=NvoudjKPSQPm9xnWY3Kp4pg4/dqgh+UTPBKkoatHIerN7HxPVZDjLj8hrskcY7CwOGa5EHyPW8JP+Apysk6q0YchlwnTtY3ZnFekAMLE2zYMVPvBGpbGdI1JjgREcaZV5RBioTSAjCUKh3VrHqgD/7QDicT06Q3BiL5FB1DHA7E=
+	t=1708950424; cv=none; b=MF9yMi65adRr8nsAgYuaG6TvknMfIjBe7O3R9nSmftagIJokhDZ7yaKmnko+btHZxSD94Ju3cn2OlB2l9555pQXg1XvbaQCz7xfMUC/yMz5uOLf64AN9DvFthZce3z26Q4CnbqWe3j/p7LQrlbx9fJ0T1wUTGMTDhkWGOK1DEXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708950425; c=relaxed/simple;
-	bh=AiTob3EyomDbHqxrhBdROP9px/lXNwdwN0SwFHxSlRo=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=gmwKudiipnXYuughyf23mibFTov0TpFqX+Nf/Mq6dDh6Agp0G6voVI4lXQCgfvMWN7I8iOWSX6W8+HEgOcURP9pk8R89b4JKvPnAXKnkCJudEN3vdbyOQ+J0DRBpoAnzQO7KuOO3p+2cOujsDsL6qpogCgbSglLz9pkECAHRXp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=WVEnr1VO; arc=none smtp.client-ip=212.227.15.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1708950388; x=1709555188; i=markus.elfring@web.de;
-	bh=AiTob3EyomDbHqxrhBdROP9px/lXNwdwN0SwFHxSlRo=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=WVEnr1VOy9OmqfLrLvzSiPG79RUIqy3RDn3/9N/rX1b449uEfGtRSLXr+gwfWGxJ
-	 Is7Mn4cgexiHpp88XYNL78IGqifZFQMxLYAd0bWNepUIw5cT68Bfk0RU67rebLrwf
-	 FL+tn/aIZ/gCvqxas0FCAy3sKaeS0ehvVmtfj8gyoojas6MJYbP70HVOniAVniDDp
-	 dt7sMFDcYpCMKE90qhEIET8JUt74sr2inkGjLSnQEgNkjfucsmTuU2Id/9I+qTjPq
-	 JOfgv46V7CozGVawvowwQCtBc65QjnjusFVMbw2v4f8zuKV3U+fDWj9b9W3p9Dbac
-	 T1PhxUnwiqWGMkexLA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MyO0u-1qg2v21sjc-00yjfO; Mon, 26
- Feb 2024 13:26:28 +0100
-Message-ID: <6a64e7b3-b1ce-46c4-9c85-89f731aee592@web.de>
-Date: Mon, 26 Feb 2024 13:26:26 +0100
+	s=arc-20240116; t=1708950424; c=relaxed/simple;
+	bh=1atNF5q0PHutcAVd63k0m5zQJdUvHeKBxneBLA4KQ7U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ackOomUJ32+ih/XUuf6mHAigPw0pq1XfyheLRpi2UllVOQmuKt2ymayTDelJtDPtz9hlPs6CqWN+INGTNGb6GfcAabtpKhitM5mlOrV01odm2tCqJPlTWtMcPLCJRaewiD+XBi8OptNo5Vpp9YNoLObJBjxDtSBcy+a3cvLvvB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=bT79gdFi; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=X62s8SRMke89gytb6JZNVCmlCtS3wHwCrunVCrHXdQU=; b=bT79gdFiTA/GcUxLwiLuVnAKkS
+	4suDRCbzG0TI2IIJrxWoSNa0uwTQSbr7g17hrLHmp+++T27M3L5eStMvgjuj2Z3ZVforoIckjMu1z
+	Y85eDnAIuWraGwOK+lfAbXBxNWI6/lRudFc7pKokW/MAVxz0+5Tqw/6BGZcsvCWFpnjZxvVo0ROI4
+	qWwcI2B9CCF0AOEAk/exr0iguotC58IaHwJUfJhBk0LHVptBpDZ5LDx2+cJWXvD101/GABj2HQHaC
+	uOsTZ99yM4wPkmHGiGN8O6cXlbFpdU6kmP1eFkY+jeMJnkkTXbzYcNDA8UAhNy1BN+50yYoB+xF0/
+	jTwfKE0A==;
+Received: from [177.34.169.255] (helo=[192.168.0.139])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1rea4A-003Yij-2B; Mon, 26 Feb 2024 13:26:42 +0100
+Message-ID: <4aab64fe-18ab-425b-9dc1-e4e9dc6b0087@igalia.com>
+Date: Mon, 26 Feb 2024 09:26:33 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,77 +55,156 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: linux-clk@vger.kernel.org, kernel-janitors@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- Angelo Gioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Chen-Yu Tsai <wenst@chromium.org>, Matthias Brugger
- <matthias.bgg@gmail.com>, Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] clk: mediatek: clk-mt8173-apmixedsys: Use common error
- handling code in clk_mt8173_apmixed_probe()
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:bm+GNw6iiB1HHEoqFeJwVo62AjB7FYz+H2KwR+YJafiQRiiUoxa
- daeyxI3TEr2cZRMFWSuX14vUsAto6LdUYXx20Gdp7oWXW1CnxcTpVPNuvGhWQ1/MZs80v4A
- UTmHhV+XZuBgnK/Q59kxJzrSOujRBIJwEWp/TeA/wAPC18hM1r1tizN3bGYjEKPLX2o9rbm
- vx3rgUlR53vh1gPCSgW8Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:mVXFJr6Rark=;DtHOcRN9Q898fo0ZyCJ9xyhJV0o
- qk60ihFXfSrxr7lunJN7IITYBYhL1HPLwyQz9UeOovSxg5PG0daQynupiTbx5Z3GiPegFG0B2
- O1WPXl41/Yowd+Zrh3RCrliLcZOmHSI708p1Ao+t5apXwX7lYAzuKi7vprrwQG7dT7eQnKx/Q
- /xxC9tvFyfXiJB9JcUmSVxNFFakzYbsbyJMI1nxKfQMaHBsB3wC6Ghy0XUrJrmLTpqpwVJQAO
- rGkcYCmBCQLAS/NY6m0JTBdjMe2FoauWcG9E7Surgsd/Bz4eeFMKfn2HD6CryGyTM7O7giGdf
- do+kFBMY9ixbXux5doJl5YClyG5VtHOuE26KPq4tUsKueMHLc6z1ikkKJzS2/QihnGLkQNIXm
- QYeHk+JdSdEjdaom56lomznxv9/FJQjA6EfYnhKwKgpaBma7KWaMkcNKcmV2z4SOA8Yqx7bCj
- khNCe+ZGacs9GKwSUf98VHN0mGRgQywnbsclVLM4QhIY5irpv1yIPeuyEPygtba93Tl+a66ge
- eJkdY22ZMFm8uLO9tjkaanIEOVsF+ndhVnyXOpKGmbBDzbeLF3gzhGQ28IK5/kxbJ/bclya7c
- YWFrNVU21pKGbvvjjtpL9oI1xzT4R4hU0WCDO1Gjfj4Spdqx2f98Qmc5l2wgUka16ORM55xDK
- uIJiEuOibfgbKy6fnD+nrnmo6ZlEs8MIBIvSwp82/8kaDPaW9I0oyGKRzArrbyZvl18/RjsPT
- OQbmVR6fXcol3ggDMn6iKLK7a3Efk07c9LB5WOfGBENmkwCxXf6eAMbmZuEbs6GAPnke4k2pQ
- CiWvTSkD9IaXIlHb+EtrNqPSIGoHhUzENnhF8a/UAnnFs=
+Subject: Re: [PATCH v7 04/36] drm/tests: Add helper to create mock crtc
+Content-Language: en-US
+To: Maxime Ripard <mripard@kernel.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>,
+ Sandy Huang <hjc@rock-chips.com>, =?UTF-8?Q?Heiko_St=C3=BCbner?=
+ <heiko@sntech.de>, Chen-Yu Tsai <wens@csie.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>
+Cc: Hans Verkuil <hverkuil@xs4all.nl>,
+ Sebastian Wick <sebastian.wick@redhat.com>,
+ =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+ dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+ linux-sunxi@lists.linux.dev
+References: <20240222-kms-hdmi-connector-state-v7-0-8f4af575fce2@kernel.org>
+ <20240222-kms-hdmi-connector-state-v7-4-8f4af575fce2@kernel.org>
+From: =?UTF-8?Q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>
+Autocrypt: addr=mcanal@igalia.com; keydata=
+ xjMEZIsaeRYJKwYBBAHaRw8BAQdAGU6aY8oojw61KS5rGGMrlcilFqR6p6ID45IZ6ovX0h3N
+ H01haXJhIENhbmFsIDxtY2FuYWxAaWdhbGlhLmNvbT7CjwQTFggANxYhBDMCqFtIvFKVRJZQ
+ hDSPnHLaGFVuBQJkixp5BQkFo5qAAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQNI+cctoYVW5u
+ GAEAwpaC5rI3wD8zqETKwGVoXd6+AbmGfZuVD40xepy7z/8BAM5w95/oyPsHUqOsg/xUTlNp
+ rlbhA+WWoaOXA3XgR+wCzjgEZIsaeRIKKwYBBAGXVQEFAQEHQGoOK0jgh0IorMAacx6WUUWb
+ s3RLiJYWUU6iNrk5wWUbAwEIB8J+BBgWCAAmFiEEMwKoW0i8UpVEllCENI+cctoYVW4FAmSL
+ GnkFCQWjmoACGwwACgkQNI+cctoYVW6cqwD/Q9R98msvkhgRvi18fzUPFDwwogn+F+gQJJ6o
+ pwpgFkAA/R2zOfla3IT6G3SBoV5ucdpdCpnIXFpQLbmfHK7dXsAC
+In-Reply-To: <20240222-kms-hdmi-connector-state-v7-4-8f4af575fce2@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Mon, 26 Feb 2024 13:10:37 +0100
+On 2/22/24 15:13, Maxime Ripard wrote:
+> We're going to need a full-blown, functional, KMS device to test more
+> components of the atomic modesetting infrastructure.
+> 
+> Let's add a new helper to create a dumb, mocked, CRTC. By default it
+> will create a CRTC relying only on the default helpers, but drivers are
+> free to deviate from that.
+> 
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
 
-Add a label so that a bit of exception handling can be better reused
-at the end of this function implementation.
+Reviewed-by: Maíra Canal <mcanal@igalia.com>
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/clk/mediatek/clk-mt8173-apmixedsys.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Best Regards,
+- Maíra
 
-diff --git a/drivers/clk/mediatek/clk-mt8173-apmixedsys.c b/drivers/clk/me=
-diatek/clk-mt8173-apmixedsys.c
-index 1bbb21ab1786..6cab483b8e1e 100644
-=2D-- a/drivers/clk/mediatek/clk-mt8173-apmixedsys.c
-+++ b/drivers/clk/mediatek/clk-mt8173-apmixedsys.c
-@@ -152,8 +152,8 @@ static int clk_mt8173_apmixed_probe(struct platform_de=
-vice *pdev)
-
- 	clk_data =3D mtk_alloc_clk_data(CLK_APMIXED_NR_CLK);
- 	if (IS_ERR_OR_NULL(clk_data)) {
--		iounmap(base);
--		return -ENOMEM;
-+		r =3D -ENOMEM;
-+		goto unmap_io;
- 	}
-
- 	fhctl_parse_dt(fhctl_node, pllfhs, ARRAY_SIZE(pllfhs));
-@@ -188,6 +188,7 @@ static int clk_mt8173_apmixed_probe(struct platform_de=
-vice *pdev)
- 				  ARRAY_SIZE(pllfhs), clk_data);
- free_clk_data:
- 	mtk_free_clk_data(clk_data);
-+unmap_io:
- 	iounmap(base);
- 	return r;
- }
-=2D-
-2.43.2
-
+> ---
+>   drivers/gpu/drm/tests/drm_kunit_helpers.c | 62 +++++++++++++++++++++++++++++++
+>   include/drm/drm_kunit_helpers.h           | 10 +++++
+>   2 files changed, 72 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/tests/drm_kunit_helpers.c b/drivers/gpu/drm/tests/drm_kunit_helpers.c
+> index 32dc8354641a..d5317d13d3fc 100644
+> --- a/drivers/gpu/drm/tests/drm_kunit_helpers.c
+> +++ b/drivers/gpu/drm/tests/drm_kunit_helpers.c
+> @@ -249,5 +249,67 @@ drm_kunit_helper_create_primary_plane(struct kunit *test,
+>   }
+>   EXPORT_SYMBOL_GPL(drm_kunit_helper_create_primary_plane);
+>   
+> +static const struct drm_crtc_helper_funcs default_crtc_helper_funcs = {
+> +};
+> +
+> +static const struct drm_crtc_funcs default_crtc_funcs = {
+> +	.atomic_destroy_state   = drm_atomic_helper_crtc_destroy_state,
+> +	.atomic_duplicate_state = drm_atomic_helper_crtc_duplicate_state,
+> +	.reset                  = drm_atomic_helper_crtc_reset,
+> +};
+> +
+> +/**
+> + * drm_kunit_helper_create_crtc - Creates a mock CRTC for a KUnit test
+> + * @test: The test context object
+> + * @drm: The device to alloc the plane for
+> + * @primary: Primary plane for CRTC
+> + * @cursor: Cursor plane for CRTC. Optional.
+> + * @funcs: Callbacks for the new plane. Optional.
+> + * @helper_funcs: Helpers callbacks for the new plane. Optional.
+> + *
+> + * This allocates and initializes a mock struct &drm_crtc meant to be
+> + * part of a mock device for a KUnit test.
+> + *
+> + * Resources will be cleaned up automatically.
+> + *
+> + * @funcs will default to the default helpers implementations.
+> + * @helper_funcs will default to an empty implementation.
+> + *
+> + * Returns:
+> + * A pointer to the new CRTC, or an ERR_PTR() otherwise.
+> + */
+> +struct drm_crtc *
+> +drm_kunit_helper_create_crtc(struct kunit *test,
+> +			     struct drm_device *drm,
+> +			     struct drm_plane *primary,
+> +			     struct drm_plane *cursor,
+> +			     const struct drm_crtc_funcs *funcs,
+> +			     const struct drm_crtc_helper_funcs *helper_funcs)
+> +{
+> +	struct drm_crtc *crtc;
+> +	int ret;
+> +
+> +	if (!funcs)
+> +		funcs = &default_crtc_funcs;
+> +
+> +	if (!helper_funcs)
+> +		helper_funcs = &default_crtc_helper_funcs;
+> +
+> +	crtc = drmm_kzalloc(drm, sizeof(*crtc), GFP_KERNEL);
+> +	KUNIT_ASSERT_NOT_NULL(test, crtc);
+> +
+> +	ret = drmm_crtc_init_with_planes(drm, crtc,
+> +					 primary,
+> +					 cursor,
+> +					 funcs,
+> +					 NULL);
+> +	KUNIT_ASSERT_EQ(test, ret, 0);
+> +
+> +	drm_crtc_helper_add(crtc, helper_funcs);
+> +
+> +	return crtc;
+> +}
+> +EXPORT_SYMBOL_GPL(drm_kunit_helper_create_crtc);
+> +
+>   MODULE_AUTHOR("Maxime Ripard <maxime@cerno.tech>");
+>   MODULE_LICENSE("GPL");
+> diff --git a/include/drm/drm_kunit_helpers.h b/include/drm/drm_kunit_helpers.h
+> index 38667d624aa8..6e99627edf45 100644
+> --- a/include/drm/drm_kunit_helpers.h
+> +++ b/include/drm/drm_kunit_helpers.h
+> @@ -9,6 +9,8 @@
+>   
+>   #include <kunit/test.h>
+>   
+> +struct drm_crtc_funcs;
+> +struct drm_crtc_helper_funcs;
+>   struct drm_device;
+>   struct drm_plane_funcs;
+>   struct drm_plane_helper_funcs;
+> @@ -110,4 +112,12 @@ drm_kunit_helper_create_primary_plane(struct kunit *test,
+>   				      unsigned int num_formats,
+>   				      const uint64_t *modifiers);
+>   
+> +struct drm_crtc *
+> +drm_kunit_helper_create_crtc(struct kunit *test,
+> +			     struct drm_device *drm,
+> +			     struct drm_plane *primary,
+> +			     struct drm_plane *cursor,
+> +			     const struct drm_crtc_funcs *funcs,
+> +			     const struct drm_crtc_helper_funcs *helper_funcs);
+> +
+>   #endif // DRM_KUNIT_HELPERS_H_
+> 
 
