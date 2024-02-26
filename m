@@ -1,275 +1,145 @@
-Return-Path: <linux-kernel+bounces-80407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55FEF86682B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:28:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CE21866835
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:28:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C267BB20D29
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:27:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 644DA2818EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:28:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A591A101C4;
-	Mon, 26 Feb 2024 02:27:49 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AEBCDDDC;
-	Mon, 26 Feb 2024 02:27:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F024199B8;
+	Mon, 26 Feb 2024 02:28:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="x3vuep3M"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70450171D1
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 02:28:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708914469; cv=none; b=hxzlR97gCsyOf7VtGNSlZJUKnAXxNXpFT+HRXm+I4B86LTKGVYK9pe0gPi6JaUBXIMMVOH9fR0OeG80CPRTQ+m5g/WNmU8FKIdG1t0jSYDJusP1Mv5WsEVdAnEwOh4TpjsM6185OycbAI5cq0GQqfnVtfz0kr0r7x8tei6C32Y8=
+	t=1708914484; cv=none; b=s2fiXx6+QVsXiZ3qKknPxzZMPNMzxuP09oALI/QscBK40Gw1rrI2FAW0bsz2RZz16ntW0IIJHYbkQxDeWU36OC0d1FHQTxYYmrnLRn4R5wAnetwLqNNB8/wuEJpxQsZPi4+p3r6Y1y0pyDljkoZ/zeJSRWL4bbe3Xa3l0diXSB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708914469; c=relaxed/simple;
-	bh=3BPVpZmd3r2/6e9QRzJoUxZLCVM8tqHO5vRHJrJNW7c=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=cmVCzmSDDUvfSQlbRoMdTzk2CqtGO3G+wbcrytePcYZRFJGvdONFMsEvWjbS5V0QMqzyISDxwFT2jk7zUYv2nwkMM09Rx2mb61ry8ZkLbMDMUoHE5APH2Zn0fqach6onjRQ6VkvuUChGT2qUuon4ONiNTX7q3q9iAVk2FRtQO4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.20.42.173])
-	by gateway (Coremail) with SMTP id _____8Dx6ugf99tlfWgRAA--.24810S3;
-	Mon, 26 Feb 2024 10:27:43 +0800 (CST)
-Received: from [10.20.42.173] (unknown [10.20.42.173])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8AxRMwa99tlniVEAA--.39424S3;
-	Mon, 26 Feb 2024 10:27:40 +0800 (CST)
-Subject: Re: [PATCH v5 4/6] LoongArch: Add paravirt interface for guest kernel
-To: Huacai Chen <chenhuacai@kernel.org>
-Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>,
- Paolo Bonzini <pbonzini@redhat.com>, loongarch@lists.linux.dev,
- linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
- kvm@vger.kernel.org
-References: <20240222032803.2177856-1-maobibo@loongson.cn>
- <20240222032803.2177856-5-maobibo@loongson.cn>
- <CAAhV-H4FiP+msu4heG00Hw89Wy3oeJd5rJ7+twhwVqph_tO4Mw@mail.gmail.com>
-From: maobibo <maobibo@loongson.cn>
-Message-ID: <6bf79c0f-daf3-9077-e83f-38bcfd7282e3@loongson.cn>
-Date: Mon, 26 Feb 2024 10:27:37 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+	s=arc-20240116; t=1708914484; c=relaxed/simple;
+	bh=u8jCfED3AAIM0Dr6uUkSBL8XcOIWg1vYet7ORyo2cy0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=eFWNezDhTIok08Ayn0qWZRhjEJcgHHAKijMEdrLsAgv/jY2rLTj2CwFeSyo0lE9iv7F48Tmu1MDVMAGwCbN1S2uoiqsBh16LymWh5enD9IqqX2LDU9R7j6o3hrtxLNB5ceVtn7IiqEROaQtG3mk3jbo479mLfAcqH8xFQiIMBBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=x3vuep3M; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d27184197cso29923941fa.1
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 18:28:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708914480; x=1709519280; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=okMwD+HI3Hm1J7uyI3T50cIUeGmA4G9Oagnd36eStaI=;
+        b=x3vuep3MxtYTykD2gVl+64Yxz1qwiD9YxoszEr0y6848r9jpufD0VUZeSalbudqt5f
+         nT9XbQGvZZFdIbD7xJp5ibjElI7eTEqt4JPEpgX2cTZzEukN4b+o9ZBUZzbsCyGS7RtI
+         CyWQI9WDBTr54RkinqRB53cYCXY5DCboJ7FWSSstpuHq7arl4yVIp9A1Q4I3I7YWu0ND
+         /g7ADVpxooInb592MUDBEnT7FOwRwJfHGwK+7sY5GFpVwNJAD/nZkJnDLokCQgus70gU
+         2EfpOB5SNCDtTKltZUfbJijsKO1lQIElL6hXioi4h7y5rTLlUcdyvv/480uknskSbMjM
+         cfdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708914480; x=1709519280;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=okMwD+HI3Hm1J7uyI3T50cIUeGmA4G9Oagnd36eStaI=;
+        b=BFDxse4NG6ZR7CeRJXKTut/gkpp0f5OvWkWzAFkFQ8EFNxEgnGilbsoWA++vFxmo+3
+         WcOpw43UGuU1r3zVLw5/xypHBLJYjFK51u8WzbJFvEX+cJvCA3AIxsPDlkV7E9c28aDr
+         3K6HSWpc3BvtqF7OyFzVwq7f1XMSpsVEJiJiKU5MuWNHdHg7VNl1QLYnC0RfuiOu8YE4
+         TgXe3khAhBJnP5K5bUnEgGl3OObkMn1SX8UisEW3Jdl+uxm510JQ8GpuIJkkSolaa2Fj
+         2ETKvd1lgExgupbu+0RgF8x5c4IB3BpX4iTfG/NdChAL1tcq8iDRFM9V41nEbfic83Mq
+         YAKA==
+X-Forwarded-Encrypted: i=1; AJvYcCW6mar6V97MRSMOoQaYoCDt32Ipy69ce3ny/8yYr3Nz5ne35N5zP8I2QPycezOgrXAALW88XRBCHtX2Gg284B/RmxsF3SPmIWykMzXg
+X-Gm-Message-State: AOJu0YxV2qNNXzhyqAGziGyd292320hN0Q9AWlHB6iVVYGxcxoWlqLYs
+	cj61gkGbY3nGqMcrI02sDgupZbROD6EVF/KKBuRHdnL5r4lMzvV0p5NZSHM0zoI=
+X-Google-Smtp-Source: AGHT+IFGLuNRRkqyJ84YiBMteFx/W6fawxgt5SBqlorHTEGoOuvKsKcz8VAynwdAnzKsErvRBTJm4g==
+X-Received: by 2002:a2e:8e90:0:b0:2d2:7813:6ca0 with SMTP id z16-20020a2e8e90000000b002d278136ca0mr2918485ljk.7.1708914480645;
+        Sun, 25 Feb 2024 18:28:00 -0800 (PST)
+Received: from umbar.lan (dzyjmhybhls-s--zn36gy-3.rev.dnainternet.fi. [2001:14ba:a00e:a300:264b:feff:fe8b:be8a])
+        by smtp.gmail.com with ESMTPSA id u19-20020a2e8553000000b002d11ef66881sm713092ljj.91.2024.02.25.18.28.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Feb 2024 18:28:00 -0800 (PST)
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: [PATCH v4 0/3] drm/msm/dpu: debug commit_done timeouts
+Date: Mon, 26 Feb 2024 04:27:58 +0200
+Message-Id: <20240226-fd-dpu-debug-timeout-v4-0-51eec83dde23@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAAhV-H4FiP+msu4heG00Hw89Wy3oeJd5rJ7+twhwVqph_tO4Mw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8AxRMwa99tlniVEAA--.39424S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxKF15Gr13uF45Kr48Gw1kCrX_yoWxWr13pa
-	4DAF4kGa18GryxAr9IqrZxurn8J397Gr129Fy2va4FyFZFvr1UJr1vgryq9Fykta1kJ3W0
-	gFyrWw1a9a15tagCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUP2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6r4j6r4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
-	Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_
-	Jw1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
-	CYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48J
-	MxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrVAFwI
-	0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
-	0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-	WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1l
-	IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0b6pPUUUU
-	U==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAC7322UC/4XNTQ6CMBCG4auQrh3TDlCKK+9hXEB/oIlS0gLRE
+ O5uYaPGEJfvl8wzMwnaWx3IKZmJ15MN1nUxskNCZFt1jQarYhOkmFFGORgFqh9B6XpsYLB37cY
+ BdMkKQ2spKE9JPO29NvaxsZdr7NaGwfnn9mVi6/oHnBgw4KosOAqR8Yydb7arvDs635BVnPCtI
+ BU7CkalNCUtDKuVEsWPkn4omO8oKVDAHA3WyKSS8ktZluUFfP0DdkUBAAA=
+To: Rob Clark <robdclark@gmail.com>, 
+ Abhinav Kumar <quic_abhinavk@quicinc.com>, Sean Paul <sean@poorly.run>, 
+ Marijn Suijten <marijn.suijten@somainline.org>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: Steev Klimaszewski <steev@kali.org>, linux-arm-msm@vger.kernel.org, 
+ dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
+ linux-kernel@vger.kernel.org
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1646;
+ i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
+ bh=u8jCfED3AAIM0Dr6uUkSBL8XcOIWg1vYet7ORyo2cy0=;
+ b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBl2/cvswuEB9zryNmyO7i/5aXauDX8QwQLWQAka
+ RMUD4mkizCJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZdv3LwAKCRCLPIo+Aiko
+ 1TlDB/43tK/bein7ge2pajmcDIVMZuxTdeAV4isVizetYKrBenH9uItcj3p7VUY5u4Le4CJ3cpC
+ 4kqF5hevPGzVDS/4TjVU2RAkY2DUAmIi0OFReena7J5OipQJOlRSyA8oxkM3TeO/R4eDcQpr7Vd
+ rE4g14bhQtAZLWhJj18qeNmjsVNArxwl4GnTI1AkA6c3zxc7w6n5rd4Cs4ct3ZyBxjimMuiRmz+
+ xwyzV5zcU8TVItaS3wEY61WNdDAL4zc55MgwQJ9bXYOjyWhZvMuvrvYpy0Pi48UX04OeN5btAPq
+ xPX1K46ZWpznAtBJFSSwBy6qtVd56Xc06jbR3FnFNdwycecb
+X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
+ fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
 
+In order to debug commit_done timeouts ([1]) display the sticky bits of
+the CTL_FLUSH register and capture the devcore dump when the first such
+timeout occurs.
 
+[1] https://gitlab.freedesktop.org/drm/msm/-/issues/33
 
-On 2024/2/24 下午5:15, Huacai Chen wrote:
-> Hi, Bibo,
-> 
-> On Thu, Feb 22, 2024 at 11:28 AM Bibo Mao <maobibo@loongson.cn> wrote:
->>
->> Paravirt interface pv_ipi_init() is added here for guest kernel, it
->> firstly checks whether system runs on VM mode. If kernel runs on VM mode,
->> it will call function kvm_para_available() to detect current VMM type.
->> Now only KVM VMM type is detected,the paravirt function can work only if
->> current VMM is KVM hypervisor, since there is only KVM hypervisor
->> supported on LoongArch now.
->>
->> There is not effective with pv_ipi_init() now, it is dummy function.
->>
->> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
->> ---
->>   arch/loongarch/Kconfig                        |  9 ++++
->>   arch/loongarch/include/asm/kvm_para.h         |  7 ++++
->>   arch/loongarch/include/asm/paravirt.h         | 27 ++++++++++++
->>   .../include/asm/paravirt_api_clock.h          |  1 +
->>   arch/loongarch/kernel/Makefile                |  1 +
->>   arch/loongarch/kernel/paravirt.c              | 41 +++++++++++++++++++
->>   arch/loongarch/kernel/setup.c                 |  1 +
->>   7 files changed, 87 insertions(+)
->>   create mode 100644 arch/loongarch/include/asm/paravirt.h
->>   create mode 100644 arch/loongarch/include/asm/paravirt_api_clock.h
->>   create mode 100644 arch/loongarch/kernel/paravirt.c
->>
->> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
->> index 929f68926b34..fdaae9a0435c 100644
->> --- a/arch/loongarch/Kconfig
->> +++ b/arch/loongarch/Kconfig
->> @@ -587,6 +587,15 @@ config CPU_HAS_PREFETCH
->>          bool
->>          default y
->>
->> +config PARAVIRT
->> +       bool "Enable paravirtualization code"
->> +       depends on AS_HAS_LVZ_EXTENSION
->> +       help
->> +          This changes the kernel so it can modify itself when it is run
->> +         under a hypervisor, potentially improving performance significantly
->> +         over full virtualization.  However, when run without a hypervisor
->> +         the kernel is theoretically slower and slightly larger.
->> +
->>   config ARCH_SUPPORTS_KEXEC
->>          def_bool y
->>
->> diff --git a/arch/loongarch/include/asm/kvm_para.h b/arch/loongarch/include/asm/kvm_para.h
->> index d48f993ae206..af5d677a9052 100644
->> --- a/arch/loongarch/include/asm/kvm_para.h
->> +++ b/arch/loongarch/include/asm/kvm_para.h
->> @@ -2,6 +2,13 @@
->>   #ifndef _ASM_LOONGARCH_KVM_PARA_H
->>   #define _ASM_LOONGARCH_KVM_PARA_H
->>
->> +/*
->> + * Hypercall code field
->> + */
->> +#define HYPERVISOR_KVM                 1
->> +#define HYPERVISOR_VENDOR_SHIFT                8
->> +#define HYPERCALL_CODE(vendor, code)   ((vendor << HYPERVISOR_VENDOR_SHIFT) + code)
->> +
->>   /*
->>    * LoongArch hypercall return code
->>    */
->> diff --git a/arch/loongarch/include/asm/paravirt.h b/arch/loongarch/include/asm/paravirt.h
->> new file mode 100644
->> index 000000000000..58f7b7b89f2c
->> --- /dev/null
->> +++ b/arch/loongarch/include/asm/paravirt.h
->> @@ -0,0 +1,27 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +#ifndef _ASM_LOONGARCH_PARAVIRT_H
->> +#define _ASM_LOONGARCH_PARAVIRT_H
->> +
->> +#ifdef CONFIG_PARAVIRT
->> +#include <linux/static_call_types.h>
->> +struct static_key;
->> +extern struct static_key paravirt_steal_enabled;
->> +extern struct static_key paravirt_steal_rq_enabled;
->> +
->> +u64 dummy_steal_clock(int cpu);
->> +DECLARE_STATIC_CALL(pv_steal_clock, dummy_steal_clock);
->> +
->> +static inline u64 paravirt_steal_clock(int cpu)
->> +{
->> +       return static_call(pv_steal_clock)(cpu);
->> +}
->> +
->> +int pv_ipi_init(void);
->> +#else
->> +static inline int pv_ipi_init(void)
->> +{
->> +       return 0;
->> +}
->> +
->> +#endif // CONFIG_PARAVIRT
->> +#endif
->> diff --git a/arch/loongarch/include/asm/paravirt_api_clock.h b/arch/loongarch/include/asm/paravirt_api_clock.h
->> new file mode 100644
->> index 000000000000..65ac7cee0dad
->> --- /dev/null
->> +++ b/arch/loongarch/include/asm/paravirt_api_clock.h
->> @@ -0,0 +1 @@
->> +#include <asm/paravirt.h>
->> diff --git a/arch/loongarch/kernel/Makefile b/arch/loongarch/kernel/Makefile
->> index 3c808c680370..662e6e9de12d 100644
->> --- a/arch/loongarch/kernel/Makefile
->> +++ b/arch/loongarch/kernel/Makefile
->> @@ -48,6 +48,7 @@ obj-$(CONFIG_MODULES)         += module.o module-sections.o
->>   obj-$(CONFIG_STACKTRACE)       += stacktrace.o
->>
->>   obj-$(CONFIG_PROC_FS)          += proc.o
->> +obj-$(CONFIG_PARAVIRT)         += paravirt.o
->>
->>   obj-$(CONFIG_SMP)              += smp.o
->>
->> diff --git a/arch/loongarch/kernel/paravirt.c b/arch/loongarch/kernel/paravirt.c
->> new file mode 100644
->> index 000000000000..5cf794e8490f
->> --- /dev/null
->> +++ b/arch/loongarch/kernel/paravirt.c
->> @@ -0,0 +1,41 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +#include <linux/export.h>
->> +#include <linux/types.h>
->> +#include <linux/jump_label.h>
->> +#include <linux/kvm_para.h>
->> +#include <asm/paravirt.h>
->> +#include <linux/static_call.h>
->> +
->> +struct static_key paravirt_steal_enabled;
->> +struct static_key paravirt_steal_rq_enabled;
->> +
->> +static u64 native_steal_clock(int cpu)
->> +{
->> +       return 0;
->> +}
->> +
->> +DEFINE_STATIC_CALL(pv_steal_clock, native_steal_clock);
->> +
->> +static bool kvm_para_available(void)
->> +{
->> +       static int hypervisor_type;
->> +       int config;
->> +
->> +       if (!hypervisor_type) {
->> +               config = read_cpucfg(CPUCFG_KVM_SIG);
->> +               if (!memcmp(&config, KVM_SIGNATURE, 4))
->> +                       hypervisor_type = HYPERVISOR_KVM;
->> +       }
->> +
->> +       return hypervisor_type == HYPERVISOR_KVM;
->> +}
->> +
->> +int __init pv_ipi_init(void)
->> +{
->> +       if (!cpu_has_hypervisor)
->> +               return 0;
->> +       if (!kvm_para_available())
->> +               return 0;
->> +
->> +       return 1;
->> +}
-> pv_ipi_init() and its declaration should also be moved to the last
-> patch. And if you think this patch is too small, you can squash the
-> whole patch to the last one.
-I can move the whole patch to the last one. I do not think that is is 
-reasonable to move function pv_ipi_init() to the last patch.
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+---
+Changes in v4:
+- Reworded documentation for new funcsions (Abhinav)
+- Link to v3: https://lore.kernel.org/r/20240225-fd-dpu-debug-timeout-v3-0-252f2b21cdcc@linaro.org
 
-Regards
-Bibo Mao
+Changes in v3:
+- Capture the snapshot only on the first comit_done timeout (Abhinav)
+- Link to v2: https://lore.kernel.org/r/20240208-fd-dpu-debug-timeout-v2-1-9f907f1bdd87@linaro.org
 
-> 
-> Huacai
-> 
->> diff --git a/arch/loongarch/kernel/setup.c b/arch/loongarch/kernel/setup.c
->> index edf2bba80130..b79a1244b56f 100644
->> --- a/arch/loongarch/kernel/setup.c
->> +++ b/arch/loongarch/kernel/setup.c
->> @@ -43,6 +43,7 @@
->>   #include <asm/efi.h>
->>   #include <asm/loongson.h>
->>   #include <asm/numa.h>
->> +#include <asm/paravirt.h>
->>   #include <asm/pgalloc.h>
->>   #include <asm/sections.h>
->>   #include <asm/setup.h>
->> --
->> 2.39.3
->>
+Changes in v2:
+- Added a call to msm_disp_snapshot_state() to trigger devcore dump
+  (Abhinav)
+- Link to v1: https://lore.kernel.org/r/20240106-fd-dpu-debug-timeout-v1-1-6d9762884641@linaro.org
+
+---
+Dmitry Baryshkov (3):
+      drm/msm/dpu: make "vblank timeout" more useful
+      drm/msm/dpu: split dpu_encoder_wait_for_event into two functions
+      drm/msm/dpu: capture snapshot on the first commit_done timeout
+
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c        | 79 ++++++++++++++++------
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h        | 22 +-----
+ .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c   |  2 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c            |  2 +-
+ drivers/gpu/drm/msm/msm_drv.h                      | 10 ---
+ 5 files changed, 65 insertions(+), 50 deletions(-)
+---
+base-commit: 33e1d31873f87d119e5120b88cd350efa68ef276
+change-id: 20240106-fd-dpu-debug-timeout-e917f0bc8063
+
+Best regards,
+-- 
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
 
