@@ -1,291 +1,176 @@
-Return-Path: <linux-kernel+bounces-81312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5379B8673EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:52:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D601867414
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:59:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1EFF1F2C50A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:52:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46D0DB2485A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:54:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64E2D1F61F;
-	Mon, 26 Feb 2024 11:52:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 517075A795;
+	Mon, 26 Feb 2024 11:53:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="A+u0mnu4"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JL4J6oxs"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F7C41CD3A;
-	Mon, 26 Feb 2024 11:52:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C3A45A0FB
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:53:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708948353; cv=none; b=EWeyrtjnNCtly6Qo9Vqijb7coPmAFQn+QxWOMbPe3tbw0aOfTB9aflAXIM4jtMQV1fqoYBSKW+pLxjQBmI103/x/FwhXISGdiutPnRati3ftdgaMUxzOmTfkS3Au9nlxuv+ZFXa/1RbKz9SPPxM06hoLCNUtKyxMpA5W/OvIJpM=
+	t=1708948435; cv=none; b=MMfTCijpdsgUL8A2hkwcwOPx93ft86A8mpWh/WAcgurxlbrgCYlJ9+scN0GlFuSugO8wTxsCQ4thOPYToJBdAr284DLbzF4TLx8pvXuhakjDuaxpWZ+Lv10k5DUMum/w7sazR8fAMQ0+VA7lU7LTc9DjjakAGb9wewWRnqbIUA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708948353; c=relaxed/simple;
-	bh=SdC1KQdlMCko1CJPSb6LDZuTc7jNEB9pAVG9bFAnLnc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qSrWYMNQ6Ybk94HAYsd/jjCCu+3Te/vvYIMHGeZ94//30eiXpQsCaINhZP+I/k+JNU+TUTWnj2ryYnOfjAqVb5PW8yU5CdlBm4Vj+zcXqrLqcP39qe7YBB0cNTwQU3xMxWAztgMZr4OaynoBPAfkEtB0lED+hmAMmY+H+hNInfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=A+u0mnu4; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8C3D36000A;
-	Mon, 26 Feb 2024 11:52:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708948348;
+	s=arc-20240116; t=1708948435; c=relaxed/simple;
+	bh=ubN9jpbxnUOn3Nf+SSQIPfdxnodeJtVUj6aPzJVKrDE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Bvo61XBprP+vGrbHUHYH/GgqlZSgCOw45TAC6K17en5mE8ufxd5uqQ9lmSS6TLnp/5rSxbb81kRp7kphrX9FkD9mgjFZE77ovuP++jyrt93R/W4bgebhpouytZ/nsfI9lRqT0IHf03mE7Iwu7YjR2Fdfo+8s/i/9YhM5UDevie4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JL4J6oxs; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708948433;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TcNE+jdsAyRYMoNdZEeccnDlbU/TpwbrSKPOoM6fQEo=;
-	b=A+u0mnu4gXMONKa8Fq7OR2dsNjAvdyKCE0wh+7jhjVr2Qc5RDPBPIwgwLhCpNLCSF0pnin
-	WhigwZnL1x3vsQxIK6WU3QPd8QdoP0LGe05q1UQTPHzGyg73TXVOLRfynMMDc/PRP4zvR/
-	/9UP7IHiKeknFFJ+ZPPhzanTUrXjz0BVmOADjYEioVDDgWOMGQ8cwhD/ZL9OO7+JqML58s
-	t//16CsA4w9bxn5QgwfaidOqN/D2JHjm7E77DcCf8So5SOYPBh4YMscSLJn4lxcMEgyTpX
-	yxpbnija6WNPiClbgKRnuy/7YMRc7Y8WOwnaoOlEymO2txrn7djtk8P9BxvJZQ==
-Date: Mon, 26 Feb 2024 12:52:26 +0100
-From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-To: Saravana Kannan <saravanak@google.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Xu Yang
- <xu.yang_2@nxp.com>, kernel-team@android.com, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, =?UTF-8?Q?Herv=C3=A9?= Codina
- <herve.codina@bootlin.com>, Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [REGRESSION] Re: [PATCH v2 2/3] of: property: Improve finding the
- supplier of a remote-endpoint property
-Message-ID: <20240226125226.705efef3@booty>
-In-Reply-To: <CAGETcx99hhfOaEn1CH1OLDGp_pnrVeJ2nWb3X5=0j8tij4NR9w@mail.gmail.com>
-References: <20240207011803.2637531-1-saravanak@google.com>
-	<20240207011803.2637531-3-saravanak@google.com>
-	<20240223171849.10f9901d@booty>
-	<CAGETcx99hhfOaEn1CH1OLDGp_pnrVeJ2nWb3X5=0j8tij4NR9w@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=N83wWYshCUb0OAMGltLJDvm3mvy8KKu8gtewNQTz+Us=;
+	b=JL4J6oxs4wy5RU75dtWLYJNTCm2EbEFfcBs9ya+FsBqWpaUvsgS1cdghekpLIfSWth75J2
+	+hn0JLoUjwmGpZ5QENaqoLtv24ObjhY5h87t8v0LtB5L04/sc+dfVR4Lp181Q+mrxjGx88
+	d/c7T7/iQcUvIj6mpiIhBU80vxUOPs0=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-628-dV1qGKaUNv2gFzear963Rw-1; Mon, 26 Feb 2024 06:53:52 -0500
+X-MC-Unique: dV1qGKaUNv2gFzear963Rw-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-412a070d81eso3131475e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:53:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708948431; x=1709553231;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=N83wWYshCUb0OAMGltLJDvm3mvy8KKu8gtewNQTz+Us=;
+        b=gYXiQGkp5s8ZHANmpJOV5u85nFtzgccFDSrVg4lmCR9NEuNQObU2trPUWhSGPRE0q7
+         YOkjEqQ1XsgUpnEOOq95hSFxi0y9S8SwX61OAcdDc1bSIO70YeIOvF5sdFD+Vo3EPGHA
+         hlzfWz+v2PR+SwYKPU8zJkMCW3NoatU5pv5lFHsyypMf3KmE4Gid44d7WeuE13afRnsF
+         EIggq3Sfi2ajHWukkdtnpHjdPsVzAyljENFMsuWniyVZJVWB3kxfwlpsh/b55FittCpd
+         caMcweDbA3yGGncfrwfn9kBCQVxBzgd6+CFlNrh8bhbmx5pDUV9zkRzPnPA9B0vFCYjc
+         RySg==
+X-Forwarded-Encrypted: i=1; AJvYcCW2ymIDjfBFWbVn463dnOApt8VIprpJzhPS3yHgzpZOi/7PIejs2094DLE6gu0kF5pgOE7lkqIezfGpgs+PLTZMFnpdst7TRXYzQ9NG
+X-Gm-Message-State: AOJu0Yy6BkDB6jo7JoyO1lICdgQOc52T5jH6BnIJklBlrtA5+8t5mStB
+	mvNL23IrtYc1iq/h0z4EA9lfvj+TolGWlgtQXDu2WDmC9y9AD6Fs27gQcXqH7o5/42D74aMg0jl
+	LUqc26tFFZahfHqKeQjXBjMfnXmtOFJjbFvmKGGlomKj40XYriichcZB9YaTn4Q==
+X-Received: by 2002:a05:600c:500e:b0:412:a96b:9aaa with SMTP id n14-20020a05600c500e00b00412a96b9aaamr43255wmr.30.1708948430808;
+        Mon, 26 Feb 2024 03:53:50 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFwx+LSotit9GJsq9qeYONBhWJ0/Lg1vAqPd5z55NBn9kh7O4AFmUEDRgN2C8LqQLgCU6TDMA==
+X-Received: by 2002:a05:600c:500e:b0:412:a96b:9aaa with SMTP id n14-20020a05600c500e00b00412a96b9aaamr43234wmr.30.1708948430442;
+        Mon, 26 Feb 2024 03:53:50 -0800 (PST)
+Received: from ?IPV6:2003:cb:c72f:f700:104b:9184:1b45:1898? (p200300cbc72ff700104b91841b451898.dip0.t-ipconnect.de. [2003:cb:c72f:f700:104b:9184:1b45:1898])
+        by smtp.gmail.com with ESMTPSA id z9-20020a05600c114900b004128fa77216sm11727858wmz.1.2024.02.26.03.53.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 03:53:50 -0800 (PST)
+Message-ID: <2f4c44ad-b309-4baa-ac21-2ae19efd31fb@redhat.com>
+Date: Mon, 26 Feb 2024 12:53:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: luca.ceresoli@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v17 19/35] arch/mm: Export direct {un,}map functions
+Content-Language: en-US
+To: Christoph Hellwig <hch@infradead.org>, Will Deacon <will@kernel.org>,
+ Quentin Perret <qperret@google.com>,
+ Chris Goldsworthy <quic_cgoldswo@quicinc.com>,
+ Android KVM <android-kvm@google.com>, Patrick Daly <quic_pdaly@quicinc.com>,
+ Alex Elder <elder@linaro.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Murali Nalajal <quic_mnalajal@quicinc.com>,
+ Trilok Soni <quic_tsoni@quicinc.com>,
+ Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>,
+ Carl van Schaik <quic_cvanscha@quicinc.com>,
+ Philip Derrin <quic_pderrin@quicinc.com>,
+ Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>,
+ Jonathan Corbet <corbet@lwn.net>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Catalin Marinas
+ <catalin.marinas@arm.com>, Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Fuad Tabba
+ <tabba@google.com>, Sean Christopherson <seanjc@google.com>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-arm-msm@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mm@kvack.org
+References: <20240222-gunyah-v17-0-1e9da6763d38@quicinc.com>
+ <20240222-gunyah-v17-19-1e9da6763d38@quicinc.com>
+ <ZdhEtH7xzbzdhS2j@infradead.org>
+ <20240223071006483-0800.eberman@hu-eberman-lv.qualcomm.com>
+ <Zdxwo0abvklfam-Z@infradead.org>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <Zdxwo0abvklfam-Z@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello Saravana,
+On 26.02.24 12:06, Christoph Hellwig wrote:
+> The point is that we can't we just allow modules to unmap data from
+> the kernel mapping, no matter how noble your intentions are.
 
-On Fri, 23 Feb 2024 17:35:24 -0800
-Saravana Kannan <saravanak@google.com> wrote:
+I absolutely agree.
 
-> On Fri, Feb 23, 2024 at 8:18=E2=80=AFAM Luca Ceresoli <luca.ceresoli@boot=
-lin.com> wrote:
-> >
-> > Hello Saravana,
-> >
-> > [+cc Herv=C3=A9 Codina]
-> >
-> > On Tue,  6 Feb 2024 17:18:01 -0800
-> > Saravana Kannan <saravanak@google.com> wrote:
-> > =20
-> > > After commit 4a032827daa8 ("of: property: Simplify of_link_to_phandle=
-()"),
-> > > remote-endpoint properties created a fwnode link from the consumer de=
-vice
-> > > to the supplier endpoint. This is a tiny bit inefficient (not buggy) =
-when
-> > > trying to create device links or detecting cycles. So, improve this t=
-he
-> > > same way we improved finding the consumer of a remote-endpoint proper=
-ty.
-> > >
-> > > Fixes: 4a032827daa8 ("of: property: Simplify of_link_to_phandle()")
-> > > Signed-off-by: Saravana Kannan <saravanak@google.com> =20
-> >
-> > After rebasing my own branch on v6.8-rc5 from v6.8-rc1 I started
-> > getting unexpected warnings during device tree overlay removal. After a
-> > somewhat painful bisection I identified this patch as the one that
-> > triggers it all. =20
->=20
-> Thanks for the report.
->=20
-> > =20
-> > > ---
-> > > --- a/drivers/of/property.c
-> > > +++ b/drivers/of/property.c
-> > > @@ -1232,7 +1232,6 @@ DEFINE_SIMPLE_PROP(pinctrl5, "pinctrl-5", NULL)
-> > >  DEFINE_SIMPLE_PROP(pinctrl6, "pinctrl-6", NULL)
-> > >  DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
-> > >  DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
-> > > -DEFINE_SIMPLE_PROP(remote_endpoint, "remote-endpoint", NULL)
-> > >  DEFINE_SIMPLE_PROP(pwms, "pwms", "#pwm-cells")
-> > >  DEFINE_SIMPLE_PROP(resets, "resets", "#reset-cells")
-> > >  DEFINE_SIMPLE_PROP(leds, "leds", NULL)
-> > > @@ -1298,6 +1297,17 @@ static struct device_node *parse_interrupts(st=
-ruct device_node *np,
-> > >       return of_irq_parse_one(np, index, &sup_args) ? NULL : sup_args=
-np;
-> > >  }
-> > >
-> > > +static struct device_node *parse_remote_endpoint(struct device_node =
-*np,
-> > > +                                              const char *prop_name,
-> > > +                                              int index)
-> > > +{
-> > > +     /* Return NULL for index > 0 to signify end of remote-endpoints=
- */
-> > > +     if (!index || strcmp(prop_name, "remote-endpoint")) =20
-> >
-> > There seem to be a bug here: "!index" should be "index > 0", as the
-> > comment suggests. Otherwise NULL is always returned. =20
->=20
-> Ah crap, I think you are right. It should have been "index". Not
-> "!index". But I tested this! Sigh. I probably screwed up my testing.
->=20
-> Please send out a Fix for this.
->=20
-> Geert, we got excited too soon. :(
->=20
-> > I am going to send a quick patch for that, but haven't done so yet
-> > because it still won't solve the problem, so I wanted to open the topic
-> > here without further delay.
-> >
-> > Even with the 'index > 0' fix I'm still getting pretty much the same: =
-=20
->=20
-> This part is confusing though. If I read your DT correctly, there's a
-> cycle between platform:panel-dsi-lvds and i2c:13-002c. And fw_devlink
-> should not be enforcing any ordering between those devices ever.
->=20
-> I'm surprised that in your "working" case, fw_devlink didn't detect
-> any cycle. It should have. If there's any debugging to do, that's the
-> one we need to debug.
->=20
-> >
-> > [   34.836781] ------------[ cut here ]------------
-> > [   34.841401] WARNING: CPU: 2 PID: 204 at drivers/base/devres.c:1064 d=
-evm_kfree+0x8c/0xfc
-> > ...
-> > [   35.024751] Call trace:
-> > [   35.027199]  devm_kfree+0x8c/0xfc
-> > [   35.030520]  devm_drm_panel_bridge_release+0x54/0x64 [drm_kms_helper]
-> > [   35.036990]  devres_release_group+0xe0/0x164
-> > [   35.041264]  i2c_device_remove+0x38/0x9c
-> > [   35.045196]  device_remove+0x4c/0x80
-> > [   35.048774]  device_release_driver_internal+0x1d4/0x230
-> > [   35.054003]  device_release_driver+0x18/0x24
-> > [   35.058279]  bus_remove_device+0xcc/0x10c
-> > [   35.062292]  device_del+0x15c/0x41c
-> > [   35.065786]  device_unregister+0x18/0x34
-> > [   35.069714]  i2c_unregister_device+0x54/0x88
-> > [   35.073988]  of_i2c_notify+0x98/0x224
-> > [   35.077656]  blocking_notifier_call_chain+0x6c/0xa0
-> > [   35.082543]  __of_changeset_entry_notify+0x100/0x16c
-> > [   35.087515]  __of_changeset_revert_notify+0x44/0x78
-> > [   35.092398]  of_overlay_remove+0x114/0x1c4
-> > ...
-> >
-> > By comparing the two versions I found that before removing the overlay:
-> >
-> >  * in the "working" case (with this patch reverted) I have:
-> >
-> >    # ls /sys/class/devlink/ | grep 002c
-> >    platform:hpbr--i2c:13-002c
-> >    platform:panel-dsi-lvds--i2c:13-002c =20
->=20
-> Can you check the "status" and "sync_state_only" file in this folder
-> and tell me what it says?
->=20
-> Since these devices have a cyclic dependency between them, it should
-> have been something other than "not tracked" and "sync_state_only"
-> should be "1". But my guess is you'll see "active" and "0".
->=20
-> >    platform:regulator-sys-1v8--i2c:13-002c
-> >    regulator:regulator.31--i2c:13-002c
-> >    #
-> >
-> >  * in the "broken" case (v6.8-rc5 + s/!index/index > 0/ as mentioned):
-> >
-> >    # ls /sys/class/devlink/ | grep 002c
-> >    platform:hpbr--i2c:13-002c
-> >    platform:regulator-sys-1v8--i2c:13-002c
-> >    regulator:regulator.30--i2c:13-002c
-> >    #
-> >
-> > So in the latter case the panel-dsi-lvds--i2c:13-002c link is missing.
-> > I think it gets created but later on removed. Here's a snippet of the
-> > kernel log when that happens:
-> >
-> > [    9.578279] ----- cycle: start -----
-> > [    9.578283] /soc@0/bus@30800000/i2c@30ad0000/i2cmux@70/i2c@3/dsi-lvd=
-s-bridge@2c: cycle: depends on /panel-dsi-lvds
-> > [    9.578308] /panel-dsi-lvds: cycle: depends on /soc@0/bus@30800000/i=
-2c@30ad0000/i2cmux@70/i2c@3/dsi-lvds-bridge@2c
-> > [    9.578329] ----- cycle: end -----
-> > [    9.578334] platform panel-dsi-lvds: Fixed dependency cycle(s) with =
-/soc@0/bus@30800000/i2c@30ad0000/i2cmux@70/i2c@3/dsi-lvds-bridge@2c
-> > ... =20
->=20
-> Somewhere in this area, I'm thinking you'll also see "device:
-> 'i2c:13-002c--platform:panel-dsi-lvds': device_add" do you not? And if
-> you enabled device link logs, you'll see that it was "sync state only"
-> link.
->=20
-> > [    9.590620] /panel-dsi-lvds Dropping the fwnode link to /soc@0/bus@3=
-0800000/i2c@30ad0000/i2cmux@70/i2c@3/dsi-lvds-bridge@2c
-> > ...
-> > [    9.597280] ----- cycle: start -----
-> > [    9.597283] /panel-dsi-lvds: cycle: depends on /soc@0/bus@30800000/i=
-2c@30ad0000/i2cmux@70/i2c@3/dsi-lvds-bridge@2c
-> > [    9.602781] /soc@0/bus@30800000/i2c@30ad0000/i2cmux@70/i2c@3/dsi-lvd=
-s-bridge@2c: cycle: depends on /panel-dsi-lvds
-> > [    9.607581] ----- cycle: end -----
-> > [    9.607585] i2c 13-002c: Fixed dependency cycle(s) with /panel-dsi-l=
-vds
-> > [    9.614217] device: 'platform:panel-dsi-lvds--i2c:13-002c': device_a=
-dd
-> > ...
-> > [    9.614277] /soc@0/bus@30800000/i2c@30ad0000/i2cmux@70/i2c@3/dsi-lvd=
-s-bridge@2c Dropping the fwnode link to /panel-dsi-lvds
-> > [    9.614369] /soc@0/bus@30800000/i2c@30ad0000/i2cmux@70/i2c@3/dsi-lvd=
-s-bridge@2c Dropping the fwnode link to /regulator-dock-sys-1v8
-> > ...
-> > [    9.739840] panel-simple panel-dsi-lvds: Dropping the link to 13-002c
-> > [    9.739846] device: 'i2c:13-002c--platform:panel-dsi-lvds': device_u=
-nregister =20
->=20
-> Oh yeah, see. The "device_add" I expected earlier is getting removed here.
->=20
-> > [   10.247037] sn65dsi83 13-002c: Dropping the link to panel-dsi-lvds
-> > [   10.247049] device: 'platform:panel-dsi-lvds--i2c:13-002c': device_u=
-nregister
-> >
-> > And here's the relevant portion of my device tree overlay:
-> >
-> > --------------------8<--------------------
-> > =20
->=20
-> I think the eventual fix would be this series + adding a
-> "post-init-providers" property to the device that's supposed to probe
-> first and point it to the device that's supposed to probe next. Do
-> this at the device node level, not the endpoint level.
-> https://lore.kernel.org/lkml/20240221233026.2915061-1-saravanak@google.co=
-m/
+-- 
+Cheers,
 
-I'm certainly going to look at this series in more detail and at the
-debugging you asked for, however I'm afraid I won't have access to the
-hardware this week and it's not going to be a quick task anyway.
+David / dhildenb
 
-So in this moment I think it's quite clear that this specific patch
-creates a regression and there is no clear fix that is reasonably
-likely to get merged before 6.8.
-
-I propose reverting this patch immediately, unless you have a better
-short-term solution.
-
-Luca
-
---=20
-Luca Ceresoli, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
 
