@@ -1,111 +1,114 @@
-Return-Path: <linux-kernel+bounces-82179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F83F868052
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:03:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5415868053
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:03:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DCE71C23FE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:03:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FDFC28D483
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:03:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4617C12F39C;
-	Mon, 26 Feb 2024 19:02:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9645712F597;
+	Mon, 26 Feb 2024 19:03:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hltUacoi"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KE66Pesh"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C42612EBE8
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 19:02:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C2B12C815;
+	Mon, 26 Feb 2024 19:03:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708974176; cv=none; b=iOw5o3dcaZn+t1EwfhpYCTM7n3Zb5WpfggoCTWCG3j/ihkEyx78lxxC6rQQAAeVbVKrKSafkQEKVTUFu1/SIEkg2iNRt0TZMl/AnTxi+LUKuQShMXzgiDH1bmgRcRhGFxAzKp9Sy3ozxQw1Q1UMTS9ZIxCqKdnOGywYnRKXoluQ=
+	t=1708974185; cv=none; b=tP30+/8G/HaRhbjpYCpoRuOT8UU/Hxiv+JgdSUNobde8wIXy259orjIpiVE4Pf2CzuD7Oh+W7e5oLPuG0rmkGm6SG9yyzUouu+HSnoJlaOxD7XTyTNT9oqxh48G7jpHi0nifVkVJOAprlwvT4piJPGy96nMQM+tWcjkBd9aHL5o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708974176; c=relaxed/simple;
-	bh=cSOx6sLrM+VFIe3l1eAHUzd6YTgL/QiWpTBCbztEAAs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IJS0RXoZtDzTkzNUkW5AQvhuUYqWgJ08289vP8FnKoKML9y5OgYaUwTvCBg9RIucI5GQ1sCOFZUerL6YbGbBB0oBgCkcoygAwl5i3vb/NVfH2ca5ew160aXMWrrnACXdgoxbPcaVxwRBaKrhX252zGdu4lCfM0uVEhdfsKz/0vQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hltUacoi; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e4f3cbb518so887229b3a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:02:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708974174; x=1709578974; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=GbKtP8KDSOrYkQE9kgpbqDQbm2VGRRUZbNQNk3IXC5I=;
-        b=hltUacoiO78HPZZpWjLccoLJBEUea4TBFACwrdskz3RY6EMSEnANzlfqHQz9fRD6dY
-         Of/43L9yjCcLvTmTsjqxBUTFIw5aSV5pRSMHUhRnnoybTQ2wV4uPq8nwnoOf6S3BrNe8
-         aCGRltqFgw1Mk63QZtZzmafHXtNVSg6uy7pLu0fAtCAAMOUy9QJ00gCTq0gPhWTsm4vY
-         LXzosFAqlsIUPSy8SbC6wtRUhlbG83rDCGpuelM03bhkLtH+FKeepL21LiEiYG++nvUa
-         GtIw75v+4MynHgyYLvmupMAaUUs73H6rO7aTcEwv9nk7jQYOrrzxmPH5uraJGen2ZRBZ
-         FHaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708974174; x=1709578974;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GbKtP8KDSOrYkQE9kgpbqDQbm2VGRRUZbNQNk3IXC5I=;
-        b=omUR61bFt2FmsGGZMEQnldMaSYp7KYDUIm1pkCFwM6D6VLnTGVKx00XDGLino614ac
-         A/szfMJHRT8Ra1+ODJ8tg0K55wmyBlV9nCXKA27f6NhRZNdBfNo20n9yYoTt5o/Pb5iz
-         gGkidj8kWSIJgvJ0ts+L66NDOFqMKYl1taiYU6cRnOZcF9R5tyfRRTcpQJfPq29iiDP6
-         Vda/Qo33EUEfiVR99OtKinKdLBO3kELI+/oQZAoO59kMcAE/T4GEC8Q8aW9Kw/P0c3xZ
-         jUbEnpU7i//BXHBd0gaL+r0sw0tDwBZOb9o8N9xI8S5BBh52bOqKpW8U6HeT0jLk5z1H
-         ddhA==
-X-Forwarded-Encrypted: i=1; AJvYcCWEupLM1nr+mK458CPqhxjRAeYh2mFTxNKVAkWe9RW2sTmV7I4/FQ9PnfTKCxmAzPdaJjnFylCrkJKA0MuFCurCdfPtJ4eibt0qEBzJ
-X-Gm-Message-State: AOJu0Yz7hIWPszDzeJyGyRZ61RGTzvJDUc/38HFnDagyXmQpLc4Xk6rQ
-	3j8I5TZ9Pd7+l6T2kjiuU2rxsD1Ts+FiYzwq7Lcl2ImTgHBgu6lZ
-X-Google-Smtp-Source: AGHT+IHePnOGpaJBQGUtC37aPUNJR9tUv/59Suj881Mn9ReQnwXZcj+LlLbcqfQGpZf3xs7EuMHS1g==
-X-Received: by 2002:aa7:8653:0:b0:6e3:b7cb:b110 with SMTP id a19-20020aa78653000000b006e3b7cbb110mr6469716pfo.30.1708974174449;
-        Mon, 26 Feb 2024 11:02:54 -0800 (PST)
-Received: from localhost.localdomain ([27.7.16.213])
-        by smtp.gmail.com with ESMTPSA id c2-20020a63a402000000b005e45b337b34sm4319656pgf.0.2024.02.26.11.02.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 11:02:54 -0800 (PST)
-From: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
-To: suzuki.poulose@arm.com
-Cc: mike.leach@linaro.org,
-	james.clark@arm.com,
-	coresight@lists.linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
-Subject: [PATCH] Correcting the spelling mistake in Coresight subsystem
-Date: Tue, 27 Feb 2024 00:32:45 +0530
-Message-Id: <20240226190245.789200-1-pvkumar5749404@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1708974185; c=relaxed/simple;
+	bh=Bn5ZICiOrzowTp93LG/Tvy9uAU1imSLSi4jPVGHq5JI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=INAqKv/xNsSHklQfzT4xfHUNenLkJpQxOtzzOGR78/QHobtMV3RZ3PYMeHqJInuiRCynIvAGoe4yvXvOzKGG0zFBVTCJGBTeg05NgFu2jK2qW5HthnKIBnBl8AW2SziYmedVa/n71hcyKOI3gqAGe6W3WpFQrjQj0ONruVR1rS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KE66Pesh; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708974184; x=1740510184;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Bn5ZICiOrzowTp93LG/Tvy9uAU1imSLSi4jPVGHq5JI=;
+  b=KE66PeshzluR3kM7eciTSwExtBVszZFR551J+lNfg6qSX6Bqvxt9JMfn
+   ekGYaoxJcnEnL5s/rSk/UUuZiPW0fAxlhowI/jxuDKrVIuICTOXdaDLYk
+   pbpeUtY4lXRBfjuJQVLdfSrRs2qSoVn5NIRbTSw2mMca5xGaer7wA6wdP
+   BgizpE6Vexteo9iNLkBjFmURk65229haBykK/OjX4wvPXFDdb01jUBsVZ
+   12m4AnJSuehHftPjkRG4KIYLxp+wOWLiLIOECMJ8M/ZFkUtYkjdnhkKUU
+   skPEelhxEA9SH1lLX1aaRqy9eq2uU5U+8CvgDoChAGiMF4bxVLzUr3zfy
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="14720135"
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="14720135"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 11:03:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="6911024"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 11:03:02 -0800
+Date: Mon, 26 Feb 2024 11:03:01 -0800
+From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
+To: Binbin Wu <binbin.wu@linux.intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	Sean Christopherson <sean.j.christopherson@intel.com>,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v18 039/121] KVM: x86/mmu: Track shadow MMIO value on a
+ per-VM basis
+Message-ID: <20240226190301.GN177224@ls.amr.corp.intel.com>
+References: <cover.1705965634.git.isaku.yamahata@intel.com>
+ <229a18434e5d83f45b1fcd7bf1544d79db1becb6.1705965635.git.isaku.yamahata@intel.com>
+ <05db1988-fad8-458a-8132-7dbe0f1a3ffa@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <05db1988-fad8-458a-8132-7dbe0f1a3ffa@linux.intel.com>
 
-Changes :
-	- "avaialble" corrected to "available" in "Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc"
+On Sun, Jan 28, 2024 at 09:50:16PM +0800,
+Binbin Wu <binbin.wu@linux.intel.com> wrote:
 
-Signed-off-by: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
----
- Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
+> > index 02a466de2991..318135daf685 100644
+> > --- a/arch/x86/kvm/mmu/spte.c
+> > +++ b/arch/x86/kvm/mmu/spte.c
+> > @@ -74,10 +74,10 @@ u64 make_mmio_spte(struct kvm_vcpu *vcpu, u64 gfn, unsigned int access)
+> >   	u64 spte = generation_mmio_spte_mask(gen);
+> >   	u64 gpa = gfn << PAGE_SHIFT;
+> > -	WARN_ON_ONCE(!shadow_mmio_value);
+> > +	WARN_ON_ONCE(!vcpu->kvm->arch.shadow_mmio_value);
+> >   	access &= shadow_mmio_access_mask;
+> > -	spte |= shadow_mmio_value | access;
+> > +	spte |= vcpu->kvm->arch.shadow_mmio_value | access;
+> >   	spte |= gpa | shadow_nonpresent_or_rsvd_mask;
+> >   	spte |= (gpa & shadow_nonpresent_or_rsvd_mask)
+> >   		<< SHADOW_NONPRESENT_OR_RSVD_MASK_LEN;
+> > @@ -411,6 +411,12 @@ void kvm_mmu_set_mmio_spte_mask(u64 mmio_value, u64 mmio_mask, u64 access_mask)
+> >   }
+> >   EXPORT_SYMBOL_GPL(kvm_mmu_set_mmio_spte_mask);
+> > +void kvm_mmu_set_mmio_spte_value(struct kvm *kvm, u64 mmio_value)
+> > +{
+> 
+> Is it better to do some check on the mmio_value and warns if the value
+> is illegal?
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc
-index 96aafa66b4a5..339cec3b2f1a 100644
---- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc
-+++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc
-@@ -97,7 +97,7 @@ Date:		August 2023
- KernelVersion:	6.7
- Contact:	Anshuman Khandual <anshuman.khandual@arm.com>
- Description:	(Read) Shows all supported Coresight TMC-ETR buffer modes available
--		for the users to configure explicitly. This file is avaialble only
-+		for the users to configure explicitly. This file is available only
- 		for TMC ETR devices.
- 
- What:		/sys/bus/coresight/devices/<memory_map>.tmc/buf_mode_preferred
+I don't think so because the only caller is kvm_mmu_set_mmio_spte_value(kvm, 0)
+in tdx_vm_init().  I don't expect other caller.
 -- 
-2.34.1
-
+Isaku Yamahata <isaku.yamahata@linux.intel.com>
 
