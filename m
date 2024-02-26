@@ -1,124 +1,89 @@
-Return-Path: <linux-kernel+bounces-81298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 961598673BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:45:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4A6A8673F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:53:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C43311C25A9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:45:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ACE23B281F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:45:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D96CB1DA37;
-	Mon, 26 Feb 2024 11:45:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAB241EB27;
+	Mon, 26 Feb 2024 11:45:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="htCSDjcg"
-Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="PezFmYNF"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A074D1DA20
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:45:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6488F1F604;
+	Mon, 26 Feb 2024 11:45:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708947907; cv=none; b=QSzMlVuz5hoe+HpZRIZGjQm+gLhBnDjsv+xPoNJcOj+b55JQrHQj49YjKCIB0X2kTS631ezfeBeuUe09CTPvCMWzf9eWAL65r6G9b72/uhqqlqdRyUGiKqPUK9cLAbe5eY/EqJCR3LK8o3ELVLzhsdwOaX++nUi3kIq0Z/drqDA=
+	t=1708947911; cv=none; b=fkdjfNdWnqpDCgvvmuueeFmm/N5/VmVeVwUoOkcR3TUipws/CkZ41KoG+b0Cm34pKWB08ffksBB+Xg70liUWUcM8LNhVl1NbCL6IJiPxfAeHQKRf/cSs3ednI00u1JsitynSY3KI8/GX6WJZX7ZmLp80RaXtVwFvuZ5sbP3uAps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708947907; c=relaxed/simple;
-	bh=prNgVbePwRcKo0ldZvLmcT9NEprnyubS2n4dPuEAQS8=;
+	s=arc-20240116; t=1708947911; c=relaxed/simple;
+	bh=oSvoN8H+rqwZXxcM1Lw/Xnu0f94O0PIpJpGfNO1tV0o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A8MP6XrEWLxG3/d91D/LR7GUjTyM05C5v5C+b3/KLWJz9Hg9TBy5J9Kn1Ya4sk1aRDdKWymeOqcGdhjgl5w8+boKvl80IddUnRDiPDfTw3K9HiktAYWI+LBiOaCIa23i7UbsXQRB0YZb7tsTUKQJHFQEoo2MgOQLCWCLhGY3EXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=htCSDjcg; arc=none smtp.client-ip=209.85.219.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-68facd7ea4bso7725036d6.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:45:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708947904; x=1709552704; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=CSKU6X8Qwf8AFWfUlivJ0Qu0nT+8oAq4LKU9650PhEY=;
-        b=htCSDjcgeWBxcIrFZFAJ7xcoOBhvWyUPFe8PIYRrjmJt1A8MQflEdaEB8PhWIGzuad
-         8yXrRxSYPKZ6tPaDEhDOLigNAm+QZsrfDjqbH7CFrw1BTawmqHmB4NZuKGsQGvKTVinJ
-         7fIAjW1SX3boe6A4YYTgXOnDMntBiJ2IoA+IzNrteHUZS/qoLGEcJI2SO9Ct/H1qV9Mh
-         446lEj6RS5wKIylYSYSzxi2Lj9tUDUo5MELA4E1ahEAI6kQfs1NIbmZWPxp9rrWdiAIn
-         ekmNn9hkvZDWbYsUGhespAYerJr8S9mk6rYteD7zrqk2s6f/MVsrvI0y/mxNoskxqxp6
-         ulbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708947904; x=1709552704;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CSKU6X8Qwf8AFWfUlivJ0Qu0nT+8oAq4LKU9650PhEY=;
-        b=e2Nz9TQmBV8Rv0Iho0BchMAJbDsCnDBurvUIturRmntRnnPuLWwHG7Cv2Rc+1NpPic
-         Rkcj6Iq7ztmqWw5wLfGrmSfZ5DKBadJUzsRh6+Z1HKPT0kBoCeh8ju76VIet42/FOLzM
-         j5J3h/E08qc0b00KTr+m5FHOQmLF45pwGVv2hsj4W99YPKUGEWb1QmLdD0wEnsYM39Xt
-         qP+Xj1aRkMU/K7L43+YLgPvlolG8xu6gYFQcshqt4OKFxpz/rCnHlbDNeL1jh3xr784Q
-         Dyl8fGkImLBIYPvnvaj18fqFq8vah9BvmwVa3PJ5M7r98MDLdbvBEkJtzww4xeeg7NOY
-         XGCw==
-X-Forwarded-Encrypted: i=1; AJvYcCU5mocUlW5+/ZFQ7ZninuyCtRqLJn2o2dvC1dfd5n+5N3FSFiYohAJ4hpycJwMjDbxHyFdYEXPrEQ9sRzYZmwEXBkknv1tEoM+Jc4qI
-X-Gm-Message-State: AOJu0Yzupw4IiMRQBToCwQB3RiYYAcIzsMnc++q0mIr/xSWMbKiQReKL
-	C2p6bzrwiIaQenDohn66xx+Qihm4BQr4Epwtl74QwuyZPBcaFeSGUdS3H/Rb0g==
-X-Google-Smtp-Source: AGHT+IGpa5Q2fHBV5USsuqQLitp7DsDSNKdukrxekBdLBW00T7uhMM/LdUvMDcnQPH4wSebMQTN4JA==
-X-Received: by 2002:a0c:f0d3:0:b0:68f:e821:ed43 with SMTP id d19-20020a0cf0d3000000b0068fe821ed43mr5600040qvl.42.1708947904574;
-        Mon, 26 Feb 2024 03:45:04 -0800 (PST)
-Received: from thinkpad ([117.202.184.81])
-        by smtp.gmail.com with ESMTPSA id bd3-20020ad45683000000b0068fa52f5f7esm2811461qvb.7.2024.02.26.03.45.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 03:45:04 -0800 (PST)
-Date: Mon, 26 Feb 2024 17:14:59 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel@quicinc.com
-Subject: Re: [PATCH] bus: mhi: host: pci_generic: constify
- modem_telit_fn980_hw_v1_config
-Message-ID: <20240226114459.GB8422@thinkpad>
-References: <20240222-mhi-const-bus-mhi-host-pci_generic-v1-1-d4c9b0b0a7a5@quicinc.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZhaxxlqD8K5o1HKmNiklNGyx8JWyNDujxycE/f+itHrgEePu93+F88iUqtgBKbAipvMRdfDI1gl1OtfATz/iJ5cEFOssm2cKU3Vel51C/f7G1+8yhrmQgJ3lRyXcJv3GpM7YL7+D5EKIMFFOpzeDQ9cRldA23VwxfpcDfwnYhIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=PezFmYNF; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=9fx1xFWIaqHRlfNeLJHhLh9M9CR7/OWd/dFYXNoL+Ak=; b=PezFmYNF0aWQlCCcwDR5gvmKyS
+	EUGqdd/VbgmjtliFb/DOVw18XVzEurQjFJ8eTAIpob2O+OMbK2MvTRoVWUu75Ymgjo5A/KmKun7aL
+	udU/0WM2b+bRkRRoAMoDH+u/GUelcWWgNGwdJa8Bm1+pzzDKe4IFILa3CMo4yl1eTxw2yWbiqgrf9
+	94LyHaEEuLtu6AC63EnjjEoCNUKTUCFmFzG5ZAN5HaJtU/ozRnyEzo004MjlBNe6xBrI20EiLKLP4
+	5h0AYbhVPahi0cHkIBfgFpdmCtuMPZZMWbrihIBeU0w1VIP/vtX/GqQolqyMHTwfZXLfOpc6+Obco
+	an3Fbp3g==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41710)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1reZPt-00039s-0F;
+	Mon, 26 Feb 2024 11:45:05 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1reZPs-0006Oy-3J; Mon, 26 Feb 2024 11:45:04 +0000
+Date: Mon, 26 Feb 2024 11:45:03 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc: davem@davemloft.net, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
+	Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH net-next 2/2] doc: sfp-phylink: mention the
+ mac_capabilities and supported_interfaces
+Message-ID: <Zdx5v1UXDqsKsjW8@shell.armlinux.org.uk>
+References: <20240220160406.3363002-1-maxime.chevallier@bootlin.com>
+ <20240220160406.3363002-3-maxime.chevallier@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240222-mhi-const-bus-mhi-host-pci_generic-v1-1-d4c9b0b0a7a5@quicinc.com>
+In-Reply-To: <20240220160406.3363002-3-maxime.chevallier@bootlin.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Thu, Feb 22, 2024 at 06:00:23PM -0800, Jeff Johnson wrote:
-> MHI expects the controller configs to be const, and all of the other ones
-> in this file already are, so constify modem_telit_fn980_hw_v1_config.
-> 
-> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+On Tue, Feb 20, 2024 at 05:04:04PM +0100, Maxime Chevallier wrote:
+> +   Fill-in all the :c:type:`phy_interface_t <phy_interface_t>` (i.e. all MAC to
+> +   PHY link modes) that your MAC can output. The following example shows a
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-- Mani
-
-> ---
->  drivers/bus/mhi/host/pci_generic.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/bus/mhi/host/pci_generic.c b/drivers/bus/mhi/host/pci_generic.c
-> index cd6cd14b3d29..51639bfcfec7 100644
-> --- a/drivers/bus/mhi/host/pci_generic.c
-> +++ b/drivers/bus/mhi/host/pci_generic.c
-> @@ -538,7 +538,7 @@ static struct mhi_event_config mhi_telit_fn980_hw_v1_events[] = {
->  	MHI_EVENT_CONFIG_HW_DATA(2, 2048, 101)
->  };
->  
-> -static struct mhi_controller_config modem_telit_fn980_hw_v1_config = {
-> +static const struct mhi_controller_config modem_telit_fn980_hw_v1_config = {
->  	.max_channels = 128,
->  	.timeout_ms = 20000,
->  	.num_channels = ARRAY_SIZE(mhi_telit_fn980_hw_v1_channels),
-> 
-> ---
-> base-commit: 3ab6aff5793c3c7bdf6535d9b0024544a4abbdd5
-> change-id: 20240222-mhi-const-bus-mhi-host-pci_generic-5ddf8f13d35c
-> 
+Technically, this should be "MAC and all PCS associated with this MAC".
 
 -- 
-மணிவண்ணன் சதாசிவம்
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
