@@ -1,130 +1,154 @@
-Return-Path: <linux-kernel+bounces-81358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81357-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49F1D8674BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:24:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EB7F8674BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:23:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B9B21C24EC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:24:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C45B41F2C75F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:23:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6DB604DE;
-	Mon, 26 Feb 2024 12:24:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 049F5604C9;
+	Mon, 26 Feb 2024 12:23:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="BROXfXqQ"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="KFmqfP0Z"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AF8D604BA;
-	Mon, 26 Feb 2024 12:24:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D635660252
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 12:23:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708950258; cv=none; b=nQbtYArlRZwDiBev+AKKN7GTEaRgUs8gh0innMe9yl+URBXWEefqfG2A+6OmJFr4NWb/7XDiRYdZBvXnjJOrhDPMPydoGj7rfHuPcHGG/33r6p3wNPkHl5Mq9Y7OQZHBMTtFD2rSyEIP9y+tpK7RiuF2XVuO7w6D7QSdTttSY8o=
+	t=1708950229; cv=none; b=QBLFSWBYNV2/fxZSVZPEoXEagvhtqfP1xDGlgWBvlxFqn2M6oWzzypb3lprZ3k2lW1EtEL1KgsllpTbeBeJYt3N/1wA/B/tKGlvO5YcVGeF6OFLpsClDiy4UXUwl66braYYDyeCSHi/F+wmbL0DAguhysPM8Fj899jsoyhBOJdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708950258; c=relaxed/simple;
-	bh=uGYKrjt3FLbs0QDjnP1dOXopulEcJJucDWfTeZDvGjk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gjvKDPECheqPXdjLhSJK61GmyEc20wzS7QHsVb2PkLZC1gSgPQ8FpumAgubw7Txj2kImDvkOg3Lj1MVmQJtUX7dIbfd7H9hJkdKcAWC4HqK629/JiyMR/Mdl1Z+kZLpFN9/VAWoHS1PPA7QtlyMmrETaLokxbAnKBHQxiesbA1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=BROXfXqQ; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=zc1RjtY1ARFXv9X7AWb9xg2qefIhvIwrCXvg3e6WynE=; b=BROXfXqQXZTbIHzw0zpQsN6HXm
-	A9Zq5kJDUduueLDMU05tNBf766hgTB9RrfuLsQ9vFytUWw3IR/SQqHpE1VGGujMI9eeNAs0xNP2Fv
-	GPhVNEujNa+JT+5JdTn3hBcvRm352QvCDhXgFTtQMJ/i7ZGcJAIf7+gxXnqPU/LWoRzN5TuWcLAxH
-	+s0CGxCQN/UTOXasfQCUp5oakmXwMsw6MpPNejJxUzqgo2CIFm9NwulM9N4qmWRpZAIO5qIKv5hjU
-	WDOlq7Ygigcj5WhK+M7BKDJKKNKgY2MD7hENrwfddIEBbsGGQD2odotWzFKv120sE0tovM8j74uxu
-	/NFJ0Sqg==;
-Received: from [177.34.169.255] (helo=[192.168.0.139])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1rea19-003YfT-KA; Mon, 26 Feb 2024 13:23:35 +0100
-Message-ID: <ad133922-6f11-483f-94c9-12aa8c3189df@igalia.com>
-Date: Mon, 26 Feb 2024 09:23:23 -0300
+	s=arc-20240116; t=1708950229; c=relaxed/simple;
+	bh=jDAhdEpIbKlSXWc3tggrWyIET+6KayygFiH8Jlx4FdQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=nbUQnCAr1jMrvmXCwbwdPQsnIoDOmDvIIVLzMXpxHM3ZqXH2RvIrVsJlddokMbL3KWuSd+do/pTb6omNZTMLcEaPKJYwWXwzdlZVdnT+jaDCRPXtp5PRlrz/Tpml5PgUdJNRChQoBTaSnt7b2oecuwL91wxCE4xB6Nr3nxTillo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=KFmqfP0Z; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708950225;
+	bh=jDAhdEpIbKlSXWc3tggrWyIET+6KayygFiH8Jlx4FdQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=KFmqfP0ZEp9VwkGbslYkheutZpcnCyH+w7n2pXU85NgWvIcdbZfOyBcav1JM4g5LW
+	 tGmyxsZTYk/queDLgYvAoip8HRcbX4kYgCWLuGdh7UwNiQCKo0qWw87VaBGA165Mn3
+	 CIwkSVEBg8xuVKJ5jeDXrQiOYNGkCK5w3bF6Z0BjO6SvjRwtO6XSJGGKHMVtPGpGc0
+	 kriSFMLerP31qCy6sdcyPUB7CYBEWM6+y3GWHZ3fpQ58BxiYJBd36t43/74JD87Yg3
+	 8IvNN1LGKvsEnNq4ApjEtp8DZSEoe1b812iAk7QsooeSwmM4D+IuL1gmYcSHI8G5gd
+	 7M2d/gb84AaTg==
+Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pq)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E5F6837803EE;
+	Mon, 26 Feb 2024 12:23:44 +0000 (UTC)
+Date: Mon, 26 Feb 2024 14:23:43 +0200
+From: Pekka Paalanen <pekka.paalanen@collabora.com>
+To: Louis Chauvet <louis.chauvet@bootlin.com>
+Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
+ <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
+ <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
+ Vetter <daniel@ffwll.ch>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ arthurgrillo@riseup.net, Jonathan Corbet <corbet@lwn.net>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
+ thomas.petazzoni@bootlin.com
+Subject: Re: [PATCH v2 7/9] drm/vkms: Add range and encoding properties to
+ pixel_read function
+Message-ID: <20240226142343.459f23f7.pekka.paalanen@collabora.com>
+In-Reply-To: <20240223-yuv-v2-7-aa6be2827bb7@bootlin.com>
+References: <20240223-yuv-v2-0-aa6be2827bb7@bootlin.com>
+	<20240223-yuv-v2-7-aa6be2827bb7@bootlin.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 02/36] drm/tests: helpers: Add atomic helpers
-Content-Language: en-US
-To: Maxime Ripard <mripard@kernel.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>,
- Sandy Huang <hjc@rock-chips.com>, =?UTF-8?Q?Heiko_St=C3=BCbner?=
- <heiko@sntech.de>, Chen-Yu Tsai <wens@csie.org>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>
-Cc: Hans Verkuil <hverkuil@xs4all.nl>,
- Sebastian Wick <sebastian.wick@redhat.com>,
- =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
- dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
- linux-sunxi@lists.linux.dev
-References: <20240222-kms-hdmi-connector-state-v7-0-8f4af575fce2@kernel.org>
- <20240222-kms-hdmi-connector-state-v7-2-8f4af575fce2@kernel.org>
-From: =?UTF-8?Q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>
-Autocrypt: addr=mcanal@igalia.com; keydata=
- xjMEZIsaeRYJKwYBBAHaRw8BAQdAGU6aY8oojw61KS5rGGMrlcilFqR6p6ID45IZ6ovX0h3N
- H01haXJhIENhbmFsIDxtY2FuYWxAaWdhbGlhLmNvbT7CjwQTFggANxYhBDMCqFtIvFKVRJZQ
- hDSPnHLaGFVuBQJkixp5BQkFo5qAAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQNI+cctoYVW5u
- GAEAwpaC5rI3wD8zqETKwGVoXd6+AbmGfZuVD40xepy7z/8BAM5w95/oyPsHUqOsg/xUTlNp
- rlbhA+WWoaOXA3XgR+wCzjgEZIsaeRIKKwYBBAGXVQEFAQEHQGoOK0jgh0IorMAacx6WUUWb
- s3RLiJYWUU6iNrk5wWUbAwEIB8J+BBgWCAAmFiEEMwKoW0i8UpVEllCENI+cctoYVW4FAmSL
- GnkFCQWjmoACGwwACgkQNI+cctoYVW6cqwD/Q9R98msvkhgRvi18fzUPFDwwogn+F+gQJJ6o
- pwpgFkAA/R2zOfla3IT6G3SBoV5ucdpdCpnIXFpQLbmfHK7dXsAC
-In-Reply-To: <20240222-kms-hdmi-connector-state-v7-2-8f4af575fce2@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/ZEoDf4cS/x3p=01Lsgfn.zi";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On 2/22/24 15:13, Maxime Ripard wrote:
-> The mock device we were creating was missing any of the driver-wide
-> helpers. That was fine before since we weren't testing the atomic state
-> path, but we're going to start, so let's use the default
-> implementations.
-> 
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+--Sig_/ZEoDf4cS/x3p=01Lsgfn.zi
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Maíra Canal <mcanal@igalia.com>
+On Fri, 23 Feb 2024 12:37:27 +0100
+Louis Chauvet <louis.chauvet@bootlin.com> wrote:
 
-Best Regards,
-- Maíra
+> From: Arthur Grillo <arthurgrillo@riseup.net>
+>=20
+> Create range and encoding properties. This should be noop, as none of
+> the conversion functions need those properties.
 
+None of the conversion function needs this? How can one say so?
+The previous patch is making use of them already, AFAICT?
+
+How is this a noop? Is it not exposing new UAPI from VKMS?
+
+
+Thanks,
+pq
+
+>=20
+> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+> [Louis Chauvet: retained only relevant parts]
+> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
 > ---
->   drivers/gpu/drm/tests/drm_kunit_helpers.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/tests/drm_kunit_helpers.c b/drivers/gpu/drm/tests/drm_kunit_helpers.c
-> index ca4f8e4c5d5d..4fb11b938bc1 100644
-> --- a/drivers/gpu/drm/tests/drm_kunit_helpers.c
-> +++ b/drivers/gpu/drm/tests/drm_kunit_helpers.c
-> @@ -1,6 +1,7 @@
->   // SPDX-License-Identifier: GPL-2.0
->   
->   #include <drm/drm_atomic.h>
-> +#include <drm/drm_atomic_helper.h>
->   #include <drm/drm_drv.h>
->   #include <drm/drm_kunit_helpers.h>
->   #include <drm/drm_managed.h>
-> @@ -14,6 +15,8 @@
->   #define KUNIT_DEVICE_NAME	"drm-kunit-mock-device"
->   
->   static const struct drm_mode_config_funcs drm_mode_config_funcs = {
-> +	.atomic_check	= drm_atomic_helper_check,
-> +	.atomic_commit	= drm_atomic_helper_commit,
->   };
->   
->   /**
-> 
+>  drivers/gpu/drm/vkms/vkms_plane.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/vkms/vkms_plane.c b/drivers/gpu/drm/vkms/vkm=
+s_plane.c
+> index 427ca67c60ce..95dfde297377 100644
+> --- a/drivers/gpu/drm/vkms/vkms_plane.c
+> +++ b/drivers/gpu/drm/vkms/vkms_plane.c
+> @@ -228,5 +228,14 @@ struct vkms_plane *vkms_plane_init(struct vkms_devic=
+e *vkmsdev,
+>  	drm_plane_create_rotation_property(&plane->base, DRM_MODE_ROTATE_0,
+>  					   DRM_MODE_ROTATE_MASK | DRM_MODE_REFLECT_MASK);
+> =20
+> +	drm_plane_create_color_properties(&plane->base,
+> +					  BIT(DRM_COLOR_YCBCR_BT601) |
+> +					  BIT(DRM_COLOR_YCBCR_BT709) |
+> +					  BIT(DRM_COLOR_YCBCR_BT2020),
+> +					  BIT(DRM_COLOR_YCBCR_LIMITED_RANGE) |
+> +					  BIT(DRM_COLOR_YCBCR_FULL_RANGE),
+> +					  DRM_COLOR_YCBCR_BT601,
+> +					  DRM_COLOR_YCBCR_FULL_RANGE);
+> +
+>  	return plane;
+>  }
+>=20
+
+
+--Sig_/ZEoDf4cS/x3p=01Lsgfn.zi
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXcgs8ACgkQI1/ltBGq
+qqd0yQ/+PlsbBszx14fLcIryZU8Vr70SeP1/sr10MG/XYQgLAvcou7ushiRPDMtc
+Vw7fD+bI7Egqs3s7nS4gFPhQX9Ej/iroulD7kUdejtzi9J4e2n5Z7ccS/uu5UoXQ
+esCHtd3ZHMY5Sgi/FK76VUZV5EeW0WTkKAQy4rMHPaUumxi2RhueLQ+YVP8nzsIs
+c9s1W8VQNAOKNKiIE7YNU0jjiA1FlqhGdghMQjpX1RYK7PB13xYmZKTZS0bUueut
+oCrzvVkrAA2ASmxyRdlDaQeOmGso2/ajbc0PamCsWklQLTBbfuoy0yNnRXBXjVJG
+RKUpyRlG4QI9/vGyFE818fbUT/f4CnwfN5yoeaM3Ciqv+zqH6fVnsXiqu1z1rQTm
+EvzbcmCbNfzVj4+LbiVJCrrxcse8Nu0KA5HwXUlCxdyTVuW4s3ffYJnU/e6Ymicb
+fgB1dGANe7d8BHUXO9JHyI4pQwIUM+7os9l3DWIEK64T9DTQCZqLPiMQeQbpDYjs
+Wpd2coi52Gr37Kuauz0mX0TwRp7/ADi0+gpHBoX4Z+CtrTgPaWxhRcS9lmcyNo05
++LOovrnQMOydRPLvkMYsoDCWI/SdVhSt8XF5xiDEV6QOorm+wDLIh/qPz9me5/eb
+U8vOpJuiE4KaKr8GwTCldJPr6GwR+CUEB1aUA33UEsZvtPbQoWg=
+=obet
+-----END PGP SIGNATURE-----
+
+--Sig_/ZEoDf4cS/x3p=01Lsgfn.zi--
 
