@@ -1,173 +1,184 @@
-Return-Path: <linux-kernel+bounces-82337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 576F48682FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:26:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C100868308
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:28:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DF441F26B19
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:26:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A190A1F24A3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:28:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B2B5132465;
-	Mon, 26 Feb 2024 21:26:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2A85131E53;
+	Mon, 26 Feb 2024 21:27:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="go/dzltW"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fTueOrf7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFB71132467;
-	Mon, 26 Feb 2024 21:26:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 025CA13173B;
+	Mon, 26 Feb 2024 21:27:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708982766; cv=none; b=VyKpYHJj0TxFbrzpBWYuCPTzq7dtQSJFdkgPd2Ini6GRcH4vxdlzEb6nCcnphocf4zexWy1axY7nLEuxcPMGi2I7BhAcA21yHorrEkRtH81BALVy0VzEtAksZkbr+yy7ic02NgLHucQIMeKI23hz1RJrEqCrBT/3wFtsCCd9dAo=
+	t=1708982866; cv=none; b=kI0+jafdMnMsonsFOvA6PzWJfxDU5Ag2LVDv5ZwSHlYEh2XAFir6G7iIqU9HMaYEQhn7YM+2uxrZjq/YYCO8UauOOQaDbadRh1OUSX4sj4Wu0xvJ8BvlO8mLAK4kcOZzGKYDGnmVuKq7UjQzxw3r53+fF62xmEMnn75r5803ekg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708982766; c=relaxed/simple;
-	bh=+aZznYEEJnxpn3Hfp1CaaYgaYW/C+miPXfNVer03ZgQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=sznuEA5EDp/NsBYL1M+rA7hheHCfRdNXUufBQd5tM+Yfxl2X08Dv/AOMY63DMi5MEsbTcKcBNDXPX8CJe880emPwIztkNHiP2V7HiiK1ufxEWB9znypMwu3tvG9KArByKUqp29p+wufsPLLsRN8ty/2mI4SVWTqeOvRO5jk5cy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=go/dzltW; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-512f6f263a6so1609308e87.2;
-        Mon, 26 Feb 2024 13:26:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708982762; x=1709587562; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=144mFCoAmLnYhpxBxU841lMdT4yO+1U9AQuLuH2HZyw=;
-        b=go/dzltWJvq453cg6xIphjT9bHHy1Tm4rfMV5KKuNt+xkMir0bfn7NirrZ0tWqRO9B
-         Prt4wPjurTd7oA1r0tBGifpmnA8w9hKiydBOtTPeHZvDJKoy0fohSIH2jjquZfTCD6vT
-         1EVqQWLf35J4lcs/SRiDRP2njOXnwHHubxKn+5SHrOzJHTP7jUze06HbGLbyPPNBiaDn
-         /NWUVaPZoZWMIQhiTj5nUu/pPWFvkTJdxUwUz1LfSTACWTCBzgA9m2cUc/4y01c2ceC4
-         APkvW0qZ/HEvUTpcNzxB74b650B9cj+pofZ/qTtAbbEqS/1/KvzjaATKmBWRBqzzSN0M
-         UsEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708982762; x=1709587562;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=144mFCoAmLnYhpxBxU841lMdT4yO+1U9AQuLuH2HZyw=;
-        b=Zg8s+hfaC6fNXHjh4jvzcTWkpYTUAHJxuOiaHYavATpZrN+ZD0chEoH3kAEoaTy2Qb
-         1Sq+EvLegXZq8ZLRbvpsLJYcGdMrQ7qO09+c8lkXvsQaKztEvgPm7L6cX1AgaHD82+zK
-         YuN1jqEztXPSvEVGuA+Uq+v01Fnag9JHdwNuvwnmQuz0s+9qittNb7WOZ69LDUJ4PGgD
-         wWI813t0W2Z1d/jgqW0CzJFlIr1B6eM3HMGxtYUns3YTedcjdwZXjiaiJi5jnL9PtUo/
-         LcaO9m7OafEzgY20U9SGgLpk385zg8AUShogEQaqCmKww0A92RUBOY4SzpgHuzsBYohf
-         +9zw==
-X-Forwarded-Encrypted: i=1; AJvYcCUpz8TWxSC/0CvZ6R61PIAf1Id7TepTNJy1C4aGPQCBpNeSkm5+zSnWbinQGMBs86DSdDNJ1HfyLJZsye3PaB6QZbK4O56pvy5uPHv7VXvF4wAEsOXcVByM8cOsioorpL03GNGjIlJsyfgqvf9+bdiZITXWyfM/204gwvCKcWJk99cGJQ==
-X-Gm-Message-State: AOJu0Yy/izbCtsc7pJ+n9PD1IJ57cdrw9oi9q8GANjnYDMDSW05KgpqR
-	xhUu60lVVuC017QV9HWkhvgcv+1yFlU2qMRFgV4nWRzbXNQhFgzbg8+phF1tQWw=
-X-Google-Smtp-Source: AGHT+IFQLy90dKHP1KmZIFww9MmLvhA0blg1bSFrxq0mZJs4PHyAwh+6VgF2nnwMNyfYZ/ajg1W5sw==
-X-Received: by 2002:ac2:4ecf:0:b0:512:d4fb:14da with SMTP id p15-20020ac24ecf000000b00512d4fb14damr4799760lfr.44.1708982762327;
-        Mon, 26 Feb 2024 13:26:02 -0800 (PST)
-Received: from [127.0.1.1] (2a02-8389-41cf-e200-06e1-5ae1-dc32-d149.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:6e1:5ae1:dc32:d149])
-        by smtp.gmail.com with ESMTPSA id uz28-20020a170907119c00b00a3df13a4fe0sm122386ejb.15.2024.02.26.13.26.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 13:26:01 -0800 (PST)
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date: Mon, 26 Feb 2024 22:25:57 +0100
-Subject: [PATCH v2 3/3] iio: humidity: hdc3020: add reset management
+	s=arc-20240116; t=1708982866; c=relaxed/simple;
+	bh=grAv2UX9w5//0+lqXh40HuhHnzKW6J9sNOgymXTHUsI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ja6N6LMvyiYWm2VqEGbOueE2eH2b0qozSGW5z7F3iMy4fr+LIh8IAffJEZU2HT0vEvjR6wqojzrfAhRmGLj5pWDTKXyvh8kXnqwVI3dFIZIGjUNM6y+knKWz5kxwAmqtiopph9ojwgASNcNP3/rsh1nnZoTpu+v5gjR2m7kRI4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fTueOrf7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3084FC43394;
+	Mon, 26 Feb 2024 21:27:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708982865;
+	bh=grAv2UX9w5//0+lqXh40HuhHnzKW6J9sNOgymXTHUsI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=fTueOrf7H0r1t9Wsr2bFQgWujJs3YsO9rmcLDgOqqgi8Z/zNJOwmeIGcRUDWpU1qZ
+	 7qeKm8Dx4AIufgZ3kLf68RCjd/tDfy1DbhIPTiZ0+exBgJwBGtPaayJ/j8uhbdZR8v
+	 b5uOwERbHorkC4uYVDLJ9rerLLJNEkRrQbV676HJYVvSfwMX5NRDv/TEOHd8qi71W2
+	 qQT/87ccjxlkvkIMtrwgpCjVSM4bF9MdK+SQRgyMKisjW7WDqpuq7qj8lkdp3KVyYn
+	 +kBMZyxbDE6DCw+Wdy7BItXexurtPw0d0B5A78qY9bG3QdW5sLGWlkTONoObcS7lvj
+	 ALfB3fp9x21Sw==
+Received: by mercury (Postfix, from userid 1000)
+	id A1FF21060D83; Mon, 26 Feb 2024 22:27:41 +0100 (CET)
+From: Sebastian Reichel <sre@kernel.org>
+To: Sebastian Reichel <sre@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	imx@lists.linux.dev
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Dong Aisheng <aisheng.dong@nxp.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: [PATCH v5 0/6] UNI-T UTi260B support
+Date: Mon, 26 Feb 2024 22:26:22 +0100
+Message-ID: <20240226212740.2019837-1-sre@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240226-hdc3020-pm-v2-3-cec6766086e8@gmail.com>
-References: <20240226-hdc3020-pm-v2-0-cec6766086e8@gmail.com>
-In-Reply-To: <20240226-hdc3020-pm-v2-0-cec6766086e8@gmail.com>
-To: Jonathan Cameron <jic23@kernel.org>, 
- Lars-Peter Clausen <lars@metafoo.de>, Li peiyu <579lpy@gmail.com>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
- linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org, 
- devicetree@vger.kernel.org, 
- Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708982756; l=2300;
- i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=+aZznYEEJnxpn3Hfp1CaaYgaYW/C+miPXfNVer03ZgQ=;
- b=CZMSC7gN5LcIOZou5QfuhlYuJ+aLxLzWNTgKdYnWvtbl6n34l0Vn2Iy1YDlOp497+AzeeU5Wa
- ppLyaUJsXAsDcbgbfAKxlBH9dEMdJQZAFrJ8mvyxhIC60dUF52FpUgX
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
+Content-Transfer-Encoding: 8bit
 
-The HDC3020 provides an active low reset signal that must be handled if
-connected. Asserting this signal turns the device into Trigger-on Demand
-measurement mode, reducing its power consumption when no measurements
-are required like in low-power modes.
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-According to the datasheet, the longest "Reset Ready" is 3 ms, which is
-only taken into account if the reset signal is defined.
+Hi,
 
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
----
- drivers/iio/humidity/hdc3020.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+This adds adds support for the UNI-T UTi260B thermal camera, which is based
+on i.MX6ULL. The series first updates DT bindings, so that CHECK_DTBS no
+longer reports any errors for i.MX6ULL (i.e. for an empty board). They are
+not specific to the UTi260B and in fact that machine has most of the IP
+handled by these patches marked as disabled. The last patch adds the actual
+thermal camera DT.
 
-diff --git a/drivers/iio/humidity/hdc3020.c b/drivers/iio/humidity/hdc3020.c
-index 6848be41e1c8..aa477b5e583e 100644
---- a/drivers/iio/humidity/hdc3020.c
-+++ b/drivers/iio/humidity/hdc3020.c
-@@ -15,6 +15,7 @@
- #include <linux/cleanup.h>
- #include <linux/crc8.h>
- #include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/i2c.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
-@@ -70,6 +71,7 @@
- 
- struct hdc3020_data {
- 	struct i2c_client *client;
-+	struct gpio_desc *reset_gpio;
- 	struct regulator *vdd_supply;
- 	/*
- 	 * Ensure that the sensor configuration (currently only heater is
-@@ -558,6 +560,9 @@ static int hdc3020_power_off(struct hdc3020_data *data)
- {
- 	hdc3020_exec_cmd(data, HDC3020_EXIT_AUTO);
- 
-+	if (data->reset_gpio)
-+		gpiod_set_value_cansleep(data->reset_gpio, 1);
-+
- 	return regulator_disable(data->vdd_supply);
- }
- 
-@@ -571,6 +576,11 @@ static int hdc3020_power_on(struct hdc3020_data *data)
- 
- 	fsleep(5000);
- 
-+	if (data->reset_gpio) {
-+		gpiod_set_value_cansleep(data->reset_gpio, 0);
-+		fsleep(3000);
-+	}
-+
- 	if (data->client->irq) {
- 		/*
- 		 * The alert output is activated by default upon power up,
-@@ -627,6 +637,12 @@ static int hdc3020_probe(struct i2c_client *client)
- 		return dev_err_probe(&client->dev, PTR_ERR(data->vdd_supply),
- 				     "Unable to get VDD regulator\n");
- 
-+	data->reset_gpio = devm_gpiod_get_optional(&client->dev, "reset",
-+						   GPIOD_OUT_HIGH);
-+	if (IS_ERR(data->reset_gpio))
-+		return dev_err_probe(&client->dev, PTR_ERR(data->reset_gpio),
-+				     "Cannot get reset GPIO\n");
-+
- 	ret = hdc3020_power_on(data);
- 	if (ret)
- 		return dev_err_probe(&client->dev, ret, "Power on failed\n");
+The DT is based on reverse engineered information. More information about
+the device can be found in this presentation from Embedded Recipes 2023:
+
+ * https://embedded-recipes.org/2023/wp-content/uploads/2023/10/Running-FOSS-on-a-Thermal-Camera-Sebastian-Reichel-compressed.pdf
+ * https://www.youtube.com/watch?v=uvObsCG-Cqo
+
+I also prepared a branch with these patches (and a minimal kernel config)
+and published it here:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-misc.git/log/?h=uti260b-v5
+
+Changes since PATCHv4:
+ * https://lore.kernel.org/all/20240224213240.1854709-1-sre@kernel.org/
+  - drop merged patches
+  - use new NXP mailing list
+  - UTi260B board DT: change patch title
+  - UTi260B board DT: fix node order
+
+Changes since PATCHv3:
+ * https://lore.kernel.org/all/20240216223654.1312880-1-sre@kernel.org/
+  - weim binding: use " instead of '
+  - weim binding: use "if: not: required: - foo" instead of "if: properties: foo: false"
+  - imx6ull-uti260b.dts: merge ecspi3_csgrp into ecspi3grp
+  - collect Reviewed-by from Krzysztof Kozlowski
+
+Changes since PATCHv2:
+ * https://lore.kernel.org/all/20240213010347.1075251-1-sre@kernel.org/
+  - drop fsl,imx-asrc YAML binding conversion (merged)
+  - collect a bunch of Reviewed-by/Acked-by tags
+  - weim DT binding: fix issue with requirements
+  - xnur-gpio -> xnur-gpios change: Improve patch long description
+
+Changes since PATCHv1:
+ * https://lore.kernel.org/all/20240210012114.489102-1-sre@kernel.org/
+  - uni-t,imx6ull-uti260b -> uni-t,uti260b
+  - add Acked-by for uni-t vendor prefix
+  - add Acked-by for HDMI audio index fix
+  - add Acked-by for LCDIF power-domain requirement drop
+  - anatop DT binding: Fixed indentation in example
+  - anatop DT binding: Described IRQs
+  - touchscreen DT binding: change tsc@ to touchscreen@ in example
+  - touchscreen DT binding: change xnur-gpio to xnur-gpios
+  - weim DT binding: drop acme,whatever example
+  - weim DT binding: use flash@ instead of nor@
+  - weim DT binding: update weim.txt reference in arcx,anybus-controller.txt
+  - weim DT binding: switch to memory-controller binding
+  - fsl,imx-asrc DT binding: fix ASoC patch subject prefix
+  - fsl,imx-asrc DT binding: add constraints
+  - add new patch fixing xnur-gpio(s) in all i.MX6UL board DT files
+  - add new patch fixing touchscreen nodename in i.MX6UL SoC DT file
+  - add new patch fixing weim nodename in all i.MX SoC DT files
+  - device DTS: use color/functions for the led
+  - device DTS: increase SPI speed
+  - device DTS: add comment for SD / eMMC node
+
+Unadressed feedback from PATCHv1:
+  - anatop phandle vs parent: technically it makes sense to just use the
+    parent, but this driver is only used by i.MX6. The current code makes
+	use of the phandle, so we cannot drop it because of backwards
+	compatibility. So I don't see a point in deprecating this property.
+  - touchscreen binding: I kept measure-delay-time and pre-charge-time
+    values in hex, since that is being used everywhere and the unit
+	is unknown. The values are directly written into HW registers and
+	the i.MX6UL TRM does not provide any hints about the unit. I do not
+	have an i.MX6UL device with a touchsreen, so I cannot test either.
+  - regulator name in DT: I did not rename the regulators to just
+    "regulator", since the nodename must be unique.
+
+Greetings,
+
+-- Sebastian
+
+Sebastian Reichel (6):
+  dt-bindings: pinctrl: fsl,imx6ul-pinctrl: convert to YAML
+  dt-bindings: input: touchscreen: fsl,imx6ul-tsc convert to YAML
+  dt-bindings: soc: imx: fsl,imx-anatop: add binding
+  dt-bindings: soc: imx: fsl,imx-iomuxc-gpr: add imx6
+  dt-bindings: fsl-imx-sdma: fix HDMI audio index
+  ARM: dts: imx: Add UNI-T UTi260B thermal camera board
+
+ .../devicetree/bindings/dma/fsl,imx-sdma.yaml |   3 +-
+ .../input/touchscreen/fsl,imx6ul-tsc.yaml     |  97 +++
+ .../bindings/input/touchscreen/imx6ul_tsc.txt |  38 --
+ .../bindings/pinctrl/fsl,imx6ul-pinctrl.txt   |  37 --
+ .../bindings/pinctrl/fsl,imx6ul-pinctrl.yaml  | 116 ++++
+ .../bindings/soc/imx/fsl,imx-anatop.yaml      | 128 ++++
+ .../bindings/soc/imx/fsl,imx-iomuxc-gpr.yaml  |  18 +-
+ arch/arm/boot/dts/nxp/imx/Makefile            |   1 +
+ arch/arm/boot/dts/nxp/imx/imx6ull-uti260b.dts | 566 ++++++++++++++++++
+ 9 files changed, 927 insertions(+), 77 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/fsl,imx6ul-tsc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/imx6ul_tsc.txt
+ delete mode 100644 Documentation/devicetree/bindings/pinctrl/fsl,imx6ul-pinctrl.txt
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/fsl,imx6ul-pinctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/imx/fsl,imx-anatop.yaml
+ create mode 100644 arch/arm/boot/dts/nxp/imx/imx6ull-uti260b.dts
 
 -- 
-2.40.1
+2.43.0
 
 
