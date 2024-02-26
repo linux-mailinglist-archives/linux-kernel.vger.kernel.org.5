@@ -1,213 +1,254 @@
-Return-Path: <linux-kernel+bounces-80560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5320586697E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:06:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 363CE866981
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:08:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BB6B1C20BEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:06:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B49AE1F219E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:08:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E20461B7E1;
-	Mon, 26 Feb 2024 05:05:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84CF01B966;
+	Mon, 26 Feb 2024 05:08:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cfc/o67r"
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RmYCNUXy"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B463DF51
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 05:05:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 883811B81C
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 05:08:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708923957; cv=none; b=tHG2gx304R95zlJwwEcdZtcc1kC4H4H0Exz52nXIFyqxawILMj5ucOl1N+u0icfMPXQtbUQlOxbSVmELwoFnoBHMUC2uxeaCcK0gzcMIRCjVR6CT2TQ5h/Z48LPkISe8vK4GuCPzXoNAQjqO0Jw1AIIZS0K6A5LGoJTWz81l9Vo=
+	t=1708924113; cv=none; b=Zn5Qh+u9tAJIf/Rb4lahDMfws1bvaIauQrbXCtXWWzE6cu+Ft/ikfPcVnsSVxGJ0VJYyC0UHjXY1BjGEARsgueiX9hc2I3gOdAGOt1+509TNrnNwahzjTF4EhCSdUwwGQ3RkhOLwfixe2mZ0a2wIjepKqM7pShsVeoGbFVoMTsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708923957; c=relaxed/simple;
-	bh=6OoXSMBS9gARhyGFZOACx9S88j++4mZxmWYv/6V2Qe4=;
+	s=arc-20240116; t=1708924113; c=relaxed/simple;
+	bh=E88zUaazKWvIhjWloT5l/8WyHuvQl96BzJs4ChOIkvc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=b3lkXkrI8Y2gLgeMeVvqLhZPufuZF/ZLCXEXXYeX7om8iAEOfERqP/ahcp4q9udc6D/7bZtK6J1NIkR5yJZQBKAm/wqhLfKOZTxYIGXBNfR81X0f2akNE5aqx+cif2K3348Mf3IXRyl9B9ssOzN3OWmdl8lCk3TGrIvTVc5KMZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cfc/o67r; arc=none smtp.client-ip=209.85.222.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7d5fce59261so1798608241.3
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 21:05:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708923954; x=1709528754; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n0sV/ZkJed5YTOmJzKp3YfxIPpujeOY2hnQ4Z72HoPQ=;
-        b=Cfc/o67rzD6zpyFJhAb9MVl5m1O5cruahGu/MDGugTze2QhXqGSeHbpMV0DLKRJnAm
-         Rm4GJSJoOfYzlf4NhUerTnc84hGypCJzVPQPjslprVce71VAMBTR/hXBvvfJumh23GnZ
-         ZqLi0mtktoFTZV4w9PSEPJs5CygtRw2rD/8PTHXC6Ke5US2W/ou5cA+5z3E2ad6Cau+A
-         j9r3JbYNS0y1FndMPzCKt5tRSU10GknyB7boa+5C3QZWkDmgsF1w0AwWq/IqI9bg50xS
-         N2zJUpXp0HntynVnQHwaF5ebPVSefGzC/hSwk3elliFWP5oDJ2BWJtREOl8PWX0zu9SK
-         Px8Q==
+	 To:Cc:Content-Type; b=n0pEGesH3jRIjGAj9PAYwnNmEDXdF9oYaE9rsduTX/vVoW/Gysh80d0/2QBjo9E6dJ0XPXOgjGUEdebtyfnq1PuxH1wp4+4dxpQZ2/b5L82o2dPqTwAQV/Hj/9QebDvMaZDEKp29wtU+b8OZZhNdas8h6zj4pD1fNjslYwydaNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RmYCNUXy; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708924110;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=d0IX1RHQfM6abvabBeCW943C4eGRN4zTgrwGo510uTA=;
+	b=RmYCNUXylhNixz5PKIaKZ+8LS5Wha5BkdO4fz62zsfeNhqeEI2djCk1leFvfzqtnHo+hCw
+	q8wf4tvgHRrK6ScoxEFJkYq4esNBgAVWWhPGKD8sLP5h2ExJbfErei3GrENmH7VUol0P2z
+	XgutJ0FnIQXtMAHAGjWUn1ulbs4Y3Zw=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-443-1Dh2yYWVPo2GT0hAdRQ4Ng-1; Mon, 26 Feb 2024 00:08:18 -0500
+X-MC-Unique: 1Dh2yYWVPo2GT0hAdRQ4Ng-1
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-29a9f042643so371853a91.0
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 21:08:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708923954; x=1709528754;
+        d=1e100.net; s=20230601; t=1708924097; x=1709528897;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=n0sV/ZkJed5YTOmJzKp3YfxIPpujeOY2hnQ4Z72HoPQ=;
-        b=U3Wko6zdpd9yMMXOualh6P+JTzcfmY6sZvZSGcsKpDIL53YcRKEUoLMlp+wHIom8Ay
-         UpuBSYF/aq4UZQ+TZrdmh37f1xtNYmtDCXZnJ/5dZ5wOmef8zbGP/QR4ZHVq5HAKxKSO
-         ZP8P7fimJrY9qpZe3mRBW+5spk43JgcY2J53xIGNM1I73ly6mPiEcN+xutElrLkzxrwc
-         HlASvDFdKJzoI/DmTtg3Dp+CXilkfMrLo8SsbqvFHiN859YJpeiGBsrxLSfPlHQ7DbxR
-         pxHn9+gXBI9pARuCLvwMamGNFeL94GGTzmaLIL1pL09B3EP31cw4uIOQA9KJHd8yUpsY
-         08ew==
-X-Forwarded-Encrypted: i=1; AJvYcCV4siUeq1X6yBRcCIzfweusHZ7oij8RAYz+y/LCHQBZ7N4rARKoptJXZeFssRhhWHesoRfuZ/vAVdR/NzVy3N6iMzR0fk+ByPhQJYeY
-X-Gm-Message-State: AOJu0Yw7oKBAu6tUkEAPGvgQuNHL8s/HuHglDiCGvV5iOq9OmhGqa8P9
-	ZH6AAAHZZhm2su0tSofTL4vSOJtKz856ZOP+1HnNqZnZbpGXw+ntfSRzn2YwKZlGwW+4f8UynSZ
-	GjxpKf6BW3nZBIXNwV52qxbhwyks=
-X-Google-Smtp-Source: AGHT+IHBzo46moG0layxvLBfJZRHuu4bELDVi9idfDPBnL5nE0tDjUn+TE4R77py2A2yeUoxtrBM9/4KA9fJSj31Zsc=
-X-Received: by 2002:a05:6102:3f53:b0:470:4aa5:2c5b with SMTP id
- l19-20020a0561023f5300b004704aa52c5bmr4598628vsv.0.1708923954489; Sun, 25 Feb
- 2024 21:05:54 -0800 (PST)
+        bh=d0IX1RHQfM6abvabBeCW943C4eGRN4zTgrwGo510uTA=;
+        b=gqXNXjD7sITLJJPL1v0iGV4lEzqnS4Ww5zTwp/1bByQDZSz75ByQ+GeTCnAB4Txf6U
+         r/I447kM30TvHPYuRgWViCTwG/ikOSDzpVZwmqxqmCmT8SbIUjeks6/+V+akYmce4Fmw
+         ddijH1wLd/FPE/bu5u6mGUZ7mLKXImkOEUAJZJF+sY/naB87giBtaCS7Kd4H+ziitxc4
+         lPDGC/YOuOSt2ykSRBQkVw7pfW4zvvKqIj6W2ek6kQwDFCzdOzSI4rmOu2X/dtv7ZvcQ
+         +y9Z14Srcp/WUuseWPT/CDNPqv8iB0QgpIg0Yu0AmoPVa5ZFsA/aqAnSI0O8ax2yuyYo
+         igWA==
+X-Forwarded-Encrypted: i=1; AJvYcCVZZFhCpWxOFdLbX1VcK84OfH7aIpzDx4zhhZZ/xPXjeiGMBQCno8DqF2LQ3a3jaMoFZUFze/AUdAOYuC1MI7ZaYyYYi4GQt1Gwzpif
+X-Gm-Message-State: AOJu0YwBhYxKlt2XQO9shKayasPJMtlbVcBP/Jg4ORPjdPOyLNgx2KHO
+	wbV+InSZBrGrvysII/pZedvbLao6ElNI++tacHB+FnM7abA534jpaufFm7BFre4642SSBmH47tY
+	LxA0NuN7wk+GW/bQNwsTS/iYTpGEDXStknUqFW5VASTfbbEjzKgYDGgUdwJfxN/t3o2mvMqAGWG
+	hbxs/0at564GH75MTqKprBxJghlUPVWADkNEsY
+X-Received: by 2002:a17:90a:f682:b0:29a:a3e1:7ab4 with SMTP id cl2-20020a17090af68200b0029aa3e17ab4mr2087473pjb.20.1708924097516;
+        Sun, 25 Feb 2024 21:08:17 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF5E17zVQ3hcFLlFhYUZzlK76i0IGg7C5MCrl1bCx+cf+ujnpkNQXP7sOltv0GVqUnmUVqBMUDafOmfdRV/Ap8=
+X-Received: by 2002:a17:90a:f682:b0:29a:a3e1:7ab4 with SMTP id
+ cl2-20020a17090af68200b0029aa3e17ab4mr2087458pjb.20.1708924097198; Sun, 25
+ Feb 2024 21:08:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231025144546.577640-1-ryan.roberts@arm.com> <20240118111036.72641-1-21cnbao@gmail.com>
- <20240118111036.72641-6-21cnbao@gmail.com> <58efd8d4-28aa-45d6-b384-7463568b24bb@redhat.com>
- <CAGsJ_4zwUpL7LihRBOefg-cmY2mgNjMm-MPkq9VFBdXS_4b=uQ@mail.gmail.com>
- <CAF8kJuNHrM+ZQSnTAOt6rrmGr1P=YS8eU+RSqhAc1CjQ7qdEwQ@mail.gmail.com>
- <c11d73d5-105e-4ae1-837a-b9da392d2dad@redhat.com> <CAF8kJuMmh06rCXuiu5V0BiT8t1ckEEnY4rM-ivRBQ+xdyMhRKQ@mail.gmail.com>
-In-Reply-To: <CAF8kJuMmh06rCXuiu5V0BiT8t1ckEEnY4rM-ivRBQ+xdyMhRKQ@mail.gmail.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Mon, 26 Feb 2024 18:05:43 +1300
-Message-ID: <CAGsJ_4wanQr8mniGnJrzDHKGzWt8J2vT_Mx65+46=qk-R0iM3w@mail.gmail.com>
-Subject: Re: [PATCH RFC 5/6] mm: rmap: weaken the WARN_ON in __folio_add_anon_rmap()
-To: Chris Li <chrisl@kernel.org>
-Cc: David Hildenbrand <david@redhat.com>, ryan.roberts@arm.com, akpm@linux-foundation.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, mhocko@suse.com, 
-	shy828301@gmail.com, wangkefeng.wang@huawei.com, willy@infradead.org, 
-	xiang@kernel.org, ying.huang@intel.com, yuzhao@google.com, surenb@google.com, 
-	steven.price@arm.com, Barry Song <v-songbaohua@oppo.com>, 
-	Chuanhua Han <hanchuanhua@oppo.com>
+References: <20230720170001-mutt-send-email-mst@kernel.org>
+ <263a5ad7-1189-3be3-70de-c38a685bebe0@redhat.com> <20230721104445-mutt-send-email-mst@kernel.org>
+ <6278a4aa-8901-b0e3-342f-5753a4bf32af@redhat.com> <20230721110925-mutt-send-email-mst@kernel.org>
+ <e3490755-35ac-89b4-b0fa-b63720a9a5c9@redhat.com> <20230723053441-mutt-send-email-mst@kernel.org>
+ <CACGkMEuPcOyjgHkKXrcnofdb5XhYYTrGQeuR3j6Oypr0KZxLMg@mail.gmail.com>
+ <20230724031732-mutt-send-email-mst@kernel.org> <CACGkMEvNqJvLvVqQyrw-5jLDA2RvWkSPfb_RLVZbe_wsM=AK4g@mail.gmail.com>
+ <20240222142056-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20240222142056-mutt-send-email-mst@kernel.org>
+From: Jason Wang <jasowang@redhat.com>
+Date: Mon, 26 Feb 2024 13:08:06 +0800
+Message-ID: <CACGkMEt=2pqc8rp1wHUhs4Kn_cG1EUKpdxB+STh+80Jw7uOTaA@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 2/2] virtio-net: add cond_resched() to the
+ command waiting loop
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Maxime Coquelin <maxime.coquelin@redhat.com>, Shannon Nelson <shannon.nelson@amd.com>, 
+	xuanzhuo@linux.alibaba.com, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, virtualization@lists.linux-foundation.org, 
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, davem@davemloft.net
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 30, 2024 at 5:32=E2=80=AFAM Chris Li <chrisl@kernel.org> wrote:
+On Fri, Feb 23, 2024 at 3:22=E2=80=AFAM Michael S. Tsirkin <mst@redhat.com>=
+ wrote:
 >
-> On Mon, Jan 29, 2024 at 2:07=E2=80=AFAM David Hildenbrand <david@redhat.c=
-om> wrote:
-> >
-> > On 29.01.24 04:25, Chris Li wrote:
-> > > Hi David and Barry,
+> On Tue, Jul 25, 2023 at 11:03:11AM +0800, Jason Wang wrote:
+> > On Mon, Jul 24, 2023 at 3:18=E2=80=AFPM Michael S. Tsirkin <mst@redhat.=
+com> wrote:
 > > >
-> > > On Mon, Jan 22, 2024 at 10:49=E2=80=AFPM Barry Song <21cnbao@gmail.co=
-m> wrote:
-> > >>
-> > >>>
-> > >>>
-> > >>> I have on my todo list to move all that !anon handling out of
-> > >>> folio_add_anon_rmap_ptes(), and instead make swapin code call add
-> > >>> folio_add_new_anon_rmap(), where we'll have to pass an exclusive fl=
-ag
-> > >>> then (-> whole new folio exclusive).
-> > >>>
-> > >>> That's the cleaner approach.
-> > >>>
-> > >>
-> > >> one tricky thing is that sometimes it is hard to know who is the fir=
-st
-> > >> one to add rmap and thus should
-> > >> call folio_add_new_anon_rmap.
-> > >> especially when we want to support swapin_readahead(), the one who
-> > >> allocated large filio might not
-> > >> be that one who firstly does rmap.
-> > >
-> > > I think Barry has a point. Two tasks might race to swap in the folio
-> > > then race to perform the rmap.
-> > > folio_add_new_anon_rmap() should only call a folio that is absolutely
-> > > "new", not shared. The sharing in swap cache disqualifies that
-> > > condition.
-> >
-> > We have to hold the folio lock. So only one task at a time might do the
-> > folio_add_anon_rmap_ptes() right now, and the
-> > folio_add_new_shared_anon_rmap() in the future [below].
-> >
+> > > On Mon, Jul 24, 2023 at 02:52:49PM +0800, Jason Wang wrote:
+> > > > On Mon, Jul 24, 2023 at 2:46=E2=80=AFPM Michael S. Tsirkin <mst@red=
+hat.com> wrote:
+> > > > >
+> > > > > On Fri, Jul 21, 2023 at 10:18:03PM +0200, Maxime Coquelin wrote:
+> > > > > >
+> > > > > >
+> > > > > > On 7/21/23 17:10, Michael S. Tsirkin wrote:
+> > > > > > > On Fri, Jul 21, 2023 at 04:58:04PM +0200, Maxime Coquelin wro=
+te:
+> > > > > > > >
+> > > > > > > >
+> > > > > > > > On 7/21/23 16:45, Michael S. Tsirkin wrote:
+> > > > > > > > > On Fri, Jul 21, 2023 at 04:37:00PM +0200, Maxime Coquelin=
+ wrote:
+> > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > On 7/20/23 23:02, Michael S. Tsirkin wrote:
+> > > > > > > > > > > On Thu, Jul 20, 2023 at 01:26:20PM -0700, Shannon Nel=
+son wrote:
+> > > > > > > > > > > > On 7/20/23 1:38 AM, Jason Wang wrote:
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > Adding cond_resched() to the command waiting loop=
+ for a better
+> > > > > > > > > > > > > co-operation with the scheduler. This allows to g=
+ive CPU a breath to
+> > > > > > > > > > > > > run other task(workqueue) instead of busy looping=
+ when preemption is
+> > > > > > > > > > > > > not allowed on a device whose CVQ might be slow.
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > Signed-off-by: Jason Wang <jasowang@redhat.com>
+> > > > > > > > > > > >
+> > > > > > > > > > > > This still leaves hung processes, but at least it d=
+oesn't pin the CPU any
+> > > > > > > > > > > > more.  Thanks.
+> > > > > > > > > > > > Reviewed-by: Shannon Nelson <shannon.nelson@amd.com=
 >
-> Ah, I see. The folio_lock() is the answer I am looking for.
+> > > > > > > > > > > >
+> > > > > > > > > > >
+> > > > > > > > > > > I'd like to see a full solution
+> > > > > > > > > > > 1- block until interrupt
+> > > > > > > > > >
+> > > > > > > > > > Would it make sense to also have a timeout?
+> > > > > > > > > > And when timeout expires, set FAILED bit in device stat=
+us?
+> > > > > > > > >
+> > > > > > > > > virtio spec does not set any limits on the timing of vq
+> > > > > > > > > processing.
+> > > > > > > >
+> > > > > > > > Indeed, but I thought the driver could decide it is too lon=
+g for it.
+> > > > > > > >
+> > > > > > > > The issue is we keep waiting with rtnl locked, it can quick=
+ly make the
+> > > > > > > > system unusable.
+> > > > > > >
+> > > > > > > if this is a problem we should find a way not to keep rtnl
+> > > > > > > locked indefinitely.
+> > > > > >
+> > > > > > From the tests I have done, I think it is. With OVS, a reconfig=
+uration is
+> > > > > > performed when the VDUSE device is added, and when a MLX5 devic=
+e is
+> > > > > > in the same bridge, it ends up doing an ioctl() that tries to t=
+ake the
+> > > > > > rtnl lock. In this configuration, it is not possible to kill OV=
+S because
+> > > > > > it is stuck trying to acquire rtnl lock for mlx5 that is held b=
+y virtio-
+> > > > > > net.
+> > > > >
+> > > > > So for sure, we can queue up the work and process it later.
+> > > > > The somewhat tricky part is limiting the memory consumption.
+> > > >
+> > > > And it needs to sync with rtnl somehow, e.g device unregistering wh=
+ich
+> > > > seems not easy.
+> > > >
+> > > > Thanks
+> > >
+> > > since when does device unregister need to send cvq commands?
+> >
+> > It doesn't do this now. But if we don't process the work under rtnl,
+> > we need to synchronize with device unregistering.
+> >
+> > Thanks
 >
-> > Also observe how folio_add_anon_rmap_ptes() states that one must hold
-> > the page lock, because otherwise this would all be completely racy.
-> >
-> >  From the pte swp exclusive flags, we know for sure whether we are
-> > dealing with exclusive vs. shared. I think patch #6 does not properly
-> > check that all entries are actually the same in that regard (all
-> > exclusive vs all shared). That likely needs fixing.
-> >
-> > [I have converting per-page PageAnonExclusive flags to a single
-> > per-folio flag on my todo list. I suspect that we'll keep the
-> > per-swp-pte exlusive bits, but the question is rather what we can
-> > actually make work, because swap and migration just make it much more
-> > complicated. Anyhow, future work]
-> >
-> > >
-> > >> is it an acceptable way to do the below in do_swap_page?
-> > >> if (!folio_test_anon(folio))
-> > >>        folio_add_new_anon_rmap()
-> > >> else
-> > >>        folio_add_anon_rmap_ptes()
-> > >
-> > > I am curious to know the answer as well.
-> >
-> >
-> > Yes, the end code should likely be something like:
-> >
-> > /* ksm created a completely new copy */
-> > if (unlikely(folio !=3D swapcache && swapcache)) {
-> >         folio_add_new_anon_rmap(folio, vma, vmf->address);
-> >         folio_add_lru_vma(folio, vma);
-> > } else if (folio_test_anon(folio)) {
-> >         folio_add_anon_rmap_ptes(rmap_flags)
-> > } else {
-> >         folio_add_new_anon_rmap(rmap_flags)
-> > }
-> >
-> > Maybe we want to avoid teaching all existing folio_add_new_anon_rmap()
-> > callers about a new flag, and just have a new
-> > folio_add_new_shared_anon_rmap() instead. TBD.
+> But what's not easy about it?
 
-if we have to add a wrapper like folio_add_new_shared_anon_rmap()
-to avoid "if (folio_test_anon(folio))" and "else" everywhere, why not
-we just do it in folio_add_anon_rmap_ptes() ?
+Yes, so I'm wondering if we can simply have the cond_resched() merged
+as the first step.
 
-folio_add_anon_rmap_ptes()
-{
-      if (!folio_test_anon(folio))
-               return folio_add_new_anon_rmap();
-}
-
-Anyway, I am going to change the patch 4/6 to if(folio_test_anon)/else firs=
-t
-and drop this 5/6.
-we may figure out if we need a wrapper later.
-
->
-> There is more than one caller needed to perform that dance around
-> folio_test_anon() then decide which function to call. It would be nice
-> to have a wrapper function folio_add_new_shared_anon_rmap() to
-> abstract this behavior.
->
->
-> >
-> > >
-> > > BTW, that test might have a race as well. By the time the task got
-> > > !anon result, this result might get changed by another task. We need
-> > > to make sure in the caller context this race can't happen. Otherwise
-> > > we can't do the above safely.
-> > Again, folio lock. Observe the folio_lock_or_retry() call that covers
-> > our existing folio_add_new_anon_rmap/folio_add_anon_rmap_pte calls.
->
-> Ack. Thanks for the explanation.
->
-> Chris
+And leave the indefinite wait for future investigation?
 
 Thanks
-Barry
+
+>
+> > >
+> > > > >
+> > > > >
+> > > > > > >
+> > > > > > > > > > > 2- still handle surprise removal correctly by waking =
+in that case
+> > > > > > > > > > >
+> > > > > > > > > > >
+> > > > > > > > > > >
+> > > > > > > > > > > > > ---
+> > > > > > > > > > > > >      drivers/net/virtio_net.c | 4 +++-
+> > > > > > > > > > > > >      1 file changed, 3 insertions(+), 1 deletion(=
+-)
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > diff --git a/drivers/net/virtio_net.c b/drivers/n=
+et/virtio_net.c
+> > > > > > > > > > > > > index 9f3b1d6ac33d..e7533f29b219 100644
+> > > > > > > > > > > > > --- a/drivers/net/virtio_net.c
+> > > > > > > > > > > > > +++ b/drivers/net/virtio_net.c
+> > > > > > > > > > > > > @@ -2314,8 +2314,10 @@ static bool virtnet_send_c=
+ommand(struct virtnet_info *vi, u8 class, u8 cmd,
+> > > > > > > > > > > > >              * into the hypervisor, so the reques=
+t should be handled immediately.
+> > > > > > > > > > > > >              */
+> > > > > > > > > > > > >             while (!virtqueue_get_buf(vi->cvq, &t=
+mp) &&
+> > > > > > > > > > > > > -              !virtqueue_is_broken(vi->cvq))
+> > > > > > > > > > > > > +              !virtqueue_is_broken(vi->cvq)) {
+> > > > > > > > > > > > > +               cond_resched();
+> > > > > > > > > > > > >                     cpu_relax();
+> > > > > > > > > > > > > +       }
+> > > > > > > > > > > > >
+> > > > > > > > > > > > >             return vi->ctrl->status =3D=3D VIRTIO=
+_NET_OK;
+> > > > > > > > > > > > >      }
+> > > > > > > > > > > > > --
+> > > > > > > > > > > > > 2.39.3
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > _______________________________________________
+> > > > > > > > > > > > > Virtualization mailing list
+> > > > > > > > > > > > > Virtualization@lists.linux-foundation.org
+> > > > > > > > > > > > > https://lists.linuxfoundation.org/mailman/listinf=
+o/virtualization
+> > > > > > > > > > >
+> > > > > > > > >
+> > > > > > >
+> > > > >
+> > >
+>
+
 
