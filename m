@@ -1,237 +1,191 @@
-Return-Path: <linux-kernel+bounces-82373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73427868361
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:56:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A2D5868367
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:57:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94FD81C2169C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:56:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B326928E2C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:57:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69C8B131E36;
-	Mon, 26 Feb 2024 21:56:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82082131E57;
+	Mon, 26 Feb 2024 21:56:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mhvVYNVZ"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rtRu16vM"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBFEA131E2F;
-	Mon, 26 Feb 2024 21:56:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A431F130E55
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 21:56:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708984592; cv=none; b=ELUFG3rmtgQWKHhk5N48AH44fUFg3djrHFqUGyULlp0mTbrCGwJQHbaINZQ+zIlFQ1JgSAWUiRbrsS+Vv/9y0Yat0E7317emJ4ZXQEnLBxMzwFWLt+up92GKf+rqsBCsxhuL641uUIY6+3r3zUUDjK1TjU0pGAHT4rf0jK+YUGM=
+	t=1708984611; cv=none; b=LKsd5Z6ZmDmeBWh90FvVcKuaQst6MaX64U8RbyXVYJgMJBGm5eJzKASVdV/+qQ5D4c1O9RXSZ3S4ZqIjW06zlc/9U+sp/SEh27mloizaxpb4W6khNhIwx+08xjHIEHVdm20R1+WwDdJGyPxLhBoMjuOMMCHXScIwcW0a+8dtfy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708984592; c=relaxed/simple;
-	bh=SLknjA5Z15uYeDnlExQifv2QhXWofp4qqSN0YtcmwZk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dO1SOiw7aUp7A8jYKZD5gZk121fUXVCxCiggGyDwGsqJYveex5juqe0kYnl7XNFZOfCX4zDkRc1G7YdKYjfv82oJ08oCzDzCu1CG6yUhLRrTHcBVHZMKCoWNdnC2ctPvHCoDWdQGPyAlN43XZ4qGcOOvTnwLcP2efHGQ/d25uZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mhvVYNVZ; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d24a727f78so50932271fa.0;
-        Mon, 26 Feb 2024 13:56:30 -0800 (PST)
+	s=arc-20240116; t=1708984611; c=relaxed/simple;
+	bh=8u2FC3jAwvrF6TPDojQJKao+PCsVs+BnFj6gQL2hy2w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=utoDeILkcmEnq4x2tDM9s3jFJKPWZgjyEIGUnf+NCXUxVnbkWxUxyFmTDmuc/JpOK4U9vwJZH+N3PzFIRnVYbFm+Q7RnfogmuVoRYq2RWgNU659HC17qEbYmMn2mlM/4bIHzOeJBNLaY83xaPbO9WNSNVicSTFGqnRU2lb58Bec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rtRu16vM; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-565223fd7d9so617a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 13:56:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708984589; x=1709589389; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=u1eIEAwPr48i+Yenfq0jlQKcUkAqO/w8pfipw6YSNWk=;
-        b=mhvVYNVZDGa538nSUn+rk38VBsJ7qp7ZIPYOSc5UpeSFtNrR10xROr/VavxaUAqxgT
-         NnadlzaQyvvfERehVzeFNU48dlEqtg2ub/vt9bJ6f94GavNZj3PXDgbZplPb5oCcNKRk
-         NCsvJSc38aegBVu/N+t6fEP8kM2VTaT5JvHxtYjes79lFqQGbJkY7ffvGgDLlMZ7cCg0
-         DwW10/gqWcQmUI47Y6AV1v8FI66+yLMCFlLktoOBhP/vUGdyv7bCMFAvValrcfLr3CFh
-         jLl9yl3L0e214xbzCZy6ozMOPZpZ+Yag0+09LLkJSfFA5JJRtuyxCjKG4RyuVNyVJP/e
-         lDfg==
+        d=google.com; s=20230601; t=1708984607; x=1709589407; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=azUYynWCdgGcNWjxX8ZZ1okg2QCYfjC5Um2iCEPR9g4=;
+        b=rtRu16vMxr4Br2s/krLpxlMa3gUY5w+R0egHVC7ddsFzjFQIJYa6kDxxvB2r9FZ5uY
+         E4/P81DN09m1P3m0551nQtaaquRSJvNVLhHkOfaTRKJuCeyXgV81AZ7y/PnOgTLHA/HI
+         pD3MgUo5ixURyg83HGl/W74U+870irPHOV11fXp3Tol+CXdkz/e8WrQsF4qTQHscVJOu
+         XTRKnicFT9+jLbp/IqOtC9HJrsUQsZrKAbTy7+jzdHY5og0UKXPbmfgRVVp6+WPY9UR2
+         uIJLoAfxza0FTbnPJK7aI9o0kqqyb83Pl6Bm78d+yna5WSrOHJGa3rh2Ww25zMGHQyDY
+         B0og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708984589; x=1709589389;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=u1eIEAwPr48i+Yenfq0jlQKcUkAqO/w8pfipw6YSNWk=;
-        b=J6H5SIY3+BzgvRznYbFI9PjYh37wM8httLibzhgZCpJWplX62i+kGycSKcqT+8nwXK
-         lCrfNX2L81MrB/wr0iLZmSdc7Tol6B+qHqPbEYwqG+jRz6+Xuigt/vkOWlSuMNAMp230
-         bpT/Aq5nb8tDq0O05RTLFwZSlDQCY4H3m9VriQ6wEGhsXKypfotml/GAUQ0hevU4RhQd
-         HraMi3tlWGFM44utxEkBH0xnBhgCFIvOv3/WuKXHvHuVLYZ7X8KeetD7DysP5FBit7q3
-         RKshLG/kWvaLpZmIWHzAgHaLcprzdASIXEX9yw3w537TW00pvGscCeGo11LdIpHBf+XG
-         9I6g==
-X-Forwarded-Encrypted: i=1; AJvYcCVh0kd2QruLH0ix5S/TMvfaI9YdsT2LEcJ9vpgaFOGUDTXSJIjAu1h+UqbWv9OheBodCS4Whi1S1qt5invOXvI1YXw2RKzTAcLSK2lpNgFtW++r0AVC/sJUs8Em3dXGEgyvXIAxS4dCdoFV
-X-Gm-Message-State: AOJu0YwL+V6LAcJgSeEhsARHPkTmXCsecaB4VDKnZmWYilYQ55Ucq3rS
-	/u7T8u8f0GS6j/OgbmxMr0nEPMT+yp7dv3LX/MAntDyBUyjZlNaA
-X-Google-Smtp-Source: AGHT+IGGbUJ58ZLM7LIZyXCH7sTUgCAfWQZm/Ne7NZYSrHReRIXBPDv7+mmqDgsGTYNJAYLkOcLpsg==
-X-Received: by 2002:a05:651c:97:b0:2d2:438a:11ec with SMTP id 23-20020a05651c009700b002d2438a11ecmr5209265ljq.2.1708984588910;
-        Mon, 26 Feb 2024 13:56:28 -0800 (PST)
-Received: from localhost.localdomain ([94.19.228.143])
-        by smtp.gmail.com with ESMTPSA id k3-20020a2ea283000000b002d08f3640b5sm1018539lja.11.2024.02.26.13.56.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 13:56:28 -0800 (PST)
-From: Andrey Skvortsov <andrej.skvortzov@gmail.com>
-To: Corentin Labbe <clabbe.montjoie@gmail.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Ovidiu Panait <ovidiu.panait@windriver.com>,
-	linux-crypto@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-sunxi@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Cc: Arnaud Ferraris <arnaud.ferraris@collabora.com>,
-	Andrey Skvortsov <andrej.skvortzov@gmail.com>
-Subject: [PATCH] crypto: sun8i-ce - Fix use after free in unprepare.
-Date: Tue, 27 Feb 2024 00:53:57 +0300
-Message-ID: <20240226215358.555234-1-andrej.skvortzov@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1708984607; x=1709589407;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=azUYynWCdgGcNWjxX8ZZ1okg2QCYfjC5Um2iCEPR9g4=;
+        b=daS0d358gPfRQhBe/fAePne/YOca4IdtW0Ey4wBbQMiR+4nFNnfBi2+WLwpa3zYsXx
+         ZhVr9xvFFhbETsFqunfrNyHGG2qTDd6I4B5D4StB3UWjlTjUW11WR0Jcf2qOPcGW3pvQ
+         aoRXPS8GvygterU8nqBWLnBrz3Zn7HhvvsYiUt1s1IKVg3QxdRL1iPOXBWAvKws/4vyU
+         CsqGEusgePlgwOBWHCcGmq8RD9RoHUwlj6kc+zx5uTGNZrZGBts2vxCjLhRZ7IyHtdX+
+         ++WqggOD6Sx+UuQkArnKoFcO3Ufr1TtwpUoOHjeccAm68f7jkfgXxpW8a96j6VLfdmu5
+         n9Ww==
+X-Forwarded-Encrypted: i=1; AJvYcCVABgsWuUYz3/hMP9I0T0KV4bmoCOu0pBjfy+BCeoKmM99iqe2lueMxEedyB0q04HKAcPNNvnI/A8pxaXSz9aF/CC78HMr1r/hkLw2z
+X-Gm-Message-State: AOJu0YxqAyJiT2Jnc1kKKy/iIWsSEVkvFGy+jD/qS2fmFV09ARsKP3v/
+	Ge5AHLJU9EVu0/4u7f1nFwkHhUfvCzOkcZn9JyDXdWC3Bn8XGo/c11sGzURqNqNKDBGsHg4P36b
+	10DDyRQDjho9PNNKmCTfE4G6ew8NnH3ofmR3H
+X-Google-Smtp-Source: AGHT+IFi3ylAsCIsvdv/4W6+maO7OqFdyJK2LjzRb/kVlH1D+Q89qTQR6aA+BoWJaN4QVWomh07SqDONCGS3/cNvlWI=
+X-Received: by 2002:a50:9e2a:0:b0:565:ad42:b97d with SMTP id
+ z39-20020a509e2a000000b00565ad42b97dmr89705ede.0.1708984606786; Mon, 26 Feb
+ 2024 13:56:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240226112816.2616719-1-quic_kriskura@quicinc.com>
+In-Reply-To: <20240226112816.2616719-1-quic_kriskura@quicinc.com>
+From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date: Mon, 26 Feb 2024 13:56:30 -0800
+Message-ID: <CANP3RGf7qsuwcgVpmOoH0QNh-v4PjRh_xj7Rcz=YJ1TbGiPK0Q@mail.gmail.com>
+Subject: Re: [RFC PATCH] usb: gadget: ncm: Fix handling of zero block length packets
+To: Krishna Kurapati <quic_kriskura@quicinc.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, quic_ppratap@quicinc.com, 
+	quic_wcheng@quicinc.com, quic_jackp@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-sun8i_ce_cipher_unprepare should be called before
-crypto_finalize_skcipher_request, because client callbacks may
-immediately free memory, that isn't needed anymore. But it will be
-used by unprepare after free. Before removing prepare/unprepare
-callbacks it was handled by crypto engine in crypto_finalize_request.
+On Mon, Feb 26, 2024 at 3:28=E2=80=AFAM Krishna Kurapati
+<quic_kriskura@quicinc.com> wrote:
+>
+> While connecting to a Linux host with CDC_NCM_NTB_DEF_SIZE_TX
+> set to 65536, it has been observed that we receive short packets,
+> which come at interval of 5-10 seconds sometimes and have block
+> length zero but still contain 1-2 valid datagrams present.
+>
+> According to the NCM spec:
+>
+> "If wBlockLength =3D 0x0000, the block is terminated by a
+> short packet. In this case, the USB transfer must still
+> be shorter than dwNtbInMaxSize or dwNtbOutMaxSize. If
+> exactly dwNtbInMaxSize or dwNtbOutMaxSize bytes are sent,
+> and the size is a multiple of wMaxPacketSize for the
+> given pipe, then no ZLP shall be sent.
+>
+> wBlockLength=3D 0x0000 must be used with extreme care, because
+> of the possibility that the host and device may get out of
+> sync, and because of test issues.
+>
+> wBlockLength =3D 0x0000 allows the sender to reduce latency by
+> starting to send a very large NTB, and then shortening it when
+> the sender discovers that there=E2=80=99s not sufficient data to justify
+> sending a large NTB"
+>
+> However, there is a potential issue with the current implementation,
+> as it checks for the occurrence of multiple NTBs in a single
+> giveback by verifying if the leftover bytes to be processed is zero
+> or not. If the block length reads zero, we would process the same
+> NTB infintely because the leftover bytes is never zero and it leads
+> to a crash. Fix this by bailing out if block length reads zero.
+>
+> Fixes: 427694cfaafa ("usb: gadget: ncm: Handle decoding of multiple NTB's=
+ in unwrap call")
+> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+> ---
+>
+> PS: Although this issue was seen after CDC_NCM_NTB_DEF_SIZE_TX
+> was modified to 64K on host side, I still believe this
+> can come up at any time as per the spec. Also I assumed
+> that the giveback where block length is zero, has only
+> one NTB and not multiple ones.
+>
+>  drivers/usb/gadget/function/f_ncm.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/fun=
+ction/f_ncm.c
+> index e2a059cfda2c..355e370e5140 100644
+> --- a/drivers/usb/gadget/function/f_ncm.c
+> +++ b/drivers/usb/gadget/function/f_ncm.c
+> @@ -1337,6 +1337,9 @@ static int ncm_unwrap_ntb(struct gether *port,
+>         VDBG(port->func.config->cdev,
+>              "Parsed NTB with %d frames\n", dgram_counter);
+>
+> +       if (block_len =3D=3D 0)
+> +               goto done;
+> +
+>         to_process -=3D block_len;
+>
+>         /*
+> @@ -1351,6 +1354,7 @@ static int ncm_unwrap_ntb(struct gether *port,
+>                 goto parse_ntb;
+>         }
+>
+> +done:
+>         dev_consume_skb_any(skb);
+>
+>         return 0;
+> --
+> 2.34.1
+>
 
-Usually that results in a pointer dereference problem during a in
-crypto selftest.
- Unable to handle kernel NULL pointer dereference at
-                                      virtual address 0000000000000030
- Mem abort info:
-   ESR = 0x0000000096000004
-   EC = 0x25: DABT (current EL), IL = 32 bits
-   SET = 0, FnV = 0
-   EA = 0, S1PTW = 0
-   FSC = 0x04: level 0 translation fault
- Data abort info:
-   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
-   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
- user pgtable: 4k pages, 48-bit VAs, pgdp=000000004716d000
- [0000000000000030] pgd=0000000000000000, p4d=0000000000000000
- Internal error: Oops: 0000000096000004 [#1] SMP
+In general this is of course fine (though see Greg's auto-complaint).
 
-This problem is detected by KASAN as well.
- ==================================================================
- BUG: KASAN: slab-use-after-free in sun8i_ce_cipher_do_one+0x6e8/0xf80 [sun8i_ce]
- Read of size 8 at addr ffff00000dcdc040 by task 1c15000.crypto-/373
+I haven't thought too much about this, but I just wonder whether the
+check for block_len =3D=3D 0
+shouldn't be just after block_len is read, ie. somewhere just after:
 
- Hardware name: Pine64 PinePhone (1.2) (DT)
- Call trace:
-  dump_backtrace+0x9c/0x128
-  show_stack+0x20/0x38
-  dump_stack_lvl+0x48/0x60
-  print_report+0xf8/0x5d8
-  kasan_report+0x90/0xd0
-  __asan_load8+0x9c/0xc0
-  sun8i_ce_cipher_do_one+0x6e8/0xf80 [sun8i_ce]
-  crypto_pump_work+0x354/0x620 [crypto_engine]
-  kthread_worker_fn+0x244/0x498
-  kthread+0x168/0x178
-  ret_from_fork+0x10/0x20
+block_len =3D get_ncm(&tmp, opts->block_length);
 
- Allocated by task 379:
-  kasan_save_stack+0x3c/0x68
-  kasan_set_track+0x2c/0x40
-  kasan_save_alloc_info+0x24/0x38
-  __kasan_kmalloc+0xd4/0xd8
-  __kmalloc+0x74/0x1d0
-  alg_test_skcipher+0x90/0x1f0
-  alg_test+0x24c/0x830
-  cryptomgr_test+0x38/0x60
-  kthread+0x168/0x178
-  ret_from_fork+0x10/0x20
+as it is kind of weird to be handling block_len =3D=3D 0 at the point where
+you are already theoretically done processing the block...
 
- Freed by task 379:
-  kasan_save_stack+0x3c/0x68
-  kasan_set_track+0x2c/0x40
-  kasan_save_free_info+0x38/0x60
-  __kasan_slab_free+0x100/0x170
-  slab_free_freelist_hook+0xd4/0x1e8
-  __kmem_cache_free+0x15c/0x290
-  kfree+0x74/0x100
-  kfree_sensitive+0x80/0xb0
-  alg_test_skcipher+0x12c/0x1f0
-  alg_test+0x24c/0x830
-  cryptomgr_test+0x38/0x60
-  kthread+0x168/0x178
-  ret_from_fork+0x10/0x20
+I guess, as is, this assumes the block isn't actually of length 0,
+since there's a bunch of following get_ncm() calls...
+Are those guaranteed to be valid?
 
- The buggy address belongs to the object at ffff00000dcdc000
-  which belongs to the cache kmalloc-256 of size 256
- The buggy address is located 64 bytes inside of
-  freed 256-byte region [ffff00000dcdc000, ffff00000dcdc100)
+I guess I don't actually see the infinite loop with block_len =3D=3D 0,
+since get_ncm() always moves us forward...
 
-Signed-off-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
-Fixes: 4136212ab18e ("crypto: sun8i-ce - Remove prepare/unprepare request")
----
- .../allwinner/sun8i-ce/sun8i-ce-cipher.c      | 34 +++++++++----------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+Maybe your patch *is* correct as is, and you just need a comment
+explaining *why* block_len =3D=3D 0 is terminal at the spot you're adding t=
+he check.
 
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-index 1262a7773ef3..de50c00ba218 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-@@ -299,22 +299,6 @@ static int sun8i_ce_cipher_prepare(struct crypto_engine *engine, void *async_req
- 	return err;
- }
- 
--static void sun8i_ce_cipher_run(struct crypto_engine *engine, void *areq)
--{
--	struct skcipher_request *breq = container_of(areq, struct skcipher_request, base);
--	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(breq);
--	struct sun8i_cipher_tfm_ctx *op = crypto_skcipher_ctx(tfm);
--	struct sun8i_ce_dev *ce = op->ce;
--	struct sun8i_cipher_req_ctx *rctx = skcipher_request_ctx(breq);
--	int flow, err;
--
--	flow = rctx->flow;
--	err = sun8i_ce_run_task(ce, flow, crypto_tfm_alg_name(breq->base.tfm));
--	local_bh_disable();
--	crypto_finalize_skcipher_request(engine, breq, err);
--	local_bh_enable();
--}
--
- static void sun8i_ce_cipher_unprepare(struct crypto_engine *engine,
- 				      void *async_req)
- {
-@@ -360,6 +344,23 @@ static void sun8i_ce_cipher_unprepare(struct crypto_engine *engine,
- 	dma_unmap_single(ce->dev, rctx->addr_key, op->keylen, DMA_TO_DEVICE);
- }
- 
-+static void sun8i_ce_cipher_run(struct crypto_engine *engine, void *areq)
-+{
-+	struct skcipher_request *breq = container_of(areq, struct skcipher_request, base);
-+	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(breq);
-+	struct sun8i_cipher_tfm_ctx *op = crypto_skcipher_ctx(tfm);
-+	struct sun8i_ce_dev *ce = op->ce;
-+	struct sun8i_cipher_req_ctx *rctx = skcipher_request_ctx(breq);
-+	int flow, err;
-+
-+	flow = rctx->flow;
-+	err = sun8i_ce_run_task(ce, flow, crypto_tfm_alg_name(breq->base.tfm));
-+	sun8i_ce_cipher_unprepare(engine, areq);
-+	local_bh_disable();
-+	crypto_finalize_skcipher_request(engine, breq, err);
-+	local_bh_enable();
-+}
-+
- int sun8i_ce_cipher_do_one(struct crypto_engine *engine, void *areq)
- {
- 	int err = sun8i_ce_cipher_prepare(engine, areq);
-@@ -368,7 +369,6 @@ int sun8i_ce_cipher_do_one(struct crypto_engine *engine, void *areq)
- 		return err;
- 
- 	sun8i_ce_cipher_run(engine, areq);
--	sun8i_ce_cipher_unprepare(engine, areq);
- 	return 0;
- }
- 
--- 
-2.43.0
+Also couldn't you fix this without goto, by changing
 
+  } else if (to_process > 0) {
+to
+  } else if (to_process && block_len) {
+    // See NCM spec.  zero block_len means short packet.
+
+--
+Maciej =C5=BBenczykowski, Kernel Networking Developer @ Google
 
