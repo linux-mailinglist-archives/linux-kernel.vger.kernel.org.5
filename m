@@ -1,243 +1,213 @@
-Return-Path: <linux-kernel+bounces-80559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3218F86697B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:00:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5320586697E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:06:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84778B20DA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:59:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BB6B1C20BEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:06:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C912B1B966;
-	Mon, 26 Feb 2024 04:59:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E20461B7E1;
+	Mon, 26 Feb 2024 05:05:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PTTvxzs9"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cfc/o67r"
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69D6F1AACD
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 04:59:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B463DF51
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 05:05:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708923584; cv=none; b=rj43En/mWv2xpubpDOcQ7u6Vs4yDpAMRdTwP63lWJ1wnvfoJZq8g7uubPONMxrQnqUTxxM9/rVbIJi1Eaa0PmgPRqfJq4dZQjpLN7CmuJjCtUi/MeGrbNUgBbLLCyPB8kWEemABpgWSWQdiYMXua/NdKpA9kmS13TmPo4UoyDBc=
+	t=1708923957; cv=none; b=tHG2gx304R95zlJwwEcdZtcc1kC4H4H0Exz52nXIFyqxawILMj5ucOl1N+u0icfMPXQtbUQlOxbSVmELwoFnoBHMUC2uxeaCcK0gzcMIRCjVR6CT2TQ5h/Z48LPkISe8vK4GuCPzXoNAQjqO0Jw1AIIZS0K6A5LGoJTWz81l9Vo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708923584; c=relaxed/simple;
-	bh=AaJMamp2Nb+Yq5spo7QL5Q4FyDBAAXS9vg0TE+DBw+s=;
+	s=arc-20240116; t=1708923957; c=relaxed/simple;
+	bh=6OoXSMBS9gARhyGFZOACx9S88j++4mZxmWYv/6V2Qe4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MUtheNLmxsXq4Ppgs1QronPUfy0fnUaWZ6bZyjUk3vtODn/TDmrQSni8Z7gQT+M/SDBoFrgykH7FzHHhZ8Lf1Cy2FQiCG0YWC5NyaEIHHJNPrSmfgTOpcOPcS3NiV7ekf/dHyOXxsVVvVbNEFA2W4i4g4pqVkcxLI0n4mjOeRxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PTTvxzs9; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708923580;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iso6K6DyWAnnF++t9+yhMMEiOuk3VKMqC/cJQai+WRQ=;
-	b=PTTvxzs9cVIp3acEcuWwCUtXx5yfaWsYiYrTGrWJz4wB5+Mo0lHsJmViIJ4TleKTKzrJxY
-	nT+zwDvpPpED8hec+tXPfZZW0Pc6kMcWjoHqYMCs1LlN47spMAofsKafX++0HgY9IE9SsP
-	5W1QPxZjjm/5aImp/WGIF13YJjVkrVA=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-643-07n9jKfqOtyeDXr0putZOQ-1; Sun, 25 Feb 2024 23:59:38 -0500
-X-MC-Unique: 07n9jKfqOtyeDXr0putZOQ-1
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-29a82907e96so2178081a91.2
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 20:59:38 -0800 (PST)
+	 To:Cc:Content-Type; b=b3lkXkrI8Y2gLgeMeVvqLhZPufuZF/ZLCXEXXYeX7om8iAEOfERqP/ahcp4q9udc6D/7bZtK6J1NIkR5yJZQBKAm/wqhLfKOZTxYIGXBNfR81X0f2akNE5aqx+cif2K3348Mf3IXRyl9B9ssOzN3OWmdl8lCk3TGrIvTVc5KMZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cfc/o67r; arc=none smtp.client-ip=209.85.222.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7d5fce59261so1798608241.3
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 21:05:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708923954; x=1709528754; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n0sV/ZkJed5YTOmJzKp3YfxIPpujeOY2hnQ4Z72HoPQ=;
+        b=Cfc/o67rzD6zpyFJhAb9MVl5m1O5cruahGu/MDGugTze2QhXqGSeHbpMV0DLKRJnAm
+         Rm4GJSJoOfYzlf4NhUerTnc84hGypCJzVPQPjslprVce71VAMBTR/hXBvvfJumh23GnZ
+         ZqLi0mtktoFTZV4w9PSEPJs5CygtRw2rD/8PTHXC6Ke5US2W/ou5cA+5z3E2ad6Cau+A
+         j9r3JbYNS0y1FndMPzCKt5tRSU10GknyB7boa+5C3QZWkDmgsF1w0AwWq/IqI9bg50xS
+         N2zJUpXp0HntynVnQHwaF5ebPVSefGzC/hSwk3elliFWP5oDJ2BWJtREOl8PWX0zu9SK
+         Px8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708923578; x=1709528378;
+        d=1e100.net; s=20230601; t=1708923954; x=1709528754;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iso6K6DyWAnnF++t9+yhMMEiOuk3VKMqC/cJQai+WRQ=;
-        b=GSfd0T9My3Esn3f4tzZiFbeiZWQXdrj8OS0axeWhp6kgRgcJ3Pt4+et1OvIq1HxizK
-         iA5w4udVdEM+98O550OocSXhOE7E2mNYeh4gFgwtMgaN9ASajpdy8UA0LvHJBoJpPafv
-         XP3xLFXdFsU6GV5MCQAYet5TPT2sEjRgUjn62TvUZ0pnJ5LaEC3ks6X0EsdqjWl9W0LX
-         ijSMXPNLT8xMWVDdRJ0CVVNJHUg41Ql6g9r//rkSM3vQXDnbCOWci6jODXeNZvFjmkAR
-         J/wsB9hky2erB15/NTLhAmUKMXCu/nsXqtdQcAiqxI63Ri25UNIk2eHdP6xrnfybduuG
-         f9Ow==
-X-Forwarded-Encrypted: i=1; AJvYcCV0F8NpOpmHndLFDW45yYyTwsaIe3RPSXt66v1jE+b4nnCbRYtAxpi2e5Nf6LDB4rGnSplShNMJ6BmsYsqxOWUMVrFu0PvSJzN25X+H
-X-Gm-Message-State: AOJu0YzC0LQ3uFmkvUasPawlnVX/ubfw3WdWwscCWXGuYo19r24w3NmZ
-	5pcx3E9rj9djPZ1Xq8h6Ng2DbkPeuJQnVNqxwarBBV3e/GxEI4N58jxXOg6mc6S4T0Wxumj8lB+
-	lN0OY+4/nOfAD7JT/woETNG5LNtX/QCxz+P1gJM6h5M0FnyF1T4ZTc0e/MkaYWPBe/2zNU0nSR2
-	wp5ME5wtOrZS2SO7JUlbtIwiWC19iLWCO9zKQB
-X-Received: by 2002:a17:90a:ad8a:b0:29a:a38c:8262 with SMTP id s10-20020a17090aad8a00b0029aa38c8262mr2919880pjq.48.1708923577743;
-        Sun, 25 Feb 2024 20:59:37 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFFTAN/Lw+RGzf9GeokVG5jtOCl25KGwF/7DbhV8aGSvRwum+aJwJ9WzPtrwumrWZ0Ki7ztusPHGEY87VqwktA=
-X-Received: by 2002:a17:90a:ad8a:b0:29a:a38c:8262 with SMTP id
- s10-20020a17090aad8a00b0029aa38c8262mr2919868pjq.48.1708923577403; Sun, 25
- Feb 2024 20:59:37 -0800 (PST)
+        bh=n0sV/ZkJed5YTOmJzKp3YfxIPpujeOY2hnQ4Z72HoPQ=;
+        b=U3Wko6zdpd9yMMXOualh6P+JTzcfmY6sZvZSGcsKpDIL53YcRKEUoLMlp+wHIom8Ay
+         UpuBSYF/aq4UZQ+TZrdmh37f1xtNYmtDCXZnJ/5dZ5wOmef8zbGP/QR4ZHVq5HAKxKSO
+         ZP8P7fimJrY9qpZe3mRBW+5spk43JgcY2J53xIGNM1I73ly6mPiEcN+xutElrLkzxrwc
+         HlASvDFdKJzoI/DmTtg3Dp+CXilkfMrLo8SsbqvFHiN859YJpeiGBsrxLSfPlHQ7DbxR
+         pxHn9+gXBI9pARuCLvwMamGNFeL94GGTzmaLIL1pL09B3EP31cw4uIOQA9KJHd8yUpsY
+         08ew==
+X-Forwarded-Encrypted: i=1; AJvYcCV4siUeq1X6yBRcCIzfweusHZ7oij8RAYz+y/LCHQBZ7N4rARKoptJXZeFssRhhWHesoRfuZ/vAVdR/NzVy3N6iMzR0fk+ByPhQJYeY
+X-Gm-Message-State: AOJu0Yw7oKBAu6tUkEAPGvgQuNHL8s/HuHglDiCGvV5iOq9OmhGqa8P9
+	ZH6AAAHZZhm2su0tSofTL4vSOJtKz856ZOP+1HnNqZnZbpGXw+ntfSRzn2YwKZlGwW+4f8UynSZ
+	GjxpKf6BW3nZBIXNwV52qxbhwyks=
+X-Google-Smtp-Source: AGHT+IHBzo46moG0layxvLBfJZRHuu4bELDVi9idfDPBnL5nE0tDjUn+TE4R77py2A2yeUoxtrBM9/4KA9fJSj31Zsc=
+X-Received: by 2002:a05:6102:3f53:b0:470:4aa5:2c5b with SMTP id
+ l19-20020a0561023f5300b004704aa52c5bmr4598628vsv.0.1708923954489; Sun, 25 Feb
+ 2024 21:05:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202121151.65710-1-liangchen.linux@gmail.com>
- <c8d59e75-d0bb-4a03-9ef4-d6de65fa9356@kernel.org> <CAKhg4tJFpG5nUNdeEbXFLonKkFUP0QCh8A9CpwU5OvtnBuz4Sw@mail.gmail.com>
- <5297dad6499f6d00f7229e8cf2c08e0eacb67e0c.camel@redhat.com>
- <CAKhg4tLbF8SfYD4dU9U9Nhii4FY2dftjPKYz-Emrn-CRwo10mg@mail.gmail.com>
- <73c242b43513bde04eebb4eb581deb189443c26b.camel@redhat.com>
- <CAKhg4tJPjcShkw4-FHFkKOcgzHK27A5pMu9FP7OWj4qJUX1ApA@mail.gmail.com>
- <1b2d471a5d06ecadcb75e3d9155b6d566afb2767.camel@redhat.com> <1708652254.1517398-1-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <1708652254.1517398-1-xuanzhuo@linux.alibaba.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Mon, 26 Feb 2024 12:59:25 +0800
-Message-ID: <CACGkMEuUeQTJYpZDx8ggqwBWULQS1Fjd_DgPvVMLq-_cjYfm7g@mail.gmail.com>
-Subject: Re: [PATCH net-next v5] virtio_net: Support RX hash XDP hint
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: Paolo Abeni <pabeni@redhat.com>, Jesper Dangaard Brouer <hawk@kernel.org>, mst@redhat.com, 
-	hengqi@linux.alibaba.com, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, netdev@vger.kernel.org, virtualization@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, john.fastabend@gmail.com, 
-	daniel@iogearbox.net, ast@kernel.org, Liang Chen <liangchen.linux@gmail.com>
+References: <20231025144546.577640-1-ryan.roberts@arm.com> <20240118111036.72641-1-21cnbao@gmail.com>
+ <20240118111036.72641-6-21cnbao@gmail.com> <58efd8d4-28aa-45d6-b384-7463568b24bb@redhat.com>
+ <CAGsJ_4zwUpL7LihRBOefg-cmY2mgNjMm-MPkq9VFBdXS_4b=uQ@mail.gmail.com>
+ <CAF8kJuNHrM+ZQSnTAOt6rrmGr1P=YS8eU+RSqhAc1CjQ7qdEwQ@mail.gmail.com>
+ <c11d73d5-105e-4ae1-837a-b9da392d2dad@redhat.com> <CAF8kJuMmh06rCXuiu5V0BiT8t1ckEEnY4rM-ivRBQ+xdyMhRKQ@mail.gmail.com>
+In-Reply-To: <CAF8kJuMmh06rCXuiu5V0BiT8t1ckEEnY4rM-ivRBQ+xdyMhRKQ@mail.gmail.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Mon, 26 Feb 2024 18:05:43 +1300
+Message-ID: <CAGsJ_4wanQr8mniGnJrzDHKGzWt8J2vT_Mx65+46=qk-R0iM3w@mail.gmail.com>
+Subject: Re: [PATCH RFC 5/6] mm: rmap: weaken the WARN_ON in __folio_add_anon_rmap()
+To: Chris Li <chrisl@kernel.org>
+Cc: David Hildenbrand <david@redhat.com>, ryan.roberts@arm.com, akpm@linux-foundation.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, mhocko@suse.com, 
+	shy828301@gmail.com, wangkefeng.wang@huawei.com, willy@infradead.org, 
+	xiang@kernel.org, ying.huang@intel.com, yuzhao@google.com, surenb@google.com, 
+	steven.price@arm.com, Barry Song <v-songbaohua@oppo.com>, 
+	Chuanhua Han <hanchuanhua@oppo.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 23, 2024 at 9:42=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
+On Tue, Jan 30, 2024 at 5:32=E2=80=AFAM Chris Li <chrisl@kernel.org> wrote:
+>
+> On Mon, Jan 29, 2024 at 2:07=E2=80=AFAM David Hildenbrand <david@redhat.c=
 om> wrote:
->
-> On Fri, 09 Feb 2024 13:57:25 +0100, Paolo Abeni <pabeni@redhat.com> wrote=
-:
-> > On Fri, 2024-02-09 at 18:39 +0800, Liang Chen wrote:
-> > > On Wed, Feb 7, 2024 at 10:27=E2=80=AFPM Paolo Abeni <pabeni@redhat.co=
+> >
+> > On 29.01.24 04:25, Chris Li wrote:
+> > > Hi David and Barry,
+> > >
+> > > On Mon, Jan 22, 2024 at 10:49=E2=80=AFPM Barry Song <21cnbao@gmail.co=
 m> wrote:
-> > > >
-> > > > On Wed, 2024-02-07 at 10:54 +0800, Liang Chen wrote:
-> > > > > On Tue, Feb 6, 2024 at 6:44=E2=80=AFPM Paolo Abeni <pabeni@redhat=
-com> wrote:
-> > > > > >
-> > > > > > On Sat, 2024-02-03 at 10:56 +0800, Liang Chen wrote:
-> > > > > > > On Sat, Feb 3, 2024 at 12:20=E2=80=AFAM Jesper Dangaard Broue=
-r <hawk@kernel.org> wrote:
-> > > > > > > > On 02/02/2024 13.11, Liang Chen wrote:
-> > > > > > [...]
-> > > > > > > > > @@ -1033,6 +1039,16 @@ static void put_xdp_frags(struct x=
-dp_buff *xdp)
-> > > > > > > > >       }
-> > > > > > > > >   }
-> > > > > > > > >
-> > > > > > > > > +static void virtnet_xdp_save_rx_hash(struct virtnet_xdp_=
-buff *virtnet_xdp,
-> > > > > > > > > +                                  struct net_device *dev=
-,
-> > > > > > > > > +                                  struct virtio_net_hdr_=
-v1_hash *hdr_hash)
-> > > > > > > > > +{
-> > > > > > > > > +     if (dev->features & NETIF_F_RXHASH) {
-> > > > > > > > > +             virtnet_xdp->hash_value =3D hdr_hash->hash_=
-value;
-> > > > > > > > > +             virtnet_xdp->hash_report =3D hdr_hash->hash=
-_report;
-> > > > > > > > > +     }
-> > > > > > > > > +}
-> > > > > > > > > +
-> > > > > > > >
-> > > > > > > > Would it be possible to store a pointer to hdr_hash in virt=
-net_xdp_buff,
-> > > > > > > > with the purpose of delaying extracting this, until and onl=
-y if XDP
-> > > > > > > > bpf_prog calls the kfunc?
-> > > > > > > >
-> > > > > > >
-> > > > > > > That seems to be the way v1 works,
-> > > > > > > https://lore.kernel.org/all/20240122102256.261374-1-liangchen=
-linux@gmail.com/
-> > > > > > > . But it was pointed out that the inline header may be overwr=
-itten by
-> > > > > > > the xdp prog, so the hash is copied out to maintain its integ=
-rity.
-> > > > > >
-> > > > > > Why? isn't XDP supposed to get write access only to the pkt
-> > > > > > contents/buffer?
-> > > > > >
-> > > > >
-> > > > > Normally, an XDP program accesses only the packet data. However,
-> > > > > there's also an XDP RX Metadata area, referenced by the data_meta
-> > > > > pointer. This pointer can be adjusted with bpf_xdp_adjust_meta to
-> > > > > point somewhere ahead of the data buffer, thereby granting the XD=
-P
-> > > > > program access to the virtio header located immediately before th=
-e
-> > > >
-> > > > AFAICS bpf_xdp_adjust_meta() does not allow moving the meta_data be=
-fore
-> > > > xdp->data_hard_start:
-> > > >
-> > > > https://elixir.bootlin.com/linux/latest/source/net/core/filter.c#L4=
-210
-> > > >
-> > > > and virtio net set such field after the virtio_net_hdr:
-> > > >
-> > > > https://elixir.bootlin.com/linux/latest/source/drivers/net/virtio_n=
-et.c#L1218
-> > > > https://elixir.bootlin.com/linux/latest/source/drivers/net/virtio_n=
-et.c#L1420
-> > > >
-> > > > I don't see how the virtio hdr could be touched? Possibly even more
-> > > > important: if such thing is possible, I think is should be somewhat
-> > > > denied (for the same reason an H/W nic should prevent XDP from
-> > > > modifying its own buffer descriptor).
+> > >>
+> > >>>
+> > >>>
+> > >>> I have on my todo list to move all that !anon handling out of
+> > >>> folio_add_anon_rmap_ptes(), and instead make swapin code call add
+> > >>> folio_add_new_anon_rmap(), where we'll have to pass an exclusive fl=
+ag
+> > >>> then (-> whole new folio exclusive).
+> > >>>
+> > >>> That's the cleaner approach.
+> > >>>
+> > >>
+> > >> one tricky thing is that sometimes it is hard to know who is the fir=
+st
+> > >> one to add rmap and thus should
+> > >> call folio_add_new_anon_rmap.
+> > >> especially when we want to support swapin_readahead(), the one who
+> > >> allocated large filio might not
+> > >> be that one who firstly does rmap.
 > > >
-> > > Thank you for highlighting this concern. The header layout differs
-> > > slightly between small and mergeable mode. Taking 'mergeable mode' as
-> > > an example, after calling xdp_prepare_buff the layout of xdp_buff
-> > > would be as depicted in the diagram below,
+> > > I think Barry has a point. Two tasks might race to swap in the folio
+> > > then race to perform the rmap.
+> > > folio_add_new_anon_rmap() should only call a folio that is absolutely
+> > > "new", not shared. The sharing in swap cache disqualifies that
+> > > condition.
+> >
+> > We have to hold the folio lock. So only one task at a time might do the
+> > folio_add_anon_rmap_ptes() right now, and the
+> > folio_add_new_shared_anon_rmap() in the future [below].
+> >
+>
+> Ah, I see. The folio_lock() is the answer I am looking for.
+>
+> > Also observe how folio_add_anon_rmap_ptes() states that one must hold
+> > the page lock, because otherwise this would all be completely racy.
+> >
+> >  From the pte swp exclusive flags, we know for sure whether we are
+> > dealing with exclusive vs. shared. I think patch #6 does not properly
+> > check that all entries are actually the same in that regard (all
+> > exclusive vs all shared). That likely needs fixing.
+> >
+> > [I have converting per-page PageAnonExclusive flags to a single
+> > per-folio flag on my todo list. I suspect that we'll keep the
+> > per-swp-pte exlusive bits, but the question is rather what we can
+> > actually make work, because swap and migration just make it much more
+> > complicated. Anyhow, future work]
+> >
 > > >
-> > >                       buf
-> > >                        |
-> > >                        v
-> > >         +--------------+--------------+-------------+
-> > >         | xdp headroom | virtio header| packet      |
-> > >         | (256 bytes)  | (20 bytes)   | content     |
-> > >         +--------------+--------------+-------------+
-> > >         ^                             ^
-> > >         |                             |
-> > >  data_hard_start                    data
-> > >                                   data_meta
+> > >> is it an acceptable way to do the below in do_swap_page?
+> > >> if (!folio_test_anon(folio))
+> > >>        folio_add_new_anon_rmap()
+> > >> else
+> > >>        folio_add_anon_rmap_ptes()
 > > >
-> > > If 'bpf_xdp_adjust_meta' repositions the 'data_meta' pointer a little
-> > > towards 'data_hard_start', it would point to the inline header, thus
-> > > potentially allowing the XDP program to access the inline header.
+> > > I am curious to know the answer as well.
 > >
-> > I see. That layout was completely unexpected to me.
 > >
-> > AFAICS the virtio_net driver tries to avoid accessing/using the
-> > virtio_net_hdr after the XDP program execution, so nothing tragic
-> > should happen.
+> > Yes, the end code should likely be something like:
 > >
-> > @Michael, @Jason, I guess the above is like that by design? Isn't it a
-> > bit fragile?
+> > /* ksm created a completely new copy */
+> > if (unlikely(folio !=3D swapcache && swapcache)) {
+> >         folio_add_new_anon_rmap(folio, vma, vmf->address);
+> >         folio_add_lru_vma(folio, vma);
+> > } else if (folio_test_anon(folio)) {
+> >         folio_add_anon_rmap_ptes(rmap_flags)
+> > } else {
+> >         folio_add_new_anon_rmap(rmap_flags)
+> > }
+> >
+> > Maybe we want to avoid teaching all existing folio_add_new_anon_rmap()
+> > callers about a new flag, and just have a new
+> > folio_add_new_shared_anon_rmap() instead. TBD.
 
-Yes.
+if we have to add a wrapper like folio_add_new_shared_anon_rmap()
+to avoid "if (folio_test_anon(folio))" and "else" everywhere, why not
+we just do it in folio_add_anon_rmap_ptes() ?
+
+folio_add_anon_rmap_ptes()
+{
+      if (!folio_test_anon(folio))
+               return folio_add_new_anon_rmap();
+}
+
+Anyway, I am going to change the patch 4/6 to if(folio_test_anon)/else firs=
+t
+and drop this 5/6.
+we may figure out if we need a wrapper later.
 
 >
-> YES. We process it carefully. That brings some troubles, we hope to put t=
-he
-> virtio-net header to the vring desc like other NICs. But that is a big pr=
-oject.
-
-Yes, and we still need to support the "legacy" layout.
-
+> There is more than one caller needed to perform that dance around
+> folio_test_anon() then decide which function to call. It would be nice
+> to have a wrapper function folio_add_new_shared_anon_rmap() to
+> abstract this behavior.
 >
-> I think this patch is ok, this can be merged to net-next firstly.
-
-+1
+>
+> >
+> > >
+> > > BTW, that test might have a race as well. By the time the task got
+> > > !anon result, this result might get changed by another task. We need
+> > > to make sure in the caller context this race can't happen. Otherwise
+> > > we can't do the above safely.
+> > Again, folio lock. Observe the folio_lock_or_retry() call that covers
+> > our existing folio_add_new_anon_rmap/folio_add_anon_rmap_pte calls.
+>
+> Ack. Thanks for the explanation.
+>
+> Chris
 
 Thanks
-
->
-> Thanks.
->
->
-> >
-> > Thanks!
-> >
-> > Paolo
-> >
->
-
+Barry
 
