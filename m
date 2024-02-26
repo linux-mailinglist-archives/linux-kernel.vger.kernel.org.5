@@ -1,155 +1,94 @@
-Return-Path: <linux-kernel+bounces-81744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B91388679A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:11:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7662F8679A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:11:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71FF929D769
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:11:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17F461F27220
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:11:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5BEA1350F2;
-	Mon, 26 Feb 2024 14:55:07 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E61861353FF;
+	Mon, 26 Feb 2024 14:55:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WadZePrh"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB7F27FBAA;
-	Mon, 26 Feb 2024 14:55:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 309971350E7;
+	Mon, 26 Feb 2024 14:55:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708959307; cv=none; b=sbEQ+fc4adkbPGXCqCGQ51JEYs2N5T8mTRPaPi1dxUudGxDEAdJihn7aUQElz8YCBxYiKMMgjsp/wMvoi6JBqpnTzkqw6X2a3wBJLdF9o7ketUUo54MUz9TayGfEXolytVOH71031I4m0WdN60+dUQsjgEFK6WHEjdaP8cayOMw=
+	t=1708959320; cv=none; b=UqVX6CIwDFPUBcvgt5Odt9hAA0ioUFRSMH0+Q6C1HtyFXE0a228g5AQ/3ODCIhgdWMHon5jrOmip6RejZ/3QwzJo3iRbWEb8SeA1lyCMuR9ezBCASESyLK76fbSCSneiiyCy1YEXT9yKCE/SeEe1eowpXOvMd3oPh/oErNXlXAY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708959307; c=relaxed/simple;
-	bh=I0TdaHq2K6g+L+L8Q/Fh7u2BvRCJVW8ZB71K1N+w5bM=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=a0K5dGxV1CeoGbhqsAoQGh2K4q5c7DTTHkymJVE7Op4vLVj74HALqtxSXJZK0c4KSkANjVwBI3SpizuM1GPwEtKu8AbVnUrlt52qiN5kzE5y4xhEmgtAcInMw9MtaDznuSJXxsVD92I+kSeHoa2Zehl7OX/75zbiNoY3YXsxNPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Tk3Sz0Kg7z6K6hb;
-	Mon, 26 Feb 2024 22:50:43 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id D3BF0140D30;
-	Mon, 26 Feb 2024 22:55:01 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 26 Feb
- 2024 14:55:01 +0000
-Date: Mon, 26 Feb 2024 14:55:00 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Jonathan Cameron <jic23@kernel.org>
-CC: Dumitru Ceclan <mitrutzceclan@gmail.com>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, <linus.walleij@linaro.org>,
-	<brgl@bgdev.pl>, <andy@kernel.org>, <linux-gpio@vger.kernel.org>, "Lars-Peter
- Clausen" <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>, Conor Dooley
-	<conor+dt@kernel.org>, Michael Walle <michael@walle.cc>, Andy Shevchenko
-	<andy.shevchenko@gmail.com>, Arnd Bergmann <arnd@arndb.de>, ChiaEn Wu
-	<chiaen_wu@richtek.com>, Niklas Schnelle <schnelle@linux.ibm.com>, Leonard
- =?ISO-8859-1?Q?G=F6hrs?= <l.goehrs@pengutronix.de>, Mike Looijmans
-	<mike.looijmans@topic.nl>, Haibo Chen <haibo.chen@nxp.com>, Hugo Villeneuve
-	<hvilleneuve@dimonoff.com>, David Lechner <dlechner@baylibre.com>, "Ceclan
- Dumitru" <dumitru.ceclan@analog.com>, <linux-iio@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Conor Dooley
-	<conor.dooley@microchip.com>
-Subject: Re: [PATCH v15 1/3] dt-bindings: adc: add AD7173
-Message-ID: <20240226145500.00007783@Huawei.com>
-In-Reply-To: <20240224173055.2b2e067c@jic23-huawei>
-References: <20240223133758.9787-1-mitrutzceclan@gmail.com>
-	<20240224173055.2b2e067c@jic23-huawei>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1708959320; c=relaxed/simple;
+	bh=SHDBTf5C5XMzZppp5DC1oDDIjabtSADDcRTNwJ3pHAc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ac911gAvcCT4103X4swOdA9T5/ksBH6TPPs4d5sSFo9+VPKLiPUsF+OhgcDvkXtIS9SV0orZH0ertTC6rg9wUy3KTOrLM/SMmbuKdiz49PDkNslyCGxwcd/Uf9EThFpiSIbqk3AfwXnlxp7Bb3XJLW5mXO6bd9ys3LZwoRVp3QU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WadZePrh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A1FAC433F1;
+	Mon, 26 Feb 2024 14:55:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708959319;
+	bh=SHDBTf5C5XMzZppp5DC1oDDIjabtSADDcRTNwJ3pHAc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WadZePrhydomBWSz8uFS7lO8azeX2/uaMhOWABcgLXAagrkhRukFAJ1Ru4x9gfGdk
+	 l0AvNL9nmp0mxTlE1BrXGA+q17oe3G6z+J67aUVfMcvdRCB24jq2audnmjgNyLqAYO
+	 JuzHcuzdnFaiYcZkZ6AekL7P84Omu4apAE0t1fx9lhzzOlTNkj0uhDXzTfaCuSEguX
+	 EB+uRGDUiFaxUN4W8b/PZVlhMCnOZo83OplURxF1TEIbkfNdXvB1VswNgh0BrxF8cp
+	 HrgJGL0MLeWeSYFT5AYiOFLTpLFxAZ+s/xSY3tOgWI70lrMNYatuSv0YaLvwfpxIOS
+	 UhzuBVYWHV7kA==
+Date: Mon, 26 Feb 2024 08:55:17 -0600
+From: Rob Herring <robh@kernel.org>
+To: Sebastian Reichel <sre@kernel.org>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-kernel@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+	Mark Brown <broonie@kernel.org>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	devicetree@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Fabio Estevam <festevam@gmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Dong Aisheng <aisheng.dong@nxp.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	linux-arm-kernel@lists.infradead.org,
+	Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v4 06/16] dt-bindings: lcdif: Do not require
+ power-domains for i.MX6ULL
+Message-ID: <170895931635.643835.3601839818121921964.robh@kernel.org>
+References: <20240224213240.1854709-1-sre@kernel.org>
+ <20240224213240.1854709-7-sre@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240224213240.1854709-7-sre@kernel.org>
 
-On Sat, 24 Feb 2024 17:30:55 +0000
-Jonathan Cameron <jic23@kernel.org> wrote:
 
-> On Fri, 23 Feb 2024 15:37:28 +0200
-> Dumitru Ceclan <mitrutzceclan@gmail.com> wrote:
+On Sat, 24 Feb 2024 22:29:38 +0100, Sebastian Reichel wrote:
+> i.MX6UL(L) uses "fsl,imx6sx-lcdif" as fallback compatible string,
+> but has only very lightweight DISPLAY power domain. Its DISPLAY
+> power domain is not supported by the binding / Linux kernel at
+> the moment. Since the current setup is working, let's remove the
+> power-domain from being required for that platform to fix the warning
+> printed by CHECK_DTBS=y.
 > 
-> > The AD7173 family offer a complete integrated Sigma-Delta ADC solution
-> > which can be used in high precision, low noise single channel applications
-> > or higher speed multiplexed applications. The Sigma-Delta ADC is intended
-> > primarily for measurement of signals close to DC but also delivers
-> > outstanding performance with input bandwidths out to ~10kHz.
-> > 
-> > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> > Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>  
+> Fixes: f62678a77d58 ("dt-bindings: mxsfb: Document i.MX8M/i.MX6SX/i.MX6SL power-domains property")
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Sebastian Reichel <sre@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/display/fsl,lcdif.yaml | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
 > 
-> Ok, in the interests of perfect not being the enemy of good enough.
-> I'll leave the supplies for now.  There are lots of existing drivers
-> where we don't list them as required (because my understanding of this
-> changed in more recent times).
-> 
-> It's been on my list of jobs for a really boring Friday afternoon
-> to bring them all inline with the convention of if it needs power
-> on the pin, it's required, so what's one more? :)
-> 
-> As Nuno pointed out, patch 2 clashed with work already upstream to
-> allow firmware to have the final say on interrupt types. I think
-> I've resolved that correctly.
-> 
-> I tidied up the docs ordering issue Andy noted.
-> 
-> Also, ad_sigma_delta is namespaced. So added
-> MODULE_IMPORT_NS(IIO_AD_SIGMA_DELTA).
-> 
-> Make sure you test your patches with a modular build
-> on a more recent tree - that change was early last in 2022!
-> 
-> A few lines in the driver were too long.
-> I don't mind them going over 80 for readability reasons, but
-> not over 100.
-> 
-> Anyhow, with those changes (and please check I didn't mess things up!)
-> applied to the togreg branch of iio.git and pushed for now as testing
-> for 0-day to get a look in.
 
-Not good news.  There are 2 issues.
->> drivers/iio/adc/ad7173.c:854:3: warning: variable 'chan_arr' is uninitialized when used here [-Wuninitialized]  
-     854 |                 chan_arr[chan_index] = ad7173_temp_iio_channel_template;
-         |                 ^~~~~~~~
-   drivers/iio/adc/ad7173.c:848:32: note: initialize the variable 'chan_arr' to silence this warning
-     848 |         struct iio_chan_spec *chan_arr, *chan;
-         |                                       ^
-         |                                        = NULL
->> drivers/iio/adc/ad7173.c:855:19: warning: variable 'chans_st_arr' is uninitialized when used here [-Wuninitialized]  
-     855 |                 chan_st_priv = &chans_st_arr[chan_index];
-         |                                 ^~~~~~~~~~~~
-   drivers/iio/adc/ad7173.c:845:37: note: initialize the variable 'chans_st_arr' to silence this warning
-     845 |         struct ad7173_channel *chans_st_arr, *chan_st_priv;
-         |                                            ^
-         |                                             = NULL
-
-+ if you build with !CONFIG_GPIOLIB
-
-ad7173_gpio_init() isn't defined.  That needs a stub.
-
-I'll back this driver out for now as fixing the first issue is a little fiddly because
-indio_dev->channels is const so the code should allocate and fill the array via a local pointer
-before assigning it to indio_dev.
-
-Please send a new version with these resolved + make sure you run some build tests.
-
-Thanks,
-
-Jonathan
-
-> 
-> Thanks,
-> 
-> Jonathan
-> 
+Applied, thanks!
 
 
