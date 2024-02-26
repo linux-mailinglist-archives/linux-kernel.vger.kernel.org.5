@@ -1,72 +1,91 @@
-Return-Path: <linux-kernel+bounces-81098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81095-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F9E7867022
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:11:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13E1686708D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:21:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F177428B50B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:11:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB322B2C7CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:10:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4179264CEE;
-	Mon, 26 Feb 2024 09:49:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3ECB63130;
+	Mon, 26 Feb 2024 09:49:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="fFQkG18o"
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [80.241.56.161])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="kS80TS6+"
+Received: from mail-oo1-f68.google.com (mail-oo1-f68.google.com [209.85.161.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90461634F3;
-	Mon, 26 Feb 2024 09:49:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.161
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 414B662A19
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:49:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708940998; cv=none; b=bQVawrXTRA/c8vZVw/mvd9435sT4tJSeEC+Pfh6ozgVg8IgzXhn297nLEJcDh4upLhTBZF1UHzdVuVRW0daaEtcRxlXGusPfjNYUW/Z1ca5efWz4jsWMuqvjzNVLkz4Fr8JIawfon36E4CRqp8GhoRuHyNZalEtsVMPypkUfdQs=
+	t=1708940989; cv=none; b=qeta0ZslyqZOLQu1ys3nazaNwhwxONbtu3nvT4F4tdjNR8oJzljsSf0/uG1w32S9f0Tk48liOsiAjnUHWXYh3K+Qsjzo6IfyIYgfjsdofRRIUSV/kMcsdv8XxhFVzI1uViRrfLT7rdQeojnVTuDf+7kAbJ68deTx//lp0sk/zEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708940998; c=relaxed/simple;
-	bh=BY0+lJrnKbexBUzETPtFYZ+OJuge9ZodiUfVOjc2hK8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RyISfggWyD+U1hNDMvF8KZK4r82AmGAAAHoZglpA6OwnAXsgvyVxP3xd42fZ89fhUuBg2R3C3VN9WznUMWfipqodrssO5mL2pkRGDfwH0w0ffxd027lkdxV2Je32SoOjEtqqA7CSMUBJT1MTLuLrRjuoKnJS3RXLLLnOcRyc9iU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=fFQkG18o; arc=none smtp.client-ip=80.241.56.161
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [10.196.197.202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4Tjwnk5kDgz9sT6;
-	Mon, 26 Feb 2024 10:49:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1708940986;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=O82T73AIK6qGhlYorGzOupTzei7wEk6+FPA8o3URJUE=;
-	b=fFQkG18oqQYxyzAvUU/y6Xu/XNWxZbMy3Hto7NjxLMdpH4n7PnYGdCLyHr4oXKUWbXSdbt
-	3kIMgsOe+HNJi2CzUuOzIN8/o3Hwj48BF9JSpk1ELMgKLrxDpkLn7dQHexpKbAy6k3on3h
-	tAY9LeXQaVX3Z0icnnr5KaXGnxzwdyT+lKKy4CYh251ECjLnS+cXrDxGEVm36OGNJwQwRd
-	47PB4v+rzOClutu21cDUGzMEc1J6st9TU1ML2CZo9yDdBjMu2qdfyN76b5tzCIv54RiQR8
-	MMZn9aLw+WeROCUn9RtgqMYpFq+RNdlieT4wk3ZhHKWPj+rdmiFDG5WMdnHFZg==
-From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-To: linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	david@fromorbit.com,
-	chandan.babu@oracle.com,
-	akpm@linux-foundation.org,
-	mcgrof@kernel.org,
-	ziy@nvidia.com,
-	hare@suse.de,
-	djwong@kernel.org,
-	gost.dev@samsung.com,
-	linux-mm@kvack.org,
-	willy@infradead.org
-Subject: [PATCH 01/13] mm: Support order-1 folios in the page cache
-Date: Mon, 26 Feb 2024 10:49:24 +0100
-Message-ID: <20240226094936.2677493-2-kernel@pankajraghav.com>
-In-Reply-To: <20240226094936.2677493-1-kernel@pankajraghav.com>
-References: <20240226094936.2677493-1-kernel@pankajraghav.com>
+	s=arc-20240116; t=1708940989; c=relaxed/simple;
+	bh=abhzLrMcAo73itQJFRf9PngJ2NfPzbHIHmMJXMFZsec=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=WwQ0naeSgPRiPdVur1Tn5IKpRfdUwx78nu4lbG71F9t/GEn5L2vj521Syf7WZxIje5N60uYijyK6YG+NgR3AFvx+t9PRfww5T86xx672+D5PDkVOq0mwQMhFm9lWzmCHijTRStfoCDowFEvB+sXr9dCId33QN0+IRSN77AcvFXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=kS80TS6+; arc=none smtp.client-ip=209.85.161.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-oo1-f68.google.com with SMTP id 006d021491bc7-595aa5b1fe0so1983893eaf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 01:49:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1708940987; x=1709545787; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4Xvb2DA8xzihP7Mzi/v0EMpx+00b5U5crlo4mSn4zeU=;
+        b=kS80TS6+bvhX77tP2NzsgvN1vrcEaGL/j9EoXMVM75liO5j/u5XYeNecqv8/A+MDip
+         RvcXJbrHzxexzcrRWDoe+KYkUa58Svgw40P6NRNt/dh98vSuf/g0JOpEsqSva/DH2HJw
+         a/u6xC6OpwKz/rTmVafuBNSisY6VKGjGDmKhVNKwi9HH6XR+eK9tSEuT/CUDK57zP8dp
+         QcMJnEzWEYrDMjvyA4tyVgJ+R2XGgo8n8a2KKxBwWS8TMrESf6nrEXUbAnZskodmr/vk
+         3Ib3e1HuJiqGRrSTgLX5Oi5npiADY0VcvTp8c2CdQjTDSv6R4RCY63+qZa1B7aXP9jwy
+         T/1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708940987; x=1709545787;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4Xvb2DA8xzihP7Mzi/v0EMpx+00b5U5crlo4mSn4zeU=;
+        b=iiKzUZR+mCzjM5UnjKmJmb4yQLZjZyF8kZGGUhutTSpBBiuCyzSkMTufdfrMxTsD/d
+         k0LcIMk8P3vbkd8tX4ZirCdDtU56Yzanes9maxTpGPkO71+FnyjEBDWHGaQzNA8Humsq
+         IZa945LT3p6f+iJoACBpClc8O5s/BzRn9nND3arQvlX/bmqwiF/Ut/YlsY4pj9hG1Byy
+         EIkofAHz/92KZQYtfifMQz0SvaVqlEwfwxitJp6Y0x7j5EmPXdeCmdEoAT7Q4td9IiDD
+         yQQQVWLjZJydRzFLpeqRoIVGZ+FJbV0Z6AxZVVPYG0kcpLZRd3xlAYhON3Bg3qZunFEE
+         edSw==
+X-Forwarded-Encrypted: i=1; AJvYcCXlj0i7697del9wtd9yteKGltTEn44PP/ziK/vLd0b9SzAIgIq/JbMikciA1yO/3Bm/5IbXo3/xIjE6Q+E0R0H+Dg72WUCLeIsop6n3
+X-Gm-Message-State: AOJu0Yw6KjXAJT7wvjyoDImMBjDp0ZBuF1KBsn9ktv6ktc+5eGLTxXoF
+	aI0El/GRXy/OD2eSDEufqGssRs1LNAaZIf8Sg7rv1jYNtFdNmxGSBWSdP9i3twc=
+X-Google-Smtp-Source: AGHT+IE3eBu8fHke4PZi6DaBscB9yThhUvkTr9IUi/THq/4EKb+SFqCguBpytKdjktiXHiyFDzer5w==
+X-Received: by 2002:a05:6358:7627:b0:17b:304f:b2b with SMTP id r39-20020a056358762700b0017b304f0b2bmr7270243rwg.26.1708940987303;
+        Mon, 26 Feb 2024 01:49:47 -0800 (PST)
+Received: from C02CV19DML87.bytedance.net ([203.208.189.12])
+        by smtp.gmail.com with ESMTPSA id x19-20020a17090ab01300b002990d91d31dsm5934779pjq.15.2024.02.26.01.49.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 01:49:46 -0800 (PST)
+From: Rui Qi <qirui.001@bytedance.com>
+To: bp@alien8.de,
+	mingo@redhat.com,
+	tglx@linutronix.de,
+	hpa@zytor.com,
+	jpoimboe@redhat.com,
+	peterz@infradead.org,
+	mbenes@suse.cz,
+	gregkh@linuxfoundation.org,
+	stable@vger.kernel.org,
+	alexandre.chartre@oracle.com
+Cc: x86@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Rui Qi <qirui.001@bytedance.com>
+Subject: [PATCH 2/3] objtool: Add support for intra-function calls
+Date: Mon, 26 Feb 2024 17:49:24 +0800
+Message-Id: <20240226094925.95835-3-qirui.001@bytedance.com>
+X-Mailer: git-send-email 2.39.2 (Apple Git-143)
+In-Reply-To: <20240226094925.95835-1-qirui.001@bytedance.com>
+References: <20240226094925.95835-1-qirui.001@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,149 +94,184 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+From: Alexandre Chartre <alexandre.chartre@oracle.com>
 
-Folios of order 1 have no space to store the deferred list.  This is
-not a problem for the page cache as file-backed folios are never
-placed on the deferred list.  All we need to do is prevent the core
-MM from touching the deferred list for order 1 folios and remove the
-code which prevented us from allocating order 1 folios.
+commit 8aa8eb2a8f5b3305a95f39957dd2b715fa668e21 upstream.
 
-Link: https://lore.kernel.org/linux-mm/90344ea7-4eec-47ee-5996-0c22f42d6a6a@google.com/
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Change objtool to support intra-function calls. On x86, an intra-function
+call is represented in objtool as a push onto the stack (of the return
+address), and a jump to the destination address. That way the stack
+information is correctly updated and the call flow is still accurate.
+
+Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Link: https://lkml.kernel.org/r/20200414103618.12657-4-alexandre.chartre@oracle.com
+Signed-off-by: Rui Qi <qirui.001@bytedance.com>
 ---
- include/linux/huge_mm.h |  7 +++++--
- mm/filemap.c            |  2 --
- mm/huge_memory.c        | 23 ++++++++++++++++++-----
- mm/internal.h           |  4 +---
- mm/readahead.c          |  3 ---
- 5 files changed, 24 insertions(+), 15 deletions(-)
+ include/linux/frame.h                         | 11 ++++
+ .../Documentation/stack-validation.txt        |  8 +++
+ tools/objtool/arch/x86/decode.c               |  6 ++
+ tools/objtool/check.c                         | 62 +++++++++++++++++--
+ 4 files changed, 83 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-index 5adb86af35fc..916a2a539517 100644
---- a/include/linux/huge_mm.h
-+++ b/include/linux/huge_mm.h
-@@ -263,7 +263,7 @@ unsigned long thp_vma_allowable_orders(struct vm_area_struct *vma,
- unsigned long thp_get_unmapped_area(struct file *filp, unsigned long addr,
- 		unsigned long len, unsigned long pgoff, unsigned long flags);
+diff --git a/include/linux/frame.h b/include/linux/frame.h
+index 02d3ca2d9598..303cda600e56 100644
+--- a/include/linux/frame.h
++++ b/include/linux/frame.h
+@@ -15,9 +15,20 @@
+ 	static void __used __section(.discard.func_stack_frame_non_standard) \
+ 		*__func_stack_frame_non_standard_##func = func
  
--void folio_prep_large_rmappable(struct folio *folio);
-+struct folio *folio_prep_large_rmappable(struct folio *folio);
- bool can_split_folio(struct folio *folio, int *pextra_pins);
- int split_huge_page_to_list(struct page *page, struct list_head *list);
- static inline int split_huge_page(struct page *page)
-@@ -410,7 +410,10 @@ static inline unsigned long thp_vma_allowable_orders(struct vm_area_struct *vma,
++/*
++ * This macro indicates that the following intra-function call is valid.
++ * Any non-annotated intra-function call will cause objtool to issue a warning.
++ */
++#define ANNOTATE_INTRA_FUNCTION_CALL				\
++	999:							\
++	.pushsection .discard.intra_function_calls;		\
++	.long 999b;						\
++	.popsection;
++
+ #else /* !CONFIG_STACK_VALIDATION */
+ 
+ #define STACK_FRAME_NON_STANDARD(func)
++#define ANNOTATE_INTRA_FUNCTION_CALL
+ 
+ #endif /* CONFIG_STACK_VALIDATION */
+ 
+diff --git a/tools/objtool/Documentation/stack-validation.txt b/tools/objtool/Documentation/stack-validation.txt
+index de094670050b..ee26bb382b70 100644
+--- a/tools/objtool/Documentation/stack-validation.txt
++++ b/tools/objtool/Documentation/stack-validation.txt
+@@ -290,6 +290,14 @@ they mean, and suggestions for how to fix them.
+       https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70646
+ 
+ 
++11. file.o: warning: unannotated intra-function call
++
++   This warning means that a direct call is done to a destination which
++   is not at the beginning of a function. If this is a legit call, you
++   can remove this warning by putting the ANNOTATE_INTRA_FUNCTION_CALL
++   directive right before the call.
++
++
+ If the error doesn't seem to make sense, it could be a bug in objtool.
+ Feel free to ask the objtool maintainer for help.
+ 
+diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
+index a62e032863a8..c3ff62c085c8 100644
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -437,6 +437,12 @@ int arch_decode_instruction(struct elf *elf, struct section *sec,
+ 
+ 	case 0xe8:
+ 		*type = INSN_CALL;
++		/*
++		 * For the impact on the stack, a CALL behaves like
++		 * a PUSH of an immediate value (the return address).
++		 */
++			op->src.type = OP_SRC_CONST;
++			op->dest.type = OP_DEST_PUSH;
+ 		break;
+ 
+ 	case 0xfc:
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 71a24fd46dbd..0fa414869f45 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -645,6 +645,7 @@ static int add_jump_destinations(struct objtool_file *file)
  	return 0;
  }
  
--static inline void folio_prep_large_rmappable(struct folio *folio) {}
-+static inline struct folio *folio_prep_large_rmappable(struct folio *folio)
++
+ /*
+  * Find the destination instructions for all calls.
+  */
+@@ -666,10 +667,7 @@ static int add_call_destinations(struct objtool_file *file)
+ 								dest_off);
+ 
+ 			if (!insn->call_dest && !insn->ignore) {
+-				WARN_FUNC("unsupported intra-function call",
+-					  insn->sec, insn->offset);
+-				if (retpoline)
+-					WARN("If this is a retpoline, please patch it in with alternatives and annotate it with ANNOTATE_NOSPEC_ALTERNATIVE.");
++				WARN_FUNC("unannotated intra-function call", insn->sec, insn->offset);
+ 				return -1;
+ 			}
+ 
+@@ -1291,6 +1289,58 @@ static int read_retpoline_hints(struct objtool_file *file)
+ 	return 0;
+ }
+ 
++
++static int read_intra_function_calls(struct objtool_file *file)
 +{
-+	return folio;
++	struct instruction *insn;
++	struct section *sec;
++	struct rela *rela;
++
++	sec = find_section_by_name(file->elf, ".rela.discard.intra_function_calls");
++	if (!sec)
++		return 0;
++
++	list_for_each_entry(rela, &sec->rela_list, list) {
++		unsigned long dest_off;
++
++		if (rela->sym->type != STT_SECTION) {
++			WARN("unexpected relocation symbol type in %s",
++			     sec->name);
++			return -1;
++		}
++
++		insn = find_insn(file, rela->sym->sec, rela->addend);
++		if (!insn) {
++			WARN("bad .discard.intra_function_call entry");
++			return -1;
++		}
++
++		if (insn->type != INSN_CALL) {
++			WARN_FUNC("intra_function_call not a direct call",
++				  insn->sec, insn->offset);
++			return -1;
++		}
++
++		/*
++		 * Treat intra-function CALLs as JMPs, but with a stack_op.
++		 * See add_call_destinations(), which strips stack_ops from
++		 * normal CALLs.
++		 */
++		insn->type = INSN_JUMP_UNCONDITIONAL;
++
++		dest_off = insn->offset + insn->len + insn->immediate;
++		insn->jump_dest = find_insn(file, insn->sec, dest_off);
++		if (!insn->jump_dest) {
++			WARN_FUNC("can't find call dest at %s+0x%lx",
++				  insn->sec, insn->offset,
++				  insn->sec->name, dest_off);
++			return -1;
++		}
++	}
++
++	return 0;
 +}
- 
- #define transparent_hugepage_flags 0UL
- 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 750e779c23db..2b00442b9d19 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -1912,8 +1912,6 @@ struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
- 			gfp_t alloc_gfp = gfp;
- 
- 			err = -ENOMEM;
--			if (order == 1)
--				order = 0;
- 			if (order > 0)
- 				alloc_gfp |= __GFP_NORETRY | __GFP_NOWARN;
- 			folio = filemap_alloc_folio(alloc_gfp, order);
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 94c958f7ebb5..81fd1ba57088 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -788,11 +788,15 @@ struct deferred_split *get_deferred_split_queue(struct folio *folio)
- }
- #endif
- 
--void folio_prep_large_rmappable(struct folio *folio)
-+struct folio *folio_prep_large_rmappable(struct folio *folio)
- {
--	VM_BUG_ON_FOLIO(folio_order(folio) < 2, folio);
--	INIT_LIST_HEAD(&folio->_deferred_list);
-+	if (!folio || !folio_test_large(folio))
-+		return folio;
-+	if (folio_order(folio) > 1)
-+		INIT_LIST_HEAD(&folio->_deferred_list);
- 	folio_set_large_rmappable(folio);
 +
-+	return folio;
- }
- 
- static inline bool is_transparent_hugepage(struct folio *folio)
-@@ -3082,7 +3086,8 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
- 	/* Prevent deferred_split_scan() touching ->_refcount */
- 	spin_lock(&ds_queue->split_queue_lock);
- 	if (folio_ref_freeze(folio, 1 + extra_pins)) {
--		if (!list_empty(&folio->_deferred_list)) {
-+		if (folio_order(folio) > 1 &&
-+		    !list_empty(&folio->_deferred_list)) {
- 			ds_queue->split_queue_len--;
- 			list_del(&folio->_deferred_list);
- 		}
-@@ -3133,6 +3138,9 @@ void folio_undo_large_rmappable(struct folio *folio)
- 	struct deferred_split *ds_queue;
- 	unsigned long flags;
- 
-+	if (folio_order(folio) <= 1)
-+		return;
-+
- 	/*
- 	 * At this point, there is no one trying to add the folio to
- 	 * deferred_list. If folio is not in deferred_list, it's safe
-@@ -3158,7 +3166,12 @@ void deferred_split_folio(struct folio *folio)
- #endif
- 	unsigned long flags;
- 
--	VM_BUG_ON_FOLIO(folio_order(folio) < 2, folio);
-+	/*
-+	 * Order 1 folios have no space for a deferred list, but we also
-+	 * won't waste much memory by not adding them to the deferred list.
-+	 */
-+	if (folio_order(folio) <= 1)
-+		return;
- 
- 	/*
- 	 * The try_to_unmap() in page reclaim path might reach here too,
-diff --git a/mm/internal.h b/mm/internal.h
-index f309a010d50f..5174b5b0c344 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -419,9 +419,7 @@ static inline struct folio *page_rmappable_folio(struct page *page)
+ static void mark_rodata(struct objtool_file *file)
  {
- 	struct folio *folio = (struct folio *)page;
+ 	struct section *sec;
+@@ -1346,6 +1396,10 @@ static int decode_sections(struct objtool_file *file)
+ 	if (ret)
+ 		return ret;
  
--	if (folio && folio_order(folio) > 1)
--		folio_prep_large_rmappable(folio);
--	return folio;
-+	return folio_prep_large_rmappable(folio);
- }
- 
- static inline void prep_compound_head(struct page *page, unsigned int order)
-diff --git a/mm/readahead.c b/mm/readahead.c
-index 2648ec4f0494..369c70e2be42 100644
---- a/mm/readahead.c
-+++ b/mm/readahead.c
-@@ -516,9 +516,6 @@ void page_cache_ra_order(struct readahead_control *ractl,
- 		/* Don't allocate pages past EOF */
- 		while (index + (1UL << order) - 1 > limit)
- 			order--;
--		/* THP machinery does not support order-1 */
--		if (order == 1)
--			order = 0;
- 		err = ra_alloc_folio(ractl, index, mark, order, gfp);
- 		if (err)
- 			break;
++	ret = read_intra_function_calls(file);
++	if (ret)
++		return ret;
++
+ 	ret = add_call_destinations(file);
+ 	if (ret)
+ 		return ret;
 -- 
-2.43.0
+2.39.2 (Apple Git-143)
 
 
