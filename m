@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-81662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81663-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41B18867938
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:58:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 161EA8678D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:43:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0318B2B685
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:43:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 395891C24171
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:43:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CF0A132474;
-	Mon, 26 Feb 2024 14:35:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47C4313249E;
+	Mon, 26 Feb 2024 14:35:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="frsiMweg"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bg/DjkPS"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1042112BF0D;
-	Mon, 26 Feb 2024 14:35:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2526132489;
+	Mon, 26 Feb 2024 14:35:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708958142; cv=none; b=MYu2Tq/wVe7njJ2s+l+92QTypwi+BlckuAsiWoOt+DdiMJm/H5UYJsqUQzS+0qR45iidpwyB6Ff+bDeCHF+97qYBCDUgRk/Wj0T6292KBH6F4nMzoMnilTNIdtCxoSsBpXlIxmm6DNBnbn9yVJTW6JZ+m316ZYM2QeQsFczZFZQ=
+	t=1708958146; cv=none; b=H5znE4WbrTxGD7OfMsR+saT9iaXyFBNnRNlm0K68V7GTMx9Iimx8hQLi8lj6XvCKZdxDt9+4cHVomRkKIuZIbfhhIolNeBIbnVa8OxyfpH4zEuIDnxjN5cdnnlaxjyKYouba24udrja603EgABF7XksCJ2OrWhyDADPfCKtM6OU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708958142; c=relaxed/simple;
-	bh=lkPWWNX4CqvxkABoFnNNUXtgtU86hs8RqI86OHed6gI=;
+	s=arc-20240116; t=1708958146; c=relaxed/simple;
+	bh=8SekTiXNHrHLsNEUj45LpjNSY2VTIm3w7VgqsWwXACc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=sqx+QlnwCliJHknl4xR9xEQYOQdsoFZ2lmH4/EJ39JDyBDD37wVCQJfL3r38gtMPqfzdlt8cDqE1Dw8qp/I7LO9Hm15AQp2oPu64rFqkWRTZ9lsoRbhiZHn5z/sDGu+3Be+XKvrRE40FwfTCAuvj/7kHtmeqexzMAqOdvZJmV6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=frsiMweg; arc=none smtp.client-ip=209.85.210.175
+	 MIME-Version; b=F3bAvni9pmDEJp/tdoIQVUfw8DD5dhKa1m4EtwSNiEhx4iiawhXHrPpJAVuhP0JRbN1T7KgPMQrl5HQKNZgOOiW4zU/3ormljC6FQfQpkc0fB61dkWRM6mbwnd3tP+pjMCFbGYIWo05saADQr66BUOkyPWfBdoU0nfy+QW83r+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bg/DjkPS; arc=none smtp.client-ip=209.85.210.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e08dd0fa0bso2686770b3a.1;
-        Mon, 26 Feb 2024 06:35:40 -0800 (PST)
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e53f3f1f82so214840b3a.2;
+        Mon, 26 Feb 2024 06:35:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708958140; x=1709562940; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708958144; x=1709562944; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BTFwRy/j+hGc3A0+vUN+d8c3IFpFYgzuXEpZOKFIa18=;
-        b=frsiMwegqR48pYel71xccNr85n9qEBuLXgiIKvX3g4Qe1slOER1yHJqjC9SckgQaWT
-         vhzCB8i6CsSNNy+crzUY4uZPRyENqpj1rpmWR0zPAin1UjnPn8qOY6rRMyw0ztXtyI/j
-         lCXYVrf/A512sv5D4SIH6hNs/664YoFGBdQylFiAeVtc5wH441hCE5GpB2mdfvVkU9Un
-         I8wgYinQXtCba4K0EU8vH3AG5WLqj7BDTZ1bhHNh5PU6+HzZW1YsTw7NsaSOIv9cuimH
-         ddNp+e31ZepvBe/7EpPU/GyEr218qjtWFjlD3Ak2scQ6hW2lt7je2aA7KvGxezsnFB4z
-         Yccg==
+        bh=GlT8Oy8jepWXAfHbDfNjdqLeUT8NKyYg0Ors9fKJfGM=;
+        b=Bg/DjkPSuasxBhfHr0aYkXRRiATzQFMJVyMcYH2rEwlo+FHaYs6Qoq3NGc3TxsNo5p
+         J9GndacRAQgiYkv41ySkiqhYZ/TCN0BvxjUAS4mH7zEoQcxltDxhFWRK+tKZCChkuzgn
+         boGKo/vSfx9pCMR2gPXuqLMpzGyCEu4BRd5jlywu5tXofr6etmM8zj8PI9gyySzOUBRo
+         ZXCmuVgqaC4zDwk7VRweSN8cajdOervWU7s9gfOwVCPHx1NXABHan29JNQKL7+5+f1BH
+         t7aPSnOHHU3KaB/p+gLey0NynAkxQeHFOs+v3aVDYYwHn8wGxqTD6xFbUWtWfvTcjKbD
+         0EIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708958140; x=1709562940;
+        d=1e100.net; s=20230601; t=1708958144; x=1709562944;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BTFwRy/j+hGc3A0+vUN+d8c3IFpFYgzuXEpZOKFIa18=;
-        b=WjmZVmyb9NGyPQfE7/VOXmcCf78j+xqOIK7LBxh2oF45xeAeXN4UCyYjHIjtNNvwSc
-         9rbsexLRCP0/8yE4yranYfezkDEBXJjivDwRkPGBQPvO2tn8ePhP36b6pGixGAaFv7Ig
-         IF85vhnXG23rfr4t57oSGQBlfqZISH0ykAL+/5pN6sJJf5si0R/lSa8JOV+Pw+sZqjke
-         mrcRCchy+iJBHUNcRsLOTbed6NIV2jxpXG7+asunrnjyIkCCCvJFhfxGklWjiQ5smETF
-         3BQJGXtLcT9Pyh9babVEeN/DNg6FTlPXyVMkl4f9LFSzmYggz/CgIW5xIkiApUJ2h8/8
-         2NIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVPOIWkmpUNIIo2ysfq9HJRy50EMEfv6ZAORRBZGcgtiCJH2uft+DRvolvDWzxbkQnHyLFoUORHdKLWAGXN+K8gBIae
-X-Gm-Message-State: AOJu0YzDQayBtbZihwVKz+ZWF1aN5lRgmXEB6aUGl2H6VuxYBEqi23NB
-	Hv2cQIOTJiDHjTEPjKdlWCiGe7ro0/SMqA5reYFIpQlO4jrTQMKgKR8ke57M
-X-Google-Smtp-Source: AGHT+IFkQAeotaJC6rOlB/07QXBxTvhlQ1Y2T2xm7Tl42zr/8ZXRkxT+6oQYkxerVjcTQcp6MLzzeQ==
-X-Received: by 2002:a05:6a21:1014:b0:1a0:e6c6:fa with SMTP id nk20-20020a056a21101400b001a0e6c600famr9611214pzb.7.1708958140321;
-        Mon, 26 Feb 2024 06:35:40 -0800 (PST)
-Received: from localhost ([198.11.176.14])
-        by smtp.gmail.com with ESMTPSA id x64-20020a626343000000b006e501303f1fsm3433320pfb.40.2024.02.26.06.35.39
+        bh=GlT8Oy8jepWXAfHbDfNjdqLeUT8NKyYg0Ors9fKJfGM=;
+        b=fir/mv314JTadVJ/ujR+w+zZocOlMh1mdpYu1cm41Cicz2PNKAU+MZM5su5Ei8Nvxg
+         9SSoRGHCYOJnyF8mTLyZufwfVFm+WYtijwP3fgC6PxaEPIuEQ6QObGjgVGybTdSTAzbX
+         WYbGEcYmIwhx5KcSMn0YusEQCMXWRKfK8uFtfCFn7YxUZtRGeYcrDGzBoa2T7WLEaVjt
+         EtoZi0ts99PTgPLBJoIOJ4N8Rjikr+wdWeWZa5ircbWH1XGMtjWW90RaV+mk6nUesLww
+         uxwgzvFc49fmZB0WmWg+2VDXxe/a6rsmaK/XoEXv0KYEnnR83mv4UnxDnkxm3GXOnate
+         MzIw==
+X-Forwarded-Encrypted: i=1; AJvYcCUKK7d/Q3O43c8lUaomVzOAnLDg/YW5duVgyya6rnzNM/xuNw9RZmwz72dTR/hS70+RllHLKJTMzMsbBFQiCvUhg/Xd
+X-Gm-Message-State: AOJu0YzHAgEJD6hakadqOjKJdiYqMbgfH3u3sVrEzn3NYtgYIX+PEzvB
+	D2U/v0XX60cIrMs82giUlFfbdYRppu2iNy3CK+vCzMMlrfnBDScJFTE6u7gz
+X-Google-Smtp-Source: AGHT+IF8TJ6xNK89quEEVBVGExFNiUnrqDL3Or/nJo10zBYwCLB2W+1oUA5ZsXrst2Z2JzN340jXxg==
+X-Received: by 2002:aa7:8449:0:b0:6e4:74ba:d907 with SMTP id r9-20020aa78449000000b006e474bad907mr5396962pfn.27.1708958143772;
+        Mon, 26 Feb 2024 06:35:43 -0800 (PST)
+Received: from localhost ([47.89.225.180])
+        by smtp.gmail.com with ESMTPSA id k4-20020aa79d04000000b006e0651ec05csm4066820pfp.43.2024.02.26.06.35.42
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 26 Feb 2024 06:35:40 -0800 (PST)
+        Mon, 26 Feb 2024 06:35:43 -0800 (PST)
 From: Lai Jiangshan <jiangshanlai@gmail.com>
 To: linux-kernel@vger.kernel.org
-Cc: Hou Wenlong <houwenlong.hwl@antgroup.com>,
-	Lai Jiangshan <jiangshan.ljs@antgroup.com>,
+Cc: Lai Jiangshan <jiangshan.ljs@antgroup.com>,
+	Hou Wenlong <houwenlong.hwl@antgroup.com>,
 	Linus Torvalds <torvalds@linux-foundation.org>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Sean Christopherson <seanjc@google.com>,
@@ -81,12 +81,11 @@ Cc: Hou Wenlong <houwenlong.hwl@antgroup.com>,
 	x86@kernel.org,
 	Kees Cook <keescook@chromium.org>,
 	Juergen Gross <jgross@suse.com>,
-	Andy Lutomirski <luto@kernel.org>,
 	Dave Hansen <dave.hansen@linux.intel.com>,
 	"H. Peter Anvin" <hpa@zytor.com>
-Subject: [RFC PATCH 19/73] x86/entry: Export 32-bit ignore syscall entry and __ia32_enabled variable
-Date: Mon, 26 Feb 2024 22:35:36 +0800
-Message-Id: <20240226143630.33643-20-jiangshanlai@gmail.com>
+Subject: [RFC PATCH 20/73] KVM: x86/PVM: Implement vcpu_load()/vcpu_put() related callbacks
+Date: Mon, 26 Feb 2024 22:35:37 +0800
+Message-Id: <20240226143630.33643-21-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20240226143630.33643-1-jiangshanlai@gmail.com>
 References: <20240226143630.33643-1-jiangshanlai@gmail.com>
@@ -98,44 +97,328 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Hou Wenlong <houwenlong.hwl@antgroup.com>
+From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 
-For PVM hypervisor, it ignores 32-bit syscall for guest currenlty.
-Therefore, export 32-bit ignore syscall entry and __ia32_enabled
-variable for PVM module.
+When preparing to switch to the guest, some guest states that only
+matter to userspace can be loaded ahead before VM enter. In PVM, guest
+segment registers and user return MSRs are loaded into hardware at that
+time. Since LDT and IO bitmap are not supported in PVM guests, they are
+cleared as well. When preparing to switch to the host in vcpu_put(),
+host states are restored.
 
-Suggested-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
-Signed-off-by: Hou Wenlong <houwenlong.hwl@antgroup.com>
 Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
+Signed-off-by: Hou Wenlong <houwenlong.hwl@antgroup.com>
 ---
- arch/x86/entry/common.c   | 1 +
- arch/x86/entry/entry_64.S | 1 +
- 2 files changed, 2 insertions(+)
+ arch/x86/kvm/pvm/pvm.c | 235 +++++++++++++++++++++++++++++++++++++++++
+ arch/x86/kvm/pvm/pvm.h |   5 +
+ 2 files changed, 240 insertions(+)
 
-diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-index 6356060caaf3..00ff701aa1be 100644
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -141,6 +141,7 @@ static __always_inline int syscall_32_enter(struct pt_regs *regs)
+diff --git a/arch/x86/kvm/pvm/pvm.c b/arch/x86/kvm/pvm/pvm.c
+index d4cc52bf6b3f..52b3b47ffe42 100644
+--- a/arch/x86/kvm/pvm/pvm.c
++++ b/arch/x86/kvm/pvm/pvm.c
+@@ -13,6 +13,8 @@
  
- #ifdef CONFIG_IA32_EMULATION
- bool __ia32_enabled __ro_after_init = !IS_ENABLED(CONFIG_IA32_EMULATION_DEFAULT_DISABLED);
-+EXPORT_SYMBOL_GPL(__ia32_enabled);
+ #include <linux/module.h>
  
- static int ia32_emulation_override_cmdline(char *arg)
++#include <asm/gsseg.h>
++#include <asm/io_bitmap.h>
+ #include <asm/pvm_para.h>
+ 
+ #include "cpuid.h"
+@@ -26,6 +28,211 @@ static bool __read_mostly is_intel;
+ 
+ static unsigned long host_idt_base;
+ 
++static inline void __save_gs_base(struct vcpu_pvm *pvm)
++{
++	// switcher will do a real hw swapgs, so use hw MSR_KERNEL_GS_BASE
++	rdmsrl(MSR_KERNEL_GS_BASE, pvm->segments[VCPU_SREG_GS].base);
++}
++
++static inline void __load_gs_base(struct vcpu_pvm *pvm)
++{
++	// switcher will do a real hw swapgs, so use hw MSR_KERNEL_GS_BASE
++	wrmsrl(MSR_KERNEL_GS_BASE, pvm->segments[VCPU_SREG_GS].base);
++}
++
++static inline void __save_fs_base(struct vcpu_pvm *pvm)
++{
++	rdmsrl(MSR_FS_BASE, pvm->segments[VCPU_SREG_FS].base);
++}
++
++static inline void __load_fs_base(struct vcpu_pvm *pvm)
++{
++	wrmsrl(MSR_FS_BASE, pvm->segments[VCPU_SREG_FS].base);
++}
++
++/*
++ * Test whether DS, ES, FS and GS need to be reloaded.
++ *
++ * Reading them only returns the selectors, but writing them (if
++ * nonzero) loads the full descriptor from the GDT or LDT.
++ *
++ * We therefore need to write new values to the segment registers
++ * on every host-guest state switch unless both the new and old
++ * values are zero.
++ */
++static inline bool need_reload_sel(u16 sel1, u16 sel2)
++{
++	return unlikely(sel1 | sel2);
++}
++
++/*
++ * Save host DS/ES/FS/GS selector, FS base, and inactive GS base.
++ * And load guest DS/ES/FS/GS selector, FS base, and GS base.
++ *
++ * Note, when the guest state is loaded and it is in hypervisor, the guest
++ * GS base is loaded in the hardware MSR_KERNEL_GS_BASE which is loaded
++ * with host inactive GS base when the guest state is NOT loaded.
++ */
++static void segments_save_host_and_switch_to_guest(struct vcpu_pvm *pvm)
++{
++	u16 pvm_ds_sel, pvm_es_sel, pvm_fs_sel, pvm_gs_sel;
++
++	/* Save host segments */
++	savesegment(ds, pvm->host_ds_sel);
++	savesegment(es, pvm->host_es_sel);
++	current_save_fsgs();
++
++	/* Load guest segments */
++	pvm_ds_sel = pvm->segments[VCPU_SREG_DS].selector;
++	pvm_es_sel = pvm->segments[VCPU_SREG_ES].selector;
++	pvm_fs_sel = pvm->segments[VCPU_SREG_FS].selector;
++	pvm_gs_sel = pvm->segments[VCPU_SREG_GS].selector;
++
++	if (need_reload_sel(pvm_ds_sel, pvm->host_ds_sel))
++		loadsegment(ds, pvm_ds_sel);
++	if (need_reload_sel(pvm_es_sel, pvm->host_es_sel))
++		loadsegment(es, pvm_es_sel);
++	if (need_reload_sel(pvm_fs_sel, current->thread.fsindex))
++		loadsegment(fs, pvm_fs_sel);
++	if (need_reload_sel(pvm_gs_sel, current->thread.gsindex))
++		load_gs_index(pvm_gs_sel);
++
++	__load_gs_base(pvm);
++	__load_fs_base(pvm);
++}
++
++/*
++ * Save guest DS/ES/FS/GS selector, FS base, and GS base.
++ * And load host DS/ES/FS/GS selector, FS base, and inactive GS base.
++ */
++static void segments_save_guest_and_switch_to_host(struct vcpu_pvm *pvm)
++{
++	u16 pvm_ds_sel, pvm_es_sel, pvm_fs_sel, pvm_gs_sel;
++
++	/* Save guest segments */
++	savesegment(ds, pvm_ds_sel);
++	savesegment(es, pvm_es_sel);
++	savesegment(fs, pvm_fs_sel);
++	savesegment(gs, pvm_gs_sel);
++	pvm->segments[VCPU_SREG_DS].selector = pvm_ds_sel;
++	pvm->segments[VCPU_SREG_ES].selector = pvm_es_sel;
++	pvm->segments[VCPU_SREG_FS].selector = pvm_fs_sel;
++	pvm->segments[VCPU_SREG_GS].selector = pvm_gs_sel;
++
++	__save_fs_base(pvm);
++	__save_gs_base(pvm);
++
++	/* Load host segments */
++	if (need_reload_sel(pvm_ds_sel, pvm->host_ds_sel))
++		loadsegment(ds, pvm->host_ds_sel);
++	if (need_reload_sel(pvm_es_sel, pvm->host_es_sel))
++		loadsegment(es, pvm->host_es_sel);
++	if (need_reload_sel(pvm_fs_sel, current->thread.fsindex))
++		loadsegment(fs, current->thread.fsindex);
++	if (need_reload_sel(pvm_gs_sel, current->thread.gsindex))
++		load_gs_index(current->thread.gsindex);
++
++	wrmsrl(MSR_KERNEL_GS_BASE, current->thread.gsbase);
++	wrmsrl(MSR_FS_BASE, current->thread.fsbase);
++}
++
++static void pvm_prepare_switch_to_guest(struct kvm_vcpu *vcpu)
++{
++	struct vcpu_pvm *pvm = to_pvm(vcpu);
++
++	if (pvm->loaded_cpu_state)
++		return;
++
++	pvm->loaded_cpu_state = 1;
++
++#ifdef CONFIG_X86_IOPL_IOPERM
++	/*
++	 * PVM doesn't load guest I/O bitmap into hardware.  Invalidate I/O
++	 * bitmap if the current task is using it.  This prevents any possible
++	 * leakage of an active I/O bitmap to the guest and forces I/O
++	 * instructions in guest to be trapped and emulated.
++	 *
++	 * The I/O bitmap will be restored when the current task exits to
++	 * user mode in arch_exit_to_user_mode_prepare().
++	 */
++	if (test_thread_flag(TIF_IO_BITMAP))
++		native_tss_invalidate_io_bitmap();
++#endif
++
++#ifdef CONFIG_MODIFY_LDT_SYSCALL
++	/* PVM doesn't support LDT. */
++	if (unlikely(current->mm->context.ldt))
++		clear_LDT();
++#endif
++
++	segments_save_host_and_switch_to_guest(pvm);
++
++	kvm_set_user_return_msr(0, (u64)entry_SYSCALL_64_switcher, -1ull);
++	kvm_set_user_return_msr(1, pvm->msr_tsc_aux, -1ull);
++	if (ia32_enabled()) {
++		if (is_intel)
++			kvm_set_user_return_msr(2, GDT_ENTRY_INVALID_SEG, -1ull);
++		else
++			kvm_set_user_return_msr(2, (u64)entry_SYSCALL32_ignore, -1ull);
++	}
++}
++
++static void pvm_prepare_switch_to_host(struct vcpu_pvm *pvm)
++{
++	if (!pvm->loaded_cpu_state)
++		return;
++
++	++pvm->vcpu.stat.host_state_reload;
++
++#ifdef CONFIG_MODIFY_LDT_SYSCALL
++	if (unlikely(current->mm->context.ldt))
++		kvm_load_ldt(GDT_ENTRY_LDT*8);
++#endif
++
++	segments_save_guest_and_switch_to_host(pvm);
++	pvm->loaded_cpu_state = 0;
++}
++
++/*
++ * Set all hardware states back to host.
++ * Except user return MSRs.
++ */
++static void pvm_switch_to_host(struct vcpu_pvm *pvm)
++{
++	preempt_disable();
++	pvm_prepare_switch_to_host(pvm);
++	preempt_enable();
++}
++
++DEFINE_PER_CPU(struct vcpu_pvm *, active_pvm_vcpu);
++
++/*
++ * Switches to specified vcpu, until a matching vcpu_put(), but assumes
++ * vcpu mutex is already taken.
++ */
++static void pvm_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
++{
++	struct vcpu_pvm *pvm = to_pvm(vcpu);
++
++	if (__this_cpu_read(active_pvm_vcpu) == pvm && vcpu->cpu == cpu)
++		return;
++
++	__this_cpu_write(active_pvm_vcpu, pvm);
++
++	indirect_branch_prediction_barrier();
++}
++
++static void pvm_vcpu_put(struct kvm_vcpu *vcpu)
++{
++	struct vcpu_pvm *pvm = to_pvm(vcpu);
++
++	pvm_prepare_switch_to_host(pvm);
++}
++
++static void pvm_sched_in(struct kvm_vcpu *vcpu, int cpu)
++{
++}
++
+ static void pvm_setup_mce(struct kvm_vcpu *vcpu)
  {
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 65bfebebeab6..5b25ea4a16ae 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -1527,6 +1527,7 @@ SYM_CODE_START(entry_SYSCALL32_ignore)
- 	mov	$-ENOSYS, %eax
- 	sysretl
- SYM_CODE_END(entry_SYSCALL32_ignore)
-+EXPORT_SYMBOL_GPL(entry_SYSCALL32_ignore)
+ }
+@@ -100,6 +307,8 @@ static void pvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+ 	struct vcpu_pvm *pvm = to_pvm(vcpu);
+ 	int i;
  
- .pushsection .text, "ax"
- 	__FUNC_ALIGN
++	pvm_switch_to_host(pvm);
++
+ 	kvm_gpc_deactivate(&pvm->pvcs_gpc);
+ 
+ 	if (!init_event)
+@@ -183,6 +392,24 @@ static int pvm_check_processor_compat(void)
+ 	return 0;
+ }
+ 
++/*
++ * When in PVM mode, the hardware MSR_LSTAR is set to the entry point
++ * provided by the host entry code (switcher), and the
++ * hypervisor can also change the hardware MSR_TSC_AUX to emulate
++ * the guest MSR_TSC_AUX.
++ */
++static __init void pvm_setup_user_return_msrs(void)
++{
++	kvm_add_user_return_msr(MSR_LSTAR);
++	kvm_add_user_return_msr(MSR_TSC_AUX);
++	if (ia32_enabled()) {
++		if (is_intel)
++			kvm_add_user_return_msr(MSR_IA32_SYSENTER_CS);
++		else
++			kvm_add_user_return_msr(MSR_CSTAR);
++	}
++}
++
+ static __init void pvm_set_cpu_caps(void)
+ {
+ 	if (boot_cpu_has(X86_FEATURE_NX))
+@@ -253,6 +480,8 @@ static __init int hardware_setup(void)
+ 	store_idt(&dt);
+ 	host_idt_base = dt.address;
+ 
++	pvm_setup_user_return_msrs();
++
+ 	pvm_set_cpu_caps();
+ 
+ 	kvm_configure_mmu(false, 0, 0, 0);
+@@ -287,8 +516,14 @@ static struct kvm_x86_ops pvm_x86_ops __initdata = {
+ 	.vcpu_free = pvm_vcpu_free,
+ 	.vcpu_reset = pvm_vcpu_reset,
+ 
++	.prepare_switch_to_guest = pvm_prepare_switch_to_guest,
++	.vcpu_load = pvm_vcpu_load,
++	.vcpu_put = pvm_vcpu_put,
++
+ 	.vcpu_after_set_cpuid = pvm_vcpu_after_set_cpuid,
+ 
++	.sched_in = pvm_sched_in,
++
+ 	.nested_ops = &pvm_nested_ops,
+ 
+ 	.setup_mce = pvm_setup_mce,
+diff --git a/arch/x86/kvm/pvm/pvm.h b/arch/x86/kvm/pvm/pvm.h
+index 599bbbb284dc..6584314487bc 100644
+--- a/arch/x86/kvm/pvm/pvm.h
++++ b/arch/x86/kvm/pvm/pvm.h
+@@ -30,13 +30,18 @@ struct vcpu_pvm {
+ 
+ 	unsigned long switch_flags;
+ 
++	u16 host_ds_sel, host_es_sel;
++
+ 	u32 hw_cs, hw_ss;
+ 
++	int loaded_cpu_state;
+ 	int int_shadow;
+ 	bool nmi_mask;
+ 
+ 	struct gfn_to_pfn_cache pvcs_gpc;
+ 
++	// emulated x86 msrs
++	u64 msr_tsc_aux;
+ 	/*
+ 	 * Only bits masked by msr_ia32_feature_control_valid_bits can be set in
+ 	 * msr_ia32_feature_control. FEAT_CTL_LOCKED is always included
 -- 
 2.19.1.6.gb485710b
 
