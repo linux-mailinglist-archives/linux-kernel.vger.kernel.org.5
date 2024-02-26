@@ -1,278 +1,202 @@
-Return-Path: <linux-kernel+bounces-81345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2070A867489
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:14:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD27186748D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:15:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FE6CB25EF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:13:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0D7F1C28508
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:15:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56A0E60912;
-	Mon, 26 Feb 2024 12:12:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2630A1C686;
+	Mon, 26 Feb 2024 12:15:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="FiOwzCq9";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="173ewDth"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HBfbrPRb"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81881605B0;
-	Mon, 26 Feb 2024 12:12:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DB896027A
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 12:14:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708949572; cv=none; b=iggMLJk2TUkNXJ6TCGHndBlIu0xl2Iy3WIkH7fJ3XRDK4Wq3o7S8GgNwbJ1aLdKT73wz3mpr0rD/PLm2WqTW4kgg7HMsyIqJwMYARwy7uK+PvOySwvYOBIvPmCzj653N8nzt27BUej921cSnSUDlvvyiT10H6EmgMC/qwHJzmkY=
+	t=1708949700; cv=none; b=fc+6wFrTtHHOKk6VWlw8Og2fhntZ4BYv8+yCD/LnD7eiFUCtTu0xzKdhoxtPyQGOpCweON7wI7yglSftI1OQxDHBbCpvIdaurkYnJOqjy3kRYElHQors/bRRd2RnP7Ln+aVzBrSffnhgadfFnfh291uleSzMFwzvi7/gWXlLIXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708949572; c=relaxed/simple;
-	bh=GHDuWh4lNR66dkekDJ22TuJEX3tomQWv/vy8HfoAH4M=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=Z1OSACqXYwGgcHgw+BKPHPFrR7H7KzC1rx6M7IjPxS6sbVn8fzQQRT181MGgqQGlk32hzM9nLY/H/06Xrc3jSqz1NNMLqw/CLRAoWlWn1UvqtLeM9hSDYOKo3bzf9ceEYnky0vB1dLQHfL2DVQiVMQ3IWEgacqvlUv9iHtn3OcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=FiOwzCq9; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=173ewDth; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 26 Feb 2024 12:12:48 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708949568;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DyHd/3wqfSy+ep7GRJ7JS+mWHJlTKt3+BrRJvvlF2oU=;
-	b=FiOwzCq9Wf/aViWg+4WUrTaUxawLRaO+MX1aW/Xoydb5SdV39qtUKMq7nP4OCqCgOCKc5N
-	Jwy64XvBkz6yNxJ4Fj296AiUwYrqkHoNv9DuolelMFnwxGEv/cFlNScJ+0w21+TqY5FkRO
-	xkzSKYU7KPXk01y/oqj6qfl0lvB/d3FwIZvwpDf2s3FhDOjhaknKP7kI6prfce6oYhU/Ii
-	4vJjZsppI+EqkLP7RldXXmIX3odLbKfK9RtWnDbs7myRlExaluJEvwKREY7RyX9zAdppDv
-	ADfNH4NDk5LjEBIupbjVXTaeFY4+8xuY1iQzIYceoMHB6vffDLR08FlDvBMxXA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708949568;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DyHd/3wqfSy+ep7GRJ7JS+mWHJlTKt3+BrRJvvlF2oU=;
-	b=173ewDth7+UEZPq7FS06uqlFPTe7DEYbgOTKLxDuF3JNHArA6xeA4bHrW9pClIYmjAqX68
-	qP8qfWvpOakV1VDQ==
-From: "tip-bot2 for Ard Biesheuvel" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/boot] x86/boot/64: Simplify global variable accesses in
- GDT/IDT programming
-Cc: Ard Biesheuvel <ardb@kernel.org>, "Borislav Petkov (AMD)" <bp@alien8.de>,
- Ingo Molnar <mingo@kernel.org>, x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240221113506.2565718-19-ardb+git@google.com>
-References: <20240221113506.2565718-19-ardb+git@google.com>
+	s=arc-20240116; t=1708949700; c=relaxed/simple;
+	bh=E8F0ZCmU82aU1vZM9HjGgaP6K8kQAaxKdvncayLIhSY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fWulbo5ScBYnsFDmyIOr36InMiMswBfsPlZbNCjLrvBEhzGg7mZ5AiIFa2WL47AAS3eei/SrIVWuRSEByskQ3IjaHygjka0fJuk2m+0fud6YhBefm11MorIshHpwgEiamvFPJVm4HePt+l6AckX6edPWdd2ugyYeQKhrOUgidaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HBfbrPRb; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708949699; x=1740485699;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=E8F0ZCmU82aU1vZM9HjGgaP6K8kQAaxKdvncayLIhSY=;
+  b=HBfbrPRbvbIWIpQNk8Ec/ZVUiFjdquOC2Vu8e4b5WilD8VhrRJmXDLLx
+   9SfY3ZXhhW3G9SOS4MslcdogAWFh49aizwZgAG6s5e3Js5wIEvJYGLsfw
+   l6Z3VcSNASR4tZzPRJMNjfWjo7shRP7Wq32+dLPpvj1YEEfNhivi7EmHJ
+   fJ3evvqSPqlyOIN74WNuj2AGYS5qcFzbIW9sMJCFEBpIhjVeatGtd3L9J
+   4uoDsP1Cg8Iw2w0F4h/UdTVH+AbGTFJvxdCHEV/Wbm0lcpyTdOBpq/8r5
+   0FuSiw59Fj04s/iWK7BPinWy+vq521LpwYF8hoiCLfu1a9dwi9jg83JSq
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3362749"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="3362749"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 04:14:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="937029957"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="937029957"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 26 Feb 2024 04:14:55 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 979203C1; Mon, 26 Feb 2024 14:14:54 +0200 (EET)
+Date: Mon, 26 Feb 2024 14:14:54 +0200
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>, 
+	linux-kernel@vger.kernel.org, pbonzini@redhat.com, tglx@linutronix.de, x86@kernel.org, 
+	bp@alien8.de
+Subject: Re: [RFC][PATCH 11/34] x86/cpu/intel: Prepare MKTME for "address
+ configuration" infrastructure
+Message-ID: <wtdmrkjfvlf4b5mkpqw537u6xuxkdajix2knbo5ivanjzzpvvg@qqlw7gaetujj>
+References: <20240222183926.517AFCD2@davehans-spike.ostc.intel.com>
+ <20240222183941.7CB634A5@davehans-spike.ostc.intel.com>
+ <z52bbgqxtr7wpa3yqqgbwurb6vx6i7gpddae2rrbxkjasuhnuk@7zsudlb4tw6s>
+ <b01f92b3-65ea-474b-8dc9-f2e1ca6ae0af@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170894956806.398.1538176163796570341.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b01f92b3-65ea-474b-8dc9-f2e1ca6ae0af@intel.com>
 
-The following commit has been merged into the x86/boot branch of tip:
+On Fri, Feb 23, 2024 at 08:22:16AM -0800, Dave Hansen wrote:
+> On 2/23/24 03:33, Kirill A. Shutemov wrote:
+> > On Thu, Feb 22, 2024 at 10:39:41AM -0800, Dave Hansen wrote:
+> >> From: Dave Hansen <dave.hansen@linux.intel.com>
+> >>
+> >> Intel also does memory encryption and also fiddles with the physical
+> >> address bits.  This is currently called for *each* CPU, but practically
+> >> only done on the boot CPU because of 'mktme_status'.
+> >>
+> >> Move it from the "each CPU" ->c_init() function to ->c_bsp_init() where
+> >> the whole thing only gets called once ever.  This also necessitates moving
+> >> detect_tme() and its entourage around in the file.
+> > The state machine around mktme_state doesn't make sense if we only call it
+> > on boot CPU, so detect_tme() can be drastically simplified. I can do it on
+> > top of the patchset.
+> 
+> That would be great.  Looking at it again, the (tme_activate !=
+> tme_activate_cpu0) block is total cruft now.  It probably just needs to
+> get moved to secondary CPU startup.
 
-Commit-ID:     5da793671957e8e99fa74423fab2737bf8c772a8
-Gitweb:        https://git.kernel.org/tip/5da793671957e8e99fa74423fab2737bf8c772a8
-Author:        Ard Biesheuvel <ardb@kernel.org>
-AuthorDate:    Wed, 21 Feb 2024 12:35:08 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 26 Feb 2024 12:58:11 +01:00
+I have never saw the check to be useful. I think it can be just dropped.
 
-x86/boot/64: Simplify global variable accesses in GDT/IDT programming
+The patch below makes detect_tme() only enumerate TME and MKTME. And
+report number of keyid bits. Kernel doesn't care about anything else.
 
-There are two code paths in the startup code to program an IDT: one that
-runs from the 1:1 mapping and one that runs from the virtual kernel
-mapping. Currently, these are strictly separate because fixup_pointer()
-is used on the 1:1 path, which will produce the wrong value when used
-while executing from the virtual kernel mapping.
+Any comments?
 
-Switch to RIP_REL_REF() so that the two code paths can be merged. Also,
-move the GDT and IDT descriptors to the stack so that they can be
-referenced directly, rather than via RIP_REL_REF().
+From 1080535093d21f025d46fd610de5ad788591f4b5 Mon Sep 17 00:00:00 2001
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Date: Mon, 26 Feb 2024 14:01:01 +0200
+Subject: [PATCH] x86/cpu/intel: Simplify detect_tme()
 
-Rename startup_64_setup_env() to startup_64_setup_gdt_idt() while at it,
-to make the call from assembler self-documenting.
+The detect_tme() function is now only called by the boot CPU. The logic
+for cross-checking TME configuration between CPUs is no longer used. It
+has never identified a real problem and can be safely removed.
 
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20240221113506.2565718-19-ardb+git@google.com
+The kernel does not use MKTME and is not concerned with MKTME policy or
+encryption algorithms. There is no need to check them.
+
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 ---
- arch/x86/include/asm/setup.h |  2 +-
- arch/x86/kernel/head64.c     | 75 ++++++++++++++---------------------
- arch/x86/kernel/head_64.S    |  4 +--
- 3 files changed, 32 insertions(+), 49 deletions(-)
+ arch/x86/kernel/cpu/intel.c | 44 ++-----------------------------------
+ 1 file changed, 2 insertions(+), 42 deletions(-)
 
-diff --git a/arch/x86/include/asm/setup.h b/arch/x86/include/asm/setup.h
-index 5c83729..e61e68d 100644
---- a/arch/x86/include/asm/setup.h
-+++ b/arch/x86/include/asm/setup.h
-@@ -48,7 +48,7 @@ extern unsigned long saved_video_mode;
- extern void reserve_standard_io_resources(void);
- extern void i386_reserve_resources(void);
- extern unsigned long __startup_64(unsigned long physaddr, struct boot_params *bp);
--extern void startup_64_setup_env(unsigned long physbase);
-+extern void startup_64_setup_gdt_idt(void);
- extern void early_setup_idt(void);
- extern void __init do_early_exception(struct pt_regs *regs, int trapnr);
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index 4192aa4576f4..60918b49344c 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -329,55 +329,20 @@ static void early_init_intel(struct cpuinfo_x86 *c)
+ #define TME_ACTIVATE_CRYPTO_ALGS(x)	((x >> 48) & 0xffff)	/* Bits 63:48 */
+ #define TME_ACTIVATE_CRYPTO_AES_XTS_128	1
  
-diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
-index dc09560..1d6865e 100644
---- a/arch/x86/kernel/head64.c
-+++ b/arch/x86/kernel/head64.c
-@@ -22,6 +22,7 @@
- #include <linux/cc_platform.h>
- #include <linux/pgtable.h>
- 
-+#include <asm/asm.h>
- #include <asm/processor.h>
- #include <asm/proto.h>
- #include <asm/smp.h>
-@@ -76,15 +77,6 @@ static struct desc_struct startup_gdt[GDT_ENTRIES] __initdata = {
- 	[GDT_ENTRY_KERNEL_DS]           = GDT_ENTRY_INIT(DESC_DATA64, 0, 0xfffff),
- };
- 
--/*
-- * Address needs to be set at runtime because it references the startup_gdt
-- * while the kernel still uses a direct mapping.
-- */
--static struct desc_ptr startup_gdt_descr __initdata = {
--	.size = sizeof(startup_gdt)-1,
--	.address = 0,
--};
+-/* Values for mktme_status (SW only construct) */
+-#define MKTME_ENABLED			0
+-#define MKTME_DISABLED			1
+-#define MKTME_UNINITIALIZED		2
+-static int mktme_status = MKTME_UNINITIALIZED;
 -
- static void __head *fixup_pointer(void *ptr, unsigned long physaddr)
+ static int detect_tme(struct cpuinfo_x86 *c)
  {
- 	return ptr - (void *)_text + (void *)physaddr;
-@@ -569,62 +561,52 @@ void __init __noreturn x86_64_start_reservations(char *real_mode_data)
-  */
- static gate_desc bringup_idt_table[NUM_EXCEPTION_VECTORS] __page_aligned_data;
+-	u64 tme_activate, tme_policy, tme_crypto_algs;
+-	int keyid_bits = 0, nr_keyids = 0;
+-	static u64 tme_activate_cpu0 = 0;
++	int keyid_bits, nr_keyids;
++	u64 tme_activate;
  
--static struct desc_ptr bringup_idt_descr = {
--	.size		= (NUM_EXCEPTION_VECTORS * sizeof(gate_desc)) - 1,
--	.address	= 0, /* Set at runtime */
--};
--
--static void set_bringup_idt_handler(gate_desc *idt, int n, void *handler)
-+/* This may run while still in the direct mapping */
-+static void __head startup_64_load_idt(void *vc_handler)
- {
--#ifdef CONFIG_AMD_MEM_ENCRYPT
-+	struct desc_ptr desc = {
-+		.address = (unsigned long)&RIP_REL_REF(bringup_idt_table),
-+		.size    = sizeof(bringup_idt_table) - 1,
-+	};
- 	struct idt_data data;
--	gate_desc desc;
--
--	init_idt_data(&data, n, handler);
--	idt_init_desc(&desc, &data);
--	native_write_idt_entry(idt, n, &desc);
--#endif
--}
-+	gate_desc idt_desc;
+ 	rdmsrl(MSR_IA32_TME_ACTIVATE, tme_activate);
  
--/* This runs while still in the direct mapping */
--static void __head startup_64_load_idt(unsigned long physbase)
--{
--	struct desc_ptr *desc = fixup_pointer(&bringup_idt_descr, physbase);
--	gate_desc *idt = fixup_pointer(bringup_idt_table, physbase);
+-	if (mktme_status != MKTME_UNINITIALIZED) {
+-		if (tme_activate != tme_activate_cpu0) {
+-			/* Broken BIOS? */
+-			pr_err_once("x86/tme: configuration is inconsistent between CPUs\n");
+-			pr_err_once("x86/tme: MKTME is not usable\n");
+-			mktme_status = MKTME_DISABLED;
 -
+-			/* Proceed. We may need to exclude bits from x86_phys_bits. */
+-		}
+-	} else {
+-		tme_activate_cpu0 = tme_activate;
+-	}
 -
--	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT)) {
--		void *handler;
--
--		/* VMM Communication Exception */
--		handler = fixup_pointer(vc_no_ghcb, physbase);
--		set_bringup_idt_handler(idt, X86_TRAP_VC, handler);
-+	/* @vc_handler is set only for a VMM Communication Exception */
-+	if (vc_handler) {
-+		init_idt_data(&data, X86_TRAP_VC, vc_handler);
-+		idt_init_desc(&idt_desc, &data);
-+		native_write_idt_entry((gate_desc *)desc.address, X86_TRAP_VC, &idt_desc);
+ 	if (!TME_ACTIVATE_LOCKED(tme_activate) || !TME_ACTIVATE_ENABLED(tme_activate)) {
+ 		pr_info_once("x86/tme: not enabled by BIOS\n");
+-		mktme_status = MKTME_DISABLED;
+ 		return 0;
  	}
  
--	desc->address = (unsigned long)idt;
--	native_load_idt(desc);
-+	native_load_idt(&desc);
- }
+-	if (mktme_status != MKTME_UNINITIALIZED)
+-		goto detect_keyid_bits;
+-
+ 	pr_info("x86/tme: enabled by BIOS\n");
  
- /* This is used when running on kernel addresses */
- void early_setup_idt(void)
- {
--	/* VMM Communication Exception */
-+	void *handler = NULL;
-+
- 	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT)) {
- 		setup_ghcb();
--		set_bringup_idt_handler(bringup_idt_table, X86_TRAP_VC, vc_boot_ghcb);
-+		handler = vc_boot_ghcb;
+-	tme_policy = TME_ACTIVATE_POLICY(tme_activate);
+-	if (tme_policy != TME_ACTIVATE_POLICY_AES_XTS_128)
+-		pr_warn("x86/tme: Unknown policy is active: %#llx\n", tme_policy);
+-
+-	tme_crypto_algs = TME_ACTIVATE_CRYPTO_ALGS(tme_activate);
+-	if (!(tme_crypto_algs & TME_ACTIVATE_CRYPTO_AES_XTS_128)) {
+-		pr_err("x86/mktme: No known encryption algorithm is supported: %#llx\n",
+-				tme_crypto_algs);
+-		mktme_status = MKTME_DISABLED;
+-	}
+-detect_keyid_bits:
+ 	keyid_bits = TME_ACTIVATE_KEYID_BITS(tme_activate);
+ 	nr_keyids = (1UL << keyid_bits) - 1;
+ 	if (nr_keyids) {
+@@ -387,11 +352,6 @@ static int detect_tme(struct cpuinfo_x86 *c)
+ 		pr_info_once("x86/mktme: disabled by BIOS\n");
  	}
  
--	bringup_idt_descr.address = (unsigned long)bringup_idt_table;
--	native_load_idt(&bringup_idt_descr);
-+	startup_64_load_idt(handler);
- }
- 
- /*
-  * Setup boot CPU state needed before kernel switches to virtual addresses.
-  */
--void __head startup_64_setup_env(unsigned long physbase)
-+void __head startup_64_setup_gdt_idt(void)
- {
-+	void *handler = NULL;
-+
-+	struct desc_ptr startup_gdt_descr = {
-+		.address = (unsigned long)&RIP_REL_REF(startup_gdt),
-+		.size    = sizeof(startup_gdt) - 1,
-+	};
-+
- 	/* Load GDT */
--	startup_gdt_descr.address = (unsigned long)fixup_pointer(startup_gdt, physbase);
- 	native_load_gdt(&startup_gdt_descr);
- 
- 	/* New GDT is live - reload data segment registers */
-@@ -632,5 +614,8 @@ void __head startup_64_setup_env(unsigned long physbase)
- 		     "movl %%eax, %%ss\n"
- 		     "movl %%eax, %%es\n" : : "a"(__KERNEL_DS) : "memory");
- 
--	startup_64_load_idt(physbase);
-+	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT))
-+		handler = &RIP_REL_REF(vc_no_ghcb);
-+
-+	startup_64_load_idt(handler);
- }
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index bfbac50..e09cf0b 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -68,8 +68,6 @@ SYM_CODE_START_NOALIGN(startup_64)
- 	/* Set up the stack for verify_cpu() */
- 	leaq	(__end_init_task - PTREGS_SIZE)(%rip), %rsp
- 
--	leaq	_text(%rip), %rdi
+-	if (mktme_status == MKTME_UNINITIALIZED) {
+-		/* MKTME is usable */
+-		mktme_status = MKTME_ENABLED;
+-	}
 -
- 	/* Setup GSBASE to allow stack canary access for C code */
- 	movl	$MSR_GS_BASE, %ecx
- 	leaq	INIT_PER_CPU_VAR(fixed_percpu_data)(%rip), %rdx
-@@ -77,7 +75,7 @@ SYM_CODE_START_NOALIGN(startup_64)
- 	shrq	$32,  %rdx
- 	wrmsr
+ 	return keyid_bits;
+ }
  
--	call	startup_64_setup_env
-+	call	startup_64_setup_gdt_idt
- 
- 	/* Now switch to __KERNEL_CS so IRET works reliably */
- 	pushq	$__KERNEL_CS
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
