@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-81666-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2CC2867960
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:04:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0A7B8678EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:46:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2B2D2B2C099
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:44:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6289B2CA8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:45:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 789E7133292;
-	Mon, 26 Feb 2024 14:35:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F341413398F;
+	Mon, 26 Feb 2024 14:35:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EZuFFqiG"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jvkIeBEr"
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29F27132C2C;
-	Mon, 26 Feb 2024 14:35:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84D9013342D;
+	Mon, 26 Feb 2024 14:35:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708958152; cv=none; b=DwVlYYMeVTac20peuS1RYMITc9EDCMxnvmxIb5ZA+oifKX8O2uOKd8qnk8HnzSiGkLmcrc2wCX6tk3xalBZBbUjp09W2y7bIqvuSnL2eL0uHlW0LEBfY58VAd2FNcKdbpMA5SUAUIC+X3K6cz6PBxKyP6U0dJ3PBJWrKCjd2+h8=
+	t=1708958159; cv=none; b=S3mKSmwfjWwR5aYVmhQcOda+Jo7mdonH0rmbEOqSGBX9vox7V3Yl+fGgIu+opeySSxOWEilCQkRIuUteutPUbfRNzDC5ByL4TdMKRfofyHxX2d2VrqXy4ixPRvpDXGdmoLr6wpOaoPBzQxObZ6eFsDnjqsP21wBLzWDaBfq1Fk8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708958152; c=relaxed/simple;
-	bh=1vEfezG9QmRjQ8J3U1Aysh33N+lTsittc0ac1Dd6Rxg=;
+	s=arc-20240116; t=1708958159; c=relaxed/simple;
+	bh=5FZhE8CGaf4oOsLW99jFiL2V8DpwR94pz9xSUE+tHww=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eJirbmJJ+75WzxUb3E+cUNliqaelPGwDI9GA5tSCc97cbrQTH6Db1JQm2KuwcYbM7tD0d+rbr7q80eD7xL/qIQ6fwY28X3t/HiM+6XTFLCFj2hLKCV7y3dVuTAyuvp605OnEfSw3Rh19urkzq3JXEWnZY7OKCOzVaratRFQx0R8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EZuFFqiG; arc=none smtp.client-ip=209.85.215.171
+	 MIME-Version; b=Dp1m2g2MlmTalvjyKf+t3seOlBCfO6TPpz9vC+bTKrTJiPhv4pzfAxwg/03QL4JDOxxdQEAqxlNB2Ydx054H5gjnnBwO6ZTC376NW9OBDTs/6tXxO/7HlNBzMWetm/7zbEPYXldYvAlkACfFFEhXQ/DddDx0jLSSJUgQh3ragHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jvkIeBEr; arc=none smtp.client-ip=209.85.215.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5e42b4bbfa4so2299073a12.1;
-        Mon, 26 Feb 2024 06:35:50 -0800 (PST)
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5dbf7b74402so2528975a12.0;
+        Mon, 26 Feb 2024 06:35:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708958150; x=1709562950; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708958156; x=1709562956; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GEYgEPxnIogvnB7Zjz1HomLlX+OknwZSPNHHST0cuPA=;
-        b=EZuFFqiGBF1LnvyJWBASWUZ/gpOEn8ZODCE2XB4VmTWRIb/rRBCoyC+QXhHKZe7rwx
-         +8nSur37gYI+VZlMfNB3bAnJCPx9F7q9NhEmM9bT0GBj/czYJD8yin8B9Ov+yHEM4HUX
-         hAdI6MqR10D55hKHPI/7aVwhXBCrD6jTLvYS5zCXD12DZuPLIX0BkBpiu1/tQkHMI9ot
-         BD7uPBHaCzTYwU5u6s4819x0eYSTfUJclHXk/pRVtKr0EBljSfh1pkJwrCiPVQ0SZcv6
-         GC9ET7wLThsTb+z2/IkJ8dgdF0OnPyjdGuFWXlJPP1FHfBp3E/+19kst9/NC+Bzo6VVk
-         BAWQ==
+        bh=avwD90nSI2LniFVSuZE7YLTIgz6R6zy0cQM3FsoXclk=;
+        b=jvkIeBErSOe1/pmH3+2vtnYLAjE3iCOVvj5jkG2iz15gNUevOPhvY2wazm6HSAo2X0
+         RumEkss1W1WDN1eII/HDnqdhJH9QzsiqUGuok/yrNsOpLOq9IqJcH69OzXE6AigobeAg
+         dmH+Soy1nsK4OxGQmOaE6f8W/lDQti+fu3qeeZIYMpPlES9TkDcLxfBhoWhfjFRpMvGI
+         1wCGRjeqAaDMzM+U7JapvTXCcauhI2WeaYiFlAQdb/uLpjHCtUQm5j5eQdvPwIsV61XY
+         E+QKZhXPXqa7RwhQoR0EYmtcLbK2IqEUHYwl9zYFtuWtT63fE3XV90JYXBSRt72ltA2F
+         xJPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708958150; x=1709562950;
+        d=1e100.net; s=20230601; t=1708958156; x=1709562956;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GEYgEPxnIogvnB7Zjz1HomLlX+OknwZSPNHHST0cuPA=;
-        b=VbbShAuxKhYXUA7Wphj49zd7JMp79f1oQlWJHNMtiHDJgQl82iVUvGrMfM59KXi5LE
-         UA6VnvKNIqBqyrwawA4mm9A5f+c7ps7xSu1aAPwrHUlwdUkfBfA+QoInP57sL7yi/WvE
-         vWMhXXR3BSxUipocZrZMrIwKEEofzz8fvWMdZxqLxtlVb/L2/ROw3rCxDfapzOLhs7jy
-         QVa0ySqAjI1nENGu1u2iFpv/WM3dPXihTNxy4cZZXAbdrBkV/gKNAgQAD9QP0zMvM+h8
-         tf8aacDGkfjZpPwMRsBZ2WceK9b1nVizj5LEcWVkYsJOMImi22nZdu68DbdO+JTxGKss
-         Z8VQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXv/lQGFw7iFTMBmQGUHz4hGfDCAZsFhkp3Zk21m31iN5iB6b088bHq6aX0CH9dFPy3VLsFGFAMhArp9vR4S/YOTG/G
-X-Gm-Message-State: AOJu0YyECQf1EtaBFtGNolqlcN3mlfSmI+7+UeYbGPbpiK3baTM6Zy8z
-	TESDaqlmG16ZwewVdjFjicOBibkclk1RitDvlGkEUU2OtgMGE6kB0bxbn3yR
-X-Google-Smtp-Source: AGHT+IGXuqJi3oC1P9HsXiXL3F0CcvclMb8/tyAsW4SrKL+SdfZxtrL7dAPtTXQRkM5ULNQY0enwQw==
-X-Received: by 2002:a17:90a:68c8:b0:299:42d1:91df with SMTP id q8-20020a17090a68c800b0029942d191dfmr5769463pjj.14.1708958150219;
-        Mon, 26 Feb 2024 06:35:50 -0800 (PST)
-Received: from localhost ([198.11.178.15])
-        by smtp.gmail.com with ESMTPSA id t20-20020a17090ad15400b00299101c1341sm4541312pjw.18.2024.02.26.06.35.49
+        bh=avwD90nSI2LniFVSuZE7YLTIgz6R6zy0cQM3FsoXclk=;
+        b=sefkZJFUlurtGfPKe8rSNiHRjZJjNMQ/pUeTFK++ulU8SCWq8w4cjdzhf7NOmW9wAL
+         xba3yO5s6c1heaMsYBbeLEb9qXvQHBRVxySMhS7vsP6AK21AvwVyJHq/0uSafun1v/y3
+         J+Qn8qrHjsGhzcu6QmVVXhCYZRllKK9Mujq06e8wg8zv+G7ytht9bmXPmyQZtwg/7qWf
+         u1oCwV1LHznwGjega0NT2bBr/2ZlvGIjXjF+aaXwTogE8Hko/xpHJdvIjplo6ZVargfL
+         pTx7sl8+N91AgYouPso/sXWs9ikQz6WRyjxNmjQoneMX7zmh7KGKEZF3Tt7PkSC7x3d3
+         rbLg==
+X-Forwarded-Encrypted: i=1; AJvYcCVXSekHDZssgjO5dIvGj0LvOaofW9tvWcmyzDcjXtlQ85lmnftxdBZxXmxv54QSEMJJOmVvhQAF1xJBbCXO6Ag/Q07e
+X-Gm-Message-State: AOJu0Ywr08SFxqkc/Vlllmcc0Q9Wit6joxD9Ox3MJbWYgGPmQYvhP8ZC
+	w/Tf8AQ4gatOSZh3uAN9h+Lc7NFyrj7MgtIapyzNlGUCqny3EVFsKn0SHqh+
+X-Google-Smtp-Source: AGHT+IF9t94J1P3gFjC3w94X7z6mLYPJMKdgH0qJsWfw2n4K1ZzGIEBhrooZGx76fRCQIDy0RbezwA==
+X-Received: by 2002:a17:90a:8c0b:b0:29a:be15:9c90 with SMTP id a11-20020a17090a8c0b00b0029abe159c90mr2457111pjo.34.1708958156679;
+        Mon, 26 Feb 2024 06:35:56 -0800 (PST)
+Received: from localhost ([47.88.5.130])
+        by smtp.gmail.com with ESMTPSA id x19-20020a17090ab01300b002990d91d31dsm6443295pjq.15.2024.02.26.06.35.55
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 26 Feb 2024 06:35:49 -0800 (PST)
+        Mon, 26 Feb 2024 06:35:56 -0800 (PST)
 From: Lai Jiangshan <jiangshanlai@gmail.com>
 To: linux-kernel@vger.kernel.org
 Cc: Lai Jiangshan <jiangshan.ljs@antgroup.com>,
@@ -83,9 +83,9 @@ Cc: Lai Jiangshan <jiangshan.ljs@antgroup.com>,
 	Juergen Gross <jgross@suse.com>,
 	Dave Hansen <dave.hansen@linux.intel.com>,
 	"H. Peter Anvin" <hpa@zytor.com>
-Subject: [RFC PATCH 22/73] KVM: x86/PVM: Handle some VM exits before enable interrupts
-Date: Mon, 26 Feb 2024 22:35:39 +0800
-Message-Id: <20240226143630.33643-23-jiangshanlai@gmail.com>
+Subject: [RFC PATCH 24/73] KVM: x86/PVM: Introduce PVM mode switching
+Date: Mon, 26 Feb 2024 22:35:41 +0800
+Message-Id: <20240226143630.33643-25-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20240226143630.33643-1-jiangshanlai@gmail.com>
 References: <20240226143630.33643-1-jiangshanlai@gmail.com>
@@ -99,161 +99,235 @@ Content-Transfer-Encoding: 8bit
 
 From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 
-Similar to VMX, NMI should be handled in non-instrumented code early
-after VM exit. Additionally, #PF, #VE, #VC, and #DB need early handling
-in non-instrumented code as well. Host interrupts and #MC need to be
-handled before enabling interrupts.
+In PVM ABI, CPL is not used directly. Instead, supervisor mode and user
+mode are used to represent the original CPL0/CPL3 concept. It is assumed
+that the kernel runs in supervisor mode and userspace runs in user mode.
+From the x86 operating modes perspective, the PVM supervisor mode is a
+modified 64-bit long mode. Therefore, 32-bit compatibility mode is not
+allowed for the supervisor mode, and its hardware CS must be __USER_CS.
+
+When switching to user mode, the stack and GS base of supervisor mode
+are saved into the associated MSRs. When switching back from user mode,
+the stack and GS base of supervisor mode are automatically restored from
+the MSRs. Therefore, in PVM ABI, the value of MSR_KERNEL_GS_BASE in
+supervisor mode is the same as the value of MSR_GS_BASE in supervisor
+mode, which does not follow the x86 ABI.
 
 Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 Signed-off-by: Hou Wenlong <houwenlong.hwl@antgroup.com>
 ---
- arch/x86/kvm/pvm/pvm.c | 89 ++++++++++++++++++++++++++++++++++++++++++
- arch/x86/kvm/pvm/pvm.h |  8 ++++
- 2 files changed, 97 insertions(+)
+ arch/x86/kvm/pvm/pvm.c | 129 +++++++++++++++++++++++++++++++++++++++++
+ arch/x86/kvm/pvm/pvm.h |   1 +
+ 2 files changed, 130 insertions(+)
 
 diff --git a/arch/x86/kvm/pvm/pvm.c b/arch/x86/kvm/pvm/pvm.c
-index 00a50ed0c118..29c6d8da7c19 100644
+index 69f8fbbb6176..3735baee1d5f 100644
 --- a/arch/x86/kvm/pvm/pvm.c
 +++ b/arch/x86/kvm/pvm/pvm.c
-@@ -265,6 +265,58 @@ static void pvm_setup_mce(struct kvm_vcpu *vcpu)
+@@ -31,6 +31,22 @@ static bool __read_mostly is_intel;
+ 
+ static unsigned long host_idt_base;
+ 
++static inline bool is_smod(struct vcpu_pvm *pvm)
++{
++	unsigned long switch_flags = pvm->switch_flags;
++
++	if ((switch_flags & SWITCH_FLAGS_MOD_TOGGLE) == SWITCH_FLAGS_SMOD)
++		return true;
++
++	WARN_ON_ONCE((switch_flags & SWITCH_FLAGS_MOD_TOGGLE) != SWITCH_FLAGS_UMOD);
++	return false;
++}
++
++static inline void pvm_switch_flags_toggle_mod(struct vcpu_pvm *pvm)
++{
++	pvm->switch_flags ^= SWITCH_FLAGS_MOD_TOGGLE;
++}
++
+ static inline u16 kernel_cs_by_msr(u64 msr_star)
  {
+ 	// [47..32]
+@@ -80,6 +96,82 @@ static inline void __load_fs_base(struct vcpu_pvm *pvm)
+ 	wrmsrl(MSR_FS_BASE, pvm->segments[VCPU_SREG_FS].base);
  }
  
-+static int handle_exit_external_interrupt(struct kvm_vcpu *vcpu)
++static u64 pvm_read_guest_gs_base(struct vcpu_pvm *pvm)
 +{
-+	++vcpu->stat.irq_exits;
-+	return 1;
++	preempt_disable();
++	if (pvm->loaded_cpu_state)
++		__save_gs_base(pvm);
++	preempt_enable();
++
++	return pvm->segments[VCPU_SREG_GS].base;
 +}
 +
-+static int handle_exit_failed_vmentry(struct kvm_vcpu *vcpu)
++static u64 pvm_read_guest_fs_base(struct vcpu_pvm *pvm)
++{
++	preempt_disable();
++	if (pvm->loaded_cpu_state)
++		__save_fs_base(pvm);
++	preempt_enable();
++
++	return pvm->segments[VCPU_SREG_FS].base;
++}
++
++static u64 pvm_read_guest_kernel_gs_base(struct vcpu_pvm *pvm)
++{
++	return pvm->msr_kernel_gs_base;
++}
++
++static void pvm_write_guest_gs_base(struct vcpu_pvm *pvm, u64 data)
++{
++	preempt_disable();
++	pvm->segments[VCPU_SREG_GS].base = data;
++	if (pvm->loaded_cpu_state)
++		__load_gs_base(pvm);
++	preempt_enable();
++}
++
++static void pvm_write_guest_fs_base(struct vcpu_pvm *pvm, u64 data)
++{
++	preempt_disable();
++	pvm->segments[VCPU_SREG_FS].base = data;
++	if (pvm->loaded_cpu_state)
++		__load_fs_base(pvm);
++	preempt_enable();
++}
++
++static void pvm_write_guest_kernel_gs_base(struct vcpu_pvm *pvm, u64 data)
++{
++	pvm->msr_kernel_gs_base = data;
++}
++
++// switch_to_smod() and switch_to_umod() switch the mode (smod/umod) and
++// the CR3.  No vTLB flushing when switching the CR3 per PVM Spec.
++static inline void switch_to_smod(struct kvm_vcpu *vcpu)
 +{
 +	struct vcpu_pvm *pvm = to_pvm(vcpu);
-+	u32 error_code = pvm->exit_error_code;
 +
-+	kvm_queue_exception_e(vcpu, GP_VECTOR, error_code);
-+	return 1;
++	pvm_switch_flags_toggle_mod(pvm);
++	kvm_mmu_new_pgd(vcpu, pvm->msr_switch_cr3);
++	swap(pvm->msr_switch_cr3, vcpu->arch.cr3);
++
++	pvm_write_guest_gs_base(pvm, pvm->msr_kernel_gs_base);
++	kvm_rsp_write(vcpu, pvm->msr_supervisor_rsp);
++
++	pvm->hw_cs = __USER_CS;
++	pvm->hw_ss = __USER_DS;
 +}
 +
-+/*
-+ * The guest has exited.  See if we can fix it or if we need userspace
-+ * assistance.
-+ */
-+static int pvm_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
++static inline void switch_to_umod(struct kvm_vcpu *vcpu)
 +{
 +	struct vcpu_pvm *pvm = to_pvm(vcpu);
-+	u32 exit_reason = pvm->exit_vector;
 +
-+	if (exit_reason >= FIRST_EXTERNAL_VECTOR && exit_reason < NR_VECTORS)
-+		return handle_exit_external_interrupt(vcpu);
-+	else if (exit_reason == PVM_FAILED_VMENTRY_VECTOR)
-+		return handle_exit_failed_vmentry(vcpu);
++	pvm->msr_supervisor_rsp = kvm_rsp_read(vcpu);
 +
-+	vcpu_unimpl(vcpu, "pvm: unexpected exit reason 0x%x\n", exit_reason);
-+	vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
-+	vcpu->run->internal.suberror =
-+		KVM_INTERNAL_ERROR_UNEXPECTED_EXIT_REASON;
-+	vcpu->run->internal.ndata = 2;
-+	vcpu->run->internal.data[0] = exit_reason;
-+	vcpu->run->internal.data[1] = vcpu->arch.last_vmentry_cpu;
-+	return 0;
++	pvm_switch_flags_toggle_mod(pvm);
++	kvm_mmu_new_pgd(vcpu, pvm->msr_switch_cr3);
++	swap(pvm->msr_switch_cr3, vcpu->arch.cr3);
 +}
 +
-+static void pvm_handle_exit_irqoff(struct kvm_vcpu *vcpu)
-+{
-+	struct vcpu_pvm *pvm = to_pvm(vcpu);
-+	u32 vector = pvm->exit_vector;
-+	gate_desc *desc = (gate_desc *)host_idt_base + vector;
-+
-+	if (vector >= FIRST_EXTERNAL_VECTOR && vector < NR_VECTORS &&
-+	    vector != IA32_SYSCALL_VECTOR)
-+		kvm_do_interrupt_irqoff(vcpu, gate_offset(desc));
-+	else if (vector == MC_VECTOR)
-+		kvm_machine_check();
-+}
-+
- static bool pvm_has_emulated_msr(struct kvm *kvm, u32 index)
- {
- 	switch (index) {
-@@ -369,6 +421,40 @@ static noinstr void pvm_vcpu_run_noinstr(struct kvm_vcpu *vcpu)
- 	pvm->exit_vector = (ret_regs->orig_ax >> 32);
- 	pvm->exit_error_code = (u32)ret_regs->orig_ax;
+ /*
+  * Test whether DS, ES, FS and GS need to be reloaded.
+  *
+@@ -309,6 +401,15 @@ static int pvm_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 	int ret = 0;
  
-+	// handle noinstr vmexits reasons.
-+	switch (pvm->exit_vector) {
-+	case PF_VECTOR:
-+		// if the exit due to #PF, check for async #PF.
-+		pvm->exit_cr2 = read_cr2();
-+		vcpu->arch.apf.host_apf_flags = kvm_read_and_reset_apf_flags();
+ 	switch (msr_info->index) {
++	case MSR_FS_BASE:
++		msr_info->data = pvm_read_guest_fs_base(pvm);
 +		break;
-+	case NMI_VECTOR:
-+		kvm_do_nmi_irqoff(vcpu);
++	case MSR_GS_BASE:
++		msr_info->data = pvm_read_guest_gs_base(pvm);
 +		break;
-+	case VE_VECTOR:
-+		// TODO: pvm host is TDX guest.
-+		// tdx_get_ve_info(&pvm->host_ve);
++	case MSR_KERNEL_GS_BASE:
++		msr_info->data = pvm_read_guest_kernel_gs_base(pvm);
 +		break;
-+	case X86_TRAP_VC:
-+		/*
-+		 * TODO: pvm host is SEV guest.
-+		 * if (!vc_is_db(error_code)) {
-+		 *      collect info and handle the first part for #VC
-+		 *      break;
-+		 * } else {
-+		 *      get_debugreg(pvm->exit_dr6, 6);
-+		 *      set_debugreg(DR6_RESERVED, 6);
-+		 * }
-+		 */
+ 	case MSR_STAR:
+ 		msr_info->data = pvm->msr_star;
+ 		break;
+@@ -352,6 +453,9 @@ static int pvm_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 	case MSR_PVM_RETS_RIP:
+ 		msr_info->data = pvm->msr_rets_rip_plus2 - 2;
+ 		break;
++	case MSR_PVM_SWITCH_CR3:
++		msr_info->data = pvm->msr_switch_cr3;
 +		break;
-+	case DB_VECTOR:
-+		get_debugreg(pvm->exit_dr6, 6);
-+		set_debugreg(DR6_RESERVED, 6);
+ 	default:
+ 		ret = kvm_get_msr_common(vcpu, msr_info);
+ 	}
+@@ -372,6 +476,15 @@ static int pvm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 	u64 data = msr_info->data;
+ 
+ 	switch (msr_index) {
++	case MSR_FS_BASE:
++		pvm_write_guest_fs_base(pvm, data);
 +		break;
-+	default:
++	case MSR_GS_BASE:
++		pvm_write_guest_gs_base(pvm, data);
 +		break;
++	case MSR_KERNEL_GS_BASE:
++		pvm_write_guest_kernel_gs_base(pvm, data);
++		break;
+ 	case MSR_STAR:
+ 		/*
+ 		 * Guest KERNEL_CS/DS shouldn't be NULL and guest USER_CS/DS
+@@ -436,6 +549,9 @@ static int pvm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 	case MSR_PVM_RETS_RIP:
+ 		pvm->msr_rets_rip_plus2 = msr_info->data + 2;
+ 		break;
++	case MSR_PVM_SWITCH_CR3:
++		pvm->msr_switch_cr3 = msr_info->data;
++		break;
+ 	default:
+ 		ret = kvm_set_msr_common(vcpu, msr_info);
+ 	}
+@@ -443,6 +559,13 @@ static int pvm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 	return ret;
+ }
+ 
++static int pvm_get_cpl(struct kvm_vcpu *vcpu)
++{
++	if (is_smod(to_pvm(vcpu)))
++		return 0;
++	return 3;
++}
++
+ static void pvm_setup_mce(struct kvm_vcpu *vcpu)
+ {
+ }
+@@ -683,6 +806,11 @@ static fastpath_t pvm_vcpu_run(struct kvm_vcpu *vcpu)
+ 
+ 	pvm_vcpu_run_noinstr(vcpu);
+ 
++	if (is_smod(pvm)) {
++		if (pvm->hw_cs != __USER_CS || pvm->hw_ss != __USER_DS)
++			kvm_make_request(KVM_REQ_TRIPLE_FAULT, vcpu);
 +	}
 +
- 	guest_state_exit_irqoff();
- }
+ 	pvm_load_host_xsave_state(vcpu);
  
-@@ -682,9 +768,12 @@ static struct kvm_x86_ops pvm_x86_ops __initdata = {
+ 	return EXIT_FASTPATH_NONE;
+@@ -949,6 +1077,7 @@ static struct kvm_x86_ops pvm_x86_ops __initdata = {
+ 	.get_msr_feature = pvm_get_msr_feature,
+ 	.get_msr = pvm_get_msr,
+ 	.set_msr = pvm_set_msr,
++	.get_cpl = pvm_get_cpl,
+ 	.load_mmu_pgd = pvm_load_mmu_pgd,
  
  	.vcpu_pre_run = pvm_vcpu_pre_run,
- 	.vcpu_run = pvm_vcpu_run,
-+	.handle_exit = pvm_handle_exit,
- 
- 	.vcpu_after_set_cpuid = pvm_vcpu_after_set_cpuid,
- 
-+	.handle_exit_irqoff = pvm_handle_exit_irqoff,
-+
- 	.sched_in = pvm_sched_in,
- 
- 	.nested_ops = &pvm_nested_ops,
 diff --git a/arch/x86/kvm/pvm/pvm.h b/arch/x86/kvm/pvm/pvm.h
-index 349f4eac98ec..123cfe1c3c6a 100644
+index 57ca2e901e0d..b0c633ce2987 100644
 --- a/arch/x86/kvm/pvm/pvm.h
 +++ b/arch/x86/kvm/pvm/pvm.h
-@@ -7,6 +7,8 @@
- 
- #define SWITCH_FLAGS_INIT	(SWITCH_FLAGS_SMOD)
- 
-+#define PVM_FAILED_VMENTRY_VECTOR	SWITCH_EXIT_REASONS_FAILED_VMETNRY
-+
- #define PT_L4_SHIFT		39
- #define PT_L4_SIZE		(1UL << PT_L4_SHIFT)
- #define DEFAULT_RANGE_L4_SIZE	(32 * PT_L4_SIZE)
-@@ -35,6 +37,12 @@ struct vcpu_pvm {
- 
- 	u16 host_ds_sel, host_es_sel;
- 
-+	union {
-+		unsigned long exit_extra;
-+		unsigned long exit_cr2;
-+		unsigned long exit_dr6;
-+		struct ve_info exit_ve;
-+	};
- 	u32 exit_vector;
- 	u32 exit_error_code;
- 	u32 hw_cs, hw_ss;
+@@ -61,6 +61,7 @@ struct vcpu_pvm {
+ 	u64 unused_MSR_IA32_SYSENTER_CS;
+ 	u64 unused_MSR_IA32_SYSENTER_EIP;
+ 	u64 unused_MSR_IA32_SYSENTER_ESP;
++	u64 msr_kernel_gs_base;
+ 	u64 msr_tsc_aux;
+ 	/*
+ 	 * Only bits masked by msr_ia32_feature_control_valid_bits can be set in
 -- 
 2.19.1.6.gb485710b
 
