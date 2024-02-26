@@ -1,127 +1,131 @@
-Return-Path: <linux-kernel+bounces-81494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE8E18676A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:33:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 524D18676B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:34:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF9261C25018
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:33:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E60AA1F26852
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:34:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25ADA128832;
-	Mon, 26 Feb 2024 13:33:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 247C01292FB;
+	Mon, 26 Feb 2024 13:34:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="YhLG2hT5"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mlXB3JID"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D63927E570;
-	Mon, 26 Feb 2024 13:33:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 302147FBAA;
+	Mon, 26 Feb 2024 13:34:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708954410; cv=none; b=dcS6WuQ3ygfHITECcqFOXJvUBd2+Nul93FWGwcLUU4lktgCRLARFVR28shNbTGynNNC3wtlxfOGHo0j+T3yblgtmW7BCkuoJhI8T14pIXoxo6GS5QgKn291jYeV56bVKbYSCZDfr/DSEeH5ZqNhsh/MHVQrHPS7RUpFwFK45Q/8=
+	t=1708954477; cv=none; b=hU6JfemUpjotRXhVwPBjDs83JnXPFtEzkiLgUPELGCpS9BL1NlXJVmRMGPOVosUdtiBRjtLf2p09w8EQQ8YE0CMYZP43XQp0VoeGzoqI/F2H5CJrDN/t7bfEkWv7M5h2umuf5zRDBbakDMlpLBPvJbBpXgHEBtyG+lPt1CSzV0E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708954410; c=relaxed/simple;
-	bh=3sQB4Jid9BCVU9AlXki1bBaFE8YjYmogAbihbNOrFeI=;
+	s=arc-20240116; t=1708954477; c=relaxed/simple;
+	bh=/x/cq3y9mTCgiZ8o1taGp5qapBsu0Js+9yDBIjMHSCM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WCKppzTUt6MoFdaJLNkl3veMGmRsuTlul9nKw1XYb+9wR6ZryXXAOGklUcmir57aYOLvbvPh+bX33jBbMw80YfHol5I9ccHZgnXpu0DucJ1mP4xe+o2hznyoj2osGeQJlE1PpPI31TdMKRmBlfUeY9ifpMcpYug993a/VMH3QpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=YhLG2hT5; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1708954407;
-	bh=3sQB4Jid9BCVU9AlXki1bBaFE8YjYmogAbihbNOrFeI=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=AtV5pgDqIhaTTwuW5Bb+BqNZyLW0C90VzrM3FuoTdXSQGU0aZocMdmZ5As3mdhObVtkUOTiCRonRURpfju9RAGGB3pKtN3IcRBca8q5WUdXkfsB1Ifm5z0xNdbpRKrLq9/BFqCceGoU9WXPLZnCIn1ULjU24trs/4ZCqqxapcTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mlXB3JID; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2ADBC433F1;
+	Mon, 26 Feb 2024 13:34:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708954477;
+	bh=/x/cq3y9mTCgiZ8o1taGp5qapBsu0Js+9yDBIjMHSCM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YhLG2hT5r9yJlvjsvgSV/ulegdGL2uUzzxX7vRWZTZKICKmnCss5QAxdlWw9+P0OV
-	 6pxaMnU0xOOti/P0xBtaQmarWNa3nBP4Xi5hHiEHl7UxhimXEKEIL6VhfFEuQOUL3G
-	 Md4dvvOffhOjARRAv4fAxoyGsEFbgChBjgMSgfMVw+ONiT7cu+025HFnmlR5EjxAVx
-	 IkPe6YXQ/vCYiH6oN8432f5G5ET04yqZXmEY/ZqTehz5g73YGK1pn6CinbzrJUq/fe
-	 Gup7eMaYlS3Vjpit80eUf2Ij4tzauW5/mQ5jNFO8Y+cwPkNsZQAC2tCrC5gzEKhnsm
-	 X5Hs5n0N7nXWA==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sebastianfricke)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id F12E73780016;
-	Mon, 26 Feb 2024 13:33:26 +0000 (UTC)
-Date: Mon, 26 Feb 2024 14:33:26 +0100
-From: Sebastian Fricke <sebastian.fricke@collabora.com>
-To: Thorsten Blum <thorsten.blum@toblux.com>
-Cc: Nas Chung <nas.chung@chipsnmedia.com>,
-	Jackson Lee <jackson.lee@chipsnmedia.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers: wave5: Remove unnecessary semicolons
-Message-ID: <20240226133326.yoa4vwbdob3kkczq@basti-XPS-13-9310>
-References: <20240213140441.8640-1-thorsten.blum@toblux.com>
+	b=mlXB3JIDgx/sTAcksbq0alUlQoDqCg6Xa3YRQvX+pgHlAoRwWxZK+VdSrlRj2tFh2
+	 WgOrqwDvcC936qN+jwQVKZ/yBQozALrLax6Y8j04m5tXRnyj+JkydmSGoAHzI7WgUI
+	 KqHTDMC3IriE7ZmWZAWypMlkbGGGXGTUl75UxvB8UQxmPLTH1VniZKEwN8uwFciqms
+	 hwp8jKhmWx+NwD6hVHBlXwL+99E5v8sceenvE+1GFPEtOhMZEULqLhe1Vhh6Xoh1H7
+	 LbARsrm2bNZ7stG6i92/78t2no6FlD6iljD6IA0lgyMjwaXW3x4+YOsejbn+51ZFV8
+	 QZQeWeabe5phA==
+Date: Mon, 26 Feb 2024 13:34:23 +0000
+From: Mark Brown <broonie@kernel.org>
+To: nikita.shubin@maquefel.me
+Cc: Hartley Sweeten <hsweeten@visionengravers.com>,
+	Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Lukasz Majewski <lukma@denx.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Andy Shevchenko <andy@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, Sebastian Reichel <sre@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Ralf Baechle <ralf@linux-mips.org>,
+	"Wu, Aaron" <Aaron.Wu@analog.com>, Lee Jones <lee@kernel.org>,
+	Olof Johansson <olof@lixom.net>, Niklas Cassel <cassel@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-gpio@vger.kernel.org, linux-clk@vger.kernel.org,
+	linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+	dmaengine@vger.kernel.org, linux-watchdog@vger.kernel.org,
+	linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
+	netdev@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-ide@vger.kernel.org, linux-input@vger.kernel.org,
+	linux-sound@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v8 00/38] ep93xx device tree conversion
+Message-ID: <168fd3d7-d1e9-467e-bdd0-36c12aa81b68@sirena.org.uk>
+References: <20240226-ep93xx-v8-0-3136dca7238f@maquefel.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="bOKaKvSbzTVE2lWB"
 Content-Disposition: inline
-In-Reply-To: <20240213140441.8640-1-thorsten.blum@toblux.com>
+In-Reply-To: <20240226-ep93xx-v8-0-3136dca7238f@maquefel.me>
+X-Cookie: Walk softly and carry a BFG-9000.
 
-Hey Thorsten,
 
-Thanks for the patch, change looks obviously good, one small thing to
-note for the future, the commit title should start with:
+--bOKaKvSbzTVE2lWB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-media: chips-media: wave5:
+On Mon, Feb 26, 2024 at 10:29:56AM +0300, Nikita Shubin via B4 Relay wrote:
 
-instead of:
+> The goal is to receive ACKs for all patches in series to merge it via Arnd branch.
 
-drivers: wave5: 
+What are the actual dependencies here?
 
-I will change that myself this time, but please do a quick git log next
-time to check how the path should be formatted for the driver.
+--bOKaKvSbzTVE2lWB
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Greetings,
-Sebastian
+-----BEGIN PGP SIGNATURE-----
 
-On 13.02.2024 15:04, Thorsten Blum wrote:
->Remove unnecessary semicolons reported by Coccinelle/coccicheck and the
->semantic patch at scripts/coccinelle/misc/semicolon.cocci.
->
->Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
->---
-> drivers/media/platform/chips-media/wave5/wave5-hw.c      | 2 +-
-> drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c | 2 +-
-> 2 files changed, 2 insertions(+), 2 deletions(-)
->
->diff --git a/drivers/media/platform/chips-media/wave5/wave5-hw.c b/drivers/media/platform/chips-media/wave5/wave5-hw.c
->index f1e022fb148e..2d82791f575e 100644
->--- a/drivers/media/platform/chips-media/wave5/wave5-hw.c
->+++ b/drivers/media/platform/chips-media/wave5/wave5-hw.c
->@@ -2315,7 +2315,7 @@ static bool wave5_vpu_enc_check_common_param_valid(struct vpu_instance *inst,
-> 				param->intra_refresh_mode);
-> 			return false;
-> 		}
->-	};
->+	}
-> 	return true;
->
-> invalid_refresh_argument:
->diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
->index f29cfa3af94a..8bbf9d10b467 100644
->--- a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
->+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
->@@ -92,7 +92,7 @@ static int switch_state(struct vpu_instance *inst, enum vpu_instance_state state
-> 		break;
-> 	case VPU_INST_STATE_STOP:
-> 		break;
->-	};
->+	}
->
-> 	dev_dbg(inst->dev->dev, "Switch state from %s to %s.\n",
-> 		state_to_str(inst->state), state_to_str(state));
->-- 
->2.43.0
->
->
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXck18ACgkQJNaLcl1U
+h9CsAAf+OGvM07gxhxeVoFEY2namqi3/k8QFeVfcgOHP2bvSRWzLj+Za5HJ77pCz
+5NPf/dOYtbqSn6Tg6tGG7nkioQECfPyoUc75jpIZHzFp2uPzk5Zx62L2WVoDnbBX
+6hzWj6VDqDZtgCB5xzXzHhEDL/OpxrUTqA3S+jeaPIeLLf5xnRDl1M4sESkZQseD
+DMzGQouGu00Z+BSB/iAt4O2uN1DAyS/jipqNGmJzmCGD8wt9LbHfpDdzzQ+q6+iw
+JDA6z8gDwF3jF1NH6SuoCvsVgNsRQyqLoMP/4ziVTz/XxQa2S91NnuSVz3Vk3y/k
+gLUn1koeWlce3T54eUcZau09HwlwFg==
+=w2Qd
+-----END PGP SIGNATURE-----
+
+--bOKaKvSbzTVE2lWB--
 
