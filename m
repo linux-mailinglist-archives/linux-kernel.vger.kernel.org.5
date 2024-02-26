@@ -1,155 +1,94 @@
-Return-Path: <linux-kernel+bounces-82262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82263-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95989868155
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:45:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDC02868159
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:45:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3610E1F231BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:45:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C175B1C21F38
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:45:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9271512FF86;
-	Mon, 26 Feb 2024 19:44:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55FA1130ACF;
+	Mon, 26 Feb 2024 19:45:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P/HAaQFT"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R1gWnFbC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73A1012FB28
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 19:44:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E3D912FF76;
+	Mon, 26 Feb 2024 19:45:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708976697; cv=none; b=S52JXVSZzbQ9hw9qXADeVCW3d9QYw39B9/inhVY8Wo8feg4MHblLZLNohf6KjNbHAd9i99BLFH0xAXmbnPbBkiicuZT/Pu9X8TXfge0SkZgKqd8M59d0LGoamnrD8HxbwWyB7xHDYuCu5JkqGdPUHNRNn94eZQ0rteiIQLIj0rI=
+	t=1708976708; cv=none; b=Fjz/dPe6IGkVUV7YOAvp2IAHvb17cmstKopIe+so1P0yl03O8pai8gH6BaQ+Y21J16Vm+NOkL+rst3pDSGEQHES1eer71NkiZZSf63LZBUD0lm7Bcc6MOfMZ4uCC4j5WUv7/Wg8NygyLlzPGMNOZe8TcS/axC2JgL4HSaiv+4Hc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708976697; c=relaxed/simple;
-	bh=AhxNsCkvwQA9C2X5NTXurrVFywjUJYKpwHGGL9G+E/8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Bhbfp0kzMUzBU3wPjCYwv3krW5PTUk747pxry+GASLwCSAySf3g+UCSCRlF7KpgiH1BzHPMEgp1plKPRnRID1SQwq+C7kNdkGPOQa0ZGtvnn8cx8883m4y61uuTLX+/zlReazt8uWuirNK2ILR2KglPx3z0pmjgX+H1vpzrijps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P/HAaQFT; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-608d490a64aso23470387b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:44:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708976695; x=1709581495; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+IjMAUifD0K8aIclGse5kDD6h96+1W53kM3fR1+WoI4=;
-        b=P/HAaQFT80btW6J094/b4KuVrFzjuvDFvsUtltGoHdeHUnCs2zTS3HwltPknHCoQJI
-         kZiKHYwfpLkVUu9D92LMB2OlxC2BDrvlC95JiVUZRjWI5owfwg591M4xHCzDZxpvNWK8
-         G0sGZsw88scKH0fss9tAbiANd6RnGhM0rrzWpl5bNauuOoM4lv+p3Om5DRot1dm4eIqo
-         tfSfzMOkxf08hIx00mOjx3GE0n2eKJmD5+z87vCFwX7gQjsPqvrhyVRJVpBXGXHaxjHm
-         A0xbZGCB4jYtVPk4FlYe69J1KQl4LuEcAFOm6+xPXjp6C48OQDSKojWAyapmWSZyAj/C
-         SyYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708976695; x=1709581495;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+IjMAUifD0K8aIclGse5kDD6h96+1W53kM3fR1+WoI4=;
-        b=ucOPIjKIJsEP1CEwKLNYBDSHjdMtIG1+Zf+0xuvp4t4cs3iaCmQWzrz00Bh3iADag2
-         ssQoMtGgxw15ARCPDkdxAQDW0KTV3Y6Gao/AezhMxalpbzjW6fkIup6DmrlyrZgupQ6M
-         T53wF9gAkEQ+Wlv2Nr9mBNb4q9P87E4E7V7aghuUepBwM38Eg7Wu7Iz2C1rLp3XVLHBU
-         Jmqw0Uo06clfu7AhyDsvGrBY4ORBFYkWWAPJxTpaBl1+I8TYJyF6TSMig3GtJoQiiCdu
-         9eofPd6BX0foa6S7kQ9Qlc2tigsdigOXDZGqc03nGEqYmbfHAC1EXhfImEa/qlzOYxZi
-         3VPA==
-X-Forwarded-Encrypted: i=1; AJvYcCXbaSHgAYJNR9AYrRQYn61Cu02FnsVmEURgJb1aYEmRs2kb3Z+/nI8QC+B6xQTo627owa6NQSgRBPtMyDg8yWjfal0nA1eC9F7Pg+21
-X-Gm-Message-State: AOJu0YxoRIV4SY3HnCd7LmiN+bcbeSZ/pPZLBJII4hT2fQeXQRc4J6Wk
-	YL7Pt0DmHXCqxwxF2ULVt7AQ4sVql/ckwV964FZfd0+BxIAMThU1mtfc9J3Hw95M42fZmtBa+Q4
-	vvA7opIdXKJOSQW7VWlMMolxzBFjBA8c5vL8=
-X-Google-Smtp-Source: AGHT+IHylF+ijSiigZhn1xaCZmadJQwYIVFkZaPIc42DFOKEpXgNS2JWVjqE4kipuCfMcPHpGREAv7pI++pZxQF/Yns=
-X-Received: by 2002:a25:6b0d:0:b0:dc6:bbbd:d4f4 with SMTP id
- g13-20020a256b0d000000b00dc6bbbdd4f4mr174043ybc.33.1708976695465; Mon, 26 Feb
- 2024 11:44:55 -0800 (PST)
+	s=arc-20240116; t=1708976708; c=relaxed/simple;
+	bh=JInZrPa/kuD/tpdKkEdPvdh8wt+qDhbGZeTQw3e9DXo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=esgY1UdDUZIIEK6HUqg+2CurJzHe11hag45c9EpTq+r7rI82Tnj6QYWeU2jyL4XEFHOMdI/AOniMECSl3TB0LK79LzhNjdRhwyF5tFLNu8dCcIQ+A7LHjRl5LuiCokyIX29Ag4qykj79Xsfo8Jjy8EMBeXAFPk6gggFSF2uvmd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R1gWnFbC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2667C433C7;
+	Mon, 26 Feb 2024 19:45:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708976707;
+	bh=JInZrPa/kuD/tpdKkEdPvdh8wt+qDhbGZeTQw3e9DXo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=R1gWnFbCJyjj8F1OC0Vt0LxKPTWw6CC+6Dxkfj+iRJPbfSgCvIUxIBjnU3N1aM6il
+	 sdO425r79+I5gWR5DjMTt13mXQE0+bX5a6dMNkQP4P/Pdm7TQheaE2vOMT6ZoWrAEq
+	 eZwz4xssiuizOOqdExkMie3ODHqJYsWvk8KD3ImQ3vO/xKaRByYIfZf824csn+4ZN9
+	 WtBZNgAQhmdAPMrndsIs2h0J/LLZ6FPDMAOGK86V0o5S7Rlg5mkJeUqStbBrWxe0z1
+	 8lKqcNHAYtdx2L0gM6wgcybMxtVIf2jsvSDGBoAuwWrKLkZ73o/U3bBd71xyTBIHPG
+	 3hvr0BU8d80qQ==
+Date: Mon, 26 Feb 2024 13:45:04 -0600
+From: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>,
+	linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+	linux-clk@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+	linux-remoteproc@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/3] dt-bindings: clock: ti: remove unstable remark
+Message-ID: <170897670414.1320059.18104874403341289968.robh@kernel.org>
+References: <20240224091236.10146-1-krzysztof.kozlowski@linaro.org>
+ <20240224091236.10146-2-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126152556.58791-1-ppbuk5246@gmail.com>
-In-Reply-To: <20240126152556.58791-1-ppbuk5246@gmail.com>
-From: Yun Levi <ppbuk5246@gmail.com>
-Date: Mon, 26 Feb 2024 19:44:44 +0000
-Message-ID: <CAM7-yPS-=NCceH6O7C0b_NvE69Aq9zpMruy+0jnB34HsNo8ZFg@mail.gmail.com>
-Subject: Re: [PATCH] kswapd: Replace try_to_freeze to kthread_freezable_should_stop.
-To: akpm@linux-foundation.org
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240224091236.10146-2-krzysztof.kozlowski@linaro.org>
 
-Gentle ping.
 
-On Fri, Jan 26, 2024 at 3:26=E2=80=AFPM Levi Yun <ppbuk5246@gmail.com> wrot=
-e:
->
-> Instead of using try_to_freeze, use kthread_freezable_should_stop in
-> kswapd.
-> By this, we can avoid unnecessary freezing when kswapd should stop.
->
-> Signed-off-by: Levi Yun <ppbuk5246@gmail.com>
+On Sat, 24 Feb 2024 10:12:35 +0100, Krzysztof Kozlowski wrote:
+> Several TI SoC clock bindings were marked as work-in-progress / unstable
+> between 2013-2016, for example in commit f60b1ea5ea7a ("CLK: TI: add
+> support for gate clock").  It was enough of time to consider them stable
+> and expect usual ABI rules.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
->  mm/vmscan.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
->
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 4f9c854ce6cc..1f139830b26f 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -6796,6 +6796,7 @@ static int balance_pgdat(pg_data_t *pgdat, int orde=
-r, int highest_zoneidx)
->                 bool raise_priority =3D true;
->                 bool balanced;
->                 bool ret;
-> +               bool was_frozen;
->
->                 sc.reclaim_idx =3D highest_zoneidx;
->
-> @@ -6894,9 +6895,9 @@ static int balance_pgdat(pg_data_t *pgdat, int orde=
-r, int highest_zoneidx)
->
->                 /* Check if kswapd should be suspending */
->                 __fs_reclaim_release(_THIS_IP_);
-> -               ret =3D try_to_freeze();
-> +               ret =3D kthread_freezable_should_stop(&was_frozen);
->                 __fs_reclaim_acquire(_THIS_IP_);
-> -               if (ret || kthread_should_stop())
-> +               if (was_frozen || ret)
->                         break;
->
->                 /*
-> @@ -7102,7 +7103,7 @@ static int kswapd(void *p)
->         WRITE_ONCE(pgdat->kswapd_highest_zoneidx, MAX_NR_ZONES);
->         atomic_set(&pgdat->nr_writeback_throttled, 0);
->         for ( ; ; ) {
-> -               bool ret;
-> +               bool was_frozen;
->
->                 alloc_order =3D reclaim_order =3D READ_ONCE(pgdat->kswapd=
-_order);
->                 highest_zoneidx =3D kswapd_highest_zoneidx(pgdat,
-> @@ -7119,15 +7120,14 @@ static int kswapd(void *p)
->                 WRITE_ONCE(pgdat->kswapd_order, 0);
->                 WRITE_ONCE(pgdat->kswapd_highest_zoneidx, MAX_NR_ZONES);
->
-> -               ret =3D try_to_freeze();
-> -               if (kthread_should_stop())
-> +               if (kthread_freezable_should_stop(&was_frozen))
->                         break;
->
->                 /*
->                  * We can speed up thawing tasks if we don't call balance=
-_pgdat
->                  * after returning from the refrigerator
->                  */
-> -               if (ret)
-> +               if (was_frozen)
->                         continue;
->
->                 /*
-> --
-> 2.39.2
+>  Documentation/devicetree/bindings/clock/ti/adpll.txt            | 2 --
+>  Documentation/devicetree/bindings/clock/ti/apll.txt             | 2 --
+>  Documentation/devicetree/bindings/clock/ti/autoidle.txt         | 2 --
+>  Documentation/devicetree/bindings/clock/ti/clockdomain.txt      | 2 --
+>  Documentation/devicetree/bindings/clock/ti/composite.txt        | 2 --
+>  Documentation/devicetree/bindings/clock/ti/divider.txt          | 2 --
+>  Documentation/devicetree/bindings/clock/ti/dpll.txt             | 2 --
+>  Documentation/devicetree/bindings/clock/ti/fapll.txt            | 2 --
+>  .../devicetree/bindings/clock/ti/fixed-factor-clock.txt         | 2 --
+>  Documentation/devicetree/bindings/clock/ti/gate.txt             | 2 --
+>  Documentation/devicetree/bindings/clock/ti/interface.txt        | 2 --
+>  Documentation/devicetree/bindings/clock/ti/mux.txt              | 2 --
+>  12 files changed, 24 deletions(-)
+> 
+
+Acked-by: Rob Herring <robh@kernel.org>
+
 
