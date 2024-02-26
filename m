@@ -1,87 +1,127 @@
-Return-Path: <linux-kernel+bounces-81848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D06A7867ADE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:54:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60608867AE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:54:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8286C1F2B8FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:54:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91C7C1C28806
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:54:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7704512C815;
-	Mon, 26 Feb 2024 15:53:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="LQQ3nBpP"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5E1412BF3C;
+	Mon, 26 Feb 2024 15:54:41 +0000 (UTC)
+Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A01A12A14A;
-	Mon, 26 Feb 2024 15:53:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C27721292ED;
+	Mon, 26 Feb 2024 15:54:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708962833; cv=none; b=Q+qjIYpGQ5Kt2JoscQseZWwogyY+RPtjxxuIXhgzX1ZRGrqX6ZmQ/p5hEdFbfGv86Vh0E3Zpn543egR5fzzIyRjY8+2ooeut1/ArS6a+ka4E+W6CXC0n1lXIFQRvUahzN+qnTaBq37Ma3Zji5M63pd5CK1uXsNXXndMqs5o7vrU=
+	t=1708962881; cv=none; b=RITeDFitdbeRbz3ZHYVMMp0UBCd6SwQHB/QsO/4rmzq8fKxMxe0lOT4+EJq8W5/5nouRa8YISeullplT1Z5kGj9G+DtpUF9yk7nu8Go3j8v4GRliRc76hts5OZaLhLBvOeJoQqMXlttccnjc0wk3PWgMKqFr5e7bRQFpmZ6Sk0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708962833; c=relaxed/simple;
-	bh=OhS4vDw10qcJb+eT/2xNrJGDLexPIJn56JWLFV7mSLU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D0mBcZ8WOcpABAJmRw7BIeYW0I3l34rxRbstsNIWQzWRsPOJgRNsnSuH+eqKXwzaouEz7NA4YEK+stXpACwnj7EZTqEToNPOhuw9i4/yniTuk+EIpJ7tNkQsAHRf3p/BjPUHyV+8/vZWTVdYw/+GUGZGyIX/MKSI0Ed/uOGHfd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=LQQ3nBpP; arc=none smtp.client-ip=198.137.202.133
+	s=arc-20240116; t=1708962881; c=relaxed/simple;
+	bh=GIXw4CMiWjn027axPINZjhYRbMIP/5BA//VYtZABjv8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=s+dSD1fz6csBBOEUnJErrCs5cDBjh9WMO2BFyGgIC+jBPGEuQDrTynbsqcUPTwZFiUwLKHItxkom90gJIGpuHEVzRBmTj/peYbSSZ7PbZ1cGxVa+1QRIkn7pxpmd8Mk1lQ/1IcFjX4t8REhzVhGt51/7K4jrOwDrGCegkl49PEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=4th8cNSX4xav3thjL9AsP3JA1usOiTW53dcNZF3hTUE=; b=LQQ3nBpPyY7lmm0uyX6l5q7O7y
-	9LIXCw8oRW15B6dslBF1PJxG1kiFvAd9Gm8xBShVpBpeZn5dOdLQlYb3/Q9fndSZv25r+jsjnIyyA
-	W7EMn8fysavG5a8WcWh5C4JIl4SaZqCiuI426x9gqJZYDWOUWXpd2jtqq9vHEkXis9GF+DtB7rsSm
-	Sm9wfspkbv/EmBcQXKm5/MrOTxu2+IATM9OtN6CGrIRCHIFt+ordidJDqo7XFCap3nN0DWTKkym1o
-	6SQTWQS1LiJVaxZBLU97fHt7scS8jlua7IHk10+S+wakCz4KGqL3iAg/1TXh7gOW22gc/pfVnJaHs
-	vcpzEf9w==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1redIW-00000001WNL-0Rf1;
-	Mon, 26 Feb 2024 15:53:44 +0000
-Date: Mon, 26 Feb 2024 07:53:44 -0800
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: John Groves <John@groves.net>
-Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Matthew Wilcox <willy@infradead.org>, linux-cxl@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
-	john@jagalactic.com, Dave Chinner <david@fromorbit.com>,
-	Christoph Hellwig <hch@infradead.org>, dave.hansen@linux.intel.com,
-	gregory.price@memverge.com
-Subject: Re: [RFC PATCH 00/20] Introduce the famfs shared-memory file system
-Message-ID: <Zdy0CGL6e0ri8LiC@bombadil.infradead.org>
-References: <cover.1708709155.git.john@groves.net>
- <ZdkzJM6sze-p3EWP@bombadil.infradead.org>
- <cc2pabb3szzpm5jxxeku276csqu5vwqgzitkwevfluagx7akiv@h45faer5zpru>
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-21fbe64ef0cso172921fac.1;
+        Mon, 26 Feb 2024 07:54:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708962879; x=1709567679;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8hG+R8NZ6weR+cw6Mtpt9mJbOI6Ku9oH9aEPOnZNcL4=;
+        b=GDi9peFSdfaxXypWsHXYi1JlyTy7fJ0vafzaF9xRBRj/iJcp3wd0cn7OV0fnwzr61q
+         QHxIGPSP3ZTIyrkbAcjoE39O9Icwd6yEaGc/bkdggkYyHp4ONt4wefMFBsvV4y6k7v39
+         F59OaAIZQlmcMq4umg3OGJ9t8hnmXSTwYZKhr/qOBuLQzKrNDt5etOpibg/QpicQbSD1
+         Quw2N81b+1dg7HjHAOoEHcSE/ku8b5UzwkSOWefx7uTA/Xz746SfqsSYguo8KcN1NNkV
+         hevzsSuEOZadPQNmPYbXlqUDFb/t36VQG3MQzO9dYrp9kFvZvYugAQ6QjOzz5GJYi5/p
+         6uCw==
+X-Forwarded-Encrypted: i=1; AJvYcCWhrzbqCVBcPx8l0UZsRhzEWbgQ4QP0y10P1vD6er63mWbkshf2rHSF+IaR1Lm58ibj97AVGsUQHBb1C2syJ7L4kA67MDZF+geuwjufgAyYFdNRsWJWxOfz1HGrTIrtmkniCozvyqOvVQ==
+X-Gm-Message-State: AOJu0Yz2SKHPsiqDsCABVgfwIzhsfcr2va2F6NkjmCzpCbLg9Yzfrfnv
+	r5Yld6tycuANGy8+dbrE7ZOq6eznagDQELemWM5qrii4yAOrbDnqcdlHwSTnKAeNpH5G/YY49PN
+	qI9Dq6AX76Eod/WiaqAMj3yX9dyAJDDUZHwk=
+X-Google-Smtp-Source: AGHT+IGYj3I+pBHztUYABBs8ofR2SML4EWvnehN8WclVuckleTZbje1PaIZCZP9V36/pwzXDffMk5oDBgMXjDRenn3g=
+X-Received: by 2002:a05:6820:2c8e:b0:5a0:4d78:975d with SMTP id
+ dx14-20020a0568202c8e00b005a04d78975dmr6637712oob.1.1708962878870; Mon, 26
+ Feb 2024 07:54:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cc2pabb3szzpm5jxxeku276csqu5vwqgzitkwevfluagx7akiv@h45faer5zpru>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+References: <4562925.LvFx2qVVIh@kreacher> <2939512.e9J7NaK4W3@kreacher>
+ <20240222182834.00000b02@Huawei.com> <CAJZ5v0id7ktjAne4wyEWox_xqjH9K=Kzbs3+Bcn1qHBctnincw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0id7ktjAne4wyEWox_xqjH9K=Kzbs3+Bcn1qHBctnincw@mail.gmail.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 26 Feb 2024 16:54:27 +0100
+Message-ID: <CAJZ5v0jjD=KN0pOuWZZ8DT5yHdu03KgOSHYe3wB7h2vafNa44w@mail.gmail.com>
+Subject: Re: [PATCH v1 3/4] ACPI: scan: Rework Device Check and Bus Check
+ notification handling
+To: Jonathan Cameron <jonathan.cameron@huawei.com>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Linux ACPI <linux-acpi@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	Mika Westerberg <mika.westerberg@linux.intel.com>, 
+	"Russell King (Oracle)" <linux@armlinux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 26, 2024 at 07:27:18AM -0600, John Groves wrote:
-> Run status group 0 (all jobs):
->   WRITE: bw=29.6GiB/s (31.8GB/s), 29.6GiB/s-29.6GiB/s (31.8GB/s-31.8GB/s), io=44.7GiB (48.0GB), run=1511-1511msec
+On Mon, Feb 26, 2024 at 4:37=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.or=
+g> wrote:
+>
+> On Thu, Feb 22, 2024 at 7:28=E2=80=AFPM Jonathan Cameron
+> <Jonathan.Cameron@huawei.com> wrote:
+> >
+> > On Wed, 21 Feb 2024 21:02:33 +0100
+> > "Rafael J. Wysocki" <rjw@rjwysocki.net> wrote:
 
-> This is run on an xfs file system on a SATA ssd.
+[...]
 
-To compare more closer apples to apples, wouldn't it make more sense
-to try this with XFS on pmem (with fio -direct=1)?
+> > > +bool acpi_device_is_enabled(const struct acpi_device *adev)
+> > > +{
+> > > +     return acpi_device_is_present(adev) && adev->status.enabled;
+> >
+> > This resolves as (present or functional) && enabled.
+> >
+> > By my reading you are not allowed functional && enabled, but not presen=
+t.
+> > Line one of the description says.
+> >
+> > "If bit [0] is cleared, then bit 1 must also be cleared (in other words=
+, a device that is not present cannot be enabled)."
+> >
+> > I don't much care about that though (I think we discussed this
+> > in Russel's earlier series)
+>
+> Functional and enabled, but not present would go against the spec.  I
+> guess the kernel could protect itself against this, but then whatever
+> it chooses to do has not been defined anyway.
+>
+> The spec doesn't actually say what the OSPM is supposed to do when it
+> sees that combination of bits.  I'm inclined to clarify it to say "if
+> bit [0] is cleared, bit [1] has no defined meaning and it should be
+> ignored by the OSPM".  To be consistent with this interpretation,
+> acpi_device_is_enabled() should return "(present and enabled) or
+> functional".
+>
+> I'll change it along these lines.
 
-  Luis
+Actually, I don't think that the "functional" bit has any bearing on
+this.  It only means that the OSPM should continue the enumeration
+below the device regardless of the present bit value.
+
+In the acpi_processor_add() case it is clearly irrelevant.
+
+acpi_scan_bus_check() needs to walk the entire subtree below the
+target device anyway.
+
+As for acpi_scan_device_check(), IMO it's better to make it walk the
+subtree below the device if it is present, but not enabled, for
+backwards compatibility.
 
