@@ -1,95 +1,126 @@
-Return-Path: <linux-kernel+bounces-81733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71C4386797B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:07:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4390286797E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:08:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2808A1F25F2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:07:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D75111F23C95
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:08:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EDDA13247D;
-	Mon, 26 Feb 2024 14:47:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1E61132C09;
+	Mon, 26 Feb 2024 14:47:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QvQm1Tgx"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="L/tRy2rX"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A94E12BF1C
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 14:47:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BCC012C533;
+	Mon, 26 Feb 2024 14:47:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708958832; cv=none; b=HlT/VZ4DFpSa0mMHqNG5tnqlwxbI44bfNIVuXJ4RL9hd7dZHA0e8c3GpAiQ9mnHezNbu/tPAW3EMLPQgpapNyc0MGjBog2IeZNmZsUUaL4HNHr6kfsXQV0DVrVic/DiJNAdqQPEZPzuCyBemTs/p0n71P9+dCTr8bytA3LHlGVc=
+	t=1708958859; cv=none; b=ZSowzjpuZqSFE4K5vtMhVdBdg3glFFox0/vSMOQVMbj70aUQ2Me0q9UG+jF3E9F3HH/qF3930Mtwak7vCU+wBoebn4rRCSqS4CnpZaOSLw7a+XSMSWkRqxxkJCfljzkP6DW9qPHT5phsAMX98Cd5LzyRolm7RcGzCAlTjxnZcWQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708958832; c=relaxed/simple;
-	bh=BS/LynQ/vfsRyBPVQ8PFhDz219TrZ+G+szkSUtWDY2k=;
+	s=arc-20240116; t=1708958859; c=relaxed/simple;
+	bh=Vsn8pIp7vt+bUR9MZs+/TiYMnBtUQAaqJD1uA8+MiBY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ntYRFQ35xCZoD1AdLoNkhY9yS2s3HZYrGnoKWBfmSoouYkRqqb1m4wTD5CAUJsrnj+A+NYMidg26NI2Q28LzCkyfw9o7aOZHg9Y+gSkhAs26e6ZwWtHczi/nraVER937ccUqeDD1xxT59IYC37tjpjJnVtM9hhao6KHv8e017QM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QvQm1Tgx; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708958831; x=1740494831;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=BS/LynQ/vfsRyBPVQ8PFhDz219TrZ+G+szkSUtWDY2k=;
-  b=QvQm1TgxBswjVGgXmMxzLalwsDR0EYOkZIE+jVFjd8C5f/LWRqeGAVut
-   x73H4I2ThfHMYzrFIVgvQExbvB5NPUwgjJVaR58QoZBIJZBxcIleUlyf+
-   6ZftohHFVRcYOKehcVzztWsbF5jHwFarzMcvSsRZZuaJ0iUjVqWEMIpHj
-   hnlI6eEcOu1cWZmIiI7NxgdgPv1XlTEZTeWAFREhVTjMb42mIzBFpfZRN
-   rzeW3jxhGUfpYTAUrxBPLYFcYrlDXZEbJ/aC5YyLuZmDDlLSIZ3NpXJqn
-   LAWG5wTQ2bxfIG2F8hE5FFenjMsboL2YGcNEzVVzC/gIQFNf/qze8CRab
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="14681758"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="14681758"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 06:47:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="913874171"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="913874171"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 06:47:08 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1recG1-00000007hu6-2KVF;
-	Mon, 26 Feb 2024 16:47:05 +0200
-Date: Mon, 26 Feb 2024 16:47:05 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Shahar Avidar <ikobh7@gmail.com>
-Cc: gregkh@linuxfoundation.org, luca.ceresoli@bootlin.com,
-	benjamin.tissoires@redhat.com, elder@linaro.org, robh@kernel.org,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] staging: pi433: Move FIFO_THRESHOLD define to source
- file
-Message-ID: <ZdykaQCdtqOrdOsC@smile.fi.intel.com>
-References: <20240225173341.1278918-1-ikobh7@gmail.com>
- <20240225173341.1278918-5-ikobh7@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=t96YBnAPJFx9+ulXdIJvbErGqu7KQ0qLSmxNNcG5w/jU9rrzVZQ0mtyceI7iM7bEMlalX/pU3D84+TfTPdykyRxd8C+FaZhjGWGVR3PVtPpM5xozk20froIlZ34C5VXKslN7TjsDSMPQrF7g6itbPp3WGP+Lz3qDqrdp+DnMJ78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=L/tRy2rX; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=yza63Q+E0MQPCYS+BMi7MSICGP+bYwaIfeMJZhSmHAE=; b=L/tRy2rXVkixtFmv5H9i8Qe5nM
+	Rkutf9gUoZz55MoYgGdoS2SLSelhnx5JIy6iVW9qOmBQwDO97pFD0E6gFMz+j/5zakLyUBbdjxKtd
+	0f7tR03m2a/31EnhM9wx122E7iYxVtO6DqesPtXlMfvsd8drPWY3a4GhY+ZUUkupNqwJ7J9zD/uQj
+	YGUkzB+jpyB8gLppfcIacfTh/cULtqx5UXA1wS4Wflt/BC0T/wGbFoJVtBPLINgK4+qVXv8nGt0l3
+	Dpl4cGVzMdnG56AI4qqdd6rbuQpsRIGVFLF5Gs9uCTcDY3MN93UQoHIiiR/q8JRYAJqUiZ942gv8q
+	ELe8gzUw==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1recGT-0000000HQ83-33XC;
+	Mon, 26 Feb 2024 14:47:33 +0000
+Date: Mon, 26 Feb 2024 14:47:33 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, david@fromorbit.com,
+	chandan.babu@oracle.com, akpm@linux-foundation.org,
+	mcgrof@kernel.org, ziy@nvidia.com, hare@suse.de, djwong@kernel.org,
+	gost.dev@samsung.com, linux-mm@kvack.org,
+	Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH 04/13] filemap: use mapping_min_order while allocating
+ folios
+Message-ID: <ZdykhSuPbe6knu89@casper.infradead.org>
+References: <20240226094936.2677493-1-kernel@pankajraghav.com>
+ <20240226094936.2677493-5-kernel@pankajraghav.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240225173341.1278918-5-ikobh7@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20240226094936.2677493-5-kernel@pankajraghav.com>
 
-On Sun, Feb 25, 2024 at 07:33:41PM +0200, Shahar Avidar wrote:
-> FIFO_THRESHOLD is only being used by pi433_if.c source file
+On Mon, Feb 26, 2024 at 10:49:27AM +0100, Pankaj Raghav (Samsung) wrote:
+> Add some additional VM_BUG_ON() in page_cache_delete[batch] and
+> __filemap_add_folio to catch errors where we delete or add folios that
+> has order less than min_order.
 
-Same issue (and seems in all of your commit messages) — missing periods
-at the end of the sentences. Respect English grammar, please.
+I don't understand why we need these checks in the deletion path.  The
+add path, yes, absolutely.  But the delete path?
 
--- 
-With Best Regards,
-Andy Shevchenko
+> @@ -896,6 +900,8 @@ noinline int __filemap_add_folio(struct address_space *mapping,
+>  			}
+>  		}
+>  
+> +		VM_BUG_ON_FOLIO(folio_order(folio) < mapping_min_folio_order(mapping),
+> +				folio);
 
+But I don't understand why you put it here, while we're holding the
+xa_lock.  That seems designed to cause maximum disruption.  Why not put
+it at the beginning of the function with all the other VM_BUG_ON_FOLIO?
+
+> @@ -1847,6 +1853,9 @@ struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
+>  		fgf_t fgp_flags, gfp_t gfp)
+>  {
+>  	struct folio *folio;
+> +	unsigned int min_order = mapping_min_folio_order(mapping);
+> +
+> +	index = mapping_align_start_index(mapping, index);
+
+I would not do this here.
+
+>  repeat:
+>  	folio = filemap_get_entry(mapping, index);
+> @@ -1886,7 +1895,7 @@ struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
+>  		folio_wait_stable(folio);
+>  no_page:
+>  	if (!folio && (fgp_flags & FGP_CREAT)) {
+> -		unsigned order = FGF_GET_ORDER(fgp_flags);
+> +		unsigned int order = max(min_order, FGF_GET_ORDER(fgp_flags));
+>  		int err;
+
+Put it here instead.
+
+>  		if ((fgp_flags & FGP_WRITE) && mapping_can_writeback(mapping))
+> @@ -1912,8 +1921,13 @@ struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
+>  			gfp_t alloc_gfp = gfp;
+>  
+>  			err = -ENOMEM;
+> +			if (order < min_order)
+> +				order = min_order;
+>  			if (order > 0)
+>  				alloc_gfp |= __GFP_NORETRY | __GFP_NOWARN;
+> +
+> +			VM_BUG_ON(index & ((1UL << order) - 1));
+
+Then you don't need this BUG_ON because it's obvious you just did it.
+And the one in filemap_add_folio() would catch it anyway.
 
 
