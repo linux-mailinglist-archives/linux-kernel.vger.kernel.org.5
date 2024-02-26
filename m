@@ -1,76 +1,77 @@
-Return-Path: <linux-kernel+bounces-81344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E3C0867487
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:13:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2070A867489
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:14:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95BCCB25B0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:13:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FE6CB25EF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:13:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 661C26087A;
-	Mon, 26 Feb 2024 12:12:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56A0E60912;
+	Mon, 26 Feb 2024 12:12:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="j3W/T6T3";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CPPddy4G"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="FiOwzCq9";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="173ewDth"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EFBA605A4;
-	Mon, 26 Feb 2024 12:12:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81881605B0;
+	Mon, 26 Feb 2024 12:12:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708949571; cv=none; b=ooR20DtiywrCDpcgPsVrBFm8XG9OdTbYa46+nOJNb3yz6T7VXx5VXsXvYP2j6xHrdastIK82//mEyoFSnjFOmMGhzlf5YTFajbIH1Leb3rWMsevkfZjCq+0uR288Fd+q7S7Q7XHMUdPDdT6Cq5G/htCJs3N+oAG2JgasPGVJn3o=
+	t=1708949572; cv=none; b=iggMLJk2TUkNXJ6TCGHndBlIu0xl2Iy3WIkH7fJ3XRDK4Wq3o7S8GgNwbJ1aLdKT73wz3mpr0rD/PLm2WqTW4kgg7HMsyIqJwMYARwy7uK+PvOySwvYOBIvPmCzj653N8nzt27BUej921cSnSUDlvvyiT10H6EmgMC/qwHJzmkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708949571; c=relaxed/simple;
-	bh=M3zALqseM1xjDZx+ABhJazwOHjpUTiVSF2sLLX/zrZc=;
+	s=arc-20240116; t=1708949572; c=relaxed/simple;
+	bh=GHDuWh4lNR66dkekDJ22TuJEX3tomQWv/vy8HfoAH4M=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=MqFaEYkRf2gCQyulIx1N0eHlYR7IY4CIlCwr0YdgUNwCwcmpdjl1RPqQcGnv5pj1GqeZNIqN1D8i/exfgajPVSkEqHVfzX/PTriDcLvtH9pdWqqXlTmEd4VG46pAi1elhA24oxondOa+lNvLp6ysBO9Y2cBj+MYSPvBuOm5vTuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=j3W/T6T3; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=CPPddy4G; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=Z1OSACqXYwGgcHgw+BKPHPFrR7H7KzC1rx6M7IjPxS6sbVn8fzQQRT181MGgqQGlk32hzM9nLY/H/06Xrc3jSqz1NNMLqw/CLRAoWlWn1UvqtLeM9hSDYOKo3bzf9ceEYnky0vB1dLQHfL2DVQiVMQ3IWEgacqvlUv9iHtn3OcA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=FiOwzCq9; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=173ewDth; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 26 Feb 2024 12:12:47 -0000
+Date: Mon, 26 Feb 2024 12:12:48 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708949567;
+	s=2020; t=1708949568;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=06BzHTpbA/22NpYtuS1jT3qMyjxhGzvHErj1VnfhLOc=;
-	b=j3W/T6T3qmgcT6NuBU/TMyN/59caj/kDoI+vd2ItnyO9+sNnnYUuKo6xwktZfWx+NeraW4
-	DHpocK4tuZUJeWJ/hIBfVIfsrvCzy90jBGMCFacuO9Ixr3PblDGIcvxsh6QOiMaLpF9HE+
-	AM7Rr5pIjllijwTp6dqn1JAl/XgItvj/fa6anvSuzn3R90UaAzCVY2wqbKFRZyxKjbb2hZ
-	bUyTnt00HLKvQKh07wR1WZZX3EdyuHkbKP6RDazav2ayurc+/A0gDw46Dst3k9dlOe+m36
-	oRoJ+u9Rej/djZwu8APS4qyuAaSIrjq1+Wx724NBkQoEzfCLCShuS2igF4sDnA==
+	bh=DyHd/3wqfSy+ep7GRJ7JS+mWHJlTKt3+BrRJvvlF2oU=;
+	b=FiOwzCq9Wf/aViWg+4WUrTaUxawLRaO+MX1aW/Xoydb5SdV39qtUKMq7nP4OCqCgOCKc5N
+	Jwy64XvBkz6yNxJ4Fj296AiUwYrqkHoNv9DuolelMFnwxGEv/cFlNScJ+0w21+TqY5FkRO
+	xkzSKYU7KPXk01y/oqj6qfl0lvB/d3FwIZvwpDf2s3FhDOjhaknKP7kI6prfce6oYhU/Ii
+	4vJjZsppI+EqkLP7RldXXmIX3odLbKfK9RtWnDbs7myRlExaluJEvwKREY7RyX9zAdppDv
+	ADfNH4NDk5LjEBIupbjVXTaeFY4+8xuY1iQzIYceoMHB6vffDLR08FlDvBMxXA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708949567;
+	s=2020e; t=1708949568;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=06BzHTpbA/22NpYtuS1jT3qMyjxhGzvHErj1VnfhLOc=;
-	b=CPPddy4GBvmkuchGpQ3XAcetsXnaeApV7DnX2yAZtvy3HKHmAHK7i1hAwCVZkfUMXmV59n
-	Z+7ZasEvnS0OW5AQ==
+	bh=DyHd/3wqfSy+ep7GRJ7JS+mWHJlTKt3+BrRJvvlF2oU=;
+	b=173ewDth7+UEZPq7FS06uqlFPTe7DEYbgOTKLxDuF3JNHArA6xeA4bHrW9pClIYmjAqX68
+	qP8qfWvpOakV1VDQ==
 From: "tip-bot2 for Ard Biesheuvel" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/boot] x86/boot/64: Use RIP_REL_REF() to assign 'phys_base'
-Cc: Ard Biesheuvel <ardb@kernel.org>, Ingo Molnar <mingo@kernel.org>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240221113506.2565718-20-ardb+git@google.com>
-References: <20240221113506.2565718-20-ardb+git@google.com>
+Subject: [tip: x86/boot] x86/boot/64: Simplify global variable accesses in
+ GDT/IDT programming
+Cc: Ard Biesheuvel <ardb@kernel.org>, "Borislav Petkov (AMD)" <bp@alien8.de>,
+ Ingo Molnar <mingo@kernel.org>, x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240221113506.2565718-19-ardb+git@google.com>
+References: <20240221113506.2565718-19-ardb+git@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170894956714.398.18401706511421124908.tip-bot2@tip-bot2>
+Message-ID: <170894956806.398.1538176163796570341.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -80,53 +81,198 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the x86/boot branch of tip:
 
-Commit-ID:     d9ec1158056bedb6da8f4e02de30d300914b31f8
-Gitweb:        https://git.kernel.org/tip/d9ec1158056bedb6da8f4e02de30d300914b31f8
+Commit-ID:     5da793671957e8e99fa74423fab2737bf8c772a8
+Gitweb:        https://git.kernel.org/tip/5da793671957e8e99fa74423fab2737bf8c772a8
 Author:        Ard Biesheuvel <ardb@kernel.org>
-AuthorDate:    Wed, 21 Feb 2024 12:35:09 +01:00
+AuthorDate:    Wed, 21 Feb 2024 12:35:08 +01:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 26 Feb 2024 12:58:35 +01:00
+CommitterDate: Mon, 26 Feb 2024 12:58:11 +01:00
 
-x86/boot/64: Use RIP_REL_REF() to assign 'phys_base'
+x86/boot/64: Simplify global variable accesses in GDT/IDT programming
 
-'phys_base' is assigned from code that executes from a 1:1 mapping so it
-cannot use a plain access from C. Replace the use of fixup_pointer()
-with RIP_REL_REF(), which is better and simpler.
+There are two code paths in the startup code to program an IDT: one that
+runs from the 1:1 mapping and one that runs from the virtual kernel
+mapping. Currently, these are strictly separate because fixup_pointer()
+is used on the 1:1 path, which will produce the wrong value when used
+while executing from the virtual kernel mapping.
 
-While at it, move the assignment to before the addition of the SME mask
-so there is no need to subtract it again, and drop the unnecessary
-addition ('phys_base' is statically initialized to 0x0)
+Switch to RIP_REL_REF() so that the two code paths can be merged. Also,
+move the GDT and IDT descriptors to the stack so that they can be
+referenced directly, rather than via RIP_REL_REF().
+
+Rename startup_64_setup_env() to startup_64_setup_gdt_idt() while at it,
+to make the call from assembler self-documenting.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20240221113506.2565718-20-ardb+git@google.com
+Link: https://lore.kernel.org/r/20240221113506.2565718-19-ardb+git@google.com
 ---
- arch/x86/kernel/head64.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ arch/x86/include/asm/setup.h |  2 +-
+ arch/x86/kernel/head64.c     | 75 ++++++++++++++---------------------
+ arch/x86/kernel/head_64.S    |  4 +--
+ 3 files changed, 32 insertions(+), 49 deletions(-)
 
+diff --git a/arch/x86/include/asm/setup.h b/arch/x86/include/asm/setup.h
+index 5c83729..e61e68d 100644
+--- a/arch/x86/include/asm/setup.h
++++ b/arch/x86/include/asm/setup.h
+@@ -48,7 +48,7 @@ extern unsigned long saved_video_mode;
+ extern void reserve_standard_io_resources(void);
+ extern void i386_reserve_resources(void);
+ extern unsigned long __startup_64(unsigned long physaddr, struct boot_params *bp);
+-extern void startup_64_setup_env(unsigned long physbase);
++extern void startup_64_setup_gdt_idt(void);
+ extern void early_setup_idt(void);
+ extern void __init do_early_exception(struct pt_regs *regs, int trapnr);
+ 
 diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
-index 1d6865e..f98f5b6 100644
+index dc09560..1d6865e 100644
 --- a/arch/x86/kernel/head64.c
 +++ b/arch/x86/kernel/head64.c
-@@ -192,6 +192,7 @@ unsigned long __head __startup_64(unsigned long physaddr,
- 	 * and the address I am actually running at.
- 	 */
- 	load_delta = physaddr - (unsigned long)(_text - __START_KERNEL_map);
-+	RIP_REL_REF(phys_base) = load_delta;
+@@ -22,6 +22,7 @@
+ #include <linux/cc_platform.h>
+ #include <linux/pgtable.h>
  
- 	/* Is the address not 2M aligned? */
- 	if (load_delta & ~PMD_MASK)
-@@ -301,12 +302,6 @@ unsigned long __head __startup_64(unsigned long physaddr,
- 	for (; i < PTRS_PER_PMD; i++)
- 		pmd[i] &= ~_PAGE_PRESENT;
++#include <asm/asm.h>
+ #include <asm/processor.h>
+ #include <asm/proto.h>
+ #include <asm/smp.h>
+@@ -76,15 +77,6 @@ static struct desc_struct startup_gdt[GDT_ENTRIES] __initdata = {
+ 	[GDT_ENTRY_KERNEL_DS]           = GDT_ENTRY_INIT(DESC_DATA64, 0, 0xfffff),
+ };
  
--	/*
--	 * Fixup phys_base - remove the memory encryption mask to obtain
--	 * the true physical address.
--	 */
--	*fixup_long(&phys_base, physaddr) += load_delta - sme_get_me_mask();
+-/*
+- * Address needs to be set at runtime because it references the startup_gdt
+- * while the kernel still uses a direct mapping.
+- */
+-static struct desc_ptr startup_gdt_descr __initdata = {
+-	.size = sizeof(startup_gdt)-1,
+-	.address = 0,
+-};
 -
- 	return sme_postprocess_startup(bp, pmd);
+ static void __head *fixup_pointer(void *ptr, unsigned long physaddr)
+ {
+ 	return ptr - (void *)_text + (void *)physaddr;
+@@ -569,62 +561,52 @@ void __init __noreturn x86_64_start_reservations(char *real_mode_data)
+  */
+ static gate_desc bringup_idt_table[NUM_EXCEPTION_VECTORS] __page_aligned_data;
+ 
+-static struct desc_ptr bringup_idt_descr = {
+-	.size		= (NUM_EXCEPTION_VECTORS * sizeof(gate_desc)) - 1,
+-	.address	= 0, /* Set at runtime */
+-};
+-
+-static void set_bringup_idt_handler(gate_desc *idt, int n, void *handler)
++/* This may run while still in the direct mapping */
++static void __head startup_64_load_idt(void *vc_handler)
+ {
+-#ifdef CONFIG_AMD_MEM_ENCRYPT
++	struct desc_ptr desc = {
++		.address = (unsigned long)&RIP_REL_REF(bringup_idt_table),
++		.size    = sizeof(bringup_idt_table) - 1,
++	};
+ 	struct idt_data data;
+-	gate_desc desc;
+-
+-	init_idt_data(&data, n, handler);
+-	idt_init_desc(&desc, &data);
+-	native_write_idt_entry(idt, n, &desc);
+-#endif
+-}
++	gate_desc idt_desc;
+ 
+-/* This runs while still in the direct mapping */
+-static void __head startup_64_load_idt(unsigned long physbase)
+-{
+-	struct desc_ptr *desc = fixup_pointer(&bringup_idt_descr, physbase);
+-	gate_desc *idt = fixup_pointer(bringup_idt_table, physbase);
+-
+-
+-	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT)) {
+-		void *handler;
+-
+-		/* VMM Communication Exception */
+-		handler = fixup_pointer(vc_no_ghcb, physbase);
+-		set_bringup_idt_handler(idt, X86_TRAP_VC, handler);
++	/* @vc_handler is set only for a VMM Communication Exception */
++	if (vc_handler) {
++		init_idt_data(&data, X86_TRAP_VC, vc_handler);
++		idt_init_desc(&idt_desc, &data);
++		native_write_idt_entry((gate_desc *)desc.address, X86_TRAP_VC, &idt_desc);
+ 	}
+ 
+-	desc->address = (unsigned long)idt;
+-	native_load_idt(desc);
++	native_load_idt(&desc);
  }
  
+ /* This is used when running on kernel addresses */
+ void early_setup_idt(void)
+ {
+-	/* VMM Communication Exception */
++	void *handler = NULL;
++
+ 	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT)) {
+ 		setup_ghcb();
+-		set_bringup_idt_handler(bringup_idt_table, X86_TRAP_VC, vc_boot_ghcb);
++		handler = vc_boot_ghcb;
+ 	}
+ 
+-	bringup_idt_descr.address = (unsigned long)bringup_idt_table;
+-	native_load_idt(&bringup_idt_descr);
++	startup_64_load_idt(handler);
+ }
+ 
+ /*
+  * Setup boot CPU state needed before kernel switches to virtual addresses.
+  */
+-void __head startup_64_setup_env(unsigned long physbase)
++void __head startup_64_setup_gdt_idt(void)
+ {
++	void *handler = NULL;
++
++	struct desc_ptr startup_gdt_descr = {
++		.address = (unsigned long)&RIP_REL_REF(startup_gdt),
++		.size    = sizeof(startup_gdt) - 1,
++	};
++
+ 	/* Load GDT */
+-	startup_gdt_descr.address = (unsigned long)fixup_pointer(startup_gdt, physbase);
+ 	native_load_gdt(&startup_gdt_descr);
+ 
+ 	/* New GDT is live - reload data segment registers */
+@@ -632,5 +614,8 @@ void __head startup_64_setup_env(unsigned long physbase)
+ 		     "movl %%eax, %%ss\n"
+ 		     "movl %%eax, %%es\n" : : "a"(__KERNEL_DS) : "memory");
+ 
+-	startup_64_load_idt(physbase);
++	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT))
++		handler = &RIP_REL_REF(vc_no_ghcb);
++
++	startup_64_load_idt(handler);
+ }
+diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+index bfbac50..e09cf0b 100644
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -68,8 +68,6 @@ SYM_CODE_START_NOALIGN(startup_64)
+ 	/* Set up the stack for verify_cpu() */
+ 	leaq	(__end_init_task - PTREGS_SIZE)(%rip), %rsp
+ 
+-	leaq	_text(%rip), %rdi
+-
+ 	/* Setup GSBASE to allow stack canary access for C code */
+ 	movl	$MSR_GS_BASE, %ecx
+ 	leaq	INIT_PER_CPU_VAR(fixed_percpu_data)(%rip), %rdx
+@@ -77,7 +75,7 @@ SYM_CODE_START_NOALIGN(startup_64)
+ 	shrq	$32,  %rdx
+ 	wrmsr
+ 
+-	call	startup_64_setup_env
++	call	startup_64_setup_gdt_idt
+ 
+ 	/* Now switch to __KERNEL_CS so IRET works reliably */
+ 	pushq	$__KERNEL_CS
 
