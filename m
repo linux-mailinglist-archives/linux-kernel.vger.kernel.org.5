@@ -1,145 +1,226 @@
-Return-Path: <linux-kernel+bounces-80600-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E6B7866A30
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:44:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4992866A32
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:44:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A3491C21B38
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:44:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17EB31F22DA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:44:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54B561AACB;
-	Mon, 26 Feb 2024 06:44:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E49BE1B27D;
+	Mon, 26 Feb 2024 06:44:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LM1PCc2h"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="W2C6wma+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KJMoawp/";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="W2C6wma+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KJMoawp/"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0FC414267;
-	Mon, 26 Feb 2024 06:44:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C22C71BDCB;
+	Mon, 26 Feb 2024 06:44:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708929857; cv=none; b=YoVjDspOO68XEKN8xXkWhKS7ap+d0kQXenZxqjqkYHaihqc0vRzTN0JAdB7F7cft8nktFIkCZxIgk3Y/g6N55dHgQy5UYeD5ArlNiea6IwawvvjTB7kMFU4vtqsywuHkhooxSQWgDIGZEBxIQUW8+pj15rCZ/C3JNRc+XaaaZHI=
+	t=1708929885; cv=none; b=LEoMYMvBMbWf7CLFx0Z26nOGreAqZTSUAYy7b7LL13FvFkWI/kgEXqh7Lra7Yq6MnXACVjfHxy9aroLceqEOh0XbjhBvxBuFXh41dozXurXCCgzslkABl0Webm4PaILJkwka7VQY7zAkgwgKuO4J7khdKMvwlEwcssJlRMQVYSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708929857; c=relaxed/simple;
-	bh=vsFafeCbwcDL7yhjwGb9jr8hq1fqF5uEqzU7YI85HPM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OjEvQo2vKqgQ/9xEDDa7clMSMZDLXrJ9DSQ17xORO+dxYxJxqz5/js8vX7SUoOPJejN+kAOQsRR4amrlFRqReEurZ/FcPNfFTRU3V1HkK8sm4goRC6kNVGxnRqZrXTVZQ8v6jM+FyTIabYTaghow7KnHtPhycyoHM3Y5WxyPIBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LM1PCc2h; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708929856; x=1740465856;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=vsFafeCbwcDL7yhjwGb9jr8hq1fqF5uEqzU7YI85HPM=;
-  b=LM1PCc2h+CYpAZbhq1X2AB5Y8xMkP/N/TM75ipOwZWZLP11ZCVe1AP48
-   iboT3CNmx8F+fL76m+0T9Zks2nAkiEiDoizVu6fUK+TsK4HlouuuVHC0S
-   x4voQhdDLh9EaFjOcFqrDsfeLGnEP1oTowLpwvs+CZlANYJkSi987W55k
-   0OJoomP+wADh2ZMfzVrRKHu/gFfqpBszPnfOZfQe3WGWyhTLPTkTCzAMi
-   zmW7luQUP8IVzVh07uPzpTpvOuB+YpQdzPUHixmGBIzCWty95G+LUAoke
-   XwyLPTnamCkEWalCcu36Qv/MAIM7IZG/cjDz3OQ1L4A9lu3VfUt+IVAcY
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="7014240"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="7014240"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 22:44:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="6992085"
-Received: from gcsargen-mobl1.amr.corp.intel.com (HELO [10.255.228.214]) ([10.255.228.214])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 22:44:15 -0800
-Message-ID: <d1ff16a1-bf7e-4704-93b8-4122b739583f@linux.intel.com>
-Date: Sun, 25 Feb 2024 22:44:14 -0800
+	s=arc-20240116; t=1708929885; c=relaxed/simple;
+	bh=0jR4/i7gzhFMuOdekx0+xLT5ggNU6KA0YqzULT8MLiI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qF4O5YgFNcnf/+AaDivG79gwxsnZHFRlMbpjTadfEZgf2KsONKgytFgkzLdcI2miH9CgPGbJeM+86W/D/ckKCtyD2usJlRB8LTNtNJbeN0Z3vhGGwA7awRNox5/ckXFJvwDMxvXeu11OP+XDDcuFmRzizgvrnFXVnDNX96ke/5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=W2C6wma+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KJMoawp/; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=W2C6wma+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KJMoawp/; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from lion.mk-sys.cz (unknown [10.100.225.114])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id AA1922233F;
+	Mon, 26 Feb 2024 06:44:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708929880; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U+h6mH/zm8We5PynLw0CU0r1+Xfy20Hg53wFN8364kU=;
+	b=W2C6wma+ZOEZsgkmamUWxY50Nicn++NFciUw9MzkP/imZEZk7NqwckYvv9/4Jc2vAP7nzR
+	Y3TmopAjVzgtSscKLguqCfFjq4UtD8FbmPk1r0FvuAYG6X+dtjNm4unBBugG8b+444bKNT
+	fvL9Sqr03RFX9akcvGBusZmO34KpCtA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708929880;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U+h6mH/zm8We5PynLw0CU0r1+Xfy20Hg53wFN8364kU=;
+	b=KJMoawp/vPoAmOMiYZJMyiNhIgIjkwr/HEpzLUmkw7GQoOiOydzNc0Bds9QSg5Lb3bAoQP
+	CQv31JvV44DAfjDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708929880; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U+h6mH/zm8We5PynLw0CU0r1+Xfy20Hg53wFN8364kU=;
+	b=W2C6wma+ZOEZsgkmamUWxY50Nicn++NFciUw9MzkP/imZEZk7NqwckYvv9/4Jc2vAP7nzR
+	Y3TmopAjVzgtSscKLguqCfFjq4UtD8FbmPk1r0FvuAYG6X+dtjNm4unBBugG8b+444bKNT
+	fvL9Sqr03RFX9akcvGBusZmO34KpCtA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708929880;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U+h6mH/zm8We5PynLw0CU0r1+Xfy20Hg53wFN8364kU=;
+	b=KJMoawp/vPoAmOMiYZJMyiNhIgIjkwr/HEpzLUmkw7GQoOiOydzNc0Bds9QSg5Lb3bAoQP
+	CQv31JvV44DAfjDg==
+Received: by lion.mk-sys.cz (Postfix, from userid 1000)
+	id 95ECD20147; Mon, 26 Feb 2024 07:44:40 +0100 (CET)
+Date: Mon, 26 Feb 2024 07:44:40 +0100
+From: Michal Kubecek <mkubecek@suse.cz>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+	Lennart Franzen <lennart@lfdomain.com>,
+	Alexandru Tachici <alexandru.tachici@analog.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH] net: ethernet: adi: requires PHYLIB support
+Message-ID: <20240226064440.ismpxvp5qmnskyna@lion.mk-sys.cz>
+References: <20240215070050.2389-1-rdunlap@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 2/5] PCI/ASPM: Always build aspm.c
-Content-Language: en-US
-To: Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- "David E . Box" <david.e.box@linux.intel.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- "Rafael J . Wysocki" <rafael@kernel.org>,
- Tasev Nikola <tasev.stefanoska@skynet.be>,
- Mark Enriquez <enriquezmark36@gmail.com>, Thomas Witt <kernel@witt.link>,
- Werner Sembach <wse@tuxedocomputers.com>, Vidya Sagar <vidyas@nvidia.com>,
- Kai-Heng Feng <kai.heng.feng@canonical.com>, Ricky Wu
- <ricky_wu@realtek.com>, Mario Limonciello <mario.limonciello@amd.com>,
- Bjorn Helgaas <bhelgaas@google.com>
-References: <20240223205851.114931-1-helgaas@kernel.org>
- <20240223205851.114931-3-helgaas@kernel.org>
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20240223205851.114931-3-helgaas@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="dokggcunvhr5bb4x"
+Content-Disposition: inline
+In-Reply-To: <20240215070050.2389-1-rdunlap@infradead.org>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-5.20 / 50.00];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,infradead.org:email];
+	 SIGNED_PGP(-2.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_COUNT_ZERO(0.00)[0];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -5.20
 
 
-On 2/23/24 12:58 PM, Bjorn Helgaas wrote:
-> From: "David E. Box" <david.e.box@linux.intel.com>
->
-> Some ASPM-related tasks, such as save and restore of LTR and L1SS
-> capabilities, still need to be performed when CONFIG_PCIEASPM is not
-> enabled. To prepare for these changes, wrap the current code in aspm.c
-> with an #ifdef and always build the file.
+--dokggcunvhr5bb4x
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Since save/restore needs to be called even if CONFIG_PCIEASPM is
-not set, why not just leave it in pci.c?
-
->
-> Link: https://lore.kernel.org/r/20240128233212.1139663-2-david.e.box@linux.intel.com
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> [bhelgaas: split build change from function moves]
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+On Wed, Feb 14, 2024 at 11:00:50PM -0800, Randy Dunlap wrote:
+> This driver uses functions that are supplied by the Kconfig symbol
+> PHYLIB, so select it to ensure that they are built as needed.
+>=20
+> When CONFIG_ADIN1110=3Dy and CONFIG_PHYLIB=3Dm, there are multiple build
+> (linker) errors that are resolved by this Kconfig change:
+>=20
+>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_net_ope=
+n':
+>    drivers/net/ethernet/adi/adin1110.c:933: undefined reference to `phy_s=
+tart'
+>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_probe_n=
+etdevs':
+>    drivers/net/ethernet/adi/adin1110.c:1603: undefined reference to `get_=
+phy_device'
+>    ld: drivers/net/ethernet/adi/adin1110.c:1609: undefined reference to `=
+phy_connect'
+>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_disconn=
+ect_phy':
+>    drivers/net/ethernet/adi/adin1110.c:1226: undefined reference to `phy_=
+disconnect'
+>    ld: drivers/net/ethernet/adi/adin1110.o: in function `devm_mdiobus_all=
+oc':
+>    include/linux/phy.h:455: undefined reference to `devm_mdiobus_alloc_si=
+ze'
+>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_registe=
+r_mdiobus':
+>    drivers/net/ethernet/adi/adin1110.c:529: undefined reference to `__dev=
+m_mdiobus_register'
+>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_net_sto=
+p':
+>    drivers/net/ethernet/adi/adin1110.c:958: undefined reference to `phy_s=
+top'
+>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_disconn=
+ect_phy':
+>    drivers/net/ethernet/adi/adin1110.c:1226: undefined reference to `phy_=
+disconnect'
+>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_adjust_=
+link':
+>    drivers/net/ethernet/adi/adin1110.c:1077: undefined reference to `phy_=
+print_status'
+>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_ioctl':
+>    drivers/net/ethernet/adi/adin1110.c:790: undefined reference to `phy_d=
+o_ioctl'
+>    ld: drivers/net/ethernet/adi/adin1110.o:(.rodata+0xf60): undefined ref=
+erence to `phy_ethtool_get_link_ksettings'
+>    ld: drivers/net/ethernet/adi/adin1110.o:(.rodata+0xf68): undefined ref=
+erence to `phy_ethtool_set_link_ksettings'
+>=20
+> Fixes: bc93e19d088b ("net: ethernet: adi: Add ADIN1110 support")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202402070626.eZsfVHG5-lkp@i=
+ntel.com/
+> Cc: Lennart Franzen <lennart@lfdomain.com>
+> Cc: Alexandru Tachici <alexandru.tachici@analog.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paolo Abeni <pabeni@redhat.com>
+> Cc: netdev@vger.kernel.org
 > ---
->  drivers/pci/pcie/Makefile | 2 +-
->  drivers/pci/pcie/aspm.c   | 4 ++++
->  2 files changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/pci/pcie/Makefile b/drivers/pci/pcie/Makefile
-> index 8de4ed5f98f1..6461aa93fe76 100644
-> --- a/drivers/pci/pcie/Makefile
-> +++ b/drivers/pci/pcie/Makefile
-> @@ -6,7 +6,7 @@ pcieportdrv-y			:= portdrv.o rcec.o
->  
->  obj-$(CONFIG_PCIEPORTBUS)	+= pcieportdrv.o
->  
-> -obj-$(CONFIG_PCIEASPM)		+= aspm.o
-> +obj-y				+= aspm.o
->  obj-$(CONFIG_PCIEAER)		+= aer.o err.o
->  obj-$(CONFIG_PCIEAER_INJECT)	+= aer_inject.o
->  obj-$(CONFIG_PCIE_PME)		+= pme.o
-> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> index d1538f73f2f9..d50c0f83430f 100644
-> --- a/drivers/pci/pcie/aspm.c
-> +++ b/drivers/pci/pcie/aspm.c
-> @@ -24,6 +24,8 @@
->  
->  #include "../pci.h"
->  
-> +#ifdef CONFIG_PCIEASPM
-> +
->  #ifdef MODULE_PARAM_PREFIX
->  #undef MODULE_PARAM_PREFIX
->  #endif
-> @@ -1517,3 +1519,5 @@ bool pcie_aspm_support_enabled(void)
->  {
->  	return aspm_support_enabled;
->  }
-> +
-> +#endif /* CONFIG_PCIEASPM */
+>  drivers/net/ethernet/adi/Kconfig |    1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff -- a/drivers/net/ethernet/adi/Kconfig b/drivers/net/ethernet/adi/Kco=
+nfig
+> --- a/drivers/net/ethernet/adi/Kconfig
+> +++ b/drivers/net/ethernet/adi/Kconfig
+> @@ -7,6 +7,7 @@ config NET_VENDOR_ADI
+>  	bool "Analog Devices devices"
+>  	default y
+>  	depends on SPI
+> +	select PHYLIB
+>  	help
+>  	  If you have a network (Ethernet) card belonging to this class, say Y.
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Shouldn't the "select PHYLIB" be added to ADIN1110 rather than
+NET_VENDOR_ADI? Now with v6.8-rc6, PHYLIB and few other options are
+forced to "Y" whenever NET_VENDOR_ADI is enabled (even with ADIN1110
+disabled).
 
+Michal
+
+--dokggcunvhr5bb4x
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEWN3j3bieVmp26mKO538sG/LRdpUFAmXcM1MACgkQ538sG/LR
+dpWWyQf+IwV1bbDi03xWEPWF9NbDjKpBv4a2Lg5jNjnCa+k3kW3DNzThJTedzX5F
+ROmPLIj1cH4cKnaK++npbAlv8K4rZXlvibJDDrXHzNi67IuoExFy1foTyfx8Kr/1
+fImb56B2WQXW4SrlHPXi8dB8CDIqlu+z3ec1eG0DEKYBM1WbVP9LKNA/FjNVi0pX
+ktr2s2tv2CgZ/4m3+/cPvxQIhiQYFjdfeiXmWaEcfjxgqZRoyGOqqqrCylHk2mIG
+0auC4nBbvEkFZqE9p4iPgFQ4IoMf8bnFtNMOawmx/DoDuj3QbgGEKBdDvDbdlRVn
+/z0uBAhXH5yRjGpd9XHPDcV2JZthLQ==
+=wmo4
+-----END PGP SIGNATURE-----
+
+--dokggcunvhr5bb4x--
 
