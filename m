@@ -1,197 +1,116 @@
-Return-Path: <linux-kernel+bounces-81516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF9088676F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:44:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 443CB8676FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:44:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 758F328F915
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:44:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75F1E1C29733
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:44:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 728C812A168;
-	Mon, 26 Feb 2024 13:42:00 +0000 (UTC)
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD09712AAEF;
+	Mon, 26 Feb 2024 13:42:25 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F276128839;
-	Mon, 26 Feb 2024 13:41:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C51C0128839;
+	Mon, 26 Feb 2024 13:42:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708954920; cv=none; b=AXJHQ7fbzc03/M8g+0ZBtHU2fwIqnGfIWQQ/1h3MkOOgP+R5Hl8Ylh3ybLnfrnal+tsTnStnxobKlRTuA7veDrKLlZwi4ddm/84+1ZmRZCVZZ/FiWdb/u88iZ0h6q26d90rKyD+xj88F+e2vtbwDx+W+ib1crjrVWMuZQXKteaI=
+	t=1708954945; cv=none; b=dGE7KkO4i0NiNvsDL59sCO/ya489q6mEcPrbj/ydSt5aguPobV8dtuNSqNa2982r+O8yt+3i68IY8zKwNuAlZAfAc7c7aFkzbcoL/5/OFpRn3a/+3OFTRBeq7nvHfcw0RRMxRqE5/pwpB51TSiK4TcgC0vB8j7wSGwQVFiX1rCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708954920; c=relaxed/simple;
-	bh=uf4G1LQtE+of00JBn2elTsV8rbTDZ2t6XSM35puzMBg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=shEyiBZlkg8GSJgKvNMu4qDCbRMq/Rpm88m2Sqw/QTtAA5tTfH1Tsw/RUEA+XGxW/CrQ40l4gCE1XklmX7Lm9/ax35gsh0cYTIpxDF3SBaaXNCmtbXJaVFtW3gvKMx+4ZBymOuiOmNS0A9Gt3t6phw0xmAfa+K0pFW0Bw5FP8us=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dcd94fb9e4dso3249752276.2;
-        Mon, 26 Feb 2024 05:41:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708954916; x=1709559716;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZOqgtv4IqErN2hXEaQAp3E0TLQstXToESwKXSzCVbV0=;
-        b=taHCDHxd/ldJ8Hj3HmymEqAq5r0R6iBu5E36uVvXkyTbaqeAmVYdWxKasEeAXGlGQm
-         0soTkccC5gJOeY+CHJlJ9kV1hVuatx4ENdxw0A0exhIbQ7o0tua57UqLVAKtwDpC1ypj
-         tcKUDdcLwla7lhe2TZ/jtfZYhFZt1MiVqyJFILkkr3wj/Hri9aR1fF3NuLjmipYTiNqZ
-         BWc40VxOGC1wiI4mfD2NP+7KQa8VNQYsq3xyb0a7UFdZdrlXMukZXdC4VcLxlhzC6adm
-         uuxlA5t/0Ox9dtEkmXBD4F+z7QbYvVlsMrwVJidV73iO2prTH5HUCTYgulUvxRBpdDUk
-         1bEg==
-X-Forwarded-Encrypted: i=1; AJvYcCU5tkBao5GSZz6ifB8cdVsjoJ/rs4Mizoz3i7UPYoEd75I6V9XcFybOQ91NEH3rOsqRjEhB9s55308ep7SFvmIHBXOhLhgf3PtuSW2xg62Klw5K2d370eDnM7QMuAV3PVlEF2764l8LoOssLf1tMIel5/p9CCRxCAQeb6Qa6e1LM1Bo0EHQZkQkbXcR
-X-Gm-Message-State: AOJu0YxtGqObbLhQJr6FSZ/Z9CeF61SOlXMu/oGdKBJCIG6URyyMczpi
-	qvXnZ4e/Q5piolny3P3xa7vN70CrBDhg4dqbhLIBuGhMmx1JjUBc5un1V++o6QE=
-X-Google-Smtp-Source: AGHT+IE+rYqLeZ6bxu/lNYvBqjVLEwDToJomctgoAxCc+HNSWVu+u3FfeX8yD+N+gcBZ7jYb5S/KJQ==
-X-Received: by 2002:a25:8402:0:b0:dcf:2b44:f38d with SMTP id u2-20020a258402000000b00dcf2b44f38dmr4696830ybk.49.1708954916180;
-        Mon, 26 Feb 2024 05:41:56 -0800 (PST)
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
-        by smtp.gmail.com with ESMTPSA id s16-20020a25aa10000000b00dcd3487c8f5sm956814ybi.12.2024.02.26.05.41.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 05:41:55 -0800 (PST)
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-607c5679842so30471357b3.2;
-        Mon, 26 Feb 2024 05:41:55 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU3JsSlVGTtkewnLTlWhTI6/Itk4ShLcAhSAPC0n5wWoMhqqPN56Nivm024b9Swy+09B2z66MYhkSub8O5mw/ChgevGCqiJstnETjR2EB+dwzL52bD39lEFr95R9dS/kzHeF4u/Ykztph00O8IQZ/Aq8iG1rT7lNWzbRB+a0ElhHhdf7SK/Uvzb7sdj
-X-Received: by 2002:a25:ad17:0:b0:dbe:9f4a:6bb0 with SMTP id
- y23-20020a25ad17000000b00dbe9f4a6bb0mr4308468ybi.56.1708954914960; Mon, 26
- Feb 2024 05:41:54 -0800 (PST)
+	s=arc-20240116; t=1708954945; c=relaxed/simple;
+	bh=d9uMUIBBuzBHstvGHMGQxaPJc7Rq6pIVJ/E6nWW6QCc=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=ByZcjd9rPwPleksdxGrD+ztGhIbiNWaEjvvGyPJq+rvGt/kkL2gh8KtQrE9JW0pJt/41P9mrKkPjYSCcTj5BtCo/0B4zf0v4swemuub/Z+bMeLTbpIOcg7bPMySK5apU3bbjeMJcRDfn+VfxOlggKCsDwQCy5WbVfPXwh9Qw+VU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Tk1xt337vz4f3lgN;
+	Mon, 26 Feb 2024 21:42:10 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id B01BF1A084A;
+	Mon, 26 Feb 2024 21:42:17 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP2 (Coremail) with SMTP id Syh0CgA3qAs0ldxllfFEFQ--.47196S2;
+	Mon, 26 Feb 2024 21:42:14 +0800 (CST)
+Subject: Re: [PATCH v2 0/5] More unit test for mballoc
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240103104900.464789-1-shikemeng@huaweicloud.com>
+ <2e7f5498-1a75-49c7-9217-74eac8895a0c@roeck-us.net>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <028d1885-df3c-eef0-6c8a-cbce78517f89@huaweicloud.com>
+Date: Mon, 26 Feb 2024 21:42:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240219160912.1206647-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240219160912.1206647-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20240219160912.1206647-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 26 Feb 2024 14:41:43 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdV3eVTek9sYwXbqu98ta8wx197GMc-k3q1RZRb8ar=jFg@mail.gmail.com>
-Message-ID: <CAMuHMdV3eVTek9sYwXbqu98ta8wx197GMc-k3q1RZRb8ar=jFg@mail.gmail.com>
-Subject: Re: [PATCH 2/4] dt-bindings: arm: renesas: Document Renesas RZ/V2H{P}
- System Controller
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Magnus Damm <magnus.damm@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	linux-arm-kernel@lists.infradead.org, linux-renesas-soc@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Hi Prabhakar,
-
-Thanks for your patch!
-
-On Mon, Feb 19, 2024 at 5:10=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.c=
-om> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Add DT binding documentation for System Controller (SYS) found on
-> RZ/V2H{P} ("R9A09G057") SoC's.
-
-RZ/V2H(P)
-
->
-> SYS block contains the SYS_LSI_DEVID register which can be used to
-> retrieve SoC version information.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soc/renesas/renesas,r9a09g057-sys=
-yaml
-> @@ -0,0 +1,59 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/soc/renesas/renesas,r9a09g057-sys.yam=
-l#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Renesas RZ/V2H{P} System Controller (SYS)
-> +
-> +maintainers:
-> +  - Geert Uytterhoeven <geert+renesas@glider.be>
-> +
-> +description:
-> +  The RZ/V2H{P} SYS (System Controller) controls the overall
-
-RZ/V2H(P)
-
-> +  configuration of the LSI and supports the following functions,
-> +  - Trust zone control
-> +  - Extend access by specific masters to address beyond 4GB space
-> +  - GBETH configuration
-> +  - Control of settings and states of SRAM/PCIe/CM33/CA55/CR8/xSPI/ADC/T=
-SU
-> +  - LSI version
-> +  - WDT stop control
-> +  - General registers
-> +
-> +properties:
-> +  compatible:
-> +    const: renesas,r9a09g057-sys
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: Clock from external oscillator
-
-Isn't this SYS_0_PCLK inside the CPG?
-
-> +
-> +  resets:
-> +    items:
-> +      - description: SYS_0_PRESETN reset signal
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - resets
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    extal_clk: extal-clk {
-> +        compatible =3D "fixed-clock";
-> +        #clock-cells =3D <0>;
-> +        clock-frequency =3D <24000000>;
-> +    };
-> +
-> +    sys: system-controller@10430000 {
-> +        compatible =3D "renesas,r9a09g057-sys";
-> +        reg =3D <0x10430000 0x10000>;
-> +        clocks =3D <&extal_clk>;
-
-clocks =3D <&cpg 1>;
-
-(I guess it will be 1 ;-)
-
-> +        resets =3D <&cpg 1>;
-> +    };
-
-Gr{oetje,eeting}s,
-
-                        Geert
+In-Reply-To: <2e7f5498-1a75-49c7-9217-74eac8895a0c@roeck-us.net>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:Syh0CgA3qAs0ldxllfFEFQ--.47196S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uw1DCFWUtr4DWrWDXFWrXwb_yoW8XFy3pr
+	WfWFn7GF4rJr18ZFyUZry8tryxXw48AF45Jr95J34fGa48ur1xKFs2gay8WryqvrykZF9I
+	vFn3u3y8K34DZ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
+	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
+	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
+	k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+	1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+on 2/26/2024 12:07 AM, Guenter Roeck wrote:
+> On Wed, Jan 03, 2024 at 06:48:55PM +0800, Kemeng Shi wrote:
+>> This series covers more function to mark on-disk bitmap. Besides, some
+>> code which is relevant to buddy cache is also tested.
+>> Before more work is done, I want to be sure I'm not on a wrong
+>> direction!
+>>
+>> v1->v2:
+>> -Fix unused variable warning which is reported at
+>> https://lore.kernel.org/lkml/202311260042.kMxL6DnL-lkp@intel.com/T/
+>>
+> 
+> With this patch series in linux-text, and with various debug options
+> enabled, unit tests for ext4 fail widely and result in crashes.
+> 
+> [    4.798582]         # Subtest: test_new_blocks_simple
+> [    4.803166] BUG: key 00000000000000a8 has not been registered!
+> [    4.803443] ------------[ cut here ]------------
+> ILLOPC: ffffffff9050cbf4: 0f 0b
+> [    4.803521] DEBUG_LOCKS_WARN_ON(1)
+> [    4.803720] WARNING: CPU: 0 PID: 154 at kernel/locking/lockdep.c:4895 lockdep_init_map_type+0x224/0x250
+Not sure how this is triggerred.
+> ...
+> [    4.833277]         # Subtest: test_mb_mark_used
+> [    4.835875] ------------[ cut here ]------------
+> [    4.836055] kernel BUG at fs/ext4/mballoc.c:2053!
+Internal functions mb_mark_used assumes group lock is held but unit
+test code doesn't acquire it as there is no concurrent block
+allocation/free in test code. Will add lock in unit test to fix this.
+> 
+> Guenter
+> 
+Hi Guenter, thanks for test and report this. I will appreciate it if
+you could tell me how to reproduce this as I need to debug the first
+issue and verify the fix. Thanks!
+
 
