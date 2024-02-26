@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-81676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D87E28678F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:48:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 825368678F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:48:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06F931C2241B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:48:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37EE529911A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:48:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82AF3136665;
-	Mon, 26 Feb 2024 14:36:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37AA913698A;
+	Mon, 26 Feb 2024 14:36:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FHwQt2Gv"
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OchYuHc4"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B32113664A;
-	Mon, 26 Feb 2024 14:36:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0722513666D;
+	Mon, 26 Feb 2024 14:36:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708958178; cv=none; b=cLEp03nAn0kXbJ5HgGIyu46zOmVfiljzg9a4QoqNRRwb3pXcG707rsIsQvOdE+2x3OtrmW8iA18S/tEB2GroXzisnGh99hBnW8drvN3GBxOaqNv/BlnFh3G5fyxLJwzO+QbjTNmRMW3VBLjDA78/iFK6FSoRuhUIqBW4UDz1IR8=
+	t=1708958181; cv=none; b=F46dMhL42sUf9ofF4Ii3p508obrzbjFNHfTY4N/U1fM/uhmVTCDTqZVo3S5k/AtqZ76mmpvqZSa8rRbDdhf6VjSHnQ6oSxD8mk5AAmU1I0YooxL/Lc8Q/TfEG7JTuyx3F5umKSgUg7yVISpJ5PVqQQhhR/B9lABEeqZlb27uTeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708958178; c=relaxed/simple;
-	bh=8gFP5rvdzZxmykD3GgHFtUmnYj+RZy2c2VA4Es1YSSs=;
+	s=arc-20240116; t=1708958181; c=relaxed/simple;
+	bh=DrPI0FjABGzIoUG3fKSzVnoxo2ZVis3PQz/praGRAjI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cT0TDclyEUJaN2VFlVaxH1zLZHmShxOoAuEI/98RUBOMpyQAzucjzV0E4q/tcA0uYWXfHdCQvq4CoAQS1QBSEysWmofAySgs36mhqGOAZic2Rze2spE+PkghE/yebhDz1dTtX37YFItD0di7HQQ9QTYJ7uoAlgQjxJ9CmPb4uNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FHwQt2Gv; arc=none smtp.client-ip=209.85.166.177
+	 MIME-Version; b=rDCWiRJnC65f7tYLAX0WLuM5Mw3RAkgbkKni+SkRl0tGrScgVUEm6ElyDVH9C3X4LJL074SbgOWgN+nmjdgt79TFQU9WV4wVPSo/HTfz69ys5U5FaHQF0awk79Olw4ybzbIO1+cbi5LRo8J8005WLsai3THB5kc0/r6XPE9J0r0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OchYuHc4; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-3657dbe2008so10162675ab.1;
-        Mon, 26 Feb 2024 06:36:16 -0800 (PST)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dbd32cff0bso21998925ad.0;
+        Mon, 26 Feb 2024 06:36:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708958176; x=1709562976; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708958179; x=1709562979; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0en7LuGGPdtEWR7o0ZKkW7B0C/vkNLQUW7iYqtMdnKQ=;
-        b=FHwQt2GvLmnD7J+9eoMsAbHRGZkOiBEAZis4BhscMz/pGSjYyHVNfqKjrXHgdZ0t1P
-         Cb06XDtr1W2LunueSHxwSNb7SAgF5vPj20rqpYmOtY8bFdS82wxxf2o81uG/86sCFfue
-         1LdCSwhInuJr/iKmL7oVI/xJdRMBZU9SGlkOQPymKBUECbWrWyUGfUh6nBQKlUUyKIAz
-         44SzK6TyVJDckFK8YEvGYG9TPoZ67LGZvTBJzE4nksOhiE5GpxT5ZbEuFUn7n+UnIWQY
-         a5JQLZ/mHdfxNHJCdW2ec0eQ5Y8RG3bppdkw6DX+U+0fsVBoDupS5XV1m1Q9fOdlks3C
-         3e0A==
+        bh=hPbfhC/aAqAbSyaObXdyVLUFdRm0DA52iNK6y2iv5Zg=;
+        b=OchYuHc4KxErK7dxZIet03ALcYYwqc6obL5xCoLAgp3gVAiSqQCMQcnL0Khj2uJbY/
+         eWjkNnBPH+StnRNWHvZi9TTfmQlDpbu811ogRdAzPPz+WmooiJcyt+6egQSRWZ2MWCpl
+         wCMs8UOPr0Jm8cl1LYcLlGx1Jt2Mx5y8PgzwoZ60jb45gIUF7x+511qg50r2n0r5RbKr
+         ZhgGjF5gMwZqbcMCYDhRjit0eEZZ+aa9TUAlAPhTg9ZuF8Hp2K/jGj2L5cRwBDUFMUmD
+         Gug8ybBUn15Jg/ybVh/5sC5/AeUvaYFqIeMOcjxy3FqjPVys+vNc8y2EKrWFBz4ULsfd
+         LFAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708958176; x=1709562976;
+        d=1e100.net; s=20230601; t=1708958179; x=1709562979;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0en7LuGGPdtEWR7o0ZKkW7B0C/vkNLQUW7iYqtMdnKQ=;
-        b=E+2MsHlclWUf0jxwMKDfG01yKENkS23Ni4bw8CHTAWlLpKCwjP38bsUrTk2fOdm+DZ
-         1qyugHprBRwwpMVVYP8dDNTtPJ49mItK87J9JMcJvyVx27cD+tmCTzgaNImSmJsATxSX
-         z4c2upcQh0ksCwU+7mF/tfCrTkxtf7it6Dwvad9HDl1L0rv2d49vAFnmrNJbkcwLpDV4
-         0KRjM7clfyP6kBPjNFSAx/H0ALHRRXoTcqJ9lu4uMK5GNuYz8xA55cP8AMXsFhEKtBGw
-         9D7p01QFv4X+H7nPJFS+4CMONDXOE0wof8eadzSkT530u5vRFIV5VbTHId4sQNioSz7l
-         4nHg==
-X-Forwarded-Encrypted: i=1; AJvYcCWpA0XHxGf/hT2m40OU26xLcc1QDbxyxE9PrHklLG+2tlESybpRtnCo6P56vfKw518FeMBOz6alEn+0D7XgeC8qTzfh
-X-Gm-Message-State: AOJu0YyGIELOvZaGCLXBzSuYsi9TOfJivskvNA21SUR0AN5ryjzlzXlm
-	yzOh52WDfhG6FePogWuRVqj3ocA6sPvENkqAFpIuA8NjUScYA0emHcXh/ZVU
-X-Google-Smtp-Source: AGHT+IHnVwo7GYxJJDVczscbJVFNB9n7llcj1bxVQaALhIzn6VPejmlCoxnolZB4h9xn3TwoQmd4jw==
-X-Received: by 2002:a05:6e02:2166:b0:365:13a8:4090 with SMTP id s6-20020a056e02216600b0036513a84090mr9791278ilv.27.1708958175892;
-        Mon, 26 Feb 2024 06:36:15 -0800 (PST)
-Received: from localhost ([47.89.225.180])
-        by smtp.gmail.com with ESMTPSA id s35-20020a634523000000b005cfb6e7b0c7sm4049086pga.39.2024.02.26.06.36.14
+        bh=hPbfhC/aAqAbSyaObXdyVLUFdRm0DA52iNK6y2iv5Zg=;
+        b=BHcRS+1S2DwJDg+bZoEMS24I/JQVXiYyT7ffYJCKBRhve+sZ818jtWAnr+UE1WdiPr
+         0w61z/gn3l1Dxswh/+qAD04nHgO4o744PPmfOX+xK8qHvWuFpywRRY+hTnmZwc5sUBDN
+         03YuClW75hHGCcZRwDjdaNBhOTX37MJZbLocjuc2mM2Kobh9bHkElIiR162dxTnhH787
+         WfgxkGwLJI77sdAI00r8ywH2Tds7orDav+LUJMmQVJnLfOjElAX7/idAI/FTA4Wca6oV
+         LbNFZTOWiQA0+8y4Iv9sUAxLge/D153yskIuAPOUaiAMP06IVWDl5pRe5kra/SH9mG/z
+         tjLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW1H430rzzH/EXHDPBTwAhvkAsl3ncx2kxXKTJaH+DK9P90ekmyMBcqu2YiBXWwHqgRUUxu50zdSQE+D5t98EXEAiHq
+X-Gm-Message-State: AOJu0Yxfjyxj7Q7M0zuAsY8L+t4WDW2Vk2lZIxIHPXzJc8naV7soV6VW
+	rOVnWec42ou6z++DL4npoLgs3EKEJyI3l7RYogXEbpw0wLqQ1rkhuM/sjyrO
+X-Google-Smtp-Source: AGHT+IG5rBMQsBjvkaIYNUuj+uXskXTIoKE+AQ7xs4oeIW/gqaIHEwUUGjBYF7X7C2QKKW1z6tgWRQ==
+X-Received: by 2002:a17:902:e848:b0:1dc:722a:1e0a with SMTP id t8-20020a170902e84800b001dc722a1e0amr7156547plg.41.1708958179150;
+        Mon, 26 Feb 2024 06:36:19 -0800 (PST)
+Received: from localhost ([198.11.178.15])
+        by smtp.gmail.com with ESMTPSA id mm12-20020a1709030a0c00b001d8d1a2e5fesm4005783plb.196.2024.02.26.06.36.18
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 26 Feb 2024 06:36:15 -0800 (PST)
+        Mon, 26 Feb 2024 06:36:18 -0800 (PST)
 From: Lai Jiangshan <jiangshanlai@gmail.com>
 To: linux-kernel@vger.kernel.org
 Cc: Lai Jiangshan <jiangshan.ljs@antgroup.com>,
@@ -83,9 +83,9 @@ Cc: Lai Jiangshan <jiangshan.ljs@antgroup.com>,
 	Juergen Gross <jgross@suse.com>,
 	Dave Hansen <dave.hansen@linux.intel.com>,
 	"H. Peter Anvin" <hpa@zytor.com>
-Subject: [RFC PATCH 30/73] KVM: x86/PVM: Implement segment related callbacks
-Date: Mon, 26 Feb 2024 22:35:47 +0800
-Message-Id: <20240226143630.33643-31-jiangshanlai@gmail.com>
+Subject: [RFC PATCH 31/73] KVM: x86/PVM: Implement instruction emulation for #UD and #GP
+Date: Mon, 26 Feb 2024 22:35:48 +0800
+Message-Id: <20240226143630.33643-32-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20240226143630.33643-1-jiangshanlai@gmail.com>
 References: <20240226143630.33643-1-jiangshanlai@gmail.com>
@@ -99,173 +99,88 @@ Content-Transfer-Encoding: 8bit
 
 From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 
-Segmentation in PVM guest is generally disabled and is only available
-for instruction emulation. The segment descriptors of segment registers
-are just cached and do not take effect in hardware. Since the PVM guest
-is only allowed to run in x86 long mode, the value of guest CS/SS is
-fixed and depends on the current mode.
+The privilege instruction in supervisor mode will trigger a #GP and
+induce VM exit. Therefore, PVM reuses the existing x86 emulator in PVM
+to support privilege instruction emulation in supervisor mode.
 
 Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 Signed-off-by: Hou Wenlong <houwenlong.hwl@antgroup.com>
 ---
- arch/x86/kvm/pvm/pvm.c | 128 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 128 insertions(+)
+ arch/x86/kvm/pvm/pvm.c | 38 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
 diff --git a/arch/x86/kvm/pvm/pvm.c b/arch/x86/kvm/pvm/pvm.c
-index 26b2201f7dde..6f91dffb6c50 100644
+index 6f91dffb6c50..4ec8c2c514ca 100644
 --- a/arch/x86/kvm/pvm/pvm.c
 +++ b/arch/x86/kvm/pvm/pvm.c
-@@ -630,6 +630,52 @@ static int pvm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 	return ret;
+@@ -402,6 +402,40 @@ static void pvm_sched_in(struct kvm_vcpu *vcpu, int cpu)
+ {
  }
  
-+static void pvm_get_segment(struct kvm_vcpu *vcpu,
-+			    struct kvm_segment *var, int seg)
++static void pvm_patch_hypercall(struct kvm_vcpu *vcpu, unsigned char *hypercall)
 +{
-+	struct vcpu_pvm *pvm = to_pvm(vcpu);
++	/* KVM_X86_QUIRK_FIX_HYPERCALL_INSN should not be enabled for pvm guest */
 +
-+	// Update CS or SS to reflect the current mode.
-+	if (seg == VCPU_SREG_CS) {
-+		if (is_smod(pvm)) {
-+			pvm->segments[seg].selector = kernel_cs_by_msr(pvm->msr_star);
-+			pvm->segments[seg].dpl = 0;
-+			pvm->segments[seg].l = 1;
-+			pvm->segments[seg].db = 0;
-+		} else {
-+			pvm->segments[seg].selector = pvm->hw_cs >> 3;
-+			pvm->segments[seg].dpl = 3;
-+			if (pvm->hw_cs == __USER_CS) {
-+				pvm->segments[seg].l = 1;
-+				pvm->segments[seg].db = 0;
-+			} else { // __USER32_CS
-+				pvm->segments[seg].l = 0;
-+				pvm->segments[seg].db = 1;
-+			}
-+		}
-+	} else if (seg == VCPU_SREG_SS) {
-+		if (is_smod(pvm)) {
-+			pvm->segments[seg].dpl = 0;
-+			pvm->segments[seg].selector = kernel_ds_by_msr(pvm->msr_star);
-+		} else {
-+			pvm->segments[seg].dpl = 3;
-+			pvm->segments[seg].selector = pvm->hw_ss >> 3;
-+		}
-+	}
-+
-+	// Update DS/ES/FS/GS states from the hardware when the states are loaded.
-+	pvm_switch_to_host(pvm);
-+	*var = pvm->segments[seg];
++	/* ud2; int3; */
++	hypercall[0] = 0x0F;
++	hypercall[1] = 0x0B;
++	hypercall[2] = 0xCC;
 +}
 +
-+static u64 pvm_get_segment_base(struct kvm_vcpu *vcpu, int seg)
++static int pvm_check_emulate_instruction(struct kvm_vcpu *vcpu, int emul_type,
++					 void *insn, int insn_len)
 +{
-+	struct kvm_segment var;
-+
-+	pvm_get_segment(vcpu, &var, seg);
-+	return var.base;
++	return X86EMUL_CONTINUE;
 +}
 +
- static int pvm_get_cpl(struct kvm_vcpu *vcpu)
- {
- 	if (is_smod(to_pvm(vcpu)))
-@@ -637,6 +683,80 @@ static int pvm_get_cpl(struct kvm_vcpu *vcpu)
- 	return 3;
- }
++static int skip_emulated_instruction(struct kvm_vcpu *vcpu)
++{
++	return kvm_emulate_instruction(vcpu, EMULTYPE_SKIP);
++}
++
++static int pvm_check_intercept(struct kvm_vcpu *vcpu,
++			       struct x86_instruction_info *info,
++			       enum x86_intercept_stage stage,
++			       struct x86_exception *exception)
++{
++	/*
++	 * HF_GUEST_MASK is not used even nested pvm is supported. L0 pvm
++	 * might even be unaware the L1 pvm.
++	 */
++	WARN_ON_ONCE(1);
++	return X86EMUL_CONTINUE;
++}
++
+ static void pvm_set_msr_linear_address_range(struct vcpu_pvm *pvm,
+ 					     u64 pml4_i_s, u64 pml4_i_e,
+ 					     u64 pml5_i_s, u64 pml5_i_e)
+@@ -1682,8 +1716,10 @@ static struct kvm_x86_ops pvm_x86_ops __initdata = {
+ 	.vcpu_pre_run = pvm_vcpu_pre_run,
+ 	.vcpu_run = pvm_vcpu_run,
+ 	.handle_exit = pvm_handle_exit,
++	.skip_emulated_instruction = skip_emulated_instruction,
+ 	.set_interrupt_shadow = pvm_set_interrupt_shadow,
+ 	.get_interrupt_shadow = pvm_get_interrupt_shadow,
++	.patch_hypercall = pvm_patch_hypercall,
+ 	.inject_irq = pvm_inject_irq,
+ 	.inject_nmi = pvm_inject_nmi,
+ 	.inject_exception = pvm_inject_exception,
+@@ -1699,6 +1735,7 @@ static struct kvm_x86_ops pvm_x86_ops __initdata = {
  
-+static void pvm_set_segment(struct kvm_vcpu *vcpu, struct kvm_segment *var, int seg)
-+{
-+	struct vcpu_pvm *pvm = to_pvm(vcpu);
-+	int cpl = pvm_get_cpl(vcpu);
-+
-+	// Unload DS/ES/FS/GS states from hardware before changing them.
-+	// It also has to unload the VCPU when leaving PVM mode.
-+	pvm_switch_to_host(pvm);
-+	pvm->segments[seg] = *var;
-+
-+	switch (seg) {
-+	case VCPU_SREG_CS:
-+		if (var->dpl == 1 || var->dpl == 2)
-+			goto invalid_change;
-+		if (!kvm_vcpu_has_run(vcpu)) {
-+			// CPL changing is only valid for the first changed
-+			// after the vcpu is created (vm-migration).
-+			if (cpl != var->dpl)
-+				pvm_switch_flags_toggle_mod(pvm);
-+		} else {
-+			if (cpl != var->dpl)
-+				goto invalid_change;
-+			if (cpl == 0 && !var->l)
-+				goto invalid_change;
-+		}
-+		break;
-+	case VCPU_SREG_LDTR:
-+		// pvm doesn't support LDT
-+		if (var->selector)
-+			goto invalid_change;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return;
-+
-+invalid_change:
-+	kvm_make_request(KVM_REQ_TRIPLE_FAULT, vcpu);
-+}
-+
-+static void pvm_get_cs_db_l_bits(struct kvm_vcpu *vcpu, int *db, int *l)
-+{
-+	struct vcpu_pvm *pvm = to_pvm(vcpu);
-+
-+	if (pvm->hw_cs == __USER_CS) {
-+		*db = 0;
-+		*l = 1;
-+	} else {
-+		*db = 1;
-+		*l = 0;
-+	}
-+}
-+
-+static void pvm_get_idt(struct kvm_vcpu *vcpu, struct desc_ptr *dt)
-+{
-+	*dt = to_pvm(vcpu)->idt_ptr;
-+}
-+
-+static void pvm_set_idt(struct kvm_vcpu *vcpu, struct desc_ptr *dt)
-+{
-+	to_pvm(vcpu)->idt_ptr = *dt;
-+}
-+
-+static void pvm_get_gdt(struct kvm_vcpu *vcpu, struct desc_ptr *dt)
-+{
-+	*dt = to_pvm(vcpu)->gdt_ptr;
-+}
-+
-+static void pvm_set_gdt(struct kvm_vcpu *vcpu, struct desc_ptr *dt)
-+{
-+	to_pvm(vcpu)->gdt_ptr = *dt;
-+}
-+
- static void pvm_deliver_interrupt(struct kvm_lapic *apic, int delivery_mode,
- 				  int trig_mode, int vector)
- {
-@@ -1545,8 +1665,16 @@ static struct kvm_x86_ops pvm_x86_ops __initdata = {
- 	.get_msr_feature = pvm_get_msr_feature,
- 	.get_msr = pvm_get_msr,
- 	.set_msr = pvm_set_msr,
-+	.get_segment_base = pvm_get_segment_base,
-+	.get_segment = pvm_get_segment,
-+	.set_segment = pvm_set_segment,
- 	.get_cpl = pvm_get_cpl,
-+	.get_cs_db_l_bits = pvm_get_cs_db_l_bits,
- 	.load_mmu_pgd = pvm_load_mmu_pgd,
-+	.get_gdt = pvm_get_gdt,
-+	.set_gdt = pvm_set_gdt,
-+	.get_idt = pvm_get_idt,
-+	.set_idt = pvm_set_idt,
- 	.get_rflags = pvm_get_rflags,
- 	.set_rflags = pvm_set_rflags,
- 	.get_if_flag = pvm_get_if_flag,
+ 	.vcpu_after_set_cpuid = pvm_vcpu_after_set_cpuid,
+ 
++	.check_intercept = pvm_check_intercept,
+ 	.handle_exit_irqoff = pvm_handle_exit_irqoff,
+ 
+ 	.request_immediate_exit = __kvm_request_immediate_exit,
+@@ -1721,6 +1758,7 @@ static struct kvm_x86_ops pvm_x86_ops __initdata = {
+ 	.complete_emulated_msr = kvm_complete_insn_gp,
+ 	.vcpu_deliver_sipi_vector = kvm_vcpu_deliver_sipi_vector,
+ 
++	.check_emulate_instruction = pvm_check_emulate_instruction,
+ 	.disallowed_va = pvm_disallowed_va,
+ 	.vcpu_gpc_refresh = pvm_vcpu_gpc_refresh,
+ };
 -- 
 2.19.1.6.gb485710b
 
