@@ -1,152 +1,130 @@
-Return-Path: <linux-kernel+bounces-81356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E8C58674AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:21:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49F1D8674BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:24:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA9781F2BFF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:21:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B9B21C24EC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:24:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C883C605A2;
-	Mon, 26 Feb 2024 12:21:47 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6DB604DE;
+	Mon, 26 Feb 2024 12:24:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="BROXfXqQ"
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECF891B27D;
-	Mon, 26 Feb 2024 12:21:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AF8D604BA;
+	Mon, 26 Feb 2024 12:24:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708950107; cv=none; b=eA3JodmapVfBbQJZgvQ0iBRHpJIxmvlwWLmhOgBOx5XSvGsR1lw1o+FitHhktCO8w0bpUsB9fFs7uJhHX+8zupx94Pl9Q9iEoyr1Cg5t4QIunczEsuU7wM+5OWk7b3gJWxXYWSl5Kh/4N0gkSKe/Z1RMVkC+mBvqfqsk4/4YoDk=
+	t=1708950258; cv=none; b=nQbtYArlRZwDiBev+AKKN7GTEaRgUs8gh0innMe9yl+URBXWEefqfG2A+6OmJFr4NWb/7XDiRYdZBvXnjJOrhDPMPydoGj7rfHuPcHGG/33r6p3wNPkHl5Mq9Y7OQZHBMTtFD2rSyEIP9y+tpK7RiuF2XVuO7w6D7QSdTttSY8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708950107; c=relaxed/simple;
-	bh=pi3BrUr3ur1vJpL7LOfjfmoG+suaosBkg1tWLQHk5BU=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eDJypdXrTtigFt3O3M8nJYLrQhB8Y0L6mgB7jMdvXtMyZ7rNJRVOxdBQOPOjVj1v1W5tyx9TmzeRfiztpf0j0mdqzTFdh4+YeTcFBAtr6VXKejCpsHWSTnDruzsaEd/in4C7Ldktiz3KB87zFZim1XrskglFQ2IPdV0g0DpPBwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Tk04k1G1Pz6K9M8;
-	Mon, 26 Feb 2024 20:17:58 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5C7CA1400DB;
-	Mon, 26 Feb 2024 20:21:41 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 26 Feb
- 2024 12:21:40 +0000
-Date: Mon, 26 Feb 2024 12:21:39 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: John Groves <John@Groves.net>
-CC: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, "Dan
- Williams" <dan.j.williams@intel.com>, Vishal Verma
-	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Alexander
- Viro" <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, "Jan
- Kara" <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
-	<linux-cxl@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<nvdimm@lists.linux.dev>, <john@jagalactic.com>, Dave Chinner
-	<david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>,
-	<dave.hansen@linux.intel.com>, <gregory.price@memverge.com>
-Subject: Re: [RFC PATCH 04/20] dev_dax_iomap: Save the kva from memremap
-Message-ID: <20240226122139.0000135b@Huawei.com>
-In-Reply-To: <66620f69fa3f3664d955649eba7da63fdf8d65ad.1708709155.git.john@groves.net>
-References: <cover.1708709155.git.john@groves.net>
-	<66620f69fa3f3664d955649eba7da63fdf8d65ad.1708709155.git.john@groves.net>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1708950258; c=relaxed/simple;
+	bh=uGYKrjt3FLbs0QDjnP1dOXopulEcJJucDWfTeZDvGjk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gjvKDPECheqPXdjLhSJK61GmyEc20wzS7QHsVb2PkLZC1gSgPQ8FpumAgubw7Txj2kImDvkOg3Lj1MVmQJtUX7dIbfd7H9hJkdKcAWC4HqK629/JiyMR/Mdl1Z+kZLpFN9/VAWoHS1PPA7QtlyMmrETaLokxbAnKBHQxiesbA1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=BROXfXqQ; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=zc1RjtY1ARFXv9X7AWb9xg2qefIhvIwrCXvg3e6WynE=; b=BROXfXqQXZTbIHzw0zpQsN6HXm
+	A9Zq5kJDUduueLDMU05tNBf766hgTB9RrfuLsQ9vFytUWw3IR/SQqHpE1VGGujMI9eeNAs0xNP2Fv
+	GPhVNEujNa+JT+5JdTn3hBcvRm352QvCDhXgFTtQMJ/i7ZGcJAIf7+gxXnqPU/LWoRzN5TuWcLAxH
+	+s0CGxCQN/UTOXasfQCUp5oakmXwMsw6MpPNejJxUzqgo2CIFm9NwulM9N4qmWRpZAIO5qIKv5hjU
+	WDOlq7Ygigcj5WhK+M7BKDJKKNKgY2MD7hENrwfddIEBbsGGQD2odotWzFKv120sE0tovM8j74uxu
+	/NFJ0Sqg==;
+Received: from [177.34.169.255] (helo=[192.168.0.139])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1rea19-003YfT-KA; Mon, 26 Feb 2024 13:23:35 +0100
+Message-ID: <ad133922-6f11-483f-94c9-12aa8c3189df@igalia.com>
+Date: Mon, 26 Feb 2024 09:23:23 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 02/36] drm/tests: helpers: Add atomic helpers
+Content-Language: en-US
+To: Maxime Ripard <mripard@kernel.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>,
+ Sandy Huang <hjc@rock-chips.com>, =?UTF-8?Q?Heiko_St=C3=BCbner?=
+ <heiko@sntech.de>, Chen-Yu Tsai <wens@csie.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>
+Cc: Hans Verkuil <hverkuil@xs4all.nl>,
+ Sebastian Wick <sebastian.wick@redhat.com>,
+ =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+ dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+ linux-sunxi@lists.linux.dev
+References: <20240222-kms-hdmi-connector-state-v7-0-8f4af575fce2@kernel.org>
+ <20240222-kms-hdmi-connector-state-v7-2-8f4af575fce2@kernel.org>
+From: =?UTF-8?Q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>
+Autocrypt: addr=mcanal@igalia.com; keydata=
+ xjMEZIsaeRYJKwYBBAHaRw8BAQdAGU6aY8oojw61KS5rGGMrlcilFqR6p6ID45IZ6ovX0h3N
+ H01haXJhIENhbmFsIDxtY2FuYWxAaWdhbGlhLmNvbT7CjwQTFggANxYhBDMCqFtIvFKVRJZQ
+ hDSPnHLaGFVuBQJkixp5BQkFo5qAAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQNI+cctoYVW5u
+ GAEAwpaC5rI3wD8zqETKwGVoXd6+AbmGfZuVD40xepy7z/8BAM5w95/oyPsHUqOsg/xUTlNp
+ rlbhA+WWoaOXA3XgR+wCzjgEZIsaeRIKKwYBBAGXVQEFAQEHQGoOK0jgh0IorMAacx6WUUWb
+ s3RLiJYWUU6iNrk5wWUbAwEIB8J+BBgWCAAmFiEEMwKoW0i8UpVEllCENI+cctoYVW4FAmSL
+ GnkFCQWjmoACGwwACgkQNI+cctoYVW6cqwD/Q9R98msvkhgRvi18fzUPFDwwogn+F+gQJJ6o
+ pwpgFkAA/R2zOfla3IT6G3SBoV5ucdpdCpnIXFpQLbmfHK7dXsAC
+In-Reply-To: <20240222-kms-hdmi-connector-state-v7-2-8f4af575fce2@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, 23 Feb 2024 11:41:48 -0600
-John Groves <John@Groves.net> wrote:
+On 2/22/24 15:13, Maxime Ripard wrote:
+> The mock device we were creating was missing any of the driver-wide
+> helpers. That was fine before since we weren't testing the atomic state
+> path, but we're going to start, so let's use the default
+> implementations.
+> 
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
 
-> Save the kva from memremap because we need it for iomap rw support
-> 
-> Prior to famfs, there were no iomap users of /dev/dax - so the virtual
-> address from memremap was not needed.
-> 
-> Also: in some cases dev_dax_probe() is called with the first
-> dev_dax->range offset past pgmap[0].range. In those cases we need to
-> add the difference to virt_addr in order to have the physaddr's in
-> dev_dax->ranges match dev_dax->virt_addr.
+Reviewed-by: Maíra Canal <mcanal@igalia.com>
 
-Probably good to have info on when this happens and preferably why
-this dragon is there.
+Best Regards,
+- Maíra
 
-> 
-> Dragons...
-> 
-> Signed-off-by: John Groves <john@groves.net>
 > ---
->  drivers/dax/dax-private.h |  1 +
->  drivers/dax/device.c      | 15 +++++++++++++++
->  2 files changed, 16 insertions(+)
+>   drivers/gpu/drm/tests/drm_kunit_helpers.c | 3 +++
+>   1 file changed, 3 insertions(+)
 > 
-> diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
-> index 446617b73aea..894eb1c66b4a 100644
-> --- a/drivers/dax/dax-private.h
-> +++ b/drivers/dax/dax-private.h
-> @@ -63,6 +63,7 @@ struct dax_mapping {
->  struct dev_dax {
->  	struct dax_region *region;
->  	struct dax_device *dax_dev;
-> +	u64 virt_addr;
-
-Why as a u64? If it's a virt address why not just void *?
-
->  	unsigned int align;
->  	int target_node;
->  	bool dyn_id;
-> diff --git a/drivers/dax/device.c b/drivers/dax/device.c
-> index 40ba660013cf..6cd79d00fe1b 100644
-> --- a/drivers/dax/device.c
-> +++ b/drivers/dax/device.c
-> @@ -372,6 +372,7 @@ static int dev_dax_probe(struct dev_dax *dev_dax)
->  	struct dax_device *dax_dev = dev_dax->dax_dev;
->  	struct device *dev = &dev_dax->dev;
->  	struct dev_pagemap *pgmap;
-> +	u64 data_offset = 0;
->  	struct inode *inode;
->  	struct cdev *cdev;
->  	void *addr;
-> @@ -426,6 +427,20 @@ static int dev_dax_probe(struct dev_dax *dev_dax)
->  	if (IS_ERR(addr))
->  		return PTR_ERR(addr);
->  
-> +	/* Detect whether the data is at a non-zero offset into the memory */
-> +	if (pgmap->range.start != dev_dax->ranges[0].range.start) {
-> +		u64 phys = (u64)dev_dax->ranges[0].range.start;
-
-Why the cast? Ranges use u64s internally.
-
-> +		u64 pgmap_phys = (u64)dev_dax->pgmap[0].range.start;
-> +		u64 vmemmap_shift = (u64)dev_dax->pgmap[0].vmemmap_shift;
-> +
-> +		if (!WARN_ON(pgmap_phys > phys))
-> +			data_offset = phys - pgmap_phys;
-> +
-> +		pr_notice("%s: offset detected phys=%llx pgmap_phys=%llx offset=%llx shift=%llx\n",
-> +		       __func__, phys, pgmap_phys, data_offset, vmemmap_shift);
-
-pr_debug() + dynamic debug will then deal with __func__ for you.
-
-> +	}
-> +	dev_dax->virt_addr = (u64)addr + data_offset;
-> +
->  	inode = dax_inode(dax_dev);
->  	cdev = inode->i_cdev;
->  	cdev_init(cdev, &dax_fops);
-
+> diff --git a/drivers/gpu/drm/tests/drm_kunit_helpers.c b/drivers/gpu/drm/tests/drm_kunit_helpers.c
+> index ca4f8e4c5d5d..4fb11b938bc1 100644
+> --- a/drivers/gpu/drm/tests/drm_kunit_helpers.c
+> +++ b/drivers/gpu/drm/tests/drm_kunit_helpers.c
+> @@ -1,6 +1,7 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   
+>   #include <drm/drm_atomic.h>
+> +#include <drm/drm_atomic_helper.h>
+>   #include <drm/drm_drv.h>
+>   #include <drm/drm_kunit_helpers.h>
+>   #include <drm/drm_managed.h>
+> @@ -14,6 +15,8 @@
+>   #define KUNIT_DEVICE_NAME	"drm-kunit-mock-device"
+>   
+>   static const struct drm_mode_config_funcs drm_mode_config_funcs = {
+> +	.atomic_check	= drm_atomic_helper_check,
+> +	.atomic_commit	= drm_atomic_helper_commit,
+>   };
+>   
+>   /**
+> 
 
