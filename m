@@ -1,134 +1,142 @@
-Return-Path: <linux-kernel+bounces-82035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82037-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27EC2867E06
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:20:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B707867E0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:20:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 477281C2C2A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:20:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B3791F2CB9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:20:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E248913329E;
-	Mon, 26 Feb 2024 17:13:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADBD912E1FA;
+	Mon, 26 Feb 2024 17:14:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0fViydWZ"
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="MbvrA4li"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7F5612CD97
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 17:13:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21211127B4D;
+	Mon, 26 Feb 2024 17:14:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708967612; cv=none; b=fynOCKqTF+pKlLC27ibbb/aZjtXtvfK0hiIeyI2JjaCkMVQhHs6JDKcE/R9iYAfU9f/17I9F03w9BpNFadJFjFUk/RUE4xleyXvUDfW2fLfwOEyy51wapUMroBoBiR38eUg2F/ScAcPVkMhN8RxnRt05Rw6Tdoll/NkGa2IMnZQ=
+	t=1708967674; cv=none; b=pikF5n6CNQf8LuMNpsNFkfdMtheVr3P0WBcgSGUQqJLugplUKcYSm8pEoq+5VhKC6kwJJcroHeBG52DsrzonW3jm1ezlIzSKEnaBnFY7BsRykMbbt2nVoV6kXC9TkAuHKX/PLk4OmdyDJ8yUI0TYgbMPw/Li19kP0cTQdZGveW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708967612; c=relaxed/simple;
-	bh=EyV42V4YwospafBlBP85zlF0CzzIrV0ckGMLg38+cps=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VeJRAn6LiJP0y1GurzXmzwVexY/Y4r7PD91HHAUb5AnJVLhQ48rjeDjOdI3fmVS3ONgNczYvfBPThz9EjGEk75TxVTM5rzUY38LcTi4136Po+ILOrslY7sfa8gPz1WEI8rU9q/Vg3G0sG4LSAiXnprSCbe/8tS2qoiu4xRNML2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0fViydWZ; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-6089b64f4eeso33163557b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:13:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708967609; x=1709572409; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EyV42V4YwospafBlBP85zlF0CzzIrV0ckGMLg38+cps=;
-        b=0fViydWZafBwJ3xL0F3ZTuvRSwyOFSrmHfEq0669FdAat5dooHz4w4ydcwe76KJq26
-         LLK1Innl8Ozcr4ZzRFS8wOBZXfz8XVvIsM1Lpl41+dDr0LuROfLdG53dNGlA9b9h4eMF
-         G1BrAsi2HgrrmZVytsbBCN43zN48wzi+DBMamTdoOdAkkld+5uUZGlksQA++8+kDhnB4
-         8YisjaPtufsIlwnzZjkqcK4rgrYZZUtUJ6qGAZVZozShNglx+FJnTn12ouCxp4XPVmkD
-         /ODSKBsJ4q/ATs5/nmT5Fa36KV2ZLF/J1cucEBLoNSKhvXKtX5V2YN3O0AKtgJFesZaz
-         HUSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708967609; x=1709572409;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EyV42V4YwospafBlBP85zlF0CzzIrV0ckGMLg38+cps=;
-        b=EWRvreW9/bcFZak0YR4c/Ma7MV4KLcb5AI+iymQIhZM1+KY+SFutKUj3UUPa/19QCp
-         q4QTo/1Ky3eNVpDmcHrFRgtr4c62BuwZi+mBw/fhA65XfxfGjYA14rBHM0iryS2b1X5k
-         Qr4EzCY6sMeGnnIiM+/A9byoFho3O+yu1FjZTWKM+x34R9jG8o7kTTrQh/XS73OqJW7t
-         Udygfe7XLMl/A9LZwPdWWSnwaIzB2L1OxoIq7ueh4BPtneHZLZoKRpNpAMUWv5F1CXEU
-         BwJ6+e14Yn25a/IkW08OSe6OkZIB/opoazWyNOrAnalcWJy6OgAYrN/doxddsXCqo0RL
-         MhSA==
-X-Forwarded-Encrypted: i=1; AJvYcCVZvNF/31dzbS6u2E3LXtant5iLh4OifcZygq8CUoIqrFHBwEwxdMVWZTkN825TGjr2xanf5Fcndi8r7YX0dliSI5XOZWdMOUKPkpw7
-X-Gm-Message-State: AOJu0YzG/orE5wjWZSq4e6Dnh/wayhcpfi3qUBVy9p+sM6RRhSw1bzi5
-	JtZwkjAhGs/niidKvRvb4UxZaq0nlRUbMQkUUcH0oi3Mfaxc3TnCfrPm340rKOnRKWLGRsGyl90
-	qnmQPdjzHSqqZVom5wfEcK48RNPkMSKOWjl20
-X-Google-Smtp-Source: AGHT+IE/7/pQws6CVfL30UNt1mkliSDpCczaElkub3hA0YpEAm7Kcwht1trOE3ZU3RPvAg7BLiFgI/3lAi1UqBVzgIg=
-X-Received: by 2002:a05:6902:210e:b0:dcd:1f17:aaea with SMTP id
- dk14-20020a056902210e00b00dcd1f17aaeamr6639276ybb.26.1708967608014; Mon, 26
- Feb 2024 09:13:28 -0800 (PST)
+	s=arc-20240116; t=1708967674; c=relaxed/simple;
+	bh=ZatBfX3GImAl/bUCZ9kxeO02BxuKFeBHkwxbI7272vE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=A7ab12j+zzNhrJw5zmGP707D99HRlm0+hDpH+ENBqTuZP2qBP+xkFTNHCAXew+pzDJ2BihzhcfKN/2okKHpj2dBKWcHr/MS0DzXD8Som9QKWN2yCPj0TnODIrXm/Zb0PKo5ynVgmiC1LajidxvgmBL8pmrkSMEYDXs9l7Do9jio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=MbvrA4li; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41QGwR0e032270;
+	Mon, 26 Feb 2024 17:14:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=7EiwRdm/V3a7kLEUdExazAqNGWLSc4lYEtu/GG4qUJ0=;
+ b=MbvrA4liD26UBVHzakTuYr0t60g3p3lFTN8BkLwRvT6ziymLUJgzI6fpxn7PD76+wLYs
+ 42zVAplEkClN8YKbxIWO9I2ImjJjU4TN7EXFs0W8o9bFwHYEjAsXqrRnK56xb2nTGaOA
+ KN3ipTfcuAl3/MK4gfpgW5P2zURHSb7LIcZTsQ7kHewvZt3jUZIh+vONFX0QylQg+Sal
+ kcJrpGJPFncGuJ9dvdCzwds4jJzgBqbVCbgHsGcZ5M/rWOJ3S+GLU4SKAk+bJbLuiYrd
+ AzmfWdwoYduR6JzUZNwRCfPZE9ijUt5hd4bPVU5Q3QrWcl3TazbX+OlvqHPIuAmdpgZH aQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wgxmm8fmc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Feb 2024 17:14:19 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41QGx2Rw001319;
+	Mon, 26 Feb 2024 17:14:18 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wgxmm8fkh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Feb 2024 17:14:18 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41QGTLLA021808;
+	Mon, 26 Feb 2024 17:14:17 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wfu5ytquv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Feb 2024 17:14:17 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41QHEDNQ9372320
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 26 Feb 2024 17:14:15 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2CBAF2004D;
+	Mon, 26 Feb 2024 17:14:13 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E8E6520049;
+	Mon, 26 Feb 2024 17:14:11 +0000 (GMT)
+Received: from [9.171.4.124] (unknown [9.171.4.124])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 26 Feb 2024 17:14:11 +0000 (GMT)
+Message-ID: <3aae1410-e30f-4cd5-8c6c-3f1c6362ffee@linux.ibm.com>
+Date: Mon, 26 Feb 2024 18:13:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221194052.927623-1-surenb@google.com> <20240221194052.927623-14-surenb@google.com>
- <a9ebb623-298d-4acf-bdd5-0025ccb70148@suse.cz>
-In-Reply-To: <a9ebb623-298d-4acf-bdd5-0025ccb70148@suse.cz>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Mon, 26 Feb 2024 09:13:17 -0800
-Message-ID: <CAJuCfpE6sJa2oHE2HrXAYuMeHd8JWd0deWa062teUs3bBRi2PA@mail.gmail.com>
-Subject: Re: [PATCH v4 13/36] lib: prevent module unloading if memory is not freed
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
-	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v5 08/21] s390/cio: rename bitmap_size() ->
+ idset_bitmap_size()
+Content-Language: en-US
+To: Alexander Lobakin <aleksander.lobakin@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        Marcin Szycik <marcin.szycik@linux.intel.com>,
+        Wojciech Drewek <wojciech.drewek@intel.com>,
+        Yury Norov <yury.norov@gmail.com>, Andy Shevchenko <andy@kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Alexander Potapenko <glider@google.com>, Jiri Pirko <jiri@resnulli.us>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+        Simon Horman <horms@kernel.org>, linux-btrfs@vger.kernel.org,
+        dm-devel@redhat.com, ntfs3@lists.linux.dev, linux-s390@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
+ <20240201122216.2634007-9-aleksander.lobakin@intel.com>
+From: Peter Oberparleiter <oberpar@linux.ibm.com>
+In-Reply-To: <20240201122216.2634007-9-aleksander.lobakin@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: kJ2xFVSXDENYmSmRhicxbmrwDujXC5lV
+X-Proofpoint-GUID: yP0KC4JJEtYmY4bzsPQdnvQdAB2lXb3v
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-26_11,2024-02-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1011
+ suspectscore=0 lowpriorityscore=0 mlxlogscore=961 adultscore=0 spamscore=0
+ impostorscore=0 priorityscore=1501 mlxscore=0 bulkscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402260131
 
-On Mon, Feb 26, 2024 at 8:58=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
->
-> On 2/21/24 20:40, Suren Baghdasaryan wrote:
-> > Skip freeing module's data section if there are non-zero allocation tag=
-s
-> > because otherwise, once these allocations are freed, the access to thei=
-r
-> > code tag would cause UAF.
-> >
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
->
-> I know that module unloading was never considered really supported etc.
-> But should we printk something so the admin knows why it didn't unload, a=
-nd
-> can go check those outstanding allocations?
+On 01.02.2024 13:22, Alexander Lobakin wrote:
+> bitmap_size() is a pretty generic name and one may want to use it for
+> a generic bitmap API function. At the same time, its logic is not
+> "generic", i.e. it's not just `nbits -> size of bitmap in bytes`
+> converter as it would be expected from its name.
+> Add the prefix 'idset_' used throughout the file where the function
+> resides.
+> 
+> Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 
-Yes, that sounds reasonable. I'll add a pr_warn() in the next version.
-Thanks!
+Apologies for the delay.
 
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to kernel-team+unsubscribe@android.com.
->
+Acked-by: Peter Oberparleiter <oberpar@linux.ibm.com>
+
+
+-- 
+Peter Oberparleiter
+Linux on IBM Z Development - IBM Germany R&D
+
 
