@@ -1,78 +1,81 @@
-Return-Path: <linux-kernel+bounces-82105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82106-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A7B7867F57
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C76CE867F58
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:54:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 898F5B269C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:51:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CDDF1F2B606
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:54:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05E1C12E1C3;
-	Mon, 26 Feb 2024 17:51:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C24712EBC1;
+	Mon, 26 Feb 2024 17:53:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KNSE/XA4"
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="jRI2fyrP"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93C5412CD89
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 17:51:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BFB212DD9B;
+	Mon, 26 Feb 2024 17:53:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708969913; cv=none; b=MvfQC4Gp0TeiZ8JMpNGXDDKa2g52+/sm6IYGv7KO1uXRm9Bf6GUukEWglT98zQ4dMRdXe47UjNVZgEesqF8wUi9O+p44JJ2LhnDhG7wFDMr5tbq7fP1RqpX4YVcZvVVTD9Ia+VCWEGbvJVKS/BoXNqTIb8OsVtMCLifQLipBYe0=
+	t=1708970031; cv=none; b=TiNAujRF+9Fe4Lx0HuhZRoS/bRN4y9+85cj/6emYyKb0TIBimPUNjQ4b7UWO4IMI1EMhGU1bYkpPHiue3JVj7RVjyTnWhKHKXYgOjRWg/A7hnEibhjNqicBRrBNFLvLbZPMSXXiSlcX+9L3xNiI/gAOtybncFpQtaE3/UfKxgGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708969913; c=relaxed/simple;
-	bh=/EIExzwYIikvad/ZPr21MBVInz4GcJDT0iSZdYjOWO0=;
+	s=arc-20240116; t=1708970031; c=relaxed/simple;
+	bh=6fa34faceJzMXzcYCnRXGvqxI3/PFGNUCWHcn+SeQZ4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CIXH+ER0rhDM3++8APrGj2z1G78vSHwu7WgmdATgFdKjBEulQBJoIzpZnpNBBlPmODJOEM99KZzIV6b6yo7mOeER4DPy5ya4StiwjWD0F6dnRWHZAPoLNewZ3liY7X1kNCEJy4SlDf3Z9uler5R13hKj2eGqKt7jp6SVduvdMaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KNSE/XA4; arc=none smtp.client-ip=209.85.215.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5d8b276979aso2611463a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:51:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708969911; x=1709574711; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wETeoW2ejlL9Du6ELWHI1KiQfZikmnxR74a33KeoH64=;
-        b=KNSE/XA47kLnVEvXPFgeq+874XxTcLLaTtswdxmCAek5JS25duQcYNwGE5KuxcJvR4
-         zP4r2kDsbYX0eddC2DFsUtkaJ9NPt6KgqlD1MAFxKz/hvkqazFNrDvT5NXhi14Lu8fHd
-         MiAbYCDzYToBhJOQ1kqWTXxeRMG4MUCxu0pslzKI9GF/kyWf5CwS3EITYQkc9+6zzWMT
-         XnTeepkwUWZohZk67wVEyufP8ZlGsVsFgq08jhra2Jk1+EuYmwhVvz4Z6X23kc989GMd
-         jy4ryBfUIAucGSt02kjTWgGm6Dx3EV/5xwJiuTSlL/lk80ZoUC15zpQ/2q2x9Ga1hWLA
-         Rjow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708969911; x=1709574711;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wETeoW2ejlL9Du6ELWHI1KiQfZikmnxR74a33KeoH64=;
-        b=k0rFrpIlwM8ScKqaHjW5rhUQVKedLJyR2V7HEh0iGr/eLbDhmhnnyFDK03apTtqmqK
-         Vg0jnQ1jZu6HgY4Oyu2Ru7cepsYOGcKpVLkZZljYBPvO63/0sjAy+HKiL/kiqW8XMDJ3
-         101LBqATIDG5Mhg4CXjaMh8x17tTFOcJ5qpLfydNfGPHA6yWhKX6myT0ve3eAFteWytu
-         q1Ebq7gT/eOgCIJEeVh9qbU+bFKTJdNJku0yiy5XbKpePsej6rqjyKHTCZ97a5Vdwv54
-         cMskhdpMdafZX6LKedJmGPuHvWagDzq98tRMlSMlRO0Rcp2kWx9NGhn6gsY+sBQLzV6f
-         KX6w==
-X-Gm-Message-State: AOJu0YyFNOzRemvU2COQIbIEh6K3xVyxeGJXvcPJNeKlgzeRU99/2RGV
-	9MEOxet4xT4SCJrLALhLZBKSMUYmqyhw4N+gGhJVaNx2ohuY6b0YCzwVezz1
-X-Google-Smtp-Source: AGHT+IGT+P7p30xrX8/rODLkEEWlMCxC0crrI5z5pzukTmusoRYq7Ms1D6LPuDfNNiUn+LxqCTeHEA==
-X-Received: by 2002:a17:90a:8c0b:b0:29a:be15:9c90 with SMTP id a11-20020a17090a8c0b00b0029abe159c90mr3110538pjo.34.1708969910759;
-        Mon, 26 Feb 2024 09:51:50 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id sx7-20020a17090b2cc700b00299404af11csm6712490pjb.36.2024.02.26.09.51.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 09:51:50 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Mon, 26 Feb 2024 09:51:49 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 6.8-rc6
-Message-ID: <6bb3f88b-bf57-442a-8b46-cb4784dd4cab@roeck-us.net>
-References: <CAHk-=whZ=iA6DhijePcW-pJjZ8YD4T5qLpLKVSUT+4gWNm_0sA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=JCGx1wL0cvOxDOyrRVzf1RoftPLgcL5yEmq7348ccPcZpB62YeCH/HI+BQLW2MiViHux4e9XtE2ueM9NJepDC1ec229NhfOMv/eh1ARNQwtWU+Uq+R1yZnhoUC1n9hgAlGSdvSfSZHlMHIiQainJaAO0qz79ZcAw7pBxO/JwC/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=jRI2fyrP; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=1p1DkU003gUsxt6igF3+hBD3UuLE8cg1CfVd//JadfU=; b=jRI2fyrPeFscsV9g9f+myW5X2z
+	hdyGQwdM2T8fz2FQw7aITmvRPFIwHyNUzWdCi70QGWjYTZZuQquWYgXY/3rmX/7+P7g53P+JJssDU
+	vV5PExCJxuco9vKsedkgIKHdJYmtIlNDBcJtzOAZvE0xvZSKAUTyqqvExhVD6vQukWs5A7hvPnwJh
+	kd67N4mO74vp5jRmBNWieIkt5d87lhrFw+bb0H6E0fZhfJKF9N1+gtjhBgpr37wVp81OrqrvPNHYz
+	B5CcciKj4X1e4QZZRgwmbpdllbxLHCxh79oLwe1JEJgVY1+FdsrgfnAykQcsuRzJMgmvvfb6lS1q9
+	dN2gPVJw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48730)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1refAV-0004Y9-35;
+	Mon, 26 Feb 2024 17:53:36 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1refAR-0006cv-9Z; Mon, 26 Feb 2024 17:53:31 +0000
+Date: Mon, 26 Feb 2024 17:53:31 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, Oleksij Rempel <o.rempel@pengutronix.de>,
+	Wei Fang <wei.fang@nxp.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>, kernel@pengutronix.de,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	Shenwei Wang <shenwei.wang@nxp.com>,
+	Clark Wang <xiaoning.wang@nxp.com>,
+	NXP Linux Team <linux-imx@nxp.com>
+Subject: Re: [PATCH net-next v6 5/8] net: phy: Immediately call adjust_link
+ if only tx_lpi_enabled changes
+Message-ID: <ZdzQG6t2slqEyH0m@shell.armlinux.org.uk>
+References: <20240223094425.691209-1-o.rempel@pengutronix.de>
+ <20240223094425.691209-6-o.rempel@pengutronix.de>
+ <Zdh1nMWZDynP/AMc@shell.armlinux.org.uk>
+ <84e1368d-ec6a-48af-945b-509528c45dff@lunn.ch>
+ <Zdic+ua5LnWxjLPn@shell.armlinux.org.uk>
+ <6af3406a-7968-41e5-bf6e-71d020d8b28a@broadcom.com>
+ <Zdot-Mqw1z4ZEo8v@pengutronix.de>
+ <c6b0716d-f093-4aba-8453-c89a562ab581@lunn.ch>
+ <e679f467-d4cd-4a1e-9bfc-92e2c9bf35d4@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,154 +84,21 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=whZ=iA6DhijePcW-pJjZ8YD4T5qLpLKVSUT+4gWNm_0sA@mail.gmail.com>
+In-Reply-To: <e679f467-d4cd-4a1e-9bfc-92e2c9bf35d4@broadcom.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Sun, Feb 25, 2024 at 03:57:21PM -0800, Linus Torvalds wrote:
-> Another week, another rc. Nothing here really stands out.
-> 
-> Last week I said that I was hoping things would calm down a bit.
-> Technically things did calm down a bit, and rc6 is smaller than rc5
-> was. But not by a huge amount, and honestly, while there's nothing
-> really alarming here, there's more here than I would really like at
-> this point in the release.
-> 
-> So this may end up being one of those releases that get an rc8. We'll
-> see. The fact that we have a bit more commits than I would really wish
-> for might not be a huge issue when a noticeable portion of said
-> commits end up being about self-tests etc.
-> 
+On Mon, Feb 26, 2024 at 09:50:02AM -0800, Florian Fainelli wrote:
+> This is the source of the concern, we don't know which MAC drivers we might
+> end-up breaking by calling adjust_link(link == 1) twice in a row, hopefully
+> none, because they should be well written to only update the parameters that
+> need updating, but who knows?
 
-Good to get those unit test failures to pass, though.
+Just quickly... There are some (I went through a bunch.) They don't
+support EEE. I haven't been through all though, so there could be
+some which support EEE and where adjust_link() with phydev->link=true
+twice in a row could result in badness.
 
-Build results:
-	total: 155 pass: 155 fail: 0
-Qemu test results:
-	total: 549 pass: 548 fail: 1
-Unit test results:
-	pass: 170476 fail: 620
-
-Details below.
-
-Guenter
-
-============
-
-Runtime crashes
-===============
-
-an385:mps2_defconfig:mps2-an385:initrd
---------------------------------------
-
-an385 does not support unaligned accesses, but test_ip_fast_csum
-expects it.
-
-Fix:
-https://lore.kernel.org/lkml/20240207-fix_sparse_errors_checksum_tests-v6-0-4caa9629705b@rivosinc.com/
-
-See additional information below about checksum unit test failures.
-
-Warning backtraces
-==================
-
-WARNING: inconsistent lock state
-6.8.0-rc4 #1 Tainted: G                 N
---------------------------------
-inconsistent {HARDIRQ-ON-W} -> {IN-HARDIRQ-W} usage.
-kworker/0:2/39 [HC1[1]:SC0[2]:HE0:SE0] takes:
-ef792074 (&syncp->seq#2){?...}-{0:0}, at: sun8i_dwmac_dma_interrupt+0x9c/0x28c
-{HARDIRQ-ON-W} state was registered at: 
-  lock_acquire+0x11c/0x368
-  __u64_stats_update_begin+0x104/0x1ac
-  stmmac_xmit+0x4d0/0xc58
-  dev_hard_start_xmit+0xc4/0x2a0
-  sch_direct_xmit+0xf8/0x30c
-  __dev_queue_xmit+0x400/0xcc4
-  ip6_finish_output2+0x254/0xafc
-  mld_sendpack+0x260/0x5b0
-  mld_ifc_work+0x274/0x588
-  process_one_work+0x230/0x604
-  worker_thread+0x1dc/0x494
-  kthread+0x100/0x120
-  ret_from_fork+0x14/0x28
-
-Caused by commit 38cc3c6dcc09 ("net: stmmac: protect updates of 64-bit
-statistics counters.")
-
-Report:
-https://lore.kernel.org/lkml/ea1567d9-ce66-45e6-8168-ac40a47d1821@roeck-us.net/
-
-No activity or even agreement if this is a false positive or a real problem.
-I added it to the regression tracker (or at least tried to) since the problem
-has now proliferated into stable branches, and the patch causing the backtrace
-may even be marked as CVE according to:
-https://git.kernel.org/pub/scm/linux/security/vulns.git/tree/cve/review/proposed/v6.7.6-greg
-
-Interesting question is if the fix for this presumed CVE is causing another
-security issue.
-
-
-Unit test failures
-==================
-
-checksum
---------
-
-Various checksum tests fail on several machines, with different reasons.
-Too many to list in detail.
-
-Reports:
-
-https://lore.kernel.org/lkml/ec44bf32-8b66-40c4-bc62-4deed3702f99@roeck-us.net/
-https://lore.kernel.org/lkml/9b004c45-45f8-4abb-a24e-bb47b369b1a5@roeck-us.net/
-https://lore.kernel.org/lkml/65ed7c95-712c-410b-84f3-58496b0c9649@roeck-us.net/
-
-Suggested fixes:
-
-https://lore.kernel.org/lkml/20240207-fix_sparse_errors_checksum_tests-v6-0-4caa9629705b@rivosinc.com/
-https://lore.kernel.org/lkml/20240210175526.3710522-1-linux@roeck-us.net/
-https://lore.kernel.org/lkml/20240211160837.2436375-1-linux@roeck-us.net/
-https://lore.kernel.org/lkml/20240210191556.3761064-1-linux@roeck-us.net/
-
-Most fixes are queued in -next. There is still an open question if the
-tested functions are supposed to work on unaligned addresses.
-
-stackinit
----------
-
-Seen with m68k:q800 emulation.
-
-    # test_char_array_zero: ASSERTION FAILED at lib/stackinit_kunit.c:333
-    Expected stackinit_range_contains(fill_start, fill_size, target_start, target_size) to be true, but is false
-stack fill missed target!? (fill 16 wide, target offset by -12)
-
-    # test_char_array_none: ASSERTION FAILED at lib/stackinit_kunit.c:343
-    Expected stackinit_range_contains(fill_start, fill_size, target_start, target_size) to be true, but is false
-stack fill missed target!? (fill 16 wide, target offset by -12)
-
-Report:
-https://lore.kernel.org/lkml/a0d10d50-2720-4ecd-a2c6-c2c5e5aeee65@roeck-us.net/
-
-I suspect this may be caused by the test assuming that stack growth is
-downward, but I don't really understand the test well enough to be sure.
-I'll disable this set of tests for m68k going forward, so I am not going
-to report the problem again in the future.
-
-mean and variance tests
------------------------
-
-This is bcachefs related.
-
-test cases 2 and 4 fail on all architectures/branches, and I don't see how
-those tests can pass. The functionality was promoted into lib/math/
-in -next, and the test now always fails there even if bcachefs is not
-enabled.
-
-Not added to regression tracker since I am not sure if unit test problems
-caused by bad test cases should count as regressions.
-
-Report:
-https://lore.kernel.org/lkml/065b94eb-6a24-4248-b7d7-d3212efb4787@roeck-us.net/
-
-Suggested fix:
-https://lore.kernel.org/lkml/20240225162925.1708462-1-linux@roeck-us.net/
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
