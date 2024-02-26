@@ -1,167 +1,157 @@
-Return-Path: <linux-kernel+bounces-81262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81263-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3B12867308
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:28:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D765786730D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:28:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6F281C22552
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:28:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 154B51C22552
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:28:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2D7F1D546;
-	Mon, 26 Feb 2024 11:28:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FB3F1DA20;
+	Mon, 26 Feb 2024 11:28:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ytg0DlvR"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Gi6LzCPg"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 704311D535;
-	Mon, 26 Feb 2024 11:28:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED7241D535;
+	Mon, 26 Feb 2024 11:28:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708946883; cv=none; b=mdS6MBkEcFvf8E3qxzIZiiwF4Rf1MC12JA++puUTQaleQXpPKarpr2kMIwjCxvHY+xM2A0uqrTPFvn1L0Tw1o3P3A5Ki8j9XYdIqGXEfQYb/8YJas+fGLOXlRIcBy9T/nl6KNsIlUaxKTUxs6E+/Rnm8LfBcQ2qfw2fVYTX/wbU=
+	t=1708946922; cv=none; b=s8ovpqInt6cVLU7W+K+AxPdjPtHcsaj4+UtR09UrBNgdH0NeSSdECRmoeMxi4LnuQ2GKbY45ibzPt1fjS5JMJLlXq8BFNj8MaAuxVa/zSSbqcmIjKJlhoeCf6Okj8kc18zVMdFDQdzDUlb6qcpojtPybwOc7sPrnYKP1xAp+zcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708946883; c=relaxed/simple;
-	bh=ATVGMAgFTSKaUu0QoQlaWSZn6gIX/h7/F0NSFkzSTEQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kkmAK80sjDsLbDOk0XKszOiDiL08aAS5JZn13nEm1SSBRiPJLACdhO5le6myENDE310WWnCkSFk9IMVqUuZpFGwDOq6aRDLEe984wCaJM6Z6E6jNlCjXqEZUreyRSrm9hzZRNNyC3C7RlJuN5YJW5ClVkpqjOp25ZhNYbhJYgSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ytg0DlvR; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d29111272eso2973011fa.0;
-        Mon, 26 Feb 2024 03:28:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708946879; x=1709551679; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eCG+0iTs0IX+hLHo/qYiNgX6GYLNuzkDgcE88IyfUfk=;
-        b=Ytg0DlvRURNAX6rHN2NfCaMuhx8TM+kj/liGY3JA1nPtmde9d6MvqFx8edqpjfZ+5k
-         9PiZfC2Kfuyolq1h7FsvnCFIh/C9kWDoBWQiT9jGYzUBSA2E88bC8NJpxHTfOyZc5ESn
-         qqNB0Lia/GaIOGVAmDYeNPr5HpPx6i2Mtexyz0dPSYV3FKXYZqIPQOiO0MJy+m2AGHo9
-         MYdEc6M5SOv+HoemJ6Dr1gkIWHCYKf5hwRUE9+xF/sJhIqOuPVuSuLZ5hoZuIsEq7CW4
-         ulU9TK/kZ7BUEGVog5igh0/0csrtS0G8tGPpvtZNT95IVgSI/JaL2KzE33lffZu9WDSG
-         f8iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708946879; x=1709551679;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eCG+0iTs0IX+hLHo/qYiNgX6GYLNuzkDgcE88IyfUfk=;
-        b=G5qTVz4czeUhEbrJY8EBR6nRNGtsANfBJxHh7SppVtDtugs2mrDkb9Nt8wzevrZ2sb
-         aLol2mCS7HfK+NQWnG1qlIDeFjmCoox+9LbDkGiQIfwY/MOlqtCHbLAVllzem+yEZzN+
-         Sv4vNJX89hVDfPGwqZ4qC2BQNcofqruf2bmmG1dRxhHq3FC7tdmM39LkFVtpr9JZfIe6
-         rz+jcH9X8uw1guxCFwXVawfNEGdJJZXN4rSNohOrSTkFjiIL4P7zF8aA/mRkkIdkJH8J
-         n1FUQqckmO7yu1+YqUEItfUYKybZyNLE9yhaSjYQf8Em2Zd1e3Noff0N96mgB04VQu/c
-         mRAg==
-X-Forwarded-Encrypted: i=1; AJvYcCUrizjqT/5MNzlRvve8+B4t8r646HM+ukfjL78wsg3+fV42HGmOEc285StzO/Hj/6rAFva3S1GVnlBb1Dqqos0wAgF0EwngqwkBb14IH/MpJAcwSdQdiDwn8413CA2/wNs1hOxwzPafww==
-X-Gm-Message-State: AOJu0Yxlvlj2kThjs6m0HW7MCOfws/r9qyoc514YBZzOutmBOdbQ4KX3
-	VFBMJDQNGBpfjGMA0ib303ImHxhkvy7YBi3UkHiotFzVZRnu/bwk
-X-Google-Smtp-Source: AGHT+IHJYTRhgYUkb819o2XjixENgbUd97kO1tx88CZUCvfD4TcHppM+hKdWRADSFIpJhwgixUOpKA==
-X-Received: by 2002:a2e:b889:0:b0:2d2:6676:3b0f with SMTP id r9-20020a2eb889000000b002d266763b0fmr5263785ljp.22.1708946879409;
-        Mon, 26 Feb 2024 03:27:59 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id j14-20020a2eb3ce000000b002d29069239dsm106815lje.37.2024.02.26.03.27.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 03:27:59 -0800 (PST)
-Date: Mon, 26 Feb 2024 14:27:56 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Jiaxun Yang <jiaxun.yang@flygoat.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] mips: cm: Convert __mips_cm_l2sync_phys_base() to
- weak function
-Message-ID: <y2lxeu5uvj7ezlv7kf6lox5e5xprmvrhqmf3gvzjsatlrrlub7@mvqzoyq5mnvd>
-References: <20240226105427.7191-1-fancer.lancer@gmail.com>
- <20240226105427.7191-2-fancer.lancer@gmail.com>
- <34af21b5-a878-418e-a70b-299cab61b37e@app.fastmail.com>
+	s=arc-20240116; t=1708946922; c=relaxed/simple;
+	bh=9r4Qy7hs0vSKI9uUdjPW2Fhk40C0I8X2MjZQPOXqT44=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=nxv0su92EzsdIUjnd5VkC4gvcKitwaVN3stnKOG+IR6Olsj2TjHChpYNeU8EcKPe0cWfv4YFg7TkPvWDiMEwCS1EKRJvQSnwbVvy0X4SJddjUNEqFhiEYZxEkjK81Y/MLCuTbjY8y7DM1rKmb1+6K7nKmtOQsobGXttz/adpVbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Gi6LzCPg; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41QARVOg009380;
+	Mon, 26 Feb 2024 11:28:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type
+	:content-transfer-encoding; s=qcppdkim1; bh=YUBb5zD+GwuxupxQ4TAz
+	WAOJqy2HhzpNAOsPo2YrqhM=; b=Gi6LzCPgYIRN1DR5ACKTaX+2Xqp/cnRK3Iyi
+	FzsH8p4f7l7c5+s8ciHQkcVWb1ygDnb2Vrby0vAmbt0XJf8kRiKi6oOSaEQIRtbX
+	Ol729OvmZBjlpobtkbAj1x7co9adoVGGhe8Pa4aBMHdD+WfqrVm/bwrxDCsNgXJs
+	Z8KZ2vFVHvXbS1+VdRaSoxevWAxqd63od/ZNhV9PIWKFfe6NaTbGTvltRF4ZMgod
+	2as16AqE/2oHeW4fRgqyqAR8WNb5GalIcWSH1iJ1vOrA5cYsn4foRhzU7scj5kt8
+	fBI2G7vrapTp0rtQ4GLI1uwdarnU9AnxxYNDKGBfDXnPwGT9Qw==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wgkxm0r18-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Feb 2024 11:28:38 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41QBSbuA017977
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Feb 2024 11:28:37 GMT
+Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 26 Feb 2024 03:28:33 -0800
+From: Krishna Kurapati <quic_kriskura@quicinc.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>
+CC: <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_ppratap@quicinc.com>, <quic_wcheng@quicinc.com>,
+        <quic_jackp@quicinc.com>, Krishna Kurapati <quic_kriskura@quicinc.com>
+Subject: [RFC PATCH] usb: gadget: ncm: Fix handling of zero block length packets
+Date: Mon, 26 Feb 2024 16:58:16 +0530
+Message-ID: <20240226112816.2616719-1-quic_kriskura@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <34af21b5-a878-418e-a70b-299cab61b37e@app.fastmail.com>
+Content-Type: text/plain; charset="y"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: GJ68AuHhhZanVx89CWMvuBMiFJIXtUiB
+X-Proofpoint-GUID: GJ68AuHhhZanVx89CWMvuBMiFJIXtUiB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-26_07,2024-02-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
+ mlxlogscore=869 clxscore=1011 impostorscore=0 suspectscore=0
+ priorityscore=1501 lowpriorityscore=0 mlxscore=0 spamscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402260085
 
-Hi Arnd
+While connecting to a Linux host with CDC_NCM_NTB_DEF_SIZE_TX
+set to 65536, it has been observed that we receive short packets,
+which come at interval of 5-10 seconds sometimes and have block
+length zero but still contain 1-2 valid datagrams present.
 
-On Mon, Feb 26, 2024 at 12:04:06PM +0100, Arnd Bergmann wrote:
-> On Mon, Feb 26, 2024, at 11:54, Serge Semin wrote:
-> > The __mips_cm_l2sync_phys_base() and mips_cm_l2sync_phys_base() couple was
-> > introduced in commit 9f98f3dd0c51 ("MIPS: Add generic CM probe & access
-> > code") where the former method was a weak implementation of the later
-> > function. Such design pattern permitted to re-define the original method
-> > and to use the weak implementation in the new function. A similar approach
-> > was introduced in the framework of another arch-specific programmable
-> > interface: mips_cm_phys_base() and __mips_cm_phys_base(). The only
-> > difference is that the underscored method of the later couple was declared
-> > in the "asm/mips-cm.h" header file, but it wasn't done for the CM L2-sync
-> > methods in the subject. Due to the missing global function declaration
-> > the "missing prototype" warning was spotted in the framework of the commit
-> > 9a2036724cd6 ("mips: mark local function static if possible") and fixed
-> > just be re-qualifying the weak method as static. Doing that broke what was
-> > originally implied by having the weak implementation globally defined.
-> >
-> > Let's fix the broken CM2 L2-sync arch-interface by dropping the static
-> > qualifier and, seeing the implemented pattern hasn't been used for over 10
-> > years but will be required soon (see the link for the discussion around
-> > it), converting it to a single weakly defined method:
-> > mips_cm_l2sync_phys_base().
-> >
-> > Fixes: 9a2036724cd6 ("mips: mark local function static if possible")
-> > Link: 
-> > https://lore.kernel.org/linux-mips/20240215171740.14550-3-fancer.lancer@gmail.com
-> > Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
-> 
-> I'm sorry I introduced the regression here, thanks for addressing it.
+According to the NCM spec:
 
-No worries. I've noticed it in my local tree only. Neither CM nor CM
-L2-sync base address getters aren't currently re-defined in the
-mainline code. So the generic kernel code hasn't been affected.
+"If wBlockLength = 0x0000, the block is terminated by a
+short packet. In this case, the USB transfer must still
+be shorter than dwNtbInMaxSize or dwNtbOutMaxSize. If
+exactly dwNtbInMaxSize or dwNtbOutMaxSize bytes are sent,
+and the size is a multiple of wMaxPacketSize for the
+given pipe, then no ZLP shall be sent.
 
-> 
-> > -static phys_addr_t __mips_cm_l2sync_phys_base(void)
-> > +phys_addr_t __weak mips_cm_l2sync_phys_base(void)
-> >  {
-> >  	u32 base_reg;
-> > 
-> > @@ -217,9 +217,6 @@ static phys_addr_t __mips_cm_l2sync_phys_base(void)
-> >  	return mips_cm_phys_base() + MIPS_CM_GCR_SIZE;
-> >  }
-> > 
-> > -phys_addr_t mips_cm_l2sync_phys_base(void)
-> > -	__attribute__((weak, alias("__mips_cm_l2sync_phys_base")));
-> > -
-> 
-> I generally have a bad feeling about weak functions, as they tend
-> to cause more problems than they solve, specifically with how they
-> hide what's going on, and how I still can't figure out what this
-> one aliases to.
-> 
-> Since the resolution of the alias is all done at link time
-> anyway, could you just convert these to an #ifdef check
-> that documents exactly when each of the versions is used?
+wBlockLength= 0x0000 must be used with extreme care, because
+of the possibility that the host and device may get out of
+sync, and because of test issues.
 
-Not sure I've completely understood what you meant. Do you suggest to
-add a mips_cm_l2sync_phys_base macro which would be defined if a
-"strong" version of the method is defined (and surround the
-underscored function by it)?
+wBlockLength = 0x0000 allows the sender to reduce latency by
+starting to send a very large NTB, and then shortening it when
+the sender discovers that there’s not sufficient data to justify
+sending a large NTB"
 
-Please note after this patch is applied no aliases will
-be left, but only a single weakly defined method:
-mips_cm_l2sync_phys_base()
-This is what we agreed to do with Thomas:
-https://lore.kernel.org/linux-mips/pf6cvzper4g5364nqhd4wd2pmlkyygoymobeqduulpslcjhyy6@kf66z7chjbl3
-Thus there will be no need in the macro you suggest since the
-weak-version of the method will be discarded by the linker as it will
-have been replaced with the "strong" one. 
+However, there is a potential issue with the current implementation,
+as it checks for the occurrence of multiple NTBs in a single
+giveback by verifying if the leftover bytes to be processed is zero
+or not. If the block length reads zero, we would process the same
+NTB infintely because the leftover bytes is never zero and it leads
+to a crash. Fix this by bailing out if block length reads zero.
 
--Serge(y)
+Fixes: 427694cfaafa ("usb: gadget: ncm: Handle decoding of multiple NTB's in unwrap call")
+Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+---
 
-> 
->       Arnd
+PS: Although this issue was seen after CDC_NCM_NTB_DEF_SIZE_TX
+was modified to 64K on host side, I still believe this
+can come up at any time as per the spec. Also I assumed
+that the giveback where block length is zero, has only
+one NTB and not multiple ones.
+
+ drivers/usb/gadget/function/f_ncm.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/function/f_ncm.c
+index e2a059cfda2c..355e370e5140 100644
+--- a/drivers/usb/gadget/function/f_ncm.c
++++ b/drivers/usb/gadget/function/f_ncm.c
+@@ -1337,6 +1337,9 @@ static int ncm_unwrap_ntb(struct gether *port,
+ 	VDBG(port->func.config->cdev,
+ 	     "Parsed NTB with %d frames\n", dgram_counter);
+ 
++	if (block_len == 0)
++		goto done;
++
+ 	to_process -= block_len;
+ 
+ 	/*
+@@ -1351,6 +1354,7 @@ static int ncm_unwrap_ntb(struct gether *port,
+ 		goto parse_ntb;
+ 	}
+ 
++done:
+ 	dev_consume_skb_any(skb);
+ 
+ 	return 0;
+-- 
+2.34.1
+
 
