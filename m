@@ -1,221 +1,93 @@
-Return-Path: <linux-kernel+bounces-81554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17DD4867772
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:01:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDA7086776F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:01:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9386E2920DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:01:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3ADC1F2B5DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:01:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B5ED129A9E;
-	Mon, 26 Feb 2024 14:01:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wc1OsdpK"
-Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4E8B129A67;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0437129A6A;
 	Mon, 26 Feb 2024 14:01:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.54
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SWvl7R0w"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 560061292EE;
+	Mon, 26 Feb 2024 14:01:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708956073; cv=none; b=ui8k1QZox5fNCplood7xtCEK/Sb2d0NeUamcfvwSV0U8RDnak3HeQe8XaghSzMaBMBi7CBPkrJA1IvYI/n7NVN8QnJCuBZdaPQxlqG+dY3etJeSKZPGRiPcA9SvPPWuJdywOgPyDnkbZBgGLJ/2K0T+6uZ6MvMkSpX/jx+hzRCU=
+	t=1708956071; cv=none; b=Q311BOpG6z7vXUnlnhGKsF3EtytmNl9wXMyr9xpCnWfAieJd0dUxiSn6omNH1u8iWSohXMY0wK5nRsEOuiFtR9EDcoNFfsrHSUlEbJ4jULQI11cQGJMth0c++cAcqAkJcO4P7WqniZ0CPwZG1rphtzsTPqCljSR3Lw2XvPHgL4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708956073; c=relaxed/simple;
-	bh=FoewpGzgpzpqtpCSQxjM1rucew+UpAWVAiJKuK/PiHc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QPT5+/kPLM39KvZeOQ306qOphe9VRUehh7p06A6PnAbYDXhChUibu515+CCHbDXuePLELUBuXScsM9ie4oUSaysTO7OCBxKjMiasKjAIWEs7VYPj48MzADc6cBVlUDK0bD1kQ+AOgwXlmdddjyWsDIuIGcHm/4YSqzDS96WE+68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wc1OsdpK; arc=none smtp.client-ip=209.85.222.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-7d5c40f874aso1573997241.1;
-        Mon, 26 Feb 2024 06:01:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708956070; x=1709560870; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yNHascdJNtuHgIE/f0tSQFcH6XfYn7+0/LouiuRBLL0=;
-        b=Wc1OsdpKZNQ6EI2Ywd7cE6zdAafTxPnA6aw60pF1QbsW/4n/vvgRL5YIgeH/PjVrOs
-         hXhu14jcDPf8yOocNbeDdmwYENhuasxJFt/0PDMJB3m3shoI7vLKJ9CsiSVEzWr4i3x1
-         2JTDFHoh/vhhTXNpGvr7466RKovpn8KkXqvqyllPI0HG29MURgKNu//n94FSTWPeU2KY
-         Jh1/NR6NdSQei0/CBPdPJJ+vLMhwX9lQD44YXdTPWpH62Sm9/SqyFD+Ih9xzpLKeA/pf
-         5ilMl5D+p0zF/tcqiu4K5FWr5jSQ8kaorq6eHTMEBqxPNooqiCeiiw26XKddoKzRRxwL
-         O+6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708956070; x=1709560870;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yNHascdJNtuHgIE/f0tSQFcH6XfYn7+0/LouiuRBLL0=;
-        b=k2Gd4lG1sMHvbp/IGlduDUWsFnLztolrW3cBHLSQvNye9pQ5SIvu43+T3FdpeLFC6H
-         PKHdS6fRIDlPsLtlUwCMNgze3OMvgPymKw0VUa/7a3KOjKkwWEFRj7D4Tvrk/6BcK2aW
-         /JrQZdRemAcJq/65MiTDnkLghkPplCYw0zNgRt0008pC1RtTunkFiCIMtuh1R1RjDDsG
-         LHlVdbontbqk+mxNXZAOF0zt0YxjhuN12XVyIc9hz6dLJiZwBjGlAc1TeFCF2hJTX+er
-         EHpkUmr5TBrUkGoB4wCELqtMDV/YOOPvUqW4+DOYdLkkSQ2J+8MUUjxEpE9e6WqcaHcj
-         VolA==
-X-Forwarded-Encrypted: i=1; AJvYcCUMUX6BeFsh03WZiBqzSuwoRfRtaPR1XqBH8Lb6G3233uCROpEH0vwYkGopdYkeGJeSOUDgA0g0vEZKmKriF7YeJUBxosZxeBwWolgx2U7BxkZBvR2/5KTqsCxWsPT7a5pFlZITQywubSxO2c2hOuOSP6hVrA2CuUt+F/97d2cIhz0U/qxkJu4NMsjP
-X-Gm-Message-State: AOJu0YyQzdqnU57MDFJIDfHWSmX8JJQ6UXfyCm8WD9wGvX5/GfQAASoc
-	/wqIHgE0BKkemuAHvtC0BDvB8WLAAkxFdlcy3xKCjQcx2N5ZuSBnhxb+qOMNV8DC7PFJhZeZ1yb
-	6ihrNrAVXSVK3EYI24olY82Cvm0o=
-X-Google-Smtp-Source: AGHT+IFzGlajTJ0dQr/ulfhaP/pnvD18+/XO56PkQbq4WgzboYwXFG5wzAYu9pqj2gZw3MoGS/OIf67vmQoXxetqckk=
-X-Received: by 2002:a1f:ed41:0:b0:4c0:1bb6:322 with SMTP id
- l62-20020a1fed41000000b004c01bb60322mr3287871vkh.15.1708956070413; Mon, 26
- Feb 2024 06:01:10 -0800 (PST)
+	s=arc-20240116; t=1708956071; c=relaxed/simple;
+	bh=zmzcQJz2EU0rskFy7vCYo51U8a1+VZhLaYJLp6NSbKs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cK19xddEBNqYojxCHsj2jZTrw+HHrrYn1qCCXBrDmqrVX5GHdXLAIYMyKAnH2dDYwy3gP/5y76tdGwFTCyRDUqDCNIhS5qKY91uFXpvzqQ7SxLsvUgFqmpJir19khFUWL0v/f9Lz7bpoRxbvAXiXqWxxcMLuOpfJbvWFQPMDZI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SWvl7R0w; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708956069; x=1740492069;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=zmzcQJz2EU0rskFy7vCYo51U8a1+VZhLaYJLp6NSbKs=;
+  b=SWvl7R0wz9mnfSqiHfmxH+CqNoCm7Ei87e2NnNGkbCPuCtWYzss5meGG
+   3S706k+gMah3IW1BQJCM6pW/jYzD17KMbXGLQ7ayi+EyxjkTWQZD0mtFO
+   5+gNOvn00+g+VSUghvKZBE0/BDAP3diudgzXVbBMzIVOkOiAJslD6h76c
+   TtJvT74pBHLdcJ0Ity/voaywCdyVNGXGRGE7bZ1ANqCoRk9Zw/jlcVX/q
+   iZtCXZ2yXDCl9V/oxGReuZcb7Xw5gpLwXMrgwYL6sVrV2GU6x66lh/sR7
+   vmlAJ+r/SmuDglIXs7sj9ciYBFwpdyESMXhLeDYpzcPRM9Q12/BPpzxkm
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="6186627"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="6186627"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 06:01:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="913871289"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="913871289"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 06:01:05 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rebXS-00000007hE8-1U8V;
+	Mon, 26 Feb 2024 16:01:02 +0200
+Date: Mon, 26 Feb 2024 16:01:02 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Arturas Moskvinas <arturas.moskvinas@gmail.com>
+Cc: fabio.estevam@nxp.com, linus.walleij@linaro.org, brgl@bgdev.pl,
+	u.kleine-koenig@pengutronix.de, linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] gpio: 74x164: Enable output pins after registers are
+ reset
+Message-ID: <ZdyZnqS_jKelbs6G@smile.fi.intel.com>
+References: <20240226134656.608559-1-arturas.moskvinas@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240219160912.1206647-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240219160912.1206647-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdV3eVTek9sYwXbqu98ta8wx197GMc-k3q1RZRb8ar=jFg@mail.gmail.com>
-In-Reply-To: <CAMuHMdV3eVTek9sYwXbqu98ta8wx197GMc-k3q1RZRb8ar=jFg@mail.gmail.com>
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date: Mon, 26 Feb 2024 14:00:20 +0000
-Message-ID: <CA+V-a8uNaRL7wE0SmwmiCq3o798-2Kd-fegKJ2Tep5mZuS2O2w@mail.gmail.com>
-Subject: Re: [PATCH 2/4] dt-bindings: arm: renesas: Document Renesas RZ/V2H{P}
- System Controller
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Magnus Damm <magnus.damm@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	linux-arm-kernel@lists.infradead.org, linux-renesas-soc@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226134656.608559-1-arturas.moskvinas@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Hi Geert,
+On Mon, Feb 26, 2024 at 03:46:56PM +0200, Arturas Moskvinas wrote:
+> Move output enabling after chip registers are cleared.
 
-Thank you for the review.
+Does this fix anything? If so, maybe elaborate a bit the potential behavioural
+changes on the real lines.
 
-On Mon, Feb 26, 2024 at 1:41=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
->
-> Hi Prabhakar,
->
-> Thanks for your patch!
->
-> On Mon, Feb 19, 2024 at 5:10=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail=
-com> wrote:
-> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >
-> > Add DT binding documentation for System Controller (SYS) found on
-> > RZ/V2H{P} ("R9A09G057") SoC's.
->
-> RZ/V2H(P)
->
-> >
-> > SYS block contains the SYS_LSI_DEVID register which can be used to
-> > retrieve SoC version information.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
->
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/soc/renesas/renesas,r9a09g057-s=
-ys.yaml
-> > @@ -0,0 +1,59 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/soc/renesas/renesas,r9a09g057-sys.y=
-aml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Renesas RZ/V2H{P} System Controller (SYS)
-> > +
-> > +maintainers:
-> > +  - Geert Uytterhoeven <geert+renesas@glider.be>
-> > +
-> > +description:
-> > +  The RZ/V2H{P} SYS (System Controller) controls the overall
->
-> RZ/V2H(P)
->
-OK.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> > +  configuration of the LSI and supports the following functions,
-> > +  - Trust zone control
-> > +  - Extend access by specific masters to address beyond 4GB space
-> > +  - GBETH configuration
-> > +  - Control of settings and states of SRAM/PCIe/CM33/CA55/CR8/xSPI/ADC=
-/TSU
-> > +  - LSI version
-> > +  - WDT stop control
-> > +  - General registers
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: renesas,r9a09g057-sys
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    items:
-> > +      - description: Clock from external oscillator
->
-> Isn't this SYS_0_PCLK inside the CPG?
->
-As per the block diagram (figure 4.4-3), if we follow the clock source
-for SYS it traces back to 24MHz Oscillator. Let me know how you want
-me to describe this please.
 
-> > +
-> > +  resets:
-> > +    items:
-> > +      - description: SYS_0_PRESETN reset signal
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - clocks
-> > +  - resets
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    extal_clk: extal-clk {
-> > +        compatible =3D "fixed-clock";
-> > +        #clock-cells =3D <0>;
-> > +        clock-frequency =3D <24000000>;
-> > +    };
-> > +
-> > +    sys: system-controller@10430000 {
-> > +        compatible =3D "renesas,r9a09g057-sys";
-> > +        reg =3D <0x10430000 0x10000>;
-> > +        clocks =3D <&extal_clk>;
->
-> clocks =3D <&cpg 1>;
->
-> (I guess it will be 1 ;-)
->
-Yep indeed ;)
-
-Cheers,
-Prabhakar
-
-> > +        resets =3D <&cpg 1>;
-> > +    };
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
-8k.org
->
-> In personal conversations with technical people, I call myself a hacker. =
-But
-> when I'm talking to journalists I just say "programmer" or something like=
- that.
->                                 -- Linus Torvalds
 
