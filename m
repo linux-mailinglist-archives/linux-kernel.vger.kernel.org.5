@@ -1,243 +1,271 @@
-Return-Path: <linux-kernel+bounces-81017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E814B866F16
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:47:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D0DA866F1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:47:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16AB31C222CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:47:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7083D1C23EFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:47:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF49180C0E;
-	Mon, 26 Feb 2024 09:12:53 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 589DB84A4F;
+	Mon, 26 Feb 2024 09:13:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VeiK6zdT"
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F1B0249F8;
-	Mon, 26 Feb 2024 09:12:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7047D82877
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:13:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708938773; cv=none; b=FQnMRE37HEu4GYfSOlS5Bzv7C42j7FMfxOyU33Zc8TGl5HOKcgD2pStXSK4peXtUt4iHt1y9KeQfHjZgp1TdPkORhw8ncFaUNQHzP68PjtrTjnh5AelL3ldW54e6jII8UirPPnGW85gnV6mdCRNnFyflku1xGH4BgSrVQPyZiVI=
+	t=1708938785; cv=none; b=F9bGxDvilbjE2X1OtAC/lu4GcK/cjUh77dlGVMBb2wnbAKJpc+QdNnzOluDQ41T/ivhPYB1MJCPS0ciELw3xVhDwn5ZcqnTVZ7tWl0ieN89gHnaikN2uhYgdRZN4oGmcqjeRbTnMzNTSUWecU6o9Z07voWLRKJylFcMkm+Zh7qc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708938773; c=relaxed/simple;
-	bh=HAjG04Jq/mOFSP/5B/LLl+sfRnqvqCPPIC2LlSaRA8U=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=SILqyt9xKgtNiA4x2wLVNrR12JuqxygxXI7PTT6Hm34+yRaySnTAF/H7fcwggKJaMJ4oq9eQhIo+/WbzekQ+phnLjmSOwxRo/4HCUyn/2ahehZLHVU5aIPxlKs6txXy+ksCwsL5+HtxSKRT0UOFw0PR5DJDNy4ZsLmCb84CLWf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Tjvyv3k2cz4f3nK3;
-	Mon, 26 Feb 2024 17:12:39 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id C65DA1A016E;
-	Mon, 26 Feb 2024 17:12:46 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgBXKBEMVtxlw6XMFA--.40107S3;
-	Mon, 26 Feb 2024 17:12:46 +0800 (CST)
-Subject: Re: [PATCH md-6.9 03/10] md/raid1: fix choose next idle in
- read_balance()
-To: Xiao Ni <xni@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: paul.e.luse@linux.intel.com, song@kernel.org, neilb@suse.com,
- shli@fb.com, linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
- yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20240222075806.1816400-1-yukuai1@huaweicloud.com>
- <20240222075806.1816400-4-yukuai1@huaweicloud.com>
- <CALTww2_g5Sdxh5f=krWiZ1y2y7ud3XaSX5Hhx-mz3AU45c6rGg@mail.gmail.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <34fbafbe-a510-5193-b86c-91fac69de95f@huaweicloud.com>
-Date: Mon, 26 Feb 2024 17:12:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1708938785; c=relaxed/simple;
+	bh=KWGbGG8rfrPPvdpe7G9H/psbmmodTAi/gM+lU2rSfZ8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oicfK9pPPsxmSzHkdEUk925M+I0QbadRpvDE/pAmjOmxQ5hZWX9YQET9O5j7zEipdqr2gqsd/u8p05MWNQA8y/hQnu2aLsHgHmeASVslEsWfjxK5o2lwtPdc3sIse+klmsbkPS/PKLp0jw8CgOH+950JQFGneefU778N7FJ4rgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VeiK6zdT; arc=none smtp.client-ip=209.85.160.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-42e7fa59fa2so3049651cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 01:13:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708938782; x=1709543582; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ecRoWB6BvHUhdzEjksTvnhXSI1/zwOKVS+LkVvmOMPQ=;
+        b=VeiK6zdTqFj55xYZ506gR2kNCHhVwYGOZFuqjRKF8+p7mTzcIh95YmhuZwbjfADuBQ
+         l0sUS01sKxbcO+V5wAqPyh+AXwfJDq4RVYyZEEJM1K/d1yRQHCjPvFnzdZYqvygrQxec
+         lhkz3YborMaKIWsbP6Ur0eFRf2hxb0F92w7Z6MPDbaaKl2ShnzUXc6Ur+cw8eCwEjIqE
+         4eIp4dzMYq8eiDEUYC8+0AMm5Ua0IPWPtsPQDSwhL/WvgS86tmrHvUz4tEPwUMATLO2U
+         zBnZtFHqvBUvtG09wyaw8AZkjBu7L13AnT7Z8tYw4CVkELzD12L4whaaSXoR96Ao2txl
+         jR3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708938782; x=1709543582;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ecRoWB6BvHUhdzEjksTvnhXSI1/zwOKVS+LkVvmOMPQ=;
+        b=OLigmTrTmNcYy8KgbkGKXyPDtE2LdRyhueNPFdF8Xd+cegZew/+aKgsCduH/1WyIJU
+         GStYGMazHYm4FuIvjspw/u2tQJQOcAo6fXfjEkT5izTa9mPbUx1Z4q45dI8e1Kdu5nsh
+         XoRRfbmGSXEQ6+KFD9IO3baEToYXh4eIP442LtT2FfugG5zXQdIhBV+E4J4b6tosklbE
+         LWITn6/+7sBthw2BrHfRaw2B3LxlqOTBDXpEf4KdDFhZ+NsY+ufKX+oaewMCSlY5o5ZD
+         XKWqKHB63YbkwZtqI6y4NqmsDaRKWmgom6+ZYqpzANcmtQ5gjPaVKhXYsjN8TwY571+9
+         pQhg==
+X-Forwarded-Encrypted: i=1; AJvYcCUzVIkHJOob5/PaaGuTkmL/7CYRA4w8VH0IovQUQuGCvnOGl6swKLzJl6H5uMj6zIEkpjZDO8Ing+cg5glzhaEvJ7cnMxE7ABv+C1gc
+X-Gm-Message-State: AOJu0Yyr+DkN2XKnAMRp24JhKZA7QDt1oEJA44kbHLMumGxZ3qR8W6jD
+	g4xqyjRC99/XGft4zZMPupJrUrLGz7fcwAOu1le6EVZzRiiKY7OGRe8CH8hF5Vc=
+X-Google-Smtp-Source: AGHT+IG5KS/lj1TIzuJzr6YyKgAoDATn+QTG722b2AW5Wb9VXy3fFbOF5K7XJkl+GNVP9f0gf2LiOw==
+X-Received: by 2002:ac8:5909:0:b0:42e:8bb3:33b7 with SMTP id 9-20020ac85909000000b0042e8bb333b7mr871347qty.11.1708938782433;
+        Mon, 26 Feb 2024 01:13:02 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id o6-20020ac85546000000b0042e637083b7sm2221677qtr.26.2024.02.26.01.12.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 01:13:02 -0800 (PST)
+Message-ID: <13aeb2ff-72f4-49d9-b65e-ddc31569a936@linaro.org>
+Date: Mon, 26 Feb 2024 10:12:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CALTww2_g5Sdxh5f=krWiZ1y2y7ud3XaSX5Hhx-mz3AU45c6rGg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 8/9] media: dt-bindings: Add Intel Displayport RX IP
+Content-Language: en-US
+To: =?UTF-8?Q?Pawe=C5=82_Anikiel?= <panikiel@google.com>, airlied@gmail.com,
+ akpm@linux-foundation.org, conor+dt@kernel.org, daniel@ffwll.ch,
+ dinguyen@kernel.org, hverkuil-cisco@xs4all.nl,
+ krzysztof.kozlowski+dt@linaro.org, maarten.lankhorst@linux.intel.com,
+ mchehab@kernel.org, mripard@kernel.org, robh+dt@kernel.org,
+ tzimmermann@suse.de
+Cc: devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+ chromeos-krk-upstreaming@google.com, ribalda@chromium.org
+References: <20240221160215.484151-1-panikiel@google.com>
+ <20240221160215.484151-9-panikiel@google.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240221160215.484151-9-panikiel@google.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBXKBEMVtxlw6XMFA--.40107S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxZryUur13Gw1xtrW8ur1UAwb_yoWrZryDpa
-	yjvanayrWUXrWak3s0qw4UXrySq345JF48CFWkJa4SqryaqFZ0qryxK3yagFyUCFs3Jw1x
-	Xr1UGrW7u3WkKa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-	3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-	sGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-Hi,
+On 21/02/2024 17:02, Paweł Anikiel wrote:
+> The Intel Displayport RX IP is a part of the DisplayPort Intel FPGA IP
+> Core. It implements a DisplayPort 1.4 receiver capable of HBR3 video
+> capture and Multi-Stream Transport. The user guide can be found here:
+> 
+> https://www.intel.com/programmable/technical-pdfs/683273.pdf
+> 
+> Signed-off-by: Paweł Anikiel <panikiel@google.com>
+> ---
+>  .../devicetree/bindings/media/intel,dprx.yaml | 160 ++++++++++++++++++
+>  1 file changed, 160 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/intel,dprx.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/media/intel,dprx.yaml b/Documentation/devicetree/bindings/media/intel,dprx.yaml
+> new file mode 100644
+> index 000000000000..31025f2d5dcd
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/intel,dprx.yaml
+> @@ -0,0 +1,160 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/intel,dprx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Intel DisplayPort RX IP
+> +
+> +maintainers:
+> +  - Paweł Anikiel <panikiel@google.com>
+> +
+> +description: |
+> +  The Intel Displayport RX IP is a part of the DisplayPort Intel FPGA IP
+> +  Core. It implements a DisplayPort 1.4 receiver capable of HBR3 video
+> +  capture and Multi-Stream Transport.
+> +
+> +  The IP features a large number of configuration parameters, found at:
+> +  https://www.intel.com/content/www/us/en/docs/programmable/683273/23-3-20-0-1/sink-parameters.html
+> +
+> +  The following parameters have to be enabled:
+> +    - Support DisplayPort sink
+> +    - Enable GPU control
+> +  The following parameters' values have to be set in the devicetree:
+> +    - RX maximum link rate
+> +    - Maximum lane count
+> +    - Support MST
+> +    - Max stream count (only if Support MST is enabled)
+> +
+> +properties:
+> +  compatible:
+> +    const: intel,dprx-20.0.1
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  intel,max-link-rate:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: Max link rate configuration parameter
 
-在 2024/02/26 16:55, Xiao Ni 写道:
-> Hi Kuai
-> 
-> Thanks for the effort!
-> 
-> On Thu, Feb 22, 2024 at 4:04 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> Commit 12cee5a8a29e ("md/raid1: prevent merging too large request") add
->> the case choose next idle in read_balance():
->>
->> read_balance:
->>   for_each_rdev
->>    if(next_seq_sect == this_sector || disk == 0)
-> 
-> typo error: s/disk/dist/g
-> 
->>    -> sequential reads
->>     best_disk = disk;
->>     if (...)
->>      choose_next_idle = 1
->>      continue;
->>
->>   for_each_rdev
->>   -> iterate next rdev
->>    if (pending == 0)
->>     best_disk = disk;
->>     -> choose the next idle disk
->>     break;
->>
->>    if (choose_next_idle)
->>     -> keep using this rdev if there are no other idle disk
->>     continue
->>
->> However, commit 2e52d449bcec ("md/raid1: add failfast handling for reads.")
->> remove the code:
->>
->> -               /* If device is idle, use it */
->> -               if (pending == 0) {
->> -                       best_disk = disk;
->> -                       break;
->> -               }
->>
->> Hence choose next idle will never work now, fix this problem by
->> following:
->>
->> 1) don't set best_disk in this case, read_balance() will choose the best
->>     disk after iterating all the disks;
->> 2) add 'pending' so that other idle disk will be chosen;
->> 3) set 'dist' to 0 so that if there is no other idle disk, and all disks
->>     are rotational, this disk will still be chosen;
->>
->> Fixes: 2e52d449bcec ("md/raid1: add failfast handling for reads.")
->> Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
->> Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->>   drivers/md/raid1.c | 21 ++++++++++++---------
->>   1 file changed, 12 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
->> index c60ea58ae8c5..d0bc67e6d068 100644
->> --- a/drivers/md/raid1.c
->> +++ b/drivers/md/raid1.c
->> @@ -604,7 +604,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
->>          unsigned int min_pending;
->>          struct md_rdev *rdev;
->>          int choose_first;
->> -       int choose_next_idle;
->>
->>          /*
->>           * Check if we can balance. We can balance on the whole
->> @@ -619,7 +618,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
->>          best_pending_disk = -1;
->>          min_pending = UINT_MAX;
->>          best_good_sectors = 0;
->> -       choose_next_idle = 0;
->>          clear_bit(R1BIO_FailFast, &r1_bio->state);
->>
->>          if ((conf->mddev->recovery_cp < this_sector + sectors) ||
->> @@ -712,7 +710,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
->>                          int opt_iosize = bdev_io_opt(rdev->bdev) >> 9;
->>                          struct raid1_info *mirror = &conf->mirrors[disk];
->>
->> -                       best_disk = disk;
->>                          /*
->>                           * If buffered sequential IO size exceeds optimal
->>                           * iosize, check if there is idle disk. If yes, choose
->> @@ -731,15 +728,21 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
->>                              mirror->next_seq_sect > opt_iosize &&
->>                              mirror->next_seq_sect - opt_iosize >=
->>                              mirror->seq_start) {
->> -                               choose_next_idle = 1;
->> -                               continue;
->> +                               /*
->> +                                * Add 'pending' to avoid choosing this disk if
->> +                                * there is other idle disk.
->> +                                * Set 'dist' to 0, so that if there is no other
->> +                                * idle disk and all disks are rotational, this
->> +                                * disk will still be chosen.
->> +                                */
->> +                               pending++;
->> +                               dist = 0;
-> 
-> There is a problem. If all disks are not idle and there is a disk with
-> dist=0 before the seq disk, it can't read from the seq disk. It will
-> read from the first disk with dist=0. Maybe we can only add the codes
-> which are removed from 2e52d449bcec?
+Please do not duplicate property name in description. It's useless.
+Instead explain what is this responsible for.
 
-If there is a disk with disk=0, then best_dist_disk will be updated to
-the disk, and best_dist will be updated to 0 already:
+Why max-link-rate would differ for the same dprx-20.0.1? And why
+standard properties cannot be used?
 
-// in each iteration
-if (dist < best_dist) {
-	best_dist = dist;
-	btest_disk_disk = disk;
-}
+Same for all questions below.
 
-In this case, best_dist will be set to the first disk with dist=0, and
-at last, the disk will be chosen:
+> +
+> +  intel,max-lane-count:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: Max lane count configuration parameter
+> +
+> +  intel,multi-stream-support:
+> +    type: boolean
+> +    description: Multi-Stream Transport support configuration parameter
+> +
+> +  intel,max-stream-count:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: Max stream count configuration parameter
+> +
+> +  port:
+> +    $ref: /schemas/graph.yaml#/properties/port
+> +    description: SST main link
 
-if (best_disk == -1) {
-         if (has_nonrot_disk || min_pending == 0)
-                 best_disk = best_pending_disk;
-         else
-                 best_disk = best_dist_disk;
-		-> the first disk with dist=0;
-}
+I don't understand why you have both port and ports. Shouldn't this be
+under ports?
 
-So, the problem that you concerned should not exist.
+> +
+> +  ports:
+> +    $ref: /schemas/graph.yaml#/properties/ports
+> +
+> +    properties:
+> +      port@0:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description: MST virtual channel 0 or SST main link
+> +
+> +      port@1:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description: MST virtual channel 1
+> +
+> +      port@2:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description: MST virtual channel 2
+> +
+> +      port@3:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description: MST virtual channel 3
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +allOf:
+> +  - if:
+> +      required:
+> +        - intel,multi-stream-support
+> +    then:
+> +      required:
+> +        - intel,max-stream-count
+> +        - ports
+> +    else:
+> +      required:
+> +        - port
 
-Thanks,
-Kuai
-> 
-> Best Regards
-> Xiao
-> 
->> +                       } else {
->> +                               best_disk = disk;
->> +                               break;
->>                          }
->> -                       break;
->>                  }
->>
->> -               if (choose_next_idle)
->> -                       continue;
->> -
->>                  if (min_pending > pending) {
->>                          min_pending = pending;
->>                          best_pending_disk = disk;
->> --
->> 2.39.2
->>
->>
-> 
-> .
-> 
+
+Best regards,
+Krzysztof
 
 
