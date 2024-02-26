@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-80657-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 776D9866AFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:36:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 416F9866AFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:36:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32B92287AAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:36:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC10A287D11
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:36:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABB665103F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBD3151C42;
 	Mon, 26 Feb 2024 07:31:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oCbpG3vO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dTGOWEJj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 669C51CD19;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92FE81CD36;
 	Mon, 26 Feb 2024 07:31:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708932683; cv=none; b=NCtddm+/HK0Byw2zw/O4eTu2iEVwmJsKCq0jqCVusI0mh+WZfWJIy3k/vgd6IxSh0rzaHGyDG3zXtPkOq0tDNXcV+ppfkEveyu/D2GPAUzH0XObu0UEd/Nb92D63KeYXMmMVGLvAL3/F8hmmYe1YzzwhZpbYe1G0kMTt+HVFFuY=
+	t=1708932683; cv=none; b=cu0q/jYLgQazqbraIk3jNO1ff/Yghpyfk6hu6a2MRrhbGbI5B3IjhIbPgR+0LW8NeDOAofYEZkNDEqe42NvjlO8gXhoYQMc5rzXpWl2MqHW5FNjxyZXMJmIJPxBVEbcwN+k7Ls9T1KGAs0Xg6hipiQNuooPGf4CbhmIM/ZvA36E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708932683; c=relaxed/simple;
-	bh=axzOW/bLfk48A9ZCiMw4d+If5yhSQO0oy0KThVKKlAA=;
+	bh=caawVOpxHFy9cm3i7DwECM4693fhFarzsOiGy9doXoc=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=nwDrmlxFlZ14LKufnYaU2kyLClVcnLE+R081UK0PQ7v6/Ec0ylUpTwlKGFhblAHdlGU7NPQjXgxyHvA9e9ggkyArCFJcboWbq55n0XO/jiyTPZ4yZkCM5LDhtkdbTicHxZTxh6eG/rQYTcjdpDZccUmdMFzODJ+8AFMbfKWuO+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oCbpG3vO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 40184C4166B;
+	 In-Reply-To:To:Cc; b=o+n4rY6751/G+d4LjG92M3ksGtLuIlTOe5bYowbiiJAP80IqbOAoiXXVXnniqDdDV1PeTlFDjOVGr+wO643ICknx9J+qQoZgm3lUAqSHZ5Jccixr9p6lQ7WPKMNQyrXwOkFr/X0d3N9nMQ5jPjAfvfG/twjT3uQTnJoTFhu89N4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dTGOWEJj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 4FA81C4E684;
 	Mon, 26 Feb 2024 07:31:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1708932683;
-	bh=axzOW/bLfk48A9ZCiMw4d+If5yhSQO0oy0KThVKKlAA=;
+	bh=caawVOpxHFy9cm3i7DwECM4693fhFarzsOiGy9doXoc=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=oCbpG3vO8se88wi/DwNL00jV9O/HJgUSK5nDIzHFhQRKPi3UojTUuihksSbjo8fR6
-	 pZfVF20hIejkGqO53lPb+D2+T8GKlbif9dpJ9WLOwBieKBMPVgtX8mW3Lhe76GqusM
-	 F32sKCFfWI5zDMRiKiWRO6eVAt/dQvlT/uKrB9yAACM7zT5FxrH71Mf6kYn315wAIM
-	 A9xgSkudEqKVoE9l+imy5hizzudr3wy2ijVdSkklkGUD1N1vL2xRmWVzYCDGVt8Dhc
-	 nLzFOZuVMtEoCnw5QpkYmPCjxvXzVqR3ErHHKzmh7Jl0Hd8N01dvBUDIQIQmWfNW/a
-	 bhNoixLCvzcxg==
+	b=dTGOWEJj+ULmKl/yjEVeUxLX8CFRPsmPilpwQxv3AxDfhEJZXHkqrKCO6IeS0gwQK
+	 oJ2Kf4AKUae7xErt+lBRieUou6fp9ipcDjCCRAjFehURCKzXoJV8ihbzHuG9z4ieDV
+	 qELJmjicM7wzvocg1BtLXJfnPIx4ZAC/Q3OJRtwaz8FhWBuE69zWW3E1+SrU4+y2K1
+	 3oVLiRl7+MnkBTc6UusdSva4BLfzqql6UoJXPLqbGFDl6VfCcHdG1wTKX9/+2nh2B3
+	 2gNSVavXkYzxDZdR5kLziSEDXoWZbynRr/ofJ9p3SKwmC6KUOMhcJD12J/mVgmVkSf
+	 aqFbxp+M4k85g==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DC1BC48BF6;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E109C54E4A;
 	Mon, 26 Feb 2024 07:31:23 +0000 (UTC)
 From:
  Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date: Mon, 26 Feb 2024 10:30:20 +0300
-Subject: [PATCH v8 24/38] wdt: ts72xx: add DT support for ts72xx
+Date: Mon, 26 Feb 2024 10:30:21 +0300
+Subject: [PATCH v8 25/38] gpio: ep93xx: add DT support for gpio-ep93xx
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,20 +55,20 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240226-ep93xx-v8-24-3136dca7238f@maquefel.me>
+Message-Id: <20240226-ep93xx-v8-25-3136dca7238f@maquefel.me>
 References: <20240226-ep93xx-v8-0-3136dca7238f@maquefel.me>
 In-Reply-To: <20240226-ep93xx-v8-0-3136dca7238f@maquefel.me>
-To: Wim Van Sebroeck <wim@linux-watchdog.org>, 
- Guenter Roeck <linux@roeck-us.net>
-Cc: linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Arnd Bergmann <arnd@arndb.de>, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Linus Walleij <linus.walleij@linaro.org>, 
+ Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Arnd Bergmann <arnd@arndb.de>, Andy Shevchenko <andy.shevchenko@gmail.com>, 
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 X-Mailer: b4 0.13-dev-e3e53
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708932678; l=1140;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708932678; l=4650;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=1rWEe31MzZtFeQGF9K/nSefILZAuLYwUQNOfnETpfJQ=; =?utf-8?q?b=3DNWQLpVoBpfL9?=
- =?utf-8?q?gQI+O05wzm22KdiT6nG5iWLCWRzc1cdbYQkJvnvBjJyNai7GZUmhpey0wbtUU4/W?=
- IoxCiTcKCIici6gpa4xotksu4nZLvZplZHl8DG5QTEAaifusGN/h
+ bh=veUYE/VzU1y37Z5M8NkA7tAbUvE+Vs49lzqAWz+krrk=; =?utf-8?q?b=3Dxp+3tulwl4Wg?=
+ =?utf-8?q?u7pH0QHdYv2pIEzgDmI/0TP/QMh5Up3Jb4OULgIkcUdPz/iCI/rf2jgSIyGHgqqR?=
+ gqzmal9gACnpUfKRU0UsmS6ZNL/YKiG+u85/FCxMm2ws9HfPeEGv
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received:
@@ -80,43 +80,138 @@ From: Nikita Shubin <nikita.shubin@maquefel.me>
 
 Add OF ID match table.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- drivers/watchdog/ts72xx_wdt.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/gpio/gpio-ep93xx.c | 38 +++++++++++++++++++++++---------------
+ 1 file changed, 23 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/watchdog/ts72xx_wdt.c b/drivers/watchdog/ts72xx_wdt.c
-index 3d57670befe1..ac709dc31a65 100644
---- a/drivers/watchdog/ts72xx_wdt.c
-+++ b/drivers/watchdog/ts72xx_wdt.c
-@@ -12,6 +12,7 @@
-  */
- 
- #include <linux/platform_device.h>
-+#include <linux/mod_devicetable.h>
+diff --git a/drivers/gpio/gpio-ep93xx.c b/drivers/gpio/gpio-ep93xx.c
+index a55f635585f4..ab798c848215 100644
+--- a/drivers/gpio/gpio-ep93xx.c
++++ b/drivers/gpio/gpio-ep93xx.c
+@@ -12,13 +12,13 @@
+ #include <linux/init.h>
  #include <linux/module.h>
- #include <linux/watchdog.h>
+ #include <linux/platform_device.h>
++#include <linux/interrupt.h>
  #include <linux/io.h>
-@@ -160,10 +161,17 @@ static int ts72xx_wdt_probe(struct platform_device *pdev)
- 	return 0;
+ #include <linux/irq.h>
+ #include <linux/slab.h>
+ #include <linux/gpio/driver.h>
+ #include <linux/bitops.h>
+ #include <linux/seq_file.h>
+-#include <linux/interrupt.h>
+ 
+ struct ep93xx_gpio_irq_chip {
+ 	void __iomem *base;
+@@ -138,7 +138,8 @@ static void ep93xx_gpio_irq_mask_ack(struct irq_data *d)
+ {
+ 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+ 	struct ep93xx_gpio_irq_chip *eic = to_ep93xx_gpio_irq_chip(gc);
+-	int port_mask = BIT(irqd_to_hwirq(d));
++	irq_hw_number_t hwirq = irqd_to_hwirq(d);
++	int port_mask = BIT(hwirq);
+ 
+ 	if (irqd_get_trigger_type(d) == IRQ_TYPE_EDGE_BOTH)
+ 		eic->int_type2 ^= port_mask; /* switch edge direction */
+@@ -147,26 +148,28 @@ static void ep93xx_gpio_irq_mask_ack(struct irq_data *d)
+ 	ep93xx_gpio_update_int_params(eic);
+ 
+ 	writeb(port_mask, eic->base + EP93XX_INT_EOI_OFFSET);
+-	gpiochip_disable_irq(gc, irqd_to_hwirq(d));
++	gpiochip_disable_irq(gc, hwirq);
  }
  
-+static const struct of_device_id ts72xx_wdt_of_ids[] = {
-+	{ .compatible = "technologic,ts7200-wdt" },
+ static void ep93xx_gpio_irq_mask(struct irq_data *d)
+ {
+ 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+ 	struct ep93xx_gpio_irq_chip *eic = to_ep93xx_gpio_irq_chip(gc);
++	irq_hw_number_t hwirq = irqd_to_hwirq(d);
+ 
+-	eic->int_unmasked &= ~BIT(irqd_to_hwirq(d));
++	eic->int_unmasked &= ~BIT(hwirq);
+ 	ep93xx_gpio_update_int_params(eic);
+-	gpiochip_disable_irq(gc, irqd_to_hwirq(d));
++	gpiochip_disable_irq(gc, hwirq);
+ }
+ 
+ static void ep93xx_gpio_irq_unmask(struct irq_data *d)
+ {
+ 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+ 	struct ep93xx_gpio_irq_chip *eic = to_ep93xx_gpio_irq_chip(gc);
++	irq_hw_number_t hwirq = irqd_to_hwirq(d);
+ 
+-	gpiochip_enable_irq(gc, irqd_to_hwirq(d));
+-	eic->int_unmasked |= BIT(irqd_to_hwirq(d));
++	gpiochip_enable_irq(gc, hwirq);
++	eic->int_unmasked |= BIT(hwirq);
+ 	ep93xx_gpio_update_int_params(eic);
+ }
+ 
+@@ -179,11 +182,11 @@ static int ep93xx_gpio_irq_type(struct irq_data *d, unsigned int type)
+ {
+ 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+ 	struct ep93xx_gpio_irq_chip *eic = to_ep93xx_gpio_irq_chip(gc);
+-	irq_hw_number_t offset = irqd_to_hwirq(d);
+-	int port_mask = BIT(offset);
++	irq_hw_number_t hwirq = irqd_to_hwirq(d);
++	int port_mask = BIT(hwirq);
+ 	irq_flow_handler_t handler;
+ 
+-	gc->direction_input(gc, offset);
++	gc->direction_input(gc, hwirq);
+ 
+ 	switch (type) {
+ 	case IRQ_TYPE_EDGE_RISING:
+@@ -209,7 +212,7 @@ static int ep93xx_gpio_irq_type(struct irq_data *d, unsigned int type)
+ 	case IRQ_TYPE_EDGE_BOTH:
+ 		eic->int_type1 |= port_mask;
+ 		/* set initial polarity based on current input level */
+-		if (gc->get(gc, offset))
++		if (gc->get(gc, hwirq))
+ 			eic->int_type2 &= ~port_mask; /* falling */
+ 		else
+ 			eic->int_type2 |= port_mask; /* rising */
+@@ -285,9 +288,8 @@ static int ep93xx_setup_irqs(struct platform_device *pdev,
+ 	if (girq->num_parents == 0)
+ 		return -EINVAL;
+ 
+-	girq->parents = devm_kcalloc(dev, girq->num_parents,
+-				   sizeof(*girq->parents),
+-				   GFP_KERNEL);
++	girq->parents = devm_kcalloc(dev, girq->num_parents, sizeof(*girq->parents),
++				     GFP_KERNEL);
+ 	if (!girq->parents)
+ 		return -ENOMEM;
+ 
+@@ -306,7 +308,7 @@ static int ep93xx_setup_irqs(struct platform_device *pdev,
+ 		girq->parent_handler = ep93xx_gpio_f_irq_handler;
+ 
+ 		for (i = 0; i < girq->num_parents; i++) {
+-			irq = platform_get_irq(pdev, i);
++			irq = platform_get_irq_optional(pdev, i);
+ 			if (irq < 0)
+ 				continue;
+ 
+@@ -359,9 +361,15 @@ static int ep93xx_gpio_probe(struct platform_device *pdev)
+ 	return devm_gpiochip_add_data(&pdev->dev, gc, egc);
+ }
+ 
++static const struct of_device_id ep93xx_gpio_match[] = {
++	{ .compatible = "cirrus,ep9301-gpio" },
 +	{ /* sentinel */ }
 +};
-+MODULE_DEVICE_TABLE(of, ts72xx_wdt_of_ids);
 +
- static struct platform_driver ts72xx_wdt_driver = {
- 	.probe		= ts72xx_wdt_probe,
+ static struct platform_driver ep93xx_gpio_driver = {
  	.driver		= {
- 		.name	= "ts72xx-wdt",
-+		.of_match_table = ts72xx_wdt_of_ids,
+ 		.name	= "gpio-ep93xx",
++		.of_match_table = ep93xx_gpio_match,
  	},
+ 	.probe		= ep93xx_gpio_probe,
  };
- 
 
 -- 
 2.41.0
