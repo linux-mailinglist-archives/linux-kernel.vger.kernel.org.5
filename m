@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-81630-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81631-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CE56867886
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:32:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46B89867887
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:32:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96C721F2D917
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:32:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0F3B291CB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:32:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06B7412C806;
-	Mon, 26 Feb 2024 14:30:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A423512CD99;
+	Mon, 26 Feb 2024 14:30:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2QEPb+Mj"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VJAJ4Ir4"
+Received: from mail-wm1-f74.google.com (mail-wm1-f74.google.com [209.85.128.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61FAB12C55D
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 14:30:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C732912C814
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 14:30:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708957821; cv=none; b=H2SltgSxdgHq3p+tuAZnjTpVJqcvHHhrE4BiQV/fSNJPXjbU5sTxUnlUicl7JBLVIJeUcWf73hcMHjaIke1Hic8zrdU3IBRpde0ueGQ3PIlB+PVFgg62XYBZexFvOZV448w+sivXm7qvA3qFdB5G/gRsnXqZvqdWKUZF87nPliQ=
+	t=1708957824; cv=none; b=YCME1Q4PveDZcZSXX4XfnskoViZPfdsYTytXhXztrbfL8PdAHIwbJlBkaiyJELaGe+wV1jbaLq5C63GBp1pkpxei0kz1vKmiEM/ybM75Y1M8MF/t30qp99PmB1NDTPCX7LLHKJH6g72Jd8ZlcHUUyJqWroDjkH9IfxYtZ0RPrTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708957821; c=relaxed/simple;
-	bh=WZPNjU+tKWbG1/7EwXfp1HjOJvLOdEPU1KuRuZ22CGg=;
+	s=arc-20240116; t=1708957824; c=relaxed/simple;
+	bh=dRE0REehaE79mQAOudLPe6thvzCULsyHIPQfD/woex8=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Bm7V92jCUs1jbnVf2S6aLPSpeYfRE8yIOztToaqHwNR2tkjy1JchPuhRfNcCnGSOUt+uUPPpN/LMFNLUq8vLG9HKVOfuNgp/kdqKfiIvYjodMVXWv4p8dSc1WPQUjILJ4IBMeqClh74rqPqq9q9/HkxUWbzhOM5V//bvimEec74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2QEPb+Mj; arc=none smtp.client-ip=209.85.219.202
+	 To:Cc:Content-Type; b=U8fQZxZVgNDXIHLgOJ8B7jYW1ro7w5QPVuuSk/HOhLEmL8K6f5cY4zsSHtp9iHy8UVbIysl0gL6HdLsWIQZIAV0G1DCU2aWZWbSvZo43Rgyzb6CEZ64AQ0LSnAGyjmz+2PogiFa8mnv8EHFUnOJQuyUBWc2M/qIi3y3adZeojxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VJAJ4Ir4; arc=none smtp.client-ip=209.85.128.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcd94cc48a1so4271653276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 06:30:19 -0800 (PST)
+Received: by mail-wm1-f74.google.com with SMTP id 5b1f17b1804b1-40fb505c97aso17421905e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 06:30:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708957818; x=1709562618; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1708957821; x=1709562621; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aHBDJ41pn3iOna4rTXtxPzeJ6vfMVADf3iDfGB7g+R4=;
-        b=2QEPb+MjnI56wEfb45TsVm3qQ9DWpl1NDS/j2MgF8PlRNmOKCcXGcvwpLz1e9I6sqx
-         hO4m69w2NtRCo3MyTwaQwt8IVdXEWI6coOB4IG6/MgQaX0u4GEKgrdjnflL/ymJkZ+F0
-         vKUhSNIF4Zf6yt/NV8Q0I1dsujzFFzxL265oXueGWwufVlrqWrOEVfqH0fMkAlDzj9cd
-         Z66lQLsSQ7+uT5rONPHqjvtH/enY17ms1I6xfcCj+d4gvGFX/I3MSWVJb3KdOdo3/cnL
-         /KcuLqe3AujVzukS99Ns+GjDqzW8oGZeIqcCAA+/v9qr+9R48Qp4NhmQuXlkWCT0/amw
-         P11w==
+        bh=o1RTMbx8aPOdGUmQigoxFTqq7Alxv8e0fhW/7jCZ7hc=;
+        b=VJAJ4Ir4KQ0hqzPxYpopFaGL0bT4Q6ddxN4WKEppogdgYtPK2AZjUOMsGsXPKlbLqK
+         y6bvx1UPDtyzv9X7z2ObEj7lo4TIjNj2fMbfSPj0urBMVn0H5SSAv6xb6NwLKc4/jF0d
+         l6E040jd4ag89f/U92ODBBjB/YCFpDPPQmWphl6a4ygAS87VlA7nog4uFYfLZanowthC
+         38lK0hg0kZTnqA4Xr4lIwG1UtKmcdqIERCa5HqY/crrwkuw3o2hSqqyAEYFv8qAzzrcs
+         /b418xGN03Q9hsZMXd4qj7Q9RDOYUKOn2njA5XMjQCcJcaRO6dqlZd1jUkUqiNybvLLv
+         lc+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708957818; x=1709562618;
+        d=1e100.net; s=20230601; t=1708957821; x=1709562621;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aHBDJ41pn3iOna4rTXtxPzeJ6vfMVADf3iDfGB7g+R4=;
-        b=kE0Uq60hCoHmPK/YF0EvU3jCE6qXVacDxd9eWOrobzfRtf/zYk9tBcn0ZqRdJGtPps
-         kUfISCXbyxJib6Hxjtsk0Uo/y0MdiHi6T1rv2MhCCwOxALfNRgPWgHd3gnRmLAGg7Xu/
-         rkX+kGZmGmULDef7tcov/Uk9GmbWlnOPp5K8qXnsg6fxzsKI/ORF0QDjBnTLE9h2XDyP
-         p3VQNsbch4yPXQ+FqCjuLEiHBk7rBj+Lblkx3auhjliifjnK7jm4AgboWrtVsBXP255I
-         IRuoIbNT0XjBWAQNoOAQ9KKXbFtlx3wJ0xXJ6e+InzVcswuqzRBMqc+IFcUerytQ07VV
-         qklg==
-X-Gm-Message-State: AOJu0Yz15EXecM9LadPmmSQCShzCWF6PFZDpFYiKRhjht7c9VGhy/L61
-	RJ+4Nxdfg4CbHnQg/LbbQ3ji0qZdeZPNVSOB7iUQ0I8R+LK2QhwczsUXIhyvnRGVadMIFo6qJnb
-	fVWNHVnaGlqdhPP32BG0A42F4AgEtLfNnB4/s/uHRxSxUMPwI3PjyVHaHiJIGJ3DeNI5oOMs1YJ
-	P5C0jkatCvkWzv4Lk2w3EGspQR3/a2bw==
-X-Google-Smtp-Source: AGHT+IGhfWgLDKjgKBzD9HHo/JGuu3u5CiubkHT0Pq0lnQt5M9sGLUKvkoIJLTqVuGN9vlyXVUFm/y8e
+        bh=o1RTMbx8aPOdGUmQigoxFTqq7Alxv8e0fhW/7jCZ7hc=;
+        b=Ztl6KLp97RZVDCXi5Ana2BwD1kiWPuRa6wyEOIf5/3rAgLZfXNWC0/Bb0/YAfzKTXE
+         ro7H6xqVTeRR+u4yyKlcd1qh66kYuYyl94il7tm8ScpEeSyEOUrXFs/E5KPwKgsGUvbU
+         Q4qr182H2GIxj4nrUy6bWZwCuA4HmKP/phqzu5I1itL/bZdbWlzy0Bebn0Tl2gL4AQsw
+         4vEr5ivvC2PcJlC+rhGD/TwEOZGVw/a5xzu1NHIR2kyvY5swaPexCRAd6g2czYkLNnIc
+         VfPC0+PwoWhAVfUTB0qmYnnD5Bhs3Bh17P52Zh5eQQ4UeA5r4J79siZ0drBGFaIjb/ou
+         EKnw==
+X-Gm-Message-State: AOJu0YwCG0PgDEez8+63v8b65klrwYKAXS7vXwpwV3p9zkwWF6Qu64kW
+	LiknBqfz/DXvPsnSBL17xE1zemUPqgLO4I7nKbsvR2PBQA4nT4JKBLfNPT7za95NAhmSKqL9riN
+	S0QNRmYQK8ctIGCrZbAAKe01efJkZlaVTAY11xz3w1zANOe/VzRgc505G8NM8S7Fp3UaGdjHGmz
+	pboVMIFj2h4IwwS4OBo4rYvTDdoDuz2A==
+X-Google-Smtp-Source: AGHT+IF5jAW0pmgmSam1nTHpkEKG/HjPYfTv5KfzvhtnsDBMPadI/fKutxd38U453MyR5zjJPiDaIGY5
 X-Received: from palermo.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:118a])
- (user=ardb job=sendgmr) by 2002:a05:6902:1003:b0:dc6:e5e9:f3af with SMTP id
- w3-20020a056902100300b00dc6e5e9f3afmr2087407ybt.9.1708957818551; Mon, 26 Feb
- 2024 06:30:18 -0800 (PST)
-Date: Mon, 26 Feb 2024 15:30:01 +0100
+ (user=ardb job=sendgmr) by 2002:a05:600c:5191:b0:412:a81e:dd7c with SMTP id
+ fa17-20020a05600c519100b00412a81edd7cmr3324wmb.1.1708957820860; Mon, 26 Feb
+ 2024 06:30:20 -0800 (PST)
+Date: Mon, 26 Feb 2024 15:30:02 +0100
 In-Reply-To: <20240226142952.64769-12-ardb+git@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,9 +73,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240226142952.64769-12-ardb+git@google.com>
 X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <20240226142952.64769-20-ardb+git@google.com>
-Subject: [PATCH v6 08/10] x86/sme: Move early SME kernel encryption handling
- into .head.text
+Message-ID: <20240226142952.64769-21-ardb+git@google.com>
+Subject: [PATCH v6 09/10] x86/sev: Move early startup code into .head.text section
 From: Ard Biesheuvel <ardb+git@google.com>
 To: linux-kernel@vger.kernel.org
 Cc: Ard Biesheuvel <ardb@kernel.org>, Kevin Loughlin <kevinloughlin@google.com>, 
@@ -87,196 +86,195 @@ Content-Type: text/plain; charset="UTF-8"
 
 From: Ard Biesheuvel <ardb@kernel.org>
 
-The .head.text section is the initial primary entrypoint of the core
-kernel, and is entered with the CPU executing from a 1:1 mapping of
-memory. Such code must never access global variables using absolute
-references, as these are based on the kernel virtual mapping which is
-not active yet at this point.
-
-Given that the SME startup code is also called from this early execution
-context, move it into .head.text as well. This will allow more thorough
-build time checks in the future to ensure that early startup code only
-uses RIP-relative references to global variables.
-
-Also replace some occurrences of __pa_symbol() [which relies on the
-compiler generating an absolute reference, which is not guaranteed] and
-an open coded RIP-relative access with RIP_REL_REF().
+In preparation for implementing rigorous build time checks to enforce
+that only code that can support it will be called from the early 1:1
+mapping of memory, move SEV init code that is called in this manner to
+the .head.text section.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/x86/include/asm/mem_encrypt.h |  4 +-
- arch/x86/mm/mem_encrypt_identity.c | 40 ++++++++------------
- 2 files changed, 18 insertions(+), 26 deletions(-)
+ arch/x86/boot/compressed/sev.c |  3 +++
+ arch/x86/include/asm/sev.h     | 10 ++++-----
+ arch/x86/kernel/sev-shared.c   | 23 +++++++++-----------
+ arch/x86/kernel/sev.c          | 14 +++++++-----
+ 4 files changed, 26 insertions(+), 24 deletions(-)
 
-diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
-index b1437ba0b3b8..f922b682b9b4 100644
---- a/arch/x86/include/asm/mem_encrypt.h
-+++ b/arch/x86/include/asm/mem_encrypt.h
-@@ -47,7 +47,7 @@ void __init sme_unmap_bootdata(char *real_mode_data);
+diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/sev.c
+index 073291832f44..bea0719d70f2 100644
+--- a/arch/x86/boot/compressed/sev.c
++++ b/arch/x86/boot/compressed/sev.c
+@@ -116,6 +116,9 @@ static bool fault_in_kernel_space(unsigned long address)
+ #undef __init
+ #define __init
  
- void __init sme_early_init(void);
++#undef __head
++#define __head
++
+ #define __BOOT_COMPRESSED
  
--void __init sme_encrypt_kernel(struct boot_params *bp);
-+void sme_encrypt_kernel(struct boot_params *bp);
- void sme_enable(struct boot_params *bp);
+ /* Basic instruction decoding support needed */
+diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
+index bed95e1f4d52..cf671138feef 100644
+--- a/arch/x86/include/asm/sev.h
++++ b/arch/x86/include/asm/sev.h
+@@ -213,16 +213,16 @@ static inline int pvalidate(unsigned long vaddr, bool rmp_psize, bool validate)
+ struct snp_guest_request_ioctl;
  
- int __init early_set_memory_decrypted(unsigned long vaddr, unsigned long size);
-@@ -81,7 +81,7 @@ static inline void __init sme_unmap_bootdata(char *real_mode_data) { }
+ void setup_ghcb(void);
+-void __init early_snp_set_memory_private(unsigned long vaddr, unsigned long paddr,
+-					 unsigned long npages);
+-void __init early_snp_set_memory_shared(unsigned long vaddr, unsigned long paddr,
+-					unsigned long npages);
++void early_snp_set_memory_private(unsigned long vaddr, unsigned long paddr,
++				  unsigned long npages);
++void early_snp_set_memory_shared(unsigned long vaddr, unsigned long paddr,
++				 unsigned long npages);
+ void __init snp_prep_memory(unsigned long paddr, unsigned int sz, enum psc_op op);
+ void snp_set_memory_shared(unsigned long vaddr, unsigned long npages);
+ void snp_set_memory_private(unsigned long vaddr, unsigned long npages);
+ void snp_set_wakeup_secondary_cpu(void);
+ bool snp_init(struct boot_params *bp);
+-void __init __noreturn snp_abort(void);
++void __noreturn snp_abort(void);
+ int snp_issue_guest_request(u64 exit_code, struct snp_req_data *input, struct snp_guest_request_ioctl *rio);
+ void snp_accept_memory(phys_addr_t start, phys_addr_t end);
+ u64 snp_get_unsupported_features(u64 status);
+diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
+index ae79f9505298..0bd7ccbe8732 100644
+--- a/arch/x86/kernel/sev-shared.c
++++ b/arch/x86/kernel/sev-shared.c
+@@ -93,7 +93,8 @@ static bool __init sev_es_check_cpu_features(void)
+ 	return true;
+ }
  
- static inline void __init sme_early_init(void) { }
+-static void __noreturn sev_es_terminate(unsigned int set, unsigned int reason)
++static void __head __noreturn
++sev_es_terminate(unsigned int set, unsigned int reason)
+ {
+ 	u64 val = GHCB_MSR_TERM_REQ;
  
--static inline void __init sme_encrypt_kernel(struct boot_params *bp) { }
-+static inline void sme_encrypt_kernel(struct boot_params *bp) { }
- static inline void sme_enable(struct boot_params *bp) { }
+@@ -330,13 +331,7 @@ static int sev_cpuid_hv(struct ghcb *ghcb, struct es_em_ctxt *ctxt, struct cpuid
+  */
+ static const struct snp_cpuid_table *snp_cpuid_get_table(void)
+ {
+-	void *ptr;
+-
+-	asm ("lea cpuid_table_copy(%%rip), %0"
+-	     : "=r" (ptr)
+-	     : "p" (&cpuid_table_copy));
+-
+-	return ptr;
++	return &RIP_REL_REF(cpuid_table_copy);
+ }
  
- static inline void sev_es_init_vc_handling(void) { }
-diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
-index 0180fbbcc940..174a7192c9cb 100644
---- a/arch/x86/mm/mem_encrypt_identity.c
-+++ b/arch/x86/mm/mem_encrypt_identity.c
-@@ -41,6 +41,7 @@
- #include <linux/mem_encrypt.h>
- #include <linux/cc_platform.h>
+ /*
+@@ -395,7 +390,7 @@ static u32 snp_cpuid_calc_xsave_size(u64 xfeatures_en, bool compacted)
+ 	return xsave_size;
+ }
+ 
+-static bool
++static bool __head
+ snp_cpuid_get_validated_func(struct cpuid_leaf *leaf)
+ {
+ 	const struct snp_cpuid_table *cpuid_table = snp_cpuid_get_table();
+@@ -532,7 +527,8 @@ static int snp_cpuid_postprocess(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
+  * Returns -EOPNOTSUPP if feature not enabled. Any other non-zero return value
+  * should be treated as fatal by caller.
+  */
+-static int snp_cpuid(struct ghcb *ghcb, struct es_em_ctxt *ctxt, struct cpuid_leaf *leaf)
++static int __head
++snp_cpuid(struct ghcb *ghcb, struct es_em_ctxt *ctxt, struct cpuid_leaf *leaf)
+ {
+ 	const struct snp_cpuid_table *cpuid_table = snp_cpuid_get_table();
+ 
+@@ -574,7 +570,7 @@ static int snp_cpuid(struct ghcb *ghcb, struct es_em_ctxt *ctxt, struct cpuid_le
+  * page yet, so it only supports the MSR based communication with the
+  * hypervisor and only the CPUID exit-code.
+  */
+-void __init do_vc_no_ghcb(struct pt_regs *regs, unsigned long exit_code)
++void __head do_vc_no_ghcb(struct pt_regs *regs, unsigned long exit_code)
+ {
+ 	unsigned int subfn = lower_bits(regs->cx, 32);
+ 	unsigned int fn = lower_bits(regs->ax, 32);
+@@ -1025,7 +1021,8 @@ struct cc_setup_data {
+  * Search for a Confidential Computing blob passed in as a setup_data entry
+  * via the Linux Boot Protocol.
+  */
+-static struct cc_blob_sev_info *find_cc_blob_setup_data(struct boot_params *bp)
++static __head
++struct cc_blob_sev_info *find_cc_blob_setup_data(struct boot_params *bp)
+ {
+ 	struct cc_setup_data *sd = NULL;
+ 	struct setup_data *hdr;
+@@ -1052,7 +1049,7 @@ static struct cc_blob_sev_info *find_cc_blob_setup_data(struct boot_params *bp)
+  * mapping needs to be updated in sync with all the changes to virtual memory
+  * layout and related mapping facilities throughout the boot process.
+  */
+-static void __init setup_cpuid_table(const struct cc_blob_sev_info *cc_info)
++static void __head setup_cpuid_table(const struct cc_blob_sev_info *cc_info)
+ {
+ 	const struct snp_cpuid_table *cpuid_table_fw, *cpuid_table;
+ 	int i;
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index 1ef7ae806a01..33c14aa1f06c 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -25,6 +25,7 @@
+ #include <linux/psp-sev.h>
+ #include <uapi/linux/sev-guest.h>
  
 +#include <asm/init.h>
- #include <asm/setup.h>
- #include <asm/sections.h>
- #include <asm/coco.h>
-@@ -95,7 +96,7 @@ struct sme_populate_pgd_data {
-  */
- static char sme_workarea[2 * PMD_SIZE] __section(".init.scratch");
- 
--static void __init sme_clear_pgd(struct sme_populate_pgd_data *ppd)
-+static void __head sme_clear_pgd(struct sme_populate_pgd_data *ppd)
- {
- 	unsigned long pgd_start, pgd_end, pgd_size;
- 	pgd_t *pgd_p;
-@@ -110,7 +111,7 @@ static void __init sme_clear_pgd(struct sme_populate_pgd_data *ppd)
- 	memset(pgd_p, 0, pgd_size);
+ #include <asm/cpu_entry_area.h>
+ #include <asm/stacktrace.h>
+ #include <asm/sev.h>
+@@ -682,8 +683,9 @@ static u64 __init get_jump_table_addr(void)
+ 	return ret;
  }
  
--static pud_t __init *sme_prepare_pgd(struct sme_populate_pgd_data *ppd)
-+static pud_t __head *sme_prepare_pgd(struct sme_populate_pgd_data *ppd)
+-static void early_set_pages_state(unsigned long vaddr, unsigned long paddr,
+-				  unsigned long npages, enum psc_op op)
++static void __head
++early_set_pages_state(unsigned long vaddr, unsigned long paddr,
++		      unsigned long npages, enum psc_op op)
  {
- 	pgd_t *pgd;
- 	p4d_t *p4d;
-@@ -147,7 +148,7 @@ static pud_t __init *sme_prepare_pgd(struct sme_populate_pgd_data *ppd)
- 	return pud;
+ 	unsigned long paddr_end;
+ 	u64 val;
+@@ -739,7 +741,7 @@ static void early_set_pages_state(unsigned long vaddr, unsigned long paddr,
+ 	sev_es_terminate(SEV_TERM_SET_LINUX, GHCB_TERM_PSC);
  }
  
--static void __init sme_populate_pgd_large(struct sme_populate_pgd_data *ppd)
-+static void __head sme_populate_pgd_large(struct sme_populate_pgd_data *ppd)
+-void __init early_snp_set_memory_private(unsigned long vaddr, unsigned long paddr,
++void __head early_snp_set_memory_private(unsigned long vaddr, unsigned long paddr,
+ 					 unsigned long npages)
  {
- 	pud_t *pud;
- 	pmd_t *pmd;
-@@ -163,7 +164,7 @@ static void __init sme_populate_pgd_large(struct sme_populate_pgd_data *ppd)
- 	set_pmd(pmd, __pmd(ppd->paddr | ppd->pmd_flags));
- }
- 
--static void __init sme_populate_pgd(struct sme_populate_pgd_data *ppd)
-+static void __head sme_populate_pgd(struct sme_populate_pgd_data *ppd)
- {
- 	pud_t *pud;
- 	pmd_t *pmd;
-@@ -189,7 +190,7 @@ static void __init sme_populate_pgd(struct sme_populate_pgd_data *ppd)
- 		set_pte(pte, __pte(ppd->paddr | ppd->pte_flags));
- }
- 
--static void __init __sme_map_range_pmd(struct sme_populate_pgd_data *ppd)
-+static void __head __sme_map_range_pmd(struct sme_populate_pgd_data *ppd)
- {
- 	while (ppd->vaddr < ppd->vaddr_end) {
- 		sme_populate_pgd_large(ppd);
-@@ -199,7 +200,7 @@ static void __init __sme_map_range_pmd(struct sme_populate_pgd_data *ppd)
- 	}
- }
- 
--static void __init __sme_map_range_pte(struct sme_populate_pgd_data *ppd)
-+static void __head __sme_map_range_pte(struct sme_populate_pgd_data *ppd)
- {
- 	while (ppd->vaddr < ppd->vaddr_end) {
- 		sme_populate_pgd(ppd);
-@@ -209,7 +210,7 @@ static void __init __sme_map_range_pte(struct sme_populate_pgd_data *ppd)
- 	}
- }
- 
--static void __init __sme_map_range(struct sme_populate_pgd_data *ppd,
-+static void __head __sme_map_range(struct sme_populate_pgd_data *ppd,
- 				   pmdval_t pmd_flags, pteval_t pte_flags)
- {
- 	unsigned long vaddr_end;
-@@ -233,22 +234,22 @@ static void __init __sme_map_range(struct sme_populate_pgd_data *ppd,
- 	__sme_map_range_pte(ppd);
- }
- 
--static void __init sme_map_range_encrypted(struct sme_populate_pgd_data *ppd)
-+static void __head sme_map_range_encrypted(struct sme_populate_pgd_data *ppd)
- {
- 	__sme_map_range(ppd, PMD_FLAGS_ENC, PTE_FLAGS_ENC);
- }
- 
--static void __init sme_map_range_decrypted(struct sme_populate_pgd_data *ppd)
-+static void __head sme_map_range_decrypted(struct sme_populate_pgd_data *ppd)
- {
- 	__sme_map_range(ppd, PMD_FLAGS_DEC, PTE_FLAGS_DEC);
- }
- 
--static void __init sme_map_range_decrypted_wp(struct sme_populate_pgd_data *ppd)
-+static void __head sme_map_range_decrypted_wp(struct sme_populate_pgd_data *ppd)
- {
- 	__sme_map_range(ppd, PMD_FLAGS_DEC_WP, PTE_FLAGS_DEC_WP);
- }
- 
--static unsigned long __init sme_pgtable_calc(unsigned long len)
-+static unsigned long __head sme_pgtable_calc(unsigned long len)
- {
- 	unsigned long entries = 0, tables = 0;
- 
-@@ -285,7 +286,7 @@ static unsigned long __init sme_pgtable_calc(unsigned long len)
- 	return entries + tables;
- }
- 
--void __init sme_encrypt_kernel(struct boot_params *bp)
-+void __head sme_encrypt_kernel(struct boot_params *bp)
- {
- 	unsigned long workarea_start, workarea_end, workarea_len;
- 	unsigned long execute_start, execute_end, execute_len;
-@@ -320,9 +321,8 @@ void __init sme_encrypt_kernel(struct boot_params *bp)
- 	 *     memory from being cached.
- 	 */
- 
--	/* Physical addresses gives us the identity mapped virtual addresses */
--	kernel_start = __pa_symbol(_text);
--	kernel_end = ALIGN(__pa_symbol(_end), PMD_SIZE);
-+	kernel_start = (unsigned long)RIP_REL_REF(_text);
-+	kernel_end = ALIGN((unsigned long)RIP_REL_REF(_end), PMD_SIZE);
- 	kernel_len = kernel_end - kernel_start;
- 
- 	initrd_start = 0;
-@@ -339,14 +339,6 @@ void __init sme_encrypt_kernel(struct boot_params *bp)
- 	}
- #endif
- 
--	/*
--	 * We're running identity mapped, so we must obtain the address to the
--	 * SME encryption workarea using rip-relative addressing.
--	 */
--	asm ("lea sme_workarea(%%rip), %0"
--	     : "=r" (workarea_start)
--	     : "p" (sme_workarea));
--
  	/*
- 	 * Calculate required number of workarea bytes needed:
- 	 *   executable encryption area size:
-@@ -356,7 +348,7 @@ void __init sme_encrypt_kernel(struct boot_params *bp)
- 	 *   pagetable structures for the encryption of the kernel
- 	 *   pagetable structures for workarea (in case not currently mapped)
- 	 */
--	execute_start = workarea_start;
-+	execute_start = workarea_start = (unsigned long)RIP_REL_REF(sme_workarea);
- 	execute_end = execute_start + (PAGE_SIZE * 2) + PMD_SIZE;
- 	execute_len = execute_end - execute_start;
+@@ -2062,7 +2064,7 @@ bool __init handle_vc_boot_ghcb(struct pt_regs *regs)
+  *
+  * Scan for the blob in that order.
+  */
+-static __init struct cc_blob_sev_info *find_cc_blob(struct boot_params *bp)
++static __head struct cc_blob_sev_info *find_cc_blob(struct boot_params *bp)
+ {
+ 	struct cc_blob_sev_info *cc_info;
  
+@@ -2088,7 +2090,7 @@ static __init struct cc_blob_sev_info *find_cc_blob(struct boot_params *bp)
+ 	return cc_info;
+ }
+ 
+-bool __init snp_init(struct boot_params *bp)
++bool __head snp_init(struct boot_params *bp)
+ {
+ 	struct cc_blob_sev_info *cc_info;
+ 
+@@ -2110,7 +2112,7 @@ bool __init snp_init(struct boot_params *bp)
+ 	return true;
+ }
+ 
+-void __init __noreturn snp_abort(void)
++void __head __noreturn snp_abort(void)
+ {
+ 	sev_es_terminate(SEV_TERM_SET_GEN, GHCB_SNP_UNSUPPORTED);
+ }
 -- 
 2.44.0.rc0.258.g7320e95886-goog
 
