@@ -1,95 +1,342 @@
-Return-Path: <linux-kernel+bounces-81919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E943867C2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:38:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89F5F867C31
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:39:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 804601C252BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:38:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4006A296035
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:39:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5830B12C548;
-	Mon, 26 Feb 2024 16:38:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20D2512BF12;
+	Mon, 26 Feb 2024 16:39:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="skJ8NSQi"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="H2p+HbLF"
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44AB6433C4;
-	Mon, 26 Feb 2024 16:38:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 375971E522
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:39:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708965490; cv=none; b=lno9dkWKvlOYU71qoq1dbQv94yqVQQIp4IJ7XODFC+ncIck/CYtrDEs4hWi7AUfPJwCNmXOt+wpRI7pksZsQlX5ZG6XjzjnIbbhlrKe2Kbdqbj1EoxRS3h4mf0bqNZ70rPiXCkt3qi6dXQrS32mBGeGW6OLG7DtW8gVUL7q6Vb4=
+	t=1708965565; cv=none; b=O0ufsMnf4eosYcOpoQ9MDRi/KSXxkQX5L8UN29+3sQy91yaAfYtoG/ov+RLvGQLYfdgMvt2D4s5dO0rF7Ecu7o7zWGM2Ci9LZIaMAm8Y3DjUCEt5FYIG8pSKR6H0ifji8FpUc4IU+Gwiq2jEAfIbU6Ai2V3pil1UX9WXbFBzUxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708965490; c=relaxed/simple;
-	bh=qtI1GWks/xC6VmEOnbJ7BknkMKj/aRcqiRxqQdtVliU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Nq1bTQ2bu1C7eVBoH2bpwhDmi0ZMZyn1uhurB+Ir6WSWCQdKtg3K2nwM4ce4M9NlAoN9/yT6/u1/GZbD41XPT4hRSEFQXVRxtkzBokfsSOOn3K+evUByUln9fiAXEHXaSKz8WXHRUBT6Wjcz6Jllr9X2irRLHEHmLnc4iMNy8dg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=skJ8NSQi; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=pzNkiLLdvEQaY40Mc3HCstVtMva5WbfAzir5v5y3tmg=; b=skJ8NSQiLGJgFXB9vdmAyueDWU
-	GTAqj8bwdyrLW05lMJsPBxXn7BfeQafwxRgFcT2EvKjxmjvWTJmY7moVEMIwqsgfGXlPVlq5yEhDD
-	9P2RM78orAlQYtbeMyRCFqyluTgKsjYHEUYnliRfYsYUgm8kwkd287J2ntbU4FTo/5Ha++bRNIv0R
-	z8pbVMWYCfF68ijugHnS1a3+xT4hMX9S8PCOwMcoyK98swlCAW8Qn16X4SXvBVqZhkKY0HBnQJyEr
-	TWXCv1MH2Y/XHKOtohnVME7K/SKTEpP3ZjQ6jydK2SsUgV0stO7dhx4OaqeSJMu0W5HJreQGDJYI0
-	ql4cHRGw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54010)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1redzL-0004F6-15;
-	Mon, 26 Feb 2024 16:38:01 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1redzI-0006Zi-4A; Mon, 26 Feb 2024 16:37:56 +0000
-Date: Mon, 26 Feb 2024 16:37:55 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Catalin Popescu <catalin.popescu@leica-geosystems.com>
-Cc: andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bsp-development.geo@leica-geosystems.com, m.felsch@pengutronix.de
-Subject: Re: [PATCH net-next v2] net: phy: dp83826: disable WOL at init
-Message-ID: <Zdy+Y8Mqs22yRrre@shell.armlinux.org.uk>
-References: <20240226162339.696461-1-catalin.popescu@leica-geosystems.com>
+	s=arc-20240116; t=1708965565; c=relaxed/simple;
+	bh=9/DoYW84F7UI+Hh7Q7bfBY2sZ83cw2mp2T/o2fkltAA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TkTXKnN0oYnZy+FgNFZgDC2QNGN6v90vA/Pq7eIJIa2AmHGJhzvrYBLdRka2xljPfz4OtAGPnd6mrkEOGanM0fn0bNyfRQmgABri8hGYHg1YNlZtAP+BYlYpFFOvaZkg3E/DixkVwcRD6dlJHWlfZ9FsEvfeeHaf5hPDhr2vQpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=H2p+HbLF; arc=none smtp.client-ip=198.252.153.129
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx1.riseup.net (Postfix) with ESMTPS id 4Tk5tL19C9zDqLc;
+	Mon, 26 Feb 2024 16:39:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1708965562; bh=9/DoYW84F7UI+Hh7Q7bfBY2sZ83cw2mp2T/o2fkltAA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=H2p+HbLFAR6/3zpb+Jt5bnWnE1CSw03mVCTFYmO1Su6B87iaS0XY8OpDdYutpFUXQ
+	 7HSbmHiG0NRTnmvuCDqIHN/t2IlwpwXyheqnxvmJpkk5J6kEklV6SWv5vZ65PfvODn
+	 myHL6BYM5Fykg8hXEh8jU/GXwp5bvRGsNKVYeglw=
+X-Riseup-User-ID: 67BBA5A2599F3DC7CC4EF7FE7959CB57C844C3A47FE960AB446AB8892D781C95
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4Tk5tF0PB3zJs4q;
+	Mon, 26 Feb 2024 16:39:16 +0000 (UTC)
+Message-ID: <4406ec1c-fcfc-4d06-bec2-a428058d32cc@riseup.net>
+Date: Mon, 26 Feb 2024 13:39:12 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240226162339.696461-1-catalin.popescu@leica-geosystems.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Subject: Re: [PATCH v2 9/9] drm/vkms: Create KUnit tests for YUV conversions
+Content-Language: en-US
+To: Louis Chauvet <louis.chauvet@bootlin.com>,
+ Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+ Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
+ <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
+ thomas.petazzoni@bootlin.com
+References: <20240223-yuv-v2-0-aa6be2827bb7@bootlin.com>
+ <20240223-yuv-v2-9-aa6be2827bb7@bootlin.com>
+From: Arthur Grillo <arthurgrillo@riseup.net>
+In-Reply-To: <20240223-yuv-v2-9-aa6be2827bb7@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 26, 2024 at 05:23:39PM +0100, Catalin Popescu wrote:
-> Commit d1d77120bc28 ("net: phy: dp83826: support TX data voltage tuning")
-> introduced a regression in that WOL is not disabled by default for DP83826.
-> WOL should normally be enabled through ethtool.
+
+
+On 23/02/24 08:37, Louis Chauvet wrote:
+> From: Arthur Grillo <arthurgrillo@riseup.net>
 > 
-> Fixes: d1d77120bc28 ("net: phy: dp83826: support TX data voltage tuning")
-> Signed-off-by: Catalin Popescu <catalin.popescu@leica-geosystems.com>
+> Create KUnit tests to test the conversion between YUV and RGB. Test each
+> conversion and range combination with some common colors.
+> 
+> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+> [Louis Chauvet: fix minor formating issues (whitespace, double line)]
+> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+> ---
+>  drivers/gpu/drm/vkms/Makefile                 |   1 +
+>  drivers/gpu/drm/vkms/tests/.kunitconfig       |   4 +
+>  drivers/gpu/drm/vkms/tests/Makefile           |   3 +
+>  drivers/gpu/drm/vkms/tests/vkms_format_test.c | 155 ++++++++++++++++++++++++++
+>  drivers/gpu/drm/vkms/vkms_formats.c           |   9 +-
+>  drivers/gpu/drm/vkms/vkms_formats.h           |   5 +
+>  6 files changed, 175 insertions(+), 2 deletions(-)
 
-It seems rather interesting that WoL is disabled in the config_init()
-method - because this will be called when the PHY is attached to its
-network driver (reasonable I guess) but also at resume time - which
-means one can't just set the WoL mode once and that status will be
-preserved.
+You need to add the CONFIG_DRM_VKMS_KUNIT_TESTS config to
+drivers/gpu/drm/vkms/Kconfig, like my previous patch did.
 
-Maybe Andrew can clarify, but I thought once WoL was configured, that
-configuration should remain until the system is rebooted.
+Best Regards,
+~Arthur Grillo
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+> 
+> diff --git a/drivers/gpu/drm/vkms/Makefile b/drivers/gpu/drm/vkms/Makefile
+> index 1b28a6a32948..8d3e46dde635 100644
+> --- a/drivers/gpu/drm/vkms/Makefile
+> +++ b/drivers/gpu/drm/vkms/Makefile
+> @@ -9,3 +9,4 @@ vkms-y := \
+>  	vkms_writeback.o
+>  
+>  obj-$(CONFIG_DRM_VKMS) += vkms.o
+> +obj-$(CONFIG_DRM_VKMS_KUNIT_TESTS) += tests/
+> diff --git a/drivers/gpu/drm/vkms/tests/.kunitconfig b/drivers/gpu/drm/vkms/tests/.kunitconfig
+> new file mode 100644
+> index 000000000000..70e378228cbd
+> --- /dev/null
+> +++ b/drivers/gpu/drm/vkms/tests/.kunitconfig
+> @@ -0,0 +1,4 @@
+> +CONFIG_KUNIT=y
+> +CONFIG_DRM=y
+> +CONFIG_DRM_VKMS=y
+> +CONFIG_DRM_VKMS_KUNIT_TESTS=y
+> diff --git a/drivers/gpu/drm/vkms/tests/Makefile b/drivers/gpu/drm/vkms/tests/Makefile
+> new file mode 100644
+> index 000000000000..2d1df668569e
+> --- /dev/null
+> +++ b/drivers/gpu/drm/vkms/tests/Makefile
+> @@ -0,0 +1,3 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +
+> +obj-$(CONFIG_DRM_VKMS_KUNIT_TESTS) += vkms_format_test.o
+> diff --git a/drivers/gpu/drm/vkms/tests/vkms_format_test.c b/drivers/gpu/drm/vkms/tests/vkms_format_test.c
+> new file mode 100644
+> index 000000000000..cb6d32ff115d
+> --- /dev/null
+> +++ b/drivers/gpu/drm/vkms/tests/vkms_format_test.c
+> @@ -0,0 +1,155 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +
+> +#include <kunit/test.h>
+> +
+> +#include <drm/drm_fixed.h>
+> +#include <drm/drm_fourcc.h>
+> +#include <drm/drm_print.h>
+> +
+> +#include "../../drm_crtc_internal.h"
+> +
+> +#include "../vkms_drv.h"
+> +#include "../vkms_formats.h"
+> +
+> +#define TEST_BUFF_SIZE 50
+> +
+> +struct yuv_u8_to_argb_u16_case {
+> +	enum drm_color_encoding encoding;
+> +	enum drm_color_range range;
+> +	size_t n_colors;
+> +	struct format_pair {
+> +		char *name;
+> +		struct pixel_yuv_u8 yuv;
+> +		struct pixel_argb_u16 argb;
+> +	} colors[TEST_BUFF_SIZE];
+> +};
+> +
+> +static struct yuv_u8_to_argb_u16_case yuv_u8_to_argb_u16_cases[] = {
+> +	{
+> +		.encoding = DRM_COLOR_YCBCR_BT601,
+> +		.range = DRM_COLOR_YCBCR_FULL_RANGE,
+> +		.n_colors = 6,
+> +		.colors = {
+> +			{"white", {0xff, 0x80, 0x80}, {0x0000, 0xffff, 0xffff, 0xffff}},
+> +			{"gray",  {0x80, 0x80, 0x80}, {0x0000, 0x8000, 0x8000, 0x8000}},
+> +			{"black", {0x00, 0x80, 0x80}, {0x0000, 0x0000, 0x0000, 0x0000}},
+> +			{"red",   {0x4c, 0x55, 0xff}, {0x0000, 0xffff, 0x0000, 0x0000}},
+> +			{"green", {0x96, 0x2c, 0x15}, {0x0000, 0x0000, 0xffff, 0x0000}},
+> +			{"blue",  {0x1d, 0xff, 0x6b}, {0x0000, 0x0000, 0x0000, 0xffff}},
+> +		},
+> +	},
+> +	{
+> +		.encoding = DRM_COLOR_YCBCR_BT601,
+> +		.range = DRM_COLOR_YCBCR_LIMITED_RANGE,
+> +		.n_colors = 6,
+> +		.colors = {
+> +			{"white", {0xeb, 0x80, 0x80}, {0x0000, 0xffff, 0xffff, 0xffff}},
+> +			{"gray",  {0x7e, 0x80, 0x80}, {0x0000, 0x8000, 0x8000, 0x8000}},
+> +			{"black", {0x10, 0x80, 0x80}, {0x0000, 0x0000, 0x0000, 0x0000}},
+> +			{"red",   {0x51, 0x5a, 0xf0}, {0x0000, 0xffff, 0x0000, 0x0000}},
+> +			{"green", {0x91, 0x36, 0x22}, {0x0000, 0x0000, 0xffff, 0x0000}},
+> +			{"blue",  {0x29, 0xf0, 0x6e}, {0x0000, 0x0000, 0x0000, 0xffff}},
+> +		},
+> +	},
+> +	{
+> +		.encoding = DRM_COLOR_YCBCR_BT709,
+> +		.range = DRM_COLOR_YCBCR_FULL_RANGE,
+> +		.n_colors = 4,
+> +		.colors = {
+> +			{"white", {0xff, 0x80, 0x80}, {0x0000, 0xffff, 0xffff, 0xffff}},
+> +			{"gray",  {0x80, 0x80, 0x80}, {0x0000, 0x8000, 0x8000, 0x8000}},
+> +			{"black", {0x00, 0x80, 0x80}, {0x0000, 0x0000, 0x0000, 0x0000}},
+> +			{"red",   {0x35, 0x63, 0xff}, {0x0000, 0xffff, 0x0000, 0x0000}},
+> +			{"green", {0xb6, 0x1e, 0x0c}, {0x0000, 0x0000, 0xffff, 0x0000}},
+> +			{"blue",  {0x12, 0xff, 0x74}, {0x0000, 0x0000, 0x0000, 0xffff}},
+> +		},
+> +	},
+> +	{
+> +		.encoding = DRM_COLOR_YCBCR_BT709,
+> +		.range = DRM_COLOR_YCBCR_LIMITED_RANGE,
+> +		.n_colors = 4,
+> +		.colors = {
+> +			{"white", {0xeb, 0x80, 0x80}, {0x0000, 0xffff, 0xffff, 0xffff}},
+> +			{"gray",  {0x7e, 0x80, 0x80}, {0x0000, 0x8000, 0x8000, 0x8000}},
+> +			{"black", {0x10, 0x80, 0x80}, {0x0000, 0x0000, 0x0000, 0x0000}},
+> +			{"red",   {0x3f, 0x66, 0xf0}, {0x0000, 0xffff, 0x0000, 0x0000}},
+> +			{"green", {0xad, 0x2a, 0x1a}, {0x0000, 0x0000, 0xffff, 0x0000}},
+> +			{"blue",  {0x20, 0xf0, 0x76}, {0x0000, 0x0000, 0x0000, 0xffff}},
+> +		},
+> +	},
+> +	{
+> +		.encoding = DRM_COLOR_YCBCR_BT2020,
+> +		.range = DRM_COLOR_YCBCR_FULL_RANGE,
+> +		.n_colors = 4,
+> +		.colors = {
+> +			{"white", {0xff, 0x80, 0x80}, {0x0000, 0xffff, 0xffff, 0xffff}},
+> +			{"gray",  {0x80, 0x80, 0x80}, {0x0000, 0x8000, 0x8000, 0x8000}},
+> +			{"black", {0x00, 0x80, 0x80}, {0x0000, 0x0000, 0x0000, 0x0000}},
+> +			{"red",   {0x43, 0x5c, 0xff}, {0x0000, 0xffff, 0x0000, 0x0000}},
+> +			{"green", {0xad, 0x24, 0x0b}, {0x0000, 0x0000, 0xffff, 0x0000}},
+> +			{"blue",  {0x0f, 0xff, 0x76}, {0x0000, 0x0000, 0x0000, 0xffff}},
+> +		},
+> +	},
+> +	{
+> +		.encoding = DRM_COLOR_YCBCR_BT2020,
+> +		.range = DRM_COLOR_YCBCR_LIMITED_RANGE,
+> +		.n_colors = 4,
+> +		.colors = {
+> +			{"white", {0xeb, 0x80, 0x80}, {0x0000, 0xffff, 0xffff, 0xffff}},
+> +			{"gray",  {0x7e, 0x80, 0x80}, {0x0000, 0x8000, 0x8000, 0x8000}},
+> +			{"black", {0x10, 0x80, 0x80}, {0x0000, 0x0000, 0x0000, 0x0000}},
+> +			{"red",   {0x4a, 0x61, 0xf0}, {0x0000, 0xffff, 0x0000, 0x0000}},
+> +			{"green", {0xa4, 0x2f, 0x19}, {0x0000, 0x0000, 0xffff, 0x0000}},
+> +			{"blue",  {0x1d, 0xf0, 0x77}, {0x0000, 0x0000, 0x0000, 0xffff}},
+> +		},
+> +	},
+> +};
+> +
+> +static void vkms_format_test_yuv_u8_to_argb_u16(struct kunit *test)
+> +{
+> +	const struct yuv_u8_to_argb_u16_case *param = test->param_value;
+> +	struct pixel_argb_u16 argb;
+> +
+> +	for (size_t i = 0; i < param->n_colors; i++) {
+> +		const struct format_pair *color = &param->colors[i];
+> +
+> +		yuv_u8_to_argb_u16(&argb, &color->yuv, param->encoding, param->range);
+> +
+> +		KUNIT_EXPECT_LE_MSG(test, abs_diff(argb.a, color->argb.a), 257,
+> +				    "On the A channel of the color %s expected 0x%04x, got 0x%04x",
+> +				    color->name, color->argb.a, argb.a);
+> +		KUNIT_EXPECT_LE_MSG(test, abs_diff(argb.r, color->argb.r), 257,
+> +				    "On the R channel of the color %s expected 0x%04x, got 0x%04x",
+> +				    color->name, color->argb.r, argb.r);
+> +		KUNIT_EXPECT_LE_MSG(test, abs_diff(argb.g, color->argb.g), 257,
+> +				    "On the G channel of the color %s expected 0x%04x, got 0x%04x",
+> +				    color->name, color->argb.g, argb.g);
+> +		KUNIT_EXPECT_LE_MSG(test, abs_diff(argb.b, color->argb.b), 257,
+> +				    "On the B channel of the color %s expected 0x%04x, got 0x%04x",
+> +				    color->name, color->argb.b, argb.b);
+> +	}
+> +}
+> +
+> +static void vkms_format_test_yuv_u8_to_argb_u16_case_desc(struct yuv_u8_to_argb_u16_case *t,
+> +							  char *desc)
+> +{
+> +	snprintf(desc, KUNIT_PARAM_DESC_SIZE, "%s - %s",
+> +		 drm_get_color_encoding_name(t->encoding), drm_get_color_range_name(t->range));
+> +}
+> +
+> +KUNIT_ARRAY_PARAM(yuv_u8_to_argb_u16, yuv_u8_to_argb_u16_cases,
+> +		  vkms_format_test_yuv_u8_to_argb_u16_case_desc);
+> +
+> +static struct kunit_case vkms_format_test_cases[] = {
+> +	KUNIT_CASE_PARAM(vkms_format_test_yuv_u8_to_argb_u16, yuv_u8_to_argb_u16_gen_params),
+> +	{}
+> +};
+> +
+> +static struct kunit_suite vkms_format_test_suite = {
+> +	.name = "vkms-format",
+> +	.test_cases = vkms_format_test_cases,
+> +};
+> +
+> +kunit_test_suite(vkms_format_test_suite);
+> +
+> +MODULE_LICENSE("GPL");
+> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
+> index 515c80866a58..20dd23ce9051 100644
+> --- a/drivers/gpu/drm/vkms/vkms_formats.c
+> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
+> @@ -7,6 +7,8 @@
+>  #include <drm/drm_rect.h>
+>  #include <drm/drm_fixed.h>
+>  
+> +#include <kunit/visibility.h>
+> +
+>  #include "vkms_formats.h"
+>  
+>  /**
+> @@ -175,8 +177,10 @@ static void ycbcr2rgb(const s16 m[3][3], u8 y, u8 cb, u8 cr, u8 y_offset, u8 *r,
+>  	*b = clamp(b_16, 0, 0xffff) >> 8;
+>  }
+>  
+> -static void yuv_u8_to_argb_u16(struct pixel_argb_u16 *argb_u16, const struct pixel_yuv_u8 *yuv_u8,
+> -			       enum drm_color_encoding encoding, enum drm_color_range range)
+> +VISIBLE_IF_KUNIT void yuv_u8_to_argb_u16(struct pixel_argb_u16 *argb_u16,
+> +					 const struct pixel_yuv_u8 *yuv_u8,
+> +					 enum drm_color_encoding encoding,
+> +					 enum drm_color_range range)
+>  {
+>  	static const s16 bt601_full[3][3] = {
+>  		{ 256, 0,   359 },
+> @@ -237,6 +241,7 @@ static void yuv_u8_to_argb_u16(struct pixel_argb_u16 *argb_u16, const struct pix
+>  	argb_u16->g = g * 257;
+>  	argb_u16->b = b * 257;
+>  }
+> +EXPORT_SYMBOL_IF_KUNIT(yuv_u8_to_argb_u16);
+>  
+>  /*
+>   * The following functions are read_line function for each pixel format supported by VKMS.
+> diff --git a/drivers/gpu/drm/vkms/vkms_formats.h b/drivers/gpu/drm/vkms/vkms_formats.h
+> index 5a3a9e1328d8..4245a5c5e956 100644
+> --- a/drivers/gpu/drm/vkms/vkms_formats.h
+> +++ b/drivers/gpu/drm/vkms/vkms_formats.h
+> @@ -13,4 +13,9 @@ struct pixel_yuv_u8 {
+>  	u8 y, u, v;
+>  };
+>  
+> +#if IS_ENABLED(CONFIG_KUNIT)
+> +void yuv_u8_to_argb_u16(struct pixel_argb_u16 *argb_u16, const struct pixel_yuv_u8 *yuv_u8,
+> +			enum drm_color_encoding encoding, enum drm_color_range range);
+> +#endif
+> +
+>  #endif /* _VKMS_FORMATS_H_ */
+> 
 
