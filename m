@@ -1,132 +1,128 @@
-Return-Path: <linux-kernel+bounces-80502-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80503-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DF1D8668F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:01:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61C608668F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:02:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54B321F247B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:01:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D54D283A39
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:02:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0822C364A5;
-	Mon, 26 Feb 2024 03:56:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 991BA1B275;
+	Mon, 26 Feb 2024 03:57:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="a0Shknek"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ynq5945f"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D971F22EF8
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:56:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDFC11B7E3;
+	Mon, 26 Feb 2024 03:57:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708919807; cv=none; b=REC8qh0qnbWlqvfx1zoxhpdYx5UgzRSsN+M8cSCOXuv3vm5OCcxjejLUFd3UVRG2tmmsW3RyQPVnxWzhWF4uxpSSyanzOEUtoTeN2rzW7EyKql/s6LL/C1ftRCIpoVOb7jcUubCnks44tB2WOdHp3v9bVvmWVG0h2ii7QhBA0nY=
+	t=1708919878; cv=none; b=hwPaNzACZTnd663q+jIbZepmjRA6osRIcMKBzv9EoTisp4iNqaxOS7WX9uF/kwXj+9BLpJSVpmnpJ3wPnmAnN4ZMVqDvNwyxdwwLvW532xhlTz/IRLu02CGWCDt/mwpQeZcdPnljPF1vi1WSVk9OCqR94He3+2W5KZyTbvAK6FI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708919807; c=relaxed/simple;
-	bh=bb2b3oSMK0DNg02UK1+jjSWnIX/epnr8WF+BqHgHszA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fcFHTrCjLPNXm2QoFPQGC/UfNn4KGG5EDCf2YoxTB5GI0rOZS+NdLZfc7N3Eju/XcR1s5q9BgEsWeZF3bSePLFwKcpyNH1IM7h4ZLJMFs6RvFKPKfGC2kL+NSxcBoV8RWaaUWwQptA309+e4g2EzPw0iYbRBQldjh5DapSVWgdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net; spf=pass smtp.mailfrom=darkphysics.net; dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b=a0Shknek; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=darkphysics.net
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dc98892850so6624355ad.0
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 19:56:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=darkphysics.net; s=google; t=1708919805; x=1709524605; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mLI/FHiNfb+I57NxVeZ7c/ye1Dp4Vh2QKadh0HWO85c=;
-        b=a0ShknekrsjBjsLcQWpSRafsZ2JChVPced3ZNOPH5I+69i0+aquNj+z2ko1WYNZiT2
-         IANJxJ1t8Ok65oKwoBF2sd2CMHY8qdFnsdlg5aTBe8NjcmbGB191o9h75Z6EXfij7DZN
-         KDyiJA0+8Gq+zyKG/8/xCDh0XQlNm7Nv0HBJC31lNU+e6Vm/OKofSySfaxxAeGZDsBV3
-         X2lwQz0XE7qhNsoPmThmsTLcAumfEfN8fGGzHguaV0zVGTGgiPK6riPaaMazsK4KntAr
-         GwmFm6VHS1lk9riysgpp+Jc7QL5UJfDYoaq3nTMbFmHFzTlzktOQCp3Npx/LezhuUNDG
-         iE/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708919805; x=1709524605;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mLI/FHiNfb+I57NxVeZ7c/ye1Dp4Vh2QKadh0HWO85c=;
-        b=JZLdsAeI0oBbbOk8RL86rxBt5uBf+Huhb22CYn88o7iTk4wGpgEI2rmmreF/mA+J5O
-         Ni0u0mEd9lkNBgbf1fccWTlVSo0V6EZc0fE/C4+wnWWKfatTumOdpo0vc7tOOraEg9yj
-         i71QAEVcyL0D9cPfInISzmqUPi26NuJSAkLV0f0G1w4aSxiDAx/JhT9ZLSu3xG367iRn
-         1JyF/57rPeNLxsI7spDOjcku4w/XtQhW2kFH49rYy3nelTTD1T3a4NraqUAlGQChjafb
-         M8zurUfHi+0VpxjcjpGN3QLCAurbc7OoJgb4MTcU4xSuL9Mkmav6mWLp0ccLyuo9BIMN
-         O/vQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVLog0Z0ejBQHvmoY4AQIbGR4E1tV5bS5BjSz0G4aI1tzzkOVX0Ep7hPam2FEHV9Z1PKhatWMIv8duhzoFYNBOxtVEN0gSw2Ww+sCdN
-X-Gm-Message-State: AOJu0YznL9XQ1yZRwPW/8DuFYhRIqEywc7NoceIMAyE9MMDtcZfH7S9U
-	JKYNfYtYvKhFfCTTs/rZ03fUT+XJeycLzsxwieFvr9duCthB16tWOMjHLrudYYI=
-X-Google-Smtp-Source: AGHT+IF/vqfj/rgrk5O7lHfnT7alhQlOlfoIckREXu2cm5x+J2z40Mj4ent46Tas7EhKMKxl9ZsjKQ==
-X-Received: by 2002:a17:902:e548:b0:1dc:1391:e074 with SMTP id n8-20020a170902e54800b001dc1391e074mr7755722plf.49.1708919805377;
-        Sun, 25 Feb 2024 19:56:45 -0800 (PST)
-Received: from oatmeal.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
-        by smtp.gmail.com with ESMTPSA id kh5-20020a170903064500b001d8a93fa5b1sm2897615plb.131.2024.02.25.19.56.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Feb 2024 19:56:45 -0800 (PST)
-From: Tree Davies <tdavies@darkphysics.net>
-To: gregkh@linuxfoundation.org,
-	philipp.g.hortmann@gmail.com,
-	anjan@momi.ca
-Cc: linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Tree Davies <tdavies@darkphysics.net>
-Subject: [PATCH 20/20] Staging: rtl8192e: Rename function MgntQuery_MgntFrameTxRate
-Date: Sun, 25 Feb 2024 19:56:24 -0800
-Message-Id: <20240226035624.370443-21-tdavies@darkphysics.net>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240226035624.370443-1-tdavies@darkphysics.net>
-References: <20240226035624.370443-1-tdavies@darkphysics.net>
+	s=arc-20240116; t=1708919878; c=relaxed/simple;
+	bh=6eV/0foyMhUCesPp4RUIfzVdUPTf/g2H7EDQ8aK/UiE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=WHD+RRuwZzg3rZMfFmW32rFkeio2pZE1Bw0Q2oKNoRedek0NLP0vl1/wCjQJSqfaIszNaf2GfeFzrPC3h9CI036ZvLSjlZaLEEcLHlYBa04FXhRzb6TZ5K/r9U69fXv9nXsKWqRngOFIZ5+LbUZDJihBU8THUd4g6MgYZBjEh7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ynq5945f; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FD4FC433C7;
+	Mon, 26 Feb 2024 03:57:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708919878;
+	bh=6eV/0foyMhUCesPp4RUIfzVdUPTf/g2H7EDQ8aK/UiE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Ynq5945f9Uj1pO+1l/G/qFbWR1EvKH6IbKRxedbgP32P/t1GzHI7ghH1y7slQ3xri
+	 6u+7NYV8bF9RqPNxErTFQoXS6IjcJO4iMBFfRUolghRQoxcC19OE1RZsMni1JzlhDP
+	 K7B4smpOv8wJSbsiorRH60apN3rck2o+KFH9CsckA8lg9S9oAh25q1n886AqSztetP
+	 IP+yssUSnoS/E2mC+NBGgirFBBaATSxCsOa+qoK/gqBfBFZ+lHP9u8MLSB5hMmaxlX
+	 kY0ByORlK6EY3tV4anD8fDiXE/w2SJyEXmxvcE1XOMpAIJzjAA6R4wmZexuLfduvtu
+	 /j4kysTdW2NNg==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>,
+	Jiri Olsa <jolsa@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	mhiramat@kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH v2 0/7] tracing/probes: Support function parameter access from return probe
+Date: Mon, 26 Feb 2024 12:57:53 +0900
+Message-Id: <170891987362.609861.6767830614537418260.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-Rename function MgntQuery_MgntFrameTxRate to mgnt_query_mgnt_frame_tx_rate
-to fix checkpatch warning Avoid CamelCase.
+Hi,
 
-Signed-off-by: Tree Davies <tdavies@darkphysics.net>
+Here is version 2 series of patches to support accessing function entry data
+from function *return* probes (including kretprobe and fprobe-exit event).
+
+In this version, I added another cleanup [4/7], updated README[5/7], added
+testcases[6/7] and updated document[7/7].
+
+This allows us to access the results of some functions, which returns the
+error code and its results are passed via function parameter, such as an
+structure-initialization function.
+
+For example, vfs_open() will link the file structure to the inode and update
+mode. Thus we can trace that changes.
+
+ # echo 'f vfs_open mode=file->f_mode:x32 inode=file->f_inode:x64' >> dynamic_events
+ # echo 'f vfs_open%return mode=file->f_mode:x32 inode=file->f_inode:x64' >> dynamic_events 
+ # echo 1 > events/fprobes/enable 
+ # cat trace
+              sh-131     [006] ...1.  1945.714346: vfs_open__entry: (vfs_open+0x4/0x40) mode=0x2 inode=0x0
+              sh-131     [006] ...1.  1945.714358: vfs_open__exit: (do_open+0x274/0x3d0 <- vfs_open) mode=0x4d801e inode=0xffff888008470168
+             cat-143     [007] ...1.  1945.717949: vfs_open__entry: (vfs_open+0x4/0x40) mode=0x1 inode=0x0
+             cat-143     [007] ...1.  1945.717956: vfs_open__exit: (do_open+0x274/0x3d0 <- vfs_open) mode=0x4a801d inode=0xffff888005f78d28
+             cat-143     [007] ...1.  1945.720616: vfs_open__entry: (vfs_open+0x4/0x40) mode=0x1 inode=0x0
+             cat-143     [007] ...1.  1945.728263: vfs_open__exit: (do_open+0x274/0x3d0 <- vfs_open) mode=0xa800d inode=0xffff888004ada8d8
+
+So as you can see those fields are initialized at exit.
+
+This series is based on v6.8-rc5 kernel or you can checkout from
+
+https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/log/?h=topic/entry-data
+
+Thank you,
+
 ---
- drivers/staging/rtl8192e/rtllib_softmac.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index 933672ac8546..adfada92495b 100644
---- a/drivers/staging/rtl8192e/rtllib_softmac.c
-+++ b/drivers/staging/rtl8192e/rtllib_softmac.c
-@@ -163,7 +163,7 @@ u8 mgnt_query_tx_rate_exclude_cck_rates(struct rtllib_device *ieee)
- 	return query_rate;
- }
- 
--static u8 MgntQuery_MgntFrameTxRate(struct rtllib_device *ieee)
-+static u8 mgnt_query_mgnt_frame_tx_rate(struct rtllib_device *ieee)
- {
- 	struct rt_hi_throughput *ht_info = ieee->ht_info;
- 	u8 rate;
-@@ -201,7 +201,7 @@ inline void softmac_mgmt_xmit(struct sk_buff *skb, struct rtllib_device *ieee)
- 	if (ieee->disable_mgnt_queue)
- 		tcb_desc->queue_index = HIGH_QUEUE;
- 
--	tcb_desc->data_rate = MgntQuery_MgntFrameTxRate(ieee);
-+	tcb_desc->data_rate = mgnt_query_mgnt_frame_tx_rate(ieee);
- 	tcb_desc->ratr_index = 7;
- 	tcb_desc->tx_dis_rate_fallback = 1;
- 	tcb_desc->tx_use_drv_assinged_rate = 1;
-@@ -277,7 +277,7 @@ softmac_ps_mgmt_xmit(struct sk_buff *skb,
- 	if (ieee->disable_mgnt_queue)
- 		tcb_desc->queue_index = HIGH_QUEUE;
- 
--	tcb_desc->data_rate = MgntQuery_MgntFrameTxRate(ieee);
-+	tcb_desc->data_rate = mgnt_query_mgnt_frame_tx_rate(ieee);
- 	tcb_desc->ratr_index = 7;
- 	tcb_desc->tx_dis_rate_fallback = 1;
- 	tcb_desc->tx_use_drv_assinged_rate = 1;
--- 
-2.39.2
+Masami Hiramatsu (Google) (7):
+      tracing/fprobe-event: cleanup: Fix a wrong comment in fprobe event
+      tracing/probes: Cleanup probe argument parser
+      tracing/probes: cleanup: Set trace_probe::nr_args at trace_probe_init
+      tracing: Remove redundant #else block for BTF args from README
+      tracing/probes: Support $argN in return probe (kprobe and fprobe)
+      selftests/ftrace: Add test cases for entry args at function exit
+      Documentation: tracing: Add entry argument access at function exit
 
+
+ Documentation/trace/fprobetrace.rst                |    7 
+ Documentation/trace/kprobetrace.rst                |    7 
+ kernel/trace/trace.c                               |    5 
+ kernel/trace/trace_eprobe.c                        |    8 
+ kernel/trace/trace_fprobe.c                        |   59 ++-
+ kernel/trace/trace_kprobe.c                        |   58 ++-
+ kernel/trace/trace_probe.c                         |  417 ++++++++++++++------
+ kernel/trace/trace_probe.h                         |   30 +
+ kernel/trace/trace_probe_tmpl.h                    |   10 
+ kernel/trace/trace_uprobe.c                        |   14 -
+ .../ftrace/test.d/dynevent/fprobe_entry_arg.tc     |   18 +
+ .../ftrace/test.d/kprobe/kretprobe_entry_arg.tc    |   18 +
+ 12 files changed, 483 insertions(+), 168 deletions(-)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/fprobe_entry_arg.tc
+ create mode 100644 tools/testing/selftests/ftrace/test.d/kprobe/kretprobe_entry_arg.tc
+
+--
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
