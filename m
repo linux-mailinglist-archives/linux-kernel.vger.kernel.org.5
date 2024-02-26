@@ -1,196 +1,185 @@
-Return-Path: <linux-kernel+bounces-80752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BCF3866C11
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:25:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDB9B866C0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:25:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C04E01C2298E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:25:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82CA31F23AFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:25:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61EFD1CA83;
-	Mon, 26 Feb 2024 08:25:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SzdnX2BE"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9C381CA91;
+	Mon, 26 Feb 2024 08:25:07 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D847E1CA81
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:25:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EC7B1C6A3
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:25:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708935941; cv=none; b=flloKybA1qzJLglD/AWR7RVt6cM1UJ+pKGO/xLZzcTrkgPqRwQSyE/gACkll7Lz7xEN9gevvbgFwcg4mAJbot6j2lfo5EybEynffss/7aCPnjUaDooTTkCaAq2QeDuVyGgBXY70A3J8H7/IPSbO9Bt4NgTukRto7buU1x4vNoek=
+	t=1708935907; cv=none; b=QJ6ylM8CbDlFAzqx3DSkL08PomoGxD5cWKiDvaoaCCXbibyv3D23/hfXnu7ngutxSk7BWLGVs2osnDhwv61fedBaT/wfDTmTd4FamWGpzHPD5HTxTeBH7RUkmUjbwizIy3mCKty0tj1FlsNy8GGUcjaFZsKy46K5O1PgzoTMNzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708935941; c=relaxed/simple;
-	bh=d9TfJ1vj7CqpSO3yp7wBMj3Qok8UMIT9GlpK+EBJT5I=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QDhrnBv9mbpZ7RJZ/is13rYHv9zsOOfczt/e5VCGDSmz5gfJNOxYWgN+NMQ1mb6RE6uLzX3m/qCJeDsPWutMmevpSbVRBNrxFGE3GeMY+5PfDTz3lD8pXw6IxSKxBVbDwvzQ5oxWYB/Mke1DXJLifyXlKddRsIPKlAmH9wrlRnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SzdnX2BE; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708935940; x=1740471940;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=d9TfJ1vj7CqpSO3yp7wBMj3Qok8UMIT9GlpK+EBJT5I=;
-  b=SzdnX2BE9f+rvX4I8fpH3gEVtQjkzHSqNYRWtLggqAJ8XheBATPR8qI9
-   3uuCAbw3xfwiRjPbmvk57xcFLyfA+U88GwPI2lAvOpvSqr/IdCzumNJJV
-   cCkq5hCUL+Rpa9D29yF4ODZ0zIvVbBB5d2njJvQ2e9ur8FUvngiXbRXlC
-   SAqHa5oAPD3VNYqB9FTwWsbkIFzNYdeZpSAPu8V0xefjSl6XgmPqQGi7g
-   gcp3REZNuuUO9uGlv1i5BsZFm8RPW7bbEV9Y9/8XHopuyZOo+tw6g2dw7
-   yKg0bV2HPUoIypj6vXZYOamlVRsLD5dB19IQDVC7/QT9xAQD481Dvls8h
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="20750875"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="20750875"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 00:25:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="6734000"
-Received: from chenyu-dev.sh.intel.com ([10.239.62.107])
-  by fmviesa008.fm.intel.com with ESMTP; 26 Feb 2024 00:25:35 -0800
-From: Chen Yu <yu.c.chen@intel.com>
-To: Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Juri Lelli <juri.lelli@redhat.com>
-Cc: Abel Wu <wuyun.abel@bytedance.com>,
-	Tim Chen <tim.c.chen@intel.com>,
-	"Tiwei Bie" <tiwei.btw@antgroup.com>,
-	Honglei Wang <wanghonglei@didichuxing.com>,
-	Aaron Lu <aaron.lu@intel.com>,
-	Chen Yu <yu.chen.surf@gmail.com>,
-	linux-kernel@vger.kernel.org,
-	Chen Yu <yu.c.chen@intel.com>,
-	kernel test robot <oliver.sang@intel.com>
-Subject: [RFC PATCH] sched/eevdf: Return leftmost entity in pick_eevdf() if no eligible entity is found
-Date: Mon, 26 Feb 2024 16:23:49 +0800
-Message-Id: <20240226082349.302363-1-yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1708935907; c=relaxed/simple;
+	bh=ILUzmi0yWEnHp6QLN0s99nRQRgTcB6WDFt8VQe6DRwA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nJsglSFe6uY75dZUzk4wAv9l9mAiq326/UGWmQKsXx8qAev6OVfkGxUzFhzxUTI+xcQ3d+3ZLiPXHV9DsK/owSxL2FqP23zOEihiAIdvbTe+Abuvf9qH69NM4sjqs0oi9vo+GlOnZlhFhOC7cbroaDJ9kYBk4b0A4CYQrQMDs88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1reWIE-0001Gf-H9; Mon, 26 Feb 2024 09:24:58 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1reWID-002xJH-M7; Mon, 26 Feb 2024 09:24:57 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1reWID-00BVMf-1u;
+	Mon, 26 Feb 2024 09:24:57 +0100
+Date: Mon, 26 Feb 2024 09:24:57 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Leif Middelschulte <leif.middelschulte@gmail.com>
+Cc: Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
+	NXP Linux Team <linux-imx@nxp.com>, Leif Middelschulte <Leif.Middelschulte@klsmartin.com>, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] pwm: imx27: fix race condition .apply,.get_state
+Message-ID: <jm73itlefa5dmqxhe35tbzohg3vr7pog6kt7ieuiw3a2q2p6ml@ngwtwz2aawyn>
+References: <20230906154215.4ikrrbx4xgx2nmu5@pengutronix.de>
+ <20240224112902.55539-1-Leif.Middelschulte@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="c5aqstpagj445og2"
+Content-Disposition: inline
+In-Reply-To: <20240224112902.55539-1-Leif.Middelschulte@gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-There is occasional report from lkp that the kernel hits the NULL pointer
-exception:
 
-[  512.079810][ T8305] BUG: kernel NULL pointer dereference, address: 0000002c
-[  512.080897][ T8305] #PF: supervisor read access in kernel mode
-[  512.081636][ T8305] #PF: error_code(0x0000) - not-present page
-[  512.082337][ T8305] *pde = 00000000
-[  512.082829][ T8305] Oops: 0000 [#1] PREEMPT SMP
-[  512.083407][ T8305] CPU: 1 PID: 8305 Comm: watchdog Tainted: G        W
-[  512.086203][ T8305] EIP: set_next_entity (fair.c:?)
+--c5aqstpagj445og2
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This is caused by NULL candidate returned by pick_eevdf() as Abel analyzed.
-After
-commit 2227a957e1d5 ("sched/eevdf: Sort the rbtree by virtual deadline")
-the NULL candidate would trigger the NULL pointer exception. While before
-this commit, there would be warning.
+Hello Leif,
 
-This NULL entity issue was always there before above commit. With debug
-patch to print the cfs_rq and all the entities in the tree, we have the
-information when the issue was reproduced:
+thanks for this new round addressing the identified issues.
 
-[  514.461242][ T8390] cfs_rq avg_vruntime:386638640128 avg_load:2048 min_vruntime:763383370431
-[  514.535935][ T8390] current on_rq se 0xc5851400, deadline:18435852013562231446
-			min_vruntime:18437121115753667698 vruntime:18435852013561943404, load:629
-[  514.536772][ T8390] Traverse rb-tree from left to right
-[  514.537138][ T8390]  se 0xec1234e0 deadline:763384870431 min_vruntime:763383370431 vruntime:763383370431 non-eligible
-[  514.537835][ T8390]  se 0xec4fcf20 deadline:763762447228 min_vruntime:763760947228 vruntime:763760947228 non-eligible
-[  514.538539][ T8390] Traverse rb-tree from topdown
-[  514.538877][ T8390]  middle se 0xec1234e0 deadline:763384870431 min_vruntime:763383370431 vruntime:763383370431 non-eligible
-[  514.539605][ T8390]  middle se 0xec4fcf20 deadline:763762447228 min_vruntime:763760947228 vruntime:763760947228 non-eligible
-[  514.540340][ T8390] Found best:0x0
-[  514.540613][ T8390] BUG: kernel NULL pointer dereference, address: 00000074
+On Sat, Feb 24, 2024 at 12:29:00PM +0100, Leif Middelschulte wrote:
+> From: Leif Middelschulte <Leif.Middelschulte@klsmartin.com>
+>=20
+> With CONFIG_PWM_DEBUG=3Dy after writing a value to the PWMSAR
+> register in .apply(), the register is read in .get_state().
+> Unless a period completed in the meantime, this read yields the
+> previously used duty cycle configuration. As the PWM_DEBUG code
+> applies the read out configuration for testing purposes this
+> effectively undoes the intended effect by rewriting the previous
+> hardware state.
+>=20
+> Note that this change merely implements a sensible heuristic.
+> The i.MX has a 4 slot FIFO to configure the duty cycle. This FIFO
+> cannot be read back in its entirety. The "write x then read back
+> x from hw" semantics are therefore not easily applicable.
+> With this change, the .get_state() function tries to wait for some
+> stabilization in the FIFO (empty state). In this state it keeps
+> applying the last value written to the sample register.
+>=20
+> Signed-off-by: Leif Middelschulte <Leif.Middelschulte@klsmartin.com>
+> ---
+>  drivers/pwm/pwm-imx27.c | 55 +++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 53 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/pwm/pwm-imx27.c b/drivers/pwm/pwm-imx27.c
+> index 7d9bc43f12b0..cb564460b79c 100644
+> --- a/drivers/pwm/pwm-imx27.c
+> +++ b/drivers/pwm/pwm-imx27.c
+> @@ -75,6 +75,7 @@
+>  						   (x)) + 1)
+> =20
+>  #define MX3_PWM_SWR_LOOP		5
+> +#define MX3_PWM_FIFOAV_EMPTY_LOOP	4
 
-We can see that non of the entities in the tree are eligible, neither is
-the current entity on this cfs_rq. As a result, curr is set to NULL:
-if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
-	curr = NULL;
+This looks like a register definition, but it's only a number that
+defines the iterations waiting for the FIFO to empty. (The same critic
+applies to MX3_PWM_SWR_LOOP, though.)
 
-and the best is set to NULL, which caused the problem:
-if (!best || (curr && entity_before(curr, best)))
-	best = curr;
+>  /* PWMPR register value of 0xffff has the same effect as 0xfffe */
+>  #define MX3_PWMPR_MAX			0xfffe
+> @@ -118,6 +119,31 @@ static void pwm_imx27_clk_disable_unprepare(struct p=
+wm_imx27_chip *imx)
+>  	clk_disable_unprepare(imx->clk_ipg);
+>  }
+> =20
+> +static int pwm_imx27_wait_fifo_empty(struct pwm_chip *chip,
+> +				     struct pwm_device *pwm)
+> +{
+> +	struct pwm_imx27_chip *imx =3D to_pwm_imx27_chip(chip);
+> +	struct device *dev =3D chip->dev;
+> +	unsigned int period_ms =3D DIV_ROUND_UP_ULL(pwm->state.period, NSEC_PER=
+_MSEC);
 
-The cause is that, the curr is eligible, but vruntime_eligible()
-returns false. And the false negative is due to the following
-code in vruntime_eligible():
+Given that waiting here is unfortunate it would be nice so reduce the
+waiting as much as possible. So it might make sense to read the actual
+period from the hardware and use that as it might be smaller that
+pwm->state.period.
 
-return avg >= (s64)(vruntime - cfs_rq->min_vruntime) * load;
+> +	int tries =3D MX3_PWM_FIFOAV_EMPTY_LOOP;
+> +	int fifoav, previous_fifoav =3D INT_MAX;
+> +	u32 sr;
 
-According to the log, vruntime is 18435852013561943404, the
-cfs_rq->min_vruntime is 763383370431, the load is 629 + 2048 = 2677,
-thus:
-s64 delta = (s64)(18435852013561943404 - 763383370431) = -10892823530978643
-    delta * 2677 = 7733399554989275921
-that is to say, the multiply result overflow the s64, which turns the
-negative value into a positive value, thus eligible check fails.
+Most variables can go into the while loop.
 
-So where is this insane huge vruntime 18435852013561943404 coming from?
-My guess is that, it is because the initial value of cfs_rq->min_vruntime
-is set to (unsigned long)(-(1LL << 20)). If the task(watchdog in this case)
-seldom scheduled in, its vruntime might not move forward too much and
-remain its original value by previous place_entity().
+> +	while (tries--) {
+> +		sr =3D readl(imx->mmio_base + MX3_PWMSR);
+> +		fifoav =3D FIELD_GET(MX3_PWMSR_FIFOAV, sr);
+> +		if (fifoav =3D=3D MX3_PWMSR_FIFOAV_EMPTY)
+> +			return 0;
+> +		/* if the FIFO value does not decrease, there is another problem */
+> +		if (previous_fifoav =3D=3D fifoav)
+> +			break;
+> +		previous_fifoav =3D fifoav;
+> +		msleep(period_ms);
+> +	}
 
-The proper fix should deal with the overflow of entity_key() * load, but
-I don't have much clue on that, so propose this conservative method to
-restore the previous behavior before the mentioned commit.
+I wonder if a loop is necessary at all. Why not use
+msleep(FIELD_GET(MX3_PWMSR_FIFOAV, sr) * period_ms)?
 
-Fixes: 2227a957e1d5 ("sched/eevdf: Sort the rbtree by virtual deadline")
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/lkml/202401301012.2ed95df0-oliver.sang@intel.com/
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
- kernel/sched/fair.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+Maybe take PWMCNR into account to shorten the sleep a bit.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 533547e3c90a..fb9202f464e2 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -880,7 +880,7 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
- 	struct rb_node *node = cfs_rq->tasks_timeline.rb_root.rb_node;
- 	struct sched_entity *se = __pick_first_entity(cfs_rq);
- 	struct sched_entity *curr = cfs_rq->curr;
--	struct sched_entity *best = NULL;
-+	struct sched_entity *best = NULL, *leftmost;
- 
- 	/*
- 	 * We can safely skip eligibility check if there is only one entity
-@@ -905,6 +905,8 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
- 		goto found;
- 	}
- 
-+	leftmost = se;
-+
- 	/* Heap search for the EEVD entity */
- 	while (node) {
- 		struct rb_node *left = node->rb_left;
-@@ -937,6 +939,15 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
- 	if (!best || (curr && entity_before(curr, best)))
- 		best = curr;
- 
-+	/*
-+	 * entity_eligible() could bring false negative due to
-+	 * multiply overflow, which reports no eligible entity.
-+	 * Return leftmost entity as a backup(it is guaranteed
-+	 * the tree is not NULL.
-+	 */
-+	if (!best)
-+		best = leftmost;
-+
- 	return best;
- }
- 
--- 
-2.25.1
+Best regards
+Uwe
 
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--c5aqstpagj445og2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXcStgACgkQj4D7WH0S
+/k4LJQf8C6hwy1sFY7yKjt5wCPoZpghfOG/zBrFyrz3Jqvu7i20/owaMN0m6BB+C
+r97/XMyUd/fCzXjrY0cFiwKHki35Q77xRGfHlpx317t4MnjHQ+RQf7L5sfhpbf3p
+1JCsDNp0Y3GJTgY5YsLzgfLIjdZyzcsN0Gsa2/5tW95Yg1Je0gDEToFTH8usggxp
+ijJ38OBCkf4qRpvNRRIVEmu2VEsS+5dLVgfS7dnX8CzRdWfo4Yhwlex58awCQZLw
+MT9DriSKhkPZXSClCkv7s3HdWRt6EQdWi0NIdsmKJsY1zZREvYDbtnSQrqW7/5xt
+D0/hgkLI8bIORFVZpF4Vi14glnLF1A==
+=TplP
+-----END PGP SIGNATURE-----
+
+--c5aqstpagj445og2--
 
