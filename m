@@ -1,426 +1,307 @@
-Return-Path: <linux-kernel+bounces-81990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E631867DEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:18:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F802867D76
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:07:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA499B31B89
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:06:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50ED61C22B55
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:07:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E59A12F599;
-	Mon, 26 Feb 2024 16:55:04 +0000 (UTC)
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E10A912FB0D;
+	Mon, 26 Feb 2024 16:55:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="eIpG+p8O"
+Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7771212B166;
-	Mon, 26 Feb 2024 16:55:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAF8612F5BC
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:55:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708966503; cv=none; b=SaBe/+Wid7itx5M1RO42JH1gZA7dVP7F3lNffJljw3ADiThEm1azGkVK3eOvxuuJdQI3Nxg9VzF+e+pKE5uvJ99rsaqP9Rg48KYRjSv/HZfsyVe+/3r9GJKxGVgtgGocfBDE/hliFXl1e15QGaSQpP7tLafA4/geOj+qt02naMU=
+	t=1708966519; cv=none; b=pMqLAFG7dKN5CM4lb4pKeG2hSOS8z9QCcuikQUi4eAhSoDgo9yBAPtY0SRyjBE1HQZQKTS2xE93bz5g91gZGaeB4PTwwp89/Ix6yMazJ00791qEMfgkplA3//7sgX1EeZSAQLpEgj3eVkLZWM6DGUnRZW/gwlznEmvSwj7X5uIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708966503; c=relaxed/simple;
-	bh=QGcRLTEri+GL4LDVdXNHiMq2PMr0H3LVHWba/SRnYx4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fin284iXrKy2czy+Oaw1xqYPf6diJyNHBJqmi5Qxwv/BjXUiYqe8WFe/CU+Q7R4LxULJ6KcH1xSD2wO3EZIWLcDCXKnfOM6sidrYZHo99Nx21hUCUjuFBhyJoV1TRCufzJfyUJ+0MEVWhABBvK8JvfYLNOKZOBh24zpj1nT3IRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-60921c4dc27so134697b3.3;
-        Mon, 26 Feb 2024 08:55:01 -0800 (PST)
+	s=arc-20240116; t=1708966519; c=relaxed/simple;
+	bh=efqSYWlmPvvmoW5hTpteGQgbaViN1str2LnrNPJgrD0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DoyeW06zcu3+flD3XeGgQTL5DdBViE+MZkeYq2ruGYPnIa8bBmTXHAzJCxkkdS9GwfXs7EvohwWCwn/iaui+EMon5kYhWOsfkax+JAjZR2ZDFJyMizifKx2V34gwlrWSZk8WiUHO0IrLzIwYdjmayZ1tk+XckGbzM0lzsYYC6i4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=eIpG+p8O; arc=none smtp.client-ip=209.85.166.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7c7894b39edso112945739f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:55:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1708966516; x=1709571316; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YapG2Iuz3DeMuojGrZ4IACVCP3buEgPcxL/agJvMeoI=;
+        b=eIpG+p8Ov/rRaNeI6uaoNEoiYBVxOHKyiRlBtWJu2YvdUhbCuZtqkdDm4a56GJy2rl
+         nr1kusUTL0Wl7M9Ji9Ua9DtzmR6hHbt5OlBxcUSmFZCT03axU42bBVhU1HGSMIMyOO0f
+         sbTz+A9TH0p/ARPuqtbkKPLG5u5lynUcIdQiCImUzTN3k9DDK2aJti8Yd8R+nR5lnzZZ
+         tf9Qw7vKBeKHeeYuR5NoWOqRIeWfAXJoR5RBRkvloBlBcjIFPoqjQz0fp/ddbnmPa0Cl
+         JGvzU0+WJVMNaw5gb8FVTL4VrrmUoyB+DXEqhk669C/mUXRYlnP2dLjCxqXojz2F2tpX
+         Uitg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708966497; x=1709571297;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=W+9BchcdAdA5Rmse93Wm2Y92LoxElKC7hpYEsTuUwfs=;
-        b=bdVE8vslNwapHdlYkfkyS/B9S/cydPiA7MYtvSaUBeFEVdS0mTIIDJa0696a9ADHa5
-         ozWIjrbLxnJtdG297rsFXU46o2gM8AyG2dp0xnXzL5EH9nkEUFic52tbg0VgciLeJnb1
-         oGN7W/sNN1VJMOaksz/kBTMjyFTpYiQRsgkeRAswCDBDq6sEjsoZC4irTcWxwkMuAcAM
-         u48PCEX5FnJgxWq5GrBNJDrWIDDz61aXGGXZJaRW2N7EeWxTlicdqk57v1bmB3r3ZXYr
-         UgB2UBjkuVBKhqiwtdWJfyZ2NtF2T5qMLIMEMusHS1aWMj+ly8P2ZdSus0qwGLrpOavw
-         qPrg==
-X-Forwarded-Encrypted: i=1; AJvYcCVS/J/I5mBV5iE2nmAcXR1VRcxsiuj7/0bOMfHYxZ62vZ4GtwC+vOngQ0jnI+zrXYZPW6EIOl+sLvIs+WunrXFMTE8UG1tocciMEigKcACES150oa7Um7bwBLxi6NZzJf8SupqxujTEPmMtM6NB6tX5uiNxMrshjID/4D/filOHIaEm12VftonoWyOjMs+HVjxqpgusIVB/TNy8+et3SjjdkFfdOHXWaAWeyMP/6Hfotr+v8VAl0GsVpLvdteQk4hWxXjY63d7GsgItGef5CsNjejiGLOBb3VvgNk0t+EhZHWlo2yrGq6nmSBuLYVfuWu1Fj2Ucn/Izwn6b68rc0/am9mjGZNqcW7BOluSroKUQxDZOU4ttl3g=
-X-Gm-Message-State: AOJu0YwUK8CbtoZfPCJujzglx7aXTgXegSZYsdDk5Vmg5t13qU0YZ6lT
-	dabYm8j9pkmzAuf0hMZSU2YHpV0X75Fzc5wwaos2hqocNZZPTONW6Vgn3EClHaw=
-X-Google-Smtp-Source: AGHT+IHR73T8g+pH1z/OZAzR6/uguNJQiIbExpK1JFKQKd+Z0Hl91C+S3h9Le/ajC2vYDJ9YhOVA6A==
-X-Received: by 2002:a81:af17:0:b0:608:d160:f9aa with SMTP id n23-20020a81af17000000b00608d160f9aamr5926196ywh.46.1708966497424;
-        Mon, 26 Feb 2024 08:54:57 -0800 (PST)
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
-        by smtp.gmail.com with ESMTPSA id w10-20020a0dd40a000000b006077c89b001sm1269523ywd.83.2024.02.26.08.54.56
+        d=1e100.net; s=20230601; t=1708966516; x=1709571316;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YapG2Iuz3DeMuojGrZ4IACVCP3buEgPcxL/agJvMeoI=;
+        b=V+5Pj7PwKvHcaKC4a9AWdgLmBAsp9gszFRO1HOUylThtCcyzv8eGTTLpaRVk84OY8v
+         ByYdLUekwZI87qaoyesAEOr60n9jfVhjf1QQLPYNNFgJ8Gzho50+b7/4enZSdx2Ia9ck
+         lFrpW1q7BlVuNFKPLjde6jDY9EFvzSslCr/Yu1v/wCIpIOxaIZfU78xWhPZ3FfGIM4m3
+         FzT6gZKqTS4D289ma55jUySSUmWvjg39cu6OBh80teYwpKLypaqleOuMVn8ZuvWBVBs2
+         V05MrUoLj00xbqJEDOR+QLnelv3ARhuso3T2gIp+Y2CuQUNNXJB8yWS5Yz3m4GoNgRV1
+         oFxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUBes7SX6emhKU6yKxLDddHasIL272YpS8a7OJag1xYkyiiu1naFejZxEOkDMEinGrrraOe03AVGE3V40mERm4T2yX/OfxdYF/t9rP+
+X-Gm-Message-State: AOJu0Yy85nucF4B07xrQPA8gMxSTDjuRDSaTSSXbFSF5CeaOlObDpGAP
+	l1Si8u10q4m8BePjG+XvFkvKNsBZPM/7hyXPysQUpsJq2ttTw2XctyNNST3/Viw=
+X-Google-Smtp-Source: AGHT+IHuaCs5d/f2oApxcwZJ00c0VtAfeY0TQXQD6OLSfI1tJf749yVYK76BLp2wH1JUJFxCC31KGw==
+X-Received: by 2002:a5e:c819:0:b0:7c7:247e:34c7 with SMTP id y25-20020a5ec819000000b007c7247e34c7mr9575536iol.9.1708966515786;
+        Mon, 26 Feb 2024 08:55:15 -0800 (PST)
+Received: from [100.64.0.1] ([170.85.6.200])
+        by smtp.gmail.com with ESMTPSA id f23-20020a6be817000000b007c7938867adsm1309067ioh.33.2024.02.26.08.55.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 08:54:56 -0800 (PST)
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dc6dcd9124bso3372772276.1;
-        Mon, 26 Feb 2024 08:54:56 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWQm2yJ1I0NE5/zVVgr2R45VuJyjU0bQtTgZi3QzVm5f5MPMLSZjEowY6iXyzGThwIdfG7vWKn0dQog43zDwn2FCaPa3eNy8UxrfKymtw9dERyzPDX1/Nf2Mq12Nr6XcMXyJ+D1lkWXrGO5s0ZYeL2O1ZTYgyynJzttwv0Fyl0A7Q5y1R2ReSOcdJZGKbXK5GpTBf6Yp22BGFLv18bqm0cMXaeyscTGb2ao/XPh2IE0VabEpHzh120ojHbjMar119fxVAbvqb8gANB8/MusVSyEUI6lLhnv5EddiQOcSMHgcFDVXE5dKz0dE/kiIn8LZ5st/oCChPm1OKklK6keeAMM/LnVjJr+XjkSuJMwX2Mh4INUqKqFZoo=
-X-Received: by 2002:a25:9346:0:b0:dcd:98bd:7cc8 with SMTP id
- g6-20020a259346000000b00dcd98bd7cc8mr5030611ybo.48.1708966495877; Mon, 26 Feb
- 2024 08:54:55 -0800 (PST)
+        Mon, 26 Feb 2024 08:55:15 -0800 (PST)
+Message-ID: <764fafb0-2206-4ab1-84ea-ebb7848c8ff2@sifive.com>
+Date: Mon, 26 Feb 2024 10:55:11 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1704788539.git.ysato@users.sourceforge.jp> <f7a504fc42486f4f3f75ca7ac8cd57c084407da0.1704788539.git.ysato@users.sourceforge.jp>
-In-Reply-To: <f7a504fc42486f4f3f75ca7ac8cd57c084407da0.1704788539.git.ysato@users.sourceforge.jp>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 26 Feb 2024 17:54:43 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXOaasX9Dv-Kv=VOO0dhnp8ObQC6-YqsFZT0Q-VeqPg+Q@mail.gmail.com>
-Message-ID: <CAMuHMdXOaasX9Dv-Kv=VOO0dhnp8ObQC6-YqsFZT0Q-VeqPg+Q@mail.gmail.com>
-Subject: Re: [DO NOT MERGE v6 08/37] clocksource: sh_tmu: CLOCKSOURCE support.
-To: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Michael Turquette <mturquette@baylibre.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Thomas Gleixner <tglx@linutronix.de>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Jiri Slaby <jirislaby@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>, Rich Felker <dalias@libc.org>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Lee Jones <lee@kernel.org>, 
-	Helge Deller <deller@gmx.de>, Heiko Stuebner <heiko@sntech.de>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
-	Yang Xiwen <forbidden405@foxmail.com>, Sebastian Reichel <sre@kernel.org>, 
-	Linus Walleij <linus.walleij@linaro.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@suse.cz>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
-	David Rientjes <rientjes@google.com>, Baoquan He <bhe@redhat.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Guenter Roeck <linux@roeck-us.net>, 
-	Stephen Rothwell <sfr@canb.auug.org.au>, Azeem Shaikh <azeemshaikh38@gmail.com>, 
-	Javier Martinez Canillas <javierm@redhat.com>, Max Filippov <jcmvbkbc@gmail.com>, 
-	Palmer Dabbelt <palmer@rivosinc.com>, Bin Meng <bmeng@tinylab.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Jacky Huang <ychuang3@nuvoton.com>, 
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
-	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
-	Sam Ravnborg <sam@ravnborg.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
-	Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>, 
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, linux-ide@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org, 
-	linux-serial@vger.kernel.org, linux-fbdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] arch: consolidate existing CONFIG_PAGE_SIZE_*KB
+ definitions
+Content-Language: en-US
+To: Arnd Bergmann <arnd@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Vincenzo Frascino <vincenzo.frascino@arm.com>,
+ Kees Cook <keescook@chromium.org>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>,
+ Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>,
+ Brian Cain <bcain@quicinc.com>, Huacai Chen <chenhuacai@kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller
+ <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Palmer Dabbelt <palmer@dabbelt.com>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Andreas Larsson <andreas@gaisler.com>, Richard Weinberger <richard@nod.at>,
+ x86@kernel.org, Max Filippov <jcmvbkbc@gmail.com>,
+ Andy Lutomirski <luto@kernel.org>, Jan Kiszka <jan.kiszka@siemens.com>,
+ Kieran Bingham <kbingham@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-um@lists.infradead.org
+References: <20240226161414.2316610-1-arnd@kernel.org>
+ <20240226161414.2316610-2-arnd@kernel.org>
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <20240226161414.2316610-2-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Saton-san,
-
-Thanks for your patch!
-
-Please drop the period at the end of the one-line summary.
-
-On Tue, Jan 9, 2024 at 9:23=E2=80=AFAM Yoshinori Sato
-<ysato@users.sourceforge.jp> wrote:
-> Allows initialization as CLOCKSOURCE.
-
-Please explain why this is needed. E.g.
-
-    Add support for early registration using TIMER_OF_DECLARE(),
-    so the timer can be used as a clocksource on SoCs that do not
-    have any other suitable timer.
-
->
-> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
-
-> --- a/drivers/clocksource/sh_tmu.c
-> +++ b/drivers/clocksource/sh_tmu.c
-
-> @@ -148,8 +151,8 @@ static int __sh_tmu_enable(struct sh_tmu_channel *ch)
->         /* enable clock */
->         ret =3D clk_enable(ch->tmu->clk);
->         if (ret) {
-> -               dev_err(&ch->tmu->pdev->dev, "ch%u: cannot enable clock\n=
-",
-> -                       ch->index);
-> +               pr_err("%s ch%u: cannot enable clock\n",
-> +                      ch->tmu->name, ch->index);
-
-Please wrap the line after, not before, "ch->tmu->name,".
-
->                 return ret;
->         }
->
-
-> @@ -324,14 +332,14 @@ static int sh_tmu_register_clocksource(struct sh_tm=
-u_channel *ch,
->         cs->mask =3D CLOCKSOURCE_MASK(32);
->         cs->flags =3D CLOCK_SOURCE_IS_CONTINUOUS;
->
-> -       dev_info(&ch->tmu->pdev->dev, "ch%u: used as clock source\n",
-> -                ch->index);
-> +       pr_info("%s ch%u: used as clock source\n",
-> +               ch->tmu->name, ch->index);
-
-No need to wrap this line at all.
-
->
->         clocksource_register_hz(cs, ch->tmu->rate);
->         return 0;
->  }
->
-> -static struct sh_tmu_channel *ced_to_sh_tmu(struct clock_event_device *c=
-ed)
-> +static inline struct sh_tmu_channel *ced_to_sh_tmu(struct clock_event_de=
-vice *ced)
->  {
->         return container_of(ced, struct sh_tmu_channel, ced);
->  }
-> @@ -364,8 +372,8 @@ static int sh_tmu_clock_event_set_state(struct clock_=
-event_device *ced,
->         if (clockevent_state_oneshot(ced) || clockevent_state_periodic(ce=
-d))
->                 sh_tmu_disable(ch);
->
-> -       dev_info(&ch->tmu->pdev->dev, "ch%u: used for %s clock events\n",
-> -                ch->index, periodic ? "periodic" : "oneshot");
-> +       pr_info("%s ch%u: used for %s clock events\n",
-> +               ch->tmu->name, ch->index, periodic ? "periodic" : "onesho=
-t");
-
-Please wrap the line after, not before, "ch->tmu->name,".
-
->         sh_tmu_clock_event_start(ch, periodic);
->         return 0;
->  }
-> @@ -403,7 +411,8 @@ static void sh_tmu_clock_event_resume(struct clock_ev=
-ent_device *ced)
->  }
->
->  static void sh_tmu_register_clockevent(struct sh_tmu_channel *ch,
-> -                                      const char *name)
-> +                                      const char *name,
-> +                                      struct device_node *np)
-
-"np" is unused in this function, hence this change is unneeded.
-(Hey, I already said that in my review of v3)
-
->  {
->         struct clock_event_device *ced =3D &ch->ced;
->         int ret;
-> @@ -417,30 +426,32 @@ static void sh_tmu_register_clockevent(struct sh_tm=
-u_channel *ch,
->         ced->set_state_shutdown =3D sh_tmu_clock_event_shutdown;
->         ced->set_state_periodic =3D sh_tmu_clock_event_set_periodic;
->         ced->set_state_oneshot =3D sh_tmu_clock_event_set_oneshot;
-> -       ced->suspend =3D sh_tmu_clock_event_suspend;
-> -       ced->resume =3D sh_tmu_clock_event_resume;
-> -
-> -       dev_info(&ch->tmu->pdev->dev, "ch%u: used for clock events\n",
-> -                ch->index);
-> +       if (ch->tmu->pdev) {
-> +               ced->suspend =3D sh_tmu_clock_event_suspend;
-> +               ced->resume =3D sh_tmu_clock_event_resume;
-> +       }
-> +       pr_info("%s ch%u: used for clock events\n",
-> +               ch->tmu->name, ch->index);
-
-No need to wrap this line at all.
-
->
->         clockevents_config_and_register(ced, ch->tmu->rate, 0x300, 0xffff=
-ffff);
->
->         ret =3D request_irq(ch->irq, sh_tmu_interrupt,
->                           IRQF_TIMER | IRQF_IRQPOLL | IRQF_NOBALANCING,
-> -                         dev_name(&ch->tmu->pdev->dev), ch);
-> +                         ch->tmu->name, ch);
->         if (ret) {
-> -               dev_err(&ch->tmu->pdev->dev, "ch%u: failed to request irq=
- %d\n",
-> -                       ch->index, ch->irq);
-> +               pr_err("%s ch%u: failed to request irq %d\n",
-> +                      ch->tmu->name, ch->index, ch->irq);
-
-Please wrap the line after, not before, "ch->tmu->name,".
-
->                 return;
->         }
->  }
->
->  static int sh_tmu_register(struct sh_tmu_channel *ch, const char *name,
-> +                          struct device_node *np,
-
-np is unneeded.
-
->                            bool clockevent, bool clocksource)
->  {
->         if (clockevent) {
->                 ch->tmu->has_clockevent =3D true;
-> -               sh_tmu_register_clockevent(ch, name);
-> +               sh_tmu_register_clockevent(ch, name, np);
->         } else if (clocksource) {
->                 ch->tmu->has_clocksource =3D true;
->                 sh_tmu_register_clocksource(ch, name);
-
-> @@ -465,53 +477,59 @@ static int sh_tmu_channel_setup(struct sh_tmu_chann=
-el *ch, unsigned int index,
->         else
->                 ch->base =3D tmu->mapbase + 8 + ch->index * 12;
->
-> -       ch->irq =3D platform_get_irq(tmu->pdev, index);
-> +       if (tmu->pdev)
-> +               ch->irq =3D platform_get_irq(tmu->pdev, index);
-> +       else
-> +               ch->irq =3D of_irq_get(np, index);
-
-You can use of_irq_get() unconditionally.
-
->         if (ch->irq < 0)
->                 return ch->irq;
->
->         ch->cs_enabled =3D false;
->         ch->enable_count =3D 0;
->
-> -       return sh_tmu_register(ch, dev_name(&tmu->pdev->dev),
-> +       return sh_tmu_register(ch, tmu->name, np,
-
-No need to pass np.
-
->                                clockevent, clocksource);
->  }
->
-> -static int sh_tmu_map_memory(struct sh_tmu_device *tmu)
-> +static int sh_tmu_map_memory(struct sh_tmu_device *tmu, struct device_no=
-de *np)
->  {
->         struct resource *res;
->
-> -       res =3D platform_get_resource(tmu->pdev, IORESOURCE_MEM, 0);
-> -       if (!res) {
-> -               dev_err(&tmu->pdev->dev, "failed to get I/O memory\n");
-> -               return -ENXIO;
-> -       }
-> +       if (tmu->pdev) {
-> +               res =3D platform_get_resource(tmu->pdev, IORESOURCE_MEM, =
-0);
-> +               if (!res) {
-> +                       pr_err("sh_tmu failed to get I/O memory\n");
-> +                       return -ENXIO;
-> +               }
+On 2024-02-26 10:14 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> These four architectures define the same Kconfig symbols for configuring
+> the page size. Move the logic into a common place where it can be shared
+> with all other architectures.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  arch/Kconfig                      | 58 +++++++++++++++++++++++++++++--
+>  arch/hexagon/Kconfig              | 25 +++----------
+>  arch/hexagon/include/asm/page.h   |  6 +---
+>  arch/loongarch/Kconfig            | 21 ++++-------
+>  arch/loongarch/include/asm/page.h | 10 +-----
+>  arch/mips/Kconfig                 | 58 +++----------------------------
+>  arch/mips/include/asm/page.h      | 16 +--------
+>  arch/sh/include/asm/page.h        | 13 +------
+>  arch/sh/mm/Kconfig                | 42 +++++++---------------
+>  9 files changed, 88 insertions(+), 161 deletions(-)
+> 
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index a5af0edd3eb8..237cea01ed9b 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -1078,17 +1078,71 @@ config HAVE_ARCH_COMPAT_MMAP_BASES
+>  	  and vice-versa 32-bit applications to call 64-bit mmap().
+>  	  Required for applications doing different bitness syscalls.
+>  
+> +config HAVE_PAGE_SIZE_4KB
+> +	bool
 > +
-> +               tmu->mapbase =3D ioremap(res->start, resource_size(res));
-> +       } else
-> +               tmu->mapbase =3D of_iomap(np, 0);
-
-You can use of_iomap() unconditionally.
-
->
-> -       tmu->mapbase =3D ioremap(res->start, resource_size(res));
->         if (tmu->mapbase =3D=3D NULL)
->                 return -ENXIO;
->
->         return 0;
->  }
->
-> -static int sh_tmu_parse_dt(struct sh_tmu_device *tmu)
-> +static int sh_tmu_parse_dt(struct sh_tmu_device *tmu, struct device_node=
- *np)
->  {
-> -       struct device_node *np =3D tmu->pdev->dev.of_node;
-> -
->         tmu->model =3D SH_TMU;
->         tmu->num_channels =3D 3;
->
->         of_property_read_u32(np, "#renesas,channels", &tmu->num_channels)=
-;
->
->         if (tmu->num_channels !=3D 2 && tmu->num_channels !=3D 3) {
-> -               dev_err(&tmu->pdev->dev, "invalid number of channels %u\n=
-",
-> -                       tmu->num_channels);
-> +               pr_err("%s: invalid number of channels %u\n",
-> +                      tmu->name, tmu->num_channels);
-
-Please wrap the line after, not before, "ch->tmu->name,".
-
->                 return -EINVAL;
->         }
->
->         return 0;
->  }
->
-> -static int sh_tmu_setup(struct sh_tmu_device *tmu, struct platform_devic=
-e *pdev)
-> +static int sh_tmu_setup(struct sh_tmu_device *tmu,
-> +                       struct platform_device *pdev, struct device_node =
-*np)
->  {
->         unsigned int i;
->         int ret;
-
-> @@ -531,14 +554,17 @@ static int sh_tmu_setup(struct sh_tmu_device *tmu, =
-struct platform_device *pdev)
->                 tmu->model =3D id->driver_data;
->                 tmu->num_channels =3D hweight8(cfg->channels_mask);
->         } else {
-> -               dev_err(&tmu->pdev->dev, "missing platform data\n");
-> +               pr_err("%s missing platform data\n", tmu->name);
->                 return -ENXIO;
->         }
->
->         /* Get hold of clock. */
-> -       tmu->clk =3D clk_get(&tmu->pdev->dev, "fck");
-> +       if (pdev)
-> +               tmu->clk =3D clk_get(&tmu->pdev->dev, "fck");
-> +       else
-> +               tmu->clk =3D of_clk_get(np, 0);
-
-You can use of_clk_get() unconditionally.
-
->         if (IS_ERR(tmu->clk)) {
-> -               dev_err(&tmu->pdev->dev, "cannot get clock\n");
-> +               pr_err("%s: cannot get clock\n", tmu->name);
->                 return PTR_ERR(tmu->clk);
->         }
->
-
-> @@ -665,12 +711,17 @@ static void __exit sh_tmu_exit(void)
->         platform_driver_unregister(&sh_tmu_device_driver);
->  }
->
-> +subsys_initcall(sh_tmu_init);
-> +module_exit(sh_tmu_exit);
-> +#endif
+> +config HAVE_PAGE_SIZE_8KB
+> +	bool
 > +
->  #ifdef CONFIG_SUPERH
-> +#ifdef CONFIG_SH_DEVICE_TREE
-> +TIMER_OF_DECLARE(sh_tmu, "renesas,tmu", sh_tmu_of_register);
+> +config HAVE_PAGE_SIZE_16KB
+> +	bool
+> +
+> +config HAVE_PAGE_SIZE_32KB
+> +	bool
+> +
+> +config HAVE_PAGE_SIZE_64KB
+> +	bool
+> +
+> +config HAVE_PAGE_SIZE_256KB
+> +	bool
+> +
+> +choice
+> +	prompt "MMU page size"
 
-Probably this TIMER_OF_DECLARE() should be done unconditionally,
-like is done in drivers/clocksource/renesas-ostm.c.
+Should this have some generic help text (at least a warning about compatibility)?
 
-I gave that a try on R-Mobile A1, which also has TMU, but it didn't
-seem to work (timer not firing?). So I suspect there are some missing
-clk_enable() calls.  In the case of the platform driver, these are
-handled using pm_runtime_get_sync().
+> +
+> +config PAGE_SIZE_4KB
+> +	bool "4KB pages"
+> +	depends on HAVE_PAGE_SIZE_4KB
+> +
+> +config PAGE_SIZE_8KB
+> +	bool "8KB pages"
+> +	depends on HAVE_PAGE_SIZE_8KB
+> +
+> +config PAGE_SIZE_16KB
+> +	bool "16KB pages"
+> +	depends on HAVE_PAGE_SIZE_16KB
+> +
+> +config PAGE_SIZE_32KB
+> +	bool "32KB pages"
+> +	depends on HAVE_PAGE_SIZE_32KB
+> +
+> +config PAGE_SIZE_64KB
+> +	bool "64KB pages"
+> +	depends on HAVE_PAGE_SIZE_64KB
+> +
+> +config PAGE_SIZE_256KB
+> +	bool "256KB pages"
+> +	depends on HAVE_PAGE_SIZE_256KB
+> +
+> +endchoice
+> +
+>  config PAGE_SIZE_LESS_THAN_64KB
+>  	def_bool y
+> -	depends on !ARM64_64K_PAGES
+>  	depends on !PAGE_SIZE_64KB
+> -	depends on !PARISC_PAGE_SIZE_64KB
+>  	depends on PAGE_SIZE_LESS_THAN_256KB
+>  
+>  config PAGE_SIZE_LESS_THAN_256KB
+>  	def_bool y
+>  	depends on !PAGE_SIZE_256KB
+>  
+> +config PAGE_SHIFT
+> +	int
+> +	default 12 if PAGE_SIZE_4KB
+> +	default 13 if PAGE_SIZE_8KB
+> +	default 14 if PAGE_SIZE_16KB
+> +	default 15 if PAGE_SIZE_32KB
+> +	default 16 if PAGE_SIZE_64KB
+> +	default 18 if PAGE_SIZE_256KB
+> +
+>  # This allows to use a set of generic functions to determine mmap base
+>  # address by giving priority to top-down scheme only if the process
+>  # is not in legacy mode (compat task, unlimited stack size or
+> diff --git a/arch/hexagon/Kconfig b/arch/hexagon/Kconfig
+> index a880ee067d2e..aac46ee1a000 100644
+> --- a/arch/hexagon/Kconfig
+> +++ b/arch/hexagon/Kconfig
+> @@ -8,6 +8,11 @@ config HEXAGON
+>  	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+>  	select ARCH_NO_PREEMPT
+>  	select DMA_GLOBAL_POOL
+> +	select FRAME_POINTER
 
-> +#else
->  sh_early_platform_init("earlytimer", &sh_tmu_device_driver);
+Looks like a paste error.
+
+> +	select HAVE_PAGE_SIZE_4KB
+> +	select HAVE_PAGE_SIZE_16KB
+> +	select HAVE_PAGE_SIZE_64KB
+> +	select HAVE_PAGE_SIZE_256KB
+>  	# Other pending projects/to-do items.
+>  	# select HAVE_REGS_AND_STACK_ACCESS_API
+>  	# select HAVE_HW_BREAKPOINT if PERF_EVENTS
+> @@ -120,26 +125,6 @@ config NR_CPUS
+>  	  This is purely to save memory - each supported CPU adds
+>  	  approximately eight kilobytes to the kernel image.
+>  
+> -choice
+> -	prompt "Kernel page size"
+> -	default PAGE_SIZE_4KB
+> -	help
+> -	  Changes the default page size; use with caution.
+> -
+> -config PAGE_SIZE_4KB
+> -	bool "4KB"
+> -
+> -config PAGE_SIZE_16KB
+> -	bool "16KB"
+> -
+> -config PAGE_SIZE_64KB
+> -	bool "64KB"
+> -
+> -config PAGE_SIZE_256KB
+> -	bool "256KB"
+> -
+> -endchoice
+> -
+>  source "kernel/Kconfig.hz"
+>  
+>  endmenu
+> diff --git a/arch/hexagon/include/asm/page.h b/arch/hexagon/include/asm/page.h
+> index 10f1bc07423c..65c9bac639fa 100644
+> --- a/arch/hexagon/include/asm/page.h
+> +++ b/arch/hexagon/include/asm/page.h
+> @@ -13,27 +13,22 @@
+>  /*  This is probably not the most graceful way to handle this.  */
+>  
+>  #ifdef CONFIG_PAGE_SIZE_4KB
+> -#define PAGE_SHIFT 12
+>  #define HEXAGON_L1_PTE_SIZE __HVM_PDE_S_4KB
 >  #endif
-> -
-> -subsys_initcall(sh_tmu_init);
-> -module_exit(sh_tmu_exit);
-> +#endif
->
->  MODULE_AUTHOR("Magnus Damm");
->  MODULE_DESCRIPTION("SuperH TMU Timer Driver");
+>  
+>  #ifdef CONFIG_PAGE_SIZE_16KB
+> -#define PAGE_SHIFT 14
+>  #define HEXAGON_L1_PTE_SIZE __HVM_PDE_S_16KB
+>  #endif
+>  
+>  #ifdef CONFIG_PAGE_SIZE_64KB
+> -#define PAGE_SHIFT 16
+>  #define HEXAGON_L1_PTE_SIZE __HVM_PDE_S_64KB
+>  #endif
+>  
+>  #ifdef CONFIG_PAGE_SIZE_256KB
+> -#define PAGE_SHIFT 18
+>  #define HEXAGON_L1_PTE_SIZE __HVM_PDE_S_256KB
+>  #endif
+>  
+>  #ifdef CONFIG_PAGE_SIZE_1MB
+> -#define PAGE_SHIFT 20
+>  #define HEXAGON_L1_PTE_SIZE __HVM_PDE_S_1MB
+>  #endif
 
-Gr{oetje,eeting}s,
+The corresponding Kconfig option does not exist (and did not exist before this
+patch).
 
-                        Geert
+>  
+> @@ -50,6 +45,7 @@
+>  #define HVM_HUGEPAGE_SIZE 0x5
+>  #endif
+>  
+> +#define PAGE_SHIFT CONFIG_PAGE_SHIFT
+>  #define PAGE_SIZE  (1UL << PAGE_SHIFT)
+>  #define PAGE_MASK  (~((1 << PAGE_SHIFT) - 1))
+>  
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
