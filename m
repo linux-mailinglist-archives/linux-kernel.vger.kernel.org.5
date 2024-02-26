@@ -1,157 +1,111 @@
-Return-Path: <linux-kernel+bounces-82093-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEB98867F19
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:45:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE9A0867F2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:48:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7984E29B950
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:45:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90406B316D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:44:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1340D130E26;
-	Mon, 26 Feb 2024 17:42:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M832y/Kf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5108012E1F8;
-	Mon, 26 Feb 2024 17:42:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633D512DD87;
+	Mon, 26 Feb 2024 17:41:13 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96167605A1
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 17:41:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708969326; cv=none; b=tbsUG+L10Uq1TlDT6l3t1a+ii1OsAPFUnAv7m0gqhjjK4XGopS1GSw1LCiduTHq0l1qs7A2Db9/rHQjTWeRXVocPeeg4K90ZUYqDj7cdTy6fAsVlrKOTz8ztv1cnUD3RnS+rBftmyGuK8ZkPB/WxhPrFN1h7/915QbP1Zxe4Qec=
+	t=1708969272; cv=none; b=NisDfoQbDvoBQHB23TwZoYyZ0N6W9ELDtqMqoVEVzz4dc/3ROsRbuH5lphm0DYhHJ+X820MKtdBjHa1lg0A9YtY9JngbUqEY1C0RvUtitTjum7pqZhY56W6j81+/5dfy2B4FmChBv1SLOp+Q0hmffGh01gsjQ9a8aAPHnLGkexA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708969326; c=relaxed/simple;
-	bh=iwCMXGQsbQGxiwJHs3E7w0+xefWy7qifrPJJKX5kaWM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XDSvpPApulPUj9DpmPRRIOGDP13+JoR9zQcH4KuNpwmBZl0NaMw1bk5X5WbXdvZ7k/90P3teYHHIlHxmVrPgXC+BOA75YHbk9avQnX/dJGVuWZkw4vlflBT2VmjBbrCH8QDIFCpIsQBSoZeztscUZ8Vlyp9VTzIRFeY7/kTmAEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M832y/Kf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91435C433F1;
-	Mon, 26 Feb 2024 17:42:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708969325;
-	bh=iwCMXGQsbQGxiwJHs3E7w0+xefWy7qifrPJJKX5kaWM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=M832y/Kf5o1+ndCigTMjJT0fqyP07vheldOXHsrUIazVUsDR1n2cK1kUPBNZJ32tI
-	 GqPO/GOeqgoHtwrWa28KMr+p3w/oHNMyBKu4+FshHmfKOHClC11AY1UMrhC77B+dDt
-	 UvpOd7A7Xb9p94SZmSp10hBvODDMZO2OyOSgh8XW0cEdskgxj4lGQLxxSeNhj+Wojr
-	 PzrbU4Q5ISYRdIlG4hyDAPSH8yvGFMOsbAVKBk/LchidazNKTboLZwyCxyb7JLYkEF
-	 xgcBRTlePUqNPjwz8nx9jdFtb6Q8cLlWhyTy76KBtLOWEDfx+DFmrm0PZ6DR9dXIf1
-	 GwjHvFAT250og==
-Date: Mon, 26 Feb 2024 17:40:31 +0000
-From: Simon Horman <horms@kernel.org>
-To: Matthieu Baerts <matttbe@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-	Mat Martineau <martineau@kernel.org>,
-	Geliang Tang <geliang@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Shuah Khan <shuah@kernel.org>,
-	mptcp@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net 2/2] selftests: mptcp: explicitly trigger the
- listener diag code-path
-Message-ID: <20240226174031.GH13129@kernel.org>
-References: <cover.1708515908.git.pabeni@redhat.com>
- <1116d80f808ea870f3f77fe927dbd6c622d062ae.1708515908.git.pabeni@redhat.com>
- <20240222131338.GA960874@kernel.org>
- <22424f1c-3f76-454d-9de4-486c3f2f2478@kernel.org>
+	s=arc-20240116; t=1708969272; c=relaxed/simple;
+	bh=dOUW0bwkpdXqCxCp6JFzajwGpBaS9u7CxDWxetlC2TY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Az/Ep8fdTknvYNc/WGXfrCkfcTPULS+uryKiOhPxxg8+XOFzWwZlENEYlGJC4zet+NnYEImG/8jgT3X17p93uarwnLUyZNHXZqNatjK2a7JCYlBv1Em4VIwVGmFOKezsRbKQeBTj50O6Sm/wVGwXt2r4LJBDWJNueHcx0noF5UY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2FEF9DA7;
+	Mon, 26 Feb 2024 09:41:48 -0800 (PST)
+Received: from [10.57.67.4] (unknown [10.57.67.4])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E95DC3F73F;
+	Mon, 26 Feb 2024 09:41:07 -0800 (PST)
+Message-ID: <ee760679-7e3c-4a35-ad53-ca98b598ead5@arm.com>
+Date: Mon, 26 Feb 2024 17:41:06 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <22424f1c-3f76-454d-9de4-486c3f2f2478@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/4] mm: swap: Remove CLUSTER_FLAG_HUGE from
+ swap_cluster_info:flags
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
+ Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+ Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20231025144546.577640-1-ryan.roberts@arm.com>
+ <20231025144546.577640-2-ryan.roberts@arm.com>
+ <d108bd79-086b-4564-838b-d41afa055137@redhat.com>
+ <6541e29b-f25a-48b8-a553-fd8febe85e5a@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <6541e29b-f25a-48b8-a553-fd8febe85e5a@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 22, 2024 at 03:49:44PM +0100, Matthieu Baerts wrote:
-> Hi Simon,
+On 22/02/2024 10:20, David Hildenbrand wrote:
+> On 22.02.24 11:19, David Hildenbrand wrote:
+>> On 25.10.23 16:45, Ryan Roberts wrote:
+>>> As preparation for supporting small-sized THP in the swap-out path,
+>>> without first needing to split to order-0, Remove the CLUSTER_FLAG_HUGE,
+>>> which, when present, always implies PMD-sized THP, which is the same as
+>>> the cluster size.
+>>>
+>>> The only use of the flag was to determine whether a swap entry refers to
+>>> a single page or a PMD-sized THP in swap_page_trans_huge_swapped().
+>>> Instead of relying on the flag, we now pass in nr_pages, which
+>>> originates from the folio's number of pages. This allows the logic to
+>>> work for folios of any order.
+>>>
+>>> The one snag is that one of the swap_page_trans_huge_swapped() call
+>>> sites does not have the folio. But it was only being called there to
+>>> avoid bothering to call __try_to_reclaim_swap() in some cases.
+>>> __try_to_reclaim_swap() gets the folio and (via some other functions)
+>>> calls swap_page_trans_huge_swapped(). So I've removed the problematic
+>>> call site and believe the new logic should be equivalent.
+>>
+>> That is the  __try_to_reclaim_swap() -> folio_free_swap() ->
+>> folio_swapped() -> swap_page_trans_huge_swapped() call chain I assume.
+>>
+>> The "difference" is that you will now (1) get another temporary
+>> reference on the folio and (2) (try)lock the folio every time you
+>> discard a single PTE of a (possibly) large THP.
+>>
 > 
-> Thank you for the review!
+> Thinking about it, your change will not only affect THP, but any call to
+> free_swap_and_cache().
 > 
-> On 22/02/2024 2:13 pm, Simon Horman wrote:
-> > On Wed, Feb 22, 2024 at 12:46:59PM +0100, Paolo Abeni wrote:
-> >> l The mptcp diag interface already experienced a few locking bugs
-> >> that lockdep and appropriate coverage have detected in advance.
-> >>
-> >> Let's add a test-case triggering the relevant code path, to prevent
-> >> similar issues in the future.
-> >>
-> >> Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-> >> ---
-> >>  tools/testing/selftests/net/mptcp/diag.sh | 30 +++++++++++++++++++++++
-> >>  1 file changed, 30 insertions(+)
-> >>
-> >> diff --git a/tools/testing/selftests/net/mptcp/diag.sh b/tools/testing/selftests/net/mptcp/diag.sh
-> >> index 60a7009ce1b5..3ab584b38566 100755
-> >> --- a/tools/testing/selftests/net/mptcp/diag.sh
-> >> +++ b/tools/testing/selftests/net/mptcp/diag.sh
-> >> @@ -81,6 +81,21 @@ chk_msk_nr()
-> >>  	__chk_msk_nr "grep -c token:" "$@"
-> >>  }
-> >>  
-> >> +chk_listener_nr()
-> >> +{
-> >> +	local expected=$1
-> >> +	local msg="$2"
-> >> +
-> >> +	if [ $expected -gt 0 ] && \
-> >> +	   ! mptcp_lib_kallsyms_has "mptcp_diag_dump_listeners"; then
-> >> +		printf "%-50s%s\n" "$msg - mptcp" "[ skip ]"
-> >> +		mptcp_lib_result_skip "many listener sockets"
-> >> +	else
-> >> +		__chk_nr "ss -inmlHMON $ns | wc -l" "$expected" "$msg - mptcp"
-> >> +	fi
-> >> +	__chk_nr "ss -inmlHtON $ns | wc -l" "$expected" "$msg - subflows"
-> >> +}
-> >> +
-> >>  wait_msk_nr()
-> >>  {
-> >>  	local condition="grep -c token:"
-> >> @@ -279,5 +294,20 @@ flush_pids
-> >>  chk_msk_inuse 0 "many->0"
-> >>  chk_msk_cestab 0 "many->0"
-> >>  
-> >> +chk_listener_nr 0 "no listener sockets"
-> >> +NR_SERVERS=100
-> >> +for I in $(seq 1 $NR_SERVERS); do
-> >> +	ip netns exec $ns ./mptcp_connect -p $((I + 20001)) -l 0.0.0.0 2>&1 >/dev/null &
-> >> +	mptcp_lib_wait_local_port_listen $ns $((I + 20001))
-> >> +done
-> >> +
-> >> +chk_listener_nr $NR_SERVERS "many listener sockets"
-> >> +
-> >> +# gracefull termination
-> > 
-> > nit, as you plan to re-spin anyway: graceful
+> Likely that's not what we want. :/
 > 
-> Paolo sent a new version on MPTCP ML only. When applying the new
-> version, I fixed this:
-> 
-> https://lore.kernel.org/mptcp/e98b8b07-558c-498a-97fb-dd5cab11e439@kernel.org/
-> 
-> >> +for I in $(seq 1 $NR_SERVERS); do
-> >> +	echo a | ip netns exec $ns ./mptcp_connect -p $((I + 20001)) 127.0.0.1 2>&1 >/dev/null
-> > 
-> > I'm not sure of the validity of this but shellcheck complains that:
-> > 
-> >   SC2069 (warning): To redirect stdout+stderr, 2>&1 must be last (or use '{ cmd > file; } 2>&1' to clarify).
-> > 
-> > Also for the same constriction slightly earlier in this patch.
-> 
-> Good catch!
-> 
-> I should add shellcheck support in our CI to catch that :)
-> 
-> I just applied the suggested modification in our tree [1]. The new
-> version that will be sent to netdev will no longer have this issue.
-> 
-> https://github.com/multipath-tcp/mptcp_net-next/commit/31f1460d552c
 
-Thanks Matt,
+Is folio_trylock() really that expensive given the code path is already locking
+multiple spinlocks, and I don't think we would expect the folio lock to be very
+contended?
 
-much appreciated.
+I guess filemap_get_folio() could be a bit more expensive, but again, is this
+really a deal-breaker?
+
+
+I'm just trying to refamiliarize myself with this series, but I think I ended up
+allocating a cluster per cpu per order. So one potential solution would be to
+turn the flag into a size and store it in the cluster info. (In fact I think I
+was doing that in an early version of this series - will have to look at why I
+got rid of that). Then we could avoid needing to figure out nr_pages from the folio.
 
