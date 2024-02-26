@@ -1,109 +1,131 @@
-Return-Path: <linux-kernel+bounces-82018-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10F9A867DCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:14:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25BD9867DD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:15:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF6792907DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:14:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57BBF1C2B3BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:15:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6952A1353EE;
-	Mon, 26 Feb 2024 17:05:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44C5D135A42;
+	Mon, 26 Feb 2024 17:05:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LKdY0dNo"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="UwCcma0b"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A87912C55E;
-	Mon, 26 Feb 2024 17:05:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55C0813540B;
+	Mon, 26 Feb 2024 17:05:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708967106; cv=none; b=rWofvR3vCtn64VyRba/A3o7UiNiZgFQZHJpsZUS8nGeXgyxoC1uwgfad2SEP4+pyns/EzHQPOWYtvZhV7a/xxajXNS9hs1EBVjzo++fmf8gUw7LsxM5uYPQKvn4tw0ZcNC+L8A53g7cwSfoiE6FoyfmxCffHrsiFoLZ3/SbLB6o=
+	t=1708967123; cv=none; b=J1vNLxJN4EAHzPHYLONOVE8/yyWyp/oGIjb84cnaknsqn5VZ8zg/jHimIDCRIS9TukvkN0XzSmE5/yrs7xXamudT+pPY5C4ey9uxTOuAGPd2um9wwfZGyTynH0kPKNwBcOoX5l6Cs/HPYP4/77tEfxrVLFFyHouRs3FCkC/LTGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708967106; c=relaxed/simple;
-	bh=MRsBgIxlb/4Wq6P8y8ODlq2nplU2xHNAakSQBx9Hqe8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uKcxylM0baurjMTspuJgLs8rLUsnndXcxDqgFlBgvco8j5dSd5A+/au5VtGVby5OcsaBKnnDKh3HEj/huOxkao0xINjYLfvEaERwcqhVJg7OS1YQplfk1xqbWLyjTOTGYC2sG3v/l0hDpfLzdOTTEQYYuwC6eB6MLSa0bvVX9ww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LKdY0dNo; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708967106; x=1740503106;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=MRsBgIxlb/4Wq6P8y8ODlq2nplU2xHNAakSQBx9Hqe8=;
-  b=LKdY0dNo8EuSYIzbvJLkRlnZqXGkRLZ3Dl4j9E2hsG/MxJytbTBg3dDT
-   m5R3Wnq3dIyEDgvi5wGRoPV6Z+3tXtapKt3POC/zPPOGJwcVh//gfNYA+
-   x27NCGZpVa3JJXafjlZq+YRpoWNnGcQTx/TpS/Hk0IE4A9OeW3jotdQWU
-   /p7oov2nWbSL+3VrdV9Y+m2WTs/MHU9SQHgUP7UjZXDJDu3S3CaaoXTVz
-   5wNn+6Vp0r7juVh3pXLj/B+C48QHJ0qJWuJB2exnejijq/0wZ+7Me5C5k
-   /Dny1RYE1mFB7QBCdQ+BxvasE+gNOGE372ItLRcYyV11Wq2JNxKC5cwlF
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="13905916"
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="13905916"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 09:05:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="913882130"
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="913882130"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 09:05:00 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1reePR-00000007k7J-2SR5;
-	Mon, 26 Feb 2024 19:04:57 +0200
-Date: Mon, 26 Feb 2024 19:04:57 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Robin van der Gracht <robin@protonic.nl>,
-	Paul Burton <paulburton@kernel.org>
-Subject: Re: [PATCH v3 9/9] auxdisplay: Add driver for MAX695x 7-segment LED
- controllers
-Message-ID: <ZdzEud8hZ2fXsVar@smile.fi.intel.com>
-References: <20240219170337.2161754-1-andriy.shevchenko@linux.intel.com>
- <20240219170337.2161754-10-andriy.shevchenko@linux.intel.com>
- <CAMuHMdWpepH0P8g9dPfq1rsZRJsvOnoZ7VnjqTL9nkSGtKFpYQ@mail.gmail.com>
+	s=arc-20240116; t=1708967123; c=relaxed/simple;
+	bh=ypNyr0Uoo5ne9ovtpSKtjzM4p27kJo/g2Xvh37ER8Xo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DyUOHVax9Pip1ii3a7Z6BG6m7+OU4xteOTUJ7tEYIfnL44c24U61QTySxJuW/ZWMqQd6bR7trBUqhwjBaqn4T44RkgQUo8yAF/TlgUA/SmgvB5icElM8Jdg+X24ofQTD+pBbWbYul+urkj3oxtD/Ig0O7u1mdUVaXm528/L2Agw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=UwCcma0b; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D88B0240004;
+	Mon, 26 Feb 2024 17:05:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708967118;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Tn9G+qXphFLUMlqaCdrIW1lI3L/sy7DuNc4RBARSO5c=;
+	b=UwCcma0by2RTCLSjDCaPHB11eVl9Hv4E4WFacUMgZUZtZi0PL3lvGYEBvnQRj1nwItn3xV
+	FtyUM6pIm2R5EQvStPsW9ZHAPY+m5Cs2ZqCB44BPWuB1DKrC3Z70IpsGQFOSgZs9zVzG5r
+	XPasAQae0LgApFmbzOsIWRzK54Q48Qk3NySaufIAiOTAVYhtSJTWLBDRMeHY8IH4FiuTSV
+	V0nzgn2/dyDNy41C8LVe5bltpaY6nseXrji9JBI3F9n7HNzSl+e9n7MuT+Cj5CxYqlJGbl
+	2Z/rvRso9ouN18O8ajWRzHIZFS/DIJjpsd62nguxkjQdhlOKNsTOlnki4dxT/g==
+Message-ID: <e24c77e6-5fcd-42f0-b93c-b4e6ce17e75a@bootlin.com>
+Date: Mon, 26 Feb 2024 18:05:16 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 17/18] PCI: j721e: add reset GPIO to struct j721e_pcie
+Content-Language: en-US
+To: Andy Shevchenko <andy@kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, Tony Lindgren <tony@atomide.com>,
+ Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>,
+ Janusz Krzysztofik <jmkrzyszt@gmail.com>, Andi Shyti
+ <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
+ Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
+ linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
+ theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com
+References: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
+ <20240102-j7200-pcie-s2r-v3-17-5c2e4a3fac1f@bootlin.com>
+ <Zc42HIibtoXqLyEA@smile.fi.intel.com>
+From: Thomas Richard <thomas.richard@bootlin.com>
+In-Reply-To: <Zc42HIibtoXqLyEA@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdWpepH0P8g9dPfq1rsZRJsvOnoZ7VnjqTL9nkSGtKFpYQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-GND-Sasl: thomas.richard@bootlin.com
 
-On Mon, Feb 26, 2024 at 05:01:46PM +0100, Geert Uytterhoeven wrote:
-> On Mon, Feb 19, 2024 at 6:03 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > Add initial driver for the MAX6958 and MAX6959 7-segment LED
-> > controllers.
+On 2/15/24 17:04, Andy Shevchenko wrote:
+> On Thu, Feb 15, 2024 at 04:18:02PM +0100, Thomas Richard wrote:
+>> From: Théo Lebrun <theo.lebrun@bootlin.com>
+>>
+>> Add reset GPIO to struct j721e_pcie, so it can be used at suspend and
+>> resume stages.
+> 
+> ...
+> 
+>>  	case PCI_MODE_RC:
+>> -		gpiod = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
+>> -		if (IS_ERR(gpiod)) {
+>> -			ret = PTR_ERR(gpiod);
+>> +		pcie->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
+>> +		if (IS_ERR(pcie->reset_gpio)) {
+>> +			ret = PTR_ERR(pcie->reset_gpio);
+>>  			if (ret != -EPROBE_DEFER)
+>>  				dev_err(dev, "Failed to get reset GPIO\n");
+>>  			goto err_get_sync;
+>> @@ -504,9 +504,9 @@ static int j721e_pcie_probe(struct platform_device *pdev)
+>>  		 * mode is selected while enabling the PHY. So deassert PERST#
+>>  		 * after 100 us.
+>>  		 */
+>> -		if (gpiod) {
+>> +		if (pcie->reset_gpio) {
+>>  			usleep_range(100, 200);
+>> -			gpiod_set_value_cansleep(gpiod, 1);
+>> +			gpiod_set_value_cansleep(pcie->reset_gpio, 1);
+>>  		}
+> 
+> Instead of all this, just add one line assignment. Moreover, before or after
+> this patch refactor the code to use ret = dev_err_probe(...); pattern that
+> eliminates those deferral probe checks.
 
-..
+Hi Andy,
 
-> LGTM, so
-> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+I'm not sure what you exactly want when you write "just add one line
+assignment".
+For the dev_err_probe() it's okay, it will be fixed in the next iteration.
 
-As per discussion, let consider maximum digits as a next feature coming later
-on. I'll take this tag, tell me if I shouldn't.
-Thank you!
+Regards,
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+Thomas Richard, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
 
