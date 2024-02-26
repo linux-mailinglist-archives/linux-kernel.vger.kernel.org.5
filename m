@@ -1,31 +1,31 @@
-Return-Path: <linux-kernel+bounces-80448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A49BB866881
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:07:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D26A866882
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:07:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43C0B1F212CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:07:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6283283652
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:07:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 191D21BDCD;
-	Mon, 26 Feb 2024 03:06:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AF291BF35;
+	Mon, 26 Feb 2024 03:06:41 +0000 (UTC)
 Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D06A18EB8
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:06:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93F651B7E2
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:06:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708916799; cv=none; b=mAzUIgiQOX0SFZlJRjJVkTHhVmsifZHMRHt3pun21dZb/Tnigctgp3zk/Jr3Fw6T/+vZFmDirnTLfMhP1xgRzc6vih3J5t1jCsy7gQqcbIeqbgA1FhFLXot2n89nkfz+vYJMl7ANrrNnVozJ7akMNmJheS8QxdGvvs8G2fiQ1b4=
+	t=1708916800; cv=none; b=bYmbnh9BN0t/A16WIEXoRyr6SgLcsMN+tDA+RcMjhGlNr/gBjd8oVQnHVlseaLa85OEPppOyfIWf+6oWBTStoWNTLUsXWwUh/jVQsILN0lvb7xR7tjoSOj5pI3yb1XWSgl7KfQ37IKgo/O2dAW0r4hCiMhQ8TFsG7qwgQVUf6hA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708916799; c=relaxed/simple;
-	bh=bOo6ompPxEjsShhZOqBiAWkLgDaqfCbo8j/HY5Q8F4Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=EEcp6dQFElWJi9sNdGExMq6RExfKcG1k1IpHoSxpdURpfv2/a+bqnBT9jM3k+IFFhrDQ93ALbdGiX/1XmWcrfaIq5emU1vuE6OtE4PJFejN5EekttKsA71BLf2le7ID7SRfMMSkPE3E/i42pPapRi0NImSEGBlYx6geI9xjfqRg=
+	s=arc-20240116; t=1708916800; c=relaxed/simple;
+	bh=o06PFcoiHrss96x6Trd7RHh2EbWbMqndDf78qMPLNHI=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=Lt5nViZSAZoMoAJPuU5yOGFyFBhlPulyZgSy5fv9KXYcclysY4EH9HB8XRGNSDkmCiZ2lwB0DSLlmw6eoip3NHEsUICK+sBSaqBn7SfInSmHTNePiXvI+jyV16z6Ka/kX2RL811JN3xSQU5LmqLOoOq56Tr7vA70LEAgg0c99l8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d6dff70000001748-3c-65dc002ffdf6
+X-AuditID: a67dfc5b-d6dff70000001748-41-65dc002f0738
 From: Byungchul Park <byungchul@sk.com>
 To: linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org
@@ -44,36 +44,36 @@ Cc: kernel_team@skhynix.com,
 	bp@alien8.de,
 	dave.hansen@linux.intel.com,
 	rjgolo@gmail.com
-Subject: [RESEND PATCH v8 5/8] mm: Separate move/undo doing on folio list from migrate_pages_batch()
-Date: Mon, 26 Feb 2024 12:06:10 +0900
-Message-Id: <20240226030613.22366-6-byungchul@sk.com>
+Subject: [RESEND PATCH v8 6/8] mm: Add APIs to free a folio directly to the buddy bypassing pcp
+Date: Mon, 26 Feb 2024 12:06:11 +0900
+Message-Id: <20240226030613.22366-7-byungchul@sk.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240226030613.22366-1-byungchul@sk.com>
 References: <20240226030613.22366-1-byungchul@sk.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKLMWRmVeSWpSXmKPExsXC9ZZnoa4Bw51UgytbWSzmrF/DZvF5wz82
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrCLMWRmVeSWpSXmKPExsXC9ZZnoa4Bw51Ug/Pn2CzmrF/DZvF5wz82
 	ixcb2hktvq7/xWzx9FMfi8XlXXPYLO6t+c9qcX7XWlaLHUv3MVlcOrCAyeJ47wEmi/n3PrNZ
 	bN40ldni+JSpjBa/fwAVn5w1mcVBwON7ax+Lx85Zd9k9Fmwq9di8Qstj8Z6XTB6bVnWyeWz6
 	NInd4925c+weJ2b8ZvGYdzLQ4/2+q2weW3/ZeTROvcbm8XmTXABfFJdNSmpOZllqkb5dAlfG
-	jfd32Qv6dSoWzXnI3sC4UrmLkZNDQsBEYkF3ByOM3dt7hg3EZhNQl7hx4ycziC0iYCZxsPUP
-	O4jNLHCXSeJAP1iNsECKxN3J38FsFgFViYP37oHV8AqYSsxe8ZYFYqa8xOoNB4DmcHBwAs15
-	/98QJCwEVPK39yrQWi6gkvdsElc6trBC1EtKHFxxg2UCI+8CRoZVjEKZeWW5iZk5JnoZlXmZ
-	FXrJ+bmbGIGBv6z2T/QOxk8Xgg8xCnAwKvHwLvhwO1WINbGsuDL3EKMEB7OSCG+4zM1UId6U
-	xMqq1KL8+KLSnNTiQ4zSHCxK4rxG38pThATSE0tSs1NTC1KLYLJMHJxSDYxTrXaYzOrinGnB
-	+X7XlfuLHN81fbstrP787pK/m45/Eet+c2XzvCshq7vO5H7O+m9Vs1fYqW7vos7J3lqrWjtl
-	H+px1wY2GF2+98WyuXvaZ6V1+ovasvLDwqaGv5pb++xnzoqE3ckCH1qtjtS6O5wU5RZcUbzo
-	4R21jdvLfVLfi64+ONsnWfSTEktxRqKhFnNRcSIAlFm963gCAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrDLMWRmVeSWpSXmKPExsXC5WfdrKvPcCfV4OQlM4s569ewWXze8I/N
+	qfuL2AuuyVb8f/uPtYFxskQXIweHhICJxNZHGV2MnGDm0zntLCA2m4C6xI0bP5lBbBEBM4mD
+	rX/YQWxmgbtMEgf62UBsYYF4if2X9oDVsAioSux98QOsl1fAVGLG58lsEDPlJVZvOMAMsooT
+	aM77/4YgYSGgkr+9Vxm7GLmASj6zSWzZepgdol5S4uCKGywTGHkXMDKsYhTKzCvLTczMMdHL
+	qMzLrNBLzs/dxAgM+2W1f6J3MH66EHyIUYCDUYmHd8GH26lCrIllxZW5hxglOJiVRHjDZW6m
+	CvGmJFZWpRblxxeV5qQWH2KU5mBREuc1+laeIiSQnliSmp2aWpBaBJNl4uCUamBs/fwpueHU
+	+a9tKw+2sUW6Xbrza+XE5pfOx8KLlTklC3pe7Dl5W/xH0iLN+GtZapmOzp+F9zow/WKaJquq
+	t/Td3RgtJZXY6nUBOjITfu//bnl8389p/695R/1hzOyZG64y9XTs34X8TNqa66csEjSdH9Zm
+	u73wwNTLs17mLVOZ/P3rydCGyGUflViKMxINtZiLihMBNdP+sncCAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrDLMWRmVeSWpSXmKPExsXC5WfdrKvPcCfVYOcJS4s569ewWXze8I/N
 	4sWGdkaLr+t/MVs8/dTHYnF47klWi8u75rBZ3Fvzn9Xi/K61rBY7lu5jsrh0YAGTxfHeA0wW
 	8+99ZrPYvGkqs8XxKVMZLX7/ACo+OWsyi4Ogx/fWPhaPnbPusnss2FTqsXmFlsfiPS+ZPDat
 	6mTz2PRpErvHu3Pn2D1OzPjN4jHvZKDH+31X2TwWv/jA5LH1l51H49RrbB6fN8kF8Edx2aSk
-	5mSWpRbp2yVwZdx4f5e9oF+nYtGch+wNjCuVuxg5OSQETCR6e8+wgdhsAuoSN278ZAaxRQTM
-	JA62/mEHsZkF7jJJHOgHqxEWSJG4O/k7mM0ioCpx8N49sBpeAVOJ2SveskDMlJdYveEA0BwO
-	Dk6gOe//G4KEhYBK/vZeZZzAyLWAkWEVo0hmXlluYmaOqV5xdkZlXmaFXnJ+7iZGYBgvq/0z
-	cQfjl8vuhxgFOBiVeHgXfLidKsSaWFZcmXuIUYKDWUmEN1zmZqoQb0piZVVqUX58UWlOavEh
-	RmkOFiVxXq/w1AQhgfTEktTs1NSC1CKYLBMHp1QD4xnnJfa9v8VUskR+vYviY+g12GM8qy2y
-	qkFCPttR5o+kxdn4ogsvDaW/7btgmLZz7mrO7YHbuNkmCiiFmAQWqFy2X2F01DXWdu1rk6bf
-	L5SrT6xdrzzVL+zI8rUb3BcW2TAlzK/cIrBT+ku186IHK1iStiz28BSrvlkRc/ajwKErieLr
-	vZknK7EUZyQaajEXFScCAI1XUVNfAgAA
+	5mSWpRbp2yVwZZy6v4i94Jpsxf+3/1gbGCdLdDFyckgImEg8ndPOAmKzCahL3LjxkxnEFhEw
+	kzjY+ocdxGYWuMskcaCfDcQWFoiX2H9pD1gNi4CqxN4XP8B6eQVMJWZ8nswGMVNeYvWGA0A1
+	HBycQHPe/zcECQsBlfztvco4gZFrASPDKkaRzLyy3MTMHFO94uyMyrzMCr3k/NxNjMAwXlb7
+	Z+IOxi+X3Q8xCnAwKvHwLvhwO1WINbGsuDL3EKMEB7OSCG+4zM1UId6UxMqq1KL8+KLSnNTi
+	Q4zSHCxK4rxe4akJQgLpiSWp2ampBalFMFkmDk6pBkadtKp9a39EpfhfkeG/yl7+RWGKU8Ar
+	h7QetZ0O31+/at9+Y9qPHSdCr54z+NdVrbB9evJcp3jNm4/Z5V709a477P5QvGKyx1WtmQw9
+	zwzOBq15tV137Ycfy9IvnZa4HZEYYGsSVuHG98zS5ZL1gbK2ZSzHJ3fMO6gpEPyQ5yTnZY24
+	2xMfZzEosRRnJBpqMRcVJwIAuYNFwF8CAAA=
 X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -81,183 +81,116 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-Functionally, no change. This is a preparation for migrc mechanism that
-requires to use separate folio lists for its own handling at migration.
+This is a preparation for migrc mechanism that frees folios at a better
+time. The mechanism will defer the use of folio_put*() for source folios
+of migration, that are unlikely to be used and a group of folios will be
+freed at once at a later time.
 
-Refactored migrate_pages_batch() and separated move and undo parts
-operating on folio list, from migrate_pages_batch().
+However, this will pollute pcp so as to inexpectedly free_pcppages_bulk()
+fresher folios and make pcp get unstable. To facilitate this new
+mechanism, an additional API has been added that allows folios under
+migrc's control to be freed directly to buddy bypassing pcp.
 
 Signed-off-by: Byungchul Park <byungchul@sk.com>
 ---
- mm/migrate.c | 134 +++++++++++++++++++++++++++++++--------------------
- 1 file changed, 83 insertions(+), 51 deletions(-)
+ include/linux/mm.h | 23 +++++++++++++++++++++++
+ mm/internal.h      |  1 +
+ mm/page_alloc.c    | 10 ++++++++++
+ mm/swap.c          |  7 +++++++
+ 4 files changed, 41 insertions(+)
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 397f2a6e34cb..bbe1ecef4956 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -1611,6 +1611,81 @@ static int migrate_hugetlbs(struct list_head *from, new_folio_t get_new_folio,
- 	return nr_failed;
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index da5219b48d52..fc0581cce3a7 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1284,6 +1284,7 @@ static inline struct folio *virt_to_folio(const void *x)
  }
  
-+static void migrate_folios_move(struct list_head *src_folios,
-+		struct list_head *dst_folios,
-+		free_folio_t put_new_folio, unsigned long private,
-+		enum migrate_mode mode, int reason,
-+		struct list_head *ret_folios,
-+		struct migrate_pages_stats *stats,
-+		int *retry, int *thp_retry, int *nr_failed,
-+		int *nr_retry_pages)
+ void __folio_put(struct folio *folio);
++void __folio_put_small_nopcp(struct folio *folio);
+ 
+ void put_pages_list(struct list_head *pages);
+ 
+@@ -1483,6 +1484,28 @@ static inline void folio_put(struct folio *folio)
+ 		__folio_put(folio);
+ }
+ 
++/**
++ * folio_put_small_nopcp - Decrement the reference count on a folio.
++ * @folio: The folio.
++ *
++ * This is only for a single page folio to release directly to the buddy
++ * allocator bypassing pcp.
++ *
++ * If the folio's reference count reaches zero, the memory will be
++ * released back to the page allocator and may be used by another
++ * allocation immediately.  Do not access the memory or the struct folio
++ * after calling folio_put_small_nopcp() unless you can be sure that it
++ * wasn't the last reference.
++ *
++ * Context: May be called in process or interrupt context, but not in NMI
++ * context.  May be called while holding a spinlock.
++ */
++static inline void folio_put_small_nopcp(struct folio *folio)
 +{
-+	struct folio *folio, *folio2, *dst, *dst2;
-+	bool is_thp;
-+	int nr_pages;
-+	int rc;
-+
-+	dst = list_first_entry(dst_folios, struct folio, lru);
-+	dst2 = list_next_entry(dst, lru);
-+	list_for_each_entry_safe(folio, folio2, src_folios, lru) {
-+		is_thp = folio_test_large(folio) && folio_test_pmd_mappable(folio);
-+		nr_pages = folio_nr_pages(folio);
-+
-+		cond_resched();
-+
-+		rc = migrate_folio_move(put_new_folio, private,
-+				folio, dst, mode,
-+				reason, ret_folios);
-+		/*
-+		 * The rules are:
-+		 *	Success: folio will be freed
-+		 *	-EAGAIN: stay on the unmap_folios list
-+		 *	Other errno: put on ret_folios list
-+		 */
-+		switch(rc) {
-+		case -EAGAIN:
-+			*retry += 1;
-+			*thp_retry += is_thp;
-+			*nr_retry_pages += nr_pages;
-+			break;
-+		case MIGRATEPAGE_SUCCESS:
-+			stats->nr_succeeded += nr_pages;
-+			stats->nr_thp_succeeded += is_thp;
-+			break;
-+		default:
-+			*nr_failed += 1;
-+			stats->nr_thp_failed += is_thp;
-+			stats->nr_failed_pages += nr_pages;
-+			break;
-+		}
-+		dst = dst2;
-+		dst2 = list_next_entry(dst, lru);
-+	}
++	if (folio_put_testzero(folio))
++		__folio_put_small_nopcp(folio);
 +}
 +
-+static void migrate_folios_undo(struct list_head *src_folios,
-+		struct list_head *dst_folios,
-+		free_folio_t put_new_folio, unsigned long private,
-+		struct list_head *ret_folios)
+ /**
+  * folio_put_refs - Reduce the reference count on a folio.
+  * @folio: The folio.
+diff --git a/mm/internal.h b/mm/internal.h
+index b880f1e78700..3be8fd5604e8 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -451,6 +451,7 @@ extern int user_min_free_kbytes;
+ 
+ extern void free_unref_page(struct page *page, unsigned int order);
+ extern void free_unref_page_list(struct list_head *list);
++extern void free_pages_nopcp(struct page *page, unsigned int order);
+ 
+ extern void zone_pcp_reset(struct zone *zone);
+ extern void zone_pcp_disable(struct zone *zone);
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 733732e7e0ba..21b8c8cd1673 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -565,6 +565,16 @@ static inline void free_the_page(struct page *page, unsigned int order)
+ 		__free_pages_ok(page, order, FPI_NONE);
+ }
+ 
++void free_pages_nopcp(struct page *page, unsigned int order)
 +{
-+	struct folio *folio, *folio2, *dst, *dst2;
-+
-+	dst = list_first_entry(dst_folios, struct folio, lru);
-+	dst2 = list_next_entry(dst, lru);
-+	list_for_each_entry_safe(folio, folio2, src_folios, lru) {
-+		int old_page_state = 0;
-+		struct anon_vma *anon_vma = NULL;
-+
-+		__migrate_folio_extract(dst, &old_page_state, &anon_vma);
-+		migrate_folio_undo_src(folio, old_page_state & PAGE_WAS_MAPPED,
-+				anon_vma, true, ret_folios);
-+		list_del(&dst->lru);
-+		migrate_folio_undo_dst(dst, true, put_new_folio, private);
-+		dst = dst2;
-+		dst2 = list_next_entry(dst, lru);
-+	}
++	/*
++	 * This function will be used in case that the pages are too
++	 * cold to keep in pcp e.g. migrc mechanism. So it'd better
++	 * release the pages to the tail.
++	 */
++	__free_pages_ok(page, order, FPI_TO_TAIL);
 +}
 +
  /*
-  * migrate_pages_batch() first unmaps folios in the from list as many as
-  * possible, then move the unmapped folios.
-@@ -1633,7 +1708,7 @@ static int migrate_pages_batch(struct list_head *from,
- 	int pass = 0;
- 	bool is_thp = false;
- 	bool is_large = false;
--	struct folio *folio, *folio2, *dst = NULL, *dst2;
-+	struct folio *folio, *folio2, *dst = NULL;
- 	int rc, rc_saved = 0, nr_pages;
- 	LIST_HEAD(unmap_folios);
- 	LIST_HEAD(dst_folios);
-@@ -1769,42 +1844,11 @@ static int migrate_pages_batch(struct list_head *from,
- 		thp_retry = 0;
- 		nr_retry_pages = 0;
- 
--		dst = list_first_entry(&dst_folios, struct folio, lru);
--		dst2 = list_next_entry(dst, lru);
--		list_for_each_entry_safe(folio, folio2, &unmap_folios, lru) {
--			is_thp = folio_test_large(folio) && folio_test_pmd_mappable(folio);
--			nr_pages = folio_nr_pages(folio);
--
--			cond_resched();
--
--			rc = migrate_folio_move(put_new_folio, private,
--						folio, dst, mode,
--						reason, ret_folios);
--			/*
--			 * The rules are:
--			 *	Success: folio will be freed
--			 *	-EAGAIN: stay on the unmap_folios list
--			 *	Other errno: put on ret_folios list
--			 */
--			switch(rc) {
--			case -EAGAIN:
--				retry++;
--				thp_retry += is_thp;
--				nr_retry_pages += nr_pages;
--				break;
--			case MIGRATEPAGE_SUCCESS:
--				stats->nr_succeeded += nr_pages;
--				stats->nr_thp_succeeded += is_thp;
--				break;
--			default:
--				nr_failed++;
--				stats->nr_thp_failed += is_thp;
--				stats->nr_failed_pages += nr_pages;
--				break;
--			}
--			dst = dst2;
--			dst2 = list_next_entry(dst, lru);
--		}
-+		/* Move the unmapped folios */
-+		migrate_folios_move(&unmap_folios, &dst_folios,
-+				put_new_folio, private, mode, reason,
-+				ret_folios, stats, &retry, &thp_retry,
-+				&nr_failed, &nr_retry_pages);
- 	}
- 	nr_failed += retry;
- 	stats->nr_thp_failed += thp_retry;
-@@ -1813,20 +1857,8 @@ static int migrate_pages_batch(struct list_head *from,
- 	rc = rc_saved ? : nr_failed;
- out:
- 	/* Cleanup remaining folios */
--	dst = list_first_entry(&dst_folios, struct folio, lru);
--	dst2 = list_next_entry(dst, lru);
--	list_for_each_entry_safe(folio, folio2, &unmap_folios, lru) {
--		int old_page_state = 0;
--		struct anon_vma *anon_vma = NULL;
--
--		__migrate_folio_extract(dst, &old_page_state, &anon_vma);
--		migrate_folio_undo_src(folio, old_page_state & PAGE_WAS_MAPPED,
--				       anon_vma, true, ret_folios);
--		list_del(&dst->lru);
--		migrate_folio_undo_dst(dst, true, put_new_folio, private);
--		dst = dst2;
--		dst2 = list_next_entry(dst, lru);
--	}
-+	migrate_folios_undo(&unmap_folios, &dst_folios,
-+			put_new_folio, private, ret_folios);
- 
- 	return rc;
+  * Higher-order pages are called "compound pages".  They are structured thusly:
+  *
+diff --git a/mm/swap.c b/mm/swap.c
+index cd8f0150ba3a..3f37496a1184 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -106,6 +106,13 @@ static void __folio_put_small(struct folio *folio)
+ 	free_unref_page(&folio->page, 0);
  }
+ 
++void __folio_put_small_nopcp(struct folio *folio)
++{
++	__page_cache_release(folio);
++	mem_cgroup_uncharge(folio);
++	free_pages_nopcp(&folio->page, 0);
++}
++
+ static void __folio_put_large(struct folio *folio)
+ {
+ 	/*
 -- 
 2.17.1
 
