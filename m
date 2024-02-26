@@ -1,151 +1,102 @@
-Return-Path: <linux-kernel+bounces-80424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE905866857
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:50:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 33E3E866858
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:51:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91FED281E23
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:50:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E337428214A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:51:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AC02101D5;
-	Mon, 26 Feb 2024 02:49:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D920101D5;
+	Mon, 26 Feb 2024 02:51:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ld+7pNoO"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AAVh+6v9"
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFC0B1798A;
-	Mon, 26 Feb 2024 02:49:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB9E4FBEF
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 02:51:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708915797; cv=none; b=W+IQxJg45Z6agU+QnAN9sipVSSEaDRBHTeooqp3+x+ie7AeH8OVMcQ+v6kS4bC+ApA8xFtJL1Knba3iFf/8YOMBvIuMrpyVEDXea1ve0/woYegcHZiqoMWk7SEKDfYKzbZB+sBXEveCHSQ9CvNg2kBuJnkS4WMhOuuiM1b5hNHw=
+	t=1708915875; cv=none; b=VBH4kliLt2AvbovVv0Q4b7qtHc8ZHOeZuvDssa1GZir/F+wdCKdQzeO6SZs4cEw9DAnWjbRJChJEreZKhfRYoAQJSGYvgf6pWb2r7xJ4Jib2NqqZFgt8qlrD9FWc7IfcWC5grjCBJ7KjlnlCf+huA0Jn2Jcch/Yzq0iqb26QulI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708915797; c=relaxed/simple;
-	bh=DcMacE/T1H711vYK5u4ErqYTR46rEQvC6GPq8x7rzXQ=;
+	s=arc-20240116; t=1708915875; c=relaxed/simple;
+	bh=EnOHlUnDap/4ImmT/XsmmXsgwlD7LDaUp8b6N0konyM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sbwFIY9tqH1T+j4CA5IMAdqKTGdByrLYGwWBjRpNNdLYou8ORVho7qt9aWZrrscyhvi/ma0UCyGbz8152lxnMPcIQpw2J81+dM+E0BReYj/GW/yWBExEhyFxUr8DLGYv1uWkgxh8Gl4k3fDmlGaWhaBGlCziO1qTygBitpLRqUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Ld+7pNoO; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=MhQaDMhNf1pMBewPwvsaNlydCejp+LUoROz0d2JINCQ=; b=Ld+7pNoOZnggeiHJnCxAAGqS8S
-	nITJ2hDxhbJ0+rZtQpiwec2j3cMW13cc7zMApsEmpBxQkzOi3PbXeFGzpqujFvhZ+bmzdo29dKYu+
-	vAdQDEYgL0hB9okrXxK/W+wjETKtabIrt7nvmvitPjSMTFJGWKZPwW1LVlJIBo2kgtpxxHjR+DaNq
-	kNSJ07KvX7//wxEKNGTF6roo6S0RxqI6JrxMwcYvQq8XYf/jMmmnGKLOooSNxA8UhsPu3/bIZGrNn
-	yIU3a/N7QJbm9wxupceEDLel0DA6xGhESb4J90rhFq/XDHCspRIaZE4DBCHLNMUa/klSruoURJX5+
-	Atf8Ok5A==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reR3v-0000000GCxT-0C2G;
-	Mon, 26 Feb 2024 02:49:51 +0000
-Message-ID: <7ef941f5-fd2f-4893-81e1-94f5aabf6ac3@infradead.org>
-Date: Sun, 25 Feb 2024 18:49:50 -0800
+	 In-Reply-To:Content-Type; b=KZ3hQjv9X1z6LAo/EkFTg890d9AEZig3m5sCT/z7t2fHo9DmRG2eLmUTH8rczLJefM0G109vG2ntROsoasG174T4zYOjJYBS6G9Jlmn5/fTvun6RQJGx8WqAVg67jk7BI2ULXc8fRUovdIAhhSAdDkeAUi7GQrquYNfW48gjaxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AAVh+6v9; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <2de0d872-0e05-4fbb-8291-0c60487ccd8d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708915871;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZpE4nKekj14CCL2IymlyiWfeetzm5jT90k6NA0P2Cno=;
+	b=AAVh+6v9wFk4dmisJwwBRgraOeOiFyGFIwh+4C65jKf/9TZKgQLn5XY4/xwB26xUcqbPN1
+	4/ovo7RE0VJgUzevD2xr/iCFfCJ7SsfeXOhXCqU0ppSAxvNjnXBTTvqfXNGmbMy9pE5apV
+	CBQ213bJpXBUrmcJdffyoq6eRcJCAzM=
+Date: Mon, 26 Feb 2024 10:51:00 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] auxdisplay: Add 7 segment LED display driver
+Subject: Re: [PATCH] 9p: remove SLAB_MEM_SPREAD flag usage
 Content-Language: en-US
-To: Chris Packham <chris.packham@alliedtelesis.co.nz>, ojeda@kernel.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- andrew@lunn.ch, gregory.clement@bootlin.com,
- sebastian.hesselbarth@gmail.com, andy.shevchenko@gmail.com,
- geert@linux-m68k.org, pavel@ucw.cz, lee@kernel.org
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-leds@vger.kernel.org
-References: <20240225213423.690561-1-chris.packham@alliedtelesis.co.nz>
- <20240225213423.690561-2-chris.packham@alliedtelesis.co.nz>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240225213423.690561-2-chris.packham@alliedtelesis.co.nz>
+To: ericvh@kernel.org, lucho@ionkov.net, asmadeus@codewreck.org,
+ linux_oss@crudebyte.com
+Cc: v9fs@lists.linux.dev, linux-kernel@vger.kernel.org, vbabka@suse.cz,
+ roman.gushchin@linux.dev, Xiongwei.Song@windriver.com
+References: <20240224134617.829016-1-chengming.zhou@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <20240224134617.829016-1-chengming.zhou@linux.dev>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi--
-
-On 2/25/24 13:34, Chris Packham wrote:
-> Add a driver for a 7 segment LED display. At the moment only one
-> character is supported but it should be possible to expand this to
-> support more characters and/or 14 segment displays in the future.
+On 2024/2/24 21:46, chengming.zhou@linux.dev wrote:
+> From: Chengming Zhou <zhouchengming@bytedance.com>
 > 
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> The SLAB_MEM_SPREAD flag is already a no-op as of 6.8-rc1, remove
+> its usage so we can delete it from slab. No functional change.
+
+Update changelog to make it clearer:
+
+The SLAB_MEM_SPREAD flag used to be implemented in SLAB, which was
+removed as of v6.8-rc1, so it became a dead flag since the commit
+16a1d968358a ("mm/slab: remove mm/slab.c and slab_def.h"). And the
+series[1] went on to mark it obsolete to avoid confusion for users.
+Here we can just remove all its users, which has no functional change.
+
+[1] https://lore.kernel.org/all/20240223-slab-cleanup-flags-v2-1-02f1753e8303@suse.cz/
+
+Thanks!
+
+> 
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 > ---
->  drivers/auxdisplay/Kconfig   |   7 ++
->  drivers/auxdisplay/Makefile  |   1 +
->  drivers/auxdisplay/seg-led.c | 152 +++++++++++++++++++++++++++++++++++
->  3 files changed, 160 insertions(+)
->  create mode 100644 drivers/auxdisplay/seg-led.c
+>  fs/9p/v9fs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/auxdisplay/Kconfig b/drivers/auxdisplay/Kconfig
-> index d944d5298eca..e826b5b15881 100644
-> --- a/drivers/auxdisplay/Kconfig
-> +++ b/drivers/auxdisplay/Kconfig
-> @@ -197,6 +197,13 @@ config ARM_CHARLCD
->  	  line and the Linux version on the second line, but that's
->  	  still useful.
->  
-> +config SEG_LED
-> +	bool "Generic 7 segment LED display"
-> +	select LINEDISP
-> +	help
-> +	  This driver supports a generic 7 segment LED display made up
-
-	                                 7-segment
-
-> +	  of GPIO pins connected to the individual segments.
-> +
->  menuconfig PARPORT_PANEL
->  	tristate "Parallel port LCD/Keypad Panel support"
->  	depends on PARPORT
-> diff --git a/drivers/auxdisplay/Makefile b/drivers/auxdisplay/Makefile
-> index 6968ed4d3f0a..808fdf156bd5 100644
-> --- a/drivers/auxdisplay/Makefile
-> +++ b/drivers/auxdisplay/Makefile
-> @@ -14,3 +14,4 @@ obj-$(CONFIG_HT16K33)		+= ht16k33.o
->  obj-$(CONFIG_PARPORT_PANEL)	+= panel.o
->  obj-$(CONFIG_LCD2S)		+= lcd2s.o
->  obj-$(CONFIG_LINEDISP)		+= line-display.o
-> +obj-$(CONFIG_SEG_LED)		+= seg-led.o
-> diff --git a/drivers/auxdisplay/seg-led.c b/drivers/auxdisplay/seg-led.c
-> new file mode 100644
-> index 000000000000..c0b302a09cbb
-> --- /dev/null
-> +++ b/drivers/auxdisplay/seg-led.c
-> @@ -0,0 +1,152 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Driver for a 7 segment LED display
-> + *
-> + * The GPIOs are wired to the 7 segments in a clock wise fashion starting from
-> + * the top.
-> + *
-> + *      -a-
-> + *     |   |
-> + *     f   b
-> + *     |   |
-> + *      -g-
-> + *     |   |
-> + *     e   c
-> + *     |   |
-> + *      -d-
-> + *
-> + * The decimal point LED presnet on some devices is currently not
-
-                            present
-
-> + * supported.
-> + *
-> + * Copyright (C) Allied Telesis Labs
-> + */
-
--- 
-#Randy
+> diff --git a/fs/9p/v9fs.c b/fs/9p/v9fs.c
+> index 61dbe52bb3a3..281a1ed03a04 100644
+> --- a/fs/9p/v9fs.c
+> +++ b/fs/9p/v9fs.c
+> @@ -637,7 +637,7 @@ static int v9fs_init_inode_cache(void)
+>  	v9fs_inode_cache = kmem_cache_create("v9fs_inode_cache",
+>  					  sizeof(struct v9fs_inode),
+>  					  0, (SLAB_RECLAIM_ACCOUNT|
+> -					      SLAB_MEM_SPREAD|SLAB_ACCOUNT),
+> +					      SLAB_ACCOUNT),
+>  					  v9fs_inode_init_once);
+>  	if (!v9fs_inode_cache)
+>  		return -ENOMEM;
 
