@@ -1,74 +1,73 @@
-Return-Path: <linux-kernel+bounces-80617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78D4C866A6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:05:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F16F866A73
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:09:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C6261C217BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:05:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED722B21B3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:09:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB5871BDCE;
-	Mon, 26 Feb 2024 07:05:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B35221BF20;
+	Mon, 26 Feb 2024 07:08:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vqdwiVI/"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XYJX9j0l"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30C0E1BC40
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 07:05:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CEE11BC58
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 07:08:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708931122; cv=none; b=DQXqPr3TKWmcpxtPzQ6Kewi5TvoE579d2zwJhjkfs6gyC5qtYZ1Gs2tMA2xjqaMDAoTmISWeGyysYAlHGjh3Jga4lK1hAlWCbQoTJHDvVark/EWg1rOO+HUv/Z4Y5fuVc8q5xbqImO9UeIBo8pwBDTrRlS9JBUC/3arXzt4fjgc=
+	t=1708931328; cv=none; b=sU3Cg3IxHx073jXPHEHXluyrj/9Jd8nd1hbvv8TCn3J2yNHiBE0Dq3zZ/flWGNB0YjOS3nLdre9CHi7kJ8riy8Fbg7Sz9TCj8Mf3WPUY/BTHyO77VAEwHENltvYTlVPT9lOl3+Z68xw29Hvs2b3f/kQoLBKdwkp2eUPZBmLvP9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708931122; c=relaxed/simple;
-	bh=nYgb0HWRu8YyT74BAkDx/Un2/2W4bfQcIXn1jyX5dhM=;
+	s=arc-20240116; t=1708931328; c=relaxed/simple;
+	bh=OS9WTaEXVOMMENks6YwqnSyrfglczQxYcXTzWisnNDI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UZDEDIrkwbFEgbgtIETKGQGa8/xfTvDAfww1P2DR4d9xuQ05HYXsR8QFMWi318uXy0AchnpeLfSD6SFv6IrXLyehsL2nmw2v8jHQpgjRXsnttvV4eE0xOmbT36o5FwVpvai+2oB1GML81JlO1V/00sCk9PTk1JtkhuCQ40GZ/SY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vqdwiVI/; arc=none smtp.client-ip=209.85.208.45
+	 In-Reply-To:Content-Type; b=L0V+Nh4RTscuyu8hNjt+dmD5mBx7xBg8Zx2SEaAOOtR+7MJO0DR6s6qOwEbBSlYwBvZ1Lj0KQqEQMw5Sojji5y0eUvpXRYC4tz9SIISbVdCisedEU05qLRgx8RCsyj6QfePrq0Amewx2t/609l5WmEYkICJKwHn/xeiCm4iTzCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XYJX9j0l; arc=none smtp.client-ip=209.85.218.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-55f50cf2021so4093435a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 23:05:20 -0800 (PST)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a3e552eff09so273839866b.3
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 23:08:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708931119; x=1709535919; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=zYlFi0LHJsAlgLIGIcShBABCv/yjhadsmMI/Fg1bJc4=;
-        b=vqdwiVI/1DJk7LGizjcFH5cs6ouJiV9eMSTxMDadht7qUSLjsgiN5hdNykkihzzx+d
-         lu2kERgqS5s5TnQd/1JhcF7IZUxLSGf5/u2Mvuh6jh4/PkXVaJbNiYhMgfb47ztR5+2d
-         etdb81nLd6C22nb/hfFJO8rVYFRAeg2TC4N4IDsdQzSYNaSm6Q7ZyuCi0jEEyzuGzOgj
-         MtA3MM4VLR1x6j6kRRL5RK4rFBgHJzmTkqepKFjyHcdAPW1mx6LNDWj16OGy4DHYvIfJ
-         mo8LvXCDLtIGztiEYgKQDU1HYrI3Ir3vrn06OCVqbxTaZvPtP1wOjVBFQpveZdVbn6GV
-         XDqQ==
+        d=linaro.org; s=google; t=1708931325; x=1709536125; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3hw1po3g3mmdi+54a+CW6CF/ypobceWxsTw7g/j9bSQ=;
+        b=XYJX9j0ln60QrjEzMymmHgbWRN0b86CIYHs7xKT7xR5u13UTOlf0nUyLvY0+N26ed5
+         Gv0JnkK6U7Ik63s1V9iy2Inn4acR9MctdC8lDow0QVeXg+/EpyCF8DNAjh0hkWSiNXhT
+         thiCKEj37ZYdB6kimuvWMl4ZEK4CPUhHMz1Ugie2em8knCZrtA8vsfyLldij/o/vYKiH
+         EFI9EWO/1nJJV9SGIhGFwA5TJLQzCFaWnRW7tyX7vovsop83tSzO2bzBz+Zo4zc/q4GG
+         KSYDaiMWOGl6ItrApdseqcaMPz76+pouOJs948Jzsz/IzaC1Lv6UIfEImYg/d3Rhqbsk
+         3tpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708931119; x=1709535919;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zYlFi0LHJsAlgLIGIcShBABCv/yjhadsmMI/Fg1bJc4=;
-        b=J7A6PwlwcxR8Lr7p+E8feL7lPU9diOeUjtYmo7egmSTSjMA2Z4HCg/L8btcBkuf8C/
-         DUG+h/jZb8fexCQpNJp/gAXjtgjV2nXsciKaKo9OOmi5lPiDDKp6zsr9dTtsnuiV4Lg8
-         nYnWLM0T44hzjhsWa7z9FqNoffIJTwlUMzkLyYIv2fa5WwVMfdqymIUhkK/nhqsGUsoo
-         8ydGrOQvoYKAA6OUEot2kAyJgxegv3UgtIP4+TTb9JHy53gy2kVs9QVp8SKqSBZ4dOW4
-         3Q6tG5fBXPvSzhRWjciV2V5xLNCZpV6IsMN2+z0Cf0+/1GdkoZio4GaqDwlp7qWeBo01
-         +UtA==
-X-Forwarded-Encrypted: i=1; AJvYcCW3ZgAOSgbylDYIZ5S5GLgjnuZwUZeeCipc20St6PKyieRPi+CIEp/zzJR67xUbvlyKxlohnLNC9/Po7GHNP+8dxX2ljLNJDTBaPMfZ
-X-Gm-Message-State: AOJu0Ywgas4eysgF9ObGrzSBUcCiWg8Xkkz+C5f6mZqJtyk6rD37tulV
-	BLkEdTTwmP8y6W3xtUXOofZ4G+4rWmxEyT31oEsb0lsjNnxXpLCNQUEJubAfv40=
-X-Google-Smtp-Source: AGHT+IGIUhAHxmHdb5Nr/f680qAPCsRQZ4ihTdSW0wFJ2SVbK0DFLJ2t/Vzjxxd1NO9R08tbikOw7Q==
-X-Received: by 2002:a17:906:c34b:b0:a42:f194:9cd6 with SMTP id ci11-20020a170906c34b00b00a42f1949cd6mr3273335ejb.7.1708931119395;
-        Sun, 25 Feb 2024 23:05:19 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708931325; x=1709536125;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3hw1po3g3mmdi+54a+CW6CF/ypobceWxsTw7g/j9bSQ=;
+        b=PRZQKE3KrkPf9s34HN+Y1Yq33BrczhYoCWw+0y4kcKLt9Q0cgTw5TMTDbN5mqWgrrZ
+         F+5onnYD+vDnuYI1Wt2DQU6czqE4aO6e0Ih3wwtmXw7H0ABmOdcX/kef2d2VthVk/a3B
+         Ofym4CG4+1dWA7ubsOx+bpcYyv0iCecgjruNgpTp3GEdIP1a40Itoxck40ubH8DnxUZD
+         VjaxbRn46yKZs6Q9EtQkK+2ssr7ld6udY/mocABTzw+SG6dtgfyxGnR9lC0Y1XQqHPwt
+         6qI+TSRsNWt5M3juB9lQgk3e36W+KGk1tJliihuK2nd2FR+EzWZ3l3++R5bzR9jXFc/z
+         wliw==
+X-Forwarded-Encrypted: i=1; AJvYcCX3c65nSFsX0uaXhw3cb1hvS1MDmWKLyU2XmVFWWJF7oX4ia2fU7sNmtXf2Il1v91Gb7iaiyzrY5ZhABRTPx83f+APeYJ12o0KoEMs2
+X-Gm-Message-State: AOJu0Ywj8Mqf8mC5fisuo5RhmMRlFhT9br83oC+7oUC7aByXya7h4Atq
+	ewompo1d0Voh7jz/gtFrbhJhl8VEW4PBDncrtPiJJUn1YksKrsQ8ffRED+XVnuY=
+X-Google-Smtp-Source: AGHT+IE0mz8pKEw9x7vvwJlcgB/Ql7HOISoj0TR/PgangKlsnwA7D6IDNgCQfo54yGJNR6yLteMu/A==
+X-Received: by 2002:a17:906:2419:b0:a3e:f7ae:49b6 with SMTP id z25-20020a170906241900b00a3ef7ae49b6mr3585434eja.49.1708931325456;
+        Sun, 25 Feb 2024 23:08:45 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id vi17-20020a170907d41100b00a43215bff13sm1269633ejc.117.2024.02.25.23.05.17
+        by smtp.gmail.com with ESMTPSA id nb18-20020a1709071c9200b00a3e45a18a5asm2131412ejc.61.2024.02.25.23.08.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 25 Feb 2024 23:05:18 -0800 (PST)
-Message-ID: <a762f756-1a92-4d82-be38-098bacaf25dc@linaro.org>
-Date: Mon, 26 Feb 2024 08:05:16 +0100
+        Sun, 25 Feb 2024 23:08:44 -0800 (PST)
+Message-ID: <458becdb-fb1e-4808-87b6-3037ec945647@linaro.org>
+Date: Mon, 26 Feb 2024 08:08:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,19 +75,16 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: msm8953-lenovo-kuntao: Add initial
- device tree
-To: Raihan Ahamed <raihan1999ahamed@gmail.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Kees Cook <keescook@chromium.org>,
- Tony Luck <tony.luck@intel.com>, "Guilherme G. Piccoli"
- <gpiccoli@igalia.com>, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-References: <20240226055615.79195-1-raihan1999ahamed@gmail.com>
+Subject: Re: [PATCH v3] dt-bindings: gpio: aspeed,ast2400-gpio: Convert to DT
+ schema
 Content-Language: en-US
+To: Andrew Jeffery <andrew@codeconstruct.com.au>, linus.walleij@linaro.org,
+ brgl@bgdev.pl, krzysztof.kozlowski+dt@linaro.org
+Cc: robh+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
+ linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org
+References: <20240226051645.414935-1-andrew@codeconstruct.com.au>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -134,63 +130,61 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240226055615.79195-1-raihan1999ahamed@gmail.com>
+In-Reply-To: <20240226051645.414935-1-andrew@codeconstruct.com.au>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 26/02/2024 06:55, Raihan Ahamed wrote:
-> Lenovo P2 is a handset using the MSM8953 SoC released in 2016
+On 26/02/2024 06:16, Andrew Jeffery wrote:
+> Squash warnings such as:
 > 
-> Add a device tree for with initial support for:
+> ```
+> arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-galaxy100.dtb: /ahb/apb@1e600000/gpio@1e780000: failed to match any schema with compatible: ['aspeed,ast2400-gpio']
+> ```
 > 
-> - GPIO keys
-> - SDHCI (internal and external storage)
-> - USB Device Mode
-> - WCNSS (WiFi/BT)
-> - Regulators
-> 
-> Signed-off-by: Raihan Ahamed <raihan1999ahamed@gmail.com>
-> ---
->  arch/arm64/boot/dts/qcom/Makefile             |   1 +
->  .../boot/dts/qcom/msm8953-lenovo-kuntao.dts   | 240 ++++++++++++++++++
->  2 files changed, 241 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/qcom/msm8953-lenovo-kuntao.dts
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-> index 39889d5f8e12..aebfb1ae728c 100644
-> --- a/arch/arm64/boot/dts/qcom/Makefile
-> +++ b/arch/arm64/boot/dts/qcom/Makefile
-> @@ -49,6 +49,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= msm8939-huawei-kiwi.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= msm8939-longcheer-l9100.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= msm8939-samsung-a7.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= msm8939-sony-xperia-kanuti-tulip.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= msm8953-lenovo-kuntao.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= msm8953-motorola-potter.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= msm8953-xiaomi-daisy.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= msm8953-xiaomi-mido.dtb
-> diff --git a/arch/arm64/boot/dts/qcom/msm8953-lenovo-kuntao.dts b/arch/arm64/boot/dts/qcom/msm8953-lenovo-kuntao.dts
-> new file mode 100644
-> index 000000000000..2fd6345bbe15
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/msm8953-lenovo-kuntao.dts
-> @@ -0,0 +1,240 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) 2024, Raihan Ahamed <raihan1999ahamed@gmail.com>
-> + */
-> +/dts-v1/;
-> +
-> +#include "msm8953.dtsi"
-> +#include "pm8953.dtsi"
-> +#include "pmi8950.dtsi"
-> +
-> +/delete-node/ &qseecom_mem;
-> +
-> +/ {
-> +	model = "Lenovo P2";
-> +	compatible = "lenovo,kuntao", "qcom,msm8953";
+> Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
 
-Missing bindings.
+..
+
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +    description: The clock to use for debounce timings
+> +
+> +  gpio-controller: true
+> +  gpio-line-names: true
+
+min/maxItems
+
+> +  gpio-ranges: true
+> +
+> +  "#gpio-cells":
+> +    const: 2
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  interrupt-controller: true
+> +
+> +  "#interrupt-cells":
+> +    const: 2
+> +
+> +  ngpios: true
+
+Where are the constraints I asked? minimum, maximum.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - interrupt-controller
+> +  - "#interrupt-cells"
+> +  - gpio-controller
+> +  - "#gpio-cells"
+> +
+
 
 Best regards,
 Krzysztof
