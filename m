@@ -1,74 +1,117 @@
-Return-Path: <linux-kernel+bounces-81157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFB9786713D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:35:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46D6C867144
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:35:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 436AC286724
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:35:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F056B1F2E19E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:35:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFB444EB5D;
-	Mon, 26 Feb 2024 10:24:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C706E2C198;
+	Mon, 26 Feb 2024 10:25:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VnAJmcyH"
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="IkhqcI4k"
+Received: from mail-4319.protonmail.ch (mail-4319.protonmail.ch [185.70.43.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FD5B4EB3A
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 10:24:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A5525634;
+	Mon, 26 Feb 2024 10:25:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708943083; cv=none; b=oWUMI3yA2Z3qcr+fw/wcK2DJEJm/YB+I+waD0KQ5FbwIWagUFf02xipP3/GJM9ymN8qRhStDzV1qDV9/5JHI5RmSILih9w47OtIsCT5Ro3hIC/SNq9CN8mMIZh3kF3eYeYWZCYSVvA1N/vhx0EQVT53Z2OSxZUh9n+S+p+9akxY=
+	t=1708943143; cv=none; b=DGxz0T7m0SO2XZQhRQMZEF3sXE/kfQKnLUeOljAaFoPManUVDm3Guo/PIFlRp70sXvRJrwfgXYMMIThmFNidb8llKl52dUZ6JU1dBaDW/Qom9vRmTqWxu9iesglZj96GmKgRyGX09Z5YC+LC1cBbMO4qvwhaAfefuk+BmaDMNUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708943083; c=relaxed/simple;
-	bh=hHXuuFK6rC5afAFqHsHsVuu803HQi5A4NQMlnO6RM/A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZnMGFClFMy6rGqf/kHH0Wa9/ZP8BHh3apaMgnUswKVG0ykxGo0pY+336IKm+dPw7gQD6nTMLra2kuvVTvalyER0eOmhRto291764oXVDnnr7aDBWCve6E+AZy1RxEwnpialIDuaS8LSYN6SNqUMB7h+Fur1ory/6N3WVeekHso0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VnAJmcyH; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e5709d61-18cf-4c6e-89b0-9615296c645a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708943079;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bTCp6YejjtPgu/QUTXPpM8H1Y9H5FjU1dYsnPrliO5M=;
-	b=VnAJmcyHzOggqmqiEuGAajYFZ1GBwni/8f5JnFmGEnXRhgpmRwtblR+tSVt8gQ6GbXCKtT
-	CcUQ4MhEtDh2uGTEF4GDfIkuDzI7pPCtNsQP/THhHH/DfblUVQpye6suX7wwL0c1g+MVkM
-	r0XRq8KylFKqCCCNNZtKxdg/lBRuRYg=
-Date: Mon, 26 Feb 2024 18:24:32 +0800
+	s=arc-20240116; t=1708943143; c=relaxed/simple;
+	bh=FB9E9JyNIVEQ3zPi5pRp1wKuBvGQBRAGlYj3fhsP/j0=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=l6gwQBpi5QLPF17ZbU7KmZDTI7HdkWzS8Jsxop1Ll/cYSsQy1OuvDC012L6AIEXAkGd6UlSiWCEkwZI9x/5Sn0X8Y09JMP5GW5g/49lavr+Z1w+ihJtuaeVLU37GXYeM8fDUwOtWPsxcSu4nU2RQWAnoHPbtk2T4glLBZL0Uo5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=IkhqcI4k; arc=none smtp.client-ip=185.70.43.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=vdsavk55ifat5gl55bl7736lum.protonmail; t=1708943133; x=1709202333;
+	bh=hvFaazzaDjEhKYnLhgusyXuDE9SwR0SnEtKd0g5cI2w=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=IkhqcI4kDYcn9GN5/V9oh3ebZ9f4hJ/d2RaIUInChPoCxCblvoyZ7Zkxy0v/yi7MU
+	 6fJg/T+O/CREAppqWvdCCYLL+NMXX7ilsxJNXqTWgN1b5XDsV4w25qktJRgI/VkMUH
+	 cwXd8JNgfpt7e73Gju7Cp10TGceZHiEGiEn28ZchWIGljboTZcZjy7fWlEj6DdKXw4
+	 X2y7UyGg9EqLdhcRWKxZ65TM5A56sH9cjkFYk1Pja6HbRExQobDDaKzzEzAU7CWj7o
+	 1WGijrHxmf4awf7TkbT/lq9kl092Vi4ky+EtPBK5z9k/nsTviF8WiTTX0aROJ1XSzS
+	 CZqGt3mw8VEAA==
+Date: Mon, 26 Feb 2024 10:25:12 +0000
+To: bhelgaas@google.com, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Edmund Raile <edmund.raile@proton.me>
+Cc: Edmund Raile <edmund.raile@proton.me>
+Subject: [PATCH] PCI: Mark LSI FW643 to avoid bus reset
+Message-ID: <20240226102354.86757-1-edmund.raile@proton.me>
+Feedback-ID: 45198251:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] freevxfs: remove SLAB_MEM_SPREAD flag usage
-Content-Language: en-US
-To: Christoph Hellwig <hch@infradead.org>
-Cc: linux-kernel@vger.kernel.org, vbabka@suse.cz, roman.gushchin@linux.dev,
- Xiongwei.Song@windriver.com, Chengming Zhou <zhouchengming@bytedance.com>
-References: <20240224134835.829506-1-chengming.zhou@linux.dev>
- <ZdxiqJZY2qSRVvEU@infradead.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <ZdxiqJZY2qSRVvEU@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/2/26 18:06, Christoph Hellwig wrote:
-> Please just do a scripted removal after next -rc1 instead of spamming
-> everyone..
-> 
-Do you mean put all diffs into a single patch, send it to all people?
-That is also a choice if it's preferable. Should it will go through
-the slab tree then?
+Using LSI / Agere FW643 with vfio-pci will issue an FLreset, causing
+a broken link only recoverable by removing power (power-off /
+suspend + rescan). Prevent this bus reset.
+With this change, the device can be assigned to VMs with VFIO.
 
-Thanks.
+Signed-off-by: Edmund Raile <edmund.raile@proton.me>
+---
+Usefulness:
+The LSI FW643 PCIe->FireWire 800 interface may be EOL but it is
+the only one that does not use a PCIe->PCI bridge.
+It was used in the following Apple machines:
+MacBookPro10,1
+MacBookPro9,2
+MacBookPro6,2
+MacBookPro5,1
+Macmini6,1
+Macmini3,1
+iMac12,2
+iMac9,1
+iMac8,1
+It is reliable and enables FireWire audio interfaces to be used
+on modern machines.
+Virtualization allows for flexible access to professional audio
+software.
+
+Implementation:
+PCI_VENDOR_ID_ATT was reused as they are identical and I am
+uncertain it is correct to add another ID for LSI to pci_ids.h.
+ drivers/pci/quirks.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index d797df6e5f3e..a6747e1b86da 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -3765,6 +3765,15 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x00=
+3e, quirk_no_bus_reset);
+  */
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_CAVIUM, 0xa100, quirk_no_bus_reset)=
+;
+=20
++/*
++ * Using LSI / Agere FW643 with vfio-pci will issue an FLreset, causing
++ * a broken link only recoverable by removing power (power-off /
++ * suspend + rescan). Prevent this bus reset.
++ * With this change, the device can be assigned to VMs with VFIO.
++ */
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATT, 0x5900, quirk_no_bus_reset);
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATT, 0x5901, quirk_no_bus_reset);
++
+ /*
+  * Some TI KeyStone C667X devices do not support bus/hot reset.  The PCIES=
+S
+  * automatically disables LTSSM when Secondary Bus Reset is received and
+--=20
+2.43.0
+
+
 
