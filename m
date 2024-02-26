@@ -1,139 +1,98 @@
-Return-Path: <linux-kernel+bounces-82266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 014B5868160
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B83F868169
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:47:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A59121F2468C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:46:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01E311F24E8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:47:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77C8512FF82;
-	Mon, 26 Feb 2024 19:46:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C406C130AE8;
+	Mon, 26 Feb 2024 19:47:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hqqrgstT"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sv5A4TqM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2927A60BA1
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 19:46:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00601130ACC;
+	Mon, 26 Feb 2024 19:47:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708976812; cv=none; b=A+qIYwSoCk8LE0i45PXLiqyWpvErvWaIAst6WbAz1J33kLt9eJoY5o/z6PbvHsh//2vIEBMULH6/HU1374ascAXv00KhDke/FfqbDPEgHzOSgug+jh7nQtn7jwPYDzIuFHcArfRsdW4I+T5QIakGTjlp7hY86e0Vys/3/e0oPn4=
+	t=1708976850; cv=none; b=SnMCY/wsQn0QjIYiSB3Ei33N5vCBvRR7FM/YgBHvWQurxobVg0c8+cIueaYy881ntjykwqBwp4gUlP7XhOfKDMBBDN78QgS5B/eQMSZWaVk5IBAyGvtwzpbU2ZSuHbk54Ay9FXDUro+CC6UIgNsKC5Gv4OWieH8mmw94XoAnboY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708976812; c=relaxed/simple;
-	bh=yMSkd40jQ58IsjTFcyz6Y0aROzLE9aRQL+3vxznmzos=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BGIXPk086pQ4Y3BYa6bmNl5jhgwksqugvXsI1uVlwDrwdV+wEdI6s4zAOjZggASbWQYhvoIDYA1BObK9xQ0ew80T4XkyBa3rHZvqoFTnD/1bzR+ylA6FNo6ldRT4jz8lN7YNs5gsEtibcP8nwal/mh3h6GFkWr2EG03HK0OKBgg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hqqrgstT; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d208be133bso54655101fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:46:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708976809; x=1709581609; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ek2V91xP+64JAHW/SkXga3bXiJC6Qhuuv1X5zy2fbQc=;
-        b=hqqrgstTWoiW4MH3bmBsIW/jABm5EFevS0hi1CtJQzNkbmdx0V54XiYUjEm+n0AhiS
-         JhtSKtDFZ/I2tkCxhcNbf2lUPg1y0K0eh4Ys6h84wkyWdd3XG8f8SZhGn4D99Y7VfC6S
-         u9GIy8zgjzsgK71TtWewyW4E4SbW36qkMjWpe4+olnFprjLzTNgsmTe6vJQjbfft42m5
-         9BhhKbiIVzUgzgNgIaxJrttomrUmFQj6y0SO9TItvCzsaujgM6krm3GrKxnEq1PHaM9X
-         xZSmFLPjrhjYaQ+BoNXQ0xh10tspFZWOWBy1Tq7wn+AYm6VoS1t/BMC0Qb6rm9l4+hPE
-         l6Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708976809; x=1709581609;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ek2V91xP+64JAHW/SkXga3bXiJC6Qhuuv1X5zy2fbQc=;
-        b=JwZ95eqNq1/D+BQ+crdaYsQgGmk2KmCgVDYdyXlmuNh9jU/SdKhjspC3YLll7YQgrG
-         +1hbgWYmg3CbuSHlXFNqXNt47pvpeaODrWqq6TsR9jFgI409uKUbSP+lxJ9I4hXViDyY
-         taRP6rXDs7c0YJ4SXo3vEEfPFck2mpmr/uojtRXDzBni/vrKs859DSUE73LDMEMJwpAm
-         YA4WSfVK3gvdJglIpG2HiSN6ZvaxCNN3LlTCwgQBabAE8zRuqqZIhuBO+HLap/B7Lpos
-         h5WkE5gMXW++gRq/xiabmE2zM2tSl4niJVWi5GQ/B4fOVu9tlUjgynvZriJhFoq7hTZD
-         t6bA==
-X-Gm-Message-State: AOJu0YylR3i+JvsYhlWwZMA2r5yacrSJw6kTEW9o8uiIXfqPCf1vsQ9w
-	F3XITwhxh6Qu2lbQqccy3M6wLNti82plL4apJPqX8JoOpOERPYFk
-X-Google-Smtp-Source: AGHT+IF2GxvAjeDiXSF6GLyuxDh9BJgcMbwryKAGrX8RsjuVPXDVCE9uco4cqw9tZGd+ESQQW6juJQ==
-X-Received: by 2002:a2e:80d3:0:b0:2d2:8c9a:c4e5 with SMTP id r19-20020a2e80d3000000b002d28c9ac4e5mr2272204ljg.18.1708976808940;
-        Mon, 26 Feb 2024 11:46:48 -0800 (PST)
-Received: from localhost.localdomain (host86-133-224-40.range86-133.btcentralplus.com. [86.133.224.40])
-        by smtp.gmail.com with ESMTPSA id x1-20020a05600c2a4100b0041292306f2csm12728453wme.16.2024.02.26.11.46.48
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 26 Feb 2024 11:46:48 -0800 (PST)
-From: Levi Yun <ppbuk5246@gmail.com>
-To: hannes@cmpxchg.org,
-	surenb@google.com,
-	peterz@infradead.org,
-	mingo@redhat.com,
-	juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com,
-	rostedt@goodmis.org,
-	bsegall@google.com,
-	mgorman@suse.de,
-	bristot@redhat.com,
-	vschneid@redhat.com
-Cc: linux-kernel@vger.kernel.org,
-	Levi Yun <ppbuk5246@gmail.com>
-Subject: [PATCH] psi: Fix avg trigger being fired unexpectedly.
-Date: Mon, 26 Feb 2024 19:46:42 +0000
-Message-ID: <20240226194642.47530-1-ppbuk5246@gmail.com>
-X-Mailer: git-send-email 2.41.0
+	s=arc-20240116; t=1708976850; c=relaxed/simple;
+	bh=bN2ZLXQ1BVg6TFH1/7WADY4uD05YSBJXrczGwIHT+ew=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ra0GpjZJDB5L2X+sKRpMF7e4/6LkuHKvZTFyjH5j50o5+XDKmfZNGYsuJxGswHWuUCYCO5PfC0hxbDvLsDVRFi++sqnzDWz23wZ2gXGXTJ+xgw0/pkoJ7tHPRn+d0FQik7yY+x5HOejT3sflWNsBirOKcrr8Loyk5BpAAa2svMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sv5A4TqM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49E98C43390;
+	Mon, 26 Feb 2024 19:47:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708976849;
+	bh=bN2ZLXQ1BVg6TFH1/7WADY4uD05YSBJXrczGwIHT+ew=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sv5A4TqM2dKTf46810qK1BFMH3qGSEWGaUdMxPKbvk8UccqJUjdtNVbuwwyCya3pt
+	 DS41bXK1yrW/w3beNOO2FYfgAixrfxF+vjRG5q6E7YDs6fKBC8BfhoS2FylWjri9k+
+	 xX60aHCdCY7YpHYj3b1YOEuUlInAZ8ZemnQDcxIFsr9Rpx9kanUwqG1+3aeqGb0xEj
+	 RmtcIAEIQfW7SRX5gsIjpmyIpvIZHhPUFKejBo8zxsxr5bfnGXcajOqa7ezvvQaGbk
+	 QW7t4ClCS+nzM0gI+7cxRSwaWBJ0h+K1MaWQBGoB2XK1Zo0z52XPeIU5GCDtMJbpSi
+	 i3f/qwKFiux0A==
+Date: Mon, 26 Feb 2024 13:47:27 -0600
+From: Rob Herring <robh@kernel.org>
+To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+	Conor Dooley <conor+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Arnaud Ferraris <arnaud.ferraris@collabora.com>,
+	linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-sunxi@lists.linux.dev
+Subject: Re: [RESEND PATCH v2 1/5] dt-bindings: sound: Add jack-type property
+ to sun8i-a33-codec
+Message-ID: <20240226194727.GA1320480-robh@kernel.org>
+References: <20240224135501.3822390-1-megi@xff.cz>
+ <20240224135501.3822390-2-megi@xff.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240224135501.3822390-2-megi@xff.cz>
 
-commit 915a087e4c473("psi: Fix trigger being fired unexpectedly at initial")
-fixes unexpected event fired when group->total accumlated for PSI_POLL.
-But, for PSI_AVGS, win->value should be initialized with group->total[PSI_AVGS].
-Moreover, to get exact initial value for win->value, it should be set
-under each trigger lock to synchronize each rtpoll/avgs_works.
+On Sat, Feb 24, 2024 at 02:54:54PM +0100, Ondřej Jirman wrote:
+> From: Ondrej Jirman <megi@xff.cz>
+> 
+> The codec driver needs to know what jack connector it is connected to
+> on the board. Add proprty to describe the type of connector.
+> 
+> Signed-off-by: Ondrej Jirman <megi@xff.cz>
+> ---
+>  .../bindings/sound/allwinner,sun8i-a33-codec.yaml        | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
+> index 63eadc4200ac..399fc00ad3f4 100644
+> --- a/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
+> +++ b/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
+> @@ -44,6 +44,15 @@ properties:
+>        - const: bus
+>        - const: mod
+>  
+> +  jack-type:
 
-Signed-off-by: Levi Yun <ppbuk5246@gmail.com>
----
- kernel/sched/psi.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+I'm all for a generic property name, but it needs to be documented 
+somewhere common. Perhaps dai-common.yaml.
 
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index 7b4aa5809c0f..e7f66ab2ad3e 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -1323,9 +1323,6 @@ struct psi_trigger *psi_trigger_create(struct psi_group *group, char *buf,
- 	t->state = state;
- 	t->threshold = threshold_us * NSEC_PER_USEC;
- 	t->win.size = window_us * NSEC_PER_USEC;
--	window_reset(&t->win, sched_clock(),
--			group->total[PSI_POLL][t->state], 0);
--
- 	t->event = 0;
- 	t->last_event_time = 0;
- 	t->of = of;
-@@ -1336,6 +1333,8 @@ struct psi_trigger *psi_trigger_create(struct psi_group *group, char *buf,
+I'm sure there is some prior art here to consider as well.
 
- 	if (privileged) {
- 		mutex_lock(&group->rtpoll_trigger_lock);
-+		window_reset(&t->win, sched_clock(),
-+				group->total[PSI_POLL][t->state], 0);
-
- 		if (!rcu_access_pointer(group->rtpoll_task)) {
- 			struct task_struct *task;
-@@ -1361,6 +1360,9 @@ struct psi_trigger *psi_trigger_create(struct psi_group *group, char *buf,
- 	} else {
- 		mutex_lock(&group->avgs_lock);
-
-+		window_reset(&t->win, sched_clock(),
-+				group->total[PSI_AVGS][t->state], 0);
-+
- 		list_add(&t->node, &group->avg_triggers);
- 		group->avg_nr_triggers[t->state]++;
-
---
-2.39.2
+Rob
 
