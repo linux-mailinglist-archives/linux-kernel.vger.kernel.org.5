@@ -1,180 +1,305 @@
-Return-Path: <linux-kernel+bounces-81248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08445867299
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:07:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E14286729D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:08:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E38A1F277C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:07:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D772F28A78B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:08:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AAA01CFB4;
-	Mon, 26 Feb 2024 11:07:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3BFE1CFAD;
+	Mon, 26 Feb 2024 11:08:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="Rl+HF+12"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RcMnuWLF"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 934741CD30
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:07:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAE0F1CD30
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:08:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708945639; cv=none; b=MMCGRrVMmDXKEWZZ5Wqe/ArVGPYnQxPorQ0hI07QDudFNQAclOFlxLFi9aWTElFMco4QLQhmVcUQ2dbbdYp2cEEXjmgT7lmClD+tv+3wCO7ZvOP4v7PI2H6+qmMO/ah/93couScwnjmuKJeVZZuTKmbYr5i5dDaqKYzaX4hbAHQ=
+	t=1708945685; cv=none; b=HchyIIm5oZOHIgdmb0iw88JDAOEmhl4GS+kdr9EyoJVwX4OLrK8VnS0+EN4MO/PE2cbKL9PHQXwTXd0Y0AeiE+jvC5dYCASR01qQm78ikdpjQUZfcpuPl1wLDOMxv54YE6Ekp91jGGuXjVaD2s+LR9qAN5eZH71Tby1idDPPPj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708945639; c=relaxed/simple;
-	bh=o469wJxegXoezlqIjGIYFTGOxZj7oatMUK25fXsLWMQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ETcr0nZTNBdH6+LX6nlL9aI5UYH7WrpMxWUUBRMoJ6iaLW4IEhTwvZK6U/vTiS3JQJTEpVv//c72UaCJ2FCEodVPqo9ya4eTxuawY40PZVN5AzCPChva3XH2uB1t4M2c13R3ceQwrv9I+CAvBkBOoC60iDM8F9dGsB283hqXjuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=Rl+HF+12; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33d153254b7so2292325f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:07:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1708945636; x=1709550436; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sbYFot8CFgR80jEb1giXs1QlZ5tdKUJQ13JHlGGWOQM=;
-        b=Rl+HF+12qGuoSaZtjaHwjYMekpfeYazHg+qsLpnXZztZn9bpBkO/lHkDH+HV1oZ2rw
-         JxIB434KNVmBagPglH0ODBMzOpZmSw09MpnVkfX0HSAUkOZvgktxGg1ZeO5JjqXcbdxQ
-         vqRNZQkzVPOSVTmajZKvAsQBXYkafgdQZjv9ZITiCMMNPiiQ8LjvYPtRORh0S4mNK1bu
-         EZ43Q0Pd1g270tq+ViJwYUqwAn8c/SlG9qewic3ltBIPYGnwuyIvoI/leZod/Z2kuh44
-         5WBH0BNnmsfH2UgbCUk0OpucNOoRqQDHpzL4kocqqP53fdMnF10Y1DfIrzHYe9ka5vQe
-         zpIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708945636; x=1709550436;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sbYFot8CFgR80jEb1giXs1QlZ5tdKUJQ13JHlGGWOQM=;
-        b=ow+qVTKqMlMHiNgAGXtTR0XGffJ/hzWn3QgSQN/DFH7awbgi21SDupLe3o3aMoIfol
-         T11U9smJj0C71UwxZ67Imty/Uh2wzcz1tE78n9Qu+LZk4tBFb2urS1Wcpq6IMIsr+NTa
-         xYGbvRxA6TR/vJSHq+lkOq5alegVPVQHvatMMYBo8eEkMHwhQP1pe3BI9RImw5gSr/KX
-         VIvoSb/phW+9bC2jV3RXbNDELruwyLPZYwdCwq1Ymb/jVmcqDemBOZVLF7CCtPO5nCzJ
-         85iibg4h9xOu70gk0mZDlwWmJ6HDzohhhbi/BoxmtL31z5OGdNVaFbToHmS16zJEg4pE
-         FQgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXd+zDZUFojQ8SMAkhamjcp/64FcMWudy7q3YYQMYVngViqabf7KKU8KbyoarnklPFsjX/QJw/O2nwvQ3131ShB77AYfUPkqb0pkX7b
-X-Gm-Message-State: AOJu0YyE6d91FYFrpQs+h3kHUciaAER8T03EEjEKtwqn2UMd7v90Q1E3
-	pnj+1T8bcj7csPkz7PuyZG5twSRYm7U/kjxcuDlrQet10Z360sVJtNmex5SxWiU=
-X-Google-Smtp-Source: AGHT+IGK+Y/yeiSY4i4LNG0FETbSsj8V00Fvy/EDeAdcI/jF6nTA4lWShcFts2QfASsHYeWulz4MLA==
-X-Received: by 2002:adf:e682:0:b0:33d:3be4:6c75 with SMTP id r2-20020adfe682000000b0033d3be46c75mr4901520wrm.71.1708945635764;
-        Mon, 26 Feb 2024 03:07:15 -0800 (PST)
-Received: from [192.168.1.70] ([84.102.31.43])
-        by smtp.gmail.com with ESMTPSA id bt1-20020a056000080100b0033d9c7eb63csm8150307wrb.84.2024.02.26.03.07.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 03:07:15 -0800 (PST)
-Message-ID: <6d82dca4-3ffe-4c51-9f74-cd6cfbac7f7a@baylibre.com>
-Date: Mon, 26 Feb 2024 12:07:13 +0100
+	s=arc-20240116; t=1708945685; c=relaxed/simple;
+	bh=NHneLC3m3/NRxM+Zd/dtOiXoXY9OrqHvyXrojTyCdBs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Nn+Yt2z7ZiTqdN6D8lIqWQYQCdsRh4621/YYE4G3oFFCXKmObDVVAQwV+EAyLBG0H9CiHOwZCov+5t9igPBKGogoUd4zoKda6DQ8x5yCDFLQtG6t+UtYEs7mA1mdSUgT8KQML09bgUno5lWYo8M0ifMZJXxFMeFyHiqHT4SlYTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RcMnuWLF; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708945684; x=1740481684;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=NHneLC3m3/NRxM+Zd/dtOiXoXY9OrqHvyXrojTyCdBs=;
+  b=RcMnuWLFa1DE/q75oZ4HViTjjeX3mb4vmyfWF+EmCTAjth4qmcGir7nj
+   J8ccdzn3xIkgbkpGeqtQBS2JGDoioS1tQmfCDT8fN9nUenYRR50twgVWI
+   g/YNOEij0Fc8qXebmLhKKB6IEjis03BKIVYNDTrw53OQG15TZ/dsPVC7m
+   JMTFJwNeQznfcbmORW049HXoMmXL3KWmoA4iJQROyuP/kKQffNrTMmxCY
+   uhj3Bl8BFhSL3WyScwbzMa8Q6/Y+HOqnCsmKgKnb8EPLs10b6zzjhDYb2
+   ClYh81Odg1Q4tDyOG7NCPTEs2myTA3JlOIB1UfWvan3A192cKIzq97tcH
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3093711"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="3093711"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 03:08:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="6625927"
+Received: from hibeid-mobl.amr.corp.intel.com (HELO localhost) ([10.252.46.254])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 03:07:59 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Nicolas <ndevos-dev@pm.me>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+Cc: Nicolas <ndevos-dev@pm.me>
+Subject: Re: [PATCH] gpu/drm: Fix several checkpatch warnings
+In-Reply-To: <20240222204450.7943-1-ndevos-dev@pm.me>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240222204450.7943-1-ndevos-dev@pm.me>
+Date: Mon, 26 Feb 2024 13:07:58 +0200
+Message-ID: <87msrno54h.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/14] mfd: tps6594: Add register definitions for TI
- TPS65224 PMIC
-Content-Language: en-US
-To: Bhargav Raviprakash <bhargav.r@ltts.com>, linux-kernel@vger.kernel.org
-Cc: m.nirmaladevi@ltts.com, lee@kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- devicetree@vger.kernel.org, arnd@arndb.de, gregkh@linuxfoundation.org,
- lgirdwood@gmail.com, broonie@kernel.org, linus.walleij@linaro.org,
- linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org, nm@ti.com,
- vigneshr@ti.com, kristo@kernel.org
-References: <20240223093701.66034-1-bhargav.r@ltts.com>
- <20240223093701.66034-2-bhargav.r@ltts.com>
-From: Julien Panis <jpanis@baylibre.com>
-In-Reply-To: <20240223093701.66034-2-bhargav.r@ltts.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-Hi Bhargav.
+On Thu, 22 Feb 2024, Nicolas <ndevos-dev@pm.me> wrote:
+> This commit includes several checkpatch for drm_connector.c:
+> - SPDX license
+> - Spaces before tabs
+> - Unnecessary brackets
+> - unsigned int is preferred over unsigned
 
-Thanks for the series.
+One change per patch, please.
 
-On 2/23/24 10:36, Bhargav Raviprakash wrote:
-> From: Nirmala Devi Mal Nadar <m.nirmaladevi@ltts.com>
->
-> Extend TPS6594 PMIC register and field definitions to support TPS65224
-> power management IC.
->
-> TPS65224 is software compatible to TPS6594 and can re-use many of the
-> same definitions, new definitions are added to support additional
-> controls available on TPS65224.
->
-> Signed-off-by: Nirmala Devi Mal Nadar <m.nirmaladevi@ltts.com>
-> Signed-off-by: Bhargav Raviprakash <bhargav.r@ltts.com>
+Signed-off-by missing.
+
 > ---
->   include/linux/mfd/tps6594.h | 354 ++++++++++++++++++++++++++++++++++--
->   1 file changed, 342 insertions(+), 12 deletions(-)
+>  drivers/gpu/drm/drm_connector.c | 142 ++++++++++++++++----------------
+>  1 file changed, 71 insertions(+), 71 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+> index b0516505f7ae..4e6c910e339b 100644
+> --- a/drivers/gpu/drm/drm_connector.c
+> +++ b/drivers/gpu/drm/drm_connector.c
+> @@ -1,3 +1,4 @@
+> +// SPDX-License-Identifier: GPL-2.0 or MIT
+>  /*
+>   * Copyright (c) 2016 Intel Corporation
+>   *
+> @@ -313,9 +314,8 @@ static int __drm_connector_init(struct drm_device *dev,
+>  				   config->tile_property,
+>  				   0);
+>  
+> -	if (drm_core_check_feature(dev, DRIVER_ATOMIC)) {
+> +	if (drm_core_check_feature(dev, DRIVER_ATOMIC))
+>  		drm_object_attach_property(&connector->base, config->prop_crtc_id, 0);
+> -	}
+>  
+>  	connector->debugfs_entry = NULL;
+>  out_put_type_id:
+> @@ -1150,70 +1150,70 @@ static const u32 dp_colorspaces =
+>   * DRM connectors have a few standardized properties:
+>   *
 
-[...]
-> +/* IRQs */
-> +enum tps65224_irqs {
-> +	/* INT_BUCK register */
-> +	TPS65224_IRQ_BUCK1_UVOV,
-> +	TPS65224_IRQ_BUCK2_UVOV,
-> +	TPS65224_IRQ_BUCK3_UVOV,
-> +	TPS65224_IRQ_BUCK4_UVOV,
-> +	/* INT_LDO_VMON register */
-> +	TPS65224_IRQ_LDO1_UVOV,
-> +	TPS65224_IRQ_LDO2_UVOV,
-> +	TPS65224_IRQ_LDO3_UVOV,
-> +	TPS65224_IRQ_VCCA_UVOV,
-> +	TPS65224_IRQ_VMON1_UVOV,
-> +	TPS65224_IRQ_VMON2_UVOV,
-> +	/* INT_GPIO register */
-> +	TPS65224_IRQ_GPIO1,
-> +	TPS65224_IRQ_GPIO2,
-> +	TPS65224_IRQ_GPIO3,
-> +	TPS65224_IRQ_GPIO4,
-> +	TPS65224_IRQ_GPIO5,
-> +	TPS65224_IRQ_GPIO6,
-> +	/* INT_STARTUP register */
-> +	TPS65224_IRQ_VSENSE,
-> +	TPS65224_IRQ_ENABLE,
-> +	TPS65224_IRQ_PB_SHORT,
-> +	TPS65224_IRQ_FSD,
-> +	TPS65224_IRQ_SOFT_REBOOT,
-> +	/* INT_MISC register */
-> +	TPS65224_IRQ_BIST_PASS,
-> +	TPS65224_IRQ_EXT_CLK,
-> +	TPS65224_IRQ_REG_UNLOCK,
-> +	TPS65224_IRQ_TWARN,
-> +	TPS65224_IRQ_PB_LONG,
-> +	TPS65224_IRQ_PB_FALL,
-> +	TPS65224_IRQ_PB_RISE,
-> +	TPS65224_IRQ_ADC_CONV_READY,
-> +	/* INT_MODERATE_ERR register */
-> +	TPS65224_IRQ_TSD_ORD,
-> +	TPS65224_IRQ_BIST_FAIL,
-> +	TPS65224_IRQ_REG_CRC_ERR,
-> +	TPS65224_IRQ_RECOV_CNT,
-> +	/* INT_SEVERE_ERR register */
-> +	TPS65224_IRQ_TSD_IMM,
-> +	TPS65224_IRQ_VCCA_OVP,
-> +	TPS65224_IRQ_PFSM_ERR,
-> +	TPS65224_IRQ_BG_XMON,
-> +	/* INT_FSM_ERR register */
-> +	TPS65224_IRQ_IMM_SHUTDOWN,
-> +	TPS65224_IRQ_ORD_SHUTDOWN,
-> +	TPS65224_IRQ_MCU_PWR_ERR,
-> +	TPS65224_IRQ_SOC_PWR_ERR,
-> +	TPS65224_IRQ_COMM_ERR,
-> +	TPS65224_IRQ_I2C2_ERR,
-> +	/* INT_ESM register */
-> +	TPS65224_IRQ_ESM_MCU_PIN,
-> +	TPS65224_IRQ_ESM_MCU_FAIL,
-> +	TPS65224_IRQ_ESM_MCU_RST,
-> +};
+In the comments below, please switch to spaces instead of tabs.
 
-For tps6594, ESM_MCU interrupts were supposed to be cleared by the MCU FW. That's why we only had to 
-deal with ESM_SOC interrupts in linux. For tps65224, I would recommend double-checking with TI where 
-ESM_MCU interrupts should be handled (either in MCU FW or in the linux driver). For some reason this 
-might be different than tps6594's case, but it does not look very consistent to me at first sight. 
-Julien Panis
+BR,
+Jani.
+
+>   * EDID:
+> - * 	Blob property which contains the current EDID read from the sink. This
+> - * 	is useful to parse sink identification information like vendor, model
+> - * 	and serial. Drivers should update this property by calling
+> - * 	drm_connector_update_edid_property(), usually after having parsed
+> - * 	the EDID using drm_add_edid_modes(). Userspace cannot change this
+> - * 	property.
+> - *
+> - * 	User-space should not parse the EDID to obtain information exposed via
+> - * 	other KMS properties (because the kernel might apply limits, quirks or
+> - * 	fixups to the EDID). For instance, user-space should not try to parse
+> - * 	mode lists from the EDID.
+> + *	Blob property which contains the current EDID read from the sink. This
+> + *	is useful to parse sink identification information like vendor, model
+> + *	and serial. Drivers should update this property by calling
+> + *	drm_connector_update_edid_property(), usually after having parsed
+> + *	the EDID using drm_add_edid_modes(). Userspace cannot change this
+> + *	property.
+> + *
+> + *	User-space should not parse the EDID to obtain information exposed via
+> + *	other KMS properties (because the kernel might apply limits, quirks or
+> + *	fixups to the EDID). For instance, user-space should not try to parse
+> + *	mode lists from the EDID.
+>   * DPMS:
+> - * 	Legacy property for setting the power state of the connector. For atomic
+> - * 	drivers this is only provided for backwards compatibility with existing
+> - * 	drivers, it remaps to controlling the "ACTIVE" property on the CRTC the
+> - * 	connector is linked to. Drivers should never set this property directly,
+> - * 	it is handled by the DRM core by calling the &drm_connector_funcs.dpms
+> - * 	callback. For atomic drivers the remapping to the "ACTIVE" property is
+> - * 	implemented in the DRM core.
+> - *
+> - * 	Note that this property cannot be set through the MODE_ATOMIC ioctl,
+> - * 	userspace must use "ACTIVE" on the CRTC instead.
+> - *
+> - * 	WARNING:
+> - *
+> - * 	For userspace also running on legacy drivers the "DPMS" semantics are a
+> - * 	lot more complicated. First, userspace cannot rely on the "DPMS" value
+> - * 	returned by the GETCONNECTOR actually reflecting reality, because many
+> - * 	drivers fail to update it. For atomic drivers this is taken care of in
+> - * 	drm_atomic_helper_update_legacy_modeset_state().
+> - *
+> - * 	The second issue is that the DPMS state is only well-defined when the
+> - * 	connector is connected to a CRTC. In atomic the DRM core enforces that
+> - * 	"ACTIVE" is off in such a case, no such checks exists for "DPMS".
+> - *
+> - * 	Finally, when enabling an output using the legacy SETCONFIG ioctl then
+> - * 	"DPMS" is forced to ON. But see above, that might not be reflected in
+> - * 	the software value on legacy drivers.
+> - *
+> - * 	Summarizing: Only set "DPMS" when the connector is known to be enabled,
+> - * 	assume that a successful SETCONFIG call also sets "DPMS" to on, and
+> - * 	never read back the value of "DPMS" because it can be incorrect.
+> + *	Legacy property for setting the power state of the connector. For atomic
+> + *	drivers this is only provided for backwards compatibility with existing
+> + *	drivers, it remaps to controlling the "ACTIVE" property on the CRTC the
+> + *	connector is linked to. Drivers should never set this property directly,
+> + *	it is handled by the DRM core by calling the &drm_connector_funcs.dpms
+> + *	callback. For atomic drivers the remapping to the "ACTIVE" property is
+> + *	implemented in the DRM core.
+> + *
+> + *	Note that this property cannot be set through the MODE_ATOMIC ioctl,
+> + *	userspace must use "ACTIVE" on the CRTC instead.
+> + *
+> + *	WARNING:
+> + *
+> + *	For userspace also running on legacy drivers the "DPMS" semantics are a
+> + *	lot more complicated. First, userspace cannot rely on the "DPMS" value
+> + *	returned by the GETCONNECTOR actually reflecting reality, because many
+> + *	drivers fail to update it. For atomic drivers this is taken care of in
+> + *	drm_atomic_helper_update_legacy_modeset_state().
+> + *
+> + *	The second issue is that the DPMS state is only well-defined when the
+> + *	connector is connected to a CRTC. In atomic the DRM core enforces that
+> + *	"ACTIVE" is off in such a case, no such checks exists for "DPMS".
+> + *
+> + *	Finally, when enabling an output using the legacy SETCONFIG ioctl then
+> + *	"DPMS" is forced to ON. But see above, that might not be reflected in
+> + *	the software value on legacy drivers.
+> + *
+> + *	Summarizing: Only set "DPMS" when the connector is known to be enabled,
+> + *	assume that a successful SETCONFIG call also sets "DPMS" to on, and
+> + *	never read back the value of "DPMS" because it can be incorrect.
+>   * PATH:
+> - * 	Connector path property to identify how this sink is physically
+> - * 	connected. Used by DP MST. This should be set by calling
+> - * 	drm_connector_set_path_property(), in the case of DP MST with the
+> - * 	path property the MST manager created. Userspace cannot change this
+> - * 	property.
+> - *
+> - * 	In the case of DP MST, the property has the format
+> - * 	``mst:<parent>-<ports>`` where ``<parent>`` is the KMS object ID of the
+> - * 	parent connector and ``<ports>`` is a hyphen-separated list of DP MST
+> - * 	port numbers. Note, KMS object IDs are not guaranteed to be stable
+> - * 	across reboots.
+> + *	Connector path property to identify how this sink is physically
+> + *	connected. Used by DP MST. This should be set by calling
+> + *	drm_connector_set_path_property(), in the case of DP MST with the
+> + *	path property the MST manager created. Userspace cannot change this
+> + *	property.
+> + *
+> + *	In the case of DP MST, the property has the format
+> + *	``mst:<parent>-<ports>`` where ``<parent>`` is the KMS object ID of the
+> + *	parent connector and ``<ports>`` is a hyphen-separated list of DP MST
+> + *	port numbers. Note, KMS object IDs are not guaranteed to be stable
+> + *	across reboots.
+>   * TILE:
+> - * 	Connector tile group property to indicate how a set of DRM connector
+> - * 	compose together into one logical screen. This is used by both high-res
+> - * 	external screens (often only using a single cable, but exposing multiple
+> - * 	DP MST sinks), or high-res integrated panels (like dual-link DSI) which
+> - * 	are not gen-locked. Note that for tiled panels which are genlocked, like
+> - * 	dual-link LVDS or dual-link DSI, the driver should try to not expose the
+> - * 	tiling and virtualise both &drm_crtc and &drm_plane if needed. Drivers
+> - * 	should update this value using drm_connector_set_tile_property().
+> - * 	Userspace cannot change this property.
+> + *	Connector tile group property to indicate how a set of DRM connector
+> + *	compose together into one logical screen. This is used by both high-res
+> + *	external screens (often only using a single cable, but exposing multiple
+> + *	DP MST sinks), or high-res integrated panels (like dual-link DSI) which
+> + *	are not gen-locked. Note that for tiled panels which are genlocked, like
+> + *	dual-link LVDS or dual-link DSI, the driver should try to not expose the
+> + *	tiling and virtualise both &drm_crtc and &drm_plane if needed. Drivers
+> + *	should update this value using drm_connector_set_tile_property().
+> + *	Userspace cannot change this property.
+>   * link-status:
+>   *      Connector link-status property to indicate the status of link. The
+>   *      default value of link-status is "GOOD". If something fails during or
+> @@ -1247,9 +1247,9 @@ static const u32 dp_colorspaces =
+>   *      to how it might fail if a different screen has been connected in the
+>   *      interim.
+>   * non_desktop:
+> - * 	Indicates the output should be ignored for purposes of displaying a
+> - * 	standard desktop environment or console. This is most likely because
+> - * 	the output device is not rectilinear.
+> + *	Indicates the output should be ignored for purposes of displaying a
+> + *	standard desktop environment or console. This is most likely because
+> + *	the output device is not rectilinear.
+>   * Content Protection:
+>   *	This property is used by userspace to request the kernel protect future
+>   *	content communicated over the link. When requested, kernel will apply
+> @@ -1399,7 +1399,7 @@ static const u32 dp_colorspaces =
+>   * Connectors also have one standardized atomic property:
+>   *
+>   * CRTC_ID:
+> - * 	Mode object ID of the &drm_crtc this connector should be connected to.
+> + *	Mode object ID of the &drm_crtc this connector should be connected to.
+>   *
+>   * Connectors for LCD panels may also have one standardized property:
+>   *
+> @@ -1721,7 +1721,7 @@ EXPORT_SYMBOL(drm_connector_attach_content_type_property);
+>  
+>  /**
+>   * drm_connector_attach_tv_margin_properties - attach TV connector margin
+> - * 	properties
+> + *	properties
+>   * @connector: DRM connector
+>   *
+>   * Called by a driver when it needs to attach TV margin props to a connector.
+> @@ -2076,7 +2076,7 @@ int drm_connector_attach_scaling_mode_property(struct drm_connector *connector,
+>  	struct drm_device *dev = connector->dev;
+>  	struct drm_property *scaling_mode_property;
+>  	int i;
+> -	const unsigned valid_scaling_mode_mask =
+> +	const unsigned int valid_scaling_mode_mask =
+>  		(1U << ARRAY_SIZE(drm_scaling_mode_enum_list)) - 1;
+>  
+>  	if (WARN_ON(hweight32(scaling_mode_mask) < 2 ||
+> @@ -2817,9 +2817,9 @@ int drm_connector_set_obj_prop(struct drm_mode_object *obj,
+>  	struct drm_connector *connector = obj_to_connector(obj);
+>  
+>  	/* Do DPMS ourselves */
+> -	if (property == connector->dev->mode_config.dpms_property) {
+> +	if (property == connector->dev->mode_config.dpms_property)
+>  		ret = (*connector->funcs->dpms)(connector, (int)value);
+> -	} else if (connector->funcs->set_property)
+> +	else if (connector->funcs->set_property)
+>  		ret = connector->funcs->set_property(connector, property, value);
+>  
+>  	if (!ret)
+
+-- 
+Jani Nikula, Intel
 
