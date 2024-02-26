@@ -1,136 +1,163 @@
-Return-Path: <linux-kernel+bounces-81028-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F5CB866F70
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:56:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8A5E866F2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:50:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE292B29F5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:51:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFD611C24CF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:50:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FA4012BE81;
-	Mon, 26 Feb 2024 09:15:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13960129A7E;
+	Mon, 26 Feb 2024 09:15:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="AP684ytn"
-Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com [209.85.217.43])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rzmvm2gp"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 168FA12B15E
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:15:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71A9C129A72
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:15:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708938926; cv=none; b=OC5s2vsO7Z549xePc6C4KabdhjLkYlGwdJs51MVVMRpLZvPxK0/hHKMK74DQBgVd7jJL54cQep9eQiXN90XAlyUf3zVLmaGM6xIjhfLSRR3wOUXF6jsuuL+MlZYpr5i7uSF4iQ66MT8xpsHgZRXqVhS+mld48qByiafWw3tBg1A=
+	t=1708938920; cv=none; b=RYQPfyQb6joWwteY+FQftvh2vdn/vzDkX5KBCFPJqPveBqoikeo6uxYJpQpk/xqkkXDlsFkHpP+Xp1EKDe4EvTsJjN/Ky5oD7GEnRq9ehSHqxUP3/ft2PhnLWndYos6FLgxM4wa9wdeJF5B/JOh+WkMItQz5A9d7R3tdPg1jfug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708938926; c=relaxed/simple;
-	bh=4JrM6obTNl+TTmD9WbQnog507Wg3xKCRVbWqMRbgJTg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qDAc3wvVBY2sf4hnQWNKoE2R5oOotqWFSHkDJdHE157M+mKoDvdm96i1Ia1wknkboWZG0Oi/exjvGNWS3op531qjXAJogx4W+jHatt6Ui9DF4/WY6AHg9JplmOQcisbOdM1hX3JgrcgNub5O6t0P3auQiWqhW/6Mrpgr6E7pNPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AP684ytn; arc=none smtp.client-ip=209.85.217.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-471e55434e9so536070137.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 01:15:24 -0800 (PST)
+	s=arc-20240116; t=1708938920; c=relaxed/simple;
+	bh=G566LV+/F51/W9KYFln95LPDYYcArDHrm4mzHyYxoZ0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u2nO6n3WPViV+lCsEgkcZRtP/1QL3Mu+gj3khta7Pg6Fq4KNVMh9Pl+t9Ib32gsBDCgrDzEF/JO83Dv+rqL2r+1o2SJLcBWFH8zCRsqt+ht7AEzrGcQHhJYhv7Pr+uxVKesTThq3C7oXXRe+LM9RVE/RZo21SgVft29eO2/5bjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rzmvm2gp; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5655c7dd3b1so4408600a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 01:15:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708938924; x=1709543724; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4JrM6obTNl+TTmD9WbQnog507Wg3xKCRVbWqMRbgJTg=;
-        b=AP684ytn0uruUtZ4O9nQ3FsT63n8lYTu+hq4RM7Mh6B2ZV8zCAiKqCVHzv4R7XcVCv
-         KG1yjDVjf1i1FwtdIFEHSepox2EYtC6gyF9Az0LkEXYo29yxMhoFmPLQC+zyyUW4YGTL
-         qwS0R6P8TgoVs00BsclAxOEGHBdGw3gqG4OGr4VvbEJeQp1zcixrhcZ9A73ln32hx3/k
-         3UqpbFOlQC/Sstrh94Q0i670dmIVIPVn9HVHkmsNCCLSWT9DbKza4tbuYKje1tq8p2Y3
-         XYKs55V/0l4TmxcCB1mc9/6oliPl0TuHOuJjWtcJFymJuZPrhB9bE33TzmlVbpUtS9C2
-         JH9A==
+        d=linaro.org; s=google; t=1708938917; x=1709543717; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wlH1Ter4o/LuhmUGIySGl8jfbKhW6NJPyE0QFDQ/6s4=;
+        b=rzmvm2gpLi5FHXiOATNBh0HPBz6oZK3tydPONzg486EPi+f+whxmorKHyAtJCQgihS
+         waGCktYzu1er1GADpg9n5pLevWKBJlwlxC8weJkbQtOCifNuGOq3a5KhzZad7gjedCyo
+         +lgMyZ3g7rxBGrOgnYDCeSyT0eBz0Vi6S6IXVBs2OvYnihxMHkFxaLL19g9YzkJR6mye
+         RsixNiZZ9zIPc293Rq6jkJD6WUaYd0tO/GSgychq79NUPetImQU6weoikR8qiiVflAeb
+         OYmkLfYGwr0/Diz36Vdv/QeGAyW3JWo8yV0HgHmGSv3Y77LCnx4VnhUvwDe4ZMEAfdZf
+         whsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708938924; x=1709543724;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4JrM6obTNl+TTmD9WbQnog507Wg3xKCRVbWqMRbgJTg=;
-        b=WZySN5Zgi9M4jHjkJC+syz9bL+3XT+P/a0sEjwt+wWp4JFS9sdq6O+wA5RyloyIwwa
-         F34q2wTeDODnjIHCxlq1vvEvRqVWvAXZlO/PgHNG6XGvNevEtcSQBPNdA7FGdb3X/95O
-         gXJAxpT7+MQNbP7z+I2jn1xyZdYLV7rwcMN5ZUUb9tsdhNvDCc61q6YpGWG9Do+fe8LZ
-         tGL26yS3yOhdWi7ZdEP3EJXcVnLe94fJq0FATf14dkIc5aENwRk4zuF93+8s+XTKcsY+
-         Dz/EAzEiNrb11TzwAx3khVXNV0Ecw63R5dlPr82L48GnD86stWNJfs7iPno/ETCyGqCG
-         uXKg==
-X-Forwarded-Encrypted: i=1; AJvYcCUFigsOL/dN3oh3qHm0iS+HpMBZvw/iiV8+lYzAli7hHQa8iUkb/0E+AfIXBDATCMK11GlTMkZl+nXEEzbLydP3M0MKlm4IYFXyNtKK
-X-Gm-Message-State: AOJu0YzaTiN0B8YlyXYZyOo+QioCjyucyxQBe/E8LuImvYDGt52W7S5e
-	nhtDrno77lZ2w/F/s+Kp2rm34k8ucK3mHlDFZLcFwMXbCmHx8t6ppigIC7SxKdcK8GLn9mTlsoF
-	uLfRFOXrBeHYZxqu4o6jSoELjfYjxQ4N5xiCe
-X-Google-Smtp-Source: AGHT+IG0UsEDnmHxQRrz745aw4UlqWNyLvLKlXPrUyhs0dx23Srr+KTicp6LvTTAV47/MeSVZ9UVHkCM8Vt6BAMhVZc=
-X-Received: by 2002:a67:ee18:0:b0:470:45bc:a78f with SMTP id
- f24-20020a67ee18000000b0047045bca78fmr4607957vsp.15.1708938923903; Mon, 26
- Feb 2024 01:15:23 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708938917; x=1709543717;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wlH1Ter4o/LuhmUGIySGl8jfbKhW6NJPyE0QFDQ/6s4=;
+        b=MkKg3DRstSGlBh/ePV1yc1zCOlWuWxpYpwUf0r/BbARmzAlFf6NPieYMAx+XB/MYX6
+         5hujD1jWKDRHm0Go4n8NL1DBgB+evp2LdTvaMWvHHXTSePR8Gu0KeIHQ3p9WN0udtY9k
+         s2JG9uSlT+DbsNMsJXTckiyxQP6A5Jf7pV9TBgGgPr8GkFzmno05js7VibSIu2exnQPt
+         +gy+Tzp9A0SlVSVEwq6LjQcFS1NkMK+/tNDBlmCbVtKw7BZLxATuMrRLZ0jQIY1aD9pR
+         kUFaa+mix6H4zIGFpVLNLPILnYi463wtn00PP0sV0gsuUPv9L0sR8J03P8fwMp6q+1yk
+         7xNA==
+X-Forwarded-Encrypted: i=1; AJvYcCWYvG51WU8jK+1+4OVJn61d0gUERZL8uCe7YZFrDtjQkoLzfz7t2Q68yssfewjWAstvio2Yi4+EdmX4Kl4dmIdfZXMyw8xUi+hMfn8X
+X-Gm-Message-State: AOJu0Yzi1H4newCT/mCRhi/8phjBZHyVHXnnbEM0qWrdQWFPkFk8Q1Pq
+	QdQugLQOeL7N39EsbrYEK1FSIu7zLQ/eQzy+dPiuVz8OOABmpMOwYAB7f2+iy9o=
+X-Google-Smtp-Source: AGHT+IEXUVR/N8Ym4kzVlbEuwaD2lWsgOYP5/F36Su6nMdyWMJ//J8As/t2DKFX23EsFXq+ZVVEfZg==
+X-Received: by 2002:a17:906:1745:b0:a3f:2168:214b with SMTP id d5-20020a170906174500b00a3f2168214bmr5890928eje.1.1708938916861;
+        Mon, 26 Feb 2024 01:15:16 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id tl18-20020a170907c31200b00a437d3e975esm167009ejc.210.2024.02.26.01.15.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 01:15:16 -0800 (PST)
+Message-ID: <310cefcb-a4d5-4f4f-a482-ba2ff08a57f6@linaro.org>
+Date: Mon, 26 Feb 2024 10:15:14 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230503090708.2524310-7-nmi@metaspace.dk> <20230503120354.534136-1-aliceryhl@google.com>
- <87y1b7a994.fsf@metaspace.dk>
-In-Reply-To: <87y1b7a994.fsf@metaspace.dk>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Mon, 26 Feb 2024 10:15:12 +0100
-Message-ID: <CAH5fLgjQm72KmKBtcnBEXOtVqd=Gto5UGF7jrekx8f+7QXh_Ag@mail.gmail.com>
-Subject: Re: [RFC PATCH 06/11] rust: apply cache line padding for `SpinLock`
-To: "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
-Cc: Damien.LeMoal@wdc.com, alex.gaynor@gmail.com, axboe@kernel.dk, 
-	benno.lossin@proton.me, bjorn3_gh@protonmail.com, boqun.feng@gmail.com, 
-	gary@garyguo.net, gost.dev@samsung.com, hare@suse.de, hch@lst.de, 
-	kbusch@kernel.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	lsf-pc@lists.linux-foundation.org, ojeda@kernel.org, 
-	rust-for-linux@vger.kernel.org, wedsonaf@gmail.com, willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 9/9] ARM: dts: chameleonv3: Add video device nodes
+Content-Language: en-US
+To: =?UTF-8?Q?Pawe=C5=82_Anikiel?= <panikiel@google.com>, airlied@gmail.com,
+ akpm@linux-foundation.org, conor+dt@kernel.org, daniel@ffwll.ch,
+ dinguyen@kernel.org, hverkuil-cisco@xs4all.nl,
+ krzysztof.kozlowski+dt@linaro.org, maarten.lankhorst@linux.intel.com,
+ mchehab@kernel.org, mripard@kernel.org, robh+dt@kernel.org,
+ tzimmermann@suse.de
+Cc: devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+ chromeos-krk-upstreaming@google.com, ribalda@chromium.org
+References: <20240221160215.484151-1-panikiel@google.com>
+ <20240221160215.484151-10-panikiel@google.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240221160215.484151-10-panikiel@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 26, 2024 at 10:02=E2=80=AFAM Andreas Hindborg (Samsung)
-<nmi@metaspace.dk> wrote:
->
->
-> Hi Alice,
->
-> Alice Ryhl <aliceryhl@google.com> writes:
->
-> > On Wed, 3 May 2023 11:07:03 +0200, Andreas Hindborg <a.hindborg@samsung=
-com> wrote:
-> >> The kernel `struct spinlock` is 4 bytes on x86 when lockdep is not ena=
-bled. The
-> >> structure is not padded to fit a cache line. The effect of this for `S=
-pinLock`
-> >> is that the lock variable and the value protected by the lock will sha=
-re a cache
-> >> line, depending on the alignment requirements of the protected value. =
-Aligning
-> >> the lock variable and the protected value to a cache line yields a 20%
-> >> performance increase for the Rust null block driver for sequential rea=
-ds to
-> >> memory backed devices at 6 concurrent readers.
-> >>
-> >> Signed-off-by: Andreas Hindborg <a.hindborg@samsung.com>
-> >
-> > This applies the cacheline padding to all spinlocks unconditionally.
-> > It's not clear to me that we want to do that. Instead, I suggest using
-> > `SpinLock<CachePadded<T>>` in the null block driver to opt-in to the
-> > cache padding there, and let other drivers choose whether or not they
-> > want to cache pad their locks.
->
-> I was going to write that this is not going to work because the compiler
-> is going to reorder the fields of `Lock` and put the `data` field first,
-> followed by the `state` field. But I checked the layout, and it seems
-> that I actually get the `state` field first (with an alignment of 4), 60
-> bytes of padding, and then the `data` field (with alignment 64).
->
-> I am wondering why the compiler is not reordering these fields? Am I
-> guaranteed that the fields will not be reordered? Looking at the
-> definition of `Lock` there does not seem to be anything that prevents
-> rustc from swapping `state` and `data`.
+On 21/02/2024 17:02, Paweł Anikiel wrote:
+> Add device nodes for the video system present on the Chameleon v3.
+> It consists of six framebuffers and two Intel Displayport receivers.
+> 
+> Signed-off-by: Paweł Anikiel <panikiel@google.com>
+> ---
 
-It's because `Lock` has `: ?Sized` on the `T` generic. Fields that
-might not be Sized must always be last.
+..
 
-Alice
+> +		dprx_sst: dp-receiver@c0064000 {
+> +			compatible = "intel,dprx-20.0.1";
+> +			reg = <0xc0064000 0x800>;
+> +			interrupt-parent = <&dprx_sst_irq>;
+> +			interrupts = <0 IRQ_TYPE_EDGE_RISING>;
+> +			intel,max-link-rate = <0x1e>;
+
+Rate is not in hex! Rate is in Hz, at least usually...
+
+Fix your bindings...
+
+Best regards,
+Krzysztof
+
 
