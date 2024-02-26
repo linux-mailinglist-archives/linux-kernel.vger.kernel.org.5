@@ -1,314 +1,249 @@
-Return-Path: <linux-kernel+bounces-81807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81808-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87804867A4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:30:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71B23867A4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:30:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A93B81C234BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:30:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F04431F249F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:30:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71DFA12A17C;
-	Mon, 26 Feb 2024 15:30:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61C3112C54A;
+	Mon, 26 Feb 2024 15:30:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="wjJ3N85A"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2071.outbound.protection.outlook.com [40.107.237.71])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Y68N6UCu"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8977212BEBF;
-	Mon, 26 Feb 2024 15:30:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.71
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708961404; cv=fail; b=RlT9EWp7Yr60MEKsrGxS7OF/hrxQWfJsRg0T/STaMX8i5x87oF4GxwCYjjBQCdWVn1sack0WIPpfESl8Twb6u7UNsk8GY2PstKeq88Gz5nnAkhWum2rQYoClyVqKyaKRB3IZYzT2aXHcrepGidkeahKA2KUaAxuVOYNUe9MflDI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708961404; c=relaxed/simple;
-	bh=xDWTUmdpAiHy2sZsA1K0WHKMrI+o24ngea9zbEnq068=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=anWIjn+aqgW/qS6GOAcdxcvDAEK/Wdmke3tFJ1SrhhXSIFHOWr1UAxGWIFhcIB9ou2HL0rtseVQU9N2dcFxRl0d3aRu2e8hhjSm046ExkpmRv2i5+d8smE0+W2kyJV9j47ltHcW/O1o/+ESzX7FesFXIWeQmmlgs7yXs2mRvSLU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=wjJ3N85A; arc=fail smtp.client-ip=40.107.237.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N7CxNm8v93FNS1IDy/Nq9VNOLwxnu757D0WA42xrjbz6+0lld4leITLYcrYmdxYlzoodt18fzUKyYX2ZMAKilGIMcQHQXQDxD27vBY4XNHdEIkFpAXido/LCBx8wEx2lk80naI5p8cH1yki913aur93mIYaVLcdZTpfgBmPwq0+NjGqMKhyOAjT/PLsxCH9OXvGycjotBCubhdgyKXAfBP/rpA7if6y/R2WdHlZofBQp2lzIuzAa3+D1XAjW9dIufb+shzjka0Msp0jconfX9l+7cCdwv1ay5ibNG4NnCRgAKDOWVgD4327Ea8Q9OiVoNKqhHfm3zzvelxXb8OsobA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8M1xkrsufNk3J5PFoOjspbxct9V8YK0UnuCnaptKX48=;
- b=Sz4WC3uc8bDT5vNZa3JomxCQ4KlzAAiDtjysnUHwUm2Hk5EigsjOxpgHTPKpwGNJUqAEGXgeiEbdwByOQPygSY6OqY9uhFH9NhyWlketLmrJ28zLhwifpXP+XCmxmmy0nZ5XgMae1Ct8qB/J0U8IgWen3EsuEzxrIpZcriclywJhwUiMDUHBVV2smd6U5Ts+asBHogChr4DbJ3MpzBrFCTlAMfC7bs7XbDnqyO6lyFEU7hjhmoECcQ3UMbfb/ibgsxVYoMpOuV4uD+yjwfu7IBn5yq4CSi7cu1p8v9UvshsBPx0dsyiw7Dgx/GUVkblgh7vpCm20QCrcanSRPcObUA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=alien8.de smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8M1xkrsufNk3J5PFoOjspbxct9V8YK0UnuCnaptKX48=;
- b=wjJ3N85AWDf096id52VZOUk0s/AUOXQLdUWrezg2a6VTESq5MJj+m7GzAOXHWxBv1cRTOsOuwJyWPD9401kz9paccd4PutHqkdbIKb/fywTbwyXpZZL+w5BcrGM0UichAoY8vU4BonG8W70Wug4uqlNDV4dwFmASDWXaNWypdtY=
-Received: from SJ0PR03CA0382.namprd03.prod.outlook.com (2603:10b6:a03:3a1::27)
- by SA0PR12MB4526.namprd12.prod.outlook.com (2603:10b6:806:98::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.34; Mon, 26 Feb
- 2024 15:30:00 +0000
-Received: from CO1PEPF000044FA.namprd21.prod.outlook.com
- (2603:10b6:a03:3a1:cafe::f9) by SJ0PR03CA0382.outlook.office365.com
- (2603:10b6:a03:3a1::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.49 via Frontend
- Transport; Mon, 26 Feb 2024 15:29:59 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000044FA.mail.protection.outlook.com (10.167.241.200) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7362.0 via Frontend Transport; Mon, 26 Feb 2024 15:29:59 +0000
-Received: from quartz-7b1chost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 26 Feb
- 2024 09:29:52 -0600
-From: Yazen Ghannam <yazen.ghannam@amd.com>
-To: <bp@alien8.de>, <tony.luck@intel.com>, <linux-edac@vger.kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <avadhut.naik@amd.com>,
-	<john.allen@amd.com>, <muralidhara.mk@amd.com>, <sathyapriya.k@amd.com>,
-	<naveenkrishna.chatradhi@amd.com>, Yazen Ghannam <yazen.ghannam@amd.com>
-Subject: [PATCH 3/3] RAS/AMD/FMPM: Add debugfs interface to print record entries
-Date: Mon, 26 Feb 2024 09:29:41 -0600
-Message-ID: <20240226152941.2615007-4-yazen.ghannam@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240226152941.2615007-1-yazen.ghannam@amd.com>
-References: <20240226152941.2615007-1-yazen.ghannam@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE64712BF11;
+	Mon, 26 Feb 2024 15:30:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708961406; cv=none; b=lyjT4qhMwBplqozakXtinu8XFu304JtXti7KNhX+8/Wulv0y5Jp23RbkdniZR6oP6zuRIwo1UrscrvCTIrpxJQlTDJDbhCGMU2ldbHc/gj+CHns3b3wVCPRawdMH2ts9ZPp78m2o0zjE3cpLcULmuMAaX5+6424m7h0NWzQks+g=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708961406; c=relaxed/simple;
+	bh=1dPT6v1I08Wyw5hcrN7bcgojMxnYVXIX2j0GluKbE6Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fbYkgK03hP5wkvcXoLLl1ePdYs4s7xYszXkekkRxEzz038dqVAdstLmoZ6LGVNAJ7cyQ56hH/R7XuTg/Q7qaiqYz1pQcKA2GK6YqgXP6O/tn+/+egXqTkAXtE1YJi2eU2zhFfVCzB4jaULWhA4IPVnLAurhWc7Cpn8GfjSg3+Ts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Y68N6UCu; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708961402;
+	bh=1dPT6v1I08Wyw5hcrN7bcgojMxnYVXIX2j0GluKbE6Y=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Y68N6UCuVbVFFasJj+ySVlHijeOnuqq7y8A5tsZ0r2I5+eHsdn6kGbuIQEhK7g7eh
+	 9xrlqCRvZTuDtW8PiCKK+RnlkYifQubrxK/ifQjhcDxUuEeLgqnHmMYB3ARUCjhxJj
+	 T5OONjkP2MYwvgu1TBRjX6KjEImlNeFxDuUqGdrT+ZyldQzxawK2jN3Y/MEAGVgYnx
+	 iks6DyEZIRF4HSGtkr11rFZq481N2a7ZUThufV2fpbjtNHSXZWAQnBSuXZA94ggtor
+	 G7R8S41pEbfY3rseYnbtvq4FdHetz7E2Pyy6OTkjE7TP5umlIbZUyaorLZuFMZad8Z
+	 u5JPfnYhZgszw==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 591A237820C3;
+	Mon, 26 Feb 2024 15:30:01 +0000 (UTC)
+Message-ID: <e15fdb18-d4de-495f-b90b-ba0e787cbef4@collabora.com>
+Date: Mon, 26 Feb 2024 16:30:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044FA:EE_|SA0PR12MB4526:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2a3dfcb1-292f-47cb-afe8-08dc36dfcb4f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	aD/BUaOGMVQ6WQ6jHKEDHAz6qD3HQwmQknrR+k1Vi8Z5OeQDmusxUhUbPeXkxjxiKNBlugfvVySiEyzwPV+HQcSD+miCgq5n/Is4/1WN+T3Z/NxFfzgN19JCiXJxbAS6TlLLfLADGj8UO4Xlgx4JYQa03WbLPh4nB1mPgr8bR8DYCmCIPH6hlKSGchlognZTBIlcBXF7MG1Qn4kdW0lsClVR7VBxDkllXZS6449lnzqRYtGjr8O7nj61Gh/RPCy3ZGpSVELXPbaqu5KfY7sDZ5mF3YeoTeH9sJDrZlw8QDoUDpd+zcdDLBjaN7kUI+lwgGvw19N1MuShqIfiBbAO7MiqSsBmC3/I8GpFgi28lu7BivoxLxCbM7vWk3P1mQwdrc1raZfFcV/qdfkamkGCQGgg36YwmMWcxauJ30caS5UkIXYq7AYh/C8HaksnsV5F8o2uoSMc4c+edk+5jJkhF/t9E3My1mFI2SyAFEs3YJBMMFlynwdehXOL5fyvJQC5RmR6hM0/c5tJz7zior3+171U51CKCdjA/J2D7VdfJOanqlOY5zaiphTniAoDqVlYqFyh+WTKbSxVCTJpMGHhmiwhRTJsUc9sSvmyI0WteHLJaM0WP95qgXtqYD6w6G96AObxdb/UxLbU/TfsbuiL4VM6CHoNLZCFXA7AJopIQbSe6ZWqSqnlJ7noQXpYmtvnIa17byiG2Bt7w630oqxs0plv44K1f7lGaa1mmsjkDOMHB708Bp0GYRPkqihMF3ZL
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 15:29:59.4653
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2a3dfcb1-292f-47cb-afe8-08dc36dfcb4f
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CO1PEPF000044FA.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4526
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 02/18] ASoC: dt-bindings: mediatek,mt8365-mt6357: Add
+ audio sound card document
+Content-Language: en-US
+To: Alexandre Mergnat <amergnat@baylibre.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>, Lee Jones <lee@kernel.org>,
+ Flora Fu <flora.fu@mediatek.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+References: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
+ <20240226-audio-i350-v1-2-4fa1cea1667f@baylibre.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240226-audio-i350-v1-2-4fa1cea1667f@baylibre.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-It is helpful to see the saved record entries during run time in
-human-readable format. This is useful for testing during module
-development. And it can be used by system admins to quickly and easily
-see the state of the system.
+Il 26/02/24 15:01, Alexandre Mergnat ha scritto:
+> Add soundcard bindings for the MT8365 SoC with the MT6357 audio codec.
+> 
+> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
+> ---
+>   .../bindings/sound/mediatek,mt8365-mt6357.yaml     | 127 +++++++++++++++++++++
+>   1 file changed, 127 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/mediatek,mt8365-mt6357.yaml b/Documentation/devicetree/bindings/sound/mediatek,mt8365-mt6357.yaml
+> new file mode 100644
+> index 000000000000..f469611ec6b6
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/mediatek,mt8365-mt6357.yaml
+> @@ -0,0 +1,127 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/mediatek,mt8365-mt6357.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Mediatek MT8365 sound card with MT6357 sound codec.
+> +
+> +maintainers:
+> +  - Alexandre Mergnat <amergnat@baylibre.com>
+> +
+> +description:
+> +  This binding describes the MT8365 sound card.
+> +
+> +properties:
+> +  compatible:
+> +    const: mediatek,mt8365-mt6357
+> +
+> +  mediatek,hp-pull-down:
+> +    description:
+> +      Earphone driver positive output stage short to the
+> +      audio reference ground.
+> +      Default value is false.
+> +    type: boolean
+> +
+> +  mediatek,micbias0-microvolt:
+> +    description: |
 
-Provide a sequential file in debugfs to print fields of interest from
-the FRU records and their entries.
+description: Selects MIC Bias 0 output voltage
 
-Don't fail to load the module if the debugfs interface is not available.
-This is a convenience feature which does not affect other module
-functionality.
+> +      Selects MIC Bias 0 output voltage.
+> +      [1.7v, 1.8v, 1.9v, 2.0v, 2.1v, 2.5v, 2.6v, 2.7v]
+> +    enum: [0, 1, 2, 3, 4, 5, 6, 7]
 
-The new interface reads the record entries and should hold the mutex.
-Expand the mutex code comment to clarify when it should be held.
+No, you don't say 0 1 2 3 4 to a property that says "microvolt", that's simply
+wrong.
 
-Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
----
- drivers/ras/amd/fmpm.c | 129 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 129 insertions(+)
+mediatek,micbias0-microvolt = <2100000>;
 
-diff --git a/drivers/ras/amd/fmpm.c b/drivers/ras/amd/fmpm.c
-index 04961d36dd9f..967af84b7fe9 100644
---- a/drivers/ras/amd/fmpm.c
-+++ b/drivers/ras/amd/fmpm.c
-@@ -54,6 +54,8 @@
- #include <asm/cpu_device_id.h>
- #include <asm/mce.h>
- 
-+#include "../debugfs.h"
-+
- #define INVALID_CPU			UINT_MAX
- 
- /* Validation Bits */
-@@ -114,6 +116,9 @@ static struct fru_rec **fru_records;
- #define INVALID_SPA	~0ULL
- static u64 *sys_addrs;
- 
-+static struct dentry *fmpm_dfs_dir;
-+static struct dentry *fmpm_dfs_entries;
-+
- #define CPER_CREATOR_FMP						\
- 	GUID_INIT(0xcd5c2993, 0xf4b2, 0x41b2, 0xb5, 0xd4, 0xf9, 0xc3,	\
- 		  0xa0, 0x33, 0x08, 0x75)
-@@ -150,6 +155,11 @@ static unsigned int sys_nr_entries;
-  * Protect the local records cache in fru_records and prevent concurrent
-  * writes to storage. This is only needed after init once notifier block
-  * registration is done.
-+ *
-+ * The majority of a record is fixed at module init and will not change
-+ * during run time. The entries within a record will be updated as new
-+ * errors are reported. The mutex should be held whenever the entries are
-+ * accessed during run time.
-  */
- static DEFINE_MUTEX(fmpm_update_mutex);
- 
-@@ -799,6 +809,122 @@ static int allocate_records(void)
- 	return ret;
- }
- 
-+static void *fmpm_start(struct seq_file *f, loff_t *pos)
-+{
-+	if (*pos >= (sys_nr_entries + 1))
-+		return NULL;
-+	return pos;
-+}
-+
-+static void *fmpm_next(struct seq_file *f, void *data, loff_t *pos)
-+{
-+	if (++(*pos) >= (sys_nr_entries + 1))
-+		return NULL;
-+	return pos;
-+}
-+
-+static void fmpm_stop(struct seq_file *f, void *data)
-+{
-+}
-+
-+#define SHORT_WIDTH	8
-+#define U64_WIDTH	18
-+#define TIMESTAMP_WIDTH	19
-+#define LONG_WIDTH	24
-+#define U64_PAD		(LONG_WIDTH - U64_WIDTH)
-+#define TS_PAD		(LONG_WIDTH - TIMESTAMP_WIDTH)
-+static int fmpm_show(struct seq_file *f, void *data)
-+{
-+	unsigned int fru_idx, entry, sys_entry, line;
-+	struct cper_fru_poison_desc *fpd;
-+	struct fru_rec *rec;
-+
-+	line = *(loff_t *)data;
-+	if (line == 0) {
-+		seq_printf(f, "%-*s", SHORT_WIDTH, "fru_idx");
-+		seq_printf(f, "%-*s", LONG_WIDTH,  "fru_id");
-+		seq_printf(f, "%-*s", SHORT_WIDTH, "entry");
-+		seq_printf(f, "%-*s", LONG_WIDTH,  "timestamp");
-+		seq_printf(f, "%-*s", LONG_WIDTH,  "hw_id");
-+		seq_printf(f, "%-*s", LONG_WIDTH,  "addr");
-+		seq_printf(f, "%-*s", LONG_WIDTH,  "spa");
-+		goto out_newline;
-+	}
-+
-+	sys_entry = line - 1;
-+	fru_idx	  = sys_entry / max_nr_entries;
-+	entry	  = sys_entry % max_nr_entries;
-+
-+	rec = fru_records[fru_idx];
-+	if (!rec)
-+		goto out;
-+
-+	seq_printf(f, "%-*u",		SHORT_WIDTH, fru_idx);
-+	seq_printf(f, "0x%016llx%-*s",	rec->fmp.fru_id, U64_PAD, "");
-+	seq_printf(f, "%-*u",		SHORT_WIDTH, entry);
-+
-+	mutex_lock(&fmpm_update_mutex);
-+
-+	if (entry >= rec->fmp.nr_entries) {
-+		seq_printf(f, "%-*s", LONG_WIDTH, "*");
-+		seq_printf(f, "%-*s", LONG_WIDTH, "*");
-+		seq_printf(f, "%-*s", LONG_WIDTH, "*");
-+		seq_printf(f, "%-*s", LONG_WIDTH, "*");
-+		goto out_unlock;
-+	}
-+
-+	fpd = &rec->entries[entry];
-+
-+	seq_printf(f, "%ptT%-*s",	&fpd->timestamp, TS_PAD,  "");
-+	seq_printf(f, "0x%016llx%-*s",	fpd->hw_id,	 U64_PAD, "");
-+	seq_printf(f, "0x%016llx%-*s",	fpd->addr,	 U64_PAD, "");
-+
-+	if (sys_addrs[sys_entry] == INVALID_SPA)
-+		seq_printf(f, "%-*s", LONG_WIDTH, "*");
-+	else
-+		seq_printf(f, "0x%016llx%-*s", sys_addrs[sys_entry], U64_PAD, "");
-+
-+out_unlock:
-+	mutex_unlock(&fmpm_update_mutex);
-+out_newline:
-+	seq_putc(f, '\n');
-+out:
-+	return 0;
-+}
-+
-+static const struct seq_operations fmpm_seq_ops = {
-+	.start	= fmpm_start,
-+	.next	= fmpm_next,
-+	.stop	= fmpm_stop,
-+	.show	= fmpm_show,
-+};
-+
-+static int fmpm_open(struct inode *inode, struct file *file)
-+{
-+	return seq_open(file, &fmpm_seq_ops);
-+}
-+
-+static const struct file_operations fmpm_fops = {
-+	.open		= fmpm_open,
-+	.release	= seq_release,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+};
-+
-+static void setup_debugfs(void)
-+{
-+	if (!ras_debugfs_dir)
-+		return;
-+
-+	fmpm_dfs_dir = debugfs_create_dir(KBUILD_MODNAME, ras_debugfs_dir);
-+	if (!fmpm_dfs_dir)
-+		return;
-+
-+	fmpm_dfs_entries = debugfs_create_file("entries", 0400, fmpm_dfs_dir, NULL, &fmpm_fops);
-+	if (!fmpm_dfs_entries)
-+		debugfs_remove(fmpm_dfs_dir);
-+}
-+
- static const struct x86_cpu_id fmpm_cpuids[] = {
- 	X86_MATCH_VENDOR_FAM(AMD, 0x19, NULL),
- 	{ }
-@@ -840,6 +966,8 @@ static int __init fru_mem_poison_init(void)
- 	if (ret)
- 		goto out_free;
- 
-+	setup_debugfs();
-+
- 	retire_mem_records();
- 
- 	mce_register_decode_chain(&fru_mem_poison_nb);
-@@ -856,6 +984,7 @@ static int __init fru_mem_poison_init(void)
- static void __exit fru_mem_poison_exit(void)
- {
- 	mce_unregister_decode_chain(&fru_mem_poison_nb);
-+	debugfs_remove(fmpm_dfs_dir);
- 	free_records();
- }
- 
--- 
-2.34.1
+..so you want a binding that says
+enum: [ 1700000, 1800000, this, that, 2700000]
+
+> +
+> +  mediatek,micbias1-microvolt:
+> +    description: |
+> +      Selects MIC Bias 1 output voltage.
+> +      [1.7v, 1.8v, 1.9v, 2.0v, 2.1v, 2.5v, 2.6v, 2.7v]
+> +    enum: [0, 1, 2, 3, 4, 5, 6, 7]
+
+same here.
+
+> +
+> +  mediatek,platform:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: The phandle of MT8365 ASoC platform.
+> +
+> +  pinctrl-names:
+> +    minItems: 1
+> +    items:
+> +      - const: aud_default
+> +      - const: aud_dmic
+> +      - const: aud_miso_off
+> +      - const: aud_miso_on
+> +      - const: aud_mosi_off
+> +      - const: aud_mosi_on
+> +
+> +  vaud28-supply:
+> +    description:
+> +      2.8 volt supply for the audio codec
+> +
+> +patternProperties:
+> +  "^dai-link-[0-9]+$":
+> +    type: object
+> +    description:
+> +      Container for dai-link level properties and CODEC sub-nodes.
+> +
+> +    properties:
+> +      codec:
+> +        type: object
+> +        description: Holds subnode which indicates codec dai.
+> +
+> +        properties:
+> +          sound-dai:
+> +            maxItems: 1
+> +            description: phandle of the codec DAI
+> +
+> +        additionalProperties: false
+> +
+> +      link-name:
+> +        description:
+> +          This property corresponds to the name of the BE dai-link to which
+> +          we are going to update parameters in this node.
+> +        items:
+> +          const: 2ND I2S BE
+> +
+> +      sound-dai:
+> +        maxItems: 1
+> +        description: phandle of the CPU DAI
+> +
+> +    additionalProperties: false
+> +
+> +    required:
+> +      - link-name
+> +      - sound-dai
+> +
+> +additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - mediatek,platform
+> +  - pinctrl-names
+> +  - vaud28-supply
+> +
+> +examples:
+> +  - |
+> +    sound {
+> +        compatible = "mediatek,mt8365-mt6357";
+> +        mediatek,platform = <&afe>;
+
+Please:
+
+https://docs.kernel.org/devicetree/bindings/dts-coding-style.html
+
+Regards,
+Angelo
+
+> +        pinctrl-names = "aud_default",
+> +            "aud_dmic",
+> +            "aud_miso_off",
+> +            "aud_miso_on",
+> +            "aud_mosi_off",
+> +            "aud_mosi_on";
+> +        pinctrl-0 = <&aud_default_pins>;
+> +        pinctrl-1 = <&aud_dmic_pins>;
+> +        pinctrl-2 = <&aud_miso_off_pins>;
+> +        pinctrl-3 = <&aud_miso_on_pins>;
+> +        pinctrl-4 = <&aud_mosi_off_pins>;
+> +        pinctrl-5 = <&aud_mosi_on_pins>;
+> +        vaud28-supply = <&mt6357_vaud28_reg>;
+> +
+> +        /* hdmi interface */
+> +        dai-link-0 {
+> +            sound-dai = <&afe>;
+> +            link-name = "2ND I2S BE";
+> +
+> +            codec {
+> +                sound-dai = <&it66121hdmitx>;
+> +            };
+> +        };
+> +    };
+> 
 
 
