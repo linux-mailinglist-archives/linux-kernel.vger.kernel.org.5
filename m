@@ -1,113 +1,112 @@
-Return-Path: <linux-kernel+bounces-81305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CDAF8673D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:48:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9FAA867416
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:59:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE6051C25F91
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:48:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 078E7B25D5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:48:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 908942557E;
-	Mon, 26 Feb 2024 11:48:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABFC31EEEA;
+	Mon, 26 Feb 2024 11:48:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="brVvD7gL"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="AQiNLdI6";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gKGLj7yO"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCF99208B8;
-	Mon, 26 Feb 2024 11:48:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 845041D54B;
+	Mon, 26 Feb 2024 11:48:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708948093; cv=none; b=jN9L0K7q2aYnUhQzxLpizwfkCmi3uBEAJx4oEPYeJOU/Jq+Qdr26Ze9TJAI8T1UCWX59g2S4+PyS7y5RHFMLpq3rElOfkuvjvCaHvZD8gxtOXf7reMsmZXbRs7Kq+jTwai/YP3q4BVTz7qiRpBrkqYw/Z5KbRMoNqFD36CRgIU8=
+	t=1708948090; cv=none; b=tm9bvL6fw4AAAnX3RxUuhPcCVZZAPNFx26aW+cgyfLOkCaAVIK0u/Yer6fUjXG0LVyjLeqc+cPfSxZHmeYocWRPY03OrOeH4snycsVovAXTuij3vYVSYCRp/EfggX6zyOljCPbXZ/x+rPwm3mAsOOdAx/2Pl5x/BMX/s8fyCUZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708948093; c=relaxed/simple;
-	bh=kFr3B/ULY+gMSkUP5N9M2ZZcd1AQsK+54aUGpEWndtI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J0DF4TDdijSanv8RUV8VEmMUHP69jvxdwiANPSffQhnYPZiL7JFuoCqpxlQIOkwKvX6Eh7qt6RRFXHB2xsUsGP/I5d7moJiJGvOTat4r+nQ5+TcUfw900WXd2usuds3XRjZoSN1t9UfdK0W/VoiEVgMrlzVed2n1+dUlzQhF7pY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=brVvD7gL; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Gw1YcQC9qtJ4/pe66V7YRq+GAf4l9U7OKSN0ldpLYSY=; b=brVvD7gLhZJfWAo8PU5vLdHgiY
-	kdXs2ki0PBjRk/pm7+3gkSDljK1QxtoBZeyd8T+RUXMw9AUUjEuYYJ+vLcSnbqtqk74jX6Xc4GE3x
-	XFX1+7DuIl4b7pTlP9DUxZvqxsMdrQ6/aAo5Yt5IyYF5DP+s36IinJu0HbOsg07TqnyCxHHgwX2Ky
-	HnGs5GLG8BPOhvHM94GvuLxrxxNGy3WuXv4ekVOpOZC/OrkT3kvOMssX3fh+QLX6ieE1pn1MQDhnL
-	JOis2meDoCyogwRu1Se4ystHBJPtbfLHPaoNB72w9rN9zygg7PMxSGBtjvAT3xrFex7WMTbppgRgj
-	yjfwBftQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:56924)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1reZSY-0003A6-2J;
-	Mon, 26 Feb 2024 11:47:50 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1reZSS-0006P5-Tm; Mon, 26 Feb 2024 11:47:44 +0000
-Date: Mon, 26 Feb 2024 11:47:44 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Charlie Jenkins <charlie@rivosinc.com>,
-	Guenter Roeck <linux@roeck-us.net>,
-	David Laight <David.Laight@aculab.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Palmer Dabbelt <palmer@rivosinc.com>,
-	Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v10] lib: checksum: Use aligned accesses for ip_fast_csum
- and csum_ipv6_magic tests
-Message-ID: <Zdx6YMRdPmb595M2@shell.armlinux.org.uk>
-References: <20240223-fix_sparse_errors_checksum_tests-v10-1-b6a45914b7d8@rivosinc.com>
- <7ae930a7-3b10-4470-94ee-89cb650b3349@csgroup.eu>
+	s=arc-20240116; t=1708948090; c=relaxed/simple;
+	bh=B/tkQbR9U4S9kEOpfs0djvn9pb0/iN+UsrDa6kyyQYw=;
+	h=Date:From:To:Subject:Cc:MIME-Version:Message-ID:Content-Type; b=iI3uaATSCUmUjQslECesNv2gV6ly2hpk5b+4Mkp4PnldC5ejZvFGP5xIE5kD/umTCHEky3WMB0ppjmmEvpcuuKU/+KB6xa1Pqur/ZzVZFdz3EfmzWm1vNCDLI1/uP9dCcogGFT/uZNVXM19fweLCgxOGIplv1GWtctRi43SgfAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=AQiNLdI6; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gKGLj7yO; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Mon, 26 Feb 2024 11:48:05 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708948086;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+	bh=gtCLZIY7ypiDdoCqSBLWsntMRCB2Ts4tl7NPSt9FmyM=;
+	b=AQiNLdI6Tnuz409Y0t2B/s5zpAa3oiObB8VEYpv+0PxmMT5vVkbP4xGljdP6vzw9SpVXmW
+	HKpap+ZfYTxqrVRKy5Kr1KkjJfB2anbqR9C3cZG5UMX4bIJZ3MiUYj05BikRIuoC+CxYIo
+	6i/KtwTJV0/ZBjx/BiuXIVLTN94mFCWIGdTRuJ3PFD2gFrvZq73Z5CZN4b3MVKaXEN2tTm
+	yifkIiqyMLPJ9xnT1PKPoRRKO1cEaFE/mU3Z7qV4ryf9+RBEbhBIf4Db26a/P5Ysu0oQGI
+	P/CrsOtS33nQvqnOWiPAFjSczDOAaTNLAwHltf2HHbarfTdgKcG3F9h5ZnsYEQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708948086;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+	bh=gtCLZIY7ypiDdoCqSBLWsntMRCB2Ts4tl7NPSt9FmyM=;
+	b=gKGLj7yOrtoQmHvHmH8syIgKDgLAwG3x4o2iJypSIFc/om+hvIk32ZOqOOyzp2jr53xvgK
+	mS+XxUdndG0p+yBw==
+From: "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/apic] x86/apic: Build the x86 topology enumeration
+ functions on UP APIC builds too
+Cc: Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+ Ingo Molnar <mingo@kernel.org>, x86@kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7ae930a7-3b10-4470-94ee-89cb650b3349@csgroup.eu>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Message-ID: <170894808573.398.6836010228517643879.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 26, 2024 at 11:34:51AM +0000, Christophe Leroy wrote:
-> Le 23/02/2024 à 23:11, Charlie Jenkins a écrit :
-> > The test cases for ip_fast_csum and csum_ipv6_magic were not properly
-> > aligning the IP header, which were causing failures on architectures
-> > that do not support misaligned accesses like some ARM platforms. To
-> > solve this, align the data along (14 + NET_IP_ALIGN) bytes which is the
-> > standard alignment of an IP header and must be supported by the
-> > architecture.
-> 
-> I'm still wondering what we are really trying to fix here.
-> 
-> All other tests are explicitely testing that it works with any alignment.
-> 
-> Shouldn't ip_fast_csum() and csum_ipv6_magic() work for any alignment as 
-> well ? I would expect it, I see no comment in arm code which explicits 
-> that assumption around those functions.
+The following commit has been merged into the x86/apic branch of tip:
 
-No, these functions are explicitly *not* designed to be used with any
-alignment. They are for 16-bit alignment only.
+Commit-ID:     62aaed88843a9a69b5614f99ec4a2930edd09658
+Gitweb:        https://git.kernel.org/tip/62aaed88843a9a69b5614f99ec4a2930edd09658
+Author:        Ingo Molnar <mingo@kernel.org>
+AuthorDate:    Mon, 26 Feb 2024 12:07:31 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Mon, 26 Feb 2024 12:14:42 +01:00
 
-I'm not sure where the idea that "any alignment" has come from, but it's
-never been the case AFAIK that we've supported that - or if we do now,
-that's something which has crept in under the radar.
+x86/apic: Build the x86 topology enumeration functions on UP APIC builds too
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+These functions are mostly pointless on UP, but nevertheless the
+64-bit UP APIC build already depends on the existence of
+topology_apply_cmdline_limits_early(), which caused a build bug,
+resolve it by making them available under CONFIG_X86_LOCAL_APIC,
+as their prototypes already are.
+
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+---
+ arch/x86/kernel/cpu/topology.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/cpu/topology.c b/arch/x86/kernel/cpu/topology.c
+index 41dd8e0..43650fe 100644
+--- a/arch/x86/kernel/cpu/topology.c
++++ b/arch/x86/kernel/cpu/topology.c
+@@ -344,7 +344,7 @@ void topology_hotunplug_apic(unsigned int cpu)
+ }
+ #endif
+ 
+-#ifdef CONFIG_SMP
++#ifdef CONFIG_X86_LOCAL_APIC
+ static unsigned int max_possible_cpus __initdata = NR_CPUS;
+ 
+ /**
 
