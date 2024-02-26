@@ -1,198 +1,149 @@
-Return-Path: <linux-kernel+bounces-81147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA28486711E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:32:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B110F86718E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:41:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A09F28C6B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:32:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 015C3B24AA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:33:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40BCA604DA;
-	Mon, 26 Feb 2024 10:16:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA868200D5;
+	Mon, 26 Feb 2024 10:18:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="web1J7L6"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="cFIEi9BN"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAE1A604D1;
-	Mon, 26 Feb 2024 10:16:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9310D1CFBE
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 10:18:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708942597; cv=none; b=NLxJWeewUrt3LxUdzyzFAcAAU660FxVGYyppJM0XYbF0Ly8EVWUySWISa5vdmKw7yRDTYtvuHjvra95pqzTwlgRUGO6xVWIRYUzEa1VuiZDGNE1q1WEfvLVt4rXVzw9OFMky9/XJFJs5SeAUlxHRkrfyeXz0dXLReM29y4U2WOs=
+	t=1708942724; cv=none; b=hPJmE6nZb4po5/H/CKzQG0G4u92Z5Gb7k7dq8sWlBCQsd8EfgdQqqElpiAWkOU4g/F5wmfO2bikDXHGVHWfxRsuNJX9Q41ezOzV7J1zmA0X4/sRHxwEmcHq6ktA7j9I/E0AEiQucKhGBequVVAjyLnyNsQiOWhwBrh6lKfGwPoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708942597; c=relaxed/simple;
-	bh=emFrdpvcCAoS+2q1ynAU1dbW3BiKoMtZlIG/7BBKPts=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lBvFHSQmmMMEKIENuWdMPGP5vfA4NoH36Y5vs8poAuOhCStTa1AuCUr8YT2Of2TYiPqm2sFjGMxWuePhxytBsQN6bfz3kozsMp8B3b7aLOifgywnEQrP7BTkW5YFAO5gNDnNKU4XxSKQIuGMcG/qbKa7P0z8i7Cty2yRF+C9uZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=web1J7L6; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1708942592;
-	bh=emFrdpvcCAoS+2q1ynAU1dbW3BiKoMtZlIG/7BBKPts=;
-	h=From:To:Cc:Subject:Date:From;
-	b=web1J7L66K1/9j61ZUQGQyHdAO/3m4PnihxmvEjPSo6xbb5xRnzmGiSDWuH36XnnW
-	 sQIHKHEMLpkvxyyHbGjhCMo5049eqTLXCYpVEZ7XZQgrssNT8JbDteqGHdLkXJGSKb
-	 HdSdlDxfVoV5a2IoW8Ti4y6dfls/Iz1og5pBcSR4Eq5cvcqKEZpk7X7IiDMF6gjxdW
-	 Nr2pa04cBYPyTqaDyeZirYVAK3zvlVn9abYxofj8E4rlLQPGJN37JRORU5BbKwqAhv
-	 HEV+wHsKbJ795zUJbdGaST+ioAQIuIdUcCFHIHuDktNEcY5LDw18+63nqf1Jiprh5O
-	 mkcWvIwJBpvnQ==
-Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: laura.nao)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8AD6137820B9;
-	Mon, 26 Feb 2024 10:16:31 +0000 (UTC)
-From: Laura Nao <laura.nao@collabora.com>
-To: ojeda@kernel.org,
-	alex.gaynor@gmail.com,
-	wedsonaf@gmail.com,
-	shuah@kernel.org
-Cc: usama.anjum@collabora.com,
-	a.hindborg@samsung.com,
-	aliceryhl@google.com,
-	benno.lossin@proton.me,
-	bjorn3_gh@protonmail.com,
-	boqun.feng@gmail.com,
-	gary@garyguo.net,
-	kernel@collabora.com,
-	laura.nao@collabora.com,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	rust-for-linux@vger.kernel.org,
-	kernel@valentinobst.de,
-	Sergio Gonzalez Collado <sergio.collado@gmail.com>
-Subject: [PATCH v4] kselftest: Add basic test for probing the rust sample modules
-Date: Mon, 26 Feb 2024 11:16:46 +0100
-Message-Id: <20240226101646.291337-1-laura.nao@collabora.com>
-X-Mailer: git-send-email 2.30.2
+	s=arc-20240116; t=1708942724; c=relaxed/simple;
+	bh=3dY9v8pzYytwG1dhDWUFwhk6KVuyvtvg0hRzpm2/Tjs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=EpM1Hlr9dQJ2dhoRjHJcs8ubBCgIEkc4zmCoWPj+q85QlK2BMGw/oiiJYdjMtZbWjbvoE67c+vQ0Pvv709+b+ZbpMuoWufshAyVuejlVe2RMVS0uMf0w6djKiGTMto2OIJV1EQiblQNL/BVNAef+lhTHm3j3T06nw8YwKDb/RGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=cFIEi9BN; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41Q5dJPw011612;
+	Mon, 26 Feb 2024 10:18:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=O2DE/nIvS1ODn/CemR0wgKU5W8KOvSU+fm4XqxrMHec=; b=cF
+	IEi9BN+DOccfzhedeCDBq6iogDL+oKI2f6dPou1pKel0osuznVYAR/1pia5oaXeI
+	w2pSpGGd5S/r00B2jEMypKLeWRgIEDMf4kyNMhn00nn2XZLPK1cdwxd958Kvq7nL
+	OBXxCVWwMvu5+yAb3OnFvKI3uV4/uRlM41uCchqXUtkoeLDGXreu12Gy+iH3tHbb
+	kzO6EecwYdPx/HnMX+kAC6zx7hG51peyDWo8WUA+d8t8XSy9hLuIjB1AwgUKP7fT
+	AcA3XI3/Jct+28T+pQ1swj/w4LBRWpWN7LA0Y3Kie78qu7dMF3nd4MH+NCLsftnd
+	vFORyuNNHtIzvEbudlLQ==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wgkxngk40-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Feb 2024 10:18:24 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41QAIO07010807
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Feb 2024 10:18:24 GMT
+Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 26 Feb
+ 2024 02:18:21 -0800
+Message-ID: <e5474801-53c1-6bbb-8781-e5cee42d6a90@quicinc.com>
+Date: Mon, 26 Feb 2024 15:47:47 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] printk: Add atomic context check inside console_unlock()
+Content-Language: en-US
+To: John Ogness <john.ogness@linutronix.de>, <pmladek@suse.com>,
+        <rostedt@goodmis.org>, <senozhatsky@chromium.org>
+CC: <linux-kernel@vger.kernel.org>
+References: <20240222090538.23017-1-quic_mojha@quicinc.com>
+ <87plwo5z4k.fsf@jogness.linutronix.de>
+From: Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <87plwo5z4k.fsf@jogness.linutronix.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: lzNiT9SrsIx7z_LR_XkQc73CMGh9MF2q
+X-Proofpoint-GUID: lzNiT9SrsIx7z_LR_XkQc73CMGh9MF2q
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-26_07,2024-02-23_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
+ priorityscore=1501 impostorscore=0 malwarescore=0 adultscore=0
+ suspectscore=0 lowpriorityscore=0 clxscore=1015 bulkscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402260078
 
-Add new basic kselftest that checks if the available rust sample modules
-can be added and removed correctly.
 
-Signed-off-by: Laura Nao <laura.nao@collabora.com>
-Reviewed-by: Sergio Gonzalez Collado <sergio.collado@gmail.com>
-Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
-Depends on:
-- https://lore.kernel.org/all/20240102141528.169947-1-laura.nao@collabora.com/T/#u
-- https://lore.kernel.org/all/20240131-ktap-sh-helpers-extend-v1-0-98ffb468712c@collabora.com/
-Changes in v4:
-- Added config file
-Changes in v3:
-- Removed useless KSFT_PASS, KSFT_FAIL, KSFT_SKIP constants
-- Used ktap_finished to print the results summary and handle the return code
-Changes in v2:
-- Added missing SPDX line
-- Edited test_probe_samples.sh script to use the common KTAP helpers file
----
- MAINTAINERS                                   |  1 +
- tools/testing/selftests/Makefile              |  1 +
- tools/testing/selftests/rust/Makefile         |  4 +++
- tools/testing/selftests/rust/config           |  5 +++
- .../selftests/rust/test_probe_samples.sh      | 34 +++++++++++++++++++
- 5 files changed, 45 insertions(+)
- create mode 100644 tools/testing/selftests/rust/Makefile
- create mode 100644 tools/testing/selftests/rust/config
- create mode 100755 tools/testing/selftests/rust/test_probe_samples.sh
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e1475ca38ff2..94e31dac6d2c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -19231,6 +19231,7 @@ F:	Documentation/rust/
- F:	rust/
- F:	samples/rust/
- F:	scripts/*rust*
-+F:	tools/testing/selftests/rust/
- K:	\b(?i:rust)\b
- 
- RXRPC SOCKETS (AF_RXRPC)
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index f7255969b695..e1504833654d 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -80,6 +80,7 @@ TARGETS += riscv
- TARGETS += rlimits
- TARGETS += rseq
- TARGETS += rtc
-+TARGETS += rust
- TARGETS += seccomp
- TARGETS += sgx
- TARGETS += sigaltstack
-diff --git a/tools/testing/selftests/rust/Makefile b/tools/testing/selftests/rust/Makefile
-new file mode 100644
-index 000000000000..fce1584d3bc0
---- /dev/null
-+++ b/tools/testing/selftests/rust/Makefile
-@@ -0,0 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0
-+TEST_PROGS += test_probe_samples.sh
-+
-+include ../lib.mk
-diff --git a/tools/testing/selftests/rust/config b/tools/testing/selftests/rust/config
-new file mode 100644
-index 000000000000..b4002acd40bc
---- /dev/null
-+++ b/tools/testing/selftests/rust/config
-@@ -0,0 +1,5 @@
-+CONFIG_RUST=y
-+CONFIG_SAMPLES=y
-+CONFIG_SAMPLES_RUST=y
-+CONFIG_SAMPLE_RUST_MINIMAL=m
-+CONFIG_SAMPLE_RUST_PRINT=m
-\ No newline at end of file
-diff --git a/tools/testing/selftests/rust/test_probe_samples.sh b/tools/testing/selftests/rust/test_probe_samples.sh
-new file mode 100755
-index 000000000000..389d180f14a5
---- /dev/null
-+++ b/tools/testing/selftests/rust/test_probe_samples.sh
-@@ -0,0 +1,34 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Copyright (c) 2023 Collabora Ltd
-+#
-+# This script tests whether the rust sample modules can
-+# be added and removed correctly.
-+#
-+
-+DIR="$(dirname "$(readlink -f "$0")")"
-+
-+source "${DIR}"/../kselftest/ktap_helpers.sh
-+
-+rust_sample_modules=("rust_minimal" "rust_print")
-+
-+ktap_print_header
-+
-+ktap_set_plan "${#rust_sample_modules[@]}"
-+
-+for sample in "${rust_sample_modules[@]}"; do
-+    if ! /sbin/modprobe -n -q "$sample"; then
-+        ktap_test_skip "module $sample is not found in /lib/modules/$(uname -r)"
-+        continue
-+    fi
-+
-+    if /sbin/modprobe -q "$sample"; then
-+        /sbin/modprobe -q -r "$sample"
-+        ktap_test_pass "$sample"
-+    else
-+        ktap_test_fail "$sample"
-+    fi
-+done
-+
-+ktap_finished
--- 
-2.30.2
+On 2/22/2024 8:23 PM, John Ogness wrote:
+> On 2024-02-22, Mukesh Ojha <quic_mojha@quicinc.com> wrote:
+>> Situation of schedule while atomic context can happen in a
+>> scenario if CPU-Y executing a async probe of ufs and while
+>> printing a line it is started spinning for console lock
+>> after preemption disable on CPU-Y and later it got the handover
+>> of console lock from CPU-X and in console_unlock() it get
+>> schedule with preempt disable as console_may_schedule was one
+>> and due to which do_cond_resched was one.
+> 
+> Nice catch. But I think the below patch is the appropriate fix:
 
+Thanks for the change @john, would you be sending this as proper
+patch.
+
+-Mukesh
+> 
+> John Ogness
+> 
+> -------8<--------
+> Subject: [PATCH] printk: Update @console_may_schedule in
+>   console_trylock_spinning()
+> 
+> console_trylock_spinning() may takeover the console lock from a
+> scheduable context. Update @console_may_schedule to make sure it
+> reflects a trylock acquire.
+> 
+> Reported-by: Mukesh Ojha <quic_mojha@quicinc.com>
+> Link: https://lore.kernel.org/lkml/20240222090538.23017-1-quic_mojha@quicinc.com
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+> ---
+>   kernel/printk/printk.c | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index 1685a71f3f71..1612b50b2374 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -2020,6 +2020,12 @@ static int console_trylock_spinning(void)
+>   	 */
+>   	mutex_acquire(&console_lock_dep_map, 0, 1, _THIS_IP_);
+>   
+> +	/*
+> +	 * Update @console_may_schedule for trylock because the previous
+> +	 * owner may have been scheduable.
+> +	 */
+> +	console_may_schedule = 0;
+> +
+>   	return 1;
+>   }
+>   
+> 
+> base-commit: e7081d5a9d976b84f61f497316d7c940a4a2e67a
 
