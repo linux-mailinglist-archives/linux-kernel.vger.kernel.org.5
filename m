@@ -1,86 +1,73 @@
-Return-Path: <linux-kernel+bounces-80435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 777A3866869
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:58:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F32B86686A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:58:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 292D51F221B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:58:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 128A128176B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:58:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFE0F1B7E4;
-	Mon, 26 Feb 2024 02:58:06 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51BDD11CAB;
+	Mon, 26 Feb 2024 02:58:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y6uxVAo6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9EB61B59D
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 02:58:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92138101C3
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 02:58:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708916286; cv=none; b=Dz5KKHwymy5EV3M4H3872e3IXCb9iKOuQBYgPBkFIRBC5XR4kEIkA+5Q1far6jp6CUpCCvyO5wVqKxdRJJ3ZyLq7UXT1zbQ0Y2Jhe2i0ItJplCN1C3J5TonpuN5ETJqqFV58TPiZbESFMRD6EezedbmsctT705YL860a7XXJs+k=
+	t=1708916328; cv=none; b=tFicO6uSXUk/pynFbATmB366TQF2/K91F8XugkstlsWR3qVFpqvjI9VeTv3KVLz4kOVSQW98p+nNDyOz5u7v4WSetkHIXrAtJN0JM0DvKn25yCVAqflvRO0lTmdqmvoWIw9BnJqYl5AMfpOvC/XEtsSZjMUx6x/bLeN3zoVHt9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708916286; c=relaxed/simple;
-	bh=aGR71Vhpr+XW0L+xURcf7ciXbyrrEkxYmCooO/pBrXw=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=oqd+klfIuvCJJw8BnuP9diaWCwtsqpm8k10MDtzY9AZSa/026Bo4gDtvWIDtEN/4V2sOFpG3nAF2tUOkJnvYc4DuLufpDvSd0rAKSJ7WboLbkVPKbD0V1fe7zqz785gN2/5jgtXNPH7x/nIToKDjWte/iOUzvgqtBvR47F6NzIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3651f5a357bso19514475ab.3
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 18:58:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708916284; x=1709521084;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TD8oqj5D6F+ZpelebSdE/49eppyj393f1LkPMpVDt9o=;
-        b=U9zb5nijr6EUjuY8fCuaopmF2gUXgqgMEhZ+syfaVjXN6mFt4vy1d0+VsyWL2vcE/7
-         I5gosOokhenQnxkOozkrQpo5TeY65GwRocFn+YgBkl4Jve8OfpJVCq7ulqT0mfzy0SUj
-         kn/9L3Q5MD1Bjj24MmLOGGdkEDAyXfvQgB2A3R7ylPfL8yFDX4DgOOtqaa+tLEXfWvaD
-         I/ga6Xawq33Z4Ti7KYZYx05/d2iQIx8FToVSupt7XCfYvzrRxGnF3AQBkGMuNTC90lci
-         fXJD/AKM6qz3M7IUe04uEQXcFSUDK5oJlbJx5uBhj9Acmfa1cdQ7lgFFRnDdbW2SSgi3
-         PTaA==
-X-Gm-Message-State: AOJu0YzYEoE4OXwTQ6cdUFondpYbR/w21+zzlNthRSMaLg5WIT2Wrf53
-	+UTfV1IRH096d1Y1q0gk0MccZHlKtKeMf+ZelejewVQprMLjwZCP80VJCQnlzd3YF8vWTL369F9
-	Tt23JaLkIhdIKw9HDrKBNSIapGrt4e6xrWz9l2PdCqwWluwPi/Nw25wLuMQ==
-X-Google-Smtp-Source: AGHT+IHa83/6AqOpmv1mYvR6uZcbdEoK0k8MowCNhHzQc/MYkvEucYtHUL6AJZZyhA21DX0lJGSnrksSmpRkyXT2nawizycMPEBD
+	s=arc-20240116; t=1708916328; c=relaxed/simple;
+	bh=RfBWpLaLGNc6IDMNpsE0Yy7Ub8NnNUuIZa8qRbfcZvI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=a6wWSEQOOVvbtchwQnY3kkeLWB5txBzy0Vi/jxb/ct2eV0MWhHOQeZhSTMweFDBPrHTUvsSQmRiELYtF8kXhA0ohmEt6nc6gKLwoduaLAJlOjTWm+yOoV9lAeh2VnBfbaoCbdLNEqzubvLmP3h1TcVAhy9HhPTB3Co074ujbIxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y6uxVAo6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 360C8C433F1;
+	Mon, 26 Feb 2024 02:58:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708916328;
+	bh=RfBWpLaLGNc6IDMNpsE0Yy7Ub8NnNUuIZa8qRbfcZvI=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=Y6uxVAo6kDfvR+tACBcxtJLT9K42alVgDRsv0T1vZ3t3xr4VBT3661Q8qjkvtc+/G
+	 DWokoik9zZyMyWVel+RNcu7DmWBok8kyOOGWfRWtHSymUGYScIYmhD+eEBHoAPxpI4
+	 DkTY02DwM8+br93DOBnnQG0Cf4lyGJ1fw/J1rF3XBhnbzMLAJKnRVLZkeAnJLTs+2k
+	 4CnWA9RAzzQczzufMFeA+GpyDUpfFQ8Zu5xE7mVuOCWmxqAgxw9yGqOzw7HeJ5Li+w
+	 Z0spdDPSRAEgOiDoc2s3dbk4k37qtu8kS2yEHYRP2/A4Q6+8qHjtqoc4251EfA1o48
+	 bfDWyJfSOQESw==
+Message-ID: <6b2854fd-8999-4671-a243-d78139f8a40f@kernel.org>
+Date: Mon, 26 Feb 2024 10:58:44 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cda6:0:b0:365:26e3:6e51 with SMTP id
- g6-20020a92cda6000000b0036526e36e51mr358830ild.0.1708916284107; Sun, 25 Feb
- 2024 18:58:04 -0800 (PST)
-Date: Sun, 25 Feb 2024 18:58:04 -0800
-In-Reply-To: <20240226025229.355810-1-lizhi.xu@windriver.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000010b5b40612401470@google.com>
-Subject: Re: [syzbot] [dri?] WARNING in vkms_get_vblank_timestamp (2)
-From: syzbot <syzbot+93bd128a383695391534@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, lizhi.xu@windriver.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [f2fs-dev] [PATCH 4/5] f2fs: prevent an f2fs_gc loop during
+ disable_checkpoint
+Content-Language: en-US
+To: Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net
+References: <20240223205535.307307-1-jaegeuk@kernel.org>
+ <20240223205535.307307-4-jaegeuk@kernel.org>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <20240223205535.307307-4-jaegeuk@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On 2024/2/24 4:55, Jaegeuk Kim wrote:
+> Don't get stuck in the f2fs_gc loop while disabling checkpoint. Instead, we have
+> a time-based management.
+> 
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 
-syzbot tried to test the proposed patch but the build/boot failed:
+Reviewed-by: Chao Yu <chao@kernel.org>
 
-failed to checkout kernel repo https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/v6.8: failed to run ["git" "fetch" "--force" "4d52a57a3858a6eee0d0b25cc3a0c9533f747d8f" "v6.8"]: exit status 128
-fatal: couldn't find remote ref v6.8
-
-
-
-Tested on:
-
-commit:         [unknown 
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git v6.8
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2c0ac5dfae6ecc58
-dashboard link: https://syzkaller.appspot.com/bug?extid=93bd128a383695391534
-compiler:       
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1401de9a180000
-
+Thanks,
 
