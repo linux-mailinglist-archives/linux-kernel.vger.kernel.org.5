@@ -1,270 +1,237 @@
-Return-Path: <linux-kernel+bounces-80947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80949-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0E92866E54
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:26:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C44A866E56
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:26:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 958C7284BAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:26:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 795461C23D7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:26:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AB3D5B68C;
-	Mon, 26 Feb 2024 08:46:10 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 106095CDF4;
+	Mon, 26 Feb 2024 08:47:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="XCM7ljmJ"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCB035B67A
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:46:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C7345C8FE
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:47:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708937170; cv=none; b=V/0vDa2+0cxvvwpGQJQKS8WRwVSBVgfI3LTjCIwYMdGHjnxTp15yZzTFeWznbXrAhOc60yVZOlrlFvluqYf44alZuQZpI7MDnXvaUC4vgce074JgPRgOcomBrWwpr6mQM2dRggfLAyIfgF7gU4Lq1pMmLiWI4z3dTRexwCqCpyQ=
+	t=1708937275; cv=none; b=VgqSiQ1WmzLqiHeVT/CIXsZ6L7K3pEzjemAG9gBy3bkUSk2DFEybhG3W9LnImg+LKvVI7nytMougzXAqJvM1Duhf3s9NSiGs1dnmywIpUb56ciE+NQdd2X7L1kmM9nZv++zeVn7QOEWkDN54Uf5H+n0eUVmouPHIcoh8sukVpic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708937170; c=relaxed/simple;
-	bh=UY8UOhk7ftwA2QGpByE16I6C5vSz2mv2Ox9M8vz+S30=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=H/+wn4PPtsGfT4li3ToJKizYvNpDysyBwIRRBg8BdYEXOL4hwYUUZcCbpCN/oyawW4BKAaxDdg/HRjuavC7Fq1XE2j/oNu5oMHPxxz/zMzlB6PTaNe0Z82KLn7C83vj8nbTtwbRbtWflyqL5wm5XA0k1+fZ+tQYH6ZYZR89DlhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TjvKd5jkbz1h0Z1;
-	Mon, 26 Feb 2024 16:43:49 +0800 (CST)
-Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
-	by mail.maildlp.com (Postfix) with ESMTPS id C007C18001A;
-	Mon, 26 Feb 2024 16:46:02 +0800 (CST)
-Received: from [10.174.179.160] (10.174.179.160) by
- kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 26 Feb 2024 16:46:01 +0800
-Message-ID: <ad4f0b57-25b2-3f48-3222-6f37f35ed81b@huawei.com>
-Date: Mon, 26 Feb 2024 16:46:00 +0800
+	s=arc-20240116; t=1708937275; c=relaxed/simple;
+	bh=3qcRaVMGc8ins339Q4R21gRbCwPBrg2acIXJ8znAOmE=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=XkYBq/oIPJSRDqj94mmrxcEQf4weeN7rt0Ih6zvNaUPJpTSjDPnCnCGqaFGmDEOxLJ28nsb4mQNo46V1ibSqBIrReNHBHTNPJyS1GP3ZoDOxcwKydNXV7J5o+3Co2baWwW6JXsJS6LyNiPODRttGSD9LCp9VJL5RFdQkD6XfXvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=XCM7ljmJ; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 983E6E0003;
+	Mon, 26 Feb 2024 08:47:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708937265;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=i2+KYYyexPFl4LUlvgVyduiapb1+RIbVCY8N+OSoCGs=;
+	b=XCM7ljmJcIJg2/Zf6njYJMWPlu/+Q1WsIAt0NNQzOo8ClKWq5dSo7y/QzObXzGNhU2M9y0
+	KsMy0CD6cu2TE26EZ9Mk7b2HOI+nIInqYS4lVIIR6OhCUgMNoZATyO5jVmg5UsqEn8iv2i
+	XP3V46kBrv6RAZ99cUK5YLkBJ2YpmnbaG8/kE/A8tQvQdp2W3Cq0qJPxAoBZr4rFTqYQL6
+	uLmpluqnMJubPYBH+QPwbbPW9lGb8IFt7VtyyDO7KqKxAIBhiY5H1mwcp1mXwlafd4ovej
+	7lBnzKPZmWNGXQ2EphoBmNp0RqTZrbGmpx6Un7OYF7ErX2x+JGVkgKTk+OGxyg==
+From: Louis Chauvet <louis.chauvet@bootlin.com>
+Subject: [PATCH v3 0/9] drm/vkms: Reimplement line-per-line pixel
+ conversion for plane reading
+Date: Mon, 26 Feb 2024 09:46:30 +0100
+Message-Id: <20240226-yuv-v3-0-ff662f0994db@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v2] filemap: avoid unnecessary major faults in
- filemap_fault()
-Content-Language: en-US
-To: David Hildenbrand <david@redhat.com>, "Huang, Ying" <ying.huang@intel.com>
-CC: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-	<akpm@linux-foundation.org>, <willy@infradead.org>, <fengwei.yin@intel.com>,
-	<aneesh.kumar@linux.ibm.com>, <shy828301@gmail.com>, <hughd@google.com>,
-	<wangkefeng.wang@huawei.com>, Nanyong Sun <sunnanyong@huawei.com>
-References: <20240206092627.1421712-1-zhangpeng362@huawei.com>
- <87jznhypxy.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <a905dea7-018e-80c0-ab54-85766add8d96@huawei.com>
- <87frxfhibt.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <43182940-ddaa-7073-001a-e95d0999c5ba@huawei.com>
- <87il2bek6f.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <fdbe3a71-ff6b-4397-8276-9ca2f3e6db89@redhat.com>
-From: "zhangpeng (AS)" <zhangpeng362@huawei.com>
-In-Reply-To: <fdbe3a71-ff6b-4397-8276-9ca2f3e6db89@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600020.china.huawei.com (7.193.23.147)
+X-B4-Tracking: v=1; b=H4sIAOZP3GUC/1WNQQ7CIBREr9KwFgMfBevKexgXQH8tSQUDLbFpe
+ ndp3djlTOa9mUnC6DCRazWTiNklF3wJ4lAR22n/ROqakgkwODFgnE5jplwI1dSsqc9KkrI0OiE
+ 1UXvbla0f+76U74it+2zq+6PkzqUhxGl7ynxt99LMKaPCaqFkC0oKuJkQht75ow0vshoy/FEgf
+ hQUSmtpEC6gjFF7almWL9LgkhPjAAAA
+To: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, 
+ Melissa Wen <melissa.srw@gmail.com>, 
+ =?utf-8?q?Ma=C3=ADra_Canal?= <mairacanal@riseup.net>, 
+ Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ David Airlie <airlied@gmail.com>, arthurgrillo@riseup.net, 
+ Jonathan Corbet <corbet@lwn.net>, pekka.paalanen@haloniitty.fi
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+ jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com, 
+ thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com, 
+ nicolejadeyee@google.com, Louis Chauvet <louis.chauvet@bootlin.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6621;
+ i=louis.chauvet@bootlin.com; h=from:subject:message-id;
+ bh=3qcRaVMGc8ins339Q4R21gRbCwPBrg2acIXJ8znAOmE=;
+ b=owEBbQKS/ZANAwAIASCtLsZbECziAcsmYgBl3FAtJqb0My2sMSXOGzZ+R3ICizHBPrY5BnkpXDW1
+ 1sLK8r6JAjMEAAEIAB0WIQRPj7g/vng8MQxQWQQgrS7GWxAs4gUCZdxQLQAKCRAgrS7GWxAs4mSuEA
+ DAmHRYqQ+2ls+HDpQIoRGwg3+M2po9gT/DsTE0h7g3V3D/aj88v+3WpldTO3T60TFxOIQEqfgI5qUd
+ yLSlJ9QCwr1MajMEx9I0471khb6Si/DhR6uQ6GDPcOP1uboT2u8QbqgJuNixvXofTga263uYAU7HZA
+ QPCES4iapYGicn6hprLjym06c1/VvGwPQZ68tfuA92gCl/6hsyLPT/Q/i8P9RhEr3RbcBM2oCYs25r
+ rtc/khXS/naiVQ85AjB1/BQ1sLHJPF/Dcg5juCfY9dLC7mi3C7c3mQOPjMXXCw4npIbzx4WT2gktGQ
+ m06UaRawPIJUhDUIqaqKVypGgEAqbtoPb+9RZdLb3AERZ4d2Lk2cO+IXWIaQa7TyUtH1kj72IjlY5d
+ X1Yk6V3Rl75IqsAzflTJk6HGIzUij/Nt2NrRuZ5vkVJ9UwdDN6ZobepZSl/rbVUqTnrqWYl92zPEPd
+ hWSj014x+aB1gOUD0dn1ND5uKdpWqE6fTTIwBUxolVkJotOMZb2LLigMgIBggdensnceMHPccMIeNo
+ LEukRM4rG08pnO7xcysBoUvU/LxoQ7+oM5PN8XPgn2kkKOs28UWM8Dpv5RKFsDUIDhlI2dA7qpf6b/
+ xB2zKsl/ZW03oBk66Q7Rwk/CpuWKyTg2bb23DZEL7MQdQEW0H5Y5u/1GkPHw==
+X-Developer-Key: i=louis.chauvet@bootlin.com; a=openpgp;
+ fpr=8B7104AE9A272D6693F527F2EC1883F55E0B40A5
+X-GND-Sasl: louis.chauvet@bootlin.com
 
-On 2024/2/26 16:20, David Hildenbrand wrote:
+This patchset is the second version of [1]. It is almost a complete 
+rewrite to use a line-by-line algorithm for the composition.
+It can be divided in three parts:
+- PATCH 1 to 4: no functional change is intended, only some formatting and 
+documenting
+(PATCH 2 is taken from [2])
+- PATCH 5: main patch for this series, it reintroduce the 
+line-by-line algorithm
+- PATCH 6 to 9: taken from Arthur's series [2], with sometimes adaptation 
+to use the pixel-by-pixel algorithm.
 
-> On 26.02.24 08:52, Huang, Ying wrote:
->> "zhangpeng (AS)" <zhangpeng362@huawei.com> writes:
->>
->>> On 2024/2/26 14:04, Huang, Ying wrote:
->>>
->>>> "zhangpeng (AS)" <zhangpeng362@huawei.com> writes:
->>>>
->>>>> On 2024/2/7 10:21, Huang, Ying wrote:
->>>>>
->>>>>> Peng Zhang <zhangpeng362@huawei.com> writes:
->>>>>>> From: ZhangPeng <zhangpeng362@huawei.com>
->>>>>>>
->>>>>>> The major fault occurred when using mlockall(MCL_CURRENT | 
->>>>>>> MCL_FUTURE)
->>>>>>> in application, which leading to an unexpected performance 
->>>>>>> issue[1].
->>>>>>>
->>>>>>> This caused by temporarily cleared PTE during a 
->>>>>>> read+clear/modify/write
->>>>>>> update of the PTE, eg, do_numa_page()/change_pte_range().
->>>>>>>
->>>>>>> For the data segment of the user-mode program, the global 
->>>>>>> variable area
->>>>>>> is a private mapping. After the pagecache is loaded, the private 
->>>>>>> anonymous
->>>>>>> page is generated after the COW is triggered. Mlockall can lock 
->>>>>>> COW pages
->>>>>>> (anonymous pages), but the original file pages cannot be locked 
->>>>>>> and may
->>>>>>> be reclaimed. If the global variable (private anon page) is 
->>>>>>> accessed when
->>>>>>> vmf->pte is zeroed in numa fault, a file page fault will be 
->>>>>>> triggered.
->>>>>>>
->>>>>>> At this time, the original private file page may have been 
->>>>>>> reclaimed.
->>>>>>> If the page cache is not available at this time, a major fault 
->>>>>>> will be
->>>>>>> triggered and the file will be read, causing additional overhead.
->>>>>>>
->>>>>>> Fix this by rechecking the PTE without acquiring PTL in 
->>>>>>> filemap_fault()
->>>>>>> before triggering a major fault.
->>>>>>>
->>>>>>> Testing file anonymous page read and write page fault 
->>>>>>> performance in ext4
->>>>>>> and ramdisk using will-it-scale[2] on a x86 physical machine. 
->>>>>>> The data
->>>>>>> is the average change compared with the mainline after the patch is
->>>>>>> applied. The test results are within the range of fluctuation, 
->>>>>>> and there
->>>>>>> is no obvious difference. The test results are as follows:
->>>>>> You still claim that there's no difference in the test results.  
->>>>>> If so,
->>>>>> why do you implement the patch?  IMHO, you need to prove your 
->>>>>> patch can
->>>>>> improve the performance in some cases.
->>>>> I'm sorry that maybe I didn't express myself clearly.
->>>>>
->>>>> The purpose of this patch is to fix the issue that major fault may 
->>>>> still be triggered
->>>>> with mlockall(), thereby improving a little performance. This 
->>>>> patch is more of a bugfix
->>>>> than a performance improvement patch.
->>>>>
->>>>> This issue affects our traffic analysis service. The inbound 
->>>>> traffic is heavy. If a major
->>>>> fault occurs, the I/O schedule is triggered and the original I/O 
->>>>> is suspended. Generally,
->>>>> the I/O schedule is 0.7 ms. If other applications are operating 
->>>>> disks, the system needs
->>>>> to wait for more than 10 ms. However, the inbound traffic is heavy 
->>>>> and the NIC buffer is
->>>>> small. As a result, packet loss occurs. The traffic analysis 
->>>>> service can't tolerate packet
->>>>> loss.
->>>>>
->>>>> To prevent packet loss, we use the mlockall() function to prevent 
->>>>> I/O. It is unreasonable
->>>>> that major faults will still be triggered after mlockall() is used.
->>>>>
->>>>> In our service test environment, the baseline is 7 major faults/12 
->>>>> hours. After applied the
->>>>> unlock patch, the probability of triggering the major fault is 1 
->>>>> major faults/12 hours. After
->>>>> applied the lock patch, no major fault will be triggered. So only 
->>>>> the locked patch can actually
->>>>> solve our problem.
->>>> This is the data I asked for.
->>>>
->>>> But, you said that this is a feature bug fix instead of performance
->>>> improvement.  So, I checked the mlock(2), and found the following 
->>>> words,
->>>>
->>>> "
->>>>          mlockall() locks all pages mapped into the address space 
->>>> of the calling
->>>>          process.  This includes the pages of the code, data, and 
->>>> stack segment,
->>>>          as well as shared libraries, user space kernel data, 
->>>> shared memory, and
->>>>          memory-mapped files.  All mapped pages are guaranteed to 
->>>> be resident in
->>>>          RAM when the call returns successfully; the  pages are  
->>>> guaranteed  to
->>>>          stay in RAM until later unlocked.
->>>> "
->>>>
->>>> In theory, the locked page are in RAM.  So, IIUC, we don't violate the
->>>> ABI.  But, in effect, we does do that.
->>>
->>> "mlockall() locks all pages mapped into the address space of the 
->>> calling process."
->>> For a private mapping, mlockall() can lock COW pages (anonymous 
->>> pages), but the
->>> original file pages can't be locked. Maybe, we violate the ABI here.
->>
->> If so, please make it explicit and loudly.
->>
->>> This is also
->>> the cause of this issue. The patch fix the impact of this issue: 
->>> prevent major
->>> faults, reduce IO, and fix the service packet loss issue.
->>>
->>> Preventing major faults, and thus reducing IO, could be an important 
->>> reason to use
->>> mlockall(). Could we fix this with the locked patch? Or is there 
->>> another way?
->>
->> Unfortunately, locked patch cause performance regressions for more
->> common cases.  Is it possible for us to change ptep_modify_prot_start()
->> to use some magic PTE value instead of 0?  That may be possible.  But,
->> that isn't enough, you need to change all ptep_get_and_clear() users.
->
-> Trigger (false) major faults for mlocked memory is suboptimal.
->
-> Having such pages temporarily not mapped (e.g., page migration) is 
-> acceptable (pages are in RAM but are getting moved). We handle that 
-> using nonswap migration entries.
->
-> Let me understand the issue first:
->
-> 1) MAP_PRIVATE file mapping that is mlocked.
->
-> 2) We caused COW, so we now have an anonymous page mapped. That anon
->    page is mlocked.
->
-> 3) Change of protection (under PT lock) will temporarily clear the PTE
->
-> 4) Page fault will trigger and find the PTE still cleared (without PT
->    lock)
->
-> 5) We don't realize that there is a page mapped and, therefore, trigger
->    a major fault.
->
-> Using the PT lock would fix it properly. Doing it as in this patch can 
-> only be considered an optimization, not a proper fix.
->
-> Using a magic PTE to work around "just use the PT lock like everyone 
-> else" feels a bit odd. The patch states "We don't hold PTL here as 
-> acquiring PTL hurts performance" -- do we have any numbers on that?
->
-Testing file anonymous page read and write page fault performance in ext4
-, tmpfs and ramdisk using will-it-scale[2] on a x86 physical machine. The
-data is the average change compared with the mainline after the patch is
-applied.
+The PATCH 5 aims to restore the line-by-line pixel reading algorithm. It 
+was introduced in 8ba1648567e2 ("drm: vkms: Refactor the plane composer to 
+accept new formats") but removed in 8ba1648567e2 ("drm: vkms: Refactor the 
+plane composer to accept new formats") in a over-simplification effort. 
+At this time, nobody noticed the performance impact of this commit. After 
+the first iteration of my series, poeple notice performance impact, and it 
+was the case. Pekka suggested to reimplement the line-by-line algorithm.
 
-with the locked patch:
-                           processes processes_idle threads threads_idle
-ext4    private file write: -0.51%    0.08%          -0.03%  -0.04%
-ext4    shared  file write:  0.135%  -0.531%          2.883% -0.772%
-ramdisk private file write: -0.48%    0.23%          -1.08%   0.27%
-ramdisk private file  read:  0.07%   -6.90%          -5.85%  -0.70%
-tmpfs   private file write: -0.344%  -0.110%          0.200%  0.145%
-tmpfs   shared  file write:  0.958%   0.101%          2.781% -0.337%
-tmpfs    private file read: -0.16%    0.00%          -0.12%   0.41%
+Expiriments on my side shown great improvement for the line-by-line 
+algorithm, and the performances are the same as the original line-by-line 
+algorithm. I targeted my effort to make the code working for all the 
+rotations and translations. The usage of helpers from drm_rect_* avoid 
+reimplementing existing logic.
 
-with the no locked patch:
-                           processes processes_idle threads threads_idle
-ext4    private file write: -1.14%  -0.08%         -1.87%   0.13%
-ext4    private file  read:  0.03%  -0.65%         -0.51%  -0.08%
-ramdisk private file write: -1.21%  -0.21%         -1.12%   0.11%
-ramdisk private file  read:  0.00%  -0.68%         -0.33%  -0.02%
+The only "complex" part remaining is the clipping of the coordinate to 
+avoid reading/writing outside of src/dst. Thus I added a lot of comments 
+to help when someone will want to add some features (framebuffer resizing 
+for example).
 
-I could also run other tests if needed.
+The YUV part is not mandatory for this series, but as my first effort was 
+to help the integration of YUV, I decided to rebase Arthur's series on 
+mine to help. I took [3], [4], [5] and [6] and adapted them to use the 
+line-by-line reading. If I did something wrong here, please let me 
+know.
 
-> We could special-case that for MLOCK'ed VMAs with MCL_FUTURE, meaning, 
-> take the PTL to double-check only in such VMAs.
->
-Agreed. I think this solution is great. Thanks for your suggestion!
+My series was mainly tested with:
+- kms_plane (for color conversions)
+- kms_rotation_crc (for rotations of planes)
+- kms_cursor_crc (for translations)
+The benchmark used to measure the improvment was done with:
+- kms_fb_stress
 
+[1]: https://lore.kernel.org/r/20240201-yuv-v1-0-3ca376f27632@bootlin.com
+[2]: https://lore.kernel.org/all/20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net/
+[3]: https://lore.kernel.org/all/20240110-vkms-yuv-v2-3-952fcaa5a193@riseup.net/
+[4]: https://lore.kernel.org/all/20240110-vkms-yuv-v2-5-952fcaa5a193@riseup.net/
+[5]: https://lore.kernel.org/all/20240110-vkms-yuv-v2-6-952fcaa5a193@riseup.net/
+[6]: https://lore.kernel.org/all/20240110-vkms-yuv-v2-7-952fcaa5a193@riseup.net/
+
+To: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+To: Melissa Wen <melissa.srw@gmail.com>
+To: Maíra Canal <mairacanal@riseup.net>
+To: Haneen Mohammed <hamohammed.sa@gmail.com>
+To: Daniel Vetter <daniel@ffwll.ch>
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+To: Maxime Ripard <mripard@kernel.org>
+To: Thomas Zimmermann <tzimmermann@suse.de>
+To: David Airlie <airlied@gmail.com>
+To: arthurgrillo@riseup.net
+To: Jonathan Corbet <corbet@lwn.net>
+To: pekka.paalanen@haloniitty.fi
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-kernel@vger.kernel.org
+Cc: jeremie.dautheribes@bootlin.com
+Cc: miquel.raynal@bootlin.com
+Cc: thomas.petazzoni@bootlin.com
+Cc: seanpaul@google.com
+Cc: marcheu@google.com
+Cc: nicolejadeyee@google.com
+Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+
+Note: after my changes, those tests seems to pass, so [7] may need 
+updating (I did not check, it was maybe already the case):
+- kms_cursor_legacy@flip-vs-cursor-atomic
+- kms_pipe_crc_basic@nonblocking-crc
+- kms_pipe_crc_basic@nonblocking-crc-frame-sequence
+- kms_writeback@writeback-pixel-formats
+- kms_writeback@writeback-invalid-parameters
+- kms_flip@flip-vs-absolute-wf_vblank-interruptible
+And those tests pass, I did not investigate why the runners fails:
+- kms_flip@flip-vs-expired-vblank-interruptible
+- kms_flip@flip-vs-expired-vblank
+- kms_flip@plain-flip-fb-recreate
+- kms_flip@plain-flip-fb-recreate-interruptible
+- kms_flip@plain-flip-ts-check-interruptible
+- kms_cursor_legacy@cursorA-vs-flipA-toggle
+- kms_pipe_crc_basic@nonblocking-crc
+- kms_prop_blob@invalid-get-prop
+- kms_flip@flip-vs-absolute-wf_vblank-interruptible
+- kms_invalid_mode@zero-hdisplay
+- kms_invalid_mode@bad-vtotal
+- kms_cursor_crc.* (everything is SUCCEED or SKIP, but no fails)
+
+[7]: https://lore.kernel.org/all/20240201065346.801038-1-vignesh.raman@collabora.com/
+
+Changes in v3:
+- Correction of remaining git-rebase artefacts
+- Added Pekka in copy of this patch
+- Link to v2: https://lore.kernel.org/r/20240223-yuv-v2-0-aa6be2827bb7@bootlin.com
+Changes in v2:
+- Rebased the series on top of drm-misc/drm-misc-net
+- Extract the typedef for pixel_read/pixel_write
+- Introduce the line-by-line algorithm per pixel format
+- Add some documentation for existing and new code
+- Port the series [1] to use line-by-line algorithm
+- Link to v1: https://lore.kernel.org/r/20240201-yuv-v1-0-3ca376f27632@bootlin.com
+
+---
+Arthur Grillo (5):
+      drm/vkms: Use drm_frame directly
+      drm/vkms: Add YUV support
+      drm/vkms: Add range and encoding properties to pixel_read function
+      drm/vkms: Drop YUV formats TODO
+      drm/vkms: Create KUnit tests for YUV conversions
+
+Louis Chauvet (4):
+      drm/vkms: Code formatting
+      drm/vkms: write/update the documentation for pixel conversion and pixel write functions
+      drm/vkms: Add typedef and documentation for pixel_read and pixel_write functions
+      drm/vkms: Re-introduce line-per-line composition algorithm
+
+ Documentation/gpu/vkms.rst                    |   3 +-
+ drivers/gpu/drm/vkms/Makefile                 |   1 +
+ drivers/gpu/drm/vkms/tests/.kunitconfig       |   4 +
+ drivers/gpu/drm/vkms/tests/Makefile           |   3 +
+ drivers/gpu/drm/vkms/tests/vkms_format_test.c | 155 +++++++
+ drivers/gpu/drm/vkms/vkms_composer.c          | 233 ++++++++---
+ drivers/gpu/drm/vkms/vkms_crtc.c              |   6 +-
+ drivers/gpu/drm/vkms/vkms_drv.c               |   3 +-
+ drivers/gpu/drm/vkms/vkms_drv.h               |  55 ++-
+ drivers/gpu/drm/vkms/vkms_formats.c           | 565 +++++++++++++++++++++-----
+ drivers/gpu/drm/vkms/vkms_formats.h           |  13 +-
+ drivers/gpu/drm/vkms/vkms_plane.c             |  50 ++-
+ drivers/gpu/drm/vkms/vkms_writeback.c         |  14 +-
+ 13 files changed, 915 insertions(+), 190 deletions(-)
+---
+base-commit: c079e2e113f2ec2803ba859bbb442a6ab82c96bd
+change-id: 20240201-yuv-1337d90d9576
+
+Best regards,
 -- 
-Best Regards,
-Peng
+Louis Chauvet <louis.chauvet@bootlin.com>
 
 
