@@ -1,181 +1,165 @@
-Return-Path: <linux-kernel+bounces-81946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81952-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B49B867CB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:52:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 106EC867CD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:54:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EA5A1C21666
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:52:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1F911F269D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:54:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6573512CD89;
-	Mon, 26 Feb 2024 16:52:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5D6712F368;
+	Mon, 26 Feb 2024 16:53:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mNSzhrjb";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="K0YV6yra";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mNSzhrjb";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="K0YV6yra"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="j2QOVcYI"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E126812CD97;
-	Mon, 26 Feb 2024 16:52:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B0B12CD99;
+	Mon, 26 Feb 2024 16:53:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708966338; cv=none; b=nyifAnvwRxfu4mGiW99fv77nt+VtQK/pANxhmDKiQ9lNv7qZG1paRTguO/ibhtvrXnCcQDVg1ITGTkRiTnDhwEHLBpd2rK2/gGgcQnhWpMsCaxW2KCGuXZHWrttq1QB4nnukU1vSa2JH27yilbdMsgouH5jccngZUL71LuWXonA=
+	t=1708966423; cv=none; b=aMkUUqBEo1E+PNveFJvgDnLYaYIzFaDaBLB3YQRnQaBW9WzNf1bigH9IbXCbe0htvm8/zQL4p5g+ihS1BR2G1VgEUSa6mCvB2mMOf0ES0SwIyR719WuzfRYHEto39tJu3pLBhIscwsKL07I/q7K3/eTQm8HW27kc25CtJGVRr+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708966338; c=relaxed/simple;
-	bh=0BSa++FtIOpjF/U/A8XxLeU3xnlurkQS7U0FDhyinjk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uq9hBN+g0nI315c1wvU+0KP0qKHLYq8ouRpwxxlZ4VSNQcUKElTO/cRKopSRoQyHMX4O4zDPq0Y2HQwAnO6r2hMWlfXH53FRWFQogQC/Vu4VxTprMMdUr3SXK5Pur8pBdpR12F4vVv84acmzwRYOvFQOAsk4jv/nojlMpsPB0Zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mNSzhrjb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=K0YV6yra; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mNSzhrjb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=K0YV6yra; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 2BF4B22234;
-	Mon, 26 Feb 2024 16:52:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708966335; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=82epdJNA5r8/dKtfBgUmlYwzSR4ZoAcz6T/CRU9wBgg=;
-	b=mNSzhrjbUAbhHrARF9enST4xkWfwsgpGi9jeIDBEDI70q6E3dVN2OZjSMCo9AbGsOy5pqe
-	QJXTtBZQM4lQODx8yVJgDvQ4lnPZkMEHBV8jmPjz9fKETwuYUTxCuGArEjSeVVpQAAKNKx
-	x6+zzDh4AYXcUtYw69p70Ar18ePRTyM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708966335;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=82epdJNA5r8/dKtfBgUmlYwzSR4ZoAcz6T/CRU9wBgg=;
-	b=K0YV6yra/+xpitdWZEg5RWe10KoizSM4EVyqqHTrd5P8EGPNNL5AAPp1UTStykIId+X+fx
-	ZJJLfkEpTFqfJaDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708966335; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=82epdJNA5r8/dKtfBgUmlYwzSR4ZoAcz6T/CRU9wBgg=;
-	b=mNSzhrjbUAbhHrARF9enST4xkWfwsgpGi9jeIDBEDI70q6E3dVN2OZjSMCo9AbGsOy5pqe
-	QJXTtBZQM4lQODx8yVJgDvQ4lnPZkMEHBV8jmPjz9fKETwuYUTxCuGArEjSeVVpQAAKNKx
-	x6+zzDh4AYXcUtYw69p70Ar18ePRTyM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708966335;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=82epdJNA5r8/dKtfBgUmlYwzSR4ZoAcz6T/CRU9wBgg=;
-	b=K0YV6yra/+xpitdWZEg5RWe10KoizSM4EVyqqHTrd5P8EGPNNL5AAPp1UTStykIId+X+fx
-	ZJJLfkEpTFqfJaDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6C73613A58;
-	Mon, 26 Feb 2024 16:52:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id IOYhGb7B3GVLFgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 26 Feb 2024 16:52:14 +0000
-Message-ID: <206b677f-0523-482f-b42b-2cdaf7ab8db9@suse.cz>
-Date: Mon, 26 Feb 2024 17:52:14 +0100
+	s=arc-20240116; t=1708966423; c=relaxed/simple;
+	bh=GPiAowAmMEMhPkJn5Ss0j6j7Qx2fIyPU1UVSLH6JwGM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RROggbgrUwHmtV87So4z4/wCn0B9lRrvkbQpddRQMoXiHsRSYknrf4mqP24eeWc44W+A+yCNNBQyC4nX58i30AVcucJhxUF8E+trJ0BFigZy/GLgwLWB+u7APvaXFflG1O8kGmTqDBWZFUapYH7AiPwnGQp5TFvlRxhg9iZLyis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=j2QOVcYI; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41QG8GU3030222;
+	Mon, 26 Feb 2024 16:53:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=abNSU3Tal16ECEcQzrf1EoGd9XJX5pEzlz0oG6bHSts=;
+ b=j2QOVcYIe0EDSqfGSyqVBm6gEKmZns6hImMqALgcrM19MCQeNwips6WBeZ9khtpzoWQf
+ MeNIU9hdV7VptHuetqdiwZeDlqZvhM4p4E7Cw+umUa6M5tL3p7/JuE5IpBI4yZmc+NlB
+ FMVQ9p2ZyE9XjIcB428yq8xeB4qI1BSSZRKMPkDljh/jbqNc/tHyqK4AFlLevYiQ7v1K
+ fd3w2Gvv9uKKKtIo00jASZ+4FM1Py8e6gnM6uCFwNgKwnId8bXUSmmYVxHwBRclHcYMD
+ FsINR2WwxC06t4Jwwnt2YH4Kz/AtNRD8StoEBhEvL4gtjecOmKnVer9zFDmW4EN0b+ZT Qw== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wgvp6bjs7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Feb 2024 16:53:26 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41QFoGTv008827;
+	Mon, 26 Feb 2024 16:53:25 GMT
+Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wftstaran-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Feb 2024 16:53:25 +0000
+Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
+	by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41QGrMnr40370462
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 26 Feb 2024 16:53:25 GMT
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id AE82C58059;
+	Mon, 26 Feb 2024 16:53:22 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id F352258043;
+	Mon, 26 Feb 2024 16:53:21 +0000 (GMT)
+Received: from slate16.aus.stglabs.ibm.com (unknown [9.61.57.130])
+	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 26 Feb 2024 16:53:21 +0000 (GMT)
+From: Eddie James <eajames@linux.ibm.com>
+To: linux-fsi@lists.ozlabs.org
+Cc: linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, andi.shyti@kernel.org,
+        eajames@linux.ibm.com, alistair@popple.id.au, joel@jms.id.au,
+        jk@ozlabs.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, lakshmiy@us.ibmcom
+Subject: [PATCH v2 00/31] fsi: Interrupt support
+Date: Mon, 26 Feb 2024 10:52:50 -0600
+Message-Id: <20240226165321.91976-1-eajames@linux.ibm.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 09/36] mm/slab: introduce SLAB_NO_OBJ_EXT to avoid
- obj_ext creation
-Content-Language: en-US
-To: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
-Cc: kent.overstreet@linux.dev, mhocko@suse.com, hannes@cmpxchg.org,
- roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
- willy@infradead.org, liam.howlett@oracle.com,
- penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
- rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
- yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
- hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
- ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
- ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-References: <20240221194052.927623-1-surenb@google.com>
- <20240221194052.927623-10-surenb@google.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240221194052.927623-10-surenb@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=mNSzhrjb;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=K0YV6yra
-X-Spamd-Result: default: False [0.67 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BAYES_HAM(-0.53)[80.54%];
-	 R_RATELIMIT(0.00)[to_ip_from(RL4x96c4bfya6u36qcqcqt7ni8)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 RCPT_COUNT_GT_50(0.00)[74];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,i-love.sakura.ne.jp,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 0.67
-X-Rspamd-Queue-Id: 2BF4B22234
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Bar: /
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: h3Lh_fePyoB59sxR-RP8vfMG7iakkxUi
+X-Proofpoint-GUID: h3Lh_fePyoB59sxR-RP8vfMG7iakkxUi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-26_11,2024-02-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ clxscore=1011 adultscore=0 mlxlogscore=861 priorityscore=1501 spamscore=0
+ malwarescore=0 bulkscore=0 suspectscore=0 impostorscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402260128
 
-On 2/21/24 20:40, Suren Baghdasaryan wrote:
-> Slab extension objects can't be allocated before slab infrastructure is
-> initialized. Some caches, like kmem_cache and kmem_cache_node, are created
-> before slab infrastructure is initialized. Objects from these caches can't
-> have extension objects. Introduce SLAB_NO_OBJ_EXT slab flag to mark these
-> caches and avoid creating extensions for objects allocated from these
-> slabs.
-> 
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+This series primarily adds interrupt support to the FSI driver subsystem.
+The series first improves the clocking model in the FSI core to provide
+real clock rates to the engine drivers. Then there are various quality,
+trace, and organizational improvements.
+Another substantial part of the series is to make some master code common
+through the use of a regmap to access master structures. This will prove
+more useful as additional FSI master drivers are added.
+Finally, interrupt support is added to the I2C driver as an alternative to
+polling.
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Changes since v1:
+ - Remove clock patches since those have been merged
+ - Add AST2700 binding documentation
+ - Fix build warning
+
+Eddie James (31):
+  fsi: Move slave definitions to fsi-slave.h
+  fsi: Improve master indexing
+  fsi: Use a defined value for default echo delay
+  fsi: Expose master-specific local bus clock divider
+  ARM: dts: aspeed: p10 and tacoma: Set FSI clock frequency
+  fsi: core: Improve master read/write/error traces
+  fsi: core: Add slave error trace
+  dt-bindings: fsi: Add AST2700 compatible
+  fsi: aspeed: Add AST2700 support
+  fsi: core: Add slave spinlock
+  fsi: core: Allow cfam device type aliases
+  fsi: core: Add common regmap master functions
+  fsi: hub: Use common initialization and link enable
+  fsi: aspeed: Use common initialization and link enable
+  fsi: aspeed: Remove cfam reset sysfs file in error path and remove
+  fsi: aspeed: Refactor trace functions
+  fsi: aspeed: Don't clear all IRQs during OPB transfers
+  fsi: aspeed: Only read result register for successful read
+  fsi: aspeed: Switch to spinlock
+  fsi: aspeed: Disable relative addressing and IPOLL for cfam reset
+  fsi: aspeed: Use common master error handler
+  fsi: core: Add interrupt support
+  fsi: aspeed: Add interrupt support
+  fsi: hub: Add interrupt support
+  i2c: fsi: Calculate clock divider from local bus frequency
+  i2c: fsi: Improve formatting
+  i2c: fsi: Change fsi_i2c_write_reg to accept data instead of a pointer
+  i2c: fsi: Remove list structure of ports
+  i2c: fsi: Define a function to check status error bits
+  i2c: fsi: Add boolean for skip stop command on abort
+  i2c: fsi: Add interrupt support
+
+ .../bindings/fsi/fsi-master-aspeed.txt        |   2 +-
+ .../boot/dts/aspeed/aspeed-bmc-opp-tacoma.dts |   1 +
+ .../arm/boot/dts/aspeed/ibm-power10-dual.dtsi |   1 +
+ drivers/fsi/Kconfig                           |   2 +
+ drivers/fsi/fsi-core.c                        | 528 ++++++++++++++----
+ drivers/fsi/fsi-master-aspeed.c               | 391 +++++++------
+ drivers/fsi/fsi-master-hub.c                  | 231 ++++----
+ drivers/fsi/fsi-master.h                      |  27 +
+ drivers/fsi/fsi-slave.h                       |  89 +++
+ drivers/i2c/busses/i2c-fsi.c                  | 464 ++++++++++-----
+ include/linux/fsi.h                           |   3 +
+ include/trace/events/fsi.h                    | 190 ++++---
+ include/trace/events/fsi_master_aspeed.h      |  86 ++-
+ include/trace/events/i2c_fsi.h                |  45 ++
+ 14 files changed, 1421 insertions(+), 639 deletions(-)
+ create mode 100644 include/trace/events/i2c_fsi.h
+
+-- 
+2.39.3
 
 
