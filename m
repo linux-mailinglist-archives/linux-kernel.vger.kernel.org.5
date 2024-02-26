@@ -1,106 +1,102 @@
-Return-Path: <linux-kernel+bounces-82219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 905518680AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:16:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24BF78680AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:16:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4FD71C28FB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:16:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55DF01C25DA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:16:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8862C131E34;
-	Mon, 26 Feb 2024 19:14:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EE00130AD4;
+	Mon, 26 Feb 2024 19:15:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bKuMmb4m"
-Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com [209.85.217.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BRCLsaeV"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 753346A006
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 19:14:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7909B6A006;
+	Mon, 26 Feb 2024 19:15:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708974887; cv=none; b=ZlnBoisX6e6dNS7pOlgY1Kgnfr4g210WOw+a+j2jBh2KW8Jqx9agkK1/5+NONfx0OUJDBfcMA9spu8iWEUINCcbssI2NWCjxQWYPUVlVDMtZCbjM517bJKKisg07tRd9DS/inSsWnQd5FZhzokBQvVPBQ+OjkZkhPcnnq3tuCjU=
+	t=1708974906; cv=none; b=Fl9snUwU8EjQV3CVoqzLyLGsk70dx7wGPL//pSLWraVJns+5732Ij3bkUAGstRyTLRFdWwRddmsJJwu5JURVbKB9NyHOJ4PWPhDlnh/cGyGhRxd1slN3+o0cjSnrlnmpcHdSRLdD06L9+G6EtbwcaoTyBp44td+iQCFzhtDQ1iw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708974887; c=relaxed/simple;
-	bh=Jv6aSpqwkNWbv+z1s8rPN96Z6OiyBRL3D8M6WOHcqqo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Mq+sF+UUplsoRzNMUb2nTa7uIcAVz4wL9nh1xtR+CTQxvDU7myEkKUdf4LBofKZfQrr+u9CF+IsxID0bMhqNKsA9vIs/VT3vgW748qkpp7h5qi3Ql9ExeF1mzD17RD2ubOSKUJyMbOS/O+B5AdzeqSOm8cXdkeHPn0Cq/HZkUew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bKuMmb4m; arc=none smtp.client-ip=209.85.217.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f42.google.com with SMTP id ada2fe7eead31-471e55434e9so794677137.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:14:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708974885; x=1709579685; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Jv6aSpqwkNWbv+z1s8rPN96Z6OiyBRL3D8M6WOHcqqo=;
-        b=bKuMmb4mbMgxDnji3Iwva9Fb516teEMWyKdj8R72/s2n2w+K0dAHKw/OD7Tk2RFrsK
-         c1ZL0UqxfxtDrw3/XTcI2/KTBZQoYEII8BuX8cUHVdly/vZBqzWwByH1YxJ+R4PxGnD1
-         1HNWAqPJAYFaJRM1nAJ/iCntDLRyPQQWdxwDgLPuh5EUQIR0FkajYJ1Y/2W3G4UtfAZn
-         fsTv5bgiNVyuV+OL5qty3zPysfUxn04/om4DuygcHAogBsN4Ks11vUXyOSFxU8lF3ZPA
-         VCtPmHJEv/1QZNgm+UF/2Ef+D8dFiGxx4W9gyAsInbxZ80FrlpkQSbTQE0lB+kqbRDzD
-         anWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708974885; x=1709579685;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Jv6aSpqwkNWbv+z1s8rPN96Z6OiyBRL3D8M6WOHcqqo=;
-        b=t0NyOu0ULL0G+8pTMtrwP0/OXgC9bvahJmynZgbqt7xzsIiPvXjK5RDvv8d8Slem5g
-         3ZIBhpSKRrPRS3tKFR2xYmSM2oAdr+p/M7cdPwk/O2rXJmFBDVSJ09ZYYLvS891w3KJB
-         ZmieVVc44q6mxXJhv14zD5zAfHh6BSKWXj9+3GijoPSjd7FCjVHGFehTX0MaFIR+uWVZ
-         Lvo1tdPtNIpWBwqWK6q3qnkIhp4QvLYDeuKmOl8wvyTbunEQ4meYykVuFZDV6//khnIo
-         qzf5GL8Dk6FwjDjdglKxIhAC4/9aC4DPWcyawO+JkO60Pf2iPdXvrmt5gj45VxrlZDaD
-         xaBA==
-X-Forwarded-Encrypted: i=1; AJvYcCUy6ob6/AA920XJsRfPHRBiND+7dVA8suyjN57bkO0U4kviWelpvCH7btbFsRbcT78P+ro+BSTMG8zgSru4bD7O4S0D57Hh6AY0/sZ2
-X-Gm-Message-State: AOJu0Ywq0uxahMhvYCfnQBBZqO/T2VCHwm+z1GMRnTL8FYq5WfQ01jAj
-	YnRr6/yn8DufwHDl4DGxwbsiugCPc44bjxb0Nol/TLUROJI8GqTCHg6cZN7FdWdGvaoLibzvuf2
-	OwLAqePPBElsp8l/LBBMTT4k32Eg=
-X-Google-Smtp-Source: AGHT+IG4HMyuPvsgf2ypPDH5IWt+1vACdKWfyU0vJS8MldIFTQ7IljaZ+vGZ8uAHsudvy6ILuzrJIW5aa8R3jJZ7IIw=
-X-Received: by 2002:a05:6102:22d5:b0:470:62cc:6306 with SMTP id
- a21-20020a05610222d500b0047062cc6306mr5149938vsh.6.1708974885241; Mon, 26 Feb
- 2024 11:14:45 -0800 (PST)
+	s=arc-20240116; t=1708974906; c=relaxed/simple;
+	bh=LJiXX+ulWwWSULerhyjRE2sXzGGRm+4Qph36BbfVcE8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MaKj5Aw4/tj6j7mrDzWcMOfqU4ovKko9hoqycOqT4l4wk3Ot/owQoYvnozZc4sBYIVQxupmFKlqNhCfpV7zHq4gfXfEiKQHek9+a2Py6cO7QwpumIm+aQzm1R1OyjEHX45bKcOwPE2hqpk3hr2zlJVf4vpb2nqtwYXUHfnj1LuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BRCLsaeV; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708974905; x=1740510905;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=LJiXX+ulWwWSULerhyjRE2sXzGGRm+4Qph36BbfVcE8=;
+  b=BRCLsaeVlWmJmFikCx+S8jt1Z+7a2V27dCKSG6IeDqZTG8yWq+3K7egn
+   HMYbvBadP6Hn2zBxn2HwIxr221BaTmtmjMkGgJJxqGUsnNS+nGn7jDWpf
+   KMpz/9RKGmFDquBuR9jC8zrvVThSvce3+pI9v7flA/n3/+/whPF+0IkAz
+   dzLFplxFDjPwleVdktuUJisys0ud3dD1cWsTzwab6ULL7ur9mpRMwv3e4
+   yYjhBXtlZdxS+4acxckM7nLUQZf6XcxrlthYfd5waC1vIM26yinDHm1nK
+   iyNqLO++pBc8SiXZhL164MZ4jAEdQ/8RV0igIF452whBEzLilmY5IhMEy
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="14721893"
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="14721893"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 11:15:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="6912300"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 11:15:03 -0800
+Date: Mon, 26 Feb 2024 11:15:02 -0800
+From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
+To: Binbin Wu <binbin.wu@linux.intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	Sean Christopherson <sean.j.christopherson@intel.com>,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v18 057/121] KVM: TDX: Add load_mmu_pgd method for TDX
+Message-ID: <20240226191502.GO177224@ls.amr.corp.intel.com>
+References: <cover.1705965634.git.isaku.yamahata@intel.com>
+ <bd5256f2f58c36c6e8712e8137525815eede3bc8.1705965635.git.isaku.yamahata@intel.com>
+ <9d024bfc-4b1d-4da5-81ba-36e60cf5e284@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223205535.307307-1-jaegeuk@kernel.org> <20240223205535.307307-4-jaegeuk@kernel.org>
- <6b2854fd-8999-4671-a243-d78139f8a40f@kernel.org>
-In-Reply-To: <6b2854fd-8999-4671-a243-d78139f8a40f@kernel.org>
-From: Daeho Jeong <daeho43@gmail.com>
-Date: Mon, 26 Feb 2024 11:14:34 -0800
-Message-ID: <CACOAw_x6VLaR0SZQqxdPuB=oggyrq+dTQDn+w+84fHSv_Ta17Q@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH 4/5] f2fs: prevent an f2fs_gc loop during disable_checkpoint
-To: Chao Yu <chao@kernel.org>
-Cc: Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <9d024bfc-4b1d-4da5-81ba-36e60cf5e284@linux.intel.com>
 
-Reviewed-by: Daeho Jeong <daehojeong@google.com>
+On Mon, Feb 05, 2024 at 10:23:34AM +0800,
+Binbin Wu <binbin.wu@linux.intel.com> wrote:
 
-On Sun, Feb 25, 2024 at 6:59=E2=80=AFPM Chao Yu <chao@kernel.org> wrote:
->
-> On 2024/2/24 4:55, Jaegeuk Kim wrote:
-> > Don't get stuck in the f2fs_gc loop while disabling checkpoint. Instead=
-, we have
-> > a time-based management.
-> >
-> > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
->
-> Reviewed-by: Chao Yu <chao@kernel.org>
->
-> Thanks,
->
->
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> > diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> > index 59d170709f82..25510b6740a3 100644
+> > --- a/arch/x86/kvm/vmx/tdx.c
+> > +++ b/arch/x86/kvm/vmx/tdx.c
+> > @@ -501,6 +501,11 @@ void tdx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+> >   	 */
+> >   }
+> > +void tdx_load_mmu_pgd(struct kvm_vcpu *vcpu, hpa_t root_hpa, int pgd_level)
+> > +{
+> > +	td_vmcs_write64(to_tdx(vcpu), SHARED_EPT_POINTER, root_hpa & PAGE_MASK);
+> 
+> If we have concern about the alignment of root_hpa, shouldn't we do some
+> check instead of masking the address quietly?
+
+Makes sense. I'll add WARN_ON_ONCE(root_hpa & ~PAGE_MASK)
+-- 
+Isaku Yamahata <isaku.yamahata@linux.intel.com>
 
