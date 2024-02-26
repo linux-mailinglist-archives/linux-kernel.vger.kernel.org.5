@@ -1,161 +1,146 @@
-Return-Path: <linux-kernel+bounces-82102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF1EB867F47
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:50:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BA7DA867F4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:51:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E0131C2B912
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:50:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB2191C2B501
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:51:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B65A12EBE7;
-	Mon, 26 Feb 2024 17:50:35 +0000 (UTC)
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A98412E1CB;
+	Mon, 26 Feb 2024 17:51:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="uZZb1kEo"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6B3D12DD9B
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 17:50:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8053812F378;
+	Mon, 26 Feb 2024 17:51:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708969834; cv=none; b=SjNltKz3x7DHgpznzsYlFGcIZdtshD0d3s3B++L6/0nHoc41or9/qryKzYgPyOm/8s2By9S3GfZsFm8gghaAasHKnDZsxp6mAfdaurIPdVGhYDHZXlkEbVtGSP86isQdHPCinAOQ+4+dgYlLEKbcBc6P84SQma3+ouu5RfcPp0I=
+	t=1708969877; cv=none; b=CHSGPIWa63nqMzxjvboor3tD9Q9CBU6f51Pz78jB1Gt+LeStsYaHyttX6DFH1v34kxyWfY2Exeu7nKpBjaP50ZsAeWGvfCxBExzRgsqTBJF/GBAw2kRyzCFz/CBv8NCXzkXhEC9s9EmvYFEDm495ilS8NRwpQgO2buxxN1/xGh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708969834; c=relaxed/simple;
-	bh=1iR3xJRjDb/FuKWA+tVOHZIwPamsfWYUgHUzg6XOKpc=;
+	s=arc-20240116; t=1708969877; c=relaxed/simple;
+	bh=qS8OT9weX4S2COy6j3APFrkuDaTbvAGT/4iWvd39c/E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GdjOFIhl0/s8nbBuYl2Qpkuads7IGDrshNmpauM7V3fEkVDcWfpnLPVf1hGm4hPARB9gfO/yMoNKYb0bLu1n9pV5OZq7TrZTc7g2ZtlSM1iQTT8G/480PWrNZP/eedXGhLhRTVEtEzwLd1p+/+JIzzQmRQiiz/L6BSeoUjhEzJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-68f9c01a148so17756376d6.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:50:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708969831; x=1709574631;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y860Dr8n+PXcs2qUmH6Kl+B8IuVXvd+eBOgZbUsNlMU=;
-        b=tFYS9jFdHg9jsfuKU8gbDqGtfRuaFFjkiuBgwST4gVHc94J0hhExAOgNThtOspvlur
-         /9xqh7sTpZmgLylVPUgA1139ostiWs0gNQGSeNH6Sm9ZHDRKcle3AfpikD/0MqQMHilm
-         oKLQFkaMS4yZREF+hiwSQCDCdqfUPCLS3RXhZ93sB84V9CJi0OHZbThYQS6yEs7Kiwpd
-         RovGsT1Zgr6MAMlFMJh2yS7X7NZGBD65b6tuB1J/B6NQg4MAajYJSwNumCupHIRm0wx2
-         gItFyQ9rdZB4y6uD4ds/qUUEem16hsO1Kerd71RXHTe8CPT1dLd6/5UgM/sqneubbC94
-         pxEw==
-X-Forwarded-Encrypted: i=1; AJvYcCUjpt0slLKMGLp4l1YhBitAt46oMaMwdsRJkuzZk/0JYoXmLxKdks4DJnkqNqp2GYwvdHPubnw4TQLUYPpaw21LhOSZSY+Xx3ItVZsK
-X-Gm-Message-State: AOJu0YwtpYgfGwzuaQzv7S2UamaUHWuIpZ/e0mVYpypM8tJuVjvbUBXo
-	CucdSLT2wTwIL2aqVVnG06GxLI3BUtrWGtxbZwnUxU1Waoz/8rck
-X-Google-Smtp-Source: AGHT+IF2iEMlAX155pwVh/rNgsMsIEoLJLHSBXSXFJSU743SPX9bWtIxSOIDT7zr2NMAa5Ad/73BVQ==
-X-Received: by 2002:ad4:5dc2:0:b0:68f:de55:521a with SMTP id m2-20020ad45dc2000000b0068fde55521amr8805845qvh.16.1708969831527;
-        Mon, 26 Feb 2024 09:50:31 -0800 (PST)
-Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id s18-20020ad45252000000b0068efae7d0aesm3157731qvq.125.2024.02.26.09.50.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 09:50:31 -0800 (PST)
-Date: Mon, 26 Feb 2024 11:50:28 -0600
-From: David Vernet <void@manifault.com>
-To: peterz@infradead.org
-Cc: mingo@redhat.com, linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com,
-	kernel-team@meta.com
-Subject: Re: [PATCH v3 0/3] sched/fair: Simplify and optimize
- update_sd_pick_busiest()
-Message-ID: <20240226175028.GA1903@maniforge>
-References: <20240206043921.850302-1-void@manifault.com>
- <20240216194440.GA1682@maniforge>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Oqdhuj01A25H+7OVo8wlJ51JyXXeggCnvSgwGbemfc83XUHYjZC31xIy8i6owv7jQtPtgy9GJPUBjfuSUv/qqxuejLEQ3cRbWn/J9KEmbvEPWb17lpUopcIrALHjE0Ic7YVthnTSJTP9QJFJI1n6MBYs5qffmWQjC5YQlU8ZBA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=uZZb1kEo; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=DS/FPTlhqUV1Rbg7GjDt8wu7AR4Zgooi3ewXLgKys4c=; b=uZZb1kEoLX0PAJhCzRKUy1g8Uv
+	SM+ZTC9ce6iXI97yEZwMtIvw5Lg3sO+8TwU/Yu8qkCLF1A+/VH/fSTtULAWPKnSCb+daQeBXzIyG6
+	8W1NEzzdisP4BLY3je4cSsZZO2YCORB9qBwKvUj8nIA60Y097T6ZwzAwoAfM89DWyDCCQ7jeO4gqh
+	IXG/VZsGfdMjIN8I+ZpoYWgafqV2v0ukZQoO9cK1EOYfs4TBJDe29tRKB72oqoQIkZB+3dbtTFD8k
+	SsPnkVQtYn4MFi5EgMUUpYmochutSB8T+EjoktzLSPzeHxbhESm3tNJU6WJ1FLIv2GybwO7+aRwFa
+	2lSAHhiQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35226)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1ref81-0004XQ-0c;
+	Mon, 26 Feb 2024 17:51:01 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1ref7x-0006ci-SJ; Mon, 26 Feb 2024 17:50:57 +0000
+Date: Mon, 26 Feb 2024 17:50:57 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Charlie Jenkins <charlie@rivosinc.com>,
+	David Laight <David.Laight@aculab.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Palmer Dabbelt <palmer@rivosinc.com>,
+	Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v10] lib: checksum: Use aligned accesses for ip_fast_csum
+ and csum_ipv6_magic tests
+Message-ID: <ZdzPgSCTntY7JD5i@shell.armlinux.org.uk>
+References: <20240223-fix_sparse_errors_checksum_tests-v10-1-b6a45914b7d8@rivosinc.com>
+ <7ae930a7-3b10-4470-94ee-89cb650b3349@csgroup.eu>
+ <e11fea7a-e99e-4539-a489-0aa145ee65f0@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="mg56jdseInclq6ef"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240216194440.GA1682@maniforge>
-User-Agent: Mutt/2.2.12 (2023-09-09)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e11fea7a-e99e-4539-a489-0aa145ee65f0@roeck-us.net>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
+On Mon, Feb 26, 2024 at 08:44:29AM -0800, Guenter Roeck wrote:
+> On 2/26/24 03:34, Christophe Leroy wrote:
+> > 
+> > 
+> > Le 23/02/2024 à 23:11, Charlie Jenkins a écrit :
+> > > The test cases for ip_fast_csum and csum_ipv6_magic were not properly
+> > > aligning the IP header, which were causing failures on architectures
+> > > that do not support misaligned accesses like some ARM platforms. To
+> > > solve this, align the data along (14 + NET_IP_ALIGN) bytes which is the
+> > > standard alignment of an IP header and must be supported by the
+> > > architecture.
+> > 
+> > I'm still wondering what we are really trying to fix here.
+> > 
+> > All other tests are explicitely testing that it works with any alignment.
+> > 
+> > Shouldn't ip_fast_csum() and csum_ipv6_magic() work for any alignment as
+> > well ? I would expect it, I see no comment in arm code which explicits
+> > that assumption around those functions.
+> > 
+> > Isn't the problem only the following line, because csum_offset is
+> > unaligned ?
+> > 
+> > csum = *(__wsum *)(random_buf + i + csum_offset);
+> > 
+> > Otherwise, if there really is an alignment issue for the IPv6 source or
+> > destination address, isn't it enough to perform a 32 bits alignment ?
+> > 
+> 
+> It isn't just arm.
+> 
+> Question should be what alignments the functions are supposed to be able
+> to handle, not what they are optimized for. If byte and/or half word alignments
+> are expected to be supported, there is still architecture code which would
+> have to be fixed. Unaligned accesses are known to fail on hppa64/parisc64
+> and on sh4, for example. If unaligned accesses are expected to be handled,
+> it would probably make sense to add a separate test case, though, to clarify
+> that the test fails due to alignment issues, not due to input parameters.
 
---mg56jdseInclq6ef
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It's network driver dependent. Most network drivers receive packets
+to the offset defined by NET_IP_ALIGN (which is normally 2) which
+has the effect of "mis-aligning" the ethernet header, but aligning
+the IP header.
 
-On Fri, Feb 16, 2024 at 01:44:40PM -0600, David Vernet wrote:
-> Hello Peter, hello Ingo,
->=20
-> Friendly ping. Is there anything else required for this to land?
+Whether drivers do that is up to drivers (and their capabilities).
+Some network drivers can not do this kind of alignment, so there are
+cases where the received packets aren't offset by two bytes, leading
+to the IP header being aligned to an odd 16-bit word rather than an
+even 16-bit word (and thus 32-bit aligned.)
 
-Hello,
+Then you have the possibility of other headers between the ethernet
+and IP header - not only things like VLANs, but also possibly DSA
+headers (for switches) and how big those are.
 
-Sending another ping.
+There's a lot to be researched here!
 
-Thanks,
-David
-
->=20
-> Thanks,
-> David
->=20
-> >=20
-> > - In update_sd_lb_stats(), we're using a goto to skip a single if check.
-> >   Let's remove the goto and just add another condition to the if.
-> >=20
-> > - In update_sd_pick_busiest(), only update a group_misfit_task group to
-> >   be the busiest if it has strictly more load than the current busiest
-> >   task, rather than >=3D the load.
-> >=20
-> > - When comparing the current struct sched_group with the yet-busiest
-> >   domain in update_sd_pick_busiest(), if the two groups have the same
-> >   group type, we're currently doing a bit of unnecessary work for any
-> >   group >=3D group_misfit_task. We're comparing the two groups, and then
-> >   returning only if false (the group in question is not the busiest).
-> >   Othewise, we break, do an extra unnecessary conditional check that's
-> >   vacuously false for any group type > group_fully_busy, and then always
-> >   return true. This patch series has us instead simply return directly
-> >   in the switch statement, saving some bytes in load_balance().
-> >=20
-> > ---
-> >=20
-> > v1: https://lore.kernel.org/lkml/20240202070216.2238392-1-void@manifaul=
-t.com/
-> > v2: https://lore.kernel.org/all/20240204044618.46100-1-void@manifault.c=
-om/
-> >=20
-> > v2 -> v3:
-> > - Add Vincent's Reviewed-by tags
-> > - Fix stale commit summary sentence (Vincent)
-> >=20
-> > v1 -> v2 changes:
-> >=20
-> > - Split the patch series into separate patches (Valentin)
-> > - Update the group_misfit_task busiest check to use strict inequality
-> >=20
-> > David Vernet (3):
-> >   sched/fair: Remove unnecessary goto in update_sd_lb_stats()
-> >   sched/fair: Do strict inequality check for busiest misfit task group
-> >   sched/fair: Simplify some logic in update_sd_pick_busiest()
-> >=20
-> >  kernel/sched/fair.c | 19 ++++---------------
-> >  1 file changed, 4 insertions(+), 15 deletions(-)
-> >=20
-> > --=20
-> > 2.43.0
-> >=20
-
-
-
---mg56jdseInclq6ef
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZdzPZAAKCRBZ5LhpZcTz
-ZNLIAQDT4f2WD1kjAIU1o2RGVd8W1WymVhO8TWz2J+WkU3QTrAD/UO9eSFBZARPn
-lNCNqBk+RnThm4SvjVfhFV7OKSMA1gc=
-=nOVC
------END PGP SIGNATURE-----
-
---mg56jdseInclq6ef--
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
