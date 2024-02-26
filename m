@@ -1,132 +1,136 @@
-Return-Path: <linux-kernel+bounces-80996-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80994-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A1E8866EC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:39:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53814866EBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:38:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B330D1F26464
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:39:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DBE2285479
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:38:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B92AF76044;
-	Mon, 26 Feb 2024 09:01:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D88CF6D1C1;
+	Mon, 26 Feb 2024 08:59:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="hwLbvwyC";
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="SYY/3zp7"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="JuIsGb/T"
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56F1E73F38
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:01:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E26C2033F;
+	Mon, 26 Feb 2024 08:59:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708938085; cv=none; b=rVwgdPDLkfPHtLXtoUHBMIPTeEEqn0sRy1ZU/BZLU0KQbYRjrJy+j44/YjuTYj6fcGi6KLMHxrUhG0ax64GOq83XdgwNGYtqroY9g3RRF3duHOXTcqXHDBFi0208jRGLKrfJAYYYmG/NvUZVHI4KUHLKsNfBGQmlcaLxXNMrb3s=
+	t=1708937974; cv=none; b=Fkf37ZtUfxczDa5jSPIxRs7W9HkzQAJkulk4OEnh/HnfzXwN8xMBkuUv9EjQdJ+F2DdYDGXSXYAlkgvdL79b8SO1zmAK1GsmSvm11lFEYp7jyJlQuU7mVsggEePAqlTrZeFmZNnZ04HEGn8C+C98C0fz222anYD2fVFcmifKwXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708938085; c=relaxed/simple;
-	bh=AekaovUwYdpBZWADqweYZwJLmuNvX/G38sf66ZdKDjw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=L9MESH4kzqoHONK2QsmkVBHooxVUw5danMhAFE6e7QPkz1diqQf0a9j4MDDKtYgZlR7W2Veo8H7B1Qxuef8NAJb463dxoLJsp+9dQRaHHEJIFIwLXVPrr849Pvde78y2Coeaz90mQWlqWw5+vUcFDgF1tpb9lBzo4y49KEfp6wY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=hwLbvwyC; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=SYY/3zp7 reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1708938082; x=1740474082;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=1dfSttFAckwOQAmC1ve5LgiPNLJsHK4JP7XZDTkYNuA=;
-  b=hwLbvwyC73Ihtbj6LFaqNANAmr+kcOFYCNLuiCRdfPk9pFIzymiwCqWw
-   nsO7wS9Y0Dtp+GayKHo4XfJ/mU1a5mSROJosftN+G0YNJrI1X5qqvHJgu
-   dJ9TIZxY9S73QONnJxpLVR/A9vTExzGSs/bznBudTzudOJ1M96ujkTkr4
-   IYSgDcQNlVw6ZYafG8AtU6ipxox34nNLLAaN++5DvjliN+wP/bk08TRSF
-   Mvb+8fNV+MAa1wa7hcNUmlqHmXgagsHMbpUZd0f/zfF3zt+Iy9XbU+Bok
-   M0r9ywuvDBDsRRsyt3ACO+7d5G7cZQ9kxEmmzyTA3UH3eyMmHbt2pYdup
-   A==;
-X-IronPort-AV: E=Sophos;i="6.06,185,1705359600"; 
-   d="scan'208";a="35589021"
-Received: from vmailcow01.tq-net.de ([10.150.86.48])
-  by mx1.tq-group.com with ESMTP; 26 Feb 2024 10:01:13 +0100
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 08F11161427;
-	Mon, 26 Feb 2024 10:01:06 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
-	s=dkim; t=1708938069; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding; bh=1dfSttFAckwOQAmC1ve5LgiPNLJsHK4JP7XZDTkYNuA=;
-	b=SYY/3zp7x8QiKOHJcB7rCv+tbl44IANZ19yC++/0yXIFGaNJht1DExfMIudv0YEJsgcTBc
-	1zVxrLvigteiBy5ovJvSZSqeuHsKgd27UHkG2IAcVwUliifs7Q/UfP9AlrNxJPzNztl6bc
-	m4s/ZKYvK2zchPUylpzkp0C4Vou/1c8o3+UNw/RXixLWXqV94Zo58VjhQqKA1FzC1PqB9X
-	ntxhnIWtwK3aUe+CER7IZAw0eaK9ByEilq9Feowl+oDBFdh1/29P+65MPGqDF2LwD2/win
-	WKNPk48agcvc9+H9npwk5nSDFu3IKjdKCZbqqXT0e2AxwJ4cvbPK9PJU7b9ULA==
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
-To: Andrzej Hajda <andrzej.hajda@intel.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Robert Foss <rfoss@kernel.org>,
-	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-	Jonas Karlman <jonas@kwiboo.se>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>
-Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/1] drm/bridge: Silence error messages upon probe deferral
-Date: Mon, 26 Feb 2024 09:59:18 +0100
-Message-Id: <20240226085918.264205-1-alexander.stein@ew.tq-group.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1708937974; c=relaxed/simple;
+	bh=TKMBEQsICcf1Jqz8go5zK6Xhh9LdECeamokbuWo4YyM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=IN7dBQShA1dIFU9/t/jM7B9FagaG76xvopR2YyHs880wv8jCq95ckAKq+/RSEWs5QnF/FHtivf/PdTP2k7DE4i+7t6mXQvOL3S2Qahj0uRENpCfqs1t3br3GSS4Aueo1YolgiXWQWrgzNqCI2QB+JsUqESJeNKlWAJSZ5UuqrQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=JuIsGb/T; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 826DF60008;
+	Mon, 26 Feb 2024 08:59:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708937964;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VPb6uM0vuQeGyvRuwmurAcfRX+uCUbmF9exG7CadPqI=;
+	b=JuIsGb/Tqmh9AHLD4dviBjlXLScBrmdGVV5R1jGgg5j267sxOuG19XceWlMRagF/nv5OSF
+	dklMzNwHtdhRhQ+dMe2Ivi8C2cYlWMVkmnOJRIVxgMQIG42j+0mChiQO3ozCzOSuUFzFg5
+	+4iPdt/3FSqa8oY8yhYF3/OIoBCGrZJGHCna11I0Xz1iNHwOwq3wjT/FQEcFQWqqKX6KUo
+	BTcRM8W4Ygwed5tbFeahfprYw1YaNgXc1aQ4g5INwaX6neF8hpAaYnmf5YZ4U+f4nGxS4T
+	vA38EF+eaTATYvVDh9Fuv1ohVZpWvYOBQjFBJXvaMz51Ld6UTpoF9G4jA48mYw==
+Date: Mon, 26 Feb 2024 09:59:19 +0100
+From: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Cc: Saeed Mahameed <saeed@kernel.org>, Leon Romanovsky <leon@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Richard Cochran
+ <richardcochran@gmail.com>, Tariq Toukan <tariqt@nvidia.com>, Gal Pressman
+ <gal@nvidia.com>, Vadim Fedorenko <vadim.fedorenko@linux.dev>, Andrew Lunn
+ <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, Przemek Kitszel
+ <przemyslaw.kitszel@intel.com>, Ahmed Zaki <ahmed.zaki@intel.com>,
+ Alexander Lobakin <aleksander.lobakin@intel.com>, Hangbin Liu
+ <liuhangbin@gmail.com>, Paul Greenwalt <paul.greenwalt@intel.com>, Justin
+ Stitt <justinstitt@google.com>, Randy Dunlap <rdunlap@infradead.org>,
+ Maxime Chevallier <maxime.chevallier@bootlin.com>, Wojciech Drewek
+ <wojciech.drewek@intel.com>, Vladimir Oltean <vladimir.oltean@nxp.com>,
+ Jiri Pirko <jiri@resnulli.us>, Jacob Keller <jacob.e.keller@intel.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu
+ <joabreu@synopsys.com>, Dragos Tatulea <dtatulea@nvidia.com>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org
+Subject: Re: [PATCH RFC net-next v1 1/6] ethtool: add interface to read Tx
+ hardware timestamping statistics
+Message-ID: <20240226095919.1c242444@kmaincent-XPS-13-7390>
+In-Reply-To: <20240223192658.45893-2-rrameshbabu@nvidia.com>
+References: <20240223192658.45893-1-rrameshbabu@nvidia.com>
+	<20240223192658.45893-2-rrameshbabu@nvidia.com>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 
-When -EPROBE_DEFER is returned do not raise an error, but silently return
-this error instead. Fixes error like this:
-[drm:drm_bridge_attach] *ERROR* failed to attach bridge
-  /soc@0/bus@30800000/mipi-dsi@30a00000 to encoder None-34: -517
-[drm:drm_bridge_attach] *ERROR* failed to attach bridge
-  /soc@0/bus@30800000/mipi-dsi@30a00000 to encoder None-34: -517
+On Fri, 23 Feb 2024 11:24:45 -0800
+Rahul Rameshbabu <rrameshbabu@nvidia.com> wrote:
 
-Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-Reviewed-by: Robert Foss <rfoss@kernel.org>
----
-Changes in v3:
-* Adjust the indentation
-* Proper line breaks in commit messages
+> Multiple network devices that support hardware timestamping appear to have
+> common behavior with regards to timestamp handling. Implement common Tx
+> hardware timestamping statistics in a tx_stats struct_group. Common Rx
+> hardware timestamping statistics can subsequently be implemented in a
+> rx_stats struct_group for ethtool_ts_stats.
+>=20
+> Signed-off-by: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+ =20
+> +/**
+> + * enum ethtool_ts_stats_layer - layer to query hardware timestamping
+> statistics
+> + * @ETHTOOL_TS_STATS_LAYER_ACTIVE:
+> + *	retrieve the statistics from the layer that is currently feeding
+> + *	hardware timestamps for packets.
+> + * @ETHTOOL_TS_STATS_LAYER_DMA:
+> + *	retrieve the statistics from the DMA hardware timestamping layer
+> of the
+> + *	device.
+> + * @ETHTOOL_TS_STATS_PHY:
+> + *	retrieve the statistics from the PHY hardware timestamping layer
+> of the
+> + *	device.
+> + */
+> +enum ethtool_ts_stats_layer {
+> +	ETHTOOL_TS_STATS_LAYER_ACTIVE,
+> +	ETHTOOL_TS_STATS_LAYER_DMA,
+> +	ETHTOOL_TS_STATS_LAYER_PHY,
+> +};
 
- drivers/gpu/drm/drm_bridge.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+The all point of my v8 series new implementation (asked by the maintainers)=
+ was
+to move on from the timestamp layer to the phc provider which is described =
+by a
+phc index + phc qualifier (precise IEEE 1588/approx DMA). The struct being
+introduce in patch 9 of my series.
+You should do the same, use the phc provider instead of the layer.
 
-diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
-index 521a71c61b164..08b474d82c9fc 100644
---- a/drivers/gpu/drm/drm_bridge.c
-+++ b/drivers/gpu/drm/drm_bridge.c
-@@ -353,13 +353,15 @@ int drm_bridge_attach(struct drm_encoder *encoder, struct drm_bridge *bridge,
- 	bridge->encoder = NULL;
- 	list_del(&bridge->chain_node);
- 
-+	if (ret != -EPROBE_DEFER) {
- #ifdef CONFIG_OF
--	DRM_ERROR("failed to attach bridge %pOF to encoder %s: %d\n",
--		  bridge->of_node, encoder->name, ret);
-+		DRM_ERROR("failed to attach bridge %pOF to encoder %s: %d\n",
-+			  bridge->of_node, encoder->name, ret);
- #else
--	DRM_ERROR("failed to attach bridge to encoder %s: %d\n",
--		  encoder->name, ret);
-+		DRM_ERROR("failed to attach bridge to encoder %s: %d\n",
-+			  encoder->name, ret);
- #endif
-+	}
- 
- 	return ret;
- }
--- 
-2.34.1
+With using only the layer and in case of several PHYs we could not reach the
+right ts stats.
+Same goes for the MAC having both type of timestamp IEEE 1588 and DMA.
 
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
