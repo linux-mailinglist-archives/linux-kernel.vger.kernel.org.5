@@ -1,170 +1,126 @@
-Return-Path: <linux-kernel+bounces-82144-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E06CD867FE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:35:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE423867FE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:39:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9286828E096
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:35:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E281A1C215DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:39:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 455DA6A017;
-	Mon, 26 Feb 2024 18:35:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F1D012B165;
+	Mon, 26 Feb 2024 18:39:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="BWWVeq6L"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S82QXTn6"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B57571E866
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 18:35:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CDAE1DFF4
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 18:38:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708972524; cv=none; b=NNt3vWBAASQPf32Hw9MLv8K+te0QmHpN+2NRjTqs1UVp89tJHp7fYxsedyve308Sw8wuhtTIyL1rLf39Xp0te43K1FBMBETqevrqBkGBzDQ14MlmbMKpOPEam7g5vO0gvkFLIgg2kLAlrxw80mvH8+IKR6m3G2DH7YpeW8CsvjQ=
+	t=1708972739; cv=none; b=lF0apfkCNLvBW6p7Zb6KATlGGGqacfk2U5LOh0GT/WeT4AzIhMIQOJA14xKxbHf7Rqh+/CLWfqkg5A3X2/rI/AcnbLQChtalB+DIxxAVGuNl+EK9f3qDp6CruSJsmxi2rwc1Z+HIRZ2tjkjsKl+/vsWImvZebjDsjTXlFD6dIHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708972524; c=relaxed/simple;
-	bh=WWopHdY8Md81FuR91ubhLw3CIB1F9V2oBwmk2nGBKec=;
+	s=arc-20240116; t=1708972739; c=relaxed/simple;
+	bh=yAb85nx0BPxN93fLWrvELpTgUdlrq5dRvyxHvqfOuX4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TckctSZT5x82p02JGri8QCucOb2LFvhw3t6cXR6JMO0fr+5MWYLCq1mA5/ZiGoxuW/MdJXImNWZOXyVBpS1dbUz1Zu8mBe3J7cC8d8TNtSNwdX1Hv3cgl/HaZ4pv9+SFTfvqupdjbRoPAaBwc96k6xL1o73sy4jog38dLqU6/1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=BWWVeq6L; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1dc3b4b9b62so29270575ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 10:35:22 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=LEUUotmuiRXHW6anJ7cH2XAzguKtdDtZ13oHabH/1WLY2EblHvd8O/hiN/bBEDpzLoVDJpCuXym+CW6m7M42+2NTJs3lLHcrV/dRfoU+dArDyUcW6ILDp9+hhcX87B9nyw79dAgEHUopMsAQqdJzMuLlteERtsAS1PqmlsGEcsw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S82QXTn6; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e4e7e25945so1571486b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 10:38:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1708972522; x=1709577322; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=hw6lDBVvZVaoT5voqNH6HBuUGCB84uuT6JNYSXYgCm4=;
-        b=BWWVeq6L0b5wwNs3uriQlatdZDzDHqfnE/JRnoHNg8po7ETmyEERjjDfJ8rDnmR8P4
-         4yNBnlwDsgmWUYqRj6NF4qXIt/qxIxJvqCadgiq1TdQkThMVPfOjbFVfR/NJmcvsG1py
-         eo6Eu7ol7ZHJEH/zQk9TxGJkdzEo44FtLiXobCbGIBEwXJyDNyh3x9rZm+s5/w153Oif
-         ZjL9MoC51gHjilQWYMvOONaOWtXAY0hChsLqEJEKA1p3A/UiyhkzZV9585fm6qOaU51M
-         AJcLZ4fp+Yq/agZWKO/LrMxKYUBLc3D0TMYBvs2DK3WyF8gNuGRhiq7qMy45SkT56aso
-         pgiA==
+        d=gmail.com; s=20230601; t=1708972737; x=1709577537; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3PnlJgZfLcS59z9QT2AxSLhFdZdPteoPLnCZaELPVAY=;
+        b=S82QXTn6JYQKCYOAzvn7MwyauUm8yFjP+VX6oWaCPcSvBPRDO/z4csvB7qqYNvYp4c
+         zf+VnZYiwbGiASZUUfMRHDBZT1yLagW8eJs+7RNduAmv9tKl7eWaulVxDk1SAGJ39MaH
+         m8RTfAloZw47WN3MZXBerflSkvaLRjqVxP+xsn2HmpK2+XkCADDOEhvP3glpR6tTT1NS
+         +W3JRxsWpKd1NgHpd0oDYpQZjJ9eqEJ72360Fw15CEz5o9IDvqpr42W50bLnj6zPH8BA
+         fMCUGG4rCQ2QX9qvyF8vAA0k7eh5JI68xi20nBNqRajsnC4vkkvoqMMm2IfQUCfqbHrW
+         Ntnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708972522; x=1709577322;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hw6lDBVvZVaoT5voqNH6HBuUGCB84uuT6JNYSXYgCm4=;
-        b=GNuw03Lk2Jc7uaIO5jw2vaU1E3g/pumVQ82eZd0ruA4j2JhZSLJoPL9qVkE83TTDNj
-         pIPuC0lKmXShIMeHGBkaWHTN3pY6kjqSv/5oeq8sfUgTeFBKIp1grNitmSbBmwVyVUfM
-         XTF9728i46xG/QEt7SYQM4hT7KXqye6RdDtqZtxyrZ66OgwPU+bGqh9Yie9RL6iGGovJ
-         Tj6O23PuQWnob2B/mXDBfln2pT/cxUkIa+Kn4fdTpKxJMI20IJXULHXHCyfofjSAI6X/
-         ace1OpcywkjnLTn6L5Wdg15g4IUsIhMdjv3bmj/nepsuYQGR4+f2m36kgf4OKyklDm/e
-         mV3g==
-X-Forwarded-Encrypted: i=1; AJvYcCXclKFwB7WfMucJdWDXX6c+u3bwOldl3q2l9n9KgWH5m/YOzVbHPCk708cxeIkXhH0aUqud9VTPiV9CyrwC2x6IOXS0m0xbkjeVHxa6
-X-Gm-Message-State: AOJu0YytmcdYgC02QpBhtef3mXr+BcyfM34Jf1Fngqmjrqx/RumUf4w6
-	DkcRFJsn9DlEGpMKu2X7ngLCuQJgML8su4UTMkH8K/p+rW4SfxT9ZbSvR5j2Il4=
-X-Google-Smtp-Source: AGHT+IFLhP5psYVyjx40hbzYLeS2d/I0I4J4aVqBaUBTza9Iak7Uinrj5RB0XUTFvA/Q90Nz44eSxQ==
-X-Received: by 2002:a17:902:d548:b0:1dc:b008:f678 with SMTP id z8-20020a170902d54800b001dcb008f678mr2012067plf.18.1708972522069;
-        Mon, 26 Feb 2024 10:35:22 -0800 (PST)
-Received: from ghost ([50.213.54.97])
-        by smtp.gmail.com with ESMTPSA id d20-20020a170903209400b001db83d42322sm2437plc.185.2024.02.26.10.35.20
+        d=1e100.net; s=20230601; t=1708972737; x=1709577537;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3PnlJgZfLcS59z9QT2AxSLhFdZdPteoPLnCZaELPVAY=;
+        b=QzFxMcPMJvrxBoXhYAjCJzR6qM2i7hyiPt501vgOmyTCOVq/pR49amJRUpRwk27Rzi
+         R0sEq95qPEFbVuTMXOyLQ2GMkjmzrAfCoZITa+NHefQQrf5LgNmQxmiueFH/x8eo/6xn
+         Ipsz2D4Mk5HEYw+imupVY6R821vLuXQL01Agv6I1b0jtNzWSNXGwoI+J9gQX/2vEtBBr
+         TJcSNVSJcf/7x3CbyLb8jX5Nn+xuAll+COqKkfs0iVH8x8p+onw04iL/IK9KJN1M7L0g
+         U1AhkQZZct73IjyAH2eU/t2F70wMRcEeBIupEBqqHuGGASXh9dp+S4oCqsTbabo9nnWv
+         HXow==
+X-Forwarded-Encrypted: i=1; AJvYcCX5uhVqqlY1NQncXyfCQfqwbgcj+FDf5duWFNkKRPKOdUYcPbaCXjnq3dQ/Ld6srm5XPxCwCBAhdarBpthtRoNmI0AdFQ8E1AoJIJVF
+X-Gm-Message-State: AOJu0YyW7+3e0FIOfN4WSEtRfIy2DuCJh4FCGrtGRHElVy+ze47H0yZE
+	X/in9lMRSr/l7Eaue55fC71wPIHAvSZlFBjLXRbo1dQVrxwrv3xk
+X-Google-Smtp-Source: AGHT+IEdqMdmXpVFgTAlu8XJDk/5pqJjaob553qYVsC6bnMTtImvjtlJ+djX40EQTcBymXiYtHLPKw==
+X-Received: by 2002:aa7:99c5:0:b0:6e4:7a93:b627 with SMTP id v5-20020aa799c5000000b006e47a93b627mr7518618pfi.15.1708972737209;
+        Mon, 26 Feb 2024 10:38:57 -0800 (PST)
+Received: from localhost ([2620:10d:c090:400::4:31e4])
+        by smtp.gmail.com with ESMTPSA id l64-20020a638843000000b005dccf9e3b74sm4306893pgd.92.2024.02.26.10.38.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 10:35:21 -0800 (PST)
-Date: Mon, 26 Feb 2024 10:35:18 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Guenter Roeck <linux@roeck-us.net>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	David Laight <David.Laight@aculab.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Palmer Dabbelt <palmer@rivosinc.com>,
-	Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v10] lib: checksum: Use aligned accesses for ip_fast_csum
- and csum_ipv6_magic tests
-Message-ID: <ZdzZ5tk459bgUrgz@ghost>
-References: <20240223-fix_sparse_errors_checksum_tests-v10-1-b6a45914b7d8@rivosinc.com>
- <7ae930a7-3b10-4470-94ee-89cb650b3349@csgroup.eu>
- <e11fea7a-e99e-4539-a489-0aa145ee65f0@roeck-us.net>
- <ZdzPgSCTntY7JD5i@shell.armlinux.org.uk>
+        Mon, 26 Feb 2024 10:38:56 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Mon, 26 Feb 2024 08:38:55 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Allen <allen.lkml@gmail.com>
+Cc: jiangshanlai@gmail.com, torvalds@linux-foundation.org,
+	linux-kernel@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCHSET wq/for-6.9,6.10] workqueue: Implement
+ disable/enable_work()
+Message-ID: <Zdzav4yCFI0kAx7o@slm.duckdns.org>
+References: <20240216180559.208276-1-tj@kernel.org>
+ <ZdUK1jhMUSyC7yUj@slm.duckdns.org>
+ <CAOMdWSKrcRFUsFc3a0+2Js5hOA92xeQSkS06oL9VgSyZpDrO8g@mail.gmail.com>
+ <CAOMdWSLjk8pZUgM6QHdeJ3C8Q-Y07GM4QuaSyAyP2jZcAMLOhA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZdzPgSCTntY7JD5i@shell.armlinux.org.uk>
+In-Reply-To: <CAOMdWSLjk8pZUgM6QHdeJ3C8Q-Y07GM4QuaSyAyP2jZcAMLOhA@mail.gmail.com>
 
-On Mon, Feb 26, 2024 at 05:50:57PM +0000, Russell King (Oracle) wrote:
-> On Mon, Feb 26, 2024 at 08:44:29AM -0800, Guenter Roeck wrote:
-> > On 2/26/24 03:34, Christophe Leroy wrote:
-> > > 
-> > > 
-> > > Le 23/02/2024 à 23:11, Charlie Jenkins a écrit :
-> > > > The test cases for ip_fast_csum and csum_ipv6_magic were not properly
-> > > > aligning the IP header, which were causing failures on architectures
-> > > > that do not support misaligned accesses like some ARM platforms. To
-> > > > solve this, align the data along (14 + NET_IP_ALIGN) bytes which is the
-> > > > standard alignment of an IP header and must be supported by the
-> > > > architecture.
-> > > 
-> > > I'm still wondering what we are really trying to fix here.
-> > > 
-> > > All other tests are explicitely testing that it works with any alignment.
-> > > 
-> > > Shouldn't ip_fast_csum() and csum_ipv6_magic() work for any alignment as
-> > > well ? I would expect it, I see no comment in arm code which explicits
-> > > that assumption around those functions.
-> > > 
-> > > Isn't the problem only the following line, because csum_offset is
-> > > unaligned ?
-> > > 
-> > > csum = *(__wsum *)(random_buf + i + csum_offset);
-> > > 
-> > > Otherwise, if there really is an alignment issue for the IPv6 source or
-> > > destination address, isn't it enough to perform a 32 bits alignment ?
-> > > 
-> > 
-> > It isn't just arm.
-> > 
-> > Question should be what alignments the functions are supposed to be able
-> > to handle, not what they are optimized for. If byte and/or half word alignments
-> > are expected to be supported, there is still architecture code which would
-> > have to be fixed. Unaligned accesses are known to fail on hppa64/parisc64
-> > and on sh4, for example. If unaligned accesses are expected to be handled,
-> > it would probably make sense to add a separate test case, though, to clarify
-> > that the test fails due to alignment issues, not due to input parameters.
-> 
-> It's network driver dependent. Most network drivers receive packets
-> to the offset defined by NET_IP_ALIGN (which is normally 2) which
-> has the effect of "mis-aligning" the ethernet header, but aligning
-> the IP header.
-> 
-> Whether drivers do that is up to drivers (and their capabilities).
-> Some network drivers can not do this kind of alignment, so there are
-> cases where the received packets aren't offset by two bytes, leading
-> to the IP header being aligned to an odd 16-bit word rather than an
-> even 16-bit word (and thus 32-bit aligned.)
-> 
-> Then you have the possibility of other headers between the ethernet
-> and IP header - not only things like VLANs, but also possibly DSA
-> headers (for switches) and how big those are.
+Hello,
 
-Those additional combinations can be supported by future test cases,
-but the goal of this patch was simply to have basic testing for these
-functions. The NET_IP_ALIGN offset is what the kernel defines to be
-supported, so that is the test case I went for.
+Sorry about the late reply.
 
-- Charlie
+On Thu, Feb 22, 2024 at 12:26:35PM -0800, Allen wrote:
+>  I do understand the work bits, but I don't fully understand the
+> concept of colors
+> (work_color, flush_color). A swift overview of it would be highly appreciated.
 
-> 
-> There's a lot to be researched here!
-> 
-> -- 
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+That's just to group work items for flush_workqueue(). Let's say there are
+work items which are queued in sequence, 1 to 8. Let's also say that there
+are three flush_workqueue() attempts which take place after work item 2, 4
+and 6. Then, the flush colors A, B, C, D are assigned so that:
+
+  work items        1     2     3     4     5     6     7     8
+  flush_workqueue            ^           ^           ^
+                    \-----/     \-----/     \-----/     \------~~~
+  flush_color          A           B           C            D
+
+and the flush_workqueue() code waits for its preceding colors to be drained
+to implement flushing.
+
+It's just a way to keep track of the number of work items in flight which
+were issued before a certain point in time. It's expensive to do that for
+arbitrary number of points in time, so it just has N slots for groups and
+calls them flush colors.
+
+This shouldn't really matter for the bh conversion given that everyone
+operates on individual work item.
+
+Thanks.
+
+-- 
+tejun
 
