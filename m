@@ -1,123 +1,117 @@
-Return-Path: <linux-kernel+bounces-81835-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A560867B99
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B99F867B42
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:12:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D481FB353CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:45:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54AABB29CFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:45:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC38D12BF1B;
-	Mon, 26 Feb 2024 15:45:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BD7512B153;
+	Mon, 26 Feb 2024 15:45:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="HNEqAqL0";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="qlHi5a6f"
-Received: from fhigh8-smtp.messagingengine.com (fhigh8-smtp.messagingengine.com [103.168.172.159])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s9SY++mh"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 104F112BEA2
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 15:45:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A3A812BE87
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 15:45:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708962340; cv=none; b=tcLN4TmLaHHo0NSJ9pDxZlfMp+FATFmVrASPk2SAvoA32I7UjrDyfWszyi8OLPLa9oywRqRaDtntgYqmTqObztHmc/pLrQdBYBHwbQBTdpKsOjVN6RNu4cQDdOEGzvgVnNcpk9+KJ99JMGBdDM3mdjUOi1hTmyl0A75NGlgh8F4=
+	t=1708962338; cv=none; b=C3So+Ko/7XPQP7KfZL1W3EDjrr7V3Fy8l4KL3+2nwdfsLGj9TTHqyTHz8XITs+Mz8X767tzcEmLdViKJH2i23GrbS1D5mLVxgClBjqBLqtHfhX2TrGYzwe3N4FzTuWjCUK2uvj1mSGo4Kn00Mu6gfO7kUsQEBzEq03TmWkETcvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708962340; c=relaxed/simple;
-	bh=7CXIMXtMPfI9H1HLbI6iz7FfltniQmJfgQ9Q9VbG/eo=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=GljhNVwqlw0l1twqllVHmE+xOykLvjAYm6qqMn0ZmUliidy+L90egSve5KIP++NYwDR3v/mFhphfij/oDEpC2ntidpYCdzDFVpfwBc3UdKURn9R5W14DqbOiWe/Ze/40DzVJarz8p5RoELM29EvtK2tRhvHNhGmXK1Vkfie2qIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=HNEqAqL0; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=qlHi5a6f; arc=none smtp.client-ip=103.168.172.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 05D3E11400B8;
-	Mon, 26 Feb 2024 10:45:34 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 26 Feb 2024 10:45:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1708962334; x=1709048734; bh=+w/dCCzGxZ
-	J2NH2QcsLQTSv5pe2kJ9fo4kQQPafe7Ao=; b=HNEqAqL0HeXfamJDzBnO7m6d5j
-	M0gkJ7ktSRJAL24kkiCAUHaLK1WAtks34CY+9t5BCPCUm/UWCZ/JmrCbT5YN0gWW
-	TYGjAy5EYQx9Qmvcwcrm0iPLS4SWN0bVWrU38qMxi/4ohgRF+/Hx9pQhlR+wiS8h
-	M6So4IV/pvFwnoCE0pH3y1sJH+RkjfliuR+xpxQxnsOxuSMxxaZLH07efEuuBEuw
-	L4Xus0e4HbEhJYCj8b0GkCfHcTmAUp8l2Mk9mabrD4lS64qecpZtu+nG03p9VuP4
-	ayAUHKgTpMD1bAdP7kjcqHhoYsFxWwekuuM928t0yT3CAsDREl5OFJxBkAQw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1708962334; x=1709048734; bh=+w/dCCzGxZJ2NH2QcsLQTSv5pe2k
-	J9fo4kQQPafe7Ao=; b=qlHi5a6fc6YzL+syHyOJopi7WiGwzgCmx7yCX8oPHBas
-	xdtvt2S0jQJgINIXsmoMg9t0hXnPkzqfW5XNf/mx+7gV3PQWRwx33C47Qdzh9IX/
-	nEdLsKAmBSiJHpXIzESMX33g7wz2LrNhrxRD2yi7rHo5MWo2CqiNTZmTVeK9r0Ye
-	sjgg6UGJhLl8Xm3TNBNPxLlMethJk1znjA+3SNqHUEWBqcq85btaDQRCqU+o+fBH
-	w7ComemVMSfy5vkPo6H2PL3xY/fpOjwCeL4w8rDvBHkT5bAyttOZQpV6WahFX9re
-	fWwx7J7A2EsXAfbeQS3ls1gVSST5kKWs2tji5rXNHw==
-X-ME-Sender: <xms:HbLcZYjDP3otViJhuEsudr2MG_qagS7ehdigdEJ3TwezarJYicPTSQ>
-    <xme:HbLcZRCNKND2_XeOd81DUr03gF04GS94RMBChcCQZ7BngPfW_I-pBAt05eVueNCnA
-    HNvb4oGkbyszWnLZCY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgedvgdejkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:HbLcZQHIIPJiQMJAAYvouHnPN-J8wMdiEbb8gGKX5VTq8psQ3ukxuQ>
-    <xmx:HbLcZZR6dQ8ziGydFmPZ4MWbsvXKKSLE6ViBQsgcxO8sWPktJMsX9A>
-    <xmx:HbLcZVzt2bXHn4frNZQtojf5m0nbGc-3Yu0PrG5bqvGV7ZVw-4th3A>
-    <xmx:HrLcZVdo7v8hBs3HvRdlKBRTixLj6B_sbFqHDX960R6xzft_PfoUGQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id CE1E9B6008D; Mon, 26 Feb 2024 10:45:33 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-153-g7e3bb84806-fm-20240215.007-g7e3bb848
+	s=arc-20240116; t=1708962338; c=relaxed/simple;
+	bh=VsH0ymrYLcRyJRnocuhbJuZDkMN1aFvJrkS1qBHwOqU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NuXGm7Jh/peg09VTNJSZEDLc7hQ+ryVD2Zygs36bJcfpTuEbLpb+G4PeJpnPqA8BjGnjPPleTq5UbIKwg0YO0xfJg/wfUfg/HjLDVfxRPztdPdB6uKlrDvUKThPl0Pz3gQanEXiHErKfu1TKOynin+3lSDw/Te/yr+GP9678FEY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s9SY++mh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22787C433C7;
+	Mon, 26 Feb 2024 15:45:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708962337;
+	bh=VsH0ymrYLcRyJRnocuhbJuZDkMN1aFvJrkS1qBHwOqU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=s9SY++mhNAKw369O/4ET4NztG3dF+U4U2Fo2gCThAJHS4inmUjFIgWYn/UdttAMMf
+	 lVfeJGREmZ4uUbb0LcItayvC/EPlyKo0Z/n2lTJ6e/Ym1uDG+AFZipoqoKhR9iJzJH
+	 reBe+HZNyeza0I7xTpHvKx+zzPrhig6dO1/1NBcTXxHOi5ILswryo2YX2L+advZbET
+	 +jeaLLyhz4252rs456/kX7oJYss55jEz0OgKThg5yk97/bz5N1/lWH5h/zL0gTjq/5
+	 Sn61paoidyZIpP+v8eeIYhhOGkgd7dlDqkgp15DbPoEE2ZiO5NmumKBVDvqgF6w83f
+	 uaJ9/JtryeWTw==
+Date: Mon, 26 Feb 2024 16:45:33 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Tycho Andersen <tycho@tycho.pizza>
+Cc: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>, 
+	stgraber@stgraber.org, cyphar@cyphar.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] tests/pid_namespace: add pid_max tests
+Message-ID: <20240226-bewaffnen-kinokarten-94eb5abf727c@brauner>
+References: <20240222160915.315255-1-aleksandr.mikhalitsyn@canonical.com>
+ <20240222160915.315255-3-aleksandr.mikhalitsyn@canonical.com>
+ <Zdd8MAJJD3M11yeR@tycho.pizza>
+ <20240223-kantholz-knallen-558beba46c62@brauner>
+ <ZdoEavHorDs3IlF5@tycho.pizza>
+ <20240226-gestrafft-pastinaken-94ff0e993a51@brauner>
+ <Zdyumw6OfWBqQMTj@tycho.pizza>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <17b57262-85ca-42d7-bc67-db2c77d6722a@app.fastmail.com>
-In-Reply-To: 
- <CA+G9fYvTtJm8mhQh=c9WL4Ef_7Mb79CbBjFVoujupXFMrNsa-w@mail.gmail.com>
-References: 
- <CA+G9fYtrXXm_KO9fNPz3XaRxHV7UD_yQp-TEuPQrNRHU+_0W_Q@mail.gmail.com>
- <0fe0add2-6b17-441f-a0e1-7c1ee9b0ea71@app.fastmail.com>
- <CA+G9fYvTtJm8mhQh=c9WL4Ef_7Mb79CbBjFVoujupXFMrNsa-w@mail.gmail.com>
-Date: Mon, 26 Feb 2024 16:45:13 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Naresh Kamboju" <naresh.kamboju@linaro.org>
-Cc: "open list" <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
- "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
- "Anna-Maria Gleixner" <anna-maria@linutronix.de>,
- "Thomas Gleixner" <tglx@linutronix.de>,
- "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
- "Ard Biesheuvel" <ardb@kernel.org>,
- "Catalin Marinas" <catalin.marinas@arm.com>,
- "Kees Cook" <keescook@chromium.org>
-Subject: Re: arch/arm64/include/asm/atomic_ll_sc.h:298:9: error: unknown type name
- 'u128'
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <Zdyumw6OfWBqQMTj@tycho.pizza>
 
-On Mon, Feb 26, 2024, at 16:33, Naresh Kamboju wrote:
-> On Fri, 23 Feb 2024 at 14:56, Arnd Bergmann <arnd@arndb.de> wrote:
+On Mon, Feb 26, 2024 at 08:30:35AM -0700, Tycho Andersen wrote:
+> On Mon, Feb 26, 2024 at 09:57:47AM +0100, Christian Brauner wrote:
+> > > > > A small quibble, but I wonder about the semantics here. "You can write
+> > > > > whatever you want to this file, but we'll ignore it sometimes" seems
+> > > > > weird to me. What if someone (CRIU) wants to spawn a pid numbered 450
+> > > > > in this case? I suppose they read pid_max first, they'll be able to
+> > > > > tell it's impossible and can exit(1), but returning E2BIG from write()
+> > > > > might be more useful.
+> > > > 
+> > > > That's a good idea. But it's a bit tricky. The straightforward thing is
+> > > > to walk upwards through all ancestor pid namespaces and use the lowest
+> > > > pid_max value as the upper bound for the current pid namespace. This
+> > > > will guarantee that you get an error when you try to write a value that
+> > > > you would't be able to create. The same logic should probably apply to
+> > > > ns_last_pid as well.
+> > > > 
+> > > > However, that still leaves cases where the current pid namespace writes
+> > > > a pid_max limit that is allowed (IOW, all ancestor pid namespaces are
+> > > > above that limit.). But then immediately afterwards an ancestor pid
+> > > > namespace lowers the pid_max limit. So you can always end up in a
+> > > > scenario like this.
+> > > 
+> > > I wonder if we can push edits down too? Or an render .effective file, like
+> > 
+> > I don't think that works in the current design? The pid_max value is per
+> > struct pid_namespace. And while there is a 1:1 relationship between a
+> > child pid namespace to all of its ancestor pid namespaces there's a 1 to
+> > many relationship between a pid namespace and it's child pid namespaces.
+> > IOW, if you change pid_max in pidns_level_1 then you'd have to go
+> > through each of the child pid namespaces on pidns_level_2 which could be
+> > thousands. So you could only do this lazily. IOW, compare and possibly
+> > update the pid_max value of the child pid namespace everytime it's read
+> > or written. Maybe that .effective is the way to go; not sure right now.
+> 
+> I wonder then, does it make sense to implement this as a cgroup thing
+> instead, which is used to doing this kind of traversal?
+> 
+> Or I suppose not, since the idea is to get legacy software that's
+> writing to pid_max to work?
 
->> I have an older patch that I never merged to unify the
->> page size configuration in Kconfig, and could try to
->> dig that out if nobody has a better idea. If we do that,
->> we could introduce a CONFIG_PAGE_SIZE.
->
-> The 16K and 64k page size builds pass.
+My personal perspective is that this is not so important. The original
+motivation for this had been legacy workloads that expect to only get
+pid numbers up to a certain size which would otherwise break. And for
+them it doesn't matter whether that setting is applied through pid_max
+or via some cgroup setting. All that matters is that they don't get pids
+beyond what they expect.
 
-Those have compat mode disabled on arm64 for historic reasons.
-We should probably fix that, but that is a different problem.
-
-     Arnd
+So yes, from my POV we could try and make this a cgroup property. But
+we should check with Tejun first whether he'd consider this a useful
+addition or not.
 
