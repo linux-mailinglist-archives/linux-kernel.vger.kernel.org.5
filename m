@@ -1,195 +1,137 @@
-Return-Path: <linux-kernel+bounces-81422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 099A28675F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:06:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8442286762E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:13:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 406F7B2D5BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:57:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52B93B2EB50
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:00:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B7AF8526F;
-	Mon, 26 Feb 2024 12:56:49 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E826480042;
+	Mon, 26 Feb 2024 13:00:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vB2Tswhp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BB2A81756;
-	Mon, 26 Feb 2024 12:56:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36F2F5A7B9;
+	Mon, 26 Feb 2024 13:00:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708952208; cv=none; b=AVmGHMpfDRNJJXKAPACV3iplJn3JK/SRAhSwo0RCkYEmWlmYb9uNATaDi16Spv0Nbgqu/vEKfrh5G+D7dbEoCsB9fZsXlIowNTvP/ZC6atIeKT7ukl224qDz4UaCla8MjUJCBOhFgxICB4Bhy3HWRt4aJTCvnZoQz1cMUeicXQA=
+	t=1708952412; cv=none; b=PbjcCymjBniFjAEPZHHwurt3pa+viBM2Fy3i0Yw5zw5oOLU9RiQs0/cPbVSp3j7IDVVeLDM3nLRfrCd+mlFj2D+Vclq3Max3mjY9J9WXEhBvVHHnPlLeHdHMOFc5WEMxvZzT9i5mlL0zR9LPGoGshgBTF8nVsRQCw4E+Bsf8lQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708952208; c=relaxed/simple;
-	bh=NC9zbuoZghbczDmZXWcpM9NU9mKbcnjtKFhuyF8fuZs=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XmlU2Y5svXNQP2I1mmdauHhBrlOMRxZwf4b/qSDRV5vSTFMobtAggOGhjwUEYUO3ghjJbVg6k519nQPU2cYQBvW7/xSLrSY9VtN4b8MH3Y+xJO1zFwl1hztsuEqHzLeZNLaHchOGYV3w7YwqTRutHB6wYfpVWhqlLZLgxs8nSGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Tk0s85lMRz6K9JP;
-	Mon, 26 Feb 2024 20:53:00 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id F41F9140FB6;
-	Mon, 26 Feb 2024 20:56:43 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 26 Feb
- 2024 12:56:43 +0000
-Date: Mon, 26 Feb 2024 12:56:42 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: John Groves <John@Groves.net>
-CC: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, "Dan
- Williams" <dan.j.williams@intel.com>, Vishal Verma
-	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Alexander
- Viro" <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, "Jan
- Kara" <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
-	<linux-cxl@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<nvdimm@lists.linux.dev>, <john@jagalactic.com>, Dave Chinner
-	<david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>,
-	<dave.hansen@linux.intel.com>, <gregory.price@memverge.com>
-Subject: Re: [RFC PATCH 10/20] famfs: famfs_open_device() &
- dax_holder_operations
-Message-ID: <20240226125642.000076d2@Huawei.com>
-In-Reply-To: <74359fdc83688fb1aac1cb2c336fbd725590a131.1708709155.git.john@groves.net>
-References: <cover.1708709155.git.john@groves.net>
-	<74359fdc83688fb1aac1cb2c336fbd725590a131.1708709155.git.john@groves.net>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1708952412; c=relaxed/simple;
+	bh=OMiWctER0LJ1jLO/g05SXNcA18YmEBLscWZvA7VnJkM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qfOOpOFrWj73Q/DTGgk+usldvuK33OwahaRko85Qzx6gzdBxFHAsHJ1SZteuBxumg1r02XlxQ3h41DLtMXhTVfqR79Hq5dPOuPYjYly94SicYVIKA6l81zxOdPKYndk2VuKwrJMJCqNMS9csMt9HHpS5ugaCe2mPKYNVK9oISXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vB2Tswhp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8000C43601;
+	Mon, 26 Feb 2024 13:00:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708952411;
+	bh=OMiWctER0LJ1jLO/g05SXNcA18YmEBLscWZvA7VnJkM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=vB2TswhpFY1yqMJl0NwGq0yJMVGeZKkqi78nomO7G/RYeP65nMeJos1uYBNQXfy0i
+	 eAnPEqB8UmbOE+IihZLRLVKVQasSgmpWjPlvcQ47uwXAI8yu9qAE6DrzfvTi2VZrwz
+	 XyM35WmTBKBcuQUT0iF0LMlRuBSkLEWIEse8sW/Z7g921wFg0CJAsXdb0iWGqIz2yU
+	 7rhsVLwgqqS4hYSW//RcyNmVW5ZOLrJ/NNkbUC/MLg7IRKICsGFxFiluuXNI9IwFVs
+	 k1NjRbOvRu7p5Hn0AXlE2Vemb8vrhksHCQep+ctT1CZAjGTpPvaK2rs6Iv5Z0r5rTJ
+	 JwU008ZHAKmuA==
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a437a2a46b1so57944066b.2;
+        Mon, 26 Feb 2024 05:00:11 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXleWZLb1givXMKwGYwzupNXuMpwLvUGMzZYkOAWzEATNoob53K1LQufBFkRktYWkHZNngSMZTUWAY7FiWyzwYigDv8SexYZWPUZPuvEHOFKVPqTneako6mWSSx4oNqj+/i
+X-Gm-Message-State: AOJu0YwmYvIVKejHp1u2o4s8drVNyeup6riukCyFVIi7cf38vkuLniUW
+	fkXofhe+P50hsE9copXIpwemszgvkrhUpH7XscbjjaNdMLSav9+NzMWfFHcTJIYi1wItVuUQTpm
+	w5D8v60YRv/0s7yv2PFYfH0Ye4WM=
+X-Google-Smtp-Source: AGHT+IHLK4Exe7j67rwEw991AFJgmSFjyGqKbOmZ/W+iJwdhbSt+QDLwruPF2NYpobJ0QS7xyR1J+L7PCSAOdYvq8Ng=
+X-Received: by 2002:a17:906:3411:b0:a43:1415:2f1e with SMTP id
+ c17-20020a170906341100b00a4314152f1emr2987434ejb.69.1708952410260; Mon, 26
+ Feb 2024 05:00:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+References: <20240130072238.2829831-1-maobibo@loongson.cn> <20240130072238.2829831-3-maobibo@loongson.cn>
+In-Reply-To: <20240130072238.2829831-3-maobibo@loongson.cn>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Mon, 26 Feb 2024 20:59:57 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H5ey2g_dmSQsM+5WM+Kir-b6jqfatxnbgBRvjggZzuXtQ@mail.gmail.com>
+Message-ID: <CAAhV-H5ey2g_dmSQsM+5WM+Kir-b6jqfatxnbgBRvjggZzuXtQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] LoongArch: KVM: Do not restart SW timer when it is expired
+To: Bibo Mao <maobibo@loongson.cn>
+Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, kvm@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 23 Feb 2024 11:41:54 -0600
-John Groves <John@Groves.net> wrote:
+The code itself looks good to me, but could you please tell me what
+does "LoongArch guest has separate hw timer" mean?
 
-> Famfs works on both /dev/pmem and /dev/dax devices. This commit introduces
-> the function that opens a block (pmem) device and the struct
-> dax_holder_operations that are needed for that ABI.
-> 
-> In this commit, support for opening character /dev/dax is stubbed. A
-> later commit introduces this capability.
-> 
-> Signed-off-by: John Groves <john@groves.net>
+Huacai
 
-Formatting comments mostly same as previous patches, so I'll stop repeating them.
-
+On Tue, Jan 30, 2024 at 3:22=E2=80=AFPM Bibo Mao <maobibo@loongson.cn> wrot=
+e:
+>
+> LoongArch guest has separate hw timer, SW timer is to wake up
+> blocked vcpu thread, rather than HW timer emulation. When blocking
+> vcpu schedules out, SW timer is used to wakeup blocked vcpu thread
+> and injects timer interrupt. It does not care about whether guest
+> timer is in period mode or oneshot mode, and SW timer needs not be
+> restarted since vcpu has been woken.
+>
+> This patch does not restart sw timer when it is expired.
+>
+> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
 > ---
->  fs/famfs/famfs_inode.c | 83 ++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 83 insertions(+)
-> 
-> diff --git a/fs/famfs/famfs_inode.c b/fs/famfs/famfs_inode.c
-> index 3329aff000d1..82c861998093 100644
-> --- a/fs/famfs/famfs_inode.c
-> +++ b/fs/famfs/famfs_inode.c
-> @@ -68,5 +68,88 @@ static const struct super_operations famfs_ops = {
->  	.show_options	= famfs_show_options,
->  };
->  
-> +/***************************************************************************************
-> + * dax_holder_operations for block dax
-> + */
-> +
-> +static int
-> +famfs_blk_dax_notify_failure(
-> +	struct dax_device	*dax_devp,
-> +	u64			offset,
-> +	u64			len,
-> +	int			mf_flags)
-> +{
-> +
-> +	pr_err("%s: dax_devp %llx offset %llx len %lld mf_flags %x\n",
-> +	       __func__, (u64)dax_devp, (u64)offset, (u64)len, mf_flags);
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +const struct dax_holder_operations famfs_blk_dax_holder_ops = {
-> +	.notify_failure		= famfs_blk_dax_notify_failure,
-> +};
-> +
-> +static int
-> +famfs_open_char_device(
-> +	struct super_block *sb,
-> +	struct fs_context  *fc)
-> +{
-> +	pr_err("%s: Root device is %s, but your kernel does not support famfs on /dev/dax\n",
-> +	       __func__, fc->source);
-> +	return -ENODEV;
-> +}
-> +
-> +/**
-> + * famfs_open_device()
-> + *
-> + * Open the memory device. If it looks like /dev/dax, call famfs_open_char_device().
-> + * Otherwise try to open it as a block/pmem device.
-> + */
-> +static int
-> +famfs_open_device(
-> +	struct super_block *sb,
-> +	struct fs_context  *fc)
-> +{
-> +	struct famfs_fs_info *fsi = sb->s_fs_info;
-> +	struct dax_device    *dax_devp;
-> +	u64 start_off = 0;
-> +	struct bdev_handle   *handlep;
-Definitely don't force alignment in local parameter definitions.
-Always goes wrong and makes for unreadable mess in patches!
-
-> +
-> +	if (fsi->dax_devp) {
-> +		pr_err("%s: already mounted\n", __func__);
-Fine to fail but worth a error message? Not sure on convention on this but seems noisy
-and maybe in userspace control which isn't good.
-> +		return -EALREADY;
-> +	}
-> +
-> +	if (strstr(fc->source, "/dev/dax")) /* There is probably a better way to check this */
-> +		return famfs_open_char_device(sb, fc);
-> +
-> +	if (!strstr(fc->source, "/dev/pmem")) { /* There is probably a better way to check this */
-> +		pr_err("%s: primary backing dev (%s) is not pmem\n",
-> +		       __func__, fc->source);
-> +		return -EINVAL;
-> +	}
-> +
-> +	handlep = bdev_open_by_path(fc->source, FAMFS_BLKDEV_MODE, fsi, &fs_holder_ops);
-> +	if (IS_ERR(handlep->bdev)) {
-> +		pr_err("%s: failed blkdev_get_by_path(%s)\n", __func__, fc->source);
-> +		return PTR_ERR(handlep->bdev);
-> +	}
-> +
-> +	dax_devp = fs_dax_get_by_bdev(handlep->bdev, &start_off,
-> +				      fsi  /* holder */,
-> +				      &famfs_blk_dax_holder_ops);
-> +	if (IS_ERR(dax_devp)) {
-> +		pr_err("%s: unable to get daxdev from handlep->bdev\n", __func__);
-> +		bdev_release(handlep);
-> +		return -ENODEV;
-> +	}
-> +	fsi->bdev_handle = handlep;
-> +	fsi->dax_devp    = dax_devp;
-> +
-> +	pr_notice("%s: root device is block dax (%s)\n", __func__, fc->source);
-
-pr_debug()  Kernel log is too noisy anyway! + I'd assume we can tell this succeeded
-in lots of other ways.
-
-
-> +	return 0;
-> +}
-> +
-> +
->  
->  MODULE_LICENSE("GPL");
-
+>  arch/loongarch/kvm/timer.c | 20 +-------------------
+>  1 file changed, 1 insertion(+), 19 deletions(-)
+>
+> diff --git a/arch/loongarch/kvm/timer.c b/arch/loongarch/kvm/timer.c
+> index a9125f0a12d1..d3282f01d4d9 100644
+> --- a/arch/loongarch/kvm/timer.c
+> +++ b/arch/loongarch/kvm/timer.c
+> @@ -23,24 +23,6 @@ static inline u64 tick_to_ns(struct kvm_vcpu *vcpu, u6=
+4 tick)
+>         return div_u64(tick * MNSEC_PER_SEC, vcpu->arch.timer_mhz);
+>  }
+>
+> -/*
+> - * Push timer forward on timeout.
+> - * Handle an hrtimer event by push the hrtimer forward a period.
+> - */
+> -static enum hrtimer_restart kvm_count_timeout(struct kvm_vcpu *vcpu)
+> -{
+> -       unsigned long cfg, period;
+> -
+> -       /* Add periodic tick to current expire time */
+> -       cfg =3D kvm_read_sw_gcsr(vcpu->arch.csr, LOONGARCH_CSR_TCFG);
+> -       if (cfg & CSR_TCFG_PERIOD) {
+> -               period =3D tick_to_ns(vcpu, cfg & CSR_TCFG_VAL);
+> -               hrtimer_add_expires_ns(&vcpu->arch.swtimer, period);
+> -               return HRTIMER_RESTART;
+> -       } else
+> -               return HRTIMER_NORESTART;
+> -}
+> -
+>  /* Low level hrtimer wake routine */
+>  enum hrtimer_restart kvm_swtimer_wakeup(struct hrtimer *timer)
+>  {
+> @@ -50,7 +32,7 @@ enum hrtimer_restart kvm_swtimer_wakeup(struct hrtimer =
+*timer)
+>         kvm_queue_irq(vcpu, INT_TI);
+>         rcuwait_wake_up(&vcpu->wait);
+>
+> -       return kvm_count_timeout(vcpu);
+> +       return HRTIMER_NORESTART;
+>  }
+>
+>  /*
+> --
+> 2.39.3
+>
 
