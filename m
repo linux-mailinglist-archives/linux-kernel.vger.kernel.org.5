@@ -1,251 +1,264 @@
-Return-Path: <linux-kernel+bounces-82023-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3C1B867DD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:16:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 525EF867DD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:15:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A05C28E9D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:16:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06C391F2C3A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:15:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD75E12F389;
-	Mon, 26 Feb 2024 17:07:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="crm4Nf/D"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2068.outbound.protection.outlook.com [40.107.243.68])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA013135A65;
+	Mon, 26 Feb 2024 17:05:30 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8914C12CDB7;
-	Mon, 26 Feb 2024 17:06:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.68
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708967219; cv=fail; b=AneIm9gYT/QuDLaUXYvmpgtIbpVLRnWNzjGaU6hW0heXxRSfKgJb4gKKMac6VL5SgNGIdTg10NX9EMq26/nJbO2768Jr/7b8mmDTvHUo6qFQ5sLSoZgdGldtuVnXm4hQHAYY+KiqvenxAXo08tRy4YHi5Rm2SfFvNTRGgl7Mwvk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708967219; c=relaxed/simple;
-	bh=JnMEiNksn5nV50Smu6PNzrgRjKfOG0zDy7msK62Z9c8=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=U9IZuzLvnfcTGMRUAIXV4RVQOL6cd+W5j4cr20t6hffxtDu4BqY49ukEs3/pnBJpspuY1nyFLxLU2jfH42//5fbFv4xQU8nPgSgUEzWKgCvgdI+opIjpO1Czi5SHZ2/90oUZdg2prVzecmji2mEpfwXlgVDAGYExkn1nOohLWl8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=crm4Nf/D; arc=fail smtp.client-ip=40.107.243.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZS7ZUQgcX01y+lahC2zCp9e0/H/2eAHCQJGOblAyTdKPiy5vMjBhb/HwuSbhA5zfLfPeik7l5qzLTQZ+7zCzIWW9fb4DcdkOn/M5XjrNHo1kqxyAJ14RODz2kn0xYMIGew3IlmdWeHcCn/0RGnYFpc9gF0yZLMgHR/8UjxElq4hAF/vj6PaiAq0wVZsfuL7gErBl7HsGJ5aS99+rvJyDy+gAJc82L2x6yO16cd8O/0eqfdBeLR2PLoOXeGrOvf0lZ9KO8/W3Y/au9Ljwtf3FoB30265fEeI1qyyXyriOWqkM1/GE1apNFG3LQpaARiXdcs1mZCkbKEcqRsDdH+VeGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Rs4u5JbO+QiZE1KGgEwdIipW9PYRwVjgEFeDW9jqMng=;
- b=YzCfFS0MijW/DKzhowV5y35ObTpg4EvfD4/WcTQmNWInoly829De28Fe6ZWD/xlJXkhvo40zGNOKTk7CJF8LAW1nNSgU0c9Z69jp8dcLcDlrl74rcXoZ5B7P+nhFRM42ozxgbM5bn1qShwXwnRWiLqxKD0SbEFsFFnSprS4+GldubWZ07iNzafQsZBUjnfACdiNbSBi6ewjNDIiDE4YZUbKWEM4A0tebYxQEONtFWMrsOiBWw1YM8NyyftHKRTFniO28zylIjUDe89c8bBK3oyHKIsB6nAmgzKAzRCjsb5N+NSr4CwZBFVtrR1S9sEHDOJKLS8r3zRA8eP9+pi1shw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Rs4u5JbO+QiZE1KGgEwdIipW9PYRwVjgEFeDW9jqMng=;
- b=crm4Nf/DPGd71pc+CgzNpXjkEDPFLtiAKGVNX/g2RBOwtdcUIt4M7lqgzTyHNjPAZNWifH3NNriF3CJv4sb5MUtVhLB0pZXjuFba9ysApy4836yJaWZ6gdpPOMGzdwp+sUgvYntcrDtZfbnoiDTV03Ad+3j+xXbitznHkSfwit8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5874.namprd12.prod.outlook.com (2603:10b6:208:396::17)
- by SJ1PR12MB6193.namprd12.prod.outlook.com (2603:10b6:a03:459::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.33; Mon, 26 Feb
- 2024 17:06:51 +0000
-Received: from BL1PR12MB5874.namprd12.prod.outlook.com
- ([fe80::14ab:832a:11af:bfec]) by BL1PR12MB5874.namprd12.prod.outlook.com
- ([fe80::14ab:832a:11af:bfec%4]) with mapi id 15.20.7316.032; Mon, 26 Feb 2024
- 17:06:51 +0000
-Message-ID: <5e360765-3398-4b72-ba7c-4df0958bc5d3@amd.com>
-Date: Mon, 26 Feb 2024 11:06:48 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 00/11] KVM: selftests: Add SEV and SEV-ES smoke tests
-Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
- Oliver Upton <oliver.upton@linux.dev>, Anup Patel <anup@brainfault.org>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Janosch Frank <frankja@linux.ibm.com>,
- Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc: kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- Vishal Annapurve <vannapurve@google.com>,
- Ackerley Tng <ackerleytng@google.com>, Andrew Jones
- <andrew.jones@linux.dev>, Tom Lendacky <thomas.lendacky@amd.com>,
- Michael Roth <michael.roth@amd.com>, Peter Gonda <pgonda@google.com>,
- Itaru Kitayama <itaru.kitayama@fujitsu.com>,
- "Giani, Dhaval" <dhaval.giani@amd.com>
-References: <20240223004258.3104051-1-seanjc@google.com>
-From: Carlos Bilbao <carlos.bilbao@amd.com>
-In-Reply-To: <20240223004258.3104051-1-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN1PR12CA0112.namprd12.prod.outlook.com
- (2603:10b6:802:21::47) To BL1PR12MB5874.namprd12.prod.outlook.com
- (2603:10b6:208:396::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2A8135A48;
+	Mon, 26 Feb 2024 17:05:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708967130; cv=none; b=H8nDGFO7QaKhEwyku94EkmhLhU1lBMfk2l2LL2UpWTdYCzAbtVS/52jYTYqqMTFOjMX/oENyy1oTaP0TSC9lLVQ1aJzMNx/rZ8f4t4yIUA5g5pQMriFCjljQGLtiwkh4kYRr5oaG6xKSp0malSAlcOjIwHjlW36SyLWUM7/RamA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708967130; c=relaxed/simple;
+	bh=wx87YOEUXHlfv7Ll5FAldV+GhFRYXH7Cua1+myCejKI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Cu7kkMeyqi6C5OaWFT/Bt5i1WmgN4PE5iiDGMyQ7wjQTnxzqP8JNvXCZ1U0+FFewo4dRY+f0yrw7KrPqtLkbPYNR4sA9dIcBFFXU5gHmaXeLbB7gfOu+P+wRnr6m4nuNhqNMwkaxSZcvZkZM45w2fgeAxFmyL2v1dIB8W5Izirs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2810C433F1;
+	Mon, 26 Feb 2024 17:05:28 +0000 (UTC)
+Date: Mon, 26 Feb 2024 12:07:28 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Richard Chang <richardycc@google.com>
+Cc: mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
+ akpm@linux-foundation.org, liumartin@google.com, surenb@google.com,
+ minchan@kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] mm: add alloc_contig_migrate_range allocation
+ statistics
+Message-ID: <20240226120728.3f495fa7@gandalf.local.home>
+In-Reply-To: <20240226120629.0c371252@gandalf.local.home>
+References: <20240226100045.2083962-1-richardycc@google.com>
+	<20240226120629.0c371252@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5874:EE_|SJ1PR12MB6193:EE_
-X-MS-Office365-Filtering-Correlation-Id: cbd44372-03f6-4128-a18d-08dc36ed535f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	AosjKrc34U19icGF82O4B3ERQo1BCp7lYoD+pvGz+CMtdDuwomutVxZpaCPKeRWWHwuSPU4kOQtm/v/d5MK0kgCKqhCS89ObNUqZN+2OKtRjSDdIlMouDDnhE32bBMmWuG3UDCc5oiKp9/JgvdypQVoXyGuuMcdqwqM3Arf6aff/uCPaB/du1hHIY983n0LhO81sweZnyBbHDeEFLT5vPg2cGjqLHk5MeWgXL7jLOWzZ1jFARuLd0r0U1CZRRSyNl3XD6L8R388VzjXtvXtVoXzY4KK4KpesEmGot21dCDewpAUVx3THH7aoSUoVbHjIId0gRBqR67xkCBhpZguewD9dfPOlOB2D7Hj6WaV0vULLciMpVKVfRacP82JsXcJYtu3OQa+pxfE51wiRqhYz7N6CmpJgZ8e05bGqe6uw1LxoxcDGqHIukqDfWBT+vpPiJSr/CruMM55nPMC4cAWhUWidJb8x85Rsom0WWGwJP8Q5rrsQWUrfbeoRc9gsy/qJGBfk22UzScCTX3fDiFxl+1oZYZLdCy/j/sRTNoVxO6kLhv7OF5mFSzyN7YCnpoHYrfwzobxHXWAQudMHJi8ES2UqhYz61Uk6+uXN49sDTUujxyTC5G9/L8nGClRZ8x74mq7XgvlbyFybUZaJVP/z57I10HVIPFh4jf+iunvhmU6mawqUnMqsynlgAXRKs5Xo
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5874.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(921011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NGEzaUJVZHZaK1BwVVlEOHRpa3I2SThuSnVodGtiQmRFcldzSzlHcTV4dnAy?=
- =?utf-8?B?YXo4TVd0QW8vMHc4aWdMdTZnNnQrRm9NeXpqU2psSWpRTk11b3YyUk4vMFJs?=
- =?utf-8?B?ZjY1Q3RZcEJ6L0ZseXE2eDlnMzFIWlMxc1RydUtaUktWK0NqanNiaGVNYUY5?=
- =?utf-8?B?eUVCQmg4aGhlb3J4bjJtTTFEb1JuNDgwR05KWWhqcEJiRjJKbExOMzVDL1E1?=
- =?utf-8?B?NXMvYlg1aHFLZHNtTmdwb3g5alBtRWVwRjV2RWFERWg5cXlGajdzZzlPNEFa?=
- =?utf-8?B?ZU1wdHRENUIyamo0VnRaalE1YWlmc3VGb1pCSjQ3RGRISUxKS3dvVTUyRnN1?=
- =?utf-8?B?ZDNBUjNiRURZUVZKdlJ0bVZNdW5TdkcrY1h6MTZvT2R1SUFqMUJjRzZIZTAz?=
- =?utf-8?B?NlhZU3BscVpyS1VJL1BQZ3JDWllDNGZPYWdCcDZ5cTdHdllqRFgyd0ljSEpJ?=
- =?utf-8?B?d2taR1R4aytxdmZZZlNoVDF3VGdRaEgrL0FUSGgybURTTkZ0RGZUK2ExelZP?=
- =?utf-8?B?aUYwbEVwOEU4aXpoZSt5YlB3S3FpY3NFSjhkTVByUUZ0TVhCK0MwdnVlZ0I5?=
- =?utf-8?B?QnFjdFpJR1E4eXE0STRMcFVPcEFnc2hERm8rVnRoUmdKY3Z0K0d0dldZUXZN?=
- =?utf-8?B?cG9GWHFaQnJ5bWtiNC9CcG1lZ3JQT0tXd2c4K2Z2K01hZXQzRVlNNHZoQ2Zh?=
- =?utf-8?B?S2dJMXlDSTVvdUtOam5DOVpkZGs1Nkl4RHhKU3NXK1VJL0pPYzZVOFVIS3Y2?=
- =?utf-8?B?TFp5QXhpYlZVaVBUeU80dzIraEJQQ0NOdXUvNTF4VkMzRDhKSTRPdG1TQ3ZR?=
- =?utf-8?B?MC9mclhVV2V3UEtwNk5MWXduRm13ZXBlZ3RMVk4zSXhQK0NsTC8ycXFDcE42?=
- =?utf-8?B?dDlKTXlJWkNBS3l0QktuT3hXZmxIRzlscng5RjM5OVJPL0I1dEFlSU9wUHJl?=
- =?utf-8?B?SDBxcnJjbDltbjdxcFladXBTRlBxZEhQTUF4enRXTkUrUVZkK1hVU2ZhR05x?=
- =?utf-8?B?bmo5cEs5bStpZFJEZUFZVGs4RjlZTFZ5YlRSR1BmcG16cmJvUHNZbUl4UExU?=
- =?utf-8?B?bVVBT2R5VVhqR0VsSUo2WEpmc1JsVEp0eDk0TnZtU21lZ2EzbUNVZFAyVzE5?=
- =?utf-8?B?MkpoS1A0Nlg1T3BZdUduZzZ4UmlsMkRyc25mRU52Zno3MVlzd0NRSFFUNHJH?=
- =?utf-8?B?SGE0eTkzNnVhdzVwYkplQ0NFTXo4Yis2MXR5aFhteFhHVFk3Y2Iyb0xRZmtC?=
- =?utf-8?B?Nm9EbERWdVN6RkdydTJ3NXA4cFRCUCtYVHRZRzZJVTdZaHJxTVlua0VCUWZS?=
- =?utf-8?B?MlZ5WVNocU92VFZZRkwvbEpsNnVRb20ydkdqS3BZTFdLdDNqZkg3K2dlYXRj?=
- =?utf-8?B?b21kYXRXbE94b1FmTGJ2VWFEUjFQektyQUpLVlFRUDJzQjZIbVNqVGk2SjlC?=
- =?utf-8?B?TFRjenBNWGUvTjhaTk9mU2tmSU9KV2t0d0JVdUkzRnY3OHB6K0VjdGV1Y2dU?=
- =?utf-8?B?QXVvdW5peTFtRVY3U3N2bGJMQUg5eFNtR1AwQy8rR0duSmNvWVozamRjQjJq?=
- =?utf-8?B?M3FrWlJkNGI1VFlYMmhkSnYrUlJKb1NNaU1Gb2dONVBtZk5JWktNcjc3b0t1?=
- =?utf-8?B?MytZdWdzajViV0IzVkFHVHd5NDVWenVGRzM3cWZwZWdFWWlid281Q1Y4QlV6?=
- =?utf-8?B?S0VQUHNZMllSS1NZVDI3SG0yV2QwQTBmS2k3dWt6MTJzNGsxQzllTjl6ODJV?=
- =?utf-8?B?U3hnK25Ia3piTXhrV1ZSclN1MkVSakVCRy9makd1SGEwUUxVU0JYdW1VUDho?=
- =?utf-8?B?V3NNT2F4TEoyMGJYLzJLZEw1RlJyU1hPZEdzVmU1RGNraHlBV28vdFltMHl4?=
- =?utf-8?B?TnBxdnZTWVcrN2l4QWxNUGtnR2NNVXljSERqMjdRZHRUd0xpbFFYaXFIVVpR?=
- =?utf-8?B?SWtNTnJsM1FqUDJDaGo1MkkzUTNxTEk1bkFoY0NYaEc4U2lWL3VQV0ZsQ0ky?=
- =?utf-8?B?anZsaVlDTWhYQkh2bGVFeEZHZkJYeCt3VkltK0xiYmRMc0JWRGY0NTZKV0ZI?=
- =?utf-8?B?dGo3eXNRdkZkZGtsMXhIUlJUdDFrNTZUeml2UUI0eEhzNHBnNi9TVUgwREN6?=
- =?utf-8?Q?jkLDNWwMpZVHzfjQScXhihg7d?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cbd44372-03f6-4128-a18d-08dc36ed535f
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5874.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 17:06:51.5016
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZHHA/oFbWvCIKLp54lqyxwsr/g2I0QfDx6ZprdGX04xiRuhNSbJ//NA9O7ZiK088Vr3IAy9nas7wP43WqcpOiQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6193
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On Mon, 26 Feb 2024 12:06:29 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-On 2/22/24 18:42, Sean Christopherson wrote:
-> Add basic SEV and SEV-ES smoke tests.  Unlike the intra-host migration tests,
-> this one actually runs a small chunk of code in the guest.
+> On Mon, 26 Feb 2024 10:00:15 +0000
+> Richard Chang <richardycc@google.com> wrote:
 > 
-> Unless anyone strongly objects to the quick and dirty approach I've taken for
-> SEV-ES, I'll get all of this queued for 6.9 soon-ish.
+> > alloc_contig_migrate_range has every information to be able to
+> > understand big contiguous allocation latency. For example, how many
+> > pages are migrated, how many times they were needed to unmap from
+> > page tables.
+> > 
+> > This patch adds the trace event to collect the allocation statistics.
+> > In the field, it was quite useful to understand CMA allocation
+> > latency.
+> > 
+> > Signed-off-by: Richard Chang <richardycc@google.com>
+> > ---
+> >  include/trace/events/kmem.h | 39 +++++++++++++++++++++++++++++++++++++
+> >  mm/internal.h               |  3 ++-
+> >  mm/page_alloc.c             | 30 +++++++++++++++++++++++-----
+> >  mm/page_isolation.c         |  2 +-
+> >  4 files changed, 67 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/include/trace/events/kmem.h b/include/trace/events/kmem.h
+> > index 58688768ef0f..964704d76f9f 100644
+> > --- a/include/trace/events/kmem.h
+> > +++ b/include/trace/events/kmem.h
+> > @@ -304,6 +304,45 @@ TRACE_EVENT(mm_page_alloc_extfrag,
+> >  		__entry->change_ownership)
+> >  );
+> >  
+> > +TRACE_EVENT(mm_alloc_contig_migrate_range_info,
+> > +
+> > +	TP_PROTO(unsigned long start,
+> > +		 unsigned long end,
+> > +		 int migratetype,
+> > +		 unsigned long nr_migrated,
+> > +		 unsigned long nr_reclaimed,
+> > +		 unsigned long nr_mapped),
+> > +
+> > +	TP_ARGS(start, end, migratetype,
+> > +		nr_migrated, nr_reclaimed, nr_mapped),
+> > +
+> > +	TP_STRUCT__entry(
+> > +		__field(unsigned long, start)
+> > +		__field(unsigned long, end)
+> > +		__field(int, migratetype)  
 > 
-> As for _why_ I added the quick-and-dirty SEV-ES testcase, I have a series to
-> cleanup __svm_sev_es_vcpu_run(), and found out that apparently I have a version
-> of OVMF that doesn't quite have to the right <something> for SEV-ES, and so I
-> could even get a "real" VM to reach KVM_RUN.  I assumed (correctly, yay!) that
-> hacking together a selftest would be faster than figuring out what firmware
-> magic I am missing.
+> 
+> Please move the int to the end of the longs, as it will cause a 4 byte hole
+> in 64 bit machines otherwise.
+> 
+> 
+> > +		__field(unsigned long, nr_migrated)
+> > +		__field(unsigned long, nr_reclaimed)
+> > +		__field(unsigned long, nr_mapped)
+> > +	),
+> > +
+> > +	TP_fast_assign(
+> > +		__entry->start = start;
+> > +		__entry->end = end;
+> > +		__entry->migratetype = migratetype;
+> > +		__entry->nr_migrated = nr_migrated;
+> > +		__entry->nr_reclaimed = nr_reclaimed;
+> > +		__entry->nr_mapped = nr_mapped;
+> > +	),
+> > +
+> > +	TP_printk("start=0x%lx end=0x%lx migratetype=%d nr_migrated=%lu nr_reclaimed=%lu nr_mapped=%lu",
+> > +		  __entry->start,
+> > +		  __entry->end,
+> > +		  __entry->migratetype,
+> > +		  __entry->nr_migrated,
+> > +		  __entry->nr_reclaimed,
+> > +		  __entry->nr_mapped)
+> > +);
+> > +
+> >  /*
+> >   * Required for uniquely and securely identifying mm in rss_stat tracepoint.
+> >   */
+> > diff --git a/mm/internal.h b/mm/internal.h
+> > index f309a010d50f..e114c647e278 100644
+> > --- a/mm/internal.h
+> > +++ b/mm/internal.h
+> > @@ -537,7 +537,8 @@ isolate_migratepages_range(struct compact_control *cc,
+> >  			   unsigned long low_pfn, unsigned long end_pfn);
+> >  
+> >  int __alloc_contig_migrate_range(struct compact_control *cc,
+> > -					unsigned long start, unsigned long end);
+> > +					unsigned long start, unsigned long end,
+> > +					int migratetype);
+> >  
+> >  /* Free whole pageblock and set its migration type to MIGRATE_CMA. */
+> >  void init_cma_reserved_pageblock(struct page *page);
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index 150d4f23b010..f840bc785afa 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -6219,9 +6219,14 @@ static void alloc_contig_dump_pages(struct list_head *page_list)
+> >  	}
+> >  }
+> >  
+> > -/* [start, end) must belong to a single zone. */
+> > +/*
+> > + * [start, end) must belong to a single zone.
+> > + * @migratetype: using migratetype to filter the type of migration in
+> > + *		trace_mm_alloc_contig_migrate_range_info.
+> > + */
+> >  int __alloc_contig_migrate_range(struct compact_control *cc,
+> > -					unsigned long start, unsigned long end)
+> > +					unsigned long start, unsigned long end,
+> > +					int migratetype)
+> >  {
+> >  	/* This function is based on compact_zone() from compaction.c. */
+> >  	unsigned int nr_reclaimed;
+> > @@ -6232,6 +6237,10 @@ int __alloc_contig_migrate_range(struct compact_control *cc,
+> >  		.nid = zone_to_nid(cc->zone),
+> >  		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL,
+> >  	};
+> > +	struct page *page;
+> > +	unsigned long total_mapped = 0;
+> > +	unsigned long total_migrated = 0;
+> > +	unsigned long total_reclaimed = 0;
+> >  
+> >  	lru_cache_disable();
+> >  
+> > @@ -6257,9 +6266,16 @@ int __alloc_contig_migrate_range(struct compact_control *cc,
+> >  							&cc->migratepages);
+> >  		cc->nr_migratepages -= nr_reclaimed;
+> >  
+> > +		total_reclaimed += nr_reclaimed;
+> > +		list_for_each_entry(page, &cc->migratepages, lru)
+> > +			total_mapped += page_mapcount(page);  
+> 
+> You're doing this calculation regardless of if tracing is enabled or not
+> and it's only used for tracing? Please add:
+> 
+> 		if (trace_mm_alloc_contig_migrate_range_info_enabled()) {
+> 			total_reclaimed += nr_reclaimed;
+> 			list_for_each_entry(page, &cc->migratepages, lru)
+> 				total_mapped += page_mapcount(page);
+> 		}
+> 
+> -- Steve
 
-Tested-by: Carlos Bilbao <carlos.bilbao@amd.com>
+Oops, I forgot to remove this sig when I came back and added the below
+reply too.
+
+-- Steve
+
 
 > 
-> v9:
->   - Drop is_kvm_sev_supported() and rely purely on KVM capabilities.
->   - Check X86_FEATURE_SEV to ensure SEV is actually enabled.
->   - Collect tags. [Carlos, Itaru]
+> > +
+> >  		ret = migrate_pages(&cc->migratepages, alloc_migration_target,
+> >  			NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE, NULL);
+> >  
+> > +		if (!ret)  
 > 
-> v8:
->   - https://lore.kernel.org/all/cc9a1951-e76c-470d-a4d1-8ad67bae5794@amd.com
->   - Undo the kvm.h uAPI breakage.
->   - Take advantage of "struct vm_shape", introduced by the guest_memfd
->     selftests, to simply tracking the SEV/SEV-ES subtypes.
->   - Rename the test to "sev_smoke_test" instead of "sev_all_boot_test",
->     as the "all" is rather nonsensical, and the test isn't booting anything
->     in the traditional sense of the word.
->   - Drop vm->protected and instead add an arch hook to query if the VM has
->     protected memory.
->   - Assert that the target memory region supports protected memory when
->     allocating protected memory.
->   - Allocate protected_phy_pages for memory regions if and only if the VM
->     supports protected memory.
->   - Rename kvm_host.h to kvm_util_arch.h, and move it to selftests/kvm where
->     it belongs.
->   - Fix up some SoB goofs.
->   - Convert the intrahost SEV/SEV-ES migration tests to use common ioctl()
->     wrappers.
+> May want the above to be:
 > 
-> Ackerley Tng (1):
->    KVM: selftests: Add a macro to iterate over a sparsebit range
+> 		if (trace_mm_alloc_config_migrate_range_info_enabled() && !ret)
 > 
-> Michael Roth (2):
->    KVM: selftests: Make sparsebit structs const where appropriate
->    KVM: selftests: Add support for protected vm_vaddr_* allocations
+> too.
 > 
-> Peter Gonda (5):
->    KVM: selftests: Add support for allocating/managing protected guest
->      memory
->    KVM: selftests: Explicitly ucall pool from shared memory
->    KVM: selftests: Allow tagging protected memory in guest page tables
->    KVM: selftests: Add library for creating and interacting with SEV
->      guests
->    KVM: selftests: Add a basic SEV smoke test
+> -- Steve
 > 
-> Sean Christopherson (3):
->    KVM: selftests: Extend VM creation's @shape to allow control of VM
->      subtype
->    KVM: selftests: Use the SEV library APIs in the intra-host migration
->      test
->    KVM: selftests: Add a basic SEV-ES smoke test
+> > +			total_migrated += cc->nr_migratepages;
+> > +
+> >  		/*
+> >  		 * On -ENOMEM, migrate_pages() bails out right away. It is pointless
+> >  		 * to retry again over this error, so do the same here.
+> > @@ -6273,9 +6289,13 @@ int __alloc_contig_migrate_range(struct compact_control *cc,
+> >  		if (!(cc->gfp_mask & __GFP_NOWARN) && ret == -EBUSY)
+> >  			alloc_contig_dump_pages(&cc->migratepages);
+> >  		putback_movable_pages(&cc->migratepages);
+> > -		return ret;
+> >  	}
+> > -	return 0;
+> > +
+> > +	trace_mm_alloc_contig_migrate_range_info(start, end, migratetype,
+> > +						 total_migrated,
+> > +						 total_reclaimed,
+> > +						 total_mapped);
+> > +	return (ret < 0) ? ret : 0;
+> >  }
+> >  
+> >  /**
+> > @@ -6355,7 +6375,7 @@ int alloc_contig_range(unsigned long start, unsigned long end,
+> >  	 * allocated.  So, if we fall through be sure to clear ret so that
+> >  	 * -EBUSY is not accidentally used or returned to caller.
+> >  	 */
+> > -	ret = __alloc_contig_migrate_range(&cc, start, end);
+> > +	ret = __alloc_contig_migrate_range(&cc, start, end, migratetype);
+> >  	if (ret && ret != -EBUSY)
+> >  		goto done;
+> >  	ret = 0;
+> > diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+> > index cd0ea3668253..a5c8fa4c2a75 100644
+> > --- a/mm/page_isolation.c
+> > +++ b/mm/page_isolation.c
+> > @@ -434,7 +434,7 @@ static int isolate_single_pageblock(unsigned long boundary_pfn, int flags,
+> >  				}
+> >  
+> >  				ret = __alloc_contig_migrate_range(&cc, head_pfn,
+> > -							head_pfn + nr_pages);
+> > +							head_pfn + nr_pages, page_mt);
+> >  
+> >  				/*
+> >  				 * restore the page's migratetype so that it can  
 > 
->   tools/testing/selftests/kvm/Makefile          |   2 +
->   .../kvm/include/aarch64/kvm_util_arch.h       |   7 ++
->   .../selftests/kvm/include/kvm_util_base.h     |  50 +++++++-
->   .../kvm/include/riscv/kvm_util_arch.h         |   7 ++
->   .../kvm/include/s390x/kvm_util_arch.h         |   7 ++
->   .../testing/selftests/kvm/include/sparsebit.h |  56 ++++++---
->   .../kvm/include/x86_64/kvm_util_arch.h        |  23 ++++
->   .../selftests/kvm/include/x86_64/processor.h  |   8 ++
->   .../selftests/kvm/include/x86_64/sev.h        | 107 ++++++++++++++++
->   tools/testing/selftests/kvm/lib/kvm_util.c    |  67 ++++++++--
->   tools/testing/selftests/kvm/lib/sparsebit.c   |  48 ++++----
->   .../testing/selftests/kvm/lib/ucall_common.c  |   3 +-
->   .../selftests/kvm/lib/x86_64/processor.c      |  32 ++++-
->   tools/testing/selftests/kvm/lib/x86_64/sev.c  | 114 ++++++++++++++++++
->   .../selftests/kvm/x86_64/sev_migrate_tests.c  |  67 ++++------
->   .../selftests/kvm/x86_64/sev_smoke_test.c     |  88 ++++++++++++++
->   16 files changed, 583 insertions(+), 103 deletions(-)
->   create mode 100644 tools/testing/selftests/kvm/include/aarch64/kvm_util_arch.h
->   create mode 100644 tools/testing/selftests/kvm/include/riscv/kvm_util_arch.h
->   create mode 100644 tools/testing/selftests/kvm/include/s390x/kvm_util_arch.h
->   create mode 100644 tools/testing/selftests/kvm/include/x86_64/kvm_util_arch.h
->   create mode 100644 tools/testing/selftests/kvm/include/x86_64/sev.h
->   create mode 100644 tools/testing/selftests/kvm/lib/x86_64/sev.c
->   create mode 100644 tools/testing/selftests/kvm/x86_64/sev_smoke_test.c
-> 
-> 
-> base-commit: 60eedcfceda9db46f1b333e5e1aa9359793f04fb
 
-Thanks,
-Carlos
 
