@@ -1,166 +1,138 @@
-Return-Path: <linux-kernel+bounces-82029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 893BE867DED
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:18:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4704A867DF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:18:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F1FB285E3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:18:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 791B61C2C107
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:18:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D899B130E2D;
-	Mon, 26 Feb 2024 17:11:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E76E131E2A;
+	Mon, 26 Feb 2024 17:12:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="cRZGNXUg"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FpRiBDv+"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A929130E2E
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 17:11:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9800A131736
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 17:12:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708967477; cv=none; b=DyVMchBoJy00xd6ffZ25zHWkvS7Bz9TIZM1r+MS+hutePOJ6LHu+pI3n5db5h3ic/Icr1AMj+yQkta4thURA/WRdLVolhcwMLW3H7ZoMh8mUevzrIShk6kbU6t6ZyJm3p639rCvLfccAXgk58WA44HWovsAIfKe9HHveHMBNpeE=
+	t=1708967523; cv=none; b=qHhF6OSajqelJtKM6XGrJkFkkRvG/LaHssp5vrP3IWpNTMaO3zxomSLDcUv7m4kVdNss4dA16IFgwpADw0h+/+lJ+kaGdLQa2YrgZjybeZiF11m+YlzteOUgZkZfakFq+tdg6VUy/Zpm5oliicXsBcSYOYRjPLOtX8THyfu3pOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708967477; c=relaxed/simple;
-	bh=Yt1iK6ApoRRAwYIAF8J0XZzIcb/oxLGRDCMiADPPzcs=;
+	s=arc-20240116; t=1708967523; c=relaxed/simple;
+	bh=Chynr1L1b/d5TcYFCNc4RvKn+tu9v2QwhIq+NAH+cTo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Not363+5cT5jdjwjKJTIcBIjh2jzEXThzmKhNMK60+f5SFxdd/ny4KoNtttVUuaIhL3d0wLeIzyoWRdcLrU8aSYGUyfQnfi5Fv5C8FmUCoOeEOI64Sgrxu9MM81GrBq3qBzGbg9VEtqC4Uro/oUu8xvDxjcoXyE7kD/8/QognCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=cRZGNXUg; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a3d484a58f6so467958866b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:11:14 -0800 (PST)
+	 To:Cc:Content-Type; b=jAsL8FHRbLuO0O//CGrzd1tn2sNXh5KvRSgXnY46yn53vZV3ukwjIhRkXN9/wdT78FMyGN6qTNiMb5hmiSkYB0Cvk7HlZFapyBXIaPAb+XSrgb2+FNr+esTglz3qHiAK5MojMu3oKo+kp8z5sOpL3RjTeFFDN4++1qIy2Z2U5ic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FpRiBDv+; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dc6d8bd612dso3249804276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:12:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708967472; x=1709572272; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1708967519; x=1709572319; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yOKxowLRXopwaSUBXoFBP7qAPcPHaHQRznoK8vOmNBg=;
-        b=cRZGNXUg7tMrDIy/Trs+pcRxxdWR4fXE549Zjdszpu1xsb1bXRsUCtbM5E7WiJL85k
-         rTgwTYNeAh5fTsFM4HUvr+t45+SJUdgFfsY05PVp07ATrKKPrXCgI+2gTpuM8cszSbXv
-         akWHvy7Dtc7dWU4yLBmPGT49QxCTIe9258MiI=
+        bh=Chynr1L1b/d5TcYFCNc4RvKn+tu9v2QwhIq+NAH+cTo=;
+        b=FpRiBDv+CAV4Y6DNyKhilSCvwzfE05AWMZswNQENVfSKH9LDwic2wN/R6WnSjGiJRY
+         XLh1loIgNFgYP+YkN0DMJOO0yInyIT66++RmRqEp9lMKhJzaPz7za3p6D4F0FkFOOdjy
+         TKywspDmeXUx5/Bi9fLUnmwVqrWD9oVP8AtA5BGpPpfrjXTU4EMm1hLHZ06rbHDYmR/T
+         QG8tVN3ExGz/BT+fuMexyKcxVmoRzl9al+fJHXXiHgRA9UcGVrYxYap4LZHPDE3gEB1U
+         EUNBT6rRGCB8h2UwQSx3Ovq6T4B1sAbyWagQoZocd22ZG7aI30pzUd5Kd3nQ0PF/5xbS
+         7PtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708967472; x=1709572272;
+        d=1e100.net; s=20230601; t=1708967519; x=1709572319;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yOKxowLRXopwaSUBXoFBP7qAPcPHaHQRznoK8vOmNBg=;
-        b=OsHNsOnzIXk2NDKXK0/90M0/KvhRE6DPj8/UziDdHHS96qJc5/qvyKFoOGO8ezN17b
-         9fgBVlL2JfpCxBtjKAJt6wFRvpLS3mMkMhm4X9NsPp/Ues9KRKYqcKw97KABAQDDJYeI
-         A+y9S9y9VQk/xeazMSDm6cO2CrB0e3Wn6zfhRsiGT8pILkUwspeM7CatKuvgvkLKpBAf
-         2pZQj6qcRI4xR50Nchk1tE1NKvMuGZMPSQeoyt7NQbJsG3cMDm4OJf7cJDXCPhju1PwY
-         VSCcxvD6rOHns6dEV4p/MySAkfl7p4VGXD+5PhNzFIjlFCUjo/K+nj7e4j7iv3s7jlji
-         3jXA==
-X-Forwarded-Encrypted: i=1; AJvYcCX03VbLFAxDqcWWsMf6WAnyeTY6N6llUEpNWL2xGWdPlT/GIF8JDZHpu10UBKWRw2s4Gnl7M4krySifn9b3tnLDHGmv3WO+A5PpzZhh
-X-Gm-Message-State: AOJu0Yxf6bKtaMmyGg2zI7ohG4jK7hwlj24YH6WgrpKPkZqJ8rO9J6PD
-	3lkfpLmQU2UlP53pnr44mnKJhdwpxGq546sZ2ELHitRm2OTxjVNApoqFOsXJH7KpR2sGG28uv91
-	gd9N8
-X-Google-Smtp-Source: AGHT+IHRjnMoTSEwfpCKw4XbqRvUXPRR0jVnOQM6heaZf3pL4r45eP0geAmmFT/RbxwJTVACt/nWGg==
-X-Received: by 2002:a17:906:1183:b0:a3e:e869:a151 with SMTP id n3-20020a170906118300b00a3ee869a151mr4924175eja.45.1708967472537;
-        Mon, 26 Feb 2024 09:11:12 -0800 (PST)
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com. [209.85.128.47])
-        by smtp.gmail.com with ESMTPSA id vx8-20020a170907a78800b00a432777eb77sm1650907ejc.60.2024.02.26.09.11.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 09:11:12 -0800 (PST)
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-412a9f272f4so11305e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:11:11 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWmVlgyf02TSbcW4CHrSh9WWpr2F4jgm7LB80KBDZoRrnXjLqz06kSWQ0iRwZcN+ZAGHxZEv85WBjPawuU/Hpa1pNedoTnlRe4lM78e
-X-Received: by 2002:a05:600c:5007:b0:412:a9ce:5f68 with SMTP id
- n7-20020a05600c500700b00412a9ce5f68mr40767wmr.2.1708967471006; Mon, 26 Feb
- 2024 09:11:11 -0800 (PST)
+        bh=Chynr1L1b/d5TcYFCNc4RvKn+tu9v2QwhIq+NAH+cTo=;
+        b=TAu05vg7dJRTe96WHJOdllzDC5mZMsM3x3z+PXKZW+GgVMKLSFYe5f9Of7eIQ+NA4o
+         0UdxAf2jAdYIDhZTXtsqW/L+3xJ31dXxazJZPHOgDbR/mvhM6Y4pZO/bJf/jMPIOYPGH
+         Cq0sgaz2NKnP2ke8B9f3/ZPhf2/+VXIFVre73r2ybDVKAkzY277RfRr5m273wTOKMFf5
+         bpAsnZbH9FGdK+0bsHrJMQDs3mgsdxmtA+qOK2M7kOUx5qVx+cpEGSoL6IzLUi3frUrb
+         pOt/DBnLDGGay1dzZysY5FC/bfECcpvZO057DPFA79kmAqikFoniKYHZ+HxHrBZ1Cf22
+         n2Yw==
+X-Forwarded-Encrypted: i=1; AJvYcCWRTDa2Br1mPbPboavLulyyGmArKnhDoq2jUhtwYbrAzD1TzbNo1Ed2ociJo0hmeKNhhblaZcTcfNlWL/ZXLGl/yfd4B6/VetplSool
+X-Gm-Message-State: AOJu0Yx9M3k7N1Qekzr6SsE9ac7LtMtvV+PEpblfOdfyCHs5qAz2etrC
+	dp/IyRqC0EYiqwGS/5Y9SP3VmAtPFWLl7GJRZK3SkCS1LvivMZj76DTwsZrH7E0IvVnV1A6gvWu
+	dx1YLP6sL9rxkA3k4vprBFnIBIxF06ABXCk/H
+X-Google-Smtp-Source: AGHT+IFIvCWhsm/t6u8M8LFQ9aoCdr7tXSqiWENlQfptKH682IaVJyWTqKPlBpDf+9Q2OFcqiRYx3fgZnfrpOzBGyTM=
+X-Received: by 2002:a25:acd2:0:b0:dcc:2caa:578b with SMTP id
+ x18-20020a25acd2000000b00dcc2caa578bmr5024557ybd.40.1708967519035; Mon, 26
+ Feb 2024 09:11:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221210626.155534-1-adrian.ratiu@collabora.com>
-In-Reply-To: <20240221210626.155534-1-adrian.ratiu@collabora.com>
-From: Doug Anderson <dianders@chromium.org>
-Date: Mon, 26 Feb 2024 09:10:54 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=WR51_HJA0teHhBKvr90ufzZePVcxdA+iVZqXUK=cYJng@mail.gmail.com>
-Message-ID: <CAD=FV=WR51_HJA0teHhBKvr90ufzZePVcxdA+iVZqXUK=cYJng@mail.gmail.com>
-Subject: Re: [PATCH] proc: allow restricting /proc/pid/mem writes
-To: Adrian Ratiu <adrian.ratiu@collabora.com>, Kees Cook <keescook@chromium.org>
-Cc: linux-security-module@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kernel@collabora.com, 
-	Guenter Roeck <groeck@chromium.org>, Mike Frysinger <vapier@chromium.org>
+References: <20240221194052.927623-1-surenb@google.com> <20240221194052.927623-16-surenb@google.com>
+ <d6141a99-3409-447b-88ac-16c24b0a892e@suse.cz>
+In-Reply-To: <d6141a99-3409-447b-88ac-16c24b0a892e@suse.cz>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Mon, 26 Feb 2024 09:11:45 -0800
+Message-ID: <CAJuCfpGZ6W-vjby=hWd5F3BOCLjdeda2iQx_Tz-HcyjCAsmKVg@mail.gmail.com>
+Subject: Re: [PATCH v4 15/36] lib: introduce support for page allocation tagging
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Mon, Feb 26, 2024 at 9:07=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> On 2/21/24 20:40, Suren Baghdasaryan wrote:
+> > Introduce helper functions to easily instrument page allocators by
+> > storing a pointer to the allocation tag associated with the code that
+> > allocated the page in a page_ext field.
+> >
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > Co-developed-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+>
+> The static key usage seems fine now. Even if the page_ext overhead is sti=
+ll
+> always paid when compiled in, you mention in the cover letter there's a p=
+lan
+> for boot-time toggle later, so
 
-On Wed, Feb 21, 2024 at 1:06=E2=80=AFPM Adrian Ratiu <adrian.ratiu@collabor=
-a.com> wrote:
->
-> Prior to v2.6.39 write access to /proc/<pid>/mem was restricted,
-> after which it got allowed in commit 198214a7ee50 ("proc: enable
-> writing to /proc/pid/mem"). Famous last words from that patch:
-> "no longer a security hazard". :)
->
-> Afterwards exploits appeared started causing drama like [1]. The
-> /proc/*/mem exploits can be rather sophisticated like [2] which
-> installed an arbitrary payload from noexec storage into a running
-> process then exec'd it, which itself could include an ELF loader
-> to run arbitrary code off noexec storage.
->
-> As part of hardening against these types of attacks, distrbutions
-> can restrict /proc/*/mem to only allow writes when they makes sense,
-> like in case of debuggers which have ptrace permissions, as they
-> are able to access memory anyway via PTRACE_POKEDATA and friends.
->
-> Dropping the mode bits disables write access for non-root users.
-> Trying to `chmod` the paths back fails as the kernel rejects it.
->
-> For users with CAP_DAC_OVERRIDE (usually just root) we have to
-> disable the mem_write callback to avoid bypassing the mode bits.
->
-> Writes can be used to bypass permissions on memory maps, even if a
-> memory region is mapped r-x (as is a program's executable pages),
-> the process can open its own /proc/self/mem file and write to the
-> pages directly.
->
-> Even if seccomp filters block mmap/mprotect calls with W|X perms,
-> they often cannot block open calls as daemons want to read/write
-> their own runtime state and seccomp filters cannot check file paths.
-> Write calls also can't be blocked in general via seccomp.
->
-> Since the mem file is part of the dynamic /proc/<pid>/ space, we
-> can't run chmod once at boot to restrict it (and trying to react
-> to every process and run chmod doesn't scale, and the kernel no
-> longer allows chmod on any of these paths).
->
-> SELinux could be used with a rule to cover all /proc/*/mem files,
-> but even then having multiple ways to deny an attack is useful in
-> case on layer fails.
->
-> [1] https://lwn.net/Articles/476947/
-> [2] https://issues.chromium.org/issues/40089045
->
-> Based on an initial patch by Mike Frysinger <vapier@chromium.org>.
->
-> Cc: Guenter Roeck <groeck@chromium.org>
-> Cc: Doug Anderson <dianders@chromium.org>
-> Signed-off-by: Mike Frysinger <vapier@chromium.org>
-> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
-> ---
-> Tested on next-20240220.
->
-> I would really like to avoid depending on CONFIG_MEMCG which is
-> required for the struct mm_stryct "owner" pointer.
->
-> Any suggestions how check the ptrace owner without MEMCG?
-> ---
->  fs/proc/base.c   | 26 ++++++++++++++++++++++++--
->  security/Kconfig | 13 +++++++++++++
->  2 files changed, 37 insertions(+), 2 deletions(-)
+Yes, I already have a simple patch for that to be included in the next
+revision: https://github.com/torvalds/linux/commit/7ca367e80232345f471b77b3=
+ea71cf82faf50954
 
-Thanks for posting this! This looks reasonable to me, but I'm nowhere
-near an expert on this so I won't add a Reviewed-by tag.
+>
+> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
-This feels like the kind of thing that Kees might be interested in
-reviewing, so adding him to the "To" list.
+Thanks!
+
+>
+>
 
