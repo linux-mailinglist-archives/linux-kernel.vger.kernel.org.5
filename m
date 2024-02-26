@@ -1,142 +1,112 @@
-Return-Path: <linux-kernel+bounces-81310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0D1F8673DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:50:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B5DF8673EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:52:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C22A41C285E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:50:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 259961F2C31A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:52:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCBCB1F619;
-	Mon, 26 Feb 2024 11:50:32 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 698F51F608;
+	Mon, 26 Feb 2024 11:52:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="b+S8ushs"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C83CB1F604;
-	Mon, 26 Feb 2024 11:50:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F7DB1EB5B
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:52:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708948231; cv=none; b=ZKupTAgvjg68pTwP2tsz/zKVpl0bIyNz2FFW7AVvEHNg11PnLSUrTN3TR1/WepvTPZ9x5O5REwdXqQ5iu1DN/BcUS7Se9+WuYg4iYrk86IfP34UxyFeaA1odhquyPd58qPPfE+pwnbDjOH0RrakYuC4DE/M9s4hDlirqbLxzg5A=
+	t=1708948328; cv=none; b=OWCMivXEfyGF9Z4AOdHLGUYGyuqEWxLrg8G79J8/o1BWu6+vgTwOWlU91zcrc5u0W4AtlAM/z6wvZ/Y2wfI0Bc1Lw/AFKvCgwZSmjI/YCq19PjhJYxxTyOJlXJpK0+LUmcQMKXGi1oqGgE0aEfkEJPkwrVoY8uxkHBBWiaqph3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708948231; c=relaxed/simple;
-	bh=o2zP6qkBFJWPP/SsY/iJWKDrUYVt/AOBRXL4yt1J6yQ=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=WBavtv93b1jtIgb41XmiUuR/JkSz7htHpsaU3xN2UsM6FLuSrdqGeJi20iS3CrVMkfuf8NcAHbmsc59Wb7oTsOWX4+aXSesfQqweXQY7piYR9ylt/sPJOKqLIxLnn+Cc4Ncz2/tQRbjwPCI+4M+HJW4nYDDmHbVum+kOyBQ65Wg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TjzSn5ZSJz4f3lVm;
-	Mon, 26 Feb 2024 19:50:17 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 138A11A0283;
-	Mon, 26 Feb 2024 19:50:25 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-	by APP4 (Coremail) with SMTP id gCh0CgCHjG4Ae9xl5k8nFQ--.25370S2;
-	Mon, 26 Feb 2024 19:50:25 +0800 (CST)
-Subject: Re: [PATCH 5/7] fs/writeback: only calculate dirtied_before when b_io
- is empty
-To: Jan Kara <jack@suse.cz>
-Cc: viro@zeniv.linux.org.uk, brauner@kernel.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240208172024.23625-1-shikemeng@huaweicloud.com>
- <20240208172024.23625-6-shikemeng@huaweicloud.com>
- <20240223135809.5bvyl7ex3zm6bnta@quack3>
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <115755e5-9c4f-8aea-1bc0-41868926c527@huaweicloud.com>
-Date: Mon, 26 Feb 2024 19:50:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+	s=arc-20240116; t=1708948328; c=relaxed/simple;
+	bh=sOzOESPSJJuKs5PAS3HZPU1TL/jbqDPulGHUi2T1kSU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XSLOIjdJEphErEZJeVMX2cyQEejUuiO24hr71B6HjdXhSXgqiG3oYIRjSyaFqP0wSGGYJ84TcqYmTxl3BXsjgRO186L/FQCArjifoTyK6386mUhDYfGhSy6o1DgNDHt8i+RhQcPzmVpa8MOB2YOmMMqdsQHwNH1mqUVGkT81Oqo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=b+S8ushs; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-412a3371133so7270635e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:52:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1708948324; x=1709553124; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Mz1uRkxJ9UbCLdRqQYDHAKRawtBRwIdQ/FjWHaCkwJM=;
+        b=b+S8ushsfvjC3dYmVdCRBizJgeMP2nlvA00iE4V7Ngk/iSoyp0xUKS1LAhId/R/+8K
+         o3lgB0ikWp/TJZpTI2GoqplVdoj9LIu66X/epE4gRYpCgqFhVpHWIz0ggFH9KH9a0rGb
+         cDWry9ljQS3pI6+oRIdyWzTKL2y9epGF6By9wo1LUG3Ixq6sUGlxvFEbYxD+nv8IHVcN
+         n6yGuV9xsuOC5MFh9Ta6yH+2E/Xycr0KnJsc/OwH8DPRng2ZfHquU2vOpsVywwg9MyMi
+         varINfdFm4Upvyf8iiGueSDR7pKE5wFybYqWkD6u/YMwc/FGDuAnqOg8kwfakVgV5vAo
+         dERA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708948324; x=1709553124;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Mz1uRkxJ9UbCLdRqQYDHAKRawtBRwIdQ/FjWHaCkwJM=;
+        b=wpnRCE0Ste/+e6qSmMC/SeIO6vm0cADCGFCMHwzvmw/hET0kO8ABOIhiPWtvyrONkU
+         UR0fW2GV2A4XGENcrkCTPEfwOIF5BcDzbxTyj5VXTfwBl4StlfA+6faOHUz96U4UBhxH
+         YTdw66WaORg/08C5yIxJ0khJ7JOYsO+ypsyOwYGg6y/m3JFFDPpeizekhkrd8dF3ngnJ
+         iKvj/c7OT5pk4vjC8LkWHVQXEZvW5ZxE+2+3eCSO0mUMeXFbvmRo0n1pucTxcMV0qpDp
+         pIdqgvcgw4K0z6fKH6d1KJyTl0E+u2w6fVsMsS8KHX1i3UZwiyYnV4iVGzcgeBR+2jvd
+         TImw==
+X-Forwarded-Encrypted: i=1; AJvYcCUzeaI0woS5ztE19z67zFTQuUb2AraTJ25742WQyI8P2Ud7xsHQK+63A/CPjdqIWtSagBlhU9+R3hALBDYSJJtzkkfr0xsllk4XHilR
+X-Gm-Message-State: AOJu0YykcOpienjyc2CS1b75DvWzwab2rFqQc3UmCuQzX4iB/S4zd+gZ
+	Hd2oD20WeuKCGT1HDErcrtx4jz0DNDFPwhItRse/i5i0PlnWngoMOd5S2RftOwpBhztuvrVE3AZ
+	u
+X-Google-Smtp-Source: AGHT+IHuxCyz0aJYPuqa7jbzFzpVsMcqlrnBD87lnBA/2voj6xC84towYtJdrLWlnO4Avghcg9bmYQ==
+X-Received: by 2002:a05:600c:4e86:b0:412:a21b:d5d with SMTP id f6-20020a05600c4e8600b00412a21b0d5dmr2728429wmq.29.1708948324496;
+        Mon, 26 Feb 2024 03:52:04 -0800 (PST)
+Received: from [192.168.1.70] ([84.102.31.43])
+        by smtp.gmail.com with ESMTPSA id 11-20020a05600c234b00b00412704a0e4asm11692160wmq.2.2024.02.26.03.52.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 03:52:04 -0800 (PST)
+Message-ID: <d3c579e1-1560-45a1-ab7e-59ed32986eea@baylibre.com>
+Date: Mon, 26 Feb 2024 12:52:02 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240223135809.5bvyl7ex3zm6bnta@quack3>
-Content-Type: text/plain; charset=gbk
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 06/14] mfd: tps6594-spi: Add TI TPS65224 PMIC SPI
+Content-Language: en-US
+To: Bhargav Raviprakash <bhargav.r@ltts.com>, linux-kernel@vger.kernel.org
+Cc: m.nirmaladevi@ltts.com, lee@kernel.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ devicetree@vger.kernel.org, arnd@arndb.de, gregkh@linuxfoundation.org,
+ lgirdwood@gmail.com, broonie@kernel.org, linus.walleij@linaro.org,
+ linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org, nm@ti.com,
+ vigneshr@ti.com, kristo@kernel.org
+References: <20240223093701.66034-1-bhargav.r@ltts.com>
+ <20240223093701.66034-7-bhargav.r@ltts.com>
+From: Julien Panis <jpanis@baylibre.com>
+In-Reply-To: <20240223093701.66034-7-bhargav.r@ltts.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgCHjG4Ae9xl5k8nFQ--.25370S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZrWrJw1kWFyfZFykZw1rXrb_yoW8Cry8pF
-	93t3WfKr4jyw1IgrnrC3W7XF45Ww4xKF4UAw1xXFyrZrnxZF10gFyvq348Kw1kAw1xZryI
-	vw4DJFWxC34jyaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
-	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
-	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
-	k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
-	7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UWHqcUUUUU=
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
+On 2/23/24 10:36, Bhargav Raviprakash wrote:
+> Add support for TPS65224 PMIC in the TPS6594 driver as they share
+> significant functional overlap.
+>
+> Signed-off-by: Bhargav Raviprakash <bhargav.r@ltts.com>
+> ---
+>   drivers/mfd/tps6594-spi.c | 15 ++++++++++++++-
+>   1 file changed, 14 insertions(+), 1 deletion(-)
 
+This might be a nitpick, but for the next version of the series, please make
+commit message description for i2c VS spi drivers more homogeneous.
+Same comment for MODULE_DESCRIPTION (you changed it for i2c: why not,
+but then apply the same change to spi).
+With these changes,
 
-on 2/23/2024 9:58 PM, Jan Kara wrote:
-> On Fri 09-02-24 01:20:22, Kemeng Shi wrote:
->> The dirtied_before is only used when b_io is not empty, so only calculate
->> when b_io is not empty.
->>
->> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
->> ---
->>  fs/fs-writeback.c | 25 +++++++++++++------------
->>  1 file changed, 13 insertions(+), 12 deletions(-)
-> 
-> OK, but please wrap the comment at 80 columns as well.
-Sorry for missing this as I rely too much on checkpatch.pl to report this
-while the script didn't catch it. Will fix it in next version. Thanks for
-review.
-> 
-> 								Honza
-> 
->>
->> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
->> index b61bf2075931..e8868e814e0a 100644
->> --- a/fs/fs-writeback.c
->> +++ b/fs/fs-writeback.c
->> @@ -2118,20 +2118,21 @@ static long wb_writeback(struct bdi_writeback *wb,
->>  
->>  		spin_lock(&wb->list_lock);
->>  
->> -		/*
->> -		 * Kupdate and background works are special and we want to
->> -		 * include all inodes that need writing. Livelock avoidance is
->> -		 * handled by these works yielding to any other work so we are
->> -		 * safe.
->> -		 */
->> -		if (work->for_kupdate) {
->> -			dirtied_before = jiffies -
->> -				msecs_to_jiffies(dirty_expire_interval * 10);
->> -		} else if (work->for_background)
->> -			dirtied_before = jiffies;
->> -
->>  		trace_writeback_start(wb, work);
->>  		if (list_empty(&wb->b_io)) {
->> +			/*
->> +			 * Kupdate and background works are special and we want to
->> +			 * include all inodes that need writing. Livelock avoidance is
->> +			 * handled by these works yielding to any other work so we are
->> +			 * safe.
->> +			 */
->> +			if (work->for_kupdate) {
->> +				dirtied_before = jiffies -
->> +					msecs_to_jiffies(dirty_expire_interval *
->> +							 10);
->> +			} else if (work->for_background)
->> +				dirtied_before = jiffies;
->> +
->>  			queue_io(wb, work, dirtied_before);
->>  			queued = true;
->>  		}
->> -- 
->> 2.30.0
->>
+Acked-by: Julien Panis <jpanis@baylibre.com>
 
 
