@@ -1,188 +1,246 @@
-Return-Path: <linux-kernel+bounces-81109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 651DD86704A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:15:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96404867068
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:17:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9172F1C22F46
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:15:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D476282549
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:17:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4937577A18;
-	Mon, 26 Feb 2024 09:50:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B8431EEEA;
+	Mon, 26 Feb 2024 09:54:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="r/dmaeu8"
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MwHNQKxy"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1B347690B;
-	Mon, 26 Feb 2024 09:50:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD59F14280;
+	Mon, 26 Feb 2024 09:54:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708941042; cv=none; b=NXM6GG0I8Focl6WL78ekSDS6vuGz5fwKRDTSs1vUi7hg+RLJJwT0cLxV/sVEfHbqYZSZHFMvVVAydTcJq1goAmc9a4mN8HtNIock61kbjZBk+CBF3mC6fuchRLfGEaCcLUDexqirRsCnog9+Qit57HT/qOT2HAHTMSV1FT9Aapg=
+	t=1708941286; cv=none; b=flAfX2mSLXKatCyQPAXvooVZsYlW0gIHzSt0pXURny9YrRrNMN/vKXAFbJav/ymi4Res51fqPExkNKmlpvVQ7W3E4CYoBQcmqUD3/8lET0PFH9R1K6jqT2+Q+oYwaFpq25MvqSiogICBjWiRkyqMxTe5xJFbqkCsH0M8apEliaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708941042; c=relaxed/simple;
-	bh=Y9b2xLAZqzX+pdH+yrlRg/WTNLCOOaokY7gPgj+Co8E=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=afjdAfqD1s/N1d0wocJyl7sZ2jzlty8LMHd8hijW/0v+Hw/rAqcUVnQLXb4d8uaRddpV/gnR1DfAv0azdQb5lw1POD9hPTKH+o4pFg0Aw4YcRE9nCfbWieufBAKUDzflxRSWHod7T/fQwrv5XN4ZNZVFO2nzoMQ0zYOtiWmNXM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=r/dmaeu8; arc=none smtp.client-ip=80.241.56.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4Tjwpj3Lszz9sd1;
-	Mon, 26 Feb 2024 10:50:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1708941037;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TxspCYGvd47S6sMZqiF8IxyiXSLrdsbW3Rzpn1A8oVs=;
-	b=r/dmaeu8ky0Zitwk6d/p71mCATrvYsjhMj+pqGiiXKmkR/JFZzQ4UzKBr1JYGDYt7Xmey+
-	4YlsyGLVY0JeTsSAfX9QD8ohDznFOefXqdL91rLdcOIA0b1DC1jKooTiTD8P0N5Otpz96p
-	FcEQHn9pTyCODOwN1oCWuNkBxQtVNSDXAYq2A1Cb7+uZg+SFwRAQhVuH+UxnnR2HHXDPnr
-	lu6+d5f2UIJPqHRvfkqMvtKaGXc4xWYIrcigS98zQJZKP+4F+ZO7iCuF7Us0aVsFsSJ5W/
-	fzYF/GIvrVQbR8vvaMZ1Xxgb/Yz13ovRc4iCTJuTdI+c/VrA577/Qf+r01F9TQ==
-From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-To: linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	david@fromorbit.com,
-	chandan.babu@oracle.com,
-	akpm@linux-foundation.org,
-	mcgrof@kernel.org,
-	ziy@nvidia.com,
-	hare@suse.de,
-	djwong@kernel.org,
-	gost.dev@samsung.com,
-	linux-mm@kvack.org,
-	willy@infradead.org,
-	Pankaj Raghav <p.raghav@samsung.com>
-Subject: [PATCH 13/13] xfs: enable block size larger than page size support
-Date: Mon, 26 Feb 2024 10:49:36 +0100
-Message-ID: <20240226094936.2677493-14-kernel@pankajraghav.com>
-In-Reply-To: <20240226094936.2677493-1-kernel@pankajraghav.com>
-References: <20240226094936.2677493-1-kernel@pankajraghav.com>
+	s=arc-20240116; t=1708941286; c=relaxed/simple;
+	bh=enB6Xir2DeuVTnHYJjI3T8tlXiRYYBFbJ7oEag0B5HQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hs81cbDautfHtX+lpXABoriy+rkPkpkuhRfIU0WMcnTNJMLzPD1O9KjpYDsdSk708Kyb0PmwzjahAWyUFWJf40JVwOpRhj1ePUbKCyszGzrOHSa8NdVw8NivrD2DXdeaUV65pkEAcix5IE1j5i/7BMaNvyxLGFiz3KhnLBsZVxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MwHNQKxy; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708941285; x=1740477285;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=enB6Xir2DeuVTnHYJjI3T8tlXiRYYBFbJ7oEag0B5HQ=;
+  b=MwHNQKxyapHMpnWbJbPGAA4PsVaQsL+s7G2Fg2/MFrzecbTCK77RLLEQ
+   XvrWJwX2SrndPLwan8IgkRXxHsX2+aeDyBkGFzFv2VZ5Qd+iWiDAV9uQ6
+   KLl4sge3gGLgG7m5ccmdsKNVHdvEvXskGPPRhCDIgLvqrYzeIXB64cvH3
+   PdvSqrBehmkL46bPEUwklt9a747rjyb5Yh9TaAuTN28kVzSgQPnjueKL7
+   EcSxFUWdQ9hxwav9cyZB9c4SJQCXDvsTMLp7gKZcxmJV50jjDf7ZeupO/
+   nWDM0ewyWqzVQiHrqLpAvh0L4nEHnMFlvQZ5KVx6fQMQLXkVXPD6RpCkH
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="13859654"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="13859654"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 01:54:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="11205325"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmviesa003.fm.intel.com with ESMTP; 26 Feb 2024 01:54:40 -0800
+Date: Mon, 26 Feb 2024 17:50:38 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Charles Perry <charles.perry@savoirfairelinux.com>
+Cc: mdf@kernel.org, avandiver@markem-imaje.com, bcody@markem-imaje.com,
+	Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>,
+	Tom Rix <trix@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Michal Simek <michal.simek@amd.com>, linux-fpga@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 3/3] fpga: xilinx-selectmap: add new driver
+Message-ID: <Zdxe7mvBbHDHzbiS@yilunxu-OptiPlex-7050>
+References: <20240221195058.1281973-1-charles.perry@savoirfairelinux.com>
+ <20240221195058.1281973-4-charles.perry@savoirfairelinux.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 4Tjwpj3Lszz9sd1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221195058.1281973-4-charles.perry@savoirfairelinux.com>
 
-From: Pankaj Raghav <p.raghav@samsung.com>
+On Wed, Feb 21, 2024 at 02:50:49PM -0500, Charles Perry wrote:
+> Xilinx 7 series FPGA can be programmed using a parallel port named
+> the SelectMAP interface in the datasheet. This interface is compatible
+> with the i.MX6 EIM bus controller but other types of external memory
+> mapped parallel bus might work.
+> 
+> xilinx-selectmap currently only supports the x8 mode where data is loaded
+> at one byte per rising edge of the clock, with the MSb of each byte
+> presented to the D0 pin.
+> 
+> Signed-off-by: Charles Perry <charles.perry@savoirfairelinux.com>
+> ---
+>  drivers/fpga/Kconfig            |  8 +++
+>  drivers/fpga/Makefile           |  1 +
+>  drivers/fpga/xilinx-selectmap.c | 97 +++++++++++++++++++++++++++++++++
+>  3 files changed, 106 insertions(+)
+>  create mode 100644 drivers/fpga/xilinx-selectmap.c
+> 
+> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
+> index d27a1ebf40838..37b35f58f0dfb 100644
+> --- a/drivers/fpga/Kconfig
+> +++ b/drivers/fpga/Kconfig
+> @@ -67,6 +67,14 @@ config FPGA_MGR_STRATIX10_SOC
+>  config FPGA_MGR_XILINX_CORE
+>  	tristate
+>  
+> +config FPGA_MGR_XILINX_SELECTMAP
+> +	tristate "Xilinx Configuration over SelectMAP"
+> +	depends on HAS_IOMEM
+> +	select FPGA_MGR_XILINX_CORE
+> +	help
+> +	  FPGA manager driver support for Xilinx FPGA configuration
+> +	  over SelectMAP interface.
+> +
+>  config FPGA_MGR_XILINX_SPI
+>  	tristate "Xilinx Configuration over Slave Serial (SPI)"
+>  	depends on SPI
+> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
+> index 7ec795b6a5a70..aeb89bb13517e 100644
+> --- a/drivers/fpga/Makefile
+> +++ b/drivers/fpga/Makefile
+> @@ -16,6 +16,7 @@ obj-$(CONFIG_FPGA_MGR_SOCFPGA_A10)	+= socfpga-a10.o
+>  obj-$(CONFIG_FPGA_MGR_STRATIX10_SOC)	+= stratix10-soc.o
+>  obj-$(CONFIG_FPGA_MGR_TS73XX)		+= ts73xx-fpga.o
+>  obj-$(CONFIG_FPGA_MGR_XILINX_CORE)	+= xilinx-core.o
+> +obj-$(CONFIG_FPGA_MGR_XILINX_SELECTMAP)	+= xilinx-selectmap.o
+>  obj-$(CONFIG_FPGA_MGR_XILINX_SPI)	+= xilinx-spi.o
+>  obj-$(CONFIG_FPGA_MGR_ZYNQ_FPGA)	+= zynq-fpga.o
+>  obj-$(CONFIG_FPGA_MGR_ZYNQMP_FPGA)	+= zynqmp-fpga.o
+> diff --git a/drivers/fpga/xilinx-selectmap.c b/drivers/fpga/xilinx-selectmap.c
+> new file mode 100644
+> index 0000000000000..b63f4623f8b2c
+> --- /dev/null
+> +++ b/drivers/fpga/xilinx-selectmap.c
+> @@ -0,0 +1,97 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Xilinx Spartan6 and 7 Series SelectMAP interface driver
+> + *
+> + * (C) 2024 Charles Perry <charles.perry@savoirfairelinux.com>
+> + *
+> + * Manage Xilinx FPGA firmware loaded over the SelectMAP configuration
+> + * interface.
+> + */
+> +
+> +#include "xilinx-core.h"
+> +
+> +#include <linux/platform_device.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/module.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/of.h>
+> +#include <linux/io.h>
+> +
+> +struct xilinx_selectmap_conf {
+> +	struct xilinx_fpga_core core;
+> +	void __iomem *base;
+> +};
+> +
+> +#define to_xilinx_selectmap_conf(obj) \
+> +	container_of(obj, struct xilinx_selectmap_conf, core)
+> +
+> +static int xilinx_selectmap_write(struct xilinx_fpga_core *core,
+> +				  const char *buf, size_t count)
+> +{
+> +	struct xilinx_selectmap_conf *conf = to_xilinx_selectmap_conf(core);
+> +	u32 i;
+> +
+> +	for (i = 0; i < count; ++i)
+> +		writeb(buf[i], conf->base);
+> +
+> +	return 0;
+> +}
+> +
+> +static int xilinx_selectmap_probe(struct platform_device *pdev)
+> +{
+> +	struct xilinx_selectmap_conf *conf;
+> +	struct resource *r;
+> +	void __iomem *base;
+> +	struct gpio_desc *csi_b;
+> +	struct gpio_desc *rdwr_b;
+> +
+> +	conf = devm_kzalloc(&pdev->dev, sizeof(*conf), GFP_KERNEL);
+> +	if (!conf)
+> +		return -ENOMEM;
+> +
+> +	conf->core.dev = &pdev->dev;
+> +	conf->core.write = xilinx_selectmap_write;
+> +
+> +	base = devm_platform_get_and_ioremap_resource(pdev, 0, &r);
+> +	if (IS_ERR(base))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(base),
+> +				     "ioremap error\n");
+> +	conf->base = base;
+> +
+> +	/* CSI_B is active low */
+> +	csi_b = devm_gpiod_get_optional(&pdev->dev, "csi", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(csi_b))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(csi_b),
+> +				     "Failed to get CSI_B gpio\n");
+> +
+> +	/* RDWR_B is active low */
+> +	rdwr_b = devm_gpiod_get_optional(&pdev->dev, "rdwr", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(rdwr_b))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(rdwr_b),
+> +				     "Failed to get RDWR_B gpio\n");
+> +
+> +	return xilinx_core_probe(&conf->core);
+> +}
+> +
+> +static const struct of_device_id xlnx_selectmap_of_match[] = {
+> +	{ .compatible = "xlnx,fpga-xc7s-selectmap", }, // Spartan-7
+> +	{ .compatible = "xlnx,fpga-xc7a-selectmap", }, // Artix-7
+> +	{ .compatible = "xlnx,fpga-xc7k-selectmap", }, // Kintex-7
+> +	{ .compatible = "xlnx,fpga-xc7v-selectmap", }, // Virtex-7
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, xlnx_selectmap_of_match);
 
-Page cache now has the ability to have a minimum order when allocating
-a folio which is a prerequisite to add support for block size > page
-size.
+Does the driver have to be used with OF or not?
 
-Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- fs/xfs/libxfs/xfs_ialloc.c |  5 +++++
- fs/xfs/libxfs/xfs_shared.h |  3 +++
- fs/xfs/xfs_icache.c        |  6 ++++--
- fs/xfs/xfs_mount.c         |  1 -
- fs/xfs/xfs_super.c         | 10 ++--------
- 5 files changed, 14 insertions(+), 11 deletions(-)
+If yes, please specify the reason and enforce in Kconfig.
+If no, please ensure it decently compiles without CONFIG_OF.
 
-diff --git a/fs/xfs/libxfs/xfs_ialloc.c b/fs/xfs/libxfs/xfs_ialloc.c
-index 2361a22035b0..c040bd6271fd 100644
---- a/fs/xfs/libxfs/xfs_ialloc.c
-+++ b/fs/xfs/libxfs/xfs_ialloc.c
-@@ -2892,6 +2892,11 @@ xfs_ialloc_setup_geometry(
- 		igeo->ialloc_align = mp->m_dalign;
- 	else
- 		igeo->ialloc_align = 0;
-+
-+	if (mp->m_sb.sb_blocksize > PAGE_SIZE)
-+		igeo->min_folio_order = mp->m_sb.sb_blocklog - PAGE_SHIFT;
-+	else
-+		igeo->min_folio_order = 0;
- }
- 
- /* Compute the location of the root directory inode that is laid out by mkfs. */
-diff --git a/fs/xfs/libxfs/xfs_shared.h b/fs/xfs/libxfs/xfs_shared.h
-index 4220d3584c1b..67ed406e7a81 100644
---- a/fs/xfs/libxfs/xfs_shared.h
-+++ b/fs/xfs/libxfs/xfs_shared.h
-@@ -188,6 +188,9 @@ struct xfs_ino_geometry {
- 	/* precomputed value for di_flags2 */
- 	uint64_t	new_diflags2;
- 
-+	/* minimum folio order of a page cache allocation */
-+	unsigned int	min_folio_order;
-+
- };
- 
- #endif /* __XFS_SHARED_H__ */
-diff --git a/fs/xfs/xfs_icache.c b/fs/xfs/xfs_icache.c
-index dba514a2c84d..a1857000e2cd 100644
---- a/fs/xfs/xfs_icache.c
-+++ b/fs/xfs/xfs_icache.c
-@@ -88,7 +88,8 @@ xfs_inode_alloc(
- 	/* VFS doesn't initialise i_mode or i_state! */
- 	VFS_I(ip)->i_mode = 0;
- 	VFS_I(ip)->i_state = 0;
--	mapping_set_large_folios(VFS_I(ip)->i_mapping);
-+	mapping_set_folio_min_order(VFS_I(ip)->i_mapping,
-+				    M_IGEO(mp)->min_folio_order);
- 
- 	XFS_STATS_INC(mp, vn_active);
- 	ASSERT(atomic_read(&ip->i_pincount) == 0);
-@@ -323,7 +324,8 @@ xfs_reinit_inode(
- 	inode->i_rdev = dev;
- 	inode->i_uid = uid;
- 	inode->i_gid = gid;
--	mapping_set_large_folios(inode->i_mapping);
-+	mapping_set_folio_min_order(inode->i_mapping,
-+				    M_IGEO(mp)->min_folio_order);
- 	return error;
- }
- 
-diff --git a/fs/xfs/xfs_mount.c b/fs/xfs/xfs_mount.c
-index 69af3b06be99..c7df1857195c 100644
---- a/fs/xfs/xfs_mount.c
-+++ b/fs/xfs/xfs_mount.c
-@@ -131,7 +131,6 @@ xfs_sb_validate_fsb_count(
- 	xfs_sb_t	*sbp,
- 	uint64_t	nblocks)
- {
--	ASSERT(PAGE_SHIFT >= sbp->sb_blocklog);
- 	ASSERT(sbp->sb_blocklog >= BBSHIFT);
- 	uint64_t mapping_count;
- 	uint64_t bytes;
-diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-index 5a2512d20bd0..685ce7bf7324 100644
---- a/fs/xfs/xfs_super.c
-+++ b/fs/xfs/xfs_super.c
-@@ -1625,16 +1625,10 @@ xfs_fs_fill_super(
- 		goto out_free_sb;
- 	}
- 
--	/*
--	 * Until this is fixed only page-sized or smaller data blocks work.
--	 */
- 	if (mp->m_sb.sb_blocksize > PAGE_SIZE) {
- 		xfs_warn(mp,
--		"File system with blocksize %d bytes. "
--		"Only pagesize (%ld) or less will currently work.",
--				mp->m_sb.sb_blocksize, PAGE_SIZE);
--		error = -ENOSYS;
--		goto out_free_sb;
-+"EXPERIMENTAL: Filesystem with Large Block Size (%d bytes) enabled.",
-+			mp->m_sb.sb_blocksize);
- 	}
- 
- 	/* Ensure this filesystem fits in the page cache limits */
--- 
-2.43.0
+Thanks,
+Yilun
 
+> +
+> +static struct platform_driver xilinx_selectmap_driver = {
+> +	.driver = {
+> +		.name = "xilinx-selectmap",
+> +		.of_match_table = xlnx_selectmap_of_match,
+> +	},
+> +	.probe  = xilinx_selectmap_probe,
+> +};
+> +
+> +module_platform_driver(xilinx_selectmap_driver);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_AUTHOR("Charles Perry <charles.perry@savoirfairelinux.com>");
+> +MODULE_DESCRIPTION("Load Xilinx FPGA firmware over SelectMap");
+> -- 
+> 2.43.0
+> 
+> 
 
