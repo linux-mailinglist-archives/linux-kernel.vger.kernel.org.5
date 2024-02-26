@@ -1,101 +1,86 @@
-Return-Path: <linux-kernel+bounces-80426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D69686685A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:52:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6047086685B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:53:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EC0F1C2166B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:52:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 165F31F212F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:53:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633D2101C4;
-	Mon, 26 Feb 2024 02:52:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="Yyk92skZ"
-Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F020817BCB;
+	Mon, 26 Feb 2024 02:53:05 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E244AEEDE
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 02:52:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.166.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D78C17722
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 02:53:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708915958; cv=none; b=Z9IXU8nUdT2F87KZpHHCXjs61vdsoEslXQLAzsekTeFgncrvhCf9BtUiqjxT+gqeZx+6iTjJQ8UCH1cvQUriljxewKuaY+zowI9roWWNlu+atynFHPGq/tiZeSYJgAnmyQI/7FCbjYzSPiKnbNb4HPL/U6+UikqgWQsGzmz049Q=
+	t=1708915985; cv=none; b=D9DhT+Y2WqGyFYmLH91cFiOcytl9s1C4kYt/mcrUrWbKUZyrR481LSint97tUcMZniRVdHsM1hkRSC3J0rCgv96CoRF7to98aGP+yDWmAl4gGA7d8kV2zthHMlycsR6s/yFFkX1vBKhKMLam5y5uH6tj0qhKJBi4ONAxdVYKAFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708915958; c=relaxed/simple;
-	bh=P/ZpeNgQBSJcOCzs+dxujGtKK8ts3PDFulgbuwMDNd0=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=R9/Uelj4sIfLhP2NoQQRj82X4fvCnoh5YHlzRlzkdQ+JO+1R0Y/KFiNY34UAKw0ZYhTCS8G4XQ1rvYrGXm4Y4un03Wj0LYThoo0B3UYxLTIKCtMtib7yJd6PDWlentoCLTLv0X8JzOW8ruRRAQH2PjknCjgYqwchb4UZHGMlqYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b=Yyk92skZ; arc=none smtp.client-ip=205.220.166.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41Q2pUUM030758;
-	Sun, 25 Feb 2024 18:52:31 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-	 h=from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PPS06212021; bh=9wS8w8E+DFTNtlQHWw80uBF588uusaQcdd25aQv68Xs=; b=
-	Yyk92skZtzmYTFUq+K47W3DJZwQ+fq37fDzC3heWLBEAEqk80caVCD+RBMd9QLu0
-	mi3tSqZ9p3b4p2m6T0pOKM3Kdeq4A1hUVLxBXIkBsfyCZR32nugcn/H+ZuySGw7v
-	QotztpV6MRx2xRpcWdLTL06bUUxj/QtyPUDdvXbxOU4ZVRZePTKY4JyIKAdq3nY6
-	QdqrxA62AgDq9id5L7V+IlNHlhuWspLOTCQoQhXwzLqdidRV+9xJib8Bx+CMx8cr
-	4kPU6bqe6ctvZ7zmvMGfcTDbErn+c+KDAsqDUikHoScDDn2ofR/w+tB3ywTOnzrH
-	yzzewff3faxj9Q0CwZSVaQ==
-Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.wrs.com [147.11.82.252])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3wfcm4181j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Sun, 25 Feb 2024 18:52:31 -0800 (PST)
-Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 25 Feb 2024 18:52:30 -0800
-Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Sun, 25 Feb 2024 18:52:29 -0800
-From: Lizhi Xu <lizhi.xu@windriver.com>
-To: <syzbot+93bd128a383695391534@syzkaller.appspotmail.com>
-CC: <syzkaller-bugs@googlegroups.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [syzbot] [dri?] WARNING in vkms_get_vblank_timestamp (2)
-Date: Mon, 26 Feb 2024 10:52:28 +0800
-Message-ID: <20240226025229.355810-1-lizhi.xu@windriver.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <000000000000edf6a306105afb50@google.com>
-References: <000000000000edf6a306105afb50@google.com>
+	s=arc-20240116; t=1708915985; c=relaxed/simple;
+	bh=Bnr9/HrCCqt6VxpqJl7JDc5CK9jt5xwixXG80R4+tRM=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=mv529/IDIuUPLTy0WFvGMCuvAg3x9cx4yYy/HTivPAHLTDegYn805VlInjuUDVIKzjyw7dY5+dBc4qMnZ1seSFQt6Xv7IPT9pDIm3soZPG+bxhhUr1ID0tpEanlOraNPuYILmbZrYmCCYt9eNgULBunp2CRqI5qYFS4YXkpZ2RI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3659343e9bfso5687835ab.2
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 18:53:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708915983; x=1709520783;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=d371mQ1crjjdmNPbPyI/JNlSUBXqwddrp9AND/IIhMs=;
+        b=dyYXUlQdi9I/5e22SOM8k6HywE2MYZPseksbEchk35r0CDgaFEMIvVNesZj7PQPMew
+         LZ58QzwBal0yUVTdyvWZwPPH0c8OmAT+VrWiJ8XfQk0Jl3LoykBaOtfAYra+TPkzXHm+
+         4SiJx3M4wnSd1XPDad3pN3w4bfOUJSHX6SVyM2GpM/VeMIl/eZBEmzQSGmH3VBCrG3yt
+         HOQ/JC/J1KHEhjQOJvhBle0oyGnerMikNtK313Y72MNmNRXC1XtD/Hp7Gg+moI4MLyaf
+         pXDjvX6/TLwVgaWfGAT7IkYauVDlWo1RHdjZ2r0CbB6UcCZB9FyR5x9XdVaHyRKa1bab
+         NA7Q==
+X-Gm-Message-State: AOJu0Yx/p0rdiVmTuy6NrZobtxiBPklHW+P3dVQZ+Lh3RLJHtAeackLh
+	GU2dqOU0cpymzQWJYqZZ5/r0GNDKKuxfW1edLJ7AkPSA0+cm6fvTXnu/37f8xh6xFVGrckzNAT9
+	osXevTmj82tk9TVaqw5jBEqaUYJZutTHgCV/5rW6y/DeTxdy3rdCcq1w8+w==
+X-Google-Smtp-Source: AGHT+IGLQNbednTdNRez8vrZ4yuLDKCZuhJd6+eVRuy0gIWLs6T1bzVSFW+2fG61JzK2UHyULVhpebhsLLH2beGBeWb/nJqpmPct
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: ezFBjSYxaxkIaP5_1P8y0Rrr8IuNoMSi
-X-Proofpoint-GUID: ezFBjSYxaxkIaP5_1P8y0Rrr8IuNoMSi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-26_01,2024-02-23_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 spamscore=0 bulkscore=0 mlxlogscore=856 mlxscore=0
- lowpriorityscore=0 clxscore=1015 adultscore=0 suspectscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402260020
+X-Received: by 2002:a05:6e02:1d99:b0:365:1212:3f0 with SMTP id
+ h25-20020a056e021d9900b00365121203f0mr344297ila.6.1708915983495; Sun, 25 Feb
+ 2024 18:53:03 -0800 (PST)
+Date: Sun, 25 Feb 2024 18:53:03 -0800
+In-Reply-To: <20240226023715.2653372-1-lizhi.xu@windriver.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000025b9030612400228@google.com>
+Subject: Re: [syzbot] [dri?] WARNING in vkms_get_vblank_timestamp (2)
+From: syzbot <syzbot+93bd128a383695391534@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, lizhi.xu@windriver.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git v6.8
+Hello,
 
-diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/vkms_crtc.c
-index 61e500b8c9da..8994cbd88482 100644
---- a/drivers/gpu/drm/vkms/vkms_crtc.c
-+++ b/drivers/gpu/drm/vkms/vkms_crtc.c
-@@ -100,6 +100,9 @@ static bool vkms_get_vblank_timestamp(struct drm_crtc *crtc,
- 
- 	*vblank_time = READ_ONCE(output->vblank_hrtimer.node.expires);
- 
-+	if (!in_vblank_irq && *vblank_time == vblank->time)
-+		return true;
-+
- 	if (WARN_ON(*vblank_time == vblank->time))
- 		return true;
- 
+syzbot tried to test the proposed patch but the build/boot failed:
+
+failed to checkout kernel repo https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/v6.8: failed to run ["git" "fetch" "--force" "4d52a57a3858a6eee0d0b25cc3a0c9533f747d8f" "v6.8"]: exit status 128
+fatal: couldn't find remote ref v6.8
+
+
+
+Tested on:
+
+commit:         [unknown 
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git v6.8
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2c0ac5dfae6ecc58
+dashboard link: https://syzkaller.appspot.com/bug?extid=93bd128a383695391534
+compiler:       
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=16c78602180000
+
 
