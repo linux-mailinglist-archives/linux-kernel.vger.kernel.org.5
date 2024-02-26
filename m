@@ -1,88 +1,163 @@
-Return-Path: <linux-kernel+bounces-81488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 394D5867691
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:29:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C202867694
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:30:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C66301F2AC90
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:29:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15D9F287EA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:30:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2117F12881A;
-	Mon, 26 Feb 2024 13:29:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="o98Mo/78"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E5D31292C4;
+	Mon, 26 Feb 2024 13:30:44 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66A4D128363;
-	Mon, 26 Feb 2024 13:29:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7286128368;
+	Mon, 26 Feb 2024 13:30:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708954182; cv=none; b=VoSM7JMgd6+NCddvA1cCjxdOcBxueENDEnLLHrGg3dou2Q8kIobj5FfoWSv+qGXcLxRX5BfD/NuNdZ2gHyB0x0aVAQ1pbhXr3pP9klYAk2mAK4aCfSB1iomK4Eimb7OB7rBh0YSAKOteSS8JmZ0E7Unh0FDoGduvNE/Sk8iy42o=
+	t=1708954244; cv=none; b=h7Fin6XOyAfKsfOr5+CzaOhk4+KVD9wW+usUweDCNtCuDFXCoG8LcA+5Vzindu5RU/XunTDONtZx4kxh6uGvf2HBoZRmDca8PdIj9c9t4LeEImbPYd8TJy8LFttlCCuPb0SbVm/26nTcc92ZI53hWUM9gLOUKnLPy7PwLRc7vUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708954182; c=relaxed/simple;
-	bh=67jJEXxyLq9p2Ef/4B1PzCLF2zQY+FmX1wTG8Gq5oXc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Tj4UIFg43iRXGvcYC+pf497zXffb3rh6sORkvbLlKgfPtk8i8/Hj4NQgEdKLt6cbrBz2V7sVgGgtqAW/7WTCDIYhWSaQJa2D8BQ9H3zgUwi6E5c7qpXtzJS7pMkmOxauapol4W8ALxzhm/ahVUn86bjC21zkPCT/Ua5Td7URJIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=o98Mo/78; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA4CAC433F1;
-	Mon, 26 Feb 2024 13:29:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1708954182;
-	bh=67jJEXxyLq9p2Ef/4B1PzCLF2zQY+FmX1wTG8Gq5oXc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=o98Mo/78L3E7sA77ucBISa4JtTv2jdikLLb0VUxng7vucJvL8JcQeWlkUskMHgAxF
-	 THupOv/r8Y5Elk/G4hB2rW1NgQZySrafB3w2YOuGyZfJGibJEm0tXrHpyD5SLQ5W3j
-	 2HaXeNBuPkdVlRLeai8qrhhrmRz0Thwvl1YXOn0k=
-Date: Mon, 26 Feb 2024 14:29:39 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Rui Qi <qirui.001@bytedance.com>
-Cc: bp@alien8.de, mingo@redhat.com, tglx@linutronix.de, hpa@zytor.com,
-	jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
-	stable@vger.kernel.org, alexandre.chartre@oracle.com,
-	x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] objtool: is_fentry_call() crashes if call has no
- destination
-Message-ID: <2024022656-anemia-slacked-e1d4@gregkh>
-References: <20240226094925.95835-1-qirui.001@bytedance.com>
- <20240226094925.95835-2-qirui.001@bytedance.com>
+	s=arc-20240116; t=1708954244; c=relaxed/simple;
+	bh=WmTzU75gfsPPhSRwgy0QA82m5EmwYSqwqUgyS5HWrKI=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=RbyJ/r2VmvhrVfZ8LBiwbfWG/+WFlOZHhXpvnMgAcdLTwwKDr4rplq+SqjGSxNNqbwtHJGlhZcwFaDKivjQk47wtlbxpiyUBvj0Rpcpw9UW/P6qBFPNOB2IYGvm2TheJzIODqLRyu9cqfvVwh96eRaReq5iKeFxtQH7OENo/820=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Tk1bd08dZz6K5wc;
+	Mon, 26 Feb 2024 21:26:21 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 13A2A140A70;
+	Mon, 26 Feb 2024 21:30:40 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 26 Feb
+ 2024 13:30:39 +0000
+Date: Mon, 26 Feb 2024 13:30:38 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: John Groves <John@Groves.net>
+CC: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, "Dan
+ Williams" <dan.j.williams@intel.com>, Vishal Verma
+	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Alexander
+ Viro" <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, "Jan
+ Kara" <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+	<linux-cxl@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<nvdimm@lists.linux.dev>, <john@jagalactic.com>, Dave Chinner
+	<david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>,
+	<dave.hansen@linux.intel.com>, <gregory.price@memverge.com>
+Subject: Re: [RFC PATCH 13/20] famfs: Add iomap_ops
+Message-ID: <20240226133038.00006e23@Huawei.com>
+In-Reply-To: <2996a7e757c3762a9a28c789645acd289f5f7bc0.1708709155.git.john@groves.net>
+References: <cover.1708709155.git.john@groves.net>
+	<2996a7e757c3762a9a28c789645acd289f5f7bc0.1708709155.git.john@groves.net>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240226094925.95835-2-qirui.001@bytedance.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500001.china.huawei.com (7.191.163.213) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Mon, Feb 26, 2024 at 05:49:23PM +0800, Rui Qi wrote:
-> From: Alexandre Chartre <alexandre.chartre@oracle.com>
+On Fri, 23 Feb 2024 11:41:57 -0600
+John Groves <John@Groves.net> wrote:
+
+> This commit introduces the famfs iomap_ops. When either
+> dax_iomap_fault() or dax_iomap_rw() is called, we get a callback
+> via our iomap_begin() handler. The question being asked is
+> "please resolve (file, offset) to (daxdev, offset)". The function
+> famfs_meta_to_dax_offset() does this.
 > 
-> commit 87cf61fe848ca8ddf091548671e168f52e8a718e upstream.
+> The per-file metadata is just an extent list to the
+> backing dax dev.  The order of this resolution is O(N) for N
+> extents. Note with the current user space, files usually have
+> only one extent.
 > 
-> Fix is_fentry_call() so that it works if a call has no destination
-> set (call_dest). This needs to be done in order to support intra-
-> function calls.
+> Signed-off-by: John Groves <john@groves.net>
+
+> ---
+>  fs/famfs/famfs_file.c | 245 ++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 245 insertions(+)
+>  create mode 100644 fs/famfs/famfs_file.c
 > 
-> Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-> Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> Link: https://lkml.kernel.org/r/20200414103618.12657-2-alexandre.chartre@oracle.com
+> diff --git a/fs/famfs/famfs_file.c b/fs/famfs/famfs_file.c
+> new file mode 100644
+> index 000000000000..fc667d5f7be8
+> --- /dev/null
+> +++ b/fs/famfs/famfs_file.c
+> @@ -0,0 +1,245 @@
 
-When you forward a patch on for inclusion, you too have to sign off on
-it.
+> +static int
+> +famfs_meta_to_dax_offset(
+> +	struct inode *inode,
+> +	struct iomap *iomap,
+> +	loff_t        offset,
+> +	loff_t        len,
+> +	unsigned int  flags)
+> +{
+> +	struct famfs_file_meta *meta = (struct famfs_file_meta *)inode->i_private;
 
-Please do so for all of these commits.
+i_private is void * so no need for explicit cast (C spec says this is always fine without)
 
-And we recieved a few different copies of this series, please resend a
-v2 series so we know which one is the correct one to review.
 
-thanks,
+> +
+> +/**
+> + * famfs_iomap_begin()
+> + *
+> + * This function is pretty simple because files are
+> + * * never partially allocated
+> + * * never have holes (never sparse)
+> + * * never "allocate on write"
+> + */
+> +static int
+> +famfs_iomap_begin(
+> +	struct inode	       *inode,
+> +	loff_t			offset,
+> +	loff_t			length,
+> +	unsigned int		flags,
+> +	struct iomap	       *iomap,
+> +	struct iomap	       *srcmap)
+> +{
+> +	struct famfs_file_meta *meta = inode->i_private;
+> +	size_t size;
+> +	int rc;
+> +
+> +	size = i_size_read(inode);
+> +
+> +	WARN_ON(size != meta->file_size);
+> +
+> +	rc = famfs_meta_to_dax_offset(inode, iomap, offset, length, flags);
+> +
+> +	return rc;
+	return famfs_meta_...
 
-greg k-h
+> +}
+
+
+> +static vm_fault_t
+> +famfs_filemap_map_pages(
+> +	struct vm_fault	       *vmf,
+> +	pgoff_t			start_pgoff,
+> +	pgoff_t			end_pgoff)
+> +{
+> +	vm_fault_t ret;
+> +
+> +	ret = filemap_map_pages(vmf, start_pgoff, end_pgoff);
+> +	return ret;
+	return filename_map_pages()....
+
+> +}
+> +
+>
+
 
