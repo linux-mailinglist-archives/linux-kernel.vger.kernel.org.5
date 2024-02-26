@@ -1,240 +1,333 @@
-Return-Path: <linux-kernel+bounces-80562-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80563-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2131B866999
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:17:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2112C86699A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:20:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D07AF2815B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:17:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A7A51C20F62
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:20:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE6E91B81C;
-	Mon, 26 Feb 2024 05:17:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A9361B947;
+	Mon, 26 Feb 2024 05:20:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="NiuIa6GK"
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="QEJQDf37"
+Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F5EAEADD;
-	Mon, 26 Feb 2024 05:17:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34E001B7E5
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 05:20:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708924634; cv=none; b=WEjycuVLTw1gYrwVMFBffOchurVmreMJrIVXp1DJvNnUB4mVZ4yVQCgVducQbNJ+VQxzPeby9PM2w+RNHXXGYnUH/LQE2J4XzYBdr+6hQsYNOFSer0OM3wYuzdB+pPmHxZnqWI0cNkn/Ybbk7/dUTYjbZ6wS5YipXca0Lwe1V+I=
+	t=1708924803; cv=none; b=pBG5f8zcweSTIxaVgtZgpEbl7wQVnxyYuo4iT/WckSHeaO2jlbxAcAFTGaOpyE0gSs24LIyRpSsvyFnS6FbMYjZ1ASzCmoG4HkVw67ictRS6289pTohioJUf4Z76r21oHskuCfGJ33o9hSK5OQqbCdO9E0Pg/ZaTJXIJUqn7XNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708924634; c=relaxed/simple;
-	bh=KOvhpneIZpmi+cMDEU/4i2+NNq6gfox83gvbSfDdpTw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ky+IE1I1XGZa9g0JVhti/SjKZdtqqyAz8k4hZDZzY0f9YslJl1u35iJNO3BzrUmDrDTOjsrr2d0S9JcJiaKuEenGG9R5h9jxscbQC84pPnT5lC5014rq4yo9LAtDV9tYwAzGfcbeMX9M2SsUM2JIJKAh/RcdzrupcHugtmToeaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=NiuIa6GK; arc=none smtp.client-ip=203.29.241.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
-Received: from localhost.localdomain (ppp118-210-168-240.adl-adc-lon-bras34.tpg.internode.on.net [118.210.168.240])
-	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 903582014E;
-	Mon, 26 Feb 2024 13:17:06 +0800 (AWST)
+	s=arc-20240116; t=1708924803; c=relaxed/simple;
+	bh=/PgP2P0hX/+bEV3aU0WEL7b5JNAP3+sF8FKj2czw6Ho=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Zd6RAwkEYvDuNoisf1GzYyiN0p+X3MQliTOmaU3G/xsTZGDfdtW3p4SyPsmsQaRknl33jBK6YEe5q8CzdAzwr+9GsGv1Asz210t6w32QqAVvQhX+8cxH8Ia+vSZiHXzhQchXlyN4sLJmpEXiq24cVlQSWoBlTBSjd8HzsvM1AbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=QEJQDf37; arc=none smtp.client-ip=209.85.166.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
+Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7c788332976so88818539f.3
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 21:20:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=codeconstruct.com.au; s=2022a; t=1708924629;
-	bh=mdH/1Yorj+DulUAB+fzBS9UNRkSo6PY+idiU6w3jbB8=;
-	h=From:To:Cc:Subject:Date;
-	b=NiuIa6GKxthSeyOFdS7yvPAHZDjJZH7sFgYK7cqscvcSb2EIrZX/ltbvPzG/ueOiq
-	 7h6gY6B1eI0Et+vksQapQ4VbFsSd5uDMhxMnJvzEY3tEMd2eZgO+ix6A6hmEWT4o5R
-	 kR6r0+NRnbR4tOqV5xV38TyrMAsrBt73m5Lc9zEKSyvy+tMOHt2RltpEdH061A713q
-	 UfL3Y+14UcELHI4/pnJ4MQ10CIvSMkAMgzEkMIIc5e7kiTaNZIm5MYY3TV9MrM1QOt
-	 qBA1oyf4pUrUyzi/zHoL4hLJEQ1ew47D0TbLg2Qu9mdP/2YXcsTQv/CicOOH20QGgs
-	 Opqw2ARSAwmCQ==
-From: Andrew Jeffery <andrew@codeconstruct.com.au>
-To: linus.walleij@linaro.org,
-	brgl@bgdev.pl,
-	krzysztof.kozlowski+dt@linaro.org
-Cc: Andrew Jeffery <andrew@codeconstruct.com.au>,
-	robh+dt@kernel.org,
-	conor+dt@kernel.org,
-	joel@jms.id.au,
-	linux-gpio@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] dt-bindings: gpio: aspeed,ast2400-gpio: Convert to DT schema
-Date: Mon, 26 Feb 2024 15:46:45 +1030
-Message-Id: <20240226051645.414935-1-andrew@codeconstruct.com.au>
-X-Mailer: git-send-email 2.39.2
+        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1708924800; x=1709529600; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fvD9c59bJDsB22IC2oo8c8Y8bED38e+VeFaxxSdJnPM=;
+        b=QEJQDf37iHkMJROnf8Q+UJvZI2C6Gz2ji+uywr0fhIn0r5dSI+gmdu8ASiO/xjaUOL
+         ofb8cf0m9VUhr1yydEqCgmV4C13HKUNBy462EOYNnfiW6+p8f482qYid3PxV6+L74NDb
+         7yfAX20A61KtkADDIpewZYTeZlxq1BuYAQLgNzHtS1CQRg6aXH7Lm6N6TM6pzNcELU4f
+         quXzvcDiK7vhZsJ9/Jts6kux1AOJ+Vg2kpCKTAfUNJHcAOyg+13r8gGwGkHW1X0QjZTb
+         Kk66QkPNl92PD0EL7lApa+SkD6QXRyuZ0G4KeKqJnnUX6gU44Weqk/HC3f6uCRdYJmi+
+         N8/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708924800; x=1709529600;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fvD9c59bJDsB22IC2oo8c8Y8bED38e+VeFaxxSdJnPM=;
+        b=rXJbPTHnZ7HmSBLr9O+ybCN/wu4F6cjq6KA5RjunSqxKHp7u1lq9TzFUWfiquZCXwO
+         lfJEjMpgCwWtV6a/l0SPo3MQVO143G2gI25cH56ewmR+IzpcB1dg2lJLXahgFIMqiqwr
+         lc5Xst/B8t5j5mwBeykL7esGQEc4xc/TGN2IR0W9cAej90PHkImm4h1PSFrdr4YvqRcW
+         jzZWajJUrEajpuKedPT6s2udDb3uymTaZ5UwVMakkSqa4UG30BRnB5IIGlKyRlMcScoR
+         W8XzVPzY5z029vIu4eJF1UZePLDoQ7sSVXYz44x2pIDlJzZpnczxIAv2xrIs5604IyC8
+         6WvA==
+X-Forwarded-Encrypted: i=1; AJvYcCUEQMa87MxUN0KW1AxsfRztAEA3q014oB9etPJV59nthHEelhepYPresk0Uu2vwEViYQSunvXVLGkXwRvBgGoPCikQsKd502nDLQ+iJ
+X-Gm-Message-State: AOJu0Yz9CHdekPRFdQlf6Qwdu8/Y9qa9x6GB1fCXlD8s6LxDDVIuLWRL
+	pdRPvE4E9JrUmdH6lQ1Sde5b1vUha2kPlhX8umyvNw5b/fKXok/KR12FPb0MMOeZxukpHxADKol
+	A1hnMAgiYjm4MCJ4we8WfXeMFwcnM5J5HNfsI2w==
+X-Google-Smtp-Source: AGHT+IFhPWWZbPSpZ41rJEGw9JQOC3MSyyZstWUE8ZQsGCxE1OndwcIjQLNxLORidft8I/HoA5DyZytqJFxaLx8Id3o=
+X-Received: by 2002:a05:6e02:d0d:b0:364:216e:d1dc with SMTP id
+ g13-20020a056e020d0d00b00364216ed1dcmr6656541ilj.22.1708924800237; Sun, 25
+ Feb 2024 21:20:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1705916069.git.haibo1.xu@intel.com> <68856b86a93a4188558e5d0ebac0dd6aac8e404c.1705916069.git.haibo1.xu@intel.com>
+ <CAOnJCULwRTSnrQkR2o1P53R=tJ3TAxX+y+XRBesW6OFEzgFv2g@mail.gmail.com>
+ <CAJve8om2oOLg5-wKX7m7cBTgzwqiMcb35x=nDi1edY8evXjyMw@mail.gmail.com> <2c96c61a-2685-4cee-9cef-963ed833bf92@rivosinc.com>
+In-Reply-To: <2c96c61a-2685-4cee-9cef-963ed833bf92@rivosinc.com>
+From: Anup Patel <anup@brainfault.org>
+Date: Mon, 26 Feb 2024 10:49:48 +0530
+Message-ID: <CAAhSdy2TVSt=gCJRf78AzXNVFKy8MGJ+QspSEHeedT7GPAYkUQ@mail.gmail.com>
+Subject: Re: [PATCH v5 11/12] KVM: riscv: selftests: Change vcpu_has_ext to a
+ common function
+To: Atish Patra <atishp@rivosinc.com>
+Cc: Haibo Xu <xiaobo55x@gmail.com>, Atish Patra <atishp@atishpatra.org>, 
+	Haibo Xu <haibo1.xu@intel.com>, ajones@ventanamicro.com, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
+	James Morse <james.morse@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
+	Zenghui Yu <yuzenghui@huawei.com>, Guo Ren <guoren@kernel.org>, 
+	Mayuresh Chitale <mchitale@ventanamicro.com>, 
+	Daniel Henrique Barboza <dbarboza@ventanamicro.com>, Conor Dooley <conor.dooley@microchip.com>, 
+	Samuel Holland <samuel@sholland.org>, Minda Chen <minda.chen@starfivetech.com>, 
+	Jisheng Zhang <jszhang@kernel.org>, Sean Christopherson <seanjc@google.com>, Peter Xu <peterx@redhat.com>, 
+	Like Xu <likexu@tencent.com>, Vipin Sharma <vipinsh@google.com>, Thomas Huth <thuth@redhat.com>, 
+	Aaron Lewis <aaronlewis@google.com>, 
+	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>, linux-kernel@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, kvm@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Squash warnings such as:
-
-```
-arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-galaxy100.dtb: /ahb/apb@1e600000/gpio@1e780000: failed to match any schema with compatible: ['aspeed,ast2400-gpio']
-```
-
-Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+On Wed, Feb 21, 2024 at 2:07=E2=80=AFPM Atish Patra <atishp@rivosinc.com> w=
+rote:
+>
+> On 2/20/24 18:13, Haibo Xu wrote:
+> > On Wed, Feb 21, 2024 at 7:03=E2=80=AFAM Atish Patra <atishp@atishpatra.=
+org> wrote:
+> >>
+> >> On Mon, Jan 22, 2024 at 1:48=E2=80=AFAM Haibo Xu <haibo1.xu@intel.com>=
+ wrote:
+> >>>
+> >>> Move vcpu_has_ext to the processor.c and rename it to __vcpu_has_ext
+> >>> so that other test cases can use it for vCPU extension check.
+> >>>
+> >>> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
+> >>> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> >>> ---
+> >>>   tools/testing/selftests/kvm/include/riscv/processor.h |  2 ++
+> >>>   tools/testing/selftests/kvm/lib/riscv/processor.c     | 10 ++++++++=
+++
+> >>>   tools/testing/selftests/kvm/riscv/get-reg-list.c      | 11 +-------=
 ---
-v3: Base on v6.8-rc6, fix yamllint warning
+> >>>   3 files changed, 13 insertions(+), 10 deletions(-)
+> >>>
+> >>> diff --git a/tools/testing/selftests/kvm/include/riscv/processor.h b/=
+tools/testing/selftests/kvm/include/riscv/processor.h
+> >>> index b68b1b731a34..bd27e1c67579 100644
+> >>> --- a/tools/testing/selftests/kvm/include/riscv/processor.h
+> >>> +++ b/tools/testing/selftests/kvm/include/riscv/processor.h
+> >>> @@ -42,6 +42,8 @@ static inline uint64_t __kvm_reg_id(uint64_t type, =
+uint64_t idx,
+> >>>   #define RISCV_ISA_EXT_REG(idx) __kvm_reg_id(KVM_REG_RISCV_ISA_EXT, =
+\
+> >>>                                               idx, KVM_REG_SIZE_ULONG=
+)
+> >>>
+> >>> +bool __vcpu_has_ext(struct kvm_vcpu *vcpu, int ext);
+> >>> +
+> >>>   struct ex_regs {
+> >>>          unsigned long ra;
+> >>>          unsigned long sp;
+> >>> diff --git a/tools/testing/selftests/kvm/lib/riscv/processor.c b/tool=
+s/testing/selftests/kvm/lib/riscv/processor.c
+> >>> index 39a1e9902dec..dad73ce18164 100644
+> >>> --- a/tools/testing/selftests/kvm/lib/riscv/processor.c
+> >>> +++ b/tools/testing/selftests/kvm/lib/riscv/processor.c
+> >>> @@ -15,6 +15,16 @@
+> >>>
+> >>>   static vm_vaddr_t exception_handlers;
+> >>>
+> >>> +bool __vcpu_has_ext(struct kvm_vcpu *vcpu, int ext)
+> >>> +{
+> >>> +       unsigned long value =3D 0;
+> >>> +       int ret;
+> >>> +
+> >>> +       ret =3D __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(ext), &value);
+> >>> +
+> >>> +       return !ret && !!value;
+> >>> +}
+> >>> +
+> >>
+> >> Not sure what was the base patch on which this was rebased. The actual
+> >> commit in the queue branch looks different.
+> >>
+> >
+> > This patch set was based on 6.7-rc8.
+> >
+> >> https://github.com/kvm-riscv/linux/commit/5563517cc2012e3326411b360c99=
+24d3f2706c8d
+> >>
+> >> Both seem to have the same bug though the tests fail now and require
+> >> the following fix.
+> >> The ext id should be uint64_t and we need to pass ext directly so that
+> >> SBI extension tests can also pass.
+> >>
+> >
+> > It's weird that 6.7-rc8 has already included Andrew's change on the ISA=
+ ext reg,
+> > but this patch was not generated against his change.
+> >
+> > commit bdf6aa328f137e184b0fce607fd585354c3742f1
+> > Author: Andrew Jones <ajones@ventanamicro.com>
+> > Date:   Wed Dec 13 18:09:58 2023 +0100
+> >
+> >      RISC-V: KVM: selftests: Treat SBI ext regs like ISA ext regs
+> >
+> > Anyway, your changes were right. Please go ahead to include them when m=
+erging.
+> >
+>
+> I am not sure what happened. Probably, a merge conflict issue.
+>
+> I just realized I forgot to copy paste another fix in arch timer
+>
+> +++ b/tools/testing/selftests/kvm/riscv/arch_timer.c
+> @@ -85,7 +85,7 @@ struct kvm_vm *test_vm_create(void)
+>          int nr_vcpus =3D test_args.nr_vcpus;
+>
+>          vm =3D vm_create_with_vcpus(nr_vcpus, guest_code, vcpus);
+> -       __TEST_REQUIRE(__vcpu_has_ext(vcpus[0], KVM_RISCV_ISA_EXT_SSTC),
+> +       __TEST_REQUIRE(__vcpu_has_ext(vcpus[0],
+> RISCV_ISA_EXT_REG(KVM_RISCV_ISA_EXT_SSTC)),
 
-    Rob's bot picked the missing `#interrupt-cells` in the example on v2[1]. The
-    patch was based on v6.8-rc1, and going back over my shell history I missed
-    the following output from `make dt_binding_check`:
+I have squashed this change into an existing commit in riscv_kvm_queue.
 
-    ```
-    ...
-      LINT    Documentation/devicetree/bindings
-      usage: yamllint [-h] [-] [-c CONFIG_FILE | -d CONFIG_DATA] [--list-files] [-f {parsable,standard,colored,github,auto}] [-s] [--no-warnings] [-v] [FILE_OR_DIR ...]
-      yamllint: error: one of the arguments FILE_OR_DIR - is required   
-    ...
-    ```
+Thanks,
+Anup
 
-    I've rebased on v6.8-rc6 and no-longer see the issue with the invocation
-    of `yamllint`.
-
-[1]: https://lore.kernel.org/all/170892197611.2260479.15343562563553959436.robh@kernel.org/
-
-v2: https://lore.kernel.org/all/20240226031951.284847-1-andrew@codeconstruct.com.au/
-
-    Address feedback from Krzysztof:
-    https://lore.kernel.org/all/0d1dd262-b6dd-4d71-9239-8b0aec8cceff@linaro.org/
-
-v1: https://lore.kernel.org/all/20240220052918.742793-1-andrew@codeconstruct.com.au/
-
- .../bindings/gpio/aspeed,ast2400-gpio.yaml    | 74 +++++++++++++++++++
- .../devicetree/bindings/gpio/gpio-aspeed.txt  | 39 ----------
- 2 files changed, 74 insertions(+), 39 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml
- delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-aspeed.txt
-
-diff --git a/Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml b/Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml
-new file mode 100644
-index 000000000000..31fa8959c0e0
---- /dev/null
-+++ b/Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml
-@@ -0,0 +1,74 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/gpio/aspeed,ast2400-gpio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Aspeed GPIO controller
-+
-+maintainers:
-+  - Andrew Jeffery <andrew@codeconstruct.com.au>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - aspeed,ast2400-gpio
-+      - aspeed,ast2500-gpio
-+      - aspeed,ast2600-gpio
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+    description: The clock to use for debounce timings
-+
-+  gpio-controller: true
-+  gpio-line-names: true
-+  gpio-ranges: true
-+
-+  "#gpio-cells":
-+    const: 2
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  interrupt-controller: true
-+
-+  "#interrupt-cells":
-+    const: 2
-+
-+  ngpios: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - interrupt-controller
-+  - "#interrupt-cells"
-+  - gpio-controller
-+  - "#gpio-cells"
-+
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: aspeed,ast2600-gpio
-+    then:
-+      required:
-+        - ngpios
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    gpio@1e780000 {
-+        compatible = "aspeed,ast2400-gpio";
-+        reg = <0x1e780000 0x1000>;
-+        interrupts = <20>;
-+        interrupt-controller;
-+        #interrupt-cells = <2>;
-+        gpio-controller;
-+        #gpio-cells = <2>;
-+    };
-diff --git a/Documentation/devicetree/bindings/gpio/gpio-aspeed.txt b/Documentation/devicetree/bindings/gpio/gpio-aspeed.txt
-deleted file mode 100644
-index b2033fc3a71a..000000000000
---- a/Documentation/devicetree/bindings/gpio/gpio-aspeed.txt
-+++ /dev/null
-@@ -1,39 +0,0 @@
--Aspeed GPIO controller Device Tree Bindings
---------------------------------------------
--
--Required properties:
--- compatible		: Either "aspeed,ast2400-gpio", "aspeed,ast2500-gpio",
--					or "aspeed,ast2600-gpio".
--
--- #gpio-cells 		: Should be two
--			  - First cell is the GPIO line number
--			  - Second cell is used to specify optional
--			    parameters (unused)
--
--- reg			: Address and length of the register set for the device
--- gpio-controller	: Marks the device node as a GPIO controller.
--- interrupts		: Interrupt specifier (see interrupt bindings for
--			  details)
--- interrupt-controller	: Mark the GPIO controller as an interrupt-controller
--
--Optional properties:
--
--- clocks		: A phandle to the clock to use for debounce timings
--- ngpios		: Number of GPIOs controlled by this controller. Should	be set
--				  when there are multiple GPIO controllers on a SoC (ast2600).
--
--The gpio and interrupt properties are further described in their respective
--bindings documentation:
--
--- Documentation/devicetree/bindings/gpio/gpio.txt
--- Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
--
--  Example:
--	gpio@1e780000 {
--		#gpio-cells = <2>;
--		compatible = "aspeed,ast2400-gpio";
--		gpio-controller;
--		interrupts = <20>;
--		reg = <0x1e780000 0x1000>;
--		interrupt-controller;
--	};
-
-base-commit: d206a76d7d2726f3b096037f2079ce0bd3ba329b
--- 
-2.39.2
-
+>
+>
+> > Thanks,
+> > Haibo
+> >
+> >>
+> >> --- a/tools/testing/selftests/kvm/include/riscv/processor.h
+> >> +++ b/tools/testing/selftests/kvm/include/riscv/processor.h
+> >> @@ -48,7 +48,7 @@ static inline uint64_t __kvm_reg_id(uint64_t type,
+> >> uint64_t subtype,
+> >> KVM_REG_RISCV_SBI_SINGLE, \
+> >> idx, KVM_REG_SIZE_ULONG)
+> >>
+> >> -bool __vcpu_has_ext(struct kvm_vcpu *vcpu, int ext);
+> >> +bool __vcpu_has_ext(struct kvm_vcpu *vcpu, uint64_t ext);
+> >>
+> >> struct ex_regs {
+> >> unsigned long ra;
+> >> diff --git a/tools/testing/selftests/kvm/lib/riscv/processor.c
+> >> b/tools/testing/selftests/kvm/lib/riscv/processor.c
+> >> index 282587cd4bbc..ec66d331a127 100644
+> >> --- a/tools/testing/selftests/kvm/lib/riscv/processor.c
+> >> +++ b/tools/testing/selftests/kvm/lib/riscv/processor.c
+> >> @@ -15,12 +15,12 @@
+> >>
+> >> static vm_vaddr_t exception_handlers;
+> >>
+> >> -bool __vcpu_has_ext(struct kvm_vcpu *vcpu, int ext)
+> >> +bool __vcpu_has_ext(struct kvm_vcpu *vcpu, uint64_t ext)
+> >> {
+> >> unsigned long value =3D 0;
+> >> int ret;
+> >>
+> >> - ret =3D __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(ext), &value);
+> >> + ret =3D __vcpu_get_reg(vcpu, ext, &value);
+> >>
+> >> return !ret && !!value;
+> >> }
+> >>
+> >> With the above the fix, Both SBI/ISA extension tests pass.
+> >> # ./get-reg-list
+> >> sbi-base: PASS
+> >> sbi-sta: PASS
+> >> sbi-pmu: PASS
+> >> sbi-dbcn: PASS
+> >> aia: PASS
+> >> fp_f: PASS
+> >> fp_d: PASS
+> >> 1..0 # SKIP - h not available, skipping tests
+> >> smstateen: PASS
+> >> sscofpmf: PASS
+> >> sstc: PASS
+> >> 1..0 # SKIP - svinval not available, skipping tests
+> >> 1..0 # SKIP - svnapot not available, skipping tests
+> >> 1..0 # SKIP - svpbmt not available, skipping tests
+> >> zba: PASS
+> >> zbb: PASS
+> >> zbc: PASS
+> >> 1..0 # SKIP - zbkb not available, skipping tests
+> >> 1..0 # SKIP - zbkc not available, skipping tests
+> >> 1..0 # SKIP - zbkx not available, skipping tests
+> >> zbs: PASS
+> >> zfa: PASS
+> >> 1..0 # SKIP - zfh not available, skipping tests
+> >> 1..0 # SKIP - zfhmin not available, skipping tests
+> >> zicbom: PASS
+> >> zicboz: PASS
+> >> zicntr: PASS
+> >> 1..0 # SKIP - zicond not available, skipping tests
+> >> zicsr: PASS
+> >> zifencei: PASS
+> >> zihintntl: PASS
+> >> zihintpause: PASS
+> >> zihpm: PASS
+> >>
+> >>
+> >>>   static uint64_t page_align(struct kvm_vm *vm, uint64_t v)
+> >>>   {
+> >>>          return (v + vm->page_size) & ~(vm->page_size - 1);
+> >>> diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools=
+/testing/selftests/kvm/riscv/get-reg-list.c
+> >>> index 25de4b8bc347..ed29ba45588c 100644
+> >>> --- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
+> >>> +++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
+> >>> @@ -75,15 +75,6 @@ bool check_reject_set(int err)
+> >>>          return err =3D=3D EINVAL;
+> >>>   }
+> >>>
+> >>> -static inline bool vcpu_has_ext(struct kvm_vcpu *vcpu, int ext)
+> >>> -{
+> >>> -       int ret;
+> >>> -       unsigned long value;
+> >>> -
+> >>> -       ret =3D __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(ext), &value);
+> >>> -       return (ret) ? false : !!value;
+> >>> -}
+> >>> -
+> >>>   void finalize_vcpu(struct kvm_vcpu *vcpu, struct vcpu_reg_list *c)
+> >>>   {
+> >>>          unsigned long isa_ext_state[KVM_RISCV_ISA_EXT_MAX] =3D { 0 }=
+;
+> >>> @@ -111,7 +102,7 @@ void finalize_vcpu(struct kvm_vcpu *vcpu, struct =
+vcpu_reg_list *c)
+> >>>                  __vcpu_set_reg(vcpu, RISCV_ISA_EXT_REG(s->feature), =
+1);
+> >>>
+> >>>                  /* Double check whether the desired extension was en=
+abled */
+> >>> -               __TEST_REQUIRE(vcpu_has_ext(vcpu, s->feature),
+> >>> +               __TEST_REQUIRE(__vcpu_has_ext(vcpu, s->feature),
+> >>>                                 "%s not available, skipping tests\n",=
+ s->name);
+> >>>          }
+> >>>   }
+> >>> --
+> >>> 2.34.1
+> >>>
+> >>
+> >>
+> >> --
+> >> Regards,
+> >> Atish
+>
 
