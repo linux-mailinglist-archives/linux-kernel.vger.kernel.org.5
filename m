@@ -1,198 +1,165 @@
-Return-Path: <linux-kernel+bounces-82212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 835BD86809A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:14:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51E6086809F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:14:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38E411F27599
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:14:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 840381C28DDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:14:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AFEF1332A0;
-	Mon, 26 Feb 2024 19:10:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81F6B130ADE;
+	Mon, 26 Feb 2024 19:10:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jOT4lAGg"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kbmp3DPL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E05F132496
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 19:10:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74C2812F586;
+	Mon, 26 Feb 2024 19:10:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708974607; cv=none; b=Bv9GsQsXNQOJWG6Y7mtcxJ4Q6juubHsE4xaX/TWiLDWIgUWG9jcGdAv/oyYgyfsu457LF74ENZJxbBZZvTpSyHsLC9UNLlP4qR3hmAC3btcM0RS29sdBZJYvfDSvOOi1++4Aq2Bax8KkTrMSrEd5hNOqpKHxGLw4TBX/Mqg81xE=
+	t=1708974636; cv=none; b=L8vzsGz8UhpX5pciyGiCsRFpwOMFkGdlsctuHBcGyQqtVMJW0RGXnPRROgNYd1Gd27Q8KI/44kF6do6zAVGlbDaEjq8J+nviT79ZyjHWCc957+eT7RRnRZkX3rZguTIiLKfN2lUWozhyA6EazNd9FKuDKbi60eR8O80y2AkzRCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708974607; c=relaxed/simple;
-	bh=9Kz1B1g9YBWVQVBA7u5n8sBfRhBddgPHEWEy/INdrdY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Dikgc8YGooM1yMflyIaCpxnHE22e4TczU+1MHhu0GWoGr6afsQOj730HXxP37nYg3T9o65q2YasiNmU7qORD0fBtatmk2bSD1GrtRXDHoaHVjXFiFM1PKoI8Npv9TKVUXcfnXJpn6iaVJljgRI5GuEI4USpM5YxXti8A3+tvQbc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jOT4lAGg; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708974606; x=1740510606;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=9Kz1B1g9YBWVQVBA7u5n8sBfRhBddgPHEWEy/INdrdY=;
-  b=jOT4lAGgGPJSBIobtFG6DfkeDJDgCH9S1EcXTIpJpCTFNDri0NJf14+l
-   oPC5sVR5E5RLLYfdmLBOiYsmoyATTvnh96egcmJn1rs4CtG+HqLkL9LoI
-   Ew0vQAn5R+LW7AZiyn3e+uS9d4p7Bodw01OY/SLZuZpC8ri/rTx2b/UQw
-   CFhhdD6iMng2Q3j8kVxc3owxbgRLoZAv0834YLBEKOyz6Jbb74JZd5e4X
-   uZRyrmcC/iC5QP/JwpQwR6pArw9vHT0u5acncF0VipYu1mBU4qGSLnMmr
-   YNfkH2UkDydNgcScAwHoZLJRs2P5DKVzMu115buy2CjIZWaBV75v5NJJ7
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="14721432"
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="14721432"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 11:10:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="6911475"
-Received: from bdmirand-mobl.amr.corp.intel.com (HELO rpedgeco-desk4.intel.com) ([10.251.3.213])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 11:10:04 -0800
-From: Rick Edgecombe <rick.p.edgecombe@intel.com>
-To: Liam.Howlett@oracle.com,
-	akpm@linux-foundation.org,
-	debug@rivosinc.com,
-	broonie@kernel.org,
-	kirill.shutemov@linux.intel.com,
-	keescook@chromium.org,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	luto@kernel.org,
-	peterz@infradead.org,
-	hpa@zytor.com,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Cc: rick.p.edgecombe@intel.com
-Subject: [PATCH v2 9/9] selftests/x86: Add placement guard gap test for shstk
-Date: Mon, 26 Feb 2024 11:09:51 -0800
-Message-Id: <20240226190951.3240433-10-rick.p.edgecombe@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240226190951.3240433-1-rick.p.edgecombe@intel.com>
-References: <20240226190951.3240433-1-rick.p.edgecombe@intel.com>
+	s=arc-20240116; t=1708974636; c=relaxed/simple;
+	bh=r3WL10V8lVhng5mzweFxXOSYkzbeF/59JAqu8qYguho=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=q1WrEGVA9hhUQpCo4S+syubBfYO82wPp8ZC7xP1+r9rItMith1n0okAl+yGzDvwRJqQnKTC1CJEZc5yDHFn7EviMv4AcgFJHxbNL2F3chEpZT8l5ZmqbX9eva0vc9L1vi4iJnQ2Blo+1T903eHulFLl7EFLry8wa9ofnPA8V6mc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kbmp3DPL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FA80C433C7;
+	Mon, 26 Feb 2024 19:10:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708974635;
+	bh=r3WL10V8lVhng5mzweFxXOSYkzbeF/59JAqu8qYguho=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Kbmp3DPLqo+WZBNwoJi38Lo9m2jIb6vXMqm8afS+SoNE0UO4WA/1H8gK5K1zFRQGv
+	 NCCOXjof30mwCEdq26HCJy3+nAGG5W8xgUYxqgnOXSaIQJNn3UHDPaFkrDg8G6ouOC
+	 Ci2puHvIBjXwNRvG/2FvvOoRgap67OhJnYpP5NqQcY0+Le6GRNJTwCaF89vSKO8+ZE
+	 BIz7mBCL9ZNaF0WjDBS1UfK+AVK7xAXbchFLTKy95I+UO6jkDckIenEkodLewQAB1d
+	 Ef6RkGiTFgvn8nuU1/UoMUD0YF+y2zPG/UHl2P5jEng0467mX61GoNLoiWF1olGFfB
+	 qBjE8VTzKffyw==
+Date: Mon, 26 Feb 2024 19:10:11 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>, Lars-Peter Clausen
+ <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Matti Vaittinen <mazziesaccount@gmail.com>, Marek Vasut <marex@denx.de>,
+ Anshul Dalal <anshulusr@gmail.com>, Javier Carrasco
+ <javier.carrasco.cruz@gmail.com>, Matt Ranostay <matt@ranostay.sg>, Stefan
+ Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 5/5] iio: light: Add support for APDS9306 Light
+ Sensor
+Message-ID: <20240226190953.1467da54@jic23-huawei>
+In-Reply-To: <ZdycR6nr3rtrnuth@smile.fi.intel.com>
+References: <20240218054826.2881-1-subhajit.ghosh@tweaklogic.com>
+	<20240218054826.2881-6-subhajit.ghosh@tweaklogic.com>
+	<ZdycR6nr3rtrnuth@smile.fi.intel.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-The existing shadow stack test for guard gaps just checks that new
-mappings are not placed in an existing mapping's guard gap. Add one that
-checks that new mappings are not placed such that preexisting mappings are
-in the new mappings guard gap.
+On Mon, 26 Feb 2024 16:12:23 +0200
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
----
- .../testing/selftests/x86/test_shadow_stack.c | 67 +++++++++++++++++--
- 1 file changed, 63 insertions(+), 4 deletions(-)
+> On Sun, Feb 18, 2024 at 04:18:26PM +1030, Subhajit Ghosh wrote:
+> > Driver support for Avago (Broadcom) APDS9306 Ambient Light Sensor.
+> > It has two channels - ALS and CLEAR. The ALS (Ambient Light Sensor)
+> > channel approximates the response of the human-eye providing direct
+> > read out where the output count is proportional to ambient light levels.
+> > It is internally temperature compensated and rejects 50Hz and 60Hz flicker
+> > caused by artificial light sources. Hardware interrupt configuration is
+> > optional. It is a low power device with 20 bit resolution and has
+> > configurable adaptive interrupt mode and interrupt persistence mode.
+> > The device also features inbuilt hardware gain, multiple integration time
+> > selection options and sampling frequency selection options.
+> > 
+> > This driver also uses the IIO GTS (Gain Time Scale) Helpers Namespace for
+> > Scales, Gains and Integration time implementation.  
+> 
+> ...
+> 
+> > +/*
+> > + * Available scales with gain 1x - 18x, timings 3.125, 25, 50, 100, 200, 400 mS  
+> 
+> "mS" --> "ms."
+> 
+> > + * Time impacts to gain: 1x, 8x, 16x, 32x, 64x, 128x
+> > + */  
+> 
+> ...
+> 
+> > +	/*
+> > +	 * If this function runs parallel with the interrupt handler, either
+> > +	 * this reads and clears the status registers or the interrupt handler
+> > +	 * does. The interrupt handler sets a flag for read data available
+> > +	 * in our private structure which we read here.
+> > +	 */
+> > +	ret = regmap_read_poll_timeout(data->regmap, APDS9306_MAIN_STATUS_REG,
+> > +				       status, data->read_data_available ||
+> > +				       (status & (APDS9306_ALS_DATA_STAT_MASK |
+> > +						  APDS9306_ALS_INT_STAT_MASK)),
+> > +				       APDS9306_ALS_READ_DATA_DELAY_US, delay * 2);  
+> 
+> > +  
+> 
+> Redundant blank line
+> 
+> > +	if (ret)
+> > +		return ret;  
+> 
+> ...
+> 
+> > +static int apds9306_init_iio_gts(struct apds9306_data *data)
+> > +{
+> > +	int i, ret, part_id;
+> > +
+> > +	ret = regmap_read(data->regmap, APDS9306_PART_ID_REG, &part_id);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	for (i = 0; i < ARRAY_SIZE(apds9306_gts_mul); i++)
+> > +		if (part_id == apds9306_gts_mul[i].part_id)
+> > +			break;
+> > +
+> > +	if (i == ARRAY_SIZE(apds9306_gts_mul))
+> > +		return -ENXIO;  
+> 
+> Strange choice of the error code, why not (one of) -ENOENT / -ENODATA ?
+> 
+> > +	return devm_iio_init_iio_gts(data->dev,
+> > +				     apds9306_gts_mul[i].max_scale_int,
+> > +				     apds9306_gts_mul[i].max_scale_nano,
+> > +				     apds9306_gains, ARRAY_SIZE(apds9306_gains),
+> > +				     apds9306_itimes, ARRAY_SIZE(apds9306_itimes),
+> > +				     &data->gts);  
+> 
+> > +
+> > +	return -ENXIO;  
+> 
+> Dead code.
+> 
+> > +}  
+> 
+> ...
+> 
+> Jonathan, are you going to apply this and addressing comments at the same time?
+> Or should it be another version?
+> 
 
-diff --git a/tools/testing/selftests/x86/test_shadow_stack.c b/tools/testing/selftests/x86/test_shadow_stack.c
-index 757e6527f67e..ee909a7927f9 100644
---- a/tools/testing/selftests/x86/test_shadow_stack.c
-+++ b/tools/testing/selftests/x86/test_shadow_stack.c
-@@ -556,7 +556,7 @@ struct node {
-  *      looked at the shadow stack gaps.
-  *   5. See if it landed in the gap.
-  */
--int test_guard_gap(void)
-+int test_guard_gap_other_gaps(void)
- {
- 	void *free_area, *shstk, *test_map = (void *)0xFFFFFFFFFFFFFFFF;
- 	struct node *head = NULL, *cur;
-@@ -593,11 +593,64 @@ int test_guard_gap(void)
- 	if (shstk - test_map - PAGE_SIZE != PAGE_SIZE)
- 		return 1;
- 
--	printf("[OK]\tGuard gap test\n");
-+	printf("[OK]\tGuard gap test, other mapping's gaps\n");
- 
- 	return 0;
- }
- 
-+/* Tests respecting the guard gap of the mapping getting placed */
-+int test_guard_gap_new_mappings_gaps(void)
-+{
-+	void *free_area, *shstk_start, *test_map = (void *)0xFFFFFFFFFFFFFFFF;
-+	struct node *head = NULL, *cur;
-+	int ret = 0;
-+
-+	free_area = mmap(0, PAGE_SIZE * 4, PROT_READ | PROT_WRITE,
-+			 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	munmap(free_area, PAGE_SIZE * 4);
-+
-+	/* Test letting map_shadow_stack find a free space */
-+	shstk_start = mmap(free_area, PAGE_SIZE, PROT_READ | PROT_WRITE,
-+			   MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	if (shstk_start == MAP_FAILED || shstk_start != free_area)
-+		return 1;
-+
-+	while (test_map > shstk_start) {
-+		test_map = (void *)syscall(__NR_map_shadow_stack, 0, PAGE_SIZE, 0);
-+		if (test_map == MAP_FAILED) {
-+			printf("[INFO]\tmap_shadow_stack MAP_FAILED\n");
-+			ret = 1;
-+			break;
-+		}
-+
-+		cur = malloc(sizeof(*cur));
-+		cur->mapping = test_map;
-+
-+		cur->next = head;
-+		head = cur;
-+
-+		if (test_map == free_area + PAGE_SIZE) {
-+			printf("[INFO]\tNew mapping has other mapping in guard gap!\n");
-+			ret = 1;
-+			break;
-+		}
-+	}
-+
-+	while (head) {
-+		cur = head;
-+		head = cur->next;
-+		munmap(cur->mapping, PAGE_SIZE);
-+		free(cur);
-+	}
-+
-+	munmap(shstk_start, PAGE_SIZE);
-+
-+	if (!ret)
-+		printf("[OK]\tGuard gap test, placement mapping's gaps\n");
-+
-+	return ret;
-+}
-+
- /*
-  * Too complicated to pull it out of the 32 bit header, but also get the
-  * 64 bit one needed above. Just define a copy here.
-@@ -850,9 +903,15 @@ int main(int argc, char *argv[])
- 		goto out;
- 	}
- 
--	if (test_guard_gap()) {
-+	if (test_guard_gap_other_gaps()) {
- 		ret = 1;
--		printf("[FAIL]\tGuard gap test\n");
-+		printf("[FAIL]\tGuard gap test, other mappings' gaps\n");
-+		goto out;
-+	}
-+
-+	if (test_guard_gap_new_mappings_gaps()) {
-+		ret = 1;
-+		printf("[FAIL]\tGuard gap test, placement mapping's gaps\n");
- 		goto out;
- 	}
- 
--- 
-2.34.1
+The multibit field pretending to be a boolean was too complex for to want to modify
+whilst applying. So yes, v8 with that tidied up and your comments sorted out
+
+Jonathan
 
 
