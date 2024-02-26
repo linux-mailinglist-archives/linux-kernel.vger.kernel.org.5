@@ -1,190 +1,131 @@
-Return-Path: <linux-kernel+bounces-80472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E1F08668C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:31:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBB5B8668CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:35:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F1DB1F22911
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:31:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A97CB2133D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:35:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C639B14AB2;
-	Mon, 26 Feb 2024 03:31:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F95D1427E;
+	Mon, 26 Feb 2024 03:34:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="EwMvYrEi"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2046.outbound.protection.outlook.com [40.107.94.46])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="REfp/HWc"
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 485E4C8C7;
-	Mon, 26 Feb 2024 03:31:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.46
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708918290; cv=fail; b=ILe/vNjIyqql06PAmVnFKRFq1eINZoYfsx8MuOJAJyOw6IV1QMFSErtD+pgt2Dr7lsWjs/Sml8HTvUmH4qbxVdYb6Mxz7GSUYp7vvhmOBKZpRceRST+8qcMfJB6GNXF7hX2xwql/N9wa2NVnvZ1B9ILacTDXh8vpZR+6vymbuQY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708918290; c=relaxed/simple;
-	bh=Sj0ZivCRL2oqi48w+6tkFj3grP2WYOy9T5gE0qTUHxg=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=WsXuqTmiB1FTn7tSOrLEs81WoYXu6IqBrBpj+jRfj5eFBGUaD5dUXugYhs3RC2o32UCXJeGuIMs6Niyox/V1DdWDdTgb/PFnQW42qe0XHxfmSB3dbJHeZTgKhmsHojw7Q3xD86juTJMjdpm9QcRo0O/patN63YVakykMwCKSlak=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=EwMvYrEi; arc=fail smtp.client-ip=40.107.94.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TAcimurMFv2t9Jjkh3RBtDAM9kv2mMT1aI01TeZUnUnrrbD7MxSXFxEu6PqlH6C0A5/L01xFJ7QHD7LSipTMkq/tlY3ISL0VX3sCpPytI3+tHaJrZVfuBIZp+C+A5gMOE/DuKG/C7QpJ8ReChJEAUvO+nu/bqBdSil9CUiWKoaRTqkZpu1JeyVTvCAx3c/n5tPkKL6LkJfd5q07Nr+ruyEy/yD6di3/whhAadS6st+Qs/XXsfpZC/guA5ClOaHFXIuKUDraueR5cdyBEUDaUbbBBK+P2wyHzy1M4x1giqN3EIKAJ2/J4N87Yn03SVyTtn496c//pi9JuzyOuuCQNaA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QFE7soO2Wosk1H8u9LU9hbw/dNpeK468h8N8GEpRttw=;
- b=cbrORB3Z46GL/4bTR2tgND/5Drux+Cz4VhMoDjPHsQcV0MsLypxwPJ2xFiPERS8YetCiXbnP3sUb6YNA8ETt/3LJsXPSWdfjY4Pi5I5xPUN8C9pj4NFm6SnWanaiCEmxgEHXvKnJ8sE0fBlafd4jOZ2sDLkZaWH8acjl58veqOuRSv9mrXx6SwEOXu6yfkI75BEVSbCPqyJa4VFzqNNOplZWetGjc5WffUqEdFqPUsgDaUYMSsdAGwn6tzeXXZEjfLEGU6ptZMNw6dXQXrzi6MS1bEWzBS/oKZaw7w7hNrcFbWAexCUbcQYy3tUa0kCVS6lyICt/dxd1EhsXXXzFbA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QFE7soO2Wosk1H8u9LU9hbw/dNpeK468h8N8GEpRttw=;
- b=EwMvYrEih7w6ZVxBl9PilB/QZy+yPrHd3WSRZjwpGE+/+bI+tbaUW4wzdwLyS8DZJLaaPh051GPg7RVChHf8L6sfbVqpuuXGeE2lBjScGCVby6libADQINobp2IgiFHMAZ/JEwP7avs9MJrTOUpA86V+XmpBFyziQEbNyCwz3xY=
-Received: from DM6PR02CA0109.namprd02.prod.outlook.com (2603:10b6:5:1b4::11)
- by CY5PR12MB6153.namprd12.prod.outlook.com (2603:10b6:930:27::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.20; Mon, 26 Feb
- 2024 03:31:26 +0000
-Received: from DS1PEPF00017096.namprd05.prod.outlook.com
- (2603:10b6:5:1b4:cafe::98) by DM6PR02CA0109.outlook.office365.com
- (2603:10b6:5:1b4::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.49 via Frontend
- Transport; Mon, 26 Feb 2024 03:31:26 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS1PEPF00017096.mail.protection.outlook.com (10.167.18.100) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7292.25 via Frontend Transport; Mon, 26 Feb 2024 03:31:26 +0000
-Received: from aiemdee.2.ozlabs.ru (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Sun, 25 Feb
- 2024 21:31:24 -0600
-From: Alexey Kardashevskiy <aik@amd.com>
-To: <linux-pci@vger.kernel.org>
-CC: <linux-kernel@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Alexey Kardashevskiy <aik@amd.com>
-Subject: [PATCH kernel v2] pci/doe: Support discovery version
-Date: Mon, 26 Feb 2024 14:31:14 +1100
-Message-ID: <20240226033114.3100118-1-aik@amd.com>
-X-Mailer: git-send-email 2.41.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBFDE4C91
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:34:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708918498; cv=none; b=U08R5Tt9mjQenFPeV5eVt0Vp5xU5CWhTpai5FFpYBTjZHE0zK9DFNviq4Z7edN2WaNj0hUucAQc+3XlU565qGXCX/xqLHxpDVdpRbYKfOyuFwz3QYyAW4wcQzn7huTKA/iqhmGkOMJBP3hgJ55BhP7l1AIMyB0UgH6XqHdNjVtI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708918498; c=relaxed/simple;
+	bh=1rlvxNg/PaO1Mom+8niom04hyZ3Gv85Bva4WGrUPYlY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Zu5YgCil/zR2oPmPu0kMTSRBExTVWt+V84PhsonCCg3FGDFoigc5IxgGtMIc+PZ9Vvko42cqEGUKn5nrZ3klAxPWcUQYuT4oJRJ9FTPFa3pDvZ6IHtlomgx4VWTHUiU0IMC9nuUr0cVusWOoxa82uYQuMbS6MROq8O16rREeTTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=REfp/HWc; arc=none smtp.client-ip=115.124.30.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1708918493; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=sF16PtfMksFLXAGoqg1Gy1LZK+T652VTSpOR/ck/ZMU=;
+	b=REfp/HWc7RdJMxdSmlVL1BhLmztNe5o0UVcyGkNOhFavQmzsD3FAWZru/Vs5N3LWTwVdqak3mm/uHfOzG68IvixzWo0tjWIxojjDTAGJ8agPWY08DNMxVukYd9hTe4l7atYIWhhp8BoqE09+PaUo70rgnsd9DknV1/iBp6Adpks=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0W1AMo4-_1708918492;
+Received: from 30.97.56.44(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W1AMo4-_1708918492)
+          by smtp.aliyun-inc.com;
+          Mon, 26 Feb 2024 11:34:52 +0800
+Message-ID: <9b49d2c8-4ace-4095-8610-8becf96eb023@linux.alibaba.com>
+Date: Mon, 26 Feb 2024 11:34:51 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS1PEPF00017096:EE_|CY5PR12MB6153:EE_
-X-MS-Office365-Filtering-Correlation-Id: f6497197-15ff-44ac-20ca-08dc367b6a15
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	kBEqHDnhMfv64bbfHp23UV9DJD3SsXcGTExOuDL8FpxPTvMtbIVqGZ6g5pV+cfwIRATKOq4Spi5xI9QOzVusI5g3kbaaHDL3XrPfsInYhIkXthNl1wlrpcKW8IVz/nJhuGBlb7QEyxr/yLm1WtiCNDDFNO7vHvpRtjWK8DWOENlUGVCgS82bnaMwaWDFXaThytrOXF7+L3dfR0U935rZtlAOAS82pLfIw+P9UFoy6BDJ41uwgr+Ejjm6IShUrXDApgAeBWbRQKR/di9DNQMUq2EqS2j+XfrsBGzgbH2Y177gye0/9ACUgYmdWhXeactkcHcycKGIvEF4iRHU6jxO0ygE37vqVG23ZNJh+gS4Wm5c13o4ibs36PPr3vouYnPzcq4mTZYXuJKle7jEwK9NYcAdjKJ1v7sn429XsQbre44BFz50scIp2XT2CbLreVrWcEh4xveDxe720KGP7dmPwyqr54brOVafMK276NgR3ju99QwSjneotMzvteWvWqmT8zbDNtVJZmSll8u5x2KmF//PdHtcTPCSJVQUCmySXPTK+zmzht063TMElwd5x2ZHSsI8GASdp2SNAn9ONfhSmPvIxe6hjD9PPoIqqZHZJWSmoyoz/awgyAz7ESP8EtAUAIrDDJcPu73AnRKCUrdfSn1KW2DtuazCmiKJQMSw9x1+R8IoYM2iyJXrGuVtDWGrlZpKWt+yIJPxZLaVTI1lb7ZeKPPdshTu+YeVAQPFlKjCgcDNi+JkZqqMbGzhcJJr
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 03:31:26.7633
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f6497197-15ff-44ac-20ca-08dc367b6a15
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS1PEPF00017096.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6153
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 2/3] mm: hugetlb: make the hugetlb migration strategy
+ consistent
+To: Oscar Salvador <osalvador@suse.de>
+Cc: akpm@linux-foundation.org, muchun.song@linux.dev, david@redhat.com,
+ linmiaohe@huawei.com, naoya.horiguchi@nec.com, mhocko@kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <cover.1708507022.git.baolin.wang@linux.alibaba.com>
+ <0514e5139b17ecf3cd9e09d86c93e586c56688dc.1708507022.git.baolin.wang@linux.alibaba.com>
+ <ZdfHi142dvQuN7B-@localhost.localdomain>
+ <0a06dc7f-3a49-42ba-8221-0b4a3777ac0b@linux.alibaba.com>
+ <ZdipdrJoN7LS3h9m@localhost.localdomain>
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <ZdipdrJoN7LS3h9m@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-PCIe r6.1, sec 6.30.1.1 defines a "DOE Discovery Version" field in
-the DOE Discovery Request Data Object Contents (3rd DW) as:
 
-15:8 DOE Discovery Version – must be 02h if the Capability Version in
-the Data Object Exchange Extended Capability is 02h or greater.
 
-Add support for the version on devices with the DOE v2 capability.
+On 2024/2/23 22:19, Oscar Salvador wrote:
+> On Fri, Feb 23, 2024 at 10:56:48AM +0800, Baolin Wang wrote:
+>   
+>> I previously considered passing the MR_reason argument to the
+>> htlb_modify_alloc_mask(), which is only used by hugetlb migration.
+>> But in alloc_hugetlb_folio_nodemask(), if there are available hugetlb on
+>> other nodes, we should allow migrating, that will not break the per-node
+>> hugetlb pool.
+>>
+>> That's why I just change the gfp_mask for allocating a new hguetlb when
+>> migration, that can break the pool.
+> 
+> Code-wise I think this is good, but I'm having some feelings
+> about where filter out the mask.
+> Ok, I'm trying to get my head around this.
+> It's been a while since I looked into hugetlb code, so here we go.
+> 
+> You mentioned that the only reason not to fiddle with gfp_mask before calling
+> in alloc_hugetlb_folio_nodemask(), was that we might be able to find a hugetlb
+> page in another node, and that that's ok because since all nodes remain with
+> the same number of hugetlb pages, per-node pool doesn't get broken.
+> 
+> Now, I see that dequeue_hugetlb_folio_nodemask() first tries to get the zonelist
+> of the preferred node, and AFAICS, if it has !GFP_THISNODE, it should also
+> get the zonelists of all other nodes, so we might fallback.
 
-Signed-off-by: Alexey Kardashevskiy <aik@amd.com>
----
-Changes:
-v2:
-* added the section number to the commit log
+Right.
 
----
-Does PCI_DOE_DATA_OBJECT_DISC_REQ_3_DISCOVER_VER need to be in pci-regs.h?
-It is only going to be used by doe.c and yet a bunch of
-PCI_DOE_DATA_OBJECT_DISC_REQ_3_xxx is already in doe.c.
-I am asking as I have been told not to expose PCI_DOE_PROTOCOL_xxx guys
-which is somehow different (?). Thanks,
----
- include/uapi/linux/pci_regs.h |  1 +
- drivers/pci/doe.c             | 11 ++++++++---
- 2 files changed, 9 insertions(+), 3 deletions(-)
+> In the hope of finding a way to be able to filter out in htlb_modify_alloc_mask(),
+> I was trying to see whether we could skip GFP_THISNODE in
+> dequeue_hugetlb_folio_nodemask() but no because we might end up dequeueing
+> a hugetlb which sits in another node, while we really specified __GFP_THISNODE.
+> 
+> The only way might be to somehow decouple dequeue_hugetlb_folio_nodemask()
+> from alloc_hugetlb_folio_nodemask() and do some kind of gfp modification
+> between the two calls.
 
-diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
-index a39193213ff2..b9c681f14181 100644
---- a/include/uapi/linux/pci_regs.h
-+++ b/include/uapi/linux/pci_regs.h
-@@ -1144,6 +1144,7 @@
- #define PCI_DOE_DATA_OBJECT_HEADER_2_LENGTH		0x0003ffff
- 
- #define PCI_DOE_DATA_OBJECT_DISC_REQ_3_INDEX		0x000000ff
-+#define PCI_DOE_DATA_OBJECT_DISC_REQ_3_DISCOVER_VER	0x0000ff00
- #define PCI_DOE_DATA_OBJECT_DISC_RSP_3_VID		0x0000ffff
- #define PCI_DOE_DATA_OBJECT_DISC_RSP_3_PROTOCOL		0x00ff0000
- #define PCI_DOE_DATA_OBJECT_DISC_RSP_3_NEXT_INDEX	0xff000000
-diff --git a/drivers/pci/doe.c b/drivers/pci/doe.c
-index 61f0531d2b1d..f57def002175 100644
---- a/drivers/pci/doe.c
-+++ b/drivers/pci/doe.c
-@@ -381,11 +381,13 @@ static void pci_doe_task_complete(struct pci_doe_task *task)
- 	complete(task->private);
- }
- 
--static int pci_doe_discovery(struct pci_doe_mb *doe_mb, u8 *index, u16 *vid,
-+static int pci_doe_discovery(struct pci_doe_mb *doe_mb, u8 capver, u8 *index, u16 *vid,
- 			     u8 *protocol)
- {
-+	u32 disver = FIELD_PREP(PCI_DOE_DATA_OBJECT_DISC_REQ_3_DISCOVER_VER,
-+				(capver >= 2) ? 2 : 0);
- 	u32 request_pl = FIELD_PREP(PCI_DOE_DATA_OBJECT_DISC_REQ_3_INDEX,
--				    *index);
-+				    *index) | disver;
- 	__le32 request_pl_le = cpu_to_le32(request_pl);
- 	__le32 response_pl_le;
- 	u32 response_pl;
-@@ -419,13 +421,16 @@ static int pci_doe_cache_protocols(struct pci_doe_mb *doe_mb)
- {
- 	u8 index = 0;
- 	u8 xa_idx = 0;
-+	u32 hdr = 0;
-+
-+	pci_read_config_dword(doe_mb->pdev, doe_mb->cap_offset, &hdr);
- 
- 	do {
- 		int rc;
- 		u16 vid;
- 		u8 prot;
- 
--		rc = pci_doe_discovery(doe_mb, &index, &vid, &prot);
-+		rc = pci_doe_discovery(doe_mb, PCI_EXT_CAP_VER(hdr), &index, &vid, &prot);
- 		if (rc)
- 			return rc;
- 
--- 
-2.41.0
+IMO, I'm not sure whether it's appropriate to decouple 
+dequeue_hugetlb_folio_nodemask() from alloc_hugetlb_folio_nodemask() 
+into two separate functions for the users to call, because these details 
+should be hidden within the hugetlb core implementation.
 
+Instead, I can move the gfp_mask fiddling into a new helper, and move 
+the helper into alloc_migrate_hugetlb_folio(). Temporary hugetlb 
+allocation has its own gfp strategy seems reasonable to me.
+
+> Another thing I dislike is the "-1" in alloc_hugetlb_folio_vma().
+> I think at least it deserves a comment like "Passing -1 will make us stick
+> to GFP_THISNODE".
+
+Sure, will add some comments.
+
+> Although that is another thing, we will pass "-1" which forces GFP_THISNODE
+> when allocating a newly fresh hugetlb page, but in dequeue_hugetlb_folio_nodemask()
+> we might get a page from a different node.
+> That doesn't break per-node pool, but it is somehow odd?
+
+Only hugetlb_mfill_atomic_pte() will use -1, which is used to allocate a 
+temporary hugetlb to hold the copied content that will be immediately 
+released if uffd copy completes (see commmit 8cc5fcbb5be8). Therefore, 
+here it is allowed to fallback to available hugetlb on other nodes, but 
+it is not allowed to break the per-node pool.
 
