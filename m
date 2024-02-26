@@ -1,352 +1,223 @@
-Return-Path: <linux-kernel+bounces-80390-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80391-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ADF58667B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:01:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABDBE8667B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:04:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3888281894
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:01:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A5002817E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:04:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22ADBEAC2;
-	Mon, 26 Feb 2024 02:01:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CLBT/MWI"
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3832AD26A;
-	Mon, 26 Feb 2024 02:01:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9520EAF0;
+	Mon, 26 Feb 2024 02:04:34 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEEFD4C84;
+	Mon, 26 Feb 2024 02:04:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708912888; cv=none; b=R/KSslxdSZhR1UPcXYeI0LNqTlqFGMaP5/HZho4z5Atiw6IEIMC2LuFJRwCJPbccAwuuD3XO8jLWRJ+PgAjB4o/Lbk/hGnH+NBzRZ6yuwuHEJRtxMlTm44daEfIYBOU3dAGhZdqwBPkX66ltXmkMdyIwmoqfVq4iDwKWre/miJ0=
+	t=1708913074; cv=none; b=Tbdp9R+NdzkWUne6GmDX/Bsp4IXB1xmEbODA8uU4j+301WDfYoUW+7JH2uUh53ZSi9N1AXNMFfH5luV1O+bEtD6696/EVMiKLIzT25tsUoJYQLW7JzR5qqhocYAQs6nSmCcp2o33jArmqa9wasvYeNSAjEbRe5Knb9Ptdzz2LxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708912888; c=relaxed/simple;
-	bh=iVqmRkKdh+Tvr8bR28kLrWzoPSMBRaonI185ojO42Z0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f7RFs42iGd9b7ss+kERf3WdAynE25VVzobUqLAuNccGEDnYEc8TUol+0cDfzWiPqyEn1pUDSxNC4gYWvMN6zm5mauqgm/bB0M9Iv8W5IENdIoxc6rbsqXMx0LHMHpTOIoUQSGE7NW/VYjPUtK1AjdtoOjGHyt4f5CGoAEY/9zSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CLBT/MWI; arc=none smtp.client-ip=209.85.219.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-68ff93c5a15so9834506d6.1;
-        Sun, 25 Feb 2024 18:01:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708912885; x=1709517685; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uhs12sRCem2cYqp63Q2x/u+BS3vh24Dd8PCAqKWiEco=;
-        b=CLBT/MWIIg0PL8PnCvSBjNuohM0japwlVT5uF+KtL8q7eoR2MIfJG6dk5qJIL9Wx73
-         /r7q8tPlFu63fgUHBT6HcNG8RkmxHDY0xR4Ro/y+zjL3tXJXxUUPY6xj6ahrihyuxT3O
-         9ApY+wgJr6Rno45UDiZeolAPyMUMFbIayVhslG9RhB3s115BvPQI0eZHZQo1kRujzZLK
-         zabK4QWAL/n4c3RMRw3lmIY3n5TwQyVEKCf/tmeiaOVVAZqPHxJtSoptSLMu7cxBZTZs
-         4N5ClVgyR2lNhHvhpBmZUQ16e9+2QIUwybtRJu3pQ609X0ofxgANvj5tFEQkpMjAhU01
-         +CQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708912885; x=1709517685;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uhs12sRCem2cYqp63Q2x/u+BS3vh24Dd8PCAqKWiEco=;
-        b=kxq7SBiYn5mG9tu9RNu5J7pFva/02QvVxk8RMcI0hnv3eCbWoYDfcLoc/jF/KWV4RI
-         Ww9Lu6RR6o6g6UjhEckhTizjI8ME7F7ba6Scic+qVkglCS6dIX0gelOOYDIHbeDJXLJc
-         EjVFMniJljfZSkQIb1l/sxyD0pb3nSn1TwrKZ4iLG/7BDzY8f2YrDWlf1EG3pya0AxOv
-         JhzxEMj2NiuYbz9LPaMv07C7/D6JHFDopL6b0VZ3ypVwSj7TdJ4SFHKwf8R0PkFtf5JU
-         Hw/MaFGQYkwC4qq+IHqRl+eU/DbILzogD0Y6WvxvZtbVAE4DI5i6S9lEd6qIFwDK0EKZ
-         GqTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWEHe/w63+Nw86RzxLqybDLe1wTx3AcTNe7jdr2QqN2CPNMZUQIAuyG/6mzKNTYixrY8do7XFDGni2MaZ5eSw7lQkti11mJr0KJYm3E4wN3OlI2x+hcMQFPoTAhIW9ja7w54SwA
-X-Gm-Message-State: AOJu0YxnWVL5XZcVl4SQCxDJxYOQqa5cNtXQfmMF1dZq7gqUo4YI6E1R
-	fJcHL2DvXGiUho6pzaDKHK7QMqZcTJsSQFxhYGGtkXQSnlTi3MSk
-X-Google-Smtp-Source: AGHT+IGpXvX+Sm/8qPjE7Cr+uYa96QyYXD6PCaayGX9DzQKjZRv4bmhxRKn424Ye0aeER0kT46Kx+w==
-X-Received: by 2002:a0c:ab1b:0:b0:68f:e972:f2c5 with SMTP id h27-20020a0cab1b000000b0068fe972f2c5mr5165169qvb.5.1708912885011;
-        Sun, 25 Feb 2024 18:01:25 -0800 (PST)
-Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id pc16-20020a056214489000b006900040146asm1030577qvb.132.2024.02.25.18.01.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Feb 2024 18:01:24 -0800 (PST)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id B76C71200068;
-	Sun, 25 Feb 2024 21:01:23 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Sun, 25 Feb 2024 21:01:23 -0500
-X-ME-Sender: <xms:8_DbZbW8Hmpz56PQOPiJ-f3VYGOCrZN_ymvJbujWcnxfCL7dMXXCyw>
-    <xme:8_DbZTkTcwGhB4yLCDbpSEuyljO0xTeuB8OGuFWRP1wZMdWklw3q4o9Yw8EHe-x9N
-    5RF3uBoITSOzaXXKQ>
-X-ME-Received: <xmr:8_DbZXa9MB-jWS-1I8eWRpfN7Eg2pwqEIqNSnbEdqigfk_5Z_YcKxD7ZmHw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgedugdegvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvfevuffkfhggtggujgesthdtre
-    dttddtvdenucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehg
-    mhgrihhlrdgtohhmqeenucggtffrrghtthgvrhhnpefhtedvgfdtueekvdekieetieetje
-    eihedvteehuddujedvkedtkeefgedvvdehtdenucffohhmrghinhepkhgvrhhnvghlrdho
-    rhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
-    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
-    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
-    hmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:8_DbZWUbpFOgcUMA1EA8Uf91cVmX8D0cq8FImpZTdTb5Og8atEE19w>
-    <xmx:8_DbZVks3CDxNcsubZ4HoEPh1Uw5kN3QH-gfRyt3cmBF5AFANF7Eng>
-    <xmx:8_DbZTd0iV4y_GSL5OEbsH1Bv-gGhkwrFC4LzGSK2AqG3KRMux-rXw>
-    <xmx:8_DbZX2L29JsyssgdoQa6BbkaorrEc8wPfKlNSuAcjMIKgjO97MUr3AJGVw>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 25 Feb 2024 21:01:22 -0500 (EST)
-Date: Sun, 25 Feb 2024 18:00:48 -0800
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: torvalds@linux-foundation.org, mpatocka@redhat.com,
-	linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev,
-	msnitzer@redhat.com, ignat@cloudflare.com, damien.lemoal@wdc.com,
-	bob.liu@oracle.com, houtao1@huawei.com, peterz@infradead.org,
-	mingo@kernel.org, netdev@vger.kernel.org, allen.lkml@gmail.com,
-	kernel-team@meta.com, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v3 3/8] workqueue: Implement BH workqueues to eventually
- replace tasklets
-Message-ID: <Zdvw0HdSXcU3JZ4g@boqun-archlinux>
-References: <20240130091300.2968534-1-tj@kernel.org>
- <20240130091300.2968534-4-tj@kernel.org>
- <ZcABypwUML6Osiec@slm.duckdns.org>
+	s=arc-20240116; t=1708913074; c=relaxed/simple;
+	bh=y318UcE4MAk0MLYiDOQ/dMvM4XNo78p/1t5blVIvXXs=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=pjS5aQsK+lONe8ZN5kbJqun5TzyD3CXk0JdIF7Ftu6YlkIlG814Pn9RD5nv4oEBBLDbvKMfRmIAj5vIYC6Xcj1oNIAp9rcg7pZ8yAER2wAE9V8jiCCvg+BnJ7KPcLL2efL2xxj1ADO2p27IgqTwWDqXwTa/KxKW6i810d+OWeNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.173])
+	by gateway (Coremail) with SMTP id _____8Dx6uin8dtlEGcRAA--.24798S3;
+	Mon, 26 Feb 2024 10:04:23 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8AxX8+k8dtlPRlEAA--.47464S3;
+	Mon, 26 Feb 2024 10:04:22 +0800 (CST)
+Subject: Re: [PATCH v5 3/6] LoongArch: KVM: Add cpucfg area for kvm hypervisor
+To: Huacai Chen <chenhuacai@kernel.org>
+Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, loongarch@lists.linux.dev,
+ linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+ kvm@vger.kernel.org
+References: <20240222032803.2177856-1-maobibo@loongson.cn>
+ <20240222032803.2177856-4-maobibo@loongson.cn>
+ <CAAhV-H5eqXMqTYVb6cAVqOsDNcEDeP9HzaMKw69KFQeVaAYEdA@mail.gmail.com>
+From: maobibo <maobibo@loongson.cn>
+Message-ID: <d1a6c424-b710-74d6-29f6-e0d8e597e1fb@loongson.cn>
+Date: Mon, 26 Feb 2024 10:04:19 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZcABypwUML6Osiec@slm.duckdns.org>
+In-Reply-To: <CAAhV-H5eqXMqTYVb6cAVqOsDNcEDeP9HzaMKw69KFQeVaAYEdA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8AxX8+k8dtlPRlEAA--.47464S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxWw47urW5uw4kGw4kJryDXFc_yoWrKF4xpF
+	WxZFnYgr48GryIy3y2qw45WrsIqr4kKr129FyfJa4rCFWaqryfAr40krWqkFyDtws5CF1I
+	qF15tr13uF1qyagCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUBjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+	Gr0_Gr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
+	kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWU
+	AwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
+	k0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_
+	Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67
+	AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
+	cVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI
+	8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v2
+	6r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jepB-UUUUU=
 
-On Sun, Feb 04, 2024 at 11:29:46AM -1000, Tejun Heo wrote:
-> >From 4cb1ef64609f9b0254184b2947824f4b46ccab22 Mon Sep 17 00:00:00 2001
-> From: Tejun Heo <tj@kernel.org>
-> Date: Sun, 4 Feb 2024 11:28:06 -1000
-> 
-> The only generic interface to execute asynchronously in the BH context is
-> tasklet; however, it's marked deprecated and has some design flaws such as
-> the execution code accessing the tasklet item after the execution is
-> complete which can lead to subtle use-after-free in certain usage scenarios
-> and less-developed flush and cancel mechanisms.
-> 
-> This patch implements BH workqueues which share the same semantics and
-> features of regular workqueues but execute their work items in the softirq
-> context. As there is always only one BH execution context per CPU, none of
-> the concurrency management mechanisms applies and a BH workqueue can be
-> thought of as a convenience wrapper around softirq.
-> 
-> Except for the inability to sleep while executing and lack of max_active
-> adjustments, BH workqueues and work items should behave the same as regular
-> workqueues and work items.
-> 
-> Currently, the execution is hooked to tasklet[_hi]. However, the goal is to
-> convert all tasklet users over to BH workqueues. Once the conversion is
-> complete, tasklet can be removed and BH workqueues can directly take over
-> the tasklet softirqs.
-> 
-> system_bh[_highpri]_wq are added. As queue-wide flushing doesn't exist in
-> tasklet, all existing tasklet users should be able to use the system BH
-> workqueues without creating their own workqueues.
-> 
-> v3: - Add missing interrupt.h include.
-> 
-> v2: - Instead of using tasklets, hook directly into its softirq action
->       functions - tasklet[_hi]_action(). This is slightly cheaper and closer
->       to the eventual code structure we want to arrive at. Suggested by Lai.
-> 
->     - Lai also pointed out several places which need NULL worker->task
->       handling or can use clarification. Updated.
-> 
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Link: http://lkml.kernel.org/r/CAHk-=wjDW53w4-YcSmgKC5RruiRLHmJ1sXeYdp_ZgVoBw=5byA@mail.gmail.com
-> Tested-by: Allen Pais <allen.lkml@gmail.com>
-> Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
-> ---
->  Documentation/core-api/workqueue.rst |  29 ++-
->  include/linux/workqueue.h            |  11 +
->  kernel/softirq.c                     |   3 +
->  kernel/workqueue.c                   | 291 ++++++++++++++++++++++-----
->  tools/workqueue/wq_dump.py           |  11 +-
->  5 files changed, 285 insertions(+), 60 deletions(-)
-> 
-> diff --git a/Documentation/core-api/workqueue.rst b/Documentation/core-api/workqueue.rst
-> index 33c4539155d9..2d6af6c4665c 100644
-> --- a/Documentation/core-api/workqueue.rst
-> +++ b/Documentation/core-api/workqueue.rst
-> @@ -77,10 +77,12 @@ wants a function to be executed asynchronously it has to set up a work
->  item pointing to that function and queue that work item on a
->  workqueue.
->  
-> -Special purpose threads, called worker threads, execute the functions
-> -off of the queue, one after the other.  If no work is queued, the
-> -worker threads become idle.  These worker threads are managed in so
-> -called worker-pools.
-> +A work item can be executed in either a thread or the BH (softirq) context.
-> +
-> +For threaded workqueues, special purpose threads, called [k]workers, execute
-> +the functions off of the queue, one after the other. If no work is queued,
-> +the worker threads become idle. These worker threads are managed in
-> +worker-pools.
->  
->  The cmwq design differentiates between the user-facing workqueues that
->  subsystems and drivers queue work items on and the backend mechanism
-> @@ -91,6 +93,12 @@ for high priority ones, for each possible CPU and some extra
->  worker-pools to serve work items queued on unbound workqueues - the
->  number of these backing pools is dynamic.
->  
-> +BH workqueues use the same framework. However, as there can only be one
-> +concurrent execution context, there's no need to worry about concurrency.
-> +Each per-CPU BH worker pool contains only one pseudo worker which represents
-> +the BH execution context. A BH workqueue can be considered a convenience
-> +interface to softirq.
-> +
->  Subsystems and drivers can create and queue work items through special
->  workqueue API functions as they see fit. They can influence some
->  aspects of the way the work items are executed by setting flags on the
-> @@ -106,7 +114,7 @@ unless specifically overridden, a work item of a bound workqueue will
->  be queued on the worklist of either normal or highpri worker-pool that
->  is associated to the CPU the issuer is running on.
->  
-> -For any worker pool implementation, managing the concurrency level
-> +For any thread pool implementation, managing the concurrency level
->  (how many execution contexts are active) is an important issue.  cmwq
->  tries to keep the concurrency at a minimal but sufficient level.
->  Minimal to save resources and sufficient in that the system is used at
-> @@ -164,6 +172,17 @@ resources, scheduled and executed.
->  ``flags``
->  ---------
->  
-> +``WQ_BH``
-> +  BH workqueues can be considered a convenience interface to softirq. BH
-> +  workqueues are always per-CPU and all BH work items are executed in the
-> +  queueing CPU's softirq context in the queueing order.
-> +
-> +  All BH workqueues must have 0 ``max_active`` and ``WQ_HIGHPRI`` is the
-> +  only allowed additional flag.
-> +
-> +  BH work items cannot sleep. All other features such as delayed queueing,
-> +  flushing and canceling are supported.
-> +
->  ``WQ_UNBOUND``
->    Work items queued to an unbound wq are served by the special
->    worker-pools which host workers which are not bound to any
-> diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
-> index 232baea90a1d..283d7891b4c4 100644
-> --- a/include/linux/workqueue.h
-> +++ b/include/linux/workqueue.h
-> @@ -353,6 +353,7 @@ static inline unsigned int work_static(struct work_struct *work) { return 0; }
->   * Documentation/core-api/workqueue.rst.
->   */
->  enum wq_flags {
-> +	WQ_BH			= 1 << 0, /* execute in bottom half (softirq) context */
->  	WQ_UNBOUND		= 1 << 1, /* not bound to any cpu */
->  	WQ_FREEZABLE		= 1 << 2, /* freeze during suspend */
->  	WQ_MEM_RECLAIM		= 1 << 3, /* may be used for memory reclaim */
-> @@ -392,6 +393,9 @@ enum wq_flags {
->  	__WQ_ORDERED		= 1 << 17, /* internal: workqueue is ordered */
->  	__WQ_LEGACY		= 1 << 18, /* internal: create*_workqueue() */
->  	__WQ_ORDERED_EXPLICIT	= 1 << 19, /* internal: alloc_ordered_workqueue() */
-> +
-> +	/* BH wq only allows the following flags */
-> +	__WQ_BH_ALLOWS		= WQ_BH | WQ_HIGHPRI,
->  };
->  
->  enum wq_consts {
-> @@ -434,6 +438,9 @@ enum wq_consts {
->   * they are same as their non-power-efficient counterparts - e.g.
->   * system_power_efficient_wq is identical to system_wq if
->   * 'wq_power_efficient' is disabled.  See WQ_POWER_EFFICIENT for more info.
-> + *
-> + * system_bh[_highpri]_wq are convenience interface to softirq. BH work items
-> + * are executed in the queueing CPU's BH context in the queueing order.
->   */
->  extern struct workqueue_struct *system_wq;
->  extern struct workqueue_struct *system_highpri_wq;
-> @@ -442,6 +449,10 @@ extern struct workqueue_struct *system_unbound_wq;
->  extern struct workqueue_struct *system_freezable_wq;
->  extern struct workqueue_struct *system_power_efficient_wq;
->  extern struct workqueue_struct *system_freezable_power_efficient_wq;
-> +extern struct workqueue_struct *system_bh_wq;
-> +extern struct workqueue_struct *system_bh_highpri_wq;
-> +
-> +void workqueue_softirq_action(bool highpri);
->  
->  /**
->   * alloc_workqueue - allocate a workqueue
-> diff --git a/kernel/softirq.c b/kernel/softirq.c
-> index 210cf5f8d92c..547d282548a8 100644
-> --- a/kernel/softirq.c
-> +++ b/kernel/softirq.c
-> @@ -27,6 +27,7 @@
->  #include <linux/tick.h>
->  #include <linux/irq.h>
->  #include <linux/wait_bit.h>
-> +#include <linux/workqueue.h>
->  
->  #include <asm/softirq_stack.h>
->  
-> @@ -802,11 +803,13 @@ static void tasklet_action_common(struct softirq_action *a,
->  
->  static __latent_entropy void tasklet_action(struct softirq_action *a)
->  {
-> +	workqueue_softirq_action(false);
->  	tasklet_action_common(a, this_cpu_ptr(&tasklet_vec), TASKLET_SOFTIRQ);
->  }
->  
->  static __latent_entropy void tasklet_hi_action(struct softirq_action *a)
->  {
-> +	workqueue_softirq_action(true);
->  	tasklet_action_common(a, this_cpu_ptr(&tasklet_hi_vec), HI_SOFTIRQ);
->  }
->  
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index 767971a29c7a..78b4b992e1a3 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -29,6 +29,7 @@
->  #include <linux/kernel.h>
->  #include <linux/sched.h>
->  #include <linux/init.h>
-> +#include <linux/interrupt.h>
->  #include <linux/signal.h>
->  #include <linux/completion.h>
->  #include <linux/workqueue.h>
-> @@ -72,8 +73,12 @@ enum worker_pool_flags {
->  	 * Note that DISASSOCIATED should be flipped only while holding
->  	 * wq_pool_attach_mutex to avoid changing binding state while
->  	 * worker_attach_to_pool() is in progress.
-> +	 *
-> +	 * As there can only be one concurrent BH execution context per CPU, a
-> +	 * BH pool is per-CPU and always DISASSOCIATED.
->  	 */
-> -	POOL_MANAGER_ACTIVE	= 1 << 0,	/* being managed */
-> +	POOL_BH			= 1 << 0,	/* is a BH pool */
-> +	POOL_MANAGER_ACTIVE	= 1 << 1,	/* being managed */
->  	POOL_DISASSOCIATED	= 1 << 2,	/* cpu can't serve workers */
->  };
->  
-> @@ -115,6 +120,14 @@ enum wq_internal_consts {
->  	WQ_NAME_LEN		= 32,
->  };
->  
-> +/*
-> + * We don't want to trap softirq for too long. See MAX_SOFTIRQ_TIME and
-> + * MAX_SOFTIRQ_RESTART in kernel/softirq.c. These are macros because
-> + * msecs_to_jiffies() can't be an initializer.
-> + */
-> +#define BH_WORKER_JIFFIES	msecs_to_jiffies(2)
-> +#define BH_WORKER_RESTARTS	10
 
-Sorry, late to the party, but I wonder how this play along with cpu
-hotplug? Say we've queued a lot BH_WORK on a CPU, and we offline that
-cpu, wouldn't that end up with a few BH_WORK left on that CPU not being
-executed?
 
-[Cc Thomas]
+On 2024/2/24 下午5:13, Huacai Chen wrote:
+> Hi, Bibo,
+> 
+> On Thu, Feb 22, 2024 at 11:28 AM Bibo Mao <maobibo@loongson.cn> wrote:
+>>
+>> Instruction cpucfg can be used to get processor features. And there
+>> is trap exception when it is executed in VM mode, and also it is
+>> to provide cpu features to VM. On real hardware cpucfg area 0 - 20
+>> is used.  Here one specified area 0x40000000 -- 0x400000ff is used
+>> for KVM hypervisor to privide PV features, and the area can be extended
+>> for other hypervisors in future. This area will never be used for
+>> real HW, it is only used by software.
+> After reading and thinking, I find that the hypercall method which is
+> used in our productive kernel is better than this cpucfg method.
+> Because hypercall is more simple and straightforward, plus we don't
+> worry about conflicting with the real hardware.
+No, I do not think so. cpucfg is simper than hypercall, hypercall can
+be in effect when system runs in guest mode. In some scenario like TCG 
+mode, hypercall is illegal intruction, however cpucfg can work.
 
-Regards,
-Boqun
+Extioi virtualization extension will be added later, cpucfg can be used 
+to get extioi features. It is unlikely that extioi driver depends on 
+PARA_VIRT macro if hypercall is used to get features.
 
-> +
-[..]
+Regards
+Bibo Mao
+
+> 
+> Huacai
+> 
+>>
+>> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+>> ---
+>>   arch/loongarch/include/asm/inst.h      |  1 +
+>>   arch/loongarch/include/asm/loongarch.h | 10 ++++++
+>>   arch/loongarch/kvm/exit.c              | 46 +++++++++++++++++---------
+>>   3 files changed, 41 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/arch/loongarch/include/asm/inst.h b/arch/loongarch/include/asm/inst.h
+>> index d8f637f9e400..ad120f924905 100644
+>> --- a/arch/loongarch/include/asm/inst.h
+>> +++ b/arch/loongarch/include/asm/inst.h
+>> @@ -67,6 +67,7 @@ enum reg2_op {
+>>          revhd_op        = 0x11,
+>>          extwh_op        = 0x16,
+>>          extwb_op        = 0x17,
+>> +       cpucfg_op       = 0x1b,
+>>          iocsrrdb_op     = 0x19200,
+>>          iocsrrdh_op     = 0x19201,
+>>          iocsrrdw_op     = 0x19202,
+>> diff --git a/arch/loongarch/include/asm/loongarch.h b/arch/loongarch/include/asm/loongarch.h
+>> index 46366e783c84..a1d22e8b6f94 100644
+>> --- a/arch/loongarch/include/asm/loongarch.h
+>> +++ b/arch/loongarch/include/asm/loongarch.h
+>> @@ -158,6 +158,16 @@
+>>   #define  CPUCFG48_VFPU_CG              BIT(2)
+>>   #define  CPUCFG48_RAM_CG               BIT(3)
+>>
+>> +/*
+>> + * cpucfg index area: 0x40000000 -- 0x400000ff
+>> + * SW emulation for KVM hypervirsor
+>> + */
+>> +#define CPUCFG_KVM_BASE                        0x40000000UL
+>> +#define CPUCFG_KVM_SIZE                        0x100
+>> +#define CPUCFG_KVM_SIG                 CPUCFG_KVM_BASE
+>> +#define  KVM_SIGNATURE                 "KVM\0"
+>> +#define CPUCFG_KVM_FEATURE             (CPUCFG_KVM_BASE + 4)
+>> +
+>>   #ifndef __ASSEMBLY__
+>>
+>>   /* CSR */
+>> diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
+>> index 923bbca9bd22..6a38fd59d86d 100644
+>> --- a/arch/loongarch/kvm/exit.c
+>> +++ b/arch/loongarch/kvm/exit.c
+>> @@ -206,10 +206,37 @@ int kvm_emu_idle(struct kvm_vcpu *vcpu)
+>>          return EMULATE_DONE;
+>>   }
+>>
+>> -static int kvm_trap_handle_gspr(struct kvm_vcpu *vcpu)
+>> +static int kvm_emu_cpucfg(struct kvm_vcpu *vcpu, larch_inst inst)
+>>   {
+>>          int rd, rj;
+>>          unsigned int index;
+>> +
+>> +       rd = inst.reg2_format.rd;
+>> +       rj = inst.reg2_format.rj;
+>> +       ++vcpu->stat.cpucfg_exits;
+>> +       index = vcpu->arch.gprs[rj];
+>> +
+>> +       /*
+>> +        * By LoongArch Reference Manual 2.2.10.5
+>> +        * Return value is 0 for undefined cpucfg index
+>> +        */
+>> +       switch (index) {
+>> +       case 0 ... (KVM_MAX_CPUCFG_REGS - 1):
+>> +               vcpu->arch.gprs[rd] = vcpu->arch.cpucfg[index];
+>> +               break;
+>> +       case CPUCFG_KVM_SIG:
+>> +               vcpu->arch.gprs[rd] = *(unsigned int *)KVM_SIGNATURE;
+>> +               break;
+>> +       default:
+>> +               vcpu->arch.gprs[rd] = 0;
+>> +               break;
+>> +       }
+>> +
+>> +       return EMULATE_DONE;
+>> +}
+>> +
+>> +static int kvm_trap_handle_gspr(struct kvm_vcpu *vcpu)
+>> +{
+>>          unsigned long curr_pc;
+>>          larch_inst inst;
+>>          enum emulation_result er = EMULATE_DONE;
+>> @@ -224,21 +251,8 @@ static int kvm_trap_handle_gspr(struct kvm_vcpu *vcpu)
+>>          er = EMULATE_FAIL;
+>>          switch (((inst.word >> 24) & 0xff)) {
+>>          case 0x0: /* CPUCFG GSPR */
+>> -               if (inst.reg2_format.opcode == 0x1B) {
+>> -                       rd = inst.reg2_format.rd;
+>> -                       rj = inst.reg2_format.rj;
+>> -                       ++vcpu->stat.cpucfg_exits;
+>> -                       index = vcpu->arch.gprs[rj];
+>> -                       er = EMULATE_DONE;
+>> -                       /*
+>> -                        * By LoongArch Reference Manual 2.2.10.5
+>> -                        * return value is 0 for undefined cpucfg index
+>> -                        */
+>> -                       if (index < KVM_MAX_CPUCFG_REGS)
+>> -                               vcpu->arch.gprs[rd] = vcpu->arch.cpucfg[index];
+>> -                       else
+>> -                               vcpu->arch.gprs[rd] = 0;
+>> -               }
+>> +               if (inst.reg2_format.opcode == cpucfg_op)
+>> +                       er = kvm_emu_cpucfg(vcpu, inst);
+>>                  break;
+>>          case 0x4: /* CSR{RD,WR,XCHG} GSPR */
+>>                  er = kvm_handle_csr(vcpu, inst);
+>> --
+>> 2.39.3
+>>
+
 
