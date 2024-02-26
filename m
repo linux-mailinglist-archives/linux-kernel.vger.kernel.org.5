@@ -1,268 +1,322 @@
-Return-Path: <linux-kernel+bounces-81286-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 303DC86735F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:38:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4974F867353
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:37:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E1D91F27DD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:38:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 001B5289C43
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:37:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D13E14A990;
-	Mon, 26 Feb 2024 11:37:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13063208B8;
+	Mon, 26 Feb 2024 11:37:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="r3gQ/FSS";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0Pcj5SVw"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="3UMfKxln"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 967B02376A;
-	Mon, 26 Feb 2024 11:37:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C1C31CD35
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:36:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708947440; cv=none; b=HKf2Yka++FTRo+8UelImnOF4bOSPGvujGAYqK2o6i5XDg5cQ5BnC4WqzEoIcqAckdvgjz2Vbs/0BLOLXyn94XwC6+M2//UETKKaEIfVpSc/Wv1h8ySVwVtQM1pfM2tBU2YcgMBgldKcNr/ZUw65ACCnyuLLPIMhGyx9XnUh/v60=
+	t=1708947419; cv=none; b=O4wLb57Z7lGJ88ToyeEnSYIPWHESjP2d+HWBHYJD4YN8S8sXVtQl+acnL5a/Yie63/XVjatmUZTr0Krqlra7S/5p9MWZKtegw1PvPGLo4EErnuO3chETzWtCqqqbjqlhvcaLGUkntEBlcuPNmnAVkwQkjJXG8GvTcWZAgpnYQpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708947440; c=relaxed/simple;
-	bh=zAAJLho0cCO/HNTiCV3588QnktmmlyE4Z01Qd0pjWN0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Dahxsfpc51RiBY3Mcdt4QfCSlJTvtCowSdcm1jfb03zUUkTB4z0ZnUGIrgJj6YT4OBp17oCyOiFAbmUOuhGwJ7rWvfU/MOcUjR3Nv6U9i22zpoTC/0SSKhNZ3lK/6fnDIfgZARDUXiR4t04VepQ+MgXIguETQBpuISji7JmdWWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=r3gQ/FSS; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0Pcj5SVw; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708947431;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0BT9tAymdgF12edcAn5jaXSRSblrBPjimcTyWY1gKVQ=;
-	b=r3gQ/FSS8tZI+vRzbrg42znqs4XhLBKCA3FHP41fG49mpUAKYPSFTBfnwBI0vl9DvSJth+
-	3s1nQcIMV4JRDi19ntwTmgiZIHCBaYuyXsnx/y+ZF97BO2GjRQSNSTvBXB9DuS2aqSiatR
-	T2z9z4DEzFaIVG+B5fGgyYXOSvvka49c0Mm1mDuLVbsd4Qfj9jPD3DNSxflBjlrhvdS5DL
-	UyrO/18gCgb9Kj5Jy+n/V2yvL41DWIZ0lJ3g6XGwly4eY/youC3cBprwjDWNIYXIoseLl7
-	mhBUJbsHaHusHD6fTVcYodfe7/s9cOfeuIn+qonaNq6TNEnX3hrzaPrkyJdEsg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708947431;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0BT9tAymdgF12edcAn5jaXSRSblrBPjimcTyWY1gKVQ=;
-	b=0Pcj5SVwVRMEILNtAi9Fm3gU1VFrH64Z4wHM04nWiSG26uri1Nb1O4aYF3UpFIrbYKJvx+
-	/zO9Y0UcNtwM0yAg==
-To: Peter Collingbourne <pcc@google.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, Petr
- Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, Sergey
- Senozhatsky <senozhatsky@chromium.org>
-Cc: Peter Collingbourne <pcc@google.com>, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] serial: Lock console when calling into driver before
- registration
-In-Reply-To: <20240222192329.1047386-1-pcc@google.com>
-References: <20240222192329.1047386-1-pcc@google.com>
-Date: Mon, 26 Feb 2024 12:42:43 +0106
-Message-ID: <878r37mp84.fsf@jogness.linutronix.de>
+	s=arc-20240116; t=1708947419; c=relaxed/simple;
+	bh=QyQIi/QDa67xtFce461/0GVNnGk1ZeK4FLUm0G7lJ48=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rAoUr+iGw9ACmSgeAhPuzapC6end/HiFSQJd5vZLGLuJSlKJTzThQXTsAtJwolPIdFJhRPUrV5/AnSg9hL4Eq/1VFan/UtIyIHamyJ9ZSY2XNxXHz1mKDfvR+hrf6ydj+ywd/45VXxngB6HP69kXFPnmWa+BeoaJRXOBp9rkccg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=3UMfKxln; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708947415;
+	bh=QyQIi/QDa67xtFce461/0GVNnGk1ZeK4FLUm0G7lJ48=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=3UMfKxlnahzVrSnv2m08QV4BF+1jj8LMVPm6a301p00qLNVi4MX+pRz8uinSQPIBR
+	 DgTiI+1qtJjAWA+6M7iZ1jYUDnrrtbNJuPqU8wh+8Kl0xuPYlRWC7/0GNccTwnlgtf
+	 frkPhnNgrzCa7MhfMxXwBsMyFLgtL2WiXKKnm+WCXiqDt00OYrEmco6fbObZ5fbpUH
+	 E2nagXnQ0I7KmsrBC+cNcGzW4vf1wI/fDiAz34mwYKUZlw0ErIsjwbjDhqvN7vP+Rd
+	 haKtn3gTpdArU+yeeP7OK6V7/ms73JY02TkMQ5udTJ3WTvHAZluNxRUj9KeEUocVTf
+	 7dxQ9DDou7xIw==
+Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pq)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5F18E37814B0;
+	Mon, 26 Feb 2024 11:36:54 +0000 (UTC)
+Date: Mon, 26 Feb 2024 13:36:46 +0200
+From: Pekka Paalanen <pekka.paalanen@collabora.com>
+To: Louis Chauvet <louis.chauvet@bootlin.com>
+Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
+ <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
+ <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
+ Vetter <daniel@ffwll.ch>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ arthurgrillo@riseup.net, Jonathan Corbet <corbet@lwn.net>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
+ thomas.petazzoni@bootlin.com
+Subject: Re: [PATCH v2 4/9] drm/vkms: Add typedef and documentation for
+ pixel_read and pixel_write functions
+Message-ID: <20240226133646.174d3fb2.pekka.paalanen@collabora.com>
+In-Reply-To: <20240223-yuv-v2-4-aa6be2827bb7@bootlin.com>
+References: <20240223-yuv-v2-0-aa6be2827bb7@bootlin.com>
+	<20240223-yuv-v2-4-aa6be2827bb7@bootlin.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; boundary="Sig_/.ffrXulYUtCGywhVcpoe/GC";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On 2024-02-22, Peter Collingbourne <pcc@google.com> wrote:
-> During the handoff from earlycon to the real console driver, we have
-> two separate drivers operating on the same device concurrently. In the
-> case of the 8250 driver these concurrent accesses cause problems due
-> to the driver's use of banked registers, controlled by LCR.DLAB. It is
-> possible for the setup(), config_port(), pm() and set_mctrl() callbacks
-> to set DLAB, which can cause the earlycon code that intends to access
-> TX to instead access DLL, leading to missed output and corruption on
-> the serial line due to unintended modifications to the baud rate.
->
-> In particular, for setup() we have:
->
-> univ8250_console_setup()
-> -> serial8250_console_setup()
-> -> uart_set_options()
-> -> serial8250_set_termios()
-> -> serial8250_do_set_termios()
-> -> serial8250_do_set_divisor()
->
-> For config_port() we have:
->
-> serial8250_config_port()
-> -> autoconfig()
->
-> For pm() we have:
->
-> serial8250_pm()
-> -> serial8250_do_pm()
-> -> serial8250_set_sleep()
->
-> For set_mctrl() we have (for some devices):
->
-> serial8250_set_mctrl()
-> -> omap8250_set_mctrl()
-> -> __omap8250_set_mctrl()
->
-> To avoid such problems, let's make it so that the console is locked
-> during pre-registration calls to these callbacks, which will prevent
-> the earlycon driver from running concurrently.
+--Sig_/.ffrXulYUtCGywhVcpoe/GC
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Even after the current atomic/threaded print rework is completed, the
-console lock will be used to synchronize boot consoles with non-boot
-consoles. I am fine with this solution.
+On Fri, 23 Feb 2024 12:37:24 +0100
+Louis Chauvet <louis.chauvet@bootlin.com> wrote:
 
-Comments below...
-
-> Remove the partial solution to this problem in the 8250 driver
-> that locked the console only during autoconfig_irq(), as this would
-> result in a deadlock with the new approach. The console continues
-> to be locked during autoconfig_irq() because it can only be called
-> through uart_configure_port().
->
-> Although this patch introduces more locking than strictly necessary
-> (and in particular it also locks during the call to rs485_config()
-> which is not affected by this issue as far as I can tell), it follows
-> the principle that it is the responsibility of the generic console
-> code to manage the earlycon handoff by ensuring that earlycon and real
-> console driver code cannot run concurrently, and not the individual
-> drivers.
->
-> Signed-off-by: Peter Collingbourne <pcc@google.com>
-> Link: https://linux-review.googlesource.com/id/I7cf8124dcebf8618e6b2ee543fa5b25532de55d8
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Cc: stable@vger.kernel.org
+> Introduce two typedefs: pixel_read_t and pixel_write_t. It allows the
+> compiler to check if the passed functions take the correct arguments.
+> Such typedefs will help ensuring consistency across the code base in
+> case of update of these prototypes.
+>=20
+> Introduce a check around the get_pixel_*_functions to avoid using a
+> nullptr as a function.
+>=20
+> Document for those typedefs.
+>=20
+> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
 > ---
->  drivers/tty/serial/8250/8250_port.c |  6 ------
->  drivers/tty/serial/serial_core.c    | 10 ++++++++++
->  kernel/printk/printk.c              | 20 +++++++++++++++++---
->  3 files changed, 27 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-> index 8ca061d3bbb9..1d65055dde27 100644
-> --- a/drivers/tty/serial/8250/8250_port.c
-> +++ b/drivers/tty/serial/8250/8250_port.c
-> @@ -1329,9 +1329,6 @@ static void autoconfig_irq(struct uart_8250_port *up)
->  		inb_p(ICP);
+>  drivers/gpu/drm/vkms/vkms_drv.h       | 23 +++++++++++++++++++++--
+>  drivers/gpu/drm/vkms/vkms_formats.c   |  8 ++++----
+>  drivers/gpu/drm/vkms/vkms_formats.h   |  4 ++--
+>  drivers/gpu/drm/vkms/vkms_plane.c     |  9 ++++++++-
+>  drivers/gpu/drm/vkms/vkms_writeback.c |  9 ++++++++-
+>  5 files changed, 43 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_=
+drv.h
+> index 18086423a3a7..886c885c8cf5 100644
+> --- a/drivers/gpu/drm/vkms/vkms_drv.h
+> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
+> @@ -53,12 +53,31 @@ struct line_buffer {
+>  	struct pixel_argb_u16 *pixels;
+>  };
+> =20
+> +/**
+> + * typedef pixel_write_t - These functions are used to read a pixel from=
+ a
+> + * `struct pixel_argb_u16*`, convert it in a specific format and write i=
+t in the @dst_pixels
+> + * buffer.
+> + *
+> + * @dst_pixel: destination address to write the pixel
+> + * @in_pixel: pixel to write
+> + */
+> +typedef void (*pixel_write_t)(u8 *dst_pixels, struct pixel_argb_u16 *in_=
+pixel);
+
+There are some inconsistencies in pixel_write_t and pixel_read_t. At
+this point of the series they still operate on a single pixel, but you
+use dst_pixels and src_pixels, plural. Yet the documentation correctly
+talks about processing a single pixel.
+
+I would also expect the source to be always const, but that's a whole
+another patch to change.
+
+> +
+>  struct vkms_writeback_job {
+>  	struct iosys_map data[DRM_FORMAT_MAX_PLANES];
+>  	struct vkms_frame_info wb_frame_info;
+> -	void (*pixel_write)(u8 *dst_pixels, struct pixel_argb_u16 *in_pixel);
+> +	pixel_write_t pixel_write;
+>  };
+> =20
+> +/**
+> + * typedef pixel_read_t - These functions are used to read a pixel in th=
+e source frame,
+> + * convert it to `struct pixel_argb_u16` and write it to @out_pixel.
+> + *
+> + * @src_pixels: Pointer to the pixel to read
+> + * @out_pixel: Pointer to write the converted pixel
+> + */
+> +typedef void (*pixel_read_t)(u8 *src_pixels, struct pixel_argb_u16 *out_=
+pixel);
+> +
+>  /**
+>   * vkms_plane_state - Driver specific plane state
+>   * @base: base plane state
+> @@ -69,7 +88,7 @@ struct vkms_writeback_job {
+>  struct vkms_plane_state {
+>  	struct drm_shadow_plane_state base;
+>  	struct vkms_frame_info *frame_info;
+> -	void (*pixel_read)(u8 *src_buffer, struct pixel_argb_u16 *out_pixel);
+> +	pixel_read_t pixel_read;
+>  };
+> =20
+>  struct vkms_plane {
+> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/v=
+kms_formats.c
+> index cb7a49b7c8e7..1f5aeba57ad6 100644
+> --- a/drivers/gpu/drm/vkms/vkms_formats.c
+> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
+> @@ -262,7 +262,7 @@ void vkms_writeback_row(struct vkms_writeback_job *wb,
+>   *
+>   * @format: 4cc of the format
+>   */
+> -void *get_pixel_conversion_function(u32 format)
+> +pixel_read_t get_pixel_read_function(u32 format)
+>  {
+>  	switch (format) {
+>  	case DRM_FORMAT_ARGB8888:
+> @@ -276,7 +276,7 @@ void *get_pixel_conversion_function(u32 format)
+>  	case DRM_FORMAT_RGB565:
+>  		return &RGB565_to_argb_u16;
+>  	default:
+> -		return NULL;
+> +		return (pixel_read_t)NULL;
 >  	}
->  
-> -	if (uart_console(port))
-> -		console_lock();
-> -
->  	/* forget possible initially masked and pending IRQ */
->  	probe_irq_off(probe_irq_on());
->  	save_mcr = serial8250_in_MCR(up);
-> @@ -1371,9 +1368,6 @@ static void autoconfig_irq(struct uart_8250_port *up)
->  	if (port->flags & UPF_FOURPORT)
->  		outb_p(save_ICP, ICP);
->  
-> -	if (uart_console(port))
-> -		console_unlock();
-> -
->  	port->irq = (irq > 0) ? irq : 0;
 >  }
->  
-> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-> index d6a58a9e072a..128aa0e0ae24 100644
-> --- a/drivers/tty/serial/serial_core.c
-> +++ b/drivers/tty/serial/serial_core.c
-> @@ -2608,7 +2608,11 @@ uart_configure_port(struct uart_driver *drv, struct uart_state *state,
->  			port->type = PORT_UNKNOWN;
->  			flags |= UART_CONFIG_TYPE;
->  		}
-
-It would be nice to add a comment here mentioning why the console_lock
-is taken. Even if it is something brief like:
-
-     /* Sychronize with possible boot console. */
-
-> +		if (uart_console(port))
-> +			console_lock();
->  		port->ops->config_port(port, flags);
-> +		if (uart_console(port))
-> +			console_unlock();
+> =20
+> @@ -287,7 +287,7 @@ void *get_pixel_conversion_function(u32 format)
+>   *
+>   * @format: 4cc of the format
+>   */
+> -void *get_pixel_write_function(u32 format)
+> +pixel_write_t get_pixel_write_function(u32 format)
+>  {
+>  	switch (format) {
+>  	case DRM_FORMAT_ARGB8888:
+> @@ -301,6 +301,6 @@ void *get_pixel_write_function(u32 format)
+>  	case DRM_FORMAT_RGB565:
+>  		return &argb_u16_to_RGB565;
+>  	default:
+> -		return NULL;
+> +		return (pixel_write_t)NULL;
 >  	}
->  
->  	if (port->type != PORT_UNKNOWN) {
-> @@ -2616,6 +2620,9 @@ uart_configure_port(struct uart_driver *drv, struct uart_state *state,
->  
->  		uart_report_port(drv, port);
->  
-
-Also, here a brief comment.
-
-> +		if (uart_console(port))
-> +			console_lock();
-> +
->  		/* Power up port for set_mctrl() */
->  		uart_change_pm(state, UART_PM_STATE_ON);
->  
-> @@ -2632,6 +2639,9 @@ uart_configure_port(struct uart_driver *drv, struct uart_state *state,
->  
->  		uart_rs485_config(port);
->  
-> +		if (uart_console(port))
-> +			console_unlock();
-> +
->  		/*
->  		 * If this driver supports console, and it hasn't been
->  		 * successfully registered yet, try to re-register it.
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index f2444b581e16..db69545e6250 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -3263,6 +3263,20 @@ static int __init keep_bootcon_setup(char *str)
->  
->  early_param("keep_bootcon", keep_bootcon_setup);
->  
-
-And here. Maybe slightly more verbose since there is an entire wrapper
-function created for the purpose.
-
-> +static int console_call_setup(struct console *newcon, char *options)
-> +{
-> +	int err;
-> +
-> +	if (!newcon->setup)
-> +		return 0;
-> +
-> +	console_lock();
-> +	err = newcon->setup(newcon, options);
-> +	console_unlock();
-> +
-> +	return err;
-> +}
-> +
->  /*
->   * This is called by register_console() to try to match
->   * the newly registered console with any of the ones selected
-> @@ -3298,8 +3312,8 @@ static int try_enable_preferred_console(struct console *newcon,
->  			if (_braille_register_console(newcon, c))
->  				return 0;
->  
-> -			if (newcon->setup &&
-> -			    (err = newcon->setup(newcon, c->options)) != 0)
-> +			err = console_call_setup(newcon, c->options);
-> +			if (err != 0)
->  				return err;
->  		}
->  		newcon->flags |= CON_ENABLED;
-> @@ -3325,7 +3339,7 @@ static void try_enable_default_console(struct console *newcon)
->  	if (newcon->index < 0)
->  		newcon->index = 0;
->  
-> -	if (newcon->setup && newcon->setup(newcon, NULL) != 0)
-> +	if (console_call_setup(newcon, NULL) != 0)
+>  }
+> diff --git a/drivers/gpu/drm/vkms/vkms_formats.h b/drivers/gpu/drm/vkms/v=
+kms_formats.h
+> index cf59c2ed8e9a..3ecea4563254 100644
+> --- a/drivers/gpu/drm/vkms/vkms_formats.h
+> +++ b/drivers/gpu/drm/vkms/vkms_formats.h
+> @@ -5,8 +5,8 @@
+> =20
+>  #include "vkms_drv.h"
+> =20
+> -void *get_pixel_conversion_function(u32 format);
+> +pixel_read_t get_pixel_read_function(u32 format);
+> =20
+> -void *get_pixel_write_function(u32 format);
+> +pixel_write_t get_pixel_write_function(u32 format);
+> =20
+>  #endif /* _VKMS_FORMATS_H_ */
+> diff --git a/drivers/gpu/drm/vkms/vkms_plane.c b/drivers/gpu/drm/vkms/vkm=
+s_plane.c
+> index d5203f531d96..f68b1b03d632 100644
+> --- a/drivers/gpu/drm/vkms/vkms_plane.c
+> +++ b/drivers/gpu/drm/vkms/vkms_plane.c
+> @@ -106,6 +106,13 @@ static void vkms_plane_atomic_update(struct drm_plan=
+e *plane,
 >  		return;
->  
->  	newcon->flags |= CON_ENABLED;
-> -- 
-> 2.44.0.rc1.240.g4c46232300-goog
+> =20
+>  	fmt =3D fb->format->format;
+> +	pixel_read_t pixel_read =3D get_pixel_read_function(fmt);
+> +
+> +	if (!pixel_read) {
+> +		DRM_WARN("Pixel format is not supported by VKMS planes. State is incha=
+nged\n");
 
-With comments added:
+DRM_WARN() is the kernel equivalent to userspace assert(), right?
+In that failing the check means an internal invariant was violated,
+which means a code bug in kernel?
 
-Reviewed-by: John Ogness <john.ogness@linutronix.de>
+Maybe this could be more specific about what invariant was violated?
+E.g. atomic check should have rejected this attempt already.
+
+
+Thanks,
+pq
+
+> +		return;
+> +	}
+> +
+>  	vkms_plane_state =3D to_vkms_plane_state(new_state);
+>  	shadow_plane_state =3D &vkms_plane_state->base;
+> =20
+> @@ -124,7 +131,7 @@ static void vkms_plane_atomic_update(struct drm_plane=
+ *plane,
+>  	drm_rect_rotate(&frame_info->rotated, drm_rect_width(&frame_info->rotat=
+ed),
+>  			drm_rect_height(&frame_info->rotated), frame_info->rotation);
+> =20
+> -	vkms_plane_state->pixel_read =3D get_pixel_conversion_function(fmt);
+> +	vkms_plane_state->pixel_read =3D pixel_read;
+>  }
+> =20
+>  static int vkms_plane_atomic_check(struct drm_plane *plane,
+> diff --git a/drivers/gpu/drm/vkms/vkms_writeback.c b/drivers/gpu/drm/vkms=
+/vkms_writeback.c
+> index c8582df1f739..c92b9f06c4a4 100644
+> --- a/drivers/gpu/drm/vkms/vkms_writeback.c
+> +++ b/drivers/gpu/drm/vkms/vkms_writeback.c
+> @@ -140,6 +140,13 @@ static void vkms_wb_atomic_commit(struct drm_connect=
+or *conn,
+>  	if (!conn_state)
+>  		return;
+> =20
+> +	pixel_write_t pixel_write =3D get_pixel_write_function(wb_format);
+> +
+> +	if (!pixel_write) {
+> +		DRM_WARN("Pixel format is not supported by VKMS writeback. State is in=
+changed\n");
+> +		return;
+> +	}
+> +
+>  	vkms_set_composer(&vkmsdev->output, true);
+> =20
+>  	active_wb =3D conn_state->writeback_job->priv;
+> @@ -150,7 +157,7 @@ static void vkms_wb_atomic_commit(struct drm_connecto=
+r *conn,
+>  	crtc_state->wb_pending =3D true;
+>  	spin_unlock_irq(&output->composer_lock);
+>  	drm_writeback_queue_job(wb_conn, connector_state);
+> -	active_wb->pixel_write =3D get_pixel_write_function(wb_format);
+> +	active_wb->pixel_write =3D pixel_write;
+>  	drm_rect_init(&wb_frame_info->src, 0, 0, crtc_width, crtc_height);
+>  	drm_rect_init(&wb_frame_info->dst, 0, 0, crtc_width, crtc_height);
+>  }
+>=20
+
+
+--Sig_/.ffrXulYUtCGywhVcpoe/GC
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXcd84ACgkQI1/ltBGq
+qqeu1RAAh3zB6DOIG+0KcNcwq/ohUyhGhDrpfkNFtEn4WKdrNVH5Kfh5O8EVjXbO
+bsXisgs75FkJ92k+AxOTGpPKZepVottwuHYIhZq6/aOI+REfHuZXQFkgZX9wAaTo
+VnAa2fzILZfOo03xc4vZvTI5hGEfSBfcIevuO15B4tLocuguXZ8bWWOeNB1qW/Yq
+jbFvhmBuxOAd8jl7+nlM5bKAMvEyJ2MQDpAGDG3kX1FcwbwuBXxWGhygnEB9YTtO
++aT141alH1zXc9ZwVJDJDf5PL0kmyoIn98iQFyQDjKDNgmltWSi15cQdO2541r4k
+qj0j3f/ecFASAFto4tM5TOcU64LjSZTDWoGwRpRfc4EJXrr9yLNtgp/xrmnK9YQg
+d3QRtstx63GC+Q1dOakxfTrlYLepP4W4S/Ls4gUMg3YYu/P68ckgfBXjx1cL2dHJ
+Z7PiHVd+ZD0WPnlX0+2Sr3pXYUXcF4VDkkVGhCTxqcKbqkUYcfFx1Mxy1fezmXC9
++5cPI6k16G/ESuFSkKGij0fzSV+J4fbm1wErgaAHB0S9zqqwWN1wZEdl0UbCqNxy
+Ul0NbttCdjIPyI6mKlEhIoDsFANdDeGJ22xSXJ0U14EMkIbvQoN+KdjeZQv2TFRT
+E0PuRkvTCMiQ/D65foxUMOyMq82q1Lh24YnLZHd/c/7XsaaKf8E=
+=PvO1
+-----END PGP SIGNATURE-----
+
+--Sig_/.ffrXulYUtCGywhVcpoe/GC--
 
