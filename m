@@ -1,159 +1,106 @@
-Return-Path: <linux-kernel+bounces-80411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A04886683A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:28:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D322086683D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:29:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2DB02817F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:28:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DB381F21D01
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:29:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FD441BC4C;
-	Mon, 26 Feb 2024 02:28:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C131611CAB;
+	Mon, 26 Feb 2024 02:28:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EMhWeRLm"
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="niTgoGNx"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F9361A5AC
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 02:28:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B48AFEAC2;
+	Mon, 26 Feb 2024 02:28:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708914487; cv=none; b=j9NHaTeyCq5iQIDtXLkIrKKAjNvZ/9K24S1rxGH3j6Bpv9q9t0RhvSPZcKObQrMvXS9hng8r48AoHbeU8BpFNNd2Z920e2TfILy05RzB5dcapl/ix5qMNapXvYfJ0IrLnmZtOgpH+veDjYaKM2EWsyo3jJa9W1XCRgYoOvJCxMQ=
+	t=1708914516; cv=none; b=px2xnfPc0wo+xoAQHeanad6C6BgxTcrthrZUYCfl1y8Ey0AnMsGx8vbMDf2MctJdFjWMYQVGw2ZQhWS/9imaiar+OVaM860U5BO+7TzRwdwrADb/nCZkzfFaQVdyGlKktGyws+E5L3pm5loG1y3iWUSAn8jqiAUHUzMB7nQx1GA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708914487; c=relaxed/simple;
-	bh=DcJkg8xY9yU1wn7LtAuvfIPSDQOSJ+nJ+ORj2FrKvhg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=NdxR6MsPfIidDPSfV8YowTvnKJjgrJFd0e6nrI+5Gj3C6Xzuo3Y1GlxnjKjOf3e9rJxNrcrmNGylVnJoOa0e8MflHcIPoSYIoZ00siXiaLcKt+chrh+FL2s3nw0P0UzWz0ZLVXQUAnJGzfIuzbQBs8B3x4vX6T7Fc09u9WnlQb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EMhWeRLm; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d275e63590so29227601fa.2
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 18:28:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708914483; x=1709519283; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2zrSUS1oI8t8ANu34PzPLXDrLfaANT7YZx3X0xgYm0k=;
-        b=EMhWeRLm0/qjVkQ6WDTRX3ga3b/2qroeBUli8Wpl+Yipu9ObMBb9ISi3/pxmYIW1hb
-         asb91rSPGQ2To33MZLcizTwFocbg52x2KrtnX84KLeMifn2ZHNSzCkUHQK1kUiHlS0+W
-         OUsuPdLjUTJYSrC9VKlcf20RykR/3bYH7bVw7pc4WjjHB5yf5a72w2JAGmNzayAaDD70
-         CND8Qc3ZEGHBn6+GFg0UJL4psMKz1WQ5mU15wWyeXvhIW/xPNOt+yQ5ksxcTsSFnooYj
-         KqvlRfcjUUy43AUKO/mn2YNestwWiCbhKY2TMh7uc/xFZRWuhSE+z28+qHdRTM5cVVoJ
-         3ZKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708914483; x=1709519283;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2zrSUS1oI8t8ANu34PzPLXDrLfaANT7YZx3X0xgYm0k=;
-        b=oCEV1jxwKcGUw8/K3Obdck1jjh3jGhooiEgZMzaEH5q+6yD5ktXfKxtmlenJqQLw3o
-         I5W05URf62BmC10nHGQS59g2FMD4775SP/UugSqC6vrvDXK86uFMB7aMr3P/M1xh8fVr
-         s7k++qcicZwTOu0l9A+Eglftgqw+eJ6wXzeBTKmAJLVfhu5Q/MPGiViM7gGvuy5z4UAt
-         18Sd0lFzbWxcp02UWc8OB1CztbooGrzBcZPEKOZqdtqTa0dugf1hiP0qE3K65tiuN3UW
-         BeJJY2mmvkDoufsQJ3WWaJECmhgoZ/YNKIlETiGB0RMOKSFEOrkjXSnxg0yCXSCaLuK7
-         jAaA==
-X-Forwarded-Encrypted: i=1; AJvYcCXmR71MUmAYN3WrzHFaDULX9ZO1k/NHrq83f2/E0iK2COX9Y/bQSv1EYOTh7eva0qG51V20qTsQ0O3VrxMAZO4kl0pzfCB3mwAnoqWx
-X-Gm-Message-State: AOJu0YwYhd7FNw/EL4mOuMld6Gig1yY337F4aVU0AkDDK6PSClmelGCC
-	Hj0/eLE882D5rea0VwtGu5VM+GiXZzkKspSXE+RKiCEVjJgaPqtVsYmmfh6nNc0=
-X-Google-Smtp-Source: AGHT+IFefIdbhKnjJWT9odB7e2g6A6Qc+KZ3uR9VQXjUuUyxkrMxksYwTJufk3CxDVrfoe1de/bzVQ==
-X-Received: by 2002:a2e:8ec5:0:b0:2d2:3820:fb4f with SMTP id e5-20020a2e8ec5000000b002d23820fb4fmr2920818ljl.12.1708914483696;
-        Sun, 25 Feb 2024 18:28:03 -0800 (PST)
-Received: from umbar.lan (dzyjmhybhls-s--zn36gy-3.rev.dnainternet.fi. [2001:14ba:a00e:a300:264b:feff:fe8b:be8a])
-        by smtp.gmail.com with ESMTPSA id u19-20020a2e8553000000b002d11ef66881sm713092ljj.91.2024.02.25.18.28.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Feb 2024 18:28:02 -0800 (PST)
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Mon, 26 Feb 2024 04:28:01 +0200
-Subject: [PATCH v4 3/3] drm/msm/dpu: capture snapshot on the first
- commit_done timeout
+	s=arc-20240116; t=1708914516; c=relaxed/simple;
+	bh=fsopglJdRFwGm3H62RCpMGMnE2IG6io/oYNlk0F4rXM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=csTaCNhuhiZNfQob+zYaUp24JVHI0MGuQBgPhq78kXoR/Q+Ftzm47yQHo0f8oes5GoNCVWl91pB3mBCDHlQAy52eC+POEGSsFojCBWoAsMNX3JM/cNy2BFKwhCe05rfGiZnXgI1v75mlXhPJUiIePRpnqcop/zgtoo05817hlC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=niTgoGNx; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1708914511;
+	bh=cFv/nzsZu1HHeCs5J+fMBi4DZwXqF7EVg81/vbEs3TQ=;
+	h=Date:From:To:Cc:Subject:From;
+	b=niTgoGNxnNtohOGApiOD7F1WgcejX7ottNMr+8/OQP0k/9RHuMxIJUAE7BEr3HCJs
+	 HBbT/MclqOcrcYGWy38ES2x5qcGUX3c87Q4hZtRRoJBm0wWHwAlOJVCWPF/sEP1mPh
+	 /layVs5rzHqaz5yh1SB4cqc6i76jD12KntcZzZNdW1+s/Pq/PJiUgS8J0DCs+Vg/Qd
+	 Y6FgD5nTEjMN1M6WkawFF6Z97j1LIb88JlEmFO5GJw+K0Ex4Bq5uzlxOjQCwfJKtxy
+	 pugODvkiRWjLzU+NYIfQF4kpVOvCPn46b+7VCYzPHssKITWpLQ3G/UIdcMJ6+NR8Ns
+	 yUP7VgY1cdzaw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tjl0Z1l3Gz4wcN;
+	Mon, 26 Feb 2024 13:28:30 +1100 (AEDT)
+Date: Mon, 26 Feb 2024 13:28:28 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Lee Jones <lee@kernel.org>
+Cc: Duje =?UTF-8?B?TWloYW5vdmnEhw==?= <duje.mihanovic@skole.hr>, Linux
+ Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the backlight tree
+Message-ID: <20240226132828.7524baec@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240226-fd-dpu-debug-timeout-v4-3-51eec83dde23@linaro.org>
-References: <20240226-fd-dpu-debug-timeout-v4-0-51eec83dde23@linaro.org>
-In-Reply-To: <20240226-fd-dpu-debug-timeout-v4-0-51eec83dde23@linaro.org>
-To: Rob Clark <robdclark@gmail.com>, 
- Abhinav Kumar <quic_abhinavk@quicinc.com>, Sean Paul <sean@poorly.run>, 
- Marijn Suijten <marijn.suijten@somainline.org>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Cc: Steev Klimaszewski <steev@kali.org>, linux-arm-msm@vger.kernel.org, 
- dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
- linux-kernel@vger.kernel.org
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2187;
- i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
- bh=DcJkg8xY9yU1wn7LtAuvfIPSDQOSJ+nJ+ORj2FrKvhg=;
- b=owGbwMvMwMXYbdNlx6SpcZXxtFoSQ+rt7/oaDYu8RNoPts+ZddbZcfsC6eypMzb3mR1w/7Pvs
- Ilev7RRJ6MxCwMjF4OsmCKLT0HL1JhNyWEfdkythxnEygQyhYGLUwAmskaV/X9y3YNSk7+/8w1W
- 3k3ge/RaK+Z1dUKrak9sw5z6AGvZsu/veVIYS0tnyPGsbQn9zFe81oF9y6/pC7fZWCwTXvHs6rM
- zk5jm23h+cVgTUdrp31ac26J6r51n0/sJd02dqiT+Jrbxz7yRo7nPJHO/1dar+kt+C9VtOzi7Mj
- qfOXd9opRLvIurnZTjktlim/Vapp2+uidq7uZb1fH3L2vwbgrq0X5YNrO1faLI3c5yw3u73vF2B
- HS5C/pJvS8xvFB9tuY5a8fz+D/fnXy07AOWeIrcq0vltRLXNzvNHz3BstBPz8j1r+FLh4bU+jvl
- SeGT7P/sl/ZdLuj6anHp6fO3QhWrhXZE+sbvmRBv6GEGAA==
-X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
- fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
+Content-Type: multipart/signed; boundary="Sig_/zjqY4iyeTAxj_lJqIElMEXN";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-In order to debug commit_done timeouts, capture the devcoredump state
-when the first timeout occurs after the encoder has been enabled.
+--Sig_/zjqY4iyeTAxj_lJqIElMEXN
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Hi all,
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-index c99c7fd770f6..c45edcde7ebc 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-@@ -126,6 +126,8 @@ enum dpu_enc_rc_states {
-  * @base:		drm_encoder base class for registration with DRM
-  * @enc_spinlock:	Virtual-Encoder-Wide Spin Lock for IRQ purposes
-  * @enabled:		True if the encoder is active, protected by enc_lock
-+ * @commit_done_timedout: True if there has been a timeout on commit after
-+ *			enabling the encoder.
-  * @num_phys_encs:	Actual number of physical encoders contained.
-  * @phys_encs:		Container of physical encoders managed.
-  * @cur_master:		Pointer to the current master in this mode. Optimization
-@@ -172,6 +174,7 @@ struct dpu_encoder_virt {
- 	spinlock_t enc_spinlock;
- 
- 	bool enabled;
-+	bool commit_done_timedout;
- 
- 	unsigned int num_phys_encs;
- 	struct dpu_encoder_phys *phys_encs[MAX_PHYS_ENCODERS_PER_VIRTUAL];
-@@ -1226,6 +1229,8 @@ static void dpu_encoder_virt_atomic_enable(struct drm_encoder *drm_enc,
- 	else if (disp_info->intf_type == INTF_DSI)
- 		dpu_enc->wide_bus_en = msm_dsi_wide_bus_enabled(priv->dsi[index]);
- 
-+	dpu_enc->commit_done_timedout = false;
-+
- 	mutex_lock(&dpu_enc->enc_lock);
- 	cur_mode = &dpu_enc->base.crtc->state->adjusted_mode;
- 
-@@ -2431,6 +2436,10 @@ int dpu_encoder_wait_for_commit_done(struct drm_encoder *drm_enc)
- 			DPU_ATRACE_BEGIN("wait_for_commit_done");
- 			ret = phys->ops.wait_for_commit_done(phys);
- 			DPU_ATRACE_END("wait_for_commit_done");
-+			if (ret == -ETIMEDOUT && !dpu_enc->commit_done_timedout) {
-+				dpu_enc->commit_done_timedout = true;
-+				msm_disp_snapshot_state(drm_enc->dev);
-+			}
- 			if (ret)
- 				return ret;
- 		}
+After merging the backlight tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
--- 
-2.39.2
+drivers/video/backlight/ktd2801-backlight.c:8:10: fatal error: linux/leds-e=
+xpresswire.h: No such file or directory
+    8 | #include <linux/leds-expresswire.h>
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Caused by commit
+
+  48749e2f14e3 ("backlight: Add Kinetic KTD2801 backlight support")
+
+I have used the backlight tree from next-20240223 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/zjqY4iyeTAxj_lJqIElMEXN
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXb90wACgkQAVBC80lX
+0GwXGQf+P/mv9iR04ObUoVt4M7hZB9H21F5ShyczcRsHaTwOx/xJGzqqdEy9BQaq
++CSER/s2MULPgwiTNebUlNYtz+g19ftOO+upUnDdzV7wXHyrevigEeRWH6yM92C4
+9vS9oJfARgwd8iTvloXL2qE1R218QboIkJ1bUuyCiFe3Rg9F7CYZleADyO9SZXE8
+5PjUFYEhXTWwHILl1fwN9utFnhubAm7YpJ9PPFWo4zEWmxQovXwJMehISl90FBje
+FqOWU+DQTvX6FI/H/stdFY0U3fr80uEcbB+Mn4009kxgDEZMoS0p8hrWeo7zRALF
+yVB1uXEeL2MtQh4EK4sTiSUNdj7ZaQ==
+=0rcy
+-----END PGP SIGNATURE-----
+
+--Sig_/zjqY4iyeTAxj_lJqIElMEXN--
 
