@@ -1,332 +1,154 @@
-Return-Path: <linux-kernel+bounces-81897-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E678867C26
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:35:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2FE6867BBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:24:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 149A3B2EA0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:24:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B37051C2A918
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:24:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7471D12EBC9;
-	Mon, 26 Feb 2024 16:23:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64BBA12C7F8;
+	Mon, 26 Feb 2024 16:23:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="fRemlhUx"
-Received: from smtp-42ae.mail.infomaniak.ch (smtp-42ae.mail.infomaniak.ch [84.16.66.174])
+	dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b="KCw/pjAf"
+Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2067.outbound.protection.outlook.com [40.107.249.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1C4312D765
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:23:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.16.66.174
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708964638; cv=none; b=G+ZEYPBbyjXNGMvMT/n3o0Rd7VDgp6yKuXh52gUJ3VekvMswhcKznnPrQKh60iFlQxUePbCGQKyTIcYnNxxm4FIMkqXE9RyzgUy4dXH8G4ypHV1fQOOfzcJUgsNkD1YiC86n4HNon0VZSDAcPCWqWeCn9idL78Yxak6sCuel3uw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708964638; c=relaxed/simple;
-	bh=c3Zr+OccwjA0SrXPF9UpZOuGeG4y5Fl0LEH4JSHh5Do=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Qfp8/fiKSXMEMZq426GGibwgJ7SO/xXhJCzDb5/6DKqbwuffYyJUpqscehzOrpTNekR1FlW4coUTR13Y3mVNc55DyNzhKNiUs4Dkru5HG1EfhA3tXx46plcLs6h7bSjsqIkNMGcXi8ZApOZGdi/TKG4W53E4XJK9U96wQGNkKXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=fRemlhUx; arc=none smtp.client-ip=84.16.66.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-4-0000.mail.infomaniak.ch (unknown [10.7.10.107])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Tk5XM2WdFzMpnw8;
-	Mon, 26 Feb 2024 17:23:47 +0100 (CET)
-Received: from unknown by smtp-4-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4Tk5XL5Hcfz6YY;
-	Mon, 26 Feb 2024 17:23:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1708964627;
-	bh=c3Zr+OccwjA0SrXPF9UpZOuGeG4y5Fl0LEH4JSHh5Do=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fRemlhUxf+yObrmNhLGPbS/xZGyxsFXGUuvYl2zs5JGCqpbDof2KTLcPJjw7gYnMk
-	 QcJwWnRqnO27scec/HibAkHYfE4txhVs/B0GrG5uzjCgVEZ8UZIvRTyYpMEk6YB3LQ
-	 8ZjwxKNDrQU1Eb7ctLxuXkyhZTihAeQzWiGg/1k8=
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To: Jakub Kicinski <kuba@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Shuah Khan <shuah@kernel.org>,
-	davem@davemloft.net
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-	=?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack@google.com>,
-	Will Drewry <wad@chromium.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A9EA12C54B;
+	Mon, 26 Feb 2024 16:23:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.249.67
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708964628; cv=fail; b=MHy/DFujG0INefgy1E5bAmMoRk+rRqYH/LgQBeKuJG6e/K/9ICh8SuBxnXeDgerFtnipkRmha4Q9CnIkFvC2ycLvKo6mdC7NtThSfmJ/v2IowCUmRhcYfT1fy9Q36E504evFjhAs5RQMlyvIMnOu8J3s03fvtGeHS99JG1x1+t8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708964628; c=relaxed/simple;
+	bh=EUsaDE3yL68RnitcmKg7uVqIAvVYWX8bcmUQ9aIDw3o=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ttuvFi/5iLopl1GlyOsUfmJ7JX4UM2KGqFkN3aJG8tE42LSgZvJU7gCGELi1vl3uUS5EFxgVU/CtXovw3jQYgfuOs+qMA87CjshU42mcziffwM7fhklLFFDbnTA/MTty8ouJq+RaZBkVZK4P4jFjjR16k7Xty6pvvc0pGqdTNAI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com; spf=fail smtp.mailfrom=leica-geosystems.com; dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b=KCw/pjAf; arc=fail smtp.client-ip=40.107.249.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=leica-geosystems.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TIoSWfeQIUvAQY+ofI7TpLT12wk4l8nG1WWc/MMhA5i6RCDvZ6A7ugjzxYJJV4oe8xdCvv6RtyZsVN62rqn0qPKhd/5DNEAvnEq40nJHu7qU39r8EvEUqRONuA0efdJx/QvV6PbpfYhTVxtgvdFMl9R5KeJAAwtZs8Yne11T61qNDTeVHeDwVtIg5GrMVppYSeLGdWRcquCOg8h1drabLLGyJo/pBnrJESHx8ieeLQdfQjCa+v11oiVNwzb2szm+uQYYuS+OEO3uD0DGIK+g/8g5NIetqrAkolKJDNngXvLa0X8SU13nukpY7JL+gK+A/P79juX9OOwXfu/BXn3ZZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=a2PUlhb7aluY9PS1b2gzvNJikv/DQK9mmeHonP8mdI4=;
+ b=HnEGmqt1vbLMRw6Sl1X2DbhI0m8jKwPOiaJnrMc2N/vyoHY99MDPjNGPDwgyX2UjOE4OcqrL1AITjVGZJuubReak6rI5Mmu/sB0kEDWATMkURkDBO3jtub/3odvC9fmL9WzuAbBvN10khVx45FBlALWRN93VPwxH3RFaA5FMlxK3QScanRSntMv0N1yfZYvOf8Aw1SCSCXpUdLYcJ40JdDZVa3ZfwhB3TeOVZJGrZOFOMCcaxtiPvIY1f7iKBqAwTskttFvbwYvCM4i0XTntRpIMwyWCwK1KFD0AGh0kBsTPhEyx4SGfSi0fVhYhWOJs5D0Syx4vixF0LpK+sOWXUw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 193.8.40.94) smtp.rcpttodomain=vger.kernel.org
+ smtp.mailfrom=leica-geosystems.com; dmarc=pass (p=reject sp=reject pct=100)
+ action=none header.from=leica-geosystems.com; dkim=none (message not signed);
+ arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=leica-geosystems.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a2PUlhb7aluY9PS1b2gzvNJikv/DQK9mmeHonP8mdI4=;
+ b=KCw/pjAfAiizGqPARePMFeH+xBC0eNPrxE7DryGCdVu3z5oevKvXki3EKKYuNTYpldt3mzFrP1wk2n7u4h4Pe0k15iKCzfyGtr6aQm3qbZGD3H/nBD4g/fWOOt2+lYpVRngRcJ77UI9hY7pVjhSLzAPQJvsgdpF4GGE9zDtqUUU=
+Received: from DBBPR09CA0016.eurprd09.prod.outlook.com (2603:10a6:10:c0::28)
+ by DBAPR06MB6806.eurprd06.prod.outlook.com (2603:10a6:10:180::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.23; Mon, 26 Feb
+ 2024 16:23:42 +0000
+Received: from DU6PEPF0000A7E1.eurprd02.prod.outlook.com
+ (2603:10a6:10:c0:cafe::e1) by DBBPR09CA0016.outlook.office365.com
+ (2603:10a6:10:c0::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.49 via Frontend
+ Transport; Mon, 26 Feb 2024 16:23:42 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 193.8.40.94)
+ smtp.mailfrom=leica-geosystems.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=leica-geosystems.com;
+Received-SPF: Pass (protection.outlook.com: domain of leica-geosystems.com
+ designates 193.8.40.94 as permitted sender) receiver=protection.outlook.com;
+ client-ip=193.8.40.94; helo=hexagon.com; pr=C
+Received: from hexagon.com (193.8.40.94) by
+ DU6PEPF0000A7E1.mail.protection.outlook.com (10.167.8.45) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7292.25 via Frontend Transport; Mon, 26 Feb 2024 16:23:41 +0000
+Received: from aherlnxbspsrv01.lgs-net.com ([10.60.34.116]) by hexagon.com with Microsoft SMTPSVC(10.0.17763.1697);
+	 Mon, 26 Feb 2024 17:23:41 +0100
+From: Catalin Popescu <catalin.popescu@leica-geosystems.com>
+To: andrew@lunn.ch,
+	hkallweit1@gmail.com,
+	linux@armlinux.org.uk,
+	davem@davemloft.net,
 	edumazet@google.com,
-	jakub@cloudflare.com,
-	pabeni@redhat.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH 2/2] selftests/harness: Merge TEST_F_FORK() into TEST_F()
-Date: Mon, 26 Feb 2024 17:23:35 +0100
-Message-ID: <20240226162335.3532920-3-mic@digikod.net>
-In-Reply-To: <20240226162335.3532920-1-mic@digikod.net>
-References: <20240223160259.22c61d1e@kernel.org>
- <20240226162335.3532920-1-mic@digikod.net>
+	bsp-development.geo@leica-geosystems.com,
+	m.felsch@pengutronix.de,
+	Catalin Popescu <catalin.popescu@leica-geosystems.com>
+Subject: [PATCH net-next v2] net: phy: dp83826: disable WOL at init
+Date: Mon, 26 Feb 2024 17:23:39 +0100
+Message-Id: <20240226162339.696461-1-catalin.popescu@leica-geosystems.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Infomaniak-Routing: alpha
+X-OriginalArrivalTime: 26 Feb 2024 16:23:41.0603 (UTC) FILETIME=[2949A730:01DA68D0]
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU6PEPF0000A7E1:EE_|DBAPR06MB6806:EE_
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: ce34d50a-2112-48a2-7a7d-08dc36e74c10
+X-SET-LOWER-SCL-SCANNER: YES
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	//713sEnSpTDhuySVRPpDuAs2YNTzRQCA1HyzzpHu8q/mmwGjh5Syu+p88L3TS3whQ04/g+f4ce1rpr/k8Dy/7KjGl1e78/u+gzNKQtmoH/T2W+AFbtE6O9u5V0TXdLnKmVAERn+PxAnbKxJdT3EXoWUetM6d8GMj7iUQ8A5IsgIK8n+Vtxs+hWVis8toyRWJ7/ohVWlZwwy36EE8VTGgaXRbenfotGaXsnGL3M4auu9NR9hCYAGNZQtGLnqlPYmsPsFuajCeKYWX7sFVSMrI8jC9mgXDRXOCbXiyfxtz7Rr+6qu/Tm5yihHFkRzT5vDCLfY78awlyJw4Ej2RIcH0e9V//2LCAiTET5dHD/M+oNMb9fT5eQNhRhOplTzU4k4IQYTKcChcmH+FeC7JH+pIx2dV/xD/KNFJ9izpfzb/2Ja7TqTdKukmEvP+Wq9+RNU0jXBktfOTuZLPr3mKQw9eEccM8lvhNKq4aXW2Y5ZxZDDi50SkjorsPDXrVK/6jCVoVk9uWJOAANSEIBSywLcZkULOMCJ0euMdU+1Q7u+O489MGfwFIxxFkLhDvkTLI/cdIaufKGWiOaCM7M8xZTUMIMmxnB+5UeNjGNDTPba3nxrKxj4eFG790KebBeOGgOO0Lrq5ofzz8KD1yA76U42QkBQ3oUvwjBNJtdZ7MbYIUh30luCF1kPZrK6t4umabrfKcWpLFyXbiDXfeA/Bab1ntqqTtUfQWuc6onCJ1Dct4T3AhZlasQpPjI/ffEKO3WO
+X-Forefront-Antispam-Report:
+	CIP:193.8.40.94;CTRY:CH;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:hexagon.com;PTR:ahersrvdom50.leica-geosystems.com;CAT:NONE;SFS:(13230031)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: leica-geosystems.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 16:23:41.9855
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce34d50a-2112-48a2-7a7d-08dc36e74c10
+X-MS-Exchange-CrossTenant-Id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a;Ip=[193.8.40.94];Helo=[hexagon.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DU6PEPF0000A7E1.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR06MB6806
 
-Remplace Landlock-specific TEST_F_FORK() with an improved TEST_F() which
-brings four related changes:
+Commit d1d77120bc28 ("net: phy: dp83826: support TX data voltage tuning")
+introduced a regression in that WOL is not disabled by default for DP83826.
+WOL should normally be enabled through ethtool.
 
-Run TEST_F()'s tests in a grandchild process to make it possible to
-drop privileges and delegate teardown to the parent.
-
-Compared to TEST_F_FORK(), simplify handling of the test grandchild
-process thanks to vfork(2), and makes it generic (e.g. no explicit
-conversion between exit code and _metadata).
-
-Compared to TEST_F_FORK(), run teardown even when tests failed with an
-assert thanks to commit 63e6b2a42342 ("selftests/harness: Run TEARDOWN
-for ASSERT failures").
-
-Simplify the test harness code by removing the no_print and step fields
-which are not used.  I added this feature just after I made
-kselftest_harness.h more broadly available but this step counter
-remained even though it wasn't needed after all. See commit 369130b63178
-("selftests: Enhance kselftest_harness.h to print which assert failed").
-
-Replace spaces with tabs in one line of __TEST_F_IMPL().
-
-Cc: Günther Noack <gnoack@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Will Drewry <wad@chromium.org>
-Signed-off-by: Mickaël Salaün <mic@digikod.net>
+Fixes: d1d77120bc28 ("net: phy: dp83826: support TX data voltage tuning")
+Signed-off-by: Catalin Popescu <catalin.popescu@leica-geosystems.com>
 ---
- tools/testing/selftests/kselftest_harness.h | 56 +++++++++----------
- tools/testing/selftests/landlock/common.h   | 62 +--------------------
- 2 files changed, 27 insertions(+), 91 deletions(-)
+Changes in v2:
+ - add Fixes tag to commit message
+ - update subject prefix to [PATCH net-next]
+---
+ drivers/net/phy/dp83822.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/kselftest_harness.h b/tools/testing/selftests/kselftest_harness.h
-index e05ac8261046..841d34deb1a6 100644
---- a/tools/testing/selftests/kselftest_harness.h
-+++ b/tools/testing/selftests/kselftest_harness.h
-@@ -95,14 +95,6 @@
-  * E.g., #define TH_LOG_ENABLED 1
-  *
-  * If no definition is provided, logging is enabled by default.
-- *
-- * If there is no way to print an error message for the process running the
-- * test (e.g. not allowed to write to stderr), it is still possible to get the
-- * ASSERT_* number for which the test failed.  This behavior can be enabled by
-- * writing `_metadata->no_print = true;` before the check sequence that is
-- * unable to print.  When an error occur, instead of printing an error message
-- * and calling `abort(3)`, the test process call `_exit(2)` with the assert
-- * number as argument, which is then printed by the parent process.
-  */
- #define TH_LOG(fmt, ...) do { \
- 	if (TH_LOG_ENABLED) \
-@@ -363,6 +355,11 @@
-  * Defines a test that depends on a fixture (e.g., is part of a test case).
-  * Very similar to TEST() except that *self* is the setup instance of fixture's
-  * datatype exposed for use by the implementation.
-+ *
-+ * The @test_name code is run in a separate process sharing the same memory
-+ * (i.e. vfork), which means that the test process can update its privileges
-+ * without impacting the related FIXTURE_TEARDOWN() (e.g. to remove files from
-+ * a directory where write access was dropped).
-  */
- #define TEST_F(fixture_name, test_name) \
- 	__TEST_F_IMPL(fixture_name, test_name, -1, TEST_TIMEOUT_DEFAULT)
-@@ -384,15 +381,28 @@
- 	{ \
- 		/* fixture data is alloced, setup, and torn down per call. */ \
- 		FIXTURE_DATA(fixture_name) self; \
-+		pid_t child; \
- 		memset(&self, 0, sizeof(FIXTURE_DATA(fixture_name))); \
- 		if (setjmp(_metadata->env) == 0) { \
- 			fixture_name##_setup(_metadata, &self, variant->data); \
- 			/* Let setup failure terminate early. */ \
--                       if (!_metadata->passed || _metadata->skip) \
-+			if (!_metadata->passed || _metadata->skip) \
- 				return; \
- 			_metadata->setup_completed = true; \
--			fixture_name##_##test_name(_metadata, &self, variant->data); \
-+			/* Use the same _metadata. */ \
-+			child = vfork(); \
-+			if (child == 0) { \
-+				fixture_name##_##test_name(_metadata, &self, variant->data); \
-+				_exit(0); \
-+			} \
-+			if (child < 0) { \
-+				ksft_print_msg("ERROR SPAWNING TEST GANDCHILD\n"); \
-+				_metadata->passed = 0; \
-+			} \
- 		} \
-+		if (child == 0) \
-+			/* Child failed and updated the shared _metadata. */ \
-+			_exit(0); \
- 		if (_metadata->setup_completed) \
- 			fixture_name##_teardown(_metadata, &self, variant->data); \
- 		__test_check_assert(_metadata); \
-@@ -694,18 +704,12 @@
- 	for (; _metadata->trigger; _metadata->trigger = \
- 			__bail(_assert, _metadata))
+diff --git a/drivers/net/phy/dp83822.c b/drivers/net/phy/dp83822.c
+index 30f2616ab1c2..ba320dc3df98 100644
+--- a/drivers/net/phy/dp83822.c
++++ b/drivers/net/phy/dp83822.c
+@@ -528,7 +528,7 @@ static int dp83826_config_init(struct phy_device *phydev)
+ 			return ret;
+ 	}
  
--#define __INC_STEP(_metadata) \
--	/* Keep "step" below 255 (which is used for "SKIP" reporting). */	\
--	if (_metadata->passed && _metadata->step < 253) \
--		_metadata->step++;
--
- #define is_signed_type(var)       (!!(((__typeof__(var))(-1)) < (__typeof__(var))1))
- 
- #define __EXPECT(_expected, _expected_str, _seen, _seen_str, _t, _assert) do { \
- 	/* Avoid multiple evaluation of the cases */ \
- 	__typeof__(_expected) __exp = (_expected); \
- 	__typeof__(_seen) __seen = (_seen); \
--	if (_assert) __INC_STEP(_metadata); \
- 	if (!(__exp _t __seen)) { \
- 		/* Report with actual signedness to avoid weird output. */ \
- 		switch (is_signed_type(__exp) * 2 + is_signed_type(__seen)) { \
-@@ -751,7 +755,6 @@
- #define __EXPECT_STR(_expected, _seen, _t, _assert) do { \
- 	const char *__exp = (_expected); \
- 	const char *__seen = (_seen); \
--	if (_assert) __INC_STEP(_metadata); \
- 	if (!(strcmp(__exp, __seen) _t 0))  { \
- 		__TH_LOG("Expected '%s' %s '%s'.", __exp, #_t, __seen); \
- 		_metadata->passed = 0; \
-@@ -837,8 +840,6 @@ struct __test_metadata {
- 	int trigger; /* extra handler after the evaluation */
- 	int timeout;	/* seconds to wait for test timeout */
- 	bool timed_out;	/* did this test timeout instead of exiting? */
--	__u8 step;
--	bool no_print; /* manual trigger when TH_LOG_STREAM is not available */
- 	bool aborted;	/* stopped test due to failed ASSERT */
- 	bool setup_completed; /* did setup finish? */
- 	jmp_buf env;	/* for exiting out of test early */
-@@ -873,11 +874,8 @@ static inline int __bail(int for_realz, struct __test_metadata *t)
- 
- static inline void __test_check_assert(struct __test_metadata *t)
- {
--	if (t->aborted) {
--		if (t->no_print)
--			_exit(t->step);
-+	if (t->aborted)
- 		abort();
--	}
+-	return 0;
++	return dp8382x_disable_wol(phydev);
  }
  
- struct __test_metadata *__active_test;
-@@ -954,13 +952,12 @@ void __wait_for_test(struct __test_metadata *t)
- 			case 0:
- 				t->passed = 1;
- 				break;
--			/* Other failure, assume step report. */
-+			/* Failure */
- 			default:
- 				t->passed = 0;
- 				fprintf(TH_LOG_STREAM,
--					"# %s: Test failed at step #%d\n",
--					t->name,
--					WEXITSTATUS(status));
-+					"# %s: Test failed\n",
-+					t->name);
- 			}
- 		}
- 	} else if (WIFSIGNALED(status)) {
-@@ -1114,8 +1111,6 @@ void __run_test(struct __fixture_metadata *f,
- 	t->passed = 1;
- 	t->skip = 0;
- 	t->trigger = 0;
--	t->step = 1;
--	t->no_print = 0;
- 	memset(t->results->reason, 0, sizeof(t->results->reason));
- 
- 	ksft_print_msg(" RUN           %s%s%s.%s ...\n",
-@@ -1137,8 +1132,7 @@ void __run_test(struct __fixture_metadata *f,
- 		/* Pass is exit 0 */
- 		if (t->passed)
- 			_exit(0);
--		/* Something else happened, report the step. */
--		_exit(t->step);
-+		_exit(1);
- 	} else {
- 		__wait_for_test(t);
- 	}
-diff --git a/tools/testing/selftests/landlock/common.h b/tools/testing/selftests/landlock/common.h
-index 0bc15d36971a..7e2b431b9f90 100644
---- a/tools/testing/selftests/landlock/common.h
-+++ b/tools/testing/selftests/landlock/common.h
-@@ -23,66 +23,8 @@
- #define __maybe_unused __attribute__((__unused__))
- #endif
- 
--/*
-- * TEST_F_FORK() is useful when a test drop privileges but the corresponding
-- * FIXTURE_TEARDOWN() requires them (e.g. to remove files from a directory
-- * where write actions are denied).  For convenience, FIXTURE_TEARDOWN() is
-- * also called when the test failed, but not when FIXTURE_SETUP() failed.  For
-- * this to be possible, we must not call abort() but instead exit smoothly
-- * (hence the step print).
-- */
--/* clang-format off */
--#define TEST_F_FORK(fixture_name, test_name) \
--	static void fixture_name##_##test_name##_child( \
--		struct __test_metadata *_metadata, \
--		FIXTURE_DATA(fixture_name) *self, \
--		const FIXTURE_VARIANT(fixture_name) *variant); \
--	__TEST_F_IMPL(fixture_name, test_name, -1, TEST_TIMEOUT_DEFAULT) \
--	{ \
--		int status; \
--		const pid_t child = fork(); \
--		if (child < 0) \
--			abort(); \
--		if (child == 0) { \
--			_metadata->no_print = 1; \
--			fixture_name##_##test_name##_child(_metadata, self, variant); \
--			if (_metadata->skip) \
--				_exit(255); \
--			if (_metadata->passed) \
--				_exit(0); \
--			_exit(_metadata->step); \
--		} \
--		if (child != waitpid(child, &status, 0)) \
--			abort(); \
--		if (WIFSIGNALED(status) || !WIFEXITED(status)) { \
--			_metadata->passed = 0; \
--			_metadata->step = 1; \
--			return; \
--		} \
--		switch (WEXITSTATUS(status)) { \
--		case 0: \
--			_metadata->passed = 1; \
--			break; \
--		case 255: \
--			_metadata->passed = 1; \
--			_metadata->skip = 1; \
--			break; \
--		default: \
--			_metadata->passed = 0; \
--			_metadata->step = WEXITSTATUS(status); \
--			break; \
--		} \
--	} \
--	static void fixture_name##_##test_name##_child( \
--		struct __test_metadata __attribute__((unused)) *_metadata, \
--		FIXTURE_DATA(fixture_name) __attribute__((unused)) *self, \
--		const FIXTURE_VARIANT(fixture_name) \
--			__attribute__((unused)) *variant)
--/* clang-format on */
--
--/* Makes backporting easier. */
--#undef TEST_F
--#define TEST_F(fixture_name, test_name) TEST_F_FORK(fixture_name, test_name)
-+/* TEST_F_FORK() should not be used for new tests. */
-+#define TEST_F_FORK(fixture_name, test_name) TEST_F(fixture_name, test_name)
- 
- #ifndef landlock_create_ruleset
- static inline int
+ static int dp8382x_config_init(struct phy_device *phydev)
+
+base-commit: 33e1d31873f87d119e5120b88cd350efa68ef276
+prerequisite-patch-id: 0000000000000000000000000000000000000000
 -- 
-2.44.0
+2.34.1
 
 
