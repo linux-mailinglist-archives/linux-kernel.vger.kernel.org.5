@@ -1,82 +1,73 @@
-Return-Path: <linux-kernel+bounces-82235-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14A4086810B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:32:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07A768680E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:25:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22202B2584B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:24:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F307E1C23970
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:25:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33A0012FF6A;
-	Mon, 26 Feb 2024 19:24:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93AF0130ACB;
+	Mon, 26 Feb 2024 19:24:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="IDawg6Dh"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="THe8MFa/"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6451B12F5A6
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 19:24:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1859412FF9C;
+	Mon, 26 Feb 2024 19:24:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708975477; cv=none; b=Bwcl5pZGa7ASwNWeA5KvC3beLs05BvwnVJm7wxxPB4a93GfcLg1JPSYic3mgijwwE8vn92R4/txj2u9pC4Qi+/CZWpHBVt6M7k0slcJzEr+o+BfroL8l3Xv8X2kGQzi5YkzmjAUcyOpWAzobTCsItXQKLYQaY4e11bCj0nK1W14=
+	t=1708975482; cv=none; b=Il/1JbW3pQsjBV1APGvq5fGVcpQaJ1l3vrJ/AOoxnHB692VcY2dpLSesKNmqezYZSGA7GPBO5QDe+XpQ0F/bYSnjavlBIKUDtcPiZr2jtl68BAaGZ/O94GYJzDryjTVdG6ujpWx1dlo+LoXQbJNw1uQVNj53Xxy1+rmu9lYi1CU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708975477; c=relaxed/simple;
-	bh=THgm6rGLpzdRlqCmuQGYCh3G2e2uZuhgn1thuX7TM28=;
+	s=arc-20240116; t=1708975482; c=relaxed/simple;
+	bh=F+4pOhLAnZ9k3/aMMqmEmpPKb8aYtX5vG0b6hRqOXac=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jdQ+FeFUZcdBEhJe3GMxtPhpg8+TzIEgr1QrHFzpwWhOJ4ZctqV4WB9AE7V72FE23vo8PdL5whvjjS6UdXNLNbLfXh0V5vAR5sG3OJogqxOzlhenooC5lB71xT4YLsE6zsPjrUaFtpIpUftXIuxBgf0zOSuC3jJPSvTiryP/IZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=IDawg6Dh; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d7232dcb3eso24616335ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:24:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708975474; x=1709580274; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=InMne0CIdEUH5H66AFxEIsfbiaQhDQQyahGGSNpAGCM=;
-        b=IDawg6DhM0XUTrV9XNtDtxehkJZRJwGpvO5ptOOXE9onzexPKtwIc1EQvwTOiYXXIu
-         S8+A3bnPp5HmicrtSCh+6mmZ7MeMB+WA/0WQvsTlVdIAruUkqYkfSTxVc4HJMrySEMFp
-         dCIo/mHxl8iSUS620NEsHqSX9wr6vpT6/mQcc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708975474; x=1709580274;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=InMne0CIdEUH5H66AFxEIsfbiaQhDQQyahGGSNpAGCM=;
-        b=kTv52Q6eNaCXsqTzBCoxCvzq2zoO2+cbAAhe+kFg2frvArUsW+MQfFt74x3F5bZuqe
-         UCunQkkMOF+uNHbBLqFNB3fbKP5d6/TlsKDFS7Inh9euKuwrzjh8QiImHhWA+sRU8Dvo
-         qb95eZrOf59XAX3XGV0VdHkkGFsztvWaCBdai89eftyYjSk50iX3523UEpygHq5ELHgO
-         e6+EqYGcdEqz1a+UpfUYFQdGJagc8BMjyPP1vkQAJ4f3Rcf+anDnMEt3MK85A12Enq5s
-         K4z2/74Sk+9iOWxxMRDWEbTNGKNTaZt3/sUbxoWIJ+u3fzH58IlaO2Yj829sWmtC9AXd
-         RVow==
-X-Forwarded-Encrypted: i=1; AJvYcCWceVvq5ydH7sOfQeaRyfH4l5SKp50aRjcwp/X8hLuvFAQH1+ELxBusVyLSWb3tqRzhru9I3tdJ0VE659lHU93qG9XliaLA7s9l9aVn
-X-Gm-Message-State: AOJu0Yx4qRwY2ocv3KI4h3gOmIkV+9Dq4LefywI9aPUmQ7OZA2EUL1u0
-	M/1FU3NqNExIxIaT2QYn0z1il2AE32BzKGywVpp1R04aWWUxlsGoMLZHambatg==
-X-Google-Smtp-Source: AGHT+IGuKJW5UHzRannH3J/uDHtHCTUjnDGiC7Kw9nAZoWU+O3ZdeIO5FhWpusWjRzPLtJW8pjElAA==
-X-Received: by 2002:a17:902:e94c:b0:1dc:ada9:bceb with SMTP id b12-20020a170902e94c00b001dcada9bcebmr1895063pll.5.1708975473701;
-        Mon, 26 Feb 2024 11:24:33 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id u13-20020a170903308d00b001dc2d1bd4d6sm51088plc.77.2024.02.26.11.24.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 11:24:33 -0800 (PST)
-Date: Mon, 26 Feb 2024 11:24:32 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Adrian Ratiu <adrian.ratiu@collabora.com>, jannh@google.com
-Cc: Doug Anderson <dianders@chromium.org>,
-	linux-security-module@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel@collabora.com, Guenter Roeck <groeck@chromium.org>,
-	Mike Frysinger <vapier@chromium.org>,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] proc: allow restricting /proc/pid/mem writes
-Message-ID: <202402261123.B2A1D0DE@keescook>
-References: <20240221210626.155534-1-adrian.ratiu@collabora.com>
- <CAD=FV=WR51_HJA0teHhBKvr90ufzZePVcxdA+iVZqXUK=cYJng@mail.gmail.com>
- <202402261110.B8129C002@keescook>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZNoyzLNWc++rAEYOmGZ4jFDGknvxrA1zRLVzw6pJO75PR0omDG0heL+MUwiiH4FOU7aCyUg41iRxg7+SBphmHprpE5b2MEkwUlCKT0emOAWjGgQpksY/K+9iv+kWgVW17ri/vWu0gdMigumw+1oSGHHYNwb88ggl9FSe1wT9sOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=THe8MFa/; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708975481; x=1740511481;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=F+4pOhLAnZ9k3/aMMqmEmpPKb8aYtX5vG0b6hRqOXac=;
+  b=THe8MFa/n3CkN2TG52UyKs3ZM7fRsQou6ZozdMwzCzI3y0JglHGXQlyI
+   JpYy+s+J11MG1GJgZkAnyK7x/ETF0gJd+nvPAJ4FlZyUEfyleaApJf40i
+   tjbJwSFCbIMYeiCRXu9Jy5gkjwU8DE3unVVdzehz9xMFgDy6XSF4Rr8MF
+   Aqt9MSWPoXb6C+INpQ74BapC1OkuFlmVLMSo8wPzafCOXFX+raR6ZMzQo
+   VzKu92ZWJGKgwF6H1XRh0YuCBix/LGUNlPuVeu7oAbRyBZgsb/KuBWYMx
+   bDMb7XqQ9uMwKQylUCcSagw2YT4A7ZFL4Vc5trh8q5GVe9wXyUyW4HGyQ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3131478"
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="3131478"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 11:24:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="11399075"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 11:24:40 -0800
+Date: Mon, 26 Feb 2024 11:24:39 -0800
+From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
+To: Binbin Wu <binbin.wu@linux.intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v18 071/121] KVM: TDX: restore user ret MSRs
+Message-ID: <20240226192439.GR177224@ls.amr.corp.intel.com>
+References: <cover.1705965634.git.isaku.yamahata@intel.com>
+ <65e96a61c497c78b41fa670e20fbeb3593f56bfe.1705965635.git.isaku.yamahata@intel.com>
+ <3ac7bcfc-ea22-43b5-b8ba-d87830637d4d@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,115 +76,26 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <202402261110.B8129C002@keescook>
+In-Reply-To: <3ac7bcfc-ea22-43b5-b8ba-d87830637d4d@linux.intel.com>
 
-[sorry for the duplicate, fixing Jann's email address]
+On Tue, Feb 20, 2024 at 05:14:02PM +0800,
+Binbin Wu <binbin.wu@linux.intel.com> wrote:
 
-On Mon, Feb 26, 2024 at 09:10:54AM -0800, Doug Anderson wrote:
-> Hi,
+> > @@ -1936,6 +1959,26 @@ int __init tdx_hardware_setup(struct kvm_x86_ops *x86_ops)
+> >   		return -EINVAL;
+> >   	}
+> > +	for (i = 0; i < ARRAY_SIZE(tdx_uret_msrs); i++) {
+> > +		/*
+> > +		 * Here it checks if MSRs (tdx_uret_msrs) can be saved/restored
+> > +		 * before returning to user space.
+> > +		 *
+> > +		 * this_cpu_ptr(user_return_msrs)->registered isn't checked
+> > +		 * because the registration is done at vcpu runtime by
+> > +		 * kvm_set_user_return_msr().
 > 
-> On Wed, Feb 21, 2024 at 1:06 PM Adrian Ratiu <adrian.ratiu@collabora.com> wrote:
-> >
-> > Prior to v2.6.39 write access to /proc/<pid>/mem was restricted,
-> > after which it got allowed in commit 198214a7ee50 ("proc: enable
-> > writing to /proc/pid/mem"). Famous last words from that patch:
-> > "no longer a security hazard". :)
-> >
-> > Afterwards exploits appeared started causing drama like [1]. The
-> > /proc/*/mem exploits can be rather sophisticated like [2] which
-> > installed an arbitrary payload from noexec storage into a running
-> > process then exec'd it, which itself could include an ELF loader
-> > to run arbitrary code off noexec storage.
-> >
-> > As part of hardening against these types of attacks, distrbutions
-> > can restrict /proc/*/mem to only allow writes when they makes sense,
-> > like in case of debuggers which have ptrace permissions, as they
-> > are able to access memory anyway via PTRACE_POKEDATA and friends.
-> >
-> > Dropping the mode bits disables write access for non-root users.
-> > Trying to `chmod` the paths back fails as the kernel rejects it.
-> >
-> > For users with CAP_DAC_OVERRIDE (usually just root) we have to
-> > disable the mem_write callback to avoid bypassing the mode bits.
-> >
-> > Writes can be used to bypass permissions on memory maps, even if a
-> > memory region is mapped r-x (as is a program's executable pages),
-> > the process can open its own /proc/self/mem file and write to the
-> > pages directly.
-> >
-> > Even if seccomp filters block mmap/mprotect calls with W|X perms,
-> > they often cannot block open calls as daemons want to read/write
-> > their own runtime state and seccomp filters cannot check file paths.
-> > Write calls also can't be blocked in general via seccomp.
-> >
-> > Since the mem file is part of the dynamic /proc/<pid>/ space, we
-> > can't run chmod once at boot to restrict it (and trying to react
-> > to every process and run chmod doesn't scale, and the kernel no
-> > longer allows chmod on any of these paths).
-> >
-> > SELinux could be used with a rule to cover all /proc/*/mem files,
-> > but even then having multiple ways to deny an attack is useful in
-> > case on layer fails.
-> >
-> > [1] https://lwn.net/Articles/476947/
-> > [2] https://issues.chromium.org/issues/40089045
-> >
-> > Based on an initial patch by Mike Frysinger <vapier@chromium.org>.
-> >
-> > Cc: Guenter Roeck <groeck@chromium.org>
-> > Cc: Doug Anderson <dianders@chromium.org>
-> > Signed-off-by: Mike Frysinger <vapier@chromium.org>
+> For tdx, it's done by kvm_user_return_update_cache(), right?
 
-This should have a "Co-developed-by: Mike..." tag, since you're making
-changes and not just passing it along directly.
-
-> > Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
-> > ---
-> > Tested on next-20240220.
-> >
-> > I would really like to avoid depending on CONFIG_MEMCG which is
-> > required for the struct mm_stryct "owner" pointer.
-> >
-> > Any suggestions how check the ptrace owner without MEMCG?
-> > ---
-> >  fs/proc/base.c   | 26 ++++++++++++++++++++++++--
-> >  security/Kconfig | 13 +++++++++++++
-> >  2 files changed, 37 insertions(+), 2 deletions(-)
-> 
-> Thanks for posting this! This looks reasonable to me, but I'm nowhere
-> near an expert on this so I won't add a Reviewed-by tag.
-> 
-> This feels like the kind of thing that Kees might be interested in
-> reviewing, so adding him to the "To" list.
-
-I'd love to make /proc/$pid/mem more strict. A few comments:
-
-> [...]
-> +	if (ptracer_capable(current, mm->user_ns) &&
-
-It really looks like you're trying to do a form of ptrace_may_access(),
-but _without_ the introspection exception?
-
-Also, using "current" in the write path can lead to problems[1], so this
-should somehow use file->f_cred, or limit write access during the open()
-instead?
-
-> [...]
-> +config SECURITY_PROC_MEM_RESTRICT_WRITES
-
-Instead of a build-time CONFIG, I'd prefer a boot-time config (or a
-sysctl, but that's be harder given the perms). That this is selectable
-by distro users, etc, and they don't need to rebuild their kernel to
-benefit from it.
-
-Jann Horn has tried to restrict access to this file in the past as well,
-so he may have some additional advice about it.
-
--Kees
-
-[1] https://docs.kernel.org/security/credentials.html#open-file-credentials
-
+Right, fixed the comment.
 -- 
-Kees Cook
+Isaku Yamahata <isaku.yamahata@linux.intel.com>
 
