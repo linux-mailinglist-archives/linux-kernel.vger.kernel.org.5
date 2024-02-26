@@ -1,169 +1,83 @@
-Return-Path: <linux-kernel+bounces-81780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CA53867A0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:22:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 682B1867A0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:22:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4909C1F271B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:22:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED9D82A32A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:22:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 581C212C54D;
-	Mon, 26 Feb 2024 15:18:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fRY2JMo4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FE7912AAD6;
+	Mon, 26 Feb 2024 15:18:54 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8704D12BF26;
-	Mon, 26 Feb 2024 15:18:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEC49605D5
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 15:18:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708960687; cv=none; b=u5RwZYaCTM1aL2zgMs2hKi4a93Jmdbj/w9Iydeu7o1ICXOn8YXH23GrdgFp4Hz9aa7TBEd4+5JmKhDIl90BpWS9hZAveT+IgN2128meovH44vgn3Q2FEMes73CBcMGtHCuzTmhj7WnJwPancMkenqiwd4pBTU7q+zOsepkvluFI=
+	t=1708960734; cv=none; b=lTXcfbMdtxLMmDfQSCKtVub0PRJYm/Bh6IFWdQ8rki/VVzYi0ybJWyYzHin3KzkyDUKlWwjQrLmndjTwuFijcaC0EbK6BTQ13OsCx0xSw3h6rV2MwmoGVgMYG2GWKzOh9bSB4eTRhWjDj2w9X/ybjc6nIkSj47QqerI06cE854g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708960687; c=relaxed/simple;
-	bh=5sVKV4wkvq1eGCuONcZKC2B80eRfgAbNH78OsTHsM+A=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=dU1Z+xFkkyxfbU13TToT0eVa2i8lRBKoUtvOYzXcPxPDwhfcMLa/E7/nul5mjfwYCxcEWZa6xZkeuzw6ZvzQycNhVFY3cFa7hzrfseidEmW1eYSidFJyNPSLsifPH6Sl08lIGW8FlMK6+ANBRRol6b7sD0401fL3uxmXEbovf8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fRY2JMo4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AE44C43390;
-	Mon, 26 Feb 2024 15:18:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708960687;
-	bh=5sVKV4wkvq1eGCuONcZKC2B80eRfgAbNH78OsTHsM+A=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=fRY2JMo4qfNiJsuDSmCv1Xqji49KsYLvcrbU9dBMWugRAEaKLPrt3G2fAivRpO/CL
-	 bZ6UTV0OudWVu5uYwSDRF1i+QaBlqZJXf1IniWw1XiFBZihcmFlfNhNW5A3rR/+zjo
-	 J665+ru3DIwxBVTYfx7U1aLTiXsdLasNYzaUZRio2Roswn784CGebrqm7y6N8sjb1B
-	 mx0CcuNcgKxoiTaeI/unc/PL3aCASf+zgX0QBY6COHXLXkZxnrkAbzxwZdR0g39jh8
-	 KrBWvVUiBQ6S5wBP1h4gA+oI66B/6y5w/PCIUQNUSgRGe+J5lPcGklxG9U5mklktKt
-	 4RIXy3QcXJeKA==
-Date: Mon, 26 Feb 2024 09:18:05 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Matthew W Carlis <mattc@purestorage.com>,
-	Keith Busch <kbusch@kernel.org>, Lukas Wunner <lukas@wunner.de>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] PCI/DPC: Request DPC only if also requesting AER
-Message-ID: <20240226151805.GA200026@bhelgaas>
+	s=arc-20240116; t=1708960734; c=relaxed/simple;
+	bh=vS9ppAlEeGRg+Ftxbz0cFjl0VgM8GrBZC+p1kJ9tmt4=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Ii6/LGwfB8BxA6dsUqduIo5SiZM7PhFAHk43B8sBu2gNGkKaB80/JyNRKCrXCmrIJWNBGmLyplM7CLfqRQcLrti1pgYU9AYmQ4nhALcDnqFESuqfBgoGmSO4e413+Zwnk7GKKLQh9+ETUP2ZHrPuLAa47UgaxxINCiLRrrUzXyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Tk4081JPBz6JBV0;
+	Mon, 26 Feb 2024 23:14:16 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 91128140A70;
+	Mon, 26 Feb 2024 23:18:50 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 26 Feb
+ 2024 15:18:50 +0000
+Date: Mon, 26 Feb 2024 15:18:49 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Yicong Yang <yangyicong@huawei.com>
+CC: <will@kernel.org>, <mark.rutland@arm.com>, <hejunhao3@huawei.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<yangyicong@hisilicon.com>, <linuxarm@huawei.com>,
+	<prime.zeng@hisilicon.com>, <fanghao11@huawei.com>
+Subject: Re: [PATCH v2 7/8] drivers/perf: hisi_pcie: Merge
+ find_related_event() and get_event_idx()
+Message-ID: <20240226151849.00004d17@Huawei.com>
+In-Reply-To: <20240223103359.18669-8-yangyicong@huawei.com>
+References: <20240223103359.18669-1-yangyicong@huawei.com>
+	<20240223103359.18669-8-yangyicong@huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b81b1e5b-81fa-4df0-926d-1d75323cf47b@linux.intel.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Sun, Feb 25, 2024 at 11:46:07AM -0800, Kuppuswamy Sathyanarayanan wrote:
-> 
-> On 2/22/24 2:15 PM, Bjorn Helgaas wrote:
-> > From: Bjorn Helgaas <bhelgaas@google.com>
-> >
-> > When booting with "pci=noaer", we don't request control of AER, but we
-> > previously *did* request control of DPC, as in the dmesg log attached at
-> > the bugzilla below:
-> >
-> >   Command line: ... pci=noaer
-> >   acpi PNP0A08:00: _OSC: OS supports [ExtendedConfig ASPM ClockPM Segments MSI EDR HPX-Type3]
-> >   acpi PNP0A08:00: _OSC: OS now controls [PCIeHotplug SHPCHotplug PME PCIeCapability LTR DPC]
-> >
-> > That's illegal per PCI Firmware Spec, r3.3, sec 4.5.1, table 4-5, which
-> > says:
-> >
-> >   If the operating system sets this bit [OSC_PCI_EXPRESS_DPC_CONTROL], it
-> >   must also set bit 7 of the Support field (indicating support for Error
-> >   Disconnect Recover notifications) and bits 3 and 4 of the Control field
-> >   (requesting control of PCI Express Advanced Error Reporting and the PCI
-> >   Express Capability Structure).
-> 
-> IIUC, this dependency is discussed in sec 4.5.2.4. "Dependencies
-> Between _OSC Control Bits".
-> 
-> Because handling of Downstream Port Containment has a dependency on
-> Advanced Error Reporting, the operating system is required to
-> request control over Advanced Error Reporting (bit 3 of the Control
-> field) while requesting control over Downstream Port Containment
-> Configuration (bit 7 of the Control field). If the operating system
-> attempts to claim control of Downstream Port Containment
-> Configuration without also claiming control over Advanced Error
-> Reporting, firmware is required to refuse control of the feature
-> being illegally claimed and mask the corresponding bit.  Firmware is
-> required to maintain ownership of Advanced Error Reporting if it
-> retains ownership of Downstream Port Containment Configuration.  If
-> the operating system sets bit 7 of the Control field, it must set
-> bit 7 of the Support field, indicating support for the Error
-> Disconnect Recover event.
+On Fri, 23 Feb 2024 18:33:58 +0800
+Yicong Yang <yangyicong@huawei.com> wrote:
 
-So I guess you're suggesting that there are two defects here?
-
-  1) Linux requested DPC control without requesting AER control.
-
-  2) Platform granted DPC control when it shouldn't have.
-
-I do agree with that, but obviously we can only fix 1) in Linux.
-
-> > Request DPC control only if we have also requested AER control.
-> >
-> > Fixes: ac1c8e35a326 ("PCI/DPC: Add Error Disconnect Recover (EDR) support")
-> > Link: https://bugzilla.kernel.org/show_bug.cgi?id=218491#c12
-> > Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> > Cc: <stable@vger.kernel.org>	# v5.7+
-> > Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> > Cc: Matthew W Carlis <mattc@purestorage.com>
-> > Cc: Keith Busch <kbusch@kernel.org>
-> > Cc: Lukas Wunner <lukas@wunner.de>
-> > Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
-> > Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
-> > ---
-> Code wise it looks fine to me.
+> From: Junhao He <hejunhao3@huawei.com>
 > 
-> Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> >  drivers/acpi/pci_root.c | 20 +++++++++++---------
-> >  1 file changed, 11 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
-> > index 58b89b8d950e..efc292b6214e 100644
-> > --- a/drivers/acpi/pci_root.c
-> > +++ b/drivers/acpi/pci_root.c
-> > @@ -518,17 +518,19 @@ static u32 calculate_control(void)
-> >  	if (IS_ENABLED(CONFIG_HOTPLUG_PCI_SHPC))
-> >  		control |= OSC_PCI_SHPC_NATIVE_HP_CONTROL;
-> >  
-> > -	if (pci_aer_available())
-> > +	if (pci_aer_available()) {
-> >  		control |= OSC_PCI_EXPRESS_AER_CONTROL;
-> >  
-> > -	/*
-> > -	 * Per the Downstream Port Containment Related Enhancements ECN to
-> > -	 * the PCI Firmware Spec, r3.2, sec 4.5.1, table 4-5,
-> > -	 * OSC_PCI_EXPRESS_DPC_CONTROL indicates the OS supports both DPC
-> > -	 * and EDR.
-> > -	 */
-> > -	if (IS_ENABLED(CONFIG_PCIE_DPC) && IS_ENABLED(CONFIG_PCIE_EDR))
-> > -		control |= OSC_PCI_EXPRESS_DPC_CONTROL;
-> > +		/*
-> > +		 * Per PCI Firmware Spec, r3.3, sec 4.5.1, table 4-5, the
-> > +		 * OS can request DPC control only if it has advertised
-> > +		 * OSC_PCI_EDR_SUPPORT and requested both
-> > +		 * OSC_PCI_EXPRESS_CAPABILITY_CONTROL and
-> > +		 * OSC_PCI_EXPRESS_AER_CONTROL.
-> > +		 */
-> > +		if (IS_ENABLED(CONFIG_PCIE_DPC))
-> > +			control |= OSC_PCI_EXPRESS_DPC_CONTROL;
-> > +	}
-> >  
-> >  	return control;
-> >  }
+> The function xxx_find_related_event() scan all working events to find
+> related events. During this process, we also can find the idle counters.
+> If not found related events, return the first idle counter to simplify
+> the code.
 > 
-> -- 
-> Sathyanarayanan Kuppuswamy
-> Linux Kernel Developer
-> 
+> Signed-off-by: Junhao He <hejunhao3@huawei.com>
+> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+Seems like a small optimization, but worthwhile.
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
 
