@@ -1,125 +1,231 @@
-Return-Path: <linux-kernel+bounces-81538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E79A986773B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:52:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B26986773E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:52:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88BC71F28621
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:52:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD6561C23000
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:52:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DD9C128839;
-	Mon, 26 Feb 2024 13:52:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="KHiIlvdj"
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 829591292ED;
+	Mon, 26 Feb 2024 13:52:35 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 692F05A7BF
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 13:52:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33212126F3B;
+	Mon, 26 Feb 2024 13:52:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708955534; cv=none; b=Zsv7wfmrMDt079V/joZPSXrxlqSqwFycwHkdixdb4eXuJmjUx9fE6+iQQgGuurukafVmQbsu404uM4Y7gmMknbccsRX2XSZy2lcoKHTt4lsmpdYCF5G9gsoqeBTE9u6lMMi+vqxkaCw8RmuQDQA73dmTX2KVV52kKXJllD8QgWw=
+	t=1708955555; cv=none; b=eV9ugEz4qZ8MQ1dO03cV+Do1O6re7O1AXfV8g93r9HqsAcUiA6YojqTUzhDhIiG+FEl2+wrHah0u+Xyq2p4ZqheGl4/x+ckVCdlio1EFZRPIBSFWHdv92QYotkI9s1ls1R55ulRkmRXEfp8YOjNSNUS0B82i1urgnempgYXBh2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708955534; c=relaxed/simple;
-	bh=HrS/3jPOPurf1a/ULbGVyrwnHZgt1MgGkieYdCEifjc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=odj1/4sl6w9qx7wWK5UrXu4nvY3cx4wYZjNU/7oY1dqmjonmjXe5sBRmO3WKUNcL7jvqJ8u6dNE5pEXy2wg5DsvrDHhc6G/Qn00l6USWYgUzUisqOi2RW1PkeHXxLTpVTmqFScHjFpMhh0MHZPEgM8UUwm4x9trnh5x1Pt6SPQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=KHiIlvdj; arc=none smtp.client-ip=91.207.212.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41QALFxh024741;
-	Mon, 26 Feb 2024 14:51:32 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=HrS/3jPOPurf1a/ULbGVyrwnHZgt1MgGkieYdCEifjc=; b=KH
-	iIlvdjS+/zHJOZA1ehXnvdZ96KKoxvYo1na/NVRbFDma7quuT7aSbLxVZoR8p362
-	x35rF/jkbaaasbISTLmGb0Hr8QJK0oYI61sv9emxu9d2R9UGV05/NE3ziGg23VhB
-	xzg75hXOLYD55+vLvM7h0HOGi0xJn5yjcnJeO+sQNNtmyOxWAglleoFqoO4EtscU
-	qqmL5BZ5Jd2Ch2yzDxFIwHvaGF7Acra4O32HOyU2fNOGZiKbyz0eTNNCVUssaVnP
-	2b+61EWpSNn47SM2uA4K4+4fOelW7j1z6IxqHm/uwW8G72oEfHX9118zPYK/hsSq
-	4kpz9apJwHdKkHTYJcow==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3wfv9tw14k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 Feb 2024 14:51:32 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 19F7B40044;
-	Mon, 26 Feb 2024 14:51:27 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6ED7027C9C7;
-	Mon, 26 Feb 2024 14:50:45 +0100 (CET)
-Received: from [10.252.9.163] (10.252.9.163) by SHFDAG1NODE2.st.com
- (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 26 Feb
- 2024 14:50:44 +0100
-Message-ID: <0b91cb58-b9ca-4c67-b15a-77c60bc2ee18@foss.st.com>
-Date: Mon, 26 Feb 2024 14:50:44 +0100
+	s=arc-20240116; t=1708955555; c=relaxed/simple;
+	bh=Xsm/8R6Mlt6gOOz8zdM11uszjNbgmxwBzqPat5Py7Xw=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Oa23mBpzrJrbZO3eE9zpPG9BrbOIGoVVJWb2edX6GgVGG9Qs9rcX34G4DHq4M2oyp2ZwudvIHH36UAPqCCMocx8cFiiurrA1sTExFGhXOaTcLjagzPZyiYC3sJGW+8k2jtv0oKKEVAl2Bw6XY7JF5rrzUOvJjeDea619kwdbR24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Tk24r0YY0z67PcT;
+	Mon, 26 Feb 2024 21:48:12 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id BB3CE140A70;
+	Mon, 26 Feb 2024 21:52:30 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 26 Feb
+ 2024 13:52:30 +0000
+Date: Mon, 26 Feb 2024 13:52:28 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: John Groves <John@Groves.net>
+CC: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, "Dan
+ Williams" <dan.j.williams@intel.com>, Vishal Verma
+	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Alexander
+ Viro" <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, "Jan
+ Kara" <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+	<linux-cxl@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<nvdimm@lists.linux.dev>, <john@jagalactic.com>, Dave Chinner
+	<david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>,
+	<dave.hansen@linux.intel.com>, <gregory.price@memverge.com>
+Subject: Re: [RFC PATCH 18/20] famfs: Support character dax via the
+ dev_dax_iomap patch
+Message-ID: <20240226135228.00007714@Huawei.com>
+In-Reply-To: <fa06095b6a05a26a0a016768b2e2b70663163eeb.1708709155.git.john@groves.net>
+References: <cover.1708709155.git.john@groves.net>
+	<fa06095b6a05a26a0a016768b2e2b70663163eeb.1708709155.git.john@groves.net>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] drm/stm: Avoid use-after-free issues with crtc and
- plane
-To: Katya Orlova <e.orlova@ispras.ru>
-CC: Yannick Fertre <yannick.fertre@foss.st.com>,
-        Philippe Cornu
-	<philippe.cornu@foss.st.com>,
-        David Airlie <airlied@gmail.com>, Daniel Vetter
-	<daniel@ffwll.ch>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre
- Torgue <alexandre.torgue@foss.st.com>,
-        Philipp Zabel
-	<p.zabel@pengutronix.de>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <lvc-project@linuxtesting.org>
-References: <20240216125040.8968-1-e.orlova@ispras.ru>
-Content-Language: en-US
-From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-In-Reply-To: <20240216125040.8968-1-e.orlova@ispras.ru>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-26_09,2024-02-26_01,2023-05-22_02
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+
+On Fri, 23 Feb 2024 11:42:02 -0600
+John Groves <John@Groves.net> wrote:
+
+> This commit introduces the ability to open a character /dev/dax device
+> instead of a block /dev/pmem device. This rests on the dev_dax_iomap
+> patches earlier in this series.
+
+Not sure the back reference is needed given it's in the series.
+
+> 
+> Signed-off-by: John Groves <john@groves.net>
+> ---
+>  fs/famfs/famfs_inode.c | 97 +++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 87 insertions(+), 10 deletions(-)
+> 
+> diff --git a/fs/famfs/famfs_inode.c b/fs/famfs/famfs_inode.c
+> index 0d659820e8ff..7d65ac497147 100644
+> --- a/fs/famfs/famfs_inode.c
+> +++ b/fs/famfs/famfs_inode.c
+> @@ -215,6 +215,93 @@ static const struct super_operations famfs_ops = {
+>  	.show_options	= famfs_show_options,
+>  };
+>  
+> +/*****************************************************************************/
+> +
+> +#if defined(CONFIG_DEV_DAX_IOMAP)
+> +
+> +/*
+> + * famfs dax_operations  (for char dax)
+> + */
+> +static int
+> +famfs_dax_notify_failure(struct dax_device *dax_dev, u64 offset,
+> +			u64 len, int mf_flags)
+> +{
+> +	pr_err("%s: offset %lld len %llu flags %x\n", __func__,
+> +	       offset, len, mf_flags);
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static const struct dax_holder_operations famfs_dax_holder_ops = {
+> +	.notify_failure		= famfs_dax_notify_failure,
+> +};
+> +
+> +/*****************************************************************************/
+> +
+> +/**
+> + * famfs_open_char_device()
+> + *
+> + * Open a /dev/dax device. This only works in kernels with the dev_dax_iomap patch
+
+That comment you definitely don't need as this won't get merged without
+that patch being in place.
 
 
-On 2/16/24 13:50, Katya Orlova wrote:
-> ltdc_load() calls functions drm_crtc_init_with_planes(),
-> drm_universal_plane_init() and drm_encoder_init(). These functions
-> should not be called with parameters allocated with devm_kzalloc()
-> to avoid use-after-free issues [1].
->
-> Use allocations managed by the DRM framework.
->
-> Found by Linux Verification Center (linuxtesting.org).
->
-> [1]
-> https://lore.kernel.org/lkml/u366i76e3qhh3ra5oxrtngjtm2u5lterkekcz6y2jkndhuxzli@diujon4h7qwb/
->
-> Signed-off-by: Katya Orlova <e.orlova@ispras.ru>
+> + */
+> +static int
+> +famfs_open_char_device(
+> +	struct super_block *sb,
+> +	struct fs_context  *fc)
+> +{
+> +	struct famfs_fs_info *fsi = sb->s_fs_info;
+> +	struct dax_device    *dax_devp;
+> +	struct inode         *daxdev_inode;
+> +
+> +	int rc = 0;
+set in all paths where it's used.
 
-Hi Katya,
+> +
+> +	pr_notice("%s: Opening character dax device %s\n", __func__, fc->source);
 
+pr_debug
 
-Thanks for this submission.
+> +
+> +	fsi->dax_filp = filp_open(fc->source, O_RDWR, 0);
+> +	if (IS_ERR(fsi->dax_filp)) {
+> +		pr_err("%s: failed to open dax device %s\n",
+> +		       __func__, fc->source);
+> +		fsi->dax_filp = NULL;
+Better to use a local variable
 
-Acked-by: Raphaël Gallais-Pou <raphael.gallais-pou@foss.st.com>
+	fp = filp_open(fc->source, O_RDWR, 0);
+	if (IS_ERR(fp)) {
+		pr_err.
+		return;
+	}
+	fsi->dax_filp = fp;
+or similar.
 
+> +		return PTR_ERR(fsi->dax_filp);
+> +	}
+> +
+> +	daxdev_inode = file_inode(fsi->dax_filp);
+> +	dax_devp     = inode_dax(daxdev_inode);
+> +	if (IS_ERR(dax_devp)) {
+> +		pr_err("%s: unable to get daxdev from inode for %s\n",
+> +		       __func__, fc->source);
+> +		rc = -ENODEV;
+> +		goto char_err;
+> +	}
+> +
+> +	rc = fs_dax_get(dax_devp, fsi, &famfs_dax_holder_ops);
+> +	if (rc) {
+> +		pr_info("%s: err attaching famfs_dax_holder_ops\n", __func__);
+> +		goto char_err;
+> +	}
+> +
+> +	fsi->bdev_handle = NULL;
+> +	fsi->dax_devp = dax_devp;
+> +
+> +	return 0;
+> +
+> +char_err:
+> +	filp_close(fsi->dax_filp, NULL);
 
-Regards,
-Raphaël
+You carefully set fsi->dax_filp to null in other other error paths.
+Why there and not here?
+
+> +	return rc;
+> +}
+> +
+> +#else /* CONFIG_DEV_DAX_IOMAP */
+> +static int
+> +famfs_open_char_device(
+> +	struct super_block *sb,
+> +	struct fs_context  *fc)
+> +{
+> +	pr_err("%s: Root device is %s, but your kernel does not support famfs on /dev/dax\n",
+> +	       __func__, fc->source);
+> +	return -ENODEV;
+> +}
+> +
+> +
+> +#endif /* CONFIG_DEV_DAX_IOMAP */
+> +
+>  /***************************************************************************************
+>   * dax_holder_operations for block dax
+>   */
+> @@ -236,16 +323,6 @@ const struct dax_holder_operations famfs_blk_dax_holder_ops = {
+>  	.notify_failure		= famfs_blk_dax_notify_failure,
+>  };
+>  
+
+Put it in right place earlier! Makes this less noisy.
+
+> -static int
+> -famfs_open_char_device(
+> -	struct super_block *sb,
+> -	struct fs_context  *fc)
+> -{
+> -	pr_err("%s: Root device is %s, but your kernel does not support famfs on /dev/dax\n",
+> -	       __func__, fc->source);
+> -	return -ENODEV;
+> -}
+> -
+>  /**
+>   * famfs_open_device()
+>   *
 
 
