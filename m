@@ -1,117 +1,95 @@
-Return-Path: <linux-kernel+bounces-80527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38656866925
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:09:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 31677866929
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:09:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50D161C215B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:08:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 633AC1C21409
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:09:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 412A91AACC;
-	Mon, 26 Feb 2024 04:08:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="VBnhH1wL"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAF291B947;
+	Mon, 26 Feb 2024 04:09:05 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D61FA17BCB;
-	Mon, 26 Feb 2024 04:08:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC3BE19BBA
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 04:09:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708920532; cv=none; b=j084hKSrqg3PCLhp+VJWVQt7niWRTLqqQOB5QG0mh3pMf2nWVzq++4jfJhKo6Eg34zN07qe5Q+nunlcPIU0c4ISDH+oYlJSy56V1iu3Va0HFpHQc3EOVX+nFpJz5oVcm4lDTnD0tlxV2SeXIvDFaqosrbtbRSUv4uA4E70OKP2w=
+	t=1708920545; cv=none; b=fxrTtlaKcz2y4G5k0KJcBFNiFll9AmKRoUpRRbpezr3NxUZYh9+6tE5neHmlDk7p7zYpZG9gXF9txc9XbgBeJ2lxzF6bgbxoB4lq5mgKMszL0b2a3AeaggMeOvZPdzMqncNIcxtK5lnIwbsvOsMx+OFp1zG5QskRmkSOnRkgdIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708920532; c=relaxed/simple;
-	bh=rsQz5L5aZrv7vU7jUeoF0dk6Ph1Eb0g/0gSx7i375GE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DHG/Y+PXDNAWHZQjoUgR3f4V0GOc8ILcH5V/Fjh62sOT0fInUoc6+0hgPg1n65lD4AChuMIA13SnwPOZdeQov4//bbM/KQ+BCRy49X8nNl9p58a67/ZfcCaPvhrGHyhMC+wGMXYcs2OHlFNMYnNqXxrXsfdnv/T8WxmQmZWYOqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=VBnhH1wL; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41Q48KEm068833;
-	Sun, 25 Feb 2024 22:08:20 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1708920500;
-	bh=9/vGKxLqEvjlsUxXNsXq7LOSMLEoOfPXv9R6m7ZEntY=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=VBnhH1wLx4b2ITu7sFzw6obhzTNZZUCbANJv4Xv0w6+fZFxjK/pLaILLihFVCbjVD
-	 2Q/3tkGHWjr3y4MT0jFKnz2gdqKK2aw9q0YJmeaB2oEKA9odEcieKHnj7k5u4EcQiU
-	 a991dKakAktM5UgdyihqkKwaaoT2HxSGYK+J7dW4=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41Q48Khi010991
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Sun, 25 Feb 2024 22:08:20 -0600
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 25
- Feb 2024 22:08:19 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Sun, 25 Feb 2024 22:08:19 -0600
-Received: from uda0132425.dhcp.ti.com (uda0132425.dhcp.ti.com [172.24.227.94])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41Q48F3Y043562;
-	Sun, 25 Feb 2024 22:08:15 -0600
-From: Vignesh Raghavendra <vigneshr@ti.com>
-To: <nm@ti.com>, <kristo@kernel.org>, <robh@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <peda@axentia.se>, <afd@ti.com>, <gregkh@linuxfoundation.org>,
-        Siddharth
- Vadapalli <s-vadapalli@ti.com>
-CC: Vignesh Raghavendra <vigneshr@ti.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <c-vankar@ti.com>, <srk@ti.com>
-Subject: Re: [PATCH v5] arm64: dts: ti: k3-j784s4-main: Fix mux-reg-masks in serdes_ln_ctrl
-Date: Mon, 26 Feb 2024 09:38:12 +0530
-Message-ID: <170860805561.1966114.575240163502689016.b4-ty@ti.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240213080348.248916-1-s-vadapalli@ti.com>
-References: <20240213080348.248916-1-s-vadapalli@ti.com>
+	s=arc-20240116; t=1708920545; c=relaxed/simple;
+	bh=sVf87IQzTzV0aVFiMywfSmA3BksnTd1FHjfXa6C0bbk=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=WwiQAtlkuRj/EEr+B1+l/flTxF4rucmNHJo0fh/N1A1zOmuepnJrqGK7XJmnz85Xq/biaDycDT3z1ChfjIK8aCnWjFgpZyCbCI0G0h80NOqMWIoOgYVELI4Q+Elo0y5InO07FIMWREvQJRzhB1DBwAFKMqDYqYNBonTbXyfD87Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3651fd50053so24969885ab.3
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 20:09:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708920543; x=1709525343;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZNDjEj3dO41B6yHWj0vKf07JfaPf4wfX68sy+dsc0cc=;
+        b=wlnFLARAHscIPnqgTmZ9/D1AYFyKtx/CPFDozo5Q4zrFkzFlcIWIGlNwfQZfdE+qr5
+         D10Ol6kjiyEeMfXcJurFiEtAIh9gmNyugwmHd1vxYWUqC7YPcl35uV6r7KseuxSInuiN
+         o87HuKwfhRQ4ydRfKV/mTxfEwnzATAvIe+a9xGVmEjZRyvUmP+G1Hu3GjVMCPDLihOx1
+         QBpIwHbIyx4E8K652ILd/W9UbK1e8hy1zEoBE1TtLLn5PiYMzGQR/+HZkP4yIUnueTfh
+         2nFlSAS5e8Xn5PWuM1uxJcOOAXjI0NvSNl7pvV89Hyp1EighrULb161VJTrWIFaGl6r0
+         ItbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUAPNduqr/lGIJyTZdxGDfWbu9CWd0Y3abfJBhf9LfxuKYqgJpWQLntvkBKxckEDfV6B5L3AaiJde18OoH/yBMClfx7W0yqdEOX3Kk6
+X-Gm-Message-State: AOJu0Yz4c1h8MCBSBmYQ2uyryf51/ry7DnepuqA1npWGging0sDZscZe
+	aAFfirXJkyBggwIYLI959XpfDqxgV1LEV+V973H7a/ngTbv9DuUFhrl7vUdmE+iU/P+fJR8nRbC
+	hoUdXYU4mK9yiKOt9egfQVKXJcyh8217r5K/GzcKG+a0o4rXwoztLCgc=
+X-Google-Smtp-Source: AGHT+IHGIB6xFgTBe8rarTPKRKsWIcHLb2B4v1XZJ1w4HhxteEbNfAkQ533BJ23mhdcAFx0a27dCQeZQZTB4NpfTSSMAAxlsZQQQ
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Received: by 2002:a05:6e02:1d13:b0:365:2f19:e597 with SMTP id
+ i19-20020a056e021d1300b003652f19e597mr470242ila.5.1708920543138; Sun, 25 Feb
+ 2024 20:09:03 -0800 (PST)
+Date: Sun, 25 Feb 2024 20:09:03 -0800
+In-Reply-To: <001a113eba282f2ffc0568b76123@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ec5a2f0612411136@google.com>
+Subject: Re: [syzbot] [reiserfs?] kernel BUG at fs/reiserfs/journal.c:LINE!
+From: syzbot <syzbot+6820505ae5978f4f8f2f@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, alaaemadhossney.ae@gmail.com, 
+	alex.shi@linux.alibaba.com, axboe@kernel.dk, baijiaju1990@gmail.com, 
+	brauner@kernel.org, colin.king@canonical.com, dhowells@redhat.com, 
+	gregkh@linuxfoundation.org, jack@suse.cz, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, mingo@kernel.org, rdunlap@infradead.org, 
+	reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
+	yanaijie@huawei.com, zhengbin13@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Siddharth Vadapalli,
+syzbot suspects this issue was fixed by commit:
 
-On Tue, 13 Feb 2024 13:33:48 +0530, Siddharth Vadapalli wrote:
-> Change offset in mux-reg-masks property for serdes_ln_ctrl node
-> since reg-mux property is used in compatible.
-> 
-> 
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+    fs: Block writes to mounted block devices
 
-[1/1] arm64: dts: ti: k3-j784s4-main: Fix mux-reg-masks in serdes_ln_ctrl
-      commit: 9a0c0a9baa2d1f906589d715f9baeab93e7fcdcb
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16fcca02180000
+start commit:   b85ea95d0864 Linux 6.7-rc1
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b5bf1661f609e7f0
+dashboard link: https://syzkaller.appspot.com/bug?extid=6820505ae5978f4f8f2f
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1728c947680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1079c598e80000
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+If the result looks correct, please mark the issue as fixed by replying with:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+#syz fix: fs: Block writes to mounted block devices
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
---
-Vignesh
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
