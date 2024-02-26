@@ -1,254 +1,165 @@
-Return-Path: <linux-kernel+bounces-81824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DA16867A8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:43:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11D72867A81
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:41:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE4F3B21952
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:41:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E1231F25233
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:41:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D492912C52A;
-	Mon, 26 Feb 2024 15:41:11 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 518FC12BF21
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 15:41:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC0312BE9F;
+	Mon, 26 Feb 2024 15:41:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HdzRKzUT"
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7C4512B15B
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 15:41:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708962071; cv=none; b=XcD/A7dDoEIC69flFrsOvrel8RdX0AdrxUy9bW5jN3edmTD0kFTsXQNLp1AeX0l+xyTcIBNHzKIeVUKEvAJUSMpoyWfApkmrmBNHm5EWMsCgTNc/JBfuM8NXZKQGJauw8M+aetdsRNV/brYAbOTFu6Wvy0pwiZFKS1PbynH3xC8=
+	t=1708962103; cv=none; b=nJvZCJCdFmLzbcI/hbhcLSZ/GL0Q76Rcs6/6jZWSKTIsMBs9uf5Hq/1XhqRaPuxrjzROrGfHUqdjzoPD6sjZX5PJH3DeT9ON0XxvqX+Tn35HtBvS13sA1ADFIBHz/lDjFF69Eb9FTmoeQyZqa5IQZ41ORpAcXJlidnOiKCjfUac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708962071; c=relaxed/simple;
-	bh=eP49OFEMvhH3M/3LwOB217nVAZoA5vsSqN74iTTOMKk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=N78BfPr8Ss1dVYI/KXsVXjnA0Ht2y6YPyX2FpfJl5QO8LcfNoBVyTPaolVg5u0j8xgTaacod3oJmo8TMo39Jlq3prnLk9XLrWYiVeFYXW+7Ti06ivmbQzPGYqt+Wr7b47+rQ1mYze/0RgJN/72JEz9O4LpRlDdVvh6wATW9ug/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 56106DA7;
-	Mon, 26 Feb 2024 07:41:46 -0800 (PST)
-Received: from [192.168.1.100] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B25C43F762;
-	Mon, 26 Feb 2024 07:41:03 -0800 (PST)
-Message-ID: <8b9c1cce-401c-5084-ee2f-68beb03ad7a0@arm.com>
-Date: Mon, 26 Feb 2024 15:41:02 +0000
+	s=arc-20240116; t=1708962103; c=relaxed/simple;
+	bh=ROfZL+8h3faUigYCfFD1t/VZMW/wKSl1v3AwMMgB+iY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dHOucQ8B2f94nKFzd1qidkAcKaDa2CZbvZw/9UE9Wl0KiX86DcqfKZgg7fqN9RVKc/cc2ZyzC0bUbkzuFHiDx4o/RSmYK6cu0Ng63S0Hu7Ci3Oe32vO7IXLAdZ5S78/w52I8iuxkPhl2W/TH4gJ28ZyNgH88RioM26unDUNUEDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HdzRKzUT; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5dbcfa0eb5dso3046977a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 07:41:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708962101; x=1709566901; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=zqorEYJP95Qb8X25T5MHrt2/iyFyV6PT4PckHw2t2nA=;
+        b=HdzRKzUTRsyKnH+I97qyXKvLRBzIkq5BpbpQNM57PmgMk3/LeJU+SWCvvgcG93YsSn
+         KI8JVnlSfCTbwjCln2cG5mc3SvT9SlNvOPB7lZLxbegf2eU69C4YIncSQxa9Go0HjW3z
+         AbwYbTpDTyPxEZueZ8hCG1L1arL/yEBSLuS9gPRISpjD5yFd0mJFYRbKPAl12KoLr0S8
+         M8mR76/J1W5/h3ypHspLD2FY/V2GtlyYZKjN/Y3ByC2lk5mHZhN7TrK/SUazS58FJEEB
+         qy+yqwcNdTCNQwUMYECM4EFxjIM2BFM7GI898qlHyXFbQ3o6P4xNg0e6318HHWpX/ZsS
+         NHqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708962101; x=1709566901;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zqorEYJP95Qb8X25T5MHrt2/iyFyV6PT4PckHw2t2nA=;
+        b=LNoLMM4/HZ55Dq6ButbjIfttDqwWA0pjWJ9gRioS372JRkAhoif1Bbn4UM0wluO+Dj
+         yOILme0jvDTc2fT6JgDvCUuQMt9tvTszx88M6y0VZFmEmJfC+zCQTSEQSMo+QtjZLGVS
+         LcXg/J6WjEtt7LCaGHLdbpvz3wSYDqm2qetWVVZ+vnG+tI4HzPd6YVt8qSvRpQMuqBsl
+         AnXss3O5/RYEpmUAuWMI0MJ/rrpr28lIEq41Rn16uUV29mIySpNo9kldESIKBTqO14d3
+         hrTALYG+isAqbZgPLyLmufQPFIbjayeuztwHVDvqYtMsRQy5UsBAof5N1JZev2r4PVDL
+         RyiQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUwk/LfhG3iV0lu3cHdna4lonz33PwU3Po+FSxh9OLb8Aedx5ha8yP6ICIq/i59iCyeFmc2Ou/o4iqNFTDbGbpcR4kunP7iOL5Tn6dl
+X-Gm-Message-State: AOJu0Yx5jrZvCtwbu+oGdF0CNW3hRtc3+522zTiHzeW+5O6i1fTI0E5J
+	aygdu8SnQWUlIziQdssZnbuJLwesNyOiM7RZAE4nXCKO6OcYKzWc4Ve9vfjnVQ==
+X-Google-Smtp-Source: AGHT+IEz5RGOjmGJm6K+8JAvLy1n3CFVFLZcKYWZ/CM3mfcFa3J1NmyxKtra4CQAUyHjYaen+sgS8A==
+X-Received: by 2002:a05:6a21:3988:b0:1a0:e9ad:7f29 with SMTP id ad8-20020a056a21398800b001a0e9ad7f29mr6816478pzc.6.1708962101003;
+        Mon, 26 Feb 2024 07:41:41 -0800 (PST)
+Received: from thinkpad ([117.202.184.81])
+        by smtp.gmail.com with ESMTPSA id v13-20020a17090a520d00b0029ab17eaa40sm3252777pjh.3.2024.02.26.07.41.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 07:41:40 -0800 (PST)
+Date: Mon, 26 Feb 2024 21:11:36 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, quic_msavaliy@quicinc.com,
+	quic_vtanuku@quicinc.com, quic_cchiluve@quicinc.com
+Subject: Re: [PATCH v4] arm64: dts: qcom: sc7280: add slimbus DT node
+Message-ID: <20240226154136.GH8422@thinkpad>
+References: <20240219051455.25927-1-quic_vdadhani@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v6 5/8] arm64: KVM: Add iflag for FEAT_TRF
-Content-Language: en-US
-To: Marc Zyngier <maz@kernel.org>
-Cc: coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
- kvmarm@lists.linux.dev, suzuki.poulose@arm.com, acme@kernel.org,
- oliver.upton@linux.dev, broonie@kernel.org, James Morse
- <james.morse@arm.com>, Zenghui Yu <yuzenghui@huawei.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Mike Leach <mike.leach@linaro.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- Miguel Luis <miguel.luis@oracle.com>, Joey Gouly <joey.gouly@arm.com>,
- Ard Biesheuvel <ardb@kernel.org>, Quentin Perret <qperret@google.com>,
- Javier Martinez Canillas <javierm@redhat.com>,
- Mark Rutland <mark.rutland@arm.com>, Arnd Bergmann <arnd@arndb.de>,
- Vincent Donnefort <vdonnefort@google.com>,
- Ryan Roberts <ryan.roberts@arm.com>, Fuad Tabba <tabba@google.com>,
- Jing Zhang <jingzhangos@google.com>, linux-kernel@vger.kernel.org
-References: <20240226113044.228403-1-james.clark@arm.com>
- <20240226113044.228403-6-james.clark@arm.com> <86edcz2vrz.wl-maz@kernel.org>
-From: James Clark <james.clark@arm.com>
-In-Reply-To: <86edcz2vrz.wl-maz@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240219051455.25927-1-quic_vdadhani@quicinc.com>
 
-
-
-On 26/02/2024 13:35, Marc Zyngier wrote:
-> On Mon, 26 Feb 2024 11:30:33 +0000,
-> James Clark <james.clark@arm.com> wrote:
->>
->> Add an extra iflag to signify if the TRFCR register is accessible.
-> 
-> That's not what this flag means: it indicates whether TRFCR needs to
-> be saved. At lease that's what the name suggests.
-> 
->> Because TRBE requires FEAT_TRF, DEBUG_STATE_SAVE_TRBE still has the same
->> behavior even though it's only set when FEAT_TRF is present.
-> 
-> This sentence seems completely out of context, because you didn't
-> explain that you were making TRBE *conditional* on TRF being
-> implemented, as per the architecture requirements.
-> 
->>
->> The following holes are left in struct kvm_vcpu_arch, but there aren't
->> enough other 8 bit fields to rearrange it to leave any hole smaller than
->> 7 bytes:
->>
->>   u8                         cflags;               /*  2292     1 */
->>   /* XXX 1 byte hole, try to pack */
->>   u16                        iflags;               /*  2294     2 */
->>   u8                         sflags;               /*  2296     1 */
->>   bool                       pause;                /*  2297     1 */
->>   /* XXX 6 bytes hole, try to pack */
-> 
-> I don't think that's particularly useful in a commit message, but more
-> relevant to the cover letter. However, see below.
-> 
->>
->> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Signed-off-by: James Clark <james.clark@arm.com>
->> ---
->>  arch/arm64/include/asm/kvm_host.h |  4 +++-
->>  arch/arm64/kvm/debug.c            | 24 ++++++++++++++++++++----
->>  2 files changed, 23 insertions(+), 5 deletions(-)
->>
->> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
->> index 21c57b812569..85b5477bd1b4 100644
->> --- a/arch/arm64/include/asm/kvm_host.h
->> +++ b/arch/arm64/include/asm/kvm_host.h
->> @@ -569,7 +569,7 @@ struct kvm_vcpu_arch {
->>  	u8 cflags;
->>  
->>  	/* Input flags to the hypervisor code, potentially cleared after use */
->> -	u8 iflags;
->> +	u16 iflags;
->>  
->>  	/* State flags for kernel bookkeeping, unused by the hypervisor code */
->>  	u8 sflags;
->> @@ -779,6 +779,8 @@ struct kvm_vcpu_arch {
->>  #define DEBUG_STATE_SAVE_TRBE	__vcpu_single_flag(iflags, BIT(6))
->>  /* vcpu running in HYP context */
->>  #define VCPU_HYP_CONTEXT	__vcpu_single_flag(iflags, BIT(7))
->> +/* Save trace filter controls */
->> +#define DEBUG_STATE_SAVE_TRFCR	__vcpu_single_flag(iflags, BIT(8))
-> 
-> I'd rather you cherry-pick [1] and avoid expanding the iflags.
-> 
-> [1] https://lore.kernel.org/r/20240226100601.2379693-4-maz@kernel.org
-> 
-> Now, I think the whole SPE/TRBE/TRCR flag management should be
-> improved, see below.
-> 
->>
->>  /* SVE enabled for host EL0 */
->>  #define HOST_SVE_ENABLED	__vcpu_single_flag(sflags, BIT(0))
->> diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
->> index ce8886122ed3..49a13e72ddd2 100644
->> --- a/arch/arm64/kvm/debug.c
->> +++ b/arch/arm64/kvm/debug.c
->> @@ -332,14 +332,30 @@ void kvm_arch_vcpu_load_debug_state_flags(struct kvm_vcpu *vcpu)
->>  	    !(read_sysreg_s(SYS_PMBIDR_EL1) & BIT(PMBIDR_EL1_P_SHIFT)))
->>  		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_SPE);
->>  
->> -	/* Check if we have TRBE implemented and available at the host */
->> -	if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceBuffer_SHIFT) &&
->> -	    !(read_sysreg_s(SYS_TRBIDR_EL1) & TRBIDR_EL1_P))
->> -		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
->> +	/*
->> +	 * Set SAVE_TRFCR flag if FEAT_TRF (TraceFilt) exists. This flag
->> +	 * signifies that the exclude_host/exclude_guest settings of any active
->> +	 * host Perf session on a core running a VCPU can be written into
->> +	 * TRFCR_EL1 on guest switch.
->> +	 */
->> +	if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceFilt_SHIFT)) {
->> +		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
-> 
-> Can we avoid doing this unconditionally? It only makes sense to save
-> the trace crud if it is going to be changed, right?
+On Mon, Feb 19, 2024 at 10:44:55AM +0530, Viken Dadhaniya wrote:
+> Populate the DTSI node for slimbus instance to be
+> used by bluetooth FM audio case.
 > 
 
-Do you mean to see if kvm_guest_trfcr was non-zero (and would have to be
-changed) at VCPU load? I assumed that it could be modified between load
-and switch. That would mean there is no way to do it conditionally.
+Just curious, where is the patch to enable bluetooth FM?
 
-I also assumed that's the reason SPE and TRBE were implemented like
-this, with the feat check at load and the enabled check at switch. It
-doesn't feel like TRFCR is any different to those two.
-
-Or do you mean to only set DEBUG_STATE_SAVE_TRFCR on switch if tracing
-was enabled?
-
-I suppose the names DEBUG_STATE_SAVE_SPE and DEBUG_STATE_SAVE_TRBE are
-slightly misleading because neither are actually saved if they weren't
-enabled. They're more like DEBUG_STATE_HAS_SPE and DEBUG_STATE_HAS_TRBE.
-
->> +		/*
->> +		 * Check if we have TRBE implemented and available at the host.
->> +		 * If it's in use at the time of guest switch then trace will
->> +		 * need to be completely disabled. The architecture mandates
->> +		 * FEAT_TRF with TRBE, so we only need to check for TRBE after
->> +		 * TRF.
->> +		 */
->> +		if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceBuffer_SHIFT) &&
->> +		    !(read_sysreg_s(SYS_TRBIDR_EL1) & TRBIDR_EL1_P))
->> +			vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
->> +	}
->>  }
->>  
->>  void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu)
->>  {
->>  	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_SPE);
->>  	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
->> +	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
->>  }
+> Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+> ---
+> v3 -> v4:
+> - Correct email address for linux-arm-msm.
 > 
-> Dealing with flags that are strongly coupled in a disjoined way a
-> pretty bad idea. Look at the generated code, and realise we flip the
-> preempt flag on each access.
+> v2 -> v3:
+> - Fix patch title by adding "PATCH" string.
+> - Update commit log.
 > 
-> Can we do better? You bet. The vcpu_{set,clear}_flags infrastructure
-> is capable of dealing with multiple flags at once, as demonstrated by
-> the way we deal with exception encoding.
+> v1 -> v2:
+> - change 0x0 -> 0 to reg property.
+> - reorder the DT property.
+> - change node tag slim_msm to slim.
+> ---
+> ---
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
 > 
-
-Oops yeah I didn't realize that this was more than a bit set/clear. I
-will combine them. I think I could probably combine the TRBE/TRF set as
-well.
-
-Agree with the rest of the comments too.
-
-Thanks
-James
-
-> Something like:
-> 
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index addf79ba8fa0..3e50e535fdd4 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -885,6 +885,10 @@ struct kvm_vcpu_arch {
->  #define DEBUG_STATE_SAVE_SPE	__vcpu_single_flag(iflags, BIT(5))
->  /* Save TRBE context if active  */
->  #define DEBUG_STATE_SAVE_TRBE	__vcpu_single_flag(iflags, BIT(6))
-> +/* Save Trace Filter Controls  */
-> +#define DEBUG_STATE_SAVE_TRFCR	__vcpu_single_flag(iflags, BIT(7))
-> +/* Global debug mask */
-> +#define DEBUG_STATE_SAVE_MASK	__vcpu_single_flag(iflags, GENMASK(7, 5))
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 581818676a4c..1d6afde915aa 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -2672,6 +2672,31 @@
+>  			status = "disabled";
+>  		};
 >  
->  /* SVE enabled for host EL0 */
->  #define HOST_SVE_ENABLED	__vcpu_single_flag(sflags, BIT(0))
-> diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
-> index 8725291cb00a..f9b197a00582 100644
-> --- a/arch/arm64/kvm/debug.c
-> +++ b/arch/arm64/kvm/debug.c
-> @@ -339,6 +339,6 @@ void kvm_arch_vcpu_load_debug_state_flags(struct kvm_vcpu *vcpu)
->  
->  void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu)
->  {
-> -	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_SPE);
-> -	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
-> +	if (!has_vhe())
-> +	    vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_MASK);
->  }
+> +		slimbam: dma-controller@3a84000 {
+> +			compatible = "qcom,bam-v1.7.0";
+> +			reg = <0 0x03a84000 0 0x20000>;
+> +			interrupts = <GIC_SPI 164 IRQ_TYPE_LEVEL_HIGH>;
+> +			#dma-cells = <1>;
+> +			qcom,controlled-remotely;
+> +			num-channels  = <31>;
+> +			qcom,ee = <1>;
+> +			qcom,num-ees = <2>;
+> +			iommus = <&apps_smmu 0x1826 0x0>;
+> +			status = "disabled";
+> +		};
+> +
+> +		slim: slim-ngd@3ac0000 {
+> +			compatible = "qcom,slim-ngd-v1.5.0";
+> +			reg = <0 0x03ac0000 0 0x2c000>;
+> +			interrupts = <GIC_SPI 163 IRQ_TYPE_LEVEL_HIGH>;
+> +			dmas = <&slimbam 3>, <&slimbam 4>;
+> +			dma-names = "rx", "tx";
+> +			iommus = <&apps_smmu 0x1826 0x0>;
+
+Does both nodes need IOMMU translation with same SID? This hints that only one
+needed.
+
+- Mani
+
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			status = "disabled";
+> +		};
+> +
+>  		lpass_hm: clock-controller@3c00000 {
+>  			compatible = "qcom,sc7280-lpasshm";
+>  			reg = <0 0x03c00000 0 0x28>;
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+> of Code Aurora Forum, hosted by The Linux Foundation
 > 
-> Thanks,
-> 
-> 	M.
-> 
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
