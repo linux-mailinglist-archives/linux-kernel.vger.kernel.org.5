@@ -1,120 +1,112 @@
-Return-Path: <linux-kernel+bounces-81826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A467D867A85
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:42:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D43A867A86
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:42:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4ACB1C28452
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:42:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA4C0291D25
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:42:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A96612BEBF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94ACB12BF1C;
 	Mon, 26 Feb 2024 15:42:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Gt1lY/Ce"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UPxjAqrN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E82249F9;
-	Mon, 26 Feb 2024 15:42:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D86EC12BE9C
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 15:42:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708962157; cv=none; b=ozvTnuZCK1r9JcnSmpu3qkLon/oG+L7fS++w4jk4VhdizpwCdYb/tNCuVLwJTS2KzYl/XXPcZmQt8swTeDcVH7hcaiy3KK/0mVQtJkndkiyXPnRU0L7osDE/v1aEP3bUiJBhHiMoK1j1gpDR0PFfvxbXbJfhE9LyPeru3fEsljk=
+	t=1708962157; cv=none; b=d4EkRDFmEUDh96aW/fuqHg/i/gCXpgiJwDkZp+NAGu9Nzbp5gFKcmUaOTvi9BYO6gl6d7NRAr8RaM15vxaFb+FEwpy5h9sZf75JZEL3kM6brnRtZhVYQQWIwUHFcvsFeZouUFjHTKyLrO0NOY90XD8jQ2T+vD2+TF5T2P570pDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708962157; c=relaxed/simple;
-	bh=owHJzHKtb9DA5C41QidfsCkm1UnouWrrnWfBZ9MSARM=;
+	bh=eL3Sq0didjuZIcQ0uUGAVgBF4oFDIInfGkYzwsFtZ5g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KmL04mnF9H2c1f7wH1jVM2jTu1Sa14XwsBFLJN7qJwHMQ7LxetFgLR94rjlAec+z3MYY7ywVPjattAlKncseitr023tuRt8Qhfml3Vt+zVaueq1YCsP9i4sKTDV4huge+NCJu2mnw/qzTN9nwV5HUuiOEVNmV5aQJM5eh3v2LQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=Gt1lY/Ce; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=EHijuvuV8E7YKNM4XdgGmLvPqRAeS9ueLF2rF2XSPaU=; b=Gt1lY/CehqeiCSFuq8QZV2wYJT
-	DscO35EA7VMFtgwYNXyD9nOpwpNH3gotKPxK0RGqgMEDYqI6Ch9YS2ejpgp8OC/dxHObyhZuwYiIO
-	xNMj9DGZ9PFFkN73BWAPqkmGzXVzWfVegL2GkXJsS4/U7GPjCWpCTijU9oXnHErFpatoS/L8iCUch
-	h2mxOnxEqe4FLvRxVhSJurF+uJxQDd4Ab2oKGluj6bQRHieZ1ndEHSSBtGFT9Ppct9UH1SFx4Q1eq
-	zBfvA+2odehQbByPQqHslkOHaOgJMLxdOIBeeonUL9P/wWhSK5HUptSetS8T/Rn/wzPuArg/1cIrg
-	3L2X0kdw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:57664)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1red7Z-00043V-29;
-	Mon, 26 Feb 2024 15:42:25 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1red7X-0006Y2-8B; Mon, 26 Feb 2024 15:42:23 +0000
-Date: Mon, 26 Feb 2024 15:42:23 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Shengyu Qu <wiagn233@outlook.com>
-Cc: andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v1] net: sfp: add quirks for ODI DFP-34X-2C2
-Message-ID: <ZdyxXzVe+fsILxrS@shell.armlinux.org.uk>
-References: <TY3P286MB2611C0FA24318AA397DB689B985A2@TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM>
- <ZdyahVYAhPgf2Xqn@shell.armlinux.org.uk>
- <TY3P286MB2611BD62C30B37A5BE02D3C5985A2@TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM>
- <ZdyiigYNGf8WVZNu@shell.armlinux.org.uk>
- <TY3P286MB261155090B2D07593901C0DE985A2@TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM>
+	 Content-Type:Content-Disposition:In-Reply-To; b=RDeO+j/NXLywLvIqKc5xZfbR5yECAcHNONEPp/T+eLOhCZqrBYdQ7x4RjqXisn3DEqIvRSFSkb4xcATtCk6H4F4rOnCJfC4DXAt2f5SHs/40WCi3dX4QHwv4N8n4gMEU0b7pGvY3brvqSHkizYPj1SZXYXuUOXVsQ1nDRLSpuRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UPxjAqrN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EBAEC433F1;
+	Mon, 26 Feb 2024 15:42:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708962157;
+	bh=eL3Sq0didjuZIcQ0uUGAVgBF4oFDIInfGkYzwsFtZ5g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UPxjAqrNQZU6c56kJP7tvRbFozDBHAeT/Ki1LV0YiumSxdtDrvz13EA0H4KhswR51
+	 Y42pqnYvuSEXWhAKu4zJrAmA8dw+IOspFIpDgy6jeF2aEgXXVp9/fvvcOsIv/jBcUy
+	 YhIhoVAOY6nJfSFI+2lm3thxc5OE85qOK+MQehEgLbvRGa+Svu8CDqcfTDADH9x6rR
+	 pg/tC6RN35XNFt+HtOLHmfFbl2MXWFx9MpCZtMhxfskVDrRf9UbmgltQResfhSEAAo
+	 CKKCen9AItd4FaRcKTIgeh2LYngENnSn7DBcZla/oSg1zzI7SZd/MaNh1n4LdxQMAr
+	 w/AWH3h/w19WQ==
+Date: Mon, 26 Feb 2024 15:42:33 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
+Subject: Re: [PATCH 6/6] ASoC: meson: axg-fifo: use FIELD helpers
+Message-ID: <a828b4f7-282b-4b83-9a64-04557edf9b6a@sirena.org.uk>
+References: <20240223175116.2005407-1-jbrunet@baylibre.com>
+ <20240223175116.2005407-7-jbrunet@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="US/dKDUluQQUZ0hF"
+Content-Disposition: inline
+In-Reply-To: <20240223175116.2005407-7-jbrunet@baylibre.com>
+X-Cookie: Your mileage may vary.
+
+
+--US/dKDUluQQUZ0hF
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <TY3P286MB261155090B2D07593901C0DE985A2@TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 26, 2024 at 10:51:36PM +0800, Shengyu Qu wrote:
-> Hi Russell,
-> 
-> 在 2024/2/26 22:39, Russell King (Oracle) 写道:
-> > On Mon, Feb 26, 2024 at 10:16:46PM +0800, Shengyu Qu wrote:
-> > > Hi Russell,
-> > > 
-> > > > On Mon, Feb 26, 2024 at 09:23:46PM +0800, Shengyu Qu wrote:
-> > > > > ODI DFP-34X-2C2 is capable of 2500base-X, but incorrectly report its
-> > > > > capabilities in the EEPROM.
-> > > > > So use sfp_quirk_2500basex for this module to allow 2500Base-X mode.
-> > > > This was previously submitted by Sergio Palumbo, and comes in two
-> > > > different forms - an OEM version and non-OEM. There was extensive
-> > > > discussion about this, and the result is that I'm not accepting this
-> > > > quirk for this module.
-> > > > 
-> > > > The reason is that the module _defaults_ to 1000base-X and requires
-> > > > manual reconfiguration by the user to operate at 2500base-X.
-> > > > Unfortunately, there is no way for the kernel to know whether that
-> > > > reconfiguration has occurred.
-> > > No, In the firmware of this stick, the speed rate is configured to auto
-> > > negotiation rather than fixed 1000base-X.
-> > 
-> > How does this "auto negotiation" work?
-> > 
-> > I mean *exactly* how does it work? How does it know whether the host is
-> > operating at 1000base-X or 2500base-X?
-> > 
-> > There is *no* inband protocol to allow this to be negotiated.
-> > 
-> Well, that seems some kind weird trick implemented in that chip's SDK (maybe
-> hardware?). It would automatically detect the speed rate that host uses and
-> switch to that rate. The system log of the stick shows that.
+On Fri, Feb 23, 2024 at 06:51:12PM +0100, Jerome Brunet wrote:
 
-This sounds racy - between the SFP detecting the speed of the host and
-the kernel code reconfiguring the interface. More details please...
+> Use FIELD_GET() and FIELD_PREP() helpers instead of doing it manually.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+This breaks the build for me:
+
+/build/stage/linux/sound/soc/meson/axg-fifo.c: In function =E2=80=98axg_fif=
+o_pcm_hw_para
+ms=E2=80=99:
+/build/stage/linux/sound/soc/meson/axg-fifo.c:149:28: error: implicit decla=
+ratio
+n of function =E2=80=98FIELD_PREP=E2=80=99 [-Werror=3Dimplicit-function-dec=
+laration]
+  149 |                            FIELD_PREP(CTRL0_INT_EN, irq_en));
+      |                            ^~~~~~~~~~
+/build/stage/linux/sound/soc/meson/axg-fifo.c: In function =E2=80=98axg_fif=
+o_pcm_irq_blo
+ck=E2=80=99:
+/build/stage/linux/sound/soc/meson/axg-fifo.c:207:18: error: implicit decla=
+ratio
+n of function =E2=80=98FIELD_GET=E2=80=99 [-Werror=3Dimplicit-function-decl=
+aration]
+  207 |         status =3D FIELD_GET(STATUS1_INT_STS, status);
+      |                  ^~~~~~~~~
+cc1: all warnings being treated as errors
+
+--US/dKDUluQQUZ0hF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXcsWgACgkQJNaLcl1U
+h9DIlgf/fnA/FeDBqMLROkPy3MIwMuQ3ZxxLtkBhK7VmoZBxa9cH7MWNDQ84B1pt
+Ed/CFYuM8JzavBhDYl1s+qGi7RRsz36Zk/FAPftRdm/zCTl7L0oXH5a26CgU2WHJ
+DiB6tY1QkkAFWj6nHAlNlNUeIkAXBa8py0pOOv7JKNGiGMVZnEcsRZKtgyhbUdK7
+jvUE3YvTXnjxDtBVKat0fe2/rOVqtefqpnKL94l7BkjlIeRgJ8DmWfGH6gibUm1t
+GFY9mTOE5niV34ypQlId8dCtJEP6tbplAssdgnw0GbMceZ/xlztKtKNy3wMv+W3m
+27/rAv8zQA4CUE078XdfAcxYGntAug==
+=GD+7
+-----END PGP SIGNATURE-----
+
+--US/dKDUluQQUZ0hF--
 
