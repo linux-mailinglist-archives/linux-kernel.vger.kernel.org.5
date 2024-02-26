@@ -1,153 +1,106 @@
-Return-Path: <linux-kernel+bounces-81153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A990F86712F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:34:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E7D9867138
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:34:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB82A1C21A66
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:34:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDD8C28FB01
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:34:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3D1D1DA2F;
-	Mon, 26 Feb 2024 10:20:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F003D208B6;
+	Mon, 26 Feb 2024 10:23:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="m1HjNlV1"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VyLnGBqz"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E14C1CD2F;
-	Mon, 26 Feb 2024 10:20:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 732D514280
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 10:23:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708942854; cv=none; b=VYGLR0wN1IW3y6DDLdDVOXtWki0KYvPuhhxTOl7u4yKBNehVk3ZnT8IHCw6etcdRomCbhpXUcOXLBvgYJ7n54604pb5VmUS9vu45u9hT5mujBRQ6UDGDPOBUcU5peIms6XwGutjcJw0BJ9HH8udKl4fCuY65pYhJ7cOZ7tGrxqs=
+	t=1708943031; cv=none; b=Fpkib3lHqJbWkTxHbdvSXcHgtZ8Y1XnifSbGzyxiXLvBRQMYJNgqeAjb8pAD/7jHs04LSWrf2fpyrUP8Xg3yowM7XW79sV0ilyi6AtDnKXaE1QPifq43IUuis1DCUlRSwl3pNYFkvfT5QHZ36V2kIJlYTnd4L9hOIx2lLx727xA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708942854; c=relaxed/simple;
-	bh=Q2Apks4OYwt/Qc7DfjpkV+EOr+jHuzuRd/7l1T5/5ic=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GqRd7eXvpLTJn/ugefoCwLiwGpc3l7tJK8CThrnh7fcyUmEmiqSSOu8WmpkjE0s9f1PE5xknTw2f2RA3xdQYyLzYy+kWr3cEb31zqZRc634PYozH2u3egbueR9qQroAGdCJrE5OyPnLAJ/EKD3NjdPakDKhYPWD3Cl+3z+wcQMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=m1HjNlV1; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1708942850;
-	bh=Q2Apks4OYwt/Qc7DfjpkV+EOr+jHuzuRd/7l1T5/5ic=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=m1HjNlV1h5M9Q+csGYfVEh9lZRy2HsPys/cL9B64uvusYZ9QFu0w7uH/e0HHW12kN
-	 Xr57jgHXRF/y8881bp5NSnvZtrttw5EOQhcB+/siK4LwM/jYwdFH3O7vMlektEr9qQ
-	 DaJcu+DeeYkjR9GE7ufWd1kNcOEanmDJ0yRIwcKZuST2GLEtNQ98bHmvUyPvRPjL/3
-	 6dw8m7t9lZhbQMzB6E1O7wyBsqu/dFhSBMAo4H3a50kW/2iLribNexUHwR5UuoxF15
-	 6AanHxWs7ABeOLrg1WDVGDOPVyQ08eF2NXNyGENeOP1MIBRgSoGxJGy6wqLtcrPNk1
-	 2HHOGUNKWxEoA==
-Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: laura.nao)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 80920378202B;
-	Mon, 26 Feb 2024 10:20:49 +0000 (UTC)
-From: Laura Nao <laura.nao@collabora.com>
-To: skhan@linuxfoundation.org
-Cc: a.hindborg@samsung.com,
-	alex.gaynor@gmail.com,
-	aliceryhl@google.com,
-	benno.lossin@proton.me,
-	bjorn3_gh@protonmail.com,
-	boqun.feng@gmail.com,
-	gary@garyguo.net,
-	kernel@collabora.com,
-	kernel@valentinobst.de,
-	laura.nao@collabora.com,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	ojeda@kernel.org,
-	rust-for-linux@vger.kernel.org,
-	sergio.collado@gmail.com,
-	shuah@kernel.org,
-	usama.anjum@collabora.com,
-	wedsonaf@gmail.com
-Subject: Re: [PATCH v3] kselftest: Add basic test for probing the rust sample modules
-Date: Mon, 26 Feb 2024 11:21:02 +0100
-Message-Id: <20240226102102.292374-1-laura.nao@collabora.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <8fe544e1-ac1c-4edf-81e9-fc0992b6bbc4@linuxfoundation.org>
-References: <8fe544e1-ac1c-4edf-81e9-fc0992b6bbc4@linuxfoundation.org>
+	s=arc-20240116; t=1708943031; c=relaxed/simple;
+	bh=nIlN/jtpPeQnxwEmEu5CghCABz2PEFjtvaRZ1Mc+Nz8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DFbMMIuN45+gxc+Srg/6LNTIWvFlcwFxnkrpESoXHWqOosJZR/S34ICDPO2Y7UtQLgXSXUzS83I9VD/qS1KpRLvwf4PG+ODS2Bt3yuTFS2WLfIqXF/AxjuGs86R+gRdQKBdUiOwdyMDtNrTE1Fn6p+LJOSHNOYG46GOLkbvpNFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VyLnGBqz; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41298159608so12369105e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 02:23:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708943028; x=1709547828; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xlfTscgQB9POTfBUx30Xla8SuM0B8+WvX4CUIan6AuI=;
+        b=VyLnGBqza2gKXCx7VCfcTpLM3pyceNeRbjEJOY2GQoXwmBrXj5vA4qw3NrT/nWNn4C
+         WVWd3pdvTvxrVD1VgWgyIpameEDMY/aUmI1dyl9kkVOEPMunildjQUVEFvIOjUuNbVp3
+         jlnU73K1GKct9W+7kjkYooR0jJ5dYLW6Yxrn6C+0ci3JBgjv7THulDrX9nqgbgUVwhVP
+         OwIgKSvRqSqOaLv4RtkUgaCuc3ImwS/r/dYslCRYgpFi0RxhZrqoJ8ofNmOCsZ40Wnda
+         Nhn3PQ9zbEE2/HbrbYdz3dshAGRwSYkK/nkY/TapaL+RqlyswgKVPMO1FoyHJvmp1mGo
+         iQLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708943028; x=1709547828;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xlfTscgQB9POTfBUx30Xla8SuM0B8+WvX4CUIan6AuI=;
+        b=FbLeKQVXtv7Rk9kQROQZc6JTuJBgb0ILcaU48HSmPGAuw5BKuEmSLeEqWsuVQgQtad
+         cVpOws3xIxsj1Vp7p892A9DRqeP7IFw0XmVduFxpH7fjvNjsBZzTbIReqSF79BCtLOvG
+         GwvTOO+TcnHyZmi9PlGSVDnp/BeG7oIyQqiHYj+NLaD+R0iTGVQ9chYKLpu29MStZXoc
+         KxzFa7eI8bA5VntNhlZ6aNPkD74whbwnmDyHFaKNbRhZ0sQMuT96kawZ0x6MmZIMoVvi
+         pv5rFmDMm9m+wbas/pPiPod6BLphJjy+FPTW3KyD0De93CsupSygAcqSjBrhVSfdBxAI
+         W/cg==
+X-Forwarded-Encrypted: i=1; AJvYcCWd1X8mBASmJbS/YmETomomazw3++rqa8hf9jOoHK7ZiDvIEPMMk5DF0Kx6Um/mhGoegRPS4Updf5GPSBZZubwEgzL0GXHkD1Ua6j/R
+X-Gm-Message-State: AOJu0Yyzw3PSdyHWE6UeOT5nGFEUUPD66CRb+Rjtg59AtMcte6aIyykz
+	KscyqU1uHZwcFD5OVr9K9MKbPtLKjvePDcSsvdib4YuELohYg8oqRGx8CPuu2Cs=
+X-Google-Smtp-Source: AGHT+IHOYrGSl/T75n+H59MRt4wltRF4iyb6EgTFzU5G4WEZznntNnYPfL0Uq4b/7PjoKUHydY9afQ==
+X-Received: by 2002:a05:600c:3ba6:b0:412:94a3:2843 with SMTP id n38-20020a05600c3ba600b0041294a32843mr5818110wms.15.1708943027842;
+        Mon, 26 Feb 2024 02:23:47 -0800 (PST)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id n6-20020a7bcbc6000000b004125f34fd7csm11415118wmi.31.2024.02.26.02.23.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 02:23:47 -0800 (PST)
+Date: Mon, 26 Feb 2024 13:23:44 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Meir Elisha <meir6264@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Ruan Jinjie <ruanjinjie@huawei.com>,
+	Yang Yingliang <yangyingliang@huawei.com>,
+	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] Staging: rtl8723bs: Remove spaces before tabs in
+ rtw_set_auth
+Message-ID: <96ab1a91-7682-4aed-a522-ceaed0dbf56c@moroto.mountain>
+References: <20240226075225.44881-1-meir6264@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226075225.44881-1-meir6264@gmail.com>
 
-Hi Shuah,
-
-On 2/23/24 23:02, Shuah Khan wrote:
-> On 2/23/24 14:48, Shuah Khan wrote:
->> On 2/22/24 09:29, Laura Nao wrote:
->>> Add new basic kselftest that checks if the available rust sample modules
->>> can be added and removed correctly.
->>>
->>> Signed-off-by: Laura Nao <laura.nao@collabora.com>
->>> Reviewed-by: Sergio Gonzalez Collado <sergio.collado@gmail.com>
->>> Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
->>> ---
->>> Changes in v3:
->>> - Removed useless KSFT_PASS, KSFT_FAIL, KSFT_SKIP constants
->>> - Used ktap_finished to print the results summary and handle the 
->>> return code
->>> Changes in v2:
->>> - Added missing SPDX line
->>> - Edited test_probe_samples.sh script to use the common KTAP helpers 
->>> file
->>> ---
->>>   MAINTAINERS                                   |  1 +
->>>   tools/testing/selftests/Makefile              |  1 +
->>>   tools/testing/selftests/rust/Makefile         |  4 +++
->>>   .../selftests/rust/test_probe_samples.sh      | 34 +++++++++++++++++++
->>>   4 files changed, 40 insertions(+)
->>>   create mode 100644 tools/testing/selftests/rust/Makefile
->>>   create mode 100755 tools/testing/selftests/rust/test_probe_samples.sh
->>>
->>
->> Looks good to me. Don't you need a config file for this test?
->> Refer to config files for existing tests as a reference.
->>
-
-Right, in order for the tests to not be skipped support for rust and its
-sample modules need to be enabled.
-
-I added the config file in v4: https://lore.kernel.org/linux-kselftest/20240226101646.291337-1-laura.nao@collabora.com/T/#u
-
-> make kselftest TARGETS=rust
-> or
-> make run_tests
+On Mon, Feb 26, 2024 at 09:52:25AM +0200, Meir Elisha wrote:
+> Remove spaces before tabs to improve coding style.
 > 
-> On Linux 6.8-rc5 give the following? Doesn't look right.
-> 
-> TAP version 13
-> 1..1
-> # timeout set to 45
-> # selftests: rust: test_probe_samples.sh
-> # ./test_probe_samples.sh: line 12: 
-> /linux/linux_6.8/tools/testing/selftests/rust/../kselftest/ktap_helpers.sh: No such file or directory
-> # ./test_probe_samples.sh: line 16: ktap_print_header: command not found
-> # ./test_probe_samples.sh: line 18: ktap_set_plan: command not found
-> # ./test_probe_samples.sh: line 22: ktap_test_skip: command not found
-> # ./test_probe_samples.sh: line 22: ktap_test_skip: command not found
-> # ./test_probe_samples.sh: line 34: ktap_finished: command not found
-> not ok 1 selftests: rust: test_probe_samples.sh # exit=127
+> Signed-off-by: Meir Elisha <meir6264@gmail.com>
+> ---
+> Changes in v3: subject and description changed, revert dead code changes
+> Changes in v2: remove dead code
 > 
 
-This patch requires
-https://lore.kernel.org/all/20240102141528.169947-1-laura.nao@collabora.com/T/#u
-and
-https://lore.kernel.org/all/20240131-ktap-sh-helpers-extend-v1-0-98ffb468712c@collabora.com/
-, which are both scheduled for 6.9-rc1. Sorry I didn't mention it above!
+Sorry that I was not clear.  This needs to be split into two patches:
+[patch 1] delete dead code
+[patch 2] remove spaces before tabs
 
-Thanks,
-
-Laura
+regards,
+dan carpenter
 
 
