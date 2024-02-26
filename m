@@ -1,87 +1,82 @@
-Return-Path: <linux-kernel+bounces-80922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75C9C866E1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:19:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81392866E6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:30:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A80261C23C0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:19:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3156F1F25748
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:30:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16123537FC;
-	Mon, 26 Feb 2024 08:41:19 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2C875FEFF;
+	Mon, 26 Feb 2024 08:50:15 +0000 (UTC)
+Received: from cantor.telenet-ops.be (cantor.telenet-ops.be [195.130.132.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E0E7535BD;
-	Mon, 26 Feb 2024 08:41:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0B9B1BC30
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:50:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708936878; cv=none; b=UO0vxvOB3gGI2l2CXngXohTj+Qw5Vdx3dWeHeVYxvyCyC6/sG40pLpyZowf5XYLhJMmb9RdlMbbtXHJKv8dkySdkPrGOIYY9zOMI100ucfvGvkv3okQjnjoaRx2gqoZgBv/6Pjaq8C4smBtLR9yQ1KG8NsFnfxWS8Md7x0V4kkM=
+	t=1708937415; cv=none; b=DF++htudToAyIk7G7C27Wtf64SEKRo816UW492zJnahriM+CH5dxcdoddSuXAPgcgyWh7bkB9uH0Oyw18y/Rprb40E+CxyIdNFMLLdHTO2KTNcZnviOQD1QYiN3u15wP8+4ZNH82GAX7I1xPJ8w4zAvGSfcq2hEfCfjADR+Sm4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708936878; c=relaxed/simple;
-	bh=HZBY62gKoi716H6fyVPpem58WiRdnL0aIJBx56d/GZQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aG/ZezwMB+S8aiDNAuszVMfkECIHRNqJJFiDJXdzVUie4/J8/MBqmmlx2FbL8YBm2txZ3hqwc10FE57cHix+ONjFG4URJ9rxiw/YH/mU6k/Sb4ngkWAS8+004g5tRSE8/4dUzAy4Au1mGJU+rzt9xi+scqodfyMVkNmBVOYDiMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92F96C433F1;
-	Mon, 26 Feb 2024 08:41:16 +0000 (UTC)
-Message-ID: <21ccdf91-19e1-497e-be65-ef2063ea0b7f@xs4all.nl>
-Date: Mon, 26 Feb 2024 09:41:14 +0100
+	s=arc-20240116; t=1708937415; c=relaxed/simple;
+	bh=UTaRrHgCR+1O6yG7TBz18ppjcUfPxclKMbwpvsVBIJo=;
+	h=Date:From:To:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=TnREqDgRBDwO+IeVqV8PlZe2cRb53o5OmSBHiYUY4PRvaNEqqmWGymdDwJkDz6AIb1CynYCvNGOnqsB+Fk36UOK504ScYbfMLEmIXWB/NmusE7i0uQI4Wbs7dpUpvUGTssdkIQYlQkDg3ZTZqwltGp+b9tBdarIBOvokLQwlGKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+	by cantor.telenet-ops.be (Postfix) with ESMTPS id 4TjvH43dPdz4wy93
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:41:36 +0100 (CET)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:7662:e968:947d:f3d0])
+	by albert.telenet-ops.be with bizsmtp
+	id rkhU2B00e5Kh3Z506khU3b; Mon, 26 Feb 2024 09:41:28 +0100
+Received: from geert (helo=localhost)
+	by ramsan.of.borg with local-esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1reWYC-001jsH-O0
+	for linux-kernel@vger.kernel.org;
+	Mon, 26 Feb 2024 09:41:28 +0100
+Date: Mon, 26 Feb 2024 09:41:28 +0100 (CET)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-kernel@vger.kernel.org
+Subject: Re: Build regressions/improvements in v6.8-rc6
+In-Reply-To: <20240226081253.3688538-1-geert@linux-m68k.org>
+Message-ID: <70425240-866d-e245-39dd-f0ed636b187@linux-m68k.org>
+References: <CAHk-=whZ=iA6DhijePcW-pJjZ8YD4T5qLpLKVSUT+4gWNm_0sA@mail.gmail.com> <20240226081253.3688538-1-geert@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] media: dvbdev: export adapter's name and bus ID to
- DVB uevent variables
-To: Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>,
- Dan Carpenter <dan.carpenter@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Hyunwoo Kim <imv4bel@gmail.com>, Sakari Ailus
- <sakari.ailus@linux.intel.com>, Zhipeng Lu <alexious@zju.edu.cn>,
- linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-References: <cover.1708422122.git.mchehab@kernel.org>
- <22e1d85d8896681a3f3f9abdc323e634b49fa1fd.1708422122.git.mchehab@kernel.org>
-Content-Language: en-US, nl
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <22e1d85d8896681a3f3f9abdc323e634b49fa1fd.1708422122.git.mchehab@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 
-On 20/02/2024 10:46, Mauro Carvalho Chehab wrote:
-> Add two new variables for uevent, helping udev to be able to setup
-> a persistent name for the device.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+On Mon, 26 Feb 2024, Geert Uytterhoeven wrote:
+> JFYI, when comparing v6.8-rc6[1] to v6.8-rc5[3], the summaries are:
+>  - build errors: +3/-6
 
-Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+   + /kisskb/src/arch/sh/mm/nommu.c: error: no previous prototype for 'kmap_coherent' [-Werror=missing-prototypes]:  => 80:7
+   + /kisskb/src/arch/sh/mm/nommu.c: error: no previous prototype for 'kmap_coherent_init' [-Werror=missing-prototypes]:  => 76:13
+   + /kisskb/src/arch/sh/mm/nommu.c: error: no previous prototype for 'kunmap_coherent' [-Werror=missing-prototypes]:  => 86:6
 
-Regards,
+sh4-gcc13/sh-allyesconfig
+Seen before, SH ICE crickets
 
-	Hans
+> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/d206a76d7d2726f3b096037f2079ce0bd3ba329b/ (138 out of 239 configs)
+> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/b401b621758e46812da61fa58a67c3fd8d91de0d/ (144 out of 239 configs)
 
-> ---
->  drivers/media/dvb-core/dvbdev.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
-> index 733d0bc4b4cc..01227c695cbd 100644
-> --- a/drivers/media/dvb-core/dvbdev.c
-> +++ b/drivers/media/dvb-core/dvbdev.c
-> @@ -1064,6 +1064,8 @@ static int dvb_uevent(const struct device *dev, struct kobj_uevent_env *env)
->  {
->  	const struct dvb_device *dvbdev = dev_get_drvdata(dev);
->  
-> +	add_uevent_var(env, "DVB_ADAPTER_NAME=%s", dvbdev->adapter->name);
-> +	add_uevent_var(env, "DVB_ADAPTER_PDEV=%s", dev_name(dev->parent));
->  	add_uevent_var(env, "DVB_ADAPTER_NUM=%d", dvbdev->adapter->num);
->  	add_uevent_var(env, "DVB_DEVICE_TYPE=%s", dnames[dvbdev->type]);
->  	add_uevent_var(env, "DVB_DEVICE_NUM=%d", dvbdev->id);
+Gr{oetje,eeting}s,
 
+ 						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
 
