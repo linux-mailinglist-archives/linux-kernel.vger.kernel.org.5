@@ -1,67 +1,68 @@
-Return-Path: <linux-kernel+bounces-81263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D765786730D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:28:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A4C8867320
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:33:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 154B51C22552
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:28:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55F091C230D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:33:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FB3F1DA20;
-	Mon, 26 Feb 2024 11:28:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Gi6LzCPg"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED7241D535;
-	Mon, 26 Feb 2024 11:28:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88DFE1DA21;
+	Mon, 26 Feb 2024 11:33:07 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC7C61D546
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:33:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708946922; cv=none; b=s8ovpqInt6cVLU7W+K+AxPdjPtHcsaj4+UtR09UrBNgdH0NeSSdECRmoeMxi4LnuQ2GKbY45ibzPt1fjS5JMJLlXq8BFNj8MaAuxVa/zSSbqcmIjKJlhoeCf6Okj8kc18zVMdFDQdzDUlb6qcpojtPybwOc7sPrnYKP1xAp+zcM=
+	t=1708947187; cv=none; b=QlwfgSiieuEIcjzyij9Bfk6ntlNEGm1RvchiwhB77dLWvLh9EiBmYXEI7R0P/eL4iMfjdvIF4Fu8u4jMrsPzl7whtrk6yXnPuK9sFl9bxd128UWn50fAJdazjMa4s3PNAXN1oic/NO82MfgPWm2ky6MNHw1eyp42Q+DhS3WUwfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708946922; c=relaxed/simple;
-	bh=9r4Qy7hs0vSKI9uUdjPW2Fhk40C0I8X2MjZQPOXqT44=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=nxv0su92EzsdIUjnd5VkC4gvcKitwaVN3stnKOG+IR6Olsj2TjHChpYNeU8EcKPe0cWfv4YFg7TkPvWDiMEwCS1EKRJvQSnwbVvy0X4SJddjUNEqFhiEYZxEkjK81Y/MLCuTbjY8y7DM1rKmb1+6K7nKmtOQsobGXttz/adpVbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Gi6LzCPg; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41QARVOg009380;
-	Mon, 26 Feb 2024 11:28:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type
-	:content-transfer-encoding; s=qcppdkim1; bh=YUBb5zD+GwuxupxQ4TAz
-	WAOJqy2HhzpNAOsPo2YrqhM=; b=Gi6LzCPgYIRN1DR5ACKTaX+2Xqp/cnRK3Iyi
-	FzsH8p4f7l7c5+s8ciHQkcVWb1ygDnb2Vrby0vAmbt0XJf8kRiKi6oOSaEQIRtbX
-	Ol729OvmZBjlpobtkbAj1x7co9adoVGGhe8Pa4aBMHdD+WfqrVm/bwrxDCsNgXJs
-	Z8KZ2vFVHvXbS1+VdRaSoxevWAxqd63od/ZNhV9PIWKFfe6NaTbGTvltRF4ZMgod
-	2as16AqE/2oHeW4fRgqyqAR8WNb5GalIcWSH1iJ1vOrA5cYsn4foRhzU7scj5kt8
-	fBI2G7vrapTp0rtQ4GLI1uwdarnU9AnxxYNDKGBfDXnPwGT9Qw==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wgkxm0r18-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 Feb 2024 11:28:38 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41QBSbuA017977
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 Feb 2024 11:28:37 GMT
-Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 26 Feb 2024 03:28:33 -0800
-From: Krishna Kurapati <quic_kriskura@quicinc.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>
-CC: <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_ppratap@quicinc.com>, <quic_wcheng@quicinc.com>,
-        <quic_jackp@quicinc.com>, Krishna Kurapati <quic_kriskura@quicinc.com>
-Subject: [RFC PATCH] usb: gadget: ncm: Fix handling of zero block length packets
-Date: Mon, 26 Feb 2024 16:58:16 +0530
-Message-ID: <20240226112816.2616719-1-quic_kriskura@quicinc.com>
+	s=arc-20240116; t=1708947187; c=relaxed/simple;
+	bh=dVvusUqZUQYYyXGU6LPv5l7YLKfrSCfBWtzkuyf2pnI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MFhGD5tXTwPJp0fmg5hpGcefQwxhTAb8rgC38PUx++6AV7fftTm4MRR3aup6CUmxV81t2m7XZ/GLjdUPrP1VdxMlnxSnb68/d9CMTRhdu+0gHgic8gTEAvW/dvSqfKmOLkmzGiZIbFj5gfZBRwdBOSE80pD3Chl1kcfEk3Q4gI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B2B18DA7;
+	Mon, 26 Feb 2024 03:33:41 -0800 (PST)
+Received: from e127643.broadband (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 923DD3F6C4;
+	Mon, 26 Feb 2024 03:32:59 -0800 (PST)
+From: James Clark <james.clark@arm.com>
+To: coresight@lists.linaro.org,
+	linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev,
+	maz@kernel.org,
+	suzuki.poulose@arm.com,
+	acme@kernel.org,
+	oliver.upton@linux.dev,
+	broonie@kernel.org
+Cc: James Clark <james.clark@arm.com>,
+	James Morse <james.morse@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Mike Leach <mike.leach@linaro.org>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Miguel Luis <miguel.luis@oracle.com>,
+	Joey Gouly <joey.gouly@arm.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Helge Deller <deller@gmx.de>,
+	Quentin Perret <qperret@google.com>,
+	Vincent Donnefort <vdonnefort@google.com>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	Fuad Tabba <tabba@google.com>,
+	Jing Zhang <jingzhangos@google.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v6 0/8] kvm/coresight: Support exclude guest and exclude host
+Date: Mon, 26 Feb 2024 11:30:28 +0000
+Message-Id: <20240226113044.228403-1-james.clark@arm.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -69,88 +70,146 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="y"
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: GJ68AuHhhZanVx89CWMvuBMiFJIXtUiB
-X-Proofpoint-GUID: GJ68AuHhhZanVx89CWMvuBMiFJIXtUiB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-26_07,2024-02-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
- mlxlogscore=869 clxscore=1011 impostorscore=0 suspectscore=0
- priorityscore=1501 lowpriorityscore=0 mlxscore=0 spamscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402260085
 
-While connecting to a Linux host with CDC_NCM_NTB_DEF_SIZE_TX
-set to 65536, it has been observed that we receive short packets,
-which come at interval of 5-10 seconds sometimes and have block
-length zero but still contain 1-2 valid datagrams present.
+This is a combination of the RFC for nVHE here [1] and v3 of VHE version
+here [2]. After a few of the review comments it seemed much simpler for
+both versions to use the same interface and be in the same patchset.
 
-According to the NCM spec:
+FEAT_TRF is a Coresight feature that allows trace capture to be
+completely filtered at different exception levels, unlike the existing
+TRCVICTLR controls which may still emit target addresses of branches,
+even if the following trace is filtered.
 
-"If wBlockLength = 0x0000, the block is terminated by a
-short packet. In this case, the USB transfer must still
-be shorter than dwNtbInMaxSize or dwNtbOutMaxSize. If
-exactly dwNtbInMaxSize or dwNtbOutMaxSize bytes are sent,
-and the size is a multiple of wMaxPacketSize for the
-given pipe, then no ZLP shall be sent.
+Without FEAT_TRF, it was possible to start a trace session on a host and
+also collect trace from the guest as TRCVICTLR was never programmed to
+exclude guests (and it could still emit target addresses even if it
+was).
 
-wBlockLength= 0x0000 must be used with extreme care, because
-of the possibility that the host and device may get out of
-sync, and because of test issues.
+With FEAT_TRF, the current behavior of trace in guests exists depends on
+whether nVHE or VHE are being used. Both of the examples below are from
+the host's point of view, as Coresight isn't accessible from guests.
+This patchset is only relevant to when FEAT_TRF exists, otherwise there
+is no change.
 
-wBlockLength = 0x0000 allows the sender to reduce latency by
-starting to send a very large NTB, and then shortening it when
-the sender discovers that there’s not sufficient data to justify
-sending a large NTB"
+  nVHE/pKVM:
 
-However, there is a potential issue with the current implementation,
-as it checks for the occurrence of multiple NTBs in a single
-giveback by verifying if the leftover bytes to be processed is zero
-or not. If the block length reads zero, we would process the same
-NTB infintely because the leftover bytes is never zero and it leads
-to a crash. Fix this by bailing out if block length reads zero.
+  Because the host and the guest are both using TRFCR_EL1, trace will be
+  generated in guests depending on the same filter rules the host is
+  using. For example if the host is tracing userspace only, then guest
+  userspace trace will also be collected.
 
-Fixes: 427694cfaafa ("usb: gadget: ncm: Handle decoding of multiple NTB's in unwrap call")
-Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+  (This is further limited by whether TRBE is used because an issue
+  with TRBE means that it's completely disabled in nVHE guests, but it's
+  possible to have other tracing components.)
+
+  VHE:
+
+  With VHE, the host filters will be in TRFCR_EL2, but the filters in
+  TRFCR_EL1 will be active when the guest is running. Because we don't
+  write to TRFCR_EL1, guest trace will be completely disabled.
+
+With this change, the guest filtering rules from the Perf session are
+now honored for both nVHE and VHE modes. This is done by either writing
+to TRFCR_EL12 at the start of the Perf session and doing nothing else
+further, or caching the guest value and writing it at guest switch for
+nVHE. In pKVM, trace is now be disabled for both protected and
+unprotected guests.
+
 ---
 
-PS: Although this issue was seen after CDC_NCM_NTB_DEF_SIZE_TX
-was modified to 64K on host side, I still believe this
-can come up at any time as per the spec. Also I assumed
-that the giveback where block length is zero, has only
-one NTB and not multiple ones.
+Changes since V5 [4]:
+  * Sort new sysreg entries by encoding
+  * Add a comment about sorting arch/arm64/tools/sysreg
+  * Warn on preemptible() before calling smp_processor_id()
+  * Pickup tags
+  * Change TRFCR_EL2 from SysregFields to Sysreg because it was only
+    used once
 
- drivers/usb/gadget/function/f_ncm.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Changes since V4 [3]:
+  * Remove all V3 changes that made it work in pKVM and just disable
+    trace there instead
+  * Restore PMU host/hyp state sharing back to how it was
+    (kvm_pmu_update_vcpu_events())
+  * Simplify some of the duplication in the comments and function docs
+  * Add a WARN_ON_ONCE() if kvm_etm_set_guest_trfcr() is called when
+    the trace filtering feature doesn't exist.
+  * Split sysreg change into a tools update followed by the new register
+    addition
 
-diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/function/f_ncm.c
-index e2a059cfda2c..355e370e5140 100644
---- a/drivers/usb/gadget/function/f_ncm.c
-+++ b/drivers/usb/gadget/function/f_ncm.c
-@@ -1337,6 +1337,9 @@ static int ncm_unwrap_ntb(struct gether *port,
- 	VDBG(port->func.config->cdev,
- 	     "Parsed NTB with %d frames\n", dgram_counter);
- 
-+	if (block_len == 0)
-+		goto done;
-+
- 	to_process -= block_len;
- 
- 	/*
-@@ -1351,6 +1354,7 @@ static int ncm_unwrap_ntb(struct gether *port,
- 		goto parse_ntb;
- 	}
- 
-+done:
- 	dev_consume_skb_any(skb);
- 
- 	return 0;
+Changes since V3:
+  * Create a new shared area to store the host state instead of copying
+    it before each VCPU run
+  * Drop commit that moved SPE and trace registers from host_debug_state
+    into the kvm sysregs array because the guest values were never used 
+  * Document kvm_etm_set_guest_trfcr()
+  * Guard kvm_etm_set_guest_trfcr() with a feature check
+  * Drop Mark B and Suzuki's review tags on the sysreg patch because it
+    turned out that broke the Perf build and needed some unconventional
+    changes to fix it (as in: to update the tools copy of the headers in
+    the same commit as the kernel changes)
+
+Changes since V2:
+
+  * Add a new iflag to signify presence of FEAT_TRF and keep the
+    existing TRBE iflag. This fixes the issue where TRBLIMITR_EL1 was
+    being accessed even if TRBE didn't exist
+  * Reword a commit message
+
+Changes since V1:
+
+  * Squashed all the arm64/tools/sysreg changes into the first commit
+  * Add a new commit to move SPE and TRBE regs into the kvm sysreg array
+  * Add a comment above the TRFCR global that it's per host CPU rather
+    than vcpu
+
+Changes since nVHE RFC [1]:
+
+ * Re-write just in terms of the register value to be written for the
+   host and the guest. This removes some logic from the hyp code and
+   a value of kvm_vcpu_arch:trfcr_el1 = 0 no longer means "don't
+   restore".
+ * Remove all the conditional compilation and new files.
+ * Change the kvm_etm_update_vcpu_events macro to a function.
+ * Re-use DEBUG_STATE_SAVE_TRFCR so iflags don't need to be expanded
+   anymore.
+ * Expand the cover letter.
+
+Changes since VHE v3 [2]:
+
+ * Use the same interface as nVHE mode so TRFCR_EL12 is now written by
+   kvm.
+
+[1]: https://lore.kernel.org/kvmarm/20230804101317.460697-1-james.clark@arm.com/
+[2]: https://lore.kernel.org/kvmarm/20230905102117.2011094-1-james.clark@arm.com/
+[3]: https://lore.kernel.org/linux-arm-kernel/20240104162714.1062610-1-james.clark@arm.com/
+[4]: https://lore.kernel.org/all/20240220100924.2761706-1-james.clark@arm.com/
+
+James Clark (8):
+  arm64: KVM: Fix renamed function in comment
+  arm64/sysreg: Add a comment that the sysreg file should be sorted
+  tools: arm64: Update sysreg.h header files
+  arm64/sysreg/tools: Move TRFCR definitions to sysreg
+  arm64: KVM: Add iflag for FEAT_TRF
+  arm64: KVM: Add interface to set guest value for TRFCR register
+  arm64: KVM: Write TRFCR value on guest switch with nVHE
+  coresight: Pass guest TRFCR value to KVM
+
+ arch/arm64/include/asm/kvm_host.h             |   7 +-
+ arch/arm64/include/asm/sysreg.h               |  12 -
+ arch/arm64/kernel/image-vars.h                |   1 +
+ arch/arm64/kvm/debug.c                        |  53 ++-
+ arch/arm64/kvm/hyp/nvhe/debug-sr.c            |  53 ++-
+ arch/arm64/kvm/hyp/nvhe/setup.c               |   2 +-
+ arch/arm64/tools/sysreg                       |  38 ++
+ .../coresight/coresight-etm4x-core.c          |  42 +-
+ drivers/hwtracing/coresight/coresight-etm4x.h |   2 +-
+ drivers/hwtracing/coresight/coresight-priv.h  |   3 +
+ tools/arch/arm64/include/asm/sysreg.h         | 375 +++++++++++++++++-
+ tools/include/linux/kasan-tags.h              |  15 +
+ 12 files changed, 541 insertions(+), 62 deletions(-)
+ create mode 100644 tools/include/linux/kasan-tags.h
+
 -- 
 2.34.1
 
