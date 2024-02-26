@@ -1,86 +1,81 @@
-Return-Path: <linux-kernel+bounces-81770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AC978679F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:19:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CC8B8679F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:19:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D049E1F305BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:19:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 230901F30709
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:19:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EE1512B163;
-	Mon, 26 Feb 2024 15:12:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F49C12F373;
+	Mon, 26 Feb 2024 15:13:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="aoLjgR8i";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1VHdsomR"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="YgBszIjO"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A84B1E498
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 15:12:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0818C12AADA;
+	Mon, 26 Feb 2024 15:13:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708960376; cv=none; b=geDQZzvK03ZG9guOMZBF/OXqckxGVG69v5gLD3yJoYQL8/N9i9GfkbF/94mFtDg1DxMqwo+kEeD/ZAUgTNIVJepgmz1njP9JCKQzwLIH1qdam2Mx/F5V/0Wd1i+Yck6f+u1TpX0YZERhQzZui+KNu+YVbcMPcVfw+7AeNoPTvmQ=
+	t=1708960419; cv=none; b=alVkQHtglMC0cR6I6/i2883X8+8z9ncR5CZSjQDnAHhfbYEZXqkfRDYAPWGkYHy2Bet+ntzViV9eePofxtDARoJHdtO1VOFNcdqOy8Ggt2AQq14fWWm1YgH6hovrePQgoYAZxh0NI1cpe6KAB7TV9L28Lui2NkNMQQkcTJFvaN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708960376; c=relaxed/simple;
-	bh=ZSRChojwrXCT0b7vENu5UlBhAbld9GHMiKpHpncCWJ8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=MYj4ewIHLHzebK0ouMnQh4+PbQESOWKhlZ5rTeJ2w/iG91GlRSWBRiDwbCaC2CciXFLu35bHX3pv9Ilm2kzHWrDSNMIgikJjbMgUfdiu5blm5s8+5Xajj1Pr+rx0B7tC4zVYgSRLfvhevLeFChxCAcd/+bOLunySx0Xia8tYVeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=aoLjgR8i; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=1VHdsomR; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708960373;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=G46q6yAlg32Zo4rclnr4qr52SJ5Jzfk+eglrodDl5U4=;
-	b=aoLjgR8ir6HxU9Ywv6oJW+Yb9Wy8x6m3nlJr4653gIJIODuI0ZYWlcDjt0Bbs9SWIeYUwB
-	/CG4VWFP9RfONLx1vJtuJ4OQcxfT5KHxzYdRjYUH9NpIkdvHYB3q7I6XkwQo1p5waN021Z
-	OjAJfm03iKAa2pFjR0SH0I+FPtlxrBaU33Z+R3mMjgQJLI/b8sxRF7nErbx1xV8zwoL1eV
-	a697fvqv9RbMfRZYizvQfOfgNRMSX9MT6XnghxxzV92nq3xFkXD/ZTfQN+4mF4E+UZ527g
-	LdAzYguoa9VPJesIRdxvx1e8DSzcEoPSC5vD8lqPl2ghDoohdWA9gILSk+UiCA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708960373;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=G46q6yAlg32Zo4rclnr4qr52SJ5Jzfk+eglrodDl5U4=;
-	b=1VHdsomRdQjf+EXAiMvUewWU5qhEvyBU4sTXKBH/4XkkmP6O/ruXS5S6PGrST1FefSKE45
-	sRp4GYwlNjRm+zAA==
-To: kernel test robot <oliver.sang@intel.com>, Marc Zyngier <maz@kernel.org>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, Anup Patel <anup@brainfault.org>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Biju
- Das <biju.das.jz@bp.renesas.com>, linux-kernel@vger.kernel.org,
- oliver.sang@intel.com
-Subject: Re: [avpatel:riscv_aia_v15] [genirq/irqdomain] c3842e43d9:
- kernel_BUG_at_arch/x86/kernel/apic/io_apic.c
-In-Reply-To: <202402261004.1e2e3e3e-oliver.sang@intel.com>
-References: <202402261004.1e2e3e3e-oliver.sang@intel.com>
-Date: Mon, 26 Feb 2024 16:12:53 +0100
-Message-ID: <87wmqr9s3u.ffs@tglx>
+	s=arc-20240116; t=1708960419; c=relaxed/simple;
+	bh=3K5Q+uUQ3Nix87plZgBtdiamDN+V1OA8pvKevYiMOh4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ah9Vo893EWt7XteM1YVKv6DfZRev3sgjlJf8JADECa8kpfa7xEPezHto095QLA7I+J0OuWR8ngaFyjS5HPWIHie5P4ceiLWtVlnmFUIz4Rg15BWuwOBnjZveoyMApGqhTOOhS5S0exvxthmU949M0eV2IDThxnvOpAor7zm7ifI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=YgBszIjO; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=4mImZSK+nWI+wjJkO50Cew7O8xH1ti6eRINL7vztxBQ=; b=YgBszIjOtxEkvEuhbgEs4yvRCG
+	Gm/4GxjQWuJaJlSNYXgVNfw105v6/O6/9zgLdptu9tAnh4LyaiD3maMNYiVj7VHCfALlQ4bQ+ato/
+	1a0Bcq/a32TcCEm/yTc5G4hnqLjZpSZUwVzfiqKvU+rmntO5jOYx8AnMIH/cpueGqRD8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1recfh-008jbJ-RK; Mon, 26 Feb 2024 16:13:37 +0100
+Date: Mon, 26 Feb 2024 16:13:37 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: forbidden405@outlook.com
+Cc: Yisen Zhuang <yisen.zhuang@huawei.com>,
+	Salil Mehta <salil.mehta@huawei.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next v5 2/7] dt-bindings: net:
+ hisilicon,hisi-femac-mdio: remove clocks
+Message-ID: <e566de39-dd54-494c-8a13-78250467e923@lunn.ch>
+References: <20240223-net-v5-0-43b22d39c013@outlook.com>
+ <20240223-net-v5-2-43b22d39c013@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240223-net-v5-2-43b22d39c013@outlook.com>
 
-On Mon, Feb 26 2024 at 12:57, kernel test robot wrote:
-> kernel test robot noticed "kernel_BUG_at_arch/x86/kernel/apic/io_apic.c" on:
->
-> commit: c3842e43d9d6b013a40adaea274b663936b14e32 ("genirq/irqdomain: Don't call ops->select for DOMAIN_BUS_ANY tokens")
-> https://github.com/avpatel/linux.git riscv_aia_v15
+On Fri, Feb 23, 2024 at 09:28:17PM +0800, Yang Xiwen via B4 Relay wrote:
+> From: Yang Xiwen <forbidden405@outlook.com>
+> 
+> This integrated MDIO bus does have a dedicated clock. Remove it. The old
 
-Fixed in
+I think you are missing a 'not' in that sentence.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/msi
-
-with commit c147e1ef59d4 ("x86/apic/msi: Use DOMAIN_BUS_GENERIC_MSI for HPET/IO-APIC domain search")
-
-Anup, please update your branch.
+  Andrew
 
