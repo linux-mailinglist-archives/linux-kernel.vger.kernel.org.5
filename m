@@ -1,73 +1,75 @@
-Return-Path: <linux-kernel+bounces-80692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C875D866B55
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:49:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18373866B5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:49:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 350F3286799
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:49:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BB1C1C227A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:49:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DCB81C29C;
-	Mon, 26 Feb 2024 07:48:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E72AE1CA8A;
+	Mon, 26 Feb 2024 07:48:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EjJ+FGAj"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="huUcqWa7"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 467DE1BF31;
-	Mon, 26 Feb 2024 07:48:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 511E71BDED;
+	Mon, 26 Feb 2024 07:48:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708933731; cv=none; b=XEtiCnTaB/oFUZJNiVM1hkRLNO/yBHsvK2MNMbKAcoSgOMG+r5bHSKHbAv5grcG5ABeUfpERZlHA3b+crlg0rICE1qCMIadGv/GDT4lfx3eT0yEkKh+y2F4N4BP6K4XcJtCgmsU4JdC5K6j8NuuRG0X6GBW9kM0PRTxWokfl398=
+	t=1708933733; cv=none; b=pZCP6sK+v999kvVzsnV9pxBu47itxBSjA7YrnWnwExQJmgzr9E1cYgUeRkWcIMdVt33sem8y7e9Ww/Syc6QGFs954MtJgGz2HU1aVbGND0XxiBip0n6DLpSZGAWh7E4UJZDC3lndgaayuw6bzQC1NUumhDUHs49CSl0tuX6jyJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708933731; c=relaxed/simple;
-	bh=PFCX+psKPyMBHPeR5ppV9yu0fZYBi5SxEA057Wc/M/0=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=WfYI/SmlP7Z6C0fmBuT69yhQWmgZGCKIzyQjr2fhAYE/UdwHBJLjjiLh9erVC81g0F3brx1LEbovTak5LIuWOcNZ2/d2XzC+z+hh67eUhsjyNF649cq0ee1iJM3vCPNVLSFTcUw1B99wu7U/geBvkanxWPZR/oOSikVdo33pcYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EjJ+FGAj; arc=none smtp.client-ip=209.85.128.53
+	s=arc-20240116; t=1708933733; c=relaxed/simple;
+	bh=cpcdxP5G8Qs15hi9mldGQ1Vw0V6oqD1neWB+82Jqh7w=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=BgjOMZcPxHWRv7CZzvQS83iEpDQKT86w0NSQosz/e9f6Lq827dfEvTh2YyyEXKfE4prOUa2ARIOSXBNHErzPo4wnwHqAd1PdDMNGQofczAb5ErydoqwASagG97cyHGaSfSo1KFmKcpc2t5sgkjHHiNMJ2e6nxwbaRLZWTL9gG+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=huUcqWa7; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-412a87f0d8eso466455e9.2;
-        Sun, 25 Feb 2024 23:48:49 -0800 (PST)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-412a87d5afcso541385e9.3;
+        Sun, 25 Feb 2024 23:48:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708933728; x=1709538528; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HqQvE+FIcyUadHgmZr58h0Sz29nDm7hjlZzXPmEulQE=;
-        b=EjJ+FGAjs1hSdYHQC35xjDHZgfugRcEsOGTFQ5E6n5K4lw1FnLfb0F27IQTMPHb9E5
-         ug2DZ2oH39mOQwXFjO8Ny0TIk3ntv8I4002ej4HGNN1cc9nUt5xI7BQkaesJVlSozyFm
-         AcO6rbrNrdW1CfRljdgCCMHtsAkVn0d/5yH0uOXCiJif9uBatusa3bjVRSObY72ZuEsW
-         j68W98t3E7g8uyvfz4RFKCrSPONoXvXjeylp+K3DPO7PyOZa7Re8fDuRU/qx2dK2DKZP
-         qAalynRHRehXuzn0Xlu5rzuH3kVpmfC8+vv7ee+Da65Cd02A3uuO5hXc2Gm5iqsZ5Mp6
-         z+Fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708933728; x=1709538528;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1708933730; x=1709538530; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=HqQvE+FIcyUadHgmZr58h0Sz29nDm7hjlZzXPmEulQE=;
-        b=tSfGrHMifgMYYBQBJOISYk0SeG3yJEkLW3pD7ycn9i//ITrEktnkNeZmn9NV222Wqi
-         p4T9t6C+t3L1wQ2ABGGE2+l3fC0Hfq1zOqTvz/gq0QlmzaUlL8rkLJkCpS/nhBlGhXwy
-         2Mvs/WkAduPUfWaQZLG8tHOXzOR+i6Ia4HuJFwUAMj+sn0qAmkwhSYsd5LQ6obbZQ5YK
-         kZMDFCzc88MKeAK3x41IGhcllTiW3haN0aSAE40mBh2lWeXI7PxE0nOorzEnXaT/J+jy
-         5VCnvXICsLv4UNG+7pwab8DKn6fLYXN1MwkebfOYiZuGyetMKJJqQuFaK8k2m1Y5sZmY
-         DL0A==
-X-Forwarded-Encrypted: i=1; AJvYcCU+xtyEEg09JdWrUgucRUQ/t/K1KlWZWuWkOF5KKtBJeuY9vD1GBJp3JXK35o23mFqtW6Fo2b6F0KskQ4VS3Kds9MgP+5s5dVStsERaXPXLD9akIggmwRTDwajyJ0zrw6v+UvS8YSYAKw==
-X-Gm-Message-State: AOJu0YyLD04kJCK5JRUrR9XyeUhX2EG+nlWw3HcefdPEOBWm2hyNImYd
-	2xZewikt8mXPQrig509BhKFT96jmRKG3U6G8/1Nxj1VSsE9iYIvi
-X-Google-Smtp-Source: AGHT+IHc0CtK0sG6FMH/QvZFvD6vHXweFp3uv9SCDGrhT9OnD2sx7OTNoXF8fRQH5jTmgWWvK5/jAw==
-X-Received: by 2002:a05:600c:46cb:b0:412:10a1:25ed with SMTP id q11-20020a05600c46cb00b0041210a125edmr5352886wmo.33.1708933728607;
-        Sun, 25 Feb 2024 23:48:48 -0800 (PST)
+        bh=ljEZV321MYaoCKwfbRB+OHvsPB1vjG2tNQbJsxizkqg=;
+        b=huUcqWa7ORFAwt7Jn30hZCp0peOgogdsSpqMeYw5NZZksobMLl5aFeI1s8Y7tvgY9D
+         R/Nrabn983wYsp7UJKAjqWj/uZdTOyMVZQS8bHRAs8MhvR91E1LcqouXYF8ZwmwFChoT
+         1053pvweBdrNFBzGm3rlRReiswJ69x3+XEyPv+3snVuzmI/w0yCQV3WXSSmO5ygibCWI
+         aLu8VsWHgvPh5u501p0y1cecGMArjOUc5DiMsKCHKgbhTqycBcs30QtkbSsU4NrjEiY5
+         tQmDZui0yCZT2V3riK66vw6fPwAm0kDnpOkFj3eDtfF7kSGQxAeygFMSljPVuK+H40Ri
+         1AOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708933730; x=1709538530;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ljEZV321MYaoCKwfbRB+OHvsPB1vjG2tNQbJsxizkqg=;
+        b=C4+yFbI6tFqtqfPEwTg9cQJE1sB6MJa0RQGvaAgtJg0W2wNOlXbvMBWTa3DmkWGhBC
+         ywbCYPEVjcFaYnu0W0H3n2mXgohlCdEx1G6loc67ErSHi5H/M6AJi0sUisD4aU2K5LWK
+         1j398DJgu/ST2RIQ0AKTDL6pn1Dkv0q9z0m6JSGEtpbhoBtD8oGjsm1z52CG8HwRqmoN
+         EMUXXYLR9EaLk2o0NDDOaC3XBa3mZlhkQbrWkmunpx2EJ5295so6HB4nrPFGPRHkMtQn
+         Ub+31/InA/DhbCp8Ero1HGOibtjIhejPZUPSa6BcMYtkH8AsUwD1Dc9KBhsV0V/+RZjc
+         DjLA==
+X-Forwarded-Encrypted: i=1; AJvYcCVTRzkWyI1PBSxRfO3DDExVRF7SV0SwV2bVDyeDqFvw5FCPLlpQiFVGyKvRkt0fUZZUP/Rrs2cIxih50wSED791xufQvvdc9bOmelXufKnCM0r7Zsf50+2QlbtqL9OofBQqa6epk9o2KQ==
+X-Gm-Message-State: AOJu0Yxtkx1TM+taA4u+owTj42KhWeTyNXY42t2eAdoDi/5DJnE5Kv+V
+	hXuAlda/o00e1z/w3HMy1KA6bWhVizOlpaIHwm9cznO8JG8vPQ3t
+X-Google-Smtp-Source: AGHT+IG5L8to5/LOVjALIkMmVCop+S/Qb4PeZTshFkd+5CR6iZVCh5z/fvGLEJPHPkbgCiWfTfTM+w==
+X-Received: by 2002:a05:600c:138f:b0:411:a5f9:26f5 with SMTP id u15-20020a05600c138f00b00411a5f926f5mr5199772wmf.38.1708933729368;
+        Sun, 25 Feb 2024 23:48:49 -0800 (PST)
 Received: from localhost ([2001:861:3385:e20:6384:4cf:52c5:3194])
-        by smtp.gmail.com with ESMTPSA id f6-20020a05600c154600b00412a482cd90sm2728024wmg.25.2024.02.25.23.48.48
+        by smtp.gmail.com with ESMTPSA id d16-20020a05600c34d000b004129e8af6absm6732333wmq.33.2024.02.25.23.48.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Feb 2024 23:48:48 -0800 (PST)
+        Sun, 25 Feb 2024 23:48:49 -0800 (PST)
 From: Raphael Gallais-Pou <rgallaispou@gmail.com>
-Subject: [PATCH 0/2] Update st,stih407-thermal device
-Date: Mon, 26 Feb 2024 08:48:37 +0100
-Message-Id: <20240226-thermal-v1-0-8b03589ece73@gmail.com>
+Date: Mon, 26 Feb 2024 08:48:38 +0100
+Subject: [PATCH 1/2] dt-bindings: thermal: convert st,stih407-thermal to DT
+ schema
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,9 +78,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAFVC3GUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDIyNT3ZKM1KLcxBxdi+QUg6RE8zQTU6MkJaDqgqLUtMwKsEnRsbW1APf
- VSj1ZAAAA
+Message-Id: <20240226-thermal-v1-1-8b03589ece73@gmail.com>
+References: <20240226-thermal-v1-0-8b03589ece73@gmail.com>
+In-Reply-To: <20240226-thermal-v1-0-8b03589ece73@gmail.com>
 To: "Rafael J. Wysocki" <rafael@kernel.org>, 
  Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, 
  Lukasz Luba <lukasz.luba@arm.com>, Rob Herring <robh+dt@kernel.org>, 
@@ -89,27 +91,123 @@ Cc: linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 X-Mailer: b4 0.13.0
 
-Those two patches update the thermal device by converting the deprecated
-txt documentation file to DT schema, and adding a required property in
-the device tree where it is needed.
+Converts st,stih407-thermal binding to DT schema format and cleans
+unused property "st,passive_cooling_temp" which does not appear in the
+device-tree.
 
 Signed-off-by: Raphael Gallais-Pou <rgallaispou@gmail.com>
 ---
-Raphael Gallais-Pou (2):
-      dt-bindings: thermal: convert st,stih407-thermal to DT schema
-      ARM: dts: st: add thermal property on stih410.dtsi and stih418.dtsi
-
  .../bindings/thermal/st,stih407-thermal.yaml       | 61 ++++++++++++++++++++++
  .../devicetree/bindings/thermal/st-thermal.txt     | 32 ------------
- arch/arm/boot/dts/st/stih410.dtsi                  |  1 +
- arch/arm/boot/dts/st/stih418.dtsi                  |  1 +
- 4 files changed, 63 insertions(+), 32 deletions(-)
----
-base-commit: b6d69282db550689ab5980e06eedd23b64584a73
-change-id: 20240225-thermal-8cd0ba7f452b
+ 2 files changed, 61 insertions(+), 32 deletions(-)
 
-Best regards,
+diff --git a/Documentation/devicetree/bindings/thermal/st,stih407-thermal.yaml b/Documentation/devicetree/bindings/thermal/st,stih407-thermal.yaml
+new file mode 100644
+index 000000000000..807f8d77edf5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/thermal/st,stih407-thermal.yaml
+@@ -0,0 +1,61 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/thermal/st,stih407-thermal.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: STMicroelectronics STi digital thermal sensor (DTS)
++
++maintainers:
++  - Patrice Chotard <patrice.chotard@foss.st.com>
++  - Lee Jones <lee@kernel.org>
++
++description:
++  Binding for Thermal Sensor device for STMicroelectronics STi SoCs series.
++
++allOf:
++  - $ref: thermal-sensor.yaml
++
++properties:
++  compatible:
++    const: st,stih407-thermal
++
++  clocks:
++    maxItems: 1
++    description: Phandle of the clock used by the thermal sensor.
++
++  clock-names:
++    items:
++      - const: thermal
++
++  reg:
++    description:
++      For non-sysconf based sensors, this should be the physical base
++      address and length of the sensor's registers.
++
++  interrupts:
++    description: |
++      Standard way to define interrupt number.
++      For thermal sensor's for which no interrupt has been
++      defined, a polling delay of 1000ms will be used to read the
++      temperature from device.
++
++required:
++  - compatible
++  - clocks
++  - clock-names
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    temp0@91a0000 {
++        compatible = "st,stih407-thermal";
++        reg = <0x91a0000 0x28>;
++        clock-names = "thermal";
++        clocks = <&CLK_SYSIN>;
++        interrupts = <GIC_SPI 205 IRQ_TYPE_EDGE_RISING>;
++        #thermal-sensor-cells = <0>;
++    };
++...
+diff --git a/Documentation/devicetree/bindings/thermal/st-thermal.txt b/Documentation/devicetree/bindings/thermal/st-thermal.txt
+deleted file mode 100644
+index a2f939137e35..000000000000
+--- a/Documentation/devicetree/bindings/thermal/st-thermal.txt
++++ /dev/null
+@@ -1,32 +0,0 @@
+-Binding for Thermal Sensor driver for STMicroelectronics STi series of SoCs.
+-
+-Required parameters:
+--------------------
+-
+-compatible : 	Should be "st,stih407-thermal"
+-
+-clock-names : 	Should be "thermal".
+-		  See: Documentation/devicetree/bindings/resource-names.txt
+-clocks : 	Phandle of the clock used by the thermal sensor.
+-		  See: Documentation/devicetree/bindings/clock/clock-bindings.txt
+-
+-Optional parameters:
+--------------------
+-
+-reg : 		For non-sysconf based sensors, this should be the physical base
+-		address and length of the sensor's registers.
+-interrupts :	Standard way to define interrupt number.
+-		  NB: For thermal sensor's for which no interrupt has been
+-		  defined, a polling delay of 1000ms will be used to read the
+-		  temperature from device.
+-
+-Example:
+-
+-	temp0@91a0000 {
+-		compatible = "st,stih407-thermal";
+-		reg = <0x91a0000 0x28>;
+-		clock-names = "thermal";
+-		clocks = <&CLK_SYSIN>;
+-		interrupts = <GIC_SPI 205 IRQ_TYPE_EDGE_RISING>;
+-		st,passive_cooling_temp = <110>;
+-	};
+
 -- 
-Raphael Gallais-Pou <rgallaispou@gmail.com>
+2.43.2
 
 
