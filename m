@@ -1,159 +1,101 @@
-Return-Path: <linux-kernel+bounces-81394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED040867555
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:42:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AE1886755A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:42:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6746283D1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:42:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45B17284630
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:42:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC50A8002E;
-	Mon, 26 Feb 2024 12:39:46 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A363B80BE4;
+	Mon, 26 Feb 2024 12:40:54 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85CAF7F7F8;
-	Mon, 26 Feb 2024 12:39:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 841307F470
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 12:40:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708951186; cv=none; b=hq5NbC8CvQawrrDphX1szf9w2wGfOZTduX76Nsf0atTcwgPM3XPALwEUITUvxksgj82EEEa5P9Y2BWYB319EWbHXHvJDPf9Y/tCxfrrvjE4EMXx03HmfluhAfSelW2rTMzJSFt1qWBwi/hUnmHPMXOuuN0/+KbybuWBsEuKZeGA=
+	t=1708951254; cv=none; b=SZ/oedQpaDnkdacywoPpOk2u/LV3Bk8CTMQDBRhMnHKQf267LV8Oc1Or7RZrj58BZXcT5to6poCmIfQJ/z9CwyHTKxEoOQMjN9VHTveqdMk+jTHitjePvbXjKEmDQxxhK90c8GmZVg8moDaSR7SvaZ5YLvqfHzcSur6FYEMKmVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708951186; c=relaxed/simple;
-	bh=NGYp5BWIWj8SFQWbwPzlkAlkYMl5l0bOr2xtSsI6jtQ=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WyRnSvZqtQjSEbTtLmIruq/1m5NGxrU/wnswZyFDI20BAsd4HOHZQ1pHZUoseHlBfYlV6KZUsmaZRg0E2Xw2mKezMePgihO37JW8Y6oh754MlnXgGH+JBWTI9WJ+o3JC4WoERRo9UjD01ZTH7iinNzI7TLghQJlMr23mXC7z1eU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Tk0Sq6gLRz6K6jp;
-	Mon, 26 Feb 2024 20:35:23 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 715421400DB;
-	Mon, 26 Feb 2024 20:39:42 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 26 Feb
- 2024 12:39:41 +0000
-Date: Mon, 26 Feb 2024 12:39:40 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: John Groves <John@Groves.net>
-CC: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, "Dan
- Williams" <dan.j.williams@intel.com>, Vishal Verma
-	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Alexander
- Viro" <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, "Jan
- Kara" <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
-	<linux-cxl@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<nvdimm@lists.linux.dev>, <john@jagalactic.com>, Dave Chinner
-	<david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>,
-	<dave.hansen@linux.intel.com>, <gregory.price@memverge.com>
-Subject: Re: [RFC PATCH 07/20] famfs: Add include/linux/famfs_ioctl.h
-Message-ID: <20240226123940.0000692c@Huawei.com>
-In-Reply-To: <b40ca30e4bf689249a8c237909d9a7aaca9861e4.1708709155.git.john@groves.net>
-References: <cover.1708709155.git.john@groves.net>
-	<b40ca30e4bf689249a8c237909d9a7aaca9861e4.1708709155.git.john@groves.net>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1708951254; c=relaxed/simple;
+	bh=lzZNBO8vtsRT5OvlPh9a/kUqH9opSZXmEh0Kf0DJQ70=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IH0PsLgG/9ck4/auBLlJIimb0lPgylZRzNfk9cvnM5rAQmCkNvP6BQV6/WsPnY4XkVDuof9XZGnaRlB7JmiU4oo5cN+BnmfPnzoTkBuVAXF7gA9SnjpNYLcTYEtpTU/XtCoaX8G+V8IG4mf/ASXTDdGwLEaFzF0UMSyV4FXwJjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1reaHd-0006dA-BP; Mon, 26 Feb 2024 13:40:37 +0100
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1reaHc-002ztr-JH; Mon, 26 Feb 2024 13:40:36 +0100
+Received: from mfe by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1reaHc-0095bI-1d;
+	Mon, 26 Feb 2024 13:40:36 +0100
+Date: Mon, 26 Feb 2024 13:40:36 +0100
+From: Marco Felsch <m.felsch@pengutronix.de>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: jic23@kernel.org, lars@metafoo.de, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	hns@goldelico.com, linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: Re: [PATCH] dt-bindings: iio: gyroscope: bosch,bmg160: add
+ spi-max-frequency binding
+Message-ID: <20240226124036.zzj5p7tlubc332r3@pengutronix.de>
+References: <20240221174305.3423039-1-m.felsch@pengutronix.de>
+ <91f29265-36fd-4d0e-99b1-61eaada59601@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <91f29265-36fd-4d0e-99b1-61eaada59601@linaro.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Fri, 23 Feb 2024 11:41:51 -0600
-John Groves <John@Groves.net> wrote:
-
-> Add uapi include file for famfs. The famfs user space uses ioctl on
-> individual files to pass in mapping information and file size. This
-> would be hard to do via sysfs or other means, since it's
-> file-specific.
+On 24-02-26, Krzysztof Kozlowski wrote:
+> On 21/02/2024 18:43, Marco Felsch wrote:
+> > Make use of the common spi-peripheral-props.yaml to pull in the common
+> > spi device properties and limit the spi-max-frequency to 10 MHz as this
+> > is the max. frequency if VDDIO >= 1.62V.
 > 
-> Signed-off-by: John Groves <john@groves.net>
-> ---
->  include/uapi/linux/famfs_ioctl.h | 56 ++++++++++++++++++++++++++++++++
->  1 file changed, 56 insertions(+)
->  create mode 100644 include/uapi/linux/famfs_ioctl.h
+> The example uses i2c, so I would expect to see in commit msg explanation
+> which devices are SPI devices.
+
+All listed devices can either operate in I2C or in SPI mode.
+
+> Also:
+> A nit, subject: drop second/last, redundant "binding". The "dt-bindings"
+> prefix is already stating that these are bindings.
+> See also:
+> https://elixir.bootlin.com/linux/v6.7-rc8/source/Documentation/devicetree/bindings/submitting-patches.rst#L18
+
+Will rephrase it if you want me to update the commit message.
+
+Regards,
+  Marco
+
 > 
-> diff --git a/include/uapi/linux/famfs_ioctl.h b/include/uapi/linux/famfs_ioctl.h
-> new file mode 100644
-> index 000000000000..6b3e6452d02f
-> --- /dev/null
-> +++ b/include/uapi/linux/famfs_ioctl.h
-> @@ -0,0 +1,56 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +/*
-> + * famfs - dax file system for shared fabric-attached memory
-> + *
-> + * Copyright 2023-2024 Micron Technology, Inc.
-> + *
-> + * This file system, originally based on ramfs the dax support from xfs,
-> + * is intended to allow multiple host systems to mount a common file system
-> + * view of dax files that map to shared memory.
-> + */
-> +#ifndef FAMFS_IOCTL_H
-> +#define FAMFS_IOCTL_H
-> +
-> +#include <linux/ioctl.h>
-> +#include <linux/uuid.h>
-> +
-> +#define FAMFS_MAX_EXTENTS 2
-Why 2?
-> +
-> +enum extent_type {
-> +	SIMPLE_DAX_EXTENT = 13,
-
-Comment on this would be good to have
-
-> +	INVALID_EXTENT_TYPE,
-> +};
-> +
-> +struct famfs_extent {
-> +	__u64              offset;
-> +	__u64              len;
-> +};
-> +
-> +enum famfs_file_type {
-> +	FAMFS_REG,
-> +	FAMFS_SUPERBLOCK,
-> +	FAMFS_LOG,
-> +};
-> +
-> +/**
-> + * struct famfs_ioc_map
-> + *
-> + * This is the metadata that indicates where the memory is for a famfs file
-> + */
-> +struct famfs_ioc_map {
-> +	enum extent_type          extent_type;
-> +	enum famfs_file_type      file_type;
-
-These are going to be potentially varying in size depending on arch, compiler
-settings etc.  Been a while, but I though best practice for uapi was always
-fixed size elements even though we lose the typing.
-
-
-> +	__u64                     file_size;
-> +	__u64                     ext_list_count;
-> +	struct famfs_extent       ext_list[FAMFS_MAX_EXTENTS];
-> +};
-> +
-> +#define FAMFSIOC_MAGIC 'u'
-> +
-> +/* famfs file ioctl opcodes */
-> +#define FAMFSIOC_MAP_CREATE    _IOW(FAMFSIOC_MAGIC, 1, struct famfs_ioc_map)
-> +#define FAMFSIOC_MAP_GET       _IOR(FAMFSIOC_MAGIC, 2, struct famfs_ioc_map)
-> +#define FAMFSIOC_MAP_GETEXT    _IOR(FAMFSIOC_MAGIC, 3, struct famfs_extent)
-> +#define FAMFSIOC_NOP           _IO(FAMFSIOC_MAGIC,  4)
-> +
-> +#endif /* FAMFS_IOCTL_H */
-
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
+> 
 
