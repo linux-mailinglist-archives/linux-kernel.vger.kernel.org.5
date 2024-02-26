@@ -1,200 +1,88 @@
-Return-Path: <linux-kernel+bounces-81375-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41199867509
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:33:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FDC9867513
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:34:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA37A1F22C9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:33:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1A0E1C250A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:34:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C627EEE6;
-	Mon, 26 Feb 2024 12:32:53 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECD667F475;
+	Mon, 26 Feb 2024 12:34:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="jsmsxXwV"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10630364A6;
-	Mon, 26 Feb 2024 12:32:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF9EA1CFA7;
+	Mon, 26 Feb 2024 12:33:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708950773; cv=none; b=RUFbaJchShp1uceT3buqJgsc0fucUdYq10QWvezAqsiIC9oZlDfR9Ch+arjMk/KX49wpMoSx3TO5ciR58bVtaOGWIklok2WuAJG5d39s3mX/Eg4lsPQy696t8X0Gh1oVEzXi/AomicQz3am8Zhxwig1T2WlJvPwKttOB03IP+3E=
+	t=1708950841; cv=none; b=NNJuhDOqClrCVJHW3CHqzMXl6+zORJdIUpUt18dSykJ+5p5lpIKnd6NlHIhSBji/xtESpavAgWjtI4YxBTIzW9EVOGJWPfw6aOvNqSLYfP7T9zO8rVqFo8e9jf05JuUbSURZfU8cTjPOhRQZP9VTi63GoyHYQVe8ShrQPMR1js4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708950773; c=relaxed/simple;
-	bh=+samE29DNF5Z/tfPUmXV4vESiIfB7rjrnsGi9M7ixAY=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=thHmHPKeAmkItYVDrfJ4c8gaqhvxG/PX06m021dhBxMV5F2p0f8QovRcnyLK2BFATqVavyI1n199E7B9ZHShCH8sfeSneAlidm6lqrYExKSKXfrlVALunSNeuGUA8mWp0+JWrhTpuMA1OdNn2Y+WHUkr8IOXV7/xRROGwsGhkuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Tk0Jr5kkRz6K643;
-	Mon, 26 Feb 2024 20:28:28 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 4DEFE141FF8;
-	Mon, 26 Feb 2024 20:32:47 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 26 Feb
- 2024 12:32:46 +0000
-Date: Mon, 26 Feb 2024 12:32:45 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: John Groves <John@Groves.net>
-CC: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, "Dan
- Williams" <dan.j.williams@intel.com>, Vishal Verma
-	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Alexander
- Viro" <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, "Jan
- Kara" <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
-	<linux-cxl@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<nvdimm@lists.linux.dev>, <john@jagalactic.com>, Dave Chinner
-	<david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>,
-	<dave.hansen@linux.intel.com>, <gregory.price@memverge.com>
-Subject: Re: [RFC PATCH 05/20] dev_dax_iomap: Add dax_operations for use by
- fs-dax on devdax
-Message-ID: <20240226123245.00000c01@Huawei.com>
-In-Reply-To: <5727b1be956278e3a6c4cf7b728ee4f8f037ae51.1708709155.git.john@groves.net>
-References: <cover.1708709155.git.john@groves.net>
-	<5727b1be956278e3a6c4cf7b728ee4f8f037ae51.1708709155.git.john@groves.net>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1708950841; c=relaxed/simple;
+	bh=yTKK6qTVp/S8l1CYnLD9a4Jr8ZrucjT94QlJdY1OCxw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=E4jwoP3iReEFbsMFISLft/Qi+Mn5ZH5EG8yWCfGC3bMWWS0MScbqS59Do0lVJ2CDXK6Z5lNtiFwhGgHyrA3CeKiGXg+PvQdFXcPVKS/GTEIokuae2UHLQg6PpvVLQ+LfcW0B2C052hReCgjDdkT43TWVgwcMCvwCNyGlmO/UwRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=jsmsxXwV; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708950838;
+	bh=yTKK6qTVp/S8l1CYnLD9a4Jr8ZrucjT94QlJdY1OCxw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=jsmsxXwVeXseXIYn86JQZ679HZED+QL5moQjh1DVj9GbMGu5KYHlE4tY0t1xFylXu
+	 OKksilY4tr5zFGMmMaQUyt3yDZGNiqy3vMMcS/Y+HdUoS0C0hYFBIV8cQ3eKUT7hqn
+	 xMBHfjl4y+CnUJMvC3dhRFr4vuRGUrWDsMylvifSwcVJNtyEto65c/rc0p58TNFq34
+	 rTABcNH/qNCicSUQzUaIZ8+zhxMtGwHzMvIKAhSZksCdTduBs14HdfYdPDfIvs7x7H
+	 PotQQlaIrTwAzMPbdLa1mY4wQis4X1G8MRcBmYCZzlVRh0GVadxzIGENsQeRLc8weh
+	 hOUDq3V1f69iw==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 414BB37803EE;
+	Mon, 26 Feb 2024 12:33:57 +0000 (UTC)
+Message-ID: <7866fd9b-6f68-402d-abdf-087b1088d28b@collabora.com>
+Date: Mon, 26 Feb 2024 13:33:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] clk: mediatek: clk-mt8173-apmixedsys: Use common error
+ handling code in clk_mt8173_apmixed_probe()
+Content-Language: en-US
+To: Markus Elfring <Markus.Elfring@web.de>, linux-clk@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, Chen-Yu Tsai <wenst@chromium.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?=
+ <u.kleine-koenig@pengutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <6a64e7b3-b1ce-46c4-9c85-89f731aee592@web.de>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <6a64e7b3-b1ce-46c4-9c85-89f731aee592@web.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Fri, 23 Feb 2024 11:41:49 -0600
-John Groves <John@Groves.net> wrote:
-
-> Notes about this commit:
+Il 26/02/24 13:26, Markus Elfring ha scritto:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Mon, 26 Feb 2024 13:10:37 +0100
 > 
-> * These methods are based somewhat loosely on pmem_dax_ops from
->   drivers/nvdimm/pmem.c
+> Add a label so that a bit of exception handling can be better reused
+> at the end of this function implementation.
 > 
-> * dev_dax_direct_access() is returns the hpa, pfn and kva. The kva was
->   newly stored as dev_dax->virt_addr by dev_dax_probe().
-> 
-> * The hpa/pfn are used for mmap (dax_iomap_fault()), and the kva is used
->   for read/write (dax_iomap_rw())
-> 
-> * dev_dax_recovery_write() and dev_dax_zero_page_range() have not been
->   tested yet. I'm looking for suggestions as to how to test those.
-> 
-> Signed-off-by: John Groves <john@groves.net>
-> ---
->  drivers/dax/bus.c | 107 ++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 107 insertions(+)
-> 
-> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-> index 664e8c1b9930..06fcda810674 100644
-> --- a/drivers/dax/bus.c
-> +++ b/drivers/dax/bus.c
-> @@ -10,6 +10,12 @@
->  #include "dax-private.h"
->  #include "bus.h"
->  
-> +#if IS_ENABLED(CONFIG_DEV_DAX_IOMAP)
-> +#include <linux/backing-dev.h>
-> +#include <linux/pfn_t.h>
-> +#include <linux/range.h>
-> +#endif
-> +
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 
-Is it worth avoiding includes based on config? Probably not.
+Reviewed-by: AngeloGiaocchino Del Regno <angelogioacchino.delregno@collabora.com>
 
->  static DEFINE_MUTEX(dax_bus_lock);
->  
->  #define DAX_NAME_LEN 30
-> @@ -1349,6 +1355,101 @@ __weak phys_addr_t dax_pgoff_to_phys(struct dev_dax *dev_dax, pgoff_t pgoff,
->  }
->  EXPORT_SYMBOL_GPL(dax_pgoff_to_phys);
->  
-> +#if IS_ENABLED(CONFIG_DEV_DAX_IOMAP)
-> +
-
-> +
-> +static long __dev_dax_direct_access(struct dax_device *dax_dev, pgoff_t pgoff,
-> +			     long nr_pages, enum dax_access_mode mode, void **kaddr,
-> +			     pfn_t *pfn)
-> +{
-> +	struct dev_dax *dev_dax = dax_get_private(dax_dev);
-> +	size_t dax_size = dev_dax_size(dev_dax);
-> +	size_t size = nr_pages << PAGE_SHIFT;
-> +	size_t offset = pgoff << PAGE_SHIFT;
-> +	phys_addr_t phys;
-> +	u64 virt_addr = dev_dax->virt_addr + offset;
-> +	pfn_t local_pfn;
-> +	u64 flags = PFN_DEV|PFN_MAP;
-> +
-> +	WARN_ON(!dev_dax->virt_addr); /* virt_addr must be saved for direct_access */
-Fair enough, but from local code point of view, does it make sense to check this
-if !kaddr as we won't use this.
-> +
-> +	phys = dax_pgoff_to_phys(dev_dax, pgoff, nr_pages << PAGE_SHIFT);
-> +
-> +	if (kaddr)
-> +		*kaddr = (void *)virt_addr;
-
-Back to earlier comment on virt_addr as a void *. Definitely looking like
-that would be more accurate and simpler!  Also not much point in computing
-virt_addr unless kaddr is good.
-
-> +
-> +	local_pfn = phys_to_pfn_t(phys, flags); /* are flags correct? */
-If you aren't going to do anything with it for !pfn, move it under the if (pfn).
-
-> +	if (pfn)
-> +		*pfn = local_pfn;
-> +
-> +	/* This the valid size at the specified address */
-> +	return PHYS_PFN(min_t(size_t, size, dax_size - offset));
-> +}
-> +
-
-> +
-> +static const struct dax_operations dev_dax_ops = {
-> +	.direct_access = dev_dax_direct_access,
-> +	.zero_page_range = dev_dax_zero_page_range,
-> +	.recovery_write = dev_dax_recovery_write,
-> +};
-> +
-> +#endif /* IS_ENABLED(CONFIG_DEV_DAX_IOMAP) */
-> +
->  struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
->  {
->  	struct dax_region *dax_region = data->dax_region;
-> @@ -1404,11 +1505,17 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
->  		}
->  	}
->  
-
-If we were to make this 
-
-	if (IS_ENABLED(CONFIG_DEV_DAX_IOMAP))
-
-etc can we avoid the ifdef stuff above and let dead code removal deal with it?
-Might need a few stubs - I haven't tried.
-
-> +#if IS_ENABLED(CONFIG_DEV_DAX_IOMAP)
-> +	/* holder_ops currently populated separately in a slightly hacky way */
-> +	dax_dev = alloc_dax(dev_dax, &dev_dax_ops);
-> +#else
->  	/*
->  	 * No dax_operations since there is no access to this device outside of
->  	 * mmap of the resulting character device.
->  	 */
->  	dax_dev = alloc_dax(dev_dax, NULL);
-> +#endif
-> +
->  	if (IS_ERR(dax_dev)) {
->  		rc = PTR_ERR(dax_dev);
->  		goto err_alloc_dax;
 
 
