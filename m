@@ -1,134 +1,105 @@
-Return-Path: <linux-kernel+bounces-81817-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12A59867A9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:46:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBAC4867A66
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:37:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F89AB2BEFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:36:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 762971F25314
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:37:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AEAD12B159;
-	Mon, 26 Feb 2024 15:35:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GEv905fr"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4073612BE87;
+	Mon, 26 Feb 2024 15:36:55 +0000 (UTC)
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CD2D12B153
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 15:35:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40C5F12B159;
+	Mon, 26 Feb 2024 15:36:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708961757; cv=none; b=NPGqXcoYwB9aumtN9Hh+ZwIG6jQFSlbhsB1WO4YdhV5RkIGQiK7Gj7rGZPTFgAyrkbUVhuH3WoM+mGcigWyYGaEM6DIpRhRTOWmwvWvHI+V4RIqUzef0hHKRcKlVBJ508wSlwBjf2AG+AkljoHwXGKpqL8PccVWzfHBAJXGnV2g=
+	t=1708961814; cv=none; b=OyLHp7L/8ZDyKhBnkRgsAKeZJk9Y6xSW9AoRx+HExISbEnLhPT3FA3CQFMYHTuWnDKcHN4AnMUKkeAXZOCaOt8GbgKThAEqRi0rsIYAwnJ5aFtXGGpBkjr0yGEWJDZPK2szFTWsFkAL2ssMk0AmjfI8UE7Mw2H8uLou/isRJ4sc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708961757; c=relaxed/simple;
-	bh=DEFsTQYOxQB1RzK8jxBp8lvN1PzPps/TqPk/AWNcRnQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=fKL5iWeDMoPaFpZbVFJtI9GcM8JHYsngyMMtUdvmReqC9MwT5vmZV8Nrc/WX+0kpAUbwwzAdO8CLxzlWcD3igSEfra0QAddoCwOGmxPIZlAYIbQURfBlWJxIwoNZ1/KdDg3NdfC0L6woyB8tAyJkArTzPzx5TxphifCFxe3Y970=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GEv905fr; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708961755; x=1740497755;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=DEFsTQYOxQB1RzK8jxBp8lvN1PzPps/TqPk/AWNcRnQ=;
-  b=GEv905freVQyNS3OtTO3sWblzDzOpjUUiu1x0r/jLcUTQA44sAl+4DrY
-   gO1/yM0B9YEvEC+U+LX76V0UHwjv4yRr0GPTC+cuMNYW0bJL/qsNikV8Z
-   GYAJfhE46VmIiVCKv4hC6TF8DznMMGIib9AZTvkRdpB2+2tdKFxu1QXLa
-   9rjYOWtBk/OR3nZHQMXcNIQBsPfHRWqlyaz4MwGBA+68AvhGxcXsb13vm
-   SudWFqBjqOFTD49Thd4l7KeGVMfQHMA0aIQvujf0lLCn3w5xw0n5V+Lh5
-   GS20wiCv+PHVhZ3INkum2mLw/Z7iqGf7YkFju+5gf49yESI4XFd4EweMl
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3417046"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="3417046"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 07:35:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="6579940"
-Received: from hibeid-mobl.amr.corp.intel.com (HELO localhost) ([10.252.46.254])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 07:35:51 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>, Rodrigo
- Vivi
- <rodrigo.vivi@intel.com>, intel-gfx@lists.freedesktop.org, Petr Mladek
- <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, Rasmus Villemoes
- <linux@rasmusvillemoes.dk>, Sergey Senozhatsky <senozhatsky@chromium.org>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/12] drm/i915: Indicate which pipe failed the fastset
- check overall
-In-Reply-To: <ZdyqAMfEfhyk6zm2@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240215164055.30585-1-ville.syrjala@linux.intel.com>
- <20240215164055.30585-2-ville.syrjala@linux.intel.com>
- <ZdfApN1h97GTfL1t@intel.com> <Zdj2ONs8BZ6959Xb@intel.com>
- <87bk83mfwp.fsf@intel.com> <ZdyqAMfEfhyk6zm2@smile.fi.intel.com>
-Date: Mon, 26 Feb 2024 17:35:51 +0200
-Message-ID: <878r37me5k.fsf@intel.com>
+	s=arc-20240116; t=1708961814; c=relaxed/simple;
+	bh=BjNxNSutKJiNR5zXcgPNhRhILN601sd61EC4YV5AKX8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tom+X2Bmo/q3kfQcEBkTpEzkTwmEJpGj7CLtAJ5NQ+9xdnUYIf0p1Z9OBRsQTeizTmIjmJd60CasTHaZljvV2IezPmSIxkwQ1aPppVAV/+Jfa0Y/SS7q0sp9E029P+gS2ESj49Gv9I5mD5rbM2nVFKjxg7V3KICmaiRJdh7E8bU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-608342633b8so28058337b3.1;
+        Mon, 26 Feb 2024 07:36:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708961811; x=1709566611;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6sTzvocRErrvVxGZHtwvRZxdbc4PLEFDUqv58JeN2Rk=;
+        b=oVu86ljrU5JbLkxU0BQ9Vp/OqFMHWHQ9XpO8OD86pA0/GUrtKEPV46866KKa4Jvx0x
+         To7ByAOLBp3/GzCP7Ok/uhGAi/Jm2RCng3g+083lf/Or1/0D2UednzARdqdDCYCcIX0O
+         vjKJA90Oat+tATTAo646Px2HbuAbPTEgxdWnQODS+7I5xJk62Ewfw7Pnx4z2S/k/Azx3
+         E6pCDsYY65bxLq30bmyEgaulDBz9GwEeKVsqEBumWu7NSwbc/cGVrwGNn5JJ9yIyiksU
+         bLD3IZlxM9XVmBa9sjpC1wjpU9ZszwLGLRJQsC8BhSt2IDwljMC5J0T/Jw8g9C9CvEKu
+         eXPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWaIowlxjuNIWIDQ3v/hSU9IyoAL+iUKQtSe6orOrRHZebgtwYe5c0JbjCzZ5duLWIqmY7XYSRqi0vkazBazDdkazV2ykVBMOmUag+p/yP9unPNsY7KRSU6fvNE6k5ZcL/t8ZMoiL+w2A==
+X-Gm-Message-State: AOJu0Yyjpe4MH2Q6X0Xi+4a3hWteMLkqg99wuRWqvg4BFdktSt+tOoYr
+	8AuKvGcgSJAZDNUajjvB0h+j0HccQrrDrHz5fSrB5nczMYd621sBJTeMaGQPUJo=
+X-Google-Smtp-Source: AGHT+IErRkgW4BaT5Z+TBbzM2IZ5mgxoI04IY2LWrdSTfjDiQXuA4FF3aV+SK6ux0G4uDnsu9JF/ew==
+X-Received: by 2002:a81:d208:0:b0:607:8afd:fa32 with SMTP id x8-20020a81d208000000b006078afdfa32mr6808614ywi.28.1708961811681;
+        Mon, 26 Feb 2024 07:36:51 -0800 (PST)
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
+        by smtp.gmail.com with ESMTPSA id s6-20020a815e06000000b006079e8f3572sm1235572ywb.85.2024.02.26.07.36.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 07:36:51 -0800 (PST)
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc6e080c1f0so2594908276.2;
+        Mon, 26 Feb 2024 07:36:51 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXRTlzjHd0y9wTdnpMKk9BGTAO+IiVIX+axmnBVLb0pXV0Hylicks4hf6LmRRrGq2GiJh1LtKajEQpgwZzGgfjqFsVFSfn/ybi6Pu9P+DxpvdXkk+tGibcFYuRuPGO9uyJ1i7WrqHSmnw==
+X-Received: by 2002:a25:dbd1:0:b0:dcc:9e88:b15 with SMTP id
+ g200-20020a25dbd1000000b00dcc9e880b15mr5134183ybf.41.1708961811025; Mon, 26
+ Feb 2024 07:36:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20240219170337.2161754-1-andriy.shevchenko@linux.intel.com> <20240219170337.2161754-3-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240219170337.2161754-3-andriy.shevchenko@linux.intel.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 26 Feb 2024 16:36:39 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVSZZdRwxUOgz9-SkPwoC4FMYtfwhncC19kNHPmy_Bp2A@mail.gmail.com>
+Message-ID: <CAMuHMdVSZZdRwxUOgz9-SkPwoC4FMYtfwhncC19kNHPmy_Bp2A@mail.gmail.com>
+Subject: Re: [PATCH v3 2/9] auxdisplay: linedisp: Allocate buffer for the string
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Andy Shevchenko <andy@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Robin van der Gracht <robin@protonic.nl>, Paul Burton <paulburton@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 26 Feb 2024, Andy Shevchenko <andriy.shevchenko@linux.intel.com> wr=
-ote:
-> On Mon, Feb 26, 2024 at 04:57:58PM +0200, Jani Nikula wrote:
->> On Fri, 23 Feb 2024, Ville Syrj=C3=A4l=C3=A4 <ville.syrjala@linux.intel.=
-com> wrote:
->> > On Thu, Feb 22, 2024 at 04:46:12PM -0500, Rodrigo Vivi wrote:
+On Mon, Feb 19, 2024 at 6:03=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> Always allocate a buffer for the currently displayed characters.
+> It makes the line display API simpler.
 >
-> ...
->
->> > I think the proper solution would be to have actually
->> > sensible conversion specifiers in the format string.
->> > So instead of %<set of random characters> we'd have something
->> > more like %{drm_crtc} (or whatever color you want to throw
->> > on that particular bikeshed).
->>=20
->> Personally I suck at remembering even the standard printf conversion
->> specifiers, let alone all the kernel extensions. I basically have to
->> look them up every time. I'd really love some %{name} format for named
->> pointer things. And indeed preferrably without the %p. Just %{name}.
->
-> It will become something like %{name[:subextensions]}, where subextensions
-> is what we now have with different letters/numbers after %pX (X is a lett=
-er
-> which you proposed to have written as name AFAIU).
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Thanks, I appreciate it, a lot!
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-But could you perhaps try to go with just clean %{name} only instead of
-adding [:subextensions] right away, please?
+Gr{oetje,eeting}s,
 
-I presume the suggestion comes from an implementation detail, and I
-guess it would be handy to reuse the current implementation for
-subextension.
-
-For example, %pb -> %{bitmap} and %pbl -> %{bitmap:l}. But really I
-think the better option would be for the latter to become, say,
-%{bitmap-list}. The goal here is to make them easy to remember and
-understand, without resorting to looking up the documentation!
-
-
-BR,
-Jani.
-
->
->> And then we could discuss adding support for drm specific things. I
->> guess one downside is that the functions to do this would have to be in
->> vsprintf.c instead of drm. Unless we add some code in drm for this
->> that's always built-in.
+                        Geert
 
 --=20
-Jani Nikula, Intel
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
