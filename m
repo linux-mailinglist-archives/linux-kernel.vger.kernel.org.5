@@ -1,188 +1,193 @@
-Return-Path: <linux-kernel+bounces-82202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E405586808D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:11:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15C46868090
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:12:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70A781F20983
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:11:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C6BA1F24FF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:12:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C45CF130AC0;
-	Mon, 26 Feb 2024 19:09:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97B3012FF76;
+	Mon, 26 Feb 2024 19:10:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="I9egwK4T"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VhYueh+P"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 731A612FB2A;
-	Mon, 26 Feb 2024 19:09:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A455112FB03
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 19:09:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708974574; cv=none; b=nDEt9cl2oq3KKL25EKgvcXwJOEFQVb3c/PCmJwSpbAiN1vvLbrRRdoQUQ9UUVJfFLiYqpnG1darh1k79cGhCzfZmgm/l+JPZ7wO4McKGIQdniUJkWCJrZB23e0kkxmq63IAXdKBdmdcFToOMB2wAW8Z1mTrU8txJyewA/tOi8yo=
+	t=1708974599; cv=none; b=XQ10paw5suVh78jJRTjlFN3HHPjfn9tRHhGNrdBQ6rTj/fAPdFOTHPi/mmYAJsKoM4kWjkPB+EDjEIibEFvK9rvq7sCHOc8SfPTT9+gN82Dw+Z9tkmm135anuidLxanlgJEyx0HM1EREpP+gFzjyJY884Ggs2sTsqFmbdionNiw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708974574; c=relaxed/simple;
-	bh=T1nwYcrb80KiMkROIVNK/60go897IbC9GVwqBNMMXlk=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=uRXHMFZM1NdN5OoRpauPig8pL39Ll63sF+WCgMrs2AoKsqpPHeDpEf+3jh7RNN6zS42SgllR36+3MxFUN7xiKUHuhXiyS40AgDBt3RAbtS0uz1+AbijFfFsFYYAb7c6hHKRowIv5cli7Q1yIXdjNZwcCiahfaI3QZJCVlPEZ/7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=I9egwK4T; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1708974599; c=relaxed/simple;
+	bh=WLPsNTUS0rffo4BsiNOi5ZgQL+HawDXmRJXW4mh1RDM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=sJ2sBf8iL9r7pSYdBpgh70qkfXeVQarkEjphD2dke5XfTeu9ID/VZRdwX2H8yQOYhxq4tQzjQZu5S5/zZuGRv0AlnCz6/zXtiuoHCGvE8tOl1UWiSHIi6YPSYY1YPcIF7/QG5oD0xZtkI+VyL45rM1IO2WClBXV2erZWQcIfoa4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VhYueh+P; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708974598; x=1740510598;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=WLPsNTUS0rffo4BsiNOi5ZgQL+HawDXmRJXW4mh1RDM=;
+  b=VhYueh+PrhBGhw3KMN/ByEhawK70DjF6OfghFYZqLP9WdpyKG2U4xv86
+   BRjcL5AdawOB/piXixzVZ1iBq2IMYydQr481IPUaQphXT1wc1tLdQpbYt
+   UPPMRP9O80+lowVSpcWqCwQtGburFP41PXagV1zcYm+gUH40FoxYuhGGk
+   PIN9by6SHnvXThkkLqQwjgCcse8fidpMq7wFrAXsd7K8MFp+519jMKdOR
+   dIHSqGf5irOCKZ5cR6Kfn2qDpyG8qmhFcARm5rYVjrLWle0ZgPUGa0kJg
+   cjwcD61iL2BcsnUkohkElNgaKNFEsafuVFvWAQt5JM8Qtqyw0r5d3tDrc
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="14721311"
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="14721311"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 11:09:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="6911439"
+Received: from bdmirand-mobl.amr.corp.intel.com (HELO rpedgeco-desk4.intel.com) ([10.251.3.213])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 11:09:56 -0800
+From: Rick Edgecombe <rick.p.edgecombe@intel.com>
+To: Liam.Howlett@oracle.com,
+	akpm@linux-foundation.org,
+	debug@rivosinc.com,
+	broonie@kernel.org,
+	kirill.shutemov@linux.intel.com,
+	keescook@chromium.org,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	luto@kernel.org,
+	peterz@infradead.org,
+	hpa@zytor.com,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Cc: rick.p.edgecombe@intel.com
+Subject: [PATCH v2 0/9] Cover a guard gap corner case
+Date: Mon, 26 Feb 2024 11:09:42 -0800
+Message-Id: <20240226190951.3240433-1-rick.p.edgecombe@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1708974566;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MhPScaDHRZdhouzkoYyad3R9PfIyEE1nMSKg/JolwpQ=;
-	b=I9egwK4T0p5eJfARevw+aGPmERrw3GF5gjjW79/nE95wu9QItS2TbWjRXlRTj4HfZzW31w
-	Yaw8zlGTOSWMOlovsfFbnOIzVh5XFZDPSdA78Fvn4vMx7+yb+HwnxRPPk+OkpNDlYd8HoB
-	1zbPKHe8+raiZJt9WfpUUFzyw9uB4rtdlrw9HhCAjsWXaZU63W0XaZ9ZXEjLp50F9eGen0
-	gu8Lm/+hFZg3K1gC9PLBjqKAOshVEGLYMBUibpYrdkuj+gP0XmbSWMSdUmHid2ozYNc+dT
-	OrxUt278Ydtbg2X1HwGgh8a/EEoBrX0Qv8oEHkcbkCpIPhQkUwTyZvDsZAw0Jw==
-Date: Mon, 26 Feb 2024 20:09:26 +0100
-From: Dragan Simic <dsimic@manjaro.org>
-To: Anand Moon <linux.amoon@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] arm64: dts: rockchip: Add cache information to the
- Rockchip RK3566 and RK3568 SoC
-In-Reply-To: <20240226182310.4032-1-linux.amoon@gmail.com>
-References: <20240226182310.4032-1-linux.amoon@gmail.com>
-Message-ID: <8ceea100f2ef7cce296943ce1397161a@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hello Anand,
+Hi,
 
-On 2024-02-26 19:23, Anand Moon wrote:
-> As per RK3568 Datasheet and TRM add missing cache information to
-> the Rockchip RK3566 and RK3568 SoC.
-> 
-> - Each Cortex-A55 core has 32KB of L1 instruction cache available and
-> 	32KB of L1 data cache available with ECC.
-> - Along with 512KB Unified L3 cache with ECC.
-> 
-> With adding instruction cache and data cache and a write buffer to
-> reduce the effect of main memory bandwidth and latency on data
-> access performance.
-> 
-> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+For v2, the notable change is a bug fix to not clobber the MMF_TOPDOWN 
+during fork. In the RFC this resulted in fork() children that didn't exec 
+getting the map up behavior, which included the stress-ng bigheap test. It 
+turns out much of the 4% improvement seen was due to the bottomup mapping 
+direction. With the fix, the performance benefit was a less surprising 
+~1%. Other than that, Kirill's style feedback was addressed. There were no 
+functional changes (other than the bug).
 
-I was about to send my own patch that adds the same missing cache
-information, so please allow me to describe the proposed way to move
-forward.
+Link to v1:
+https://lore.kernel.org/lkml/20240215231332.1556787-1-rick.p.edgecombe@intel.com/
 
-The way I see it, your commit summary and description need a rather
-complete rewrite, to be more readable, more accurate, and to avoid
-including an irrelevant (and slightly misleading) description of the
-general role of caches.
+=======
 
-Also, the changes to the dtsi file would benefit from small touch-ups
-here and there, for improved consistency, etc.
+In working on x86’s shadow stack feature, I came across some limitations 
+around the kernel’s handling of guard gaps. AFAICT these limitations are 
+not too important for the traditional stack usage of guard gaps, but have 
+bigger impact on shadow stack’s usage. And now in addition to x86, we have 
+two other architectures implementing shadow stack like features that plan 
+to use guard gaps. I wanted to see about addressing them, but I have not 
+worked on mmap() placement related code before, so would greatly 
+appreciate if people could take a look and point me in the right 
+direction.
 
-With all that in mind, I propose that you withdraw your patch and let
-me send my patch that will addresses all these issues, of course with
-a proper tag that lists you as a co-developer.  I think that would
-save us a fair amount of time going back and forth.
+The nature of the limitations of concern is as follows. In order to ensure 
+guard gaps between mappings, mmap() would need to consider two things:
+ 1. That the new mapping isn’t placed in an any existing mapping’s guard
+    gap.
+ 2. That the new mapping isn’t placed such that any existing mappings are
+    not in *its* guard gaps
+Currently mmap never considers (2), and (1) is not considered in some 
+situations.
 
-I hope you agree.
+When not passing an address hint, or passing one without 
+MAP_FIXED_NOREPLACE, (1) is enforced. With MAP_FIXED_NOREPLACE, (1) is not 
+enforced. With MAP_FIXED, (1) is not considered, but this seems to be 
+expected since MAP_FIXED can already clobber existing mappings. For 
+MAP_FIXED_NOREPLACE I would have guessed it should respect the guard gaps 
+of existing mappings, but it is probably a little ambiguous.
 
+In this series I just tried to add enforcement of (2) for the normal (no 
+address hint) case and only for the newer shadow stack memory (not 
+stacks). The reason is that with the no-address-hint situation, landing 
+next to a guard gap could come up naturally and so be more influencable by 
+attackers such that two shadow stacks could be adjacent without a guard 
+gap. Where as the address-hint scenarios would require more control - 
+being able to call mmap() with specific arguments. As for why not just fix 
+the other corner cases anyway, I thought it might have some greater 
+possibility of affecting existing apps.
 
-> ---
-> [0] 
-> http://www.rock-chips.com/uploads/pdf/2022.8.26/191/RK3568%20Brief%20Datasheet.pdf
-> [1] 
-> https://dl.radxa.com/rock3/docs/hw/datasheet/Rockchip%20RK3568%20TRM%20Part1%20V1.1-20210301.pdf
-> ---
->  arch/arm64/boot/dts/rockchip/rk356x.dtsi | 37 ++++++++++++++++++++++++
->  1 file changed, 37 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> index c19c0f1b3778..49235efefb6b 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> @@ -56,6 +56,13 @@ cpu0: cpu@0 {
->  			clocks = <&scmi_clk 0>;
->  			#cooling-cells = <2>;
->  			enable-method = "psci";
-> +			d-cache-line-size = <32>;
-> +			d-cache-size = <0x8000>;
-> +			d-cache-sets = <32>;
-> +			i-cache-line-size = <32>;
-> +			i-cache-size = <0x8000>;
-> +			i-cache-sets = <32>;
-> +			next-level-cache = <&l2>;
->  			operating-points-v2 = <&cpu0_opp_table>;
->  		};
-> 
-> @@ -65,6 +72,13 @@ cpu1: cpu@100 {
->  			reg = <0x0 0x100>;
->  			#cooling-cells = <2>;
->  			enable-method = "psci";
-> +			d-cache-line-size = <32>;
-> +			d-cache-size = <0x8000>;
-> +			d-cache-sets = <32>;
-> +			i-cache-line-size = <32>;
-> +			i-cache-size = <0x8000>;
-> +			i-cache-sets = <32>;
-> +			next-level-cache = <&l2>;
->  			operating-points-v2 = <&cpu0_opp_table>;
->  		};
-> 
-> @@ -74,6 +88,13 @@ cpu2: cpu@200 {
->  			reg = <0x0 0x200>;
->  			#cooling-cells = <2>;
->  			enable-method = "psci";
-> +			d-cache-line-size = <32>;
-> +			d-cache-size = <0x8000>;
-> +			d-cache-sets = <32>;
-> +			i-cache-line-size = <32>;
-> +			i-cache-size = <0x8000>;
-> +			i-cache-sets = <32>;
-> +			next-level-cache = <&l2>;
->  			operating-points-v2 = <&cpu0_opp_table>;
->  		};
-> 
-> @@ -83,8 +104,24 @@ cpu3: cpu@300 {
->  			reg = <0x0 0x300>;
->  			#cooling-cells = <2>;
->  			enable-method = "psci";
-> +			d-cache-line-size = <32>;
-> +			d-cache-size = <0x8000>;
-> +			d-cache-sets = <32>;
-> +			i-cache-line-size = <32>;
-> +			i-cache-size = <0x8000>;
-> +			i-cache-sets = <32>;
-> +			next-level-cache = <&l2>;
->  			operating-points-v2 = <&cpu0_opp_table>;
->  		};
-> +
-> +		l2: l2-cache0 {
-> +			compatible = "cache";
-> +			cache-level = <3>;
-> +			cache-unified;
-> +			cache-size = <0x7d000>; /* L3. 512 KB */
-> +			cache-line-size = <64>;
-> +			cache-sets = <512>;
-> +		};
->  	};
-> 
->  	cpu0_opp_table: opp-table-0 {
+Thanks,
+
+Rick
+
+Rick Edgecombe (9):
+  mm: Switch mm->get_unmapped_area() to a flag
+  mm: Introduce arch_get_unmapped_area_vmflags()
+  mm: Use get_unmapped_area_vmflags()
+  thp: Add thp_get_unmapped_area_vmflags()
+  mm: Initialize struct vm_unmapped_area_info
+  mm: Take placement mappings gap into account
+  x86/mm: Implement HAVE_ARCH_UNMAPPED_AREA_VMFLAGS
+  x86/mm: Care about shadow stack guard gap during placement
+  selftests/x86: Add placement guard gap test for shstk
+
+ arch/alpha/kernel/osf_sys.c                   |   2 +-
+ arch/arc/mm/mmap.c                            |   2 +-
+ arch/arm/mm/mmap.c                            |   4 +-
+ arch/csky/abiv1/mmap.c                        |   2 +-
+ arch/loongarch/mm/mmap.c                      |   2 +-
+ arch/mips/mm/mmap.c                           |   2 +-
+ arch/parisc/kernel/sys_parisc.c               |   2 +-
+ arch/powerpc/mm/book3s64/slice.c              |   4 +-
+ arch/s390/mm/hugetlbpage.c                    |   6 +-
+ arch/s390/mm/mmap.c                           |   8 +-
+ arch/sh/mm/mmap.c                             |   4 +-
+ arch/sparc/kernel/sys_sparc_32.c              |   2 +-
+ arch/sparc/kernel/sys_sparc_64.c              |  19 ++--
+ arch/sparc/mm/hugetlbpage.c                   |   6 +-
+ arch/x86/include/asm/pgtable_64.h             |   1 +
+ arch/x86/kernel/cpu/sgx/driver.c              |   2 +-
+ arch/x86/kernel/sys_x86_64.c                  |  39 +++++--
+ arch/x86/mm/hugetlbpage.c                     |   6 +-
+ arch/x86/mm/mmap.c                            |   4 +-
+ drivers/char/mem.c                            |   2 +-
+ drivers/dax/device.c                          |   6 +-
+ fs/hugetlbfs/inode.c                          |   6 +-
+ fs/proc/inode.c                               |  15 +--
+ fs/ramfs/file-mmu.c                           |   2 +-
+ include/linux/huge_mm.h                       |  11 ++
+ include/linux/mm.h                            |  12 ++-
+ include/linux/mm_types.h                      |   6 +-
+ include/linux/sched/coredump.h                |   5 +-
+ include/linux/sched/mm.h                      |  22 ++++
+ io_uring/io_uring.c                           |   2 +-
+ mm/debug.c                                    |   6 --
+ mm/huge_memory.c                              |  23 ++--
+ mm/mmap.c                                     | 101 +++++++++++++-----
+ mm/shmem.c                                    |  11 +-
+ mm/util.c                                     |   6 +-
+ .../testing/selftests/x86/test_shadow_stack.c |  67 +++++++++++-
+ 36 files changed, 298 insertions(+), 122 deletions(-)
+
+-- 
+2.34.1
+
 
