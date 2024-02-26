@@ -1,57 +1,53 @@
-Return-Path: <linux-kernel+bounces-80453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9682386688E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:19:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4245186688F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:19:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C944281BB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:19:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 412A21C213F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:19:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2735E14008;
-	Mon, 26 Feb 2024 03:18:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82BB014F61;
+	Mon, 26 Feb 2024 03:19:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="bq3sJS9V"
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nkdIayy8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDA95DF4D;
-	Mon, 26 Feb 2024 03:18:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA7BA14263
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:19:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708917537; cv=none; b=VJhbp/j2ND0TLn7imVEMHmxEq7E1kzw+lheRQFO9lQdQCUnLfI/C0XPkHWep+PIoMdDLbMbyyxe3qCSjIGMZ78ib3YWr9vc/2IzYHfXQK/ih59o+aNq3C8wSTE/PyOPh0z+l1MaCeVGaACLh/bkDVicApqCgtY190gQL7klNh1Q=
+	t=1708917562; cv=none; b=d3jX2Tipey6aVmBCkqhfARa+kcndWw984x5m3ixhfxn0gfQAQDa/ABLb++DWqvTNbchzfOotOq0LFisGOYCJG4/bKVqltgPGkLyFozaofxC609IbpsDdK5ihXdqv5LDG2ZKydgFPqhMQMAdRtQk6QCsEC4IuPQMFeQCngkhB9VA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708917537; c=relaxed/simple;
-	bh=MXL6VcPZBWyMQPrfjTrEpeHJCu9JL55Z5etYKoyrgX8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HJ+aeKup25ccyUetDkt7LRm+RWOCMWnrnHwAqT/fZvDoI0UIknjf+7NpZCg6vHOEIo6yqM8u4QvIewz5VDYztVc5ueEZ55kNAeEmLXbjXO8Qe0ZSIdPW8ZXu4zvaw0aLa0bkez3gef2/X6sH4hJ2Frd+h3SPDMg4l3HStg/YDSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=bq3sJS9V; arc=none smtp.client-ip=115.124.30.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1708917531; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=mLCk/YbBkqEYhn5Q5sMxmBvYHKM1K5bF4wYuOkh2FwE=;
-	b=bq3sJS9ViK35UmFygOAgZqjsPFxl24/tn+mM3IZPLecktO654M8Zb+VPZLqbp9T8Ii+f6CsW/buReGZO37N9xeqYeQ5di6ddYzDb4dTdL5qcrJXsg+76NoK4XfTYA5qZR+5O5tNRpy4JUOPXeopu2d9mFfJhPyb9kdFR5jfuDFk=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xiangzao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0W1ACl3C_1708917520;
-Received: from localhost.localdomain(mailfrom:xiangzao@linux.alibaba.com fp:SMTPD_---0W1ACl3C_1708917520)
-          by smtp.aliyun-inc.com;
-          Mon, 26 Feb 2024 11:18:50 +0800
-From: Yuanhe Shu <xiangzao@linux.alibaba.com>
-To: rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com,
-	shuah@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	xiangzao@linux.alibaba.com,
-	stable@vger.kernel.org
-Subject: [PATCH v2] selftests/ftrace: Limit length in subsystem-enable tests
-Date: Mon, 26 Feb 2024 11:18:16 +0800
-Message-Id: <20240226031816.88715-1-xiangzao@linux.alibaba.com>
-X-Mailer: git-send-email 2.39.3
+	s=arc-20240116; t=1708917562; c=relaxed/simple;
+	bh=Sz0jqU0v0tnHzoX+q1gyX1BWNEr6Uw1vZ878UbaRw+A=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OdDDH8DOpZFSqiuQXlV1q7YdRInld3W6fz4bD5gAOyagnYsKTqy5tpkGgKK6LEF/ww3Mj4fdW5MsklJ+RZ+ufpi31nRvgvqYnZWTbjsw/q1OUKc3wNwk59cBikekxiVPPxjy6L5zxxh64ggE2JnsVimBQHjAqMiNbripqMb96mw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nkdIayy8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F7B5C433F1;
+	Mon, 26 Feb 2024 03:19:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708917562;
+	bh=Sz0jqU0v0tnHzoX+q1gyX1BWNEr6Uw1vZ878UbaRw+A=;
+	h=From:To:Cc:Subject:Date:From;
+	b=nkdIayy8WuuXHCfivhW41LDvhKRAvve89Ehr0XoCveRNsV4v4Kelo/ZpsOlV/Eg+r
+	 PxoMAuAfgTgOaNX2ibsqQyn0Qz6pgcjNxO3ScsvOQzXVFcUhTMpVV31pG2GelcA8RO
+	 wANUevdAV3n5yqwv0PiSMc7qA90+P265iqNOWlxyXIqonAGCoCcF96MIjgzndLcZ4d
+	 IO5+xAcdzr7BWd+M0c91iM7LAh0HMaYWwpN2q5g1VFBYc9D8l1KyDHXlmOB+0EMI60
+	 pBGfV+D0Bt4GZiqpJbXHeKqgh//InS4JpPxDQusj6OaMacfBQgVYkasLDzpXiHq8nF
+	 Zv8nuxqfAbijg==
+From: Chao Yu <chao@kernel.org>
+To: jaegeuk@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org,
+	Chao Yu <chao@kernel.org>
+Subject: [PATCH] f2fs: fix to check return value in f2fs_insert_range()
+Date: Mon, 26 Feb 2024 11:19:16 +0800
+Message-Id: <20240226031916.2420870-1-chao@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,51 +56,36 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-While sched* events being traced and sched* events continuously happen,
-"[xx] event tracing - enable/disable with subsystem level files" would
-not stop as on some slower systems it seems to take forever.
-Select the first 100 lines of output would be enough to judge whether
-there are more than 3 types of sched events.
+In f2fs_insert_range(), it missed to check return value of
+filemap_write_and_wait_range(), fix it.
 
-Fixes: 815b18ea66d6 ("ftracetest: Add basic event tracing test cases")
-Cc: stable@vger.kernel.org
-Signed-off-by: Yuanhe Shu <xiangzao@linux.alibaba.com>
+Meanwhile, just return error number once __exchange_data_block()
+fails.
+
+Signed-off-by: Chao Yu <chao@kernel.org>
 ---
- .../selftests/ftrace/test.d/event/subsystem-enable.tc       | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/f2fs/file.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/ftrace/test.d/event/subsystem-enable.tc b/tools/testing/selftests/ftrace/test.d/event/subsystem-enable.tc
-index b1ede6249866..b7c8f29c09a9 100644
---- a/tools/testing/selftests/ftrace/test.d/event/subsystem-enable.tc
-+++ b/tools/testing/selftests/ftrace/test.d/event/subsystem-enable.tc
-@@ -18,7 +18,7 @@ echo 'sched:*' > set_event
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 6ddc2092842b..0a80fdf0cdb8 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -1679,10 +1679,12 @@ static int f2fs_insert_range(struct inode *inode, loff_t offset, loff_t len)
+ 	}
+ 	filemap_invalidate_unlock(mapping);
+ 	f2fs_up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
++	if (ret)
++		return ret;
  
- yield
+ 	/* write out all moved pages, if possible */
+ 	filemap_invalidate_lock(mapping);
+-	filemap_write_and_wait_range(mapping, offset, LLONG_MAX);
++	ret = filemap_write_and_wait_range(mapping, offset, LLONG_MAX);
+ 	truncate_pagecache(inode, offset);
+ 	filemap_invalidate_unlock(mapping);
  
--count=`cat trace | grep -v ^# | awk '{ print $5 }' | sort -u | wc -l`
-+count=`head -n 100 trace | grep -v ^# | awk '{ print $5 }' | sort -u | wc -l`
- if [ $count -lt 3 ]; then
-     fail "at least fork, exec and exit events should be recorded"
- fi
-@@ -29,7 +29,7 @@ echo 1 > events/sched/enable
- 
- yield
- 
--count=`cat trace | grep -v ^# | awk '{ print $5 }' | sort -u | wc -l`
-+count=`head -n 100 trace | grep -v ^# | awk '{ print $5 }' | sort -u | wc -l`
- if [ $count -lt 3 ]; then
-     fail "at least fork, exec and exit events should be recorded"
- fi
-@@ -40,7 +40,7 @@ echo 0 > events/sched/enable
- 
- yield
- 
--count=`cat trace | grep -v ^# | awk '{ print $5 }' | sort -u | wc -l`
-+count=`head -n 100 trace | grep -v ^# | awk '{ print $5 }' | sort -u | wc -l`
- if [ $count -ne 0 ]; then
-     fail "any of scheduler events should not be recorded"
- fi
 -- 
-2.39.3
+2.40.1
 
 
