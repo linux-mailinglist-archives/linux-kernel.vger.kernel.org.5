@@ -1,154 +1,168 @@
-Return-Path: <linux-kernel+bounces-80575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E39A8669DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:03:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 309D28669E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:04:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E65821F222A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:03:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61DEE1C2146D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:04:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 882981BC31;
-	Mon, 26 Feb 2024 06:03:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4644B1BC35;
+	Mon, 26 Feb 2024 06:04:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Q6diPE+P"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=icenowy.me header.i=uwu@icenowy.me header.b="QDmAwvF+"
+Received: from sender4-op-o12.zoho.com (sender4-op-o12.zoho.com [136.143.188.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B87A11BF24;
-	Mon, 26 Feb 2024 06:03:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708927400; cv=none; b=NrM2OPTDegjVQC4TBuHSU+ZQJtpPYbF1NYG66ikpV0yFCCKTWQ2PNXgThIpwhzcpaa5CRBt3IJqa9e3tr09Zroz3i59uZah9Rf9LnkNxVjMCaAp9RkXSizbtYKGsygz1a+bGaJgOmNd55OFVKxKPHVAnQWzVkmBq1KUT9TNDc3w=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708927400; c=relaxed/simple;
-	bh=rQ1turlgsXFMqRMIQFeoxObihk2n1XNDtxJd21pN6NU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=buz498FLI/vIkcq260cRUQfGkd8gLhl7rQlbbcTIZM5JXvlWtq5ImLXgbF+L/TZOeKOr0sjmj1fM4PUV0aPjudKpkSTKQPhP3PzQ1afb2dlkvPRm73WKN6Kk7ZrbHrH1xzCvpzCNzxvQqmRWk2EkEdz9vZNj9OWa9TAl2I7ZTQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Q6diPE+P; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6CD3C433F1;
-	Mon, 26 Feb 2024 06:03:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1708927400;
-	bh=rQ1turlgsXFMqRMIQFeoxObihk2n1XNDtxJd21pN6NU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Q6diPE+PpN5xVxki1jdKL05t/czhdUZjwrK3wpbFsw2ZbFdA7hJShitFl8CohBKea
-	 izzRef5GkObR5ytJMXrVt0+vWnQqmpCz9fDP4lfQp+4pd8xgeMgrd0FPN5Nyl6hdF0
-	 OFyH2UDBTcC7vK7BtokNW7R5fDc5ylR6G+4naxSE=
-Date: Mon, 26 Feb 2024 07:03:17 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Michael Trimarchi <michael@amarulasolutions.com>
-Cc: Thinh Nguyen <Thinh.Nguyen@synopsys.com>, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-amarula@amarulasolutions.com
-Subject: Re: [PATCH] usb: dwc3: gadget: Fix suspend/resume warning when
- no-gadget is connected
-Message-ID: <2024022604-shelve-uranium-4a58@gregkh>
-References: <20240225181309.1697245-1-michael@amarulasolutions.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5AE363B1;
+	Mon, 26 Feb 2024 06:04:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.12
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708927477; cv=pass; b=lTutuD8hjoP5/YT5z+UnwnZUYbV4AvXbyx23geJpJ0CW3Pii903mWG+XiJE9bmKjz1JVaGvgdfb16lCa6ZI+PmYEBM0R+P24gZcSYdrYdJ0v3UqZOgr8u1muZ3JN8PlOS7m2W6hnVBzJM2qmTUNT7g1fCkhw80S4IFz6DTPHCbo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708927477; c=relaxed/simple;
+	bh=CZVTpBGF86V/SGUwaHA7h+OYsTh8TAqio3D0tYnMqbc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=BWEmFSpS9UaEHp9zyMebi5BuyeSZFBOyuP0aYef9dlpVmjeLtA260Yo5gFywvKJBPdWlo0ocMbe2f4S0cO1epZEdlnbpNVXch5ClHuGszaJdIEIRg2jWrd1YspY7fsIgqfg+GjIDuQE+3lkbt0gL+2Wfzs1ea+UAkRHfQ9aKfeM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=icenowy.me; spf=pass smtp.mailfrom=icenowy.me; dkim=pass (2048-bit key) header.d=icenowy.me header.i=uwu@icenowy.me header.b=QDmAwvF+; arc=pass smtp.client-ip=136.143.188.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=icenowy.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=icenowy.me
+ARC-Seal: i=1; a=rsa-sha256; t=1708927440; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=TcsIh9ADSLaGaizzV7Meh/U0sik1DIKqedMt5LCLU1EDdkZ2LvzM+qsEw8l+VJ8A1TcTKXyAwbia9UOmDNmEY4cVp+6/Dhoio0RsFq+xIBPAkZ0bhXkl9RxWj1d1NThHyV1zLHxL4R4Yx01mb6oMEqqgekvsx4UnmArRdRTaSvo=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1708927440; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=CZVTpBGF86V/SGUwaHA7h+OYsTh8TAqio3D0tYnMqbc=; 
+	b=ka45S8jnRfOOrzbW+F7FPqM8zRrOLq9z6pJ1dfB5WGGx2H4K8evZPWy9SREDOeEX42Jqlzsdoq0QjCeQXDBXmsFz9Tkeu3CufAFArqaf96tcnyuVDCwIDhpFvvJr0nJJQQnuuh7nFTEotRy85feH4XDxMim7iDDkbIIUsGAhKHU=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=icenowy.me;
+	spf=pass  smtp.mailfrom=uwu@icenowy.me;
+	dmarc=pass header.from=<uwu@icenowy.me>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1708927440;
+	s=zmail2; d=icenowy.me; i=uwu@icenowy.me;
+	h=Message-ID:Subject:Subject:From:From:To:To:Cc:Cc:Date:Date:In-Reply-To:References:Content-Type:Content-Transfer-Encoding:MIME-Version:Message-Id:Reply-To;
+	bh=CZVTpBGF86V/SGUwaHA7h+OYsTh8TAqio3D0tYnMqbc=;
+	b=QDmAwvF+V4Q9r8FMBx2ZQH+E53G1Ax9gHEBQGLrkvyRAxfv26QHtlDrdpsT6XnKP
+	GJpKmhbRedV61bI4UQ88PV1jgE66pqllfBnm/5CD+s6fyIBkXRebQx3F6naU9QOdNLZ
+	SPGpGRRfnNHNVaaxIoFOXoXfqUBjTxwwkXrt88rmOvevvy2xl/lsxkrr1iS+y2Mm+/D
+	qDeeuBLLNgkDDPpo0YwjDkaxd2kGk6Gr40jTxf/2XvGHaUcmvWL824A5F7Pl6+A+IoQ
+	P6eUXKQ+irEcf53sY5htc5Y1/zdl4fz/gMFGIqzDzatrQLTdrY/sl9Cl/n6mDkjKqiW
+	e589WQTyUw==
+Received: from edelgard.fodlan.icenowy.me (112.94.101.70 [112.94.101.70]) by mx.zohomail.com
+	with SMTPS id 1708927438859856.127358578202; Sun, 25 Feb 2024 22:03:58 -0800 (PST)
+Message-ID: <61c5b883762ba4f7fc5a89f539dcd6c8b13d8622.camel@icenowy.me>
+Subject: Re: Chromium sandbox on LoongArch and statx -- seccomp deep
+ argument inspection again?
+From: Icenowy Zheng <uwu@icenowy.me>
+To: Xi Ruoyao <xry111@xry111.site>, Huacai Chen <chenhuacai@kernel.org>, 
+	WANG Xuerui <kernel@xen0n.name>
+Cc: linux-api@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Christian
+ Brauner <brauner@kernel.org>, Kees Cook <keescook@chromium.org>, Xuefeng Li
+ <lixuefeng@loongson.cn>, Jianmin Lv <lvjianmin@loongson.cn>, Xiaotian Wu
+ <wuxiaotian@loongson.cn>, WANG Rui <wangrui@loongson.cn>, Miao Wang
+ <shankerwangmiao@gmail.com>, "loongarch@lists.linux.dev"
+ <loongarch@lists.linux.dev>, linux-arch <linux-arch@vger.kernel.org>, Linux
+ Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date: Mon, 26 Feb 2024 14:03:48 +0800
+In-Reply-To: <24c47463f9b469bdc03e415d953d1ca926d83680.camel@xry111.site>
+References: <599df4a3-47a4-49be-9c81-8e21ea1f988a@xen0n.name>
+	 <CAAhV-H4oW70y-2ZSp=b-Ed3A7Jrxfg6xvO8YpjED6To=PF0NwA@mail.gmail.com>
+	 <f063e65df92228cac6e57b0c21de6b750cf47e42.camel@icenowy.me>
+	 <24c47463f9b469bdc03e415d953d1ca926d83680.camel@xry111.site>
+Organization: Anthon Open-Source Community
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240225181309.1697245-1-michael@amarulasolutions.com>
+X-ZohoMailClient: External
 
-On Sun, Feb 25, 2024 at 07:13:09PM +0100, Michael Trimarchi wrote:
-> This patch restore the logic but protects the variable using a spinlock
-> without moving the code
-> 
-> [   45.597274] dwc3 31000000.usb: wait for SETUP phase timed out
-> [   45.599140] dwc3 31000000.usb: failed to set STALL on ep0out
-> [   45.601069] ------------[ cut here ]------------
-> [   45.601073] WARNING: CPU: 0 PID: 150 at drivers/usb/dwc3/ep0.c:289 dwc3_ep0_out_start+0xcc/0xd4
-> [   45.601102] Modules linked in: cfg80211 rfkill ipv6 rpmsg_ctrl rpmsg_char crct10dif_ce rti_wdt k3_j72xx_bandgap rtc_ti_k3 omap_mailbox sa2ul authenc [last unloaded: ti_k3_r5_remoteproc]
-> [   45.601151] CPU: 0 PID: 150 Comm: sh Not tainted 6.8.0-rc5 #1
-> [   45.601159] Hardware name: BSH - CCM-M3 (DT)
-> [   45.601164] pstate: 600000c5 (nZCv daIF -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [   45.601172] pc : dwc3_ep0_out_start+0xcc/0xd4
-> [   45.601179] lr : dwc3_ep0_out_start+0x50/0xd4
-> [   45.601186] sp : ffff8000832739e0
-> [   45.601189] x29: ffff8000832739e0 x28: ffff800082a21000 x27: ffff8000808dc630
-> [   45.601200] x26: 0000000000000002 x25: ffff800082530a44 x24: 0000000000000000
-> [   45.601210] x23: ffff000000e079a0 x22: ffff000000e07a68 x21: 0000000000000001
-> [   45.601219] x20: ffff000000e07880 x19: ffff000000e07880 x18: 0000000000000040
-> [   45.601229] x17: ffff7fff8e1ce000 x16: ffff800080000000 x15: fffffffffffe5260
-> [   45.601239] x14: 0000000000000000 x13: 206e6f204c4c4154 x12: 5320746573206f74
-> [   45.601249] x11: 0000000000000001 x10: 000000000000000a x9 : ffff800083273930
-> [   45.601259] x8 : 000000000000000a x7 : ffffffffffff3f0c x6 : ffffffffffff3f00
-> [   45.601268] x5 : ffffffffffff3f0c x4 : 0000000000000000 x3 : 0000000000000000
-> [   45.601278] x2 : 0000000000000000 x1 : ffff000004e7e600 x0 : 00000000ffffff92
-> [   45.601289] Call trace:
-> [   45.601293]  dwc3_ep0_out_start+0xcc/0xd4
-> [   45.601301]  dwc3_ep0_stall_and_restart+0x98/0xbc
-> [   45.601309]  dwc3_ep0_reset_state+0x5c/0x88
-> [   45.601315]  dwc3_gadget_soft_disconnect+0x144/0x160
-> [   45.601323]  dwc3_gadget_suspend+0x18/0xb0
-> [   45.601329]  dwc3_suspend_common+0x5c/0x18c
-> [   45.601341]  dwc3_suspend+0x20/0x44
-> [   45.601350]  platform_pm_suspend+0x2c/0x6c
-> [   45.601360]  __device_suspend+0x10c/0x34c
-> [   45.601372]  dpm_suspend+0x1a8/0x240
-> [   45.601382]  dpm_suspend_start+0x80/0x9c
-> [   45.601391]  suspend_devices_and_enter+0x1c4/0x584
-> [   45.601402]  pm_suspend+0x1b0/0x264
-> [   45.601408]  state_store+0x80/0xec
-> [   45.601415]  kobj_attr_store+0x18/0x2c
-> [   45.601426]  sysfs_kf_write+0x44/0x54
-> [   45.601434]  kernfs_fop_write_iter+0x120/0x1ec
-> [   45.601445]  vfs_write+0x23c/0x358
-> [   45.601458]  ksys_write+0x70/0x104
-> [   45.601467]  __arm64_sys_write+0x1c/0x28
-> [   45.601477]  invoke_syscall+0x48/0x114
-> [   45.601488]  el0_svc_common.constprop.0+0x40/0xe0
-> [   45.601498]  do_el0_svc+0x1c/0x28
-> [   45.601506]  el0_svc+0x34/0xb8
-> [   45.601516]  el0t_64_sync_handler+0x100/0x12c
-> [   45.601522]  el0t_64_sync+0x190/0x194
-> [   45.601531] ---[ end trace 0000000000000000 ]---
-> [   45.608794] Disabling non-boot CPUs ...
-> [   45.611029] psci: CPU1 killed (polled 0 ms)
-> [   45.611837] Enabling non-boot CPUs ...
-> [   45.612247] Detected VIPT I-cache on CPU1
-> 
-> Tested on a am62x board
-> 
-> Fixes: 61a348857e86 ("usb: dwc3: gadget: Fix NULL pointer dereference in dwc3_gadget_suspend)
-> Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
-> ---
->  drivers/usb/dwc3/gadget.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
+=E5=9C=A8 2024-02-25=E6=98=9F=E6=9C=9F=E6=97=A5=E7=9A=84 15:32 +0800=EF=BC=
+=8CXi Ruoyao=E5=86=99=E9=81=93=EF=BC=9A
+> On Sun, 2024-02-25 at 14:51 +0800, Icenowy Zheng wrote:
+> > > From my point of view, I prefer to "restore fstat", because we
+> > > need
+> > > to
+> > > use the Chrome sandbox everyday (even though it hasn't been
+> > > upstream
+> > > by now). But I also hope "seccomp deep argument inspection" can
+> > > be
+> > > solved in the future.
+> >=20
+> > My idea is this problem needs syscalls to be designed with deep
+> > argument inspection in mind; syscalls before this should be
+> > considered
+> > as historical error and get fixed by resotring old syscalls.
+>=20
+> I'd not consider fstat an error as using statx for fstat has a
+> performance impact (severe for some workflows), and Linus has
+> concluded
 
-Hi,
+Sorry for clearance, I mean statx is an error in ABI design, not fstat.
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+> "if the user wants fstat, give them fstat" for the performance issue:
+>=20
+> https://sourceware.org/pipermail/libc-alpha/2023-September/151365.html
+>=20
+> However we only want fstat (actually "newfstat" in fs/stat.c), and it
+> seems we don't want to resurrect newstat, newlstat, newfstatat, etc.
+> (or
+> am I missing any benefit - performance or "just pleasing seccomp" -
+> of
+> them comparing to statx?) so we don't want to just define
+> __ARCH_WANT_NEW_STAT.=C2=A0 So it seems we need to add some new #if to
+> fs/stat.c and include/uapi/asm-generic/unistd.h.
+>=20
+> And no, it's not a design issue of all other syscalls.=C2=A0 It's just th=
+e
+> design issue of seccomp.=C2=A0 There's no way to design a syscall allowin=
+g
+> seccomp to inspect a 100-character path in its argument unless
+> refactoring seccomp entirely because we cannot fit a 100-character
+> path
+> into 8 registers.
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+Well my meaning is that syscalls should be designed to be simple to
+prevent this kind of circumstance.
 
-- You have marked a patch with a "Fixes:" tag for a commit that is in an
-  older released kernel, yet you do not have a cc: stable line in the
-  signed-off-by area at all, which means that the patch will not be
-  applied to any older kernel releases.  To properly fix this, please
-  follow the documented rules in the
-  Documentation/process/stable-kernel-rules.rst file for how to resolve
-  this.
+>=20
+> As at now people do use PTRACE_PEEKDATA for "deep inspection"
+> (actually
+> "debugging" the target process) but it obviously makes a very severe
+> performance impact.
+>=20
+> <rant>
+>=20
+> Today the entire software industry is saying "do things in a
+> declarative
+> way" but seccomp is completely the opposite.=C2=A0 It's auditing *how* th=
+e
+> sandboxed application is doing things instead of *what* will be done.
+>=20
+> I've raised my against to seccomp and/or syscall allowlisting several
+> times after seeing so many breakages like:
+>=20
+> - https://github.com/NetworkConfiguration/dhcpcd/issues/120
+> - https://gitlab.gnome.org/GNOME/tracker-miners/-/issues/252
+> - https://blog.pintia.cn/2018/06/27/glibc-segmentation-fault/
+> -
+> http://web.archive.org/web/20210126121421/http://acm.xidian.edu.cn/discus=
+s/thread.php?tid=3D148&cid=3D#
+> =C2=A0(comment 3)
+>=20
+> but people just keep telling me "you are wrong, you don't understand
+> security".=C2=A0 Some of them even complain "seccomp is broken" as well
+> but
+> still keep using it.
+>=20
+> </rant>
+>=20
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
 
