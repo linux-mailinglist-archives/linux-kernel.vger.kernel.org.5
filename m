@@ -1,134 +1,181 @@
-Return-Path: <linux-kernel+bounces-81404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23C58867585
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:47:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A69A986758D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:48:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B83931F2469A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:47:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D84621C23008
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:48:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A95BA7FBB0;
-	Mon, 26 Feb 2024 12:47:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="yorHxad0"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97CF18060F;
+	Mon, 26 Feb 2024 12:48:25 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73BCA604D4
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 12:47:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE4E880020;
+	Mon, 26 Feb 2024 12:48:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708951656; cv=none; b=RpC31xlIpxlOv+RXni4l2QoVE08pjTX/6LJbynQK0HYWnIPCKKzUwABO/SpPsI0ZcCM4JlzwE4Xfb8HdkqcPyEMkatg0qES6/ZqHhhKaAHE1MPOrToaxY5zLCLqGdv6La5BSoTyk+IXQUfaKtHmIee1wU5OVU87zHjv30cDIaM4=
+	t=1708951705; cv=none; b=rKlnc7Cq7vXo0w0I8c0AORID3z7U2k22D9qy39sKNWJafxZrMthzQ27jEesI20nZOMAmtkXRkJaLje52NIveOsAczj+tu4J6Qg0V0rly4P1eTbFAsBcFJk6AVqv8XbyxNqz/EDe2crnuCiWgaGeZTQ3x8sNuent+qGoWNUd9ivA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708951656; c=relaxed/simple;
-	bh=dN7vlfm2CWuP7gytdhzY1G0iMgJePvyOPGhA6GCsXPU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ExBzrDQHF+kGiEJAfoKEsxy7i+kZ6AKPXCGZLC2Rd/zugQDT0AeO8wc/88WfAi+T6+1qrNMNITuOmpMKFvr0EDRUA4/gLQPdD3KuUDN2HzSPiyiCj//Vpqn4REjDT6qUYoTGPVAxs4LhL3qv2kQTzwoWmHfGWFGKPabz4Huv6Ws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=yorHxad0; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e459b39e2cso1640137b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 04:47:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1708951654; x=1709556454; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nyrubZrd+iQQ9LRdmGo0pLnE0GnOJFu8Ms2d6zdohTc=;
-        b=yorHxad0Q2CTEfzncY+ztjfHw/nemFR33fL9via7ohGcaIULF0x3HojLZf/UqW3S4z
-         9bZI0jUT9fM48y4aBcJE/Gs5ACGUaat0xkeo0mKou5B0L5hr47wgWceI3dRhhkuuJNQY
-         zN/kSt8OXwj9SJ+M5wRKvCbrgxivjyceI0OGGEx5FdJP9I6btAhUdFYNuAXEPz7DVsVt
-         lXAlBbHxLl1dEU1Ahc265wpsNvn9I/DVyFXrPWbv2o5QTOs0gJutv9aDECKWyvZxyEoM
-         FWshhAUN7+kJp4m0HJBJG70taftd1XZadPI//NOZQsXPAOhHQVCGqW0qL/1wG/+V74gq
-         UI5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708951654; x=1709556454;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nyrubZrd+iQQ9LRdmGo0pLnE0GnOJFu8Ms2d6zdohTc=;
-        b=Xkv4eSXBrAgqK5VF6WtFzq4onBaKCLivsxTL1+xNUd2kKf6PueLhg6N2ziIHV/GihD
-         X9T9N9OIglcDK2XILIxkB27kE4Y41Ga2j9ftzh7SWuw2hgi3Ox5rYyuqB8DxB+GjLA/p
-         PL/nc5CiNRVX228qmTiuyOh9QRM0niykCmXrcpmL2Ue603xxRKj/mwwX15YoQ7R+jjxr
-         Rt+h/NHbkr7Aptw+/KjUtJ0txXchRR0LsZRxuA7r5ttzh5mjDHjb6S86jTK/ffc11lSV
-         mGbBUV7NijWGAPYfFF8z5hJ3VLYPre4Kdhu/fdRKY7MzB7BZ9Q1n5As3y4XWIgO+mkHm
-         stzg==
-X-Forwarded-Encrypted: i=1; AJvYcCUKNqCVcen54IXOJJG1YKGvrBV7+4e11e40k21FDA7d8z7+/1nL3q4thstktXXB4sUfL5Rax8fC6RtBqZyhO/0Aqv+GMutYvVgB31Hk
-X-Gm-Message-State: AOJu0YzTZ3eJD4ICYWSmeSP3yqnTEdR04YTV0wlfTfUGCTiyqzv3FPz6
-	yaUmBe3srK9AKAPJ0rdQfdEaxMsGReJkHsgGQgBD9VGi+Ibx2SvMcLPh8AfpfVw=
-X-Google-Smtp-Source: AGHT+IFX/dKtzGRqrmOKHZtigWLQqswOK9f44At5pPNmVA4fazaZ6Tbtk13iEH+Bwie50vdjALOU8A==
-X-Received: by 2002:a05:6a21:1584:b0:1a1:5ad:4129 with SMTP id nr4-20020a056a21158400b001a105ad4129mr1274023pzb.15.1708951653839;
-        Mon, 26 Feb 2024 04:47:33 -0800 (PST)
-Received: from dread.disaster.area (pa49-181-247-196.pa.nsw.optusnet.com.au. [49.181.247.196])
-        by smtp.gmail.com with ESMTPSA id l3-20020a62be03000000b006e4432027d1sm4030530pff.142.2024.02.26.04.47.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 04:47:33 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1reaOI-00BkxF-2y;
-	Mon, 26 Feb 2024 23:47:30 +1100
-Date: Mon, 26 Feb 2024 23:47:30 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, chandan.babu@oracle.com,
-	akpm@linux-foundation.org, mcgrof@kernel.org, ziy@nvidia.com,
-	hare@suse.de, djwong@kernel.org, gost.dev@samsung.com,
-	linux-mm@kvack.org, willy@infradead.org,
-	Pankaj Raghav <p.raghav@samsung.com>
-Subject: Re: [PATCH 12/13] xfs: make the calculation generic in
- xfs_sb_validate_fsb_count()
-Message-ID: <ZdyIYrei4QWvAMpx@dread.disaster.area>
-References: <20240226094936.2677493-1-kernel@pankajraghav.com>
- <20240226094936.2677493-13-kernel@pankajraghav.com>
+	s=arc-20240116; t=1708951705; c=relaxed/simple;
+	bh=A5fVjk1SgP+2ltBG8VhkDLaQNzbQ1PoBtwp3T6NOQ4I=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ZWVsjv4DwjtcoWc6Gz2Y9JJhaZuOVpXMlg0/L9COhdFlIpU7CJfA0U3mKnH23pNEnS7kNMS7eqgK2kwicGf0mEHBxpRgfi7/kyNByjqW5KsxxXwmY6avULeYhQr2tton8O8ABUryXJQu6SV+taoz9mr53MM08f6FxKIuctXgumI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Tk0fn3tSbz6K6Gc;
+	Mon, 26 Feb 2024 20:44:01 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 188F0140D30;
+	Mon, 26 Feb 2024 20:48:20 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 26 Feb
+ 2024 12:48:19 +0000
+Date: Mon, 26 Feb 2024 12:48:18 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: John Groves <John@Groves.net>
+CC: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, "Dan
+ Williams" <dan.j.williams@intel.com>, Vishal Verma
+	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Alexander
+ Viro" <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, "Jan
+ Kara" <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+	<linux-cxl@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<nvdimm@lists.linux.dev>, <john@jagalactic.com>, Dave Chinner
+	<david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>,
+	<dave.hansen@linux.intel.com>, <gregory.price@memverge.com>
+Subject: Re: [RFC PATCH 08/20] famfs: Add famfs_internal.h
+Message-ID: <20240226124818.0000251d@Huawei.com>
+In-Reply-To: <13556dbbd8d0f51bc31e3bdec796283fe85c6baf.1708709155.git.john@groves.net>
+References: <cover.1708709155.git.john@groves.net>
+	<13556dbbd8d0f51bc31e3bdec796283fe85c6baf.1708709155.git.john@groves.net>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240226094936.2677493-13-kernel@pankajraghav.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Mon, Feb 26, 2024 at 10:49:35AM +0100, Pankaj Raghav (Samsung) wrote:
-> From: Pankaj Raghav <p.raghav@samsung.com>
+On Fri, 23 Feb 2024 11:41:52 -0600
+John Groves <John@Groves.net> wrote:
+
+> Add the famfs_internal.h include file. This contains internal data
+> structures such as the per-file metadata structure (famfs_file_meta)
+> and extent formats.
 > 
-> Instead of assuming that PAGE_SHIFT is always higher than the blocklog,
-> make the calculation generic so that page cache count can be calculated
-> correctly for LBS.
-> 
-> Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
+> Signed-off-by: John Groves <john@groves.net>
+Hi John,
+
+Build this up as you add the definitions in later patches.
+
+Separate header patches just make people jump back and forth when trying
+to review.  Obviously more work to build this stuff up cleanly but
+it's worth doing to save review time.
+
+Generally I'd plumb up Kconfig and Makefile a the beginning as it means
+that the set is bisectable and we can check the logic of building each stage.
+That is harder to do but tends to bring benefits in forcing clear step
+wise approach on a patch set. Feel free to ignore this one though as it
+can slow things down.
+
+A few trivial comments inline.
+
 > ---
->  fs/xfs/xfs_mount.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
+>  fs/famfs/famfs_internal.h | 53 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+>  create mode 100644 fs/famfs/famfs_internal.h
 > 
-> diff --git a/fs/xfs/xfs_mount.c b/fs/xfs/xfs_mount.c
-> index aabb25dc3efa..69af3b06be99 100644
-> --- a/fs/xfs/xfs_mount.c
-> +++ b/fs/xfs/xfs_mount.c
-> @@ -133,9 +133,15 @@ xfs_sb_validate_fsb_count(
->  {
->  	ASSERT(PAGE_SHIFT >= sbp->sb_blocklog);
->  	ASSERT(sbp->sb_blocklog >= BBSHIFT);
-> +	uint64_t mapping_count;
-> +	uint64_t bytes;
->  
-> +	if (check_mul_overflow(nblocks, (1 << sbp->sb_blocklog), &bytes))
-> +		return -EFBIG;
+> diff --git a/fs/famfs/famfs_internal.h b/fs/famfs/famfs_internal.h
+> new file mode 100644
+> index 000000000000..af3990d43305
+> --- /dev/null
+> +++ b/fs/famfs/famfs_internal.h
+> @@ -0,0 +1,53 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * famfs - dax file system for shared fabric-attached memory
+> + *
+> + * Copyright 2023-2024 Micron Technology, Inc.
+> + *
+> + * This file system, originally based on ramfs the dax support from xfs,
+> + * is intended to allow multiple host systems to mount a common file system
+> + * view of dax files that map to shared memory.
+> + */
+> +#ifndef FAMFS_INTERNAL_H
+> +#define FAMFS_INTERNAL_H
 > +
-> +	mapping_count = bytes >> PAGE_SHIFT;
+> +#include <linux/atomic.h>
 
-max_index, not a "mapping count". Also, put this after this comment:
+Why?
 
->  	/* Limited by ULONG_MAX of page cache index */
+> +#include <linux/famfs_ioctl.h>
+> +
+> +#define FAMFS_MAGIC 0x87b282ff
+> +
+> +#define FAMFS_BLKDEV_MODE (FMODE_READ|FMODE_WRITE)
 
-So it is obvious what the max_index we are calculating belongs to.
+Spaces around | 
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+> +
+> +extern const struct file_operations      famfs_file_operations;
+
+I wouldn't force alignment. It rots too often as new stuff gets added
+and doesn't really help readability much.
+
+> +
+> +/*
+> + * Each famfs dax file has this hanging from its inode->i_private.
+> + */
+> +struct famfs_file_meta {
+> +	int                   error;
+> +	enum famfs_file_type  file_type;
+> +	size_t                file_size;
+> +	enum extent_type      tfs_extent_type;
+> +	size_t                tfs_extent_ct;
+> +	struct famfs_extent   tfs_extents[];  /* flexible array */
+
+Comment kind of obvious ;) I'd drop it.  Though we have
+magic markings for __counted_by which would be good to use from the start.
+
+
+
+> +};
+> +
+> +struct famfs_mount_opts {
+> +	umode_t mode;
+> +};
+> +
+> +extern const struct iomap_ops             famfs_iomap_ops;
+> +extern const struct vm_operations_struct  famfs_file_vm_ops;
+> +
+> +#define ROOTDEV_STRLEN 80
+
+Why?  You aren't creating an array of this size here so I can't
+immediately see what the define is for.
+
+> +
+> +struct famfs_fs_info {
+> +	struct famfs_mount_opts  mount_opts;
+> +	struct file             *dax_filp;
+> +	struct dax_device       *dax_devp;
+> +	struct bdev_handle      *bdev_handle;
+> +	struct list_head         fsi_list;
+> +	char                    *rootdev;
+> +};
+> +
+> +#endif /* FAMFS_INTERNAL_H */
+
 
